@@ -1518,6 +1518,61 @@ let ``Journaled freeze crash during block CAS put drops the trailing intent`` ()
     }
 
 [<Fact>]
+let ``BlockCas PutMany crash-mid-write on the second freeze keeps the first`` () : Task =
+    task {
+        ensureHasher ()
+        FileSystem.Register(InMemoryFileSystem())
+        let store = "/putmany-second-crash"
+        let mutbuf = ZetaFsMutbuf.create store ZetaFsMutbuf.Coherence.Shared
+        let logDev = SimulatedBlockIo(4096)
+        let objDev = SimulatedBlockIo(4096)
+        let cas = BlockCas(objDev)
+        let volume = ZetaFsFreeze.createManualWithBlockStore store mutbuf None logDev cas
+
+        try
+            let id = mintId ()
+            let h = ZetaFsMutbuf.openHandle volume.Mutbuf id
+            ZetaFsMutbuf.pwrite volume.Mutbuf h 0L [| 1uy; 2uy; 3uy |] |> ignore
+            let pendingA = (freezeAsync volume id ZetaFsFreeze.Journaled).AsTask()
+            do! (ZetaFsFreeze.pumpLog volume CancellationToken.None).ConfigureAwait(false)
+            let! first = pendingA.ConfigureAwait(false)
+
+            match first with
+            | Error e -> Assert.Fail(ZetaFsFreeze.errorName e)
+            | Ok first ->
+                Assert.True(ZetaFsFreeze.isReadable volume first.Content)
+                let published = cas.Count
+                Assert.True(published > 0, "freeze A must publish BlockCas objects")
+                objDev.ArmCrashMidWrite(8)
+                ZetaFsMutbuf.pwrite volume.Mutbuf h 0L [| 9uy; 8uy; 7uy |] |> ignore
+                let pendingB = (freezeAsync volume id ZetaFsFreeze.Journaled).AsTask()
+                do! (ZetaFsFreeze.pumpLog volume CancellationToken.None).ConfigureAwait(false)
+                let! _ =
+                    Assert
+                        .ThrowsAsync<CrashMidWriteException>(fun () -> pendingB :> Task)
+                        .ConfigureAwait(false)
+
+                Assert.True(ZetaFsFreeze.isReadable volume first.Content)
+                ZetaFsFreeze.dispose volume
+                let logClone = logDev.CloneMedia()
+                let objClone = objDev.CloneMedia()
+                let cas2 = BlockCas(objClone)
+                let reopened =
+                    ZetaFsFreeze.createManualWithBlockStore store mutbuf None logClone cas2
+
+                try
+                    Assert.True(ZetaFsFreeze.isReadable reopened first.Content)
+                    Assert.True(
+                        cas2.Count > 0,
+                        "CloneMedia BlockCas must still hold freeze A objects"
+                    )
+                finally
+                    ZetaFsFreeze.dispose reopened
+        finally
+            FileSystem.Reset()
+    }
+
+[<Fact>]
 let ``Journaled freeze log superblock reopens from cloned media without LogicalBytes`` () : Task =
     task {
         ensureHasher ()
