@@ -226,3 +226,83 @@ export function renderSvg(size = 720): string {
     "",
   ].join("\n");
 }
+
+// ── RUNG 2: DRAWINGS ────────────────────────────────────────────────────────
+//
+// Edges, and they are DERIVED rather than drawn. The 240 roots are the vertices of
+// the Gosset polytope 4_21; its edges join roots at 60 degrees. In these doubled
+// coordinates |r|^2 = 8, so 60 degrees is exactly <r,s> = 8 * cos(60) = 4 -- an
+// INTEGER test on integer vectors, with no tolerance and nothing eyeballed.
+//
+// The falsifier: 4_21 has 6720 edges and is 56-regular (240 * 56 / 2 = 6720). Pick
+// the wrong inner product and both numbers move.
+
+/** Inner product marking a 4_21 edge, in doubled coordinates: |r|^2 * cos(60) = 8/2. */
+export const GOSSET_EDGE_INNER_PRODUCT = 4;
+
+export interface Edge {
+  readonly a: number;
+  readonly b: number;
+}
+
+/** Edges of the Gosset polytope 4_21 over the root set, by exact integer test. */
+export function gossetEdges(roots: readonly Root[] = e8Roots()): Edge[] {
+  const edges: Edge[] = [];
+  for (let i = 0; i < roots.length; i++) {
+    for (let j = i + 1; j < roots.length; j++) {
+      const ri = roots[i];
+      const rj = roots[j];
+      if (ri === undefined || rj === undefined) continue;
+      if (dot(ri, rj) === GOSSET_EDGE_INNER_PRODUCT) edges.push({ a: i, b: j });
+    }
+  }
+  return edges;
+}
+
+/** Degree of every vertex -- 4_21 is 56-regular, so this must be constant. */
+export function vertexDegrees(roots: readonly Root[] = e8Roots(), edges?: readonly Edge[]): number[] {
+  const es = edges ?? gossetEdges(roots);
+  const deg = new Array<number>(roots.length).fill(0);
+  for (const e of es) {
+    deg[e.a] = (deg[e.a] ?? 0) + 1;
+    deg[e.b] = (deg[e.b] ?? 0) + 1;
+  }
+  return deg;
+}
+
+/** The drawing: projected vertices plus their derived edges. Still nothing by hand. */
+export function renderDrawingSvg(size = 720): string {
+  const roots = e8Roots();
+  const pts = projectRoots(roots);
+  const edges = gossetEdges(roots);
+  const max = Math.max(...pts.map((p) => p.radius));
+  const s = (size / 2 - 12) / max;
+  const c = size / 2;
+  const at = (k: number): { x: number; y: number } => {
+    const p = pts[k];
+    if (p === undefined) return { x: c, y: c };
+    return { x: c + p.x * s, y: c - p.y * s };
+  };
+  const lines = edges
+    .map((e) => {
+      const p = at(e.a);
+      const q = at(e.b);
+      return `<line x1="${p.x.toFixed(2)}" y1="${p.y.toFixed(2)}" x2="${q.x.toFixed(2)}" y2="${q.y.toFixed(2)}"/>`;
+    })
+    .join("\n    ");
+  const dots = pts
+    .map((p) => `<circle cx="${(c + p.x * s).toFixed(2)}" cy="${(c - p.y * s).toFixed(2)}" r="2.2"/>`)
+    .join("\n    ");
+  return [
+    `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${size} ${size}" width="${size}" height="${size}">`,
+    `  <title>Gosset 4_21 on the Coxeter plane -- vertices and edges, both derived</title>`,
+    `  <g stroke="currentColor" stroke-width="0.25" stroke-opacity="0.5" fill="none">`,
+    `    ${lines}`,
+    `  </g>`,
+    `  <g fill="currentColor">`,
+    `    ${dots}`,
+    `  </g>`,
+    `</svg>`,
+    "",
+  ].join("\n");
+}

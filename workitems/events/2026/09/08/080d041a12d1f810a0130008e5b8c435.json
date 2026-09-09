@@ -1,0 +1,14 @@
+{
+  "id": "080d041a12d1f810a0130008e5b8c435",
+  "at": "2026-09-08T23:02:38.911Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M21M4PHY087G0R003TQ4ECZ",
+    "type": "task",
+    "title": "Rung 2: drawings — Gosset 4_21 edges derived from the root system",
+    "slug": "rung-2-drawings-gosset-4-21-edges-derived-from-the-root-syst",
+    "priority": "P2",
+    "filename": "081M21M4PHY087G0R003TQ4ECZ-rung-2-drawings-gosset-4-21-edges-derived-from-the-root-syst.md"
+  }
+}

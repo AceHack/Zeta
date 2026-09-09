@@ -3,9 +3,12 @@ import {
   coxeterPlaneBasis,
   e8Roots,
   e8SimpleRoots,
+  gossetEdges,
   projectRoots,
   radiusRings,
+  renderDrawingSvg,
   renderSvg,
+  vertexDegrees,
 } from "./clifford-e8-coxeter-projection.ts";
 
 describe("the rendering surface is generated from the algebra", () => {
@@ -64,6 +67,42 @@ describe("the rendering surface is generated from the algebra", () => {
   it("renders an SVG whose every mark is a projected root", () => {
     const svg = renderSvg(720);
     expect(svg.startsWith("<svg")).toBe(true);
+    expect((svg.match(/<circle /g) ?? []).length).toBe(240);
+  });
+});
+
+describe("rung 2 — drawings, with edges derived not drawn", () => {
+  // 4_21's vertices ARE the 240 roots, and its edges join roots at 60 degrees.
+  // In doubled coordinates that is the exact integer test <r,s> = 4, so there is
+  // no tolerance to tune and nothing to eyeball.
+  const roots = e8Roots();
+  const edges = gossetEdges(roots);
+
+  it("has the Gosset polytope's edge count", () => {
+    expect(edges.length).toBe(6720);
+  });
+
+  it("is 56-regular — every vertex, not on average", () => {
+    const degrees = new Set(vertexDegrees(roots, edges));
+    expect([...degrees]).toEqual([56]);
+  });
+
+  it("edge count and regularity agree: 240 * 56 / 2", () => {
+    // Two independently computed quantities that must reconcile. If the edge test
+    // were wrong in a way that preserved the count, this would still catch a
+    // non-uniform degree distribution.
+    expect((240 * 56) / 2).toBe(edges.length);
+  });
+
+  it("no self-edges and no duplicates", () => {
+    const seen = new Set(edges.map((e) => `${e.a}-${e.b}`));
+    expect(seen.size).toBe(edges.length);
+    expect(edges.every((e) => e.a !== e.b)).toBe(true);
+  });
+
+  it("the drawing emits every derived edge and vertex, and nothing else", () => {
+    const svg = renderDrawingSvg(720);
+    expect((svg.match(/<line /g) ?? []).length).toBe(6720);
     expect((svg.match(/<circle /g) ?? []).length).toBe(240);
   });
 });
