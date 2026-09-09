@@ -68,12 +68,27 @@ describe("k8s manifests are present and well-formed", () => {
     expect(bad).toEqual([]);
   });
 });
-
 describe("ArgoCD Applications reference paths/files that exist", () => {
-  const apps = allYaml.filter((f) => {
-    const t = readFileSync(f, "utf8");
-    return /kind:\s*Application/.test(t) && /argoproj\.io/.test(t);
-  });
+  // Read the DOCUMENT, not the prose. Both patterns are line-anchored:
+  //
+  //   - `kind:` must be the whole value, so `kind: ApplicationSet` is not an
+  //     ArgoCD Application and is no longer treated as one.
+  //   - `apiVersion:` must actually be the argoproj group. The old test matched
+  //     a bare `argoproj\.io` ANYWHERE in the file, which every
+  //     `argocd.argoproj.io/sync-wave` annotation satisfies — and so does a
+  //     COMMENT. `k8s/sync-wave-dependency-graph.yaml` is
+  //     `kind: AppDependencyGraph`, `apiVersion: ace.zeta.io/v1`, and it was
+  //     pulled into this Application suite purely because its prose quotes
+  //     `kind: Application` and the annotation name.
+  //
+  // The anchoring also clears CodeQL js/regex/missing-regexp-anchor: an
+  // unanchored host-shaped literal reads as a URL check that arbitrary hosts
+  // can prefix. It was never a URL check — and it should not have been
+  // unanchored either way.
+  const isArgoApplication = (t: string): boolean =>
+    /^\s*kind:\s*Application\s*$/m.test(t) && /^\s*apiVersion:\s*argoproj\.io\//m.test(t);
+
+  const apps = allYaml.filter((f) => isArgoApplication(readFileSync(f, "utf8")));
 
   test("found the Applications (incl. the ones added this session)", () => {
     const names = apps.map((f) => f.replace(REPO, "").replace(/\\/g, "/"));
@@ -82,6 +97,19 @@ describe("ArgoCD Applications reference paths/files that exist", () => {
     expect(names.some((n) => n.includes("game-hosting/gmod"))).toBe(true);
     expect(names.some((n) => n.includes("cilium-lb-ipam"))).toBe(true);
     expect(names.some((n) => n.includes("agent-memory"))).toBe(true);
+  });
+
+  test("a file that only TALKS about Applications is not one", () => {
+    // The regression. sync-wave-dependency-graph.yaml declares
+    // `kind: AppDependencyGraph` and mentions `kind: Application` in comments;
+    // the unanchored filter classified it as an ArgoCD Application.
+    const names = apps.map((f) => f.replace(REPO, "").replace(/\\/g, "/"));
+    expect(names.some((n) => n.includes("sync-wave-dependency-graph"))).toBe(false);
+
+    // And the filter itself, exercised directly on the forcing shapes.
+    expect(isArgoApplication("# a note about `kind: Application` and argocd.argoproj.io/sync-wave\napiVersion: ace.zeta.io/v1\nkind: AppDependencyGraph\n")).toBe(false);
+    expect(isArgoApplication("apiVersion: argoproj.io/v1alpha1\nkind: ApplicationSet\n")).toBe(false);
+    expect(isArgoApplication("apiVersion: argoproj.io/v1alpha1\nkind: Application\n")).toBe(true);
   });
 
   // Strict existence check scoped to the apps THIS session added — those
