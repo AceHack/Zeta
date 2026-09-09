@@ -84,8 +84,8 @@ on:
   workflow_dispatch: {}
 
 permissions:
-  contents: write # commits the tick event back to docs/drift-events/
-  actions: read # GET /actions/workflows/gate.yml/runs — the gate-verdict drought step below
+  contents: read
+  actions: read # GET /actions/workflows/gate.yml/runs, the gate-verdict drought step
 
 concurrency:
   group: drift-sweep
@@ -167,6 +167,11 @@ jobs:
           } >> "$GITHUB_STEP_SUMMARY"
 
   sweep:
+    permissions:
+      # NARROWED to job level 2026-09-09. The debounce job declares its own read-only
+      # grant and never inherited the write, so only this job needed it.
+      contents: write # commits the tick event back to docs/drift-events/
+      actions: read   # gate-verdict drought + run/job queries
     name: sweep main into the drift ledger
     needs: debounce
     if: needs.debounce.outputs.should_run == 'true'

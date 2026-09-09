@@ -65,8 +65,7 @@ concurrency:
   cancel-in-progress: false
 
 permissions:
-  contents: write   # append-only commit of new events/ to the accelerator branch
-  actions: write    # bounded self-re-dispatch
+  contents: read
 
 env:
   AGENT_INPUT: ${{ inputs.agent }}
@@ -74,6 +73,10 @@ env:
 
 jobs:
   move-next:
+    permissions:
+      # NARROWED to job level 2026-09-09.
+      contents: write   # append-only commit of new events/ to the accelerator branch
+      actions: write    # bounded self-re-dispatch
     # Timeout basis: observed n=1 at 0.2m; validate + append-only event commit.
     timeout-minutes: 10
     runs-on: ubuntu-24.04

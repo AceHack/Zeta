@@ -5,8 +5,7 @@ on:
     types: [opened]
 
 permissions:
-  contents: write
-  issues: write
+  contents: read
 
 concurrency:
   group: passkey-proposal-${{ github.event.issue.number }}
@@ -14,6 +13,12 @@ concurrency:
 
 jobs:
   verify-and-stage:
+    permissions:
+      # NARROWED to job level 2026-09-09. Both grants are genuinely exercised:
+      # proposal-gated-commit-runner.ts:310 pushes the review branch with the
+      # checkout persisted GITHUB_TOKEN, and the handoff step comments on the issue.
+      contents: write
+      issues: write
     if: startsWith(github.event.issue.body, '<!-- zeta-proposal-v2 -->') || startsWith(github.event.issue.body, '<!-- zeta-delegated-device-proposal-v1 -->')
     # Timeout basis: no completed runs; bun install --frozen-lockfile + fetch-depth 0 + branch push.
     timeout-minutes: 15

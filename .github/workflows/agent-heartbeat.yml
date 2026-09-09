@@ -32,8 +32,7 @@ on:
   workflow_dispatch: # manual trigger for testing
 
 permissions:
-  contents: write
-  pull-requests: write
+  contents: read
 
 concurrency:
   group: agent-heartbeat
@@ -41,6 +40,12 @@ concurrency:
 
 jobs:
   heartbeat:
+    permissions:
+      # NARROWED to job level 2026-09-09. Both jobs genuinely write: the tick pushes
+      # its heartbeat lane ref, and the flush arms auto-merge, falling back to
+      # GITHUB_TOKEN when ZETA_PR_ARCHIVE_TOKEN is absent or refused the mutation.
+      contents: write
+      pull-requests: write
     name: ${{ matrix.agent }} heartbeat tick
     runs-on: ubuntu-24.04
     timeout-minutes: 10
@@ -1506,6 +1511,10 @@ jobs:
         run: git push --force-with-lease origin "heartbeat/$AGENT"
 
   flush-to-main:
+    permissions:
+      # NARROWED to job level 2026-09-09. See the heartbeat job for why both are real.
+      contents: write
+      pull-requests: write
     name: flush ${{ matrix.agent }} heartbeats
     runs-on: ubuntu-24.04
     timeout-minutes: 5

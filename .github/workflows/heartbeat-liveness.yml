@@ -66,24 +66,7 @@ on:
         default: "60"
 
 permissions:
-  actions: read # read agent-heartbeat run history — the whole input to the verdict
-  issues: write # raise/refresh the tracking issue so the alarm survives outside Actions
-  # WRITE, AS OF 2026-08-27, AND EXACTLY WHAT IT CAN AND CANNOT REACH.
-  #
-  # This is the workflow's own scoped GITHUB_TOKEN, the same grant `agent-heartbeat.yml` already
-  # holds. It is used for ONE thing: `git push origin HEAD:liveness/observations`. It provably
-  # cannot reach `main`, and that is a property of the repository rulesets rather than of this
-  # workflow's good behaviour — verified against the live API on 2026-08-27:
-  #
-  #   `CI Gate` (required_status_checks) has conditions.ref_name.include == ["~DEFAULT_BRANCH"],
-  #   and its ONLY bypass actor is RepositoryRole 5 with bypass_mode `pull_request`. GITHUB_TOKEN
-  #   is not that actor, and even that actor cannot push to `main` without a PR.
-  #
-  # So this grant buys the ability to write a non-default ref and nothing else. It is not the
-  # bypass actor that a literal "observations land as commits ON main" would require; that would
-  # be a credential able to push anything to `main`, enforced only by its own source code, and it
-  # is a security decision for the maintainer rather than a workflow edit.
-  contents: write
+  contents: read
 
 concurrency:
   group: heartbeat-liveness
@@ -99,6 +82,27 @@ concurrency:
 
 jobs:
   check:
+    permissions:
+      # NARROWED to job level 2026-09-09; the grants and their reasoning are unchanged.
+      actions: read # read agent-heartbeat run history, the whole input to the verdict
+      issues: write # raise/refresh the tracking issue so the alarm survives outside Actions
+      #
+      # contents: write is used for ONE thing: pushing HEAD to liveness/observations.
+      # It provably cannot reach main, and that is a property of the repository
+      # rulesets rather than of this workflow's good behaviour, verified against the
+      # live API on 2026-08-27:
+      #
+      #   CI Gate (required_status_checks) has conditions.ref_name.include ==
+      #   ["~DEFAULT_BRANCH"], and its ONLY bypass actor is RepositoryRole 5 with
+      #   bypass_mode pull_request. GITHUB_TOKEN is not that actor, and even that
+      #   actor cannot push to main without a PR.
+      #
+      # So this grant buys the ability to write a non-default ref and nothing else. It
+      # is not the bypass actor that a literal "observations land as commits ON main"
+      # would require; that would be a credential able to push anything to main,
+      # enforced only by its own source code, and it is a security decision for the
+      # maintainer rather than a workflow edit.
+      contents: write
     name: No successful heartbeat in N minutes?
     runs-on: ubuntu-24.04
     timeout-minutes: 5

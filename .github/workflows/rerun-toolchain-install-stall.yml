@@ -114,7 +114,7 @@ on:
         default: "45"
 
 permissions:
-  actions: write
+  contents: read
 
 concurrency:
   # One sweep at a time. Safe to cancel a queued older one: the sweep holds no state and
@@ -124,6 +124,9 @@ concurrency:
 
 jobs:
   sweep:
+    permissions:
+      # NARROWED to job level 2026-09-09. Re-dispatches the stalled run.
+      actions: write
     name: rerun toolchain-install stalls
     runs-on: ubuntu-24.04
     timeout-minutes: 10

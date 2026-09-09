@@ -46,8 +46,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write       # push the staging branch
-  pull-requests: write  # open/arm the flush PR
+  contents: read
 
 # One writer per lane. Without this, the push trigger and the 15-minute schedule can
 # overlap and race each other onto the same staging ref. The shard store makes the DATA
@@ -58,6 +57,10 @@ concurrency:
 
 jobs:
   append-metrics:
+    permissions:
+      # NARROWED to job level 2026-09-09.
+      contents: write       # push the staging branch
+      pull-requests: write  # open/arm the flush PR
     name: append tick metrics
     runs-on: ubuntu-24.04
     timeout-minutes: 5

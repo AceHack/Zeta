@@ -66,8 +66,7 @@ on:
   workflow_dispatch: {}
 
 permissions:
-  contents: write      # push the lane's heartbeat/lockfile-healer staging branch
-  pull-requests: write # open + arm the flush PR that lands the heal on main
+  contents: read
 
 concurrency:
   group: lockfile-healer
@@ -75,6 +74,10 @@ concurrency:
 
 jobs:
   heal:
+    permissions:
+      # NARROWED to job level 2026-09-09.
+      contents: write      # push the lane's heartbeat/lockfile-healer staging branch
+      pull-requests: write # open + arm the flush PR that lands the heal on main
     name: LD001 — heal bun.lock desync
     runs-on: ubuntu-24.04
     timeout-minutes: 8

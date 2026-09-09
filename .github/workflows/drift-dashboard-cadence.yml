@@ -50,7 +50,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
 
 concurrency:
   group: drift-dashboard-cadence
@@ -58,6 +58,9 @@ concurrency:
 
 jobs:
   observe:
+    permissions:
+      # NARROWED to job level 2026-09-09. Degraded-path fallback for the staging push.
+      contents: write
     runs-on: ubuntu-24.04
     timeout-minutes: 10
 

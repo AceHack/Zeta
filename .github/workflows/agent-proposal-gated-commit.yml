@@ -1,7 +1,5 @@
 name: Agent proposal to gated review branch
 
-
-
 on:
 
   workflow_dispatch:
@@ -33,14 +31,8 @@ on:
         type: string
         
 
-
 permissions:
-
-  contents: write
-  
-  pull-requests: write
-  
-
+  contents: read
 
 concurrency:
 
@@ -49,10 +41,21 @@ concurrency:
   cancel-in-progress: false
   
 
-
 jobs:
 
   stage-review-branch:
+    permissions:
+      # NARROWED to job level, and pull-requests: write REMOVED, 2026-09-09.
+      #
+      # contents: write is real: agent-proposal-runner.ts:130 pushes the review branch
+      # with the checkout's persisted GITHUB_TOKEN.
+      #
+      # pull-requests: write was NOT reachable by GITHUB_TOKEN. The only PR call is
+      # createGatedReviewPullRequest (proposal-gated-commit-runner.ts:127), which sets
+      # GH_TOKEN to ZETA_PR_ARCHIVE_TOKEN explicitly and throws on an empty token, so
+      # it never falls back to the workflow credential. The grant conferred close,
+      # merge, comment and label on every PR in the repo and bought this lane nothing.
+      contents: write
   
     runs-on: ubuntu-24.04
     
@@ -104,47 +107,4 @@ jobs:
           
         run: bun src/Core.TypeScript/planning/agent-proposal-runner.ts
         
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
