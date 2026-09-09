@@ -1,0 +1,14 @@
+{
+  "id": "080d043514867810a0130008277c62bd",
+  "at": "2026-09-09T14:46:35.983Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M23A546F087G0R0034GY1DA",
+    "type": "task",
+    "title": "Rung 6: Clifford-derived shading — exact Lambert over the 4_21 face set",
+    "slug": "rung-6-clifford-derived-shading-exact-lambert-over-the-4-21",
+    "priority": "P2",
+    "filename": "081M23A546F087G0R0034GY1DA-rung-6-clifford-derived-shading-exact-lambert-over-the-4-21.md"
+  }
+}
