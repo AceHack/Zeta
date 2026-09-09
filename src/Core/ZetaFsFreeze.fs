@@ -2477,34 +2477,150 @@ module ZetaFsFreeze =
         | None -> false
         | Some bytes -> (ContentHash256.ofBytes bytes).Equals(id)
 
-    let private className (c: DurabilityClass) =
+    /// Same RFC 8949 writer as jumprope encode. Intent/commit maps keep the
+    /// historical key order (not sorted): decode is by name. Private buffer.
+    [<Sealed>]
+    type private CborBuf() =
+        let mutable buf = Array.zeroCreate 256
+        let mutable n = 0
+
+        member this.Ensure(extra: int) =
+            let need = n + extra
+
+            if need > buf.Length then
+                let mutable cap = buf.Length
+
+                while cap < need do
+                    cap <- cap * 2
+
+                let bigger = Array.zeroCreate cap
+                Buffer.BlockCopy(buf, 0, bigger, 0, n)
+                buf <- bigger
+
+        member this.Add(b: byte) =
+            this.Ensure 1
+            buf.[n] <- b
+            n <- n + 1
+
+        member this.AddSpan(s: ReadOnlySpan<byte>) =
+            this.Ensure s.Length
+            s.CopyTo(Span<byte>(buf, n, s.Length))
+            n <- n + s.Length
+
+        member this.WriteHead(major: int, arg: uint64) =
+            let mt = byte (major <<< 5)
+
+            if arg <= 23UL then
+                this.Add(mt ||| byte arg)
+            elif arg <= 0xffUL then
+                this.Ensure 2
+                buf.[n] <- mt ||| 24uy
+                buf.[n + 1] <- byte arg
+                n <- n + 2
+            elif arg <= 0xffffUL then
+                this.Ensure 3
+                buf.[n] <- mt ||| 25uy
+                buf.[n + 1] <- byte (arg >>> 8)
+                buf.[n + 2] <- byte arg
+                n <- n + 3
+            elif arg <= 0xffffffffUL then
+                this.Ensure 5
+                buf.[n] <- mt ||| 26uy
+                buf.[n + 1] <- byte (arg >>> 24)
+                buf.[n + 2] <- byte (arg >>> 16)
+                buf.[n + 3] <- byte (arg >>> 8)
+                buf.[n + 4] <- byte arg
+                n <- n + 5
+            else
+                this.Ensure 9
+                buf.[n] <- mt ||| 27uy
+                n <- n + 1
+                let mutable shift = 56
+
+                while shift >= 0 do
+                    buf.[n] <- byte (arg >>> shift)
+                    n <- n + 1
+                    shift <- shift - 8
+
+        member this.WriteInt(v: int64) =
+            if v >= 0L then
+                this.WriteHead(0, uint64 v)
+            else
+                this.WriteHead(1, uint64 (~~~v))
+
+        member this.WriteTextUtf8(utf8: ReadOnlySpan<byte>) =
+            this.WriteHead(3, uint64 utf8.Length)
+            this.AddSpan utf8
+
+        member this.WriteText(s: string) =
+            let utf8 =
+                Encoding.UTF8.GetBytes(if isNull s then "" else s)
+
+            this.WriteTextUtf8(ReadOnlySpan<byte> utf8)
+
+        member this.WriteBytes(s: ReadOnlySpan<byte>) =
+            this.WriteHead(2, uint64 s.Length)
+            this.AddSpan s
+
+        member _.ToArray() : byte[] =
+            let a = Array.zeroCreate n
+            Buffer.BlockCopy(buf, 0, a, 0, n)
+            a
+
+    let private tT = "t"B
+    let private tEntity = "entity"B
+    let private tContent = "content"B
+    let private tLeaves = "leaves"B
+    let private tClass = "class"B
+    let private tLsn = "lsn"B
+    let private tIntentLsn = "intentLsn"B
+    let private tFreezeIntent1 = "freeze-intent/1"B
+    let private tFreezeCommit1 = "freeze-commit/1"B
+    let private tBuffered = "buffered"B
+    let private tJournaled = "journaled"B
+    let private tDurable = "durable"B
+
+    let private classUtf8 (c: DurabilityClass) =
         match c with
-        | Buffered -> "buffered"
-        | Journaled -> "journaled"
-        | Durable -> "durable"
+        | Buffered -> tBuffered
+        | Journaled -> tJournaled
+        | Durable -> tDurable
 
     let private encodeIntent entity (content: ContentHash256) (leaves: ContentHash256[]) (cls: DurabilityClass) (lsn: int64) : byte[] =
-        let leafArr =
-            DynamicValue.Array [ for leaf in leaves -> DynamicValue.Bytes(System.Collections.Immutable.ImmutableArray.CreateRange leaf.Raw) ]
+        let buf = CborBuf()
+        let leafN = if isNull leaves then 0 else leaves.Length
+        buf.WriteHead(5, 6UL)
+        buf.WriteTextUtf8(ReadOnlySpan<byte> tT)
+        buf.WriteTextUtf8(ReadOnlySpan<byte> tFreezeIntent1)
+        buf.WriteTextUtf8(ReadOnlySpan<byte> tEntity)
+        buf.WriteText(ZetaFsNamespace.EntityId.format entity)
+        buf.WriteTextUtf8(ReadOnlySpan<byte> tContent)
+        buf.WriteBytes(ReadOnlySpan<byte> content.Raw)
+        buf.WriteTextUtf8(ReadOnlySpan<byte> tLeaves)
+        buf.WriteHead(4, uint64 leafN)
 
-        DynamicValue.toCanonicalCborOk (
-            DynamicValue.Object
-                [ "t", DynamicValue.String "freeze-intent/1"
-                  "entity", DynamicValue.String(ZetaFsNamespace.EntityId.format entity)
-                  "content", DynamicValue.Bytes(System.Collections.Immutable.ImmutableArray.CreateRange content.Raw)
-                  "leaves", leafArr
-                  "class", DynamicValue.String(className cls)
-                  "lsn", DynamicValue.Int lsn ]
-        )
+        if not (isNull leaves) then
+            for leaf in leaves do
+                buf.WriteBytes(ReadOnlySpan<byte> leaf.Raw)
+
+        buf.WriteTextUtf8(ReadOnlySpan<byte> tClass)
+        buf.WriteTextUtf8(ReadOnlySpan<byte> (classUtf8 cls))
+        buf.WriteTextUtf8(ReadOnlySpan<byte> tLsn)
+        buf.WriteInt lsn
+        buf.ToArray()
 
     let private encodeCommit (intentLsn: int64) (content: ContentHash256) (lsn: int64) : byte[] =
-        DynamicValue.toCanonicalCborOk (
-            DynamicValue.Object
-                [ "t", DynamicValue.String "freeze-commit/1"
-                  "intentLsn", DynamicValue.Int intentLsn
-                  "content", DynamicValue.Bytes(System.Collections.Immutable.ImmutableArray.CreateRange content.Raw)
-                  "lsn", DynamicValue.Int lsn ]
-        )
+        let buf = CborBuf()
+        buf.WriteHead(5, 4UL)
+        buf.WriteTextUtf8(ReadOnlySpan<byte> tT)
+        buf.WriteTextUtf8(ReadOnlySpan<byte> tFreezeCommit1)
+        buf.WriteTextUtf8(ReadOnlySpan<byte> tIntentLsn)
+        buf.WriteInt intentLsn
+        buf.WriteTextUtf8(ReadOnlySpan<byte> tContent)
+        buf.WriteBytes(ReadOnlySpan<byte> content.Raw)
+        buf.WriteTextUtf8(ReadOnlySpan<byte> tLsn)
+        buf.WriteInt lsn
+        buf.ToArray()
 
     let private framePlain (payload: byte[]) : byte[] =
         let crc = HardwareCrc.Crc32C(ReadOnlySpan payload)

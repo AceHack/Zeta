@@ -2,6 +2,7 @@
 module Zeta.Tests.ZetaFsFreezeTests
 
 open System
+open System.Collections.Immutable
 open System.Globalization
 open System.IO
 open System.Text
@@ -843,6 +844,70 @@ let ``observer OnJournaled fires for Journaled and not for Buffered`` () : Task 
             let! _ = (freezeAsync volume id ZetaFsFreeze.Journaled).AsTask().ConfigureAwait(false)
             Assert.Equal(1, recb.Journaled)
             Assert.Equal(0, recb.Durable)
+        finally
+            ZetaFsFreeze.dispose volume
+            FileSystem.Reset()
+    }
+
+[<Fact>]
+let ``Journaled freeze-intent bytes match DynamicValue canonical CBOR`` () : Task =
+    task {
+        ensureHasher ()
+        FileSystem.Register(InMemoryFileSystem())
+        let store = "/freeze-intent-cbor"
+        let volume =
+            ZetaFsFreeze.create store (ZetaFsMutbuf.create store ZetaFsMutbuf.Coherence.Shared) None
+        let payload = [| 7uy |]
+
+        try
+            let id = mintId ()
+            let h = ZetaFsMutbuf.openHandle volume.Mutbuf id
+            ZetaFsMutbuf.pwrite volume.Mutbuf h 0L payload |> ignore
+            let! r = (freezeAsync volume id ZetaFsFreeze.Journaled).AsTask().ConfigureAwait(false)
+
+            match r with
+            | Error e -> Assert.Fail(ZetaFsFreeze.errorName e)
+            | Ok ok ->
+                let rope = ZetaFsJumprope.buildV1 payload
+                Assert.Equal(rope.Content.ToHex(), ok.Content.ToHex())
+                let leafIds = [| for cid, _ in rope.Leaves -> cid |]
+
+                let leafArr =
+                    DynamicValue.Array
+                        [ for leaf in leafIds ->
+                              DynamicValue.Bytes(ImmutableArray.CreateRange leaf.Raw) ]
+
+                let intentDv =
+                    DynamicValue.Object
+                        [ "t", DynamicValue.String "freeze-intent/1"
+                          "entity", DynamicValue.String(ZetaFsNamespace.EntityId.format id)
+                          "content", DynamicValue.Bytes(ImmutableArray.CreateRange ok.Content.Raw)
+                          "leaves", leafArr
+                          "class", DynamicValue.String "journaled"
+                          "lsn", DynamicValue.Int ok.IntentLsn ]
+
+                let commitDv =
+                    DynamicValue.Object
+                        [ "t", DynamicValue.String "freeze-commit/1"
+                          "intentLsn", DynamicValue.Int ok.IntentLsn
+                          "content", DynamicValue.Bytes(ImmutableArray.CreateRange ok.Content.Raw)
+                          "lsn", DynamicValue.Int ok.CommitLsn ]
+
+                let intentBytes = DynamicValue.toCanonicalCborOk intentDv
+                let commitBytes = DynamicValue.toCanonicalCborOk commitDv
+                let logBytes =
+                    FileSystem.Current.ReadAllBytes(ZetaFsPath.combine3 store "log" "freeze")
+
+                Assert.True(
+                    MemoryExtensions.IndexOf(ReadOnlySpan<byte> logBytes, ReadOnlySpan<byte> intentBytes)
+                    >= 0,
+                    "intent CBOR missing from log"
+                )
+                Assert.True(
+                    MemoryExtensions.IndexOf(ReadOnlySpan<byte> logBytes, ReadOnlySpan<byte> commitBytes)
+                    >= 0,
+                    "commit CBOR missing from log"
+                )
         finally
             ZetaFsFreeze.dispose volume
             FileSystem.Reset()
