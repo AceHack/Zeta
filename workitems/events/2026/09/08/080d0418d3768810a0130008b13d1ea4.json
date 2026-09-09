@@ -1,0 +1,14 @@
+{
+  "id": "080d0418d3768810a0130008b13d1ea4",
+  "at": "2026-09-08T22:19:02.737Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M21HMVPH087G0R000XK85ET",
+    "type": "task",
+    "title": "B8 measured: 9 Secrets referenced, 0 produced, ratcheted by a check",
+    "slug": "b8-measured-9-secrets-referenced-0-produced-ratcheted-by-a-c",
+    "priority": "P2",
+    "filename": "081M21HMVPH087G0R000XK85ET-b8-measured-9-secrets-referenced-0-produced-ratcheted-by-a-c.md"
+  }
+}
