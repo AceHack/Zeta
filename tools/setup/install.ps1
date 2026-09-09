@@ -432,14 +432,41 @@ try {
     # mise backend selects. Keep the exception narrow and visible; every other version still comes
     # from the active .mise.toml/.mise.full.toml graph rather than being duplicated here.
     $unsupported = @{
-      'java' = 'mise has no Java 26 metadata for Windows ARM64'
       'pipx:semgrep' = 'cryptography has no compatible wheel and its source build requires OpenSSL'
       '1password-cli' = 'the upstream Windows ARM64 archive is unavailable'
+    }
+    # Java is NO LONGER omitted here. It used to be, with the reason 'mise has no Java 26
+    # metadata for Windows ARM64' -- which is true and remains true, but omitting the tool
+    # left this platform with NO JAVA AT ALL rather than an older one. Measured 2026-09-09
+    # against the vendor APIs, controlling against windows/x64 so a zero means absence and
+    # not a broken query:
+    #
+    #   windows/x64      Adoptium: 21 yes, 25 yes, 26 yes
+    #   windows/aarch64  Adoptium: 21 yes, 25 NO,  26 NO
+    #   windows/aarch64  Azul Zulu: 21 yes, 25 yes, 26 NO
+    #
+    # So 26 genuinely does not exist for Windows-on-ARM from either vendor, and the newest
+    # that does is Zulu 25. The pin in .mise.toml is deliberately NOT changed: every other
+    # platform keeps 26, and this is a platform-coverage fallback, not a downgrade.
+    #
+    # VENDOR-QUALIFIED ON PURPOSE. A bare '25' resolves to Oracle OpenJDK, which publishes
+    # no Windows ARM64 build, so it would fail the same way 26 does.
+    #
+    # BEST-EFFORT BY DESIGN: the current behaviour on this platform is no Java, so a failed
+    # install here can only restore the status quo. It must never fail the bootstrap -- a
+    # hard failure would make this change strictly worse than the omission it replaces.
+    $armJavaSpec = 'java@zulu-25'
+    try {
+      Invoke-Tool { mise install --yes $armJavaSpec } "mise install --yes $armJavaSpec (Windows ARM64 Java fallback)"
+      Write-Host "note: Windows ARM64 uses $armJavaSpec; .mise.toml's java 26 has no build for this platform."
+    } catch {
+      Write-Host "warn: Windows ARM64 Java fallback '$armJavaSpec' did not install: $($_.Exception.Message)"
+      Write-Host "warn: this platform continues with no Java, as it did before this fallback existed."
     }
     foreach ($tool in @($unsupported.Keys | Sort-Object)) {
       Write-Host "warn: Windows ARM64 omits optional mise tool '$tool': $($unsupported[$tool])"
     }
-    $miseInstallSpecs = @(Get-MiseConfiguredToolSpecs -ExcludedTools @($unsupported.Keys))
+    $miseInstallSpecs = @(Get-MiseConfiguredToolSpecs -ExcludedTools (@($unsupported.Keys) + @('java')))
     Invoke-Tool { mise install --yes @miseInstallSpecs } 'mise install --yes (Windows ARM64 supported tool graph)'
     $runtimeBinPaths = @(Get-ToolOutput { mise bin-paths --quiet @miseInstallSpecs } 'mise bin-paths --quiet (Windows ARM64 supported tool graph)')
     # Later bootstrap steps use `mise exec -- bun ...`. Its default exec_auto_install setting

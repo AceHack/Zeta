@@ -57,7 +57,14 @@ test("Windows ARM64 installs the configured mise graph minus only unavailable op
   const unsupportedBlock = installer.match(/\$unsupported = @\{(?<body>[\s\S]*?)\n    \}/)?.groups?.body ?? "";
   const excludedTools = [...unsupportedBlock.matchAll(/^      '([^']+)' =/gm)].map((match) => match[1]);
 
-  expect(excludedTools.sort()).toEqual(["1password-cli", "java", "pipx:semgrep"]);
+  // `java` left this list on 2026-09-09. It was omitted with the reason "mise has no
+  // Java 26 metadata for Windows ARM64" -- true, and still true, but the effect was that
+  // this platform got NO JAVA AT ALL rather than an older one. Measured against the vendor
+  // APIs, controlled against windows/x64 so a zero means absence and not a broken query:
+  // Adoptium serves 21/25/26 on x64 but only 21 on aarch64; Azul Zulu serves 21 and 25 on
+  // aarch64 and no 26. So 26 genuinely does not exist for Windows-on-ARM, and Zulu 25 is
+  // the newest that does. The .mise.toml pin is unchanged for every other platform.
+  expect(excludedTools.sort()).toEqual(["1password-cli", "pipx:semgrep"]);
   expect(installer).toContain("mise ls --current --json");
   expect(installer).not.toContain("$_.active -and $_.requested_version");
   expect(installer).toContain("$miseInstallSpecs = @(Get-MiseConfiguredToolSpecs -ExcludedTools");
@@ -69,6 +76,29 @@ test("Windows ARM64 installs the configured mise graph minus only unavailable op
   expect(disableImplicitInstall).toBeGreaterThan(filteredInstall);
   expect(firstBunExec).toBeGreaterThan(disableImplicitInstall);
   expect(installer).toContain("warn: Windows ARM64 omits optional mise tool");
+
+  // Java is still excluded from the .mise.toml GRAPH -- the pinned 26 has no build here --
+  // and is installed separately, vendor-qualified. A bare "25" resolves to Oracle OpenJDK,
+  // which publishes no Windows ARM64 build and would fail exactly as 26 does.
+  expect(installer).toContain(`+ @('java')`);
+  expect(installer).toContain("java@zulu-25");
+
+  // BEST-EFFORT, asserted rather than assumed. The prior behaviour on this platform was no
+  // Java, so a failed fallback can only restore the status quo; a hard failure would make
+  // the change strictly worse than the omission it replaced.
+  //
+  // Scoped to the java block itself. A first draft searched for "try {" ANYWHERE after the
+  // spec index and passed against a mutant that replaced the guard with `if ($true)` /
+  // `else` -- because the file has other try/catch blocks further down. Matching a token
+  // that also exists elsewhere is not a guard; the window is what makes it one.
+  const javaSpec = installer.indexOf("$armJavaSpec = 'java@zulu-25'");
+  expect(javaSpec).toBeGreaterThan(-1);
+  const javaBlock = installer.slice(javaSpec, javaSpec + 700);
+  expect(javaBlock).toMatch(/\btry\s*\{/);
+  expect(javaBlock).toMatch(/\}\s*catch\s*\{/);
+  // and the catch must actually say the platform continues without Java, rather than
+  // swallowing the failure silently
+  expect(javaBlock).toContain("continues with no Java");
 });
 
 test("build-and-test matrix routes each OS family through its native installer", () => {
