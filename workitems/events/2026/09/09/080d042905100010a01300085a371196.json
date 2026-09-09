@@ -1,0 +1,14 @@
+{
+  "id": "080d042905100010a01300085a371196",
+  "at": "2026-09-09T07:45:03.488Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M22J18FZ087G0R0034AWA5H",
+    "type": "task",
+    "title": "Zeta graphics engine rung 4 — exact integer bivector coverage over Clifford-derived geometry",
+    "slug": "zeta-graphics-engine-rung-4-exact-integer-bivector-coverage",
+    "priority": "P2",
+    "filename": "081M22J18FZ087G0R0034AWA5H-zeta-graphics-engine-rung-4-exact-integer-bivector-coverage.md"
+  }
+}
