@@ -815,6 +815,7 @@ function runManagedCommandUntilSerialMarkers(
   }
   const managed = spawnManagedCommand(command, options);
 
+  let lastPhaseSerialOutput = "";
   while (Date.now() < deadline) {
     let serialOutput: string;
     try {
@@ -831,6 +832,7 @@ function runManagedCommandUntilSerialMarkers(
     }
 
     const phaseSerialOutput = serialOutputAfterBaseline(serialOutput, serialBaseline);
+    lastPhaseSerialOutput = phaseSerialOutput;
     const failureMarker = firstMatchedMarker(phaseSerialOutput, stopCondition.failureMarkers);
     if (failureMarker !== undefined) {
       stopManagedProcess(managed, "SIGTERM", pollIntervalMs);
@@ -887,7 +889,9 @@ function runManagedCommandUntilSerialMarkers(
         command,
         exitCode: 1,
         stdout: "",
-        stderr: `QEMU exited before serial markers were observed: ${stopCondition.successMarkers.join(", ")}`,
+        stderr:
+          `QEMU exited before serial markers were observed: ${stopCondition.successMarkers.join(", ")}. ` +
+          serialTailForFailure(phaseSerialOutput),
       };
     }
 
@@ -900,8 +904,33 @@ function runManagedCommandUntilSerialMarkers(
     command,
     exitCode: 1,
     stdout: "",
-    stderr: `timeout (${String(options.timeoutMs)}ms) waiting for serial markers: ${stopCondition.successMarkers.join(", ")}`,
+    stderr:
+      `timeout (${String(options.timeoutMs)}ms) waiting for serial markers: ${stopCondition.successMarkers.join(", ")}. ` +
+      serialTailForFailure(lastPhaseSerialOutput),
   };
+}
+
+/**
+ * The tail of what the guest actually said, for a failure message.
+ *
+ * WHY EVERY QEMU FAILURE PATH CARRIES ONE (081M22T9CFA087G0R0026YN1NW). The serial log is
+ * written to a FILE and, until now, no failure path put any of it in the
+ * result. A 30-minute timeout therefore reported only "no marker" -- true, and
+ * useless: it cannot distinguish a guest that never booted (firmware/boot-order
+ * problem, empty log) from one that booted and hung mid-install (log full of
+ * NixOS output). Measured on run 34324877507, where scenarios 3 and 4 both
+ * timed out at `initial-install-from-iso-with-disk` and the job log contained
+ * NOTHING about why. Diagnosing it required reading the harness source and
+ * guessing at the firmware.
+ *
+ * An empty tail is itself the finding, and is reported AS empty rather than
+ * omitted -- "the guest wrote nothing to ttyS0" is a different and much
+ * sharper fact than "we have no information".
+ */
+export function serialTailForFailure(text: string, maxLines = 40): string {
+  const lines = text.split("\n").filter((l) => l.trim().length > 0);
+  if (lines.length === 0) return "serial log is EMPTY -- the guest wrote nothing to ttyS0 (suspect firmware or boot order, not the installer)";
+  return `last ${String(Math.min(maxLines, lines.length))} serial line(s):\n${lines.slice(-maxLines).join("\n")}`;
 }
 
 export function createSpawnSyncQcow2RetentionExecutor(

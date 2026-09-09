@@ -1,0 +1,14 @@
+{
+  "id": "080d042d258f5810a0130008c777742e",
+  "at": "2026-09-09T10:09:18.315Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M22T9CFA087G0R0026YN1NW",
+    "type": "bug",
+    "title": "QEMU install scenarios 3 and 4 time out and the serial log never reaches CI, so the failure is undiagnosable",
+    "slug": "qemu-install-scenarios-3-and-4-time-out-and-the-serial-log-n",
+    "priority": "P2",
+    "filename": "081M22T9CFA087G0R0026YN1NW-qemu-install-scenarios-3-and-4-time-out-and-the-serial-log-n.md"
+  }
+}
