@@ -35,6 +35,7 @@ import { spawnSync } from "node:child_process";
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { basename, dirname } from "node:path";
 
+import { stripRemotePrefix } from "../../git/ref-prefix.ts";
 import { MANIFEST_RELATIVE, SHARD_ROOT_RELATIVE, shardPathFor } from "./pr-manifest-shards.ts";
 
 const REVIEW_DIR = "docs/history/pr-reviews";
@@ -79,7 +80,7 @@ const onMainPrs = new Set(merged.keys());
 
 const branches = git(["branch", "-r"])
   .split("\n")
-  .map((b) => b.trim().replace(new RegExp(`^${remote}/`), ""))
+  .map((b) => stripRemotePrefix(b.trim(), remote))
   .filter((b) => b.startsWith("automation/pr-archive-"))
   .sort()
   .slice(0, limit === Infinity ? undefined : limit);

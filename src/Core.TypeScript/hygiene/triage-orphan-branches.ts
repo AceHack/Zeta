@@ -27,6 +27,8 @@
 
 import { spawnSync } from "node:child_process";
 
+import { stripRemotePrefix } from "../git/ref-prefix.ts";
+
 const REMOTE_DEFAULT = "origin";
 
 // Regenerable / ephemeral paths whose absence from main is NOT lost work.
@@ -132,7 +134,7 @@ function main(): number {
     `refs/remotes/${remote}/`,
   ])
     .split("\n")
-    .map((b) => b.replace(new RegExp(`^${remote}/`), ""))
+    .map((b) => stripRemotePrefix(b, remote))
     .filter((b) => b.startsWith(namespace))
     .sort();
   const targets = Number.isFinite(limit) ? orphans.slice(0, limit) : orphans;

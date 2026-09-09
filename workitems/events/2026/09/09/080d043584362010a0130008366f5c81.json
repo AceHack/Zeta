@@ -1,0 +1,14 @@
+{
+  "id": "080d043584362010a0130008366f5c81",
+  "at": "2026-09-09T15:01:50.916Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M23B11P4087G0R001H08M2A",
+    "type": "bug",
+    "title": "regex built from a CLI argument, and an anchor bound to only one alternative",
+    "slug": "regex-built-from-a-cli-argument-and-an-anchor-bound-to-only",
+    "priority": "P2",
+    "filename": "081M23B11P4087G0R001H08M2A-regex-built-from-a-cli-argument-and-an-anchor-bound-to-only.md"
+  }
+}
