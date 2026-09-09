@@ -1,0 +1,27 @@
+"""Resample frozen TripoSR codes. Mesh density is not a likeness metric."""
+import os
+os.environ['PYTORCH_ENABLE_MPS_FALLBACK']='1'
+from pathlib import Path
+import sys,time,json,hashlib
+import torch,numpy as np
+root=Path(__file__).resolve().parent
+lab=root.parent/'Character-Learning-Lab'
+sys.path.insert(0,str(lab/'TripoSR'))
+from tsr.system import TSR
+torch.set_num_threads(12)
+model=TSR.from_pretrained(str(lab/'weights/TripoSR'),config_name='config.yaml',weight_name='model.ckpt').to('mps').eval()
+model.renderer.set_chunk_size(16384)
+rows=[]
+for name in ['AceHack','Xenaa']:
+ codepath=lab/'reconstruction-u2net'/name/'scene-code.pt'
+ codes=torch.load(codepath,map_location='cpu',weights_only=True).to('mps')
+ sha=hashlib.sha256(codepath.read_bytes()).hexdigest()
+ out=root/'fixed-latent'/name;out.mkdir(parents=True,exist_ok=True)
+ for resolution in [128,256,384]:
+  torch.mps.synchronize();start=time.monotonic()
+  mesh=model.extract_mesh(codes,True,resolution=resolution,threshold=25)[0]
+  torch.mps.synchronize();elapsed=time.monotonic()-start
+  mesh.export(out/f'mesh-{resolution}.glb')
+  row=dict(name=name,resolution=resolution,threshold=25,latent_sha256=sha,seconds=elapsed,vertices=len(mesh.vertices),faces=len(mesh.faces),finite=bool(np.isfinite(mesh.vertices).all()),watertight=bool(mesh.is_watertight),euler_number=int(mesh.euler_number),bounds=mesh.bounds.tolist(),area=float(mesh.area),volume=float(mesh.volume))
+  rows.append(row);print(json.dumps(row),flush=True)
+  (root/'fixed-latent-receipts.json').write_text(json.dumps(rows,indent=2)+'\n')

@@ -1,0 +1,68 @@
+[
+  {
+    "stage": "heads",
+    "name": "AceHack",
+    "vertices": 152506,
+    "faces": 304680,
+    "components": 4,
+    "largest_component_vertices": 152450,
+    "watertight": false,
+    "euler": -150,
+    "finite": true
+  },
+  {
+    "stage": "heads",
+    "name": "Xenaa",
+    "vertices": 205343,
+    "faces": 410272,
+    "components": 23,
+    "largest_component_vertices": 204600,
+    "watertight": false,
+    "euler": -169,
+    "finite": true
+  },
+  {
+    "stage": "heads-sg",
+    "name": "AceHack",
+    "vertices": 279003,
+    "faces": 564308,
+    "components": 400,
+    "largest_component_vertices": 270319,
+    "watertight": false,
+    "euler": -3122,
+    "finite": true
+  },
+  {
+    "stage": "heads-sg",
+    "name": "Xenaa",
+    "vertices": 336242,
+    "faces": 669840,
+    "components": 979,
+    "largest_component_vertices": 314471,
+    "watertight": false,
+    "euler": 1332,
+    "finite": true
+  },
+  {
+    "stage": "heads-sg-float32",
+    "name": "AceHack",
+    "vertices": 169805,
+    "faces": 336002,
+    "components": 1196,
+    "largest_component_vertices": 140061,
+    "watertight": false,
+    "euler": 1804,
+    "finite": true
+  },
+  {
+    "stage": "heads-sg-float32",
+    "name": "Xenaa",
+    "vertices": 212929,
+    "faces": 422994,
+    "components": 986,
+    "largest_component_vertices": 199295,
+    "watertight": true,
+    "euler": 1432,
+    "finite": true
+  }
+]

@@ -1,0 +1,9 @@
+from pathlib import Path
+import json,trimesh,numpy as np
+root=Path(__file__).resolve().parent;rows=[]
+for stage in ['heads','heads-sg','heads-sg-float32']:
+ for name in ['AceHack','Xenaa']:
+  mesh=trimesh.load(root/stage/name/'mesh.glb',force='mesh')
+  counts=np.bincount(trimesh.graph.connected_component_labels(mesh.edges_unique,node_count=len(mesh.vertices)))
+  rows.append(dict(stage=stage,name=name,vertices=len(mesh.vertices),faces=len(mesh.faces),components=len(counts),largest_component_vertices=int(counts.max()),watertight=bool(mesh.is_watertight),euler=int(mesh.euler_number),finite=bool(np.isfinite(mesh.vertices).all())))
+(root/'geometry-review.json').write_text(json.dumps(rows,indent=2)+'\n');print(json.dumps(rows,indent=2))

@@ -1,0 +1,171 @@
+$ bun ./src/Core.TypeScript/hygiene/preflight.ts
+Preflight (full: lints + tsc + build + test)
+
+▶ no-conflict-markers … PASS
+▶ no-empty-dirs … PASS
+▶ hook-script-paths … PASS
+▶ identity-registry-sync … PASS
+▶ auto-vivify check … PASS
+▶ ace build-graph drift … PASS
+▶ check-arity census drift … PASS
+▶ check-arity census drift (non-equality) … PASS
+▶ inventory items.json current … PASS
+▶ markdownlint … PASS
+▶ lint: TypeScript (tsc) … PASS
+▶ lint: F# … PASS
+▶ lint: C# … PASS
+▶ lint: Python … SKIP (toolchain missing)
+▶ lint: Rust … PASS
+▶ lint: Go … SKIP (toolchain missing)
+▶ dotnet build -c Release … PASS
+▶ dotnet test -c Release … FAIL
+
+════════════════════════════════════════════════════════════
+FAILURES (1)
+════════════════════════════════════════════════════════════
+
+──── dotnet test -c Release ────
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+  Zeta.Core.FSharp.ZetaId -> /Users/acehack/.zeta/agents/codex/Zeta-character-evolution-20260908/src/Core.FSharp.ZetaId/bin/Release/net10.0/Zeta.Core.FSharp.ZetaId.dll
+  Zeta.Core.FSharp.Yaml -> /Users/acehack/.zeta/agents/codex/Zeta-character-evolution-20260908/src/Core.FSharp.Yaml/bin/Release/net10.0/Zeta.Core.FSharp.Yaml.dll
+  Zeta.Core.Abstractions -> /Users/acehack/.zeta/agents/codex/Zeta-character-evolution-20260908/src/Core.Abstractions/bin/Release/net10.0/Zeta.Core.Abstractions.dll
+  Zeta.Core.CSharp.TypeProvider -> /Users/acehack/.zeta/agents/codex/Zeta-character-evolution-20260908/src/Core.CSharp.TypeProvider/bin/Release/netstandard2.0/Zeta.Core.CSharp.TypeProvider.dll
+  Zeta.Core.CSharp.Yaml -> /Users/acehack/.zeta/agents/codex/Zeta-character-evolution-20260908/src/Core.CSharp.Yaml/bin/Release/net10.0/Zeta.Core.CSharp.Yaml.dll
+  Zeta.Core.FSharp.Observe -> /Users/acehack/.zeta/agents/codex/Zeta-character-evolution-20260908/src/Core.FSharp.Observe/bin/Release/net10.0/Zeta.Core.FSharp.Observe.dll
+  Zeta.Core.CSharp.TriBoolean -> /Users/acehack/.zeta/agents/codex/Zeta-character-evolution-20260908/src/Core.CSharp.TriBoolean/bin/Release/net10.0/Zeta.Core.CSharp.TriBoolean.dll
+  Zeta.Core.CSharp.Merkle -> /Users/acehack/.zeta/agents/codex/Zeta-character-evolution-20260908/src/Core.CSharp.Merkle/bin/Release/net10.0/Zeta.Core.CSharp.Merkle.dll
+  Zeta.Core.CSharp.Mediator -> /Users/acehack/.zeta/agents/codex/Zeta-character-evolution-20260908/src/Core.CSharp.Mediator/bin/Release/net10.0/Zeta.Core.CSharp.Mediator.dll
+  Zeta.Clis -> /Users/acehack/.zeta/agents/codex/Zeta-character-evolution-20260908/clis/bin/Release/net10.0/Zeta.Clis.dll
+  Zeta.Core.CSharp.Sha256 -> /Users/acehack/.zeta/agents/codex/Zeta-character-evolution-20260908/src/Core.CSharp.Sha256/bin/Release/net10.0/Zeta.Core.CSharp.Sha256.dll
+  Zeta.Core.CSharp.Clock -> /Users/acehack/.zeta/agents/codex/Zeta-character-evolution-20260908/src/Core.CSharp.Clock/bin/Release/net10.0/Zeta.Core.CSharp.Clock.dll
+  Zeta.Core.CSharp.ByteCost -> /Users/acehack/.zeta/agents/codex/Zeta-character-evolution-20260908/src/Core.CSharp.ByteCost/bin/Release/net10.0/Zeta.Core.CSharp.ByteCost.dll
+  Zeta.Core.CSharp.RangeSet -> /Users/acehack/.zeta/agents/codex/Zeta-character-evolution-20260908/src/Core.CSharp.RangeSet/bin/Release/net10.0/Zeta.Core.CSharp.RangeSet.dll
+  Zeta.Core.CSharp.Metric -> /Users/acehack/.zeta/agents/codex/Zeta-character-evolution-20260908/src/Core.CSharp.Metric/bin/Release/net10.0/Zeta.Core.CSharp.Metric.dll
+  Zeta.Core.CSharp.Observe -> /Users/acehack/.zeta/agents/codex/Zeta-character-evolution-20260908/src/Core.CSharp.Observe/bin/Release/net10.0/Zeta.Core.CSharp.Observe.dll
+  Zeta.Core.FSharp.AceCanonical -> /Users/acehack/.zeta/agents/codex/Zeta-character-evolution-20260908/src/Core.FSharp.AceCanonical/bin/Release/net10.0/Zeta.Core.FSharp.AceCanonical.dll
+  Zeta.Core.FSharp.Sha256 -> /Users/acehack/.zeta/agents/codex/Zeta-character-evolution-20260908/src/Core.FSharp.Sha256/bin/Release/net10.0/Zeta.Core.FSharp.Sha256.dll
+  Zeta.Core.CSharp.Bonsai -> /Users/acehack/.zeta/agents/codex/Zeta-character-evolution-20260908/src/Core.CSharp.Bonsai/bin/Release/net10.0/Zeta.Core.CSharp.Bonsai.dll
+  Zeta.Core.CSharp.AceCanonical -> /Users/acehack/.zeta/agents/codex/Zeta-character-evolution-20260908/src/Core.CSharp.AceCanonical/bin/Release/net10.0/Zeta.Core.CSharp.AceCanonical.dll
+  Zeta.Core.CSharp.ZetaId -> /Users/acehack/.zeta/agents/codex/Zeta-character-evolution-20260908/src/Core.CSharp.ZetaId/bin/Release/net10.0/Zeta.Core.CSharp.ZetaId.dll
+  Zeta.Core.CSharp.DynamicValue -> /Users/acehack/.zeta/agents/codex/Zeta-character-evolution-20260908/src/Core.CSharp.DynamicValue/bin/Release/net10.0/Zeta.Core.CSharp.DynamicValue.dll
+  Core -> /Users/acehack/.zeta/agents/codex/Zeta-character-evolution-20260908/src/Core/bin/Release/net10.0/Zeta.Core.dll
+  Tests.CSharp.TypeProvider -> /Users/acehack/.zeta/agents/codex/Zeta-character-evolution-20260908/tests/Tests.CSharp.TypeProvider/bin/Release/net10.0/Tests.CSharp.TypeProvider.dll
+  Zeta.Tests.FSharp.MediatorFixtures -> /Users/acehack/.zeta/agents/codex/Zeta-character-evolution-20260908/tests/Core.FSharp.Mediator.Fixtures/bin/Release/net10.0/Zeta.Tests.FSharp.MediatorFixtures.dll
+  Zeta.Core.FSharp.Mediator -> /Users/acehack/.zeta/agents/codex/Zeta-character-evolution-20260908/src/Core.FSharp.Mediator/bin/Release/net10.0/Zeta.Core.FSharp.Mediator.dll
+Test run for /Users/acehack/.zeta/agents/codex/Zeta-character-evolution-20260908/tests/Tests.CSharp.TypeProvider/bin/Release/net10.0/Tests.CSharp.TypeProvider.dll (.NETCoreApp,Version=v10.0)
+  Zeta.Core.CSharp.Resume -> /Users/acehack/.zeta/agents/codex/Zeta-character-evolution-20260908/src/Core.CSharp.Resume/bin/Release/net10.0/Zeta.Core.CSharp.Resume.dll
+  Bayesian -> /Users/acehack/.zeta/agents/codex/Zeta-character-evolution-20260908/src/Bayesian/bin/Release/net10.0/Zeta.Bayesian.dll
+  Zeta.Core.Telemetry -> /Users/acehack/.zeta/agents/codex/Zeta-character-evolution-20260908/src/Core.Telemetry/bin/Release/net10.0/Zeta.Core.Telemetry.dll
+  Zeta.Core.FSharp.TriBoolean -> /Users/acehack/.zeta/agents/codex/Zeta-character-evolution-20260908/src/Core.FSharp.TriBoolean/bin/Release/net10.0/Zeta.Core.FSharp.TriBoolean.dll
+  Zeta.Core.FSharp.ObserveBridge -> /Users/acehack/.zeta/agents/codex/Zeta-character-evolution-20260908/src/Core.FSharp.ObserveBridge/bin/Release/net10.0/Zeta.Core.FSharp.ObserveBridge.dll
+A total of 1 test files matched the specified pattern.
+  Zeta.Core.FSharp.Blake3 -> /Users/acehack/.zeta/agents/codex/Zeta-character-evolution-20260908/src/Core.FSharp.Blake3/bin/Release/net10.0/Zeta.Core.FSharp.Blake3.dll
+  Core.CSharp -> /Users/acehack/.zeta/agents/codex/Zeta-character-evolution-20260908/src/Core.CSharp/bin/Release/net10.0/Zeta.Core.CSharp.dll
+  Zeta.Core.FSharp.Git -> /Users/acehack/.zeta/agents/codex/Zeta-character-evolution-20260908/src/Core.FSharp.Git/bin/Release/net10.0/Zeta.Core.FSharp.Git.dll
+  Zeta.Core.CSharp.Blake3 -> /Users/acehack/.zeta/agents/codex/Zeta-character-evolution-20260908/src/Core.CSharp.Blake3/bin/Release/net10.0/Zeta.Core.CSharp.Blake3.dll
+  Zeta.Generators -> /Users/acehack/.zeta/agents/codex/Zeta-character-evolution-20260908/src/Zeta.Generators/bin/Release/netstandard2.0/Zeta.Generators.dll
+  Zeta.Core.CSharp.Mediator.Handlers -> /Users/acehack/.zeta/agents/codex/Zeta-character-evolution-20260908/src/Core.CSharp.Mediator.Handlers/bin/Release/net10.0/Zeta.Core.CSharp.Mediator.Handlers.dll
+  Core.CSharp.Tests -> /Users/acehack/.zeta/agents/codex/Zeta-character-evolution-20260908/tests/Core.CSharp.Tests/bin/Release/net10.0/Core.CSharp.Tests.dll
+  Bayesian.Tests -> /Users/acehack/.zeta/agents/codex/Zeta-character-evolution-20260908/tests/Bayesian.Tests/bin/Release/net10.0/Bayesian.Tests.dll
+Test run for /Users/acehack/.zeta/agents/codex/Zeta-character-evolution-20260908/tests/Core.CSharp.Tests/bin/Release/net10.0/Core.CSharp.Tests.dll (.NETCoreApp,Version=v10.0)
+  Zeta.Cli -> /Users/acehack/.zeta/agents/codex/Zeta-character-evolution-20260908/src/Core.FSharp.Cli/bin/Debug/net10.0/zeta.dll
+  Tests.FSharp.Git -> /Users/acehack/.zeta/agents/codex/Zeta-character-evolution-20260908/tests/Tests.FSharp.Git/bin/Release/net10.0/Tests.FSharp.Git.dll
+Test run for /Users/acehack/.zeta/agents/codex/Zeta-character-evolution-20260908/tests/Bayesian.Tests/bin/Release/net10.0/Bayesian.Tests.dll (.NETCoreApp,Version=v10.0)
+Test run for /Users/acehack/.zeta/agents/codex/Zeta-character-evolution-20260908/tests/Tests.FSharp.Git/bin/Release/net10.0/Tests.FSharp.Git.dll (.NETCoreApp,Version=v10.0)
+  Core.CSharp.Mediator.Tests -> /Users/acehack/.zeta/agents/codex/Zeta-character-evolution-20260908/tests/Core.CSharp.Mediator.Tests/bin/Release/net10.0/Core.CSharp.Mediator.Tests.dll
+A total of 1 test files matched the specified pattern.
+Test run for /Users/acehack/.zeta/agents/codex/Zeta-character-evolution-20260908/tests/Core.CSharp.Mediator.Tests/bin/Release/net10.0/Core.CSharp.Mediator.Tests.dll (.NETCoreApp,Version=v10.0)
+A total of 1 test files matched the specified pattern.
+A total of 1 test files matched the specified pattern.
+A total of 1 test files matched the specified pattern.
+
+Passed!  - Failed:     0, Passed:     3, Skipped:     0, Total:     3, Duration: 23 ms - Tests.CSharp.TypeProvider.dll (net10.0)
+
+Passed!  - Failed:     0, Passed:    21, Skipped:     0, Total:    21, Duration: 125 ms - Core.CSharp.Tests.dll (net10.0)
+
+Passed!  - Failed:     0, Passed:    12, Skipped:     0, Total:    12, Duration: 155 ms - Core.CSharp.Mediator.Tests.dll (net10.0)
+  Tests.FSharp -> /Users/acehack/.zeta/agents/codex/Zeta-character-evolution-20260908/tests/Tests.FSharp/bin/Release/net10.0/Tests.FSharp.dll
+Test run for /Users/acehack/.zeta/agents/codex/Zeta-character-evolution-20260908/tests/Tests.FSharp/bin/Release/net10.0/Tests.FSharp.dll (.NETCoreApp,Version=v10.0)
+A total of 1 test files matched the specified pattern.
+
+Passed!  - Failed:     0, Passed:    38, Skipped:     0, Total:    38, Duration: 2 s - Tests.FSharp.Git.dll (net10.0)
+  Tests.CSharp -> /Users/acehack/.zeta/agents/codex/Zeta-character-evolution-20260908/tests/Tests.CSharp/bin/Release/net10.0/Tests.CSharp.dll
+Test run for /Users/acehack/.zeta/agents/codex/Zeta-character-evolution-20260908/tests/Tests.CSharp/bin/Release/net10.0/Tests.CSharp.dll (.NETCoreApp,Version=v10.0)
+A total of 1 test files matched the specified pattern.
+[xUnit.net 00:00:06.49]     Zeta.Tests.RxAdapterTests.A DEAD PIPELINE REFUSES NEW SUBSCRIBERS: after teardown the subject is disposed, not leaked [SKIP]
+[xUnit.net 00:00:06.49]     Zeta.Tests.RxAdapterTests.TEARDOWN IS REAL: disposing the one handle stops notifications — the count stops moving [SKIP]
+[xUnit.net 00:00:06.49]     Zeta.Tests.RxAdapterTests.bounded pipeline completes after exactly count ticks and delivers count notifications [SKIP]
+  Skipped Zeta.Tests.RxAdapterTests.A DEAD PIPELINE REFUSES NEW SUBSCRIBERS: after teardown the subject is disposed, not leaked [1 ms]
+  Skipped Zeta.Tests.RxAdapterTests.TEARDOWN IS REAL: disposing the one handle stops notifications — the count stops moving [1 ms]
+  Skipped Zeta.Tests.RxAdapterTests.bounded pipeline completes after exactly count ticks and delivers count notifications [1 ms]
+
+Passed!  - Failed:     0, Passed:   568, Skipped:     0, Total:   568, Duration: 8 s - Bayesian.Tests.dll (net10.0)
+
+Passed!  - Failed:     0, Passed:   413, Skipped:     0, Total:   413, Duration: 5 s - Tests.CSharp.dll (net10.0)
+[xUnit.net 00:00:20.58]     Zeta.Tests.BenPortTests.BDN ADAPTER SMOKE (manual): wall meter drives the same case through the same port [SKIP]
+  Skipped Zeta.Tests.BenPortTests.BDN ADAPTER SMOKE (manual): wall meter drives the same case through the same port [1 ms]
+[xUnit.net 00:00:25.61]     Zeta.Tests.CollationCrossOracleTreatyTests.every shared catalog name denotes the same relation in every oracle [SKIP]
+  Skipped Zeta.Tests.CollationCrossOracleTreatyTests.every shared catalog name denotes the same relation in every oracle [1 ms]
+[xUnit.net 00:00:34.25]     Zeta.Tests.CollationCrossOracleTreatyTests.decide's tie-break uses the canonical collation [SKIP]
+  Skipped Zeta.Tests.CollationCrossOracleTreatyTests.decide's tie-break uses the canonical collation [1 ms]
+  Failed Zeta.Tests.Formal.TlcRunnerTests.TLC checks the pinned model(id: "BftConsensus") [2 m 30 s]
+  Error Message:
+   System.Exception : BftConsensus expected a clean run; TLC did not report the completion marker (exit 134).
+stdout tail:
+3 distinct states found (1,119,463 ds/min), 516,201 states left on queue.
+Progress(13) at 2026-09-09 03:01:03: 17,314,683 states generated (8,675,179 s/min), 2,162,261 distinct states found (963,228 ds/min), 691,972 states left on queue.
+#
+# A fatal error has been detected by the Java Runtime Environment:
+#
+#  SIGBUS (0xa) at pc=0x000000010e842e88, pid=47268, tid=13059
+#
+# JRE version: Java(TM) SE Runtime Environment (21.0.1+12) (build 21.0.1+12-LTS-29)
+# Java VM: Java HotSpot(TM) 64-Bit Server VM (21.0.1+12-LTS-29, mixed mode, emulated-client, sharing, tiered, compressed oops, compressed class ptrs, serial gc, bsd-aarch64)
+# Problematic frame:
+# V  [libjvm.dylib+0x7bae88]  MarkSweep::mark_object(oopDesc*)+0xbc
+#
+# No core dump will be written. Core dumps have been disabled. To enable core dumping, try "ulimit -c unlimited" before starting Java again
+#
+# An error report file with more information is saved as:
+# /Users/acehack/.zeta/agents/codex/Zeta-character-evolution-20260908/TestResults/tlc-diagnostics/BftConsensus-5596dd2cefe04b268498362868b0275b/hs_err_pid47268.log
+#
+# If you would like to submit a bug report, please visit:
+#   https://bugreport.java.com/bugreport/crash.jsp
+#
+
+Full retained diagnostics: /Users/acehack/.zeta/agents/codex/Zeta-character-evolution-20260908/TestResults/tlc-diagnostics/BftConsensus-5596dd2cefe04b268498362868b0275b
+  Stack Trace:
+     at Microsoft.FSharp.Core.PrintfModule.PrintFormatToStringThenFail@1447.Invoke(String message)
+   at Zeta.Tests.Formal.TlcRunnerTests.TLC checks the pinned model(String id) in /Users/acehack/.zeta/agents/codex/Zeta-character-evolution-20260908/tests/Tests.FSharp/Formal/Tlc.Runner.Tests.fs:line 519
+   at InvokeStub_TlcRunnerTests.TLC checks the pinned model(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+
+Failed!  - Failed:     1, Passed:  6728, Skipped:     6, Total:  6735, Duration: 6 m 11 s - Tests.FSharp.dll (net10.0)
+[xUnit.net 00:05:06.69]     Zeta.Tests.Formal.TlcRunnerTests.TLC checks the pinned model(id: "BftConsensus") [FAIL]
+
+────────────────────────────────────────────────────────────
+Summary
+  ✓ no-conflict-markers
+  ✓ no-empty-dirs
+  ✓ hook-script-paths
+  ✓ identity-registry-sync
+  ✓ auto-vivify check
+  ✓ ace build-graph drift
+  ✓ check-arity census drift
+  ✓ check-arity census drift (non-equality)
+  ✓ inventory items.json current
+  ✓ markdownlint
+  ✓ lint: TypeScript (tsc)
+  ✓ lint: F#
+  ✓ lint: C#
+  • lint: Python — underlying tool unavailable
+  ✓ lint: Rust
+  • lint: Go — underlying tool unavailable
+  ✓ dotnet build -c Release
+  ✗ dotnet test -c Release
+
+2 check(s) SKIPPED (tool unavailable locally) — they will still run in CI.
+
+✗ preflight: 1 check(s) failed.
+error: script "preflight" exited with code 1

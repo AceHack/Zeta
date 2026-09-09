@@ -1,0 +1,28 @@
+from pathlib import Path
+root=Path(__file__).resolve().parent;s=(root/'compose_v3.py').read_text()
+s=s.replace("cut=[v for v in bm.verts if v.co.z<target_h*.795 and abs(v.co.x)<target_h*.04]", "cut=[v for v in bm.verts if v.co.z<target_h*.835 or (v.co.z<target_h*.864 and (v.co.x*v.co.x+(v.co.y+.008)**2)**.5>target_h*.045)]")
+s=s.replace("or (name=='AceHack' and c.y>-.055 and c.z>target_h*.955)", "")
+s=s.replace("(.883 if name=='AceHack' else .874)", "(.866 if name=='AceHack' else .874)")
+s=s.replace("mesh.materials.append(collar_mat)","mesh.materials.append(collar_mat)\n for p in mesh.polygons:p.use_smooth=True")
+s=s.replace("# Suppress neutral-white hallucinations", """# Feather a dark hair correction into the inferred rear scalp, avoiding a hard cap boundary.
+ if name=='AceHack':
+  attr=head.data.color_attributes.active_color
+  if attr:
+   for i,item in enumerate(attr.data):
+    vi=head.data.loops[i].vertex_index if attr.domain=='CORNER' else i;c=head.data.vertices[vi].co
+    w=max(0,min(1,(c.z-target_h*.918)/(target_h*.075)))*max(0,min(1,(c.y+.045)/.045))
+    old=item.color_srgb;hair_color=(.18,.14,.115)
+    item.color_srgb=tuple(old[j]*(1-w)+hair_color[j]*w for j in range(3))+(1,)
+ # Explicit back-cloth hypothesis, separated from the measured front reference.
+ mat=body.data.materials[0];n=mat.node_tree.nodes;l=mat.node_tree.links;bs=n.get('Principled BSDF');front=bs.inputs['Base Color'].links[0].from_socket
+ geom=n.new('ShaderNodeNewGeometry');sep=n.new('ShaderNodeSeparateXYZ');l.new(geom.outputs['Normal'],sep.inputs[0])
+ remap=n.new('ShaderNodeMapRange');remap.interpolation_type='SMOOTHSTEP';remap.inputs['From Min'].default_value=-.2;remap.inputs['From Max'].default_value=.5;l.new(sep.outputs['Y'],remap.inputs['Value'])
+ mix=n.new('ShaderNodeMixRGB');l.new(remap.outputs[0],mix.inputs[0]);l.new(front,mix.inputs[1]);mix.inputs[2].default_value=(.012,.018,.013,1) if name=='AceHack' else (.035,.008,.062,1)
+ l.new(mix.outputs[0],bs.inputs['Base Color']);l.new(mix.outputs[0],bs.inputs['Emission Color']);bs.inputs['Roughness'].default_value=.78;bs.inputs['Specular IOR Level'].default_value=.16
+ # Suppress neutral-white hallucinations""")
+s=s.replace('composed-v3','composed-v4').replace('composition-v3-receipt.json','composition-v4-receipt.json')
+(root/'compose_v4.py').write_text(s)
+s=(root/'finalize_scene.py').read_text().replace("root/'composed-v3'", "root/'composed-v4'").replace("out=root/'delivery'", "out=root/'delivery-v4'")
+s=s.replace("scene.frame_start=1;scene.frame_end=96;scene.render.fps=24", "scene.frame_start=1;scene.frame_end=96;scene.render.fps=12")
+s=s.replace("scene.frame_set(1);bpy.ops.wm.save_as_mainfile", "scene.frame_set(1);scene.name='01 | Character atelier';turntable=scene.copy();turntable.name='02 | Turntable';turntable.camera=orbitcam;bpy.context.window.scene=scene;bpy.ops.wm.save_as_mainfile")
+(root/'finalize_scene_v4.py').write_text(s)

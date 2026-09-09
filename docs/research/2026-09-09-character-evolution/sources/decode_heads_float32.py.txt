@@ -1,0 +1,20 @@
+"""Matched saved-latent decoder precision experiment, same SG extraction helper."""
+import os
+os.environ['PYTORCH_ENABLE_MPS_FALLBACK']='1'
+from pathlib import Path
+import sys,time,json,hashlib
+import torch,trimesh,numpy as np
+root=Path(__file__).resolve().parent;lab=root.parent/'Character-Learning-Lab';sys.path.insert(0,str(lab/'TripoSG'))
+from triposg.models.autoencoders import TripoSGVAEModel
+from triposg.inference_utils import hierarchical_extract_geometry
+torch.set_num_threads(12)
+vae=TripoSGVAEModel.from_pretrained(str(lab/'weights/TripoSG'/'vae'),torch_dtype=torch.float32).to('mps').eval()
+for name in ['AceHack','Xenaa']:
+ inp=root/'heads-sg'/name/'latent.pt';latents=torch.load(inp,map_location='cpu',weights_only=True).float().to('mps')
+ out=root/'heads-sg-float32'/name;out.mkdir(parents=True,exist_ok=True)
+ start=time.monotonic()
+ with torch.no_grad():
+  output=hierarchical_extract_geometry(lambda x:vae.decode(latents,sampled_points=x,num_chunks=16384).sample,torch.device('mps'),dense_octree_depth=8,hierarchical_octree_depth=8)
+ torch.mps.synchronize();mesh=trimesh.Trimesh(output[0][0].astype(np.float32),output[0][1]);mesh.export(out/'mesh.glb')
+ row=dict(seconds=time.monotonic()-start,vertices=len(mesh.vertices),faces=len(mesh.faces),latent_sha256=hashlib.sha256(inp.read_bytes()).hexdigest(),finite=bool(np.isfinite(mesh.vertices).all()),watertight=bool(mesh.is_watertight),euler=int(mesh.euler_number),dtype='decoder/queries float32; upstream helper retains float16 grid logits')
+ (out/'receipt.json').write_text(json.dumps(row,indent=2)+'\n');print(name,row,flush=True)

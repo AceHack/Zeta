@@ -1,0 +1,21 @@
+"""Freeze this complete art revision; the archive and inventory live outside its tree."""
+from pathlib import Path
+import hashlib,json,zipfile
+root=Path(__file__).resolve().parent
+repo=Path('/Users/acehack/.zeta/agents/codex/Zeta-character-evolution-20260908')
+doc=repo/'docs/research/2026-09-09-character-evolution';doc.mkdir(parents=True,exist_ok=True)
+out=root.parent/'Character-Evolution-Archive-20260909';out.mkdir(exist_ok=True)
+archive=out/'character-composition-evolution.zip'
+paths=sorted(p for p in root.rglob('*') if p.is_file() and '__pycache__' not in p.parts and p.name!='.DS_Store')
+m={'schema':1,'release_tag':'research-character-composition-20260909','archives':[],'files':[], 'parent_record':'docs/research/2026-09-08-character-evolution/README.md','verdict':'Local-detail composition study; improved facial appearance judged by agent, not accepted production assets; meshes unrigged; all failures preserved', 'external_dependencies':{'TripoSR_model_revision':'5b521936b01fbe1890f6f9baed0254ab6351c04a','TripoSG_model_revision':'2c1c516d22d58db486a058d98d31bb6177344e06','Blender':'5.2.1 LTS','body_latents':'Previous immutable release research-character-reconstruction-20260908'}}
+with zipfile.ZipFile(archive,'x',compression=zipfile.ZIP_DEFLATED,compresslevel=4) as z:
+ for p in paths:
+  rel=p.relative_to(root);name=root.name+'/'+rel.as_posix();m['files'].append({'archive':archive.name,'path':name,'bytes':p.stat().st_size,'sha256':hashlib.file_digest(p.open('rb'),'sha256').hexdigest()});z.write(p,name)
+  if p.suffix in ['.py','.json'] and p.stat().st_size<200000:
+   q=doc/'sources'/(rel.as_posix()+'.txt');q.parent.mkdir(parents=True,exist_ok=True);q.write_bytes(p.read_bytes())
+m['archives'].append({'name':archive.name,'bytes':archive.stat().st_size,'sha256':hashlib.file_digest(archive.open('rb'),'sha256').hexdigest()})
+for d in [out,doc]:(d/'inventory.json').write_text(json.dumps(m,indent=2)+'\n')
+with zipfile.ZipFile(archive) as z:
+ for row in m['files']:
+  with z.open(row['path']) as f:assert hashlib.file_digest(f,'sha256').hexdigest()==row['sha256']
+print(json.dumps({'files':len(m['files']),'archive':m['archives'][0]},indent=2))

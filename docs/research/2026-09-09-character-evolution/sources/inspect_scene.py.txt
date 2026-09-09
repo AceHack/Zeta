@@ -1,0 +1,14 @@
+"""Read-only checks against the saved Blender deliverable."""
+import bpy,json,math
+from pathlib import Path
+root=Path(__file__).resolve().parent
+scene=bpy.context.scene
+characters=[o for o in scene.objects if o.type=='MESH' and ('generator' in o.name or 'Collar join' in o.name)]
+assert len(characters)==6
+assert all(math.isfinite(c) for o in characters for v in o.data.vertices for c in v.co)
+images=[i for i in bpy.data.images if i.source=='FILE']
+assert all(i.packed_file is not None for i in images)
+assert '02 | Turntable' in bpy.data.scenes
+assert scene.camera is not None
+row=dict(blender=bpy.app.version_string,scene=scene.name,scenes=[s.name for s in bpy.data.scenes],cameras=[o.name for o in scene.objects if o.type=='CAMERA'],meshes=[dict(name=o.name,vertices=len(o.data.vertices),faces=len(o.data.polygons)) for o in characters],packed_images=[i.name for i in images],finite_vertices=True,rigged=False)
+(root/'scene-validation.json').write_text(json.dumps(row,indent=2)+'\n');print(json.dumps(row,indent=2))

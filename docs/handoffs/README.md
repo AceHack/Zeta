@@ -74,3 +74,7 @@ Current:
   claim-bearing sources + known-answer table). Vera's verdict lines remain hers to write.
 - `kestrel-shape-validation-bundle.txt` — the faithful-renderer port bundle (sources + cartridges
   - known-answer checks).
+
+- [Character evolution: composed local detail (2026-09-09)](../research/2026-09-09-character-evolution/README.md)
+  preserves the next Blender revision, frozen-latent tessellation measurements,
+  rejected head candidates and the decoder-precision comparison.

@@ -1,0 +1,17 @@
+"""Keep the review scene on save and make the camera orbit constant-speed."""
+import bpy
+from pathlib import Path
+root=Path(__file__).resolve().parent;path=root/'delivery-v5'/'AceHack-Xenaa-Evolution-20260909.blend'
+bpy.ops.wm.open_mainfile(filepath=str(path));scene=bpy.context.scene
+turntable=bpy.data.scenes.get('02 | Turntable')
+if turntable is None:turntable=scene.copy();turntable.name='02 | Turntable'
+turntable.use_fake_user=True;turntable.camera=bpy.data.objects['02 | Animated turntable'];turntable.render.fps=12
+orbit=bpy.data.objects['Turntable | Camera orbit'];action=orbit.animation_data.action
+for layer in action.layers:
+ for strip in layer.strips:
+  for bag in strip.channelbags:
+   for curve in bag.fcurves:
+    for key in curve.keyframe_points:key.interpolation='LINEAR'
+bpy.context.window.scene=scene;scene.frame_set(1)
+bpy.data.texts['START HERE - evolution'].write('\nChoose scene 02 | Turntable from the top bar, then press Space for the 8-second camera orbit. Scene 01 | Character atelier keeps the main view. Portrait cameras are available in the Outliner.\n')
+bpy.ops.wm.save_as_mainfile(filepath=str(path))

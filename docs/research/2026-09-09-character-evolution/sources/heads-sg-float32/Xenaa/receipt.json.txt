@@ -1,0 +1,10 @@
+{
+  "seconds": 39.69719737500418,
+  "vertices": 212929,
+  "faces": 422994,
+  "latent_sha256": "b923803b102587f4e6588a9272afc3febf71291260bb7615845a7327f9a42d23",
+  "finite": true,
+  "watertight": true,
+  "euler": 1432,
+  "dtype": "decoder/queries float32; upstream helper retains float16 grid logits"
+}
