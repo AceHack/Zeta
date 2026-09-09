@@ -1,6 +1,7 @@
 module Zeta.Tests.ZetaFsJumpropeTests
 
 open System
+open System.Collections.Immutable
 open System.IO
 open System.Text
 open System.Text.Json
@@ -72,7 +73,27 @@ let ``small file below min-chunk is one leaf`` () =
     Assert.Equal<byte>(bytes, got)
 
 [<Fact>]
+let ``1-byte chunk/1 encoding matches DynamicValue canonical CBOR`` () =
+    ensureHasher ()
+    let payload = [| 7uy |]
+    let rope = ZetaFsJumprope.buildV1 payload
+    let chunkId, _ = rope.Leaves.[0]
+
+    let dv =
+        DynamicValue.Object(
+            [ "data", DynamicValue.Bytes(ImmutableArray.CreateRange payload)
+              "len", DynamicValue.Int 1L
+              "t", DynamicValue.String "chunk/1" ]
+            |> List.sortWith (fun (a, _) (b, _) -> String.Compare(a, b, StringComparison.Ordinal))
+        )
+
+    let expected = ContentHash256.ofBytes (DynamicValue.toCanonicalCborOk dv)
+    Assert.Equal(expected.ToHex(), chunkId.ToHex())
+
+[<Fact>]
 let ``thirty-two 1-byte Jumpropes do not pay FastCDC max-chunk buffers`` () =
+    // Direct canonical CBOR (081M239JRJ0087G0R001FCAKEH). DynamicValue
+    // encode allocated 296376 bytes; 256 KiB fails that path.
     ensureHasher ()
     let before = GC.GetAllocatedBytesForCurrentThread()
 
@@ -81,7 +102,7 @@ let ``thirty-two 1-byte Jumpropes do not pay FastCDC max-chunk buffers`` () =
         Assert.Equal(1, rope.Leaves.Length)
 
     let n = GC.GetAllocatedBytesForCurrentThread() - before
-    Assert.True(n < 1L * 1024L * 1024L, sprintf "32 one-byte Jumpropes allocated %d bytes" n)
+    Assert.True(n < 256L * 1024L, sprintf "32 one-byte Jumpropes allocated %d bytes" n)
 
 [<Fact>]
 let ``multi-chunk file round-trips and seek hits the right byte`` () =

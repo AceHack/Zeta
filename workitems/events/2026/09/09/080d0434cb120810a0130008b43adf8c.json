@@ -1,0 +1,14 @@
+{
+  "id": "080d0434cb120810a0130008b43adf8c",
+  "at": "2026-09-09T14:36:34.241Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M239JRJ0087G0R001FCAKEH",
+    "type": "task",
+    "title": "D10 jumprope encode writes canonical CBOR without DynamicValue",
+    "slug": "d10-jumprope-encode-writes-canonical-cbor-without-dynamicval",
+    "priority": "P2",
+    "filename": "081M239JRJ0087G0R001FCAKEH-d10-jumprope-encode-writes-canonical-cbor-without-dynamicval.md"
+  }
+}
