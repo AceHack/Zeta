@@ -60,7 +60,15 @@ jobs:
     permissions:
       # NARROWED to job level 2026-09-09.
       contents: write       # push the staging branch
-      pull-requests: write  # open/arm the flush PR
+      # pull-requests: write REMOVED 2026-09-09 -- GITHUB_TOKEN could not reach it.
+      # Every token binding in this file was enumerated: GITHUB_TOKEN appears ONLY as
+      # the git-push FALLBACK_TOKEN (a contents concern), never as GH_TOKEN. The single
+      # GH_TOKEN binding is ZETA_PR_ARCHIVE_TOKEN on the flush step, and
+      # flush-via-staging.ts errors rather than falling back to the workflow credential.
+      # flush-via-staging.ts:47 states why no lane can use it: THE PR CANNOT BE OPENED
+      # BY GITHUB_TOKEN, the enterprise forbids the Actions identity from creating pull
+      # requests. The grant conferred close, merge, comment and label on every PR in the
+      # repository and bought this lane nothing.
     name: append tick metrics
     runs-on: ubuntu-24.04
     timeout-minutes: 5
