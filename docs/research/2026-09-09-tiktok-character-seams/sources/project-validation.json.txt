@@ -1,0 +1,20 @@
+[
+  {
+    "project": "AceHack-Face-v1",
+    "face_graph_reference_resolves": true,
+    "native_update_edge_count": 1,
+    "head_tracking_component_present": true,
+    "body_tracking_component_absent": true,
+    "imported_glb_matches_export_sha256": "1c4f040c6f5917bb657ff27c060be10d22d736114c2422f5fec185ee55e33e54",
+    "note": "Reference-presence checks supplement, do not replace, actual editor preview/performance test"
+  },
+  {
+    "project": "Xenaa-Face-v1",
+    "face_graph_reference_resolves": true,
+    "native_update_edge_count": 1,
+    "head_tracking_component_present": true,
+    "body_tracking_component_absent": true,
+    "imported_glb_matches_export_sha256": "44f74e779cd669985fe30ea981fb1f36c237735647e4971c2df7029bd7213716",
+    "note": "Reference-presence checks supplement, do not replace, actual editor preview/performance test"
+  }
+]

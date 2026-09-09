@@ -1,0 +1,12 @@
+{
+  "date": "2026-09-09",
+  "source": "Aaron's follow-up during this iteration",
+  "verdict": "The current head/body attachment remains incorrect; do not promote the agent's neutral-view judgment to acceptance.",
+  "reported_defects": [
+    "Heads are still not correctly connected to bodies.",
+    "Arms looked reversed or otherwise twisted during the rigging attempt; exact cause remains to be diagnosed.",
+    "Some of Xenaa's hair is attached to the outfit rather than the head."
+  ],
+  "requested_sequence": "Validate neck, arm orientation, and hair-follow behavior in Blender before returning to Effect House.",
+  "first_pass_status": "Preserved as a failed attachment/body-rig iteration. Face-effect size/performance measurements remain valid within their stated scope."
+}

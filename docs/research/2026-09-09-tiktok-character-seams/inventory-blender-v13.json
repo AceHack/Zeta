@@ -1,0 +1,3754 @@
+{
+  "schema": 1,
+  "release_tag": "research-tiktok-character-seams-20260909",
+  "archives": [
+    {
+      "name": "tiktok-blender-correction-v13.zip",
+      "bytes": 611001153,
+      "sha256": "93210ec888cc73fcd8e310bcd86fa5c8c0a37b4aa93ffb6913154e2ad22f6ded"
+    }
+  ],
+  "files": [
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/AceHack-Face-v1/Assets/AceHack-face-body/AceHack-face-body.glb",
+      "bytes": 646720,
+      "sha256": "1c4f040c6f5917bb657ff27c060be10d22d736114c2422f5fec185ee55e33e54"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/AceHack-Face-v1/Assets/AceHack-face-body/AceHack-face-body.glb.extra",
+      "bytes": 1458,
+      "sha256": "67c7bb2e7d8540a3a4849d9f6792ad8b5c75a0f85b985ee9bea2bf338e93ba32"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/AceHack-Face-v1/Assets/AceHack-face-body/Materials/AceHack-head  Baked mobile.omtl",
+      "bytes": 14510,
+      "sha256": "31556dc5eb58b84e33bcff7c2ebd987ce8afabc4e0e93dcf95c1c2caa38c4937"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/AceHack-Face-v1/Assets/AceHack-face-body/Materials/AceHack-head  Baked mobile.omtl.extra",
+      "bytes": 3392,
+      "sha256": "cc4099bc00bc39b67b258e9adf33f024301787158ca9a744477b125037677291"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/AceHack-Face-v1/Assets/AceHack-face-body/Materials.extra",
+      "bytes": 370,
+      "sha256": "ebf52eee9f80b9fef1ed91b8a7c9d6ad03a34a28c3b4ae38fe060567ec71fd17"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/AceHack-Face-v1/Assets/AceHack-face-body/Textures/AceHack-head-basecolor.jpg",
+      "bytes": 197897,
+      "sha256": "303cabdd14c102bc5f55be259df02f3d9af3d64d8c6453ce6eecc4b6d651c451"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/AceHack-Face-v1/Assets/AceHack-face-body/Textures/AceHack-head-basecolor.jpg.extra",
+      "bytes": 827,
+      "sha256": "16b57eb44af52c3b9b51871e36a9f7bbb486f8576adf65e375e2b587a7d28608"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/AceHack-Face-v1/Assets/AceHack-face-body/Textures.extra",
+      "bytes": 369,
+      "sha256": "5a4ce0b11a26fdc6e498f50545456d755533dfdc97b7f27cbef6c8ec05465767"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/AceHack-Face-v1/Assets/AceHack-face-body.extra",
+      "bytes": 378,
+      "sha256": "d9c490490cfd1da7f402a2c33e8c3098e33fa4501d57d42baf8885755b0f3eb5"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/AceHack-Face-v1/Assets/language.json",
+      "bytes": 488,
+      "sha256": "d72cecea3e93bbeb946db8822f264300f5a809867cf3afb53641cefa6eca7154"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/AceHack-Face-v1/Assets/main.scene",
+      "bytes": 11362,
+      "sha256": "1e6c1c0d058972577552a631f5870a0e02ea413f76613b39c63f044a5499a762"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/AceHack-Face-v1/Assets/main.scene.extra",
+      "bytes": 16029,
+      "sha256": "c465a526030d4fbb6adb6aec2571bab5c1990d29ff7692688c1c6560985a7949"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/AceHack-Face-v1/Assets/temp (1).folder/AceHack-face/AceHack-face.glb",
+      "bytes": 646720,
+      "sha256": "1c4f040c6f5917bb657ff27c060be10d22d736114c2422f5fec185ee55e33e54"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/AceHack-Face-v1/Assets/temp (1).folder/AceHack-face/AceHack-face.glb.extra",
+      "bytes": 1453,
+      "sha256": "f6f5668f673c95136eabd69d3f96c2aea4a4883192b6af66cc47ab3f156b9a26"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/AceHack-Face-v1/Assets/temp (1).folder/AceHack-face/Materials/AceHack-head  Baked mobile.omtl",
+      "bytes": 14521,
+      "sha256": "9794ce5a1b19b4cddf31bc1b84c8a8c7bb9eb28578642c03c9b2bef1cd9bc343"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/AceHack-Face-v1/Assets/temp (1).folder/AceHack-face/Materials/AceHack-head  Baked mobile.omtl.extra",
+      "bytes": 3356,
+      "sha256": "dda0b3b2fc63c3dc4283642a4330d1ceeb215a7582389fb6ba5d2c95954e8dc0"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/AceHack-Face-v1/Assets/temp (1).folder/AceHack-face/Textures/AceHack-head-basecolor.jpg",
+      "bytes": 197897,
+      "sha256": "303cabdd14c102bc5f55be259df02f3d9af3d64d8c6453ce6eecc4b6d651c451"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/AceHack-Face-v1/Assets/temp (1).folder/AceHack-face/Textures/AceHack-head-basecolor.jpg.extra",
+      "bytes": 866,
+      "sha256": "c4927f61a113fbc6bc0f76ec3349b753b0178e77105fa50f0281e2f631801369"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/AceHack-Face-v1/Assets/temp (1).folder/AceHack-face/folder.ignore",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/AceHack-Face-v1/Assets/temp (1).folder/folder.ignore",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/AceHack-Face-v1/Assets/temp.folder/folder.ignore",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/AceHack-Face-v1/EffectSettings/BuiltinPropertySettingsModule.json",
+      "bytes": 135,
+      "sha256": "07b5524e579fda4892299bfd6b1fa5dba35035b2f970ef5e4e71394b6e7b4643"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/AceHack-Face-v1/EffectSettings/MultiResolutionSettingsModule.json",
+      "bytes": 39,
+      "sha256": "19c99127e6627959bacc0ec5ffae600c1f9e12d429b09694d90b5436f4ab171b"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/AceHack-Face-v1/EffectSettings/Physics2DSettingsModule.json",
+      "bytes": 994,
+      "sha256": "893fdb395c22fd58f6605970e3ba1b7bfa6c4ceae1e2da6ecbd88ee34f41b8ef"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/AceHack-Face-v1/EffectSettings/PhysicsSettingsModule.json",
+      "bytes": 932,
+      "sha256": "036f2a50d52f99e2bbfc4046ca479d6f35728a75250bd94e86feacc003380f72"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/AceHack-Face-v1/EffectSettings/SubmissionSettingsModule.json",
+      "bytes": 44,
+      "sha256": "beaaf5b66f442a666bb294ace7fe4adf559140a4d9c3a0e348069781a3770b60"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/AceHack-Face-v1/Graph/ScriptTemplate/FaceAvatarDrive/CGFaceAvatarDrive.js",
+      "bytes": 1858,
+      "sha256": "97ae07d3a7418e04d3a7721c877b29d4e9ddf1292864a677e04f7996ad1b3b5c"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/AceHack-Face-v1/Graph/ScriptTemplate/FaceAvatarDrive/node.json",
+      "bytes": 1628,
+      "sha256": "ed205fd09b24e2a6c9ff1621b8f316dd5540351ab69e8ec0772f9f84c50ed223"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/AceHack-Face-v1/Graph/ScriptTemplate/OnStart/CGOnStart.js",
+      "bytes": 265,
+      "sha256": "ccc95679287ea4c4e2ed305ebbc5dafd840d17962eb88ada5301671296deb09e"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/AceHack-Face-v1/Graph/ScriptTemplate/OnStart/node.json",
+      "bytes": 769,
+      "sha256": "ba5878b5dd2cfa13d9581056d1569ba47e8f06087903ff190a57f5dc5269bfb3"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/AceHack-Face-v1/Graph/ScriptTemplate/OnUpdate/CGOnUpdate.js",
+      "bytes": 290,
+      "sha256": "719e97277a3a0f2695d4b16c4abd30c0fc4ad71e74ff1ae7c6c3d468325a5257"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/AceHack-Face-v1/Graph/ScriptTemplate/OnUpdate/node.json",
+      "bytes": 1075,
+      "sha256": "99b1782c2f110328f8bf1e3911ca41de7f89ad2e45a32565d3821fb97d149433"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/AceHack-Face-v1/Graph/graph.backup",
+      "bytes": 18209,
+      "sha256": "a886c6c8c276191e2bd5478be68efe2553385f1ac9dac8e15a2e242b06050fa3"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/AceHack-Face-v1/Graph/graph.json",
+      "bytes": 9024,
+      "sha256": "320a1a216a5ce35e8a6ca0e90c524f541ae263b215240b0eac253f6e58835640"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/AceHack-Face-v1/Icon/iconInfo.json",
+      "bytes": 20,
+      "sha256": "40f71ee0bb937a55854e921740cd01dea0ed670c7db823ea895cc7fa9846dab9"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/AceHack-Face-v1/effect.ehproj",
+      "bytes": 3018,
+      "sha256": "f3b0daedbf0f63bd985dfd354f72cb9ef79ab3162a80f275d700095edd80abda"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/AceHack-TikTok-Prototype-20260909/Assets/AceHack-face-body/AceHack-face-body.glb",
+      "bytes": 1690044,
+      "sha256": "8f7f60b3c7ce351ced53a822a31b23e46432857a3dd65e8f941e966ed9d9af3c"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/AceHack-TikTok-Prototype-20260909/Assets/AceHack-face-body/AceHack-face-body.glb.extra",
+      "bytes": 1848,
+      "sha256": "94da034a3aec6a4080126bb04464eb6bbe54205f843ad98c6a8798cb3c352803"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/AceHack-TikTok-Prototype-20260909/Assets/AceHack-face-body/Materials/AceHack  Tailored collar.omtl",
+      "bytes": 14486,
+      "sha256": "5e20235444dad6c9d50f3dc2aecdc82855ac0fc8efd4dcfd478f187b235f8f95"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/AceHack-TikTok-Prototype-20260909/Assets/AceHack-face-body/Materials/AceHack  Tailored collar.omtl.extra",
+      "bytes": 3352,
+      "sha256": "15a4ca29ab9fdbeadb0f80ca54a2af95485faa05657e8e2937064301024b52a7"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/AceHack-TikTok-Prototype-20260909/Assets/AceHack-face-body/Materials/AceHack-body  Baked mobile.omtl",
+      "bytes": 14510,
+      "sha256": "f842503d84b6f5bdee822f5bc1d16442d8f5201424998568bd9684876e770887"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/AceHack-TikTok-Prototype-20260909/Assets/AceHack-face-body/Materials/AceHack-body  Baked mobile.omtl.extra",
+      "bytes": 3355,
+      "sha256": "105dc659f6ba8aa73df8655a5a5b3417256618f5fb98f7eb05f555673b25427c"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/AceHack-TikTok-Prototype-20260909/Assets/AceHack-face-body/Materials/AceHack-head  Baked mobile.omtl",
+      "bytes": 14510,
+      "sha256": "31556dc5eb58b84e33bcff7c2ebd987ce8afabc4e0e93dcf95c1c2caa38c4937"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/AceHack-TikTok-Prototype-20260909/Assets/AceHack-face-body/Materials/AceHack-head  Baked mobile.omtl.extra",
+      "bytes": 3356,
+      "sha256": "7d2947a5561f7de4d47126a423486f326284e3ce8b4f1d1ffa682461bd522295"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/AceHack-TikTok-Prototype-20260909/Assets/AceHack-face-body/Materials.extra",
+      "bytes": 370,
+      "sha256": "ebf52eee9f80b9fef1ed91b8a7c9d6ad03a34a28c3b4ae38fe060567ec71fd17"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/AceHack-TikTok-Prototype-20260909/Assets/AceHack-face-body/Textures/AceHack-body-basecolor.jpg",
+      "bytes": 170291,
+      "sha256": "06f6bc8241ce612193ed141e1dfa16c65b83b01e7934507322c976d9429290f4"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/AceHack-TikTok-Prototype-20260909/Assets/AceHack-face-body/Textures/AceHack-body-basecolor.jpg.extra",
+      "bytes": 827,
+      "sha256": "ad976dd2392ad4d0ce4c09787c56900472005837cafc1dc91c593bc9dcb7dcac"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/AceHack-TikTok-Prototype-20260909/Assets/AceHack-face-body/Textures/AceHack-head-basecolor.jpg",
+      "bytes": 197897,
+      "sha256": "303cabdd14c102bc5f55be259df02f3d9af3d64d8c6453ce6eecc4b6d651c451"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/AceHack-TikTok-Prototype-20260909/Assets/AceHack-face-body/Textures/AceHack-head-basecolor.jpg.extra",
+      "bytes": 827,
+      "sha256": "16b57eb44af52c3b9b51871e36a9f7bbb486f8576adf65e375e2b587a7d28608"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/AceHack-TikTok-Prototype-20260909/Assets/AceHack-face-body/Textures.extra",
+      "bytes": 369,
+      "sha256": "5a4ce0b11a26fdc6e498f50545456d755533dfdc97b7f27cbef6c8ec05465767"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/AceHack-TikTok-Prototype-20260909/Assets/AceHack-face-body.extra",
+      "bytes": 378,
+      "sha256": "d9c490490cfd1da7f402a2c33e8c3098e33fa4501d57d42baf8885755b0f3eb5"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/AceHack-TikTok-Prototype-20260909/Assets/language.json",
+      "bytes": 488,
+      "sha256": "d72cecea3e93bbeb946db8822f264300f5a809867cf3afb53641cefa6eca7154"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/AceHack-TikTok-Prototype-20260909/Assets/main.scene",
+      "bytes": 37478,
+      "sha256": "5236d316570a6ab4b4a8b4dbb8517ce23f697cc5f686e79ce22c70d451b7e122"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/AceHack-TikTok-Prototype-20260909/Assets/main.scene.extra",
+      "bytes": 61546,
+      "sha256": "59969f7ba4c155457caef0926bb2dbfdeb829016e9b4a843fde1e1ca0a750a42"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/AceHack-TikTok-Prototype-20260909/EffectSettings/BuiltinPropertySettingsModule.json",
+      "bytes": 135,
+      "sha256": "07b5524e579fda4892299bfd6b1fa5dba35035b2f970ef5e4e71394b6e7b4643"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/AceHack-TikTok-Prototype-20260909/EffectSettings/MultiResolutionSettingsModule.json",
+      "bytes": 39,
+      "sha256": "19c99127e6627959bacc0ec5ffae600c1f9e12d429b09694d90b5436f4ab171b"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/AceHack-TikTok-Prototype-20260909/EffectSettings/Physics2DSettingsModule.json",
+      "bytes": 994,
+      "sha256": "893fdb395c22fd58f6605970e3ba1b7bfa6c4ceae1e2da6ecbd88ee34f41b8ef"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/AceHack-TikTok-Prototype-20260909/EffectSettings/PhysicsSettingsModule.json",
+      "bytes": 932,
+      "sha256": "036f2a50d52f99e2bbfc4046ca479d6f35728a75250bd94e86feacc003380f72"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/AceHack-TikTok-Prototype-20260909/EffectSettings/SubmissionSettingsModule.json",
+      "bytes": 44,
+      "sha256": "beaaf5b66f442a666bb294ace7fe4adf559140a4d9c3a0e348069781a3770b60"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/AceHack-TikTok-Prototype-20260909/Graph/ScriptTemplate/OnStart/CGOnStart.js",
+      "bytes": 265,
+      "sha256": "ccc95679287ea4c4e2ed305ebbc5dafd840d17962eb88ada5301671296deb09e"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/AceHack-TikTok-Prototype-20260909/Graph/ScriptTemplate/OnStart/node.json",
+      "bytes": 769,
+      "sha256": "ba5878b5dd2cfa13d9581056d1569ba47e8f06087903ff190a57f5dc5269bfb3"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/AceHack-TikTok-Prototype-20260909/Graph/ScriptTemplate/OnUpdate/CGOnUpdate.js",
+      "bytes": 290,
+      "sha256": "719e97277a3a0f2695d4b16c4abd30c0fc4ad71e74ff1ae7c6c3d468325a5257"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/AceHack-TikTok-Prototype-20260909/Graph/ScriptTemplate/OnUpdate/node.json",
+      "bytes": 1075,
+      "sha256": "99b1782c2f110328f8bf1e3911ca41de7f89ad2e45a32565d3821fb97d149433"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/AceHack-TikTok-Prototype-20260909/Graph/graph.json",
+      "bytes": 4541,
+      "sha256": "3573ca605e6f22451e384c0cd95c47b758f1376f92255751e19fff3bb7926a6b"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/AceHack-TikTok-Prototype-20260909/Icon/iconInfo.json",
+      "bytes": 20,
+      "sha256": "40f71ee0bb937a55854e921740cd01dea0ed670c7db823ea895cc7fa9846dab9"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/AceHack-TikTok-Prototype-20260909/effect.ehproj",
+      "bytes": 2479,
+      "sha256": "f30fc2ff71b5af96eca315e08d7918201aae6064936a1e08b2a6fa5ff6c349bd"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/AceHack-TikTok-v2/Assets/AceHack-face-body/AceHack-face-body.glb",
+      "bytes": 1690044,
+      "sha256": "8f7f60b3c7ce351ced53a822a31b23e46432857a3dd65e8f941e966ed9d9af3c"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/AceHack-TikTok-v2/Assets/AceHack-face-body/AceHack-face-body.glb.extra",
+      "bytes": 1848,
+      "sha256": "442138024d0b8589a800e7f72f348ce083eda82e2603ca2af6e6284876bdd3a6"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/AceHack-TikTok-v2/Assets/AceHack-face-body/Materials/AceHack  Tailored collar.omtl",
+      "bytes": 14486,
+      "sha256": "5e20235444dad6c9d50f3dc2aecdc82855ac0fc8efd4dcfd478f187b235f8f95"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/AceHack-TikTok-v2/Assets/AceHack-face-body/Materials/AceHack  Tailored collar.omtl.extra",
+      "bytes": 3352,
+      "sha256": "1220d7d04add77ee9c52a18e12c5e53190da7db29dff9f628c32f6f87445678f"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/AceHack-TikTok-v2/Assets/AceHack-face-body/Materials/AceHack-body  Baked mobile.omtl",
+      "bytes": 14510,
+      "sha256": "f842503d84b6f5bdee822f5bc1d16442d8f5201424998568bd9684876e770887"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/AceHack-TikTok-v2/Assets/AceHack-face-body/Materials/AceHack-body  Baked mobile.omtl.extra",
+      "bytes": 3356,
+      "sha256": "ee67b345495aeea82ea103dd2f1ec9db15b391d2a1df86ced6cea6dbfa1f4414"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/AceHack-TikTok-v2/Assets/AceHack-face-body/Materials/AceHack-head  Baked mobile.omtl",
+      "bytes": 14510,
+      "sha256": "31556dc5eb58b84e33bcff7c2ebd987ce8afabc4e0e93dcf95c1c2caa38c4937"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/AceHack-TikTok-v2/Assets/AceHack-face-body/Materials/AceHack-head  Baked mobile.omtl.extra",
+      "bytes": 3354,
+      "sha256": "88bab85f689709bdcc9469ea9a9a01ed489160a585ccaeb277b0a4cfedd9ef03"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/AceHack-TikTok-v2/Assets/AceHack-face-body/Materials.extra",
+      "bytes": 370,
+      "sha256": "ebf52eee9f80b9fef1ed91b8a7c9d6ad03a34a28c3b4ae38fe060567ec71fd17"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/AceHack-TikTok-v2/Assets/AceHack-face-body/Textures/AceHack-body-basecolor.jpg",
+      "bytes": 170291,
+      "sha256": "06f6bc8241ce612193ed141e1dfa16c65b83b01e7934507322c976d9429290f4"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/AceHack-TikTok-v2/Assets/AceHack-face-body/Textures/AceHack-body-basecolor.jpg.extra",
+      "bytes": 827,
+      "sha256": "ad976dd2392ad4d0ce4c09787c56900472005837cafc1dc91c593bc9dcb7dcac"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/AceHack-TikTok-v2/Assets/AceHack-face-body/Textures/AceHack-head-basecolor.jpg",
+      "bytes": 197897,
+      "sha256": "303cabdd14c102bc5f55be259df02f3d9af3d64d8c6453ce6eecc4b6d651c451"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/AceHack-TikTok-v2/Assets/AceHack-face-body/Textures/AceHack-head-basecolor.jpg.extra",
+      "bytes": 827,
+      "sha256": "16b57eb44af52c3b9b51871e36a9f7bbb486f8576adf65e375e2b587a7d28608"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/AceHack-TikTok-v2/Assets/AceHack-face-body/Textures.extra",
+      "bytes": 369,
+      "sha256": "5a4ce0b11a26fdc6e498f50545456d755533dfdc97b7f27cbef6c8ec05465767"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/AceHack-TikTok-v2/Assets/AceHack-face-body.extra",
+      "bytes": 378,
+      "sha256": "d9c490490cfd1da7f402a2c33e8c3098e33fa4501d57d42baf8885755b0f3eb5"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/AceHack-TikTok-v2/Assets/language.json",
+      "bytes": 488,
+      "sha256": "d72cecea3e93bbeb946db8822f264300f5a809867cf3afb53641cefa6eca7154"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/AceHack-TikTok-v2/Assets/main.scene",
+      "bytes": 38183,
+      "sha256": "0c9d847e252fe0c256a7479b4fe5575690b9ce693ee8f6e271b25e3ae4cc10c3"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/AceHack-TikTok-v2/Assets/main.scene.extra",
+      "bytes": 61536,
+      "sha256": "0628f54286b052d30a5cfe9ba64f9ec0c5c16b7489fff503ea298a8304adcb54"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/AceHack-TikTok-v2/Assets/temp.folder/folder.ignore",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/AceHack-TikTok-v2/EffectSettings/BuiltinPropertySettingsModule.json",
+      "bytes": 135,
+      "sha256": "07b5524e579fda4892299bfd6b1fa5dba35035b2f970ef5e4e71394b6e7b4643"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/AceHack-TikTok-v2/EffectSettings/MultiResolutionSettingsModule.json",
+      "bytes": 39,
+      "sha256": "19c99127e6627959bacc0ec5ffae600c1f9e12d429b09694d90b5436f4ab171b"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/AceHack-TikTok-v2/EffectSettings/Physics2DSettingsModule.json",
+      "bytes": 994,
+      "sha256": "893fdb395c22fd58f6605970e3ba1b7bfa6c4ceae1e2da6ecbd88ee34f41b8ef"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/AceHack-TikTok-v2/EffectSettings/PhysicsSettingsModule.json",
+      "bytes": 932,
+      "sha256": "036f2a50d52f99e2bbfc4046ca479d6f35728a75250bd94e86feacc003380f72"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/AceHack-TikTok-v2/EffectSettings/SubmissionSettingsModule.json",
+      "bytes": 44,
+      "sha256": "beaaf5b66f442a666bb294ace7fe4adf559140a4d9c3a0e348069781a3770b60"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/AceHack-TikTok-v2/Graph/ScriptTemplate/FaceAvatarDrive/CGFaceAvatarDrive.js",
+      "bytes": 1858,
+      "sha256": "97ae07d3a7418e04d3a7721c877b29d4e9ddf1292864a677e04f7996ad1b3b5c"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/AceHack-TikTok-v2/Graph/ScriptTemplate/FaceAvatarDrive/node.json",
+      "bytes": 1628,
+      "sha256": "ed205fd09b24e2a6c9ff1621b8f316dd5540351ab69e8ec0772f9f84c50ed223"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/AceHack-TikTok-v2/Graph/ScriptTemplate/OnStart/CGOnStart.js",
+      "bytes": 265,
+      "sha256": "ccc95679287ea4c4e2ed305ebbc5dafd840d17962eb88ada5301671296deb09e"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/AceHack-TikTok-v2/Graph/ScriptTemplate/OnStart/node.json",
+      "bytes": 769,
+      "sha256": "ba5878b5dd2cfa13d9581056d1569ba47e8f06087903ff190a57f5dc5269bfb3"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/AceHack-TikTok-v2/Graph/ScriptTemplate/OnUpdate/CGOnUpdate.js",
+      "bytes": 290,
+      "sha256": "719e97277a3a0f2695d4b16c4abd30c0fc4ad71e74ff1ae7c6c3d468325a5257"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/AceHack-TikTok-v2/Graph/ScriptTemplate/OnUpdate/node.json",
+      "bytes": 1075,
+      "sha256": "99b1782c2f110328f8bf1e3911ca41de7f89ad2e45a32565d3821fb97d149433"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/AceHack-TikTok-v2/Graph/graph.backup",
+      "bytes": 4541,
+      "sha256": "3573ca605e6f22451e384c0cd95c47b758f1376f92255751e19fff3bb7926a6b"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/AceHack-TikTok-v2/Graph/graph.json",
+      "bytes": 8542,
+      "sha256": "ee7d3790066d1ecec137ef3c0a60e5df491e75ccabd3f6669465ca9678f990a8"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/AceHack-TikTok-v2/Icon/iconInfo.json",
+      "bytes": 20,
+      "sha256": "40f71ee0bb937a55854e921740cd01dea0ed670c7db823ea895cc7fa9846dab9"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/AceHack-TikTok-v2/effect.ehproj",
+      "bytes": 2494,
+      "sha256": "e1e2e9fd6e42cccbf0b73d5dced46a94a00d1caa813b71379af891d35242e8ad"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/AceHack-TikTok-v3/Assets/AceHack-face-body/AceHack-face-body.glb",
+      "bytes": 646720,
+      "sha256": "1c4f040c6f5917bb657ff27c060be10d22d736114c2422f5fec185ee55e33e54"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/AceHack-TikTok-v3/Assets/AceHack-face-body/AceHack-face-body.glb.extra",
+      "bytes": 1458,
+      "sha256": "798a01b29d62f70b33ca27e115a20f08cc89a1050f2472e61a86bf06fddafea7"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/AceHack-TikTok-v3/Assets/AceHack-face-body/Materials/AceHack-head  Baked mobile.omtl",
+      "bytes": 14510,
+      "sha256": "31556dc5eb58b84e33bcff7c2ebd987ce8afabc4e0e93dcf95c1c2caa38c4937"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/AceHack-TikTok-v3/Assets/AceHack-face-body/Materials/AceHack-head  Baked mobile.omtl.extra",
+      "bytes": 3391,
+      "sha256": "468758fbbb5c42436a4c057cea1ac6f1d5454f31510764d0e71182002c0ce9a6"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/AceHack-TikTok-v3/Assets/AceHack-face-body/Materials.extra",
+      "bytes": 370,
+      "sha256": "ebf52eee9f80b9fef1ed91b8a7c9d6ad03a34a28c3b4ae38fe060567ec71fd17"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/AceHack-TikTok-v3/Assets/AceHack-face-body/Textures/AceHack-head-basecolor.jpg",
+      "bytes": 197897,
+      "sha256": "303cabdd14c102bc5f55be259df02f3d9af3d64d8c6453ce6eecc4b6d651c451"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/AceHack-TikTok-v3/Assets/AceHack-face-body/Textures/AceHack-head-basecolor.jpg.extra",
+      "bytes": 827,
+      "sha256": "16b57eb44af52c3b9b51871e36a9f7bbb486f8576adf65e375e2b587a7d28608"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/AceHack-TikTok-v3/Assets/AceHack-face-body/Textures.extra",
+      "bytes": 369,
+      "sha256": "5a4ce0b11a26fdc6e498f50545456d755533dfdc97b7f27cbef6c8ec05465767"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/AceHack-TikTok-v3/Assets/AceHack-face-body.extra",
+      "bytes": 378,
+      "sha256": "d9c490490cfd1da7f402a2c33e8c3098e33fa4501d57d42baf8885755b0f3eb5"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/AceHack-TikTok-v3/Assets/language.json",
+      "bytes": 488,
+      "sha256": "d72cecea3e93bbeb946db8822f264300f5a809867cf3afb53641cefa6eca7154"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/AceHack-TikTok-v3/Assets/main.scene",
+      "bytes": 12344,
+      "sha256": "1f1865d7e378cb1074841bdb17b853843c4546aaa2604e88c82a09d0a8391fc2"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/AceHack-TikTok-v3/Assets/main.scene.extra",
+      "bytes": 69351,
+      "sha256": "6a9fe63eaf8da070c460da2b7bd4df20734b17427bf66902ed485c1cd83ab60a"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/AceHack-TikTok-v3/Assets/temp.folder/folder.ignore",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/AceHack-TikTok-v3/EffectSettings/BuiltinPropertySettingsModule.json",
+      "bytes": 135,
+      "sha256": "07b5524e579fda4892299bfd6b1fa5dba35035b2f970ef5e4e71394b6e7b4643"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/AceHack-TikTok-v3/EffectSettings/MultiResolutionSettingsModule.json",
+      "bytes": 39,
+      "sha256": "19c99127e6627959bacc0ec5ffae600c1f9e12d429b09694d90b5436f4ab171b"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/AceHack-TikTok-v3/EffectSettings/Physics2DSettingsModule.json",
+      "bytes": 994,
+      "sha256": "893fdb395c22fd58f6605970e3ba1b7bfa6c4ceae1e2da6ecbd88ee34f41b8ef"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/AceHack-TikTok-v3/EffectSettings/PhysicsSettingsModule.json",
+      "bytes": 932,
+      "sha256": "036f2a50d52f99e2bbfc4046ca479d6f35728a75250bd94e86feacc003380f72"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/AceHack-TikTok-v3/EffectSettings/SubmissionSettingsModule.json",
+      "bytes": 44,
+      "sha256": "beaaf5b66f442a666bb294ace7fe4adf559140a4d9c3a0e348069781a3770b60"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/AceHack-TikTok-v3/Graph/ScriptTemplate/FaceAvatarDrive/CGFaceAvatarDrive.js",
+      "bytes": 1858,
+      "sha256": "97ae07d3a7418e04d3a7721c877b29d4e9ddf1292864a677e04f7996ad1b3b5c"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/AceHack-TikTok-v3/Graph/ScriptTemplate/FaceAvatarDrive/node.json",
+      "bytes": 1628,
+      "sha256": "ed205fd09b24e2a6c9ff1621b8f316dd5540351ab69e8ec0772f9f84c50ed223"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/AceHack-TikTok-v3/Graph/ScriptTemplate/GetSceneObjectNode/CGGetSceneObjectNode.js",
+      "bytes": 295,
+      "sha256": "50f390962eb9225a00b33bf4d10ef9960ca4463f3556ed11281b1976f9d0157e"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/AceHack-TikTok-v3/Graph/ScriptTemplate/GetSceneObjectNode/node.json",
+      "bytes": 1103,
+      "sha256": "13f62a7e1ea612f15c569a6aa30b15789bfb18d05531cc718ea4e4941a09e28d"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/AceHack-TikTok-v3/Graph/ScriptTemplate/OnStart/CGOnStart.js",
+      "bytes": 265,
+      "sha256": "ccc95679287ea4c4e2ed305ebbc5dafd840d17962eb88ada5301671296deb09e"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/AceHack-TikTok-v3/Graph/ScriptTemplate/OnStart/node.json",
+      "bytes": 769,
+      "sha256": "ba5878b5dd2cfa13d9581056d1569ba47e8f06087903ff190a57f5dc5269bfb3"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/AceHack-TikTok-v3/Graph/ScriptTemplate/OnUpdate/CGOnUpdate.js",
+      "bytes": 290,
+      "sha256": "719e97277a3a0f2695d4b16c4abd30c0fc4ad71e74ff1ae7c6c3d468325a5257"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/AceHack-TikTok-v3/Graph/ScriptTemplate/OnUpdate/node.json",
+      "bytes": 1075,
+      "sha256": "99b1782c2f110328f8bf1e3911ca41de7f89ad2e45a32565d3821fb97d149433"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/AceHack-TikTok-v3/Graph/graph.backup",
+      "bytes": 8542,
+      "sha256": "ee7d3790066d1ecec137ef3c0a60e5df491e75ccabd3f6669465ca9678f990a8"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/AceHack-TikTok-v3/Graph/graph.json",
+      "bytes": 11162,
+      "sha256": "ea4156d3e5e52df607b502bbdbe6e417ed6e281df4607fbff6c6430e3982e281"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/AceHack-TikTok-v3/Icon/iconInfo.json",
+      "bytes": 20,
+      "sha256": "40f71ee0bb937a55854e921740cd01dea0ed670c7db823ea895cc7fa9846dab9"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/AceHack-TikTok-v3/effect.ehproj",
+      "bytes": 2433,
+      "sha256": "2bdf9d97efe8634a576cb6f1c9246c19d92ba639937cb5bbdd669683d48d01c6"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/START-HERE.md",
+      "bytes": 1545,
+      "sha256": "3734e3f8805b472ced9cb1deda4ca2496c5b4c53efafc62fce47cafaa1511f16"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/Xenaa-Face-v1/Assets/AceHack-face-body/AceHack-face-body.glb",
+      "bytes": 903420,
+      "sha256": "44f74e779cd669985fe30ea981fb1f36c237735647e4971c2df7029bd7213716"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/Xenaa-Face-v1/Assets/AceHack-face-body/AceHack-face-body.glb.extra",
+      "bytes": 1649,
+      "sha256": "f9813d6d4cf646546309614e734a5f4d685a43927a49fc8de3cdb67ed5014b90"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/Xenaa-Face-v1/Assets/AceHack-face-body/Materials/Xenaa  Black hair.omtl",
+      "bytes": 14486,
+      "sha256": "d2d2e36648f8fcc3fc92d2564a383eca4b7377af673b30aceb070b0c2ababa38"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/Xenaa-Face-v1/Assets/AceHack-face-body/Materials/Xenaa  Black hair.omtl.extra",
+      "bytes": 3368,
+      "sha256": "4e0437b5c39927bfa9a79808ebca3182711ea14ba00f815c3bc7e6df5b4f149d"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/Xenaa-Face-v1/Assets/AceHack-face-body/Materials/Xenaa-head  Baked mobile.omtl",
+      "bytes": 14508,
+      "sha256": "fc6ddea41a69b966f7087e0d7e1193ee95a4d2f36a3f9211badca450d09a2218"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/Xenaa-Face-v1/Assets/AceHack-face-body/Materials/Xenaa-head  Baked mobile.omtl.extra",
+      "bytes": 3382,
+      "sha256": "9e8532e87f39c8e5560f7bb29d8af222729ad5ef105cb7f8786a27d27cff763e"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/Xenaa-Face-v1/Assets/AceHack-face-body/Materials.extra",
+      "bytes": 370,
+      "sha256": "ebf52eee9f80b9fef1ed91b8a7c9d6ad03a34a28c3b4ae38fe060567ec71fd17"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/Xenaa-Face-v1/Assets/AceHack-face-body/Textures/Xenaa-head-basecolor.jpg",
+      "bytes": 125360,
+      "sha256": "1e3a8652e983065cd068fa64eeb3e277a1f685acf050155da790cac29243854c"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/Xenaa-Face-v1/Assets/AceHack-face-body/Textures/Xenaa-head-basecolor.jpg.extra",
+      "bytes": 847,
+      "sha256": "cdd109e0ae6f2514cc7d85ce42ef2b5f02e650657ffc859b218b3078995cfafb"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/Xenaa-Face-v1/Assets/AceHack-face-body/Textures.extra",
+      "bytes": 369,
+      "sha256": "5a4ce0b11a26fdc6e498f50545456d755533dfdc97b7f27cbef6c8ec05465767"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/Xenaa-Face-v1/Assets/AceHack-face-body.extra",
+      "bytes": 378,
+      "sha256": "d9c490490cfd1da7f402a2c33e8c3098e33fa4501d57d42baf8885755b0f3eb5"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/Xenaa-Face-v1/Assets/language.json",
+      "bytes": 488,
+      "sha256": "d72cecea3e93bbeb946db8822f264300f5a809867cf3afb53641cefa6eca7154"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/Xenaa-Face-v1/Assets/main.scene",
+      "bytes": 13047,
+      "sha256": "b540d898b09fe1a5a4858168423e1c3d5780cf6dc326735569f3ec3c83a22372"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/Xenaa-Face-v1/Assets/main.scene.extra",
+      "bytes": 26613,
+      "sha256": "96e59e62019da0b81fa6d81c1f957f3321224ca49e1494e33b4aeee5aae1fdf7"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/Xenaa-Face-v1/Assets/temp (1).folder/AceHack-face/AceHack-face.glb",
+      "bytes": 646720,
+      "sha256": "1c4f040c6f5917bb657ff27c060be10d22d736114c2422f5fec185ee55e33e54"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/Xenaa-Face-v1/Assets/temp (1).folder/AceHack-face/AceHack-face.glb.extra",
+      "bytes": 1453,
+      "sha256": "f6f5668f673c95136eabd69d3f96c2aea4a4883192b6af66cc47ab3f156b9a26"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/Xenaa-Face-v1/Assets/temp (1).folder/AceHack-face/Materials/AceHack-head  Baked mobile.omtl",
+      "bytes": 14521,
+      "sha256": "9794ce5a1b19b4cddf31bc1b84c8a8c7bb9eb28578642c03c9b2bef1cd9bc343"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/Xenaa-Face-v1/Assets/temp (1).folder/AceHack-face/Materials/AceHack-head  Baked mobile.omtl.extra",
+      "bytes": 3356,
+      "sha256": "dda0b3b2fc63c3dc4283642a4330d1ceeb215a7582389fb6ba5d2c95954e8dc0"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/Xenaa-Face-v1/Assets/temp (1).folder/AceHack-face/Textures/AceHack-head-basecolor.jpg",
+      "bytes": 197897,
+      "sha256": "303cabdd14c102bc5f55be259df02f3d9af3d64d8c6453ce6eecc4b6d651c451"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/Xenaa-Face-v1/Assets/temp (1).folder/AceHack-face/Textures/AceHack-head-basecolor.jpg.extra",
+      "bytes": 866,
+      "sha256": "c4927f61a113fbc6bc0f76ec3349b753b0178e77105fa50f0281e2f631801369"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/Xenaa-Face-v1/Assets/temp (1).folder/AceHack-face/folder.ignore",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/Xenaa-Face-v1/Assets/temp (1).folder/folder.ignore",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/Xenaa-Face-v1/Assets/temp (2).folder/Xenaa-face/Materials/Xenaa  Black hair.omtl",
+      "bytes": 14486,
+      "sha256": "d2d2e36648f8fcc3fc92d2564a383eca4b7377af673b30aceb070b0c2ababa38"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/Xenaa-Face-v1/Assets/temp (2).folder/Xenaa-face/Materials/Xenaa  Black hair.omtl.extra",
+      "bytes": 3346,
+      "sha256": "40459e7bd657a9e4a71c845a1e2fde28cab5219087504202d885246e929e11d4"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/Xenaa-Face-v1/Assets/temp (2).folder/Xenaa-face/Materials/Xenaa-head  Baked mobile.omtl",
+      "bytes": 14517,
+      "sha256": "b17905e97f2b5dfcb6e58056473297155ed8c4b738203741abf7af58ecf79fd6"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/Xenaa-Face-v1/Assets/temp (2).folder/Xenaa-face/Materials/Xenaa-head  Baked mobile.omtl.extra",
+      "bytes": 3352,
+      "sha256": "bde396f8fd4347d1bf144b744061e1a366b03ce3dbfc50663d966a53e0e2a3e5"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/Xenaa-Face-v1/Assets/temp (2).folder/Xenaa-face/Textures/Xenaa-head-basecolor.jpg",
+      "bytes": 125360,
+      "sha256": "1e3a8652e983065cd068fa64eeb3e277a1f685acf050155da790cac29243854c"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/Xenaa-Face-v1/Assets/temp (2).folder/Xenaa-face/Textures/Xenaa-head-basecolor.jpg.extra",
+      "bytes": 856,
+      "sha256": "07ebcda8caa4cefc9329038a4399df6e155f080e592879256282ce73fe040780"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/Xenaa-Face-v1/Assets/temp (2).folder/Xenaa-face/Xenaa-face.glb",
+      "bytes": 903420,
+      "sha256": "44f74e779cd669985fe30ea981fb1f36c237735647e4971c2df7029bd7213716"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/Xenaa-Face-v1/Assets/temp (2).folder/Xenaa-face/Xenaa-face.glb.extra",
+      "bytes": 1642,
+      "sha256": "b9edeb3d862f06d45b14e9b0fdd29458c31fc0cf726ff48a91d88c8fd7b87391"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/Xenaa-Face-v1/Assets/temp (2).folder/Xenaa-face/folder.ignore",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/Xenaa-Face-v1/Assets/temp (2).folder/folder.ignore",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/Xenaa-Face-v1/Assets/temp.folder/folder.ignore",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/Xenaa-Face-v1/EffectSettings/BuiltinPropertySettingsModule.json",
+      "bytes": 135,
+      "sha256": "07b5524e579fda4892299bfd6b1fa5dba35035b2f970ef5e4e71394b6e7b4643"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/Xenaa-Face-v1/EffectSettings/MultiResolutionSettingsModule.json",
+      "bytes": 39,
+      "sha256": "19c99127e6627959bacc0ec5ffae600c1f9e12d429b09694d90b5436f4ab171b"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/Xenaa-Face-v1/EffectSettings/Physics2DSettingsModule.json",
+      "bytes": 994,
+      "sha256": "893fdb395c22fd58f6605970e3ba1b7bfa6c4ceae1e2da6ecbd88ee34f41b8ef"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/Xenaa-Face-v1/EffectSettings/PhysicsSettingsModule.json",
+      "bytes": 932,
+      "sha256": "036f2a50d52f99e2bbfc4046ca479d6f35728a75250bd94e86feacc003380f72"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/Xenaa-Face-v1/EffectSettings/SubmissionSettingsModule.json",
+      "bytes": 44,
+      "sha256": "beaaf5b66f442a666bb294ace7fe4adf559140a4d9c3a0e348069781a3770b60"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/Xenaa-Face-v1/Graph/ScriptTemplate/FaceAvatarDrive/CGFaceAvatarDrive.js",
+      "bytes": 1858,
+      "sha256": "97ae07d3a7418e04d3a7721c877b29d4e9ddf1292864a677e04f7996ad1b3b5c"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/Xenaa-Face-v1/Graph/ScriptTemplate/FaceAvatarDrive/node.json",
+      "bytes": 1628,
+      "sha256": "ed205fd09b24e2a6c9ff1621b8f316dd5540351ab69e8ec0772f9f84c50ed223"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/Xenaa-Face-v1/Graph/ScriptTemplate/OnStart/CGOnStart.js",
+      "bytes": 265,
+      "sha256": "ccc95679287ea4c4e2ed305ebbc5dafd840d17962eb88ada5301671296deb09e"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/Xenaa-Face-v1/Graph/ScriptTemplate/OnStart/node.json",
+      "bytes": 769,
+      "sha256": "ba5878b5dd2cfa13d9581056d1569ba47e8f06087903ff190a57f5dc5269bfb3"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/Xenaa-Face-v1/Graph/ScriptTemplate/OnUpdate/CGOnUpdate.js",
+      "bytes": 290,
+      "sha256": "719e97277a3a0f2695d4b16c4abd30c0fc4ad71e74ff1ae7c6c3d468325a5257"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/Xenaa-Face-v1/Graph/ScriptTemplate/OnUpdate/node.json",
+      "bytes": 1075,
+      "sha256": "99b1782c2f110328f8bf1e3911ca41de7f89ad2e45a32565d3821fb97d149433"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/Xenaa-Face-v1/Graph/graph.backup",
+      "bytes": 9024,
+      "sha256": "320a1a216a5ce35e8a6ca0e90c524f541ae263b215240b0eac253f6e58835640"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/Xenaa-Face-v1/Graph/graph.json",
+      "bytes": 9022,
+      "sha256": "b45c78e712aaa11745d0f5eed4915de31e1bf742d4c109a0429151d54aba2154"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/Xenaa-Face-v1/Icon/iconInfo.json",
+      "bytes": 20,
+      "sha256": "40f71ee0bb937a55854e921740cd01dea0ed670c7db823ea895cc7fa9846dab9"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/Xenaa-Face-v1/effect.ehproj",
+      "bytes": 3008,
+      "sha256": "b267a615cf2a8a2e7323af3bbfab2f0e1a04c391f944055677a89b51cc35582a"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/archive-attempt.txt",
+      "bytes": 334,
+      "sha256": "b83391b4dd9a7a60ef076f41c2f7e0289b4e21db4eeef8d8e1c44d0f4b5699f1"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/archive-correction-v13.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/archive_correction_v13.py",
+      "bytes": 2717,
+      "sha256": "ecce2550ad24221f434a4566a10abdc6660f28042f23f63fdb0d8b762a3b326c"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/archive_iteration.py",
+      "bytes": 2517,
+      "sha256": "d48c685a1b2479c87600c7faf4b6b6aa7fdca9e309415c36e97ac39b39f77ddc"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/attachment-diagnostics/AceHack-0.png",
+      "bytes": 1070261,
+      "sha256": "2097f3baefa3ca6124432cd2947148f538ecbfa2bcfde068f8e4ab2a1a8b06b1"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/attachment-diagnostics/AceHack-180.png",
+      "bytes": 1126362,
+      "sha256": "8351edf7ea219116392592c3be2002bdae4354ee1db19337584f6b86b65a1c9a"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/attachment-diagnostics/AceHack-90.png",
+      "bytes": 1197099,
+      "sha256": "b1a18e1d336b21791c068abafd34c9d67c2d9f171b7d7e5aec06d30046639a7a"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/attachment-diagnostics/Xenaa-0.png",
+      "bytes": 1100753,
+      "sha256": "f33e3df4b7c5c36af8eea6f80a62d5d8de24d51a30bde65d06f9a2f1cb49a7a0"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/attachment-diagnostics/Xenaa-180.png",
+      "bytes": 1236878,
+      "sha256": "61c3e7624a9ee4aed8f170838de38edc5d776f228c22b6381f61a9927eb9f280"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/attachment-diagnostics/Xenaa-90.png",
+      "bytes": 1223991,
+      "sha256": "cf4a0baa51faca04bdddaba5edbc48d83573e97e3aa708d6e0e341d3b9bf8a51"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/attachment-diagnostics.json",
+      "bytes": 3480,
+      "sha256": "d22a95a6b48091e373213b36d8ebafd293987475a4e105d04ef98f8a9607e2d1"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/attachment-diagnostics.log",
+      "bytes": 1576,
+      "sha256": "a1fd2c5ab5003f32567085d2525626cfa0a78f0ebc163eae6c3406aba09a1828"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/attachment-isolated/AceHack-0.png",
+      "bytes": 1065172,
+      "sha256": "88c5d031b488fa9b921520b9816d7d1780e8da6c30a9ed2f716f0840ce8b866f"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/attachment-isolated/AceHack-180.png",
+      "bytes": 1121690,
+      "sha256": "d8461025c632f623f7e9f45cd86d5eb774d8c35fec8e0321d930a5549f57f89f"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/attachment-isolated/AceHack-90.png",
+      "bytes": 1064218,
+      "sha256": "2323b3f12bb1056e6be2feb1c53efd2a61bf567a838febcc4ed0de659e697ce1"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/attachment-isolated/Xenaa-0.png",
+      "bytes": 1100207,
+      "sha256": "291a75effc7cf724cd25b9a6e834940f81a84d8bff4bd0cca322cf386d4b55a1"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/attachment-isolated/Xenaa-180.png",
+      "bytes": 1238552,
+      "sha256": "b5dd573f640c8b46e38424f14d9d848bad27e6f479c2ce7ede89f9f3bbbe44bd"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/attachment-isolated/Xenaa-90.png",
+      "bytes": 1205388,
+      "sha256": "3910498b586d492ff44dd0840b818bcadc01db50817bd819d6d03d5659c3c27e"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/attachment-isolated.json",
+      "bytes": 3480,
+      "sha256": "d22a95a6b48091e373213b36d8ebafd293987475a4e105d04ef98f8a9607e2d1"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/attachment-isolated.log",
+      "bytes": 1556,
+      "sha256": "8758454511c4d45b77422172f9efe7d8f2207c4276faaff5caebb5d17f53d59e"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/audit_mobile.py",
+      "bytes": 4014,
+      "sha256": "1f9034dbd35021932a299ea469efbe4f58080ea88ca7df9813abbd512af60584"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/audit_mobile_v13.py",
+      "bytes": 4040,
+      "sha256": "82d523d22bdd04ad09d373e165a84cc8335a66e39528ecb70a3e6179fb660e90"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/audit_projects.py",
+      "bytes": 1358,
+      "sha256": "f67caecd6a342960bb63737e4f04174dc08aed03e9768a17eae72f39aa66bfbf"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v10/Characters-v10.blend",
+      "bytes": 14601033,
+      "sha256": "64f67294729b3071e73cf0da034fbbccd2d80c61c3b7999c128504e6ba961b80"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v10/elbows.png",
+      "bytes": 1849454,
+      "sha256": "680116323a1aa72485680e40e1314cccac919ef1fb5f520c2e3ef3f070c62284"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v10/head-nod.png",
+      "bytes": 1867206,
+      "sha256": "ab0f7b1e39baad99e894df6f0f283c275cab8250c54f9213c8b886e439766021"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v10/head-turn.png",
+      "bytes": 1872764,
+      "sha256": "807dd28337a0f63960ece5c148a1f2f51231937dd91750d5f2d8ae1e79b8a609"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v10/left-arm.png",
+      "bytes": 1872740,
+      "sha256": "6804c256c207770c1688ac39fe9781a029479d1f447f61e66a6d8db74f88bb44"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v10/neutral.png",
+      "bytes": 1871780,
+      "sha256": "08014543d03cd4e20299e1861f68e8e3e8a843a3ddedf05915ee1be8ec3c11ef"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v10/right-arm.png",
+      "bytes": 1869351,
+      "sha256": "5452e785efa32c03aa234f1f443a49bbbd6c836dca226061de060621bd90712b"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v10-profiles/AceHack-0.png",
+      "bytes": 957449,
+      "sha256": "94b8d347bb30d0a003ae732c29b5170513a84a810e1dedb52d841af2ca3f5879"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v10-profiles/AceHack-180.png",
+      "bytes": 957530,
+      "sha256": "d17887b90c98e97b9e83e31711fed226414bcdc0ea9a4c7cc38493e1dc511cac"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v10-profiles/AceHack-90.png",
+      "bytes": 1187641,
+      "sha256": "dfd604560b71d30f7df270360251ab3dc08c43943567bc166a2ee6fda2106584"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v10-profiles/Xenaa-0.png",
+      "bytes": 957185,
+      "sha256": "0fd341b8c7fbf904a156f59d34afc92602aeed18ea2b4372dfef9d766360f358"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v10-profiles/Xenaa-180.png",
+      "bytes": 957185,
+      "sha256": "c10307d906722e1adc4c5989faf7c393646aa35cc4683e17ecee914c6f73f5fc"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v10-profiles/Xenaa-90.png",
+      "bytes": 1148340,
+      "sha256": "882b5f971a7177eace282940950293fc639be0c25c6ec087fdb257cb588076e9"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v10-profiles.json",
+      "bytes": 3482,
+      "sha256": "99ef51c2d720303e2350f7882f0f65503356076ddf181de263dbc1447c2f22dc"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v10-receipt.json",
+      "bytes": 639,
+      "sha256": "e330d3a5776610dd10c6a2923b9be4cf505a07823a2eeaba25e4753935ffc63e"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v10.log",
+      "bytes": 752,
+      "sha256": "3d180f897d138e549c587d33d705f5bfcc398b0f7fce3c8510a319d82213db69"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v11/Characters-v11.blend",
+      "bytes": 14481498,
+      "sha256": "dc81e9be4c9c7fcd297c59e9e5e10a131b8ff5be4e95cb328b4d4300c1f48627"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v11/elbows.png",
+      "bytes": 1850581,
+      "sha256": "68a68359a444827750a0d4afc56e16bc2047453f45693564891dd60c24950c82"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v11/head-nod.png",
+      "bytes": 1866747,
+      "sha256": "f6cbdc3d81e5a3340fead3bbb7a89245f8655a2f0772dadec137da1fc007f05d"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v11/head-turn.png",
+      "bytes": 1872866,
+      "sha256": "9bdd3ccf22d0d53624b89b1b252f2c554845817f68ebe8da7327db4e998a3a6c"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v11/left-arm.png",
+      "bytes": 1873269,
+      "sha256": "710810ff7aba247f56c1e1d9c61b9849b0ec6914bd10eae92f2d11b367d8cc06"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v11/neutral.png",
+      "bytes": 1872809,
+      "sha256": "c81f5eafd809b6da1eb282998498a272493eca2ddb68f14b4e9cb03367aa0fdb"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v11/right-arm.png",
+      "bytes": 1870684,
+      "sha256": "ac97fa34d193bdb493d4ff4f36eba78fd59bcbb031f149f7a2f75f3c1dcd816e"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v11-profiles/AceHack-0.png",
+      "bytes": 957322,
+      "sha256": "6386fb81ab62fd3125cfca7d6e55fe062d1b1192aafaac0cfcfe4eedd30aef72"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v11-profiles/AceHack-180.png",
+      "bytes": 957417,
+      "sha256": "b058ea9433e5a0112fd7f19e1cfeaa61666225e825c380b637bb432def93313c"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v11-profiles/AceHack-90.png",
+      "bytes": 1189056,
+      "sha256": "40fa2164ebc35d8d66debaeb0de1981762572831d37b341d70089ed5b992cde7"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v11-profiles/Xenaa-0.png",
+      "bytes": 957185,
+      "sha256": "12186d9ddbad6319a45ad6f92c20b21e990d212f6c5c8e2b5609fde35580b246"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v11-profiles/Xenaa-180.png",
+      "bytes": 957185,
+      "sha256": "c98041fbb6a34259098f0504de66304f0e54e81520191ad044d053034b66d9d2"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v11-profiles/Xenaa-90.png",
+      "bytes": 1140332,
+      "sha256": "56d0728e411e16e83ea6262df812c65b50cb67893be32ea42968262e5bb31beb"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v11-profiles.json",
+      "bytes": 3488,
+      "sha256": "8fcc29cac9423c2f1b8f9ce523edec803175383192a9c784add4cfcb45ed0af6"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v11-receipt.json",
+      "bytes": 639,
+      "sha256": "6a1e0e0cefe39b42d38acb3297ab12d26177fc2f3e741199bf7ef21e892a833a"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v11.log",
+      "bytes": 752,
+      "sha256": "09e6c971b9ce4cf27a3c9160b781d9798b46e785d7f4535ff70778fb45140ed8"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v12/Characters-v12.blend",
+      "bytes": 14535687,
+      "sha256": "97ea2381977f494de09c5b3b2144ea01400150e2bd24c22abdc147fe08959727"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v12/elbows.png",
+      "bytes": 1848289,
+      "sha256": "ad8e0b1c74c187d0d192237836953580d88de73ba271160062b36f2872e99871"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v12/head-nod.png",
+      "bytes": 1864339,
+      "sha256": "9794c40d6edcfc1373bd2686a7a3636795f297838652a0a61a14c2e2eca36423"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v12/head-turn.png",
+      "bytes": 1869190,
+      "sha256": "b1391c674e63fbd6afef1f02d61f0d8ba6ce7e84894260d6a1d4c9f26aa469d6"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v12/left-arm.png",
+      "bytes": 1871772,
+      "sha256": "0604e8c57af96cf21b40790eb647c190fe8296b3e25d52663a8b72b48f4d6298"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v12/neutral.png",
+      "bytes": 1870038,
+      "sha256": "747786b6d5a97302c8bd3ca9b3c20c5e9113aefe033d9f46349dd0106e110cbc"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v12/right-arm.png",
+      "bytes": 1870122,
+      "sha256": "16d23c69c621840185d3985f5c4cce338fd5edc86a71121fcd06f824ccc07ce3"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v12-clay/AceHack-0.png",
+      "bytes": 1091050,
+      "sha256": "b24e6b0f42445b1c232fc3342e47a0cd03be65ada1e7bf9e251eb6269c30429b"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v12-clay/AceHack-180.png",
+      "bytes": 1130168,
+      "sha256": "d3e588d7061352c59bcab7aedff8b5dc365d586f81c1cd0894e90e66f2193f77"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v12-clay/AceHack-90.png",
+      "bytes": 1083310,
+      "sha256": "92fde502f229ce5cc2b64f58280d3b1acae4334f72c769f302b30d4342965fa9"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v12-clay/Xenaa-0.png",
+      "bytes": 1149461,
+      "sha256": "51423f7df7ca89ee19bbe6417b1d6d093ea8ff739bad2d7bb129c18fa435217d"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v12-clay/Xenaa-180.png",
+      "bytes": 1099094,
+      "sha256": "3e0e3ae459339742de180e63f1f5282a5d98673260718abe7dc2a9c7ca9ed0de"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v12-clay/Xenaa-90.png",
+      "bytes": 1055712,
+      "sha256": "cab1eb4166b5a1b1daa265755a5b6d1030189493ab2092964e3834b2aa671b37"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v12-clay.json",
+      "bytes": 3488,
+      "sha256": "9cdae3a66d706645f9bf982b2bfc3a53602ba1e1e900eedafec9ed9d05235166"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v12-receipt.json",
+      "bytes": 639,
+      "sha256": "6a1e0e0cefe39b42d38acb3297ab12d26177fc2f3e741199bf7ef21e892a833a"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v12.log",
+      "bytes": 752,
+      "sha256": "de69dfd89348d1f94f3f38befd48a7645763ba99402d0c7a487f5c4587ae8ca4"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v13/Blender-Motion-Review-v13.blend",
+      "bytes": 14497961,
+      "sha256": "950e85d7326c8ec082a582d71ad319ea5f9e920660e7d58213342f3d89a5f3d8"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v13/Blender-Motion-Review-v13.mp4",
+      "bytes": 388207,
+      "sha256": "f04f59ea9ccbb6fd6883d6df167fd7c9a1c1f6ecb2f4ab284a4a5c76340cbe74"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v13/Characters-v13.blend",
+      "bytes": 14503069,
+      "sha256": "4c58dec1d3e81d0ff51c98e286610e2341d3ab8cc398de095e68d967c2f2dd92"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v13/elbows.png",
+      "bytes": 1840954,
+      "sha256": "c2acd0ae3f5fdfaf29e85fd86d4505e0dd9572481aed6601c317b6b99577a700"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v13/head-nod.png",
+      "bytes": 1855709,
+      "sha256": "a1120efea615e677eaf4f4da594c6300bf98df799d44bfaa852c0aac1241e74b"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v13/head-turn.png",
+      "bytes": 1860227,
+      "sha256": "c86e6370030181f95b30f5084beabd0f60b018eedea50ad60d6852d2ad8b5394"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v13/left-arm.png",
+      "bytes": 1862051,
+      "sha256": "fb762c222fad6d9871816247e21e64d6de2127bec36dd440a4c363b0e63c3079"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v13/motion-frames/frame-0001.png",
+      "bytes": 880376,
+      "sha256": "55223e15ccb9ae127f03874211fd1d625e5e805c99545e0903a1d24209ce0567"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v13/motion-frames/frame-0003.png",
+      "bytes": 880902,
+      "sha256": "59fa53b625ec9020697c641a0bdb6a09851c267e8a73d774f79daf2a45fd2f33"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v13/motion-frames/frame-0005.png",
+      "bytes": 880732,
+      "sha256": "5ce82d45f7a627fdb3db1c8c6137316cc53033cc0dee1a75b4e74948dffb3a7a"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v13/motion-frames/frame-0007.png",
+      "bytes": 880472,
+      "sha256": "351e405fc1476e6b4be1851d3ad77159ecb1b7d2919405b133d7538544461b8f"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v13/motion-frames/frame-0009.png",
+      "bytes": 880099,
+      "sha256": "c475f8025b5fa866a58ea046de4fc81b6cc9dda322fc80bb450af705cdef524b"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v13/motion-frames/frame-0011.png",
+      "bytes": 880100,
+      "sha256": "cde548edd6dad9e3aa6083e93aa855239a7e6f0dfc1136c5492a5e36b9d9d135"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v13/motion-frames/frame-0013.png",
+      "bytes": 880076,
+      "sha256": "bb927cec18d4a2d8caba282509c9c8411628adc431870db643897b733bf02d1c"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v13/motion-frames/frame-0015.png",
+      "bytes": 879550,
+      "sha256": "53d36cca51eb8ff69db589a7fd76fa14d977b9b244bfd44356fda7c6bc948d75"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v13/motion-frames/frame-0017.png",
+      "bytes": 880494,
+      "sha256": "8742018bcbd72aabfddad92b4c50ad74ff8985a233aeff53e9bdeab235f7bb15"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v13/motion-frames/frame-0019.png",
+      "bytes": 880919,
+      "sha256": "1c1eca7b61d6a74d8d42d78afd8746dc03425fe2350589c32345275a7289b037"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v13/motion-frames/frame-0021.png",
+      "bytes": 880533,
+      "sha256": "50c8390b1f68a540d6ff556bb17ca9e7a3f3e425dab10a6e47a471cd826b8e49"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v13/motion-frames/frame-0023.png",
+      "bytes": 880998,
+      "sha256": "140047babcd2764576346eae9a946a89f29ddea6234ae346c1b91f976843c885"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v13/motion-frames/frame-0025.png",
+      "bytes": 880380,
+      "sha256": "02ed0f1d62aec494049178460efb6350b10b622fddc5d7c52b19a2d42ca97d5b"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v13/motion-frames/frame-0027.png",
+      "bytes": 880656,
+      "sha256": "4a788edd52eae46a1730bdd8b40d716062bd6b9a0362442afeda1b6e1d5b4c69"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v13/motion-frames/frame-0029.png",
+      "bytes": 880590,
+      "sha256": "e0b7f2de0c4668da38fec05d06065f53247e046e2681224bc6b508b34b29a7b2"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v13/motion-frames/frame-0031.png",
+      "bytes": 880967,
+      "sha256": "49eafae15c9df97f5a77ce031cec5ca2a2a936005d9d0600e898f3a2bb3624ac"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v13/motion-frames/frame-0033.png",
+      "bytes": 880375,
+      "sha256": "c44003e6ef4701370af0853e9f9114efc48dfadc975fa800a01f98d460c2c6e3"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v13/motion-frames/frame-0035.png",
+      "bytes": 879819,
+      "sha256": "1b2883d5a0e34d65a04382d4771198e678a077e5434152b1c38d19670161cd1e"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v13/motion-frames/frame-0037.png",
+      "bytes": 880317,
+      "sha256": "d4164b629406e4ca7c042b24d34e9aff7c21155f7b33f6858e7feb1f00c46f84"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v13/motion-frames/frame-0039.png",
+      "bytes": 880032,
+      "sha256": "301366364eb9e35bc0df2c16b81fb33aaaa099af2446ab5df231f83b32458361"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v13/motion-frames/frame-0041.png",
+      "bytes": 880395,
+      "sha256": "b5b298a80f2fbf603b13a90caeb784a95f99f80c4bd10a105bde87ec8d70c9c7"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v13/motion-frames/frame-0043.png",
+      "bytes": 880449,
+      "sha256": "690fbc222219d73f434a213cc2b4a93092618ab6baba08ad296db4b9f896ff42"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v13/motion-frames/frame-0045.png",
+      "bytes": 880982,
+      "sha256": "a7f249a99e2f140b689ae8618ab1e4acd78078dcee3eb64520f6407b54876995"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v13/motion-frames/frame-0047.png",
+      "bytes": 881045,
+      "sha256": "47feb93bc9b1e1f5c34884a783338506c8f7b4c3b45a248edcd04b8e8ad99de9"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v13/motion-frames/frame-0049.png",
+      "bytes": 880376,
+      "sha256": "41d66819dd72268d74fdc1f2772c165a8b7e74c590ad895e95e00fa07f25d498"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v13/motion-frames/frame-0051.png",
+      "bytes": 880365,
+      "sha256": "52834609fcbd7f69737e34f36e1a6d934ec1441fee5060528588fbf472e67303"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v13/motion-frames/frame-0053.png",
+      "bytes": 880912,
+      "sha256": "53fdc006ba71655afba889fbf5d9624fb9324996581174f02767b7bcd46a0871"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v13/motion-frames/frame-0055.png",
+      "bytes": 880567,
+      "sha256": "44d8e3d91deedd90ed9d6f01246873c9242d534f217ae4471884671edb215b93"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v13/motion-frames/frame-0057.png",
+      "bytes": 880824,
+      "sha256": "502ea3fb88685c3d9d3a96909f47ed81d2a1b29842b44af82911036203703983"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v13/motion-frames/frame-0059.png",
+      "bytes": 881718,
+      "sha256": "05eb93f3f6be5698396082855a551d0225174c3306b7e1cd5f7fddb7c463a347"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v13/motion-frames/frame-0061.png",
+      "bytes": 881672,
+      "sha256": "3a4b507a2e126b51f1d2062237375a168357c61cefe74ca462108d49decd0afd"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v13/motion-frames/frame-0063.png",
+      "bytes": 881940,
+      "sha256": "26261803c6a0ea8cf1e17c15cc1c6e4f15fd88935a09d4afd2ae92ffd48ff3eb"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v13/motion-frames/frame-0065.png",
+      "bytes": 881384,
+      "sha256": "ec46c17eacea62ae5969766e9907c9f7c87c036a1911999b6909cb8798d7c1d3"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v13/motion-frames/frame-0067.png",
+      "bytes": 881044,
+      "sha256": "88db02a99d86b4048712ae71e79507727d36e76ce58cea9c69394ffa59fa88e6"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v13/motion-frames/frame-0069.png",
+      "bytes": 880376,
+      "sha256": "4874ce12c8c96333b77527daec6de60866cc5e0a761243ad17014eece959598e"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v13/motion-frames/frame-0071.png",
+      "bytes": 880197,
+      "sha256": "a44645a50fb9c10a1c86ae22e47537d4896dbec7b7ae7599fb4185557352ca77"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v13/motion-frames/frame-0073.png",
+      "bytes": 879868,
+      "sha256": "c86695cf39173db7b8a472e265c9c04beb8a97f9b5a7167856335501ece897e3"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v13/motion-frames/frame-0075.png",
+      "bytes": 879856,
+      "sha256": "bac799aaad0d99ca677a3b2bb9cb6a6e0b89c6ac210670bd48a73fd6a024ec24"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v13/motion-frames/frame-0077.png",
+      "bytes": 880169,
+      "sha256": "8cc06f99a5b137b44b3af17dab7f0d1515606b146735dbdcbcfffbb733b409ca"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v13/motion-frames/frame-0079.png",
+      "bytes": 880834,
+      "sha256": "4b2f301e13e5769418b1d7edc3bc3904908d0e600fb903cc64831a11f47c3b4a"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v13/motion-frames/frame-0081.png",
+      "bytes": 881170,
+      "sha256": "ed251bb007df74b14faa94efb438fcfb32905d26889c6e50047a62c673153643"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v13/motion-frames/frame-0083.png",
+      "bytes": 881739,
+      "sha256": "b23026ecd1f5138c92d0ed53204a531e8ea8181a9e142d74dcc03e38aea9c8bc"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v13/motion-frames/frame-0085.png",
+      "bytes": 881645,
+      "sha256": "e559e64cce0c9058abaedcee937093acf48d0b05b737a8528d11e99438dd29f1"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v13/motion-frames/frame-0087.png",
+      "bytes": 881499,
+      "sha256": "d0c47ba99d5db8e880f0fffc8bc8e0795c20573c18aa4165cf40664b2cf3d181"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v13/motion-frames/frame-0089.png",
+      "bytes": 880859,
+      "sha256": "f6ec40a807103ce3b84746c9147e7aaf9a55fd7ae48182d66f55d110eecaa531"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v13/motion-frames/frame-0091.png",
+      "bytes": 880761,
+      "sha256": "735fb8a3f7e3399405b270da4b21949f6ed93ec0d17cb060308e4454eee12703"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v13/motion-frames/frame-0093.png",
+      "bytes": 880684,
+      "sha256": "30feaa2d1d69e85aab48750a47a359b77258f69d6a7b071848a4a40e51c75ef7"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v13/motion-frames/frame-0095.png",
+      "bytes": 880324,
+      "sha256": "98fbf3a093f1daacc65caa2ce13136db135b934099fe9433ebdfffa2cf22e02b"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v13/motion-frames/frame-0097.png",
+      "bytes": 880376,
+      "sha256": "2b096b0c91a4fdf19df7c1a65909f67d2eca5984378c13468609d6855b2496d3"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v13/motion-frames/frame-0099.png",
+      "bytes": 880671,
+      "sha256": "223786133254124152524a565d22689275530fd4d735d681b5026584cd9b961b"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v13/motion-frames/frame-0101.png",
+      "bytes": 880560,
+      "sha256": "cce0a95f30ab9740c66e16ed6ad8825d5602d2d2010046db8b6902f0f104dbd3"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v13/motion-frames/frame-0103.png",
+      "bytes": 880300,
+      "sha256": "1ab4931837331eba7652211a77ccfe3db637a75305245665ee77e60ab22cebf9"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v13/motion-frames/frame-0105.png",
+      "bytes": 879775,
+      "sha256": "c2b7d4b70c772999891cce99d14ba91b26c736b3704ac80cf0db77f6f8f46e54"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v13/motion-frames/frame-0107.png",
+      "bytes": 878819,
+      "sha256": "9421b69c61de8dfa91914975f114eace470a1474835dc620fdfa9aa199211c09"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v13/motion-frames/frame-0109.png",
+      "bytes": 877978,
+      "sha256": "ef35aee72a5fd9788ac0545bebf461d2b720b0089f0ee46ce2c17a1588802987"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v13/motion-frames/frame-0111.png",
+      "bytes": 876911,
+      "sha256": "bac110497b17fb37f55a8f6b0aee7812e0f8c10ed92dce532ab9a96590ff31b7"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v13/motion-frames/frame-0113.png",
+      "bytes": 875688,
+      "sha256": "7a1628fd5308fa2fd1644f276efea4fe1241b4bec540c1dacf4deb4822a0e50e"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v13/motion-frames/frame-0115.png",
+      "bytes": 874072,
+      "sha256": "747b0a5f3f8c6070dbc5e870c7487c14db0fa2c34334f44aa85267d257875c91"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v13/motion-frames/frame-0117.png",
+      "bytes": 873580,
+      "sha256": "0b122d5b4d588e239cd49e1868ce94d3a0ade070bd9c9953f34ae036a0cc7719"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v13/motion-frames/frame-0119.png",
+      "bytes": 873118,
+      "sha256": "978413fa1cc3a70461f5ae6e750568d4786e8aa74d14d8679b4cacf0363ee846"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v13/motion-frames/frame-0121.png",
+      "bytes": 872754,
+      "sha256": "248a0be09349183b1d523dd0c7b7eb4e70d6101e410f858add76e069d4df4b16"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v13/motion-frames/frame-0123.png",
+      "bytes": 873248,
+      "sha256": "35a8431bae226e4010cbdcd9ad8959944214e866e7b571f3d7ff670b2623f362"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v13/motion-frames/frame-0125.png",
+      "bytes": 873385,
+      "sha256": "abd3204a34646c316b8d9e7ca001e863d993aaaad08f35289191a348e1942fab"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v13/motion-frames/frame-0127.png",
+      "bytes": 874153,
+      "sha256": "63d441bde78e255a188ebd7e1dd6b08075791d1d24d827923ce4d38cf9120143"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v13/motion-frames/frame-0129.png",
+      "bytes": 875654,
+      "sha256": "81216d567c41e24fc8281354dbde5b92bcbc531a71f9ea1291359edba4a3ca38"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v13/motion-frames/frame-0131.png",
+      "bytes": 876815,
+      "sha256": "b0977100e413ffec6cd0d8d3725c2f336824ad336f4218255b2b5fb187dcb514"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v13/motion-frames/frame-0133.png",
+      "bytes": 878032,
+      "sha256": "9d41d52e8b66d0272c72e1e4deeecaedbf78704a049ebfb13c9a271b4740e7d6"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v13/motion-frames/frame-0135.png",
+      "bytes": 878846,
+      "sha256": "bd3cfdbd47fa1978f97bfa9460a2d8caeceaddb2dc1d5ef7defcfae6d1f74fe6"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v13/motion-frames/frame-0137.png",
+      "bytes": 879639,
+      "sha256": "9a3ee9a38ddf723d175022e32c438cba9f14939f8f600b61e7793b03cc0ded37"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v13/motion-frames/frame-0139.png",
+      "bytes": 880271,
+      "sha256": "b4150d221af14f9038d799ed2542ee9c09f21526d9375dd229f0c0e615a83c96"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v13/motion-frames/frame-0141.png",
+      "bytes": 880579,
+      "sha256": "c23691e21d032a47a160a58dc6eb1f7d5498a46dd0fde5978e2e545c87a92146"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v13/motion-frames/frame-0143.png",
+      "bytes": 880414,
+      "sha256": "8cf1cb379e4e086c2d9fb9f3ca1883ba3db4c4b974ca6ff18576863d7131b122"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v13/motion-frames/frame-0145.png",
+      "bytes": 880376,
+      "sha256": "3a27856e875d988b1e27597a127585d218f302994423ae1fa6681d0f2f6eb42f"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v13/motion-frames/frame-0147.png",
+      "bytes": 880208,
+      "sha256": "de71096fe6e3a898d49f93d3f66023f811a2666410f735da0c12e869221580e3"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v13/motion-frames/frame-0149.png",
+      "bytes": 880540,
+      "sha256": "b8585694a62d1769093116c3e65fc1fd7041b1a2c9ca89a91ab895429df65c2c"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v13/motion-frames/frame-0151.png",
+      "bytes": 880550,
+      "sha256": "da7d717cf1259182e83b8599704b4a30c404d40ccb56f4575163152af75bebe1"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v13/motion-frames/frame-0153.png",
+      "bytes": 880676,
+      "sha256": "868dfadafbc78d9036731513198a714c63ae669dd7bb768d7721431df499e1a8"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v13/motion-frames/frame-0155.png",
+      "bytes": 881140,
+      "sha256": "6153061068dd70087c72c6772ab2b4adc093938fa5496266ae822133cfdef7ee"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v13/motion-frames/frame-0157.png",
+      "bytes": 880698,
+      "sha256": "94b0b1f5ecf4593dd4ebd3542eff09663878db06e40424c32d8c7e4c82ce1cc4"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v13/motion-frames/frame-0159.png",
+      "bytes": 880498,
+      "sha256": "b7c43457fb47fae0496ff56d3c8de83d6ae7cdfb48428ef5e42fa3ed81568e8b"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v13/motion-frames/frame-0161.png",
+      "bytes": 880143,
+      "sha256": "b1c99a14b61449c2058bad5bb55d5f66a2653acfe78fe654f17ec6fff38c7030"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v13/motion-frames/frame-0163.png",
+      "bytes": 879865,
+      "sha256": "0161dbcf0d9dd05d1dfe6299f72f5f3500149ee8cd920ebcc38aabf41b8f9db5"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v13/motion-frames/frame-0165.png",
+      "bytes": 879198,
+      "sha256": "351df8185480a4b0e1465798e86b6abb1b2971ab00d8960a168dbcbf4b539834"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v13/motion-frames/frame-0167.png",
+      "bytes": 879220,
+      "sha256": "a52e75e4edeb2ac1b483cc8086be86bb7ab24ab414dfa2f20994cb2c446964ea"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v13/motion-frames/frame-0169.png",
+      "bytes": 879018,
+      "sha256": "085a43c8fdbb0cff57534edb25b207b852ac428441e3fb23077c55ce9e4edfd0"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v13/motion-frames/frame-0171.png",
+      "bytes": 879362,
+      "sha256": "27be2f67dbb33f3901a2373948915e533a5e49575a9930a0ca44923787f286fa"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v13/motion-frames/frame-0173.png",
+      "bytes": 879080,
+      "sha256": "6a736059d59ae616144bf5b3585e7a7f6a8bf9a0f1bae5e70c6529c0f3f3dc1b"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v13/motion-frames/frame-0175.png",
+      "bytes": 879546,
+      "sha256": "ac18d5187c97017c318a334f0f884f1185287ebce27327f0bdf46ba49a68b34e"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v13/motion-frames/frame-0177.png",
+      "bytes": 880009,
+      "sha256": "4acd0e2920b14c1f1212890e43a0ef815719616f30ba55a3aa5b2f95f28cb46c"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v13/motion-frames/frame-0179.png",
+      "bytes": 879487,
+      "sha256": "2c4dca136146e87fcb850404cc1e4e3e4fd4d5a8e8def1e8ee69fcb94cbcd2fc"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v13/motion-frames/frame-0181.png",
+      "bytes": 880136,
+      "sha256": "49007c10295265134d7e3c981b0f151d72eccfdb3b471af437ad44e1991ab378"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v13/motion-frames/frame-0183.png",
+      "bytes": 880806,
+      "sha256": "f7320d328c3810a3f2ab656e3c23c6275ebed3505d994018af881e66da4d8def"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v13/motion-frames/frame-0185.png",
+      "bytes": 880635,
+      "sha256": "5c563e7eb449547f1b7b952c5b6f1714f487a21202bb5ee8385319324c3ffcfc"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v13/motion-frames/frame-0187.png",
+      "bytes": 881176,
+      "sha256": "9840ca1f5b762d41d84069d6ede268dd77bfad233424dc3bc23e29852ebff92a"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v13/motion-frames/frame-0189.png",
+      "bytes": 880616,
+      "sha256": "2575165f873fa25d685e4c91ed93de09de88161a9c65bd54b3dd5eea5629982e"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v13/motion-frames/frame-0191.png",
+      "bytes": 880097,
+      "sha256": "ba41ea3b4be3f2e5735f3da41434fa404940fcab6542f29fec119cce89e83385"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v13/motion-frames/frame-0193.png",
+      "bytes": 880376,
+      "sha256": "275cedb75189d1a5806c325102cc841397eb8fcb1ed387f0053568e7c47efe1b"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v13/motion-frames/frame-0195.png",
+      "bytes": 880511,
+      "sha256": "2042c52e51922097b70a7c95bbd92e752090e85f01d2bd3a88726193ac797758"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v13/motion-frames/frame-0197.png",
+      "bytes": 880069,
+      "sha256": "021a513c61d49fc0b96bdc8fb13a78c4591ce153d68814a62bfa02e887f66be1"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v13/motion-frames/frame-0199.png",
+      "bytes": 879335,
+      "sha256": "6f71fd8cf44536bd871e94ef868f775f671c5d5c4a9696831d7b1750a0233a7f"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v13/motion-frames/frame-0201.png",
+      "bytes": 879677,
+      "sha256": "7b9a75bcc9007d8203fb3c518937084797e67cf6f560bf4fa6d4fb820ab7dc61"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v13/motion-frames/frame-0203.png",
+      "bytes": 878670,
+      "sha256": "2e851ce6110dff7935708a1fe38d501105fcf9874386ea15ccbdcdf6a50a979e"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v13/motion-frames/frame-0205.png",
+      "bytes": 878837,
+      "sha256": "e6689b4cb0f7ebd01d427702d3001116c08fb06d4eb4d4439b6910d1f343abbb"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v13/motion-frames/frame-0207.png",
+      "bytes": 878125,
+      "sha256": "377d4ea40c838497dd9073a3f2142b24e6b42835b343593f862d47a984c9437a"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v13/motion-frames/frame-0209.png",
+      "bytes": 878046,
+      "sha256": "bad748e357975202189e7e3f5163aaae0cf11e14f3e892b32b4c29c3ee8cf02a"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v13/motion-frames/frame-0211.png",
+      "bytes": 877645,
+      "sha256": "05faf5db4cdbb04cd1ada77add1a1b485b72489ba1e9472764851615918cf2bc"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v13/motion-frames/frame-0213.png",
+      "bytes": 877841,
+      "sha256": "ca5d319b56edf2caa6ab150ffc042b64fa5e78c83a192905abaf94d8508550f8"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v13/motion-frames/frame-0215.png",
+      "bytes": 877577,
+      "sha256": "2b6913c1f8e7ce66e7e2707c4947fde4059ab3c77725bdd2cf4456155d319fb7"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v13/motion-frames/frame-0217.png",
+      "bytes": 877793,
+      "sha256": "cb18e75f64ef2162178d6887d82e4ebc72d252f33bf30d91f6dae8d279f7fc8e"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v13/motion-frames/frame-0219.png",
+      "bytes": 877642,
+      "sha256": "428e5d6def49ec1902579e1faabafde7701e47bfd91ea86d275e4c9b69290bcc"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v13/motion-frames/frame-0221.png",
+      "bytes": 877716,
+      "sha256": "916e7b73087c43762b23b4ee56537e0a38bbb0f5185f915447e7e7c3542f3ee6"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v13/motion-frames/frame-0223.png",
+      "bytes": 878246,
+      "sha256": "2df255fad69fd659d7873ad68a2ab6b2a6f5fce9ad3ff5f1c0bb0a686e729f01"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v13/motion-frames/frame-0225.png",
+      "bytes": 878429,
+      "sha256": "1dac53e76de23884300bdfe0e24b40af51b05fc700714577911e0be061f14bbb"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v13/motion-frames/frame-0227.png",
+      "bytes": 878373,
+      "sha256": "7fb63e094c2988e56f4bde87e4ca6d9e23a2a80bfbc2989977089fd6203332d8"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v13/motion-frames/frame-0229.png",
+      "bytes": 879786,
+      "sha256": "37c43c88a6ec694ffc9d599d9146ec086a48fe9e40f386e8a441d7f4f8c24abe"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v13/motion-frames/frame-0231.png",
+      "bytes": 879487,
+      "sha256": "ecffd9bf1c14b7f33bd876f6481ba0485b4d7fbc3a373f558dd876b0beaae21c"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v13/motion-frames/frame-0233.png",
+      "bytes": 879699,
+      "sha256": "55f67acc435e1fe06f831144f438d5950d6816cc8ef01b3c2744655e989129e4"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v13/motion-frames/frame-0235.png",
+      "bytes": 880011,
+      "sha256": "e23afa56ab2385fded8bede4b2e1d7316e055fd42a700a4d93426f98002610e5"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v13/motion-frames/frame-0237.png",
+      "bytes": 880461,
+      "sha256": "6986e75df820beab1d4b1ad71466eeaabb2f5858e02dddd09e85543eaa036311"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v13/motion-frames/frame-0239.png",
+      "bytes": 879756,
+      "sha256": "04f57f6c50887a9a19c6ff8e6d9baf2c900896380d8405b638e38d0f09b632e4"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v13/motion-frames/frame-0241.png",
+      "bytes": 880376,
+      "sha256": "a67ce1d1815ddaa3a1d9955cc7d086669333b8a12906fe0295a270e8a1497b2d"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v13/motion-frames/frame-0243.png",
+      "bytes": 880174,
+      "sha256": "8e0b2ec3298eef3dda9ccde2eebb5dcf6385cbd43aea213429438b1372a2c86c"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v13/motion-frames/frame-0245.png",
+      "bytes": 880065,
+      "sha256": "af9312b35c5712f1358f6aa058db167001228585a97c38201bf6372342b6d2bd"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v13/motion-frames/frame-0247.png",
+      "bytes": 880297,
+      "sha256": "c118dd7f9a2ba29110d26a77cd53edf84eb542e9724cba04cde7592fd416ef04"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v13/motion-frames/frame-0249.png",
+      "bytes": 880179,
+      "sha256": "525635d5874f18c34ab0850d651c98c325268d85b2b7a452a93ab703727c9a03"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v13/motion-frames/frame-0251.png",
+      "bytes": 879485,
+      "sha256": "ce498fc12086ff91de8094278ed92953ec4077bef4789123a905c93ef948f5d0"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v13/motion-frames/frame-0253.png",
+      "bytes": 879140,
+      "sha256": "dbce0a6bd6e34fa7a418c3c277c43e6c0e7b1b7561edbf25377324095dd86d68"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v13/motion-frames/frame-0255.png",
+      "bytes": 879330,
+      "sha256": "7dc45c293dc22c9c05ef6c982396ed3ef73cfeddd05ee2d2e3e5c43ed964d22d"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v13/motion-frames/frame-0257.png",
+      "bytes": 878783,
+      "sha256": "faf5e336c410615d77620ca79bbe04a974e9ec3be335d02e55078dbad4f87c3a"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v13/motion-frames/frame-0259.png",
+      "bytes": 878998,
+      "sha256": "1b0d1a241901e14a8f7a926fa638beda4c79969f2512bbe9c2d34d52cc042c3f"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v13/motion-frames/frame-0261.png",
+      "bytes": 878191,
+      "sha256": "262429bb841c3174532eda5fae205d2f95a6bd36abeb060650dbdcbc9041a901"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v13/motion-frames/frame-0263.png",
+      "bytes": 878203,
+      "sha256": "5686c327828b3ec84a0e636b7aea7b422ec32ea03f8f96a0f8503473be48abfe"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v13/motion-frames/frame-0265.png",
+      "bytes": 878309,
+      "sha256": "fc08b900c2bdea445c5b70079b87db9df8b3ed100ea97a30cb08b833612c90d3"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v13/motion-frames/frame-0267.png",
+      "bytes": 878036,
+      "sha256": "28aa944ea3f39f27abf3e4622462be8bf475b8cce2b914e53312549d30770ca5"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v13/motion-frames/frame-0269.png",
+      "bytes": 878368,
+      "sha256": "4aa67dbcbb5e6c723faa7c5b0be9c0e428b2c91ea6fb39db0af202296ae04d91"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v13/motion-frames/frame-0271.png",
+      "bytes": 878875,
+      "sha256": "66830717644ed775ac45c7f2e8d93f57fd4b191015afdece01b2dcb1d60ed5e6"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v13/motion-frames/frame-0273.png",
+      "bytes": 879004,
+      "sha256": "fabe93101d9ae85dc20dd403f6747873539fe3d17b96fb503bfead6f060f7fba"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v13/motion-frames/frame-0275.png",
+      "bytes": 879372,
+      "sha256": "1946c0c0e8b6d1283269bd63023a96dac2809a42d52da432aeaf53b45e9be49c"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v13/motion-frames/frame-0277.png",
+      "bytes": 879457,
+      "sha256": "0a5047a06eda4fe192c9af28eb6ac65c0d58ec2dd7fdff25a07dec6634a6fa9d"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v13/motion-frames/frame-0279.png",
+      "bytes": 879633,
+      "sha256": "c710ff923d0feb9c172001a9ed1cbf942ec319ad34fa49b9c46d0525829e93a1"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v13/motion-frames/frame-0281.png",
+      "bytes": 880468,
+      "sha256": "3377313da4a3a67a2bdcc2d13be0792d6693e74489dd472ff9616bf00c827ba7"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v13/motion-frames/frame-0283.png",
+      "bytes": 880424,
+      "sha256": "909c2b246409d8fdb5254ceba58ef5da8b3a8a593b7c8af6f5e9d5b7270263cc"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v13/motion-frames/frame-0285.png",
+      "bytes": 880177,
+      "sha256": "421f48c36490274202d5d2f396cec7bb0f02db7f58976230716eba386e76cef5"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v13/motion-frames/frame-0287.png",
+      "bytes": 880233,
+      "sha256": "eac9f4b849931654797c9bc2f055fe6f2682685b5ca121dc0c4eef7af81605f2"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v13/motion-frames/frame-0289.png",
+      "bytes": 880376,
+      "sha256": "c98ce7d92e516d292ebf3a8660097ec5153059458d1c10f0d62bf700ef80e53a"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v13/motion-frames/frame-0291.png",
+      "bytes": 880440,
+      "sha256": "6ba49d62daf89b78327af6468dd1700aaf9a80da63f4a1178ce83e9e706643ee"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v13/motion-frames/frame-0293.png",
+      "bytes": 880192,
+      "sha256": "0d9ef0457d643df953dce0ce2bcb79aa51fa95ef80b9839486b7ad20bca47255"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v13/motion-frames/frame-0295.png",
+      "bytes": 879964,
+      "sha256": "5e00843061b7f50950b2059ecbfbf70e3368ec639e6f28c35600c5e2c69f4427"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v13/motion-frames/frame-0297.png",
+      "bytes": 879792,
+      "sha256": "4c78a3093fac4493d57302c4896b1e735a8fa58126619a2b9da936ea28d06fe5"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v13/motion-frames/frame-0299.png",
+      "bytes": 879705,
+      "sha256": "f16e850ecf8842858a288e7c7761b3b858f8ad61efb94fa39fd0752120103fd5"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v13/motion-frames/frame-0301.png",
+      "bytes": 879598,
+      "sha256": "d64f5cce1deb73e3ee44354b5299f66b5a6b622e3fe3f4be6adc7df4841c5678"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v13/motion-frames/frame-0303.png",
+      "bytes": 879258,
+      "sha256": "10175212dcc239d4d8dbdc941ab219c28a71757da815ad1a1e17450792c6da80"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v13/motion-frames/frame-0305.png",
+      "bytes": 879190,
+      "sha256": "d1a60b8baf50a35711b7b40282a62310f146f538253d4bbee7d37f026fc6d547"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v13/motion-frames/frame-0307.png",
+      "bytes": 878520,
+      "sha256": "e792d186fe0f8850e81124fdd5333a643318a43696a6eab6c5def3c8ecb4d781"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v13/motion-frames/frame-0309.png",
+      "bytes": 878248,
+      "sha256": "dfd0485a36dfa6a697fcd3a6d740cbca6aff19c7bba5d919ba42e5a3a33d8741"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v13/motion-frames/frame-0311.png",
+      "bytes": 878467,
+      "sha256": "7402dfa9c88078d23204c12a0c5ed7adc4245786c5e1c232efcdc22fbdda7471"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v13/motion-frames/frame-0313.png",
+      "bytes": 879013,
+      "sha256": "f5efe25848fa480dcf5400596b86e359be4e664199e8f39ebcf924a22b3b0187"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v13/motion-frames/frame-0315.png",
+      "bytes": 878058,
+      "sha256": "82129f88dd63ef8872be9d850fe3ea2c274a68fc18bb4570682b2929f0afc4ff"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v13/motion-frames/frame-0317.png",
+      "bytes": 878473,
+      "sha256": "ba96a5ca615173f9c56f759cb3b8830229b5db0c14f66bb76fafe1a77fcc5b4a"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v13/motion-frames/frame-0319.png",
+      "bytes": 878636,
+      "sha256": "bd8a9c32495c470c0d3cab107ae8148730794c2c40fd58710c37c604ddbda2e9"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v13/motion-frames/frame-0321.png",
+      "bytes": 879142,
+      "sha256": "529c733cc3a36871e84d634608e341747893f2e0aa289f3314b333d260ea56ae"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v13/motion-frames/frame-0323.png",
+      "bytes": 879312,
+      "sha256": "ddcf3a118efa914763e28a1234f2d28c461f48c1831463cde151f7161efcc27c"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v13/motion-frames/frame-0325.png",
+      "bytes": 879535,
+      "sha256": "2da69242324a2938ec6c06f903f6e4d20f16ed046f3224525f94910e34882b47"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v13/motion-frames/frame-0327.png",
+      "bytes": 879539,
+      "sha256": "d692cff63e1fd75aad60982017defda2f25783e0485f1f1529bd6c2a3d607de1"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v13/motion-frames/frame-0329.png",
+      "bytes": 880081,
+      "sha256": "e01ef6d1f6a5206084caa7ef25fa8a9144702225877f03d4755d6c3da36f6dbc"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v13/motion-frames/frame-0331.png",
+      "bytes": 879994,
+      "sha256": "f53cb7260d0eec385d70a51e344140726543e3e5a2fb69d7f15bc8759f1c282c"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v13/motion-frames/frame-0333.png",
+      "bytes": 880129,
+      "sha256": "1080341e7160233999b82d5b7a8448dacebc48ca80a3e19ffe52d9d9a808cf64"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v13/motion-frames/frame-0335.png",
+      "bytes": 880183,
+      "sha256": "07177eb9286aa4bdcb15fa8ce554893f6288bf3d1838f6838a64e8e91284a604"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v13/motion-frames/frame-0337.png",
+      "bytes": 880376,
+      "sha256": "5d5f8fcd855d565e998fee469cca49dece7d3e7df2acf6026fa5a5889f77f67e"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v13/neutral.png",
+      "bytes": 1862385,
+      "sha256": "7199055067f0aded425b901903a29788897ecba65298c514bbf1bd6a391ae7e9"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v13/right-arm.png",
+      "bytes": 1860670,
+      "sha256": "3784de940a98a6ca7dd76b2214a53eb3562da0368653f3b0abf156a6c2314a68"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v13-profiles/AceHack-0.png",
+      "bytes": 1350631,
+      "sha256": "fcfd1b552b1e74bf1c2bd9b0b9f7395ffbd5df267e5ff463fbf63db464f0c426"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v13-profiles/AceHack-180.png",
+      "bytes": 1071472,
+      "sha256": "6e3aaad600aed9dbd3470394418ba8bc29deba2056fadbb99c60cd190bd686cb"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v13-profiles/AceHack-90.png",
+      "bytes": 1185648,
+      "sha256": "53646e655b4fb3226d96469be4c142422251415d4cafdf336335185f0c6a267f"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v13-profiles/Xenaa-0.png",
+      "bytes": 1290888,
+      "sha256": "a00d228871ea66c88f4e413591a93e132fa3ff2d390fc3df3e703b8454c33291"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v13-profiles/Xenaa-180.png",
+      "bytes": 1124543,
+      "sha256": "47bae47567d43f9132ea7ed7ac39603228d26994f915cb03d6257526a83b4fd1"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v13-profiles/Xenaa-90.png",
+      "bytes": 1141931,
+      "sha256": "62de571e1abdd0e7069d2c7927101984eb1f9bc4fb36b89e15f209d8a70d3b03"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v13-profiles.json",
+      "bytes": 3488,
+      "sha256": "9cdae3a66d706645f9bf982b2bfc3a53602ba1e1e900eedafec9ed9d05235166"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v13-receipt.json",
+      "bytes": 639,
+      "sha256": "5a01562a5e2624e77c0554903cc1c0cc1879e210ec3bbde79025f5c17d345370"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v13.log",
+      "bytes": 752,
+      "sha256": "2be47ae71ac40b337a310751010db8be0ef2608014741043610da1dd3a00156d"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v6/Characters-v6.blend",
+      "bytes": 5991226,
+      "sha256": "fc66f64c592931e24d58385a34cda7b4b72da3a56563e5db1486ae39fad0d668"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v6/elbows.png",
+      "bytes": 1832618,
+      "sha256": "711a6811119ac81a18d42464e28681ffe4eaffa10d0fb94b381e04420110d606"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v6/head-nod.png",
+      "bytes": 1839369,
+      "sha256": "fbccfa93cd61e593d0a85661ec7f78b10a8bfb3d8d2ee9c7e9c9857ae1f84b37"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v6/head-turn.png",
+      "bytes": 1843878,
+      "sha256": "8cbbc8b0d00450806215a78448adc62bc449cbe3302c912b0a3d7596233e6623"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v6/left-arm.png",
+      "bytes": 1849152,
+      "sha256": "0ed42a4ffce32ddb0e774f384f5967f89c6571ecb11096355d4355e705005d42"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v6/neutral.png",
+      "bytes": 1843058,
+      "sha256": "c68af8e308f892cfcd789876b10e1f0923770ab8d6206b3fe18196d1abb27a2d"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v6/right-arm.png",
+      "bytes": 1850935,
+      "sha256": "b0e9dd64d4bf7a1bd000a2f051253d548d712a1d2aec4c940734d3d96e599520"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v6-receipt.json",
+      "bytes": 635,
+      "sha256": "86496875e0dbb8b06ab60a6253e15b195b016944902f3e5245b9bc01b7c74e33"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v6.log",
+      "bytes": 749,
+      "sha256": "ab4b9f684cfdba138a6409bd4fd11cb0ad372aaabaedb169bfeec8f4a1d3c867"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v7/Characters-v7.blend",
+      "bytes": 6066167,
+      "sha256": "ba689ca4ac4fe02916892a62871a61086de7d58f201c16440473670aecbea089"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v7/neutral.png",
+      "bytes": 1851846,
+      "sha256": "6dcf390f1a5efbe59d8b233d4958d64a21eacf3f0a4a405cefaed541c94c1b52"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v7-receipt.json",
+      "bytes": 635,
+      "sha256": "31dec2d82207c0ba3f0aa93a5626ca1a467887e49d466df7c47bb9266902719d"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v7.log",
+      "bytes": 749,
+      "sha256": "aa0ce3eca5b0e4ecef81d318880889760efa3e57c50d9355e6f118d5667aa70a"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v8/Characters-v8.blend",
+      "bytes": 6161341,
+      "sha256": "a86df5e0b8199a86de3fd75ae5207cdfa2b5d19654efa695ec99e3652a36dc90"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v8/elbows.png",
+      "bytes": 1839775,
+      "sha256": "93a3e7605f55c434bfb45d9e070161ff5049d00f2b3a2eef8e9f3ac8209ca94e"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v8/head-nod.png",
+      "bytes": 1856697,
+      "sha256": "bd4c0c9a55a58bbfe036b210f4e1cfe248486a09ffe8c45b3e6ac19a3e3e31ca"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v8/head-turn.png",
+      "bytes": 1857823,
+      "sha256": "1e79d6415caf2b73e819a75b4ca8c1ac0b8fd628fab0459aed3c4971f7c956de"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v8/left-arm.png",
+      "bytes": 1858422,
+      "sha256": "0d0207ec154f38d0a06df16967ab871ebdaf1f9e1a70089a5392f0cb71dc351d"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v8/neutral.png",
+      "bytes": 1857278,
+      "sha256": "a3a0dc8aa3b13d29864da735abf18d01d1154c8399e8afa2abe223f9df027b71"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v8/right-arm.png",
+      "bytes": 1857932,
+      "sha256": "d85d49281bc8e30e5591f6f6983425fecf3e9f62d8ad8588cfcf03b3ff7860ad"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v8-receipt.json",
+      "bytes": 639,
+      "sha256": "83e4cdaf4cec85fa6e51becda6dc2ec61fb54382be54d67caacfbb2f8bb0781c"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v8.log",
+      "bytes": 749,
+      "sha256": "92803c05f8857d0009368a35e50f34b46db1105e7b270ad64c0286f03f42bf5a"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v9/Characters-v9.blend",
+      "bytes": 14671935,
+      "sha256": "c81599523d05322b204e1c4b7d20d3256f387d587830aa401539c964f8bec6f5"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v9/elbows.png",
+      "bytes": 1840818,
+      "sha256": "e61c4329723b3c82f6bf24d569eb36de3919decd6df44fb7b3814967f7caede6"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v9/head-nod.png",
+      "bytes": 1860875,
+      "sha256": "b67fa9d4f5fd79d82171898dc41aeeff90fee1641753366b70e53e7ea53b89a0"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v9/head-turn.png",
+      "bytes": 1864754,
+      "sha256": "e807b9da54398b02e53b7da479085f21f95debe5b694f58745d41e69443ad610"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v9/left-arm.png",
+      "bytes": 1864554,
+      "sha256": "52aefb766674977f9eb0a025fb907d5c9493dffbd5f2862e447c4ebe0a11125f"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v9/neutral.png",
+      "bytes": 1863157,
+      "sha256": "3ae5c83d71e4fce198682c614d951c1472cb082c8aa94b24f8bc86b8cc27b3d9"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v9/right-arm.png",
+      "bytes": 1860505,
+      "sha256": "a135af4d58183a878379d7d6466e526cdd00a9a3fdc079210cb178810bc7ddc0"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v9-receipt.json",
+      "bytes": 639,
+      "sha256": "83e4cdaf4cec85fa6e51becda6dc2ec61fb54382be54d67caacfbb2f8bb0781c"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v9-retry.log",
+      "bytes": 749,
+      "sha256": "7a82ebc64ab56b501ee68a8bd6d36896c3fb2313eb649f8a90733fffc796c79c"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/blender-v9.log",
+      "bytes": 923,
+      "sha256": "3da7852fcd4d76e8fb8a66231b735d6accd1ca82e7fcf72d0ebeadb9ea82366d"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/diagnose-v12.log",
+      "bytes": 1532,
+      "sha256": "6916cc7d27f2947cc0553fdb591ad72a884461d4be2c9e5fe6a3cf90d9326ebc"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/diagnose_attachment.py",
+      "bytes": 2008,
+      "sha256": "3e104fc09b70b5c21bd858083111fd3000ce374e8ce2c4df97e42f621aa4c210"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/diagnose_isolated.py",
+      "bytes": 2165,
+      "sha256": "88d06fef63c9d2847cb91033485048108a6bf9a20df9fc00f89670cce25dde75"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/diagnose_v12.py",
+      "bytes": 2217,
+      "sha256": "92523c13337b1b740e760f84edfd05d620c7737e5f1e8cdb81f20f2b4ee87d67"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/effect-house-ui-receipt.json",
+      "bytes": 1935,
+      "sha256": "8096b87bbb5369bacc231e57543992d8944dd7a371526b811719aacbcc7fa29a"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/export-mobile-v13.log",
+      "bytes": 4750,
+      "sha256": "a836f2df51d0a348977e0514f805dd8285b4c1fb25dbcbc4ec544dcf46141ad3"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/export_mobile_v13.py",
+      "bytes": 6291,
+      "sha256": "7487da6117d45230265441d99724dd5d51c0b7c8a43af30baf23d7f94c9bf442"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/face-assets-v1/AceHack-face.glb",
+      "bytes": 646720,
+      "sha256": "1c4f040c6f5917bb657ff27c060be10d22d736114c2422f5fec185ee55e33e54"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/face-assets-v1/Xenaa-face.glb",
+      "bytes": 903420,
+      "sha256": "44f74e779cd669985fe30ea981fb1f36c237735647e4971c2df7029bd7213716"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/face-assets-v1-receipt.json",
+      "bytes": 442,
+      "sha256": "e2d0bf2d20ddd40dba26a00f6970c57f8e0122f0215bf4c92a8934c270e252c0"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/face-assets-v1.log",
+      "bytes": 1060,
+      "sha256": "2992a3b8e8938174b1a06a5fe9b17fce38ac2c05e469d04ffb83d5a0df1fc3ff"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/face_assets_v1.py",
+      "bytes": 1546,
+      "sha256": "1c131830ed0423f28d4e055ee2216ea4bfa5a12624b7479913cae9d884614ec7"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/feedback/3.46.56.png",
+      "bytes": 1884843,
+      "sha256": "991b82cf70c0591fed8e34a07af037f033bcff64a628d8a1661632b2673c7669"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/feedback/3.47.03.png",
+      "bytes": 1168909,
+      "sha256": "b27003fb6afa12e84fe7289be97e027521450bbf4cc4b9d45aa3682748b5205d"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/feedback/3.47.11.png",
+      "bytes": 1252782,
+      "sha256": "a778a122b4171308d971a211e46b82c7f493deed85b4bb9b900d33a5060b2856"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/final_review_v13.json",
+      "bytes": 3094,
+      "sha256": "1b1e421520ab8895607a03bdebdc26210f9ef9bf8a2d447420ff78ce5b24b3cf"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/inspect-boundaries.log",
+      "bytes": 2497,
+      "sha256": "962f8df958a89f11a3951c83f383469efa3c7e8891d74d48bb4b45f337bddd23"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/inspect_boundaries.py",
+      "bytes": 767,
+      "sha256": "13e5004de1ecde5f7422e39a10825acf4ece7f0675f19394ed11a7178eebad8e"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/inspect_official_rig.py",
+      "bytes": 846,
+      "sha256": "5e361dd7c756238575dd3eb1d3cd54edcfaad6f6ca5374d445e55076ac1b0363"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/inspect_reference.py",
+      "bytes": 1257,
+      "sha256": "cd9c11752d1e3eec4942fa170de2998c537fc1f089271d7385e905775743fb9c"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/mobile-export-v13/AceHack-Left-arm-surface.jpg",
+      "bytes": 40354,
+      "sha256": "ef97dd662e0863429b3e4d3d3b48c35292bd6e9beecd4ae18df14d140dbf6ff7"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/mobile-export-v13/AceHack-Right-arm-surface.jpg",
+      "bytes": 33724,
+      "sha256": "e16d47280ed5c5336bd58e2bffc1557d2ef98b3aaade48a00dd9915ad7a81620"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/mobile-export-v13/AceHack-body-candidate.glb",
+      "bytes": 2056168,
+      "sha256": "1d3a6da65a85526bdf8b55c564280fb5d0776db90ac2eb307a38a6b467975bbe"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/mobile-export-v13/AceHack-face-candidate.glb",
+      "bytes": 756176,
+      "sha256": "e094f388f26e4482486f433de82ac384f10d639980b31020cf13a654ab9a4489"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/mobile-export-v13/AceHack-head.jpg",
+      "bytes": 291610,
+      "sha256": "a384c1eb3090193c290e36edf42b5f10605f7bdfc02b57772819cab11b168737"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/mobile-export-v13/Mobile-Candidates-v13.blend",
+      "bytes": 17379011,
+      "sha256": "5eed7b1617faebe56f023d6882da35a9b39113d7dead3d0e15702c97628352ed"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/mobile-export-v13/Xenaa-Left-arm-surface.jpg",
+      "bytes": 34520,
+      "sha256": "75c58d9ffd613733deef3cc25636574795755db725192d8a5e996eb6702afdbf"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/mobile-export-v13/Xenaa-Right-arm-surface.jpg",
+      "bytes": 34167,
+      "sha256": "cc93badc189893a7c6846293945bf0885867314b80fce89fdb76f6382b120723"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/mobile-export-v13/Xenaa-body-candidate.glb",
+      "bytes": 2480060,
+      "sha256": "c026b14b8cd0de17adf61860e26a895314b056119547e0d040f35eeee3dfe784"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/mobile-export-v13/Xenaa-face-candidate.glb",
+      "bytes": 1237300,
+      "sha256": "e71dbd6d6d2e9ba09f32936f7698a38c832e2e89e784c2b1a858d03930626e23"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/mobile-export-v13/Xenaa-head.jpg",
+      "bytes": 188276,
+      "sha256": "8df426a0ecd167ac8f457b43b81bcf725e5c59e6aa9e56f7a0846f6636c7e717"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/mobile-export-v13-receipt.json",
+      "bytes": 2642,
+      "sha256": "6518cf374e2e996152a49e7c2da7e0a3df7d7b9cc3e09f13ca6f5b7c14a90e38"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/mobile-rig-v1/AceHack-body-basecolor.jpg",
+      "bytes": 1040239,
+      "sha256": "c90ac97d28f20c192982a2d519f480f62b058ff7cd157ef66a82d8c937e191d6"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/mobile-rig-v1/AceHack-face-body.glb",
+      "bytes": 1690044,
+      "sha256": "8f7f60b3c7ce351ced53a822a31b23e46432857a3dd65e8f941e966ed9d9af3c"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/mobile-rig-v1/AceHack-head-basecolor.jpg",
+      "bytes": 1106416,
+      "sha256": "d75aa37d96d9aef9425cbafefe3e9122a518c0ac67b32d110adf73e55a950d6c"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/mobile-rig-v1/TikTok-Characters-Rigged.blend",
+      "bytes": 6414516,
+      "sha256": "7a6ec2860f6dbbfdd339943bc1845908472348a7ab6aa6f8ed8e4cf744226b9e"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/mobile-rig-v1/Xenaa-body-basecolor.jpg",
+      "bytes": 1001633,
+      "sha256": "b59fe8e192d7dad875e1d709bdebdb2101305fbe8763df9d00c4db787327e267"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/mobile-rig-v1/Xenaa-face-body.glb",
+      "bytes": 2043760,
+      "sha256": "11b1902428938ecd8b5c038dffd5d36c1792d1f2bc8826597385c2cd14916e88"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/mobile-rig-v1/Xenaa-head-basecolor.jpg",
+      "bytes": 830049,
+      "sha256": "044653f14d3ff372f2249bb534e98b601f851b7b969eb705a79b7bb025e1e08b"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/mobile-rig-v1/expression.png",
+      "bytes": 2474655,
+      "sha256": "8c684460d39303b20edf80cb6a8bb69c7cda18d827ae1bb5953380ebcdd4b044"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/mobile-rig-v1/neck-turn.png",
+      "bytes": 2475749,
+      "sha256": "d7adac21077ff530287be8ea5eddb0815139475f54ac76915398a8771cf98140"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/mobile-rig-v1/neutral.png",
+      "bytes": 2474680,
+      "sha256": "49eeb3379acfcdc85e6fc53b2631a515075389e1e86c96ac243ffd778ab0be8c"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/mobile-rig-v1-receipt.json",
+      "bytes": 3461,
+      "sha256": "0f5ee64378ab725ca58c832034ce719e2386389a405cd6dfb7f8c6a5dd76a974"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/mobile-rig-v1.log",
+      "bytes": 1871,
+      "sha256": "5964d5a49867377e42962af39ecf806bd099f014269599611eff20f978621e04"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/mobile-rig-v2/AceHack-face-body.glb",
+      "bytes": 1694308,
+      "sha256": "b62b1f141b5a994147cfbf7f87c9bd1b60dbb594328305ca76ff6e661511d4de"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/mobile-rig-v2/TikTok-Characters-T-pose.blend",
+      "bytes": 6418739,
+      "sha256": "5a57740b5f18d9ecf75a96651be414f11f2ee866232f8c129a0e8561525ae28f"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/mobile-rig-v2/Xenaa-face-body.glb",
+      "bytes": 2049188,
+      "sha256": "00ebf350c9a6bf0d6f73ea508326e025d66a8a032d85e0518388e323d4b774ad"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/mobile-rig-v2/t-pose.png",
+      "bytes": 2335712,
+      "sha256": "d7383011d6f87d63650b1f696117dcfa7dad3c3c8c9223402195f70940d1ed64"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/mobile-rig-v2-receipt.json",
+      "bytes": 248,
+      "sha256": "587a9b59179d3c9aad3681d24eb37abd55d167ed42064398ec8e55c18b07d460"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/mobile-rig-v2.log",
+      "bytes": 1608,
+      "sha256": "b48595236d501e7ec43487c1f14d296023b9d8ded6d16b33e5dc691370e3bc22"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/mobile-rig-v3/AceHack-face-body.glb",
+      "bytes": 1694308,
+      "sha256": "ff3815aed2b93aa4a663bda793e47eabf993cda70f5783a4fc234af313cc44cd"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/mobile-rig-v3/TikTok-Characters-T-pose.blend",
+      "bytes": 6398086,
+      "sha256": "6e982d44e575d639821d72709d54f39f59c697ed00736a9252b9f1d1decce2cb"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/mobile-rig-v3/Xenaa-face-body.glb",
+      "bytes": 2049188,
+      "sha256": "1aaee06afd25a6c02cf7a3bf94639500143fac2ae52c70b044ab6d7ce3960f81"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/mobile-rig-v3/t-pose.png",
+      "bytes": 2307580,
+      "sha256": "186f130cc423bcb07385a5acedcfe57bb4b0f133905650c867193d5f887b651d"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/mobile-rig-v3-receipt.json",
+      "bytes": 248,
+      "sha256": "587a9b59179d3c9aad3681d24eb37abd55d167ed42064398ec8e55c18b07d460"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/mobile-rig-v3-retry.log",
+      "bytes": 1608,
+      "sha256": "4d8662df0641ea171e45e97de93525afe3f3a0d05f68e0bfe398b192d20649e4"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/mobile-rig-v3.log",
+      "bytes": 467,
+      "sha256": "69ee803d2f20a36971fc9daa745dac37b22d3c0db141e79425d7814ef9e47344"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/mobile-rig-v4/AceHack-face-body.glb",
+      "bytes": 1694604,
+      "sha256": "5118addc002dff169e21845952f55446e920abed0dc2e45f9422aaddf9955571"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/mobile-rig-v4/TikTok-Characters-T-pose.blend",
+      "bytes": 6406974,
+      "sha256": "1e5108b4f4be84930cd90d283cbd9c0a3a7aa6bd73f5314da86afbc69a29f7d2"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/mobile-rig-v4/Xenaa-face-body.glb",
+      "bytes": 2049272,
+      "sha256": "0b50d8658322a69e2b2189fab91e8e75d3bf80dc0eb4b4f56e18431ed7b96d44"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/mobile-rig-v4/t-pose.png",
+      "bytes": 2317861,
+      "sha256": "54005d97f1fd376b948c3d962da08e3e29cf815181f4018dac60631ab7afc5c2"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/mobile-rig-v4-receipt.json",
+      "bytes": 248,
+      "sha256": "33bdb91f8725383f683b3e9e31db00daa1dd9c270f0a622c1a8378774419f1f0"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/mobile-rig-v4.log",
+      "bytes": 1608,
+      "sha256": "a49044bade5788f66fb4e2e11b1a5eebd6c9409d349a330d623e73db57464595"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/mobile-rig-v5/AceHack-face-body.glb",
+      "bytes": 1684216,
+      "sha256": "7cd5668a4600fbf2234dbd2bce9d116fd07381bde98abb17d07bed0439082876"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/mobile-rig-v5/TikTok-Characters-T-pose.blend",
+      "bytes": 6370400,
+      "sha256": "54a36b7ac03ceb008e0c1b0eefda53e9f98e428a9b6c8e904b202d6965d5e4cc"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/mobile-rig-v5/Xenaa-face-body.glb",
+      "bytes": 2041492,
+      "sha256": "91116fc8a71114f2583be75977dff35d86bf4e5c94755c2930dcd11bd208d583"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/mobile-rig-v5/t-pose.png",
+      "bytes": 2281145,
+      "sha256": "b5cc9d3b3114ab2b1dd525dae223ed0f226b44719031aeddcf027701dd99c9db"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/mobile-rig-v5-receipt.json",
+      "bytes": 320,
+      "sha256": "961563c658bc743d063d8bd0484140049b37620d45df7091f3947f3e0867c676"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/mobile-rig-v5.log",
+      "bytes": 1607,
+      "sha256": "9027ee320c1214aac4dc35802ffa0bb7f6390bae91f7e834116140543025b844"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/mobile-v1/AceHack-body.png",
+      "bytes": 1040239,
+      "sha256": "c90ac97d28f20c192982a2d519f480f62b058ff7cd157ef66a82d8c937e191d6"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/mobile-v1/AceHack-head.png",
+      "bytes": 1106416,
+      "sha256": "d75aa37d96d9aef9425cbafefe3e9122a518c0ac67b32d110adf73e55a950d6c"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/mobile-v1/AceHack-neutral.glb",
+      "bytes": 2909800,
+      "sha256": "c36a0242560198a876fec2a29e6d51ebc5a47e8e17814cf73abfb7c2d73f6828"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/mobile-v1/Mobile-Characters.blend",
+      "bytes": 12521412,
+      "sha256": "74896db2f2d80882476e67fed93dd4d96025d533397e291f553282c83de98f6b"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/mobile-v1/Xenaa-body.png",
+      "bytes": 1001633,
+      "sha256": "b59fe8e192d7dad875e1d709bdebdb2101305fbe8763df9d00c4db787327e267"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/mobile-v1/Xenaa-head.png",
+      "bytes": 830049,
+      "sha256": "044653f14d3ff372f2249bb534e98b601f851b7b969eb705a79b7bb025e1e08b"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/mobile-v1/Xenaa-neutral.glb",
+      "bytes": 2791636,
+      "sha256": "193039f774c7efd731c5eee776624d9ad0bcdfb7f4d28ac70f1966ce2afe226e"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/mobile-v1/neutral-0.png",
+      "bytes": 2475323,
+      "sha256": "54177269ec389e3ee9e849106421e2b623d353d597a44103132faac090b707e1"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/mobile-v1/neutral-180.png",
+      "bytes": 2140209,
+      "sha256": "394a5f67b0e0282b85ab8f8d34f137ca8ffa56d517391ac5cd47b87be2893ec0"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/mobile-v1/neutral-75.png",
+      "bytes": 2276979,
+      "sha256": "f8c2a2e64b9fb8d881574e17b825228542acba35d41d1bf0bd8aca0bfb3c1d9e"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/mobile-v1-mesh-receipt.json",
+      "bytes": 851,
+      "sha256": "5101a9212c5524d896cc70ad2fc6bb0a26bfe2eed31de6288f9ba021024ff430"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/mobile-v1.log",
+      "bytes": 3676,
+      "sha256": "64d3555e1f5ec15e1a8548ee62f2b3d0fb27f0daf70eb998912ab6e19c292245"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/mobile-validation-v13.json",
+      "bytes": 12752,
+      "sha256": "04a7171e520fc89f971757deb938c4d9bf35d991771fcecca98c19a823c32361"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/mobile-validation.json",
+      "bytes": 8860,
+      "sha256": "7fd9e52f3c8abe04189390441c99392d947bfb5f100f591f00373e03b57df5db"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/mobile_export_v1.py",
+      "bytes": 4579,
+      "sha256": "cfc6d16b0f9dd89ae1d5e85b9cbd420ddcecce870ebc333392b22ad24762b26a"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/motion-review-v10.log",
+      "bytes": 889,
+      "sha256": "011d4b325108ae3058ca46706f07034969d746413f1855ebefaeb11b95fa0dab"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/motion-review-v11.log",
+      "bytes": 889,
+      "sha256": "fdf4df3dbfc114abd861a408bff635a0f8961bd1b538b9321ca74686f40698a8"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/motion-review-v12.log",
+      "bytes": 889,
+      "sha256": "4225c0ed3172b89fcd3b42c7a44f23169a7eeb66d60b78a2efa8f2523827048b"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/motion-review-v13.log",
+      "bytes": 889,
+      "sha256": "5e60d068b68cc1044e50da19e426e5c0f33af7f12df2bdc7189b631e68523602"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/motion-review-v6.log",
+      "bytes": 882,
+      "sha256": "5a9fc692721d941e05ee1e84a8a747b2189bed41b7ca14d65dcb62356d673f6a"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/motion-review-v8.log",
+      "bytes": 882,
+      "sha256": "666145c8603ed364f449547546ddaf451dc28678300b395734910b4038748c27"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/motion-review-v9.log",
+      "bytes": 882,
+      "sha256": "cd249cb86e9930569f1ea22cc86cd84e284fac97368cde7d54fa5931ccc6a00b"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/motion-validation-v13.json",
+      "bytes": 6031,
+      "sha256": "f64af356318b55e438d80da7642efe306b4902f7dc36356291709ac01095130d"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/motion_review_v10.py",
+      "bytes": 1063,
+      "sha256": "11bde298e2da0c19ae603550dfb47e2cf818c1c7dd49c629add14cfed9e87cfd"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/motion_review_v11.py",
+      "bytes": 1063,
+      "sha256": "521773e77efcb6d87635707658a156d1d266c531fc8f526133f944fee5c17f7d"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/motion_review_v12.py",
+      "bytes": 1063,
+      "sha256": "2db5dae6da6d4473b4d87776efa4c023ca0442d4dcc5cca68b2ec5e61aed4c47"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/motion_review_v13.py",
+      "bytes": 1063,
+      "sha256": "b1ef0127a2fa093d7f05fe45077375dfba58f4da3e8fdcbedefe099e540372be"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/motion_review_v6.py",
+      "bytes": 1061,
+      "sha256": "64c22456995710c1b0107cf23ad60997d64a4f6dadcb8bc0abb1ac34f3da6793"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/motion_review_v8.py",
+      "bytes": 1061,
+      "sha256": "2a7acb8ebc7649998d0967d5d8f8bade0dcc081dfe49d1d2ea8bf147380f6188"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/motion_review_v9.py",
+      "bytes": 1061,
+      "sha256": "8c7b6dab50e93fd32a3273f41900228b5f6fcea876288f0ca1ab4cb2dcd0ba30"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/official-rig-inspection.json",
+      "bytes": 19964,
+      "sha256": "b177c69ec9be3a52214256d8084df77115bc153c0405e499a3ce38af5b855472"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/official-rig-inspection.log",
+      "bytes": 1156,
+      "sha256": "97ef32e988c4728d7ef6f9e3805ea1962f2926eb58f7a74c2c95e5ff80f0bb46"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/prepare_effect_v2.py",
+      "bytes": 863,
+      "sha256": "03134ab651819781c78389228af1b3c585979e3abbd1d256f8d0d6e4dbba569d"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/prepare_face_project.py",
+      "bytes": 1462,
+      "sha256": "1b9d075a4e26b1d022ca23c22600c037c3d0a77255ec757eae3df773a6640328"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/prior-rig-audit.json",
+      "bytes": 4950,
+      "sha256": "d3dd88d5e9bb2470bc1b1c7e74b03b5d4ec3aabbcfe6dff70093c388388ec450"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/profile-review-v10.log",
+      "bytes": 1082,
+      "sha256": "75712deac01b5d6ad3610f54b4c2aa37642f270c737779cb43d56ece2dbf046a"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/profile-review-v11.log",
+      "bytes": 1082,
+      "sha256": "18e54efbcd5629d8b591e7872f6e65eeeabde6b82368e26c38388856d08e7f7f"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/profile-review-v13.log",
+      "bytes": 1082,
+      "sha256": "515c2ee3ccdd28a18ac4dd76c767a69cfb6413cf2169b3bd83384f250d768a82"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/profile_review_v10.py",
+      "bytes": 1545,
+      "sha256": "575524ed2c797326ab3d97439325407ca6fa9e54cd3cc1d634b9befb4078c7f4"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/profile_review_v11.py",
+      "bytes": 1545,
+      "sha256": "4443e335b2ff76aaab685d13baa81318fac72861513fdb8735a87ea02ce51b77"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/profile_review_v12.py",
+      "bytes": 1561,
+      "sha256": "379db3878050408cc72e860c701cf249c4da1da2549ced78410991f998426c97"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/profile_review_v13.py",
+      "bytes": 1561,
+      "sha256": "e9688de6f7a497e355b0ebcd617aaa9c7ae551e3360e01f095deebd6ffac5378"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/project-validation.json",
+      "bytes": 855,
+      "sha256": "1935944876d5f7da5eb01eaa083e5a3d5da8491afa1bbec94ff99867195b0dd8"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/rebuild-v1/Joined-Characters.blend",
+      "bytes": 30929132,
+      "sha256": "0ddc0463b9c1cf29db71311bc75a73362abef363b2a1d7e7b79f4e09a7a3dc02"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/rebuild-v1/duo-0.png",
+      "bytes": 2058692,
+      "sha256": "e93836efbaf0949a562858a82c53bdfc538aa4b4205a578c7e2159e1ac4de1dc"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/rebuild-v1/duo-120.png",
+      "bytes": 1726286,
+      "sha256": "451ce80056926eb3f4c71b28a4f902421f8d6b49eac243786ae377eeb24374ac"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/rebuild-v1/duo-180.png",
+      "bytes": 1637322,
+      "sha256": "923a6aab9088308ffe48b39c095d6129aa05f3d12c8aae081d7cbbc4f702a308"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/rebuild-v1/duo-75.png",
+      "bytes": 1825865,
+      "sha256": "e0f058787c3a72210db3bcbc020b4bb4449d6956c3e09cfa7446edec4ca43f16"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/rebuild-v1-receipt.json",
+      "bytes": 373,
+      "sha256": "c2cd050866c70eeda882944d0a8916a5d4186db8f1e9a281a062e192e4e03458"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/rebuild-v1.log",
+      "bytes": 1197,
+      "sha256": "1b11046fa1d2042dc8cb61916c6a4c574bfa4d4fe456c56ab2f9e52d254cf496"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/rebuild-v2/Joined-Characters.blend",
+      "bytes": 28999048,
+      "sha256": "ebbaaae913ad7f3fd4d1a5c99cceb886500eef5edc48ee389e73d11588f57dbf"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/rebuild-v2/duo-0.png",
+      "bytes": 2052518,
+      "sha256": "2190073b8926290b0fd974d2b24181b9048c15619db196ccf39aa8c544239cfb"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/rebuild-v2/duo-120.png",
+      "bytes": 1722572,
+      "sha256": "51908395d7bbb6c3e5c32af5592823a1403292b66f7fdacf7a18387d6389480e"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/rebuild-v2/duo-180.png",
+      "bytes": 1636043,
+      "sha256": "79883cf25788940de1b86eef3a7661d409cf03700b409e55ba65a79a067052d1"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/rebuild-v2/duo-75.png",
+      "bytes": 1821485,
+      "sha256": "a3191dd56dcbc64f143b1fafeb6efec31670150fcb6971b0fc4befb719d3d1d1"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/rebuild-v2-receipt.json",
+      "bytes": 371,
+      "sha256": "48930f08fde4dc1d3029b9de4eff1ad19206c5e456417a9bb0d542502afdbb3e"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/rebuild-v2.log",
+      "bytes": 1197,
+      "sha256": "12ff85e0e50230f5926c658d22070b4d19856a54c648073829743cb65fc87c32"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/rebuild-v3/Joined-Characters.blend",
+      "bytes": 30247979,
+      "sha256": "8fcac3825c76ff106b35d8fd666683c2e235bed203be35693275846c66c2e106"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/rebuild-v3/duo-0.png",
+      "bytes": 2055313,
+      "sha256": "77ebaca5bfe428bbaa6545901d35b4373eb00cc0735824b194aca02e00a819c4"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/rebuild-v3/duo-120.png",
+      "bytes": 1724215,
+      "sha256": "4c4e9225915b95f99c15b2c2f13a43c641f20b2ad9f448a5cbef548daf18e0cb"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/rebuild-v3/duo-180.png",
+      "bytes": 1638413,
+      "sha256": "aa90a105fa9e14a3638e1cc58b18028b796e9034594c5ba15ced85977e866595"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/rebuild-v3/duo-75.png",
+      "bytes": 1821618,
+      "sha256": "57f98ce37a4eedc82810df2c639155c655d70576744a09fb49179612412f179b"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/rebuild-v3-receipt.json",
+      "bytes": 370,
+      "sha256": "e53fac0c60acbb961bc69f6d248bafab538aa1f9c55e92ad2d3291cb368b9d8e"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/rebuild-v3.log",
+      "bytes": 1197,
+      "sha256": "e0cc701240b194a151f30524865ae7a74b2c633aefbc3a1c0dc22f41fab1d047"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/rebuild_blender_v10.py",
+      "bytes": 15094,
+      "sha256": "d1aa9187e92fb6a060dcedc3ca95855cdc9e26fb78ad04519076bbb614aea122"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/rebuild_blender_v11.py",
+      "bytes": 16171,
+      "sha256": "074dd07559641a1996c4fc66dfb93a0afdea09f81c8ae4ac3e74299dd9af0e34"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/rebuild_blender_v12.py",
+      "bytes": 16555,
+      "sha256": "6b5eaafcf9ecde3aa7cb5f289d75ae00b4d6955c49c9874bdc346258c7c89e92"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/rebuild_blender_v13.py",
+      "bytes": 17437,
+      "sha256": "10a6d4c6c7be9e00d109844f655126c9058103d647ad6aafbaf3e8e0cc2eebb0"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/rebuild_blender_v6.py",
+      "bytes": 10174,
+      "sha256": "69673e17041fcae91c8312d11c384c1acb37ba960904f779151b5df28fb078db"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/rebuild_blender_v7.py",
+      "bytes": 11014,
+      "sha256": "4117101ce063ca85e087a916ac79ec1cf4cbb3cb75bc122f09cbc70e0cf9c6ec"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/rebuild_blender_v8.py",
+      "bytes": 13264,
+      "sha256": "eb4df815593ade253e79611d2c162ad33d60129710b4e10238f27775dc49d483"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/rebuild_blender_v9.py",
+      "bytes": 15673,
+      "sha256": "f146448b58c5d1d865bae31bf111c6fee2213eddc1cd9905f1541fcf16eec0bb"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/rebuild_v1.py",
+      "bytes": 5012,
+      "sha256": "ac8e31702197ca8e1e24097b77b311c0562fb3595fec375a41d5d1e579fa73e0"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/rebuild_v2.py",
+      "bytes": 6220,
+      "sha256": "75793628af56b9304d7bbb0e470ef8eb359167f52759197bdfd8469d990902e3"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/rebuild_v3.py",
+      "bytes": 6250,
+      "sha256": "cc2ea03b9af3b931c251733729e147380ba1b9783fe9dd066e4e054a3dd0017e"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/reference-validation.json",
+      "bytes": 910,
+      "sha256": "6503a784813f7661b3383c7b9039c2a3a0e44abf4705f9bd899bb2f21f2105b7"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/reference-validation.log",
+      "bytes": 226,
+      "sha256": "03d7ed2d8733d259517cd8c637ee25d09b9c9d0e34242dc6d2726b161fd65372"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/rig_mobile_v1.py",
+      "bytes": 6752,
+      "sha256": "28cc6690f6f2fcdb4076759c55c5a3cbc0f8acde46ef62f84d8e71b2003cd061"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/tpose_mobile_v2.py",
+      "bytes": 2988,
+      "sha256": "f5263769cf2b3be29cac9ac3124f56167354f3a2cc690214c56f16c8a3e18565"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/tpose_mobile_v3.py",
+      "bytes": 4167,
+      "sha256": "95f98a58f07903863817750c7e830b85ad0ee5d5302cf713f110d61e0f518abe"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/tpose_mobile_v4.py",
+      "bytes": 4551,
+      "sha256": "96edf14450ac6ac6ad6a1c3a2d4c0c98a7fa2c072bf0078837d080a9d335db8e"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/tpose_mobile_v5.py",
+      "bytes": 5010,
+      "sha256": "22e2c9dfe2e5c094e2551c0c3058aeb3294ef23f86387a3ef0aaf506e61d03ef"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/user-review-attachment-correction.json",
+      "bytes": 780,
+      "sha256": "21b69f9d9984e4837e037d1a3238d707ee6a837988e7f02be7f7ac71f287ca85"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/validate-motion-v13.log",
+      "bytes": 25454,
+      "sha256": "8fbd84e8c88b1647408e9339348c8a109e934d20a2087606ead60a933258ad54"
+    },
+    {
+      "archive": "tiktok-blender-correction-v13.zip",
+      "path": "TikTok-Character-Evolution-20260909/validate_motion_v13.py",
+      "bytes": 6236,
+      "sha256": "6a817d91bdd98fe73b9bb1a4570a2a789d01712a56fc86b30c4384df24a133a2"
+    }
+  ],
+  "parent_record": "docs/research/2026-09-09-character-evolution/README.md",
+  "verdict": "Blender-first correction selected for upper-body motion review; original joins rejected; visual defects and Effect House retesting remain; see final_review_v13.json",
+  "excluded": "Effect House Library and Record caches, Python caches, .DS_Store, vendor official FBX and download ZIP; source URL and digest retained"
+}

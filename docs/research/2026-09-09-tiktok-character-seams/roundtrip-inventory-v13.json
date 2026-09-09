@@ -1,0 +1,41 @@
+{
+  "archive": {
+    "name": "tiktok-roundtrip-v13.zip",
+    "bytes": 3995087,
+    "sha256": "294dcd1cc76667f3bc02c346dc065eff554575182f2c2b2917f05e1692be23f3"
+  },
+  "files": [
+    {
+      "path": "TikTok-Character-Evolution-20260909/roundtrip_v13.py",
+      "bytes": 2844,
+      "sha256": "ac034cca0501a2e156813fb7736984078a41babccbdcf8b10941050f3d3999da"
+    },
+    {
+      "path": "TikTok-Character-Evolution-20260909/roundtrip-validation-v13.json",
+      "bytes": 1766,
+      "sha256": "07f52657497103ad6d8a4e6f25ea5d05ab14e66faf0051fde08e1790b706413d"
+    },
+    {
+      "path": "TikTok-Character-Evolution-20260909/roundtrip-v13.log",
+      "bytes": 1708,
+      "sha256": "7efb8897a44c3bfcd90ca9d748105fb270615b5c002039dbc9625412b5c9d455"
+    },
+    {
+      "path": "TikTok-Character-Evolution-20260909/roundtrip-v13/head-turn.png",
+      "bytes": 1329631,
+      "sha256": "d62f74605c14a14dc42d2d0ab4c79b09fce6f1eb331e654a748be0cd445a6d11"
+    },
+    {
+      "path": "TikTok-Character-Evolution-20260909/roundtrip-v13/left-arm.png",
+      "bytes": 1330039,
+      "sha256": "5ef9137216b40f446e5a1340e4aa723b357f5405da345143f179eb07439f91f9"
+    },
+    {
+      "path": "TikTok-Character-Evolution-20260909/roundtrip-v13/neutral.png",
+      "bytes": 1331542,
+      "sha256": "9bbfc9803b61e3e367787b7d431119c27bcdb14cfca6a82deaa8a7c910b77000"
+    }
+  ],
+  "verified": "Every entry decompressed and matched length/hash",
+  "scope": "Post-snapshot GLB reimport checks; supplemental to the 623-file correction snapshot"
+}

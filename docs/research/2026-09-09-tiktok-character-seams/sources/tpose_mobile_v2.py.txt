@@ -1,0 +1,39 @@
+import bpy,json,math
+from pathlib import Path
+from mathutils import Vector,Matrix
+ROOT=Path(__file__).resolve().parent;OUT=ROOT/'mobile-rig-v2';OUT.mkdir(exist_ok=True)
+bpy.ops.wm.open_mainfile(filepath=str(ROOT/'mobile-rig-v1/TikTok-Characters-Rigged.blend'));scene=bpy.context.scene
+records=[]
+for name in ['AceHack','Xenaa']:
+ rig=bpy.data.objects[name+' | Motion rig'];meshes=[o for o in scene.objects if o.type=='MESH' and o.parent==rig]
+ bpy.context.view_layer.objects.active=rig
+ for side,sgn in [('Left',1),('Right',-1)]:
+  for part in ['UpperArm','ForeArm','Hand']:
+   bone=rig.pose.bones[side+part];m=bone.matrix.copy();a=m.translation;direction=(bone.tail-bone.head).normalized();rot=direction.rotation_difference(Vector((sgn,0,0))).to_matrix().to_4x4();bone.matrix=Matrix.Translation(a)@rot@Matrix.Translation(-a)@m;bpy.context.view_layer.update()
+ for o in meshes:
+  bpy.context.view_layer.objects.active=o
+  for mod in list(o.modifiers):
+   if mod.type=='ARMATURE':
+    if o.data.shape_keys:o.modifiers.remove(mod)
+    else:bpy.ops.object.modifier_apply(modifier=mod.name)
+ bpy.context.view_layer.objects.active=rig;bpy.ops.object.mode_set(mode='POSE');bpy.ops.pose.armature_apply(selected=False);bpy.ops.object.mode_set(mode='OBJECT')
+ for o in meshes:
+  mod=o.modifiers.new('T-pose mobile skeleton','ARMATURE');mod.object=rig
+ # New blink channels use localized eyelid compression. Glasses remain a known shared-topology limit.
+ head=next(o for o in meshes if 'head generator' in o.name);eyeZ=1.80 if name=='AceHack' else 1.72
+ for side,sgn in [('Left',1),('Right',-1)]:
+  key=head.shape_key_add(name='eyeBlink'+side)
+  for i,v in enumerate(head.data.vertices):
+   x,y,z=v.co;w=math.exp(-(((x-sgn*.044)/.023)**4+((z-eyeZ)/.014)**4))*max(0,min(1,(-y-.115)/.055))
+   key.data[i].co=v.co+Vector((0,0,(eyeZ-z)*w*.92))
+ for k in head.data.shape_keys.key_blocks:
+  if k.name=='Basis':continue
+  for i,v in enumerate(head.data.vertices):
+   if v.co.z<(1.9 if name=='AceHack' else 1.82)*.845:k.data[i].co=v.co
+ offset=rig.location.x;rig.location.x=0;bpy.ops.object.select_all(action='DESELECT');rig.select_set(True)
+ for o in meshes:o.select_set(True)
+ bpy.ops.export_scene.gltf(filepath=str(OUT/(name+'-face-body.glb')),use_selection=True,export_format='GLB',export_animations=False,export_morph=True,export_morph_normal=False,export_morph_tangent=False,export_image_format='JPEG',export_jpeg_quality=90)
+ rig.location.x=offset
+ records.append({'character':name,'rest_pose':'T','bones':len(rig.data.bones),'blendshapes':len(head.data.shape_keys.key_blocks)-1,'glb_bytes':(OUT/(name+'-face-body.glb')).stat().st_size})
+scene.camera.data.ortho_scale=3.9;scene.render.resolution_x=1600;scene.render.resolution_y=1200;scene.cycles.samples=24;scene.render.filepath=str(OUT/'t-pose.png');bpy.ops.render.render(write_still=True)
+bpy.ops.wm.save_as_mainfile(filepath=str(OUT/'TikTok-Characters-T-pose.blend'));(ROOT/'mobile-rig-v2-receipt.json').write_text(json.dumps(records,indent=2))

@@ -1,0 +1,11 @@
+from pathlib import Path
+import re,json,hashlib
+root=Path(__file__).resolve().parent;rows=[]
+for name in ['AceHack','Xenaa']:
+ d=root/(name+'-Face-v1');s=(d/'Assets/main.scene').read_text();g=json.loads((d/'Graph/graph.json').read_text());graph=g['containers'][0]['graph'];drive=next(n for n in graph['nodeList'] if n.get('name')=='Face Avatar Drive');p=next(p for p in drive['inputPorts'] if p['portName']=='Deformation');a,b=re.fullmatch(r'Guid\((\d+), (\d+)\)',p['portValue']['value']).groups()
+ assert re.search(r'__class: MorpherComponent\n.*?guid: \{a: '+a+', b: '+b+r'\}',s,re.S)
+ assert len(graph['edgeList'])==1
+ assert 'className: !<str> FaceBinding' in s and 'className: !<str> FullBodyAvatarDrive' not in s
+ raw=d/'Assets/AceHack-face-body/AceHack-face-body.glb';export=root/'face-assets-v1'/(name+'-face.glb');assert raw.read_bytes()==export.read_bytes()
+ rows.append({'project':d.name,'face_graph_reference_resolves':True,'native_update_edge_count':len(graph['edgeList']),'head_tracking_component_present':True,'body_tracking_component_absent':True,'imported_glb_matches_export_sha256':hashlib.sha256(raw.read_bytes()).hexdigest(),'note':'Reference-presence checks supplement, do not replace, actual editor preview/performance test'})
+(root/'project-validation.json').write_text(json.dumps(rows,indent=2)+'\n');print(json.dumps(rows,indent=2))

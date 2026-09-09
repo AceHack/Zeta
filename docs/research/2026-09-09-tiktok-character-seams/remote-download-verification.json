@@ -1,0 +1,18 @@
+{
+  "release_tag": "research-tiktok-character-seams-20260909",
+  "status_at_check": "draft",
+  "download_verification": [
+    {
+      "asset": "tiktok-character-seams-v2.zip",
+      "bytes": 215381762,
+      "downloaded_sha256": "4feb0e610be06ef24e75f3a0ac73486ec2f8991330f76052f8751686c182628a",
+      "matches_local": true
+    },
+    {
+      "asset": "tiktok-blender-correction-v13.zip",
+      "bytes": 611001153,
+      "downloaded_sha256": "93210ec888cc73fcd8e310bcd86fa5c8c0a37b4aa93ffb6913154e2ad22f6ded",
+      "matches_local": true
+    }
+  ]
+}

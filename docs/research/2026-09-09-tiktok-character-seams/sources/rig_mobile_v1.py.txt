@@ -1,0 +1,86 @@
+import bpy,bmesh,math,json
+from pathlib import Path
+from mathutils import Vector
+ROOT=Path(__file__).resolve().parent;OUT=ROOT/'mobile-rig-v1';OUT.mkdir(exist_ok=True)
+bpy.ops.wm.open_mainfile(filepath=str(ROOT/'mobile-v1/Mobile-Characters.blend'));scene=bpy.context.scene
+# JPEG bake outputs retain 1024-pixel detail while meeting each image budget.
+scene.render.image_settings.quality=90
+for im in list(bpy.data.images):
+ if 'basecolor' in im.name:
+  im.filepath_raw=str(OUT/(im.name+'.jpg'));im.file_format='JPEG';im.save();im.pack()
+receipts=[]
+def clamp(x):return max(0,min(1,x))
+def smooth(x):x=clamp(x);return x*x*(3-2*x)
+def distance(p,a,b):q=b-a;t=clamp((p-a).dot(q)/q.length_squared);return (p-(a+t*q)).length
+for name,H in [('AceHack',1.9),('Xenaa',1.82)]:
+ meshes=[o for o in scene.objects if o.type=='MESH' and o.name.startswith(name+' | ') and any(s in o.name for s in ['generator','Fitted collar','Rebuilt hair'])]
+ head=next(o for o in meshes if 'head generator' in o.name);offset=head.location.x
+ for o in meshes:o.data.validate(clean_customdata=True);o.data.update()
+ mouthz=1.715 if name=='AceHack' else 1.648;eyez=1.80 if name=='AceHack' else 1.72
+ # Localized authoring is a prototype, not a fitted performance-capture rig.
+ basis=head.shape_key_add(name='Basis');keyrows=[]
+ channels=['jawOpen','jawLeft','jawRight','mouthSmileLeft','mouthSmileRight','mouthPucker','browInnerUp','browDownLeft','browDownRight']
+ for channel in channels:
+  key=head.shape_key_add(name=channel);maxd=0;changed=0;neckd=0
+  for i,v in enumerate(head.data.vertices):
+   x,y,z=v.co;front=smooth((-y-.10)/.065);dx=dy=dz=0
+   mouth=math.exp(-((x/.055)**2+((z-mouthz)/.04)**2))*front
+   left=smooth((x+.007)/.022);side=left if channel.endswith('Left') else 1-left
+   if channel=='jawOpen':
+    w=front*math.exp(-(x/.075)**4)*smooth((mouthz+.012-z)/.036)*smooth((z-(mouthz-.10))/.04);dz=-.012*w;dy=-.002*w
+   elif channel in ['jawLeft','jawRight']:dx=(.007 if channel=='jawLeft' else -.007)*mouth
+   elif channel.startswith('mouthSmile'):dz=.008*mouth*side;dx=(.005 if channel.endswith('Left') else -.005)*mouth*side
+   elif channel=='mouthPucker':dx=-x*.18*mouth;dy=-.007*mouth
+   elif channel=='browInnerUp':dz=.006*math.exp(-((x/.029)**2+((z-eyez-.031)/.019)**2))*front
+   else:dz=-.0045*math.exp(-(((abs(x)-.042)/.028)**2+((z-eyez-.032)/.020)**2))*front*side
+   d=Vector((dx,dy,dz));key.data[i].co=v.co+d;maxd=max(maxd,d.length);changed+=d.length>1e-6
+   if z<H*.84:neckd=max(neckd,d.length)
+  keyrows.append({'channel':channel,'maximum_delta_m':maxd,'moved_vertices':changed,'lower_neck_max_delta_m':neckd})
+ # Twenty anatomical joints, at most four weights. Both head and body share one neck field.
+ spec=[('Pelvis',(0,0,.98),(0,0,1.10),None),('Spine1',(0,0,1.10),(0,0,1.24),'Pelvis'),('Spine2',(0,0,1.24),(0,0,1.39),'Spine1'),('Spine3',(0,0,1.39),(0,-.035,1.55),'Spine2'),('Neck',(0,-.06,1.55),(0,-.06,1.69),'Spine3'),('Head',(0,-.06,1.69),(0,-.055,1.87),'Neck')]
+ for side,sgn in [('Left',1),('Right',-1)]:
+  spec.extend([(side+'Shoulder',(0,-.035,1.51),(sgn*.19,-.03,1.51),'Spine3'),(side+'UpperArm',(sgn*.19,-.03,1.51),(sgn*.265,-.02,1.28),side+'Shoulder'),(side+'ForeArm',(sgn*.265,-.02,1.28),(sgn*.34,-.035,1.06),side+'UpperArm'),(side+'Hand',(sgn*.34,-.035,1.06),(sgn*.35,-.05,.94),side+'ForeArm'),(side+'Thigh',(sgn*.105,0,1.0),(sgn*.11,-.025,.57),'Pelvis'),(side+'Shin',(sgn*.11,-.025,.57),(sgn*.12,.015,.13),side+'Thigh'),(side+'Foot',(sgn*.12,.015,.13),(sgn*.12,-.17,.04),side+'Shin')])
+ scale=H/1.9;spec=[(n,Vector(a)*scale,Vector(b)*scale,p) for n,a,b,p in spec]
+ data=bpy.data.armatures.new(name+' mobile rig');rig=bpy.data.objects.new(name+' | Motion rig',data);scene.collection.objects.link(rig);rig.location.x=offset;bpy.context.view_layer.objects.active=rig;rig.select_set(True);bpy.ops.object.mode_set(mode='EDIT')
+ for n,a,b,p in spec:
+  bone=data.edit_bones.new(n);bone.head=a;bone.tail=b
+  if p:bone.parent=data.edit_bones[p]
+ bpy.ops.object.mode_set(mode='OBJECT');rig.show_in_front=True
+ for o in meshes:
+  groups={n:o.vertex_groups.new(name=n) for n,a,b,p in spec}
+  for v in o.data.vertices:
+   p=v.co;x,y,z=p
+   if z>H*.79 and (abs(x)<H*.13 or 'head generator' in o.name or 'hair' in o.name):
+    h=smooth((z-H*.825)/(H*.070));n=smooth((z-H*.78)/(H*.05));weights={'Head':h,'Neck':(1-h)*n,'Spine3':(1-h)*(1-n)}
+   else:
+    if 'collar' in o.name:allowed={'Spine3','Neck'}
+    elif abs(x)>H*.11 and z>H*.48:allowed={('Left' if x>0 else 'Right')+s for s in ['Shoulder','UpperArm','ForeArm','Hand']}
+    elif z<H*.51 and y>.04:allowed={'Pelvis','Spine1'}
+    elif z<H*.56:allowed={'Pelvis'}|{('Left' if x>0 else 'Right')+s for s in ['Thigh','Shin','Foot']}
+    else:allowed={'Pelvis','Spine1','Spine2','Spine3'}
+    distances=sorted([(distance(p,a,b),n) for n,a,b,parent in spec if n in allowed])[:4];raw={n:1/(d+.015)**4 for d,n in distances};total=sum(raw.values());weights={n:w/total for n,w in raw.items()}
+   total=sum(weights.values())
+   for n,w in weights.items():
+    if w>1e-7:groups[n].add([v.index],w/total,'REPLACE')
+  mod=o.modifiers.new('Shared mobile skeleton','ARMATURE');mod.object=rig
+  world=o.matrix_world.copy();o.parent=rig;o.matrix_world=world
+ bpy.ops.object.select_all(action='DESELECT');rig.select_set(True)
+ for o in meshes:o.select_set(True)
+ rig.location.x=0
+ bpy.ops.export_scene.gltf(filepath=str(OUT/(name+'-face-body.glb')),use_selection=True,export_format='GLB',export_animations=False,export_morph=True,export_morph_normal=False,export_morph_tangent=False,export_image_format='JPEG',export_jpeg_quality=90,export_yup=True)
+ rig.location.x=offset
+ receipts.append({'character':name,'bones':len(spec),'head_vertices':len(head.data.vertices),'targets':keyrows,'bytes':(OUT/(name+'-face-body.glb')).stat().st_size})
+scene.render.resolution_x=1600;scene.render.resolution_y=1200;scene.cycles.samples=24
+for label,rot,smile in [('neutral',0,0),('neck-turn',20,0),('expression',0,1)]:
+ for name,H in [('AceHack',1.9),('Xenaa',1.82)]:
+  rig=bpy.data.objects[name+' | Motion rig'];bone=rig.pose.bones['Head'];bone.rotation_mode='XYZ';bone.rotation_euler.y=math.radians(rot)
+  head=bpy.data.objects[name+' | Independent head generator']
+  for k in head.data.shape_keys.key_blocks:k.value=smile if k.name in ['mouthSmileLeft','mouthSmileRight','browInnerUp'] else 0
+ scene.render.filepath=str(OUT/(label+'.png'));bpy.ops.render.render(write_still=True)
+for o in bpy.data.objects:
+ if o.type=='ARMATURE':
+  for b in o.pose.bones:b.rotation_euler=(0,0,0)
+ if o.type=='MESH' and o.data.shape_keys:
+  for k in o.data.shape_keys.key_blocks:k.value=0
+bpy.ops.wm.save_as_mainfile(filepath=str(OUT/'TikTok-Characters-Rigged.blend'))
+(ROOT/'mobile-rig-v1-receipt.json').write_text(json.dumps(receipts,indent=2))

@@ -1,0 +1,47 @@
+"""Audit selected GLBs directly, including sparse accessors and embedded images."""
+from pathlib import Path
+import struct,json,math,io,hashlib
+from PIL import Image
+ROOT=Path(__file__).resolve().parent
+FORM={5120:('b',1),5121:('B',1),5122:('h',2),5123:('H',2),5125:('I',4),5126:('f',4)}
+DIM={'SCALAR':1,'VEC2':2,'VEC3':3,'VEC4':4,'MAT4':16,'MAT3':9,'MAT2':4}
+def audit(path):
+ data=path.read_bytes();magic,version,length=struct.unpack_from('<III',data);assert magic==0x46546c67 and version==2 and length==len(data)
+ off=12;chunks={}
+ while off<len(data):
+  n,t=struct.unpack_from('<II',data,off);off+=8;chunks[t]=data[off:off+n];assert len(chunks[t])==n;off+=n
+ g=json.loads(chunks[0x4e4f534a]);blob=chunks[0x004e4942]
+ def readview(idx,offset,count,fmt,dim):
+  v=g['bufferViews'][idx];code,sz=FORM[fmt];stride=v.get('byteStride',sz*dim);start=v.get('byteOffset',0)+offset;assert offset+(count-1)*stride+sz*dim<=v['byteLength']
+  return [struct.unpack_from('<'+code*dim,blob,start+i*stride) for i in range(count)]
+ def accessor(idx):
+  a=g['accessors'][idx];dim=DIM[a['type']];rows=readview(a['bufferView'],a.get('byteOffset',0),a['count'],a['componentType'],dim) if 'bufferView' in a else [(0,)*dim]*a['count']
+  if 'sparse' in a:
+   s=a['sparse'];ix=s['indices'];val=s['values'];indices=readview(ix['bufferView'],ix.get('byteOffset',0),s['count'],ix['componentType'],1);values=readview(val['bufferView'],val.get('byteOffset',0),s['count'],a['componentType'],dim)
+   for (i,),v in zip(indices,values):assert i<a['count'];rows[i]=v
+  if a.get('normalized'):
+   divisor={5121:255,5123:65535,5120:127,5122:32767}[a['componentType']];rows=[tuple(max(-1,c/divisor) for c in v) for v in rows]
+  assert all(math.isfinite(c) for row in rows for c in row)
+  return rows
+ for i in range(len(g['accessors'])):accessor(i)
+ meshes=[]
+ for m in g['meshes']:
+  for p in m['primitives']:
+   at=p['attributes'];pos=accessor(at['POSITION']);indices=accessor(p['indices']);assert all(0<=i[0]<len(pos) for i in indices);assert len(indices)%3==0
+   targets=p.get('targets',[]);assert len(m.get('extras',{}).get('targetNames',[]))==len(targets)
+   target_rows=[]
+   for name,t in zip(m.get('extras',{}).get('targetNames',[]),targets):
+    delta=accessor(t['POSITION']);assert len(delta)==len(pos);maximum=max(math.sqrt(sum(c*c for c in d)) for d in delta);assert maximum>0
+    target_rows.append({'name':name,'maximum_delta_m':maximum})
+   if 'WEIGHTS_0' in at:
+    weights=accessor(at['WEIGHTS_0']);assert all(abs(sum(w)-1)<1e-4 and all(0<=c<=1 for c in w) for w in weights)
+    assert 'WEIGHTS_1' not in at;assert all(len(w)<=4 for w in weights)
+    joints=accessor(at['JOINTS_0']);assert all(0<=j<20 for row in joints for j in row)
+   meshes.append({'name':m.get('name'),'vertices_after_uv_splits':len(pos),'triangles':len(indices)//3,'targets':target_rows,'skinned':'WEIGHTS_0' in at})
+ images=[]
+ for im in g.get('images',[]):
+  view=g['bufferViews'][im['bufferView']];raw=blob[view.get('byteOffset',0):view.get('byteOffset',0)+view['byteLength']];pic=Image.open(io.BytesIO(raw));assert max(pic.size)<=1024 and len(raw)<1000000
+  images.append({'size':list(pic.size),'bytes':len(raw),'format':pic.format})
+ return {'file':str(path.relative_to(ROOT)),'bytes':len(data),'sha256':hashlib.sha256(data).hexdigest(),'joints':[len(s['joints']) for s in g.get('skins',[])],'meshes':meshes,'images':images,'checks':'finite all accessors; valid index ranges; nonzero morphs; image dimensions/bytes; normalized max-four weights when present','scope':'Structural subset audit, not complete Khronos validation or proof of deformation quality'}
+paths=[ROOT/f'{folder}/{name}{suffix}.glb' for folder,suffix in [('mobile-export-v13','-body-candidate'),('mobile-export-v13','-face-candidate')] for name in ['AceHack','Xenaa']]
+rows=[audit(p) for p in paths];(ROOT/'mobile-validation-v13.json').write_text(json.dumps(rows,indent=2)+'\n');print(json.dumps([{'file':r['file'],'bytes':r['bytes'],'triangles':sum(m['triangles'] for m in r['meshes'])} for r in rows],indent=2))

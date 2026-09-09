@@ -1,0 +1,50 @@
+{
+  "date": "2026-09-09",
+  "app": "Effect House 5.14.0",
+  "method": "Native app via CUA; observations, not fabricated screenshots",
+  "AceHack_body_v2": {
+    "package_display_mb": 2.5,
+    "cap_mb": 8,
+    "joints_matched": 20,
+    "preview": "Dancing (Person 1)",
+    "verdict": "Failed visual quality: arm and garment distortion"
+  },
+  "AceHack_face_v1": {
+    "package_display_mb": 1.7,
+    "cap_mb": 8,
+    "preview": "Mouth Open (Person 1)",
+    "head_tracking": "Visible face follows preview person; occluder disabled to avoid cutting reconstructed face",
+    "graph": "Update to native Face Avatar Drive, valid head MorpherComponent reference",
+    "channels": 11,
+    "performance_test": {
+      "displayed_time": "2026-09-09 04:51",
+      "result": "Passed",
+      "fps": 16.55,
+      "minimum_fps": 13.5,
+      "memory_mb": 50.31,
+      "maximum_memory_mb": 200
+    },
+    "limits": "No convincing open mouth: missing mouth cavity. No per-channel runtime coefficient receipt; graph wiring is not a facial-accuracy benchmark."
+  },
+  "editor_issues": [
+    "Project switching occasionally quit the app and reopened Home/crash feedback; no feedback submitted. Saved project reopened successfully.",
+    "Hierarchy drag landed in graph or did not reparent; copied projects patched as text and then reopened/verified."
+  ],
+  "phone_test": "Not performed; no TikTok submission",
+  "Xenaa_face_v1": {
+    "package_display_mb": 1.9,
+    "cap_mb": 8,
+    "preview": "Mouth Open (Person 1)",
+    "graph": "Update to native Face Avatar Drive; selected Xenaa MorpherComponent in actual editor",
+    "channels": 11,
+    "performance_test": {
+      "displayed_time": "2026-09-09 04:59",
+      "result": "Passed",
+      "fps": 16.55,
+      "minimum_fps": 13.5,
+      "memory_mb": 50.53,
+      "maximum_memory_mb": 200
+    },
+    "limits": "Same hand-authored expression limitations as AceHack; no facial-accuracy or phone test"
+  }
+}

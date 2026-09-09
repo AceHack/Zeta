@@ -1,0 +1,16 @@
+[
+  {
+    "character": "AceHack",
+    "rest_pose": "T",
+    "bones": 20,
+    "blendshapes": 11,
+    "glb_bytes": 1694308
+  },
+  {
+    "character": "Xenaa",
+    "rest_pose": "T",
+    "bones": 20,
+    "blendshapes": 11,
+    "glb_bytes": 2049188
+  }
+]

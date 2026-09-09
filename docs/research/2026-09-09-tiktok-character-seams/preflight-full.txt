@@ -1,0 +1,46 @@
+$ bun ./src/Core.TypeScript/hygiene/preflight.ts
+Preflight (full: lints + tsc + build + test)
+
+▶ no-conflict-markers … PASS
+▶ no-empty-dirs … PASS
+▶ hook-script-paths … PASS
+▶ identity-registry-sync … PASS
+▶ auto-vivify check … PASS
+▶ ace build-graph drift … PASS
+▶ check-arity census drift … PASS
+▶ check-arity census drift (non-equality) … PASS
+▶ inventory items.json current … PASS
+▶ markdownlint … PASS
+▶ lint: TypeScript (tsc) … PASS
+▶ lint: F# … PASS
+▶ lint: C# … PASS
+▶ lint: Python … PASS
+▶ lint: Rust … PASS
+▶ lint: Go … SKIP (toolchain missing)
+▶ dotnet build -c Release … PASS
+▶ dotnet test -c Release … PASS
+
+────────────────────────────────────────────────────────────
+Summary
+  ✓ no-conflict-markers
+  ✓ no-empty-dirs
+  ✓ hook-script-paths
+  ✓ identity-registry-sync
+  ✓ auto-vivify check
+  ✓ ace build-graph drift
+  ✓ check-arity census drift
+  ✓ check-arity census drift (non-equality)
+  ✓ inventory items.json current
+  ✓ markdownlint
+  ✓ lint: TypeScript (tsc)
+  ✓ lint: F#
+  ✓ lint: C#
+  ✓ lint: Python
+  ✓ lint: Rust
+  • lint: Go — underlying tool unavailable
+  ✓ dotnet build -c Release
+  ✓ dotnet test -c Release
+
+1 check(s) SKIPPED (tool unavailable locally) — they will still run in CI.
+
+✓ preflight: all 17 executed check(s) passed.

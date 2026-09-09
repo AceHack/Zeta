@@ -1,0 +1,38 @@
+{
+  "blender": "5.2.1 LTS",
+  "finite_vertices": true,
+  "packed_file_images": [
+    "AceHack-square-alpha.png",
+    "alpha.png",
+    "alpha.png.001",
+    "Xenaa-square-alpha.png"
+  ],
+  "character_meshes": 7,
+  "ranges": [
+    {
+      "name": "AceHack",
+      "head_z_bounds": [
+        1.524999976158142,
+        1.9117302894592285
+      ],
+      "body_z_bounds": [
+        0.0,
+        1.7191978693008423
+      ],
+      "note": "Z-range overlap only; side/back renders remain necessary to assess attachment"
+    },
+    {
+      "name": "Xenaa",
+      "head_z_bounds": [
+        1.475000023841858,
+        1.8419688940048218
+      ],
+      "body_z_bounds": [
+        0.0,
+        1.6469953060150146
+      ],
+      "note": "Z-range overlap only; side/back renders remain necessary to assess attachment"
+    }
+  ],
+  "scope": "Neutral assembly structural checks, not whole-body watertightness or motion proof"
+}

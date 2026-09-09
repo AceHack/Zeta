@@ -1,0 +1,24 @@
+from pathlib import Path
+import re,shutil,json
+r=Path(__file__).resolve().parent;s=r/'AceHack-TikTok-v3';d=r/'AceHack-Face-v1'
+shutil.copytree(s,d,ignore=shutil.ignore_patterns('Library','Record'))
+p=d/'Assets/main.scene';s=p.read_text();s=re.sub(r'  - __class: Entity\n    name: !<str> Body Avatar Drive\n.*?(?=  - __class: Entity\n)', '',s,flags=re.S)
+blocks=re.split(r'(?=--- !Transform &)',s)
+for i,b in enumerate(blocks):
+ if b.startswith('--- !Transform &38\n'):b=''
+ if b.startswith('--- !Transform &9\n'):b=b.replace('  - {localId: 38}\n','')
+ if b.startswith('--- !Transform &12\n'):
+  b=b.replace('parent: {localId: 38}','parent: {localId: 40}').replace('localScale: {x: 1, y: 1, z: 1}','localScale: {x: 0.75, y: 0.75, z: 0.75}')
+ if b.startswith('--- !Transform &40\n'):b=b.replace('children:\n','children:\n  - {localId: 12}\n')
+ blocks[i]=b
+p.write_text(''.join(blocks))
+p=d/'Graph/graph.json';g=json.loads(p.read_text())
+for c in g['containers']:
+ graph=c['graph'];graph['nodeList']=[n for n in graph['nodeList'] if n.get('name')!='Get Scene Object']
+ for n in graph['nodeList']:
+  if n.get('name')=='Face Avatar Drive':
+   n['position']={'x':50250,'y':49900}
+   for port in n['inputPorts']:
+    if port['portName']=='Deformation':port['portValue']['value']='Guid(13855617519989489080, 10785934338203678338)'
+p.write_text(json.dumps(g,indent=2))
+p=d/'effect.ehproj';j=json.loads(p.read_text());j['name']=d.name;p.write_text(json.dumps(j,indent=2))

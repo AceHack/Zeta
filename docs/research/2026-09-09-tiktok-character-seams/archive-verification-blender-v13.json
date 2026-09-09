@@ -1,0 +1,10 @@
+{
+  "files_verified_after_restore": 623,
+  "archive": {
+    "name": "tiktok-blender-correction-v13.zip",
+    "bytes": 611001153,
+    "sha256": "93210ec888cc73fcd8e310bcd86fa5c8c0a37b4aa93ffb6913154e2ad22f6ded"
+  },
+  "restore_directory": "/Users/acehack/Documents/Blender/TikTok-Character-Archive-20260909/restore-check-v13",
+  "scope": "Complete per-file restore and SHA256 validation; no entries overwritten"
+}

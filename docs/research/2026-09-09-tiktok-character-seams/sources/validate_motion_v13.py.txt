@@ -1,0 +1,57 @@
+"""Pose-based checks independent of the mesh generator's weighting formulas."""
+import bpy,math,json
+from pathlib import Path
+from mathutils import Vector,Matrix
+R=Path(__file__).resolve().parent;O=R/'blender-v13';bpy.ops.wm.open_mainfile(filepath=str(O/'Characters-v13.blend'));scene=bpy.context.scene
+rigs=[o for o in scene.objects if o.type=='ARMATURE'];rows=[]
+def reset():
+ for rig in rigs:
+  for b in rig.pose.bones:b.matrix_basis=Matrix.Identity(4)
+ bpy.context.view_layer.update()
+def turn(rig,n,axis,angle):
+ b=rig.pose.bones[n];m=b.matrix.copy();p=m.translation.copy();b.matrix=Matrix.Translation(p)@Matrix.Rotation(math.radians(angle),4,axis)@Matrix.Translation(-p)@m;bpy.context.view_layer.update()
+def positions(o):
+ ob=o.evaluated_get(bpy.context.evaluated_depsgraph_get());me=ob.to_mesh();points=[ob.matrix_world@v.co for v in me.vertices];ob.to_mesh_clear();return points
+baseline={o.name:positions(o) for rig in rigs for o in rig.children if o.type=='MESH'}
+# Actual evaluated vertices are compared to a rigid transform and unchanged base.
+for label,ops in [('left-arm',[('LeftUpperArm','Y',-60)]),('right-arm',[('RightUpperArm','Y',60)]),('elbows',[('LeftForeArm','X',-60),('RightForeArm','X',-60)]),('head-left',[('Head','Z',30)]),('head-right',[('Head','Z',-30)]),('nod',[('Head','X',20)]),('neck-bend',[('Neck','X',15)])]:
+ reset()
+ for rig in rigs:
+  name=rig.name.split(' | ')[0];base=1.475 if name=='AceHack' else 1.435;cut=1.605 if name=='AceHack' else 1.525
+  head=bpy.data.objects[name+' | Independent head generator'];other=bpy.data.objects[name+' | '+('Right' if label=='left-arm' else 'Left')+' arm surface'];before_other=baseline[other.name]
+  for op in ops:turn(rig,*op)
+  points=positions(head);basis=baseline[head.name];transform=rig.matrix_world@rig.pose.bones['Head'].matrix@rig.data.bones['Head'].matrix_local.inverted()@rig.matrix_world.inverted()
+  neck_ids=[v.index for v in head.data.vertices if v.co.z<=base+.004];face_ids=[v.index for v in head.data.vertices if v.co.z>=cut+.001]
+  neck_error=max(((points[i]-basis[i]).length for i in neck_ids),default=0);face_error=max(((points[i]-transform@basis[i]).length for i in face_ids),default=0)
+  hairs=[o for o in rig.children if o.type=='MESH' and ('hair' in o.name.lower() or 'lock' in o.name.lower())];hair_error=0
+  for hair in hairs:
+   ps=positions(hair);bs=baseline[hair.name];hair_error=max(hair_error,max(((p-transform@b).length for p,b in zip(ps,bs)),default=0))
+  opposite_error=max(((p-b).length for p,b in zip(positions(other),before_other)),default=0) if label in ['left-arm','right-arm'] else None
+  body=bpy.data.objects[name+' | Body generator'];bp=positions(body);bb=baseline[body.name];coat_ids=[v.index for v in body.data.vertices if v.co.z<.95];coat_error=max(((bp[i]-bb[i]).length for i in coat_ids),default=0)
+  finite=all(math.isfinite(c) for o in rig.children if o.type=='MESH' for p in positions(o) for c in p)
+  rows.append({'pose':label,'character':name,'neck_base_vertices':len(neck_ids),'neck_base_max_displacement_m':neck_error,'rigid_face_max_error_m':face_error,'hair_follow_max_error_m':hair_error,'opposite_arm_max_displacement_m':opposite_error,'coat_tail_max_displacement_m':coat_error,'finite':finite})
+  # Restore before the next character; each measurement has one active skeleton.
+  for b in rig.pose.bones:b.matrix_basis=Matrix.Identity(4)
+  bpy.context.view_layer.update()
+assert all(r['neck_base_vertices']>0 and r['neck_base_max_displacement_m']<1e-5 and r['rigid_face_max_error_m']<1e-5 and r['hair_follow_max_error_m']<1e-5 and r['coat_tail_max_displacement_m']<1e-5 and (r['opposite_arm_max_displacement_m'] is None or r['opposite_arm_max_displacement_m']<1e-5) and r['finite'] for r in rows)
+# Marked review sequence: actual rig poses, not image interpolation.
+reset();scene.frame_start=1;scene.frame_end=337;scene.render.fps=24
+sequence=[(1,'Neutral',[]),(25,'Left arm 60',[('LeftUpperArm','Y',-60)]),(49,'Neutral',[]),(73,'Right arm 60',[('RightUpperArm','Y',60)]),(97,'Neutral',[]),(121,'Elbows 60',[('LeftForeArm','X',-60),('RightForeArm','X',-60)]),(145,'Neutral',[]),(169,'Head left 30',[('Head','Z',30)]),(193,'Neutral',[]),(217,'Head right 30',[('Head','Z',-30)]),(241,'Neutral',[]),(265,'Head nod 20',[('Head','X',20)]),(289,'Neutral',[]),(313,'Neck bend 15',[('Neck','X',15)]),(337,'Neutral',[])]
+for frame,label,ops in sequence:
+ reset();scene.frame_set(frame)
+ # frame_set may evaluate an already-authored curve; reset after evaluation.
+ reset()
+ for rig in rigs:
+  for op in ops:turn(rig,*op)
+  for b in rig.pose.bones:
+   b.rotation_mode='QUATERNION';b.keyframe_insert('location',frame=frame);b.keyframe_insert('rotation_quaternion',frame=frame);b.keyframe_insert('scale',frame=frame)
+ marker=scene.timeline_markers.new(label,frame=frame)
+scene.frame_set(1);scene.camera.data.ortho_scale=3.7;scene.camera.location=(.15,-5,1.2);scene.camera.rotation_euler=(Vector((0,-.10,1))-scene.camera.location).to_track_quat('-Z','Y').to_euler();scene['Review']='Scrub markers. Numerical attachment checks pass; visual defects remain separately reviewed.'
+for screen in bpy.data.screens:
+ for area in screen.areas:
+  if area.type=='VIEW_3D':area.spaces.active.region_3d.view_perspective='CAMERA';area.spaces.active.overlay.show_overlays=False;area.spaces.active.shading.type='MATERIAL'
+bpy.ops.wm.save_as_mainfile(filepath=str(O/'Blender-Motion-Review-v13.blend'))
+(R/'motion-validation-v13.json').write_text(json.dumps({'tolerance_m':1e-5,'checks':rows,'sequence':[{'frame':f,'label':label} for f,label,ops in sequence],'limits':['Does not certify shoulder topology, collision avoidance, facial expressions or Effect House retargeting.','Legs and coat tails remain pelvis-bound in this upper-body prototype.','Hair is rigidly head-bound; no secondary dynamics.']},indent=2))
+# Render a short physical motion preview at 12 fps; each saved frame is evaluated.
+scene.render.resolution_x=960;scene.render.resolution_y=720;scene.render.resolution_percentage=100;scene.cycles.samples=4;scene.render.fps=12;scene.frame_step=2;scene.render.image_settings.file_format='PNG';scene.render.filepath=str(O/'motion-frames/frame-');(O/'motion-frames').mkdir(exist_ok=True)
+bpy.ops.render.render(animation=True)

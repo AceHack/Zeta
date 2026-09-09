@@ -1,0 +1,9 @@
+import bpy,json,hashlib
+from pathlib import Path
+R=Path(__file__).resolve().parent;bpy.ops.wm.read_factory_settings(use_empty=True)
+bpy.ops.import_scene.fbx(filepath=str(R/'BodyRigTemplate-official.fbx'))
+rows=[]
+for o in bpy.data.objects:
+ if o.type=='ARMATURE':
+  rows.append({'name':o.name,'world_matrix':[list(r) for r in o.matrix_world],'bones':[{'name':b.name,'parent':b.parent.name if b.parent else None,'head':list(o.matrix_world@b.head_local),'tail':list(o.matrix_world@b.tail_local),'matrix':[list(r) for r in b.matrix_local]} for b in o.data.bones]})
+(R/'official-rig-inspection.json').write_text(json.dumps({'source_url':'https://sf16.tiktokcdn-us.com/obj/eden-va2/uhpzvyalweh7ullsyhj/LargeFiles/BodyRigTemplate.fbx.zip','fbx_sha256':hashlib.sha256((R/'BodyRigTemplate-official.fbx').read_bytes()).hexdigest(),'rigs':rows},indent=2))

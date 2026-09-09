@@ -1,0 +1,18 @@
+import bpy,bmesh,json
+from pathlib import Path
+R=Path(__file__).resolve().parent
+bpy.ops.wm.open_mainfile(filepath=str(R/'mobile-v1/Mobile-Characters.blend'))
+rows=[]
+for name in ['AceHack','Xenaa']:
+ o=bpy.data.objects[name+' | Independent head generator'];bm=bmesh.new();bm.from_mesh(o.data)
+ es=set(e for e in bm.edges if e.is_boundary);loops=[]
+ while es:
+  todo=[es.pop()];vs=set()
+  while todo:
+   e=todo.pop();vs.update(e.verts)
+   for v in e.verts:
+    for n in v.link_edges:
+     if n in es:es.remove(n);todo.append(n)
+  loops.append({'n':len(vs),'lo':[min(v.co[i] for v in vs) for i in range(3)],'hi':[max(v.co[i] for v in vs) for i in range(3)]})
+ rows.append({'name':name,'loops':sorted(loops,key=lambda l:-l['n'])[:20]})
+print(json.dumps(rows,indent=2))

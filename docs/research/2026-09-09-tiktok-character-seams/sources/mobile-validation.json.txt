@@ -1,0 +1,336 @@
+[
+  {
+    "file": "mobile-rig-v1/AceHack-face-body.glb",
+    "bytes": 1690044,
+    "sha256": "8f7f60b3c7ce351ced53a822a31b23e46432857a3dd65e8f941e966ed9d9af3c",
+    "joints": [
+      20
+    ],
+    "meshes": [
+      {
+        "name": "geometry_0",
+        "vertices_after_uv_splits": 11645,
+        "triangles": 13992,
+        "targets": [],
+        "skinned": true
+      },
+      {
+        "name": "AceHack collar",
+        "vertices_after_uv_splits": 548,
+        "triangles": 516,
+        "targets": [],
+        "skinned": true
+      },
+      {
+        "name": "geometry_0.001",
+        "vertices_after_uv_splits": 7367,
+        "triangles": 7700,
+        "targets": [
+          {
+            "name": "jawOpen",
+            "maximum_delta_m": 0.012165490921082139
+          },
+          {
+            "name": "jawLeft",
+            "maximum_delta_m": 0.0069968244060873985
+          },
+          {
+            "name": "jawRight",
+            "maximum_delta_m": 0.0069968244060873985
+          },
+          {
+            "name": "mouthSmileLeft",
+            "maximum_delta_m": 0.008693591597206013
+          },
+          {
+            "name": "mouthSmileRight",
+            "maximum_delta_m": 0.00914567527531803
+          },
+          {
+            "name": "mouthPucker",
+            "maximum_delta_m": 0.0069969265908260666
+          },
+          {
+            "name": "browInnerUp",
+            "maximum_delta_m": 0.005857348442077637
+          },
+          {
+            "name": "browDownLeft",
+            "maximum_delta_m": 0.0037692785263061523
+          },
+          {
+            "name": "browDownRight",
+            "maximum_delta_m": 0.004167079925537109
+          }
+        ],
+        "skinned": true
+      }
+    ],
+    "images": [
+      {
+        "size": [
+          1024,
+          1024
+        ],
+        "bytes": 170291,
+        "format": "JPEG"
+      },
+      {
+        "size": [
+          1024,
+          1024
+        ],
+        "bytes": 197897,
+        "format": "JPEG"
+      }
+    ],
+    "checks": "finite all accessors; valid index ranges; nonzero morphs; image dimensions/bytes; normalized max-four weights when present",
+    "scope": "Structural subset audit, not complete Khronos validation or proof of deformation quality"
+  },
+  {
+    "file": "mobile-rig-v1/Xenaa-face-body.glb",
+    "bytes": 2043760,
+    "sha256": "11b1902428938ecd8b5c038dffd5d36c1792d1f2bc8826597385c2cd14916e88",
+    "joints": [
+      20
+    ],
+    "meshes": [
+      {
+        "name": "geometry_0.002",
+        "vertices_after_uv_splits": 12086,
+        "triangles": 13995,
+        "targets": [],
+        "skinned": true
+      },
+      {
+        "name": "Xenaa collar",
+        "vertices_after_uv_splits": 544,
+        "triangles": 516,
+        "targets": [],
+        "skinned": true
+      },
+      {
+        "name": "geometry_0.003",
+        "vertices_after_uv_splits": 6539,
+        "triangles": 7741,
+        "targets": [
+          {
+            "name": "jawOpen",
+            "maximum_delta_m": 0.012165490921082139
+          },
+          {
+            "name": "jawLeft",
+            "maximum_delta_m": 0.0069761332124471664
+          },
+          {
+            "name": "jawRight",
+            "maximum_delta_m": 0.0069761332124471664
+          },
+          {
+            "name": "mouthSmileLeft",
+            "maximum_delta_m": 0.008763307559266199
+          },
+          {
+            "name": "mouthSmileRight",
+            "maximum_delta_m": 0.009117269040877351
+          },
+          {
+            "name": "mouthPucker",
+            "maximum_delta_m": 0.006994498636724057
+          },
+          {
+            "name": "browInnerUp",
+            "maximum_delta_m": 0.005792737007141113
+          },
+          {
+            "name": "browDownLeft",
+            "maximum_delta_m": 0.0042504072189331055
+          },
+          {
+            "name": "browDownRight",
+            "maximum_delta_m": 0.004373908042907715
+          }
+        ],
+        "skinned": true
+      },
+      {
+        "name": "Layered swept hair",
+        "vertices_after_uv_splits": 5298,
+        "triangles": 6399,
+        "targets": [],
+        "skinned": true
+      }
+    ],
+    "images": [
+      {
+        "size": [
+          1024,
+          1024
+        ],
+        "bytes": 155866,
+        "format": "JPEG"
+      },
+      {
+        "size": [
+          1024,
+          1024
+        ],
+        "bytes": 125360,
+        "format": "JPEG"
+      }
+    ],
+    "checks": "finite all accessors; valid index ranges; nonzero morphs; image dimensions/bytes; normalized max-four weights when present",
+    "scope": "Structural subset audit, not complete Khronos validation or proof of deformation quality"
+  },
+  {
+    "file": "face-assets-v1/AceHack-face.glb",
+    "bytes": 646720,
+    "sha256": "1c4f040c6f5917bb657ff27c060be10d22d736114c2422f5fec185ee55e33e54",
+    "joints": [],
+    "meshes": [
+      {
+        "name": "geometry_0.001",
+        "vertices_after_uv_splits": 7367,
+        "triangles": 7700,
+        "targets": [
+          {
+            "name": "jawOpen",
+            "maximum_delta_m": 0.012165490921082139
+          },
+          {
+            "name": "jawLeft",
+            "maximum_delta_m": 0.0069968244060873985
+          },
+          {
+            "name": "jawRight",
+            "maximum_delta_m": 0.0069968244060873985
+          },
+          {
+            "name": "mouthSmileLeft",
+            "maximum_delta_m": 0.008693591597206013
+          },
+          {
+            "name": "mouthSmileRight",
+            "maximum_delta_m": 0.00914567527531803
+          },
+          {
+            "name": "mouthPucker",
+            "maximum_delta_m": 0.0069969265908260666
+          },
+          {
+            "name": "browInnerUp",
+            "maximum_delta_m": 0.005857348442077637
+          },
+          {
+            "name": "browDownLeft",
+            "maximum_delta_m": 0.0037692785263061523
+          },
+          {
+            "name": "browDownRight",
+            "maximum_delta_m": 0.004167079925537109
+          },
+          {
+            "name": "eyeBlinkLeft",
+            "maximum_delta_m": 0.005590200424194336
+          },
+          {
+            "name": "eyeBlinkRight",
+            "maximum_delta_m": 0.0045555830001831055
+          }
+        ],
+        "skinned": false
+      }
+    ],
+    "images": [
+      {
+        "size": [
+          1024,
+          1024
+        ],
+        "bytes": 197897,
+        "format": "JPEG"
+      }
+    ],
+    "checks": "finite all accessors; valid index ranges; nonzero morphs; image dimensions/bytes; normalized max-four weights when present",
+    "scope": "Structural subset audit, not complete Khronos validation or proof of deformation quality"
+  },
+  {
+    "file": "face-assets-v1/Xenaa-face.glb",
+    "bytes": 903420,
+    "sha256": "44f74e779cd669985fe30ea981fb1f36c237735647e4971c2df7029bd7213716",
+    "joints": [],
+    "meshes": [
+      {
+        "name": "geometry_0.003",
+        "vertices_after_uv_splits": 6539,
+        "triangles": 7741,
+        "targets": [
+          {
+            "name": "jawOpen",
+            "maximum_delta_m": 0.012165490921082139
+          },
+          {
+            "name": "jawLeft",
+            "maximum_delta_m": 0.0069761332124471664
+          },
+          {
+            "name": "jawRight",
+            "maximum_delta_m": 0.0069761332124471664
+          },
+          {
+            "name": "mouthSmileLeft",
+            "maximum_delta_m": 0.008763307559266199
+          },
+          {
+            "name": "mouthSmileRight",
+            "maximum_delta_m": 0.009117269040877351
+          },
+          {
+            "name": "mouthPucker",
+            "maximum_delta_m": 0.006994498636724057
+          },
+          {
+            "name": "browInnerUp",
+            "maximum_delta_m": 0.005792737007141113
+          },
+          {
+            "name": "browDownLeft",
+            "maximum_delta_m": 0.0042504072189331055
+          },
+          {
+            "name": "browDownRight",
+            "maximum_delta_m": 0.004373908042907715
+          },
+          {
+            "name": "eyeBlinkLeft",
+            "maximum_delta_m": 0.007082104682922363
+          },
+          {
+            "name": "eyeBlinkRight",
+            "maximum_delta_m": 0.00703275203704834
+          }
+        ],
+        "skinned": false
+      },
+      {
+        "name": "Layered swept hair",
+        "vertices_after_uv_splits": 5298,
+        "triangles": 6399,
+        "targets": [],
+        "skinned": false
+      }
+    ],
+    "images": [
+      {
+        "size": [
+          1024,
+          1024
+        ],
+        "bytes": 125360,
+        "format": "JPEG"
+      }
+    ],
+    "checks": "finite all accessors; valid index ranges; nonzero morphs; image dimensions/bytes; normalized max-four weights when present",
+    "scope": "Structural subset audit, not complete Khronos validation or proof of deformation quality"
+  }
+]

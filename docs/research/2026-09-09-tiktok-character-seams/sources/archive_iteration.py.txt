@@ -1,0 +1,23 @@
+"""Preserve all actual attempts; exclude only regenerable Effect House/UI caches."""
+from pathlib import Path
+import hashlib,json,zipfile,shutil
+root=Path(__file__).resolve().parent
+repo=Path('/Users/acehack/.zeta/agents/codex/Zeta-character-evolution-20260908');doc=repo/'docs/research/2026-09-09-tiktok-character-seams'
+out=root.parent/'TikTok-Character-Archive-20260909';out.mkdir(exist_ok=True);archive=out/'tiktok-character-seams-v2.zip'
+paths=sorted(p for p in root.rglob('*') if p.is_file() and not set(p.relative_to(root).parts).intersection({'Library','Record','__pycache__'}) and p.name!='.DS_Store')
+m={'schema':1,'release_tag':'research-tiktok-character-seams-20260909','archives':[],'files':[],'parent_record':'docs/research/2026-09-09-character-evolution/README.md','verdict':'Improved neutral neck assembly and performance-tested face-effect prototypes; full-body motion repairs rejected; facial topology remains provisional','excluded':'Effect House Library and Record caches, Python caches, .DS_Store'}
+with zipfile.ZipFile(archive,'x',compression=zipfile.ZIP_DEFLATED,compresslevel=4) as z:
+ for p in paths:
+  rel=p.relative_to(root);name=root.name+'/'+rel.as_posix();raw=p.read_bytes();m['files'].append({'archive':archive.name,'path':name,'bytes':len(raw),'sha256':hashlib.sha256(raw).hexdigest()});z.writestr(name,raw)
+  if rel.parent==Path('.') and p.suffix in ['.py','.json']:
+   dest=doc/'sources'/(p.name+'.txt');dest.parent.mkdir(parents=True,exist_ok=True);dest.write_bytes(raw)
+m['archives'].append({'name':archive.name,'bytes':archive.stat().st_size,'sha256':hashlib.file_digest(archive.open('rb'),'sha256').hexdigest()})
+for d in [out,doc]:(d/'inventory.json').write_text(json.dumps(m,indent=2)+'\n')
+restore=out/'restore-check';restore.mkdir(exist_ok=False)
+with zipfile.ZipFile(archive) as z:
+ for row in m['files']:
+  dest=restore/row['path'];dest.parent.mkdir(parents=True,exist_ok=True)
+  with z.open(row['path']) as src,dest.open('wb') as dst:shutil.copyfileobj(src,dst)
+  assert dest.stat().st_size==row['bytes'];assert hashlib.file_digest(dest.open('rb'),'sha256').hexdigest()==row['sha256']
+receipt={'files_verified_after_restore':len(m['files']),'archive':m['archives'][0],'restore_directory':str(restore),'scope':'Complete per-file restore and SHA256 validation; no entries overwritten'}
+(out/'verification.json').write_text(json.dumps(receipt,indent=2)+'\n');(doc/'archive-verification.json').write_text(json.dumps(receipt,indent=2)+'\n');print(json.dumps(receipt,indent=2))

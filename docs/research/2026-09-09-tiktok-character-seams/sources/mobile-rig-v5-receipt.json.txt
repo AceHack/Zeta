@@ -1,0 +1,18 @@
+[
+  {
+    "character": "AceHack",
+    "removed_stretched_faces": 371,
+    "rest_pose": "T",
+    "bones": 20,
+    "blendshapes": 11,
+    "glb_bytes": 1684216
+  },
+  {
+    "character": "Xenaa",
+    "removed_stretched_faces": 248,
+    "rest_pose": "T",
+    "bones": 20,
+    "blendshapes": 11,
+    "glb_bytes": 2041492
+  }
+]

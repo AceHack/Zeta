@@ -1,0 +1,44 @@
+[
+  {
+    "character": "AceHack",
+    "mesh": "AceHack | Body generator",
+    "vertices": 7118,
+    "triangles": 13999
+  },
+  {
+    "character": "AceHack",
+    "mesh": "AceHack | Independent head generator",
+    "vertices": 3901,
+    "triangles": 7703
+  },
+  {
+    "character": "AceHack",
+    "mesh": "AceHack | Fitted collar",
+    "vertices": 260,
+    "triangles": 516
+  },
+  {
+    "character": "Xenaa",
+    "mesh": "Xenaa | Body generator",
+    "vertices": 7148,
+    "triangles": 14000
+  },
+  {
+    "character": "Xenaa",
+    "mesh": "Xenaa | Independent head generator",
+    "vertices": 4210,
+    "triangles": 7744
+  },
+  {
+    "character": "Xenaa",
+    "mesh": "Xenaa | Fitted collar",
+    "vertices": 260,
+    "triangles": 516
+  },
+  {
+    "character": "Xenaa",
+    "mesh": "Xenaa | Rebuilt hair",
+    "vertices": 3422,
+    "triangles": 6399
+  }
+]
