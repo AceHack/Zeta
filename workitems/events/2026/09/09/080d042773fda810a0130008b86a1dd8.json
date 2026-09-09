@@ -1,0 +1,14 @@
+{
+  "id": "080d042773fda810a0130008b86a1dd8",
+  "at": "2026-09-09T06:50:17.909Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M22EWZXM087G0R003TZK1XK",
+    "type": "task",
+    "title": "B9: the Linux consent adapter is a remote channel, not a local factor",
+    "slug": "b9-the-linux-consent-adapter-is-a-remote-channel-not-a-local",
+    "priority": "P2",
+    "filename": "081M22EWZXM087G0R003TZK1XK-b9-the-linux-consent-adapter-is-a-remote-channel-not-a-local.md"
+  }
+}
