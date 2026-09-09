@@ -3547,6 +3547,62 @@ if [ -d "$ZETA_HOME" ]; then
   fi
   # ── 081M1W1NCDT087G0R002H3VG6Y: end named bao bun consume ──────
 
+  # ── 081M22M7G8M087G0R003R1C8Z4: automate the seal-path detection ──────
+  #
+  # The block above consumes a NAMED probe and correctly refuses to invent
+  # one: zflash may not spawn, so `firstboot-bao-env.ts` always reports
+  # `probe: null`. That is right, and it left the live look unrun on metal —
+  # the probe and the decision were both built and correct, and nothing
+  # executed both. `seal-path-detect.ts` is the join, and this is where it
+  # runs on real hardware for the first time.
+  #
+  # OBSERVATIONAL ONLY. It reports which seal path THIS host would get; it
+  # configures no seal, writes no stanza, and changes nothing about the
+  # install. Acting on the answer is the next rung and needs an operator
+  # decision (and, for an HSM, its password) — not a value this script picks.
+  #
+  # `--request auto` asks "what is the strongest path this host can honour",
+  # which is a question, not a policy. A refused decision is a finding and is
+  # logged as one: `probe-did-not-run` means the look could not complete on
+  # this host, and that is exactly what an operator needs to see BEFORE the
+  # cluster is expected to unseal itself.
+  SEAL_DETECT_HELPER="$ZETA_HOME/Zeta/tools/setup/persona-keys/seal-path-detect.ts"
+  if [ ! -f "$SEAL_DETECT_HELPER" ]; then
+    echo "[081M22M7G8M087G0R003R1C8Z4-seal]   helper absent; live look skipped"
+  else
+    set +e
+    SEAL_DETECT_JSON=$(
+      sudo --preserve-env=PATH -u "#$ZETA_UID" HOME="$ZETA_HOME" BUN_INSTALL="$ZETA_HOME/.bun" \
+        MISE_TRUSTED_CONFIG_PATHS="$ZETA_HOME/Zeta" \
+        bash -c "set -o pipefail; export PATH='/run/current-system/sw/bin:${ZETA_HOME}/.local/share/mise/shims:${ZETA_HOME}/.bun/bin:/usr/bin:/bin'; eval \"\$(mise activate bash 2>/dev/null || true)\"; cd '$ZETA_HOME/Zeta' && bun '$SEAL_DETECT_HELPER' --os nixos --effects real --request auto" \
+        2>/tmp/zeta-seal-detect.err
+    )
+    SEAL_DETECT_RC=$?
+    set -e
+    if [ "$SEAL_DETECT_RC" -eq 0 ]; then
+      SEAL_DETECT_PROBE=$(printf '%s' "$SEAL_DETECT_JSON" | jq -c '.probe' 2>/dev/null || printf 'unparseable')
+      SEAL_DETECT_DECISION=$(printf '%s' "$SEAL_DETECT_JSON" | jq -c '.decision' 2>/dev/null || printf 'unparseable')
+      SEAL_DETECT_PATH=$(printf '%s' "$SEAL_DETECT_JSON" | jq -r '.decision.path // ""' 2>/dev/null || printf '')
+      SEAL_DETECT_REASON=$(printf '%s' "$SEAL_DETECT_JSON" | jq -r '.decision.reason // ""' 2>/dev/null || printf '')
+      echo "[081M22M7G8M087G0R003R1C8Z4-seal]   live look $SEAL_DETECT_PROBE"
+      echo "[081M22M7G8M087G0R003R1C8Z4-seal]   decision $SEAL_DETECT_DECISION"
+      if [ -n "$SEAL_DETECT_PATH" ]; then
+        echo "[081M22M7G8M087G0R003R1C8Z4-seal]   this host would seal on '$SEAL_DETECT_PATH' (observed, not configured)"
+      elif [ "$SEAL_DETECT_REASON" = "probe-did-not-run" ]; then
+        echo "[081M22M7G8M087G0R003R1C8Z4-seal]   the look could not complete on this host; that is unmeasured, NOT 'no hardware'"
+      else
+        echo "[081M22M7G8M087G0R003R1C8Z4-seal]   no path: '$SEAL_DETECT_REASON'"
+      fi
+    else
+      echo "[081M22M7G8M087G0R003R1C8Z4-seal]   WARN: live look refused rc=$SEAL_DETECT_RC json='$SEAL_DETECT_JSON'" >&2
+    fi
+    if [ -s /tmp/zeta-seal-detect.err ]; then
+      sed -e 's/^/[081M22M7G8M087G0R003R1C8Z4-seal]   /' /tmp/zeta-seal-detect.err 2>/dev/null | tail -10
+    fi
+    rm -f /tmp/zeta-seal-detect.err
+  fi
+  # ── 081M22M7G8M087G0R003R1C8Z4: end seal-path live look ──────
+
   # ── Step 6.95c: iter-5.5.1 wifi NetworkManager profile write (081KZHJPJCF) ──────────────────
   # iter-5.2/6.6 staged /mnt/boot/zeta-wifi-credentials.json but could NOT write the NM profile
   # there (no repo/mise pre-6.95a). Now the runtime bootstrap has run ($ZETA_HOME/Zeta cloned,

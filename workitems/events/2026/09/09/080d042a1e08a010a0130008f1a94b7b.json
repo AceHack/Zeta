@@ -1,0 +1,14 @@
+{
+  "id": "080d042a1e08a010a0130008f1a94b7b",
+  "at": "2026-09-09T08:23:25.204Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M22M7G8M087G0R003R1C8Z4",
+    "type": "task",
+    "title": "Automate seal-path detection: one CLI joins the live hardware look to the unseal decision",
+    "slug": "automate-seal-path-detection-one-cli-joins-the-live-hardware",
+    "priority": "P2",
+    "filename": "081M22M7G8M087G0R003R1C8Z4-automate-seal-path-detection-one-cli-joins-the-live-hardware.md"
+  }
+}

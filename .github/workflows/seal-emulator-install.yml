@@ -73,7 +73,37 @@ jobs:
           bun test \
             src/Core.TypeScript/cluster/seal-emulator-install.test.ts \
             src/Core.TypeScript/cluster/unseal-path.test.ts \
-            src/Core.TypeScript/cluster/seal-emulator-rung.test.ts
+            src/Core.TypeScript/cluster/seal-emulator-rung.test.ts \
+            tools/setup/persona-keys/seal-path-detect.test.ts
+
+      # CI BEFORE HARDWARE (Aaron 2026-09-08). The tests above describe hosts;
+      # this step runs the LIVE look against the actual runner, so "the probe
+      # can physically look on Linux" is exercised here and not first on metal.
+      #
+      # It deliberately does NOT assert a specific path. A GitHub runner's USB
+      # topology is unmeasured from here — `/sys/bus/usb/devices` may enumerate
+      # or may be empty in a virtualised runner, which the probe correctly
+      # reports as `indeterminate` rather than `absent`. Asserting
+      # `lucent-shamir` would be pinning a value nobody measured.
+      #
+      # What IS asserted is the direction that can hurt: a runner with no HSM
+      # and no TPM must never come back naming a hardware path. A false
+      # `pkcs11-*` here would mean the joiner invented hardware, which is the
+      # failure this whole stack exists to prevent. An honest
+      # `probe-did-not-run` passes — a look that could not happen is a finding,
+      # not a fault.
+      - name: Run the live look on this runner and refuse an invented hardware path
+        run: |
+          set -euo pipefail
+          OUT=$(bun tools/setup/persona-keys/seal-path-detect.ts \
+            --os nixos --effects real --request auto)
+          echo "$OUT" | jq .
+          echo "$OUT" | jq -e '.ok == true' >/dev/null
+          echo "$OUT" | jq -e '.probe != null' >/dev/null
+          if echo "$OUT" | jq -e '.decision.path // "" | startswith("pkcs11-")' >/dev/null; then
+            echo "REFUSED: a runner with no attached HSM/TPM named a hardware seal path" >&2
+            exit 1
+          fi
 
   matrix:
     name: seal-emulator (${{ matrix.name }})
