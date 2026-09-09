@@ -2433,6 +2433,23 @@ jobs:
       - name: Clone-at-a-tag is still sufficient (no ace-as-resolver)
         run: bun src/Core.TypeScript/hygiene/lint-clone-at-tag-is-sufficient.ts
 
+      # The same invariant, one layer down. `tools/setup/manifests/pinned-refs` is a
+      # MIRROR of pins written at their point of use (a container digest lives in the
+      # Dockerfile, where `docker build` reads it with no package manager present).
+      # This refuses whenever a registry row disagrees with the file, which is what
+      # keeps the mirror from quietly becoming the source. OFFLINE -- no network.
+      # 081M23NT5VX087G0R000KAFE45
+      - name: Pinned refs still match their point of use (registry is a mirror)
+        run: bun src/Core.TypeScript/ace/refresh-pins.ts --verify
+
+      # The premise under the dismissal of Dependabot alert #15 (mathjs prototype
+      # pollution, riding on the `quantum-circuit` second oracle the maintainer kept).
+      # A dismissal whose premise nothing checks is the vacuity class; this is the
+      # check. Offline parts every run; the upstream part reports UNKNOWN when
+      # node_modules is absent, and UNKNOWN is never counted as a pass.
+      - name: mathjs dismissal premise still holds (alert #15)
+        run: bun src/Core.TypeScript/hygiene/lint-mathjs-dismissal-premise.ts
+
       # A flake ref evaluates PURE by default, and pure-eval `builtins.pathExists`
       # on an absolute path returns FALSE rather than erroring (measured 2026-08-21,
       # Nix 2.34.6). Every full-ai-cluster module reading /etc/zeta guards its
@@ -2448,6 +2465,8 @@ jobs:
             src/Core.TypeScript/hygiene/audit-build-graph-completeness.test.ts \
             src/Core.TypeScript/hygiene/lint-clone-at-tag-is-sufficient.test.ts \
             src/Core.TypeScript/hygiene/lint-nixos-rebuild-needs-impure.test.ts \
+            src/Core.TypeScript/hygiene/lint-mathjs-dismissal-premise.test.ts \
+            src/Core.TypeScript/ace/refresh-pins.test.ts \
             src/Core.TypeScript/ci/affected-legs.test.ts
 
       # OBSERVE-ONLY. Nothing reads these outputs yet, and that is deliberate: the

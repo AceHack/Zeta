@@ -22,7 +22,7 @@
 #            Ref: https://github.com/actions/runner-images/issues/11742
 # TODO(dep-pin): pin base by sha256 digest at next maintenance (capture from a green CI run);
 # the :ltsc2025 tag receives monthly servicing, so a digest gives content-addressed reproducibility.
-FROM mcr.microsoft.com/windows/servercore:ltsc2025
+FROM mcr.microsoft.com/windows/servercore:ltsc2025@sha256:e18a49cbc074dfaa8e106296d51cebd62bbf6effb999f134a5c48eed1c2334e1
 
 # Server Core ships Windows PowerShell 5.1 (NOT pwsh 7). install.ps1 is #Requires 5.1 + 5.1-safe.
 SHELL ["powershell", "-NoProfile", "-ExecutionPolicy", "Bypass", "-Command", "$ErrorActionPreference='Stop'; $ProgressPreference='SilentlyContinue';"]

@@ -11,6 +11,17 @@ tools/setup/manifests/windows     # Windows packages          -> install.ps1
 tools/setup/manifests/from-*      # 15 mechanism manifests    -> ace-realize
 ```
 
+**One file here is NOT a declaration and installs nothing:**
+`tools/setup/manifests/pinned-refs` (+ `pinned-refs-receipts`). It is a **mirror**
+of digests written at their point of use — a container digest lives in the
+Dockerfile, where `docker build` reads it with no package manager present — and it
+exists so `src/Core.TypeScript/ace/refresh-pins.ts` can *refresh* those pins and
+*report* their staleness. Nothing in any build path reads it, and
+`refresh-pins.ts --verify` (in `gate`) refuses whenever a row disagrees with the
+file, which is what keeps it a mirror rather than a source
+(`.claude/rules/clone-at-tag-stays-sufficient.md`). Design:
+`docs/agendas/ace-package-manager/2026-09-09-ace-refresh-pin-and-refresh-are-one-mechanism-design.md`.
+
 ## The halfway state, measured (2026-08-24)
 
 `ace` is mid-adoption, so "does ace handle this?" has different answers per
@@ -29,7 +40,7 @@ surface. The declaration side is already single-source for every mechanism.
 
 **This means there is no duplication to keep in sync.** A dependency is written
 down exactly once regardless of which half realizes it; what varies is only the
-_consumer_. That is worth stating plainly because the obvious guess — "declare it
+*consumer*. That is worth stating plainly because the obvious guess — "declare it
 in two places until ace lands" — would be the wrong shape and would need a parity
 audit that this design does not.
 
@@ -72,7 +83,7 @@ manifest row is load-bearing for a runtime property.
 
 The sentence above was written about `pam-reattach` and stayed true of nothing
 else. Twenty-five other `brew` rows, one `brew-cask` row, thirty-five `apt` rows
-and fourteen `windows` rows had no check of any kind that they were _installed_.
+and fourteen `windows` rows had no check of any kind that they were *installed*.
 
 Note what DID exist, because it is the interesting half: the **declaration** side
 was thoroughly audited — `ci/manifest-symmetry.test.ts` refuses an apt/brew tool
@@ -98,11 +109,11 @@ worth knowing from here are:
   this manifest minutes ago and has no history to drift from — drift requires
   persistence, and CI runners are amnesiac by construction. A cron that provisions
   a fresh machine and then asks whether the fresh machine is provisioned cannot
-  fail for the reason we care about. The CI use is a _different_ question ("did the
+  fail for the reason we care about. The CI use is a *different* question ("did the
   loop just now satisfy the rows it claimed to") and is honestly weaker.
 - **It measures realization by the declared MECHANISM**, not "a binary by that name
   exists". `yubihsm2-sdk` is reported absent while `yubihsm-shell` runs from
-  `/usr/local/bin` — hand-installed from a `.pkg` two days _before_ the row that was
+  `/usr/local/bin` — hand-installed from a `.pkg` two days *before* the row that was
   meant to make it reproducible. The tool works; the declaration is still false,
   because brew cannot upgrade it, cannot say its version, and a fresh clone on a
   fresh machine does not get it.
