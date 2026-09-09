@@ -30,3 +30,5 @@
 
 src/Core.TLA/tla2tools.jar  sha256=82cc5759b43c7842410ece4f362850a27d2eb3416341335580a46629822a7896  measured=2026-09-09  result=pass  remeasure=src/Core.TypeScript/formal-verification/run-tlc.ts:--all  evidence=docs/cross-verify/2026-09-09-tla2tools-82cc5759-gate-sweep.md
 src/Core.TLA/tla2tools.jar  sha256=bb82311bc0493a8d30112a1baa0aece42a5f91b928866c7593930e390c14c340  measured=2026-09-09  result=pass  remeasure=src/Core.TypeScript/formal-verification/run-tlc.ts:--all  evidence=docs/cross-verify/2026-09-09-tla2tools-bb82311b-remeasure.md
+src/Core.TLA/tla2tools.jar  sha256=f629a67c1ade2cadfcd12670de9172e07629418502df76e9b9ccbf4a5aa0ed6e  measured=2026-09-09  result=pass  remeasure=src/Core.TypeScript/formal-verification/run-tlc.ts:--all  evidence=docs/cross-verify/2026-09-09-tla2tools-f629a67c-remeasure.md
+src/Core.TLA/tla2tools.jar  sha256=8836549e83db7f0b3f9fdde679ab56270d18e06198366d217d960738c02b9dbe  measured=2026-09-09  result=pass  remeasure=src/Core.TypeScript/formal-verification/run-tlc.ts:--all  evidence=docs/cross-verify/2026-09-09-tla2tools-8836549e-remeasure.md
