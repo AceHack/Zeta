@@ -44,7 +44,19 @@
 // staging for a removal PR — git as the public-trust distribution channel (ca.ts), removed the
 // same way it was added (never a force-push, never a direct main write).
 import { spawnSync } from "node:child_process";
-import { existsSync, readdirSync, rmSync, statSync, unlinkSync, writeFileSync } from "node:fs";
+import {
+  closeSync,
+  constants,
+  existsSync,
+  fstatSync,
+  fsyncSync,
+  lstatSync,
+  openSync,
+  readdirSync,
+  rmSync,
+  unlinkSync,
+  writeSync,
+} from "node:fs";
 import { homedir } from "node:os";
 import { join } from "node:path";
 import { caPublicKeyPath } from "./ca.ts";
@@ -460,6 +472,71 @@ export function format1PasswordNote(): string {
   return lines.join("\n");
 }
 
+/** OVERWRITE-THEN-UNLINK, the fallback used when `shred` is absent or fails.
+ *
+ *  Exported so it is testable on its own: on a host that HAS `shred` the branch below is never
+ *  taken by `securelyRemove`, and an untestable erasure path is one nobody can falsify.
+ *
+ *  This was `statSync(path).size` followed by `writeFileSync(path, Buffer.alloc(size, 0))`,
+ *  which was wrong in three separate ways -- hence the single file descriptor:
+ *
+ *   1. IT COULD NOT OVERWRITE ANYTHING. `writeFileSync` opens with O_TRUNC, which releases the
+ *      file's blocks BEFORE writing. The zeros then land on freshly-allocated blocks and the
+ *      private bytes are never touched. The step could not perform the one act it exists for --
+ *      erasure that looked identical to a plain unlink, wearing a shredder's name.
+ *   2. CHECK-THEN-USE (CWE-367). The size came from the PATH and the write went to the PATH, so
+ *      anything that replaced the path between the two calls redirected the overwrite. Losing
+ *      that race meant zeroing a file whose size was never measured, leaving the secret intact.
+ *   3. IT FOLLOWED SYMLINKS. Both calls resolve links, so a link swapped in for the key would
+ *      have zeroed the link's TARGET while the bytes it replaced survived untouched.
+ *
+ *  O_RDWR with neither O_CREAT nor O_TRUNC, plus O_NOFOLLOW: one descriptor, opened once,
+ *  stat'd and written through. A path that vanished throws instead of being re-created, and a
+ *  symlink is refused instead of followed.
+ *
+ *  NEVER reads the file's bytes into this process -- it writes zeros and never issues a read.
+ *  The SSD/copy-on-write caveat in the header still applies and is why the durable 1Password
+ *  backup is the honest recovery path. */
+export function overwriteAndUnlink(path: string): boolean {
+  try {
+    const fd = openSync(path, constants.O_RDWR | constants.O_NOFOLLOW);
+    try {
+      const size = fstatSync(fd).size;
+      if (size > 0) {
+        writeSync(fd, Buffer.alloc(size, 0), 0, size, 0);
+        // Force the zeros to the device BEFORE the inode is unlinked. Without this the overwrite
+        // can still be in page cache when unlink frees the blocks, and the ORIGINAL bytes are
+        // what survive on the medium -- an erasure that returned true and erased nothing.
+        fsyncSync(fd);
+      }
+    } finally {
+      closeSync(fd);
+    }
+  } catch {
+    // Overwrite is best-effort (a symlink, a vanished path, a read-only mount); proceed to
+    // unlink regardless, because removing the name is still strictly better than leaving it.
+  }
+  try {
+    unlinkSync(path);
+  } catch (err) {
+    // ALREADY GONE IS SUCCESS, and it must be told apart from COULD NOT REMOVE. An erasure
+    // primitive is retried (the caller re-runs teardown to prove clean re-onboarding), so
+    // reporting `false` for a path that is already absent would make a completed wipe look
+    // like a failed one -- and a false alarm in a destructive tool is what teaches an operator
+    // to stop reading its output.
+    if ((err as NodeJS.ErrnoException).code === "ENOENT") return true;
+    return false;
+  }
+  // `lstatSync`, not `existsSync`: a DANGLING symlink still occupies the name, and `existsSync`
+  // reports false for one -- which would let a failed unlink of a link report success.
+  try {
+    lstatSync(path);
+    return false;
+  } catch {
+    return true;
+  }
+}
+
 /** The REAL host effects (used by the CLI). The wipe doors do the secure erasure; the git door
  *  shells `git rm` under the given repoRoot — never a push, never main. NO door returns secret bytes. */
 export function realEffects(): TeardownEffects {
@@ -486,18 +563,7 @@ export function realEffects(): TeardownEffects {
       if (shredded.status === 0 && !existsSync(path)) return true;
       // Fallback: best-effort overwrite-in-place with zeros, then unlink. (SSD/CoW caveat applies —
       // the durable backup in 1Password is the honest recovery path; see header Beacon note.)
-      try {
-        const size = statSync(path).size;
-        if (size > 0) writeFileSync(path, Buffer.alloc(size, 0));
-      } catch {
-        // overwrite is best-effort; proceed to unlink regardless
-      }
-      try {
-        unlinkSync(path);
-      } catch {
-        return false;
-      }
-      return !existsSync(path);
+      return overwriteAndUnlink(path);
     },
     removeDir: (dir) => {
       try {
