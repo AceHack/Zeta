@@ -1517,6 +1517,9 @@ async function main() {
   let pubkeyPath = sshKeyOverride ?? DEFAULT_SSH_KEY;
   let willInject = !noInject;
   let tempPubkeyPath: string | null = null;
+  // The 0700 directory that HOLDS the temp pubkey. Cleanup removes the
+  // DIRECTORY, so nothing is left in /tmp for a later run to collide with.
+  let tempPubkeyDir: string | null = null;
 
   if (willInject) {
     if (sshKeyOverride) {
@@ -1589,7 +1592,20 @@ async function main() {
       }
 
       if (combinedContent.trim()) {
-        tempPubkeyPath = join(tmpdir(), `zeta-combined-${user}.pub`);
+        // OWNER-ONLY DIRECTORY, not a predictable name in shared /tmp.
+        // The old path was guessable by anyone with a shell on this host, so an
+        // attacker who plants a symlink there first has the following
+        // `writeFileSync` follow it and write 0644 content to a path of their
+        // choosing (CodeQL js/insecure-temporary-file, alert 286).
+        // `mkdtempSync` creates the directory ATOMICALLY at 0700 -- no window --
+        // and once only the owner can traverse it, a predictable name INSIDE it
+        // is not a weakness. Same primitive and same reasoning as
+        // `peer-call/output-path.ts`, which records why a fixed name plus a
+        // later `chmod` is the weaker fix: the mode is umask-masked, ignored
+        // outright when the directory already exists, and CodeQL models
+        // `mkdtemp` rather than the chmod that follows it.
+        tempPubkeyDir = mkdtempSync(join(tmpdir(), "zeta-zflash-pubkey-"));
+        tempPubkeyPath = join(tempPubkeyDir, `combined-${user}.pub`);
         writeFileSync(tempPubkeyPath, combinedContent, { mode: 0o644 });
         pubkeyPath = tempPubkeyPath;
       } else {
@@ -1810,9 +1826,13 @@ async function main() {
     // The ESP payload was baked into the flashed image BEFORE the write and verified by
     // an mdir read-back, so there is no post-flash step here. injectPubkeyToUsb is
     // diskutil-shaped and must never run on this path.
-    if (tempPubkeyPath && existsSync(tempPubkeyPath)) {
+    // `force: true` already means "no error if absent", so the `existsSync`
+    // guard it replaces bought nothing and was itself a check-then-use race
+    // (the path can vanish between the two calls). Removing the directory, not
+    // the file, is what makes the temp state actually go away.
+    if (tempPubkeyDir) {
       try {
-        rmSync(tempPubkeyPath, { force: true });
+        rmSync(tempPubkeyDir, { recursive: true, force: true });
       } catch { /* ignore */ }
     }
     if (willInject) {
@@ -1832,9 +1852,13 @@ async function main() {
     try {
       await injectPubkeyToUsb(pubkeyPath, hostOverride, credBake, testMode, firstbootRole.value, joinTokenPathFlag);
     } finally {
-      if (tempPubkeyPath && existsSync(tempPubkeyPath)) {
+      // `force: true` already means "no error if absent", so the `existsSync`
+      // guard it replaces bought nothing and was itself a check-then-use race
+      // (the path can vanish between the two calls). Removing the directory, not
+      // the file, is what makes the temp state actually go away.
+      if (tempPubkeyDir) {
         try {
-          rmSync(tempPubkeyPath, { force: true });
+          rmSync(tempPubkeyDir, { recursive: true, force: true });
         } catch { /* ignore */ }
       }
     }

@@ -1,0 +1,14 @@
+{
+  "id": "080d0435a5b68810a01300089c38d4c7",
+  "at": "2026-09-09T15:06:25.361Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M23B9DPG087G0R00050XQPK",
+    "type": "bug",
+    "title": "zflash writes a combined pubkey to a guessable path in shared tmp",
+    "slug": "zflash-writes-a-combined-pubkey-to-a-guessable-path-in-share",
+    "priority": "P2",
+    "filename": "081M23B9DPG087G0R00050XQPK-zflash-writes-a-combined-pubkey-to-a-guessable-path-in-share.md"
+  }
+}
