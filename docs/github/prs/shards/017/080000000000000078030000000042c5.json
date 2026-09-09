@@ -1,0 +1,12 @@
+{
+  "pr_number": 17093,
+  "archive_path": "docs/history/pr-reviews/PR-17093-feat-cluster-measure-b8-9-secrets-referenced-0-produced-and-ratchet-it.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-09T06:48:29.018Z",
+  "schema_version": "v1",
+  "commit_sha": "c734542140a5bd2f445918391da78bd74d79dce1",
+  "title": "feat(cluster): measure B8 — 9 Secrets referenced, 0 produced, and ratchet it",
+  "state": "MERGED",
+  "merged_at": "2026-09-09T06:47:47Z",
+  "head_ref": "shadow/b8-audit-secret-references-vs-producers"
+}
