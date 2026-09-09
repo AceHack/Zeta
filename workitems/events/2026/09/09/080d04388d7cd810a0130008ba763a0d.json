@@ -1,0 +1,14 @@
+{
+  "id": "080d04388d7cd810a0130008ba763a0d",
+  "at": "2026-09-09T16:47:58.363Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M23H3BWT087G0R000FES3JA",
+    "type": "task",
+    "title": "Decide the scene-design substrate -- incremental change propagation over Rx push, and whether DBSP is the render-loop carrier",
+    "slug": "decide-the-scene-design-substrate-incremental-change-propaga",
+    "priority": "P2",
+    "filename": "081M23H3BWT087G0R000FES3JA-decide-the-scene-design-substrate-incremental-change-propaga.md"
+  }
+}
