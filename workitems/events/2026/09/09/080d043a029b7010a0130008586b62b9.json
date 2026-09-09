@@ -1,0 +1,14 @@
+{
+  "id": "080d043a029b7010a0130008586b62b9",
+  "at": "2026-09-09T17:38:54.958Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M23M0MVD087G0R003NR0ET1",
+    "type": "task",
+    "title": "Reflective 4_21 in the only register the geometry supports: root-quantised views, two-sided, 768 faces declared sideless",
+    "slug": "reflective-4-21-in-the-only-register-the-geometry-supports-r",
+    "priority": "P2",
+    "filename": "081M23M0MVD087G0R003NR0ET1-reflective-4-21-in-the-only-register-the-geometry-supports-r.md"
+  }
+}

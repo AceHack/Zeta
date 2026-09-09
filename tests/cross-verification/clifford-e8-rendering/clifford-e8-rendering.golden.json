@@ -1,0 +1,51 @@
+{
+  "schema": "clifford-e8-rendering-golden/v1",
+  "frame": "doubled integer coordinates; root norm squared 8",
+  "canonicalSerialisation": "fields joined by ',', records joined by ';', UTF-8, SHA-256 lowercase hex",
+  "rootCount": 240,
+  "rootSplit": [112, 128],
+  "rootNormSquared": 8,
+  "rootsSha256": "300c2a4c96601ea830562ac25c88f309938dc843e3c016b61fe80fee3f7aa7aa",
+  "firstRoot": [2, 2, 0, 0, 0, 0, 0, 0],
+  "lastRoot": [-1, -1, -1, -1, -1, -1, -1, -1],
+  "gossetEdgeInnerProduct": 4,
+  "edgeCount": 6720,
+  "edgesSha256": "241f59b0b2913ab563bc194e38507e00be6d91b09e9246ed434ee0fd8aa42fa4",
+  "faceCount": 60480,
+  "facesSha256": "2f02909ec1c2659d6a394ece609e3b56ba291a788c33d20258b736b476c95bcb",
+  "firstFace": [0, 4, 8],
+  "lastFace": [237, 238, 239],
+  "fVector": [240, 6720, 60480, 241920, 483840, 483840, 207360, 19440],
+  "eulerAlternatingSum": 0,
+  "edgeFaceIncidence": [6720, 27, 27],
+  "faceNormalNormSquared": 48,
+  "faceBivectorNormSquared": 48,
+  "faceNormalsSha256": "a6eefc57c850f2d07251c9e21110919f08501ea98319fa8dff9acf45ed2c047a",
+  "lambertDenominatorSquared": 384,
+  "lambertCensus": [
+    [-16, 756],
+    [-12, 4032],
+    [-8, 7560],
+    [-4, 12096],
+    [0, 11592],
+    [4, 12096],
+    [8, 7560],
+    [12, 4032],
+    [16, 756]
+  ],
+  "twoSidedCensus": [
+    [0, 11592],
+    [4, 24192],
+    [8, 15120],
+    [12, 8064],
+    [16, 1512]
+  ],
+  "brightnessLevels": [0, 4, 8, 12, 16],
+  "planeIlluminationCensus": [
+    [0, 1512],
+    [256, 40824],
+    [384, 18144]
+  ],
+  "coxeterRingCount": 8,
+  "coxeterPointsPerRing": 30
+}

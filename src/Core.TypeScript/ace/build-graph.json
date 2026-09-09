@@ -44,6 +44,7 @@
         "dotnet:src/Core",
         "dotnet:src/Core.CSharp.Bonsai",
         "dotnet:src/Core.FSharp.Blake3",
+        "dotnet:src/Core.FSharp.E8Render",
         "dotnet:src/Core.FSharp.Git"
       ],
       "legs": ["gate/build-and-test", "gate/lint-csharp", "gate/lint-fsharp"],
@@ -923,6 +924,38 @@
       }
     },
     {
+      "id": "dotnet:src/Core.FSharp.E8Render",
+      "kind": "dotnet",
+      "sources": ["src/Core.FSharp.E8Render/**"],
+      "dependsOn": [],
+      "legs": ["gate/build-and-test", "gate/lint-csharp", "gate/lint-fsharp"],
+      "origin": "derived",
+      "requiredQuorum": {
+        "tier": "T3",
+        "faultModel": {
+          "faultClass": "byzantine",
+          "f": 1
+        },
+        "reviewerClasses": ["reviewer:fsharp"],
+        "evidence": [
+          {
+            "rule": "cross-oracle-bytelock",
+            "kind": "cross-oracle",
+            "witness": "tests/Tests.FSharp/Blake3/CrossVerifyTests.fs",
+            "count": 31,
+            "holder": "dotnet:tests/Tests.FSharp"
+          },
+          {
+            "rule": "treaty-transcript",
+            "kind": "treaty-transcript",
+            "witness": "tests/Tests.FSharp/Chip9Treaty.Tests.fs",
+            "count": 11,
+            "holder": "dotnet:tests/Tests.FSharp"
+          }
+        ]
+      }
+    },
+    {
       "id": "dotnet:src/Core.FSharp.Git",
       "kind": "dotnet",
       "sources": ["src/Core.FSharp.Git/**"],
@@ -1481,6 +1514,7 @@
         "dotnet:src/Core.FSharp.AceCanonical",
         "dotnet:src/Core.FSharp.Blake3",
         "dotnet:src/Core.FSharp.Cli",
+        "dotnet:src/Core.FSharp.E8Render",
         "dotnet:src/Core.FSharp.Mediator",
         "dotnet:src/Core.FSharp.Observe",
         "dotnet:src/Core.FSharp.ObserveBridge",
@@ -2804,14 +2838,14 @@
             "rule": "cross-oracle-bytelock",
             "kind": "cross-oracle",
             "witness": "tests/cross-verification/_golden/zeta-ir-v4.golden.json",
-            "count": 338,
+            "count": 342,
             "holder": "ts:cross-verification"
           },
           {
             "rule": "golden-vectors",
             "kind": "golden-vector",
             "witness": "tests/cross-verification/_golden/zeta-ir-v4.golden.json",
-            "count": 4,
+            "count": 6,
             "holder": "ts:cross-verification"
           }
         ]

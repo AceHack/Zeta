@@ -1,0 +1,14 @@
+{
+  "id": "080d0437db31e010a0130008808ce1ae",
+  "at": "2026-09-09T16:23:37.788Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M23FPSHV087G0R001V4M5QV",
+    "type": "task",
+    "title": "F# oracle for the Clifford E8 rendering rungs, plus a SIMD CPU ray tracer in .NET",
+    "slug": "f-oracle-for-the-clifford-e8-rendering-rungs-plus-a-simd-cpu",
+    "priority": "P2",
+    "filename": "081M23FPSHV087G0R001V4M5QV-f-oracle-for-the-clifford-e8-rendering-rungs-plus-a-simd-cpu.md"
+  }
+}
