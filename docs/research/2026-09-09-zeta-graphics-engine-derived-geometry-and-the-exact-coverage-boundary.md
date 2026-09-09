@@ -355,6 +355,13 @@ shaded surface is reachable without anyone placing a vertex.
 The step after that, and only after it: an exact _fractional_ coverage, which is what a
 variational solver's volume weights would actually consume.
 
+> **Landed 2026-09-09 as rung 5** —
+> `docs/research/2026-09-09-rung-5-the-face-set-derived-and-the-f-vector-as-its-falsifier.md`.
+> The 60,480 flagged **UNVERIFIED** above is now **counted in-tree** and Coxeter held; the
+> full f-vector is measured by two independent mechanisms and its alternating sum is
+> exactly zero. This paragraph is left as written, because the flag doing its job is the
+> record worth keeping.
+
 ## Pointers
 
 - `src/Core.TypeScript/research/clifford-e8-exact-coverage.ts` — rung 4.
