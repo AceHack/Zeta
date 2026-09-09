@@ -1,11 +1,36 @@
-import { describe, expect, it } from "bun:test";
+import { describe, expect, it, afterAll } from "bun:test";
 import * as fs from "node:fs";
+import { join } from "node:path";
+import { tmpdir } from "node:os";
 import {
   kappaFromDf,
   dfFromKappa,
   sleHarmonicDensity,
   runZ4Discharge,
 } from "./z4-sle-harmonic-discharge.ts";
+
+// Certificates are written to a PRIVATE, UNPREDICTABLE directory.
+//
+// This used to be the literal `/tmp/z4-test-cert`, repeated in three tests
+// (CodeQL js/insecure-temporary-file, alert 641, which lands on the
+// `writeFileSync` inside `runZ4Discharge`). A hard-coded path in the shared,
+// world-writable `/tmp` is a real defect and not a scanner quibble:
+//
+//   - `mkdirSync(dir, { recursive: true })` SUCCEEDS on a directory that
+//     already exists and belongs to somebody else, so on a shared runner the
+//     first user to create the path owns it and can read or replace whatever
+//     lands there afterwards.
+//   - `writeFileSync` FOLLOWS SYMLINKS, so a pre-planted
+//     `/tmp/z4-test-cert/z4-discharge-certificate.json -> <target>` turns this
+//     into an arbitrary-file overwrite running as the test user.
+//   - the directory was never removed, so it persisted between runs and users.
+//
+// The artifact makes it worse rather than better: a DISCHARGE CERTIFICATE is a
+// proof-lineage artifact. An attacker who can replace one can assert that a
+// conjecture was discharged. `mkdtempSync` gives a 0700 directory with an
+// unpredictable suffix, created atomically -- none of the three holds against it.
+const certRoot = fs.mkdtempSync(join(tmpdir(), "z4-discharge-cert-"));
+afterAll(() => fs.rmSync(certRoot, { recursive: true, force: true }));
 
 describe("Conjecture Z-4: SLE_kappa Harmonic Measure Discharge & Falsifiers", () => {
   it("calculates exact bidirectional conversion between D_f and kappa", () => {
@@ -23,7 +48,7 @@ describe("Conjecture Z-4: SLE_kappa Harmonic Measure Discharge & Falsifiers", ()
   });
 
   it("DISCHARGES Z-4 when empirical DLA fractal dimension D_f is approx 1.71", () => {
-    const tmpDir = "/tmp/z4-test-cert";
+    const tmpDir = join(certRoot, "cert");
     const result = runZ4Discharge(undefined, 0.5, tmpDir);
 
     expect(result.success).toBeTrue();
@@ -45,7 +70,7 @@ describe("Conjecture Z-4: SLE_kappa Harmonic Measure Discharge & Falsifiers", ()
       { r: 80, count: 80 },
     ];
 
-    const tmpDir = "/tmp/z4-test-cert";
+    const tmpDir = join(certRoot, "cert");
     const result = runZ4Discharge(linearPoints, 0.5, tmpDir);
 
     // MUST FAIL — falsifier gate is load-bearing!
@@ -65,7 +90,7 @@ describe("Conjecture Z-4: SLE_kappa Harmonic Measure Discharge & Falsifiers", ()
       { r: 80, count: 6400 },
     ];
 
-    const tmpDir = "/tmp/z4-test-cert";
+    const tmpDir = join(certRoot, "cert");
     const result = runZ4Discharge(densePoints, 0.5, tmpDir);
 
     // MUST FAIL — D_f = 2.0 exceeds theoretical bounds!

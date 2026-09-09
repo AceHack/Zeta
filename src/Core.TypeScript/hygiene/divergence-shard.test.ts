@@ -557,3 +557,30 @@ describe("fileReviewThreadDisagreement (detect → file glue, AC #2)", () => {
     });
   });
 });
+
+describe("the alert-224 flow claim is checked, not asserted", () => {
+  // divergence-shard.ts carries a comment naming THIS FILE as the only path
+  // from os.tmpdir() to its exclusive create. That claim has one load-bearing
+  // premise -- that divergence-shard.ts never reaches for a temp dir itself --
+  // and a comment cannot keep a premise true. This does.
+  const stripComments = (src: string): string =>
+    src.replace(/\/\*[\s\S]*?\*\//g, "").replace(/(^|[^:])\/\/.*$/gm, "$1");
+
+  test("divergence-shard.ts never calls tmpdir() outside its comments", () => {
+    const src = readFileSync(join(import.meta.dir, "divergence-shard.ts"), "utf8");
+    const code = stripComments(src);
+    expect(code).not.toMatch(/\btmpdir\s*\(/);
+    expect(code).not.toMatch(/\bmkdtempSync\s*\(/);
+  });
+
+  test("the stripper actually strips — otherwise the assertion above is vacuous", () => {
+    // The real file MENTIONS tmpdir() in the alert-224 comment. If the stripper
+    // were a no-op the test above would fail; if it stripped too much it could
+    // hide a real call. Both directions are pinned here.
+    const src = readFileSync(join(import.meta.dir, "divergence-shard.ts"), "utf8");
+    expect(src).toMatch(/tmpdir\(\)/);                       // present in prose
+    expect(stripComments("// tmpdir()\\nconst a = 1;")).not.toMatch(/tmpdir/);
+    expect(stripComments("const x = tmpdir(); // note")).toMatch(/tmpdir\(\)/);
+    expect(stripComments("/* tmpdir() */ const a = 1;")).not.toMatch(/tmpdir/);
+  });
+});
