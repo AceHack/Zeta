@@ -1,0 +1,124 @@
+{
+  "$comment": [
+    "workflow-enablement.json -- every workflow whose forge state is NOT active.",
+    "",
+    "Enforcer: src/Core.TypeScript/ci/workflow-enablement.ts, run in the drift (loud) job.",
+    "",
+    "A disabled workflow sits at its correct path, is valid YAML, is named by prose and by",
+    "rosters, and produces ZERO runs. No run means no red X, so it is the vacuity class in its",
+    "purest administrative form -- and every workflow guard in this repo reads TEXT, so none of",
+    "them can see it. The state lives only in the forge.",
+    "",
+    "THIS FILE IS A RECORD, NOT A PERMISSION. An entry does not approve the disablement; it says",
+    "somebody wrote the fact down. classification=unreviewed means exactly that nobody has",
+    "decided yet, and every run prints those entries so that unreviewed cannot quietly become",
+    "fine.",
+    "",
+    "The audit goes RED when: a non-active workflow is missing here (the next silent",
+    "disablement); an entry here is active again (a stale row hides the next real one); an entry",
+    "names a path the forge does not list; an entry has no reason or a bad classification."
+  ],
+  "version": 1,
+  "classifications": {
+    "intentional": "A maintainer decided this lane should not run, and the reason says why.",
+    "unreviewed": "Measured disabled. Nobody has decided. Reported as a warning on every run."
+  },
+  "entries": [
+    {
+      "path": ".github/workflows/agent-heartbeat.yml",
+      "state": "disabled_manually",
+      "classification": "unreviewed",
+      "reason": "Measured non-active on 2026-09-09 by the audit that introduced this registry. Recorded as FACT, not as approval: no decision record in the repository explains why this workflow was disabled, and until a maintainer supplies one this lane produces no runs and therefore no red X. Reclassify to intentional with a reason, or re-enable."
+    },
+    {
+      "path": ".github/workflows/archive-strand-alarm.yml",
+      "state": "disabled_manually",
+      "classification": "unreviewed",
+      "reason": "Measured non-active on 2026-09-09 by the audit that introduced this registry. Recorded as FACT, not as approval: no decision record in the repository explains why this workflow was disabled, and until a maintainer supplies one this lane produces no runs and therefore no red X. Reclassify to intentional with a reason, or re-enable."
+    },
+    {
+      "path": ".github/workflows/artifact-freshness.yml",
+      "state": "disabled_manually",
+      "classification": "unreviewed",
+      "reason": "Measured non-active on 2026-09-09 by the audit that introduced this registry. Recorded as FACT, not as approval: no decision record in the repository explains why this workflow was disabled, and until a maintainer supplies one this lane produces no runs and therefore no red X. Reclassify to intentional with a reason, or re-enable."
+    },
+    {
+      "path": ".github/workflows/budget-snapshot-cadence.yml",
+      "state": "disabled_manually",
+      "classification": "unreviewed",
+      "reason": "Measured non-active on 2026-09-09 by the audit that introduced this registry. Recorded as FACT, not as approval: no decision record in the repository explains why this workflow was disabled, and until a maintainer supplies one this lane produces no runs and therefore no red X. Reclassify to intentional with a reason, or re-enable."
+    },
+    {
+      "path": ".github/workflows/context-cost-trend-cadence.yml",
+      "state": "disabled_manually",
+      "classification": "unreviewed",
+      "reason": "Measured non-active on 2026-09-09 by the audit that introduced this registry. Recorded as FACT, not as approval: no decision record in the repository explains why this workflow was disabled, and until a maintainer supplies one this lane produces no runs and therefore no red X. Reclassify to intentional with a reason, or re-enable."
+    },
+    {
+      "path": ".github/workflows/drift-dashboard-cadence.yml",
+      "state": "disabled_manually",
+      "classification": "unreviewed",
+      "reason": "Measured non-active on 2026-09-09 by the audit that introduced this registry. Recorded as FACT, not as approval: no decision record in the repository explains why this workflow was disabled, and until a maintainer supplies one this lane produces no runs and therefore no red X. Reclassify to intentional with a reason, or re-enable."
+    },
+    {
+      "path": ".github/workflows/drift-sweep.yml",
+      "state": "disabled_manually",
+      "classification": "unreviewed",
+      "reason": "Measured non-active on 2026-09-09 by the audit that introduced this registry. Recorded as FACT, not as approval: no decision record in the repository explains why this workflow was disabled, and until a maintainer supplies one this lane produces no runs and therefore no red X. Reclassify to intentional with a reason, or re-enable."
+    },
+    {
+      "path": ".github/workflows/lockfile-healer.yml",
+      "state": "disabled_manually",
+      "classification": "unreviewed",
+      "reason": "Measured non-active on 2026-09-09 by the audit that introduced this registry. Recorded as FACT, not as approval: no decision record in the repository explains why this workflow was disabled, and until a maintainer supplies one this lane produces no runs and therefore no red X. Reclassify to intentional with a reason, or re-enable."
+    },
+    {
+      "path": ".github/workflows/manifesto-citation-snapshot-cadence.yml",
+      "state": "disabled_manually",
+      "classification": "unreviewed",
+      "reason": "Measured non-active on 2026-09-09 by the audit that introduced this registry. Recorded as FACT, not as approval: no decision record in the repository explains why this workflow was disabled, and until a maintainer supplies one this lane produces no runs and therefore no red X. Reclassify to intentional with a reason, or re-enable."
+    },
+    {
+      "path": ".github/workflows/pr-categorization-cadence.yml",
+      "state": "disabled_manually",
+      "classification": "unreviewed",
+      "reason": "Measured non-active on 2026-09-09 by the audit that introduced this registry. Recorded as FACT, not as approval: no decision record in the repository explains why this workflow was disabled, and until a maintainer supplies one this lane produces no runs and therefore no red X. Reclassify to intentional with a reason, or re-enable."
+    },
+    {
+      "path": ".github/workflows/pr-manifest-integrity.yml",
+      "state": "disabled_manually",
+      "classification": "unreviewed",
+      "reason": "Measured non-active on 2026-09-09 by the audit that introduced this registry. Recorded as FACT, not as approval: no decision record in the repository explains why this workflow was disabled, and until a maintainer supplies one this lane produces no runs and therefore no red X. Reclassify to intentional with a reason, or re-enable."
+    },
+    {
+      "path": ".github/workflows/proof-closure-drift.yml",
+      "state": "disabled_manually",
+      "classification": "unreviewed",
+      "reason": "Measured non-active on 2026-09-09 by the audit that introduced this registry. Recorded as FACT, not as approval: no decision record in the repository explains why this workflow was disabled, and until a maintainer supplies one this lane produces no runs and therefore no red X. Reclassify to intentional with a reason, or re-enable."
+    },
+    {
+      "path": ".github/workflows/search-index-cadence.yml",
+      "state": "disabled_manually",
+      "classification": "unreviewed",
+      "reason": "Measured non-active on 2026-09-09 by the audit that introduced this registry. Recorded as FACT, not as approval: no decision record in the repository explains why this workflow was disabled, and until a maintainer supplies one this lane produces no runs and therefore no red X. Reclassify to intentional with a reason, or re-enable."
+    },
+    {
+      "path": ".github/workflows/society-heartbeat.yml",
+      "state": "disabled_manually",
+      "classification": "unreviewed",
+      "reason": "Measured non-active on 2026-09-09 by the audit that introduced this registry. Recorded as FACT, not as approval: no decision record in the repository explains why this workflow was disabled, and until a maintainer supplies one this lane produces no runs and therefore no red X. Reclassify to intentional with a reason, or re-enable."
+    },
+    {
+      "path": ".github/workflows/tick-metrics.yml",
+      "state": "disabled_manually",
+      "classification": "unreviewed",
+      "reason": "Measured non-active on 2026-09-09 by the audit that introduced this registry. Recorded as FACT, not as approval: no decision record in the repository explains why this workflow was disabled, and until a maintainer supplies one this lane produces no runs and therefore no red X. Reclassify to intentional with a reason, or re-enable."
+    },
+    {
+      "path": ".github/workflows/zetadb-scheduled-node.yml",
+      "state": "disabled_manually",
+      "classification": "unreviewed",
+      "reason": "Measured non-active on 2026-09-09 by the audit that introduced this registry. Recorded as FACT, not as approval: no decision record in the repository explains why this workflow was disabled, and until a maintainer supplies one this lane produces no runs and therefore no red X. Reclassify to intentional with a reason, or re-enable."
+    }
+  ]
+}
