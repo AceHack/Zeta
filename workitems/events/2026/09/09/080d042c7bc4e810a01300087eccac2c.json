@@ -1,0 +1,14 @@
+{
+  "id": "080d042c7bc4e810a01300087eccac2c",
+  "at": "2026-09-09T09:46:07.389Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M22RYY4W087G0R0020H2528",
+    "type": "task",
+    "title": "adjudicate the two vendored formal-methods jars against clone-at-tag-stays-sufficient",
+    "slug": "adjudicate-the-two-vendored-formal-methods-jars-against-clon",
+    "priority": "P2",
+    "filename": "081M22RYY4W087G0R0020H2528-adjudicate-the-two-vendored-formal-methods-jars-against-clon.md"
+  }
+}

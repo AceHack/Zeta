@@ -1450,6 +1450,20 @@ jobs:
         # regression cannot report success the way `lint:markdown` did (#10712).
         run: bun run hygiene:no-decide-by-grep
 
+      - name: No committed build intermediates (output must not outrank its source)
+        id: no_committed_build_intermediates
+        # .claude/rules/no-binary-in-proof-lineage.md excludes build intermediates
+        # from the "artifact under test" exception, but its enforcer
+        # (audit-proof-lineage-binaries.ts) is scoped to src/wasm-dla/bytelock/ --
+        # correct for that exception, silent about the rest of the tree. The gap
+        # was live: src/Core.Alloy/classes/AlloyRunner.class was tracked because
+        # .gitignore still named tools/alloy/classes/ after the tree moved.
+        # Alloy.Runner.Tests.fs skips javac when the .class is NEWER than the
+        # .java, so a committed intermediate silently decided what the
+        # formal-methods harness ran. Scorecard saw it (BinaryArtifactsID 244);
+        # no in-repo check did.
+        run: bun run hygiene:no-committed-build-intermediates
+
       - name: Orphaned doc comments (a docstring that documents the wrong symbol)
         id: orphaned_doc_comments
         # A top-level doc comment immediately followed by another, with no code between

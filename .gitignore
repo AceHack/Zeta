@@ -220,8 +220,16 @@ repository-open-graph-template.png
 Spine/
 
 # Alloy runner compiled-class scratch directory — produced by `javac
-# tools/alloy/AlloyRunner.java` on first test run. Regenerated; not source.
+# AlloyRunner.java` on first test run. Regenerated; not source.
+#
+# BOTH paths are listed on purpose. The tree moved to src/Core.Alloy/ and
+# this rule was not moved with it, so src/Core.Alloy/classes/AlloyRunner.class
+# was committed -- a build intermediate in the proof lineage, and worse, one
+# the harness treats as authoritative: Alloy.Runner.Tests.fs skips javac when
+# the .class is newer than the .java, so a stale committed class silently wins
+# over its own source. tools/alloy/classes/ still exists as local scratch.
 tools/alloy/classes/
+src/Core.Alloy/classes/
 .broadcasts/
 .concept-index.json
 
