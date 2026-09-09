@@ -1,0 +1,14 @@
+{
+  "id": "080d043627f42810a0130008e112fa83",
+  "at": "2026-09-09T15:24:12.293Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M23C9ZM4087G0R001Q1MSD7",
+    "type": "task",
+    "title": "the OutOfSync-but-Healthy set decomposes into persistent StatefulSet drift and transient CRD reconcile",
+    "slug": "the-outofsync-but-healthy-set-decomposes-into-persistent-sta",
+    "priority": "P2",
+    "filename": "081M23C9ZM4087G0R001Q1MSD7-the-outofsync-but-healthy-set-decomposes-into-persistent-sta.md"
+  }
+}
