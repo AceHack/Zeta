@@ -20,6 +20,8 @@ import {
 import { join, resolve } from "node:path";
 import {
   APPLIED_BUT_UNASSERTED_REASONS,
+  applicationOutcome,
+  type ArgoApplicationSnapshot,
   architectureFailure,
   auditAppliedButUnasserted,
   buildPlan,
@@ -30,6 +32,7 @@ import {
   DEV_EXCLUDED_REASONS,
   auditDevExclusionReasons,
   isExcludedFromIncludedProof,
+  failedSyncMessage,
   isApplicationSynced,
   isIncludedScope,
   isZetaGitDirectoryApplicationSource,
@@ -2099,5 +2102,111 @@ describe("crash-loop containers are found, not guessed", () => {
     expect(restartingContainersFromPodsJson("not json")).toEqual([]);
     expect(restartingContainersFromPodsJson("{}")).toEqual([]);
     expect(restartingContainersFromPodsJson(JSON.stringify({ items: "nope" }))).toEqual([]);
+  });
+});
+
+describe("081M23BCR90087G0R002GYP7TE a failed sync is never reconciled", () => {
+  // VERBATIM from run 34323056405, the "Name the drifting resources" step.
+  // hat-system's Sync hook Job exhausted backoffLimit: 2 because two
+  // ConstraintTemplates never compiled, so seven Constraints never applied --
+  // and every unapplied resource was a kind ArgoCD has no health check for,
+  // so the Application still read Healthy and the proof passed over it.
+  const HAT_SYSTEM_SYNC_ERROR =
+    "Failed last sync attempt to [c73cc49e53fc13198df1cdb9ea054bc364e1c01f]: " +
+    "one or more synchronization tasks completed unsuccessfully (retried 10 times).";
+
+  const hatSystem = (
+    conditions?: readonly { type: string; message: string }[],
+  ): ArgoApplicationSnapshot => ({
+    name: "hat-system",
+    syncStatus: "OutOfSync",
+    healthStatus: "Healthy",
+    message: "",
+    syncRevision: "c73cc49e53fc13198df1cdb9ea054bc364e1c01f",
+    ...(conditions === undefined ? {} : { conditions }),
+  });
+
+  const autoSync = {
+    dir: "hat-system",
+    name: "hat-system",
+    path: "full-ai-cluster/k8s/applications/hat-system/Application.yaml",
+    excludedFromDev: false,
+    manualSync: false,
+  };
+
+  test("the OLD predicate cannot tell the two apart -- that IS the defect", () => {
+    // Both are `OutOfSync + Healthy` with a revision, so isApplicationSynced
+    // says true for BOTH. That is why the failure has to be read from the
+    // condition rather than inferred from two status strings.
+    expect(isApplicationSynced(hatSystem())).toBe(true);
+    expect(
+      isApplicationSynced(hatSystem([{ type: "SyncError", message: HAT_SYSTEM_SYNC_ERROR }])),
+    ).toBe(true);
+  });
+
+  test("applicationOutcome REFUSES an Application whose last sync failed", () => {
+    const outcome = applicationOutcome(
+      autoSync,
+      hatSystem([{ type: "SyncError", message: HAT_SYSTEM_SYNC_ERROR }]),
+    );
+    expect(outcome.ok).toBe(false);
+    expect(outcome.reason).toContain("SyncError");
+    expect(outcome.reason).toContain("retried 10 times");
+  });
+
+  test("and still accepts the same app once the condition clears", () => {
+    expect(applicationOutcome(autoSync, hatSystem()).ok).toBe(true);
+    expect(applicationOutcome(autoSync, hatSystem([])).ok).toBe(true);
+  });
+
+  test("an unrelated condition type is not a sync failure", () => {
+    // ComparisonError is the `sync=Unknown` class and has its own accepted
+    // path; reading every condition as a failure would break six apps that
+    // pass that way in a green run.
+    const comparison = [{ type: "ComparisonError", message: "rpc error" }];
+    expect(failedSyncMessage(hatSystem(comparison))).toBe(null);
+    expect(applicationOutcome(autoSync, hatSystem(comparison)).ok).toBe(true);
+  });
+
+  test("a SyncError with an EMPTY message still refuses, and says so", () => {
+    // An empty string must not read as "no failure" -- that would be a
+    // refusal that cannot fire.
+    const bare = [{ type: "SyncError", message: "" }];
+    expect(failedSyncMessage(hatSystem(bare))).toBe("sync operation failed");
+    expect(applicationOutcome(autoSync, hatSystem(bare)).ok).toBe(false);
+  });
+
+  test("the manual-sync contract is untouched -- it is judged elsewhere", () => {
+    const manual = { ...autoSync, name: "kubevirt", dir: "kubevirt", manualSync: true };
+    const outcome = applicationOutcome(manual, {
+      name: "kubevirt",
+      syncStatus: "OutOfSync",
+      healthStatus: "Missing",
+      message: "",
+      conditions: [{ type: "SyncError", message: HAT_SYSTEM_SYNC_ERROR }],
+    });
+    // manualSyncAssertion decides this one. Pinned so that widening the
+    // auto-sync contract can never silently widen the manual one.
+    expect(outcome.ok).toBe(true);
+  });
+
+  test("the condition survives parse and reaches the verdict", () => {
+    const snapshots = parseApplicationList(
+      JSON.stringify({
+        items: [
+          {
+            metadata: { name: "hat-system" },
+            status: {
+              sync: { status: "OutOfSync", revision: "c73cc49e" },
+              health: { status: "Healthy", message: "" },
+              conditions: [{ type: "SyncError", message: HAT_SYSTEM_SYNC_ERROR }],
+            },
+          },
+        ],
+      }),
+    );
+    const verdicts = classifyApplications([autoSync], snapshots);
+    expect(verdicts.map((verdict) => verdict.ok)).toEqual([false]);
+    expect(verdicts[0]?.reason).toContain("retried 10 times");
   });
 });

@@ -2929,6 +2929,52 @@ function parseApplicationObjectOrFailure(
   }
 }
 
+/**
+ * ArgoCD's own name for "the sync operation FAILED", written into
+ * `status.conditions` and cleared when a later sync succeeds.
+ */
+export const SYNC_ERROR_CONDITION_TYPE = "SyncError";
+
+/**
+ * A FAILED SYNC IS NEVER RECONCILED, WHATEVER HEALTH SAYS.
+ *
+ * `isApplicationSynced` below accepts `OutOfSync + Healthy` -- deliberately,
+ * for benign StatefulSet and git-directory drift. But health is assessed per
+ * RESOURCE KIND, and the kinds ArgoCD has no health check for contribute
+ * nothing to it. Gatekeeper Constraints are such a kind. So an Application
+ * whose sync genuinely failed, and whose unapplied resources are all
+ * health-less, reads as `OutOfSync + Healthy` -- indistinguishable, to every
+ * predicate below, from an app that synced fine and drifted afterwards.
+ *
+ * MEASURED, on the lane this file is the proof for. `hat-system` carried
+ *
+ *   SyncError: Failed last sync attempt to [c73cc49e...]: one or more
+ *   synchronization tasks completed unsuccessfully (retried 10 times).
+ *
+ * in run 34323056405, with all seven Hat Constraints `OutOfSync`, and the same
+ * seven Constraints unapplied in run 34338106811 -- which the proof PASSED.
+ * The policy engine held zero installed policies in a green run, for as long
+ * as the lane has existed.
+ *
+ * The condition is what closes it, because it is ArgoCD stating the failure
+ * rather than us inferring it from two status strings that cannot carry it.
+ * Scoped to the auto-sync contract: a declared manual-sync app is judged by
+ * `manualSyncAssertion`, a different and weaker contract on purpose
+ * (./manual-sync-policy.ts).
+ *
+ * NOT TERMINAL. ArgoCD retries, and clears the condition when a sync succeeds,
+ * so an app carrying one stays a LAGGARD and the wait keeps waiting -- a
+ * transient failure still self-heals. Only one that survives the timeout fails
+ * the proof, which is the honest reading of "it never synced".
+ */
+export function failedSyncMessage(snapshot: ArgoApplicationSnapshot): string | null {
+  const condition = (snapshot.conditions ?? []).find(
+    (candidate) => candidate.type === SYNC_ERROR_CONDITION_TYPE,
+  );
+  if (condition === undefined) return null;
+  return condition.message.length > 0 ? condition.message : "sync operation failed";
+}
+
 export function isApplicationSynced(snapshot: ArgoApplicationSnapshot): boolean {
   if (snapshot.syncStatus === "Synced") return true;
   // Helm apps with benign StatefulSet drift often stay OutOfSync while Healthy after a successful sync.
@@ -2973,6 +3019,10 @@ export function isApplicationSynced(snapshot: ArgoApplicationSnapshot): boolean 
  */
 export function applicationOutcome(expected: ExpectedApplication, snapshot: ArgoApplicationSnapshot): AssertionOutcome {
   if (expected.manualSync) return manualSyncAssertion(snapshot);
+  const syncFailure = failedSyncMessage(snapshot);
+  if (syncFailure !== null) {
+    return { ok: false, reason: SYNC_ERROR_CONDITION_TYPE + ": " + syncFailure };
+  }
   const reconciled = isApplicationSynced(snapshot) ? snapshot.healthStatus === "Healthy" : false;
   if (reconciled) return { ok: true, reason: "" };
   const stated = snapshot.message === "" ? "expected Synced/Healthy" : snapshot.message;
