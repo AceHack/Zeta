@@ -1,0 +1,93 @@
+# DECLARED auto-accept exceptions for ROLLING `from-url` rows.
+#
+# Format: <dest>  accept=auto  verify=<colon-argv|deferred>  declared=<YYYY-MM-DD>
+#         expires=<YYYY-MM-DD>  exitcheck=<colon-argv>  tradeoff=<repo-relative doc>
+#
+# ── WHAT A ROW HERE DOES ─────────────────────────────────────────────────────
+#
+# It lets ONE `rolling=` row in `tools/setup/manifests/from-url` install bytes
+# whose sha256 disagrees with the pin, instead of aborting `install.sh`. That is
+# it. It does not move the pin, does not touch any pin surface, does not write a
+# re-measure receipt, and does not make any verifier claim go green.
+#
+# ── WHAT IT EXPLICITLY DOES NOT DO ───────────────────────────────────────────
+#
+# THERE IS NO GLOBAL SWITCH HERE AND THERE MUST NEVER BE ONE. A `*` row matches
+# the literal dest `*` and nothing else — `activeExceptionFor` compares dests
+# with `===`. Every rolling row without a row below still fails closed, every
+# non-rolling row is refused an exception outright by
+# `src/Core.TypeScript/hygiene/lint-rolling-exceptions.ts`, and an EXPIRED row
+# is inert at install time AND turns the gate red.
+#
+# ── THE MAINTAINER'S RULING, 2026-09-09 ──────────────────────────────────────
+#
+#   "okay i think we can just allow for the roll and update for now, i know that
+#    is not great from a security point of view but this is not a permanent fix,
+#    it just until we don't need the new features anymore, we are going to need
+#    this exception path we can just save the exceptions somewhere and let it not
+#    break install.sh."
+#
+# The security cost is real, was accepted knowingly, and is written down in each
+# row's `tradeoff=` doc rather than softened. The lint refuses a row whose
+# tradeoff doc does not say what an ATTACKER gains while the row is live.
+#
+# ── THE FIELDS ───────────────────────────────────────────────────────────────
+#
+#   accept     `auto` and nothing else. A closed set of one, so a typo is a
+#              refusal rather than a fall-through to permissive.
+#   verify     colon-encoded argv run under `bun` BEFORE the bytes are accepted.
+#              Non-zero ⇒ the bytes are REFUSED and the failure is recorded.
+#              `deferred` is the honest way to say nothing runs — and it is
+#              recorded as `verdict=not-run`, never as a pass.
+#   declared   the day the row was written. Bounds how far `expires` may reach.
+#   expires    the day it stops working. At most 90 days after `declared`;
+#              past ⇒ inert at install time and red in the gate.
+#   exitcheck  colon-encoded argv falsifying the row's stated PREMISE — the
+#              reason the exception exists at all. Run in the gate, so "the
+#              reason evaporated" is a red check rather than a silence.
+#   tradeoff   the doc carrying the security analysis.
+#
+# ── WHERE ACCEPTANCES ARE RECORDED ───────────────────────────────────────────
+#
+# `.zeta/from-url-rolling-accepts` — untracked, per machine, append-only,
+# idempotent. Every acceptance names both digests, the clock, and whether a
+# verification ran and what it said. It is NOT `from-url-rolling-receipts`:
+# accepting is not measuring, and only a receipt written by
+# `tools/setup/repin-rolling.ts` after a re-measure exits 0 can move a pin.
+#
+# 081M24396B2087G0R000MDMDEA
+#
+# ── src/Core.TLA/tla2tools.jar ───────────────────────────────────────────────
+#
+# WHY THIS ROW EXISTS. tlaplus republishes the v1.8.0 prerelease asset from CI
+# on pushes to master. MEASURED 2026-09-09: FOUR distinct builds served in one
+# day (12:48 rev 65fbace · 15:25 rev 4ad12e8 · 16:25 rev 4ad12e8, same rev and
+# different bytes · 21:30 rev ede5b88). Each one aborts the whole `from-url`
+# realizer — which is not best-effort, so `install.sh` stops — on every machine
+# whose cached jar is not the pinned one. That is fleet-wide provisioning
+# breakage several times a day for one dependency.
+#
+# WHY NOT JUST PIN v1.7.4 AND BE DONE. Because v1.7.4 prints the generic
+# "Temporal properties were violated." where v1.8.0 names WHICH property, and
+# `registry/tlc-models.json` pins the named form as an expectDetail. The
+# `exitcheck=` below is that premise made falsifiable: if no gate-tier model
+# needs a named temporal property any more, it goes red and this row should be
+# retired in favour of an immutable pin.
+#
+# WHY verify=deferred RATHER THAN THE SWEEP. MEASURED 2026-09-09 on an
+# Apple-Silicon host with OpenJDK 26: `run-tlc.ts --all` is 52 models in
+# **5m53s** wall clock (and all 52 agreed with their pins on the ede5b88 build,
+# so this is the cost of a PASSING sweep, not a pathological one). Six minutes
+# added to every `install.sh` on every machine for one dependency is not
+# affordable, and it could not run here even if it were: the sweep judges the
+# jar against `registry/tlc-models.json`'s versionBanner, which is a COMMITTED
+# restatement of the pin, and the accept path is not allowed to move committed
+# pin surfaces. Deferring it is therefore not laziness but the only honest
+# option — and the deferral is not a promise, it is `repin-rolling.ts`, which
+# runs exactly that sweep and refuses to write a digest it did not pass.
+#
+# EXPIRES 90 DAYS OUT, THE CEILING, DELIBERATELY. The exit condition — a STABLE
+# tlaplus release carrying the named-property diagnostic — is not ours to
+# schedule, so a shorter window would buy a renewal ritual rather than new
+# information. The ceiling is what makes the row revisitable at all.
+src/Core.TLA/tla2tools.jar  accept=auto  verify=deferred  declared=2026-09-09  expires=2026-12-08  exitcheck=src/Core.TypeScript/hygiene/lint-tla2tools-rolling-premise.ts  tradeoff=docs/agendas/ace-package-manager/2026-09-09-rolling-from-url-auto-accept-exceptions-design.md

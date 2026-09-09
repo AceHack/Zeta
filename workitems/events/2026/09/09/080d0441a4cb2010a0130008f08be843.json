@@ -1,0 +1,14 @@
+{
+  "id": "080d0441a4cb2010a0130008f08be843",
+  "at": "2026-09-09T22:05:43.652Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M24396B2087G0R000MDMDEA",
+    "type": "task",
+    "title": "Rolling from-url exceptions: declared, recorded auto-accept so a roll does not break install.sh",
+    "slug": "rolling-from-url-exceptions-declared-recorded-auto-accept-so",
+    "priority": "P2",
+    "filename": "081M24396B2087G0R000MDMDEA-rolling-from-url-exceptions-declared-recorded-auto-accept-so.md"
+  }
+}

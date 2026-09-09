@@ -1,3 +1,4 @@
+import { spawnSync } from "node:child_process";
 import { mkdirSync, renameSync, unlinkSync } from "node:fs";
 import { dirname } from "node:path";
 import { parseMechanismManifest } from "../setup-manifest.ts";
@@ -5,8 +6,15 @@ import {
   curlFetchToFile,
   resolveRepoRelativeDest,
   sha256File,
-  verifySha256File,
 } from "./curl-fetch.ts";
+import {
+  activeExceptionFor,
+  appendAcceptanceRecord,
+  decideRollingAccept,
+  loadRollingExceptions,
+  rollingRemedy,
+  type RollingException,
+} from "./rolling-exception.ts";
 import {
   commandOnPath,
   finishResult,
@@ -40,31 +48,26 @@ function requireSha256(destRel: string, attrs: Attrs): string {
 /**
  * `rolling=<name>` declares that the bytes behind this URL are REPLACED IN
  * PLACE upstream -- a GitHub prerelease tag whose asset is re-uploaded, a
- * "latest" alias, a nightly. It changes NOTHING about enforcement: the digest
- * is still mandatory and a mismatch still fails closed. What it changes is the
- * DIAGNOSIS. Without it, "sha256 mismatch" reads as corruption or attack and
- * sends the reader hunting for a compromise that did not happen; with it, the
- * message names the actual event, prints both digests, and gives the one
- * command that re-measures and re-pins.
+ * "latest" alias, a nightly. By itself it changes NOTHING about enforcement:
+ * the digest is still mandatory and a mismatch still fails closed. What it
+ * changes is the DIAGNOSIS. Without it, "sha256 mismatch" reads as corruption
+ * or attack and sends the reader hunting for a compromise that did not happen;
+ * with it, the message names the actual event, prints both digests, and gives
+ * the one command that re-measures and re-pins.
+ *
+ * A DECLARED EXCEPTION is the second half, added 081M24396B2087G0R000MDMDEA on
+ * the maintainer's ruling. It does not change the default either: a rolling row
+ * with no row in `tools/setup/manifests/from-url-rolling-exceptions` still
+ * fails closed here, and so does one whose row has expired. See
+ * `rolling-exception.ts` for what the exception costs and what it does not.
  *
  * The rule the message has to carry, because it is the whole point of the
  * regime: BUMPING THE DIGEST TO MAKE A RED TREE GREEN IS THE FAILURE MODE.
  * It swaps the verifier under every claim the verifier ever established, in a
- * one-line diff that looks like housekeeping.
+ * one-line diff that looks like housekeeping. An auto-accept does NOT bump the
+ * digest -- the pin stays where it is and keeps disagreeing.
  */
-export function rollingRemedy(destRel: string, expected: string, actual: string, rolling: string): string {
-  return (
-    `from-url ${destRel}: upstream REBUILT this asset in place (rolling=${rolling}).\n` +
-    `  pinned  sha256=${expected}\n` +
-    `  fetched sha256=${actual}\n` +
-    "  This is expected for a rolling upstream and is NOT corruption. It fails\n" +
-    "  closed on purpose: the new bytes are a different verifier, so every claim\n" +
-    "  the old one established has to be re-measured before the pin moves.\n" +
-    `  Re-measure AND re-pin in one step:  bun tools/setup/repin-rolling.ts ${destRel}\n` +
-    "  Do NOT hand-edit the sha256= in tools/setup/manifests/from-url. A digest\n" +
-    "  bumped without a re-measure is the exact failure this regime exists to stop."
-  );
-}
+export { rollingRemedy };
 
 function checkRequires(requires: string | undefined, logWarn: (msg: string) => void): void {
   if (!requires) return;
@@ -81,12 +84,38 @@ function checkRequires(requires: string | undefined, logWarn: (msg: string) => v
   }
 }
 
+/**
+ * Runs an exception row's `verify=` argv under `bun`, in the repo root.
+ *
+ * `ok` is "the process exited 0" and nothing softer. A spawn that could not
+ * start at all (`status === null`, no bun, ENOENT) is NOT a pass -- it is a
+ * check that did not run, and it is reported as a failure so the accept path
+ * refuses rather than treating an unanswerable question as a yes.
+ */
+function runVerifyUnderBun(repoRoot: string, argv: readonly string[]): { ok: boolean; transcript: string } {
+  const run = spawnSync("bun", [...argv], {
+    cwd: repoRoot,
+    encoding: "utf8",
+    maxBuffer: 64 * 1024 * 1024,
+  });
+  const transcript = (run.stdout ?? "") + (run.stderr ?? "");
+  if (run.status === null) {
+    return {
+      ok: false,
+      transcript: transcript + "\nverify could not be spawned: " + String(run.error?.message ?? "unknown"),
+    };
+  }
+  return { ok: run.status === 0, transcript };
+}
+
 async function downloadWithOuterRetry(
   dest: string,
   destRel: string,
   url: string,
   sha256: string,
   rolling: string | undefined,
+  exception: RollingException | null,
+  repoRoot: string,
   dryRun: boolean,
   log: (msg: string) => void,
 ): Promise<void> {
@@ -98,33 +127,58 @@ async function downloadWithOuterRetry(
   const part = `${dest}.part`;
   const maxAttempts = 4;
   for (let attempt = 1; attempt <= maxAttempts; attempt++) {
-    let fetched: string | null = null;
+    // The fetch and the digest are the only things that may be RETRIED: they
+    // are the transport-class failures. Everything after this block is a
+    // judgement about bytes that already arrived, and retrying a judgement just
+    // asks the same question of the same bytes four times.
+    let fetched: string;
     try {
       await curlFetchToFile(part, url);
-      // Verify BEFORE the rename: a digest mismatch must never leave bytes at
-      // the destination, where the next run's existence check would adopt them.
+      // Hash BEFORE the rename: bytes that fail the pin must never reach the
+      // destination, where the next run's existence check would adopt them.
       fetched = sha256File(part);
-      verifySha256File(part, sha256);
-      renameSync(part, dest);
-      return;
     } catch (err) {
-      try {
-        unlinkSync(part);
-      } catch {
-        /* absent */
-      }
-      // A digest disagreement is UPSTREAM DISAGREEING WITH THE PIN, and retrying
-      // it four times just fetches the same wrong bytes four times. Fail on the
-      // first one, and say which event it was.
-      if (fetched !== null && fetched !== sha256) {
-        if (rolling !== undefined) throw new Error(rollingRemedy(destRel, sha256, fetched, rolling));
-        throw err;
-      }
+      removeIfPresent(part);
       if (attempt >= maxAttempts) throw err;
       const sleepS = attempt * 30;
       log(`  attempt ${String(attempt)}/${String(maxAttempts)} failed; retrying in ${String(sleepS)}s`);
       await Bun.sleep(sleepS * 1000);
+      continue;
     }
+
+    if (fetched === sha256) {
+      renameSync(part, dest);
+      return;
+    }
+
+    // UPSTREAM DISAGREES WITH THE PIN. For a non-rolling row that is a
+    // supply-chain event and there is nothing to say but the digests.
+    if (rolling === undefined) {
+      removeIfPresent(part);
+      throw new Error(
+        `sha256 mismatch for ${destRel}: expected ${sha256}, got ${fetched}`,
+      );
+    }
+
+    // A rolling row: `decideRollingAccept` is the ONLY thing that can turn this
+    // into an acceptance, and with `exception === null` it never does.
+    const decision = decideRollingAccept(
+      { dest: destRel, rolling, pinned: sha256, fetched, exception },
+      {
+        runVerify: (argv) => runVerifyUnderBun(repoRoot, argv),
+        appendRecord: (line) => {
+          appendAcceptanceRecord(repoRoot, line);
+        },
+        nowIso: () => new Date().toISOString(),
+      },
+    );
+    if (!decision.accepted) {
+      removeIfPresent(part);
+      throw new Error(decision.message);
+    }
+    renameSync(part, dest);
+    log(decision.message);
+    return;
   }
 }
 
@@ -158,6 +212,11 @@ export const realizeFromUrl: SetupRealizer = async (ctx) => {
   }
 
   const entries = parseMechanismManifest(text);
+  // Read once, for the whole realizer. The clock is read once too and passed
+  // down: a run that straddles midnight must not have an exception expire
+  // halfway through it and treat two identical rows differently.
+  const exceptions = loadRollingExceptions(ctx.repoRoot);
+  const today = new Date().toISOString().slice(0, 10);
   for (const entry of entries) {
     const destRel = entry.tokens[0];
     const url = entry.tokens[1];
@@ -170,6 +229,14 @@ export const realizeFromUrl: SetupRealizer = async (ctx) => {
     mkdirSync(dirname(dest), { recursive: true });
 
     const rolling = entry.attrs.rolling;
+    // An exception is meaningless without `rolling=`, and letting one apply to
+    // an IMMUTABLE row would be the worst version of this feature: on an
+    // immutable upstream a byte change is a supply-chain event, not a rebuild,
+    // and auto-accepting it is exactly what must never happen. The lint refuses
+    // such a row too; this is the second, independent refusal, at the only
+    // place that could act on it.
+    const exception =
+      rolling === undefined ? null : activeExceptionFor(exceptions, destRel, today);
 
     // Present is not the same as correct, so this hashes rather than asking
     // whether the path exists: a partial, poisoned, or re-uploaded-upstream file
@@ -204,7 +271,17 @@ export const realizeFromUrl: SetupRealizer = async (ctx) => {
 
     ctx.log(`↓ from-url: ${destRel} ← ${url}`);
     ctx.actions.push(ctx.dryRun ? `dry-run: curl ${url} → verify sha256 → ${dest}` : `curl ${url} → verify sha256 → ${dest}`);
-    await downloadWithOuterRetry(dest, destRel, url, sha256, rolling, ctx.dryRun, ctx.log);
+    await downloadWithOuterRetry(
+      dest,
+      destRel,
+      url,
+      sha256,
+      rolling,
+      exception,
+      ctx.repoRoot,
+      ctx.dryRun,
+      ctx.log,
+    );
     ctx.log(`✓ ${destRel}`);
   }
 

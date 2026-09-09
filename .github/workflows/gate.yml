@@ -2450,6 +2450,24 @@ jobs:
       - name: mathjs dismissal premise still holds (alert #15)
         run: bun src/Core.TypeScript/hygiene/lint-mathjs-dismissal-premise.ts
 
+      # The declared auto-accept exceptions for ROLLING `from-url` rows. An
+      # exception with no enforcement is a licence, so this refuses a row that is
+      # EXPIRED, that runs past the 90-day ceiling, that names a NON-rolling row,
+      # that uses any accept= mode but `auto`, that has a duplicate, or whose
+      # tradeoff doc never states what an attacker gains. OFFLINE -- no network.
+      # 081M24396B2087G0R000MDMDEA
+      - name: Rolling auto-accept exceptions are declared, bounded and unexpired
+        run: bun src/Core.TypeScript/hygiene/lint-rolling-exceptions.ts
+
+      # ...and the PREMISE under the one exception that exists: the row's own
+      # `exitcheck=`, RUN rather than merely declared. A declared-but-never-
+      # executed check is the defect the lint above exists to prevent, one level
+      # up. Red when no gate-tier model expects the named-temporal diagnostic
+      # that only the rolling build provides -- i.e. when the reason for
+      # tolerating a rolling upstream at all has evaporated.
+      - name: tla2tools rolling premise still holds (the exception's own exitcheck)
+        run: bun src/Core.TypeScript/hygiene/lint-tla2tools-rolling-premise.ts
+
       # A flake ref evaluates PURE by default, and pure-eval `builtins.pathExists`
       # on an absolute path returns FALSE rather than erroring (measured 2026-08-21,
       # Nix 2.34.6). Every full-ai-cluster module reading /etc/zeta guards its
@@ -2466,6 +2484,8 @@ jobs:
             src/Core.TypeScript/hygiene/lint-clone-at-tag-is-sufficient.test.ts \
             src/Core.TypeScript/hygiene/lint-nixos-rebuild-needs-impure.test.ts \
             src/Core.TypeScript/hygiene/lint-mathjs-dismissal-premise.test.ts \
+            src/Core.TypeScript/hygiene/lint-rolling-exceptions.test.ts \
+            src/Core.TypeScript/ace/setup-realizers/rolling-exception.test.ts \
             src/Core.TypeScript/ace/refresh-pins.test.ts \
             src/Core.TypeScript/ci/affected-legs.test.ts
 
