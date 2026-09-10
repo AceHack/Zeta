@@ -943,7 +943,29 @@ let ``probe cancellation drains inherited pipes after observed launcher exit`` (
                 Assert.Equal(0, captured.ExitCode)
                 Assert.True captured.TimedOut
                 Assert.False child.HasExited
-                Assert.Equal(pid.ToString(Globalization.CultureInfo.InvariantCulture), (readTextSharedWithWriter stdout).Trim())
+                // The grandchild still holds `stdout` OPEN FOR WRITING here, so its bytes
+                // become visible on the WRITER's schedule, not ours. Read once and this
+                // line asserts a race rather than the drain behaviour it is named for.
+                //
+                // MEASURED 2026-09-10: failed on macos-26 with Actual "" against an
+                // expected PID, and the SAME COMMIT passed on re-run -- two verdicts from
+                // one tree, which is what proves it flaky rather than broken. The failing
+                // instance took 661 ms; this repo's own archived runs of this test record
+                // 184 ms and 68 ms, so the fixture was under 3.6x-10x its normal time
+                // pressure and an assertion with no tolerance cannot survive that.
+                //
+                // Same remedy and the same reasoning as the readiness bound at :930
+                // (PR #17071, "four windows failures, one diagnosis: bounds with no
+                // tolerance"). That fix reached the readiness bound; this line was left
+                // with no tolerance at all, so its own diagnosis applies here untouched.
+                //
+                // Tolerates the DELAY, never the ABSENCE: a PID that never appears still
+                // fails, and it fails through Assert.Equal so the message carries the
+                // value actually observed instead of a bare timeout.
+                let expectedPid = pid.ToString(Globalization.CultureInfo.InvariantCulture)
+                SpinWait.SpinUntil((fun () -> (readTextSharedWithWriter stdout).Trim() = expectedPid), 10000)
+                |> ignore
+                Assert.Equal(expectedPid, (readTextSharedWithWriter stdout).Trim())
             with error ->
                 primaryFailure <- Some error
                 recordFailure "fixture-failure.json" (box {| Stage = stage; Error = error.ToString() |})
