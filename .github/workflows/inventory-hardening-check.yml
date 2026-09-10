@@ -4,7 +4,9 @@
 #   * inventory/proofs/phase7-csp-proof.ts — asserts the shipped index.html keeps a
 #     locked CSP (script/style/connect-src 'self', no 'unsafe-inline', no off-origin
 #     host), no inline JS/CSS, and every referenced script/stylesheet on disk.
-#   * inventory/proofs/viewer.unit.test.ts — the viewer's pure filter/sort/escape logic.
+#   * inventory/proofs/*.test.ts — the viewer pure filter/sort/escape logic, AND the CSP
+#     proof own falsifier (phase7-csp-proof.test.ts): eight adversarial payloads that the
+#     previous regex-based gate reported CLEAN, measured 2026-09-09.
 # Static + offline only (no network, no secrets, no browser). The live in-browser
 # CSP-no-violations check is the Part-2 Auditor's job.
 name: inventory-hardening-check
@@ -45,5 +47,5 @@ jobs:
       - name: CSP hardening proof (static)
         run: bun inventory/proofs/phase7-csp-proof.ts
 
-      - name: Inventory viewer unit tests
-        run: bun test inventory/proofs/viewer.unit.test.ts
+      - name: Inventory proof + viewer unit tests
+        run: bun test inventory/proofs/
