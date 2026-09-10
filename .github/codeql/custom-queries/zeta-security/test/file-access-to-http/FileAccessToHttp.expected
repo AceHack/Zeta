@@ -1,0 +1,58 @@
+edges
+| creds.ts:11:9:11:11 | raw | creds.ts:12:28:12:30 | raw | provenance |  |
+| creds.ts:11:9:11:11 | raw | creds.ts:12:59:12:61 | raw | provenance |  |
+| creds.ts:11:15:11:53 | JSON.pa ... tf-8")) | creds.ts:11:9:11:11 | raw | provenance |  |
+| creds.ts:11:26:11:52 | readFil ... utf-8") | creds.ts:11:15:11:53 | JSON.pa ... tf-8")) | provenance |  |
+| creds.ts:12:10:12:73 | { baseU ... en"]) } [baseUrl] | unguarded.ts:12:17:12:42 | readCre ... lsPath) [baseUrl] | provenance |  |
+| creds.ts:12:10:12:73 | { baseU ... en"]) } [token] | partly-guarded.ts:11:17:11:42 | readCre ... lsPath) [token] | provenance |  |
+| creds.ts:12:10:12:73 | { baseU ... en"]) } [token] | unguarded.ts:12:17:12:42 | readCre ... lsPath) [token] | provenance |  |
+| creds.ts:12:21:12:42 | String( ... eUrl"]) | creds.ts:12:10:12:73 | { baseU ... en"]) } [baseUrl] | provenance |  |
+| creds.ts:12:28:12:30 | raw | creds.ts:12:21:12:42 | String( ... eUrl"]) | provenance |  |
+| creds.ts:12:52:12:71 | String(raw["token"]) | creds.ts:12:10:12:73 | { baseU ... en"]) } [token] | provenance |  |
+| creds.ts:12:59:12:61 | raw | creds.ts:12:52:12:71 | String(raw["token"]) | provenance |  |
+| partly-guarded.ts:11:9:11:13 | creds [token] | partly-guarded.ts:16:41:16:45 | creds [token] | provenance |  |
+| partly-guarded.ts:11:17:11:42 | readCre ... lsPath) [token] | partly-guarded.ts:11:9:11:13 | creds [token] | provenance |  |
+| partly-guarded.ts:16:31:16:53 | `Bearer ... token}` | partly-guarded.ts:16:14:16:83 | { Autho ... json" } | provenance |  |
+| partly-guarded.ts:16:41:16:45 | creds [token] | partly-guarded.ts:16:41:16:51 | creds.token | provenance |  |
+| partly-guarded.ts:16:41:16:51 | creds.token | partly-guarded.ts:16:31:16:53 | `Bearer ... token}` | provenance |  |
+| unguarded.ts:12:9:12:13 | creds [baseUrl] | unguarded.ts:13:35:13:39 | creds [baseUrl] | provenance |  |
+| unguarded.ts:12:9:12:13 | creds [token] | unguarded.ts:14:41:14:45 | creds [token] | provenance |  |
+| unguarded.ts:12:17:12:42 | readCre ... lsPath) [baseUrl] | unguarded.ts:12:9:12:13 | creds [baseUrl] | provenance |  |
+| unguarded.ts:12:17:12:42 | readCre ... lsPath) [token] | unguarded.ts:12:9:12:13 | creds [token] | provenance |  |
+| unguarded.ts:13:35:13:39 | creds [baseUrl] | unguarded.ts:13:35:13:47 | creds.baseUrl | provenance |  |
+| unguarded.ts:13:35:13:47 | creds.baseUrl | unguarded.ts:13:32:13:56 | `${cred ... {path}` | provenance |  |
+| unguarded.ts:14:31:14:53 | `Bearer ... token}` | unguarded.ts:14:14:14:83 | { Autho ... json" } | provenance |  |
+| unguarded.ts:14:41:14:45 | creds [token] | unguarded.ts:14:41:14:51 | creds.token | provenance |  |
+| unguarded.ts:14:41:14:51 | creds.token | unguarded.ts:14:31:14:53 | `Bearer ... token}` | provenance |  |
+nodes
+| creds.ts:11:9:11:11 | raw | semmle.label | raw |
+| creds.ts:11:15:11:53 | JSON.pa ... tf-8")) | semmle.label | JSON.pa ... tf-8")) |
+| creds.ts:11:26:11:52 | readFil ... utf-8") | semmle.label | readFil ... utf-8") |
+| creds.ts:12:10:12:73 | { baseU ... en"]) } [baseUrl] | semmle.label | { baseU ... en"]) } [baseUrl] |
+| creds.ts:12:10:12:73 | { baseU ... en"]) } [token] | semmle.label | { baseU ... en"]) } [token] |
+| creds.ts:12:21:12:42 | String( ... eUrl"]) | semmle.label | String( ... eUrl"]) |
+| creds.ts:12:28:12:30 | raw | semmle.label | raw |
+| creds.ts:12:52:12:71 | String(raw["token"]) | semmle.label | String(raw["token"]) |
+| creds.ts:12:59:12:61 | raw | semmle.label | raw |
+| partly-guarded.ts:11:9:11:13 | creds [token] | semmle.label | creds [token] |
+| partly-guarded.ts:11:17:11:42 | readCre ... lsPath) [token] | semmle.label | readCre ... lsPath) [token] |
+| partly-guarded.ts:16:14:16:83 | { Autho ... json" } | semmle.label | { Autho ... json" } |
+| partly-guarded.ts:16:31:16:53 | `Bearer ... token}` | semmle.label | `Bearer ... token}` |
+| partly-guarded.ts:16:41:16:45 | creds [token] | semmle.label | creds [token] |
+| partly-guarded.ts:16:41:16:51 | creds.token | semmle.label | creds.token |
+| unguarded.ts:12:9:12:13 | creds [baseUrl] | semmle.label | creds [baseUrl] |
+| unguarded.ts:12:9:12:13 | creds [token] | semmle.label | creds [token] |
+| unguarded.ts:12:17:12:42 | readCre ... lsPath) [baseUrl] | semmle.label | readCre ... lsPath) [baseUrl] |
+| unguarded.ts:12:17:12:42 | readCre ... lsPath) [token] | semmle.label | readCre ... lsPath) [token] |
+| unguarded.ts:13:32:13:56 | `${cred ... {path}` | semmle.label | `${cred ... {path}` |
+| unguarded.ts:13:35:13:39 | creds [baseUrl] | semmle.label | creds [baseUrl] |
+| unguarded.ts:13:35:13:47 | creds.baseUrl | semmle.label | creds.baseUrl |
+| unguarded.ts:14:14:14:83 | { Autho ... json" } | semmle.label | { Autho ... json" } |
+| unguarded.ts:14:31:14:53 | `Bearer ... token}` | semmle.label | `Bearer ... token}` |
+| unguarded.ts:14:41:14:45 | creds [token] | semmle.label | creds [token] |
+| unguarded.ts:14:41:14:51 | creds.token | semmle.label | creds.token |
+subpaths
+#select
+| partly-guarded.ts:16:14:16:83 | { Autho ... json" } | creds.ts:11:26:11:52 | readFil ... utf-8") | partly-guarded.ts:16:14:16:83 | { Autho ... json" } | Outbound network request depends on $@. | creds.ts:11:26:11:52 | readFil ... utf-8") | file data |
+| unguarded.ts:13:32:13:56 | `${cred ... {path}` | creds.ts:11:26:11:52 | readFil ... utf-8") | unguarded.ts:13:32:13:56 | `${cred ... {path}` | Outbound network request depends on $@. | creds.ts:11:26:11:52 | readFil ... utf-8") | file data |
+| unguarded.ts:14:14:14:83 | { Autho ... json" } | creds.ts:11:26:11:52 | readFil ... utf-8") | unguarded.ts:14:14:14:83 | { Autho ... json" } | Outbound network request depends on $@. | creds.ts:11:26:11:52 | readFil ... utf-8") | file data |

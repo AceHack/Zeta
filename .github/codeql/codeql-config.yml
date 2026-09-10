@@ -80,12 +80,47 @@ paths-ignore:
   - "**/obj/**"
   - "**/bin/**"
 
-# Custom query packs — reserved for the follow-up round that
-# ships Zeta-specific taint / CWE rules. The formal-
-# verification-expert (Soraya) routes the rule authoring
-# between Semgrep (syntactic) and CodeQL (taint-flow); see
-# .claude/skills/formal-methods/blueprints/codeql-expert.md §"When CodeQL is the
-# wrong tool" for the decision rubric.
+  # Deliberately vulnerable CodeQL fixtures. `test/file-access-to-http/` and
+  # `test/log-injection/` exist to prove that Zeta's guards close a false
+  # positive WITHOUT blinding the rule, so two of the four fixtures there are
+  # supposed to be reported and are pinned as such in the `.expected` files.
+  # They are the control group for a measurement, not Zeta code, and scanning
+  # them would file alerts against a test's own negative case. Run them with
+  # `codeql test run .github/codeql/custom-queries/zeta-security/test`.
+  - ".github/codeql/custom-queries/**/test/**"
+
+# Custom query packs — the reserved slot, now answered by measurement.
 #
-# packs:
-#   - custom-queries/zeta-security
+# This slot was "reserved for the follow-up round that ships Zeta-specific
+# taint / CWE rules". That round ran (CodeQL CLI 2.27.0), and it produced a
+# NEGATIVE result worth more than the pack would have been:
+#
+#   For FIRST-PARTY code, no customisation delivered from this repository
+#   changes what a BUILT-IN CodeQL query reports.
+#
+# Measured, each with its own run and its own control:
+#   * a `barrierModel` data extension is honoured by a byte-identical clone of
+#     the shipped query compiled inside a local pack (1 -> 0) and ignored by the
+#     shipped query itself (1 -> 1), in the SAME invocation over the SAME
+#     database. Not a resolution failure (`codeql resolve extensions` lists the
+#     row against `codeql/javascript-queries`), not a `.qlx` cache (deleting the
+#     precompiled query changed nothing), and not specific to barriers (a
+#     `sinkModel` control failed to add an alert the same way);
+#   * subclassing a query's `abstract class Sanitizer` from another pack is
+#     resolved per compilation closure, so it reaches that pack's queries only;
+#   * `packs:` here cannot name a local pack anyway — `github/codeql-action`
+#     validates the entry as a REGISTRY pack name, and an extension pack may not
+#     carry queries, so it cannot ride in on `queries:` either.
+#
+# What DOES close a first-party alert is a guard in the code that CodeQL's
+# DEFAULT taint barriers already recognise — an allowlist membership test, a
+# regular-expression test. That is a real refusal at runtime as well as a
+# barrier at analysis time, so the finding is FIXED rather than explained, and
+# the rule keeps firing on the unguarded shape (pinned in the fixtures above).
+#
+# Full measurements, commands and the ruled-out alternatives:
+# .github/codeql/custom-queries/zeta-security/README.md
+#
+# `packs:` therefore stays unused. Fill it only for a pack published to the
+# CodeQL registry that models a THIRD-PARTY library — the job data extensions
+# are actually for.

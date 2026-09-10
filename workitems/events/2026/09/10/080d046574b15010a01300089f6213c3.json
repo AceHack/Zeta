@@ -1,0 +1,14 @@
+{
+  "id": "080d046574b15010a01300089f6213c3",
+  "at": "2026-09-10T18:57:27.082Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M26AX5H9087G0R002HYWKWP",
+    "type": "task",
+    "title": "CodeQL first-party false-positive closure: barrier-model pack plus recognised sanitizer guards",
+    "slug": "codeql-first-party-false-positive-closure-barrier-model-pack",
+    "priority": "P2",
+    "filename": "081M26AX5H9087G0R002HYWKWP-codeql-first-party-false-positive-closure-barrier-model-pack.md"
+  }
+}

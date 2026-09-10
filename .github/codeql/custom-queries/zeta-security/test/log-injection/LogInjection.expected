@@ -1,0 +1,19 @@
+edges
+| variants.ts:15:11:15:14 | note | variants.ts:24:35:24:38 | note | provenance |  |
+| variants.ts:15:11:15:14 | note | variants.ts:29:31:29:34 | note | provenance |  |
+| variants.ts:15:18:15:52 | String( ...  ?? "") | variants.ts:15:11:15:14 | note | provenance |  |
+| variants.ts:15:25:15:45 | req.hea ... -note"] | variants.ts:15:18:15:52 | String( ...  ?? "") | provenance |  |
+| variants.ts:24:35:24:38 | note | variants.ts:24:35:24:59 | note.re ... u, " ") | provenance |  |
+| variants.ts:29:31:29:34 | note | variants.ts:29:31:29:81 | note.re ... u, " ") | provenance |  |
+nodes
+| variants.ts:15:11:15:14 | note | semmle.label | note |
+| variants.ts:15:18:15:52 | String( ...  ?? "") | semmle.label | String( ...  ?? "") |
+| variants.ts:15:25:15:45 | req.hea ... -note"] | semmle.label | req.hea ... -note"] |
+| variants.ts:24:35:24:38 | note | semmle.label | note |
+| variants.ts:24:35:24:59 | note.re ... u, " ") | semmle.label | note.re ... u, " ") |
+| variants.ts:29:31:29:34 | note | semmle.label | note |
+| variants.ts:29:31:29:81 | note.re ... u, " ") | semmle.label | note.re ... u, " ") |
+subpaths
+#select
+| variants.ts:24:35:24:59 | note.re ... u, " ") | variants.ts:15:25:15:45 | req.hea ... -note"] | variants.ts:24:35:24:59 | note.re ... u, " ") | Log entry depends on a $@. | variants.ts:15:25:15:45 | req.hea ... -note"] | user-provided value |
+| variants.ts:29:31:29:81 | note.re ... u, " ") | variants.ts:15:25:15:45 | req.hea ... -note"] | variants.ts:29:31:29:81 | note.re ... u, " ") | Log entry depends on a $@. | variants.ts:15:25:15:45 | req.hea ... -note"] | user-provided value |

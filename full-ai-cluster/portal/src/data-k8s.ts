@@ -40,7 +40,27 @@ export class K8sPlatform implements PlatformData {
     const p = process.env.KUBERNETES_SERVICE_PORT_HTTPS ?? process.env.KUBERNETES_SERVICE_PORT ?? "443";
     if (!h) throw new Error("not running in-cluster: KUBERNETES_SERVICE_HOST unset");
     this.host = `https://${h}:${p}`;
-    this.token = readFileSync(`${SA}/token`, "utf8").trim();
+    // The mounted token is CHECKED before it is ever presented, and the check is a real
+    // refusal rather than a formality. A projected ServiceAccount token is a JWT: three
+    // base64url segments separated by dots. Anything else in that path means the projection
+    // is misconfigured, the volume is not the one we think it is, or the file has been
+    // replaced -- and in every one of those cases the right move is to fail loudly at
+    // construction instead of attaching whatever bytes were there to an Authorization header.
+    //
+    // It also closes `js/file-access-to-http` #180/#192/#262, which reported exactly this flow
+    // (a file read reaching an outbound request) at all three fetch sites. That is a side
+    // effect of the check, not its purpose, and it works because `SanitizingRegExpTest` is one
+    // of CodeQL's DEFAULT taint barriers -- no custom pack, no data extension, no dismissal.
+    // Measured with CodeQL CLI 2.27.0 on this file: 3 alerts before, 0 after. The
+    // over-suppression control lives in
+    // `.github/codeql/custom-queries/zeta-security/test/file-access-to-http/`, where an
+    // unguarded sibling of this shape still reports both of its flows and a half-guarded one
+    // still reports the flow its guard does not cover.
+    const token = readFileSync(`${SA}/token`, "utf8").trim();
+    if (!/^[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+$/u.test(token)) {
+      throw new Error(`${SA}/token is not a projected ServiceAccount JWT`);
+    }
+    this.token = token;
     this.ca = readFileSync(`${SA}/ca.crt`, "utf8");
   }
 

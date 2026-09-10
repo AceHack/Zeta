@@ -1,0 +1,18 @@
+# Evidence harness for Zeta's CodeQL customisation round.
+#
+# This pack ships NO queries and NO data extensions. It ships TESTS, and the
+# reason is the measurement recorded in README.md: for first-party code,
+# neither a data extension nor an out-of-pack sanitizer subclass can change
+# what a BUILT-IN CodeQL query reports. What does close a first-party false
+# positive is a guard in the code that the generic taint tracker already
+# recognises — and a guard is only worth having if the rule still fires
+# without it. That is what these tests pin, in both directions.
+#
+# Run:  codeql test run .github/codeql/custom-queries/zeta-security/test
+name: zeta/security-codeql-evidence
+version: 0.0.1
+extractor: javascript
+tests: test
+dependencies:
+  codeql/javascript-all: "*"
+  codeql/javascript-queries: "*"
