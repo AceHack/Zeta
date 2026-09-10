@@ -85,6 +85,7 @@ describe("a live look reaches a seal path", () => {
     expect(code).toBe(0);
     expect(body.probe.yubiHsm2).toBe("attached");
     expect(body.decision).toMatchObject({ ok: true, path: "pkcs11-yubihsm", autoUnseal: true });
+    expect(body.ladder).toBe("hsm");
   });
 
   it("names pkcs11-tpm when the chip is family-2.0 confirmed and no HSM is attached", () => {
@@ -92,12 +93,21 @@ describe("a live look reaches a seal path", () => {
     const { body } = detect(["--os", "nixos", "--effects", "real", "--request", "auto"], fx);
     expect(body.probe.tpm2).toBe("present");
     expect(body.decision).toMatchObject({ ok: true, path: "pkcs11-tpm" });
+    expect(body.ladder).toBe("tpm");
   });
 
   it("falls to lucent-shamir when both looks ran and found nothing", () => {
     const { body } = detect(["--os", "nixos", "--effects", "real", "--request", "auto"], NO_HSM());
     expect(body.probe.yubiHsm2).toBe("absent");
     expect(body.decision).toMatchObject({ ok: true, path: "lucent-shamir" });
+    expect(body.ladder).toBe("sidecar");
+  });
+
+  it("HSM attached with TPM present still picks hsm (one seal)", () => {
+    const fx = linuxUsb("YubiHSM", { tpm2: tpm2Present() });
+    const { body } = detect(["--os", "nixos", "--effects", "real", "--request", "auto"], fx);
+    expect(body.decision).toMatchObject({ ok: true, path: "pkcs11-yubihsm" });
+    expect(body.ladder).toBe("hsm");
   });
 });
 
@@ -107,12 +117,14 @@ describe("unmeasured is never rounded to a value", () => {
     expect(code).toBe(0);
     expect(body.probe).toBeNull();
     expect(body.decision).toMatchObject({ ok: false, reason: "probe-did-not-run" });
+    expect(body.ladder).toBeNull();
   });
 
   it("a missing request is unmeasured, NOT auto", () => {
     const { body } = detect(["--os", "nixos", "--effects", "real"], WITH_HSM());
     expect(body.requested).toBeNull();
     expect(body.decision).toBeNull();
+    expect(body.ladder).toBeNull();
   });
 
   it("a PKCS#11 driver on disk is not a device", () => {
@@ -121,11 +133,13 @@ describe("unmeasured is never rounded to a value", () => {
     const { body } = detect(["--os", "nixos", "--effects", "real", "--request", "pkcs11-hsm"], fx);
     expect(body.probe.pkcs11ModuleOnDisk).toBeTrue();
     expect(body.decision).toMatchObject({ ok: false, reason: "driver-is-not-a-device" });
+    expect(body.ladder).toBeNull();
   });
 
   it("an emulator is declared by the install matrix, never detected", () => {
     const { body } = detect(["--os", "nixos", "--effects", "real", "--request", "ci-softhsm"], WITH_HSM());
     expect(body.decision).toMatchObject({ ok: false, reason: "emulator-not-declared" });
+    expect(body.ladder).toBeNull();
   });
 
   it("smartcardHsm stays not-asked — the CardContact probe is not run by the frost look", () => {
@@ -177,7 +191,9 @@ describe("the look is actually consulted", () => {
   it("two different machines under identical flags reach different paths", () => {
     const argv = ["--os", "nixos", "--effects", "real", "--request", "auto"];
     expect(detect(argv, WITH_HSM()).body.decision.path).toBe("pkcs11-yubihsm");
+    expect(detect(argv, WITH_HSM()).body.ladder).toBe("hsm");
     expect(detect(argv, NO_HSM()).body.decision.path).toBe("lucent-shamir");
+    expect(detect(argv, NO_HSM()).body.ladder).toBe("sidecar");
   });
 });
 

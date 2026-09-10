@@ -30,6 +30,9 @@ const INSTALL_START = "# ── 081M1VZRST2087G0R001QEJDWG: named bao site+path 
 const INSTALL_END = "# ── 081M1VZRST2087G0R001QEJDWG: end named bao pickup";
 const INVOKE_START = "# ── 081M1W1NCDT087G0R002H3VG6Y: named bao bun consume";
 const INVOKE_END = "# ── 081M1W1NCDT087G0R002H3VG6Y: end named bao bun consume";
+const SEAL_DETECT_START = "# ── 081M22M7G8M087G0R003R1C8Z4: automate the seal-path detection";
+const SEAL_DETECT_END = "# ── 081M22M7G8M087G0R003R1C8Z4: end seal-path live look";
+const SEAL_DETECT_HELPER_REL = "tools/setup/persona-keys/seal-path-detect.ts";
 const BAO_ENV_HELPER_REL = "src/Core.TypeScript/zflash/firstboot-bao-env.ts";
 
 const SITE_SED_BASH = `s/^${FIRSTBOOT_BAO_LOAD_SITE_KEY}='\\([^']*\\)'\\$/\\1/p`;
@@ -495,5 +498,40 @@ describe("zeta-install.sh named bao bun consume after 6.95a", () => {
     });
     expect(fromTpmrm0.status).toBe(2);
     expect(JSON.parse(fromTpmrm0.stdout)).toEqual({ ok: false, reason: "unknown-effects" });
+  });
+});
+
+describe("zeta-install.sh USB seal-path live look (081M22M7G8M / 081M246EAP)", () => {
+  const src = readFileSync(INSTALL_SH, "utf8");
+  const block = sliceMarkedBlock(src, SEAL_DETECT_START, SEAL_DETECT_END);
+  const executable = executableLines(block);
+
+  test("live look sits after named bao bun consume", () => {
+    expect(src.indexOf(SEAL_DETECT_START)).toBeGreaterThan(src.indexOf(INVOKE_END));
+  });
+
+  test("runs seal-path-detect with auto on a real NixOS look", () => {
+    expect(executable.split(SEAL_DETECT_HELPER_REL).length - 1).toBe(1);
+    expect(executable.split("--os nixos").length - 1).toBe(1);
+    expect(executable.split("--effects real").length - 1).toBe(1);
+    expect(executable.split("--request auto").length - 1).toBe(1);
+  });
+
+  test("logs the USB ladder (hsm then tpm then sidecar) and stays observational", () => {
+    expect(executable.split(".ladder").length - 1).toBe(1);
+    expect(executable.split("ladder:").length - 1).toBe(1);
+    expect(block.split("observed, not configured").length - 1).toBe(1);
+    expect(block.split("hsm → tpm → sidecar").length - 1).toBe(1);
+  });
+
+  test("does not configure a seal, call overlay, or invent a probe", () => {
+    expect(executable.split("Application.yaml").length - 1).toBe(0);
+    expect(executable.split('seal "pkcs11"').length - 1).toBe(0);
+    expect(executable.split("valuesObject").length - 1).toBe(0);
+    expect(executable.split("plan-setup-from-frost-look").length - 1).toBe(0);
+    expect(executable.split("planSetupFromNamedBaoElfEnv").length - 1).toBe(0);
+    expect(executable.split("overlay").length - 1).toBe(0);
+    expect(executable.split(TPM_CHAR_DEVICE).length - 1).toBe(0);
+    expect(executable.split("--from-json").length - 1).toBe(0);
   });
 });

@@ -3561,11 +3561,14 @@ if [ -d "$ZETA_HOME" ]; then
   # install. Acting on the answer is the next rung and needs an operator
   # decision (and, for an HSM, its password) — not a value this script picks.
   #
-  # `--request auto` asks "what is the strongest path this host can honour",
-  # which is a question, not a policy. A refused decision is a finding and is
-  # logged as one: `probe-did-not-run` means the look could not complete on
-  # this host, and that is exactly what an operator needs to see BEFORE the
-  # cluster is expected to unseal itself.
+  # Product ladder is hsm → tpm → sidecar (one choice). `--request auto`
+  # asks "what is the strongest path this host can honour". A machine with
+  # neither HSM nor TPM is sidecar, not a failure. Two HSM vendors on one
+  # box is still one seal. A refused decision is a finding and is logged as
+  # one: `probe-did-not-run` means the look could not complete on this host,
+  # and that is exactly what an operator needs to see BEFORE the cluster
+  # is expected to unseal itself. Incomplete look is unmeasured, NOT
+  # "no hardware" and NOT sidecar.
   SEAL_DETECT_HELPER="$ZETA_HOME/Zeta/tools/setup/persona-keys/seal-path-detect.ts"
   if [ ! -f "$SEAL_DETECT_HELPER" ]; then
     echo "[081M22M7G8M087G0R003R1C8Z4-seal]   helper absent; live look skipped"
@@ -3584,10 +3587,11 @@ if [ -d "$ZETA_HOME" ]; then
       SEAL_DETECT_DECISION=$(printf '%s' "$SEAL_DETECT_JSON" | jq -c '.decision' 2>/dev/null || printf 'unparseable')
       SEAL_DETECT_PATH=$(printf '%s' "$SEAL_DETECT_JSON" | jq -r '.decision.path // ""' 2>/dev/null || printf '')
       SEAL_DETECT_REASON=$(printf '%s' "$SEAL_DETECT_JSON" | jq -r '.decision.reason // ""' 2>/dev/null || printf '')
+      SEAL_DETECT_LADDER=$(printf '%s' "$SEAL_DETECT_JSON" | jq -r '.ladder // ""' 2>/dev/null || printf '')
       echo "[081M22M7G8M087G0R003R1C8Z4-seal]   live look $SEAL_DETECT_PROBE"
       echo "[081M22M7G8M087G0R003R1C8Z4-seal]   decision $SEAL_DETECT_DECISION"
       if [ -n "$SEAL_DETECT_PATH" ]; then
-        echo "[081M22M7G8M087G0R003R1C8Z4-seal]   this host would seal on '$SEAL_DETECT_PATH' (observed, not configured)"
+        echo "[081M22M7G8M087G0R003R1C8Z4-seal]   this host would seal on '$SEAL_DETECT_PATH' (ladder: ${SEAL_DETECT_LADDER:-unmeasured}; observed, not configured)"
       elif [ "$SEAL_DETECT_REASON" = "probe-did-not-run" ]; then
         echo "[081M22M7G8M087G0R003R1C8Z4-seal]   the look could not complete on this host; that is unmeasured, NOT 'no hardware'"
       else

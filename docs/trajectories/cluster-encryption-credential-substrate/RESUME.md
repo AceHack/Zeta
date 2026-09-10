@@ -1,11 +1,38 @@
 # Trajectory - Cluster Encryption / Credential Substrate
 
 Status: active — first surfaced 2026-05-29 from substrate inventory (was tracked only as scattered backlog rows; never had a trajectory surface, which is why it was easy to lose at cold-boot)
-Last refreshed: 2026-09-07 (frost look CLI takes ISO bun JSON look; JSON probe is ignored)
+Last refreshed: 2026-09-09 (USB install ladder: hsm → tpm → sidecar; CI tests all three)
 Type: workstream (current-focus) — a trajectory the operator is *actively powering*. Many trajectories can be tracked; only a few are workstreams at once (finite-focus / WIP-bounded — a workstream is a trajectory under sustained thrust, and thrust budget is finite, so most trajectories coast). ("Trajectory" is the genus; "workstream" is the species: a trajectory under sustained thrust toward a deliverable, vs. emergent-posture trajectories like `anti-infection`, which self-describes as "not a workstream with a cadence." See [`factory-trajectory-surface`](../factory-trajectory-surface/RESUME.md) for the genus/species taxonomy.) One of the operator's three current cluster workstreams (encryption / usb-zflash / ts-workflow-engine).
 Eventual encoding (design-stage — the human maintainer 2026-05-23 genetic-ID substrate + Clifford/HKT): this trajectory's state is trackable as a 128-bit genetic-ID seed (discrete, reversible via parser-combinator ↔ generator-function) → Clifford-space path (continuous, eventual). Mirrors the three-lane I8-lattice / I9-manifold split.
 Current blocker: none operationally; the live design tension is interactive-login-vs-baked-in-keys-vs-CI-test (081KSGS9H0008QG0R003JNSVR5)
-Next concrete action: round-trip harness in flight (otto/onboarding-roundtrip-harness — sandboxed new-fork setup→teardown→re-setup ×N, surfaces the rotate-command gap). Then smart cascading teardown (cascade-with-warnings; extra-care warn on memories/hardware-state/unrecoverable-encrypted; OWNER-consent-gated memory delete; user-sovereign encryption can't be force-reset; each user = own git repo — see `docs/research/2026-06-21-smart-cascading-teardown-user-sovereign-deletion-…`). All 3 vaults now Active+Standby (rotation-ready: Lucent/Personal/CA, 2 service accounts each in Keychain). CA-recovery hardware (FIDO/HSM/N-of-M) = post-investor next layer. Live wipe + clean re-onboard once the harness is tight. Teardown primitive shipped (#9000).
+Next concrete action: USB install now *names* the ladder (hsm / tpm / sidecar) from the live look; acting on it (operator PIN, Application.yaml) is still later. Metal `seal "pkcs11"` still waits on a same-libc OpenBao image. Round-trip harness in flight (otto/onboarding-roundtrip-harness). Then smart cascading teardown.
+
+## 2026-09-09 — USB install ladder: hsm then tpm then sidecar (Riven)
+
+Aaron: some machines have no HSM and no TPM; almost none have two
+HSMs on one machine. Detect during USB install and pick **one**
+rung in that order. CI must test the HSM simulator, the TPM
+simulator, **and** the sidecar independently (all three).
+
+The picker already existed as UnsealPath (`pkcs11-yubihsm` /
+`pkcs11-tpm` / `lucent-shamir`) and the USB install already ran
+`seal-path-detect.ts` after 6.95a (`081M22M7G8M087G0R003R1C8Z4`).
+This slice is the product vocabulary, not a second look.
+
+- `UsbInstallSeal` = `hsm` | `tpm` | `sidecar`. Projection only.
+  Does not rename UnsealPath. Incomplete look is `ladder: null`,
+  not sidecar. Sidecar is the completed negative.
+- Two HSM vendors on one box still one seal (`hsm`). Dual-vendor
+  custody stays ZetaFS k-of-n.
+- USB install logs `ladder: hsm|tpm|sidecar` next to the path.
+  Still observational. Still no overlay. Still no Application.yaml.
+  bun JSON `probe` stays `null`.
+- CI cells: `hsm-simulator`, `tpm-simulator`, `sidecar`, plus
+  `both-softhsm-wins` (one seal; HSM wins). `--expect-ladder=`.
+  SoftHSM/swtpm stay job declarations, never `/dev/tpmrm0`.
+
+Workitem: `081M246EAP0087G0R003FFYST2`. Classifier:
+`usbInstallSealFromPath` in `unseal-path.ts`.
 
 ## 2026-09-05 — μένω names the recast (Riven)
 
