@@ -78,11 +78,37 @@ inputs:
 runs:
   using: composite
   steps:
+    # ── $GITHUB_PATH ON WINDOWS MUST CARRY WINDOWS PATHS ─────────────────────
+    #
+    # Every `run:` step here uses Git Bash, so `/tmp/zigdir/...` is a perfectly good path TO
+    # BASH — and it is meaningless to the Windows Node process that actually spawns the
+    # compilers. MEASURED on run 34501385444: `wat2wasm` was reported found at
+    # `/tmp/wabt/wabt-1.0.41/bin/wat2wasm`, that string went into $GITHUB_PATH, and
+    # `build-substrates.mjs` then failed with "exited with status null" — a process that never
+    # started, because Node could not resolve the directory. Same for zig and emcc.
+    #
+    # `cygpath -w` is Git Bash's own translator. The helper is defined once and sourced by the
+    # steps below rather than repeated, so a path that reaches $GITHUB_PATH untranslated is a
+    # missing call rather than a typo in one of four copies.
+    - name: Define the $GITHUB_PATH translator (Windows needs native paths)
+      shell: bash
+      run: |
+        cat > "$RUNNER_TEMP/add-to-path.sh" <<'SH'
+        add_to_path () {
+          # $1 = a directory as bash sees it. Emits the form the RUNNER's own tooling needs.
+          [ -d "$1" ] || { echo "add_to_path: not a directory: $1"; return 1; }
+          if command -v cygpath >/dev/null 2>&1; then cygpath -w "$1" >> "$GITHUB_PATH"; else echo "$1" >> "$GITHUB_PATH"; fi
+        }
+        SH
+        echo "translator written to $RUNNER_TEMP/add-to-path.sh"
+
     # ── wabt / wat2wasm ──────────────────────────────────────────────────────
     - name: Install wabt (wat2wasm)
       shell: bash
       run: |
         set -uo pipefail
+        # shellcheck disable=SC1091
+        . "$RUNNER_TEMP/add-to-path.sh"
         if command -v wat2wasm >/dev/null 2>&1; then echo "wat2wasm already present"; exit 0; fi
         case "${{ runner.os }}" in
           Linux)   sudo apt-get update -qq && sudo apt-get install -y --no-install-recommends wabt ;;
@@ -110,7 +136,7 @@ runs:
               # layout change would otherwise put an empty directory on PATH and report
               # ABSENT with no clue why.
               bin="$(dirname "$(find /tmp/wabt -name "wat2wasm*" -type f | head -1)")"
-              if [ -n "$bin" ] && [ -d "$bin" ]; then echo "$bin" >> "$GITHUB_PATH"; export PATH="$bin:$PATH"
+              if [ -n "$bin" ] && [ -d "$bin" ]; then add_to_path "$bin"; export PATH="$bin:$PATH"
               else echo "wabt archive extracted but contains no wat2wasm — layout changed?"; find /tmp/wabt -maxdepth 2 | head -20; fi
             else
               echo "wabt download FAILED: $url"
@@ -132,6 +158,7 @@ runs:
             # preinstalled on the macOS runner images, and `brew install` is then a no-op.
             brew install llvm lld || true
             echo "$(brew --prefix llvm)/bin" >> "$GITHUB_PATH"
+            export PATH="$(brew --prefix llvm)/bin:$PATH"
             ;;
           Windows) choco install -y llvm --no-progress >/dev/null 2>&1 || true ;;
         esac
@@ -184,10 +211,12 @@ runs:
           Windows-ARM64) Z=zig-windows-aarch64-0.13.0; EXT=zip ;;
           *) echo "zig: no release for ${{ runner.os }}-${{ runner.arch }} — Zig substrate will report TOOLING-ABSENT"; exit 0 ;;
         esac
+        # shellcheck disable=SC1091
+        . "$RUNNER_TEMP/add-to-path.sh"
         if curl -fsSL --retry 3 -o "/tmp/zig.${EXT}" "https://ziglang.org/download/0.13.0/${Z}.${EXT}"; then
           mkdir -p /tmp/zigdir
           if [ "$EXT" = "zip" ]; then unzip -q "/tmp/zig.${EXT}" -d /tmp/zigdir; else tar -xJf "/tmp/zig.${EXT}" -C /tmp/zigdir; fi
-          echo "/tmp/zigdir/${Z}" >> "$GITHUB_PATH"
+          add_to_path "/tmp/zigdir/${Z}"
           "/tmp/zigdir/${Z}/zig" version
         else
           echo "zig download: FAILED — Zig substrate will report TOOLING-ABSENT"
@@ -215,7 +244,9 @@ runs:
         # shellcheck disable=SC1091
         . /tmp/emsdk/emsdk_env.sh >/dev/null 2>&1 || true
         if command -v emcc >/dev/null 2>&1; then
-          dirname "$(command -v emcc)" >> "$GITHUB_PATH"
+          # shellcheck disable=SC1091
+          . "$RUNNER_TEMP/add-to-path.sh"
+          add_to_path "$(dirname "$(command -v emcc)")"
           emcc --version | head -1
         else
           echo "emcc: ABSENT after emsdk — Emscripten substrate will report TOOLING-ABSENT"
