@@ -1,0 +1,14 @@
+{
+  "id": "080d0446d61ea010a013000868df5b9b",
+  "at": "2026-09-10T01:07:13.492Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M24DNGYK087G0R0002C26Z9",
+    "type": "bug",
+    "title": "Nothing wrapped code-scanning alert reads, so every query was ad-hoc and one was wrong",
+    "slug": "nothing-wrapped-code-scanning-alert-reads-so-every-query-was",
+    "priority": "P2",
+    "filename": "081M24DNGYK087G0R0002C26Z9-nothing-wrapped-code-scanning-alert-reads-so-every-query-was.md"
+  }
+}
