@@ -16,6 +16,7 @@
   button:hover{filter:brightness(1.12)}
   #screen{line-height:0;border:1px solid var(--bd);border-radius:6px;display:inline-block;overflow:hidden}
   .px{display:inline-block;width:10px;height:10px}
+  .c0{background:#000000}.c1{background:#e11d48}.c2{background:#10b981}.c3{background:#f59e0b}.c4{background:#3b82f6}.c5{background:#d946ef}.c6{background:#06b6d4}.c7{background:#f8fafc}
   .meta{font-size:.85rem;color:var(--mut);margin-top:.6rem}
   .ok{color:var(--good);font-weight:600}.fail{color:var(--bad);font-weight:600}
   .note{font-size:.8rem;color:var(--mut);margin-top:1rem}
@@ -83,27 +84,88 @@ function runCart(cart) {
   }
   return (px, py) => { const idx = py * W + px; return (display.get(idx) ? 1 : 0) | (extra.get(idx) || 0); };
 }
-const PALETTE = ["#000000", "#e11d48", "#10b981", "#f59e0b", "#3b82f6", "#d946ef", "#06b6d4", "#f8fafc"];
+// The 3-bit gamut lives in CSS classes .c0..c7, never in a style="" built by string
+// concatenation: an inline style assembled from data is one careless interpolation away
+// from being a sink, and a Content-Security-Policy would refuse it anyway.
+function el(tag, cls, text) {
+  const n = document.createElement(tag);
+  if (cls) n.className = cls;
+  if (text !== undefined) n.textContent = text;
+  return n;
+}
+function refuse(meta, why) { meta.replaceChildren(el("span", "fail", why)); }
+
+/**
+ * Why the cart is refused, or null when it is well formed.
+ *
+ * A CART IS UNTRUSTED INPUT — it is typed or pasted into the textarea, so every field read
+ * below is checked before it is used. MEASURED 2026-09-09 with the stub-DOM harness in
+ * chip9-cart-viewer.test.ts, the format check alone let five malformed carts through:
+ *
+ *   name carrying markup          rendered as LIVE HTML  (CodeQL js/xss-through-dom, 466)
+ *   steps carrying markup         rendered as LIVE HTML  (a SECOND flow on the same line)
+ *   height 0, goldenRows []       displayed VERIFIED after ZERO comparisons
+ *   goldenRows longer than height displayed VERIFIED, the extra rows never compared
+ *   romHex or goldenRows absent   uncaught TypeError; the page froze on the PREVIOUS
+ *                                 render, so a refused cart looked like an accepted one
+ *
+ * The middle two are the worse pair. VERIFIED is an integrity claim shown to a person, and
+ * a loop that ran zero times has verified nothing.
+ */
+function cartProblem(cart) {
+  if (cart === null || typeof cart !== "object" || Array.isArray(cart)) return "not a JSON object";
+  if (cart.format !== "chip9-cart-capture/v1") return "not a chip9-cart-capture/v1";
+  if (typeof cart.name !== "string") return "name is not a string";
+  if (typeof cart.romHex !== "string" || cart.romHex.length % 2 !== 0 || /[^0-9a-f]/i.test(cart.romHex)) {
+    return "romHex is not an even-length hex string";
+  }
+  if (!Number.isInteger(cart.steps) || cart.steps < 0 || cart.steps > 1000000) {
+    return "steps is not an integer in 0..1000000";
+  }
+  if (cart.width !== W || cart.height !== H) {
+    return "cart declares " + cart.width + "x" + cart.height + "; the treaty VM display is " + W + "x" + H;
+  }
+  if (!Array.isArray(cart.goldenRows) || cart.goldenRows.length !== cart.height) {
+    return "goldenRows must carry exactly " + cart.height + " rows";
+  }
+  for (let y = 0; y < cart.goldenRows.length; y++) {
+    const row = cart.goldenRows[y];
+    if (typeof row !== "string" || row.length !== cart.width) return "goldenRows[" + y + "] is not a " + cart.width + "-character string";
+  }
+  return null;
+}
+
 function render() {
   const meta = document.getElementById("meta"), screen = document.getElementById("screen");
   let cart;
-  try { cart = JSON.parse(document.getElementById("cart").value); } catch { meta.innerHTML = '<span class="fail">not valid JSON</span>'; return; }
-  if (cart.format !== "chip9-cart-capture/v1") { meta.innerHTML = '<span class="fail">not a chip9-cart-capture/v1</span>'; return; }
+  try { cart = JSON.parse(document.getElementById("cart").value); } catch { refuse(meta, "not valid JSON"); return; }
+  const problem = cartProblem(cart);
+  if (problem !== null) { refuse(meta, problem); return; }
   const colorAt = runCart(cart);
-  let html = "", verified = true;
+  const frag = document.createDocumentFragment();
+  let compared = 0, verified = true;
   for (let y = 0; y < cart.height; y++) {
     let goldenRow = "";
     for (let x = 0; x < cart.width; x++) {
       const c = colorAt(x, y);
       goldenRow += c.toString(16);
-      html += '<span class="px" style="background:' + PALETTE[c] + '"></span>';
+      frag.appendChild(el("span", "px c" + c));
     }
-    html += "<br>";
+    frag.appendChild(el("br"));
+    compared += 1;
     if (goldenRow !== cart.goldenRows[y]) verified = false;
   }
-  screen.innerHTML = html;
-  meta.innerHTML = '"' + cart.name + '" — ' + (cart.romHex.length / 2) + " ROM bytes, " + cart.steps + " instructions · golden-render byte-compare: " +
-    (verified ? '<span class="ok">VERIFIED</span>' : '<span class="fail">DRIFT — render does not match carried golden rows</span>');
+  screen.replaceChildren(frag);
+  // SECOND, INDEPENDENT GUARD on the VERIFIED claim. cartProblem already refuses a cart
+  // whose goldenRows count disagrees with its height, so this cannot fire today — which is
+  // the point: the claim now rests on a comparison COUNT, not on a flag nothing decremented.
+  if (compared !== cart.height || compared === 0) verified = false;
+  // textContent, never innerHTML: cart.name and cart.steps are attacker-controlled and this
+  // is the line CodeQL flagged. A text node cannot become an element.
+  meta.replaceChildren(
+    document.createTextNode("\"" + cart.name + "\"" + " — " + (cart.romHex.length / 2) + " ROM bytes, " + cart.steps + " instructions · golden-render byte-compare: "),
+    el("span", verified ? "ok" : "fail", verified ? "VERIFIED" : "DRIFT — render does not match carried golden rows"),
+  );
 }
 document.getElementById("run").addEventListener("click", render);
 document.getElementById("cart").value = JSON.stringify(SAMPLE_CART);

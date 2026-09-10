@@ -1,0 +1,14 @@
+{
+  "id": "080d0441632d4010a01300087cc03514",
+  "at": "2026-09-09T21:56:46.120Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M242RSD8087G0R001MVT6G7",
+    "type": "bug",
+    "title": "chip9 cart viewer: untrusted cart fields reach innerHTML and VERIFIED is displayed after zero comparisons",
+    "slug": "chip9-cart-viewer-untrusted-cart-fields-reach-innerhtml-and",
+    "priority": "P2",
+    "filename": "081M242RSD8087G0R001MVT6G7-chip9-cart-viewer-untrusted-cart-fields-reach-innerhtml-and.md"
+  }
+}
