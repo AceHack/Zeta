@@ -326,6 +326,28 @@ export const KNOWN_FLAGS: ReadonlySet<string> = new Set([
 ]);
 
 /**
+ * Flags whose NEXT TOKEN is an opaque value, never a flag of this CLI.
+ *
+ * These exist to hand an argument verbatim to a child process, and real command arguments start
+ * with a dash — `--maxWorkers=2`, `--allow-empty`, `-q`. `unknownFlags` scans every token in argv,
+ * so without this set it read those values as flags of its own and refused the run before it
+ * started. Measured: `--test-arg --maxWorkers=2` produced `refused: unknown flag --maxWorkers`,
+ * exit 2, on the flag combination jest actually requires.
+ *
+ * DELIBERATELY NARROW. It holds only the pass-through argument flags, not every flag that takes a
+ * value. `--store --git` is a typo worth catching — the operator meant to give a path and gave a
+ * flag — and widening this set to all value-taking flags would silence that whole class. What is
+ * listed here is the case where a leading dash is EXPECTED rather than suspicious.
+ */
+export const OPAQUE_VALUE_FLAGS: ReadonlySet<string> = new Set([
+  "--artifact-arg", "--meeting-arg", "--review-arg", "--room-arg", "--study-arg", "--test-arg",
+  "--work-agent-arg", "--work-arg", "--work-verify-arg",
+  // A header is `Key: value`, which cannot begin with a dash — but it is passed through untouched
+  // to a remote service, so the same rule applies: this CLI does not get an opinion about its shape.
+  "--tracker-header",
+]);
+
+/**
  * Names people actually reach for, and what they meant.
  *
  * AN EXPLICIT TABLE, not a similarity heuristic. `--at` and `--now` share no prefix and no
@@ -353,7 +375,15 @@ export const FLAG_ALIASES: Readonly<Record<string, string>> = {
  */
 export function unknownFlags(argv: readonly string[]): readonly string[] {
   const out: string[] = [];
-  for (const arg of argv) {
+  for (let i = 0; i < argv.length; i += 1) {
+    const arg = argv[i] as string;
+    // THE TOKEN AFTER A PASS-THROUGH FLAG BELONGS TO THE CHILD PROCESS. Consumed here rather
+    // than merely skipped, so a value that happens to name a real flag of this CLI is not
+    // silently honoured as one either.
+    if (OPAQUE_VALUE_FLAGS.has(arg)) {
+      i += 1;
+      continue;
+    }
     if (!arg.startsWith("--") && arg !== "-h") continue;
     // `--flag=value` is not this CLI's style, but somebody will type it; name the flag part.
     const flag = arg.includes("=") ? arg.slice(0, arg.indexOf("=")) : arg;

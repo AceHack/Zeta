@@ -78,6 +78,34 @@ describe("AN UNKNOWN FLAG IS REFUSED, NOT IGNORED", () => {
   });
 });
 
+describe("A PASS-THROUGH ARGUMENT IS NOT THIS CLI'S FLAG", () => {
+  // Every one of these flags exists to hand an argument VERBATIM to a child process, and real
+  // command arguments begin with a dash. `unknownFlags` scanned every token in argv, so
+  // `--test-arg --maxWorkers=2` read as the flag `--maxWorkers` and refused the run before it
+  // started -- on the exact combination jest requires. Measured: exit 2, nothing ran.
+
+  test("a value beginning with -- is passed through, not refused", () => {
+    expect(unknownFlags(["--work-arg", "--allow-empty"])).toEqual([]);
+    expect(unknownFlags(["--test-arg", "--maxWorkers=2"])).toEqual([]);
+    expect(parseArgs(["--work-arg", "--allow-empty"]).workArgs).toEqual(["--allow-empty"]);
+  });
+
+  test("a value that NAMES a real flag is still consumed as a value", () => {
+    // Otherwise `--work-arg --json` would quietly switch this CLI's own output format while also
+    // reaching the child, which is two surprises for one token.
+    expect(unknownFlags(["--work-arg", "--json"])).toEqual([]);
+  });
+
+  test("...and a genuine unknown flag is STILL refused", () => {
+    // The narrowing must not become a hole. A dash-prefixed token that is not the value of a
+    // pass-through flag is exactly as suspicious as it ever was.
+    expect(unknownFlags(["--allow-empty"])).toHaveLength(1);
+    expect(unknownFlags(["--work-arg", "ok", "--maxWorkers=2"])).toHaveLength(1);
+    // A typo in a PATH flag stays caught: the operator meant to give a directory and gave a flag.
+    expect(unknownFlags(["--store", "/tmp/x", "--nope"])).toHaveLength(1);
+  });
+});
+
 describe("argument parsing", () => {
   test("defaults are all off", () => {
     // `store` is undefined by default: persisting is a SIDE EFFECT, and a reporting CLI should
@@ -400,18 +428,56 @@ describe("THE CLI SUPPLIES THE HISTORY THE DELIVERY GUARD NEEDS", () => {
     }
   }, 180_000);
 
-  // -- WHAT THIS TEST DOES NOT PROVE, stated rather than implied ------------
-  // Mutation-checked 2026-09-10, five ways. Three go red here and a fourth (the autonomy loop
-  // dropping the history between cycles) goes red in `autonomy.test.ts`, which is where it
-  // belongs. ONE SURVIVES: replacing the fold with `new Set<string>()` -- an empty history --
-  // changes nothing, because in this scenario nothing lands and an empty history is correct.
-  //
-  // The direction that would catch it is a resumed CLI run over work that DID land, which
-  // cannot be written here today: `--work-cmd` runs with `cwd: args.git`, the BASE checkout,
-  // not the change's worktree, so no CLI-driven work can commit onto a work branch. The
-  // equivalent is pinned one layer down, in `real-adapters.test.ts` -- 'A RESUMED RUN OVER
-  // ALREADY-MERGED WORK STILL DELIVERS' -- with the history handed to the runtime directly.
-  // So the guard's firing is falsified at this seam; its staying quiet is falsified below it.
+  test("...AND A RESUMED RUN OVER WORK THAT DID LAND STILL DELIVERS", async () => {
+    // -- THE PAIR, AND THE HALF THAT IS EASY TO GET WRONG ----------------------
+    // The test above pins the guard FIRING. This one pins it staying quiet, and it is the half a
+    // careless fix breaks: supplying `new Set<string>()` instead of folding the log would satisfy
+    // the test above exactly as well, and would then call every already-shipped item unlanded on
+    // every resume -- a verdict that fires on healthy runs rather than broken ones.
+    //
+    // Same store, same repository, run twice. The only difference between the two runs is what the
+    // log says, which is precisely the input under test.
+    const repo = tinyRepo();
+    const store = mkdtempSync(join(tmpdir(), "zeta-cli-store2-"));
+    const wt = mkdtempSync(join(tmpdir(), "zeta-cli-wt2-"));
+    const lines: string[] = [];
+    const log = console.log;
+    console.log = (...a: unknown[]) => void lines.push(a.map(String).join(" "));
+    try {
+      // Work that genuinely commits, onto the change's own branch in its own worktree. `-m` takes
+      // the workId, which `argsFor` appends last.
+      const argv = [
+        "--git", repo, "--base", "main", "--worktrees", wt, "--store", store, "--until", "3",
+        "--work-cmd", "git",
+        "--work-arg", "commit", "--work-arg", "--allow-empty", "--work-arg", "-m",
+      ];
+
+      expect(await main(argv)).toBe(0);
+      // IT REALLY MERGED. Asked of git, not of the run's own account of itself.
+      const merges = execFileSync("git", ["log", "--merges", "--oneline", "main"], {
+        cwd: repo, encoding: "utf-8",
+      }).trim();
+      expect(merges).not.toBe("");
+
+      lines.length = 0;
+      // Resume. The work is done and the commit is in git; the cascade opens no new change for it,
+      // so the projection sits below `Merged` and only the LOG can say this was already shipped.
+      expect(await main(argv)).toBe(0);
+      const out = lines.join("\n");
+      expect(out).toContain("DELIVERED");
+      expect(out).not.toContain("no commit exists for it");
+
+      // …and the repository is where the first run left it: a resume ships nothing twice.
+      expect(
+        execFileSync("git", ["log", "--merges", "--oneline", "main"], { cwd: repo, encoding: "utf-8" }).trim(),
+      ).toBe(merges);
+    } finally {
+      console.log = log;
+      rmSync(repo, { recursive: true, force: true });
+      rmSync(store, { recursive: true, force: true });
+      rmSync(wt, { recursive: true, force: true });
+    }
+  }, 180_000);
 });
 
 describe("the failure modes exit non-zero", () => {
