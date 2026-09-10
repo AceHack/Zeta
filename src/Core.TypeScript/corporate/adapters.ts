@@ -1190,6 +1190,43 @@ export function commandTestRunner(input: {
 }
 
 /**
+ * Where a change's checkout records the work item that opened it.
+ *
+ * BESIDE the worktree, never inside it. A marker inside would be an untracked file in the tree a
+ * work command runs in, and the first `git add -A` would commit it into somebody's change.
+ */
+export function ownerMarkerPath(workdir: string): string {
+  return `${workdir}.owner`;
+}
+
+/** The work item that opened this checkout, or nothing if none is recorded. */
+export function ownerOf(workdir: string): string | undefined {
+  try {
+    const raw = readFileSync(ownerMarkerPath(workdir), "utf-8").trim();
+    return raw === "" ? undefined : raw;
+  } catch {
+    // ABSENT, not empty. A checkout with no marker was made by something that did not claim it,
+    // and claiming it on its behalf is the reuse this exists to refuse.
+    return undefined;
+  }
+}
+
+/**
+ * Whether a local branch exists.
+ *
+ * `rev-parse --verify` over `refs/heads/<name>` EXACTLY — not `<name>`, which also resolves a
+ * tag, a remote-tracking ref, or a commit whose abbreviation happens to match. Creating a branch
+ * only when one is absent is a decision, and a check that answers yes for a tag would skip the
+ * creation and then cut the work from whatever that tag points at.
+ */
+export function branchExists(
+  run: (args: readonly string[]) => { readonly status: number | null },
+  branch: string,
+): boolean {
+  return run(["rev-parse", "--verify", "--quiet", `refs/heads/${branch}`]).status === 0;
+}
+
+/**
  * How many commits `branch` has that `HEAD` does not.
  *
  * THE DEFECT THIS EXISTS FOR. `git merge --no-ff <branch>` where the branch points at the same
@@ -1212,43 +1249,6 @@ export function commandTestRunner(input: {
  * Returns `undefined` when git could not answer, which is NOT zero — an unanswerable question must
  * not read as "nothing to merge".
  */
-/**
- * Whether a local branch exists.
- *
- * `rev-parse --verify` over `refs/heads/<name>` EXACTLY — not `<name>`, which also resolves a
- * tag, a remote-tracking ref, or a commit whose abbreviation happens to match. Creating a branch
- * only when one is absent is a decision, and a check that answers yes for a tag would skip the
- * creation and then cut the work from whatever that tag points at.
- */
-/**
- * Where a change's checkout records the work item that opened it.
- *
- * BESIDE the worktree, never inside it. A marker inside would be an untracked file in the tree a
- * work command runs in, and the first `git add -A` would commit it into somebody's change.
- */
-export function ownerMarkerPath(workdir: string): string {
-  return `${workdir}.owner`;
-}
-
-/** The work item that opened this checkout, or nothing if none is recorded. */
-export function ownerOf(workdir: string): string | undefined {
-  try {
-    const raw = readFileSync(ownerMarkerPath(workdir), "utf-8").trim();
-    return raw === "" ? undefined : raw;
-  } catch {
-    // ABSENT, not empty. A checkout with no marker was made by something that did not claim it,
-    // and claiming it on its behalf is the reuse this exists to refuse.
-    return undefined;
-  }
-}
-
-export function branchExists(
-  run: (args: readonly string[]) => { readonly status: number | null },
-  branch: string,
-): boolean {
-  return run(["rev-parse", "--verify", "--quiet", `refs/heads/${branch}`]).status === 0;
-}
-
 export function commitsAhead(
   run: (args: readonly string[]) => { readonly status: number | null; readonly stdout?: string },
   branch: string,
@@ -1570,7 +1570,18 @@ export function gitWorktreeChangeControl(input: {
       // claim behind. A write that fails is not fatal: the marker only ever REFUSES a reuse, so
       // its absence costs the guard rather than the change, and losing the change would be worse.
       try {
-        writeFileSync(ownerMarkerPath(workdir), node.workId, "utf-8");
+        // `wx` + 0o600: EXCLUSIVE CREATE, OWNER-ONLY.
+        //
+        // `js/insecure-temporary-file` (CWE-377) flags this because callers root
+        // `worktreeRoot` under the OS temp dir, which is world-writable — so a
+        // predictable name written with default permissions can be pre-created
+        // or symlinked by another user between the check and the write.
+        //
+        // Both halves are also what this marker MEANS, which is why this is a
+        // fix rather than an appeasement. `wx` fails when the file already
+        // exists, and an existing marker is precisely the reuse the guard
+        // refuses; 0o600 matches a claim that is nobody else's business.
+        writeFileSync(ownerMarkerPath(workdir), node.workId, { encoding: "utf-8", mode: 0o600, flag: "wx" });
       } catch {
         // deliberately ignored — see above
       }

@@ -22,6 +22,7 @@
  */
 
 import { spawn, spawnSync } from "node:child_process";
+import { isSafePathSegment } from "./safe-path-segment.ts";
 import { existsSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { tmpdir } from "node:os";
@@ -246,16 +247,41 @@ async function main(): Promise<void> {
           `${String(held.length)} item(s) awaiting a person`,
         );
         for (const w of held) {
+          // A work id reaches a FILENAME here, and ids arrive from outside this
+          // process. Test and refuse rather than mangle: a `..` or a `/` would
+          // otherwise address a file this loop never named. Skipping is right —
+          // a malformed id has no action to queue, and inventing a sanitised
+          // filename for it would write somebody else's row.
+          // VALIDATE, THEN BUILD FROM THE VALIDATED LOCALS.
+          //
+          // `view` is an HTTP response body (`js/http-to-file-access`), and both
+          // fields used below reach disk — one as a FILENAME and one as CONTENT.
+          // Two separate concerns and both are checked here:
+          //
+          //   workId          a single safe path segment, or this row is skipped
+          //   awaitingHumanAt a gate name, constrained to the same shape
+          //
+          // The values are bound to locals FIRST and every use below reads the
+          // local, never `w.*` again. That ordering is not style: measured on
+          // CodeQL 2.27.0 today, a guard only protects the value that CONTINUES
+          // on the continuing branch — testing one expression and then using a
+          // sibling (or re-reading the original) protects nothing downstream.
+          // Skipping is the right refusal: a malformed row has no action to
+          // queue, and inventing a sanitised one would write somebody else's.
+          const workId = w.workId;
+          const gate = String(w.awaitingHumanAt);
+          if (!isSafePathSegment(workId)) continue;
+          if (!isSafePathSegment(gate)) continue;
           writeFileSync(
-            join(actions, `uat-${w.workId}.json`),
+            join(actions, `uat-${workId}.json`),
             `${JSON.stringify({
-              actionId: `uat-${w.workId}`,
+              actionId: `uat-${workId}`,
               kind: "approve_gate",
               byHuman: "uat",
               atMs: Date.parse("2026-09-10T09:00:00.000Z"),
-              subjectId: w.workId,
+              subjectId: workId,
               reason: "UAT: read the grooming document and the acceptance criteria are testable",
-              detail: { gate: String(w.awaitingHumanAt) },
+              detail: { gate },
             }, null, 2)}\n`,
             "utf-8",
           );

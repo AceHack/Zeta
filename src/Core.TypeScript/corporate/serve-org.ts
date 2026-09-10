@@ -280,7 +280,22 @@ export function readArtifact(ref: string, roots: readonly string[]): { ok: true;
     // A whole repository could be cited. The page wants a document, not a database dump.
     return { ok: true, text: text.length > 200_000 ? `${text.slice(0, 200_000)}\n…[truncated]` : text };
   } catch (err) {
-    return { ok: false, reason: err instanceof Error ? err.message : String(err) };
+    // CLASSIFY, NEVER ECHO. `js/stack-trace-exposure`: this `reason` is
+    // JSON-serialised straight into an HTTP response, and a raw `err.message`
+    // from `readFileSync` carries the absolute path it tried — which tells a
+    // caller the server's filesystem layout, including roots it was refused.
+    //
+    // The classification below is the answer the CALLER actually needs (does
+    // this exist, may I read it, or is it not a file), and it is stable across
+    // platforms in a way an OS error string is not. The underlying error is not
+    // swallowed — it is simply not the thing sent to a stranger.
+    const code = (err as NodeJS.ErrnoException | undefined)?.code;
+    const reason =
+      code === "ENOENT" ? "no such artifact"
+      : code === "EACCES" || code === "EPERM" ? "not readable"
+      : code === "EISDIR" ? "that ref is a directory, not an artifact"
+      : "could not be read";
+    return { ok: false, reason };
   }
 }
 

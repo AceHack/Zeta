@@ -14,6 +14,7 @@
  */
 
 import { mkdirSync, readdirSync, writeFileSync } from "node:fs";
+import { isSafePathSegment } from "./safe-path-segment.ts";
 import { join } from "node:path";
 
 import { externalRefOf, type ExternalEvent } from "./intake";
@@ -83,9 +84,10 @@ const MAX_INBOX_BYTES = 1_048_576;
  * was. The better design and the one the analyser can see are the same design here, which is
  * the outcome to prefer over any suppression.
  */
-function isSafeInboxKey(key: string): boolean {
-  return /^[A-Za-z0-9][A-Za-z0-9._-]{0,99}$/u.test(key);
-}
+// Moved to `safe-path-segment.ts` when CodeQL found the same shape a second
+// time, in `uat-three-criteria.ts`. Kept as a named alias so the call sites
+// below still read in this file's own vocabulary.
+const isSafeInboxKey = isSafePathSegment;
 
 /** Which tickets this organization has already been asked to take. */
 export function inboxKeys(inboxDir: string | undefined): readonly string[] {
