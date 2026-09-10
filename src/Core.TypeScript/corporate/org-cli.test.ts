@@ -97,12 +97,49 @@ describe("A METHOD MUST NAME A VERB THAT EXISTS, AND A REASON", () => {
     expect(h.stderr.join("")).toContain("instruction");
   });
 
-  test("an org with no methods says so rather than saying nothing", async () => {
+  test("an org that bound nothing reports the DEFAULTS in force, and says they are defaults", async () => {
+    // This asserted "the way it always was" until the register grew defaults, and that message is
+    // now false: an organization that configured nothing IS interviewing its requirements. A
+    // listing that describes the configuration file rather than the running system is the same
+    // class of defect as a metric that disagrees with what it counts.
     const h = harness();
     await main(CREATE, h.deps);
     h.stdout.length = 0;
     expect(await main(["org", "method", "list", "--org", "elera"], h.deps)).toBe(Exit.Ok);
-    expect(h.stdout.join("")).toContain("the way it always was");
+    const out = h.stdout.join("");
+    expect(out).toContain("requirement-grilling");
+    expect(out).toContain("(default)");
+    expect(out).toContain("nothing was bound");
+  });
+
+  test("a declined method disappears from what is in force, with its reason kept", async () => {
+    const h = harness();
+    await main(CREATE, h.deps);
+    expect(
+      await main(
+        ["org", "method", "unbind", "--org", "elera", "--kind", "request_information", "--why", "our BAs run intake their own way"],
+        h.deps,
+      ),
+    ).toBe(Exit.Ok);
+    h.stdout.length = 0;
+    await main(["org", "method", "list", "--org", "elera", "--json"], h.deps);
+    const v = JSON.parse(h.stdout.join("")) as {
+      inForce: { kind: string }[];
+      configured: { kind: string; skillId: string; why: string }[];
+    };
+    expect(v.inForce.some((m) => m.kind === "request_information")).toBe(false);
+    // The DECISION is still on the record, with why — declining is not the same as never deciding.
+    const declined = v.configured.find((m) => m.kind === "request_information");
+    expect(declined?.skillId).toBe("");
+    expect(declined?.why).toContain("their own way");
+  });
+
+  test("declining without a reason is refused", async () => {
+    const h = harness();
+    await main(CREATE, h.deps);
+    expect(
+      await main(["org", "method", "unbind", "--org", "elera", "--kind", "request_information", "--why", ""], h.deps),
+    ).toBe(Exit.Usage);
   });
 });
 
@@ -457,13 +494,18 @@ describe("skills are OPTIONAL configuration, defaulting to the repo", () => {
     return h;
   }
 
-  test("A NEW ORG BINDS NOTHING and every gate falls back", async () => {
+  test("A NEW ORG BINDS NOTHING and every gate still resolves", async () => {
     const h = await withOrg();
     const code = await main(["org", "skill", "list", "--json"], h.deps);
     expect(code).toBe(Exit.Ok);
     const v = JSON.parse(h.stdout.join("")) as { bound: unknown[]; resolved: { bound: boolean }[] };
+    // The organization has configured nothing — that half is unchanged.
     expect(v.bound).toEqual([]);
-    expect(v.resolved.every((r) => !r.bound)).toBe(true);
+    // …and it is still not in a degraded state: some gates carry the register's own method, the
+    // rest fall back to the repo, and NOTHING is unresolved.
+    expect(v.resolved.length).toBeGreaterThan(0);
+    expect(v.resolved.some((r) => r.bound)).toBe(true);
+    expect(v.resolved.some((r) => !r.bound)).toBe(true);
   });
 
   test("binding a gate changes only that gate", async () => {
@@ -476,7 +518,15 @@ describe("skills are OPTIONAL configuration, defaulting to the repo", () => {
     await main(["org", "skill", "list", "--json"], h.deps);
     const v = JSON.parse(h.stdout.join("")) as { resolved: { gate: string; bound: boolean }[] };
     expect(v.resolved.find((r) => r.gate === "qa_uat")?.bound).toBe(true);
-    expect(v.resolved.filter((r) => r.bound)).toHaveLength(1);
+    // ONLY THAT GATE CHANGED. Counted as a DELTA against the unconfigured organization rather than
+    // against zero, because the register now defaults three gates and an absolute count would fail
+    // for a reason that has nothing to do with what this test is about.
+    const before = (await (async () => {
+      const clean = await withOrg();
+      await main(["org", "skill", "list", "--json"], clean.deps);
+      return JSON.parse(clean.stdout.join("")) as { resolved: { bound: boolean }[] };
+    })()).resolved.filter((r) => r.bound).length;
+    expect(v.resolved.filter((r) => r.bound)).toHaveLength(before + 1);
   });
 
   test("A MARKETPLACE SKILL WITHOUT A MARKETPLACE IS REFUSED", async () => {

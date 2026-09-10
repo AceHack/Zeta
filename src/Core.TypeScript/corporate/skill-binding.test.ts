@@ -17,6 +17,7 @@ import {
   validateBindings,
   type SkillBinding,
 } from "./skill-binding";
+import { DEFAULT_GATE_SKILLS } from "./method-defaults";
 
 const REPO: SkillBinding = {
   gate: GateKind.ImplementationReview,
@@ -31,10 +32,33 @@ const MARKET: SkillBinding = {
 };
 
 describe("ZERO CONFIGURATION IS THE DEFAULT, not a degraded mode", () => {
-  test("an org with no bindings falls back on every gate", () => {
+  test("an org with no bindings resolves EVERY gate — some to a default, the rest to the repo", () => {
+    // The property this has always defended: a new organization is never in a degraded state. What
+    // changed is that three gates now resolve to the register's own method rather than to nothing.
+    // Zero configuration got BETTER, not narrower — an operator who never heard of `org skill bind`
+    // now gets a requirement interviewed rather than transcribed.
     for (const gate of Object.values(GateKind)) {
-      expect(resolve([], gate).bound).toBe(false);
+      const r = resolve([], gate);
+      const hasDefault = DEFAULT_GATE_SKILLS[gate] !== undefined;
+      expect(r.bound).toBe(hasDefault);
+      if (hasDefault) expect(r.skill).toBe(DEFAULT_GATE_SKILLS[gate]);
     }
+  });
+
+  test("the defaults are NARROW — most gates still fall back to the repo", () => {
+    // A default on everything would be the register having an opinion it has not earned. It has one
+    // about shaping a requirement and not about reviewing architecture, and the table has to show
+    // that restraint or it is just a second hardcoded pipeline.
+    const defaulted = Object.values(GateKind).filter((g) => resolve([], g).bound);
+    expect(defaulted.length).toBeGreaterThan(0);
+    expect(defaulted.length).toBeLessThan(Object.values(GateKind).length / 2);
+  });
+
+  test("a default is REPLACEABLE, or it is a mandate", () => {
+    const gate = Object.keys(DEFAULT_GATE_SKILLS)[0] as GateKind;
+    const mine = resolve([{ gate, skill: "our-own-way", source: SkillSource.Repo }], gate);
+    expect(mine.bound).toBe(true);
+    expect(mine.skill).toBe("our-own-way");
   });
 
   test("a fallback NEVER refuses — it resolves, and says it fell back", () => {

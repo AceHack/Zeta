@@ -19,6 +19,7 @@
 import { readBlockers } from "./blocker-outbox";
 import { isSignatureScheme, type WebhookConfig } from "./webhook-intake";
 import { checksFromRoster, selectChecks, type CheckBinding } from "./check-roster";
+import { isDefaultMethod, methodsFor } from "./method-defaults";
 import { ACTION_KINDS } from "../observe/action-reconciliation";
 import { CROSS_VERIFY_AUDITS } from "../ci/cross-verify-roster";
 import { LINEAR_SEVERITY_MAP, LINEAR_WEBHOOK_MAP } from "./linear-source";
@@ -371,7 +372,9 @@ export async function main(argv: readonly string[], deps: CliDeps): Promise<numb
       const view = {
         bound: bindingsOf(chosen.org.skills),
         resolved: resolved.map((r) => ({
-          gate: r.gate, bound: r.bound, skill: r.skill ?? "(repo default)",
+          // `byDefault` TRAVELS. Without it a gate the REGISTER defaulted renders exactly like
+          // one this operator chose, and the listing reports a decision nobody made.
+          gate: r.gate, bound: r.bound, byDefault: r.byDefault === true, skill: r.skill ?? "(repo default)",
           source: r.source ?? "repo", scopeWorkId: r.scopeWorkId, because: r.because,
         })),
         defaults: resolved.filter((r) => !r.bound).length,
@@ -529,15 +532,58 @@ export async function main(argv: readonly string[], deps: CliDeps): Promise<numb
       return Exit.Ok;
     }
 
+    case "org method unbind": {
+      const chosen = resolveOrg(registry, flagValue(flags, "--org"));
+      if ("reason" in chosen) { deps.err(chosen.reason); return Exit.NotFound; }
+
+      const kind = (flagValue(flags, "--kind") ?? "").trim();
+      const why = (flagValue(flags, "--why") ?? "").trim();
+      if (kind === "") { deps.err("--kind is required"); return Exit.Usage; }
+      // DECLINING CARRIES ITS REASON TOO. Turning a default off is a decision somebody made,
+      // and the next person to read this configuration deserves to know why it was made.
+      if (why === "") { deps.err("--why is required: declining a method is a decision, not an absence"); return Exit.Usage; }
+      if (!ACTION_KINDS.includes(kind)) {
+        deps.err(`'${kind}' is not an action kind — see 'describe' for the grammar`);
+        return Exit.NotFound;
+      }
+
+      const existing = chosen.org.methods ?? [];
+      // An EMPTY skill id is how the record says 'no method here' — see `methodsFor`. It is a
+      // suppression rather than a deletion, because deleting the row would let the default come
+      // straight back and the operator's decision would silently evaporate.
+      const updated = updateOrg(registry, {
+        ...chosen.org,
+        methods: [...existing.filter((m) => m.kind !== kind), { kind, skillId: "", why }],
+      });
+      if (!updated.ok) { deps.err(updated.reason); return Exit.Refused; }
+      registry = updated.registry;
+      deps.writeFile(registryPath, serializeRegistry(registry));
+
+      emit(deps, json, { org: chosen.org.orgId, kind, declined: true, why }, () =>
+        `'${kind}' now carries no method on '${chosen.org.orgId}'\n` +
+        `  because ${why}\n`,
+      );
+      return Exit.Ok;
+    }
+
     case "org method list": {
       const chosen = resolveOrg(registry, flagValue(flags, "--org"));
       if ("reason" in chosen) { deps.err(chosen.reason); return Exit.NotFound; }
-      const methods = chosen.org.methods ?? [];
-      emit(deps, json, { org: chosen.org.orgId, methods }, () => {
-        if (methods.length === 0) {
-          return `'${chosen.org.orgId}' attaches no methods — every verb is taken the way it always was\n`;
+      // WHAT IS IN FORCE, not what was typed. Reporting only the organization's own bindings
+      // said "attaches no methods" about an organization that was in fact grilling its
+      // requirements — the CLI describing a configuration file rather than the running system.
+      const configured = chosen.org.methods ?? [];
+      const inForce = methodsFor(chosen.org);
+      emit(deps, json, { org: chosen.org.orgId, configured, inForce }, () => {
+        if (inForce.length === 0) {
+          return `'${chosen.org.orgId}' has no methods in force — every verb is taken the way it always was\n`;
         }
-        return methods.map((m) => `  ${m.kind}\n    ${m.skillId}\n    because ${m.why}\n`).join("");
+        const rows = inForce
+          .map((m) => `  ${m.kind}\n    ${m.skillId}  (${isDefaultMethod(m) ? "default" : "chosen here"})\n    because ${m.why}\n`)
+          .join("");
+        return configured.length === 0
+          ? `${rows}  nothing was bound — these are the organization's defaults; 'org method bind' replaces one\n`
+          : rows;
       });
       return Exit.Ok;
     }

@@ -171,6 +171,18 @@ export const COMMANDS: readonly CommandSpec[] = [
     writes: true,
   },
   {
+    name: "org method unbind",
+    what: "Decline a method for a verb, including one this organization gets by default. The verb is then taken with no method at all.",
+    then: "A default that cannot be turned off is a mandate. Declining is a real answer and it carries its reason, which `org method list` shows beside it.",
+    flags: [
+      ORG_FLAG,
+      { name: "--kind", what: "The action kind to leave without a method.", required: true, takesValue: true },
+      { name: "--why", what: "Why this verb should carry no method. Declining is a decision, not an absence.", required: true, takesValue: true },
+      JSON_FLAG,
+    ],
+    writes: true,
+  },
+  {
     name: "org method list",
     what: "Which verbs carry a method, and why each one was attached.",
     then: "A verb with no method is not unmanaged — it is taken the way it always was. That is the normal case and is reported as such.",

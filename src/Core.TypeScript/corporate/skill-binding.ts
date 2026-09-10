@@ -30,6 +30,7 @@
 
 import { stringCompare } from "../collation/collation.ts";
 import type { GateKind } from "./quality-gate";
+import { DEFAULT_GATE_SKILLS } from "./method-defaults";
 
 /** Where a skill comes from. The distinction an operator cares about when something misbehaves. */
 export const SkillSource = {
@@ -97,6 +98,14 @@ export function validateBinding(binding: SkillBinding): BindingCheck {
 
 /** How a gate's performer was decided. `bound` false means the default producer runs. */
 export interface Resolution {
+  /**
+   * True when this came from the REGISTER's default rather than from the organization.
+   *
+   * Absent means the organization chose it (or that nothing resolved at all). The difference
+   * matters to anything asking "what has this operator actually configured" — a default counted as
+   * a choice makes guided setup skip a step nobody took.
+   */
+  readonly byDefault?: boolean;
   readonly gate: GateKind;
   readonly bound: boolean;
   readonly skill?: string;
@@ -146,6 +155,29 @@ export function resolve(
       source: orgWide.source,
       ...(orgWide.marketplace === undefined ? {} : { marketplace: orgWide.marketplace }),
       because: "bound organization-wide",
+    };
+  }
+
+  // ── THE REGISTER'S OWN DEFAULT, BEFORE GIVING UP ───────────────────────────
+  // An organization that bound nothing used to get nothing, which meant the gates where a
+  // requirement is SHAPED were performed with no method at all — and an operator only discovered
+  // the knob existed by reading the CLI. A default here is not a mandate: `org skill bind` replaces
+  // it, and it applies to three gates rather than to everything, because those are the ones this
+  // register has an earned opinion about.
+  const fallback = DEFAULT_GATE_SKILLS[gate];
+  if (fallback !== undefined) {
+    return {
+      gate,
+      bound: true,
+      skill: fallback,
+      source: SkillSource.Repo,
+      // WHOSE DECISION THIS WAS, as a field rather than as prose in `because`.
+      // `configure-plan` counts what an ORGANIZATION has configured, and once defaults started
+      // resolving as bound it counted them too — so a brand-new org was told its skills were set up
+      // and the step stopped being offered. A caller that needs the distinction must be able to ask
+      // for it, not parse a sentence.
+      byDefault: true,
+      because: `nothing is bound for '${String(gate)}', so the organization's default method performs it — bind another with 'org skill bind' to replace it`,
     };
   }
 

@@ -23,6 +23,7 @@ import { methodFor, renderAction, type Method, type NextAction, type World } fro
 import { tick, type DriveDeps, type DriveState } from "./org-drive";
 import { buildOrgChart } from "./org-chart";
 import { SEED_HATS } from "./org-seed";
+import { DEFAULT_METHODS, methodsFor } from "./method-defaults";
 import { EMPTY_BOARD } from "./discussion-anchor";
 import { EMPTY_CALENDAR } from "./work-schedule";
 import { ACTION_KINDS, ACTION_RECONCILIATION } from "../observe/action-reconciliation";
@@ -164,8 +165,11 @@ describe("AND THE AGENT ACTUALLY SEES IT — the chain, end to end", () => {
     expect(seen[0]).toEqual([GRILL]);
   });
 
-  test("a drive with NO methods hands the chooser undefined, not an empty list", () => {
-    // Absent is "this organization has no opinion"; empty would be "it has one and it is nothing".
+  test("a drive that says nothing gets the REGISTER'S DEFAULTS, not silence", () => {
+    // This test asserted the opposite an hour ago, and the opposite was wrong. Making an operator
+    // bind the basics before their organization asks a decent question is a cost paid by everyone
+    // who did not know the knob existed, for a flexibility almost none of them wanted. Saying
+    // nothing now means "use the register's judgement".
     const seen: (readonly Method[] | undefined)[] = [];
     const deps = {
       chart: CHART,
@@ -179,6 +183,61 @@ describe("AND THE AGENT ACTUALLY SEES IT — the chain, end to end", () => {
     } as unknown as DriveDeps;
 
     tick(driveState(), "backend_implementer", deps);
-    expect(seen[0]).toBeUndefined();
+    expect(seen[0]).toEqual(DEFAULT_METHODS);
+    expect(seen[0]?.some((m) => m.kind === "request_information")).toBe(true);
+  });
+
+  test("...and an EXPLICIT empty list is how you say none", () => {
+    // A default that cannot be turned off is a mandate. Passing `[]` is the difference between "I
+    // have not thought about it" and "I have, and the answer is no method here".
+    const seen: (readonly Method[] | undefined)[] = [];
+    const deps = {
+      chart: CHART,
+      nowMs: 0,
+      createId: (p: string) => `${p}-1`,
+      resourceAuthorityHatId: "rmo_office",
+      methods: [],
+      choose: (menu: readonly NextAction[], _hatId: string, methods?: readonly Method[]) => {
+        seen.push(methods);
+        return menu[0];
+      },
+    } as unknown as DriveDeps;
+
+    tick(driveState(), "backend_implementer", deps);
+    expect(seen[0] ?? []).toEqual([]);
+  });
+});
+
+describe("THE DEFAULTS ARE THE POINT — you should not have to bind the basics", () => {
+  test("an organization that configured NOTHING still interviews requirements", () => {
+    const inForce = methodsFor({});
+    expect(inForce.some((m) => m.kind === "request_information" && m.skillId === "requirement-grilling")).toBe(true);
+  });
+
+  test("a binding REPLACES the default for that verb and leaves the others", () => {
+    const inForce = methodsFor({ methods: [{ kind: "request_information", skillId: "our-own-way", why: "house style" }] });
+    expect(inForce.find((m) => m.kind === "request_information")?.skillId).toBe("our-own-way");
+    expect(inForce.find((m) => m.kind === "draft_business_doc")?.skillId).toBe("requirement-grilling");
+  });
+
+  test("binding an EMPTY skill removes the default — a default that cannot be turned off is a mandate", () => {
+    const inForce = methodsFor({ methods: [{ kind: "request_information", skillId: "", why: "our BAs run this differently" }] });
+    expect(inForce.some((m) => m.kind === "request_information")).toBe(false);
+    // …and only that one. Declining one method is not declining all of them.
+    expect(inForce.some((m) => m.kind === "draft_business_doc")).toBe(true);
+  });
+
+  test("a method for a verb the register has no opinion about is kept", () => {
+    const inForce = methodsFor({ methods: [{ kind: "review_artifact", skillId: "house-review", why: "ours" }] });
+    expect(inForce.some((m) => m.kind === "review_artifact" && m.skillId === "house-review")).toBe(true);
+    expect(inForce.length).toBe(DEFAULT_METHODS.length + 1);
+  });
+
+  test("the defaults are NARROW — the register only defaults what it has an earned method for", () => {
+    // A default on every verb would be a second hardcoded pipeline wearing a configuration's
+    // clothes. Restraint here is what keeps this a default rather than a policy.
+    expect(DEFAULT_METHODS.length).toBeGreaterThan(0);
+    expect(DEFAULT_METHODS.length).toBeLessThan(5);
+    for (const m of DEFAULT_METHODS) expect(m.why.trim()).not.toBe("");
   });
 });

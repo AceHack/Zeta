@@ -123,7 +123,13 @@ export function planForNothing(): ConfigurePlan {
 export function planFor(org: OrgRecord, hasWork: boolean): ConfigurePlan {
   const sourceSynced = org.intake === Intake.SourceSynced;
   const gates = [...new Set(Object.values(CHAIN_BY_TYPE).flat())];
-  const boundGates = gates.filter((g) => resolve(org.skills, g).bound);
+  // WHAT THIS ORGANIZATION CHOSE, not what resolves. The register now defaults a few gates, and
+  // counting those here told a brand-new organization its skills were configured — so the step was
+  // never offered and an operator could not discover that binding existed.
+  const boundGates = gates.filter((g) => {
+    const r = resolve(org.skills, g);
+    return r.bound && r.byDefault !== true;
+  });
 
   const create: PlanStep = {
     step: ConfigureStep.Create,

@@ -65,6 +65,7 @@ import { SignalTool, type SupervisorSignal } from "./supervisor-signal";
 import { preferChooser, type OrgChooser } from "./org-decision";
 import type { EscalationAction } from "./escalation";
 import { lagSignals } from "./lag-signals";
+import { DEFAULT_METHODS } from "./method-defaults";
 
 /** The mutable half of the organization — what a tick can change. */
 export interface DriveState {
@@ -217,7 +218,12 @@ export function tick(state: DriveState, hatId: string, deps: DriveDeps): TickRep
         : { nowMs: deps.nowMs, reviewIntervalMs: deps.directionReviewMs },
       // WITHOUT THIS LINE the whole seam is decorative: the surface would accept methods and never
       // be given any, so no agent would ever see one.
-      deps.methods,
+      //
+      // DEFAULTED, not merely forwarded. A caller that says nothing about methods gets the
+      // register's own — because "you have to bind the basics yourself" is a cost paid by every
+      // operator who did not know the knob existed, for a flexibility almost none of them wanted.
+      // Supplying an explicit list replaces them; supplying an empty one is how you say none.
+      deps.methods ?? DEFAULT_METHODS,
     ),
   };
   const menu = buildMenu(world);
