@@ -1,0 +1,14 @@
+{
+  "id": "080d0445ac7a6810a0130008125e008f",
+  "at": "2026-09-10T00:26:35.213Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M24BB3TD087G0R001PJTW9A",
+    "type": "bug",
+    "title": "zflash QEMU scenarios 3 and 4 boot legacy CSM because buildQemuSystemBootArgs passes no OVMF pflash",
+    "slug": "zflash-qemu-scenarios-3-and-4-boot-legacy-csm-because-buildq",
+    "priority": "P2",
+    "filename": "081M24BB3TD087G0R001PJTW9A-zflash-qemu-scenarios-3-and-4-boot-legacy-csm-because-buildq.md"
+  }
+}
