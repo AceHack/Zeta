@@ -378,11 +378,17 @@ export async function main(argv: readonly string[], deps: CliDeps): Promise<numb
           source: r.source ?? "repo", scopeWorkId: r.scopeWorkId, because: r.because,
         })),
         defaults: resolved.filter((r) => !r.bound).length,
+        // COUNTED SEPARATELY because a default is neither of the other two. Folding it into
+        // `bound` credits the operator with a choice they never made; folding it into
+        // `defaults` claims the repository supplies a skill the REGISTER supplied.
+        byDefault: resolved.filter((r) => r.byDefault === true).length,
       };
       emit(deps, json, view, () =>
-        `${String(view.bound.length)} binding(s); ${String(view.defaults)} gate(s) on the repo default` + "\n"
+        `${String(view.bound.length)} bound here; ${String(view.byDefault)} by default; `
+        + `${String(view.defaults)} gate(s) on whatever the repository provides` + "\n"
         + view.resolved.filter((r) => r.bound)
-            .map((r) => `  ${r.gate}  ${r.skill}  (${r.source})`).join("\n") + "\n",
+            .map((r) => `  ${r.gate}  ${r.skill}  (${r.byDefault === true ? "default" : r.source})`)
+            .join("\n") + "\n",
       );
       return Exit.Ok;
     }

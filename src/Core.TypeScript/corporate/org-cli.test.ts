@@ -564,6 +564,38 @@ describe("skills are OPTIONAL configuration, defaulting to the repo", () => {
     expect(await main(args, h.deps)).toBe(Exit.Refused);
   });
 
+  test("THE HUMAN RENDER TELLS THE THREE STATES APART", async () => {
+    // Every other test here reads --json, and the text render drifted behind it unnoticed: on a
+    // freshly created organization it printed "0 binding(s)" as the header of a THREE-ROW list,
+    // and credited each of those rows to "(repo)" for a skill the REGISTER supplied. Both halves
+    // are asserted, because the header and the rows drifted independently.
+    const h = await withOrg();
+    await main(["org", "skill", "list"], h.deps);
+    const out = h.stdout.join("");
+
+    // A default is labelled a default -- not "(repo)", which names a place it did not come from.
+    expect(out).toContain("business_context_grooming");
+    expect(out).toContain("(default)");
+    expect(out).not.toContain("(repo)");
+
+    // …and the header agrees with the rows beneath it. Counting the defaults as "bound here"
+    // reports a choice nobody made; counting them as unresolved contradicts the list.
+    expect(out).toContain("0 bound here");
+    expect(out).toContain("3 by default");
+  });
+
+  test("a gate bound BY HAND is not reported as a default", async () => {
+    // The other direction. A render that labelled every row "(default)" would pass the test above
+    // while erasing the distinction it exists to draw.
+    const h = await withOrg();
+    await main(["org", "skill", "bind", "--gate", "qa_uat", "--skill", "house-qa", "--source", "repo"], h.deps);
+    h.stdout.length = 0;
+    await main(["org", "skill", "list"], h.deps);
+    const out = h.stdout.join("");
+    expect(out).toContain("qa_uat  house-qa  (repo)");
+    expect(out).toContain("1 bound here");
+  });
+
   test("every resolution explains itself, bound or not", async () => {
     const h = await withOrg();
     await main(["org", "skill", "list", "--json"], h.deps);
