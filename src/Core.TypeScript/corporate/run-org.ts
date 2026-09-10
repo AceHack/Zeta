@@ -171,6 +171,7 @@ import type { ProducerPort } from "./pipeline";
 import type { OrgChart } from "./org-chart";
 import type { OrgRuntimeDeps, OrgRuntimeReport } from "./org-runtime";
 import type { NextAction } from "../observe/observe";
+import { branchNameIn } from "./branch-topology";
 
 /**
  * The goals a person actually stated, as intake.
@@ -2280,7 +2281,11 @@ export async function main(argv: readonly string[]): Promise<number> {
       // The tests this run ACTUALLY produced decide runtime_validation — not an assumption, and
       // not an approval handed over because no runs were found.
       qaVerdict: qaVerdictFrom(report),
-      branch: `agent-work/${workId}`,
+      // NAMED BY THE WORK, like every other path. `agent-work/${workId}` marked WHO performed the
+      // item, which is a different axis from what the branch holds — and the register already
+      // records the performer, so the branch name was spending the one thing a reviewer reads on a
+      // fact stored elsewhere. `report.cascade` is in scope, so the collision-aware form is used.
+      branch: branchNameIn(report.cascade, node),
     });
     return {
       succeeded: outcome.landed,

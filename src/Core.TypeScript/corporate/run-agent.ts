@@ -58,6 +58,7 @@ import { deliverWorkItem, type DeliveryOutcome } from "./work-delivery";
 import { DEFAULT_PIPELINE } from "./pipeline";
 import { GateOutcome } from "./quality-gate";
 import { RunOutcome } from "./qa";
+import { branchNameIn } from "./branch-topology";
 
 /** The inbound event the demo organization works. A real caller supplies its own. */
 const DEFECT: ExternalEvent = {
@@ -347,7 +348,11 @@ export async function organizationSurface(args: AgentRunArgs): Promise<{
         atMs: args.atMs,
         proposerHatId: node.assigneeHatId ?? "unassigned",
         qaVerdict,
-        branch: `agent-work/${workId}`,
+        // NAMED BY THE WORK, like every other path. `agent-work/${workId}` marked WHO performed the
+        // item, which is a different axis from what the branch holds — and the register already
+        // records the performer, so the branch name was spending the one thing a reviewer reads on a
+        // fact stored elsewhere. `report.cascade` is in scope, so the collision-aware form is used.
+        branch: branchNameIn(report.cascade, node),
       });
     },
   };
