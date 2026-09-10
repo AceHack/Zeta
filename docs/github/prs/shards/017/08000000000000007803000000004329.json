@@ -1,0 +1,12 @@
+{
+  "pr_number": 17193,
+  "archive_path": "docs/history/pr-reviews/PR-17193-fix-081m24c2cm1087g0r0000hbsbn-claude-md-sent-every-agent-to-a-liveness-source-t.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-10T01:11:41.628Z",
+  "schema_version": "v1",
+  "commit_sha": "a30873b240f1d79b4a9ed87f11eb0561e24b95fa",
+  "title": "fix(081M24C2CM1087G0R0000HBSBN): CLAUDE.md sent every agent to a liveness source that is intentionally paused",
+  "state": "MERGED",
+  "merged_at": "2026-09-10T01:10:59Z",
+  "head_ref": "claudemd-liveness-paused"
+}
