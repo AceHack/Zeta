@@ -1,3 +1,25 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# DISABLED (`disabled_manually` in the Actions API) — 2026-08-29, and
+# heartbeat-liveness.yml on 2026-09-10. This is a maintainer decision, not rot.
+#
+# WHY: these are cadence workflows that COMMIT on a schedule, and the cost is
+# HISTORY, not tip. Measured on 2026-09-10: `liveness/observations` held 605
+# commits and 3,025 git objects to carry 409 KB of current content, at 84
+# commits/day; `drift-sweep.yml` committed a tick event into `docs/` on every
+# run. Quoting the tip size understates it — git keeps all of it.
+#
+# DO NOT re-enable to "restore telemetry". Re-enabling resumes exactly the
+# growth this stopped. A liveness signal is wanted again only with a bound on
+# history, which is the telemetry redesign, not this file.
+#
+# The design worth keeping from it: observations about a broken pipeline must
+# not depend on that pipeline (hence an orphan ref, not a PR flush). What it
+# lacked was a retention bound.
+#
+# Absence of runs here is the pause, NEVER evidence that work stopped — read
+# liveness from the work itself: commits on `main`, merged PRs, open
+# work-items. A lane's run-state is a question for the Actions API.
+# ─────────────────────────────────────────────────────────────────────────────
 name: context-cost-trend-cadence
 
 # Daily DORA trend cadence for 081KT7YW00008QG0R002T1XNWT context-window minimization. Runs
