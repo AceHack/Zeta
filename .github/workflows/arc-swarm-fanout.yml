@@ -67,17 +67,45 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
+          # Nothing in this job pushes or fetches again, so the token has no
+          # reader after the clone. The sibling lane (mux-swarm-tick.yml) already
+          # set this for the same reason; this one was left behind.
+          persist-credentials: false
 
       - name: Install Bun
         uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
         with:
           bun-version: latest
 
-      - name: Install Ollama (Free local LLM tier)
+      # Same adoption as mux-swarm-tick.yml, and the same reasons: the pinned
+      # installer (.github/ollama-pin.json, proved on a real runner by
+      # verify-ollama-pin.yml) replaces `curl ... install.sh | sh`, and the
+      # `ollama serve &` becomes load-bearing again because the pinned artifact
+      # starts no systemd unit to collide with.
+      #
+      # This lane has never been dispatched (workflow_dispatch only; the API
+      # reports total_count 0 as of 2026-09-10), so the change is unexercised HERE
+      # -- it is exercised by the hourly sibling and by verify-ollama-pin.yml.
+      # 081M24E7814087G0R003JY87M3
+      - name: Install Ollama (pinned, checksum-verified)
+        continue-on-error: true
+        run: bun src/Core.TypeScript/ace/install-pinned-artifact.ts --pin .github/ollama-pin.json
+
+      - name: Start Ollama + pull the chunk's model
+        continue-on-error: true
         run: |
-          curl -fsSL https://ollama.com/install.sh | sh
+          set -euo pipefail
+          if ! command -v ollama >/dev/null 2>&1; then
+            echo "::error title=fanout degraded::The pinned Ollama install did not complete, so this chunk runs WITHOUT a model. Fix the pin (.github/ollama-pin.json) -- do not restore the unpinned installer."
+            exit 1
+          fi
+
           ollama serve &
-          sleep 5
+          for _ in $(seq 1 30); do
+            if ollama list >/dev/null 2>&1; then break; fi
+            sleep 1
+          done
+
           ollama pull qwen2.5:0.5b
 
       - name: Evaluate Chunk

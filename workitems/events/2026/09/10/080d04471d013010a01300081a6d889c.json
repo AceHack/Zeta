@@ -1,0 +1,14 @@
+{
+  "id": "080d04471d013010a01300081a6d889c",
+  "at": "2026-09-10T01:16:54.182Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M24E7814087G0R003JY87M3",
+    "type": "bug",
+    "title": "two swarm workflows still curl-pipe-sh the Ollama installer while the pinned installer is already shipped and adopted elsewhere",
+    "slug": "two-swarm-workflows-still-curl-pipe-sh-the-ollama-installer",
+    "priority": "P2",
+    "filename": "081M24E7814087G0R003JY87M3-two-swarm-workflows-still-curl-pipe-sh-the-ollama-installer.md"
+  }
+}
