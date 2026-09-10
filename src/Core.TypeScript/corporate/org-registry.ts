@@ -23,6 +23,7 @@
  * why the shape below has no notion of a destination.
  */
 
+import { stringCompare } from "../collation/collation.ts";
 import { isVerificationApproach, validateOrgPolicy, type OrgPolicy } from "./org-policy";
 import type { CheckBinding } from "./check-roster";
 import { HumanCheckpoint } from "./quality-gate";
@@ -361,6 +362,6 @@ export function parseRegistry(json: string): RegistryResult {
 
 /** Serialize, with keys in a stable order so a registry file diffs cleanly. */
 export function serializeRegistry(registry: Registry): string {
-  const orgs = [...registry.orgs].sort((a, b) => a.orgId.localeCompare(b.orgId));
+  const orgs = [...registry.orgs].sort((a, b) => stringCompare(a.orgId, b.orgId));
   return `${JSON.stringify({ orgs }, null, 2)}\n`;
 }

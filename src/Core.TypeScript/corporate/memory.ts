@@ -27,6 +27,8 @@
  * that with the arithmetic, because it is the difference between a memory system and a memory leak.
  */
 
+
+import { stringCompare } from "../collation/collation.ts";
 /** Where a memory belongs in the organization. */
 export const MemoryTier = {
   /** The whole company. Slowest to decay. */
@@ -325,7 +327,7 @@ export function recall(
   // Heaviest first; ties broken by id so the order is stable across runs — a recall that reorders
   // between two identical runs would make the whole thing unreplayable.
   out.sort((a, b) =>
-    b.weight === a.weight ? a.memory.content.memoryId.localeCompare(b.memory.content.memoryId) : b.weight - a.weight,
+    b.weight === a.weight ? stringCompare(a.memory.content.memoryId, b.memory.content.memoryId) : b.weight - a.weight,
   );
   return out.slice(0, budget);
 }

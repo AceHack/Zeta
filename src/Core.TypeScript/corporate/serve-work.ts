@@ -13,7 +13,7 @@
  * that refusal is the correct outcome rather than a bug in this file.
  */
 
-import { existsSync, mkdirSync, readdirSync, writeFileSync } from "node:fs";
+import { mkdirSync, readdirSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 
 import { externalRefOf, type ExternalEvent } from "./intake";
@@ -62,9 +62,17 @@ function json(body: unknown, status = 200): Response {
 
 /** Which tickets this organization has already been asked to take. */
 export function inboxKeys(inboxDir: string | undefined): readonly string[] {
-  if (inboxDir === undefined || !existsSync(inboxDir)) return [];
+  if (inboxDir === undefined) return [];
+  // Undefined is a CONFIGURATION fact and stays a check; existence is a filesystem fact
+  // and is decided by the read itself (CWE-367).
+  let names: readonly string[];
+  try {
+    names = readdirSync(inboxDir);
+  } catch {
+    return [];
+  }
   const out: string[] = [];
-  for (const entry of readdirSync(inboxDir)) {
+  for (const entry of names) {
     // The filename carries the key so this needs no read: `jira-AIAGENT-1590.json`.
     const m = /^jira-(.+)\.json$/.exec(entry);
     if (m?.[1] !== undefined) out.push(m[1]);

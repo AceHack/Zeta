@@ -22,7 +22,7 @@
  */
 
 import { spawn, spawnSync } from "node:child_process";
-import { existsSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync, statSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { tmpdir } from "node:os";
 
@@ -71,10 +71,16 @@ const BASE = `http://127.0.0.1:${String(PORT)}`;
 
 /** Walk a directory tree. Used to count event shards and to find memory files. */
 function walk(at: string, out: string[] = []): string[] {
-  if (!existsSync(at)) return out;
-  for (const name of readdirSync(at)) {
-    const p = join(at, name);
-    if (statSync(p).isDirectory()) walk(p, out);
+  // Existence from the read, kind from the listing: both races closed (CWE-367).
+  let entries: readonly import("node:fs").Dirent[];
+  try {
+    entries = readdirSync(at, { withFileTypes: true });
+  } catch {
+    return out;
+  }
+  for (const dirent of entries) {
+    const p = join(at, dirent.name);
+    if (dirent.isDirectory()) walk(p, out);
     else out.push(p);
   }
   return out;
@@ -173,20 +179,35 @@ async function main(): Promise<void> {
         }).then((r) => r.json())) as { ok?: boolean; loaded?: string; reason?: string };
 
         const written = join(inbox, `jira-${candidate.issue.key}.json`);
+        // READ ONCE, then assert from the read. `existsSync(written)` as the assertion
+        // followed by `readFileSync(written)` asked the filesystem the same question twice
+        // and could get two different answers (CWE-367) -- and the second question is the
+        // one that mattered, so the check could pass on a file the next line then failed to
+        // read. Deriving the verdict FROM the read is also a stronger claim: it says the
+        // file exists AND is readable AND parses, rather than that a name existed a moment
+        // ago.
+        let intake: { externalId?: string; title?: string; source?: string } | null = null;
+        try {
+          intake = JSON.parse(readFileSync(written, "utf-8")) as typeof intake;
+        } catch {
+          intake = null;
+        }
         check(
           1,
           "handing a ticket over writes it into the organisation's inbox",
-          loaded.ok === true && existsSync(written),
+          loaded.ok === true && intake !== null,
           loaded.ok === true ? `${String(loaded.loaded)} → ${written}` : `refused: ${String(loaded.reason)}`,
         );
 
-        // The intake is the tracker's own words, not something this script made up.
-        const intake = JSON.parse(readFileSync(written, "utf-8")) as { externalId?: string; title?: string; source?: string };
+        // The intake is the tracker's own words, not something this script made up. A null
+        // here has already been reported by the check above, so the fields read as absent
+        // rather than throwing and taking the remaining criteria with them.
+        const intakeFields: { externalId?: string; title?: string; source?: string } = intake ?? {};
         check(
           1,
           "the loaded ticket carries the tracker's own key and summary",
-          intake.externalId === candidate.issue.key && intake.title === candidate.issue.summary && intake.source === "jira",
-          `${String(intake.source)} ${String(intake.externalId)} — ${String(intake.title)}`,
+          intakeFields.externalId === candidate.issue.key && intakeFields.title === candidate.issue.summary && intakeFields.source === "jira",
+          `${String(intakeFields.source)} ${String(intakeFields.externalId)} — ${String(intakeFields.title)}`,
         );
 
         // ── the organisation picks it up and STOPS at the gate ──

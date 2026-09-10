@@ -391,9 +391,12 @@ export function directoryDataSource(input: {
   const collect = (): readonly SourceDocument[] => {
     const out: SourceDocument[] = [];
     const walk = (at: string, rel: string): void => {
-      let entries: readonly string[];
+      // `withFileTypes` so the KIND arrives with the listing. Asking `statSync` per
+      // entry afterwards re-asks the filesystem a question it already answered, and an
+      // entry can vanish or change kind in between (CWE-367).
+      let entries: readonly import("node:fs").Dirent[];
       try {
-        entries = readdirSync(at);
+        entries = readdirSync(at, { withFileTypes: true });
       } catch {
         // A record that does not exist yet is EMPTY, not an error: the first run has written
         // nothing, and refusing there would make the union refuse and take the real corpus with it.
@@ -402,7 +405,8 @@ export function directoryDataSource(input: {
       // ORDINAL, not whatever the filesystem returns. Directory order is not stable across
       // machines, and a context whose document order changes between runs is a context that cannot
       // be replayed or compared.
-      for (const entry of [...entries].sort((a, b) => (a < b ? -1 : a > b ? 1 : 0))) {
+      for (const dirent of [...entries].sort((a, b) => (a.name < b.name ? -1 : a.name > b.name ? 1 : 0))) {
+        const entry = dirent.name;
         const full = join(at, entry);
         const next = rel === "" ? entry : `${rel}/${entry}`;
         let stat;

@@ -30,6 +30,8 @@
  * `hatsWithStudyLeft` for why a second mechanism here was removed.
  */
 
+
+import { stringCompare } from "../collation/collation.ts";
 import {
   ScheduleBlockState,
   ScheduleBlockType,
@@ -235,7 +237,7 @@ export function hatsWithStudyLeft(
   budget: StudyBudget = DEFAULT_STUDY_BUDGET,
 ): readonly { readonly hatId: string; readonly remainingMs: number }[] {
   return [...hatIds]
-    .sort((a, b) => a.localeCompare(b))
+    .sort((a, b) => stringCompare(a, b))
     .map((hatId) => ({ hatId, remainingMs: remainingStudy(calendar, hatId, nowMs, budget) }))
     .filter((h) => h.remainingMs >= budget.minSessionMs);
 }

@@ -18,6 +18,7 @@
  * something to put on a network by default.
  */
 
+import { stringCompare } from "../collation/collation.ts";
 import { roomJson, workRoutes } from "./serve-work";
 import { loadRooms } from "./room-store";
 import { directoryMemoryStore } from "./memory-store";
@@ -187,7 +188,7 @@ export function portalPayload(
     // calendar contains only work is one that never does anything else, and a page that showed
     // only work blocks would report exactly that whatever the agents were doing.
     calendar: [...folded.calendar.blocks]
-      .sort((a, b) => (a.startMs === b.startMs ? a.hatId.localeCompare(b.hatId) : a.startMs - b.startMs))
+      .sort((a, b) => (a.startMs === b.startMs ? stringCompare(a.hatId, b.hatId) : a.startMs - b.startMs))
       .slice(-400)
       .map((b) => ({
         blockId: b.blockId,

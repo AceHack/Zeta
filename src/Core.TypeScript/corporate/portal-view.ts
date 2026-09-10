@@ -21,6 +21,7 @@
  * status is a field that goes stale exactly when it matters, which is while a run is moving.
  */
 
+import { stringCompare } from "../collation/collation.ts";
 import type { Cascade, CascadeNode } from "./goal-cascade";
 import { childrenOf, isLeafType, WorkState } from "./goal-cascade";
 import type { OrgChart } from "./org-chart";
@@ -272,7 +273,7 @@ export function agentViews(
     (a, b) =>
       a.departmentRank - b.departmentRank ||
       RANK[a.activity] - RANK[b.activity] ||
-      a.name.localeCompare(b.name),
+      stringCompare(a.name, b.name),
   );
 }
 

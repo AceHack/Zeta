@@ -25,6 +25,7 @@
  * denominator so a reader can see how thin it is.
  */
 
+import { stringCompare } from "../collation/collation.ts";
 import type { WriteInput } from "./memory";
 import { MemoryTier as Tier } from "./memory";
 import { OrgEventKind, type OrgEvent } from "./org-event";
@@ -108,11 +109,11 @@ export function agentCalibrations(
     .map((r) => ({
       agentId: r.agentId,
       gate: r.gate,
-      workItems: [...r.work].sort((a, b) => a.localeCompare(b)),
+      workItems: [...r.work].sort((a, b) => stringCompare(a, b)),
       sentBack: r.sentBack,
       passed: r.passed,
     }))
-    .sort((a, b) => (a.agentId === b.agentId ? a.gate.localeCompare(b.gate) : a.agentId.localeCompare(b.agentId)));
+    .sort((a, b) => (a.agentId === b.agentId ? stringCompare(a.gate, b.gate) : stringCompare(a.agentId, b.agentId)));
 }
 
 /**
