@@ -37,7 +37,7 @@
 
 import { execSync, spawnSync } from "node:child_process";
 import { existsSync, readFileSync } from "node:fs";
-import { join, dirname } from "node:path";
+import { join, dirname, delimiter } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const __dir = dirname(fileURLToPath(import.meta.url));
@@ -265,10 +265,39 @@ const SUBSTRATES = [
 // Helpers
 // ─────────────────────────────────────────────────────────────────────────────
 
+// WINDOWS EXECUTABLE RESOLUTION. `spawnSync` on Windows does NOT search PATHEXT the way a
+// shell does: `spawnSync("zig", …)` cannot find `zig.exe`, and the failure arrives as
+// `status: null` — not a non-zero exit, an unspawned process. MEASURED on run 34501385444,
+// where WAT, Zig, AssemblyScript and Emscripten all failed on both Windows legs with
+// "exited with status null" while every one of those tools was installed and on PATH.
+//
+// `.cmd` and `.bat` are a second, different problem: since the CVE-2024-27980 mitigation,
+// Node REFUSES to spawn them without `shell: true` (EINVAL). `asc` ships as `asc.cmd`, so it
+// needs the shell route; everything else gets an explicit `.exe` path, which avoids handing
+// cmd.exe argument strings full of `[`, `'` and `,` to re-parse.
+function resolveExecutable(cmd) {
+  if (process.platform !== "win32") return { cmd, shell: false };
+  const isPath = cmd.includes("/") || cmd.includes("\\");
+  const exts = ["", ".exe", ".cmd", ".bat"];
+  const candidates = isPath
+    ? exts.map((e) => cmd + e)
+    : (process.env.PATH ?? "").split(delimiter).flatMap((d) => exts.map((e) => join(d, cmd + e)));
+  const found = candidates.find((c) => c !== "" && existsSync(c));
+  const target = found ?? cmd;
+  return { cmd: target, shell: /\.(cmd|bat)$/i.test(target) };
+}
+
 function run(cmd, args, opts = {}) {
-  const result = spawnSync(cmd, args, { cwd: __dir, stdio: "inherit", ...opts });
+  const { cmd: exe, shell } = resolveExecutable(cmd);
+  const result = spawnSync(exe, args, { cwd: __dir, stdio: "inherit", shell, ...opts });
   if (result.status !== 0) {
-    throw new Error(`${cmd} exited with status ${result.status}`);
+    // `status: null` means the process never started (not found / not spawnable), which is a
+    // different fact from a compiler that ran and rejected the source. Say which.
+    const why =
+      result.status === null
+        ? `could not be started (${result.error?.message ?? "no error reported"}) — resolved to ${exe}`
+        : `exited with status ${result.status}`;
+    throw new Error(`${cmd} ${why}`);
   }
 }
 
