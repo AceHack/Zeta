@@ -145,7 +145,31 @@
 // Usage (offline, hermetic):
 //   bun src/Core.TypeScript/ci/verdict-drought.ts --observations fixture.json --now <iso>
 
-import { appendFileSync, readFileSync, writeFileSync } from "node:fs";
+import { appendFileSync, readFileSync } from "node:fs";
+import { fetchBounded, truncateUtf8Bytes, writeFileOwned } from "../io/safe-io.ts";
+
+/**
+ * 32 MiB for one GitHub API document. The largest response either fold asks for
+ * is a 100-run workflow listing with jobs, measured at well under 5 MiB.
+ */
+const GH_API_MAX_BYTES = 32 * 1024 * 1024;
+
+/** 30 s per API call. A hung call must fail this job, not hold a CI runner. */
+const GH_API_TIMEOUT_MS = 30_000;
+
+/**
+ * GitHub truncates `$GITHUB_STEP_SUMMARY` at 1 MiB and, when the file is over
+ * it, drops the summary ENTIRELY -- so an unbounded append does not overflow
+ * loudly, it silently produces no summary at all. Bounding it here in BYTES
+ * (`String.slice` counts UTF-16 code units) keeps the report visible and makes
+ * the truncation say so.
+ */
+const STEP_SUMMARY_MAX_BYTES = 900 * 1024;
+
+/** 0o644 — the mode `writeFileSync` produced under the CI umask, kept exactly. */
+const REPORT_FILE_MODE = 0o644;
+
+
 
 // ---------------------------------------------------------------------------
 // Model
@@ -943,16 +967,49 @@ interface ApiRun {
   readonly updated_at: string;
 }
 
+/**
+ * THE CAP BELONGS HERE, not at the write.
+ *
+ * CodeQL reports the STEP-SUMMARY and `--out` writes below as
+ * `js/http-to-file-access`: bytes that arrived over HTTP reach a file sink.
+ * That flow is real and it is this job's whole function -- a CI reporter
+ * renders remote data. What was missing is the BOUND, and the bound belongs at
+ * the door the bytes come through rather than at each of the sinks they
+ * eventually reach, because there are three sinks and one door.
+ *
+ * `fetchBounded` supplies three things `fetch(...).json()` did not:
+ *   * a byte cap, counted AS THE BODY ARRIVES and abandoned the moment it is
+ *     crossed -- so an oversized listing is a refusal, never an OOM;
+ *   * a deadline, so a hung API call fails this job instead of holding a CI
+ *     runner until the workflow-level timeout;
+ *   * a scheme check, so nothing here can be pointed at `file:`.
+ *
+ * A truncated body is a REFUSAL, never a partial parse. Half a JSON document
+ * that happens to parse is the worst possible outcome for a fold that decides
+ * whether main is healthy.
+ */
 async function ghJson<T>(url: string, token: string): Promise<T> {
-  const res = await fetch(url, {
+  const res = await fetchBounded(url, {
     headers: {
       accept: "application/vnd.github+json",
       authorization: `Bearer ${token}`,
       "x-github-api-version": "2022-11-28",
     },
+    maxBytes: GH_API_MAX_BYTES,
+    timeoutMs: GH_API_TIMEOUT_MS,
+    failOnHttpError: false,
   });
-  if (!res.ok) throw new Error(`GitHub API ${String(res.status)} for ${url}`);
-  return (await res.json()) as T;
+  if (!res.ok) throw new Error(`GitHub API unreachable for ${url}: ${res.error.message}`);
+  if (res.value.status < 200 || res.value.status >= 300) {
+    throw new Error(`GitHub API ${String(res.value.status)} for ${url}`);
+  }
+  if (res.value.truncated) {
+    throw new Error(
+      `GitHub API body for ${url} exceeded the ${String(GH_API_MAX_BYTES)}-byte cap. ` +
+        "Refusing to parse a truncated document: half a listing that happens to parse is worse than none.",
+    );
+  }
+  return JSON.parse(res.value.body) as T;
 }
 
 /**
@@ -1091,8 +1148,32 @@ async function main(): Promise<number> {
   for (const line of droughtAnnotations(report, liveness)) console.log(line);
 
   const summaryPath = process.env["GITHUB_STEP_SUMMARY"];
-  if (summaryPath !== undefined && summaryPath.length > 0) appendFileSync(summaryPath, `${markdown}\n`);
-  if (out.length > 0) writeFileSync(out, `${JSON.stringify({ report, liveness }, null, 2)}\n`);
+  // BOUNDED IN BYTES. `markdown` renders API data, so its size is upstream's to
+  // choose; GitHub drops a step summary larger than 1 MiB rather than truncating
+  // it, which turns "too big" into "no report" with nothing said. The cut says
+  // so out loud.
+  if (summaryPath !== undefined && summaryPath.length > 0) {
+    const body = `${markdown}\n`;
+    const bounded = truncateUtf8Bytes(body, STEP_SUMMARY_MAX_BYTES);
+    appendFileSync(
+      summaryPath,
+      bounded.length === body.length
+        ? bounded
+        : `${bounded}\n\n_(truncated at ${String(STEP_SUMMARY_MAX_BYTES)} bytes — GitHub drops a step summary over 1 MiB entirely)_\n`,
+    );
+  }
+  // `--out` is an OPERATOR-NAMED path (an argv flag), and the payload is this
+  // job's own fold of API data. Routed through `writeFileOwned` so the write is
+  // one owned descriptor with an explicit mode, and so a failure to write the
+  // machine-readable report is LOUD rather than an exception thrown out of the
+  // middle of a reporter.
+  if (out.length > 0) {
+    const written = writeFileOwned(out, `${JSON.stringify({ report, liveness }, null, 2)}\n`, { mode: REPORT_FILE_MODE });
+    if (!written.ok) {
+      console.log(`::error title=drought report not written::${out}: ${written.error.message}`);
+      return 1;
+    }
+  }
 
   // `--report-only` prints and annotates but always exits 0. Used by the `drift-sweep`
   // host, whose run conclusion is folded by the drift-dashboard roster: failing it there

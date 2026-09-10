@@ -17,8 +17,22 @@
 // the verified values on the first network-enabled fetch.
 
 import { createHash } from "node:crypto";
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, mkdtempSync, readFileSync, renameSync, rmSync } from "node:fs";
+import { fetchToFile } from "../io/safe-io.ts";
 import { join } from "node:path";
+
+/**
+ * 512 MiB for one datfile. The largest No-Intro / Redump release is a few tens
+ * of MiB uncompressed, so this bounds a hostile or broken upstream without ever
+ * bounding a real one.
+ */
+const DATFILE_MAX_BYTES = 512 * 1024 * 1024;
+
+/** 10 minutes. A datfile that has not arrived by then is not arriving. */
+const DOWNLOAD_TIMEOUT_MS = 10 * 60 * 1000;
+
+/** 0o644 — the mode `writeFileSync` produced under the umask, kept exactly. */
+const DATFILE_MODE = 0o644;
 
 // --- Manifest model ---
 
@@ -259,16 +273,61 @@ export async function main(argv: readonly string[]): Promise<number> {
   process.stderr.write(
     `fetching ${pin.datfileName} (${pin.source} ${pin.release}) from ${pin.downloadUrl}\n`,
   );
-  const response = await fetch(pin.downloadUrl);
-  if (!response.ok) {
-    process.stderr.write(
-      `download failed: HTTP ${response.status} ${response.statusText}\n`,
-    );
+  // TWO FLOWS MEET HERE AND BOTH ARE INTENDED. `pin.downloadUrl` comes from the
+  // checked-in manifest, so the request depends on file data
+  // (`js/file-access-to-http`, alert #228); the body then reaches a file sink
+  // (`js/http-to-file-access`, alert #222). Downloading a pinned datfile IS this
+  // tool's entire function, so the honest outcome is not to delete the flows but
+  // to make them happen ONCE, bounded, where a reviewer can find them.
+  //
+  // WHAT WAS ACTUALLY MISSING was the bound. `await response.arrayBuffer()` had
+  // no cap, no deadline and no scheme check, so a `file:` pin turned a download
+  // into a local read, and a hostile or broken upstream could hand this process
+  // an unbounded body before the checksum ever got to look at it.
+  //
+  // THE STAGING DIRECTORY IS THE OTHER HALF, and it is why `bytes` is not simply
+  // held in memory: `fetchBounded` decodes its body as UTF-8, and a datfile is
+  // bytes -- any sequence that is not valid UTF-8 would come back as U+FFFD and
+  // the sha256 would then be computed over something the server never sent. So
+  // the transfer goes to a private staging file and the checksum is taken from
+  // WHAT LANDED ON DISK, which is a strictly stronger check than one over an
+  // in-memory buffer. `mkdtempSync` gives a 0700 directory with an
+  // unpredictable name, and `exclusive: true` is O_CREAT|O_EXCL, so nothing
+  // pre-planted at that path can be followed or clobbered.
+  //
+  // UNVERIFIED BYTES NEVER REACH `outPath`. They live in the staging directory
+  // and are removed on every failure path; only a checksum-verified file is
+  // renamed into place, and rename within one directory is atomic.
+  mkdirSync(args.outDir, { recursive: true });
+  const outPath = join(args.outDir, pin.datfileName);
+  const stagingDir = mkdtempSync(join(args.outDir, ".datfile-staging-"));
+  const stagingPath = join(stagingDir, pin.datfileName);
+  const discardStaging = (): void => {
+    rmSync(stagingDir, { recursive: true, force: true });
+  };
+
+  const download = await fetchToFile(pin.downloadUrl, stagingPath, {
+    maxBytes: DATFILE_MAX_BYTES,
+    timeoutMs: DOWNLOAD_TIMEOUT_MS,
+    exclusive: true,
+    mode: DATFILE_MODE,
+    failOnHttpError: false,
+  });
+  if (!download.ok) {
+    discardStaging();
+    process.stderr.write(`download failed: ${download.error.kind}: ${download.error.message}\n`);
     return 1;
   }
-  const bytes = new Uint8Array(await response.arrayBuffer());
+  if (download.value.status < 200 || download.value.status >= 300) {
+    discardStaging();
+    process.stderr.write(`download failed: HTTP ${String(download.value.status)}\n`);
+    return 1;
+  }
+
+  const bytes = new Uint8Array(readFileSync(stagingPath));
 
   if (!verifyChecksum(bytes, pin.sha256)) {
+    discardStaging();
     process.stderr.write(
       `checksum MISMATCH for ${pin.datfileName}: ` +
         `expected ${pin.sha256.toLowerCase()}, got ${sha256Hex(bytes)}. ` +
@@ -277,9 +336,8 @@ export async function main(argv: readonly string[]): Promise<number> {
     return 1;
   }
 
-  if (!existsSync(args.outDir)) mkdirSync(args.outDir, { recursive: true });
-  const outPath = join(args.outDir, pin.datfileName);
-  writeFileSync(outPath, bytes);
+  renameSync(stagingPath, outPath);
+  discardStaging();
   process.stdout.write(outPath + "\n");
   process.stderr.write(
     `verified + wrote ${bytes.length} bytes to ${outPath}\n` +

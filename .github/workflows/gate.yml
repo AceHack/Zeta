@@ -4367,12 +4367,21 @@ jobs:
             src/Core.TypeScript/ci/drift-loud.ts
             src/Core.TypeScript/ci/verdict-drought.ts
             src/Core.TypeScript/ci/workflow-enablement.ts
+            src/Core.TypeScript/io/safe-io.ts
             registry/workflow-enablement.json
             data/platform-drift.json
           sparse-checkout-cone-mode: false
 
-      # Bun only — the reporter imports nothing but node built-ins, so this job never
-      # runs `bun install` (~2-4 min) for a ~30 s fold.
+      # Bun only — the reporter imports nothing but node built-ins and ONE in-repo
+      # module (`io/safe-io.ts`, which itself imports only node built-ins), so this
+      # job never runs `bun install` (~2-4 min) for a ~30 s fold.
+      #
+      # THE SPARSE LIST ABOVE IS LOAD-BEARING AND SILENT ABOUT IT, which is worth a
+      # line because it already bit: a sparse checkout does not fail at checkout time
+      # when a file is missing, it fails at RUN time with `Cannot find module`, in a
+      # job whose whole job is to report on other jobs. If either reporter grows an
+      # in-repo import, it must be added above or this lane goes red for a reason that
+      # has nothing to do with drift.
       - name: Setup Bun
         uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
 

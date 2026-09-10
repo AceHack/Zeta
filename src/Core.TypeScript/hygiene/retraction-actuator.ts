@@ -64,6 +64,13 @@ import { openMergePR } from "../agent-heartbeats/merge-heartbeats-to-main.ts";
 import { isValidLane, stagingRef } from "../forge-host/github/flush-via-staging.ts";
 import { readLedger } from "./drift-ledger.ts";
 import { IDLE, step, type EpisodeEvent, type EpisodeState } from "./episode-protocol.ts";
+import { fetchBounded } from "../io/safe-io.ts";
+
+/** 32 MiB for one GitHub API document — orders of magnitude above what this asks for. */
+const GH_API_MAX_BYTES = 32 * 1024 * 1024;
+
+/** 30 s. A hung API call must fail the actuator, not stall an incident response. */
+const GH_API_TIMEOUT_MS = 30_000;
 
 // ── Pure fact computations ──────────────────────────────────────────────────
 
@@ -395,14 +402,41 @@ export function retractionCommitMessage(breakSha: string, episodeId: string, ope
   ].join("\n");
 }
 
+/**
+ * THE ONE DOOR, and it is bounded because of WHERE this runs.
+ *
+ * CodeQL reports this call as `js/file-access-to-http` (alert #669): the
+ * workflow file this actuator reads feeds the decision that reaches the
+ * network. That flow is the actuator's function -- it reads main's own state
+ * and asks GitHub about it -- and it is not removable.
+ *
+ * What IS removable is the unboundedness. This code runs UNATTENDED, on the
+ * path that fires when `main` is already red, and `res.json()` had no cap and
+ * no deadline: a hung or oversized API response would hold the auto-revert
+ * healer open exactly when it is most needed. `fetchBounded` gives it a byte
+ * cap counted as the body arrives, a deadline, and a scheme check.
+ *
+ * A truncated body is a REFUSAL, never a partial parse. This function's output
+ * decides whether a commit gets reverted; half a JSON document that happens to
+ * parse is the worst input it could be handed.
+ */
 async function gh(path: string): Promise<unknown> {
   const token = process.env["GH_TOKEN"];
   const repo = process.env["REPO"];
-  const res = await fetch(`https://api.github.com/repos/${repo}${path}`, {
+  const res = await fetchBounded(`https://api.github.com/repos/${repo}${path}`, {
     headers: { Authorization: `Bearer ${token}`, Accept: "application/vnd.github+json" },
+    maxBytes: GH_API_MAX_BYTES,
+    timeoutMs: GH_API_TIMEOUT_MS,
+    failOnHttpError: false,
   });
-  if (!res.ok) throw new Error(`gh ${path}: ${String(res.status)}`);
-  return res.json();
+  if (!res.ok) throw new Error(`gh ${path}: ${res.error.kind}: ${res.error.message}`);
+  if (res.value.status < 200 || res.value.status >= 300) throw new Error(`gh ${path}: ${String(res.value.status)}`);
+  if (res.value.truncated) {
+    throw new Error(
+      `gh ${path}: body exceeded the ${String(GH_API_MAX_BYTES)}-byte cap; refusing to parse a truncated document`,
+    );
+  }
+  return JSON.parse(res.value.body);
 }
 
 /**

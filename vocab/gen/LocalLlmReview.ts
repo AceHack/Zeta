@@ -6,16 +6,38 @@
 //   bun tools/hygiene/vocab-llm-review.ts [model] [count]
 import { readdirSync, lstatSync, existsSync, readFileSync } from "node:fs";
 import { join, basename } from "node:path";
+import { fetchBounded } from "../../src/Core.TypeScript/io/safe-io.ts";
+
+const OLLAMA_URL = "http://localhost:11434/api/generate";
+
+/** `num_predict` is 120 tokens; 8 MiB is generous by three orders of magnitude. */
+const LLM_RESPONSE_MAX_BYTES = 8 * 1024 * 1024;
+
+/** 2 minutes. A local model that has not answered by then is stuck, not slow. */
+const LLM_TIMEOUT_MS = 2 * 60 * 1000;
 
 // --- the interface (the SHAPE of an LLM = the port; impl is swappable) ---
 type Llm = (prompt: string) => Promise<string>;          // SoftValue text generator
+// THE FLOW IS THE FUNCTION. CodeQL reports this as `js/file-access-to-http`
+// (alert #191): the carved sentence read out of a vocab markdown file becomes
+// the body of an outbound request. That is precisely what this tool is for --
+// "dogfood the vocab with a local LLM" -- and removing the flow would remove
+// the tool. What was missing is the BOUND: `fetch(...).json()` had no cap and
+// no deadline, so a local model that stalls or floods hangs a review loop with
+// no error anywhere. `fetchBounded` supplies both, plus the scheme check that
+// stops this adapter ever being pointed at a `file:` URL.
 const ollama = (model: string): Llm => async (prompt) => {
-  const r = await fetch("http://localhost:11434/api/generate", {
+  const r = await fetchBounded(OLLAMA_URL, {
     method: "POST",
     body: JSON.stringify({ model, prompt, stream: false, options: { temperature: 0.2, num_predict: 120 } }),
+    maxBytes: LLM_RESPONSE_MAX_BYTES,
+    timeoutMs: LLM_TIMEOUT_MS,
+    failOnHttpError: false,
   });
-  if (!r.ok) throw new Error(`ollama ${r.status}`);
-  return ((await r.json()) as { response: string }).response.trim();
+  if (!r.ok) throw new Error(`ollama unreachable: ${r.error.kind}: ${r.error.message}`);
+  if (r.value.status < 200 || r.value.status >= 300) throw new Error(`ollama ${String(r.value.status)}`);
+  if (r.value.truncated) throw new Error(`ollama response exceeded the ${String(LLM_RESPONSE_MAX_BYTES)}-byte cap`);
+  return ((JSON.parse(r.value.body)) as { response: string }).response.trim();
 };
 
 // --- pick a sample of canonical vocab files ---
