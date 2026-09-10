@@ -171,6 +171,9 @@ import type { ProducerPort } from "./pipeline";
 import type { OrgChart } from "./org-chart";
 import type { OrgRuntimeDeps, OrgRuntimeReport } from "./org-runtime";
 import type { NextAction } from "../observe/observe";
+import { guidanceFrom, type Directive, type Practice } from "./practice";
+import { DEFAULT_DIRECTIVES, DEFAULT_PRACTICES } from "./practice-defaults";
+import { renderRepoSkills } from "./repo-skills";
 import { branchNameIn } from "./branch-topology";
 
 /**
@@ -639,6 +642,17 @@ export interface Args {
    * provides, which is the documented default and still a resolution the agent is told about.
    */
   readonly skillBindings: readonly SkillBinding[];
+  /** HOW this organization works, per gate, verb or kind of work. See `practice.ts`. */
+  readonly practices: readonly Practice[];
+  /** What holds regardless of what is being done. */
+  readonly directives: readonly Directive[];
+  /**
+   * Connected repositories, so an agent can be told what each already offers.
+   *
+   * Carried as (id, location) pairs rather than as rendered text: a pre-rendered string could not
+   * be re-read after a source changed, and the rendering belongs at the point of use.
+   */
+  readonly repoSources: readonly { readonly sourceId: string; readonly location: string }[];
   /** PATH to the Atlassian credentials file. Never a token — see the parser. */
   readonly confluenceAuthFile: string | undefined;
   /** Space keys to read. Empty reads whatever the CQL matches. */
@@ -738,6 +752,9 @@ export function parseArgs(argv: readonly string[]): Args {
     // like one, and the file is re-read per call so a rotated credential needs no restart.
     // Empty unless an organization is resolved; `withOrgDefaults` fills it from the registry.
     skillBindings: [],
+    practices: [],
+    directives: [],
+    repoSources: [],
     confluenceAuthFile: valueAfter(argv, "--confluence-auth-file"),
     confluenceSpaces: valuesAfter(argv, "--confluence-space"),
     confluenceCql: valueAfter(argv, "--confluence-cql"),
@@ -1112,6 +1129,11 @@ export function artifactProducersFromArgs(
   cascade?: Cascade,
   /** Which skill performs a gate here. See `skillResolverFor`. */
   skillFor?: (gate: GateKind, node: CascadeNode) => Resolution,
+  /** How this organization works. See `guidanceFrom`. */
+  guidanceFor?: (
+    gate: GateKind,
+    node: CascadeNode,
+  ) => { readonly practice?: string; readonly directives?: string; readonly repoSkills?: string },
 ): ReadonlyMap<GateKind, ProducerPort> {
   const out = new Map<GateKind, ProducerPort>();
   if (args.artifactCmd === undefined) return out;
@@ -1135,6 +1157,8 @@ export function artifactProducersFromArgs(
         // The other half of `ask:` — what a person said last time reaches the agent that asked.
         answersFor: answersFromOutbox(args.blockers, args.actions, cascade),
         ...(skillFor === undefined ? {} : { skillFor: (node: CascadeNode) => skillFor(gate, node) }),
+        // AND HOW IT IS DONE. Passed through unchanged: this function routes, it does not render.
+        ...(guidanceFor === undefined ? {} : { guidanceFor }),
         // WHY A PERSON TURNED THIS BACK. The other half of a review: an author that cannot see the
         // objection can only guess, and the same document comes back twice.
         feedbackFor: ((by) => (node: CascadeNode) => by(node.workId))(feedbackFromActions(args.actions)),
@@ -1350,6 +1374,18 @@ export function withOrgDefaults(args: Args, orgId: string, registryJson: string 
       // `org skill bind` has already said this, and asking them to repeat it per run is how a
       // configuration surface becomes decoration.
       skillBindings: args.skillBindings.length > 0 ? args.skillBindings : org.skills,
+      // WHAT THIS ORGANIZATION SAID ITS PROCESS IS. Read here for the same reason the bindings
+      // are: an operator who ran `org practice bind` has already said it, and asking them to
+      // repeat it per run is how a configuration surface becomes decoration.
+      practices: args.practices.length > 0 ? args.practices : (org.practices ?? []),
+      directives: args.directives.length > 0 ? args.directives : (org.directives ?? []),
+      // GIT SOURCES ONLY: a tracker or a wiki has no skills directory to read.
+      repoSources:
+        args.repoSources.length > 0
+          ? args.repoSources
+          : org.sources
+              .filter((src) => String(src.kind) === "git")
+              .map((src) => ({ sourceId: src.id, location: src.location })),
     },
   };
 }
@@ -1875,7 +1911,22 @@ export async function main(argv: readonly string[]): Promise<number> {
       skillResolverFor(
         args.skillBindings,
         args.store === undefined ? undefined : foldOrganization(readEvents(args.store)).cascade,
-      )
+      ),
+      // ── HOW THE WORK IS DONE, reaching the agent that does it ──────────────
+      // The last join, and the one the whole layer is for: a process nothing hands to an agent is
+      // a configuration surface that reads as governance and governs nothing.
+      guidanceFrom({
+        practices: args.practices,
+        directives: args.directives,
+        defaultPractices: DEFAULT_PRACTICES,
+        defaultDirectives: DEFAULT_DIRECTIVES,
+        ...(args.store === undefined
+          ? {}
+          : { cascade: foldOrganization(readEvents(args.store)).cascade }),
+        // READ ONCE PER RUN. A repository's skill directory does not change mid-run, and reading
+        // it per phase would stat the same files for every gate of every item.
+        repoSkills: renderRepoSkills(args.repoSources),
+      }),
     ),
     ...((n) => (n === undefined ? {} : { maxGateAttempts: n }))(gateAttemptsFor(args)),
     // ── THE TWO HALVES OF A CHECKPOINT, AND THEY TRAVEL TOGETHER ───────────

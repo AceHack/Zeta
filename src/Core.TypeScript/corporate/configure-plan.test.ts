@@ -17,6 +17,7 @@ import { basePolicy } from "./org-policy";
 import { HumanCheckpoint, GateKind } from "./quality-gate";
 import { SkillSource } from "./skill-binding";
 import { commandNames } from "./cli-surface";
+import { PracticeSubjectKind } from "./practice";
 
 function org(over: Partial<OrgRecord> = {}): OrgRecord {
   return {
@@ -74,6 +75,9 @@ describe("OPTIONAL CONFIGURATION NEVER BLOCKS COMPLETION", () => {
     expect(offered).toContain(ConfigureStep.ChooseCheckpoints);
     expect(offered).toContain(ConfigureStep.BindSkills);
     expect(offered).toContain(ConfigureStep.ReceiveEvents);
+    // HOW THE ORGANIZATION WORKS is offered too. A configuration layer nobody is asked about is
+    // one that does not exist, and this is the broadest question onboarding asks.
+    expect(offered).toContain(ConfigureStep.StateProcess);
   });
 
   test("an org that took the optional steps stops being offered them", () => {
@@ -81,6 +85,13 @@ describe("OPTIONAL CONFIGURATION NEVER BLOCKS COMPLETION", () => {
       humanCheckpoints: [HumanCheckpoint.Grooming],
       skills: [{ gate: GateKind.QaUat, skill: "house-qa", source: SkillSource.Repo }],
       webhooks: [{ sourceId: "linear-eng", scheme: "hmac_sha256_hex", signatureHeader: "linear-signature", secretFile: "/s", map: ["title=title"] }],
+      // …and its process, which is an optional step like the three above it.
+      practices: [{
+        subject: { kind: PracticeSubjectKind.WorkType, id: "defect" },
+        skills: [],
+        directive: "reproduce first, keep the reproduction",
+        why: "a fix with no falsifier is a belief about the defect",
+      }],
     });
     expect(planFor(configured, true).optional).toEqual([]);
   });

@@ -145,6 +145,9 @@ describe("argument parsing", () => {
       workAgent: undefined, workModel: undefined, until: undefined, windowStart: undefined, windowTarget: undefined, now: undefined, agentDelivers: false, sourceRepos: [], sourceSubdir: undefined,
       confluenceAuthFile: undefined, confluenceSpaces: [], confluenceCql: undefined, confluenceLimit: undefined,
       skillBindings: [], workAgentArgs: [], workVerify: undefined, workVerifyArgs: [],
+      // The process layer, empty by default: an organization states its own, and one that has
+      // stated nothing follows the register's few defaults rather than these fields.
+      practices: [], directives: [], repoSources: [],
       // Absent means each adapter keeps its own default. Two minutes is right for a build command
       // and wrong for an agent, so the choice belongs to whoever knows which one they wired up.
       portTimeoutMs: undefined,

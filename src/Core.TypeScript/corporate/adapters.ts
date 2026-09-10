@@ -662,6 +662,25 @@ export function commandArtifactProducer(input: {
    * adapter's.
    */
   readonly feedbackFor?: (node: CascadeNode) => readonly { readonly gate: string; readonly said: string }[];
+  /**
+   * HOW THIS ORGANIZATION WORKS, as the agent should be told it.
+   *
+   * Three strings, already rendered, because the consumer is a prompt and this adapter has no
+   * business deciding how a process reads. ONE FUNCTION returning three fields rather than three
+   * separate injections: a caller cannot then wire two and leave the third silently absent, which
+   * is exactly how an optional member went missing from the provider wrapper for its whole life.
+   *
+   * Every field is optional and an absent one emits no variable at all — an agent must be able to
+   * tell "this organization states no process" from "the process is empty".
+   */
+  readonly guidanceFor?: (
+    gate: GateKind,
+    node: CascadeNode,
+  ) => {
+    readonly practice?: string;
+    readonly directives?: string;
+    readonly repoSkills?: string;
+  };
 }): ProducerPort {
   return {
     meta: {
@@ -693,6 +712,13 @@ export function commandArtifactProducer(input: {
                 ORG_SKILL_SOURCE: skill.source ?? "repo",
                 ORG_SKILL_WHY: skill.because,
               }),
+          // THE PROCESS. Each variable is omitted rather than emptied when the organization says
+          // nothing, so an agent can tell silence from an empty statement.
+          ...((g) => ({
+            ...(g?.practice === undefined || g.practice === "" ? {} : { ORG_PRACTICE: g.practice }),
+            ...(g?.directives === undefined || g.directives === "" ? {} : { ORG_DIRECTIVES: g.directives }),
+            ...(g?.repoSkills === undefined || g.repoSkills === "" ? {} : { ORG_REPO_SKILLS: g.repoSkills }),
+          }))(input.guidanceFor?.(input.gate, node)),
         },
         encoding: "utf-8",
         timeout: input.timeoutMs ?? 120_000,

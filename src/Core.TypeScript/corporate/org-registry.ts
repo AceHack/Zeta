@@ -29,6 +29,12 @@ import type { CheckBinding } from "./check-roster";
 import type { Method as MethodBinding } from "../observe/observe";
 import { HumanCheckpoint } from "./quality-gate";
 import { validateBindings, type SkillBinding } from "./skill-binding";
+import {
+  validateDirective,
+  validatePractices,
+  type Directive,
+  type Practice,
+} from "./practice";
 
 /** How work ENTERS an organization. Never affects which gates apply — see `gate-demand`. */
 export const Intake = {
@@ -167,6 +173,28 @@ export interface OrgRecord {
    * it, exactly as `ORG_SKILL` already works for gates.
    */
   readonly methods?: readonly MethodBinding[];
+  /**
+   * HOW THIS ORGANIZATION WORKS — its process, per gate, verb or kind of work.
+   *
+   * Optional, and empty is the normal case for a new organization: the register states the few
+   * practices it has earned and everything else is however the repository and the agent see fit.
+   *
+   * The difference from `skills` is worth stating, because they look adjacent and are not. A
+   * skill binding answers WHICH ONE THING performs a gate. A practice answers HOW THE WORK IS
+   * DONE — an ordered chain to reach for, and the process in the organization's own words, which
+   * is the half no skill id can carry. Scoped per work item, so a pilot and the release beside it
+   * can run different processes without a second configuration system.
+   */
+  readonly practices?: readonly Practice[];
+  /**
+   * What holds regardless of what is being done.
+   *
+   * The register's own default is that the skills of the repository being worked in come first;
+   * an organization may replace that or decline it. Kept separate from `practices` because a
+   * standing instruction attached to a subject would have to be repeated on every subject, and
+   * would then be missing from whichever one nobody remembered.
+   */
+  readonly directives?: readonly Directive[];
   readonly createdAtMs: number;
 }
 
@@ -242,6 +270,15 @@ export function validateOrg(org: OrgRecord): OrgCheck {
   }
 
   const skills = validateBindings(org.skills ?? []);
+  // VALIDATED AT LOAD, like the bindings above and for the same reason: this file is edited by
+  // hand, and a practice whose subject is a typo matches nothing while reading, in every listing,
+  // exactly like a process somebody is following.
+  const practices = validatePractices(org.practices ?? []);
+  if (!practices.ok) return { ok: false, reason: practices.reason };
+  for (const directive of org.directives ?? []) {
+    const one = validateDirective(directive);
+    if (!one.ok) return { ok: false, reason: one.reason };
+  }
   if (!skills.ok) return { ok: false, reason: skills.reason };
 
   const seen = new Set<string>();

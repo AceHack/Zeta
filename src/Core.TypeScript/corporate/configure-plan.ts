@@ -48,6 +48,8 @@ export const ConfigureStep = {
   ReceiveEvents: "receive_events",
   /** Where the organization stops for a person. Optional. */
   ChooseCheckpoints: "choose_checkpoints",
+  /** How this organization works — its process, and the standing instructions every agent reads. */
+  StateProcess: "state_process",
   /** Which skill performs which gate. Optional; the repo's own skills are the default. */
   BindSkills: "bind_skills",
   /** Something for the organization to actually do. */
@@ -224,6 +226,37 @@ export function planFor(org: OrgRecord, hasWork: boolean): ConfigurePlan {
         : `stops at ${org.humanCheckpoints.join(" and ")}`,
   };
 
+  // ── HOW THIS ORGANIZATION WORKS ────────────────────────────────────────────
+  // Asked BEFORE the per-gate binding below, because it is the more general question. An operator
+  // who has stated their process often needs no binding at all, and asking the narrow question
+  // first invites them to answer the broad one in the wrong place.
+  const statedPractices = (org.practices ?? []).length;
+  const statedDirectives = (org.directives ?? []).length;
+  const process: PlanStep = {
+    step: ConfigureStep.StateProcess,
+    ask:
+      "How does this organization work? What a BRD has to contain, whether a test comes before the " +
+      "code, what solving a defect means here — and whether any of that differs for a particular " +
+      "programme or a particular stage of one.",
+    why:
+      "Two organizations with the same chart and the same steps can work completely differently, and " +
+      "none of that difference fits in a skill id. A practice attaches an ordered set of skills AND " +
+      "the process in your own words to a step, a verb, or a kind of work, and it can be scoped to " +
+      "one programme so a pilot and the release beside it need not follow the same process. " +
+      "Unstated is a real answer: the register states the few practices it has earned and the rest " +
+      "is however the repository and the agent see fit.",
+    command:
+      "org practice bind --subject-kind gate|verb|work_type --subject <id> " +
+      "[--skill <s> ...] [--directive \"<how you do it>\"] --why <why> [--for <workId>]",
+    satisfied: statedPractices > 0 || statedDirectives > 0,
+    required: false,
+    current:
+      statedPractices === 0 && statedDirectives === 0
+        ? "nothing stated — following the register's own practices, and its standing instruction to " +
+          "prefer the skills each repository already provides"
+        : `${String(statedPractices)} practice(s) and ${String(statedDirectives)} directive(s) stated here`,
+  };
+
   const skills: PlanStep = {
     step: ConfigureStep.BindSkills,
     ask:
@@ -259,7 +292,7 @@ export function planFor(org: OrgRecord, hasWork: boolean): ConfigurePlan {
     current: hasWork ? "the organization has work in hand" : "nothing to do yet",
   };
 
-  const steps = [create, sources, events, checkpoints, skills, work];
+  const steps = [create, sources, events, checkpoints, process, skills, work];
   const required = steps.filter((s) => s.required);
   const complete = required.every((s) => s.satisfied);
   const next = required.find((s) => !s.satisfied);

@@ -20,6 +20,23 @@ import { readBlockers } from "./blocker-outbox";
 import { isSignatureScheme, type WebhookConfig } from "./webhook-intake";
 import { checksFromRoster, selectChecks, type CheckBinding } from "./check-roster";
 import { isDefaultMethod, methodsFor } from "./method-defaults";
+import {
+  declinePractice,
+  directivesInForce,
+  isDeclined,
+  practicesInForce,
+  PracticeSubjectKind,
+  renderPractice,
+  resolvePractice,
+  subjectRosterFor,
+  validateDirective,
+  validatePractice,
+  type Practice,
+  type PracticeSkill,
+  type PracticeSubject,
+} from "./practice";
+import { DEFAULT_DIRECTIVES, DEFAULT_PRACTICES } from "./practice-defaults";
+import { repoSkillsIn } from "./repo-skills";
 import { ACTION_KINDS } from "../observe/action-reconciliation";
 import { CROSS_VERIFY_AUDITS } from "../ci/cross-verify-roster";
 import { LINEAR_SEVERITY_MAP, LINEAR_WEBHOOK_MAP } from "./linear-source";
@@ -63,7 +80,7 @@ import { appendAction, readActions } from "./action-queue";
 import { checkpointStops, unstaffableRaises } from "./unstaffable-gate";
 import { openBlockers } from "./human-blocker";
 import { humanGatesFor, type GateKind, type HumanCheckpoint } from "./quality-gate";
-import { bindingsOf, resolve, validateBinding, type SkillBinding, type SkillSource }
+import { bindingsOf, resolve, SkillSource, validateBinding, type SkillBinding }
   from "./skill-binding";
 import { planFor, planForNothing } from "./configure-plan";
 import {
@@ -591,6 +608,243 @@ export async function main(argv: readonly string[], deps: CliDeps): Promise<numb
           ? `${rows}  nothing was bound — these are the organization's defaults; 'org method bind' replaces one\n`
           : rows;
       });
+      return Exit.Ok;
+    }
+
+    case "org practice bind": {
+      const chosen = resolveOrg(registry, flagValue(flags, "--org"));
+      if ("reason" in chosen) { deps.err(chosen.reason); return Exit.NotFound; }
+
+      const kindRaw = (flagValue(flags, "--subject-kind") ?? "").trim();
+      const id = (flagValue(flags, "--subject") ?? "").trim();
+      const why = (flagValue(flags, "--why") ?? "").trim();
+      const directive = (flagValue(flags, "--directive") ?? "").trim();
+      const skillIds = flagValues(flags, "--skill").map((v) => v.trim()).filter((v) => v !== "");
+      const sources = flagValues(flags, "--source").map((v) => v.trim()).filter((v) => v !== "");
+      const marketplaces = flagValues(flags, "--marketplace").map((v) => v.trim());
+      const scopeWorkId = (flagValue(flags, "--for") ?? "").trim();
+
+      if (kindRaw === "") { deps.err("--subject-kind is required: gate, verb or work_type"); return Exit.Usage; }
+      if (id === "") { deps.err("--subject is required"); return Exit.Usage; }
+      if (why === "") { deps.err("--why is required: a practice with no reason is an instruction"); return Exit.Usage; }
+
+      const kinds = Object.values(PracticeSubjectKind) as readonly string[];
+      if (!kinds.includes(kindRaw)) {
+        deps.err(`'${kindRaw}' is not a subject kind — known: ${kinds.join(", ")}`);
+        return Exit.NotFound;
+      }
+      const kind = kindRaw as PracticeSubjectKind;
+
+      // ONE SOURCE FOR ALL, OR ONE EACH. Any other count is a pairing the operator did not state and
+      // this CLI would have to guess at — and a guess here silently attaches a skill to the wrong
+      // marketplace. Refused with the two shapes that do work.
+      if (sources.length > 1 && sources.length !== skillIds.length) {
+        deps.err(
+          `${String(sources.length)} --source flag(s) for ${String(skillIds.length)} --skill flag(s): ` +
+          `pass one --source for all of them, or one per skill in the same order`,
+        );
+        return Exit.Usage;
+      }
+      const skills: PracticeSkill[] = skillIds.map((skill, i) => {
+        const source = (sources.length === 1 ? sources[0] : sources[i]) ?? SkillSource.Repo;
+        const marketplace = (marketplaces.length === 1 ? marketplaces[0] : marketplaces[i]) ?? "";
+        return {
+          skill,
+          source: source as PracticeSkill["source"],
+          ...(marketplace === "" ? {} : { marketplace }),
+        };
+      });
+
+      const subject: PracticeSubject = { kind, id };
+      const practice: Practice = {
+        subject,
+        skills,
+        ...(directive === "" ? {} : { directive }),
+        why,
+        ...(scopeWorkId === "" ? {} : { scopeWorkId }),
+      };
+      const valid = validatePractice(practice);
+      if (!valid.ok) { deps.err(valid.reason); return Exit.Refused; }
+
+      const existing = chosen.org.practices ?? [];
+      const sameKey = (a: Practice) =>
+        a.subject.kind === kind && a.subject.id === id && (a.scopeWorkId ?? "") === scopeWorkId;
+      const replaced = existing.some(sameKey);
+      const updated = updateOrg(registry, {
+        ...chosen.org,
+        practices: [...existing.filter((a) => !sameKey(a)), practice],
+      });
+      if (!updated.ok) { deps.err(updated.reason); return Exit.Refused; }
+      registry = updated.registry;
+      deps.writeFile(registryPath, serializeRegistry(registry));
+
+      emit(deps, json, { org: chosen.org.orgId, practice, replaced }, () =>
+        `${replaced ? "replaced the practice for" : "stated the practice for"} ${String(kind)} '${id}'` +
+        `${scopeWorkId === "" ? "" : ` under '${scopeWorkId}'`} on '${chosen.org.orgId}'` + "\n" +
+        renderPractice(resolvePractice([practice], subject, scopeWorkId === "" ? [] : [scopeWorkId])) + "\n",
+      );
+      return Exit.Ok;
+    }
+
+    case "org practice unbind": {
+      const chosen = resolveOrg(registry, flagValue(flags, "--org"));
+      if ("reason" in chosen) { deps.err(chosen.reason); return Exit.NotFound; }
+
+      const kindRaw = (flagValue(flags, "--subject-kind") ?? "").trim();
+      const id = (flagValue(flags, "--subject") ?? "").trim();
+      const why = (flagValue(flags, "--why") ?? "").trim();
+      const scopeWorkId = (flagValue(flags, "--for") ?? "").trim();
+      if (kindRaw === "" || id === "") { deps.err("--subject-kind and --subject are required"); return Exit.Usage; }
+      // DECLINING CARRIES ITS REASON. A default that cannot be turned off is a mandate, and choosing
+      // "no process here" is a decision the next reader deserves the reason for.
+      if (why === "") { deps.err("--why is required: declining a practice is a decision, not an absence"); return Exit.Usage; }
+
+      const kinds = Object.values(PracticeSubjectKind) as readonly string[];
+      if (!kinds.includes(kindRaw)) {
+        deps.err(`'${kindRaw}' is not a subject kind — known: ${kinds.join(", ")}`);
+        return Exit.NotFound;
+      }
+      const kind = kindRaw as PracticeSubjectKind;
+      if (!subjectRosterFor(kind).includes(id)) {
+        deps.err(`'${id}' is not a ${String(kind)} — see 'describe' for the grammar`);
+        return Exit.NotFound;
+      }
+
+      const existing = chosen.org.practices ?? [];
+      const sameKey = (a: Practice) =>
+        a.subject.kind === kind && a.subject.id === id && (a.scopeWorkId ?? "") === scopeWorkId;
+      // A SUPPRESSION, not a deletion. Removing the row would let the register's default come
+      // straight back and the operator's decision would silently evaporate.
+      const declined = declinePractice({ kind, id }, why, scopeWorkId === "" ? undefined : scopeWorkId);
+      const updated = updateOrg(registry, {
+        ...chosen.org,
+        practices: [...existing.filter((a) => !sameKey(a)), declined],
+      });
+      if (!updated.ok) { deps.err(updated.reason); return Exit.Refused; }
+      registry = updated.registry;
+      deps.writeFile(registryPath, serializeRegistry(registry));
+
+      emit(deps, json, { org: chosen.org.orgId, subject: { kind, id }, declined: true, why }, () =>
+        `${String(kind)} '${id}' now carries no practice on '${chosen.org.orgId}'\n  because ${why}\n`,
+      );
+      return Exit.Ok;
+    }
+
+    case "org practice list": {
+      const chosen = resolveOrg(registry, flagValue(flags, "--org"));
+      if ("reason" in chosen) { deps.err(chosen.reason); return Exit.NotFound; }
+      const ancestry = flagValues(flags, "--for");
+
+      // WHAT IS IN FORCE, not what was typed — the lesson `org method list` and `org skill list`
+      // both had to learn. An organization following the register's practices has a process.
+      const inForce = practicesInForce(chosen.org.practices ?? [], DEFAULT_PRACTICES)
+        .filter((row) => !isDeclined(row.practice));
+      const directives = directivesInForce(chosen.org.directives, DEFAULT_DIRECTIVES);
+
+      // WHAT THE REPOSITORIES THEMSELVES OFFER. The standing instruction says to prefer a
+      // repository's own skills; without this the instruction is prose about a directory nobody
+      // looked in, and "the repository has none" reads identically to "nobody checked".
+      const repos = chosen.org.sources
+        // GIT SOURCES ONLY: a tracker or a wiki has no skills directory to read. `id` rather
+        // than `sourceId` — the registry names it `id`, and the earlier spelling silently
+        // produced `undefined` in every row of the listing.
+        .filter((src) => src.kind === ("git" as SourceKind))
+        .map((src) => ({ sourceId: src.id, skills: repoSkillsIn(src.location) }));
+
+      const view = {
+        org: chosen.org.orgId,
+        stated: (chosen.org.practices ?? []).length,
+        inForce: inForce.map((row) => ({
+          subject: row.practice.subject,
+          byDefault: row.byDefault,
+          skills: row.practice.skills,
+          ...(row.practice.directive === undefined ? {} : { directive: row.practice.directive }),
+          why: row.practice.why,
+          ...(row.practice.scopeWorkId === undefined ? {} : { scopeWorkId: row.practice.scopeWorkId }),
+        })),
+        directives: directives.map((row) => ({ ...row.directive, byDefault: row.byDefault })),
+        repoSkills: repos,
+        resolvedFor: ancestry,
+      };
+
+      emit(deps, json, view, () => {
+        const out: string[] = [];
+        out.push(`${String(view.inForce.length)} practice(s) in force; ${String(view.stated)} stated here`);
+        for (const row of inForce) {
+          const where = row.practice.scopeWorkId === undefined ? "" : ` under '${row.practice.scopeWorkId}'`;
+          out.push(`  ${String(row.practice.subject.kind)} ${row.practice.subject.id}${where}  (${row.byDefault ? "default" : "stated here"})`);
+          const rendered = renderPractice(
+            resolvePractice([row.practice], row.practice.subject, ancestry, DEFAULT_PRACTICES),
+          );
+          if (rendered !== "") out.push(rendered);
+        }
+        out.push(`${String(directives.length)} standing directive(s)`);
+        for (const row of directives) {
+          out.push(`  ${row.directive.id}  (${row.byDefault ? "default" : "stated here"})`);
+          out.push(`    ${row.directive.text}`);
+          out.push(`    because ${row.directive.why}`);
+        }
+        for (const repo of repos) {
+          out.push(
+            repo.skills.length === 0
+              ? `  ${repo.sourceId} offers no skills of its own`
+              : `  ${repo.sourceId} offers ${String(repo.skills.length)} skill(s): ${repo.skills.map((k) => k.name).join(", ")}`,
+          );
+        }
+        return out.join("\n") + "\n";
+      });
+      return Exit.Ok;
+    }
+
+    case "org directive bind": {
+      const chosen = resolveOrg(registry, flagValue(flags, "--org"));
+      if ("reason" in chosen) { deps.err(chosen.reason); return Exit.NotFound; }
+      const id = (flagValue(flags, "--id") ?? "").trim();
+      const text = (flagValue(flags, "--text") ?? "").trim();
+      const why = (flagValue(flags, "--why") ?? "").trim();
+      if (id === "") { deps.err("--id is required"); return Exit.Usage; }
+      if (text === "") { deps.err("--text is required: use 'org directive unbind' to decline one"); return Exit.Usage; }
+      const valid = validateDirective({ id, text, why });
+      if (!valid.ok) { deps.err(valid.reason); return Exit.Refused; }
+
+      const existing = chosen.org.directives ?? [];
+      const replaced = existing.some((d) => d.id === id);
+      const updated = updateOrg(registry, {
+        ...chosen.org,
+        directives: [...existing.filter((d) => d.id !== id), { id, text, why }],
+      });
+      if (!updated.ok) { deps.err(updated.reason); return Exit.Refused; }
+      registry = updated.registry;
+      deps.writeFile(registryPath, serializeRegistry(registry));
+
+      emit(deps, json, { org: chosen.org.orgId, id, text, why, replaced }, () =>
+        `${replaced ? "replaced" : "stated"} the standing directive '${id}' on '${chosen.org.orgId}'\n  ${text}\n  because ${why}\n`,
+      );
+      return Exit.Ok;
+    }
+
+    case "org directive unbind": {
+      const chosen = resolveOrg(registry, flagValue(flags, "--org"));
+      if ("reason" in chosen) { deps.err(chosen.reason); return Exit.NotFound; }
+      const id = (flagValue(flags, "--id") ?? "").trim();
+      const why = (flagValue(flags, "--why") ?? "").trim();
+      if (id === "") { deps.err("--id is required"); return Exit.Usage; }
+      if (why === "") { deps.err("--why is required: declining a directive is a decision, not an absence"); return Exit.Usage; }
+
+      const existing = chosen.org.directives ?? [];
+      // EMPTY TEXT IS THE SUPPRESSION, for the same reason an empty skill id suppresses a method:
+      // deleting the row would let the register's default return and erase the decision.
+      const updated = updateOrg(registry, {
+        ...chosen.org,
+        directives: [...existing.filter((d) => d.id !== id), { id, text: "", why }],
+      });
+      if (!updated.ok) { deps.err(updated.reason); return Exit.Refused; }
+      registry = updated.registry;
+      deps.writeFile(registryPath, serializeRegistry(registry));
+
+      emit(deps, json, { org: chosen.org.orgId, id, declined: true, why }, () =>
+        `'${id}' no longer holds on '${chosen.org.orgId}'\n  because ${why}\n`,
+      );
       return Exit.Ok;
     }
 
