@@ -1,0 +1,14 @@
+{
+  "id": "080d0468fcfe5010a0130008a0a6a695",
+  "at": "2026-09-10T21:00:55.114Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M26HZ7Y2087G0R002CGC4TB",
+    "type": "task",
+    "title": "Ferry the abstraction-agent transcript and connect it to LLM-weights-to-small-model",
+    "slug": "ferry-the-abstraction-agent-transcript-and-connect-it-to-llm",
+    "priority": "P2",
+    "filename": "081M26HZ7Y2087G0R002CGC4TB-ferry-the-abstraction-agent-transcript-and-connect-it-to-llm.md"
+  }
+}
