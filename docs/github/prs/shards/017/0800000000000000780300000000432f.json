@@ -1,0 +1,12 @@
+{
+  "pr_number": 17199,
+  "archive_path": "docs/history/pr-reviews/PR-17199-chore-branches-sweep-34-remote-heads-162-to-127-tagged-before-every-delete.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-10T01:42:31.355Z",
+  "schema_version": "v1",
+  "commit_sha": "35b23c98b959fa21d3200900de980a8241021a3e",
+  "title": "chore(branches): sweep 34 remote heads, 162 to 127 — tagged before every delete",
+  "state": "MERGED",
+  "merged_at": "2026-09-10T01:41:42Z",
+  "head_ref": "shadow/branch-sweep-2026-09-09"
+}

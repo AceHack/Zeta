@@ -1,0 +1,12 @@
+{
+  "pr_number": 17198,
+  "archive_path": "docs/history/pr-reviews/PR-17198-fix-081m24bb3td087g0r001pjtw9a-the-qemu-harness-boots-uefi-from-one-firmware-res.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-10T01:36:52.467Z",
+  "schema_version": "v1",
+  "commit_sha": "456e1d35263ed253dd39eeb8dc247a2888d5ad0c",
+  "title": "fix(081M24BB3TD087G0R001PJTW9A): the QEMU harness boots UEFI, from one firmware resolver",
+  "state": "MERGED",
+  "merged_at": "2026-09-10T01:36:05Z",
+  "head_ref": "agent/qemu-uefi-firmware-v2-081M24BB3TD087G0R001PJTW9A"
+}

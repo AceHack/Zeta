@@ -1,0 +1,12 @@
+{
+  "pr_number": 17201,
+  "archive_path": "docs/history/pr-reviews/PR-17201-fix-sec-close-the-log-trimmer-toctou-in-both-vite-configs-one-fd-opened-once.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-10T01:46:28.453Z",
+  "schema_version": "v1",
+  "commit_sha": "54ec048444c64d3c8ab9b10782d58bad25529a01",
+  "title": "fix(sec): close the log-trimmer TOCTOU in both vite configs -- one fd, opened once",
+  "state": "MERGED",
+  "merged_at": "2026-09-10T01:45:48Z",
+  "head_ref": "security/tranche6-vite-log-toctou"
+}
