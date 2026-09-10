@@ -1,0 +1,14 @@
+{
+  "id": "080d044858887810a013000803fbeb41",
+  "at": "2026-09-10T01:59:58.991Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M24GP48E087G0R00158CEGE",
+    "type": "bug",
+    "title": "two thirds of CodeQL javascript analyses on main never run: cancel-in-progress kills each commit baseline",
+    "slug": "two-thirds-of-codeql-javascript-analyses-on-main-never-run-c",
+    "priority": "P2",
+    "filename": "081M24GP48E087G0R00158CEGE-two-thirds-of-codeql-javascript-analyses-on-main-never-run-c.md"
+  }
+}
