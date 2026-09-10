@@ -1,0 +1,14 @@
+{
+  "id": "080d0447dd88a810a0130008a6b86b09",
+  "at": "2026-09-10T01:43:11.381Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M24FQC8M087G0R003HX7QXG",
+    "type": "task",
+    "title": "Drop the SessionStart tick-loop notice from every agent cold start",
+    "slug": "drop-the-sessionstart-tick-loop-notice-from-every-agent-cold",
+    "priority": "P2",
+    "filename": "081M24FQC8M087G0R003HX7QXG-drop-the-sessionstart-tick-loop-notice-from-every-agent-cold.md"
+  }
+}
