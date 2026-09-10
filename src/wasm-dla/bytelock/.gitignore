@@ -1,38 +1,36 @@
-# Compiled WASM binaries.
+# Compiled WASM binaries. THE HEADING IS NOW TRUE OF THE TREE: nothing here is tracked.
 #
-# READ THIS BEFORE TRUSTING THE HEADING BELOW. These patterns are ignore rules, not
-# statements of fact: six substrate modules ARE tracked (force-added) and are what the
-# runner actually loads — dla-canonical-{wat,llvm,emcc,rust,asc,zig}.wasm. Only the Go
-# module is genuinely built at run time, because it is ~1.9 MB.
+# It was not true from 2026-08-01 to 2026-09-10. Six substrate modules were force-added —
+# dla-canonical-{wat,llvm,emcc,rust,asc,zig}.wasm — and the paragraph that used to sit here
+# recorded the trade they were accepted under:
+#
+#     "`bytelock.yml` installs only wabt, lua5.4 and Go; it has no clang-wasm32, emcc,
+#      rustc+wasm32, asc or zig. Those five substrates therefore CANNOT be rebuilt on the
+#      runner, and a substrate CI cannot build is a substrate CI would silently SKIP. …
+#      Add a toolchain to the workflow and the corresponding file should stop being
+#      tracked, not start being trusted."
+#
+# THE TOOLCHAINS WERE ADDED, so the files stopped being tracked. Run 34490525095 measured
+# every one of them on all five byte-lock legs: wabt, clang+lld, `rustup target add wasm32`,
+# assemblyscript, zig 0.13.0 and emscripten install in 52-75 seconds total on Linux and
+# macOS, all six substrates build, and each rebuilt module reproduces the UNCHANGED
+# `testdata/golden-seed-*.json` vectors. Two per-leg gaps are upstream facts rather than
+# oversights and are recorded in `bytelock.yml`'s matrix: Chocolatey's `wabt` package ships
+# no `wat2wasm`, so Windows gets wabt from its official release archive; and emsdk publishes
+# no Windows-arm64 SDK at all ("tool or SDK not found: sdk-releases-…-64bit"), so
+# Emscripten is honestly TOOLING-ABSENT on `windows-11-arm` and that leg's floor says so.
 #
 # The gap between this file's intent and the tree cost two weeks (2026-08-15):
 # `dla-canonical-zig.wasm` was committed as an `ar` archive and nobody re-derived it,
-# because everyone read this heading and assumed it was built fresh. If you commit a
-# substrate here, `git add -f` it AND record why it is tracked rather than built.
-#
-# WHY THE SIX ARE TRACKED, recorded here as that sentence asks (2026-08-16). `bytelock.yml`
-# installs only wabt, lua5.4 and Go; it has no clang-wasm32, emcc, rustc+wasm32, asc or zig.
-# Those five substrates therefore CANNOT be rebuilt on the runner, and a substrate CI cannot
-# build is a substrate CI would silently SKIP. They are committed so the roster's nine are
-# nine. That is a trade — reproducibility given up for coverage — and it is the reason the
-# exception in `.claude/rules/no-binary-in-proof-lineage.md` is conditioned on a committed
-# build recipe and machine-checked by `hygiene/audit-proof-lineage-binaries.ts` rather than
-# just asserted. Add a toolchain to the workflow and the corresponding file should stop being
-# tracked, not start being trusted.
+# because everyone read this heading and assumed it was built fresh. If you ever commit a
+# substrate here again, `git add -f` it AND record why it is tracked rather than built —
+# and expect `hygiene/audit-proof-lineage-binaries.ts` to hold you to the five conditions
+# in `.claude/rules/no-binary-in-proof-lineage.md` rather than to this comment.
 #
 # `*.rcgu.o` is rustc's per-codegen-unit intermediate. One
 # (`dla_canonical_rust.…-cgu.0.rcgu.o`) was committed by accident and sat here unreferenced
 # until the audit above named it; the pattern below keeps the next one out.
 *.wasm
-# The SIX substrate modules under test are committed on purpose — the SUBJECT of the
-# byte-lock comparison, not its expectation (`.claude/rules/no-binary-in-proof-lineage.md`).
-# Without these they are TRACKED BUT IGNORED and a re-add silently no-ops.
-!dla-canonical-wat.wasm
-!dla-canonical-llvm.wasm
-!dla-canonical-emcc.wasm
-!dla-canonical-rust.wasm
-!dla-canonical-asc.wasm
-!dla-canonical-zig.wasm
 *.wasm.o
 *.o
 *.a

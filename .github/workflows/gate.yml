@@ -3014,6 +3014,14 @@ jobs:
       - name: Install root dependencies (the builder's imports)
         run: bun install --frozen-lockfile
 
+      # `stagePagesWasmAssets` THROWS on a missing WASM source, and since 2026-09-10 the six
+      # oracle modules are BUILT rather than committed — so this job has to build them for the
+      # same reason `pages-deploy.yml` does. This job runs the deploy's own build entry; if
+      # that entry needs an artefact then so does this job, or the two have drifted apart,
+      # which is exactly what this job exists to prevent.
+      - name: Build the six WASM oracle substrates from source
+        uses: ./.github/actions/build-wasm-substrates
+
       - name: Build the site exactly as pages-deploy does (install + check + pages build)
         run: bun ./src/Core.TypeScript/discovery/identity-dla-pages-build.ts
 
@@ -3720,6 +3728,15 @@ jobs:
         # executes the Z3 outcome sequence and the independent ephemeris fault control;
         # neither may be a documentation-only proof artifact.
         run: bun test src/Core.TypeScript/planning/light-time-endpoint-speed-envelope.test.ts src/Core.TypeScript/planning/orbital-independent-check.test.ts
+
+      # `identity-dla-pages-wasm-behavior.test.ts` INSTANTIATES all six oracle modules and
+      # checks each against `testdata/golden-seed-*.json`. It used to read them out of the
+      # tree, because they were committed; since 2026-09-10 they are built. A test that
+      # cannot find its subject is not a skip here — `identity-dla-pages-wasm-assets.test.ts`
+      # asserts each source exists — so this step is what keeps the suite honest rather than
+      # what keeps it green.
+      - name: Build the six WASM oracle substrates the discovery suite instantiates
+        uses: ./.github/actions/build-wasm-substrates
 
       - name: Tier manifest (what the hermetic tier deliberately does not run, and why)
         # Printed BEFORE the suite, pass or fail, so the log states the tier's own boundary

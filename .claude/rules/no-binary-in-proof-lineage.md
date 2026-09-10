@@ -20,22 +20,39 @@ mergeable. (Tradeoff accepted: large fixtures get verbose, still diffable.)
 Binary files in the repo are otherwise NON-verification (reference PDFs, a couple
 images, forensic logs) — never proofs. This paragraph used to read "the only
 binary files in the repo are…", which was false when written: `src/wasm-dla/bytelock/`
-has held six committed `.wasm` files since 2026-08-01, in a directory literally
-named "bytelock". The sentence below is what the rule always meant.
+held six committed `.wasm` files from 2026-08-01 to 2026-09-10, in a directory
+literally named "bytelock". The exception below is what the rule always meant — and
+as of 2026-09-10 **nothing in the repository exercises it**, because those six are
+now built in CI instead. It is kept as a boundary, not as a description of the tree.
 
 ## The one exception: the artifact UNDER TEST
 
 > **The evidence is text. The thing under test is not evidence.**
 
 A binary may be committed inside a verification directory when it is the **subject**
-of the comparison rather than the **expectation** it is compared against. Six
-DLA substrate modules — `src/wasm-dla/bytelock/dla-canonical-{wat,llvm,emcc,rust,asc,zig}.wasm`
-— are that case: `run-bytelock-ci.mjs` *loads and executes* each one and compares
-its trajectory against `testdata/golden-seed-*.json`, which is hex-in-JSON exactly
-as the carved sentence requires. Deleting the binaries would delete the experiment,
-not the proof. Encoding them as hex would not make them more auditable — nobody
-reviews a WebAssembly module by reading its bytes; you review its **source**, which
-is committed beside it as `.wat` / `.c` / `.rs` / `.ts` / `.zig`.
+of the comparison rather than the **expectation** it is compared against. Six DLA
+substrate modules — `dla-canonical-{wat,llvm,emcc,rust,asc,zig}.wasm` — were that case
+from 2026-08-01: `run-bytelock-ci.mjs` *loads and executes* each one and compares its
+trajectory against `testdata/golden-seed-*.json`, which is hex-in-JSON exactly as the
+carved sentence requires.
+
+**They are no longer committed, and condition 3's own parenthesis is why.** It said
+"where the toolchain also exists in CI, prefer *building* over *committing*", and
+`src/wasm-dla/bytelock/.gitignore` recorded the trade the six were accepted under —
+they were tracked *because* no CI leg could rebuild them, and "add a toolchain to the
+workflow and the corresponding file should stop being tracked, not start being
+trusted." Run 34490525095 measured all five byte-lock legs: every substrate builds,
+in 52–75 s of toolchain install on Linux and macOS, and every rebuilt module
+reproduces the **unchanged** golden vectors. So the toolchains were added and the
+files were deleted — six OpenSSF `BinaryArtifactsID` alerts closed by removal rather
+than by dismissal. Two per-leg gaps are upstream and are recorded in the matrix
+(Chocolatey's `wabt` ships no `wat2wasm`; emsdk publishes no Windows-arm64 SDK).
+
+The exception's *reasoning* stands unchanged, and it is why the condition list stays:
+encoding a `.wasm` as hex would not make it more auditable — nobody reviews a
+WebAssembly module by reading its bytes; you review its **source**, which is committed
+beside it as `.wat` / `.c` / `.rs` / `.ts` / `.zig`. What changed is that the source is
+now the *only* thing committed.
 
 **The exception is exhausted by these five conditions, all machine-checked:**
 
@@ -62,6 +79,14 @@ runner's own roster and the build script's own declared outputs, so a new binary
 that directory fails until it is wired into both. It went red on `main` when written
 — a stray `.rcgu.o` rustc intermediate, and the unread golden vectors of condition 2.
 
+**And DELETING a binary has to be guarded too, which is the half that did not exist
+before.** A roster substrate with no committed file used to be a flat failure; now it
+must be *built*, and the audit demands two things it reads out of `bytelock.yml`
+itself: the job runs the shared build action, **and** the substrate is named in a
+`BYTELOCK_REQUIRED_SUBSTRATES` list. The second is the load-bearing one — it is what
+turns "the file is gone" from an absence nobody sees into a named, red per-route
+floor, which is the guarantee the committed file used to give by simply existing.
+
 **Not covered by this exception** (each is a *rule* case, not an *exception* case):
 build intermediates (`.o`, `.a`, `.bc`, `.rcgu.o`), binaries nothing executes,
 binaries with no committed source, and any binary that *is* the expected value.
@@ -69,8 +94,11 @@ binaries with no committed source, and any binary that *is* the expected value.
 **A note on the tooling.** OpenSSF Scorecard's `Binary-Artifacts` check
 (`BinaryArtifactsID`, surfaced in code scanning by `.github/workflows/scorecard.yml`,
 *not* a CodeQL query) flags every committed binary and offers no in-repo allowlist.
-Those alerts are dismissed in the code-scanning UI with this section as the reason;
-the audit above, not the dismissal, is what keeps the claim true.
+Six such alerts stood against the substrate modules. They were closed on 2026-09-10
+**by deleting the binaries**, not by dismissing the alerts — which is the disposition
+to prefer whenever it is reachable: a dismissal is a claim about the alert, a deletion
+is a change to the tree. The audit above, not any dismissal, is what keeps the claim
+true for whatever is committed next.
 
 ## Pointers
 
@@ -80,8 +108,12 @@ the audit above, not the dismissal, is what keeps the claim true.
 - [`dv2-data-split-discipline-activated.md`](dv2-data-split-discipline-activated.md) — DST (#4) + idempotency: text golden vectors replay deterministically.
 - `src/Core.TypeScript/hygiene/audit-proof-lineage-binaries.ts` — the enforcer of the
   exception above (`cross-verify` floor job).
-- `src/wasm-dla/bytelock/` — the one exempt directory: six substrate modules under test,
-  their committed sources, and the hex-in-JSON vectors that judge them.
+- `src/wasm-dla/bytelock/` — formerly the one exempt directory. Now: nine substrates'
+  committed **sources**, the hex-in-JSON vectors that judge them, and no committed
+  `.wasm` at all. `.gitignore` there carries the measurement.
+- `.github/actions/build-wasm-substrates/` — the shared build step the four lanes that
+  need these artefacts all use (byte-lock, Pages deploy, and two gate jobs), with the
+  per-leg install costs measured in its header.
 - `docs/research/2026-08-15-which-locally-produced-artifacts-does-ci-never-reproduce-narrowing-the-corruption-window-claim.md`
   — §1's REFERENCE-ONLY disposition ("the file is compared to itself") is the general form
   of what condition 2 above forbids.

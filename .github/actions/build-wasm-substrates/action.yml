@@ -1,0 +1,224 @@
+name: build the DLA byte-lock WASM substrates
+description: >-
+  Acquire the compiler toolchains for the `src/wasm-dla/bytelock` substrates and build them
+  from their committed source. Replaces six `.wasm` files that used to be committed. Reports
+  what it built and what it could not; never silently skips.
+
+# WHY A COMPOSITE ACTION RATHER THAN SIX COPIES OF THE STEPS
+# ----------------------------------------------------------
+# Four independent lanes need these artefacts present, and none of them is the byte-lock:
+#
+#   * `bytelock.yml`                     — loads and executes them (5 legs)
+#   * `pages-deploy.yml`                 — stages six of them into the published site as
+#                                          `wasm/dla-{wat,zig,emcc,llvm,rust,asc}.wasm`
+#   * `gate.yml` / lint (identity-dla site) — runs the deploy's own build entry, which throws
+#                                          if a staged source is missing
+#   * `gate.yml` / test (TS whole-tree)  — `identity-dla-pages-wasm-behavior.test.ts`
+#                                          instantiates all six and checks them against the
+#                                          committed golden vectors
+#
+# Six copies of an install list is the include-list defect `gate.yml` already names: the
+# next lane to need them is the one somebody forgets. One action, one place.
+#
+# ANSWERING THE QUESTION THAT STARTED THIS (Aaron, 2026-09-10): "is this cause we are serving
+# it? can it be built and published or something so it can be served from our github pages."
+# Yes on both counts. They ARE served — `identity-dla-pages-wasm-assets.ts` copies all six
+# into the Pages artifact and six live oracle panels drive them — and yes, they can be built
+# and published instead of committed, which is what this action makes possible. The Go
+# substrate has been doing exactly this since #11489; this generalises its pattern to the
+# other six rather than inventing a second mechanism.
+#
+# MEASURED INSTALL COST, run 34490525095 (seconds, per toolchain, cold):
+#
+#   leg                wabt  clang+lld  rust-wasm32  asc   zig    emcc   total
+#   ubuntu-24.04         10          2            2     9     8      30      61
+#   ubuntu-24.04-arm     16          5            2     7     8      14      52
+#   macos-26              3         25            3     7     9      28      75
+#   windows-2025          6          2            3    20    50      46     127
+#   windows-11-arm       31        125            4   164    54       —     378
+#
+# `asc` no longer costs anything on a lane that already runs `bun install`, because
+# `assemblyscript` is a root devDependency — the numbers above are from the probe, which
+# installed it separately.
+
+inputs:
+  substrates:
+    description: >-
+      Which substrates to build, as `build-substrates.mjs` names them, comma-separated.
+      Empty means THE SIX WASM ONES — WAT, LLVM/C, Emscripten, Rust, AssemblyScript, Zig —
+      which are exactly the ones that stopped being committed on 2026-09-10. Go is built by
+      its own step where it is wanted (`--only=Go`; ~1.9 MB, needs `actions/setup-go`), and
+      Lua's `.luac` is not a `.wasm` and is outside this action's scope.
+    required: false
+    default: ""
+  skip-emscripten:
+    description: >-
+      Set on legs where emsdk publishes no SDK. Only `windows-11-arm` qualifies today, and
+      the reason is upstream: `./emsdk install latest` there fails with
+      "tool or SDK not found: sdk-releases-<sha>-64bit" — there is no Windows-arm64 build.
+    required: false
+    default: "false"
+
+runs:
+  using: composite
+  steps:
+    # ── wabt / wat2wasm ──────────────────────────────────────────────────────
+    - name: Install wabt (wat2wasm)
+      shell: bash
+      run: |
+        set -uo pipefail
+        if command -v wat2wasm >/dev/null 2>&1; then echo "wat2wasm already present"; exit 0; fi
+        case "${{ runner.os }}" in
+          Linux)   sudo apt-get update -qq && sudo apt-get install -y --no-install-recommends wabt ;;
+          macOS)   brew install wabt || true ;;
+          Windows)
+            # NOT CHOCOLATEY. MEASURED on both Windows legs (run 34490525095): `choco install
+            # wabt` reports success and leaves NO `wat2wasm` on PATH, so the WAT substrate
+            # failed to build on windows-2025 and windows-11-arm with "wat2wasm: command not
+            # found" while the install step looked healthy. That is the check-that-cannot-fail
+            # shape, in an install step. The official release archive carries the binary.
+            ver=1.0.36
+            url="https://github.com/WebAssembly/wabt/releases/download/${ver}/wabt-${ver}-windows.tar.gz"
+            curl -fsSL --retry 3 -o /tmp/wabt.tar.gz "$url"
+            mkdir -p /tmp/wabt && tar -xzf /tmp/wabt.tar.gz -C /tmp/wabt
+            echo "/tmp/wabt/wabt-${ver}/bin" >> "$GITHUB_PATH"
+            ;;
+        esac
+        command -v wat2wasm && wat2wasm --version || echo "wat2wasm: ABSENT (WAT substrate will report TOOLING-ABSENT)"
+
+    # ── clang + wasm-ld ──────────────────────────────────────────────────────
+    - name: Install clang and lld for the wasm32 target
+      shell: bash
+      run: |
+        set -uo pipefail
+        case "${{ runner.os }}" in
+          Linux)   sudo apt-get install -y --no-install-recommends clang lld || true ;;
+          macOS)
+            # APPLE CLANG CANNOT DO THIS. Xcode's clang has no wasm32 target and ships no
+            # wasm-ld, so `--target=wasm32` fails at link. Homebrew LLVM has both; it is
+            # preinstalled on the macOS runner images, and `brew install` is then a no-op.
+            brew install llvm lld || true
+            echo "$(brew --prefix llvm)/bin" >> "$GITHUB_PATH"
+            ;;
+          Windows) choco install -y llvm --no-progress >/dev/null 2>&1 || true ;;
+        esac
+        command -v clang && clang --version | head -1 || echo "clang: ABSENT"
+        command -v wasm-ld && wasm-ld --version || echo "wasm-ld: ABSENT"
+
+    # ── rust wasm32 target ───────────────────────────────────────────────────
+    - name: Add the rust wasm32-unknown-unknown target
+      shell: bash
+      # rustup is preinstalled on every GitHub-hosted runner, so this is a target add rather
+      # than a toolchain install: 2-4 seconds on all five legs. `.mise.toml` already declares
+      # `targets = ["wasm32-unknown-unknown"]` on its rust entry, so this is the CI-side
+      # spelling of a pin the repository already made.
+      run: |
+        rustup target add wasm32-unknown-unknown || echo "rustup target add: FAILED — Rust substrate will report TOOLING-ABSENT"
+
+    # ── assemblyscript ───────────────────────────────────────────────────────
+    - name: Ensure assemblyscript is resolvable at the repository root
+      shell: bash
+      # FREE ON ANY LANE THAT ALREADY RAN `bun install --frozen-lockfile` — which is every
+      # gate and Pages lane — because `assemblyscript` is a root devDependency. The byte-lock
+      # legs do not run a full install, so they get the one package, AT THE VERSION
+      # `package.json` DECLARES. Reading the pin rather than repeating it is the point: a
+      # second literal version in a workflow is a lockfile that nothing locks.
+      run: |
+        set -uo pipefail
+        if [ -x node_modules/.bin/asc ] || [ -x node_modules/.bin/asc.cmd ]; then
+          echo "asc already installed"; node_modules/.bin/asc --version || true; exit 0
+        fi
+        ver="$(node -p "require('./package.json').devDependencies.assemblyscript.replace(/^[^0-9]*/, '')")"
+        echo "installing assemblyscript@${ver} (pin read from package.json)"
+        npm install --no-save --no-audit --no-fund "assemblyscript@${ver}" || echo "assemblyscript install FAILED — AssemblyScript substrate will report TOOLING-ABSENT"
+
+    # ── zig, pinned to .mise.toml ────────────────────────────────────────────
+    - name: Install zig 0.13.0 (the .mise.toml pin)
+      shell: bash
+      # PINNED, NOT LATEST, and the pin is not this file's to choose: `.mise.toml` says
+      # `zig = "0.13.0"` and `audit-mise-toolchain-couplings.ts` couples that line to this
+      # substrate. Zig's release flags changed after 0.13, so an unpinned install would be a
+      # silent recipe change wearing an upgrade's face.
+      run: |
+        set -uo pipefail
+        if command -v zig >/dev/null 2>&1 && [ "$(zig version)" = "0.13.0" ]; then echo "zig 0.13.0 already present"; exit 0; fi
+        case "${{ runner.os }}-${{ runner.arch }}" in
+          Linux-X64)     Z=zig-linux-x86_64-0.13.0;    EXT=tar.xz ;;
+          Linux-ARM64)   Z=zig-linux-aarch64-0.13.0;   EXT=tar.xz ;;
+          macOS-ARM64)   Z=zig-macos-aarch64-0.13.0;   EXT=tar.xz ;;
+          macOS-X64)     Z=zig-macos-x86_64-0.13.0;    EXT=tar.xz ;;
+          Windows-X64)   Z=zig-windows-x86_64-0.13.0;  EXT=zip ;;
+          Windows-ARM64) Z=zig-windows-aarch64-0.13.0; EXT=zip ;;
+          *) echo "zig: no release for ${{ runner.os }}-${{ runner.arch }} — Zig substrate will report TOOLING-ABSENT"; exit 0 ;;
+        esac
+        if curl -fsSL --retry 3 -o "/tmp/zig.${EXT}" "https://ziglang.org/download/0.13.0/${Z}.${EXT}"; then
+          mkdir -p /tmp/zigdir
+          if [ "$EXT" = "zip" ]; then unzip -q "/tmp/zig.${EXT}" -d /tmp/zigdir; else tar -xJf "/tmp/zig.${EXT}" -C /tmp/zigdir; fi
+          echo "/tmp/zigdir/${Z}" >> "$GITHUB_PATH"
+          "/tmp/zigdir/${Z}/zig" version
+        else
+          echo "zig download: FAILED — Zig substrate will report TOOLING-ABSENT"
+        fi
+
+    # ── emscripten ───────────────────────────────────────────────────────────
+    - name: Install emscripten
+      if: inputs.skip-emscripten != 'true'
+      shell: bash
+      run: |
+        set -uo pipefail
+        if command -v emcc >/dev/null 2>&1; then echo "emcc already present"; exit 0; fi
+        case "${{ runner.os }}" in
+          Linux)   sudo apt-get install -y --no-install-recommends emscripten || true ;;
+          macOS)   brew install emscripten || true ;;
+          Windows) : ;;
+        esac
+        if command -v emcc >/dev/null 2>&1; then emcc --version | head -1; exit 0; fi
+        # emsdk is the fallback, and on Windows it is the only route.
+        git clone --depth 1 https://github.com/emscripten-core/emsdk.git /tmp/emsdk || { echo "emsdk clone FAILED"; exit 0; }
+        ( cd /tmp/emsdk && ./emsdk install latest && ./emsdk activate latest ) || { echo "emsdk install FAILED — Emscripten substrate will report TOOLING-ABSENT"; exit 0; }
+        # `emsdk_env.sh` exports for the CURRENT shell only; each `run:` step is a fresh
+        # shell, so the directories have to reach $GITHUB_PATH or the next step loses them.
+        # This is what the probe got wrong on windows-11-arm.
+        # shellcheck disable=SC1091
+        . /tmp/emsdk/emsdk_env.sh >/dev/null 2>&1 || true
+        if command -v emcc >/dev/null 2>&1; then
+          dirname "$(command -v emcc)" >> "$GITHUB_PATH"
+          emcc --version | head -1
+        else
+          echo "emcc: ABSENT after emsdk — Emscripten substrate will report TOOLING-ABSENT"
+        fi
+
+    - name: Report the Emscripten skip (never silent)
+      if: inputs.skip-emscripten == 'true'
+      shell: bash
+      # A skip that prints nothing is indistinguishable from a step that ran and worked.
+      run: echo "Emscripten DELIBERATELY SKIPPED on this leg — emsdk publishes no Windows-arm64 SDK; the leg's BYTELOCK_REQUIRED_SUBSTRATES omits it and its floor is lowered to match."
+
+    # ── build ────────────────────────────────────────────────────────────────
+    - name: Build the substrates from committed source
+      shell: bash
+      working-directory: src/wasm-dla/bytelock
+      # NOT `|| true`. `build-substrates.mjs` exits 1 when a requested substrate fails, and a
+      # caller that wants a substrate skipped says so through `substrates:` rather than by
+      # swallowing the exit status — which is the defect that let `go build` report
+      # "Building Go... OK" while producing nothing (fixed 2026-08-15, same file).
+      env:
+        REQUESTED: ${{ inputs.substrates }}
+        SKIP_EMCC: ${{ inputs.skip-emscripten }}
+      run: |
+        set -euo pipefail
+        list="$REQUESTED"
+        if [ -z "$list" ]; then
+          list="WAT,LLVM/C,Emscripten,Rust,AssemblyScript,Zig"
+          [ "$SKIP_EMCC" = "true" ] && list="WAT,LLVM/C,Rust,AssemblyScript,Zig"
+        fi
+        echo "building: $list"
+        IFS=',' read -ra names <<< "$list"
+        for n in "${names[@]}"; do node build-substrates.mjs --only="$n"; done
+
+    - name: Report what is present
+      shell: bash
+      working-directory: src/wasm-dla/bytelock
+      run: |
+        node build-substrates.mjs --check || true
+        ls -l ./*.wasm ./*.luac 2>/dev/null || echo "(no artefacts)"

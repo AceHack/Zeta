@@ -142,17 +142,25 @@ export const CROSS_VERIFY_AUDITS: readonly CrossVerifyAudit[] = [
   },
 
   // The `.claude/rules/no-binary-in-proof-lineage.md` exception, enforced rather than
-  // asserted. `src/wasm-dla/bytelock/` holds six committed `.wasm` substrate modules; they
-  // are the artifact UNDER TEST, not golden vectors, and the rule now says so — but a
-  // documented exception with no scope is a licence. This derives the allowed set from the
-  // byte-lock runner's own roster and the build script's own declared outputs, so a new
+  // asserted. `src/wasm-dla/bytelock/` HELD six committed `.wasm` substrate modules until
+  // 2026-09-10; they were the artifact UNDER TEST, not golden vectors, and the rule says so —
+  // but a documented exception with no scope is a licence. This derives the allowed set from
+  // the byte-lock runner's own roster and the build script's own declared outputs, so a new
   // binary in that directory is red until it is wired into both.
   //
-  // Two of its checks are here rather than in `bytelock.yml` on purpose. That workflow is
+  // The six are now BUILT in CI and the audit gained the other half: a roster substrate that
+  // is neither committed nor built-and-required is red too. That second condition is what
+  // this floor is actually buying now — `bytelock.yml` must NAME each built substrate in a
+  // required list, so a broken toolchain fails the byte-lock by name instead of quietly
+  // shrinking the roster.
+  //
+  // Its checks are here rather than in `bytelock.yml` on purpose. That workflow is
   // `push: main` — POST-MERGE by construction — so the malformed-artefact guard that would
   // have caught `dla-canonical-zig.wasm` shipping as an `ar` archive could only ever fire
-  // after the fact, and it did, for two weeks. The header check and the golden-vector text
-  // check need no toolchain, so they belong on the pre-merge floor.
+  // after the fact, and it did, for two weeks. Nothing this audit does needs a toolchain, so
+  // it belongs on the pre-merge floor: with the substrates built rather than committed, the
+  // header check has no subject on this lane and the audit prints the committed/built split
+  // so that shows as a stated fact rather than as a silent OK.
   {
     id: "proof-lineage-binaries",
     title: "Proof-lineage binary exception (no-binary-in-proof-lineage.md)",

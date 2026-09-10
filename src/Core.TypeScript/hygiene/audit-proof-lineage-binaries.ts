@@ -4,19 +4,26 @@
 //
 // WHY THIS FILE EXISTS
 // --------------------
-// The rule says verification artifacts are TEXT. `src/wasm-dla/bytelock/` holds six committed
-// `.wasm` files, in a directory literally named "bytelock", which reads like a flat violation
-// and was flagged as one (OpenSSF Scorecard `BinaryArtifactsID`, surfaced in code scanning via
-// `.github/workflows/scorecard.yml`).
+// The rule says verification artifacts are TEXT. `src/wasm-dla/bytelock/` held six committed
+// `.wasm` files from 2026-08-01 to 2026-09-10, in a directory literally named "bytelock",
+// which read like a flat violation and was flagged as one (OpenSSF Scorecard
+// `BinaryArtifactsID`, surfaced in code scanning via `.github/workflows/scorecard.yml`).
 //
-// It is not a violation, and the reason is a distinction the rule did not previously draw:
+// It was not a violation, and the reason is a distinction the rule did not previously draw:
 //
 //   THE EVIDENCE IS TEXT. THE THING UNDER TEST IS NOT EVIDENCE.
 //
-// Those `.wasm` files are the SUBJECT of the comparison — nine independently-compiled DLA
+// Those `.wasm` files were the SUBJECT of the comparison — nine independently-compiled DLA
 // substrates that `run-bytelock-ci.mjs` LOADS AND EXECUTES. The evidence they are judged
 // against is `testdata/golden-seed-*.json`: hex-in-JSON, diffable, exactly what the rule
-// mandates. Deleting the binaries would delete the experiment, not the proof.
+// mandates. Deleting the binaries would have deleted the experiment, not the proof.
+//
+// THEY ARE NOW BUILT IN CI AND THE SIX ALERTS ARE CLOSED BY DELETION — which is the
+// disposition the exception's own condition 3 preferred all along ("where the toolchain also
+// exists in CI, prefer BUILDING over COMMITTING"). So this file's job has GAINED a half
+// rather than lost one: it still refuses an unearned commit, and it now also refuses an
+// unearned DELETION — a substrate that is neither committed nor built-and-required is a
+// roster entry nothing holds to account. See check 4.
 //
 // But "documented exception" with no scope is the vacuity class this repo cares most about
 // avoiding — it is a licence, not a boundary. So the exception is machine-checked here, and it
@@ -34,7 +41,12 @@
 //                   input source file exists and is itself text. The exception rests on the
 //                   binary being REPRODUCIBLE; if it cannot be re-derived, it is trusted, and
 //                   trusted bytes in a proof lineage are what the rule forbids.
-//   4. LOADABLE   — every roster .wasm carries the 8-byte WebAssembly header. This is the
+//   4. LOADABLE / BUILT-IN-CI — a roster substrate is either COMMITTED, in which case it
+//                   must carry the 8-byte WebAssembly header, or BUILT BY CI, in which case
+//                   `bytelock.yml` must run the shared build action AND name the substrate in
+//                   a `BYTELOCK_REQUIRED_SUBSTRATES` list so its absence fails the run by
+//                   name. See the block at that check for why condition 2 is the load-bearing
+//                   one. The header half is the
 //                   PRE-MERGE twin of the runner's own exit-3 guard: `dla-canonical-zig.wasm`
 //                   sat on main as an `ar` archive for two weeks, and the only check that
 //                   would have caught it runs post-merge in `bytelock.yml`. This one runs in
@@ -47,14 +59,16 @@
 //                   vectors — the rule's own artifact — were dead weight, and a co-ordinated
 //                   edit to reference.mjs plus a rebuild would have moved the locked trajectory
 //                   with a green byte-lock and no vector diff to review.
-//   6. DWARF      — no substrate may carry DWARF debug sections except the one named,
-//                   ceilinged exemption below. `dla-canonical-rust.wasm` is 478 KB of which
-//                   472 KB is `.debug_*` (measured, see DWARF_EXEMPT); its actual code section
-//                   is 1,996 bytes, in family with the other five. The size gap is a missing
-//                   `-C debuginfo=0`, not a different kind of artifact — and the ceiling stops
-//                   it being read as licence for the next one.
+//   6. DWARF      — no COMMITTED substrate may carry DWARF debug sections except a named,
+//                   ceilinged exemption. DWARF_EXEMPT is now empty: its one entry was
+//                   `dla-canonical-rust.wasm` (472 KB of `.debug_*` around a 1,996-byte code
+//                   section), and that artefact is no longer committed. The check is kept
+//                   with no entries on purpose — commit a substrate again and any DWARF in it
+//                   fails outright, with nothing grandfathered to hide behind.
 //
-// LIVENESS: the audit refuses to pass while inspecting nothing (empty roster, no goldens).
+// LIVENESS: the audit refuses to pass while inspecting nothing (empty roster, no goldens),
+// and it PRINTS the committed/built split so a reader can see that checks 1/2/4-header/6 had
+// no committed subject rather than inferring health from a silent OK.
 // "Checked 0 substrates" must never read as success — the same floor the byte-lock runner
 // applies to itself.
 //
@@ -69,31 +83,37 @@ const RULE = ".claude/rules/no-binary-in-proof-lineage.md";
 const BYTELOCK_DIR = "src/wasm-dla/bytelock";
 const RUNNER = "run-bytelock-ci.mjs";
 const BUILDER = "build-substrates.mjs";
+const WORKFLOW = ".github/workflows/bytelock.yml";
+const BUILD_ACTION = ".github/actions/build-wasm-substrates";
 
 // The WebAssembly magic (00 61 73 6d) plus the binary-format version (01 00 00 00). Eight
 // bytes, not four: a wrong version is equally unloadable, and the `ar` archive that shipped on
 // main differed in the first four (21 3c 61 72 = "!<ar").
 const WASM_HEADER = Object.freeze([0x00, 0x61, 0x73, 0x6d, 0x01, 0x00, 0x00, 0x00]);
 
-// DWARF carried by a committed substrate, named and ceilinged rather than tolerated.
+// DWARF carried by a COMMITTED substrate, named and ceilinged rather than tolerated.
 //
-// MEASURED 2026-08-16 by walking the section table of the committed file:
-//   .debug_str 265,057 · .debug_info 150,552 · .debug_ranges 46,518 · .debug_line 7,818 ·
-//   .debug_abbrev 2,449  = 472,394 of 478,353 bytes (98.8%). Code section: 1,996 bytes.
-//   Strings are rustc-remapped (`/rustc/<hash>/…`), so no builder-machine path leaks — but
-//   472 KB of upstream libcore DWARF is not reviewable and is not evidence of anything.
+// EMPTY SINCE 2026-09-10, and the emptiness is a result rather than a relaxation. Its one
+// entry was `dla-canonical-rust.wasm`: 472,394 of 478,353 bytes (98.8%) were `.debug_*`
+// against a 1,996-byte code section, measured 2026-08-16 by walking its section table. The
+// note here said "THE FIX IS ONE FLAG: `-C debuginfo=0` … which would land it at ~6 KB",
+// and declined to apply it because this branch had no `rustup` to re-derive the committed
+// artefact with.
 //
-// THE FIX IS ONE FLAG: `-C debuginfo=0` (or `wasm-opt --strip-debug`) in the Rust recipe in
-// build-substrates.mjs, which would land it at ~6 KB. It is NOT applied here because doing so
-// rewrites the committed artefact, and this branch has no `rustup`/`wasm32-unknown-unknown` to
-// re-derive it with — a rebuilt binary nobody could reproduce is exactly the trust this audit
-// exists to refuse. Filed as a follow-up; the ceiling below means it can only shrink.
-const DWARF_EXEMPT: Readonly<Record<string, { ceiling: number; why: string }>> = Object.freeze({
-  "dla-canonical-rust.wasm": {
-    ceiling: 480_000,
-    why: "rustc emits DWARF for wasm32 cdylib by default; recipe lacks -C debuginfo=0",
-  },
-});
+// Both halves of that have now been settled by measurement:
+//
+//   * THE NAMED FLAG IS A NO-OP. On rustc 1.99.0 the module is 624,772 bytes with
+//     `-C debuginfo=0` and 624,772 bytes without it — the DWARF is upstream libcore's,
+//     already compiled. `-C strip=debuginfo` is the flag that works, landing it at 8,058
+//     bytes. A fix asserted and never run is the shape this file exists to catch, and this
+//     one sat in its own header for three weeks.
+//   * THE ARTEFACT IS NO LONGER COMMITTED. All six substrates are built in CI, so there is
+//     nothing to strip in the tree and no ceiling to keep. `build-substrates.mjs` carries
+//     the working flag.
+//
+// The check below is kept with an empty exemption map ON PURPOSE: commit a substrate again
+// and any DWARF in it fails outright, with no grandfathered entry to hide behind.
+const DWARF_EXEMPT: Readonly<Record<string, { ceiling: number; why: string }>> = Object.freeze({});
 
 const rootArgIdx = process.argv.indexOf("--root");
 const root = rootArgIdx >= 0 ? (process.argv[rootArgIdx + 1] ?? ".") : ".";
@@ -190,6 +210,42 @@ function isBinary(absPath: string): boolean {
 const tracked = trackedFiles();
 const trackedRel = new Set(tracked.map((p) => p.slice(`${BYTELOCK_DIR}/`.length)));
 
+// ── The CI half, derived from the workflow rather than declared here ──────────
+//
+// A roster substrate that is NOT committed has to come from somewhere, and "somewhere" is
+// `bytelock.yml`. Two facts are read out of that file, both derived so neither can drift
+// from what CI actually does:
+//
+//   * does the byte-lock job run the shared build action at all, and
+//   * which substrate NAMES appear in a `BYTELOCK_REQUIRED_SUBSTRATES` list.
+//
+// The second is the load-bearing one. `run-bytelock-ci.mjs` fails the job when a name on
+// that list did not execute, so a substrate that is built-not-committed AND named there
+// cannot silently vanish: a broken toolchain becomes a red byte-lock rather than a smaller
+// roster. Without it, deleting a binary would convert a hard failure into an absence, which
+// is the "check that did not run looking like one that passed" class this whole directory
+// is built around.
+function readOrEmpty(path: string): string {
+  // One syscall, one answer. An `existsSync` gate here is a check-then-use race and the
+  // repo's own linter refuses it: the file can be created or removed between the two calls,
+  // so the check reads as defensive and prevents nothing.
+  try {
+    return readFileSync(path, "utf8");
+  } catch (e) {
+    if ((e as NodeJS.ErrnoException).code === "ENOENT") return "";
+    throw e;
+  }
+}
+const workflowSrc = readOrEmpty(join(root, WORKFLOW));
+const ciRunsBuildAction =
+  workflowSrc.includes("./.github/actions/build-wasm-substrates") &&
+  existsSync(join(root, BUILD_ACTION, "action.yml"));
+const ciRequiredNames = new Set<string>(
+  [...workflowSrc.matchAll(/required_substrates:\s*"([^"]*)"/g)].flatMap((m) =>
+    (m[1] ?? "").split(",").map((s) => s.trim()).filter(Boolean),
+  ),
+);
+
 // ── 1. SCOPE — every tracked binary is a declared output or a roster substrate ─
 const allowed = new Set<string>([...declaredOutputs, ...roster.map((r) => r.file)]);
 let binariesSeen = 0;
@@ -253,15 +309,46 @@ for (const sub of roster) {
     }
   }
 
-  const abs = join(base, sub.file);
-  if (!existsSync(abs)) {
-    fail(
-      `LOADABLE: roster substrate "${sub.name}" points at ${sub.file}, which is not committed.`,
-      `Every WASM_SUBSTRATES entry is loaded from the tree in CI; a missing file means the ` +
-        `substrate silently SKIPs and the roster overstates coverage.`,
-    );
-    continue;
+  // ── BUILT-IN-CI, the branch that used to be an outright failure ─────────────
+  //
+  // Before 2026-09-10 a roster substrate whose file was not committed failed here, because
+  // every one of them WAS committed and a missing file could only mean a silent SKIP. Six
+  // of them are now built in CI instead, so "not committed" has a second, legitimate
+  // reading — and the audit's job is to tell the two apart rather than to forbid one.
+  //
+  // What separates them is whether the byte-lock would NOTICE the substrate going missing.
+  // Both conditions below are read out of `bytelock.yml` itself:
+  //
+  //   1. the job runs the shared build action, so something actually produces the file, and
+  //   2. the substrate's NAME is on a `BYTELOCK_REQUIRED_SUBSTRATES` list, so
+  //      `run-bytelock-ci.mjs` fails the run by name if it did not execute.
+  //
+  // Condition 2 is what keeps the deletion honest. It converts "the file is absent" from an
+  // absence nobody sees into a named, red per-route floor — the same guarantee the committed
+  // file used to give by simply being there.
+  const committed = trackedRel.has(sub.file);
+  if (!committed) {
+    if (!ciRunsBuildAction) {
+      fail(
+        `BUILT-IN-CI: roster substrate "${sub.name}" (${sub.file}) is neither committed nor built by CI.`,
+        `${WORKFLOW} does not use ${BUILD_ACTION}, so nothing produces this substrate and the ` +
+          `byte-lock would report it TOOLING-ABSENT while the roster claims it as coverage. ` +
+          `Either commit it under the five conditions in ${RULE}, or build it.`,
+      );
+    }
+    if (!ciRequiredNames.has(sub.name)) {
+      fail(
+        `BUILT-IN-CI: substrate "${sub.name}" is built rather than committed, but no leg REQUIRES it.`,
+        `No BYTELOCK_REQUIRED_SUBSTRATES list in ${WORKFLOW} names "${sub.name}", so a broken ` +
+          `toolchain would make it silently absent instead of failing the run. A built substrate ` +
+          `earns its roster seat from the per-route floor; without that it is a roster entry ` +
+          `nothing holds to account.`,
+      );
+    }
+    continue; // nothing in the tree to check the header or DWARF of
   }
+
+  const abs = join(base, sub.file);
   const head = readFileSync(abs).subarray(0, WASM_HEADER.length);
   const ok = head.length === WASM_HEADER.length && WASM_HEADER.every((b, i) => head[i] === b);
   if (!ok) {
@@ -317,6 +404,11 @@ function dwarfBytes(abs: string): number {
 }
 
 for (const sub of roster) {
+  // COMMITTED ONLY. The DWARF budget is a rule about what enters the repository, not about
+  // what a build leaves in a working tree — a developer who has just run
+  // `build-substrates.mjs` has unstripped artefacts sitting here by design, and failing on
+  // those would be an audit arguing with its own build step.
+  if (!trackedRel.has(sub.file)) continue;
   const abs = join(base, sub.file);
   if (!existsSync(abs)) continue;
   let bytes: number;
@@ -419,10 +511,18 @@ if (goldens.length === 0) {
 
 // ── Report ────────────────────────────────────────────────────────────────────
 // Coverage is printed unconditionally. "0 checked" must never be mistaken for "0 problems".
+// The committed/built split is printed EXPLICITLY. When every substrate is built rather than
+// committed, the SCOPE / LOADED / LOADABLE / DWARF checks have no subject left — they are
+// still correct, and they are still the guard that fires the day someone commits one again,
+// but a reader must be able to see that they inspected nothing rather than inferring health
+// from a silent OK. That is the same distinction the byte-lock's own "Verified 0 of 10"
+// refusal exists to draw.
+const committedSubstrates = roster.filter((s) => trackedRel.has(s.file)).length;
 console.log(
-  `proof-lineage binaries: ${roster.length} roster substrate(s), ${recipes.length} build ` +
-    `recipe(s), ${binariesSeen} committed binary file(s), ${goldens.length} golden vector(s) ` +
-    `under ${BYTELOCK_DIR}/`,
+  `proof-lineage binaries: ${roster.length} roster substrate(s) ` +
+    `(${committedSubstrates} committed, ${roster.length - committedSubstrates} built in CI), ` +
+    `${recipes.length} build recipe(s), ${binariesSeen} committed binary file(s), ` +
+    `${goldens.length} golden vector(s) under ${BYTELOCK_DIR}/`,
 );
 
 if (findings.length > 0) {

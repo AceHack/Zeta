@@ -112,7 +112,7 @@ Two things are worth keeping from the episode:
 
 The byte-locked substrates are built by `bytelock/build-substrates.mjs`, which is the only recipe
 that matters — it is the one `run-bytelock-ci.mjs` and the audit derive their rosters from. See
-`bytelock/.gitignore` for why five of the six modules are committed rather than built in CI.
+`bytelock/.gitignore` for the measurement behind building all nine rather than committing six.
 
 ```bash
 node bytelock/build-substrates.mjs        # rebuild what the local toolchain supports
@@ -131,13 +131,13 @@ node bytelock/run-bytelock-ci.mjs         # compare every substrate against test
 > a check that never ran is the same defect class as the panels above: something that reads as
 > verified because nobody looked. Corrected 2026-08-17.
 
-## Why `bytelock/` contains committed `.wasm` files
+## Why `bytelock/` no longer contains committed `.wasm` files
 
 `src/wasm-dla/bytelock/` — the canonical-spec byte-lock, a different and later thing from the
-Oracle 10 sources above — holds six committed WebAssembly modules. They look like a violation
-of `.claude/rules/no-binary-in-proof-lineage.md` ("verification artifacts are TEXT") and are
-flagged as one by OpenSSF Scorecard's Binary-Artifacts check. They are not, and the reason is
-worth stating once so it is not re-litigated:
+Oracle 10 sources above — held six committed WebAssembly modules from 2026-08-01 to 2026-09-10.
+They looked like a violation of `.claude/rules/no-binary-in-proof-lineage.md` ("verification
+artifacts are TEXT") and were flagged as one by OpenSSF Scorecard's Binary-Artifacts check.
+They were not, and the reason is worth keeping because it is what the rule's exception rests on:
 
 **The evidence is text; the thing under test is not evidence.** `run-bytelock-ci.mjs` *loads
 and executes* each module and compares the trajectory it computes against
@@ -146,25 +146,40 @@ binaries are the experiment, not the proof. You review them through their commit
 (`dla-canonical.{wat,c,rs,ts,zig}`), which is how anyone would review a WebAssembly module
 anyway.
 
-They are *committed* rather than *built* because `bytelock.yml` installs only wabt, lua5.4 and
-Go; five of the six have no toolchain on the runner, and a substrate CI cannot build is a
-substrate CI silently skips. That trade is written down in `bytelock/.gitignore`, and the
-exception is conditioned and machine-checked — see the rule's §"The one exception" and
-`src/Core.TypeScript/hygiene/audit-proof-lineage-binaries.ts`, which runs in the `cross-verify`
-floor job on every PR.
+**They are built now, and the six alerts are closed by deletion rather than by dismissal.**
+They were committed because `bytelock.yml` installed only wabt, lua5.4 and Go — five of the six
+had no toolchain on the runner, and a substrate CI cannot build is a substrate CI silently
+skips. `bytelock/.gitignore` wrote down the exit from that trade: *"add a toolchain to the
+workflow and the corresponding file should stop being tracked, not start being trusted."*
+Run 34490525095 measured all five legs; every substrate builds, in 52–75 s of toolchain install
+on Linux and macOS, and every rebuilt module reproduces the **unchanged** golden vectors. The
+shared install-and-build step is `.github/actions/build-wasm-substrates`, used by the four lanes
+that need the artefacts (byte-lock, Pages deploy, and two `gate.yml` jobs).
 
-### The 478 KB Rust module, explained
+Two per-leg gaps are upstream and are recorded in the byte-lock matrix rather than smoothed
+over: Chocolatey's `wabt` package ships no `wat2wasm` (so Windows fetches wabt's own release
+archive), and emsdk publishes no Windows-arm64 SDK at all, so Emscripten is honestly
+TOOLING-ABSENT on `windows-11-arm` and that leg's floor is 7 instead of 8.
 
-`dla-canonical-rust.wasm` is 478,353 bytes against ~1–5 KB for the other five. Measured by
-walking its section table (2026-08-16), **472,394 bytes — 98.8% — are DWARF**: `.debug_str`
+The exception itself stays conditioned and machine-checked — see the rule's §"The one
+exception" and `src/Core.TypeScript/hygiene/audit-proof-lineage-binaries.ts`, which now also
+refuses an unearned *deletion*: a roster substrate that is neither committed nor
+built-and-required is a roster entry nothing holds to account.
+
+### The 478 KB Rust module, and the flag that did not fix it
+
+`dla-canonical-rust.wasm` was 478,353 bytes against ~1–5 KB for the other five. Measured by
+walking its section table (2026-08-16), **472,394 bytes — 98.8% — were DWARF**: `.debug_str`
 265,057 · `.debug_info` 150,552 · `.debug_ranges` 46,518 · `.debug_line` 7,818 · `.debug_abbrev`
-2,449. Its actual **code section is 1,996 bytes**, in family with the others.
+2,449. Its actual **code section was 1,996 bytes**, in family with the others.
 
-So the size gap is not a different kind of artifact — it is a missing `-C debuginfo=0` in the
-Rust recipe in `build-substrates.mjs`. (The strings are rustc-remapped to `/rustc/<hash>/…`, so
-no builder-machine paths leak.) The fix is one flag plus a re-derived artefact, which needs a
-`wasm32-unknown-unknown` toolchain; until then the audit pins it with a named, ceilinged
-exemption so it can only shrink and so the next unstripped substrate fails instead.
+The fix named here and in the audit was `-C debuginfo=0`, and **that flag is a no-op**: measured
+on rustc 1.99.0, the module is 624,772 bytes with it and 624,772 bytes without — the DWARF comes
+from already-compiled upstream libcore, so telling rustc not to emit debug info for our crate
+changes nothing. `-C strip=debuginfo` is the flag that works (8,058 bytes), and it is now in the
+Rust recipe; the stripped module passes the unchanged vectors at all four seeds. The ceilinged
+DWARF exemption is gone with the committed artefact, and the check is kept with an empty
+exemption map so the next unstripped *committed* substrate fails outright.
 
 ## Dependencies (Desired-State)
 
@@ -175,5 +190,8 @@ All four compilers are declared in desired-state config:
 - **Ubuntu** (`tools/setup/manifests/apt`): `wabt`, `binaryen`, `emscripten`, `nodejs`
 - **devShell** (`flake.nix`): `wabt`, `binaryen`, `emscripten`, `nodejs`
 
-AssemblyScript (`asc`) is installed via `pnpm add -g assemblyscript`
-(already in mise) and requires `nodejs` as the runtime host.
+AssemblyScript (`asc`) is a root **devDependency** — `bun install --frozen-lockfile` puts it at
+`node_modules/.bin/asc`, which is where `build-substrates.mjs` looks. It requires `nodejs` as
+the runtime host. (This paragraph used to say `pnpm add -g assemblyscript` "already in mise";
+neither half was ever true — pnpm is not a mise tool, and the recipe's `npx asc` failed on all
+five CI legs, which is what made the AssemblyScript substrate unbuildable until 2026-09-10.)

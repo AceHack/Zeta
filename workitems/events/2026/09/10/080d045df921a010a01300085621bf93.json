@@ -1,0 +1,14 @@
+{
+  "id": "080d045df921a010a01300085621bf93",
+  "at": "2026-09-10T14:35:54.804Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M25VY91K087G0R000CF8J8R",
+    "type": "task",
+    "title": "build the six wasm-dla substrates in CI instead of committing them",
+    "slug": "build-the-six-wasm-dla-substrates-in-ci-instead-of-committin",
+    "priority": "P2",
+    "filename": "081M25VY91K087G0R000CF8J8R-build-the-six-wasm-dla-substrates-in-ci-instead-of-committin.md"
+  }
+}

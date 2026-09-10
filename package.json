@@ -85,6 +85,7 @@
     "@eslint/js": "10.0.1",
     "@types/bun": "1.4.0",
     "@types/semver": "7.8.0",
+    "assemblyscript": "0.28.8",
     "eslint": "10.9.1",
     "eslint-plugin-sonarjs": "4.2.0",
     "fast-check": "4.9.0",
