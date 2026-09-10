@@ -113,6 +113,12 @@ export const ACTION_RECONCILIATION: Record<ActionKind, ActionRow> = {
   // supervisor's attention; not asking costs the work. Cf. the free modes: the thing that must
   // never be gated is the agent's ability to be honest about its own state.
   request_information: { kind: "request_information", gate: "never_gated", scope: "unrestricted", freeMode: false, leadSlot: null },
+  // NEVER GATED, and here the argument is stronger than it is for `request_information`. A gate on
+  // this verb is a gate on an agent's ability to reach a person when the organization has run out
+  // of answers — which is precisely the situation in which a gate has nobody left to open it. An
+  // agent that cannot say "this needs a human" when it does is one whose remaining options are to
+  // guess or to go quiet, and the guess arrives at a review as somebody else's problem.
+  raise_to_human: { kind: "raise_to_human", gate: "never_gated", scope: "unrestricted", freeMode: false, leadSlot: null },
   assign_work: { kind: "assign_work", gate: "assign_work", scope: "item_in_scope", freeMode: false, leadSlot: null },
 
   // ── MAKING WORK ──────────────────────────────────────────────────────────

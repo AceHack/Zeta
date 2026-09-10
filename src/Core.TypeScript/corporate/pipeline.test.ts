@@ -310,3 +310,114 @@ describe("contextFrom", () => {
     expect(contextFrom(undefined, new Map()).branch).toContain("no change open");
   });
 });
+
+describe("A HUMAN CHECKPOINT STOPS THE PRODUCTION PATH, not only the fixture", () => {
+  // The defect this describes was real and was found by looking: the checkpoint machinery was wired
+  // into `runGateChain`, which `org-cycle` uses, and `runPipeline` is what the actual runtime walks.
+  // A checkpoint configured on one and absent from the other is a setting that appears to work and
+  // never stops anything — worse than not offering it, because somebody would rely on it.
+  const groomingThenBuild: Pipeline = [
+    { gate: GateKind.BrdApproval, produce: recordingProducer(GateKind.BrdApproval, []) },
+    { gate: GateKind.ArchitectureDesign, produce: recordingProducer(GateKind.ArchitectureDesign, []) },
+  ];
+
+  const walk = async (over: Partial<Parameters<typeof runPipeline>[1]> = {}, log: string[] = []) =>
+    runPipeline(chart, {
+      workId: "w1",
+      node,
+      pipeline: [
+        { gate: GateKind.BrdApproval, produce: recordingProducer(GateKind.BrdApproval, log) },
+        { gate: GateKind.ArchitectureDesign, produce: recordingProducer(GateKind.ArchitectureDesign, log) },
+      ],
+      chooser: loggingChooser(log),
+      atMs: 0,
+      proposerHatId: "backend_implementer",
+      ...over,
+    });
+
+  test("WITH NO CHECKPOINTS the walk is exactly what it always was", async () => {
+    // The default, and the one that must not change. Every existing caller passes neither field.
+    const r = await walk();
+    expect(r.complete).toBe(true);
+    expect(r.awaitingHuman).toBeUndefined();
+  });
+
+  test("a configured checkpoint with no answer STOPS the walk at that gate", async () => {
+    const r = await walk({ humanRequiredAt: new Set([GateKind.BrdApproval]) });
+    expect(r.awaitingHuman).toBe(GateKind.BrdApproval);
+    expect(r.complete).toBe(false);
+  });
+
+  test("WAITING IS NOT BLOCKING — `blockedAt` and the recovery path stay empty", async () => {
+    // Collapsing the two would make an unanswered checkpoint indistinguishable from a failed
+    // review, and the organization would "recover" from a decision nobody made — sending the work
+    // backwards because somebody had not looked at it yet.
+    const r = await walk({ humanRequiredAt: new Set([GateKind.BrdApproval]) });
+    expect(r.blockedAt).toBeUndefined();
+    expect(r.recovery).toBeUndefined();
+    expect(r.refusals).toEqual([]);
+  });
+
+  test("IT WAITS BEFORE PRODUCING, so the checkpoint saves the work it exists to save", async () => {
+    // The whole value of stopping at `brd_approval` is that nothing downstream has been built.
+    // Producing first and waiting second would spend exactly the call this checkpoint prevents.
+    const log: string[] = [];
+    await walk({ humanRequiredAt: new Set([GateKind.BrdApproval]) }, log);
+    expect(log).toEqual([]);
+  });
+
+  test("A PERSON'S APPROVAL RELEASES IT and the walk carries on", async () => {
+    const r = await walk({
+      humanRequiredAt: new Set([GateKind.BrdApproval]),
+      humanDecisionFor: (gate) =>
+        gate === GateKind.BrdApproval
+          ? { outcome: GateOutcome.Approved, actionRef: "human-action/ha-7" }
+          : undefined,
+    });
+    expect(r.awaitingHuman).toBeUndefined();
+    expect(r.complete).toBe(true);
+  });
+
+  test("...and the evaluation records WHICH decision it was", async () => {
+    // An approval with no traceable origin is precisely what the audit requirement exists to
+    // prevent. The action id travels into the gate's own evidence.
+    const r = await walk({
+      humanRequiredAt: new Set([GateKind.BrdApproval]),
+      humanDecisionFor: () => ({ outcome: GateOutcome.Approved, actionRef: "human-action/ha-7" }),
+    });
+    const brd = r.evaluations.find((e) => e.gate === GateKind.BrdApproval);
+    expect(brd?.evidenceRefs).toContain("human-action/ha-7");
+  });
+
+  test("A PERSON'S REJECTION IS A REJECTION — it is not merely a slower approval", async () => {
+    const r = await walk({
+      humanRequiredAt: new Set([GateKind.BrdApproval]),
+      humanDecisionFor: () => ({ outcome: GateOutcome.Rejected, actionRef: "human-action/ha-8" }),
+    });
+    expect(r.complete).toBe(false);
+    expect(r.blockedAt).toBe(GateKind.BrdApproval);
+  });
+
+  test("the decision is applied ONLY to the gate it names", async () => {
+    // A decision that leaked to the next gate would let one approval carry the whole chain, which
+    // is the opposite of what an operator asking for a checkpoint wants.
+    const r = await walk({
+      humanRequiredAt: new Set([GateKind.BrdApproval, GateKind.ArchitectureDesign]),
+      humanDecisionFor: (gate) =>
+        gate === GateKind.BrdApproval
+          ? { outcome: GateOutcome.Approved, actionRef: "human-action/ha-7" }
+          : undefined,
+    });
+    expect(r.awaitingHuman).toBe(GateKind.ArchitectureDesign);
+  });
+
+  test("a gate nobody was asked about is judged by the organization, as before", async () => {
+    void groomingThenBuild;
+    const r = await walk({
+      humanRequiredAt: new Set([GateKind.BrdApproval]),
+      humanDecisionFor: () => ({ outcome: GateOutcome.Approved, actionRef: "human-action/ha-7" }),
+    });
+    const design = r.evaluations.find((e) => e.gate === GateKind.ArchitectureDesign);
+    expect(design?.evidenceRefs).not.toContain("human-action/ha-7");
+  });
+});

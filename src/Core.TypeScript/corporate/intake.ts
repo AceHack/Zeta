@@ -314,3 +314,115 @@ export function receive(
   if (!ingested.ok) return ingested;
   return triage(ingested.value);
 }
+
+/** `a.b.c` into a nested object. Returns undefined at the first missing hop rather than throwing. */
+export function atPath(body: unknown, path: string): unknown {
+  let cursor: unknown = body;
+  for (const hop of path.split(".")) {
+    if (typeof cursor !== "object" || cursor === null) return undefined;
+    cursor = (cursor as Record<string, unknown>)[hop];
+  }
+  return cursor;
+}
+
+/** `k:v` pairs into headers. A pair with no colon is IGNORED rather than becoming a header named "". */
+export function headersFrom(pairs: readonly string[]): Record<string, string> {
+  const out: Record<string, string> = {};
+  for (const pair of pairs) {
+    const at = pair.indexOf(":");
+    if (at <= 0) continue;
+    out[pair.slice(0, at).trim()] = pair.slice(at + 1).trim();
+  }
+  return out;
+}
+
+/**
+ * `--tracker-map field=path` pairs into an `ExternalEvent` mapper.
+ *
+ * This is what makes a real tracker reachable from a command line rather than only from code. Jira's
+ * search response, for instance:
+ *
+ *   --tracker-items issues --tracker-map externalId=key --tracker-map title=fields.summary
+ *
+ * It REFUSES rather than guessing. An item with no `externalId` or no `title` throws, naming the
+ * field and the path that was tried, and `httpIntake` turns that into a refusal carrying the item's
+ * index. Substituting a placeholder id would put an unidentifiable ticket into the queue, which is
+ * worse than not accepting it: nobody could ever match it back to the tracker.
+ */
+export function trackerMapper(
+  source: string,
+  pairs: readonly string[],
+  /**
+   * How THIS tracker names its severities, as `raw=critical|high|medium|low` pairs.
+   *
+   * Trackers do not share a vocabulary. Jira ships "3 - Medium"; nothing in the register recognises
+   * that, so it fell to `Low` — the mapper's deliberate refusal to invent urgency upward, which is
+   * right in the abstract and silently wrong here: a Medium defect entered the organization as Low
+   * and would have been prioritised, staffed and scheduled as Low.
+   *
+   * Matching is case-insensitive and trimmed. Anything unmapped still falls to `Low`, because a
+   * severity nobody translated is a severity nobody knows.
+   */
+  severityPairs: readonly string[] = [],
+): (item: unknown) => ExternalEvent {
+  const severityBy = new Map<string, Severity>();
+  for (const pair of severityPairs) {
+    const at = pair.lastIndexOf("=");
+    if (at <= 0) continue;
+    const raw = pair.slice(0, at).trim().toLowerCase();
+    const to = pair.slice(at + 1).trim().toLowerCase();
+    if (to === Severity.Critical || to === Severity.High || to === Severity.Medium || to === Severity.Low) {
+      severityBy.set(raw, to);
+    }
+  }
+
+  const paths = new Map<string, string>();
+  for (const pair of pairs) {
+    const at = pair.indexOf("=");
+    if (at <= 0) continue;
+    paths.set(pair.slice(0, at).trim(), pair.slice(at + 1).trim());
+  }
+  const read = (item: unknown, field: string, fallback: string): string | undefined => {
+    const path = paths.get(field) ?? fallback;
+    const value = atPath(item, path);
+    if (typeof value === "string") return value;
+    // A NUMBER IS A VALUE SOMEBODY MEANT. Linear's priority is `2`, not `"High"`, and reading only
+    // strings dropped it — so a P2 defect entered the organization as Low and would have been
+    // prioritised, staffed and scheduled as Low. Exactly the failure the severity table above was
+    // written to prevent, arriving one layer earlier through the type.
+    //
+    // Booleans too: a `isBlocker: true` flag is a severity signal in some trackers, and `"true"` is
+    // then a key an operator can map. Objects and arrays are NOT stringified — `[object Object]` is
+    // not a value anybody meant.
+    if (typeof value === "number" && Number.isFinite(value)) return String(value);
+    if (typeof value === "boolean") return String(value);
+    return undefined;
+  };
+  return (item) => {
+    const externalId = read(item, "externalId", "externalId");
+    const title = read(item, "title", "title");
+    if (externalId === undefined) {
+      throw new Error(`no externalId at '${paths.get("externalId") ?? "externalId"}'`);
+    }
+    if (title === undefined) throw new Error(`${externalId} has no title at '${paths.get("title") ?? "title"}'`);
+    const severity = read(item, "severity", "severity");
+    return {
+      source,
+      externalId,
+      title,
+      kind: IntakeKind.Defect,
+      // An unrecognised severity becomes `Low` rather than being invented upward: over-stating
+      // urgency from a field nobody mapped would let the tracker's noise set this org's priorities.
+      severity: ((raw) => {
+        if (raw === undefined) return Severity.Low;
+        const mapped = severityBy.get(raw.trim().toLowerCase());
+        if (mapped !== undefined) return mapped;
+        return raw === Severity.Critical || raw === Severity.High || raw === Severity.Medium
+          ? raw
+          : Severity.Low;
+      })(severity),
+      reproduction: read(item, "reproduction", "reproduction") ?? "",
+      evidenceRefs: [`${source}/${externalId}`],
+    };
+  };
+}

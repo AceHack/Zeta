@@ -7,10 +7,13 @@
  */
 
 import { describe, expect, test } from "bun:test";
+import { readFileSync } from "node:fs";
 import { fidelityOf, Port } from "./providers";
-import { WorkState, WorkType as WorkTypeValue } from "./goal-cascade";
-import { main, parseArgs, providersFromArgs } from "./run-org";
+import { WorkState, WorkType as WorkTypeValue, type CascadeNode } from "./goal-cascade";
+import { artifactProducersFromArgs, churnThresholdFor, gateAttemptsFor, hasSource, main, parseArgs, PRE_CODE_GATES, providersFromArgs, trackerMapper, KNOWN_FLAGS, unknownFlags} from "./run-org";
 import { RunOutcome } from "./qa";
+import { GateKind, ORDERED_GATES } from "./quality-gate";
+import { Severity } from "./intake";
 
 /** Run `main`, capturing what it printed. */
 async function capture(argv: readonly string[]): Promise<{ code: number; out: string }> {
@@ -28,12 +31,70 @@ async function capture(argv: readonly string[]): Promise<{ code: number; out: st
   }
 }
 
+describe("AN UNKNOWN FLAG IS REFUSED, NOT IGNORED", () => {
+  test("a flag this CLI does not know is named", () => {
+    // Found the hard way: every run in one session passed `--at <iso>` believing it set the clock.
+    // The flag does not exist — it is `--now` — so nowMs stayed 0 and every timestamp in the log
+    // was the epoch. Nothing complained. A flag that silently does nothing is the vacuity class
+    // wearing a CLI: the operator believes a setting is in force and it is not.
+    expect(unknownFlags(["--at", "2026-01-01"]).length).toBe(1);
+    expect(unknownFlags(["--at", "2026-01-01"])[0]).toContain("--at");
+  });
+
+  test("it suggests what you probably meant", () => {
+    expect(unknownFlags(["--at"])[0]).toContain("--now");
+  });
+
+  test("known flags pass, including their values", () => {
+    expect(unknownFlags(["--store", "/tmp/x", "--now", "2026-01-01T00:00:00Z", "--json"])).toEqual([]);
+  });
+
+  test("a value that happens to start with two dashes is still checked", () => {
+    // `--store --now` is a typo that would otherwise consume the next flag as a path.
+    expect(unknownFlags(["--store", "--nope"]).length).toBe(1);
+  });
+
+  test("--flag=value form names the flag, not the whole token", () => {
+    expect(unknownFlags(["--wibble=3"])[0]?.startsWith("--wibble")).toBe(true);
+  });
+
+  test("positional arguments are not flags", () => {
+    expect(unknownFlags(["run", "/tmp/store"])).toEqual([]);
+  });
+
+  test("every flag the CLI reads is in the known set", () => {
+    // The list is written by hand, so this greps the source for what it actually reads. A flag
+    // added without being listed becomes a silent no-op the day somebody types it.
+    const source = readFileSync(new URL("./run-org.ts", import.meta.url), "utf-8");
+    const used = new Set<string>();
+    for (const m of source.matchAll(/(?:valueAfter|valuesAfter)\(argv, "(--[a-z-]+)"\)/g)) used.add(m[1] as string);
+    for (const m of source.matchAll(/argv\.includes\("(--[a-z-]+)"\)/g)) used.add(m[1] as string);
+    for (const m of source.matchAll(/a === "(--[a-z-]+)"/g)) used.add(m[1] as string);
+    const missing = [...used].filter((f) => !KNOWN_FLAGS.has(f));
+    expect(missing).toEqual([]);
+  });
+});
+
 describe("argument parsing", () => {
   test("defaults are all off", () => {
     // `store` is undefined by default: persisting is a SIDE EFFECT, and a reporting CLI should
     // not have one unless told to.
     expect(parseArgs([])).toEqual({
       qaFails: false, churn: false, json: false, cycleOnly: false, admin: false, store: undefined,
+      // Absent by default: with no facilitator wired, meetings are booked and held by nobody, and
+      // the run SAYS that rather than reporting an outcome it did not have.
+      meetingCmd: undefined, meetingArgs: [],
+      // NO CHECKPOINTS BY DEFAULT, and this is the assertion that keeps it that way. A default that
+      // drifted to "both" would stop every unattended run at its first gate, and the run would look
+      // like it had crashed rather than like it was waiting.
+      actions: undefined, blockers: undefined, checkpoints: [],
+      // NO PRICE TABLE BY DEFAULT. Every crossing is still measured; the cost is reported absent
+      // rather than as a number nobody configured — see `meter.ts`.
+      pricing: {},
+      // Rooms are absent by default: a run with no --rooms answers no conversations, which is
+      // the right behaviour for one nobody told about them.
+      rooms: undefined, roomCmd: undefined, roomArgs: [],
+      memory: undefined, studyCmd: undefined, studyArgs: [],
       // `--week` runs the organization DRIVING ITSELF rather than the scripted cycle. Off by
       // default like every other mode; `days` is absent rather than undefined, because
       // `exactOptionalPropertyTypes` makes those different things and the parser respects it.
@@ -49,10 +110,152 @@ describe("argument parsing", () => {
       // The three ports that had no command-line path until now. Absent still means simulated, and
       // the fidelity block still says so — reaching a tracker, an agent or a model is opt-in.
       reviewModel: undefined, tracker: undefined, trackerItems: undefined,
-      trackerHeaders: [], trackerMap: [], trackerSource: "tracker",
-      workAgent: undefined, workModel: undefined, until: undefined, windowStart: undefined, windowTarget: undefined, now: undefined, agentDelivers: false, sourceRepos: [], sourceSubdir: undefined, workAgentArgs: [], workVerify: undefined, workVerifyArgs: [],
+      trackerHeaders: [], trackerMap: [], trackerSource: "tracker", trackerSeverity: [],
+      workAgent: undefined, workModel: undefined, until: undefined, windowStart: undefined, windowTarget: undefined, now: undefined, agentDelivers: false, sourceRepos: [], sourceSubdir: undefined,
+      confluenceAuthFile: undefined, confluenceSpaces: [], confluenceCql: undefined, confluenceLimit: undefined,
+      skillBindings: [], workAgentArgs: [], workVerify: undefined, workVerifyArgs: [],
+      // Absent means each adapter keeps its own default. Two minutes is right for a build command
+      // and wrong for an agent, so the choice belongs to whoever knows which one they wired up.
+      portTimeoutMs: undefined,
+      // Three, decided in org-cycle. An operator watching a CONVERGING revision may raise it;
+      // absent means the register keeps its own judgement about when churn is churn.
+      maxGateAttempts: undefined,
+      // Three, decided in escalation.ts. It fires BEFORE maxGateAttempts, so raising only the
+      // attempt bound changes nothing an operator can observe.
+      churnThreshold: undefined,
+      // Absent leaves the pre-code phases judgement-only, which is what they have always been.
+      artifactCmd: undefined,
+      artifactArgs: [],
+      // The organization reads a corpus and its own record; it never writes to either. Absent means
+      // the pre-code phases stay judgement-only, which is what they have always been.
+      orgDocs: undefined, contextLimit: undefined, contextOut: undefined,
     });
     expect(parseArgs(["--store", "/tmp/x"]).store).toBe("/tmp/x");
+  });
+
+  test("--port-timeout-ms reaches the SPAWNED port, proven by killing a slow one", async () => {
+    // This flag exists because of a real failure. With nothing setting it, every spawned adapter
+    // kept its 2-minute default; a work agent given a defect in a real codebase was killed at 120s,
+    // the register carried on to the gates with an empty diff, every gate correctly rejected
+    // nothing, and the run reported NOT DELIVERED in under two minutes. No gate was wrong — the
+    // organization was simply never given time to produce anything for them to judge.
+    //
+    // So this is asserted through BEHAVIOUR, not by reading the parsed field back. A flag that is
+    // parsed and then dropped on the floor would satisfy any test that only re-reads `parseArgs`.
+    expect(parseArgs([]).portTimeoutMs).toBeUndefined();
+    expect(parseArgs(["--port-timeout-ms", "5400000"]).portTimeoutMs).toBe(5_400_000);
+    expect(parseArgs(["--max-gate-attempts", "6"]).maxGateAttempts).toBe(6);
+
+    // Asserted through the DECISION, not the parsed field. Reading `parseArgs(...).x` back only
+    // proves the parser stored what it was given; two mutants that dropped the value on its way to
+    // the runtime both survived a test written that way, which is the whole reason this one exists.
+    expect(gateAttemptsFor(parseArgs([]))).toBeUndefined();          // the register keeps its own 3
+    expect(gateAttemptsFor(parseArgs(["--churn"]))).toBe(5);          // the bundle's posture
+    expect(gateAttemptsFor(parseArgs(["--max-gate-attempts", "6"]))).toBe(6);
+    // The narrower, later statement wins over the bundle rather than being overwritten by it.
+    expect(gateAttemptsFor(parseArgs(["--churn", "--max-gate-attempts", "9"]))).toBe(9);
+    expect(gateAttemptsFor(parseArgs(["--max-gate-attempts", "9", "--churn"]))).toBe(9);
+
+    // Every gate BEFORE implementation gets a producer, and none after it — the later phases
+    // already have something real to judge and must not be handed a document instead.
+    expect(artifactProducersFromArgs(parseArgs([])).size).toBe(0);
+
+    // A source is DECLARED by either flag, and the org's own record counts as one — a run with a
+    // record and no repository still has a corpus to grow from.
+    expect(hasSource(parseArgs([]))).toBe(false);
+    expect(hasSource(parseArgs(["--source-repo", "/r"]))).toBe(true);
+    expect(hasSource(parseArgs(["--org-docs", "/d"]))).toBe(true);
+
+    // A tracker's severity words are its own. Jira ships "3 - Medium", which nothing in the register
+    // recognises, so it fell to Low — right in the abstract, silently wrong in practice: a Medium
+    // defect would have been prioritised, staffed and scheduled as Low.
+    const jira = trackerMapper("jira", ["externalId=key", "title=fields.summary", "severity=fields.priority.name"],
+                               ["3 - Medium=medium", "2 - High=high", "1 - Critical=critical"]);
+    const issue = { key: "AIAGENT-1637", fields: { summary: "archival is broken", priority: { name: "3 - Medium" } } };
+    expect(jira(issue).severity).toBe(Severity.Medium);
+    expect(jira(issue).externalId).toBe("AIAGENT-1637");
+
+    // Unmapped STILL falls to Low. A severity nobody translated is a severity nobody knows, and
+    // guessing upward would let a tracker's vocabulary set this organization's priorities.
+    const unmapped = { key: "X-1", fields: { summary: "t", priority: { name: "Blocker!!" } } };
+    expect(jira(unmapped).severity).toBe(Severity.Low);
+
+    // And the register's own words keep working with no mapping at all.
+    const plain = trackerMapper("t", ["externalId=id", "title=t", "severity=sev"]);
+    expect(plain({ id: "1", t: "x", sev: "high" }).severity).toBe(Severity.High);
+
+    // ── ONE MAPPER, ANY TOOL. Config, not code. ──────────────────────────────
+    // The register must not learn a vendor. These are three real response shapes from three
+    // different systems, each read by the SAME function with different flags — which is the whole
+    // claim: swapping task tracker or document store is a configuration change, and nothing in the
+    // core is allowed to name the tool it is talking to.
+    const shapes = [
+      {
+        tool: "Jira",
+        map: ["externalId=key", "title=fields.summary", "severity=fields.priority.name"],
+        sev: ["3 - Medium=medium"],
+        item: { key: "AIAGENT-1637", fields: { summary: "archival broken", priority: { name: "3 - Medium" } } },
+        id: "AIAGENT-1637",
+      },
+      {
+        tool: "GitHub Issues",
+        map: ["externalId=number", "title=title", "severity=labels.0.name"],
+        sev: ["bug:p2=medium"],
+        item: { number: "4471", title: "archival broken", labels: [{ name: "bug:p2" }] },
+        id: "4471",
+      },
+      {
+        tool: "ServiceNow",
+        map: ["externalId=sys_id", "title=short_description", "severity=impact"],
+        sev: ["2=medium"],
+        item: { sys_id: "INC0012345", short_description: "archival broken", impact: "2" },
+        id: "INC0012345",
+      },
+    ];
+    for (const shape of shapes) {
+      const read = trackerMapper(shape.tool, shape.map, shape.sev);
+      const event = read(shape.item);
+      expect(event.externalId).toBe(shape.id);
+      expect(event.title).toBe("archival broken");
+      expect(event.severity).toBe(Severity.Medium);
+      // The citation names the system it came from, so a work item can be traced back to its tool.
+      expect(event.evidenceRefs?.[0]).toBe(`${shape.tool}/${shape.id}`);
+    }
+    const withCmd = artifactProducersFromArgs(parseArgs(["--artifact-cmd", "bash", "--artifact-arg", "w.sh"]));
+    expect([...withCmd.keys()]).toEqual([...PRE_CODE_GATES]);
+    expect(withCmd.has(GateKind.ImplementationReview)).toBe(false);
+    expect(withCmd.has(GateKind.RuntimeValidation)).toBe(false);
+    expect(withCmd.has(GateKind.FinalBusinessValidation)).toBe(false);
+    // DERIVED from the chain, not listed: the boundary is implementation_review's position.
+    expect(PRE_CODE_GATES).toEqual(ORDERED_GATES.slice(0, ORDERED_GATES.indexOf(GateKind.ImplementationReview)));
+    expect(PRE_CODE_GATES).toContain(GateKind.CostApproval);
+    expect(PRE_CODE_GATES).toContain(GateKind.AdversarialReview);
+
+    expect(churnThresholdFor(parseArgs([]))).toBeUndefined();
+    expect(churnThresholdFor(parseArgs(["--churn"]))).toBe(2);
+    expect(churnThresholdFor(parseArgs(["--churn-threshold", "8"]))).toBe(8);
+    expect(churnThresholdFor(parseArgs(["--churn", "--churn-threshold", "8"]))).toBe(8);
+
+    const slow = ["--git", ".", "--work-cmd", process.execPath, "--work-arg", "-e", "--work-arg", "setTimeout(() => {}, 4000)"];
+    const item: CascadeNode = {
+      workId: "task-1",
+      workType: WorkTypeValue.Task,
+      title: "a slow one",
+      state: WorkState.Open,
+      ownerHatId: "tech_lead",
+      assigneeHatId: "backend_implementer",
+    };
+
+    // A budget SHORTER than the command: the port must be killed, and say so rather than pretend.
+    const impatient = providersFromArgs(parseArgs([...slow, "--port-timeout-ms", "250"]), [], RunOutcome.Passed);
+    const killed = await impatient.work.execute(item, { branch: "b" });
+    expect(killed.ok).toBe(false);
+
+    // A budget LONGER than the command, through the same flag: the identical command now finishes.
+    // Same port, same argv, one number different — which is what makes this a test of the flag.
+    const patient = providersFromArgs(parseArgs([...slow, "--port-timeout-ms", "60000"]), [], RunOutcome.Passed);
+    const finished = await patient.work.execute(item, { branch: "b" });
+    expect(finished.ok).toBe(true);
   });
 
   test("REPEATED --work-arg accumulates IN ORDER — these become argv for a real process", () => {
@@ -90,7 +293,12 @@ describe("the default run delivers", () => {
     expect(out).toContain("offered 1 item(s); picked");
     expect(out).toContain("approved and it merged");
     expect(out).toContain("qa_engineer: 1/1 passed");
-    expect(out).toContain("passed all 7 gates");
+    // DERIVED, not a literal. This line asserted "all 7 gates" while the chain held fourteen —
+    // so the test was pinning the stale count rather than catching it, which is the shape of a
+    // check that agrees with the defect. It now fails if either side drifts from the real chain.
+    // Each item names its own chain now; "all 14" was true of nothing.
+    expect(out).toContain("gate(s) this defect owes");
+    expect(out).toContain("and is done");
     expect(out).toContain("DELIVERED");
   });
 

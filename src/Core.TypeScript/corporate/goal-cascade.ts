@@ -165,6 +165,35 @@ export interface CascadeNode {
   /** The IC doing it. Only meaningful on a task. */
   readonly assigneeHatId?: string;
   /**
+   * Work that must be delivered before this item can run.
+   *
+   * A GENERAL EDGE, not a special case. The first version of this was a rule in the runtime that
+   * said "an item of type `review` depends on its non-review siblings" — which is one true
+   * dependency written as code, so every other dependency the organization might have had no way
+   * to be expressed, and this one could not be inspected, overridden, or recorded.
+   *
+   * As data it is none of those things: whoever decomposes the work states what depends on what,
+   * the runtime reads the edge without knowing why it exists, and a dependency that came from a
+   * source system or from an agent's own planning uses the same field.
+   *
+   * Ids, not nodes, so a cascade folded from the log is the same shape as one built in memory.
+   */
+  readonly dependsOn?: readonly string[];
+  /**
+   * What the requester actually wrote about this — why it matters and what done looks like.
+   *
+   * SEPARATE FROM `title`, which is one line and is a label. A step worked by an agent gets the
+   * title and, without this, nothing else: MEASURED, an agent groomed a goal whose stated reason
+   * named the audience, the owner, the latency target and the v1 scope, and its first act was to
+   * ask who the audience was. The detail existed the whole time, in the intake item, one layer up.
+   * An organization that asks a person to repeat what they already said is not consulting them.
+   *
+   * INHERITED by children like `domain` and `requestRef`, because a project under a goal is about
+   * the same thing the goal is about. A child may state its own, which is how a decomposition
+   * narrows the ask rather than repeating it.
+   */
+  readonly brief?: string;
+  /**
    * What this work is ABOUT — the fact the chart never carried.
    *
    * Optional, because a cascade without one behaves exactly as it always did. Present, it decides
@@ -185,6 +214,21 @@ export interface CascadeNode {
    * time it is, and is why `directionOpenings` offers no restatements without a clock.
    */
   readonly directedAtMs?: number;
+  /**
+   * WHAT ASKED FOR THIS — the `externalRefOf` key of the request it came from.
+   *
+   * Minted at intake and, until this field existed, dropped one function later: the organization
+   * knew a defect had arrived, produced a goal and seven descendants, and could not answer "what did
+   * we do about AIAGENT-1637" from the work at all. The link existed for the length of one call.
+   *
+   * INHERITED BY CHILDREN, exactly like `domain` and for the same reason — a task under a project
+   * under a goal that answers a request answers that request, and making every caller repeat it
+   * guarantees the one that forgets orphans a whole branch.
+   *
+   * Optional because work can be born inside the organization: a capability request a hat raised for
+   * itself has no upstream, and pretending it does would attribute it to somebody.
+   */
+  readonly requestRef?: string;
 }
 
 export interface Cascade {
@@ -312,6 +356,14 @@ export function ownerForRung(
   parentHatId: string,
   mustSupportLevel?: HatLevel,
   domain?: Domain,
+  /**
+   * How many contributors under this hat are not already carrying work.
+   *
+   * Supplied by whoever knows the current load - the chart does not, and must not: a chart that
+   * changed shape as work arrived would make two runs over the same organization disagree about
+   * who reports to whom. Absent means capacity is not considered, which is the old behaviour.
+   */
+  freeUnder?: (hatId: string) => number,
 ): OrgHat | undefined {
   const start = OWNING_LEVELS.indexOf(level);
   const ladder = start < 0 ? [level] : OWNING_LEVELS.slice(start);
@@ -351,9 +403,9 @@ export function ownerForRung(
     if (domain !== undefined) {
       const owningDept = departmentFor(domain);
       const inDomain = candidates.filter((h) => h.departmentId === owningDept);
-      if (inDomain.length > 0) return best(chart, inDomain, parentHatId, below);
+      if (inDomain.length > 0) return best(chart, inDomain, parentHatId, below, freeUnder);
     }
-    return best(chart, candidates, parentHatId, below);
+    return best(chart, candidates, parentHatId, below, freeUnder);
   }
 
   // THE PARENT WEARS THE RUNG ITSELF, last and only when it can carry it.
@@ -389,6 +441,7 @@ function best(
   candidates: readonly OrgHat[],
   parentHatId: string,
   preferReach?: HatLevel,
+  freeUnder?: (hatId: string) => number,
 ): OrgHat | undefined {
   const distance = (h: OrgHat): number => supervisorChainOf(chart, h.id).indexOf(parentHatId);
   const delegates = (h: OrgHat): boolean => preferReach !== undefined && reaches(chart, h, preferReach);
@@ -397,6 +450,21 @@ function best(
     if (byDistance !== 0) return byDistance;
     const byDelegation = Number(delegates(b)) - Number(delegates(a));
     if (byDelegation !== 0) return byDelegation;
+    // AMONG EQUALS, PREFER THE LINE WITH PEOPLE FREE.
+    //
+    // Distance and delegation say who SHOULD own it; this says who CAN start it. MEASURED: the
+    // seeded chart has 85 individual contributors and 2 of them under `tech_lead`, which the
+    // ordinal tie-break below picked every single time - so three goals stated together left 83
+    // people idle behind a two-deep queue. A manager asked to take a fourth thing while a peer with
+    // an empty team sits beside them is not a hierarchy working, it is one not looking.
+    //
+    // A TIE-BREAK, never a filter: a line with nobody free still owns work when it is the right
+    // line, and the work then queues under it. Preferring capacity reorders equals; it does not
+    // reassign work away from where it belongs.
+    if (freeUnder !== undefined) {
+      const byCapacity = freeUnder(b.id) - freeUnder(a.id);
+      if (byCapacity !== 0) return byCapacity;
+    }
     // STILL EQUAL: ORDINALLY, never by the order the seed happens to declare hats in.
     //
     // With eight departments there was usually one candidate and this never showed. At the
@@ -432,6 +500,10 @@ export function acceptGoal(
      * reintroduced at the one verb that creates the branch.
      */
     readonly domain?: Domain;
+    /** The request this goal answers, if something outside asked for it. See `request.ts`. */
+    readonly requestRef?: string;
+    /** What the requester wrote. See `CascadeNode.brief`. */
+    readonly brief?: string;
     /** When the direction was stated. Absent means this organization has no clock. */
     readonly atMs?: number;
   },
@@ -460,6 +532,8 @@ export function acceptGoal(
           state: WorkState.Open,
           ownerHatId: hat.id,
           ...(input.domain === undefined ? {} : { domain: input.domain }),
+          ...(input.requestRef === undefined ? {} : { requestRef: input.requestRef }),
+          ...(input.brief === undefined ? {} : { brief: input.brief }),
           ...(input.atMs === undefined ? {} : { directedAtMs: input.atMs }),
         },
       ],
@@ -535,7 +609,18 @@ export function decompose(
     readonly title: string;
     readonly workType?: WorkType;
     readonly domain?: Domain;
+    /** What this child waits for. See `CascadeNode.dependsOn`. */
+    readonly dependsOn?: readonly string[];
+    /** What this child is about, in the requester's words. Inherited when absent. */
+    readonly brief?: string;
   }[],
+  /**
+   * How many contributors under a hat are free. See `ownerForRung`.
+   *
+   * Optional so every existing caller keeps its behaviour; supplied, decomposition routes new work
+   * to a line that can actually start it.
+   */
+  freeUnder?: (hatId: string) => number,
 ): CascadeResult {
   const parent = nodeById(cascade, parentWorkId);
   if (parent === undefined) return { ok: false, reason: `no work item '${parentWorkId}'` };
@@ -576,7 +661,7 @@ export function decompose(
   // domains would need one owner per domain, and that is a different verb (delegating ACROSS
   // departments) than splitting work within one.
   const childDomain = children.find((c) => c.domain !== undefined)?.domain ?? parent.domain;
-  const owner = ownerForRung(chart, rung.ownerLevel, parent.ownerHatId, mustSupport, childDomain);
+  const owner = ownerForRung(chart, rung.ownerLevel, parent.ownerHatId, mustSupport, childDomain, freeUnder);
   if (owner === undefined) {
     return {
       ok: false,
@@ -608,6 +693,10 @@ export function decompose(
       };
     }
     const domain = child.domain ?? parent.domain;
+    // INHERITED, like the domain above and for the same reason: a child of work that answers a
+    // request answers that request. A child cannot override it — an upstream is a fact about where
+    // the work came from, not a routing preference somebody may restate.
+    const requestRef = parent.requestRef;
     nodes.push({
       workId: child.workId,
       workType: childType,
@@ -616,6 +705,9 @@ export function decompose(
       ownerHatId: owner.id,
       parentWorkId,
       ...(domain === undefined ? {} : { domain }),
+      ...(requestRef === undefined ? {} : { requestRef }),
+      ...(child.dependsOn === undefined || child.dependsOn.length === 0 ? {} : { dependsOn: [...child.dependsOn] }),
+      ...((child.brief ?? parent.brief) === undefined ? {} : { brief: child.brief ?? parent.brief }),
     });
   }
   return { ok: true, cascade: { nodes } };

@@ -14,6 +14,8 @@
  * It is a READ. Nothing here changes state — `org-admin.ts` is where an operator acts.
  */
 
+import { chainFor } from "./gate-demand";
+import type { WorkType } from "./goal-cascade";
 import {
   anchorById,
   decisionsOn,
@@ -69,10 +71,9 @@ import {
   type TestRun,
 } from "./qa";
 import {
-  allGatesPassed,
-  gateProgress,
   mayEvaluate,
   nextLegalGate,
+  ORDERED_GATES,
   recoveryPathFor,
   type GateEvaluation,
   type GateKind,
@@ -209,18 +210,28 @@ export interface GateHealth {
   readonly unauthorizedEvaluations: number;
 }
 
+/**
+ * How one work item is doing against THE GATES IT OWES.
+ *
+ * `workType` is optional only so existing callers keep compiling; supply it. Without it this
+ * reports against every canonical gate, and once each type walks its own chain that answer is
+ * actively misleading — a task three gates from done was reported as next-needing
+ * `business_context_grooming`, a gate its type does not owe and no hat will ever run for it.
+ */
 export function gateHealth(
   chart: OrgChart,
   workId: string,
   evaluations: readonly GateEvaluation[],
+  workType?: WorkType,
 ): GateHealth {
   const mine = evaluations.filter((e) => e.workId === workId);
   const passed = new Set(mine.filter((e) => e.outcome === "approved" || e.outcome === "waived").map((e) => e.gate));
-  const next = nextLegalGate(passed);
+  const owed = workType === undefined ? ORDERED_GATES : chainFor(workType);
+  const next = nextLegalGate(passed, owed);
   return {
     workId,
-    progress: gateProgress(passed),
-    merged: allGatesPassed(passed),
+    progress: owed.length === 0 ? 0 : owed.filter((g: GateKind) => passed.has(g)).length / owed.length,
+    merged: owed.length > 0 && owed.every((g: GateKind) => passed.has(g)),
     ...(next === undefined ? {} : { nextGate: next, recoveryIfRejected: recoveryPathFor(next) }),
     // A verdict from a hat without the scope should be impossible — `evaluateGate` refuses it. This
     // counts them anyway, because an audit that trusts the writer cannot detect a bad writer.
@@ -491,12 +502,19 @@ export function orgStatus(input: StatusInput): OrgStatus {
     .map((n) => n.workId);
   const partyHats = [...new Set(input.board.anchors.flatMap((a) => a.participantHatIds))].sort();
 
+  // Each item is judged against ITS OWN chain, so the type has to travel with the id. Absent, this
+  // reported every task as owing all fourteen gates.
+  const typeOf = (id: string): WorkType | undefined =>
+    input.cascade.nodes.find((n) => n.workId === id)?.workType;
+
   return {
     chart: chartHealth(input.chart, input.bindings, input.nowMs),
     schedules: workedHats.map((h) => scheduleHealth(input.calendar, h, input.nowMs)),
     qa: qaHealth(input.testCases, input.testRuns),
     queue: queueHealth(input.queue, input.nowMs),
-    gates: taskIds.map((id) => gateHealth(input.chart, id, input.gateEvaluations)),
+    gates: taskIds.map((id) =>
+      gateHealth(input.chart, id, input.gateEvaluations, typeOf(id)),
+    ),
     churn: taskIds.map((id) => churnHealth(id, input.gateEvaluations)),
     deliberation: partyHats.map((h) => deliberationDebt(input.board, h)),
     exposure: reputationExposure(

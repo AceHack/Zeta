@@ -94,18 +94,32 @@ import {
   type CascadeNode,
 } from "./goal-cascade";
 import { supervisorOf, type HatLevel, type OrgChart } from "./org-chart";
+import { decideSupply, endorseRecommendation, DEFAULT_LOAD_PER_WEARER, type SupplyVote } from "./rmo";
+import { assignableAgents, hatSupply, type AgentRoster } from "./agent-roster";
+import type { HatBinding } from "./hat-binding";
+import type { PriorityDecision } from "./prioritization";
 import {
   EMPTY_CALENDAR,
+  ScheduleBlockState,
+  ScheduleBlockType,
   firstCommonFreeSlot,
   scheduleBlock,
   scheduleMeeting,
-  ScheduleBlockState,
-  ScheduleBlockType,
   type Calendar,
 } from "./work-schedule";
 import { sendSupervisorSignal, SignalTool, type SupervisorSignal } from "./supervisor-signal";
 import { firstLegalChooser, preferChooser, type OrgChooser } from "./org-decision";
-import { GateOutcome, NO_PROPOSER, runGateChain, type GateEvaluation, type GateKind, type GateRunResult, type RecoveryPath } from "./quality-gate";
+import {
+  GateOutcome,
+  NO_PROPOSER,
+  humanGatesFor,
+  runGateChain,
+  type GateEvaluation,
+  type GateKind,
+  type GateRunResult,
+  type HumanCheckpoint,
+  type RecoveryPath,
+} from "./quality-gate";
 import {
   DEFAULT_CHURN_THRESHOLD,
   decideEscalation,
@@ -135,6 +149,52 @@ export interface OrgCycleDeps {
   readonly resourceAuthorityHatId: string;
   /** The RMO's staffing choice for a task. `undefined` means it could not staff it. */
   readonly contributorFor: (task: CascadeNode) => string | undefined;
+  /**
+   * How the work is ranked, so the RMO weights the queue instead of counting it.
+   *
+   * Absent means every item weighs the "unranked" 0.5 — deliberately not zero, because staffing
+   * nobody for work nobody has ranked yet is how an unranked backlog justifies an empty team.
+   */
+  readonly priorities?: readonly PriorityDecision[];
+  /** Open tasks one wearer carries. Shared with the RMO so both sides use one number. */
+  readonly loadPerWearer?: number;
+  /**
+   * How each eligible supervisor votes on a hat's supply. Absent endorses the workload.
+   *
+   * The RMO used to be computed AFTER the run and printed in a report, which meant staffing was
+   * never actually constrained by it: `assignment-engine` picked whoever was eligible and the
+   * supply figure was a number nobody consulted. A resource office that cannot refuse is not one.
+   */
+  readonly supplyVoteBy?: (voterHatId: string, recommended: number) => SupplyVote | undefined;
+  /**
+   * The agents that EXIST, and which hats each is provisioned for.
+   *
+   * Absent means the old behaviour — an agent conjured per hat, so no hat is ever short-staffed.
+   * Supplying one makes staffing refusable: a hat with nobody free stays unstaffed and the cycle
+   * says which agents were blocked and why, instead of assigning somebody who cannot hold it.
+   */
+  readonly roster?: AgentRoster;
+  /** Live hat bindings, so capacity and cooldown are read from what is actually worn. */
+  readonly bindings?: readonly HatBinding[];
+  /**
+   * The optional human checkpoints — grooming, the approach, both, or (the default) neither.
+   *
+   * Empty means the organization runs the whole chain agentically. That is the default because it
+   * is what every existing caller does, and because a checkpoint nobody asked for would stop a run
+   * that had no one waiting to unblock it.
+   */
+  readonly checkpoints?: readonly HumanCheckpoint[];
+  /**
+   * What a person has decided about a work item's gate, if anything.
+   *
+   * Supplied by the caller, because the caller is what read the action queue. The cycle does not
+   * reach for the queue itself: a run that could read new instructions mid-cycle would be deciding
+   * against a moving input, and its trace would not replay.
+   */
+  readonly humanDecisionFor?: (
+    workId: string,
+    gate: GateKind,
+  ) => { readonly outcome: GateOutcome; readonly actionRef: string } | undefined;
   /** What happened when the assignee did the work. */
   readonly outcomeFor: (task: CascadeNode) => "done" | "blocked";
   /**
@@ -353,7 +413,11 @@ export function runOrgCycle(deps: OrgCycleDeps): OrgCycleReport {
   // ── 3 & 4. The RMO staffs the tasks ───────────────────────────────────────
   // The request goes to the resource authority, NOT up the line — a lead asking its own supervisor
   // for people is asking someone who must forward it.
-  for (const task of unstaffedTasks(cascade)) {
+  // Captured ONCE: the queue as it stands when staffing begins. Re-deriving it inside the loop
+  // would shrink `upcoming` as the loop assigns, so each decision would see less demand than the
+  // one before it and the office would under-staff the tail of its own queue.
+  const pendingQueue = [...unstaffedTasks(cascade)];
+  for (const task of pendingQueue) {
     const sent = sendSupervisorSignal(
       chart,
       board,
@@ -403,6 +467,80 @@ export function runOrgCycle(deps: OrgCycleDeps): OrgCycleReport {
     }
     board = decided.board;
 
+    // ── IS THERE ANYBODY TO WEAR IT? ─────────────────────────────────────
+    // Asked BEFORE the RMO votes, because a supply decision about a hat nobody can wear is a
+    // decision about nothing. Skipped entirely when no roster was supplied, which keeps the old
+    // conjure-an-agent-per-hat behaviour available and visible rather than silently imposed.
+    if (deps.roster !== undefined) {
+      const bench = assignableAgents({
+        roster: deps.roster,
+        bindings: deps.bindings ?? [],
+        chart,
+        hatId: contributor,
+        nowMs: deps.nowMs,
+      });
+      if (bench.length === 0) {
+        const supplyNow = hatSupply({
+          roster: deps.roster,
+          bindings: deps.bindings ?? [],
+          chart,
+          hatId: contributor,
+          nowMs: deps.nowMs,
+        });
+        const why = supplyNow.blocked.length === 0
+          ? "no agent is provisioned for it"
+          : supplyNow.blocked.map((b) => `${b.agentId}: ${b.reason}`).join("; ");
+        refusals.push(`no agent can wear '${contributor}' for ${task.workId} — ${why}`);
+        continue;
+      }
+      events.push(
+        `${deps.resourceAuthorityHatId}: ${String(bench.length)} agent(s) available for ${contributor} (${bench.join(", ")})`,
+      );
+    }
+
+    // ── THE RMO AUTHORIZES, OR THE HAT IS NOT WORN ───────────────────────
+    // Supply is computed from the work already assigned to this hat PLUS the queue still waiting
+    // that would route to it, so the office staffs for demand rather than one cycle behind it. A
+    // quorum of the hat's own supervisors then votes; short of quorum is a refusal, not a default.
+    // TASKS and WEARERS are different units, and conflating them is a real refusal: a hat with one
+    // authorized wearer holds `loadPerWearer` tasks, so comparing an assigned-task count against a
+    // wearer target refused the second task to every hat that had just taken its first.
+    const heldTasks = cascade.nodes.filter(
+      (n) => n.assigneeHatId === contributor && n.state !== WorkState.Done && n.state !== WorkState.Canceled,
+    ).length;
+    const perWearer = Math.max(1, deps.loadPerWearer ?? DEFAULT_LOAD_PER_WEARER);
+    const wearers = Math.ceil(heldTasks / perWearer);
+    const supply = decideSupply({
+      chart,
+      hatId: contributor,
+      currentWearers: wearers,
+      supply: {
+        cascade,
+        priorities: deps.priorities ?? [],
+        ...(deps.loadPerWearer === undefined ? {} : { loadPerWearer: deps.loadPerWearer }),
+        upcoming: pendingQueue
+          .filter((t) => t.workId !== task.workId)
+          .map((t) => ({ node: t, hatId: contributor })),
+      },
+      voteBy: deps.supplyVoteBy ?? endorseRecommendation("workload"),
+    });
+    if (!supply.ok) {
+      refusals.push(`RMO supply for ${contributor}: ${supply.reason}`);
+      continue;
+    }
+    if (heldTasks >= supply.decision.target * perWearer) {
+      // Not a failure — the office declining to over-staff. Leaving it unassigned is the honest
+      // state; assigning anyway would make the supply decision decorative.
+      refusals.push(
+        `RMO holds ${contributor} at ${String(supply.decision.target)} wearer(s) ` +
+          `(${String(heldTasks)}/${String(supply.decision.target * perWearer)} tasks); ${task.workId} stays unstaffed`,
+      );
+      continue;
+    }
+    events.push(
+      `${deps.resourceAuthorityHatId}: supply ${contributor} ${supply.decision.action} target ${String(supply.decision.target)} (${String(supply.decision.votesCast)}/${String(supply.decision.quorum)} votes)`,
+    );
+
     const assigned = assign(cascade, chart, task.workId, contributor);
     if (!assigned.ok) {
       refusals.push(`assign ${task.workId}: ${assigned.reason}`);
@@ -420,12 +558,20 @@ export function runOrgCycle(deps: OrgCycleDeps): OrgCycleReport {
 
   // ── 5. Assignees get a work block ─────────────────────────────────────────
   // The schedule is runtime authority: after this, "is this hat busy" has an answer.
+  //
+  // A BLOCK IS A PRECONDITION, NOT A RECEIPT. It used to be neither: a refused block pushed a
+  // refusal and the cycle went on to execute the work anyway, so the calendar recorded what the
+  // organization intended while the work ignored it. A schedule nothing obeys is not authority.
   let cursor = deps.nowMs;
+  const scheduled: string[] = [];
+  // Which block holds which task, so the calendar can be told the block was HONOURED.
+  const blockOf = new Map<string, string>();
   for (const taskId of staffed) {
     const task = nodeById(cascade, taskId);
     if (task?.assigneeHatId === undefined) continue;
+    const blockId = deps.createId("blk");
     const step = scheduleBlock(calendar, {
-      blockId: deps.createId("blk"),
+      blockId,
       hatId: task.assigneeHatId,
       blockType: ScheduleBlockType.PrioritizedWork,
       startMs: cursor,
@@ -438,6 +584,8 @@ export function runOrgCycle(deps: OrgCycleDeps): OrgCycleReport {
       continue;
     }
     calendar = step.calendar;
+    scheduled.push(taskId);
+    blockOf.set(taskId, blockId);
     events.push(`${task.assigneeHatId} scheduled ${deps.workBlockMs}ms on ${taskId}`);
     // Sequential, because one contributor may hold several tasks and the calendar refuses overlap.
     // Stacking them at the same instant would make the second refusal look like a scheduling bug
@@ -478,9 +626,26 @@ export function runOrgCycle(deps: OrgCycleDeps): OrgCycleReport {
   }
 
   // ── 7 & 8. Work happens; blockers rise, and escalate when they must ───────
-  for (const taskId of staffed) {
+  // ONLY WHAT WAS SCHEDULED. A task the calendar refused has no time in which to be done, and doing
+  // it anyway would make every downstream claim — the QA record, the gate evidence, the DORA
+  // figures — describe work the organization never actually made room for.
+  for (const taskId of staffed.filter((id) => !scheduled.includes(id))) {
+    refusals.push(`${taskId} was staffed but never scheduled; no work was done on it`);
+  }
+  for (const taskId of scheduled) {
     const task = nodeById(cascade, taskId);
     if (task === undefined) continue;
+
+    // NOTE, deliberately NOT a fix here: nothing outside tests ever sets a block to `Completed`,
+    // so `markMissed` ages every past block into `Missed` and `scheduleHealth.reliability` reads
+    // 100% while no block has passed and 0% the moment one has — decided by when you look.
+    //
+    // Marking the block completed HERE was tried and is wrong: `occupies()` counts scheduled,
+    // active and paused, so a completed block stops occupying and the hat reads as not busy during
+    // its own booked time — breaking the one question the calendar exists to answer. The honest
+    // repair is a block lifecycle that runs as the clock advances (scheduled -> active ->
+    // completed), which the single-cycle path has no clock for. Left as a named gap rather than a
+    // transition that makes a metric look better and a guarantee false.
 
     if (deps.outcomeFor(task) === "done") {
       // The assignee claims it is finished. THE ORGANIZATION DECIDES WHETHER IT IS — seven gates,
@@ -492,7 +657,12 @@ export function runOrgCycle(deps: OrgCycleDeps): OrgCycleReport {
       let merged = false;
 
       for (let attempt = 1; attempt <= maxAttempts && !merged; attempt += 1) {
+        const humanGates = humanGatesFor(deps.checkpoints ?? []);
         const run = runGateChain(chart, {
+          ...(humanGates.size === 0 ? {} : { humanRequiredAt: humanGates }),
+          ...(deps.humanDecisionFor === undefined
+            ? {}
+            : { humanDecisionFor: (gate: GateKind) => deps.humanDecisionFor?.(taskId, gate) }),
           workId: taskId,
           chooser: deps.gateChooser ?? preferChooser<GateOutcome>(GateOutcome.Approved, "approve"),
           atMs: deps.nowMs,
@@ -500,6 +670,14 @@ export function runOrgCycle(deps: OrgCycleDeps): OrgCycleReport {
           proposerHatId: task.assigneeHatId ?? NO_PROPOSER,
         });
         gateRuns.push({ taskId, run });
+        if (run.awaitingHuman !== undefined) {
+          // NOT a refusal. Nobody has looked yet, and the work is fine — it is simply not the
+          // organization's turn. Recorded as an event so a dashboard can show whose turn it is.
+          events.push(
+            `${taskId} is waiting for a person at '${String(run.awaitingHuman)}' — the organization has stopped here on purpose`,
+          );
+          break;
+        }
         gateEvaluations.push(...run.evaluations);
         for (const evaluation of run.evaluations) engage(evaluation.byHatId);
         for (const refusal of run.refusals) refusals.push(`gates for ${taskId}: ${refusal}`);

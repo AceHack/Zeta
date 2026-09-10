@@ -12,6 +12,7 @@
 
 import { describe, expect, test } from "bun:test";
 import { factEvents, foldCalendar, foldCascade, foldGateEvaluations, foldOrganization, foldPortfolioBook, foldPriorities, foldQaCycles, foldQueues, foldRefusals } from "./org-fold";
+import { isStudyBlock } from "./study-session";
 import { ClaimState, ShardState, emptyQueue, type WorkQueue } from "./work-market";
 import { mergeQueues } from "./run-agent";
 import { PriorityClass } from "./prioritization";
@@ -19,6 +20,8 @@ import { GateKind, GateOutcome } from "./quality-gate";
 import { PortfolioKind, portfolioHistory } from "./portfolio";
 import { agentsFromChart, runOrgRuntime, type OrgRuntimeDeps } from "./org-runtime";
 import { buildOrgChart } from "./org-chart";
+import { emit } from "./org-event";
+import { conflictsFor } from "./work-schedule";
 import { SEED_HATS } from "./org-seed";
 import { IntakeKind, Severity, type ExternalEvent } from "./intake";
 import { RunOutcome } from "./qa";
@@ -130,6 +133,102 @@ describe("THE ROUND TRIP — the log rebuilds what produced it", () => {
     // One fact, N legs: all the legs share one id, and each sits on a different hat's calendar.
     expect(new Set(meetings.map((b) => b.meetingId)).size).toBe(1);
     expect(new Set(meetings.map((b) => b.hatId)).size).toBe(meetings.length);
+  });
+
+  test("FREE TIME IS BOOKED TIME — a studying hat is not free", () => {
+    const chart = buildOrgChart(SEED_HATS);
+    if (!chart.ok) throw new Error(chart.reason);
+    const at = Date.parse("2026-09-09T13:00:00.000Z");
+    const events = [
+      emit(chart.chart, "e1", {
+        kind: OrgEventKind.DecisionRecorded,
+        subjectId: "architect",
+        decision: "architect spent free time on the repository",
+        atMs: at,
+        fact: {
+          kind: "self_directed",
+          hatId: "architect",
+          selfDirectedKind: "study_repository",
+          subject: "the module this hat reviews most often",
+          startMs: at,
+          endMs: at + 3_600_000,
+          producesKey: "study_repository:the-module-this-hat-reviews-most-often",
+        },
+      }),
+    ];
+
+    // ASSERTED ON THE PROPERTY THIS TEST IS NAMED FOR — the hour is BOOKED — not on the block
+    // type it happened to have. It read `blockType === FreeTime`, which held only while every
+    // self-directed hour was flattened to free time; that flattening is precisely what made the
+    // study budget unspendable (`isStudyBlock` tests for `Reflection`, so `studySpentIn` answered
+    // zero over a log full of study). Pinning the type here would have pinned the defect.
+    const booked = foldCalendar(events).blocks;
+    expect(booked.length).toBe(1);
+    expect(booked[0]?.hatId).toBe("architect");
+    expect(booked[0]?.endMs).toBe(at + 3_600_000);
+    // The memory the block owes, so an hour that produced nothing is visible as one.
+    expect(booked[0]?.workItemId).toBe("study_repository:the-module-this-hat-reviews-most-often");
+
+    // AND IT IS RECOGNISABLE AS STUDY, which is the half the old assertion actively prevented.
+    // Without this the hour is booked and still invisible to the allowance that is supposed to
+    // bound it.
+    expect(isStudyBlock(booked[0]!)).toBe(true);
+
+    // The point of putting it on the calendar at all: the hat is BUSY. Before this, the hour
+    // existed only as a fact, so a meeting could be booked straight over it.
+    expect(conflictsFor(foldCalendar(events), "architect", at + 60_000, at + 120_000).length).toBe(1);
+  });
+
+  test("a NON-study self-directed hour is still free time — the split is by kind, not by blanket", () => {
+    const chart = buildOrgChart(SEED_HATS);
+    if (!chart.ok) throw new Error(chart.reason);
+    const at = Date.parse("2026-09-09T13:00:00.000Z");
+    const events = [
+      emit(chart.chart, "e1", {
+        kind: OrgEventKind.DecisionRecorded,
+        subjectId: "architect",
+        decision: "architect wrote down how a subsystem works",
+        atMs: at,
+        fact: {
+          kind: "self_directed",
+          hatId: "architect",
+          selfDirectedKind: "write_context_doc",
+          subject: "how the fold works",
+          startMs: at,
+          endMs: at + 3_600_000,
+          producesKey: "write_context_doc:how-the-fold-works",
+        },
+      }),
+    ];
+    const blocks = foldCalendar(events).blocks;
+    expect(blocks.length).toBe(1);
+    expect(blocks[0]?.blockType).toBe(ScheduleBlockType.FreeTime);
+    // Still booked — the hat is busy writing, and a meeting must not land on top of it.
+    expect(conflictsFor(foldCalendar(events), "architect", at + 60_000, at + 120_000).length).toBe(1);
+    // But it does NOT spend the study allowance: documenting is not studying.
+    expect(isStudyBlock(blocks[0]!)).toBe(false);
+  });
+
+  test("re-folding a self-directed hour does not book it twice", () => {
+    const chart = buildOrgChart(SEED_HATS);
+    if (!chart.ok) throw new Error(chart.reason);
+    const at = Date.parse("2026-09-09T13:00:00.000Z");
+    const one = emit(chart.chart, "e1", {
+      kind: OrgEventKind.DecisionRecorded,
+      subjectId: "architect",
+      decision: "studied",
+      atMs: at,
+      fact: {
+        kind: "self_directed",
+        hatId: "architect",
+        selfDirectedKind: "study_repository",
+        subject: "s",
+        startMs: at,
+        endMs: at + 3_600_000,
+        producesKey: "k",
+      },
+    });
+    expect(foldCalendar([one, one]).blocks.length).toBe(1);
   });
 });
 

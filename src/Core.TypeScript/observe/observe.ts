@@ -176,6 +176,72 @@ export interface MissingInformation {
    * agent with nothing to do but guess or go quiet.
    */
   readonly kind?: string;
+  /**
+   * What only a PERSON can settle, if the agent can say — an opaque string here.
+   *
+   * Present means the agent is claiming no colleague can answer this: a legal call, a spend it has
+   * no budget for, a customer's intent, access it may not grant itself. The core does not check the
+   * claim and cannot — whether a decision belongs to an organization is not a fact the organization
+   * contains. A register decides what to do with it and records that this branch was UNCHECKED.
+   */
+  readonly needsHuman?: string;
+}
+
+/**
+ * HOW AN ORGANIZATION RAN OUT — the reason a blocker is leaving it for a person.
+ *
+ * A discriminated union rather than a boolean, because "the org cannot solve this" is a CLAIM, and
+ * a claim nobody can check is the escape hatch that eventually carries everything. Two of the three
+ * forms below are checkable against the chart by whoever receives them; the third names an
+ * authority the organization was never given. None of them is "I would rather ask a person."
+ */
+export type Exhaustion =
+  /**
+   * Nobody here can hold it. Checkable: the register looks the kind up in its own chart.
+   *
+   * This is the form that must NOT require a prior attempt. An organization with no security hat
+   * cannot ask its security hat first, and demanding evidence of an impossible attempt would trap
+   * exactly the blocker that most needs a person.
+   */
+  | { readonly kind: "no_owner_in_org"; readonly forBlockerKind: string }
+  /**
+   * The people who own it were asked, and it is still stuck.
+   *
+   * `askedHatIds` MUST be non-empty — see `acceptBlocker`. An exhaustion that names nobody is an
+   * agent asserting it tried, and an assertion that costs nothing is the vacuity class: a check
+   * that cannot fail, wearing the shape of diligence.
+   */
+  | { readonly kind: "owners_could_not_resolve"; readonly askedHatIds: readonly string[] }
+  /**
+   * A decision the organization is not allowed to make at all.
+   *
+   * Money it has no budget for, access it may not grant itself, a person's consent, a legal call,
+   * anything outside its own authority. No amount of internal escalation produces this answer,
+   * because the answer was never the organization's to give.
+   */
+  | { readonly kind: "outside_org_authority"; readonly what: string };
+
+/**
+ * Something that has stopped, that the organization itself cannot unstick.
+ *
+ * This is the ONLY thing in the grammar addressed OUTSIDE the organization. `request_information`
+ * asks a colleague; this asks a person, and it exists because an organization made entirely of
+ * agents will otherwise choose plausibly at exactly the moments a person would have said "no, not
+ * that" — and the cost surfaces at a gate, or in a merge request, rather than in a question.
+ */
+export interface HumanBlocker {
+  /** A stable id, so raising the same blocker twice is one blocker and not two. */
+  readonly blockerId: string;
+  /** What is not known or not permitted. */
+  readonly about: string;
+  /** The work that has stopped. Never empty — a blocker blocking nothing is an opinion. */
+  readonly blocking: string;
+  /** The taxonomy's name for it, if the agent could classify it. Opaque here. */
+  readonly kind?: string;
+  /** How the organization ran out. */
+  readonly exhaustion: Exhaustion;
+  /** What the agent would do with an answer, so the person is told what their reply unblocks. */
+  readonly unblocks: string;
 }
 
 /**
@@ -234,6 +300,13 @@ export interface World {
   readonly reviewsAsked?: readonly ReviewAsk[];
   readonly deliberations?: readonly OpenDeliberation[];
   readonly missing?: readonly MissingInformation[];
+  /**
+   * Blockers that have run out of organization — the ones that must reach a person.
+   *
+   * Optional like the rest of the surface: absent means the verb is simply not offered, and an
+   * agent with no organization behind it sees the menu it always saw.
+   */
+  readonly unresolvable?: readonly HumanBlocker[];
   /** Work this agent may hand to someone else, with who is eligible. */
   readonly assignable?: readonly { readonly item: BacklogItem; readonly toHatIds: readonly string[] }[];
   /** Hats this agent could pull into a room, and the artifact it would convene over. */
@@ -498,6 +571,23 @@ export type NextAction =
   | { kind: "convene_meeting"; artifactId: string; withHatIds: readonly string[]; reason: string }
   /** Say what is missing. NEVER GATED — see the reconciliation row. */
   | { kind: "request_information"; about: string; blocking: string; reason: string; blockerKind?: string }
+  /**
+   * Raise a blocker OUT of the organization, to a person. NEVER GATED, for the same reason.
+   *
+   * The only verb whose addressee is outside the org chart. `respond_to_operator` answers a person
+   * who already spoke; this one interrupts a person who did not. That is why it carries its
+   * `exhaustion` — the addressee is owed the reason their attention is being spent.
+   */
+  | {
+      kind: "raise_to_human";
+      blockerId: string;
+      about: string;
+      blocking: string;
+      exhaustion: Exhaustion;
+      unblocks: string;
+      reason: string;
+      blockerKind?: string;
+    }
   /** Hand a work item to someone. Wires `canCreateWork`, which had no action until now. */
   | { kind: "assign_work"; item: BacklogItem; toHatId: string; reason: string }
 
@@ -538,6 +628,36 @@ export type NextAction =
  * chooser ends up unable to pick the thing the observer told it to do. The `reason` is the
  * opening's own prompt — the agent is being asked a question, and the menu should say which.
  */
+function raiseAction(b: HumanBlocker): NextAction {
+  return {
+    kind: "raise_to_human",
+    blockerId: b.blockerId,
+    about: b.about,
+    blocking: b.blocking,
+    exhaustion: b.exhaustion,
+    unblocks: b.unblocks,
+    reason: whyItLeft(b),
+    ...(b.kind === undefined ? {} : { blockerKind: b.kind }),
+  };
+}
+
+/**
+ * The sentence a person reads first.
+ *
+ * Total over `Exhaustion`, so a fourth way of running out is a compile error here rather than a
+ * blocker that reaches somebody with no account of why it did.
+ */
+export function whyItLeft(b: HumanBlocker): string {
+  switch (b.exhaustion.kind) {
+    case "no_owner_in_org":
+      return `${b.blocking} is stopped on ${b.about}, and nobody here holds '${b.exhaustion.forBlockerKind}'`;
+    case "owners_could_not_resolve":
+      return `${b.blocking} is stopped on ${b.about}; ${b.exhaustion.askedHatIds.join(", ")} could not resolve it`;
+    case "outside_org_authority":
+      return `${b.blocking} is stopped on ${b.about} — ${b.exhaustion.what} is not this organization's to decide`;
+  }
+}
+
 function generativeAction(g: GenerativeOpening): NextAction {
   switch (g.kind) {
     case "set_direction":
@@ -654,6 +774,14 @@ export function observe(world: World): NextAction {
   // always prefer new work to unblocking each other builds a backlog of half-finished things and a
   // queue of people waiting. None of them is forced: they are what `observe` RECOMMENDS, and the
   // free modes remain in the menu beside them exactly as before.
+  // ABOVE `request_information`, and that ordering is the whole point of the verb. Something in
+  // `unresolvable` has ALREADY run out of organization; asking the organization again is the loop
+  // it is trying to leave. Below the operator and the persisted free mode, exactly like every other
+  // work-shaped verb — being stuck does not cancel the agent's freedom, it just makes this the
+  // recommendation when the agent is working.
+  const forPerson = world.unresolvable?.[0];
+  if (forPerson) return raiseAction(forPerson);
+
   const blocked = world.missing?.[0];
   if (blocked) {
     return {
@@ -911,6 +1039,9 @@ export function buildMenu(world: World): NextAction[] {
       revisionId: d.revisionId,
       reason: `'${d.title}' is open and you are in it`,
     });
+  }
+  for (const b of world.unresolvable ?? []) {
+    candidates.push(raiseAction(b));
   }
   for (const m of world.missing ?? []) {
     candidates.push({
@@ -1289,6 +1420,16 @@ export function simulate(world: World, action: NextAction): World {
     // of an action whose effect is not local, and inventing a local effect here (dropping the
     // assigned item from this agent's backlog, say) would make the pure simulation disagree with
     // what actually happened.
+    // RAISING IT IS A LOCAL CHANGE, unlike its neighbours below, and the difference is real rather
+    // than a convenience. `unresolvable` is a list in THIS agent's own world of things it has yet
+    // to hand out; once handed out, it is a person's, and the agent has nothing left to do with it
+    // but wait. Leaving it in place would make the deterministic controller pick the same blocker
+    // every tick forever — which is measured behaviour for `request_information` (see the
+    // bridge's 200-round note) and is not worth reproducing on purpose.
+    case "raise_to_human": {
+      const left = (world.unresolvable ?? []).filter((b) => b.blockerId !== action.blockerId);
+      return { ...world, unresolvable: left };
+    }
     case "review_artifact":
     case "respond_to_artifact":
     case "convene_meeting":

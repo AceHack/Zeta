@@ -144,17 +144,93 @@ export function writeShard(spec: ShardSpec, root: string): string {
  * and returned as one, with whatever fields it happened to have. A store that silently adopts
  * anything left in its directory is not a store; the name is what says "this is ours".
  */
-function walkShards(dir: string, out: string[]): void {
-  for (const entry of readdirSync(dir, { withFileTypes: true })) {
+/**
+ * A half-open instant range, in the same milliseconds a shard is written under.
+ *
+ * Both ends optional: a window with neither is every shard, which is what an unbounded read is.
+ */
+export interface ShardWindow {
+  /** Inclusive. */
+  readonly fromMs?: number;
+  /** Inclusive — a day is kept when any part of it is at or before this. */
+  readonly toMs?: number;
+}
+
+const MS_PER_DAY = 86_400_000;
+
+/**
+ * Whether a `YYYY/MM/DD` triple can hold anything the window wants.
+ *
+ * A date the runtime cannot parse is KEPT. An unreadable directory name is a reason to look, never
+ * a licence to skip — dropping shards to tidy up a walk is the one failure a store must not have.
+ */
+function dayIntersects(parts: readonly string[], window: ShardWindow): boolean {
+  const [yyyy, mm, dd] = parts;
+  if (yyyy === undefined || mm === undefined || dd === undefined) return true;
+  // NO SEPARATE SHAPE CHECK. One was written here — `/^[0-9]{4}$/` on the year and `/^[0-9]{2}$/`
+  // on the other two — and it was SUBSUMED by the two lines below: anything not date-shaped either
+  // fails to parse or fails the round trip, and both of those already return `true`. It survived a
+  // mutation that deleted it outright, which is the definition of a check no input can falsify.
+  const startMs = Date.parse(`${yyyy}-${mm}-${dd}T00:00:00.000Z`);
+  if (!Number.isFinite(startMs)) return true;
+  // ROUND-TRIPPED, because `Date.parse` accepts dates that do not exist and silently rolls them
+  // over: `2026-02-30` parses as March 2nd. A directory named that is not a date this store wrote,
+  // and treating it as March would prune it against the wrong day.
+  if (new Date(startMs).toISOString().slice(0, 10) !== `${yyyy}-${mm}-${dd}`) return true;
+  const endMs = startMs + MS_PER_DAY - 1;
+  if (window.fromMs !== undefined && endMs < window.fromMs) return false;
+  if (window.toMs !== undefined && startMs > window.toMs) return false;
+  return true;
+}
+
+/**
+ * Collect shard paths under `dir`, skipping days the window excludes.
+ *
+ * ── THE DATE IS DECIDED WHERE THE FILES ARE, NOT ON THE WAY DOWN ─────────────
+ * A shard is written at `<root>/<prefix...>/YYYY/MM/DD/<id>.json`, so the date is always the LAST
+ * three segments above the filename — but the prefix is variable length, so on the way down there
+ * is no way to know whether a triple being assembled is the date or part of the prefix.
+ *
+ * The first cut guessed while descending and was WRONG, measurably: a store written under the
+ * prefix `2020/01/01` had every one of its 2026 shards pruned by a 2026 window, because the walk
+ * matched the prefix as the date, found 2020 outside the range, and never descended. Silent loss,
+ * in the direction of returning less — the worst direction for a store.
+ *
+ * Asking at the directory that actually HOLDS the files removes the guess entirely: whatever those
+ * three segments are, they are the ones `shardPath` put there. The cost is one `readdir` per day
+ * directory that gets skipped, which is nothing beside the file opens it avoids — at 60,000 events
+ * the opens and parses are essentially the whole read.
+ */
+function walkShards(dir: string, out: string[], window?: ShardWindow, below: readonly string[] = []): void {
+  const entries = readdirSync(dir, { withFileTypes: true });
+  // Only ask about this directory's own trailing triple, and only when it holds shards.
+  const skipFiles = window !== undefined && !dayIntersects(below.slice(-3), window);
+  for (const entry of entries) {
     const full = join(dir, entry.name);
     if (entry.isDirectory()) {
-      walkShards(full, out);
+      walkShards(full, out, window, [...below, entry.name]);
       continue;
     }
+    if (skipFiles) continue;
     if (!entry.isFile() || !entry.name.endsWith(".json")) continue;
     if (!SHARD_ID_RE.test(entry.name.slice(0, -".json".length))) continue;
     out.push(full);
   }
+}
+
+/**
+ * The PATH of every shard under a root, without opening any of them.
+ *
+ * Listing costs a `readdir` per directory; reading costs an open, a read and a `JSON.parse` per
+ * record, and at 60,000 events that second cost is essentially the entire read. So a caller that
+ * wants to know WHICH shards exist — an incremental indexer deciding what is new — must be able to
+ * ask without paying for the contents it already has.
+ */
+export function shardFiles(root: string, window?: ShardWindow): readonly string[] {
+  if (!existsSync(root)) return [];
+  const files: string[] = [];
+  walkShards(root, files, window);
+  return files;
 }
 
 /**
@@ -167,18 +243,68 @@ function walkShards(dir: string, out: string[]): void {
  * A missing root is an EMPTY read, not an error: a store nobody has written to yet is a normal
  * state, and throwing would make "nothing has happened" indistinguishable from "something broke".
  */
-export function readShards<T>(root: string, identify: (record: T) => string): readonly T[] {
+export function readShards<T>(
+  root: string,
+  identify: (record: T) => string,
+  /**
+   * Read only shards written inside this instant range.
+   *
+   * A HINT ABOUT THE PATH, not a filter on the record. Pruning happens on `YYYY/MM/DD` directories,
+   * which are named from the instant a record was WRITTEN UNDER — so a caller that needs the
+   * predicate to hold exactly must still filter what comes back. What this buys is not opening the
+   * files that cannot match: MEASURED at 60,000 events, an unbounded read is ~10s and essentially
+   * all of it is reading and parsing, so the saving is proportional to the days excluded.
+   */
+  window?: ShardWindow,
+): readonly T[] {
   if (!existsSync(root)) return [];
   const files: string[] = [];
-  walkShards(root, files);
+  walkShards(root, files, window);
   const seen = new Set<string>();
   const out: T[] = [];
   for (const file of files) {
-    const record = JSON.parse(readFileSync(file, "utf-8")) as T;
+    // ── ONE BAD SHARD IS NOT A BROKEN STORE ────────────────────────────────
+    // A process killed mid-write leaves a truncated file, and this used to throw straight out of
+    // `JSON.parse` — so the single failure mode durability exists to survive made the whole
+    // organization permanently unreadable.
+    //
+    // It is SKIPPED, never silently: `shardProblems` lists exactly these files. A store quietly
+    // missing events would read as a smaller organization and nobody would know, which is the
+    // worse of the two errors.
+    let record: T;
+    try {
+      record = JSON.parse(readFileSync(file, "utf-8")) as T;
+    } catch {
+      continue;
+    }
     const id = identify(record);
     if (seen.has(id)) continue;
     seen.add(id);
     out.push(record);
+  }
+  return out;
+}
+
+/**
+ * Shards under a root that could not be read back, and why.
+ *
+ * The companion `readShards` needs to stay honest. Reading skips what it cannot parse so one
+ * truncated file cannot take down a whole organization; this is how a caller finds out that it
+ * happened, so "the store is smaller than it should be" is a reportable fact rather than a silence.
+ */
+export function shardProblems(
+  root: string,
+): readonly { readonly file: string; readonly reason: string }[] {
+  if (!existsSync(root)) return [];
+  const files: string[] = [];
+  walkShards(root, files);
+  const out: { file: string; reason: string }[] = [];
+  for (const file of files) {
+    try {
+      JSON.parse(readFileSync(file, "utf-8"));
+    } catch (err) {
+      out.push({ file, reason: err instanceof Error ? err.message : String(err) });
+    }
   }
   return out;
 }

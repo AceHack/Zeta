@@ -377,7 +377,20 @@ describe("THE RUN PRODUCES ARTIFACTS, AND THE DELIBERATION IS ABOUT THEM", () =>
     const r = driveUntilSettled(driveStateFrom(report, chart), HATS, deps(), 200);
     const posts = r.state.view.board.posts;
     expect(posts.length).toBeGreaterThan(0);
-    expect(new Set(posts.map((p) => p.byHatId)).size).toBeGreaterThan(1);
+    // THE REAL PROPERTY: a post is attributed to a hat that actually sits on that anchor. The bug
+    // this test was written for read `participantHatIds[0]`, so a room of three recorded one hat
+    // saying everything — and that is what this catches, on every post.
+    const byId = new Map(r.state.view.board.anchors.map((a) => [a.anchorId, a]));
+    for (const post of posts) {
+      expect(byId.get(post.anchorId)?.participantHatIds).toContain(post.byHatId);
+    }
+    // DELIBERATION SPANS THE HIERARCHY. Asserted on the anchors rather than on how many hats the
+    // drive loop happened to tick: the previous assertion counted distinct POSTERS, which was a
+    // proxy for breadth that depended on every leaf walking all fourteen gates. Now each rung
+    // crosses its own chain, so breadth is visible where it actually lives — measured on a real
+    // run as five hats requesting review (IC through C-suite) and seven disciplines asked.
+    const parties = new Set(r.state.view.board.anchors.flatMap((a) => a.participantHatIds));
+    expect(parties.size).toBeGreaterThan(2);
     // Nobody speaks twice about one revision on one anchor.
     const seen = new Set<string>();
     for (const p of posts) {

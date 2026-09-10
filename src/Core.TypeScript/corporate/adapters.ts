@@ -35,6 +35,7 @@ import { join } from "node:path";
 
 import {
   Fidelity,
+  type ChangeRevision,
   Port,
   type ChangeControlPort,
   type IntakeSource,
@@ -47,7 +48,10 @@ import {
   type WorkExecutor,
   type WorkOutcome,
 } from "./providers";
-import { GateOutcome } from "./quality-gate";
+import type { ChangedFileCount } from "./providers";
+import type { PortUsage } from "./meter";
+import { GateOutcome, type GateKind } from "./quality-gate";
+import type { Artifact, PhaseContext, ProducerPort } from "./pipeline";
 import { RunOutcome, type TestCase } from "./qa";
 import type { ExternalEvent } from "./intake";
 import type { CascadeNode } from "./goal-cascade";
@@ -231,6 +235,7 @@ export function commandReview(input: {
         encoding: "utf-8",
         timeout: input.timeoutMs ?? 120_000,
         shell: false,
+        maxBuffer: MAX_COMMAND_OUTPUT_BYTES,
       });
       if (run.error !== undefined) {
         return { ok: false, reason: `'${input.command}' could not run: ${run.error.message}` };
@@ -510,6 +515,364 @@ function capture(label: string, text: string): string {
  * argv entries, so a title containing `; rm -rf /` is one argument called `; rm -rf /` and not a
  * second command.
  */
+/**
+ * Something that MAKES the document a pre-code gate will judge.
+ *
+ * Eleven of the fourteen gates had no producer, so there was nothing at those phases for a reviewer
+ * to read. A run therefore had two honest options — approve on nothing, or reject on nothing — and
+ * both are the same failure wearing different clothes: the gate is not evaluating the work.
+ *
+ * This is the third spawn adapter and it keeps the two rules the others keep. THE EXIT CODE DECIDES
+ * whether the phase produced anything; a command that prints apologies and exits 0 has produced
+ * something, and one that prints a document and exits 1 has not. And `shell: false`, because a work
+ * item's title arrives from intake and must never reach a shell.
+ *
+ * Its STDOUT is the reference list, one per line — the paths a reviewer can open. An empty list from
+ * a zero exit is reported as produced-but-cited-nothing rather than smoothed into success, because a
+ * gate whose evidence list is empty is exactly what an approval with nothing behind it looks like.
+ *
+ * `priorArtifacts` is passed on the command line, so the phase can build on the last: the BRD writer
+ * is handed the RFP analysis, the architect the BRD, the cost reviewer the architecture.
+ */
+/**
+ * The line an author uses to say which memory it actually used: `relied on [<memoryId>]`.
+ *
+ * Named once, so the parser and any producer that wants to be understood agree by construction
+ * rather than by two string literals that happen to match.
+ */
+/**
+ * How much a spawned command may print before the runner gives up on it.
+ *
+ * ── THE DEFECT THIS CLOSES ───────────────────────────────────────────────────
+ * `spawnSync` buffers a child's output and defaults to ONE MEGABYTE. Past that it kills the child
+ * and returns `ENOBUFS` — which arrives here indistinguishable from "the command could not run", so
+ * the gate refuses and the reason names the tool rather than the truth.
+ *
+ * MEASURED against a real build: `mvn test` on one ELERA module exceeded it and the verification
+ * came back as a spawn error, for a project whose tests had not yet been reached. Real builds print
+ * megabytes; a verifier that fails on verbose output fails on the ones that matter most.
+ *
+ * Sixty-four megabytes: past any honest build log and still far short of exhausting memory. A
+ * command that prints more than this has a problem of its own worth surfacing.
+ */
+export const MAX_COMMAND_OUTPUT_BYTES = 64 * 1024 * 1024;
+
+export const CITED_PREFIX = "relied on ";
+
+/**
+ * How an agent says it needs a person, on any gate.
+ *
+ * A DECLARED LINE SHAPE, like `- ` and `relied on `, because the alternative is the organization
+ * deciding for itself what an agent must be unsure about — which is a questionnaire compiled into
+ * the substrate, and it can only ever ask what its author thought of.
+ *
+ * The agent doing the step knows what it is missing; nothing else does. So it says so, in its own
+ * words, and this layer carries the sentence without reading it.
+ */
+export const ASK_PREFIX = "ask: ";
+
+/**
+ * How an agent records something it worked out, so the next agent does not work it out again.
+ *
+ * `learned: <key> :: <what>` - the key is what a later reader would search for, the rest is the
+ * lesson. Split on the first `::` only, because a lesson may well contain another one.
+ *
+ * A DECLARED LINE like the others, and for the same reason: the agent doing the work is the only
+ * thing that knows a procedure was hard-won. An organization that decided for itself what counted
+ * as a lesson would record the things its author thought of - which is the questionnaire mistake
+ * one layer down.
+ */
+export const LEARNED_PREFIX = "learned: ";
+
+/** One thing an agent worked out. `key` is how it will be found again. */
+export interface Learning {
+  readonly key: string;
+  readonly value: string;
+}
+
+/** Parse `learned:` lines. A line with no `::` is all lesson and gets a key derived from its start. */
+export function learningsFrom(lines: readonly string[]): readonly Learning[] {
+  return lines
+    .filter((l) => l.startsWith(LEARNED_PREFIX))
+    .map((l) => l.slice(LEARNED_PREFIX.length).trim())
+    .filter((l) => l.length > 0)
+    .map((body) => {
+      const at = body.indexOf("::");
+      if (at < 0) {
+        // No key given: derive a stable one from the opening words, so the same lesson written twice
+        // REINFORCES rather than accumulating near-duplicates nobody can find.
+        const key = body.toLowerCase().split(/[^a-z0-9]+/).filter((w) => w.length > 2).slice(0, 6).join("-");
+        return { key: key === "" ? "lesson" : key, value: body };
+      }
+      return { key: body.slice(0, at).trim(), value: body.slice(at + 2).trim() };
+    })
+    .filter((l) => l.value !== "");
+}
+
+export function commandArtifactProducer(input: {
+  readonly command: string;
+  readonly gate: GateKind;
+  readonly argsFor: (gate: GateKind, node: CascadeNode, ctx: PhaseContext) => readonly string[];
+  readonly cwd: string;
+  readonly timeoutMs?: number;
+  readonly name?: string;
+  /**
+   * The organization's OWN documents, resolved to readable paths, for the author to work from.
+   *
+   * Without this an author writes a BRD from the three sentences in a defect report and nothing
+   * else — so it invents the specifics it needs, and the reviewer rejects it for inventing them.
+   * That loop is not a disagreement about quality; it is the author being asked to describe a
+   * system it has never been shown.
+   *
+   * Absent means judgement-only, which is what these phases have always been. Supplying it does not
+   * change what a gate ASKS, only what the author was given before answering.
+   */
+  readonly contextFor?: (gate: GateKind, node: CascadeNode) => readonly string[];
+  /**
+   * Answers to questions THIS producer asked on an earlier run, so it can carry on.
+   *
+   * The other half of the `ask:` protocol. Without it an agent that asked a question and got an
+   * answer would ask the same question again forever, and the organization would look like it was
+   * consulting a person while learning nothing from them.
+   *
+   * Supplied by whoever owns the channel out — this adapter neither reads the outbox nor knows what
+   * an answer means.
+   */
+  readonly answersFor?: (node: CascadeNode) => readonly { readonly question: string; readonly answer: string }[];
+  /**
+   * How many more times this step may come back with questions instead of work.
+   *
+   * Told to the step, not enforced behind it: an agent that knows this is its last round spends it
+   * on what matters, where one that is silently cut off just fails. When it reaches zero the step
+   * must produce something or refuse - the organization stops offering the person as an option.
+   *
+   * Absent means unbounded, which is right for a caller that has no way to answer anyway.
+   */
+  readonly askRoundsLeft?: (node: CascadeNode) => number;
+  /**
+   * Which skill performs this step, as the organization configured it.
+   *
+   * Passed as environment rather than interpreted here: what a skill IS depends on the agent — a
+   * slash command to one, a directory of instructions to another, a marketplace id to a third. This
+   * layer carries the name, the source and the reason it was chosen, and reads none of them.
+   *
+   * The `because` travels too. An agent told "use whatever this repository provides, because no
+   * binding covers this gate" behaves differently from one told nothing at all, and the difference
+   * is the whole value of having a default that is stated.
+   */
+  readonly skillFor?: (node: CascadeNode) => {
+    readonly bound: boolean;
+    readonly skill?: string;
+    readonly source?: string;
+    readonly because: string;
+  };
+  /**
+   * What a reviewer said when they turned this work back, newest first.
+   *
+   * Verbatim and uninterpreted, like `answersFor`. A layer that summarised a review would be
+   * deciding which of a person's objections mattered, which is the reviewer's call and not this
+   * adapter's.
+   */
+  readonly feedbackFor?: (node: CascadeNode) => readonly { readonly gate: string; readonly said: string }[];
+}): ProducerPort {
+  return {
+    meta: {
+      port: Port.WorkExecution,
+      name: input.name ?? "artifact",
+      fidelity: Fidelity.Real,
+      describes: `runs '${input.command}' to produce the artifact judged at '${String(input.gate)}'`,
+    },
+    produce: async (node, ctx): Promise<PortResult<Artifact>> => {
+      const context = input.contextFor?.(input.gate, node) ?? [];
+      const answered = input.answersFor?.(node) ?? [];
+      const roundsLeft = input.askRoundsLeft?.(node);
+      const skill = input.skillFor?.(node);
+      const feedback = input.feedbackFor?.(node) ?? [];
+      const run = spawnSync(input.command, [...input.argsFor(input.gate, node, ctx), ...context], {
+        cwd: ctx.workdir ?? input.cwd,
+        // THE BRIEF, and anything a person has already told this work. An author invoked with a
+        // gate name and a work id knows neither what the work is nor what it was told last time —
+        // which is how an agent ends up asking a question it has already had answered.
+        env: {
+          ...workBriefEnv(node, ctx),
+          ...(answered.length === 0 ? {} : { ORG_ANSWERS: JSON.stringify(answered) }),
+          ...(roundsLeft === undefined ? {} : { ORG_ASK_ROUNDS_LEFT: String(roundsLeft) }),
+          ...(feedback.length === 0 ? {} : { ORG_FEEDBACK: JSON.stringify(feedback) }),
+          ...(skill === undefined
+            ? {}
+            : {
+                ORG_SKILL: skill.skill ?? "",
+                ORG_SKILL_SOURCE: skill.source ?? "repo",
+                ORG_SKILL_WHY: skill.because,
+              }),
+        },
+        encoding: "utf-8",
+        timeout: input.timeoutMs ?? 120_000,
+        shell: false,
+        maxBuffer: MAX_COMMAND_OUTPUT_BYTES,
+      });
+      if (run.error !== undefined) {
+        return { ok: false, reason: `'${input.command}' could not run: ${run.error.message}` };
+      }
+      if (run.status !== 0) {
+        return {
+          ok: false,
+          reason: `'${input.command}' produced nothing for '${String(input.gate)}' (exit ${String(run.status)})`,
+        };
+      }
+      // ── WHAT IT SAID IT WOULD DO, AND WHAT IT MADE ──────────────────────
+      // A line beginning `- ` is a PLAN ITEM; everything else is a reference to something produced.
+      // Backward compatible by construction: a producer that only prints paths declares no plan and
+      // behaves exactly as it did. Declaring one is how a step stops being a name with a verdict
+      // attached and becomes a list somebody can check the work against.
+      const lines = String(run.stdout ?? "")
+        .split(/\r?\n/)
+        .map((line) => line.trim())
+        .filter((line) => line.length > 0);
+      const plan = lines.filter((l) => l.startsWith("- ")).map((l) => l.slice(2).trim());
+      // ── AND WHAT IT RELIED ON ─────────────────────────────────────────
+      // A DECLARED line shape, not a leftover. Before this it fell into the else-branch below and
+      // was filed as a produced document: counted as an artifact, and handed to the next phase as
+      // a path to read. A line protocol whose last rule is "everything else is a file" turns every
+      // line shape nobody anticipated into a fake file.
+      const citations = lines
+        .filter((l) => l.startsWith(CITED_PREFIX))
+        .map((l) => l.slice(CITED_PREFIX.length).trim());
+      // ── AND WHAT IT COULD NOT DECIDE ALONE ────────────────────────────
+      // Questions REFUSE the phase rather than accompanying an artifact. An agent that produced a
+      // document AND asked what it should have contained has produced a guess, and letting both
+      // through would put that guess in front of a reviewer with the uncertainty stripped off.
+      // WHAT THIS STEP WORKED OUT. Reported alongside whatever it produced: a lesson is not an
+      // artifact and does not stand in for one, but a step that both did the work AND learned
+      // something should not have to choose which to report.
+      const learned = learningsFrom(lines);
+      const questions = lines
+        .filter((l) => l.startsWith(ASK_PREFIX))
+        .map((l) => l.slice(ASK_PREFIX.length).trim())
+        .filter((q) => q.length > 0);
+      if (questions.length > 0) {
+        // PAST THE BOUND, A QUESTION IS JUST A REFUSAL. Still a refusal - the step did not produce
+        // what it owed - but no longer something a person is asked to resolve. Without this an
+        // agent that always finds one more thing to ask would consult forever, and the work would
+        // never reach anyone.
+        if (roundsLeft !== undefined && roundsLeft <= 0) {
+          return {
+            ok: false,
+            reason:
+              `'${String(input.gate)}' still had questions after its consultation rounds were used up; ` +
+              `it must proceed on stated assumptions or fail`,
+          };
+        }
+        return {
+          ok: false,
+          reason:
+            `'${String(input.gate)}' needs ${String(questions.length)} question(s) answered by a person`,
+          questions,
+        };
+      }
+      // ── AND WHAT IT SPENT ─────────────────────────────────────────────
+      // A `usage:` line lets a model-backed author declare its own tokens, which is the only place
+      // that number can honestly come from — this process never sees the model call. Absent means
+      // not reported, and `meter.ts` keeps that distinct from zero all the way to the screen.
+      const usage = parseUsageLine(lines.find((l) => l.startsWith("usage:")));
+      const refs = lines.filter(
+        (l) =>
+          !l.startsWith("- ") &&
+          !l.startsWith("usage:") &&
+          !l.startsWith(CITED_PREFIX) &&
+          !l.startsWith(ASK_PREFIX) &&
+          !l.startsWith(LEARNED_PREFIX),
+      );
+      return {
+        ok: true,
+        value: {
+          refs,
+          summary:
+            refs.length === 0
+              ? `'${String(input.gate)}': the producer succeeded but cited nothing`
+              : `'${String(input.gate)}': ${String(refs.length)} artifact(s)`,
+          ...(citations.length === 0 ? {} : { citations }),
+          ...(learned.length === 0 ? {} : { learned }),
+        },
+        evidence: [
+          ...plan.map((item) => ({ kind: "trace" as const, ref: `plan:${item}` })),
+          ...refs.map((ref) => ({ kind: "document" as const, ref })),
+        ],
+        ...(usage === undefined ? {} : { usage }),
+      };
+    },
+  };
+}
+
+/**
+ * Read a producer's own `usage: model=<m> in=<n> out=<n>` line.
+ *
+ * Returns `undefined` for anything it cannot fully understand, including a partially-parseable
+ * line. A half-read usage line would report fewer tokens than were spent, and an under-count is
+ * worse than an absence: the absence is visible in the total's denominator, the under-count is not.
+ */
+export function parseUsageLine(line: string | undefined): PortUsage | undefined {
+  if (line === undefined) return undefined;
+  const fields = new Map<string, string>();
+  for (const part of line.slice("usage:".length).trim().split(/\s+/)) {
+    const at = part.indexOf("=");
+    if (at > 0) fields.set(part.slice(0, at), part.slice(at + 1));
+  }
+  const model = fields.get("model");
+  if (model === undefined || model === "") return undefined;
+  const num = (key: string): number | undefined => {
+    const raw = fields.get(key);
+    if (raw === undefined) return undefined;
+    const value = Number.parseInt(raw, 10);
+    return Number.isFinite(value) && value >= 0 ? value : undefined;
+  };
+  const tokensIn = num("in");
+  const tokensOut = num("out");
+  if (tokensIn === undefined && tokensOut === undefined) return undefined;
+  return {
+    model,
+    ...(tokensIn === undefined ? {} : { tokensIn }),
+    ...(tokensOut === undefined ? {} : { tokensOut }),
+  };
+}
+
+/**
+ * The BRIEF a worker is handed, as environment.
+ *
+ * ── THE DEFECT THIS CLOSES ───────────────────────────────────────────────────
+ * A worker was invoked as `<exe> <args...> <workId>` and given nothing else. An opaque id is not a
+ * work assignment: an agent handed `task-015` in an empty checkout has no way to learn what
+ * `task-015` asks for, so the one thing the organization exists to do — get a specific piece of
+ * work done — could not cross the port. The cascade node carries the title, the type and the state;
+ * none of it reached the process that was supposed to act on it.
+ *
+ * Passed as ENVIRONMENT rather than argv on purpose. The argv contract is `<args...> <workId>` with
+ * the id LAST, and several existing callers index it that way; appending a title would silently
+ * move the id and break them. Environment is additive — a worker that ignores it behaves exactly
+ * as before.
+ *
+ * `ORG_WORK_TITLE` is the sentence a human wrote about what this is. It is UNTRUSTED text as far as
+ * the runner is concerned: it is handed over, never interpreted here, and never spliced into a
+ * shell — `shell: false` on every spawn in this file is what keeps that true.
+ */
+export function workBriefEnv(node: CascadeNode, ctx: WorkContext): Record<string, string> {
+  return {
+    ...process.env as Record<string, string>,
+    ORG_WORK_ID: node.workId,
+    ORG_WORK_TITLE: node.title,
+    // THE REQUESTER'S OWN WORDS. The title is a label; this is what they actually said about why it
+    // matters and what done looks like. Absent when nobody wrote any, which is itself worth knowing.
+    ...(node.brief === undefined ? {} : { ORG_WORK_BRIEF: node.brief }),
+    ORG_WORK_TYPE: String(node.workType),
+    ORG_WORK_STATE: String(node.state),
+    ORG_WORK_OWNER: node.ownerHatId,
+    ORG_BRANCH: ctx.branch,
+    ...(node.parentWorkId === undefined ? {} : { ORG_PARENT_ID: node.parentWorkId }),
+    ...(node.assigneeHatId === undefined ? {} : { ORG_ASSIGNEE: node.assigneeHatId }),
+    ...(ctx.workdir === undefined ? {} : { ORG_WORKDIR: ctx.workdir }),
+  };
+}
+
 export function commandWorkExecutor(input: {
   readonly command: string;
   readonly argsFor: (node: CascadeNode) => readonly string[];
@@ -530,10 +893,13 @@ export function commandWorkExecutor(input: {
         // The change's own checkout when it has one, else the configured directory. This is what
         // lets a worktree-per-change adapter actually isolate the work rather than merely name it.
         cwd: ctx.workdir ?? input.cwd,
+        // WHAT to build, not just which id. See `workBriefEnv`.
+        env: workBriefEnv(node, ctx),
         encoding: "utf-8",
         timeout: input.timeoutMs ?? 120_000,
         // No shell. The whole safety argument above depends on this line.
         shell: false,
+        maxBuffer: MAX_COMMAND_OUTPUT_BYTES,
       });
       if (run.error !== undefined) {
         return { ok: false, reason: `'${input.command}' could not run: ${run.error.message}` };
@@ -630,6 +996,7 @@ export function agentWorkExecutor(input: {
         encoding: "utf-8",
         timeout: input.verify.timeoutMs ?? 120_000,
         shell: false,
+        maxBuffer: MAX_COMMAND_OUTPUT_BYTES,
       });
       if (run.error !== undefined) {
         return { ok: false, reason: `the verifier '${input.verify.command}' could not run: ${run.error.message}` };
@@ -704,9 +1071,11 @@ export function commandProposal(input: {
   return (node, ctx) => {
     const run = spawnSync(input.command, [...input.argsFor(node)], {
       cwd: ctx.workdir ?? input.cwd,
+      env: workBriefEnv(node, ctx),
       encoding: "utf-8",
       timeout: input.timeoutMs ?? 120_000,
       shell: false,
+      maxBuffer: MAX_COMMAND_OUTPUT_BYTES,
     });
     if (run.error !== undefined) throw new Error(`'${input.command}' could not run: ${run.error.message}`);
     if (run.status !== 0) {
@@ -789,12 +1158,19 @@ export function commandTestRunner(input: {
       fidelity: Fidelity.Real,
       describes: `runs '${input.command}' per test case in ${input.cwd}`,
     },
-    run: async (testCase) => {
+    run: async (testCase, ctx) => {
       const run = spawnSync(input.command, [...input.argsFor(testCase)], {
-        cwd: input.cwd,
+        // THE CHANGE'S OWN CHECKOUT WHEN IT HAS ONE. This adapter used `input.cwd` unconditionally,
+        // so with `--worktrees` every test ran against the BASE tree instead of the branch under
+        // test. MEASURED: a task whose worker had just committed a working app and its suite was
+        // failed by `runtime_validation` three times, because the tests ran where the app was not.
+        // The opposite case is worse and silent — a base that already passes hands every change a
+        // green gate that proves nothing about it.
+        cwd: ctx.workdir ?? input.cwd,
         encoding: "utf-8",
         timeout: input.timeoutMs ?? 120_000,
         shell: false,
+        maxBuffer: MAX_COMMAND_OUTPUT_BYTES,
       });
       if (run.error !== undefined) {
         // The RUNNER broke, which is not the same as the test failing. Reporting this as `Failed`
@@ -855,6 +1231,60 @@ export function commitsAhead(
  * MERGE IS `--no-ff` ON PURPOSE: a fast-forward leaves no record that a change existed, and this
  * port's whole job is that the record and the repository agree.
  */
+/**
+ * Parse `git diff --numstat` into per-file counts.
+ *
+ * Two shapes matter and both are handled rather than smoothed:
+ *   `12\t3\tsrc/a.ts`   an ordinary edit
+ *   `-\t-\tassets/x.png` a BINARY file, where git reports a dash because "lines" is meaningless
+ *
+ * A binary file yields `0`/`0` and is still LISTED, because it changed. Dropping it would make a
+ * commit that replaced an image look empty, and a reader would conclude nothing happened.
+ */
+export function parseNumstat(text: string): readonly ChangedFileCount[] {
+  const out: ChangedFileCount[] = [];
+  for (const line of text.split(/\r?\n/)) {
+    if (line.trim() === "") continue;
+    const parts = line.split("\t");
+    if (parts.length < 3) continue;
+    const added = parts[0] === "-" ? 0 : Number.parseInt(parts[0] ?? "", 10);
+    const removed = parts[1] === "-" ? 0 : Number.parseInt(parts[1] ?? "", 10);
+    const path = parts.slice(2).join("\t").trim();
+    // A row whose counts do not parse is DROPPED rather than counted as zero: zero is a
+    // measurement ("this file changed by nothing"), and an unparsed row measured nothing at all.
+    if (!Number.isFinite(added) || !Number.isFinite(removed) || path === "") continue;
+    out.push({ path, added, removed });
+  }
+  return out;
+}
+
+/**
+ * A branch's commit and tree, or a reason.
+ *
+ * TWO `rev-parse` CALLS, NOT ONE PARSED IN HALF. `git rev-parse <b> <b>^{tree}` does answer both on
+ * two lines, and reading position 0 and 1 out of that output is exactly the kind of parse that
+ * returns a plausible wrong answer when git prepends a warning — which it does, on a repository
+ * with a detached HEAD or an ambiguous ref. Two calls, each with one thing to say.
+ */
+export function revisionOf(
+  run: (args: readonly string[]) => { readonly status: number | null; readonly stdout?: string; readonly stderr?: string; readonly error?: Error },
+  ref: string,
+): { readonly ok: true; readonly revision: ChangeRevision } | { readonly ok: false; readonly reason: string } {
+  const read = (what: string): string | undefined => {
+    const out = run(["rev-parse", "--verify", what]);
+    if (out.error !== undefined || out.status !== 0) return undefined;
+    const value = String(out.stdout ?? "").trim();
+    // A 40-hex object name or nothing. `rev-parse` prints the input back verbatim when it cannot
+    // resolve it under some configurations, so a shape check is what stops `HEAD` becoming a sha.
+    return /^[0-9a-f]{40}$/.test(value) ? value : undefined;
+  };
+  const commit = read(ref);
+  if (commit === undefined) return { ok: false, reason: `could not resolve ${ref} to a commit` };
+  const tree = read(`${ref}^{tree}`);
+  if (tree === undefined) return { ok: false, reason: `could not resolve the tree of ${ref}` };
+  return { ok: true, revision: { commit, tree } };
+}
+
 export function gitChangeControl(input: {
   readonly cwd: string;
   readonly baseBranch: string;
@@ -878,7 +1308,7 @@ export function gitChangeControl(input: {
     );
   }
   const git = (args: readonly string[]) =>
-    spawnSync("git", [...args], { cwd: input.cwd, encoding: "utf-8", shell: false });
+    spawnSync("git", [...args], { cwd: input.cwd, encoding: "utf-8", shell: false, maxBuffer: MAX_COMMAND_OUTPUT_BYTES });
   return {
     meta: {
       port: Port.ChangeControl,
@@ -909,7 +1339,35 @@ export function gitChangeControl(input: {
       if (merged.status !== 0) {
         return { ok: false, reason: `merge of ${handle.branch} refused: ${(merged.stderr ?? "").trim()}` };
       }
-      return { ok: true, value: handle, evidence: [{ kind: "trace", ref: `merged:${handle.branch}` }] };
+      // THE MERGE COMMIT, read back rather than assumed. `merge --no-ff` always makes one, and
+      // "always" is a claim about git's behaviour under configuration this adapter does not own.
+      const at = revisionOf(git, "HEAD");
+      return {
+        ok: true,
+        value: at.ok ? { ...handle, commit: at.revision.commit, tree: at.revision.tree } : handle,
+        evidence: [{ kind: "trace", ref: at.ok ? `merged:${at.revision.commit}` : `merged:${handle.branch}` }],
+      };
+    },
+    revision: async (handle) => {
+      const at = revisionOf(git, handle.branch);
+      return at.ok
+        ? { ok: true, value: at.revision, evidence: [{ kind: "trace", ref: `rev:${at.revision.commit}` }] }
+        : { ok: false, reason: at.reason };
+    },
+    // WHAT THE BRANCH HOLDS relative to where it started. `<base>...<branch>` is the three-dot
+    // form on purpose: it diffs against the MERGE BASE, so commits that landed on the base branch
+    // while this work was in flight are not reported as this work's changes.
+    changed: async (handle) => {
+      const out = git(["diff", "--numstat", `${input.baseBranch}...${handle.branch}`]);
+      if (out.error !== undefined) return { ok: false, reason: `git could not run: ${out.error.message}` };
+      if (out.status !== 0) {
+        return { ok: false, reason: `could not diff ${handle.branch}: ${(out.stderr ?? "").trim()}` };
+      }
+      return {
+        ok: true,
+        value: parseNumstat(String(out.stdout ?? "")),
+        evidence: [{ kind: "trace", ref: `diff:${handle.branch}` }],
+      };
     },
   };
 }
@@ -950,7 +1408,7 @@ export function gitWorktreeChangeControl(input: {
   readonly name?: string;
 }): ChangeControlPort {
   const git = (args: readonly string[], at = input.cwd) =>
-    spawnSync("git", [...args], { cwd: at, encoding: "utf-8", shell: false });
+    spawnSync("git", [...args], { cwd: at, encoding: "utf-8", shell: false, maxBuffer: MAX_COMMAND_OUTPUT_BYTES });
   return {
     meta: {
       port: Port.ChangeControl,
@@ -1001,7 +1459,18 @@ export function gitWorktreeChangeControl(input: {
           ],
         };
       }
-      return { ok: true, value: handle, evidence: [{ kind: "trace", ref: `merged:${handle.branch}` }] };
+      const at = revisionOf(git, "HEAD");
+      return {
+        ok: true,
+        value: at.ok ? { ...handle, commit: at.revision.commit, tree: at.revision.tree } : handle,
+        evidence: [{ kind: "trace", ref: at.ok ? `merged:${at.revision.commit}` : `merged:${handle.branch}` }],
+      };
+    },
+    revision: async (handle) => {
+      const at = revisionOf(git, handle.branch);
+      return at.ok
+        ? { ok: true, value: at.revision, evidence: [{ kind: "trace", ref: `rev:${at.revision.commit}` }] }
+        : { ok: false, reason: at.reason };
     },
   };
 }

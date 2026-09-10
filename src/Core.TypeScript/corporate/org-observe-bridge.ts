@@ -40,7 +40,9 @@ import { hatsAtLevel, reportsUpTo, type OrgChart } from "./org-chart";
 import { SignalTool, sendSupervisorSignal, type SupervisorSignal } from "./supervisor-signal";
 import { AnchorState, type AnchorBoard } from "./discussion-anchor";
 import { headsOf, type ArtifactHistory } from "./artifact-deliberation";
-import { BlockerKind, isBlockerKind, resolutionFor } from "./blocker-taxonomy";
+import { BlockerKind, isBlockerKind, ownersFor, resolutionFor } from "./blocker-taxonomy";
+import { acceptBlocker, exhaustionHolds, type RaisedBlocker } from "./human-blocker";
+import type { HumanAction } from "./human-action";
 import {
   buildContextPack,
   ContextItemKind,
@@ -64,7 +66,7 @@ import {
   type RequirementProfile,
   type Waiver,
 } from "./requirement-maturity";
-import type { BacklogItem, GenerativeOpening as GrammarOpening } from "../observe/observe";
+import type { BacklogItem, Exhaustion, GenerativeOpening as GrammarOpening, HumanBlocker } from "../observe/observe";
 import { GenerativeKind, generativeOpeningsFor, type DirectionClock } from "./generative-work";
 import {
   decideEscalation,
@@ -98,6 +100,22 @@ export interface OrgView {
   readonly artifacts: ReadonlyMap<string, ArtifactHistory>;
   /** What each hat has reported itself blocked on. Absent means nothing is blocking it. */
   readonly blockers?: ReadonlyMap<string, readonly MissingInformation[]>;
+  /**
+   * Blockers already handed OUT of the organization, so the surface stops offering them.
+   *
+   * Without this a stuck hat raises the same blocker on every tick — which the outbox would
+   * deduplicate on disk, and which would still consume the hat's every turn forever. Suppressing it
+   * here is what lets the hat go and do something else while it waits for a person.
+   */
+  readonly raisedBlockers?: readonly RaisedBlocker[];
+  /**
+   * What people have said, so a hat can be told somebody is talking to it.
+   *
+   * The organization's own state does not include a person's messages — they arrive on a queue the
+   * run reads. Carrying them on the view is what lets `orgSurfaceFor` derive the operator channel
+   * without the bridge reaching for a directory of its own.
+   */
+  readonly humanActions?: readonly HumanAction[];
   /**
    * What the organization observes about work that already HAS an owner — the input a steal is
    * derived from.
@@ -174,7 +192,14 @@ export interface OrgView {
 /** Just the organizational half of a `World` — merged into whatever else the caller has. */
 export type OrgSurface = Pick<
   World,
-  "reviewsAsked" | "deliberations" | "missing" | "assignable" | "convenable" | "generative"
+  | "reviewsAsked"
+  | "deliberations"
+  | "missing"
+  | "unresolvable"
+  | "assignable"
+  | "convenable"
+  | "generative"
+  | "operator"
 >;
 
 /**
@@ -679,10 +704,59 @@ export function orgSurfaceFor(
     reviewsAsked: reviewsAskedOf(view, hatId),
     deliberations: deliberationsOf(view, hatId),
     missing: unraisedBlockers(view, hatId),
+    unresolvable: unresolvableFor(view, hatId),
     assignable: [...assignableBy(view, hatId), ...stealableBy(view, hatId), ...alternateWorkFor(view, hatId)],
     convenable: convenableBy(view, hatId),
     generative: generativeFor(view, hatId, resourceAuthorityHatId ?? hatId, directionClock),
+    // WIRED ONLY WHEN SOMEBODY IS ACTUALLY TALKING. Absent means the channel is not wired, which is
+    // the state every existing caller is in — a background agent with no operator sees exactly the
+    // menu it always saw.
+    ...((waiting) => (waiting ? { operator: { pendingMessage: true, pendingFerry: false } } : {}))(
+      awaitingReplyFrom(view, hatId),
+    ),
   };
+}
+
+/**
+ * Is a person waiting on THIS hat to say something back?
+ *
+ * ── WHY THIS IS THE OPERATOR CHANNEL AND NOT A NEW VERB ─────────────────────
+ * `observe.ts` already has exactly one thing that outranks all work: `respond_to_operator`, sitting
+ * above even a persisted free mode, because a person who is talking to you is the highest-signal
+ * thing in the world. A person writing into a room IS that, so it travels on that channel rather
+ * than on a new one — a second "somebody is talking to you" surface would be a second priority to
+ * keep in step with the first.
+ *
+ * ── ANSWERED IS DERIVED, NEVER MARKED ───────────────────────────────────────
+ * A message is outstanding until the hat POSTS IN THAT ROOM after it. No read receipt, no consumed
+ * flag: a stored flag and the transcript can disagree, and the way that disagreement shows up is an
+ * agent that believes it replied to something it did not. The transcript is the receipt.
+ */
+export function awaitingReplyFrom(view: OrgView, hatId: string): boolean {
+  return oldestUnansweredRoom(view, hatId) !== undefined;
+}
+
+/**
+ * The room holding the OLDEST message this hat has not answered.
+ *
+ * Oldest first, so a hat spoken to twice answers in the order it was spoken to. Answering the most
+ * recent message first is how the first question never gets answered.
+ */
+export function oldestUnansweredRoom(view: OrgView, hatId: string): string | undefined {
+  const mine = [...(view.humanActions ?? [])]
+    .filter((a) => a.kind === "post_to_room")
+    .sort((a, b) => (a.atMs === b.atMs ? (a.actionId < b.actionId ? -1 : 1) : a.atMs - b.atMs));
+  for (const said of mine) {
+    const anchor = view.board.anchors.find((x) => x.anchorId === said.subjectId);
+    // A message into a room this hat is not in is not this hat's to answer, and a message into a
+    // room the board does not hold cannot be answered at all.
+    if (anchor === undefined || !anchor.participantHatIds.includes(hatId)) continue;
+    const replied = view.board.posts.some(
+      (p) => p.anchorId === said.subjectId && p.byHatId === hatId && p.atMs > said.atMs,
+    );
+    if (!replied) return said.subjectId;
+  }
+  return undefined;
 }
 
 // ─── Applying what the agent chose ──────────────────────────────────────────
@@ -813,6 +887,28 @@ export type OrgEffect =
       readonly workId: string;
       readonly signal: SupervisorSignal;
     }
+  /**
+   * A blocker on its way to a PERSON — the one effect whose addressee is outside the chart.
+   *
+   * Carries the whole `RaisedBlocker` rather than an id, because the runtime that writes it to the
+   * outbox and the dashboard that renders it both need the reason, and re-deriving that reason from
+   * the view at two later moments is how two accounts of one stoppage appear.
+   */
+  | { readonly kind: "raise_blocker"; readonly blocker: RaisedBlocker }
+  /**
+   * An agent answering a PERSON, in the room they were spoken to in.
+   *
+   * The room is DERIVED, not chosen — same discipline as a routed signal. The agent says it is
+   * replying to the operator; the register decides which conversation that is, so an agent cannot
+   * answer in a room nobody addressed it in, and cannot answer the easy message while leaving the
+   * hard one outstanding.
+   */
+  | {
+      readonly kind: "reply_to_person";
+      readonly anchorId: string;
+      readonly byHatId: string;
+      readonly body: string;
+    }
   | { readonly kind: "priced"; readonly workId: string; readonly priority: PriorityClass }
   | {
       readonly kind: "breakdown";
@@ -892,6 +988,35 @@ export function effectOf(
       );
       if (!sent.ok) return { ok: false, reason: sent.reason };
       return { ok: true, effect: { kind: "signal", signal: sent.signal } };
+    }
+    case "respond_to_operator": {
+      const room = oldestUnansweredRoom(view, hatId);
+      // NOTHING TO ANSWER IS A REFUSAL, not a silent no-op. An agent that chose this with no message
+      // waiting has misread its own surface, and a quiet success would hide that from the drive.
+      if (room === undefined) return { ok: false, reason: `nobody is waiting on '${hatId}' in any room` };
+      return {
+        ok: true,
+        effect: { kind: "reply_to_person", anchorId: room, byHatId: hatId, body: action.reason },
+      };
+    }
+    case "raise_to_human": {
+      // THE CLAIM IS CHECKED BEFORE THE ATTENTION IS SPENT. A raise whose exhaustion does not hold
+      // is refused WITH THE HAT TO ASK INSTEAD — the refusal has to leave the agent somewhere to
+      // go, or it is just a locked door.
+      const held = exhaustionHolds(view.chart, action.exhaustion);
+      if (!held.holds) return { ok: false, reason: held.reason };
+      const accepted = acceptBlocker({
+        blockerId: action.blockerId,
+        about: action.about,
+        blocking: action.blocking,
+        ...(action.blockerKind === undefined ? {} : { kind: action.blockerKind }),
+        exhaustion: action.exhaustion,
+        unblocks: action.unblocks,
+        byHatId: hatId,
+        atMs,
+      });
+      if (!accepted.ok) return { ok: false, reason: accepted.reason };
+      return { ok: true, effect: { kind: "raise_blocker", blocker: accepted.blocker } };
     }
     case "assign_work":
       return placementEffect(view, hatId, action.item.id, action.toHatId, atMs);
@@ -1412,6 +1537,63 @@ function exhaustedAtGates(view: OrgView, hatId: string): readonly MissingInforma
       blocking: n.workId,
       kind: BlockerKind.ReleaseBlocked,
     }));
+}
+
+/**
+ * This hat's blockers that have run out of ORGANIZATION — the ones that must reach a person.
+ *
+ * Two derivations, and deliberately only two:
+ *
+ *   1. NOBODY HERE OWNS IT. The blocker is classified, and the taxonomy's owners for that kind are
+ *      absent from this chart (or are the reporter itself). This is not a new judgement — it is the
+ *      case `routeBlocker` already returns `undefined` for, which until now became a REFUSAL: the
+ *      agent was told its ask could not be routed and was left holding the blocker with no path at
+ *      all. A dead end is what this replaces.
+ *   2. THE AGENT SAYS SO. `needsHuman` is the agent naming a decision it believes is nobody's here
+ *      to make. Recorded as `outside_org_authority`, which `exhaustionHolds` reports as UNCHECKED
+ *      rather than pretending to have verified it.
+ *
+ * NOT DERIVED HERE: `owners_could_not_resolve` — "I asked and they could not help". That needs a
+ * staleness policy (how long is an unanswered signal an unanswerable one?), and a policy invented
+ * here would be a wall-clock rule inside a fold that must replay. A caller that holds a clock
+ * constructs that exhaustion itself; the shape is available and the derivation is not guessed.
+ */
+export function unresolvableFor(view: OrgView, hatId: string): readonly HumanBlocker[] {
+  const already = new Set((view.raisedBlockers ?? []).map((b) => b.blockerId));
+  const out: HumanBlocker[] = [];
+  for (const m of [...(view.blockers?.get(hatId) ?? []), ...exhaustedAtGates(view, hatId)]) {
+    const exhaustion = exhaustionOf(view, hatId, m);
+    if (exhaustion === undefined) continue;
+    // The id must match what `acceptBlocker` derives from the same three fields, or a raise would
+    // never suppress the offer that produced it and the hat would raise it every tick.
+    const blockerId = `hb-${hatId}-${m.blocking}-${m.about}`.replace(/[^A-Za-z0-9._-]/g, "-");
+    if (already.has(blockerId)) continue;
+    out.push({
+      blockerId,
+      about: m.about,
+      blocking: m.blocking,
+      ...(m.kind === undefined ? {} : { kind: m.kind }),
+      exhaustion,
+      unblocks: m.blocking,
+    });
+  }
+  return out;
+}
+
+/** Which way this blocker ran out of organization, or `undefined` if it has not. */
+function exhaustionOf(view: OrgView, hatId: string, m: MissingInformation): Exhaustion | undefined {
+  // THE AGENT'S OWN CLAIM FIRST. A decision it says is outside the organization stays outside it
+  // even when the taxonomy happens to list an owner for the kind — the owner could take the ask and
+  // still not be allowed to answer it.
+  if (m.needsHuman !== undefined && m.needsHuman.trim() !== "") {
+    return { kind: "outside_org_authority", what: m.needsHuman };
+  }
+  if (m.kind === undefined || !isBlockerKind(m.kind)) return undefined;
+  // Excluding the reporter is the same exclusion `routeBlocker` makes: a hat routed its own blocker
+  // has been told to ask itself, which is a no-op reporting success.
+  const owners = ownersFor(view.chart, m.kind).filter((o) => o.id !== hatId);
+  if (owners.length > 0) return undefined;
+  return { kind: "no_owner_in_org", forBlockerKind: m.kind };
 }
 
 function unraisedBlockers(view: OrgView, hatId: string): readonly MissingInformation[] {

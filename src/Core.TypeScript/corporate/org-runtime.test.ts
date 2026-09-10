@@ -12,19 +12,24 @@
  * make look right.
  */
 
+import { chainFor } from "./gate-demand";
 import { describe, expect, test } from "bun:test";
 import { agentsFromChart, gateStaffing, runOrgRuntime, staffingReadout, type OrgRuntimeDeps } from "./org-runtime";
 import { buildOrgChart, reportsUpTo } from "./org-chart";
 import { SEED_HATS } from "./org-seed";
 import { IntakeKind, Severity, externalRefOf, type ExternalEvent } from "./intake";
-import { childrenOf, isDelivered, nodeById, WorkState, WorkType } from "./goal-cascade";
+import { parseRequestRef } from "./request";
+import { childrenOf, isDelivered, nodeById, WorkState, WorkType, isLeafType } from "./goal-cascade";
 import { isAuthorizing, BindingPhase } from "./hat-binding";
 import { GateKind, GateOutcome, ORDERED_GATES, mayEvaluate } from "./quality-gate";
 import { RunOutcome } from "./qa";
 import { ShardState } from "./work-market";
+import { Fidelity, Port } from "./providers";
+import type { ProducerPort } from "./pipeline";
 import { PriorityClass } from "./prioritization";
 import { AnchorState } from "./discussion-anchor";
 import { SignalTool } from "./supervisor-signal";
+import type { OrgEvent } from "./org-event";
 
 const chart = (() => {
   const r = buildOrgChart(SEED_HATS);
@@ -77,7 +82,16 @@ describe("THE WHOLE PIPELINE, end to end", () => {
 
   test("it runs, and the only refusals are the ones the inputs asked for", async () => {
     report = await runOrgRuntime(deps());
-    expect(report.refusals).toEqual([]);
+    // ── OUT-OF-DISCIPLINE AUTHORSHIP IS A REAL FINDING, NOT NOISE ────────────
+    // This fixture staffs implementers and nobody from QA, so the QA phases end up authored by an
+    // implementer — and the run now SAYS so instead of crediting them silently, which is how a
+    // Backend Implementer came to be recorded as the author of a customer RFP review.
+    //
+    // Asserted by shape rather than deleted: any OTHER refusal still fails this test, so the
+    // "nothing else went wrong" half of it survives.
+    const offDiscipline = report.refusals.filter((r) => r.includes("outside its discipline"));
+    expect(report.refusals.filter((r) => !r.includes("outside its discipline"))).toEqual([]);
+    expect(offDiscipline.every((r) => r.includes("runtime_validation"))).toBe(true);
     expect(report.delivered).toBe(true);
   });
 
@@ -212,9 +226,14 @@ describe("THE WHOLE PIPELINE, end to end", () => {
   test("9. GATES — all seven, each by an authorized hat outside the delivery line", async () => {
     report = await runOrgRuntime(deps());
     expect(report.gateRuns).toHaveLength(2);
+    const taskIdOf = (r: (typeof report.gateRuns)[number]["run"]): string =>
+      report.gateRuns.find((g) => g.run === r)?.taskId ?? "";
     for (const { run } of report.gateRuns) {
       expect(run.merged).toBe(true);
-      expect(run.evaluations).toHaveLength(ORDERED_GATES.length);
+      // EACH ITEM'S OWN CHAIN. Asserting fourteen here pinned the model where one implementer
+      // walked every gate — the defect the redistribution removed.
+      const node = report.cascade.nodes.find((n) => n.workId === taskIdOf(run));
+      expect(run.evaluations.length).toBe(chainFor(node?.workType ?? WorkType.Task).length);
       for (const e of run.evaluations) expect(mayEvaluate(chart, e.byHatId, e.gate)).toBe(true);
     }
     const departments = new Set(
@@ -234,6 +253,37 @@ describe("THE WHOLE PIPELINE, end to end", () => {
     expect(report.succession).toHaveLength(2);
     // The seed's policy is `appoint`, so no successor is invented — an authority decides.
     for (const p of report.succession) expect(p.nextWearerAgentId).toBeUndefined();
+  });
+
+  test("NO WALL-CLOCK INSTANT reaches the log of an all-simulated run", async () => {
+    // The failure this pins was intermittent and therefore nearly invisible: `meterCall` read an
+    // ambient `Date.now()`, so every `metered_call` fact carried a wall-clock `startedMs` and two
+    // identical runs differed only when the millisecond happened to tick between them. The test
+    // below caught it roughly one run in fifty.
+    //
+    // This one cannot be lucky: with simulated ports every recorded instant must equal the run's
+    // own logical instant, so a wall clock anywhere in the fold fails it every time.
+    const report = await runOrgRuntime(deps());
+    expect(report.fidelity.replayable).toBe(true);
+    const meters = report.trace
+      .map((e) => e.fact)
+      .filter((f) => f?.kind === "metered_call")
+      .map((f) => (f as Extract<NonNullable<typeof f>, { kind: "metered_call" }>).meter);
+    expect(meters.length).toBeGreaterThan(0);
+    // The PROPERTY is that the instant is logical, not that it equals a particular number — it is
+    // the run's warmed instant, and hard-coding that would be testing the fixture's arithmetic.
+    // Two things make it logical and neither can be true of a wall clock: every meter shares one
+    // instant, and every duration is zero because no real time passed.
+    const instants = new Set(meters.map((m) => m.startedMs));
+    expect(instants.size).toBe(1);
+    for (const m of meters) expect(m.durationMs).toBe(0);
+    // Small enough to be the run's own clock rather than a date. A wall clock is ~1.7e12.
+    expect([...instants][0]).toBeLessThan(1_000_000_000);
+    // And the duration is in the DECISION LINE too, which is what `a.events` compares — the exact
+    // path the intermittent failure travelled.
+    for (const line of report.events.filter((e) => e.includes("metered"))) {
+      expect(line).toContain("0ms");
+    }
   });
 
   test("the runtime is a FUNCTION OF ITS INPUTS", async () => {
@@ -494,7 +544,10 @@ describe("three properties the happy path cannot show", () => {
 describe("the runtime projects its work onto a real CHANGE", () => {
   test("delivered work reaches Merged, and the records do not disagree", async () => {
     const report = await runOrgRuntime(deps());
-    expect(report.changes).toHaveLength(2);
+    // ONE change, not two. The run's leaves are a defect and a `review`; only the defect writes
+    // code, so only it becomes a change. A verification task has no branch — projecting one for it
+    // produced an empty change that the real git port then refused to merge.
+    expect(report.changes).toHaveLength(1);
     for (const c of report.changes) {
       expect(c.projection.state.tag).toBe("Merged");
       expect(c.disagreements).toEqual([]);
@@ -516,5 +569,284 @@ describe("the runtime projects its work onto a real CHANGE", () => {
   test("unstaffed work never leaves Backlog", async () => {
     const report = await runOrgRuntime(deps({ agents: [] }));
     for (const c of report.changes) expect(c.projection.state.tag).toBe("Backlog");
+  });
+});
+
+/** A producer that writes one named reference. Shared: two suites need the same fixture. */
+const stubProducer = (ref: string): ProducerPort => ({
+  meta: { port: Port.WorkExecution, name: "stub", fidelity: Fidelity.Real, describes: `writes ${ref}` },
+  produce: async () => ({ ok: true, value: { refs: [ref], summary: ref }, evidence: [{ kind: "document", ref }] }),
+});
+
+describe("A CALLER MAY GIVE A PRE-CODE GATE SOMETHING TO JUDGE", () => {
+  test("the produced artifact becomes the GATE'S OWN EVIDENCE, not a note beside it", async () => {
+    // Without this the reviewer at brd_approval is shown nothing and its approval means nothing.
+    const report = await runOrgRuntime(deps({
+      artifactProducers: new Map([[GateKind.BrdApproval, stubProducer("docs/brd.md")]]),
+    }));
+    const brd = report.gateEvaluations.filter((e) => e.gate === GateKind.BrdApproval);
+    expect(brd.length).toBeGreaterThan(0);
+    expect(brd.some((e) => e.evidenceRefs.includes("docs/brd.md"))).toBe(true);
+  });
+
+  test("a caller CANNOT unhook work execution by claiming its gate", async () => {
+    // The runtime's own producers are not a caller's to remove. If this merge went the other way, a
+    // caller could silently replace the thing that does the work with one that writes a document,
+    // and the run would still report every gate crossed.
+    const report = await runOrgRuntime(deps({
+      artifactProducers: new Map([
+        [GateKind.ImplementationReview, stubProducer("docs/not-the-work.md")],
+        [GateKind.RuntimeValidation, stubProducer("docs/not-the-tests.md")],
+      ]),
+    }));
+    expect(report.delivered).toBe(true);
+    const impl = report.gateEvaluations.filter((e) => e.gate === GateKind.ImplementationReview);
+    expect(impl.some((e) => e.evidenceRefs.includes("docs/not-the-work.md"))).toBe(false);
+  });
+});
+
+describe("STOPPING FOR A PERSON IS A PAUSE, NEVER A ROLLBACK", () => {
+  // The defect this pins was shipped and then found by looking at a real store: the wait broke out
+  // of the attempt loop BEFORE the recording step, so a task that had passed two gates and then
+  // stopped for a person recorded neither of them. The dashboard read `0/14` beside work that was
+  // two gates in, and a resumed run would have re-crossed gates it had already crossed — paying for
+  // the same reviews twice and, worse, giving a second answer where one already existed.
+
+  test("with a checkpoint and nobody to answer, the run reports what it is waiting for", async () => {
+    const report = await runOrgRuntime(deps({ checkpoints: ["grooming"] }));
+    expect(report.awaitingHuman.length).toBeGreaterThan(0);
+    expect(report.awaitingHuman.every((w) => String(w.gate) === "brd_approval")).toBe(true);
+  });
+
+  test("WAITING IS NOT FAILING — it is reported apart from a blocked gate", async () => {
+    const report = await runOrgRuntime(deps({ checkpoints: ["grooming"] }));
+    // Folding the two together would make an organization waiting politely for its operator
+    // indistinguishable from one that kept failing its own reviews, and the second reads as broken.
+    expect(report.gateBlocked).toEqual([]);
+  });
+
+  test("THE GATES ALREADY PASSED ARE KEPT, not discarded with the pause", async () => {
+    const report = await runOrgRuntime(deps({ checkpoints: ["grooming"] }));
+    const kept = report.gateEvaluations.filter((e) => e.gate === "business_context_grooming");
+    expect(kept.length).toBeGreaterThan(0);
+    // And nothing past the checkpoint was crossed — the pause is real in the other direction too.
+    expect(report.gateEvaluations.some((e) => e.gate === "brd_approval")).toBe(false);
+  });
+
+  test("...and they reach the LOG, so a resumed run does not redo them", async () => {
+    const events: OrgEvent[] = [];
+    await runOrgRuntime(deps({ checkpoints: ["grooming"], onEvent: (e) => events.push(e) }));
+    const recorded = events
+      .filter((e) => e.fact?.kind === "gates_evaluated")
+      .flatMap((e) => (e.fact?.kind === "gates_evaluated" ? e.fact.evaluations : []));
+    expect(recorded.some((e) => e.gate === "business_context_grooming")).toBe(true);
+  });
+
+  test("A PERSON'S APPROVAL RELEASES IT and the run delivers", async () => {
+    const report = await runOrgRuntime(
+      deps({
+        checkpoints: ["grooming"],
+        humanDecisionFor: () => ({ outcome: GateOutcome.Approved, actionRef: "human-action/ha-1" }),
+      }),
+    );
+    expect(report.awaitingHuman).toEqual([]);
+    expect(report.delivered).toBe(true);
+  });
+
+  test("WITH NO CHECKPOINTS NOTHING WAITS — the default is unchanged", async () => {
+    const report = await runOrgRuntime(deps());
+    expect(report.awaitingHuman).toEqual([]);
+  });
+
+  test("a completed task's own log line names the REAL number of gates", async () => {
+    // It said "passed all 7 gates" while the chain held fourteen — a literal written beside a list
+    // that grew. Nothing read it, so nothing caught it; the only reader is a person, and a log that
+    // lies to a person about how much was checked is the worst place for a stale constant.
+    const events: OrgEvent[] = [];
+    const report = await runOrgRuntime(deps({ onEvent: (e) => events.push(e) }));
+    const done = events.filter((e) => e.decision?.includes("passed all"));
+    expect(done.length).toBeGreaterThan(0);
+    // The line now names the item's OWN chain — "passed all 4 gate(s) this defect owes (...)" —
+    // because "all 14" was false for every item once each type walked its own gates, and a
+    // decision line that misreports what was satisfied is a record nobody can audit against.
+    for (const e of done) {
+      const node = report.cascade.nodes.find((n: { workId: string }) => n.workId === e.subjectId);
+      const owed = chainFor(node?.workType ?? WorkType.Task);
+      expect(e.decision).toContain(`all ${String(owed.length)} gate(s) this ${String(node?.workType)} owes`);
+      for (const g of owed) expect(e.decision).toContain(String(g));
+    }
+  });
+});
+
+describe("WHAT A PHASE MADE REACHES THE LOG — a writer with no reader is not a feature", () => {
+  // The gap this closes: `runPipeline` produced an artifact for every phase, the report carried it,
+  // and NONE of it was written to the log — so it died with the process. An observer could report
+  // that `brd_approval` was approved and could not show the BRD, or say whether one existed. A
+  // person asked to sign that gate was being asked to sign a gate NAME.
+
+  test("a producer's output is written as a fact, with the reference it produced", async () => {
+    const events: OrgEvent[] = [];
+    await runOrgRuntime(
+      deps({
+        artifactProducers: new Map([[GateKind.BrdApproval, stubProducer("docs/brd.md")]]),
+        onEvent: (e) => events.push(e),
+      }),
+    );
+    const outputs = events.filter((e) => e.fact?.kind === "phase_output");
+    expect(outputs.length).toBeGreaterThan(0);
+    const brd = outputs.find((e) => e.fact?.kind === "phase_output" && e.fact.gate === GateKind.BrdApproval);
+    expect(brd).toBeDefined();
+    if (brd?.fact?.kind === "phase_output") {
+      expect(brd.fact.refs).toContain("docs/brd.md");
+      expect(brd.fact.workId.length).toBeGreaterThan(0);
+    }
+  });
+
+  test("...and the reference travels on the EVENT too, so a trace reader sees it", async () => {
+    const events: OrgEvent[] = [];
+    await runOrgRuntime(
+      deps({
+        artifactProducers: new Map([[GateKind.BrdApproval, stubProducer("docs/brd.md")]]),
+        onEvent: (e) => events.push(e),
+      }),
+    );
+    const brd = events.find((e) => e.fact?.kind === "phase_output");
+    expect(brd?.evidenceRefs).toContain("docs/brd.md");
+  });
+
+  test("A GATE WITH NO PRODUCER WRITES NO OUTPUT — absence is the honest record", async () => {
+    // Not an empty artifact per gate. An empty output would let a page render "here is what was
+    // made" over nothing, which is worse than saying nothing was made — and it is exactly what
+    // turns an Approve button into a rubber stamp.
+    const events: OrgEvent[] = [];
+    await runOrgRuntime(deps({ onEvent: (e) => events.push(e) }));
+    const gates = events
+      .filter((e) => e.fact?.kind === "phase_output")
+      .map((e) => (e.fact?.kind === "phase_output" ? e.fact.gate : ""));
+    expect(gates).not.toContain(String(GateKind.BrdApproval));
+    expect(gates).not.toContain(String(GateKind.ArchitectureDesign));
+  });
+
+  test("...while the runtime's OWN producers do write theirs", async () => {
+    // The other half of the same property. If this were empty too, the writer would be dead and the
+    // three tests above would be asserting over a channel nothing uses.
+    const events: OrgEvent[] = [];
+    await runOrgRuntime(deps({ onEvent: (e) => events.push(e) }));
+    const gates = events
+      .filter((e) => e.fact?.kind === "phase_output")
+      .map((e) => (e.fact?.kind === "phase_output" ? e.fact.gate : ""));
+    expect(gates).toContain(String(GateKind.RuntimeValidation));
+  });
+
+  test("A SIMULATED PHASE SAYS SO IN ITS OWN SUMMARY, and that reaches the page", async () => {
+    // `implementation_review` under a simulated work executor produces an artifact whose summary is
+    // "assumed complete — no work was performed". That sentence is the most useful thing on an
+    // approval card, and until this fact existed it never left the process.
+    const events: OrgEvent[] = [];
+    await runOrgRuntime(deps({ onEvent: (e) => events.push(e) }));
+    const impl = events.find(
+      (e) => e.fact?.kind === "phase_output" && e.fact.gate === String(GateKind.ImplementationReview),
+    );
+    expect(impl?.fact?.kind === "phase_output" ? impl.fact.summary : "").toContain("no work was performed");
+  });
+});
+
+describe("WHAT ASKED FOR THE WORK SURVIVES THE RUN", () => {
+  // Intake mints a collision-proof key and, until the cascade carried it, dropped it one function
+  // later — so the organization produced a goal and seven descendants and could not answer "what did
+  // we do about this request" from its own work, in any run, ever.
+
+  test("the goal records the request it answers", async () => {
+    const report = await runOrgRuntime(deps());
+    const goal = report.cascade.nodes.find((n) => n.parentWorkId === undefined);
+    expect(goal?.requestRef).toBeDefined();
+    expect(parseRequestRef(goal!.requestRef!)?.source).toBe(GOOD.source);
+    expect(parseRequestRef(goal!.requestRef!)?.externalId).toBe(GOOD.externalId);
+  });
+
+  test("EVERY RUNG INHERITS IT, including the tasks somebody actually does", async () => {
+    // A goal that knows and a task that does not is a label on a tree, not a spine — and the page
+    // that matters reads the leaves.
+    const report = await runOrgRuntime(deps());
+    expect(report.cascade.nodes.length).toBeGreaterThan(3);
+    expect(report.cascade.nodes.every((n) => n.requestRef !== undefined)).toBe(true);
+  });
+
+  test("...and it reaches the LOG, so a resumed organization still knows", async () => {
+    const events: OrgEvent[] = [];
+    await runOrgRuntime(deps({ onEvent: (e) => events.push(e) }));
+    const created = events.filter((e) => e.fact?.kind === "work_created");
+    expect(created.length).toBeGreaterThan(3);
+    expect(
+      created.every((e) => e.fact?.kind === "work_created" && e.fact.requestRef !== undefined),
+    ).toBe(true);
+  });
+
+  test("an accepted request is a FACT, not only a sentence", async () => {
+    const events: OrgEvent[] = [];
+    await runOrgRuntime(deps({ onEvent: (e) => events.push(e) }));
+    const accepted = events.find((e) => e.fact?.kind === "intake_accepted");
+    expect(accepted).toBeDefined();
+    if (accepted?.fact?.kind === "intake_accepted") {
+      expect(accepted.fact.item.externalRef).toBe(externalRefOf(GOOD.source, GOOD.externalId));
+    }
+  });
+
+  test("A DECLINED REQUEST IS ALSO A FACT — somebody filed it and is owed the answer", async () => {
+    // Intake refuses duplicates and defects with no reproduction steps, and both were prose in a
+    // run's refusal list. The person who filed one is waiting and, until this fact existed, there
+    // was nowhere the answer could be shown.
+    const events: OrgEvent[] = [];
+    // A defect with no reproduction steps — exactly what `triage` declines at the door.
+    const noRepro: ExternalEvent = {
+      source: "portal",
+      externalId: "T-99",
+      kind: IntakeKind.Defect,
+      title: "portal is slow sometimes",
+      severity: Severity.Low,
+    };
+    await runOrgRuntime(deps({ externalEvents: [GOOD, noRepro], onEvent: (e) => events.push(e) }));
+    const refused = events.filter((e) => e.fact?.kind === "intake_refused");
+    expect(refused.length).toBeGreaterThan(0);
+    for (const e of refused) {
+      if (e.fact?.kind !== "intake_refused") continue;
+      expect(e.fact.reason.length).toBeGreaterThan(0);
+      expect(e.fact.message.length).toBeGreaterThan(0);
+      // Keyed from the raw event, because a refusal has no minted key of its own — and the filer
+      // knows the request by its upstream id regardless of whether this organization took it.
+      expect(parseRequestRef(e.fact.externalRef ?? "")).toBeDefined();
+    }
+  });
+});
+
+describe("EVERY RUNG RECALLS, NOT ONLY THE LEAVES", () => {
+  // THE DEFECT: `recallFor` was called from the LEAF walk only. So the goal, the initiative and the
+  // project — the rungs whose entire job is institutional judgement — worked with no memory at all,
+  // while the implementer was handed everything the organization had ever learned. That is the
+  // governance-walk hole for the fourth time: a facility built once and wired to one of the two
+  // walks that need it.
+  test("the upper rungs are offered what their hat already knows", async () => {
+    const asked: { workId: string; hatId: string }[] = [];
+    const report = await runOrgRuntime(
+      deps({
+        recallFor: (workId: string, hatId: string) => {
+          asked.push({ workId, hatId });
+          return { text: "", injectedIds: [] };
+        },
+      }),
+    );
+
+    // Non-leaf rungs exist in this run at all — otherwise the assertion below would pass vacuously
+    // on an organization that decomposed nothing.
+    const upper = report.cascade.nodes.filter((n) => !isLeafType(n.workType));
+    expect(upper.length).toBeGreaterThan(0);
+
+    // And each of them was offered recall, under the hat that OWNS the rung. Asking under the
+    // wrong hat would return another role's memory, which is worse than returning none.
+    for (const node of upper) {
+      const forNode = asked.filter((a) => a.workId === node.workId);
+      expect(forNode.length).toBeGreaterThan(0);
+      expect(forNode.some((a) => a.hatId === node.ownerHatId)).toBe(true);
+    }
   });
 });

@@ -58,6 +58,7 @@ import type { OrgChart } from "./org-chart";
 import { detectLag, type LagInput } from "./lag-detection";
 import { spend as chargeBudget } from "./budget";
 import { GateKind, GateOutcome, runGateChain } from "./quality-gate";
+import type { RaisedBlocker } from "./human-blocker";
 import { costGateOutcome, type SpendVerdict } from "./spend-decision";
 import { SignalTool, type SupervisorSignal } from "./supervisor-signal";
 import { preferChooser, type OrgChooser } from "./org-decision";
@@ -95,6 +96,15 @@ export interface DriveDeps {
   readonly choose?: (menu: readonly NextAction[], hatId: string) => NextAction | undefined;
   /** Derive effects and apply NONE. The honest way to ask what would happen next. */
   readonly dryRun?: boolean;
+  /**
+   * Carry a raised blocker OUT to wherever a person will see it.
+   *
+   * An injected effect rather than a write in `apply`, for the same reason `onEvent` is: the drive
+   * stays a pure function of its state and the one thing that has to leave the process leaves
+   * through a declared door. Absent means the raise is recorded in the run and reaches nobody —
+   * honest, and visible in the report, rather than silently discarded.
+   */
+  readonly onRaisedBlocker?: (blocker: RaisedBlocker) => void;
   /**
    * What to sweep for lag before the round, and who the sweep is attributed to.
    *
@@ -250,6 +260,43 @@ export function apply(state: DriveState, effect: OrgEffect, deps: DriveDeps): Ap
   switch (effect.kind) {
     case "none":
       return { state, changed: false, refusals: [] };
+
+    case "reply_to_person": {
+      // The reply goes on the BOARD, which is what makes it an answer rather than a claim to have
+      // answered: `awaitingReplyFrom` reads the transcript back, so the message stops being
+      // outstanding because a reply is visibly there, never because something marked it read.
+      const posted = postToAnchor(state.view.board, {
+        postId: deps.createId("post"),
+        anchorId: effect.anchorId,
+        byHatId: effect.byHatId,
+        atMs: deps.nowMs,
+        body: effect.body,
+        evidence: [],
+      });
+      if (!posted.ok) return { state, changed: false, refusals: [posted.reason] };
+      return { state: { ...state, view: { ...state.view, board: posted.board } }, changed: true, refusals: [] };
+    }
+
+    case "raise_blocker": {
+      // THE ONE EFFECT THAT LEAVES. Everything else here lands on a hat's surface so some hat picks
+      // it up next tick; this one lands on nobody's, because the addressee is not in the chart. All
+      // the organization does is record that it has stopped and stop offering the blocker to the hat
+      // that raised it — the runtime carries it to the outbox, and a person answers or does not.
+      //
+      // `changed: true` even though no work moved. The organization asking for help IS a change of
+      // state, and reporting it as an idle tick is how a stall reads as progress.
+      const already = (state.view.raisedBlockers ?? []).some((b) => b.blockerId === effect.blocker.blockerId);
+      if (already) return { state, changed: false, refusals: [] };
+      // ONCE, on the transition — not on every tick that finds it still open. The outbox is
+      // idempotent by id anyway, so a double write is harmless; a write per tick would still be a
+      // hundred file writes for one question.
+      deps.onRaisedBlocker?.(effect.blocker);
+      const view: OrgView = {
+        ...state.view,
+        raisedBlockers: [...(state.view.raisedBlockers ?? []), effect.blocker],
+      };
+      return { state: { ...state, view }, changed: true, refusals: [] };
+    }
 
     case "signal": {
       // The signal joins the organization's own list, so the NEXT tick of the hat it was routed to

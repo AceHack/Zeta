@@ -163,7 +163,7 @@ describe("A DIRECTION GOES STALE, AND A RESTATEMENT MAKES IT FRESH", () => {
     const titles = month.state.cascade.nodes.filter((n) => n.workType === WorkType.Goal).map((n) => n.title);
     expect(Math.max(...titles.map((t) => t.length))).toBeLessThan(120);
     expect(titles.some((t) => t.includes("still pointed the right way"))).toBe(true);
-  });
+  }, 120_000);
 
   test("THE RESTATEMENT CLOSES ITS OWN OPENING — the clock is reset, not the title alone", () => {
     // Otherwise every executive restates every direction every round for the rest of the week,

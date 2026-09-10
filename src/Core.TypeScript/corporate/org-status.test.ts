@@ -177,7 +177,10 @@ describe("the status reads a REAL run", () => {
   test("gate health reports progress and where a rejection would send it", async () => {
     const r = await run({ qaFallback: RunOutcome.Failed });
     const taskId = r.gateRuns[0]!.taskId;
-    const g = gateHealth(chart, taskId, r.gateEvaluations);
+    // THE TYPE TRAVELS WITH THE ID. Without it `gateHealth` reports against every canonical gate
+    // and named `business_context_grooming` as next for a task whose type never walks it.
+    const node = r.cascade.nodes.find((n) => n.workId === taskId);
+    const g = gateHealth(chart, taskId, r.gateEvaluations, node?.workType);
     expect(g.merged).toBe(false);
     expect(g.progress).toBeGreaterThan(0);
     expect(g.nextGate).toBe(GateKind.RuntimeValidation);

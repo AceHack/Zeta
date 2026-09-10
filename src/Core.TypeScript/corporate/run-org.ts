@@ -42,6 +42,23 @@
  * Exit codes: 0 delivered · 1 not delivered · 2 the organization could not be built.
  */
 
+import { MemoryTier } from "./memory";
+import { lifeSummary, lifeTick, writeMemory, type HoldMeeting, type Study } from "./run-life";
+import { DEFAULT_STUDY_BUDGET, remainingStudy } from "./study-session";
+import { isPresence, type HatPresence } from "./org-life";
+import { hasMeetingDemand, meetingDemand } from "./meeting-demand";
+import { agentCalibrations, memoryFromCalibration } from "./agent-calibration";
+import { raiseBlocker, readBlockers } from "./blocker-outbox";
+import { answeredBlockers } from "./human-blocker";
+
+/** A blank line before a section heading. Named because an escape in this file keeps getting eaten. */
+const NL = String.fromCharCode(10);
+import { openBlockers } from "./human-blocker";
+import { directoryMemoryStore } from "./memory-store";
+import { citedIdsIn, correlateOutcome, EMPTY_LEDGER, inject, noteInjectionFor, recordCitations, signalFor } from "./memory-loop";
+import { departmentOf } from "./org-presentation";
+import { spawnSync } from "node:child_process";
+import { answerRooms, gateAnswersFromRooms, type Reviser } from "./room-answer";
 import { buildOrgChart } from "./org-chart";
 import { SEED_HATS } from "./org-seed";
 import { agentsFromChart, gateStaffing, runOrgRuntime, staffingReadout } from "./org-runtime";
@@ -50,7 +67,7 @@ import { DAY_MS, runCadence } from "./org-cadence";
 import { openBudget } from "./budget";
 import { Adequacy, EffortClass } from "./spend-decision";
 import { SignalTool } from "./supervisor-signal";
-import { EMPTY_CASCADE } from "./goal-cascade";
+import { EMPTY_CASCADE, WorkState, type Cascade } from "./goal-cascade";
 import { EMPTY_BOARD } from "./discussion-anchor";
 import { EMPTY_CALENDAR } from "./work-schedule";
 import {
@@ -67,7 +84,11 @@ import {
   shardHolder,
   traceHealth,
 } from "./org-status";
-import { IntakeKind, Severity, normalize, type ExternalEvent } from "./intake";
+import { atPath, externalRefOf, headersFrom, IntakeKind, Severity, normalize, trackerMapper, type ExternalEvent } from "./intake";
+// Re-exported where they used to live, so no caller has to move with them. They are INTAKE
+// concerns — somebody else's JSON becoming an `ExternalEvent` — and a webhook receiver needs
+// the same mapping without importing the whole runner.
+export { atPath, headersFrom, trackerMapper } from "./intake";
 import { fidelityLine, type ProviderSet } from "./providers";
 import {
   agentWorkExecutor,
@@ -87,6 +108,7 @@ import {
   simulatedIntake,
   simulatedTestRunner,
   simulatedWorkExecutor,
+  commandArtifactProducer,
 } from "./adapters";
 import { RunOutcome } from "./qa";
 import { ollamaBackend } from "../accelerator/local-llm.ts";
@@ -115,7 +137,7 @@ import { ScheduleBlockType } from "./work-schedule";
 import { observeForHat } from "./work-batch";
 import { isLeafType, WorkType as WorkTypeValue } from "./goal-cascade";
 import { associateGoal, EMPTY_BOOK, openPortfolio, PortfolioKind, retirePortfolio } from "./portfolio";
-import { appendRun, deliveryRate, readEvents } from "./org-store";
+import { appendEvent, appendRun, deliveryRate, readEvents } from "./org-store";
 import { runUntilSettled } from "./autonomy";
 import { decideSupply, endorseRecommendation } from "./rmo";
 import { authorityFor, pressureBoard } from "./schedule-pressure";
@@ -124,16 +146,76 @@ import { contextFor, runDispatchedCycle, statusSurfaceFrom } from "./agent-loop-
 import { dispatcherFor, evaluatePromotionGate } from "./slot-dispatch";
 import { compareToLegacy, foldObserveActWindow, legacySelection, type ObserveActTick } from "./observe-act-window";
 import { deliverWorkItem } from "./work-delivery";
-import { gitDataSource, unionOf } from "./git-data-source";
+import { directoryDataSource, gitDataSource, unionOf } from "./git-data-source";
 import type { DataSourcePort } from "./providers";
+import type { CascadeNode } from "./goal-cascade";
+import { OrgEventKind, type OrgEvent, type OrgFact } from "./org-event";
 import { DEFAULT_PIPELINE } from "./pipeline";
-import { foldObserveActTicks } from "./org-fold";
+import { foldCalendar, foldOrganization } from "./org-fold";
+import { authorIndexFrom, observationsFrom } from "./reputation-from-log";
+import type { ReputationObservation } from "./reputation";
+import { foldHatsWorn,
+  foldLandedChanges, foldObserveActTicks, foldPresence } from "./org-fold";
 import { emit } from "./org-event";
 import type { AgentState } from "../workflow-engine/agent-loop/state-machine";
-import { GateKind, GateOutcome, NO_PROPOSER } from "./quality-gate";
+import { GateKind, GateOutcome, NO_PROPOSER, ORDERED_GATES, type HumanCheckpoint } from "./quality-gate";
+import { readActions } from "./action-queue";
+import { groom } from "./grooming";
+import { confluenceSource } from "./confluence-source";
+import { resolve as resolveSkill, type Resolution, type SkillBinding } from "./skill-binding";
+import { orgById, parseRegistry, runReadinessOf } from "./org-registry";
+import { HumanActionKind, type HumanAction } from "./human-action";
+import { mkdirSync, readdirSync, readFileSync, writeFileSync, statSync } from "node:fs";
+import { join } from "node:path";
+import type { ProducerPort } from "./pipeline";
 import type { OrgChart } from "./org-chart";
 import type { OrgRuntimeDeps, OrgRuntimeReport } from "./org-runtime";
 import type { NextAction } from "../observe/observe";
+
+/**
+ * The goals a person actually stated, as intake.
+ *
+ * ── THE DEFECT THIS CLOSES ───────────────────────────────────────────────────
+ * `org goal --title ... --reason ...` validated the request through `acceptAction`, appended it to
+ * the queue, AND recorded a permanent event for it — then nothing ever read it. Grepping the queue's
+ * consumers found three: an agent's inbox view, gate approve/reject answers, and blocker
+ * acceptance. `SubmitGoal` had NO consumer at all. So the run always built the hardcoded `REPORTS`
+ * fixture instead.
+ *
+ * MEASURED, end to end: an organization was created, told to "Ship a URL shortener HTTP API", and
+ * reported `queued submit_goal`. The run that followed decomposed, staffed, reviewed, gated and
+ * merged — all of it correctly — for 'checkout double-charges when a coupon is applied twice'. The
+ * customer's goal was never mentioned once. Every part worked; they were not connected.
+ *
+ * That is a WRITER WITH NO READER — the mirror of the reader-with-no-writer pattern this codebase
+ * keeps producing, and harder to see, because the writing end reports success.
+ *
+ * The fixture is kept as the FALLBACK, not the default: an org with nothing queued still has
+ * something to demonstrate, and a run says which of the two it used rather than leaving a person to
+ * infer it from the work item titles.
+ */
+export function statedGoalsAsIntake(actions: readonly HumanAction[]): readonly ExternalEvent[] {
+  return actions
+    .filter((a) => a.kind === HumanActionKind.SubmitGoal)
+    // Oldest first, so the order the organization takes them in is the order they were stated.
+    .sort((x, y) => (x.atMs === y.atMs ? (x.actionId < y.actionId ? -1 : 1) : x.atMs - y.atMs))
+    .map((a) => ({
+      // WHO ASKED, kept as the source. "portal" would make a customer's own words look like a
+      // scraped ticket, and the acceptance gate at the end is answering to this person.
+      source: `operator:${a.byHuman}`,
+      // The action id IS the idempotency key — the same goal queued twice is one goal, and a run
+      // repeated against the same store does not fork the cascade.
+      externalId: a.actionId,
+      kind: IntakeKind.Goal,
+      title: a.subjectId,
+      // `--reason` is "why it matters and what done looks like", which is exactly what a
+      // reproduction field is for on a goal: the statement the final validation is judged against.
+      // Intake REFUSES a defect with no reproduction; a goal with no stated done-condition deserves
+      // the same treatment, so an empty reason is left absent rather than filled with a placeholder.
+      ...(a.reason.trim() === "" ? {} : { reproduction: a.reason }),
+      evidenceRefs: [`action/${a.actionId}`],
+    }));
+}
 
 /** The reports this run feeds in. Three deliberately: one good, one duplicate, one incomplete. */
 const REPORTS: readonly ExternalEvent[] = [
@@ -159,6 +241,159 @@ const REPORTS: readonly ExternalEvent[] = [
   { source: "support", externalId: "S-9", kind: IntakeKind.Defect, title: "it is broken" },
 ];
 
+/**
+ * Parse `--price <model>=<in>,<out>` into a price table.
+ *
+ * A malformed entry is DROPPED rather than defaulted to zero. A zero price would render as free
+ * work, which is the exact figure `meter.ts` exists to keep off the screen — so an unparseable
+ * price leaves that model unpriced, and the total says so by carrying its denominator.
+ */
+/**
+ * A reviser backed by a command.
+ *
+ * The conversation reaches it on STDIN as JSON and the new document comes back on STDOUT. That way
+ * a real model-backed author and this fixture have the same contract, and neither needs the room's
+ * text on a command line where a message somebody typed would land in a process listing.
+ *
+ * THE EXIT CODE DECIDES. A command that prints an apology and exits 0 has produced a revision; one
+ * that prints a document and exits 1 has not — the same rule every other spawn adapter here keeps.
+ */
+export function commandReviser(command: string, args: readonly string[], cwd: string): Reviser {
+  return (request) => {
+    const run = spawnSync(command, [...args], {
+      cwd,
+      encoding: "utf-8",
+      input: JSON.stringify(request),
+      timeout: 120_000,
+      shell: false,
+    });
+    if (run.error !== undefined) return { ok: false, reason: `'${command}' could not run: ${run.error.message}` };
+    if (run.status !== 0) {
+      return { ok: false, reason: `'${command}' exited ${String(run.status)}: ${(run.stderr ?? "").trim().slice(0, 300)}` };
+    }
+    const text = String(run.stdout ?? "").trim();
+    if (text === "") return { ok: false, reason: `'${command}' produced no document` };
+    return { ok: true, text };
+  };
+}
+
+/** What a life fact is ABOUT, for the event's subject. */
+function subjectOfLifeFact(fact: OrgFact): string {
+  if (fact.kind === "hat_move" || fact.kind === "self_directed") return fact.hatId;
+  if (fact.kind === "memory_written" || fact.kind === "memory_phase") return fact.memoryId;
+  // The WORK, not the meeting: a meeting is a response to something, and filing it under its own
+  // id would leave the item it is about with no record that anybody met over it.
+  if (fact.kind === "meeting_planned") return fact.workItemId ?? fact.meetingId;
+  if (fact.kind === "meeting_held") return fact.meetingId;
+  return "organization";
+}
+
+/** One readable sentence per fact, so the trace is legible without decoding the fact. */
+function describeLifeFact(fact: OrgFact): string {
+  switch (fact.kind) {
+    case "hat_move":
+      return `${fact.hatId}: ${fact.move} — ${fact.why}`;
+    case "self_directed":
+      return `${fact.hatId} spent free time on '${fact.subject}' (${fact.selfDirectedKind})`;
+    case "memory_written":
+      return `${fact.writtenBy} ${fact.outcome} '${fact.key}' at the ${fact.tier} tier`;
+    case "memory_phase":
+      return `memory ${fact.from} → ${fact.to} (weight ${fact.weight.toFixed(3)}): ${fact.why}`;
+    case "meeting_planned":
+      return `${fact.attendeeHatIds.join(" + ")} booked an hour${fact.about === undefined ? "" : `: ${fact.about}`}`;
+    case "meeting_held":
+      return fact.produced === ""
+        ? `${fact.attendeeHatIds.join(" + ")} met and produced NOTHING — ${fact.reason ?? "no reason given"}`
+        : `${fact.attendeeHatIds.join(" + ")} met and produced: ${fact.produced.split("\n")[0] ?? ""}`;
+    default:
+      return "life";
+  }
+}
+
+/**
+ * Every flag this CLI understands.
+ *
+ * Derived by hand and CHECKED by a test that greps this file for `valueAfter`/`valuesAfter`/`has`
+ * calls, so a flag added without being listed here fails the suite rather than becoming a silent
+ * no-op the day somebody types it.
+ */
+export const KNOWN_FLAGS: ReadonlySet<string> = new Set([
+  "--actions", "--admin", "--agent-delivers", "--artifact-arg", "--artifact-cmd", "--base",
+  "--blockers", "--checkpoint", "--churn", "--org", "--churn-threshold", "--context-limit", "--context-out",
+  "--cycle", "--days", "--git", "--inbox", "--json", "--max-gate-attempts", "--meeting-arg",
+  "--meeting-cmd", "--memory", "--now",
+  "--org-docs", "--port-timeout-ms", "--price", "--qa-fails", "--review-arg", "--review-cmd",
+  "--review-model", "--review-queue", "--room-arg", "--room-cmd", "--rooms", "--source-repo",
+  "--source-subdir", "--store", "--study-arg", "--study-cmd", "--test-arg", "--test-cmd",
+  "--confluence-auth-file", "--confluence-space", "--confluence-cql", "--confluence-limit",
+  "--tracker", "--tracker-header", "--tracker-items", "--tracker-map", "--tracker-severity",
+  "--tracker-source", "--until", "--week", "--window-start", "--window-target", "--work-agent",
+  "--work-agent-arg", "--work-arg", "--work-cmd", "--work-model", "--work-verify",
+  "--work-verify-arg", "--worktrees", "--resume", "--help", "-h",
+]);
+
+/**
+ * Names people actually reach for, and what they meant.
+ *
+ * AN EXPLICIT TABLE, not a similarity heuristic. `--at` and `--now` share no prefix and no
+ * characters worth matching on, so a fuzzy guess cannot connect them — and `--at` is precisely the
+ * mistake that motivated this whole check. A table of real mistakes is honest; a heuristic that
+ * cannot catch the one case it was written for is decoration.
+ */
+export const FLAG_ALIASES: Readonly<Record<string, string>> = {
+  "--at": "--now",
+  "--time": "--now",
+  "--date": "--now",
+  "--jira": "--tracker",
+  "--out": "--store",
+  "--output": "--store",
+  "--dir": "--store",
+  "--queue": "--actions",
+  "--docs": "--org-docs",
+};
+
+/**
+ * Flags the caller passed that this CLI does not understand.
+ *
+ * Where the name is a known mistake, the message says what was meant. Otherwise a prefix match is
+ * offered — useful for a typo, and honestly absent when there is nothing sensible to suggest.
+ */
+export function unknownFlags(argv: readonly string[]): readonly string[] {
+  const out: string[] = [];
+  for (const arg of argv) {
+    if (!arg.startsWith("--") && arg !== "-h") continue;
+    // `--flag=value` is not this CLI's style, but somebody will type it; name the flag part.
+    const flag = arg.includes("=") ? arg.slice(0, arg.indexOf("=")) : arg;
+    if (KNOWN_FLAGS.has(flag)) continue;
+    const meant =
+      FLAG_ALIASES[flag] ??
+      (flag.length > 3
+        ? [...KNOWN_FLAGS].find((k) => k !== flag && (k.startsWith(flag) || flag.startsWith(k)))
+        : undefined);
+    out.push(meant === undefined ? flag : `${flag} (did you mean ${meant}?)`);
+  }
+  return out;
+}
+
+export function pricingFrom(
+  entries: readonly string[],
+): Record<string, { readonly inPerMillion: number; readonly outPerMillion: number }> {
+  const out: Record<string, { inPerMillion: number; outPerMillion: number }> = {};
+  for (const entry of entries) {
+    const at = entry.indexOf("=");
+    if (at <= 0) continue;
+    const model = entry.slice(0, at).trim();
+    const parts = entry.slice(at + 1).split(",");
+    if (model === "" || parts.length !== 2) continue;
+    const inPerMillion = Number.parseFloat((parts[0] ?? "").trim());
+    const outPerMillion = Number.parseFloat((parts[1] ?? "").trim());
+    if (!Number.isFinite(inPerMillion) || !Number.isFinite(outPerMillion)) continue;
+    if (inPerMillion < 0 || outPerMillion < 0) continue;
+    out[model] = { inPerMillion, outPerMillion };
+  }
+  return out;
+}
+
 export interface Args {
   readonly qaFails: boolean;
   readonly churn: boolean;
@@ -171,6 +406,26 @@ export interface Args {
   readonly admin: boolean;
   /** Where to persist the run's history. Absent means the run leaves no trace on disk. */
   readonly store: string | undefined;
+  /**
+   * Where a person's requests and answers arrive. Absent = nobody can reach this run.
+   *
+   * The SAME directory `serve-org --actions` writes to. One inbound door: a second channel for
+   * answers would be a second place the run has to look for what a person said, and the first one
+   * to be forgotten would be silent.
+   */
+  readonly actions: string | undefined;
+  /** Where the organization leaves questions it cannot answer itself. Absent = it cannot ask. */
+  readonly blockers: string | undefined;
+  readonly meetingCmd: string | undefined;
+  readonly meetingArgs: readonly string[];
+  /**
+   * Which optional checkpoints are on. EMPTY IS THE DEFAULT and means fully agentic.
+   *
+   * Empty rather than "both", because a checkpoint nobody asked for stops a run that has nobody
+   * waiting to unblock it — and an organization that halts on an unattended machine looks exactly
+   * like one that crashed.
+   */
+  readonly checkpoints: readonly HumanCheckpoint[];
   /**
    * Which adapter answers each port. Absent means the SIMULATED one — explicitly, and the run says
    * so in its own output. Reaching reality is opt-in and visible at the command line.
@@ -202,6 +457,8 @@ export interface Args {
   readonly trackerHeaders: readonly string[];
   readonly trackerMap: readonly string[];
   readonly trackerSource: string;
+  /** `raw=critical|high|medium|low` pairs translating this tracker's severity vocabulary. */
+  readonly trackerSeverity: readonly string[];
   /** An agent performs the work; a separate command decides whether it worked. */
   readonly workAgent: string | undefined;
   /**
@@ -214,6 +471,84 @@ export interface Args {
   readonly workAgentArgs: readonly string[];
   readonly workVerify: string | undefined;
   readonly workVerifyArgs: readonly string[];
+  /**
+   * How long a spawned port may take before it is killed.
+   *
+   * Every `spawnSync` adapter defaults to two minutes, which is ample for a build command and
+   * nowhere near enough for an agent asked to fix a defect in a real codebase. Nothing here used to
+   * set it, so a real work agent was killed mid-thought and the register carried on to the gates
+   * with an empty diff — every gate then correctly rejected nothing, and the run reported NOT
+   * DELIVERED in under two minutes. The organization was not wrong at any step; it was simply never
+   * given time to have anything to judge.
+   */
+  readonly portTimeoutMs: number | undefined;
+  /**
+   * How many times work may be re-presented to the gates before the churn is called.
+   *
+   * Three is the right default and stays the default: the bound exists so that repeated rejection
+   * is broken structurally instead of endured, and `org-runtime` deliberately halts rather than
+   * claim it retried with an input nothing changed.
+   *
+   * But that reasoning turns on the input NOT changing. When each turn-back produces a genuinely
+   * different diff — a different hash, judged afresh — the work is converging, and stopping it at
+   * three ends a process that was moving rather than one that was spinning. This makes the number
+   * the operator's, because only the operator knows which of those two they are watching.
+   */
+  readonly maxGateAttempts: number | undefined;
+  /**
+   * How many turn-backs count as CHURN, at which point the organization stops re-presenting.
+   *
+   * Three by default, and it fires BEFORE `maxGateAttempts` — which made raising the attempt bound
+   * alone do nothing observable, because churn was declared first and halted the loop. The two
+   * numbers describe different things (how many tries are allowed; how many rejections mean the
+   * process is stuck) and an operator who raises one almost always means to raise both.
+   */
+  readonly churnThreshold: number | undefined;
+  /**
+   * What WRITES the document each pre-code gate judges.
+   *
+   * Eleven of the fourteen gates had no producer, so a reviewer at those phases was choosing
+   * between approving nothing and rejecting nothing. Both are the gate failing to evaluate the
+   * work, and the run still reported them crossed.
+   *
+   * Absent leaves those phases judgement-only, which is what they have always been. Supplying a
+   * command gives each one a real artifact, so an approval at `brd_approval` means somebody read a
+   * BRD rather than a title.
+   */
+  readonly artifactCmd: string | undefined;
+  readonly artifactArgs: readonly string[];
+  /**
+   * `--price <model>=<inPerMillion>,<outPerMillion>`, repeatable.
+   *
+   * Empty by default and deliberately so. Without it every crossing is still measured — duration,
+   * tokens, which adapter — and the cost is reported ABSENT rather than as a number nobody
+   * configured. A price supplied later reprices the history exactly, because the tokens were kept.
+   */
+  readonly pricing: Record<string, { readonly inPerMillion: number; readonly outPerMillion: number }>;
+  /** Where the iteration rooms live. A person waiting in one is answered before anything else runs. */
+  readonly rooms: string | undefined;
+  /** The memory root. Absent ⇒ the organization has no memory and the run says so. */
+  readonly memory: string | undefined;
+  /** The command an idle hat runs to study something. Absent ⇒ idle time produces nothing. */
+  readonly studyCmd: string | undefined;
+  readonly studyArgs: readonly string[];
+  /** The command that rewrites a document in a room. Absent ⇒ rooms are read but not answered. */
+  readonly roomCmd: string | undefined;
+  readonly roomArgs: readonly string[];
+  /**
+   * Where the organization keeps ITS OWN written record — the BRDs, architecture notes and cost
+   * rulings its phases produced on earlier work.
+   *
+   * Unioned with the read-only corpus, so each new work item is written against both what the
+   * company documented and what this organization itself concluded last time. That is how it builds
+   * an internal view across many tickets WITHOUT editing anybody's wiki: `DataSourcePort` has
+   * `read` and `query` and no write, so the corpus it reads is not a corpus it can touch.
+   */
+  readonly orgDocs: string | undefined;
+  /** How many documents an author may be handed. A prompt is finite; a corpus is not. */
+  readonly contextLimit: number | undefined;
+  /** Where those documents are put so a command-line author can read them. */
+  readonly contextOut: string | undefined;
   readonly git: string | undefined;
   readonly baseBranch: string;
   /**
@@ -265,9 +600,62 @@ export interface Args {
   readonly sourceRepos: readonly string[];
   /** Restrict each source repository to a subtree — `docs/`, say, rather than the whole tree. */
   readonly sourceSubdir: string | undefined;
+  /**
+   * Skills the operator bound to gates, from the organization's own record.
+   *
+   * NOT a flag: bindings are configuration an org carries, set once by `org skill bind` and read
+   * from the registry when `--org` names one. Empty means every gate uses whatever the checkout
+   * provides, which is the documented default and still a resolution the agent is told about.
+   */
+  readonly skillBindings: readonly SkillBinding[];
+  /** PATH to the Atlassian credentials file. Never a token — see the parser. */
+  readonly confluenceAuthFile: string | undefined;
+  /** Space keys to read. Empty reads whatever the CQL matches. */
+  readonly confluenceSpaces: readonly string[];
+  /** A CQL expression, when the caller knows exactly which pages matter. */
+  readonly confluenceCql: string | undefined;
+  readonly confluenceLimit: number | undefined;
 }
 
 /** The value after a flag, or undefined. A flag with nothing after it is the same as absent. */
+/**
+ * What a person has decided about a work item's gate, read from the action queue.
+ *
+ * READ ONCE, before the run, and closed over — never re-read mid-walk. A run that could pick up new
+ * instructions between two gates would be deciding against a moving input and its trace would not
+ * replay. The next cycle reads the queue again, which is the right granularity: a person answers,
+ * and the organization picks it up on its next pass.
+ *
+ * Matching is by the work item AND the gate. An approval that named neither would apply to whatever
+ * the run happened to be doing, which is the one way a recorded human decision can be worse than no
+ * decision at all.
+ */
+export function humanDecisionsFrom(
+  queueDir: string,
+): (workId: string, gate: GateKind) => { readonly outcome: GateOutcome; readonly actionRef: string } | undefined {
+  const actions = readActions(queueDir);
+  return (workId, gate) => {
+    // LAST WORD WINS. A person who answers twice has changed their mind, and the later word is the
+    // one they meant — ordered by the action's own clock, never by the order files were read.
+    const answers = actions
+      .filter(
+        (a) =>
+          (a.kind === HumanActionKind.ApproveGate || a.kind === HumanActionKind.RejectGate) &&
+          a.subjectId === workId &&
+          a.detail?.["gate"] === String(gate),
+      )
+      .sort((x: HumanAction, y: HumanAction) => (x.atMs === y.atMs ? (x.actionId < y.actionId ? -1 : 1) : x.atMs - y.atMs));
+    const latest = answers[answers.length - 1];
+    if (latest === undefined) return undefined;
+    return {
+      outcome: latest.kind === HumanActionKind.ApproveGate ? GateOutcome.Approved : GateOutcome.Rejected,
+      // THE ACTION IS THE EVIDENCE. An approval with no traceable origin is precisely what the
+      // audit requirement exists to prevent, so the id travels into the evaluation's own refs.
+      actionRef: `human-action/${latest.actionId}`,
+    };
+  };
+}
+
 function valueAfter(argv: readonly string[], flag: string): string | undefined {
   const i = argv.indexOf(flag);
   return i >= 0 ? argv[i + 1] : undefined;
@@ -305,6 +693,7 @@ export function parseArgs(argv: readonly string[]): Args {
     trackerHeaders: valuesAfter(argv, "--tracker-header"),
     trackerMap: valuesAfter(argv, "--tracker-map"),
     trackerSource: valueAfter(argv, "--tracker-source") ?? "tracker",
+    trackerSeverity: valuesAfter(argv, "--tracker-severity"),
     workAgent: valueAfter(argv, "--work-agent"),
     workModel: valueAfter(argv, "--work-model"),
     until: valueAfter(argv, "--until"),
@@ -314,9 +703,42 @@ export function parseArgs(argv: readonly string[]): Args {
     agentDelivers: argv.includes("--agent-delivers"),
     sourceRepos: valuesAfter(argv, "--source-repo"),
     sourceSubdir: valueAfter(argv, "--source-subdir"),
+    // A PATH, never a token. argv is world-readable; `looksLikeSecret` refuses a value that looks
+    // like one, and the file is re-read per call so a rotated credential needs no restart.
+    // Empty unless an organization is resolved; `withOrgDefaults` fills it from the registry.
+    skillBindings: [],
+    confluenceAuthFile: valueAfter(argv, "--confluence-auth-file"),
+    confluenceSpaces: valuesAfter(argv, "--confluence-space"),
+    confluenceCql: valueAfter(argv, "--confluence-cql"),
+    confluenceLimit: ((v) => (v === undefined ? undefined : Number.parseInt(v, 10)))(
+      valueAfter(argv, "--confluence-limit"),
+    ),
     workAgentArgs: valuesAfter(argv, "--work-agent-arg"),
     workVerify: valueAfter(argv, "--work-verify"),
     workVerifyArgs: valuesAfter(argv, "--work-verify-arg"),
+    portTimeoutMs: ((v) => (v === undefined ? undefined : Number.parseInt(v, 10)))(
+      valueAfter(argv, "--port-timeout-ms"),
+    ),
+    maxGateAttempts: ((v) => (v === undefined ? undefined : Number.parseInt(v, 10)))(
+      valueAfter(argv, "--max-gate-attempts"),
+    ),
+    churnThreshold: ((v) => (v === undefined ? undefined : Number.parseInt(v, 10)))(
+      valueAfter(argv, "--churn-threshold"),
+    ),
+    artifactCmd: valueAfter(argv, "--artifact-cmd"),
+    artifactArgs: valuesAfter(argv, "--artifact-arg"),
+    pricing: pricingFrom(valuesAfter(argv, "--price")),
+    rooms: valueAfter(argv, "--rooms"),
+    memory: valueAfter(argv, "--memory"),
+    studyCmd: valueAfter(argv, "--study-cmd"),
+    studyArgs: valuesAfter(argv, "--study-arg"),
+    roomCmd: valueAfter(argv, "--room-cmd"),
+    roomArgs: valuesAfter(argv, "--room-arg"),
+    orgDocs: valueAfter(argv, "--org-docs"),
+    contextLimit: ((v) => (v === undefined ? undefined : Number.parseInt(v, 10)))(
+      valueAfter(argv, "--context-limit"),
+    ),
+    contextOut: valueAfter(argv, "--context-out"),
     git: valueAfter(argv, "--git"),
     baseBranch: valueAfter(argv, "--base") ?? "main",
     worktrees: valueAfter(argv, "--worktrees"),
@@ -324,6 +746,18 @@ export function parseArgs(argv: readonly string[]): Args {
     churn: argv.includes("--churn"),
     json: argv.includes("--json"),
     store: ((i) => (i >= 0 ? argv[i + 1] : undefined))(argv.indexOf("--store")),
+    actions: valueAfter(argv, "--actions"),
+    blockers: valueAfter(argv, "--blockers"),
+    // WHO RUNS THE MEETINGS. Absent, meetings are booked and held by nobody, and the run says so
+    // rather than reporting outcomes it did not have.
+    meetingCmd: valueAfter(argv, "--meeting-cmd"),
+    meetingArgs: valuesAfter(argv, "--meeting-arg"),
+    // REPEATABLE, and anything that is not one of the two names is dropped rather than guessed at.
+    // A typo silently enabling a checkpoint would stop a run for a reason its operator never asked
+    // for; a typo silently enabling nothing is visible in the banner printed at startup.
+    checkpoints: argv
+      .map((a, i) => (a === "--checkpoint" ? argv[i + 1] : undefined))
+      .filter((v): v is HumanCheckpoint => v === "grooming" || v === "approach"),
     cycleOnly: argv.includes("--cycle"),
     week: argv.includes("--week"),
     // Spread rather than assigned, because `exactOptionalPropertyTypes` is on and an explicit
@@ -333,75 +767,6 @@ export function parseArgs(argv: readonly string[]): Args {
   };
 }
 
-/** `a.b.c` into a nested object. Returns undefined at the first missing hop rather than throwing. */
-export function atPath(body: unknown, path: string): unknown {
-  let cursor: unknown = body;
-  for (const hop of path.split(".")) {
-    if (typeof cursor !== "object" || cursor === null) return undefined;
-    cursor = (cursor as Record<string, unknown>)[hop];
-  }
-  return cursor;
-}
-
-/** `k:v` pairs into headers. A pair with no colon is IGNORED rather than becoming a header named "". */
-export function headersFrom(pairs: readonly string[]): Record<string, string> {
-  const out: Record<string, string> = {};
-  for (const pair of pairs) {
-    const at = pair.indexOf(":");
-    if (at <= 0) continue;
-    out[pair.slice(0, at).trim()] = pair.slice(at + 1).trim();
-  }
-  return out;
-}
-
-/**
- * `--tracker-map field=path` pairs into an `ExternalEvent` mapper.
- *
- * This is what makes a real tracker reachable from a command line rather than only from code. Jira's
- * search response, for instance:
- *
- *   --tracker-items issues --tracker-map externalId=key --tracker-map title=fields.summary
- *
- * It REFUSES rather than guessing. An item with no `externalId` or no `title` throws, naming the
- * field and the path that was tried, and `httpIntake` turns that into a refusal carrying the item's
- * index. Substituting a placeholder id would put an unidentifiable ticket into the queue, which is
- * worse than not accepting it: nobody could ever match it back to the tracker.
- */
-export function trackerMapper(source: string, pairs: readonly string[]): (item: unknown) => ExternalEvent {
-  const paths = new Map<string, string>();
-  for (const pair of pairs) {
-    const at = pair.indexOf("=");
-    if (at <= 0) continue;
-    paths.set(pair.slice(0, at).trim(), pair.slice(at + 1).trim());
-  }
-  const read = (item: unknown, field: string, fallback: string): string | undefined => {
-    const path = paths.get(field) ?? fallback;
-    const value = atPath(item, path);
-    return typeof value === "string" ? value : undefined;
-  };
-  return (item) => {
-    const externalId = read(item, "externalId", "externalId");
-    const title = read(item, "title", "title");
-    if (externalId === undefined) {
-      throw new Error(`no externalId at '${paths.get("externalId") ?? "externalId"}'`);
-    }
-    if (title === undefined) throw new Error(`${externalId} has no title at '${paths.get("title") ?? "title"}'`);
-    const severity = read(item, "severity", "severity");
-    return {
-      source,
-      externalId,
-      title,
-      kind: IntakeKind.Defect,
-      // An unrecognised severity becomes `Low` rather than being invented upward: over-stating
-      // urgency from a field nobody mapped would let the tracker's noise set this org's priorities.
-      severity: severity === Severity.Critical || severity === Severity.High || severity === Severity.Medium
-        ? severity
-        : Severity.Low,
-      reproduction: read(item, "reproduction", "reproduction") ?? "",
-      evidenceRefs: [`${source}/${externalId}`],
-    };
-  };
-}
 
 /**
  * What the flags ask for but cannot be given, said out loud instead of quietly downgraded.
@@ -477,14 +842,309 @@ export function argRefusals(args: Args): readonly string[] {
  * title, never anything a reporter typed. A work item arrives from intake, which with `--inbox` is a
  * directory somebody else can write to; its text is untrusted input to this process.
  */
+/**
+ * How many times work may be re-presented to the gates, given what the operator asked for.
+ *
+ * `--churn` bundles a whole posture (a lower churn threshold AND a higher attempt bound) for
+ * observing churn deliberately. An explicit `--max-gate-attempts` is a narrower, later statement
+ * about one number, so it wins; having the bundle silently overwrite it would make the flag look
+ * accepted and do nothing, which is the failure mode this file has already been bitten by once.
+ */
+export function gateAttemptsFor(args: Args): number | undefined {
+  return args.maxGateAttempts ?? (args.churn ? 5 : undefined);
+}
+
+/**
+ * The gates a document is written FOR, in chain order.
+ *
+ * Everything before `implementation_review`, because those are the phases the runtime has no
+ * producer for — the ones that were being crossed on nothing. The later gates already have
+ * something real to judge: implementation and runtime validation carry the runtime's own
+ * producers, and the final reviews read the diff.
+ */
+export const PRE_CODE_GATES: readonly GateKind[] = ORDERED_GATES.slice(
+  0,
+  ORDERED_GATES.indexOf(GateKind.ImplementationReview),
+);
+
+/**
+ * A producer per pre-code gate, or none at all.
+ *
+ * DERIVED from the chain rather than listed, so a gate inserted before implementation gets a
+ * producer without anyone remembering to add it here — the failure this whole exercise keeps
+ * finding is a list that stopped matching the thing it described.
+ */
+/**
+ * Put the organization's own documents where a shell-based author can read them.
+ *
+ * The DataSourcePort is the interface — a git repository today, a wiki or a ticket system tomorrow.
+ * Everything downstream of this function sees files, so a new source is a new implementation of two
+ * methods and nothing here changes.
+ *
+ * `limit` is not decoration. A source can hold thousands of documents and an author has one prompt;
+ * handing it everything would push the material that matters out of the window and cost a fortune
+ * doing it. The cap is the caller's, and a run that hit it says so rather than silently truncating.
+ */
+/**
+ * What the organization already knows ABOUT THIS ITEM, written where an author can read it.
+ *
+ * Targeted rather than blanket: `groom` derives search terms from the work item and asks the source
+ * about each one, so a step working on link expiry is handed the pages about links and about expiry
+ * instead of the first forty documents in the corpus.
+ *
+ * The terms that matched NOTHING are written into the file too. That is the more useful half for
+ * anyone deciding whether a request extends an existing system or introduces a new one: a term the
+ * corpus has never heard of is a thing this organization has not built, and an author that can see
+ * that asks about scope instead of assuming a system it cannot find.
+ *
+ * Cached per work item because a run walks several gates over the same item and each would otherwise
+ * re-query the source - which for a wiki is a network round trip per gate per term.
+ */
+export function groundingFor(
+  source: DataSourcePort | undefined,
+  dir: string | undefined,
+  limit: number,
+): (node: CascadeNode) => Promise<readonly string[]> {
+  if (source === undefined || dir === undefined) return async () => [];
+  const cache = new Map<string, readonly string[]>();
+  return async (node: CascadeNode) => {
+    const hit = cache.get(node.workId);
+    if (hit !== undefined) return hit;
+    const found = await groom(node, source);
+    if (!found.ok) {
+      cache.set(node.workId, []);
+      return [];
+    }
+    mkdirSync(dir, { recursive: true });
+    const docs = found.value.documents.slice(0, Math.max(0, limit));
+    const at = join(dir, `grounding-${node.workId.replace(/[^A-Za-z0-9._-]/g, "-")}.md`);
+    const body = [
+      `# What this organization already has about: ${node.title}`,
+      ``,
+      `Searched for: ${found.value.terms.join(", ")}`,
+      found.value.termsWithNoMatch.length === 0
+        ? `Every term matched something.`
+        : `NOTHING was found for: ${found.value.termsWithNoMatch.join(", ")} — this organization has ` +
+          `not written about these, so treat them as new ground rather than assuming a system exists.`,
+      ``,
+      ...docs.flatMap((d) => [`## ${d.ref}`, ``, d.content, ``]),
+      docs.length === 0 ? `No existing document matched. This looks like new ground.` : ``,
+    ].join("\n");
+    writeFileSync(at, body, "utf-8");
+    const paths = [at];
+    cache.set(node.workId, paths);
+    return paths;
+  };
+}
+
+export async function materialiseContext(
+  source: DataSourcePort,
+  dir: string,
+  limit: number,
+): Promise<{ readonly paths: readonly string[]; readonly total: number; readonly capped: boolean }> {
+  const read = await source.read();
+  if (!read.ok) return { paths: [], total: 0, capped: false };
+  mkdirSync(dir, { recursive: true });
+  const docs = [...read.value];
+  const taken = docs.slice(0, Math.max(0, limit));
+  const paths: string[] = [];
+  for (const [i, doc] of taken.entries()) {
+    // The REF is written into the file, so an author quoting a document quotes something citable
+    // and a reviewer can tell which revision was read.
+    const safe = doc.path.replace(/[^A-Za-z0-9._-]/g, "-").slice(-80);
+    const at = join(dir, `${String(i).padStart(3, "0")}-${safe}`);
+    writeFileSync(at, `<!-- ${doc.ref} -->
+${doc.content}`, "utf-8");
+    paths.push(at);
+  }
+  return { paths, total: docs.length, capped: docs.length > taken.length };
+}
+
+/**
+ * What a person has already told this work, from the outbox and the action queue.
+ *
+ * Derived on every call rather than accumulated, so a run that stopped mid-conversation resumes
+ * exactly where the record says it was. Pairs each question with its answer: an answer on its own
+ * is unreadable to whoever asked, since the question is what gives it a subject.
+ */
+export function answersFromOutbox(
+  blockersDir: string | undefined,
+  actionsDir: string | undefined,
+  /**
+   * The work, so an answer can reach the rungs BELOW the one that asked.
+   *
+   * ── WHY ANSWERS INHERIT ──────────────────────────────────────────────────
+   * A person told the CTO the expected traffic while it groomed the goal. The next rung down then
+   * asked the same question about the initiative, because answers were filed against the work item
+   * that asked and nothing carried them further. From the person's side that is being asked the
+   * same thing twice by the same company, which is the fastest way to make them stop answering.
+   *
+   * Downward only, like `brief` and `domain`: a child is about what its parent is about, so what
+   * the parent was told applies to it. The reverse does not hold — something said about one leaf is
+   * not true of its siblings, and pushing it upward would put one task's answer on all of them.
+   *
+   * Omitted means node-only, which is the honest behaviour when the caller has no cascade to
+   * resolve ancestry against.
+   */
+  cascade?: Cascade,
+): (node: CascadeNode) => readonly { readonly question: string; readonly answer: string }[] {
+  if (blockersDir === undefined) return () => [];
+  const raised = readBlockers(blockersDir);
+  const actions = actionsDir === undefined ? [] : readActions(actionsDir);
+  const lineage = (node: CascadeNode): ReadonlySet<string> => {
+    const ids = new Set<string>([node.workId]);
+    if (cascade === undefined) return ids;
+    let cur: CascadeNode | undefined = node;
+    // Guarded against a cycle in the parent chain: a malformed cascade must not hang the run.
+    while (cur?.parentWorkId !== undefined && !ids.has(cur.parentWorkId)) {
+      ids.add(cur.parentWorkId);
+      cur = cascade.nodes.find((n: CascadeNode) => n.workId === cur?.parentWorkId);
+    }
+    return ids;
+  };
+  return (node) => {
+    const mine = lineage(node);
+    return answeredBlockers(
+      raised.filter((b) => mine.has(b.blocking)),
+      actions,
+    ).map(({ blocker, answer }) => ({
+      question: blocker.about,
+      // `detail.answer` IS the answer; `reason` is why it was given. `acceptAction` refuses an
+      // answer whose `detail.answer` is empty precisely so the two cannot be confused.
+      answer: String(answer.detail?.["answer"] ?? answer.reason),
+    }));
+  };
+}
+
+/**
+ * How many rounds of questions one piece of work gets before it must proceed regardless.
+ *
+ * THREE, matching the gate-attempt bound, and for the same reason: the number is not the point, the
+ * existence of one is. An organization with no limit on consultation does not converge, and every
+ * step that would rather be certain than finished stalls behind a person.
+ */
+export const MAX_ASK_ROUNDS = 3;
+
+/**
+ * Which skill performs this gate for this work item, as the operator configured it.
+ *
+ * ── WHY THIS FUNCTION HAD TO EXIST ───────────────────────────────────────────
+ * `skill-binding.resolve` holds the rule - nearest scoped binding wins, then organization-wide,
+ * then whatever the checkout provides - and until now only the CONFIGURE PLANNER and the `org skill
+ * list` command ever called it. An operator could bind a skill, see it listed against the right
+ * gate, and no agent would ever hear about it.
+ *
+ * `ancestry` is the work item then its parents, nearest first, because that is the precedence the
+ * binding rule is written in: a task overrides its project, a project its organization.
+ *
+ * The resolution's `because` travels with it. A fallback nobody can see is the thing that makes
+ * people stop trusting configuration, and "no binding, so use the repo's own" is a decision worth
+ * showing rather than a silence.
+ */
+export function skillResolverFor(
+  bindings: readonly SkillBinding[],
+  cascade: Cascade | undefined,
+): (gate: GateKind, node: CascadeNode) => Resolution {
+  const ancestryOf = (node: CascadeNode): readonly string[] => {
+    const out: string[] = [node.workId];
+    if (cascade === undefined) return out;
+    let cur: CascadeNode | undefined = node;
+    while (cur?.parentWorkId !== undefined && !out.includes(cur.parentWorkId)) {
+      out.push(cur.parentWorkId);
+      cur = cascade.nodes.find((n: CascadeNode) => n.workId === cur?.parentWorkId);
+    }
+    return out;
+  };
+  return (gate, node) => resolveSkill(bindings, gate, ancestryOf(node));
+}
+
+/**
+ * What a person said when they turned this work back.
+ *
+ * ── THE DEFECT THIS CLOSES ───────────────────────────────────────────────────
+ * A rejection reached the runtime as an outcome and an action reference. The REVIEW ITSELF - the
+ * sentences explaining what was wrong - stayed on the queued action and reached nobody. The author
+ * redoing the step was told it had been rejected and not why.
+ *
+ * Newest first, because a reviewer who has objected twice means the second one: the first was about
+ * a draft that no longer exists.
+ *
+ * Only REJECTIONS. An approval's reason is a note for the record, not an instruction to change
+ * anything, and handing it to an author as feedback would have them revising work somebody just
+ * accepted.
+ */
+export function feedbackFromActions(
+  actionsDir: string | undefined,
+): (workId: string) => readonly { readonly gate: string; readonly said: string }[] {
+  if (actionsDir === undefined) return () => [];
+  const actions = readActions(actionsDir);
+  return (workId) =>
+    actions
+      .filter((a) => a.kind === HumanActionKind.RejectGate && a.subjectId === workId && a.reason.trim() !== "")
+      .sort((x, y) => (x.atMs === y.atMs ? (x.actionId < y.actionId ? 1 : -1) : y.atMs - x.atMs))
+      .map((a) => ({ gate: String(a.detail?.["gate"] ?? "unknown"), said: a.reason }));
+}
+
+export function artifactProducersFromArgs(
+  args: Args,
+  contextFor?: (gate: GateKind, node: CascadeNode) => readonly string[],
+  /** The work, so an answer given to a parent reaches its children. See `answersFromOutbox`. */
+  cascade?: Cascade,
+  /** Which skill performs a gate here. See `skillResolverFor`. */
+  skillFor?: (gate: GateKind, node: CascadeNode) => Resolution,
+): ReadonlyMap<GateKind, ProducerPort> {
+  const out = new Map<GateKind, ProducerPort>();
+  if (args.artifactCmd === undefined) return out;
+  const budget = args.portTimeoutMs === undefined ? {} : { timeoutMs: args.portTimeoutMs };
+  for (const gate of PRE_CODE_GATES) {
+    out.set(
+      gate,
+      commandArtifactProducer({
+        command: args.artifactCmd,
+        gate,
+        cwd: args.git ?? process.cwd(),
+        // The gate, the work id, then what earlier phases produced — so the BRD writer is handed
+        // the RFP analysis and the architect the BRD. Never the title: it comes from intake.
+        argsFor: (g, node, ctx) => [
+          ...args.artifactArgs,
+          String(g),
+          node.workId,
+          ...PRE_CODE_GATES.flatMap((prior) => ctx.priorArtifacts.get(prior)?.refs ?? []),
+        ],
+        ...(contextFor === undefined ? {} : { contextFor }),
+        // The other half of `ask:` — what a person said last time reaches the agent that asked.
+        answersFor: answersFromOutbox(args.blockers, args.actions, cascade),
+        ...(skillFor === undefined ? {} : { skillFor: (node: CascadeNode) => skillFor(gate, node) }),
+        // WHY A PERSON TURNED THIS BACK. The other half of a review: an author that cannot see the
+        // objection can only guess, and the same document comes back twice.
+        feedbackFor: ((by) => (node: CascadeNode) => by(node.workId))(feedbackFromActions(args.actions)),
+        // AND THE BOUND ON ASKING. Counted from what this work has already been told, so a step
+        // that has been answered twice is on its last round wherever it runs.
+        askRoundsLeft: (node) =>
+          Math.max(0, MAX_ASK_ROUNDS - answersFromOutbox(args.blockers, args.actions, cascade)(node).length),
+        ...budget,
+      }),
+    );
+  }
+  return out;
+}
+
+/** Same precedence as {@link gateAttemptsFor}: the narrow flag beats the posture `--churn` bundles. */
+export function churnThresholdFor(args: Args): number | undefined {
+  return args.churnThreshold ?? (args.churn ? 2 : undefined);
+}
+
 export function providersFromArgs(args: Args, events: readonly ExternalEvent[], qaFallback: RunOutcome): ProviderSet {
+  // Spread rather than assigned: `exactOptionalPropertyTypes` is on, so an explicit `undefined`
+  // would not mean "absent" and would override each adapter's own default with nothing.
+  const budget = args.portTimeoutMs === undefined ? {} : { timeoutMs: args.portTimeoutMs };
   return {
     intake:
       args.tracker !== undefined
         ? httpIntake({
             url: args.tracker,
             ...(args.trackerItems === undefined ? {} : { itemsAt: (body) => atPath(body, args.trackerItems ?? "") }),
-            mapper: trackerMapper(args.trackerSource, args.trackerMap),
+            mapper: trackerMapper(args.trackerSource, args.trackerMap, args.trackerSeverity),
             headers: headersFrom(args.trackerHeaders),
           })
         : args.inbox === undefined
@@ -505,6 +1165,7 @@ export function providersFromArgs(args: Args, events: readonly ExternalEvent[], 
               command: args.workVerify,
               argsFor: (node) => [...args.workVerifyArgs, node.workId],
               cwd: args.git ?? process.cwd(),
+              ...budget,
             },
             name: "model",
           })
@@ -515,6 +1176,7 @@ export function providersFromArgs(args: Args, events: readonly ExternalEvent[], 
               command: args.workAgent,
               argsFor: (node) => [...args.workAgentArgs, node.workId],
               cwd: args.git ?? process.cwd(),
+              ...budget,
             }),
             // The verifier decides. A different command on purpose — the same one would be the
             // agent marking its own homework, which is the whole thing this port refuses.
@@ -522,6 +1184,7 @@ export function providersFromArgs(args: Args, events: readonly ExternalEvent[], 
               command: args.workVerify,
               argsFor: (node) => [...args.workVerifyArgs, node.workId],
               cwd: args.git ?? process.cwd(),
+              ...budget,
             },
           })
         : args.workCmd === undefined
@@ -530,6 +1193,7 @@ export function providersFromArgs(args: Args, events: readonly ExternalEvent[], 
             command: args.workCmd,
             argsFor: (node) => [...args.workArgs, node.workId],
             cwd: args.git ?? process.cwd(),
+            ...budget,
           }),
     tests:
       args.testCmd === undefined
@@ -538,6 +1202,7 @@ export function providersFromArgs(args: Args, events: readonly ExternalEvent[], 
             command: args.testCmd,
             argsFor: (tc) => [...args.testArgs, tc.testCaseId],
             cwd: args.git ?? process.cwd(),
+            ...budget,
           }),
     review:
       args.reviewModel !== undefined
@@ -558,6 +1223,7 @@ export function providersFromArgs(args: Args, events: readonly ExternalEvent[], 
               // The gate and the work id, in that order, after any fixed arguments. Never a title.
               argsFor: (request) => [...args.reviewArgs, request.gate, request.workId],
               cwd: args.git ?? process.cwd(),
+              ...budget,
             })
           : autoApproveReview(),
     change:
@@ -569,15 +1235,228 @@ export function providersFromArgs(args: Args, events: readonly ExternalEvent[], 
   };
 }
 
+/**
+ * What the store already knows about who does good work.
+ *
+ * Derived rather than stored: a gate verdict recorded against an author is the observation, and
+ * re-deriving it means a hand-edited or replayed log yields the same reputation as the run that
+ * produced it. An absent store is an empty history, which is the honest starting state for an
+ * organization that has not done anything yet — every candidate at the same prior, and the
+ * exploration bonus is then what breaks the tie.
+ */
+function priorObservationsFrom(storeDir: string | undefined): readonly ReputationObservation[] {
+  if (storeDir === undefined) return [];
+  const events = readEvents(storeDir);
+  const folded = foldOrganization(events);
+  // WHO WORE WHAT, from the assignment events themselves. `HatAssignment` carries the agent in
+  // `actorAgentId` and the hat in `toState`, which is the only place the pairing is recorded.
+  // Later assignments win: a hat handed to a second agent means the second one did the work.
+  const wearerOf = new Map<string, string>();
+  for (const e of events) {
+    if (e.kind !== OrgEventKind.HatAssignment) continue;
+    if (e.toState === undefined || e.actorAgentId === undefined) continue;
+    wearerOf.set(e.toState, e.actorAgentId);
+  }
+  return observationsFrom({
+    evaluations: folded.gateEvaluations,
+    authorOf: authorIndexFrom(folded.phaseOutputs),
+    wearerOf,
+  });
+}
+
+/**
+ * Settings the operator already configured, applied to this run.
+ *
+ * ── THE DEFECT THIS CLOSES ───────────────────────────────────────────────────
+ * `org create` records an organization's store, its intake mode, its AUTONOMY, its human
+ * checkpoints and its skill bindings — and `run-org` read NONE of it. There was no `--org` flag at
+ * all: every setting had to be retyped as a flag on every run, and any that was not retyped simply
+ * did not apply. An organization created `--autonomy autonomous --checkpoint cost_approval` ran
+ * fully agentic, in whatever store the command line happened to name, because nothing connected the
+ * configuration surface to the runtime. Configuration that the thing being configured never reads
+ * is not configuration; it is a note to nobody.
+ *
+ * ── AUTONOMY DECIDES WHETHER THE RUN CONVERGES ───────────────────────────────
+ * The autonomy loop existed (`runUntilSettled`, with the right stop reasons) but was opt-in behind
+ * `--until N`, so the default was a SINGLE cycle. That is the wrong default for an organization: an
+ * org that stops after one pass with work still open has not finished, and a person watching it
+ * cannot tell "it is done" from "it stopped". An organization runs until the work is delivered,
+ * until it is genuinely blocked, or until it stops making progress — and then says which.
+ *
+ * So a resolved org CONVERGES by default, and `--until` becomes the bound rather than the switch.
+ * An explicit flag always wins: this fills in what the command line left unsaid, and overrides
+ * nothing.
+ */
+export function withOrgDefaults(args: Args, orgId: string, registryJson: string | undefined): { readonly args: Args } | { readonly reason: string } {
+  if (registryJson === undefined) return { reason: `no organization registry found — create one with 'org create --id ${orgId} ...'` };
+  const parsed = parseRegistry(registryJson);
+  if (!parsed.ok) return { reason: parsed.reason };
+  const org = orgById(parsed.registry, orgId);
+  if (org !== undefined) {
+    // READY TO RUN, not merely well formed. Being half-configured is the normal state of something
+    // somebody is still setting up; being half-configured and asked to WORK is the mistake, and
+    // this is the point at which "would read an empty backlog forever" becomes true.
+    const ready = runReadinessOf(org);
+    if (!ready.ok) return { reason: ready.reason };
+  }
+  if (org === undefined) {
+    const known = parsed.registry.orgs.map((o) => o.orgId).join(", ") || "none";
+    return { reason: `no organization '${orgId}' — configured: ${known}` };
+  }
+  return {
+    args: {
+      ...args,
+      store: args.store ?? org.storeDir,
+      actions: args.actions ?? `${org.storeDir}/actions`,
+      // The checkpoints the operator chose. A flag-supplied list wins outright rather than merging:
+      // half-honouring a stated checkpoint set is worse than either honouring or ignoring it.
+      checkpoints: args.checkpoints.length > 0 ? args.checkpoints : org.humanCheckpoints,
+      // CONVERGE. Both autonomy modes run until the work settles — they differ in what work exists
+      // (directed works only what it is handed; autonomous also raises its own), never in whether
+      // the organization sees it through.
+      until: args.until ?? String(DEFAULT_CONVERGENCE_CYCLES),
+      // WHAT THIS ORGANIZATION BOUND. Read here rather than passed as flags: an operator who ran
+      // `org skill bind` has already said this, and asking them to repeat it per run is how a
+      // configuration surface becomes decoration.
+      skillBindings: args.skillBindings.length > 0 ? args.skillBindings : org.skills,
+    },
+  };
+}
+
+/**
+ * How many cycles a resolved organization gets before the bound is reported as the stop reason.
+ *
+ * A BOUND, NOT A TARGET: delivery, an escalation, or a cycle that changed nothing all fire first,
+ * and in practice one of them always does. It exists so a defect that makes the loop productive but
+ * non-converging is reported rather than run forever.
+ */
+export const DEFAULT_CONVERGENCE_CYCLES = 25;
+
 export async function main(argv: readonly string[]): Promise<number> {
-  const args = parseArgs(argv);
+  let args = parseArgs(argv);
+
+  // ── THE ORGANIZATION THE OPERATOR ALREADY CONFIGURED ──────────────────────
+  const wantedOrg = valueAfter(argv, "--org");
+  if (wantedOrg !== undefined) {
+    const home = process.env["ORG_HOME"] ?? process.env["HOME"] ?? process.env["USERPROFILE"] ?? ".";
+    const registryPath = process.env["ORG_REGISTRY"] ?? join(home, ".agent-org", "registry.json");
+    let raw: string | undefined;
+    try {
+      raw = readFileSync(registryPath, "utf-8");
+    } catch {
+      raw = undefined;
+    }
+    const resolved = withOrgDefaults(args, wantedOrg, raw);
+    if ("reason" in resolved) {
+      console.error(`refused: ${resolved.reason}`);
+      return 2;
+    }
+    args = resolved.args;
+    console.log(`  organization '${wantedOrg}': store, checkpoints and autonomy read from the registry`);
+  }
 
   // Before the organization is built, because a misconfigured run that reaches the cascade has
   // already printed a page of output an operator will read as progress.
+  // ── AN UNKNOWN FLAG IS A REFUSAL, NOT A SHRUG ─────────────────────────────
+  // Before anything else, because the whole point is that the operator finds out BEFORE the run
+  // produces a page of output they will read as "it worked".
+  const unknown = unknownFlags(argv);
+  if (unknown.length > 0) {
+    for (const flag of unknown) console.error(`refused: unknown flag ${flag}`);
+    return 2;
+  }
+
   const refusals = argRefusals(args);
   if (refusals.length > 0) {
     for (const reason of refusals) console.error(`refused: ${reason}`);
     return 2;
+  }
+
+  // ── SOMEBODY IS WAITING IN A ROOM ─────────────────────────────────────────
+  // Before the organization is even built. A person in a conversation is the most valuable thing
+  // this run can attend to and the cheapest to get wrong: a room answered after a full pipeline
+  // walk is a conversation nobody is having any more.
+  if (args.rooms !== undefined && args.roomCmd !== undefined) {
+    const reviser: Reviser = commandReviser(args.roomCmd, args.roomArgs, process.cwd());
+    const answered = await answerRooms(args.rooms, reviser, args.now === undefined ? Date.now() : Date.parse(args.now));
+    if (answered.length > 0) {
+      console.log("\n--- rooms ---");
+      for (const a of answered) {
+        console.log(
+          `  ${a.roomId}: ${a.outcome}${a.revision === undefined ? "" : ` → revision ${String(a.revision)}`}` +
+            `${a.reason === undefined ? "" : ` (${a.reason})`}`,
+        );
+      }
+    }
+  }
+
+  // Built before the runtime so the same store serves the circuit and the life tick — two stores
+  // over one directory would each hold a stale view of the other's writes.
+  const memoryStore = args.memory === undefined ? undefined : directoryMemoryStore(args.memory);
+  let injectionLedger = EMPTY_LEDGER;
+  /** Where each work item's recalled memory was written, so the producer can be handed it. */
+  const recallPaths = new Map<string, string>();
+
+  // ── WHAT THE WORK IS ABOUT, WRITTEN DOWN WHERE AN AUTHOR CAN READ IT ──────
+  // Keyed by `requestRef`, which `acceptGoal` already puts on the goal and `decompose` already
+  // inherits down every rung — so a task five levels below the goal can still find the ticket it
+  // came from. Without this an author knows only a gate name and a work id.
+  //
+  // Written from the inbox the run was actually given. An empty inbox produces no briefs and the
+  // author is told nothing, which is the honest state for a run with no tracker attached.
+  const briefPaths = new Map<string, string>();
+  if (args.inbox !== undefined && args.artifactCmd !== undefined) {
+    const briefDir = join(args.inbox, ".briefs");
+    for (const file of (() => {
+      try {
+        return readdirSync(args.inbox as string).filter((f: string) => f.endsWith(".json"));
+      } catch {
+        return [] as string[];
+      }
+    })()) {
+      try {
+        const raw: unknown = JSON.parse(readFileSync(join(args.inbox, file), "utf-8"));
+        const it = raw as Record<string, unknown>;
+        const source = typeof it["source"] === "string" ? it["source"] : undefined;
+        const externalId = typeof it["externalId"] === "string" ? it["externalId"] : undefined;
+        const title = typeof it["title"] === "string" ? it["title"] : undefined;
+        if (source === undefined || externalId === undefined || title === undefined) continue;
+        const body = typeof it["body"] === "string" ? it["body"].trim() : "";
+        const reproduction = typeof it["reproduction"] === "string" ? it["reproduction"].trim() : "";
+        const refs = Array.isArray(it["evidenceRefs"]) ? it["evidenceRefs"].map(String) : [];
+
+        mkdirSync(briefDir, { recursive: true });
+        const at = join(briefDir, `${externalId.replace(/[^A-Za-z0-9._-]/g, "-")}.md`);
+        // THE ABSENCE IS STATED, not smoothed over. A ticket with no description is common, and an
+        // author that is not told the description is missing will fill the gap silently — which is
+        // exactly the document that started this. Saying it out loud makes "the requirements are
+        // unverified" something the author can write instead of something a reader has to notice.
+        writeFileSync(
+          at,
+          [
+            `# ${externalId} — ${title}`,
+            "",
+            `Source: ${source}`,
+            ...(refs.length === 0 ? [] : ["", "Evidence:", ...refs.map((r) => `- ${r}`)]),
+            "",
+            "## What the request says",
+            "",
+            body === ""
+              ? "**The description is EMPTY in the source system.** Nothing beyond the title above " +
+                "was supplied. Do not invent requirements to fill this in — say plainly that the " +
+                "description is missing and that anything below it is unverified."
+              : body,
+            ...(reproduction === "" ? [] : ["", "## Reproduction", "", reproduction]),
+            "",
+          ].join("\n"),
+          "utf-8",
+        );
+        briefPaths.set(externalRefOf(source, externalId), at);
+      } catch {
+        // An unreadable inbox file is the intake port's problem to report, not this loop's to
+        // guess at. No brief is written and the author is told nothing about that request.
+      }
+    }
   }
 
   const built = buildOrgChart(SEED_HATS);
@@ -622,6 +1501,10 @@ export async function main(argv: readonly string[]): Promise<number> {
           cascade: [],
           artifacts: new Map(),
           blockers: new Map(),
+          // WHAT PEOPLE HAVE SAID. Without this the operator channel can never light up, and a
+          // message written into a room would sit in the queue while the hat it was addressed to
+          // went on picking work — visible to a reader, invisible to the organization.
+          humanActions: args.actions === undefined ? [] : readActions(args.actions),
           gateAttempts: { counts: new Map<string, number>(), maxAttempts: 3 },
           // ── THREE THINGS SOMEBODY WANTS TO BUY ────────────────────────────
           // A FIXTURE, and labelled as one: the register does not invent costs, so a run with
@@ -812,14 +1695,80 @@ export async function main(argv: readonly string[]): Promise<number> {
   // ── THE DATA SOURCES THIS RUN READS ───────────────────────────────────────
   // `<dir>` or `<dir>@<ref>`. The ref defaults inside `gitDataSource` to `origin/main` rather than
   // HEAD, because HEAD is a property of one checkout and the organization's context is not.
-  const dataSource = args.sourceRepos.length === 0 ? undefined : sourceFromArgs(args);
+  const dataSource = hasSource(args) ? sourceFromArgs(args) : undefined;
 
-  const providers = providersFromArgs(args, REPORTS, args.qaFails ? RunOutcome.Failed : RunOutcome.Passed);
+  // ── WHAT THE BUSINESS AUTHORS ARE GIVEN BEFORE THEY WRITE ────────────────
+  // Read ONCE, ahead of the run, and handed to every pre-code author. Before this, the data source
+  // fed exactly one gate and the other seven authors saw only the defect report — so a BRD was
+  // written from three sentences, invented the specifics it needed, and was rejected for inventing
+  // them. That loop was not a disagreement about quality; the author was being asked to describe a
+  // system nobody had shown it.
+  //
+  // Materialised to files because the authors are commands. The PORT is still the interface, so a
+  // wiki or a ticket system is a new adapter and nothing below changes.
+  // ── WHAT THE ORGANIZATION ALREADY HAS ABOUT EACH ITEM ─────────────────────
+  // Targeted per work item rather than a blanket read of the corpus, so a step working on link
+  // expiry is handed the pages about links and about expiry — and, more usefully, is TOLD which of
+  // its own terms the corpus has never mentioned. That is what separates "extend what exists" from
+  // "build something new", and an author that cannot tell the difference asks the wrong questions.
+  //
+  // Computed for the work already on the record, because `contextFor` is consulted synchronously
+  // while the run walks. A goal stated for the first time therefore reaches its first gate
+  // ungrounded and is grounded from the next cycle on, which is the honest limit of doing this
+  // without making every producer call await a search.
+  const grounding = new Map<string, readonly string[]>();
+  if (dataSource !== undefined && args.contextOut !== undefined && args.store !== undefined) {
+    const ground = groundingFor(dataSource, args.contextOut, args.contextLimit ?? 8);
+    for (const node of foldOrganization(readEvents(args.store)).cascade.nodes) {
+      const paths = await ground(node);
+      if (paths.length > 0) grounding.set(node.workId, paths);
+    }
+    if (grounding.size > 0) {
+      console.log(`
+--- grounding ---
+  ${String(grounding.size)} work item(s) given what this organization already has about them`);
+    }
+  }
+
+  let contextPaths: readonly string[] = [];
+  if (dataSource !== undefined && args.contextOut !== undefined) {
+    const got = await materialiseContext(dataSource, args.contextOut, args.contextLimit ?? 40);
+    contextPaths = got.paths;
+    console.log(
+      `
+--- context ---
+  ${String(got.paths.length)} document(s) given to the business authors` +
+        (got.capped ? ` (capped from ${String(got.total)}; raise --context-limit to widen)` : "") +
+        `
+  source is READ-ONLY: the organization writes its own record and never edits the corpus`,
+    );
+  }
+
+    // ── WHAT THIS ORGANIZATION HAS BEEN ASKED FOR ─────────────────────────────
+  // Stated goals win over the demo fixture. See `statedGoalsAsIntake` for what was broken.
+  const stated = args.actions === undefined ? [] : statedGoalsAsIntake(readActions(args.actions));
+  if (stated.length > 0) {
+    console.log(`  intake: ${String(stated.length)} goal(s) stated by a person; the demo fixture is not used`);
+  }
+
+  const intake = stated.length > 0 ? stated : REPORTS;
+
+  const providers = providersFromArgs(args, intake, args.qaFails ? RunOutcome.Failed : RunOutcome.Passed);
   const runtimeDeps = {
     chart,
-    externalEvents: REPORTS,
+    externalEvents: intake,
     agents,
-    observations: [],
+    // THE RMO NEEDS A HISTORY TO RANK ON. Empty here meant every candidate scored the same
+    // uniform prior, so two assignments in one run both came back `score 0.400` and both went
+    // to the same agent out of eighty-five eligible. Derived from the store, so reputation
+    // accumulates across runs instead of resetting every process.
+    observations: priorObservationsFrom(args.store),
+    // WHAT THIS ORGANIZATION WAS ALREADY DOING. Without it every run re-accepts the same intake
+    // under fresh ids, so nothing a run learns - an answer, a verdict, a document - can reach the
+    // next one, and no work can outlive the process that started it.
+    ...(args.store === undefined
+      ? {}
+      : { priorCascade: foldOrganization(readEvents(args.store)).cascade }),
     acceptingHatId: "cto",
     resourceAuthorityHatId: "rmo_office",
     priorityDeciderHatId: "cto",
@@ -841,7 +1790,147 @@ export async function main(argv: readonly string[]): Promise<number> {
     ...(dataSource === undefined ? {} : { dataSource }),
     leaseMs: 300_000,
     ...(args.qaFails ? { qaFallback: RunOutcome.Failed } : {}),
-    ...(args.churn ? { churnThreshold: 2, maxGateAttempts: 5 } : {}),
+    ...((n) => (n === undefined ? {} : { churnThreshold: n }))(churnThresholdFor(args)),
+    // The documents each pre-code gate judges. Empty when no command was given, which leaves those
+    // phases exactly as they were rather than inventing an artifact nobody wrote.
+    // ── WRITE EVENTS AS THEY HAPPEN, so the run can be WATCHED ─────────────
+    // `appendRun` still writes the summary at the end. This adds the events on the way past, which
+    // is the whole difference between a history and a live view: a run that is still going, or one
+    // that crashed, is observable either way because the log is written as it is lived.
+    ...(args.store === undefined
+      ? {}
+      : { onEvent: (event: OrgEvent) => void appendEvent(event, args.store as string) }),
+    artifactProducers: artifactProducersFromArgs(
+      args,
+      // WHAT THE WORK IS, the org's own documents, and what this hat remembers.
+      //
+      // The brief goes FIRST. These arrive as positional arguments after the gate and the work id,
+      // and an author that reads only the first is then reading the ticket rather than whichever
+      // document happened to sort earliest.
+      (_gate: GateKind, node: CascadeNode) => {
+        const brief = node.requestRef === undefined ? undefined : briefPaths.get(node.requestRef);
+        const recall = recallPaths.get(node.workId);
+        return [
+          ...(brief === undefined ? [] : [brief]),
+          // WHAT ALREADY EXISTS ABOUT THIS ITEM, before the corpus at large: an author reads the
+          // first documents it is given, and the one about its own work should not be behind forty
+          // that are not.
+          ...(grounding.get(node.workId) ?? []),
+          ...contextPaths,
+          ...(recall === undefined ? [] : [recall]),
+        ];
+      },
+      // The work as the log has it, so an answer given to a goal reaches the project under it.
+      args.store === undefined ? undefined : foldOrganization(readEvents(args.store)).cascade,
+      // WHAT THE OPERATOR BOUND. Empty is not nothing: `resolve` still answers, with "use whatever
+      // the repository provides", which is the documented default and the thing agents were never
+      // told either.
+      skillResolverFor(
+        args.skillBindings,
+        args.store === undefined ? undefined : foldOrganization(readEvents(args.store)).cascade,
+      )
+    ),
+    ...((n) => (n === undefined ? {} : { maxGateAttempts: n }))(gateAttemptsFor(args)),
+    // ── THE TWO HALVES OF A CHECKPOINT, AND THEY TRAVEL TOGETHER ───────────
+    // Checkpoints with no queue to answer them is an organization that stops and cannot be
+    // restarted. So the answer path is wired whenever `--actions` is given, and the checkpoints are
+    // wired whenever they are named; a run configured with the first and not the second stops for
+    // good, which is why the banner below says which of the two it has.
+    ...(args.checkpoints.length === 0 ? {} : { checkpoints: args.checkpoints }),
+    // ── TWO WAYS A PERSON CAN ANSWER A GATE, AND THEY AGREE ──────────────
+    // The action queue (a straight approval) and a CONVERGED ROOM (an approval reached by
+    // iterating on the document). A room's approval names the revision it was given for, so it is
+    // the stronger of the two — and it wins when both exist, because somebody who sat in the room
+    // has read more than somebody who pressed a button.
+    ...(args.actions === undefined && args.rooms === undefined
+      ? {}
+      : {
+          humanDecisionFor: (workId: string, gate: GateKind) => {
+            if (args.rooms !== undefined) {
+              const fromRoom = gateAnswersFromRooms(args.rooms).find(
+                (r) => r.workId === workId && r.gate === String(gate),
+              );
+              if (fromRoom !== undefined) {
+                return {
+                  outcome: GateOutcome.Approved,
+                  // The ROOM is the evidence, and it carries the revision that was approved.
+                  actionRef: `room/${fromRoom.roomId}#r${String(fromRoom.revision)}`,
+                };
+              }
+            }
+            return args.actions === undefined ? undefined : humanDecisionsFrom(args.actions)(workId, gate);
+          },
+        }),
+    // ── WHICH REFS ARE DOCUMENTS ──────────────────────────────────────────
+    // The runtime asks; this answers by looking. A ref that does not resolve to a readable file
+    // yields nothing, so the documents view lists only what a reader can open — the same discipline
+    // `/api/artifact` keeps at the other end.
+    documentAt: (ref: string) => {
+      try {
+        const stat = statSync(ref);
+        return stat.isFile() ? { path: ref, bytes: stat.size } : undefined;
+      } catch {
+        return undefined;
+      }
+    },
+    // ── THE MEMORY CIRCUIT ────────────────────────────────────────────────
+    // Recall before a hat produces anything, credit what it cited afterwards, and — after the run
+    // knows how the work ended — tell the memories that were in scope. Without all three the
+    // counters that decide what survives never move and the substrate decays on a timer alone.
+    ...(memoryStore === undefined
+      ? {}
+      : {
+          recallFor: (workId: string, hatId: string, _gate: string, agentId?: string) => {
+            // ORG, HAT, AGENT and WORK. Department is deliberately absent: `scopesFor` supports it
+            // and nothing in this register writes a department-tier memory yet, so asking for one
+            // would add a scope that is empty by construction — a lookup that cannot succeed reads
+            // exactly like one that found nothing.
+            const injection = inject(
+              memoryStore,
+              { hatId, workId, orgId: "org", ...(agentId === undefined ? {} : { agentId }) },
+              nowMs,
+            );
+            injectionLedger = noteInjectionFor(injectionLedger, workId, injection.injectedIds);
+            // ── HOW MEMORY REACHES THE AGENT ──────────────────────────────
+            // Written to a file and handed over through the SAME context seam the org's own
+            // documents already use. A second delivery mechanism would mean a producer that reads
+            // documents but not memory, or the reverse, depending on which one it was wired for.
+            if (injection.injectedIds.length > 0) {
+              try {
+                const dir = join(memoryStore.root, ".recall");
+                mkdirSync(dir, { recursive: true });
+                const path = join(dir, `${workId.replace(/[^A-Za-z0-9._-]/g, "-")}.md`);
+                writeFileSync(path, `${injection.text}
+`, "utf-8");
+                recallPaths.set(workId, path);
+              } catch {
+                // A recall the producer cannot be handed is a recall that did not happen for it.
+                // The injection is still counted, because the memory WAS selected and the counter
+                // measures selection; the citation simply will not come.
+              }
+            }
+            return { text: injection.text, injectedIds: injection.injectedIds };
+          },
+          notedCitations: (
+            workId: string,
+            _hatId: string,
+            injectedIds: readonly string[],
+            producedText: readonly string[],
+          ) => {
+            const cited = citedIdsIn(producedText.join("\n"));
+            if (cited.length === 0) return [];
+            const result = recordCitations(memoryStore, injectedIds, cited, nowMs, workId);
+            if (!result.ok) {
+              // A FABRICATED CITATION IS A REFUSAL, not a silent drop. An agent that can claim to
+              // have used something it was never shown could manufacture its own grounding.
+              console.error(`[memory] ${workId}: ${result.reason}`);
+              return [];
+            }
+            return result.facts;
+          },
+        }),
+    // Absent unless `--price` was given. No table is baked in: see `meter.ts`.
+    ...(Object.keys(args.pricing).length === 0 ? {} : { pricing: args.pricing }),
     providers,
     priorityInputsFor: (item: { readonly severity?: unknown }) => ({
       executivePriority: 0.5,
@@ -856,6 +1945,31 @@ export async function main(argv: readonly string[]): Promise<number> {
       estimatedEffort: 0.2,
     }),
   } satisfies OrgRuntimeDeps;
+
+  // SAID OUT LOUD, BEFORE THE RUN. A checkpoint that is on and an answer path that is missing is
+  // a run that will stop and stay stopped, and the operator has to learn that at the start rather
+  // than from a report that says nothing happened.
+  // NOT UNDER `--json`. That mode's whole contract is that stdout is ONE parseable document,
+  // and a banner printed ahead of it makes the output unparseable — which is how this was
+  // caught: the test that reads the report back failed on the first word of this message. The
+  // machine-readable half is already in the report, as `awaitingHuman`.
+  if (!args.json) {
+    if (args.checkpoints.length === 0) {
+      console.log("\nhuman checkpoints: none — the organization runs the whole chain agentically");
+    } else {
+      console.log(`\nhuman checkpoints: ${args.checkpoints.join(", ")}`);
+      console.log(
+        args.actions === undefined
+          ? "  !! no --actions queue: nothing can answer these, so the run WILL stop and stay stopped"
+          : `  answers read from ${args.actions}`,
+      );
+    }
+    console.log(
+      args.blockers === undefined
+        ? "  (no --blockers outbox: a blocker the organization cannot resolve reaches nobody)"
+        : `  blockers raised to a person land in ${args.blockers}`,
+    );
+  }
 
   // ── ONE CYCLE, OR UNTIL IT SETTLES ────────────────────────────────────────
   // Absent `--until`, this is the single cycle the CLI has always run. With it, the driver keeps
@@ -880,6 +1994,56 @@ export async function main(argv: readonly string[]): Promise<number> {
   if (args.json) {
     console.log(JSON.stringify(report, null, 2));
     return report.delivered ? 0 : 1;
+  }
+
+  // BEFORE THE VERDICT. "NOT DELIVERED" and "waiting for you" are different sentences, and a
+  // reader who sees only the first concludes the run failed.
+  // ── WHAT THE ORGANIZATION'S OWN AGENTS ASKED ──────────────────────────────
+  // Raised through the SAME channel a blocker uses, because it is one: something the organization
+  // cannot resolve from inside itself. The questions are the agent's, verbatim — this layer routes
+  // and never authors, so a differently-configured org, with different SDLC steps and different
+  // hats, asks entirely different things through exactly this code.
+  if (report.questionsForHuman.length > 0) {
+    console.log(NL + "=== THE ORGANIZATION IS ASKING YOU ===");
+    for (const q of report.questionsForHuman) {
+      console.log("  " + q.byHatId + " on " + q.taskId + " at '" + String(q.gate) + "': " + q.question);
+    }
+    if (args.blockers === undefined) {
+      // An honest refusal rather than a silent drop: the questions exist, and without an outbox
+      // they reach nobody. Saying so is what keeps "nobody asked" and "nobody answered" apart.
+      console.log("  (no --blockers outbox - these reached nobody; pass one so they can be answered)");
+    } else {
+      for (const q of report.questionsForHuman) {
+        // Idempotent by id: the same unanswered question on a later run is one blocker, not two.
+        const digest = [...q.question].reduce((h, c) => (h * 31 + c.charCodeAt(0)) % 1000000007, 7);
+        raiseBlocker(
+          {
+            blockerId: "ask-" + q.taskId + "-" + String(q.gate) + "-" + String(digest),
+            byHatId: q.byHatId,
+            about: q.question,
+            blocking: q.taskId,
+            // NOT this organization's to decide: the agent doing the step has already established
+            // that the answer is not something the chart contains. `human-blocker.ts` documents
+            // this as the kind it cannot check, which is exactly right - whether a question is
+            // answerable inside the org is a judgement the agent made, not a fact the chart holds.
+            exhaustion: { kind: "outside_org_authority", what: "'" + String(q.gate) + "' on " + q.taskId },
+            unblocks: "'" + String(q.gate) + "' on " + q.taskId,
+            atMs: nowMs,
+            why: q.byHatId + " could not complete '" + String(q.gate) + "' without this",
+          },
+          args.blockers,
+        );
+      }
+      console.log("  raised into " + args.blockers + " - answer them and run again");
+    }
+  }
+
+  if (report.awaitingHuman.length > 0) {
+    console.log(`\n=== WAITING ON A PERSON ===`);
+    for (const w of report.awaitingHuman) {
+      console.log(`  ${w.taskId} stopped at '${String(w.gate)}' — approve or reject it to continue`);
+      console.log(`    --kind approve_gate --subject ${w.taskId} --detail gate=${String(w.gate)}`);
+    }
   }
 
   console.log(`\n=== ${report.delivered ? "DELIVERED" : "NOT DELIVERED"} ===`);
@@ -941,7 +2105,17 @@ export async function main(argv: readonly string[]): Promise<number> {
     testRuns: report.qa.flatMap((q) => q.runs),
     gateEvaluations: report.gateEvaluations,
     priorities: report.priorities,
-    observations: [],
+    // THE RMO NEEDS A HISTORY TO RANK ON. Empty here meant every candidate scored the same
+    // uniform prior, so two assignments in one run both came back `score 0.400` and both went
+    // to the same agent out of eighty-five eligible. Derived from the store, so reputation
+    // accumulates across runs instead of resetting every process.
+    observations: priorObservationsFrom(args.store),
+    // WHAT THIS ORGANIZATION WAS ALREADY DOING. Without it every run re-accepts the same intake
+    // under fresh ids, so nothing a run learns - an answer, a verdict, a document - can reach the
+    // next one, and no work can outlive the process that started it.
+    ...(args.store === undefined
+      ? {}
+      : { priorCascade: foldOrganization(readEvents(args.store)).cascade }),
     agentIds: agents.map((a) => a.agentId),
     ...(report.goalWorkId === undefined ? {} : { goalWorkId: report.goalWorkId }),
     nowMs: Math.max(...report.bindings.map((b) => b.warmupEndsMs), nowMs),
@@ -1132,6 +2306,288 @@ export async function main(argv: readonly string[]): Promise<number> {
     }),
   );
 
+  // ── HOW THE WORK TURNED OUT, TOLD TO WHAT WAS IN SCOPE FOR IT ─────────────
+  // The half that says whether a memory was RIGHT, rather than merely fresh or merely read. Runs
+  // before the life tick so the maintenance pass sees this run's correlation rather than the last
+  // one's — a memory that just failed should be judged on that today, not tomorrow.
+  if (memoryStore !== undefined && injectionLedger.byWork.size > 0) {
+    const blockedWork = new Set(report.awaitingHuman.map((a) => a.taskId));
+    const deliveredWork = new Set(
+      report.cascade.nodes.filter((node) => node.state === WorkState.Done).map((node) => node.workId),
+    );
+    let correlated = 0;
+    for (const [workId, ids] of injectionLedger.byWork) {
+      const signal = signalFor(deliveredWork.has(workId), blockedWork.has(workId));
+      correlated += correlateOutcome(memoryStore, workId, ids, signal, nowMs).length;
+    }
+    if (correlated > 0) console.log(`\n--- memory ---\n  ${String(correlated)} memory/memories told how their work went`);
+  }
+
+  // The census the LAST run took, narrowed back into the typed shape.
+  //
+  // The fact stores `presence` as a plain string, because a fact is data on disk and a log written
+  // by an older build must still be readable. So a value that is no longer a known state is DROPPED
+  // rather than cast: an unrecognised state silently treated as `asleep` would report a hat as
+  // sleeping on the strength of not being understood.
+  const previousPresence: HatPresence[] = [];
+  for (const h of foldPresence(args.store === undefined ? [] : readEvents(args.store))?.hats ?? []) {
+    if (!isPresence(h.presence)) continue;
+    previousPresence.push({
+      hatId: h.hatId,
+      presence: h.presence,
+      because: h.because,
+      ...(h.subject === undefined ? {} : { subject: h.subject }),
+    });
+  }
+
+  // Read ONCE and reused three times below — the calibration pass, which hats are worn, and what
+  // the organisation has a reason to meet about. Reading it three times would let three answers
+  // come from three reads of a directory another process may be appending to.
+  const priorEvents = args.store === undefined ? [] : readEvents(args.store);
+  // Facts produced before the life tick, carried into the same event batch so a calibration and a
+  // study memory written on the same day land in one run's history rather than two.
+  const lifePreFacts: OrgFact[] = [];
+
+  // ── WHAT EACH ACTOR LEARNED ABOUT ITSELF ──────────────────────────────────
+  // Separate from the hat memories the study loop writes: those are what the ROLE knows and are
+  // inherited by whoever wears it next. These are about the ACTOR and travel with it across hats,
+  // which is what `MemoryTier.Agent` is for — a tier that was readable everywhere and written
+  // nowhere until this ran.
+  //
+  // Fed the PRIOR log plus this run's events, because a run's own gate results are the freshest
+  // evidence about how the agent did (`report.trace` is the run's own OrgEvents; `report.events`
+  // is their printable form), and excluding them would make every calibration a run behind.
+  // ── WHAT THE WORK ITSELF TAUGHT ───────────────────────────────────────────
+  // Written at the HAT tier: a lesson about how this codebase is built belongs to the role and is
+  // inherited by whoever wears it next. A refusal is a protected memory somebody tried to
+  // overwrite, and it stays a refusal.
+  let lessonsWritten = 0;
+  if (memoryStore !== undefined) {
+    for (const l of report.learnings) {
+      const written = writeMemory(memoryStore, {
+        tier: MemoryTier.Hat,
+        scope: l.byHatId,
+        key: l.key,
+        value: l.value,
+        contextHint: `worked out while doing '${String(l.gate)}' on ${l.workId}`,
+        writtenBy: l.byHatId,
+        atMs: nowMs,
+      });
+      if (written === undefined) continue;
+      lifePreFacts.push(written.fact);
+      lessonsWritten += 1;
+    }
+    if (lessonsWritten > 0) {
+      console.log(`${NL}--- what the work taught ---`);
+      for (const l of report.learnings) console.log(`  ${l.byHatId} learned '${l.key}' doing '${String(l.gate)}'`);
+    }
+  }
+
+  let calibrationsWritten = 0;
+  if (memoryStore !== undefined) {
+    const store = memoryStore;
+    for (const calibration of agentCalibrations([...priorEvents, ...report.trace])) {
+      const input = memoryFromCalibration(calibration, nowMs);
+      if (input === undefined) continue;
+      const written = writeMemory(store, input);
+      // A refusal is a protected memory somebody tried to overwrite, and it stays a refusal.
+      if (written === undefined) continue;
+      lifePreFacts.push(written.fact);
+      calibrationsWritten += 1;
+    }
+    if (calibrationsWritten > 0) {
+      console.log(`\n--- what each agent learned about itself ---`);
+      console.log(`  ${String(calibrationsWritten)} calibration(s) written to agents' own repositories`);
+    }
+  }
+
+  // ── THE REST OF THE DAY ───────────────────────────────────────────────────
+  // Run AFTER the pipeline, so "who is idle" reflects where this run actually got to rather than
+  // where it started. A hat that finished its work five minutes ago is idle now, and that is
+  // exactly the moment worth giving it something to read.
+  let lifeFacts: readonly OrgFact[] = [];
+  let lifeEvents: readonly OrgEvent[] = [];
+
+  // WHY THIS IS COMPUTED BEFORE THE GATE BELOW: a meeting is caused by a condition in the log, not
+  // by whether anyone configured a memory store. An organisation with rejections piling up should
+  // put an hour in the diary whether or not it is also studying in its spare time.
+  const demand = meetingDemand({
+    events: priorEvents,
+    cascade: report.cascade,
+    chart,
+    nowMs,
+    stillHeld: report.awaitingHuman.map((a) => ({ workId: a.taskId, gate: String(a.gate) })),
+    ...(args.blockers === undefined
+      ? {}
+      : {
+          blockers: openBlockers(
+            readBlockers(args.blockers),
+            args.actions === undefined ? [] : readActions(args.actions),
+          ),
+        }),
+    ...(memoryStore === undefined ? {} : { memories: memoryStore.load() }),
+  });
+  let mintedBlockIds = 0;
+
+  if (args.memory !== undefined || args.studyCmd !== undefined || hasMeetingDemand(demand)) {
+    const store = memoryStore;
+    const study: Study | undefined =
+      args.studyCmd === undefined
+        ? undefined
+        : (proposal) => {
+            // The proposal goes in on STDIN as JSON and what was learned comes back on STDOUT.
+            // Same contract as the reviser, and for the same reason: nothing an agent wrote ends
+            // up on a command line.
+            const run = spawnSync(args.studyCmd as string, [...args.studyArgs], {
+              cwd: process.cwd(),
+              encoding: "utf-8",
+              input: JSON.stringify(proposal),
+              timeout: 60_000,
+              shell: false,
+            });
+            if (run.error !== undefined) return { ok: false, reason: run.error.message };
+            if (run.status !== 0) {
+              return { ok: false, reason: `exited ${String(run.status)}: ${(run.stderr ?? "").trim().slice(0, 200)}` };
+            }
+            return { ok: true, found: String(run.stdout ?? "").trim() };
+          };
+
+    // The proposal goes in on STDIN as JSON and what came out comes back on STDOUT — the same
+    // contract as the studier and the reviser, and for the same reason: nothing an agent wrote
+    // ends up on a command line.
+    const hold: HoldMeeting | undefined =
+      args.meetingCmd === undefined
+        ? undefined
+        : (proposal) => {
+            const run = spawnSync(args.meetingCmd as string, [...args.meetingArgs], {
+              cwd: process.cwd(),
+              encoding: "utf-8",
+              input: JSON.stringify(proposal),
+              timeout: 60_000,
+              shell: false,
+            });
+            if (run.error !== undefined) return { ok: false, reason: run.error.message };
+            if (run.status !== 0) {
+              return { ok: false, reason: `exited ${String(run.status)}: ${(run.stderr ?? "").trim().slice(0, 200)}` };
+            }
+            // An EMPTY stdout is a successful call that produced nothing, which is different from a
+            // failed call — and the difference survives into the log.
+            return { ok: true, produced: String(run.stdout ?? "").trim() };
+          };
+
+    const studyHistory = foldCalendar(priorEvents);
+    const tick = await lifeTick({
+      chart,
+      cascade: report.cascade,
+      calendar: report.calendar,
+      nowMs,
+      // ── STUDY IS BOUNDED, AND THIS IS WHERE THE BOUND IS APPLIED ───────────
+      // `study-session.ts` defines a real allowance — two hours a rolling day, sessions of at most
+      // one, none shorter than fifteen minutes — and `mayStudy` is optional at every layer that
+      // forwards it. Nobody supplied it: `remainingStudy` and `hatsWithStudyLeft` had no callers
+      // outside their own module, so the budget was never consulted and study was unbounded. A run
+      // put sixty of a hundred and twenty hats into study blocks with nothing stopping them.
+      //
+      // Measured against the CALENDAR, which already holds the blocks this run and prior runs
+      // booked — so the allowance is spent by what was actually scheduled, not by a counter that
+      // could disagree with the diary.
+      //
+      // MEASURED AGAINST THE **FOLDED** CALENDAR, NOT `report.calendar`. The cycle's calendar starts
+      // at `EMPTY_CALENDAR` and is rebuilt from scratch every run, so it holds only the blocks this
+      // cycle planned — and the study blocks are booked by `lifeTick` itself, after this point. A
+      // budget read off it would see zero spent, forever: five consecutive runs against one store
+      // all reported `62 studying`, which is what a rolling allowance looks like when nothing can
+      // ever spend it. `foldCalendar` replays the log's `block_planned` facts, so the twenty-four
+      // hour window is measured against what the organization actually booked.
+      mayStudy: (hatId: string) =>
+        remainingStudy(studyHistory, hatId, nowMs) >= DEFAULT_STUDY_BUDGET.minSessionMs,
+      // Which hats are worn is a fold of the LOG, not a field on this run's report: donning
+      // survives across runs, so asking this run alone would forget what the last one put on.
+      worn: [...foldHatsWorn(priorEvents)],
+      // WHAT HAS ALREADY LANDED, read from the log for the same reason `worn` is: it is a fact
+      // about history, and this run has none of its own. Only supplied when there IS a store —
+      // without one the honest answer is "not measured", and the runtime treats that as "do not
+      // judge" rather than as "nothing has landed".
+      ...(args.store === undefined ? {} : { alreadyLanded: new Set(foldLandedChanges(priorEvents).keys()) }),
+      ...(store === undefined ? {} : { store }),
+      ...(study === undefined ? {} : { study }),
+      // Rotates what each hat studies between runs, so it does not read one thing forever.
+      cycle: args.store === undefined ? 0 : deliveryRate(args.store).runs,
+      departmentOf: (hatId: string) => departmentOf(chart, hatId),
+      meetings: demand,
+      ...(hold === undefined ? {} : { hold }),
+      // Read from the LOG, not carried in memory: a run is a separate process, so "who was asleep
+      // last time" has to survive one ending. Without it nothing could ever be reported as waking,
+      // and sleep would be a state with no exit anybody could see.
+      ...(previousPresence.length === 0 ? {} : { previousPresence }),
+      // Derived from the run's own instant, never a random: two runs at the same instant must mint
+      // the same block ids, or re-storing a run would book the same meeting twice under new legs.
+      createId: (prefix) => {
+        mintedBlockIds += 1;
+        return `${prefix}-life-${String(nowMs)}-${String(mintedBlockIds)}`;
+      },
+    });
+    lifeFacts = [...lifePreFacts, ...tick.facts];
+    lifeEvents = lifeFacts.map((fact, i) =>
+      // Keyed by the run's instant and the fact's index, so re-running the same instant re-stores
+      // the same shards — an upsert, exactly like the observe-act ticks above.
+      emit(chart, `evt-life-${String(nowMs)}-${String(i + 1)}`, {
+        kind: OrgEventKind.DecisionRecorded,
+        subjectId: subjectOfLifeFact(fact),
+        decision: describeLifeFact(fact),
+        atMs: nowMs,
+        fact,
+      }),
+    );
+
+    console.log("\n--- the rest of the day ---");
+    console.log(`  ${lifeSummary(tick)}`);
+    for (const m of tick.met) {
+      console.log(`  met: ${m.attendeeHatIds.join(" + ")} — ${m.about}`);
+      console.log(`       must produce: ${m.mustProduce}`);
+    }
+    // Printed as loudly as the booked ones. The organisation still has the reason; it just has no
+    // hour, and a calendar too full to answer its own problems is the thing worth seeing.
+    for (const u of tick.unmet) console.log(`  NOT met: ${u.meetingId} — ${u.reason}`);
+    for (const o of tick.meetingOutcomes) {
+      console.log(
+        o.produced === ""
+          ? `  produced NOTHING: ${o.meetingId} — ${o.reason ?? "no reason given"}`
+          : `  produced: ${o.meetingId} — ${o.produced.split("\n")[0] ?? ""}`,
+      );
+    }
+    if (tick.woke.length > 0) {
+      console.log(`  woke: ${tick.woke.join(", ")} — work arrived that needs their authority`);
+    }
+    for (const s2 of tick.studied) {
+      console.log(
+        `  ${s2.hatId}: ${s2.subject}${s2.wrote ? " → wrote it down" : ` → nothing (${s2.reason ?? "?"})`}`,
+      );
+    }
+    if (store !== undefined) {
+      const held = store.load();
+      const live = held.filter((m) => m.state.phase !== "archived");
+      console.log(`  memory: ${String(live.length)} live, ${String(held.length - live.length)} forgotten, under ${store.root}`);
+    }
+  } else if (lifePreFacts.length > 0) {
+    // The calibrations still have to reach the log. Without this branch a run with a memory store
+    // but no study command would write the memories to disk and record nothing about having done
+    // so — the store and the log would disagree, and the log is what a resumed run reads.
+    lifeFacts = lifePreFacts;
+  }
+
+  if (lifeEvents.length === 0 && lifeFacts.length > 0) {
+    lifeEvents = lifeFacts.map((fact, i) =>
+      emit(chart, `evt-life-${String(nowMs)}-${String(i + 1)}`, {
+        kind: OrgEventKind.DecisionRecorded,
+        subjectId: subjectOfLifeFact(fact),
+        decision: describeLifeFact(fact),
+        atMs: nowMs,
+        fact,
+      }),
+    );
+  }
+
   // -- persist the run, if asked --
   //
   // The trace IS the append-only log; storing it is one shard per event, so two runs never contend
@@ -1144,7 +2600,10 @@ export async function main(argv: readonly string[]): Promise<number> {
         delivered: report.delivered,
         levelsEngaged: report.levelsEngaged,
         refusals: report.refusals,
-        trace: [...report.trace, ...tickEvents],
+        // What happened outside the pipeline is part of the run's history too. Without the life
+        // events the log would show an organization that only exists while it is being asked for
+        // something — which is the complaint this whole tick answers.
+        trace: [...report.trace, ...tickEvents, ...lifeEvents],
         // The run's own fidelity, written down. Without it the summary cannot tell a history where
         // everything shipped from one where nothing did.
         replayable: report.fidelity.replayable,
@@ -1528,5 +2987,27 @@ function sourceFromArgs(args: Args): DataSourcePort {
       name: `git-${String(i + 1)}`,
     });
   });
+  // THE WIKI IS A PEER SOURCE TOO — read-only, like every source here. A company's requirements
+  // live on it, and an organization that can read the ticket but not the page behind it is reading
+  // the summary of a decision instead of the decision.
+  if (args.confluenceAuthFile !== undefined) {
+    sources.push(
+      confluenceSource({
+        credentialsPath: args.confluenceAuthFile,
+        ...(args.confluenceSpaces.length === 0 ? {} : { spaceKeys: args.confluenceSpaces }),
+        ...(args.confluenceCql === undefined ? {} : { cql: args.confluenceCql }),
+        ...(args.confluenceLimit === undefined ? {} : { limit: args.confluenceLimit }),
+      }),
+    );
+  }
+  // The organization's own record joins the corpus as a PEER SOURCE, not as an edit to it.
+  if (args.orgDocs !== undefined) {
+    sources.push(directoryDataSource({ dir: args.orgDocs, name: "org-record" }));
+  }
   return sources.length === 1 ? sources[0]! : unionOf(sources);
+}
+
+/** Whether a source was declared at all — `sourceFromArgs` is only meaningful when one was. */
+export function hasSource(args: Args): boolean {
+  return args.sourceRepos.length > 0 || args.orgDocs !== undefined || args.confluenceAuthFile !== undefined;
 }

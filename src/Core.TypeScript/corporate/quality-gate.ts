@@ -27,10 +27,13 @@
  * rubber stamp (code decides) or a suggestion (the agent decides everything).
  */
 
-import { chooseWithinLegal, type OrgChooser } from "./org-decision";
+import { chooseWithinLegal, preferChooser, type OrgChooser } from "./org-decision";
 import { preflightGateEvaluation } from "./hat-guardrails";
 import type { OrgChart, OrgHat } from "./org-chart";
 import { BlockerKind, BLOCKER_POLICY } from "./blocker-taxonomy";
+// `org-policy` imports only `type GateKind` from here, and a type import is erased at compile time,
+// so this pair is a compile-time cycle and not a runtime one.
+import { unmetRules, type OrgPolicy } from "./org-policy";
 
 /** The seven gates. */
 export const GateKind = {
@@ -113,8 +116,15 @@ export const ORDERED_GATES: readonly GateKind[] = [
   GateKind.ImplementationReview,
   GateKind.QaUat,
   GateKind.RuntimeValidation,
-  GateKind.FinalBusinessValidation,
+  // ARCHITECTURE BEFORE BUSINESS at the end of the chain.
+  //
+  // The business validator is asked whether the change delivers the outcome; the architect is asked
+  // whether the code does what it claims and addresses a cause. Asking business first meant the
+  // organization could accept an outcome built on a structure it had not yet examined, and then
+  // treat re-opening that structure as a regression against an approval it had already given.
+  // Architecture is the cheaper rejection and belongs first.
   GateKind.FinalArchitectureReview,
+  GateKind.FinalBusinessValidation,
   GateKind.ReleaseReadiness,
 ];
 
@@ -416,6 +426,29 @@ export function evaluateGate(
      * between a process engine and one organization's process hardcoded as a law.
      */
     readonly chain?: readonly GateKind[];
+    /**
+     * THIS ORGANIZATION'S extra demands at this gate, and the facts to check them against.
+     *
+     * Optional: an org with no policy behaves exactly as before. Supplied, a PASSING outcome that
+     * does not satisfy the org's rules is downgraded to `ChangesRequested` naming what is missing —
+     * downgraded rather than refused, because the attempt happened and a refusal would leave no
+     * record of it, and because `ChangesRequested` is precisely what feeds the rework loop.
+     *
+     * `priorApproverHatIds` is the caller's to supply because `MinApprovers` counts across
+     * evaluations and this function sees one. Passing none means this approval is the first.
+     *
+     * HONEST LIMIT. Like the evidence field above, this checks what was REFERENCED, not what was
+     * run. It is a stronger control than the evidence check — `autoApproveReview`'s
+     * `auto-approved:<gate>:<workId>` does not contain a needle like `playwright-report`, so the
+     * null adapter does NOT satisfy it — but a caller that fabricates a matching ref would pass.
+     * What it delivers is that the org's stated requirement and whether it was met both reach the
+     * record.
+     */
+    readonly policy?: {
+      readonly policy: OrgPolicy;
+      readonly artifactPaths?: readonly string[];
+      readonly priorApproverHatIds?: readonly string[];
+    };
   },
 ): GateResult {
   const hat = chart.byId.get(input.evaluatorHatId);
@@ -462,17 +495,37 @@ export function evaluateGate(
   // the evidence reached the reviewer and never reached the record.
   const evidenceRefs = (input.evidenceRefs ?? []).filter((r) => r.trim() !== "");
 
+  // ── THIS ORGANIZATION'S OWN RULES ──────────────────────────────────────────
+  // Applied only to a PASSING outcome. A rejection needs no policy: refusing to record "this does
+  // not work" because the org's evidence rules were unmet would be exactly backwards — the failing
+  // case is when a check is missing, and that is the case a rejection is reporting.
+  let outcome = choice.option;
+  let reason = choice.reason;
+  if (input.policy !== undefined && isPassing(outcome)) {
+    const unmet = unmetRules(input.policy.policy, input.gate, {
+      evidenceRefs,
+      approverHatIds: [...(input.policy.priorApproverHatIds ?? []), hat.id],
+      artifactPaths: input.policy.artifactPaths ?? [],
+    });
+    if (unmet.length > 0) {
+      outcome = GateOutcome.ChangesRequested;
+      reason =
+        `${choice.reason} — held by ${input.policy.policy.orgId} policy: ` +
+        unmet.map((u) => `${u.rule.id} (${u.because})`).join("; ");
+    }
+  }
+
   const evaluation: GateEvaluation = {
     workId: input.workId,
     gate: input.gate,
-    outcome: choice.option,
+    outcome,
     byHatId: hat.id,
-    reason: choice.reason,
+    reason,
     atMs: input.atMs,
     evidenceRefs,
   };
 
-  if (!isPassing(choice.option)) {
+  if (!isPassing(outcome)) {
     // The passed set is UNCHANGED on failure. An item that fails a gate has not crossed it, and the
     // recovery path says where it goes instead.
     return { ok: true, evaluation, passed: input.passed, recovery: recoveryPathFor(input.gate) };
@@ -488,12 +541,54 @@ export function evaluateGate(
  *
  * Returns every evaluation, so a caller can see WHERE it stopped rather than only that it did.
  */
+/**
+ * Where a person may be required to sign off, if the operator asks for it.
+ *
+ * BOTH ARE OPTIONAL AND OFF BY DEFAULT. With neither configured the organization runs the whole
+ * chain agentically, exactly as it did before this existed — which is the behaviour every current
+ * caller depends on, and a checkpoint that switched itself on would be a change of kind rather than
+ * a change of configuration.
+ */
+export const HumanCheckpoint = {
+  /** The business and architectural grooming, signed off BEFORE anybody starts building. */
+  Grooming: "grooming",
+  /** The approach itself, approved before it is built. */
+  Approach: "approach",
+} as const;
+export type HumanCheckpoint = (typeof HumanCheckpoint)[keyof typeof HumanCheckpoint];
+
+/**
+ * The gate each checkpoint stops at.
+ *
+ * `brd_approval` is the end of grooming: the business rules are written and reviewed, and nothing
+ * has been built. `architecture_approval` is the end of the approach: the design is assessed and
+ * still nothing has been built. Both are the last moment where a person's "no" is cheap.
+ */
+export const CHECKPOINT_GATE: Readonly<Record<HumanCheckpoint, GateKind>> = {
+  grooming: "brd_approval",
+  approach: "architecture_approval",
+};
+
+/** The gates that need a person, for the checkpoints an operator turned on. Empty means agentic. */
+export function humanGatesFor(checkpoints: readonly HumanCheckpoint[]): ReadonlySet<GateKind> {
+  return new Set(checkpoints.map((c) => CHECKPOINT_GATE[c]));
+}
+
 export interface GateRunResult {
   readonly evaluations: readonly GateEvaluation[];
   readonly passed: ReadonlySet<GateKind>;
   readonly merged: boolean;
   /** The gate that stopped it, if any. */
   readonly blockedAt?: GateKind;
+  /**
+   * The gate WAITING ON A PERSON, if any.
+   *
+   * Deliberately not `blockedAt`. A rejection means somebody looked and said no, and the recovery
+   * path sends the work backwards. Waiting means nobody has looked yet — the work is fine, it is
+   * simply not anyone's turn. Collapsing the two would make an unanswered checkpoint indistinguish-
+   * able from a failed review, and the organization would "recover" from a decision never made.
+   */
+  readonly awaitingHuman?: GateKind;
   readonly recovery?: RecoveryPath;
   readonly refusals: readonly string[];
 }
@@ -516,6 +611,23 @@ export function runGateChain(
      * fabricating the evidence for a claim it is meant to be checking.
      */
     readonly evidenceFor?: (gate: GateKind) => readonly string[];
+    /**
+     * Gates that may not pass without a person. Absent or empty = fully agentic.
+     *
+     * See {@link humanGatesFor}. This is the whole opt-in: no checkpoint exists unless an operator
+     * named one.
+     */
+    readonly humanRequiredAt?: ReadonlySet<GateKind>;
+    /**
+     * The person's answer for a gate, if they have given one.
+     *
+     * Returns the outcome AND the reference to the action that carried it, so the evaluation
+     * records WHICH human decision it was — an approval with no traceable origin is the thing the
+     * audit requirement exists to prevent.
+     */
+    readonly humanDecisionFor?: (
+      gate: GateKind,
+    ) => { readonly outcome: GateOutcome; readonly actionRef: string } | undefined;
     /**
      * A chooser for ONE gate, where its outcome is derived rather than judged.
      *
@@ -555,15 +667,29 @@ export function runGateChain(
       return { evaluations, passed, merged: false, blockedAt: gate, refusals };
     }
 
+    // ── A CHECKPOINT WAITS FOR A PERSON ───────────────────────────────────
+    // Checked BEFORE the gate is evaluated, so an unanswered checkpoint never produces an
+    // evaluation at all. Recording an agent's verdict and then overriding it would leave two
+    // answers in the trace, and the wrong one is the easier to read.
+    const human = input.humanRequiredAt?.has(gate) === true ? input.humanDecisionFor?.(gate) : undefined;
+    if (input.humanRequiredAt?.has(gate) === true && human === undefined) {
+      return { evaluations, passed, merged: false, awaitingHuman: gate, refusals };
+    }
+
     const result = evaluateGate(chart, {
       workId: input.workId,
       gate,
       evaluatorHatId: evaluator.id,
       passed,
-      chooser: input.chooserFor?.(gate) ?? input.chooser,
+      // The person's answer replaces the judgement, through the SAME seam `cost_approval` uses for
+      // an outcome that is derived rather than judged. The hat still records the gate; the decision
+      // is the human's, and the evidence below says whose.
+      chooser: human === undefined ? (input.chooserFor?.(gate) ?? input.chooser) : preferChooser(human.outcome, "human checkpoint"),
       atMs: input.atMs,
       proposerHatId: input.proposerHatId,
-      evidenceRefs: input.evidenceFor?.(gate) ?? [],
+      evidenceRefs: human === undefined
+        ? (input.evidenceFor?.(gate) ?? [])
+        : [...(input.evidenceFor?.(gate) ?? []), human.actionRef],
     });
     if (!result.ok) {
       refusals.push(result.reason);

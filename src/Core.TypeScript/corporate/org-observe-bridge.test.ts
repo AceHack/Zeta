@@ -22,6 +22,8 @@ import { buildOrgChart } from "./org-chart";
 import { SEED_HATS } from "./org-seed";
 import { SignalTool, type SupervisorSignal } from "./supervisor-signal";
 import { AnchorState, AnchorType, EMPTY_BOARD, ExpectedOutput, type DiscussionAnchor } from "./discussion-anchor";
+import { acceptAction, HumanActionKind, type HumanAction } from "./human-action";
+import { observe } from "../observe/observe";
 import { headsOf, mergeHistories, openArtifact, revise, type ArtifactHistory } from "./artifact-deliberation";
 import { WorkState, WorkType, type CascadeNode } from "./goal-cascade";
 import type { NextAction } from "../observe/observe";
@@ -519,5 +521,159 @@ describe("ESCALATING CHURN — a ruling, or an honest refusal", () => {
     const r = effectOf(view(), "engineering_manager", escalate("nope"), { signalId: "s", anchorId: "a" }, 1, "rmo_office");
     expect(r.ok).toBe(false);
     if (!r.ok) expect(r.reason).toContain("no work item");
+  });
+});
+
+describe("TALKING TO AN AGENT — a message reaches it, and the reply comes back", () => {
+  // The loop this closes: a note written into a room used to sit in the queue, visible to whoever
+  // opened the page and invisible to the organization. The hat it was addressed to went on picking
+  // work. That is a chat window with nobody on the other end.
+  //
+  // It travels on the OPERATOR CHANNEL rather than a new verb, because `observe.ts` already puts
+  // `respond_to_operator` above everything except a durability save — a person talking to you is
+  // the highest-signal thing in the world, and a second surface for it would be a second priority
+  // to keep in step with the first.
+
+  const roomAnchor: DiscussionAnchor = {
+    anchorId: "a1",
+    anchorType: AnchorType.SupervisorSignal,
+    title: "brd_approval",
+    purpose: "decide it",
+    expectedOutput: ExpectedOutput.GateResult,
+    participantHatIds: ["backend_implementer", "product_director"],
+    openedByHatId: "backend_implementer",
+    openedAtMs: 10,
+    state: AnchorState.Open,
+    workItemId: "task-1",
+  };
+
+  const said = (over: Record<string, unknown> = {}): HumanAction => {
+    const r = acceptAction({
+      kind: HumanActionKind.PostToRoom,
+      byHuman: "Max",
+      subjectId: "a1",
+      reason: "asked the reviewer a question",
+      atMs: 100,
+      detail: { message: "what evidence did you read here?" },
+      ...over,
+    });
+    if (!r.ok) throw new Error(r.reason);
+    return r.action;
+  };
+
+  const withRoom = (over: Partial<OrgView> = {}): OrgView =>
+    view({ board: { ...EMPTY_BOARD, anchors: [roomAnchor] }, ...over });
+
+  test("a message lights the operator channel for a hat IN that room", () => {
+    const surface = orgSurfaceFor(withRoom({ humanActions: [said()] }), "product_director");
+    expect(surface.operator?.pendingMessage).toBe(true);
+  });
+
+  test("...and OUTRANKS the work — observe recommends answering the person", () => {
+    // The whole point of using this channel. If it merely appeared somewhere on the menu, an agent
+    // with a backlog would answer eventually, which for a person waiting is the same as never.
+    const surface = orgSurfaceFor(withRoom({ humanActions: [said()] }), "product_director");
+    const next = observe({ backlog: [{ id: "b1", title: "something else", ready: true, ambiguous: false }], ...surface });
+    expect(next.kind).toBe("respond_to_operator");
+  });
+
+  test("a hat that is NOT in the room is not told to answer", () => {
+    // A message is addressed to a conversation, and a hat outside it has nothing to answer. Waking
+    // every hat for every message is how an operator channel becomes noise nobody reads.
+    expect(orgSurfaceFor(withRoom({ humanActions: [said()] }), "cfo").operator).toBeUndefined();
+  });
+
+  test("a message into a room the board does not hold reaches nobody", () => {
+    expect(orgSurfaceFor(withRoom({ humanActions: [said({ subjectId: "ghost" })] }), "product_director").operator)
+      .toBeUndefined();
+  });
+
+  test("with nobody talking, the channel is ABSENT — not present and empty", () => {
+    // Absent means "not wired", which is what every existing caller is and must stay.
+    expect(orgSurfaceFor(withRoom(), "product_director").operator).toBeUndefined();
+  });
+
+  test("THE REPLY CLEARS IT, and only a reply in that room by that hat does", () => {
+    const replied = withRoom({
+      humanActions: [said()],
+      board: {
+        ...EMPTY_BOARD,
+        anchors: [roomAnchor],
+        posts: [
+          { postId: "p1", anchorId: "a1", byHatId: "product_director", atMs: 200, body: "I read the diff", evidence: [] },
+        ],
+      },
+    });
+    expect(orgSurfaceFor(replied, "product_director").operator).toBeUndefined();
+  });
+
+  test("a reply written BEFORE the message does not answer it", () => {
+    // Derived from the transcript and its clock, never from a read flag — a flag and the transcript
+    // can disagree, and the disagreement looks like an agent that answered something it did not.
+    const stale = withRoom({
+      humanActions: [said()],
+      board: {
+        ...EMPTY_BOARD,
+        anchors: [roomAnchor],
+        posts: [
+          { postId: "p0", anchorId: "a1", byHatId: "product_director", atMs: 50, body: "earlier", evidence: [] },
+        ],
+      },
+    });
+    expect(orgSurfaceFor(stale, "product_director").operator?.pendingMessage).toBe(true);
+  });
+
+  test("somebody ELSE replying does not answer for you", () => {
+    const other = withRoom({
+      humanActions: [said()],
+      board: {
+        ...EMPTY_BOARD,
+        anchors: [roomAnchor],
+        posts: [
+          { postId: "p1", anchorId: "a1", byHatId: "backend_implementer", atMs: 200, body: "not mine", evidence: [] },
+        ],
+      },
+    });
+    expect(orgSurfaceFor(other, "product_director").operator?.pendingMessage).toBe(true);
+  });
+
+  test("the reply goes to the room the message was IN, chosen by the register", () => {
+    // The agent says it is answering the operator; which conversation that is, is not its to pick.
+    const r = effectOf(
+      withRoom({ humanActions: [said()] }),
+      "product_director",
+      { kind: "respond_to_operator", reason: "I read the change and the tests" },
+      { signalId: "s", anchorId: "unused" },
+      300,
+      "rmo_office",
+    );
+    expect(r.ok).toBe(true);
+    if (!r.ok) return;
+    expect(r.effect.kind).toBe("reply_to_person");
+    if (r.effect.kind === "reply_to_person") {
+      expect(r.effect.anchorId).toBe("a1");
+      expect(r.effect.byHatId).toBe("product_director");
+      expect(r.effect.body).toBe("I read the change and the tests");
+    }
+  });
+
+  test("THE OLDEST MESSAGE IS ANSWERED FIRST", () => {
+    // Answering the newest first is how the first question never gets answered.
+    const second: DiscussionAnchor = { ...roomAnchor, anchorId: "a2", title: "peer_review" };
+    const v = view({
+      board: { ...EMPTY_BOARD, anchors: [roomAnchor, second] },
+      humanActions: [said({ subjectId: "a2", atMs: 400, actionId: "ha-late" }), said({ atMs: 100, actionId: "ha-early" })],
+    });
+    const r = effectOf(v, "product_director", { kind: "respond_to_operator", reason: "answering" },
+      { signalId: "s", anchorId: "x" }, 500, "rmo_office");
+    expect(r.ok && r.effect.kind === "reply_to_person" ? r.effect.anchorId : "").toBe("a1");
+  });
+
+  test("answering when nobody is waiting is REFUSED, not a quiet no-op", () => {
+    // A silent success would hide an agent that had misread its own surface.
+    const r = effectOf(withRoom(), "product_director", { kind: "respond_to_operator", reason: "hello?" },
+      { signalId: "s", anchorId: "x" }, 300, "rmo_office");
+    expect(r.ok).toBe(false);
+    if (!r.ok) expect(r.reason).toContain("nobody is waiting");
   });
 });

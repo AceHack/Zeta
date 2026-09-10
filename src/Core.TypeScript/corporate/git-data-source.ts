@@ -57,6 +57,8 @@
  */
 
 import { execFileSync } from "node:child_process";
+import { readdirSync, readFileSync, statSync } from "node:fs";
+import { join } from "node:path";
 import { Fidelity, Port, type DataSourcePort, type PortResult, type SourceDocument } from "./providers";
 
 /** How much of a file is worth reading. A source document is context, not a payload. */
@@ -183,13 +185,29 @@ export function gitDataSource(input: GitSourceInput): DataSourcePort {
       .filter((e): e is TreeEntry => e !== undefined && extensions.some((x) => e.path.endsWith(x)))
       .sort((a, b) => (a.path < b.path ? -1 : a.path > b.path ? 1 : 0));
 
+    // TOO LARGE TO INLINE IS ITS OWN ANSWER — a third state beside read and unreadable. The
+    // citation still points at real bytes a reviewer can open, and the content says why they are
+    // not here. Omitting the file silently would make the source claim a completeness it lacks;
+    // failing the read would let one oversized document deny an agent the other four hundred.
+    const inlinable = entries.filter((e) => e.size <= MAX_DOCUMENT_BYTES);
+
+    // ── ONE SUBPROCESS, NOT ONE PER FILE ──────────────────────────────────
+    // This was `git show <rev>:<path>` per document — ~70 subprocesses per read of one directory,
+    // and the idempotence falsifier builds two sources, so ~140. Under the process pressure of a
+    // full test run one failed to spawn and the whole read was refused: deterministically red in
+    // the suite, green in isolation. `cat-file --batch` reads every blob in one call.
+    let blobs: ReadonlyMap<string, string>;
+    try {
+      blobs = readBlobs(input.repoDir, revision, inlinable.map((e) => e.path));
+    } catch (err) {
+      // AN UNREADABLE READ FAILS THE READ. A partial document set that says nothing about what it
+      // dropped is a source an agent would groom against believing it saw everything.
+      return { ok: false, reason: `could not read ${subtree} at ${revision}: ${message(err)}` };
+    }
+
     const documents: SourceDocument[] = [];
     for (const entry of entries) {
       const path = entry.path;
-      // TOO LARGE TO INLINE IS ITS OWN ANSWER — a third state beside read and unreadable. The
-      // citation still points at real bytes a reviewer can open, and the content says why they are
-      // not here. Omitting the file silently would make the source claim a completeness it lacks;
-      // failing the read would let one oversized document deny an agent the other four hundred.
       if (entry.size > MAX_DOCUMENT_BYTES) {
         documents.push({
           path,
@@ -199,19 +217,18 @@ export function gitDataSource(input: GitSourceInput): DataSourcePort {
         });
         continue;
       }
-      let content: string;
-      try {
-        content = git(input.repoDir, ["show", `${revision}:${path}`]);
-      } catch (err) {
-        // AN UNREADABLE FILE FAILS THE READ. A partial document set that says nothing about what
-        // it dropped is a source an agent would groom against believing it saw everything.
+      const content = blobs.get(path);
+      if (content === undefined) {
+        // A blob `ls-tree` named and `cat-file` did not return.
         //
-        // ALSO UNCOVERED, for the same reason as the listing catch above: a blob that `ls-tree`
-        // just named is one `git show` can read, so reaching this needs object corruption between
-        // two calls. Stated here because an uncovered branch that nobody names reads as a tested
-        // one — the oversized-file case, which IS reachable and IS covered, is handled above rather
-        // than here precisely so this catch stays narrow.
-        return { ok: false, reason: `could not read ${path} at ${revision}: ${message(err)}` };
+        // UNREACHABLE IN A HEALTHY REPOSITORY, and its mutant survives the matrix — both commands
+        // read the same object database at the same revision, so a path in the listing is a path
+        // the batch answers. Said carefully, because the code this replaced made the SAME claim
+        // about `git show` and was WRONG: that branch was reached constantly, by failed process
+        // spawns rather than by anything about the object. The difference is that spawning is no
+        // longer per file — there is one subprocess, and if it fails the catch above refuses the
+        // whole read. What is left here is genuinely about the object.
+        return { ok: false, reason: `could not read ${path} at ${revision}: not in the batch` };
       }
       documents.push({ path, revision, content, ref: `${name}:${revision}:${path}` });
     }
@@ -267,6 +284,45 @@ function git(cwd: string, args: readonly string[]): string {
   return execFileSync("git", [...args], { cwd, encoding: "utf-8", maxBuffer: 32 * 1024 * 1024 });
 }
 
+/**
+ * Every named blob at one revision, in ONE subprocess.
+ *
+ * ── WHY BYTES AND NOT A STRING ───────────────────────────────────────────────
+ * `cat-file --batch` answers `<sha> <type> <size>` then a newline, the contents, and a newline —
+ * and `<size>` counts BYTES. Decoding the stream as UTF-8 first would make every offset after the
+ * first non-ASCII character wrong, and these documents are full of em-dashes. So the stream is
+ * parsed as a Buffer and each blob is decoded on its own.
+ *
+ * A missing object answers `<name> missing` and is simply absent from the map; the caller turns
+ * that into a refusal rather than a silently shorter document set.
+ */
+export function readBlobs(cwd: string, revision: string, paths: readonly string[]): ReadonlyMap<string, string> {
+  const out = new Map<string, string>();
+  if (paths.length === 0) return out;
+
+  const stdout: Buffer = execFileSync("git", ["cat-file", "--batch"], {
+    cwd,
+    input: `${paths.map((p) => `${revision}:${p}`).join("\n")}\n`,
+    maxBuffer: 512 * 1024 * 1024,
+  });
+
+  const NEWLINE = 0x0a;
+  let at = 0;
+  for (const path of paths) {
+    const headerEnd = stdout.indexOf(NEWLINE, at);
+    if (headerEnd < 0) break;
+    const header = stdout.subarray(at, headerEnd).toString("utf-8");
+    at = headerEnd + 1;
+    // `<sha> <type> <size>`; anything else (`missing`, `ambiguous`) leaves the path unmapped.
+    const parts = header.split(" ");
+    const size = parts.length === 3 ? Number.parseInt(parts[2] ?? "", 10) : Number.NaN;
+    if (!Number.isFinite(size)) continue;
+    out.set(path, stdout.subarray(at, at + size).toString("utf-8"));
+    at += size + 1; // the newline git writes after the contents
+  }
+  return out;
+}
+
 function message(err: unknown): string {
   return err instanceof Error ? err.message.split("\n")[0] ?? err.message : String(err);
 }
@@ -319,6 +375,100 @@ export function simulatedDataSource(
  * would produce a context that looks complete and is missing a repository, which is the failure
  * mode a merged view is most likely to hide.
  */
+/**
+ * The organization's OWN documents — what it has written, not what it was given.
+ *
+ * ── WHY THIS IS A SEPARATE SOURCE ───────────────────────────────────────────
+ * The register reads a wiki, a repository, a specification folder. It must never write back to
+ * them: `DataSourcePort` has `read` and `query` and nothing else, so an adapter physically cannot
+ * edit the corpus it reads. That is deliberate. An organization that rewrites the company wiki as
+ * a side effect of grooming a defect is not doing governance, it is doing damage, and "we will be
+ * careful" is not a control.
+ *
+ * So the org accumulates its own business record HERE instead — the BRDs, architecture notes and
+ * cost rulings its phases produced. Unioned with the read-only corpus, each new work item is
+ * written against both what the company documented and what the organization itself concluded last
+ * time. That is how it builds an internal view over many tickets without touching a wiki page.
+ *
+ * Publishing any of it outward stays a separate, deliberate act by something that is not this port.
+ */
+export function directoryDataSource(input: {
+  readonly dir: string;
+  readonly name?: string;
+  /** Extensions to read. Absent means markdown, which is what the phases write. */
+  readonly extensions?: readonly string[];
+}): DataSourcePort {
+  const name = input.name ?? "org-record";
+  const exts = input.extensions ?? [".md"];
+  const collect = (): readonly SourceDocument[] => {
+    const out: SourceDocument[] = [];
+    const walk = (at: string, rel: string): void => {
+      let entries: readonly string[];
+      try {
+        entries = readdirSync(at);
+      } catch {
+        // A record that does not exist yet is EMPTY, not an error: the first run has written
+        // nothing, and refusing there would make the union refuse and take the real corpus with it.
+        return;
+      }
+      // ORDINAL, not whatever the filesystem returns. Directory order is not stable across
+      // machines, and a context whose document order changes between runs is a context that cannot
+      // be replayed or compared.
+      for (const entry of [...entries].sort((a, b) => (a < b ? -1 : a > b ? 1 : 0))) {
+        const full = join(at, entry);
+        const next = rel === "" ? entry : `${rel}/${entry}`;
+        let stat;
+        try {
+          stat = statSync(full);
+        } catch {
+          continue;
+        }
+        if (stat.isDirectory()) {
+          walk(full, next);
+          continue;
+        }
+        if (!exts.some((e) => entry.endsWith(e))) continue;
+        let content = "";
+        try {
+          content = readFileSync(full, "utf-8");
+        } catch {
+          continue;
+        }
+        // The REVISION is the file's own mtime. A wiki page has a version; a written record has the
+        // moment it was written, and a citation with no revision is not a citation.
+        const revision = String(Math.floor(stat.mtimeMs));
+        out.push({ path: next, revision, content, ref: `${name}:${revision}:${next}` });
+      }
+    };
+    walk(input.dir, "");
+    return out;
+  };
+  const answer = async (
+    docs: readonly SourceDocument[],
+  ): Promise<PortResult<readonly SourceDocument[]>> => ({
+    ok: true,
+    value: docs,
+    evidence: [{ kind: "document" as const, ref: `${name}:${String(docs.length)} document(s)` }],
+  });
+  return {
+    meta: {
+      port: Port.DataSource,
+      name,
+      fidelity: Fidelity.Real,
+      describes: `reads the organization's own written record under ${input.dir}`,
+    },
+    read: async () => answer(collect()),
+    query: async (term) => {
+      const needle = term.toLowerCase();
+      return answer(
+        collect().filter(
+          (d) => d.path.toLowerCase().includes(needle) || d.content.toLowerCase().includes(needle),
+        ),
+      );
+    },
+  };
+}
+
 export function unionOf(sources: readonly DataSourcePort[], name = "union"): DataSourcePort {
   const gather = async (
     take: (s: DataSourcePort) => Promise<PortResult<readonly SourceDocument[]>>,

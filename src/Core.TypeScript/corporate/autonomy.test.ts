@@ -47,6 +47,47 @@ const scripted = (reports: readonly OrgRuntimeReport[]) => {
   };
 };
 
+describe("A LOOP WHOSE ITERATIONS CANNOT SEE EACH OTHER IS NOT A LOOP", () => {
+  test("what cycle 1 LANDED is visible to cycle 2", () => {
+    // `deps.alreadyLanded` is folded from the store once, before the loop. Without accumulating it
+    // here, an item merged in cycle 1 comes back in cycle 2 as done-with-no-commit and the run
+    // refuses to deliver work it just shipped — the same defect `priorCascade` was fixed for, one
+    // field over.
+    const seen: (readonly string[])[] = [];
+    const run = async (d: OrgRuntimeDeps): Promise<OrgRuntimeReport> => {
+      seen.push([...(d.alreadyLanded ?? [])].sort());
+      return report({
+        changesLanded: seen.length === 1 ? ["task-1"] : ["task-2"],
+        // Progress has to differ or the driver stops for no-progress before cycle 3.
+        gateEvaluations: Array.from({ length: seen.length }, (_, i) => i) as never,
+      });
+    };
+    return runUntilSettled(
+      { nowMs: 0, alreadyLanded: new Set<string>() } as unknown as OrgRuntimeDeps,
+      { maxCycles: 3 },
+      run,
+    ).then(() => {
+      expect(seen[0]).toEqual([]);
+      expect(seen[1]).toEqual(["task-1"]);
+      expect(seen[2]).toEqual(["task-1", "task-2"]);
+    });
+  });
+
+  test("NOT MEASURED survives the loop — it does not become an empty set", () => {
+    // A caller with no store supplies nothing, and "nothing has ever landed" is a different claim
+    // from "we did not look". Turning the first into the second here would make every store-less
+    // run start failing on a question it never asked.
+    const seen: (ReadonlySet<string> | undefined)[] = [];
+    const run = async (d: OrgRuntimeDeps): Promise<OrgRuntimeReport> => {
+      seen.push(d.alreadyLanded);
+      return report({ gateEvaluations: Array.from({ length: seen.length }, (_, i) => i) as never });
+    };
+    return runUntilSettled({ nowMs: 0 } as unknown as OrgRuntimeDeps, { maxCycles: 2 }, run).then(() => {
+      expect(seen).toEqual([undefined, undefined]);
+    });
+  });
+});
+
 describe("DELIVERED is the only good ending", () => {
   test("it stops on the cycle that delivers", async () => {
     const r = await runUntilSettled(deps, { maxCycles: 10 }, scripted([

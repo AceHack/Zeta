@@ -84,6 +84,53 @@ describe("supply is computed from PRIORITY-WEIGHTED workload", () => {
     expect(requiredSupply(HAT, { cascade: c, priorities: paused })).toBe(0);
   });
 
+  test("UPCOMING work counts too — the office staffs for the queue, not just the desk", () => {
+    // Without this, supply is read off ASSIGNED work only, so a hat can never be authorized to grow
+    // until the backlog has already been forced onto the wearers it has. The RMO ends up one cycle
+    // behind demand permanently: staffing for the queue it just absorbed instead of the one coming.
+    const assignedOnly = cascade(leaf("t1"), leaf("t2"));
+    const ps = ["t1", "t2", "u1", "u2"].map((id) => priority(id, PriorityClass.Expedite));
+
+    // Two assigned items, two per wearer -> one wearer.
+    expect(requiredSupply(HAT, { cascade: assignedOnly, priorities: ps })).toBe(1);
+
+    // The same two, plus two unstaffed items that WILL route to this hat -> two wearers.
+    const upcoming = [
+      { node: leaf("u1"), hatId: HAT },
+      { node: leaf("u2"), hatId: HAT },
+    ];
+    expect(requiredSupply(HAT, { cascade: assignedOnly, priorities: ps, upcoming })).toBe(2);
+  });
+
+  test("upcoming work for ANOTHER hat does not inflate this one", () => {
+    // The routing is the caller's, and it is honoured. Counting every unstaffed item toward every
+    // hat would authorize the whole organization to grow off one queue.
+    // The counts are chosen so the ROUTING changes the answer. An earlier version of this test used
+    // one assigned item, where ceil(1/2) and ceil(2/2) are both 1 — the ceiling absorbed the
+    // difference, the assertion held whether the filter existed or not, and a mutant that counted
+    // every queued item toward every hat survived it.
+    const c = cascade(leaf("t1"), leaf("t2"));
+    const ps = ["t1", "t2", "u1", "u2"].map((id) => priority(id, PriorityClass.Expedite));
+    const elsewhere = [
+      { node: leaf("u1"), hatId: "some_other_hat" },
+      { node: leaf("u2"), hatId: "some_other_hat" },
+    ];
+    expect(requiredSupply(HAT, { cascade: c, priorities: ps })).toBe(1);
+    expect(requiredSupply(HAT, { cascade: c, priorities: ps, upcoming: elsewhere })).toBe(1);
+    // ...and the same queue routed HERE does move it, which is what proves the filter is the reason.
+    const here = elsewhere.map((e) => ({ node: e.node, hatId: HAT }));
+    expect(requiredSupply(HAT, { cascade: c, priorities: ps, upcoming: here })).toBe(2);
+  });
+
+  test("upcoming work that is DONE or CANCELLED needs nobody, same as assigned work", () => {
+    const c = cascade();
+    const upcoming = [
+      { node: leaf("u1", { state: WorkState.Done }), hatId: HAT },
+      { node: leaf("u2", { state: WorkState.Canceled }), hatId: HAT },
+    ];
+    expect(requiredSupply(HAT, { cascade: c, priorities: [], upcoming })).toBe(0);
+  });
+
   test("finished and cancelled work needs nobody", () => {
     const c = cascade(leaf("t1", { state: WorkState.Done }), leaf("t2", { state: WorkState.Canceled }));
     expect(requiredSupply(HAT, { cascade: c, priorities: [] })).toBe(0);
