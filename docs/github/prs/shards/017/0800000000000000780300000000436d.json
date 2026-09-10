@@ -1,0 +1,12 @@
+{
+  "pr_number": 17261,
+  "archive_path": "docs/history/pr-reviews/PR-17261-docs-081m26hz7y2087g0r002cgc4tb-ferry-the-abstraction-agent-transcript-read-it-a.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-10T21:31:45.901Z",
+  "schema_version": "v1",
+  "commit_sha": "b663438bec03de7a1602b85c1700df2ea0cab586",
+  "title": "docs(081M26HZ7Y2087G0R002CGC4TB): ferry the abstraction-agent transcript; read it as elicitation, not distillation",
+  "state": "MERGED",
+  "merged_at": "2026-09-10T21:30:57Z",
+  "head_ref": "ferry-abstraction-agent-transcript"
+}

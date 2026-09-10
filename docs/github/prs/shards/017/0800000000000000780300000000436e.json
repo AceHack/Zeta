@@ -1,0 +1,12 @@
+{
+  "pr_number": 17262,
+  "archive_path": "docs/history/pr-reviews/PR-17262-feat-hygiene-effort-cost-is-an-evidential-channel-ai-authorship-collapsed-author.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-10T21:50:09.584Z",
+  "schema_version": "v1",
+  "commit_sha": "c53b519ee86ba50fb7c8eaa1dbe1656d16693280",
+  "title": "feat(hygiene): effort-cost is an evidential channel AI authorship collapsed — .authorevidence + its meter",
+  "state": "MERGED",
+  "merged_at": "2026-09-10T21:49:23Z",
+  "head_ref": "research/author-evidence-effort-cost-channel"
+}

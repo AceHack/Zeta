@@ -1,0 +1,12 @@
+{
+  "pr_number": 17244,
+  "archive_path": "docs/history/pr-reviews/PR-17244-feat-081m25ykdf6087g0r002xc2z8z-tag-only-pins-an-unhashed-dependency-is-supporte.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-10T21:54:14.501Z",
+  "schema_version": "v1",
+  "commit_sha": "a4d50e43220bcfec2c51c20fdf219adbe1834444",
+  "title": "feat(081M25YKDF6087G0R002XC2Z8Z): tag-only pins — an unhashed dependency is supported, declared, and not the default",
+  "state": "MERGED",
+  "merged_at": "2026-09-10T21:53:21Z",
+  "head_ref": "tag-only-pins-for-rolling-rows"
+}

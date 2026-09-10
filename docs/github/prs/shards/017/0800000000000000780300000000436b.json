@@ -1,0 +1,12 @@
+{
+  "pr_number": 17259,
+  "archive_path": "docs/history/pr-reviews/PR-17259-docs-081m26hwsz6087g0r00373bn0q-name-the-agent-fairness-protocol.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-10T21:34:26.855Z",
+  "schema_version": "v1",
+  "commit_sha": "24ca90bbbef5ba8ededeaef6505e669455e19903",
+  "title": "docs(081M26HWSZ6087G0R00373BN0Q): name the agent fairness protocol",
+  "state": "MERGED",
+  "merged_at": "2026-09-10T21:32:48Z",
+  "head_ref": "feat/zetadb-agent-fairness-protocol"
+}
