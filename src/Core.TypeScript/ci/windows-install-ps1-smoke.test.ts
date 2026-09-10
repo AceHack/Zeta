@@ -10,6 +10,8 @@ import {
   bunGlobalOutputContainsPackage,
   SHARED_COMMANDS,
   CONTAINER_SKIPS,
+  parseWindowsHostTierPolicy,
+  stripPowerShellLineComments,
 } from "./windows-install-ps1-smoke";
 
 test("taskHasDurationAndNextRun: healthy task (Repetition Duration + populated Next Run)", () => {
@@ -170,4 +172,73 @@ test("Windows .ps1 entrypoints are ASCII-only (PS 5.1 reads BOM-less .ps1 as ANS
       .map((c) => `${f}@char${c.i}: U+${c.code.toString(16).toUpperCase().padStart(4, "0")} '${c.ch}'`);
     expect(offenders).toEqual([]);
   }
+});
+
+// ---------------------------------------------------------------------------
+// HOST TIER (081M25QNJ49087G0R000CRS6MN)
+//
+// install.ps1 used to hardcode ZETA_HOST_TIER='full' on every Windows host. `full` merges
+// `.mise.full.toml`, and the only tools that file adds over `.mise.toml` are the five
+// Kubernetes ones -- which no Windows lane invokes. It was not free: `github:yannh/kubeconform`
+// failing to install (GitHub attestation 503) took `build-and-test (windows-11-arm)` red on
+// main, in a leg that runs `dotnet build` + `dotnet test` and nothing else.
+//
+// Aaron 2026-09-10: "full k8s can't run on windows ... eventually we may support windows
+// non control nodes but today we don't". So the capability must stay REACHABLE by
+// declaration while ceasing to be the default -- which is the pair of assertions below.
+// ---------------------------------------------------------------------------
+
+test("stripPowerShellLineComments drops whole-line comments and keeps code (the guard reads CODE)", () => {
+  const src = ["# ZETA_HOST_TIER = 'full' in prose", "  # indented prose too", "$env:ZETA_HOST_TIER = 'standard'"].join(
+    "\n",
+  );
+  const code = stripPowerShellLineComments(src);
+  expect(code).not.toMatch(/prose/);
+  expect(code).toContain("$env:ZETA_HOST_TIER = 'standard'");
+});
+
+test("parseWindowsHostTierPolicy CAN fail — it reads the assignment, not the surrounding prose", () => {
+  // Negative control: the same shape with 'full' must parse as 'full'. Without this, a parser
+  // that returned 'standard' unconditionally would satisfy the assertion below vacuously.
+  const asFull = "if (-not $env:ZETA_HOST_TIER) { $env:ZETA_HOST_TIER = 'full' }";
+  expect(parseWindowsHostTierPolicy(asFull).defaultTier).toBe("full");
+  // And a comment that merely mentions the assignment is not the assignment.
+  const commentOnly = "# if (-not $env:ZETA_HOST_TIER) { $env:ZETA_HOST_TIER = 'full' }";
+  expect(parseWindowsHostTierPolicy(commentOnly).defaultTier).toBeNull();
+  expect(parseWindowsHostTierPolicy("").miseEnvFullGuardTier).toBeNull();
+});
+
+test("Windows defaults to tier=standard — a host that declares nothing gets no Kubernetes tooling", () => {
+  const repoRoot = join(import.meta.dir, "..", "..", "..");
+  const installer = readFileSync(join(repoRoot, "tools", "setup", "install.ps1"), "utf8");
+  const policy = parseWindowsHostTierPolicy(installer);
+  expect(policy.defaultTier).toBe("standard");
+  expect(policy.defaultTier).not.toBe("full");
+});
+
+test("declaring ZETA_HOST_TIER=full still reaches the full graph (capability kept, default dropped)", () => {
+  const repoRoot = join(import.meta.dir, "..", "..", "..");
+  const installer = readFileSync(join(repoRoot, "tools", "setup", "install.ps1"), "utf8");
+  expect(parseWindowsHostTierPolicy(installer).miseEnvFullGuardTier).toBe("full");
+});
+
+test(".mise.full.toml's only non-mirror entries are the k8s five — what tier=standard now skips", () => {
+  // This is the fact that makes the tests above mean anything: if the k8s tools were ALSO in
+  // `.mise.toml`, narrowing the tier would change nothing, and if `.mise.full.toml` carried
+  // something else Windows needs, narrowing it would break the lane.
+  const repoRoot = join(import.meta.dir, "..", "..", "..");
+  const base = readFileSync(join(repoRoot, ".mise.toml"), "utf8");
+  const full = readFileSync(join(repoRoot, ".mise.full.toml"), "utf8");
+  const declared = (text: string): string[] =>
+    text
+      .split(/\r?\n/)
+      .map((l) => l.trim())
+      .filter((l) => l.length > 0 && !l.startsWith("#") && !l.startsWith("["))
+      .map((l) => l.split("=")[0]!.trim().replace(/^"|"$/g, ""));
+  const fullTools = declared(full);
+  const baseTools = new Set(declared(base));
+  const onlyInFull = fullTools.filter((t) => !baseTools.has(t)).sort();
+  expect(onlyInFull).toEqual(["github:yannh/kubeconform", "helm", "k3d", "kind", "kubectl"]);
+  // The mirrors: present in BOTH, so a standard-tier host installs the same versions.
+  expect(fullTools.filter((t) => baseTools.has(t)).sort()).toEqual(["rust", "zig"]);
 });

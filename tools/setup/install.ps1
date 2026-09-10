@@ -464,12 +464,54 @@ if ($miseActual -and $miseActual -ne $MisePinVersion) {
 Push-Location $RepoRoot
 try {
   Invoke-Tool { mise trust --all --yes } 'mise trust --all --yes'
-  # HOST TIERS (workitem 081KTWQZY7F): Windows boxes are dev machines -- full tier unless
-  # explicitly declared otherwise; full merges .mise.full.toml (the k8s set) via MISE_ENV.
-  if (-not $env:ZETA_HOST_TIER) { $env:ZETA_HOST_TIER = 'full' }
-  if (-not $env:ZETA_HOST_TIER -or $env:ZETA_HOST_TIER -eq 'full') {
+  # HOST TIERS (workitem 081KTWQZY7F; narrowed by 081M25QNJ49087G0R000CRS6MN).
+  #
+  # WHAT THE TIER ACTUALLY BUYS ON WINDOWS. The only thing ZETA_HOST_TIER changes in this
+  # script is MISE_ENV=full, which merges `.mise.full.toml`. Measured 2026-09-10 against
+  # that file: over `.mise.toml` it adds exactly five tools -- k3d, kind, kubectl, helm and
+  # `github:yannh/kubeconform` -- plus `zig` and `rust` entries that are deliberate
+  # byte-identical mirrors of the base tier and so install the same versions either way.
+  # No manifest this script reads (`manifests\windows`, `manifests\from-bun-global`,
+  # `manifests\local-llm`) carries a `tier=` token, and install.ps1 drives no dotnet-global
+  # manifest. So the tier's ENTIRE Windows payload is those five Kubernetes tools.
+  #
+  # NOTHING ON WINDOWS USES THEM. Every consumer is a Linux lane: gate.yml's
+  # `lint (yaml/k8s)` installs its own kubeconform with `go install`, helm-validate.yml is
+  # `ubuntu-24.04`, and k8s-argocd-health-test.yml (k3d/kind/kubectl) is `ubuntu-24.04`.
+  # The Windows leg of `build-and-test` runs `dotnet build` + `dotnet test` over Zeta.sln
+  # and invokes none of the five.
+  #
+  # Aaron 2026-09-10: "full k8s can't run on windows ... the only windows would be from our
+  # vms inside k8s, eventually we may support windows non control nodes but today we don't".
+  # So `full` here was never a capability claim about the host. It was a default nobody had
+  # a reason to narrow.
+  #
+  # WHAT IT COST. `build-and-test (windows-11-arm)` on main failed at this very step because
+  # `github:yannh/kubeconform@0.7.0` could not be installed -- GitHub's attestation service
+  # returned 503. An outage in a Kubernetes tool took down a Windows build-and-test leg that
+  # has no Kubernetes in it. Same shape as the `qemu` row in `manifests\windows`: a
+  # dependency nothing on this platform invokes is still a way for this platform to go red.
+  #
+  # `standard` AND NOT `slim`, because this is a WORKLOAD statement rather than a capacity
+  # one. The ranks are read as host SIZE elsewhere (`common/host-tier.sh` detects `slim`
+  # below 8 GB), and a Windows dev box -- or a 16 GB GitHub runner -- is not a small host.
+  # `standard` drops precisely the k8s set and keeps every standard-tier entry (the dotnet
+  # diagnostics suite, stryker, fsharp-analyzers in `manifests/from-dotnet-global`)
+  # available for the day Windows wires that manifest up.
+  #
+  # A DECLARATION STILL WINS, exactly as `common/host-tier.sh` specifies. Anyone who wants
+  # the k8s set on Windows -- the "eventually" above -- exports ZETA_HOST_TIER=full and gets
+  # it unchanged. The capability stays discoverable; it stops being the unasked-for default.
+  if (-not $env:ZETA_HOST_TIER) { $env:ZETA_HOST_TIER = 'standard' }
+  if ($env:ZETA_HOST_TIER -eq 'full') {
     $env:MISE_ENV = 'full'
+  } else {
+    # Loud, named, with both tiers -- the skip discipline at the top of
+    # tools/setup/common/host-tier.sh, which this script cannot source (it is bash).
+    Write-Host "-> k3d/kind/kubectl/helm/kubeconform skipped: require tier=full, host is $env:ZETA_HOST_TIER"
   }
+  $miseEnvLabel = if ($env:MISE_ENV) { $env:MISE_ENV } else { '<none: base .mise.toml only>' }
+  Write-Host "host tier: $env:ZETA_HOST_TIER (MISE_ENV=$miseEnvLabel)"
   if (-not $env:MISE_TRUSTED_CONFIG_PATHS) {
     $env:MISE_TRUSTED_CONFIG_PATHS = $RepoRoot
   } elseif ($env:MISE_TRUSTED_CONFIG_PATHS -notlike "*$RepoRoot*") {
