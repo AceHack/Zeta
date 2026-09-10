@@ -267,6 +267,32 @@ jobs:
           # the only one whose checkout was being killed at the timeout.
           fetch-depth: 1
 
+          # TRUSTED BASE, NOT THE PR MERGE REF -- CodeQL alert #798,
+          # `actions/untrusted-checkout/medium`.
+          #
+          # The default for a `pull_request` trigger is the PR's merge ref, i.e.
+          # contributor-controlled code. This job never reads it: `detect` below
+          # fetches both SHAs explicitly and runs a TWO-DOT `git diff A B`, which
+          # compares two fetched OBJECTS and never consults the working tree. So
+          # the checkout existed only to provide a git directory.
+          #
+          # Checking out the base commit gives exactly the same git directory
+          # without placing untrusted code on disk. The diff is byte-identical
+          # because both endpoints are still fetched by SHA in `detect`, and the
+          # fail-closed property is unchanged -- a missing object still aborts on
+          # `fatal: bad object` rather than yielding a wrong changed-file set.
+          #
+          # Why this is a FIX and not a suppression: the alert is arguably a false
+          # positive today (workflow permissions are `contents: read`, the trigger
+          # is `pull_request` and not `pull_request_target`, and this job's only two
+          # `run:` blocks are inline shell that execute nothing from the tree). But
+          # "non-privileged AND executes nothing" is a property of the CURRENT job,
+          # held by nothing but review. A future step that reads a file from the
+          # tree would silently make the checkout load-bearing. Not putting the
+          # untrusted code there in the first place removes the class instead of
+          # arguing about this instance -- and it cost one line.
+          ref: ${{ github.event.pull_request.base.sha }}
+
       - id: detect
         if: github.event_name == 'pull_request'
         shell: bash
