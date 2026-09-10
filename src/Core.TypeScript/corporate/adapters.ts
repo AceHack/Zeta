@@ -1487,6 +1487,16 @@ export function gitWorktreeChangeControl(input: {
       // The borrowed checkout is released whichever way the merge went — it holds a lock on the
       // base branch, and leaving it behind would make the NEXT change unmergeable.
       const release = (): void => {
+        // Nothing was borrowed when the shared checkout was already on the base, so there is
+        // nothing holding it. Removing unconditionally would try to delete the operator's own
+        // checkout.
+        if (onBase) return;
+        // `--force` because the borrowed tree is not clean after a merge lands in it, and a
+        // refused merge can leave conflict markers on disk. Nothing is lost either way: the
+        // worktree had the BASE BRANCH checked out, so a successful merge is already a commit on
+        // that branch in the shared object store, and a refused one wrote no commit at all. What
+        // is removed here is the working directory, never the work.
+        git(["worktree", "remove", "--force", borrowed]);
       };
       if (merged.error !== undefined) {
         release();

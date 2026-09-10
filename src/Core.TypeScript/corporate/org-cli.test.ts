@@ -8,6 +8,9 @@
  */
 
 import { describe, expect, test } from "bun:test";
+import { mkdtempSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 import { COMMANDS, Exit } from "./cli-surface";
 import { main, PLANNED, type CliDeps } from "./org-cli";
 import { buildOrgChart } from "./org-chart";
@@ -60,9 +63,30 @@ function harness(files: Record<string, string> = {}): Harness {
   };
 }
 
+// A REAL TEMP DIRECTORY, NOT A FAKE ABSOLUTE PATH.
+//
+// This used to be the literal `/store/elera`, on the reasonable assumption that the harness's
+// injected `deps` (readFile/writeFile over an in-memory Map) meant nothing reached disk. It does
+// not hold: `main` is only HALF injected. It reads and writes the registry through `deps`, and
+// then calls `appendAction` and `appendEvent`, which are real-filesystem modules by design --
+// `action-queue.ts` uses `mkdirSync`/`readdirSync` throughout, and its own tests correctly use
+// temp dirs. So the store path reached `node:fs` unmediated.
+//
+// The consequence was a LOCAL/CI SPLIT, which is the expensive kind of test defect: a Linux CI
+// runner happily creates `/store`, so six tests passed there, while macOS's read-only root
+// answers `EROFS: read-only file system, mkdir '/store'` and the same six fail on a developer's
+// machine. A test whose verdict depends on which operating system ran it is not reporting on the
+// code.
+//
+// The harness's own comment, twenty lines below, states the exact principle this violated: a test
+// that picks up something from the real environment "would pass on their machine and fail in CI,
+// and the failure would look like a defect in the code rather than in the test." That was written
+// about `env`; the same class escaped through `fs`.
+const STORE_ROOT = mkdtempSync(join(tmpdir(), "org-cli-store-"));
+
 const CREATE = [
   "org", "create",
-  "--id", "elera", "--name", "ELERA Core", "--store", "/store/elera",
+  "--id", "elera", "--name", "ELERA Core", "--store", join(STORE_ROOT, "elera"),
   "--intake", "greenfield", "--verification", "existing_harness",
 ];
 
