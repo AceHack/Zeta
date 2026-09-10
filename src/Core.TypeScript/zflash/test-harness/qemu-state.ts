@@ -1,6 +1,7 @@
 import { spawn as nodeSpawn, spawnSync as nodeSpawnSync, type SpawnOptions } from "node:child_process";
 import { existsSync, readFileSync } from "node:fs";
 import { qemuUsbStorageDeviceArg } from "../../installer/qemu-usb-storage.ts";
+import { buildOvmfPflashArgs, type QemuUefiFirmware } from "../../ci/ovmf-firmware.ts";
 import {
   B0891_RETENTION_USB_SERIAL_MARKERS,
   HOSTNAME_AUTOGENERATION_SERIAL_MARKERS,
@@ -46,6 +47,14 @@ export interface QemuSystemBootArgsInput {
    * (scenario 5) sees different args.
    */
   readonly networkDevices?: readonly QemuNetworkDevice[];
+  /**
+   * REQUIRED, and deliberately not optional. Until 081M24BB3TD087G0R001PJTW9A this
+   * builder emitted no firmware args at all, so QEMU silently used its built-in SeaBIOS
+   * and every scenario routed through here booted LEGACY -- on which the installer
+   * correctly refuses ("not booted in UEFI mode"). Legacy BIOS was reachable by saying
+   * nothing; now it is reachable only by naming it, with a reason.
+   */
+  readonly uefiFirmware: QemuUefiFirmware;
 }
 
 export interface Qcow2SnapshotRetentionInput {
@@ -58,6 +67,12 @@ export interface Qcow2SnapshotRetentionInput {
   readonly memoryMB?: number;
   readonly cpuCount?: number;
   readonly kvmAvailable?: boolean;
+  /**
+   * REQUIRED. The retention scenario restarts the guest from a snapshot, and a restart
+   * that dropped to SeaBIOS would reproduce 081M24BB3TD087G0R001PJTW9A on the second
+   * boot only -- a failure that looks like snapshot corruption and is not.
+   */
+  readonly uefiFirmware: QemuUefiFirmware;
 }
 
 export interface Qcow2SnapshotRetentionPlan {
@@ -498,6 +513,7 @@ export function buildQemuSystemBootArgs(input: QemuSystemBootArgsInput): readonl
   const args: string[] = [
     "-machine",
     "q35",
+    ...buildOvmfPflashArgs(input.uefiFirmware),
     "-m",
     String(input.memoryMB),
     "-smp",
@@ -553,6 +569,7 @@ function buildRestartArgs(input: NormalizedQcow2SnapshotRetentionInput): readonl
       input.bootImagePath === undefined
         ? { kind: "iso", path: input.isoPath }
         : { kind: "usb-image", path: input.bootImagePath },
+    uefiFirmware: input.uefiFirmware,
   });
 }
 
@@ -568,6 +585,7 @@ export function planQcow2SnapshotRetention(input: Qcow2SnapshotRetentionInput): 
     diskPath: input.diskPath,
     serialLogPath: input.serialLogPath,
     snapshotName: input.snapshotName,
+    uefiFirmware: input.uefiFirmware,
     diskSizeGB: input.diskSizeGB ?? DEFAULT_DISK_SIZE_GB,
     memoryMB: input.memoryMB ?? DEFAULT_MEMORY_MB,
     cpuCount: input.cpuCount ?? DEFAULT_CPU_COUNT,

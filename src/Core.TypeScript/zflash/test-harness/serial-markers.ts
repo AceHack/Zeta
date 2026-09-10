@@ -114,7 +114,33 @@ export const RETENTION_FAILURE_SERIAL_MARKERS: readonly string[] = [
   "bail",
 ];
 
-export const RETENTION_ABSENT_TERMINAL_MARKERS: readonly string[] = ["nixos@zeta-installer:~"];
+/**
+ * A guest-side refusal that is FATAL and self-announcing, so the harness must stop rather
+ * than serve out its timeout.
+ *
+ * 081M24BB3TD087G0R001PJTW9A: scenarios 3 and 4 each waited the full 1,800,000 ms for
+ * "ZETA CLUSTER NODE INSTALL COMPLETE" while the guest had ALREADY printed this line --
+ * roughly 60 runner-minutes per dispatch spent proving a determined failure. The
+ * installer was right to refuse and the harness had no way to hear it.
+ *
+ * The string is the installer's own, from zeta-install's UEFI preflight. It is matched as
+ * a SUBSTRING, so the trailing remediation text ("Reboot and choose the 'UEFI:' entry
+ * ...") does not have to be reproduced here.
+ *
+ * NOT a success condition and not a softened assertion: a run that trips this still exits
+ * non-zero. What changes is only how long it takes to say so.
+ */
+export const UEFI_REQUIRED_TERMINAL_MARKER = "ERROR: not booted in UEFI mode";
+
+/**
+ * Terminal markers every install-shaped boot honours. `nixos@zeta-installer:~` means the
+ * live ISO dropped to its own shell instead of running zeta-first-boot; the UEFI refusal
+ * means the firmware was wrong before anything could be installed.
+ */
+export const RETENTION_ABSENT_TERMINAL_MARKERS: readonly string[] = [
+  "nixos@zeta-installer:~",
+  UEFI_REQUIRED_TERMINAL_MARKER,
+];
 
 /** Emitted on tty1 and mirrored to ttyS0 while zeta-first-boot.service runs. */
 export const FIRST_BOOT_PROGRESS_SERIAL_MARKERS: readonly string[] = [

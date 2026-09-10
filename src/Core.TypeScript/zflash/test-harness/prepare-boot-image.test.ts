@@ -101,6 +101,11 @@ describe("prepare-boot-image", () => {
       diskPath: "/tmp/disk.qcow2",
       serialLogPath: "/tmp/serial.log",
       snapshotName: "post-initial-format",
+      uefiFirmware: {
+        kind: "ovmf",
+        codePath: "/usr/share/OVMF/OVMF_CODE_4M.fd",
+        varsPath: "/tmp/OVMF_VARS.fd",
+      },
     });
     expect("ok" in planned).toBe(true);
     if (!("ok" in planned)) throw new Error("expected plan");
