@@ -1,0 +1,12 @@
+{
+  "pr_number": 17180,
+  "archive_path": "docs/history/pr-reviews/PR-17180-docs-081m2439bgm087g0r002aq9enp-ferry-the-simulation-papers-transcript-and-price.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-10T02:03:20.486Z",
+  "schema_version": "v1",
+  "commit_sha": "43171d69a57345adc7b012c942f560e04eb118e0",
+  "title": "docs(081M2439BGM087G0R002AQ9ENP): ferry the simulation-papers transcript and price the learned-geometry second track",
+  "state": "MERGED",
+  "merged_at": "2026-09-10T02:02:38Z",
+  "head_ref": "shadow/ferry-simulation-papers-and-learned-geometry-direction"
+}

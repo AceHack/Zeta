@@ -1,0 +1,12 @@
+{
+  "pr_number": 17203,
+  "archive_path": "docs/history/pr-reviews/PR-17203-fix-sec-no-shell-in-the-byte-lock-harness-execfilesync-and-a-cause-you-can-read.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-10T01:51:15.341Z",
+  "schema_version": "v1",
+  "commit_sha": "12170c610c0784040e4cefc2bef7a1fe0924986c",
+  "title": "fix(sec): no shell in the byte-lock harness -- execFileSync, and a cause you can read",
+  "state": "MERGED",
+  "merged_at": "2026-09-10T01:50:26Z",
+  "head_ref": "security/tranche6-exec-no-shell"
+}

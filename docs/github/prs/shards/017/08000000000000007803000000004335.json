@@ -1,0 +1,12 @@
+{
+  "pr_number": 17205,
+  "archive_path": "docs/history/pr-reviews/PR-17205-chore-081m24fqc8m087g0r003hx7qxg-drop-the-sessionstart-tick-loop-notice-from-eve.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-10T02:05:33.217Z",
+  "schema_version": "v1",
+  "commit_sha": "4b4ac505075481db61222536de415d4bbdc23f02",
+  "title": "chore(081M24FQC8M087G0R003HX7QXG): drop the SessionStart tick-loop notice from every agent cold start",
+  "state": "MERGED",
+  "merged_at": "2026-09-10T02:04:53Z",
+  "head_ref": "drop-startup-loop-notice"
+}
