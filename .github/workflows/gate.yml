@@ -228,6 +228,21 @@ jobs:
     timeout-minutes: 15
     outputs:
       code: ${{ steps.detect.outputs.code || steps.nonpr.outputs.code }}
+      # PER-DOMAIN vector. `code` is one scalar for "does the F# matrix need to
+      # run"; these say WHICH language lints a diff can possibly affect.
+      #
+      # FAIL CLOSED, and the `|| 'true'` tail is the mechanism: if `detect` did
+      # not run, could not run, or emitted nothing, every consumer sees `true`
+      # and runs. Absence of a verdict is never absence of a check.
+      # (`'false'` is a non-empty string and therefore truthy to `||`, so a
+      # genuine false verdict is passed through and only emptiness falls back.)
+      csharp: ${{ steps.detect.outputs.csharp || steps.nonpr.outputs.csharp || 'true' }}
+      fsharp: ${{ steps.detect.outputs.fsharp || steps.nonpr.outputs.fsharp || 'true' }}
+      go: ${{ steps.detect.outputs.go || steps.nonpr.outputs.go || 'true' }}
+      markdown: ${{ steps.detect.outputs.markdown || steps.nonpr.outputs.markdown || 'true' }}
+      python: ${{ steps.detect.outputs.python || steps.nonpr.outputs.python || 'true' }}
+      rust: ${{ steps.detect.outputs.rust || steps.nonpr.outputs.rust || 'true' }}
+      workflows: ${{ steps.detect.outputs.workflows || steps.nonpr.outputs.workflows || 'true' }}
     steps:
       # Fast-path for non-PR events: emit code=true without cloning
       # the repo. Push-to-main / merge_group / workflow_dispatch all
@@ -242,6 +257,16 @@ jobs:
         run: |
           echo "Event ${GH_EVENT} (not pull_request) — emitting code=true (full build), no checkout needed."
           echo "code=true" >> "$GITHUB_OUTPUT"
+          # Non-PR events (push to main / merge_group / dispatch) run EVERY
+          # domain. path-filter is never the mechanism that hides a change
+          # from main-tip CI -- the same invariant `code=true` above holds.
+          echo "csharp=true" >> "$GITHUB_OUTPUT"
+          echo "fsharp=true" >> "$GITHUB_OUTPUT"
+          echo "go=true" >> "$GITHUB_OUTPUT"
+          echo "markdown=true" >> "$GITHUB_OUTPUT"
+          echo "python=true" >> "$GITHUB_OUTPUT"
+          echo "rust=true" >> "$GITHUB_OUTPUT"
+          echo "workflows=true" >> "$GITHUB_OUTPUT"
 
       - name: Checkout
         if: github.event_name == 'pull_request'
@@ -292,6 +317,12 @@ jobs:
           # untrusted code there in the first place removes the class instead of
           # arguing about this instance -- and it cost one line.
           ref: ${{ github.event.pull_request.base.sha }}
+
+      - name: Set up bun (for the domain classifier below)
+        if: github.event_name == 'pull_request'
+        uses: oven-sh/setup-bun@735343b667d3e6f658f44d0eca948eb6282f2b76 # v2.0.2
+        with:
+          bun-version: latest
 
       - id: detect
         if: github.event_name == 'pull_request'
@@ -407,6 +438,43 @@ jobs:
           else
             echo "Docs-only PR — emitting code=false (skip F# install/build/test)."
             echo "code=false" >> "$GITHUB_OUTPUT"
+          fi
+
+          # ── PER-DOMAIN VECTOR ────────────────────────────────────────────
+          # `code` above is one scalar. It cannot say that a diff of two JSON
+          # shards and two markdown files has nothing for `lint (C#)` to read.
+          # MEASURED on PR #17264 (run 34532486225): 76 jobs, 3,409 CPU-seconds,
+          # 267s wall-clock -- including 155s of `lint (C#)` (60s installing a
+          # .NET toolchain, 70s scanning .cs files) on a PR with zero .cs files,
+          # 116s of `lint (Rust)` with zero .rs files, and 79s of shellcheck
+          # with zero shell. 18 of the last 100 merged PRs are flush/archive.
+          #
+          # Roughly half of each job is runner setup, which is why the vector
+          # gates the JOB rather than the step: gating the step still pays the
+          # install.
+          #
+          # THE DIFF IS THE AUTHORITY. Nothing here reads the PR title --
+          # `[skip-review]` and `[telemetry-flush]` are contributor-controlled
+          # text and must never turn a check off.
+          #
+          # The classifier runs from the BASE checkout (`ref: base.sha` above),
+          # so it is main's code, not the contributor's. If it is absent -- a PR
+          # whose base predates it -- every domain is forced ON.
+          CLASSIFIER="src/Core.TypeScript/ci/path-domains.ts"
+          if [ ! -f "${CLASSIFIER}" ]; then
+            echo "No ${CLASSIFIER} in the base tree — forcing every domain ON (fail closed)."
+            for d in csharp fsharp go markdown python rust workflows; do
+              echo "${d}=true" >> "$GITHUB_OUTPUT"
+            done
+          elif ! printf '%s\n' "${CHANGED}" | bun "${CLASSIFIER}" > /tmp/domains.txt; then
+            echo "Classifier failed — forcing every domain ON (fail closed)."
+            for d in csharp fsharp go markdown python rust workflows; do
+              echo "${d}=true" >> "$GITHUB_OUTPUT"
+            done
+          else
+            echo "Domain vector:"
+            sed 's/^/  /' /tmp/domains.txt
+            cat /tmp/domains.txt >> "$GITHUB_OUTPUT"
           fi
 
   build-and-test:
@@ -3099,6 +3167,30 @@ jobs:
   lint-fsharp:
     name: lint (F#)
     timeout-minutes: 15
+    # ── DOMAIN-GATED DRIFT CHECK ──────────────────────────────────────────
+    # Runs only when the diff contains something `lint (F#)` could read.
+    #
+    # Safe because of four properties, none of them assumed:
+    #   1. The DIFF decides, never the PR title. `[skip-review]` does nothing.
+    #   2. Fail closed -- `path-filter` defaults every domain to `true`, so an
+    #      absent or failed verdict RUNS the job. See its `outputs:` block.
+    #   3. This job is NOT in the required floor
+    #      (`registry/uncompensatable-floor.yaml`), so nothing about the
+    #      blocking treaty changes. Narrowing a FLOOR job would be an
+    #      amendment on the maintainer's consent path, and is not done here.
+    #   4. Whole-tree coverage is untouched: this workflow also runs on
+    #      `push: branches: [main]`, where `path-filter` forces every domain
+    #      ON. A drift lint skipped on a docs-only PR would have been
+    #      reporting on MAIN's state rather than on anything the PR did, and
+    #      the same lint scans the whole tree on the very next merge.
+    #
+    # COST, stated rather than hidden: `needs: path-filter` puts this job
+    # behind that one. path-filter is p50=23s but has a heavy tail
+    # (p95=70s, p99=201s, max=262s), so in the tail this can DELAY a lint
+    # that would have run immediately. The trade is worth it because the
+    # skip is total -- setup included -- and most PRs touch no fsharp at all.
+    needs: path-filter
+    if: needs.path-filter.outputs.fsharp == 'true'
     runs-on: ubuntu-24.04
     steps:
       - name: Checkout
@@ -3158,6 +3250,31 @@ jobs:
   lint-csharp:
     name: lint (C#)
     timeout-minutes: 15
+    # ── DOMAIN-GATED DRIFT CHECK ──────────────────────────────────────────
+    # Runs only when the diff contains something `lint (C#)` could read. MEASURED on PR #17264: 155s spent on a diff of two JSON
+    # shards and two markdown files -- about half of it installing a toolchain.
+    #
+    # Safe because of four properties, none of them assumed:
+    #   1. The DIFF decides, never the PR title. `[skip-review]` does nothing.
+    #   2. Fail closed -- `path-filter` defaults every domain to `true`, so an
+    #      absent or failed verdict RUNS the job. See its `outputs:` block.
+    #   3. This job is NOT in the required floor
+    #      (`registry/uncompensatable-floor.yaml`), so nothing about the
+    #      blocking treaty changes. Narrowing a FLOOR job would be an
+    #      amendment on the maintainer's consent path, and is not done here.
+    #   4. Whole-tree coverage is untouched: this workflow also runs on
+    #      `push: branches: [main]`, where `path-filter` forces every domain
+    #      ON. A drift lint skipped on a docs-only PR would have been
+    #      reporting on MAIN's state rather than on anything the PR did, and
+    #      the same lint scans the whole tree on the very next merge.
+    #
+    # COST, stated rather than hidden: `needs: path-filter` puts this job
+    # behind that one. path-filter is p50=23s but has a heavy tail
+    # (p95=70s, p99=201s, max=262s), so in the tail this can DELAY a lint
+    # that would have run immediately. The trade is worth it because the
+    # skip is total -- setup included -- and most PRs touch no csharp at all.
+    needs: path-filter
+    if: needs.path-filter.outputs.csharp == 'true'
     runs-on: ubuntu-24.04
     steps:
       - name: Checkout
@@ -3217,6 +3334,30 @@ jobs:
   lint-go:
     name: lint (Go)
     timeout-minutes: 15
+    # ── DOMAIN-GATED DRIFT CHECK ──────────────────────────────────────────
+    # Runs only when the diff contains something `lint (Go)` could read.
+    #
+    # Safe because of four properties, none of them assumed:
+    #   1. The DIFF decides, never the PR title. `[skip-review]` does nothing.
+    #   2. Fail closed -- `path-filter` defaults every domain to `true`, so an
+    #      absent or failed verdict RUNS the job. See its `outputs:` block.
+    #   3. This job is NOT in the required floor
+    #      (`registry/uncompensatable-floor.yaml`), so nothing about the
+    #      blocking treaty changes. Narrowing a FLOOR job would be an
+    #      amendment on the maintainer's consent path, and is not done here.
+    #   4. Whole-tree coverage is untouched: this workflow also runs on
+    #      `push: branches: [main]`, where `path-filter` forces every domain
+    #      ON. A drift lint skipped on a docs-only PR would have been
+    #      reporting on MAIN's state rather than on anything the PR did, and
+    #      the same lint scans the whole tree on the very next merge.
+    #
+    # COST, stated rather than hidden: `needs: path-filter` puts this job
+    # behind that one. path-filter is p50=23s but has a heavy tail
+    # (p95=70s, p99=201s, max=262s), so in the tail this can DELAY a lint
+    # that would have run immediately. The trade is worth it because the
+    # skip is total -- setup included -- and most PRs touch no go at all.
+    needs: path-filter
+    if: needs.path-filter.outputs.go == 'true'
     runs-on: ubuntu-24.04
     steps:
       - name: Checkout
@@ -3276,6 +3417,30 @@ jobs:
   lint-python:
     name: lint (Python)
     timeout-minutes: 15
+    # ── DOMAIN-GATED DRIFT CHECK ──────────────────────────────────────────
+    # Runs only when the diff contains something `lint (Python)` could read.
+    #
+    # Safe because of four properties, none of them assumed:
+    #   1. The DIFF decides, never the PR title. `[skip-review]` does nothing.
+    #   2. Fail closed -- `path-filter` defaults every domain to `true`, so an
+    #      absent or failed verdict RUNS the job. See its `outputs:` block.
+    #   3. This job is NOT in the required floor
+    #      (`registry/uncompensatable-floor.yaml`), so nothing about the
+    #      blocking treaty changes. Narrowing a FLOOR job would be an
+    #      amendment on the maintainer's consent path, and is not done here.
+    #   4. Whole-tree coverage is untouched: this workflow also runs on
+    #      `push: branches: [main]`, where `path-filter` forces every domain
+    #      ON. A drift lint skipped on a docs-only PR would have been
+    #      reporting on MAIN's state rather than on anything the PR did, and
+    #      the same lint scans the whole tree on the very next merge.
+    #
+    # COST, stated rather than hidden: `needs: path-filter` puts this job
+    # behind that one. path-filter is p50=23s but has a heavy tail
+    # (p95=70s, p99=201s, max=262s), so in the tail this can DELAY a lint
+    # that would have run immediately. The trade is worth it because the
+    # skip is total -- setup included -- and most PRs touch no python at all.
+    needs: path-filter
+    if: needs.path-filter.outputs.python == 'true'
     runs-on: ubuntu-24.04
     steps:
       - name: Checkout
@@ -3335,6 +3500,31 @@ jobs:
   lint-rust:
     name: lint (Rust)
     timeout-minutes: 15
+    # ── DOMAIN-GATED DRIFT CHECK ──────────────────────────────────────────
+    # Runs only when the diff contains something `lint (Rust)` could read. MEASURED on PR #17264: 116s spent on a diff of two JSON
+    # shards and two markdown files -- about half of it installing a toolchain.
+    #
+    # Safe because of four properties, none of them assumed:
+    #   1. The DIFF decides, never the PR title. `[skip-review]` does nothing.
+    #   2. Fail closed -- `path-filter` defaults every domain to `true`, so an
+    #      absent or failed verdict RUNS the job. See its `outputs:` block.
+    #   3. This job is NOT in the required floor
+    #      (`registry/uncompensatable-floor.yaml`), so nothing about the
+    #      blocking treaty changes. Narrowing a FLOOR job would be an
+    #      amendment on the maintainer's consent path, and is not done here.
+    #   4. Whole-tree coverage is untouched: this workflow also runs on
+    #      `push: branches: [main]`, where `path-filter` forces every domain
+    #      ON. A drift lint skipped on a docs-only PR would have been
+    #      reporting on MAIN's state rather than on anything the PR did, and
+    #      the same lint scans the whole tree on the very next merge.
+    #
+    # COST, stated rather than hidden: `needs: path-filter` puts this job
+    # behind that one. path-filter is p50=23s but has a heavy tail
+    # (p95=70s, p99=201s, max=262s), so in the tail this can DELAY a lint
+    # that would have run immediately. The trade is worth it because the
+    # skip is total -- setup included -- and most PRs touch no rust at all.
+    needs: path-filter
+    if: needs.path-filter.outputs.rust == 'true'
     runs-on: ubuntu-24.04
     steps:
       - name: Checkout
