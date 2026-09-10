@@ -1,0 +1,12 @@
+{
+  "pr_number": 17266,
+  "archive_path": "docs/history/pr-reviews/PR-17266-feat-081m26nhrm9087g0r0029wzghs-gate-language-lints-on-the-diff-s-domain-155s-of.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-10T22:42:19.531Z",
+  "schema_version": "v1",
+  "commit_sha": "79b9c4f87fcecd5d3a5e21ca2409b6116ca95b4b",
+  "title": "feat(081M26NHRM9087G0R0029WZGHS): gate language lints on the diff's domain — 155s of lint (C#) on a PR with zero .cs files",
+  "state": "MERGED",
+  "merged_at": "2026-09-10T22:41:36Z",
+  "head_ref": "path-domain-filter"
+}
