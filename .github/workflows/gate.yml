@@ -3467,6 +3467,7 @@ jobs:
           - image-source-provenance
           - image-source-provenance-tests
           - reason-truth
+          - chart-assertion-census
           - no-raw-nul-in-source
           - concept-registry-drift
           - tech-radar-claims
