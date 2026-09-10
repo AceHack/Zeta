@@ -485,6 +485,17 @@ describe("THE CALENDAR IS RUNTIME AUTHORITY — the last two script-only phases"
   };
 
   const out = week();
+  // HOISTED, for the same reason `out` is: `week()` runs a real three-period cadence with up to 80
+  // rounds each, and it is the ONLY expensive thing in this describe. Computed at describe scope it
+  // is module-load time; computed inside a test body it is charged against that test's 5000ms
+  // budget, and the whole simulation has to fit.
+  //
+  // It did not. CI run 34535382381 (job 103065663507): this file's `NO workBlockMs MEANS NO
+  // BOOKING` test took **5873ms against a 5000ms limit** and timed out, while the same file passes
+  // locally in 27.4s total across 42 tests. A verdict that flips on how fast the runner is, is not
+  // reporting on the code -- and raising the timeout would only move the threshold rather than
+  // remove the dependence.
+  const unscheduled = week(false);
 
   test("EVERY ASSIGNMENT RESERVES TIME — an assignment nobody booked is one nobody can honour", () => {
     // `org-cycle.ts` booked work blocks as its own phase and it was the last thing it did that no
@@ -506,7 +517,6 @@ describe("THE CALENDAR IS RUNTIME AUTHORITY — the last two script-only phases"
   test("NO `workBlockMs` MEANS NO BOOKING — a register that does not know how long work takes cannot reserve it", () => {
     // The honest default said out loud. Picking an hour on the caller's behalf would put a number
     // nobody chose into the one surface that decides whether a hat is busy.
-    const unscheduled = week(false);
     expect(unscheduled.state.calendar.blocks).toEqual([]);
     // AND THE ORGANISATION STILL RUNS. Scheduling is a consequence of assignment, not a gate on it.
     expect(unscheduled.state.cascade.nodes.filter((n) => n.state === "done").length).toBeGreaterThan(0);
