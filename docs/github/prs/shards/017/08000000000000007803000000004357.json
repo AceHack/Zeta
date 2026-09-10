@@ -1,0 +1,16 @@
+{
+  "pr_number": 17239,
+  "archive_path": "docs/history/pr-reviews/PR-17239-fix-observe-docker-strip-the-whole-control-character-class-pin-the-last-floating.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7tPD09",
+    "comment:PRRC_kwDOSF9kNM7tV3Xl",
+    "thread:PRRT_kwDOSF9kNM6hHUVj"
+  ],
+  "fetched_at": "2026-09-10T17:48:27.811Z",
+  "schema_version": "v1",
+  "commit_sha": "808d48c20f5d6a35dc8dd729e58e40e641f2b175",
+  "title": "fix(observe,docker): strip the whole control-character class; pin the last floating base image",
+  "state": "MERGED",
+  "merged_at": "2026-09-10T17:47:37Z",
+  "head_ref": "sec7/pin-and-sanitize"
+}
