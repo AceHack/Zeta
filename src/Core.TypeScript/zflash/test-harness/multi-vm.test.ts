@@ -9,6 +9,17 @@ import {
 } from "./multi-vm";
 import { planFirstbootConfFileContent } from "../firstboot-role";
 
+/**
+ * Firmware fixture. Never resolved from the filesystem in a unit test: the arg SHAPE is
+ * what regressed in 081M24BB3TD087G0R001PJTW9A, and asserting it must not require OVMF to
+ * be installed on the machine running the test.
+ */
+const TEST_OVMF = {
+  kind: "ovmf",
+  codePath: "/usr/share/OVMF/OVMF_CODE_4M.fd",
+  varsPath: "run/OVMF_VARS.test.fd",
+} as const;
+
 function validInput(overrides: Partial<MultiVMRuntimeInput> = {}): MultiVMRuntimeInput {
   return {
     isoPath: "fixtures/zeta.iso",
@@ -16,6 +27,8 @@ function validInput(overrides: Partial<MultiVMRuntimeInput> = {}): MultiVMRuntim
     joiningDiskPath: "run/joining.qcow2",
     existingSerialLogPath: "run/existing.serial.log",
     joiningSerialLogPath: "run/joining.serial.log",
+    existingUefiFirmware: TEST_OVMF,
+    joiningUefiFirmware: { ...TEST_OVMF, varsPath: "run/OVMF_VARS.joining.fd" },
     ...overrides,
   };
 }

@@ -53,6 +53,7 @@ import { fileURLToPath } from "node:url";
 import { SCENARIOS, validateScenarios, findScenario, type Scenario, type ScenarioId } from "./scenarios";
 import { SCENARIO_IMPL_DESIGN, computeImplDesignProgress } from "./extensions";
 import { prepareBootImage } from "./prepare-boot-image";
+import { ovmfForPlanning, requireOvmfForGuest } from "../../ci/ovmf-firmware.ts";
 import {
   createSpawnSyncQcow2RetentionExecutor,
   executeQcow2SnapshotRetentionPlan,
@@ -614,12 +615,17 @@ export function runRetentionRuntime(isoPath: string, options: RetentionRuntimeOp
     };
   }
   const artifacts = retentionArtifactPaths(absIsoPath, runDirectory.ok);
+  // UEFI, resolved HERE because this is the executor and the planners are pure. Before
+  // 081M24BB3TD087G0R001PJTW9A no firmware was passed at all, QEMU used SeaBIOS, and the
+  // installer refused with "not booted in UEFI mode" after a 30-minute wait.
+  const retentionFirmware = ovmfForPlanning(runDirectory.ok, "OVMF_VARS.retention.fd");
   const planned = planQcow2SnapshotRetention({
     isoPath: absIsoPath,
     ...(bootImagePath === undefined ? {} : { bootImagePath }),
     diskPath: artifacts.diskPath,
     serialLogPath: artifacts.serialLogPath,
     snapshotName: "post-initial-format",
+    uefiFirmware: retentionFirmware,
     kvmAvailable: options.kvmAvailable ?? existsSync(KVM_PATH),
   });
   if ("error" in planned) {
@@ -643,6 +649,13 @@ export function runRetentionRuntime(isoPath: string, options: RetentionRuntimeOp
     options.timeoutMs === undefined
       ? { cwd: options.cwd ?? REPO_ROOT }
       : { cwd: options.cwd ?? REPO_ROOT, timeoutMs: options.timeoutMs };
+  // THE REFUSAL LIVES HERE, not at plan time. A plan is data; a spawn is a boot. If OVMF
+  // is genuinely missing on a host that is about to run QEMU, fail loudly now rather than
+  // let the guest come up on SeaBIOS -- which does not fail fast, it WIPES THE DISK and
+  // only then fails at bootloader install (081M24BB3TD087G0R001PJTW9A). `options.executor`
+  // is the injected test double, and an injected executor boots nothing, so it is exempt.
+  if (options.executor === undefined) requireOvmfForGuest(runDirectory.ok, "OVMF_VARS.retention.exec.fd");
+
   const executor = options.executor ?? createSpawnSyncQcow2RetentionExecutor(executorOptions);
   const executed = executeQcow2SnapshotRetentionPlan(planned.ok, executor);
 
@@ -722,6 +735,11 @@ export function runPathForkRuntime(isoPath: string, options: PathForkRuntimeOpti
     };
   }
   const artifacts = pathForkArtifactPaths(absIsoPath, runDirectory.ok);
+  // ONE NVRAM PER GUEST. The two forks run sequentially off the same starting disk, but
+  // they are separate boots and a shared OVMF_VARS would carry boot entries written by
+  // the first into the second -- an undeclared channel between two runs whose whole point
+  // is that they diverge.
+  const pathForkFirmware = ovmfForPlanning(runDirectory.ok, "OVMF_VARS.path-fork.fd");
   const planned = planPathForkRuntime({
     isoPath: absIsoPath,
     ...(bootImagePath === undefined ? {} : { bootImagePath }),
@@ -729,6 +747,7 @@ export function runPathForkRuntime(isoPath: string, options: PathForkRuntimeOpti
     startingDiskPath: artifacts.startingDiskPath,
     migrateSerialLogPath: artifacts.migrateSerialLogPath,
     freshSerialLogPath: artifacts.freshSerialLogPath,
+    uefiFirmware: pathForkFirmware,
     kvmAvailable: options.kvmAvailable ?? existsSync(KVM_PATH),
   });
   if ("error" in planned) {
@@ -758,6 +777,13 @@ export function runPathForkRuntime(isoPath: string, options: PathForkRuntimeOpti
     options.timeoutMs === undefined
       ? { cwd: options.cwd ?? REPO_ROOT }
       : { cwd: options.cwd ?? REPO_ROOT, timeoutMs: options.timeoutMs };
+  // THE REFUSAL LIVES HERE, not at plan time. A plan is data; a spawn is a boot. If OVMF
+  // is genuinely missing on a host that is about to run QEMU, fail loudly now rather than
+  // let the guest come up on SeaBIOS -- which does not fail fast, it WIPES THE DISK and
+  // only then fails at bootloader install (081M24BB3TD087G0R001PJTW9A). `options.executor`
+  // is the injected test double, and an injected executor boots nothing, so it is exempt.
+  if (options.executor === undefined) requireOvmfForGuest(runDirectory.ok, "OVMF_VARS.path-fork.exec.fd");
+
   const executor = options.executor ?? createSpawnSyncPathForkExecutor(executorOptions);
   const bootstrapPlan =
     options.bootstrap === true
@@ -766,6 +792,9 @@ export function runPathForkRuntime(isoPath: string, options: PathForkRuntimeOpti
             isoPath: absIsoPath,
             startingDiskPath: artifacts.startingDiskPath,
             baselineSerialLogPath: artifacts.baselineSerialLogPath,
+            // Its own NVRAM: the baseline install runs BEFORE both forks and must not
+            // hand them a firmware it has already written boot entries into.
+            uefiFirmware: ovmfForPlanning(runDirectory.ok, "OVMF_VARS.path-fork-baseline.fd"),
             kvmAvailable: options.kvmAvailable ?? existsSync(KVM_PATH),
           });
           if ("error" in plannedBootstrap) {

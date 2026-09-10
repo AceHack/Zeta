@@ -26,6 +26,7 @@ import {
   type QemuCommandExecution,
   type QemuSerialStopCondition,
 } from "./qemu-state";
+import type { QemuUefiFirmware } from "../../ci/ovmf-firmware.ts";
 
 export interface MultiVMRuntimeInput {
   readonly isoPath: string;
@@ -34,6 +35,19 @@ export interface MultiVMRuntimeInput {
   readonly joiningDiskPath: string;
   readonly existingSerialLogPath: string;
   readonly joiningSerialLogPath: string;
+  /**
+   * SEPARATE FIRMWARE PER VM, and separate is the whole point. OVMF needs a WRITABLE
+   * NVRAM image; the distro ships a read-only template. This planner boots two guests, so
+   * one shared `OVMF_VARS.fd` would put two firmwares on one NVRAM file and let boot
+   * entries written by one guest appear in the other -- a cross-VM channel nobody
+   * declared. Two fields, mirroring `existingDiskPath` / `joiningDiskPath`, make that
+   * structural rather than a convention the caller has to remember.
+   *
+   * Resolved by the EXECUTOR, never here: this planner is pure and must not probe the
+   * filesystem (Section 13 -- one declared door).
+   */
+  readonly existingUefiFirmware: QemuUefiFirmware;
+  readonly joiningUefiFirmware: QemuUefiFirmware;
   readonly snapshotName?: string;
   readonly memoryMB?: number;
   readonly cpuCount?: number;
@@ -197,6 +211,8 @@ interface NormalizedMultiVMRuntimeInput {
   readonly joiningDiskPath: string;
   readonly existingSerialLogPath: string;
   readonly joiningSerialLogPath: string;
+  readonly existingUefiFirmware: QemuUefiFirmware;
+  readonly joiningUefiFirmware: QemuUefiFirmware;
   readonly snapshotName: string;
   readonly memoryMB: number;
   readonly cpuCount: number;
@@ -256,6 +272,8 @@ export function planMultiVMRuntime(input: MultiVMRuntimeInput): MultiVMRuntimeRe
     joiningDiskPath: input.joiningDiskPath,
     existingSerialLogPath: input.existingSerialLogPath,
     joiningSerialLogPath: input.joiningSerialLogPath,
+    existingUefiFirmware: input.existingUefiFirmware,
+    joiningUefiFirmware: input.joiningUefiFirmware,
     snapshotName: input.snapshotName ?? DEFAULT_SNAPSHOT_NAME,
     memoryMB: input.memoryMB ?? DEFAULT_MEMORY_MB,
     cpuCount: input.cpuCount ?? DEFAULT_CPU_COUNT,
@@ -269,6 +287,7 @@ export function planMultiVMRuntime(input: MultiVMRuntimeInput): MultiVMRuntimeRe
     const networkDevices = segmentNetworkDevices(vmSpec.role, networkTopology);
     const diskPath = isExisting ? normalized.existingDiskPath : normalized.joiningDiskPath;
     const serialLogPath = isExisting ? normalized.existingSerialLogPath : normalized.joiningSerialLogPath;
+    const uefiFirmware = isExisting ? normalized.existingUefiFirmware : normalized.joiningUefiFirmware;
 
     // Command to restore the snapshot for the existing cluster VM
     const restoreStartingState = isExisting
@@ -295,6 +314,7 @@ export function planMultiVMRuntime(input: MultiVMRuntimeInput): MultiVMRuntimeRe
           kvmAvailable: normalized.kvmAvailable,
           bootMedia: { kind: "iso", path: normalized.isoPath },
           networkDevices,
+          uefiFirmware,
         }),
       };
     } else {
@@ -328,6 +348,7 @@ export function planMultiVMRuntime(input: MultiVMRuntimeInput): MultiVMRuntimeRe
             kvmAvailable: normalized.kvmAvailable,
             bootMedia: { kind: "usb-image", path: normalized.bootImagePath },
             networkDevices,
+            uefiFirmware,
           }),
         };
       }

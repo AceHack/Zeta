@@ -17,6 +17,17 @@ const FRESH_SERIAL_LOG_PATH = "run/fresh.serial.log";
 
 const FRESH_BOOT_IMAGE_PATH = "fixtures/zflash-boot-fresh.img";
 
+/**
+ * Firmware fixture. Never resolved from the filesystem in a unit test: the arg SHAPE is
+ * what regressed in 081M24BB3TD087G0R001PJTW9A, and asserting it must not require OVMF to
+ * be installed on the machine running the test.
+ */
+const TEST_OVMF = {
+  kind: "ovmf",
+  codePath: "/usr/share/OVMF/OVMF_CODE_4M.fd",
+  varsPath: "run/OVMF_VARS.test.fd",
+} as const;
+
 function pathForkPlan(): readonly PathForkRuntimeForkPlan[] {
   const result = planPathForkRuntime({
     isoPath: ISO_PATH,
@@ -25,6 +36,7 @@ function pathForkPlan(): readonly PathForkRuntimeForkPlan[] {
     startingDiskPath: STARTING_DISK_PATH,
     migrateSerialLogPath: MIGRATE_SERIAL_LOG_PATH,
     freshSerialLogPath: FRESH_SERIAL_LOG_PATH,
+    uefiFirmware: TEST_OVMF,
   });
 
   if ("error" in result) {
@@ -43,6 +55,7 @@ describe("path-fork serial marker assertions", () => {
       startingDiskPath: STARTING_DISK_PATH,
       migrateSerialLogPath: MIGRATE_SERIAL_LOG_PATH,
       freshSerialLogPath: FRESH_SERIAL_LOG_PATH,
+    uefiFirmware: TEST_OVMF,
     });
     if ("error" in result) {
       throw new Error(result.error.reason);
@@ -121,6 +134,7 @@ describe("path-fork serial marker assertions", () => {
       startingDiskPath: STARTING_DISK_PATH,
       migrateSerialLogPath: MIGRATE_SERIAL_LOG_PATH,
       freshSerialLogPath: FRESH_SERIAL_LOG_PATH,
+    uefiFirmware: TEST_OVMF,
     });
     if ("error" in planned) {
       throw new Error(planned.error.reason);

@@ -31,12 +31,24 @@ import {
 } from "./qemu-state";
 import { qemuUsbStorageDeviceArg } from "../../installer/qemu-usb-storage.ts";
 
+/**
+ * Firmware fixture. Never resolved from the filesystem in a unit test: the arg SHAPE is
+ * what regressed in 081M24BB3TD087G0R001PJTW9A, and asserting it must not require OVMF to
+ * be installed on the machine running the test.
+ */
+const TEST_OVMF = {
+  kind: "ovmf",
+  codePath: "/usr/share/OVMF/OVMF_CODE_4M.fd",
+  varsPath: "run/OVMF_VARS.test.fd",
+} as const;
+
 function retentionPlan(): Qcow2SnapshotRetentionPlan {
   const result = planQcow2SnapshotRetention({
     isoPath: "/tmp/zeta.iso",
     diskPath: "/tmp/zeta.qcow2",
     serialLogPath: "/tmp/serial.log",
     snapshotName: "post-initial-format",
+    uefiFirmware: TEST_OVMF,
   });
   if ("error" in result) throw new Error(result.error.reason);
   return result.ok;
@@ -66,6 +78,7 @@ describe("081KSNY2Z0008QG0R0008PN7RQ QEMU state-preservation planner", () => {
       diskPath: "/tmp/zeta.qcow2",
       serialLogPath: "/tmp/serial.log",
       snapshotName: "post-initial-format",
+      uefiFirmware: TEST_OVMF,
       diskSizeGB: 32,
       kvmAvailable: true,
     });
@@ -102,6 +115,7 @@ describe("081KSNY2Z0008QG0R0008PN7RQ QEMU state-preservation planner", () => {
       diskPath: "/tmp/zeta.qcow2",
       serialLogPath: "/tmp/serial.log",
       snapshotName: "post-initial-format",
+      uefiFirmware: TEST_OVMF,
     });
     if ("error" in result) throw new Error(result.error.reason);
 
@@ -115,6 +129,7 @@ describe("081KSNY2Z0008QG0R0008PN7RQ QEMU state-preservation planner", () => {
       diskPath: "/tmp/zeta.qcow2",
       serialLogPath: "/tmp/serial.log",
       snapshotName: "post-initial-format",
+      uefiFirmware: TEST_OVMF,
       kvmAvailable: false,
     });
     if ("error" in result) throw new Error(result.error.reason);
@@ -130,6 +145,7 @@ describe("081KSNY2Z0008QG0R0008PN7RQ QEMU state-preservation planner", () => {
       diskPath: "/tmp/zeta.qcow2",
       serialLogPath: "/tmp/serial.log",
       snapshotName: "post-initial-format",
+      uefiFirmware: TEST_OVMF,
     });
     if ("error" in result) throw new Error(result.error.reason);
 
@@ -156,6 +172,7 @@ describe("081KSNY2Z0008QG0R0008PN7RQ QEMU state-preservation planner", () => {
       diskPath: "/tmp/zeta.qcow2",
       serialLogPath: "/tmp/serial.log",
       snapshotName: "post-initial-format",
+      uefiFirmware: TEST_OVMF,
     });
     if ("error" in result) throw new Error(result.error.reason);
 
@@ -169,6 +186,7 @@ describe("081KSNY2Z0008QG0R0008PN7RQ QEMU state-preservation planner", () => {
       diskPath: "/tmp/zeta.qcow2",
       serialLogPath: "/tmp/serial.log",
       snapshotName: "post-initial-format",
+      uefiFirmware: TEST_OVMF,
     });
     if ("error" in result) throw new Error(result.error.reason);
 
@@ -186,6 +204,7 @@ describe("081KSNY2Z0008QG0R0008PN7RQ QEMU state-preservation planner", () => {
       diskPath: "/tmp/zeta.qcow2",
       serialLogPath: "/tmp/serial.log",
       snapshotName: "post-initial-format",
+      uefiFirmware: TEST_OVMF,
     });
 
     expect("error" in result).toBe(true);
@@ -201,6 +220,7 @@ describe("081KSNY2Z0008QG0R0008PN7RQ QEMU state-preservation planner", () => {
       diskPath: "/tmp/zeta.qcow2",
       serialLogPath: "/tmp/serial.log",
       snapshotName: "post-initial-format",
+      uefiFirmware: TEST_OVMF,
       diskSizeGB: 0,
     });
 
@@ -682,6 +702,7 @@ const SEGMENT_BOOT_BASE = {
   cpuCount: 2,
   kvmAvailable: false,
   bootMedia: { kind: "iso", path: "/tmp/i.iso" },
+  uefiFirmware: TEST_OVMF,
 } as const;
 
 describe("QEMU network devices (scenario 5 shared L2 segment)", () => {

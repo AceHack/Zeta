@@ -28,6 +28,18 @@ describe("Performance & Scale Multi-VM Stress Harness", () => {
         joiningDiskPath: node.diskPath,
         existingSerialLogPath: node.serialLogPath,
         joiningSerialLogPath: node.serialLogPath,
+        // Per-node NVRAM, keyed by the node's own disk name -- the stress plan boots many
+        // guests and a shared OVMF_VARS would be one NVRAM file for all of them.
+        existingUefiFirmware: {
+          kind: "ovmf",
+          codePath: "/usr/share/OVMF/OVMF_CODE_4M.fd",
+          varsPath: `${node.diskPath}.OVMF_VARS.fd`,
+        },
+        joiningUefiFirmware: {
+          kind: "ovmf",
+          codePath: "/usr/share/OVMF/OVMF_CODE_4M.fd",
+          varsPath: `${node.diskPath}.joining.OVMF_VARS.fd`,
+        },
         memoryMB: 1024,
         cpuCount: 2,
       }),
