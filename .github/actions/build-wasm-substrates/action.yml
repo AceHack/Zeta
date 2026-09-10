@@ -51,6 +51,22 @@ inputs:
       Lua's `.luac` is not a `.wasm` and is outside this action's scope.
     required: false
     default: ""
+  fail-on-build-error:
+    description: >-
+      When "true" (the default) a substrate that fails to build fails this action. Lanes that
+      CONSUME the artefacts want that: nothing downstream of them would notice a missing
+      module until it produced a confusing error somewhere else.
+
+      `bytelock.yml` sets it "false", and that is not a softening. Its whole design is that a
+      MISSING TOOLCHAIN is environmental and must not block, while what a substrate COMPUTES
+      must — and it already enforces that better than this action can, with a per-leg
+      `BYTELOCK_REQUIRED_SUBSTRATES` list plus a `BYTELOCK_MIN_SUBSTRATES` floor that names
+      the substrate that did not run. Failing here instead would take the whole leg down on
+      the first missing toolchain and destroy the reports the cross-processor comparison
+      needs — which is exactly what happened on both Windows legs in run 34497580746, where a
+      bad wabt URL killed the leg before Rust, Zig or Emscripten were ever attempted.
+    required: false
+    default: "true"
   skip-emscripten:
     description: >-
       Set on legs where emsdk publishes no SDK. Only `windows-11-arm` qualifies today, and
@@ -77,11 +93,28 @@ runs:
             # failed to build on windows-2025 and windows-11-arm with "wat2wasm: command not
             # found" while the install step looked healthy. That is the check-that-cannot-fail
             # shape, in an install step. The official release archive carries the binary.
-            ver=1.0.36
-            url="https://github.com/WebAssembly/wabt/releases/download/${ver}/wabt-${ver}-windows.tar.gz"
-            curl -fsSL --retry 3 -o /tmp/wabt.tar.gz "$url"
-            mkdir -p /tmp/wabt && tar -xzf /tmp/wabt.tar.gz -C /tmp/wabt
-            echo "/tmp/wabt/wabt-${ver}/bin" >> "$GITHUB_PATH"
+            #
+            # THE ASSET NAME WAS GUESSED THE FIRST TIME AND THE GUESS WAS WRONG — this step
+            # shipped as `wabt-1.0.36-windows.tar.gz`, a file that does not exist, and both
+            # Windows legs went red on run 34497580746. The real roster (queried, not
+            # assumed) is `wabt-<ver>-windows-x64.tar.gz`, and there is NO windows-arm64
+            # asset at all, so `windows-11-arm` runs the x64 binary under emulation.
+            #
+            # 1.0.41 is the version measured to rebuild `dla-canonical-wat.wasm`
+            # BYTE-IDENTICALLY to the module that was committed until 2026-09-10.
+            ver=1.0.41
+            url="https://github.com/WebAssembly/wabt/releases/download/${ver}/wabt-${ver}-windows-x64.tar.gz"
+            if curl -fsSL --retry 3 -o /tmp/wabt.tar.gz "$url"; then
+              mkdir -p /tmp/wabt && tar -xzf /tmp/wabt.tar.gz -C /tmp/wabt
+              # Globbed rather than assumed: the archive root carries the version, and a
+              # layout change would otherwise put an empty directory on PATH and report
+              # ABSENT with no clue why.
+              bin="$(dirname "$(find /tmp/wabt -name "wat2wasm*" -type f | head -1)")"
+              if [ -n "$bin" ] && [ -d "$bin" ]; then echo "$bin" >> "$GITHUB_PATH"; export PATH="$bin:$PATH"
+              else echo "wabt archive extracted but contains no wat2wasm — layout changed?"; find /tmp/wabt -maxdepth 2 | head -20; fi
+            else
+              echo "wabt download FAILED: $url"
+            fi
             ;;
         esac
         command -v wat2wasm && wat2wasm --version || echo "wat2wasm: ABSENT (WAT substrate will report TOOLING-ABSENT)"
@@ -205,16 +238,31 @@ runs:
       env:
         REQUESTED: ${{ inputs.substrates }}
         SKIP_EMCC: ${{ inputs.skip-emscripten }}
+        FAIL_ON_ERROR: ${{ inputs.fail-on-build-error }}
       run: |
-        set -euo pipefail
+        set -uo pipefail
         list="$REQUESTED"
         if [ -z "$list" ]; then
           list="WAT,LLVM/C,Emscripten,Rust,AssemblyScript,Zig"
           [ "$SKIP_EMCC" = "true" ] && list="WAT,LLVM/C,Rust,AssemblyScript,Zig"
         fi
-        echo "building: $list"
+        echo "building: $list  (fail-on-build-error=$FAIL_ON_ERROR)"
         IFS=',' read -ra names <<< "$list"
-        for n in "${names[@]}"; do node build-substrates.mjs --only="$n"; done
+        failed=""
+        for n in "${names[@]}"; do
+          node build-substrates.mjs --only="$n" || failed="$failed $n"
+        done
+        if [ -n "$failed" ]; then
+          # NAMED EITHER WAY. Whether this fails the step or defers to the byte-lock's own
+          # floors, the substrates that did not build are printed — an absence nobody can
+          # read is the failure this whole directory is organised against.
+          echo "SUBSTRATES THAT FAILED TO BUILD:$failed"
+          if [ "$FAIL_ON_ERROR" = "true" ]; then
+            echo "failing the step: this lane CONSUMES these artefacts and nothing downstream would notice them missing."
+            exit 1
+          fi
+          echo "not failing the step: bytelock.yml judges these by BYTELOCK_REQUIRED_SUBSTRATES + BYTELOCK_MIN_SUBSTRATES, which name the substrate that did not run."
+        fi
 
     - name: Report what is present
       shell: bash

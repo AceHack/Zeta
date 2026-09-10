@@ -360,6 +360,14 @@ jobs:
         uses: ./.github/actions/build-wasm-substrates
         with:
           skip-emscripten: ${{ matrix.skip_emscripten || 'false' }}
+          # THE FLOORS BELOW ARE THE JUDGE, NOT THIS STEP. A missing toolchain is
+          # environmental and must not block (this workflow's own header says so); a
+          # substrate that computes the WRONG BYTES must, and does. Failing here would take
+          # the leg down on the first missing toolchain and destroy the report the
+          # cross-processor comparison needs — measured on run 34497580746, where a bad wabt
+          # URL killed both Windows legs before Rust, Zig or Emscripten were ever attempted.
+          # BYTELOCK_REQUIRED_SUBSTRATES names anything that fails to run.
+          fail-on-build-error: "false"
 
       # THE ZIG PROVENANCE PAIR, CHECKED WHERE ZIG EXISTS. `audit-mise-toolchain-couplings.ts`
       # records (zig 0.13.0, sha256 of dla-canonical-zig.wasm) and used to verify it against
