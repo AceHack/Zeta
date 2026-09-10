@@ -1076,8 +1076,16 @@ jobs:
         run: |
           set -euo pipefail
           python3 -m venv .venv-yamllint
-          .venv-yamllint/bin/python -m pip install --upgrade pip
-          .venv-yamllint/bin/pip install yamllint==1.38.0
+          # NO `pip install --upgrade pip`. That was an UNPINNED network install on
+          # every run (Scorecard #457) buying nothing: the venv's own pip installs a
+          # hash-pinned requirements file perfectly well, and upgrading it first meant
+          # the tool that enforces our pins was itself unpinned.
+          #
+          # `--require-hashes` is what makes the file below load-bearing: pip refuses
+          # ANY requirement in it that lacks a hash, so a future addition cannot be
+          # slipped in unpinned. Scorecard #458.
+          .venv-yamllint/bin/pip install --require-hashes --no-deps \
+            -r tools/setup/manifests/yamllint-requirements.txt
           go install github.com/yannh/kubeconform/cmd/kubeconform@v0.7.0
           echo "$PWD/.venv-yamllint/bin" >> "$GITHUB_PATH"
           echo "$(go env GOPATH)/bin" >> "$GITHUB_PATH"
