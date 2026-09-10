@@ -1,0 +1,14 @@
+{
+  "id": "080d0468f33f3010a013000842633e6e",
+  "at": "2026-09-10T20:59:35.270Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M26HWSZ6087G0R00373BN0Q",
+    "type": "task",
+    "title": "Agent fairness protocol: inbound references are visible; reply cannot overwrite",
+    "slug": "agent-fairness-protocol-inbound-references-are-visible-reply",
+    "priority": "P1",
+    "filename": "081M26HWSZ6087G0R00373BN0Q-agent-fairness-protocol-inbound-references-are-visible-reply.md"
+  }
+}
