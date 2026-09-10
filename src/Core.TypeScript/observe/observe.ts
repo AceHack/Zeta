@@ -287,6 +287,48 @@ export type GenerativeOpening =
   | { readonly kind: "convene_chain"; readonly subjectId: string; readonly prompt: string }
   | { readonly kind: "decide_spend"; readonly subjectId: string; readonly prompt: string };
 
+/**
+ * HOW to take a verb well, when a register has an opinion about it.
+ *
+ * ── WHY THE CORE DOES NOT RESOLVE THIS ───────────────────────────────────────
+ * `skillId` is an OPAQUE STRING. The grammar never opens it, never validates it, and never learns
+ * what methods exist — exactly as `MissingInformation.kind` is opaque, and for the same reason:
+ * whether a given method exists, and what it says, is not a fact this grammar contains. A register
+ * resolves it; a driver puts it in front of the model. An enum here would be the core deciding what
+ * good practice is, which is the hardcoding this seam exists to avoid.
+ *
+ * ── AND IT IS AN OFFER, NOT AN OBLIGATION ────────────────────────────────────
+ * Absent means no method is offered and the agent proceeds as it always did — the same shape as
+ * every other optional field on `World`. Nothing here makes a standalone agent owe anything new.
+ */
+export interface Method {
+  /** The action kind this applies to, matched against `NextAction["kind"]`. */
+  readonly kind: string;
+  /** Opaque to the core. A register knows what it names. */
+  readonly skillId: string;
+  /**
+   * Why this method is offered here.
+   *
+   * Carried so an agent handed a method can tell whether it still applies to what it is actually
+   * doing, rather than following it because it arrived. A method with no reason is an instruction,
+   * and instructions are what this register keeps refusing to hardcode.
+   */
+  readonly why: string;
+}
+
+/**
+ * The method for an action, or `undefined` when none is offered.
+ *
+ * FIRST MATCH WINS and the order is the register's. Two methods for one kind is a configuration
+ * somebody should see rather than a merge this function performs quietly.
+ */
+export function methodFor(
+  methods: readonly Method[] | undefined,
+  kind: string,
+): Method | undefined {
+  return (methods ?? []).find((m) => m.kind === kind);
+}
+
 export interface World {
   readonly backlog: readonly BacklogItem[];
   /**
@@ -319,6 +361,15 @@ export interface World {
    * text. The grammar cannot tell the two apart, and must not be able to.
    */
   readonly generative?: readonly GenerativeOpening[];
+  /**
+   * How to take particular verbs well. Absent means no method is offered for anything.
+   *
+   * This is the third question a surface has to answer. The menu says WHAT may be done and the
+   * openings say WHAT is being looked at; without this an agent is told it may ask a question and
+   * never told what a good question looks like — so it asks one shallow one, gets a shallow answer,
+   * and proceeds on it.
+   */
+  readonly methods?: readonly Method[];
   readonly operator?: OperatorChannel;
   readonly mode?: Mode; // the persisted mode (carried across ticks; absent = unset)
   readonly forgeState?: ForgeState; // PR/CI state from the forge host (optional — absent if no forge resolved)

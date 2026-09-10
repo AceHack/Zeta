@@ -276,6 +276,16 @@ export const FREE_MODE_KINDS: readonly ActionKind[] = ["explore", "play", "self_
  * Kinds the grammar has attached no authority to. Ungated TODAY — this is a roster of a known gap,
  * not a claim that these are safe. Pinned by a test so it shrinks only on purpose.
  */
+/**
+ * Every action kind there is, derived from the table rather than written beside it.
+ *
+ * A second hand-maintained list would drift from this one silently, and the way it would show up is
+ * a verb that exists and cannot be configured — or worse, a configuration accepted for a verb that
+ * does not exist. `action-reconciliation.test.ts` already asserts the table is TOTAL over
+ * `ActionKind`, so deriving from it inherits that guarantee instead of restating it.
+ */
+export const ACTION_KINDS: readonly string[] = Object.keys(ACTION_RECONCILIATION);
+
 export const UNGATED_KINDS: readonly ActionKind[] = Object.values(ACTION_RECONCILIATION)
   .filter((r) => r.gate === "not_yet_assigned")
   .map((r) => r.kind);

@@ -66,6 +66,46 @@ const CREATE = [
   "--intake", "greenfield", "--verification", "existing_harness",
 ];
 
+describe("A METHOD MUST NAME A VERB THAT EXISTS, AND A REASON", () => {
+  const bind = async (h: Harness, kind: string, why: string) =>
+    main(
+      ["org", "method", "bind", "--org", "elera", "--kind", kind, "--skill", "requirement-grilling", "--why", why],
+      h.deps,
+    );
+
+  test("a real verb with a reason binds", async () => {
+    const h = harness();
+    await main(CREATE, h.deps);
+    expect(await bind(h, "request_information", "a shallow question gets a shallow answer")).toBe(Exit.Ok);
+  });
+
+  test("a MISSPELLED verb is refused, not stored", async () => {
+    // A method attached to a verb that does not exist is offered to nobody and reports itself as
+    // configured — the vacuity class, entered through a typo. Caught here or discovered never.
+    const h = harness();
+    await main(CREATE, h.deps);
+    expect(await bind(h, "reqest_information", "because")).toBe(Exit.NotFound);
+    expect(h.stderr.join("")).toContain("reqest_information");
+  });
+
+  test("a method with NO REASON is refused", async () => {
+    // A method with no reason is an instruction: an agent handed one cannot tell whether it still
+    // applies to what it is doing, so it follows it because it arrived.
+    const h = harness();
+    await main(CREATE, h.deps);
+    expect(await bind(h, "request_information", "")).toBe(Exit.Usage);
+    expect(h.stderr.join("")).toContain("instruction");
+  });
+
+  test("an org with no methods says so rather than saying nothing", async () => {
+    const h = harness();
+    await main(CREATE, h.deps);
+    h.stdout.length = 0;
+    expect(await main(["org", "method", "list", "--org", "elera"], h.deps)).toBe(Exit.Ok);
+    expect(h.stdout.join("")).toContain("the way it always was");
+  });
+});
+
 describe("every advertised command is wired", () => {
   test("NO DECLARED COMMAND ANSWERS 'declared but not wired'", async () => {
     for (const c of COMMANDS) {

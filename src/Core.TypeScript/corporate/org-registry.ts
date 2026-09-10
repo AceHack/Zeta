@@ -25,6 +25,7 @@
 
 import { isVerificationApproach, validateOrgPolicy, type OrgPolicy } from "./org-policy";
 import type { CheckBinding } from "./check-roster";
+import type { Method as MethodBinding } from "../observe/observe";
 import { HumanCheckpoint } from "./quality-gate";
 import { validateBindings, type SkillBinding } from "./skill-binding";
 
@@ -153,6 +154,18 @@ export interface OrgRecord {
    * with none runs its gates exactly as it did — this is an override, never a requirement.
    */
   readonly checks?: readonly CheckBinding[];
+  /**
+   * How this organization's hats should take particular verbs. EMPTY IS THE NORMAL CASE.
+   *
+   * A method is an OFFER attached to a verb — "when you ask for information, ask like this". It is
+   * configuration rather than code for the same reason a skill binding is: the alternative is a
+   * table inside the runtime naming a method for a verb, which works for the pairs its author knew
+   * about and cannot be changed without a release.
+   *
+   * The runtime never resolves `skillId`. It hands it to the agent and the agent's harness opens
+   * it, exactly as `ORG_SKILL` already works for gates.
+   */
+  readonly methods?: readonly MethodBinding[];
   readonly createdAtMs: number;
 }
 

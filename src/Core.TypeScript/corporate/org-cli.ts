@@ -19,6 +19,7 @@
 import { readBlockers } from "./blocker-outbox";
 import { isSignatureScheme, type WebhookConfig } from "./webhook-intake";
 import { checksFromRoster, selectChecks, type CheckBinding } from "./check-roster";
+import { ACTION_KINDS } from "../observe/action-reconciliation";
 import { CROSS_VERIFY_AUDITS } from "../ci/cross-verify-roster";
 import { LINEAR_SEVERITY_MAP, LINEAR_WEBHOOK_MAP } from "./linear-source";
 import { answeredBlockers } from "./human-blocker";
@@ -487,6 +488,56 @@ export async function main(argv: readonly string[], deps: CliDeps): Promise<numb
             `    accepts ${w.acceptTypes === undefined || w.acceptTypes.length === 0 ? "every delivery type" : w.acceptTypes.join(", ")}\n`,
           )
           .join("");
+      });
+      return Exit.Ok;
+    }
+
+    case "org method bind": {
+      const chosen = resolveOrg(registry, flagValue(flags, "--org"));
+      if ("reason" in chosen) { deps.err(chosen.reason); return Exit.NotFound; }
+
+      const kind = (flagValue(flags, "--kind") ?? "").trim();
+      const skillId = (flagValue(flags, "--skill") ?? "").trim();
+      const why = (flagValue(flags, "--why") ?? "").trim();
+      if (kind === "") { deps.err("--kind is required"); return Exit.Usage; }
+      if (skillId === "") { deps.err("--skill is required"); return Exit.Usage; }
+      // A METHOD WITH NO REASON IS AN INSTRUCTION. An agent handed one has no way to tell whether
+      // it still applies to what it is actually doing, so it follows it because it arrived.
+      if (why === "") { deps.err("--why is required: a method with no reason is an instruction"); return Exit.Usage; }
+
+      // THE KIND MUST BE A VERB THAT EXISTS. A method attached to a misspelled action is offered to
+      // nobody, and reports itself as configured — the vacuity class, entered through a typo.
+      if (!ACTION_KINDS.includes(kind)) {
+        deps.err(`'${kind}' is not an action kind — see 'describe' for the grammar`);
+        return Exit.NotFound;
+      }
+
+      const existing = chosen.org.methods ?? [];
+      const replaced = existing.some((m) => m.kind === kind);
+      const updated = updateOrg(registry, {
+        ...chosen.org,
+        methods: [...existing.filter((m) => m.kind !== kind), { kind, skillId, why }],
+      });
+      if (!updated.ok) { deps.err(updated.reason); return Exit.Refused; }
+      registry = updated.registry;
+      deps.writeFile(registryPath, serializeRegistry(registry));
+
+      emit(deps, json, { org: chosen.org.orgId, kind, skillId, why, replaced }, () =>
+        `${replaced ? "replaced the method for" : "bound"} '${skillId}' to '${kind}' on '${chosen.org.orgId}'\n` +
+        `  the runtime hands this id to the agent and never opens it\n`,
+      );
+      return Exit.Ok;
+    }
+
+    case "org method list": {
+      const chosen = resolveOrg(registry, flagValue(flags, "--org"));
+      if ("reason" in chosen) { deps.err(chosen.reason); return Exit.NotFound; }
+      const methods = chosen.org.methods ?? [];
+      emit(deps, json, { org: chosen.org.orgId, methods }, () => {
+        if (methods.length === 0) {
+          return `'${chosen.org.orgId}' attaches no methods — every verb is taken the way it always was\n`;
+        }
+        return methods.map((m) => `  ${m.kind}\n    ${m.skillId}\n    because ${m.why}\n`).join("");
       });
       return Exit.Ok;
     }

@@ -677,3 +677,33 @@ describe("TALKING TO AN AGENT — a message reaches it, and the reply comes back
     if (!r.ok) expect(r.reason).toContain("nobody is waiting");
   });
 });
+
+describe("THE SURFACE CARRIES HOW, NOT ONLY WHAT", () => {
+  const GRILL = {
+    kind: "request_information",
+    skillId: "requirement-grilling",
+    why: "a single shallow question gets a shallow answer and the work proceeds on it",
+  } as const;
+
+  test("methods supplied by the caller reach the surface", () => {
+    // The seam is only worth having if it is CONNECTED. A bridge that accepts methods and drops
+    // them compiles, ships, and leaves every agent exactly as uninformed as before — the
+    // reader-with-no-writer shape, one layer up.
+    const surface = orgSurfaceFor(view(), "backend_implementer", undefined, undefined, [GRILL]);
+    expect(surface.methods).toEqual([GRILL]);
+  });
+
+  test("no methods means the field is ABSENT, not an empty list", () => {
+    // Absent and empty are different answers: absent is "this organization has no opinion", empty
+    // would be "it has an opinion and the opinion is nothing". Every existing caller passes none.
+    expect(orgSurfaceFor(view(), "backend_implementer").methods).toBeUndefined();
+    expect(orgSurfaceFor(view(), "backend_implementer", undefined, undefined, []).methods).toBeUndefined();
+  });
+
+  test("the bridge does not interpret a method it was handed", () => {
+    // It must be able to carry one it has never heard of, or a register cannot ship a method
+    // without changing this file.
+    const invented = { kind: "review_artifact", skillId: "never-heard-of-it", why: "because" } as const;
+    expect(orgSurfaceFor(view(), "backend_implementer", undefined, undefined, [invented]).methods).toEqual([invented]);
+  });
+});

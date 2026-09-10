@@ -36,6 +36,7 @@ import type {
   ReviewAsk,
   World,
 } from "../observe/observe";
+import type { Method } from "../observe/observe";
 import { hatsAtLevel, reportsUpTo, type OrgChart } from "./org-chart";
 import { SignalTool, sendSupervisorSignal, type SupervisorSignal } from "./supervisor-signal";
 import { AnchorState, type AnchorBoard } from "./discussion-anchor";
@@ -200,6 +201,11 @@ export type OrgSurface = Pick<
   | "convenable"
   | "generative"
   | "operator"
+  // METHODS BELONG IN THE PICK, not merely in the object literal. A spread does not trigger
+  // excess-property checking, so attaching `methods` without naming it here compiles, ships the
+  // field at runtime, and leaves every consumer unable to SEE it — a writer with no typed reader,
+  // which is the same defect as a reader with no writer wearing the other face.
+  | "methods"
 >;
 
 /**
@@ -699,8 +705,17 @@ export function orgSurfaceFor(
   hatId: string,
   resourceAuthorityHatId?: string,
   directionClock?: DirectionClock,
+  /**
+   * How this organization wants its verbs taken. Absent means no method is offered.
+   *
+   * PASSED THROUGH UNTOUCHED, not interpreted. This bridge does not know what a method says and
+   * must not start deciding which ones apply — that judgement belongs to whoever configured them
+   * and to the agent reading them.
+   */
+  methods?: readonly Method[],
 ): OrgSurface {
   return {
+    ...(methods === undefined || methods.length === 0 ? {} : { methods }),
     reviewsAsked: reviewsAskedOf(view, hatId),
     deliberations: deliberationsOf(view, hatId),
     missing: unraisedBlockers(view, hatId),

@@ -158,6 +158,26 @@ export const COMMANDS: readonly CommandSpec[] = [
     writes: true,
   },
   {
+    name: "org method bind",
+    what: "Say HOW a verb should be taken — attach a skill to an action an agent can choose. Optional; a verb with no method is taken the way it always was.",
+    then: "The runtime never opens the skill; it hands the id to the agent, whose harness resolves it. `org method list` shows what resolves where. Bind `requirement-grilling` to `request_information` to make asking an interview rather than a single question.",
+    flags: [
+      ORG_FLAG,
+      { name: "--kind", what: "The action kind, as `observe` names it — e.g. request_information, draft_business_doc, review_artifact.", required: true, takesValue: true },
+      { name: "--skill", what: "Skill id the agent's harness resolves. Opaque here: this CLI never opens it.", required: true, takesValue: true },
+      { name: "--why", what: "Why this method applies here, so an agent can tell whether it still does. A method with no reason is an instruction.", required: true, takesValue: true },
+      JSON_FLAG,
+    ],
+    writes: true,
+  },
+  {
+    name: "org method list",
+    what: "Which verbs carry a method, and why each one was attached.",
+    then: "A verb with no method is not unmanaged — it is taken the way it always was. That is the normal case and is reported as such.",
+    flags: [ORG_FLAG, JSON_FLAG],
+    writes: false,
+  },
+  {
     name: "org check bind",
     what: "Answer a gate by RUNNING checks instead of asking for an opinion. Optional; a gate with no binding is judged exactly as before.",
     then: "The checks run in the change's own checkout and the verdict is recorded against the git TREE, so an unchanged tree reuses it and a changed one cannot. A check with no falsifier reports UNPROVEN rather than passing — see `org check list`.",
