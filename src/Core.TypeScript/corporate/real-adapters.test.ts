@@ -33,6 +33,7 @@ import {
   commandWorkExecutor,
   directoryIntake,
   gitChangeControl,
+  gitWorktreeChangeControl,
   revisionOf,
 } from "./adapters";
 import { gitDataSource } from "./git-data-source";
@@ -89,6 +90,7 @@ async function runAgainst(
   inbox: string,
   over: { readonly work?: unknown } = {},
   runtime: Record<string, unknown> = {},
+  worktreeRoot?: string,
 ) {
   let n = 0;
   return runOrgRuntime({
@@ -118,7 +120,13 @@ async function runAgainst(
       }),
       tests: commandTestRunner({ command: "git", argsFor: () => ["--version"], cwd: repo }),
       review: autoApproveReview(),
-      change: gitChangeControl({ cwd: repo, baseBranch: "main" }),
+      // ISOLATED ON REQUEST. The shared-checkout adapter leaves `handle.workdir` absent to mark
+      // that a change has no checkout of its own, and bound checks refuse in that state rather
+      // than run somewhere arbitrary — so a test about checks has to ask for a worktree.
+      change:
+        worktreeRoot === undefined
+          ? gitChangeControl({ cwd: repo, baseBranch: "main" })
+          : gitWorktreeChangeControl({ cwd: repo, baseBranch: "main", worktreeRoot }),
       ...over,
     },
     priorityInputsFor: () => ({
@@ -429,7 +437,7 @@ describe("THE ORGANIZATION AGAINST A REAL REPOSITORY", () => {
           },
         ],
         checkResults: new Map(),
-      });
+      }, mkdtempSync(join(tmpdir(), "wt-")));
 
       // The check ran and its verdict was RECORDED against a tree.
       const recorded = report.trace
@@ -469,7 +477,10 @@ describe("THE ORGANIZATION AGAINST A REAL REPOSITORY", () => {
       });
 
       // Refused by name, and the reason says what is missing rather than blaming the check.
-      expect(report.refusals.some((r) => r.includes("no readable revision"))).toBe(true);
+      // The reason names what is actually missing: `peer_review` runs before the work is claimed,
+      // so no change has been opened — which is a different problem from a branch that will not
+      // resolve, and sends the reader somewhere different.
+      expect(report.refusals.some((r) => r.includes("no change has been opened"))).toBe(true);
       expect(report.delivered).toBe(false);
       // NOTHING WAS RECORDED, because nothing ran. A result filed against no tree would be a
       // verdict nobody could attribute to a revision — and would be reused as if they could.
@@ -490,9 +501,38 @@ describe("THE ORGANIZATION AGAINST A REAL REPOSITORY", () => {
         checkBindings: [{ gate: "implementation_review", checkIds: ["always-passes"] }],
         checkSpecs: [{ id: "always-passes", title: "clean", command: "true", falsifier: "true" }],
         checkResults: new Map(),
-      });
+      }, mkdtempSync(join(tmpdir(), "wt-")));
       expect(report.delivered).toBe(true);
       expect(report.trace.map((e) => e.fact).filter((f) => f?.kind === "check_result").length).toBeGreaterThan(0);
+    } finally {
+      rmSync(repo, { recursive: true, force: true });
+      rmSync(inbox, { recursive: true, force: true });
+    }
+  }, 180_000);
+
+  test("BOUND CHECKS REFUSE WHEN THE CHANGE HAS NO CHECKOUT OF ITS OWN", async () => {
+    // ── THE HOLE THIS CLOSES ───────────────────────────────────────────────
+    // `runAgainst` uses `gitChangeControl`, the SHARED-checkout adapter, which leaves
+    // `handle.workdir` absent on purpose to mark that this change has no isolation. The first cut
+    // of the check wiring fell back to `"."` — the directory `run-org` was LAUNCHED FROM — so the
+    // roster would have judged whatever repository the operator happened to be standing in, and
+    // filed the verdict against this change's tree hash. A wrong answer attributed to the right
+    // content is worse than no answer, and it is the same trap `gitChangeControl` already throws
+    // over for its own `cwd`.
+    const repo = realRepo();
+    const inbox = realInbox();
+    try {
+      const report = await runAgainst(repo, inbox, {}, {
+        checkBindings: [{ gate: "implementation_review", checkIds: ["always-passes"] }],
+        checkSpecs: [{ id: "always-passes", title: "clean", command: "true", falsifier: "true" }],
+        checkResults: new Map(),
+      });
+
+      expect(report.refusals.some((r) => r.includes("no checkout of its own"))).toBe(true);
+      expect(report.delivered).toBe(false);
+      // NOTHING WAS RECORDED, because nothing legitimate could have run. A result filed here would
+      // attribute a judgement about another directory to this change.
+      expect(report.trace.map((e) => e.fact).filter((f) => f?.kind === "check_result")).toEqual([]);
     } finally {
       rmSync(repo, { recursive: true, force: true });
       rmSync(inbox, { recursive: true, force: true });
@@ -508,7 +548,7 @@ describe("THE ORGANIZATION AGAINST A REAL REPOSITORY", () => {
         // Passes, and nothing establishes it could ever fail.
         checkSpecs: [{ id: "unproven", title: "green, unproven", command: "true" }],
         checkResults: new Map(),
-      });
+      }, mkdtempSync(join(tmpdir(), "wt-")));
       expect(report.delivered).toBe(false);
       expect(report.refusals.some((r) => r.includes("UNPROVEN"))).toBe(true);
     } finally {

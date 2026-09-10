@@ -2561,13 +2561,27 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
       if (boundIds.length > 0 && providers.change.revision !== undefined) {
         const handle = openedChanges.get(task.workId);
         const at = handle === undefined ? undefined : await providers.change.revision(handle);
-        if (handle === undefined || at === undefined || !at.ok) {
+        // NO CHECKOUT OF ITS OWN, NO CHECKS. `handle.workdir` is filled in only by the
+        // worktree adapter; the shared-checkout one leaves it absent on purpose, to mark that this
+        // change has no isolation. Running the roster anyway meant falling back to `"."` — the
+        // directory `run-org` was LAUNCHED FROM — so the checks would judge whatever repository the
+        // operator happened to be standing in, and the verdict would be filed against this change's
+        // tree hash. A wrong answer attributed to the right content is worse than no answer.
+        if (handle === undefined || handle.workdir === undefined || at === undefined || !at.ok) {
           // NO TREE, NO VERDICT. Running the checks anyway would produce an answer nobody could
           // attribute to a revision, and caching it would attribute it to the wrong one.
-          refusals.push(
-            `checks bound to ${gate} for ${task.workId} could not run: the change has no readable revision`,
-          );
-          reviewed.set(gate, { outcome: GateOutcome.Rejected, reason: "the change has no readable revision to check" });
+          // THREE DIFFERENT REASONS, SAID APART. They send an operator to three different places:
+          // to the pipeline (nothing has been opened yet), to a flag (no isolated checkout), or to
+          // the repository (the branch will not resolve). Collapsing them into one sentence would
+          // make the commonest of them the diagnosis for all three.
+          const why =
+            handle === undefined
+              ? "no change has been opened for it yet, so there is nothing to check"
+              : handle.workdir === undefined
+                ? "the change has no checkout of its own to run them in — pass --worktrees"
+                : "the change has no readable revision";
+          refusals.push(`checks bound to ${gate} for ${task.workId} could not run: ${why}`);
+          reviewed.set(gate, { outcome: GateOutcome.Rejected, reason: why });
           return;
         }
         const picked = selectChecks(deps.checkSpecs ?? [], boundIds);
@@ -2579,7 +2593,7 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
         const ran = runRoster(
           picked.selected,
           at.value.tree,
-          { workdir: handle.workdir ?? "." },
+          { workdir: handle.workdir },
           deps.checkResults ?? new Map(),
         );
         for (const result of ran.results) {
