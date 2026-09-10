@@ -2,8 +2,8 @@
   "note": "PINNED TLC INVOCATIONS. One entry per MODEL RUN (module x config), carrying the complete command the gate executes. The record and the command are ONE artefact: a verdict quoted anywhere in this repo must name an id from this file, and that id fixes every flag. Filed under 081KZYRDMZW087G0R0012K4QA0 after CI run on #10452 went red because a spec was MEASURED with -deadlock (which DISABLES deadlock checking) and CHECKED without it. Adding -config was necessary and not sufficient; the next mismatch would have been a different flag. Consumers: tests/Tests.FSharp/Formal/Tlc.Runner.Tests.fs (the gate) and src/Core.TypeScript/formal-verification/run-tlc.ts (the hand-run CLI). Both build argv from THIS file via one builder; neither may add a flag of its own. Drift guard: src/Core.TypeScript/hygiene/lint-tlc-model-registry.ts.",
   "toolchain": {
     "jar": "src/Core.TLA/tla2tools.jar",
-    "jarSha256": "8836549e83db7f0b3f9fdde679ab56270d18e06198366d217d960738c02b9dbe",
-    "versionBanner": "TLC2 Version 2026.09.09.213036 (rev: ede5b88)",
+    "jarSha256": "eefe1ed75d091b3b0263af53add21265546895d12e43dfd68abb9517b7811006",
+    "versionBanner": "TLC2 Version 2026.09.10.133702 (rev: 8ab94b6)",
     "note": "The jar is FETCHED (081M23ESC5B087G0R002HJ39DG) from the digest-pinned ROLLING row in tools/setup/manifests/from-url -- unlike z3/cvc5, which install-pinned-smt.ts pins off checksummed GitHub releases because apt's version is too old. That is why there is no tlc-solver-floor.json: a version FLOOR answers a question TLC does not have. jarSha256 and versionBanner here are a RESTATEMENT of that pin, declared as a pinsurfaces= entry on the row, so lint-verifier-jar-provenance.ts fails if the manifest moves and this file does not. versionBanner is still checked against the loaded jar on every gated run, which is what catches a present-but-wrong build that a mere existence check waves through. Re-pin with `bun tools/setup/repin-rolling.ts src/Core.TLA/tla2tools.jar`, never by hand."
   },
   "invocation": {
