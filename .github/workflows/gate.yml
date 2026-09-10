@@ -3514,6 +3514,8 @@ jobs:
           - bootstrap-application-pin-parity-tests
           - argocd-pin-parity-tests
           - mise-toolchain-couplings
+          - mise-lock-coverage
+          - mise-lock-coverage-tests
           - flash-entrypoint-parity
           - chart-target-revisions
           - image-source-provenance

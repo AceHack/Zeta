@@ -1,0 +1,14 @@
+{
+  "id": "080d045e481bb810a0130008cfc47e5b",
+  "at": "2026-09-10T14:46:41.783Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M25WJ0VP087G0R003HHYVGM",
+    "type": "task",
+    "title": "Converge the fleet on one exact mise version so mise.lock can run in locked mode",
+    "slug": "converge-the-fleet-on-one-exact-mise-version-so-mise-lock-ca",
+    "priority": "P2",
+    "filename": "081M25WJ0VP087G0R003HHYVGM-converge-the-fleet-on-one-exact-mise-version-so-mise-lock-ca.md"
+  }
+}

@@ -570,6 +570,32 @@ export const CROSS_VERIFY_AUDITS: readonly CrossVerifyAudit[] = [
     command: "bun src/Core.TypeScript/hygiene/audit-mise-toolchain-couplings.ts",
   },
 
+  // The committed mise digests, and the two ways they stop meaning anything WITHOUT any
+  // file here looking wrong. (a) A pin moves in `.mise.toml` and `mise.lock` is not
+  // regenerated, so the committed digest describes the previous artifact — a one-line diff
+  // that reads as housekeeping. (b) `locked = true` disappears from `[settings]`, at which
+  // point mise silently fills a missing platform row from upstream and rewrites the lockfile
+  // in place; a lockfile that repairs itself is a cache wearing a lock's name. Neither is
+  // visible in review, because the subject is 600 lines of generated TOML.
+  //
+  // OFFLINE, and on the floor rather than in verify-mise-lock.yml for that reason: this
+  // reads four files and opens no socket, so it cannot redden a PR because a release host
+  // is down. The network half — does the digest still match what upstream serves — is the
+  // weekly + on-touch lane, where a third party's bad day is allowed to fail a run.
+  {
+    id: "mise-lock-coverage",
+    title: "mise lock coverage (config↔lock agreement · locked mode · exemption roster)",
+    command: "bun src/Core.TypeScript/hygiene/audit-mise-lock-coverage.ts",
+  },
+
+  // The falsifiers for the audit above. It is a coverage check, and a coverage check that
+  // has only been shown to pass cannot tell a working lock from a decorative one.
+  {
+    id: "mise-lock-coverage-tests",
+    title: "mise lock coverage falsifiers (stale pin · dropped platform · stale exemption)",
+    command: "bun test src/Core.TypeScript/hygiene/audit-mise-lock-coverage.test.ts",
+  },
+
   // Every zflash host arm must reach the ISO integrity gate before it writes to a block
   // device. Measured on main 2026-08-21: the manifest check existed in the macOS arm and
   // NOWHERE ELSE, so flash-usb-linux.ts and flash-usb-windows.ts wrote an image with no

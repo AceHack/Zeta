@@ -84,6 +84,8 @@ generator that read an EMPTY roster cannot pass.
 | `cross-verify (bootstrap-application-pin-parity-tests)` | bootstrap/Application pin falsifiers (multi-doc parse + stale acknowledgement)     |
 | `cross-verify (argocd-pin-parity-tests)`                | argocd-pin-parity falsifiers (roster refusal + chart-anchored parse)               |
 | `cross-verify (mise-toolchain-couplings)`               | mise toolchain couplings (rust restatements · zig byte-lock provenance)            |
+| `cross-verify (mise-lock-coverage)`                     | mise lock coverage (config↔lock agreement · locked mode · exemption roster)        |
+| `cross-verify (mise-lock-coverage-tests)`               | mise lock coverage falsifiers (stale pin · dropped platform · stale exemption)     |
 | `cross-verify (flash-entrypoint-parity)`                | zflash host-arm parity (every arm verifies the ISO before writing)                 |
 | `cross-verify (chart-target-revisions)`                 | ArgoCD chart targetRevisions resolve (offline, against the committed snapshot)     |
 | `cross-verify (image-source-provenance)`                | No private-source image dependencies (offline, against the committed provenance)   |

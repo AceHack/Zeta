@@ -1,0 +1,272 @@
+# Prove the committed mise digests are OURS, are the ones actually used, and still describe
+# what upstream serves — on a real runner, before they reach install.sh.
+#
+# WHY THIS LANE EXISTS. Until 081M24MADR2087G0R001FCD8K6 there was no `mise.lock` in the
+# tree, so the `[2/3] checksum` step every `mise install` prints was verified against a
+# checksum FETCHED FROM UPSTREAM AT INSTALL TIME. Not one of the ~24 tool digests was ours.
+# On 2026-09-10 GitHub's attestation service returned 503 and both ARM lanes on `main` died
+# on `kubeconform@0.7.0` — AFTER the checksum step had passed. Integrity was established;
+# the install died on an availability check layered over it, because neither trust source
+# lived in this repository.
+#
+# A committed digest is also the kind of change that LOOKS right in review — 600 lines of
+# generated TOML — and can only be falsified by running it. So the lockfile is not merged on
+# the strength of a plausible diff; it is merged on the strength of this run.
+#
+# It exercises BOTH directions, deliberately:
+#   1. unit falsifiers      — the audit convicts on a stale pin, a dropped platform, a
+#                             missing `locked = true`, and an exemption that outlived its reason
+#   2. the DRIFT check      — a re-lock on the PINNED mise must reproduce every url and digest
+#   3. the live refusal     — a tampered digest MUST be rejected, on the real install path
+#   3b. the honest limit    — a MISSING platform row is refilled from upstream (locked mode is
+#                             off; `.mise.toml` carries why, and the re-enable condition)
+#   4. the happy path       — a real install that uses the COMMITTED digest
+# Without (1) and (3) this workflow could not tell a working lock from a decorative one,
+# which is the defect class the lockfile exists to remove. Do not delete them to save a minute.
+#
+# On demand:  gh workflow run verify-mise-lock.yml --ref <branch>
+name: verify-mise-lock
+
+on:
+  workflow_dispatch:
+  schedule:
+    # Weekly. A committed digest goes stale silently: it is only wrong once upstream changes
+    # what it serves, and nothing in a PR diff can notice that. This is the only step that
+    # asks the question when nobody edited anything.
+    - cron: "17 6 * * 1"
+  pull_request:
+    paths:
+      - mise.lock
+      - mise.full.lock
+      - .mise.toml
+      - .mise.full.toml
+      - tools/setup/common/mise.sh
+      - tools/setup/install.ps1
+      - tools/setup/linux.sh
+      - src/Core.TypeScript/hygiene/audit-mise-lock-coverage.ts
+      - src/Core.TypeScript/hygiene/audit-mise-lock-coverage.test.ts
+      - .github/workflows/verify-mise-lock.yml
+
+permissions:
+  contents: read
+
+concurrency:
+  group: verify-mise-lock-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    name: committed mise digests are ours and are used
+    # SAME image family as the linux install lane. Verifying on a different runner than the
+    # one that will run it is how #9890 shipped broken.
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          # Nothing here pushes or fetches again; the token has no reader after the clone.
+          persist-credentials: false
+
+      - name: Setup bun
+        uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
+        with:
+          bun-version: latest
+
+      - name: Unit falsifiers (the refusals are the half that matters)
+        run: bun test src/Core.TypeScript/hygiene/audit-mise-lock-coverage.test.ts
+
+      - name: Static coverage audit (offline)
+        run: bun src/Core.TypeScript/hygiene/audit-mise-lock-coverage.ts
+
+      - name: Install the PINNED mise — read from linux.sh, never restated here
+        # The version and its SHA-256 are READ from tools/setup/linux.sh rather than copied,
+        # because a copy is a second declaration of one fact and it goes stale in exactly the
+        # way this whole workflow exists to catch. The pin matters beyond hygiene: `mise lock`
+        # output DIFFERS between mise releases (measured 2026-09-10, 2026.6.12 vs 2026.8.14
+        # disagree on the header URL, on `specifiers`, and on which x86-64 baseline platform
+        # variants are emitted), so re-locking on the wrong mise reports drift that is not there.
+        run: |
+          set -euo pipefail
+          VERSION=$(grep -oP '^MISE_PIN_VERSION="\K[^"]+' tools/setup/linux.sh)
+          SHA=$(grep -oP '^MISE_SHA256_X64="\K[^"]+' tools/setup/linux.sh)
+          echo "[verify] pinned mise ${VERSION}"
+          curl -fsSL -o /tmp/mise.tar.gz \
+            "https://github.com/jdx/mise/releases/download/v${VERSION}/mise-v${VERSION}-linux-x64.tar.gz"
+          echo "${SHA}  /tmp/mise.tar.gz" | sha256sum -c -
+          tar -xzf /tmp/mise.tar.gz -C /tmp
+          /tmp/mise/bin/mise --version
+          echo "MISE_BIN=/tmp/mise/bin/mise" >> "$GITHUB_ENV"
+
+      - name: DRIFT — a re-lock on the pinned mise must reproduce the committed file byte for byte
+        # This is the whole refresh path run as a check. It is the only step that measures the
+        # digests against what upstream actually serves today, so it answers three questions
+        # at once: a pin bumped without a re-lock, a hand-edited digest, and an upstream that
+        # has mutated a release asset it had already published (which is a real supply-chain
+        # signal, not a nuisance).
+        #
+        # MISE_LOCKED=0 is load-bearing, not cosmetic: with `locked = true` active `mise lock`
+        # cannot resolve a version that is not already in the lockfile and PRUNES the entry
+        # instead — measured 2026-09-10, it emptied a lockfile that way.
+        #
+        # Run twice, on purpose: the first pass over a platform set discovers the x86-64
+        # `-baseline` variants, so a single pass is not a fixed point.
+        #
+        # `provenance` rows are compared SEPARATELY and never fail this step. A provenance row
+        # is an attestation mise verified AT LOCK TIME and recorded, and with it present mise
+        # SKIPS the live attestation call on install — measured 2026-09-10. Its presence
+        # therefore depends on GitHub's attestation service being reachable at lock time, so a
+        # byte-for-byte gate would let an attestation outage redden the very check that exists
+        # so an attestation outage would stop mattering. A failed probe is `unknown`.
+        env:
+          # Authenticated release metadata; the anonymous 60/hr limit is exhausted by a run
+          # this size, exactly as tools/setup/common/mise.sh documents.
+          MISE_GITHUB_TOKEN: ${{ github.token }}
+          # MUST equal what tools/setup/common/mise.sh exports at INSTALL time. mise refuses to
+          # install a tool whose lockfile attests a check the settings disable ("This may indicate
+          # a downgrade attack"), so a re-lock with 1 here against mise.sh's 0 would manufacture
+          # drift AND, if committed, fail every install.sh consumer closed. Measured 2026-09-10:
+          # that is exactly what it did. audit-mise-lock-coverage.ts holds the two together.
+          MISE_PYTHON_GITHUB_ATTESTATIONS: "0"
+        run: |
+          set -euo pipefail
+          git show HEAD:mise.lock > /tmp/committed-mise.lock
+          git show HEAD:mise.full.lock > /tmp/committed-mise.full.lock
+          "$MISE_BIN" trust --all --yes
+          MISE_LOCKED=0 "$MISE_BIN" lock
+          MISE_LOCKED=0 "$MISE_BIN" lock --platform windows-arm64
+          MISE_LOCKED=0 "$MISE_BIN" lock
+          RC=0
+          bun src/Core.TypeScript/hygiene/audit-mise-lock-coverage.ts --relock-diff \
+            /tmp/committed-mise.lock mise.lock || RC=1
+          bun src/Core.TypeScript/hygiene/audit-mise-lock-coverage.ts --relock-diff \
+            /tmp/committed-mise.full.lock mise.full.lock || RC=1
+          git checkout -- mise.lock mise.full.lock
+          if [ "$RC" -ne 0 ]; then
+            echo "::error title=mise lock drift::A re-lock on the pinned mise does not reproduce the committed lockfile's urls, checksums, versions or platforms. Either a pin moved without a re-lock, a digest was hand-edited, or an upstream release asset changed after publication. Re-run the refresh commands printed above and commit the result."
+            exit 1
+          fi
+          echo "[verify] lockfile reproduces on the pinned mise"
+
+      - name: LIVE REFUSAL — a real fetch whose digest does not match the lockfile must be rejected
+        # Cheap on purpose: shellcheck is ~1MB and is locked on every required platform, so this
+        # proves the check is live end to end — real network, real filesystem, real install path —
+        # without re-downloading the whole tool graph.
+        env:
+          MISE_DATA_DIR: /tmp/mise-data-refusal
+          MISE_GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import re, pathlib
+          p = pathlib.Path("mise.lock")
+          body = p.read_text()
+          # Flip exactly the linux-x64 shellcheck digest: the row THIS runner will resolve.
+          block = re.search(r'\[tools\.shellcheck\."platforms\.linux-x64"\]\nchecksum = "sha256:[0-9a-f]{64}"', body)
+          assert block is not None, "shellcheck linux-x64 row not found -- this falsifier would test nothing"
+          body = body.replace(block.group(0), re.sub(r'sha256:[0-9a-f]{64}', "sha256:" + "0" * 64, block.group(0)))
+          p.write_text(body)
+          PY
+          set +e
+          "$MISE_BIN" install --yes shellcheck > /tmp/refusal.log 2>&1
+          RC=$?
+          set -e
+          cat /tmp/refusal.log
+          git checkout -- mise.lock
+          if [ "$RC" -eq 0 ]; then
+            echo "::error title=mise lock::mise ACCEPTED a payload whose SHA-256 does not match the committed lockfile. The digest is decorative."
+            exit 1
+          fi
+          grep -q "Checksum mismatch" /tmp/refusal.log || {
+            echo "::error title=mise lock::the install failed, but not on the checksum — this falsifier did not measure what it claims."
+            exit 1
+          }
+          echo "[verify] live refusal OK (rc=${RC}) — the committed digest can fail"
+
+      - name: THE HONEST LIMIT — a MISSING platform row is filled from upstream, not refused
+        # The question the work item insisted be measured rather than assumed: does an unlisted
+        # platform fall through to an unlocked install? WITH `locked = true` it fails closed —
+        # measured, `rc=1`, "No lockfile URL found ... (--locked mode)", nothing installed. But
+        # locked mode is OFF in this repo, because a lockfile is not readable across the two mise
+        # versions the fleet runs (`.mise.toml` carries the measurement and the re-enable
+        # condition). So the shipped behaviour is: mise installs it and WRITES THE FETCHED DIGEST
+        # BACK into mise.lock.
+        #
+        # That is a weaker guarantee, and this step exists so it is a MEASURED weaker guarantee
+        # rather than a hopeful sentence. It asserts the behaviour in both directions — the tool
+        # lands AND the lockfile is rewritten — so if mise ever changes it, the claim in
+        # `.mise.toml` and in `audit-mise-lock-coverage.ts` stops being true loudly instead of
+        # quietly. The coverage loss itself is caught by that audit on the cross-verify floor.
+        env:
+          MISE_DATA_DIR: /tmp/mise-data-selfheal
+          MISE_GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import pathlib
+          p = pathlib.Path("mise.lock")
+          kept = [b for b in p.read_text().split("\n\n")
+                  if 'tools.shellcheck."platforms.linux-x64"' not in b]
+          p.write_text("\n\n".join(kept))
+          PY
+          cp mise.lock /tmp/stripped-mise.lock
+          "$MISE_BIN" install --yes shellcheck
+          if [ ! -e /tmp/mise-data-selfheal/installs/shellcheck ]; then
+            echo "::error title=mise lock::shellcheck did not install; this step no longer measures what it claims."
+            exit 1
+          fi
+          # COMPARE AGAINST THE STRIPPED SNAPSHOT, never against HEAD. `git diff` measures the
+          # tree against the COMMITTED file, and a successful self-heal restores exactly that —
+          # so a HEAD comparison reports "clean" for the very event this step exists to observe.
+          # The first version of this step made that mistake and reddened this lane; the snapshot
+          # is what makes the assertion measure the writeback rather than its absence.
+          if diff -q /tmp/stripped-mise.lock mise.lock >/dev/null; then
+            echo "::error title=mise lock::mise did NOT refill the missing platform row. That is BETTER than documented -- but .mise.toml and audit-mise-lock-coverage.ts both state that unlocked mise self-heals, so one of them is now wrong and must be corrected."
+            git checkout -- mise.lock
+            exit 1
+          fi
+          if ! git diff --quiet -- mise.lock; then
+            echo "::error title=mise lock::the refilled row does NOT match the committed digest. mise fetched something different from what this repo pinned, which is a supply-chain signal and not a formatting difference."
+            git diff -- mise.lock
+            git checkout -- mise.lock
+            exit 1
+          fi
+          git checkout -- mise.lock
+          echo "[verify] self-heal confirmed: unlocked, a missing row is refilled from upstream — and it came back byte-identical to the committed digest, which is why the coverage audit rather than the install is what catches a hole"
+
+      - name: HAPPY PATH — install from the COMMITTED digest and prove it is the one used
+        env:
+          MISE_DATA_DIR: /tmp/mise-data-happy
+          MISE_GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          "$MISE_BIN" install --yes shellcheck actionlint
+          # Independent reading: the audit above asserts the row exists, this asserts the BYTES
+          # on disk hash to it. A verify block relaxed to something that cannot fail would pass
+          # the first and not the second.
+          LOCKED=$(python3 -c "
+          import re,sys,pathlib
+          b = pathlib.Path('mise.lock').read_text()
+          m = re.search(r'\[tools\.shellcheck\.\"platforms\.linux-x64\"\]\nchecksum = \"sha256:([0-9a-f]{64})\"\nurl = \"([^\"]+)\"', b)
+          print(m.group(1), m.group(2))
+          ")
+          DIGEST=${LOCKED%% *}
+          URL=${LOCKED##* }
+          curl -fsSL -o /tmp/shellcheck-asset "$URL"
+          echo "${DIGEST}  /tmp/shellcheck-asset" | sha256sum -c -
+          echo "[verify] the committed digest matches the bytes at the committed URL"
+          "$MISE_BIN" exec shellcheck -- shellcheck --version
+
+      - name: The tree is unchanged when coverage is COMPLETE
+        # The complement of the step above. Self-heal fires only on a MISSING row; with every
+        # required platform covered, an ordinary install must leave the lockfile byte-identical.
+        # If this ever reddens it means a platform we believe is covered is not — which is the
+        # dirty-tree symptom of a coverage hole, caught here before a laptop finds it.
+        run: |
+          set -euo pipefail
+          if ! git diff --exit-code -- mise.lock mise.full.lock; then
+            echo "::error title=mise lock::an install REWROTE the lockfile. A lockfile that repairs itself is not a lock."
+            exit 1
+          fi
+          echo "[verify] lockfile untouched by the installs above"

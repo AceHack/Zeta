@@ -328,6 +328,56 @@ node = "24"
 "pipx:mypy" = "2.3.1"
 
 [settings]
+# COMMITTED LOCKFILES, AND WHY `locked = true` IS *NOT* SET HERE.
+# `mise.lock` / `mise.full.lock` are committed (081M24MADR2087G0R001FCD8K6). With them in
+# the tree mise verifies every download against a digest THIS REPO owns -- measured, and
+# it holds with `locked = false`: a checksum that does not match the bytes refuses on both
+# mise versions the fleet runs, expected and actual printed.
+#
+# LOCKED MODE WAS TRIED AND MEASURED UNSAFE, and the reason is a lockfile FORMAT coupling:
+#
+#   lockfile written by | mise 2026.6.12 resolves | mise 2026.8.14 resolves
+#   --------------------|------------------------|------------------------
+#   2026.6.12           | all 25 tools           | FAILS node@24, npm:markdownlint-cli2
+#   2026.8.14           | FAILS node@24, npm:... | all 25 tools
+#
+# 2026.8.14 writes and matches `specifiers = ["24"]`; 2026.6.12 does not write it and
+# matches by version prefix. Neither reads the other's answer for a FUZZY pin (`node`,
+# `bun`, `java` above) or an `npm:` entry -- and `mise install` then refuses with
+# "<tool> is not in the lockfile" and installs NOTHING. Exact pins are unaffected, which
+# is why a two-tool cross-version smoke test passed and hid it.
+#
+# The fleet runs both versions, deliberately and on the record: linux.sh and install.ps1
+# pin 2026.6.12 exactly, macos.sh enforces only `MISE_MIN_VERSION` because "macOS installs
+# mise via Homebrew, whose formula advances in place". So locked mode would convert a
+# documented divergence into a fleet-wide install failure on whichever platform did not
+# generate the file.
+#
+# THE COST OF SHIPPING WITHOUT IT, stated rather than glossed: unlocked, a platform row
+# that is MISSING is silently filled from upstream and the lockfile is rewritten in place.
+# A digest we HAVE is enforced; a digest we LACK is not demanded. Coverage loss is
+# therefore caught by `audit-mise-lock-coverage.ts` and `verify-mise-lock.yml`, not by the
+# install failing closed.
+#
+# RE-ENABLING IS A MEASURED CONDITION, NOT A JUDGEMENT CALL: converge every installer on
+# one exact mise version, re-lock on it, and add `locked = true` below. The audit is
+# bidirectional and will REQUIRE that line the moment the three pins agree, so this is not
+# an exemption that can quietly become permanent.
+#
+# REFRESH: `MISE_LOCKED=0 MISE_PYTHON_GITHUB_ATTESTATIONS=0 mise lock` (plus
+# `--platform windows-arm64`, run twice) on the version linux.sh pins, with
+# `MISE_GITHUB_TOKEN` set. The audit's `refreshInstructions()` prints the full recipe and
+# the reason for each variable.
+#
+# ATTESTATIONS ARE UNCHANGED, and the lockfile records what they already do. A
+# `provenance = "github-attestations"` row is an attestation mise verified AT LOCK TIME;
+# with it present mise SKIPS the live attestation call on install. 36 such rows ship
+# (actionlint, golangci-lint, uv), so those installs no longer need that service to be up.
+# THE LOCK-TIME SETTING MUST EQUAL THE INSTALL-TIME ONE: locking python with
+# MISE_PYTHON_GITHUB_ATTESTATIONS=1 against mise.sh's `0` took every containerised
+# install.sh lane down -- mise refuses a lockfile that attests a check the settings disable
+# ("This may indicate a downgrade attack"). `audit-mise-lock-coverage.ts` holds them
+# together.
 # Explicit: use astral-sh/python-build-standalone precompiled binaries (fast
 # install on dev laptops + CI). Compile-from-source is opt-in via
 # `python.compile = true` when a platform build is required.
