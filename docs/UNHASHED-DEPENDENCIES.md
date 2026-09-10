@@ -15,8 +15,8 @@
 ## Counts
 
 - **Declared unhashed:** 6 — each one names its own reason on its own row.
-- **Undeclared unhashed:** 170 — visible and countable, but not yet declarable. This number must only fall.
-- **Digest-covered:** 1938.
+- **Undeclared unhashed:** 169 — visible and countable, but not yet declarable. This number must only fall.
+- **Digest-covered:** 1947.
 
 ## Declared — an unhashed dependency that says why
 
@@ -44,7 +44,6 @@ work of removing one is nameable rather than vague.
 | `apt` | 41 | `agda, binaryen, build-essential, ca-certificates, cmake, curl, cvc5, emscripten, fuse-overlayfs, git, gnupg, libgssapi-krb5-2, libicu74, libpcsclite1, libsasl2-dev, libssl-dev, libssl3t64, libzstd-dev, llvm, lua5.4, mtools, nodejs, opam, opensc, p7zip-full, pandoc, pcscd, pkg-config, podman, qemu-system-x86, qemu-utils, r-base, slirp4netns, tzdata, uidmap, wabt, yubico-piv-tool, yubikey-manager, z3, zlib1g-dev, zstd` | apt verifies its own repository signatures; per-package digests are the distro's, not ours | `tools/setup/manifests/apt` |
 | `brew` | 32 | `agda, binaryen, cmake, cyrus-sasl, emscripten, eprover, gnupg, headscale-cli, hermes-agent, llvm, lua, mtools, ollama, opam, opensc, openssl@3, p7zip, pam-reattach, pandoc, pkgconf, podman, qemu, r, tailscale, tectonic, wabt, ykman, yubico-piv-tool, z3, zig, zlib, zstd` | homebrew formulae carry their own upstream sha256; we pin neither the formula revision nor the bottle | `tools/setup/manifests/brew` |
 | `brew-cask` | 2 | `cvc5, yubihsm2-sdk` | same as brew; casks additionally fetch vendor DMGs on the cask's schedule | `tools/setup/manifests/brew-cask` |
-| `docker` | 1 | `node:24-slim` | a container base is pinnable with @sha256: at its point of use; this one is not, and has no tools/setup/manifests/pinned-refs row either | `agentic-organization/Dockerfile` |
 | `from-bun-global` | 2 | `@anthropic-ai/claude-code, @openai/codex` | parseSimpleManifest treats the whole line as a package id, so a k=v attribute cannot be added without changing the parser; rows also carry no VERSION, so `bun install --global` resolves latest on every run | `tools/setup/manifests/from-bun-global` |
 | `from-dotnet-global` | 7 | `dotnet-counters, dotnet-dump, dotnet-gcdump, dotnet-stack, dotnet-stryker, dotnet-trace, fsharp-analyzers` | `dotnet tool install` takes a version, never a digest; several rows pin no version either | `tools/setup/manifests/from-dotnet-global` |
 | `from-ollama` | 3 | `3 row(s)` | key/value file, not a row-per-dependency format; the model is named by a mutable ollama tag | `tools/setup/manifests/from-ollama` |
@@ -61,6 +60,7 @@ Listed so the numbers above are a ratio rather than a scare.
 
 | Mechanism | Covered | Where |
 |---|---|---|
+| `docker` | `node:24-slim@sha256:2fe369e969550cde8e867afc3fe370b260140cab4a23d467074295b42163d553` | `agentic-organization/Dockerfile` |
 | `docker` | `oven/bun:1.3.14-alpine@sha256:5acc90a93e91ff07bf72aa90a7c9f0fa189765aec90b47bdbf2152d2196383c0` | `full-ai-cluster/openbao-unseal/Dockerfile` |
 | `docker` | `mcr.microsoft.com/dotnet/runtime:10.0-noble@sha256:399e54a8a7e35c3aba78398b2840455d45185cba20b831b8a2b46f849f4f5001` | `full-ai-cluster/orleans-silo/Dockerfile` |
 | `docker` | `mcr.microsoft.com/dotnet/sdk:10.0-noble@sha256:4ea6fe75dd36706bb6d8c3c293d4c4315840f5d76ea28ac97def77e3ec487fa5` | `full-ai-cluster/orleans-silo/Dockerfile` |
@@ -88,6 +88,7 @@ Listed so the numbers above are a ratio rather than a scare.
 | `npm` | `870 integrity-covered package(s)` | `package-lock.json` |
 | `npm` | `43 integrity-covered package(s)` | `src/apps/twitch-ai/bun.lock` |
 | `npm` | `92 integrity-covered package(s)` | `src/apps/twitch-ai/package-lock.json` |
+| `npm` | `8 integrity-covered package(s)` | `tools/setup/persona-keys/bun.lock` |
 | `yamllint-requirements.txt` | `PyYAML` | `tools/setup/manifests/yamllint-requirements.txt` |
 | `yamllint-requirements.txt` | `pathspec` | `tools/setup/manifests/yamllint-requirements.txt` |
 | `yamllint-requirements.txt` | `yamllint` | `tools/setup/manifests/yamllint-requirements.txt` |

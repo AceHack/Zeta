@@ -3,7 +3,15 @@
 # The code runs directly via `node --experimental-strip-types` (no build step,
 # no bundler) per the repo convention. node:24-slim (Debian) is used over Alpine
 # so the `pg` and @nats-io native paths resolve against glibc cleanly.
-FROM node:24-slim
+#
+# DIGEST-PINNED, like every other Dockerfile in this tree. A floating tag means
+# two builds of the same commit can produce different images, which is the same
+# defect as an unpinned dependency and is what OpenSSF Scorecard's
+# `Pinned-Dependencies` reports (alert #122) -- this file was the ONE outlier
+# among the eleven `FROM` lines in the repo. The digest below was resolved
+# against registry-1.docker.io directly, not copied from the alert text.
+# Bumping it is a deliberate commit, which is the point.
+FROM node:24-slim@sha256:2fe369e969550cde8e867afc3fe370b260140cab4a23d467074295b42163d553
 
 WORKDIR /app
 
