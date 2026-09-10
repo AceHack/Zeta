@@ -1,0 +1,12 @@
+{
+  "pr_number": 17161,
+  "archive_path": "docs/history/pr-reviews/PR-17161-restore-character-source-detail-and-keep-media-in-single-version-archives.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-09T18:19:19.875Z",
+  "schema_version": "v1",
+  "commit_sha": "7280c6b8938b1f112e35b8015321dd8a437b6ebb",
+  "title": "Restore character source detail and keep media in single-version archives",
+  "state": "MERGED",
+  "merged_at": "2026-09-09T18:17:37Z",
+  "head_ref": "codex/tiktok-character-v15"
+}

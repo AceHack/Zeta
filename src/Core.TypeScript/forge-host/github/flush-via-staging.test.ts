@@ -43,7 +43,7 @@ const WORKFLOW_DIR = join(import.meta.dir, "..", "..", "..", "..", ".github", "w
 const workflow = (name: string): string => readFileSync(join(WORKFLOW_DIR, name), "utf8");
 
 // The telemetry lanes that flush through this tool.
-const LANES = ["tick-metrics", "society", "red-state"] as const;
+const LANES = ["tick-metrics", "society", "red-state", "pr-archive"] as const;
 
 // The validator's REQUIRED_KEYS, duplicated deliberately: if that list changes,
 // this test must go red rather than silently accept a block missing a key.
@@ -637,6 +637,11 @@ describe("AgencySignature on telemetry flushes", () => {
 const TREATED = [
   { lane: "tick-metrics", file: "tick-metrics.yml" },
   { lane: "society", file: "society-heartbeat.yml" },
+  // Treated 2026-09-09 on stall: #17145 gate run 34394714180 was
+  // completed/action_required, actor=github-actions[bot], 0 jobs
+  // (081M1EKTVH7087G0R002XC3GCW). The yaml comment already named the PAT;
+  // checkout still persisted GITHUB_TOKEN.
+  { lane: "pr-archive", file: "pr-archive-on-merge.yml" },
 ] as const;
 
 /**

@@ -1,0 +1,12 @@
+{
+  "pr_number": 17160,
+  "archive_path": "docs/history/pr-reviews/PR-17160-docs-081m23k0s2w087g0r001h50z8m-agents-carry-source-and-evolve-with-zero-downtim.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-09T17:48:21.890Z",
+  "schema_version": "v1",
+  "commit_sha": "380aa53f14269cd8c1bbfb1c273a66c765ee35a1",
+  "title": "docs(081M23K0S2W087G0R001H50Z8M): agents carry source and evolve with zero downtime",
+  "state": "MERGED",
+  "merged_at": "2026-09-09T17:47:36Z",
+  "head_ref": "feat/zetadb-agents-carry-source"
+}

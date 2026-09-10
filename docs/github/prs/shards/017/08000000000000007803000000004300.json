@@ -1,0 +1,12 @@
+{
+  "pr_number": 17152,
+  "archive_path": "docs/history/pr-reviews/PR-17152-fix-security-scope-workflow-write-grants-to-the-job-that-writes.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-09T16:51:57.151Z",
+  "schema_version": "v1",
+  "commit_sha": "620dc6a245051b05468b61e0ccbe0ba3278a0866",
+  "title": "fix(security): scope workflow write grants to the job that writes",
+  "state": "MERGED",
+  "merged_at": "2026-09-09T16:51:13Z",
+  "head_ref": "nazar/token-permissions-narrow"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 17171,
+  "archive_path": "docs/history/pr-reviews/PR-17171-docs-handoff-stage-arc-game-trajectory-roadmap.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-09T19:54:43.120Z",
+  "schema_version": "v1",
+  "commit_sha": "cf6de5aa5a9c4571753fbbec59697cff82558b78",
+  "title": "docs(handoff): stage ARC game trajectory roadmap",
+  "state": "MERGED",
+  "merged_at": "2026-09-09T19:54:05Z",
+  "head_ref": "lumen/arc-game-trajectory-roadmap"
+}

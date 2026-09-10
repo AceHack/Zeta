@@ -86,6 +86,7 @@ generator that read an EMPTY roster cannot pass.
 | `cross-verify (image-source-provenance)`                | No private-source image dependencies (offline, against the committed provenance)   |
 | `cross-verify (image-source-provenance-tests)`          | Private-source image dependencies — falsifiers (proves it goes red)                |
 | `cross-verify (reason-truth)`                           | ArgoCD deferral reasons — every cited anchor still holds (offline)                 |
+| `cross-verify (chart-assertion-census)`                 | every chart is applied by some job, and no chart is asserted vacuously             |
 | `cross-verify (no-raw-nul-in-source)`                   | No raw NUL in tracked source (an audit must be able to read the file)              |
 | `cross-verify (concept-registry-drift)`                 | Concept registry vs published page (docs/CONCEPT-REGISTRY.md)                      |
 | `cross-verify (tech-radar-claims)`                      | Tech radar claims the repo can still support (paths resolve, in-use tools ringed)  |

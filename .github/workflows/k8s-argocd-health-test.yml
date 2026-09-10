@@ -2066,6 +2066,123 @@ jobs:
           done
           echo "all $total ConstraintTemplates compiled and created"
 
+      # A COMPILED TEMPLATE IS NOT AN INSTALLED POLICY.
+      #
+      # The step above proves gatekeeper compiled the Rego and generated the
+      # constraint CRDs. It says nothing about whether the seven CONSTRAINTS --
+      # the policy instances, the objects that actually enforce anything -- were
+      # ever applied. Those are separate objects, ArgoCD assigns them NO HEALTH,
+      # and `isApplicationSynced` admits `OutOfSync + Healthy` for git-directory
+      # apps like hat-system. So an app holding zero installed policies reads
+      # exactly like one holding seven.
+      #
+      # MEASURED on run 34390707656 -- the GREEN 37/37 main run, taken AFTER the
+      # template check landed. hat-system was `OutOfSync/Healthy` at proof time
+      # with all seven ConstraintTemplates `sync=OutOfSync health=-`, and not one
+      # of the seven Constraints present in the resource list at all. The
+      # template step then passed 31 seconds later because it waits. The half
+      # that is checked recovers and says so; this half had never been observed.
+      #
+      # The roster is DERIVED from the committed policy YAML by
+      # `hat-constraint-roster.ts`, which exits 1 on an empty roster and refuses
+      # a Constraint whose kind no template declares. A hardcoded list of seven
+      # names is the drift this repo has already been bitten by: an eighth policy
+      # lands and the check keeps passing over seven.
+      #
+      # GATES ON EXISTENCE, not on `status.byPod[].enforced`. Existence is what
+      # was FALSE in the measured runs, so it is a real falsifier today;
+      # enforcement is printed as diagnostics rather than gated because nothing
+      # has yet measured how long gatekeeper takes to load a fresh constraint on
+      # a cold kind node, and a timeout nobody measured is a flake dressed as a
+      # check. Promoting it is a follow-up with a measurement attached.
+      - name: Every Hat Constraint is applied
+        if: always() && steps.proof.conclusion != 'skipped'
+        run: |
+          set -o pipefail
+          bun src/Core.TypeScript/cluster/hat-constraint-roster.ts > "$RUNNER_TEMP/hat-constraints.txt"
+          if [ ! -s "$RUNNER_TEMP/hat-constraints.txt" ]; then
+            echo "::error::the Hat Constraint roster is empty -- a loop over it would pass trivially, which is the check-that-cannot-fail this step exists to remove"
+            exit 1
+          fi
+          cat "$RUNNER_TEMP/hat-constraints.txt"
+          DEADLINE=$(( SECONDS + 300 ))
+          while :; do
+            missing=""
+            while read -r kind name; do
+              [ -n "$kind" ] || continue
+              resource="$(printf '%s' "$kind" | tr '[:upper:]' '[:lower:]').constraints.gatekeeper.sh"
+              kubectl get "$resource" "$name" >/dev/null 2>&1 || missing="$missing $kind/$name"
+            done < "$RUNNER_TEMP/hat-constraints.txt"
+            if [ -z "$missing" ]; then break; fi
+            if [ "$SECONDS" -ge "$DEADLINE" ]; then
+              echo "::error::Hat Constraints never applied:$missing -- gatekeeper holds fewer policies than the repo declares, and ArgoCD gives Constraints no health so hat-system still reads Healthy"
+              exit 1
+            fi
+            sleep 10
+          done
+          echo "all Hat Constraints applied"
+          kubectl get constraints -o json 2>/dev/null | jq -r '.items[] | "\(.kind)/\(.metadata.name): byPod=\((.status.byPod // []) | length)"' || true
+
+      # THE POLICIES' DATA SOURCE, which the two checks above cannot see.
+      #
+      # Six of the seven Hat templates are REFERENTIAL -- their Rego reads other
+      # cluster objects out of `data.inventory`. Gatekeeper populates that
+      # inventory ONLY for kinds named in a `config.gatekeeper.sh` Config's
+      # `spec.sync.syncOnly`. MEASURED 2026-09-09: no such Config existed, so the
+      # inventory was empty, every comprehension over it yielded the empty list,
+      # and six policies that compiled and applied could not deny anything on any
+      # input (081M241X2YQ087G0R001K95PAB).
+      #
+      # `hat-constraint-roster.ts` refuses that STATICALLY, by tying each Rego
+      # inventory read to a syncOnly entry. This step is the live half, and it
+      # exists because the static check cannot see one thing: whether the Config
+      # the tree declares actually REACHED the cluster. ArgoCD gives a Config no
+      # health, exactly like a Constraint, so hat-system stays Healthy without it.
+      #
+      # The expected kinds are DERIVED from the committed Config, not restated:
+      # a hardcoded list of three would keep passing when a seventh policy adds a
+      # fourth kind.
+      - name: Gatekeeper syncs the kinds the Hat policies read
+        if: always() && steps.proof.conclusion != 'skipped'
+        # DECLARES ITSELF as a post-deploy functional assertion, so the chart
+        # census DERIVES the count rather than being told it. Without this the
+        # census reports `0 of 49` and is correct to; a hand-maintained registry
+        # would have owed an edit at whatever unattended moment these two branches
+        # happened to merge in. Convention + parser + limits:
+        # src/Core.TypeScript/cluster/chart-assertion-census.ts.
+        env:
+          ZETA_FUNCTIONAL_ASSERTION_FOR: hat-system
+        run: |
+          set -o pipefail
+          want="$(bun -e '
+            const { readHatPolicyRoster } = await import("./src/Core.TypeScript/cluster/hat-constraint-roster.ts");
+            const roster = readHatPolicyRoster(process.cwd());
+            for (const e of roster.synced) console.log(e.group + "/" + e.version + "/" + e.kind);
+          ')"
+          if [ -z "$want" ]; then
+            echo "::error::the committed Gatekeeper Config syncs NOTHING -- an empty syncOnly leaves data.inventory empty, which is the defect this step exists to catch, and comparing against an empty list would pass trivially"
+            exit 1
+          fi
+          echo "expected syncOnly:"; echo "$want"
+          DEADLINE=$(( SECONDS + 180 ))
+          while :; do
+            got="$(kubectl -n gatekeeper-system get config.config.gatekeeper.sh config -o json 2>/dev/null \
+              | jq -r '(.spec.sync.syncOnly // [])[] | "\(.group)/\(.version)/\(.kind)"' 2>/dev/null || true)"
+            missing=""
+            while read -r key; do
+              [ -n "$key" ] || continue
+              printf '%s\n' "$got" | grep -qxF "$key" || missing="$missing $key"
+            done <<< "$want"
+            if [ -z "$missing" ]; then break; fi
+            if [ "$SECONDS" -ge "$DEADLINE" ]; then
+              echo "live syncOnly:"; echo "${got:-<none>}"
+              echo "::error::gatekeeper is not syncing:$missing -- data.inventory stays empty for those kinds, so every referential Hat policy compiles, applies, and CANNOT DENY ANYTHING"
+              exit 1
+            fi
+            sleep 10
+          done
+          echo "gatekeeper syncs every kind the Hat policies read"
+
       # NAME THE RESOURCE, NOT JUST THE APPLICATION.
       #
       # Added 2026-08-21 after a run where `weaviate` reported

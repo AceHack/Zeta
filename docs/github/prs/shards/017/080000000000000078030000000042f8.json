@@ -1,0 +1,12 @@
+{
+  "pr_number": 17144,
+  "archive_path": "docs/history/pr-reviews/PR-17144-docs-081m23c9zm4087g0r001q1msd7-the-outofsync-but-healthy-set-diagnosed-across-t.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-09T15:46:28.766Z",
+  "schema_version": "v1",
+  "commit_sha": "d4238e936eac349c5a1053419ec8415981f5f453",
+  "title": "docs(081M23C9ZM4087G0R001Q1MSD7): the OutOfSync-but-Healthy set, diagnosed across two bring-ups",
+  "state": "MERGED",
+  "merged_at": "2026-09-09T15:45:40Z",
+  "head_ref": "outofsync-but-healthy-diagnosed"
+}

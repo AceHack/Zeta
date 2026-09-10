@@ -1,0 +1,12 @@
+{
+  "pr_number": 17170,
+  "archive_path": "docs/history/pr-reviews/PR-17170-docs-081m23qzts3087g0r003t4jp4s-graphics-physics-roadmap-read-the-generator-at-r.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-09T19:22:46.969Z",
+  "schema_version": "v1",
+  "commit_sha": "8c06e74a82fd74c7c9f860b72ce4c3b10609eb8f",
+  "title": "docs(081M23QZTS3087G0R003T4JP4S): graphics/physics roadmap — read the generator at rank 3, and price the fast path",
+  "state": "MERGED",
+  "merged_at": "2026-09-09T19:22:05Z",
+  "head_ref": "graphics-physics-roadmap"
+}

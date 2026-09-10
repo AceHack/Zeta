@@ -616,6 +616,28 @@ export const CROSS_VERIFY_AUDITS: readonly CrossVerifyAudit[] = [
     command: "bun src/Core.TypeScript/cluster/reason-truth.ts",
   },
 
+  // THE VACUITY COLUMN, which no other roster entry supplies. Aaron 2026-09-09:
+  // "how many are fully tested green fully green and have some sort of test to make
+  // sure it's not vacuous?" -- and then, sharpening it: "can we not look at the logs
+  // or have some post deploy tests to tell what's working and what's not?"
+  //
+  // MEASURED that day: `argocd-health-test.ts` carries 72 references to
+  // Synced/Healthy and ZERO post-deploy functional assertions. The lane's `nc -z`
+  // and `git ls-remote` probes print OPEN/FAIL and `return 0` -- diagnostics, and
+  // the right shape for diagnostics, but none of them gates. So the whole lane
+  // asserts one class of thing: ArgoCD's opinion about reconciliation.
+  //
+  // This audit reports it per chart and refuses two gaps it can decide statically:
+  // a chart no lane applies and no registry accounts for, and a chart asserted
+  // Synced+Healthy whose committed resources are ALL kinds ArgoCD gives no health
+  // verdict (measured: deepseek-coder, qwen-coder). It is cheap -- it reads the
+  // committed manifests and touches no cluster.
+  {
+    id: "chart-assertion-census",
+    title: "every chart is applied by some job, and no chart is asserted vacuously",
+    command: "bun src/Core.TypeScript/cluster/chart-assertion-census.ts",
+  },
+
   // A tracked source file holding a raw 0x00 byte reads as BINARY to grep/rg, so every
   // text audit silently skips it -- a check that did not run, looking exactly like one
   // that passed. `rg 'foldChain' key-epoch-ledger.ts` printed "binary file matches" and

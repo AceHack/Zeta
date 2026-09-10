@@ -1,0 +1,12 @@
+{
+  "pr_number": 17142,
+  "archive_path": "docs/history/pr-reviews/PR-17142-build-setup-de-vendor-the-alloy-jar-keep-tla2tools-committed-and-say-why.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-09T15:52:52.462Z",
+  "schema_version": "v1",
+  "commit_sha": "0dd41319f499f2e8a60dc50e086021bc67d795f1",
+  "title": "build(setup): de-vendor the Alloy jar; keep tla2tools committed and say why",
+  "state": "MERGED",
+  "merged_at": "2026-09-09T15:51:31Z",
+  "head_ref": "devendor-verifier-jars"
+}

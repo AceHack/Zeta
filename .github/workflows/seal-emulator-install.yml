@@ -1,21 +1,28 @@
 # .github/workflows/seal-emulator-install.yml
 #
-# SoftHSM2 / swtpm 2×2 install job. The job INSTALLS the emulator
-# the cell asked for, then `seal-emulator-install.ts` measures the
-# disk. A missing package is fail-missing. skip-if-absent cannot
-# wear pass.
+# SoftHSM2 / swtpm / sidecar install job. The job INSTALLS the emulator
+# the cell asked for, then `seal-emulator-install.ts` measures the disk.
+# A missing package is fail-missing. skip-if-absent cannot wear pass.
+#
+# USB-install product ladder is hsm → tpm → sidecar (one choice).
+# CI tests all three independently:
+#   hsm-simulator  (SoftHSM2) → path ci-softhsm, ladder hsm
+#   tpm-simulator  (swtpm)    → path ci-swtpm,    ladder tpm
+#   sidecar        (neither)  → path kind-shamir, ladder sidecar
+# plus both-softhsm-wins: one seal when both simulators are present
+# (HSM wins; this is not "two HSMs on one machine").
 #
 # WHAT THIS PROVES: apt produced libsofthsm2.so / swtpm; the path
-# picker names ci-softhsm / ci-swtpm / kind-shamir; SoftHSM can
-# init a token. WHAT IT DOES NOT PROVE: YubiHSM domains, USB,
-# CardContact, this board's PCRs, OpenBao PKCS#11 auto-unseal
-# (Application.yaml stays Shamir until a module is in the image
-# in the same commit as the stanza).
+# picker names ci-softhsm / ci-swtpm / kind-shamir; the ladder is
+# hsm / tpm / sidecar; SoftHSM can init a token. WHAT IT DOES NOT
+# PROVE: YubiHSM domains, USB, CardContact, this board's PCRs,
+# OpenBao PKCS#11 auto-unseal (Application.yaml stays Shamir until
+# a module is in the image in the same commit as the stanza).
 #
 # SECURITY NOTE: no github.event.* values are interpolated into
 # any `run:` block. Matrix values are trusted literals. Workflow
 # permissions are contents:read. Actions are SHA-pinned.
-# Workitem: 081M1TS32Y3087G0R0026Y21F5.
+# Workitem: 081M246EAP0087G0R003FFYST2.
 
 name: seal-emulator-install
 
@@ -30,6 +37,9 @@ on:
       - "src/Core.TypeScript/cluster/unseal-path.test.ts"
       - "src/Core.TypeScript/cluster/seal-emulator-rung.ts"
       - "src/Core.TypeScript/cluster/seal-emulator-rung.test.ts"
+      - "tools/setup/persona-keys/seal-path-detect.ts"
+      - "tools/setup/persona-keys/seal-path-detect.test.ts"
+      - "src/Core.TypeScript/zflash/firstboot-bao-install.test.ts"
   push:
     branches: [main]
     paths:
@@ -40,6 +50,9 @@ on:
       - "src/Core.TypeScript/cluster/unseal-path.test.ts"
       - "src/Core.TypeScript/cluster/seal-emulator-rung.ts"
       - "src/Core.TypeScript/cluster/seal-emulator-rung.test.ts"
+      - "tools/setup/persona-keys/seal-path-detect.ts"
+      - "tools/setup/persona-keys/seal-path-detect.test.ts"
+      - "src/Core.TypeScript/zflash/firstboot-bao-install.test.ts"
   schedule:
     # Weekly Sundays 04:29 UTC — apt archive drift, not our bytes.
     # Odd minute, off heartbeat / drift-sweep hours.
@@ -74,7 +87,8 @@ jobs:
             src/Core.TypeScript/cluster/seal-emulator-install.test.ts \
             src/Core.TypeScript/cluster/unseal-path.test.ts \
             src/Core.TypeScript/cluster/seal-emulator-rung.test.ts \
-            tools/setup/persona-keys/seal-path-detect.test.ts
+            tools/setup/persona-keys/seal-path-detect.test.ts \
+            src/Core.TypeScript/zflash/firstboot-bao-install.test.ts
 
       # CI BEFORE HARDWARE (Aaron 2026-09-08). The tests above describe hosts;
       # this step runs the LIVE look against the actual runner, so "the probe
@@ -104,6 +118,10 @@ jobs:
             echo "REFUSED: a runner with no attached HSM/TPM named a hardware seal path" >&2
             exit 1
           fi
+          if echo "$OUT" | jq -e '.ladder == "hsm" or .ladder == "tpm"' >/dev/null; then
+            echo "REFUSED: a runner with no attached HSM/TPM named a hardware USB ladder" >&2
+            exit 1
+          fi
 
   matrix:
     name: seal-emulator (${{ matrix.name }})
@@ -113,22 +131,26 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - name: neither-kind-shamir
+          - name: sidecar
             softhsm: "0"
             swtpm: "0"
             expect: kind-shamir
-          - name: softhsm-only
+            expect_ladder: sidecar
+          - name: hsm-simulator
             softhsm: "1"
             swtpm: "0"
             expect: ci-softhsm
-          - name: swtpm-only
+            expect_ladder: hsm
+          - name: tpm-simulator
             softhsm: "0"
             swtpm: "1"
             expect: ci-swtpm
+            expect_ladder: tpm
           - name: both-softhsm-wins
             softhsm: "1"
             swtpm: "1"
             expect: ci-softhsm
+            expect_ladder: hsm
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -160,13 +182,15 @@ jobs:
           WANT_SOFTHSM: ${{ matrix.softhsm }}
           WANT_SWTPM: ${{ matrix.swtpm }}
           EXPECT_PATH: ${{ matrix.expect }}
+          EXPECT_LADDER: ${{ matrix.expect_ladder }}
         run: |
           set -euo pipefail
           bun src/Core.TypeScript/cluster/seal-emulator-install.ts \
             --want-softhsm="$WANT_SOFTHSM" \
             --want-swtpm="$WANT_SWTPM" \
             --kind-unsealer=1 \
-            --expect-path="$EXPECT_PATH"
+            --expect-path="$EXPECT_PATH" \
+            --expect-ladder="$EXPECT_LADDER"
 
       # Token init is gated on the cell that *already installed* SoftHSM
       # in the prior step. This is not skip-if-the-package-is-missing.

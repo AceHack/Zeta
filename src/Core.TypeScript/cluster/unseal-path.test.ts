@@ -30,6 +30,8 @@ import {
   companionContentsFromRestore,
   skipIfAbsentCannotWearPass,
   tpmCanAutoUnseal,
+  usbInstallSealFromDecision,
+  usbInstallSealFromPath,
   UNSEAL_REQUEST_ENV_KEY,
 } from "./unseal-path.ts";
 
@@ -157,6 +159,52 @@ describe("integrateAtSetup — PKCS#11 only when the device is accessible", () =
     expect(r.autoUnseal).toBe(false);
     expect(r.threshold).toBe(UNSEAL_THRESHOLD);
     expect(r.threshold).toBeGreaterThanOrEqual(2);
+  });
+
+  test("USB ladder: no HSM, no TPM, look complete → sidecar (not 'no path')", () => {
+    const r = integrateAtSetup({ requested: "auto" }, METAL);
+    expect(usbInstallSealFromDecision(r)).toBe("sidecar");
+  });
+
+  test("USB ladder: HSM only → hsm", () => {
+    const r = integrateAtSetup({ requested: "auto" }, capture({ yubiHsm2: "attached" }));
+    expect(usbInstallSealFromDecision(r)).toBe("hsm");
+  });
+
+  test("USB ladder: TPM only → tpm", () => {
+    const r = integrateAtSetup({ requested: "auto" }, capture({ tpm2: "present" }));
+    expect(usbInstallSealFromDecision(r)).toBe("tpm");
+  });
+
+  test("USB ladder: HSM + TPM → hsm (one seal; almost no box has two HSMs)", () => {
+    const r = integrateAtSetup({ requested: "auto" }, capture({ yubiHsm2: "attached", tpm2: "present" }));
+    expect(usbInstallSealFromDecision(r)).toBe("hsm");
+    expect(r.ok && r.path).toBe("pkcs11-yubihsm");
+  });
+
+  test("USB ladder: two HSM vendors → still hsm (one seal, not two)", () => {
+    const r = integrateAtSetup({ requested: "auto" }, capture({ yubiHsm2: "attached", smartcardHsm: "present" }));
+    expect(usbInstallSealFromDecision(r)).toBe("hsm");
+  });
+
+  test("USB ladder: incomplete look is null, not sidecar", () => {
+    const r = integrateAtSetup({ requested: "auto" }, capture({ tpm2: "not-asked" }));
+    expect(r.ok).toBe(false);
+    expect(usbInstallSealFromDecision(r)).toBeNull();
+  });
+
+  test("USB ladder: missing request is null, not auto-sidecar", () => {
+    expect(usbInstallSealFromDecision(null)).toBeNull();
+  });
+
+  test("USB ladder projects every UnsealPath onto one of three rungs", () => {
+    expect(usbInstallSealFromPath("pkcs11-yubihsm")).toBe("hsm");
+    expect(usbInstallSealFromPath("pkcs11-smartcard")).toBe("hsm");
+    expect(usbInstallSealFromPath("ci-softhsm")).toBe("hsm");
+    expect(usbInstallSealFromPath("pkcs11-tpm")).toBe("tpm");
+    expect(usbInstallSealFromPath("ci-swtpm")).toBe("tpm");
+    expect(usbInstallSealFromPath("lucent-shamir")).toBe("sidecar");
+    expect(usbInstallSealFromPath("kind-shamir")).toBe("sidecar");
   });
 
   test("explicit lucent-shamir is always a peer path, even with HSM attached", () => {
@@ -290,6 +338,7 @@ describe("emulator install 2×2 — declared by installing, never skip-if-absent
     expect(r.ok).toBe(true);
     if (!r.ok) return;
     expect(r.path).toBe("lucent-shamir");
+    expect(usbInstallSealFromDecision(r)).toBe("sidecar");
   });
 
   test("neither emulator, kind unsealer present → kind-shamir", () => {
@@ -302,6 +351,7 @@ describe("emulator install 2×2 — declared by installing, never skip-if-absent
     expect(r.ok).toBe(true);
     if (!r.ok) return;
     expect(r.path).toBe("kind-shamir");
+    expect(usbInstallSealFromDecision(r)).toBe("sidecar");
   });
 
   test("neither emulator and nothing to unseal with is no-path, not a skip-pass", () => {
@@ -327,6 +377,7 @@ describe("emulator install 2×2 — declared by installing, never skip-if-absent
     if (!r.ok) return;
     expect(r.path).toBe("ci-softhsm");
     expect(r.mechanism).toBe("aes-gcm");
+    expect(usbInstallSealFromDecision(r)).toBe("hsm");
   });
 
   test("swtpm installed, softhsm not → ci-swtpm OAEP", () => {
@@ -340,6 +391,7 @@ describe("emulator install 2×2 — declared by installing, never skip-if-absent
     if (!r.ok) return;
     expect(r.path).toBe("ci-swtpm");
     expect(r.mechanism).toBe("must-pin-rsa-oaep");
+    expect(usbInstallSealFromDecision(r)).toBe("tpm");
   });
 
   test("both emulators installed → ci-softhsm (HSM wins; one seal)", () => {
@@ -352,6 +404,7 @@ describe("emulator install 2×2 — declared by installing, never skip-if-absent
     expect(r.ok).toBe(true);
     if (!r.ok) return;
     expect(r.path).toBe("ci-softhsm");
+    expect(usbInstallSealFromDecision(r)).toBe("hsm");
   });
 
   test("emulatorMatrixCell fail-missing never skip-passes", () => {

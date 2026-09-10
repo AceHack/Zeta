@@ -1,0 +1,14 @@
+{
+  "id": "080d0440f45ec010a0130008c0101fc5",
+  "at": "2026-09-09T21:41:38.392Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M241X2YQ087G0R001K95PAB",
+    "type": "task",
+    "title": "Assert the seven Hat Constraints are applied — a compiled ConstraintTemplate is not an installed policy",
+    "slug": "assert-the-seven-hat-constraints-are-applied-a-compiled-cons",
+    "priority": "P2",
+    "filename": "081M241X2YQ087G0R001K95PAB-assert-the-seven-hat-constraints-are-applied-a-compiled-cons.md"
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 17143,
+  "archive_path": "docs/history/pr-reviews/PR-17143-fix-creds-t5-kubeconfig-retry-t3-wipe-skip-marker-zeta-bao-unseal-image.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-09T16:45:42.713Z",
+  "schema_version": "v1",
+  "commit_sha": "5f0164428c1239764d79ca06e5fb3fd39c905448",
+  "title": "fix(creds): T5 kubeconfig retry, T3 WIPE skip marker, zeta-bao-unseal image",
+  "state": "MERGED",
+  "merged_at": "2026-09-09T16:44:53Z",
+  "head_ref": "cursor/creds-t5-t3-unseal-image-27c5"
+}

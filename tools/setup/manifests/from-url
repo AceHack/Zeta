@@ -108,4 +108,4 @@ src/Core.Alloy/alloy.jar  https://github.com/AlloyTools/org.alloytools.alloy/rel
 # at a tag still sufficient) and remove the fleet-wide breakage window
 # -- at the price of becoming a redistributor of an MIT-licensed
 # third-party binary. See 081M23ESC5B087G0R002HJ39DG.
-src/Core.TLA/tla2tools.jar  https://github.com/tlaplus/tlaplus/releases/download/v1.8.0/tla2tools.jar  sha256=bb82311bc0493a8d30112a1baa0aece42a5f91b928866c7593930e390c14c340  requires=java  rolling=tlaplus-v1.8.0-prerelease  update=when-drift-bump-pin  identity=jar-tlc  remeasure=src/Core.TypeScript/formal-verification/run-tlc.ts:--all  pinsurfaces=registry/tlc-models.json,docs/INSTALLED.md,docs/dependency-status.md
+src/Core.TLA/tla2tools.jar  https://github.com/tlaplus/tlaplus/releases/download/v1.8.0/tla2tools.jar  sha256=8836549e83db7f0b3f9fdde679ab56270d18e06198366d217d960738c02b9dbe  requires=java  rolling=tlaplus-v1.8.0-prerelease  update=when-drift-bump-pin  identity=jar-tlc  remeasure=src/Core.TypeScript/formal-verification/run-tlc.ts:--all  pinsurfaces=registry/tlc-models.json,docs/INSTALLED.md,docs/dependency-status.md

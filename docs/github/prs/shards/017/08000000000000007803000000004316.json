@@ -1,0 +1,12 @@
+{
+  "pr_number": 17174,
+  "archive_path": "docs/history/pr-reviews/PR-17174-feat-cluster-assert-the-seven-hat-constraints-are-applied-a-compiled-template-is.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-10T00:06:28.874Z",
+  "schema_version": "v1",
+  "commit_sha": "c75c0b7277a7706c815743396ab90e3443a378c3",
+  "title": "feat(cluster): assert the seven Hat Constraints are applied — a compiled template is not an installed policy",
+  "state": "MERGED",
+  "merged_at": "2026-09-10T00:05:40Z",
+  "head_ref": "agent/hat-constraints-applied-081M241X2YQ087G0R001K95PAB"
+}

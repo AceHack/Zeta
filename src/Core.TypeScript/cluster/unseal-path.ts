@@ -68,6 +68,41 @@ export type UnsealPath =
   "pkcs11-yubihsm" | "pkcs11-smartcard" | "pkcs11-tpm" | "lucent-shamir" | "ci-softhsm" | "ci-swtpm" | "kind-shamir";
 
 /**
+ * USB-install product vocabulary. One choice from detected hardware:
+ * HSM if attached, else TPM if present, else the fetch-at-unseal sidecar.
+ * Almost no machine has two HSMs; if two vendors are attached, still one
+ * seal (`hsm`). Does not rename UnsealPath. CI maps simulators onto the
+ * same three rungs (SoftHSM → hsm, swtpm → tpm, kind/Lucent → sidecar).
+ */
+export type UsbInstallSeal = "hsm" | "tpm" | "sidecar";
+
+/** Project the internal path onto the USB-install ladder. Exhaustive. */
+export function usbInstallSealFromPath(path: UnsealPath): UsbInstallSeal {
+  switch (path) {
+    case "pkcs11-yubihsm":
+    case "pkcs11-smartcard":
+    case "ci-softhsm":
+      return "hsm";
+    case "pkcs11-tpm":
+    case "ci-swtpm":
+      return "tpm";
+    case "lucent-shamir":
+    case "kind-shamir":
+      return "sidecar";
+  }
+}
+
+/**
+ * Ladder is null when the look did not produce a path: missing request,
+ * refused PKCS#11, incomplete probe. A look that did not happen is not
+ * "sidecar" — sidecar is the completed negative (no HSM, no TPM).
+ */
+export function usbInstallSealFromDecision(decision: IntegrateDecision | null): UsbInstallSeal | null {
+  if (decision === null || !decision.ok) return null;
+  return usbInstallSealFromPath(decision.path);
+}
+
+/**
  * What setup asked for. `auto` picks the strongest accessible path.
  * `pkcs11-hsm` is request-only: either metal HSM vendor (YubiHSM or
  * CardContact SmartCard-HSM). The result names the vendor.

@@ -1,0 +1,12 @@
+{
+  "pr_number": 17146,
+  "archive_path": "docs/history/pr-reviews/PR-17146-fix-081m23cwg35087g0r003hxvv5y-one-transient-synced-degraded-poll-aborted-the-in.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-09T16:23:00.778Z",
+  "schema_version": "v1",
+  "commit_sha": "822b4ce40d0a369eb2295de69c5ccb2c14de1488",
+  "title": "fix(081M23CWG35087G0R003HXVV5Y): one transient Synced/Degraded poll aborted the included proof 2277 seconds early",
+  "state": "MERGED",
+  "merged_at": "2026-09-09T16:22:17Z",
+  "head_ref": "degraded-abort-needs-two-samples"
+}

@@ -90,6 +90,77 @@ export function deriveIdentity(kind: string | undefined, absPath: string): strin
   throw new Error(`unknown identity=${kind} (jar-tlc|jar-alloy)`);
 }
 
+/**
+ * The substring `deriveIdentity` returns, so a pin-surface rewrite can use the
+ * same pair whether the old bytes were on disk or not.
+ *
+ * TLC: `YYYY.MM.DD.HHMMSS (rev: hex)` — the jar manifest's Build-TimeStamp plus
+ * short rev, and the suffix of `TLC2 Version …` in registry/docs.
+ * Alloy: `bundleVersion (rev: descriptor)`.
+ *
+ * Fresh regex per call: `matchAll` advances `lastIndex` on a shared `/g`
+ * object, and a reused pattern would silently skip matches in later texts.
+ */
+export function identityPatternSource(kind: string): string {
+  if (kind === "jar-tlc") return String.raw`\d{4}\.\d{2}\.\d{2}\.\d{6} \(rev: [0-9a-f]+\)`;
+  if (kind === "jar-alloy") return String.raw`\d+\.\d+\.\d+\.\d+ \(rev: [0-9A-Za-z._-]+\)`;
+  throw new Error(`unknown identity=${kind} (jar-tlc|jar-alloy)`);
+}
+
+/**
+ * Recover the previous identity from pin-surface TEXT when the gitignored jar
+ * is not on disk. A fresh clone (and this Cloud VM) has no `tla2tools.jar`;
+ * skipping substitution in that case rewrites the digest and leaves the old
+ * banner in place, so re-measure then refuses 52/52 models as a "verifier
+ * disagreement" that is actually this tool skipping a step.
+ *
+ * Returns null when kind is unset, or when the surfaces name nothing.
+ * Throws when kind is unknown, or when the surfaces name more than one
+ * distinct identity (ambiguous — picking one would re-pin the wrong banner).
+ */
+export function recoverIdentityFromSurfaces(
+  kind: string | undefined,
+  texts: readonly string[],
+): string | null {
+  if (kind === undefined || kind === "") return null;
+  const source = identityPatternSource(kind);
+  const found = new Set<string>();
+  for (const text of texts) {
+    const re = new RegExp(source, "g");
+    for (const match of text.matchAll(re)) found.add(match[0]);
+  }
+  if (found.size === 0) return null;
+  if (found.size > 1) {
+    throw new Error(
+      `ambiguous prior identity in pin surfaces (${kind}): ${[...found].sort().join(", ")}`,
+    );
+  }
+  return [...found][0] ?? null;
+}
+
+/**
+ * Fail closed: a row that declares `identity=` MUST substitute it. Skipping
+ * when the old jar is missing is how a digest-only re-pin looks like a
+ * verifier disagreement.
+ */
+export function identitySubstitutionPairs(
+  kind: string | undefined,
+  oldIdentity: string | null,
+  newIdentity: string | null,
+): ReadonlyArray<readonly [string, string]> {
+  if (kind === undefined || kind === "") return [];
+  if (oldIdentity === null) {
+    throw new Error(
+      `identity=${kind} is set but the previous identity cannot be recovered ` +
+        "(no jar on disk, and pin surfaces carry none)",
+    );
+  }
+  if (newIdentity === null) {
+    throw new Error(`identity=${kind} is set but the new bytes yielded no identity`);
+  }
+  return [[oldIdentity, newIdentity]];
+}
+
 export function sha256Of(bytes: Uint8Array): string {
   return createHash("sha256").update(bytes).digest("hex");
 }
@@ -325,7 +396,27 @@ async function main(argv: readonly string[]): Promise<number> {
   const absDest = join(repoRoot, dest);
   const backup = absDest + ".prepin";
   const hadBytes = copyIfPresent(absDest, backup);
-  const oldIdentity = hadBytes ? deriveIdentity(pin.identity, backup) : null;
+  // The dest is gitignored (de-vendored). A clone that never fetched the jar
+  // has no previous bytes, so identity must come from the pin surfaces the
+  // row already declares — the same strings a present jar would rewrite.
+  // Recover BEFORE writing the new bytes so an ambiguous/missing identity
+  // fails closed without leaving the new jar at dest.
+  const pinSurfaceTexts = pin.pinSurfaces.map((rel) => readFileSync(join(repoRoot, rel), "utf8"));
+  let oldIdentity: string | null;
+  try {
+    oldIdentity = hadBytes
+      ? deriveIdentity(pin.identity, backup)
+      : recoverIdentityFromSurfaces(pin.identity, pinSurfaceTexts);
+    if ((pin.identity ?? "") !== "" && oldIdentity === null) {
+      throw new Error(
+        `identity=${pin.identity} is set but the previous identity cannot be recovered ` +
+          `(no jar at ${dest}, and pin surfaces carry none)`,
+      );
+    }
+  } catch (err) {
+    removeIfPresent(backup);
+    die(2, err instanceof Error ? err.message : String(err));
+  }
   mkdirSync(dirname(absDest), { recursive: true });
   stageVerifiedWrite(absDest, bytes, newSha);
   const newIdentity = deriveIdentity(pin.identity, absDest);
@@ -352,7 +443,12 @@ async function main(argv: readonly string[]): Promise<number> {
   }
 
   const pairs: Array<readonly [string, string]> = [[oldSha, newSha]];
-  if (oldIdentity !== null && newIdentity !== null) pairs.push([oldIdentity, newIdentity]);
+  try {
+    pairs.push(...identitySubstitutionPairs(pin.identity, oldIdentity, newIdentity));
+  } catch (err) {
+    rollback();
+    die(2, err instanceof Error ? err.message : String(err));
+  }
   for (const rel of pin.pinSurfaces) {
     const abs = join(repoRoot, rel);
     const before = readFileSync(abs, "utf8");

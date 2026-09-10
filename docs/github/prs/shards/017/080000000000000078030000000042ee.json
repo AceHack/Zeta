@@ -1,0 +1,12 @@
+{
+  "pr_number": 17134,
+  "archive_path": "docs/history/pr-reviews/PR-17134-feat-research-rung-6-shading-derived-from-clifford-exact-over-q-sqrt-6.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-09T15:32:04.298Z",
+  "schema_version": "v1",
+  "commit_sha": "2cdb04e2aa2061a5eff92e46099fd3c261d7cc62",
+  "title": "feat(research): rung 6 - shading derived from Clifford, exact over Q(sqrt 6)",
+  "state": "MERGED",
+  "merged_at": "2026-09-09T15:31:22Z",
+  "head_ref": "rung-6-clifford-derived-shading"
+}

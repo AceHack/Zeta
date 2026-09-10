@@ -1,10 +1,12 @@
 # ZetaFS as first product -- git/Venti-class content-addressed store, POSIX as a mount, history as a fold
 
+> **Title is historical.** The product identity is ZetaDB (Z-set / G-set / 0-downtime schema evolution / key rotation / `IncrementalJoin`). This file is the **store satellite**, not the database. Jumprope / POSIX / FUSE are sprinkles. See first-class vs sprinkle in the ZetaDB roadmap (`081M245GDBN087G0R000QWR0M4`). Do not rename this path in this peel — too many inbound links.
+
 **Author:** Ani (Grok Build) / design-doc-writer; human maintainer Aaron
 **Date:** 2026-08-30
-**Revised:** 2026-09-09 (agents carry source and evolve with zero downtime; Jumprope discriminator; Rust after ZD4)
+**Revised:** 2026-09-09 (first-class is the algebra, not this store; agents carry source; Jumprope discriminator; Rust after ZD4)
 **Work item:** `081M1C59ZG4087G0R000VM8DZN`
-**Status:** Design spec. PR1-PR11 polyfill is in-tree. Freeze log uses the ferry (D4/ZD2). Crash-mid-write intercept is `InMemoryFileSystem.ArmCrashMidWrite` (D12 door). Crash *recovery* remains `toy` until the rest of the PR12 corpus (reclaim sweep). `ISimulatedFs` is flush-fail and write-fail; crash-mid-write stays `InMemoryFileSystem.ArmCrashMidWrite`. Stay in this monorepo until a signed, tested v0.9ish FS. Do not mint a GitHub product repo as a prerequisite. Later split: `docs/research/2026-09-01-zetafs-stays-in-monorepo-until-v09-then-product-per-language-ir-oracles.md`.
+**Status:** Design spec for the **store**, not the database identity. First-class ZetaDB is Z-set / G-set / schema evolution / key rotation / `IncrementalJoin` (`081M245GDBN087G0R000QWR0M4`). This file is EntityId + typed log + optional CAS body. Jumprope/POSIX/FUSE are sprinkles. PR1-PR11 polyfill is in-tree. Freeze log uses the ferry (D4/ZD2). Crash *recovery* remains `toy`. Stay in this monorepo until a signed, tested v0.9ish FS. Do not mint a GitHub product repo as a prerequisite.
 **Register:** product design. Existing code cited below is a polyfill / algebra substrate, not this product.
 **Extends (do not contradict):** [`docs/design/2026-08-27-zetafs-names-are-tags-multi-parented-files-and-symlink-native-presentation.md`](../../docs/design/2026-08-27-zetafs-names-are-tags-multi-parented-files-and-symlink-native-presentation.md)
 **Settles:** retention and GC, which that document left unset in **section 6.3 / section 8.3** (cycle guard: section 6.2, specified here). Names-are-tags **section 7** is platform presentation (FUSE / FSKit / ProjFS, case-fold refuse) -- not the retention hole. **Also settles** the former Open Questions as **composable knobs** (C1-C10). C8 is the one exclusive ZetaId slot (`StoreEntity = 13`). C9 is **not** "pick TPM": unwrap oracles compose (passphrase, Keychain, Secure Enclave when a seal tier exists, TPM 2.0 on Linux if present, PKCS#11 HSMs of several manufacturers, live USB probe). R8's tpmSeal-vs-usbISerial XOR is the installer defect; this FS must not repeat it.
@@ -17,7 +19,7 @@
 
 ## Overview
 
-Zeta's first product is **not** "ext4 but hashed" and **not** a daily APFS-on-one-SSD Finder replacement. It is a **git/Venti-class content-addressed store**: chunks addressed by BLAKE3-256, a Z-set of name bindings as the namespace (names are tags; the DAG does not know names exist), snapshots and clones as refs, a git polyfill first, a POSIX mount when a POSIX view is wanted, and a multi-device erasure-coded pool when there are many disks.
+This store is **not** "ext4 but hashed" and **not** a daily APFS-on-one-SSD Finder replacement. It is a **git/Venti-class content-addressed store**: chunks addressed by BLAKE3-256, a Z-set of name bindings as the namespace (names are tags; the DAG does not know names exist), snapshots and clones as refs, a git polyfill first, a POSIX mount when a POSIX view is wanted, and a multi-device erasure-coded pool when there are many disks. The database that sits on it is ZetaDB.
 
 Durability truth is the **event log** (`ZetaFsDeltaLog` / DBSP), not the POSIX cache. `write()` mutates a scratch buffer and does not mint a new EntityId. Freeze (CDC + hash) produces a ContentId. `fsync` waits for an LSN. History is a **first-class per-entity policy** -- `keep-all | rolling | none | regen` -- implemented as DBSP window folds over bindings, keyed by **phase**, never wall-clock. Git's infinite history is the bloat this product exists to refuse.
 

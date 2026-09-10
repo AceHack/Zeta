@@ -1,0 +1,12 @@
+{
+  "pr_number": 17149,
+  "archive_path": "docs/history/pr-reviews/PR-17149-preserve-tiktok-v14-character-motion-and-facial-corrections.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-09T16:32:17.355Z",
+  "schema_version": "v1",
+  "commit_sha": "7ffb1fabdb03eb3ac819912b109528dc0e88c958",
+  "title": "Preserve TikTok v14 character motion and facial corrections",
+  "state": "MERGED",
+  "merged_at": "2026-09-09T16:31:18Z",
+  "head_ref": "codex/tiktok-character-v14"
+}

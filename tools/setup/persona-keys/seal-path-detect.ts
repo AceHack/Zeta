@@ -71,7 +71,7 @@
  * Usage: bun tools/setup/persona-keys/seal-path-detect.ts
  * Env:   ZETA_FROST_LOOK_OS, ZETA_FROST_LOOK_EFFECTS, ZETA_UNSEAL_REQUEST
  * Argv:  --os <family> [--effects null|real] [--request <PathRequest>]
- * Exit 0: {"ok":true, os, effects, requested, probe, decision}
+ * Exit 0: {"ok":true, os, effects, requested, probe, decision, ladder}
  * Exit 2: {"ok":false, reason}
  */
 
@@ -83,7 +83,11 @@ import {
   type FrostLookEnvParse,
 } from "./named-frost-look.ts";
 import { frostLookProbeFromNamed } from "./named-frost-look-env.ts";
-import { integrateAtSetupFromEnv } from "../../../src/Core.TypeScript/cluster/unseal-path.ts";
+import {
+  integrateAtSetupFromEnv,
+  usbInstallSealFromDecision,
+  type UsbInstallSeal,
+} from "../../../src/Core.TypeScript/cluster/unseal-path.ts";
 
 export const UNSEAL_REQUEST_FLAG = "--request";
 export const UNSEAL_REQUEST_KEY = "ZETA_UNSEAL_REQUEST";
@@ -112,6 +116,8 @@ export interface SealPathDetectOk {
   readonly requested: string | null;
   readonly probe: unknown;
   readonly decision: unknown;
+  /** USB-install rung. Null when the look did not produce a path. */
+  readonly ladder: UsbInstallSeal | null;
 }
 
 /**
@@ -134,6 +140,7 @@ export function joinLookToDecision(
     requested: env[UNSEAL_REQUEST_KEY] ?? null,
     probe,
     decision: joined.decision,
+    ladder: usbInstallSealFromDecision(joined.decision),
   };
   return { json: JSON.stringify(body), code: 0 };
 }

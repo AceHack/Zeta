@@ -1,0 +1,12 @@
+{
+  "pr_number": 17137,
+  "archive_path": "docs/history/pr-reviews/PR-17137-fix-zflash-a-combined-pubkey-written-to-a-guessable-path-in-shared-tmp.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-09T15:28:09.271Z",
+  "schema_version": "v1",
+  "commit_sha": "9926a1efad0d4c0e67a92478d6a5b0370bbb7775",
+  "title": "fix(zflash): a combined pubkey written to a guessable path in shared tmp",
+  "state": "MERGED",
+  "merged_at": "2026-09-09T15:27:24Z",
+  "head_ref": "fix/zflash-predictable-temp-pubkey"
+}
