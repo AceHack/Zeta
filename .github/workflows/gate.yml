@@ -4384,10 +4384,11 @@ jobs:
       # lint-workflow-job-timeouts), so none of them can see it.
       #
       # Measured 2026-09-09: 16 of 105 workflows were disabled_manually and nothing named
-      # it -- including `drift-sweep.yml`, which is the SECOND HOST of the very
-      # verdict-drought detector in the step above. That detector was deliberately given
-      # two hosts because one of them is cancelled by the merge storm it exists to report;
-      # with drift-sweep disabled since 2026-08-29, only the cancellable host remained.
+      # it. THOSE SIXTEEN ARE INTENTIONAL -- the maintainer stopped the cadence/heartbeat
+      # lanes because they commit on every scheduled run and were growing the repo, so this
+      # step records them and never argues for re-enabling any. The signal is the DELTA:
+      # the seventeenth disablement nobody wrote down, an entry that comes back to life, a
+      # roster row gone stale.
       #
       # DRIFT TIER, and forced rather than chosen: this is a live POPULATION query, which
       # floor-live-remote-queries.ts refuses inside the blocking floor. A PR must not go red

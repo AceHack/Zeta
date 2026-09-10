@@ -22,20 +22,26 @@
 // The state lives ONLY in the forge, so only a live query can see it.
 //
 // MEASURED 2026-09-09 on Lucent-Financial-Group/Zeta: 16 of 105 workflows were
-// disabled_manually, and no surface in the repository named that fact. Among them:
-//   * drift-sweep.yml -- the SECOND HOST of verdict-drought.ts, chosen as a second host
-//     for one stated reason. verdict-drought.ts says it plainly: "a drought detector that
-//     lives only inside gate is cancelled by exactly the condition it exists to report --
-//     it would be silent precisely when it matters". Its own failure-mode section adds:
-//     "If BOTH go quiet the condition is invisible again -- that limit is real and is not
-//     papered over here." One of the two had been quiet since 2026-08-29, and the
-//     surviving host is the cancellable one.
-//   * agent-heartbeat.yml, society-heartbeat.yml, tick-metrics.yml -- the lanes CLAUDE.md
-//     instructs every agent to read for liveness.
-//   * pr-manifest-integrity.yml, proof-closure-drift.yml, artifact-freshness.yml,
-//     archive-strand-alarm.yml -- four named alarms.
-// Whether any given one SHOULD be disabled is a maintainer call and this file does not
-// make it. What this file refuses is that the answer be UNRECORDED.
+// disabled_manually, and no surface in the repository named that fact.
+//
+// THEY WERE DISABLED ON PURPOSE, and this file is NOT a case for turning them back on.
+// The maintainer (Aaron, 2026-09-09) stopped the cadence/heartbeat lanes because they
+// were growing the repository uncontrollably: several hold contents:write and COMMIT on
+// every scheduled run -- drift-sweep.yml writes a tick event to docs/drift-events/ per
+// cadence -- so re-enabling one resumes exactly what was removed. The registry records
+// them as `intentional` and the audit is content with that forever.
+//
+// SO WHAT IS THIS FOR. Visibility, and nothing more. A workflow that produces no runs
+// produces no red X, so its silence is invisible by construction, and this repository has
+// no other surface that can see it. The value is in the DELTA: the seventeenth
+// disablement nobody wrote down, an entry that quietly comes back to life, a roster row
+// that has gone stale. Those are the findings. The recorded sixteen are furniture.
+//
+// A design note, deliberately not a work item: verdict-drought.ts runs in two hosts on
+// purpose ("a drought detector that lives only inside gate is cancelled by exactly the
+// condition it exists to report"), and drift-sweep was the second one. That redundancy is
+// currently gone. Restoring it would need a NON-COMMITTING host, which is a later design
+// question and not a defect to be filed now.
 //
 // WHAT IT DOES, AND THE BASELINE DISCIPLINE
 // -----------------------------------------
