@@ -74,6 +74,7 @@ generator that read an EMPTY roster cannot pass.
 | `cross-verify (push-without-rebase)`                    | Commit-back lane can re-express its work (AH001)                                   |
 | `cross-verify (skip-token-cannot-land)`                 | Commit-back lane can actually land (AH002)                                         |
 | `cross-verify (dotnet-pin-parity)`                      | .NET SDK pin declared once (.mise.toml canonical, global.json restates)            |
+| `cross-verify (dotnet-band-unity)`                      | every TargetFramework and dotnet base image sits in the pinned band                |
 | `cross-verify (argocd-pin-parity)`                      | ArgoCD chart pinned identically at all five install sites                          |
 | `cross-verify (committed-chart-credentials)`            | No chart's values carry a secret as a literal                                      |
 | `cross-verify (committed-chart-credentials-tests)`      | committed-chart-credentials falsifiers (identifier vs secret, stale keys, no leak) |

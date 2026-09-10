@@ -3470,6 +3470,7 @@ jobs:
           - push-without-rebase
           - skip-token-cannot-land
           - dotnet-pin-parity
+          - dotnet-band-unity
           - argocd-pin-parity
           - committed-chart-credentials
           - committed-chart-credentials-tests

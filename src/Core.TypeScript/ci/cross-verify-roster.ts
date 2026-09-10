@@ -416,6 +416,21 @@ export const CROSS_VERIFY_AUDITS: readonly CrossVerifyAudit[] = [
     command: "bun src/Core.TypeScript/hygiene/audit-dotnet-pin-parity.ts",
   },
 
+  // THE PIN'S CONSUMERS, which the entry above does not reach. `audit-dotnet-pin-parity`
+  // holds `.mise.toml` and `global.json` equal and is correct about those two files. It
+  // says nothing about the places that SPEND the pin. MEASURED 2026-09-09: 42 projects on
+  // `net10.0`, one on `net8.0` (`genesis/_src/auth-backend`), and two Dockerfiles naming
+  // `dotnet/sdk:8.0` / `dotnet/aspnet:8.0` while `orleans-silo` was on `10.0-noble`. The
+  // holdout is not in `Zeta.sln` and is not built by CI -- it carries a deliberately empty
+  // `Directory.Build.props` so it escapes the strict profile -- which is exactly why the
+  // drift was silent: the only surface that would have caught it is one nothing compiles.
+  // A pin nobody checks against the things it pins is a declaration, not a constraint.
+  {
+    id: "dotnet-band-unity",
+    title: "every TargetFramework and dotnet base image sits in the pinned band",
+    command: "bun src/Core.TypeScript/hygiene/audit-dotnet-runtime-band-unity.ts",
+  },
+
   // FIVE places install ArgoCD and they must name ONE chart version. The response to the
   // 2026-09-03 incident -- the k3s bootstrap moved to 10.6.0 and "this kind-lane pin was
   // the one left behind", so v2.13.2's Helm 3 could not render seaweedfs's Helm-4-only
