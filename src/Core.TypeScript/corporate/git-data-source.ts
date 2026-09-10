@@ -57,7 +57,8 @@
  */
 
 import { execFileSync } from "node:child_process";
-import { closeSync, constants, fstatSync, openSync, readFileSync, readdirSync } from "node:fs";
+import { createHash } from "node:crypto";
+import { readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
 import { Fidelity, Port, type DataSourcePort, type PortResult, type SourceDocument } from "./providers";
 
@@ -424,27 +425,28 @@ export function directoryDataSource(input: {
         // the revision of the bytes it carries. That is a citation that quietly lies, which is
         // worse here than a read that fails. CodeQL alert #938 (`js/file-system-race`).
         let content = "";
-        let mtimeMs: number;
         try {
-          // O_RDONLY as an explicit NUMERIC flag, not the string "r". They are the same
-          // thing, but the string form is what CodeQL's `js/insecure-temporary-file` read as
-          // a possible CREATE when the walk root happens to be under the OS temp dir (alert
-          // #945 — introduced by the very fix that closed the stat-then-read race #938, which
-          // is the relocation pattern landing on me). O_RDONLY cannot create a file, and
-          // saying so in the flag rather than in a mode string leaves nothing to infer.
-          const fd = openSync(full, constants.O_RDONLY);
-          try {
-            mtimeMs = fstatSync(fd).mtimeMs;
-            content = readFileSync(fd, "utf-8");
-          } finally {
-            closeSync(fd);
-          }
+          content = readFileSync(full, "utf-8");
         } catch {
           continue;
         }
-        // The REVISION is the file's own mtime. A wiki page has a version; a written record has the
-        // moment it was written, and a citation with no revision is not a citation.
-        const revision = String(Math.floor(mtimeMs));
+        // THE REVISION IS THE CONTENT ITSELF, not the file's mtime.
+        //
+        // This started as `statSync` then `readFileSync` — two questions about one path,
+        // taking the revision from the first answer and the bytes from the second, so a file
+        // rewritten in between produced a citation whose revision did not describe its
+        // content (`js/file-system-race` #938). Closing that with one descriptor
+        // (`openSync`/`fstatSync`) then raised `js/insecure-temporary-file` #945, and
+        // spelling the flag `constants.O_RDONLY` relocated it to #947. Two fixes, two new
+        // alerts, same site: the pattern moving rather than leaving.
+        //
+        // Hashing the content removes the QUESTION instead of answering it more carefully.
+        // There is no second syscall to race against, no descriptor to open, and the
+        // revision cannot disagree with the bytes because it is DERIVED from them. It is
+        // also the better citation: an mtime is a property of the filesystem that copying,
+        // checkout or rsync will change without the content changing, while a content
+        // address is stable wherever the document travels — which is what a citation is for.
+        const revision = createHash("sha256").update(content, "utf-8").digest("hex").slice(0, 12);
         out.push({ path: next, revision, content, ref: `${name}:${revision}:${next}` });
       }
     };
