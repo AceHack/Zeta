@@ -957,7 +957,18 @@ export function observe(world: World): NextAction {
 }
 
 /** One-line human-readable render of a chosen action (for the foreground loop). */
-export function renderAction(a: NextAction): string {
+export function renderAction(a: NextAction, methods?: readonly Method[]): string {
+  // ── THE METHOD IS SAID BESIDE THE VERB ────────────────────────────────────
+  // This is the whole point of the seam. A method held on `World` that no rendering mentions is a
+  // method no agent ever reads — the surface would know how to do the thing and never say so.
+  // Appended rather than substituted: the verb is still the verb, and an agent that ignores the
+  // method still sees exactly the line it saw before.
+  const how = methodFor(methods, a.kind);
+  const suffix = how === undefined ? "" : `  [how: ${how.skillId} — ${how.why}]`;
+  return renderVerb(a) + suffix;
+}
+
+function renderVerb(a: NextAction): string {
   switch (a.kind) {
     case "preserve_ferry":
       return `[preserve]  ${a.reason}`;

@@ -19,8 +19,31 @@
  */
 
 import { describe, expect, test } from "bun:test";
-import { methodFor, type Method, type World } from "../observe/observe";
+import { methodFor, renderAction, type Method, type NextAction, type World } from "../observe/observe";
+import { tick, type DriveDeps, type DriveState } from "./org-drive";
+import { buildOrgChart } from "./org-chart";
+import { SEED_HATS } from "./org-seed";
+import { EMPTY_BOARD } from "./discussion-anchor";
+import { EMPTY_CALENDAR } from "./work-schedule";
 import { ACTION_KINDS, ACTION_RECONCILIATION } from "../observe/action-reconciliation";
+
+const built = buildOrgChart(SEED_HATS);
+if (!built.ok) throw new Error(built.reason);
+const CHART = built.chart;
+
+/**
+ * The smallest drive state `tick` accepts — the same shape `org-drive.test.ts` builds.
+ *
+ * Hand-rolling a narrower one omitted `signals` and `board`, and the failure was a TypeError inside
+ * the bridge rather than a wrong answer: a fixture that cannot reach the code is not a lighter
+ * fixture, it is a test that proves nothing about it.
+ */
+const driveState = (): DriveState =>
+  ({
+    view: { chart: CHART, board: EMPTY_BOARD, signals: [], cascade: [], artifacts: new Map() },
+    cascade: { nodes: [] },
+    calendar: EMPTY_CALENDAR,
+  }) as unknown as DriveState;
 
 const GRILL: Method = {
   kind: "request_information",
@@ -90,5 +113,72 @@ describe("THE SURFACE CARRIES IT WITHOUT CHANGING WHAT A VERB IS", () => {
     const w = world();
     expect(w.methods).toBeUndefined();
     expect(methodFor(w.methods, "request_information")).toBeUndefined();
+  });
+});
+
+describe("AND THE AGENT ACTUALLY SEES IT — the chain, end to end", () => {
+  // ── WHY THIS DESCRIBE EXISTS ───────────────────────────────────────────────
+  // The seam was built and left UNCONNECTED: `org method bind` wrote the record, the type carried
+  // it, `orgSurfaceFor` would pass it through — and the only production caller never passed it,
+  // and nothing read `methodFor` at all. Every unit test above passed the whole time. These are
+  // the joins, and each one is the thing a unit test cannot see.
+
+  test("renderAction SAYS the method beside the verb it applies to", () => {
+    // The one function that turns a verb into text an agent reads. A method the rendering never
+    // mentions is a method no agent ever sees — the surface would know how and never say so.
+    const action = { kind: "request_information", about: "the expiry policy", blocking: "task-1" } as unknown as NextAction;
+    const line = renderAction(action, [GRILL]);
+    expect(line).toContain("requirement-grilling");
+    expect(line).toContain("how:");
+  });
+
+  test("...and says nothing extra when no method applies", () => {
+    const action = { kind: "request_information", about: "x", blocking: "y" } as unknown as NextAction;
+    expect(renderAction(action, [])).toBe(renderAction(action));
+    expect(renderAction(action)).not.toContain("how:");
+  });
+
+  test("a method for ANOTHER verb does not leak onto this one", () => {
+    const action = { kind: "raise_to_human", reason: "legal" } as unknown as NextAction;
+    expect(renderAction(action, [GRILL])).not.toContain("requirement-grilling");
+  });
+
+  test("the DRIVE hands the methods to the chooser", () => {
+    // A model-backed chooser builds its own prompt; if the drive does not hand it the methods, the
+    // model never learns them however well the rendering behaves.
+    const seen: (readonly Method[] | undefined)[] = [];
+    const deps = {
+      chart: CHART,
+      nowMs: 0,
+      createId: (p: string) => `${p}-1`,
+      resourceAuthorityHatId: "rmo_office",
+      methods: [GRILL],
+      choose: (menu: readonly NextAction[], _hatId: string, methods?: readonly Method[]) => {
+        seen.push(methods);
+        return menu[0];
+      },
+    } as unknown as DriveDeps;
+
+    tick(driveState(), "backend_implementer", deps);
+    expect(seen).toHaveLength(1);
+    expect(seen[0]).toEqual([GRILL]);
+  });
+
+  test("a drive with NO methods hands the chooser undefined, not an empty list", () => {
+    // Absent is "this organization has no opinion"; empty would be "it has one and it is nothing".
+    const seen: (readonly Method[] | undefined)[] = [];
+    const deps = {
+      chart: CHART,
+      nowMs: 0,
+      createId: (p: string) => `${p}-1`,
+      resourceAuthorityHatId: "rmo_office",
+      choose: (menu: readonly NextAction[], _hatId: string, methods?: readonly Method[]) => {
+        seen.push(methods);
+        return menu[0];
+      },
+    } as unknown as DriveDeps;
+
+    tick(driveState(), "backend_implementer", deps);
+    expect(seen[0]).toBeUndefined();
   });
 });

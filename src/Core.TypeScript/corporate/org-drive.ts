@@ -29,6 +29,7 @@
  */
 
 import { buildMenu, type NextAction, type World } from "../observe/observe";
+import type { Method } from "../observe/observe";
 import { effectOf, orgSurfaceFor, type OrgEffect, type OrgView } from "./org-observe-bridge";
 import type { WorkTransfer } from "./work-stealing";
 import type { AlternateAssignment } from "./alternate-work";
@@ -93,7 +94,24 @@ export interface DriveDeps {
    * First rather than random: a drive has to be replayable, and the menu is already ordered by the
    * grammar so that the more urgent thing comes first. A caller wiring a model in supplies its own.
    */
-  readonly choose?: (menu: readonly NextAction[], hatId: string) => NextAction | undefined;
+  readonly choose?: (
+    menu: readonly NextAction[],
+    hatId: string,
+    /**
+     * How this organization wants particular verbs taken.
+     *
+     * Handed to the chooser rather than only rendered, because a MODEL-backed chooser builds its
+     * own prompt and would otherwise never see them. Optional third parameter so every existing
+     * deterministic chooser keeps compiling and keeps behaving identically.
+     */
+    methods?: readonly Method[],
+  ) => NextAction | undefined;
+  /**
+   * The methods this drive offers, if any. Absent means every verb is taken the way it always was.
+   *
+   * Supplied by whoever holds the organization's record — this module does not read a registry.
+   */
+  readonly methods?: readonly Method[];
   /** Derive effects and apply NONE. The honest way to ask what would happen next. */
   readonly dryRun?: boolean;
   /**
@@ -197,10 +215,13 @@ export function tick(state: DriveState, hatId: string, deps: DriveDeps): TickRep
       deps.directionReviewMs === undefined
         ? undefined
         : { nowMs: deps.nowMs, reviewIntervalMs: deps.directionReviewMs },
+      // WITHOUT THIS LINE the whole seam is decorative: the surface would accept methods and never
+      // be given any, so no agent would ever see one.
+      deps.methods,
     ),
   };
   const menu = buildMenu(world);
-  const chosen = (deps.choose ?? ((m) => m[0]))(menu, hatId);
+  const chosen = (deps.choose ?? ((m) => m[0]))(menu, hatId, world.methods);
   if (chosen === undefined) {
     return {
       hatId,
