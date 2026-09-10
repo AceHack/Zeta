@@ -73,6 +73,8 @@ export interface Reference {
   readonly pinned: boolean;
   readonly file: string;
   readonly line: number;
+  /** The `# vX.Y.Z` comment trailing the pin, when one is written. */
+  readonly versionComment?: string;
 }
 
 export interface Finding {
@@ -80,8 +82,14 @@ export interface Finding {
   readonly sha: string;
   readonly file: string;
   readonly line: number;
-  readonly reason: "not-on-roster" | "sha-disagrees-with-roster" | "unpinned-mutable-ref";
+  readonly reason:
+    | "not-on-roster"
+    | "sha-disagrees-with-roster"
+    | "unpinned-mutable-ref"
+    | "version-comment-disagrees";
   readonly rosterSha?: string;
+  /** version-comment-disagrees: every distinct claim made about this one SHA. */
+  readonly versionClaims?: readonly string[];
 }
 
 export interface AuditResult {
@@ -104,7 +112,13 @@ export function extractReferences(file: string, src: string): Reference[] {
       const action = m[1];
       const sha = m[2];
       if (action !== undefined && sha !== undefined) {
-        out.push({ action, sha, pinned: SHA_RE.test(sha), file, line: i + 1 });
+        // The trailing `# v7.0.1`. USES_RE stops at `#`, so it is read separately.
+        const c = /#\s*(v?[0-9][A-Za-z0-9._-]*)\s*$/u.exec(line);
+        const versionComment = c?.[1];
+        out.push({
+          action, sha, pinned: SHA_RE.test(sha), file, line: i + 1,
+          ...(versionComment === undefined ? {} : { versionComment }),
+        });
       }
     }
   }
@@ -146,7 +160,9 @@ export function readRoster(root: string): Roster | null {
  * line hides exactly that.
  */
 export function auditReferences(refs: readonly Reference[], roster: Roster): Finding[] {
-  const findings: Finding[] = [];
+  // Version-comment disagreement is a property of the SET of references, not of any one, so it is
+  // computed once over the whole set rather than inside the per-reference loop below.
+  const findings: Finding[] = [...auditVersionComments(refs)];
   for (const r of refs) {
     if (!r.pinned) {
       findings.push({ ...r, reason: "unpinned-mutable-ref" });
@@ -163,6 +179,62 @@ export function auditReferences(refs: readonly Reference[], roster: Roster): Fin
 }
 
 /** The roster a clean tree would have — one entry per action, refusing to invent one when pins disagree. */
+/**
+ * ONE SHA, TWO VERSION CLAIMS -- at least one of them is FALSE.
+ *
+ * This is provable from the repository alone, with no network call: a single
+ * immutable commit cannot be two different released versions, so if a SHA
+ * carries two distinct `# vX.Y.Z` comments then at most one is true. The check
+ * does not need to know WHICH one is wrong to know that one is.
+ *
+ * MEASURED 2026-09-10, which is why it exists. `actions/upload-artifact` was
+ * pinned at `043fb46d` across 29 sites carrying THREE different claims --
+ * `# v4.6.2`, `# v7.0.0`, `# v7.0.1`. Resolving the tags against GitHub showed
+ * the SHA is **v7.0.1**; real v4.6.2 is `ea165f8d` and real v7.0.0 is
+ * `bbbca2dd`. So two comments were false and one was wrong by THREE MAJOR
+ * VERSIONS -- a reviewer reading `# v4.6.2` believed they were reviewing a v4
+ * action while a v7 one ran.
+ *
+ * The roster check above could not see it, because every site agreed on the
+ * SHA. That is the point: the SHA is what RUNS and the comment is what gets
+ * READ, and nothing was comparing the two. A comment shaped like a version pin
+ * that nothing checks is the vacuity class with a `#` in front of it.
+ *
+ * DELIBERATELY OFFLINE. Verifying a comment against the real tag needs the
+ * GitHub API, which would make this check environment-dependent and its verdict
+ * a function of network reachability rather than of the tree. Internal
+ * disagreement is decidable from the files themselves and catches the live
+ * case; the network form belongs in a drift lane, not here.
+ *
+ * HONEST LIMIT: it cannot catch a SHA whose ONE comment is uniformly wrong
+ * everywhere. That needs the tag lookup.
+ */
+export function auditVersionComments(refs: readonly Reference[]): Finding[] {
+  const claims = new Map<string, Map<string, Reference>>();
+  for (const r of refs) {
+    if (!r.pinned || r.versionComment === undefined) continue;
+    const key = `${r.action}@${r.sha}`;
+    let byClaim = claims.get(key);
+    if (byClaim === undefined) { byClaim = new Map<string, Reference>(); claims.set(key, byClaim); }
+    if (!byClaim.has(r.versionComment)) byClaim.set(r.versionComment, r);
+  }
+  const findings: Finding[] = [];
+  for (const byClaim of claims.values()) {
+    if (byClaim.size < 2) continue;
+    // Ordinal, never localeCompare: collation must not vary by machine.
+    const versionClaims = [...byClaim.keys()].sort((a, b) => (a < b ? -1 : a > b ? 1 : 0));
+    for (const claim of versionClaims) {
+      const r = byClaim.get(claim);
+      if (r === undefined) continue;
+      findings.push({
+        action: r.action, sha: r.sha, file: r.file, line: r.line,
+        reason: "version-comment-disagrees", versionClaims,
+      });
+    }
+  }
+  return findings;
+}
+
 export function deriveRoster(refs: readonly Reference[]): { roster: Roster; conflicts: string[] } {
   const seen = new Map<string, Set<string>>();
   for (const r of refs) {
@@ -185,7 +257,14 @@ function renderHuman(r: AuditResult, roster: Roster): string {
   if (r.findings.length === 0) return `action-sha-roster: OK — ${head}.`;
   const lines = [`action-sha-roster: ${r.findings.length} finding(s) — ${head}`, ""];
   for (const f of r.findings) {
-    if (f.reason === "unpinned-mutable-ref") {
+    if (f.reason === "version-comment-disagrees") {
+      lines.push(
+        `  ${f.file}:${String(f.line)}  ${f.action}@${f.sha.slice(0, 12)}`,
+        `      VERSION COMMENT DISAGREES. This one SHA is labelled ${(f.versionClaims ?? []).join(", ")} across the`,
+        `      fleet. A commit cannot be two releases, so at least one of those comments is FALSE — and the`,
+        `      SHA is what runs while the comment is what gets read.`,
+      );
+    } else if (f.reason === "unpinned-mutable-ref") {
       lines.push(`  ${f.file}:${String(f.line)}  ${f.action}@${f.sha}`);
       lines.push(`      NOT PINNED. \`@${f.sha}\` is a tag or branch the upstream owner can move at any`);
       lines.push(`      time, so what CI runs tomorrow is not what anyone reviewed today. Pin the SHA.`);

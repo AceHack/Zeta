@@ -18,15 +18,7 @@ import { mkdtempSync, mkdirSync, writeFileSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { afterAll, describe, expect, test } from "bun:test";
-import {
-  auditReferences,
-  collectReferences,
-  deriveRoster,
-  extractReferences,
-  readRoster,
-  ROSTER_PATH,
-  type Roster,
-} from "./audit-action-sha-roster";
+import { ROSTER_PATH, auditReferences, auditVersionComments, collectReferences, deriveRoster, extractReferences, readRoster, type Roster } from "./audit-action-sha-roster.ts";
 
 const SHA_A = "043fb46d1a93c77aae656e7c1c64a875d1fc6a0a";
 const SHA_B = "ea165f8d65b6e75b540449e92b4886f43607fa02";
@@ -192,5 +184,64 @@ describe("the live tree", () => {
     expect(workflows).toBeGreaterThan(50);
     expect(refs.length).toBeGreaterThan(100);
     expect(refs.every((r) => r.pinned)).toBe(true);
+  });
+});
+
+describe("version comments — one SHA cannot be two releases", () => {
+  const SHA = "043fb46d1a93c77aae656e7c1c64a875d1fc6a0a";
+  const line = (v: string): string => `      uses: actions/upload-artifact@${SHA} # ${v}`;
+
+  test("two different claims about one SHA is a finding", () => {
+    const refs = [
+      ...extractReferences("a.yml", line("v4.6.2")),
+      ...extractReferences("b.yml", line("v7.0.1")),
+    ];
+    const f = auditVersionComments(refs);
+    expect(f.length).toBe(2);
+    expect(f[0]?.reason).toBe("version-comment-disagrees");
+    // Ordinal order, so the claim list does not vary by machine.
+    expect(f[0]?.versionClaims).toEqual(["v4.6.2", "v7.0.1"]);
+  });
+
+  test("the live case: THREE claims on one SHA, as measured on 2026-09-10", () => {
+    const refs = [
+      ...extractReferences("a.yml", line("v4.6.2")),
+      ...extractReferences("b.yml", line("v7.0.0")),
+      ...extractReferences("c.yml", line("v7.0.1")),
+    ];
+    expect(auditVersionComments(refs).length).toBe(3);
+  });
+
+  test("agreement is silent — the same claim everywhere is not a finding", () => {
+    const refs = [
+      ...extractReferences("a.yml", line("v7.0.1")),
+      ...extractReferences("b.yml", line("v7.0.1")),
+      ...extractReferences("c.yml", line("v7.0.1")),
+    ];
+    expect(auditVersionComments(refs)).toEqual([]);
+  });
+
+  test("NEGATIVE-CASE CONTROL: an uncommented pin is not a claim, so it cannot disagree", () => {
+    // Absence of a comment is not a false comment. Reporting it here would make
+    // the check fire on something it has no evidence about.
+    const refs = [
+      ...extractReferences("a.yml", `      uses: actions/upload-artifact@${SHA}`),
+      ...extractReferences("b.yml", line("v7.0.1")),
+    ];
+    expect(auditVersionComments(refs)).toEqual([]);
+  });
+
+  test("DIFFERENT SHAs may legitimately carry different versions", () => {
+    const other = "ea165f8d65b6e75b540449e92b4886f43607fa02";
+    const refs = [
+      ...extractReferences("a.yml", line("v7.0.1")),
+      ...extractReferences("b.yml", `      uses: actions/upload-artifact@${other} # v4.6.2`),
+    ];
+    expect(auditVersionComments(refs)).toEqual([]);
+  });
+
+  test("THE COMMITTED TREE agrees with itself", () => {
+    const { refs } = collectReferences(".");
+    expect(auditVersionComments(refs)).toEqual([]);
   });
 });

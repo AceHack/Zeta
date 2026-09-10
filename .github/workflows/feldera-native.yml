@@ -118,7 +118,7 @@ jobs:
 
       - name: Upload Feldera Nexmark CSV
         if: always()
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.0
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: feldera-nexmark-${{ matrix.os }}
           path: feldera-nexmark-out/feldera-nexmark.csv
@@ -252,7 +252,7 @@ jobs:
 
       - name: Upload dbsp log
         if: always()
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.0
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: dbsp-${{ matrix.os }}-${{ matrix.pair.rust }}
           path: dbsp-build.log

@@ -1,0 +1,14 @@
+{
+  "id": "080d046ac7145010a0130008a459e5c3",
+  "at": "2026-09-10T22:03:27.754Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M26NHRM9087G0R0029WZGHS",
+    "type": "task",
+    "title": "Per-domain gate filtering and the failure taxonomy",
+    "slug": "per-domain-gate-filtering-and-the-failure-taxonomy",
+    "priority": "P2",
+    "filename": "081M26NHRM9087G0R0029WZGHS-per-domain-gate-filtering-and-the-failure-taxonomy.md"
+  }
+}
