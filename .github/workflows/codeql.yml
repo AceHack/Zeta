@@ -202,12 +202,30 @@ concurrency:
   # `total_count: 0` jobs, i.e. it never started, which is what identifies this as the
   # pending case rather than a failure of the setting.
   #
-  # So the expected outcome is a large reduction, NOT zero. The sibling workflow is the
-  # calibration: `scorecard.yml` has run `cancel-in-progress: false` all along and still
-  # cancels ~3% of runs on `main` (n=99), against this workflow's 62% before the change.
-  # Anyone re-running the zero-rule ratio should read a residual few percent as SUCCESS.
-  # Reading it as failure would be the same error in the other direction -- concluding a
-  # working check is broken, and reverting to the configuration that produced 62%.
+  # MEASURED AFTER THE FACT, AND IT CORRECTS WHAT THIS COMMENT FIRST SAID.
+  #
+  # The first draft predicted "a large reduction in the cancellation RATE". That is NOT what
+  # happened, and anyone checking the rate alone would conclude the fix failed and revert it.
+  #
+  # Measured on `main`, 2026-09-10, first 6 completed runs after the change:
+  #
+  #   cancellation rate   69% before  ->  67% after      <- barely moved
+  #   cancelled runs that had STARTED any job:
+  #                       4 of 4 before (2-6 jobs each)
+  #                       0 of 4 after  (0 jobs, 0 started)
+  #
+  # So the RATE is the wrong metric and the NATURE is the right one. Before, cancellation
+  # killed analyses that were already running -- real work destroyed, and the alert baseline
+  # left stale. After, it only drops QUEUED duplicates that had done no work, which is the
+  # pending-supersede case described above and is harmless.
+  #
+  # THE FALSIFIER, corrected: count cancelled runs whose jobs actually STARTED.
+  #
+  #   gh api ".../actions/runs/<id>/jobs" --jq '[.jobs[]|select(.started_at!=null)]|length'
+  #
+  # Zero of those is the fix working. A non-zero count is the fix not applying, and is the
+  # only reading that justifies revisiting this line. A high cancellation rate on its own
+  # says nothing -- it is dominated by superseded queue entries under a fast push cadence.
 
 jobs:
   # Fast pre-check: decide whether any code-scanned paths
