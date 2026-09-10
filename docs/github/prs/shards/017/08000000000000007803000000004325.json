@@ -1,0 +1,12 @@
+{
+  "pr_number": 17189,
+  "archive_path": "docs/history/pr-reviews/PR-17189-feat-creds-usb-install-ladder-is-hsm-then-tpm-then-sidecar.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-10T00:30:06.442Z",
+  "schema_version": "v1",
+  "commit_sha": "fe89336a91876cbdae15b2d54956b81748e2da11",
+  "title": "feat(creds): USB install ladder is hsm then tpm then sidecar",
+  "state": "MERGED",
+  "merged_at": "2026-09-10T00:29:23Z",
+  "head_ref": "cursor/usb-seal-ladder-hsm-tpm-sidecar-27c5"
+}
