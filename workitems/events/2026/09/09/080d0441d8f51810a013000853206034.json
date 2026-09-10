@@ -1,0 +1,14 @@
+{
+  "id": "080d0441d8f51810a013000853206034",
+  "at": "2026-09-09T22:12:50.979Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M243P7N2087G0R001541V8M",
+    "type": "bug",
+    "title": "rolling tla2tools pin: upstream republishes faster than a re-pin can merge, so CI is red repo-wide",
+    "slug": "rolling-tla2tools-pin-upstream-republishes-faster-than-a-re",
+    "priority": "P2",
+    "filename": "081M243P7N2087G0R001541V8M-rolling-tla2tools-pin-upstream-republishes-faster-than-a-re.md"
+  }
+}
