@@ -1,0 +1,12 @@
+{
+  "pr_number": 17243,
+  "archive_path": "docs/history/pr-reviews/PR-17243-fix-bytelock-build-the-six-wasm-substrates-in-ci-instead-of-committing-them.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-10T15:44:53.397Z",
+  "schema_version": "v1",
+  "commit_sha": "7628c702537f622d3c6a35e202daea2458f31bf0",
+  "title": "fix(bytelock): build the six wasm substrates in CI instead of committing them",
+  "state": "MERGED",
+  "merged_at": "2026-09-10T15:44:08Z",
+  "head_ref": "agent/wasm-build-in-ci"
+}

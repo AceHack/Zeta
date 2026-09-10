@@ -1,0 +1,12 @@
+{
+  "pr_number": 17231,
+  "archive_path": "docs/history/pr-reviews/PR-17231-feat-081m24madr2087g0r001fcd8k6-commit-mise-lock-so-the-toolchain-digests-are-ou.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-10T15:38:16.095Z",
+  "schema_version": "v1",
+  "commit_sha": "4062a7b8c961dfa1d164f93216b6ddd505af227b",
+  "title": "feat(081M24MADR2087G0R001FCD8K6): commit mise.lock so the toolchain digests are ours",
+  "state": "MERGED",
+  "merged_at": "2026-09-10T15:37:25Z",
+  "head_ref": "mise-lock-committed-digests"
+}
