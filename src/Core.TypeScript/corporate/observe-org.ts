@@ -702,7 +702,7 @@ export async function main(argv: readonly string[]): Promise<number> {
   // Re-READ, never accumulate. Holding state between ticks is how a watcher starts disagreeing with
   // the log it is supposed to be showing.
   for (;;) {
-    console.log("[2J[H");
+    console.log("\u001B[2J\u001B[H");
     once();
     await new Promise((resolve) => setTimeout(resolve, everyMs));
   }
