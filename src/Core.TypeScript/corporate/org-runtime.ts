@@ -74,6 +74,11 @@ import {
   type CascadeNode,
 } from "./goal-cascade";
 import {
+  branchNameIn,
+  collectionsReadyToLand,
+  integrationFor,
+} from "./branch-topology";
+import {
   advanceAll,
   beginBinding,
   bindingForHat,
@@ -2380,8 +2385,20 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
     // `handle` is optional on `PipelineRunInput` exactly for this case.
     let handle: ChangeHandle | undefined;
     if (producesCode(task.workType)) {
-      const branch = `work/${task.workId}`;
-      const openedResult = await providers.change.open(task, { branch });
+      // ── WHAT THE BRANCH IS CALLED, AND WHAT IT IS CUT FROM ─────────────
+      // Both derived from the WORK rather than from this organization's internal ids.
+      // `work/task-015` told a reviewer nothing; `story/AIAGENT-1520` can be found by anybody
+      // holding the ticket, which is the only audience a branch name has.
+      //
+      // `base` is supplied ONLY when the item belongs under a collection. Saying nothing is how
+      // a caller asks for the adapter's own trunk — the runtime does not know the trunk and must
+      // not learn it, or the same fact lives in two places and drifts.
+      const branch = branchNameIn(cascade, task);
+      const under = integrationFor({ cascade, workId: task.workId });
+      const openedResult = await providers.change.open(
+        task,
+        under === undefined ? { branch } : { branch, base: under.branch },
+      );
       if (!openedResult.ok) {
         refusals.push(`change control '${providers.change.meta.name}' could not open ${branch}: ${openedResult.reason}`);
         continue;
@@ -2471,7 +2488,7 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
             },
           },
           // A code-less item has no branch; QA still needs a name for the run it reports.
-          branch: handle?.branch ?? `work/${task.workId}`,
+          branch: handle?.branch ?? branchNameIn(cascade, task),
           qaHatId: "qa_engineer",
           createId: deps.createId,
           nowMs: warmedAt,
@@ -3383,6 +3400,67 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
     });
   }
 
+  // ── THE COLLECTION'S OWN MERGE ────────────────────────────────────────────
+  //
+  // A feature branch that nothing merges is WORSE than no feature branch: the stories land on it,
+  // the run reports them delivered, and the trunk never sees any of the feature. Every loop above
+  // merges code-producing LEAVES; nothing merged the thing they were collected into.
+  //
+  // WHEN is not a new concept — it is two facts the cascade already holds, and both are required:
+  // the collection is Done (for a non-leaf that means its own gate chain passed, and `gate-demand`
+  // holds the last gate until the children are delivered), AND every code item under it is done.
+  // The second is checked rather than inferred from the first, because a collection marked done
+  // over an unfinished child is exactly the disagreement this register exists to catch, and merging
+  // on it would put half a feature on the trunk.
+  //
+  // NO `base` ON THE HANDLE, deliberately: a collection goes to the adapter's own trunk. That is
+  // the same silence the open path uses, and it keeps the trunk in one place.
+  const collectionsLanded: string[] = [];
+  const collectionsUnlanded: string[] = [];
+  // REAL CHANGE CONTROL ONLY. A simulated port would accept a merge of a branch that never existed
+  // and emit a `change_merged` fact for it, which is a landing nobody can check — the vacuity class
+  // wearing a success. A simulated run therefore behaves exactly as it did.
+  if (providers.change.meta.fidelity === Fidelity.Real) {
+    for (const ready of collectionsReadyToLand({ cascade })) {
+      // ALREADY ON THE TRUNK, from an earlier run. Asked of the LOG, for the same reason the
+      // done-with-nothing-merged rule asks it: this run has no history of its own, and a second
+      // merge of a landed collection is either a refusal that reads as a defect or an empty merge
+      // commit nobody asked for.
+      if (deps.alreadyLanded?.has(ready.workId) === true) continue;
+      if (collectionsLanded.includes(ready.workId)) continue;
+
+      const landed = await providers.change.merge({
+        changeId: `${ready.branch}@${ready.workId}`,
+        branch: ready.branch,
+      });
+      if (!landed.ok) {
+        refusals.push(
+          `change control '${providers.change.meta.name}' could not land the collection ` +
+            `'${ready.workId}' from ${ready.branch}: ${landed.reason}`,
+        );
+        collectionsUnlanded.push(ready.workId);
+        continue;
+      }
+      collectionsLanded.push(ready.workId);
+      note({
+        kind: OrgEventKind.ChangeProjected,
+        subjectId: ready.workId,
+        decision:
+          `landed collection ${ready.branch}` +
+          `${landed.value.commit === undefined ? "" : ` at ${landed.value.commit.slice(0, 12)}`}`,
+        atMs: warmedAt,
+        fact: {
+          kind: "change_merged",
+          workId: ready.workId,
+          changeId: `${ready.branch}@${ready.workId}`,
+          branch: ready.branch,
+          ...(landed.value.commit === undefined ? {} : { commit: landed.value.commit }),
+          ...(landed.value.tree === undefined ? {} : { tree: landed.value.tree }),
+        },
+      });
+    }
+  }
+
   // A GOAL IS NOT DELIVERED WHILE A CHANGE THE ORGANIZATION PROJECTED AS MERGED DID NOT MERGE.
   //
   // The paragraph above says a refusal "CONTRADICTS the claim rather than being logged beside it",
@@ -3399,6 +3477,10 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
   const delivered =
     startedGoals.every((g) => isDelivered(cascade, g.goalId)) &&
     changesUnlanded.length === 0 &&
+    // ...AND NO COLLECTION FAILED TO REACH THE TRUNK. Without this the stories are on the
+    // feature branch, the feature branch is not on the trunk, and the run says delivered — the
+    // same refusal-beside-the-claim shape the two clauses around it exist to prevent.
+    collectionsUnlanded.length === 0 &&
     // ...AND NOTHING IS DONE WITH NO COMMIT BEHIND IT. A merge the port refused and a merge nobody
     // ever offered are both "the repository does not have this"; only the first was being counted.
     changesDoneUnmerged.length === 0;

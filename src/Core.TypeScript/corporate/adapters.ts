@@ -30,7 +30,7 @@
  */
 
 import { spawnSync } from "node:child_process";
-import { readdirSync, readFileSync } from "node:fs";
+import { existsSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 
 import {
@@ -1212,6 +1212,43 @@ export function commandTestRunner(input: {
  * Returns `undefined` when git could not answer, which is NOT zero — an unanswerable question must
  * not read as "nothing to merge".
  */
+/**
+ * Whether a local branch exists.
+ *
+ * `rev-parse --verify` over `refs/heads/<name>` EXACTLY — not `<name>`, which also resolves a
+ * tag, a remote-tracking ref, or a commit whose abbreviation happens to match. Creating a branch
+ * only when one is absent is a decision, and a check that answers yes for a tag would skip the
+ * creation and then cut the work from whatever that tag points at.
+ */
+/**
+ * Where a change's checkout records the work item that opened it.
+ *
+ * BESIDE the worktree, never inside it. A marker inside would be an untracked file in the tree a
+ * work command runs in, and the first `git add -A` would commit it into somebody's change.
+ */
+export function ownerMarkerPath(workdir: string): string {
+  return `${workdir}.owner`;
+}
+
+/** The work item that opened this checkout, or nothing if none is recorded. */
+export function ownerOf(workdir: string): string | undefined {
+  try {
+    const raw = readFileSync(ownerMarkerPath(workdir), "utf-8").trim();
+    return raw === "" ? undefined : raw;
+  } catch {
+    // ABSENT, not empty. A checkout with no marker was made by something that did not claim it,
+    // and claiming it on its behalf is the reuse this exists to refuse.
+    return undefined;
+  }
+}
+
+export function branchExists(
+  run: (args: readonly string[]) => { readonly status: number | null },
+  branch: string,
+): boolean {
+  return run(["rev-parse", "--verify", "--quiet", `refs/heads/${branch}`]).status === 0;
+}
+
 export function commitsAhead(
   run: (args: readonly string[]) => { readonly status: number | null; readonly stdout?: string },
   branch: string,
@@ -1323,18 +1360,35 @@ export function gitChangeControl(input: {
       describes: `branches from ${input.baseBranch} in ${input.cwd}`,
     },
     open: async (node, ctx) => {
-      const made = git(["checkout", "-b", ctx.branch, input.baseBranch]);
+      // The same per-change base as the worktree adapter, for the same reason. Both are real
+      // change control over one repository; a topology that only one of them understood would
+      // put the work in a different place depending on which flag the operator passed.
+      const base = (ctx.base ?? "").trim() === "" ? input.baseBranch : (ctx.base as string);
+      if (base !== input.baseBranch && !branchExists(git, base)) {
+        const cut = git(["branch", "--no-track", base, input.baseBranch]);
+        if (cut.error !== undefined) return { ok: false, reason: `git could not run: ${cut.error.message}` };
+        if (cut.status !== 0) {
+          return {
+            ok: false,
+            reason: `could not create the integration branch '${base}' from '${input.baseBranch}': ${(cut.stderr ?? "").trim()}`,
+          };
+        }
+      }
+      const made = git(["checkout", "-b", ctx.branch, base]);
       if (made.error !== undefined) return { ok: false, reason: `git could not run: ${made.error.message}` };
       if (made.status !== 0) return { ok: false, reason: `could not branch ${ctx.branch}: ${(made.stderr ?? "").trim()}` };
       return {
         ok: true,
-        value: { changeId: `${ctx.branch}@${node.workId}`, branch: ctx.branch },
-        evidence: [{ kind: "trace", ref: `branch:${ctx.branch}` }],
+        value: { changeId: `${ctx.branch}@${node.workId}`, branch: ctx.branch, base },
+        evidence: [{ kind: "trace", ref: `branch:${ctx.branch}` }, { kind: "trace", ref: `cut-from:${base}` }],
       };
     },
     merge: async (handle) => {
-      const back = git(["checkout", input.baseBranch]);
-      if (back.status !== 0) return { ok: false, reason: `could not return to ${input.baseBranch}: ${(back.stderr ?? "").trim()}` };
+      const into = (handle.base ?? "").trim() === "" ? input.baseBranch : (handle.base as string);
+      const back = git(["checkout", into]);
+      if (back.status !== 0) return { ok: false, reason: `could not return to ${into}: ${(back.stderr ?? "").trim()}` };
+      // HEAD is now the base, so the default `into` is correct here — stated rather than assumed,
+      // because it is only true BECAUSE of the checkout on the line above.
       const ahead = commitsAhead(git, handle.branch);
       if (ahead === undefined) return { ok: false, reason: `could not tell whether ${handle.branch} has anything to merge` };
       if (ahead === 0) {
@@ -1433,15 +1487,99 @@ export function gitWorktreeChangeControl(input: {
     },
     open: async (node, ctx) => {
       const workdir = join(input.worktreeRoot, worktreeDirName(ctx.branch));
-      const made = git(["worktree", "add", "-b", ctx.branch, workdir, input.baseBranch]);
+      const base = (ctx.base ?? "").trim() === "" ? input.baseBranch : (ctx.base as string);
+
+      // ── AN INTEGRATION BRANCH IS BORN HERE, OR NOWHERE ─────────────────
+      // A story cut from `feature/X` needs `feature/X` to exist, and nothing upstream creates
+      // it: the runtime derives the topology but does not touch git, and the collection became
+      // real at the moment its first story was opened — which is this call. So a base that is
+      // not the trunk and does not yet exist is CUT FROM THE TRUNK, once.
+      //
+      // IDEMPOTENT BY CONSTRUCTION, which is what makes it safe on a resumed run: the second
+      // story finds the branch and joins it, and `--no-track` keeps it a local integration
+      // branch rather than one claiming an upstream nobody pushed.
+      if (base !== input.baseBranch && !branchExists(git, base)) {
+        const cut = git(["branch", "--no-track", base, input.baseBranch]);
+        if (cut.error !== undefined) return { ok: false, reason: `git could not run: ${cut.error.message}` };
+        if (cut.status !== 0) {
+          // REFUSED, never silently demoted to the trunk. Landing the work somewhere plausible
+          // and wrong is the defect this whole seam exists to close.
+          return {
+            ok: false,
+            reason: `could not create the integration branch '${base}' from '${input.baseBranch}': ${(cut.stderr ?? "").trim()}`,
+          };
+        }
+      }
+
+      // ── A RESUME REJOINS ITS OWN WORK, IT DOES NOT REFUSE IT ───────────
+      // MEASURED before this existed: a second cycle over the same item died on
+      // `fatal: a branch named 'work/task-015' already exists`, and the run then reported the
+      // item done with nothing merged. The branch was its OWN, from the cycle before.
+      //
+      // Two states to rejoin, and they are checked in the order that makes each check honest:
+      // the worktree first (a directory whose HEAD is already this branch), then the branch
+      // alone (a checkout to re-create over it).
+      if (existsSync(workdir)) {
+        const onIt = git(["rev-parse", "--abbrev-ref", "HEAD"], workdir);
+        // TWO CONDITIONS, and the second is the one a first cut missed. The directory must be a
+        // checkout of this branch — a leftover or an unrelated tree handed back as this change's
+        // workdir would have the work performed where the merge will never look — AND it must
+        // have been opened by THIS work item. Without the owner check a second item asking for
+        // the same branch inherits the first's checkout, its work lands under the first's name,
+        // and the run calls both delivered.
+        const owner = ownerOf(workdir);
+        if (onIt.status === 0 && String(onIt.stdout ?? "").trim() === ctx.branch && owner === node.workId) {
+          return {
+            ok: true,
+            value: { changeId: `${ctx.branch}@${node.workId}`, branch: ctx.branch, base, workdir },
+            evidence: [{ kind: "trace", ref: `worktree-rejoined:${workdir}` }],
+          };
+        }
+        return {
+          ok: false,
+          reason:
+            owner !== undefined && owner !== node.workId
+              ? `'${ctx.branch}' is already open for '${owner}': refusing to reuse another item's change`
+              : `'${workdir}' exists and is not a checkout of ${ctx.branch}: refusing to work in it`,
+        };
+      }
+      // An existing branch is checked out WITHOUT `-b`, which would refuse it. `base` is not
+      // passed here on purpose: the branch already has a history and re-pointing it at the base
+      // would silently discard whatever the earlier cycle committed.
+      //
+      // …but only for the item that owns it. A branch whose checkout is gone but whose marker
+      // names somebody else is the same reuse refused above, arriving one state later.
+      const existing = branchExists(git, ctx.branch);
+      if (existing) {
+        const owner = ownerOf(workdir);
+        if (owner !== undefined && owner !== node.workId) {
+          return {
+            ok: false,
+            reason: `'${ctx.branch}' belongs to '${owner}': refusing to reuse another item's change`,
+          };
+        }
+      }
+      const made = existing
+        ? git(["worktree", "add", workdir, ctx.branch])
+        : git(["worktree", "add", "-b", ctx.branch, workdir, base]);
       if (made.error !== undefined) return { ok: false, reason: `git could not run: ${made.error.message}` };
       if (made.status !== 0) {
         return { ok: false, reason: `could not open a worktree for ${ctx.branch}: ${(made.stderr ?? "").trim()}` };
       }
+      // WHO OWNS THIS CHECKOUT. Written after the worktree exists, so a failed `add` leaves no
+      // claim behind. A write that fails is not fatal: the marker only ever REFUSES a reuse, so
+      // its absence costs the guard rather than the change, and losing the change would be worse.
+      try {
+        writeFileSync(ownerMarkerPath(workdir), node.workId, "utf-8");
+      } catch {
+        // deliberately ignored — see above
+      }
       return {
         ok: true,
-        value: { changeId: `${ctx.branch}@${node.workId}`, branch: ctx.branch, workdir },
-        evidence: [{ kind: "trace", ref: `worktree:${workdir}` }],
+        // `base` TRAVELS. `merge(handle)` is all the runtime passes, so a base left behind here
+        // would send every story back to the trunk and the feature branch would hold nothing.
+        value: { changeId: `${ctx.branch}@${node.workId}`, branch: ctx.branch, base, workdir },
+        evidence: [{ kind: "trace", ref: `worktree:${workdir}` }, { kind: "trace", ref: `cut-from:${base}` }],
       };
     },
     merge: async (handle) => {
@@ -1449,7 +1587,11 @@ export function gitWorktreeChangeControl(input: {
       // MEASURED AGAINST THE BASE, not against HEAD: this adapter deliberately leaves the shared
       // checkout alone, so HEAD is the operator's own branch and `HEAD..work/x` counts commits
       // that have nothing to do with whether this change carries anything.
-      const ahead = commitsAhead(git, handle.branch, input.baseBranch);
+      // THE HANDLE'S BASE, not the adapter's. A story merges into its feature branch; only the
+      // handle knows which one, and counting against the trunk would report a story as empty
+      // the moment its siblings had already landed on the feature.
+      const into = (handle.base ?? "").trim() === "" ? input.baseBranch : (handle.base as string);
+      const ahead = commitsAhead(git, handle.branch, into);
       if (ahead === undefined) return { ok: false, reason: `could not tell whether ${handle.branch} has anything to merge` };
       if (ahead === 0) {
         // The worktree may well hold files — the work ran. Uncommitted files are not a change, and
@@ -1465,10 +1607,10 @@ export function gitWorktreeChangeControl(input: {
       // borrowed into a worktree of its own so the operator's HEAD and files are not touched.
       const head = git(["rev-parse", "--abbrev-ref", "HEAD"]);
       if (head.status !== 0) return { ok: false, reason: `could not read the checked-out branch: ${(head.stderr ?? "").trim()}` };
-      const onBase = String(head.stdout ?? "").trim() === input.baseBranch;
-      const borrowed = join(input.worktreeRoot, worktreeDirName(`into-${input.baseBranch}`));
+      const onBase = String(head.stdout ?? "").trim() === into;
+      const borrowed = join(input.worktreeRoot, worktreeDirName(`into-${into}`));
       if (!onBase) {
-        const lent = git(["worktree", "add", borrowed, input.baseBranch]);
+        const lent = git(["worktree", "add", borrowed, into]);
         if (lent.error !== undefined) return { ok: false, reason: `git could not run: ${lent.error.message}` };
         if (lent.status !== 0) {
           // The commonest cause is the base being checked out in ANOTHER worktree, which git
@@ -1477,7 +1619,7 @@ export function gitWorktreeChangeControl(input: {
           return {
             ok: false,
             reason:
-              `could not merge into '${input.baseBranch}': it is not checked out here and a worktree for it ` +
+              `could not merge into '${into}': it is not checked out here and a worktree for it ` +
               `could not be opened: ${(lent.stderr ?? "").trim()}`,
           };
         }
@@ -1526,7 +1668,7 @@ export function gitWorktreeChangeControl(input: {
       // checkout, which this adapter has just gone to some trouble not to move — so reading it
       // would report the operator's own tip as the change's landing commit, and the tree hash
       // filed against every bound check would belong to somebody else's work.
-      const at = revisionOf(git, input.baseBranch);
+      const at = revisionOf(git, into);
       return {
         ok: true,
         value: at.ok ? { ...handle, commit: at.revision.commit, tree: at.revision.tree } : handle,

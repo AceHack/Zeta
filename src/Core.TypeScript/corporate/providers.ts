@@ -250,6 +250,18 @@ export interface ReviewPort {
 export interface ChangeHandle {
   readonly changeId: string;
   readonly branch: string;
+  /**
+   * WHAT THIS CHANGE WAS CUT FROM, and what its merge must therefore target.
+   *
+   * Carried on the HANDLE rather than only in the open-context, because `merge(handle)` is all
+   * the runtime passes and a base known only at `open` would be gone by the time it decides
+   * anything. A story cut from its feature branch has to go back into that feature branch, and
+   * an adapter holding one configured trunk cannot work that out.
+   *
+   * Absent means the adapter's own configured base — which is what every caller meant before
+   * this field existed, so an adapter that ignores it behaves exactly as it did.
+   */
+  readonly base?: string;
   readonly url?: string;
   /**
    * Where this change's work should happen, when it has a place of its own.
@@ -281,7 +293,20 @@ export interface ChangeHandle {
 
 export interface ChangeControlPort {
   readonly meta: ProviderMeta;
-  open(node: CascadeNode, ctx: { readonly branch: string }): Promise<PortResult<ChangeHandle>>;
+  /**
+   * Open a change on `ctx.branch`, cut from `ctx.base`.
+   *
+   * `base` is OPTIONAL so every existing caller keeps working: absent, the adapter uses the one
+   * it was configured with. Present, it may name a branch that DOES NOT EXIST YET — an
+   * integration branch is created by the first change that needs it, because nothing else knows
+   * when the collection became real. An adapter that cannot create it must refuse rather than
+   * silently fall back to its trunk: that fallback is the whole class of defect this field
+   * exists to close, since the work would land somewhere plausible and wrong.
+   */
+  open(
+    node: CascadeNode,
+    ctx: { readonly branch: string; readonly base?: string },
+  ): Promise<PortResult<ChangeHandle>>;
   merge(handle: ChangeHandle): Promise<PortResult<ChangeHandle>>;
   /**
    * WHAT THE CHANGE TOUCHED — path, lines added, lines removed.

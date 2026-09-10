@@ -14,6 +14,8 @@ import { WorkState, WorkType, type Cascade, type CascadeNode } from "./goal-casc
 import {
   ancestorsOf,
   branchNameFor,
+  branchNameIn,
+  changeContextFor,
   branchPlanFor,
   codeProducingUnder,
   collects,
@@ -153,6 +155,80 @@ describe("a branch is named after the TICKET when there is one", () => {
     // A type absent from the table is named after itself — never silently sharing another's.
     expect(prefixFor(WorkType.Task, {})).toBe("task");
     expect(new Set(Object.values(DEFAULT_BRANCH_PREFIXES)).size).toBeGreaterThan(1);
+  });
+});
+
+describe("AN INHERITED TICKET MUST NOT NAME TWO BRANCHES THE SAME", () => {
+  // `requestRef` is inherited by children on purpose, so in a real decomposition every rung carries
+  // one ticket. Measured on the folded cascade of an actual end-to-end run, before this was handled:
+  //
+  //     goal-009 epic/T-1   init-011 epic/T-1   proj-013 feature/T-1
+  //     task-015 defect/T-1 task-017 review/T-1
+  //
+  // Two nodes, one name. The differing prefixes hid the worse case: two TASKS under one project --
+  // the feature case this module exists for -- would both be `story/T-1`, and the second would be
+  // refused by the change port as an attempt to reuse the first's branch. Safe, and entirely stuck.
+
+  /** One ticket, inherited all the way down, two stories under one project. */
+  const inherited: Cascade = (() => {
+    const ref = externalRefOf("jira", "T-1");
+    return {
+      nodes: [
+        node("goal-1", WorkType.Goal, undefined, { requestRef: ref, title: "the outcome" }),
+        node("init-1", WorkType.Initiative, "goal-1", { requestRef: ref, title: "the epic" }),
+        node("proj-1", WorkType.Project, "init-1", { requestRef: ref, title: "the feature" }),
+        node("leaf-1", WorkType.Task, "proj-1", { requestRef: ref, title: "story one" }),
+        node("leaf-2", WorkType.Task, "proj-1", { requestRef: ref, title: "story two" }),
+      ],
+    };
+  })();
+
+  test("EVERY branch in a cascade is distinct", () => {
+    // The property, asserted as a property. A per-case expectation would pass while some other pair
+    // collided, and any collision at all is the failure.
+    const names = inherited.nodes.map((n) => branchNameIn(inherited, n));
+    expect(new Set(names).size).toBe(names.length);
+  });
+
+  test("two stories sharing one ticket are named by their DESCRIPTIONS", () => {
+    const one = inherited.nodes.find((n) => n.workId === "leaf-1") as CascadeNode;
+    const two = inherited.nodes.find((n) => n.workId === "leaf-2") as CascadeNode;
+    expect(branchNameIn(inherited, one)).toBe("story/story-one");
+    expect(branchNameIn(inherited, two)).toBe("story/story-two");
+    // …and they still share ONE feature branch, which is the point of the collection.
+    expect(changeContextFor({ cascade: inherited, workId: "leaf-1" })?.base).toBe(
+      changeContextFor({ cascade: inherited, workId: "leaf-2" })?.base,
+    );
+  });
+
+  test("...AND A LONE ITEM KEEPS ITS TICKET — the case an inheritance test got wrong", () => {
+    // The correction that produced the current rule. Keying on "is this ref my own or my parent's"
+    // is a true statement about inheritance and the wrong rule: a request that becomes ONE code item
+    // has an inherited ref and no collision, and demoting it to `defect/do-leaf-1` throws away the
+    // most useful thing a branch name carries for no gain at all.
+    const lone: Cascade = {
+      nodes: [
+        node("goal-1", WorkType.Goal, undefined, { requestRef: externalRefOf("jira", "AIAGENT-1637"), title: "the outcome" }),
+        node("proj-1", WorkType.Project, "goal-1", { requestRef: externalRefOf("jira", "AIAGENT-1637"), title: "the fix" }),
+        node("leaf-1", WorkType.Defect, "proj-1", { requestRef: externalRefOf("jira", "AIAGENT-1637"), title: "double charge" }),
+      ],
+    };
+    expect(branchNameIn(lone, lone.nodes[2] as CascadeNode)).toBe("defect/AIAGENT-1637");
+  });
+
+  test("identically-titled siblings fall back to the work id rather than colliding", () => {
+    // The last resort, and it always works because the id is unique by construction. Deliberately
+    // ugly: a branch that reaches this has two siblings nobody gave distinct titles.
+    const twins: Cascade = {
+      nodes: [
+        node("proj-1", WorkType.Project, undefined, { title: "the feature" }),
+        node("leaf-1", WorkType.Task, "proj-1", { title: "same" }),
+        node("leaf-2", WorkType.Task, "proj-1", { title: "same" }),
+      ],
+    };
+    const names = [1, 2].map((i) => branchNameIn(twins, twins.nodes[i] as CascadeNode));
+    expect(new Set(names).size).toBe(2);
+    expect(names).toContain("story/leaf-1");
   });
 });
 

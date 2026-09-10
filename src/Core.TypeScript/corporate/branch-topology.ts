@@ -49,6 +49,7 @@
 import {
   childrenOf,
   nodeById,
+  WorkState,
   WorkType,
   type Cascade,
   type CascadeNode,
@@ -173,6 +174,70 @@ export function branchNameFor(
   return `${prefixFor(node.workType, prefixes)}/${leaf === "" ? "work" : leaf}`;
 }
 
+/** The same name with the ticket deliberately ignored — what an item is called by what it IS. */
+function describedNameFor(
+  node: CascadeNode,
+  prefixes: Readonly<Partial<Record<WorkType, string>>>,
+): string {
+  const fromTitle = slugOf(node.title);
+  const leaf = fromTitle === "" ? slugOf(node.workId) : fromTitle;
+  return `${prefixFor(node.workType, prefixes)}/${leaf === "" ? "work" : leaf}`;
+}
+
+/**
+ * A work item's branch name, resolved against the rest of the cascade.
+ *
+ * ── WHY THE CASCADE IS NEEDED, AND WHAT THE FIRST TWO ATTEMPTS GOT WRONG ─────
+ * `requestRef` is INHERITED by children on purpose — a task under a project under a goal that
+ * answers a request answers that request — so in a real decomposition every rung carries the same
+ * ticket. Measured on the folded cascade of a real end-to-end run:
+ *
+ *     goal-009  epic/T-1      init-011  epic/T-1      proj-013  feature/T-1
+ *     task-015  defect/T-1    task-017  review/T-1
+ *
+ * `epic/T-1` twice. Differing prefixes hid the rest, because that fixture's two leaves happen to be
+ * a defect and a review — two TASKS under one project, which is the feature case this whole module
+ * exists for, would both be `story/T-1`.
+ *
+ * ATTEMPT ONE named every rung after the ticket. Collides.
+ * ATTEMPT TWO used the ticket only when the ref was the node's OWN rather than its parent's. Correct
+ * about inheritance, and the wrong rule: it demoted the commonest case there is — a request that
+ * becomes ONE code item — to `defect/do-leaf-1`, discarding the single most useful thing a branch
+ * name carries, to avoid a collision that was not there.
+ *
+ * So the collision is measured, not predicted. Keep the ticket unless another node would produce the
+ * same name; fall back to the description, and to the id under that.
+ *
+ * ── STABILITY, AND ITS HONEST LIMIT ──────────────────────────────────────────
+ * The answer depends on which nodes exist, so a node gaining a same-named peer changes its name. In
+ * practice a decomposition creates a parent's children together, so this settles before any branch
+ * is opened. When it does not, the change port's owner check REFUSES rather than writing one item's
+ * work under another's name — visible and safe, but a refusal rather than a rename, and worth
+ * knowing about before it is met.
+ */
+export function branchNameIn(
+  cascade: Cascade,
+  node: CascadeNode,
+  prefixes: Readonly<Partial<Record<WorkType, string>>> = DEFAULT_BRANCH_PREFIXES,
+): string {
+  const mine = branchNameFor(node, prefixes);
+  const contested = cascade.nodes.some(
+    (other) => other.workId !== node.workId && branchNameFor(other, prefixes) === mine,
+  );
+  if (!contested) return mine;
+
+  // Named by what it is. Two siblings of one request differ here even though their tickets do not.
+  const described = describedNameFor(node, prefixes);
+  const stillContested = cascade.nodes.some(
+    (other) => other.workId !== node.workId && describedNameFor(other, prefixes) === described,
+  );
+  if (!stillContested) return described;
+
+  // LAST RESORT, and it always works: the work id is unique by construction. Ugly on purpose — a
+  // branch reaching this has two identically-titled siblings, which is worth noticing.
+  return `${prefixFor(node.workType, prefixes)}/${slugOf(node.workId)}`;
+}
+
 /** Every descendant of `workId`, excluding the node itself. */
 export function descendantsOf(cascade: Cascade, workId: string): readonly CascadeNode[] {
   const out: CascadeNode[] = [];
@@ -271,6 +336,37 @@ export function branchPlanFor(input: {
   const trunk = input.trunk.trim();
   if (trunk === "") return { reason: "no trunk branch was named" };
 
+  const prefixes = input.prefixes ?? DEFAULT_BRANCH_PREFIXES;
+  const found = integrationFor(input);
+  return found === undefined
+    ? { branch: branchNameIn(input.cascade, node, prefixes), base: trunk }
+    : {
+        branch: branchNameIn(input.cascade, node, prefixes),
+        base: found.branch,
+        integration: { ...found, base: trunk },
+      };
+}
+
+/**
+ * The integration branch a work item belongs under, or nothing.
+ *
+ * SEPARATE FROM `branchPlanFor` because a caller that drives the change-control port does not
+ * know the trunk and must not learn it: the adapter was configured with it, and `ctx.base` is
+ * optional precisely so a caller can say "the usual place" by saying nothing. Naming the trunk in
+ * the runtime as well would be the same fact in two places, which is the same fact drifting.
+ *
+ * `undefined` therefore means TWO true things at once, and they do not need telling apart here:
+ * the item's work goes straight to the trunk, and the item is itself the collection that goes
+ * straight to the trunk.
+ */
+export function integrationFor(input: {
+  readonly cascade: Cascade;
+  readonly workId: string;
+  readonly prefixes?: Readonly<Partial<Record<WorkType, string>>>;
+  readonly collectsAt?: number;
+}): { readonly workId: string; readonly branch: string } | undefined {
+  const node = nodeById(input.cascade, input.workId);
+  if (node === undefined) return undefined;
   const at = input.collectsAt ?? COLLECTS_AT;
   const prefixes = input.prefixes ?? DEFAULT_BRANCH_PREFIXES;
 
@@ -280,24 +376,77 @@ export function branchPlanFor(input: {
   // code and therefore also collects — the over-counting the header describes, one rung up, and
   // it puts a second integration level back exactly where it was removed. A collection is where
   // the work is assembled and reviewed as a whole; once it is approved it goes to the trunk.
-  if (collects(input.cascade, node, at)) {
-    return { branch: branchNameFor(node, prefixes), base: trunk };
-  }
+  if (collects(input.cascade, node, at)) return undefined;
 
   // NEAREST FIRST, and the first hit wins. `ancestorsOf` already returns nearest-first, so this
   // is a `find` rather than a fold — the ancestors above the one that takes the branch are not
   // 'also collecting', they are the same code counted again from further away.
   const nearest = ancestorsOf(input.cascade, input.workId).find((a) => collects(input.cascade, a, at));
-  if (nearest === undefined) {
-    return { branch: branchNameFor(node, prefixes), base: trunk };
-  }
+  if (nearest === undefined) return undefined;
+  return { workId: nearest.workId, branch: branchNameIn(input.cascade, nearest, prefixes) };
+}
 
-  const integration: IntegrationBranch = {
-    workId: nearest.workId,
-    branch: branchNameFor(nearest, prefixes),
-    base: trunk,
-  };
-  return { branch: branchNameFor(node, prefixes), base: integration.branch, integration };
+/**
+ * What to hand `ChangeControlPort.open` for a work item.
+ *
+ * The whole point of the module, from the runtime's side: a branch named after the ticket, and a
+ * base ONLY when the work belongs under a collection. Omitting `base` is how a caller says "the
+ * usual place" — see `integrationFor` for why that is the right silence rather than a gap.
+ */
+export function changeContextFor(input: {
+  readonly cascade: Cascade;
+  readonly workId: string;
+  readonly prefixes?: Readonly<Partial<Record<WorkType, string>>>;
+  readonly collectsAt?: number;
+}): { readonly branch: string; readonly base?: string } | undefined {
+  const node = nodeById(input.cascade, input.workId);
+  if (node === undefined) return undefined;
+  const branch = branchNameIn(input.cascade, node, input.prefixes ?? DEFAULT_BRANCH_PREFIXES);
+  const under = integrationFor(input);
+  return under === undefined ? { branch } : { branch, base: under.branch };
+}
+
+/**
+ * The collections whose integration branch is ready to reach the trunk.
+ *
+ * ── WHY THIS IS A QUERY AND NOT A RULE IN THE RUNTIME ────────────────────────
+ * A feature branch that nothing merges is worse than no feature branch: the stories land on it,
+ * the run reports them delivered, and the trunk never sees any of it. So the collection needs a
+ * merge of its own — and WHEN is not a new concept, it is two facts the cascade already holds:
+ *
+ *   - the collection is DONE, which for a non-leaf means its own gate chain passed, and
+ *   - every code-producing item under it is done too.
+ *
+ * The second is not implied by the first and is checked rather than trusted. `gate-demand` blocks
+ * a rung's LAST gate until its children are delivered, so the two agree in a healthy run — but a
+ * collection marked done over an unfinished child is exactly the disagreement this register
+ * exists to catch, and merging on it would put half a feature on the trunk.
+ */
+export function collectionsReadyToLand(input: {
+  readonly cascade: Cascade;
+  readonly prefixes?: Readonly<Partial<Record<WorkType, string>>>;
+  readonly collectsAt?: number;
+}): readonly IntegrationBranch[] {
+  const at = input.collectsAt ?? COLLECTS_AT;
+  const prefixes = input.prefixes ?? DEFAULT_BRANCH_PREFIXES;
+  const out: IntegrationBranch[] = [];
+  for (const node of input.cascade.nodes) {
+    if (!collects(input.cascade, node, at)) continue;
+    // A collection nobody routed work under has no branch to land. `integrationFor` is the
+    // authority on that, so it is ASKED rather than re-derived: a collection that collects but
+    // that no leaf named would otherwise be merged from a branch that was never created.
+    const named = descendantsOf(input.cascade, node.workId).some(
+      (d) => producesCode(d.workType) && integrationFor({ ...input, workId: d.workId })?.workId === node.workId,
+    );
+    if (!named) continue;
+    if (node.state !== WorkState.Done) continue;
+    const unfinished = descendantsOf(input.cascade, node.workId).filter(
+      (d) => producesCode(d.workType) && d.state !== WorkState.Done,
+    );
+    if (unfinished.length > 0) continue;
+    out.push({ workId: node.workId, branch: branchNameIn(input.cascade, node, prefixes), base: "" });
+  }
+  return out;
 }
 
 /** Whether a plan is a plan or a refusal, without the caller reaching for a field that may not be there. */
