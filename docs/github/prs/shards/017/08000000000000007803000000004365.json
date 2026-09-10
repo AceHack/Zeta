@@ -1,0 +1,12 @@
+{
+  "pr_number": 17253,
+  "archive_path": "docs/history/pr-reviews/PR-17253-fix-codeql-close-js-file-access-to-http-in-first-party-code-with-a-real-guard.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-10T19:57:36.564Z",
+  "schema_version": "v1",
+  "commit_sha": "9ba965b6f026cb44290bc4739d2f3df5f9c10a8d",
+  "title": "fix(codeql): close js/file-access-to-http in first-party code with a real guard",
+  "state": "MERGED",
+  "merged_at": "2026-09-10T19:56:54Z",
+  "head_ref": "codeql-first-party-fp-closure"
+}
