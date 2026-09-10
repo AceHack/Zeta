@@ -1,0 +1,12 @@
+{
+  "pr_number": 17228,
+  "archive_path": "docs/history/pr-reviews/PR-17228-fix-081m25qmt7q087g0r002767x31-the-uefi-smoke-lane-named-an-installer-it-never-b.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-10T13:45:41.526Z",
+  "schema_version": "v1",
+  "commit_sha": "1e3b08739d6d493b2886473ee7f0b10f6ff0e6e4",
+  "title": "fix(081M25QMT7Q087G0R002767X31): the UEFI smoke lane named an installer it never boots",
+  "state": "MERGED",
+  "merged_at": "2026-09-10T13:45:00Z",
+  "head_ref": "esp-grub-lane-names-what-it-proves"
+}
