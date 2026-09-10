@@ -2838,14 +2838,14 @@
             "rule": "cross-oracle-bytelock",
             "kind": "cross-oracle",
             "witness": "tests/cross-verification/_golden/zeta-ir-v4.golden.json",
-            "count": 344,
+            "count": 348,
             "holder": "ts:cross-verification"
           },
           {
             "rule": "golden-vectors",
             "kind": "golden-vector",
             "witness": "tests/cross-verification/_golden/zeta-ir-v4.golden.json",
-            "count": 8,
+            "count": 10,
             "holder": "ts:cross-verification"
           }
         ]

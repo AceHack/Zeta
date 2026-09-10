@@ -826,6 +826,7 @@
     <Compile Include="StreamTableDuality.Tests.fs" />
     <Compile Include="ToyBosonFermionParity.Tests.fs" />
     <Compile Include="E8Render.Tests.fs" />
+    <Compile Include="H3Render.Tests.fs" />
   </ItemGroup>
 
   <ItemGroup>

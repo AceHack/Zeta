@@ -21,6 +21,8 @@
     <Compile Include="E8Embedding.fs" />
     <Compile Include="E8Raytracer.fs" />
     <Compile Include="E8GoldenVector.fs" />
+    <Compile Include="H3Exact.fs" />
+    <Compile Include="H3GoldenVector.fs" />
   </ItemGroup>
 
 </Project>
