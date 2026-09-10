@@ -56,6 +56,14 @@ export function readJiraCredentials(path: string): { readonly ok: true; readonly
     token === "" ? "token" : undefined,
   ].filter((m): m is string => m !== undefined);
   if (missing.length > 0) return { ok: false, reason: `${path} is missing: ${missing.join(", ")}` };
+  // THE BASE URL IS FILE DATA TOO, and it is the value that decides WHERE the credential
+  // goes. A credentials file naming `http://` (plaintext), embedding userinfo
+  // (`https://user:pw@host`), or carrying a path with `..` is not a configuration this should
+  // silently honour — it is how a token ends up somewhere the operator never intended.
+  // Required to be a plain https origin with an optional simple path.
+  if (!/^https:\/\/[A-Za-z0-9.-]+(?::\d{1,5})?(?:\/[A-Za-z0-9._~/-]*)?$/u.test(baseUrl)) {
+    return { ok: false, reason: `${path}: baseUrl must be a plain https URL with no credentials, query or fragment` };
+  }
   if (!HEADER_SAFE_CREDENTIAL.test(token)) {
     return { ok: false, reason: `${path}: token is not header-safe — it must be printable ASCII with no spaces or control characters` };
   }

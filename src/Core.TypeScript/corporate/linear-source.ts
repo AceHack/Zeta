@@ -56,6 +56,12 @@ export function readLinearCredentials(
     return { ok: false, reason: `${path}: apiKey is not header-safe — it must be printable ASCII with no spaces or control characters` };
   }
   const apiUrl = typeof it["apiUrl"] === "string" && it["apiUrl"].trim() !== "" ? it["apiUrl"].trim() : LINEAR_API_URL;
+  // Same reasoning as `readJiraCredentials`: the url is file data and it decides WHERE the
+  // api key is sent, so a plaintext scheme, embedded userinfo or a traversal path is refused
+  // rather than honoured.
+  if (!/^https:\/\/[A-Za-z0-9.-]+(?::\d{1,5})?(?:\/[A-Za-z0-9._~/-]*)?$/u.test(apiUrl)) {
+    return { ok: false, reason: `${path}: apiUrl must be a plain https URL with no credentials, query or fragment` };
+  }
   return { ok: true, credentials: { apiKey, apiUrl } };
 }
 

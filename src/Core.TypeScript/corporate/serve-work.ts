@@ -60,6 +60,9 @@ function json(body: unknown, status = 200): Response {
   });
 }
 
+/** One megabyte: far above any real ticket, far below anything that hurts. */
+const MAX_INBOX_BYTES = 1_048_576;
+
 /**
  * REFUSE a key that cannot safely become a filename, rather than mangling it into one.
  *
@@ -268,7 +271,18 @@ export async function workRoutes(
       return json({ ok: false, reason: `refusing ticket key ${JSON.stringify(issue.value.key)}: not a single safe path segment` }, 400);
     }
     const file = join(config.inboxDir, `jira-${issue.value.key}.json`);
-    writeFileSync(file, `${JSON.stringify(event, null, 2)}\n`, "utf-8");
+    const inboxBody = `${JSON.stringify(event, null, 2)}\n`;
+    // BOUNDED. The ticket's title and body are remote text by nature — that is the feature,
+    // and `js/http-to-file-access` #937 describes it accurately: writing an HTTP-delivered
+    // ticket into the inbox is what this endpoint is FOR, so no guard closes that alert
+    // without deleting the endpoint. What was genuinely missing is a ceiling: an unbounded
+    // write driven by a remote value fills the disk of whoever runs the organisation, and a
+    // tracker that has been misconfigured or compromised is exactly the source that would.
+    // A megabyte is far above any real ticket and far below anything that hurts.
+    if (inboxBody.length > MAX_INBOX_BYTES) {
+      return json({ ok: false, reason: `refusing ticket ${issue.value.key}: ${String(inboxBody.length)} bytes exceeds the ${String(MAX_INBOX_BYTES)}-byte inbox ceiling` }, 413);
+    }
+    writeFileSync(file, inboxBody, "utf-8");
     return json({
       ok: true,
       loaded: issue.value.key,
