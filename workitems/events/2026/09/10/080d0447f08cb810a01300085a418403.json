@@ -1,0 +1,14 @@
+{
+  "id": "080d0447f08cb810a01300085a418403",
+  "at": "2026-09-10T01:45:47.159Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M24FW4C0087G0R003EQRCYY",
+    "type": "bug",
+    "title": "npm ci with an npm install fallback is a check with a bypass; two workflows carry it",
+    "slug": "npm-ci-with-an-npm-install-fallback-is-a-check-with-a-bypass",
+    "priority": "P2",
+    "filename": "081M24FW4C0087G0R003EQRCYY-npm-ci-with-an-npm-install-fallback-is-a-check-with-a-bypass.md"
+  }
+}
