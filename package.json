@@ -51,6 +51,7 @@
     "hygiene:no-ambient-credential-hoist": "bun ./src/Core.TypeScript/hygiene/lint-no-ambient-credential-hoist.ts",
     "hygiene:no-culture-sensitive-collation": "bun ./src/Core.TypeScript/hygiene/lint-no-culture-sensitive-collation.ts",
     "hygiene:no-decide-by-grep": "bun ./src/Core.TypeScript/hygiene/lint-no-decide-by-grep.ts",
+    "hygiene:overrides-take-effect": "bun ./src/Core.TypeScript/hygiene/lint-overrides-take-effect.ts",
     "hygiene:no-committed-build-intermediates": "bun ./src/Core.TypeScript/hygiene/lint-no-committed-build-intermediates.ts",
     "hygiene:no-orphaned-doc-comments": "bun ./src/Core.TypeScript/hygiene/lint-orphaned-doc-comments.ts src/Core.TypeScript/corporate",
     "hygiene:no-clean-sarif-for-skipped-analysis": "bun ./src/Core.TypeScript/hygiene/lint-no-clean-sarif-for-skipped-analysis.ts",
@@ -102,7 +103,7 @@
     "z3-solver": "5.2.0"
   },
   "overrides": {
-    "smol-toml": "1.6.1",
+    "smol-toml": "1.7.1",
     "fast-uri": "3.1.7"
   },
   "dependencies": {

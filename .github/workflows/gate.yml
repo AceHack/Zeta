@@ -2450,6 +2450,20 @@ jobs:
       - name: mathjs dismissal premise still holds (alert #15)
         run: bun src/Core.TypeScript/hygiene/lint-mathjs-dismissal-premise.ts
 
+      # An `overrides` entry is a SECURITY CONTROL written as a version string --
+      # it is how this tree carries a transitive dependency past a CVE its own
+      # parent will not release. Nothing checked that it took effect. Measured
+      # 2026-09-09: the `smol-toml` override had sat at 1.6.1 since 2026-04-21
+      # while markdownlint-cli2 declared an exact 1.7.0, so the override was
+      # silently DOWNGRADING the tool the markdown gate runs on -- to the version
+      # that never returns on CVE-2026-85730. This refuses an override that any
+      # lockfile has drifted from, that is a range rather than a pin, or that is
+      # NESTED (bun ignores nested overrides, so npm would show a fix bun never
+      # installs -- a fix only the scanner can see). OFFLINE -- no network.
+      # 081M24D4APR087G0R001QRQ071
+      - name: Root overrides take effect in BOTH lockfiles (not just the scanner's)
+        run: bun src/Core.TypeScript/hygiene/lint-overrides-take-effect.ts
+
       # The declared auto-accept exceptions for ROLLING `from-url` rows. An
       # exception with no enforcement is a licence, so this refuses a row that is
       # EXPIRED, that runs past the 90-day ceiling, that names a NON-rolling row,
@@ -2485,6 +2499,7 @@ jobs:
             src/Core.TypeScript/hygiene/lint-nixos-rebuild-needs-impure.test.ts \
             src/Core.TypeScript/hygiene/lint-mathjs-dismissal-premise.test.ts \
             src/Core.TypeScript/hygiene/lint-rolling-exceptions.test.ts \
+            src/Core.TypeScript/hygiene/lint-overrides-take-effect.test.ts \
             src/Core.TypeScript/ace/setup-realizers/rolling-exception.test.ts \
             src/Core.TypeScript/ace/refresh-pins.test.ts \
             src/Core.TypeScript/ci/affected-legs.test.ts
