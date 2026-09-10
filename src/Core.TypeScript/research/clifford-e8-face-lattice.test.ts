@@ -195,10 +195,18 @@ describe("rung 5 — the face set is derived, and the f-vector is what falsifies
     FACETS.forEach((facet, i) => {
       for (const v of facet.vertices) facetsOfVertex[v]?.push(i);
     });
+    // The membership sets are per VERTEX (240 of them), not per face. Building them
+    // inside the loop below built `2 * FACES.length` = 120,960 Sets over the same 240
+    // distinct lists, and that is the whole reason this falsifier was a CI flake: it
+    // measured ~2.6 s locally against bun's 5 s per-test default, so a runner under
+    // parallel load tipped it over (observed 2026-09-09 at 5126 ms in `test (TS
+    // hermetic)`; it passed on re-run, which is exactly how a real red gets absorbed).
+    // Hoisting changes no assertion and no result -- the same sets, constructed once.
+    const facetSetOfVertex = facetsOfVertex.map((list) => new Set(list));
     const split = new Map<string, number>();
     for (const [a, b, c] of FACES) {
-      const inA = new Set(facetsOfVertex[a] ?? []);
-      const inB = new Set(facetsOfVertex[b] ?? []);
+      const inA = facetSetOfVertex[a] ?? new Set<number>();
+      const inB = facetSetOfVertex[b] ?? new Set<number>();
       let simplex = 0;
       let orthoplex = 0;
       for (const i of facetsOfVertex[c] ?? []) {

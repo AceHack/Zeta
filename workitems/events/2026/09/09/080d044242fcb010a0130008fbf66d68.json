@@ -1,0 +1,14 @@
+{
+  "id": "080d044242fcb010a0130008fbf66d68",
+  "at": "2026-09-09T22:27:19.574Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M244GQWP087G0R002GZBQ45",
+    "type": "bug",
+    "title": "TS hermetic flake: the 26-facets falsifier sits under 2x of bun default timeout",
+    "slug": "ts-hermetic-flake-the-26-facets-falsifier-sits-under-2x-of-b",
+    "priority": "P2",
+    "filename": "081M244GQWP087G0R002GZBQ45-ts-hermetic-flake-the-26-facets-falsifier-sits-under-2x-of-b.md"
+  }
+}
