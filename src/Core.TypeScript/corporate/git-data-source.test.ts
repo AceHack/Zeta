@@ -171,11 +171,23 @@ describe("THE BATCHED READ IS BYTE-EXACT", () => {
 });
 
 describe("TEXT ONLY", () => {
-  test("the default extension list holds no binary formats", () => {
+  test("the default extension list is EXACTLY these seven text formats", () => {
     // `no-binary-in-proof-lineage`: a grooming artifact citing a `.png` cites something nobody can
     // check, and decoding one would put replacement characters into an agent's context.
-    for (const bad of [".png", ".jpg", ".pdf", ".wasm", ".zip", ".exe"]) {
-      expect(DEFAULT_TEXT_EXTENSIONS).not.toContain(bad);
+    //
+    // AN EXACT PIN, NOT A LIST OF ABSENCES. This was six `not.toContain(binary)` assertions,
+    // and `audit-check-arity-nonequality` was right to refuse them: an absence assertion
+    // witnesses ONE RENDERING of a leak, never its absence. `not.toContain(".png")` also
+    // passes on an EMPTY list, and on any list that merely happens to lack `.png` — so the
+    // claim "holds no binary formats" was riding on a check that could not fail in the
+    // direction that matters.
+    //
+    // Pinning the whole value carries the claim instead: adding `.png` fails, emptying the
+    // list fails, and so does any drift nobody meant. The binary check below is now a
+    // DERIVED consequence rather than the evidence, which is why it can stay readable.
+    expect(DEFAULT_TEXT_EXTENSIONS).toEqual([".md", ".txt", ".json", ".yml", ".yaml", ".toml", ".csv"]);
+    for (const ext of DEFAULT_TEXT_EXTENSIONS) {
+      expect([".png", ".jpg", ".pdf", ".wasm", ".zip", ".exe"]).not.toContain(ext);
     }
   });
 
