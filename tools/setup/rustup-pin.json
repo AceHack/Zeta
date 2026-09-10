@@ -1,0 +1,128 @@
+{
+  "_doc": [
+    "PINNED rustup-init — the only rustup installer tools/setup/ may execute.",
+    "",
+    "WHAT IT REPLACES. tools/setup/common/install-rust-wasm32.sh:32 was, until",
+    "081M24HZCYN087G0R002MT55TV:",
+    "",
+    "    curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | \\",
+    "      sh -s -- -y --default-toolchain \"$RUST_VERSION\" --no-modify-path",
+    "",
+    "the last live pipe-to-shell on the install path. `install.sh` is consumed three ways",
+    "(dev laptops, CI runners, devcontainer images, GOVERNANCE.md §24), so whatever that URL",
+    "served at that instant executed on all three, and nothing committed to this repo could",
+    "have told anyone it had changed. §13 noninterference: influence through an undeclared,",
+    "unmetered channel. Also OpenSSF Scorecard PinnedDependenciesID.",
+    "",
+    "THE ORDERING IS THE PROPERTY. `curl | sh` runs the bytes as its FIRST act, so no check",
+    "performed afterwards is a check at all. src/Core.TypeScript/ace/pinned-artifact.ts",
+    "fetches, compares the SHA-256, and only then makes the file executable and runs it. A",
+    "single flipped byte refuses with NOTHING executed.",
+    "",
+    "SHAPE. Same mechanism as .github/ollama-pin.json (PR #17200), extended in two ways this",
+    "dependency forced and Ollama did not: `artifacts` is a LIST, one row per platform, because",
+    "one digest cannot describe four builds; and `kind: run-installer` executes the verified",
+    "bytes instead of unpacking them, because rustup-init is an executable and not a tarball.",
+    "",
+    "WHY THE ARCHIVE URL AND NOT https://sh.rustup.rs. The archive path is VERSION-ADDRESSED:",
+    "static.rust-lang.org/rustup/archive/<version>/<triple>/rustup-init is written once when",
+    "that rustup is cut and is not rewritten afterwards. sh.rustup.rs is a rolling alias that",
+    "changes with every rustup release, so pinning it would fail closed on somebody else's",
+    "schedule and would need a from-url-rolling-exceptions row. This one needs none: a new",
+    "rustup release does not touch this URL. The pin goes stale; it does not break.",
+    "",
+    "FAILURE MODE: FAIL CLOSED, deliberately, and it is NOT an increase in blast radius. The",
+    "call site runs under `set -euo pipefail` and the previous `curl … | sh` aborted install.sh",
+    "on a network failure too, so the shape of a bad day is unchanged. What is refused is a",
+    "FALLBACK to the unpinned installer: a check with a bypass is not a check. If the pin",
+    "cannot be satisfied, Rust is not installed and install.sh stops with the reason named.",
+    "",
+    "REFRESH (the maintenance path), when a newer rustup is wanted. Never hand-edit a digest:",
+    "  1. bun src/Core.TypeScript/ace/refresh-rustup-pin.ts [--version 1.29.1]",
+    "  2. commit on a branch, push, open a PR — verify-rustup-pin.yml proves it on a real",
+    "     ubuntu-24.04 runner: install, prove the version, AND prove the refusal path",
+    "  3. merge only after it is green",
+    "",
+    "HONEST LIMIT ON DIGEST PROVENANCE, stated because the ollama pin claims something",
+    "stronger and this one cannot. That refresher cross-checks TWO independent sources. rustup",
+    "has only one distribution channel: static.rust-lang.org publishes the binary and the",
+    "`.sha256` sidecar beside it, from the same origin, so agreeing with the sidecar is one",
+    "source, not two — it detects a corrupted transfer and would not detect a compromised",
+    "origin. rust-lang/rustup's GitHub releases carry no rustup-init assets to cross-check",
+    "against (measured 2026-09-10: the API has no release for tag 1.29.1 at all). The",
+    "refresher therefore records what it actually did rather than claiming independence.",
+    "",
+    "MEASURED 2026-09-10: all four sidecars agreed with the sha256 of the bytes actually",
+    "fetched, and https://static.rust-lang.org/rustup/release-stable.toml named 1.29.1."
+  ],
+  "entry": {
+    "name": "rustup-init",
+    "version": "1.29.1",
+    "weight": 1,
+    "packageManager": "ace",
+    "lastUpdated": "2026-09-10T00:00:00Z"
+  },
+  "artifacts": [
+    {
+      "tag": "1.29.1",
+      "asset": "rustup-init",
+      "url": "https://static.rust-lang.org/rustup/archive/1.29.1/x86_64-unknown-linux-gnu/rustup-init",
+      "platform": "linux/x86_64",
+      "sizeBytes": 21113232,
+      "contentAddress": "sha256:dda7234360b7f578ca8b0ddcb80145646fa61a67c1720a5abc7051b35c9fcb71",
+      "kind": "run-installer",
+      "runArgs": ["-y", "--no-modify-path"],
+      "installsInto": "~/.cargo",
+      "verify": { "binary": "~/.cargo/bin/rustup", "versionArgs": ["--version"] }
+    },
+    {
+      "tag": "1.29.1",
+      "asset": "rustup-init",
+      "url": "https://static.rust-lang.org/rustup/archive/1.29.1/aarch64-unknown-linux-gnu/rustup-init",
+      "platform": "linux/arm64",
+      "sizeBytes": 19856640,
+      "contentAddress": "sha256:15f6e4ce9f583b929c996c91562bad6d4454f3281de858b02cdfdef615fac433",
+      "kind": "run-installer",
+      "runArgs": ["-y", "--no-modify-path"],
+      "installsInto": "~/.cargo",
+      "verify": { "binary": "~/.cargo/bin/rustup", "versionArgs": ["--version"] }
+    },
+    {
+      "tag": "1.29.1",
+      "asset": "rustup-init",
+      "url": "https://static.rust-lang.org/rustup/archive/1.29.1/x86_64-apple-darwin/rustup-init",
+      "platform": "darwin/x86_64",
+      "sizeBytes": 12945744,
+      "contentAddress": "sha256:259e2b84274434085163fe8d556510571772cda2aa6d87ca6aa664f57bc644e3",
+      "kind": "run-installer",
+      "runArgs": ["-y", "--no-modify-path"],
+      "installsInto": "~/.cargo",
+      "verify": { "binary": "~/.cargo/bin/rustup", "versionArgs": ["--version"] }
+    },
+    {
+      "tag": "1.29.1",
+      "asset": "rustup-init",
+      "url": "https://static.rust-lang.org/rustup/archive/1.29.1/aarch64-apple-darwin/rustup-init",
+      "platform": "darwin/arm64",
+      "sizeBytes": 11319056,
+      "contentAddress": "sha256:ec1b9233e7f72990ecd8e62063fa7f6c3dfc2bec8e97f88bff165f9100ac696a",
+      "kind": "run-installer",
+      "runArgs": ["-y", "--no-modify-path"],
+      "installsInto": "~/.cargo",
+      "verify": { "binary": "~/.cargo/bin/rustup", "versionArgs": ["--version"] }
+    }
+  ],
+  "_platformCoverage": {
+    "exercisedToday": [
+      "linux/x86_64 — tools/setup/linux.sh:892 on ubuntu-24.04 runners and Debian/Ubuntu hosts",
+      "linux/arm64 — the same call site on an arm64 Linux host or cluster node"
+    ],
+    "declaredButNotExercisedToday": [
+      "darwin/x86_64 and darwin/arm64 — macos.sh does NOT call install-rust-wasm32.sh; macOS gets rust from .mise.toml. The rows are here so a macOS invocation of the script (its docstring documents a standalone run) is pinned rather than unsupported, and their digests were measured the same way as the Linux pair. Nothing on a live path proves them today, and this note exists so nobody reads their presence as coverage."
+    ]
+  },
+  "_notPinnedHere": [
+    "The Rust TOOLCHAIN version (1.99.0-beta.3) is declared once, in .mise.toml, and reaches this mechanism as `--run-arg --default-toolchain <version>` from install-rust-wasm32.sh. Copying it into this file would create a second place it lives, and a pin that disagrees with .mise.toml is worse than no pin.",
+    "The toolchain bytes themselves. rustup verifies its own downloads against the Rust release signing keys; this pin covers the installer that bootstraps that trust, not everything downstream of it."
+  ]
+}

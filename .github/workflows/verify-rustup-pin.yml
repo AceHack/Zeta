@@ -1,0 +1,150 @@
+# Prove the pinned rustup install actually works — on a real runner, before it reaches
+# install.sh.
+#
+# WHY THIS LANE EXISTS. tools/setup/install.sh is consumed three ways (dev laptops, CI runners,
+# devcontainer images; GOVERNANCE.md §24), and this step FAILS CLOSED by design: a bad pin does
+# not degrade the install, it stops it, on all three. A pin is also the kind of change that
+# LOOKS right in review and can only be falsified by running it. So the pin is not merged on
+# the strength of a plausible diff; it is merged on the strength of this run.
+#
+# It runs automatically on any PR that touches the pin, the mechanism or the call site, and on
+# demand:
+#     gh workflow run verify-rustup-pin.yml --ref <branch>
+#
+# It exercises BOTH directions, deliberately:
+#   1. unit falsifiers — wrong bytes, empty bytes, short digest, shadowing binary, an
+#      `archive` handed runArgs, a multi-platform pin with one shared digest
+#   2. the live refusal — a real fetch whose digest does not match MUST be rejected, through
+#      the real network and filesystem effects
+#   3. the happy path  — download rustup-init, verify, execute, and prove the rustup now under
+#      ~/.cargo/bin is the pinned build
+# Without (1) and (2) this workflow could not tell a working check from an absent one, which is
+# the defect class the pin exists to remove. Do not delete them to save a minute.
+name: verify-rustup-pin
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - tools/setup/rustup-pin.json
+      - tools/setup/common/install-rust-wasm32.sh
+      - .github/workflows/verify-rustup-pin.yml
+      - src/Core.TypeScript/ace/pinned-artifact.ts
+      - src/Core.TypeScript/ace/install-pinned-artifact.ts
+      - src/Core.TypeScript/ace/refresh-rustup-pin.ts
+
+permissions:
+  contents: read
+
+concurrency:
+  group: verify-rustup-pin-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    name: pinned rustup install works end-to-end
+    # SAME image family as the linux install lane. Verifying on a different runner than the one
+    # that will run it is how #9890 shipped broken.
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          # Nothing here pushes or fetches again; the token has no reader after the clone.
+          persist-credentials: false
+
+      - name: Setup bun
+        uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
+        with:
+          bun-version: latest
+
+      - name: Unit falsifiers (the refusal is the half that matters)
+        run: bun test src/Core.TypeScript/ace/pinned-artifact.test.ts
+
+      - name: The pin agrees with what static.rust-lang.org serves
+        # --check measures the real bytes for the version the pin ALREADY names and refuses on
+        # drift. It deliberately does not resolve "stable": that would silently judge this pin
+        # against a newer release nobody asked to adopt, and report an upstream event as a
+        # defect in the diff under review.
+        run: bun src/Core.TypeScript/ace/refresh-rustup-pin.ts --check
+
+      - name: Show the pin under test
+        run: |
+          bun -e '
+            const p = await Bun.file("tools/setup/rustup-pin.json").json();
+            console.log("rustup version ", p.entry.version);
+            for (const a of p.artifacts) {
+              console.log("  " + a.platform.padEnd(14) + a.contentAddress + "  " + String(a.sizeBytes));
+            }
+          '
+
+      - name: LIVE REFUSAL — a real fetch with a wrong digest must be rejected
+        run: |
+          # Point the installer at a small real file (rustup-init's own .sha256 sidecar) while
+          # leaving the binary's digest in place. The download succeeds; the comparison must
+          # not. Cheap on purpose: it proves the check is live end to end without a second
+          # 21MB fetch, and it proves it on the REAL effects rather than on fakes.
+          bun -e '
+            const p = await Bun.file("tools/setup/rustup-pin.json").json();
+            // Concatenation, not a template literal: a bare-dollar interpolation inside this
+            // single-quoted shell argument trips shellcheck SC2016, and actionlint escalates
+            // that to a gate failure.
+            for (const a of p.artifacts) { a.url = a.url + ".sha256"; }
+            await Bun.write("/tmp/tampered-rustup-pin.json", JSON.stringify(p, null, 2));
+          '
+          set +e
+          bun src/Core.TypeScript/ace/install-pinned-artifact.ts --pin /tmp/tampered-rustup-pin.json \
+            --run-arg=--default-toolchain --run-arg=none
+          RC=$?
+          set -e
+          if [ "$RC" -eq 0 ]; then
+            echo "::error title=rustup pin::The installer ACCEPTED a payload whose SHA-256 does not match the pin. The digest check is not doing anything."
+            exit 1
+          fi
+          echo "[verify] live refusal OK (rc=$RC) — the digest check can fail"
+
+      - name: Clear the runner's preinstalled Rust
+        # ubuntu-24.04 images ship a rustup already, and rustup-init refuses to install over
+        # one. install-rust-wasm32.sh never reaches this path on such a host (it checks
+        # `command -v rustup` first), so removing it here is what puts the runner into the
+        # state this lane is meant to verify: a machine with no Rust.
+        run: |
+          rm -rf "$HOME/.cargo" "$HOME/.rustup"
+          if command -v rustup >/dev/null 2>&1; then
+            echo "::error title=rustup pin::rustup is still on PATH after removal; this run would verify the wrong thing."
+            exit 1
+          fi
+
+      - name: HAPPY PATH — install rustup from the pin
+        # `--default-toolchain none` keeps this lane about the INSTALLER, which is the only
+        # thing the pin covers. Downloading 1.99.0-beta.3 here would re-test rustup's own
+        # signature-checked toolchain fetch at several minutes a run. A stated limit of this
+        # verification, not an oversight.
+        run: |
+          bun src/Core.TypeScript/ace/install-pinned-artifact.ts --pin tools/setup/rustup-pin.json \
+            --run-arg=--default-toolchain --run-arg=none
+
+      - name: Prove the rustup on disk is the pinned build
+        run: |
+          set -euo pipefail
+          # The install step already asserts this through artifact.verify; asserting it again
+          # from the shell is the independent reading — it would catch a verify block that had
+          # been relaxed to something that cannot fail.
+          PINNED=$(bun -e 'console.log((await Bun.file("tools/setup/rustup-pin.json").json()).entry.version)')
+          OUT=$("$HOME/.cargo/bin/rustup" --version 2>&1)
+          echo "$OUT"
+          case "$OUT" in
+            *"$PINNED"*) echo "[verify] ~/.cargo/bin/rustup is rustup $PINNED" ;;
+            *) echo "::error title=rustup pin::rustup reports '$OUT' but the pin is $PINNED"; exit 1 ;;
+          esac
+
+      - name: The call site still runs (idempotent second pass)
+        # install-rust-wasm32.sh's step 1 must now SKIP, because rustup is present. This proves
+        # the shell change did not turn a warm host into a reinstall — which is the regression a
+        # reviewer cannot see in the diff.
+        run: |
+          set -euo pipefail
+          export PATH="$HOME/.cargo/bin:$PATH"
+          RUST_VERSION=stable bash tools/setup/common/install-rust-wasm32.sh

@@ -1012,7 +1012,27 @@ jobs:
 
       - name: Tear down kind cluster
         if: always()
-        run: bun src/Core.TypeScript/cluster/dev-cluster/kind-down.ts --cluster-name zeta-ci
+        # WHY THIS IS GUARDED (081M24HZCYN087G0R002MT55TV). `if: always()` means this
+        # step also runs when the TOOLCHAIN INSTALL failed -- and then there is no
+        # `bun`, so it died with `bun: command not found` and exit 127. Measured
+        # 2026-09-10 on `live kind ArgoCD health (ubuntu-24.04-arm)`, run
+        # 34427150482: the job showed TWO reds, and the LAST one -- the one a reader
+        # sees first -- was the missing bun. The actual cause was five steps earlier,
+        # a GitHub attestation-service 503 that stopped `mise install`.
+        #
+        # The guard exits 0 on exactly ONE condition, and it is the condition under
+        # which teardown is definitionally a no-op: no `bun` means the toolchain
+        # never installed, which means no cluster was ever created. A REAL teardown
+        # failure -- bun present, `kind-down.ts` non-zero -- still goes red, because
+        # nothing here touches that path. This is not error suppression; it is
+        # refusing to invent a second, misleading failure out of the first one.
+        run: |
+          set -euo pipefail
+          if ! command -v bun >/dev/null 2>&1; then
+            echo "::notice title=teardown skipped::No bun on PATH, so the toolchain install never completed and no cluster was created. Nothing to tear down. The real failure is the earlier toolchain step -- read that one, not this."
+            exit 0
+          fi
+          bun src/Core.TypeScript/cluster/dev-cluster/kind-down.ts --cluster-name zeta-ci
 
   # THE SECOND PROVIDER. k3d/k3s, not kind.
   #
@@ -1435,7 +1455,17 @@ jobs:
 
       - name: Tear down k3d cluster
         if: always()
-        run: bun src/Core.TypeScript/cluster/dev-cluster/k3d-down.ts --config full-ai-cluster/dev-cluster/profiles/ci.k3d-config.yaml
+        # Guarded for the reason spelled out on the first `Tear down` step in this
+        # file: `if: always()` also fires when the toolchain never installed, and an
+        # unguarded `bun ...` then reports `command not found` as a second, later,
+        # misleading red. A genuine teardown failure still goes red.
+        run: |
+          set -euo pipefail
+          if ! command -v bun >/dev/null 2>&1; then
+            echo "::notice title=teardown skipped::No bun on PATH, so the toolchain install never completed and no cluster was created. Nothing to tear down. The real failure is the earlier toolchain step -- read that one, not this."
+            exit 0
+          fi
+          bun src/Core.TypeScript/cluster/dev-cluster/k3d-down.ts --config full-ai-cluster/dev-cluster/profiles/ci.k3d-config.yaml
 
 
   # THE CNI THE METAL CLUSTER WILL RUN, EXERCISED.
@@ -1591,7 +1621,17 @@ jobs:
 
       - name: Tear down kind cluster
         if: always()
-        run: bun src/Core.TypeScript/cluster/dev-cluster/kind-down.ts --cluster-name zeta-ci-cilium
+        # Guarded for the reason spelled out on the first `Tear down` step in this
+        # file: `if: always()` also fires when the toolchain never installed, and an
+        # unguarded `bun ...` then reports `command not found` as a second, later,
+        # misleading red. A genuine teardown failure still goes red.
+        run: |
+          set -euo pipefail
+          if ! command -v bun >/dev/null 2>&1; then
+            echo "::notice title=teardown skipped::No bun on PATH, so the toolchain install never completed and no cluster was created. Nothing to tear down. The real failure is the earlier toolchain step -- read that one, not this."
+            exit 0
+          fi
+          bun src/Core.TypeScript/cluster/dev-cluster/kind-down.ts --cluster-name zeta-ci-cilium
 
   # THE MISSING CELL OF THE 2x2. Dispatch-gated; see `workflow_dispatch` above.
   #
@@ -1784,7 +1824,17 @@ jobs:
 
       - name: Tear down kind cluster
         if: always()
-        run: bun src/Core.TypeScript/cluster/dev-cluster/kind-down.ts --cluster-name zeta-ci-cilium-included
+        # Guarded for the reason spelled out on the first `Tear down` step in this
+        # file: `if: always()` also fires when the toolchain never installed, and an
+        # unguarded `bun ...` then reports `command not found` as a second, later,
+        # misleading red. A genuine teardown failure still goes red.
+        run: |
+          set -euo pipefail
+          if ! command -v bun >/dev/null 2>&1; then
+            echo "::notice title=teardown skipped::No bun on PATH, so the toolchain install never completed and no cluster was created. Nothing to tear down. The real failure is the earlier toolchain step -- read that one, not this."
+            exit 0
+          fi
+          bun src/Core.TypeScript/cluster/dev-cluster/kind-down.ts --cluster-name zeta-ci-cilium-included
 
   live-kind-included:
     name: live kind included Synced+Healthy proof (${{ matrix.runner }})
@@ -2259,7 +2309,17 @@ jobs:
 
       - name: Tear down kind cluster
         if: always()
-        run: bun src/Core.TypeScript/cluster/dev-cluster/kind-down.ts --cluster-name zeta-ci-included
+        # Guarded for the reason spelled out on the first `Tear down` step in this
+        # file: `if: always()` also fires when the toolchain never installed, and an
+        # unguarded `bun ...` then reports `command not found` as a second, later,
+        # misleading red. A genuine teardown failure still goes red.
+        run: |
+          set -euo pipefail
+          if ! command -v bun >/dev/null 2>&1; then
+            echo "::notice title=teardown skipped::No bun on PATH, so the toolchain install never completed and no cluster was created. Nothing to tear down. The real failure is the earlier toolchain step -- read that one, not this."
+            exit 0
+          fi
+          bun src/Core.TypeScript/cluster/dev-cluster/kind-down.ts --cluster-name zeta-ci-included
 
   # ---------------------------------------------------------------------------
   # DO THE VENDORED cdi/kubevirt BYTES ACTUALLY DEPLOY?
@@ -2367,4 +2427,14 @@ jobs:
 
       - name: Tear down kind cluster
         if: always()
-        run: bun src/Core.TypeScript/cluster/dev-cluster/kind-down.ts --cluster-name zeta-ci-virt
+        # Guarded for the reason spelled out on the first `Tear down` step in this
+        # file: `if: always()` also fires when the toolchain never installed, and an
+        # unguarded `bun ...` then reports `command not found` as a second, later,
+        # misleading red. A genuine teardown failure still goes red.
+        run: |
+          set -euo pipefail
+          if ! command -v bun >/dev/null 2>&1; then
+            echo "::notice title=teardown skipped::No bun on PATH, so the toolchain install never completed and no cluster was created. Nothing to tear down. The real failure is the earlier toolchain step -- read that one, not this."
+            exit 0
+          fi
+          bun src/Core.TypeScript/cluster/dev-cluster/kind-down.ts --cluster-name zeta-ci-virt

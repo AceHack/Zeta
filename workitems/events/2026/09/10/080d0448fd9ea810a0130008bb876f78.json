@@ -1,0 +1,14 @@
+{
+  "id": "080d0448fd9ea810a0130008bb876f78",
+  "at": "2026-09-10T02:22:31.381Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M24HZCYN087G0R002MT55TV",
+    "type": "task",
+    "title": "Retire the last curl-pipe-sh on the install path: pin rustup-init by sha256 and classify the remaining stray shell scripts",
+    "slug": "retire-the-last-curl-pipe-sh-on-the-install-path-pin-rustup",
+    "priority": "P2",
+    "filename": "081M24HZCYN087G0R002MT55TV-retire-the-last-curl-pipe-sh-on-the-install-path-pin-rustup.md"
+  }
+}

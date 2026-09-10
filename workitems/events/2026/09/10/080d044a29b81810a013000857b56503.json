@@ -1,0 +1,14 @@
+{
+  "id": "080d044a29b81810a013000857b56503",
+  "at": "2026-09-10T03:03:29.795Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M24MADR2087G0R001FCD8K6",
+    "type": "task",
+    "title": "No mise-managed tool has a committed digest: trust rests on GitHub's attestation service being up, and mise.lock is the fix",
+    "slug": "no-mise-managed-tool-has-a-committed-digest-trust-rests-on-g",
+    "priority": "P2",
+    "filename": "081M24MADR2087G0R001FCD8K6-no-mise-managed-tool-has-a-committed-digest-trust-rests-on-g.md"
+  }
+}
