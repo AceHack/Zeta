@@ -164,11 +164,31 @@ env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 concurrency:
-  # PR force-push supersedes the previous run. Schedule runs
-  # carry a distinct ref (`refs/heads/main` on cron) so they
-  # don't cancel each other.
+  # PR force-push supersedes the previous run -- that is the case
+  # cancellation is FOR, and it is preserved below.
+  #
+  # It must NOT apply to `main`. The comment this replaces claimed
+  # "schedule runs carry a distinct ref (`refs/heads/main` on cron)
+  # so they don't cancel each other", which is exactly backwards:
+  # a push to `main`, a cron on `main`, and a merge_group all
+  # resolve `github.ref` to the SAME value, so they shared one
+  # group and killed each other. At ~84 commits/day on `main` the
+  # measured result (2026-09-09) was **61 of the last 100 runs
+  # cancelled**, and the three most recent `javascript-typescript`
+  # analyses reporting `rules_count: 0, results_count: 0,
+  # error: "unsuccessful execution, exit code: 0"`.
+  #
+  # That is this repo's worst failure class -- a check that did not
+  # run looking like one that passed -- sitting at the top of the
+  # security stack, because every alert count quoted from those
+  # analyses rested on scans that never finished.
+  #
+  # Cancelling is therefore scoped to pull requests only. Runs on
+  # `main` now queue and complete. Queuing is the accepted cost:
+  # a delayed analysis that finishes is worth more than a prompt
+  # one that is cancelled, because only the first produces data.
   group: codeql-${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
   # Fast pre-check: decide whether any code-scanned paths

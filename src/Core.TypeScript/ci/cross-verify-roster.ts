@@ -296,6 +296,25 @@ export const CROSS_VERIFY_AUDITS: readonly CrossVerifyAudit[] = [
     command: "bun src/Core.TypeScript/hygiene/audit-workflow-write-token-consistency.ts",
   },
 
+  // An evidence-producing workflow that cancels its own default-branch runs makes every
+  // number downstream of it unfalsifiable. Measured 2026-09-09 on `codeql.yml`: 61 of the
+  // last 100 runs on `main` cancelled, and the three most recent `javascript-typescript`
+  // analyses reporting `rules_count: 0, results_count: 0,
+  // error: "unsuccessful execution, exit code: 0"`. Two of the cancelled runs were exactly
+  // the ones that would have verified that session's own security fixes -- the defect
+  // demonstrating itself.
+  //
+  // The workflow's comment asserted the opposite ("schedule runs carry a distinct ref so
+  // they don't cancel each other"), which is backwards: push, schedule and merge_group all
+  // resolve `github.ref` to the same value on `main`. Prose could not hold this; a check
+  // can. Offline (reads committed workflow text, no sockets), so it belongs on the
+  // pre-merge floor.
+  {
+    id: "scanner-cancels-itself",
+    title: "Evidence workflows must not cancel their own default-branch runs",
+    command: "bun src/Core.TypeScript/hygiene/audit-scanner-cancels-itself-on-main.ts",
+  },
+
   // The falsifier for the PR-free heartbeat lane. Design:
   // docs/research/2026-08-25-pr-free-heartbeat-lane-attestation-instead-of-gate.md
   //

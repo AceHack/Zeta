@@ -1,0 +1,14 @@
+{
+  "id": "080d044840927010a01300082495ea0a",
+  "at": "2026-09-10T01:56:42.702Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M24GG4JE087G0R003J9Y98R",
+    "type": "bug",
+    "title": "CodeQL on main cancels itself: 61 of 100 runs cancelled, analyses report rules_count 0",
+    "slug": "codeql-on-main-cancels-itself-61-of-100-runs-cancelled-analy",
+    "priority": "P2",
+    "filename": "081M24GG4JE087G0R003J9Y98R-codeql-on-main-cancels-itself-61-of-100-runs-cancelled-analy.md"
+  }
+}
