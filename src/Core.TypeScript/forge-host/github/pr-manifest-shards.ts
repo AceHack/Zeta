@@ -90,8 +90,9 @@
  * idempotent; Goguen & Meseguer 1982 (noninterference — no ambient clock or entropy here).
  */
 
-import { existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
+import { readFileBounded, writeFileOwned } from "../../io/safe-io.ts";
 
 import { pack, type SimulationEnvironment } from "../../zeta-id/zeta-id.ts";
 import { toHex } from "../../zeta-id/encoding.ts";
@@ -299,6 +300,21 @@ function equalModuloWallClockNoise(a: ManifestEntry, b: ManifestEntry): boolean 
 }
 
 /**
+ * A shard is one JSON object for one PR. 8 MiB is three orders of magnitude
+ * above the largest one on `main` and still bounds a corrupted or hostile file
+ * that `readFileSync` would have loaded whole.
+ */
+const SHARD_MAX_BYTES = 8 * 1024 * 1024;
+
+/**
+ * 0o644 — the mode `writeFileSync` produced under the repo's umask, preserved
+ * exactly. `writeFileOwned` defaults to 0o600, which would make newly-written
+ * shards unreadable to other local users for no reason: these are public
+ * repository files, and git records none of this anyway.
+ */
+const SHARD_MODE = 0o644;
+
+/**
  * Write one entry as its own shard. UPSERT on the natural key: same `pr_number` ⇒ same path,
  * so N writes for one PR leave exactly one file (§12). Two DIFFERENT PRs can never select the
  * same path, so concurrent writers never touch a shared byte (§2).
@@ -310,9 +326,23 @@ function equalModuloWallClockNoise(a: ManifestEntry, b: ManifestEntry): boolean 
 export function writeShard(entry: ManifestEntry, root: string): ShardWriteResult {
   const path = shardPathFor(entry.pr_number, root);
   const next = serializeShard(entry);
-  const existed = existsSync(path);
-  if (existed) {
-    const current = readFileSync(path, "utf8");
+  // ONE DESCRIPTOR ANSWERS BOTH QUESTIONS. This used to be `existsSync(path)`
+  // and then `readFileSync(path)` and then `writeFileSync(path)` — three
+  // separate resolutions of one name, so "did it exist", "what was in it" and
+  // "what did we overwrite" could describe three different inodes (CodeQL
+  // `js/file-system-race`). `readFileBounded` opens once and reports ENOENT as
+  // `not-found`, which is the same answer `existsSync` was being asked for and
+  // is the ONLY answer that is consistent with the bytes actually read.
+  const read = readFileBounded(path, { maxBytes: SHARD_MAX_BYTES });
+  if (!read.ok && read.error.kind !== "not-found") {
+    // An unreadable-but-present shard is NOT the same as an absent one, and the
+    // old `existsSync` could not tell them apart: a permission error read as
+    // "does not exist" and the shard was silently replaced.
+    throw new Error(`cannot read existing shard ${path}: ${read.error.message}`);
+  }
+  const existed = read.ok;
+  if (read.ok) {
+    const current = read.value.text;
     if (current === next) return { path, changed: false, classification: "noop" };
     let parsed: unknown;
     try {
@@ -327,7 +357,8 @@ export function writeShard(entry: ManifestEntry, root: string): ShardWriteResult
     }
   }
   mkdirSync(join(path, ".."), { recursive: true });
-  writeFileSync(path, next, "utf8");
+  const written = writeFileOwned(path, next, { mode: SHARD_MODE });
+  if (!written.ok) throw new Error(`cannot write shard ${path}: ${written.error.message}`);
   return { path, changed: true, classification: existed ? "replaced" : "added" };
 }
 

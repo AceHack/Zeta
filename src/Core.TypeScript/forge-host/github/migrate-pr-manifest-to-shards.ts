@@ -27,7 +27,8 @@
  * Exit codes: 0 ok · 1 round-trip mismatch · 2 shard-store integrity failure · 3 usage.
  */
 
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { mkdirSync } from "node:fs";
+import { readFileBounded, writeFileOwned, writeTextIfChanged } from "../../io/safe-io.ts";
 import { dirname, join, resolve } from "node:path";
 
 import {
@@ -41,6 +42,20 @@ import {
   serializeUnparseable,
   writeShard,
 } from "./pr-manifest-shards.ts";
+
+/**
+ * 0o644 — the mode `writeFileSync` produced under the repo's umask, kept
+ * exactly. The safe-io writers default to 0o600, and a repository file that
+ * only its writer can read is a change nobody asked for.
+ */
+const REPO_FILE_MODE = 0o644;
+
+/**
+ * The manifest is ~7.6 MiB on `main` and grows by one line per merged PR.
+ * 256 MiB is decades of headroom; one that reaches it is a defect worth
+ * failing loudly on rather than loading whole.
+ */
+const MANIFEST_MAX_BYTES = 256 * 1024 * 1024;
 
 export interface MigrateOptions {
   readonly root: string;
@@ -60,12 +75,22 @@ export function runMigration(opts: MigrateOptions): MigrateOutcome {
   const shardRoot = join(opts.root, SHARD_ROOT_RELATIVE);
   const sidecarPath = join(opts.root, UNPARSEABLE_RELATIVE);
 
-  if (!existsSync(manifestPath)) {
-    out.push(`::error::no manifest at ${manifestPath}`);
+  // ONE OPEN ANSWERS BOTH. `existsSync` then `readFileSync` resolved the name
+  // twice, so the file whose absence was reported and the file whose bytes were
+  // parsed could be different objects. `not-found` is the only error that means
+  // absent; anything else is a manifest that exists and cannot be read, which
+  // the old shape reported as "no manifest".
+  const source = readFileBounded(manifestPath, { maxBytes: MANIFEST_MAX_BYTES });
+  if (!source.ok) {
+    out.push(
+      source.error.kind === "not-found"
+        ? `::error::no manifest at ${manifestPath}`
+        : `::error::cannot read ${manifestPath}: ${source.error.message}`,
+    );
     return { code: 3, lines: out };
   }
 
-  const blob = readFileSync(manifestPath, "utf8");
+  const blob = source.value.text;
   const parsed = parseManifest(blob);
   out.push(`input:        ${MANIFEST_RELATIVE}`);
   out.push(`  parseable:  ${String(parsed.entries.length)}`);
@@ -88,7 +113,13 @@ export function runMigration(opts: MigrateOptions): MigrateOutcome {
   if (!opts.verifyOnly && !opts.dryRun) {
     if (parsed.unparseable.length > 0) {
       mkdirSync(dirname(sidecarPath), { recursive: true });
-      writeFileSync(sidecarPath, serializeUnparseable(parsed.unparseable), "utf8");
+      const quarantined = writeFileOwned(sidecarPath, serializeUnparseable(parsed.unparseable), {
+        mode: REPO_FILE_MODE,
+      });
+      if (!quarantined.ok) {
+        out.push(`::error::cannot write ${UNPARSEABLE_RELATIVE}: ${quarantined.error.message}`);
+        return { code: 2, lines: out };
+      }
       out.push(`quarantined ${String(parsed.unparseable.length)} line(s) -> ${UNPARSEABLE_RELATIVE}`);
     }
     let added = 0;
@@ -135,13 +166,23 @@ export function runMigration(opts: MigrateOptions): MigrateOutcome {
   }
   out.push(`round trip:   BYTE-IDENTICAL modulo ordering (pr_number ascending, integer compare) ✓`);
 
+  // ONE DESCRIPTOR EACH WAY. `existsSync`/`readFileSync` then `writeFileSync`
+  // resolved one name three times and made the write CONDITIONAL on the first
+  // resolution — CodeQL `js/file-system-race`. `writeTextIfChanged` reads
+  // through one descriptor, compares, and writes through one more, with no
+  // check in front of the write. The mtime-preserving no-op contract is kept:
+  // identical bytes open nothing for writing.
   if (opts.writeManifest && !opts.verifyOnly) {
-    const current = readFileSync(manifestPath, "utf8");
-    if (current === derived) out.push(`${MANIFEST_RELATIVE} already in derived form.`);
-    else {
-      writeFileSync(manifestPath, derived, "utf8");
-      out.push(`${MANIFEST_RELATIVE} rewritten in derived order.`);
+    const written = writeTextIfChanged(manifestPath, derived, {
+      mode: REPO_FILE_MODE,
+      maxBytes: MANIFEST_MAX_BYTES,
+    });
+    if (!written.ok) {
+      out.push(`::error::cannot write ${MANIFEST_RELATIVE}: ${written.error.message}`);
+      return { code: 2, lines: out };
     }
+    if (written.value.unchanged) out.push(`${MANIFEST_RELATIVE} already in derived form.`);
+    else out.push(`${MANIFEST_RELATIVE} rewritten in derived order.`);
   }
   return { code: 0, lines: out };
 }

@@ -79,6 +79,13 @@ describe("injectKeyIntoEsp on a real ISO copy", () => {
       } finally {
         closeSync(fd);
       }
+      // THE RE-OPEN IS THE ASSERTION. CodeQL reports this as
+      // `js/file-system-race` (alert #256) because `tmp` was opened "r+" seven
+      // lines up. Reusing that handle would assert only that the bytes this
+      // test wrote are the bytes this test wrote -- exactly the vacuous check
+      // this line exists to avoid. `tmp` lives inside a 0700 `mkdtempSync`
+      // directory created for this test alone, so there is no second writer to
+      // race with.
       const fd2 = openSync(tmp, "r"); // re-open fresh: prove it persisted to the file
       try {
         expect(verifyKeyInEsp(fd2, body)).toBe(true);

@@ -400,6 +400,76 @@ export function writeFileOwned(
   }
 }
 
+export interface WriteIfChangedOptions extends WriteOptions {
+  /**
+   * Refuse when the EXISTING file is larger than this. Defaults to
+   * `DEFAULT_MAX_BYTES`. A file too large to read is a file this function
+   * cannot decide about, and deciding anyway means overwriting it blind.
+   */
+  readonly maxBytes?: number;
+}
+
+export interface WriteIfChangedOutcome {
+  readonly path: string;
+  /** The file existed and already held exactly `text`. Nothing was written. */
+  readonly unchanged: boolean;
+  /** The file did not exist before this call. */
+  readonly created: boolean;
+  /** Bytes written, or bytes read when `unchanged`. */
+  readonly bytes: number;
+}
+
+/**
+ * Write `text` only when it differs from what the path already holds.
+ *
+ * THE SHAPE THIS REPLACES, which appeared nine times across the manifest,
+ * vocabulary and crypto writers:
+ *
+ *     const current = existsSync(p) ? readFileSync(p, "utf8") : "";
+ *     if (current !== next) writeFileSync(p, next, "utf8");
+ *
+ * That is THREE separate resolutions of one name -- `existsSync`,
+ * `readFileSync`, `writeFileSync` -- so "did it exist", "what was in it" and
+ * "what did we overwrite" can each describe a different inode. CodeQL reports
+ * it as `js/file-system-race`; the reason it is a defect and not only a
+ * finding is that the write is CONDITIONAL ON the check, so a replacement
+ * between them silently inverts the decision.
+ *
+ * Here the existence question is answered by the read that has to happen
+ * anyway, through one descriptor, and the write is not preceded by a check at
+ * all.
+ *
+ * TWO REFUSALS THAT THE OLD SHAPE SWALLOWED, and both are the point:
+ *
+ *   * an existing file that cannot be READ (permissions, a directory in the
+ *     way) is an error, not an absence. `existsSync` returning false for
+ *     EACCES made an unreadable file look like a missing one, and the next
+ *     line overwrote it.
+ *   * an existing file LARGER than `maxBytes` is an error. `readFileSync`
+ *     would have loaded it whole to compare it.
+ *
+ * The mtime-preserving property callers relied on is kept exactly: when the
+ * bytes already match, nothing is opened for writing, so a deterministic
+ * re-run stays a true no-op (no mtime churn, no git diff).
+ */
+export function writeTextIfChanged(
+  path: string,
+  text: string,
+  options: WriteIfChangedOptions = {},
+): Result<WriteIfChangedOutcome, IoError> {
+  const read = readFileBounded(path, { maxBytes: options.maxBytes ?? DEFAULT_MAX_BYTES });
+  if (!read.ok) {
+    // `not-found` is the ONLY error that means "absent". Everything else is a
+    // file this call must not overwrite.
+    if (read.error.kind !== "not-found") return fail(read.error);
+  } else if (read.value.text === text) {
+    return ok({ path, unchanged: true, created: false, bytes: read.value.bytes });
+  }
+  const written = writeFileOwned(path, text, options);
+  if (!written.ok) return fail(written.error);
+  return ok({ path, unchanged: false, created: !read.ok, bytes: written.value.bytes });
+}
+
 // ═══════════════════════════════════════════════════════════════════════════
 // COMMAND LINES -- SPLIT, NEVER INTERPRETED
 // ═══════════════════════════════════════════════════════════════════════════

@@ -33,8 +33,18 @@
  * or redaction; decrypt returns the exact input bytes.
  */
 
-import { readFileSync, writeFileSync, existsSync, readdirSync, mkdirSync, statSync } from "node:fs";
+import { readFileSync, existsSync, readdirSync, mkdirSync, statSync } from "node:fs";
+import { writeFileOwned } from "../../io/safe-io.ts";
 import { join, basename } from "node:path";
+
+/**
+ * 0o600 — an age envelope is the encrypted form of a private memory, and the
+ * plaintext it came from is not world-readable either. This is the ONE mode in
+ * this change that is not `writeFileSync`'s old 0o644: `writeFileOwned`'s
+ * private-by-default is the right default here, and saying so out loud is
+ * cheaper than inheriting a umask.
+ */
+const ENVELOPE_MODE = 0o600;
 import {
   deserializeSecretBundle,
   looksLikeSecretBundle,
@@ -89,17 +99,36 @@ export function encryptDir(
 
   for (const inFile of listInputs(inDir, inExt)) {
     const out = outPathFor(inFile, outDir, inExt);
-    if (existsSync(out) && !opts.force) {
-      skipped.push({ in: inFile, reason: `output exists (use --force): ${out}` });
-      continue;
-    }
     const bytes = readFileSync(inFile); // Buffer is a Uint8Array
     const res = encryptBytes(bytes, self, []); // [] = pure self-encryption
     if (!res.ok) {
       errors.push({ in: inFile, feedback: JSON.stringify(res.feedback) });
       continue;
     }
-    writeFileSync(out, res.envelopeBytes);
+    // THE ATOMIC FORM OF THE CHECK THIS REPLACES. `if (existsSync(out) &&
+    // !force) skip;` followed by `writeFileSync(out, ...)` is the check-then-
+    // create race in its textbook form (CodeQL `js/file-system-race`): between
+    // the two lines another writer -- or a planted symlink -- can create `out`,
+    // and the write then clobbers whatever landed there. `exclusive: !force` is
+    // O_CREAT|O_EXCL, which asks the KERNEL the question, and the kernel is the
+    // only participant that can see both halves at once. A loser gets
+    // `already-exists`, which is exactly the "output exists" the check meant.
+    //
+    // It matters more here than at the other sites in this change: the payload
+    // is an encryption envelope, and `--force`-less mode exists precisely so a
+    // re-run cannot destroy one.
+    const written = writeFileOwned(out, res.envelopeBytes, {
+      exclusive: opts.force !== true,
+      mode: ENVELOPE_MODE,
+    });
+    if (!written.ok) {
+      if (written.error.kind === "already-exists") {
+        skipped.push({ in: inFile, reason: `output exists (use --force): ${out}` });
+      } else {
+        errors.push({ in: inFile, feedback: `cannot write ${out}: ${written.error.message}` });
+      }
+      continue;
+    }
     encrypted.push({ in: inFile, out, recipients: res.recipientIdentities });
   }
 

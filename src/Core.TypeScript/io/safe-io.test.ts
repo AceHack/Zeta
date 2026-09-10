@@ -30,7 +30,7 @@
 // tests do not silently pass over an empty string, they fail at the Result.
 
 import { afterAll, describe, expect, test } from "bun:test";
-import { mkdtempSync, rmSync, existsSync } from "node:fs";
+import { mkdirSync, mkdtempSync, rmSync, statSync, existsSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import {
@@ -45,6 +45,7 @@ import {
   splitCommandLine,
   truncateUtf8Bytes,
   writeFileOwned,
+  writeTextIfChanged,
 } from "./safe-io.ts";
 
 const SUBJECT = join(import.meta.dir, "safe-io.ts");
@@ -215,6 +216,78 @@ describe("writeFileOwned", () => {
     expect(writeFileOwned(p, "short").ok).toBe(true);
     const r = readFileBounded(p);
     expect(r.ok && r.value.text).toBe("short");
+  });
+});
+
+describe("writeTextIfChanged — the check-then-write shape, without the check", () => {
+  test("creates a file that was absent, and says so", () => {
+    const p = scratchPath("wic-new.txt");
+    const r = writeTextIfChanged(p, "hello");
+    expect(r.ok).toBe(true);
+    if (r.ok) {
+      expect(r.value.created).toBe(true);
+      expect(r.value.unchanged).toBe(false);
+      expect(r.value.bytes).toBe(5);
+    }
+    expect(readFileBounded(p).ok).toBe(true);
+  });
+
+  test("identical bytes are a TRUE no-op — nothing is opened for writing", () => {
+    // The mtime-preserving contract every caller relies on: a deterministic
+    // re-run must produce no git diff and no mtime churn. Delete the equality
+    // branch and the mtime moves, which this catches.
+    const p = scratchPath("wic-noop.txt");
+    expect(writeTextIfChanged(p, "same").ok).toBe(true);
+    const before = statSync(p).mtimeMs;
+    const again = writeTextIfChanged(p, "same");
+    expect(again.ok).toBe(true);
+    if (again.ok) {
+      expect(again.value.unchanged).toBe(true);
+      expect(again.value.created).toBe(false);
+    }
+    expect(statSync(p).mtimeMs).toBe(before);
+  });
+
+  test("different bytes are written, and the tail does not survive", () => {
+    const p = scratchPath("wic-change.txt");
+    expect(writeTextIfChanged(p, "LONG-ORIGINAL-CONTENT").ok).toBe(true);
+    const r = writeTextIfChanged(p, "short");
+    expect(r.ok).toBe(true);
+    if (r.ok) {
+      expect(r.value.unchanged).toBe(false);
+      expect(r.value.created).toBe(false);
+    }
+    expect(readFileBounded(p).ok && (readFileBounded(p) as { value: { text: string } }).value.text).toBe("short");
+  });
+
+  test("an EXISTING file that cannot be read REFUSES — it is not treated as absent", () => {
+    // The defect `existsSync` hid: EACCES made a present file look missing, and
+    // the next line overwrote it. A directory is the portable stand-in for
+    // "present but unreadable as a file" -- it needs no chmod and behaves the
+    // same on a CI runner running as root, where a 0000 file is still readable.
+    const p = scratchPath("wic-dir");
+    mkdirSync(p);
+    const r = writeTextIfChanged(p, "should not land");
+    expect(r.ok).toBe(false);
+    if (!r.ok) expect(r.error.kind).not.toBe("not-found");
+    expect(statSync(p).isDirectory()).toBe(true);
+  });
+
+  test("an existing file larger than maxBytes REFUSES rather than overwriting blind", () => {
+    const p = scratchPath("wic-big.txt");
+    expect(writeFileOwned(p, "0123456789").ok).toBe(true);
+    const r = writeTextIfChanged(p, "x", { maxBytes: 4 });
+    expect(r.ok).toBe(false);
+    if (!r.ok) expect(r.error.kind).toBe("too-large");
+    expect(readFileBounded(p).ok && (readFileBounded(p) as { value: { text: string } }).value.text).toBe("0123456789");
+  });
+
+  test("exclusive still refuses to clobber", () => {
+    const p = scratchPath("wic-excl.txt");
+    expect(writeTextIfChanged(p, "first", { exclusive: true }).ok).toBe(true);
+    const second = writeTextIfChanged(p, "second", { exclusive: true });
+    expect(second.ok).toBe(false);
+    if (!second.ok) expect(second.error.kind).toBe("already-exists");
   });
 });
 

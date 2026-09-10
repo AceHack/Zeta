@@ -45,7 +45,8 @@
 //   4 -- file write error
 
 import { spawnSync } from "node:child_process";
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync } from "node:fs";
+import { readFileBounded, writeTextIfChanged } from "../../io/safe-io.ts";
 import { dirname, relative, resolve } from "node:path";
 
 import {
@@ -57,6 +58,23 @@ import {
   type ManifestEntry,
 } from "./pr-manifest-shards.ts";
 import { isArchiveEligible } from "./archive-eligibility.ts";
+
+/**
+ * 0o644 — the mode `writeFileSync` produced under the repo's umask, kept
+ * exactly. `writeTextIfChanged` defaults to 0o600, and a repository file that
+ * only its writer can read is a change nobody asked for.
+ */
+const REPO_FILE_MODE = 0o644;
+
+/** One rendered PR-review archive. 32 MiB is far above the largest on `main`. */
+const ARCHIVE_MAX_BYTES = 32 * 1024 * 1024;
+
+/**
+ * The manifest is ~7.6 MiB on `main` and grows by one line per merged PR.
+ * 256 MiB is decades of headroom; one that reaches it is a defect worth
+ * failing loudly on rather than loading whole.
+ */
+const MANIFEST_MAX_BYTES = 256 * 1024 * 1024;
 
 // The manifest entry schema + its canonical serialization now live in
 // `pr-manifest-shards.ts` (one definition, shared by the writer, the deriver and the
@@ -839,15 +857,15 @@ export function writeArchive(archive: PRReviewArchive, outputDir: string): Write
   const rendered = renderArchive(archive);
   try {
     mkdirSync(dirname(path), { recursive: true });
-    let existing: string | null = null;
-    if (existsSync(path)) {
-      existing = readFileSync(path, "utf8");
-    }
-    if (existing === rendered) {
-      return { path, changed: false };
-    }
-    writeFileSync(path, rendered, "utf8");
-    return { path, changed: existing !== rendered };
+    // ONE DESCRIPTOR EACH WAY. `existsSync` then `readFileSync` then
+    // `writeFileSync` resolved one name three times, and the write was
+    // CONDITIONAL on the first resolution — CodeQL `js/file-system-race`.
+    // `writeTextIfChanged` keeps the mtime-preserving no-op exactly (identical
+    // bytes open nothing for writing) and additionally refuses a present-but-
+    // unreadable archive instead of treating it as absent and replacing it.
+    const written = writeTextIfChanged(path, rendered, { mode: REPO_FILE_MODE, maxBytes: ARCHIVE_MAX_BYTES });
+    if (!written.ok) throw new Error(written.error.message);
+    return { path, changed: !written.value.unchanged };
   } catch (err) {
     const msg = err instanceof Error ? err.message : String(err);
     process.stderr.write(`failed to write archive ${path}: ${msg}\n`);
@@ -983,11 +1001,14 @@ export interface ManifestUpdateResult {
  */
 export function updateManifest(entry: ManifestEntry, manifestPath: string): ManifestUpdateResult {
   mkdirSync(dirname(manifestPath), { recursive: true });
-  let existingLines: string[] = [];
-  if (existsSync(manifestPath)) {
-    const raw = readFileSync(manifestPath, "utf8");
-    existingLines = raw.split("\n").filter((l) => l.trim().length > 0);
+  // ONE OPEN. `existsSync` then `readFileSync` resolved the name twice; and a
+  // present-but-unreadable manifest read as an absent one, after which the
+  // write below replaced it with a one-line file.
+  const read = readFileBounded(manifestPath, { maxBytes: MANIFEST_MAX_BYTES });
+  if (!read.ok && read.error.kind !== "not-found") {
+    throw new Error(`cannot read ${manifestPath}: ${read.error.message}`);
   }
+  const existingLines: string[] = read.ok ? read.value.text.split("\n").filter((l) => l.trim().length > 0) : [];
 
   const newSerialized = serializeManifestEntry(entry);
 
@@ -1037,19 +1058,17 @@ export function updateManifest(entry: ManifestEntry, manifestPath: string): Mani
     }
   }
 
-  // Write only when content changed -- preserves mtime on noop reruns.
-  let changed = false;
-  const newContent = outLines.join("\n") + (outLines.length > 0 ? "\n" : "");
-  let oldContent = "";
-  if (existsSync(manifestPath)) {
-    oldContent = readFileSync(manifestPath, "utf8");
-  }
-  if (oldContent !== newContent) {
-    writeFileSync(manifestPath, newContent, "utf8");
-    changed = true;
-  }
+  // Write only when content changed -- preserves mtime on noop reruns. That
+  // contract is now `writeTextIfChanged`'s, which keeps it through ONE
+  // descriptor each way instead of `existsSync` + `readFileSync` +
+  // `writeFileSync` (CodeQL `js/file-system-race`).
+  const written = writeTextIfChanged(manifestPath, outLines.join("\n") + (outLines.length > 0 ? "\n" : ""), {
+    mode: REPO_FILE_MODE,
+    maxBytes: MANIFEST_MAX_BYTES,
+  });
+  if (!written.ok) throw new Error(`cannot write ${manifestPath}: ${written.error.message}`);
 
-  return { path: manifestPath, changed, classification };
+  return { path: manifestPath, changed: !written.value.unchanged, classification };
 }
 
 // ---------------------------------------------------------------------------

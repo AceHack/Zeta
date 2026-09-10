@@ -5,8 +5,20 @@
 // single-file MASTER cache (one read = the whole vocabulary). Deterministic; --check gates.
 //   bun vocab/gen/MasterIndex.ts            (rewrite indexes)
 //   bun vocab/gen/MasterIndex.ts --check     (verify; exit 1 if stale)
-import { readdirSync, lstatSync, existsSync, readFileSync, writeFileSync } from "node:fs";
+import { readdirSync, lstatSync, existsSync, readFileSync } from "node:fs";
+import { readFileBounded, writeTextIfChanged } from "../../src/Core.TypeScript/io/safe-io.ts";
 import { join, basename, relative } from "node:path";
+
+
+/**
+ * 0o644 — the mode `writeFileSync` produced under the repo's umask, kept
+ * exactly. `writeTextIfChanged` defaults to 0o600, and a generated repository
+ * file that only its generator can read is a change nobody asked for.
+ */
+const GENERATED_FILE_MODE = 0o644;
+
+/** One generated index. 32 MiB is far above the master index on `main`. */
+const INDEX_MAX_BYTES = 32 * 1024 * 1024;
 
 const VOCAB = new URL("../", import.meta.url).pathname;
 const CANON = ["words", "letters", "shapes", "colors", "temperatures", "personas"]; // type homes (real)
@@ -64,9 +76,25 @@ writes.push({ path: ROOT_INDEX, body: norm(root) });
 const check = process.argv.includes("--check");
 let stale = 0;
 for (const w of writes) {
-  const cur = existsSync(w.path) ? readFileSync(w.path, "utf8") : "";
-  if (check) { if (cur !== w.body) { stale++; console.error(`STALE: ${relative(VOCAB, w.path)}`); } }
-  else writeFileSync(w.path, w.body);
+  if (check) {
+    // --check READS ONLY. `readFileBounded` opens once; `not-found` is the only
+    // error that means "absent", so a present-but-unreadable index is reported
+    // as stale-and-unreadable rather than silently compared against "".
+    const read = readFileBounded(w.path, { maxBytes: INDEX_MAX_BYTES });
+    if (!read.ok && read.error.kind !== "not-found") {
+      stale++;
+      console.error(`UNREADABLE: ${relative(VOCAB, w.path)}: ${read.error.message}`);
+      continue;
+    }
+    const cur = read.ok ? read.value.text : "";
+    if (cur !== w.body) { stale++; console.error(`STALE: ${relative(VOCAB, w.path)}`); }
+    continue;
+  }
+  // ONE DESCRIPTOR EACH WAY. `existsSync(p) ? readFileSync(p) : ""` followed by
+  // `writeFileSync(p)` resolved one name three times and made the write
+  // conditional on the first resolution -- CodeQL `js/file-system-race`.
+  const written = writeTextIfChanged(w.path, w.body, { mode: GENERATED_FILE_MODE, maxBytes: INDEX_MAX_BYTES });
+  if (!written.ok) { console.error(`vocab-index: cannot write ${relative(VOCAB, w.path)}: ${written.error.message}`); process.exit(1); }
 }
 if (check) {
   if (stale) { console.error(`vocab-index: ${stale} stale — run: bun vocab/gen/MasterIndex.ts`); process.exit(1); }

@@ -1,0 +1,14 @@
+{
+  "id": "080d045c14c30810a0130008c00b682b",
+  "at": "2026-09-10T13:29:46.849Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M25R5631087G0R0014R941Z",
+    "type": "bug",
+    "title": "check-then-write TOCTOU: existsSync gating writeFileSync across the manifest, vocab and crypto writers (js/file-system-race)",
+    "slug": "check-then-write-toctou-existssync-gating-writefilesync-acro",
+    "priority": "P2",
+    "filename": "081M25R5631087G0R0014R941Z-check-then-write-toctou-existssync-gating-writefilesync-acro.md"
+  }
+}
