@@ -213,6 +213,24 @@ export const CROSS_VERIFY_AUDITS: readonly CrossVerifyAudit[] = [
     command: "bun src/Core.TypeScript/hygiene/audit-action-sha-roster.ts",
   },
 
+  // A DEPENDENCY NOBODY VERIFIED, IN A MECHANISM NOBODY COUNTED.
+  //
+  // Aaron 2026-09-10: an unhashed dependency is SUPPORTED, is NOT PREFERRED, must be
+  // HANDLED SEPARATELY, and the handling must be WIRED EVERYWHERE. The wiring is
+  // `unhashed-pin.ts`; the counting is `docs/UNHASHED-DEPENDENCIES.md`, derived. Without
+  // this leg the page is a document that rots, which is worse than no page: five
+  // mechanisms each quietly permitting one unhashed dependency is not five small
+  // decisions, it is one large one nobody made.
+  //
+  // It fails BOTH ways, which is the property worth having: an unhashed dependency that
+  // is not on the page fails, AND a page entry the tree no longer produces fails, so the
+  // roster shrinks when a digest becomes available and cannot sit there looking justified.
+  {
+    id: "unhashed-dependencies",
+    title: "Unhashed dependencies are declared and inventoried (AH011)",
+    command: "bun src/Core.TypeScript/hygiene/audit-unhashed-dependencies.ts",
+  },
+
   // A TASK ID THAT IS WELL-FORMED AND IDENTIFIES NOTHING.
   //
   // The AgencySignature gate validates `Task:` for placeholder-ness and SHAPE, never

@@ -65,6 +65,7 @@ generator that read an EMPTY roster cannot pass.
 | `cross-verify (stage0-independence)`                    | Stage-0 independence ratchet (doors, not file count)                               |
 | `cross-verify (step-output-writers)`                    | Step outputs have writers (a step that cannot succeed)                             |
 | `cross-verify (action-sha-roster)`                      | Third-party actions match the SHA roster (AH007)                                   |
+| `cross-verify (unhashed-dependencies)`                  | Unhashed dependencies are declared and inventoried (AH011)                         |
 | `cross-verify (task-zetaid-resolves)`                   | Task ZetaIds resolve to work-items (AH006)                                         |
 | `cross-verify (credential-role-separation)`             | Workflow credential role separation (one role, one secret)                         |
 | `cross-verify (coauthor-identity-collision)`            | Co-author identity collision (AH005 — plain-username GitHub noreply form)          |

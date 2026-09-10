@@ -1,0 +1,14 @@
+{
+  "id": "080d045f893c2810a01300081a72655a",
+  "at": "2026-09-10T15:30:32.453Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M25Z29W4087G0R002Y0Q1MG",
+    "type": "task",
+    "title": "unhashed dependency is a first-class declared class across every dependency mechanism",
+    "slug": "unhashed-dependency-is-a-first-class-declared-class-across-e",
+    "priority": "P2",
+    "filename": "081M25Z29W4087G0R002Y0Q1MG-unhashed-dependency-is-a-first-class-declared-class-across-e.md"
+  }
+}

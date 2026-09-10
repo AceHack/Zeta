@@ -3503,6 +3503,7 @@ jobs:
           - stage0-independence
           - step-output-writers
           - action-sha-roster
+          - unhashed-dependencies
           - task-zetaid-resolves
           - credential-role-separation
           - coauthor-identity-collision

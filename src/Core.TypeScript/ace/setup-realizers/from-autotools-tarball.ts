@@ -4,6 +4,7 @@ import { join } from "node:path";
 import { spawnSync } from "node:child_process";
 import { parseMechanismManifest } from "../setup-manifest.ts";
 import { curlFetchToFile, sha256FileMatches, verifySha256File } from "./curl-fetch.ts";
+import { resolvePin, unhashedInstallNotice } from "./unhashed-pin.ts";
 import { expandPath, whenMatches } from "./when.ts";
 import { tierAllows, tierFromAttrs, resolveHostTier } from "./host-tier.ts";
 import {
@@ -128,10 +129,11 @@ export const realizeFromAutotoolsTarball: SetupRealizer = async (ctx) => {
       continue;
     }
 
-    const sha256 = entry.attrs.sha256;
-    if (sha256 === undefined || sha256.length === 0) {
-      throw new Error(`from-autotools-tarball ${binName}: sha256= pin required`);
-    }
+    // UNHASHED IS A DECLARED CLASS HERE TOO (081M25Z29W4087G0R002Y0Q1MG). The bare
+    // `sha256= pin required` refusal stays exactly as it was for a row that declares NOTHING;
+    // what is new is that a source tarball with no stable digest now has a spelling instead of
+    // being unbuildable. One vocabulary, shared with from-url and from-elan.
+    const pin = resolvePin("from-autotools-tarball", binName, tarballUrl, entry.attrs);
 
     if (!tarballUrl.startsWith("http://") && !tarballUrl.startsWith("https://")) {
       throw new Error(`from-autotools-tarball ${binName}: URL must be http(s): ${tarballUrl}`);
@@ -165,10 +167,13 @@ export const realizeFromAutotoolsTarball: SetupRealizer = async (ctx) => {
     // corrupt — so the bad copy is discarded and refetched; a mismatch on the
     // freshly downloaded bytes still throws, because that is upstream
     // disagreeing with the pin and no retry can fix it.
+    // An unhashed row has no pin to judge the cache against, so a present tarball is used as
+    // found. That is a REAL loss and it is named rather than papered over: the paragraph above
+    // exists because a restored CI cache is exactly the copy nobody verified, and for a declared
+    // unhashed row nothing here can re-establish it. It is the cost the declaration buys.
     const present = existsSync(tarball);
-    const disposition = ctx.dryRun
-      ? tarballDisposition(present, true)
-      : tarballDisposition(present, present && sha256FileMatches(tarball, sha256));
+    const cacheTrusted = ctx.dryRun || pin.kind !== "digest" || (present && sha256FileMatches(tarball, pin.sha256));
+    const disposition = tarballDisposition(present, cacheTrusted);
     if (disposition === "discard-and-fetch") {
       ctx.warn(
         `from-autotools-tarball ${binName}: cached tarball failed its sha256 pin; discarding and refetching`,
@@ -182,7 +187,9 @@ export const realizeFromAutotoolsTarball: SetupRealizer = async (ctx) => {
       ctx.actions.push(ctx.dryRun ? `dry-run: curl ${tarballUrl}` : `curl ${tarballUrl} → ${tarball}`);
       if (!ctx.dryRun) {
         await curlFetchToFile(part, tarballUrl);
-        verifySha256File(part, sha256);
+        const notice = unhashedInstallNotice(pin, binName, tarballUrl);
+        if (notice !== null) ctx.warn(notice);
+        if (pin.kind === "digest") verifySha256File(part, pin.sha256);
         renameSync(part, tarball);
       }
     } else {

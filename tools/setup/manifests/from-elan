@@ -5,5 +5,13 @@
 #   elan  <elan-init-url>  sha256=<hex>  [commit=<git-sha>]
 #
 # Bump procedure: update URL commit segment + sha256 together (content-pin pair).
+#
+# THE PIN IS MANDATORY, and it is one of three things (081M25Z29W4087G0R002Y0Q1MG):
+#   sha256=<64-hex>                     verified before use.
+#   sha256=tag-only  tagonly=<reason>   the URL carries a version-shaped tag; we pin the tag.
+#   sha256=unpinned  unpinned=<reason>  no version to pin at all. Refused when a tag exists.
+# The reason is a VALUE, never a comment — a comment is copied along with the line it excuses.
+# One vocabulary across every mechanism: src/Core.TypeScript/ace/setup-realizers/unhashed-pin.ts.
+# Every declared row lands in docs/UNHASHED-DEPENDENCIES.md, which is derived and gate-checked.
 
 elan  https://raw.githubusercontent.com/leanprover/elan/58e8d545e33641f66dbcbd22c4283109e71757be/elan-init.sh  sha256=4bacca9502cb89736fe63d2685abc2947cfbf34dc87673504f1bb4c43eda9264  commit=58e8d545e33641f66dbcbd22c4283109e71757be

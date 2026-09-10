@@ -44,6 +44,7 @@
     "hygiene:measure-shell-key-exposure": "bun ./src/Core.TypeScript/hygiene/measure-shell-key-exposure.ts",
     "hygiene:stage0-independence": "bun ./src/Core.TypeScript/hygiene/measure-stage0-independence.ts --enforce",
     "hygiene:mise-pin-parity": "bun ./src/Core.TypeScript/hygiene/mise-pin-parity.ts",
+    "hygiene:unhashed-dependencies": "bun ./src/Core.TypeScript/hygiene/audit-unhashed-dependencies.ts",
     "hygiene:dotnet-pin-parity": "bun ./src/Core.TypeScript/hygiene/audit-dotnet-pin-parity.ts",
     "hygiene:mise-toolchain-couplings": "bun ./src/Core.TypeScript/hygiene/audit-mise-toolchain-couplings.ts",
     "hygiene:triangle-corners": "bun ./src/Core.TypeScript/hygiene/measure-triangle-corners.ts",

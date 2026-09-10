@@ -262,12 +262,35 @@ describe("realizeFromElan dry-run", () => {
     mkdirSync(manifestDir, { recursive: true });
     writeFileSync(
       join(manifestDir, "from-elan"),
-      "elan https://example.com/elan-init.sh sha256=abc\n",
+      `elan https://example.com/elan-init.sh sha256=${"a".repeat(64)}\n`,
     );
     const ctx = createContext({ repoRoot, dryRun: true });
     const result = await realizeFromElan(ctx);
     expect(result.skipped).toBe(false);
     expect(result.actions.length).toBeGreaterThan(0);
+  });
+
+  // THE PIN WAS NEVER VALIDATED HERE. This row said `sha256=abc` until 2026-09-10 and this
+  // mechanism accepted it: the old check was `sha256 === undefined`, so any non-empty string
+  // passed and a three-character "digest" reached `verifySha256File`, where it could only ever
+  // fail at install time on a real machine. Routing the row through the shared `resolvePin`
+  // (081M25Z29W4087G0R002Y0Q1MG) refuses it at parse time instead, and says what to write.
+  test("a malformed digest is refused rather than carried to install time", async () => {
+    const repoRoot = mkdtempSync(join(tmpdir(), "setup-realize-elan-"));
+    const manifestDir = join(repoRoot, "tools/setup/manifests");
+    mkdirSync(manifestDir, { recursive: true });
+    writeFileSync(join(manifestDir, "from-elan"), "elan https://example.com/elan-init.sh sha256=abc\n");
+    const ctx = createContext({ repoRoot, dryRun: true });
+    await expect(realizeFromElan(ctx)).rejects.toThrow(/64 hex chars/u);
+  });
+
+  test("a row with no pin at all is still refused, and the refusal names the declarations", async () => {
+    const repoRoot = mkdtempSync(join(tmpdir(), "setup-realize-elan-"));
+    const manifestDir = join(repoRoot, "tools/setup/manifests");
+    mkdirSync(manifestDir, { recursive: true });
+    writeFileSync(join(manifestDir, "from-elan"), "elan https://example.com/elan-init.sh\n");
+    const ctx = createContext({ repoRoot, dryRun: true });
+    await expect(realizeFromElan(ctx)).rejects.toThrow(/sha256= pin required/u);
   });
 });
 
