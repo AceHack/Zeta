@@ -1,0 +1,14 @@
+{
+  "id": "080d0468ee426010a01300082e2d63e5",
+  "at": "2026-09-10T20:58:54.412Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M26HVJ2B087G0R000V685F7",
+    "type": "task",
+    "title": "Research: developer tooling assumes decorrelated authorship; LLM agents share a prior",
+    "slug": "research-developer-tooling-assumes-decorrelated-authorship-l",
+    "priority": "P2",
+    "filename": "081M26HVJ2B087G0R000V685F7-research-developer-tooling-assumes-decorrelated-authorship-l.md"
+  }
+}
