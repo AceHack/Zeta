@@ -1,0 +1,12 @@
+{
+  "pr_number": 17216,
+  "archive_path": "docs/history/pr-reviews/PR-17216-feat-081m24j1ykm087g0r001t9yc9k-land-the-hidden-switch-compiled-transfer-and-nat.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-10T02:54:00.360Z",
+  "schema_version": "v1",
+  "commit_sha": "47108aa9ee01ec9976e1951d4ecfe7123cc67dac",
+  "title": "feat(081M24J1YKM087G0R001T9YC9K): land the hidden-switch compiled transfer and native-replay tooling",
+  "state": "MERGED",
+  "merged_at": "2026-09-10T02:53:18Z",
+  "head_ref": "land/hidden-switch-compiled-transfer-tooling"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 17215,
+  "archive_path": "docs/history/pr-reviews/PR-17215-fix-081m24hv21k087g0r0015td0mv-a-github-attestation-503-failed-the-whole-windows.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-10T03:13:28.716Z",
+  "schema_version": "v1",
+  "commit_sha": "38e7fe3b9bc81b38ea1a9a0d02c8cb0063769226",
+  "title": "fix(081M24HV21K087G0R0015TD0MV): a GitHub attestation 503 failed the whole Windows lane with no retry",
+  "state": "MERGED",
+  "merged_at": "2026-09-10T03:12:10Z",
+  "head_ref": "windows-toolchain-transient-retry"
+}

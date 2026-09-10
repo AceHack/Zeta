@@ -1,0 +1,12 @@
+{
+  "pr_number": 17179,
+  "archive_path": "docs/history/pr-reviews/PR-17179-feat-081m243hxzs087g0r003746f3h-phase-0-the-shading-survives-at-rank-3-on-triang.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-10T03:12:45.383Z",
+  "schema_version": "v1",
+  "commit_sha": "51d13b725650498c4846731279cda913033a2b9a",
+  "title": "feat(081M243HXZS087G0R003746F3H): phase 0 — the shading survives at rank 3 on triangles, and the object has a side",
+  "state": "MERGED",
+  "merged_at": "2026-09-10T03:11:50Z",
+  "head_ref": "h3-rank3-phase-0"
+}
