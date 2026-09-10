@@ -1,0 +1,14 @@
+{
+  "id": "080d04481711e010a0130008955bc1bc",
+  "at": "2026-09-10T01:51:02.716Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M24G5RHW087G0R000QAV588",
+    "type": "task",
+    "title": "Repo split round 4: Aaron's named candidates measured — cut cost, change rate, CI attribution, and the ace exit question",
+    "slug": "repo-split-round-4-aaron-s-named-candidates-measured-cut-cos",
+    "priority": "P2",
+    "filename": "081M24G5RHW087G0R000QAV588-repo-split-round-4-aaron-s-named-candidates-measured-cut-cos.md"
+  }
+}
