@@ -1,0 +1,14 @@
+{
+  "id": "080d046992b88010a01300089b771ed1",
+  "at": "2026-09-10T21:21:21.680Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M26K4NRF087G0R003QVF7GB",
+    "type": "task",
+    "title": "Audit ad-hoc command shapes and design question-first verb elicitation",
+    "slug": "audit-ad-hoc-command-shapes-and-design-question-first-verb-e",
+    "priority": "P2",
+    "filename": "081M26K4NRF087G0R003QVF7GB-audit-ad-hoc-command-shapes-and-design-question-first-verb-e.md"
+  }
+}

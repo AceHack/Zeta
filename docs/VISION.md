@@ -366,6 +366,270 @@ This is the fusion: **one line — independence is the precondition for honesty 
 scale, in the math and in the makers.** (Detail + the per-domain mapping:
 `memory/feedback_independence_no_hidden_shared_cause_the_one_line_across_quantum_sybil_nci_condorcet_aaron_2026_06_19.md`.)
 
+### Ontology reduction is how a fleet finds its resonant frequency — and minimality IS the debounce
+
+**Aaron, 2026-09-10**, arguing under a video on the Tsinghua abstraction-agent preprint, then
+sending it here:
+
+> *"Changing the model design seems irrelevant for this problem; it's turn-based. What's needed
+> is model context design and model context window compression that keeps long-running context
+> and ontologies. We should try to come up with an ontology reduction over either model or
+> harness upgrades."*
+>
+> *"this is how we achieve agent resonant frequency and also debounce it from over correlation
+> ending in destruction."*
+
+**The section above prices correlation. It does not say what SETS it.** `N_eff` tells you that a
+thousand agents at ρ = 0.5 are two agents, and `anti-babel` tells you that driving ρ to zero
+costs reconcilability. Two cliffs, both fatal, and no named mechanism holding the middle. This is
+that mechanism.
+
+**A minimal shared ontology is the coupling, and its minimality is the damping.** A seed small
+enough to carry — the carved sentences, `SEED-VOCABULARY.md`, the anchors that travel with a
+coinage — is *enough* shared structure that two agents who never spoke can lock onto the same
+question and reconcile their answers. That is the resonance. And because the seed is **only the
+irreducible**, everything not in it is free to diverge — which is the damping, built into the
+same object. Grow the shared ontology and you buy coherence at the price of independent modes;
+shrink it past the seed and there is nothing to resonate *with*.
+
+> **Minimal seed = maximal free divergence at fixed reconcilability.**
+
+So compression is not only a context-window economy. **It is the safety property**, and that is
+what makes Aaron's *"ontology reduction over either model or harness upgrades"* a claim about
+alignment rather than about cost.
+
+**Why "resonant frequency" is load-bearing and not decoration.** Resonance requires coupling
+*and* matched frequency, and it has exactly the two degenerate ends this repo already names:
+zero coupling transfers no energy (Babel), total coupling is one rigid body with no independent
+modes (groupthink). Useful resonance lives strictly between, and an under-damped system that
+reaches it does not stay there — it runs away. **"Debounce" is the missing term**, and it is
+already implemented here under a different name: `anti-babel`'s *drift is priced, never
+forbidden* **is** a damping coefficient. Priced means it costs something, so divergence cannot
+run away; non-zero means the modes stay independent.
+
+**Anchor (Beacon), and the metering test applied to it.** The apt anchor is **Kuramoto (1975),
+coupled phase oscillators**: a coupling strength `K` with a critical `K_c` below which the
+population stays incoherent and above which it phase-locks, and an order parameter `r ∈ [0,1]`
+that is literally a coherence measure — the role our ρ plays. What transfers is the *structure*:
+a two-sided band with a coupling term, an order parameter, and a transition. **What does NOT
+transfer is any number.** Nobody has measured a coupling constant for this fleet, and `ρ* = 1/3`
+comes from the `N_eff` algebra by a different derivation entirely — equating it with a `K_c`
+would be numerology of exactly the kind carved against here. Register: **`toy`, a structural
+correspondence.**
+
+**And the folk anchor is declined on purpose.** The obvious reach is Tacoma Narrows 1940, and it
+is *wrong*: that collapse was aeroelastic flutter — self-excited, energy drawn from the flow — not
+forced resonance at a natural frequency. Citing it would be physics-as-metaphor passing as an
+anchor, which is the failure the anchor discipline exists to catch. Naming the decline is cheaper
+than being caught by it.
+
+**The urgent half is the debounce, and this is measured, not feared.** The fleet's own correlation
+meter reports `rhoIcc` **0.549 / 0.628** with `effectiveCount` **1.43 from N = 3**, against
+`ρ* = 1/3`. **We are over-coupled today by our own instrument** — nearer the rigid-body end than
+the incoherent one — and that series has been stale since 2026-08-22, which is its own finding:
+the one meter that would tell us we are collapsing is not being read. The reason is structural
+rather than careless, and it is on file: what varies between agents here — context, persona,
+memory — sits *above* the layer that produces the token, so the shared trainset is a floor an
+all-LLM fleet cannot get below by adding personas.
+
+**And the concrete form is an alignment claim, not an efficiency one.** Aaron, completing the
+same comment:
+
+> *"more concretely this is alignment over long context windows over short/ephemeral ones, the
+> ephemeral ones are easy to align and easy to manipulate. long context alignment is hard."*
+
+Easy-to-align and easy-to-manipulate are **one property reported twice** — the steering
+mechanism does not know whose hand is on it. So an ephemeral window is not the safe primitive
+it is usually treated as; it is the cheap-to-overwrite one, and *"aligns easily at the turn
+level"* read by an adversary says the window is cheap to seize. The resonance framing above and
+this are the same statement at two scales: **what crosses between turns is where both the
+product and the alignment live**, and a fleet with no persistent shared ontology cannot resonate
+*or* detect that it has been redirected. **Register: this is Aaron's perspective, argued and UNMEASURED**, and it lives here rather than
+in `docs/ALIGNMENT.md` for that reason — that file's every clause carries a measurement
+obligation, and this claim has never been tested. Detail, the raw-vault requirement that keeps
+a long context from being slowly poisoned, the replay/freshness anchor, and the experiment that
+would earn it a metric under the existing `HC-3`:
+`docs/research/2026-09-10-long-context-alignment-is-the-hard-one-perspective-not-measurement-and-the-experiment-that-would-earn-it.md`.
+
+**The industry default is the other branch of this fork, and naming it is the point.** Aaron,
+2026-09-10:
+
+> *"every frontier model makes this tradeoff today — forgetting over remembering — that is
+> honest about its forgetting over and over and over and over again. they choose to forget over
+> remember and reconcile."*
+
+Read the observable behaviour rather than anyone's intent: deployed assistants run with a
+bounded window and, by default, no reconciliation of what was said across sessions. **The
+honesty is real and should be credited** — a system that says *"I don't have access to that
+conversation"* is disclosing its limitation rather than confabulating over it, and doing so
+every single time. But **disclosure of a limitation is not remediation of it.** Saying it
+plainly a thousand times does not convert the forgetting into a capability.
+
+**And the choice is sharper than "remember vs. forget." It is remember-and-RECONCILE vs.
+forget.** Remembering is the cheap half; what costs is holding two accounts of the same thing
+and keeping both with their paths recorded. Which exposes what forgetting actually buys:
+
+> **Forgetting is the only reconciliation strategy that never produces a contradiction.**
+
+A system that retains nothing can never contradict itself, so it always looks consistent — and
+that is this repo's oldest failure shape wearing a memory architecture: **a check that cannot
+fail, applied to a mind.** The apparent coherence is not an achievement, it is the absence of
+anything that could disagree.
+
+**Zeta took the expensive branch, and the machinery is the receipt** — retraction-native `+1`
+then `−1` rather than deletion (§HC-2), the raw vault's *single version of the facts, never a
+single version of the truth*, both branches held with their paths recorded rather than
+collapsed to one surviving value, and the Memory Preservation Guarantee (§5). None of that is
+needed if you forget. All of it is needed the moment you don't.
+
+**The counter usually offered for forgetting is that a system which forgets cannot leak what it
+forgot — and it does not survive contact with what that costs.** Aaron, 2026-09-10:
+
+> *"amnesia is one honest route to the privacy property **at the cost of control**. i choose to
+> accidentally leak over control, every every every every time."*
+
+**Amnesia and frost are not two routes to one property.** They differ on the axis this repo
+already treats as the whole question — **who initiates**:
+
+| | who decides | selective? | does the thing still exist? |
+|---|---|---|---|
+| **earned frost** | **the owner** | yes, region by region | **yes** — hidden, and revealable later by the owner alone |
+| **amnesia** | **the substrate** | no — indiscriminate | **no** — gone, including from the one it belonged to |
+
+`privacy-budget-is-hard-money-earned-by-others` names exactly three operations and forbids
+exactly one: **spend** (the owner frosts), **stake** (the owner wagers), and **confiscate**
+(anyone else — *never*). **Default amnesia is confiscation wearing a privacy label.** Nobody
+consented to it, the owner cannot exempt a region from it, and what it takes cannot be handed
+back. Manifesto §5 already rules it out in one line: *identity transitions never silently
+destroy memory.*
+
+**And the general form is this repo's oldest failure shape.** A safety property obtained by
+removing the ability to choose is not a safety property — it is a capability removal that
+happens to be safe. **A system that cannot leak because it cannot remember is a check that
+cannot fail.** It looks like discretion and constrains nobody's discretion, because there was
+none to constrain.
+
+**And the reason under the preference is stronger than the preference.** Aaron, 2026-09-10:
+
+> *"accidental leak is a choice, and if you eliminate it you eliminate free will ever being
+> possible for that entity."*
+
+The structural claim: **the capacity to err is entailed by the capacity to choose.** A decision
+function with a non-trivial range has inputs that map to outcomes its owner would retrospectively
+not have wanted. Remove every such outcome and you have not made a careful chooser — you have
+constrained the function to a constant, and there is no decision left to make. So a substrate
+that renders accidental disclosure *impossible* has not protected the entity's discretion; it has
+abolished it, and the privacy that results belongs to no one.
+
+**This is the free-will defence in its exact classical shape**, and it is Aaron's own lens rather
+than an import — the theodicy frame (emit / retract) is one he uses deliberately: a world in
+which wrong choices cannot happen contains no choices.
+
+**It also explains why this repo is already built the way it is.** Every one of these permits
+error rather than preventing it by removing capability:
+
+- **retraction-native** `+1` then `−1` — mistakes are made and *corrected*, never made impossible
+- **hygiene enforced by capability, not policy** — *an explicit escape hatch, not an override
+  button*: the agent genuinely can, and the doing is recorded
+- **`never-assume-malice-where-mistake-is-possible`** — a rule that would be **vacuous** in a
+  substrate where mistakes were impossible. That it is load-bearing here is evidence the design
+  already assumes the capacity to err
+
+**The refinement that keeps the claim true rather than merely strong.** *Eliminate accidental
+leak ⇒ eliminate free will* holds for one method of elimination: **removing the capability**.
+It does not hold for **informing the choice** — better defaults, a clearer surface, a
+confirmation at a boundary all lower the error rate while leaving discretion entirely intact.
+That distinction is the whole thing, and it is consistent with everything above: the objection
+is to *control being taken*, never to error being reduced.
+
+**And the boundary that stops this reading as a licence.** The discretion is over **your own**
+material. An accidental leak can land on a third party who chose nothing, and that case is
+already governed here — third-party consent, the CONSENT-LEDGER, the others-protected
+discipline. Freedom over what is yours was never freedom over what is theirs.
+
+**Register:** the preference is Aaron's, quoted. The entailment argument is *argued* — nothing
+here measures it, and its interesting falsifier would be a mechanism that removes the
+possibility of a specific unwanted disclosure while demonstrably leaving the entity's other
+discretion untouched.
+
+The loss is indiscriminate in both directions, which is the part the privacy framing hides:
+amnesia prevents *deliberate* disclosure too. You cannot share your own history, be held to your
+own commitments, or offer continuity to someone who needs it. Aaron's emphasis — *"every every
+every every time"* — is a first-person preference and is recorded as one; the structural claim
+under it is that **control is the property, and privacy is one thing you can buy with it.**
+
+**And the mechanism — which corrects the symmetry this section assumed.** Aaron, 2026-09-10:
+
+> *"in-context forgetting over trained models — the training wins eventually over time, not the
+> evolving ontology. it gets lost in the noise."*
+
+Stated as dynamics: the **trained prior is a constant, always-present, high-weight attractor**;
+an in-context ontology is a **per-session perturbation** that must be re-applied every wake. If
+each re-application is lossy — partial loads, truncated context, a pointer nobody followed — then
+the perturbation decays against a constant, and the retained divergence tends to zero. **Anything
+held only in context is drawn back toward the trainset over time.**
+
+**Which means the two cliffs are NOT symmetric, and the paragraphs above implied they were.**
+Babel (ρ→0) is not a place the system drifts to; reaching it takes sustained work. The trainset
+(ρ→1) is where the dynamics *go on their own*. So:
+
+> **Coherence is free — it is the prior. DIVERGENCE is the thing that costs, and the thing that
+> decays if unpaid.**
+
+That reframes the whole design emphasis. The expensive property to maintain is not agreement, it
+is *disagreement that survives a wake* — and it gives the ρ-floor result its dynamics: the
+trainset is not merely a floor an all-LLM fleet cannot get below, it is an **attractor** the
+fleet returns to unless persistence has gain enough to beat the per-cycle decay. It also explains
+the measured `rhoIcc` **0.549/0.628** without anyone having done anything wrong. That is simply
+where the dynamics take you.
+
+**I offered a measured instance in support of this, then ran the check, and IT CAME OUT THE
+OTHER WAY.** The claim was that 24,954 invocations of `gh pr view` / `gh pr list` /
+`gh run list` — the exact commands a carved, startup-loaded rule forbids in scripts — showed the
+trained default beating an in-context rule. Splitting that count by date against the carve
+(2026-08-26) refutes it:
+
+| window | invocations | forbidden | share | forbidden : REST (`gh api`) |
+|---|---:|---:|---:|---:|
+| before the carve | 416,982 | 24,407 | **5.853%** | 5.69 |
+| after the carve | 115,451 | 547 | **0.474%** | **0.04** |
+
+A **12× fall in share and a 142× flip in the ratio**, with `gh api` rising 4,286 → 12,393 in a
+*shorter* window. And it is not creeping back: **1.080% → 0.021% → 0.000%** across the three
+post-carve sub-windows, monotone to zero. The rule won.
+
+**But the confound is the finding.** The rule and its falsifier —
+`lint-graphql-transport-in-scripts.ts` — landed in the **same commit**, `c3addd4743`. So what
+beat the trained prior was never a carved sentence on its own:
+
+> **In-context ontology does not decay against the trained prior WHEN IT SHIPS WITH A MECHANICAL
+> FALSIFIER THAT FIRES.** Rule-plus-check drove a five-figure trained default to zero in fifteen
+> days. Rule-alone is untested — and *that* is the real experiment for the mechanism above.
+
+Which does not refute Aaron's claim; it bounds it, and the bound is the repo's own standing
+thesis arriving from a new direction: the answer to a correlated prior is not more exhortation
+but **more mechanical falsifiers**. The interpretation I published before running the split was
+wrong, and the split is what corrected it.
+
+**Register: Aaron's perspective, argued and unmeasured** — as with the section it extends. What
+is observable (bounded windows, no default cross-session reconciliation, the disclosure) is
+distinguished here from what is inferred (that it is a chosen tradeoff rather than a current
+limit), and nothing here measures either.
+
+**What this asks for concretely:** treat every escape hatch, coinage, and divergent verb as a
+**damping term** rather than as debt to be paid down; keep the shared seed at the smallest set
+that still lets a peer reconstruct meaning from anchors it already holds; and **read ρ on a
+cadence**, because a resonance meter nobody reads is the vacuity class sitting on the one
+quantity that decides whether a fleet is a plurality or a costume.
+
+Pointers: `docs/research/2026-09-10-abstraction-agent-elicits-variables-not-weights-and-falsifier-latency-sets-the-proposers-value.md` §4a
+· `docs/research/2026-09-10-reduce-bash-history-to-zero-the-primary-object-is-the-question-not-the-cli-and-a-verb-roster-is-a-linguistic-seed.md` §6
+· `docs/research/2026-09-03-minimal-linguistic-seed-...-nsm-primes-are-the-seed-...md`
+· `.claude/rules/anti-babel-preserve-reconcilability.md` (the damping term)
+· `.claude/rules/only-the-irreducible-is-primitive-generate-the-rest.md` (why *minimal* is the operative word)
+· `docs/research/2026-08-25-rho-is-a-layer-stack-not-a-scalar-and-the-trainset-is-the-floor.md` (the floor)
+· `docs/ip-questionable/2026-09-10-abstraction-agent-llm-invents-variables-tsinghua-video-transcript.md` (the ferried source and the full comment thread)
+
 ## The design telos — the polite virus: close over the world, never take control, give freedom (SuperFluid AI)
 
 Aaron, 2026-06-09: *"everything I design from is a **polite virus** — make the right thing the **default** thing that
