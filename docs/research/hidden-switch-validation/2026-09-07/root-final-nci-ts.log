@@ -1,0 +1,44 @@
+Command: ['mise', 'exec', 'bun@1.3.13', '--', 'bun', 'test', 'src/Core.TypeScript/formal-verification/nci-witness-receipt.test.ts', 'src/Core.TypeScript/formal-verification/nci-witness-capability.test.ts', 'src/Core.TypeScript/observe/attestation-consent-expiry-receipt.test.ts']
+SourceCommit: 7e9b8681c2e619316ed2439fd313cb8ae3d5f42e
+StartedAtUtc: 2026-09-07T12:08:56.579344+00:00
+bun test v1.3.13 (bf2e2cec)
+
+src/Core.TypeScript/observe/attestation-consent-expiry-receipt.test.ts:
+(pass) finite attestation consent-and-expiry receipt > reports only a test-only bound subject window [1.53ms]
+(pass) finite attestation consent-and-expiry receipt > reports before and after as distinct local statuses [0.02ms]
+(pass) finite attestation consent-and-expiry receipt > defers rather than affirming an unbound record [0.26ms]
+(pass) finite attestation consent-and-expiry receipt > refuses a changed raw record, unsupported scope, and non-local evaluation mode
+(pass) finite attestation consent-and-expiry receipt > both committed cross-language receipts reproduce only the test-only local observation [1.70ms]
+(pass) finite attestation consent-and-expiry receipt > a reordered receipt or added authority field is refused [0.05ms]
+
+src/Core.TypeScript/formal-verification/nci-witness-capability.test.ts:
+(pass) NCI emitter exercised dependency and capability boundary > renders the pinned bytes from the four subject files with an exact read trace [49.79ms]
+(pass) NCI emitter exercised dependency and capability boundary > runs only the declared checker command and emits exact receipt bytes on its controlled success [14.51ms]
+(pass) NCI emitter exercised dependency and capability boundary > a controlled checker failure refuses before receipt revalidation [12.00ms]
+(pass) NCI emitter exercised dependency and capability boundary > a static checker import is refused by the actual module linker [7.74ms]
+(pass) NCI emitter exercised dependency and capability boundary > a computed dynamic import is refused by syntax admission before VM execution [6.59ms]
+(pass) NCI emitter exercised dependency and capability boundary > direct checker read is refused even with the unchanged static import roster [5.59ms]
+(pass) NCI emitter exercised dependency and capability boundary > aliased checker read is refused even with the unchanged static import roster [5.49ms]
+(pass) NCI emitter exercised dependency and capability boundary > computed Python subprocess is refused even with the unchanged static import roster [5.30ms]
+(pass) NCI emitter exercised dependency and capability boundary > different runtime arguments is refused even with the unchanged static import roster [5.37ms]
+(pass) NCI emitter exercised dependency and capability boundary > caught checker-read refusal is refused even with the unchanged static import roster [6.94ms]
+
+src/Core.TypeScript/formal-verification/nci-witness-receipt.test.ts:
+(pass) finite NciNonUrgency witness receipt > renders and accepts the one pinned bounded witness [13.41ms]
+(pass) finite NciNonUrgency witness receipt > both committed cross-surface receipts reproduce the finite canonical witness [9.63ms]
+(pass) finite NciNonUrgency witness receipt > the current registry refuses reuse of the historical receipt [7.49ms]
+(pass) finite NciNonUrgency witness receipt > failed historical setup keeps the original refusal and removes its owned temporary files [7.25ms]
+(pass) finite NciNonUrgency witness receipt > a one-byte model change refuses before a witness can be rendered [10.17ms]
+(pass) finite NciNonUrgency witness receipt > a missing pinned input refuses from the same attempted read [9.88ms]
+(pass) finite NciNonUrgency witness receipt > changed jar and registry inputs refuse rather than reusing the bounded witness [33.64ms]
+(pass) finite NciNonUrgency witness receipt > a reordered or incomplete valid JSON receipt is refused [13.41ms]
+(pass) finite NciNonUrgency witness receipt > an altered completed-model result cannot become an NCI witness [9.58ms]
+(pass) finite NciNonUrgency witness receipt > the witness data cannot be a policy score or authority grant [7.62ms]
+
+ 26 pass
+ 0 fail
+ 54 expect() calls
+Ran 26 tests across 3 files. [807.00ms]
+
+ExitCode: 0
+CompletedAtUtc: 2026-09-07T12:08:57.483606+00:00

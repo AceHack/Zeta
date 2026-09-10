@@ -1,11 +1,38 @@
 # Trajectory - Cluster Encryption / Credential Substrate
 
 Status: active — first surfaced 2026-05-29 from substrate inventory (was tracked only as scattered backlog rows; never had a trajectory surface, which is why it was easy to lose at cold-boot)
-Last refreshed: 2026-09-06 (zeta-install bun-consumes bao names after 6.95a; still not a seal)
+Last refreshed: 2026-09-09 (USB install ladder: hsm → tpm → sidecar; CI tests all three)
 Type: workstream (current-focus) — a trajectory the operator is *actively powering*. Many trajectories can be tracked; only a few are workstreams at once (finite-focus / WIP-bounded — a workstream is a trajectory under sustained thrust, and thrust budget is finite, so most trajectories coast). ("Trajectory" is the genus; "workstream" is the species: a trajectory under sustained thrust toward a deliverable, vs. emergent-posture trajectories like `anti-infection`, which self-describes as "not a workstream with a cadence." See [`factory-trajectory-surface`](../factory-trajectory-surface/RESUME.md) for the genus/species taxonomy.) One of the operator's three current cluster workstreams (encryption / usb-zflash / ts-workflow-engine).
 Eventual encoding (design-stage — the human maintainer 2026-05-23 genetic-ID substrate + Clifford/HKT): this trajectory's state is trackable as a 128-bit genetic-ID seed (discrete, reversible via parser-combinator ↔ generator-function) → Clifford-space path (continuous, eventual). Mirrors the three-lane I8-lattice / I9-manifold split.
 Current blocker: none operationally; the live design tension is interactive-login-vs-baked-in-keys-vs-CI-test (081KSGS9H0008QG0R003JNSVR5)
-Next concrete action: round-trip harness in flight (otto/onboarding-roundtrip-harness — sandboxed new-fork setup→teardown→re-setup ×N, surfaces the rotate-command gap). Then smart cascading teardown (cascade-with-warnings; extra-care warn on memories/hardware-state/unrecoverable-encrypted; OWNER-consent-gated memory delete; user-sovereign encryption can't be force-reset; each user = own git repo — see `docs/research/2026-06-21-smart-cascading-teardown-user-sovereign-deletion-…`). All 3 vaults now Active+Standby (rotation-ready: Lucent/Personal/CA, 2 service accounts each in Keychain). CA-recovery hardware (FIDO/HSM/N-of-M) = post-investor next layer. Live wipe + clean re-onboard once the harness is tight. Teardown primitive shipped (#9000).
+Next concrete action: USB install now *names* the ladder (hsm / tpm / sidecar) from the live look; acting on it (operator PIN, Application.yaml) is still later. Metal `seal "pkcs11"` still waits on a same-libc OpenBao image. Round-trip harness in flight (otto/onboarding-roundtrip-harness). Then smart cascading teardown.
+
+## 2026-09-09 — USB install ladder: hsm then tpm then sidecar (Riven)
+
+Aaron: some machines have no HSM and no TPM; almost none have two
+HSMs on one machine. Detect during USB install and pick **one**
+rung in that order. CI must test the HSM simulator, the TPM
+simulator, **and** the sidecar independently (all three).
+
+The picker already existed as UnsealPath (`pkcs11-yubihsm` /
+`pkcs11-tpm` / `lucent-shamir`) and the USB install already ran
+`seal-path-detect.ts` after 6.95a (`081M22M7G8M087G0R003R1C8Z4`).
+This slice is the product vocabulary, not a second look.
+
+- `UsbInstallSeal` = `hsm` | `tpm` | `sidecar`. Projection only.
+  Does not rename UnsealPath. Incomplete look is `ladder: null`,
+  not sidecar. Sidecar is the completed negative.
+- Two HSM vendors on one box still one seal (`hsm`). Dual-vendor
+  custody stays ZetaFS k-of-n.
+- USB install logs `ladder: hsm|tpm|sidecar` next to the path.
+  Still observational. Still no overlay. Still no Application.yaml.
+  bun JSON `probe` stays `null`.
+- CI cells: `hsm-simulator`, `tpm-simulator`, `sidecar`, plus
+  `both-softhsm-wins` (one seal; HSM wins). `--expect-ladder=`.
+  SoftHSM/swtpm stay job declarations, never `/dev/tpmrm0`.
+
+Workitem: `081M246EAP0087G0R003FFYST2`. Classifier:
+`usbInstallSealFromPath` in `unseal-path.ts`.
 
 ## 2026-09-05 — μένω names the recast (Riven)
 
@@ -591,6 +618,517 @@ Workitem: `081M1W6J9MH087G0R003VNMDDR`.
 - Literal `ZETA_BAO_ELF_EPOCH='installer-iso'`. Missing epoch
   is unmeasured, not `installed-host`. `/mnt` is unknown, not
   `installer-iso`. Does not infer from `/dev/tpmrm0`.
+- Does not invent an integrate decision. Does not expand
+  `ZetaFirstbootRole`. Does not edit Application.yaml.
+
+## 2026-09-06 — overlay env join reads named epoch from env (Riven)
+
+Aaron: continue after the ISO bun consume. Epoch lived in
+process env, but `planSetupFromNamedBaoElfEnv` still took it
+as a TypeScript argument.
+
+Consumer: `src/Core.TypeScript/installer/bao-elf-capture.ts`
+(`planSetupFromNamedBaoElfEnv`).
+Workitem: `081M1W8D6MF087G0R003405R3N`.
+
+- Epoch comes from `ZETA_BAO_ELF_EPOCH`. A named ask without
+  a named epoch refuses (`empty-epoch`) and does not open
+  `NIXOS_HOST_BAO`. `/mnt` is unknown-epoch. Missing keys stay
+  unmeasured. Does not default missing epoch to
+  `installed-host`.
+- Does not invent an integrate decision. Does not expand
+  `ZetaFirstbootRole`. Does not edit Application.yaml.
+
+## 2026-09-06 — ISO bun consume filters current-system bao at named epoch (Riven)
+
+Aaron: continue after the env join reads epoch from env. Bun
+JSON still reported the sourced ISO current-system path as a
+named ask.
+
+Consumer: `src/Core.TypeScript/zflash/firstboot-bao-elf.ts`
+(`consumeFirstbootBaoElfEnvWithEpoch`) plus
+`src/Core.TypeScript/zflash/firstboot-bao-env.ts`.
+Workitem: `081M1W9VW7P087G0R0026A9J6Z`.
+
+- Named epoch applies `namedBaoElfAskAtEpoch`. `installer-iso`
+  plus `NIXOS_HOST_BAO` is a null ask. A named store path stays
+  an ask. Missing epoch still reports the sourced ask (join
+  refuses `empty-epoch`). Does not infer from `/mnt`.
+- Does not invent an integrate decision. Does not expand
+  `ZetaFirstbootRole`. Does not edit Application.yaml.
+
+## 2026-09-06 — named unseal request is not inferred from tpmrm0 (Riven)
+
+Aaron: continue after ISO bun filters current-system bao. Overlay
+join still takes an IntegrateDecision a live installer would
+invent.
+
+Consumer: `src/Core.TypeScript/cluster/unseal-path.ts`
+(`parsePathRequest`, `consumeUnsealRequestFromEnv`).
+Workitem: `081M1WBA6RX087G0R002450S9J`.
+
+- `ZETA_UNSEAL_REQUEST` names a `PathRequest`. Missing is
+  unmeasured, not `auto`, not `pkcs11-tpm`. `/dev/tpmrm0` and
+  `/mnt` are unknown-request. Does not call `integrateAtSetup`.
+- Does not invent an integrate decision. Does not expand
+  `ZetaFirstbootRole`. Does not edit Application.yaml.
+
+## 2026-09-06 — env unseal request joins injected capture (Riven)
+
+Aaron: continue after naming the request. `integrateAtSetup`
+still took a TypeScript SetupRequest, so missing env could
+become `auto`.
+
+Consumer: `src/Core.TypeScript/cluster/unseal-path.ts`
+(`integrateAtSetupFromEnv`).
+Workitem: `081M1WCEGYJ087G0R0039T2T39`.
+
+- Request from `ZETA_UNSEAL_REQUEST`. Missing is unmeasured
+  (`decision` null), not `auto`. Capture stays injected.
+  `/dev/tpmrm0` still refuses at parse. Does not invent a
+  capture from the char device.
+- Does not invent an integrate decision. Does not expand
+  `ZetaFirstbootRole`. Does not edit Application.yaml.
+
+## 2026-09-06 — overlay env join reads named unseal request (Riven)
+
+Aaron: continue after integrateAtSetupFromEnv. Overlay env join
+still took an IntegrateDecision a caller could invent.
+
+Consumer: `src/Core.TypeScript/installer/bao-elf-capture.ts`
+(`planSetupFromNamedBaoElfEnv`).
+Workitem: `081M1WE7Z5S087G0R001WT3K6G`.
+
+- Request from `ZETA_UNSEAL_REQUEST` via `integrateAtSetupFromEnv`.
+  Missing is unmeasured, not `auto`. Capture stays injected.
+  `/dev/tpmrm0` still refuses at parse. Does not invent a
+  capture from the char device.
+- Does not invent an integrate decision. Does not expand
+  `ZetaFirstbootRole`. Does not edit Application.yaml.
+
+## 2026-09-06 — ISO bun consume reports named unseal request (Riven)
+
+Aaron: continue after overlay env join reads the request. Bun
+JSON still reported only ask and epoch, so a missing request
+was invisible.
+
+Consumer: `src/Core.TypeScript/zflash/firstboot-bao-env.ts`
+plus `full-ai-cluster/usb-nixos-installer/zeta-install.sh`.
+Workitem: `081M1WG1RJB087G0R001ADMJNK`.
+
+- JSON includes `requested`. Missing is unmeasured (`null`),
+  not `auto`. `/dev/tpmrm0` still refuses at parse. ISO bun
+  does not export `ZETA_UNSEAL_REQUEST`. Does not call
+  `integrateAtSetup`. Does not invent a capture.
+- Does not invent an integrate decision. Does not expand
+  `ZetaFirstbootRole`. Does not edit Application.yaml.
+
+## 2026-09-06 — argv and conf overlay joins read named unseal request (Riven)
+
+Aaron: continue after bun JSON reports the request. Argv and
+conf overlay joins still took an IntegrateDecision a caller
+could invent.
+
+Consumer: `src/Core.TypeScript/installer/bao-elf-capture.ts`
+(`planSetupFromNamedBaoElfArgv`, `planSetupFromNamedBaoElfConf`).
+Workitem: `081M1WHKEEQ087G0R0002B3SPG`.
+
+- Request from `ZETA_UNSEAL_REQUEST` via `integrateAtSetupFromEnv`.
+  Missing is unmeasured, not `auto`. Capture stays injected.
+  `/dev/tpmrm0` still refuses at parse. Does not add the
+  request to ESP conf.
+- Does not invent an integrate decision. Does not expand
+  `ZetaFirstbootRole`. Does not edit Application.yaml.
+
+## 2026-09-07 — named probe snapshot becomes host capture (Riven)
+
+Aaron: detect HSM/TPM at setup. Overlay joins read the request
+from env. Capture was still invented in tests.
+
+Consumer: `src/Core.TypeScript/cluster/host-seal-profile.ts`
+(`hostCaptureFromNamedProbe`).
+Workitem: `081M1WK36Y1087G0R003WT976Y`.
+
+- `/dev/tpmrm0` is not `present`. A YubiKey / CCID reader is
+  not CardContact SmartCard-HSM. A PKCS#11 driver on disk is
+  not an attached YubiHSM. Null is unmeasured, not absent.
+  Does not import frost-hardware-probe. Does not call
+  `integrateAtSetup`.
+- Does not invent an integrate decision. Does not expand
+  `ZetaFirstbootRole`. Does not edit Application.yaml.
+
+## 2026-09-07 — overlay joins take named probe (Riven)
+
+Aaron: detect HSM/TPM at setup. Mapper landed. Overlay joins
+still took `HostHardwareCapture`.
+
+Consumer: `src/Core.TypeScript/installer/bao-elf-capture.ts`
+(`planSetupFromNamedBaoElfArgv` / `Conf` / `Env`).
+Workitem: `081M1WMR8KD087G0R003HZYY14`.
+
+- Probe snapshot stays injected. Mapped via
+  `hostCaptureFromNamedProbe`. Null is unmeasured, not
+  present. `/dev/tpmrm0` on the probe is not a capture.
+  Does not import frost-hardware-probe. Does not call this
+  from `zeta-install.sh`.
+- Does not invent an integrate decision. Does not expand
+  `ZetaFirstbootRole`. Does not edit Application.yaml.
+
+## 2026-09-07 — env integrate takes named probe (Riven)
+
+Aaron: detect HSM/TPM at setup. Overlay joins take a named
+probe. `integrateAtSetupFromEnv` still took
+`HostHardwareCapture`.
+
+Consumer: `src/Core.TypeScript/cluster/unseal-path.ts`
+(`integrateAtSetupFromEnv`).
+Workitem: `081M1WP0C7B087G0R000VK9E0V`.
+
+- Probe snapshot stays injected. Mapped via
+  `hostCaptureFromNamedProbe`. Null is unmeasured, not
+  present. `/dev/tpmrm0` on the probe is not a capture.
+  Overlay passes the probe through. Inner `integrateAtSetup`
+  still takes a capture. Does not import frost-hardware-probe.
+  Does not call this from `zeta-install.sh`.
+- Does not invent an integrate decision. Does not expand
+  `ZetaFirstbootRole`. Does not edit Application.yaml.
+
+## 2026-09-07 — overlay named bun JSON join takes look; null look is missing-os (Riven)
+
+Aaron: detect HSM/TPM at setup. Overlay optional bun JSON
+join treats null look as unmeasured. Overlay NamedArgv
+`--from-json` treats null look as `missing-os`. The required
+bun JSON string join was missing.
+
+Consumer: `tools/setup/persona-keys/plan-setup-from-frost-look.ts`.
+Workitem: `081M1Z36ZJ4087G0R003HFMT2K`.
+
+- `planSetupFromFrostLookNamedBunJson`. Uses `look`. JSON
+  `probe` is ignored even when non-null. Null look is
+  `missing-os`, not unmeasured. Mixing env frost-look keys
+  with JSON look is `mixed-source`. NamedEnv still requires
+  OS. Does not default to `realProbeEffects`. `/dev/tpmrm0`
+  is not `real`. Does not write ESP. Does not import the
+  frost-look CLI. Does not call this from `zeta-install.sh`.
+  Does not change ISO bun `probe: null`.
+- Does not invent an integrate decision. Does not expand
+  `ZetaFirstbootRole`. Does not edit Application.yaml.
+
+## 2026-09-07 — overlay named argv takes bun JSON --from-json; null look is missing-os (Riven)
+
+Aaron: detect HSM/TPM at setup. Overlay optional named argv
+takes `--from-json`. Null look is unmeasured. Overlay
+NamedArgv still only took `--os` / `--effects`.
+
+Consumer: `tools/setup/persona-keys/plan-setup-from-frost-look.ts`.
+Workitem: `081M1Z1FHDW087G0R00210Z0PG`.
+
+- `planSetupFromFrostLookNamedArgv` takes `--from-json`.
+  Uses `look`. JSON `probe` is ignored even when non-null.
+  Null look is `missing-os`, not unmeasured. Mixing with
+  `--os` / `--effects` / `--from-conf` / env frost-look keys
+  is `mixed-source`. NamedEnv still requires OS. Does not
+  default to `realProbeEffects`. `/dev/tpmrm0` is not
+  `real`. Does not write ESP. Does not import the frost-look
+  CLI. Does not call this from `zeta-install.sh`. Does not
+  change ISO bun `probe: null`.
+- Does not invent an integrate decision. Does not expand
+  `ZetaFirstbootRole`. Does not edit Application.yaml.
+
+## 2026-09-07 — overlay optional named argv takes bun JSON --from-json; JSON probe is ignored (Riven)
+
+Aaron: detect HSM/TPM at setup. Frost look CLI takes
+`--from-json`. Overlay optional named join takes a bun JSON
+string with bao from env. Overlay optional named argv still
+only took `--os` / `--effects`.
+
+Consumer: `tools/setup/persona-keys/plan-setup-from-frost-look.ts`.
+Workitem: `081M1YWR8EB087G0R002X0SFX7`.
+
+- `planSetupFromFrostLookOptionalNamedArgv` takes
+  `--from-json`. Uses `look`. JSON `probe` is ignored even
+  when non-null. Null look is unmeasured, not `missing-os`.
+  Mixing with `--os` / `--effects` / `--from-conf` / env
+  frost-look keys is `mixed-source`. NamedEnv still requires
+  OS. Does not default to `realProbeEffects`. `/dev/tpmrm0`
+  is not `real`. Does not write ESP. Does not import the
+  frost-look CLI. Does not call this from `zeta-install.sh`.
+  Does not change ISO bun `probe: null`.
+- Does not invent an integrate decision. Does not expand
+  `ZetaFirstbootRole`. Does not edit Application.yaml.
+
+## 2026-09-07 — frost look CLI takes bun JSON look; JSON probe is ignored (Riven)
+
+Aaron: detect HSM/TPM at setup. Overlay optional named join
+takes ISO bun JSON look. Frost look CLI takes env / argv /
+`--from-conf`. Nobody printed that same bun JSON `look`.
+
+CLI: `tools/setup/persona-keys/named-frost-look-env.ts`.
+Workitem: `081M1YS9661087G0R001YK5CEY`.
+
+- `--from-json`. Uses `look`. JSON `probe` is ignored even
+  when non-null. Null look is unmeasured, not `missing-os`.
+  Mixing with `--os` / `--effects` / `--from-conf` / env
+  frost-look keys is `mixed-source`. NamedEnv still requires
+  OS. Does not default to `realProbeEffects`. `/dev/tpmrm0`
+  is not `real`. Does not write ESP. Does not call overlay
+  join. Does not call this from `zeta-install.sh`. Does not
+  change ISO bun `probe: null`.
+- Does not invent an integrate decision. Does not expand
+  `ZetaFirstbootRole`. Does not edit Application.yaml.
+
+## 2026-09-07 — overlay optional named join takes ISO bun JSON look; JSON probe is ignored (Riven)
+
+Aaron: detect HSM/TPM at setup. ISO bun consume prints
+`look`. Overlay optional named joins take env / argv /
+conf. Nobody joined the bun JSON `look` field.
+
+Consumer: `tools/setup/persona-keys/plan-setup-from-frost-look.ts`.
+Workitem: `081M1YQKYXQ087G0R000NXN8JN`.
+
+- `planSetupFromFrostLookOptionalNamedBunJson`. Uses
+  `look`. JSON `probe` is ignored even when non-null.
+  Null look is unmeasured, not `missing-os`. Mixing env
+  frost-look keys with JSON look is `mixed-source`.
+  NamedEnv still requires OS. Does not default to
+  `realProbeEffects`. `/dev/tpmrm0` is not `real`. Does
+  not write ESP. Does not import the frost-look CLI. Does
+  not call this from `zeta-install.sh`. Does not change
+  ISO bun `probe: null`.
+- Does not invent an integrate decision. Does not expand
+  `ZetaFirstbootRole`. Does not edit Application.yaml.
+
+## 2026-09-07 — overlay optional named joins match ISO bun missing frost-look keys (Riven)
+
+Aaron: detect HSM/TPM at setup. ISO bun consume reports
+`look` when frost-look keys are missing. Overlay NamedEnv
+still refused that same env as `missing-os`.
+
+Consumer: `tools/setup/persona-keys/plan-setup-from-frost-look.ts`.
+Workitem: `081M1YNNVFQ087G0R001J5SEPD`.
+
+- `planSetupFromFrostLookOptionalNamedEnv` / Argv / Conf.
+  Missing both frost-look keys is unmeasured (`probe`
+  null), not `missing-os`. NamedEnv still requires OS.
+  Does not default to `realProbeEffects`. `/dev/tpmrm0`
+  is not `real`. Does not write ESP. Does not import the
+  frost-look CLI. Does not call this from
+  `zeta-install.sh`. Does not change ISO bun
+  `probe: null`.
+- Does not invent an integrate decision. Does not expand
+  `ZetaFirstbootRole`. Does not edit Application.yaml.
+
+## 2026-09-07 — ISO bun consume reports named frost-look keys (Riven)
+
+Aaron: detect HSM/TPM at setup. Overlay named-key joins
+consume frost-look keys. ISO bun consume still omitted
+them, so missing could be treated as a live look.
+
+Consumer: `src/Core.TypeScript/zflash/firstboot-bao-env.ts`.
+Workitem: `081M1YGP8BF087G0R002Z1YH8R`.
+
+- `consumeOptionalFrostLookFromEnv`. Missing both keys is
+  unmeasured (`look` null), not `missing-os`. Named `"real"`
+  is reported and still leaves `probe: null`. Parse does
+  not import the look mapper. `/dev/tpmrm0` is not `real`.
+  Does not import the frost-look CLI. Does not export
+  frost-look keys from `zeta-install.sh`. Does not write
+  ESP. Does not change ISO bun `probe: null`.
+- Does not invent an integrate decision. Does not expand
+  `ZetaFirstbootRole`. Does not edit Application.yaml.
+
+## 2026-09-07 — overlay named-key joins take frost-look keys (Riven)
+
+Aaron: detect HSM/TPM at setup. CLI conf consume prints a
+named look. Overlay Conf join still took a separate OS /
+effects argument.
+
+Consumer: `tools/setup/persona-keys/plan-setup-from-frost-look.ts`.
+Workitem: `081M1YCFES8087G0R000R3MV6Y`.
+
+- `planSetupFromFrostLookNamedEnv` / Argv / Conf. Parse
+  lives in `named-frost-look.ts`. Overlay does not import
+  the frost-look CLI. Missing OS is `missing-os`, not
+  `nixos`. Missing effects is unmeasured. Does not default
+  to `realProbeEffects`. `/dev/tpmrm0` is not `real`. Does
+  not write ESP. Does not call this from `zeta-install.sh`.
+  Does not change ISO bun `probe: null`.
+- Does not invent an integrate decision. Does not expand
+  `ZetaFirstbootRole`. Does not edit Application.yaml.
+
+## 2026-09-07 — frost look CLI conf takes named effects (Riven)
+
+Aaron: detect HSM/TPM at setup. Env and argv CLIs print a
+named look. A conf body still had no parse.
+
+CLI: `tools/setup/persona-keys/named-frost-look-env.ts`.
+Workitem: `081M1YAHFVV087G0R001G2TXRE`.
+
+- `consumeFrostLookFromConf` / `runFrostLookConfCli`.
+  `--from-conf` takes the body. Missing effects is
+  unmeasured, not a live look. Missing OS is `missing-os`,
+  not `nixos`. Does not default to `realProbeEffects`.
+  `/dev/tpmrm0` is not `real` and not an OS. Does not mix
+  conf with argv or env. Does not write ESP. Does not call
+  `appendFirstbootBaoElfConf`. Does not call overlay join.
+  Does not call this from `zeta-install.sh`. Does not
+  change ISO bun `probe: null`.
+- Does not invent an integrate decision. Does not expand
+  `ZetaFirstbootRole`. Does not edit Application.yaml.
+
+## 2026-09-07 — frost look CLI argv takes named effects (Riven)
+
+Aaron: detect HSM/TPM at setup. Env CLI prints a named look.
+Argv still had no parse.
+
+CLI: `tools/setup/persona-keys/named-frost-look-env.ts`.
+Workitem: `081M1Y5WKS2087G0R002Q7ZKS7`.
+
+- `consumeFrostLookFromArgv` / `runFrostLookArgvCli`. `--os`
+  is required. Missing `--effects` is unmeasured, not a live
+  look. Does not default to `realProbeEffects`. `/dev/tpmrm0`
+  is not `real` and not an OS. Does not read env when argv
+  flags are present. Does not call overlay join. Does not
+  call this from `zeta-install.sh`. Does not change ISO bun
+  `probe: null`.
+- Does not invent an integrate decision. Does not expand
+  `ZetaFirstbootRole`. Does not edit Application.yaml.
+
+## 2026-09-07 — frost look CLI takes named effects (Riven)
+
+Aaron: detect HSM/TPM at setup. Overlay look joins exist.
+Nobody printed a named look.
+
+CLI: `tools/setup/persona-keys/named-frost-look-env.ts`.
+Workitem: `081M1Y39EJJ087G0R003Z00P0Y`.
+
+- Missing effects is unmeasured (`probe` null), not a live
+  look. Does not default to `realProbeEffects`. OS family is
+  named (`ZETA_FROST_LOOK_OS`), not read from
+  `/etc/os-release`. `/dev/tpmrm0` is not `real` and not an
+  OS. Named `"real"` uses injected effects. Does not call
+  overlay join. Does not import frost into cluster. Does
+  not call this from `zeta-install.sh`. Does not change ISO
+  bun `probe: null`.
+- Does not invent an integrate decision. Does not expand
+  `ZetaFirstbootRole`. Does not edit Application.yaml.
+
+## 2026-09-07 — overlay joins take frost look (Riven)
+
+Aaron: detect HSM/TPM at setup. The frost look maps named
+effects to a probe. Overlay frost joins still took a frost
+result, so a caller could skip the look.
+
+Join: `tools/setup/persona-keys/plan-setup-from-frost-look.ts`.
+Workitem: `081M1XYSWV0087G0R000ZFKBTD`.
+
+- `planSetupFromFrostLookEnv` / Argv / Conf map via
+  `namedProbeFromFrostLook` then the named-bao overlay joins.
+  Null effects is unmeasured, not a live look. Does not
+  default to `realProbeEffects`. `/dev/tpmrm0` does not
+  upgrade `tpm2` to `present`. A YubiKey / CCID reader is
+  not CardContact. OS family is a named argument. Result
+  joins stay result-only and still do not call
+  `probeHardwareSecurity`. Does not import frost into
+  cluster. Does not call this from `zeta-install.sh`. Does
+  not change ISO bun `probe: null`.
+- Does not invent an integrate decision. Does not expand
+  `ZetaFirstbootRole`. Does not edit Application.yaml.
+
+## 2026-09-07 — frost look with injected effects (Riven)
+
+Aaron: detect HSM/TPM at setup. Overlay joins take a frost
+result. Nobody ran frost with named effects into the mapper.
+
+Look: `tools/setup/persona-keys/named-probe-from-frost-look.ts`.
+Workitem: `081M1WYXT4S087G0R002K1TK4Y`.
+
+- `namedProbeFromFrostLook` runs `probeHardwareSecurity` only
+  when effects are named. Null effects is unmeasured, not a
+  live look. Does not default to `realProbeEffects`.
+  `/dev/tpmrm0` does not upgrade `tpm2` to `present`. A
+  YubiKey / CCID reader is not CardContact. A PKCS#11 driver
+  on disk is not an attached YubiHSM. OS family is a named
+  argument, not `fx.platform`. Does not import frost into
+  cluster. Does not call this from `zeta-install.sh`. Does
+  not change ISO bun `probe: null`.
+- Does not invent an integrate decision. Does not expand
+  `ZetaFirstbootRole`. Does not edit Application.yaml.
+
+## 2026-09-07 — overlay argv/conf joins take frost result (Riven)
+
+Aaron: detect HSM/TPM at setup. Overlay env join takes a frost
+result. Argv and conf siblings still took
+`NamedHardwareProbe | null`, so a caller could skip the mapper.
+
+Join: `tools/setup/persona-keys/plan-setup-from-frost.ts`.
+Workitem: `081M1WXPCAV087G0R002H1X6VY`.
+
+- `planSetupFromFrostArgv` / `planSetupFromFrostConf` map via
+  `namedProbeFromFrostResult` then the argv/conf overlay joins.
+  `/dev/tpmrm0` does not upgrade `tpm2` to `present`. A YubiKey
+  / CCID reader is not CardContact. Null frost result is
+  unmeasured, not present. Unseal request stays named from env.
+  Does not add the request to ESP conf. Does not call
+  `probeHardwareSecurity`. Does not import frost into cluster.
+  Does not call overlay join from `zeta-install.sh`. Does not
+  change ISO bun `probe: null`.
+- Does not invent an integrate decision. Does not expand
+  `ZetaFirstbootRole`. Does not edit Application.yaml.
+
+## 2026-09-07 — overlay env join takes frost result (Riven)
+
+Aaron: detect HSM/TPM at setup. Frost maps to a named probe.
+Overlay env join still took `NamedHardwareProbe | null`, so a
+caller could skip the mapper.
+
+Join: `tools/setup/persona-keys/plan-setup-from-frost.ts`.
+Workitem: `081M1WTR4BW087G0R0001NVXWQ`.
+
+- `planSetupFromFrostEnv` maps via `namedProbeFromFrostResult`
+  then `planSetupFromNamedBaoElfEnv`. `/dev/tpmrm0` does not
+  upgrade `tpm2` to `present`. A YubiKey / CCID reader is not
+  CardContact. A PKCS#11 driver on disk is not an attached
+  YubiHSM. Null frost result is unmeasured, not present. OS
+  family is a named argument. Does not call
+  `probeHardwareSecurity`. Does not import frost into cluster.
+  Does not call overlay join from `zeta-install.sh`. Does not
+  change ISO bun `probe: null`.
+- Does not invent an integrate decision. Does not expand
+  `ZetaFirstbootRole`. Does not edit Application.yaml.
+
+## 2026-09-07 — frost result becomes named probe (Riven)
+
+Aaron: detect HSM/TPM at setup. Overlay and env integrate take
+a named probe. ISO bun reports `probe: null`. Frost's
+`HardwareProbeResult` was still not a named probe.
+
+Mapper: `tools/setup/persona-keys/named-probe-from-frost.ts`.
+Workitem: `081M1WS6HV4087G0R001K1YWMN`.
+
+- `namedProbeFromFrostResult` copies `tpm2State` / `yubiHsm2State`.
+  `/dev/tpmrm0` does not upgrade `tpm2` to `present`. A YubiKey
+  / CCID reader is not CardContact. A PKCS#11 driver on disk is
+  not an attached YubiHSM. Null frost result is unmeasured, not
+  absent. OS family is a named argument, not `/etc/os-release`.
+  Does not call `probeHardwareSecurity`. Does not import frost
+  into cluster. Does not call overlay join from `zeta-install.sh`.
+- Does not invent an integrate decision. Does not expand
+  `ZetaFirstbootRole`. Does not edit Application.yaml.
+
+## 2026-09-07 — ISO bun consume reports unmeasured probe (Riven)
+
+Aaron: detect HSM/TPM at setup. Env integrate takes a named
+probe. ISO bun consume still omitted it.
+
+Consumer: `src/Core.TypeScript/zflash/firstboot-bao-env.ts`.
+Workitem: `081M1WQNTZ0087G0R002Q8T8RT`.
+
+- JSON includes `probe: null`. Missing is unmeasured, not
+  present. A named PathRequest is not a named probe.
+  `/dev/tpmrm0` is not a probe. Does not import
+  frost-hardware-probe. Does not call `integrateAtSetupFromEnv`.
+  Does not call overlay join from `zeta-install.sh`.
 - Does not invent an integrate decision. Does not expand
   `ZetaFirstbootRole`. Does not edit Application.yaml.
 

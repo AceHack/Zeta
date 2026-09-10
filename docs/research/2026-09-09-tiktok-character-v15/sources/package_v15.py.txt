@@ -1,0 +1,40 @@
+"""Single-version release: explicit file allowlist, hashes, and ZIP read-back verification."""
+from pathlib import Path
+import hashlib,json,zipfile
+R=Path(__file__).resolve().parent
+REPO=Path('/Users/acehack/.zeta/agents/codex/Zeta-character-evolution-20260908')
+D=REPO/'docs/research/2026-09-09-tiktok-character-v15'
+archive=R/'tiktok-character-quality-v15.zip'
+files={'review/Blender-Quality-Review-v15.blend':R/'review/Blender-Quality-Review-v15.blend'}
+for name in ['neutral.png','left-arm.png','pose-0049.png','pose-0073.png','pose-0121.png','pose-0145.png','side-review.png','side-head-turn.png']:files['evidence/'+name]=R/'review'/name
+for name in ['surface-retention.json','pose-diagnostics.json','delivery-validation.json','cleanup-summary.json','local-cleanup-receipt.json']:files['receipts/'+name]=R/name
+for name in ['preserve_surfaces_v15.py','review_poses_v15.py','validate_delivery_v15.py','cleanup_verified_copies.py','package_v15.py','profile_review_v15.py']:files['sources/'+name]=R/name
+manifest={'version':'v15-quality-study','contains_previous_versions':False,'scope':'High-detail Blender research candidate, not a TikTok runtime release','files':[{'path':name,'bytes':p.stat().st_size,'sha256':hashlib.sha256(p.read_bytes()).hexdigest()} for name,p in sorted(files.items())]}
+readme='''V15 quality study - Vera / OpenAI Codex (GPT-6)
+Open review/Blender-Quality-Review-v15.blend. All four used image textures are packed.
+Timeline: 1 neutral, 25 left arm, 49 right arm, 73 left knee, 97 right knee,
+121 head left, 145 head right, 169 neutral. Synthetic controls, not camera tracking.
+
+This release contains only v15. Previous v14 runtime candidate and source rig:
+https://github.com/Lucent-Financial-Group/Zeta/releases/tag/research-tiktok-character-v14-20260909
+Pre-rig v5 reconstruction input:
+https://github.com/Lucent-Financial-Group/Zeta/releases/tag/research-character-composition-20260909
+
+No facial morphs or individual finger influences are authored on this v15 study.
+Shoulder strain, hair segmentation and hidden garment boundaries need further work.
+Do not transfer v14 Effect House package/performance results to these high-detail assets.
+
+Sources are recipes requiring the separately archived inputs. Do not rerun the
+administrative cleanup script as a modelling step; its completed ledger is included.
+Detailed record and storage policy:
+https://github.com/Lucent-Financial-Group/Zeta/blob/main/docs/research/2026-09-09-tiktok-character-v15/README.md
+'''
+with zipfile.ZipFile(archive,'w',compression=zipfile.ZIP_DEFLATED,compresslevel=6) as z:
+ for name,p in sorted(files.items()):z.write(p,name)
+ z.writestr('README.txt',readme);z.writestr('manifest.json',json.dumps(manifest,indent=2)+'\n')
+with zipfile.ZipFile(archive) as z:
+ assert z.testzip() is None
+ for entry in manifest['files']:assert hashlib.sha256(z.read(entry['path'])).hexdigest()==entry['sha256'],entry['path']
+ assert all(not n.startswith(('previous/','current/')) for n in z.namelist())
+receipt={'release':'https://github.com/Lucent-Financial-Group/Zeta/releases/tag/research-tiktok-character-quality-v15-20260909','archive':archive.name,'bytes':archive.stat().st_size,'sha256':hashlib.sha256(archive.read_bytes()).hexdigest(),'read_back_verified_files':len(manifest['files']),'contains_previous_versions':False}
+(D/'artifact-manifest.json').write_text(json.dumps(manifest,indent=2)+'\n');(D/'archive-verification.json').write_text(json.dumps(receipt,indent=2)+'\n');print(json.dumps(receipt,indent=2))

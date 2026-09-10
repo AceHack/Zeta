@@ -1,0 +1,35 @@
+{
+  "CorrectedCut": "49e470bab8de5bbf8199846c778fdd18236ce02e",
+  "OriginalSuccessorCut": "83beb2933937da4bfa7c07b4367373da10479f3e",
+  "ObservedProofCut": "6a1f5d43ad08f992bb8a0f80ac0c490ef4188d8a",
+  "ManifestBytes": 14734,
+  "ManifestSha256": "d8b0510e4adc0c985589ffce96c34cffe1b0dd5ede4a69e3337c5ee7a891dbb9",
+  "Records": 30,
+  "StoredBytes": 29563,
+  "OriginalBytes": 207054,
+  "Original23StoredRecordsUnchanged": true,
+  "FailedFollowupEmptyStdoutPreserved": true,
+  "FailureTextIsExplicitTranscription": true,
+  "ActualRepairProcess": {
+    "Command": [
+      "python3",
+      ".git/distributional-successor-tree-count-correction-2.py"
+    ],
+    "StartedAt": "2026-09-08T03:12:06.125724+00:00",
+    "FinishedAt": "2026-09-08T03:12:10.276574+00:00",
+    "ExitCode": 0,
+    "StdoutBytes": 96206,
+    "StderrBytes": 0,
+    "ScriptSha256": "6877d63337cb2a8b79b7d97ab353b43426834a7bdf52ac251d3dec91f3faa391",
+    "StdoutSha256": "aba1b622cd2afaa5b87d49ecfa5c376b50a7507f92a55fb94845822f7ea3b5e6",
+    "StderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "All231RetainedRowsMatchIndependentFullTrees": true,
+  "ExpectedChangedDocumentation": [
+    "docs/research/2026-09-08-distributional-learning-controls-publication.md",
+    "docs/research/2026-09-08-distributional-learning-publication-scope-review.md"
+  ],
+  "FiveSourceFilesRemainUnchanged": true,
+  "ScientificOrProjectExecutionsByReviewer": 0,
+  "SuccessorGithubOrMainAdmission": false
+}

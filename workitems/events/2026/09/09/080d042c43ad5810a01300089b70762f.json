@@ -1,0 +1,14 @@
+{
+  "id": "080d042c43ad5810a01300089b70762f",
+  "at": "2026-09-09T09:38:27.883Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M22RGXDA087G0R0009FB070",
+    "type": "bug",
+    "title": "mathjs 6.6.5 CVE needs a major bump under quantum-circuit, a cross-verify oracle",
+    "slug": "mathjs-6-6-5-cve-needs-a-major-bump-under-quantum-circuit-a",
+    "priority": "P2",
+    "filename": "081M22RGXDA087G0R0009FB070-mathjs-6-6-5-cve-needs-a-major-bump-under-quantum-circuit-a.md"
+  }
+}

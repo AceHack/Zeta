@@ -1,0 +1,12 @@
+{
+  "pr_number": 17136,
+  "archive_path": "docs/history/pr-reviews/PR-17136-fix-081m23b24p5087g0r002bjwen1-two-hat-constrainttemplates-never-compiled-so-no-.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-09T15:28:35.326Z",
+  "schema_version": "v1",
+  "commit_sha": "1fa12500bde6ef15443e6245b893ea0b2b980830",
+  "title": "fix(081M23B24P5087G0R002BJWEN1): two hat ConstraintTemplates never compiled, so no hat policy was ever enforced",
+  "state": "MERGED",
+  "merged_at": "2026-09-09T15:27:52Z",
+  "head_ref": "fix-hat-system-rego-never-compiled"
+}

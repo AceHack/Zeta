@@ -1,0 +1,14 @@
+{
+  "id": "080d03f3c789f810a013000851ebac0f",
+  "at": "2026-09-08T00:44:10.431Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1Z7HW9Y087G0R003JCTSTZ",
+    "type": "task",
+    "title": "FUSE byte session UNLINK RMDIR SYMLINK RENAME",
+    "slug": "fuse-byte-session-unlink-rmdir-symlink-rename",
+    "priority": "P2",
+    "filename": "081M1Z7HW9Y087G0R003JCTSTZ-fuse-byte-session-unlink-rmdir-symlink-rename.md"
+  }
+}

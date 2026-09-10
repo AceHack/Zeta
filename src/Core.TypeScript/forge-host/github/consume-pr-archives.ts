@@ -32,9 +32,26 @@
 // After running, commit `docs/history/pr-reviews/` + `docs/github/prs/manifest.jsonl` and open a PR.
 
 import { spawnSync } from "node:child_process";
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync } from "node:fs";
+import { readFileBounded, writeFileOwned, writeTextIfChanged } from "../../io/safe-io.ts";
+
+/**
+ * 0o644 — the mode `writeFileSync` produced under the repo's umask, kept
+ * exactly. The safe-io writers default to 0o600, and a repository file that
+ * only its writer can read is a change nobody asked for.
+ */
+const REPO_FILE_MODE = 0o644;
+
+/**
+ * The manifest is ~7.6 MiB on `main` and grows by one line per merged PR.
+ * 256 MiB is decades of headroom; one that reaches it is a defect worth
+ * failing loudly on rather than loading whole.
+ */
+const MANIFEST_MAX_BYTES = 256 * 1024 * 1024;
+
 import { basename, dirname } from "node:path";
 
+import { stripRemotePrefix } from "../../git/ref-prefix.ts";
 import { MANIFEST_RELATIVE, SHARD_ROOT_RELATIVE, shardPathFor } from "./pr-manifest-shards.ts";
 
 const REVIEW_DIR = "docs/history/pr-reviews";
@@ -73,13 +90,22 @@ const limit = args.includes("--limit") ? Number(args[args.indexOf("--limit") + 1
 git(["fetch", remote, "--prune", "-q"], true);
 
 // On-main manifest is the union target; start from current working-tree manifest if present.
-const baseManifest = existsSync(MANIFEST) ? readFileSync(MANIFEST, "utf8") : "";
+// ONE OPEN, and `not-found` is the only error that means "absent". `existsSync`
+// returning false for EACCES made a present-but-unreadable manifest look
+// missing, and the consolidated write at the end of this script then replaced
+// it with whatever the branches carried. CodeQL `js/file-system-race`.
+const baseRead = readFileBounded(MANIFEST, { maxBytes: MANIFEST_MAX_BYTES });
+if (!baseRead.ok && baseRead.error.kind !== "not-found") {
+  console.error(`cannot read ${MANIFEST}: ${baseRead.error.message}`);
+  process.exit(2);
+}
+const baseManifest = baseRead.ok ? baseRead.value.text : "";
 const merged = manifestByPr(baseManifest);
 const onMainPrs = new Set(merged.keys());
 
 const branches = git(["branch", "-r"])
   .split("\n")
-  .map((b) => b.trim().replace(new RegExp(`^${remote}/`), ""))
+  .map((b) => stripRemotePrefix(b.trim(), remote))
   .filter((b) => b.startsWith("automation/pr-archive-"))
   .sort()
   .slice(0, limit === Infinity ? undefined : limit);
@@ -112,7 +138,17 @@ for (const branch of branches) {
     skippedNoMd++;
     continue;
   }
-  writeFileSync(`${REVIEW_DIR}/${basename(added)}`, content.endsWith("\n") ? content : content + "\n");
+  const mdWrite = writeFileOwned(
+    `${REVIEW_DIR}/${basename(added)}`,
+    content.endsWith("\n") ? content : content + "\n",
+    {
+      mode: REPO_FILE_MODE,
+    },
+  );
+  if (!mdWrite.ok) {
+    console.error(`cannot write ${REVIEW_DIR}/${basename(added)}: ${mdWrite.error.message}`);
+    process.exit(2);
+  }
 
   // The per-PR shard, if this branch was cut after the shard writer landed. Its path is a
   // pure function of `pr` (no scan, no guessing) — see pr-manifest-shards.ts.
@@ -120,7 +156,13 @@ for (const branch of branches) {
   const shardBlob = git(["show", `${ref}:${shardRel}`], true);
   if (shardBlob) {
     mkdirSync(dirname(shardRel), { recursive: true });
-    writeFileSync(shardRel, shardBlob.endsWith("\n") ? shardBlob : shardBlob + "\n");
+    const shardWrite = writeFileOwned(shardRel, shardBlob.endsWith("\n") ? shardBlob : shardBlob + "\n", {
+      mode: REPO_FILE_MODE,
+    });
+    if (!shardWrite.ok) {
+      console.error(`cannot write ${shardRel}: ${shardWrite.error.message}`);
+      process.exit(2);
+    }
     shardsConsumed++;
   }
 
@@ -137,7 +179,14 @@ for (const branch of branches) {
 
 // Write the consolidated manifest (sorted by pr_number for stable diffs).
 const lines = [...merged.entries()].sort((a, b) => a[0] - b[0]).map(([, l]) => l);
-writeFileSync(MANIFEST, lines.join("\n") + (lines.length ? "\n" : ""));
+const manifestWrite = writeTextIfChanged(MANIFEST, lines.join("\n") + (lines.length ? "\n" : ""), {
+  mode: REPO_FILE_MODE,
+  maxBytes: MANIFEST_MAX_BYTES,
+});
+if (!manifestWrite.ok) {
+  console.error(`cannot write ${MANIFEST}: ${manifestWrite.error.message}`);
+  process.exit(2);
+}
 
 console.log(
   `consumed: ${consumed} | shards: ${shardsConsumed} | skipped (no archive .md): ${skippedNoMd} | manifest entries: ${merged.size}`,

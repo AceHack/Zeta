@@ -1,0 +1,16 @@
+{
+  "ObservedAtUtc": "2026-09-07T14:11:39.817722+00:00",
+  "HeadShaObservedBefore": "a2bf4225cef685ff9c67037d8dbcf7e19b9704cb",
+  "ExitCode": 0,
+  "Stdout": [
+    {
+      "bucket": "pass",
+      "event": "pull_request",
+      "link": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34128437843/job/101768168025",
+      "name": "gate (required)",
+      "state": "SUCCESS",
+      "workflow": "gate"
+    }
+  ],
+  "Stderr": ""
+}

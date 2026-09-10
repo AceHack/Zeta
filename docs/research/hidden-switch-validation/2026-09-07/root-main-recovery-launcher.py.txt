@@ -1,0 +1,47 @@
+from pathlib import Path
+import datetime
+import hashlib
+import json
+import os
+import subprocess
+import sys
+
+root = Path.cwd()
+out = root / "docs/research/hidden-switch-validation/2026-09-07"
+def utc():
+    return datetime.datetime.now(datetime.timezone.utc).isoformat()
+def digest(path):
+    with path.open("rb") as handle:
+        return hashlib.file_digest(handle, "sha256").hexdigest().upper()
+initial = json.loads((out / "root-main-gate-attempt-1.json").read_text())
+head = subprocess.check_output(["git", "rev-parse", "HEAD"], text=True).strip()
+if head != initial["SourceCommit"]:
+    raise RuntimeError("Source HEAD changed before unchanged-source recovery")
+for path, expected in initial["InputSha256"].items():
+    if digest(root / path) != expected:
+        raise RuntimeError("Input changed: " + path)
+argv = ["dotnet", "test", "Zeta.sln", "-c", "Release", "--no-build", "--blame-crash", "--blame-hang-timeout", "15m", "--logger", "trx;LogFilePrefix=hidden-switch-main-2"]
+env = os.environ.copy()
+env["MSBUILDDEBUGPATH"] = str(root / ".git/hidden-switch-main-msbuild-diagnostics")
+binaries = sorted(p for base in (root / "tests").iterdir() if base.is_dir() for p in (base / "bin/Release/net10.0").glob("*.dll") if p.name.startswith(("Tests.", "Core.", "Bayesian.", "Zeta.")))
+metadata = {"StartedAtUtc": utc(), "SourceCommit": head, "Command": argv,
+            "InputCount": len(initial["InputSha256"]), "AllOriginalSelectedInputsUnchangedBeforeLaunch": True,
+            "SelectedTestOutputDllHashes": {str(p.relative_to(root)): digest(p) for p in binaries},
+            "RecoveryReason": "One unchanged-source full-solution retry after the original FSharp test process exit 139. Original failure remains retained; retry does not establish cause.",
+            "ChangesFromAttempt1TestCommand": ["TRX LogFilePrefix changed to preserve both original artifacts"],
+            "RegisteredExperimentExecution": False}
+with (out / "root-main-gate-attempt-2.json").open("x") as output:
+    json.dump(metadata, output, indent=2)
+print("Unchanged-source tests started " + metadata["StartedAtUtc"], flush=True)
+with (out / "root-main-tests-attempt-2.log").open("x") as output:
+    output.write("Command: " + json.dumps(argv) + "\nStartedAtUtc: " + metadata["StartedAtUtc"] + "\nSourceCommit: " + head + "\n")
+    output.flush()
+    result = subprocess.run(argv, cwd=root, env=env, stdout=output, stderr=subprocess.STDOUT)
+    finished = utc()
+    output.write("\nExitCode: " + str(result.returncode) + "\nFinishedAtUtc: " + finished + "\n")
+changed = [path for path, expected in initial["InputSha256"].items() if digest(root / path) != expected]
+changed_dll = [path for path, expected in metadata["SelectedTestOutputDllHashes"].items() if digest(root / path) != expected]
+with (out / "root-main-gate-attempt-2-completion.json").open("x") as output:
+    json.dump({"SourceCommit": head, "FinishedAtUtc": finished, "TestCommandExitCode": result.returncode, "InputCount": len(initial["InputSha256"]), "ChangedSelectedInputs": changed, "ChangedSelectedTestDlls": changed_dll}, output, indent=2)
+print("Unchanged-source tests exit " + str(result.returncode) + "; changed inputs=" + str(len(changed)) + "; changed DLLs=" + str(len(changed_dll)), flush=True)
+sys.exit(result.returncode if result.returncode else int(bool(changed or changed_dll)))

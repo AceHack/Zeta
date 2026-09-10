@@ -1,0 +1,12 @@
+{
+  "pr_number": 17024,
+  "archive_path": "docs/history/pr-reviews/PR-17024-fix-tests-the-custody-path-fixture-was-unix-shaped-so-windows-refused-it.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-08T03:31:19.102Z",
+  "schema_version": "v1",
+  "commit_sha": "871138b4d5913c662843183ba07a45452468ae7a",
+  "title": "fix(tests): the custody-path fixture was Unix-shaped, so Windows refused it",
+  "state": "MERGED",
+  "merged_at": "2026-09-08T03:30:41Z",
+  "head_ref": "shadow/windows-custody-path-fully-qualified"
+}

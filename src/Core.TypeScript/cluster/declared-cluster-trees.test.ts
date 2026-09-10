@@ -5,8 +5,11 @@ import { join } from "node:path";
 import {
   ROSTER_FILE,
   assertRootsPresent,
+  applicationDirs,
   bootstrapDirs,
   bootstrapManifests,
+  clusterDirs,
+  existingClusterDirs,
   clusterK8sRoots,
   readDeclaredTrees,
 } from "./declared-cluster-trees.ts";
@@ -44,6 +47,32 @@ describe("the derivation reproduces what the guards used to hardcode", () => {
     expect(clusterK8sRoots({ surviving: "live", stale: ["legacy/k8s", "legacy/nixos"] })).toEqual([
       "live/k8s",
       "legacy/k8s",
+    ]);
+  });
+});
+
+describe("clusterDirs reproduces the hardcoded lists it replaces, order included", () => {
+  test("grouped by ROOT then by name — the order the literal lists already used", () => {
+    const root = fixture("live", ["stale/k8s"], ["live/k8s", "stale/k8s"]);
+    expect(clusterDirs(["applications", "bootstrap"], root)).toEqual([
+      "live/k8s/applications",
+      "live/k8s/bootstrap",
+      "stale/k8s/applications",
+      "stale/k8s/bootstrap",
+    ]);
+    expect(applicationDirs(root)).toEqual(["live/k8s/applications", "stale/k8s/applications"]);
+    expect(bootstrapDirs(root)).toEqual(["live/k8s/bootstrap", "stale/k8s/bootstrap"]);
+  });
+
+  test("existingClusterDirs drops absent subdirectories; clusterDirs does not", () => {
+    // `fixture` creates only `<root>/bootstrap`, so `tests` is absent under both trees.
+    // Both branches asserted, so this cannot pass by the filter never removing anything.
+    const root = fixture("live", ["stale/k8s"], ["live/k8s", "stale/k8s"]);
+    expect(clusterDirs(["tests"], root)).toEqual(["live/k8s/tests", "stale/k8s/tests"]);
+    expect(existingClusterDirs(["tests"], root)).toEqual([]);
+    expect(existingClusterDirs(["bootstrap"], root)).toEqual([
+      "live/k8s/bootstrap",
+      "stale/k8s/bootstrap",
     ]);
   });
 });

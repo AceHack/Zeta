@@ -9,6 +9,32 @@ the LAST hop of a ferry, never as the home.
 
 Current:
 
+- [Character v15 quality study](../research/2026-09-09-tiktok-character-v15/README.md) - restored pre-rig surfaces, pose evidence, archive cleanup and remaining mobile work.
+
+- [Character asset storage policy](../CHARACTER-ASSET-STORAGE.md) — recipes and hashes in Git; one version per release ZIP.
+
+- [TikTok character v14: garment, facial and limb review](../research/2026-09-09-tiktok-character-v14/README.md)
+- [TikTok character necks, mobile budgets and tracking prototypes](../research/2026-09-09-tiktok-character-seams/README.md)
+  — **Vera, v13 character iteration.** Separate 1.7/1.9 MB face effects pass
+  Effect House performance tests; user-rejected first joins, Blender-tested v13 upper-body motion; failed full-body
+  rigs and remaining facial topology work are preserved explicitly.
+
+- [Character evolution, generator research and recovery](../research/2026-09-08-character-evolution/README.md)
+  — **Vera, character assets.** Surviving failed and revised models, scripts,
+  images and videos in checksum-bound release archives; generator/Clifford
+  scope, the Astra graphics talk, and the ongoing likeness comparison.
+
+- [`2026-09-08-vera-projection-and-composable-learning-continuation.md`](./2026-09-08-vera-projection-and-composable-learning-continuation.md)
+  — **Vera, current learning direction.** Independently accepted finite scalar
+  projection result, original and post-experiment source identities, next bounded
+  mixed-message/weight-epoch proposal and the exit into learned DAG comparisons.
+  Compiled-controller investment is paused; streams 9307/9409 remain unopened.
+- [`2026-09-07-vera-compiled-controller-continuation.md`](./2026-09-07-vera-compiled-controller-continuation.md)
+  — **Vera, historical compiled-controller checkpoint; investment now paused.** Actual native semantic replay,
+  983 compiled Python tests, reviewed fixture/encoding primitives, historical
+  capture-five main proof and remaining runtime/outer-recorder admission work.
+  The registered streams remain unopened. Use the September 8 continuation
+  above for the current distributional/compositional investment decision.
 - [`../trajectories/own-ai-harness/RESUME.md`](../trajectories/own-ai-harness/RESUME.md)
   — **Harny** (custom agent harness). Device-code first, vendor-CLI import,
   Manus remote API-key. After dogfood: Ace pre-bootstrap + Harny extract.
@@ -29,15 +55,36 @@ Current:
   the universal tensor, Riechers' nondiagonalizable spectral decomposition ↔ `SpectralPivot` /
   scene-change detection, `c_ℓ − h_ℓ` ↔ the uncertainty ledger. Six ranked experiments; every
   correspondence carries a register. Aaron is routing this through OpenAI's Astra.
+- [`2026-09-06-vera-unattended-research-continuation.md`](./2026-09-06-vera-unattended-research-continuation.md)
+  — **Vera, consolidated unattended continuation.** Paste-ready GPT-6 Astra bootstrap,
+  verified research/repair merges, immutable experiment references, combined
+  431-case Interp validation and encountered re-entry hazards. Includes the completed
+  supplied-model hidden-switch result, exact replay, matched-work costs, all-row
+  descriptive figure and separately retained publication failures/recovery. The next
+  compiled-controller protocol and prior-study result are verified on main;
+  implementation proceeds under a fresh co-claim before any new streams.
+  Model-identification advice remains unregistered. Keeps learning,
+  online-search necessity, controller counts and quantum equivalence outside earned results.
 - [`2026-09-06-vera-to-vera-predictive-state-research-and-arc3-bridge.md`](./2026-09-06-vera-to-vera-predictive-state-research-and-arc3-bridge.md)
   — **Fresh Astra re-entry.** Links Vera's landed ARC honesty audit, WSet/Simplex comparison,
   Mess3 and RRXOR learning, entropy/spectral work, learned-HMM and factored-state controls,
   the upstream orthogonality correction, and the parallel CHIP-8/contextual-grid/MiniGrid
   carrier ladder. Now includes a paste-ready bootstrap and a grounded QBism/neutral-monism bridge
   to pairwise relational memory, anti-Sybil identity, CQM, Clifford, and the soft/amplitude stack.
-  Ends with separately preregistered predictor and identity tasks and the gates required before
-  any ARC-AGI-3 policy integration.
+  Continuation results retain order-two after the rendered predictor comparison and formalize
+  declared-cut memory invariance with conditional entropy and pairwise workload limits.
+  Includes the registered rendered-catch result, identity component and CHSH coverage repairs,
+  and the gates required before any ARC-AGI-3 policy integration.
+  The rendered predictor now has independently replayed results: all RNNs beat bigram,
+  none meets the stronger order-two criterion. The subsequent supplied-goal catch trial
+  passes every registered return/cost condition with exact full replay. The continuation
+  also records supplied-model hidden-switch planning; learned perception and learned
+  dynamics remain separate future experiments.
 - `vera-qsharp-verification-package.txt` — the Q# verification hand-off (brief REVISION 2 +
   claim-bearing sources + known-answer table). Vera's verdict lines remain hers to write.
 - `kestrel-shape-validation-bundle.txt` — the faithful-renderer port bundle (sources + cartridges
   - known-answer checks).
+
+- [Character evolution: composed local detail (2026-09-09)](../research/2026-09-09-character-evolution/README.md)
+  preserves the next Blender revision, frozen-latent tessellation measurements,
+  rejected head candidates and the decoder-precision comparison.

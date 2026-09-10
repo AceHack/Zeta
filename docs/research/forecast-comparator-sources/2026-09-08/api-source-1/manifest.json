@@ -1,0 +1,58 @@
+{
+  "Schema": "zeta.forecast-comparator-api-source.v1",
+  "Commit": "8589d1988e9676817548e9626738ff06b6ca6370",
+  "Scope": "Read-only licensed source inspection; no imports, weights, data or inference",
+  "RecordCount": 6,
+  "OriginalBytes": 107741,
+  "StoredBytes": 27303,
+  "Records": [
+    {
+      "File": "00-observation.json.gz",
+      "OriginalPath": ".git/chronos2-api-source-1/00-observation.json",
+      "Bytes": 1895,
+      "Sha256": "24026B1C4FBE18E20E5E88BE8094885A342233C65052852ACE3B4E8278A2ECBF",
+      "StoredBytes": 952,
+      "StoredSha256": "4DD606D50F6D35A6886EA8C09052741AEF6F69AEE46C4269338D1F843C79C84E"
+    },
+    {
+      "File": "00-pipeline.py.gz",
+      "OriginalPath": ".git/chronos2-api-source-1/00-pipeline.py",
+      "Bytes": 57203,
+      "Sha256": "9FAD1E4FB7251471463A40408A32D25D31B23B7AFB88069911F095071B9B0599",
+      "StoredBytes": 13194,
+      "StoredSha256": "C799D454EF77D967346CBE57A8930CB475B23CDF39AD67B5BFA1A8C9C6DD2B28"
+    },
+    {
+      "File": "01-dataset.py.gz",
+      "OriginalPath": ".git/chronos2-api-source-1/01-dataset.py",
+      "Bytes": 17236,
+      "Sha256": "90B34B05AF99069972A33AA780019AB2FCA7514E907B68921A2D5C9205584E0A",
+      "StoredBytes": 4590,
+      "StoredSha256": "B8840D3E8E05D02DFB8D9D386F80EB0FAD112A767A45DB68588730F7CE0EA227"
+    },
+    {
+      "File": "01-observation.json.gz",
+      "OriginalPath": ".git/chronos2-api-source-1/01-observation.json",
+      "Bytes": 1890,
+      "Sha256": "33BA6F0E9672F64761B16ADA462D2173848047ABAC959B0CAC0E349F0B1099A9",
+      "StoredBytes": 949,
+      "StoredSha256": "445EA5E97B5E316C50FE6D6ABCDECE2149EF666ED2F0CE80C6077EC023DD2DB5"
+    },
+    {
+      "File": "02-observation.json.gz",
+      "OriginalPath": ".git/chronos2-api-source-1/02-observation.json",
+      "Bytes": 1903,
+      "Sha256": "464F6039BEDCFDCB7657019956DDD64049BD7A59B2F3C1553758CF056CD3B456",
+      "StoredBytes": 958,
+      "StoredSha256": "4D1456757CFD36EF032179610D13DD9896B583ADD1649D7AFB612CA45E8D0EE4"
+    },
+    {
+      "File": "02-preprocess.py.gz",
+      "OriginalPath": ".git/chronos2-api-source-1/02-preprocess.py",
+      "Bytes": 27614,
+      "Sha256": "A6DA6192BC3E51A24D7ADEE4398C7436CE56F532FBDCF8DCEF4C0C366EE02246",
+      "StoredBytes": 6660,
+      "StoredSha256": "FE66433E482FFBCA3CE6A2D60AC52425459EBF1A55E452C66C31AA39550614F7"
+    }
+  ]
+}

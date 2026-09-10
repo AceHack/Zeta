@@ -1,0 +1,45 @@
+{
+  "Schema": "zeta.mixed-epoch.freeze-observation.v1",
+  "Records": [
+    {
+      "File": "001.gz",
+      "OriginalPath": ".git/mixed-source-freeze-observation-1/completion.json",
+      "Bytes": 159,
+      "Sha256": "41BC1B83D4BC3031BCDFD0253105CD7DC3800C8DB2362C0FCCE9E418CB350215",
+      "StoredBytes": 140,
+      "StoredSha256": "F1F8064B1A2167FEE00CBA63FE491A2A818697AA5CBEE0982D575D14E1284AD9"
+    },
+    {
+      "File": "002.gz",
+      "OriginalPath": ".git/mixed-source-freeze-observation-1/freeze-source.py",
+      "Bytes": 8553,
+      "Sha256": "0DBFF44E506F9EF175318F10018C340A0CDEB2B2F70602518DCFE47B92DD2970",
+      "StoredBytes": 3194,
+      "StoredSha256": "D4D361E6D6808BA4B5B8A2F8BC4C5A8C7C16E5EC562C3D3614C0E673103D43C0"
+    },
+    {
+      "File": "003.gz",
+      "OriginalPath": ".git/mixed-source-freeze-observation-1/invocation.json",
+      "Bytes": 492,
+      "Sha256": "EB6DA3F1BB1166BF62129DBC8B47A027D8DE8584C69B5DE2174BBC165E68DBFE",
+      "StoredBytes": 251,
+      "StoredSha256": "A60E2FFDEF4628DACEEB84D22F12DCECB39EB856057553BEAAA298185B50119A"
+    },
+    {
+      "File": "004.gz",
+      "OriginalPath": ".git/mixed-source-freeze-observation-1/stderr",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "StoredBytes": 20,
+      "StoredSha256": "9CEFFB7310338057CFE71A4AE1E2C98D2C485D81CDEF906532A801F457A38D64"
+    },
+    {
+      "File": "005.gz",
+      "OriginalPath": ".git/mixed-source-freeze-observation-1/stdout",
+      "Bytes": 1610,
+      "Sha256": "47EB98E58E754B70AE201B8D60F584A4F7F6883247E6E881EF0C2423018CDAF7",
+      "StoredBytes": 766,
+      "StoredSha256": "E36C25B465141D474A095AB89F65BA036ED2395D72D6B39DB352046D39828D80"
+    }
+  ]
+}

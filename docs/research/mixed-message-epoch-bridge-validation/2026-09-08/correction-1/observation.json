@@ -1,0 +1,100 @@
+{
+  "ArchiveMembers": 858,
+  "OriginalBytes": 4783518,
+  "Archive": {
+    "File": "custody.tar.gz",
+    "Bytes": 822952,
+    "Sha256": "9C9C3FCF79E4458CECC98E67B9AABCC32114F2ABDA182381FD2C8270439C197B"
+  },
+  "SourceFiles": [
+    {
+      "Path": "src/Interp.Python/zeta_interp/mixed_message_epoch_bridge.py",
+      "Bytes": 198381,
+      "Sha256": "18A2E29434E528912B47D657B82CC75EF3FEC0AB7089E39C9E864ED6352267EB"
+    },
+    {
+      "Path": "src/Interp.Python/zeta_interp/mixed_message_epoch_controls.py",
+      "Bytes": 16771,
+      "Sha256": "03ED13D4D860D1E3B61B73AF265B7C65A8251B258623C16B1B1ED28EC6C51711"
+    },
+    {
+      "Path": "src/Interp.Python/tests/test_mixed_message_epoch_bridge.py",
+      "Bytes": 61841,
+      "Sha256": "09BB4C61741D4698085741F807CE5A6C0263B3219BD4C33E7613675255828298"
+    }
+  ],
+  "FilesystemNodes": 1085,
+  "SymlinksRecorded": 43,
+  "AllMembersAndOriginalsMatched": true,
+  "BothFinalSourceCutsEqualTheirThreeCaptures": true,
+  "RepositoryGates": [
+    {
+      "Gate": 2,
+      "SourceCommit": "0e0369a22ca9bf1687addf2d328ef82b0d22bdf5",
+      "Commands": [
+        {
+          "Invocation": {
+            "Argv": [
+              "bun",
+              "run",
+              "preflight"
+            ],
+            "Cwd": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906"
+          },
+          "Completion": {
+            "ExitCode": 0,
+            "ElapsedSeconds": 609.430002500012
+          }
+        },
+        {
+          "Invocation": {
+            "Argv": [
+              "dotnet",
+              "format",
+              "--verify-no-changes"
+            ],
+            "Cwd": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906"
+          },
+          "Completion": {
+            "ExitCode": 0,
+            "ElapsedSeconds": 17.85452720799367
+          }
+        }
+      ]
+    },
+    {
+      "Gate": 3,
+      "SourceCommit": "4402be8a7121f2f1609d4a7213d7ba7d3e3e65ee",
+      "Commands": [
+        {
+          "Invocation": {
+            "Argv": [
+              "bun",
+              "run",
+              "preflight"
+            ],
+            "Cwd": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906"
+          },
+          "Completion": {
+            "ExitCode": 0,
+            "ElapsedSeconds": 605.0347582499962
+          }
+        },
+        {
+          "Invocation": {
+            "Argv": [
+              "dotnet",
+              "format",
+              "--verify-no-changes"
+            ],
+            "Cwd": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906"
+          },
+          "Completion": {
+            "ExitCode": 0,
+            "ElapsedSeconds": 18.97376575000817
+          }
+        }
+      ]
+    }
+  ]
+}

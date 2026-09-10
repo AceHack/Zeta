@@ -1,0 +1,14 @@
+{
+  "id": "080d044737d03010a01300082c88fd5e",
+  "at": "2026-09-10T01:20:33.798Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M24EDYG6087G0R003RT9JPQ",
+    "type": "bug",
+    "title": "TOCTOU in the Manus log-trimmer duplicated byte-identically across two vite configs",
+    "slug": "toctou-in-the-manus-log-trimmer-duplicated-byte-identically",
+    "priority": "P2",
+    "filename": "081M24EDYG6087G0R003RT9JPQ-toctou-in-the-manus-log-trimmer-duplicated-byte-identically.md"
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "id": "080d03c414398010a0130008c71ae2fa",
+  "at": "2026-09-06T20:56:55.344Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1W851SG087G0R000TBQH01",
+    "type": "task",
+    "title": "Buffered putObject planted garbage returns MissingLeaves",
+    "slug": "buffered-putobject-planted-garbage-returns-missingleaves",
+    "priority": "P2",
+    "filename": "081M1W851SG087G0R000TBQH01-buffered-putobject-planted-garbage-returns-missingleaves.md"
+  }
+}

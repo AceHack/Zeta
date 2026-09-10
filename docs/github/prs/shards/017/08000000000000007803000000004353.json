@@ -1,0 +1,12 @@
+{
+  "pr_number": 17235,
+  "archive_path": "docs/history/pr-reviews/PR-17235-fix-io-put-the-cap-at-the-door-bound-six-fetches-that-feed-file-sinks.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-10T15:39:02.212Z",
+  "schema_version": "v1",
+  "commit_sha": "fc7948168e067116b2f720fc2e4dd7cd36f1f755",
+  "title": "fix(io): put the cap at the door — bound six fetches that feed file sinks",
+  "state": "MERGED",
+  "merged_at": "2026-09-10T15:38:18Z",
+  "head_ref": "sec7/bound-the-fetch"
+}

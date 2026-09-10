@@ -1,0 +1,14 @@
+{
+  "id": "080d044a7c4fc810a01300082294993c",
+  "at": "2026-09-10T03:14:46.393Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M24MZ2FR087G0R000BQRTJE",
+    "type": "bug",
+    "title": "Tlc.Runner.Tests 946 reads a file its writer still holds open, with no tolerance",
+    "slug": "tlc-runner-tests-946-reads-a-file-its-writer-still-holds-ope",
+    "priority": "P2",
+    "filename": "081M24MZ2FR087G0R000BQRTJE-tlc-runner-tests-946-reads-a-file-its-writer-still-holds-ope.md"
+  }
+}

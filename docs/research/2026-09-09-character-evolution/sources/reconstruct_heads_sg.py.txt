@@ -1,0 +1,20 @@
+import os
+os.environ['PYTORCH_ENABLE_MPS_FALLBACK']='1'
+from pathlib import Path
+import sys,time,json
+import torch,numpy as np
+from PIL import Image
+root=Path(__file__).resolve().parent;lab=root.parent/'Character-Learning-Lab';sys.path.insert(0,str(lab/'TripoSG'))
+from triposg.pipelines.pipeline_triposg import TripoSGPipeline
+torch.set_num_threads(12)
+pipe=TripoSGPipeline.from_pretrained(str(lab/'weights/TripoSG'),torch_dtype=torch.float16).to('mps')
+for name in ['AceHack','Xenaa']:
+ out=root/'heads-sg'/name;out.mkdir(parents=True,exist_ok=True)
+ def save_final(p,i,t,kw):
+  if i==49:torch.save(kw['latents'].detach().cpu(),out/'latent.pt')
+  return kw
+ start=time.monotonic()
+ result=pipe(image=Image.open(root/'heads'/name/'white.png').convert('RGB'),generator=torch.Generator(device='cpu').manual_seed(20260909),num_inference_steps=50,guidance_scale=7.0,dense_octree_depth=8,hierarchical_octree_depth=8,use_flash_decoder=False,callback_on_step_end=save_final)
+ torch.mps.synchronize();mesh=result.meshes[0];mesh.export(out/'mesh.glb')
+ row=dict(seconds=time.monotonic()-start,vertices=len(mesh.vertices),faces=len(mesh.faces),bounds=mesh.bounds.tolist(),finite=bool(np.isfinite(mesh.vertices).all()))
+ (out/'receipt.json').write_text(json.dumps(row,indent=2)+'\n');print(name,row,flush=True)

@@ -1,0 +1,85 @@
+{
+  "DepsFile": "/Users/acehack/.dotnet/tools/.store/dotnet-dump/9.0.661903/dotnet-dump/9.0.661903/tools/net8.0/any/dotnet-dump.deps.json",
+  "DepsSha256": "430f074d7e0b2be60f5091c43a525bd80eec8b55c92b892bd3b6d38ece9fdbc7",
+  "Purpose": "Declared managed package runtime assets, not actual loads or full framework closure",
+  "Records": [
+    {
+      "Package": "Microsoft.Diagnostics.Runtime/4.0.0-beta.25610.1",
+      "File": "Microsoft.Diagnostics.Runtime.dll",
+      "Bytes": 685640,
+      "Sha256": "45fe59b0e9d206b37616f0177279189b53a4eec50717dd6cd60c9d7c38a2a59e"
+    },
+    {
+      "Package": "Azure.Identity/1.13.2",
+      "File": "Azure.Identity.dll",
+      "Bytes": 348704,
+      "Sha256": "183dfcdc51fb4675d80c12a795d8e9d6bf7687f2f639451b938adc6f0e382652"
+    },
+    {
+      "Package": "Microsoft.Diagnostics.NETCore.Client/0.2.661903",
+      "File": "Microsoft.Diagnostics.NETCore.Client.dll",
+      "Bytes": 151064,
+      "Sha256": "e2cc9e1f6c97b3c4ee45ebabaa92408eb9b2fc81cb08ceeb342fe48bf79db15f"
+    },
+    {
+      "Package": "Azure.Core/1.44.1",
+      "File": "Azure.Core.dll",
+      "Bytes": 426552,
+      "Sha256": "b74cdb738903bb6abe8269105c0ae4e71269f10dd7367b1fd562f573d0ebcfaf"
+    },
+    {
+      "Package": "Microsoft.Identity.Client/4.67.2",
+      "File": "Microsoft.Identity.Client.dll",
+      "Bytes": 1004576,
+      "Sha256": "02ee19218b90ed6caa8f0a7fc011d9a72b75ba3bf8c78c2ce9240e937a4badf3"
+    },
+    {
+      "Package": "Microsoft.Identity.Client.Extensions.Msal/4.67.2",
+      "File": "Microsoft.Identity.Client.Extensions.Msal.dll",
+      "Bytes": 66616,
+      "Sha256": "98c19b7ac459568c875b891829294a0150ed71ee6d95216503d3a65ac567678f"
+    },
+    {
+      "Package": "Microsoft.Extensions.Logging.Abstractions/8.0.3",
+      "File": "Microsoft.Extensions.Logging.Abstractions.dll",
+      "Bytes": 65288,
+      "Sha256": "bb853130f5afaf335be7858d661f8212ec653835100f5a4e3aa2c66a4d4f685d"
+    },
+    {
+      "Package": "Microsoft.Bcl.AsyncInterfaces/6.0.0",
+      "File": "Microsoft.Bcl.AsyncInterfaces.dll",
+      "Bytes": 16000,
+      "Sha256": "5705d245072d3eb78400547b32147dbb6e2c8b02ba8bda76729798f5efdeaecb"
+    },
+    {
+      "Package": "System.ClientModel/1.1.0",
+      "File": "System.ClientModel.dll",
+      "Bytes": 111128,
+      "Sha256": "db26ba55aa35083a9ff53f0ae44401e65d514c2c9837fd46f629e3292cfff77c"
+    },
+    {
+      "Package": "System.Memory.Data/6.0.0",
+      "File": "System.Memory.Data.dll",
+      "Bytes": 28264,
+      "Sha256": "8817d16a629710c78b3757f220b74878283c56fe7d9a866ece0eaef0be0a2bf1"
+    },
+    {
+      "Package": "Microsoft.IdentityModel.Abstractions/6.35.0",
+      "File": "Microsoft.IdentityModel.Abstractions.dll",
+      "Bytes": 18968,
+      "Sha256": "f4694d23f05cc0263abbcb536d132e243bc9c175ae642387fa98652b880a4be0"
+    },
+    {
+      "Package": "System.Security.Cryptography.ProtectedData/4.5.0",
+      "File": "System.Security.Cryptography.ProtectedData.dll",
+      "Bytes": 25232,
+      "Sha256": "80566f0839ece5946e66bf9f00d723e59e371ba1341a18e00c7c7a7c49298e1d"
+    },
+    {
+      "Package": "Microsoft.Extensions.DependencyInjection.Abstractions/8.0.2",
+      "File": "Microsoft.Extensions.DependencyInjection.Abstractions.dll",
+      "Bytes": 63768,
+      "Sha256": "67fa4325000db017dc0c35829b416f024f042d24efb868bcf17a895ee6500a93"
+    }
+  ]
+}

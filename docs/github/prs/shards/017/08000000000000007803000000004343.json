@@ -1,0 +1,12 @@
+{
+  "pr_number": 17219,
+  "archive_path": "docs/history/pr-reviews/PR-17219-docs-081m24k5jd3087g0r000kasxsc-cancel-in-progress-false-protects-running-runs-n.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-10T03:05:53.451Z",
+  "schema_version": "v1",
+  "commit_sha": "bf19f20b598b8c20e9148275ffad088f3c8277f9",
+  "title": "docs(081M24K5JD3087G0R000KASXSC): cancel-in-progress false protects RUNNING runs, not PENDING ones",
+  "state": "MERGED",
+  "merged_at": "2026-09-10T03:05:11Z",
+  "head_ref": "codeql-pending-supersede-limit"
+}

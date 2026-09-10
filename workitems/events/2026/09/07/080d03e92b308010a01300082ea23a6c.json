@@ -1,0 +1,14 @@
+{
+  "id": "080d03e92b308010a01300082ea23a6c",
+  "at": "2026-09-07T18:33:18.096Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1YJASGG087G0R000QNVQF4",
+    "type": "task",
+    "title": "Fake VFS unlink rmdir symlink readlink",
+    "slug": "fake-vfs-unlink-rmdir-symlink-readlink",
+    "priority": "P2",
+    "filename": "081M1YJASGG087G0R000QNVQF4-fake-vfs-unlink-rmdir-symlink-readlink.md"
+  }
+}

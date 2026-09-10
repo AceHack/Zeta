@@ -1,0 +1,226 @@
+{
+  "tolerance_m": 1e-05,
+  "checks": [
+    {
+      "pose": "left-arm",
+      "character": "AceHack",
+      "neck_base_vertices": 77,
+      "neck_base_max_displacement_m": 0.0,
+      "rigid_face_max_error_m": 0.0,
+      "hair_follow_max_error_m": 0,
+      "opposite_arm_max_displacement_m": 0.0,
+      "coat_tail_max_displacement_m": 0.0,
+      "finite": true
+    },
+    {
+      "pose": "left-arm",
+      "character": "Xenaa",
+      "neck_base_vertices": 118,
+      "neck_base_max_displacement_m": 0.0,
+      "rigid_face_max_error_m": 0.0,
+      "hair_follow_max_error_m": 0,
+      "opposite_arm_max_displacement_m": 0.0,
+      "coat_tail_max_displacement_m": 0.0,
+      "finite": true
+    },
+    {
+      "pose": "right-arm",
+      "character": "AceHack",
+      "neck_base_vertices": 77,
+      "neck_base_max_displacement_m": 0.0,
+      "rigid_face_max_error_m": 0.0,
+      "hair_follow_max_error_m": 0,
+      "opposite_arm_max_displacement_m": 0.0,
+      "coat_tail_max_displacement_m": 0.0,
+      "finite": true
+    },
+    {
+      "pose": "right-arm",
+      "character": "Xenaa",
+      "neck_base_vertices": 118,
+      "neck_base_max_displacement_m": 0.0,
+      "rigid_face_max_error_m": 0.0,
+      "hair_follow_max_error_m": 0,
+      "opposite_arm_max_displacement_m": 0.0,
+      "coat_tail_max_displacement_m": 0.0,
+      "finite": true
+    },
+    {
+      "pose": "elbows",
+      "character": "AceHack",
+      "neck_base_vertices": 77,
+      "neck_base_max_displacement_m": 0.0,
+      "rigid_face_max_error_m": 0.0,
+      "hair_follow_max_error_m": 0,
+      "opposite_arm_max_displacement_m": null,
+      "coat_tail_max_displacement_m": 0.0,
+      "finite": true
+    },
+    {
+      "pose": "elbows",
+      "character": "Xenaa",
+      "neck_base_vertices": 118,
+      "neck_base_max_displacement_m": 0.0,
+      "rigid_face_max_error_m": 0.0,
+      "hair_follow_max_error_m": 0,
+      "opposite_arm_max_displacement_m": null,
+      "coat_tail_max_displacement_m": 0.0,
+      "finite": true
+    },
+    {
+      "pose": "head-left",
+      "character": "AceHack",
+      "neck_base_vertices": 77,
+      "neck_base_max_displacement_m": 0.0,
+      "rigid_face_max_error_m": 7.450580596923828e-08,
+      "hair_follow_max_error_m": 0,
+      "opposite_arm_max_displacement_m": null,
+      "coat_tail_max_displacement_m": 0.0,
+      "finite": true
+    },
+    {
+      "pose": "head-left",
+      "character": "Xenaa",
+      "neck_base_vertices": 118,
+      "neck_base_max_displacement_m": 0.0,
+      "rigid_face_max_error_m": 1.3328003749250113e-07,
+      "hair_follow_max_error_m": 1.2489448945403256e-07,
+      "opposite_arm_max_displacement_m": null,
+      "coat_tail_max_displacement_m": 0.0,
+      "finite": true
+    },
+    {
+      "pose": "head-right",
+      "character": "AceHack",
+      "neck_base_vertices": 77,
+      "neck_base_max_displacement_m": 0.0,
+      "rigid_face_max_error_m": 1.2128666487410446e-07,
+      "hair_follow_max_error_m": 0,
+      "opposite_arm_max_displacement_m": null,
+      "coat_tail_max_displacement_m": 0.0,
+      "finite": true
+    },
+    {
+      "pose": "head-right",
+      "character": "Xenaa",
+      "neck_base_vertices": 118,
+      "neck_base_max_displacement_m": 0.0,
+      "rigid_face_max_error_m": 1.228781230931777e-07,
+      "hair_follow_max_error_m": 1.2128666487410446e-07,
+      "opposite_arm_max_displacement_m": null,
+      "coat_tail_max_displacement_m": 0.0,
+      "finite": true
+    },
+    {
+      "pose": "nod",
+      "character": "AceHack",
+      "neck_base_vertices": 77,
+      "neck_base_max_displacement_m": 0.0,
+      "rigid_face_max_error_m": 2.425733297482089e-07,
+      "hair_follow_max_error_m": 0,
+      "opposite_arm_max_displacement_m": null,
+      "coat_tail_max_displacement_m": 0.0,
+      "finite": true
+    },
+    {
+      "pose": "nod",
+      "character": "Xenaa",
+      "neck_base_vertices": 118,
+      "neck_base_max_displacement_m": 0.0,
+      "rigid_face_max_error_m": 1.228781230931777e-07,
+      "hair_follow_max_error_m": 1.2489448945403256e-07,
+      "opposite_arm_max_displacement_m": null,
+      "coat_tail_max_displacement_m": 0.0,
+      "finite": true
+    },
+    {
+      "pose": "neck-bend",
+      "character": "AceHack",
+      "neck_base_vertices": 77,
+      "neck_base_max_displacement_m": 0.0,
+      "rigid_face_max_error_m": 2.4027400458748785e-07,
+      "hair_follow_max_error_m": 0,
+      "opposite_arm_max_displacement_m": null,
+      "coat_tail_max_displacement_m": 0.0,
+      "finite": true
+    },
+    {
+      "pose": "neck-bend",
+      "character": "Xenaa",
+      "neck_base_vertices": 118,
+      "neck_base_max_displacement_m": 0.0,
+      "rigid_face_max_error_m": 1.228781230931777e-07,
+      "hair_follow_max_error_m": 1.228781230931777e-07,
+      "opposite_arm_max_displacement_m": null,
+      "coat_tail_max_displacement_m": 0.0,
+      "finite": true
+    }
+  ],
+  "sequence": [
+    {
+      "frame": 1,
+      "label": "Neutral"
+    },
+    {
+      "frame": 25,
+      "label": "Left arm 60"
+    },
+    {
+      "frame": 49,
+      "label": "Neutral"
+    },
+    {
+      "frame": 73,
+      "label": "Right arm 60"
+    },
+    {
+      "frame": 97,
+      "label": "Neutral"
+    },
+    {
+      "frame": 121,
+      "label": "Elbows 60"
+    },
+    {
+      "frame": 145,
+      "label": "Neutral"
+    },
+    {
+      "frame": 169,
+      "label": "Head left 30"
+    },
+    {
+      "frame": 193,
+      "label": "Neutral"
+    },
+    {
+      "frame": 217,
+      "label": "Head right 30"
+    },
+    {
+      "frame": 241,
+      "label": "Neutral"
+    },
+    {
+      "frame": 265,
+      "label": "Head nod 20"
+    },
+    {
+      "frame": 289,
+      "label": "Neutral"
+    },
+    {
+      "frame": 313,
+      "label": "Neck bend 15"
+    },
+    {
+      "frame": 337,
+      "label": "Neutral"
+    }
+  ],
+  "limits": [
+    "Does not certify shoulder topology, collision avoidance, facial expressions or Effect House retargeting.",
+    "Legs and coat tails remain pelvis-bound in this upper-body prototype.",
+    "Hair is rigidly head-bound; no secondary dynamics."
+  ]
+}

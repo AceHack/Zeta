@@ -15,7 +15,8 @@
  * Composes with:
  *   - src/Core.TypeScript/observe/observe.ts (World, NextAction, buildMenu, observe)
  *   - src/Core.TypeScript/observe/simulate-tick.ts (the simulation harness)
- *   - src/Core.TypeScript/peer-call/summon.ts (ISummon → Participant bridge)
+ *   - src/Core.TypeScript/protocol/summon-contract.ts (the ISummon port this bridges to a
+ *     Participant; `peer-call/summon.ts` is one implementation of it, and is never named here)
  *   - src/Core.TypeScript/accelerator/local-llm.ts (ModelBackend → Participant bridge)
  *   - src/Core.TypeScript/service/persona-registry.ts (PersonaConfig → Participant)
  *   - docs/research/2026-06-16-universal-participant-abstraction-observe-loop-summon-convergence-alexa.md
@@ -23,7 +24,7 @@
 
 import { observe, buildMenu, actionLabel, type World, type NextAction } from "./observe";
 import { ollamaBackend, chooseIndex, parseChosenIndex, type ChooseFallbackCause } from "../accelerator/local-llm";
-import type { ISummon, SummonResult } from "../peer-call/summon";
+import type { ISummon, SummonResult } from "../protocol/summon-contract";
 
 // ─── The Participant interface ───────────────────────────────────────────────
 

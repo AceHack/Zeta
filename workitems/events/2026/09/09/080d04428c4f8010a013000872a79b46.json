@@ -1,0 +1,14 @@
+{
+  "id": "080d04428c4f8010a013000872a79b46",
+  "at": "2026-09-09T22:37:20.240Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M24532FF087G0R002WBRZ4Z",
+    "type": "task",
+    "title": "Lane audit under the metal-fidelity criterion — seven bring-up jobs, four justified",
+    "slug": "lane-audit-under-the-metal-fidelity-criterion-seven-bring-up",
+    "priority": "P2",
+    "filename": "081M24532FF087G0R002WBRZ4Z-lane-audit-under-the-metal-fidelity-criterion-seven-bring-up.md"
+  }
+}

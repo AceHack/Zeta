@@ -1,0 +1,84 @@
+{
+  "Scope": "historical capture preservation, no scientific admission",
+  "Artifacts": [
+    {
+      "File": "verification.json.gz",
+      "Bytes": 570,
+      "Sha256": "820C4F3DCCA449A397D3DBFCD507663F62444046E12AF9A72B0A5FD9D7F0AA44",
+      "Encoding": "gzip",
+      "StoredBytes": 394,
+      "StoredSha256": "26D8F11CB6376B0267DC56642C6A151E02217AB3AAB1A0D3EC3BC5F84DB25158"
+    },
+    {
+      "File": "preserve.py.gz",
+      "Bytes": 2327,
+      "Sha256": "16DA7568F807C93D56B54060ADE4C47D4F95F7674B120C857EDF708EE127FA1E",
+      "Encoding": "gzip",
+      "StoredBytes": 1022,
+      "StoredSha256": "962AC4C93DA29ECD035B7ED7B57C38F22335BD160272F6D36D7438626264810D"
+    },
+    {
+      "File": "claim-push.log.gz",
+      "Bytes": 1984,
+      "Sha256": "EF99CD9306F318273A4A26835CE516072E818B6727C1DF0A8C86090F23F0ABF4",
+      "Encoding": "gzip",
+      "StoredBytes": 709,
+      "StoredSha256": "69FD34349506636600D2E8029B248A11B82EF927E846A63B858F7840734A20EA"
+    },
+    {
+      "File": "claim-remote.txt.gz",
+      "Bytes": 106,
+      "Sha256": "AFC66862180D42D4F29C741852D0E8374910C971FD82DB6EC8673F5CE0FB71C1",
+      "Encoding": "gzip",
+      "StoredBytes": 110,
+      "StoredSha256": "C39162192459D1D011296173652F564AA7BE62BF40D192241A3769EF054FF6E5"
+    },
+    {
+      "File": "source-refs-remote.txt.gz",
+      "Bytes": 369,
+      "Sha256": "6265A2F3A0E61CBE04F2230855703FB794347369E4A24AB304FC7B1CF279D670",
+      "Encoding": "gzip",
+      "StoredBytes": 197,
+      "StoredSha256": "095704798047E2E4B2F4AE19E9993831BBC000C8C859526769A71454547B54C8"
+    },
+    {
+      "File": "source-refs-push.log.gz",
+      "Bytes": 2149,
+      "Sha256": "77BCB5BD0D25064DC8F93176D026DD715C29F68796AE7393300586F0CA6A6EB2",
+      "Encoding": "gzip",
+      "StoredBytes": 843,
+      "StoredSha256": "E824DB8CB703F055A41AE77FAF270AAE9EC5DC717B27CD207152E4B1A73ED748"
+    },
+    {
+      "File": "full-preflight-1.log.gz",
+      "Bytes": 1362,
+      "Sha256": "C7561CF0E5DD61E406CFFAE95B49151DD32602169A68889A2FDB2068E889768D",
+      "Encoding": "gzip",
+      "StoredBytes": 437,
+      "StoredSha256": "D7A238CFB20BA29F3E750C607FF137CE2206E09A382C0D2AE1B065EB37403D40"
+    }
+  ],
+  "VerifiedRefs": [
+    {
+      "Lane": "root",
+      "Ref": "refs/heads/wip/compiled-validation-root-20260907",
+      "Commit": "8c3e5abd663c49c3d6cff6fa2de0188b1609e04e"
+    },
+    {
+      "Lane": "native",
+      "Ref": "refs/heads/wip/compiled-validation-native-20260907",
+      "Commit": "c05a133965d43b004baa1d615e2aea443bc52eea"
+    },
+    {
+      "Lane": "reference",
+      "Ref": "refs/heads/wip/compiled-validation-reference-20260907",
+      "Commit": "cdcf34d759a74201aa5599f4556e07af00f6dc4a"
+    },
+    {
+      "Lane": "review",
+      "Ref": "refs/heads/wip/compiled-validation-review-20260907",
+      "Commit": "7a2519953843ac077b44efa798b0a45524b972ea"
+    }
+  ],
+  "NativeSourceAncestorVerified": "18ef52ac8dea69a0bd98c4cce9c08619d90d7757"
+}

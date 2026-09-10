@@ -3,7 +3,27 @@
  * build-substrates.mjs — Compile all 9 DLA byte-lock substrates from source.
  *
  * Run this before run-bytelock-ci.mjs whenever the source files change or
- * after a fresh clone (compiled binaries are in .gitignore).
+ * after a fresh clone. NOTHING THIS SCRIPT PRODUCES IS COMMITTED any more.
+ *
+ * Until 2026-09-10 six of the nine substrates were committed `.wasm` files, under the
+ * "artifact under test" exception in `.claude/rules/no-binary-in-proof-lineage.md`. That
+ * exception's own parenthesis said what to do instead — "(Where the toolchain also exists in
+ * CI, prefer BUILDING over COMMITTING — as `bytelock.yml` does for the Go substrate)" — and
+ * `src/wasm-dla/bytelock/.gitignore` recorded the trade they were accepted under: the six were
+ * tracked *because* `bytelock.yml` installed no toolchain that could rebuild them, and "add a
+ * toolchain to the workflow and the corresponding file should stop being tracked, not start
+ * being trusted."
+ *
+ * Run 34490525095 measured the toolchains on all five byte-lock legs. Every one of the six is
+ * buildable, at a total install cost of 52-75 seconds on Linux and macOS, and every rebuilt
+ * substrate reproduced the UNCHANGED `testdata/golden-seed-*.json` vectors. So the toolchains
+ * were added and the files stopped being tracked. Two per-leg gaps are upstream facts and are
+ * recorded in `bytelock.yml`'s matrix rather than papered over.
+ *
+ * `verifyWasmHeader` now runs on EVERY substrate, not just Zig and Go. When the artefacts were
+ * committed, `audit-proof-lineage-binaries.ts` checked their headers pre-merge; nothing is
+ * committed to check now, so the guard moves to the build site — which is where the file this
+ * comment sits in already argued it is cheapest.
  *
  * Usage:
  *   node build-substrates.mjs              # build all
@@ -21,9 +41,24 @@ import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const __dir = dirname(fileURLToPath(import.meta.url));
+const __repoRoot = join(__dir, "..", "..", "..");
 const args = process.argv.slice(2);
 const onlyFilter = args.find((a) => a.startsWith("--only="))?.split("=")[1];
 const checkOnly = args.includes("--check");
+
+// `asc` IS A PROJECT DEPENDENCY, resolved by path — never `npx asc`.
+//
+// `npx asc` was the recipe until 2026-09-10 and it is measurably broken in two different
+// ways at once. On a machine with no `assemblyscript` present it exits 1 with "could not
+// determine executable to run" (measured locally). In CI, `npm install assemblyscript` run
+// from THIS directory hoists to the repository root — that is where `package.json` lives —
+// so `./node_modules/.bin/asc` is not where the install put it, and the build reports
+// "asc: command not found". MEASURED on all five byte-lock legs, run 34490525095: the
+// AssemblyScript substrate failed to build on every one of them for exactly this reason.
+//
+// `assemblyscript` is now a root devDependency, so `bun install --frozen-lockfile` — which
+// every lane that needs this substrate already runs — puts the binary exactly here.
+const ASC = join(__repoRoot, "node_modules", ".bin", process.platform === "win32" ? "asc.cmd" : "asc");
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Substrate build definitions
@@ -36,6 +71,7 @@ const SUBSTRATES = [
     check: () => existsSync(join(__dir, "dla-canonical-wat.wasm")),
     build: () => {
       run("wat2wasm", ["dla-canonical.wat", "-o", "dla-canonical-wat.wasm"]);
+      verifyWasmHeader(join(__dir, "dla-canonical-wat.wasm"), "WAT");
     },
   },
   {
@@ -53,6 +89,7 @@ const SUBSTRATES = [
         "-o", "dla-canonical-llvm.wasm",
         "dla-canonical.c",
       ]);
+      verifyWasmHeader(join(__dir, "dla-canonical-llvm.wasm"), "LLVM/C");
     },
   },
   {
@@ -94,6 +131,7 @@ const SUBSTRATES = [
         "-o", "dla-canonical-emcc.wasm",
         "dla-canonical.c",
       ]);
+      verifyWasmHeader(join(__dir, "dla-canonical-emcc.wasm"), "Emscripten");
     },
   },
   {
@@ -107,12 +145,27 @@ const SUBSTRATES = [
         "--edition", "2021",
         "--target", "wasm32-unknown-unknown",
         "-C", "opt-level=s",
+        // `-C strip=debuginfo`, and the flag matters — MEASURED, not chosen.
+        //
+        // `audit-proof-lineage-binaries.ts` carried a DWARF exemption for this substrate with
+        // the note "THE FIX IS ONE FLAG: `-C debuginfo=0` … which would land it at ~6 KB",
+        // and that flag is a NO-OP here: on rustc 1.99.0 the module is 624,772 bytes with it
+        // and 624,772 bytes without it. The DWARF comes from upstream libcore, which is
+        // already compiled, so telling rustc not to EMIT debug info for our crate changes
+        // nothing. `-C strip=debuginfo` strips what the linker produced and lands it at
+        // 8,058 bytes; `-C strip=symbols` gets 7,004 and also removes the name section.
+        //
+        // Verified against the unchanged golden vectors after stripping: PASS at all four
+        // seeds. The exemption is deleted rather than re-ceilinged, because the artefact it
+        // exempted is no longer committed.
+        "-C", "strip=debuginfo",
         "-C", "link-args=--allow-undefined",
         "-C", "panic=abort",
         "--crate-type", "cdylib",
         "-o", "dla-canonical-rust.wasm",
         "dla-canonical.rs",
       ]);
+      verifyWasmHeader(join(__dir, "dla-canonical-rust.wasm"), "Rust");
     },
   },
   {
@@ -120,13 +173,20 @@ const SUBSTRATES = [
     output: "dla-canonical-asc.wasm",
     check: () => existsSync(join(__dir, "dla-canonical-asc.wasm")),
     build: () => {
-      run("npx", [
-        "asc", "dla-canonical.ts",
+      if (!existsSync(ASC)) {
+        throw new Error(
+          `assemblyscript is not installed at ${ASC} — run \`bun install --frozen-lockfile\` ` +
+            `at the repository root first. It is a declared devDependency, not a global tool.`,
+        );
+      }
+      run(ASC, [
+        "dla-canonical.ts",
         "--outFile", "dla-canonical-asc.wasm",
         "--optimize",
         "--noAssert",
         "--runtime", "stub",
       ]);
+      verifyWasmHeader(join(__dir, "dla-canonical-asc.wasm"), "AssemblyScript");
     },
   },
   {

@@ -1,0 +1,14 @@
+import bpy,math,json
+from pathlib import Path
+from mathutils import Vector,Matrix
+R=Path(__file__).resolve().parent;O=R/'blender-v11'
+bpy.ops.wm.open_mainfile(filepath=str(O/'Characters-v11.blend'));scene=bpy.context.scene;scene.cycles.samples=12
+# Pose desired world-space rotations through each bone's actual rest matrix.
+def turn(rig,n,axis,angle):
+ b=rig.pose.bones[n];m=b.matrix.copy();pivot=m.translation.copy();rot=Matrix.Rotation(math.radians(angle),4,axis);b.matrix=Matrix.Translation(pivot)@rot@Matrix.Translation(-pivot)@m;bpy.context.view_layer.update()
+for label,ops in [('left-arm',[('LeftUpperArm','Y',-60)]),('right-arm',[('RightUpperArm','Y',60)]),('head-turn',[('Head','Z',30)]),('head-nod',[('Head','X',20)]),('elbows',[('LeftForeArm','X',-60),('RightForeArm','X',-60)])]:
+ for rig in [o for o in scene.objects if o.type=='ARMATURE']:
+  for b in rig.pose.bones:b.matrix_basis=Matrix.Identity(4)
+  bpy.context.view_layer.update()
+  for op in ops:turn(rig,*op)
+ scene.render.filepath=str(O/(label+'.png'));bpy.ops.render.render(write_still=True)

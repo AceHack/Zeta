@@ -1,0 +1,33 @@
+{
+  "BaseCommit": "6544c068ea0a9bba4a5a55e391c9cddcb7bc8daa",
+  "VerifiedGzipRecords": 6,
+  "OriginalBytes": 44681,
+  "StoredBytes": 16450,
+  "Patch": {
+    "Bytes": 2051,
+    "Sha256": "28e6b982d5cb0cc2e80f54c76130360dc8939a406abb391b1dd487b1cf4563d1"
+  },
+  "CheckArgv": [
+    "git",
+    "apply",
+    "--check",
+    "-"
+  ],
+  "CheckExitCode": 0,
+  "CheckStdout": "",
+  "CheckStderr": "",
+  "AdditionalSourceIdentities": [
+    {
+      "Path": "src/Core/Policy.fs",
+      "Bytes": 5135,
+      "Sha256": "432d35355b00d67e38b183b8768b3d654541c5d0992c4404d8838debfd20c9dc"
+    },
+    {
+      "Path": "src/Renderers/browser/dla-multi-oracle.html",
+      "Bytes": 12747,
+      "Sha256": "2097bcdb1a764eab13ce378d6be072ecd7e848d2abaecda70622d8894c2b1f20"
+    }
+  ],
+  "PatchApplied": false,
+  "SourceOrTestExecuted": false
+}

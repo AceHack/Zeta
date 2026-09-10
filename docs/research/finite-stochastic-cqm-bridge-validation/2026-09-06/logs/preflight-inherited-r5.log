@@ -1,0 +1,17 @@
+check-arity-nonequality drift-check: 1 corpus file(s) touched, e.g.
+  tests/Tests.FSharp/FiniteStochasticBridge.Tests.fs
+::error file=src/Core.TypeScript/formal-verification/nci-witness-receipt.test.ts,line=103,title=R5%3A 1 unadjudicated absence-under-a-taint-claim assertion(s)::count rose 0 -> 1. An absence assertion witnesses ONE RENDERING of a leak, never its absence. Strengthen the test, or — if a positive/exact-equality assertion already carries the claim — record that judgement with: bun src/Core.TypeScript/hygiene/audit-check-arity-nonequality.ts --write --accept-raises
+FAIL: 1 problem(s) across 2354 scanned test files.
+
+src/Core.TypeScript/formal-verification/nci-witness-receipt.test.ts: R5 -- absence-under-a-taint-claim count rose 0 -> 1.
+    An absence assertion discharging a taint / 2-safety claim witnesses ONE RENDERING of a
+    leak, never its absence. The sites, so the adjudication is one glance and not a hunt:
+      src/Core.TypeScript/formal-verification/nci-witness-receipt.test.ts:103  not.toContain(source) -> ("nci_witness_receipt_oracle")
+          in test: the TypeScript witness emitter does not depend on the independent Python checker
+    Two remedies, and the FIRST is usually right:
+      1. STRENGTHEN the test so the claim rides on a check that can fail.
+      2. If the site is genuinely correct -- an exact-equality pin on the whole output, or a
+         positive capability assertion, carries the claim beside it -- record that judgement:
+         bun src/Core.TypeScript/hygiene/audit-check-arity-nonequality.ts --write --accept-raises
+
+Rule anchors: .claude/rules/dv2-data-split-discipline-activated.md #7 (noninterference) | .claude/rules/manifesto-13-specifications.md s13 | .claude/rules/toy-is-free-metered-must-be-earned.md

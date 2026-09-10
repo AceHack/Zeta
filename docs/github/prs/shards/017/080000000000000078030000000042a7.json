@@ -1,0 +1,12 @@
+{
+  "pr_number": 17063,
+  "archive_path": "docs/history/pr-reviews/PR-17063-feat-081m211sn5w087g0r00129m1e6-append-fastcdc-from-last-chunk.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-08T18:09:51.445Z",
+  "schema_version": "v1",
+  "commit_sha": "0c2393b01d5cf2cc4277e5378f4c172d0e4b9714",
+  "title": "feat(081M211SN5W087G0R00129M1E6): append FastCDC from last chunk",
+  "state": "MERGED",
+  "merged_at": "2026-09-08T18:08:42Z",
+  "head_ref": "feat/zetafs-d9-append-length"
+}

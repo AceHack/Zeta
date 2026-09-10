@@ -21,8 +21,10 @@ import { spawnSync } from "node:child_process";
 import {
   emulatorMatrixCell,
   skipIfAbsentCannotWearPass,
+  usbInstallSealFromPath,
   type IntegrateDecision,
   type UnsealPath,
+  type UsbInstallSeal,
 } from "./unseal-path.ts";
 
 /** Ubuntu 24.04 + Fedora/RHEL well-known SoftHSM2 module paths. */
@@ -121,6 +123,16 @@ export function expectedPathForCell(
   return undefined;
 }
 
+/** Same three rungs USB install speaks. CI tests all three independently. */
+export function expectedLadderForCell(
+  wantSofthsm: boolean,
+  wantSwtpm: boolean,
+  kindUnsealerPresent: boolean,
+): UsbInstallSeal | undefined {
+  const path = expectedPathForCell(wantSofthsm, wantSwtpm, kindUnsealerPresent);
+  return path === undefined ? undefined : usbInstallSealFromPath(path);
+}
+
 function parseArg(argv: readonly string[], name: string): string | undefined {
   const prefix = `--${name}=`;
   for (const a of argv) {
@@ -134,18 +146,26 @@ export function main(argv: readonly string[], fs: EmulatorFs = REAL_FS): number 
   const wantSwtpm = parseWantFlag(parseArg(argv, "want-swtpm"));
   const kindUnsealerPresent = parseWantFlag(parseArg(argv, "kind-unsealer") ?? "1");
   const expectPath = parseArg(argv, "expect-path");
+  const expectLadder = parseArg(argv, "expect-ladder");
   const decision = witnessInstall({ wantSofthsm, wantSwtpm, kindUnsealerPresent }, fs);
   if (!decision.ok) {
     process.stderr.write(`seal-emulator-install: ${decision.reason}\n`);
     return 1;
   }
+  const ladder = usbInstallSealFromPath(decision.path);
   if (expectPath !== undefined && expectPath !== decision.path) {
     process.stderr.write(
-      `seal-emulator-install: expected path=${expectPath} got path=${decision.path} mechanism=${decision.mechanism}\n`,
+      `seal-emulator-install: expected path=${expectPath} got path=${decision.path} mechanism=${decision.mechanism} ladder=${ladder}\n`,
     );
     return 1;
   }
-  process.stdout.write(`seal-emulator-install: path=${decision.path} mechanism=${decision.mechanism}\n`);
+  if (expectLadder !== undefined && expectLadder !== ladder) {
+    process.stderr.write(
+      `seal-emulator-install: expected ladder=${expectLadder} got ladder=${ladder} path=${decision.path}\n`,
+    );
+    return 1;
+  }
+  process.stdout.write(`seal-emulator-install: path=${decision.path} mechanism=${decision.mechanism} ladder=${ladder}\n`);
   return 0;
 }
 

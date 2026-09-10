@@ -1,0 +1,28 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>Zeta.E8Render</RootNamespace>
+    <AssemblyName>Zeta.Core.FSharp.E8Render</AssemblyName>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <InvariantGlobalization>true</InvariantGlobalization>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <!-- Zero external dependencies. This project is a second ORACLE for the rendering
+       rungs, and an oracle that pulls in a third-party geometry library is measuring
+       that library rather than the substrate. -->
+
+  <ItemGroup>
+    <Compile Include="E8Exact.fs" />
+    <Compile Include="E8Clifford.fs" />
+    <Compile Include="E8Shading.fs" />
+    <Compile Include="E8Embedding.fs" />
+    <Compile Include="E8Raytracer.fs" />
+    <Compile Include="E8GoldenVector.fs" />
+    <Compile Include="H3Exact.fs" />
+    <Compile Include="H3GoldenVector.fs" />
+  </ItemGroup>
+
+</Project>

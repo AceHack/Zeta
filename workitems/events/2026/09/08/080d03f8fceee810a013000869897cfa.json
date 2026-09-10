@@ -1,0 +1,14 @@
+{
+  "id": "080d03f8fceee810a013000869897cfa",
+  "at": "2026-09-08T03:46:13.597Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1ZHZ7EW087G0R00006H4BK",
+    "type": "task",
+    "title": "D10 freeze-storm alloc bound vs GroupCommit",
+    "slug": "d10-freeze-storm-alloc-bound-vs-groupcommit",
+    "priority": "P1",
+    "filename": "081M1ZHZ7EW087G0R00006H4BK-d10-freeze-storm-alloc-bound-vs-groupcommit.md"
+  }
+}

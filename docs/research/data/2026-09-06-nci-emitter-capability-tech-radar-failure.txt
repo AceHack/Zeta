@@ -1,0 +1,16 @@
+PR #16887, head 6774b7e1b020e1cc305574ea93159b4e1cd0b2bd
+GitHub Actions run 34067445779, job 101578600361
+Retained failed audit output from the completed job log:
+
+2026-09-06T23:38:37.0275475Z ── Tech radar claims the repo can still support (paths resolve, in-use tools ringed)
+2026-09-06T23:38:37.0276438Z    $ bun src/Core.TypeScript/hygiene/audit-tech-radar-claims.ts
+2026-09-06T23:38:37.4848052Z tech-radar claims: 1 claim(s) the repo cannot support:
+2026-09-06T23:38:37.4848485Z 
+2026-09-06T23:38:37.4848747Z   [unringed-devdep] docs/TECH-RADAR.md  typescript
+2026-09-06T23:38:37.4850827Z       pinned in package.json devDependencies and imported by 1 test file(s) (e.g. src/Core.TypeScript/formal-verification/nci-witness-capability.test.ts) — a tool we verify with and have given no ring
+2026-09-06T23:38:37.4852270Z 
+2026-09-06T23:38:37.4852672Z Fix by correcting the row, not by deleting the citation. A path that a row PROPOSES
+2026-09-06T23:38:37.4853665Z rather than reports is marked `(planned)` on the same line. An in-use verification tool
+2026-09-06T23:38:37.4854802Z with no ring is the radar failing at its one job — give it a row and an honest ring.
+2026-09-06T23:38:37.4927803Z ##[error]Tech radar claims the repo can still support (paths resolve, in-use tools ringed) FAILED (exit 1). Command: bun src/Core.TypeScript/hygiene/audit-tech-radar-claims.ts
+2026-09-06T23:38:37.4948905Z ##[error]Process completed with exit code 1.

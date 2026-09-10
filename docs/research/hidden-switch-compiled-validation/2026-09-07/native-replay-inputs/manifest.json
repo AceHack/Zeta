@@ -1,0 +1,295 @@
+{
+  "Scope": "unchanged actual prerequisite native reports for pure replay implementation fixtures; no combined process/source/runtime admission",
+  "OriginalPreservationCommit": "8c3e5abd6",
+  "NativeEntrySourceCommit": "34b4395175cd58ee2caba179e6061e54521673f6",
+  "Artifacts": [
+    {
+      "File": "bindings.json.gz",
+      "OriginalFile": "docs/research/hidden-switch-compiled-validation/2026-09-07/native-certificate-fixture-attempt-1/bindings.json.gz",
+      "Bytes": 170,
+      "Sha256": "7F1FA5F1BD3776C066589090BDF4016E55B0CCEDE1FE17D4475DEEE82B2FE0AF",
+      "Encoding": "gzip",
+      "StoredBytes": 126,
+      "StoredSha256": "5A3552B7F7BBC05A1F0F61B2C75DCFF13B562E36946B6ECCC11178E480EA8B58"
+    },
+    {
+      "File": "00-baseline.json.gz",
+      "OriginalFile": "docs/research/hidden-switch-compiled-validation/2026-09-07/native-certificate-fixture-attempt-1/00-baseline/native.json.gz",
+      "Bytes": 1276,
+      "Sha256": "BE4B17A544A3A0CDA086C1AE673964A1ADAB1206237D84D9BA937FCB9A698535",
+      "Encoding": "gzip",
+      "StoredBytes": 593,
+      "StoredSha256": "BBF1506CC57F20307A2E247D95D030A239DB05A10B71F6D1B5A0B5D257DAAA1E"
+    },
+    {
+      "File": "01-wrong-protocol-binding.json.gz",
+      "OriginalFile": "docs/research/hidden-switch-compiled-validation/2026-09-07/native-certificate-fixture-attempt-1/01-wrong-protocol-binding/native.json.gz",
+      "Bytes": 1439,
+      "Sha256": "FB41CC320873DF7EB6C4A5F22DCD60343F4D3D8F6ABAEF5B3EE1DEEBD6F18A41",
+      "Encoding": "gzip",
+      "StoredBytes": 699,
+      "StoredSha256": "75FA332F24F0AFC9C3FDB630940C09A3ECA4964F13D991D2672C815E9825E30C"
+    },
+    {
+      "File": "02-wrong-source-binding.json.gz",
+      "OriginalFile": "docs/research/hidden-switch-compiled-validation/2026-09-07/native-certificate-fixture-attempt-1/02-wrong-source-binding/native.json.gz",
+      "Bytes": 1435,
+      "Sha256": "53DE35C46E35DC70A4812F29908CF6AA284D4E12426849E0B6D20E0D620D03AC",
+      "Encoding": "gzip",
+      "StoredBytes": 700,
+      "StoredSha256": "239177A0689DC808D1F99AF209FE4300589F109464C37E6841E9A5B0B5C6ED90"
+    },
+    {
+      "File": "03-wrong-epsilon.json.gz",
+      "OriginalFile": "docs/research/hidden-switch-compiled-validation/2026-09-07/native-certificate-fixture-attempt-1/03-wrong-epsilon/native.json.gz",
+      "Bytes": 1421,
+      "Sha256": "5AEAA6E72D0D030C14413FE3C4355A168FA1B794F209A8E0D0B5CDCD7058CE59",
+      "Encoding": "gzip",
+      "StoredBytes": 695,
+      "StoredSha256": "6070E657D881528E42DB7A4C2346BD4B29089EE77FFC0F04E6684E00E570EA65"
+    },
+    {
+      "File": "04-changed-drift.json.gz",
+      "OriginalFile": "docs/research/hidden-switch-compiled-validation/2026-09-07/native-certificate-fixture-attempt-1/04-changed-drift/native.json.gz",
+      "Bytes": 1421,
+      "Sha256": "402B220BAF4A536DF8C2466038D0C1802A32186D5CA3E3E9F012143B540C3D4C",
+      "Encoding": "gzip",
+      "StoredBytes": 695,
+      "StoredSha256": "D034869D2CBBFCF4968B21BCD43182296877D89F3E9FBA97DF110D99E20CB513"
+    },
+    {
+      "File": "05-changed-effect.json.gz",
+      "OriginalFile": "docs/research/hidden-switch-compiled-validation/2026-09-07/native-certificate-fixture-attempt-1/05-changed-effect/native.json.gz",
+      "Bytes": 1423,
+      "Sha256": "43A83E7DBA267997DAA3241982B0D8945180CD4DF83F9C9A82F2DB76E2834C2B",
+      "Encoding": "gzip",
+      "StoredBytes": 693,
+      "StoredSha256": "08146C6F875E5CC867156424243529F80FFF0C294290BB55C627034EB2560B90"
+    },
+    {
+      "File": "06-changed-depth.json.gz",
+      "OriginalFile": "docs/research/hidden-switch-compiled-validation/2026-09-07/native-certificate-fixture-attempt-1/06-changed-depth/native.json.gz",
+      "Bytes": 1421,
+      "Sha256": "5DDB07D235F29CC79D9BF76E506382C0221880750A941642E1422336D5F27A0A",
+      "Encoding": "gzip",
+      "StoredBytes": 697,
+      "StoredSha256": "F1328F08AA4A7B8B01B2AFB961A1548FFD7E8CB726A5B71446958E6E1ABA278C"
+    },
+    {
+      "File": "07-reassociated-expression.json.gz",
+      "OriginalFile": "docs/research/hidden-switch-compiled-validation/2026-09-07/native-certificate-fixture-attempt-1/07-reassociated-expression/native.json.gz",
+      "Bytes": 1441,
+      "Sha256": "7D43C5D35FDE1DABC18E8CA484A30551FF4E1728451AA110C7AFFC529993A5DC",
+      "Encoding": "gzip",
+      "StoredBytes": 700,
+      "StoredSha256": "A8424371DFB907DB2EED4A40EAEBA2A853A250E0DD0DD14E274ADF53E5AC59CA"
+    },
+    {
+      "File": "08-missing-alpha-candidate.json.gz",
+      "OriginalFile": "docs/research/hidden-switch-compiled-validation/2026-09-07/native-certificate-fixture-attempt-1/08-missing-alpha-candidate/native.json.gz",
+      "Bytes": 1441,
+      "Sha256": "583011180AB4DD6F617B1766F5F68BF91CD216250C875EB7EC488CBE711E48BD",
+      "Encoding": "gzip",
+      "StoredBytes": 699,
+      "StoredSha256": "BD644C8FF86DF95A8A323E1A9785B00C3CA2161D08FD740575DA3919ACCD850E"
+    },
+    {
+      "File": "09-reordered-alpha-candidates.json.gz",
+      "OriginalFile": "docs/research/hidden-switch-compiled-validation/2026-09-07/native-certificate-fixture-attempt-1/09-reordered-alpha-candidates/native.json.gz",
+      "Bytes": 1447,
+      "Sha256": "C95C4CCF2FBB69383037493E7435EB95EF0E5EF480C9B4505A5B79D37D081ABA",
+      "Encoding": "gzip",
+      "StoredBytes": 701,
+      "StoredSha256": "4ADC5FC90D624AC808B074E21158DCDEEA39A31B96EF5D17BC00A114198544C4"
+    },
+    {
+      "File": "10-changed-alpha-value.json.gz",
+      "OriginalFile": "docs/research/hidden-switch-compiled-validation/2026-09-07/native-certificate-fixture-attempt-1/10-changed-alpha-value/native.json.gz",
+      "Bytes": 1433,
+      "Sha256": "F9376FAFBB3DCC0218A6BAE0E57B81F6497AEF91E54B63572C36D80FCB42AE9C",
+      "Encoding": "gzip",
+      "StoredBytes": 698,
+      "StoredSha256": "A60E1833CBB00F8FAE9DD5950847549BD759F99D7A32EEB19D3EAA7A434859F7"
+    },
+    {
+      "File": "11-missing-envelope-interval.json.gz",
+      "OriginalFile": "docs/research/hidden-switch-compiled-validation/2026-09-07/native-certificate-fixture-attempt-1/11-missing-envelope-interval/native.json.gz",
+      "Bytes": 1445,
+      "Sha256": "6803ABBC609527A7EBE624C85EC8A65E5C80F2E4F4EA3E0A99C5304E64454D5F",
+      "Encoding": "gzip",
+      "StoredBytes": 703,
+      "StoredSha256": "8B5704779843F077EE11BA75C7733403EC7029DAFFD5443D0A8B5065BD1745E8"
+    },
+    {
+      "File": "12-missing-gap-interval.json.gz",
+      "OriginalFile": "docs/research/hidden-switch-compiled-validation/2026-09-07/native-certificate-fixture-attempt-1/12-missing-gap-interval/native.json.gz",
+      "Bytes": 1435,
+      "Sha256": "E00189787D246631D919DB3BD245D453B5F0EE44AC174D433429CBD0C9F6F527",
+      "Encoding": "gzip",
+      "StoredBytes": 699,
+      "StoredSha256": "72FAC145935DCECD92BBE93730F07F4D48B1EA239D5F03321F510B00DA54E69D"
+    },
+    {
+      "File": "13-changed-endpoint-margin.json.gz",
+      "OriginalFile": "docs/research/hidden-switch-compiled-validation/2026-09-07/native-certificate-fixture-attempt-1/13-changed-endpoint-margin/native.json.gz",
+      "Bytes": 1441,
+      "Sha256": "7459CDE9F9D22001EF212EDFAA2A721F43E5322759AFE9D4A17CD2B08B989F2D",
+      "Encoding": "gzip",
+      "StoredBytes": 701,
+      "StoredSha256": "9ECF38C7A26422DE37A052363EFB9FA340AFFD24F0344EC5CEB8D0F5E2A5E817"
+    },
+    {
+      "File": "14-omitted-subtraction-error.json.gz",
+      "OriginalFile": "docs/research/hidden-switch-compiled-validation/2026-09-07/native-certificate-fixture-attempt-1/14-omitted-subtraction-error/native.json.gz",
+      "Bytes": 1445,
+      "Sha256": "E023D09DFAD61BF6FE99555F265A6008A825BFA942CDEB61C3B3BD16E4831A00",
+      "Encoding": "gzip",
+      "StoredBytes": 701,
+      "StoredSha256": "465518C5068CA79FCE3603E53DDEF774A67BA36D96043D417F1697DB6DAE2D60"
+    },
+    {
+      "File": "15-swapped-depth-two-guards.json.gz",
+      "OriginalFile": "docs/research/hidden-switch-compiled-validation/2026-09-07/native-certificate-fixture-attempt-1/15-swapped-depth-two-guards/native.json.gz",
+      "Bytes": 1443,
+      "Sha256": "7C896270BB9CD608301F1772F88741B8696B8A169FCB622666E300FDA52C667F",
+      "Encoding": "gzip",
+      "StoredBytes": 704,
+      "StoredSha256": "F53E983761319FDA226B238CDCB36A899B949C304179F1A48F834B8E2B9E2763"
+    },
+    {
+      "File": "16-outward-depth-two-switch.json.gz",
+      "OriginalFile": "docs/research/hidden-switch-compiled-validation/2026-09-07/native-certificate-fixture-attempt-1/16-outward-depth-two-switch/native.json.gz",
+      "Bytes": 1443,
+      "Sha256": "7C4AC7D10C402CA41178A216AA4581C0CEF39288A9C8F7E31034A28F06D1A605",
+      "Encoding": "gzip",
+      "StoredBytes": 705,
+      "StoredSha256": "E7249CFEE16AAA10352ABCCC0ABD66D0CBFC0A259FD2D0CF8D07049AA3FBBE89"
+    },
+    {
+      "File": "17-outward-depth-two-harvest.json.gz",
+      "OriginalFile": "docs/research/hidden-switch-compiled-validation/2026-09-07/native-certificate-fixture-attempt-1/17-outward-depth-two-harvest/native.json.gz",
+      "Bytes": 1445,
+      "Sha256": "479A80D31B7C129A9EFE01C43F7184360996CF56D4DE7EA5451D7E548334BEF2",
+      "Encoding": "gzip",
+      "StoredBytes": 703,
+      "StoredSha256": "28CC93506C6121643D61990EA0CD5D33D39F0BD29ED68E41112F8B903DAF4434"
+    },
+    {
+      "File": "18-outward-depth-three-switch.json.gz",
+      "OriginalFile": "docs/research/hidden-switch-compiled-validation/2026-09-07/native-certificate-fixture-attempt-1/18-outward-depth-three-switch/native.json.gz",
+      "Bytes": 1447,
+      "Sha256": "D4F07D130BE0E69C0B310D974D4CA6C09A5079B5CBDD4BB2679F99C73FAD034A",
+      "Encoding": "gzip",
+      "StoredBytes": 702,
+      "StoredSha256": "AF8B2CAD2CCF1D9EA51A33807A4690588B56B4F803B741DD3A9513E34EE95A8E"
+    },
+    {
+      "File": "19-outward-depth-three-harvest.json.gz",
+      "OriginalFile": "docs/research/hidden-switch-compiled-validation/2026-09-07/native-certificate-fixture-attempt-1/19-outward-depth-three-harvest/native.json.gz",
+      "Bytes": 1449,
+      "Sha256": "430D5B8FDA2B55B967F927869A87447DD2472B6805F28C9EAA57D4E086AB5698",
+      "Encoding": "gzip",
+      "StoredBytes": 709,
+      "StoredSha256": "85D6A0D6A71A3133056A0A0A56EF67F126C81E9145EC570D7F7355071702EB3B"
+    },
+    {
+      "File": "20-inclusive-switch-relation.json.gz",
+      "OriginalFile": "docs/research/hidden-switch-compiled-validation/2026-09-07/native-certificate-fixture-attempt-1/20-inclusive-switch-relation/native.json.gz",
+      "Bytes": 1445,
+      "Sha256": "44484517365185A21B1FC9281163E09FA8E516BBB6C3FFB8A1EB33B10D0BD0B9",
+      "Encoding": "gzip",
+      "StoredBytes": 699,
+      "StoredSha256": "9829AFE88A1C5E77E3C38E0BE592E77DAD5666E0894016C9F9C886CEA2D01067"
+    },
+    {
+      "File": "21-noncanonical-rational.json.gz",
+      "OriginalFile": "docs/research/hidden-switch-compiled-validation/2026-09-07/native-certificate-fixture-attempt-1/21-noncanonical-rational/native.json.gz",
+      "Bytes": 1437,
+      "Sha256": "1B8324592BE013EC14651CD2150DA47F46AE51E8D25FE6EE3A9EA327FC12C35E",
+      "Encoding": "gzip",
+      "StoredBytes": 699,
+      "StoredSha256": "CB988559A2D7E33BECE534A85F3030FD145B6D3594190B686BC44BBCFB761D39"
+    },
+    {
+      "File": "22-boolean-candidate-index.json.gz",
+      "OriginalFile": "docs/research/hidden-switch-compiled-validation/2026-09-07/native-certificate-fixture-attempt-1/22-boolean-candidate-index/native.json.gz",
+      "Bytes": 1441,
+      "Sha256": "D4BF1A6BB1E0C2397C1785CDD2F736A8CFC734D3A4DE4B9077AF8E2CCBAF7EFB",
+      "Encoding": "gzip",
+      "StoredBytes": 700,
+      "StoredSha256": "6803F8B3F892882380771FC1623B61B031173B0E22C23C623275D71B37FC7331"
+    },
+    {
+      "File": "23-extra-top-level-field.json.gz",
+      "OriginalFile": "docs/research/hidden-switch-compiled-validation/2026-09-07/native-certificate-fixture-attempt-1/23-extra-top-level-field/native.json.gz",
+      "Bytes": 1437,
+      "Sha256": "38CE3D1519261A11D89E96489360687B98ABC6DE2AAA9A09290A18C7907D1DAA",
+      "Encoding": "gzip",
+      "StoredBytes": 701,
+      "StoredSha256": "9E6A3A4101275105656C6B7C4883F3D454DADEA498DC535F6EAD352C9162F755"
+    },
+    {
+      "File": "24-missing-top-level-field.json.gz",
+      "OriginalFile": "docs/research/hidden-switch-compiled-validation/2026-09-07/native-certificate-fixture-attempt-1/24-missing-top-level-field/native.json.gz",
+      "Bytes": 1441,
+      "Sha256": "574081F7733822D374573A639DB159F43B7DAA9831559FD63FECF32C0C3EA230",
+      "Encoding": "gzip",
+      "StoredBytes": 702,
+      "StoredSha256": "8252EB6C18481AD685208CBC841BFCADB67661A9B221B0095EDC3F09D29F3530"
+    },
+    {
+      "File": "25-duplicate-schema-key.json.gz",
+      "OriginalFile": "docs/research/hidden-switch-compiled-validation/2026-09-07/native-certificate-fixture-attempt-1/25-duplicate-schema-key/native.json.gz",
+      "Bytes": 1435,
+      "Sha256": "D04A4C12D31DA94307D6DFC398839313113E1A158BD3241EAD0E939FF66CB393",
+      "Encoding": "gzip",
+      "StoredBytes": 698,
+      "StoredSha256": "809AAABA72D4E7AA1780FD61F56ECB640BE1FA5D86EBAE725834DB1B941FF9B9"
+    },
+    {
+      "File": "26-nonfinite-index.json.gz",
+      "OriginalFile": "docs/research/hidden-switch-compiled-validation/2026-09-07/native-certificate-fixture-attempt-1/26-nonfinite-index/native.json.gz",
+      "Bytes": 1421,
+      "Sha256": "01B2FB71B9C10EF87099A826EB68927E7ACEC055657D705E29173E4FB97492F2",
+      "Encoding": "gzip",
+      "StoredBytes": 706,
+      "StoredSha256": "666B354596722ECBCFB4858B74118B8164623C073F13EAAEC1C7BEAB687FFA46"
+    },
+    {
+      "File": "27-invalid-utf8.json.gz",
+      "OriginalFile": "docs/research/hidden-switch-compiled-validation/2026-09-07/native-certificate-fixture-attempt-1/27-invalid-utf8/native.json.gz",
+      "Bytes": 1419,
+      "Sha256": "7F254A4075BC49F3CF9CA39116FBF4E56AAFA0F2D26F7833F17F3FD504A592FC",
+      "Encoding": "gzip",
+      "StoredBytes": 696,
+      "StoredSha256": "4292741CFA89A47DE40B2922BB8A3BA65971C0A81C46869A3607285D92A7F28F"
+    },
+    {
+      "File": "28-unpaired-surrogate.json.gz",
+      "OriginalFile": "docs/research/hidden-switch-compiled-validation/2026-09-07/native-certificate-fixture-attempt-1/28-unpaired-surrogate/native.json.gz",
+      "Bytes": 1431,
+      "Sha256": "CE182EF4E8B767D5DAD95B852EB45F07556B9E35DA2AC1B1DC6F1F0155FA9D6F",
+      "Encoding": "gzip",
+      "StoredBytes": 699,
+      "StoredSha256": "5121762564D10F397A1A710F3D442E40795E4F8E9349AF53E2F677795CDD6160"
+    },
+    {
+      "File": "29-empty-input.json.gz",
+      "OriginalFile": "docs/research/hidden-switch-compiled-validation/2026-09-07/native-certificate-fixture-attempt-1/29-empty-input/native.json.gz",
+      "Bytes": 1390,
+      "Sha256": "68D95BFD359E295F794807B56A74A7529962D7378F620705CE09E44E35C906B0",
+      "Encoding": "gzip",
+      "StoredBytes": 679,
+      "StoredSha256": "FCD9646EC3B8448245BD0BD26B2464006EA0638A94FA018B2C1C37AA88AF57B1"
+    },
+    {
+      "File": "30-truncated-input.json.gz",
+      "OriginalFile": "docs/research/hidden-switch-compiled-validation/2026-09-07/native-certificate-fixture-attempt-1/30-truncated-input/native.json.gz",
+      "Bytes": 1407,
+      "Sha256": "12F606F6DEF70C0AF5693CDE27CAE457AF152525B2F0342720D007B4B91C8D22",
+      "Encoding": "gzip",
+      "StoredBytes": 691,
+      "StoredSha256": "ED96BE0FA8084B4250D44174D959EA2E4C4548359915BC2EB315B738E83450B6"
+    }
+  ]
+}

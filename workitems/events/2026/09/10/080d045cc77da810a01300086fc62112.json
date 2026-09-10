@@ -1,0 +1,14 @@
+{
+  "id": "080d045cc77da810a01300086fc62112",
+  "at": "2026-09-10T13:54:10.997Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M25SHVXM087G0R000HJ052P",
+    "type": "bug",
+    "title": "path-filter checks out untrusted PR code it never reads",
+    "slug": "path-filter-checks-out-untrusted-pr-code-it-never-reads",
+    "priority": "P2",
+    "filename": "081M25SHVXM087G0R000HJ052P-path-filter-checks-out-untrusted-pr-code-it-never-reads.md"
+  }
+}

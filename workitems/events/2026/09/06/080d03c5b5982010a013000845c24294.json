@@ -1,0 +1,14 @@
+{
+  "id": "080d03c5b5982010a013000845c24294",
+  "at": "2026-09-06T21:53:54.436Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1WBDCR3087G0R001P68H7W",
+    "type": "task",
+    "title": "Freeze volumes write FORMAT ns=bindings",
+    "slug": "freeze-volumes-write-format-ns-bindings",
+    "priority": "P2",
+    "filename": "081M1WBDCR3087G0R001P68H7W-freeze-volumes-write-format-ns-bindings.md"
+  }
+}

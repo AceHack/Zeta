@@ -1,0 +1,42 @@
+{
+  "commit": "db9bb96d8b50489c0d5672d8ce579a083660cb24",
+  "startedUtc": "2026-09-06T20:10:39.236277+00:00",
+  "files": [
+    {
+      "path": "src/Research.FSharp/RenderedSignalCarrier.fs",
+      "sha256": "e45bda8b67ff3cd7b3b0e58febc787fab4f0e7cb47a7c338661098f80704a7ca"
+    },
+    {
+      "path": "src/Research.FSharp/RenderedSignalDetection.fs",
+      "sha256": "745a4cfc43b04259c71181b7c55feee5f30481902d4510b0eadd3e3c2a5ce0fe"
+    },
+    {
+      "path": "src/Research.FSharp/RenderedSignalExperiment.fs",
+      "sha256": "226ebe5041175c0a8fda4b6d3fb047c63df3627913388ed34d875e52d155266d"
+    },
+    {
+      "path": "src/Research.FSharp/RenderedSignalPrediction.fs",
+      "sha256": "9a27f564b34e9a7d119be31d4a1b4ae3a8b2f5a1afc2593179e1a0c12970aa2b"
+    },
+    {
+      "path": "src/Research.FSharp/run-rendered-signal-experiment.fsx",
+      "sha256": "68433230900d2c026329b28f8352d81e5617493ed08a79ca3b442a9dcc3a01de"
+    },
+    {
+      "path": "src/Research.FSharp/measure-rendered-signal-inference.fsx",
+      "sha256": "f0cf4a0e78954f61636f92cdef5cca5fa45e6ec362bbd4e2d473305ff9a1d4ca"
+    },
+    {
+      "path": "src/Research.FSharp/check-rendered-signal-kernel.fsx",
+      "sha256": "8707e63cd3c43fb570ee4d913ee783d32d989f93979a236e9a7520f43f0138ad"
+    },
+    {
+      "path": "tests/Tests.FSharp/RenderedSignal.Tests.fs",
+      "sha256": "40c8d549892ee7a3276c591badfee8571978dc330249555bf3a363869a8ae98b"
+    },
+    {
+      "path": "tests/Tests.FSharp/Tests.FSharp.fsproj",
+      "sha256": "a84741bb1c5ff6d87aeeaf975c535441c80c44d7caa5dcb1a1cbba47582804bf"
+    }
+  ]
+}

@@ -97,16 +97,25 @@ jobs:
 
       - name: Install workspace dependencies
         working-directory: agentic-organization
-        # `npm ci` is the reproducible form and is what should run; the fallback exists
-        # because package-lock.json here predates some workspace additions. If `ci`
-        # fails the lockfile is stale, and that is worth seeing in the log rather than
-        # hiding -- so the fallback is announced.
+        # `npm ci` AND NOTHING ELSE. This used to fall back to `npm install` on
+        # failure, behind a ::warning -- and a check with a bypass is not a check.
+        # The two commands are not interchangeable: `npm ci` installs exactly the
+        # committed lockfile and fails when package.json and the lockfile disagree;
+        # `npm install` is free to resolve different versions and REWRITE the
+        # lockfile. So the fallback answered "the pinned graph does not apply" by
+        # installing an unpinned one, and reported it as a warning nobody reads.
+        # That is also precisely what Scorecard PinnedDependenciesID alert 783 was
+        # pointing at: the unpinned command sitting in the file.
+        #
+        # A stale lockfile is a real defect and should go RED. Measured before
+        # removing the fallback: `npm ci --dry-run` in agentic-organization exits 0
+        # and adds 20 packages, so the lockfile is current and this removal changes
+        # nothing about today's behaviour -- only about what happens the day it
+        # stops being current.
+        # 081M24FW4C0087G0R003EQRCYY
         run: |
           set -euo pipefail
-          if ! npm ci; then
-            echo "::warning title=stale lockfile::npm ci failed; falling back to npm install. agentic-organization/package-lock.json needs regenerating."
-            npm install
-          fi
+          npm ci
 
       - name: Unit + contract suite (deterministic, no network)
         working-directory: agentic-organization

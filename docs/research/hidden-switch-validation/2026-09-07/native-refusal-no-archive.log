@@ -1,0 +1,4 @@
+
+
+/Users/acehack/.zeta/agents/codex/Zeta-rendered-predictor-native-20260906/src/Research.FSharp/HiddenSwitchRuntime.fsx(170,61): error FS0072: The type of this expression could not be inferred before accessing its members. Add a type annotation, e.g. (expr: SomeType), to constrain the type before this point.
+

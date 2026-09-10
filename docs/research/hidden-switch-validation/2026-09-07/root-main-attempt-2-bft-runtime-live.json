@@ -1,0 +1,27 @@
+{
+  "Architecture": "Arm64",
+  "Executable": {
+    "File": "/Users/acehack/.local/share/mise/installs/java/26/bin/java",
+    "Bytes": 69952,
+    "Sha256": "6B7A04D8C5C059FCD6D1270ACF5C0313D9996E674FE621DF9FF4BE9C7B3B685D"
+  },
+  "ExitCode": 0,
+  "Platform": "macOS 26.6.2",
+  "Stage": "runtime-identity",
+  "Stderr": {
+    "File": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-catch-reference-20260906/TestResults/tlc-diagnostics/BftConsensus-e5f8fd404b3d4cf6935d8a02227ebb1f/version-stderr.log",
+    "Bytes": 144,
+    "Sha256": "5E0AAF8078D0847D8CCAE3A86A46B5F5E7C0F2F5EC3D2CC97DFAC2D247586317"
+  },
+  "Stdout": {
+    "File": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-catch-reference-20260906/TestResults/tlc-diagnostics/BftConsensus-e5f8fd404b3d4cf6935d8a02227ebb1f/version-stdout.log",
+    "Bytes": 0,
+    "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  "TimedOut": false,
+  "TimeoutMilliseconds": 30000,
+  "VersionArgv": [
+    "-XX:ErrorFile=/Users/acehack/.zeta/agents/codex/Zeta-rendered-catch-reference-20260906/TestResults/tlc-diagnostics/BftConsensus-e5f8fd404b3d4cf6935d8a02227ebb1f/version_hs_err_pid%p.log",
+    "-version"
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "id": "080d0436b1393810a0130008b57665d6",
+  "at": "2026-09-09T15:42:56.807Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M23DC9S6087G0R003P8VCDT",
+    "type": "task",
+    "title": "Record Jumprope ZetaDB discriminator, chunk sizes, and Rust after ZD4",
+    "slug": "record-jumprope-zetadb-discriminator-chunk-sizes-and-rust-af",
+    "priority": "P2",
+    "filename": "081M23DC9S6087G0R003P8VCDT-record-jumprope-zetadb-discriminator-chunk-sizes-and-rust-af.md"
+  }
+}

@@ -9,6 +9,7 @@ open System.Diagnostics
 open System.IO
 open System.Text.Json
 open System.Threading
+open System.Threading.Tasks
 open FsUnit.Xunit
 open global.Xunit
 
@@ -46,9 +47,9 @@ open global.Xunit
 // `the TLA+ gate leg actually carries the gate on CI`, which turns the
 // no-op into a failure on the one CI leg that is supposed to run it.
 //
-// Tests are serialized via the `TLC` xunit collection: TLC dumps
-// counterexample traces into the specs directory and parallel runs
-// race on cleanup.
+// Tests remain serialized via the `TLC` xunit collection to bound JVM
+// concurrency. Each attempt now owns its copied source workspace and
+// traces; cleanup never scans the shared specs directory.
 // ═══════════════════════════════════════════════════════════════════
 
 
@@ -188,11 +189,10 @@ let private currentPlatformIsMacArm64 () =
        System.Runtime.InteropServices.Architecture.Arm64
 
 
-/// JVM policy from the registry pin. OpenJDK 26 on macOS/aarch64 has
-/// crashed in G1, ParallelGC, and C2 type-speculation cleanup while
-/// running this suite, so that one platform keeps C2 and disables only
-/// the observed failing optimization; C1-only is materially slower on
-/// the largest model.
+/// JVM policy from the registry pin. macOS/aarch64 uses C1-only after
+/// in-run OpenJDK 26 failures and two complete BftConsensus diagnostics
+/// under that policy. This is a bounded workaround, not a root-cause or
+/// general-stability claim; see the dated TLC macOS C1 research record.
 let tlcJvmArguments (isMacArm64: bool) (errorFilePath: string) =
     [ yield! jvmBase
       if isMacArm64 then yield! jvmDarwinArm64Extra
@@ -238,6 +238,47 @@ let private isCi =
     | _ -> false
 
 
+/// Recursive delete that survives Windows' read-only bit.
+///
+/// `git init` marks everything under `.git/objects` READ-ONLY, and Windows
+/// refuses to unlink a read-only file, so `Directory.Delete(path, true)` throws
+/// `UnauthorizedAccessException` mid-sweep. POSIX ignores the bit on unlink,
+/// which is why this only ever bit Windows -- and why only the ONE test in this
+/// file that runs `git init` needs it. The other three scratch trees hold no
+/// `.git`, so they keep the plain delete rather than acquiring a helper they do
+/// not need.
+///
+/// Clearing the attribute is BEST-EFFORT per file and the `Directory.Delete`
+/// below is what actually enforces cleanup: a file we cannot un-mark still fails
+/// loudly there rather than being silently skipped here. That ordering is the
+/// point -- the swallow cannot hide a failure, it can only fail to prevent one.
+/// Read a file another handle may still hold OPEN FOR WRITING.
+///
+/// `File.ReadAllText` opens with share flags that exclude a concurrent writer.
+/// On Windows that is an `IOException` (`IO_SharingViolation_File`) rather than a
+/// read; POSIX imposes no such restriction, which is why the plain call worked
+/// everywhere for as long as the fixture's grandchild could not survive its
+/// launcher on Windows. Once `detached: true` fixed THAT, the surviving writer
+/// made the read illegal -- a second platform difference standing behind the
+/// first, and only reachable after the first was fixed.
+///
+/// `FileShare.ReadWrite` is the explicit statement that a writer is expected and
+/// tolerated. It is the right flag here rather than a retry, because the writer
+/// is not transient: the whole point of the fixture is that it is still holding
+/// the pipe open when this read happens.
+let private readTextSharedWithWriter (path: string) =
+    use stream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite)
+    use reader = new StreamReader(stream)
+    reader.ReadToEnd()
+
+
+let private deleteGitScratchTree (path: string) =
+    if Directory.Exists path then
+        for file in Directory.EnumerateFiles(path, "*", SearchOption.AllDirectories) do
+            try File.SetAttributes(file, FileAttributes.Normal) with _ -> ()
+        Directory.Delete(path, true)
+
+
 let private isLinuxX64NonSlim () =
     let isLinux =
         System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(
@@ -269,108 +310,15 @@ let private toolchainReady () : bool =
         | _ -> false
 
 
-/// Runs TLC on one pinned model. Returns `(exitCode, stdout)`.
-let private runTlcUnlocked (model: PinnedModel) : int * string =
-    if not (File.Exists tlaJarPath) then
-        failwithf "TLC jar not found at %s — run tools/setup/install.sh" tlaJarPath
-    let tempDir = Path.Combine(Path.GetTempPath(), $"tlc_run_{model.Id}_{Guid.NewGuid().ToString()}")
-    let errorFilePath = Path.Combine(tempDir, "hs_err_pid%p.log")
-    Directory.CreateDirectory(tempDir) |> ignore
-    let psi = ProcessStartInfo()
-    psi.FileName <- "java"
-    psi.WorkingDirectory <- specsPath
-    for argument in buildTlcArguments model (currentPlatformIsMacArm64 ()) errorFilePath tlaJarPath tempDir do
-        psi.ArgumentList.Add argument
-    psi.RedirectStandardOutput <- true
-    psi.RedirectStandardError <- true
-    psi.UseShellExecute <- false
-    use p = Process.Start psi
-    let stdoutTask = p.StandardOutput.ReadToEndAsync()
-    let stderrTask = p.StandardError.ReadToEndAsync()
-    p.WaitForExit()
-    let stdout = stdoutTask.GetAwaiter().GetResult()
-    let stderr = stderrTask.GetAwaiter().GetResult()
-    try Directory.Delete(tempDir, true) with _ -> ()
-    // Clean up TLC trace dumps so repeated runs do not litter the repo.
-    // TLC emits both a `.tla` mini-spec and a `.bin` state dump whenever
-    // it finds a counterexample — which the EXPECT-VIOLATION models do
-    // every single run, by design.
-    for f in Directory.GetFiles(specsPath, $"{model.Module}_TTrace_*.tla") do
-        try File.Delete f with _ -> ()
-    for f in Directory.GetFiles(specsPath, $"{model.Module}_TTrace_*.bin") do
-        try File.Delete f with _ -> ()
-    for f in Directory.GetFiles(specsPath, "MC*.tla") do
-        try File.Delete f with _ -> ()
-    p.ExitCode, stdout + stderr
+/// Only explicit pre-TLC initialization failures are retryable. Fatal signals,
+/// in-run OOM, checker errors and model answers remain failures on attempt one.
+let private jvmNeverStarted = TlcAttempts.jvmNeverStarted
 
-
-/// Did the JVM fail before TLC ever ran?
-///
-/// The banner check below cannot tell "this jar is a different TLC" from "no TLC ran at all", and
-/// those call for opposite responses: the first is drift an operator must fix, the second is an
-/// environment fault that will pass on the next run.
-///
-/// Observed 2026-09-03, once in three full-suite runs: under the memory pressure of the whole F#
-/// suite the JVM could not start —
-///
-///     Error occurred during initialization of VM
-///     Could not reserve enough space for object heap
-///
-/// — and the test reported `TOOLCHAIN DRIFT … a different TLC is a different experiment`, sending a
-/// reader to hunt a jar mismatch that did not exist. Same class as `forge-diagnosis`: a failure
-/// whose KIND is misreported costs more than the failure.
-let private jvmNeverStarted (stdout: string) =
-    [ "Could not reserve enough space for object heap"
-      "Error occurred during initialization of VM"
-      "Unable to access jarfile"
-      "OutOfMemoryError" ]
-    |> List.exists (fun marker -> stdout.Contains(marker, StringComparison.Ordinal))
-
-/// Attempts allowed when the JVM cannot start. The RUN is retried, never the verdict.
 [<Literal>]
 let private JvmStartAttempts = 3
 
-/// Should this run be attempted again?
-///
-/// Split out of the loop so the POLICY can be tested without launching a JVM. The two ways to get
-/// this wrong are opposite and both bad: retrying an answer turns a real failure intermittent, and
-/// not bounding the retry turns a persistent shortage into a hang.
-let internal shouldRetryJvmStart (attempt: int) (stdout: string) =
-    attempt < JvmStartAttempts && jvmNeverStarted stdout
-
-let private runTlc (model: PinnedModel) : int * string =
-    tlcProcessGate.Wait()
-
-    try
-        // RETRY ONLY A JVM THAT NEVER STARTED.
-        //
-        // The registry pins `-Xmx4g`, and on a box running the whole 6,000-test suite the JVM
-        // sometimes cannot reserve it — observed once in three full runs on 2026-09-03. Nothing
-        // about the model or the jar is wrong when that happens; the process simply never got far
-        // enough to check anything.
-        //
-        // A model check is deterministic and idempotent, so re-running one is free of consequence —
-        // which is exactly the condition that makes a retry honest rather than a way of averaging
-        // over a flaky result. The retry is bounded and the LAST output is returned either way, so a
-        // persistent shortage still fails, and still fails with the "TLC DID NOT RUN" diagnosis
-        // rather than being retried into silence.
-        //
-        // Deliberately NOT retried: a violated invariant, a wrong banner, a missing completion
-        // marker. Those are answers, and re-asking a question you already have an answer to is how a
-        // real failure becomes intermittent.
-        let mutable attempt = 1
-        let mutable result = runTlcUnlocked model
-
-        while shouldRetryJvmStart attempt (snd result) do
-            attempt <- attempt + 1
-            // A moment for whatever else was holding the memory to release it. Re-reserving
-            // instantly would usually just fail again.
-            Thread.Sleep 2000
-            result <- runTlcUnlocked model
-
-        result
-    finally
-        tlcProcessGate.Release() |> ignore
+let internal shouldRetryJvmStart (attempt: int) (exitCode: int) (stdout: string) =
+    attempt < JvmStartAttempts && exitCode = 1 && jvmNeverStarted stdout
 
 
 let private cleanMarker = "Model checking completed. No error has been found"
@@ -392,9 +340,31 @@ let private judge (model: PinnedModel) (exitCode: int) (stdout: string) =
             "TLC DID NOT RUN on %s — the JVM failed to start, so this says NOTHING about the model or the jar's version. NOT toolchain drift: retry, and if it persists give the runner more memory or lower TLC's heap.\nstdout head:\n%s"
             model.Id (stdout.Substring(0, min 400 stdout.Length))
 
+    // BANNER DRIFT WARNS; IT DOES NOT FAIL. Maintainer decision, Aaron 2026-09-10, after the
+    // third roll in about 24 hours reddened `main`: "lets not fail on that, and just let it
+    // keep rolling and accept the security risk i've said several times."
+    //
+    // What makes this an accepted risk rather than a hole: the banner is ONE of five verdicts
+    // and the only one that asks WHICH BUILD RAN. The other four -- exit code, completion
+    // marker, pinned error substring, pinned exhaustive state count -- ask whether the MODEL
+    // verified, and all four stay hard failures below. So the rule this encodes is:
+    //
+    //     we accept a different BUILD; we do not accept a different RESULT.
+    //
+    // A rolled TLC that still reaches the pinned state count on every pinned model has not
+    // changed any conclusion. One that does not will fail on the verdict that measures it,
+    // and will fail with a message about the model rather than about the jar.
+    //
+    // Upstream's `v1.8.0` is a PRERELEASE TAG THAT GETS RE-CUT: the URL is stable and the
+    // bytes are not. bb82311b -> 8836549e -> ede5b88 -> 8ab94b6 in a day. Failing on that is
+    // failing on someone else's release cadence.
+    //
+    // The warning is LOUD and goes to stderr, because an accepted risk that nobody can see is
+    // not an accepted risk -- it is an unnoticed one. It names the re-pin command so the drift
+    // is cheap to close when someone chooses to.
     if not (stdout.Contains(pinnedBanner, StringComparison.Ordinal)) then
-        failwithf
-            "TOOLCHAIN DRIFT on %s: the registry pins %s and this jar reports something else. A different TLC is a different experiment.\nstdout head:\n%s"
+        eprintfn
+            "TOOLCHAIN DRIFT ACCEPTED on %s: the registry pins %s and this jar reports something else. The four model verdicts below still apply, so a changed RESULT still fails. Re-pin with `bun tools/setup/repin-rolling.ts src/Core.TLA/tla2tools.jar`.\nstdout head:\n%s"
             model.Id pinnedBanner (stdout.Substring(0, min 400 stdout.Length))
     let clean = stdout.Contains(cleanMarker, StringComparison.Ordinal)
     if String.Equals(model.Expect, "violation", StringComparison.Ordinal) then
@@ -436,6 +406,113 @@ let private judge (model: PinnedModel) (exitCode: int) (stdout: string) =
                 model.Id actual expected
 
 
+// ── Attempt-owned execution and diagnostic retention ──────────────────────
+
+let private gitText arguments =
+    let info = ProcessStartInfo("git")
+    info.WorkingDirectory <- repoRoot
+    info.UseShellExecute <- false
+    info.RedirectStandardOutput <- true
+    info.RedirectStandardError <- true
+    for argument in arguments do info.ArgumentList.Add argument
+    use proc = Process.Start info
+    let stdout = proc.StandardOutput.ReadToEnd()
+    let stderr = proc.StandardError.ReadToEnd()
+    proc.WaitForExit()
+    if proc.ExitCode <> 0 then invalidOp ("git source identity refused: " + stderr)
+    stdout.Trim()
+
+let private runTlcUnlocked (model: PinnedModel) attemptNumber =
+    let started = DateTimeOffset.UtcNow
+    let diagnosticRoot = Path.Combine(repoRoot, "TestResults", "tlc-diagnostics")
+    match TlcAttempts.prepare diagnosticRoot model.Id attemptNumber specsPath (fun () -> TlcAttempts.sourceInputs repoRoot specsPath [|model.Module + ".tla"; model.Config|]) with
+    | Error failure ->
+        failwithf "TLC input preparation failed: %s; retained diagnostics: %s" failure.Error failure.Directory
+    | Ok attempt ->
+        let mutable stage = "source-identity"
+        try
+            let java = which "java" |> Option.defaultWith (fun () -> invalidOp "java is unavailable")
+            let argv = buildTlcArguments model (currentPlatformIsMacArm64 ()) attempt.ErrorFile tlaJarPath attempt.Metadir
+            let runnerAssembly = typeof<PinnedModel>.Assembly
+            TlcAttempts.writeDiagnostic attempt "invocation.json"
+                {| Schema = 1; Stage = stage; Runner = "fsharp"; Model = model; Attempt = attemptNumber
+                   StartedAtUtc = started; Java = java; Argv = argv; WorkingDirectory = attempt.Workspace
+                   TimeoutMilliseconds = Nullable<int>(); Inputs = attempt.Inputs
+                   SourceSnapshotMeaning = "working-tree input hashes; SourceCommit is checkout HEAD, not a clean-source assertion"
+                   SourceCommit = gitText ["rev-parse"; "HEAD"]
+                   RunnerRuntime = System.Runtime.InteropServices.RuntimeInformation.FrameworkDescription
+                   RunnerAssembly = TlcAttempts.identifyFile runnerAssembly.Location runnerAssembly.Location
+                   RunnerAssemblyMvid = runnerAssembly.ManifestModule.ModuleVersionId.ToString("D")
+                   Jar = TlcAttempts.identifyFile tlaJarPath tlaJarPath
+                   Registry = TlcAttempts.identifyFile registryPath registryPath
+                   RunnerSource =
+                     [| for name in ["Tlc.Attempts.fs"; "Tlc.Runner.Tests.fs"] do
+                            let file = Path.Combine(repoRoot, "tests", "Tests.FSharp", "Formal", name)
+                            yield TlcAttempts.identifyFile file file |] |}
+            // Initial attempt metadata exists before the identity subprocess can fail.
+            stage <- "runtime-identity"
+            let versionArgv = [|"-XX:ErrorFile=" + Path.Combine(attempt.Directory, "version_hs_err_pid%p.log"); "-version"|]
+            TlcAttempts.writeDiagnostic attempt "runtime-invocation.json"
+                {| Stage = stage; Java = java; Argv = versionArgv; WorkingDirectory = attempt.Workspace
+                   TimeoutMilliseconds = 30000; TimeoutAction = "cancel complete capture; kill tree if direct process remains alive; exited-parent descendants are not isolated" |}
+            let versionOut = Path.Combine(attempt.Directory, "version-stdout.log")
+            let versionErr = Path.Combine(attempt.Directory, "version-stderr.log")
+            let version = TlcAttempts.captureProcess java versionArgv attempt.Workspace versionOut versionErr (Some 30000)
+            TlcAttempts.writeDiagnostic attempt "runtime.json"
+                {| Stage = stage; Executable = TlcAttempts.identifyFile java java
+                   Platform = System.Runtime.InteropServices.RuntimeInformation.OSDescription
+                   Architecture = string System.Runtime.InteropServices.RuntimeInformation.OSArchitecture
+                   VersionArgv = versionArgv; ExitCode = version.ExitCode; TimedOut = version.TimedOut
+                   TimeoutMilliseconds = 30000
+                   Stdout = TlcAttempts.identifyFile versionOut versionOut; Stderr = TlcAttempts.identifyFile versionErr versionErr |}
+            if version.ExitCode <> 0 || version.TimedOut then invalidOp "runtime identity subprocess failed or timed out"
+            stage <- "tlc-process"
+            let captured = TlcAttempts.captureProcess java argv attempt.Workspace attempt.Stdout attempt.Stderr None
+            let stdout = File.ReadAllText attempt.Stdout
+            let stderr = File.ReadAllText attempt.Stderr
+            let output = stdout + stderr
+            stage <- "judgement"
+            let verdict =
+                try judge model captured.ExitCode output; Ok()
+                with error -> Error error.Message
+            let files, bytes = TlcAttempts.inventory attempt.Metadir
+            let workspaceFiles, workspaceBytes = TlcAttempts.inventory attempt.Workspace
+            TlcAttempts.writeDiagnostic attempt "completion.json"
+                {| Stage = "completed"; FinishedAtUtc = DateTimeOffset.UtcNow; ExitCode = captured.ExitCode
+                   Expected = Result.isOk verdict; Reason = (match verdict with Ok() -> "" | Error error -> error)
+                   Stdout = TlcAttempts.identifyFile attempt.Stdout attempt.Stdout
+                   Stderr = TlcAttempts.identifyFile attempt.Stderr attempt.Stderr
+                   StateInventory = {| Files = files; Bytes = bytes |}
+                   WorkspaceInventory = {| Files = workspaceFiles; Bytes = workspaceBytes |}
+                   StateRetention = (if Result.isOk verdict then "delete this expected attempt only" else "retain complete attempt; no automatic size cap or purge") |}
+            TlcAttempts.finish attempt (Result.isOk verdict)
+            match verdict with
+            | Ok() -> ()
+            | Error _ -> Console.Error.WriteLine("TLC attempt retained at " + attempt.Directory)
+            captured.ExitCode, output, attempt.Directory, verdict
+        with error ->
+            try TlcAttempts.writeDiagnostic attempt "runner-failure.json" {| Stage = stage; FinishedAtUtc = DateTimeOffset.UtcNow; Error = error.Message |}
+            with _ -> ()
+            failwithf "TLC runner failed: %s; retained diagnostics: %s" error.Message attempt.Directory
+
+let private runTlc (model: PinnedModel) =
+    tlcProcessGate.Wait()
+    try
+        let mutable attempt = 1
+        let mutable outcome = runTlcUnlocked model attempt
+        let retry () =
+            let exitCode, output, _, verdict = outcome
+            Result.isError verdict && shouldRetryJvmStart attempt exitCode output
+        while retry () do
+            Console.Error.WriteLine(sprintf "TLC %s: explicit startup failure retained before retry %d/3" model.Id attempt)
+            Thread.Sleep 2000
+            attempt <- attempt + 1
+            outcome <- runTlcUnlocked model attempt
+        outcome
+    finally
+        tlcProcessGate.Release() |> ignore
+
+
 // ═══════════════════════════════════════════════════════════════════
 // The gate. One theory case per pinned model — no hand-maintained
 // list, so a config cannot be added to the specs directory and quietly
@@ -458,16 +535,22 @@ let gateModelIds : obj array seq =
 let ``TLC checks the pinned model`` (id: string) =
     if not (toolchainReady ()) then () else
     let model = modelById id
-    let (exitCode, stdout) = runTlc model
-    judge model exitCode stdout
+    let _, _, directory, verdict = runTlc model
+    match verdict with
+    | Ok() -> ()
+    | Error reason -> failwithf "%s\nFull retained diagnostics: %s" reason directory
 
 
 [<Fact>]
-let ``TLC JVM policy excludes C2 type speculation only on macOS arm64`` () =
+let ``TLC JVM policy uses C1 only on macOS arm64`` () =
+    jvmDarwinArm64Extra
+    |> should equal [ "-XX:-UseTypeSpeculation"; "-XX:TieredStopAtLevel=1" ]
     tlcJvmArguments true "error.log"
     |> should equal (jvmBase @ jvmDarwinArm64Extra @ [ "-XX:ErrorFile=error.log" ])
     tlcJvmArguments false "error.log"
     |> should equal (jvmBase @ [ "-XX:ErrorFile=error.log" ])
+    tlcJvmArguments false "error.log"
+    |> should not' (contain "-XX:TieredStopAtLevel=1")
 
 
 [<Fact>]
@@ -587,14 +670,29 @@ let ``a JVM that never started is reported as such, not as toolchain drift`` () 
     Assert.Contains("NOTHING about the model", ex.Message)
 
 [<Fact>]
-let ``a jar reporting a different version IS toolchain drift`` () =
-    // The other half. A guard that called everything an environment fault would be as wrong as the
-    // one that called everything drift, and it would silently accept an unpinned checker.
-    let wrongJar = "TLC2 Version 1900.01.01.000000 (rev: deadbee)\nModel checking completed.\n"
+let ``a jar reporting a different version is ACCEPTED, but a different RESULT still fails`` () =
+    // The other half, rewritten 2026-09-10 with the maintainer's decision to accept the roll.
+    //
+    // This is the test that stops the acceptance from becoming a hole. Banner drift alone must
+    // NOT throw -- that is the accepted risk. Banner drift plus a result the registry does not
+    // expect MUST still throw, and must throw about the RESULT, not about the jar.
+    // The FULL completion marker, not a prefix. The previous version of this test carried
+    // "Model checking completed." alone and passed anyway, because it threw on the BANNER
+    // before reaching the clean-run check -- so the truncated fixture never mattered. Once
+    // the banner only warns, the fixture has to actually satisfy the verdicts that remain.
+    // That is the test noticing its own under-specification, which is the point of relaxing
+    // one verdict and keeping four.
+    let wrongJarCleanRun =
+        "TLC2 Version 1900.01.01.000000 (rev: deadbee)\nModel checking completed. No error has been found\n"
 
-    let ex = Assert.Throws<Exception>(fun () -> judge aModel 0 wrongJar)
+    // A rolled build that still produces the expected outcome: accepted, no exception.
+    judge aModel 0 wrongJarCleanRun
 
-    Assert.Contains("TOOLCHAIN DRIFT", ex.Message)
+    // The same rolled build with a nonzero exit: still fails, and the message is about the run
+    // rather than about the version. If this ever starts reporting drift instead, the four
+    // substantive verdicts have been swallowed by the one we chose to relax.
+    let ex = Assert.Throws<Exception>(fun () -> judge aModel 1 wrongJarCleanRun)
+    Assert.DoesNotContain("TOOLCHAIN DRIFT", ex.Message)
     Assert.DoesNotContain("TLC DID NOT RUN", ex.Message)
 
 
@@ -603,19 +701,343 @@ let ``a jar reporting a different version IS toolchain drift`` () =
 [<Fact>]
 let ``a JVM that never started is retried`` () =
     // The observed case: -Xmx4g cannot be reserved while the whole suite runs.
-    Assert.True(shouldRetryJvmStart 1 "Could not reserve enough space for object heap")
+    Assert.True(shouldRetryJvmStart 1 1 "Could not reserve enough space for object heap")
 
 [<Fact>]
 let ``the retry is BOUNDED — a persistent shortage still fails`` () =
     // Without this the run would spin on a box that simply does not have the memory, and a hang is
     // a worse failure than a red test because nothing reports it.
-    Assert.False(shouldRetryJvmStart JvmStartAttempts "Could not reserve enough space for object heap")
+    Assert.False(shouldRetryJvmStart JvmStartAttempts 1 "Could not reserve enough space for object heap")
 
 [<Fact>]
 let ``an ANSWER is never retried`` () =
     // The half that matters most. TLC reporting a violation, a wrong banner, or a missing completion
     // marker has ANSWERED; re-asking is how a real, reproducible failure becomes intermittent — and
     // an intermittent failure is one people learn to re-run rather than read.
-    Assert.False(shouldRetryJvmStart 1 "Error: Invariant Solvency is violated.")
-    Assert.False(shouldRetryJvmStart 1 "TLC2 Version 1900.01.01.000000 (rev: deadbee)")
-    Assert.False(shouldRetryJvmStart 1 "Model checking completed. No error has been found")
+    Assert.False(shouldRetryJvmStart 1 1 "Error: Invariant Solvency is violated.")
+    Assert.False(shouldRetryJvmStart 1 1 "TLC2 Version 1900.01.01.000000 (rev: deadbee)")
+    Assert.False(shouldRetryJvmStart 1 1 "Model checking completed. No error has been found")
+
+
+[<Fact>]
+let ``startup retry policy agrees with the cross-runner refusal roster`` () =
+    use fixture = JsonDocument.Parse(File.ReadAllText(Path.Combine(repoRoot, "registry", "tlc-retry-fixtures.json")))
+    for row in fixture.RootElement.GetProperty("Cases").EnumerateArray() do
+        let output = row.GetProperty("Stdout").GetString() + "\n" + row.GetProperty("Stderr").GetString()
+        let expected = row.GetProperty("Retryable").GetBoolean()
+        let signalFree = row.GetProperty("Signal").ValueKind = JsonValueKind.Null
+        let processError = row.GetProperty("ProcessError").GetBoolean()
+        let exitCode = row.GetProperty("ExitCode").GetInt32()
+        Assert.Equal(expected, signalFree && not processError && shouldRetryJvmStart 1 exitCode output)
+        Assert.False(shouldRetryJvmStart 3 1 output)
+
+
+[<Fact>]
+let ``a valid completion followed by fatal nonzero exit remains a failed answer`` () =
+    let output = pinnedBanner + "\n" + cleanMarker + "\nSIGBUS\nhs_err_pid42.log"
+    Assert.Throws<Exception>(fun () -> judge aModel 134 output) |> ignore
+    Assert.False(shouldRetryJvmStart 1 1 output)
+
+
+[<Fact>]
+let ``failed attempt streams states and helper inputs survive later expected cleanup`` () =
+    let scratch = Path.Combine(Path.GetTempPath(), "tlc-retention-fixture-" + Guid.NewGuid().ToString("N"))
+    Directory.CreateDirectory scratch |> ignore
+    try
+        File.WriteAllText(Path.Combine(scratch, "Fixture.tla"), "---- MODULE Fixture ----\nEXTENDS Helper\n====\n")
+        File.WriteAllText(Path.Combine(scratch, "Helper.tla"), "---- MODULE Helper ----\nVALUE == 1\n====\n")
+        File.WriteAllText(Path.Combine(scratch, "Fixture.cfg"), "SPECIFICATION Spec\n")
+        let foreign = Path.Combine(scratch, "Fixture_TTrace_foreign.tla")
+        File.WriteAllText(foreign, "preexisting trace")
+        let sources () = [|"Fixture.tla"; "Helper.tla"; "Fixture.cfg"|]
+        let prepare number =
+            match TlcAttempts.prepare (Path.Combine(scratch, "diagnostics")) "Fixture" number scratch sources with
+            | Ok value -> value
+            | Error failure -> failwith failure.Error
+        let first, second = prepare 1, prepare 2
+        Assert.NotEqual<string>(first.Directory, second.Directory)
+        Assert.NotEqual<string>(first.ErrorFile, second.ErrorFile)
+        Assert.Equal(3, first.Inputs.Length)
+        Assert.True(first.Inputs |> Array.forall (fun input -> input.Source = input.Copied))
+        Assert.Contains("VALUE == 1", File.ReadAllText(Path.Combine(first.Workspace, "Helper.tla")))
+        Assert.False(File.Exists(Path.Combine(first.Workspace, "Fixture_TTrace_foreign.tla")))
+        let fullLog = "first sentinel\n" + String('x', 65536) + "\nlast sentinel"
+        File.WriteAllText(first.Stdout, fullLog)
+        File.WriteAllText(first.Stderr, "fatal stderr")
+        File.WriteAllText(Path.Combine(first.Directory, "hs_err_pid42.log"), "crash identity")
+        File.WriteAllBytes(Path.Combine(first.Metadir, "state.bin"), [|1uy;2uy;3uy;4uy|])
+        TlcAttempts.writeDiagnostic first "completion.json" {| Expected = false |}
+        Assert.Throws<IOException>(fun () -> TlcAttempts.writeDiagnostic first "completion.json" {| Expected = true |}) |> ignore
+        TlcAttempts.finish first false
+        TlcAttempts.finish second true
+        Assert.Equal(fullLog, File.ReadAllText first.Stdout)
+        Assert.Equal("crash identity", File.ReadAllText(Path.Combine(first.Directory, "hs_err_pid42.log")))
+        Assert.Equal((1,4L), TlcAttempts.inventory first.Metadir)
+        Assert.False(Directory.Exists second.Directory)
+        Assert.Equal("preexisting trace", File.ReadAllText foreign)
+    finally Directory.Delete(scratch, true)
+
+
+[<Fact>]
+let ``source inventory and copy refusals retain explicit attempt metadata`` () =
+    let scratch = Path.Combine(Path.GetTempPath(), "tlc-copy-fixture-" + Guid.NewGuid().ToString("N"))
+    Directory.CreateDirectory scratch |> ignore
+    try
+        let inventories =
+            [ (fun () -> [|"missing.tla"|]); (fun () -> [|"../escape.tla"|])
+              (fun () -> [|"Fixture_TTrace_old.tla"|]); (fun () -> failwith "source identity unavailable") ]
+        for sources in inventories do
+            match TlcAttempts.prepare (Path.Combine(scratch, "diagnostics")) "Fixture" 1 scratch sources with
+            | Ok _ -> failwith "expected explicit source-copy refusal"
+            | Error failure ->
+                Assert.True(File.Exists(Path.Combine(failure.Directory, "attempt.json")))
+                Assert.True(File.Exists(Path.Combine(failure.Directory, "preparation-failure.json")))
+    finally Directory.Delete(scratch, true)
+
+
+[<Fact>]
+let ``actual source collection admits unstaged and new helpers but refuses ignored helpers`` () =
+    let scratch = Path.Combine(Path.GetTempPath(), "tlc-source-fixture-" + Guid.NewGuid().ToString("N"))
+    let specs = Path.Combine(scratch, "src", "Core.TLA", "specs")
+    Directory.CreateDirectory specs |> ignore
+    let git arguments =
+        let info = ProcessStartInfo("git")
+        info.WorkingDirectory <- scratch
+        info.UseShellExecute <- false
+        info.RedirectStandardOutput <- true
+        info.RedirectStandardError <- true
+        for argument in arguments do info.ArgumentList.Add argument
+        use proc = Process.Start info
+        let stdout = proc.StandardOutput.ReadToEnd()
+        let stderr = proc.StandardError.ReadToEnd()
+        proc.WaitForExit()
+        Assert.True(proc.ExitCode = 0, stdout + stderr)
+    try
+        git ["init"; "--quiet"]
+        File.WriteAllText(Path.Combine(specs, "Fixture.tla"), "tracked original")
+        File.WriteAllText(Path.Combine(specs, "Fixture.cfg"), "tracked config")
+        git ["add"; "src"]
+        File.WriteAllText(Path.Combine(specs, "Fixture.tla"), "unstaged changed bytes")
+        File.WriteAllText(Path.Combine(specs, "New.tla"), "---- MODULE New ----\nEXTENDS Helper\n====")
+        File.WriteAllText(Path.Combine(specs, "Helper.tla"), "new untracked helper")
+        File.WriteAllText(Path.Combine(specs, "New.cfg"), "new untracked selected config")
+        File.WriteAllText(Path.Combine(specs, "Fixture_TTrace_old.tla"), "foreign generated trace")
+        let sources () = TlcAttempts.sourceInputs scratch specs [|"New.tla"; "New.cfg"|]
+        Assert.True((sources() |> Array.sort) = [|"Fixture.cfg"; "Fixture.tla"; "Helper.tla"; "New.cfg"; "New.tla"|])
+        let attempt =
+            match TlcAttempts.prepare (Path.Combine(scratch, "diagnostics")) "New" 1 specs sources with
+            | Ok value -> value
+            | Error failure -> failwith failure.Error
+        Assert.Equal("unstaged changed bytes", File.ReadAllText(Path.Combine(attempt.Workspace, "Fixture.tla")))
+        Assert.Equal("new untracked helper", File.ReadAllText(Path.Combine(attempt.Workspace, "Helper.tla")))
+        File.WriteAllText(Path.Combine(scratch, ".gitignore"), "Ignored.tla\n")
+        File.WriteAllText(Path.Combine(specs, "Ignored.tla"), "must not silently omit this helper")
+        let error = Assert.Throws<InvalidOperationException>(fun () -> sources() |> ignore)
+        Assert.Contains("ignored local source input would be omitted: Ignored.tla", error.Message)
+    // `git init` above leaves read-only objects; see `deleteGitScratchTree`.
+    finally deleteGitScratchTree scratch
+
+
+[<Fact>]
+let ``owned process capture retains probe streams and bounds timeout without Java`` () =
+    let scratch = Path.Combine(Path.GetTempPath(), "tlc-process-fixture-" + Guid.NewGuid().ToString("N"))
+    Directory.CreateDirectory scratch |> ignore
+    try
+        let bun = which "bun" |> Option.defaultWith (fun () -> failwith "synthetic process fixture requires the configured Bun runtime")
+        let stdout = Path.Combine(scratch, "stdout.log")
+        let stderr = Path.Combine(scratch, "stderr.log")
+        // 3000 ms was a BUN COLD-START budget masquerading as a correctness bound.
+        // This assertion is about capture and exit status, not about how fast bun
+        // starts; when the budget is exceeded `captureProcessWithDeadline` calls
+        // `proc.Kill true`, and on Windows that surfaces as ExitCode -1 -- which is
+        // what the next line then reported as a capture failure. Measured: 2 of the
+        // last 14 windows runs on main (windows-2025 and windows-11-arm alike).
+        // 30000 matches the java-version budget above. The timeout paths that ARE
+        // under test keep their tiny budgets and are deliberately unchanged: the
+        // `Atomics.wait` call asserts `TimedOut`, and the empty-argv call asserts
+        // `IOException` on the CreateNew collision. Those name behaviour; this one
+        // named a stopwatch. (Referred to by call, not by line: my own insert here
+        // shifted the numbers a first draft of this comment cited.)
+        let result = TlcAttempts.captureProcess bun ["-e"; "console.log('output sentinel');console.error('error sentinel')"] scratch stdout stderr (Some 30000)
+        Assert.Equal(0, result.ExitCode)
+        Assert.False result.TimedOut
+        Assert.Contains("output sentinel", File.ReadAllText stdout)
+        Assert.Contains("error sentinel", File.ReadAllText stderr)
+        Assert.ThrowsAny<System.ComponentModel.Win32Exception>(fun () ->
+            TlcAttempts.captureProcess (Path.Combine(scratch, "missing-executable")) [] scratch (Path.Combine(scratch, "missing-out")) (Path.Combine(scratch, "missing-err")) (Some 100) |> ignore) |> ignore
+        let timed = TlcAttempts.captureProcess bun ["-e"; "Atomics.wait(new Int32Array(new SharedArrayBuffer(4)),0,0)"] scratch (Path.Combine(scratch, "timed-out")) (Path.Combine(scratch, "timed-err")) (Some 40)
+        Assert.True timed.TimedOut
+        Assert.False(not timed.TimedOut && shouldRetryJvmStart 1 timed.ExitCode "Error occurred during initialization of VM")
+        let partial = Path.Combine(scratch, "partial-open")
+        Assert.Throws<IOException>(fun () -> TlcAttempts.captureProcess bun [] scratch partial stderr (Some 100) |> ignore) |> ignore
+        // If opening stderr failed, stdout's earlier descriptor must already be disposed.
+        use exclusive = new FileStream(partial, FileMode.Open, FileAccess.ReadWrite, FileShare.None)
+        Assert.Equal(0L, exclusive.Length)
+        Assert.Contains("error sentinel", File.ReadAllText stderr)
+    finally Directory.Delete(scratch, true)
+
+
+[<Fact>]
+let ``probe cancellation drains inherited pipes after observed launcher exit`` () =
+    // THE HOLDER IS SPAWNED DETACHED, and that is a cross-platform requirement
+    // rather than a stylistic choice.
+    //
+    // What is under test is that the drain stays BOUNDED when the captured
+    // process exits while some OTHER process still holds the write end of its
+    // pipe -- `CopyToAsync` never sees EOF, so `WhenAll` must be released by the
+    // deadline rather than hanging forever. That needs a grandchild which (a)
+    // inherits the launcher's stdout and (b) OUTLIVES it. The inheritance is
+    // intrinsic: .NET cannot spawn the holder itself, because a second
+    // .NET-spawned process would get its own pipe, not this one.
+    //
+    // The first draft used `Bun.spawn(..., {stdout:'inherit'})` + `child.unref()`.
+    // That satisfies (a) everywhere and (b) only on POSIX: `unref()` detaches the
+    // child from Bun's event loop, NOT from the OS. On Windows the grandchild
+    // stays in the launcher's job object and is terminated when the launcher
+    // exits, so `Process.GetProcessById` threw `ArgumentException: MissingProcess`
+    // before the drain was ever exercised -- 53 of 59 runs on `windows-2025` and
+    // `windows-11-arm`, invisible to `gate (required)` the whole time.
+    //
+    // `node:child_process.spawn(..., { detached: true })` is the documented
+    // cross-platform mechanism for outliving a parent: `setsid` on POSIX,
+    // `DETACHED_PROCESS` on Windows. `stdio: ['ignore','inherit','inherit']`
+    // keeps property (a) exactly as before.
+    //
+    // HONEST LIMIT: this cannot be verified from macOS or Linux, where the old
+    // fixture already worked -- only Windows CI can falsify it. It is landed
+    // WITHOUT a platform skip on purpose: a skip would hide whether the redesign
+    // worked, and Windows is already red, so an unsuccessful attempt costs a
+    // cycle rather than a regression.
+    let scratch = Path.Combine(repoRoot, "TestResults", "tlc-diagnostics", "inherited-pipe-fixture-" + Guid.NewGuid().ToString("N"))
+    Directory.CreateDirectory scratch |> ignore
+    let stdout = Path.Combine(scratch, "stdout.log")
+    let stderr = Path.Combine(scratch, "stderr.log")
+    let pidPath = Path.Combine(scratch, "child.pid")
+    let mutable complete = false
+    let mutable stage = "setup"
+    let mutable primaryFailure: exn option = None
+    let mutable capture: Task<TlcAttempts.ProcessCapture> option = None
+    use launcher = new Process()
+    use deadline = new CancellationTokenSource()
+    let recordFailure name (value: obj) =
+        try File.WriteAllText(Path.Combine(scratch, name), JsonSerializer.Serialize value)
+        with writeError ->
+            // Diagnostic storage failure must not replace the original assertion.
+            try Console.Error.WriteLine("Fixture diagnostic write failed at " + scratch + ": " + writeError.ToString())
+            with _ -> ()
+    try
+        // Successful cleanup joins capture before disposal. A bounded join failure
+        // remains a retained failure, not a claim that all work became quiescent.
+        use stdoutFile = new FileStream(stdout, FileMode.CreateNew, FileAccess.Write, FileShare.Read)
+        use stderrFile = new FileStream(stderr, FileMode.CreateNew, FileAccess.Write, FileShare.Read)
+        try
+            try
+                let bun = which "bun" |> Option.defaultWith (fun () -> failwith "synthetic process fixture requires the configured Bun runtime")
+                // `process.stdout.write(String(pid))`, NOT `console.log(pid)`, and the
+                // difference is a real bug this test caught on macOS. Bun COLOURISES
+                // numbers in `console.log`, so the captured pipe held
+                // `ESC[0m ESC[33m 74140 ESC[0m` and the comparison against a bare PID
+                // failed with "Strings differ" while printing two identical-looking
+                // values -- the escapes are invisible in the diff, and `.Trim()` does
+                // not remove them. Writing the string directly emits exactly the bytes
+                // asserted, with no dependence on TTY detection or NO_COLOR.
+                // PID ownership is independent of the drain path under test. Rename
+                // publishes complete bytes; readiness/exit precede cancellation.
+                let script = "const fs=require('node:fs');const cp=require('node:child_process');const child=cp.spawn(process.execPath,['-e','Atomics.wait(new Int32Array(new SharedArrayBuffer(4)),0,0)'],{detached:true,stdio:['ignore','inherit','inherit']});child.unref();fs.writeFileSync(process.argv[1]+'.partial',String(child.pid));fs.renameSync(process.argv[1]+'.partial',process.argv[1]);process.stdout.write(String(child.pid));process.exit(0)"
+                let info = ProcessStartInfo(bun)
+                info.WorkingDirectory <- scratch
+                info.UseShellExecute <- false
+                info.RedirectStandardOutput <- true
+                info.RedirectStandardError <- true
+                for arg in ["-e"; script; pidPath] do info.ArgumentList.Add arg
+                launcher.StartInfo <- info
+                File.WriteAllText(Path.Combine(scratch, "fixture.json"), JsonSerializer.Serialize
+                    {| Kind = "synthetic-inherited-pipe-cancellation"; Executable = bun
+                       Argv = [|"-e"; script; pidPath|]; SetupPatienceMilliseconds = 30000
+                       DeadlineMode = "cancel only after readiness and observed launcher exit" |})
+                let running = Task.Run(fun () -> TlcAttempts.captureProcessWithDeadline launcher stdoutFile stderrFile deadline)
+                capture <- Some running
+                // SETUP PATIENCE, not the property under test. This waits for a
+                // fixture that spawns bun which spawns bun again; on Windows that is
+                // two cold starts, and the test burned exactly its 10 s before
+                // failing "fixture readiness not observed". Raising it tolerates the
+                // DELAY and not the ABSENCE -- readiness that never arrives still
+                // fails, and the cancel-and-drain behaviour this test exists to prove
+                // keeps its own bounds at :914, :922 and :957, which are untouched.
+                Assert.True(SpinWait.SpinUntil((fun () -> File.Exists pidPath || running.IsCompleted), 30000), "fixture readiness not observed; retained: " + scratch)
+                if running.IsCompleted then running.GetAwaiter().GetResult() |> ignore
+                Assert.True(File.Exists pidPath, "fixture child PID not published; retained: " + scratch)
+                Assert.True(launcher.WaitForExit(10000), "launcher exit not observed; retained: " + scratch)
+                Assert.Equal(0, launcher.ExitCode)
+                let pid = Int32.Parse(File.ReadAllText(pidPath).Trim(), Globalization.CultureInfo.InvariantCulture)
+                use child = Process.GetProcessById pid
+                Assert.False child.HasExited
+                Assert.False running.IsCompleted
+                stage <- "cancel-and-drain"
+                deadline.Cancel()
+                Assert.True(running.Wait(10000), "cancelled pipe drain did not finish; retained: " + scratch)
+                let captured = running.GetAwaiter().GetResult()
+                Assert.Equal(0, captured.ExitCode)
+                Assert.True captured.TimedOut
+                Assert.False child.HasExited
+                // The grandchild still holds `stdout` OPEN FOR WRITING here, so its bytes
+                // become visible on the WRITER's schedule, not ours. Read once and this
+                // line asserts a race rather than the drain behaviour it is named for.
+                //
+                // MEASURED 2026-09-10: failed on macos-26 with Actual "" against an
+                // expected PID, and the SAME COMMIT passed on re-run -- two verdicts from
+                // one tree, which is what proves it flaky rather than broken. The failing
+                // instance took 661 ms; this repo's own archived runs of this test record
+                // 184 ms and 68 ms, so the fixture was under 3.6x-10x its normal time
+                // pressure and an assertion with no tolerance cannot survive that.
+                //
+                // Same remedy and the same reasoning as the readiness bound at :930
+                // (PR #17071, "four windows failures, one diagnosis: bounds with no
+                // tolerance"). That fix reached the readiness bound; this line was left
+                // with no tolerance at all, so its own diagnosis applies here untouched.
+                //
+                // Tolerates the DELAY, never the ABSENCE: a PID that never appears still
+                // fails, and it fails through Assert.Equal so the message carries the
+                // value actually observed instead of a bare timeout.
+                let expectedPid = pid.ToString(Globalization.CultureInfo.InvariantCulture)
+                SpinWait.SpinUntil((fun () -> (readTextSharedWithWriter stdout).Trim() = expectedPid), 10000)
+                |> ignore
+                Assert.Equal(expectedPid, (readTextSharedWithWriter stdout).Trim())
+            with error ->
+                primaryFailure <- Some error
+                recordFailure "fixture-failure.json" (box {| Stage = stage; Error = error.ToString() |})
+                try Console.Error.WriteLine("Inherited-pipe fixture retained at " + scratch)
+                with _ -> ()
+                reraise()
+        finally
+            // Cancellation does not claim to isolate an exited launcher's child.
+            // This fixture explicitly owns and cleans the separately recorded PID.
+            let cleanupFailures = ResizeArray<string>()
+            let clean action =
+                try action()
+                with error -> cleanupFailures.Add(error.ToString())
+            clean (fun () -> deadline.Cancel())
+            clean (fun () ->
+                try
+                    if not launcher.HasExited then launcher.Kill true
+                with :? InvalidOperationException -> ())
+            clean (fun () ->
+                if File.Exists pidPath then
+                    let pid = Int32.Parse(File.ReadAllText(pidPath).Trim(), Globalization.CultureInfo.InvariantCulture)
+                    try
+                        use child = Process.GetProcessById pid
+                        if not child.HasExited then child.Kill true
+                    with :? ArgumentException -> ())
+            // Kill closes the fixture's inherited pipes even if cancellation regresses.
+            clean (fun () ->
+                match capture with
+                | Some running ->
+                    Assert.True(running.Wait(10000), "fixture capture did not join after owned cleanup; retained: " + scratch)
+                    running.GetAwaiter().GetResult() |> ignore
+                | None -> ())
+            if cleanupFailures.Count <> 0 then
+                recordFailure "cleanup-failure.json" (box (cleanupFailures.ToArray()))
+                if primaryFailure.IsNone then invalidOp ("fixture cleanup failed; retained: " + scratch + "; " + String.concat "\n" cleanupFailures)
+        complete <- true
+    finally
+        if complete then Directory.Delete(scratch, true)

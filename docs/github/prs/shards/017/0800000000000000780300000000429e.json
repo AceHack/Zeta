@@ -1,0 +1,12 @@
+{
+  "pr_number": 17054,
+  "archive_path": "docs/history/pr-reviews/PR-17054-feat-081m20tmrd9087g0r0035y762d-freeze-boat-carries-only-unknown-cas-objects.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-08T16:04:02.514Z",
+  "schema_version": "v1",
+  "commit_sha": "42830885eb9cad6e2160f77f1ba8954a370a4506",
+  "title": "feat(081M20TMRD9087G0R0035Y762D): freeze boat carries only unknown CAS objects",
+  "state": "MERGED",
+  "merged_at": "2026-09-08T16:03:14Z",
+  "head_ref": "feat/zetafs-d9-freeze-new-objects-only"
+}

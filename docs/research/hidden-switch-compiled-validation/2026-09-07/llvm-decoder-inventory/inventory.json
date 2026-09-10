@@ -1,0 +1,131 @@
+{
+  "CapturedAtUtc": "2026-09-07T23:18:04.001175+00:00",
+  "Scope": "Version/help/link inventory only; no disassembly, target or dump query",
+  "Records": [
+    {
+      "File": "version.stdout.txt",
+      "Bytes": 1770,
+      "Sha256": "ee24f182784db894212508edaf63804bc1c0332b320ca99998375bee959d7c4c"
+    },
+    {
+      "File": "version.stderr.txt",
+      "Bytes": 0,
+      "Sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "Command": [
+        "/opt/homebrew/opt/llvm/bin/llvm-mc",
+        "--version"
+      ],
+      "ExitCode": 0
+    },
+    {
+      "File": "help.stdout.txt",
+      "Bytes": 4498,
+      "Sha256": "acc96e66c7236aff0b903d79b8d4214876341aeee72d3fdd984314f910ff51ce"
+    },
+    {
+      "File": "help.stderr.txt",
+      "Bytes": 0,
+      "Sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "Command": [
+        "/opt/homebrew/opt/llvm/bin/llvm-mc",
+        "--help"
+      ],
+      "ExitCode": 0
+    },
+    {
+      "File": "executable-links.stdout.txt",
+      "Bytes": 283,
+      "Sha256": "e61908edefe787c02808ac1000549c07861927b685a399d5a1725dc2163281cb"
+    },
+    {
+      "File": "executable-links.stderr.txt",
+      "Bytes": 0,
+      "Sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "Command": [
+        "/usr/bin/otool",
+        "-L",
+        "/opt/homebrew/opt/llvm/bin/llvm-mc"
+      ],
+      "ExitCode": 0
+    },
+    {
+      "File": "llvm-links.stdout.txt",
+      "Bytes": 820,
+      "Sha256": "97fef0bde9f97a7a671cc7763fd5deb4b2d500c4bc304a4b23e96ed19d41a240"
+    },
+    {
+      "File": "llvm-links.stderr.txt",
+      "Bytes": 0,
+      "Sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "Command": [
+        "/usr/bin/otool",
+        "-L",
+        "/opt/homebrew/opt/llvm/lib/libLLVM.23.1.dylib"
+      ],
+      "ExitCode": 0
+    }
+  ],
+  "InstalledFilePins": [
+    {
+      "Path": "/opt/homebrew/opt/llvm/bin/llvm-mc",
+      "ResolvedPath": "/opt/homebrew/Cellar/llvm/23.1.0/bin/llvm-mc",
+      "Bytes": 107432,
+      "Sha256": "1e6100f8891f7c1f27daf80ce98a5962331b555ceb7821e61c68211c40fd03d0"
+    },
+    {
+      "Path": "/opt/homebrew/opt/llvm/lib/libLLVM.23.1.dylib",
+      "ResolvedPath": "/opt/homebrew/Cellar/llvm/23.1.0/lib/libLLVM.23.1.dylib",
+      "Bytes": 169150736,
+      "Sha256": "407f3a39e56a727ea161e95767eafd96bdcd09071638f583beff0106bffa34f5"
+    },
+    {
+      "Path": "/opt/homebrew/opt/llvm/INSTALL_RECEIPT.json",
+      "ResolvedPath": "/opt/homebrew/Cellar/llvm/23.1.0/INSTALL_RECEIPT.json",
+      "Bytes": 3944,
+      "Sha256": "68cb3c7e28a90b045654f0cdd4bb97da215c59a93900d81c29137c8e16061efd"
+    },
+    {
+      "Path": "/opt/homebrew/opt/llvm/include/llvm/MC/MCDisassembler/MCDisassembler.h",
+      "ResolvedPath": "/opt/homebrew/Cellar/llvm/23.1.0/include/llvm/MC/MCDisassembler/MCDisassembler.h",
+      "Bytes": 10589,
+      "Sha256": "f30c0820c0067d066c62c79d322a159a839c7dc4e719fb142eee7b452ce5b955"
+    },
+    {
+      "Path": "/opt/homebrew/opt/z3/lib/libz3.5.1.dylib",
+      "ResolvedPath": "/opt/homebrew/Cellar/z3/5.1.0/lib/libz3.5.1.0.0.dylib",
+      "Bytes": 15730544,
+      "Sha256": "45344d6a38b6f75304433c2458d6fa16bc4907d426c96e2bedf0a90603460422"
+    },
+    {
+      "Path": "/opt/homebrew/opt/zstd/lib/libzstd.1.dylib",
+      "ResolvedPath": "/opt/homebrew/Cellar/zstd/1.5.7_1/lib/libzstd.1.5.7.dylib",
+      "Bytes": 649648,
+      "Sha256": "e2847c4613b386683c234913ae3b7b04299254096caf7616e3b3cd9bb97a39ab"
+    }
+  ],
+  "VersionTagSourceGuidance": [
+    {
+      "File": "MCAsmStreamer.cpp",
+      "Bytes": 97174,
+      "Sha256": "1e7a44a66f49318774e89a3df66e9b8101a4ace70d5957d548e4fa2e3bbd51f3"
+    },
+    {
+      "File": "Disassembler.cpp",
+      "Bytes": 8022,
+      "Sha256": "0b7aae48d0ed2ecf81d428b0e19842827ad4b0ba3cadb76e2e8ba840f3cf6706"
+    },
+    {
+      "File": "llvm-mc.cpp",
+      "Bytes": 24571,
+      "Sha256": "977b9756008dd34a29d7beb6fa8de91fc98a94fdc2705ff50c75f9d312136a38"
+    }
+  ]
+}

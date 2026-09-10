@@ -1,0 +1,15 @@
+  Determining projects to restore...
+  Restored /Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/src/Core.FSharp.ZetaId/Zeta.Core.FSharp.ZetaId.fsproj (in 41 ms).
+  Restored /Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/src/Core.FSharp.Yaml/Zeta.Core.FSharp.Yaml.fsproj (in 41 ms).
+  Restored /Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/src/Core.Abstractions/Zeta.Core.Abstractions.csproj (in 91 ms).
+  Restored /Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/src/Core/Core.fsproj (in 103 ms).
+  Zeta.Core.Abstractions -> /Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/src/Core.Abstractions/bin/Release/net10.0/Zeta.Core.Abstractions.dll
+  Zeta.Core.FSharp.ZetaId -> /Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/src/Core.FSharp.ZetaId/bin/Release/net10.0/Zeta.Core.FSharp.ZetaId.dll
+  Zeta.Core.FSharp.Yaml -> /Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/src/Core.FSharp.Yaml/bin/Release/net10.0/Zeta.Core.FSharp.Yaml.dll
+  Core -> /Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/src/Core/bin/Release/net10.0/Zeta.Core.dll
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:24.16

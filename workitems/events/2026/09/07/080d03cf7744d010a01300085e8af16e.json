@@ -1,0 +1,14 @@
+{
+  "id": "080d03cf7744d010a01300085e8af16e",
+  "at": "2026-09-07T03:34:55.386Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1WYXT4S087G0R002K1TK4Y",
+    "type": "task",
+    "title": "Frost look with injected effects becomes named probe; tpmrm0 is not present",
+    "slug": "frost-look-with-injected-effects-becomes-named-probe-tpmrm0",
+    "priority": "P2",
+    "filename": "081M1WYXT4S087G0R002K1TK4Y-frost-look-with-injected-effects-becomes-named-probe-tpmrm0.md"
+  }
+}

@@ -51,6 +51,60 @@ function Invoke-Tool {
   try { & $Cmd 2>&1 | ForEach-Object { Write-Host "$_" } } finally { $ErrorActionPreference = $prev }
   if ($LASTEXITCODE -ne 0) { throw "$What failed (exit $LASTEXITCODE)" }
 }
+
+# NARROW retry for failures produced by an external service that never answered.
+#
+# Measured 2026-09-10, `build-and-test (windows-11-arm)` on `main`: mise refused to install
+# kubeconform because GitHub's attestation service returned 503 "trust-metadata-api service
+# unavailable". Failing closed on an unverifiable artifact is CORRECT and stays. Giving up
+# after one attempt is not: the whole Windows lane went red on `main` for an outage measured
+# in seconds.
+#
+# The distinction this rests on, and the reason the list is short: a verification that RAN and
+# said no must never be retried away -- only one that COULD NOT RUN is re-attemptable. A 5xx is
+# the server declining to answer, not an answer. A checksum mismatch, a 404, or "no matching
+# attestation found" are answers, and they fail immediately here as they always did.
+#
+# The needles are mirrored from `src/Core.TypeScript/ci/transient-toolchain-failure.ts`, where
+# the classification is unit-tested (11 falsifiers; mutating the default verdict to `retry` is
+# killed by 5, truncating this needle to "attestation" by 1). `audit-transient-retry-parity.ts`
+# fails if the two lists drift, because a retry predicate that is broader here than there is
+# exactly how red quietly becomes intermittent green.
+$script:TransientToolNeedles = @(
+  'trust-metadata-api service unavailable',
+  '503 Service Unavailable',
+  '502 Bad Gateway',
+  '504 Gateway Time-out'
+)
+
+function Invoke-ToolWithTransientRetry {
+  param(
+    [Parameter(Mandatory)][scriptblock]$Cmd,
+    [string]$What = 'native command',
+    [int]$MaxAttempts = 3
+  )
+  for ($attempt = 1; $attempt -le $MaxAttempts; $attempt++) {
+    $prev = $ErrorActionPreference
+    $ErrorActionPreference = 'Continue'
+    try { $out = @(& $Cmd 2>&1 | ForEach-Object { Write-Host "$_"; "$_" }) } finally { $ErrorActionPreference = $prev }
+    if ($LASTEXITCODE -eq 0) { return }
+
+    $joined = ($out -join "`n")
+    $matched = $null
+    foreach ($needle in $script:TransientToolNeedles) {
+      if ($joined -like "*$needle*") { $matched = $needle; break }
+    }
+    # DEFAULT IS FAIL-NOW. A predicate that defaulted to retry would eventually swallow a
+    # real defect, and turning red into slow-green is worse than staying red.
+    if ($null -eq $matched) { throw "$What failed (exit $LASTEXITCODE)" }
+    if ($attempt -ge $MaxAttempts) {
+      throw "$What failed (exit $LASTEXITCODE) after $MaxAttempts attempts; last transient signature was '$matched'. An outage that outlasts the budget is an outage worth failing on."
+    }
+    $delayMs = 2000 * [math]::Pow(2, [math]::Min($attempt, 4) - 1)
+    Write-Host "warn: $What hit a transient upstream failure ('$matched'); attempt $attempt of $MaxAttempts, retrying in $([int]$delayMs)ms"
+    Start-Sleep -Milliseconds ([int]$delayMs)
+  }
+}
 # Capture native output with the same PowerShell 5.1 stderr discipline as Invoke-Tool. Used when
 # the output is data consumed by this script rather than progress intended for the console.
 function Get-ToolOutput {
@@ -410,12 +464,54 @@ if ($miseActual -and $miseActual -ne $MisePinVersion) {
 Push-Location $RepoRoot
 try {
   Invoke-Tool { mise trust --all --yes } 'mise trust --all --yes'
-  # HOST TIERS (workitem 081KTWQZY7F): Windows boxes are dev machines -- full tier unless
-  # explicitly declared otherwise; full merges .mise.full.toml (the k8s set) via MISE_ENV.
-  if (-not $env:ZETA_HOST_TIER) { $env:ZETA_HOST_TIER = 'full' }
-  if (-not $env:ZETA_HOST_TIER -or $env:ZETA_HOST_TIER -eq 'full') {
+  # HOST TIERS (workitem 081KTWQZY7F; narrowed by 081M25QNJ49087G0R000CRS6MN).
+  #
+  # WHAT THE TIER ACTUALLY BUYS ON WINDOWS. The only thing ZETA_HOST_TIER changes in this
+  # script is MISE_ENV=full, which merges `.mise.full.toml`. Measured 2026-09-10 against
+  # that file: over `.mise.toml` it adds exactly five tools -- k3d, kind, kubectl, helm and
+  # `github:yannh/kubeconform` -- plus `zig` and `rust` entries that are deliberate
+  # byte-identical mirrors of the base tier and so install the same versions either way.
+  # No manifest this script reads (`manifests\windows`, `manifests\from-bun-global`,
+  # `manifests\local-llm`) carries a `tier=` token, and install.ps1 drives no dotnet-global
+  # manifest. So the tier's ENTIRE Windows payload is those five Kubernetes tools.
+  #
+  # NOTHING ON WINDOWS USES THEM. Every consumer is a Linux lane: gate.yml's
+  # `lint (yaml/k8s)` installs its own kubeconform with `go install`, helm-validate.yml is
+  # `ubuntu-24.04`, and k8s-argocd-health-test.yml (k3d/kind/kubectl) is `ubuntu-24.04`.
+  # The Windows leg of `build-and-test` runs `dotnet build` + `dotnet test` over Zeta.sln
+  # and invokes none of the five.
+  #
+  # Aaron 2026-09-10: "full k8s can't run on windows ... the only windows would be from our
+  # vms inside k8s, eventually we may support windows non control nodes but today we don't".
+  # So `full` here was never a capability claim about the host. It was a default nobody had
+  # a reason to narrow.
+  #
+  # WHAT IT COST. `build-and-test (windows-11-arm)` on main failed at this very step because
+  # `github:yannh/kubeconform@0.7.0` could not be installed -- GitHub's attestation service
+  # returned 503. An outage in a Kubernetes tool took down a Windows build-and-test leg that
+  # has no Kubernetes in it. Same shape as the `qemu` row in `manifests\windows`: a
+  # dependency nothing on this platform invokes is still a way for this platform to go red.
+  #
+  # `standard` AND NOT `slim`, because this is a WORKLOAD statement rather than a capacity
+  # one. The ranks are read as host SIZE elsewhere (`common/host-tier.sh` detects `slim`
+  # below 8 GB), and a Windows dev box -- or a 16 GB GitHub runner -- is not a small host.
+  # `standard` drops precisely the k8s set and keeps every standard-tier entry (the dotnet
+  # diagnostics suite, stryker, fsharp-analyzers in `manifests/from-dotnet-global`)
+  # available for the day Windows wires that manifest up.
+  #
+  # A DECLARATION STILL WINS, exactly as `common/host-tier.sh` specifies. Anyone who wants
+  # the k8s set on Windows -- the "eventually" above -- exports ZETA_HOST_TIER=full and gets
+  # it unchanged. The capability stays discoverable; it stops being the unasked-for default.
+  if (-not $env:ZETA_HOST_TIER) { $env:ZETA_HOST_TIER = 'standard' }
+  if ($env:ZETA_HOST_TIER -eq 'full') {
     $env:MISE_ENV = 'full'
+  } else {
+    # Loud, named, with both tiers -- the skip discipline at the top of
+    # tools/setup/common/host-tier.sh, which this script cannot source (it is bash).
+    Write-Host "-> k3d/kind/kubectl/helm/kubeconform skipped: require tier=full, host is $env:ZETA_HOST_TIER"
   }
+  $miseEnvLabel = if ($env:MISE_ENV) { $env:MISE_ENV } else { '<none: base .mise.toml only>' }
+  Write-Host "host tier: $env:ZETA_HOST_TIER (MISE_ENV=$miseEnvLabel)"
   if (-not $env:MISE_TRUSTED_CONFIG_PATHS) {
     $env:MISE_TRUSTED_CONFIG_PATHS = $RepoRoot
   } elseif ($env:MISE_TRUSTED_CONFIG_PATHS -notlike "*$RepoRoot*") {
@@ -432,15 +528,42 @@ try {
     # mise backend selects. Keep the exception narrow and visible; every other version still comes
     # from the active .mise.toml/.mise.full.toml graph rather than being duplicated here.
     $unsupported = @{
-      'java' = 'mise has no Java 26 metadata for Windows ARM64'
       'pipx:semgrep' = 'cryptography has no compatible wheel and its source build requires OpenSSL'
       '1password-cli' = 'the upstream Windows ARM64 archive is unavailable'
+    }
+    # Java is NO LONGER omitted here. It used to be, with the reason 'mise has no Java 26
+    # metadata for Windows ARM64' -- which is true and remains true, but omitting the tool
+    # left this platform with NO JAVA AT ALL rather than an older one. Measured 2026-09-09
+    # against the vendor APIs, controlling against windows/x64 so a zero means absence and
+    # not a broken query:
+    #
+    #   windows/x64      Adoptium: 21 yes, 25 yes, 26 yes
+    #   windows/aarch64  Adoptium: 21 yes, 25 NO,  26 NO
+    #   windows/aarch64  Azul Zulu: 21 yes, 25 yes, 26 NO
+    #
+    # So 26 genuinely does not exist for Windows-on-ARM from either vendor, and the newest
+    # that does is Zulu 25. The pin in .mise.toml is deliberately NOT changed: every other
+    # platform keeps 26, and this is a platform-coverage fallback, not a downgrade.
+    #
+    # VENDOR-QUALIFIED ON PURPOSE. A bare '25' resolves to Oracle OpenJDK, which publishes
+    # no Windows ARM64 build, so it would fail the same way 26 does.
+    #
+    # BEST-EFFORT BY DESIGN: the current behaviour on this platform is no Java, so a failed
+    # install here can only restore the status quo. It must never fail the bootstrap -- a
+    # hard failure would make this change strictly worse than the omission it replaces.
+    $armJavaSpec = 'java@zulu-25'
+    try {
+      Invoke-Tool { mise install --yes $armJavaSpec } "mise install --yes $armJavaSpec (Windows ARM64 Java fallback)"
+      Write-Host "note: Windows ARM64 uses $armJavaSpec; .mise.toml's java 26 has no build for this platform."
+    } catch {
+      Write-Host "warn: Windows ARM64 Java fallback '$armJavaSpec' did not install: $($_.Exception.Message)"
+      Write-Host "warn: this platform continues with no Java, as it did before this fallback existed."
     }
     foreach ($tool in @($unsupported.Keys | Sort-Object)) {
       Write-Host "warn: Windows ARM64 omits optional mise tool '$tool': $($unsupported[$tool])"
     }
-    $miseInstallSpecs = @(Get-MiseConfiguredToolSpecs -ExcludedTools @($unsupported.Keys))
-    Invoke-Tool { mise install --yes @miseInstallSpecs } 'mise install --yes (Windows ARM64 supported tool graph)'
+    $miseInstallSpecs = @(Get-MiseConfiguredToolSpecs -ExcludedTools (@($unsupported.Keys) + @('java')))
+    Invoke-ToolWithTransientRetry { mise install --yes @miseInstallSpecs } 'mise install --yes (Windows ARM64 supported tool graph)'
     $runtimeBinPaths = @(Get-ToolOutput { mise bin-paths --quiet @miseInstallSpecs } 'mise bin-paths --quiet (Windows ARM64 supported tool graph)')
     # Later bootstrap steps use `mise exec -- bun ...`. Its default exec_auto_install setting
     # otherwise expands back to the whole config and retries the three unsupported tools before
@@ -448,7 +571,7 @@ try {
     # that implicit expansion for the remainder of this Windows ARM64 process.
     $env:MISE_EXEC_AUTO_INSTALL = 'false'
   } else {
-    Invoke-Tool { mise install --yes } 'mise install --yes'
+    Invoke-ToolWithTransientRetry { mise install --yes } 'mise install --yes'
     $runtimeBinPaths = @(Get-ToolOutput { mise bin-paths --quiet } 'mise bin-paths --quiet')
   }
   Publish-ZetaRuntimePaths $runtimeBinPaths
@@ -479,6 +602,38 @@ if (Test-Path $agentCliManifest) {
   Write-Host "warn: agent-clis manifest missing; skipping agent CLI install"
 }
 Repair-CodexConfigServiceTier
+
+# 5a. The from-url realizer -- the ONE mechanism manifest Windows was silently
+# skipping. `install.ps1` re-implements `manifests\windows` and
+# `manifests\from-bun-global` inline and drove NO Bun realizer at all, so a
+# Windows box provisioned by this script never got `src/Core.Alloy/alloy.jar`
+# and, since 081M23ESC5B087G0R002HJ39DG, would never get
+# `src/Core.TLA/tla2tools.jar` either. That was invisible rather than loud:
+# Alloy's gate leg only asserts the jar on Linux-x64 CI, so Windows just
+# skipped the checks and reported green.
+#
+# Scope is DELIBERATELY one mechanism, not `--all`. The other fourteen `from-*`
+# realizers were written against Unix hosts and have never run here; turning
+# them all on in a fix for the jars would be shipping fourteen untested code
+# paths under one commit. `from-url` is curl-to-a-digest-pinned-path, which is
+# platform-neutral, and it is the mechanism the verifier jars actually use.
+#
+# GRACEFUL, matching every other optional step in this file: a network failure
+# WARNS and continues rather than bricking a dev laptop's install. The jars'
+# absence is not silent afterwards -- the F# gate-leg tests and
+# `lint-verifier-jar-provenance.ts` are what turn a missing jar red, and they
+# are the right place for that verdict.
+$setupRealize = Join-Path $RepoRoot 'src\Core.TypeScript\ace\setup-realize.ts'
+if (Test-Path $setupRealize) {
+  Push-Location $RepoRoot
+  try {
+    $urCode = Invoke-ToolSoft { mise exec -- bun src/Core.TypeScript/ace/setup-realize.ts from-url }
+    if ($urCode -eq 0) { Write-Host 'ok from-url realizer -- digest-pinned verifier jars fetched' }
+    else { Write-Host "warn: from-url realizer failed (exit $urCode); verifier jars may be absent; continuing" }
+  } finally { Pop-Location }
+} else {
+  Write-Host 'warn: setup-realize.ts missing; skipping from-url realizer'
+}
 
 # 5b. Expose the repo's package bins (ace, zeta-shadow) on PATH via `bun link` (the package.json
 # `bin` map declares them). Best-effort + GRACEFUL (Invoke-ToolSoft): a failure WARNS and

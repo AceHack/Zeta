@@ -1,0 +1,12 @@
+{
+  "pr_number": 16981,
+  "archive_path": "docs/history/pr-reviews/PR-16981-feat-081m1yz75mp087g0r001eqy7jk-fuse-byte-session-lookup-entry-out.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-07T22:56:15.394Z",
+  "schema_version": "v1",
+  "commit_sha": "69e2e4cd27de3eadb6c61a2cb024215cbc4e4942",
+  "title": "feat(081M1YZ75MP087G0R001EQY7JK): FUSE byte session LOOKUP entry_out",
+  "state": "MERGED",
+  "merged_at": "2026-09-07T22:55:36Z",
+  "head_ref": "feat/zetafs-fuse-lookup-bytes"
+}

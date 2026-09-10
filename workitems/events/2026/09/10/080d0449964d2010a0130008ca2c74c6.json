@@ -1,0 +1,14 @@
+{
+  "id": "080d0449964d2010a0130008ca2c74c6",
+  "at": "2026-09-10T02:43:22.148Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M24K5JD3087G0R000KASXSC",
+    "type": "task",
+    "title": "cancel-in-progress false protects running runs but not pending ones",
+    "slug": "cancel-in-progress-false-protects-running-runs-but-not-pendi",
+    "priority": "P2",
+    "filename": "081M24K5JD3087G0R000KASXSC-cancel-in-progress-false-protects-running-runs-but-not-pendi.md"
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 17115,
+  "archive_path": "docs/history/pr-reviews/PR-17115-docs-handoff-tiktok-avatar-the-pass-vera-picks-up.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-09T08:30:39.092Z",
+  "schema_version": "v1",
+  "commit_sha": "1e5645779777f0d830957b6021495cc5c8846d4b",
+  "title": "docs(handoff): TikTok avatar — the pass Vera picks up",
+  "state": "MERGED",
+  "merged_at": "2026-09-09T08:29:49Z",
+  "head_ref": "shadow/tiktok-handoff-for-vera"
+}

@@ -1,0 +1,74 @@
+{
+  "packed_images": [
+    {
+      "name": "AceHack-body-review",
+      "packed": true,
+      "size": [
+        2048,
+        2048
+      ]
+    },
+    {
+      "name": "AceHack-head-review",
+      "packed": true,
+      "size": [
+        2048,
+        2048
+      ]
+    },
+    {
+      "name": "AceHack-Left-arm-review",
+      "packed": true,
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "name": "AceHack-Right-arm-review",
+      "packed": true,
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "name": "Xenaa-body-review",
+      "packed": true,
+      "size": [
+        2048,
+        2048
+      ]
+    },
+    {
+      "name": "Xenaa-head-review",
+      "packed": true,
+      "size": [
+        2048,
+        2048
+      ]
+    },
+    {
+      "name": "Xenaa-Left-arm-review",
+      "packed": true,
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "name": "Xenaa-Right-arm-review",
+      "packed": true,
+      "size": [
+        1024,
+        1024
+      ]
+    }
+  ],
+  "rigs": {
+    "AceHack | Motion rig": 50,
+    "Xenaa | Motion rig": 50
+  },
+  "neutral_frame": 1,
+  "source": "current/Blender-Motion-Review-v14.blend"
+}

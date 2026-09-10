@@ -1,0 +1,15 @@
+from pathlib import Path
+import re,shutil,json
+root=Path(__file__).resolve().parent
+source=root/'AceHack-TikTok-Prototype-20260909';dest=root/'AceHack-TikTok-v2'
+shutil.copytree(source,dest,ignore=shutil.ignore_patterns('Library','Record'))
+p=dest/'Assets/main.scene';s=p.read_text();blocks=re.split(r'(?=--- !Transform &)',s)
+for i,b in enumerate(blocks):
+ if b.startswith('--- !Transform &9\n'):b=b.replace('  - {localId: 12}\n','')
+ if b.startswith('--- !Transform &12\n'):b=b.replace('parent: {localId: 9}','parent: {localId: 38}')
+ if b.startswith('--- !Transform &38\n'):
+  b=b.replace('mobility:\n','children:\n  - {localId: 12}\nmobility:\n')
+ blocks[i]=b
+s=''.join(blocks);p.write_text(s)
+j=json.loads((dest/'effect.ehproj').read_text());j['name']='AceHack-TikTok-v2';(dest/'effect.ehproj').write_text(json.dumps(j,indent=2))
+print(dest/'effect.ehproj')

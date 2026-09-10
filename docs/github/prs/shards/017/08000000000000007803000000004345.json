@@ -1,0 +1,12 @@
+{
+  "pr_number": 17221,
+  "archive_path": "docs/history/pr-reviews/PR-17221-feat-081m24hzcyn087g0r002mt55tv-pin-rustup-init-and-refuse-a-remote-fetch-piped-.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-10T03:31:58.559Z",
+  "schema_version": "v1",
+  "commit_sha": "b56063b0d8916c3b4c1ca40209d4ed900ac51235",
+  "title": "feat(081M24HZCYN087G0R002MT55TV): pin rustup-init and refuse a remote fetch piped into an interpreter",
+  "state": "MERGED",
+  "merged_at": "2026-09-10T03:31:15Z",
+  "head_ref": "retire-curl-pipe-sh-rustup-pin"
+}

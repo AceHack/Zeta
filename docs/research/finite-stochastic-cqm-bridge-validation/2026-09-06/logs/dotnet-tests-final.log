@@ -1,0 +1,86 @@
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+  Zeta.Core.Abstractions -> /Users/acehack/.zeta/agents/codex/Zeta-rendered-predictor-native-20260906/src/Core.Abstractions/bin/Release/net10.0/Zeta.Core.Abstractions.dll
+  Zeta.Core.CSharp.Yaml -> /Users/acehack/.zeta/agents/codex/Zeta-rendered-predictor-native-20260906/src/Core.CSharp.Yaml/bin/Release/net10.0/Zeta.Core.CSharp.Yaml.dll
+  Zeta.Core.FSharp.ZetaId -> /Users/acehack/.zeta/agents/codex/Zeta-rendered-predictor-native-20260906/src/Core.FSharp.ZetaId/bin/Release/net10.0/Zeta.Core.FSharp.ZetaId.dll
+  Zeta.Core.FSharp.Yaml -> /Users/acehack/.zeta/agents/codex/Zeta-rendered-predictor-native-20260906/src/Core.FSharp.Yaml/bin/Release/net10.0/Zeta.Core.FSharp.Yaml.dll
+  Zeta.Core.CSharp.Merkle -> /Users/acehack/.zeta/agents/codex/Zeta-rendered-predictor-native-20260906/src/Core.CSharp.Merkle/bin/Release/net10.0/Zeta.Core.CSharp.Merkle.dll
+  Zeta.Core.FSharp.Observe -> /Users/acehack/.zeta/agents/codex/Zeta-rendered-predictor-native-20260906/src/Core.FSharp.Observe/bin/Release/net10.0/Zeta.Core.FSharp.Observe.dll
+  Zeta.Core.CSharp.Mediator -> /Users/acehack/.zeta/agents/codex/Zeta-rendered-predictor-native-20260906/src/Core.CSharp.Mediator/bin/Release/net10.0/Zeta.Core.CSharp.Mediator.dll
+  Zeta.Core.CSharp.AceCanonical -> /Users/acehack/.zeta/agents/codex/Zeta-rendered-predictor-native-20260906/src/Core.CSharp.AceCanonical/bin/Release/net10.0/Zeta.Core.CSharp.AceCanonical.dll
+  Zeta.Core.CSharp.ZetaId -> /Users/acehack/.zeta/agents/codex/Zeta-rendered-predictor-native-20260906/src/Core.CSharp.ZetaId/bin/Release/net10.0/Zeta.Core.CSharp.ZetaId.dll
+  Zeta.Core.CSharp.ByteCost -> /Users/acehack/.zeta/agents/codex/Zeta-rendered-predictor-native-20260906/src/Core.CSharp.ByteCost/bin/Release/net10.0/Zeta.Core.CSharp.ByteCost.dll
+  Zeta.Core.CSharp.Sha256 -> /Users/acehack/.zeta/agents/codex/Zeta-rendered-predictor-native-20260906/src/Core.CSharp.Sha256/bin/Release/net10.0/Zeta.Core.CSharp.Sha256.dll
+  Zeta.Core.CSharp.TriBoolean -> /Users/acehack/.zeta/agents/codex/Zeta-rendered-predictor-native-20260906/src/Core.CSharp.TriBoolean/bin/Release/net10.0/Zeta.Core.CSharp.TriBoolean.dll
+  Zeta.Core.CSharp.RangeSet -> /Users/acehack/.zeta/agents/codex/Zeta-rendered-predictor-native-20260906/src/Core.CSharp.RangeSet/bin/Release/net10.0/Zeta.Core.CSharp.RangeSet.dll
+  Zeta.Core.CSharp.Bonsai -> /Users/acehack/.zeta/agents/codex/Zeta-rendered-predictor-native-20260906/src/Core.CSharp.Bonsai/bin/Release/net10.0/Zeta.Core.CSharp.Bonsai.dll
+  Zeta.Core.CSharp.DynamicValue -> /Users/acehack/.zeta/agents/codex/Zeta-rendered-predictor-native-20260906/src/Core.CSharp.DynamicValue/bin/Release/net10.0/Zeta.Core.CSharp.DynamicValue.dll
+  Zeta.Core.CSharp.TypeProvider -> /Users/acehack/.zeta/agents/codex/Zeta-rendered-predictor-native-20260906/src/Core.CSharp.TypeProvider/bin/Release/netstandard2.0/Zeta.Core.CSharp.TypeProvider.dll
+  Zeta.Core.CSharp.Observe -> /Users/acehack/.zeta/agents/codex/Zeta-rendered-predictor-native-20260906/src/Core.CSharp.Observe/bin/Release/net10.0/Zeta.Core.CSharp.Observe.dll
+  Zeta.Core.CSharp.Clock -> /Users/acehack/.zeta/agents/codex/Zeta-rendered-predictor-native-20260906/src/Core.CSharp.Clock/bin/Release/net10.0/Zeta.Core.CSharp.Clock.dll
+  Zeta.Core.FSharp.AceCanonical -> /Users/acehack/.zeta/agents/codex/Zeta-rendered-predictor-native-20260906/src/Core.FSharp.AceCanonical/bin/Release/net10.0/Zeta.Core.FSharp.AceCanonical.dll
+  Zeta.Clis -> /Users/acehack/.zeta/agents/codex/Zeta-rendered-predictor-native-20260906/clis/bin/Release/net10.0/Zeta.Clis.dll
+  Zeta.Core.CSharp.Metric -> /Users/acehack/.zeta/agents/codex/Zeta-rendered-predictor-native-20260906/src/Core.CSharp.Metric/bin/Release/net10.0/Zeta.Core.CSharp.Metric.dll
+  Zeta.Tests.FSharp.MediatorFixtures -> /Users/acehack/.zeta/agents/codex/Zeta-rendered-predictor-native-20260906/tests/Core.FSharp.Mediator.Fixtures/bin/Release/net10.0/Zeta.Tests.FSharp.MediatorFixtures.dll
+  Core -> /Users/acehack/.zeta/agents/codex/Zeta-rendered-predictor-native-20260906/src/Core/bin/Release/net10.0/Zeta.Core.dll
+  Zeta.Core.FSharp.Sha256 -> /Users/acehack/.zeta/agents/codex/Zeta-rendered-predictor-native-20260906/src/Core.FSharp.Sha256/bin/Release/net10.0/Zeta.Core.FSharp.Sha256.dll
+  Zeta.Core.FSharp.Mediator -> /Users/acehack/.zeta/agents/codex/Zeta-rendered-predictor-native-20260906/src/Core.FSharp.Mediator/bin/Release/net10.0/Zeta.Core.FSharp.Mediator.dll
+  Zeta.Core.CSharp.Blake3 -> /Users/acehack/.zeta/agents/codex/Zeta-rendered-predictor-native-20260906/src/Core.CSharp.Blake3/bin/Release/net10.0/Zeta.Core.CSharp.Blake3.dll
+  Zeta.Core.FSharp.Git -> /Users/acehack/.zeta/agents/codex/Zeta-rendered-predictor-native-20260906/src/Core.FSharp.Git/bin/Release/net10.0/Zeta.Core.FSharp.Git.dll
+  Zeta.Core.FSharp.TriBoolean -> /Users/acehack/.zeta/agents/codex/Zeta-rendered-predictor-native-20260906/src/Core.FSharp.TriBoolean/bin/Release/net10.0/Zeta.Core.FSharp.TriBoolean.dll
+  Zeta.Core.Telemetry -> /Users/acehack/.zeta/agents/codex/Zeta-rendered-predictor-native-20260906/src/Core.Telemetry/bin/Release/net10.0/Zeta.Core.Telemetry.dll
+  Zeta.Core.CSharp.Resume -> /Users/acehack/.zeta/agents/codex/Zeta-rendered-predictor-native-20260906/src/Core.CSharp.Resume/bin/Release/net10.0/Zeta.Core.CSharp.Resume.dll
+  Zeta.Core.FSharp.ObserveBridge -> /Users/acehack/.zeta/agents/codex/Zeta-rendered-predictor-native-20260906/src/Core.FSharp.ObserveBridge/bin/Release/net10.0/Zeta.Core.FSharp.ObserveBridge.dll
+  Core.CSharp -> /Users/acehack/.zeta/agents/codex/Zeta-rendered-predictor-native-20260906/src/Core.CSharp/bin/Release/net10.0/Zeta.Core.CSharp.dll
+  Bayesian -> /Users/acehack/.zeta/agents/codex/Zeta-rendered-predictor-native-20260906/src/Bayesian/bin/Release/net10.0/Zeta.Bayesian.dll
+  Zeta.Core.FSharp.Blake3 -> /Users/acehack/.zeta/agents/codex/Zeta-rendered-predictor-native-20260906/src/Core.FSharp.Blake3/bin/Release/net10.0/Zeta.Core.FSharp.Blake3.dll
+  Tests.CSharp.TypeProvider -> /Users/acehack/.zeta/agents/codex/Zeta-rendered-predictor-native-20260906/tests/Tests.CSharp.TypeProvider/bin/Release/net10.0/Tests.CSharp.TypeProvider.dll
+  Zeta.Core.CSharp.Mediator.Handlers -> /Users/acehack/.zeta/agents/codex/Zeta-rendered-predictor-native-20260906/src/Core.CSharp.Mediator.Handlers/bin/Release/net10.0/Zeta.Core.CSharp.Mediator.Handlers.dll
+Test run for /Users/acehack/.zeta/agents/codex/Zeta-rendered-predictor-native-20260906/tests/Tests.CSharp.TypeProvider/bin/Release/net10.0/Tests.CSharp.TypeProvider.dll (.NETCoreApp,Version=v10.0)
+  Zeta.Generators -> /Users/acehack/.zeta/agents/codex/Zeta-rendered-predictor-native-20260906/src/Zeta.Generators/bin/Release/netstandard2.0/Zeta.Generators.dll
+  Core.CSharp.Tests -> /Users/acehack/.zeta/agents/codex/Zeta-rendered-predictor-native-20260906/tests/Core.CSharp.Tests/bin/Release/net10.0/Core.CSharp.Tests.dll
+Test run for /Users/acehack/.zeta/agents/codex/Zeta-rendered-predictor-native-20260906/tests/Core.CSharp.Tests/bin/Release/net10.0/Core.CSharp.Tests.dll (.NETCoreApp,Version=v10.0)
+  Zeta.Cli -> /Users/acehack/.zeta/agents/codex/Zeta-rendered-predictor-native-20260906/src/Core.FSharp.Cli/bin/Debug/net10.0/zeta.dll
+A total of 1 test files matched the specified pattern.
+A total of 1 test files matched the specified pattern.
+
+Passed!  - Failed:     0, Passed:     3, Skipped:     0, Total:     3, Duration: 18 ms - Tests.CSharp.TypeProvider.dll (net10.0)
+
+Passed!  - Failed:     0, Passed:    21, Skipped:     0, Total:    21, Duration: 68 ms - Core.CSharp.Tests.dll (net10.0)
+  Core.CSharp.Mediator.Tests -> /Users/acehack/.zeta/agents/codex/Zeta-rendered-predictor-native-20260906/tests/Core.CSharp.Mediator.Tests/bin/Release/net10.0/Core.CSharp.Mediator.Tests.dll
+  Tests.CSharp -> /Users/acehack/.zeta/agents/codex/Zeta-rendered-predictor-native-20260906/tests/Tests.CSharp/bin/Release/net10.0/Tests.CSharp.dll
+  Tests.FSharp.Git -> /Users/acehack/.zeta/agents/codex/Zeta-rendered-predictor-native-20260906/tests/Tests.FSharp.Git/bin/Release/net10.0/Tests.FSharp.Git.dll
+Test run for /Users/acehack/.zeta/agents/codex/Zeta-rendered-predictor-native-20260906/tests/Core.CSharp.Mediator.Tests/bin/Release/net10.0/Core.CSharp.Mediator.Tests.dll (.NETCoreApp,Version=v10.0)
+Test run for /Users/acehack/.zeta/agents/codex/Zeta-rendered-predictor-native-20260906/tests/Tests.CSharp/bin/Release/net10.0/Tests.CSharp.dll (.NETCoreApp,Version=v10.0)
+Test run for /Users/acehack/.zeta/agents/codex/Zeta-rendered-predictor-native-20260906/tests/Tests.FSharp.Git/bin/Release/net10.0/Tests.FSharp.Git.dll (.NETCoreApp,Version=v10.0)
+  Tests.FSharp -> /Users/acehack/.zeta/agents/codex/Zeta-rendered-predictor-native-20260906/tests/Tests.FSharp/bin/Release/net10.0/Tests.FSharp.dll
+Test run for /Users/acehack/.zeta/agents/codex/Zeta-rendered-predictor-native-20260906/tests/Tests.FSharp/bin/Release/net10.0/Tests.FSharp.dll (.NETCoreApp,Version=v10.0)
+A total of 1 test files matched the specified pattern.
+A total of 1 test files matched the specified pattern.
+A total of 1 test files matched the specified pattern.
+A total of 1 test files matched the specified pattern.
+
+Passed!  - Failed:     0, Passed:    12, Skipped:     0, Total:    12, Duration: 78 ms - Core.CSharp.Mediator.Tests.dll (net10.0)
+
+Passed!  - Failed:     0, Passed:    38, Skipped:     0, Total:    38, Duration: 1 s - Tests.FSharp.Git.dll (net10.0)
+  Bayesian.Tests -> /Users/acehack/.zeta/agents/codex/Zeta-rendered-predictor-native-20260906/tests/Bayesian.Tests/bin/Release/net10.0/Bayesian.Tests.dll
+Test run for /Users/acehack/.zeta/agents/codex/Zeta-rendered-predictor-native-20260906/tests/Bayesian.Tests/bin/Release/net10.0/Bayesian.Tests.dll (.NETCoreApp,Version=v10.0)
+A total of 1 test files matched the specified pattern.
+
+Passed!  - Failed:     0, Passed:   413, Skipped:     0, Total:   413, Duration: 2 s - Tests.CSharp.dll (net10.0)
+[xUnit.net 00:00:08.15]     Zeta.Tests.BenPortTests.BDN ADAPTER SMOKE (manual): wall meter drives the same case through the same port [SKIP]
+  Skipped Zeta.Tests.BenPortTests.BDN ADAPTER SMOKE (manual): wall meter drives the same case through the same port [1 ms]
+
+Passed!  - Failed:     0, Passed:   503, Skipped:     0, Total:   503, Duration: 5 s - Bayesian.Tests.dll (net10.0)
+[xUnit.net 00:00:10.72]     Zeta.Tests.RxAdapterTests.A DEAD PIPELINE REFUSES NEW SUBSCRIBERS: after teardown the subject is disposed, not leaked [SKIP]
+[xUnit.net 00:00:10.72]     Zeta.Tests.RxAdapterTests.bounded pipeline completes after exactly count ticks and delivers count notifications [SKIP]
+  Skipped Zeta.Tests.RxAdapterTests.A DEAD PIPELINE REFUSES NEW SUBSCRIBERS: after teardown the subject is disposed, not leaked [1 ms]
+  Skipped Zeta.Tests.RxAdapterTests.bounded pipeline completes after exactly count ticks and delivers count notifications [1 ms]
+[xUnit.net 00:00:10.72]     Zeta.Tests.RxAdapterTests.TEARDOWN IS REAL: disposing the one handle stops notifications — the count stops moving [SKIP]
+  Skipped Zeta.Tests.RxAdapterTests.TEARDOWN IS REAL: disposing the one handle stops notifications — the count stops moving [1 ms]
+[xUnit.net 00:00:15.73]     Zeta.Tests.CollationCrossOracleTreatyTests.decide's tie-break uses the canonical collation [SKIP]
+  Skipped Zeta.Tests.CollationCrossOracleTreatyTests.decide's tie-break uses the canonical collation [1 ms]
+[xUnit.net 00:00:23.27]     Zeta.Tests.CollationCrossOracleTreatyTests.every shared catalog name denotes the same relation in every oracle [SKIP]
+  Skipped Zeta.Tests.CollationCrossOracleTreatyTests.every shared catalog name denotes the same relation in every oracle [1 ms]
+
+Passed!  - Failed:     0, Passed:  6525, Skipped:     6, Total:  6531, Duration: 5 m 35 s - Tests.FSharp.dll (net10.0)

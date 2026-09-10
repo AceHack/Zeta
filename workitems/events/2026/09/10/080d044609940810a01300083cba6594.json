@@ -1,0 +1,14 @@
+{
+  "id": "080d044609940810a01300083cba6594",
+  "at": "2026-09-10T00:39:17.889Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M24C2CM1087G0R0000HBSBN",
+    "type": "bug",
+    "title": "CLAUDE.md sends agents to heartbeat refs that are intentionally paused, producing a false liveness negative",
+    "slug": "claude-md-sends-agents-to-heartbeat-refs-that-are-intentiona",
+    "priority": "P2",
+    "filename": "081M24C2CM1087G0R0000HBSBN-claude-md-sends-agents-to-heartbeat-refs-that-are-intentiona.md"
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "archive": "tiktok-characters-v14-current-and-previous.zip",
+  "bytes": 63702871,
+  "sha256": "36a2406ad171f32d1f0d138b11c0a3cf5a63276293500bd5bee06ecddcb41d3f",
+  "verified_entries": 144,
+  "verification": "ZIP CRC plus SHA-256 read-back for every manifest entry",
+  "release_tag": "research-tiktok-character-v14-20260909"
+}

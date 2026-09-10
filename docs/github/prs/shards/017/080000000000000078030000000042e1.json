@@ -1,0 +1,12 @@
+{
+  "pr_number": 17121,
+  "archive_path": "docs/history/pr-reviews/PR-17121-fix-081m22p1265087g0r001vvyswz-headscale-probed-the-wrong-listener-orleans-read-.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-09T09:49:04.747Z",
+  "schema_version": "v1",
+  "commit_sha": "d2e314ab59365429b98dad8da17f0644a13072d8",
+  "title": "fix(081M22P1265087G0R001VVYSWZ): headscale probed the wrong listener; orleans read redis-auth from a namespace nothing minted it into",
+  "state": "MERGED",
+  "merged_at": "2026-09-09T09:48:21Z",
+  "head_ref": "fix-k8s-headscale-orleans"
+}

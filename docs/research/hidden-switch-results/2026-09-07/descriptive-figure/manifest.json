@@ -1,0 +1,79 @@
+{
+  "StudyTask": "081M1XK02XM087G0R00043EW05",
+  "ArtifactKind": "post-hoc-descriptive-figure",
+  "MeasuredSourceCommit": "4fc82b611012bd2620a26e02afe6baba491fe553",
+  "InputFiles": {
+    "behavior-attempt-1.json": {
+      "Bytes": 78026027,
+      "Sha256": "f15ca0d41b1437b5e05a6ca402a8a8609f85d8b0e1c6218c316460257f450c2e"
+    },
+    "cost-attempt-1.json": {
+      "Bytes": 6868985,
+      "Sha256": "6af9cf36f4cfc1c5e38f236e8922025cd845481d9e2e18daff58e5be191b9df3"
+    },
+    "verdict-attempt-1.json": {
+      "Bytes": 11871,
+      "Sha256": "d0fbffe371155002a204bae3959b788a4e1b54d1ad83761d0e5933cb9cb67222"
+    }
+  },
+  "PlotScript": {
+    "Bytes": 13366,
+    "Sha256": "0671ee685585a09cf1a6a03dc565b5c35c0c928160f7b4f27b8e761dc47b7daa"
+  },
+  "PlotRequirements": {
+    "Bytes": 189,
+    "Sha256": "2a8de658c132b271b107a0b0898325f3c19981452a93edf63c4912ea5eb42d56"
+  },
+  "PlotRuntime": {
+    "Python": "3.12.14",
+    "PythonExecutable": {
+      "Bytes": 18041888,
+      "Sha256": "ac60cfe0268614638d0ffa35f3b0284fc7b3a11482723793455e17eeb278509e"
+    },
+    "Matplotlib": "3.10.7",
+    "NumPy": "2.3.5",
+    "Pillow": "12.3.0",
+    "FreeType": "2.6.1",
+    "Font": {
+      "Name": "DejaVu Sans",
+      "Bytes": 756072,
+      "Sha256": "3fdf69cabf06049ea70a00b5919340e2ce1e6d02b0cc3c4b44fb6801bd1e0d22"
+    },
+    "Packages": {
+      "contourpy": "1.3.3",
+      "cycler": "0.12.1",
+      "fonttools": "4.64.0",
+      "kiwisolver": "1.5.1",
+      "matplotlib": "3.10.7",
+      "numpy": "2.3.5",
+      "packaging": "26.3",
+      "pillow": "12.3.0",
+      "pyparsing": "3.3.2",
+      "python-dateutil": "2.9.0.post0",
+      "six": "1.17.0"
+    }
+  },
+  "Outputs": {
+    "hidden-switch-descriptive.svg": {
+      "Bytes": 196546,
+      "Sha256": "62f74933af112f60dcc03cb1c2e03d7e0d4cac827b649d7b90a0301c862b9a72"
+    },
+    "hidden-switch-descriptive.png": {
+      "Bytes": 217119,
+      "Sha256": "9df18cb449f78e39719d7aaf0d64a5822198fd4eff163841d77ec2e9073be45a"
+    },
+    "plotted-values.json": {
+      "Bytes": 9659,
+      "Sha256": "400226eb877e3d1d453b42079e6d7db27510a34c43107ddf4aae2a6dee49f4aa"
+    }
+  },
+  "Checks": {
+    "InputByteBindings": true,
+    "MeansRecomputedFromOriginalReward4": 16,
+    "MeansEqualOriginalVerdict": true,
+    "CostRowsRetained": 20,
+    "CostArmMediansEqualOriginalVerdict": true,
+    "DroppedRows": 0
+  },
+  "Scope": "Rendering only. No experiment source, policy call, statistical test, timing rerun or receipt replacement."
+}

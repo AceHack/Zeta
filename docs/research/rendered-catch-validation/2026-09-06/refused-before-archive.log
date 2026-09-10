@@ -1,0 +1,2 @@
+receipt=docs/research/rendered-catch-validation/2026-09-06/refused-before-archive.json sha256=B93018BCB58C0A8DA8F0FC10C36C3C7307C8400A8A07CCA54B742C79AF45208D complete=false
+archive-git: fatal: Needed a single revision

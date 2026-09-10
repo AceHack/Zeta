@@ -1,0 +1,57 @@
+import bpy,math,json
+from pathlib import Path
+from mathutils import Vector,Matrix
+root=Path(__file__).resolve().parent
+
+def bounds(o):
+ pts=[o.matrix_world@v.co for v in o.data.vertices]
+ return Vector([min(p[i] for p in pts) for i in range(3)]),Vector([max(p[i] for p in pts) for i in range(3)])
+
+def import_tsr(path):
+ bpy.ops.import_scene.gltf(filepath=str(path));o=[o for o in bpy.context.selected_objects if o.type=='MESH'][0]
+ o.matrix_world=Matrix.Rotation(-math.pi/2,4,'Z')@Matrix.Rotation(-math.pi/2,4,'X')@o.matrix_world
+ bpy.context.view_layer.objects.active=o;bpy.ops.object.transform_apply(location=True,rotation=True,scale=True)
+ for p in o.data.polygons:p.use_smooth=True
+ return o
+
+def reference_material(o,path):
+ im=bpy.data.images.load(str(path),check_existing=True);im.pack()
+ import numpy as np
+ w,h=im.size;px=np.empty(w*h*4,dtype=np.float32);im.pixels.foreach_get(px);px=px.reshape(h,w,4)
+ ys,xs=np.where(px[:,:,3]>.8);u0,u1=xs.min()/w,xs.max()/w;v0,v1=ys.min()/h,ys.max()/h
+ lo,hi=bounds(o);uv=o.data.uv_layers.new(name='Frontal reference')
+ for p in o.data.polygons:
+  for li in p.loop_indices:
+   v=o.data.vertices[o.data.loops[li].vertex_index].co
+   uv.data[li].uv=(u0+(v.x-lo.x)/(hi.x-lo.x)*(u1-u0),v0+(v.z-lo.z)/(hi.z-lo.z)*(v1-v0))
+ mat=o.data.materials[0];mat.use_nodes=True;n=mat.node_tree.nodes;l=mat.node_tree.links;bs=n.get('Principled BSDF')
+ old=bs.inputs['Base Color'].links[0].from_socket
+ tex=n.new('ShaderNodeTexImage');tex.image=im;tex.extension='EXTEND'
+ geom=n.new('ShaderNodeNewGeometry');sep=n.new('ShaderNodeSeparateXYZ');l.new(geom.outputs['Normal'],sep.inputs[0])
+ neg=n.new('ShaderNodeMath');neg.operation='MULTIPLY';neg.inputs[1].default_value=-1;l.new(sep.outputs['Y'],neg.inputs[0])
+ remap=n.new('ShaderNodeMapRange');remap.clamp=True;remap.interpolation_type='SMOOTHSTEP';remap.inputs['From Min'].default_value=-.2;remap.inputs['From Max'].default_value=.65;l.new(neg.outputs[0],remap.inputs['Value'])
+ alpha=n.new('ShaderNodeMath');alpha.operation='GREATER_THAN';alpha.inputs[1].default_value=.85;l.new(tex.outputs['Alpha'],alpha.inputs[0])
+ weight=n.new('ShaderNodeMath');weight.operation='MULTIPLY';l.new(remap.outputs[0],weight.inputs[0]);l.new(alpha.outputs[0],weight.inputs[1])
+ mix=n.new('ShaderNodeMixRGB');l.new(weight.outputs[0],mix.inputs[0]);l.new(old,mix.inputs[1]);l.new(tex.outputs['Color'],mix.inputs[2]);l.new(mix.outputs[0],bs.inputs['Base Color'])
+ l.new(mix.outputs[0],bs.inputs['Emission Color']);bs.inputs['Emission Strength'].default_value=.25;bs.inputs['Roughness'].default_value=.63;bs.inputs['Specular IOR Level'].default_value=.22
+ return mat
+
+def studio(center,height):
+ scene=bpy.context.scene;scene.render.engine='CYCLES';scene.cycles.samples=48;scene.cycles.use_denoising=True
+ prefs=bpy.context.preferences.addons['cycles'].preferences;prefs.compute_device_type='METAL';prefs.get_devices()
+ for d in prefs.devices:d.use=d.type=='METAL'
+ scene.cycles.device='GPU';scene.world=bpy.data.worlds.new('Studio');scene.world.use_nodes=True
+ scene.world.node_tree.nodes['Background'].inputs[0].default_value=(.065,.08,.105,1);scene.world.node_tree.nodes['Background'].inputs[1].default_value=.5
+ for label,loc,power,size in [('Key',(-3,-4,5),220,4),('Fill',(3,-2,3),130,3),('Rim',(2,3,4),280,2)]:
+  data=bpy.data.lights.new(label,'AREA');data.energy=power;data.shape='DISK';data.size=size;o=bpy.data.objects.new(label,data);scene.collection.objects.link(o);o.location=Vector(loc);o.rotation_euler=(center-o.location).to_track_quat('-Z','Y').to_euler()
+ data=bpy.data.cameras.new('Review');cam=bpy.data.objects.new('Review',data);scene.collection.objects.link(cam);scene.camera=cam;data.type='ORTHO';data.ortho_scale=height*1.18
+ scene.render.resolution_x=1000;scene.render.resolution_y=1000;scene.render.resolution_percentage=100;scene.view_settings.view_transform='Standard'
+ return scene,cam
+
+if __name__=='__main__':
+ for name in ['AceHack','Xenaa']:
+  bpy.ops.wm.read_factory_settings(use_empty=True);o=import_tsr(root/'heads'/name/'mesh.glb');reference_material(o,root/'heads'/name/'alpha.png')
+  lo,hi=bounds(o);center=(lo+hi)/2;scene,cam=studio(center,hi.z-lo.z)
+  for a in [0,35,90,180]:
+   r=math.radians(a);cam.location=center+Vector((4*math.sin(r),-4*math.cos(r),0));cam.rotation_euler=(center-cam.location).to_track_quat('-Z','Y').to_euler();scene.render.filepath=str(root/'heads'/name/f'review-{a}.png');bpy.ops.render.render(write_still=True)
+  bpy.ops.wm.save_as_mainfile(filepath=str(root/'heads'/name/f'{name}-head.blend'))

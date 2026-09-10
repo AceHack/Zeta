@@ -1,0 +1,24 @@
+{
+  "ObservedAtUtc": "2026-09-08T01:04:55.972526+00:00",
+  "PublishedCommit": "cb86d8085a2f9c0e86ccb99c28c35915867d6097",
+  "SourceReviewCommit": "5d329128194c9cefe194c489e9b13cd6aa6ec2db",
+  "EvidenceReviewCommit": "2522c1e54c4874ca3c5ee0a2d8b9d609bd0e82a3",
+  "Artifacts": [
+    {
+      "File": "push.log.gz",
+      "Bytes": 1717,
+      "Sha256": "7AF1263BC0EB5768AB08DCA97DBDF1EDD30B8C1A57F51CC808A6A8CE782138E6",
+      "Encoding": "gzip",
+      "StoredBytes": 667,
+      "StoredSha256": "80C7645A8B1536D7707A4FC25885E3462C20830D9497C04543687C3F593ECF1F"
+    },
+    {
+      "File": "remote-proof.txt",
+      "Bytes": 100,
+      "Sha256": "0ED5B890CF56F826917A843FA59BD480CDEF15B649D655CC777E734873E53523",
+      "Encoding": "identity",
+      "StoredBytes": 100,
+      "StoredSha256": "0ED5B890CF56F826917A843FA59BD480CDEF15B649D655CC777E734873E53523"
+    }
+  ]
+}

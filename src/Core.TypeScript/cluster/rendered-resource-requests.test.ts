@@ -312,7 +312,13 @@ describe("the live tree", () => {
     // live cluster in app-of-apps-discovery.ts), so a depth-2 Application IS
     // applied. game-hosting/gmod requests a literal cpu: "1".
     expect(applicationDirs()).toContain("game-hosting/gmod");
-    expect(devLaneAppliedDirs()).toContain("game-hosting/gmod");
+    // 2026-09-07: it is NO LONGER in the dev lane. `game-hosting/**` joined the dev root
+    // catalog's excludeGlob so the lane's memory would fit the free runner. The DEPTH-2
+    // finding this test exists for is unaffected and is the reason the assertion inverts
+    // rather than disappears: reaching depth 2 is what made the 1000m visible in the
+    // first place, and it is still reached -- `applicationDirs()` still contains it, and
+    // its rung still governs it. Only the LANE is smaller.
+    expect(devLaneAppliedDirs()).not.toContain("game-hosting/gmod");
   });
 
   test("the exclude glob is a PREFIX match, so `x/**` drops everything under x", () => {
@@ -604,7 +610,15 @@ describe("eight mutations against the live validators", () => {
   // carrying a REAL debt still convicts a dead one" — which is the property that
   // stops the next genuine shortfall hiding behind an expired row.
   test("7 the lane register carries the live shortfall, and a revived one is convicted STALE", () => {
-    expect(liveCatalogue.acknowledgedLaneBudgetShortfall.map((a) => a.key)).toEqual(["dev memory 11148>9216"]);
+    // 2026-09-07: THE REGISTER IS EMPTY AGAIN, because the memory shortfall is GONE --
+    // gmod's 2048Mi left the lane and 11148Mi became 9100Mi against a 9216Mi budget. The
+    // mutation below is unchanged in kind and is now back to its original, weaker form:
+    // "an empty register rejects everything". The sharper property it had while a real
+    // debt was carried is preserved in the comment above rather than deleted, because a
+    // register that is empty for the right reason and one that is empty because someone
+    // removed a row look identical from here -- which is exactly why `auditRunnerBudget`
+    // is asserted on the line below rather than trusted.
+    expect(liveCatalogue.acknowledgedLaneBudgetShortfall.map((a) => a.key)).toEqual([]);
     expect(auditRunnerBudget(liveCatalogue, "dev")).toEqual([]);
     const revived = {
       ...liveCatalogue,

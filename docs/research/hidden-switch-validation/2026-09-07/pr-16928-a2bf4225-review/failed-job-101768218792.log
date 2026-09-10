@@ -1,0 +1,261 @@
+﻿2026-09-07T13:56:38.4678422Z Current runner version: '2.337.0'
+2026-09-07T13:56:38.4705494Z ##[group]Runner Image Provisioner
+2026-09-07T13:56:38.4706414Z Hosted Compute Agent
+2026-09-07T13:56:38.4707178Z Version: 20260828.587
+2026-09-07T13:56:38.4707852Z Commit: abac92662cab4cc7352de4f9f9d2e2419aad9c29
+2026-09-07T13:56:38.4708670Z Build Date: 2026-08-28T16:44:25Z
+2026-09-07T13:56:38.4709398Z Worker ID: {c9886d88-f390-4d10-adbd-332d1baa8f15}
+2026-09-07T13:56:38.4710137Z Azure Region: westus2
+2026-09-07T13:56:38.4711043Z ##[endgroup]
+2026-09-07T13:56:38.4712680Z ##[group]Operating System
+2026-09-07T13:56:38.4713347Z Ubuntu
+2026-09-07T13:56:38.4714062Z 24.04.4
+2026-09-07T13:56:38.4714677Z LTS
+2026-09-07T13:56:38.4715259Z ##[endgroup]
+2026-09-07T13:56:38.4715838Z ##[group]Runner Image
+2026-09-07T13:56:38.4716439Z Image: ubuntu-24.04
+2026-09-07T13:56:38.4717091Z Version: 20260831.293.1
+2026-09-07T13:56:38.4718428Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20260831.293/images/ubuntu/Ubuntu2404-Readme.md
+2026-09-07T13:56:38.4720173Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20260831.293
+2026-09-07T13:56:38.4721630Z ##[endgroup]
+2026-09-07T13:56:38.4722979Z ##[group]GITHUB_TOKEN Permissions
+2026-09-07T13:56:38.4724954Z Actions: read
+2026-09-07T13:56:38.4725717Z Contents: read
+2026-09-07T13:56:38.4726308Z Metadata: read
+2026-09-07T13:56:38.4726920Z ##[endgroup]
+2026-09-07T13:56:38.4729167Z Secret source: Actions
+2026-09-07T13:56:38.4730413Z Prepare workflow directory
+2026-09-07T13:56:38.5267740Z Prepare all required actions
+2026-09-07T13:56:38.5317154Z Getting action download info
+2026-09-07T13:56:38.9183072Z Download action repository 'actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1' (SHA:3d3c42e5aac5ba805825da76410c181273ba90b1)
+2026-09-07T13:56:39.0302263Z Download action repository 'oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6' (SHA:0c5077e51419868618aeaa5fe8019c62421857d6)
+2026-09-07T13:56:39.3620220Z Complete job name: drift (loud)
+2026-09-07T13:56:39.4328517Z ##[group]Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+2026-09-07T13:56:39.4329571Z with:
+2026-09-07T13:56:39.4330000Z   fetch-depth: 1
+2026-09-07T13:56:39.4330448Z   filter: blob:none
+2026-09-07T13:56:39.4331692Z   sparse-checkout: src/Core.TypeScript/ci/drift-loud.ts
+src/Core.TypeScript/ci/verdict-drought.ts
+data/platform-drift.json
+
+2026-09-07T13:56:39.4332788Z   sparse-checkout-cone-mode: false
+2026-09-07T13:56:39.4333373Z   repository: Lucent-Financial-Group/Zeta
+2026-09-07T13:56:39.4337845Z   token: ***
+2026-09-07T13:56:39.4338443Z   ssh-strict: true
+2026-09-07T13:56:39.4339003Z   ssh-user: git
+2026-09-07T13:56:39.4339467Z   persist-credentials: true
+2026-09-07T13:56:39.4339967Z   clean: true
+2026-09-07T13:56:39.4340387Z   fetch-tags: false
+2026-09-07T13:56:39.4341139Z   show-progress: true
+2026-09-07T13:56:39.4341615Z   lfs: false
+2026-09-07T13:56:39.4342042Z   submodules: false
+2026-09-07T13:56:39.4342506Z   set-safe-directory: true
+2026-09-07T13:56:39.4343063Z   allow-unsafe-pr-checkout: false
+2026-09-07T13:56:39.4344145Z env:
+2026-09-07T13:56:39.4347881Z   GITHUB_TOKEN: ***
+2026-09-07T13:56:39.4348339Z ##[endgroup]
+2026-09-07T13:56:39.5362109Z Syncing repository: Lucent-Financial-Group/Zeta
+2026-09-07T13:56:39.5364956Z ##[group]Getting Git version info
+2026-09-07T13:56:39.5366129Z Working directory is '/home/runner/work/Zeta/Zeta'
+2026-09-07T13:56:39.5367931Z [command]/usr/bin/git version
+2026-09-07T13:56:39.5464890Z git version 2.55.0
+2026-09-07T13:56:39.5489237Z ##[endgroup]
+2026-09-07T13:56:39.5502847Z Temporarily overriding HOME='/home/runner/work/_temp/aa984b6b-873c-4d04-95f8-9286a3ecc52a' before making global git config changes
+2026-09-07T13:56:39.5505567Z Adding repository directory to the temporary git global config as a safe directory
+2026-09-07T13:56:39.5510093Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/Zeta/Zeta
+2026-09-07T13:56:39.5563785Z Deleting the contents of '/home/runner/work/Zeta/Zeta'
+2026-09-07T13:56:39.5568345Z ##[group]Determining repository object format
+2026-09-07T13:56:39.5571081Z ##[endgroup]
+2026-09-07T13:56:39.5572495Z ##[group]Initializing the repository
+2026-09-07T13:56:39.5576142Z [command]/usr/bin/git init /home/runner/work/Zeta/Zeta
+2026-09-07T13:56:39.5728736Z hint: Using 'master' as the name for the initial branch. This default branch name
+2026-09-07T13:56:39.5730556Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+2026-09-07T13:56:39.5732653Z hint: to use in all of your new repositories, which will suppress this warning,
+2026-09-07T13:56:39.5734139Z hint: call:
+2026-09-07T13:56:39.5734858Z hint:
+2026-09-07T13:56:39.5735723Z hint: 	git config --global init.defaultBranch <name>
+2026-09-07T13:56:39.5736885Z hint:
+2026-09-07T13:56:39.5738021Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+2026-09-07T13:56:39.5739730Z hint: 'development'. The just-created branch can be renamed via this command:
+2026-09-07T13:56:39.5741372Z hint:
+2026-09-07T13:56:39.5742221Z hint: 	git branch -m <name>
+2026-09-07T13:56:39.5743142Z hint:
+2026-09-07T13:56:39.5744348Z hint: Disable this message with "git config set advice.defaultBranchName false"
+2026-09-07T13:56:39.5746560Z Initialized empty Git repository in /home/runner/work/Zeta/Zeta/.git/
+2026-09-07T13:56:39.5750094Z [command]/usr/bin/git remote add origin https://github.com/Lucent-Financial-Group/Zeta
+2026-09-07T13:56:39.5799232Z ##[endgroup]
+2026-09-07T13:56:39.5800967Z ##[group]Disabling automatic garbage collection
+2026-09-07T13:56:39.5803596Z [command]/usr/bin/git config --local gc.auto 0
+2026-09-07T13:56:39.5839582Z ##[endgroup]
+2026-09-07T13:56:39.5841494Z ##[group]Setting up auth
+2026-09-07T13:56:39.5843019Z Removing SSH command configuration
+2026-09-07T13:56:39.5845736Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-09-07T13:56:39.5877217Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-09-07T13:56:39.6265934Z Removing HTTP extra header
+2026-09-07T13:56:39.6272933Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-09-07T13:56:39.6304620Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-09-07T13:56:39.6516398Z Removing includeIf entries pointing to credentials config files
+2026-09-07T13:56:39.6520892Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-09-07T13:56:39.6549690Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-09-07T13:56:39.6768057Z [command]/usr/bin/git config --file /home/runner/work/_temp/git-credentials-bd4c2b78-cbc1-4dd6-afa1-4c645e477d63.config http.https://github.com/.extraheader AUTHORIZATION: basic ***
+2026-09-07T13:56:39.6804367Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/Zeta/Zeta/.git.path /home/runner/work/_temp/git-credentials-bd4c2b78-cbc1-4dd6-afa1-4c645e477d63.config
+2026-09-07T13:56:39.6834000Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/Zeta/Zeta/.git/worktrees/*.path /home/runner/work/_temp/git-credentials-bd4c2b78-cbc1-4dd6-afa1-4c645e477d63.config
+2026-09-07T13:56:39.6866844Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git.path /github/runner_temp/git-credentials-bd4c2b78-cbc1-4dd6-afa1-4c645e477d63.config
+2026-09-07T13:56:39.6897256Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git/worktrees/*.path /github/runner_temp/git-credentials-bd4c2b78-cbc1-4dd6-afa1-4c645e477d63.config
+2026-09-07T13:56:39.6922999Z ##[endgroup]
+2026-09-07T13:56:39.6924372Z ##[group]Fetching the repository
+2026-09-07T13:56:39.6931368Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --filter=blob:none --depth=1 origin +d91098372a07b2771ac9c20634f76137a34732d3:refs/remotes/pull/16928/merge
+2026-09-07T13:56:40.2793732Z From https://github.com/Lucent-Financial-Group/Zeta
+2026-09-07T13:56:40.2795328Z  * [new ref]         d91098372a07b2771ac9c20634f76137a34732d3 -> pull/16928/merge
+2026-09-07T13:56:40.2798512Z ##[endgroup]
+2026-09-07T13:56:40.2799824Z ##[group]Determining the checkout info
+2026-09-07T13:56:40.2801329Z ##[endgroup]
+2026-09-07T13:56:40.2802419Z ##[group]Setting up sparse checkout
+2026-09-07T13:56:40.2803339Z [command]/usr/bin/git config core.sparseCheckout true
+2026-09-07T13:56:40.2836595Z [command]/usr/bin/git rev-parse --git-path info/sparse-checkout
+2026-09-07T13:56:40.2861654Z .git/info/sparse-checkout
+2026-09-07T13:56:40.2869494Z ##[endgroup]
+2026-09-07T13:56:40.2871350Z ##[group]Checking out the ref
+2026-09-07T13:56:40.2874180Z [command]/usr/bin/git checkout --progress --force refs/remotes/pull/16928/merge
+2026-09-07T13:56:40.9200054Z Note: switching to 'refs/remotes/pull/16928/merge'.
+2026-09-07T13:56:40.9201111Z 
+2026-09-07T13:56:40.9201720Z You are in 'detached HEAD' state. You can look around, make experimental
+2026-09-07T13:56:40.9203043Z changes and commit them, and you can discard any commits you make in this
+2026-09-07T13:56:40.9204301Z state without impacting any branches by switching back to a branch.
+2026-09-07T13:56:40.9205042Z 
+2026-09-07T13:56:40.9205586Z If you want to create a new branch to retain commits you create, you may
+2026-09-07T13:56:40.9206805Z do so (now or later) by using -c with the switch command. Example:
+2026-09-07T13:56:40.9207516Z 
+2026-09-07T13:56:40.9207860Z   git switch -c <new-branch-name>
+2026-09-07T13:56:40.9208366Z 
+2026-09-07T13:56:40.9208744Z Or undo this operation with:
+2026-09-07T13:56:40.9209194Z 
+2026-09-07T13:56:40.9209500Z   git switch -
+2026-09-07T13:56:40.9209901Z 
+2026-09-07T13:56:40.9210982Z Turn off this advice by setting config variable advice.detachedHead to false
+2026-09-07T13:56:40.9221979Z 
+2026-09-07T13:56:40.9222841Z HEAD is now at d910983 Merge a2bf4225cef685ff9c67037d8dbcf7e19b9704cb into 409c7603381f2e8b160c3b61238e0b6105bbb337
+2026-09-07T13:56:40.9225643Z ##[endgroup]
+2026-09-07T13:56:40.9267413Z [command]/usr/bin/git log -1 --format=%H
+2026-09-07T13:56:40.9291120Z d91098372a07b2771ac9c20634f76137a34732d3
+2026-09-07T13:56:40.9624690Z ##[group]Run oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6
+2026-09-07T13:56:40.9625407Z with:
+2026-09-07T13:56:40.9625822Z   no-cache: false
+2026-09-07T13:56:40.9628915Z   token: ***
+2026-09-07T13:56:40.9629335Z env:
+2026-09-07T13:56:40.9632871Z   GITHUB_TOKEN: ***
+2026-09-07T13:56:40.9633296Z ##[endgroup]
+2026-09-07T13:56:41.4918146Z Downloading a new version of Bun: https://github.com/oven-sh/bun/releases/download/bun-v1.4.2/bun-linux-x64.zip
+2026-09-07T13:56:41.7545533Z [command]/usr/bin/unzip -o -q /home/runner/work/_temp/2d717ed8-2528-4fe6-adae-3bd1bc095b63.zip
+2026-09-07T13:56:42.3583442Z [command]/home/runner/.bun/bin/bun --revision
+2026-09-07T13:56:42.3631759Z 1.4.2+744846f84
+2026-09-07T13:56:42.3805481Z ##[group]Run bun src/Core.TypeScript/ci/drift-loud.ts \
+2026-09-07T13:56:42.3805958Z [36;1mbun src/Core.TypeScript/ci/drift-loud.ts \[0m
+2026-09-07T13:56:42.3806347Z [36;1m  --repo "$REPO" --run-id "$RUN_ID" --window 60 \[0m
+2026-09-07T13:56:42.3806723Z [36;1m  --ledger data/platform-drift.json[0m
+2026-09-07T13:56:42.3848258Z shell: /usr/bin/bash -e {0}
+2026-09-07T13:56:42.3848526Z env:
+2026-09-07T13:56:42.3851482Z   GITHUB_TOKEN: ***
+2026-09-07T13:56:42.3853932Z   GH_TOKEN: ***
+2026-09-07T13:56:42.3854167Z   REPO: Lucent-Financial-Group/Zeta
+2026-09-07T13:56:42.3854434Z   RUN_ID: 34128437843
+2026-09-07T13:56:42.3854650Z ##[endgroup]
+2026-09-07T13:59:41.9467776Z ## Drift -- loud, and blocking nothing
+2026-09-07T13:59:41.9468564Z 
+2026-09-07T13:59:41.9472324Z **149 absorbed failure(s)** across 5 subject(s) (of which the canary and this reporter are instruments, not findings) in the last 60 run(s) (window is bounded at 60). Coverage: 60/60 runs actually executed jobs (100.0%); 0 were cancelled before anything ran. Every rate below is over EXECUTIONS.
+2026-09-07T13:59:41.9475009Z 
+2026-09-07T13:59:41.9477983Z > **PUBLICATION OFF BY DECISION: `data/platform-drift.json` is pinned at run 33238368515 and the publisher is `disabled_manually`, so nothing is expected to land. The numbers below are FROZEN at that run, not current -- read them as a snapshot, never as today's platform. This is reported rather than silenced because a frozen dashboard that looks live is the failure this job exists to catch; it is a warning rather than an error because a deliberate off-switch is not a defect.**
+2026-09-07T13:59:41.9481325Z 
+2026-09-07T13:59:41.9481707Z | subject | band | class | executions | failures | rate | clean streak | last |
+2026-09-07T13:59:41.9482456Z | --- | --- | --- | --- | --- | --- | --- | --- |
+2026-09-07T13:59:41.9483634Z | `build-and-test (windows-11-arm)` | SUSTAINED -- failing most runs, unhealed | job red, `gate (required)` green | 59 | 56 | 94.9% | 0 | run 34127678235 |
+2026-09-07T13:59:41.9485411Z | `build-and-test (windows-2025)` | SUSTAINED -- failing most runs, unhealed | job red, `gate (required)` green | 59 | 56 | 94.9% | 0 | run 34127678235 |
+2026-09-07T13:59:41.9486983Z | `lint (bash retirement inventory + hygiene unit tests)` | healed -- failed in window, clean since | job red, `gate (required)` green | 60 | 4 | 6.7% | 54 | run 34064728231 |
+2026-09-07T13:59:41.9487850Z 
+2026-09-07T13:59:41.9502384Z Loud: **2** annotated (2 at `::error::`). `healed` and `unobserved` rows carry NO annotation on purpose -- an alarm that stays lit after its defect is gone is how a real signal gets muted.
+2026-09-07T13:59:41.9503204Z 
+2026-09-07T13:59:41.9503941Z **This job is not in the `gate (required)` floor.** A red X here is a drift signal, never a merge block. Making any of these blocking is a floor amendment and a separate, human decision.
+2026-09-07T13:59:41.9504732Z 
+2026-09-07T13:59:41.9505420Z Detector liveness: OK -- detector live: the canary's swallowed step was observed in run 34128437843 via the annotation channel (Process completed with exit code 1.)
+2026-09-07T13:59:41.9506222Z 
+2026-09-07T13:59:41.9526123Z ##[error]build-and-test (windows-11-arm) -- 56/59 executions failed (94.9%), clean streak 0, last run 34127678235. job red, `gate (required)` green. This is a DRIFT signal: it is loud on purpose and it blocks nothing.
+2026-09-07T13:59:41.9536213Z ##[error]build-and-test (windows-2025) -- 56/59 executions failed (94.9%), clean streak 0, last run 34127678235. job red, `gate (required)` green. This is a DRIFT signal: it is loud on purpose and it blocks nothing.
+2026-09-07T13:59:41.9543240Z ##[warning]PUBLICATION OFF BY DECISION: `data/platform-drift.json` is pinned at run 33238368515 and the publisher is `disabled_manually`, so nothing is expected to land. The numbers below are FROZEN at that run, not current -- read them as a snapshot, never as today's platform. This is reported rather than silenced because a frozen dashboard that looks live is the failure this job exists to catch; it is a warning rather than an error because a deliberate off-switch is not a defect.
+2026-09-07T13:59:41.9545604Z 
+2026-09-07T13:59:41.9546112Z EXIT 1 -- a drift signal is at its loudest band. This job is NOT in the `gate (required)` floor: the merge is unaffected. Red here means read it, not stop.
+2026-09-07T13:59:41.9550387Z ##[error]Process completed with exit code 1.
+2026-09-07T13:59:41.9612081Z ##[group]Run bun src/Core.TypeScript/ci/verdict-drought.ts \
+2026-09-07T13:59:41.9612547Z [36;1mbun src/Core.TypeScript/ci/verdict-drought.ts \[0m
+2026-09-07T13:59:41.9612897Z [36;1m  --repo "$REPO" --window 60[0m
+2026-09-07T13:59:41.9649634Z shell: /usr/bin/bash -e {0}
+2026-09-07T13:59:41.9649905Z env:
+2026-09-07T13:59:41.9653197Z   GITHUB_TOKEN: ***
+2026-09-07T13:59:41.9656261Z   GH_TOKEN: ***
+2026-09-07T13:59:41.9656525Z   REPO: Lucent-Financial-Group/Zeta
+2026-09-07T13:59:41.9656836Z ##[endgroup]
+2026-09-07T13:59:44.7698335Z ## main gate-verdict drought -- loud, and blocking nothing
+2026-09-07T13:59:44.7699141Z 
+2026-09-07T13:59:44.7699351Z **OK -- main has a recent completed verdict**
+2026-09-07T13:59:44.7699710Z 
+2026-09-07T13:59:44.7699868Z | measurement | value |
+2026-09-07T13:59:44.7700230Z | --- | --- |
+2026-09-07T13:59:44.7700798Z | register | `ok` |
+2026-09-07T13:59:44.7701632Z | last COMPLETED verdict (success **or** failure) | run 34128197660 `failure` 409c7603 (2026-09-07T13:57:09.000Z) |
+2026-09-07T13:59:44.7702625Z | time since that verdict | 3 min (threshold 45 min) |
+2026-09-07T13:59:44.7703238Z | commits on main since that verdict | 5 (threshold 10) |
+2026-09-07T13:59:44.7703803Z | gate runs since that verdict | 5 |
+2026-09-07T13:59:44.7704334Z | last SUCCESS (a different fact) | run 34072186435 f44bd35d (2026-09-07T01:29:49.000Z) |
+2026-09-07T13:59:44.7704787Z | time since last success | 750 min |
+2026-09-07T13:59:44.7705079Z | window | 60 run(s), bounded at 60 |
+2026-09-07T13:59:44.7705366Z | of which verdicts | 55 |
+2026-09-07T13:59:44.7705630Z | of which cancelled | 0 (0.0%) |
+2026-09-07T13:59:44.7705916Z | of which still running | 5 |
+2026-09-07T13:59:44.7706186Z | of which other non-verdict | 0 |
+2026-09-07T13:59:44.7706520Z | median gate duration when allowed to finish | 22 min |
+2026-09-07T13:59:44.7706893Z | measured against | 2026-09-07T13:59:41.978Z |
+2026-09-07T13:59:44.7707111Z 
+2026-09-07T13:59:44.7707198Z **Why:**
+2026-09-07T13:59:44.7707313Z 
+2026-09-07T13:59:44.7707649Z - main has a completed verdict from 3 min ago (run 34128197660, `failure`) with 5 commit(s) on top of it.
+2026-09-07T13:59:44.7708095Z 
+2026-09-07T13:59:44.7708656Z `cancelled` and `skipped` are **not** verdicts and can never satisfy this check. `failure` **is** a verdict -- this measures whether `main` is being checked, not whether it is green.
+2026-09-07T13:59:44.7709281Z 
+2026-09-07T13:59:44.7710184Z **Nothing here blocks.** No `gate (required)` dependency was added and no required check reads this. The concurrency group, the merge queue question, and the flush cadences are untouched on purpose: this makes the condition visible so that whichever policy is chosen can be verified afterwards.
+2026-09-07T13:59:44.7711842Z 
+2026-09-07T13:59:44.7712390Z Detector liveness: OK -- drought detector live: 60 gate run(s) observed on main, 55 of them carrying a completed verdict.
+2026-09-07T13:59:44.7713067Z 
+2026-09-07T13:59:44.7713105Z 
+2026-09-07T13:59:44.7713453Z EXIT 0 -- main has a recent completed verdict and the detector proved it looked.
+2026-09-07T13:59:44.7875990Z Post job cleanup.
+2026-09-07T13:59:44.8708605Z [command]/usr/bin/git version
+2026-09-07T13:59:44.8751665Z git version 2.55.0
+2026-09-07T13:59:44.8786519Z Temporarily overriding HOME='/home/runner/work/_temp/d8ab17cc-b273-4822-a27c-3a5712d379e2' before making global git config changes
+2026-09-07T13:59:44.8787816Z Adding repository directory to the temporary git global config as a safe directory
+2026-09-07T13:59:44.8791439Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/Zeta/Zeta
+2026-09-07T13:59:44.8821607Z Removing SSH command configuration
+2026-09-07T13:59:44.8828045Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-09-07T13:59:44.8862448Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-09-07T13:59:44.9116707Z Removing HTTP extra header
+2026-09-07T13:59:44.9123742Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-09-07T13:59:44.9158275Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-09-07T13:59:44.9406952Z Removing includeIf entries pointing to credentials config files
+2026-09-07T13:59:44.9413250Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-09-07T13:59:44.9443714Z includeif.gitdir:/home/runner/work/Zeta/Zeta/.git.path
+2026-09-07T13:59:44.9444566Z includeif.gitdir:/home/runner/work/Zeta/Zeta/.git/worktrees/*.path
+2026-09-07T13:59:44.9445320Z includeif.gitdir:/github/workspace/.git.path
+2026-09-07T13:59:44.9446007Z includeif.gitdir:/github/workspace/.git/worktrees/*.path
+2026-09-07T13:59:44.9452509Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/Zeta/Zeta/.git.path
+2026-09-07T13:59:44.9475149Z /home/runner/work/_temp/git-credentials-bd4c2b78-cbc1-4dd6-afa1-4c645e477d63.config
+2026-09-07T13:59:44.9486683Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/Zeta/Zeta/.git.path \/home\/runner\/work\/_temp\/git\-credentials\-bd4c2b78\-cbc1\-4dd6\-afa1\-4c645e477d63\.config
+2026-09-07T13:59:44.9520414Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/Zeta/Zeta/.git/worktrees/*.path
+2026-09-07T13:59:44.9543782Z /home/runner/work/_temp/git-credentials-bd4c2b78-cbc1-4dd6-afa1-4c645e477d63.config
+2026-09-07T13:59:44.9552234Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/Zeta/Zeta/.git/worktrees/*.path \/home\/runner\/work\/_temp\/git\-credentials\-bd4c2b78\-cbc1\-4dd6\-afa1\-4c645e477d63\.config
+2026-09-07T13:59:44.9591989Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git.path
+2026-09-07T13:59:44.9613132Z /github/runner_temp/git-credentials-bd4c2b78-cbc1-4dd6-afa1-4c645e477d63.config
+2026-09-07T13:59:44.9620245Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git.path \/github\/runner_temp\/git\-credentials\-bd4c2b78\-cbc1\-4dd6\-afa1\-4c645e477d63\.config
+2026-09-07T13:59:44.9650470Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git/worktrees/*.path
+2026-09-07T13:59:44.9671503Z /github/runner_temp/git-credentials-bd4c2b78-cbc1-4dd6-afa1-4c645e477d63.config
+2026-09-07T13:59:44.9681074Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git/worktrees/*.path \/github\/runner_temp\/git\-credentials\-bd4c2b78\-cbc1\-4dd6\-afa1\-4c645e477d63\.config
+2026-09-07T13:59:44.9714337Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-09-07T13:59:44.9958372Z Removing credentials config '/home/runner/work/_temp/git-credentials-bd4c2b78-cbc1-4dd6-afa1-4c645e477d63.config'
+2026-09-07T13:59:45.0096194Z Cleaning up orphan processes

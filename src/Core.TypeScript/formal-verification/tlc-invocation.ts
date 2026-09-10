@@ -88,9 +88,9 @@ export function loadTlcRegistry(repoRoot: string): TlcRegistry {
   return JSON.parse(raw) as TlcRegistry;
 }
 
-/** JVM policy, from the registry pin. OpenJDK 26 on macOS/aarch64 has crashed in
- *  C2 type-speculation cleanup after a model completed, so that one platform keeps
- *  C2 and disables only the failing optimisation. */
+/** JVM policy from the registry pin. macOS/aarch64 uses C1-only after in-run
+ *  OpenJDK 26 failures and two complete BftConsensus diagnostics under that
+ *  policy. This is a bounded workaround, not a root-cause or stability theorem. */
 export function tlcJvmArguments(
   registry: TlcRegistry,
   platform: NodeJS.Platform = process.platform,
@@ -111,9 +111,11 @@ export function buildTlcArgv(
   metadir: string,
   platform: NodeJS.Platform = process.platform,
   architecture: string = process.arch,
+  errorFile?: string,
 ): readonly string[] {
   return [
     ...tlcJvmArguments(registry, platform, architecture),
+    ...(errorFile === undefined ? [] : ["-XX:ErrorFile=" + errorFile]),
     "-cp", jarPath,
     "tlc2.TLC",
     "-metadir", metadir,

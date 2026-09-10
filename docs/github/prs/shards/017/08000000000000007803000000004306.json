@@ -1,0 +1,12 @@
+{
+  "pr_number": 17158,
+  "archive_path": "docs/history/pr-reviews/PR-17158-docs-081m23h36qf087g0r0012f5ght-the-cross-domain-fidelity-meter-is-the-gate-and-.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-09T17:22:33.393Z",
+  "schema_version": "v1",
+  "commit_sha": "46910b6557b24e65a2268966ca3c386137698a8c",
+  "title": "docs(081M23H36QF087G0R0012F5GHT): the cross-domain fidelity meter is the gate, and the shared structure is a category not a space",
+  "state": "MERGED",
+  "merged_at": "2026-09-09T17:21:42Z",
+  "head_ref": "worktree-agent-a1e273deccb0f7fca"
+}

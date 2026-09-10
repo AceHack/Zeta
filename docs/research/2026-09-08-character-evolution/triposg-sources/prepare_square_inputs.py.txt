@@ -1,0 +1,14 @@
+"""Model preprocessing: explicit U2Net alpha, square padding and background composite."""
+from pathlib import Path
+import sys,numpy as np,rembg
+from PIL import Image
+root=Path(__file__).resolve().parent;sys.path.insert(0,str(root/'TripoSR'))
+from tsr.utils import remove_background,resize_foreground
+session=rembg.new_session('u2net')
+for name,filename in [('AceHack','AceHack-derived.png'),('Xenaa','Xenaa-white.png')]:
+ im=resize_foreground(remove_background(Image.open(root/'references'/filename),session),.80)
+ im.save(root/'references'/f'{name}-square-alpha.png')
+ rgba=np.asarray(im).astype(np.float32)/255
+ rgb=rgba[:,:,:3]*rgba[:,:,3:4]+1-rgba[:,:,3:4]
+ Image.fromarray((rgb*255).astype(np.uint8)).save(root/'references'/f'{name}-square-white.png')
+ print(name,'prepared',flush=True)

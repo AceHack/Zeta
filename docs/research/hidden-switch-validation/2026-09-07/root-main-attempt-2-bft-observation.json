@@ -1,0 +1,16 @@
+{
+  "ObservedAtUtc": "2026-09-07T14:12:30.606082+00:00",
+  "Scope": "Live recovery-attempt snapshot only; original TRX must establish completion",
+  "Files": [
+    {
+      "File": "root-main-attempt-2-bft-invocation-live.json",
+      "Bytes": 35450,
+      "Sha256": "632a16e598308219eb4a490eec037d361350a340c08e3b9db5b32ba91db2b051"
+    },
+    {
+      "File": "root-main-attempt-2-bft-runtime-live.json",
+      "Bytes": 1186,
+      "Sha256": "b9a9b190af371cec0b42d2eb81ace558841975ab0ae20433795edab444478f63"
+    }
+  ]
+}

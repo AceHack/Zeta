@@ -19,18 +19,49 @@ const TRIM_TARGET_BYTES = Math.floor(MAX_LOG_SIZE_BYTES * 0.6); // Trim to 60% t
 type LogSource = "browserConsole" | "networkRequests" | "sessionReplay";
 
 function ensureLogDir() {
-  if (!fs.existsSync(LOG_DIR)) {
-    fs.mkdirSync(LOG_DIR, { recursive: true });
-  }
+  // DO, THEN INTERPRET. `recursive: true` already succeeds when the directory
+  // exists, so the `existsSync` guard this replaced bought a second path lookup
+  // and no safety -- between the check and the mkdir the answer can change.
+  fs.mkdirSync(LOG_DIR, { recursive: true });
 }
 
+/**
+ * Trim the log down to the newest lines that fit in TRIM_TARGET_BYTES.
+ *
+ * ONE DESCRIPTOR, OPENED ONCE. The previous shape resolved `logPath` FOUR
+ * separate times -- existsSync, statSync, readFileSync, writeFileSync -- and
+ * decided on the first two whether the last one would overwrite. Anything that
+ * replaced the path in between received the truncating write. Here the path is
+ * resolved exactly once, by `openSync`, and every operation after it names the
+ * DESCRIPTOR rather than the path, so there is no window left to swap.
+ *
+ * O_RDWR with neither O_CREAT nor O_TRUNC: this function must never bring a log
+ * into existence, and must never empty one before it has read it. O_NOFOLLOW
+ * because the only writer of this path is the appendFileSync below -- a symlink
+ * here was put there by someone else. Read through `fs.constants` defensively:
+ * the flag is not defined on every platform Node runs on.
+ */
+const O_NOFOLLOW: number =
+  typeof fs.constants.O_NOFOLLOW === "number" ? fs.constants.O_NOFOLLOW : 0;
+
 function trimLogFile(logPath: string, maxSize: number) {
+  let fd: number | undefined;
   try {
-    if (!fs.existsSync(logPath) || fs.statSync(logPath).size <= maxSize) {
+    fd = fs.openSync(logPath, fs.constants.O_RDWR | O_NOFOLLOW);
+
+    // fstat, not stat: the size that decides the trim is the size of the file
+    // this descriptor already holds open, not of whatever the name points at now.
+    const size = fs.fstatSync(fd).size;
+    if (size <= maxSize) {
       return;
     }
 
-    const lines = fs.readFileSync(logPath, "utf-8").split("\n");
+    // readSync may return short. Decoding the whole buffer regardless would
+    // append uninitialised bytes to the log it is meant to be trimming, so the
+    // decode is bounded by what was actually read.
+    const buffer = Buffer.alloc(size);
+    const bytesRead = fs.readSync(fd, buffer, 0, size, 0);
+    const lines = buffer.subarray(0, bytesRead).toString("utf-8").split("\n");
     const keptLines: string[] = [];
     let keptBytes = 0;
 
@@ -43,9 +74,28 @@ function trimLogFile(logPath: string, maxSize: number) {
       keptBytes += lineBytes;
     }
 
-    fs.writeFileSync(logPath, keptLines.join("\n"), "utf-8");
-  } catch {
-    /* ignore trim errors */
+    // Truncate and rewrite through the SAME descriptor. writeFileSync(logPath)
+    // would re-resolve the name and hand the write to whatever is there now.
+    const kept = Buffer.from(keptLines.join("\n"), "utf-8");
+    fs.ftruncateSync(fd, 0);
+    fs.writeSync(fd, kept, 0, kept.length, 0);
+  } catch (err) {
+    // ENOENT is the do-then-interpret answer to "does the log exist yet": no log,
+    // nothing to trim, not a problem. ELOOP is O_NOFOLLOW refusing a symlink,
+    // which our own writer never creates -- worth saying out loud.
+    //
+    // EVERYTHING ELSE IS A REAL FAILURE AND MUST NOT VANISH. The `catch {}` this
+    // replaced swallowed every one of them, so a log that had stopped trimming
+    // grew without limit and said nothing about it.
+    const code = (err as NodeJS.ErrnoException).code;
+    if (code === "ENOENT") {
+      return;
+    }
+    console.warn("[manus-debug] could not trim " + logPath + ": " + (code ?? String(err)));
+  } finally {
+    if (fd !== undefined) {
+      fs.closeSync(fd);
+    }
   }
 }
 

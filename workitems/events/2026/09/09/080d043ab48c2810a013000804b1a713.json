@@ -1,0 +1,14 @@
+{
+  "id": "080d043ab48c2810a013000804b1a713",
+  "at": "2026-09-09T18:03:12.645Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M23ND4C5087G0R00036MYZ5",
+    "type": "task",
+    "title": "rung 8 — the 7.6x was a measurement of our BVH, and the projection is not the problem",
+    "slug": "rung-8-the-7-6x-was-a-measurement-of-our-bvh-and-the-project",
+    "priority": "P2",
+    "filename": "081M23ND4C5087G0R00036MYZ5-rung-8-the-7-6x-was-a-measurement-of-our-bvh-and-the-project.md"
+  }
+}

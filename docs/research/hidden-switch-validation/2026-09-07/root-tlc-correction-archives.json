@@ -1,0 +1,18 @@
+{
+  "VerifiedUtc": "2026-09-07T13:35:10.532714+00:00",
+  "Command": [
+    "git",
+    "ls-remote",
+    "--tags",
+    "origin",
+    "refs/tags/archive/validation/081M1XQM8E4087G0R0036P5RWY-tlc-attempt-retention*"
+  ],
+  "Refs": {
+    "refs/tags/archive/validation/081M1XQM8E4087G0R0036P5RWY-tlc-attempt-retention": "5b3663eb5bd0ddc4b8038ab05a6b2d7de70772e9",
+    "refs/tags/archive/validation/081M1XQM8E4087G0R0036P5RWY-tlc-attempt-retention^{}": "c247403be5d6320b74903e5562b36f55d6884d6f",
+    "refs/tags/archive/validation/081M1XQM8E4087G0R0036P5RWY-tlc-attempt-retention-ci-correction": "7c0ea54e97886ac726bd6277253f1362a89fe9d7",
+    "refs/tags/archive/validation/081M1XQM8E4087G0R0036P5RWY-tlc-attempt-retention-ci-correction^{}": "038ff0e3c854d6757dce08252ee9c15e5105429c"
+  },
+  "OriginalArchiveUnchanged": true,
+  "Scope": "Remote original and supplemental annotated-tag identities; no main-merge or source-to-binary claim."
+}

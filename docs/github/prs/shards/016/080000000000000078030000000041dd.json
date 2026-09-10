@@ -1,0 +1,12 @@
+{
+  "pr_number": 16861,
+  "archive_path": "docs/history/pr-reviews/PR-16861-docs-formal-freeze-finite-nci-witness-verifier.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-06T21:29:00.633Z",
+  "schema_version": "v1",
+  "commit_sha": "d55917363cc1473e8db228812756fca600eeb816",
+  "title": "docs(formal): freeze finite NCI witness verifier",
+  "state": "MERGED",
+  "merged_at": "2026-09-06T21:27:48Z",
+  "head_ref": "lumen/nci-witness-verifier-contract"
+}

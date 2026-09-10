@@ -123,6 +123,7 @@ import {
   type Dirent,
 } from "node:fs";
 import { resolve, join, dirname } from "node:path";
+import { applicationDirs } from "./declared-cluster-trees.ts";
 import { spawnSync } from "node:child_process";
 import { parseAllDocuments, stringify as yamlStringify } from "yaml";
 import { stringCompare } from "../collation/collation.ts";
@@ -141,7 +142,8 @@ const REPO_ROOT = resolve(import.meta.dir, "../../..");
 export const DEFAULT_BASELINE_PATH = "src/Core.TypeScript/cluster/rendered-storage-claims.baseline.json";
 
 /** Directories whose depth-1 entries are `<app>/Application.yaml`. */
-const APPLICATION_ROOTS = ["full-ai-cluster/k8s/applications", "infra/k8s/applications"] as const;
+/** Derived from the tree roster — see `declared-cluster-trees.ts` for why it is not a literal. */
+const APPLICATION_ROOTS: readonly string[] = applicationDirs();
 
 // ---------------------------------------------------------------------------
 // Discovery

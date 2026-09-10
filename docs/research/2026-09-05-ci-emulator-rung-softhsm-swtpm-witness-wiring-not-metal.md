@@ -276,16 +276,183 @@ ISO bun names epoch (`081M1W6J9MH087G0R003VNMDDR`):
 `ZETA_BAO_ELF_EPOCH='installer-iso'` as a literal.
 Missing epoch is unmeasured, not `installed-host`.
 `/mnt` is unknown, not `installer-iso`.
+Env join reads named epoch (`081M1W8D6MF087G0R003405R3N`):
+`planSetupFromNamedBaoElfEnv` takes epoch from env.
+A named ask without a named epoch refuses. Missing
+keys stay unmeasured. Does not invent an integrate
+decision.
+ISO bun filters current-system bao (`081M1W9VW7P087G0R0026A9J6Z`):
+`consumeFirstbootBaoElfEnvWithEpoch` applies
+`namedBaoElfAskAtEpoch` when epoch is named. Bun JSON
+ask is null for ISO current-system bao.
+Named unseal request (`081M1WBA6RX087G0R002450S9J`):
+`parsePathRequest`. Missing is unmeasured, not `auto`.
+`/dev/tpmrm0` is unknown, not `pkcs11-tpm`. Does not
+call `integrateAtSetup`.
+Env request joins injected capture (`081M1WCEGYJ087G0R0039T2T39`):
+`integrateAtSetupFromEnv`. Missing is unmeasured, not
+`auto`. Capture stays injected. `/dev/tpmrm0` still
+refuses at parse.
+Overlay env join reads unseal request (`081M1WE7Z5S087G0R001WT3K6G`):
+`planSetupFromNamedBaoElfEnv` takes the request from env.
+Capture stays injected. Missing is unmeasured, not `auto`.
+ISO bun consume reports named unseal request (`081M1WG1RJB087G0R001ADMJNK`):
+bun JSON includes `requested`. Missing is unmeasured, not `auto`.
+Does not export a default request. Does not call `integrateAtSetup`.
+Argv/conf overlay joins read unseal request (`081M1WHKEEQ087G0R0002B3SPG`):
+`planSetupFromNamedBaoElfArgv` and `planSetupFromNamedBaoElfConf`
+take the request from env. Capture stays injected. Missing is
+unmeasured, not `auto`. Does not add the request to ESP conf.
+Named probe snapshot becomes host capture (`081M1WK36Y1087G0R003WT976Y`):
+`hostCaptureFromNamedProbe`. `/dev/tpmrm0` is not `present`.
+A YubiKey is not CardContact. A driver on disk is not attached
+YubiHSM. Null is unmeasured, not absent.
+Overlay joins take named probe (`081M1WMR8KD087G0R003HZYY14`):
+argv/conf/env joins take `NamedHardwareProbe | null`.
+Mapped via `hostCaptureFromNamedProbe`. Null is unmeasured,
+not present. `/dev/tpmrm0` on the probe is not a capture.
+Env integrate takes named probe (`081M1WP0C7B087G0R000VK9E0V`):
+`integrateAtSetupFromEnv` takes `NamedHardwareProbe | null`.
+Overlay passes the probe through. Inner `integrateAtSetup`
+still takes a capture. Null is unmeasured, not present.
+ISO bun consume reports unmeasured probe (`081M1WQNTZ0087G0R002Q8T8RT`):
+bun JSON includes `probe: null`. A named PathRequest is not a
+named probe. `/dev/tpmrm0` is not a probe.
+Frost result becomes named probe (`081M1WS6HV4087G0R001K1YWMN`):
+`namedProbeFromFrostResult`. `/dev/tpmrm0` is not `present`.
+A YubiKey / CCID reader is not CardContact. A driver on disk
+is not an attached YubiHSM. Null frost result is unmeasured,
+not absent. OS family is named, not inferred. Does not run
+the live probe. Does not import frost into cluster.
+Overlay env join takes frost result (`081M1WTR4BW087G0R0001NVXWQ`):
+`planSetupFromFrostEnv`. Maps via `namedProbeFromFrostResult`
+then `planSetupFromNamedBaoElfEnv`. `/dev/tpmrm0` is not
+`present`. Null frost result is unmeasured, not present.
+Does not run the live probe. Does not change ISO bun
+`probe: null`.
+Overlay argv/conf joins take frost result (`081M1WXPCAV087G0R002H1X6VY`):
+`planSetupFromFrostArgv` / `planSetupFromFrostConf`. Maps via
+`namedProbeFromFrostResult` then the argv/conf overlay joins.
+`/dev/tpmrm0` is not `present`. Null frost result is
+unmeasured, not present. Does not add the request to ESP
+conf. Does not change ISO bun `probe: null`.
+Frost look with injected effects (`081M1WYXT4S087G0R002K1TK4Y`):
+`namedProbeFromFrostLook`. Null effects is unmeasured, not a
+live look. Does not default to `realProbeEffects`.
+`/dev/tpmrm0` is not `present`. Does not call this from
+`zeta-install.sh`. Does not change ISO bun `probe: null`.
+Overlay joins take frost look (`081M1XYSWV0087G0R000ZFKBTD`):
+`planSetupFromFrostLookEnv` / Argv / Conf. Maps via
+`namedProbeFromFrostLook` then the named-bao overlay joins.
+Null effects is unmeasured, not a live look. Does not
+default to `realProbeEffects`. Result joins stay
+result-only. Does not call this from `zeta-install.sh`.
+Does not change ISO bun `probe: null`.
+Frost look CLI takes named effects (`081M1Y39EJJ087G0R003Z00P0Y`):
+`named-frost-look-env.ts`. Missing effects is unmeasured,
+not a live look. Does not default to `realProbeEffects`.
+OS family is named, not inferred. `/dev/tpmrm0` is not
+`real`. Does not call overlay join. Does not call this from
+`zeta-install.sh`. Does not change ISO bun `probe: null`.
+Frost look CLI argv takes named effects (`081M1Y5WKS2087G0R002Q7ZKS7`):
+`--os` / `--effects`. Missing `--effects` is unmeasured.
+`/dev/tpmrm0` is not `real`. Does not mix argv with env.
+Does not call this from `zeta-install.sh`. Does not change
+ISO bun `probe: null`.
+Frost look CLI conf takes named effects (`081M1YAHFVV087G0R001G2TXRE`):
+`--from-conf` body. Missing effects is unmeasured.
+Missing OS is `missing-os`, not `nixos`. `/dev/tpmrm0` is
+not `real`. Does not write ESP. Does not mix conf with
+argv or env. Does not call this from `zeta-install.sh`.
+Does not change ISO bun `probe: null`.
+Overlay named-key joins take frost-look keys (`081M1YCFES8087G0R000R3MV6Y`):
+`planSetupFromFrostLookNamedEnv` / Argv / Conf. Parse lives
+in `named-frost-look.ts`, not the CLI. Missing OS is
+`missing-os`. Missing effects is unmeasured. Does not
+write ESP. Does not call this from `zeta-install.sh`. Does
+not change ISO bun `probe: null`.
+ISO bun consume reports named frost-look keys (`081M1YGP8BF087G0R002Z1YH8R`):
+bun JSON includes `look`. Missing both keys is unmeasured,
+not `missing-os`. Named `"real"` still leaves `probe:
+null`. Parse does not import the look mapper. Does not
+export frost-look keys from `zeta-install.sh`. Does not
+change ISO bun `probe: null`.
+Overlay optional named joins match ISO bun missing
+frost-look keys (`081M1YNNVFQ087G0R001J5SEPD`):
+`planSetupFromFrostLookOptionalNamedEnv` / Argv / Conf.
+Missing both keys is unmeasured, not `missing-os`.
+NamedEnv still requires OS. Does not write ESP. Does not
+call this from `zeta-install.sh`. Does not change ISO bun
+`probe: null`.
+Overlay optional named join takes ISO bun JSON look
+(`081M1YQKYXQ087G0R000NXN8JN`):
+`planSetupFromFrostLookOptionalNamedBunJson`. Uses `look`.
+JSON `probe` is ignored even when non-null. Mixing env
+frost-look keys with JSON look refuses. Does not call this
+from `zeta-install.sh`. Does not change ISO bun
+`probe: null`.
+Frost look CLI takes bun JSON look (`081M1YS9661087G0R001YK5CEY`):
+`--from-json`. Uses `look`. JSON `probe` is ignored even
+when non-null. Mixing with `--os` / `--effects` /
+`--from-conf` / env frost-look keys refuses. Does not
+write ESP. Does not call overlay join. Does not call this
+from `zeta-install.sh`. Does not change ISO bun
+`probe: null`.
+Overlay optional named argv takes bun JSON `--from-json`
+(`081M1YWR8EB087G0R002X0SFX7`):
+`planSetupFromFrostLookOptionalNamedArgv`. Uses `look`.
+JSON `probe` is ignored even when non-null. Mixing
+`--from-json` with `--os` / `--effects` / `--from-conf` /
+env frost-look keys refuses. Does not import the
+frost-look CLI. Does not call this from `zeta-install.sh`.
+Does not change ISO bun `probe: null`.
+Overlay named argv takes bun JSON `--from-json`
+(`081M1Z1FHDW087G0R00210Z0PG`):
+`planSetupFromFrostLookNamedArgv`. Uses `look`. JSON
+`probe` is ignored even when non-null. Null look is
+`missing-os`, not unmeasured. Mixing `--from-json` with
+`--os` / `--effects` / `--from-conf` / env frost-look keys
+refuses. Does not import the frost-look CLI. Does not
+call this from `zeta-install.sh`. Does not change ISO bun
+`probe: null`.
+Overlay named bun JSON join takes look
+(`081M1Z36ZJ4087G0R003HFMT2K`):
+`planSetupFromFrostLookNamedBunJson`. Uses `look`. JSON
+`probe` is ignored even when non-null. Null look is
+`missing-os`, not unmeasured. Mixing env frost-look keys
+with JSON look refuses. Does not import the frost-look
+CLI. Does not call this from `zeta-install.sh`. Does not
+change ISO bun `probe: null`.
 
 1. Metal: `seal "pkcs11"` in Application.yaml still waits.
    Same commit as a **reachable** module: same-libc image
    (glibc OpenBao that can load the host `.so`) or option D
    host `bao`. Dual-vendor per node is ZetaFS k-of-n, not
-   two active OpenBao seals. Do not treat this planner as
-   that commit. Epoch is named at the ISO consume. A live
-   installer call still must not invent an integrate
-   decision. Does not expand `ZetaFirstbootRole`.
-   `/dev/tpmrm0` is still not an ask.
+   two active OpenBao seals. Do not treat this overlay as
+   that commit.    Named-key overlay joins landed
+   (`081M1YCFES8087G0R000R3MV6Y`); they do not write ESP.
+   ISO bun consume reports `look`
+   (`081M1YGP8BF087G0R002Z1YH8R`) and still leaves `probe`
+   null.    Optional named joins
+   (`081M1YNNVFQ087G0R001J5SEPD`) match that missing-key
+   unmeasure and still leave NamedEnv requiring OS.
+   Bun JSON look join
+   (`081M1YQKYXQ087G0R000NXN8JN`) uses `look` and ignores
+   JSON `probe`. Frost look CLI `--from-json`
+   (`081M1YS9661087G0R001YK5CEY`) prints that same look
+   and still ignores JSON `probe`. Overlay optional named
+   argv `--from-json` (`081M1YWR8EB087G0R002X0SFX7`)
+   joins that same look with argv bao flags and still
+   ignores JSON `probe`. Overlay named argv `--from-json`
+   (`081M1Z1FHDW087G0R00210Z0PG`) joins it on the required
+   path; null look is `missing-os`. Overlay named bun JSON
+   join (`081M1Z36ZJ4087G0R003HFMT2K`) is the required
+   string sibling; null look is `missing-os`. Wiring this look on
+   the live ISO is later
+   and still must not infer from `/dev/tpmrm0`. Bun JSON
+   `probe` stays null until that wiring exists. Does not
+   expand `ZetaFirstbootRole`. `/dev/tpmrm0` is still not
+   an ask and not a PathRequest.
 2. extraContainer Shamir sidecar (`valuesObject` only) until
    kind/CI consume the emulator init.
 

@@ -1,0 +1,14 @@
+{
+  "id": "080d0416afbb4810a0130008ddf71c98",
+  "at": "2026-09-08T21:04:15.721Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M21DBXV8087G0R003HFHJK2",
+    "type": "task",
+    "title": "ZetaFS product reason: multi-planet DBSP consensus not Earth-only FS",
+    "slug": "zetafs-product-reason-multi-planet-dbsp-consensus-not-earth",
+    "priority": "P2",
+    "filename": "081M21DBXV8087G0R003HFHJK2-zetafs-product-reason-multi-planet-dbsp-consensus-not-earth.md"
+  }
+}

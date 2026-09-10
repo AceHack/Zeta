@@ -12,8 +12,9 @@ open Zeta.Core.FSharp.Blake3
 /// a rank-2 brand: a raw ContentId cannot mint a token. Mark is ShivaGc's
 /// cycle-safe reachability. Pacer budget is freeze bytes since the last
 /// tick, never local wall-clock. Crash-mid-sweep intercept:
-/// `InMemoryFileSystem.ArmCrashOnDelete`. A partial tick leaves extra
-/// garbage, not a missing live object. A committed Journaled freeze stays
+/// `InMemoryFileSystem.ArmCrashOnDelete` (POSIX stream) and
+/// `BlockCas.ArmCrashOnDelete` (BlockStore / default `create`). A partial
+/// tick leaves extra garbage, not a missing live object. A committed Journaled freeze stays
 /// readable across that crash (tested). Sweep journal slice:
 /// `applyWithJournal` records remaining paths and resumes after
 /// crash-mid-sweep. Freeze volume door: `ZetaFsFreeze.reclaimSweep`.

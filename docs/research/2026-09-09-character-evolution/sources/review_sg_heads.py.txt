@@ -1,0 +1,13 @@
+import bpy,sys,math
+from pathlib import Path
+from mathutils import Vector
+root=Path(__file__).resolve().parent;sys.path.insert(0,str(root))
+from review_heads import bounds,reference_material,studio
+for name in ['AceHack','Xenaa']:
+ bpy.ops.wm.read_factory_settings(use_empty=True);bpy.ops.import_scene.gltf(filepath=str(root/'transferred'/name/'head.glb'))
+ o=[o for o in bpy.context.selected_objects if o.type=='MESH'][0];bpy.context.view_layer.objects.active=o;bpy.ops.object.transform_apply(location=True,rotation=True,scale=True)
+ for p in o.data.polygons:p.use_smooth=True
+ reference_material(o,root/'heads'/name/'alpha.png');lo,hi=bounds(o);center=(lo+hi)/2;scene,cam=studio(center,hi.z-lo.z)
+ for a in [0,35,90,180]:
+  r=math.radians(a);cam.location=center+Vector((4*math.sin(r),-4*math.cos(r),0));cam.rotation_euler=(center-cam.location).to_track_quat('-Z','Y').to_euler();scene.render.filepath=str(root/'heads-sg'/name/f'review-{a}.png');bpy.ops.render.render(write_still=True)
+ bpy.ops.wm.save_as_mainfile(filepath=str(root/'heads-sg'/name/f'{name}-head.blend'))

@@ -1,0 +1,14 @@
+{
+  "id": "080d03c7ec54e810a013000833e57ec9",
+  "at": "2026-09-06T23:11:17.149Z",
+  "by": "vera-codex",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1WFV2MW087G0R00078X6PV",
+    "type": "task",
+    "title": "Exercise the NCI emitter through an explicit dependency capability boundary",
+    "slug": "exercise-the-nci-emitter-through-an-explicit-dependency-capa",
+    "priority": "P2",
+    "filename": "081M1WFV2MW087G0R00078X6PV-exercise-the-nci-emitter-through-an-explicit-dependency-capa.md"
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 17167,
+  "archive_path": "docs/history/pr-reviews/PR-17167-fix-hygiene-a-space-walked-through-the-sealed-room-gate-a-comment-made-a-manifes.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-09T18:44:15.196Z",
+  "schema_version": "v1",
+  "commit_sha": "d0daf3f4a7b60ebbf4329051c93310c828f17e29",
+  "title": "fix(hygiene): a space walked through the sealed-room gate; a comment made a manifest an Application",
+  "state": "MERGED",
+  "merged_at": "2026-09-09T18:43:33Z",
+  "head_ref": "codeql-regexp-anchor-sealed-room-whitespace-evasion"
+}

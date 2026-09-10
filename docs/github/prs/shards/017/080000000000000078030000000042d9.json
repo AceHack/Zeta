@@ -1,0 +1,12 @@
+{
+  "pr_number": 17113,
+  "archive_path": "docs/history/pr-reviews/PR-17113-feat-081m22gkexs087g0r0033jnz2f-catalog-persist-appends-hex-without-tohex.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-09T07:46:49.833Z",
+  "schema_version": "v1",
+  "commit_sha": "47b4ff3a7fe20bbb97cfc8eb823db196897437a4",
+  "title": "feat(081M22GKEXS087G0R0033JNZ2F): catalog persist appends hex without ToHex",
+  "state": "MERGED",
+  "merged_at": "2026-09-09T07:46:06Z",
+  "head_ref": "feat/zetafs-d10-catalog-append-hex"
+}

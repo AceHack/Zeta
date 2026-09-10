@@ -1,0 +1,12 @@
+{
+  "pr_number": 16873,
+  "archive_path": "docs/history/pr-reviews/PR-16873-refactor-cluster-move-the-validators-out-of-the-tree-scheduled-for-deletion.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-06T23:10:49.042Z",
+  "schema_version": "v1",
+  "commit_sha": "246245e0d52c7f28a1bdd7e8aa8cd63c2a44e8e5",
+  "title": "refactor(cluster): move the validators out of the tree scheduled for deletion",
+  "state": "MERGED",
+  "merged_at": "2026-09-06T23:10:09Z",
+  "head_ref": "shadow/move-validators-out-of-stale-tree"
+}

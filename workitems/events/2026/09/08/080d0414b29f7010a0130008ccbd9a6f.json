@@ -1,0 +1,14 @@
+{
+  "id": "080d0414b29f7010a0130008ccbd9a6f",
+  "at": "2026-09-08T19:54:45.102Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M219CMZE087G0R000GSEAQJ",
+    "type": "task",
+    "title": "D9 mid-file delete FastCDC from first mismatched window",
+    "slug": "d9-mid-file-delete-fastcdc-from-first-mismatched-window",
+    "priority": "P2",
+    "filename": "081M219CMZE087G0R000GSEAQJ-d9-mid-file-delete-fastcdc-from-first-mismatched-window.md"
+  }
+}

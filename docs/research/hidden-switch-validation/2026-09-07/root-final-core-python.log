@@ -1,0 +1,8 @@
+Command: ['uv', 'run', '--project', 'src/Core.Python', 'pytest', 'src/Core.Python/tests', '-q']
+SourceCommit: 7e9b8681c2e619316ed2439fd313cb8ae3d5f42e
+StartedAtUtc: 2026-09-07T12:07:38.075587+00:00
+...............................................................          [100%]
+63 passed in 77.63s (0:01:17)
+
+ExitCode: 0
+CompletedAtUtc: 2026-09-07T12:08:56.579002+00:00

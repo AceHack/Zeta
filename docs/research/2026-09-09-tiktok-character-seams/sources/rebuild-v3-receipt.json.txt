@@ -1,0 +1,24 @@
+[
+  {
+    "name": "AceHack",
+    "cut_z": 1.61,
+    "shared_neck_seam_vertices": 445,
+    "head_vertices": 110475,
+    "head_translation": [
+      0,
+      -0.033,
+      -0.03
+    ]
+  },
+  {
+    "name": "Xenaa",
+    "cut_z": 1.57,
+    "shared_neck_seam_vertices": 307,
+    "head_vertices": 54054,
+    "head_translation": [
+      0,
+      -0.033,
+      -0.018
+    ]
+  }
+]

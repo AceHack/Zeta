@@ -32,13 +32,46 @@ let private isTotal (decode: unit -> Result<'a, DecodeError>) : bool =
     with _ ->
         false
 
-/// Run `f` with a wall-clock budget; false = timed out (a hang = DoS = bug).
-let private completesWithin (ms: int) (f: unit -> bool) : bool =
-    try
-        let t = Task.Run f
-        if t.Wait ms then t.Result else false
-    with _ ->
-        false
+/// WHICH of the three outcomes occurred. This replaces a `completesWithin ms (isTotal ...)`
+/// composition that collapsed two distinct bugs into one `false`.
+///
+/// That pair returned `false` both for a decoder that THREW (a totality violation) and
+/// for one that HUNG (a pre-allocation DoS), so every assertion built on it could only
+/// say "hung or threw" -- accurate, and unactionable. `completesWithin` had no other
+/// caller and is gone; `isTotal` remains for the budget-free property tests. That mattered on 2026-09-08: `Fuzz: Arrow garbage + truncated-header
+/// inputs are rejected fast` failed on windows-11-arm on main and the message could
+/// not say whether the decoder had blown a 2 s budget or thrown. The two call for
+/// opposite responses -- a slow decode wants more budget, a throw wants a decoder
+/// fix -- so raising the budget without knowing which would risk hiding the bug the
+/// test exists to catch.
+type private DecodeOutcome =
+    | Total
+    | Threw of string
+    | HungPast of int
+
+let private decodeOutcome (ms: int) (decode: unit -> Result<'a, DecodeError>) : DecodeOutcome =
+    let work =
+        Task.Run(fun () ->
+            try
+                decode () |> ignore
+                None
+            with e ->
+                Some(e.GetType().Name + ": " + e.Message))
+    if work.Wait ms then
+        match work.Result with
+        | None -> Total
+        | Some detail -> Threw detail
+    else
+        HungPast ms
+
+/// Assert totality under a budget, naming the failure mode rather than the union.
+let private assertDecodeTotal (ms: int) (label: string) (decode: unit -> Result<'a, DecodeError>) =
+    match decodeOutcome ms decode with
+    | Total -> ()
+    | Threw detail ->
+        Assert.Fail(label + " THREW rather than returning a Result (totality violation): " + detail)
+    | HungPast budget ->
+        Assert.Fail(sprintf "%s HUNG past %d ms without returning (pre-allocation DoS)" label budget)
 
 // ── DECODE TOTALITY over random inputs (the core leg) ──
 
@@ -79,15 +112,13 @@ let ``Fuzz: decoders handle null / empty inputs without throwing`` () =
 let ``Fuzz: CBOR array-length bomb (claims 2^64-1 elements, empty body) is rejected fast`` () =
     // 0x9B = major type 4 (array), 8-byte length follows; then 0xFF×8 = 2^64-1, no elements.
     let bomb = [| 0x9Buy; 0xFFuy; 0xFFuy; 0xFFuy; 0xFFuy; 0xFFuy; 0xFFuy; 0xFFuy; 0xFFuy |]
-    let ok = completesWithin 2000 (fun () -> isTotal (fun () -> DynamicValue.fromCanonicalCbor bomb))
-    Assert.True(ok, "CBOR array-length bomb hung or threw (pre-allocation DoS)")
+    assertDecodeTotal 2000 "CBOR array-length bomb" (fun () -> DynamicValue.fromCanonicalCbor bomb)
 
 [<Fact>]
 let ``Fuzz: CBOR byte-string-length bomb (claims 2^64-1 bytes, empty body) is rejected fast`` () =
     // 0x5B = major type 2 (byte string), 8-byte length; 0xFF×8 = 2^64-1, no payload.
     let bomb = [| 0x5Buy; 0xFFuy; 0xFFuy; 0xFFuy; 0xFFuy; 0xFFuy; 0xFFuy; 0xFFuy; 0xFFuy |]
-    let ok = completesWithin 2000 (fun () -> isTotal (fun () -> DynamicValue.fromCanonicalCbor bomb))
-    Assert.True(ok, "CBOR byte-string-length bomb hung or threw (pre-allocation DoS)")
+    assertDecodeTotal 2000 "CBOR byte-string-length bomb" (fun () -> DynamicValue.fromCanonicalCbor bomb)
 
 [<Fact>]
 let ``Fuzz: Arrow garbage + truncated-header inputs are rejected fast`` () =
@@ -97,8 +128,10 @@ let ``Fuzz: Arrow garbage + truncated-header inputs are rejected fast`` () =
           "ARROW1"B
           Array.zeroCreate 32 ]
     for bytes in cases do
-        let ok = completesWithin 2000 (fun () -> isTotal (fun () -> DynamicValueArrow.fromArrow bytes))
-        Assert.True(ok, "Arrow hostile input hung or threw")
+        // Budget DELIBERATELY unchanged at 2000. This is the case that failed on
+        // Windows, and until the message says HUNG or THREW, more time could be
+        // hiding a real totality violation rather than absorbing JIT warm-up.
+        assertDecodeTotal 2000 "Arrow hostile input" (fun () -> DynamicValueArrow.fromArrow bytes)
 
 // ── DEEP NESTING (moderate depth; the recursion-depth class). Conservative so a robust
 //    decoder either handles it (Result) or rejects it — without a process-killing SO. ──
@@ -107,15 +140,13 @@ let ``Fuzz: Arrow garbage + truncated-header inputs are rejected fast`` () =
 let ``Fuzz: deeply-nested JSON arrays decode to a Result without throwing (depth 2000)`` () =
     let depth = 2000
     let json = String.replicate depth "[" + String.replicate depth "]"
-    let ok = completesWithin 3000 (fun () -> isTotal (fun () -> DynamicValue.fromCanonicalJson json))
-    Assert.True(ok, "deeply-nested JSON hung or threw")
+    assertDecodeTotal 3000 "deeply-nested JSON" (fun () -> DynamicValue.fromCanonicalJson json)
 
 [<Fact>]
 let ``Fuzz: deeply-nested XML elements decode to a Result without throwing (depth 2000)`` () =
     let depth = 2000
     let xml = String.replicate depth "<a>" + String.replicate depth "</a>"
-    let ok = completesWithin 3000 (fun () -> isTotal (fun () -> DynamicValue.fromCanonicalXml xml))
-    Assert.True(ok, "deeply-nested XML hung or threw")
+    assertDecodeTotal 3000 "deeply-nested XML" (fun () -> DynamicValue.fromCanonicalXml xml)
 
 // ── DEPTH-BOUND CONTRACT (the `NestingTooDeep` guard, mirrored F#/C#/Rust/TS). The deep-nesting
 //    Facts above prove "no process-killing SO"; these pin the exact boundary: a value AT the bound

@@ -1,0 +1,12 @@
+{
+  "pr_number": 17196,
+  "archive_path": "docs/history/pr-reviews/PR-17196-fix-081m24dngyk087g0r0002c26z9-wrap-the-code-scanning-alert-read-because-the-ad-.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-10T01:24:37.480Z",
+  "schema_version": "v1",
+  "commit_sha": "dac008697479f023a7661bee8a5a3937201a96b8",
+  "title": "fix(081M24DNGYK087G0R0002C26Z9): wrap the code-scanning alert read, because the ad-hoc one was wrong",
+  "state": "MERGED",
+  "merged_at": "2026-09-10T01:23:59Z",
+  "head_ref": "pr-inspect-tool"
+}

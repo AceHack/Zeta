@@ -1,0 +1,14 @@
+{
+  "id": "080d040f369e9010a0130008f5cc77d1",
+  "at": "2026-09-08T16:43:03.506Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M20YDMYH087G0R002NXBFWN",
+    "type": "task",
+    "title": "D9 reuse prefix Jumprope chunks on same-span overwrite",
+    "slug": "d9-reuse-prefix-jumprope-chunks-on-same-span-overwrite",
+    "priority": "P2",
+    "filename": "081M20YDMYH087G0R002NXBFWN-d9-reuse-prefix-jumprope-chunks-on-same-span-overwrite.md"
+  }
+}

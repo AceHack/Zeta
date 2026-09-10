@@ -1,0 +1,42 @@
+PR #16892, head 30dc175d239ba7ec685f25f4b6c6efed9e830bb3; gate run 34068080589.
+Extracts from GitHub job logs; timestamps retained; ANSI terminal styling removed.
+
+linux: https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34068080589/job/101580729133
+Full downloaded log SHA256: 58CB729FD351F610076E445B7ED0370D9F8D52F4D8E2E5827D2EE8DB7C561D4B
+2026-09-07T00:02:26.4448994Z [xUnit.net 00:00:26.53]     Zeta.Tests.RenderedCatchTests.RenderedCatch complete rendered hand episode retains both execution counts and suffix noninterference [FAIL]
+2026-09-07T00:02:26.4451255Z [xUnit.net 00:00:26.53]       System.IO.DirectoryNotFoundException : IO_PathNotFound_Path, /_/src/Research.FSharp/rendered-signal-results.json
+2026-09-07T00:02:26.4637864Z [xUnit.net 00:00:26.55]     Zeta.Tests.RenderedCatchTests.RenderedCatch lower band cannot influence admitted projection or any forked policy action [FAIL]
+2026-09-07T00:02:26.4639986Z [xUnit.net 00:00:26.55]       System.IO.DirectoryNotFoundException : IO_PathNotFound_Path, /_/src/Research.FSharp/rendered-signal-results.json
+2026-09-07T00:02:26.4863359Z   Failed Zeta.Tests.RenderedCatchTests.RenderedCatch complete rendered hand episode retains both execution counts and suffix noninterference [1 ms]
+2026-09-07T00:02:26.4934651Z    System.IO.DirectoryNotFoundException : IO_PathNotFound_Path, /_/src/Research.FSharp/rendered-signal-results.json
+2026-09-07T00:02:26.5240846Z   Failed Zeta.Tests.RenderedCatchTests.RenderedCatch lower band cannot influence admitted projection or any forked policy action [1 ms]
+2026-09-07T00:02:26.5242468Z    System.IO.DirectoryNotFoundException : IO_PathNotFound_Path, /_/src/Research.FSharp/rendered-signal-results.json
+2026-09-07T00:10:08.5627551Z Test Run Failed.
+2026-09-07T00:10:08.5629397Z      Failed: 2
+
+arm: https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34068080589/job/101580729162
+Full downloaded log SHA256: F62B41B3B58813BF1664B6C9C3E46F3537303BC85D1F409EF73C9CCB10542008
+2026-09-07T00:01:33.4858135Z [xUnit.net 00:00:34.33]     Zeta.Tests.RenderedCatchTests.RenderedCatch complete rendered hand episode retains both execution counts and suffix noninterference [FAIL]
+2026-09-07T00:01:33.4859233Z [xUnit.net 00:00:34.33]       System.IO.DirectoryNotFoundException : IO_PathNotFound_Path, /_/src/Research.FSharp/rendered-signal-results.json
+2026-09-07T00:01:33.4937115Z [xUnit.net 00:00:34.34]     Zeta.Tests.RenderedCatchTests.RenderedCatch lower band cannot influence admitted projection or any forked policy action [FAIL]
+2026-09-07T00:01:33.4938118Z [xUnit.net 00:00:34.34]       System.IO.DirectoryNotFoundException : IO_PathNotFound_Path, /_/src/Research.FSharp/rendered-signal-results.json
+2026-09-07T00:01:33.5211945Z   Failed Zeta.Tests.RenderedCatchTests.RenderedCatch complete rendered hand episode retains both execution counts and suffix noninterference [1 ms]
+2026-09-07T00:01:33.5271767Z    System.IO.DirectoryNotFoundException : IO_PathNotFound_Path, /_/src/Research.FSharp/rendered-signal-results.json
+2026-09-07T00:01:33.5291378Z   Failed Zeta.Tests.RenderedCatchTests.RenderedCatch lower band cannot influence admitted projection or any forked policy action [1 ms]
+2026-09-07T00:01:33.5292447Z    System.IO.DirectoryNotFoundException : IO_PathNotFound_Path, /_/src/Research.FSharp/rendered-signal-results.json
+2026-09-07T00:03:05.1986660Z Test Run Failed.
+2026-09-07T00:03:05.1987293Z      Failed: 2
+
+macos: https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34068080589/job/101580729105
+Full downloaded log SHA256: DADE610F3C752B9D34CF1D04A10E4EAD8C8F078C7E947B9DE7B74242A76FB9E9
+2026-09-07T00:03:07.4542460Z [xUnit.net 00:00:56.85]     Zeta.Tests.RenderedCatchTests.RenderedCatch complete rendered hand episode retains both execution counts and suffix noninterference [FAIL]
+2026-09-07T00:03:07.4644860Z [xUnit.net 00:00:56.86]     Zeta.Tests.RenderedCatchTests.RenderedCatch lower band cannot influence admitted projection or any forked policy action [FAIL]
+2026-09-07T00:03:07.4832700Z [xUnit.net 00:00:56.85]       System.IO.DirectoryNotFoundException : IO_PathNotFound_Path, /_/src/Research.FSharp/rendered-signal-results.json
+2026-09-07T00:03:07.5779540Z [xUnit.net 00:00:56.86]       System.IO.DirectoryNotFoundException : IO_PathNotFound_Path, /_/src/Research.FSharp/rendered-signal-results.json
+2026-09-07T00:03:07.6084530Z   Failed Zeta.Tests.RenderedCatchTests.RenderedCatch complete rendered hand episode retains both execution counts and suffix noninterference [1 ms]
+2026-09-07T00:03:07.6086800Z    System.IO.DirectoryNotFoundException : IO_PathNotFound_Path, /_/src/Research.FSharp/rendered-signal-results.json
+2026-09-07T00:03:07.6103920Z   Failed Zeta.Tests.RenderedCatchTests.RenderedCatch lower band cannot influence admitted projection or any forked policy action [< 1 ms]
+2026-09-07T00:03:07.6104930Z    System.IO.DirectoryNotFoundException : IO_PathNotFound_Path, /_/src/Research.FSharp/rendered-signal-results.json
+2026-09-07T00:04:49.3828600Z Test Run Failed.
+2026-09-07T00:04:49.3829340Z      Failed: 2
+

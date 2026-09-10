@@ -339,9 +339,40 @@ function tryExclusiveWrite(absPath: string, content: string): boolean {
     // openSync with the "wx" flag (O_CREAT | O_EXCL) is the canonical exclusive
     // create: a single kernel op that fails with EEXIST rather than following a
     // pre-planted symlink or racing a competing writer. Using the dedicated
-    // descriptor form (rather than writeFileSync's options-object flag) is what
-    // the CodeQL insecure-temporary-file dataflow query models as a secure
-    // create, so it clears the finding substantively, not by suppression.
+    // descriptor form (rather than writeFileSync's options-object flag) is the
+    // shape CodeQL's insecure-temporary-file query models as a secure create.
+    //
+    // THIS COMMENT USED TO SAY the change "clears the finding substantively,
+    // not by suppression". THAT WAS FALSE, and it read as settled. Alert 224
+    // (js/insecure-temporary-file) was `state=open` against THIS LINE. A
+    // comment asserting a finding is cleared, sitting on the line the finding
+    // names, is worse than no comment -- it retires the question for the next
+    // reader. The correction then said the query "is following a caller that
+    // has not been identified" and asked for a measurement instead of a guess.
+    //
+    // THE CALLER IS NOW IDENTIFIED, 2026-09-09. It is the TEST:
+    //
+    //   divergence-shard.test.ts:39
+    //     const root = mkdtempSync(join(tmpdir(), "diverge-test-"));
+    //
+    // `withTempRoot` hands that `root` to `writeShardAtPath(join(root, ...))`
+    // and to `writeDivergenceShard(root, INPUT)`, which reaches this line. That
+    // is the ONLY flow: this file never calls `tmpdir()`, and the production
+    // entry point takes `--repo-root`, defaulting to `"."`
+    // (review-thread-observations.ts:548) -- a checkout, never a temp dir.
+    //
+    // WHAT IS STILL NOT CLAIMED: that the alert is closed. It is not, and this
+    // comment does not close it. What the identification buys is that the flow
+    // can now be argued about instead of guessed at, and on the merits it is
+    // benign twice over: `mkdtempSync` yields a 0700 directory with an
+    // unpredictable suffix (the secure idiom, not the predictable name the
+    // query is about), and the create below is O_CREAT|O_EXCL, which neither
+    // follows a pre-planted symlink nor races a competing writer.
+    //
+    // So the disposition is FALSE POSITIVE WITH A NAMED FLOW -- a judgement for
+    // the architect + maintainer to accept or reject, not one to enact here.
+    // Do not re-close this in a comment; close it with a re-query that returns
+    // `state=fixed` or with a dismissal somebody with the authority signed.
     fd = openSync(absPath, "wx");
   } catch (err) {
     if ((err as NodeJS.ErrnoException).code === "EEXIST") {

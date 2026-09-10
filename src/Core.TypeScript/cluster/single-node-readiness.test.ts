@@ -1389,13 +1389,22 @@ describe("the hindsight manifest renders what it declares", () => {
     ).toBe("longhorn");
   });
 
-  test("the LLM API key is still unwired, and the file says so rather than implying otherwise", async () => {
-    // The honest half. `existingSecret` is the chart's real key for it, and
-    // setting it before an ExternalSecret exists would hold the pod in
-    // CreateContainerConfigError -- so its ABSENCE is the correct state today
-    // and this test pins it together with the reason.
+  test("the LLM API key is wired BY REFERENCE, and something actually mints it", async () => {
+    // WAS "still unwired, and the file says so". That was the correct state
+    // while setting `existingSecret` before a source existed would have held the
+    // api AND worker pods in CreateContainerConfigError. Aaron 2026-09-07
+    // resolved the fork the Application asked for -- ESO on metal, a minted
+    // Secret in CI -- so the name is now set and the guard inverts rather than
+    // disappears.
+    //
+    // THE ASSERTION IS DELIBERATELY NOT "the string is present". A name in a
+    // values file with nothing creating the object is exactly the
+    // CreateContainerConfigError the old test existed to prevent, so this
+    // resolves the name against the MINTING ROSTER. That is the property that
+    // matters and it is checked mechanically, not asserted in prose.
     const { readFileSync } = await import("node:fs");
     const { parseAllDocuments } = await import("yaml");
+    const { DEV_SHARED_SECRETS } = await import("./dev-cluster/lib.ts");
     const text = readFileSync("full-ai-cluster/k8s/applications/hindsight/Application.yaml", "utf8");
     const obj = (
       (
@@ -1404,8 +1413,21 @@ describe("the hindsight manifest renders what it declares", () => {
         ] as Record<string, unknown>
       )["helm"] as Record<string, unknown>
     )["valuesObject"] as Record<string, unknown>;
-    expect(obj["existingSecret"]).toBeUndefined();
-    expect(text).toContain("HINDSIGHT_API_LLM_API_KEY");
+
+    const named = obj["existingSecret"];
+    expect(typeof named).toBe("string");
+
+    // Something mints it, and it carries the key the chart's `envFrom` turns
+    // into the env var the app reads.
+    const minter = DEV_SHARED_SECRETS.find((spec) => spec.name === named);
+    expect(minter, `no dev roster entry mints ${String(named)}`).toBeDefined();
+    expect(Object.keys(minter?.keys("probe") ?? {})).toContain("HINDSIGHT_API_LLM_API_KEY");
+
+    // THE HONEST HALF, kept: CI's value is a placeholder that satisfies a
+    // presence-only boot check, and metal still has no ExternalSecret. Both
+    // caveats must stay written down -- a green lane would otherwise imply
+    // coverage of an LLM path that cannot work with a drawn value.
+    expect(minter?.reason ?? "").toContain("PLACEHOLDER");
     expect(text).toContain("CreateContainerConfigError");
   });
 });
@@ -1701,7 +1723,7 @@ describe("findRungCoverage — the budgeted rung vs the committed rung", () => {
     // 6690m -> 7690m on 2026-09-04: `opensearch` was added, one StatefulSet pod at the
     // metal rung's 1000m (081M1Q1XHVV087G0R0034X846M). Same property, same mutation,
     // fourth value -- which is the point of writing the sequence rather than the number.
-    const moved = live.acknowledgedRungBudgetGap.map((key) => key.replace("8390m", "7891m"));
+    const moved = live.acknowledgedRungBudgetGap.map((key) => key.replace("7390m", "7891m"));
     expect(moved).not.toEqual(live.acknowledgedRungBudgetGap);
     expect(findRungCoverage({ ...live, acknowledgedRungBudgetGap: moved }, resources).length).toBe(1);
   });

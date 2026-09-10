@@ -1,0 +1,60 @@
+{
+  "HeadSha": "a2bf4225cef685ff9c67037d8dbcf7e19b9704cb",
+  "DeclaredCount": 1,
+  "ObservedCount": 1,
+  "Pages": [
+    {
+      "ObservedAtUtc": "2026-09-07T14:10:24.126860+00:00",
+      "RequestedCursor": null,
+      "HeadSha": "a2bf4225cef685ff9c67037d8dbcf7e19b9704cb",
+      "Connection": {
+        "totalCount": 1,
+        "pageInfo": {
+          "hasNextPage": false,
+          "endCursor": "Y3Vyc29yOnYyOpK0MjAyNi0wOS0wN1QxMjo0NDo0MVrOn-qcOw=="
+        },
+        "nodes": [
+          {
+            "id": "PRRT_kwDOSF9kNM6f6pw7",
+            "isResolved": true,
+            "isOutdated": false,
+            "path": "src/Interp.Python/zeta_interp/hidden_switch_reference.py",
+            "line": 37,
+            "originalLine": 37,
+            "comments": {
+              "totalCount": 2,
+              "pageInfo": {
+                "hasNextPage": false,
+                "endCursor": "Y3Vyc29yOnYyOpK0MjAyNi0wOS0wN1QxMzoxMToyN1rO63DvlQ=="
+              },
+              "nodes": [
+                {
+                  "id": "PRRC_kwDOSF9kNM7rbc5o",
+                  "databaseId": 3949842024,
+                  "body": "## Unused global variable\n\n<p>The global variable 'PANELS' is not used.</p>",
+                  "url": "https://github.com/Lucent-Financial-Group/Zeta/pull/16928#discussion_r3949842024",
+                  "createdAt": "2026-09-07T12:44:41Z",
+                  "lastEditedAt": null,
+                  "author": {
+                    "login": "github-code-quality"
+                  }
+                },
+                {
+                  "id": "PRRC_kwDOSF9kNM7rcO-V",
+                  "databaseId": 3950047125,
+                  "body": "The reference roster has a direct external consumer: tests/test_hidden_switch_reference.py:65 reads ref.PANELS and asserts its ordered names in test_registered_constants_and_hand_tapes_are_complete_and_immutable. Root and an independent reviewer checked this on f52b00065eb8055a32aea4bd93628df7537f4949; the existing targeted test passed once (1 passed, 4.74s). Production replay deliberately defines its own independent roster. We retain the frozen reference source unchanged and record the exact source/test evidence in docs/research/2026-09-07-hidden-switch-result-review.md and the indexed validation directory.",
+                  "url": "https://github.com/Lucent-Financial-Group/Zeta/pull/16928#discussion_r3950047125",
+                  "createdAt": "2026-09-07T13:11:27Z",
+                  "lastEditedAt": null,
+                  "author": {
+                    "login": "AceHack"
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

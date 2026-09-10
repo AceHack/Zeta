@@ -1,0 +1,14 @@
+{
+  "id": "080d045bd6445010a0130008173e967f",
+  "at": "2026-09-10T13:21:14.890Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M25QNJ49087G0R000CRS6MN",
+    "type": "bug",
+    "title": "Windows hosts default to tier=full and install Kubernetes tooling nothing on Windows uses",
+    "slug": "windows-hosts-default-to-tier-full-and-install-kubernetes-to",
+    "priority": "P2",
+    "filename": "081M25QNJ49087G0R000CRS6MN-windows-hosts-default-to-tier-full-and-install-kubernetes-to.md"
+  }
+}

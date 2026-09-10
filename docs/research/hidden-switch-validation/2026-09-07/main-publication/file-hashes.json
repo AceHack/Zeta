@@ -1,0 +1,35 @@
+{
+  "RecordedAtUtc": "2026-09-07T15:21:22.697057+00:00",
+  "Records": [
+    {
+      "File": "archive-remote-proof.json",
+      "Bytes": 764,
+      "Sha256": "c02a062c1cc3f6e84403604f74382829262147e280dbf96a96da6df766875975"
+    },
+    {
+      "File": "archive-remote-refs.txt",
+      "Bytes": 1139,
+      "Sha256": "d9865bbfa21b212a2d293a8863fe3a8cd87e90cbea528a8b4dc306b148b77017"
+    },
+    {
+      "File": "merge-message.txt",
+      "Bytes": 4085,
+      "Sha256": "77780dd65dcb9abeb453531e82406cc5f0a6bc4caf4aa3c5206f6a55ed181544"
+    },
+    {
+      "File": "merged-pr.json",
+      "Bytes": 4373,
+      "Sha256": "50b7d877062c467f22bbbaa0a8b202d27c5cd75ba80d6ab5dd56d9832006bc5f"
+    },
+    {
+      "File": "proof.json",
+      "Bytes": 7834,
+      "Sha256": "b17ceef4ed8c91ac673424eb82aa114d32e3afef826bdfd4a33fed5374dc141a"
+    },
+    {
+      "File": "verify-main.py.txt",
+      "Bytes": 3333,
+      "Sha256": "7126a12331e4c6347c147625b68268aa7e17f125bcca6198fa94064bf4c3df7e"
+    }
+  ]
+}

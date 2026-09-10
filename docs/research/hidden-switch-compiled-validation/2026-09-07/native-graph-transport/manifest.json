@@ -1,0 +1,51 @@
+{
+  "Meaning": "Reviewed graph-only completion transport; focused build and synthetic tests, no actual attempt3 yet. Output hash identifies observed DLL, not a source-to-binary theorem.",
+  "Files": [
+    {
+      "File": "hidden-switch-compiled-graph-build-attempt-7.log.gz",
+      "Bytes": 979,
+      "Sha256": "450DDAEF4523EB018147B915FC743D2B0948AE138B560B2655EFEDF0D5ED37B3",
+      "StoredBytes": 319,
+      "StoredSha256": "B6DD9DD03FBE2B28AB4FCADA07E344B867BD98D75FA555C119DBED0DDBBBBB27",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "hidden-switch-compiled-graph-synthetic-attempt-3.log.gz",
+      "Bytes": 1830,
+      "Sha256": "D0FFFB09AD2D01C8D6BD3FE1483789ADBE48C14AFF84E32EF512F3F63305C7F2",
+      "StoredBytes": 560,
+      "StoredSha256": "09E08633E7441709F3A6142F75D3E6D5E00F87E6FFE8108636152D7A99272B27",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "hidden-switch-compiled-graph-synthetic-attempt-4.log.gz",
+      "Bytes": 1124,
+      "Sha256": "9E5DCC79E0338309048E1026DE0B4B10C0B34699383A9E1EECA6AE6826D189CC",
+      "StoredBytes": 326,
+      "StoredSha256": "CF94509984922E85A0D1BABF3BF988B685E486B1DE2668C38A02B4517950858A",
+      "Encoding": "gzip"
+    }
+  ],
+  "SourceAndOutputSnapshot": [
+    {
+      "File": "src/Research.FSharp/HiddenSwitchCompiledGraph.fs",
+      "Bytes": 17893,
+      "Sha256": "B738541BC39453342891F28D188A039C56CF605984D145C3D35CF378AC396397"
+    },
+    {
+      "File": "src/Research.FSharp.Cli/inspect_hidden_switch_graph.py",
+      "Bytes": 15035,
+      "Sha256": "C63C930B8E7A015050896A7ED1EF519DE8858D9E32204B680BA9420EC061BABC"
+    },
+    {
+      "File": "src/Research.FSharp.Cli/test_inspect_hidden_switch_graph.py",
+      "Bytes": 6400,
+      "Sha256": "F0593BDBE3994864A1FD318C54D74E1DEFA2E243E2497DDEA754F6C47BF800AE"
+    },
+    {
+      "File": "src/Research.FSharp.Cli/bin/Release/net10.0/Zeta.Research.HiddenSwitchCompiled.dll",
+      "Bytes": 226816,
+      "Sha256": "A23474812C69C48D2E892CCF786369A95F8B6B8134F280D0A62CCA5DA22B8DDC"
+    }
+  ]
+}

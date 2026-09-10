@@ -1,0 +1,90 @@
+{
+  "Schema": 1,
+  "OriginalPublishedHead": "c247403be5d6320b74903e5562b36f55d6884d6f",
+  "CorrectedSourceCommit": "91baf83d79c146367b8183c58732bb8f437eb55b",
+  "SourceFiles": [
+    {
+      "File": "src/Core.TypeScript/formal-verification/tlc-attempts.ts",
+      "Bytes": 10565,
+      "Sha256": "B2519EA289D7FA7955C4582335FF3FC8A4A05D0151B513CF6D4F6A459DAAFE63"
+    },
+    {
+      "File": "src/Core.TypeScript/formal-verification/tlc-attempts.test.ts",
+      "Bytes": 13095,
+      "Sha256": "AED35A1D82341D33A49DBFC7EAAA558290E674D0246D8E3B561B8B524EA1EB70"
+    }
+  ],
+  "RetainedLogs": [
+    {
+      "File": "docs/research/tlc-attempt-retention-validation/2026-09-07/ci-hygiene-attempt-1.log",
+      "Bytes": 70230,
+      "Sha256": "9BA876F0E0C6D463D1D3241C9E53B859ECAB5F7BE34E80CFCFFBE447E0D2B9A8"
+    },
+    {
+      "File": "docs/research/tlc-attempt-retention-validation/2026-09-07/ci-races-attempt-1.log",
+      "Bytes": 27098,
+      "Sha256": "0FA490B1CCA06C2577ED346E4F9A97A53DF61DA4F187C1ECB80BB7BAAEAB2BE9"
+    },
+    {
+      "File": "docs/research/tlc-attempt-retention-validation/2026-09-07/ci-attribution-attempt-1.log",
+      "Bytes": 23659,
+      "Sha256": "9D5B49B1F835E0B04C2FBDAB3EB4CF92F19CE7DA98BDBBB2F4D732597B2EE4A1"
+    },
+    {
+      "File": "docs/research/tlc-attempt-retention-validation/2026-09-07/ci-ts-pinned-1.3.13.log",
+      "Bytes": 4059,
+      "Sha256": "D15F474D88236EE921B5C0AAE7D2A47E49F5BA5D8796897BA049ADA9325E03FE"
+    },
+    {
+      "File": "docs/research/tlc-attempt-retention-validation/2026-09-07/ci-ts-1.3.14.log",
+      "Bytes": 4113,
+      "Sha256": "A64285D45AC1F2A9492F36A9AEFE5349848924D43DFF74E14081D72E40E6876D"
+    },
+    {
+      "File": "docs/research/tlc-attempt-retention-validation/2026-09-07/ci-typecheck-recovery.log",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "File": "docs/research/tlc-attempt-retention-validation/2026-09-07/ci-races-recovery.log",
+      "Bytes": 153,
+      "Sha256": "B86B37F07A7E3476323468F0151B5FF05F872F250718CD70F08666FAB4B4917D"
+    },
+    {
+      "File": "docs/research/tlc-attempt-retention-validation/2026-09-07/ci-ambient-recovery.log",
+      "Bytes": 167,
+      "Sha256": "89197C7D0E98455094F82F50DFE8F5D3944F74B973D8574A61FD8D975694AFC6"
+    },
+    {
+      "File": "docs/research/tlc-attempt-retention-validation/2026-09-07/ci-macos-attempt-1.log",
+      "Bytes": 1242941,
+      "Sha256": "07296427C6C33FD043E98EA28A817316389AEDBC2EF887C7E8F298E5CFFC1CC4"
+    }
+  ],
+  "UnchangedNativeFiles": [
+    {
+      "File": "tests/Tests.FSharp/Formal/Tlc.Attempts.fs",
+      "Bytes": 9286,
+      "Sha256": "B92D6DDB692650123783CB98230446B178B51C2C6F292E955CCDAC1837DE3EAB",
+      "SameAsOriginalPublishedHead": true
+    },
+    {
+      "File": "tests/Tests.FSharp/Formal/Tlc.Runner.Tests.fs",
+      "Bytes": 43109,
+      "Sha256": "0AB48B420CA04ACFB2306B9E402F79DFDE5AF41C888688DDEE960EBE8D3FCD6F",
+      "SameAsOriginalPublishedHead": true
+    },
+    {
+      "File": "tests/Tests.FSharp/Tests.FSharp.fsproj",
+      "Bytes": 45118,
+      "Sha256": "D6BD9C089A611F6FBD3086551F3D51A7F55B282820DA9E922F42A6C8B31300AC",
+      "SameAsOriginalPublishedHead": true
+    },
+    {
+      "File": "registry/tlc-models.json",
+      "Bytes": 22775,
+      "Sha256": "1ED72341EAB59F78243F82781A837E4177BF67B61C55672D4BBCC75DF91EA4A8",
+      "SameAsOriginalPublishedHead": true
+    }
+  ]
+}

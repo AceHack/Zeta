@@ -1,0 +1,101 @@
+import bpy,sys,math,json,random
+from pathlib import Path
+from mathutils import Vector
+R=Path('/Users/acehack/Documents/Blender/AceHack-Xenaa-Realistic');P=R/'sources/mpfb2';A=R/'sources/system-assets'
+sys.path.insert(0,str(P/'src'));original=bpy.utils.extension_path_user;bpy.utils.extension_path_user=lambda package,*a,**k:str(R/'sources/mpfb-user') if package=='mpfb' else original(package,*a,**k)
+import mpfb,addon_utils
+mpfb.bl_info=mpfb.fake_bl_info;bpy.context.preferences.use_preferences_save=False;addon_utils.enable('mpfb',default_set=True,persistent=False)
+from mpfb.services.humanservice import HumanService
+from mpfb.services.targetservice import TargetService
+bpy.ops.object.select_all(action='SELECT');bpy.ops.object.delete(use_global=False)
+
+def material(name,color,rough=.45,metal=0):
+ m=bpy.data.materials.new(name);m.diffuse_color=(*color,1);m.use_nodes=True;bs=m.node_tree.nodes.get('Principled BSDF');bs.inputs['Base Color'].default_value=(*color,1);bs.inputs['Roughness'].default_value=rough;bs.inputs['Metallic'].default_value=metal;return m
+black=material('Reference • black leather',(.012,.015,.021),.36,.05);black.use_fake_user=True
+metal=material('Reference • warm brass',(.34,.19,.065),.28,.8);metal.use_fake_user=True
+records=[]
+for who,male,x in [('AceHack',True,-.62),('Xenaa',False,.62)]:
+ before=set(bpy.data.objects);macro=TargetService.get_default_macro_info_dict();macro.update(gender=1.0 if male else 0.0,age=.70 if male else .50,muscle=.66 if male else .51,weight=.54 if male else .42,height=.56 if male else .60,proportions=.62,firmness=.60,cupsize=.40)
+ macro['race']={'asian':.05 if male else .78,'caucasian':.95 if male else .22,'african':0.0}
+ h=HumanService.create_human(macro_detail_dict=macro);h.name=who+' | Human';
+ targets=([('head/head-rectangular',.16),('chin/chin-width-incr',.14),('nose/nose-scale-depth-incr',.10)] if male else [('head/head-oval',.25),('chin/chin-width-decr',.22),('nose/nose-scale-horiz-decr',.14),('mouth/mouth-lowerlip-volume-incr',.13),('mouth/mouth-upperlip-volume-incr',.12)])
+ if not male:targets += [('eyes/l-eye-corner2-up',.28),('eyes/r-eye-corner2-up',.28),('eyes/l-eye-height2-decr',.14),('eyes/r-eye-height2-decr',.14),('cheek/l-cheek-bones-incr',.18),('cheek/r-cheek-bones-incr',.18),('chin/chin-height-decr',.12)]
+ else:targets += [('head/head-age-incr',.23),('head/head-fat-incr',.10)]
+ for name,w in targets:
+  path=P/'src/mpfb/data/targets'/(name+'.target.gz')
+  if path.exists():TargetService.load_target(h,str(path),weight=w)
+ skin='middleage_caucasian_male' if male else 'young_asian_female'
+ path=A/'skins'/skin/(skin+'.mhmat');HumanService.set_character_skin(str(path),h,skin_type='GAMEENGINE')
+ for m in h.data.materials:
+  if m and m.use_nodes:
+   bs=m.node_tree.nodes.get('Principled BSDF')
+   if bs:
+    bs.inputs['Roughness'].default_value=.48 if male else .43;bs.inputs['Subsurface Weight'].default_value=.10;bs.inputs['Subsurface Radius'].default_value=(.009,.004,.002)
+ rig=HumanService.add_builtin_rig(h,'default');rig.name=who+' | Deformation Rig'
+ assets=[('eyes','high-poly','Eyes'),('eyebrows','eyebrow009' if male else 'eyebrow001','Eyebrows'),('eyelashes','eyelashes01','Eyelashes'),('hair','short04' if male else 'long01','Hair')]
+ added=[]
+ for folder,name,typ in assets:
+  ob=HumanService.add_mhclo_asset(str(A/folder/name/(name+'.mhclo')),h,asset_type=typ,material_type='GAMEENGINE',subdiv_levels=1,set_up_rigging=True)
+  ob.name=who+' | '+typ
+  if typ=='Hair':
+   for m in ob.data.materials:
+    if m and m.use_nodes:
+     bs=next((n for n in m.node_tree.nodes if n.type=='BSDF_PRINCIPLED'),None)
+     if bs:
+      bs.inputs['Roughness'].default_value=.62;bs.inputs['Specular IOR Level'].default_value=.23
+      # Preserve the alpha texture; darken the color toward black.
+      links=list(bs.inputs['Base Color'].links)
+      if links:
+       mix=m.node_tree.nodes.new('ShaderNodeMixRGB');mix.blend_type='MULTIPLY';mix.inputs[0].default_value=1;mix.inputs[2].default_value=(.11,.12,.14,1) if male else (.055,.050,.065,1)
+       src=links[0].from_socket;m.node_tree.links.remove(links[0]);m.node_tree.links.new(src,mix.inputs[1]);m.node_tree.links.new(mix.outputs[0],bs.inputs['Base Color'])
+  for f in ob.data.polygons:f.use_smooth=True
+  added.append(ob)
+ if male:
+  ob=HumanService.add_mhclo_asset(str(A/'clothes/male_elegantsuit01/male_elegantsuit01.mhclo'),h,asset_type='Clothes',material_type='GAMEENGINE',subdiv_levels=2,set_up_rigging=True);ob.name=who+' | Tailored suit'
+  for f in ob.data.polygons:f.use_smooth=True
+ ob=HumanService.add_mhclo_asset(str(A/'clothes/shoes03/shoes03.mhclo'),h,asset_type='Clothes',material_type='GAMEENGINE',subdiv_levels=2,set_up_rigging=True);ob.name=who+' | Fitted boot feet'
+ for f in ob.data.polygons:f.use_smooth=True
+ # Actual skin topology and weights are retained; outfit pass adds outer garments.
+ sub=h.modifiers.new('Skin surface subdivision','SUBSURF');sub.levels=2;sub.render_levels=2
+ for f in h.data.polygons:f.use_smooth=True
+ bpy.context.view_layer.update();height=max((h.matrix_world@v.co).z for v in h.evaluated_get(bpy.context.evaluated_depsgraph_get()).data.vertices)
+ # Mark and group the entire character hierarchy without baking its morphs.
+ c=bpy.data.collections.new(who+' | Character');bpy.context.scene.collection.children.link(c)
+ new=set(bpy.data.objects)-before
+ for o in new:
+  for co in list(o.users_collection):co.objects.unlink(o)
+  c.objects.link(o);o['Character']=who
+ # Keep local bodies at x=0 for the outfit pass; parent hierarchy translated as a whole.
+ root=bpy.data.objects.new(who+' | Root',None);c.objects.link(root)
+ for o in new:
+  if not o.parent:world=o.matrix_world.copy();o.parent=root;o.matrix_world=world
+ root.location.x=x
+ bones={b.name:{'Head':list(b.head_local),'Tail':list(b.tail_local)} for b in rig.data.bones}
+ records.append({'Character':who,'Height':height,'Macro':macro,'Targets':targets,'Bones':bones,'BodyName':h.name})
+ # Give the anatomical body a neutral black fitted garment for the first portrait pass.
+ h.data.materials.append(black);idx=len(h.data.materials)-1
+ mix=h.shape_key_add(name='Costume fit snapshot',from_mix=True);coords=[v.co.copy() for v in mix.data];h.shape_key_remove(mix)
+ neck=rig.data.bones.get('neck01');cut=neck.head_local.z-.035 if neck else height*.83
+ for f in h.data.polygons:
+  z=sum(coords[i].z for i in f.vertices)/len(f.vertices);xx=sum(coords[i].x for i in f.vertices)/len(f.vertices)
+  if z<cut and (abs(xx)<height*.09 or z<height*.55 or male):f.material_index=idx
+ # First-pass landmark positions for reliable clothing fit and inspection.
+(R/'sources/anatomy-record.json').write_text(json.dumps(records,indent=2)+'\n')
+scene=bpy.context.scene;scene.render.engine='CYCLES';scene.cycles.samples=64;scene.cycles.use_denoising=True
+try:
+ p=bpy.context.preferences.addons['cycles'].preferences;p.compute_device_type='METAL';p.get_devices()
+ for d in p.devices:d.use=d.type=='METAL'
+ scene.cycles.device='GPU'
+except Exception:pass
+scene.world.use_nodes=True;scene.world.node_tree.nodes['Background'].inputs[0].default_value=(.04,.045,.065,1);scene.world.node_tree.nodes['Background'].inputs[1].default_value=.3
+scene.view_settings.view_transform='AgX';scene.view_settings.exposure=-.30
+for name,loc,power,color,size in [('Key',(-2,-3,3),200,(1,.84,.72),2),('Fill',(2,-2,2.5),100,(.65,.78,1),2),('Rim',(0,1,2.8),200,(.7,.7,1),1.4)]:
+ d=bpy.data.lights.new(name,'AREA');d.energy=power;d.color=color;d.shape='DISK';d.size=size;o=bpy.data.objects.new(name,d);scene.collection.objects.link(o);o.location=loc;o.rotation_euler=(Vector((0,0,1.5))-o.location).to_track_quat('-Z','Y').to_euler()
+cd=bpy.data.cameras.new('Portrait camera');cam=bpy.data.objects.new('Portrait camera',cd);scene.collection.objects.link(cam);scene.camera=cam
+scene.render.resolution_x=1100;scene.render.resolution_y=1100;scene.render.resolution_percentage=100
+bpy.context.preferences.filepaths.save_version=0
+bpy.ops.wm.save_as_mainfile(filepath=str(R/'realistic-anatomy.blend'))
+for rec,x in zip(records,[-.62,.62]):
+ top=rec['Height'];cam.location=(x+.14,-1.7,top-.07);cam.rotation_euler=(Vector((x,-.03,top-.16))-cam.location).to_track_quat('-Z','Y').to_euler();cam.data.lens=80
+ scene.render.filepath=str(R/'renders'/(rec['Character']+'-anatomy-portrait.png'));bpy.ops.render.render(write_still=True)
+print('ANATOMY_COMPLETE',[(r['Character'],r['Height']) for r in records])

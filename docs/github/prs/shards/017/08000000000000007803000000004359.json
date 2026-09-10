@@ -1,0 +1,12 @@
+{
+  "pr_number": 17241,
+  "archive_path": "docs/history/pr-reviews/PR-17241-feat-081m25vxgqp087g0r0026xw1rw-accept-the-tla2tools-roll-banner-drift-warns-the.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-10T15:08:48.081Z",
+  "schema_version": "v1",
+  "commit_sha": "65d8a425feb2f2636978388fd5ed8801386360ab",
+  "title": "feat(081M25VXGQP087G0R0026XW1RW): accept the tla2tools roll — banner drift warns, the four model verdicts still fail",
+  "state": "MERGED",
+  "merged_at": "2026-09-10T15:08:04Z",
+  "head_ref": "tlc-banner-roll-is-a-warning-not-a-failure"
+}

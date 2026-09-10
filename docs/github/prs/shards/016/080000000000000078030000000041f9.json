@@ -1,0 +1,12 @@
+{
+  "pr_number": 16889,
+  "archive_path": "docs/history/pr-reviews/PR-16889-feat-creds-read-named-unseal-request-from-env-at-argv-conf-join.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-07T00:06:42.279Z",
+  "schema_version": "v1",
+  "commit_sha": "dc30bcc2d42fad24732e223478a911865673468e",
+  "title": "feat(creds): Read named unseal request from env at argv/conf join",
+  "state": "MERGED",
+  "merged_at": "2026-09-07T00:05:46Z",
+  "head_ref": "cursor/argv-conf-unseal-request-27c5"
+}

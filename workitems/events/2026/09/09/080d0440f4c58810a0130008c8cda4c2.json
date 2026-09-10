@@ -1,0 +1,14 @@
+{
+  "id": "080d0440f4c58810a0130008c8cda4c2",
+  "at": "2026-09-09T21:41:41.681Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M241X65G087G0R00298CCQ8",
+    "type": "task",
+    "title": "Unify on .NET 10 — genesis auth-backend is the last net8.0 holdout",
+    "slug": "unify-on-net-10-genesis-auth-backend-is-the-last-net8-0-hold",
+    "priority": "P2",
+    "filename": "081M241X65G087G0R00298CCQ8-unify-on-net-10-genesis-auth-backend-is-the-last-net8-0-hold.md"
+  }
+}

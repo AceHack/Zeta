@@ -31,7 +31,7 @@ import { SEED_HATS } from "./org-seed";
 import { IntakeKind, Severity, type ExternalEvent } from "./intake";
 import { RunOutcome } from "./qa";
 import { preferWhere } from "./org-decision";
-import type { AgentState, MenuOption } from "../workflow-engine/agent-loop/state-machine";
+import type { AgentState, MenuOption } from "../protocol/agent-loop-contract";
 import type { OrgEvent } from "./org-event";
 import { isNonCoercive } from "../workflow-engine/agent-loop/menu-generator";
 

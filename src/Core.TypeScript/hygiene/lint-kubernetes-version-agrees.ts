@@ -30,6 +30,7 @@
  */
 
 import { readFileSync } from "node:fs";
+import { existingClusterDirs } from "../cluster/declared-cluster-trees.ts";
 import { join } from "node:path";
 
 export const DECLARATION_PATH = "full-ai-cluster/k8s/kubernetes-version.json";
@@ -122,7 +123,10 @@ export function formatFinding(l: VersionLiteral, declared: string): string {
 export const SCAN_GLOBS: readonly string[] = [
   "src/Core.TypeScript/hygiene",
   "src/Core.TypeScript/cluster",
-  "infra/k8s/tests",
+  // Every declared cluster tree that actually HAS a tests dir — derived, because the set of
+  // trees is the roster's to state. `existingClusterDirs` and not `clusterDirs`: this is a
+  // scan list, so a tree without tests contributes nothing rather than a missing path.
+  ...existingClusterDirs(["tests"]),
   ".github/workflows",
 ];
 

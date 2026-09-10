@@ -10,8 +10,15 @@
 //   bun src/Core.TypeScript/peer-call/summon.ts <persona> --allow-empty "prompt"
 //
 
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, readFileSync } from "node:fs";
 import { spawnSync } from "node:child_process";
+import {
+  fetchBounded,
+  readFileBounded,
+  spawnShellDeclared,
+  truncateUtf8Bytes,
+  writeFileOwned,
+} from "../io/safe-io.ts";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { getPersona, registerPersona, localLlmPersona } from "../service/persona-registry";
@@ -29,30 +36,18 @@ import { askPersona, awaitHello, openPersona, type PersonaFrame, type PersonaCtl
 import { peerCallOutputPath } from "./output-path.ts";
 
 const FILE_HEAD_BYTES = 20000;
+/** Captured-output ceiling for the declared shell. Matches gh-cli.ts's SPAWN_MAX_BUFFER. */
+const SPAWN_MAX_BYTES = 64 * 1024 * 1024;
+/** Ceiling on a local-LLM response body. `num_predict` is 2048 tokens; 16 MiB is generous. */
+const LLM_RESPONSE_MAX_BYTES = 16 * 1024 * 1024;
 const CTX_HEAD_BYTES = 20000;
 
-export interface SummonOptions {
-  readonly model?: string | undefined;
-  readonly file?: string | undefined;
-  readonly contextCmd?: string | undefined;
-  readonly outputFile?: string | undefined;
-  readonly allowEmpty?: boolean | undefined;
-  readonly json?: boolean | undefined;
-  readonly stream?: boolean | undefined;
-  readonly review?: boolean | undefined;
-}
-
-export interface SummonResult {
-  readonly success: boolean;
-  readonly exitCode: number;
-  readonly outputFile: string;
-  readonly stdout: string;
-  readonly stderr: string;
-}
-
-export interface ISummon {
-  summon(persona: string, prompt: string, options?: SummonOptions): Promise<SummonResult>;
-}
+// The port and its two records live in `protocol/summon-contract.ts` — pure
+// shape, importable without pulling this module's registry / firewall / CLI /
+// WebSocket weight in with them. Re-exported here so every existing importer is
+// unchanged; a consumer that needs only the shape should import the contract.
+import type { ISummon, SummonOptions, SummonResult } from "../protocol/summon-contract";
+export type { ISummon, SummonOptions, SummonResult } from "../protocol/summon-contract";
 
 export class PersonaSummoner implements ISummon {
   async summon(persona: string, prompt: string, options: SummonOptions = {}): Promise<SummonResult> {
@@ -174,35 +169,51 @@ export class PersonaSummoner implements ISummon {
 
     // Append file context if specified
     if (options.file) {
-      if (!existsSync(options.file)) {
+      // ONE open, and the head bound applies to the READ rather than to the
+      // string afterwards. Two defects went out together here:
+      //   * `existsSync` gating `readFileSync` is a check-then-use race — the
+      //     path can be replaced between the two (CodeQL js/file-system-race).
+      //   * `readFileSync(...).slice(0, N)` read the WHOLE file into memory and
+      //     then threw most of it away, so `--file` on a 2 GB path cost 2 GB.
+      //     And `.slice` counts UTF-16 code units, so the "20000-byte" bound was
+      //     not a byte bound at all.
+      // `readFileBounded` opens once, reads at most `headBytes`, and reports
+      // ENOENT as `not-found`. See src/Core.TypeScript/io/safe-io.ts.
+      const fileRead = readFileBounded(options.file, { headBytes: FILE_HEAD_BYTES });
+      if (!fileRead.ok) {
         return {
           success: false,
           exitCode: 1,
           outputFile: "",
           stdout: "",
-          stderr: `error: --file path does not exist: ${options.file}\n`,
+          stderr:
+            fileRead.error.kind === "not-found"
+              ? `error: --file path does not exist: ${options.file}\n`
+              : `error: failed to read file context: ${fileRead.error.message}\n`,
         };
       }
-      try {
-        const fileContent = readFileSync(options.file, "utf8").slice(0, FILE_HEAD_BYTES);
-        fullPrompt += `\n\n---\n\nFile context: ${options.file}\n\`\`\`\n${fileContent}\n\`\`\``;
-      } catch (err) {
-        return {
-          success: false,
-          exitCode: 1,
-          outputFile: "",
-          stdout: "",
-          stderr: `error: failed to read file context: ${err instanceof Error ? err.message : String(err)}\n`,
-        };
-      }
+      fullPrompt += `\n\n---\n\nFile context: ${options.file}\n\`\`\`\n${fileRead.value.text}\n\`\`\``;
     }
 
     // Append context cmd output if specified
     if (options.contextCmd) {
-      const cmdResult = spawnSync("/bin/sh", ["-c", `(${options.contextCmd}) 2>&1 | head -c ${CTX_HEAD_BYTES}`], {
-        encoding: "utf8",
+      // THE DECLARED SHELL, not a hand-rolled one. `--context-cmd` is a
+      // documented escape hatch whose contract IS a shell command line ("the
+      // same trust boundary as the bash original's `eval`", peer-call/README),
+      // and one live loop passes it a `bun tools/...` invocation, so narrowing
+      // it to an argument vector would break a caller. What changes is that the
+      // shell now lives in ONE reviewable function with a written reason
+      // instead of being open-coded here and in seven sibling files.
+      //
+      // The `| head -c N` pipeline is gone with it: the bound is now applied in
+      // this process, in BYTES, by `truncateUtf8Bytes`. The old `.slice(0, N)`
+      // counted UTF-16 code units, so a context command emitting non-ASCII
+      // overran the bound it appeared to enforce.
+      const cmdResult = spawnShellDeclared("sh", `(${options.contextCmd}) 2>&1`, {
+        reason: "peer-call --context-cmd: the command line is the documented contract of the flag",
+        maxBytes: SPAWN_MAX_BYTES,
       });
-      const cmdOutput = cmdResult.stdout ?? "";
+      const cmdOutput = cmdResult.ok ? truncateUtf8Bytes(cmdResult.value.stdout, CTX_HEAD_BYTES) : "";
       fullPrompt += `\n\n---\n\nContext command: ${options.contextCmd}\nOutput:\n\`\`\`\n${cmdOutput}\n\`\`\``;
     }
 
@@ -288,10 +299,9 @@ export class PersonaSummoner implements ISummon {
       }
     }
 
-    try {
-      writeFileSync(outputFile, stdout);
-    } catch (err) {
-      process.stderr.write(`error: failed to write output-file ${outputFile}: ${err instanceof Error ? err.message : String(err)}\n`);
+    const wrote = writeFileOwned(outputFile, stdout, { mode: 0o600 });
+    if (!wrote.ok) {
+      process.stderr.write(`error: failed to write output-file ${outputFile}: ${wrote.error.message}\n`);
     }
 
     return {
@@ -330,12 +340,13 @@ export class PersonaSummoner implements ISummon {
     const host = harness.host ?? "http://127.0.0.1:11434";
 
     try {
-      const ctrl = new AbortController();
-      const timer = setTimeout(() => ctrl.abort(), (config.gateTimeout || 60) * 1000);
-
       const systemPrompt = harness.systemPrompt ?? `You are ${config.name}.`;
 
-      const res = await fetch(`${host}/api/generate`, {
+      // `fetchBounded` carries the AbortController timeout that used to be
+      // hand-rolled here AND the byte cap that was not: `await res.json()` has
+      // no ceiling, so a misbehaving or hostile endpoint on `host` could return
+      // a body as large as it liked and this process would buffer all of it.
+      const res = await fetchBounded(`${host}/api/generate`, {
         method: "POST",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({
@@ -349,10 +360,9 @@ export class PersonaSummoner implements ISummon {
             num_predict: 2048,
           },
         }),
-        signal: ctrl.signal,
+        timeoutMs: (config.gateTimeout || 60) * 1000,
+        maxBytes: LLM_RESPONSE_MAX_BYTES,
       });
-
-      clearTimeout(timer);
 
       if (!res.ok) {
         return {
@@ -360,18 +370,17 @@ export class PersonaSummoner implements ISummon {
           exitCode: 2,
           outputFile,
           stdout: "",
-          stderr: `local-llm: ollama HTTP ${res.status} (model=${model}, host=${host})\n`,
+          stderr: `local-llm: ollama ${res.error.kind}: ${res.error.message} (model=${model}, host=${host})\n`,
         };
       }
 
-      const data = (await res.json()) as { response?: string };
+      const data = JSON.parse(res.value.body) as { response?: string };
       const stdout = data.response ?? "";
 
-      try {
-        writeFileSync(outputFile, stdout);
-      } catch {
-        // best-effort output file
-      }
+      // Best-effort, and now SAID SO rather than swallowed: the Result is
+      // ignored deliberately because the answer is already in `stdout` and a
+      // failed capture must not turn a successful call into a failed one.
+      writeFileOwned(outputFile, stdout, { mode: 0o600 });
 
       return {
         success: true,
@@ -428,7 +437,7 @@ export class PersonaSummoner implements ISummon {
        const stdout = outcome.result.content;
        if (streamOpt) process.stdout.write(stdout);
        
-       try { writeFileSync(outputFile, stdout); } catch {}
+       writeFileOwned(outputFile, stdout, { mode: 0o600 });
        return { success: true, exitCode: 0, outputFile, stdout, stderr: "" };
     } catch (err) {
        return {

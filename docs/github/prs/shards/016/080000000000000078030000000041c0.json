@@ -1,0 +1,12 @@
+{
+  "pr_number": 16832,
+  "archive_path": "docs/history/pr-reviews/PR-16832-feat-corporate-the-organization-drives-itself-peer-verbs-the-calendar-as-authori.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-07T03:04:25.985Z",
+  "schema_version": "v1",
+  "commit_sha": "e583811fd704fa502a12b8da257ed3844d09cdc7",
+  "title": "feat(corporate): the organization drives itself — peer verbs, the calendar as authority, and a run with no simulated port",
+  "state": "MERGED",
+  "merged_at": "2026-09-07T03:03:37Z",
+  "head_ref": "org-pipeline-phases"
+}

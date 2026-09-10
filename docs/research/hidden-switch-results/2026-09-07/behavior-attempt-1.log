@@ -1,0 +1,7 @@
+Command: ['dotnet', 'fsi', 'src/Research.FSharp/run-hidden-switch-experiment.fsx', '/Users/acehack/.zeta/agents/codex/Zeta-rendered-catch-reference-20260906/docs/research/hidden-switch-results/2026-09-07/behavior-attempt-1.json']
+SourceCommit: 4fc82b611012bd2620a26e02afe6baba491fe553
+StartedAtUtc: 2026-09-07T12:15:02.208423+00:00
+receipt=/Users/acehack/.zeta/agents/codex/Zeta-rendered-catch-reference-20260906/docs/research/hidden-switch-results/2026-09-07/behavior-attempt-1.json sha256=F15CA0D41B1437B5E05A6CA402A8A8609F85D8B0E1C6218C316460257F450C2E complete=true
+
+ExitCode: 0
+CompletedAtUtc: 2026-09-07T12:15:09.846395+00:00

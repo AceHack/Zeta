@@ -1,0 +1,12 @@
+{
+  "pr_number": 16975,
+  "archive_path": "docs/history/pr-reviews/PR-16975-feat-081m1ysyzfg087g0r001tnk4et-fuse-dispatcher-truncate-via-mutbuf.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-07T21:08:44.185Z",
+  "schema_version": "v1",
+  "commit_sha": "32675e113130f08916a52d7e55714dc6833e485a",
+  "title": "feat(081M1YSYZFG087G0R001TNK4ET): FUSE dispatcher truncate via mutbuf",
+  "state": "MERGED",
+  "merged_at": "2026-09-07T21:08:06Z",
+  "head_ref": "feat/zetafs-fuse-truncate"
+}

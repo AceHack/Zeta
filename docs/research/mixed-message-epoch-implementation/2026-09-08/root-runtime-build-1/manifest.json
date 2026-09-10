@@ -1,0 +1,34 @@
+{
+  "Schema": "zeta.mixed-epoch.root-runtime-build.v1",
+  "CoreSource": "15b43aa7271d100842c198a4378eef717e4acef8",
+  "NamedControlExecuted": false,
+  "Records": [
+    {
+      "File": "completion.json.gz",
+      "Encoding": "gzip",
+      "Bytes": 325,
+      "Sha256": "D4AB2D5384DF08876CDC44FC29B0F0CEA011E7AC4AB807D6B7240AAEB3B87B47",
+      "StoredBytes": 253,
+      "StoredSha256": "522A0B9D6B3B6225C40312E4CB452D72305B87FF1305568596B631D5F3EDE73B",
+      "OriginalPath": ".git/core-runtime-root-build-1/completion.json"
+    },
+    {
+      "File": "stderr.gz",
+      "Encoding": "gzip",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "StoredBytes": 20,
+      "StoredSha256": "9CEFFB7310338057CFE71A4AE1E2C98D2C485D81CDEF906532A801F457A38D64",
+      "OriginalPath": ".git/core-runtime-root-build-1/stderr"
+    },
+    {
+      "File": "stdout.gz",
+      "Encoding": "gzip",
+      "Bytes": 920,
+      "Sha256": "D1884B1A2637E953E1F5FEE2A6D912FABD1BCEBE85324F595B31CB0718E8477D",
+      "StoredBytes": 296,
+      "StoredSha256": "13CA037AAA3CA41EF2D8447ECE6F00862EF7FA3E210F6EAEBFBF5DE523AAF66C",
+      "OriginalPath": ".git/core-runtime-root-build-1/stdout"
+    }
+  ]
+}

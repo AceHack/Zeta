@@ -1,0 +1,14 @@
+{
+  "id": "080d0418a98af810a01300084d1deb89",
+  "at": "2026-09-08T22:13:19.327Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M21HACAY087G0R003YNEZBT",
+    "type": "task",
+    "title": "Device flash carries join material so a two-node join is testable on real hardware",
+    "slug": "device-flash-carries-join-material-so-a-two-node-join-is-tes",
+    "priority": "P2",
+    "filename": "081M21HACAY087G0R003YNEZBT-device-flash-carries-join-material-so-a-two-node-join-is-tes.md"
+  }
+}

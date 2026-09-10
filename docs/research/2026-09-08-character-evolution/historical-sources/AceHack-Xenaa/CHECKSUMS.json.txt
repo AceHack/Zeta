@@ -1,0 +1,132 @@
+[
+  {
+    "File": "README.md",
+    "Bytes": 3780,
+    "Sha256": "4f14ffa83f459494d8c415a020feb5c677528254c5d04f31baadb127b41346a3"
+  },
+  {
+    "File": "BUILD_ORDER.md",
+    "Bytes": 1640,
+    "Sha256": "6c18d8f712872bd55c941b927e1b27f9d3ef14e04dd9ca6339eaf91b34b6db38"
+  },
+  {
+    "File": "AceHack_Xenaa_Atelier.blend",
+    "Bytes": 9889498,
+    "Sha256": "f5f2a078671714038b731fdbd6d5b0d32a56ae4ed48911856a982d251a05d09f"
+  },
+  {
+    "File": "references/source-manifest.json",
+    "Bytes": 992,
+    "Sha256": "071adef8189ecd3c8d1c46fe519d294a8770fc2d0199a031c0de071b1d721759"
+  },
+  {
+    "File": "exports/Xenaa.glb",
+    "Bytes": 18253268,
+    "Sha256": "0bfba5510b9c221494ac3ccf7ddf7c851c2a2a3269ea591865cd213d9ab17c45"
+  },
+  {
+    "File": "exports/reimport-validation.json",
+    "Bytes": 1277,
+    "Sha256": "8644492603a19968e8610235b7c8cbea61ed462a777cfc6374d8f07585e55de7"
+  },
+  {
+    "File": "exports/manifest.json",
+    "Bytes": 2489,
+    "Sha256": "704d155027f58911a38f71d016adacb6e5400ddfd24898a79d83ad589b84c03b"
+  },
+  {
+    "File": "exports/AceHack.glb",
+    "Bytes": 21857368,
+    "Sha256": "0bb932510da824566d7b0ab6faf4a30e5ec944fbc81e6b3023cd6f93122968c1"
+  },
+  {
+    "File": "renders/AceHack_Xenaa_Hero.png",
+    "Bytes": 6267140,
+    "Sha256": "4b0346989c149039843f5f9bec370620a72d091e2e5e60b9dce767e898a5fc3a"
+  },
+  {
+    "File": "renders/AceHack_Portrait.png",
+    "Bytes": 3682932,
+    "Sha256": "f332dfef90110d8730ffa48f3c09bc7bf84321972974b612d899ed976d54ce2c"
+  },
+  {
+    "File": "renders/Xenaa_Portrait.png",
+    "Bytes": 3827495,
+    "Sha256": "62ceac78df655b60691565226ea415c71992bccba04ed166016971407734824c"
+  },
+  {
+    "File": "renders/AceHack_Xenaa_Turntable.mp4",
+    "Bytes": 2831005,
+    "Sha256": "e9aceb7acb45eac048a963bc6a142ea998f770568aec8610f45dac1ab1e3ccef"
+  },
+  {
+    "File": "renders/video-validation.json",
+    "Bytes": 284,
+    "Sha256": "70f83cb1a5367d272d8f80686f6b4d19c7bfc5ae73f0084b405a1aebf5aadcb7"
+  },
+  {
+    "File": "scripts/build_characters.py",
+    "Bytes": 34445,
+    "Sha256": "e2c6cf57f75463b1843eb842f466165a5941ca15800287e9dcc272a18126cca1"
+  },
+  {
+    "File": "scripts/export_clifford_motion.fsx",
+    "Bytes": 1692,
+    "Sha256": "89e1cc1624c66cdefeb30b3aa6556eeea8feb549a32f887a0993bbfd27d9f8d4"
+  },
+  {
+    "File": "scripts/finalize_assets.py",
+    "Bytes": 7388,
+    "Sha256": "b226db77e3a67db7a677d9f0b28c1d07aa9455e864830ee00caf2dae373f8e04"
+  },
+  {
+    "File": "scripts/package_assets.py",
+    "Bytes": 3843,
+    "Sha256": "04155f2e01bb90a6aca36743372f94ff62c93773e107c6543edc2a97dd36f225"
+  },
+  {
+    "File": "scripts/validate_assets.py",
+    "Bytes": 3397,
+    "Sha256": "ffb4a37d4d810fb92db4989a1673b450d44a2e89fc78541fd71fbd5b0e13af4f"
+  },
+  {
+    "File": "scripts/render_turntable.py",
+    "Bytes": 640,
+    "Sha256": "487cf18e3decd881dc1a93a3f8e6d7571c25fa71efe0c6f97d7f5207a1fa83d1"
+  },
+  {
+    "File": "scripts/set_opening_view.py",
+    "Bytes": 732,
+    "Sha256": "92507fc6b7baa248c0b66e28118399b0c1eaeec5d4a8ea42e5d46cdc998a2d3d"
+  },
+  {
+    "File": "research/clifford-turntable.json",
+    "Bytes": 73520,
+    "Sha256": "5336c808b4635057a2108a31873618117e9f761395f604e82c7df3b5b48ea564"
+  },
+  {
+    "File": "research/CLIFFORD_SCENE_DIRECTION.md",
+    "Bytes": 5449,
+    "Sha256": "92db56a0c684845de86477e60e51344080d52a46cc2d1f7771b5429a4b0d4b24"
+  },
+  {
+    "File": "research/zeta-source-identities.json",
+    "Bytes": 721,
+    "Sha256": "a9149248def5d9b7b5ed2c604ed3f246c64017582d409a432cc5d48457f7296a"
+  },
+  {
+    "File": "research/attachment-validation.json",
+    "Bytes": 258,
+    "Sha256": "75f815d66b99acd5d5942a5a085521cc166c396c211932a8b87a41e1c992acfe"
+  },
+  {
+    "File": "research/clifford-motion-execution.log",
+    "Bytes": 71,
+    "Sha256": "da0bec33eb85061574e29f5d6f6048965ccd89dc9f46faef155e8060a9c77ec1"
+  },
+  {
+    "File": "research/blender-motion-validation.json",
+    "Bytes": 32489,
+    "Sha256": "12dec4864a18f0f873b71149e4b1463c3f7729bada571c447c6b8c31bd74c459"
+  }
+]

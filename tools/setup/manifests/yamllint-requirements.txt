@@ -1,0 +1,29 @@
+# Hash-pinned install set for the `lint (yaml/k8s)` gate job.
+#
+# OpenSSF Scorecard alerts #457 and #458 (`PinnedDependenciesID`, score 9) named two
+# unpinned installs in `.github/workflows/gate.yml`:
+#
+#   .venv-yamllint/bin/python -m pip install --upgrade pip      <- unpinned, every run
+#   .venv-yamllint/bin/pip install yamllint==1.38.0             <- version-pinned, not hash-pinned
+#
+# A version pin says WHICH release; a hash pin says WHICH BYTES. PyPI versions are
+# immutable by policy, not by construction, and the gap between those two is the whole
+# reason this check exists.
+#
+# SDIST hashes, not wheel hashes, and that is deliberate: wheels are per-platform
+# (`cp314-macosx_11_0_arm64` locally, `manylinux_x86_64` on the runner), so a hash set
+# measured on one machine silently fails on the other. A source distribution has one hash
+# everywhere. PyYAML builds a C extension from sdist; the runner has a compiler.
+#
+# `--require-hashes` makes the pin LOAD-BEARING rather than decorative: with it, pip
+# refuses ANY requirement in this file that lacks a hash, so a future addition cannot be
+# slipped in unpinned. That is the property, not the individual digests.
+#
+# Transitive deps are listed explicitly because `--require-hashes` requires it -- pip will
+# not resolve an unhashed dependency of a hashed one.
+#
+# Refresh: re-read the sdist digests from PyPI's JSON API
+#   curl -s https://pypi.org/pypi/<pkg>/<version>/json | jq -r '.urls[]|select(.packagetype=="sdist")|.digests.sha256'
+yamllint==1.38.0 --hash=sha256:09e5f29531daab93366bb061e76019d5e91691ef0a40328f04c927387d1d364d
+pathspec==1.1.1 --hash=sha256:17db5ecd524104a120e173814c90367a96a98d07c45b2e10c2f3919fff91bf5a
+PyYAML==6.0.3 --hash=sha256:d76623373421df22fb4cf8817020cbb7ef15c725b9d5e45f17e189bfc384190f

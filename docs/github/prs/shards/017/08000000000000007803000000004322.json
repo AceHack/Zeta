@@ -1,0 +1,12 @@
+{
+  "pr_number": 17186,
+  "archive_path": "docs/history/pr-reviews/PR-17186-docs-research-lane-audit-under-the-metal-fidelity-criterion-seven-bring-up-jobs-.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-10T02:02:52.229Z",
+  "schema_version": "v1",
+  "commit_sha": "50ca36367b2d223b29c41200a8b7e036d4c8808f",
+  "title": "docs(research): lane audit under the metal-fidelity criterion — seven bring-up jobs, four justified",
+  "state": "MERGED",
+  "merged_at": "2026-09-10T02:02:09Z",
+  "head_ref": "agent/lane-metal-fidelity-audit-081M241X64R087G0R0038NK0V3"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 17217,
+  "archive_path": "docs/history/pr-reviews/PR-17217-docs-081m24jhvkf087g0r0032a8ppy-land-the-independent-review-push-custody-record.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-10T02:51:55.011Z",
+  "schema_version": "v1",
+  "commit_sha": "c36e3a8e0f565b99561b10b7cb5c0eb9f34c11c4",
+  "title": "docs(081M24JHVKF087G0R0032A8PPY): land the independent-review push custody record",
+  "state": "MERGED",
+  "merged_at": "2026-09-10T02:51:03Z",
+  "head_ref": "land/review-push-custody"
+}

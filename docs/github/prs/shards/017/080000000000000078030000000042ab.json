@@ -1,0 +1,12 @@
+{
+  "pr_number": 17067,
+  "archive_path": "docs/history/pr-reviews/PR-17067-docs-research-add-durable-room-result-admission-gate.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-08T18:39:35.789Z",
+  "schema_version": "v1",
+  "commit_sha": "88fc64426c70480ae36604fb06375b0161af2b79",
+  "title": "docs(research): add durable room result admission gate",
+  "state": "MERGED",
+  "merged_at": "2026-09-08T18:38:56Z",
+  "head_ref": "lumen/durable-room-result-admission"
+}

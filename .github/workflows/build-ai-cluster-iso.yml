@@ -209,7 +209,68 @@ jobs:
         # Eval-only check — catches typos, missing imports, undefined
         # attributes before paying for the build. Skip building checks
         # to keep this cheap.
-        run: nix flake check --no-build --show-trace
+        #
+        # `--all-systems` added 2026-09-09 (081M244SY6K087G0R002WDBCZJ) for the reason
+        # root-flake-check.yml and first-boot-manifest-check.yml already state in their
+        # own words: without it "nix silently omits outputs incompatible with the runner
+        # and still exits 0, which is a narrower vacuous green replacing a wider one."
+        # MEASURED on this flake, same host, same tree, counted with the very pattern the
+        # assertion below uses: 94 output lines without the flag, 189 with it. Cost
+        # measured at the same time: 7 s -> 54 s. Twice the flake for 47 s, inside a job
+        # that measures ~32 min.
+        #
+        # AND THE FLAG IS LOAD-BEARING, not cosmetic: replaying the assertion below
+        # against both logs, the no-flag log FAILS on `gpu-node-label-preflight` — that
+        # check hangs off `nixosConfigurations.worker-gpu` and is omitted outright when
+        # nix restricts itself to the current system. One of the nine simply was not
+        # evaluated, and nix still exited 0.
+        run: |
+          set -o pipefail
+          nix flake check --no-build --all-systems --show-trace 2>&1 | tee /tmp/aic-flake-check.log
+
+      - name: Assert the flake check actually checked something
+        working-directory: full-ai-cluster
+        # ANTI-VACUITY, copied from root-flake-check.yml, whose own comment says "anyone
+        # adding a nix lane anywhere should copy this step, because the default failure
+        # mode of a nix eval lane is a confident green over an empty check."
+        # `nix flake check` exits 0 on a flake whose outputs it skipped entirely.
+        #
+        # THIS LANE DID NOT HAVE IT. Of the four nix eval lanes in this repository,
+        # root-flake-check.yml and first-boot-manifest-check.yml carried the guard and the
+        # two `Check flake evaluates` steps in THIS file carried neither it nor
+        # `--all-systems` — so the oldest and most expensive nix lane was the one with the
+        # weakest evidence behind its green.
+        #
+        # Format-independent on purpose: run 33023664270 taught that counting `^✅` reads
+        # Determinate Nix 3.x presentation while upstream nix prints `checking flake
+        # output '...'`, and the emoji-only version reported ZERO outputs while nix had
+        # checked twenty.
+        run: |
+          checked=$(grep -cE '^(✅|checking |evaluating )' /tmp/aic-flake-check.log || true)
+          echo "outputs checked: $checked"
+          if [ "$checked" -eq 0 ]; then
+            echo "::error title=full-ai-cluster flake check validated nothing::nix flake check exited 0 having checked ZERO outputs. An eval lane that evaluates nothing is indistinguishable from one that passed."
+            exit 1
+          fi
+          # NAME THE CHECKS THIS STEP IS THE ONLY EVALUATOR OF. Nine eval-only checks in
+          # this flake are named individually by NO workflow step anywhere — their sole
+          # coverage is this `nix flake check`. A green here that never reached them is a
+          # green about some other output. Measured 2026-09-09: mutating
+          # zeta-creds-to-k8s-eval-test.nix so every property fails makes
+          # `nix flake check --no-build --all-systems` exit 1 in 61 s, which is what
+          # earns the claim that this step covers them.
+          missing=""
+          for c in zeta-creds-to-k8s-model tpm2-seal-prereqs-model host-seal-profile-model \
+                   secure-boot-desired-state-model longhorn-node-preflight \
+                   longhorn-disk-registration longhorn-common-default-disk-eval \
+                   cilium-wireguard-preflight gpu-node-label-preflight; do
+            grep -q "$c" /tmp/aic-flake-check.log || missing="$missing $c"
+          done
+          if [ -n "$missing" ]; then
+            echo "::error title=Eval-only checks were not among the outputs evaluated::nix flake check never mentioned:$missing. These checks are named by no other step in any workflow, so this step is their only coverage. Either they were renamed or removed, or --all-systems omitted the system they live on. Either way this lane is green about something else."
+            exit 1
+          fi
+          echo "all nine eval-only checks were evaluated."
 
       # Regression test for the k3s --cluster-init token deadlock
       # (k3s-server.nix). Boots the control-plane k3s module in a QEMU VM
@@ -272,13 +333,28 @@ jobs:
       # EVALUATION-ONLY checks, run here because NOTHING ELSE RAN THEM.
       #
       # `cluster-cidr-derivation` and `k3s-server-join-model` were added to
-      # `flake.checks` by #15668 and were referenced by no workflow in the
+      # `flake.checks` by #15668 and were named by no workflow step in the
       # repository — `grep -rn 'cluster-cidr\|server-join' .github/workflows/`
-      # returned empty. No lane runs `nix flake check` on this flake (the steps
-      # here name each check individually), so both were checks that could not
-      # fail because nothing invoked them. Their TypeScript twins under
-      # src/Core.TypeScript/hygiene/ DO run in the bun sweep, which is why the
-      # gap was survivable and also why it was invisible.
+      # returned empty. Their TypeScript twins under src/Core.TypeScript/hygiene/
+      # DO run in the bun sweep, which is why the gap was survivable.
+      #
+      # CORRECTION, 2026-09-09 (081M244SY6K087G0R002WDBCZJ). This comment used to
+      # continue "No lane runs `nix flake check` on this flake (the steps here name
+      # each check individually), so both were checks that could not fail because
+      # nothing invoked them." THAT WAS FALSE WHEN WRITTEN: the `Check flake
+      # evaluates` step in this same job, ~60 lines above, runs
+      # `nix flake check --no-build`, and an eval-only check's assertions fire
+      # during EVALUATION — which is exactly what the flake's own comments say
+      # about them. Measured: mutating zeta-creds-to-k8s-eval-test.nix so every
+      # property fails makes `nix flake check --no-build --all-systems` exit 1 in
+      # 61 s, naming the failed properties.
+      #
+      # The correction matters because the false sentence told a reader auditing
+      # coverage that eval coverage did not exist when it did — and the real defect
+      # was the opposite shape: the coverage existed and had NO ANTI-VACUITY GUARD,
+      # so it could have stopped covering anything without a red X. The guard now
+      # lives on that step. These two `nix build` lines stay as belt-and-braces
+      # (they cost seconds and they name their subjects), with an honest reason.
       #
       # They cost no VM and their assertions fire during EVALUATION, so this is
       # seconds, not minutes.
@@ -955,7 +1031,21 @@ jobs:
 
       - name: Check flake evaluates
         working-directory: full-ai-cluster
-        run: nix flake check --no-build --show-trace
+        # `--all-systems` + the assertion below, for the same reason as the x86_64 job:
+        # a nix eval lane's default failure mode is a confident green over an empty check.
+        run: |
+          set -o pipefail
+          nix flake check --no-build --all-systems --show-trace 2>&1 | tee /tmp/aic-arm-flake-check.log
+
+      - name: Assert the flake check actually checked something (aarch64)
+        working-directory: full-ai-cluster
+        run: |
+          checked=$(grep -cE '^(✅|checking |evaluating )' /tmp/aic-arm-flake-check.log || true)
+          echo "outputs checked: $checked"
+          if [ "$checked" -eq 0 ]; then
+            echo "::error title=full-ai-cluster flake check validated nothing (aarch64)::nix flake check exited 0 having checked ZERO outputs. An eval lane that evaluates nothing is indistinguishable from one that passed."
+            exit 1
+          fi
 
       - name: Build aarch64 installer ISO
         working-directory: full-ai-cluster

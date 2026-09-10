@@ -1,0 +1,12 @@
+{
+  "pr_number": 16927,
+  "archive_path": "docs/history/pr-reviews/PR-16927-feat-cluster-control-plane-and-gpu-on-one-machine-roles-compose-agents-refuse-cl.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-07T13:10:27.940Z",
+  "schema_version": "v1",
+  "commit_sha": "b6ede6e6de4ce237f83ccd9ace36a33f9616d3d4",
+  "title": "feat(cluster): control plane AND gpu on one machine — roles compose, agents refuse cluster work",
+  "state": "MERGED",
+  "merged_at": "2026-09-07T13:09:46Z",
+  "head_ref": "shadow/compose-node-roles"
+}

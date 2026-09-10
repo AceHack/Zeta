@@ -1,0 +1,14 @@
+{
+  "id": "080d04151fba5010a013000874ae635c",
+  "at": "2026-09-08T20:09:38.890Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M21A7XTA087G0R0037YZRXV",
+    "type": "task",
+    "title": "Measure Aaron-Max RTT to decide stretched cluster vs federation",
+    "slug": "measure-aaron-max-rtt-to-decide-stretched-cluster-vs-federat",
+    "priority": "P2",
+    "filename": "081M21A7XTA087G0R0037YZRXV-measure-aaron-max-rtt-to-decide-stretched-cluster-vs-federat.md"
+  }
+}

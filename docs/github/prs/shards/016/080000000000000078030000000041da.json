@@ -1,0 +1,12 @@
+{
+  "pr_number": 16858,
+  "archive_path": "docs/history/pr-reviews/PR-16858-research-retain-order-two-after-rendered-predictor-comparison.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-06T21:51:24.354Z",
+  "schema_version": "v1",
+  "commit_sha": "d9787b016bc2ccc9a1d86bf3ab67a6df1f8df5e0",
+  "title": "research: Retain order-two after rendered predictor comparison",
+  "state": "MERGED",
+  "merged_at": "2026-09-06T21:50:43Z",
+  "head_ref": "claim/task-rendered-signal-predictor-20260906"
+}

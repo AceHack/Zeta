@@ -1,0 +1,77 @@
+{
+  "Source": "c5f1fc0e6ff7b364404e602390cb37d5e2b51679",
+  "Artifacts": [
+    {
+      "File": "000-oracle-actual-main-added-paths-1.txt.gz",
+      "OriginalPath": ".git/oracle-actual-main-added-paths-1.txt",
+      "Bytes": 1534,
+      "Sha256": "135b7bb471830ca25b6841fbf34fb6681f5107186d22d2cdb9fba99bab9018bd",
+      "StoredBytes": 701,
+      "StoredSha256": "1fabf18befd99a1c56207c99ec788306fdf59ee3a6664263e3a2f8b9aa30a63d"
+    },
+    {
+      "File": "001-oracle-actual-main-merge-1.log.gz",
+      "OriginalPath": ".git/oracle-actual-main-merge-1.log",
+      "Bytes": 508,
+      "Sha256": "ff1b69d34b3a0779fe312dacc0d95b7e8ba8160fca2354ade54ddde21313bb0b",
+      "StoredBytes": 237,
+      "StoredSha256": "540c2bd40f73c9ebd24b15f47ea397c3f4965ab1cb528de8a870085cc4063a94"
+    },
+    {
+      "File": "002-oracle-actual-main-merge-commit-1.log.gz",
+      "OriginalPath": ".git/oracle-actual-main-merge-commit-1.log",
+      "Bytes": 122,
+      "Sha256": "f29784c44b40f7550dbd940686678aa9fc799bc23bbbb1d78f3afdc4d2caf24f",
+      "StoredBytes": 119,
+      "StoredSha256": "a707a8afe44d8f27bfe1639c3295b5e86b58d6bfca87def631fcef1967df5420"
+    },
+    {
+      "File": "003-oracle-actual-main-merge-message.txt.gz",
+      "OriginalPath": ".git/oracle-actual-main-merge-message.txt",
+      "Bytes": 370,
+      "Sha256": "42f8134b6617c6eb44b6bf7a2b2455cf3c6f692433e08436e62c4c16dfe7f6db",
+      "StoredBytes": 277,
+      "StoredSha256": "9eca0b294ad123e8568fbf000ead02eb614997eed3ddfb1d7120f02e66ebfe26"
+    },
+    {
+      "File": "004-oracle-actual-main-resolution-1.json.gz",
+      "OriginalPath": ".git/oracle-actual-main-resolution-1.json",
+      "Bytes": 475,
+      "Sha256": "aad867268a47b08a466aa6a3abbc8a28a54d74e9422d20071f33549331c2147d",
+      "StoredBytes": 249,
+      "StoredSha256": "83289833099c4ceba8b719762a213eaa7b5c1676a07dd57c39733adb7bda8e9c"
+    },
+    {
+      "File": "005-process.json.gz",
+      "OriginalPath": ".git/oracle-publication-full-preflight-2/process.json",
+      "Bytes": 93,
+      "Sha256": "44f4b29416a840f1b91c6898db3c8c57c8990a11ce311a08d75eb03cdd89685e",
+      "StoredBytes": 107,
+      "StoredSha256": "9138942ec579dfe06427623361b97fadd0f48a19578ab270e0d95bf6a4be1a3c"
+    },
+    {
+      "File": "006-start.json.gz",
+      "OriginalPath": ".git/oracle-publication-full-preflight-2/start.json",
+      "Bytes": 132,
+      "Sha256": "dedbac40a6da431495ea06c4fa7f1ee81bf7e1292e4881ff1c8aec53a346e68c",
+      "StoredBytes": 136,
+      "StoredSha256": "627589c7ad5d4bcd010ac1f2ad51cebf9bcd1ccd61e57a11798e6a08386a8baa"
+    },
+    {
+      "File": "007-stderr.gz",
+      "OriginalPath": ".git/oracle-publication-full-preflight-2/stderr",
+      "Bytes": 49,
+      "Sha256": "2702855c35b0430a3432c3f284c32b80ecd46d83302246db156609015e6b2560",
+      "StoredBytes": 69,
+      "StoredSha256": "5c00a8fdc5d6679c6621d462c7a2386aeecfb66d2f3cf0f82cdbaf91a490ad35"
+    },
+    {
+      "File": "008-stdout.gz",
+      "OriginalPath": ".git/oracle-publication-full-preflight-2/stdout",
+      "Bytes": 1313,
+      "Sha256": "bab079ca25dc0ae422108d850a086d6753e5fadaefb06cb0fe8ab4b507869f51",
+      "StoredBytes": 408,
+      "StoredSha256": "cc7006133569f8b5ffb89d538817b8c5e5ba7c7bbafb728e0dae7dfeff35de7a"
+    }
+  ]
+}

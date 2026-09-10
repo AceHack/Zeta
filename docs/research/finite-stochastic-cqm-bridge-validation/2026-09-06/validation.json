@@ -1,0 +1,116 @@
+{
+  "Schema": "finite-stochastic-bridge-validation-v1",
+  "ScientificArchiveCommit": "ce7fcffd496d8dcdea55f99d9919519276b35bd9",
+  "FinalDotnetTestedCommit": "5957b1ad8aa3ea9f4507b29221b2e8c63aa6103d",
+  "ScientificSourceFilesUnchanged": true,
+  "Validation": [
+    {
+      "Command": "dotnet build -c Release",
+      "ExitCode": 0,
+      "Log": "logs/build-final.log",
+      "Warnings": 0,
+      "Errors": 0
+    },
+    {
+      "Command": "dotnet test Zeta.sln -c Release",
+      "ExitCode": 0,
+      "Log": "logs/dotnet-tests-final.log",
+      "Passed": 7515,
+      "Skipped": 6,
+      "Failed": 0
+    },
+    {
+      "Command": "uv run pytest -q",
+      "WorkingDirectory": "src/Interp.Python",
+      "ExitCode": 0,
+      "Log": "logs/python-tests.log",
+      "Passed": 198,
+      "Warnings": 1
+    },
+    {
+      "Command": "dotnet format --verify-no-changes",
+      "ExitCode": 0,
+      "Log": "logs/format.log"
+    },
+    {
+      "Command": "dotnet test tests/Tests.FSharp/Tests.FSharp.fsproj -c Release --no-build --filter FullyQualifiedName~TlcRunnerTests&DisplayName~BftConsensus --logger console;verbosity=normal",
+      "ExitCode": 0,
+      "Log": "logs/tlc-isolated-recovery.log",
+      "Passed": 1
+    },
+    {
+      "Command": "bun run preflight:quick",
+      "ExitCode": 0,
+      "Log": "logs/preflight-final.log",
+      "Passed": 16,
+      "Failed": 0
+    }
+  ],
+  "Files": [
+    {
+      "File": "logs/build-failed-139.log",
+      "Bytes": 9340,
+      "Sha256": "84BE608D6D71E2E01249F5FE478777F512A38F159FF8235D7119210FFBE0E883"
+    },
+    {
+      "File": "logs/build-final.log",
+      "Bytes": 8972,
+      "Sha256": "43824903C5441FDA39F41D4D46015F682B392240AD286D355EC3EF58B753E537"
+    },
+    {
+      "File": "logs/build-isolated.log",
+      "Bytes": 224,
+      "Sha256": "53A943DEE2706B4E8B7B8DE729C29AA57F9E0B622266773A3000366401940743"
+    },
+    {
+      "File": "logs/build-recovery.log",
+      "Bytes": 8972,
+      "Sha256": "52846078B32AB5CAC65610F13D1782FA822ACC9D8FE88D05BEE65B5F65E9301F"
+    },
+    {
+      "File": "logs/dotnet-tests-final.log",
+      "Bytes": 11778,
+      "Sha256": "3A5F1A05FD6A4B071087502519929800A925BFFBE92A91E37446A852616CAEDD"
+    },
+    {
+      "File": "logs/dotnet-tests-first-failed.log",
+      "Bytes": 13904,
+      "Sha256": "A13B1DB06FF12E2AC5CA1C2B080CF506D4D3251F304792A10C1A3488BFE46C75"
+    },
+    {
+      "File": "logs/format.log",
+      "Bytes": 5192,
+      "Sha256": "AE8DF6A64C497F2902CD855C16AA7D23382405EAE5E55AA25B6BFA733A8A7E14"
+    },
+    {
+      "File": "logs/preflight-inherited-r5.log",
+      "Bytes": 1782,
+      "Sha256": "02A44A32BC5D4B5B5D17EC1248F759CBFBFCDB1205733B1EF4326CEC0396DC8A"
+    },
+    {
+      "File": "logs/python-tests.log",
+      "Bytes": 893,
+      "Sha256": "66BE9BAED6C312A5501814FD566A8860B61FE9E57CABB02B82D5330E97CD8253"
+    },
+    {
+      "File": "logs/tlc-isolated-recovery.log",
+      "Bytes": 778,
+      "Sha256": "715C10BBECBC225717BF14917A0A8D5833A794AA7D2D98B99E32D32DAC0E3021"
+    },
+    {
+      "File": "native.json",
+      "Bytes": 475255,
+      "Sha256": "CAA481CBB41956BC6FAE56A4ACECEFED14B300B51AEBEDB332E447B025683B64"
+    },
+    {
+      "File": "replay.json",
+      "Bytes": 2674,
+      "Sha256": "340733433B7689038B62512138DF0C039E53D1879225D105D51F72858BDC501F"
+    },
+    {
+      "File": "logs/preflight-final.log",
+      "Bytes": 1224,
+      "Sha256": "78384DE8312A3216342FC13B8F8682EAAEF4762D3EB4B3D06DAED458418E405E"
+    }
+  ]
+}

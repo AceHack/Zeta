@@ -1,0 +1,12 @@
+{
+  "pr_number": 16942,
+  "archive_path": "docs/history/pr-reviews/PR-16942-feat-081m1y32j02087g0r003v91r9g-posix-rename-dest-eisdir-enotdir-enotempty.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-07T14:27:27.950Z",
+  "schema_version": "v1",
+  "commit_sha": "9fae5f8c3c499d424bc773fa4a13c057d7990495",
+  "title": "feat(081M1Y32J02087G0R003V91R9G): POSIX rename dest EISDIR ENOTDIR ENOTEMPTY",
+  "state": "MERGED",
+  "merged_at": "2026-09-07T14:26:44Z",
+  "head_ref": "feat/zetafs-rename-dest-posix"
+}

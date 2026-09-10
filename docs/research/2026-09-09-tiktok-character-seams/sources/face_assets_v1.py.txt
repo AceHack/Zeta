@@ -1,0 +1,24 @@
+import bpy,json,math
+from pathlib import Path
+from mathutils import Vector
+ROOT=Path(__file__).resolve().parent;OUT=ROOT/'face-assets-v1';OUT.mkdir(exist_ok=True)
+bpy.ops.wm.open_mainfile(filepath=str(ROOT/'mobile-rig-v2/TikTok-Characters-T-pose.blend'))
+rows=[]
+for name,eyeZ in [('AceHack',1.80),('Xenaa',1.72)]:
+ rig=bpy.data.objects[name+' | Motion rig'];meshes=[o for o in bpy.context.scene.objects if o.type=='MESH' and o.parent==rig and ('head generator' in o.name or 'hair' in o.name)]
+ for o in meshes:
+  world=o.matrix_world.copy();o.parent=None;o.matrix_world=world;o.location=(0,0,0)
+  for m in list(o.modifiers):
+   if m.type=='ARMATURE':o.modifiers.remove(m)
+  shift=Vector((0,-.10,eyeZ-.025))
+  if o.data.shape_keys:
+   for key in o.data.shape_keys.key_blocks:
+    for v in key.data:v.co-=shift
+   for key in o.data.shape_keys.key_blocks:key.value=0
+  else:
+   for v in o.data.vertices:v.co-=shift
+ bpy.ops.object.select_all(action='DESELECT')
+ for o in meshes:o.select_set(True)
+ bpy.ops.export_scene.gltf(filepath=str(OUT/(name+'-face.glb')),use_selection=True,export_format='GLB',export_animations=False,export_morph=True,export_morph_normal=False,export_morph_tangent=False,export_image_format='JPEG',export_jpeg_quality=90)
+ rows.append({'character':name,'glb_bytes':(OUT/(name+'-face.glb')).stat().st_size,'morph_channels':11,'origin':'eye line minus 25mm, y=-0.10m in previous body frame','scope':'face morph prototype; not a captured facial rig'})
+(ROOT/'face-assets-v1-receipt.json').write_text(json.dumps(rows,indent=2))

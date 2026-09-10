@@ -89,6 +89,28 @@ let ``PR6 canonical FORMAT round-trips`` () =
         Assert.Equal(expected, ZetaFsFormat.render m)
 
 [<Fact>]
+let ``bindingsDefault FORMAT round-trips ns=bindings body=jumprope`` () =
+    let expected = ZetaFsFormat.render ZetaFsFormat.bindingsDefault
+    match ZetaFsFormat.parse expected with
+    | Error e -> Assert.Fail(ZetaFsFormat.describe e)
+    | Ok m ->
+        Assert.Equal(ZetaFsFormat.Namespace.Bindings, m.Ns)
+        Assert.Equal(ZetaFsFormat.Body.Jumprope, m.Body)
+        Assert.Equal(expected, ZetaFsFormat.render m)
+        match ZetaFsFormat.requireBindings m with
+        | Ok accepted -> Assert.Equal(ZetaFsFormat.Namespace.Bindings, accepted.Ns)
+        | Error e -> Assert.Fail(ZetaFsFormat.describe e)
+        match ZetaFsFormat.requireGitTrees m with
+        | Ok _ -> Assert.Fail("git-trees polyfill must not open ns=bindings")
+        | Error e -> Assert.Equal("ReaderDoesNotSupport", ZetaFsFormat.errorName e)
+
+[<Fact>]
+let ``requireBindings refuses ns=git-trees`` () =
+    match ZetaFsFormat.requireBindings ZetaFsFormat.pr6Default with
+    | Ok _ -> Assert.Fail("bindings reader must not open ns=git-trees")
+    | Error e -> Assert.Equal("ReaderDoesNotSupport", ZetaFsFormat.errorName e)
+
+[<Fact>]
 let ``golden vector cases parse as recorded`` () =
     let path = goldenPath ()
     Assert.True(File.Exists path, sprintf "seed not found: %s" path)

@@ -1,0 +1,240 @@
+{
+  "SourceCommit": "2f068ba34da612f82370c64cef4e38a909e7edd5",
+  "Scope": "Source/focused synthetic preparation only; no metadata helper dump query or fresh capture",
+  "Records": [
+    {
+      "File": "00-hidden-switch-clrmd-build-1.log.gz",
+      "OriginalLocalFile": ".git/hidden-switch-clrmd-build-1.log",
+      "Bytes": 1900,
+      "Sha256": "2C9B90C431BD234AE614C3FEF911D169AE20A2A1847F06E970A40D7A52782388",
+      "StoredBytes": 438,
+      "StoredSha256": "D818B9F53CC34C36E9930DFF1FF785D4FCCA9312B8EACF5EE285C8C0BD6B3A98",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "01-hidden-switch-clrmd-build-2.log.gz",
+      "OriginalLocalFile": ".git/hidden-switch-clrmd-build-2.log",
+      "Bytes": 353,
+      "Sha256": "CE2E7A78FE772D59E4C9064694515097904A8CE165A838879027E590C6767C81",
+      "StoredBytes": 257,
+      "StoredSha256": "4682AC84686244AC8FA903B0D6F28FF3E17BFE79CB3D78EE89054C573B166F18",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "02-hidden-switch-clrmd-build-3.log.gz",
+      "OriginalLocalFile": ".git/hidden-switch-clrmd-build-3.log",
+      "Bytes": 3418,
+      "Sha256": "4429E4DF8DA60D45E3A81784FE1C918E53BDF0F0275835A132E33C84C8625FC3",
+      "StoredBytes": 576,
+      "StoredSha256": "823ABDF2D647C3C02716431C7E044C7C7A2AED93BF8D52B337805E8C61AF3B67",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "03-hidden-switch-clrmd-build-4.log.gz",
+      "OriginalLocalFile": ".git/hidden-switch-clrmd-build-4.log",
+      "Bytes": 2730,
+      "Sha256": "55773D0112A82AB28F3489171EAB859D611493A0F71A99A1508A5AB6D79DCB22",
+      "StoredBytes": 549,
+      "StoredSha256": "B3CB5908DD8AA5B1C818B715D10BC20089A3B469CE8DA69D104348247B8FCFB9",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "04-hidden-switch-clrmd-build-5.log.gz",
+      "OriginalLocalFile": ".git/hidden-switch-clrmd-build-5.log",
+      "Bytes": 934,
+      "Sha256": "46C429F4768B2929A2B4CB2DD4A1DCD75C2F9A09D4802B590F5815A99C338EAA",
+      "StoredBytes": 343,
+      "StoredSha256": "5751599D771AA224AE69B433BD335B36B189C5CCEF5404682FA704805414908F",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "05-hidden-switch-clrmd-build-6.log.gz",
+      "OriginalLocalFile": ".git/hidden-switch-clrmd-build-6.log",
+      "Bytes": 353,
+      "Sha256": "B398A150C90DA6EDADE6466F9B1F09B4B4A32BBE1D7DEFD552831504ADA523D5",
+      "StoredBytes": 257,
+      "StoredSha256": "04B5918219503A4B734CB9FD73EEABC31BE1B6689FFDB4AAD4C2C716553FEB72",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "06-hidden-switch-clrmd-build-7.log.gz",
+      "OriginalLocalFile": ".git/hidden-switch-clrmd-build-7.log",
+      "Bytes": 353,
+      "Sha256": "F08146E6492DD25C755CC621D97E2675BA774F69C7DE7717D9DAFE8EACC16BED",
+      "StoredBytes": 257,
+      "StoredSha256": "FD834099350D8D5A8A20CD72437A1DC954FB879193DE6CBDC290A98C8018CD37",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "07-hidden-switch-clrmd-focused-build-1.log.gz",
+      "OriginalLocalFile": ".git/hidden-switch-clrmd-focused-build-1.log",
+      "Bytes": 8873,
+      "Sha256": "0ECF4CDF054C4F6B46DB070B7A40341E60436FF4658D36567658D436BB05BE9B",
+      "StoredBytes": 799,
+      "StoredSha256": "2727D5981D3217D555CE1D6E9C7B653C82582E9DE076C71735DE430DB4BAB33D",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "08-hidden-switch-clrmd-focused-build-2.log.gz",
+      "OriginalLocalFile": ".git/hidden-switch-clrmd-focused-build-2.log",
+      "Bytes": 3989,
+      "Sha256": "22BE9AC5934AEB7D0863CF80C9CF35361CBB35964140FA0F22F15E8C30031616",
+      "StoredBytes": 571,
+      "StoredSha256": "32B0B1CE293A529BBAA363E09002D49039C5B0F5620EFE2D904B0A752A8B63CF",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "09-hidden-switch-clrmd-focused-build-3.log.gz",
+      "OriginalLocalFile": ".git/hidden-switch-clrmd-focused-build-3.log",
+      "Bytes": 3989,
+      "Sha256": "DF0133D2D140584E3EB73E513A0121B04A4276EF33B9F33AB34B7FCEB40D635D",
+      "StoredBytes": 571,
+      "StoredSha256": "4596F5748FA9E84CCF1909B189535815D7F6BC0E7CAE637A5C4D08792B3854E0",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "10-hidden-switch-clrmd-focused-tests-1.log.gz",
+      "OriginalLocalFile": ".git/hidden-switch-clrmd-focused-tests-1.log",
+      "Bytes": 2094,
+      "Sha256": "6DCF5BFED17D69F5C774BBD3517C42AF90D889C42E0BCA00675226DF88F236B8",
+      "StoredBytes": 857,
+      "StoredSha256": "FDB4C202C2B219E83B0846F4F8E81612916ED77BCBBD29DD95E59E62A4B09C49",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "11-hidden-switch-clrmd-focused-tests-2.log.gz",
+      "OriginalLocalFile": ".git/hidden-switch-clrmd-focused-tests-2.log",
+      "Bytes": 494,
+      "Sha256": "7587F2265243F2F4D8B5FA521F9DE83E1CE4C897F0EF8537F859FECB0C560CA2",
+      "StoredBytes": 291,
+      "StoredSha256": "084BE31140698D3A47E34D88B7C0365FD42E8338DCE241AE47E3222C7C6F2569",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "12-hidden-switch-clrmd-ruff-1.log.gz",
+      "OriginalLocalFile": ".git/hidden-switch-clrmd-ruff-1.log",
+      "Bytes": 5331,
+      "Sha256": "0E5388AB2BF00BA1C1576BB580DDA891D4340573F50803F74C8BCFCB6254168E",
+      "StoredBytes": 1648,
+      "StoredSha256": "4F8FD39B2398C5226BE703A8A7F78C5AC02A726F88D173FE160D593913B7FA4A",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "13-hidden-switch-clrmd-ruff-2.log.gz",
+      "OriginalLocalFile": ".git/hidden-switch-clrmd-ruff-2.log",
+      "Bytes": 19,
+      "Sha256": "82B3E6A6C090A57601D22943BD23FCA9218D1031DBE5A7B754092F9A156B4F18",
+      "StoredBytes": 39,
+      "StoredSha256": "F3AF4D142827F5AAD2EB0C72D556D325488A57FB6219AAC10AFEB51085667D53",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "14-hidden-switch-clrmd-ruff-fixes.log.gz",
+      "OriginalLocalFile": ".git/hidden-switch-clrmd-ruff-fixes.log",
+      "Bytes": 2233,
+      "Sha256": "3EBDAABEB6B818A9313AA0700FB9D1CE625C768C4D75F9441B86FB0D7471710C",
+      "StoredBytes": 773,
+      "StoredSha256": "0BAD85B404FF415E29047A3D1B862C5CB9C682046E7224D1A840ECCB94A1451C",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "15-hidden-switch-clrmd-build-1-sources.json.gz",
+      "OriginalLocalFile": ".git/hidden-switch-clrmd-build-1-sources.json",
+      "Bytes": 650,
+      "Sha256": "D6D4516B1706A64E0D5069C842F12E25C86B846C684FBA1502F64C0FDC9F2DF2",
+      "StoredBytes": 350,
+      "StoredSha256": "E1C2880EB339C031E75D8D51011FA73EB228405AC9D2AE015CDE7144F8F4F9EF",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "16-hidden-switch-clrmd-build-5-wrapper-failure.txt.gz",
+      "OriginalLocalFile": ".git/hidden-switch-clrmd-build-5-wrapper-failure.txt",
+      "Bytes": 235,
+      "Sha256": "7EFC64DB6216613751F152CE71FE4B89AC2D38F6C30CDDC22F8121D66FAF9113",
+      "StoredBytes": 188,
+      "StoredSha256": "0E8C418968E8CB5B98F15081A24B083C8FCB399880340E299CA3B4EB43E2BA37",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "17-hidden-switch-clrmd-final-validation.json.gz",
+      "OriginalLocalFile": ".git/hidden-switch-clrmd-final-validation.json",
+      "Bytes": 2654,
+      "Sha256": "3E6AC1883F2A24B3CA83F0C72476C98AFCB846B6C27091E4C6CC709C3B97629D",
+      "StoredBytes": 1012,
+      "StoredSha256": "D171D3F0F09AD801EF37974A167CF2FCCE867403F266B62C042260680D66CBF3",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "18-hidden-switch-clrmd-buildgraph.log.gz",
+      "OriginalLocalFile": ".git/hidden-switch-clrmd-buildgraph.log",
+      "Bytes": 58,
+      "Sha256": "A7E77500E9825C542885667E9E7E2EBBDA20CC7782627BEDF5EC72BD2522B5E8",
+      "StoredBytes": 78,
+      "StoredSha256": "5A6B9640505B3F84F787298D9D7780C8D43DB840BDBAF934F908CFE2E1382CA0",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "19-Admission.fs.gz",
+      "OriginalLocalFile": ".git/hidden-switch-clrmd-pre-review-repair/Admission.fs",
+      "Bytes": 6543,
+      "Sha256": "41F6D4B5EE66B52C7847B14A3306CD09F8DA6C0A6FCCB613B8E407428B2D0393",
+      "StoredBytes": 2168,
+      "StoredSha256": "9986ED2DECBB803BECE94C31CE4013FF82A5DFEEE1BDCCE0BED27B294F1767BB",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "20-HiddenSwitchMetadata.fsproj.gz",
+      "OriginalLocalFile": ".git/hidden-switch-clrmd-pre-review-repair/HiddenSwitchMetadata.fsproj",
+      "Bytes": 3052,
+      "Sha256": "A9B7040CD1FEFF0240436F15CF26FC8B88C8E447F2E3A27198391D79368CB361",
+      "StoredBytes": 742,
+      "StoredSha256": "66519C892B493318B30A74B68616BB2799B58E29D48AE1DEAD758B812F1621DB",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "21-Program.fs.gz",
+      "OriginalLocalFile": ".git/hidden-switch-clrmd-pre-review-repair/Program.fs",
+      "Bytes": 20178,
+      "Sha256": "C7981E6BDBA92593A10ED5809B852DCC7759F6A2EF119569D030653765E9E679",
+      "StoredBytes": 5498,
+      "StoredSha256": "FC1A597CE241657A5741F5318538D5FEE20511D2D8E6485ECF21CC3F0B5E72BA",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "22-dependencies.json.gz",
+      "OriginalLocalFile": ".git/hidden-switch-clrmd-pre-review-repair/dependencies.json",
+      "Bytes": 3329,
+      "Sha256": "0D655825CA695206198FB1A6980006BC8F2E468D03AC15FDFD81C59020FAFC8E",
+      "StoredBytes": 1216,
+      "StoredSha256": "AA3399C60DA2E0504338D62346F15A04676CC684A4B5645C306A33AA4B9FC6F2",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "23-manifest.json.gz",
+      "OriginalLocalFile": ".git/hidden-switch-clrmd-pre-review-repair/manifest.json",
+      "Bytes": 722,
+      "Sha256": "E856B28BFD43D9089ECD48CD297DDF1509C4B210BC5C0556ECAA394BC5A93EE5",
+      "StoredBytes": 361,
+      "StoredSha256": "D99DBC4057C8E3D486F93D7604106896D8EF140F5B27B738446C65D9D147064D",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "24-hidden-switch-clrmd-focused-1.trx.gz",
+      "OriginalLocalFile": "tests/Tests.FSharp/TestResults/hidden-switch-clrmd-focused-1.trx",
+      "Bytes": 75473,
+      "Sha256": "756E5B456DE7AC0DE585D8993ED471D7EF288F02BC469C456EB93E9426DCF740",
+      "StoredBytes": 11123,
+      "StoredSha256": "30EA55AC2E32A1C4C3790294DA50292BEFEEC00402B36D94AF74AE69280672F3",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "25-hidden-switch-clrmd-focused-2.trx.gz",
+      "OriginalLocalFile": "tests/Tests.FSharp/TestResults/hidden-switch-clrmd-focused-2.trx",
+      "Bytes": 72086,
+      "Sha256": "9B7A3892E78AE6384D7A5A76DE79E52A3B062C35709F64ADF233843FFB6E2009",
+      "StoredBytes": 10049,
+      "StoredSha256": "DC9A776D2AC264FE88EAC44B3021AB069AE6C6BDFBCADE6F676EB0058FAF74B9",
+      "Encoding": "gzip"
+    }
+  ]
+}

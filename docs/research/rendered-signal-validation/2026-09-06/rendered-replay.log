@@ -1,0 +1,14 @@
+replayed prediction train-dot L16
+replayed prediction train-dot L64
+replayed prediction heldout-bar L16
+replayed prediction heldout-bar L64
+replayed prediction nuisance L16
+replayed prediction nuisance L64
+replayed detection domain 201
+replayed detection domain 202
+replayed detection domain 203
+replayed detection domain 204
+replayed detection domain 205
+real 115.26
+user 107.78
+sys 2.50

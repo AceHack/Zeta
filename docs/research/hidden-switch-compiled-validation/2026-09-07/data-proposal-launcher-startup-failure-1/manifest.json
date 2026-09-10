@@ -1,0 +1,26 @@
+{
+  "SourceCommit": "a80211d357d548d97caf850f367543abfbf91638",
+  "ExecutionHead": "90e0acc5707505c755c6b17fd1c6efd5c927aca5",
+  "LauncherSha256": "29650060363DA14BD947A1F3B6B966C5DEAAAA3ACCCE574C7A4D4DC0CED4B11B",
+  "Scope": "First outer launch failed before invocation file/attempt directory/metadata child at runtime image identity limit. Tool-returned combined output text is explicitly transcribed; no raw per-stream capture exists. Subsequent regular-file stat was read-only. No range proposal or physical read.",
+  "Records": [
+    {
+      "File": "hidden-switch-data-proposal-launcher-startup-1-observation.json.gz",
+      "OriginalLocalFile": ".git/hidden-switch-data-proposal-launcher-startup-1-observation.json",
+      "Bytes": 437,
+      "Sha256": "56BC27190E8491499A31CA90C1B64565DF9CEBA4380F70845A9708EDB85D3ECF",
+      "StoredBytes": 305,
+      "StoredSha256": "6DEC004EA3E2DB17C2417550C1045EDE3881BB0978C96AE85091C7C15E50F7C1",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "hidden-switch-data-proposal-launcher-startup-1-tool-result.json.gz",
+      "OriginalLocalFile": ".git/hidden-switch-data-proposal-launcher-startup-1-tool-result.json",
+      "Bytes": 1530,
+      "Sha256": "34ED6BDAD314E4151FB713F2376D2F5C297E19923D4FF568B6AF77890002B035",
+      "StoredBytes": 720,
+      "StoredSha256": "B1183D619C6DB881326B6C1E5F21BE9F4B00E69A98C5014FE2EDA163D0C94F32",
+      "Encoding": "gzip"
+    }
+  ]
+}

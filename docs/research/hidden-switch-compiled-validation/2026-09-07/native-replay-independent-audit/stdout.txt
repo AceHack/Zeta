@@ -1,0 +1,171 @@
+{
+  "EvidenceCommit": "cb86d8085a2f9c0e86ccb99c28c35915867d6097",
+  "Scope": "Committed bytes, exact source snapshots and retained result/count associations only; no project imports or replay execution",
+  "Bundles": [
+    {
+      "File": "docs/research/hidden-switch-compiled-validation/2026-09-07/native-replay-attempt-1/manifest.json",
+      "Bytes": 35586,
+      "Sha256": "321E32AD0B4487D61CE3A751243912886F478D5E620C96934C388D99B893F22A",
+      "Records": 104,
+      "OriginalBytes": 72103126,
+      "StoredBytes": 3464338,
+      "SourceCommit": "e2dde77cf59de9fe435dcc69eb63cf842bc48578",
+      "SourceFiles": 15,
+      "NativeSourceSnapshots": 3,
+      "ObservedLoadedSources": 14,
+      "PublicResultReferences": 79,
+      "ProducerReturned": 43,
+      "ProducerPending": 31,
+      "Runs": [
+        {
+          "Name": "complete",
+          "Counts": {
+            "ChargedBytes": 5107609,
+            "MatchedCases": 38,
+            "NativeCompared": 31,
+            "NativePending": 0,
+            "PreparedCases": 38,
+            "PythonMatched": 43,
+            "PythonReturned": 43,
+            "PythonStarted": 43
+          },
+          "Bytes": 20957328,
+          "Sha256": "ACCD71A24D3987CB516AB0553456DF24F40171C240DB4F224B19F39CB5403C19"
+        },
+        {
+          "Name": "pending",
+          "Counts": {
+            "ChargedBytes": 5037270,
+            "MatchedCases": 7,
+            "NativeCompared": 0,
+            "NativePending": 31,
+            "PreparedCases": 38,
+            "PythonMatched": 43,
+            "PythonReturned": 43,
+            "PythonStarted": 43
+          },
+          "Bytes": 20619163,
+          "Sha256": "FD91D4B4C3AD241A5C9D9633FF5C2FE2C7B3DCDE5F3B185BB565DB5E105889F6"
+        },
+        {
+          "Name": "missing-native-final",
+          "Counts": {
+            "ChargedBytes": 3988231,
+            "MatchedCases": 30,
+            "NativeCompared": 30,
+            "NativePending": 0,
+            "PreparedCases": 38,
+            "PythonMatched": 31,
+            "PythonReturned": 31,
+            "PythonStarted": 31
+          },
+          "Bytes": 20884994,
+          "Sha256": "C762203B6693E27D4682C03AC8894C21E112C136EEB403349B709A71C2B9849E"
+        }
+      ]
+    },
+    {
+      "File": "docs/research/hidden-switch-compiled-validation/2026-09-07/native-replay-repair/manifest.json",
+      "Bytes": 36303,
+      "Sha256": "E1208AA382BA11BA35AD9D2232C90A5D6D40C893FB124FC386EC32EFBA5FA4F5",
+      "Records": 106,
+      "OriginalBytes": 113048682,
+      "StoredBytes": 5338702,
+      "SourceCommit": "e4946ec091981ccbd3057eb568d56069e79df4f2",
+      "SourceFiles": 15,
+      "NativeSourceSnapshots": 3,
+      "ObservedLoadedSources": 14,
+      "PublicResultReferences": 81,
+      "ProducerReturned": 43,
+      "ProducerPending": 31,
+      "Runs": [
+        {
+          "Name": "complete",
+          "Counts": {
+            "ChargedBytes": 5107609,
+            "MatchedCases": 38,
+            "NativeCompared": 31,
+            "NativePending": 0,
+            "PreparedCases": 38,
+            "PythonMatched": 43,
+            "PythonReturned": 43,
+            "PythonStarted": 43
+          },
+          "Bytes": 20957328,
+          "Sha256": "ACCD71A24D3987CB516AB0553456DF24F40171C240DB4F224B19F39CB5403C19"
+        },
+        {
+          "Name": "pending",
+          "Counts": {
+            "ChargedBytes": 5037270,
+            "MatchedCases": 7,
+            "NativeCompared": 0,
+            "NativePending": 31,
+            "PreparedCases": 38,
+            "PythonMatched": 43,
+            "PythonReturned": 43,
+            "PythonStarted": 43
+          },
+          "Bytes": 20619163,
+          "Sha256": "FD91D4B4C3AD241A5C9D9633FF5C2FE2C7B3DCDE5F3B185BB565DB5E105889F6"
+        },
+        {
+          "Name": "missing-native-final",
+          "Counts": {
+            "ChargedBytes": 3988231,
+            "MatchedCases": 30,
+            "NativeCompared": 30,
+            "NativePending": 0,
+            "PreparedCases": 38,
+            "PythonMatched": 31,
+            "PythonReturned": 31,
+            "PythonStarted": 31
+          },
+          "Bytes": 20884994,
+          "Sha256": "C762203B6693E27D4682C03AC8894C21E112C136EEB403349B709A71C2B9849E"
+        },
+        {
+          "Name": "normal-dispatch-refusal",
+          "Counts": {
+            "ChargedBytes": 2198642,
+            "MatchedCases": 0,
+            "NativeCompared": 0,
+            "NativePending": 0,
+            "PreparedCases": 38,
+            "PythonMatched": 0,
+            "PythonReturned": 1,
+            "PythonStarted": 1
+          },
+          "Bytes": 20486312,
+          "Sha256": "0685C41017560FA0ADB13F0253EB7654E9C10387C355F764CA9EC24EDEB71BB1"
+        },
+        {
+          "Name": "malformed-nested-call",
+          "Counts": {
+            "ChargedBytes": 2198642,
+            "MatchedCases": 0,
+            "NativeCompared": 0,
+            "NativePending": 0,
+            "PreparedCases": 38,
+            "PythonMatched": 0,
+            "PythonReturned": 1,
+            "PythonStarted": 1
+          },
+          "Bytes": 20486286,
+          "Sha256": "C6B97E75DE896FECC9D8FAA882BF511FD019D19A7D04C76663F9B4B04986516F"
+        }
+      ]
+    }
+  ],
+  "OriginalNativeInputs": {
+    "File": "docs/research/hidden-switch-compiled-validation/2026-09-07/native-replay-inputs/manifest.json",
+    "Bytes": 15219,
+    "Sha256": "C4505D6FEE13A1CFCCB20012A832298A61F15BFB414103225E4F782BD3B7FC3D",
+    "Records": 32,
+    "OriginalBytes": 44465,
+    "StoredBytes": 21693
+  },
+  "NormalRunBytesIdenticalAcrossRepair": true,
+  "PublicResultReferences": 160,
+  "Passed": true
+}

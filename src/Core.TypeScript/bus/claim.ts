@@ -65,6 +65,18 @@ function withAcquireLock<T>(itemId: string, fn: () => T): T {
         // NEW mtime — or the reverse — and can reclaim a lock that is very much alive. That is a
         // correctness bug in lock recovery, not only a scanner finding (CodeQL
         // `js/file-system-race`). One `open`, one inode, both answers.
+        //
+        // CodeQL still reports THIS line (alert #811), and the report is about
+        // a different pair: the `openSync(lp, "wx")` above that raised EEXIST,
+        // read as a "check" preceding this "use". That pairing has no fix. The
+        // EEXIST *is* the discovery that a lock file exists, and the only way to
+        // learn who holds it is to open the file it named. There is no syscall
+        // that both fails on collision and hands back the colliding object, so
+        // any correct lock-recovery path opens twice. What the fix above did
+        // remove is the race that mattered: the PID and the mtime now come from
+        // ONE descriptor, so recovery can no longer mix an old holder with a new
+        // clock. A lock that is replaced between the two opens is handled by the
+        // retry loop, which is what the loop is for.
         const rfd = openSync(lp, "r");
         let content: string;
         let st: ReturnType<typeof fstatSync>;

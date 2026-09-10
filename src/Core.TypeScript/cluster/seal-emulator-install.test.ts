@@ -16,6 +16,7 @@ import {
   REAL_FS,
   aptPackagesForCell,
   detectEmulators,
+  expectedLadderForCell,
   expectedPathForCell,
   inferSwtpmFromKernelTpm,
   parseWantFlag,
@@ -147,6 +148,14 @@ describe("aptPackagesForCell — the job installs what the cell wants", () => {
     expect(expectedPathForCell(true, true, true)).toBe("ci-softhsm");
   });
 
+  test("expectedLadderForCell names the three USB rungs independently", () => {
+    expect(expectedLadderForCell(false, false, true)).toBe("sidecar");
+    expect(expectedLadderForCell(true, false, true)).toBe("hsm");
+    expect(expectedLadderForCell(false, true, true)).toBe("tpm");
+    expect(expectedLadderForCell(true, true, true)).toBe("hsm");
+    expect(expectedLadderForCell(false, false, false)).toBeUndefined();
+  });
+
   test("parseWantFlag accepts 1/true/yes only", () => {
     expect(parseWantFlag("1")).toBe(true);
     expect(parseWantFlag("true")).toBe(true);
@@ -184,6 +193,39 @@ describe("main — CLI the job actually runs", () => {
       main(["--want-softhsm=0", "--want-swtpm=1", "--kind-unsealer=1", "--expect-path=ci-swtpm"], fs([], ["swtpm"])),
     ).toBe(0);
   });
+
+  test("expect-ladder accepts the three independent rungs", () => {
+    expect(
+      main(
+        ["--want-softhsm=1", "--want-swtpm=0", "--kind-unsealer=1", "--expect-path=ci-softhsm", "--expect-ladder=hsm"],
+        fs(["/usr/lib/softhsm/libsofthsm2.so"], []),
+      ),
+    ).toBe(0);
+    expect(
+      main(
+        ["--want-softhsm=0", "--want-swtpm=1", "--kind-unsealer=1", "--expect-path=ci-swtpm", "--expect-ladder=tpm"],
+        fs([], ["swtpm"]),
+      ),
+    ).toBe(0);
+    expect(
+      main(
+        ["--want-softhsm=0", "--want-swtpm=0", "--kind-unsealer=1", "--expect-path=kind-shamir", "--expect-ladder=sidecar"],
+        fs([], []),
+      ),
+    ).toBe(0);
+  });
+
+  test("expect-ladder refuses a leftover emulator wearing the wrong rung", () => {
+    expect(
+      main(
+        ["--want-softhsm=0", "--want-swtpm=1", "--kind-unsealer=1", "--expect-ladder=tpm"],
+        fs(["/usr/lib/x86_64-linux-gnu/softhsm/libsofthsm2.so"], ["swtpm"]),
+      ),
+    ).toBe(1);
+    expect(
+      main(["--want-softhsm=0", "--want-swtpm=0", "--kind-unsealer=1", "--expect-ladder=hsm"], fs([], [])),
+    ).toBe(1);
+  });
 });
 
 describe("workflow — installs, never skip-pass, never continue-on-error", () => {
@@ -196,15 +238,22 @@ describe("workflow — installs, never skip-pass, never continue-on-error", () =
     })
     .join("\n");
 
-  test("four named 2×2 cells are declared", () => {
-    expect(yml).toContain("neither-kind-shamir");
-    expect(yml).toContain("softhsm-only");
-    expect(yml).toContain("swtpm-only");
+  test("four named cells: hsm simulator, tpm simulator, sidecar, and HSM-wins", () => {
+    expect(yml).toContain("sidecar");
+    expect(yml).toContain("hsm-simulator");
+    expect(yml).toContain("tpm-simulator");
     expect(yml).toContain("both-softhsm-wins");
+    expect(yml).not.toContain("neither-kind-shamir");
+    expect(yml).not.toContain("softhsm-only");
+    expect(yml).not.toContain("swtpm-only");
     expect(yml).toContain("expect: kind-shamir");
     expect(yml).toContain("expect: ci-softhsm");
     expect(yml).toContain("expect: ci-swtpm");
+    expect(yml).toContain("expect_ladder: sidecar");
+    expect(yml).toContain("expect_ladder: hsm");
+    expect(yml).toContain("expect_ladder: tpm");
     expect(yml).toContain("--expect-path=");
+    expect(yml).toContain("--expect-ladder=");
   });
 
   test("apt installs softhsm2 and swtpm when the cell asks", () => {

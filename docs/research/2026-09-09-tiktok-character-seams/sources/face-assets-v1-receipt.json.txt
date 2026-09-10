@@ -1,0 +1,16 @@
+[
+  {
+    "character": "AceHack",
+    "glb_bytes": 646720,
+    "morph_channels": 11,
+    "origin": "eye line minus 25mm, y=-0.10m in previous body frame",
+    "scope": "face morph prototype; not a captured facial rig"
+  },
+  {
+    "character": "Xenaa",
+    "glb_bytes": 903420,
+    "morph_channels": 11,
+    "origin": "eye line minus 25mm, y=-0.10m in previous body frame",
+    "scope": "face morph prototype; not a captured facial rig"
+  }
+]

@@ -1,0 +1,14 @@
+{
+  "id": "080d03cd608be810a013000835e26d8b",
+  "at": "2026-09-07T02:21:54.941Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1WTR4BW087G0R0001NVXWQ",
+    "type": "task",
+    "title": "Overlay env join takes frost result; tpmrm0 is not present",
+    "slug": "overlay-env-join-takes-frost-result-tpmrm0-is-not-present",
+    "priority": "P2",
+    "filename": "081M1WTR4BW087G0R0001NVXWQ-overlay-env-join-takes-frost-result-tpmrm0-is-not-present.md"
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 16885,
+  "archive_path": "docs/history/pr-reviews/PR-16885-feat-081m1wfc7qn087g0r0029eqnt0-persist-tagbindings-on-freeze-volumes.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-06T23:46:17.849Z",
+  "schema_version": "v1",
+  "commit_sha": "fe2e7a9475a6e7a0e67edeebb35bf09555ccf2a4",
+  "title": "feat(081M1WFC7QN087G0R0029EQNT0): persist TagBindings on freeze volumes",
+  "state": "MERGED",
+  "merged_at": "2026-09-06T23:45:37Z",
+  "head_ref": "feat/zetafs-persist-tagbinding"
+}

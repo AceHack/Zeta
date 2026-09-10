@@ -1,0 +1,29 @@
+  Zeta.Core.Abstractions -> /Users/acehack/.zeta/agents/codex/Zeta-rendered-catch-reference-20260906/src/Core.Abstractions/bin/Release/net10.0/Zeta.Core.Abstractions.dll
+  Zeta.Core.FSharp.ZetaId -> /Users/acehack/.zeta/agents/codex/Zeta-rendered-catch-reference-20260906/src/Core.FSharp.ZetaId/bin/Release/net10.0/Zeta.Core.FSharp.ZetaId.dll
+  Zeta.Core.FSharp.Yaml -> /Users/acehack/.zeta/agents/codex/Zeta-rendered-catch-reference-20260906/src/Core.FSharp.Yaml/bin/Release/net10.0/Zeta.Core.FSharp.Yaml.dll
+  Core -> /Users/acehack/.zeta/agents/codex/Zeta-rendered-catch-reference-20260906/src/Core/bin/Release/net10.0/Zeta.Core.dll
+  Zeta.Core.Telemetry -> /Users/acehack/.zeta/agents/codex/Zeta-rendered-catch-reference-20260906/src/Core.Telemetry/bin/Release/net10.0/Zeta.Core.Telemetry.dll
+  Zeta.Core.FSharp.Git -> /Users/acehack/.zeta/agents/codex/Zeta-rendered-catch-reference-20260906/src/Core.FSharp.Git/bin/Release/net10.0/Zeta.Core.FSharp.Git.dll
+  Zeta.Core.FSharp.Blake3 -> /Users/acehack/.zeta/agents/codex/Zeta-rendered-catch-reference-20260906/src/Core.FSharp.Blake3/bin/Release/net10.0/Zeta.Core.FSharp.Blake3.dll
+  Zeta.Cli -> /Users/acehack/.zeta/agents/codex/Zeta-rendered-catch-reference-20260906/src/Core.FSharp.Cli/bin/Release/net10.0/zeta.dll
+  Bayesian -> /Users/acehack/.zeta/agents/codex/Zeta-rendered-catch-reference-20260906/src/Bayesian/bin/Release/net10.0/Zeta.Bayesian.dll
+  Zeta.Core.CSharp.Yaml -> /Users/acehack/.zeta/agents/codex/Zeta-rendered-catch-reference-20260906/src/Core.CSharp.Yaml/bin/Release/net10.0/Zeta.Core.CSharp.Yaml.dll
+  Zeta.Core.CSharp.DynamicValue -> /Users/acehack/.zeta/agents/codex/Zeta-rendered-catch-reference-20260906/src/Core.CSharp.DynamicValue/bin/Release/net10.0/Zeta.Core.CSharp.DynamicValue.dll
+  Core.CSharp -> /Users/acehack/.zeta/agents/codex/Zeta-rendered-catch-reference-20260906/src/Core.CSharp/bin/Release/net10.0/Zeta.Core.CSharp.dll
+  Zeta.Core.CSharp.Merkle -> /Users/acehack/.zeta/agents/codex/Zeta-rendered-catch-reference-20260906/src/Core.CSharp.Merkle/bin/Release/net10.0/Zeta.Core.CSharp.Merkle.dll
+  Zeta.Core.CSharp.Metric -> /Users/acehack/.zeta/agents/codex/Zeta-rendered-catch-reference-20260906/src/Core.CSharp.Metric/bin/Release/net10.0/Zeta.Core.CSharp.Metric.dll
+  Zeta.Core.FSharp.TriBoolean -> /Users/acehack/.zeta/agents/codex/Zeta-rendered-catch-reference-20260906/src/Core.FSharp.TriBoolean/bin/Release/net10.0/Zeta.Core.FSharp.TriBoolean.dll
+  Zeta.Core.FSharp.Observe -> /Users/acehack/.zeta/agents/codex/Zeta-rendered-catch-reference-20260906/src/Core.FSharp.Observe/bin/Release/net10.0/Zeta.Core.FSharp.Observe.dll
+  Zeta.Core.FSharp.ObserveBridge -> /Users/acehack/.zeta/agents/codex/Zeta-rendered-catch-reference-20260906/src/Core.FSharp.ObserveBridge/bin/Release/net10.0/Zeta.Core.FSharp.ObserveBridge.dll
+  Zeta.Core.FSharp.Sha256 -> /Users/acehack/.zeta/agents/codex/Zeta-rendered-catch-reference-20260906/src/Core.FSharp.Sha256/bin/Release/net10.0/Zeta.Core.FSharp.Sha256.dll
+  Zeta.Core.FSharp.AceCanonical -> /Users/acehack/.zeta/agents/codex/Zeta-rendered-catch-reference-20260906/src/Core.FSharp.AceCanonical/bin/Release/net10.0/Zeta.Core.FSharp.AceCanonical.dll
+  Zeta.Core.CSharp.Mediator -> /Users/acehack/.zeta/agents/codex/Zeta-rendered-catch-reference-20260906/src/Core.CSharp.Mediator/bin/Release/net10.0/Zeta.Core.CSharp.Mediator.dll
+  Zeta.Core.FSharp.Mediator -> /Users/acehack/.zeta/agents/codex/Zeta-rendered-catch-reference-20260906/src/Core.FSharp.Mediator/bin/Release/net10.0/Zeta.Core.FSharp.Mediator.dll
+  Zeta.Clis -> /Users/acehack/.zeta/agents/codex/Zeta-rendered-catch-reference-20260906/clis/bin/Release/net10.0/Zeta.Clis.dll
+  Tests.FSharp -> /Users/acehack/.zeta/agents/codex/Zeta-rendered-catch-reference-20260906/tests/Tests.FSharp/bin/Release/net10.0/Tests.FSharp.dll
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:53.17

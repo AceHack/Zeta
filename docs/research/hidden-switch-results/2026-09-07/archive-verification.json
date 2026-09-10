@@ -1,0 +1,32 @@
+{
+  "VerifiedAtUtc": "2026-09-07T12:15:01.621245+00:00",
+  "Records": [
+    {
+      "Tag": "archive/experiments/081M1XK02XM087G0R00043EW05-registration",
+      "TagObject": "2474dc79558390b57362d131f6d1c849280331c2",
+      "Commit": "6a3150037a1e6be6ae89996dc8562f2061f7c75d",
+      "Type": "annotated"
+    },
+    {
+      "Tag": "archive/experiments/081M1XK02XM087G0R00043EW05-implementation",
+      "TagObject": "bb746ecdf7e25fa5b5d26c7b89d948d929c097a4",
+      "Commit": "4fc82b611012bd2620a26e02afe6baba491fe553",
+      "Type": "annotated"
+    },
+    {
+      "Tag": "archive/experiments/081M1XK02XM087G0R00043EW05-independent-reference",
+      "TagObject": "0ab0afe5c7a76133efafc6d5583bad8b19387252",
+      "Commit": "b8e93e65d771e057bcb287f1231e8580dee1d5a6",
+      "Type": "annotated"
+    },
+    {
+      "Tag": "archive/experiments/081M1XK02XM087G0R00043EW05-native-source",
+      "TagObject": "71d107a57000d1df81cf3e267ae64c243dfea877",
+      "Commit": "31ee67f9b4ed68ce6d0b52d1bdeb223c48d57dbb",
+      "Type": "annotated"
+    }
+  ],
+  "RegistrationAncestorOfImplementation": true,
+  "RegisteredSourcesGenerated": false,
+  "RemoteOutput": "bb746ecdf7e25fa5b5d26c7b89d948d929c097a4\trefs/tags/archive/experiments/081M1XK02XM087G0R00043EW05-implementation\n4fc82b611012bd2620a26e02afe6baba491fe553\trefs/tags/archive/experiments/081M1XK02XM087G0R00043EW05-implementation^{}\n0ab0afe5c7a76133efafc6d5583bad8b19387252\trefs/tags/archive/experiments/081M1XK02XM087G0R00043EW05-independent-reference\nb8e93e65d771e057bcb287f1231e8580dee1d5a6\trefs/tags/archive/experiments/081M1XK02XM087G0R00043EW05-independent-reference^{}\n71d107a57000d1df81cf3e267ae64c243dfea877\trefs/tags/archive/experiments/081M1XK02XM087G0R00043EW05-native-source\n31ee67f9b4ed68ce6d0b52d1bdeb223c48d57dbb\trefs/tags/archive/experiments/081M1XK02XM087G0R00043EW05-native-source^{}\n2474dc79558390b57362d131f6d1c849280331c2\trefs/tags/archive/experiments/081M1XK02XM087G0R00043EW05-registration\n6a3150037a1e6be6ae89996dc8562f2061f7c75d\trefs/tags/archive/experiments/081M1XK02XM087G0R00043EW05-registration^{}\n"
+}

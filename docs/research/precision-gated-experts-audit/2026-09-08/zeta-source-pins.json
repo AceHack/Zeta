@@ -1,0 +1,37 @@
+{
+  "Writer": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-catch-reference-20260906",
+  "Records": [
+    {
+      "Path": "src/Bayesian/Message.fs",
+      "SourceCommit": "5a5b909e04a4d543bc93e7f8f7213ae1b67fb294",
+      "Bytes": 15816,
+      "Sha256": "983256b985671acfb2c136b6a82a614e53ebb87b7c9cda04fa4540e3c7c2eee7",
+      "GitBlob": "6a817690a9fa5adc367a4d8890b3a26fab4a762d",
+      "CurrentWorkingFileMatches": true
+    },
+    {
+      "Path": "src/Bayesian/FactorGraph.fs",
+      "SourceCommit": "5a5b909e04a4d543bc93e7f8f7213ae1b67fb294",
+      "Bytes": 11171,
+      "Sha256": "86ebef6ba9abd29499d40a15ac0727ff15cdb4dc72fe247a9c744ca6123df6f7",
+      "GitBlob": "61b8efa91b9d3d40bbbcbed5696d73f806caace4",
+      "CurrentWorkingFileMatches": true
+    },
+    {
+      "Path": "src/Bayesian/MultilayerBnn.fs",
+      "SourceCommit": "5a5b909e04a4d543bc93e7f8f7213ae1b67fb294",
+      "Bytes": 68551,
+      "Sha256": "4993ccf745fa348651da0b88eb50049f99bfc382fd5439aff2d4a49d9f0809e5",
+      "GitBlob": "8c70971d9e0c454b4a05bde10e0d7c1d9c9a6b67",
+      "CurrentWorkingFileMatches": true
+    },
+    {
+      "Path": "docs/research/2026-09-03-bayesian-circuit-and-edge-module-contract.md",
+      "SourceCommit": "5a5b909e04a4d543bc93e7f8f7213ae1b67fb294",
+      "Bytes": 4028,
+      "Sha256": "d6bb4e2a13ed15af54a8078870cfdd67399d50a82b28bddc572e55397fc26f00",
+      "GitBlob": "2d4e35ecf529735772bd3b531259a9a3d81f683d",
+      "CurrentWorkingFileMatches": true
+    }
+  ]
+}

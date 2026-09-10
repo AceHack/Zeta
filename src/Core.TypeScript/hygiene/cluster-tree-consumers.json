@@ -66,21 +66,15 @@
     },
     {
       "path": ".github/workflows/gate.yml",
-      "disposition": "blocking",
-      "note": "The `lint (yaml/k8s)` job runs `yamllint -d relaxed full-ai-cluster/k8s/ infra/k8s/ ...` and a `find full-ai-cluster/k8s infra/k8s ... | xargs kubeconform`. Both name infra/k8s as a literal path argument; `find` errors on a missing directory.",
-      "migrateTo": "drop infra/k8s from both argument lists in the deletion commit."
+      "disposition": "prose",
+      "note": "The `lint (yaml/k8s)` job now DERIVES its manifest roots from this roster (a `Declared cluster manifest roots` step emits the declared k8s roots that exist on disk, and yamllint + the kubeconform `find` consume them via env). No literal stale path remains in any argument list; what is left are comments describing history.",
+      "migrateTo": "drop the historical comments when the stale tree is gone; the derivation needs no change."
     },
     {
       "path": ".github/workflows/helm-validate.yml",
-      "disposition": "blocking",
-      "note": "The whole workflow is keyed on infra/k8s: PR + push path filters, and four invocations of `bun infra/k8s/tests/validate-applications.ts`, a script that lives INSIDE the stale tree. Deleting the tree deletes the validator.",
-      "migrateTo": "full-ai-cluster/k8s/applications via the validator's existing --apps-dir flag, AND move the validator out of infra/k8s/tests/. MEASURED 2026-08-17: pointed at the live tree it reports 224 passed, 14 failed — so this is not a one-line repoint. See the work item."
-    },
-    {
-      "path": ".github/workflows/root-flake-check.yml",
-      "disposition": "blocking",
-      "note": "The lane that evaluates the ROOT flake, so it is keyed on the same tree flake.nix imports: infra/nixos/** appears in both the pull_request and the push path filter. Those filters are not decoration — nixosConfigurations.{control-plane,worker-gpu-01,worker-gpu-02} ARE ./infra/nixos/hosts/*/configuration.nix (see the flake.nix entry below), so a change under that tree changes what this lane evaluates and must retrigger it. Deleting infra/nixos leaves a path filter naming a directory that does not exist: it matches nothing and the lane silently stops triggering — a check that never runs looking like one that passed.",
-      "migrateTo": "Bound to the flake.nix entry below, which is UNDECIDED (maintainer decision). Wherever the root flake's nixosConfigurations repoint, these two path filters follow in the same commit."
+      "disposition": "derived",
+      "note": "MEASURED 2026-09-06 and the previous note was STALE on both halves. (1) It recorded '224 passed, 14 failed' against the live tree from 2026-08-17; today it is 285 passed, 0 failed. (2) It said to repoint via --apps-dir, but the validator's DEFAULT already moved to full-ai-cluster/k8s/applications and this workflow invokes it with no --apps-dir, so it was already validating the live tree. The only real remainder was that the validators LIVED in the stale tree; they now live in full-ai-cluster/k8s/tests/. What is left here is path filters naming infra/k8s/**, and a filter naming a deleted directory simply never matches.",
+      "migrateTo": "drop the infra/k8s path-filter entries in the deletion commit; nothing breaks if it lags."
     },
     {
       "path": ".gitignore",
@@ -107,12 +101,6 @@
       "migrateTo": "NONE — do not repoint. The mutation genuinely ran against that file at that path, and rewriting the log to name full-ai-cluster would falsify what was measured. Drop the row with the tree; the log is append-only and its records are content-addressed."
     },
     {
-      "path": "db/search-index/inverted/files.txt",
-      "disposition": "derived",
-      "note": "The git-native inverted index's document list (081M0QTXTR3087G0R002R439FH). It names infra/k8s and infra/nixos because it names EVERY indexed path in the repo — an index of the tree mentions the whole tree by construction, so any surviving file under those directories puts them here. Machine-written, rebuilt from an explicit git rev every ~6h by search-index-cadence.yml; nothing reads these paths as a target.",
-      "migrateTo": "nothing to do — the next scheduled rebuild after the deletion drops the lines, and this roster entry then goes stale and fails, which is the roster shrinking as designed."
-    },
-    {
       "path": "db/uncertainty/081M0BH05N7087G0R0037KFCJD-k8s-bootstrap-never-deployed-argocd-install-was-a-kustomize.md",
       "disposition": "prose",
       "note": "A ΔU ledger entry recording that the infra/k8s bootstrap never deployed (argocd-install.yaml was a kustomize Kustomization, a build-time input, not an API object). It names infra/k8s because it DOCUMENTS AN EVENT IN THAT TREE — it is a historical record, not a live consumer, and nothing imports or resolves against the path.",
@@ -126,9 +114,9 @@
     },
     {
       "path": "flake.nix",
-      "disposition": "blocking",
-      "note": "nixosConfigurations.{control-plane,worker-gpu-01,worker-gpu-02} import ./infra/nixos/hosts/*/configuration.nix and nixosModules.{common,k3s-server,k3s-agent,gpu} ARE ./infra/nixos/modules/*.nix. VERIFIED 2026-08-17: `nix flake check --no-build` at the repo root evaluates all three hosts today, so deleting infra/nixos/ breaks it. NOT verified by CI — the only `nix flake check` in .github/workflows/build-ai-cluster-iso.yml runs with working-directory: full-ai-cluster. A root flake.lock landed 2026-08-26 (was absent until then); `nix flake check --no-build` still evaluates all three hosts against it. The lock pins nixos-hardware@master, which was the one genuinely floating input.",
-      "migrateTo": "UNDECIDED — full-ai-cluster/flake.nix already declares control-plane and worker-gpu, on nixpkgs 25.11 against the root flake's 24.11. Repointing crosses a nixpkgs major; dropping the outputs breaks any off-repo machine tracking .#control-plane. Maintainer decision."
+      "disposition": "prose",
+      "note": "Comment only. The root flake's nixosConfigurations and nixosModules — which imported infra/nixos/hosts and infra/nixos/modules — were REMOVED 2026-09-07; machines are declared in full-ai-cluster/flake.nix. What remains is the paragraph recording what was removed and why, including that the blocking unknown (whether any off-repo machine tracked .#control-plane) was resolved by asking Aaron rather than by inference.",
+      "migrateTo": "drop the removal note when the stale tree is gone."
     },
     {
       "path": "full-ai-cluster/k8s/applications/gitlab/Application.yaml",
@@ -143,10 +131,46 @@
       "migrateTo": "empty the array — the collision is gone once one tree is."
     },
     {
+      "path": "full-ai-cluster/k8s/tests/ratchet-app-failures.ts",
+      "disposition": "prose",
+      "note": "Comment only — the file header's historical note; it measures whichever tree the validator defaults to, which is the live one.",
+      "migrateTo": "drop the historical note when the stale tree is gone."
+    },
+    {
+      "path": "full-ai-cluster/k8s/tests/validate-applications.test.ts",
+      "disposition": "prose",
+      "note": "Comment only — narrative about the two-tree history the validator no longer depends on.",
+      "migrateTo": "drop the historical paragraph when the stale tree is gone."
+    },
+    {
+      "path": "full-ai-cluster/k8s/tests/validate-applications.ts",
+      "disposition": "prose",
+      "note": "Comment only: the paragraph recording that seven Applications used to live under the stale tree and why they were removed (one root, one directory). The validator's default apps-dir is the live tree.",
+      "migrateTo": "drop the historical paragraph when the stale tree is gone."
+    },
+    {
+      "path": "full-ai-cluster/k8s/tests/validate-bootstrap.test.ts",
+      "disposition": "prose",
+      "note": "Comment only — narrative about the two-tree history.",
+      "migrateTo": "drop the historical paragraph when the stale tree is gone."
+    },
+    {
+      "path": "full-ai-cluster/k8s/tests/validate-bootstrap.ts",
+      "disposition": "prose",
+      "note": "Comment only. Its Test 2 header used to hardcode the stale path; it now prints the tree actually being validated, derived from --infra-dir.",
+      "migrateTo": "drop the historical paragraph when the stale tree is gone."
+    },
+    {
+      "path": "full-ai-cluster/nixos/modules/common.nix",
+      "disposition": "prose",
+      "note": "Comment only. The byte-lock toolchain block was CARRIED HERE from infra/nixos/modules/common.nix (Aaron 2026-09-07: the whole toolchain should run on the real hardware and cluster). The mention is the paragraph recording where it came from and why the alternative — recording that cluster hosts do not need it — was rejected.",
+      "migrateTo": "drop the provenance paragraph when the stale tree is gone; the packages stay."
+    },
+    {
       "path": "src/Core.TypeScript/ace/deps.ts",
-      "disposition": "blocking",
-      "note": "generateArgoCD() emits Applications whose spec.source.path is `infra/k8s/applications/${chart}` — a path in the tree ArgoCD will prune. It ships in the ace CLI. deps.test.ts does not assert the path, so after the deletion this fails SILENTLY, in generated output, at deploy time.",
-      "migrateTo": "full-ai-cluster/k8s/applications/${chart}, plus an assertion in deps.test.ts so the path can go red."
+      "disposition": "prose",
+      "note": "`generateArgoCD` now emits `full-ai-cluster/k8s/applications/${chart}`; the only remaining mention is the comment recording what the path used to be and why it was wrong (the stale tree prunes, and it holds no per-chart directories, so the old path resolved to nothing). `deps.test.ts` asserts the emitted path and refuses any path under a roster-declared stale tree.",
+      "migrateTo": "drop the historical note when the stale tree is gone."
     },
     {
       "path": "src/Core.TypeScript/ci/cross-verify-roster.ts",
@@ -174,27 +198,21 @@
     },
     {
       "path": "src/Core.TypeScript/cluster/rendered-resource-requests.test.ts",
-      "disposition": "derived",
-      "note": "Pins `appTreeOf` against the cross-tree collision the checker had in draft: `full-ai-cluster` and `infra` each hold an Application called `gitlab` and one called `cockroachdb`, and splitting an appId on the first slash attributed one tree's render to the other tree's catalogue row.",
-      "migrateTo": "the collision case needs TWO trees to exist; when there is one, replace the fixture with a synthetic second tree rather than deleting the test -- the function is still wrong without it."
+      "disposition": "prose",
+      "note": "Comment only — the two-tree behaviour it describes is now derived, not listed.",
+      "migrateTo": "drop the two-tree paragraph when there is one tree."
     },
     {
       "path": "src/Core.TypeScript/cluster/rendered-resource-requests.ts",
-      "disposition": "derived",
-      "note": "Renders every discovered Application at both resource rungs. It does not TARGET infra/k8s -- it inherits the tree list from `discoverApplications`, which walks both roots -- and it names the path only in the finding text that says the CPU/memory ladder cannot cover a second tree. Nothing here breaks when infra/k8s goes; the finding simply stops being produced.",
-      "migrateTo": "drop the `(it is in the \"<tree>\" tree; ...)` clause from `uncovered-application` when full-ai-cluster is the only tree, or leave it -- it is derived from `appTreeOf`, not from a literal."
+      "disposition": "prose",
+      "note": "Its application roots now come from `discoverApplications`, which reads the derived tree list; the only remaining mention is the paragraph explaining that it walks BOTH trees.",
+      "migrateTo": "drop the two-tree paragraph when there is one tree."
     },
     {
       "path": "src/Core.TypeScript/cluster/rendered-storage-claims.test.ts",
       "disposition": "prose",
       "note": "One comment (line ~356) records WHY the storage-claim set shrank: infra/k8s/applications held seven Applications that duplicated full-ai-cluster ones, and they left by deletion rather than by discovery getting worse. The mention is the explanation of a removal, not a dependency on the tree.",
       "migrateTo": "drop the sentence when infra/k8s is deleted and the comparison it draws stops being legible."
-    },
-    {
-      "path": "src/Core.TypeScript/cluster/rendered-storage-claims.ts",
-      "disposition": "derived",
-      "note": "APPLICATION_ROOTS lists `infra/k8s/applications` beside `full-ai-cluster/k8s/applications` so the render check covers BOTH declarations of the cluster. It has to: infra/cockroachdb carries a catalogue row (`infra/cockroachdb/data`, 8Gi x3), and infra/gitlab renders four PVCs totalling 76 GiB that no row declares. Nothing BREAKS when the tree is deleted -- `readdirIfPresent` returns an empty list for a missing directory rather than throwing -- but the checked-in render snapshot would keep naming apps that no longer exist and `--check-snapshot` would report them as GONE, which is drift, not a crash.",
-      "migrateTo": "drop `infra/k8s/applications` from APPLICATION_ROOTS in the deletion commit and re-run `--write-snapshot`; the infra entries leave the snapshot in the same pass. The `infra/cockroachdb/data` row in storage-profiles.json goes with them (it is already noted there as living in the other app-of-apps tree)."
     },
     {
       "path": "src/Core.TypeScript/cluster/single-node-readiness.test.ts",
@@ -204,9 +222,9 @@
     },
     {
       "path": "src/Core.TypeScript/cluster/single-node-readiness.ts",
-      "disposition": "derived",
-      "note": "MANIFEST_ROOTS lists infra/k8s/applications and infra/k8s/bootstrap so the auditor can see the collision at all.",
-      "migrateTo": "remove both roots when the tree goes."
+      "disposition": "prose",
+      "note": "`DEFAULT_ROOTS` is now derived from the roster via `clusterDirs`; the only remaining mention is the paragraph explaining why the duplicate-detection keys are tree-qualified.",
+      "migrateTo": "drop the two-tree paragraph when there is one tree."
     },
     {
       "path": "src/Core.TypeScript/hygiene/audit-argocd-pin-parity.ts",
@@ -242,22 +260,22 @@
       "note": "This roster."
     },
     {
-      "path": "src/Core.TypeScript/hygiene/lint-kubernetes-version-agrees.ts",
-      "disposition": "derived",
-      "note": "SCAN_GLOBS includes infra/k8s/tests because a Kubernetes-version literal there is exactly what this linter exists to catch -- the legacy validator carried 1.33.0 while the observability audit carried 1.31.0 and the cluster ran 1.35.6. Scanning only the surviving tree would leave the drift it was written for unwatched.",
-      "migrateTo": "drop the infra/k8s/tests entry from SCAN_GLOBS when that tree is deleted; the remaining globs need no change."
-    },
-    {
       "path": "src/Core.TypeScript/hygiene/mise-pin-parity.test.ts",
       "disposition": "derived",
       "note": "Synthetic flake body in a fixture string mentions ./infra/nixos/hosts/control-plane/configuration.nix. Test data only; nothing reads the real path.",
       "migrateTo": "update the fixture string."
     },
     {
-      "path": "src/wasm-dla/README.md",
-      "disposition": "blocking",
-      "note": "States the byte-lock toolchain (wabt, binaryen, emscripten, nodejs) is declared in infra/nixos/modules/common.nix. TRUE TODAY and it is the ONLY NixOS module that declares it — VERIFIED 2026-08-17: full-ai-cluster/nixos/modules/common.nix contains none of wabt/binaryen/emscripten/zig/rustup. This is content unique to the stale tree, not a stale citation.",
-      "migrateTo": "carry the byte-lock toolchain block into full-ai-cluster/nixos/modules/common.nix (or decide on the record that cluster nodes do not need it and the root devShell is the only home), THEN re-point this line."
+      "path": "src/Core.TypeScript/society/effective-agent-count.test.ts",
+      "disposition": "derived",
+      "note": "Exercises `FRAME_RENAMES` with the same historical paths. Same class as the entry above.",
+      "migrateTo": "NO EDIT REQUIRED at deletion — the key is a historical path that is not meant to resolve. Drop the row only when the ledger records citing it are themselves retired."
+    },
+    {
+      "path": "src/Core.TypeScript/society/effective-agent-count.ts",
+      "disposition": "derived",
+      "note": "`FRAME_RENAMES` maps the pre-move path of two validators to their current path, so a draw recorded in the APPEND-ONLY mutation-findings ledger still lands in the frame. Same class as the `db/mutation-findings/*.jsonl` rows above and rostered on the same reasoning: the old path is the SUBJECT of a past record, not a path anything resolves. `applyFrameRename` is frame-aware, so the row is inert at any frame that does not hold the target.",
+      "migrateTo": "NO EDIT REQUIRED at deletion — the key is a historical path that is not meant to resolve. Drop the row only when the ledger records citing it are themselves retired."
     }
   ]
 }

@@ -1,0 +1,12 @@
+{
+  "pr_number": 17159,
+  "archive_path": "docs/history/pr-reviews/PR-17159-feat-e8-render-f-oracle-byte-locks-to-the-typescript-rungs-plus-a-simd-cpu-ray-t.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-09T18:36:37.546Z",
+  "schema_version": "v1",
+  "commit_sha": "0a5a9d05553aa7cb6fc11ecbb50bddc3fa0b2318",
+  "title": "feat(e8-render): F# oracle byte-locks to the TypeScript rungs, plus a SIMD CPU ray tracer",
+  "state": "MERGED",
+  "merged_at": "2026-09-09T18:35:53Z",
+  "head_ref": "e8-dotnet-simd-raytracer"
+}

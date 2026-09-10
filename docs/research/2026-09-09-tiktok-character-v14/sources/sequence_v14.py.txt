@@ -1,0 +1,56 @@
+"""Marked Blender review: arms, legs, face channels and individual fingers."""
+import bpy,math,json
+from pathlib import Path
+from mathutils import Vector,Matrix
+R=Path(__file__).resolve().parent;O=R/'blender-v14';F=O/'motion-frames';F.mkdir(exist_ok=True)
+bpy.ops.wm.open_mainfile(filepath=str(O/'Characters-v14.blend'));sc=bpy.context.scene;rigs=[bpy.data.objects[n+' | Motion rig'] for n in ['AceHack','Xenaa']]
+poses=[(1,'Neutral',[]),(17,'Left arm',[('LeftUpperArm','Y',-60)]),(33,'Neutral',[]),(49,'Right arm',[('RightUpperArm','Y',60)]),(65,'Neutral',[]),(81,'Left leg and knee',[('LeftThigh','X',-35),('LeftShin','X',65)]),(97,'Neutral',[]),(113,'Right leg and knee',[('RightThigh','X',-35),('RightShin','X',65)]),(129,'Neutral',[]),(145,'Head left',[('Head','Z',35)]),(161,'Head right',[('Head','Z',-35)]),(177,'Neutral',[]),(193,'Finger curl',[(side+'Hand'+finger+str(j),'X',-40) for side in ['Left','Right'] for finger in ['Index','Middle','Ring','Pinky','Thumb'] for j in range(1,4)])]
+poses += [(209,'AceHack face: neutral',[]),(221,'AceHack face: jaw open',[]),(233,'AceHack face: smile',[]),(245,'AceHack face: blink',[]),(257,'Xenaa face: neutral',[]),(269,'Xenaa face: jaw open',[]),(281,'Xenaa face: smile',[]),(293,'Xenaa face: blink',[]),(305,'Hand: neutral',[]),(321,'Hand: index only',[('LeftHandIndex1','X',-60),('LeftHandIndex2','X',-60),('LeftHandIndex3','X',-60)]),(337,'Hand: neutral',[]),(353,'Neutral',[])]
+for rig in rigs:
+ rig.animation_data_clear()
+ for b in rig.pose.bones:b.rotation_mode='QUATERNION'
+ for ob in rig.children:
+  if ob.type=='MESH' and ob.data.shape_keys:ob.data.shape_keys.animation_data_clear()
+cam=sc.camera;cam.animation_data_clear();cam.data.animation_data_clear()
+for marker in list(sc.timeline_markers):sc.timeline_markers.remove(marker)
+for frame,label,ops in poses:
+ sc.frame_set(frame);sc.timeline_markers.new(label,frame=frame)
+ for rig in rigs:
+  for b in rig.pose.bones:b.matrix_basis=Matrix.Identity(4)
+  bpy.context.view_layer.update()
+  for n,axis,angle in ops:
+   b=rig.pose.bones[n];m=b.matrix.copy();p=m.translation.copy();b.matrix=Matrix.Translation(p)@Matrix.Rotation(math.radians(angle),4,axis)@Matrix.Translation(-p)@m;bpy.context.view_layer.update()
+  for b in rig.pose.bones:
+   b.keyframe_insert(data_path='rotation_quaternion',frame=frame);b.keyframe_insert(data_path='location',frame=frame);b.keyframe_insert(data_path='scale',frame=frame)
+  head=next(o for o in rig.children if o.type=='MESH' and 'head generator' in o.name)
+  for k in head.data.shape_keys.key_blocks:
+   if k.name=='Basis':continue
+   value=0
+   if label.startswith(rig.name.split(' | ')[0]+' face:'):
+    if 'jaw open' in label and k.name=='jawOpen':value=.8
+    if 'smile' in label and k.name.startswith('mouthSmile'):value=.8
+    if 'blink' in label and k.name.startswith('eyeBlink'):value=1
+   k.value=value;k.keyframe_insert(data_path='value',frame=frame)
+ # Deliberate camera cuts isolate faces/hands for review.
+ if 209<=frame<=293:
+  name='AceHack' if frame<=245 else 'Xenaa';x=-.68 if name=='AceHack' else .68;z=1.74 if name=='AceHack' else 1.665;center=Vector((x,-.15,z));cam.location=center+Vector((0,-3,0));cam.data.ortho_scale=.50
+ elif 305<=frame<=337:
+  center=Vector((1.02,-.25,.945));cam.location=center+Vector((.18,-1,.10));cam.data.ortho_scale=.27
+ else:center=Vector((0,-.10,.98));cam.location=Vector((.1,-5,1.2));cam.data.ortho_scale=2.85
+ cam.rotation_euler=(center-cam.location).to_track_quat('-Z','Y').to_euler();cam.keyframe_insert(data_path='location',frame=frame);cam.keyframe_insert(data_path='rotation_euler',frame=frame);cam.data.keyframe_insert(data_path='ortho_scale',frame=frame)
+# Modern layered Actions expose channels through channelbags.
+for action in bpy.data.actions:
+ for layer in action.layers:
+  for strip in layer.strips:
+   for bag in strip.channelbags:
+    for curve in bag.fcurves:
+     for key in curve.keyframe_points:key.interpolation='CONSTANT' if action==cam.animation_data.action or action==cam.data.animation_data.action else 'LINEAR'
+sc.frame_start=1;sc.frame_end=353;sc.render.fps=24;sc.frame_set(1);sc.render.resolution_x=1440;sc.render.resolution_y=1080;sc.render.resolution_percentage=100
+sc.render.engine='BLENDER_EEVEE';sc.eevee.taa_render_samples=64;sc.eevee.use_shadows=True;sc.eevee.use_fast_gi=True;sc.eevee.fast_gi_quality=.75;sc.eevee.shadow_ray_count=4
+for screen in bpy.data.screens:
+ for area in screen.areas:
+  if area.type=='VIEW_3D':area.spaces.active.shading.type='MATERIAL';area.spaces.active.overlay.show_overlays=False;area.spaces.active.region_3d.view_perspective='CAMERA'
+bpy.ops.wm.save_as_mainfile(filepath=str(O/'Blender-Motion-Review-v14.blend'))
+(R/'sequence-v14.json').write_text(json.dumps({'scene_fps':24,'rendered_frames':list(range(1,354,2)),'video_fps':12,'engine':'Blender EEVEE','taa_render_samples':64,'resolution':[1440,1080],'markers':[(f,l) for f,l,_ in poses],'scope':'Synthetic controls in Blender; not camera-driven tracking'},indent=2))
+# The test frame is inspected before committing to the complete render.
+sc.render.filepath=str(O/'eevee-quality-check.png');bpy.ops.render.render(write_still=True)

@@ -486,7 +486,16 @@ pkgs.testers.nixosTest {
     # A node can appear in `kubectl get nodes` as an agent. This asserts it is
     # a control-plane member, which is what `--server` on a role=server node is
     # supposed to produce.
-    founder.succeed(
+    # WAIT, do not sample once. k3s applies this label ASYNCHRONOUSLY after the
+    # node registers, so a single-shot `succeed` races it -- and lost, in 4 of
+    # the last 11 runs of this lane. In the failing logs the joiner reports
+    # "Annotations and labels have been set successfully" twelve lines BELOW the
+    # assertion that just failed.
+    #
+    # This file already knows the idiom: lines 356, 444 and 448 all use
+    # `wait_until_succeeds` against k3s state. This assertion was the one that
+    # did not, and nothing about it is more synchronous than its neighbours.
+    founder.wait_until_succeeds(
         "KUBECONFIG=/etc/rancher/k3s/k3s.yaml k3s kubectl get node joiner "
         "-o jsonpath='{.metadata.labels}' "
         "| grep -q 'node-role.kubernetes.io/control-plane'"

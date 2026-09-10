@@ -1,6 +1,7 @@
 import { spawn as nodeSpawn, spawnSync as nodeSpawnSync, type SpawnOptions } from "node:child_process";
 import { existsSync, readFileSync } from "node:fs";
 import { qemuUsbStorageDeviceArg } from "../../installer/qemu-usb-storage.ts";
+import { buildOvmfPflashArgs, type QemuUefiFirmware } from "../../ci/ovmf-firmware.ts";
 import {
   B0891_RETENTION_USB_SERIAL_MARKERS,
   HOSTNAME_AUTOGENERATION_SERIAL_MARKERS,
@@ -46,6 +47,14 @@ export interface QemuSystemBootArgsInput {
    * (scenario 5) sees different args.
    */
   readonly networkDevices?: readonly QemuNetworkDevice[];
+  /**
+   * REQUIRED, and deliberately not optional. Until 081M24BB3TD087G0R001PJTW9A this
+   * builder emitted no firmware args at all, so QEMU silently used its built-in SeaBIOS
+   * and every scenario routed through here booted LEGACY -- on which the installer
+   * correctly refuses ("not booted in UEFI mode"). Legacy BIOS was reachable by saying
+   * nothing; now it is reachable only by naming it, with a reason.
+   */
+  readonly uefiFirmware: QemuUefiFirmware;
 }
 
 export interface Qcow2SnapshotRetentionInput {
@@ -58,6 +67,12 @@ export interface Qcow2SnapshotRetentionInput {
   readonly memoryMB?: number;
   readonly cpuCount?: number;
   readonly kvmAvailable?: boolean;
+  /**
+   * REQUIRED. The retention scenario restarts the guest from a snapshot, and a restart
+   * that dropped to SeaBIOS would reproduce 081M24BB3TD087G0R001PJTW9A on the second
+   * boot only -- a failure that looks like snapshot corruption and is not.
+   */
+  readonly uefiFirmware: QemuUefiFirmware;
 }
 
 export interface Qcow2SnapshotRetentionPlan {
@@ -498,6 +513,7 @@ export function buildQemuSystemBootArgs(input: QemuSystemBootArgsInput): readonl
   const args: string[] = [
     "-machine",
     "q35",
+    ...buildOvmfPflashArgs(input.uefiFirmware),
     "-m",
     String(input.memoryMB),
     "-smp",
@@ -553,6 +569,7 @@ function buildRestartArgs(input: NormalizedQcow2SnapshotRetentionInput): readonl
       input.bootImagePath === undefined
         ? { kind: "iso", path: input.isoPath }
         : { kind: "usb-image", path: input.bootImagePath },
+    uefiFirmware: input.uefiFirmware,
   });
 }
 
@@ -568,6 +585,7 @@ export function planQcow2SnapshotRetention(input: Qcow2SnapshotRetentionInput): 
     diskPath: input.diskPath,
     serialLogPath: input.serialLogPath,
     snapshotName: input.snapshotName,
+    uefiFirmware: input.uefiFirmware,
     diskSizeGB: input.diskSizeGB ?? DEFAULT_DISK_SIZE_GB,
     memoryMB: input.memoryMB ?? DEFAULT_MEMORY_MB,
     cpuCount: input.cpuCount ?? DEFAULT_CPU_COUNT,
@@ -815,6 +833,7 @@ function runManagedCommandUntilSerialMarkers(
   }
   const managed = spawnManagedCommand(command, options);
 
+  let lastPhaseSerialOutput = "";
   while (Date.now() < deadline) {
     let serialOutput: string;
     try {
@@ -831,6 +850,7 @@ function runManagedCommandUntilSerialMarkers(
     }
 
     const phaseSerialOutput = serialOutputAfterBaseline(serialOutput, serialBaseline);
+    lastPhaseSerialOutput = phaseSerialOutput;
     const failureMarker = firstMatchedMarker(phaseSerialOutput, stopCondition.failureMarkers);
     if (failureMarker !== undefined) {
       stopManagedProcess(managed, "SIGTERM", pollIntervalMs);
@@ -887,7 +907,9 @@ function runManagedCommandUntilSerialMarkers(
         command,
         exitCode: 1,
         stdout: "",
-        stderr: `QEMU exited before serial markers were observed: ${stopCondition.successMarkers.join(", ")}`,
+        stderr:
+          `QEMU exited before serial markers were observed: ${stopCondition.successMarkers.join(", ")}. ` +
+          serialTailForFailure(phaseSerialOutput),
       };
     }
 
@@ -900,8 +922,33 @@ function runManagedCommandUntilSerialMarkers(
     command,
     exitCode: 1,
     stdout: "",
-    stderr: `timeout (${String(options.timeoutMs)}ms) waiting for serial markers: ${stopCondition.successMarkers.join(", ")}`,
+    stderr:
+      `timeout (${String(options.timeoutMs)}ms) waiting for serial markers: ${stopCondition.successMarkers.join(", ")}. ` +
+      serialTailForFailure(lastPhaseSerialOutput),
   };
+}
+
+/**
+ * The tail of what the guest actually said, for a failure message.
+ *
+ * WHY EVERY QEMU FAILURE PATH CARRIES ONE (081M22T9CFA087G0R0026YN1NW). The serial log is
+ * written to a FILE and, until now, no failure path put any of it in the
+ * result. A 30-minute timeout therefore reported only "no marker" -- true, and
+ * useless: it cannot distinguish a guest that never booted (firmware/boot-order
+ * problem, empty log) from one that booted and hung mid-install (log full of
+ * NixOS output). Measured on run 34324877507, where scenarios 3 and 4 both
+ * timed out at `initial-install-from-iso-with-disk` and the job log contained
+ * NOTHING about why. Diagnosing it required reading the harness source and
+ * guessing at the firmware.
+ *
+ * An empty tail is itself the finding, and is reported AS empty rather than
+ * omitted -- "the guest wrote nothing to ttyS0" is a different and much
+ * sharper fact than "we have no information".
+ */
+export function serialTailForFailure(text: string, maxLines = 40): string {
+  const lines = text.split("\n").filter((l) => l.trim().length > 0);
+  if (lines.length === 0) return "serial log is EMPTY -- the guest wrote nothing to ttyS0 (suspect firmware or boot order, not the installer)";
+  return `last ${String(Math.min(maxLines, lines.length))} serial line(s):\n${lines.slice(-maxLines).join("\n")}`;
 }
 
 export function createSpawnSyncQcow2RetentionExecutor(

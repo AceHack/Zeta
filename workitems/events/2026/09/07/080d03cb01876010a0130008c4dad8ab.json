@@ -1,0 +1,14 @@
+{
+  "id": "080d03cb01876010a0130008c4dad8ab",
+  "at": "2026-09-07T00:59:02.252Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1WP0C7B087G0R000VK9E0V",
+    "type": "task",
+    "title": "Env integrate takes named probe; tpmrm0 is not a capture",
+    "slug": "env-integrate-takes-named-probe-tpmrm0-is-not-a-capture",
+    "priority": "P2",
+    "filename": "081M1WP0C7B087G0R000VK9E0V-env-integrate-takes-named-probe-tpmrm0-is-not-a-capture.md"
+  }
+}

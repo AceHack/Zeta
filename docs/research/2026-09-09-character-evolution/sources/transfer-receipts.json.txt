@@ -1,0 +1,30 @@
+[
+  {
+    "character": "AceHack",
+    "part": "head",
+    "mean_nearest_distance": 0.028857574274375974,
+    "max_nearest_distance": 0.19128109322415446,
+    "method": "axiswise bounds alignment, inverse-distance 4-neighbor surface colors"
+  },
+  {
+    "character": "Xenaa",
+    "part": "head",
+    "mean_nearest_distance": 0.0349335207601837,
+    "max_nearest_distance": 0.18353469848917928,
+    "method": "axiswise bounds alignment, inverse-distance 4-neighbor surface colors"
+  },
+  {
+    "character": "AceHack",
+    "part": "body",
+    "mean_nearest_distance": 0.01791472037054123,
+    "max_nearest_distance": 0.09792053989578783,
+    "method": "axiswise bounds alignment, inverse-distance 4-neighbor surface colors"
+  },
+  {
+    "character": "Xenaa",
+    "part": "body",
+    "mean_nearest_distance": 0.03913447600095108,
+    "max_nearest_distance": 0.19708520274257693,
+    "method": "axiswise bounds alignment, inverse-distance 4-neighbor surface colors"
+  }
+]

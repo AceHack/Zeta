@@ -1,0 +1,14 @@
+{
+  "id": "080d044125fa1010a01300089e0d48b0",
+  "at": "2026-09-09T21:48:24.770Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M2429FT1087G0R0034A9B7W",
+    "type": "bug",
+    "title": "CSP hardening proof is regex-based: eight adversarial payloads pass the gate (CodeQL js/bad-tag-filter)",
+    "slug": "csp-hardening-proof-is-regex-based-eight-adversarial-payload",
+    "priority": "P2",
+    "filename": "081M2429FT1087G0R0034A9B7W-csp-hardening-proof-is-regex-based-eight-adversarial-payload.md"
+  }
+}

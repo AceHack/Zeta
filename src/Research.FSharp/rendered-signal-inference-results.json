@@ -1,0 +1,2055 @@
+{
+  "Complete": true,
+  "Config": {
+    "ContextLength": 64,
+    "Contexts": 256,
+    "Domain": 301,
+    "EndToEndCalls": 256,
+    "EndToEndWarmups": 16,
+    "Renderer": "train-dot",
+    "Repetitions": 5,
+    "Rotation": "left-by-repetition",
+    "Seed": 3001,
+    "TokenCalls": 4096,
+    "TokenWarmups": 256
+  },
+  "Corpus": {
+    "Diagnostics": {
+      "Comparisons": 16128,
+      "StructureChanges": 0,
+      "PaletteChanges": 0,
+      "PlacementChanges": 8086
+    },
+    "Extraction": {
+      "ElapsedMilliseconds": 1921.1092,
+      "CpuMilliseconds": 3703.943,
+      "AllocatedBytes": 221117136
+    },
+    "Fingerprints": {
+      "RomSha256": "03A7D52643446EEC503DB9265827CB910B504A23F203915AA30E1CE749A61A25",
+      "FrameSha256": "BB3813555EBE2F626EF0BCACD2B56DDC12924530809D856E29C09DD87E5BB72E",
+      "TokenSha256": "B7AE7FC4EF88E8CBB1580BCDDE5BC94C7D9AE5570DB205037B34CF5388E28185",
+      "Sequences": 256,
+      "Frames": 16384
+    },
+    "Generation": {
+      "ElapsedMilliseconds": 2.7968,
+      "CpuMilliseconds": 2.791,
+      "AllocatedBytes": 820120
+    }
+  },
+  "HostActivity": "ordinary host applications may remain; own builds/tests/training must be idle",
+  "InputFile": "rendered-signal-results.json",
+  "InputSha256": "C59468575B140DA146265182EE40B03D6F6B5103FAAC9A0137CE8A288DF357B3",
+  "LoadedAssemblies": [
+    {
+      "Name": "Zeta.Core",
+      "Mvid": "9c1a25c1-efc0-36c8-7e05-c22e880cfc58",
+      "Sha256": "A39D0FB23A2970A5E1806C651DB2D41ABDCBA4C6EB95E38C35B3B4DA71797563"
+    },
+    {
+      "Name": "Zeta.Core.Abstractions",
+      "Mvid": "5b489ca4-370d-4ea4-a141-ad1eac7e3535",
+      "Sha256": "41B380DFCED77F2853581E64C03818623E7FB41AB7A74EB70C4D5823FCCB379D"
+    }
+  ],
+  "OperatingSystem": "macOS 26.6.2",
+  "PipelinePayload": {
+    "CurrentPreviousFrameCellBytes": 4096,
+    "EmulatorDisplayLogicalBooleans": 2048,
+    "EmulatorMemoryBytes": 4096,
+    "RomBytes": 517,
+    "Scope": "partial array ledger; excludes registers, stack, keys and metadata; managed heap and peak RSS not measured"
+  },
+  "Protocol": "rendered-signal-inference-v1",
+  "Rows": [
+    {
+      "Name": "unigram",
+      "Seed": -1,
+      "Path": "tokens",
+      "Repetition": 0,
+      "Calls": 4096,
+      "WarmupCalls": 256,
+      "Checksum": 2052.781177044903,
+      "ParameterBytes": 16,
+      "PredictorStateBytes": 16,
+      "Resource": {
+        "ElapsedMilliseconds": 4.3416,
+        "CpuMilliseconds": 4.346,
+        "AllocatedBytes": 163920
+      }
+    },
+    {
+      "Name": "bigram",
+      "Seed": -1,
+      "Path": "tokens",
+      "Repetition": 0,
+      "Calls": 4096,
+      "WarmupCalls": 256,
+      "Checksum": 2053.1453467572733,
+      "ParameterBytes": 48,
+      "PredictorStateBytes": 20,
+      "Resource": {
+        "ElapsedMilliseconds": 4.3722,
+        "CpuMilliseconds": 4.372,
+        "AllocatedBytes": 163920
+      }
+    },
+    {
+      "Name": "order-two",
+      "Seed": -1,
+      "Path": "tokens",
+      "Repetition": 0,
+      "Calls": 4096,
+      "WarmupCalls": 256,
+      "Checksum": 2026.0467129718238,
+      "ParameterBytes": 112,
+      "PredictorStateBytes": 24,
+      "Resource": {
+        "ElapsedMilliseconds": 8.0995,
+        "CpuMilliseconds": 8.068,
+        "AllocatedBytes": 2228304
+      }
+    },
+    {
+      "Name": "known",
+      "Seed": -1,
+      "Path": "tokens",
+      "Repetition": 0,
+      "Calls": 4096,
+      "WarmupCalls": 256,
+      "Checksum": 2024,
+      "ParameterBytes": 0,
+      "PredictorStateBytes": 24,
+      "Resource": {
+        "ElapsedMilliseconds": 3.8316,
+        "CpuMilliseconds": 3.826,
+        "AllocatedBytes": 163920
+      }
+    },
+    {
+      "Name": "fair",
+      "Seed": -1,
+      "Path": "tokens",
+      "Repetition": 0,
+      "Calls": 4096,
+      "WarmupCalls": 256,
+      "Checksum": 2048,
+      "ParameterBytes": 0,
+      "PredictorStateBytes": 16,
+      "Resource": {
+        "ElapsedMilliseconds": 3.8459,
+        "CpuMilliseconds": 3.847,
+        "AllocatedBytes": 163920
+      }
+    },
+    {
+      "Name": "last",
+      "Seed": -1,
+      "Path": "tokens",
+      "Repetition": 0,
+      "Calls": 4096,
+      "WarmupCalls": 256,
+      "Checksum": 2091.200000000003,
+      "ParameterBytes": 0,
+      "PredictorStateBytes": 20,
+      "Resource": {
+        "ElapsedMilliseconds": 3.8364,
+        "CpuMilliseconds": 3.819,
+        "AllocatedBytes": 163920
+      }
+    },
+    {
+      "Name": "untrained-rnn",
+      "Seed": 41,
+      "Path": "tokens",
+      "Repetition": 0,
+      "Calls": 4096,
+      "WarmupCalls": 256,
+      "Checksum": 2863.2049308080304,
+      "ParameterBytes": 848,
+      "PredictorStateBytes": 80,
+      "Resource": {
+        "ElapsedMilliseconds": 113.1737,
+        "CpuMilliseconds": 112.631,
+        "AllocatedBytes": 1409104
+      }
+    },
+    {
+      "Name": "untrained-rnn",
+      "Seed": 53,
+      "Path": "tokens",
+      "Repetition": 0,
+      "Calls": 4096,
+      "WarmupCalls": 256,
+      "Checksum": 2613.9425925914484,
+      "ParameterBytes": 848,
+      "PredictorStateBytes": 80,
+      "Resource": {
+        "ElapsedMilliseconds": 111.7307,
+        "CpuMilliseconds": 111.209,
+        "AllocatedBytes": 1409104
+      }
+    },
+    {
+      "Name": "untrained-rnn",
+      "Seed": 67,
+      "Path": "tokens",
+      "Repetition": 0,
+      "Calls": 4096,
+      "WarmupCalls": 256,
+      "Checksum": 2484.8090369088445,
+      "ParameterBytes": 848,
+      "PredictorStateBytes": 80,
+      "Resource": {
+        "ElapsedMilliseconds": 61.4317,
+        "CpuMilliseconds": 77.061,
+        "AllocatedBytes": 1343664
+      }
+    },
+    {
+      "Name": "trained-rnn",
+      "Seed": 41,
+      "Path": "tokens",
+      "Repetition": 0,
+      "Calls": 4096,
+      "WarmupCalls": 256,
+      "Checksum": 2053.3145357479807,
+      "ParameterBytes": 848,
+      "PredictorStateBytes": 80,
+      "Resource": {
+        "ElapsedMilliseconds": 33.1545,
+        "CpuMilliseconds": 33.047,
+        "AllocatedBytes": 1278032
+      }
+    },
+    {
+      "Name": "trained-rnn",
+      "Seed": 53,
+      "Path": "tokens",
+      "Repetition": 0,
+      "Calls": 4096,
+      "WarmupCalls": 256,
+      "Checksum": 2075.9498764009427,
+      "ParameterBytes": 848,
+      "PredictorStateBytes": 80,
+      "Resource": {
+        "ElapsedMilliseconds": 32.2885,
+        "CpuMilliseconds": 32.173,
+        "AllocatedBytes": 1278032
+      }
+    },
+    {
+      "Name": "trained-rnn",
+      "Seed": 67,
+      "Path": "tokens",
+      "Repetition": 0,
+      "Calls": 4096,
+      "WarmupCalls": 256,
+      "Checksum": 2043.876180476465,
+      "ParameterBytes": 848,
+      "PredictorStateBytes": 80,
+      "Resource": {
+        "ElapsedMilliseconds": 32.1841,
+        "CpuMilliseconds": 32.394,
+        "AllocatedBytes": 1278032
+      }
+    },
+    {
+      "Name": "bigram",
+      "Seed": -1,
+      "Path": "tokens",
+      "Repetition": 1,
+      "Calls": 4096,
+      "WarmupCalls": 256,
+      "Checksum": 2053.1453467572733,
+      "ParameterBytes": 48,
+      "PredictorStateBytes": 20,
+      "Resource": {
+        "ElapsedMilliseconds": 0.4384,
+        "CpuMilliseconds": 0.445,
+        "AllocatedBytes": 163920
+      }
+    },
+    {
+      "Name": "order-two",
+      "Seed": -1,
+      "Path": "tokens",
+      "Repetition": 1,
+      "Calls": 4096,
+      "WarmupCalls": 256,
+      "Checksum": 2026.0467129718238,
+      "ParameterBytes": 112,
+      "PredictorStateBytes": 24,
+      "Resource": {
+        "ElapsedMilliseconds": 2.2973,
+        "CpuMilliseconds": 2.299,
+        "AllocatedBytes": 2228304
+      }
+    },
+    {
+      "Name": "known",
+      "Seed": -1,
+      "Path": "tokens",
+      "Repetition": 1,
+      "Calls": 4096,
+      "WarmupCalls": 256,
+      "Checksum": 2024,
+      "ParameterBytes": 0,
+      "PredictorStateBytes": 24,
+      "Resource": {
+        "ElapsedMilliseconds": 0.5159,
+        "CpuMilliseconds": 0.512,
+        "AllocatedBytes": 163920
+      }
+    },
+    {
+      "Name": "fair",
+      "Seed": -1,
+      "Path": "tokens",
+      "Repetition": 1,
+      "Calls": 4096,
+      "WarmupCalls": 256,
+      "Checksum": 2048,
+      "ParameterBytes": 0,
+      "PredictorStateBytes": 16,
+      "Resource": {
+        "ElapsedMilliseconds": 0.5651,
+        "CpuMilliseconds": 0.534,
+        "AllocatedBytes": 163920
+      }
+    },
+    {
+      "Name": "last",
+      "Seed": -1,
+      "Path": "tokens",
+      "Repetition": 1,
+      "Calls": 4096,
+      "WarmupCalls": 256,
+      "Checksum": 2091.200000000003,
+      "ParameterBytes": 0,
+      "PredictorStateBytes": 20,
+      "Resource": {
+        "ElapsedMilliseconds": 0.5219,
+        "CpuMilliseconds": 0.508,
+        "AllocatedBytes": 163920
+      }
+    },
+    {
+      "Name": "untrained-rnn",
+      "Seed": 41,
+      "Path": "tokens",
+      "Repetition": 1,
+      "Calls": 4096,
+      "WarmupCalls": 256,
+      "Checksum": 2863.2049308080304,
+      "ParameterBytes": 848,
+      "PredictorStateBytes": 80,
+      "Resource": {
+        "ElapsedMilliseconds": 32.9101,
+        "CpuMilliseconds": 32.829,
+        "AllocatedBytes": 1278032
+      }
+    },
+    {
+      "Name": "untrained-rnn",
+      "Seed": 53,
+      "Path": "tokens",
+      "Repetition": 1,
+      "Calls": 4096,
+      "WarmupCalls": 256,
+      "Checksum": 2613.9425925914484,
+      "ParameterBytes": 848,
+      "PredictorStateBytes": 80,
+      "Resource": {
+        "ElapsedMilliseconds": 32.6475,
+        "CpuMilliseconds": 32.556,
+        "AllocatedBytes": 1278032
+      }
+    },
+    {
+      "Name": "untrained-rnn",
+      "Seed": 67,
+      "Path": "tokens",
+      "Repetition": 1,
+      "Calls": 4096,
+      "WarmupCalls": 256,
+      "Checksum": 2484.8090369088445,
+      "ParameterBytes": 848,
+      "PredictorStateBytes": 80,
+      "Resource": {
+        "ElapsedMilliseconds": 32.3466,
+        "CpuMilliseconds": 32.232,
+        "AllocatedBytes": 1278032
+      }
+    },
+    {
+      "Name": "trained-rnn",
+      "Seed": 41,
+      "Path": "tokens",
+      "Repetition": 1,
+      "Calls": 4096,
+      "WarmupCalls": 256,
+      "Checksum": 2053.3145357479807,
+      "ParameterBytes": 848,
+      "PredictorStateBytes": 80,
+      "Resource": {
+        "ElapsedMilliseconds": 32.6323,
+        "CpuMilliseconds": 32.518,
+        "AllocatedBytes": 1278032
+      }
+    },
+    {
+      "Name": "trained-rnn",
+      "Seed": 53,
+      "Path": "tokens",
+      "Repetition": 1,
+      "Calls": 4096,
+      "WarmupCalls": 256,
+      "Checksum": 2075.9498764009427,
+      "ParameterBytes": 848,
+      "PredictorStateBytes": 80,
+      "Resource": {
+        "ElapsedMilliseconds": 32.0788,
+        "CpuMilliseconds": 31.992,
+        "AllocatedBytes": 1278032
+      }
+    },
+    {
+      "Name": "trained-rnn",
+      "Seed": 67,
+      "Path": "tokens",
+      "Repetition": 1,
+      "Calls": 4096,
+      "WarmupCalls": 256,
+      "Checksum": 2043.876180476465,
+      "ParameterBytes": 848,
+      "PredictorStateBytes": 80,
+      "Resource": {
+        "ElapsedMilliseconds": 32.7015,
+        "CpuMilliseconds": 52.595,
+        "AllocatedBytes": 1278032
+      }
+    },
+    {
+      "Name": "unigram",
+      "Seed": -1,
+      "Path": "tokens",
+      "Repetition": 1,
+      "Calls": 4096,
+      "WarmupCalls": 256,
+      "Checksum": 2052.781177044903,
+      "ParameterBytes": 16,
+      "PredictorStateBytes": 16,
+      "Resource": {
+        "ElapsedMilliseconds": 0.4542,
+        "CpuMilliseconds": 0.614,
+        "AllocatedBytes": 163920
+      }
+    },
+    {
+      "Name": "order-two",
+      "Seed": -1,
+      "Path": "tokens",
+      "Repetition": 2,
+      "Calls": 4096,
+      "WarmupCalls": 256,
+      "Checksum": 2026.0467129718238,
+      "ParameterBytes": 112,
+      "PredictorStateBytes": 24,
+      "Resource": {
+        "ElapsedMilliseconds": 2.2768,
+        "CpuMilliseconds": 2.281,
+        "AllocatedBytes": 2228304
+      }
+    },
+    {
+      "Name": "known",
+      "Seed": -1,
+      "Path": "tokens",
+      "Repetition": 2,
+      "Calls": 4096,
+      "WarmupCalls": 256,
+      "Checksum": 2024,
+      "ParameterBytes": 0,
+      "PredictorStateBytes": 24,
+      "Resource": {
+        "ElapsedMilliseconds": 0.4574,
+        "CpuMilliseconds": 0.458,
+        "AllocatedBytes": 163920
+      }
+    },
+    {
+      "Name": "fair",
+      "Seed": -1,
+      "Path": "tokens",
+      "Repetition": 2,
+      "Calls": 4096,
+      "WarmupCalls": 256,
+      "Checksum": 2048,
+      "ParameterBytes": 0,
+      "PredictorStateBytes": 16,
+      "Resource": {
+        "ElapsedMilliseconds": 0.5955,
+        "CpuMilliseconds": 0.554,
+        "AllocatedBytes": 163920
+      }
+    },
+    {
+      "Name": "last",
+      "Seed": -1,
+      "Path": "tokens",
+      "Repetition": 2,
+      "Calls": 4096,
+      "WarmupCalls": 256,
+      "Checksum": 2091.200000000003,
+      "ParameterBytes": 0,
+      "PredictorStateBytes": 20,
+      "Resource": {
+        "ElapsedMilliseconds": 0.4282,
+        "CpuMilliseconds": 0.429,
+        "AllocatedBytes": 163920
+      }
+    },
+    {
+      "Name": "untrained-rnn",
+      "Seed": 41,
+      "Path": "tokens",
+      "Repetition": 2,
+      "Calls": 4096,
+      "WarmupCalls": 256,
+      "Checksum": 2863.2049308080304,
+      "ParameterBytes": 848,
+      "PredictorStateBytes": 80,
+      "Resource": {
+        "ElapsedMilliseconds": 33.2888,
+        "CpuMilliseconds": 33.196,
+        "AllocatedBytes": 1278032
+      }
+    },
+    {
+      "Name": "untrained-rnn",
+      "Seed": 53,
+      "Path": "tokens",
+      "Repetition": 2,
+      "Calls": 4096,
+      "WarmupCalls": 256,
+      "Checksum": 2613.9425925914484,
+      "ParameterBytes": 848,
+      "PredictorStateBytes": 80,
+      "Resource": {
+        "ElapsedMilliseconds": 32.7487,
+        "CpuMilliseconds": 32.596,
+        "AllocatedBytes": 1278032
+      }
+    },
+    {
+      "Name": "untrained-rnn",
+      "Seed": 67,
+      "Path": "tokens",
+      "Repetition": 2,
+      "Calls": 4096,
+      "WarmupCalls": 256,
+      "Checksum": 2484.8090369088445,
+      "ParameterBytes": 848,
+      "PredictorStateBytes": 80,
+      "Resource": {
+        "ElapsedMilliseconds": 32.4301,
+        "CpuMilliseconds": 32.326,
+        "AllocatedBytes": 1278032
+      }
+    },
+    {
+      "Name": "trained-rnn",
+      "Seed": 41,
+      "Path": "tokens",
+      "Repetition": 2,
+      "Calls": 4096,
+      "WarmupCalls": 256,
+      "Checksum": 2053.3145357479807,
+      "ParameterBytes": 848,
+      "PredictorStateBytes": 80,
+      "Resource": {
+        "ElapsedMilliseconds": 32.7365,
+        "CpuMilliseconds": 32.557,
+        "AllocatedBytes": 1278032
+      }
+    },
+    {
+      "Name": "trained-rnn",
+      "Seed": 53,
+      "Path": "tokens",
+      "Repetition": 2,
+      "Calls": 4096,
+      "WarmupCalls": 256,
+      "Checksum": 2075.9498764009427,
+      "ParameterBytes": 848,
+      "PredictorStateBytes": 80,
+      "Resource": {
+        "ElapsedMilliseconds": 32.4475,
+        "CpuMilliseconds": 32.353,
+        "AllocatedBytes": 1278032
+      }
+    },
+    {
+      "Name": "trained-rnn",
+      "Seed": 67,
+      "Path": "tokens",
+      "Repetition": 2,
+      "Calls": 4096,
+      "WarmupCalls": 256,
+      "Checksum": 2043.876180476465,
+      "ParameterBytes": 848,
+      "PredictorStateBytes": 80,
+      "Resource": {
+        "ElapsedMilliseconds": 32.5577,
+        "CpuMilliseconds": 34.815,
+        "AllocatedBytes": 1278032
+      }
+    },
+    {
+      "Name": "unigram",
+      "Seed": -1,
+      "Path": "tokens",
+      "Repetition": 2,
+      "Calls": 4096,
+      "WarmupCalls": 256,
+      "Checksum": 2052.781177044903,
+      "ParameterBytes": 16,
+      "PredictorStateBytes": 16,
+      "Resource": {
+        "ElapsedMilliseconds": 0.4995,
+        "CpuMilliseconds": 1.802,
+        "AllocatedBytes": 163920
+      }
+    },
+    {
+      "Name": "bigram",
+      "Seed": -1,
+      "Path": "tokens",
+      "Repetition": 2,
+      "Calls": 4096,
+      "WarmupCalls": 256,
+      "Checksum": 2053.1453467572733,
+      "ParameterBytes": 48,
+      "PredictorStateBytes": 20,
+      "Resource": {
+        "ElapsedMilliseconds": 0.4525,
+        "CpuMilliseconds": 0.454,
+        "AllocatedBytes": 163920
+      }
+    },
+    {
+      "Name": "known",
+      "Seed": -1,
+      "Path": "tokens",
+      "Repetition": 3,
+      "Calls": 4096,
+      "WarmupCalls": 256,
+      "Checksum": 2024,
+      "ParameterBytes": 0,
+      "PredictorStateBytes": 24,
+      "Resource": {
+        "ElapsedMilliseconds": 0.4529,
+        "CpuMilliseconds": 1.034,
+        "AllocatedBytes": 163920
+      }
+    },
+    {
+      "Name": "fair",
+      "Seed": -1,
+      "Path": "tokens",
+      "Repetition": 3,
+      "Calls": 4096,
+      "WarmupCalls": 256,
+      "Checksum": 2048,
+      "ParameterBytes": 0,
+      "PredictorStateBytes": 16,
+      "Resource": {
+        "ElapsedMilliseconds": 0.4304,
+        "CpuMilliseconds": 0.594,
+        "AllocatedBytes": 163920
+      }
+    },
+    {
+      "Name": "last",
+      "Seed": -1,
+      "Path": "tokens",
+      "Repetition": 3,
+      "Calls": 4096,
+      "WarmupCalls": 256,
+      "Checksum": 2091.200000000003,
+      "ParameterBytes": 0,
+      "PredictorStateBytes": 20,
+      "Resource": {
+        "ElapsedMilliseconds": 0.4396,
+        "CpuMilliseconds": 0.559,
+        "AllocatedBytes": 163920
+      }
+    },
+    {
+      "Name": "untrained-rnn",
+      "Seed": 41,
+      "Path": "tokens",
+      "Repetition": 3,
+      "Calls": 4096,
+      "WarmupCalls": 256,
+      "Checksum": 2863.2049308080304,
+      "ParameterBytes": 848,
+      "PredictorStateBytes": 80,
+      "Resource": {
+        "ElapsedMilliseconds": 33.3453,
+        "CpuMilliseconds": 67.274,
+        "AllocatedBytes": 1278032
+      }
+    },
+    {
+      "Name": "untrained-rnn",
+      "Seed": 53,
+      "Path": "tokens",
+      "Repetition": 3,
+      "Calls": 4096,
+      "WarmupCalls": 256,
+      "Checksum": 2613.9425925914484,
+      "ParameterBytes": 848,
+      "PredictorStateBytes": 80,
+      "Resource": {
+        "ElapsedMilliseconds": 32.6207,
+        "CpuMilliseconds": 63.815,
+        "AllocatedBytes": 1278032
+      }
+    },
+    {
+      "Name": "untrained-rnn",
+      "Seed": 67,
+      "Path": "tokens",
+      "Repetition": 3,
+      "Calls": 4096,
+      "WarmupCalls": 256,
+      "Checksum": 2484.8090369088445,
+      "ParameterBytes": 848,
+      "PredictorStateBytes": 80,
+      "Resource": {
+        "ElapsedMilliseconds": 32.988,
+        "CpuMilliseconds": 56.254,
+        "AllocatedBytes": 1278032
+      }
+    },
+    {
+      "Name": "trained-rnn",
+      "Seed": 41,
+      "Path": "tokens",
+      "Repetition": 3,
+      "Calls": 4096,
+      "WarmupCalls": 256,
+      "Checksum": 2053.3145357479807,
+      "ParameterBytes": 848,
+      "PredictorStateBytes": 80,
+      "Resource": {
+        "ElapsedMilliseconds": 32.9105,
+        "CpuMilliseconds": 32.82,
+        "AllocatedBytes": 1278032
+      }
+    },
+    {
+      "Name": "trained-rnn",
+      "Seed": 53,
+      "Path": "tokens",
+      "Repetition": 3,
+      "Calls": 4096,
+      "WarmupCalls": 256,
+      "Checksum": 2075.9498764009427,
+      "ParameterBytes": 848,
+      "PredictorStateBytes": 80,
+      "Resource": {
+        "ElapsedMilliseconds": 31.9393,
+        "CpuMilliseconds": 31.819,
+        "AllocatedBytes": 1278032
+      }
+    },
+    {
+      "Name": "trained-rnn",
+      "Seed": 67,
+      "Path": "tokens",
+      "Repetition": 3,
+      "Calls": 4096,
+      "WarmupCalls": 256,
+      "Checksum": 2043.876180476465,
+      "ParameterBytes": 848,
+      "PredictorStateBytes": 80,
+      "Resource": {
+        "ElapsedMilliseconds": 32.9697,
+        "CpuMilliseconds": 32.805,
+        "AllocatedBytes": 1278032
+      }
+    },
+    {
+      "Name": "unigram",
+      "Seed": -1,
+      "Path": "tokens",
+      "Repetition": 3,
+      "Calls": 4096,
+      "WarmupCalls": 256,
+      "Checksum": 2052.781177044903,
+      "ParameterBytes": 16,
+      "PredictorStateBytes": 16,
+      "Resource": {
+        "ElapsedMilliseconds": 0.4624,
+        "CpuMilliseconds": 0.464,
+        "AllocatedBytes": 163920
+      }
+    },
+    {
+      "Name": "bigram",
+      "Seed": -1,
+      "Path": "tokens",
+      "Repetition": 3,
+      "Calls": 4096,
+      "WarmupCalls": 256,
+      "Checksum": 2053.1453467572733,
+      "ParameterBytes": 48,
+      "PredictorStateBytes": 20,
+      "Resource": {
+        "ElapsedMilliseconds": 0.4488,
+        "CpuMilliseconds": 0.45,
+        "AllocatedBytes": 163920
+      }
+    },
+    {
+      "Name": "order-two",
+      "Seed": -1,
+      "Path": "tokens",
+      "Repetition": 3,
+      "Calls": 4096,
+      "WarmupCalls": 256,
+      "Checksum": 2026.0467129718238,
+      "ParameterBytes": 112,
+      "PredictorStateBytes": 24,
+      "Resource": {
+        "ElapsedMilliseconds": 1.9484,
+        "CpuMilliseconds": 3.979,
+        "AllocatedBytes": 2228304
+      }
+    },
+    {
+      "Name": "fair",
+      "Seed": -1,
+      "Path": "tokens",
+      "Repetition": 4,
+      "Calls": 4096,
+      "WarmupCalls": 256,
+      "Checksum": 2048,
+      "ParameterBytes": 0,
+      "PredictorStateBytes": 16,
+      "Resource": {
+        "ElapsedMilliseconds": 0.4044,
+        "CpuMilliseconds": 0.412,
+        "AllocatedBytes": 163920
+      }
+    },
+    {
+      "Name": "last",
+      "Seed": -1,
+      "Path": "tokens",
+      "Repetition": 4,
+      "Calls": 4096,
+      "WarmupCalls": 256,
+      "Checksum": 2091.200000000003,
+      "ParameterBytes": 0,
+      "PredictorStateBytes": 20,
+      "Resource": {
+        "ElapsedMilliseconds": 0.4343,
+        "CpuMilliseconds": 0.436,
+        "AllocatedBytes": 163920
+      }
+    },
+    {
+      "Name": "untrained-rnn",
+      "Seed": 41,
+      "Path": "tokens",
+      "Repetition": 4,
+      "Calls": 4096,
+      "WarmupCalls": 256,
+      "Checksum": 2863.2049308080304,
+      "ParameterBytes": 848,
+      "PredictorStateBytes": 80,
+      "Resource": {
+        "ElapsedMilliseconds": 32.9861,
+        "CpuMilliseconds": 32.936,
+        "AllocatedBytes": 1278032
+      }
+    },
+    {
+      "Name": "untrained-rnn",
+      "Seed": 53,
+      "Path": "tokens",
+      "Repetition": 4,
+      "Calls": 4096,
+      "WarmupCalls": 256,
+      "Checksum": 2613.9425925914484,
+      "ParameterBytes": 848,
+      "PredictorStateBytes": 80,
+      "Resource": {
+        "ElapsedMilliseconds": 32.3388,
+        "CpuMilliseconds": 32.247,
+        "AllocatedBytes": 1278032
+      }
+    },
+    {
+      "Name": "untrained-rnn",
+      "Seed": 67,
+      "Path": "tokens",
+      "Repetition": 4,
+      "Calls": 4096,
+      "WarmupCalls": 256,
+      "Checksum": 2484.8090369088445,
+      "ParameterBytes": 848,
+      "PredictorStateBytes": 80,
+      "Resource": {
+        "ElapsedMilliseconds": 32.4753,
+        "CpuMilliseconds": 32.332,
+        "AllocatedBytes": 1278032
+      }
+    },
+    {
+      "Name": "trained-rnn",
+      "Seed": 41,
+      "Path": "tokens",
+      "Repetition": 4,
+      "Calls": 4096,
+      "WarmupCalls": 256,
+      "Checksum": 2053.3145357479807,
+      "ParameterBytes": 848,
+      "PredictorStateBytes": 80,
+      "Resource": {
+        "ElapsedMilliseconds": 33.3955,
+        "CpuMilliseconds": 33.177,
+        "AllocatedBytes": 1278032
+      }
+    },
+    {
+      "Name": "trained-rnn",
+      "Seed": 53,
+      "Path": "tokens",
+      "Repetition": 4,
+      "Calls": 4096,
+      "WarmupCalls": 256,
+      "Checksum": 2075.9498764009427,
+      "ParameterBytes": 848,
+      "PredictorStateBytes": 80,
+      "Resource": {
+        "ElapsedMilliseconds": 32.6792,
+        "CpuMilliseconds": 32.447,
+        "AllocatedBytes": 1278032
+      }
+    },
+    {
+      "Name": "trained-rnn",
+      "Seed": 67,
+      "Path": "tokens",
+      "Repetition": 4,
+      "Calls": 4096,
+      "WarmupCalls": 256,
+      "Checksum": 2043.876180476465,
+      "ParameterBytes": 848,
+      "PredictorStateBytes": 80,
+      "Resource": {
+        "ElapsedMilliseconds": 32.371,
+        "CpuMilliseconds": 32.923,
+        "AllocatedBytes": 1278032
+      }
+    },
+    {
+      "Name": "unigram",
+      "Seed": -1,
+      "Path": "tokens",
+      "Repetition": 4,
+      "Calls": 4096,
+      "WarmupCalls": 256,
+      "Checksum": 2052.781177044903,
+      "ParameterBytes": 16,
+      "PredictorStateBytes": 16,
+      "Resource": {
+        "ElapsedMilliseconds": 0.5022,
+        "CpuMilliseconds": 1.677,
+        "AllocatedBytes": 163920
+      }
+    },
+    {
+      "Name": "bigram",
+      "Seed": -1,
+      "Path": "tokens",
+      "Repetition": 4,
+      "Calls": 4096,
+      "WarmupCalls": 256,
+      "Checksum": 2053.1453467572733,
+      "ParameterBytes": 48,
+      "PredictorStateBytes": 20,
+      "Resource": {
+        "ElapsedMilliseconds": 0.3994,
+        "CpuMilliseconds": 0.4,
+        "AllocatedBytes": 163920
+      }
+    },
+    {
+      "Name": "order-two",
+      "Seed": -1,
+      "Path": "tokens",
+      "Repetition": 4,
+      "Calls": 4096,
+      "WarmupCalls": 256,
+      "Checksum": 2026.0467129718238,
+      "ParameterBytes": 112,
+      "PredictorStateBytes": 24,
+      "Resource": {
+        "ElapsedMilliseconds": 1.2375,
+        "CpuMilliseconds": 3.081,
+        "AllocatedBytes": 2228304
+      }
+    },
+    {
+      "Name": "known",
+      "Seed": -1,
+      "Path": "tokens",
+      "Repetition": 4,
+      "Calls": 4096,
+      "WarmupCalls": 256,
+      "Checksum": 2024,
+      "ParameterBytes": 0,
+      "PredictorStateBytes": 24,
+      "Resource": {
+        "ElapsedMilliseconds": 0.4464,
+        "CpuMilliseconds": 0.447,
+        "AllocatedBytes": 163920
+      }
+    },
+    {
+      "Name": "unigram",
+      "Seed": -1,
+      "Path": "end-to-end",
+      "Repetition": 0,
+      "Calls": 256,
+      "WarmupCalls": 16,
+      "Checksum": 128.29882356531385,
+      "ParameterBytes": 16,
+      "PredictorStateBytes": 16,
+      "Resource": {
+        "ElapsedMilliseconds": 460.1065,
+        "CpuMilliseconds": 492.322,
+        "AllocatedBytes": 221137704
+      }
+    },
+    {
+      "Name": "bigram",
+      "Seed": -1,
+      "Path": "end-to-end",
+      "Repetition": 0,
+      "Calls": 256,
+      "WarmupCalls": 16,
+      "Checksum": 128.32158417232785,
+      "ParameterBytes": 48,
+      "PredictorStateBytes": 20,
+      "Resource": {
+        "ElapsedMilliseconds": 454.2252,
+        "CpuMilliseconds": 452.352,
+        "AllocatedBytes": 221126736
+      }
+    },
+    {
+      "Name": "order-two",
+      "Seed": -1,
+      "Path": "end-to-end",
+      "Repetition": 0,
+      "Calls": 256,
+      "WarmupCalls": 16,
+      "Checksum": 126.62791956074209,
+      "ParameterBytes": 112,
+      "PredictorStateBytes": 24,
+      "Resource": {
+        "ElapsedMilliseconds": 455.9167,
+        "CpuMilliseconds": 454.061,
+        "AllocatedBytes": 221255760
+      }
+    },
+    {
+      "Name": "known",
+      "Seed": -1,
+      "Path": "end-to-end",
+      "Repetition": 0,
+      "Calls": 256,
+      "WarmupCalls": 16,
+      "Checksum": 126.5,
+      "ParameterBytes": 0,
+      "PredictorStateBytes": 24,
+      "Resource": {
+        "ElapsedMilliseconds": 611.5034,
+        "CpuMilliseconds": 533.407,
+        "AllocatedBytes": 221126736
+      }
+    },
+    {
+      "Name": "fair",
+      "Seed": -1,
+      "Path": "end-to-end",
+      "Repetition": 0,
+      "Calls": 256,
+      "WarmupCalls": 16,
+      "Checksum": 128,
+      "ParameterBytes": 0,
+      "PredictorStateBytes": 16,
+      "Resource": {
+        "ElapsedMilliseconds": 476.08,
+        "CpuMilliseconds": 467.462,
+        "AllocatedBytes": 221126736
+      }
+    },
+    {
+      "Name": "last",
+      "Seed": -1,
+      "Path": "end-to-end",
+      "Repetition": 0,
+      "Calls": 256,
+      "WarmupCalls": 16,
+      "Checksum": 130.70000000000007,
+      "ParameterBytes": 0,
+      "PredictorStateBytes": 20,
+      "Resource": {
+        "ElapsedMilliseconds": 455.3135,
+        "CpuMilliseconds": 452.977,
+        "AllocatedBytes": 221126736
+      }
+    },
+    {
+      "Name": "untrained-rnn",
+      "Seed": 41,
+      "Path": "end-to-end",
+      "Repetition": 0,
+      "Calls": 256,
+      "WarmupCalls": 16,
+      "Checksum": 178.95030817550116,
+      "ParameterBytes": 848,
+      "PredictorStateBytes": 80,
+      "Resource": {
+        "ElapsedMilliseconds": 456.0486,
+        "CpuMilliseconds": 454.217,
+        "AllocatedBytes": 221196368
+      }
+    },
+    {
+      "Name": "untrained-rnn",
+      "Seed": 53,
+      "Path": "end-to-end",
+      "Repetition": 0,
+      "Calls": 256,
+      "WarmupCalls": 16,
+      "Checksum": 163.37141203696555,
+      "ParameterBytes": 848,
+      "PredictorStateBytes": 80,
+      "Resource": {
+        "ElapsedMilliseconds": 457.9066,
+        "CpuMilliseconds": 456.064,
+        "AllocatedBytes": 221196368
+      }
+    },
+    {
+      "Name": "untrained-rnn",
+      "Seed": 67,
+      "Path": "end-to-end",
+      "Repetition": 0,
+      "Calls": 256,
+      "WarmupCalls": 16,
+      "Checksum": 155.30056480680287,
+      "ParameterBytes": 848,
+      "PredictorStateBytes": 80,
+      "Resource": {
+        "ElapsedMilliseconds": 540.4123,
+        "CpuMilliseconds": 507.751,
+        "AllocatedBytes": 221196368
+      }
+    },
+    {
+      "Name": "trained-rnn",
+      "Seed": 41,
+      "Path": "end-to-end",
+      "Repetition": 0,
+      "Calls": 256,
+      "WarmupCalls": 16,
+      "Checksum": 128.33215848424837,
+      "ParameterBytes": 848,
+      "PredictorStateBytes": 80,
+      "Resource": {
+        "ElapsedMilliseconds": 466.2182,
+        "CpuMilliseconds": 464.463,
+        "AllocatedBytes": 221196368
+      }
+    },
+    {
+      "Name": "trained-rnn",
+      "Seed": 53,
+      "Path": "end-to-end",
+      "Repetition": 0,
+      "Calls": 256,
+      "WarmupCalls": 16,
+      "Checksum": 129.74686727505855,
+      "ParameterBytes": 848,
+      "PredictorStateBytes": 80,
+      "Resource": {
+        "ElapsedMilliseconds": 463.73,
+        "CpuMilliseconds": 462.081,
+        "AllocatedBytes": 221196368
+      }
+    },
+    {
+      "Name": "trained-rnn",
+      "Seed": 67,
+      "Path": "end-to-end",
+      "Repetition": 0,
+      "Calls": 256,
+      "WarmupCalls": 16,
+      "Checksum": 127.7422612797796,
+      "ParameterBytes": 848,
+      "PredictorStateBytes": 80,
+      "Resource": {
+        "ElapsedMilliseconds": 458.8411,
+        "CpuMilliseconds": 459.397,
+        "AllocatedBytes": 221196368
+      }
+    },
+    {
+      "Name": "bigram",
+      "Seed": -1,
+      "Path": "end-to-end",
+      "Repetition": 1,
+      "Calls": 256,
+      "WarmupCalls": 16,
+      "Checksum": 128.32158417232785,
+      "ParameterBytes": 48,
+      "PredictorStateBytes": 20,
+      "Resource": {
+        "ElapsedMilliseconds": 450.4168,
+        "CpuMilliseconds": 448.891,
+        "AllocatedBytes": 221126696
+      }
+    },
+    {
+      "Name": "order-two",
+      "Seed": -1,
+      "Path": "end-to-end",
+      "Repetition": 1,
+      "Calls": 256,
+      "WarmupCalls": 16,
+      "Checksum": 126.62791956074209,
+      "ParameterBytes": 112,
+      "PredictorStateBytes": 24,
+      "Resource": {
+        "ElapsedMilliseconds": 454.1748,
+        "CpuMilliseconds": 452.58,
+        "AllocatedBytes": 221255720
+      }
+    },
+    {
+      "Name": "known",
+      "Seed": -1,
+      "Path": "end-to-end",
+      "Repetition": 1,
+      "Calls": 256,
+      "WarmupCalls": 16,
+      "Checksum": 126.5,
+      "ParameterBytes": 0,
+      "PredictorStateBytes": 24,
+      "Resource": {
+        "ElapsedMilliseconds": 455.1008,
+        "CpuMilliseconds": 453.375,
+        "AllocatedBytes": 221126696
+      }
+    },
+    {
+      "Name": "fair",
+      "Seed": -1,
+      "Path": "end-to-end",
+      "Repetition": 1,
+      "Calls": 256,
+      "WarmupCalls": 16,
+      "Checksum": 128,
+      "ParameterBytes": 0,
+      "PredictorStateBytes": 16,
+      "Resource": {
+        "ElapsedMilliseconds": 461.4334,
+        "CpuMilliseconds": 457.505,
+        "AllocatedBytes": 221126696
+      }
+    },
+    {
+      "Name": "last",
+      "Seed": -1,
+      "Path": "end-to-end",
+      "Repetition": 1,
+      "Calls": 256,
+      "WarmupCalls": 16,
+      "Checksum": 130.70000000000007,
+      "ParameterBytes": 0,
+      "PredictorStateBytes": 20,
+      "Resource": {
+        "ElapsedMilliseconds": 595.1074,
+        "CpuMilliseconds": 2540.55,
+        "AllocatedBytes": 221127056
+      }
+    },
+    {
+      "Name": "untrained-rnn",
+      "Seed": 41,
+      "Path": "end-to-end",
+      "Repetition": 1,
+      "Calls": 256,
+      "WarmupCalls": 16,
+      "Checksum": 178.95030817550116,
+      "ParameterBytes": 848,
+      "PredictorStateBytes": 80,
+      "Resource": {
+        "ElapsedMilliseconds": 462.8487,
+        "CpuMilliseconds": 462.073,
+        "AllocatedBytes": 221196328
+      }
+    },
+    {
+      "Name": "untrained-rnn",
+      "Seed": 53,
+      "Path": "end-to-end",
+      "Repetition": 1,
+      "Calls": 256,
+      "WarmupCalls": 16,
+      "Checksum": 163.37141203696555,
+      "ParameterBytes": 848,
+      "PredictorStateBytes": 80,
+      "Resource": {
+        "ElapsedMilliseconds": 473.3791,
+        "CpuMilliseconds": 462.686,
+        "AllocatedBytes": 221196328
+      }
+    },
+    {
+      "Name": "untrained-rnn",
+      "Seed": 67,
+      "Path": "end-to-end",
+      "Repetition": 1,
+      "Calls": 256,
+      "WarmupCalls": 16,
+      "Checksum": 155.30056480680287,
+      "ParameterBytes": 848,
+      "PredictorStateBytes": 80,
+      "Resource": {
+        "ElapsedMilliseconds": 451.4857,
+        "CpuMilliseconds": 450.095,
+        "AllocatedBytes": 221196328
+      }
+    },
+    {
+      "Name": "trained-rnn",
+      "Seed": 41,
+      "Path": "end-to-end",
+      "Repetition": 1,
+      "Calls": 256,
+      "WarmupCalls": 16,
+      "Checksum": 128.33215848424837,
+      "ParameterBytes": 848,
+      "PredictorStateBytes": 80,
+      "Resource": {
+        "ElapsedMilliseconds": 445.0087,
+        "CpuMilliseconds": 443.607,
+        "AllocatedBytes": 221196328
+      }
+    },
+    {
+      "Name": "trained-rnn",
+      "Seed": 53,
+      "Path": "end-to-end",
+      "Repetition": 1,
+      "Calls": 256,
+      "WarmupCalls": 16,
+      "Checksum": 129.74686727505855,
+      "ParameterBytes": 848,
+      "PredictorStateBytes": 80,
+      "Resource": {
+        "ElapsedMilliseconds": 446.336,
+        "CpuMilliseconds": 444.57,
+        "AllocatedBytes": 221196328
+      }
+    },
+    {
+      "Name": "trained-rnn",
+      "Seed": 67,
+      "Path": "end-to-end",
+      "Repetition": 1,
+      "Calls": 256,
+      "WarmupCalls": 16,
+      "Checksum": 127.7422612797796,
+      "ParameterBytes": 848,
+      "PredictorStateBytes": 80,
+      "Resource": {
+        "ElapsedMilliseconds": 448.1892,
+        "CpuMilliseconds": 447.303,
+        "AllocatedBytes": 221196328
+      }
+    },
+    {
+      "Name": "unigram",
+      "Seed": -1,
+      "Path": "end-to-end",
+      "Repetition": 1,
+      "Calls": 256,
+      "WarmupCalls": 16,
+      "Checksum": 128.29882356531385,
+      "ParameterBytes": 16,
+      "PredictorStateBytes": 16,
+      "Resource": {
+        "ElapsedMilliseconds": 444.8103,
+        "CpuMilliseconds": 444.278,
+        "AllocatedBytes": 221126696
+      }
+    },
+    {
+      "Name": "order-two",
+      "Seed": -1,
+      "Path": "end-to-end",
+      "Repetition": 2,
+      "Calls": 256,
+      "WarmupCalls": 16,
+      "Checksum": 126.62791956074209,
+      "ParameterBytes": 112,
+      "PredictorStateBytes": 24,
+      "Resource": {
+        "ElapsedMilliseconds": 448.2487,
+        "CpuMilliseconds": 569.001,
+        "AllocatedBytes": 221255720
+      }
+    },
+    {
+      "Name": "known",
+      "Seed": -1,
+      "Path": "end-to-end",
+      "Repetition": 2,
+      "Calls": 256,
+      "WarmupCalls": 16,
+      "Checksum": 126.5,
+      "ParameterBytes": 0,
+      "PredictorStateBytes": 24,
+      "Resource": {
+        "ElapsedMilliseconds": 456.401,
+        "CpuMilliseconds": 455.993,
+        "AllocatedBytes": 221126696
+      }
+    },
+    {
+      "Name": "fair",
+      "Seed": -1,
+      "Path": "end-to-end",
+      "Repetition": 2,
+      "Calls": 256,
+      "WarmupCalls": 16,
+      "Checksum": 128,
+      "ParameterBytes": 0,
+      "PredictorStateBytes": 16,
+      "Resource": {
+        "ElapsedMilliseconds": 490.3514,
+        "CpuMilliseconds": 483.625,
+        "AllocatedBytes": 221126696
+      }
+    },
+    {
+      "Name": "last",
+      "Seed": -1,
+      "Path": "end-to-end",
+      "Repetition": 2,
+      "Calls": 256,
+      "WarmupCalls": 16,
+      "Checksum": 130.70000000000007,
+      "ParameterBytes": 0,
+      "PredictorStateBytes": 20,
+      "Resource": {
+        "ElapsedMilliseconds": 469.8867,
+        "CpuMilliseconds": 467.958,
+        "AllocatedBytes": 221126696
+      }
+    },
+    {
+      "Name": "untrained-rnn",
+      "Seed": 41,
+      "Path": "end-to-end",
+      "Repetition": 2,
+      "Calls": 256,
+      "WarmupCalls": 16,
+      "Checksum": 178.95030817550116,
+      "ParameterBytes": 848,
+      "PredictorStateBytes": 80,
+      "Resource": {
+        "ElapsedMilliseconds": 533.8912,
+        "CpuMilliseconds": 510.591,
+        "AllocatedBytes": 221196328
+      }
+    },
+    {
+      "Name": "untrained-rnn",
+      "Seed": 53,
+      "Path": "end-to-end",
+      "Repetition": 2,
+      "Calls": 256,
+      "WarmupCalls": 16,
+      "Checksum": 163.37141203696555,
+      "ParameterBytes": 848,
+      "PredictorStateBytes": 80,
+      "Resource": {
+        "ElapsedMilliseconds": 509.8619,
+        "CpuMilliseconds": 497.109,
+        "AllocatedBytes": 221196328
+      }
+    },
+    {
+      "Name": "untrained-rnn",
+      "Seed": 67,
+      "Path": "end-to-end",
+      "Repetition": 2,
+      "Calls": 256,
+      "WarmupCalls": 16,
+      "Checksum": 155.30056480680287,
+      "ParameterBytes": 848,
+      "PredictorStateBytes": 80,
+      "Resource": {
+        "ElapsedMilliseconds": 538.0874,
+        "CpuMilliseconds": 512.747,
+        "AllocatedBytes": 221196328
+      }
+    },
+    {
+      "Name": "trained-rnn",
+      "Seed": 41,
+      "Path": "end-to-end",
+      "Repetition": 2,
+      "Calls": 256,
+      "WarmupCalls": 16,
+      "Checksum": 128.33215848424837,
+      "ParameterBytes": 848,
+      "PredictorStateBytes": 80,
+      "Resource": {
+        "ElapsedMilliseconds": 518.0865,
+        "CpuMilliseconds": 656.559,
+        "AllocatedBytes": 221196328
+      }
+    },
+    {
+      "Name": "trained-rnn",
+      "Seed": 53,
+      "Path": "end-to-end",
+      "Repetition": 2,
+      "Calls": 256,
+      "WarmupCalls": 16,
+      "Checksum": 129.74686727505855,
+      "ParameterBytes": 848,
+      "PredictorStateBytes": 80,
+      "Resource": {
+        "ElapsedMilliseconds": 465.9491,
+        "CpuMilliseconds": 466.214,
+        "AllocatedBytes": 221196328
+      }
+    },
+    {
+      "Name": "trained-rnn",
+      "Seed": 67,
+      "Path": "end-to-end",
+      "Repetition": 2,
+      "Calls": 256,
+      "WarmupCalls": 16,
+      "Checksum": 127.7422612797796,
+      "ParameterBytes": 848,
+      "PredictorStateBytes": 80,
+      "Resource": {
+        "ElapsedMilliseconds": 476.4637,
+        "CpuMilliseconds": 470.077,
+        "AllocatedBytes": 221196328
+      }
+    },
+    {
+      "Name": "unigram",
+      "Seed": -1,
+      "Path": "end-to-end",
+      "Repetition": 2,
+      "Calls": 256,
+      "WarmupCalls": 16,
+      "Checksum": 128.29882356531385,
+      "ParameterBytes": 16,
+      "PredictorStateBytes": 16,
+      "Resource": {
+        "ElapsedMilliseconds": 458.171,
+        "CpuMilliseconds": 457.9,
+        "AllocatedBytes": 221126696
+      }
+    },
+    {
+      "Name": "bigram",
+      "Seed": -1,
+      "Path": "end-to-end",
+      "Repetition": 2,
+      "Calls": 256,
+      "WarmupCalls": 16,
+      "Checksum": 128.32158417232785,
+      "ParameterBytes": 48,
+      "PredictorStateBytes": 20,
+      "Resource": {
+        "ElapsedMilliseconds": 453.0417,
+        "CpuMilliseconds": 452.893,
+        "AllocatedBytes": 221126696
+      }
+    },
+    {
+      "Name": "known",
+      "Seed": -1,
+      "Path": "end-to-end",
+      "Repetition": 3,
+      "Calls": 256,
+      "WarmupCalls": 16,
+      "Checksum": 126.5,
+      "ParameterBytes": 0,
+      "PredictorStateBytes": 24,
+      "Resource": {
+        "ElapsedMilliseconds": 450.117,
+        "CpuMilliseconds": 493.477,
+        "AllocatedBytes": 221126696
+      }
+    },
+    {
+      "Name": "fair",
+      "Seed": -1,
+      "Path": "end-to-end",
+      "Repetition": 3,
+      "Calls": 256,
+      "WarmupCalls": 16,
+      "Checksum": 128,
+      "ParameterBytes": 0,
+      "PredictorStateBytes": 16,
+      "Resource": {
+        "ElapsedMilliseconds": 448.7603,
+        "CpuMilliseconds": 448.686,
+        "AllocatedBytes": 221126696
+      }
+    },
+    {
+      "Name": "last",
+      "Seed": -1,
+      "Path": "end-to-end",
+      "Repetition": 3,
+      "Calls": 256,
+      "WarmupCalls": 16,
+      "Checksum": 130.70000000000007,
+      "ParameterBytes": 0,
+      "PredictorStateBytes": 20,
+      "Resource": {
+        "ElapsedMilliseconds": 456.7238,
+        "CpuMilliseconds": 456.496,
+        "AllocatedBytes": 221126696
+      }
+    },
+    {
+      "Name": "untrained-rnn",
+      "Seed": 41,
+      "Path": "end-to-end",
+      "Repetition": 3,
+      "Calls": 256,
+      "WarmupCalls": 16,
+      "Checksum": 178.95030817550116,
+      "ParameterBytes": 848,
+      "PredictorStateBytes": 80,
+      "Resource": {
+        "ElapsedMilliseconds": 452.1957,
+        "CpuMilliseconds": 452.058,
+        "AllocatedBytes": 221196328
+      }
+    },
+    {
+      "Name": "untrained-rnn",
+      "Seed": 53,
+      "Path": "end-to-end",
+      "Repetition": 3,
+      "Calls": 256,
+      "WarmupCalls": 16,
+      "Checksum": 163.37141203696555,
+      "ParameterBytes": 848,
+      "PredictorStateBytes": 80,
+      "Resource": {
+        "ElapsedMilliseconds": 476.7376,
+        "CpuMilliseconds": 684.577,
+        "AllocatedBytes": 221196328
+      }
+    },
+    {
+      "Name": "untrained-rnn",
+      "Seed": 67,
+      "Path": "end-to-end",
+      "Repetition": 3,
+      "Calls": 256,
+      "WarmupCalls": 16,
+      "Checksum": 155.30056480680287,
+      "ParameterBytes": 848,
+      "PredictorStateBytes": 80,
+      "Resource": {
+        "ElapsedMilliseconds": 453.3073,
+        "CpuMilliseconds": 453.608,
+        "AllocatedBytes": 221196328
+      }
+    },
+    {
+      "Name": "trained-rnn",
+      "Seed": 41,
+      "Path": "end-to-end",
+      "Repetition": 3,
+      "Calls": 256,
+      "WarmupCalls": 16,
+      "Checksum": 128.33215848424837,
+      "ParameterBytes": 848,
+      "PredictorStateBytes": 80,
+      "Resource": {
+        "ElapsedMilliseconds": 452.8288,
+        "CpuMilliseconds": 452.667,
+        "AllocatedBytes": 221196328
+      }
+    },
+    {
+      "Name": "trained-rnn",
+      "Seed": 53,
+      "Path": "end-to-end",
+      "Repetition": 3,
+      "Calls": 256,
+      "WarmupCalls": 16,
+      "Checksum": 129.74686727505855,
+      "ParameterBytes": 848,
+      "PredictorStateBytes": 80,
+      "Resource": {
+        "ElapsedMilliseconds": 455.0626,
+        "CpuMilliseconds": 455.022,
+        "AllocatedBytes": 221196328
+      }
+    },
+    {
+      "Name": "trained-rnn",
+      "Seed": 67,
+      "Path": "end-to-end",
+      "Repetition": 3,
+      "Calls": 256,
+      "WarmupCalls": 16,
+      "Checksum": 127.7422612797796,
+      "ParameterBytes": 848,
+      "PredictorStateBytes": 80,
+      "Resource": {
+        "ElapsedMilliseconds": 452.567,
+        "CpuMilliseconds": 452.458,
+        "AllocatedBytes": 221196328
+      }
+    },
+    {
+      "Name": "unigram",
+      "Seed": -1,
+      "Path": "end-to-end",
+      "Repetition": 3,
+      "Calls": 256,
+      "WarmupCalls": 16,
+      "Checksum": 128.29882356531385,
+      "ParameterBytes": 16,
+      "PredictorStateBytes": 16,
+      "Resource": {
+        "ElapsedMilliseconds": 454.5389,
+        "CpuMilliseconds": 454.423,
+        "AllocatedBytes": 221126696
+      }
+    },
+    {
+      "Name": "bigram",
+      "Seed": -1,
+      "Path": "end-to-end",
+      "Repetition": 3,
+      "Calls": 256,
+      "WarmupCalls": 16,
+      "Checksum": 128.32158417232785,
+      "ParameterBytes": 48,
+      "PredictorStateBytes": 20,
+      "Resource": {
+        "ElapsedMilliseconds": 454.4204,
+        "CpuMilliseconds": 454.293,
+        "AllocatedBytes": 221126696
+      }
+    },
+    {
+      "Name": "order-two",
+      "Seed": -1,
+      "Path": "end-to-end",
+      "Repetition": 3,
+      "Calls": 256,
+      "WarmupCalls": 16,
+      "Checksum": 126.62791956074209,
+      "ParameterBytes": 112,
+      "PredictorStateBytes": 24,
+      "Resource": {
+        "ElapsedMilliseconds": 465.8903,
+        "CpuMilliseconds": 619.029,
+        "AllocatedBytes": 221255720
+      }
+    },
+    {
+      "Name": "fair",
+      "Seed": -1,
+      "Path": "end-to-end",
+      "Repetition": 4,
+      "Calls": 256,
+      "WarmupCalls": 16,
+      "Checksum": 128,
+      "ParameterBytes": 0,
+      "PredictorStateBytes": 16,
+      "Resource": {
+        "ElapsedMilliseconds": 454.6454,
+        "CpuMilliseconds": 499.856,
+        "AllocatedBytes": 221126696
+      }
+    },
+    {
+      "Name": "last",
+      "Seed": -1,
+      "Path": "end-to-end",
+      "Repetition": 4,
+      "Calls": 256,
+      "WarmupCalls": 16,
+      "Checksum": 130.70000000000007,
+      "ParameterBytes": 0,
+      "PredictorStateBytes": 20,
+      "Resource": {
+        "ElapsedMilliseconds": 494.4407,
+        "CpuMilliseconds": 480.901,
+        "AllocatedBytes": 221126696
+      }
+    },
+    {
+      "Name": "untrained-rnn",
+      "Seed": 41,
+      "Path": "end-to-end",
+      "Repetition": 4,
+      "Calls": 256,
+      "WarmupCalls": 16,
+      "Checksum": 178.95030817550116,
+      "ParameterBytes": 848,
+      "PredictorStateBytes": 80,
+      "Resource": {
+        "ElapsedMilliseconds": 458.0698,
+        "CpuMilliseconds": 457.8,
+        "AllocatedBytes": 221196328
+      }
+    },
+    {
+      "Name": "untrained-rnn",
+      "Seed": 53,
+      "Path": "end-to-end",
+      "Repetition": 4,
+      "Calls": 256,
+      "WarmupCalls": 16,
+      "Checksum": 163.37141203696555,
+      "ParameterBytes": 848,
+      "PredictorStateBytes": 80,
+      "Resource": {
+        "ElapsedMilliseconds": 463.077,
+        "CpuMilliseconds": 462.505,
+        "AllocatedBytes": 221196328
+      }
+    },
+    {
+      "Name": "untrained-rnn",
+      "Seed": 67,
+      "Path": "end-to-end",
+      "Repetition": 4,
+      "Calls": 256,
+      "WarmupCalls": 16,
+      "Checksum": 155.30056480680287,
+      "ParameterBytes": 848,
+      "PredictorStateBytes": 80,
+      "Resource": {
+        "ElapsedMilliseconds": 479.9501,
+        "CpuMilliseconds": 662.319,
+        "AllocatedBytes": 221196328
+      }
+    },
+    {
+      "Name": "trained-rnn",
+      "Seed": 41,
+      "Path": "end-to-end",
+      "Repetition": 4,
+      "Calls": 256,
+      "WarmupCalls": 16,
+      "Checksum": 128.33215848424837,
+      "ParameterBytes": 848,
+      "PredictorStateBytes": 80,
+      "Resource": {
+        "ElapsedMilliseconds": 451.6117,
+        "CpuMilliseconds": 454.477,
+        "AllocatedBytes": 221196328
+      }
+    },
+    {
+      "Name": "trained-rnn",
+      "Seed": 53,
+      "Path": "end-to-end",
+      "Repetition": 4,
+      "Calls": 256,
+      "WarmupCalls": 16,
+      "Checksum": 129.74686727505855,
+      "ParameterBytes": 848,
+      "PredictorStateBytes": 80,
+      "Resource": {
+        "ElapsedMilliseconds": 454.839,
+        "CpuMilliseconds": 456.405,
+        "AllocatedBytes": 221196328
+      }
+    },
+    {
+      "Name": "trained-rnn",
+      "Seed": 67,
+      "Path": "end-to-end",
+      "Repetition": 4,
+      "Calls": 256,
+      "WarmupCalls": 16,
+      "Checksum": 127.7422612797796,
+      "ParameterBytes": 848,
+      "PredictorStateBytes": 80,
+      "Resource": {
+        "ElapsedMilliseconds": 462.3243,
+        "CpuMilliseconds": 462.225,
+        "AllocatedBytes": 221196328
+      }
+    },
+    {
+      "Name": "unigram",
+      "Seed": -1,
+      "Path": "end-to-end",
+      "Repetition": 4,
+      "Calls": 256,
+      "WarmupCalls": 16,
+      "Checksum": 128.29882356531385,
+      "ParameterBytes": 16,
+      "PredictorStateBytes": 16,
+      "Resource": {
+        "ElapsedMilliseconds": 460.231,
+        "CpuMilliseconds": 592.999,
+        "AllocatedBytes": 221126696
+      }
+    },
+    {
+      "Name": "bigram",
+      "Seed": -1,
+      "Path": "end-to-end",
+      "Repetition": 4,
+      "Calls": 256,
+      "WarmupCalls": 16,
+      "Checksum": 128.32158417232785,
+      "ParameterBytes": 48,
+      "PredictorStateBytes": 20,
+      "Resource": {
+        "ElapsedMilliseconds": 453.3334,
+        "CpuMilliseconds": 455.871,
+        "AllocatedBytes": 221126696
+      }
+    },
+    {
+      "Name": "order-two",
+      "Seed": -1,
+      "Path": "end-to-end",
+      "Repetition": 4,
+      "Calls": 256,
+      "WarmupCalls": 16,
+      "Checksum": 126.62791956074209,
+      "ParameterBytes": 112,
+      "PredictorStateBytes": 24,
+      "Resource": {
+        "ElapsedMilliseconds": 465.0532,
+        "CpuMilliseconds": 465.784,
+        "AllocatedBytes": 221255720
+      }
+    },
+    {
+      "Name": "known",
+      "Seed": -1,
+      "Path": "end-to-end",
+      "Repetition": 4,
+      "Calls": 256,
+      "WarmupCalls": 16,
+      "Checksum": 126.5,
+      "ParameterBytes": 0,
+      "PredictorStateBytes": 24,
+      "Resource": {
+        "ElapsedMilliseconds": 463.2325,
+        "CpuMilliseconds": 627.042,
+        "AllocatedBytes": 221126696
+      }
+    }
+  ],
+  "Runtime": ".NET 10.0.11",
+  "SourceCommit": "468772e59b6a587469fd7fd576d0bd141d421af0",
+  "SourceHashes": [
+    {
+      "File": "src/Core/Chip8.fs",
+      "Sha256": "1D6286765EE3471940A52C5F3E297E1D3252BA710CA515182EAF18DD1ED4437A"
+    },
+    {
+      "File": "src/Core/FrameMotion.fs",
+      "Sha256": "905EAB511A0F5CE877AE6E71003FFCFF7AEA3B2B5E86172D5B8883846528B67D"
+    },
+    {
+      "File": "src/Core/FrameSignals.fs",
+      "Sha256": "6D438A0B36981946C641EE4C03A3A5474ED63AB74883553B0CCCC6BF9FC4F8D5"
+    },
+    {
+      "File": "src/Core/GameEnvironment.fs",
+      "Sha256": "D4DE496B2DB5136C53F5761825A23862F55083FE04C7E475033B3748A890EED8"
+    },
+    {
+      "File": "src/Core/SplitMix64.fs",
+      "Sha256": "56D14EA951C459EF9509F934AE9AD65A293BEACBA841A2CBA8A2289693AAF174"
+    },
+    {
+      "File": "src/Research.FSharp/ResearchRandom.fs",
+      "Sha256": "4422C5EE4380A698FF479F0082C44E1453990C48AA034B9842719C4E0E7C79FF"
+    },
+    {
+      "File": "src/Research.FSharp/SmallRnn.fs",
+      "Sha256": "E2A4C965D61D9E128B9B9F8857D69E24A527ABD4E9386DD61EC506B40A05DABD"
+    },
+    {
+      "File": "src/Research.FSharp/SmallRnnTraining.fs",
+      "Sha256": "61D6BD4213B44E4E0AB46DFBA9E0DB9C4241513F896C7175441DEAADAE1DBB32"
+    },
+    {
+      "File": "src/Research.FSharp/RenderedSignalCarrier.fs",
+      "Sha256": "E45BDA8B67FF3CD7B3B0E58FEBC787FAB4F0E7CB47A7C338661098F80704A7CA"
+    },
+    {
+      "File": "src/Research.FSharp/RenderedSignalPrediction.fs",
+      "Sha256": "9A27F564B34E9A7D119BE31D4A1B4AE3A8B2F5A1AFC2593179E1A0C12970AA2B"
+    },
+    {
+      "File": "src/Research.FSharp/RenderedSignalDetection.fs",
+      "Sha256": "745A4CFC43B04259C71181B7C55FEEE5F30481902D4510B0EADD3E3C2A5CE0FE"
+    },
+    {
+      "File": "src/Research.FSharp/RenderedSignalExperiment.fs",
+      "Sha256": "FCE7AA8A4141E0677C4652AF5EF3F3A790F831BB34EC1223303040AF85E5C0D7"
+    },
+    {
+      "File": "src/Research.FSharp/RenderedSignalRuntime.fsx",
+      "Sha256": "7CB5607C611BC1EA22DD8FC70B2CCE8A924A5C85D22919BA3FC8A5DDB4D163D9"
+    },
+    {
+      "File": "src/Research.FSharp/run-rendered-signal-experiment.fsx",
+      "Sha256": "9AF00B5A7C1B68C2B93D0A82AB66525A9D53217FE0302C7D61B04038DBAE153B"
+    },
+    {
+      "File": "src/Research.FSharp/measure-rendered-signal-inference.fsx",
+      "Sha256": "330A337E493238C122F4E719CFC0FB1227A9121FD4A6734A53EBB802AC83A139"
+    },
+    {
+      "File": "docs/research/2026-09-06-rendered-signal-predictor-protocol.md",
+      "Sha256": "3D33BF23EDFC20E4B01B4E06FE88570FED4EFBE3F0559F9164451B2727CD622D"
+    }
+  ]
+}

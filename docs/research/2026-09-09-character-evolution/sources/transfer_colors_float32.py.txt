@@ -1,0 +1,22 @@
+"""Transfer inferred TripoSR surface colors onto aligned TripoSG geometry.
+Axiswise bounds fit + 4-neighbor interpolation is a heuristic, not registration proof.
+"""
+from pathlib import Path
+import json,numpy as np,trimesh
+from scipy.spatial import cKDTree
+root=Path(__file__).resolve().parent;lab=root.parent/'Character-Learning-Lab'
+rows=[]
+for kind in ['head']:
+ for name in ['AceHack','Xenaa']:
+  srcpath=(root/'heads'/name/'mesh.glb') if kind=='head' else (root/'fixed-latent'/name/'mesh-384.glb')
+  dstpath=(root/'heads-sg-float32'/name/'mesh.glb') if kind=='head' else (lab/'reconstruction-sg-framed'/name/'mesh.glb')
+  src=trimesh.load(srcpath,force='mesh');dst=trimesh.load(dstpath,force='mesh')
+  xyz=dst.vertices[:,[2,0,1]]
+  aligned=(xyz-xyz.min(0))/np.ptp(xyz,axis=0)*np.ptp(src.vertices,axis=0)+src.vertices.min(0)
+  dist,index=cKDTree(src.vertices).query(aligned,k=4)
+  weights=1/np.maximum(dist,1e-6);weights/=weights.sum(1,keepdims=True)
+  colors=(src.visual.vertex_colors[index,:3]*weights[:,:,None]).sum(1).clip(0,255).astype(np.uint8)
+  dst.visual.vertex_colors=np.column_stack([colors,np.full(len(colors),255,dtype=np.uint8)])
+  out=root/'transferred-float32'/name;out.mkdir(parents=True,exist_ok=True);dst.export(out/f'{kind}.glb')
+  rows.append(dict(character=name,part=kind,mean_nearest_distance=float(dist[:,0].mean()),max_nearest_distance=float(dist[:,0].max()),method='axiswise bounds alignment, inverse-distance 4-neighbor surface colors'))
+(root/'transfer-float32-receipts.json').write_text(json.dumps(rows,indent=2)+'\n')

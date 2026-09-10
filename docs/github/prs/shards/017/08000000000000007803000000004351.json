@@ -1,0 +1,12 @@
+{
+  "pr_number": 17233,
+  "archive_path": "docs/history/pr-reviews/PR-17233-fix-io-close-the-check-then-write-toctou-across-ten-sites-on-one-new-primitive.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-10T15:38:38.165Z",
+  "schema_version": "v1",
+  "commit_sha": "4a51ae507330134d5492719703a0f469d8f4235f",
+  "title": "fix(io): close the check-then-write TOCTOU across ten sites, on one new primitive",
+  "state": "MERGED",
+  "merged_at": "2026-09-10T15:37:51Z",
+  "head_ref": "sec7/file-system-race"
+}

@@ -1,0 +1,14 @@
+{
+  "id": "080d03f2738a1010a01300080e7423fc",
+  "at": "2026-09-07T23:57:45.154Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1Z4WWA2087G0R003PPWF6T",
+    "type": "task",
+    "title": "FUSE byte session OPEN READ WRITE RELEASE with DirectIo",
+    "slug": "fuse-byte-session-open-read-write-release-with-directio",
+    "priority": "P2",
+    "filename": "081M1Z4WWA2087G0R003PPWF6T-fuse-byte-session-open-read-write-release-with-directio.md"
+  }
+}

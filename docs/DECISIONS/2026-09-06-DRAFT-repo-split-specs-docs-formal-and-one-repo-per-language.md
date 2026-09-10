@@ -273,6 +273,53 @@ ref that `git` alone can follow, with `ace` as the ergonomic layer on top.
 *facts*, and `ace` would be the ergonomic nexus for *resolution* — and neither may become
 mandatory without violating §1.
 
+## Regenerated artifacts go to a repo whose history is NOT preserved
+
+Aaron, 2026-09-07, deciding the `db/search-index` question and generalising it:
+
+> *"we have a plan to save files in a way that costs space on every recalculation, so full
+> history is not preserved — we were going to do this on a different repo. Just make sure this
+> plan is part of the repo split too, and we can delete it for now."*
+
+**The cost model is the point, and it is the triangle's worst case.** A derived artifact
+committed to a full-history repo costs `size x recalculations`, **forever** — every rebuild
+writes a new blob and every old blob stays reachable. The search index measured **59.7 MB across
+40 files**, rebuilt **7 times in a single day** (2026-08-24) before its cadence was disabled. At
+that rate the artifact is not 60 MB; it is 60 MB per rebuild, permanently, for a file whose
+entire content is a pure function of the tree it indexes.
+
+**So the fix is not to regenerate less.** It is to store regenerated things where history is
+disposable:
+
+> **If an artifact is regenerated, its history is not evidence. Only its GENERATOR's history is.**
+
+That sentence is the whole rule, and it follows from the triangle directly: a derived artifact is
+an observation that a generator can reproduce on demand, so retaining its past is retaining
+points you can always recompute — the expensive corner, paying rent on a fact you already own.
+
+**Consequence for the split:** a repo for derived artifacts — working name `zeta-index` — whose
+history is periodically discarded rather than accumulated (orphan-refresh, or a truncating
+force-replace on a schedule; the mechanism is an implementation detail, the *non-preservation*
+is the requirement). It is deliberately NOT `zeta-archive`: the PR-review archive is append-only
+history we want to keep, and conflating "big" with "disposable" would eventually discard
+something irreplaceable.
+
+| repo | contents | history |
+|---|---|---|
+| `zeta-archive` | PR reviews, past decisions | **preserved** — it IS the record |
+| `zeta-index` | search index, generated dashboards, any pure function of the tree | **not preserved** — regenerate instead |
+
+**The honest limit of the deletion that accompanies this.** Removing `db/search-index/` from the
+working tree stops FUTURE growth; it does **not** reclaim what is already in the pack, because
+every historical blob stays reachable from the commits that introduced it. Reclaiming that needs
+a history rewrite, which is a gated class and is not proposed here. So the win is *"it stops
+costing more"*, not *"the repo got 60 MB smaller"* — and a report claiming the latter would be
+wrong.
+
+**Falsifier already in place:** `query.ts` REFUSES with `no index at <dir> — an absent index must
+not read as an empty corpus`, exit 3. So the missing artifact cannot degrade into silently empty
+search results while it lives elsewhere.
+
 ## Naming — the memory constraint, satisfied
 
 One prefix, one word, no punctuation to remember:

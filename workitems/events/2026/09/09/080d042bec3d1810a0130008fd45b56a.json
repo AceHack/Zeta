@@ -1,0 +1,14 @@
+{
+  "id": "080d042bec3d1810a0130008fd45b56a",
+  "at": "2026-09-09T09:26:31.587Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M22QV1X0087G0R002XDFBPF",
+    "type": "bug",
+    "title": "lint-autofix-apply checks out PR-controlled code with contents:write for an unreachable push path",
+    "slug": "lint-autofix-apply-checks-out-pr-controlled-code-with-conten",
+    "priority": "P2",
+    "filename": "081M22QV1X0087G0R002XDFBPF-lint-autofix-apply-checks-out-pr-controlled-code-with-conten.md"
+  }
+}

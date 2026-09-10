@@ -1,0 +1,14 @@
+{
+  "id": "080d042cb3342010a0130008cbb077b0",
+  "at": "2026-09-09T09:53:41.508Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M22SCSM4087G0R001K51FWF",
+    "type": "bug",
+    "title": "main is red: PR 17122 left 14 consecutive redirects, tripping SC2129 in lint (actionlint)",
+    "slug": "main-is-red-pr-17122-left-14-consecutive-redirects-tripping",
+    "priority": "P2",
+    "filename": "081M22SCSM4087G0R001K51FWF-main-is-red-pr-17122-left-14-consecutive-redirects-tripping.md"
+  }
+}

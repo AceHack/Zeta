@@ -1,0 +1,88 @@
+{
+  "GeneratedAtUtc": "2026-09-07T10:40:29.207522+00:00",
+  "SourceCommit": "6e43857a0a536c88f64cffdb72708840114857e8",
+  "RegistrationTag": "refs/tags/archive/experiments/081M1XK02XM087G0R00043EW05-registration",
+  "RegistrationCommit": "6a3150037a1e6be6ae89996dc8562f2061f7c75d",
+  "PlannedImplementationTag": "refs/tags/archive/experiments/081M1XK02XM087G0R00043EW05-implementation",
+  "ProtocolSha256": "E6E2943D5991E70DBC95D3ED1E620AA7505D3E692315E80588729C9FCD03946A",
+  "SourceHashes": [
+    {
+      "File": "src/Core/ControlScheme.fs",
+      "Sha256": "1FBA050D2E32DC59C6B7EB9CC40130F0152CCFCD2465B70CA7F94801DEB59F87"
+    },
+    {
+      "File": "src/Core/GameEnvironment.fs",
+      "Sha256": "D4DE496B2DB5136C53F5761825A23862F55083FE04C7E475033B3748A890EED8"
+    },
+    {
+      "File": "src/Core/SplitMix64.fs",
+      "Sha256": "56D14EA951C459EF9509F934AE9AD65A293BEACBA841A2CBA8A2289693AAF174"
+    },
+    {
+      "File": "src/Core/Result.fs",
+      "Sha256": "C2F07DC84DFA5F44215BAA1C6DFA88D4D0CE294F8A411FF43A433ADA5725BEB1"
+    },
+    {
+      "File": "src/Research.FSharp/ResearchRandom.fs",
+      "Sha256": "4422C5EE4380A698FF479F0082C44E1453990C48AA034B9842719C4E0E7C79FF"
+    },
+    {
+      "File": "src/Research.FSharp/HiddenSwitchReceipt.fs",
+      "Sha256": "8D0F4B1844B64B46CBC8B6E8A0688B0AFAD1BA2F29B1A088DFEAA8C1AE529F55"
+    },
+    {
+      "File": "src/Research.FSharp/HiddenSwitchObservation.fs",
+      "Sha256": "09468D775552259612AF31EF7AAF3831474B5AE37F0063EA17AA632D04A4448E"
+    },
+    {
+      "File": "src/Research.FSharp/HiddenSwitchCarrier.fs",
+      "Sha256": "EB21882259B482DB5136824D7E9A10F348ABC59E3DC8A9A1E80221AFF0B3D868"
+    },
+    {
+      "File": "src/Research.FSharp/HiddenSwitchPolicy.fs",
+      "Sha256": "4358B476FA4871B1C187F615133B35BAC1139359919500CD3B05DBE1DA0AAFB1"
+    },
+    {
+      "File": "src/Research.FSharp/HiddenSwitchExperiment.fs",
+      "Sha256": "21B33C22912D56DD1BDDA071BB821279207E64C4A34BA05129564C4D81CBC55A"
+    },
+    {
+      "File": "src/Research.FSharp/HiddenSwitchRuntime.fsx",
+      "Sha256": "FD90ED4117DF678FC2BFEACF987A59593446EC755F14333B9F067C6172C48D14"
+    },
+    {
+      "File": "src/Research.FSharp/run-hidden-switch-experiment.fsx",
+      "Sha256": "088C4BC3F18688DB08C4503D12EB23C05D7B47D1AD44477FA3679FA9599E7D9F"
+    },
+    {
+      "File": "src/Research.FSharp/measure-hidden-switch-inference.fsx",
+      "Sha256": "E8330838C496C518D72DCAF6661CD97319A040B260F856A0DF7A13D984F67F81"
+    },
+    {
+      "File": "src/Research.FSharp/check-hidden-switch-kernel.fsx",
+      "Sha256": "B218FC4A733DFAAB986F82921A3EA0AE985A4B9A56C39F085BD75A8951A95052"
+    },
+    {
+      "File": "src/Interp.Python/zeta_interp/hidden_switch_reference.py",
+      "Sha256": "7130FBF88E4A5F7393AD59CFFD6C56637B3D226F630B8CF547167D319BF880E2"
+    },
+    {
+      "File": "src/Interp.Python/zeta_interp/hidden_switch_replay.py",
+      "Sha256": "1F676223B32583AB3313476373A6FA9FBA792231827F504788F39C1BA42D50D5"
+    },
+    {
+      "File": "src/Interp.Python/zeta_interp/hidden_switch_verdict.py",
+      "Sha256": "DEB49D086669FC71C8675548408EE251FDB175624FEB48931993D60F70D36F23"
+    },
+    {
+      "File": "docs/research/2026-09-07-hidden-switch-protocol.md",
+      "Sha256": "E6E2943D5991E70DBC95D3ED1E620AA7505D3E692315E80588729C9FCD03946A"
+    },
+    {
+      "File": "docs/research/hidden-switch-validation/2026-09-07/hand-fixture.json",
+      "Sha256": "A37CBDB7B62399FA0A74ADFE0ADAFF7395863F89A47131FCDF0ABC68C4260A84"
+    }
+  ],
+  "Scope": "Nineteen directly admitted scientific source/contract/hand-fixture files. Loaded assembly identities are separate; no full transitive toolchain or source-to-binary theorem is claimed.",
+  "RegisteredSourcesGenerated": false
+}

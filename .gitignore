@@ -86,11 +86,37 @@ lake-packages/
 *.ilean
 *.trace
 
-# Verifier JARs at the LEGACY tools/ paths. The jars the runners load are
-# committed at src/Core.TLA/tla2tools.jar + src/Core.Alloy/alloy.jar (#8053);
-# nothing writes tools/{tla,alloy}/ any more (081M001E114087G0R001AZF4KD
-# deleted the from-url rows). These patterns stay as a guard so a jar copied
-# here by hand cannot be committed as a second, unused toolchain.
+# Verifier JARs.
+#
+# src/Core.Alloy/alloy.jar is FETCHED by tools/setup/install.sh from the
+# digest-pinned row in tools/setup/manifests/from-url (081M23AST90087G0R00150MK76),
+# so it must not be tracked. audit-ci-cache-paths.ts additionally requires any
+# repo-relative path named in an actions/cache block to be git-ignored, and this
+# line is what satisfies that for the jar cache entry.
+src/Core.Alloy/*.jar
+#
+# src/Core.TLA/tla2tools.jar is FETCHED too, as of 081M23ESC5B087G0R002HJ39DG.
+# Its from-url row carries `rolling=`, because tlaplus re-uploads the v1.8.0
+# prerelease asset in place; the digest still fails closed on every rebuild and
+# `tools/setup/repin-rolling.ts` is the re-measure-then-re-pin path. It stopped
+# being committed because a checked-in verifier is a binary nobody re-derives,
+# and the maintainer chose the newer checker on the ground that its updates may
+# find cases the old one misses.
+src/Core.TLA/*.jar
+#
+# The realizer's and the re-pin tool's working files: `<dest>.part` is the
+# fetch staging path (verified before the rename, so it exists only mid-fetch)
+# and `<dest>.prepin` is the previous bytes repin-rolling.ts keeps until the
+# re-measure passes. Both are deleted on the happy path; ignoring them keeps an
+# interrupted run from offering a jar for commit.
+src/Core.TLA/*.jar.part
+src/Core.TLA/*.jar.prepin
+src/Core.Alloy/*.jar.part
+src/Core.Alloy/*.jar.prepin
+#
+# The LEGACY tools/ paths. Nothing writes tools/{tla,alloy}/ any more; these
+# patterns stay as a guard so a jar copied here by hand cannot be committed as a
+# second, unused toolchain.
 tools/alloy/*.jar
 tools/tla/*.jar
 
@@ -220,8 +246,16 @@ repository-open-graph-template.png
 Spine/
 
 # Alloy runner compiled-class scratch directory — produced by `javac
-# tools/alloy/AlloyRunner.java` on first test run. Regenerated; not source.
+# AlloyRunner.java` on first test run. Regenerated; not source.
+#
+# BOTH paths are listed on purpose. The tree moved to src/Core.Alloy/ and
+# this rule was not moved with it, so src/Core.Alloy/classes/AlloyRunner.class
+# was committed -- a build intermediate in the proof lineage, and worse, one
+# the harness treats as authoritative: Alloy.Runner.Tests.fs skips javac when
+# the .class is newer than the .java, so a stale committed class silently wins
+# over its own source. tools/alloy/classes/ still exists as local scratch.
 tools/alloy/classes/
+src/Core.Alloy/classes/
 .broadcasts/
 .concept-index.json
 
@@ -370,3 +404,15 @@ db/ledgers/privacy/
 
 # Playwright run output — artifacts of a run, never the run itself.
 test-results/
+# Generated character media stays inside versioned release ZIPs; see docs/CHARACTER-ASSET-STORAGE.md.
+/docs/research/*character*/**/*.png
+/docs/research/*character*/**/*.jpg
+/docs/research/*character*/**/*.jpeg
+/docs/research/*character*/**/*.webp
+/docs/research/*character*/**/*.blend
+/docs/research/*character*/**/*.blend1
+/docs/research/*character*/**/*.glb
+/docs/research/*character*/**/*.fbx
+/docs/research/*character*/**/*.mp4
+/docs/research/*character*/**/*.mov
+/docs/research/*character*/**/*.zip

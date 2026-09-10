@@ -25,8 +25,9 @@ open Zeta.Core.FSharp.Blake3
 /// last reclaim tick are metered on the volume (`reclaimTickMetered`).
 /// Orphan catalog keeps full ContentHash256 (`orphanObjects`); a path
 /// scan cannot reconstruct ids. Catalog persists in dual-slot
-/// `known.pins.0` / `known.pins.1` (generation + CRC); `known.pins`
-/// is a copy. Reopen still sees crash leftovers. Successful freeze enqueues orphan
+/// `known.pins.0` / `known.pins.1` (generation + CRC). Reopen still
+/// loads a leftover `known.pins` alias if both slots are missing.
+/// Successful freeze enqueues orphan
 /// reclaim when the catalog is nonempty. Reopen enqueues from leftover
 /// sizes. The freeze-byte meter persists in the catalog so reopen
 /// does not start at pacer(0). Default `create` stores CAS on `BlockCas`; reclaim
@@ -42,7 +43,7 @@ open Zeta.Core.FSharp.Blake3
 /// `noteFreeze` / `applyRetention` / `noteKnownObject` persist are best-effort
 /// (write-fail does not throw; next FreezeLog persist retries). After putLeaves,
 /// stored object bytes are hashed; mismatch withholds commit as
-/// `FreezeError.MissingLeaves`.
+/// `FreezeError.MissingLeaves`. Buffered `putObject` hash-verifies the same way.
 ///
 /// DoP=1 on this log. No Task.Run except the ferry launch (injected context
 /// on the DST path; `manual` + `PumpToIdleAsync` for tests).
@@ -145,35 +146,6 @@ module ZetaFsFreeze =
         else
             None
 
-    let private catalogObjectLines
-        (known: Dictionary<ContentHash256, uint64>)
-        (livePins: HashSet<ContentHash256>)
-        : string[] =
-        known
-        |> Seq.map (fun kv ->
-            let pin = if livePins.Contains kv.Key then "1" else "0"
-
-            kv.Key.ToHex()
-            + " "
-            + kv.Value.ToString(CultureInfo.InvariantCulture)
-            + " "
-            + pin)
-        |> Seq.toArray
-
-    let private catalogSetLines (objectSets: Dictionary<ContentHash256, ContentHash256[]>) : string[] =
-        objectSets
-        |> Seq.map (fun kv ->
-            let ids =
-                kv.Value
-                |> Array.map (fun id -> id.ToHex())
-                |> String.concat " "
-
-            if ids.Length = 0 then
-                "set " + kv.Key.ToHex()
-            else
-                "set " + kv.Key.ToHex() + " " + ids)
-        |> Seq.toArray
-
     let private encodeCatalog
         (gen: int64)
         (history: ZetaFsPolicy.HistoryPolicy)
@@ -181,28 +153,46 @@ module ZetaFsFreeze =
         (known: Dictionary<ContentHash256, uint64>)
         (livePins: HashSet<ContentHash256>)
         (objectSets: Dictionary<ContentHash256, ContentHash256[]>)
-        : string =
-        let body =
-            String.concat
-                "\n"
-                (Array.concat
-                    [| [| formatHistory history
-                          "meter " + meter.ToString(CultureInfo.InvariantCulture) |]
-                       catalogObjectLines known livePins
-                       catalogSetLines objectSets |])
+        : byte[] =
+        let sb = StringBuilder()
 
-        let payload =
-            "gen "
-            + gen.ToString(CultureInfo.InvariantCulture)
-            + "\n"
-            + body
+        sb
+            .Append("gen ")
+            .Append(gen.ToString(CultureInfo.InvariantCulture))
+            .Append('\n')
+            .Append(formatHistory history)
+            .Append('\n')
+            .Append("meter ")
+            .Append(meter.ToString(CultureInfo.InvariantCulture))
+        |> ignore
 
-        let crc = HardwareCrc.Crc32C(ReadOnlySpan(Encoding.UTF8.GetBytes payload))
+        for kv in known do
+            sb.Append('\n') |> ignore
+            kv.Key.AppendHex(sb) |> ignore
 
-        "crc "
-        + crc.ToString(CultureInfo.InvariantCulture)
-        + "\n"
-        + payload
+            sb
+                .Append(' ')
+                .Append(kv.Value.ToString(CultureInfo.InvariantCulture))
+                .Append(' ')
+                .Append(if livePins.Contains kv.Key then "1" else "0")
+            |> ignore
+
+        for kv in objectSets do
+            sb.Append('\n').Append("set ") |> ignore
+            kv.Key.AppendHex(sb) |> ignore
+
+            for id in kv.Value do
+                sb.Append(' ') |> ignore
+                id.AppendHex(sb) |> ignore
+
+        let payloadBytes = Encoding.UTF8.GetBytes(sb.ToString())
+        let crc = HardwareCrc.Crc32C(ReadOnlySpan payloadBytes)
+        let headerBytes =
+            Encoding.UTF8.GetBytes("crc " + crc.ToString(CultureInfo.InvariantCulture) + "\n")
+        let bytes = Array.zeroCreate (headerBytes.Length + payloadBytes.Length)
+        Buffer.BlockCopy(headerBytes, 0, bytes, 0, headerBytes.Length)
+        Buffer.BlockCopy(payloadBytes, 0, bytes, headerBytes.Length, payloadBytes.Length)
+        bytes
 
     let private parsePinLines
         (lines: string[])
@@ -312,22 +302,14 @@ module ZetaFsFreeze =
         (history: ZetaFsPolicy.HistoryPolicy)
         (meter: uint64)
         (objectSets: Dictionary<ContentHash256, ContentHash256[]>)
+        (catalogGen: int64 ref)
         =
-        let fs = FileSystem.Current
-        let mutable maxGen = 0L
-
-        match tryDecodePath fs (catalogSlot storeDir 0) with
-        | Some(g, _, _, _, _) when g > maxGen -> maxGen <- g
-        | _ -> ()
-
-        match tryDecodePath fs (catalogSlot storeDir 1) with
-        | Some(g, _, _, _, _) when g > maxGen -> maxGen <- g
-        | _ -> ()
-
-        let gen = maxGen + 1L
+        // In-memory gen; slots are reopen truth. Do not re-decode on persist.
+        let gen = !catalogGen + 1L
+        catalogGen := gen
         let slot = int (gen % 2L)
-        let text = encodeCatalog gen history meter known livePins objectSets
-        let bytes = Encoding.UTF8.GetBytes text
+        let fs = FileSystem.Current
+        let bytes = encodeCatalog gen history meter known livePins objectSets
 
         let writePublished path =
             let tmp = path + ".tmp"
@@ -341,7 +323,6 @@ module ZetaFsFreeze =
             fs.Move(tmp, path, true)
 
         writePublished (catalogSlot storeDir slot)
-        writePublished (catalogPath storeDir)
 
     let private catalogPersistError (storeDir: string) =
         FreezeError.Fsync(FileSync.FileSyncError.FlushFailed(catalogPath storeDir, 5))
@@ -353,9 +334,10 @@ module ZetaFsFreeze =
         (history: ZetaFsPolicy.HistoryPolicy)
         (meter: uint64)
         (objectSets: Dictionary<ContentHash256, ContentHash256[]>)
+        (catalogGen: int64 ref)
         : Result<unit, FreezeError> =
         try
-            persistCatalog storeDir known livePins history meter objectSets
+            persistCatalog storeDir known livePins history meter objectSets catalogGen
             Ok()
         with
         | :? CrashMidWriteException as ex -> raise ex
@@ -375,8 +357,9 @@ module ZetaFsFreeze =
         (history: ZetaFsPolicy.HistoryPolicy)
         (meter: uint64)
         (objectSets: Dictionary<ContentHash256, ContentHash256[]>)
+        (catalogGen: int64 ref)
         =
-        match tryPersistCatalog storeDir known livePins history meter objectSets with
+        match tryPersistCatalog storeDir known livePins history meter objectSets catalogGen with
         | Ok() -> ()
         | Error _ -> ()
 
@@ -386,6 +369,7 @@ module ZetaFsFreeze =
         (livePins: HashSet<ContentHash256>)
         (meter: uint64 ref)
         (objectSets: Dictionary<ContentHash256, ContentHash256[]>)
+        (catalogGen: int64 ref)
         : ZetaFsPolicy.HistoryPolicy =
         let fs = FileSystem.Current
         let mutable bestGen = 0L
@@ -413,6 +397,7 @@ module ZetaFsFreeze =
             applyEntries known livePins bestEntries
             applySets objectSets bestSets
             meter := bestMeter
+            catalogGen := bestGen
             bestHistory
         else
             let path = catalogPath storeDir
@@ -428,6 +413,7 @@ module ZetaFsFreeze =
                 applyEntries known livePins entries
                 applySets objectSets sets
 
+            catalogGen := 0L
             history
 
     /// DoP=1 segment writer. One boat = N freezes, one Flush; Durable adds one
@@ -444,7 +430,8 @@ module ZetaFsFreeze =
             livePins: HashSet<ContentHash256>,
             history: ZetaFsPolicy.HistoryPolicy ref,
             meter: uint64 ref,
-            objectSets: Dictionary<ContentHash256, ContentHash256[]>
+            objectSets: Dictionary<ContentHash256, ContentHash256[]>,
+            catalogGen: int64 ref
         ) =
 
         do
@@ -463,13 +450,13 @@ module ZetaFsFreeze =
 
             let persist () =
                 if err.IsNone then
-                    match tryPersistCatalog storeDir known livePins !history !meter objectSets with
+                    match tryPersistCatalog storeDir known livePins !history !meter objectSets catalogGen with
                     | Ok() -> ()
                     | Error e -> err <- Some e
 
             let succeed () =
-                persist ()
-
+                // Per-item persist already ran before each commit frame.
+                // A second write here is the same catalog without new pins.
                 if err.IsNone then
                     for i in 0 .. boat.Length - 1 do
                         let it = boat.Span.[i]
@@ -543,22 +530,57 @@ module ZetaFsFreeze =
                     d
 
                 let putLeaves (item: LogItem) =
-                    let mutable j = 0
+                    match objectCas with
+                    | Some cas ->
+                        if err.IsNone && item.Objects.Length > 0 then
+                            let staged = Array.zeroCreate item.Objects.Length
 
-                    while err.IsNone && j < item.Objects.Length do
-                        let struct (id, bytes) = item.Objects.[j]
-                        let hex = (ContentHash256.toContentAddress128 id).ToHex()
+                            for j in 0 .. item.Objects.Length - 1 do
+                                let struct (id, bytes) = item.Objects.[j]
+                                let hex = (ContentHash256.toContentAddress128 id).ToHex()
+                                staged.[j] <- hex, bytes
 
-                        match objectCas with
-                        | Some cas ->
-                            cas.Put(hex, bytes)
-                            known.[id] <- uint64 bytes.Length
-                            persist ()
-                            tryWrite (ZetaFsPath.combine2 storeDir "cas")
+                            try
+                                cas.PutMany staged
 
-                            if item.Durable then
-                                tryFlush cas.Device (ZetaFsPath.combine2 storeDir "cas")
-                        | None ->
+                                for j in 0 .. item.Objects.Length - 1 do
+                                    let struct (id, bytes) = item.Objects.[j]
+                                    known.[id] <- uint64 bytes.Length
+
+                                tryWrite (ZetaFsPath.combine2 storeDir "cas")
+
+                                if item.Durable then
+                                    tryFlush cas.Device (ZetaFsPath.combine2 storeDir "cas")
+                            with
+                            | :? CrashMidWriteException as ex -> raise ex
+                            | :? PowerOutageException as ex -> raise ex
+                            | :? BadMemoryException as ex -> raise ex
+                            | :? IOException ->
+                                err <-
+                                    Some(
+                                        FreezeError.Fsync(
+                                            FileSync.FileSyncError.FlushFailed(
+                                                ZetaFsPath.combine2 storeDir "cas",
+                                                5
+                                            )
+                                        )
+                                    )
+                            | ex when ex.Message.IndexOf("BUGGIFY", StringComparison.Ordinal) >= 0 ->
+                                err <-
+                                    Some(
+                                        FreezeError.Fsync(
+                                            FileSync.FileSyncError.FlushFailed(
+                                                ZetaFsPath.combine2 storeDir "cas",
+                                                5
+                                            )
+                                        )
+                                    )
+                    | None ->
+                        let mutable j = 0
+
+                        while err.IsNone && j < item.Objects.Length do
+                            let struct (id, bytes) = item.Objects.[j]
+                            let hex = (ContentHash256.toContentAddress128 id).ToHex()
                             let path = ZetaFsPath.combine3 objectsDir (hex.Substring(0, 2)) (hex.Substring(2))
                             let dir = ZetaFsPath.directoryName path
                             fsDoor.CreateDirectory dir
@@ -597,12 +619,12 @@ module ZetaFsFreeze =
                                 | Ok() -> ()
                                 | Error e -> err <- Some(FreezeError.Fsync e)
 
-                        j <- j + 1
+                            j <- j + 1
 
-                    if err.IsNone && item.Durable && objectCas.IsNone then
-                        match FileSync.fsyncDir objectsDir with
-                        | Error e -> err <- Some(FreezeError.Fsync e)
-                        | Ok() -> ()
+                        if err.IsNone && item.Durable then
+                            match FileSync.fsyncDir objectsDir with
+                            | Error e -> err <- Some(FreezeError.Fsync e)
+                            | Ok() -> ()
 
                 let objectMatchesStored (id: ContentHash256) : bool =
                     let hex = (ContentHash256.toContentAddress128 id).ToHex()
@@ -862,6 +884,402 @@ module ZetaFsFreeze =
         interface IDisposable with
             member _.Dispose() = (throttler :> IDisposable).Dispose()
 
+    let private bindingsPath (storeDir: string) =
+        ZetaFsPath.combine2 storeDir "bindings"
+
+    let private kindName (k: ZetaFsNamespace.EntityKind) =
+        match k with
+        | ZetaFsNamespace.EntityKind.File -> "file"
+        | ZetaFsNamespace.EntityKind.Directory -> "directory"
+        | ZetaFsNamespace.EntityKind.Essence -> "essence"
+        | ZetaFsNamespace.EntityKind.Symlink -> "symlink"
+
+    let private parseKind (s: string) : ZetaFsNamespace.EntityKind option =
+        if String.Equals(s, "file", StringComparison.Ordinal) then
+            Some ZetaFsNamespace.EntityKind.File
+        elif String.Equals(s, "directory", StringComparison.Ordinal) then
+            Some ZetaFsNamespace.EntityKind.Directory
+        elif String.Equals(s, "essence", StringComparison.Ordinal) then
+            Some ZetaFsNamespace.EntityKind.Essence
+        elif String.Equals(s, "symlink", StringComparison.Ordinal) then
+            Some ZetaFsNamespace.EntityKind.Symlink
+        else
+            None
+
+    let private persistNamespace (storeDir: string) (state: ZetaFsNamespace.State) =
+        let fs = FileSystem.Current
+        let sb = StringBuilder()
+
+        for kv in state.Entities do
+            sb
+                .Append("entity ")
+                .Append(ZetaFsNamespace.EntityId.format kv.Key)
+                .Append(' ')
+                .Append(kindName kv.Value)
+                .Append('\n')
+            |> ignore
+
+        for b in List.rev state.Bindings do
+            let nameHex = Convert.ToHexString b.Name
+            let asserter =
+                match b.Asserter with
+                | ZetaFsNamespace.ActorId a -> a
+
+            match b.Target with
+            | ZetaFsNamespace.Live target ->
+                sb
+                    .Append("live ")
+                    .Append(ZetaFsNamespace.EntityId.format b.Parent)
+                    .Append(' ')
+                    .Append(nameHex)
+                    .Append(' ')
+                    .Append(ZetaFsNamespace.EntityId.format target)
+                    .Append(' ')
+                    .Append(asserter)
+                    .Append(' ')
+                    .Append(b.Phase.Stamp.Version.ToString(CultureInfo.InvariantCulture))
+                    .Append('\n')
+                |> ignore
+            | ZetaFsNamespace.Tombstone ->
+                sb
+                    .Append("tombstone ")
+                    .Append(ZetaFsNamespace.EntityId.format b.Parent)
+                    .Append(' ')
+                    .Append(nameHex)
+                    .Append(' ')
+                    .Append(asserter)
+                    .Append(' ')
+                    .Append(b.Phase.Stamp.Version.ToString(CultureInfo.InvariantCulture))
+                    .Append('\n')
+                |> ignore
+
+        FileSystemIo.writeAllText fs (bindingsPath storeDir) (sb.ToString())
+
+    let private policyPath (storeDir: string) =
+        ZetaFsPath.combine2 storeDir "policy"
+
+    let private persistPolicy (storeDir: string) (catalog: ZetaFsPolicy.Catalog) =
+        FileSystemIo.writeAllText (FileSystem.Current) (policyPath storeDir) (ZetaFsPolicy.formatCatalog catalog)
+
+    let private loadPolicy (storeDir: string) : ZetaFsPolicy.Catalog =
+        let fs = FileSystem.Current
+        let path = policyPath storeDir
+
+        if not (fs.Exists path) then
+            ZetaFsPolicy.empty
+        else
+            ZetaFsPolicy.parseCatalog (Encoding.UTF8.GetString(fs.ReadAllBytes path))
+
+    let private symlinksPath (storeDir: string) =
+        ZetaFsPath.combine2 storeDir "symlinks"
+
+    let private persistSymlinks (storeDir: string) (targets: Dictionary<System.UInt128, byte[]>) =
+        let sb = StringBuilder()
+
+        for kv in targets do
+            sb
+                .Append(ZetaFsNamespace.EntityId.format (ZetaFsNamespace.EntityId.ofRaw kv.Key))
+                .Append(' ')
+                .Append(Convert.ToHexString kv.Value)
+                .Append('\n')
+            |> ignore
+
+        FileSystemIo.writeAllText (FileSystem.Current) (symlinksPath storeDir) (sb.ToString())
+
+    let private loadSymlinks (storeDir: string) : Dictionary<System.UInt128, byte[]> =
+        let acc = Dictionary<System.UInt128, byte[]>()
+        let fs = FileSystem.Current
+        let path = symlinksPath storeDir
+
+        if fs.Exists path then
+            let text = Encoding.UTF8.GetString(fs.ReadAllBytes path)
+            let lines = text.Replace("\r\n", "\n", StringComparison.Ordinal).Split('\n')
+
+            for raw in lines do
+                if raw.Length > 0 then
+                    let parts = raw.Split(' ')
+
+                    if parts.Length >= 1 then
+                        match ZetaFsNamespace.EntityId.tryParse parts.[0] with
+                        | None -> ()
+                        | Some id ->
+                            let bytes =
+                                if parts.Length < 2 || parts.[1].Length = 0 then
+                                    Array.empty
+                                else
+                                    try
+                                        Convert.FromHexString parts.[1]
+                                    with _ ->
+                                        Array.empty
+
+                            acc.[id.Raw] <- bytes
+
+        acc
+
+    let private posixPath (storeDir: string) =
+        ZetaFsPath.combine2 storeDir "posix-meta"
+
+    let private persistPosix
+        (storeDir: string)
+        (metas: Dictionary<System.UInt128, ZetaFsPosixMeta.PosixMeta>)
+        =
+        let sb = StringBuilder()
+
+        for kv in metas do
+            sb.Append(ZetaFsPosixMeta.format kv.Value).Append('\n') |> ignore
+
+        FileSystemIo.writeAllText (FileSystem.Current) (posixPath storeDir) (sb.ToString())
+
+    let private loadPosix (storeDir: string) : Dictionary<System.UInt128, ZetaFsPosixMeta.PosixMeta> =
+        let acc = Dictionary<System.UInt128, ZetaFsPosixMeta.PosixMeta>()
+        let fs = FileSystem.Current
+        let path = posixPath storeDir
+
+        if fs.Exists path then
+            let text = Encoding.UTF8.GetString(fs.ReadAllBytes path)
+            let lines = text.Replace("\r\n", "\n", StringComparison.Ordinal).Split('\n')
+
+            for raw in lines do
+                if raw.Length > 0 then
+                    match ZetaFsPosixMeta.parse raw with
+                    | None -> ()
+                    | Some meta -> acc.[meta.Entity.Raw] <- meta
+
+        acc
+
+    let private loadNamespace (storeDir: string) (root: ZetaFsNamespace.EntityId) : ZetaFsNamespace.State =
+        let fs = FileSystem.Current
+        let path = bindingsPath storeDir
+        let mutable entities = Map.add root ZetaFsNamespace.EntityKind.Directory Map.empty
+        let mutable bindings: ZetaFsNamespace.TagBinding list = []
+        let mutable next = Versionstamp.zero
+
+        if fs.Exists path then
+            let text = Encoding.UTF8.GetString(fs.ReadAllBytes path)
+            let lines =
+                text.Replace("\r\n", "\n", StringComparison.Ordinal).Split('\n')
+
+            for raw in lines do
+                if raw.Length > 0 then
+                    let parts = raw.Split(' ')
+
+                    if parts.Length >= 3 && String.Equals(parts.[0], "entity", StringComparison.Ordinal) then
+                        match ZetaFsNamespace.EntityId.tryParse parts.[1], parseKind parts.[2] with
+                        | Some id, Some kind -> entities <- Map.add id kind entities
+                        | _ -> ()
+                    elif parts.Length >= 6 && String.Equals(parts.[0], "live", StringComparison.Ordinal) then
+                        match
+                            ZetaFsNamespace.EntityId.tryParse parts.[1],
+                            ZetaFsNamespace.EntityId.tryParse parts.[3],
+                            Int64.TryParse(parts.[5], NumberStyles.Integer, CultureInfo.InvariantCulture)
+                        with
+                        | Some parent, Some target, (true, ver) ->
+                            let name = Convert.FromHexString parts.[2]
+                            let stamp = Versionstamp.ofInt64 ver
+                            if stamp.Version >= next.Version then
+                                next <- Versionstamp.tick stamp
+
+                            bindings <-
+                                { Name = name
+                                  Parent = parent
+                                  Target = ZetaFsNamespace.Live target
+                                  Phase = { Line = ZetaFsNamespace.PhaseLine; Stamp = stamp }
+                                  Asserter = ZetaFsNamespace.ActorId parts.[4] }
+                                :: bindings
+                        | _ -> ()
+                    elif parts.Length >= 5 && String.Equals(parts.[0], "tombstone", StringComparison.Ordinal) then
+                        match
+                            ZetaFsNamespace.EntityId.tryParse parts.[1],
+                            Int64.TryParse(parts.[4], NumberStyles.Integer, CultureInfo.InvariantCulture)
+                        with
+                        | Some parent, (true, ver) ->
+                            let name = Convert.FromHexString parts.[2]
+                            let stamp = Versionstamp.ofInt64 ver
+                            if stamp.Version >= next.Version then
+                                next <- Versionstamp.tick stamp
+
+                            bindings <-
+                                { Name = name
+                                  Parent = parent
+                                  Target = ZetaFsNamespace.Tombstone
+                                  Phase = { Line = ZetaFsNamespace.PhaseLine; Stamp = stamp }
+                                  Asserter = ZetaFsNamespace.ActorId parts.[3] }
+                                :: bindings
+                        | _ -> ()
+
+        { Root = root
+          Entities = entities
+          Bindings = bindings
+          Next = next
+          Line = ZetaFsNamespace.PhaseLine }
+
+    type internal LastLayout =
+        { Prev: ZetaFsJumprope.Prev
+          ObjectIds: ContentHash256[] }
+
+    let private layoutPath (storeDir: string) (entity: ZetaFsNamespace.EntityId) =
+        ZetaFsPath.combine3 storeDir "layout" (ZetaFsNamespace.EntityId.format entity)
+
+    let private encodeLayout (layout: LastLayout) : string =
+        let sb = StringBuilder()
+        sb.Append("layout/1\n") |> ignore
+        sb.Append("content ") |> ignore
+        layout.Prev.Content.AppendHex(sb) |> ignore
+        sb.Append('\n') |> ignore
+        sb.Append("span ").Append(layout.Prev.Span.ToString(CultureInfo.InvariantCulture)).Append('\n')
+        |> ignore
+        sb.Append("chunker ").Append(ZetaFsJumprope.chunkerName layout.Prev.Chunker).Append('\n')
+        |> ignore
+        sb.Append("objects") |> ignore
+
+        for id in layout.ObjectIds do
+            sb.Append(' ') |> ignore
+            id.AppendHex(sb) |> ignore
+
+        sb.Append('\n') |> ignore
+
+        for i in 0 .. layout.Prev.Leaves.Length - 1 do
+            let id, span = layout.Prev.Leaves.[i]
+            let start = layout.Prev.Starts.[i]
+
+            sb.Append("leaf ").Append(start.ToString(CultureInfo.InvariantCulture)).Append(' ')
+            |> ignore
+
+            id.AppendHex(sb) |> ignore
+
+            sb.Append(' ').Append(span.ToString(CultureInfo.InvariantCulture)).Append('\n')
+            |> ignore
+
+        sb.ToString()
+
+    let private tryParseHex (s: string) : ContentHash256 option =
+        try
+            Some(ContentHash256.ofHex s)
+        with _ ->
+            None
+
+    let private tryParseUInt64 (s: string) : uint64 option =
+        match UInt64.TryParse(s, NumberStyles.None, CultureInfo.InvariantCulture) with
+        | true, n -> Some n
+        | _ -> None
+
+    let private tryDecodeLayout (text: string) : LastLayout option =
+        let lines =
+            text.Replace("\r\n", "\n", StringComparison.Ordinal).Split('\n')
+
+        if lines.Length = 0 || not (String.Equals(lines.[0], "layout/1", StringComparison.Ordinal)) then
+            None
+        else
+            let mutable content = None
+            let mutable span = None
+            let mutable chunker = None
+            let mutable objects: ContentHash256[] = [||]
+            let leaves = ResizeArray<uint64 * ContentHash256 * uint64>()
+            let mutable bad = false
+            let mutable i = 1
+
+            while (not bad) && i < lines.Length do
+                let line = lines.[i]
+
+                if line.Length > 0 then
+                    if line.StartsWith("content ", StringComparison.Ordinal) then
+                        content <- tryParseHex (line.Substring(8))
+                        if content.IsNone then bad <- true
+                    elif line.StartsWith("span ", StringComparison.Ordinal) then
+                        span <- tryParseUInt64 (line.Substring(5))
+                        if span.IsNone then bad <- true
+                    elif line.StartsWith("chunker ", StringComparison.Ordinal) then
+                        chunker <- ZetaFsJumprope.parseChunker (line.Substring(8))
+                        if chunker.IsNone then bad <- true
+                    elif line.StartsWith("objects", StringComparison.Ordinal) then
+                        let rest =
+                            if line.Length = 7 then ""
+                            elif line.Length > 8 && line.[7] = ' ' then line.Substring(8)
+                            else
+                                bad <- true
+                                ""
+
+                        if not bad then
+                            if rest.Length = 0 then
+                                objects <- [||]
+                            else
+                                let parts = rest.Split(' ')
+                                let acc = ResizeArray<ContentHash256>(parts.Length)
+                                let mutable j = 0
+
+                                while (not bad) && j < parts.Length do
+                                    match tryParseHex parts.[j] with
+                                    | Some id -> acc.Add id
+                                    | None -> bad <- true
+
+                                    j <- j + 1
+
+                                if not bad then
+                                    objects <- acc.ToArray()
+                    elif line.StartsWith("leaf ", StringComparison.Ordinal) then
+                        let parts = line.Substring(5).Split(' ')
+
+                        if parts.Length <> 3 then
+                            bad <- true
+                        else
+                            match tryParseUInt64 parts.[0], tryParseHex parts.[1], tryParseUInt64 parts.[2] with
+                            | Some start, Some id, Some n -> leaves.Add(start, id, n)
+                            | _ -> bad <- true
+                    else
+                        bad <- true
+
+                i <- i + 1
+
+            match bad, content, span, chunker with
+            | false, Some c, Some n, Some ch when leaves.Count > 0 ->
+                let starts = Array.zeroCreate leaves.Count
+                let leafIds = Array.zeroCreate leaves.Count
+
+                for k in 0 .. leaves.Count - 1 do
+                    let start, id, ln = leaves.[k]
+                    starts.[k] <- start
+                    leafIds.[k] <- (id, ln)
+
+                Some
+                    { Prev =
+                        { Content = c
+                          Span = n
+                          Chunker = ch
+                          Starts = starts
+                          Leaves = leafIds }
+                      ObjectIds = objects }
+            | _ -> None
+
+    let private tryLoadLayout (storeDir: string) (entity: ZetaFsNamespace.EntityId) : LastLayout option =
+        let path = layoutPath storeDir entity
+        let fs = FileSystem.Current
+
+        if not (fs.Exists path) then
+            None
+        else
+            tryDecodeLayout (Encoding.UTF8.GetString(fs.ReadAllBytes path))
+
+    let private persistLayoutBestEffort
+        (storeDir: string)
+        (entity: ZetaFsNamespace.EntityId)
+        (layout: LastLayout)
+        =
+        // Single-leaf is a hint we can rebuild cheaply. Skip the disk write
+        // on the 1-byte freeze storm. LastLayout in memory still holds.
+        if layout.Prev.Leaves.Length <= 1 || layout.Prev.Starts.Length <> layout.Prev.Leaves.Length then
+            ()
+        else
+            try
+                let path = layoutPath storeDir entity
+                FileSystem.Current.CreateDirectory(ZetaFsPath.directoryName path)
+                FileSystemIo.writeAllText FileSystem.Current path (encodeLayout layout)
+            with
+            | :? CrashMidWriteException -> ()
+            | :? PowerOutageException -> ()
+            | :? BadMemoryException -> ()
+            | :? IOException -> ()
+            | ex when ex.Message.IndexOf("BUGGIFY", StringComparison.Ordinal) >= 0 -> ()
+
     [<Sealed>]
     type Volume
         (
@@ -872,7 +1290,8 @@ module ZetaFsFreeze =
             config: FerryThrottlerConfig,
             manual: bool,
             blockIo: FreezeBlockIo option,
-            objectCas: BlockCas option
+            objectCas: BlockCas option,
+            clock: ISimulationEnvironment
         ) =
         let gate = obj ()
         let commits = Dictionary<ContentHash256, FreezeResult>()
@@ -882,7 +1301,26 @@ module ZetaFsFreeze =
         let known = Dictionary<ContentHash256, uint64>()
         let livePins = HashSet<ContentHash256>()
         let objectSets = Dictionary<ContentHash256, ContentHash256[]>()
-        let history = ref (loadCatalog storeDir known livePins freezeBytesSinceReclaim objectSets)
+        let catalogGen = ref 0L
+        let lastLayout = Dictionary<ZetaFsNamespace.EntityId, LastLayout>()
+        let history = ref (loadCatalog storeDir known livePins freezeBytesSinceReclaim objectSets catalogGen)
+        let root =
+            let path = ZetaFsPath.combine2 storeDir ZetaFsNamespace.RootFileName
+            let fs = FileSystem.Current
+
+            if not (fs.Exists path) then
+                None
+            else
+                ZetaFsNamespace.EntityId.tryParse (Encoding.UTF8.GetString(fs.ReadAllBytes path))
+        let nsState =
+            ref (
+                match root with
+                | None -> None
+                | Some rootId -> Some(loadNamespace storeDir rootId)
+            )
+        let policyState = ref (loadPolicy storeDir)
+        let symlinkTargets = loadSymlinks storeDir
+        let posixMeta = loadPosix storeDir
         let log =
             new FreezeLog(
                 storeDir,
@@ -894,7 +1332,8 @@ module ZetaFsFreeze =
                 livePins,
                 history,
                 freezeBytesSinceReclaim,
-                objectSets
+                objectSets,
+                catalogGen
             )
         let reclaim = new ReclaimFerry(storeDir, config, manual, objectCas)
         do
@@ -941,16 +1380,37 @@ module ZetaFsFreeze =
         member internal _.KnownObjects = known
         member internal _.LivePins = livePins
         member internal _.ObjectSets = objectSets
+        member internal _.CatalogGen = catalogGen
+        member internal _.LastLayout = lastLayout
         member _.History
             with get () = !history
             and set v =
                 history := v
-                persistCatalogBestEffort storeDir known livePins v !freezeBytesSinceReclaim objectSets
+                persistCatalogBestEffort storeDir known livePins v !freezeBytesSinceReclaim objectSets catalogGen
+        member _.Root = root
+        member internal _.Ns = nsState
+        member internal _.Policy = policyState
+        member internal _.Symlinks = symlinkTargets
+        member internal _.Posix = posixMeta
+        member _.Clock = clock
 
         interface IDisposable with
             member _.Dispose() =
                 (reclaim :> IDisposable).Dispose()
                 (log :> IDisposable).Dispose()
+
+    let private applyPolicyCatalog (volume: Volume) (catalog: ZetaFsPolicy.Catalog) =
+        persistPolicy volume.StoreDir catalog
+        volume.Policy := catalog
+
+    let private stampPosix
+        (volume: Volume)
+        (id: ZetaFsNamespace.EntityId)
+        (kind: ZetaFsNamespace.EntityKind)
+        =
+        let now = ZetaFsPosixMeta.unixNs volume.Clock
+        volume.Posix.[id.Raw] <- ZetaFsPosixMeta.born id kind now
+        persistPosix volume.StoreDir volume.Posix
 
     let private logDir (v: Volume) = ZetaFsPath.combine2 v.StoreDir "log"
     let private objectsDir (v: Volume) = ZetaFsPath.combine2 v.StoreDir "objects"
@@ -1284,14 +1744,36 @@ module ZetaFsFreeze =
         (manual: bool)
         (blockIo: FreezeBlockIo option)
         (objectCas: BlockCas option)
+        (clock: ISimulationEnvironment)
         : Volume =
         let fs = FileSystem.Current
+        fs.CreateDirectory storeDir
         fs.CreateDirectory (ZetaFsPath.combine2 storeDir "log")
         fs.CreateDirectory (ZetaFsPath.combine2 storeDir "objects")
-        let volume = new Volume(storeDir, mutbuf, observer, session, config, manual, blockIo, objectCas)
+        let formatPath = ZetaFsPath.combine2 storeDir ZetaFsFormat.FileName
+        let headPath = ZetaFsPath.combine2 storeDir "HEAD"
+
+        if not (fs.Exists formatPath) && not (fs.Exists headPath) then
+            ZetaFsFormat.write fs storeDir ZetaFsFormat.bindingsDefault
+            let rootPath = ZetaFsPath.combine2 storeDir ZetaFsNamespace.RootFileName
+
+            if not (fs.Exists rootPath) then
+                let ns =
+                    ZetaFsNamespace.create (
+                        ZetaFsNamespace.Entropy(fun () -> SystemEnvironment.Default.NextInt64())
+                    )
+                FileSystemIo.writeAllText fs rootPath (ZetaFsNamespace.EntityId.format ns.Root)
+
+        let volume =
+            new Volume(storeDir, mutbuf, observer, session, config, manual, blockIo, objectCas, clock)
 
         try
             lock volume.Gate (fun () ->
+                match volume.Root with
+                | Some root when not (volume.Posix.ContainsKey root.Raw) ->
+                    stampPosix volume root ZetaFsNamespace.EntityKind.Directory
+                | _ -> ()
+
                 match session with
                 | None -> replayPlainLog fs volume
                 | Some s -> replaySealedLog fs volume s)
@@ -1312,7 +1794,7 @@ module ZetaFsFreeze =
         fs.CreateDirectory(ZetaFsPath.combine2 storeDir "log")
         let path = ZetaFsPath.combine3 storeDir "log" "freeze"
         let io = FileSystemBlockIo(fs, path, 4096)
-        createFull storeDir mutbuf observer session defaultConfig manual (Some(HostFile io)) None
+        createFull storeDir mutbuf observer session defaultConfig manual (Some(HostFile io)) None SystemEnvironment.Default
 
     let private hostFileStore
         (storeDir: string)
@@ -1326,7 +1808,7 @@ module ZetaFsFreeze =
         let logIo = FileSystemBlockIo(fs, ZetaFsPath.combine3 storeDir "log" "freeze", 4096)
         let casIo = FileSystemBlockIo(fs, ZetaFsPath.combine2 storeDir "cas", 4096)
         let cas = BlockCas(casIo)
-        createFull storeDir mutbuf observer session defaultConfig manual (Some(HostFile logIo)) (Some cas)
+        createFull storeDir mutbuf observer session defaultConfig manual (Some(HostFile logIo)) (Some cas) SystemEnvironment.Default
 
     let createWith
         (storeDir: string)
@@ -1336,6 +1818,23 @@ module ZetaFsFreeze =
         : Volume =
         let volume = hostFileStore storeDir mutbuf observer session false
         volume.History <- ZetaFsPolicy.rollingDefault
+
+        lock volume.Gate (fun () ->
+            match ZetaFsPolicy.volumeDefault !volume.Policy ZetaFsPolicy.HistoryTag with
+            | Some _ -> ()
+            | None ->
+                applyPolicyCatalog
+                    volume
+                    (ZetaFsPolicy.assertBinding
+                        !volume.Policy
+                        { Subject = ZetaFsPolicy.VolumeDefault
+                          Kind = ZetaFsPolicy.History ZetaFsPolicy.rollingDefault
+                          Phase =
+                            ({ Line = ZetaFsNamespace.PhaseLine
+                               Stamp = Versionstamp.zero }
+                            : ZetaFsNamespace.FsPhase)
+                          Asserter = ZetaFsNamespace.ActorId "freeze" }))
+
         volume
 
     /// Unencrypted control (FORMAT enc=off). The default first-product profile.
@@ -1351,7 +1850,15 @@ module ZetaFsFreeze =
         (mutbuf: ZetaFsMutbuf.Catalog)
         (observer: IDurabilityObserver option)
         : Volume =
-        createFull storeDir mutbuf observer None defaultConfig true None None
+        createFull storeDir mutbuf observer None defaultConfig true None None SystemEnvironment.Default
+
+    let createManualStreamWith
+        (storeDir: string)
+        (mutbuf: ZetaFsMutbuf.Catalog)
+        (observer: IDurabilityObserver option)
+        (clock: ISimulationEnvironment)
+        : Volume =
+        createFull storeDir mutbuf observer None defaultConfig true None None clock
 
     let createManualWithStream
         (storeDir: string)
@@ -1359,7 +1866,7 @@ module ZetaFsFreeze =
         (observer: IDurabilityObserver option)
         (session: ZetaFsCrypto.Session option)
         : Volume =
-        createFull storeDir mutbuf observer session defaultConfig true None None
+        createFull storeDir mutbuf observer session defaultConfig true None None SystemEnvironment.Default
 
     /// DST / test: no background ferry. Caller drives with `pumpLog`.
     /// Journaled log and CAS objects ride `FileSystemBlockIo`.
@@ -1387,7 +1894,7 @@ module ZetaFsFreeze =
         (observer: IDurabilityObserver option)
         (blocks: SimulatedBlockIo)
         : Volume =
-        createFull storeDir mutbuf observer None defaultConfig true (Some(Simulated blocks)) None
+        createFull storeDir mutbuf observer None defaultConfig true (Some(Simulated blocks)) None SystemEnvironment.Default
 
     /// DST: sealed Journaled frames through `IBlockIo`. Same dual-slot
     /// superblock as `createManualWithBlocks`. Wrong-key MAC on the first
@@ -1399,7 +1906,7 @@ module ZetaFsFreeze =
         (session: ZetaFsCrypto.Session)
         (blocks: SimulatedBlockIo)
         : Volume =
-        createFull storeDir mutbuf observer (Some session) defaultConfig true (Some(Simulated blocks)) None
+        createFull storeDir mutbuf observer (Some session) defaultConfig true (Some(Simulated blocks)) None SystemEnvironment.Default
 
     /// DST: log on one simulated disk, CAS objects on another. Two devices
     /// so a crash arm on objects cannot tear the log. LBA 0 and 1 on each
@@ -1411,7 +1918,7 @@ module ZetaFsFreeze =
         (logBlocks: SimulatedBlockIo)
         (objectCas: BlockCas)
         : Volume =
-        createFull storeDir mutbuf observer None defaultConfig true (Some(Simulated logBlocks)) (Some objectCas)
+        createFull storeDir mutbuf observer None defaultConfig true (Some(Simulated logBlocks)) (Some objectCas) SystemEnvironment.Default
 
     /// DST inject: log is an already-populated `FileSystemBlockIo` polyfill
     /// (e.g. `SimulatedBlockIo.ReplayTo`). CAS is a `BlockCas` on a second
@@ -1423,7 +1930,7 @@ module ZetaFsFreeze =
         (logFile: FileSystemBlockIo)
         (objectCas: BlockCas)
         : Volume =
-        createFull storeDir mutbuf observer None defaultConfig true (Some(HostFile logFile)) (Some objectCas)
+        createFull storeDir mutbuf observer None defaultConfig true (Some(HostFile logFile)) (Some objectCas) SystemEnvironment.Default
 
     /// DST: sealed Journaled log on one disk, CAS objects on another.
     let createManualWithSealedBlockStore
@@ -1434,7 +1941,7 @@ module ZetaFsFreeze =
         (logBlocks: SimulatedBlockIo)
         (objectCas: BlockCas)
         : Volume =
-        createFull storeDir mutbuf observer (Some session) defaultConfig true (Some(Simulated logBlocks)) (Some objectCas)
+        createFull storeDir mutbuf observer (Some session) defaultConfig true (Some(Simulated logBlocks)) (Some objectCas) SystemEnvironment.Default
 
     /// DST: journaled freeze log through the `FileSystemBlockIo` polyfill
     /// (one host file, LBA offsets). Same door as `createManual`.
@@ -1476,6 +1983,274 @@ module ZetaFsFreeze =
         hostFileStore storeDir mutbuf observer (Some session) true
 
     let dispose (volume: Volume) = (volume :> IDisposable).Dispose()
+
+    let private persistBind
+        (volume: Volume)
+        (state: ZetaFsNamespace.State)
+        (parent: ZetaFsNamespace.EntityId)
+        (name: byte[])
+        (target: ZetaFsNamespace.EntityId)
+        : Result<ZetaFsNamespace.State, ZetaFsNamespace.BindError> =
+        match ZetaFsNamespace.bind state parent name target (ZetaFsNamespace.ActorId "freeze") with
+        | Error e -> Error e
+        | Ok next ->
+            persistNamespace volume.StoreDir next
+            volume.Ns := Some next
+            let phase =
+                match next.Bindings with
+                | b :: _ -> b.Phase
+                | [] ->
+                    { Line = ZetaFsNamespace.PhaseLine
+                      Stamp = Versionstamp.zero }
+
+            applyPolicyCatalog
+                volume
+                (ZetaFsPolicy.copyAtFirstBind
+                    !volume.Policy
+                    target
+                    parent
+                    name
+                    phase
+                    (ZetaFsNamespace.ActorId "freeze"))
+            Ok next
+
+    /// Mint a File under `parent` and persist the TagBinding. First bind
+    /// copies nearest ByPrefix or VolumeDefault onto ByEntity.
+    let bindFileUnder
+        (volume: Volume)
+        (parent: ZetaFsNamespace.EntityId)
+        (name: byte[])
+        : Result<ZetaFsNamespace.EntityId, ZetaFsNamespace.BindError> =
+        lock volume.Gate (fun () ->
+            match !volume.Ns with
+            | None -> Error(ZetaFsNamespace.UnknownEntity parent)
+            | Some state ->
+                let entropy =
+                    ZetaFsNamespace.Entropy(fun () -> SystemEnvironment.Default.NextInt64())
+                let id, minted = ZetaFsNamespace.mint state ZetaFsNamespace.EntityKind.File entropy
+
+                match persistBind volume minted parent name id with
+                | Error e -> Error e
+                | Ok _ ->
+                    stampPosix volume id ZetaFsNamespace.EntityKind.File
+                    Ok id)
+
+    /// Mint a File under ROOT. No ROOT => UnknownEntity.
+    let bindFile (volume: Volume) (name: byte[]) : Result<ZetaFsNamespace.EntityId, ZetaFsNamespace.BindError> =
+        match volume.Root with
+        | Some root -> bindFileUnder volume root name
+        | None -> Error(ZetaFsNamespace.UnknownEntity { Raw = System.UInt128.Zero })
+
+    /// Mint a Directory under `parent` and persist the TagBinding.
+    let bindDirectory
+        (volume: Volume)
+        (parent: ZetaFsNamespace.EntityId)
+        (name: byte[])
+        : Result<ZetaFsNamespace.EntityId, ZetaFsNamespace.BindError> =
+        lock volume.Gate (fun () ->
+            match !volume.Ns with
+            | None -> Error(ZetaFsNamespace.UnknownEntity parent)
+            | Some state ->
+                let entropy =
+                    ZetaFsNamespace.Entropy(fun () -> SystemEnvironment.Default.NextInt64())
+                let id, minted = ZetaFsNamespace.mint state ZetaFsNamespace.EntityKind.Directory entropy
+
+                match persistBind volume minted parent name id with
+                | Error e -> Error e
+                | Ok _ ->
+                    stampPosix volume id ZetaFsNamespace.EntityKind.Directory
+                    Ok id)
+
+    /// Mint a Symlink under `parent`. Body is UTF-8 target bytes, not a
+    /// resolved path. Reopen `readSymlink` must return the same bytes.
+    let bindSymlink
+        (volume: Volume)
+        (parent: ZetaFsNamespace.EntityId)
+        (name: byte[])
+        (target: byte[])
+        : Result<ZetaFsNamespace.EntityId, ZetaFsNamespace.BindError> =
+        lock volume.Gate (fun () ->
+            match !volume.Ns with
+            | None -> Error(ZetaFsNamespace.UnknownEntity parent)
+            | Some state ->
+                let entropy =
+                    ZetaFsNamespace.Entropy(fun () -> SystemEnvironment.Default.NextInt64())
+                let id, minted = ZetaFsNamespace.mint state ZetaFsNamespace.EntityKind.Symlink entropy
+
+                match persistBind volume minted parent name id with
+                | Error e -> Error e
+                | Ok _ ->
+                    volume.Symlinks.[id.Raw] <- target
+                    persistSymlinks volume.StoreDir volume.Symlinks
+                    stampPosix volume id ZetaFsNamespace.EntityKind.Symlink
+                    Ok id)
+
+    let readSymlink (volume: Volume) (id: ZetaFsNamespace.EntityId) : byte[] option =
+        lock volume.Gate (fun () ->
+            match volume.Symlinks.TryGetValue id.Raw with
+            | true, bytes -> Some bytes
+            | false, _ -> None)
+
+    /// Bind an existing entity under `parent`. Refuses a Directory cycle.
+    let bindName
+        (volume: Volume)
+        (parent: ZetaFsNamespace.EntityId)
+        (name: byte[])
+        (target: ZetaFsNamespace.EntityId)
+        : Result<unit, ZetaFsNamespace.BindError> =
+        lock volume.Gate (fun () ->
+            match !volume.Ns with
+            | None -> Error(ZetaFsNamespace.UnknownEntity parent)
+            | Some state ->
+                match persistBind volume state parent name target with
+                | Error e -> Error e
+                | Ok _ -> Ok())
+
+    /// POSIX typed replace. Eisdir / Enotdir / Enotempty do not tombstone.
+    let rename
+        (volume: Volume)
+        (srcParent: ZetaFsNamespace.EntityId)
+        (srcName: byte[])
+        (dstParent: ZetaFsNamespace.EntityId)
+        (dstName: byte[])
+        : Result<unit, ZetaFsNamespace.BindError> =
+        lock volume.Gate (fun () ->
+            match !volume.Ns with
+            | None -> Error(ZetaFsNamespace.UnknownEntity srcParent)
+            | Some state ->
+                match
+                    ZetaFsNamespace.rename
+                        state
+                        srcParent
+                        srcName
+                        dstParent
+                        dstName
+                        (ZetaFsNamespace.ActorId "freeze")
+                with
+                | Error e -> Error e
+                | Ok next ->
+                    persistNamespace volume.StoreDir next
+                    volume.Ns := Some next
+                    Ok())
+
+    /// POSIX unlink: append Tombstone under `parent`. Does not retract Live.
+    let unlinkUnder
+        (volume: Volume)
+        (parent: ZetaFsNamespace.EntityId)
+        (name: byte[])
+        : Result<unit, ZetaFsNamespace.BindError> =
+        lock volume.Gate (fun () ->
+            match !volume.Ns with
+            | None -> Error(ZetaFsNamespace.UnknownEntity parent)
+            | Some state ->
+                match ZetaFsNamespace.unlink state parent name (ZetaFsNamespace.ActorId "freeze") with
+                | Error e -> Error e
+                | Ok next ->
+                    persistNamespace volume.StoreDir next
+                    volume.Ns := Some next
+                    Ok())
+
+    /// POSIX unlink under ROOT.
+    let unlinkFile (volume: Volume) (name: byte[]) : Result<unit, ZetaFsNamespace.BindError> =
+        match volume.Root with
+        | Some root -> unlinkUnder volume root name
+        | None -> Error(ZetaFsNamespace.UnknownEntity { Raw = System.UInt128.Zero })
+
+    let liveResolve (volume: Volume) (name: byte[]) : ZetaFsNamespace.EntityId option =
+        lock volume.Gate (fun () ->
+            match volume.Root, !volume.Ns with
+            | Some root, Some state -> ZetaFsNamespace.liveResolve root name state.Bindings
+            | _ -> None)
+
+    let liveResolveUnder
+        (volume: Volume)
+        (parent: ZetaFsNamespace.EntityId)
+        (name: byte[])
+        : ZetaFsNamespace.EntityId option =
+        lock volume.Gate (fun () ->
+            match !volume.Ns with
+            | Some state -> ZetaFsNamespace.liveResolve parent name state.Bindings
+            | None -> None)
+
+    /// Live names under `dir`. No `.` / `..`.
+    let readdir
+        (volume: Volume)
+        (dir: ZetaFsNamespace.EntityId)
+        : Result<(byte[] * ZetaFsNamespace.EntityId)[], ZetaFsNamespace.BindError> =
+        lock volume.Gate (fun () ->
+            match !volume.Ns with
+            | None -> Error(ZetaFsNamespace.UnknownEntity dir)
+            | Some state -> ZetaFsNamespace.readdir state dir)
+
+    let getattr
+        (volume: Volume)
+        (id: ZetaFsNamespace.EntityId)
+        : Result<ZetaFsPosixMeta.PosixStat, ZetaFsNamespace.BindError> =
+        lock volume.Gate (fun () ->
+            match !volume.Ns with
+            | None -> Error(ZetaFsNamespace.UnknownEntity id)
+            | Some state ->
+                match Map.tryFind id state.Entities with
+                | None -> Error(ZetaFsNamespace.UnknownEntity id)
+                | Some kind ->
+                    let meta =
+                        match volume.Posix.TryGetValue id.Raw with
+                        | true, m -> m
+                        | false, _ ->
+                            ZetaFsPosixMeta.born id kind (ZetaFsPosixMeta.unixNs volume.Clock)
+
+                    let size =
+                        match ZetaFsMutbuf.tryLiveLength volume.Mutbuf id with
+                        | Some n -> n
+                        | None -> meta.Size
+
+                    Ok
+                        { Meta = meta
+                          Nlink = ZetaFsNamespace.liveNlink state id
+                          Size = size })
+
+    let setattr
+        (volume: Volume)
+        (id: ZetaFsNamespace.EntityId)
+        (patch: ZetaFsPosixMeta.PosixSetattr)
+        : Result<unit, ZetaFsNamespace.BindError> =
+        lock volume.Gate (fun () ->
+            match !volume.Ns with
+            | None -> Error(ZetaFsNamespace.UnknownEntity id)
+            | Some state ->
+                match Map.tryFind id state.Entities with
+                | None -> Error(ZetaFsNamespace.UnknownEntity id)
+                | Some kind ->
+                    let now = ZetaFsPosixMeta.unixNs volume.Clock
+                    let current =
+                        match volume.Posix.TryGetValue id.Raw with
+                        | true, m -> m
+                        | false, _ -> ZetaFsPosixMeta.born id kind now
+
+                    volume.Posix.[id.Raw] <- ZetaFsPosixMeta.apply current patch now
+                    persistPosix volume.StoreDir volume.Posix
+                    Ok())
+
+    /// Title at `at` (inclusive). Tombstone does not erase prior Live.
+    let resolveAt
+        (volume: Volume)
+        (parent: ZetaFsNamespace.EntityId)
+        (name: byte[])
+        (at: Versionstamp)
+        : ZetaFsNamespace.BindingTarget option =
+        lock volume.Gate (fun () ->
+            match !volume.Ns with
+            | Some state -> ZetaFsNamespace.resolveAt parent name at state.Bindings
+            | None -> None)
+
+    /// Persist a policy fact (ByPrefix / VolumeDefault / ByEntity). Later
+    /// prefix edits do not rewrite an existing ByEntity hub.
+    let assertPolicyBinding (volume: Volume) (binding: ZetaFsPolicy.Binding) : unit =
+        lock volume.Gate (fun () -> applyPolicyCatalog volume (ZetaFsPolicy.assertBinding !volume.Policy binding))
+
+    /// SELECT stored ByEntity history. None until first bind copied it.
+    let effectiveHistory (volume: Volume) (id: ZetaFsNamespace.EntityId) : ZetaFsPolicy.HistoryPolicy option =
+        lock volume.Gate (fun () -> ZetaFsPolicy.effectiveHistory !volume.Policy id)
 
     /// Journal for a crash-mid-sweep. Owned by the volume, not invented by
     /// the caller. `reclaimSweep` is the only apply door that uses it.
@@ -1543,12 +2318,30 @@ module ZetaFsFreeze =
 
     let freezeBytesSinceReclaim (volume: Volume) = volume.FreezeBytesSinceReclaim
 
+    let knownCount (volume: Volume) =
+        lock volume.Gate (fun () -> volume.KnownObjects.Count)
+
+    let hasPrev (volume: Volume) (entity: ZetaFsNamespace.EntityId) : bool =
+        lock volume.Gate (fun () ->
+            volume.LastLayout.ContainsKey entity
+            || FileSystem.Current.Exists(layoutPath volume.StoreDir entity))
+
+    let private objectsNotYetKnown (volume: Volume) (cas: ZetaFsJumprope.Cas) =
+        lock volume.Gate (fun () ->
+            let acc = ResizeArray<struct (ContentHash256 * byte[])>(cas.Objects.Count)
+
+            for kv in cas.Objects do
+                if not (volume.KnownObjects.ContainsKey kv.Key) then
+                    acc.Add(struct (kv.Key, kv.Value))
+
+            acc.ToArray())
+
     /// DST / crash leftover: record a CAS object the volume wrote. Full
     /// ContentHash256, not the 128-bit path. Disk scan cannot reconstruct this.
     let noteKnownObject (volume: Volume) (id: ContentHash256) (size: uint64) =
         lock volume.Gate (fun () ->
             volume.KnownObjects.[id] <- size
-            persistCatalogBestEffort volume.StoreDir volume.KnownObjects volume.LivePins volume.History volume.FreezeBytesSinceReclaim volume.ObjectSets)
+            persistCatalogBestEffort volume.StoreDir volume.KnownObjects volume.LivePins volume.History volume.FreezeBytesSinceReclaim volume.ObjectSets volume.CatalogGen)
 
     /// Objects the volume wrote that no live freeze still pins. Keeps full
     /// ids so reclaim can propose them. Empty until something is unpinned
@@ -1568,6 +2361,7 @@ module ZetaFsFreeze =
                 volume.History
                 0UL
                 volume.ObjectSets
+                volume.CatalogGen
             n)
 
     /// Reclaim tick paced from freeze bytes accumulated on this volume
@@ -1646,15 +2440,25 @@ module ZetaFsFreeze =
             fs.CreateDirectory dir
             FileSystemIo.writeAllBytes fs path bytes
 
-        volume.KnownObjects.[id] <- uint64 bytes.Length
-        volume.LivePins.Add id |> ignore
-        tryPersistCatalog
-            volume.StoreDir
-            volume.KnownObjects
-            volume.LivePins
-            volume.History
-            volume.FreezeBytesSinceReclaim
-            volume.ObjectSets
+        let stored =
+            if fs.Exists path then
+                Some(fs.ReadAllBytes path)
+            else
+                None
+
+        match stored with
+        | Some b when (ContentHash256.ofBytes b).Equals(id) ->
+            volume.KnownObjects.[id] <- uint64 bytes.Length
+            volume.LivePins.Add id |> ignore
+            tryPersistCatalog
+                volume.StoreDir
+                volume.KnownObjects
+                volume.LivePins
+                volume.History
+                volume.FreezeBytesSinceReclaim
+                volume.ObjectSets
+                volume.CatalogGen
+        | _ -> Error(FreezeError.MissingLeaves 1)
 
     let private tryReadObject (volume: Volume) (id: ContentHash256) : byte[] option =
         match volume.Log.ObjectCas with
@@ -1673,34 +2477,150 @@ module ZetaFsFreeze =
         | None -> false
         | Some bytes -> (ContentHash256.ofBytes bytes).Equals(id)
 
-    let private className (c: DurabilityClass) =
+    /// Same RFC 8949 writer as jumprope encode. Intent/commit maps keep the
+    /// historical key order (not sorted): decode is by name. Private buffer.
+    [<Sealed>]
+    type private CborBuf() =
+        let mutable buf = Array.zeroCreate 256
+        let mutable n = 0
+
+        member this.Ensure(extra: int) =
+            let need = n + extra
+
+            if need > buf.Length then
+                let mutable cap = buf.Length
+
+                while cap < need do
+                    cap <- cap * 2
+
+                let bigger = Array.zeroCreate cap
+                Buffer.BlockCopy(buf, 0, bigger, 0, n)
+                buf <- bigger
+
+        member this.Add(b: byte) =
+            this.Ensure 1
+            buf.[n] <- b
+            n <- n + 1
+
+        member this.AddSpan(s: ReadOnlySpan<byte>) =
+            this.Ensure s.Length
+            s.CopyTo(Span<byte>(buf, n, s.Length))
+            n <- n + s.Length
+
+        member this.WriteHead(major: int, arg: uint64) =
+            let mt = byte (major <<< 5)
+
+            if arg <= 23UL then
+                this.Add(mt ||| byte arg)
+            elif arg <= 0xffUL then
+                this.Ensure 2
+                buf.[n] <- mt ||| 24uy
+                buf.[n + 1] <- byte arg
+                n <- n + 2
+            elif arg <= 0xffffUL then
+                this.Ensure 3
+                buf.[n] <- mt ||| 25uy
+                buf.[n + 1] <- byte (arg >>> 8)
+                buf.[n + 2] <- byte arg
+                n <- n + 3
+            elif arg <= 0xffffffffUL then
+                this.Ensure 5
+                buf.[n] <- mt ||| 26uy
+                buf.[n + 1] <- byte (arg >>> 24)
+                buf.[n + 2] <- byte (arg >>> 16)
+                buf.[n + 3] <- byte (arg >>> 8)
+                buf.[n + 4] <- byte arg
+                n <- n + 5
+            else
+                this.Ensure 9
+                buf.[n] <- mt ||| 27uy
+                n <- n + 1
+                let mutable shift = 56
+
+                while shift >= 0 do
+                    buf.[n] <- byte (arg >>> shift)
+                    n <- n + 1
+                    shift <- shift - 8
+
+        member this.WriteInt(v: int64) =
+            if v >= 0L then
+                this.WriteHead(0, uint64 v)
+            else
+                this.WriteHead(1, uint64 (~~~v))
+
+        member this.WriteTextUtf8(utf8: ReadOnlySpan<byte>) =
+            this.WriteHead(3, uint64 utf8.Length)
+            this.AddSpan utf8
+
+        member this.WriteText(s: string) =
+            let utf8 =
+                Encoding.UTF8.GetBytes(if isNull s then "" else s)
+
+            this.WriteTextUtf8(ReadOnlySpan<byte> utf8)
+
+        member this.WriteBytes(s: ReadOnlySpan<byte>) =
+            this.WriteHead(2, uint64 s.Length)
+            this.AddSpan s
+
+        member _.ToArray() : byte[] =
+            let a = Array.zeroCreate n
+            Buffer.BlockCopy(buf, 0, a, 0, n)
+            a
+
+    let private tT = "t"B
+    let private tEntity = "entity"B
+    let private tContent = "content"B
+    let private tLeaves = "leaves"B
+    let private tClass = "class"B
+    let private tLsn = "lsn"B
+    let private tIntentLsn = "intentLsn"B
+    let private tFreezeIntent1 = "freeze-intent/1"B
+    let private tFreezeCommit1 = "freeze-commit/1"B
+    let private tBuffered = "buffered"B
+    let private tJournaled = "journaled"B
+    let private tDurable = "durable"B
+
+    let private classUtf8 (c: DurabilityClass) =
         match c with
-        | Buffered -> "buffered"
-        | Journaled -> "journaled"
-        | Durable -> "durable"
+        | Buffered -> tBuffered
+        | Journaled -> tJournaled
+        | Durable -> tDurable
 
     let private encodeIntent entity (content: ContentHash256) (leaves: ContentHash256[]) (cls: DurabilityClass) (lsn: int64) : byte[] =
-        let leafArr =
-            DynamicValue.Array [ for leaf in leaves -> DynamicValue.Bytes(System.Collections.Immutable.ImmutableArray.CreateRange leaf.Raw) ]
+        let buf = CborBuf()
+        let leafN = if isNull leaves then 0 else leaves.Length
+        buf.WriteHead(5, 6UL)
+        buf.WriteTextUtf8(ReadOnlySpan<byte> tT)
+        buf.WriteTextUtf8(ReadOnlySpan<byte> tFreezeIntent1)
+        buf.WriteTextUtf8(ReadOnlySpan<byte> tEntity)
+        buf.WriteText(ZetaFsNamespace.EntityId.format entity)
+        buf.WriteTextUtf8(ReadOnlySpan<byte> tContent)
+        buf.WriteBytes(ReadOnlySpan<byte> content.Raw)
+        buf.WriteTextUtf8(ReadOnlySpan<byte> tLeaves)
+        buf.WriteHead(4, uint64 leafN)
 
-        DynamicValue.toCanonicalCborOk (
-            DynamicValue.Object
-                [ "t", DynamicValue.String "freeze-intent/1"
-                  "entity", DynamicValue.String(ZetaFsNamespace.EntityId.format entity)
-                  "content", DynamicValue.Bytes(System.Collections.Immutable.ImmutableArray.CreateRange content.Raw)
-                  "leaves", leafArr
-                  "class", DynamicValue.String(className cls)
-                  "lsn", DynamicValue.Int lsn ]
-        )
+        if not (isNull leaves) then
+            for leaf in leaves do
+                buf.WriteBytes(ReadOnlySpan<byte> leaf.Raw)
+
+        buf.WriteTextUtf8(ReadOnlySpan<byte> tClass)
+        buf.WriteTextUtf8(ReadOnlySpan<byte> (classUtf8 cls))
+        buf.WriteTextUtf8(ReadOnlySpan<byte> tLsn)
+        buf.WriteInt lsn
+        buf.ToArray()
 
     let private encodeCommit (intentLsn: int64) (content: ContentHash256) (lsn: int64) : byte[] =
-        DynamicValue.toCanonicalCborOk (
-            DynamicValue.Object
-                [ "t", DynamicValue.String "freeze-commit/1"
-                  "intentLsn", DynamicValue.Int intentLsn
-                  "content", DynamicValue.Bytes(System.Collections.Immutable.ImmutableArray.CreateRange content.Raw)
-                  "lsn", DynamicValue.Int lsn ]
-        )
+        let buf = CborBuf()
+        buf.WriteHead(5, 4UL)
+        buf.WriteTextUtf8(ReadOnlySpan<byte> tT)
+        buf.WriteTextUtf8(ReadOnlySpan<byte> tFreezeCommit1)
+        buf.WriteTextUtf8(ReadOnlySpan<byte> tIntentLsn)
+        buf.WriteInt intentLsn
+        buf.WriteTextUtf8(ReadOnlySpan<byte> tContent)
+        buf.WriteBytes(ReadOnlySpan<byte> content.Raw)
+        buf.WriteTextUtf8(ReadOnlySpan<byte> tLsn)
+        buf.WriteInt lsn
+        buf.ToArray()
 
     let private framePlain (payload: byte[]) : byte[] =
         let crc = HardwareCrc.Crc32C(ReadOnlySpan payload)
@@ -1741,6 +2661,19 @@ module ZetaFsFreeze =
 
                     ok)
 
+    let private rememberLayout
+        (volume: Volume)
+        (entity: ZetaFsNamespace.EntityId)
+        (rope: ZetaFsJumprope.Rope)
+        (objectIds: ContentHash256[])
+        =
+        let layout =
+            { Prev = ZetaFsJumprope.prevOf rope
+              ObjectIds = objectIds }
+
+        lock volume.Gate (fun () -> volume.LastLayout.[entity] <- layout)
+        persistLayoutBestEffort volume.StoreDir entity layout
+
     let private noteFreeze (volume: Volume) (span: uint64) (result: FreezeResult) =
         lock volume.Gate (fun () ->
             volume.FreezeBytesSinceReclaim <- volume.FreezeBytesSinceReclaim + span
@@ -1750,7 +2683,8 @@ module ZetaFsFreeze =
                 volume.LivePins
                 volume.History
                 volume.FreezeBytesSinceReclaim
-                volume.ObjectSets)
+                volume.ObjectSets
+                volume.CatalogGen)
 
         result
 
@@ -1785,7 +2719,7 @@ module ZetaFsFreeze =
             volume.LivePins.Add id |> ignore
 
         match keepCount volume.History with
-        | None -> persistCatalogBestEffort volume.StoreDir volume.KnownObjects volume.LivePins volume.History volume.FreezeBytesSinceReclaim volume.ObjectSets
+        | None -> ()
         | Some n ->
             let mine =
                 volume.Commits.Values
@@ -1795,9 +2729,7 @@ module ZetaFsFreeze =
 
             let dropCount = mine.Length - n
 
-            if dropCount <= 0 then
-                persistCatalogBestEffort volume.StoreDir volume.KnownObjects volume.LivePins volume.History volume.FreezeBytesSinceReclaim volume.ObjectSets
-            else
+            if dropCount > 0 then
                 let kept = HashSet<ContentHash256>()
 
                 for i in dropCount .. mine.Length - 1 do
@@ -1808,8 +2740,6 @@ module ZetaFsFreeze =
                     for id in objectsNamed volume mine.[i].Content do
                         if not (kept.Contains id) then
                             volume.LivePins.Remove id |> ignore
-
-                persistCatalogBestEffort volume.StoreDir volume.KnownObjects volume.LivePins volume.History volume.FreezeBytesSinceReclaim volume.ObjectSets
 
     let private finish
         (volume: Volume)
@@ -1862,17 +2792,40 @@ module ZetaFsFreeze =
             ValueTask<Result<FreezeResult, FreezeError>>(Error FreezeError.WindowsDurableNotClaimed)
         else
             let snap = ZetaFsMutbuf.snapshot volume.Mutbuf entity
-            let rope = ZetaFsJumprope.buildV1 snap.Bytes
+            let prev =
+                lock volume.Gate (fun () ->
+                    match volume.LastLayout.TryGetValue entity with
+                    | true, layout -> Some layout
+                    | _ ->
+                        match tryLoadLayout volume.StoreDir entity with
+                        | Some layout ->
+                            volume.LastLayout.[entity] <- layout
+                            Some layout
+                        | None -> None)
+
+            let rope =
+                match prev with
+                | Some layout -> ZetaFsJumprope.buildFromPrev layout.Prev snap.Bytes
+                | None -> ZetaFsJumprope.buildV1 snap.Bytes
+
             let leafIds = [| for id, _ in rope.Leaves -> id |]
-            let objectIds = [| for kv in rope.Cas.Objects -> kv.Key |]
+            let casIds = [| for kv in rope.Cas.Objects -> kv.Key |]
+
+            let objectIds =
+                if rope.Cas.Objects.Count = 0 then
+                    match prev with
+                    | Some layout when layout.Prev.Content.Equals rope.Content -> layout.ObjectIds
+                    | _ -> leafIds
+                else
+                    Array.append leafIds casIds
 
             match cls with
             | Buffered ->
                 let mutable putErr: FreezeError option = None
 
-                for kv in rope.Cas.Objects do
+                for struct (id, bytes) in objectsNotYetKnown volume rope.Cas do
                     if putErr.IsNone then
-                        match putObject volume kv.Key kv.Value with
+                        match putObject volume id bytes with
                         | Error e -> putErr <- Some e
                         | Ok() -> ()
 
@@ -1888,6 +2841,7 @@ module ZetaFsFreeze =
                           IntentLsn = 0L
                           CommitLsn = 0L }
 
+                    rememberLayout volume entity rope objectIds
                     ValueTask<Result<FreezeResult, FreezeError>>(
                         afterFreeze volume ct (Ok(noteFreeze volume rope.Span result))
                     )
@@ -1921,15 +2875,7 @@ module ZetaFsFreeze =
                             TaskCreationOptions.RunContinuationsAsynchronously
                         )
 
-                    let objects =
-                        let arr = Array.zeroCreate rope.Cas.Objects.Count
-                        let mutable i = 0
-
-                        for kv in rope.Cas.Objects do
-                            arr.[i] <- struct (kv.Key, kv.Value)
-                            i <- i + 1
-
-                        arr
+                    let objects = objectsNotYetKnown volume rope.Cas
 
                     let item =
                         { IntentLsn = intentLsn
@@ -1946,12 +2892,14 @@ module ZetaFsFreeze =
                         match pending.Result with
                         | Error e -> ValueTask<Result<FreezeResult, FreezeError>>(Error e)
                         | Ok(struct (i, c)) ->
-                            ValueTask<Result<FreezeResult, FreezeError>>(
-                                afterFreeze
-                                    volume
-                                    ct
-                                    (finish volume entity rope.Content rope.Span cls snap.Generation leafIds objectIds i c)
-                            )
+                            let finished =
+                                finish volume entity rope.Content rope.Span cls snap.Generation leafIds objectIds i c
+
+                            match finished with
+                            | Ok _ -> rememberLayout volume entity rope objectIds
+                            | Error _ -> ()
+
+                            ValueTask<Result<FreezeResult, FreezeError>>(afterFreeze volume ct finished)
                     else
                         let work =
                             task {
@@ -1960,21 +2908,24 @@ module ZetaFsFreeze =
                                 match logged with
                                 | Error e -> return Error e
                                 | Ok(struct (i, c)) ->
-                                    return
-                                        afterFreeze
+                                    let finished =
+                                        finish
                                             volume
-                                            ct
-                                            (finish
-                                                volume
-                                                entity
-                                                rope.Content
-                                                rope.Span
-                                                cls
-                                                snap.Generation
-                                                leafIds
-                                                objectIds
-                                                i
-                                                c)
+                                            entity
+                                            rope.Content
+                                            rope.Span
+                                            cls
+                                            snap.Generation
+                                            leafIds
+                                            objectIds
+                                            i
+                                            c
+
+                                    match finished with
+                                    | Ok _ -> rememberLayout volume entity rope objectIds
+                                    | Error _ -> ()
+
+                                    return afterFreeze volume ct finished
                             }
 
                         ValueTask<Result<FreezeResult, FreezeError>> work

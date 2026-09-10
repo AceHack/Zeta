@@ -22,35 +22,27 @@ spec:
       rego: |
         package hatnocycle
 
-        # Helper: is `target` reachable from `start` via supervises
-        # edges using the post-create catalog state?
-        reachable(start, target, catalog) {
-          some next
-          next := catalog[start].spec.supervises[_]
-          next == target
-        }
-        reachable(start, target, catalog) {
-          some next
-          next := catalog[start].spec.supervises[_]
-          reachable(next, target, catalog)
+        # `supervises` edges as an adjacency object over the POST-write catalog.
+        # Rego forbids recursive rules (rego_recursion_error), so transitive
+        # reachability is `graph.reachable`, not a self-calling helper.
+        edges(catalog) = out {
+          out := {node: supervised |
+            catalog[node]
+            supervised := {target | target := catalog[node].spec.supervises[_]}
+          }
         }
 
         violation[{"msg": msg}] {
           input.review.kind.kind == "Hat"
-          input.review.operation == "CREATE" or input.review.operation == "UPDATE"
+          {"CREATE", "UPDATE"}[input.review.operation]
           new_hat := input.review.object
           name := new_hat.metadata.name
 
-          # Build post-update catalog: existing hats with the new one
-          # overlaid on top.
           existing := data.inventory.cluster["society.zeta.io/v1alpha1"]["Hat"]
           catalog := object.union(existing, {name: new_hat})
 
-          # If anyone the new hat supervises (transitively) supervises
-          # the new hat back, that's a cycle.
-          some sup
           sup := new_hat.spec.supervises[_]
-          reachable(sup, name, catalog)
+          graph.reachable(edges(catalog), {sup})[name]
 
           msg := sprintf(
             "supervisor cycle: hat %v would supervise %v which transitively supervises %v",

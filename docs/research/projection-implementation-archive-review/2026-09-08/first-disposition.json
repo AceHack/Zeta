@@ -1,0 +1,11 @@
+{
+  "Exit": 1,
+  "SourceBytes": 8853,
+  "SourceSha256": "FFC3A1840F1CA9903F28CF6363725CAEABA5557FA97054F960960EB5CD2C56EF",
+  "Failure": "Reviewer asserted every gate-2 snapshot equals its recorded base HEAD; exactly the driver test had the documented uncommitted blank-line correction.",
+  "BaseHead": "fdc2e42e0ffdb9f5b295ab0f8c31a05b8a730905",
+  "ChangedSnapshotBytes": 32565,
+  "BaseHeadBytes": 32566,
+  "ArchiveDefectEstablished": false,
+  "Correction": "Require all first-gate snapshots equal their recorded HEAD; require all second-gate snapshots equal frozen source f33ac429, and explicitly retain the sole difference from recorded base HEAD."
+}

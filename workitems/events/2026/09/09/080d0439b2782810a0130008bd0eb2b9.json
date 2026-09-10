@@ -1,0 +1,14 @@
+{
+  "id": "080d0439b2782810a0130008bd0eb2b9",
+  "at": "2026-09-09T17:27:58.469Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M23KCKR4087G0R001D3KAJB",
+    "type": "task",
+    "title": "Assess 3DGUT unscented-transform projection against Zeta exact-geometry rendering and the EP moment-matching stack",
+    "slug": "assess-3dgut-unscented-transform-projection-against-zeta-exa",
+    "priority": "P2",
+    "filename": "081M23KCKR4087G0R001D3KAJB-assess-3dgut-unscented-transform-projection-against-zeta-exa.md"
+  }
+}

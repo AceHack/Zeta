@@ -1,0 +1,12 @@
+{
+  "pr_number": 17061,
+  "archive_path": "docs/history/pr-reviews/PR-17061-feat-081m21080zq087g0r0037yy66r-persist-jumprope-layout-across-reopen.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-08T17:41:45.675Z",
+  "schema_version": "v1",
+  "commit_sha": "d42c34cd0892a6bf13fd0c9683832feab190cf33",
+  "title": "feat(081M21080ZQ087G0R0037YY66R): persist Jumprope layout across reopen",
+  "state": "MERGED",
+  "merged_at": "2026-09-08T17:41:05Z",
+  "head_ref": "feat/zetafs-d9-persist-layout"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 17031,
+  "archive_path": "docs/history/pr-reviews/PR-17031-fix-zflash-the-freshness-gate-watched-a-retired-flake-and-not-the-real-one.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-08T04:19:50.412Z",
+  "schema_version": "v1",
+  "commit_sha": "cca7f4da8ffba0f2397d4e5e815f4a6866e9d9c9",
+  "title": "fix(zflash): the freshness gate watched a retired flake and not the real one",
+  "state": "MERGED",
+  "merged_at": "2026-09-08T04:19:07Z",
+  "head_ref": "shadow/freshness-gate-watched-a-retired-path"
+}

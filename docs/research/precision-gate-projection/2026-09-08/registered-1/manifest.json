@@ -1,0 +1,2028 @@
+{
+  "Schema": "zeta.research-custody.archive.v1",
+  "Archive": "custody.tar.gz",
+  "Bytes": 6397793,
+  "Sha256": "04C079901CEA886500CFD0A5912CD812A997268803FAE3F0DAD4F8EDE65A8167",
+  "Members": [
+    {
+      "Path": "attempt/manifest.json",
+      "Bytes": 9821,
+      "Sha256": "FE1F5BDF732FA6B08092887210552BA9CEF68D724E519C77958A282366A348E7",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/manifest.json"
+    },
+    {
+      "Path": "attempt/native-call-000/bindings.json",
+      "Bytes": 5728,
+      "Sha256": "78CFBBB647E19C9EE9D42F523AC4971950415D2573F15B8694EB90A6A0935B75",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/native-call-000/bindings.json"
+    },
+    {
+      "Path": "attempt/native-call-000/input.json",
+      "Bytes": 137,
+      "Sha256": "A2E453068D82B21661F5F2E00A82B69179EDDE2D8A2917C7EFD8D7D77A1C1AB1",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/native-call-000/input.json"
+    },
+    {
+      "Path": "attempt/native-call-000/receipt.json",
+      "Bytes": 16232,
+      "Sha256": "E7FDC10E3B9FC0946601B596F621E02847D906212177A1813A2DFCA4B89865DA",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/native-call-000/receipt.json"
+    },
+    {
+      "Path": "attempt/native-call-003/bindings.json",
+      "Bytes": 5728,
+      "Sha256": "78CFBBB647E19C9EE9D42F523AC4971950415D2573F15B8694EB90A6A0935B75",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/native-call-003/bindings.json"
+    },
+    {
+      "Path": "attempt/native-call-003/input.json",
+      "Bytes": 141,
+      "Sha256": "253F1859C0A932514D31C90EAA9E4BC5728D464F60ECA805C2027E6E35F47FDA",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/native-call-003/input.json"
+    },
+    {
+      "Path": "attempt/native-call-003/receipt.json",
+      "Bytes": 16050,
+      "Sha256": "F15BC14D53C78C19487F1A1F8E09FA3333991A83933B52128324A3AAE32F9A29",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/native-call-003/receipt.json"
+    },
+    {
+      "Path": "attempt/native-call-006/bindings.json",
+      "Bytes": 5728,
+      "Sha256": "78CFBBB647E19C9EE9D42F523AC4971950415D2573F15B8694EB90A6A0935B75",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/native-call-006/bindings.json"
+    },
+    {
+      "Path": "attempt/native-call-006/input.json",
+      "Bytes": 156,
+      "Sha256": "0B989CBC6F29DFCEF116EBB74C15155CEF47619A2577028BB8BE224649B79168",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/native-call-006/input.json"
+    },
+    {
+      "Path": "attempt/native-call-006/receipt.json",
+      "Bytes": 16607,
+      "Sha256": "92FA15AE3A3ED78A4B756150416429621BB7E6A4286EEA714D1E6F45EB80E9D7",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/native-call-006/receipt.json"
+    },
+    {
+      "Path": "attempt/native-call-009/bindings.json",
+      "Bytes": 5728,
+      "Sha256": "78CFBBB647E19C9EE9D42F523AC4971950415D2573F15B8694EB90A6A0935B75",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/native-call-009/bindings.json"
+    },
+    {
+      "Path": "attempt/native-call-009/input.json",
+      "Bytes": 155,
+      "Sha256": "4D5304F96A62023FA9B90CF743D96A18FCA258368EED7656238348553CDFD07B",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/native-call-009/input.json"
+    },
+    {
+      "Path": "attempt/native-call-009/receipt.json",
+      "Bytes": 16422,
+      "Sha256": "E6154A90E0ADE9EDA22248CD60BEF46246E08E156137A5387F82FE38C74F1F14",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/native-call-009/receipt.json"
+    },
+    {
+      "Path": "attempt/native-call-012/bindings.json",
+      "Bytes": 5728,
+      "Sha256": "78CFBBB647E19C9EE9D42F523AC4971950415D2573F15B8694EB90A6A0935B75",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/native-call-012/bindings.json"
+    },
+    {
+      "Path": "attempt/native-call-012/input.json",
+      "Bytes": 158,
+      "Sha256": "9B87EA9C6370CDD1C0D516C7503F3E51D4C58A7C6BBCC1BE2237FC84FF7F4FA4",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/native-call-012/input.json"
+    },
+    {
+      "Path": "attempt/native-call-012/receipt.json",
+      "Bytes": 16606,
+      "Sha256": "93984EDD15A96CCEF02AF069110B03FA59E4D36325B64BFC09F1196035C4800C",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/native-call-012/receipt.json"
+    },
+    {
+      "Path": "attempt/native-call-015/bindings.json",
+      "Bytes": 5728,
+      "Sha256": "78CFBBB647E19C9EE9D42F523AC4971950415D2573F15B8694EB90A6A0935B75",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/native-call-015/bindings.json"
+    },
+    {
+      "Path": "attempt/native-call-015/input.json",
+      "Bytes": 145,
+      "Sha256": "78B8F89E9C6133C613CB5A8016B43B6C36A025744DCF650725FB5EF6A15F95D8",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/native-call-015/input.json"
+    },
+    {
+      "Path": "attempt/native-call-015/receipt.json",
+      "Bytes": 15497,
+      "Sha256": "C7D7360603A19CB2CE2C809DBB4F97F5D9BCE9EA302613415E13DDF665240AE0",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/native-call-015/receipt.json"
+    },
+    {
+      "Path": "attempt/native-call-018/bindings.json",
+      "Bytes": 5728,
+      "Sha256": "78CFBBB647E19C9EE9D42F523AC4971950415D2573F15B8694EB90A6A0935B75",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/native-call-018/bindings.json"
+    },
+    {
+      "Path": "attempt/native-call-018/input.json",
+      "Bytes": 223,
+      "Sha256": "B8423179FA7068FF2201249FD3F8E81DE33E751FB171D44AFC3539DF3190B06E",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/native-call-018/input.json"
+    },
+    {
+      "Path": "attempt/native-call-018/receipt.json",
+      "Bytes": 16240,
+      "Sha256": "3F62F855C8AE564B8D618AEBB441743B3AFA0DA29ED37CA1D296F986027174DB",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/native-call-018/receipt.json"
+    },
+    {
+      "Path": "attempt/native-call-021/bindings.json",
+      "Bytes": 5728,
+      "Sha256": "78CFBBB647E19C9EE9D42F523AC4971950415D2573F15B8694EB90A6A0935B75",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/native-call-021/bindings.json"
+    },
+    {
+      "Path": "attempt/native-call-021/input.json",
+      "Bytes": 141,
+      "Sha256": "79608BB7967F3F60E6045AB3508621F2551BDEC227BF0853C403BEA16A9844FA",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/native-call-021/input.json"
+    },
+    {
+      "Path": "attempt/native-call-021/receipt.json",
+      "Bytes": 16424,
+      "Sha256": "3D7FC8516C4428301E26A2AB82FEFB2DDEAE0853AC422BAC36AA19AB1617DC6B",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/native-call-021/receipt.json"
+    },
+    {
+      "Path": "attempt/native-call-024/bindings.json",
+      "Bytes": 5728,
+      "Sha256": "78CFBBB647E19C9EE9D42F523AC4971950415D2573F15B8694EB90A6A0935B75",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/native-call-024/bindings.json"
+    },
+    {
+      "Path": "attempt/native-call-024/input.json",
+      "Bytes": 146,
+      "Sha256": "396DEEFC464EE3E63E41CBFAF0F2DCA8D9E92C3356B07D4F065925DFF99F7402",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/native-call-024/input.json"
+    },
+    {
+      "Path": "attempt/native-call-024/receipt.json",
+      "Bytes": 16427,
+      "Sha256": "B48DF38BC753F45B554D17E6CF1D5AF18E1C7E686ED0DDDF93364DD93DEE21B1",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/native-call-024/receipt.json"
+    },
+    {
+      "Path": "attempt/native-call-027/bindings.json",
+      "Bytes": 5728,
+      "Sha256": "78CFBBB647E19C9EE9D42F523AC4971950415D2573F15B8694EB90A6A0935B75",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/native-call-027/bindings.json"
+    },
+    {
+      "Path": "attempt/native-call-027/input.json",
+      "Bytes": 146,
+      "Sha256": "7465A96AC36735B0C46D4B7A48977E66E0D72E22158439C91827B0A3D5FF3E10",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/native-call-027/input.json"
+    },
+    {
+      "Path": "attempt/native-call-027/receipt.json",
+      "Bytes": 16612,
+      "Sha256": "699F0B2127AE57B0DB0799D39201D513AF841F9DE13BA1084240D028ED748A9D",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/native-call-027/receipt.json"
+    },
+    {
+      "Path": "attempt/native-call-030/bindings.json",
+      "Bytes": 5728,
+      "Sha256": "78CFBBB647E19C9EE9D42F523AC4971950415D2573F15B8694EB90A6A0935B75",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/native-call-030/bindings.json"
+    },
+    {
+      "Path": "attempt/native-call-030/input.json",
+      "Bytes": 140,
+      "Sha256": "D7AC03BF852D65D68B2EAB43D919F2B4D985370067A47731F057CF36B401E674",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/native-call-030/input.json"
+    },
+    {
+      "Path": "attempt/native-call-030/receipt.json",
+      "Bytes": 16422,
+      "Sha256": "A41912FFC0683E306A0B0194463CA210DB3A5CC28F30BEA39BC0DD3198C47763",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/native-call-030/receipt.json"
+    },
+    {
+      "Path": "attempt/native-call-033/bindings.json",
+      "Bytes": 5728,
+      "Sha256": "78CFBBB647E19C9EE9D42F523AC4971950415D2573F15B8694EB90A6A0935B75",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/native-call-033/bindings.json"
+    },
+    {
+      "Path": "attempt/native-call-033/input.json",
+      "Bytes": 175,
+      "Sha256": "FF7FF97BE1129335F5835181A3DD5D3BBE0EB9453B2B4DC9344B7143239A2CF1",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/native-call-033/input.json"
+    },
+    {
+      "Path": "attempt/native-call-033/receipt.json",
+      "Bytes": 18089,
+      "Sha256": "A22DA2968D5D6C4FDCD748012693B0634F29AD529D1ED1B2A5389072E1C8DB0E",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/native-call-033/receipt.json"
+    },
+    {
+      "Path": "attempt/native-call-036/bindings.json",
+      "Bytes": 5728,
+      "Sha256": "78CFBBB647E19C9EE9D42F523AC4971950415D2573F15B8694EB90A6A0935B75",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/native-call-036/bindings.json"
+    },
+    {
+      "Path": "attempt/native-call-036/input.json",
+      "Bytes": 150,
+      "Sha256": "F4F998185392CEC6D77D1B30673C7D9B1887FFFAC3C7CC4EF01DC97627550CD4",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/native-call-036/input.json"
+    },
+    {
+      "Path": "attempt/native-call-036/receipt.json",
+      "Bytes": 7532,
+      "Sha256": "DC048EF299CFDDDE3172615AE34A775431109A1709D55330B82E731AE497539F",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/native-call-036/receipt.json"
+    },
+    {
+      "Path": "attempt/native-call-039/bindings.json",
+      "Bytes": 5728,
+      "Sha256": "78CFBBB647E19C9EE9D42F523AC4971950415D2573F15B8694EB90A6A0935B75",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/native-call-039/bindings.json"
+    },
+    {
+      "Path": "attempt/native-call-039/input.json",
+      "Bytes": 150,
+      "Sha256": "2CFD8C863CBD9F28F7561C2FD0931827F3680AB430ED6A6557EC2B0378FA065D",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/native-call-039/input.json"
+    },
+    {
+      "Path": "attempt/native-call-039/receipt.json",
+      "Bytes": 8271,
+      "Sha256": "B7FAE0F1E0AF6DBF79FE89C6FF6BF51169785436B7254F9E10C5307BB82EFCB0",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/native-call-039/receipt.json"
+    },
+    {
+      "Path": "attempt/native-call-042/bindings.json",
+      "Bytes": 5728,
+      "Sha256": "78CFBBB647E19C9EE9D42F523AC4971950415D2573F15B8694EB90A6A0935B75",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/native-call-042/bindings.json"
+    },
+    {
+      "Path": "attempt/native-call-042/input.json",
+      "Bytes": 154,
+      "Sha256": "2C694ACC7FFD062F3AF9AEA2A3300C8D92C9B12CCFA5D94D116BE27DC9270037",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/native-call-042/input.json"
+    },
+    {
+      "Path": "attempt/native-call-042/receipt.json",
+      "Bytes": 8133,
+      "Sha256": "12D069500E49C69438887EC3401646C140F68C1C31C5AA5EEF78934BEDE200E5",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/native-call-042/receipt.json"
+    },
+    {
+      "Path": "attempt/native-call-045/bindings.json",
+      "Bytes": 5728,
+      "Sha256": "78CFBBB647E19C9EE9D42F523AC4971950415D2573F15B8694EB90A6A0935B75",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/native-call-045/bindings.json"
+    },
+    {
+      "Path": "attempt/native-call-045/input.json",
+      "Bytes": 147,
+      "Sha256": "F7AB1FA117809C187C9F33D184BA6573D09DC0423C4AD9677F1C6480C7A3C973",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/native-call-045/input.json"
+    },
+    {
+      "Path": "attempt/native-call-045/receipt.json",
+      "Bytes": 16610,
+      "Sha256": "5B5010E47FC3BE9DBFF7D2C4F77ACCA536006CE0C0FBBA559CA8BC2C13FBBB00",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/native-call-045/receipt.json"
+    },
+    {
+      "Path": "attempt/native-call-048/bindings.json",
+      "Bytes": 5728,
+      "Sha256": "78CFBBB647E19C9EE9D42F523AC4971950415D2573F15B8694EB90A6A0935B75",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/native-call-048/bindings.json"
+    },
+    {
+      "Path": "attempt/native-call-048/input.json",
+      "Bytes": 148,
+      "Sha256": "3B09C4854B315254EAE8B74F0135CE3527E3C7924A4BFDF2A1F2ED32368CB67B",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/native-call-048/input.json"
+    },
+    {
+      "Path": "attempt/native-call-048/receipt.json",
+      "Bytes": 7881,
+      "Sha256": "C5F98833810C172A06E9FF48FFEC054F0E10ACD284519218A2FCAA741F8976F2",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/native-call-048/receipt.json"
+    },
+    {
+      "Path": "attempt/native-call-051/bindings.json",
+      "Bytes": 5728,
+      "Sha256": "78CFBBB647E19C9EE9D42F523AC4971950415D2573F15B8694EB90A6A0935B75",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/native-call-051/bindings.json"
+    },
+    {
+      "Path": "attempt/native-call-051/input.json",
+      "Bytes": 136,
+      "Sha256": "9263D4A5F465FC2462D16D9E051F764960256C058C9C37F0CA90C7300BE194D0",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/native-call-051/input.json"
+    },
+    {
+      "Path": "attempt/native-call-051/receipt.json",
+      "Bytes": 7079,
+      "Sha256": "D5925258D1D548FC71D7E1802395AE3FB789960EEF55356DBB1F7D198233BF06",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/native-call-051/receipt.json"
+    },
+    {
+      "Path": "attempt/native-call-054/bindings.json",
+      "Bytes": 5728,
+      "Sha256": "78CFBBB647E19C9EE9D42F523AC4971950415D2573F15B8694EB90A6A0935B75",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/native-call-054/bindings.json"
+    },
+    {
+      "Path": "attempt/native-call-054/input.json",
+      "Bytes": 141,
+      "Sha256": "4B3E3A2B317FD2FC3F4D56D07895D868BDD526D5D72DD2FA4B0F8F7DDE7461D7",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/native-call-054/input.json"
+    },
+    {
+      "Path": "attempt/native-call-054/receipt.json",
+      "Bytes": 7085,
+      "Sha256": "FFAF38420848624BD37AB0DF8E79D149136ECEA546302EBD142B710F474393FA",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/native-call-054/receipt.json"
+    },
+    {
+      "Path": "attempt/native-call-057/bindings.json",
+      "Bytes": 5728,
+      "Sha256": "78CFBBB647E19C9EE9D42F523AC4971950415D2573F15B8694EB90A6A0935B75",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/native-call-057/bindings.json"
+    },
+    {
+      "Path": "attempt/native-call-057/input.json",
+      "Bytes": 136,
+      "Sha256": "84C5342869E6CEF88825B073BDB3EFB426E9E95872230E9C2F6BA120B6C26011",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/native-call-057/input.json"
+    },
+    {
+      "Path": "attempt/native-call-057/receipt.json",
+      "Bytes": 7079,
+      "Sha256": "643620D754D2125D55C42F5CED242A8B28295AB031AD38569080E8D0AD8C6735",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/native-call-057/receipt.json"
+    },
+    {
+      "Path": "attempt/native-call-060/bindings.json",
+      "Bytes": 5728,
+      "Sha256": "78CFBBB647E19C9EE9D42F523AC4971950415D2573F15B8694EB90A6A0935B75",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/native-call-060/bindings.json"
+    },
+    {
+      "Path": "attempt/native-call-060/input.json",
+      "Bytes": 141,
+      "Sha256": "9AB300A4D350E7FD660892115927A53FC99ADDADAF324B1230074CD05A00A0D2",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/native-call-060/input.json"
+    },
+    {
+      "Path": "attempt/native-call-060/receipt.json",
+      "Bytes": 7085,
+      "Sha256": "0BC8F5FAA0A40DD797E2C933238625999F00EE8BEBAB8C17CA20495E309A92D8",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/native-call-060/receipt.json"
+    },
+    {
+      "Path": "attempt/native-call-064/bindings.json",
+      "Bytes": 5728,
+      "Sha256": "78CFBBB647E19C9EE9D42F523AC4971950415D2573F15B8694EB90A6A0935B75",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/native-call-064/bindings.json"
+    },
+    {
+      "Path": "attempt/native-call-064/input.json",
+      "Bytes": 142,
+      "Sha256": "00A1D4DC60F969200C3BF6F4658D872E5CE65B8FA451BFDB9928041AC5049EC8",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/native-call-064/input.json"
+    },
+    {
+      "Path": "attempt/native-call-064/receipt.json",
+      "Bytes": 6522,
+      "Sha256": "DB28FE1BF9E8025D92E35A7BFA0553B83CF9955B6F7C09A28466E1C61CCC2FB1",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/native-call-064/receipt.json"
+    },
+    {
+      "Path": "attempt/native-call-066/bindings.json",
+      "Bytes": 5728,
+      "Sha256": "78CFBBB647E19C9EE9D42F523AC4971950415D2573F15B8694EB90A6A0935B75",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/native-call-066/bindings.json"
+    },
+    {
+      "Path": "attempt/native-call-066/input.json",
+      "Bytes": 143,
+      "Sha256": "ED7BC86864838C44BDEE54E9833D09D2C79CDEFEECF924CE5240519B97E07B5E",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/native-call-066/input.json"
+    },
+    {
+      "Path": "attempt/native-call-066/receipt.json",
+      "Bytes": 6622,
+      "Sha256": "C3F341A0E6920E49170A2E2177778EA2AE1DC150968A9FF57C8942D391957F51",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/native-call-066/receipt.json"
+    },
+    {
+      "Path": "attempt/native-call-068/bindings.json",
+      "Bytes": 5728,
+      "Sha256": "78CFBBB647E19C9EE9D42F523AC4971950415D2573F15B8694EB90A6A0935B75",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/native-call-068/bindings.json"
+    },
+    {
+      "Path": "attempt/native-call-068/input.json",
+      "Bytes": 148,
+      "Sha256": "DDD6AE9DE2E9F88038D2B64908C46D94F0A2A1C3F87EAE89C906326CC7E3D8BF",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/native-call-068/input.json"
+    },
+    {
+      "Path": "attempt/native-call-068/receipt.json",
+      "Bytes": 6622,
+      "Sha256": "CD3E3C18E53327166185C90139401EA1545EC90C67500AF8E67C8B1A609E4E3C",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/native-call-068/receipt.json"
+    },
+    {
+      "Path": "attempt/native-call-070/bindings.json",
+      "Bytes": 5728,
+      "Sha256": "78CFBBB647E19C9EE9D42F523AC4971950415D2573F15B8694EB90A6A0935B75",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/native-call-070/bindings.json"
+    },
+    {
+      "Path": "attempt/native-call-070/input.json",
+      "Bytes": 133,
+      "Sha256": "6F06B71012B52B2DAA7D58E0AA24799E07A0E2D5792C0A1316ABEC44188F4F7E",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/native-call-070/input.json"
+    },
+    {
+      "Path": "attempt/native-call-070/receipt.json",
+      "Bytes": 6564,
+      "Sha256": "76BB561281E60FC0AAD26E86AC057D3347FB9BBEFA44A01C1B8A1D15E397CE00",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/native-call-070/receipt.json"
+    },
+    {
+      "Path": "attempt/native-call-072/bindings.json",
+      "Bytes": 5728,
+      "Sha256": "78CFBBB647E19C9EE9D42F523AC4971950415D2573F15B8694EB90A6A0935B75",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/native-call-072/bindings.json"
+    },
+    {
+      "Path": "attempt/native-call-072/input.json",
+      "Bytes": 149,
+      "Sha256": "D51BF39DB7327561001C87AD93AB4647334ED9E69161C43C3443409C2C2649FD",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/native-call-072/input.json"
+    },
+    {
+      "Path": "attempt/native-call-072/receipt.json",
+      "Bytes": 6528,
+      "Sha256": "C5E11305AAC221CCC21A5D11E733BBD94DCF37EE3113B95A71B763DFC927ED71",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/native-call-072/receipt.json"
+    },
+    {
+      "Path": "attempt/native-call-074/bindings.json",
+      "Bytes": 5728,
+      "Sha256": "78CFBBB647E19C9EE9D42F523AC4971950415D2573F15B8694EB90A6A0935B75",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/native-call-074/bindings.json"
+    },
+    {
+      "Path": "attempt/native-call-074/input.json",
+      "Bytes": 156,
+      "Sha256": "37F9ABFB2EF82B07620228813761FEF7BF98F966EC5EC371DE0F8BCAD87D8DDD",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/native-call-074/input.json"
+    },
+    {
+      "Path": "attempt/native-call-074/receipt.json",
+      "Bytes": 6554,
+      "Sha256": "D7CDF88D338CC1CF338406079C69A28F86B897AA6DC215411693FB134347950C",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/native-call-074/receipt.json"
+    },
+    {
+      "Path": "attempt/native-custody/src/Bayesian/bin/Release/net10.0/Zeta.Bayesian.dll",
+      "Bytes": 1175040,
+      "Sha256": "EE4EDF2A7510F6BA2203582A95876CD992177694C5F2665BD667126E52E8DC40",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/native-custody/src/Bayesian/bin/Release/net10.0/Zeta.Bayesian.dll"
+    },
+    {
+      "Path": "attempt/native-custody/src/Core/bin/Release/net10.0/Zeta.Core.dll",
+      "Bytes": 9268224,
+      "Sha256": "9F2340026152A68A002EF1F6A8B68B91AF613076C2EC4E55E148E2BD5FF371B8",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/native-custody/src/Core/bin/Release/net10.0/Zeta.Core.dll"
+    },
+    {
+      "Path": "attempt/native-custody/src/Core.Abstractions/bin/Release/net10.0/Zeta.Core.Abstractions.dll",
+      "Bytes": 46592,
+      "Sha256": "A76DF741EDAC585F64BBB94432F9B9F2E440A38585CB6FED3596A1FD5E5BBDDA",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/native-custody/src/Core.Abstractions/bin/Release/net10.0/Zeta.Core.Abstractions.dll"
+    },
+    {
+      "Path": "attempt/native-custody/src/Research.FSharp/PrecisionGateProjectionReplay.fsx",
+      "Bytes": 12723,
+      "Sha256": "C1174406CC4E7D3164714C536207AD2BD72F085A38A3A816C8BC1B14ADE917B2",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/native-custody/src/Research.FSharp/PrecisionGateProjectionReplay.fsx"
+    },
+    {
+      "Path": "attempt/outer-final.json",
+      "Bytes": 7939,
+      "Sha256": "FFB75FC917C095DF40A1E494730E931EF842CF29FA89F20F4894D259C471BCD4",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/outer-final.json"
+    },
+    {
+      "Path": "attempt/prepared-native.json",
+      "Bytes": 5822,
+      "Sha256": "A33E3A797F2D495E0D944A0AE6B9001E41FF992C885B317DF2538C6CE5899E95",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/prepared-native.json"
+    },
+    {
+      "Path": "attempt/records/final-journal.json",
+      "Bytes": 295304,
+      "Sha256": "7334542B89E4755CB63E2F6A3C59D940B7E698B18F013D4A787CC4135471D38B",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/final-journal.json"
+    },
+    {
+      "Path": "attempt/records/record-000000.bin",
+      "Bytes": 137,
+      "Sha256": "A2E453068D82B21661F5F2E00A82B69179EDDE2D8A2917C7EFD8D7D77A1C1AB1",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000000.bin"
+    },
+    {
+      "Path": "attempt/records/record-000001.bin",
+      "Bytes": 15811,
+      "Sha256": "6D9B3AC751CF212809B47F415875518EF2F8D429E07D6A4A80AD8D22784EE529",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000001.bin"
+    },
+    {
+      "Path": "attempt/records/record-000002.bin",
+      "Bytes": 16232,
+      "Sha256": "E7FDC10E3B9FC0946601B596F621E02847D906212177A1813A2DFCA4B89865DA",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000002.bin"
+    },
+    {
+      "Path": "attempt/records/record-000003.bin",
+      "Bytes": 137,
+      "Sha256": "A2E453068D82B21661F5F2E00A82B69179EDDE2D8A2917C7EFD8D7D77A1C1AB1",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000003.bin"
+    },
+    {
+      "Path": "attempt/records/record-000004.bin",
+      "Bytes": 90585,
+      "Sha256": "704E2F9B140E0D8987F0F9EB4993215703DD6E5D1DC7B5062AE45A8E699960B9",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000004.bin"
+    },
+    {
+      "Path": "attempt/records/record-000005.bin",
+      "Bytes": 137,
+      "Sha256": "A2E453068D82B21661F5F2E00A82B69179EDDE2D8A2917C7EFD8D7D77A1C1AB1",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000005.bin"
+    },
+    {
+      "Path": "attempt/records/record-000006.bin",
+      "Bytes": 16232,
+      "Sha256": "E7FDC10E3B9FC0946601B596F621E02847D906212177A1813A2DFCA4B89865DA",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000006.bin"
+    },
+    {
+      "Path": "attempt/records/record-000007.bin",
+      "Bytes": 134131,
+      "Sha256": "27E2DEE9A5214597BFAC7902D6C8482708D886F311DB7AAE28ABEBCB4314F9B9",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000007.bin"
+    },
+    {
+      "Path": "attempt/records/record-000008.bin",
+      "Bytes": 141,
+      "Sha256": "253F1859C0A932514D31C90EAA9E4BC5728D464F60ECA805C2027E6E35F47FDA",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000008.bin"
+    },
+    {
+      "Path": "attempt/records/record-000009.bin",
+      "Bytes": 15814,
+      "Sha256": "140F2FF9EA7DDBAF612878705B0DB36B7EB86C43FCB9BDE6409224585FACF28B",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000009.bin"
+    },
+    {
+      "Path": "attempt/records/record-000010.bin",
+      "Bytes": 16050,
+      "Sha256": "F15BC14D53C78C19487F1A1F8E09FA3333991A83933B52128324A3AAE32F9A29",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000010.bin"
+    },
+    {
+      "Path": "attempt/records/record-000011.bin",
+      "Bytes": 141,
+      "Sha256": "253F1859C0A932514D31C90EAA9E4BC5728D464F60ECA805C2027E6E35F47FDA",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000011.bin"
+    },
+    {
+      "Path": "attempt/records/record-000012.bin",
+      "Bytes": 74219,
+      "Sha256": "B919ACCFD6381141579DC3DD1551AB742571D15F3B1AA787B339EE008B48A532",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000012.bin"
+    },
+    {
+      "Path": "attempt/records/record-000013.bin",
+      "Bytes": 141,
+      "Sha256": "253F1859C0A932514D31C90EAA9E4BC5728D464F60ECA805C2027E6E35F47FDA",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000013.bin"
+    },
+    {
+      "Path": "attempt/records/record-000014.bin",
+      "Bytes": 16050,
+      "Sha256": "F15BC14D53C78C19487F1A1F8E09FA3333991A83933B52128324A3AAE32F9A29",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000014.bin"
+    },
+    {
+      "Path": "attempt/records/record-000015.bin",
+      "Bytes": 117426,
+      "Sha256": "C04B8894D1ADED32725F4E34CFF3E71805F3F3C26EDCC85FD426F172DC2F7061",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000015.bin"
+    },
+    {
+      "Path": "attempt/records/record-000016.bin",
+      "Bytes": 156,
+      "Sha256": "0B989CBC6F29DFCEF116EBB74C15155CEF47619A2577028BB8BE224649B79168",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000016.bin"
+    },
+    {
+      "Path": "attempt/records/record-000017.bin",
+      "Bytes": 15816,
+      "Sha256": "A8C2F84778279E33CCF1BF995F2470819299A4E74D99A74DA2E8D8A9C20CE4AB",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000017.bin"
+    },
+    {
+      "Path": "attempt/records/record-000018.bin",
+      "Bytes": 16607,
+      "Sha256": "92FA15AE3A3ED78A4B756150416429621BB7E6A4286EEA714D1E6F45EB80E9D7",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000018.bin"
+    },
+    {
+      "Path": "attempt/records/record-000019.bin",
+      "Bytes": 156,
+      "Sha256": "0B989CBC6F29DFCEF116EBB74C15155CEF47619A2577028BB8BE224649B79168",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000019.bin"
+    },
+    {
+      "Path": "attempt/records/record-000020.bin",
+      "Bytes": 311322,
+      "Sha256": "3930EA70AC1DD6FD2D2A3F96D736163B000DAAE0C04966D50D2DE71AA3C91A33",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000020.bin"
+    },
+    {
+      "Path": "attempt/records/record-000021.bin",
+      "Bytes": 156,
+      "Sha256": "0B989CBC6F29DFCEF116EBB74C15155CEF47619A2577028BB8BE224649B79168",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000021.bin"
+    },
+    {
+      "Path": "attempt/records/record-000022.bin",
+      "Bytes": 16607,
+      "Sha256": "92FA15AE3A3ED78A4B756150416429621BB7E6A4286EEA714D1E6F45EB80E9D7",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000022.bin"
+    },
+    {
+      "Path": "attempt/records/record-000023.bin",
+      "Bytes": 355680,
+      "Sha256": "98A2F909CD87BBA91B2AF7AA12070181BF7FC66102214CA65FB8E0E9893C83D8",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000023.bin"
+    },
+    {
+      "Path": "attempt/records/record-000024.bin",
+      "Bytes": 155,
+      "Sha256": "4D5304F96A62023FA9B90CF743D96A18FCA258368EED7656238348553CDFD07B",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000024.bin"
+    },
+    {
+      "Path": "attempt/records/record-000025.bin",
+      "Bytes": 15816,
+      "Sha256": "8BA67D72E7ECDB1549CCD83029C41409D444A502535F2EE0847212A918DE18C4",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000025.bin"
+    },
+    {
+      "Path": "attempt/records/record-000026.bin",
+      "Bytes": 16422,
+      "Sha256": "E6154A90E0ADE9EDA22248CD60BEF46246E08E156137A5387F82FE38C74F1F14",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000026.bin"
+    },
+    {
+      "Path": "attempt/records/record-000027.bin",
+      "Bytes": 155,
+      "Sha256": "4D5304F96A62023FA9B90CF743D96A18FCA258368EED7656238348553CDFD07B",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000027.bin"
+    },
+    {
+      "Path": "attempt/records/record-000028.bin",
+      "Bytes": 294263,
+      "Sha256": "8F224FCC156C88BEE679D67C66AD9E985EF17E9A3534F59238BB3D647E047987",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000028.bin"
+    },
+    {
+      "Path": "attempt/records/record-000029.bin",
+      "Bytes": 155,
+      "Sha256": "4D5304F96A62023FA9B90CF743D96A18FCA258368EED7656238348553CDFD07B",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000029.bin"
+    },
+    {
+      "Path": "attempt/records/record-000030.bin",
+      "Bytes": 16422,
+      "Sha256": "E6154A90E0ADE9EDA22248CD60BEF46246E08E156137A5387F82FE38C74F1F14",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000030.bin"
+    },
+    {
+      "Path": "attempt/records/record-000031.bin",
+      "Bytes": 338217,
+      "Sha256": "00CC5E6D0D29AB4747DB909E878B18E2764B195FEFC310F1DA7082CF507661CE",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000031.bin"
+    },
+    {
+      "Path": "attempt/records/record-000032.bin",
+      "Bytes": 158,
+      "Sha256": "9B87EA9C6370CDD1C0D516C7503F3E51D4C58A7C6BBCC1BE2237FC84FF7F4FA4",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000032.bin"
+    },
+    {
+      "Path": "attempt/records/record-000033.bin",
+      "Bytes": 15816,
+      "Sha256": "D1F6AE49958EE49593FB5B8B1E17B44AE4C5E1D19EE952EEE77EE543FFF73742",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000033.bin"
+    },
+    {
+      "Path": "attempt/records/record-000034.bin",
+      "Bytes": 16606,
+      "Sha256": "93984EDD15A96CCEF02AF069110B03FA59E4D36325B64BFC09F1196035C4800C",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000034.bin"
+    },
+    {
+      "Path": "attempt/records/record-000035.bin",
+      "Bytes": 158,
+      "Sha256": "9B87EA9C6370CDD1C0D516C7503F3E51D4C58A7C6BBCC1BE2237FC84FF7F4FA4",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000035.bin"
+    },
+    {
+      "Path": "attempt/records/record-000036.bin",
+      "Bytes": 361544,
+      "Sha256": "EF941B989818A2485D91E5604F5C126597A1E78815F7BFE147F2AF7F2875717F",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000036.bin"
+    },
+    {
+      "Path": "attempt/records/record-000037.bin",
+      "Bytes": 158,
+      "Sha256": "9B87EA9C6370CDD1C0D516C7503F3E51D4C58A7C6BBCC1BE2237FC84FF7F4FA4",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000037.bin"
+    },
+    {
+      "Path": "attempt/records/record-000038.bin",
+      "Bytes": 16606,
+      "Sha256": "93984EDD15A96CCEF02AF069110B03FA59E4D36325B64BFC09F1196035C4800C",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000038.bin"
+    },
+    {
+      "Path": "attempt/records/record-000039.bin",
+      "Bytes": 405009,
+      "Sha256": "2192D9F036BE001526D1C9718458508BF550667ABAD2F362438A58DB4010E0E6",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000039.bin"
+    },
+    {
+      "Path": "attempt/records/record-000040.bin",
+      "Bytes": 145,
+      "Sha256": "78B8F89E9C6133C613CB5A8016B43B6C36A025744DCF650725FB5EF6A15F95D8",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000040.bin"
+    },
+    {
+      "Path": "attempt/records/record-000041.bin",
+      "Bytes": 15816,
+      "Sha256": "3A0231514562B7734D93AE2DD508267BAF7B6AAF8B130951827C3A1445BC2BD6",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000041.bin"
+    },
+    {
+      "Path": "attempt/records/record-000042.bin",
+      "Bytes": 15497,
+      "Sha256": "C7D7360603A19CB2CE2C809DBB4F97F5D9BCE9EA302613415E13DDF665240AE0",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000042.bin"
+    },
+    {
+      "Path": "attempt/records/record-000043.bin",
+      "Bytes": 145,
+      "Sha256": "78B8F89E9C6133C613CB5A8016B43B6C36A025744DCF650725FB5EF6A15F95D8",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000043.bin"
+    },
+    {
+      "Path": "attempt/records/record-000044.bin",
+      "Bytes": 51042,
+      "Sha256": "BFD1CD9322A1BA52E8B57EC231A5899A3BFC4BC04B95BDD8186C271ADF241D77",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000044.bin"
+    },
+    {
+      "Path": "attempt/records/record-000045.bin",
+      "Bytes": 145,
+      "Sha256": "78B8F89E9C6133C613CB5A8016B43B6C36A025744DCF650725FB5EF6A15F95D8",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000045.bin"
+    },
+    {
+      "Path": "attempt/records/record-000046.bin",
+      "Bytes": 15497,
+      "Sha256": "C7D7360603A19CB2CE2C809DBB4F97F5D9BCE9EA302613415E13DDF665240AE0",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000046.bin"
+    },
+    {
+      "Path": "attempt/records/record-000047.bin",
+      "Bytes": 93015,
+      "Sha256": "4CFA6D28FD97B85F583EB408E5D7A7CCAEA09CAFF8C75810D5444B780D30C095",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000047.bin"
+    },
+    {
+      "Path": "attempt/records/record-000048.bin",
+      "Bytes": 223,
+      "Sha256": "B8423179FA7068FF2201249FD3F8E81DE33E751FB171D44AFC3539DF3190B06E",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000048.bin"
+    },
+    {
+      "Path": "attempt/records/record-000049.bin",
+      "Bytes": 15819,
+      "Sha256": "35F918C485D7CD81BD31675E4D114E5C7D25F6FC6474D5375B96EB469AB0CF39",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000049.bin"
+    },
+    {
+      "Path": "attempt/records/record-000050.bin",
+      "Bytes": 16240,
+      "Sha256": "3F62F855C8AE564B8D618AEBB441743B3AFA0DA29ED37CA1D296F986027174DB",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000050.bin"
+    },
+    {
+      "Path": "attempt/records/record-000051.bin",
+      "Bytes": 223,
+      "Sha256": "B8423179FA7068FF2201249FD3F8E81DE33E751FB171D44AFC3539DF3190B06E",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000051.bin"
+    },
+    {
+      "Path": "attempt/records/record-000052.bin",
+      "Bytes": 92768,
+      "Sha256": "084682E54D175B2775A6540D70FFD9BF9F7B3D34FA7346BD23B75A9FACA78A6F",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000052.bin"
+    },
+    {
+      "Path": "attempt/records/record-000053.bin",
+      "Bytes": 223,
+      "Sha256": "B8423179FA7068FF2201249FD3F8E81DE33E751FB171D44AFC3539DF3190B06E",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000053.bin"
+    },
+    {
+      "Path": "attempt/records/record-000054.bin",
+      "Bytes": 16240,
+      "Sha256": "3F62F855C8AE564B8D618AEBB441743B3AFA0DA29ED37CA1D296F986027174DB",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000054.bin"
+    },
+    {
+      "Path": "attempt/records/record-000055.bin",
+      "Bytes": 136560,
+      "Sha256": "771C41924174518CFBE09BA5752A71935437A7AF7503802DEEBC1C024C3B2EE0",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000055.bin"
+    },
+    {
+      "Path": "attempt/records/record-000056.bin",
+      "Bytes": 141,
+      "Sha256": "79608BB7967F3F60E6045AB3508621F2551BDEC227BF0853C403BEA16A9844FA",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000056.bin"
+    },
+    {
+      "Path": "attempt/records/record-000057.bin",
+      "Bytes": 15818,
+      "Sha256": "C16CD9B85B7A1A958DEE01DC514319DD2A0A1D793E8BD9A245479D98FA675E6C",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000057.bin"
+    },
+    {
+      "Path": "attempt/records/record-000058.bin",
+      "Bytes": 16424,
+      "Sha256": "3D7FC8516C4428301E26A2AB82FEFB2DDEAE0853AC422BAC36AA19AB1617DC6B",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000058.bin"
+    },
+    {
+      "Path": "attempt/records/record-000059.bin",
+      "Bytes": 141,
+      "Sha256": "79608BB7967F3F60E6045AB3508621F2551BDEC227BF0853C403BEA16A9844FA",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000059.bin"
+    },
+    {
+      "Path": "attempt/records/record-000060.bin",
+      "Bytes": 117238,
+      "Sha256": "B5942BF9D34380C55E56DFF56770B86E74EE8CCD45E8D12A995AFDA30DEDDB22",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000060.bin"
+    },
+    {
+      "Path": "attempt/records/record-000061.bin",
+      "Bytes": 141,
+      "Sha256": "79608BB7967F3F60E6045AB3508621F2551BDEC227BF0853C403BEA16A9844FA",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000061.bin"
+    },
+    {
+      "Path": "attempt/records/record-000062.bin",
+      "Bytes": 16424,
+      "Sha256": "3D7FC8516C4428301E26A2AB82FEFB2DDEAE0853AC422BAC36AA19AB1617DC6B",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000062.bin"
+    },
+    {
+      "Path": "attempt/records/record-000063.bin",
+      "Bytes": 161192,
+      "Sha256": "B91C6E62FAAF97A5F9926F2D4ACDE0965F6A21F0832A22AD88007EB9BC8828C9",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000063.bin"
+    },
+    {
+      "Path": "attempt/records/record-000064.bin",
+      "Bytes": 146,
+      "Sha256": "396DEEFC464EE3E63E41CBFAF0F2DCA8D9E92C3356B07D4F065925DFF99F7402",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000064.bin"
+    },
+    {
+      "Path": "attempt/records/record-000065.bin",
+      "Bytes": 15821,
+      "Sha256": "809D7D5572D2AA39D98012CC2C65CE53D0F7507BB955B57065C3C92104502218",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000065.bin"
+    },
+    {
+      "Path": "attempt/records/record-000066.bin",
+      "Bytes": 16427,
+      "Sha256": "B48DF38BC753F45B554D17E6CF1D5AF18E1C7E686ED0DDDF93364DD93DEE21B1",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000066.bin"
+    },
+    {
+      "Path": "attempt/records/record-000067.bin",
+      "Bytes": 146,
+      "Sha256": "396DEEFC464EE3E63E41CBFAF0F2DCA8D9E92C3356B07D4F065925DFF99F7402",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000067.bin"
+    },
+    {
+      "Path": "attempt/records/record-000068.bin",
+      "Bytes": 363999,
+      "Sha256": "6CDA6004A77A64BB209274F3A62E6D8D24EEDDEAAE2E5E45A641599046F44366",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000068.bin"
+    },
+    {
+      "Path": "attempt/records/record-000069.bin",
+      "Bytes": 146,
+      "Sha256": "396DEEFC464EE3E63E41CBFAF0F2DCA8D9E92C3356B07D4F065925DFF99F7402",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000069.bin"
+    },
+    {
+      "Path": "attempt/records/record-000070.bin",
+      "Bytes": 16427,
+      "Sha256": "B48DF38BC753F45B554D17E6CF1D5AF18E1C7E686ED0DDDF93364DD93DEE21B1",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000070.bin"
+    },
+    {
+      "Path": "attempt/records/record-000071.bin",
+      "Bytes": 407947,
+      "Sha256": "BE6C47FFD7A451E243DEA30FFE61450BC1AB23DAAD8247E8EC4A1F56B0EF65FE",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000071.bin"
+    },
+    {
+      "Path": "attempt/records/record-000072.bin",
+      "Bytes": 146,
+      "Sha256": "7465A96AC36735B0C46D4B7A48977E66E0D72E22158439C91827B0A3D5FF3E10",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000072.bin"
+    },
+    {
+      "Path": "attempt/records/record-000073.bin",
+      "Bytes": 15821,
+      "Sha256": "6373845B6A2BE19B1169C98BA210AED8B4CE41BCB0C0EE25409F78B6C51BFB1E",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000073.bin"
+    },
+    {
+      "Path": "attempt/records/record-000074.bin",
+      "Bytes": 16612,
+      "Sha256": "699F0B2127AE57B0DB0799D39201D513AF841F9DE13BA1084240D028ED748A9D",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000074.bin"
+    },
+    {
+      "Path": "attempt/records/record-000075.bin",
+      "Bytes": 146,
+      "Sha256": "7465A96AC36735B0C46D4B7A48977E66E0D72E22158439C91827B0A3D5FF3E10",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000075.bin"
+    },
+    {
+      "Path": "attempt/records/record-000076.bin",
+      "Bytes": 311572,
+      "Sha256": "AA829701F9C4EB8655DD548CEEA8E6DD52BC2DDCE3AA8ED1B06005F47ED1E9D6",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000076.bin"
+    },
+    {
+      "Path": "attempt/records/record-000077.bin",
+      "Bytes": 146,
+      "Sha256": "7465A96AC36735B0C46D4B7A48977E66E0D72E22158439C91827B0A3D5FF3E10",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000077.bin"
+    },
+    {
+      "Path": "attempt/records/record-000078.bin",
+      "Bytes": 16612,
+      "Sha256": "699F0B2127AE57B0DB0799D39201D513AF841F9DE13BA1084240D028ED748A9D",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000078.bin"
+    },
+    {
+      "Path": "attempt/records/record-000079.bin",
+      "Bytes": 356011,
+      "Sha256": "0EB63631CD558F3BCB0D080024175E0FB214BA25B6E9A4BAE4A206BA1D03BB5B",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000079.bin"
+    },
+    {
+      "Path": "attempt/records/record-000080.bin",
+      "Bytes": 140,
+      "Sha256": "D7AC03BF852D65D68B2EAB43D919F2B4D985370067A47731F057CF36B401E674",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000080.bin"
+    },
+    {
+      "Path": "attempt/records/record-000081.bin",
+      "Bytes": 15816,
+      "Sha256": "461CA84795A88A735069A79074EC97669AF3366FEBAB10C72CCD9FC4E7ECEE69",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000081.bin"
+    },
+    {
+      "Path": "attempt/records/record-000082.bin",
+      "Bytes": 16422,
+      "Sha256": "A41912FFC0683E306A0B0194463CA210DB3A5CC28F30BEA39BC0DD3198C47763",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000082.bin"
+    },
+    {
+      "Path": "attempt/records/record-000083.bin",
+      "Bytes": 140,
+      "Sha256": "D7AC03BF852D65D68B2EAB43D919F2B4D985370067A47731F057CF36B401E674",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000083.bin"
+    },
+    {
+      "Path": "attempt/records/record-000084.bin",
+      "Bytes": 117237,
+      "Sha256": "B95E613B69751C8364511DC02D584A9D2F5747C320E611DD746324D16EAE70DB",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000084.bin"
+    },
+    {
+      "Path": "attempt/records/record-000085.bin",
+      "Bytes": 140,
+      "Sha256": "D7AC03BF852D65D68B2EAB43D919F2B4D985370067A47731F057CF36B401E674",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000085.bin"
+    },
+    {
+      "Path": "attempt/records/record-000086.bin",
+      "Bytes": 16422,
+      "Sha256": "A41912FFC0683E306A0B0194463CA210DB3A5CC28F30BEA39BC0DD3198C47763",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000086.bin"
+    },
+    {
+      "Path": "attempt/records/record-000087.bin",
+      "Bytes": 161186,
+      "Sha256": "26BBDD812B0DE87E94CD6602F73F331FC8AB94E4EC75C3BAFEAF3A95A367D70E",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000087.bin"
+    },
+    {
+      "Path": "attempt/records/record-000088.bin",
+      "Bytes": 175,
+      "Sha256": "FF7FF97BE1129335F5835181A3DD5D3BBE0EB9453B2B4DC9344B7143239A2CF1",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000088.bin"
+    },
+    {
+      "Path": "attempt/records/record-000089.bin",
+      "Bytes": 15818,
+      "Sha256": "B391F169544BF6BE9EE1D222004CBB8F864FB39F25490964AE592C997B1603DA",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000089.bin"
+    },
+    {
+      "Path": "attempt/records/record-000090.bin",
+      "Bytes": 18089,
+      "Sha256": "A22DA2968D5D6C4FDCD748012693B0634F29AD529D1ED1B2A5389072E1C8DB0E",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000090.bin"
+    },
+    {
+      "Path": "attempt/records/record-000091.bin",
+      "Bytes": 175,
+      "Sha256": "FF7FF97BE1129335F5835181A3DD5D3BBE0EB9453B2B4DC9344B7143239A2CF1",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000091.bin"
+    },
+    {
+      "Path": "attempt/records/record-000092.bin",
+      "Bytes": 399149,
+      "Sha256": "15D2F90C6BBB05B8E3FE39FC6D1D2E518AF145862AA69233866D5F0E4AD2765F",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000092.bin"
+    },
+    {
+      "Path": "attempt/records/record-000093.bin",
+      "Bytes": 175,
+      "Sha256": "FF7FF97BE1129335F5835181A3DD5D3BBE0EB9453B2B4DC9344B7143239A2CF1",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000093.bin"
+    },
+    {
+      "Path": "attempt/records/record-000094.bin",
+      "Bytes": 18089,
+      "Sha256": "A22DA2968D5D6C4FDCD748012693B0634F29AD529D1ED1B2A5389072E1C8DB0E",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000094.bin"
+    },
+    {
+      "Path": "attempt/records/record-000095.bin",
+      "Bytes": 446245,
+      "Sha256": "B9EAF5BE4A8A7BCB3FBDF78AD18DD618890305DFFCD952681FF2FD05455CB7E2",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000095.bin"
+    },
+    {
+      "Path": "attempt/records/record-000096.bin",
+      "Bytes": 150,
+      "Sha256": "F4F998185392CEC6D77D1B30673C7D9B1887FFFAC3C7CC4EF01DC97627550CD4",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000096.bin"
+    },
+    {
+      "Path": "attempt/records/record-000097.bin",
+      "Bytes": 15798,
+      "Sha256": "EB0CC284E375867755F853893B6EC85420684EBC109B21D63359BA600DBA3BCF",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000097.bin"
+    },
+    {
+      "Path": "attempt/records/record-000098.bin",
+      "Bytes": 7532,
+      "Sha256": "DC048EF299CFDDDE3172615AE34A775431109A1709D55330B82E731AE497539F",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000098.bin"
+    },
+    {
+      "Path": "attempt/records/record-000099.bin",
+      "Bytes": 150,
+      "Sha256": "F4F998185392CEC6D77D1B30673C7D9B1887FFFAC3C7CC4EF01DC97627550CD4",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000099.bin"
+    },
+    {
+      "Path": "attempt/records/record-000100.bin",
+      "Bytes": 10702,
+      "Sha256": "170B57F9954A7CE7E03D5D453A0E0A1AE9AC15722C5EDED7E58A2064F3CB2168",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000100.bin"
+    },
+    {
+      "Path": "attempt/records/record-000101.bin",
+      "Bytes": 150,
+      "Sha256": "F4F998185392CEC6D77D1B30673C7D9B1887FFFAC3C7CC4EF01DC97627550CD4",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000101.bin"
+    },
+    {
+      "Path": "attempt/records/record-000102.bin",
+      "Bytes": 7532,
+      "Sha256": "DC048EF299CFDDDE3172615AE34A775431109A1709D55330B82E731AE497539F",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000102.bin"
+    },
+    {
+      "Path": "attempt/records/record-000103.bin",
+      "Bytes": 21989,
+      "Sha256": "A6F3FE207E19E6A637D3849AB3C96A05285B0680228F6554BF7CF299934F7DBE",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000103.bin"
+    },
+    {
+      "Path": "attempt/records/record-000104.bin",
+      "Bytes": 150,
+      "Sha256": "2CFD8C863CBD9F28F7561C2FD0931827F3680AB430ED6A6557EC2B0378FA065D",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000104.bin"
+    },
+    {
+      "Path": "attempt/records/record-000105.bin",
+      "Bytes": 15797,
+      "Sha256": "11EC0DD27AA20F70A53A2C70D36FBBC448C1E62CAC874D6530D56D072F25F884",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000105.bin"
+    },
+    {
+      "Path": "attempt/records/record-000106.bin",
+      "Bytes": 8271,
+      "Sha256": "B7FAE0F1E0AF6DBF79FE89C6FF6BF51169785436B7254F9E10C5307BB82EFCB0",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000106.bin"
+    },
+    {
+      "Path": "attempt/records/record-000107.bin",
+      "Bytes": 150,
+      "Sha256": "2CFD8C863CBD9F28F7561C2FD0931827F3680AB430ED6A6557EC2B0378FA065D",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000107.bin"
+    },
+    {
+      "Path": "attempt/records/record-000108.bin",
+      "Bytes": 377984,
+      "Sha256": "6821CD1A600EA99AE0145A79362ED7F3A01DE9BCC498AA7B23ADE6545AFFB04B",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000108.bin"
+    },
+    {
+      "Path": "attempt/records/record-000109.bin",
+      "Bytes": 150,
+      "Sha256": "2CFD8C863CBD9F28F7561C2FD0931827F3680AB430ED6A6557EC2B0378FA065D",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000109.bin"
+    },
+    {
+      "Path": "attempt/records/record-000110.bin",
+      "Bytes": 8271,
+      "Sha256": "B7FAE0F1E0AF6DBF79FE89C6FF6BF51169785436B7254F9E10C5307BB82EFCB0",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000110.bin"
+    },
+    {
+      "Path": "attempt/records/record-000111.bin",
+      "Bytes": 24534,
+      "Sha256": "5CA68E32CD9F2BA0FFFB7C35DEDC0EFE4215060C831CF6E377DB8E3AECC8C3B6",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000111.bin"
+    },
+    {
+      "Path": "attempt/records/record-000112.bin",
+      "Bytes": 154,
+      "Sha256": "2C694ACC7FFD062F3AF9AEA2A3300C8D92C9B12CCFA5D94D116BE27DC9270037",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000112.bin"
+    },
+    {
+      "Path": "attempt/records/record-000113.bin",
+      "Bytes": 15801,
+      "Sha256": "E22E5180F4D3F447EE2BB349ED06D593549AF2AA4554E16B105ABAA07567AD93",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000113.bin"
+    },
+    {
+      "Path": "attempt/records/record-000114.bin",
+      "Bytes": 8133,
+      "Sha256": "12D069500E49C69438887EC3401646C140F68C1C31C5AA5EEF78934BEDE200E5",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000114.bin"
+    },
+    {
+      "Path": "attempt/records/record-000115.bin",
+      "Bytes": 154,
+      "Sha256": "2C694ACC7FFD062F3AF9AEA2A3300C8D92C9B12CCFA5D94D116BE27DC9270037",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000115.bin"
+    },
+    {
+      "Path": "attempt/records/record-000116.bin",
+      "Bytes": 9348,
+      "Sha256": "9AAE108353105050850276FD333106C7B1248E4DE7727EEFAEE8238216629A7F",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000116.bin"
+    },
+    {
+      "Path": "attempt/records/record-000117.bin",
+      "Bytes": 154,
+      "Sha256": "2C694ACC7FFD062F3AF9AEA2A3300C8D92C9B12CCFA5D94D116BE27DC9270037",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000117.bin"
+    },
+    {
+      "Path": "attempt/records/record-000118.bin",
+      "Bytes": 8133,
+      "Sha256": "12D069500E49C69438887EC3401646C140F68C1C31C5AA5EEF78934BEDE200E5",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000118.bin"
+    },
+    {
+      "Path": "attempt/records/record-000119.bin",
+      "Bytes": 23792,
+      "Sha256": "CB82F90897C00581297BCA6EE1B6946DC6AB200969E3B22C6CC87CD48C393A93",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000119.bin"
+    },
+    {
+      "Path": "attempt/records/record-000120.bin",
+      "Bytes": 147,
+      "Sha256": "F7AB1FA117809C187C9F33D184BA6573D09DC0423C4AD9677F1C6480C7A3C973",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000120.bin"
+    },
+    {
+      "Path": "attempt/records/record-000121.bin",
+      "Bytes": 15819,
+      "Sha256": "ADB5E809638F3FEFF9A396BCB9EE52A19784E0BE668A8F967DD67B4763C18095",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000121.bin"
+    },
+    {
+      "Path": "attempt/records/record-000122.bin",
+      "Bytes": 16610,
+      "Sha256": "5B5010E47FC3BE9DBFF7D2C4F77ACCA536006CE0C0FBBA559CA8BC2C13FBBB00",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000122.bin"
+    },
+    {
+      "Path": "attempt/records/record-000123.bin",
+      "Bytes": 147,
+      "Sha256": "F7AB1FA117809C187C9F33D184BA6573D09DC0423C4AD9677F1C6480C7A3C973",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000123.bin"
+    },
+    {
+      "Path": "attempt/records/record-000124.bin",
+      "Bytes": 573192,
+      "Sha256": "3EEE788D0B23D4C38F5FD30A42D57B8CF911898432776810AF3EB940D127499B",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000124.bin"
+    },
+    {
+      "Path": "attempt/records/record-000125.bin",
+      "Bytes": 147,
+      "Sha256": "F7AB1FA117809C187C9F33D184BA6573D09DC0423C4AD9677F1C6480C7A3C973",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000125.bin"
+    },
+    {
+      "Path": "attempt/records/record-000126.bin",
+      "Bytes": 16610,
+      "Sha256": "5B5010E47FC3BE9DBFF7D2C4F77ACCA536006CE0C0FBBA559CA8BC2C13FBBB00",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000126.bin"
+    },
+    {
+      "Path": "attempt/records/record-000127.bin",
+      "Bytes": 614394,
+      "Sha256": "47664A8FACFF241075C7AB641335935A94178841C50B969D8EF984D2259FFEEB",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000127.bin"
+    },
+    {
+      "Path": "attempt/records/record-000128.bin",
+      "Bytes": 148,
+      "Sha256": "3B09C4854B315254EAE8B74F0135CE3527E3C7924A4BFDF2A1F2ED32368CB67B",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000128.bin"
+    },
+    {
+      "Path": "attempt/records/record-000129.bin",
+      "Bytes": 15797,
+      "Sha256": "0B6266AA4D64DEA2003E67C594B9E8902630ED681B50422AEDAE95F6841F59E8",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000129.bin"
+    },
+    {
+      "Path": "attempt/records/record-000130.bin",
+      "Bytes": 7881,
+      "Sha256": "C5F98833810C172A06E9FF48FFEC054F0E10ACD284519218A2FCAA741F8976F2",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000130.bin"
+    },
+    {
+      "Path": "attempt/records/record-000131.bin",
+      "Bytes": 148,
+      "Sha256": "3B09C4854B315254EAE8B74F0135CE3527E3C7924A4BFDF2A1F2ED32368CB67B",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000131.bin"
+    },
+    {
+      "Path": "attempt/records/record-000132.bin",
+      "Bytes": 117242,
+      "Sha256": "3D649FC739512158CBD696CC5E8FC7258D7420D4F7F17AEFC808EEF6DBA3D094",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000132.bin"
+    },
+    {
+      "Path": "attempt/records/record-000133.bin",
+      "Bytes": 148,
+      "Sha256": "3B09C4854B315254EAE8B74F0135CE3527E3C7924A4BFDF2A1F2ED32368CB67B",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000133.bin"
+    },
+    {
+      "Path": "attempt/records/record-000134.bin",
+      "Bytes": 7881,
+      "Sha256": "C5F98833810C172A06E9FF48FFEC054F0E10ACD284519218A2FCAA741F8976F2",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000134.bin"
+    },
+    {
+      "Path": "attempt/records/record-000135.bin",
+      "Bytes": 22664,
+      "Sha256": "D9FE80E26CC6C79876EFDA84491E54DD2334669FEDF0CB3466EB79FB6493EE9D",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000135.bin"
+    },
+    {
+      "Path": "attempt/records/record-000136.bin",
+      "Bytes": 136,
+      "Sha256": "9263D4A5F465FC2462D16D9E051F764960256C058C9C37F0CA90C7300BE194D0",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000136.bin"
+    },
+    {
+      "Path": "attempt/records/record-000137.bin",
+      "Bytes": 15788,
+      "Sha256": "6E3808741EFE8B5C4F20E31156A9A43DEA3A3CF6C8870B80114B892EFEC4E7B6",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000137.bin"
+    },
+    {
+      "Path": "attempt/records/record-000138.bin",
+      "Bytes": 7079,
+      "Sha256": "D5925258D1D548FC71D7E1802395AE3FB789960EEF55356DBB1F7D198233BF06",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000138.bin"
+    },
+    {
+      "Path": "attempt/records/record-000139.bin",
+      "Bytes": 136,
+      "Sha256": "9263D4A5F465FC2462D16D9E051F764960256C058C9C37F0CA90C7300BE194D0",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000139.bin"
+    },
+    {
+      "Path": "attempt/records/record-000140.bin",
+      "Bytes": 7445,
+      "Sha256": "E0325491E9D0FCD1018B143E04272573859D6E653F3D0C422387A73FE9F4A522",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000140.bin"
+    },
+    {
+      "Path": "attempt/records/record-000141.bin",
+      "Bytes": 136,
+      "Sha256": "9263D4A5F465FC2462D16D9E051F764960256C058C9C37F0CA90C7300BE194D0",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000141.bin"
+    },
+    {
+      "Path": "attempt/records/record-000142.bin",
+      "Bytes": 7079,
+      "Sha256": "D5925258D1D548FC71D7E1802395AE3FB789960EEF55356DBB1F7D198233BF06",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000142.bin"
+    },
+    {
+      "Path": "attempt/records/record-000143.bin",
+      "Bytes": 21047,
+      "Sha256": "28A8F9B54BC6527DE2A67F4A873F899884CD12C07E8B5AE54410B1FEBE4D3FF7",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000143.bin"
+    },
+    {
+      "Path": "attempt/records/record-000144.bin",
+      "Bytes": 141,
+      "Sha256": "4B3E3A2B317FD2FC3F4D56D07895D868BDD526D5D72DD2FA4B0F8F7DDE7461D7",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000144.bin"
+    },
+    {
+      "Path": "attempt/records/record-000145.bin",
+      "Bytes": 15792,
+      "Sha256": "65B10CBA8275AC1A09C6B46F2D18A249909C95A14FA297E5E3FA831228D1A057",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000145.bin"
+    },
+    {
+      "Path": "attempt/records/record-000146.bin",
+      "Bytes": 7085,
+      "Sha256": "FFAF38420848624BD37AB0DF8E79D149136ECEA546302EBD142B710F474393FA",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000146.bin"
+    },
+    {
+      "Path": "attempt/records/record-000147.bin",
+      "Bytes": 141,
+      "Sha256": "4B3E3A2B317FD2FC3F4D56D07895D868BDD526D5D72DD2FA4B0F8F7DDE7461D7",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000147.bin"
+    },
+    {
+      "Path": "attempt/records/record-000148.bin",
+      "Bytes": 7451,
+      "Sha256": "334EBF3F6259E28FD0680F4129DABDC56EA2A46E3C8341CB2744A344E0493551",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000148.bin"
+    },
+    {
+      "Path": "attempt/records/record-000149.bin",
+      "Bytes": 141,
+      "Sha256": "4B3E3A2B317FD2FC3F4D56D07895D868BDD526D5D72DD2FA4B0F8F7DDE7461D7",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000149.bin"
+    },
+    {
+      "Path": "attempt/records/record-000150.bin",
+      "Bytes": 7085,
+      "Sha256": "FFAF38420848624BD37AB0DF8E79D149136ECEA546302EBD142B710F474393FA",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000150.bin"
+    },
+    {
+      "Path": "attempt/records/record-000151.bin",
+      "Bytes": 21065,
+      "Sha256": "54B43EEDD93DE91E6FF4DE5E06F0AA34740FF3243C829E46813B4F6B7B821B94",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000151.bin"
+    },
+    {
+      "Path": "attempt/records/record-000152.bin",
+      "Bytes": 136,
+      "Sha256": "84C5342869E6CEF88825B073BDB3EFB426E9E95872230E9C2F6BA120B6C26011",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000152.bin"
+    },
+    {
+      "Path": "attempt/records/record-000153.bin",
+      "Bytes": 15788,
+      "Sha256": "BF6181AF0121FCCE643475FC10CF7D197A3447626F75124B1381BCC8AD97A67D",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000153.bin"
+    },
+    {
+      "Path": "attempt/records/record-000154.bin",
+      "Bytes": 7079,
+      "Sha256": "643620D754D2125D55C42F5CED242A8B28295AB031AD38569080E8D0AD8C6735",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000154.bin"
+    },
+    {
+      "Path": "attempt/records/record-000155.bin",
+      "Bytes": 136,
+      "Sha256": "84C5342869E6CEF88825B073BDB3EFB426E9E95872230E9C2F6BA120B6C26011",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000155.bin"
+    },
+    {
+      "Path": "attempt/records/record-000156.bin",
+      "Bytes": 7445,
+      "Sha256": "6B0F759CB702D9B1974A145FE13A4083574E8BAE1D35BC43A5DE8120FC37AADF",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000156.bin"
+    },
+    {
+      "Path": "attempt/records/record-000157.bin",
+      "Bytes": 136,
+      "Sha256": "84C5342869E6CEF88825B073BDB3EFB426E9E95872230E9C2F6BA120B6C26011",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000157.bin"
+    },
+    {
+      "Path": "attempt/records/record-000158.bin",
+      "Bytes": 7079,
+      "Sha256": "643620D754D2125D55C42F5CED242A8B28295AB031AD38569080E8D0AD8C6735",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000158.bin"
+    },
+    {
+      "Path": "attempt/records/record-000159.bin",
+      "Bytes": 21047,
+      "Sha256": "ABCBE181ABF91AA2C0EFF42089B5AF2C861CA5F52909C53775FE41A45A928AC9",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000159.bin"
+    },
+    {
+      "Path": "attempt/records/record-000160.bin",
+      "Bytes": 141,
+      "Sha256": "9AB300A4D350E7FD660892115927A53FC99ADDADAF324B1230074CD05A00A0D2",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000160.bin"
+    },
+    {
+      "Path": "attempt/records/record-000161.bin",
+      "Bytes": 15792,
+      "Sha256": "C05662564653196D396A7CA936379A107ADF078E8643FA932199629447E05308",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000161.bin"
+    },
+    {
+      "Path": "attempt/records/record-000162.bin",
+      "Bytes": 7085,
+      "Sha256": "0BC8F5FAA0A40DD797E2C933238625999F00EE8BEBAB8C17CA20495E309A92D8",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000162.bin"
+    },
+    {
+      "Path": "attempt/records/record-000163.bin",
+      "Bytes": 141,
+      "Sha256": "9AB300A4D350E7FD660892115927A53FC99ADDADAF324B1230074CD05A00A0D2",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000163.bin"
+    },
+    {
+      "Path": "attempt/records/record-000164.bin",
+      "Bytes": 7451,
+      "Sha256": "55B9DD8E2B3D613D81BFE6BE61614D98F7B43AFF8D4F332FFF2876AE610D22AF",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000164.bin"
+    },
+    {
+      "Path": "attempt/records/record-000165.bin",
+      "Bytes": 141,
+      "Sha256": "9AB300A4D350E7FD660892115927A53FC99ADDADAF324B1230074CD05A00A0D2",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000165.bin"
+    },
+    {
+      "Path": "attempt/records/record-000166.bin",
+      "Bytes": 7085,
+      "Sha256": "0BC8F5FAA0A40DD797E2C933238625999F00EE8BEBAB8C17CA20495E309A92D8",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000166.bin"
+    },
+    {
+      "Path": "attempt/records/record-000167.bin",
+      "Bytes": 21065,
+      "Sha256": "40FEDA7BC1741252BB5611F01BC9FC378C58889102EF0D0328966E65BCFD06F8",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000167.bin"
+    },
+    {
+      "Path": "attempt/records/record-000168.bin",
+      "Bytes": 154,
+      "Sha256": "F8A853996A61F334DD31D3EC62F1985B97945409C80CD93A32CD36E6DB7308A3",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000168.bin"
+    },
+    {
+      "Path": "attempt/records/record-000169.bin",
+      "Bytes": 11266,
+      "Sha256": "55DE268FABC654D37A39823A597436E4FB3AA1DA320E4CB667EB2C99CA8BDFF4",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000169.bin"
+    },
+    {
+      "Path": "attempt/records/record-000170.bin",
+      "Bytes": 142,
+      "Sha256": "00A1D4DC60F969200C3BF6F4658D872E5CE65B8FA451BFDB9928041AC5049EC8",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000170.bin"
+    },
+    {
+      "Path": "attempt/records/record-000171.bin",
+      "Bytes": 15793,
+      "Sha256": "BD3977D327AD03D0879EC51D45B5C9CBF520322D0986B920CA7FC19007D85D20",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000171.bin"
+    },
+    {
+      "Path": "attempt/records/record-000172.bin",
+      "Bytes": 6522,
+      "Sha256": "DB28FE1BF9E8025D92E35A7BFA0553B83CF9955B6F7C09A28466E1C61CCC2FB1",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000172.bin"
+    },
+    {
+      "Path": "attempt/records/record-000173.bin",
+      "Bytes": 142,
+      "Sha256": "00A1D4DC60F969200C3BF6F4658D872E5CE65B8FA451BFDB9928041AC5049EC8",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000173.bin"
+    },
+    {
+      "Path": "attempt/records/record-000174.bin",
+      "Bytes": 7078,
+      "Sha256": "4842AE13E468C866A3195263D3A11B1A18041D4064EDAD2922C0131980974D8A",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000174.bin"
+    },
+    {
+      "Path": "attempt/records/record-000175.bin",
+      "Bytes": 143,
+      "Sha256": "ED7BC86864838C44BDEE54E9833D09D2C79CDEFEECF924CE5240519B97E07B5E",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000175.bin"
+    },
+    {
+      "Path": "attempt/records/record-000176.bin",
+      "Bytes": 15793,
+      "Sha256": "8964D70A4B046E2BDB5D39AE3E863A347ECD44BD017496A92D17433901D9E6A1",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000176.bin"
+    },
+    {
+      "Path": "attempt/records/record-000177.bin",
+      "Bytes": 6622,
+      "Sha256": "C3F341A0E6920E49170A2E2177778EA2AE1DC150968A9FF57C8942D391957F51",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000177.bin"
+    },
+    {
+      "Path": "attempt/records/record-000178.bin",
+      "Bytes": 143,
+      "Sha256": "ED7BC86864838C44BDEE54E9833D09D2C79CDEFEECF924CE5240519B97E07B5E",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000178.bin"
+    },
+    {
+      "Path": "attempt/records/record-000179.bin",
+      "Bytes": 7078,
+      "Sha256": "107CC2C12840EE024A0A429AF5A84FCD1E13527658E08611E2A543470938E7B0",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000179.bin"
+    },
+    {
+      "Path": "attempt/records/record-000180.bin",
+      "Bytes": 148,
+      "Sha256": "DDD6AE9DE2E9F88038D2B64908C46D94F0A2A1C3F87EAE89C906326CC7E3D8BF",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000180.bin"
+    },
+    {
+      "Path": "attempt/records/record-000181.bin",
+      "Bytes": 15793,
+      "Sha256": "161605DC693810B34465435107DCE3F347011271EFCE09C73FDB5C04D099016A",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000181.bin"
+    },
+    {
+      "Path": "attempt/records/record-000182.bin",
+      "Bytes": 6622,
+      "Sha256": "CD3E3C18E53327166185C90139401EA1545EC90C67500AF8E67C8B1A609E4E3C",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000182.bin"
+    },
+    {
+      "Path": "attempt/records/record-000183.bin",
+      "Bytes": 148,
+      "Sha256": "DDD6AE9DE2E9F88038D2B64908C46D94F0A2A1C3F87EAE89C906326CC7E3D8BF",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000183.bin"
+    },
+    {
+      "Path": "attempt/records/record-000184.bin",
+      "Bytes": 7078,
+      "Sha256": "28D0A99FB057B61A2C105E83E863DDE37B97C51D3FB8B1E7AE9B17FA1FD716D5",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000184.bin"
+    },
+    {
+      "Path": "attempt/records/record-000185.bin",
+      "Bytes": 133,
+      "Sha256": "6F06B71012B52B2DAA7D58E0AA24799E07A0E2D5792C0A1316ABEC44188F4F7E",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000185.bin"
+    },
+    {
+      "Path": "attempt/records/record-000186.bin",
+      "Bytes": 15793,
+      "Sha256": "536DD0912D84C15D81F7607C495360BD863FCBF549E48DA388071893027E5E94",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000186.bin"
+    },
+    {
+      "Path": "attempt/records/record-000187.bin",
+      "Bytes": 6564,
+      "Sha256": "76BB561281E60FC0AAD26E86AC057D3347FB9BBEFA44A01C1B8A1D15E397CE00",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000187.bin"
+    },
+    {
+      "Path": "attempt/records/record-000188.bin",
+      "Bytes": 133,
+      "Sha256": "6F06B71012B52B2DAA7D58E0AA24799E07A0E2D5792C0A1316ABEC44188F4F7E",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000188.bin"
+    },
+    {
+      "Path": "attempt/records/record-000189.bin",
+      "Bytes": 7030,
+      "Sha256": "6671EB29E626905700020E615371E386BB615FADE27A42C0D46E331122586F99",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000189.bin"
+    },
+    {
+      "Path": "attempt/records/record-000190.bin",
+      "Bytes": 149,
+      "Sha256": "D51BF39DB7327561001C87AD93AB4647334ED9E69161C43C3443409C2C2649FD",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000190.bin"
+    },
+    {
+      "Path": "attempt/records/record-000191.bin",
+      "Bytes": 15793,
+      "Sha256": "06513159366D2C4FBB64B8D4F6A0AC4AC57889A24375855481B5900909ABD55B",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000191.bin"
+    },
+    {
+      "Path": "attempt/records/record-000192.bin",
+      "Bytes": 6528,
+      "Sha256": "C5E11305AAC221CCC21A5D11E733BBD94DCF37EE3113B95A71B763DFC927ED71",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000192.bin"
+    },
+    {
+      "Path": "attempt/records/record-000193.bin",
+      "Bytes": 149,
+      "Sha256": "D51BF39DB7327561001C87AD93AB4647334ED9E69161C43C3443409C2C2649FD",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000193.bin"
+    },
+    {
+      "Path": "attempt/records/record-000194.bin",
+      "Bytes": 6988,
+      "Sha256": "5C72CB0751597FA17C9DC7FB49D878B61875C07A561E29794A783118831BAA77",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000194.bin"
+    },
+    {
+      "Path": "attempt/records/record-000195.bin",
+      "Bytes": 156,
+      "Sha256": "37F9ABFB2EF82B07620228813761FEF7BF98F966EC5EC371DE0F8BCAD87D8DDD",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000195.bin"
+    },
+    {
+      "Path": "attempt/records/record-000196.bin",
+      "Bytes": 15793,
+      "Sha256": "8FD14259E9D455A6EA5A375E40ECA78597817F72D00033C180FA6500158841CB",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000196.bin"
+    },
+    {
+      "Path": "attempt/records/record-000197.bin",
+      "Bytes": 6554,
+      "Sha256": "D7CDF88D338CC1CF338406079C69A28F86B897AA6DC215411693FB134347950C",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000197.bin"
+    },
+    {
+      "Path": "attempt/records/record-000198.bin",
+      "Bytes": 156,
+      "Sha256": "37F9ABFB2EF82B07620228813761FEF7BF98F966EC5EC371DE0F8BCAD87D8DDD",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000198.bin"
+    },
+    {
+      "Path": "attempt/records/record-000199.bin",
+      "Bytes": 7015,
+      "Sha256": "7112B652B6D3953D4C8155F60C12A5F3D970C58B31615F9A913F26BDD92A2E1F",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000199.bin"
+    },
+    {
+      "Path": "attempt/records/record-000200.bin",
+      "Bytes": 141,
+      "Sha256": "79608BB7967F3F60E6045AB3508621F2551BDEC227BF0853C403BEA16A9844FA",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000200.bin"
+    },
+    {
+      "Path": "attempt/records/record-000201.bin",
+      "Bytes": 16425,
+      "Sha256": "B61AFC09BE5A0A7AE7B87B73CDD1B468225A369D123DB601CAF3A38D2A617957",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000201.bin"
+    },
+    {
+      "Path": "attempt/records/record-000202.bin",
+      "Bytes": 157447,
+      "Sha256": "BE9F167CCE8689ECD6CC3678CDD2B0EB14523BC5868DADC2551B701CF1114915",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000202.bin"
+    },
+    {
+      "Path": "attempt/records/record-000203.bin",
+      "Bytes": 141,
+      "Sha256": "79608BB7967F3F60E6045AB3508621F2551BDEC227BF0853C403BEA16A9844FA",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000203.bin"
+    },
+    {
+      "Path": "attempt/records/record-000204.bin",
+      "Bytes": 16425,
+      "Sha256": "7BF2E07F70229F71E1612CED1E2FAD165032DE7EE4C49D769AF40B56B2E30429",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000204.bin"
+    },
+    {
+      "Path": "attempt/records/record-000205.bin",
+      "Bytes": 39763,
+      "Sha256": "CB6DDB6E25465ADBC1E4797AE91B085168BC7CD945D8047A14E4FBBF2DD0626C",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000205.bin"
+    },
+    {
+      "Path": "attempt/records/record-000206.bin",
+      "Bytes": 141,
+      "Sha256": "79608BB7967F3F60E6045AB3508621F2551BDEC227BF0853C403BEA16A9844FA",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000206.bin"
+    },
+    {
+      "Path": "attempt/records/record-000207.bin",
+      "Bytes": 16425,
+      "Sha256": "9367B5AB23A9EB67F9B00200B52D4808CAE70ED0815C98C81CC9CBA60EA39937",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000207.bin"
+    },
+    {
+      "Path": "attempt/records/record-000208.bin",
+      "Bytes": 39777,
+      "Sha256": "E6DA93B58AFCB01AE9280832E2B978435CF3D6A8F787E88D7A6A9BC92820E37C",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000208.bin"
+    },
+    {
+      "Path": "attempt/records/record-000209.bin",
+      "Bytes": 141,
+      "Sha256": "79608BB7967F3F60E6045AB3508621F2551BDEC227BF0853C403BEA16A9844FA",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000209.bin"
+    },
+    {
+      "Path": "attempt/records/record-000210.bin",
+      "Bytes": 16425,
+      "Sha256": "C0110423FA3E049C38CEC4F8FE240AF6900006FB650F2657A773305C213933AC",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000210.bin"
+    },
+    {
+      "Path": "attempt/records/record-000211.bin",
+      "Bytes": 158738,
+      "Sha256": "D20ABBB471D08B8C15D0DBD65781B578A7539EE82461943127991FADD8E78479",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000211.bin"
+    },
+    {
+      "Path": "attempt/records/record-000212.bin",
+      "Bytes": 141,
+      "Sha256": "79608BB7967F3F60E6045AB3508621F2551BDEC227BF0853C403BEA16A9844FA",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000212.bin"
+    },
+    {
+      "Path": "attempt/records/record-000213.bin",
+      "Bytes": 16425,
+      "Sha256": "2B5BAFE5DB224808A6C3D8AD85C03611D5DDEEF6B1C944FC66AF669257BE537D",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000213.bin"
+    },
+    {
+      "Path": "attempt/records/record-000214.bin",
+      "Bytes": 159082,
+      "Sha256": "178A8409EFAEC4A148792CD9E1435F3E060EF9C987FCFD1771300635358FA910",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000214.bin"
+    },
+    {
+      "Path": "attempt/records/record-000215.bin",
+      "Bytes": 141,
+      "Sha256": "79608BB7967F3F60E6045AB3508621F2551BDEC227BF0853C403BEA16A9844FA",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000215.bin"
+    },
+    {
+      "Path": "attempt/records/record-000216.bin",
+      "Bytes": 16425,
+      "Sha256": "37B9793CD5D0B926FFB47DFA69EFE74AF1D7565FA771EAD6495176278D5F5B79",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000216.bin"
+    },
+    {
+      "Path": "attempt/records/record-000217.bin",
+      "Bytes": 160311,
+      "Sha256": "96B1BC397503053033B582223056070AC193594D7548729C95EF23AAC01973C4",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000217.bin"
+    },
+    {
+      "Path": "attempt/records/record-000218.bin",
+      "Bytes": 141,
+      "Sha256": "79608BB7967F3F60E6045AB3508621F2551BDEC227BF0853C403BEA16A9844FA",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000218.bin"
+    },
+    {
+      "Path": "attempt/records/record-000219.bin",
+      "Bytes": 16425,
+      "Sha256": "DBF0899EC6F3B711D2DBB680C89C84C5096C0D7ADD00F00E8533207BE391B929",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000219.bin"
+    },
+    {
+      "Path": "attempt/records/record-000220.bin",
+      "Bytes": 160807,
+      "Sha256": "2BFFF995616174AED744FAD44F58DE4DB319CD085F142612B1D7567E0A3D19AE",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000220.bin"
+    },
+    {
+      "Path": "attempt/records/record-000221.bin",
+      "Bytes": 141,
+      "Sha256": "79608BB7967F3F60E6045AB3508621F2551BDEC227BF0853C403BEA16A9844FA",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000221.bin"
+    },
+    {
+      "Path": "attempt/records/record-000222.bin",
+      "Bytes": 16425,
+      "Sha256": "86DCB37B93A189A8C5FFCB6FB9E113C9F1D4FE22C0A99B09264D2374DB0B6C4B",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000222.bin"
+    },
+    {
+      "Path": "attempt/records/record-000223.bin",
+      "Bytes": 161298,
+      "Sha256": "15E9847D58429325E9429CEF48B5DB69C03DB17DD680CFE75A9F5C2F6C9A2AC8",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000223.bin"
+    },
+    {
+      "Path": "attempt/records/record-000224.bin",
+      "Bytes": 141,
+      "Sha256": "79608BB7967F3F60E6045AB3508621F2551BDEC227BF0853C403BEA16A9844FA",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000224.bin"
+    },
+    {
+      "Path": "attempt/records/record-000225.bin",
+      "Bytes": 16425,
+      "Sha256": "192EF0F7D50152F6CE6603242DC4D8B4AB0A1DCE8EBF667DBC34C4D3068A23F2",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000225.bin"
+    },
+    {
+      "Path": "attempt/records/record-000226.bin",
+      "Bytes": 39769,
+      "Sha256": "6F727CC243C1E08B6D79956EC2B53FFF94BEF4F5A79B389FE9052C6C78091D85",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000226.bin"
+    },
+    {
+      "Path": "attempt/records/record-000227.bin",
+      "Bytes": 141,
+      "Sha256": "79608BB7967F3F60E6045AB3508621F2551BDEC227BF0853C403BEA16A9844FA",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000227.bin"
+    },
+    {
+      "Path": "attempt/records/record-000228.bin",
+      "Bytes": 16425,
+      "Sha256": "F1569FC008B3D763744C11B301CDE6FA36A746CE80D892812EA1DB34958FE77A",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000228.bin"
+    },
+    {
+      "Path": "attempt/records/record-000229.bin",
+      "Bytes": 39764,
+      "Sha256": "0A3FE9550571D827DA96D249D217D8BE064E53FE7A648FFF663294D1CC750A9C",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000229.bin"
+    },
+    {
+      "Path": "attempt/records/record-000230.bin",
+      "Bytes": 141,
+      "Sha256": "79608BB7967F3F60E6045AB3508621F2551BDEC227BF0853C403BEA16A9844FA",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000230.bin"
+    },
+    {
+      "Path": "attempt/records/record-000231.bin",
+      "Bytes": 16288,
+      "Sha256": "9CDCABE0597187836BD8D700CDFBEF8CE18381A4E53CF2609EB34E7DBC4DAB17",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000231.bin"
+    },
+    {
+      "Path": "attempt/records/record-000232.bin",
+      "Bytes": 39464,
+      "Sha256": "F16B6ADD5133D2E0457BB858C2A69F126A7F711524D2D76160F5C6A41F06AEB0",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000232.bin"
+    },
+    {
+      "Path": "attempt/records/record-000233.bin",
+      "Bytes": 141,
+      "Sha256": "79608BB7967F3F60E6045AB3508621F2551BDEC227BF0853C403BEA16A9844FA",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000233.bin"
+    },
+    {
+      "Path": "attempt/records/record-000234.bin",
+      "Bytes": 16425,
+      "Sha256": "E9C2CD40864A23D639649D7FA357CF4BED2546833EE734F853E3B159214925F1",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000234.bin"
+    },
+    {
+      "Path": "attempt/records/record-000235.bin",
+      "Bytes": 39777,
+      "Sha256": "85B62940EEEB6502051A7F4DEC7EC20AAC92FB9A250D5ADF7B48F68AF959651C",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000235.bin"
+    },
+    {
+      "Path": "attempt/records/record-000236.bin",
+      "Bytes": 106546,
+      "Sha256": "F1D9FA4D45591C366310CFEA310242176C453BA797C587911F9AFFD40E8049DF",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/records/record-000236.bin"
+    },
+    {
+      "Path": "attempt/source-snapshot-1.json",
+      "Bytes": 22699,
+      "Sha256": "0F703015BAFF58AB539F9BA9A4A22AB02E4263005B232241265486F43E3584E8",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/source-snapshot-1.json"
+    },
+    {
+      "Path": "attempt/source-snapshot-2.json",
+      "Bytes": 22699,
+      "Sha256": "0F703015BAFF58AB539F9BA9A4A22AB02E4263005B232241265486F43E3584E8",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1/source-snapshot-2.json"
+    },
+    {
+      "Path": "coordinator/completion.json",
+      "Bytes": 96,
+      "Sha256": "A9AF009B071E17539E9953110AF7D1D3FCDC8C45EE30B2E61658823F5ECD195D",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-execution-1/completion.json"
+    },
+    {
+      "Path": "coordinator/invocation.json",
+      "Bytes": 1240,
+      "Sha256": "EB55D44602924A012B0D41AC47A1D05BF59114F002EA28AAB4ED9965F3F5F9F7",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-execution-1/invocation.json"
+    },
+    {
+      "Path": "coordinator/prerequisites.json",
+      "Bytes": 14454,
+      "Sha256": "5C438B8605F4357B65F8463C05809AA26C1DBC014E537AD78E61234F6FF0C79E",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-execution-1/prerequisites.json"
+    },
+    {
+      "Path": "coordinator/stderr.txt",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-execution-1/stderr.txt"
+    },
+    {
+      "Path": "coordinator/stdout.txt",
+      "Bytes": 282,
+      "Sha256": "7FAFCC3944112D847BB8B6DE13D7D0B9847047044C92EBFC16FB9821E247E0CA",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-execution-1/stdout.txt"
+    },
+    {
+      "Path": "coordinator/execution-helper.py",
+      "Bytes": 3376,
+      "Sha256": "CFD871B772830FAC06256D6C7F27AF65F8AE55452BB6C743EC95190B716B4030",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-execution-1.py"
+    },
+    {
+      "Path": "analysis/archive-helper.py",
+      "Bytes": 5910,
+      "Sha256": "16DAA5B5F2140EB55FBFCDE52832B226A5D77A309BA1518A0EF715835F390D9F",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/archive-projection-registered-1.py"
+    },
+    {
+      "Path": "analysis/observation.json",
+      "Bytes": 105431,
+      "Sha256": "949F8FD195A054CD8D65475792E78FFB4DE4D483296F54A520D6D70DCFFD3B7D",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/docs/research/precision-gate-projection/2026-09-08/registered-1/observation.json"
+    }
+  ],
+  "MemberCount": 336,
+  "PayloadBytes": 21658589,
+  "VerifiedWithoutExtraction": true,
+  "ObservedUnix": 1788857732.561035
+}

@@ -1,0 +1,14 @@
+{
+  "id": "080d03c5f7c49810a0130008af9780f7",
+  "at": "2026-09-06T22:02:56.531Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1WBXY42087G0R000N4V4Z1",
+    "type": "task",
+    "title": "correct the PR-archive growth attribution from a 30-day total to a rate",
+    "slug": "correct-the-pr-archive-growth-attribution-from-a-30-day-tota",
+    "priority": "P2",
+    "filename": "081M1WBXY42087G0R000N4V4Z1-correct-the-pr-archive-growth-attribution-from-a-30-day-tota.md"
+  }
+}

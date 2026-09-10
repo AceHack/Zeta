@@ -1,0 +1,7 @@
+
+
+/Users/acehack/.zeta/agents/codex/Zeta-rendered-predictor-native-20260906/src/Research.FSharp/HiddenSwitchExperiment.fs(40,63): error FS0001: This expression was expected to have type
+    'HiddenSwitchPolicy.Decision'    
+but here has type
+    'HiddenSwitchPolicy.Policy'    
+

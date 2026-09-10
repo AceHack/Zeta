@@ -1,5 +1,6 @@
 import { describe, expect, test } from "bun:test";
 import {
+  serialTailForFailure,
   buildQemuNetworkDeviceArgs,
   buildQemuSystemBootArgs,
   DEFAULT_QEMU_NETWORK_DEVICES,
@@ -30,12 +31,24 @@ import {
 } from "./qemu-state";
 import { qemuUsbStorageDeviceArg } from "../../installer/qemu-usb-storage.ts";
 
+/**
+ * Firmware fixture. Never resolved from the filesystem in a unit test: the arg SHAPE is
+ * what regressed in 081M24BB3TD087G0R001PJTW9A, and asserting it must not require OVMF to
+ * be installed on the machine running the test.
+ */
+const TEST_OVMF = {
+  kind: "ovmf",
+  codePath: "/usr/share/OVMF/OVMF_CODE_4M.fd",
+  varsPath: "run/OVMF_VARS.test.fd",
+} as const;
+
 function retentionPlan(): Qcow2SnapshotRetentionPlan {
   const result = planQcow2SnapshotRetention({
     isoPath: "/tmp/zeta.iso",
     diskPath: "/tmp/zeta.qcow2",
     serialLogPath: "/tmp/serial.log",
     snapshotName: "post-initial-format",
+    uefiFirmware: TEST_OVMF,
   });
   if ("error" in result) throw new Error(result.error.reason);
   return result.ok;
@@ -65,6 +78,7 @@ describe("081KSNY2Z0008QG0R0008PN7RQ QEMU state-preservation planner", () => {
       diskPath: "/tmp/zeta.qcow2",
       serialLogPath: "/tmp/serial.log",
       snapshotName: "post-initial-format",
+      uefiFirmware: TEST_OVMF,
       diskSizeGB: 32,
       kvmAvailable: true,
     });
@@ -101,6 +115,7 @@ describe("081KSNY2Z0008QG0R0008PN7RQ QEMU state-preservation planner", () => {
       diskPath: "/tmp/zeta.qcow2",
       serialLogPath: "/tmp/serial.log",
       snapshotName: "post-initial-format",
+      uefiFirmware: TEST_OVMF,
     });
     if ("error" in result) throw new Error(result.error.reason);
 
@@ -114,6 +129,7 @@ describe("081KSNY2Z0008QG0R0008PN7RQ QEMU state-preservation planner", () => {
       diskPath: "/tmp/zeta.qcow2",
       serialLogPath: "/tmp/serial.log",
       snapshotName: "post-initial-format",
+      uefiFirmware: TEST_OVMF,
       kvmAvailable: false,
     });
     if ("error" in result) throw new Error(result.error.reason);
@@ -129,6 +145,7 @@ describe("081KSNY2Z0008QG0R0008PN7RQ QEMU state-preservation planner", () => {
       diskPath: "/tmp/zeta.qcow2",
       serialLogPath: "/tmp/serial.log",
       snapshotName: "post-initial-format",
+      uefiFirmware: TEST_OVMF,
     });
     if ("error" in result) throw new Error(result.error.reason);
 
@@ -155,6 +172,7 @@ describe("081KSNY2Z0008QG0R0008PN7RQ QEMU state-preservation planner", () => {
       diskPath: "/tmp/zeta.qcow2",
       serialLogPath: "/tmp/serial.log",
       snapshotName: "post-initial-format",
+      uefiFirmware: TEST_OVMF,
     });
     if ("error" in result) throw new Error(result.error.reason);
 
@@ -168,6 +186,7 @@ describe("081KSNY2Z0008QG0R0008PN7RQ QEMU state-preservation planner", () => {
       diskPath: "/tmp/zeta.qcow2",
       serialLogPath: "/tmp/serial.log",
       snapshotName: "post-initial-format",
+      uefiFirmware: TEST_OVMF,
     });
     if ("error" in result) throw new Error(result.error.reason);
 
@@ -185,6 +204,7 @@ describe("081KSNY2Z0008QG0R0008PN7RQ QEMU state-preservation planner", () => {
       diskPath: "/tmp/zeta.qcow2",
       serialLogPath: "/tmp/serial.log",
       snapshotName: "post-initial-format",
+      uefiFirmware: TEST_OVMF,
     });
 
     expect("error" in result).toBe(true);
@@ -200,6 +220,7 @@ describe("081KSNY2Z0008QG0R0008PN7RQ QEMU state-preservation planner", () => {
       diskPath: "/tmp/zeta.qcow2",
       serialLogPath: "/tmp/serial.log",
       snapshotName: "post-initial-format",
+      uefiFirmware: TEST_OVMF,
       diskSizeGB: 0,
     });
 
@@ -681,6 +702,7 @@ const SEGMENT_BOOT_BASE = {
   cpuCount: 2,
   kvmAvailable: false,
   bootMedia: { kind: "iso", path: "/tmp/i.iso" },
+  uefiFirmware: TEST_OVMF,
 } as const;
 
 describe("QEMU network devices (scenario 5 shared L2 segment)", () => {
@@ -795,5 +817,55 @@ describe("QEMU network devices (scenario 5 shared L2 segment)", () => {
     expect(args.filter((a) => a === "-netdev")).toHaveLength(2);
     expect(args).toContain("user,id=net0");
     expect(args).toContain("virtio-net-pci,netdev=net1,mac=52:54:00:7a:f1:01");
+  });
+});
+
+/**
+ * 081M22P1265087G0R001VVYSWZ -- a QEMU failure must carry what the guest SAID.
+ *
+ * Run 34324877507: scenarios 3 and 4 both timed out at
+ * `initial-install-from-iso-with-disk` after 1800s, and the CI log carried
+ * nothing but "no marker". That cannot distinguish a guest which never booted
+ * from one which booted and hung, which are opposite diagnoses with opposite
+ * fixes. These pin that the distinction survives into the failure message.
+ */
+describe("serialTailForFailure", () => {
+  test("reports an EMPTY log as the finding it is, not as absence of information", () => {
+    const out = serialTailForFailure("");
+    expect(out).toContain("EMPTY");
+    expect(out).toContain("firmware or boot order");
+  });
+
+  test("treats a whitespace-only log as empty -- blank lines are not guest output", () => {
+    expect(serialTailForFailure("\n  \n\t\n")).toContain("EMPTY");
+  });
+
+  test("carries the LAST lines, which is where a hang shows", () => {
+    const text = Array.from({ length: 100 }, (_, i) => `line ${String(i)}`).join("\n");
+    const out = serialTailForFailure(text, 3);
+    expect(out).toContain("line 99");
+    expect(out).toContain("line 97");
+    expect(out).not.toContain("line 96");
+  });
+
+  /**
+   * The DEFAULT window is what every call site actually uses -- none of them
+   * pass one -- so leaving it unpinned let a mutant widen it to the whole log
+   * and survive. A failure message that dumps an unbounded serial log is a
+   * different defect from one that dumps none, and both are worth refusing.
+   */
+  test("bounds the default window, which is the one every call site uses", () => {
+    const text = Array.from({ length: 500 }, (_, i) => `line ${String(i)}`).join("\n");
+    const lines = serialTailForFailure(text).split("\n");
+    // one header line plus the window
+    expect(lines.length).toBe(41);
+    expect(serialTailForFailure(text)).toContain("last 40 serial line(s)");
+    expect(serialTailForFailure(text)).not.toContain("line 459");
+  });
+
+  test("does not pad when the log is shorter than the window", () => {
+    const out = serialTailForFailure("only one line", 40);
+    expect(out).toContain("last 1 serial line(s)");
+    expect(out).toContain("only one line");
   });
 });

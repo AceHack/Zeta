@@ -165,4 +165,44 @@ function main(): void {
   console.log(`\nwindows-install-ps1-smoke (${mode}): all checks passed`);
 }
 
+/**
+ * The host-tier policy `install.ps1` applies, read out of the script itself.
+ *
+ * Windows carries no `common/host-tier.sh` (that helper is bash), so the tier decision is
+ * inline PowerShell and nothing but this parser checks it. `ZETA_HOST_TIER` changes exactly
+ * one thing on Windows -- whether `MISE_ENV=full` merges `.mise.full.toml`, whose only
+ * non-mirror entries are the five Kubernetes tools -- so these two fields are the whole
+ * policy. Workitem 081M25QNJ49087G0R000CRS6MN.
+ */
+export interface WindowsHostTierPolicy {
+  /** Tier assigned when the caller declared none; `null` if the script assigns none. */
+  readonly defaultTier: string | null;
+  /** The tier value that gates `$env:MISE_ENV = 'full'`; `null` if that assignment is unguarded. */
+  readonly miseEnvFullGuardTier: string | null;
+}
+
+/**
+ * Pure: drop WHOLE-LINE PowerShell `#` comments.
+ *
+ * Whole-line only, deliberately. A trailing-comment stripper would also cut into string
+ * literals (`install.ps1` contains `-replace '#.*$'`), and the point of stripping at all is
+ * that a guard must match the CALL and not the prose beside it -- the rationale block above
+ * this policy names every tier value it is about, so an unstripped match would pass on a
+ * comment alone.
+ */
+export function stripPowerShellLineComments(text: string): string {
+  return text
+    .split(/\r?\n/)
+    .filter((line) => !/^\s*#/.test(line))
+    .join("\n");
+}
+
+/** Pure: extract the tier policy from `install.ps1` source. */
+export function parseWindowsHostTierPolicy(ps1Text: string): WindowsHostTierPolicy {
+  const code = stripPowerShellLineComments(ps1Text);
+  const fallback = code.match(/if\s*\(-not\s+\$env:ZETA_HOST_TIER\)\s*\{\s*\$env:ZETA_HOST_TIER\s*=\s*'([^']+)'/);
+  const guarded = code.match(/if\s*\(\$env:ZETA_HOST_TIER\s+-eq\s+'([^']+)'\)\s*\{\s*\$env:MISE_ENV\s*=\s*'full'/);
+  return { defaultTier: fallback?.[1] ?? null, miseEnvFullGuardTier: guarded?.[1] ?? null };
+}
+
 if (import.meta.main) main();

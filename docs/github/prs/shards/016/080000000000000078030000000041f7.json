@@ -1,0 +1,12 @@
+{
+  "pr_number": 16887,
+  "archive_path": "docs/history/pr-reviews/PR-16887-test-formal-execute-the-nci-emitter-capability-boundary.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-07T00:06:32.237Z",
+  "schema_version": "v1",
+  "commit_sha": "4b9906d7195233e1a5b6540904daf21bb66d446a",
+  "title": "test(formal): Execute the NCI emitter capability boundary",
+  "state": "MERGED",
+  "merged_at": "2026-09-07T00:05:54Z",
+  "head_ref": "claim/task-nci-emitter-capability-20260906"
+}

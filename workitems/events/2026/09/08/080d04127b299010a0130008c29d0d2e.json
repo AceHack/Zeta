@@ -1,0 +1,14 @@
+{
+  "id": "080d04127b299010a0130008c29d0d2e",
+  "at": "2026-09-08T18:37:16.466Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M214YS9J087G0R0011YKARN",
+    "type": "task",
+    "title": "D9 mid-file insert FastCDC from first mismatched window",
+    "slug": "d9-mid-file-insert-fastcdc-from-first-mismatched-window",
+    "priority": "P2",
+    "filename": "081M214YS9J087G0R0011YKARN-d9-mid-file-insert-fastcdc-from-first-mismatched-window.md"
+  }
+}

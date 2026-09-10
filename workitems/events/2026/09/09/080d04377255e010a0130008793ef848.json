@@ -1,0 +1,14 @@
+{
+  "id": "080d04377255e010a0130008793ef848",
+  "at": "2026-09-09T16:09:18.780Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M23EWJNV087G0R001MYF1H7",
+    "type": "task",
+    "title": "Rung 7: a viewable WebGPU/WebGL2/Canvas2D page and a CPU BVH ray tracer for the derived E8 surface",
+    "slug": "rung-7-a-viewable-webgpu-webgl2-canvas2d-page-and-a-cpu-bvh",
+    "priority": "P2",
+    "filename": "081M23EWJNV087G0R001MYF1H7-rung-7-a-viewable-webgpu-webgl2-canvas2d-page-and-a-cpu-bvh.md"
+  }
+}

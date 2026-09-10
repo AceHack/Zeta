@@ -1,0 +1,12 @@
+{
+  "pr_number": 16859,
+  "archive_path": "docs/history/pr-reviews/PR-16859-feat-081m1w851sg087g0r000tbqh01-buffered-putobject-planted-garbage-returns-missi.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-06T21:15:15.452Z",
+  "schema_version": "v1",
+  "commit_sha": "18354f8257da58c35f584ca824fa4b7a5600aa6c",
+  "title": "feat(081M1W851SG087G0R000TBQH01): Buffered putObject planted garbage returns MissingLeaves",
+  "state": "MERGED",
+  "merged_at": "2026-09-06T21:14:40Z",
+  "head_ref": "feat/zetafs-missingleaves-buffered"
+}

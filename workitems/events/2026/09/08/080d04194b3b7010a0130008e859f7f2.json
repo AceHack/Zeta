@@ -1,0 +1,14 @@
+{
+  "id": "080d04194b3b7010a0130008e859f7f2",
+  "at": "2026-09-08T22:35:23.886Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M21JJSVD087G0R002HHRH47",
+    "type": "task",
+    "title": "Rendering surface generated from Clifford: E8 Coxeter-plane projection",
+    "slug": "rendering-surface-generated-from-clifford-e8-coxeter-plane-p",
+    "priority": "P2",
+    "filename": "081M21JJSVD087G0R002HHRH47-rendering-surface-generated-from-clifford-e8-coxeter-plane-p.md"
+  }
+}

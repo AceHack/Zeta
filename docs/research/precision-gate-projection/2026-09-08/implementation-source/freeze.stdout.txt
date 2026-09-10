@@ -1,0 +1,16 @@
+{
+  "SourceCommit": "f33ac42959388344fc3c82058f165764954fa22d",
+  "ManifestSha256": "FE1F5BDF732FA6B08092887210552BA9CEF68D724E519C77958A282366A348E7",
+  "ArchiveBytes": 5152737,
+  "Members": 59,
+  "Reservation": {
+    "CopiedBytes": 10502579,
+    "ManifestBytes": 9821,
+    "DriverCombinedBytes": 149737504,
+    "DriverSlots": 90,
+    "InnerCombinedBytes": 118697952,
+    "InnerJournalBytes": 8388608,
+    "InnerSlots": 422,
+    "UnusedReservationsReclaimed": false
+  }
+}

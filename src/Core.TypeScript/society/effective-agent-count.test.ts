@@ -12,10 +12,13 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import {
   AGENTS,
+  FRAME_RENAMES,
+  applyFrameRename,
   assertFrameContainsDraws,
   effectiveTrialCount,
   enumerateUniverse,
   formatReport,
+  frameRenamesAreLive,
   iccOneWay,
   independenceExpectedOverlap,
   measure,
@@ -25,9 +28,9 @@ import {
   rhoFromUnionCoverage,
   sourceIsTheSamplingUnit,
   tabulate,
+  type Table2x2,
   unionEquivalentAgentCount,
   unionProbability,
-  type Table2x2,
 } from "./effective-agent-count.ts";
 
 const ROOT = repoRoot();
@@ -299,7 +302,11 @@ describe("the measurement over db/mutation-findings/", () => {
     expect(frame.length).toBeGreaterThan(600);
     const draws = new Map<string, ReadonlySet<string>>();
     for (const a of AGENTS) {
-      draws.set(a, new Set(readFindings(ROOT, a).map((f) => f.source)));
+      // `applyFrameRename` exactly as `measure()` does it: a file that MOVED after it was
+      // sampled is the same sampling unit under a new name, and the append-only ledger keeps
+      // the name it recorded. Without this the assertion below fires on a rename, which is a
+      // false alarm — the unit never left the population.
+      draws.set(a, new Set(readFindings(ROOT, a).map((f) => applyFrameRename(f.source, new Set(frame)))));
     }
     // The check that killed the N = 616 frame. It must throw, not filter.
     expect(() => {
@@ -471,3 +478,42 @@ describe("the measurement over db/mutation-findings/", () => {
 //   5. phi numerator `a*d + b*c`                    -> phi endpoints, alexa x otto value
 //   6. ICC `(MSB - MSW) / (MSB + MSW)`  (drop k-1)  -> ICC/phi agreement, THE FINDING
 //   7. `assertFrameContainsDraws` filters instead of throwing -> frame test's `.toThrow`
+
+describe("FRAME_RENAMES — a moved file is the same sampling unit", () => {
+  test("a recorded draw translates into the frame's current vocabulary; everything else is identity", () => {
+    // Both directions, so this cannot pass by the map never applying.
+    const [from, to] = [...FRAME_RENAMES.entries()][0] ?? [];
+    expect(from).toBeDefined();
+    expect(to).toBeDefined();
+    const live = new Set([to as string, "src/Core.TypeScript/society/effective-agent-count.ts"]);
+    expect(applyFrameRename(from as string, live)).toBe(to as string);
+    expect(applyFrameRename("src/Core.TypeScript/society/effective-agent-count.ts", live)).toBe(
+      "src/Core.TypeScript/society/effective-agent-count.ts",
+    );
+    // FRAME-AWARE: at a historical frame that still holds the OLD path, nothing is translated.
+    const historical = new Set([from as string]);
+    expect(applyFrameRename(from as string, historical)).toBe(from as string);
+    // And a rename whose target is in NEITHER frame returns the original rather than inventing.
+    expect(applyFrameRename(from as string, new Set(["unrelated.ts"]))).toBe(from as string);
+  });
+
+  test("every rename target is live in the real frame", () => {
+    // The map's failure mode is ROT: a target that no longer exists translates a draw to
+    // nowhere, putting it back out of frame — the very thing the map prevents. This is the
+    // guard for that, run against the actual repository.
+    expect(frameRenamesAreLive(enumerateUniverse("."))).toEqual([]);
+  });
+
+  test("a rotted map is REFUSED, not tolerated", () => {
+    expect(frameRenamesAreLive(["something/else.ts"])).toEqual([...FRAME_RENAMES.values()]);
+    expect(frameRenamesAreLive(["something/else.ts"]).length).toBeGreaterThan(0);
+  });
+
+  test("renaming preserves the draw COUNT — it is a rename, not a filter", () => {
+    const recorded = ["infra/k8s/tests/validate-bootstrap.ts", "a/b.ts", "a/b.ts"];
+    const f = new Set(["full-ai-cluster/k8s/tests/validate-bootstrap.ts", "a/b.ts"]);
+    const translated = recorded.map((r) => applyFrameRename(r, f));
+    expect(translated.length).toBe(recorded.length);
+    expect(new Set(translated).size).toBe(new Set(recorded).size);
+  });
+});

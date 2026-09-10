@@ -1,0 +1,14 @@
+{
+  "id": "080d03c4e5f51010a013000816f57aed",
+  "at": "2026-09-06T21:25:33.474Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1W9SFN2087G0R00069NWSV",
+    "type": "task",
+    "title": "derive the remaining cluster application and scan roots from the tree roster",
+    "slug": "derive-the-remaining-cluster-application-and-scan-roots-from",
+    "priority": "P2",
+    "filename": "081M1W9SFN2087G0R00069NWSV-derive-the-remaining-cluster-application-and-scan-roots-from.md"
+  }
+}

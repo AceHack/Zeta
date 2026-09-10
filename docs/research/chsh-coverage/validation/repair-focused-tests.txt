@@ -1,0 +1,4 @@
+Test run for /Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/tests/Tests.FSharp/bin/Release/net10.0/Tests.FSharp.dll (.NETCoreApp,Version=v10.0)
+A total of 1 test files matched the specified pattern.
+
+Passed!  - Failed:     0, Passed:    55, Skipped:     0, Total:    55, Duration: 1 s - Tests.FSharp.dll (net10.0)

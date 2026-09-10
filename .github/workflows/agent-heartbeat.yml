@@ -1,3 +1,25 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# DISABLED (`disabled_manually` in the Actions API) — 2026-08-29, and
+# heartbeat-liveness.yml on 2026-09-10. This is a maintainer decision, not rot.
+#
+# WHY: these are cadence workflows that COMMIT on a schedule, and the cost is
+# HISTORY, not tip. Measured on 2026-09-10: `liveness/observations` held 605
+# commits and 3,025 git objects to carry 409 KB of current content, at 84
+# commits/day; `drift-sweep.yml` committed a tick event into `docs/` on every
+# run. Quoting the tip size understates it — git keeps all of it.
+#
+# DO NOT re-enable to "restore telemetry". Re-enabling resumes exactly the
+# growth this stopped. A liveness signal is wanted again only with a bound on
+# history, which is the telemetry redesign, not this file.
+#
+# The design worth keeping from it: observations about a broken pipeline must
+# not depend on that pipeline (hence an orphan ref, not a PR flush). What it
+# lacked was a retention bound.
+#
+# Absence of runs here is the pause, NEVER evidence that work stopped — read
+# liveness from the work itself: commits on `main`, merged PRs, open
+# work-items. A lane's run-state is a question for the Actions API.
+# ─────────────────────────────────────────────────────────────────────────────
 # Agent heartbeat — symmetric pair heartbeating on free-tier Ollama.
 #
 # TWO agents (alexa + otto) heartbeat independently, each on their own branch.
@@ -32,8 +54,7 @@ on:
   workflow_dispatch: # manual trigger for testing
 
 permissions:
-  contents: write
-  pull-requests: write
+  contents: read
 
 concurrency:
   group: agent-heartbeat
@@ -41,6 +62,12 @@ concurrency:
 
 jobs:
   heartbeat:
+    permissions:
+      # NARROWED to job level 2026-09-09. Both jobs genuinely write: the tick pushes
+      # its heartbeat lane ref, and the flush arms auto-merge, falling back to
+      # GITHUB_TOKEN when ZETA_PR_ARCHIVE_TOKEN is absent or refused the mutation.
+      contents: write
+      pull-requests: write
     name: ${{ matrix.agent }} heartbeat tick
     runs-on: ubuntu-24.04
     timeout-minutes: 10
@@ -1506,6 +1533,10 @@ jobs:
         run: git push --force-with-lease origin "heartbeat/$AGENT"
 
   flush-to-main:
+    permissions:
+      # NARROWED to job level 2026-09-09. See the heartbeat job for why both are real.
+      contents: write
+      pull-requests: write
     name: flush ${{ matrix.agent }} heartbeats
     runs-on: ubuntu-24.04
     timeout-minutes: 5

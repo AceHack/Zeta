@@ -1,0 +1,497 @@
+{
+  "Schema": "zeta.projection-driver.source-validation.v1",
+  "Records": [
+    {
+      "Original": ".git/precision-gate-projection-driver-attempt-1/commands.json",
+      "Stored": "000-commands.json.gz",
+      "Encoding": "gzip",
+      "Bytes": 1580,
+      "Sha256": "149D2A5B1040E7C65AB224D518277A97BBAABD06816E21583BCBE557C8125A6F",
+      "StoredBytes": 367,
+      "StoredSha256": "5F20ABD55FAEAA37EEDBF7A250E15847E3E81C72D55257CED80457DC6C53950F"
+    },
+    {
+      "Original": ".git/precision-gate-projection-driver-attempt-1/format.stderr",
+      "Stored": "001-format.stderr.gz",
+      "Encoding": "gzip",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "StoredBytes": 20,
+      "StoredSha256": "9CEFFB7310338057CFE71A4AE1E2C98D2C485D81CDEF906532A801F457A38D64"
+    },
+    {
+      "Original": ".git/precision-gate-projection-driver-attempt-1/format.stdout",
+      "Stored": "002-format.stdout.gz",
+      "Encoding": "gzip",
+      "Bytes": 80173,
+      "Sha256": "4B0C8C67BD3F4759F0ACCA84980AF907EA9B66AA0806ADB7F3397FBF4797334D",
+      "StoredBytes": 16890,
+      "StoredSha256": "70B281B5F3319A51F54C153AA3A9ADBB5672097B439804D07E66106B5FBFE5FD"
+    },
+    {
+      "Original": ".git/precision-gate-projection-driver-attempt-1/initial-plan.md",
+      "Stored": "003-initial-plan.md.gz",
+      "Encoding": "gzip",
+      "Bytes": 5338,
+      "Sha256": "14D931A29A25F058EA123A60C80CCF3D976E2897944AC98C276E0D22D51E56DA",
+      "StoredBytes": 2550,
+      "StoredSha256": "8E704FD34DBAFD26D03F0660ACCEBAF85EF882FA6A047658E3D9E08B07047750"
+    },
+    {
+      "Original": ".git/precision-gate-projection-driver-attempt-1/initial-source.py",
+      "Stored": "004-initial-source.py.gz",
+      "Encoding": "gzip",
+      "Bytes": 33039,
+      "Sha256": "8192AE4A395C07A71EA7D724AB52F9AADE9EFA8FD4BFC3B68EED36559639BA54",
+      "StoredBytes": 8516,
+      "StoredSha256": "25B2A9FD7AD7FC7B1ACED5F17440F6646C459C8AE762BAC6264A0BD8E966D998"
+    },
+    {
+      "Original": ".git/precision-gate-projection-driver-attempt-1/mypy.stderr",
+      "Stored": "005-mypy.stderr.gz",
+      "Encoding": "gzip",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "StoredBytes": 20,
+      "StoredSha256": "9CEFFB7310338057CFE71A4AE1E2C98D2C485D81CDEF906532A801F457A38D64"
+    },
+    {
+      "Original": ".git/precision-gate-projection-driver-attempt-1/mypy.stdout",
+      "Stored": "006-mypy.stdout.gz",
+      "Encoding": "gzip",
+      "Bytes": 16564,
+      "Sha256": "48B437F48467A6E327933E3F16E61586A60516855AFF283EE46B63A6F91F676B",
+      "StoredBytes": 1229,
+      "StoredSha256": "4DF7919086A69E1197D74BAAAB05F0AE0AA0B3A300577DF929C069EC6E4238E0"
+    },
+    {
+      "Original": ".git/precision-gate-projection-driver-attempt-1/pytest.stderr",
+      "Stored": "007-pytest.stderr.gz",
+      "Encoding": "gzip",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "StoredBytes": 20,
+      "StoredSha256": "9CEFFB7310338057CFE71A4AE1E2C98D2C485D81CDEF906532A801F457A38D64"
+    },
+    {
+      "Original": ".git/precision-gate-projection-driver-attempt-1/pytest.stdout",
+      "Stored": "008-pytest.stdout.gz",
+      "Encoding": "gzip",
+      "Bytes": 1669,
+      "Sha256": "BB4764DA4CD8B156E7A17C8245C740AA97F8847E3C6DF91F49FC6E223807B329",
+      "StoredBytes": 805,
+      "StoredSha256": "5F21CF7775185140F5FF6875607F7909AB1FAC1BE6B630D72C06363B49DE83D0"
+    },
+    {
+      "Original": ".git/precision-gate-projection-driver-attempt-1/ruff.stderr",
+      "Stored": "009-ruff.stderr.gz",
+      "Encoding": "gzip",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "StoredBytes": 20,
+      "StoredSha256": "9CEFFB7310338057CFE71A4AE1E2C98D2C485D81CDEF906532A801F457A38D64"
+    },
+    {
+      "Original": ".git/precision-gate-projection-driver-attempt-1/ruff.stdout",
+      "Stored": "010-ruff.stdout.gz",
+      "Encoding": "gzip",
+      "Bytes": 2821,
+      "Sha256": "E497556F8C59DA3CA3688157AD83AD50BBAA6BC456AD8E966E960A3DD1774100",
+      "StoredBytes": 1129,
+      "StoredSha256": "34C23C7BA13E0D19A59D6EE62538CE5047592CC260CEFC22358C811098644E33"
+    },
+    {
+      "Original": ".git/precision-gate-projection-driver-attempt-1/run.py",
+      "Stored": "011-run.py.gz",
+      "Encoding": "gzip",
+      "Bytes": 1479,
+      "Sha256": "EADB47A0174CEBB99CE91DF9F0118683373A3DDAC184B62031E21BDB6C85DA69",
+      "StoredBytes": 617,
+      "StoredSha256": "0C432E35FFE7D6BD18CACE3D0458ACE3FF2BED5DE4E17725FE86E0060B0A9A15"
+    },
+    {
+      "Original": ".git/precision-gate-projection-driver-attempt-1/source.py",
+      "Stored": "012-source.py.gz",
+      "Encoding": "gzip",
+      "Bytes": 33039,
+      "Sha256": "8192AE4A395C07A71EA7D724AB52F9AADE9EFA8FD4BFC3B68EED36559639BA54",
+      "StoredBytes": 8516,
+      "StoredSha256": "25B2A9FD7AD7FC7B1ACED5F17440F6646C459C8AE762BAC6264A0BD8E966D998"
+    },
+    {
+      "Original": ".git/precision-gate-projection-driver-attempt-1/test.py",
+      "Stored": "013-test.py.gz",
+      "Encoding": "gzip",
+      "Bytes": 18665,
+      "Sha256": "9580D781CE1CA28A802032A173C767826A5A06F03C6AD73E9B51EC1E2A4684CA",
+      "StoredBytes": 5046,
+      "StoredSha256": "02ED2BFE61139B4CC9603EA412EBFFA9407EE330BE75D4D3C0BFD0532B7D5988"
+    },
+    {
+      "Original": ".git/precision-gate-projection-driver-attempt-2/commands.json",
+      "Stored": "014-commands.json.gz",
+      "Encoding": "gzip",
+      "Bytes": 1581,
+      "Sha256": "6CAE8A21005948F0FA024F55F27AD7A4C5638EFF01D9C9A38413CE8E15D1C686",
+      "StoredBytes": 370,
+      "StoredSha256": "8379A131F39A710E162BA4487462500EA66DC71F98718E3E7A85BAE617EFD0A4"
+    },
+    {
+      "Original": ".git/precision-gate-projection-driver-attempt-2/format.stderr",
+      "Stored": "015-format.stderr.gz",
+      "Encoding": "gzip",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "StoredBytes": 20,
+      "StoredSha256": "9CEFFB7310338057CFE71A4AE1E2C98D2C485D81CDEF906532A801F457A38D64"
+    },
+    {
+      "Original": ".git/precision-gate-projection-driver-attempt-2/format.stdout",
+      "Stored": "016-format.stdout.gz",
+      "Encoding": "gzip",
+      "Bytes": 26,
+      "Sha256": "3BC53BF3E981A98A34A852E175BF9B77AF841EDEA74FCA595D9AEDCBAF9A4938",
+      "StoredBytes": 46,
+      "StoredSha256": "9A1A2D79ACCCDB0F46930A600A1382606067033CFB52A4673DC15B0C1030D871"
+    },
+    {
+      "Original": ".git/precision-gate-projection-driver-attempt-2/mypy.stderr",
+      "Stored": "017-mypy.stderr.gz",
+      "Encoding": "gzip",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "StoredBytes": 20,
+      "StoredSha256": "9CEFFB7310338057CFE71A4AE1E2C98D2C485D81CDEF906532A801F457A38D64"
+    },
+    {
+      "Original": ".git/precision-gate-projection-driver-attempt-2/mypy.stdout",
+      "Stored": "018-mypy.stdout.gz",
+      "Encoding": "gzip",
+      "Bytes": 3476,
+      "Sha256": "1B834F2164F216361262CD4B121C76602D26FB9DAB4941235C0753FBA7E8E0CE",
+      "StoredBytes": 402,
+      "StoredSha256": "68C879881B7716F67BA45B2FAE05F6A31C4F32B13B2691E553A3532B8B9B4AA7"
+    },
+    {
+      "Original": ".git/precision-gate-projection-driver-attempt-2/pytest.stderr",
+      "Stored": "019-pytest.stderr.gz",
+      "Encoding": "gzip",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "StoredBytes": 20,
+      "StoredSha256": "9CEFFB7310338057CFE71A4AE1E2C98D2C485D81CDEF906532A801F457A38D64"
+    },
+    {
+      "Original": ".git/precision-gate-projection-driver-attempt-2/pytest.stdout",
+      "Stored": "020-pytest.stdout.gz",
+      "Encoding": "gzip",
+      "Bytes": 99,
+      "Sha256": "FAE4C68EB31F207D2BC2043966B217C8FF461F0830E10C79A9F5D4F897263573",
+      "StoredBytes": 52,
+      "StoredSha256": "3F1513260215E37289E3184B91D1C72A330CE125222B8C29E5ACFF4A6948153D"
+    },
+    {
+      "Original": ".git/precision-gate-projection-driver-attempt-2/ruff.stderr",
+      "Stored": "021-ruff.stderr.gz",
+      "Encoding": "gzip",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "StoredBytes": 20,
+      "StoredSha256": "9CEFFB7310338057CFE71A4AE1E2C98D2C485D81CDEF906532A801F457A38D64"
+    },
+    {
+      "Original": ".git/precision-gate-projection-driver-attempt-2/ruff.stdout",
+      "Stored": "022-ruff.stdout.gz",
+      "Encoding": "gzip",
+      "Bytes": 19,
+      "Sha256": "82B3E6A6C090A57601D22943BD23FCA9218D1031DBE5A7B754092F9A156B4F18",
+      "StoredBytes": 39,
+      "StoredSha256": "F3AF4D142827F5AAD2EB0C72D556D325488A57FB6219AAC10AFEB51085667D53"
+    },
+    {
+      "Original": ".git/precision-gate-projection-driver-attempt-2/run.py",
+      "Stored": "023-run.py.gz",
+      "Encoding": "gzip",
+      "Bytes": 1479,
+      "Sha256": "BEAC1227D284025063BEC5E9D958EB94C5A5CCC3D9A9F2A21379BFC55A0E7722",
+      "StoredBytes": 618,
+      "StoredSha256": "9D7A3DBA3875D58C2B289A250F807DD574C0204271074021DB16BA1DA6A83941"
+    },
+    {
+      "Original": ".git/precision-gate-projection-driver-attempt-2/source.py",
+      "Stored": "024-source.py.gz",
+      "Encoding": "gzip",
+      "Bytes": 39948,
+      "Sha256": "1FF43731B4B4D463D7C5BF1CAFCA851F1B11D7CB3E3230ABFFD1F631C1570755",
+      "StoredBytes": 9275,
+      "StoredSha256": "DEF425C3047DCF5F3963E64E88BE271F59639F99F45FAA75050401B4C46D41A4"
+    },
+    {
+      "Original": ".git/precision-gate-projection-driver-attempt-2/test.py",
+      "Stored": "025-test.py.gz",
+      "Encoding": "gzip",
+      "Bytes": 30748,
+      "Sha256": "70056D190FE8CF39BCC0806A74C562695938AC6264775B5E71DFAB0DE26BCA10",
+      "StoredBytes": 7002,
+      "StoredSha256": "E5EED72D3004F61DF217530A7850AEBAA62B7A904AB31665209AC95D9BE679F1"
+    },
+    {
+      "Original": ".git/precision-gate-projection-driver-attempt-3/commands.json",
+      "Stored": "026-commands.json.gz",
+      "Encoding": "gzip",
+      "Bytes": 1582,
+      "Sha256": "97278D2B7AD64BAFCB015D609F6D9710E1948236A04D51E4A1C9FCA52B3F9875",
+      "StoredBytes": 365,
+      "StoredSha256": "D1DD4BAFE92AA17F6307583FC335C91B5C4F10F230A4DE232E6A6B6E96A8CB72"
+    },
+    {
+      "Original": ".git/precision-gate-projection-driver-attempt-3/format.stderr",
+      "Stored": "027-format.stderr.gz",
+      "Encoding": "gzip",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "StoredBytes": 20,
+      "StoredSha256": "9CEFFB7310338057CFE71A4AE1E2C98D2C485D81CDEF906532A801F457A38D64"
+    },
+    {
+      "Original": ".git/precision-gate-projection-driver-attempt-3/format.stdout",
+      "Stored": "028-format.stdout.gz",
+      "Encoding": "gzip",
+      "Bytes": 26,
+      "Sha256": "3BC53BF3E981A98A34A852E175BF9B77AF841EDEA74FCA595D9AEDCBAF9A4938",
+      "StoredBytes": 46,
+      "StoredSha256": "9A1A2D79ACCCDB0F46930A600A1382606067033CFB52A4673DC15B0C1030D871"
+    },
+    {
+      "Original": ".git/precision-gate-projection-driver-attempt-3/mypy.stderr",
+      "Stored": "029-mypy.stderr.gz",
+      "Encoding": "gzip",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "StoredBytes": 20,
+      "StoredSha256": "9CEFFB7310338057CFE71A4AE1E2C98D2C485D81CDEF906532A801F457A38D64"
+    },
+    {
+      "Original": ".git/precision-gate-projection-driver-attempt-3/mypy.stdout",
+      "Stored": "030-mypy.stdout.gz",
+      "Encoding": "gzip",
+      "Bytes": 43,
+      "Sha256": "F9B031E5C45AA702CD4FEF028D465551CB20A2C4698E0913C7B00766B20AC4D8",
+      "StoredBytes": 63,
+      "StoredSha256": "76EACBBF7755358F4BE970D3CD86B2D0FFA287F96DB2193F42233534159C057D"
+    },
+    {
+      "Original": ".git/precision-gate-projection-driver-attempt-3/pytest.stderr",
+      "Stored": "031-pytest.stderr.gz",
+      "Encoding": "gzip",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "StoredBytes": 20,
+      "StoredSha256": "9CEFFB7310338057CFE71A4AE1E2C98D2C485D81CDEF906532A801F457A38D64"
+    },
+    {
+      "Original": ".git/precision-gate-projection-driver-attempt-3/pytest.stdout",
+      "Stored": "032-pytest.stdout.gz",
+      "Encoding": "gzip",
+      "Bytes": 99,
+      "Sha256": "D550DEE49E5064B3C15B184832E7234CE4E0FBE1BF9C58D923962814A6AAB22D",
+      "StoredBytes": 52,
+      "StoredSha256": "73155E692DB168B415909826A7C17E41F01BA5BB3317D5E14D7E76FF95AF24A1"
+    },
+    {
+      "Original": ".git/precision-gate-projection-driver-attempt-3/ruff.stderr",
+      "Stored": "033-ruff.stderr.gz",
+      "Encoding": "gzip",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "StoredBytes": 20,
+      "StoredSha256": "9CEFFB7310338057CFE71A4AE1E2C98D2C485D81CDEF906532A801F457A38D64"
+    },
+    {
+      "Original": ".git/precision-gate-projection-driver-attempt-3/ruff.stdout",
+      "Stored": "034-ruff.stdout.gz",
+      "Encoding": "gzip",
+      "Bytes": 19,
+      "Sha256": "82B3E6A6C090A57601D22943BD23FCA9218D1031DBE5A7B754092F9A156B4F18",
+      "StoredBytes": 39,
+      "StoredSha256": "F3AF4D142827F5AAD2EB0C72D556D325488A57FB6219AAC10AFEB51085667D53"
+    },
+    {
+      "Original": ".git/precision-gate-projection-driver-attempt-3/run.py",
+      "Stored": "035-run.py.gz",
+      "Encoding": "gzip",
+      "Bytes": 1479,
+      "Sha256": "6A59435E96B4DC5E1D7FEE33FC9992448DBDFEBD367FCBF5CC03A933895235CE",
+      "StoredBytes": 618,
+      "StoredSha256": "85AC9CDF4355BAF3F5AF397C15D34F467F39C849C465428CF565DE300BE9A8F1"
+    },
+    {
+      "Original": ".git/precision-gate-projection-driver-attempt-3/source.py",
+      "Stored": "036-source.py.gz",
+      "Encoding": "gzip",
+      "Bytes": 40992,
+      "Sha256": "83537F7105042FC077D348EC6F59FD8D44318C0233D1804B01381A6A4EE51706",
+      "StoredBytes": 9408,
+      "StoredSha256": "7D5A1635B6B680D4E1D18D405A23DD41A810DEA2208F16A304B9F04B8661043A"
+    },
+    {
+      "Original": ".git/precision-gate-projection-driver-attempt-3/test.py",
+      "Stored": "037-test.py.gz",
+      "Encoding": "gzip",
+      "Bytes": 31024,
+      "Sha256": "FB9B5A21A64020814767578965F31158C6D860E76616585B8F6B1631E7A3D198",
+      "StoredBytes": 7047,
+      "StoredSha256": "F049F9DC20C63F65CC40A36981505EB1D4EDF12626E1AA44197502290E257271"
+    },
+    {
+      "Original": ".git/precision-gate-projection-driver-source-observations/command.json",
+      "Stored": "038-command.json.gz",
+      "Encoding": "gzip",
+      "Bytes": 453,
+      "Sha256": "E15A1252238AF809D3545724AF1F6534063D4602A87E8A008DA1E3EB14F086D1",
+      "StoredBytes": 245,
+      "StoredSha256": "A4D51E0E20DC6A8A3F1B79490E330113B331CFBEDB160BBD2A76CD4E41B51F7E"
+    },
+    {
+      "Original": ".git/precision-gate-projection-driver-source-observations/observe.py",
+      "Stored": "039-observe.py.gz",
+      "Encoding": "gzip",
+      "Bytes": 1178,
+      "Sha256": "E56A4264518D97C5E5EEF407E22B2A922A9D4DF480FA66BB2418690E9CCB63B5",
+      "StoredBytes": 641,
+      "StoredSha256": "00A27D1039019A32949302A28B2A87F67E884066516B1DC4CBAEC97146C5778C"
+    },
+    {
+      "Original": ".git/precision-gate-projection-driver-source-observations/source-roster.json",
+      "Stored": "040-source-roster.json.gz",
+      "Encoding": "gzip",
+      "Bytes": 2883,
+      "Sha256": "10692FC795218802F1C579C04C06CEE70164E8AB485F1D641B40EEA930F8D8A0",
+      "StoredBytes": 679,
+      "StoredSha256": "2F35D07367F66225B3850091E8B4765F23259147415385380969D0A0A3E43496"
+    },
+    {
+      "Original": ".git/precision-gate-projection-driver-source-observations/stderr",
+      "Stored": "041-stderr.gz",
+      "Encoding": "gzip",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "StoredBytes": 20,
+      "StoredSha256": "9CEFFB7310338057CFE71A4AE1E2C98D2C485D81CDEF906532A801F457A38D64"
+    },
+    {
+      "Original": ".git/precision-gate-projection-driver-source-observations/stdout.json",
+      "Stored": "042-stdout.json.gz",
+      "Encoding": "gzip",
+      "Bytes": 8926,
+      "Sha256": "C4961A2A5CA0EEF6D53376C8E4E74B97458B0F09E0EC47D18962622D25502358",
+      "StoredBytes": 1620,
+      "StoredSha256": "0D4B74496587F86A5B15E12574DFAE955CAACA74FE820D110778EC544E0A75E4"
+    },
+    {
+      "Original": ".git/precision-gate-projection-driver-import-e133/claim-conflict.md",
+      "Stored": "043-claim-conflict.md.gz",
+      "Encoding": "gzip",
+      "Bytes": 6601,
+      "Sha256": "D9E988E898A6D3976A5011346599F9016E209997E4FC69DD8389ED772ABCE744",
+      "StoredBytes": 2451,
+      "StoredSha256": "69D639271440863BCC3299BFF75C1DE503A0B62076FCC8ED4AE84313CF8C3B57"
+    },
+    {
+      "Original": ".git/precision-gate-projection-driver-import-8254/process-conflict.md",
+      "Stored": "044-process-conflict.md.gz",
+      "Encoding": "gzip",
+      "Bytes": 12888,
+      "Sha256": "7EDCCD0BF1B7DE6DB47D451621EBDF8E68BB187E99192D353576DBA2D743E189",
+      "StoredBytes": 5532,
+      "StoredSha256": "8D1B636A3E107E3DDBD52EDED246350FF3F68E2CEEC3BB73BB7A38E2A3D8404C"
+    },
+    {
+      "Original": ".git/precision-gate-projection-driver-source-observations/dependency-equality.json",
+      "Stored": "045-dependency-equality.json.gz",
+      "Encoding": "gzip",
+      "Bytes": 1620,
+      "Sha256": "223A3E0BCD214E6017F2A65AF8918CF6AA325C829FF45DCFD4D5A81EB0A8D9C7",
+      "StoredBytes": 540,
+      "StoredSha256": "60B9E9F70F607AF6F6ADFCDD98B5C02B3B7453FDA2AB9126945BB3F5562F5167"
+    },
+    {
+      "Original": ".git/precision-gate-projection-driver-preflight-1/command.json",
+      "Stored": "046-command.json.gz",
+      "Encoding": "gzip",
+      "Bytes": 146,
+      "Sha256": "0999E07DCF80F193BB57F05E34D4119DD35CAFC6E3B946C4125AF761CD41CADE",
+      "StoredBytes": 129,
+      "StoredSha256": "7D0ABD0CCA321D505BECFA6E62991B52A009501812F1C71A39B7FC50CB797E44"
+    },
+    {
+      "Original": ".git/precision-gate-projection-driver-preflight-1/stderr",
+      "Stored": "047-stderr.gz",
+      "Encoding": "gzip",
+      "Bytes": 57,
+      "Sha256": "FC5CEA057558784B9285265B206AE14E6629D39610EC93EFC443C21AD0D05961",
+      "StoredBytes": 77,
+      "StoredSha256": "DC19432FFF48A51A2BE835947A121911035939B067CF6ED507E168F48EF85CC7"
+    },
+    {
+      "Original": ".git/precision-gate-projection-driver-preflight-1/stdout",
+      "Stored": "048-stdout.gz",
+      "Encoding": "gzip",
+      "Bytes": 1167,
+      "Sha256": "4167192A5F69F0E03959F4DF63DDA87D1D9D07C7F6F46AD058960CB384ACE0A4",
+      "StoredBytes": 375,
+      "StoredSha256": "D9609B6914A36A006AE5B1CEA9CE0934F941EA4D76997A7383732D422563C2EF"
+    },
+    {
+      "Original": ".git/precision-gate-projection-driver-custody-verification/audit.py",
+      "Stored": "049-audit.py.gz",
+      "Encoding": "gzip",
+      "Bytes": 1606,
+      "Sha256": "DD71D64D9D7520D4C01EFFB056B55B52945B6DC42C9D7F9FCD497ED72B313F2E",
+      "StoredBytes": 734,
+      "StoredSha256": "E9F28E59E05E609EA574F453FAFC183702131320225A180B9594C0438A54FD87"
+    },
+    {
+      "Original": ".git/precision-gate-projection-driver-custody-verification/command.json",
+      "Stored": "050-command.json.gz",
+      "Encoding": "gzip",
+      "Bytes": 260,
+      "Sha256": "1FE928A051DB28AB10F8190BE6401921B2B9575727E34988582693ADAA73754D",
+      "StoredBytes": 215,
+      "StoredSha256": "D7929F110B4D153AF1124E6A7B60B1B9DFAEE94CFC0F55C3981FB90E0FE560CB"
+    },
+    {
+      "Original": ".git/precision-gate-projection-driver-custody-verification/stderr",
+      "Stored": "051-stderr.gz",
+      "Encoding": "gzip",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "StoredBytes": 20,
+      "StoredSha256": "9CEFFB7310338057CFE71A4AE1E2C98D2C485D81CDEF906532A801F457A38D64"
+    },
+    {
+      "Original": ".git/precision-gate-projection-driver-custody-verification/stdout.json",
+      "Stored": "052-stdout.json.gz",
+      "Encoding": "gzip",
+      "Bytes": 192,
+      "Sha256": "2EF312461D4C3E46ED8C567362592A7B8C4FE0017CAD821CF2BD0914BE15D9E7",
+      "StoredBytes": 167,
+      "StoredSha256": "74E2055DEA9245F6F702A6B3EB4B7FAC1112EC876FC0A4B3CF5759CFA68B4615"
+    }
+  ],
+  "CurrentOwnedFiles": [
+    {
+      "Path": "src/Interp.Python/zeta_interp/precision_gate_projection_driver.py",
+      "Bytes": 40992,
+      "Sha256": "83537F7105042FC077D348EC6F59FD8D44318C0233D1804B01381A6A4EE51706"
+    },
+    {
+      "Path": "src/Interp.Python/tests/test_precision_gate_projection_driver.py",
+      "Bytes": 31024,
+      "Sha256": "FB9B5A21A64020814767578965F31158C6D860E76616585B8F6B1631E7A3D198"
+    }
+  ],
+  "RecordCount": 53,
+  "RawBytes": 384984,
+  "StoredBytes": 94792
+}

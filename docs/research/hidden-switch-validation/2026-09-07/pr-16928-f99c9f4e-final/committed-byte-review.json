@@ -1,0 +1,292 @@
+{
+  "StartedAtUtc": "2026-09-07T15:09:41.471643+00:00",
+  "FinishedAtUtc": "2026-09-07T15:09:43.687413+00:00",
+  "HeadSha": "f99c9f4e2502263943d899ec7a506aa287f76558",
+  "ComparisonHeadSha": "f3bd1347e490084f411198dc8abff197c817eb1b",
+  "ImplementationArchiveCommit": "4fc82b611012bd2620a26e02afe6baba491fe553",
+  "ResultArchiveCommit": "900c0f57a51bfb79d7e9a7b8156ef367d97824f8",
+  "SourceFiles": [
+    {
+      "Path": "src/Core/ControlScheme.fs",
+      "ComparisonCommit": "4fc82b611012bd2620a26e02afe6baba491fe553",
+      "Bytes": 7593,
+      "Sha256": "1fba050d2e32dc59c6b7eb9cc40130f0152ccfcd2465b70ca7f94801deb59f87"
+    },
+    {
+      "Path": "src/Core/GameEnvironment.fs",
+      "ComparisonCommit": "4fc82b611012bd2620a26e02afe6baba491fe553",
+      "Bytes": 15898,
+      "Sha256": "d4de496b2db5136c53f5761825a23862f55083fe04c7e475033b3748a890eed8"
+    },
+    {
+      "Path": "src/Core/SplitMix64.fs",
+      "ComparisonCommit": "4fc82b611012bd2620a26e02afe6baba491fe553",
+      "Bytes": 2875,
+      "Sha256": "56d14ea951c459ef9509f934ae9ad65a293beacba841a2cba8a2289693aaf174"
+    },
+    {
+      "Path": "src/Core/Result.fs",
+      "ComparisonCommit": "4fc82b611012bd2620a26e02afe6baba491fe553",
+      "Bytes": 1152,
+      "Sha256": "c2f07dc84dfa5f44215baa1c6dfa88d4d0ce294f8a411ff43a433ada5725beb1"
+    },
+    {
+      "Path": "src/Research.FSharp/ResearchRandom.fs",
+      "ComparisonCommit": "4fc82b611012bd2620a26e02afe6baba491fe553",
+      "Bytes": 486,
+      "Sha256": "4422c5ee4380a698ff479f0082c44e1453990c48aa034b9842719c4e0e7c79ff"
+    },
+    {
+      "Path": "src/Research.FSharp/HiddenSwitchReceipt.fs",
+      "ComparisonCommit": "4fc82b611012bd2620a26e02afe6baba491fe553",
+      "Bytes": 5350,
+      "Sha256": "8d0f4b1844b64b46cbc8b6e8a0688b0afad1ba2f29b1a088dfeaa8c1ae529f55"
+    },
+    {
+      "Path": "src/Research.FSharp/HiddenSwitchObservation.fs",
+      "ComparisonCommit": "4fc82b611012bd2620a26e02afe6baba491fe553",
+      "Bytes": 2430,
+      "Sha256": "09468d775552259612af31ef7aaf3831474b5ae37f0063ea17aa632d04a4448e"
+    },
+    {
+      "Path": "src/Research.FSharp/HiddenSwitchCarrier.fs",
+      "ComparisonCommit": "4fc82b611012bd2620a26e02afe6baba491fe553",
+      "Bytes": 6207,
+      "Sha256": "eb21882259b482db5136824d7e9a10f348abc59e3dc8a9a1e80221aff0b3d868"
+    },
+    {
+      "Path": "src/Research.FSharp/HiddenSwitchPolicy.fs",
+      "ComparisonCommit": "4fc82b611012bd2620a26e02afe6baba491fe553",
+      "Bytes": 6968,
+      "Sha256": "4358b476fa4871b1c187f615133b35bac1139359919500cd3b05dbe1da0aafb1"
+    },
+    {
+      "Path": "src/Research.FSharp/HiddenSwitchExperiment.fs",
+      "ComparisonCommit": "4fc82b611012bd2620a26e02afe6baba491fe553",
+      "Bytes": 9194,
+      "Sha256": "21b33c22912d56dd1bdda071bb821279207e64c4a34ba05129564c4d81cbc55a"
+    },
+    {
+      "Path": "src/Research.FSharp/HiddenSwitchRuntime.fsx",
+      "ComparisonCommit": "4fc82b611012bd2620a26e02afe6baba491fe553",
+      "Bytes": 16939,
+      "Sha256": "fd90ed4117df678fc2bfeacf987a59593446ec755f14333b9f067c6172c48d14"
+    },
+    {
+      "Path": "src/Research.FSharp/run-hidden-switch-experiment.fsx",
+      "ComparisonCommit": "4fc82b611012bd2620a26e02afe6baba491fe553",
+      "Bytes": 1893,
+      "Sha256": "088c4bc3f18688db08c4503d12eb23c05d7b47d1ad44477fa3679fa9599e7d9f"
+    },
+    {
+      "Path": "src/Research.FSharp/measure-hidden-switch-inference.fsx",
+      "ComparisonCommit": "4fc82b611012bd2620a26e02afe6baba491fe553",
+      "Bytes": 2718,
+      "Sha256": "e8330838c496c518d72dcaf6661cd97319a040b260f856a0df7a13d984f67f81"
+    },
+    {
+      "Path": "src/Research.FSharp/check-hidden-switch-kernel.fsx",
+      "ComparisonCommit": "4fc82b611012bd2620a26e02afe6baba491fe553",
+      "Bytes": 15692,
+      "Sha256": "b218fc4a733dfaab986f82921a3ea0ae985a4b9a56c39f085bd75a8951a95052"
+    },
+    {
+      "Path": "src/Interp.Python/zeta_interp/hidden_switch_reference.py",
+      "ComparisonCommit": "4fc82b611012bd2620a26e02afe6baba491fe553",
+      "Bytes": 27739,
+      "Sha256": "7130fbf88e4a5f7393ad59cffd6c56637b3d226f630b8cf547167d319bf880e2"
+    },
+    {
+      "Path": "src/Interp.Python/zeta_interp/hidden_switch_replay.py",
+      "ComparisonCommit": "4fc82b611012bd2620a26e02afe6baba491fe553",
+      "Bytes": 31240,
+      "Sha256": "1f676223b32583ab3313476373a6fa9fba792231827f504788f39c1ba42d50d5"
+    },
+    {
+      "Path": "src/Interp.Python/zeta_interp/hidden_switch_verdict.py",
+      "ComparisonCommit": "4fc82b611012bd2620a26e02afe6baba491fe553",
+      "Bytes": 12349,
+      "Sha256": "deb49d086669fc71c8675548408ee251fdb175624feb48931993d60f70d36f23"
+    },
+    {
+      "Path": "docs/research/2026-09-07-hidden-switch-protocol.md",
+      "ComparisonCommit": "4fc82b611012bd2620a26e02afe6baba491fe553",
+      "Bytes": 22670,
+      "Sha256": "e6e2943d5991e70dbc95d3ed1e620aa7505d3e692315e80588729c9fcd03946a"
+    },
+    {
+      "Path": "docs/research/hidden-switch-validation/2026-09-07/hand-fixture.json",
+      "ComparisonCommit": "4fc82b611012bd2620a26e02afe6baba491fe553",
+      "Bytes": 476473,
+      "Sha256": "a37cbdb7b62399fa0a74adfe0adaff7395863f89a47131fcdf0abc68c4260a84"
+    }
+  ],
+  "OriginalResultRecords": [
+    {
+      "Path": "docs/research/hidden-switch-results/2026-09-07/archive-verification.json",
+      "ComparisonCommit": "900c0f57a51bfb79d7e9a7b8156ef367d97824f8",
+      "Bytes": 2090,
+      "Sha256": "8b6ef55bda4a284e8cf2db2d4a94805f78c4b56b56c72c11e7b3398d21b2aaa7"
+    },
+    {
+      "Path": "docs/research/hidden-switch-results/2026-09-07/behavior-attempt-1.json",
+      "ComparisonCommit": "900c0f57a51bfb79d7e9a7b8156ef367d97824f8",
+      "Bytes": 78026027,
+      "Sha256": "f15ca0d41b1437b5e05a6ca402a8a8609f85d8b0e1c6218c316460257f450c2e"
+    },
+    {
+      "Path": "docs/research/hidden-switch-results/2026-09-07/behavior-attempt-1.log",
+      "ComparisonCommit": "900c0f57a51bfb79d7e9a7b8156ef367d97824f8",
+      "Bytes": 632,
+      "Sha256": "cba71eb82777b61ef74ce9afacb41a0c3d73905a01eb10c026cc48cf9fb75d81"
+    },
+    {
+      "Path": "docs/research/hidden-switch-results/2026-09-07/behavior-processes-after.log",
+      "ComparisonCommit": "900c0f57a51bfb79d7e9a7b8156ef367d97824f8",
+      "Bytes": 131973,
+      "Sha256": "6ce41b630ed8715911f7d2c1dff5f051a6c19a1f82a0d077258938b6b2fa2a7a"
+    },
+    {
+      "Path": "docs/research/hidden-switch-results/2026-09-07/behavior-processes-before.log",
+      "ComparisonCommit": "900c0f57a51bfb79d7e9a7b8156ef367d97824f8",
+      "Bytes": 131993,
+      "Sha256": "34fef680b01a9f33b2cf526ebc1c70f59d5ba8904b0d63067d6f9f68be21bd3b"
+    },
+    {
+      "Path": "docs/research/hidden-switch-results/2026-09-07/cost-attempt-1.json",
+      "ComparisonCommit": "900c0f57a51bfb79d7e9a7b8156ef367d97824f8",
+      "Bytes": 6868985,
+      "Sha256": "6af9cf36f4cfc1c5e38f236e8922025cd845481d9e2e18daff58e5be191b9df3"
+    },
+    {
+      "Path": "docs/research/hidden-switch-results/2026-09-07/cost-attempt-1.log",
+      "ComparisonCommit": "900c0f57a51bfb79d7e9a7b8156ef367d97824f8",
+      "Bytes": 1274,
+      "Sha256": "b154aa302e068d51935a04b23fb00327db254290438d8dd5abcf0766f4b479ac"
+    },
+    {
+      "Path": "docs/research/hidden-switch-results/2026-09-07/cost-processes-after.log",
+      "ComparisonCommit": "900c0f57a51bfb79d7e9a7b8156ef367d97824f8",
+      "Bytes": 131593,
+      "Sha256": "c465672486d925e1c189e536a2a1f511772dee63ff258e633d0f814eb4a561f0"
+    },
+    {
+      "Path": "docs/research/hidden-switch-results/2026-09-07/cost-processes-before.log",
+      "ComparisonCommit": "900c0f57a51bfb79d7e9a7b8156ef367d97824f8",
+      "Bytes": 131880,
+      "Sha256": "e48f823b013ecccaa00e287465c0e9da09b50bf2d1b06d92547c2031cf8d1419"
+    },
+    {
+      "Path": "docs/research/hidden-switch-results/2026-09-07/implementation-push.log",
+      "ComparisonCommit": "900c0f57a51bfb79d7e9a7b8156ef367d97824f8",
+      "Bytes": 2857,
+      "Sha256": "991021db5cda47cad02acde7f095262726c5a74543425dda69f54f98e0186200"
+    },
+    {
+      "Path": "docs/research/hidden-switch-results/2026-09-07/measurement-attempt-1.json",
+      "ComparisonCommit": "900c0f57a51bfb79d7e9a7b8156ef367d97824f8",
+      "Bytes": 4816,
+      "Sha256": "c87bec2403062b2553c3d496f38a41c253ca5744313b3e489d20d61021cf853c"
+    },
+    {
+      "Path": "docs/research/hidden-switch-results/2026-09-07/publication-preflight.log",
+      "ComparisonCommit": "900c0f57a51bfb79d7e9a7b8156ef367d97824f8",
+      "Bytes": 1366,
+      "Sha256": "05507ff5d03528e4b30bc1f8ad183f0ac152fba0e86ffcca236d83fbb33f0d81"
+    },
+    {
+      "Path": "docs/research/hidden-switch-results/2026-09-07/replay-attempt-1.json",
+      "ComparisonCommit": "900c0f57a51bfb79d7e9a7b8156ef367d97824f8",
+      "Bytes": 7553,
+      "Sha256": "04c282c7eea51e9672362427d36e4238f10897074ca9b691ba9c3a534e9137fb"
+    },
+    {
+      "Path": "docs/research/hidden-switch-results/2026-09-07/replay-attempt-1.log",
+      "ComparisonCommit": "900c0f57a51bfb79d7e9a7b8156ef367d97824f8",
+      "Bytes": 808,
+      "Sha256": "5c7311db7129dbe9e09516be652325c4b73d6ba816f26256ffcc5ed104b5ddc1"
+    },
+    {
+      "Path": "docs/research/hidden-switch-results/2026-09-07/replay-execution-attempt-1.json",
+      "ComparisonCommit": "900c0f57a51bfb79d7e9a7b8156ef367d97824f8",
+      "Bytes": 2774,
+      "Sha256": "0d268d3ca6d7dc8f2718908c6c45af9e14aec17d0a064103943ceb9b344599f8"
+    },
+    {
+      "Path": "docs/research/hidden-switch-results/2026-09-07/replay-launcher.py.txt",
+      "ComparisonCommit": "900c0f57a51bfb79d7e9a7b8156ef367d97824f8",
+      "Bytes": 1936,
+      "Sha256": "35a62513bbb7a2391937724623757d1e551e40afa6f73068c9bd2fa20165a9cf"
+    },
+    {
+      "Path": "docs/research/hidden-switch-results/2026-09-07/verdict-attempt-1.json",
+      "ComparisonCommit": "900c0f57a51bfb79d7e9a7b8156ef367d97824f8",
+      "Bytes": 11871,
+      "Sha256": "d0fbffe371155002a204bae3959b788a4e1b54d1ad83761d0e5933cb9cb67222"
+    },
+    {
+      "Path": "docs/research/hidden-switch-results/2026-09-07/verdict-attempt-1.log",
+      "ComparisonCommit": "900c0f57a51bfb79d7e9a7b8156ef367d97824f8",
+      "Bytes": 982,
+      "Sha256": "d3b477b188d6f1f499ce4c35a30130c6f524e41dce4a47eb8094b339baea5b6f"
+    }
+  ],
+  "FigureFiles": [
+    {
+      "Path": "docs/research/hidden-switch-results/2026-09-07/descriptive-figure/README.md",
+      "ComparisonCommit": "58a3999765766f117f6c6ab46dc436cb9a92397a",
+      "Bytes": 5187,
+      "Sha256": "f846985d768e57c3a4234acbf6c1613a06ded8a62b17ad846c3843c5b241fd79"
+    },
+    {
+      "Path": "docs/research/hidden-switch-results/2026-09-07/descriptive-figure/plot.py",
+      "ComparisonCommit": "58a3999765766f117f6c6ab46dc436cb9a92397a",
+      "Bytes": 13366,
+      "Sha256": "0671ee685585a09cf1a6a03dc565b5c35c0c928160f7b4f27b8e761dc47b7daa"
+    },
+    {
+      "Path": "docs/research/hidden-switch-results/2026-09-07/descriptive-figure/requirements.txt",
+      "ComparisonCommit": "58a3999765766f117f6c6ab46dc436cb9a92397a",
+      "Bytes": 189,
+      "Sha256": "2a8de658c132b271b107a0b0898325f3c19981452a93edf63c4912ea5eb42d56"
+    },
+    {
+      "Path": "docs/research/hidden-switch-results/2026-09-07/descriptive-figure/manifest.json",
+      "ComparisonCommit": "58a3999765766f117f6c6ab46dc436cb9a92397a",
+      "Bytes": 2469,
+      "Sha256": "be398002c0cc256b66fc53812f447c51f6e4ae6185760e6c85eae781fd60aafd"
+    },
+    {
+      "Path": "docs/research/hidden-switch-results/2026-09-07/descriptive-figure/plotted-values.json",
+      "ComparisonCommit": "58a3999765766f117f6c6ab46dc436cb9a92397a",
+      "Bytes": 9659,
+      "Sha256": "400226eb877e3d1d453b42079e6d7db27510a34c43107ddf4aae2a6dee49f4aa"
+    },
+    {
+      "Path": "docs/research/hidden-switch-results/2026-09-07/descriptive-figure/hidden-switch-descriptive.svg",
+      "ComparisonCommit": "58a3999765766f117f6c6ab46dc436cb9a92397a",
+      "Bytes": 196546,
+      "Sha256": "62f74933af112f60dcc03cb1c2e03d7e0d4cac827b649d7b90a0301c862b9a72"
+    },
+    {
+      "Path": "docs/research/hidden-switch-results/2026-09-07/descriptive-figure/hidden-switch-descriptive.png",
+      "ComparisonCommit": "58a3999765766f117f6c6ab46dc436cb9a92397a",
+      "Bytes": 217119,
+      "Sha256": "9df18cb449f78e39719d7aaf0d64a5822198fd4eff163841d77ec2e9073be45a"
+    }
+  ],
+  "DiffFromF3": "M\tdocs/research/hidden-switch-validation/2026-09-07/README.md\nA\tdocs/research/hidden-switch-validation/2026-09-07/publication-json-bom-correction/README.md\nA\tdocs/research/hidden-switch-validation/2026-09-07/publication-json-bom-correction/finding.json\nA\tdocs/research/hidden-switch-validation/2026-09-07/publication-json-bom-correction/manifest.json\nA\tdocs/research/hidden-switch-validation/2026-09-07/publication-json-bom-correction/semgrep-drift-job-101780447107.json\nA\tdocs/research/hidden-switch-validation/2026-09-07/publication-json-bom-correction/semgrep-drift-job-101780447107.log.gz\nA\tdocs/research/hidden-switch-validation/2026-09-07/root-final-api-bom-packaging.json\nA\tdocs/research/hidden-switch-validation/2026-09-07/root-final-api-gzip-quick.log.gz\nA\tdocs/research/hidden-switch-validation/2026-09-07/root-final-api-semgrep-attempt-1.log.gz\nA\tdocs/research/hidden-switch-validation/2026-09-07/root-final-api-semgrep-attempt-2.log.gz\nA\tdocs/research/hidden-switch-validation/2026-09-07/root-final-api-semgrep-validation.json\nM\tdocs/research/tlc-attempt-retention-validation/2026-09-07/publication-proof.md\nM\tdocs/research/tlc-attempt-retention-validation/2026-09-07/publication/file-hashes.json\nD\tdocs/research/tlc-attempt-retention-validation/2026-09-07/publication/tlc-ci-merge-commit.json\nA\tdocs/research/tlc-attempt-retention-validation/2026-09-07/publication/tlc-ci-merge-commit.json.gz\n",
+  "GzipApiResponse": {
+    "Path": "docs/research/tlc-attempt-retention-validation/2026-09-07/publication/tlc-ci-merge-commit.json.gz",
+    "Stored": {
+      "Bytes": 146476,
+      "Sha256": "d2509c1dc1282aa7ad4428274d85c2c139f2f72605ff52dd104db6499ff98aca"
+    },
+    "Original": {
+      "Bytes": 711308,
+      "Sha256": "040b64e0a36a7935f28aba75dc825040a1552910e47e3a3a10d2d61e44950205"
+    },
+    "EqualsOriginalF3CommittedBytes": true
+  },
+  "Scope": "Read-only committed-byte comparison, not source-to-binary proof, validation rerun or new scientific analysis."
+}

@@ -65,15 +65,19 @@ generator that read an EMPTY roster cannot pass.
 | `cross-verify (stage0-independence)`                    | Stage-0 independence ratchet (doors, not file count)                               |
 | `cross-verify (step-output-writers)`                    | Step outputs have writers (a step that cannot succeed)                             |
 | `cross-verify (action-sha-roster)`                      | Third-party actions match the SHA roster (AH007)                                   |
+| `cross-verify (unhashed-dependencies)`                  | Unhashed dependencies are declared and inventoried (AH011)                         |
 | `cross-verify (task-zetaid-resolves)`                   | Task ZetaIds resolve to work-items (AH006)                                         |
 | `cross-verify (credential-role-separation)`             | Workflow credential role separation (one role, one secret)                         |
 | `cross-verify (coauthor-identity-collision)`            | Co-author identity collision (AH005 — plain-username GitHub noreply form)          |
 | `cross-verify (write-token-consistency)`                | Workflow write-token consistency (forge writes must reach the PAT)                 |
+| `cross-verify (transient-retry-parity)`                 | Transient-retry signatures identical in install.ps1 and the tested module          |
+| `cross-verify (scanner-cancels-itself)`                 | Evidence workflows must not cancel their own default-branch runs                   |
 | `cross-verify (heartbeat-lane-attestations)`            | PR-free heartbeat lane attestations (armed; vacuous until the lane exists)         |
 | `cross-verify (heartbeat-lane-audit-tests)`             | Heartbeat-lane audit unit tests (a check that cannot fail is not a check)          |
 | `cross-verify (push-without-rebase)`                    | Commit-back lane can re-express its work (AH001)                                   |
 | `cross-verify (skip-token-cannot-land)`                 | Commit-back lane can actually land (AH002)                                         |
 | `cross-verify (dotnet-pin-parity)`                      | .NET SDK pin declared once (.mise.toml canonical, global.json restates)            |
+| `cross-verify (dotnet-band-unity)`                      | every TargetFramework and dotnet base image sits in the pinned band                |
 | `cross-verify (argocd-pin-parity)`                      | ArgoCD chart pinned identically at all five install sites                          |
 | `cross-verify (committed-chart-credentials)`            | No chart's values carry a secret as a literal                                      |
 | `cross-verify (committed-chart-credentials-tests)`      | committed-chart-credentials falsifiers (identifier vs secret, stale keys, no leak) |
@@ -81,16 +85,20 @@ generator that read an EMPTY roster cannot pass.
 | `cross-verify (bootstrap-application-pin-parity-tests)` | bootstrap/Application pin falsifiers (multi-doc parse + stale acknowledgement)     |
 | `cross-verify (argocd-pin-parity-tests)`                | argocd-pin-parity falsifiers (roster refusal + chart-anchored parse)               |
 | `cross-verify (mise-toolchain-couplings)`               | mise toolchain couplings (rust restatements · zig byte-lock provenance)            |
+| `cross-verify (mise-lock-coverage)`                     | mise lock coverage (config↔lock agreement · locked mode · exemption roster)        |
+| `cross-verify (mise-lock-coverage-tests)`               | mise lock coverage falsifiers (stale pin · dropped platform · stale exemption)     |
 | `cross-verify (flash-entrypoint-parity)`                | zflash host-arm parity (every arm verifies the ISO before writing)                 |
 | `cross-verify (chart-target-revisions)`                 | ArgoCD chart targetRevisions resolve (offline, against the committed snapshot)     |
 | `cross-verify (image-source-provenance)`                | No private-source image dependencies (offline, against the committed provenance)   |
 | `cross-verify (image-source-provenance-tests)`          | Private-source image dependencies — falsifiers (proves it goes red)                |
 | `cross-verify (reason-truth)`                           | ArgoCD deferral reasons — every cited anchor still holds (offline)                 |
+| `cross-verify (chart-assertion-census)`                 | every chart is applied by some job, and no chart is asserted vacuously             |
 | `cross-verify (no-raw-nul-in-source)`                   | No raw NUL in tracked source (an audit must be able to read the file)              |
 | `cross-verify (concept-registry-drift)`                 | Concept registry vs published page (docs/CONCEPT-REGISTRY.md)                      |
 | `cross-verify (tech-radar-claims)`                      | Tech radar claims the repo can still support (paths resolve, in-use tools ringed)  |
 | `cross-verify (tech-radar-audit-tests)`                 | Tech-radar audit unit tests (a check that cannot fail is not a check)              |
 | `cross-verify (check-then-use-races)`                   | No check-then-use filesystem races (TOCTOU, CWE-367)                               |
+| `cross-verify (hand-rolled-io)`                         | No hand-rolled shell spawns or unbounded fetch-to-disk (use io/safe-io.ts)         |
 | `cross-verify (mumps-zeta-id)`                          | Execute MUMPS zeta-id packer                                                       |
 | `cross-verify (zeta-id-gen-layout-drift)`               | zeta-id generated layouts vs the layout YAML                                       |
 | `cross-verify (algebra-tower-drift)`                    | Algebra-tower drift-check (semiring→ring→kleene + star-ring)                       |

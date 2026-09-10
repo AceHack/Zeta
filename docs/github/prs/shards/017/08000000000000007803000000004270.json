@@ -1,0 +1,12 @@
+{
+  "pr_number": 17008,
+  "archive_path": "docs/history/pr-reviews/PR-17008-fix-hygiene-close-k3s-preflight-spawn-env-against-ambient-process-env.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-08T05:07:20.247Z",
+  "schema_version": "v1",
+  "commit_sha": "238f258316a9386c01966af1f9b744f1d0b1bbd2",
+  "title": "fix(hygiene): close k3s preflight spawn env against ambient process.env",
+  "state": "MERGED",
+  "merged_at": "2026-09-08T05:06:24Z",
+  "head_ref": "cursor/k3s-join-intent-hermetic-27c5"
+}

@@ -9,6 +9,7 @@
  */
 
 import { DEFAULT_PATH_FORK, type PathForkVariant } from "./extensions";
+import type { QemuUefiFirmware } from "../../ci/ovmf-firmware.ts";
 import { B0891_FRESH_USB_SERIAL_MARKER, B0891_RETENTION_USB_SERIAL_MARKERS } from "./serial-markers";
 import {
   RETENTION_ABSENT_TERMINAL_MARKERS,
@@ -39,6 +40,13 @@ export interface PathForkRuntimeInput {
   readonly memoryMB?: number;
   readonly cpuCount?: number;
   readonly kvmAvailable?: boolean;
+  /**
+   * REQUIRED. Scenario 4 boots the zflash-written USB image, and until
+   * 081M24BB3TD087G0R001PJTW9A it did so on SeaBIOS -- the installer then refused with
+   * "not booted in UEFI mode" and the harness waited out a 30-minute timeout for a marker
+   * that could never arrive. Resolved by the executor; this planner stays pure.
+   */
+  readonly uefiFirmware: QemuUefiFirmware;
 }
 
 export interface PathForkRuntimeForkPlan {
@@ -158,6 +166,7 @@ interface NormalizedPathForkRuntimeInput {
   readonly memoryMB: number;
   readonly cpuCount: number;
   readonly kvmAvailable: boolean;
+  readonly uefiFirmware: QemuUefiFirmware;
 }
 
 /** Fork boots prove the operator path choice only — 081KSNY2Z0008QG0R0008PN7RQ early markers, not a second full install. */
@@ -189,6 +198,7 @@ function bootCommandForFork(input: NormalizedPathForkRuntimeInput, forkId: PathF
         cpuCount: input.cpuCount,
         kvmAvailable: input.kvmAvailable,
         bootMedia: { kind: "usb-image", path: bootImagePath },
+        uefiFirmware: input.uefiFirmware,
       }),
     };
   }
@@ -205,6 +215,7 @@ function bootCommandForFork(input: NormalizedPathForkRuntimeInput, forkId: PathF
         input.freshBootImagePath === undefined
           ? { kind: "iso", path: input.isoPath }
           : { kind: "usb-image", path: input.freshBootImagePath },
+      uefiFirmware: input.uefiFirmware,
     }),
   };
 }
@@ -259,6 +270,7 @@ export function planPathForkRuntime(input: PathForkRuntimeInput): PathForkRuntim
     startingDiskPath: input.startingDiskPath,
     migrateSerialLogPath: input.migrateSerialLogPath,
     freshSerialLogPath: input.freshSerialLogPath,
+    uefiFirmware: input.uefiFirmware,
     snapshotName: input.snapshotName ?? DEFAULT_SNAPSHOT_NAME,
     memoryMB: input.memoryMB ?? DEFAULT_MEMORY_MB,
     cpuCount: input.cpuCount ?? DEFAULT_CPU_COUNT,
@@ -387,6 +399,12 @@ export interface PathForkBaselineBootstrapInput {
   readonly memoryMB?: number;
   readonly cpuCount?: number;
   readonly kvmAvailable?: boolean;
+  /**
+   * REQUIRED. The baseline bootstrap is the FIRST install in scenario 4, and it is the
+   * one that timed out for 30 minutes under 081M24BB3TD087G0R001PJTW9A -- the guest
+   * booted legacy and the installer refused. Firmware is stated, never defaulted.
+   */
+  readonly uefiFirmware: QemuUefiFirmware;
 }
 
 export function planPathForkBaselineBootstrap(
@@ -397,6 +415,7 @@ export function planPathForkBaselineBootstrap(
     diskPath: input.startingDiskPath,
     serialLogPath: input.baselineSerialLogPath,
     snapshotName: input.snapshotName ?? DEFAULT_SNAPSHOT_NAME,
+    uefiFirmware: input.uefiFirmware,
     ...(input.diskSizeGB === undefined ? {} : { diskSizeGB: input.diskSizeGB }),
     ...(input.memoryMB === undefined ? {} : { memoryMB: input.memoryMB }),
     ...(input.cpuCount === undefined ? {} : { cpuCount: input.cpuCount }),

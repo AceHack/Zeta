@@ -1,0 +1,78 @@
+{
+  "Schema": "zeta.mixed-message-epoch.peer-amendment-review.v1",
+  "ReviewedCommit": "15b20c513245201e125a0deae7d41c23e7bc136c",
+  "Records": [
+    {
+      "File": "01-2026-09-08-mixed-message-epoch-transport-amendment.md.gz",
+      "Encoding": "gzip",
+      "Bytes": 10513,
+      "Sha256": "ABB0E47938DF9ECD8CD4A64536289451D70FF0245B84EF9C05D1A2710C340707",
+      "StoredBytes": 4423,
+      "StoredSha256": "EA9C94F7D5138AF53D5905889C76CC0618683C131A82CB06C54043A034D705F1",
+      "SourceCommit": "15b20c513245201e125a0deae7d41c23e7bc136c",
+      "SourcePath": "docs/research/2026-09-08-mixed-message-epoch-transport-amendment.md",
+      "CurrentBytesMatched": true
+    },
+    {
+      "File": "02-2026-09-08-checked-mixed-message-module-epoch-source-contract.md.gz",
+      "Encoding": "gzip",
+      "Bytes": 53198,
+      "Sha256": "4234015EE650FA7190CF3375C58654499F3BB9EC9C96E4BE21D2FC97A30EC979",
+      "StoredBytes": 20744,
+      "StoredSha256": "C22B71FB0367882AC05627C372CB6268FA044E044459064EC7BA7648ECBBBA68",
+      "SourceCommit": "15b20c513245201e125a0deae7d41c23e7bc136c",
+      "SourcePath": "docs/research/2026-09-08-checked-mixed-message-module-epoch-source-contract.md",
+      "CurrentBytesMatched": true
+    },
+    {
+      "File": "gate-invocation.json.gz",
+      "Encoding": "gzip",
+      "Bytes": 210,
+      "Sha256": "DF20FBAC8EF7A0ECCC74A89DF0AEF138EA21A8A10639A770D711F8D312D6484B",
+      "StoredBytes": 182,
+      "StoredSha256": "DB19F9FBD50AC03F697A137A25EBAE7ED1D731D210809F3DAC108C6453C3D7A1",
+      "OriginalPath": ".git/mixed-message-peer-amendment-review-gate-1/invocation.json"
+    },
+    {
+      "File": "gate-stdout.gz",
+      "Encoding": "gzip",
+      "Bytes": 1167,
+      "Sha256": "4167192A5F69F0E03959F4DF63DDA87D1D9D07C7F6F46AD058960CB384ACE0A4",
+      "StoredBytes": 375,
+      "StoredSha256": "D9609B6914A36A006AE5B1CEA9CE0934F941EA4D76997A7383732D422563C2EF",
+      "OriginalPath": ".git/mixed-message-peer-amendment-review-gate-1/stdout"
+    },
+    {
+      "File": "gate-stderr.gz",
+      "Encoding": "gzip",
+      "Bytes": 57,
+      "Sha256": "FC5CEA057558784B9285265B206AE14E6629D39610EC93EFC443C21AD0D05961",
+      "StoredBytes": 77,
+      "StoredSha256": "DC19432FFF48A51A2BE835947A121911035939B067CF6ED507E168F48EF85CC7",
+      "OriginalPath": ".git/mixed-message-peer-amendment-review-gate-1/stderr"
+    },
+    {
+      "File": "gate-completion.json.gz",
+      "Encoding": "gzip",
+      "Bytes": 69,
+      "Sha256": "FCA74A550F43EB8F657EAA14AD4CE09A6BD2BB7F39A40DA9F7ADC0AC3F1438EF",
+      "StoredBytes": 88,
+      "StoredSha256": "9F77EF2F20151529CEA9115FF2EEE3D4DD27F9D4ABD8AD8C9A01850DB5F393C6",
+      "OriginalPath": ".git/mixed-message-peer-amendment-review-gate-1/completion.json"
+    }
+  ],
+  "OriginalContractCommit": "84fa75bc537f0e32f3df7b6159d9ead3a66f0c3c",
+  "OriginalContractUnchanged": true,
+  "ReviewedAtUtc": "2026-09-08T11:18:29.041815+00:00",
+  "Scope": "Read-only schema and prefix-custody review; no implementation or executable control acceptance",
+  "Validation": {
+    "Command": [
+      "bun",
+      "run",
+      "preflight:quick"
+    ],
+    "ExitCode": 0,
+    "Passed": 16,
+    "ExecutableControlRun": false
+  }
+}

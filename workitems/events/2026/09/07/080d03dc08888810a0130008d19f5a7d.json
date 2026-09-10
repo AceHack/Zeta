@@ -1,0 +1,14 @@
+{
+  "id": "080d03dc08888810a0130008d19f5a7d",
+  "at": "2026-09-07T10:54:11.217Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1XR248G087G0R000H0WJT1",
+    "type": "bug",
+    "title": "Pin C1 for TLC on macOS ARM64 after in-run runtime failures",
+    "slug": "pin-c1-for-tlc-on-macos-arm64-after-in-run-runtime-failures",
+    "priority": "P2",
+    "filename": "081M1XR248G087G0R000H0WJT1-pin-c1-for-tlc-on-macos-arm64-after-in-run-runtime-failures.md"
+  }
+}

@@ -1,0 +1,68 @@
+{
+  "Protocol": "finite-stochastic-cqm-bridge-replay-v1",
+  "InputSha256": "CAA481CBB41956BC6FAE56A4ACECEFED14B300B51AEBEDB332E447B025683B64",
+  "Runtime": "3.14.6 (main, Jun 11 2026, 03:55:33) [Clang 22.1.3 ]",
+  "OperatingSystem": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+  "Complete": true,
+  "Passed": true,
+  "Failure": {
+    "Stage": "",
+    "Detail": ""
+  },
+  "ExecutingSourceSha256": "2746DA7950EFDB88854151095BF35DCBE44531318A05F6A13F24FE0635CAA77C",
+  "Provenance": {
+    "SourceCommit": "ce7fcffd496d8dcdea55f99d9919519276b35bd9",
+    "SourceArchive": "refs/tags/archive/experiments/081M1WDDB6M087G0R002KN8DWQ",
+    "ContractCommit": "86205e52d65b2aa9dd43eff8c02a2bca9852f797",
+    "ProtocolSha256": "D906EFFD5A08C93D9B1DD528C59229FE65312E25D996F624C43C28C6D4F909D2",
+    "SourceHashes": [
+      {
+        "File": "docs/research/2026-09-06-finite-stochastic-cqm-bridge-protocol.md",
+        "Sha256": "D906EFFD5A08C93D9B1DD528C59229FE65312E25D996F624C43C28C6D4F909D2"
+      },
+      {
+        "File": "src/Core/WSet.fs",
+        "Sha256": "39C89EF89B7B9140CA5043872E72CB6475DBEF83B9AB10FCDD96603F606A5AAE"
+      },
+      {
+        "File": "src/Core/ProbabilitySemiring.fs",
+        "Sha256": "9289FAB0568DAB9F075B28D8EB91D2B681DDEDABB7BB90717190C10BF07F9170"
+      },
+      {
+        "File": "src/Core.Abstractions/ISemiring.cs",
+        "Sha256": "E49C6747C6EC19E7A04A0C6C979DD4CE5D1C14DF6D9B6DDD02295660B3938EFF"
+      },
+      {
+        "File": "src/Core.Abstractions/IRing.cs",
+        "Sha256": "D506CCAB7D5EB5990C9C035EF05C7A858C20827573496983204C956305AE4DF7"
+      },
+      {
+        "File": "src/Research.FSharp/FiniteStochasticBridge.fs",
+        "Sha256": "14618333EC1D6770256238DBCB8C6C9851F578E64AD5CB2B160E976A6907E7D1"
+      },
+      {
+        "File": "src/Research.FSharp/run-finite-stochastic-bridge.fsx",
+        "Sha256": "93C9E1ACFAAA31D1D430CB475D87086DDB1B61AFF89D936D83DA1C6B1826C7FE"
+      },
+      {
+        "File": "src/Interp.Python/zeta_interp/finite_stochastic_bridge.py",
+        "Sha256": "2746DA7950EFDB88854151095BF35DCBE44531318A05F6A13F24FE0635CAA77C"
+      }
+    ]
+  },
+  "Checks": 14,
+  "Cases": 957,
+  "Arithmetic": "Python fractions.Fraction; arbitrary precision",
+  "Independence": "different algorithm/arithmetic; shared author; separate reviewer",
+  "NativeArithmetic": {
+    "OperandLimit": 1000000,
+    "MaximumAbsoluteNumerator": 11,
+    "MaximumDenominator": 18,
+    "Refusals": 0
+  },
+  "RetainedCoefficientBounds": {
+    "MaximumAbsoluteNumerator": 11,
+    "MaximumDenominator": 18
+  },
+  "ArithmeticCrosscheck": "retained coefficient lower bounds and guarded operand ceiling; no replay of native operation order"
+}

@@ -67,3 +67,26 @@ promptly in good faith.
   auto-transcript while connecting the interview to Zeta's pairwise-memory, anti-Sybil, Bayesian,
   categorical-quantum, Clifford, and emulator research. Original analysis remains in the linked
   Vera handoff and treats these as hypotheses and analogies, not source-established equivalences.
+
+- [2026-09-08 Voyager Yang-Mills talk](2026-09-08-voyager-yang-mills-mass-gap-talk.md) —
+  attributed source and timestamped study map for Aaron's finite computer-science
+  gauge-consistency question; includes original attachment identity and the
+  boundary between memory-loop checks and the physics mass-gap problem.
+
+- [The Magnet Paradox: supplied transcript and memory/history stimulus](2026-09-08-magnet-paradox-memory-history-transcript.md)
+  (2026-09-08): exact user-provided transcript, original attachment hashes and
+  separately linked history/generator research analysis.
+
+- [Astra and code-generated graphics: supplied Two Minute Papers transcript](2026-09-08-two-minute-papers-astra-code-generated-graphics-transcript.md)
+  (2026-09-08): exact attachment, all 16 supplied source destinations, verified
+  Variational Stokes paper identity, and a separate generator/evolution bridge.
+
+- [Deformation, topology change and ferrofluids: supplied Two Minute Papers transcript](2026-09-09-two-minute-papers-deformation-topology-ferrofluid-simulation-transcript.md)
+  (2026-09-09): verbatim transcript segment with byte count and SHA-256, the video title and
+  channel authenticated via YouTube's own oEmbed endpoint, and all four covered 2024 ACM TOG
+  papers identified from their own PDFs (Trading Spaces; Progressive Dynamics; Multi-Material
+  Mesh-Based Surface Tracking; the Induce-on-Boundary ferrofluid solver) — including three
+  places where the narration and the publications disagree, and the licence facts for the two
+  third-party repositories, which were consulted for capability and licence only under the
+  clean-room rule. Separate analysis:
+  `docs/research/2026-09-09-learning-geometry-from-pictures-is-a-second-track-and-efficiency-is-its-entry-fee.md`.

@@ -1,0 +1,14 @@
+{
+  "id": "080d043b9c747010a01300088f86cfb4",
+  "at": "2026-09-09T18:34:52.430Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M23Q73MC087G0R000BZ38BZ",
+    "type": "bug",
+    "title": "predictable temp paths in the z4 discharge and ESP inject tests",
+    "slug": "predictable-temp-paths-in-the-z4-discharge-and-esp-inject-te",
+    "priority": "P2",
+    "filename": "081M23Q73MC087G0R000BZ38BZ-predictable-temp-paths-in-the-z4-discharge-and-esp-inject-te.md"
+  }
+}

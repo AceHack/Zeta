@@ -1,0 +1,12 @@
+{
+  "pr_number": 16895,
+  "archive_path": "docs/history/pr-reviews/PR-16895-feat-creds-map-named-probe-to-host-capture-tpmrm0-is-not-present.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-07T00:35:32.119Z",
+  "schema_version": "v1",
+  "commit_sha": "5b9bc04a0aa3817312f841e939e2e37c40cd6cf8",
+  "title": "feat(creds): Map named probe to host capture; tpmrm0 is not present",
+  "state": "MERGED",
+  "merged_at": "2026-09-07T00:34:52Z",
+  "head_ref": "cursor/named-probe-capture-27c5"
+}

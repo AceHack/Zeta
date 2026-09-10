@@ -1,0 +1,14 @@
+{
+  "id": "080d04284dddd010a01300083abc3bb7",
+  "at": "2026-09-09T07:20:02.746Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M22GKEXS087G0R0033JNZ2F",
+    "type": "task",
+    "title": "D10 catalog persist appends hex without ToHex strings",
+    "slug": "d10-catalog-persist-appends-hex-without-tohex-strings",
+    "priority": "P2",
+    "filename": "081M22GKEXS087G0R0033JNZ2F-d10-catalog-persist-appends-hex-without-tohex-strings.md"
+  }
+}

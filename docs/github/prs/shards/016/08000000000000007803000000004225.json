@@ -1,0 +1,12 @@
+{
+  "pr_number": 16933,
+  "archive_path": "docs/history/pr-reviews/PR-16933-feat-cluster-full-ai-cluster-to-nixpkgs-26-05-latest-everywhere-and-it-evaluates.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-07T13:21:32.222Z",
+  "schema_version": "v1",
+  "commit_sha": "1dd20510bacaf2422e1eb39350d839afd085d7d9",
+  "title": "feat(cluster): full-ai-cluster to nixpkgs 26.05 — latest everywhere, and it evaluates clean",
+  "state": "MERGED",
+  "merged_at": "2026-09-07T13:20:53Z",
+  "head_ref": "shadow/full-ai-cluster-nixpkgs-26-05"
+}

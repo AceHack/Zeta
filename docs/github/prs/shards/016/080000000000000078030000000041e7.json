@@ -1,0 +1,12 @@
+{
+  "pr_number": 16871,
+  "archive_path": "docs/history/pr-reviews/PR-16871-fix-core-describe-correlation-components-without-physical-source-claims.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-06T22:21:36.922Z",
+  "schema_version": "v1",
+  "commit_sha": "113fdbf0ea7a88c9d234ea6655b3023681d1cea9",
+  "title": "fix(core): Describe correlation components without physical-source claims",
+  "state": "MERGED",
+  "merged_at": "2026-09-06T22:21:05Z",
+  "head_ref": "claim/task-antisybil-components-20260906"
+}

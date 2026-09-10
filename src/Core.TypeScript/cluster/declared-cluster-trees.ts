@@ -80,11 +80,38 @@ export function assertRootsPresent(roots: readonly string[], repoRoot = process.
   }
 }
 
-/** `<root>/bootstrap` for each declared k8s root, verified present. */
-export function bootstrapDirs(repoRoot = process.cwd()): readonly string[] {
+/**
+ * `<root>/<name>` for each declared k8s root and each requested subdirectory, grouped by
+ * ROOT and then by name — so `clusterDirs(["applications", "bootstrap"])` reads
+ * live/apps, live/bootstrap, stale/apps, stale/bootstrap. That grouping is the order the
+ * hardcoded lists this replaces already used, and it is the readable one: a reader scanning
+ * the output sees one tree at a time.
+ *
+ * The ROOTS are asserted present; the subdirectories are not, because a caller asking for a
+ * directory that does not exist is asking a question about its own arguments, not about
+ * whether the tree list has silently shrunk. Use `existingClusterDirs` for optional ones.
+ */
+export function clusterDirs(names: readonly string[], repoRoot = process.cwd()): readonly string[] {
   const roots = clusterK8sRoots(readDeclaredTrees(repoRoot));
   assertRootsPresent(roots, repoRoot);
-  return roots.map((r) => `${r}/bootstrap`);
+  const out: string[] = [];
+  for (const r of roots) for (const n of names) out.push(`${r}/${n}`);
+  return out;
+}
+
+/** Like `clusterDirs`, but drops subdirectories that do not exist — for optional ones. */
+export function existingClusterDirs(names: readonly string[], repoRoot = process.cwd()): readonly string[] {
+  return clusterDirs(names, repoRoot).filter((d) => existsSync(join(repoRoot, d)));
+}
+
+/** `<root>/bootstrap` for each declared k8s root, verified present. */
+export function bootstrapDirs(repoRoot = process.cwd()): readonly string[] {
+  return clusterDirs(["bootstrap"], repoRoot);
+}
+
+/** `<root>/applications` for each declared k8s root, verified present. */
+export function applicationDirs(repoRoot = process.cwd()): readonly string[] {
+  return clusterDirs(["applications"], repoRoot);
 }
 
 /** A named manifest under each declared k8s root's bootstrap dir. */

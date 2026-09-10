@@ -1,0 +1,12 @@
+{
+  "pr_number": 17000,
+  "archive_path": "docs/history/pr-reviews/PR-17000-feat-081m1z8mfrb087g0r0003xjrmf-fuse-byte-session-setattr-truncate.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-08T01:26:42.855Z",
+  "schema_version": "v1",
+  "commit_sha": "e46322f2f85909fcda8153e4361a85c757f2c042",
+  "title": "feat(081M1Z8MFRB087G0R0003XJRMF): FUSE byte session SETATTR truncate",
+  "state": "MERGED",
+  "merged_at": "2026-09-08T01:26:04Z",
+  "head_ref": "feat/zetafs-fuse-setattr-bytes"
+}

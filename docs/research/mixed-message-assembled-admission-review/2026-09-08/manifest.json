@@ -1,0 +1,207 @@
+{
+  "Schema": "zeta.mixed-epoch.assembled-independent-admission.v1",
+  "PacketCommit": "d61ee6a994b154c8df3b0627e9b23b5cd9db13c6",
+  "SourceCommit": "3c3a76ad6674bb40b2e1309021735950c282d8d5",
+  "AcceptedManifestSha256": "F92041F0DBC344DA877DFA970B3C5C7AD6817C8285AAA28E164872F2CE6D56F1",
+  "AcceptedArchiveSha256": "E51A00FC29FA2A13B09F152AB0F55908B7E03982036E5084F54A221815149445",
+  "Records": [
+    {
+      "Name": "audit.py",
+      "OriginalFile": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/mixed-assembled-admission-review-1/audit.py",
+      "File": "000-audit.py.gz",
+      "Bytes": 12838,
+      "Sha256": "38E42984242295F388A0D1310BB229FAD19EA9A319FC7DE4A852765EBDFA2A9B",
+      "StoredBytes": 4700,
+      "StoredSha256": "A710A294BF1CD92B5774255A46E3BCEBE1E92050C65B0655E4BE1FA230443D0A"
+    },
+    {
+      "Name": "completion.json",
+      "OriginalFile": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/mixed-assembled-admission-review-1/completion.json",
+      "File": "001-completion.json.gz",
+      "Bytes": 54,
+      "Sha256": "64FA84D47812B760E1648E82D8F21BFB0629C717A1618442010A9E54F7FA7637",
+      "StoredBytes": 73,
+      "StoredSha256": "D43517241394EC38813613B1A0984E2F8278AFFC4E018AF5F0DF49A8A1E7030C"
+    },
+    {
+      "Name": "git-observations.json",
+      "OriginalFile": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/mixed-assembled-admission-review-1/git-observations.json",
+      "File": "002-git-observations.json.gz",
+      "Bytes": 28068,
+      "Sha256": "628C7625325265237F2AEDB51E61503D2D3DFC3ADEC21F6DF8AEF0A6E28E9329",
+      "StoredBytes": 4468,
+      "StoredSha256": "648DFADD7DE329E98D64A492DFB072D79C3AD9CCAC0ED6B208EAF47CC15C04AD"
+    },
+    {
+      "Name": "invocation.json",
+      "OriginalFile": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/mixed-assembled-admission-review-1/invocation.json",
+      "File": "003-invocation.json.gz",
+      "Bytes": 302,
+      "Sha256": "47500E2669617733344399532ACD17E3041191D34ED80883404E0E0E04DB11B4",
+      "StoredBytes": 198,
+      "StoredSha256": "9B0FE862C7D2E32AED0E508605C9C08457E5BD5DD2DEBA1D3684FAC1A8D90ACF"
+    },
+    {
+      "Name": "packet/docs/research/2026-09-08-mixed-message-assembled-validation.md",
+      "OriginalFile": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/mixed-assembled-admission-review-1/packet/docs/research/2026-09-08-mixed-message-assembled-validation.md",
+      "File": "004-2026-09-08-mixed-message-assembled-validation.md.gz",
+      "Bytes": 6321,
+      "Sha256": "C5ED5BDC571D9B699092357FAF0D6131DA622A9EE273A0E082E434530FA387CF",
+      "StoredBytes": 2912,
+      "StoredSha256": "C17047EBEE15CB07BD11E095109869F80F546CA2C4BDDD498E4552AAAA1C3F75"
+    },
+    {
+      "Name": "packet/docs/research/2026-09-08-mixed-message-frozen-nested-query-register.md",
+      "OriginalFile": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/mixed-assembled-admission-review-1/packet/docs/research/2026-09-08-mixed-message-frozen-nested-query-register.md",
+      "File": "005-2026-09-08-mixed-message-frozen-nested-query-register.md.gz",
+      "Bytes": 5984,
+      "Sha256": "823995732D03E3D93F735CC04C836D591C1F6CA96A69C8D4B7E5A22700A53707",
+      "StoredBytes": 2716,
+      "StoredSha256": "C1771B410F884A9E8E11C99E595E339F0F7935B28392411390A6F20B3090D484"
+    },
+    {
+      "Name": "packet/docs/research/mixed-message-epoch-implementation/2026-09-08/assembled-validation-1/manifest.json",
+      "OriginalFile": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/mixed-assembled-admission-review-1/packet/docs/research/mixed-message-epoch-implementation/2026-09-08/assembled-validation-1/manifest.json",
+      "File": "006-manifest.json.gz",
+      "Bytes": 25304,
+      "Sha256": "74F49162BB0FEE8A37228A8874E1771B212DA493E55E3DA890B59CEE5E1E751A",
+      "StoredBytes": 4497,
+      "StoredSha256": "1FCB1BDB3CA2DB387C4D6C4100C5BFE5382F62502C464D018FBF809842CB507D"
+    },
+    {
+      "Name": "packet/docs/research/mixed-message-epoch-implementation/2026-09-08/final-source-recheck-1/manifest.json",
+      "OriginalFile": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/mixed-assembled-admission-review-1/packet/docs/research/mixed-message-epoch-implementation/2026-09-08/final-source-recheck-1/manifest.json",
+      "File": "007-manifest.json.gz",
+      "Bytes": 15987,
+      "Sha256": "DB80DA089E37C68A21E4A2ACDCD11EC528535D3FBC41312F8E717978D843119E",
+      "StoredBytes": 3739,
+      "StoredSha256": "36904A4D13D19CC68D80E4573225A5FAC5F13E665B80D9C087A49771FCF270D5"
+    },
+    {
+      "Name": "packet/docs/research/mixed-message-epoch-implementation/2026-09-08/implementation-source/README.md",
+      "OriginalFile": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/mixed-assembled-admission-review-1/packet/docs/research/mixed-message-epoch-implementation/2026-09-08/implementation-source/README.md",
+      "File": "008-README.md.gz",
+      "Bytes": 3594,
+      "Sha256": "0B80ED074107D9A821891D134D50EC853EAC4297A773CD158E2DF9ECC1D87DDF",
+      "StoredBytes": 1811,
+      "StoredSha256": "F61A5491330C58C4D36428195CF3F88113DB0E83C14248B5B84F8FA9E865326B"
+    },
+    {
+      "Name": "packet/docs/research/mixed-message-epoch-implementation/2026-09-08/implementation-source/archive-manifest.json",
+      "OriginalFile": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/mixed-assembled-admission-review-1/packet/docs/research/mixed-message-epoch-implementation/2026-09-08/implementation-source/archive-manifest.json",
+      "File": "009-archive-manifest.json.gz",
+      "Bytes": 50500,
+      "Sha256": "9C578652E7821ED660ED94EFA37BDDD4893CA618FBB40871561BE3BC4EA15F20",
+      "StoredBytes": 9353,
+      "StoredSha256": "0442F6A715070DC8D19C01A16C56C4BB6CB9FF77A91243911ECBE057C7EFD944"
+    },
+    {
+      "Name": "packet/docs/research/mixed-message-epoch-implementation/2026-09-08/implementation-source/freeze-observation/manifest.json",
+      "OriginalFile": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/mixed-assembled-admission-review-1/packet/docs/research/mixed-message-epoch-implementation/2026-09-08/implementation-source/freeze-observation/manifest.json",
+      "File": "010-manifest.json.gz",
+      "Bytes": 1739,
+      "Sha256": "2FD60A634558251591556F8360BC8BDDED04329FA6676D99C7FAEE34F409330D",
+      "StoredBytes": 704,
+      "StoredSha256": "82ED741A955F51CBBF0A9D4EA85ED8ADC4BA3EC8E4357320D1AF8EAFE37B8AF0"
+    },
+    {
+      "Name": "packet/docs/research/mixed-message-epoch-implementation/2026-09-08/implementation-source/service-manifest.json",
+      "OriginalFile": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/mixed-assembled-admission-review-1/packet/docs/research/mixed-message-epoch-implementation/2026-09-08/implementation-source/service-manifest.json",
+      "File": "011-service-manifest.json.gz",
+      "Bytes": 22381,
+      "Sha256": "F92041F0DBC344DA877DFA970B3C5C7AD6817C8285AAA28E164872F2CE6D56F1",
+      "StoredBytes": 5080,
+      "StoredSha256": "B4657EBB43CCB2AD9864204DE8BC8C9DBE71F93A265B13E9399CAF9CD1DF3988"
+    },
+    {
+      "Name": "packet/docs/research/mixed-message-epoch-implementation/2026-09-08/implementation-source/service-manifest.sha256",
+      "OriginalFile": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/mixed-assembled-admission-review-1/packet/docs/research/mixed-message-epoch-implementation/2026-09-08/implementation-source/service-manifest.sha256",
+      "File": "012-service-manifest.sha256.gz",
+      "Bytes": 65,
+      "Sha256": "C17067E4F8484AF04B95089D235A13C527D9036E12CA0D48D4426866D1DBE1FC",
+      "StoredBytes": 72,
+      "StoredSha256": "2DE7CFB7EE3DEB3F468E61E5CC8DB1C722C4011BEB76B80C9011C8F89C4906C8"
+    },
+    {
+      "Name": "packet/docs/research/mixed-message-epoch-implementation/2026-09-08/implementation-source/source-custody.json",
+      "OriginalFile": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/mixed-assembled-admission-review-1/packet/docs/research/mixed-message-epoch-implementation/2026-09-08/implementation-source/source-custody.json",
+      "File": "013-source-custody.json.gz",
+      "Bytes": 3383,
+      "Sha256": "134A326586F66CA738FFB2C25044B25FD5D6B769D0D91D6FDFE4090C17BC06F1",
+      "StoredBytes": 1175,
+      "StoredSha256": "9F675FA025AD2025E1E21E51A6BEC2FE5BD07D4B7C1D261025C68156590F52D6"
+    },
+    {
+      "Name": "stderr",
+      "OriginalFile": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/mixed-assembled-admission-review-1/stderr",
+      "File": "014-stderr.gz",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "StoredBytes": 20,
+      "StoredSha256": "9CEFFB7310338057CFE71A4AE1E2C98D2C485D81CDEF906532A801F457A38D64"
+    },
+    {
+      "Name": "stdout",
+      "OriginalFile": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/mixed-assembled-admission-review-1/stdout",
+      "File": "015-stdout.gz",
+      "Bytes": 5122,
+      "Sha256": "EDA73CE4FDFAEADCF7FE5F4C00C8E2A1AB9F7033D72AE27554B6482683F99815",
+      "StoredBytes": 1992,
+      "StoredSha256": "B34274F9476AEF461CCC43CCFB0E3AB15427D41B91A01B74D48D4F60C51FEB7D"
+    },
+    {
+      "Name": "validation-completion.json",
+      "OriginalFile": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/mixed-assembled-admission-review-1/validation-completion.json",
+      "File": "016-validation-completion.json.gz",
+      "Bytes": 54,
+      "Sha256": "B1099683535A8017577972B28C88748473D83AA0A3F990D6A5935F1C94BDA64A",
+      "StoredBytes": 72,
+      "StoredSha256": "D293C2D2CADC8D2A2AC2656B35B5FD37431A5159902C038DDD2680B9EDC5DD97"
+    },
+    {
+      "Name": "validation-git-observations.json",
+      "OriginalFile": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/mixed-assembled-admission-review-1/validation-git-observations.json",
+      "File": "017-validation-git-observations.json.gz",
+      "Bytes": 30652,
+      "Sha256": "B320CCB852591B981BE84007CC29F8FEBE9BA41733673B62C98DA3D223E3613C",
+      "StoredBytes": 3253,
+      "StoredSha256": "2F419F0E100FEA8961863FA4704DFE1273E9086E9E1100E617BB163B6B98C151"
+    },
+    {
+      "Name": "validation-invocation.json",
+      "OriginalFile": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/mixed-assembled-admission-review-1/validation-invocation.json",
+      "File": "018-validation-invocation.json.gz",
+      "Bytes": 313,
+      "Sha256": "5F974C0A65BA71F213EA20BFC1DE14470DFBEAE71642CD9C40BF1240208363B4",
+      "StoredBytes": 206,
+      "StoredSha256": "3B8D378E98336C30C41A2003D90B7AD5ED010A9BE6E23674721140BBAE837CAF"
+    },
+    {
+      "Name": "validation-stderr",
+      "OriginalFile": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/mixed-assembled-admission-review-1/validation-stderr",
+      "File": "019-validation-stderr.gz",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "StoredBytes": 20,
+      "StoredSha256": "9CEFFB7310338057CFE71A4AE1E2C98D2C485D81CDEF906532A801F457A38D64"
+    },
+    {
+      "Name": "validation-stdout",
+      "OriginalFile": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/mixed-assembled-admission-review-1/validation-stdout",
+      "File": "020-validation-stdout.gz",
+      "Bytes": 11105,
+      "Sha256": "FF5F37BB5D643CE66D0F4341F63DB193141D6AFF478CC994816B4FCEAEF32082",
+      "StoredBytes": 2333,
+      "StoredSha256": "2D3516D7754A608CD716328BEA1E2044936EC7D9BBC427625207B12FB08A3A1B"
+    },
+    {
+      "Name": "validation_audit.py",
+      "OriginalFile": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/mixed-assembled-admission-review-1/validation_audit.py",
+      "File": "021-validation_audit.py.gz",
+      "Bytes": 9360,
+      "Sha256": "9DC9B94554E38D8BB8C213C84F88C95C14EFA521D154C1833355AC690AAF38BE",
+      "StoredBytes": 3421,
+      "StoredSha256": "432B56B7771E17A2B238723E4A490305A4BEE82E68AD99519EF983167C4EE025"
+    }
+  ]
+}

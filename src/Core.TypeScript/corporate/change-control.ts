@@ -41,7 +41,7 @@ import {
   type WorkLifecycleState,
   type WorkLifecycleTransition,
 } from "../workflow-engine/agent-loop/work-lifecycle-state-machine";
-import type { AgentPersona } from "../workflow-engine/agent-loop/state-machine";
+import type { AgentPersona } from "../protocol/agent-loop-contract";
 import { childrenOf, nodeById, WorkState, type Cascade } from "./goal-cascade";
 import { isPassing, ORDERED_GATES, type GateEvaluation, type GateKind } from "./quality-gate";
 import { ShardState, type WorkQueue } from "./work-market";

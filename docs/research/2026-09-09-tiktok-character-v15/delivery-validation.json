@@ -1,0 +1,99 @@
+{
+  "blender_version": "5.2.1 LTS",
+  "packed_images": [
+    {
+      "name": "AceHack-square-alpha.png",
+      "pixels": [
+        1866,
+        1866
+      ],
+      "packed": true
+    },
+    {
+      "name": "alpha.png",
+      "pixels": [
+        1452,
+        1452
+      ],
+      "packed": true
+    },
+    {
+      "name": "alpha.png.001",
+      "pixels": [
+        1474,
+        1474
+      ],
+      "packed": true
+    },
+    {
+      "name": "Xenaa-square-alpha.png",
+      "pixels": [
+        1903,
+        1903
+      ],
+      "packed": true
+    }
+  ],
+  "characters": [
+    {
+      "character": "AceHack",
+      "bones": 50,
+      "weighted_bones": [
+        "Head",
+        "LeftFoot",
+        "LeftForeArm",
+        "LeftHand",
+        "LeftShin",
+        "LeftThigh",
+        "LeftUpperArm",
+        "Pelvis",
+        "RightFoot",
+        "RightForeArm",
+        "RightHand",
+        "RightShin",
+        "RightThigh",
+        "RightUpperArm",
+        "Spine1",
+        "Spine2",
+        "Spine3"
+      ],
+      "max_influences": 2,
+      "max_weight_sum_error": 2.9802322387695312e-08,
+      "hair_head_transform_max_error_m": null,
+      "selected_scalp_hair_vertices": 0,
+      "selected_scalp_hair_min_head_weight": null,
+      "expression_channels": [],
+      "scope": "Reference surface study; no v15 face/finger tracking or mobile acceptance"
+    },
+    {
+      "character": "Xenaa",
+      "bones": 50,
+      "weighted_bones": [
+        "Head",
+        "LeftFoot",
+        "LeftForeArm",
+        "LeftHand",
+        "LeftShin",
+        "LeftThigh",
+        "LeftUpperArm",
+        "Pelvis",
+        "RightFoot",
+        "RightForeArm",
+        "RightHand",
+        "RightShin",
+        "RightThigh",
+        "RightUpperArm",
+        "Spine1",
+        "Spine2",
+        "Spine3"
+      ],
+      "max_influences": 2,
+      "max_weight_sum_error": 2.9802322387695312e-08,
+      "hair_head_transform_max_error_m": 4.2146848510894035e-08,
+      "selected_scalp_hair_vertices": 101211,
+      "selected_scalp_hair_min_head_weight": 1.0,
+      "expression_channels": [],
+      "scope": "Reference surface study; no v15 face/finger tracking or mobile acceptance"
+    }
+  ]
+}

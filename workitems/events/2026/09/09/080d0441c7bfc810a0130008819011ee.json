@@ -1,0 +1,14 @@
+{
+  "id": "080d0441c7bfc810a0130008819011ee",
+  "at": "2026-09-09T22:10:30.009Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M243HXZS087G0R003746F3H",
+    "type": "task",
+    "title": "Phase 0: read the generator at rank 3 — H3 geometry derived, shading falsified, and the byte-lock",
+    "slug": "phase-0-read-the-generator-at-rank-3-h3-geometry-derived-sha",
+    "priority": "P2",
+    "filename": "081M243HXZS087G0R003746F3H-phase-0-read-the-generator-at-rank-3-h3-geometry-derived-sha.md"
+  }
+}

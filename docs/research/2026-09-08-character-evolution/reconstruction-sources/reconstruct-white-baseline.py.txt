@@ -1,0 +1,34 @@
+"""Run pinned TripoSR on derived white-background references; export real meshes."""
+import os
+os.environ['PYTORCH_ENABLE_MPS_FALLBACK']='1'
+from pathlib import Path
+import sys,time,json,hashlib
+import torch
+from PIL import Image
+root=Path(__file__).resolve().parent
+sys.path.insert(0,str(root/'TripoSR'))
+from tsr.system import TSR
+
+torch.manual_seed(20260908)
+torch.set_num_threads(12)
+device='mps' if torch.backends.mps.is_available() else 'cpu'
+print('device',device,torch.__version__,flush=True)
+t=time.monotonic()
+model=TSR.from_pretrained(str(root/'weights/TripoSR'),config_name='config.yaml',weight_name='model.ckpt')
+model.renderer.set_chunk_size(8192)
+model.to(device).eval()
+print('loaded',time.monotonic()-t,flush=True)
+for name,filename in [('AceHack','AceHack-derived.png'),('Xenaa','Xenaa-white.png')]:
+ out=root/'reconstruction'/name;out.mkdir(parents=True,exist_ok=True)
+ image=Image.open(root/'references'/filename).convert('RGB')
+ start=time.monotonic()
+ with torch.no_grad():
+  codes=model([image],device=device)
+ print(name,'inferred',time.monotonic()-start,flush=True)
+ torch.save(codes.detach().cpu(),out/'scene-code.pt')
+ meshes=model.extract_mesh(codes,True,resolution=256)
+ mesh=meshes[0]
+ mesh.export(out/'mesh.glb')
+ report={'model':'stabilityai/TripoSR','model_revision':'5b521936b01fbe1890f6f9baed0254ab6351c04a','input':filename,'input_sha256':hashlib.sha256((root/'references'/filename).read_bytes()).hexdigest(),'device':device,'resolution':256,'vertices':len(mesh.vertices),'faces':len(mesh.faces),'seconds':time.monotonic()-start,'representation':'vertex colored mesh; unrigged; occluded surfaces inferred'}
+ (out/'receipt.json').write_text(json.dumps(report,indent=2)+'\n')
+ print(report,flush=True)

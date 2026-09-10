@@ -1,0 +1,2145 @@
+{
+  "schema": 1,
+  "release_tag": "research-character-composition-20260909",
+  "archives": [
+    {
+      "name": "character-composition-evolution.zip",
+      "bytes": 938930578,
+      "sha256": "db41f6989d28e3e13ed35e9bf700084d0a18b7a1f6205f527bfb940b350cb979"
+    }
+  ],
+  "files": [
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/archive_evolution.py",
+      "bytes": 2169,
+      "sha256": "cda67c2ed3b89df304051d89b77cf89e67fe4adae1e96a5f7a3f57fe1d647fe5"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/compose-v1.log",
+      "bytes": 1697,
+      "sha256": "71759f4ee383c5ef4fcd31ce31610c52d3fb3f3f27aa46833d689150fe195de0"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/compose-v2.log",
+      "bytes": 1935,
+      "sha256": "5fa4d497ea0d2872633d3337a347175e83e5149a2fbeb5433b523af901a928cd"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/compose-v3.log",
+      "bytes": 2271,
+      "sha256": "81add3d4a73d257d891639f7b33de35236042eb2ed35cc7c3927d3a5114fe798"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/compose-v4.log",
+      "bytes": 2271,
+      "sha256": "e55a45c2a173153b2acea6d8dbad1ccba59caead6d13417eb8f699f325911455"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/compose-v5.log",
+      "bytes": 2272,
+      "sha256": "e6dcff363cd6554c5d9a977bf115e19467743cc6229e0c1a342afd5ed2d858ff"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/compose_v1.py",
+      "bytes": 4414,
+      "sha256": "a04cf1c3f6cae66cce76c70f67864eeeca54e23f5b11c71b0de2fff2b5974c45"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/compose_v2.py",
+      "bytes": 5969,
+      "sha256": "f21982a86d0a548137d16802b84b99dd44f791590cde8b80f877e41cc8cd1e75"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/compose_v3.py",
+      "bytes": 7325,
+      "sha256": "111f704bdd3e520cbf4c76deb90dcb927d06ab7125bb496908f4eb572da483a2"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/compose_v4.py",
+      "bytes": 8814,
+      "sha256": "4c15a83e4970712d8b01a98aaa6ddd3070dd42aa79754454f0684672279dcee7"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/compose_v5.py",
+      "bytes": 10363,
+      "sha256": "5e4af7e97a5e610761cea270acb0e33f4ab3047c0ceb5a20123725564acf77b2"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/composed-v1/AceHack-Xenaa-Evolution.blend",
+      "bytes": 38096715,
+      "sha256": "64fba9966bfdf60e77cdfecc463a598a2ff9f23ec57b5d2ed630448430d991c1"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/composed-v1/duo-0.png",
+      "bytes": 3638092,
+      "sha256": "6bd8c95d42d9f05d51574b3c36f3ca67ffe9e98f902e3413e809ee5d8dbb6966"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/composed-v1/duo-180.png",
+      "bytes": 3225524,
+      "sha256": "91b3ff1c2bc5d0d7243c1101c52e1b6d80a9ea68006d7bf221fc744a41e6e332"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/composed-v1/duo-25.png",
+      "bytes": 3612977,
+      "sha256": "ae61cbf81c3680b53044bbb33e84a39e4c2c3af4593470db7ed6e7c1c31192c8"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/composed-v1/duo-90.png",
+      "bytes": 3034924,
+      "sha256": "eb857f440cbbae0f7fb28c18be094d1ea15232f1e3ecc25401af78c7403fdfd1"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/composed-v2/AceHack-Xenaa-Evolution.blend",
+      "bytes": 45820154,
+      "sha256": "6228ad7f85100ccce0b36ef47628d2c820929894d9124b88896f400315f2729a"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/composed-v2/duo-0.png",
+      "bytes": 3644376,
+      "sha256": "c2b7cc7e1d1e60b3cde2df73a676461e02fcada15a03384054236d774e9fe6e6"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/composed-v2/duo-180.png",
+      "bytes": 3212818,
+      "sha256": "dcb43fa44cb33c0217d451bfe54660a918863019b3f82c8524e86b91746f0aa2"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/composed-v2/duo-25.png",
+      "bytes": 3608828,
+      "sha256": "3414956009a32a457986b551e519bafccc4d04456cdcaeb4de1efa473fdccfcd"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/composed-v2/duo-90.png",
+      "bytes": 2975372,
+      "sha256": "ea558d5be9d913d6be911a20b2ae80e5dfbd09465ba6eb4ad2696c83712eaa8f"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/composed-v3/AceHack-Xenaa-Evolution.blend",
+      "bytes": 42909723,
+      "sha256": "7bc18837144b90800bfc3632f5ec24bce124b06752440bfe8d25dd57971ab870"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/composed-v3/duo-0.png",
+      "bytes": 3648569,
+      "sha256": "0bfc5e9606c8bc40891c368fae0b68c564fce5f4c4fdef21cffb039ea195932e"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/composed-v3/duo-180.png",
+      "bytes": 3238681,
+      "sha256": "756ecd312241ae4c031a15c1f6f852f70434cefd99ead09d569076f55a8a1b46"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/composed-v3/duo-25.png",
+      "bytes": 3626627,
+      "sha256": "b32e448ae2f71b4b3fcfa73f60a579e7bf0095e01e0bd2fd8f9c889115262731"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/composed-v3/duo-90.png",
+      "bytes": 3032434,
+      "sha256": "76578429eb6b034e38571b56014f79ed76c333293228515f25588c2e21375e18"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/composed-v4/AceHack-Xenaa-Evolution.blend",
+      "bytes": 34648530,
+      "sha256": "8e7ba611b93c3dc2f2e9a18365d4136366336f8c8987d0637fd39cbf9455faec"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/composed-v4/duo-0.png",
+      "bytes": 3657783,
+      "sha256": "cefecd98a2110857f2c466ef2a9e54d49e39d436ed12a24d3d5a2dac01b216d7"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/composed-v4/duo-180.png",
+      "bytes": 3033253,
+      "sha256": "64a8dced32735a8ccd299d98c521a09dda947842c72e9e73bd332c02a2090e18"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/composed-v4/duo-25.png",
+      "bytes": 3632718,
+      "sha256": "c8ffc1292e9a2ac36c58be09a9da309aed66804caf976ac6947c1887909338aa"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/composed-v4/duo-90.png",
+      "bytes": 3007849,
+      "sha256": "bdc0a8f118262e8c0f93edd6b7d630edb8f0f7847f37a21f4dcdc2ab4ff8b42c"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/composed-v5/AceHack-Xenaa-Evolution.blend",
+      "bytes": 34651027,
+      "sha256": "d4a3858bedf8ce9ad2f0cf782ddb3aed23d425af2b08e003ce774e2908f97981"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/composed-v5/duo-0.png",
+      "bytes": 3657693,
+      "sha256": "3e8e40457599be3861f7dbf4a221a6cef11352582be0505f81c483910763d30c"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/composed-v5/duo-180.png",
+      "bytes": 3027321,
+      "sha256": "bb0b4d2d7662f8face2cbbbaf5b4dfd6c2be11505bebd295e8ed2065f7f7fd57"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/composed-v5/duo-25.png",
+      "bytes": 3631900,
+      "sha256": "df30d766c71794104dda90d3fab9c46399f751e1cb23598df553cb38a73e6d1a"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/composed-v5/duo-90.png",
+      "bytes": 3011709,
+      "sha256": "a983f2c81b0d5472019ed07315d10e92a45d7f1bd5540d3712226d7459c8c9c6"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/composition-v1-receipt.json",
+      "bytes": 216,
+      "sha256": "a068d5fa069eb61269052827428d22e85d568a194579069fb63dab413d6d8a11"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/composition-v2-receipt.json",
+      "bytes": 218,
+      "sha256": "950e4cffb09f08359270dfa87023a8ac47984b84c2ab3a03df20972115174533"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/composition-v3-receipt.json",
+      "bytes": 216,
+      "sha256": "396aa0c4c8c31e04b8d5d7e00e35008dd3e0d36686d5cbdb938a8b77bdb21ad7"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/composition-v4-receipt.json",
+      "bytes": 216,
+      "sha256": "bdc6347f36a32040dc4b11347fcf24d956417366d0c4f2ccbfb29fa8f6a2fd70"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/composition-v5-receipt.json",
+      "bytes": 216,
+      "sha256": "bdc6347f36a32040dc4b11347fcf24d956417366d0c4f2ccbfb29fa8f6a2fd70"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/decode-heads-float32.log",
+      "bytes": 738,
+      "sha256": "5474b46680b8de00c5c90aa5580d40d6137f76c92f017e90c35a55aad8ab317c"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/decode_heads_float32.py",
+      "bytes": 1602,
+      "sha256": "89ea5ed78cad643c1a7e7bc1efcb92acf1445f792cb24a7d5dc4e5b5bb4f9bd2"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery/AceHack-Xenaa-Evolution-20260909.blend",
+      "bytes": 42911087,
+      "sha256": "a547014274f67658fdd886fe79cf4b80c2761204d33d3497f1f4c660a4546cc1"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery/AceHack-Xenaa-Evolution.png",
+      "bytes": 5159047,
+      "sha256": "1f8aa1b4859e703390cd1c1b5d2d9fe398f5f16d277ca94981ac85bfc5e9e2a7"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery/AceHack-Xenaa-Turntable-v3.mp4",
+      "bytes": 3250976,
+      "sha256": "c358fc467d69cca90a7b31317057ca3cdf0d101e8788686f6a182faa773655e4"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery/AceHack-portrait.png",
+      "bytes": 2547059,
+      "sha256": "07e4d62aaec36bb352219e3ba0b3519b28073b6e90491ad05d25533e95c48afb"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery/Xenaa-portrait.png",
+      "bytes": 2324954,
+      "sha256": "ebd3fe610bf3fbb039a3027242a65e5e6712f6e000b3dc523d7944f8cd33186b"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery/turntable-frames/0001.png",
+      "bytes": 1926217,
+      "sha256": "a133156193282aaf7b545bb06c36ce90e482b01f66524e35ce2e3e7bfaf389dd"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery/turntable-frames/0002.png",
+      "bytes": 1925365,
+      "sha256": "47030b1cf9a36624d2878dfc9fed7504053498fb9124581299dba7f6fa0888c1"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery/turntable-frames/0003.png",
+      "bytes": 1924983,
+      "sha256": "68d0e98753f1792001f3adff988f9006ebf7ffb101de6a5280a0b9921ea221f1"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery/turntable-frames/0004.png",
+      "bytes": 1927430,
+      "sha256": "4d9cd9bf13ac45a557199f5a7ba9ae1e65b872f76b8747fc45a9ca0e6fa1b43a"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery/turntable-frames/0005.png",
+      "bytes": 1927355,
+      "sha256": "0edce76c9dfe47de135c4f16b4d8f38c0fafba1a83df03322b6351dd4f522b84"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery/turntable-frames/0006.png",
+      "bytes": 1927009,
+      "sha256": "b0be9ea04303905e3f6e4b1abfbb871aba0932bf2e0fbd3f2f2d1ded4f2a7791"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery/turntable-frames/0007.png",
+      "bytes": 1928206,
+      "sha256": "0642dc1dc39549a6a5ea99adf5f1338ed1ae20eb1aaf5ae7957ccad3ac45dfde"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery/turntable-frames/0008.png",
+      "bytes": 1928999,
+      "sha256": "bff5f045513747ce4d13a70364b38aabeda41cb27ba1c45555a169ff686ab8cb"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery/turntable-frames/0009.png",
+      "bytes": 1929118,
+      "sha256": "894931aa1cd5becae7499744dabb0b245c6524845e29b87f753d5788d7250929"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery/turntable-frames/0010.png",
+      "bytes": 1928647,
+      "sha256": "ffebe2db6e77d6ab4ac325b4a19513da48ac69b7f3354418432159b30e9c0031"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery/turntable-frames/0011.png",
+      "bytes": 1925654,
+      "sha256": "09c00ed0bc2f47e82fd019e29faca5b55f532ae7978d63e7b54bd58fa58da32d"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery/turntable-frames/0012.png",
+      "bytes": 1925707,
+      "sha256": "91159486caec886b938cc15f6c47cb9060d8b579b3de707d6858d0b4c774a124"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery/turntable-frames/0013.png",
+      "bytes": 1925291,
+      "sha256": "18b0d49a5089b7333c59711d5fa7d1a3f38bb88cd44961f0913a4c08eb36fd8f"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery/turntable-frames/0014.png",
+      "bytes": 1923424,
+      "sha256": "23b462027fa9130c19f48b5e4b00b335da35b61a9bec1f3be6aa58065aabeaea"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery/turntable-frames/0015.png",
+      "bytes": 1922095,
+      "sha256": "b3fcf6244539d279c7c6351f8a2b6aa9971a44f6a23b53a028a72bbfb680406b"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery/turntable-frames/0016.png",
+      "bytes": 1918521,
+      "sha256": "a3b830f6ff57ec48e62d15f808ec59fcadd0d09d1a9e4b5ed88da268939af589"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery/turntable-frames/0017.png",
+      "bytes": 1915129,
+      "sha256": "701597dcbee86841aa86ac1cb03fea4d500fdcf08a26d4ea8a1184b51e1564e9"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery/turntable-frames/0018.png",
+      "bytes": 1912118,
+      "sha256": "6444bf011367ac87b97110e5bccc96f6df74d3df8fc09c11fcea43eae20ac5af"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery/turntable-frames/0019.png",
+      "bytes": 1905102,
+      "sha256": "557fd603a94215c92b9bbddc919b97628545dc60ded4761dc04650e4685a794d"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery/turntable-frames/0020.png",
+      "bytes": 1897594,
+      "sha256": "ba60876c16ca2914c77ea1e2c96eb93b71ff87fc8822fbb94a593ef25867efdd"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery/turntable-frames/0021.png",
+      "bytes": 1889008,
+      "sha256": "7cfda71b2d248c57b5056d661ee92722701a81c275fba0b6eb98efd914e74e50"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery/turntable-frames/0022.png",
+      "bytes": 1879621,
+      "sha256": "a0fc7fb89c708bc1d4064a90d664299eb4bc78c5625cf880827c060af46e497d"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery/turntable-frames/0023.png",
+      "bytes": 1869441,
+      "sha256": "c6586ecc690984464981ffc36ed9ca55b1de0d7ee6aa549c2db437e28447008b"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery/turntable-frames/0024.png",
+      "bytes": 1855388,
+      "sha256": "1c9fd640018b3cbd761e825bd914496fce3bed4bc3465bd287cb09946597c28b"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery/turntable-frames/0025.png",
+      "bytes": 1841213,
+      "sha256": "946d2989f60d36e933c06ac1e14890d322fddfa8abedb3cf4219beae7c5969a3"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery/turntable-frames/0026.png",
+      "bytes": 1826456,
+      "sha256": "2c275af5e146188d84f79d4f4db77e6bf03161027cfa228e937ae6630eaa7fcd"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery/turntable-frames/0027.png",
+      "bytes": 1808741,
+      "sha256": "a2325615045d4b26120d04bac77826ebc6da26bc481a6dc99f27899505557e05"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery/turntable-frames/0028.png",
+      "bytes": 1788271,
+      "sha256": "49f5949d9f72393fb3c5e9bf9f914af49483292023b2612779f95a32eff0e759"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery/turntable-frames/0029.png",
+      "bytes": 1757912,
+      "sha256": "b87b0ce6567c93ca94af4a03dfe7a217c949f7bb4e5990ba02f7f8b185638908"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery/turntable-frames/0030.png",
+      "bytes": 1718186,
+      "sha256": "548d1f6dee57488b847a6bc1f7fce8fdde3a91809a2488e18add16b466ae1ae8"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery/turntable-frames/0031.png",
+      "bytes": 1669449,
+      "sha256": "aaea3b7d50125a2d0019dae71de1a3cd94731a5338e8cea98846bb872ee8bb9d"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery/turntable-frames/0032.png",
+      "bytes": 1615957,
+      "sha256": "7504d9f4b26f7ac66b81a82b4f38ba21fad8cde2133e8d5ab692e1b1df541554"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery/turntable-frames/0033.png",
+      "bytes": 1597084,
+      "sha256": "52448dcc8af2aad3567ddc5e7c33f28782fac0ea1464640ddbfa0a7989cfdb2c"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery/turntable-frames/0034.png",
+      "bytes": 1627121,
+      "sha256": "ac2d85874c79bb756d34130545d604bebc5264859465dba6464d8796a03416a0"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery/turntable-frames/0035.png",
+      "bytes": 1669729,
+      "sha256": "407820a9d568e0fd8973ce7f982c2e351f37188fcd08be0d0797fe91dcde3669"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery/turntable-frames/0036.png",
+      "bytes": 1702614,
+      "sha256": "bce7d8109ee168be15b05f3b53f1caabfdd81da29e2be6fec7b07b115f299995"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery/turntable-frames/0037.png",
+      "bytes": 1722847,
+      "sha256": "85ba4a3943dddea4f23f951ae3036489f8ef68608bdb9fc69b540f40c4eebad0"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery/turntable-frames/0038.png",
+      "bytes": 1735667,
+      "sha256": "0052e6e23a651933981f819b6e72fbef91a16234846874036744eb43ff7adbe6"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery/turntable-frames/0039.png",
+      "bytes": 1750242,
+      "sha256": "6f297b5a56c8dfea13638374e250e6ff686fce782502bf697120b59ed0745667"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery/turntable-frames/0040.png",
+      "bytes": 1756368,
+      "sha256": "0502973a4609d3d2ad74deb8fc11468d6db2342f2f74dec65625d7a5a6ee27ba"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery/turntable-frames/0041.png",
+      "bytes": 1762589,
+      "sha256": "7e7d689880c8075c92261b0d953f8f3e65f6da29af88b26bb26438115deb4330"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery/turntable-frames/0042.png",
+      "bytes": 1762004,
+      "sha256": "47638af2ec8d6308d1b233f0e3e11cb66ccf66e635448bf5cc2832e28c259464"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery/turntable-frames/0043.png",
+      "bytes": 1760639,
+      "sha256": "7e56b1d2bbf13b5a0dccb75c2e49420956c7e64e999cea504aaa33caa7e293e2"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery/turntable-frames/0044.png",
+      "bytes": 1756240,
+      "sha256": "cc891385ea41964fd063f265f694bb01395ff124f8535b771f776bb8b32ada9c"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery/turntable-frames/0045.png",
+      "bytes": 1749225,
+      "sha256": "db5371b3be82501802591fd92816470d4cd833d8747e26724312f0afcd8663ed"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery/turntable-frames/0046.png",
+      "bytes": 1745090,
+      "sha256": "6370ac0e479c7ac4cd43e874531012575cf95e507ad508bc2cec161398f31c51"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery/turntable-frames/0047.png",
+      "bytes": 1739338,
+      "sha256": "2b95e66135ef13b97bbb79f6a2e3cd74a63ca24ce0f38b13ff7427191b44a0b4"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery/turntable-frames/0048.png",
+      "bytes": 1734132,
+      "sha256": "6c89535646e012d2402a4e1719a7d9b8dd2f3ea52033ecb9515cf68411c74c20"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery/turntable-frames/0049.png",
+      "bytes": 1732659,
+      "sha256": "366ae9c23b69b34822acbabf794d105f4988f7e198ec03a7f414b22d567b3a2b"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery/turntable-frames/0050.png",
+      "bytes": 1733840,
+      "sha256": "ba2e00d1cf0fc7b9cb5bbf99cdf42806cd25719587622b90b9319954061b460f"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery/turntable-frames/0051.png",
+      "bytes": 1734393,
+      "sha256": "82b931509516da42436f6671e40f9e66ce9aba471b67c07f5d0f593ab4465fdd"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery/turntable-frames/0052.png",
+      "bytes": 1734105,
+      "sha256": "8d44b63b7460603ebc4937e6a230781b4e1fbcee0625b6a81b6a813641574dad"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery/turntable-frames/0053.png",
+      "bytes": 1730864,
+      "sha256": "a7e4033c62d940b1acb017b7725436097bce597a687f55ea8ab56356d5eaa348"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery/turntable-frames/0054.png",
+      "bytes": 1729168,
+      "sha256": "06e0044de269770ee3de39f1639b6100a92d22c21e22d55573a4e284ca5b82b3"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery/turntable-frames/0055.png",
+      "bytes": 1728014,
+      "sha256": "80c3fc8541ad2056be310b2e00c28f68cb1006a93197706d96c6ac89d130a625"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery/turntable-frames/0056.png",
+      "bytes": 1726547,
+      "sha256": "c340867f4d0b35dd08e9dfe2ca6d00518b662580ffa0bc5cca42294440f6e115"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery/turntable-frames/0057.png",
+      "bytes": 1727173,
+      "sha256": "8a8074f11a3ad00283c54b1a7e8b3d3438fd47dcdbf31c08a6ff0066373a532c"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery/turntable-frames/0058.png",
+      "bytes": 1726926,
+      "sha256": "98e1a7f1376b08fe2b28114415fbf70a4b99720007297ecb68a9f63cb006a45a"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery/turntable-frames/0059.png",
+      "bytes": 1727025,
+      "sha256": "f44ee7d768e6e6da2bafac93a3247b0dd7868a9e753bc853cff4bc837a13df56"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery/turntable-frames/0060.png",
+      "bytes": 1724347,
+      "sha256": "7e3afad1988b802f001c41b8ccb72feb144374d8b02f744246232b97867ab1f2"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery/turntable-frames/0061.png",
+      "bytes": 1716098,
+      "sha256": "6671bc50769ac3b402fe9f832379ff725aab2ea4b4b09f47b59f36ee8f6bb814"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery/turntable-frames/0062.png",
+      "bytes": 1700298,
+      "sha256": "3f2192683552ca15ae4336a213809617b0d0f8a4331d35fd40536a3eb509c306"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery/turntable-frames/0063.png",
+      "bytes": 1673471,
+      "sha256": "ee9585b75f13e78ca1fe31faea8472579ab2093830c92ed17777d80b1a137898"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery/turntable-frames/0064.png",
+      "bytes": 1633111,
+      "sha256": "9297e43290bfbfede54e109ac74310238365073a54142c786b2cb2cf5243a9c2"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery/turntable-frames/0065.png",
+      "bytes": 1606751,
+      "sha256": "14ec449b3e8642cb4fdb39e88669fbfe9f79f297ce1cb00542b73d155b707b04"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery/turntable-frames/0066.png",
+      "bytes": 1604833,
+      "sha256": "5ceba55b773e5c1174b81ee3c502c8410576edbcf67105fb260e54a9a1ec9aa3"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery/turntable-frames/0067.png",
+      "bytes": 1647245,
+      "sha256": "c9842a960f3e6fde2eda7775c28fa035456a6d4627f5ad8b20478bdb9884444b"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery/turntable-frames/0068.png",
+      "bytes": 1696958,
+      "sha256": "a27b4233e04cbb6271d596872677a7112ad82364551f32eb812f8c0bcc03730d"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery/turntable-frames/0069.png",
+      "bytes": 1738488,
+      "sha256": "d83a950882dba27a94aaea9fa4204724803b1e19b9efa9e7e1bdd328504b5c87"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery/turntable-frames/0070.png",
+      "bytes": 1766790,
+      "sha256": "0f3f8f62b62eeb4c12f52a54a3aa1377b66958057e2a05883c679b1065de9477"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery/turntable-frames/0071.png",
+      "bytes": 1792766,
+      "sha256": "ab94a281a7ae0de15dc77c8666e31e0585f49e516946170fb2d465ac23e5d9f9"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery/turntable-frames/0072.png",
+      "bytes": 1816231,
+      "sha256": "6436c5aa7164dd6394ae2ca39e5cde87f2abb477c2bb0f0cc9e56752b0c19a08"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery/turntable-frames/0073.png",
+      "bytes": 1836937,
+      "sha256": "f8d838e6cb981abd1d6e6918620482702f708576ad2c2465c73f936cc2abd1f1"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery/turntable-frames/0074.png",
+      "bytes": 1855703,
+      "sha256": "49e190f4a916538ab43690da17078e0ab86d2a6d653815aba8c7d2dd78e0d3aa"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery/turntable-frames/0075.png",
+      "bytes": 1874234,
+      "sha256": "6f9af8fab295efaa7d117c6ac033057d22fab2d0505d82d2a981ab19682015d9"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery/turntable-frames/0076.png",
+      "bytes": 1887954,
+      "sha256": "263dd4ce197366b4aa52e07911f166f350f070e1251a86ebad6ae337cfa54381"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery/turntable-frames/0077.png",
+      "bytes": 1899326,
+      "sha256": "8c37da3f9ed381944c3388cadf49afeb8a711ef084527892899f3bbaccbc3416"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery/turntable-frames/0078.png",
+      "bytes": 1910478,
+      "sha256": "587d2730fc6d05db4e5c93ed465a7a40e8838d46b4cffb734938ce95a8498c5f"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery/turntable-frames/0079.png",
+      "bytes": 1916608,
+      "sha256": "b046d3bdad2d867bed1a442030b45cc270eed1be0fc66a06894fcc8d82f9f3c5"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery/turntable-frames/0080.png",
+      "bytes": 1922432,
+      "sha256": "1e354e041046915f8f996139c883cbae484e367814704e798d7f0e3268c5555b"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery/turntable-frames/0081.png",
+      "bytes": 1924518,
+      "sha256": "a1abd3ebfed01c5a55c01aedb787effa6b2f9bf0ccf19061a40bdbe77ee5c9f3"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery/turntable-frames/0082.png",
+      "bytes": 1925876,
+      "sha256": "9c5d023db756341cfb808a2a87b4fd05f8c46c1d4376de656d1c61338553c7df"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery/turntable-frames/0083.png",
+      "bytes": 1927729,
+      "sha256": "4f5e3b2f208908cc12d60beaf68f7c14236fe02723ba39541c611a9df66a92d0"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery/turntable-frames/0084.png",
+      "bytes": 1928574,
+      "sha256": "6881d04df5f6976524e71de4f3d800e62fa5c4917062853286de9cc5fb92f48a"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery/turntable-frames/0085.png",
+      "bytes": 1926771,
+      "sha256": "0ba698bc7ee8b80451a991509b9d21ab1ded5805a8c3a19645893af071661e84"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery/turntable-frames/0086.png",
+      "bytes": 1928882,
+      "sha256": "f1da9d62bc06a2577250933af5f3259300c46de4e26a419fe22301bbf56ff1a4"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery/turntable-frames/0087.png",
+      "bytes": 1930205,
+      "sha256": "938f3b7bd698c95d3060189687c620198cf53bfdc6c362cadfdf3d6ae28c62f7"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery/turntable-frames/0088.png",
+      "bytes": 1929176,
+      "sha256": "4618e3f072e6a06c16126b12afab5103ec68b0549244892489f374c73ccbd136"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery/turntable-frames/0089.png",
+      "bytes": 1930345,
+      "sha256": "f33651a511eb489ca4afe2923fd06306aa36e1bd7c76aeaa2e525c3c255a82eb"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery/turntable-frames/0090.png",
+      "bytes": 1928048,
+      "sha256": "dde2132d5ac7f76fbeaf8ab2037059849e36c9f537278dd608d60d4f45ae4cb2"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery/turntable-frames/0091.png",
+      "bytes": 1926480,
+      "sha256": "450db566f86e4f3814c18fd46c78a9f6ca2dafaa694340bc55196cfb095e2847"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery/turntable-frames/0092.png",
+      "bytes": 1926412,
+      "sha256": "b77e792afada5d2e56d547adc583b729111aacffdbb2d3818643e2287a7491a4"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery/turntable-frames/0093.png",
+      "bytes": 1925917,
+      "sha256": "2063624e760bd0f802dec709cb67a5d82f724650988ca80172afe55b7808dc2f"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery/turntable-frames/0094.png",
+      "bytes": 1928058,
+      "sha256": "b0c74f62f1876d20574a644a7b64c8ef87e3dabb140003f84d47ff12cbc711a4"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery/turntable-frames/0095.png",
+      "bytes": 1924336,
+      "sha256": "922c9d369e41534ca8acb897aab0824ed2d9ae63055fc225dc037279e6a9b19a"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery/turntable-frames/0096.png",
+      "bytes": 1926354,
+      "sha256": "87e13a105f60889db0bcc14a9eb669531f370640239d97693fb0250324a5667a"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery-v5/AceHack-Xenaa-Evolution-20260909.blend",
+      "bytes": 34655735,
+      "sha256": "72fa1032298c0e205695a0c84f4c780fd393a2267fed1da809b299ee247920ae"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery-v5/AceHack-Xenaa-Evolution-20260909.blend1",
+      "bytes": 34652479,
+      "sha256": "4a1282224e7a03c89eee8bcc3f01ea96755af00d5268712792bbb7f5bec96a0b"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery-v5/AceHack-Xenaa-Evolution.png",
+      "bytes": 5174032,
+      "sha256": "2e8fcd656049ad8e1fb5e663e5986ecdd0a3fddb40783f8f37ea92c9bb86a2a2"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery-v5/AceHack-Xenaa-Turntable.mp4",
+      "bytes": 3135264,
+      "sha256": "bfadbce079f25f69433432031899d67cb739c75eedac63692b47088a5e114517"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery-v5/AceHack-portrait.png",
+      "bytes": 2557433,
+      "sha256": "8a86a3b662b4f7a2754143392ed9f74827d26c251105926eeafc5ad7abfb7ef6"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery-v5/Xenaa-portrait.png",
+      "bytes": 2326625,
+      "sha256": "934addb0b66a705477370b40475afa4eb669b1c257ce836c7a32724fcc049e93"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery-v5/turntable-frames/0001.png",
+      "bytes": 1932458,
+      "sha256": "4d68c046c86e01537bc58be508e838014f96788f76e2594d376deac90b51946b"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery-v5/turntable-frames/0002.png",
+      "bytes": 1932882,
+      "sha256": "2f90389124ff14fbd9ec22aecc8e9ce569bbfc43e1bc14196d75728dd075c31b"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery-v5/turntable-frames/0003.png",
+      "bytes": 1932871,
+      "sha256": "a7054f95756a35d61ea1fa55260034016e3159b4a25ec4666788f0a533760633"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery-v5/turntable-frames/0004.png",
+      "bytes": 1933837,
+      "sha256": "9a603906c242b37a9b29dec306feaf2669610102f676753f988368dd5f8f4733"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery-v5/turntable-frames/0005.png",
+      "bytes": 1933535,
+      "sha256": "7a8b5945d5332ad1f21e367e4e408ad09f9eab8994274eed9ce817fef94f02f5"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery-v5/turntable-frames/0006.png",
+      "bytes": 1933356,
+      "sha256": "006b5ca0dad810759119506c3ab9eb223343853f71baa20b33c7637cfd9bc64b"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery-v5/turntable-frames/0007.png",
+      "bytes": 1935157,
+      "sha256": "aedb7ce15c74140b59eaba7eadba0450b368f6ba2dac016cda535d221d71f758"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery-v5/turntable-frames/0008.png",
+      "bytes": 1935174,
+      "sha256": "69a24961ea8a76a1f209f261a1e56dede599b6249a735e0db12855f29b4fb645"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery-v5/turntable-frames/0009.png",
+      "bytes": 1935048,
+      "sha256": "155c774eebaa923b615838abbc66524723195482ef0cc8ef2ba6bc35fa016af0"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery-v5/turntable-frames/0010.png",
+      "bytes": 1933911,
+      "sha256": "035f95363018cc764b3e7c420f4f88725c716f3d65fa5be38832cef88f2870a3"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery-v5/turntable-frames/0011.png",
+      "bytes": 1932510,
+      "sha256": "d3988e3d75c5f0874114954ba7ffc5fb952df66aea13a4411747b43acd6ef890"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery-v5/turntable-frames/0012.png",
+      "bytes": 1931675,
+      "sha256": "af4f719eb40859d8b25ae02e6053021dc5609055e533d91150528c2ce05ebdb9"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery-v5/turntable-frames/0013.png",
+      "bytes": 1930610,
+      "sha256": "70ff6b3c4a4883a7b63383d0b7bdde7934fce4f1f18fd96d365862fc2d76766a"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery-v5/turntable-frames/0014.png",
+      "bytes": 1928245,
+      "sha256": "f4b38500dbc20fbba413c2a16518357ee21eace75208b16a11a7778479300cd7"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery-v5/turntable-frames/0015.png",
+      "bytes": 1926639,
+      "sha256": "372185870d413432eb7b68ec9eae6ee080d30a0d15cd9f7517518151a3704a54"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery-v5/turntable-frames/0016.png",
+      "bytes": 1921972,
+      "sha256": "49a7e6e6e1ba6318df10e7889980fdde84f2f6a8a89069b56ea36aef602d5e0c"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery-v5/turntable-frames/0017.png",
+      "bytes": 1919394,
+      "sha256": "962beabbb0615127cb1762a7a797e397bfc8bdea05a30cef2dde56c7ff2edbdc"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery-v5/turntable-frames/0018.png",
+      "bytes": 1914790,
+      "sha256": "6a01706c248669e50c1fd83b4269aaae2aae9a9ce3d4e932fb611cd1aad242f4"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery-v5/turntable-frames/0019.png",
+      "bytes": 1909387,
+      "sha256": "684804ddefb57f302f4b67a31bdc17acd00caf5a5fb16ecec90f238063d007e7"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery-v5/turntable-frames/0020.png",
+      "bytes": 1900720,
+      "sha256": "d71cf90202bd7f0a6d9921919103851ba130694c1c79c9f326e452cf623e752b"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery-v5/turntable-frames/0021.png",
+      "bytes": 1891710,
+      "sha256": "38d7ecc5a6d9cfc098f0eb5481c3522adff9162dfc7e30bd4b0f0626360a6d90"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery-v5/turntable-frames/0022.png",
+      "bytes": 1883103,
+      "sha256": "09a0516e3eed37c0bd43555626d2dc57a2aa51e1e24707b6abc771b0e6b8e908"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery-v5/turntable-frames/0023.png",
+      "bytes": 1870850,
+      "sha256": "0b30c029ffcb93ed69d7dc7325a30cba57a5f38fee2dc4f58ed16942543c7aaa"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery-v5/turntable-frames/0024.png",
+      "bytes": 1856659,
+      "sha256": "baa9cb53262a40656ea6e91dfde461228b281e41573362123120153cb36c604f"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery-v5/turntable-frames/0025.png",
+      "bytes": 1841136,
+      "sha256": "1a3de9a13a573478e68de279495bc9e6e3fc7f3cc745841f91f1d016c5b2d648"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery-v5/turntable-frames/0026.png",
+      "bytes": 1825085,
+      "sha256": "66542dd3edf6b22946a4e921671f4ac3b5d7b2fd8044cb4ff4ba6b50cb0ad4d3"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery-v5/turntable-frames/0027.png",
+      "bytes": 1804595,
+      "sha256": "a60e1430458028c96cfb3ce6783528059023b406a0ad53ba1095a5cb0de8308e"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery-v5/turntable-frames/0028.png",
+      "bytes": 1781953,
+      "sha256": "8db8547e6a15ea3ce2c741b2e267dbcfc69542347a3fcd242d757e3481314aac"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery-v5/turntable-frames/0029.png",
+      "bytes": 1752707,
+      "sha256": "a2c214858e3ff25d71edb8a52c51da5c55e13d28ac5e98242c06e35d63c04e8b"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery-v5/turntable-frames/0030.png",
+      "bytes": 1713270,
+      "sha256": "f90971e89857b2e8da5f6552426c1c80ac4d398446d9e8094855c07985450fab"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery-v5/turntable-frames/0031.png",
+      "bytes": 1663676,
+      "sha256": "2fa895c84a0012677eccb4bf728e91e260794cdc4ff14df759dab8c2d023471b"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery-v5/turntable-frames/0032.png",
+      "bytes": 1604352,
+      "sha256": "47ca1c5ad7a87919dbc92c814eb56ffb66bf1c966b207b28bc971358019cf316"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery-v5/turntable-frames/0033.png",
+      "bytes": 1568439,
+      "sha256": "efd6bbd103961c867d0ad6fae9770a82dca4094e4e4407524187c4cfaa223c60"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery-v5/turntable-frames/0034.png",
+      "bytes": 1586646,
+      "sha256": "24e20381f3d3a0b208d3d3475baa9de1a21f62475078007d4c63d1f43b64039c"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery-v5/turntable-frames/0035.png",
+      "bytes": 1622989,
+      "sha256": "ee4b671555c93209b09b534eefd4d4674269fc5f975ffa78655e9a752b9abd9a"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery-v5/turntable-frames/0036.png",
+      "bytes": 1644439,
+      "sha256": "f85be43249c18830fb40f53ce6841cf892d0590d58f0ba9d11510a93f0751cdf"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery-v5/turntable-frames/0037.png",
+      "bytes": 1655388,
+      "sha256": "411a4bc901a9be02fb194707b924ad20600019003d912f3a1be11426edf0e1c7"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery-v5/turntable-frames/0038.png",
+      "bytes": 1661868,
+      "sha256": "3a9c85ddba6fd66e7e5d6b21ae27d451219112c4334527a84d9bd7783df91de1"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery-v5/turntable-frames/0039.png",
+      "bytes": 1663989,
+      "sha256": "9bd0851a0523f973eaae3f831c70077565144f30e87b4e8ef80a555369b2e238"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery-v5/turntable-frames/0040.png",
+      "bytes": 1662275,
+      "sha256": "35c16707b56f624929b170b7e89776e7d771830818725a88068337fa589ee52f"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery-v5/turntable-frames/0041.png",
+      "bytes": 1660063,
+      "sha256": "edbecafb39f7379d47953ddde53c6c17de1019125582ee4232a54e7a3dc33f9d"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery-v5/turntable-frames/0042.png",
+      "bytes": 1652832,
+      "sha256": "95ff2c286e6dab6a0e0812a3a177e39a23c60c6c4140b0970bfafd4da99aab28"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery-v5/turntable-frames/0043.png",
+      "bytes": 1645842,
+      "sha256": "b01697a876bcb6ae56a97262c7262e45c393df77bd0d6b8a0365725e190d81d6"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery-v5/turntable-frames/0044.png",
+      "bytes": 1633807,
+      "sha256": "9a437117a6c7b00f8a773f1bfb9793096025a45a770e6cb4e5173481fed11c44"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery-v5/turntable-frames/0045.png",
+      "bytes": 1620746,
+      "sha256": "dcccb7702d71b00d6708ca8b7bf1689aa9f636e0b7398fbe84e2aed075d9751b"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery-v5/turntable-frames/0046.png",
+      "bytes": 1609071,
+      "sha256": "6f9a95b9da8f9d7a0dbd7b7638f8af8c92a4011c679e222e70d327a95c167796"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery-v5/turntable-frames/0047.png",
+      "bytes": 1599553,
+      "sha256": "084bbb1b20f22e86c1d4076c5236a75e050afd3a53d1c9a347a502a9a368fd06"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery-v5/turntable-frames/0048.png",
+      "bytes": 1590894,
+      "sha256": "2fbda338efdd093bd06d7632ac0dc86f83029a03689af8132da0c23ae4cbff04"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery-v5/turntable-frames/0049.png",
+      "bytes": 1585937,
+      "sha256": "0103bd8bdfe3b4a073770a5f7ca801dfedb6e42149e6e44355af15a14c5af60a"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery-v5/turntable-frames/0050.png",
+      "bytes": 1586108,
+      "sha256": "a77ec498514322b11f82e8d32804ba695bfd4c9dc5c79c7f9a9cb405e34e8e0d"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery-v5/turntable-frames/0051.png",
+      "bytes": 1587965,
+      "sha256": "c597cde3f6da63ba20908c95d0f8584cf919ffd2a06a0dbf38663b644f293aa1"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery-v5/turntable-frames/0052.png",
+      "bytes": 1591732,
+      "sha256": "8564fe791df1aee41435e6e6e1874187527956e0ac8cafe076be630f244522c1"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery-v5/turntable-frames/0053.png",
+      "bytes": 1594628,
+      "sha256": "0881e52e49702e491c2f937bc7352ab11e84b1e2f280c5ae5109336efbc34a8f"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery-v5/turntable-frames/0054.png",
+      "bytes": 1602190,
+      "sha256": "ecbe95a9d210749cc34e8bb44b88378025c696a7d8ef6429d6898ab4ae3743ed"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery-v5/turntable-frames/0055.png",
+      "bytes": 1609722,
+      "sha256": "ad995dab31d777d12ee3fba3b37b74b6fd235db17dc93e7eea6f68fb699c0e7e"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery-v5/turntable-frames/0056.png",
+      "bytes": 1618875,
+      "sha256": "53c5352291f57a2bf9b798bdc2a3024de60d00b513134f9955ddd89a7ddad74d"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery-v5/turntable-frames/0057.png",
+      "bytes": 1625590,
+      "sha256": "566270bf8ac488ffbc9878b1cdd893c4fb1111f5ab16fd96d87dd9dbd6a12481"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery-v5/turntable-frames/0058.png",
+      "bytes": 1635487,
+      "sha256": "f7f3a787f0c5b05564fba40c973a56daf2ec8c60a891c5b530833f43d12e4a7b"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery-v5/turntable-frames/0059.png",
+      "bytes": 1642986,
+      "sha256": "7ba3bd6c2235ef9890082181a9a089b76868ee593f44bfea219d0c76e527e279"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery-v5/turntable-frames/0060.png",
+      "bytes": 1648810,
+      "sha256": "de7f927624d0fd98f8fd38ec57b8c8a93ce29dcb9e8a118642885e2c1faad147"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery-v5/turntable-frames/0061.png",
+      "bytes": 1648812,
+      "sha256": "0f57e80d9c77a8d3973b64fa7eeb84a5031c78a52b261c1e5c54f99281a7e753"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery-v5/turntable-frames/0062.png",
+      "bytes": 1639246,
+      "sha256": "9610c8c73e288c596ebf9a0bc20453fdcdb948b6279961f3b6232f482b609451"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery-v5/turntable-frames/0063.png",
+      "bytes": 1623442,
+      "sha256": "21ec639b44df82f4478e15ab9d37d9adbb4d8f503be348e931f37b2a5cb4bb11"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery-v5/turntable-frames/0064.png",
+      "bytes": 1588542,
+      "sha256": "bb101886c1eda8eaa7a006a9ca0919b47aa446e2a25616ec55d5ad3a3977e8b9"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery-v5/turntable-frames/0065.png",
+      "bytes": 1572418,
+      "sha256": "802f6629ca25d6d0ef776b5c917b6537955a9306472cbb59829f576ed3adc82e"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery-v5/turntable-frames/0066.png",
+      "bytes": 1584711,
+      "sha256": "f6839aae83f4fc04a55cbce2cf8208ce84842142da5d8590285f261b1f59dcaa"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery-v5/turntable-frames/0067.png",
+      "bytes": 1635640,
+      "sha256": "74c03436a6806cde0d9c63e0fc289c026719fd57086973ee34a21f344e63eb12"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery-v5/turntable-frames/0068.png",
+      "bytes": 1686781,
+      "sha256": "fd5661648e8bb72c83aba2d4cb38d4dd706f87be14456a2f0ac28bdb1a8dbc6a"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery-v5/turntable-frames/0069.png",
+      "bytes": 1729661,
+      "sha256": "936d001c1a7b333a3ac5c4936a0be3f0e6de2cc8a38545e24d20e6322f86203a"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery-v5/turntable-frames/0070.png",
+      "bytes": 1758387,
+      "sha256": "85e28b65912ad08c6ddae86a9dc10fec71ff0fcc535ef7d2030c6ee3bc673767"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery-v5/turntable-frames/0071.png",
+      "bytes": 1785942,
+      "sha256": "1025bfc2c7f8c2cbb3a252407612eff38183f9884b9708b11e2938509a3b53e0"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery-v5/turntable-frames/0072.png",
+      "bytes": 1811873,
+      "sha256": "ee10cf74755924aa1ae7080e32f5282bca52d65057badde767c9f22389a5c36e"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery-v5/turntable-frames/0073.png",
+      "bytes": 1836162,
+      "sha256": "63e5b7df81c40d4c023d16d8b0d9fdb5a9efbd94502df0bbdeab9981b9507562"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery-v5/turntable-frames/0074.png",
+      "bytes": 1855269,
+      "sha256": "ed1ecbf8e713a32dcdfa20a833ddc517b356397f16da3f387d63555c46aec9af"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery-v5/turntable-frames/0075.png",
+      "bytes": 1875596,
+      "sha256": "cbb979a9c29a8f8f8739550471747416b1ae5ef0adf898c47b582f33ae074a7a"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery-v5/turntable-frames/0076.png",
+      "bytes": 1889437,
+      "sha256": "989fc7f7aad0ad4e4ea8dfff177a08539a7c47b9c26a2ea8935f4f0d3e2e9c00"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery-v5/turntable-frames/0077.png",
+      "bytes": 1900456,
+      "sha256": "154d49c4d1dfb9737aa904c676cc7149fc3fb8db5c046cb600d9658b3a9c7bff"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery-v5/turntable-frames/0078.png",
+      "bytes": 1913334,
+      "sha256": "9241e1f15e5a8d7aae8134ba12ab7f8ed3fb0186cbc2be8af4af7d7e00baba8b"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery-v5/turntable-frames/0079.png",
+      "bytes": 1919174,
+      "sha256": "dc990db66bf2fc31b4315eedbc9cfc0b68a48f0d3022bc91768c236ba3a3e349"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery-v5/turntable-frames/0080.png",
+      "bytes": 1927697,
+      "sha256": "8c8c0ee54a850ad3d624dcdb01ee8644fa6dd88486c3a6b87043b73536f62db6"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery-v5/turntable-frames/0081.png",
+      "bytes": 1929574,
+      "sha256": "f640905bf1ffe706741a87369e3689ca797c83f9c544c08a79476433d208df22"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery-v5/turntable-frames/0082.png",
+      "bytes": 1931166,
+      "sha256": "2f79c1e8e5ae09faa54a34920dd382f33112f6d299fb2235d5c2744b524b3c66"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery-v5/turntable-frames/0083.png",
+      "bytes": 1932538,
+      "sha256": "02dbb6727fcb06f04518a6e8d2d3236075551f5638eb416ab6a5073dc8e31d0d"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery-v5/turntable-frames/0084.png",
+      "bytes": 1932892,
+      "sha256": "a41600105442c92b922c865b67630ea937e115ab40d3f9b7b67ae6dc1678558e"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery-v5/turntable-frames/0085.png",
+      "bytes": 1932317,
+      "sha256": "c7b1baf63d4e7ef2a0fe71345b8fce93f627da7c2b0ec148b56a68214ccfd2ce"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery-v5/turntable-frames/0086.png",
+      "bytes": 1934014,
+      "sha256": "4a0082da2c8d95ce02335b8dbed500315eab41a9d70e005d017acf03d33098ce"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery-v5/turntable-frames/0087.png",
+      "bytes": 1934463,
+      "sha256": "07b68fc4a1a8e42895c2aa361aee65d594a1fdeafd5acfb424f01ba480dcb92b"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery-v5/turntable-frames/0088.png",
+      "bytes": 1935331,
+      "sha256": "89d15b385320ae372ea9ae8cd5880b4a9b2de634f9f10ab79a93c2c9317bf829"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery-v5/turntable-frames/0089.png",
+      "bytes": 1935184,
+      "sha256": "411a0ff6bee401e14569879d59656c80c007373a900849806703e85c9d8b31a8"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery-v5/turntable-frames/0090.png",
+      "bytes": 1934236,
+      "sha256": "3595ab14f62147c43997c7dea8cde757daa6a2be593def7a1a155cdd6848155d"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery-v5/turntable-frames/0091.png",
+      "bytes": 1933809,
+      "sha256": "1e8885936810f3d851f16d4b4f94c31049cc3105fd6d6089ee6a15c51961829a"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery-v5/turntable-frames/0092.png",
+      "bytes": 1934359,
+      "sha256": "017a11c75e7293ca15b82f722e988060b7d0935012ecf95a004da1a67a2f5df1"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery-v5/turntable-frames/0093.png",
+      "bytes": 1932846,
+      "sha256": "40f27487ecdb2802926cbd2b874b2544a6715376ed53c37007b592c04194f805"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery-v5/turntable-frames/0094.png",
+      "bytes": 1934204,
+      "sha256": "82bd49151504ae149300b7d4e177c502bcf4bfea29f4208ce4dcc07104400127"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery-v5/turntable-frames/0095.png",
+      "bytes": 1932659,
+      "sha256": "d95506c343fe0c45f0f4e66574493d81d5e13f23cfe5ebc5acc563f68705674c"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery-v5/turntable-frames/0096.png",
+      "bytes": 1933335,
+      "sha256": "e07bfe602d1af161acd6c4298f0a47c812115a09c244fccaf15257cf4b338f34"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/delivery-v5/video-validation.json",
+      "bytes": 279,
+      "sha256": "24a3da89a023cf27f9f55353d62bd9fe7eb3eebab2350e7592b823963ce61c3d"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/encode-v3.log",
+      "bytes": 4376,
+      "sha256": "b771c7b38438cabefe6d78be7c23759ebb9e656d75cb0764bcb7a24afc2e0ebd"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/encode-v5.log",
+      "bytes": 4164,
+      "sha256": "ec7c8bd2ffee3f5f191daf1a8b94b115e917c7c4a4b0fcf367562b0dd645f03e"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/finalize-scene-v5.log",
+      "bytes": 14033,
+      "sha256": "e29441c932f35def05a5a8ac9e575affa9ce2af975bc08c55ded31a9b301f103"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/finalize-scene.log",
+      "bytes": 13736,
+      "sha256": "d9aa24d91d0d25ae38b852bb038c55702f584398214572ec5568c1b2654200a1"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/finalize_scene.py",
+      "bytes": 3576,
+      "sha256": "7b1b32aa1592fdf04cd8666a8eb28fcce88f49a0980ffe814f57548ada9437ed"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/finalize_scene_v4.py",
+      "bytes": 3727,
+      "sha256": "077a4ae0b6e95578eb9f397bf81f4822b33b228db763f46ce7045d01aff957fe"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/finalize_scene_v5.py",
+      "bytes": 3727,
+      "sha256": "1dc15c462faf7ef8b6014fa4ea46925bc74187dad73f0929dcda283d867bcd96"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/fixed-latent/AceHack/mesh-128.glb",
+      "bytes": 355736,
+      "sha256": "614ae58ee818220509437d337434cade7c44bf9abe9f90fea6078b78287cf7d7"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/fixed-latent/AceHack/mesh-256.glb",
+      "bytes": 1525212,
+      "sha256": "faeb1a3022fe54f314993d3267475edb925b1ca1c23f6ea6e5a332da2e5f1755"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/fixed-latent/AceHack/mesh-384.glb",
+      "bytes": 3503092,
+      "sha256": "9de8f93c68f5280973ef5455373446fc1b013c02b47adbe24f13d8d1badc8125"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/fixed-latent/Xenaa/mesh-128.glb",
+      "bytes": 354216,
+      "sha256": "ee895276eaed7ab1d9b0f346449f50e243490eeb5dcf580a5fe9b5813dbcc601"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/fixed-latent/Xenaa/mesh-256.glb",
+      "bytes": 1500256,
+      "sha256": "69ed03429b3da5a2b16f65be6a7a8276d7e9ea351ba7a6f9bac5d3eb6d724c22"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/fixed-latent/Xenaa/mesh-384.glb",
+      "bytes": 3428576,
+      "sha256": "d99fc36afc41b1dd142d5548595db29799f160a21c3999705e314311683c6ba1"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/fixed-latent-receipts.json",
+      "bytes": 3629,
+      "sha256": "3829af647c8cc47bdfd0c5d63bd7c0be982af7c518683101af72ca4900244262"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/generator-dag.json",
+      "bytes": 3376,
+      "sha256": "be1a6ede156038696fec1e64e4d6011345a165309de47d43c4aaac5f1b88192b"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/geometry-review.json",
+      "bytes": 1385,
+      "sha256": "7437f8b6737be8e0cddc3e043e0b5063afffaa6b8117ddce408ce5a56659ec84"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/heads/AceHack/AceHack-head.blend",
+      "bytes": 12347768,
+      "sha256": "cf79383aded8269e12a172f39a163a6515a782fe070be2349b1c7b1a8c519612"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/heads/AceHack/alpha.png",
+      "bytes": 1584341,
+      "sha256": "d13018204bfd4984e00986f28ee1e7503b39b88705ffc11e9589d36a7a1ab1ae"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/heads/AceHack/conditioning.png",
+      "bytes": 1352740,
+      "sha256": "6aa99c91a7042229d150eacf903e644c8553b3295892e5547ae2f2d9acaafca8"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/heads/AceHack/mesh.glb",
+      "bytes": 6097252,
+      "sha256": "c7920f7b62d2be409ea232d0847b2f096b7043a68de50032e25e7156d2d0a2cd"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/heads/AceHack/receipt.json",
+      "bytes": 295,
+      "sha256": "5d2c819587f2c1ac1e6daf9bb881ed3295bda25b4e86fe81cac496b67bddfb63"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/heads/AceHack/review-0.png",
+      "bytes": 1373960,
+      "sha256": "e9eb0d498024298bb2284d9bec33bee84c39fcc1e6521be83694eabb9505965e"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/heads/AceHack/review-180.png",
+      "bytes": 1138358,
+      "sha256": "991ffeff7b7ed5c6ca9b413e46a9e8c4c63f4904f4f49da56c76905463283c22"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/heads/AceHack/review-35.png",
+      "bytes": 1344402,
+      "sha256": "d119ca7d7a201b9f35ec7e000964232ffa552a3f1fe9f6d40a8b53f4189b2291"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/heads/AceHack/review-90.png",
+      "bytes": 1258261,
+      "sha256": "81a885c0db6a88a58defdf42bad6208dbadc064f12b418abe2e0f86605098b96"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/heads/AceHack/scene-code.pt",
+      "bytes": 1967678,
+      "sha256": "6294417ce1f1533711fb89483c791109dc17326d4e76f29edd4631335186edbc"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/heads/AceHack/white.png",
+      "bytes": 1359404,
+      "sha256": "e07ed29a6437132fa543a5bc1980b81254ad2693458247cb83d2f5d3e7c6a907"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/heads/Xenaa/Xenaa-head.blend",
+      "bytes": 16359735,
+      "sha256": "e1e528a32632ded8b9dfcd328217ee2fb372a9a22ad7f270d239f5048cd4fc36"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/heads/Xenaa/alpha.png",
+      "bytes": 2286695,
+      "sha256": "fb0c8051ea25c2b846ee745958d0fb6b212f3af8513976adc79e9ac016033419"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/heads/Xenaa/conditioning.png",
+      "bytes": 2019244,
+      "sha256": "558a7d1216d1b31ddddc637b8a26191f4c5744c5d2726adb4c4e7681c04539b4"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/heads/Xenaa/mesh.glb",
+      "bytes": 8209748,
+      "sha256": "b2bdb5a59d9ab9be683edbddec5842dcbfdd1445c206fbb39fdf09cf2d82213e"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/heads/Xenaa/receipt.json",
+      "bytes": 295,
+      "sha256": "ed1a8ed5d8c0da41b42c96e9014041700dd6c1114c6755b076fbf68d2d37b9f4"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/heads/Xenaa/review-0.png",
+      "bytes": 1361920,
+      "sha256": "dc4d2b57327bce0842d44b55196d63e038ea9bd61c2b746e467278d1152a3726"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/heads/Xenaa/review-180.png",
+      "bytes": 1152506,
+      "sha256": "43ff45654e2c8d434c614800eb89a09b57cd680e6b96644258f3ecaeaa17570e"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/heads/Xenaa/review-35.png",
+      "bytes": 1350155,
+      "sha256": "0d3f788f3791e033f5eb9fdd168fd526b17225e4fcb9a4aa36a8fb5b2eb2f355"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/heads/Xenaa/review-90.png",
+      "bytes": 1233494,
+      "sha256": "99c46add1f317860a309b4a9569aede4bf9e4820c921c714c61d571a6b5498ab"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/heads/Xenaa/scene-code.pt",
+      "bytes": 1967678,
+      "sha256": "c7997dc27b53979ccb2ef9c2aa08160adf464799bf4f4fc8627ae417897e3e59"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/heads/Xenaa/white.png",
+      "bytes": 2020868,
+      "sha256": "6b73b4f198276f004ad08e75eb59adbe43a759aeb3523ece67866105d4ab1e67"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/heads-sg/AceHack/AceHack-head.blend",
+      "bytes": 20131709,
+      "sha256": "787490f7c7db7a669f853dba5e5d3c79abdd848a9729698feeda70bcb1fa1b42"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/heads-sg/AceHack/latent.pt",
+      "bytes": 263650,
+      "sha256": "79dac1c852072b3bd1f3b90996e35c8bdbe536ea008194cf9afdd605643a7892"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/heads-sg/AceHack/mesh.glb",
+      "bytes": 10120520,
+      "sha256": "f4ab112423d8b399d5b7581c0f39fca9c4d0b45094d5eae8f259a386fb1add4b"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/heads-sg/AceHack/receipt.json",
+      "bytes": 295,
+      "sha256": "3aebc1141097b53a3d10597e1c2250536b3c4eba84b1feb09b9edfc54e0b3f22"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/heads-sg/AceHack/review-0.png",
+      "bytes": 1479598,
+      "sha256": "4485a5bb66d9d944b0dcf54efc0bf0c93e7669b6bd6d2060cbbea6710137506c"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/heads-sg/AceHack/review-180.png",
+      "bytes": 1283084,
+      "sha256": "8dd081021eabb09f296e26817ed2c48cdb2b87f1dd61f827cdfbf7af4449668a"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/heads-sg/AceHack/review-35.png",
+      "bytes": 1479753,
+      "sha256": "61f07bc4b48f5fafde9d3c7d59318f6365c187a8f9a9005c3c5c4a86798dc1ab"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/heads-sg/AceHack/review-90.png",
+      "bytes": 1370017,
+      "sha256": "55ec6a036668cee32a122616b1c3ab30cd96fffc3d9331c6ff7f679f59f4c904"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/heads-sg/Xenaa/Xenaa-head.blend",
+      "bytes": 23972147,
+      "sha256": "b9a4d3a1a13da96476079d296797eee771d56c142545502f0dbba39163ccd7b6"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/heads-sg/Xenaa/latent.pt",
+      "bytes": 263650,
+      "sha256": "b923803b102587f4e6588a9272afc3febf71291260bb7615845a7327f9a42d23"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/heads-sg/Xenaa/mesh.glb",
+      "bytes": 12073772,
+      "sha256": "9b9d9d1f11ceea9d2f0b8730277da7223dbc909b36e00333c0b297cdf8af5bc8"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/heads-sg/Xenaa/receipt.json",
+      "bytes": 295,
+      "sha256": "9654b5bb3ff6e071e47e160d5b24ebbc4c44db6fa2a244c1d40ea37527ad08ca"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/heads-sg/Xenaa/review-0.png",
+      "bytes": 1393954,
+      "sha256": "5605e161c193267e316b56f97109e155464aceb19130065dbf75856d757cc6b6"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/heads-sg/Xenaa/review-180.png",
+      "bytes": 1229169,
+      "sha256": "c5477e20d113e7590500fd0e810010fefc3453a1222b98a19ed9694450b9527a"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/heads-sg/Xenaa/review-35.png",
+      "bytes": 1380975,
+      "sha256": "f45c8d4aa1f951f8b6bb5b392037aaa0dfad3dd931effd961f6db3d25c4c460e"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/heads-sg/Xenaa/review-90.png",
+      "bytes": 1282199,
+      "sha256": "213cb950bfab43a68dda3bd98c2d22a746956e9666e993f4da6bc90eab5dacbe"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/heads-sg-float32/AceHack/AceHack-head.blend",
+      "bytes": 12552579,
+      "sha256": "3018bb52a776296ce0d39ba9ddb3f6c696451657fad36f198d1521dd963f03c1"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/heads-sg-float32/AceHack/mesh.glb",
+      "bytes": 6070464,
+      "sha256": "361780af526d2abe19c013d72b1b1cb5cf809815a700a946830f6ee6c9af11fb"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/heads-sg-float32/AceHack/receipt.json",
+      "bytes": 305,
+      "sha256": "c2717a04b7855508562c889e60d3cf95264ff6eca86b890bf8f5a5db2e0f0016"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/heads-sg-float32/AceHack/review-0.png",
+      "bytes": 1511485,
+      "sha256": "6934c43cb08607e636ea7014e1df4acd961a8cce9eec8c03b6a974e7bbef07c5"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/heads-sg-float32/AceHack/review-180.png",
+      "bytes": 1312202,
+      "sha256": "0b75ee46b818035c42e6a252e096b9147b9104d9962da19d794259b01cd2dc16"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/heads-sg-float32/AceHack/review-35.png",
+      "bytes": 1508677,
+      "sha256": "b4567521b005d5fc22517b7ee0648b1fdf43066c8fc149d5ed8becab3f52e3eb"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/heads-sg-float32/AceHack/review-90.png",
+      "bytes": 1381847,
+      "sha256": "61ffb2a97eb64a94afe42b90142c6a4fcd755171e5f0a3ecb8797a7c0d2ae882"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/heads-sg-float32/Xenaa/Xenaa-head.blend",
+      "bytes": 16050629,
+      "sha256": "60cf00b551d25b74377c39178b5e6de789878721d318902f66c0dfd6a395c999"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/heads-sg-float32/Xenaa/mesh.glb",
+      "bytes": 7631864,
+      "sha256": "241636299a5e20c55000c857ab713637f670438128cdac9a41a9fe87e0f635a3"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/heads-sg-float32/Xenaa/receipt.json",
+      "bytes": 303,
+      "sha256": "bb571a54a3b975272fe6681b6d58869039cef6940b983d68a5762908542eff59"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/heads-sg-float32/Xenaa/review-0.png",
+      "bytes": 1390107,
+      "sha256": "9690d7373cfbafb634ae1aa2c3ed347d190220c01a769cdb47395eca30cbb866"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/heads-sg-float32/Xenaa/review-180.png",
+      "bytes": 1228341,
+      "sha256": "e8de52d2da89c8791498617357a4d203060183d6d7cd8906acc1454c5db49170"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/heads-sg-float32/Xenaa/review-35.png",
+      "bytes": 1379650,
+      "sha256": "2d2a7a640f8e003609aef77e33c806adc66dbdfaa36b5e7e1179909ab2f0a10f"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/heads-sg-float32/Xenaa/review-90.png",
+      "bytes": 1283905,
+      "sha256": "06d1bb2def97334fa5319e7a449b6fd565bdca58248969b6504cb0439e29af53"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/imagegen-call-records.json",
+      "bytes": 2525,
+      "sha256": "d0ab13a7475650750cf25781280752b61fa9c1fbb49aeb08271b47a1e1b1fbe8"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/inspect_geometry.py",
+      "bytes": 741,
+      "sha256": "88fa8b4af7feea3b66d747b16c7295ed5b1bb30688dd80b2d6ebd4e2e824f741"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/inspect_scene.py",
+      "bytes": 1020,
+      "sha256": "16ea554750b7d733070a4c3877bf318d3a3b3357faf04f820aba29175fce75f2"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/make_float32_review.py",
+      "bytes": 606,
+      "sha256": "905bb6c8da4b0f2085d6d3337c3b0e4187df338959d54d04e01cd60d390cd416"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/make_v2.py",
+      "bytes": 2426,
+      "sha256": "0486838dab8d59462295a0b9528da853746953f1fd08cbfb638052e76cfd50e2"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/make_v3.py",
+      "bytes": 2559,
+      "sha256": "e5b3326108ed00779ac0c24db762574da0fb1c8e6546f723f47d6498f948f290"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/make_v4.py",
+      "bytes": 2911,
+      "sha256": "756e52bad0dd699743673ad36410a9646b27f50b0735eec7bd468dd480477273"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/make_v5.py",
+      "bytes": 2283,
+      "sha256": "635b5346fd8e5eb250c34e395bc420b469af3676aa3bd367b550e01a3de364ef"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/pack-scene.log",
+      "bytes": 291,
+      "sha256": "5bc8e0c24a869effad5112500abfad26d332edcbc6a90aa6b0a77740c5cc6f86"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/pack_scene.py",
+      "bytes": 1134,
+      "sha256": "c32bcd77f6f1a03d83e98be03046168152202065d5da825889dea13508f870d3"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/reconstruct-heads-sg.log",
+      "bytes": 2251,
+      "sha256": "9b3b9cf3b26e41902650a464e6b00e6cf448dd9013dc045bd5431abfe093ec50"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/reconstruct-heads.log",
+      "bytes": 1062,
+      "sha256": "6ebf8b10ed1ce8271bb124e4af3a9aeb03d9e89bb095df6cfdc985b0be47e4cb"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/reconstruct_heads.py",
+      "bytes": 1691,
+      "sha256": "7740cb2bd8ca34ad76cdf5d9e642724479fb396eca1d62ecf1d4ff5a17f2f7eb"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/reconstruct_heads_sg.py",
+      "bytes": 1301,
+      "sha256": "6e959031c95531bbdba9ef57d683269cfbc205aa90f8fe32317035a84cb0fa96"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/references/AceHack-head-derived.png",
+      "bytes": 1670608,
+      "sha256": "06c38a71e9d93643d317042d934190cd40716ce8ae2d0186ab37746afa795d56"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/references/Xenaa-head-derived.png",
+      "bytes": 2269483,
+      "sha256": "1de20618abb46749c2ec21665e4ecc02deeb09db4415d52674c3778644634d07"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/release-notes.md",
+      "bytes": 724,
+      "sha256": "3612ddcf38bd37844f1ea41b73918ba91b6c0e95b4246c2120a89033cc1336f6"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/resample.log",
+      "bytes": 3382,
+      "sha256": "b1654bb8fa3340b588a6039beee6847b54cf00f295fe4e3795cd10eda9e50cf1"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/resample.py",
+      "bytes": 1565,
+      "sha256": "73f01cfc50cfffae15baf51155f49b34a88082389967ded2208c4c6054ccf135"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/review-heads.log",
+      "bytes": 2037,
+      "sha256": "b3609176108344fd601929e0e1fe947beddc2703426abae11bb0cd68d8d75efb"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/review-sg-heads-float32.log",
+      "bytes": 1586,
+      "sha256": "46f7369f1b717a04dd3729055146137fb9482462c6205037a5ad407e09ad686a"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/review-sg-heads.log",
+      "bytes": 1522,
+      "sha256": "bcd96719feb4df95890ed4d3c9a008d7ea21cb1d58b26b92d14fe69a4c85131d"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/review_heads.py",
+      "bytes": 4519,
+      "sha256": "282691f3ca42083e62b97adaaf5a2b9bcc41c38245770985ee99bdb5feef1213"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/review_sg_heads.py",
+      "bytes": 1073,
+      "sha256": "e068b88bd5c29e3cca11e20db571770f1ddabba4fea0b6cbf0776a9fb7aac1ad"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/review_sg_heads_float32.py",
+      "bytes": 1097,
+      "sha256": "6f3b0a5af8af82ba419dc79a416dddc9e0f34af8649a3b989a779e78353f8b7b"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/scene-validation-before-pack.log",
+      "bytes": 489,
+      "sha256": "44aef8600a107c7def8b3beb815a27ee8ef60bd09ca9954756f72dea1bf699f7"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/scene-validation.json",
+      "bytes": 1060,
+      "sha256": "750d375b85650e456b7d8d20011376a14bdddebc471f58c3e1a95d577fde68dd"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/scene-validation.log",
+      "bytes": 1295,
+      "sha256": "6e4f4daa8c18f5f1fa438412f591c40119294e8fae1b6f3f31e2f2b5ab78a937"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/transfer-float32-receipts.json",
+      "bytes": 484,
+      "sha256": "a2b71efcbd21f26504477e6e0d10a94eecb6020b93b41ee4530c564c0c6b2dbe"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/transfer-receipts.json",
+      "bytes": 967,
+      "sha256": "39a88276cb0623e91a8cf36f012fd0bc140b5cedf24117394c166fe2cbaa9e80"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/transfer_colors.py",
+      "bytes": 1535,
+      "sha256": "de493ce757ec296c843436fc91eed52b21d48c0c4ecd932dffec4dd85835a592"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/transfer_colors_float32.py",
+      "bytes": 1552,
+      "sha256": "6a8d22a3457b93fb98298c32ea519f373f5026fa21d77fc03fb9a2141427256b"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/transferred/AceHack/body.glb",
+      "bytes": 4724692,
+      "sha256": "f48d759781da8e2d6213f941d24def33de41ce307a4416c3546d3f3749efb6ae"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/transferred/AceHack/head.glb",
+      "bytes": 11236828,
+      "sha256": "8c0a1e1e25bf0ff9d93a0e468a98097550b8e8cb764f25f39e1045d73dae1390"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/transferred/Xenaa/body.glb",
+      "bytes": 4683284,
+      "sha256": "9abfd958e9673a503b54b39d8f7c3acc5093a174c5fccd70f9501b1b900820a2"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/transferred/Xenaa/head.glb",
+      "bytes": 13419036,
+      "sha256": "d6157155a15d985640e210e0aaeab16fb1815fc56073120d80d51caa46817a26"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/transferred-float32/AceHack/head.glb",
+      "bytes": 6749976,
+      "sha256": "0f6f176004d5fd98a6674e5308a6ed14581fd1b4a6323fbbd26a0f05f4286c50"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/transferred-float32/Xenaa/head.glb",
+      "bytes": 8483872,
+      "sha256": "ab615cfc361ee01d83145d4c9d49264dcf7d87ce488e6e241231663c22e54557"
+    },
+    {
+      "archive": "character-composition-evolution.zip",
+      "path": "Character-Evolution-20260909/write_generator_record.py",
+      "bytes": 1830,
+      "sha256": "25991d451e40d82880060c1d916878e97151532f180dddb554c27c446c872b3b"
+    }
+  ],
+  "parent_record": "docs/research/2026-09-08-character-evolution/README.md",
+  "verdict": "Local-detail composition study; improved facial appearance judged by agent, not accepted production assets; meshes unrigged; all failures preserved",
+  "external_dependencies": {
+    "TripoSR_model_revision": "5b521936b01fbe1890f6f9baed0254ab6351c04a",
+    "TripoSG_model_revision": "2c1c516d22d58db486a058d98d31bb6177344e06",
+    "Blender": "5.2.1 LTS",
+    "body_latents": "Previous immutable release research-character-reconstruction-20260908"
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 17065,
+  "archive_path": "docs/history/pr-reviews/PR-17065-test-081m213chf9087g0r0032fb65s-torn-layout-falls-back-freeze-stays.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-08T18:37:17.526Z",
+  "schema_version": "v1",
+  "commit_sha": "c8b54b2fc5d7f79ef4b0574535eac0ed01ab017c",
+  "title": "test(081M213CHF9087G0R0032FB65S): torn layout falls back, freeze stays",
+  "state": "MERGED",
+  "merged_at": "2026-09-08T18:36:24Z",
+  "head_ref": "feat/zetafs-d9-layout-crash"
+}

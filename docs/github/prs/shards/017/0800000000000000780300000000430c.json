@@ -1,0 +1,12 @@
+{
+  "pr_number": 17164,
+  "archive_path": "docs/history/pr-reviews/PR-17164-feat-081m23nd4c5087g0r00036myz5-rung-8-2-780-tests-ray-was-our-bvh-not-cpu-ray-t.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-09T18:37:53.382Z",
+  "schema_version": "v1",
+  "commit_sha": "bd802f7ea82ec1454e4dad00fae0cf5fa38f1ebd",
+  "title": "feat(081M23ND4C5087G0R00036MYZ5): rung 8 — 2,780 tests/ray was our BVH, not CPU ray tracing",
+  "state": "MERGED",
+  "merged_at": "2026-09-09T18:36:52Z",
+  "head_ref": "rung-8-sbvh-and-the-projection-question"
+}

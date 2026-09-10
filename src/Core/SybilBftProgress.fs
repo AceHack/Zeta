@@ -1,21 +1,11 @@
 namespace Zeta.Core
 
-/// **`SybilBftProgress` — observe consensus progress per sim tick (Aaron 2026-06-08, shadow*).**
-///
-/// The BFT runs on deterministic logical ticks (`SybilBftLiveness`, DST §7), so progress toward a decision is
-/// **observable and replayable at every tick**. This module exposes that observation: a per-tick `Progress`
-/// snapshot and a `fraction` in `[0,1]` that is the **liveness variant function** — the monotone rank a
-/// liveness proof (Soraya's TLA+ `◇commit` obligation) needs, made concrete and watchable in the sim.
-///
-/// **What "progress" is:** how close the leading value is to the distinct-source quorum, or `1.0` once
-/// committed. It rises as distinct sources report and resets only across a view-change (new leader, new round)
-/// — exactly the rank that must strictly improve on productive steps for liveness to hold. A run where the
-/// fraction stays flat without committing is a **stall / livelock** — `isStalled` flags it.
-///
-/// **Honest scope (peel):** an *observation* layer over the shipped reducer — pure, deterministic, no new
-/// protocol behaviour. `fraction` is monotone *within a view* but legitimately *drops* on a view-change
-/// (progress in the failed view is abandoned); so `isStalled` judges over a window, not a single step, and
-/// only flags flat-without-commit. Inherits the safety/liveness scope of `SybilBftProtocol`/`Liveness`.
+/// Deterministic per-tick observations of the reference consensus reducer.
+/// `fraction` is the leading component-vote count divided by the configured quorum,
+/// or one after commitment. It is not a monotone rank or a liveness proof: a new
+/// stream can bridge earlier components, conflicting votes can remove a component's
+/// support, and view changes can reset observations. `isStalled` is a bounded
+/// no-improvement heuristic, not a proof that eventual commitment is impossible.
 module SybilBftProgress =
 
     open SybilBft
@@ -25,9 +15,9 @@ module SybilBftProgress =
     type Progress<'v when 'v: comparison> =
         { Tick: Tick
           ViewNum: int
-          /// Distinct entropy sources whose votes are in (Sybil-collapsed).
+          /// Correlation components among currently heard votes.
           DistinctSources: int
-          /// Max distinct-source votes for any single value (the leader in the tally).
+          /// Largest unanimous component-vote count for any value.
           LeadingVotes: int
           /// The fixed `2f+1` quorum for the membership.
           Quorum: int
@@ -47,8 +37,9 @@ module SybilBftProgress =
           Quorum = SybilBftProtocol.quorum lv.Safety
           Committed = committed lv }
 
-    /// Progress fraction in `[0,1]`: `1.0` once committed, else `leadingVotes / quorum` (clamped). The liveness
-    /// variant — watch it per tick to see the round close in.
+    /// Progress fraction: one after commitment, otherwise `leadingVotes / quorum` capped at one
+    /// (zero if quorum is nonpositive). Observed states have nonnegative counts; it may decrease
+    /// within one view when the correlation graph or component vote agreement changes.
     let fraction (p: Progress<'v>) : float =
         match p.Committed with
         | Some _ -> 1.0
@@ -57,7 +48,7 @@ module SybilBftProgress =
     /// True once a decision is reached (terminal — idempotent, #6).
     let isDecided (p: Progress<'v>) : bool = Option.isSome p.Committed
 
-    /// **Stall / livelock detector** over a tick-ordered window. Stalled iff the window is non-trivial, ends
+    /// Bounded no-improvement indicator over a tick-ordered window. True iff the window is non-trivial, ends
     /// undecided, stays in ONE view (no view-change happened — a view-change is legitimate progress), and the
     /// leading-vote count never improved across it. (A flat fraction *with* a view-change is not a stall — the
     /// system is trying to recover.)

@@ -80,6 +80,11 @@ on:
       - "full-ai-cluster/k8s/bootstrap/**"
       - "src/Core.TypeScript/cluster/app-of-apps-discovery.ts"
       - "src/Core.TypeScript/cluster/rendered-storage-claims.ts"
+      # The coverage falsifier asks whether every Application the INCLUDED
+      # PROOF asserts has a lane. That roster comes from
+      # `discoverExpectedApplications`, so a change to what dev excludes moves
+      # the set being covered without touching anything else listed here.
+      - "src/Core.TypeScript/cluster/argocd-health-test.ts"
       - ".github/workflows/k8s-lane-partition.yml"
   push:
     branches: [main]
@@ -95,6 +100,11 @@ on:
       - "full-ai-cluster/k8s/bootstrap/**"
       - "src/Core.TypeScript/cluster/app-of-apps-discovery.ts"
       - "src/Core.TypeScript/cluster/rendered-storage-claims.ts"
+      # The coverage falsifier asks whether every Application the INCLUDED
+      # PROOF asserts has a lane. That roster comes from
+      # `discoverExpectedApplications`, so a change to what dev excludes moves
+      # the set being covered without touching anything else listed here.
+      - "src/Core.TypeScript/cluster/argocd-health-test.ts"
       - ".github/workflows/k8s-lane-partition.yml"
   workflow_dispatch:
 
@@ -134,6 +144,8 @@ jobs:
             ~/.dotnet/tools
             ~/.elan
             ~/.config/zeta
+            src/Core.TLA/tla2tools.jar
+            src/Core.Alloy/alloy.jar
           key: install-${{ runner.os }}-${{ runner.arch }}-full-${{ hashFiles('.mise.toml', '.mise.full.toml', 'tools/setup/**', 'global.json', '!tools/setup/persona-keys/**', '!tools/setup/op-token-setup.*', '!tools/setup/secret-clip.sh', '!tools/setup/manus-smoke-test.ts', '!tools/setup/build-lumen-persona-package.ts') }}
 
       - name: Restore apt archives (root fix for the exit-124 install-step class)
@@ -224,6 +236,8 @@ jobs:
             ~/.dotnet/tools
             ~/.elan
             ~/.config/zeta
+            src/Core.TLA/tla2tools.jar
+            src/Core.Alloy/alloy.jar
           key: install-${{ runner.os }}-${{ runner.arch }}-full-${{ hashFiles('.mise.toml', '.mise.full.toml', 'tools/setup/**', 'global.json', '!tools/setup/persona-keys/**', '!tools/setup/op-token-setup.*', '!tools/setup/secret-clip.sh', '!tools/setup/manus-smoke-test.ts', '!tools/setup/build-lumen-persona-package.ts') }}
 
       - name: Restore apt archives (root fix for the exit-124 install-step class)

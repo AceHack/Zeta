@@ -35,7 +35,7 @@
  * `WorkResult | undefined` already had a place to say it.
  */
 
-import type { MenuOption, WorkResult } from "../workflow-engine/agent-loop/state-machine";
+import type { MenuOption, WorkResult } from "../protocol/agent-loop-contract";
 import { Fidelity, type ProviderMeta } from "./providers";
 import { Port } from "./providers";
 

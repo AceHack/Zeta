@@ -1,33 +1,16 @@
 namespace Zeta.Core
 
-/// **`SybilBftLiveness` — the liveness layer over the distinct-source quorum (Aaron 2026-06-08, shadow*).**
+/// Logical-tick heartbeats, timeout suspicion, and view changes for the reference reducer.
+/// View-change votes use the same observed correlation components as `SybilBft.tally`.
+/// Exact record replays can collapse; recodings from one shared generator can still
+/// meet a quorum. Membership, controller distinctness, and a BFT fault model therefore
+/// require separate justification, just as on the vote path.
 ///
-/// `SybilBftProtocol` (#7048) gives *safety* (no two honest views commit different values) but not
-/// *liveness*: if the leader is silent, nothing forces progress. This layer adds the standard BFT liveness
-/// mechanisms — **heartbeats**, **timeout-driven suspicion**, and **view-change** (leader rotation) — but
-/// reuses the anti-Sybil discipline so the liveness path is itself Sybil-resistant.
-///
-/// **Aaron's design inputs, made concrete:**
-/// - **Heartbeats are the timeout mechanism.** A leader that keeps beating holds the view; silence past a
-///   `Timeout` (in *logical ticks* — DST §7, no wall clock) makes a replica suspect it and call a view-change.
-/// - **Persistence-over-time increases the identity claim.** A source that sustains a *consistent* drift
-///   signature accrues a stronger claim than a fresh one — a forger can fake a moment, not a long regular
-///   history. `claimStrength` rewards sustained beats and penalizes jitter (variance).
-/// - **Harmonic resonance finds the clock generator efficiently.** `resonantPeriod` locks onto the
-///   generator's period via an **autocorrelation peak** on the beat train (O(n·maxLag), not a brute scan of
-///   candidate generators). Anchor: autocorrelation pitch detection (Rabiner & Schafer); a real clock's beat
-///   train resonates at one dominant lag, a forged/irregular one does not.
-///
-/// **The BFT-critical bit — view-change is ALSO counted over distinct sources.** A naive view-change lets one
-/// Byzantine node spam suspicions and stall the system forever (a liveness attack). Here a view-change
-/// installs only on a `2f+1` quorum of **distinct sources** (via `SybilBft.tally`), so a forger's many
-/// claimed ids collapse to one vote and cannot force rotation alone.
-///
-/// **Honest scope (peel):** logical-tick model (the caller drives `onTick`); single-shot agreement per view
-/// (composes `SybilBftProtocol`, not multi-slot). `resonantPeriod` is a standard signal-processing estimator,
-/// not a novel transform — its role here is the *efficient generator-finder*, and it inherits the
-/// detection/length limits of any finite-sample autocorrelation. Inherits `AntiSybil`'s exact-replay
-/// soundness. Reference model; the gated transport (081KT2T2J0008QG0R002R72323) and wall-clock binding live in the adapter.
+/// `claimStrength` rewards count and regularity of supplied heartbeat ticks;
+/// `resonantPeriod` estimates repeated spacing. A caller can fabricate a regular
+/// history, so neither observation authenticates a clock or proves identity strength.
+/// The caller drives logical time; transport and wall-clock provenance are external.
+
 module SybilBftLiveness =
 
     open SybilBft
@@ -35,7 +18,7 @@ module SybilBftLiveness =
     /// A logical tick (DST — advanced explicitly by the caller, never read from a wall clock).
     type Tick = int
 
-    /// A per-member identity claim that accrues with persistence over time. `RecentBeats` is the bounded
+    /// Per-claim bookkeeping over supplied ticks. `RecentBeats` is the bounded
     /// recent history of heartbeat ticks (for resonance + jitter).
     type IdentityClaim =
         { FirstTick: Tick
@@ -61,8 +44,8 @@ module SybilBftLiveness =
             (xs |> List.sumBy (fun x -> (x - mean) * (x - mean))) / n
 
     /// Claim strength: grows with **persistence** (sustained beats) and is dampened by **jitter** (interval
-    /// variance). A long, regular history ⇒ strong claim; a short or erratic one ⇒ weak. (Aaron: "persistence
-    /// over time increases the identity claim.")
+    /// variance). This is a regularity heuristic over supplied ticks, not authenticated
+    /// provenance or a lower bound on the effort needed to construct the history.
     let claimStrength (c: IdentityClaim) : float =
         let jitter = c.RecentBeats |> intervalsOf |> List.map float |> variance
         float c.Beats / (1.0 + jitter)
@@ -85,7 +68,7 @@ module SybilBftLiveness =
     /// generator's period (Aaron: "harmonic oscillation / resonance frequency is how you find the clock
     /// generator efficiently"). Reconstruct a 0/1 train over `[min..max]` beat ticks and return the positive
     /// lag in `[1..maxLag]` maximizing self-overlap. `None` if fewer than two beats. A regular clock peaks
-    /// sharply at its period; an irregular/forged train does not.
+    /// at repeated spacings; fabricated regular ticks can produce the same observation.
     let resonantPeriod (beats: Tick list) : Tick option =
         match List.sort (List.distinct beats) with
         | [] | [ _ ] -> None
@@ -104,7 +87,7 @@ module SybilBftLiveness =
                     |> List.maxBy (fun lag -> (score lag, -lag)) // ties → smallest period (fundamental, not harmonic)
                 Some best
 
-    /// A liveness-layer message (composes the safety-layer `SybilBftProtocol.Message`).
+    /// A liveness-layer message composing `SybilBftProtocol.Message`.
     type LiveMessage<'v when 'v: comparison> =
         | Safety of SybilBftProtocol.Message<'v>
         | Heartbeat of leaderClaim: int * stream: int list * tick: Tick
@@ -119,7 +102,7 @@ module SybilBftLiveness =
           LastLeaderBeat: Tick
           Claims: Map<int, IdentityClaim>
           /// Accumulated view-change votes: keyed by claimed voter id → the new view it voted for + its
-          /// drift stream (so the install quorum is counted over *distinct sources*).
+          /// supplied stream (the install quorum is counted over correlation components).
           ViewChangeVotes: Map<int, int * int list> }
 
     /// The current leader's claimed id = `ViewNum mod Members` (round-robin rotation).
@@ -155,12 +138,12 @@ module SybilBftLiveness =
         else
             lv, []
 
-    /// Fold a `ViewChangeVote` into the view. A new view installs only when `2f+1` **distinct sources** have
-    /// voted for it (Sybil-resistant view-change). On install: bump `ViewNum`, reset the suspicion timer, and
-    /// clear the accumulated votes.
+    /// Fold a `ViewChangeVote` into the view. Install when `2f+1` correlation components
+    /// vote for the candidate; recodings of one shared generator can meet this condition.
+    /// On install, bump `ViewNum`, reset the suspicion timer, and clear accumulated votes.
     let onViewChangeVote (lv: LiveView<'v>) (newView: int) (voter: int) (stream: int list) : LiveView<'v> =
         let votes = Map.add voter (newView, stream) lv.ViewChangeVotes
-        // Count only votes for this candidate view, over distinct sources.
+        // Count only votes for this candidate view, over observed components.
         let forThis =
             votes
             |> Map.toList

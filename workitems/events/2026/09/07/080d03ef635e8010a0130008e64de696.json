@@ -1,0 +1,14 @@
+{
+  "id": "080d03ef635e8010a0130008e64de696",
+  "at": "2026-09-07T22:10:41.232Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1YYRTYF087G0R003TXBK2W",
+    "type": "task",
+    "title": "Publish reviewed compiled controller prerequisites and evidence",
+    "slug": "publish-reviewed-compiled-controller-prerequisites-and-evide",
+    "priority": "P2",
+    "filename": "081M1YYRTYF087G0R003TXBK2W-publish-reviewed-compiled-controller-prerequisites-and-evide.md"
+  }
+}

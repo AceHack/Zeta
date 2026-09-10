@@ -14,33 +14,61 @@
 // this file is only the real doors — network, filesystem, process.
 
 import { spawnSync } from "node:child_process";
-import { accessSync, constants, mkdtempSync, rmSync, writeFileSync } from "node:fs";
-import { tmpdir } from "node:os";
+import { accessSync, chmodSync, constants, mkdtempSync, rmSync, writeFileSync } from "node:fs";
+import { homedir, tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { installPinnedArtifact, type InstallEffects } from "./pinned-artifact.ts";
 import { resolveElevatorPathOrThrow } from "../privilege/elevator.ts";
 
 interface Args {
   readonly pin: string;
+  /**
+   * argv appended to a `run-installer`'s own `runArgs`. This is how a caller supplies a value
+   * it owns (`--default-toolchain <version>`, which lives in `.mise.toml`, not in the pin)
+   * without the pin file acquiring a second copy of it that could drift.
+   *
+   * It does NOT weaken the pin: the bytes are still the pinned bytes, and an `archive`
+   * artifact refuses these outright rather than ignoring them.
+   */
+  readonly runArgs: readonly string[];
   readonly help: boolean;
   readonly error?: string;
 }
 
+const NO_ARGS: readonly string[] = [];
+
 export function parseArgs(argv: readonly string[]): Args {
   let pin = "";
+  const runArgs: string[] = [];
   for (let i = 0; i < argv.length; i++) {
     const a = argv[i];
-    if (a === "--help" || a === "-h") return { pin: "", help: true };
+    if (a === "--help" || a === "-h") return { pin: "", runArgs: NO_ARGS, help: true };
     if (a === "--pin") {
       const v = argv[++i];
-      if (v === undefined) return { pin: "", help: false, error: "--pin needs a path" };
+      if (v === undefined) return { pin: "", runArgs: NO_ARGS, help: false, error: "--pin needs a path" };
       pin = v;
       continue;
     }
-    return { pin: "", help: false, error: `unknown arg: ${a}` };
+    // `--run-arg=<value>` is the SPELLING TO USE, and the separate-operand form is kept only
+    // for a hand-typed invocation. Reason: a run-arg's value is itself usually a flag
+    // (`--default-toolchain`), and in the separated form `audit-workflow-cli-flags.ts` — which
+    // reads workflow text with no argv model — sees that value as a flag handed to THIS tool
+    // and refuses it. Attaching the value keeps the audit correct rather than teaching every
+    // reader of a command line a per-tool operand table it cannot have.
+    if (a !== undefined && a.startsWith("--run-arg=")) {
+      runArgs.push(a.slice("--run-arg=".length));
+      continue;
+    }
+    if (a === "--run-arg") {
+      const v = argv[++i];
+      if (v === undefined) return { pin: "", runArgs: NO_ARGS, help: false, error: "--run-arg needs a value" };
+      runArgs.push(v);
+      continue;
+    }
+    return { pin: "", runArgs: NO_ARGS, help: false, error: `unknown arg: ${String(a)}` };
   }
-  if (pin === "") return { pin: "", help: false, error: "--pin <file> is required" };
-  return { pin, help: false };
+  if (pin === "") return { pin: "", runArgs: NO_ARGS, help: false, error: "--pin <file> is required" };
+  return { pin, runArgs, help: false };
 }
 
 /** `::error::` so a refusal renders in the run UI, not only in scrollback. */
@@ -114,10 +142,34 @@ function realEffects(): InstallEffects {
       };
     },
 
+    // 0o700, not 0o755: the installer sits in a mkdtemp directory this process owns, and it
+    // is about to run as this user. Widening it would let anything else on a shared machine
+    // execute the freshly-verified bytes, which is a strictly larger surface for no gain.
+    makeExecutable: async (path) => {
+      try {
+        chmodSync(path, 0o700);
+        return { ok: true, message: "" };
+      } catch (e) {
+        return { ok: false, message: `chmod ${path}: ${e instanceof Error ? e.message : String(e)}` };
+      }
+    },
+
     // PATH scanned directly rather than via `command -v` with `shell: true`. Handing a
     // security tool a shell to interpolate a name into is the wrong default even when the
     // name comes from a repo-controlled file — and this form has no shell at all.
+    //
+    // A spec containing `/` is a filesystem path instead, with a leading `~` expanded here
+    // rather than by a shell (there is none) — see the `which` contract in pinned-artifact.ts.
     which: async (binary) => {
+      if (binary.includes("/")) {
+        const path = binary.startsWith("~/") ? join(homedir(), binary.slice(2)) : binary;
+        try {
+          accessSync(path, constants.X_OK);
+          return path;
+        } catch {
+          return null;
+        }
+      }
       for (const dir of (process.env["PATH"] ?? "").split(":")) {
         if (dir.length === 0) continue;
         const candidate = join(dir, binary);
@@ -131,8 +183,12 @@ function realEffects(): InstallEffects {
       return null;
     },
 
+    // maxBuffer raised from node's 1MB default deliberately: this now also runs INSTALLERS,
+    // and rustup-init's progress output over a toolchain download is not bounded by anything
+    // this file controls. Overflowing the default kills the child with ENOBUFS, which would
+    // present as "the installer failed" for a reason that has nothing to do with the install.
     run: async (binary, args) => {
-      const r = spawnSync(binary, [...args], { encoding: "utf8" });
+      const r = spawnSync(binary, [...args], { encoding: "utf8", maxBuffer: 64 * 1024 * 1024 });
       return { ok: r.status === 0, output: `${r.stdout ?? ""}\n${r.stderr ?? ""}` };
     },
 
@@ -143,7 +199,7 @@ function realEffects(): InstallEffects {
 async function main(argv: readonly string[]): Promise<number> {
   const args = parseArgs(argv);
   if (args.help) {
-    console.log("usage: install-pinned-artifact.ts --pin <pin.json>");
+    console.log("usage: install-pinned-artifact.ts --pin <pin.json> [--run-arg=<argv> ...]");
     return 0;
   }
   if (args.error !== undefined) {
@@ -159,7 +215,7 @@ async function main(argv: readonly string[]): Promise<number> {
     return 1;
   }
 
-  const outcome = await installPinnedArtifact(raw, realEffects());
+  const outcome = await installPinnedArtifact(raw, realEffects(), args.runArgs);
   if (outcome.ok) {
     console.log(`[pin] ${outcome.name}@${outcome.version} installed into ${outcome.installedInto}`);
     return 0;

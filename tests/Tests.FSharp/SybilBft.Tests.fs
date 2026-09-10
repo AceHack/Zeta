@@ -32,8 +32,8 @@ let ``honest 4-source agreement decides the value (d=4, f=1, quorum=3)`` () =
     Assert.Equal(Some "commit", decide t)
 
 [<Fact>]
-let ``THE GUARANTEE: one Byzantine clock forging 5 identities cannot reach quorum`` () =
-    // Attacker has ONE clock (seed 9), claims 5 identities all voting "evil".
+let ``five exact record copies contribute one component vote in the seeded fixture`` () =
+    // Five claims repeat exactly one generated record, all voting "evil".
     // 3 honest distinct sources vote "good".
     let evil = bits 9 500
     let votes =
@@ -46,14 +46,14 @@ let ``THE GUARANTEE: one Byzantine clock forging 5 identities cannot reach quoru
     let t = tally 0.5 votes
     // 5 forged claims collapse to 1 source; 3 honest = 4 distinct sources total.
     Assert.Equal(4, t.DistinctSources)
-    Assert.Equal(1, t.VotesByValue.["evil"]) // NOT 5 — Sybil inflation defeated before counting
+    Assert.Equal(1, t.VotesByValue.["evil"]) // exact record duplication does not increase this tally
     Assert.Equal(3, t.VotesByValue.["good"])
     // f = maxFaults 4 = 1, quorum = 3: "good" wins, "evil" never had the votes.
     Assert.Equal(Some "good", decide t)
     Assert.False(hasQuorum 1 "evil" t)
 
 [<Fact>]
-let ``equivocating source (same clock, conflicting votes) is detected and excluded`` () =
+let ``conflicting votes on identical records exclude their component`` () =
     let clk = bits 11 500
     let votes =
         [ { Claimed = 0; Stream = clk; Value = "A" }
@@ -69,3 +69,15 @@ let ``equivocating source (same clock, conflicting votes) is detected and exclud
 let ``deterministic / replayable (DST)`` () =
     let votes = [ vote 0 1 "x"; vote 1 2 "x"; vote 2 3 "y" ]
     Assert.Equal(decide (tally 0.5 votes), decide (tally 0.5 votes))
+
+[<Fact>]
+let ``one shared state recoded with three masks contributes a full three-component quorum`` () =
+    let shared = [ 1; 0; 1; 1 ]
+    let masks = [ [ 0; 0; 0; 0 ]; [ 0; 1; 0; 1 ]; [ 0; 0; 1; 1 ] ]
+    let votes =
+        masks |> List.mapi (fun i mask ->
+            { Claimed = i; Stream = List.map2 (^^^) shared mask; Value = "one-controller" })
+    let observed = tally 0.5 votes
+    Assert.Equal(3, observed.DistinctSources)
+    Assert.Equal(3, observed.VotesByValue.["one-controller"])
+    Assert.True(hasQuorum 1 "one-controller" observed)

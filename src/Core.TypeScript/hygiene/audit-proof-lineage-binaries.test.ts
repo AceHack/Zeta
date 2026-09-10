@@ -162,12 +162,60 @@ test("LOADABLE: the `ar` archive that shipped on main for two weeks is caught", 
   expect(out).toContain("21 3c 61 72"); // the exact bytes that were on main
 });
 
-test("LOADABLE: a roster entry with no committed file is caught", () => {
-  rmSync(join(dir, "dla-canonical-wat.wasm"));
+// ── BUILT-IN-CI ───────────────────────────────────────────────────────────────
+//
+// Until 2026-09-10 a roster entry with no committed file was simply a failure, and the test
+// below asserted exactly that. Six substrates are now built in CI rather than committed, so
+// "no committed file" has a legitimate reading and the audit has to separate the two. These
+// three tests pin the separation: the honest case passes, and BOTH halves of what makes it
+// honest are individually falsified.
+
+/** Write the CI half the audit reads: the build action, and a workflow that uses it. */
+function writeCiBuildHalf(opts: { readonly requires: string }): void {
+  mkdirSync(join(root, ".github", "actions", "build-wasm-substrates"), { recursive: true });
+  mkdirSync(join(root, ".github", "workflows"), { recursive: true });
+  writeFileSync(join(root, ".github", "actions", "build-wasm-substrates", "action.yml"), "name: build\n");
+  writeFileSync(
+    join(root, ".github", "workflows", "bytelock.yml"),
+    [
+      "jobs:",
+      "  bytelock:",
+      "    steps:",
+      "      - uses: ./.github/actions/build-wasm-substrates",
+      "    env:",
+      `      required_substrates: "${opts.requires}"`,
+    ].join("\n"),
+  );
   git("add", "-Af");
+}
+
+test("BUILT-IN-CI: a built-not-committed substrate passes when CI builds it AND a leg requires it", () => {
+  rmSync(join(dir, "dla-canonical-wat.wasm"));
+  writeCiBuildHalf({ requires: "WAT,JS (V8)" });
+  const { exit, out } = audit();
+  expect(out).toContain("0 committed, 1 built in CI");
+  expect(exit).toBe(0);
+});
+
+test("BUILT-IN-CI: a roster entry that is neither committed nor built by CI is caught", () => {
+  rmSync(join(dir, "dla-canonical-wat.wasm"));
+  git("add", "-Af"); // no workflow, no action — nothing produces it
   const { exit, out } = audit();
   expect(exit).toBe(1);
-  expect(out).toContain("LOADABLE:");
+  expect(out).toContain("BUILT-IN-CI:");
+  expect(out).toContain("nothing produces this substrate");
+});
+
+test("BUILT-IN-CI: a built substrate that no leg REQUIRES is caught", () => {
+  // The mutation that matters most. CI genuinely builds it, so the file appears in every
+  // healthy run — but nothing fails when the toolchain breaks, which turns a red byte-lock
+  // into a quiet absence. This is the half that would be easy to lose and impossible to
+  // notice, because everything is green right up until the substrate stops running.
+  rmSync(join(dir, "dla-canonical-wat.wasm"));
+  writeCiBuildHalf({ requires: "JS (V8),Go" });
+  const { exit, out } = audit();
+  expect(exit).toBe(1);
+  expect(out).toContain("no leg REQUIRES it");
 });
 
 test("BUILDABLE: a substrate with no build recipe is caught", () => {

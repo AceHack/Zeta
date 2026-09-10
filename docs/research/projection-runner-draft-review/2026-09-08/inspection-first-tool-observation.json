@@ -1,0 +1,9 @@
+{
+  "Kind": "transcribed tool observation, not captured raw stderr",
+  "Action": "read-only exploratory archive inspection after reading manifest keys",
+  "ExitCode": 1,
+  "Failure": "KeyError: Bytes",
+  "Cause": "inspection helper used Bytes instead of this manifest schema RawBytes",
+  "ProjectCodeExecuted": false,
+  "Correction": "use exact RawBytes/RawSha256 schema in the separately retained audit.py"
+}

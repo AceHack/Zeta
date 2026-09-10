@@ -1,0 +1,14 @@
+{
+  "id": "080d0438abb46810a0130008000d91f2",
+  "at": "2026-09-09T16:52:05.901Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M23HAXMD087G0R003N52KHH",
+    "type": "task",
+    "title": "Remove pull-requests write that GITHUB_TOKEN cannot reach on three flush lanes",
+    "slug": "remove-pull-requests-write-that-github-token-cannot-reach-on",
+    "priority": "P2",
+    "filename": "081M23HAXMD087G0R003N52KHH-remove-pull-requests-write-that-github-token-cannot-reach-on.md"
+  }
+}

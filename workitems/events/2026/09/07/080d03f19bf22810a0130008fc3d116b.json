@@ -1,0 +1,14 @@
+{
+  "id": "080d03f19bf22810a0130008fc3d116b",
+  "at": "2026-09-07T23:28:19.013Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1Z36ZJ4087G0R003HFMT2K",
+    "type": "task",
+    "title": "Overlay named bun JSON join takes look; null look is missing-os",
+    "slug": "overlay-named-bun-json-join-takes-look-null-look-is-missing",
+    "priority": "P2",
+    "filename": "081M1Z36ZJ4087G0R003HFMT2K-overlay-named-bun-json-join-takes-look-null-look-is-missing.md"
+  }
+}

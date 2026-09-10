@@ -1,0 +1,12 @@
+{
+  "pr_number": 16872,
+  "archive_path": "docs/history/pr-reviews/PR-16872-feat-creds-name-unseal-request-from-env-tpmrm0-is-not-pkcs11-tpm.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-06T22:11:11.097Z",
+  "schema_version": "v1",
+  "commit_sha": "415a255607ed187362ad75a496544a8377b11e08",
+  "title": "feat(creds): Name unseal request from env; tpmrm0 is not pkcs11-tpm",
+  "state": "MERGED",
+  "merged_at": "2026-09-06T22:10:35Z",
+  "head_ref": "cursor/named-unseal-request-27c5"
+}

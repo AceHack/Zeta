@@ -1,0 +1,12 @@
+{
+  "pr_number": 16983,
+  "archive_path": "docs/history/pr-reviews/PR-16983-feat-081m1z1c0kt087g0r002fwc42p-fuse-byte-session-getattr-attr-out.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-07T23:18:30.096Z",
+  "schema_version": "v1",
+  "commit_sha": "0313fa86d0e14ca1f88b5d280e13bd75cf9a2ae6",
+  "title": "feat(081M1Z1C0KT087G0R002FWC42P): FUSE byte session GETATTR attr_out",
+  "state": "MERGED",
+  "merged_at": "2026-09-07T23:17:51Z",
+  "head_ref": "feat/zetafs-fuse-getattr-bytes"
+}

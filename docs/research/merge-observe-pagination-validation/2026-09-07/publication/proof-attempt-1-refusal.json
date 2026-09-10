@@ -1,0 +1,6 @@
+{
+  "Meaning": "Reconstructed source-proof setup failure, not raw command output",
+  "Failure": "AssertionError on .github/workflows/interp-lane.yml",
+  "Cause": "The initial roster diffed current PR base1193 against an older branch head4f8 and incorrectly included unrelated intervening main history. It refused before writing a success proof. Corrected roster is exactly squash-parent to squash changed paths.",
+  "ScientificOrProductSourceChanged": false
+}

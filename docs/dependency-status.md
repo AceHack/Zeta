@@ -88,12 +88,12 @@ Independent outage sources from the runtimes; build/install/restore breaks when 
 | Homebrew (`formulae.brew.sh`) | system-level macOS packages (mise itself + curl bootstrap) | <https://status.brew.sh/> | (formula fetch) |
 | apt (Debian/Ubuntu) | system-level Linux packages | (no canonical status; per-mirror) | (none) |
 
-### Verifiers + analyzers (jars are committed; the rest are fetched)
+### Verifiers + analyzers (both jars are fetched and digest-pinned)
 
 | Dependency | Used for | Status source | Factory-relevant components |
 |---|---|---|---|
-| TLA+ (`tla2tools.jar`, `TLC2 Version 2026.05.18.174321 (rev: 8ba1027)`) | safety/liveness specs | committed to git -- upstream release health does not gate our runs | (none: no fetch at install time) |
-| Alloy (`alloy.jar`, `6.2.0.202501090817 (rev: 794226d)`) | structural model checking | committed to git -- upstream release health does not gate our runs | (none: no fetch at install time) |
+| TLA+ (`tla2tools.jar`, `TLC2 Version 2026.09.09.213036 (rev: ede5b88)`) | safety/liveness specs | <https://www.githubstatus.com/> -- `install.sh` fetches the tlaplus v1.8.0 asset, digest-pinned in `tools/setup/manifests/from-url` with `rolling=`, because that prerelease tag is re-uploaded in place. A rebuild fails the digest CLOSED and is re-pinned by `tools/setup/repin-rolling.ts`, which re-runs all 52 gate models first; sha256 `8836549e83db7f0b3f9fdde679ab56270d18e06198366d217d960738c02b9dbe` | (GitHub release assets) |
+| Alloy (`alloy.jar`, `6.2.0.202501090817 (rev: 794226d)`) | structural model checking | <https://www.githubstatus.com/> -- `install.sh` fetches upstream v6.2.0 from a GitHub release, digest-pinned in `tools/setup/manifests/from-url`; a GitHub outage delays install, and a re-uploaded asset fails the digest closed rather than being adopted | (GitHub release assets) |
 | Stryker (.NET tool) | mutation testing | <https://stryker-mutator.io/blog/> | (NuGet feed) |
 | Semgrep | static analysis | <https://semgrep.dev/blog> | (CLI registry) |
 
@@ -115,6 +115,15 @@ The programmatic poll snippet above is the fastest answer-now path for the GitHu
 ## Known concern classes
 
 These are the failure modes the factory should watch for; the surface flags them, it does not mitigate them.
+
+### Nested check pagination can produce a false gate-absence alarm
+
+The [2026-09-07 detector correction](research/2026-09-07-required-check-pagination-correction.md)
+retains a concrete case: `gh pr list` exposed 100 of 103 contexts, hiding the
+successful required gate on page two. The detector now verifies complete
+PR-context pagination before classifying absence. Check the exact PR head and
+`gh pr checks <number> --required` when interpreting this advisory alarm;
+a red presence watchdog alone does not establish a GitHub outage.
 
 ### GitHub merge-queue / auto-merge wrong-commit class
 

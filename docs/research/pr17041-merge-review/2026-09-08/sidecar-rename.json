@@ -1,0 +1,19 @@
+{
+  "OldPath": "docs/research/pr17041-merge-review/2026-09-08/result-identity.json",
+  "NewPath": "docs/research/pr17041-merge-review/2026-09-08/receipt-byte-identity.json",
+  "Bytes": 228,
+  "Sha256": "18525f91ca27297b5fc2d96b0a948ba0ee2dd5bf3022978b92f6f8d40453a389",
+  "CIJob": 101958987718,
+  "LogBytes": 659331,
+  "LogSha256": "2bac9407c8075b20602ca5e961e64982344f9c9a0332709f3c2caf959191a440",
+  "FocusedTest": {
+    "Argv": [
+      "bun",
+      "test",
+      "src/Core.TypeScript/hygiene/no-tracked-file-is-ignored.test.ts"
+    ],
+    "Exit": 0,
+    "Bytes": 222,
+    "Sha256": "77f211eb42375e93d7c831b8c97033827de47d8a889cc4478c39da64ca9e4092"
+  }
+}

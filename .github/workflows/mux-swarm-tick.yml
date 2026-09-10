@@ -5,9 +5,14 @@ on:
     - cron: '0 * * * *'  # every hour
   workflow_dispatch:         # manual trigger
 
+# READ-ONLY. The only payload step runs swarm-controller.ts, which shells out
+# nowhere and performs no git or forge write -- the write scope was never
+# exercised. It was not harmless: this job installs and runs a third-party
+# script fetched at runtime (ollama.com install.sh), and a write-scoped
+# GITHUB_TOKEN was persisted into .git/config by the checkout below while
+# that ran. Scorecard TokenPermissionsID alert 687.
 permissions:
-  contents: write
-  pull-requests: write
+  contents: read
 
 concurrency:
   group: mux-swarm-tick
@@ -30,18 +35,62 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
+          # Nothing here pushes, and a runtime-fetched installer runs in this
+          # job -- so no credential is left on disk for it to find.
+          persist-credentials: false
 
       - name: Install Bun
         uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
         with:
           bun-version: latest
 
-      - name: Install Ollama (Free local LLM tier)
+      # WAS `curl -fsSL https://ollama.com/install.sh | sh`, hourly, 655 runs. The
+      # pinned replacement was built, tested and adopted by agent-heartbeat.yml on
+      # 2026-08-16; this lane and arc-swarm-fanout.yml simply never picked it up.
+      # Adopting it here rather than inventing a second install path: one named
+      # release asset by version, SHA-256 verified against .github/ollama-pin.json,
+      # refusing anything that does not match. Refresh + proof path: the `_doc`
+      # block in that file, and verify-ollama-pin.yml, which runs on any PR that
+      # touches the pin.
+      #
+      # It also removes a step that ERRORED on every single run and said so only in
+      # a log nobody reads: install.sh registers and starts a systemd unit, so the
+      # `ollama serve &` below it always hit
+      # `listen tcp 127.0.0.1:11434: bind: address already in use`. Backgrounded, so
+      # `set -e` never saw it. The pinned installer lays down bin/ + lib/ and starts
+      # nothing, which makes the serve line load-bearing again instead of dead.
+      #
+      # continue-on-error, same reasoning as the heartbeat lane: a pin fails closed
+      # when upstream moves, and falling back to the unpinned installer is FORBIDDEN
+      # (a check with a bypass is not a check). The step goes red in the run UI, the
+      # tick carries on without a model, and observeWithLlm already degrades to the
+      # deterministic oracle rather than dying.
+      # 081M24E7814087G0R003JY87M3
+      - name: Install Ollama (pinned, checksum-verified)
+        continue-on-error: true
+        run: bun src/Core.TypeScript/ace/install-pinned-artifact.ts --pin .github/ollama-pin.json
+
+      - name: Start Ollama + pull the tick's model
+        continue-on-error: true
         run: |
-          curl -fsSL https://ollama.com/install.sh | sh
+          set -euo pipefail
+          if ! command -v ollama >/dev/null 2>&1; then
+            echo "::error title=swarm tick degraded::The pinned Ollama install did not complete, so this tick runs WITHOUT a model. Fix the pin (.github/ollama-pin.json) -- do not restore the unpinned installer."
+            exit 1
+          fi
+
           ollama serve &
-          sleep 5
-          # Pull the small, fast Qwen model that fits in runner RAM
+          # Poll for readiness rather than `sleep 5`. The fixed sleep was a race this
+          # lane lost silently whenever the runner was slow: the pull simply failed
+          # against a server that had not bound yet.
+          for _ in $(seq 1 30); do
+            if ollama list >/dev/null 2>&1; then break; fi
+            sleep 1
+          done
+
+          # Small, fast, CPU-friendly; the model pin itself lives in
+          # tools/setup/manifests/from-ollama, which is where DST reproducibility
+          # reads it from.
           ollama pull qwen2.5:0.5b
           ollama list
 

@@ -1,0 +1,12 @@
+{
+  "pr_number": 16869,
+  "archive_path": "docs/history/pr-reviews/PR-16869-fix-chsh-require-setting-coverage-before-calibrated-inference.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-06T22:03:58.308Z",
+  "schema_version": "v1",
+  "commit_sha": "5aa54ebf9e4f9c269651eee8ef5c3b7b874dab55",
+  "title": "fix(chsh): Require setting coverage before calibrated inference",
+  "state": "MERGED",
+  "merged_at": "2026-09-06T22:03:19Z",
+  "head_ref": "codex/chsh-coverage-audit-20260906"
+}

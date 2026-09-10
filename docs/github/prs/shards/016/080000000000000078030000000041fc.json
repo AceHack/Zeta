@@ -1,0 +1,19 @@
+{
+  "pr_number": 16892,
+  "archive_path": "docs/history/pr-reviews/PR-16892-feat-research-verify-chronological-prediction-in-rendered-catch.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7rLmq_",
+    "comment:PRRC_kwDOSF9kNM7rLmrF",
+    "comment:PRRC_kwDOSF9kNM7rMNKP",
+    "comment:PRRC_kwDOSF9kNM7rMNLf",
+    "thread:PRRT_kwDOSF9kNM6fwEMV",
+    "thread:PRRT_kwDOSF9kNM6fwEMa"
+  ],
+  "fetched_at": "2026-09-07T00:54:41.777Z",
+  "schema_version": "v1",
+  "commit_sha": "972011ed1f6ff75483a475c6fc7ff485ac65e89e",
+  "title": "feat(research): Verify chronological prediction in rendered catch",
+  "state": "MERGED",
+  "merged_at": "2026-09-07T00:53:49Z",
+  "head_ref": "claim/task-rendered-catch-actions-20260906"
+}

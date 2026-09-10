@@ -231,6 +231,11 @@
       "state": "active"
     },
     {
+      "name": "CodeQL - Code Quality",
+      "path": "dynamic/github-code-quality/codeql",
+      "state": "active"
+    },
+    {
       "name": "Copilot",
       "path": "dynamic/agents/copilot-pull-request-reviewer",
       "state": "active"
@@ -288,7 +293,7 @@
     {
       "name": "agent-heartbeat",
       "path": ".github/workflows/agent-heartbeat.yml",
-      "state": "active"
+      "state": "disabled_manually"
     },
     {
       "name": "agent-reviewer",
@@ -316,6 +321,16 @@
       "state": "active"
     },
     {
+      "name": "archive-strand-alarm",
+      "path": ".github/workflows/archive-strand-alarm.yml",
+      "state": "disabled_manually"
+    },
+    {
+      "name": "artifact-freshness",
+      "path": ".github/workflows/artifact-freshness.yml",
+      "state": "disabled_manually"
+    },
+    {
       "name": "backlog-index-integrity",
       "path": ".github/workflows/backlog-index-integrity.yml",
       "state": "active"
@@ -323,7 +338,7 @@
     {
       "name": "budget-snapshot-cadence",
       "path": ".github/workflows/budget-snapshot-cadence.yml",
-      "state": "active"
+      "state": "disabled_manually"
     },
     {
       "name": "build-ai-cluster-iso",
@@ -351,9 +366,14 @@
       "state": "active"
     },
     {
+      "name": "ci-runtime-image",
+      "path": ".github/workflows/ci-runtime-image.yml",
+      "state": "active"
+    },
+    {
       "name": "context-cost-trend-cadence",
       "path": ".github/workflows/context-cost-trend-cadence.yml",
-      "state": "active"
+      "state": "disabled_manually"
     },
     {
       "name": "docker-nixos-install-sh-test",
@@ -378,16 +398,31 @@
     {
       "name": "drift-dashboard-cadence",
       "path": ".github/workflows/drift-dashboard-cadence.yml",
-      "state": "active"
+      "state": "disabled_manually"
     },
     {
       "name": "drift-sweep",
       "path": ".github/workflows/drift-sweep.yml",
-      "state": "active"
+      "state": "disabled_manually"
     },
     {
       "name": "factory-hygiene-audit-cadence",
       "path": ".github/workflows/factory-hygiene-audit-cadence.yml",
+      "state": "active"
+    },
+    {
+      "name": "feldera-compare",
+      "path": ".github/workflows/feldera-compare.yml",
+      "state": "active"
+    },
+    {
+      "name": "feldera-native",
+      "path": ".github/workflows/feldera-native.yml",
+      "state": "active"
+    },
+    {
+      "name": "first-boot-manifest-check",
+      "path": ".github/workflows/first-boot-manifest-check.yml",
       "state": "active"
     },
     {
@@ -488,7 +523,7 @@
     {
       "name": "lockfile-healer",
       "path": ".github/workflows/lockfile-healer.yml",
-      "state": "active"
+      "state": "disabled_manually"
     },
     {
       "name": "low-memory",
@@ -503,7 +538,7 @@
     {
       "name": "manifesto-citation-snapshot-cadence",
       "path": ".github/workflows/manifesto-citation-snapshot-cadence.yml",
-      "state": "active"
+      "state": "disabled_manually"
     },
     {
       "name": "memory-index-drift",
@@ -528,7 +563,7 @@
     {
       "name": "mirror-to-fork",
       "path": ".github/workflows/mirror-to-fork.yml",
-      "state": "active"
+      "state": "disabled_manually"
     },
     {
       "name": "multiboot-qemu-uefi-smoke",
@@ -551,6 +586,11 @@
       "state": "active"
     },
     {
+      "name": "pr-categorization-cadence",
+      "path": ".github/workflows/pr-categorization-cadence.yml",
+      "state": "disabled_manually"
+    },
+    {
       "name": "pr-gate-presence",
       "path": ".github/workflows/pr-gate-presence.yml",
       "state": "active"
@@ -558,12 +598,12 @@
     {
       "name": "pr-manifest-integrity",
       "path": ".github/workflows/pr-manifest-integrity.yml",
-      "state": "active"
+      "state": "disabled_manually"
     },
     {
       "name": "proof-closure-drift",
       "path": ".github/workflows/proof-closure-drift.yml",
-      "state": "active"
+      "state": "disabled_manually"
     },
     {
       "name": "razor-cadence",
@@ -591,6 +631,11 @@
       "state": "active"
     },
     {
+      "name": "root-flake-check",
+      "path": ".github/workflows/root-flake-check.yml",
+      "state": "active"
+    },
+    {
       "name": "ruleset-apply",
       "path": ".github/workflows/ruleset-apply.yml",
       "state": "active"
@@ -606,9 +651,19 @@
       "state": "active"
     },
     {
+      "name": "seal-emulator-bao",
+      "path": ".github/workflows/seal-emulator-bao.yml",
+      "state": "active"
+    },
+    {
+      "name": "seal-emulator-install",
+      "path": ".github/workflows/seal-emulator-install.yml",
+      "state": "active"
+    },
+    {
       "name": "search-index-cadence",
       "path": ".github/workflows/search-index-cadence.yml",
-      "state": "active"
+      "state": "disabled_manually"
     },
     {
       "name": "skill-description-lint",
@@ -618,7 +673,7 @@
     {
       "name": "society-heartbeat",
       "path": ".github/workflows/society-heartbeat.yml",
-      "state": "active"
+      "state": "disabled_manually"
     },
     {
       "name": "soraya-formal-coverage-cadence",
@@ -638,7 +693,7 @@
     {
       "name": "tick-metrics",
       "path": ".github/workflows/tick-metrics.yml",
-      "state": "active"
+      "state": "disabled_manually"
     },
     {
       "name": "tlaps-proof",
@@ -668,7 +723,7 @@
     {
       "name": "zetadb-scheduled-node",
       "path": ".github/workflows/zetadb-scheduled-node.yml",
-      "state": "active"
+      "state": "disabled_manually"
     },
     {
       "name": "zflash-harness-lint",

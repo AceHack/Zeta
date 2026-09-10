@@ -1,0 +1,14 @@
+{
+  "id": "080d03c5a8d8e810a01300082192d8c2",
+  "at": "2026-09-06T21:52:10.013Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1WBA6RX087G0R002450S9J",
+    "type": "task",
+    "title": "Named unseal request from env is not inferred from tpmrm0",
+    "slug": "named-unseal-request-from-env-is-not-inferred-from-tpmrm0",
+    "priority": "P2",
+    "filename": "081M1WBA6RX087G0R002450S9J-named-unseal-request-from-env-is-not-inferred-from-tpmrm0.md"
+  }
+}

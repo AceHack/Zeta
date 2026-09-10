@@ -1,0 +1,12 @@
+{
+  "pr_number": 16957,
+  "archive_path": "docs/history/pr-reviews/PR-16957-feat-creds-overlay-named-key-joins-take-frost-look-keys-tpmrm0-is-not-real.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-07T18:01:12.750Z",
+  "schema_version": "v1",
+  "commit_sha": "ad2c423530e185d6b6b7f26df2513fa131ab12cc",
+  "title": "feat(creds): Overlay named-key joins take frost-look keys; tpmrm0 is not real",
+  "state": "MERGED",
+  "merged_at": "2026-09-07T18:00:33Z",
+  "head_ref": "cursor/frost-look-named-conf-27c5"
+}

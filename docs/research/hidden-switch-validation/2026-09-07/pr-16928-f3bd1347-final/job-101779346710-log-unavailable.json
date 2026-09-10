@@ -1,0 +1,6 @@
+{
+  "ExitCode": 1,
+  "Stdout": "\ufeff<?xml version=\"1.0\" encoding=\"utf-8\"?><Error><Code>BlobNotFound</Code><Message>The specified blob does not exist.\nRequestId:1be0c361-901e-0109-0bd6-3eadd5000000\nTime:2026-09-07T14:40:51.0450756Z</Message></Error>",
+  "Stderr": "gh: HTTP 404\n",
+  "Scope": "Retain actual unavailable log response; no cancellation-cause inference from absence."
+}

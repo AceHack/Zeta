@@ -1,7 +1,13 @@
 import { describe, expect, test } from "bun:test";
 import { UNSEAL_THRESHOLD } from "./vault-unsealer.ts";
-import { ELF_INTERP_GLIBC_X86_64 } from "./bao-load-site.ts";
-import { emptyCapture, pickSealOracleFromCapture, type HostHardwareCapture } from "./host-seal-profile.ts";
+import { ELF_INTERP_GLIBC_X86_64, TPM_CHAR_DEVICE } from "./bao-load-site.ts";
+import {
+  emptyCapture,
+  hostCaptureFromNamedProbe,
+  pickSealOracleFromCapture,
+  type HostHardwareCapture,
+  type NamedHardwareProbe,
+} from "./host-seal-profile.ts";
 import {
   NIXOS_PKCS11_MODULE_PATH,
   USB_PKCS11_MODULE_POINTER,
@@ -10,8 +16,12 @@ import {
 } from "./pkcs11-hostpath-overlay.ts";
 import {
   availablePaths,
+  consumeUnsealRequestFromEnv,
   emulatorMatrixCell,
   integrateAtSetup,
+  integrateAtSetupFromEnv,
+  namedPathRequestErrorMessage,
+  parsePathRequest,
   pickInstallPath,
   planSetupFromRestoredCompanion,
   planSetupOverlayFromIntegrate,
@@ -20,6 +30,9 @@ import {
   companionContentsFromRestore,
   skipIfAbsentCannotWearPass,
   tpmCanAutoUnseal,
+  usbInstallSealFromDecision,
+  usbInstallSealFromPath,
+  UNSEAL_REQUEST_ENV_KEY,
 } from "./unseal-path.ts";
 
 /** Completed metal look: both automatic oracles absent. */
@@ -31,6 +44,32 @@ const METAL: HostHardwareCapture = emptyCapture({
 
 function capture(partial: Partial<HostHardwareCapture>): HostHardwareCapture {
   return emptyCapture({ ...METAL, ...partial });
+}
+
+function namedTpmPresent(): NamedHardwareProbe {
+  return {
+    os: "nixos",
+    tpm2: "present",
+    tpmDeviceNode: TPM_CHAR_DEVICE,
+    yubiHsm2: "not-asked",
+    smartCardReaderAttached: false,
+    yubikeyDetected: false,
+    pkcs11ModuleOnDisk: false,
+    smartcardHsm: "not-asked",
+  };
+}
+
+function namedMetalAbsent(): NamedHardwareProbe {
+  return {
+    os: "nixos",
+    tpm2: "absent",
+    tpmDeviceNode: null,
+    yubiHsm2: "absent",
+    smartCardReaderAttached: false,
+    yubikeyDetected: false,
+    pkcs11ModuleOnDisk: false,
+    smartcardHsm: "not-asked",
+  };
 }
 
 describe("integrateAtSetup — PKCS#11 only when the device is accessible", () => {
@@ -60,7 +99,7 @@ describe("integrateAtSetup — PKCS#11 only when the device is accessible", () =
   });
 
   test("CardContact SmartCard-HSM wins over TPM when no YubiHSM", () => {
-    const r = integrateAtSetup({ requested: "auto" }, capture({ smartcardHsm: true, tpm2: "present" }));
+    const r = integrateAtSetup({ requested: "auto" }, capture({ smartcardHsm: "present", tpm2: "present" }));
     expect(r.ok).toBe(true);
     if (!r.ok) return;
     expect(r.path).toBe("pkcs11-smartcard");
@@ -68,7 +107,7 @@ describe("integrateAtSetup — PKCS#11 only when the device is accessible", () =
   });
 
   test("CardContact SmartCard-HSM is a peer vendor — measure-on-device, not YubiHSM AES-GCM", () => {
-    const r = integrateAtSetup({ requested: "auto" }, capture({ smartcardHsm: true }));
+    const r = integrateAtSetup({ requested: "auto" }, capture({ smartcardHsm: "present" }));
     expect(r.ok).toBe(true);
     if (!r.ok) return;
     expect(r.path).toBe("pkcs11-smartcard");
@@ -84,14 +123,14 @@ describe("integrateAtSetup — PKCS#11 only when the device is accessible", () =
   });
 
   test("both metal HSM vendors attached → one OpenBao seal (YubiHSM first)", () => {
-    const r = integrateAtSetup({ requested: "auto" }, capture({ yubiHsm2: "attached", smartcardHsm: true }));
+    const r = integrateAtSetup({ requested: "auto" }, capture({ yubiHsm2: "attached", smartcardHsm: "present" }));
     expect(r.ok).toBe(true);
     if (!r.ok) return;
     expect(r.path).toBe("pkcs11-yubihsm");
   });
 
   test("umbrella pkcs11-hsm with only CardContact names pkcs11-smartcard", () => {
-    const r = integrateAtSetup({ requested: "pkcs11-hsm" }, capture({ smartcardHsm: true }));
+    const r = integrateAtSetup({ requested: "pkcs11-hsm" }, capture({ smartcardHsm: "present" }));
     expect(r.ok).toBe(true);
     if (!r.ok) return;
     expect(r.path).toBe("pkcs11-smartcard");
@@ -106,7 +145,7 @@ describe("integrateAtSetup — PKCS#11 only when the device is accessible", () =
   });
 
   test("requested pkcs11-yubihsm with only SmartCard-HSM refuses — not the other vendor", () => {
-    const r = integrateAtSetup({ requested: "pkcs11-yubihsm" }, capture({ smartcardHsm: true }));
+    const r = integrateAtSetup({ requested: "pkcs11-yubihsm" }, capture({ smartcardHsm: "present" }));
     expect(r.ok).toBe(false);
     if (r.ok) return;
     expect(r.reason).toBe("requested-pkcs11-not-accessible");
@@ -120,6 +159,52 @@ describe("integrateAtSetup — PKCS#11 only when the device is accessible", () =
     expect(r.autoUnseal).toBe(false);
     expect(r.threshold).toBe(UNSEAL_THRESHOLD);
     expect(r.threshold).toBeGreaterThanOrEqual(2);
+  });
+
+  test("USB ladder: no HSM, no TPM, look complete → sidecar (not 'no path')", () => {
+    const r = integrateAtSetup({ requested: "auto" }, METAL);
+    expect(usbInstallSealFromDecision(r)).toBe("sidecar");
+  });
+
+  test("USB ladder: HSM only → hsm", () => {
+    const r = integrateAtSetup({ requested: "auto" }, capture({ yubiHsm2: "attached" }));
+    expect(usbInstallSealFromDecision(r)).toBe("hsm");
+  });
+
+  test("USB ladder: TPM only → tpm", () => {
+    const r = integrateAtSetup({ requested: "auto" }, capture({ tpm2: "present" }));
+    expect(usbInstallSealFromDecision(r)).toBe("tpm");
+  });
+
+  test("USB ladder: HSM + TPM → hsm (one seal; almost no box has two HSMs)", () => {
+    const r = integrateAtSetup({ requested: "auto" }, capture({ yubiHsm2: "attached", tpm2: "present" }));
+    expect(usbInstallSealFromDecision(r)).toBe("hsm");
+    expect(r.ok && r.path).toBe("pkcs11-yubihsm");
+  });
+
+  test("USB ladder: two HSM vendors → still hsm (one seal, not two)", () => {
+    const r = integrateAtSetup({ requested: "auto" }, capture({ yubiHsm2: "attached", smartcardHsm: "present" }));
+    expect(usbInstallSealFromDecision(r)).toBe("hsm");
+  });
+
+  test("USB ladder: incomplete look is null, not sidecar", () => {
+    const r = integrateAtSetup({ requested: "auto" }, capture({ tpm2: "not-asked" }));
+    expect(r.ok).toBe(false);
+    expect(usbInstallSealFromDecision(r)).toBeNull();
+  });
+
+  test("USB ladder: missing request is null, not auto-sidecar", () => {
+    expect(usbInstallSealFromDecision(null)).toBeNull();
+  });
+
+  test("USB ladder projects every UnsealPath onto one of three rungs", () => {
+    expect(usbInstallSealFromPath("pkcs11-yubihsm")).toBe("hsm");
+    expect(usbInstallSealFromPath("pkcs11-smartcard")).toBe("hsm");
+    expect(usbInstallSealFromPath("ci-softhsm")).toBe("hsm");
+    expect(usbInstallSealFromPath("pkcs11-tpm")).toBe("tpm");
+    expect(usbInstallSealFromPath("ci-swtpm")).toBe("tpm");
+    expect(usbInstallSealFromPath("lucent-shamir")).toBe("sidecar");
+    expect(usbInstallSealFromPath("kind-shamir")).toBe("sidecar");
   });
 
   test("explicit lucent-shamir is always a peer path, even with HSM attached", () => {
@@ -194,7 +279,7 @@ describe("availablePaths — fleet may mix; Lucent is always listed", () => {
   });
 
   test("both metal HSM vendors + TPM are listed; Lucent stays a peer", () => {
-    expect(availablePaths(capture({ yubiHsm2: "attached", smartcardHsm: true, tpm2: "present" }))).toEqual([
+    expect(availablePaths(capture({ yubiHsm2: "attached", smartcardHsm: "present", tpm2: "present" }))).toEqual([
       "pkcs11-yubihsm",
       "pkcs11-smartcard",
       "pkcs11-tpm",
@@ -253,6 +338,7 @@ describe("emulator install 2×2 — declared by installing, never skip-if-absent
     expect(r.ok).toBe(true);
     if (!r.ok) return;
     expect(r.path).toBe("lucent-shamir");
+    expect(usbInstallSealFromDecision(r)).toBe("sidecar");
   });
 
   test("neither emulator, kind unsealer present → kind-shamir", () => {
@@ -265,6 +351,7 @@ describe("emulator install 2×2 — declared by installing, never skip-if-absent
     expect(r.ok).toBe(true);
     if (!r.ok) return;
     expect(r.path).toBe("kind-shamir");
+    expect(usbInstallSealFromDecision(r)).toBe("sidecar");
   });
 
   test("neither emulator and nothing to unseal with is no-path, not a skip-pass", () => {
@@ -290,6 +377,7 @@ describe("emulator install 2×2 — declared by installing, never skip-if-absent
     if (!r.ok) return;
     expect(r.path).toBe("ci-softhsm");
     expect(r.mechanism).toBe("aes-gcm");
+    expect(usbInstallSealFromDecision(r)).toBe("hsm");
   });
 
   test("swtpm installed, softhsm not → ci-swtpm OAEP", () => {
@@ -303,6 +391,7 @@ describe("emulator install 2×2 — declared by installing, never skip-if-absent
     if (!r.ok) return;
     expect(r.path).toBe("ci-swtpm");
     expect(r.mechanism).toBe("must-pin-rsa-oaep");
+    expect(usbInstallSealFromDecision(r)).toBe("tpm");
   });
 
   test("both emulators installed → ci-softhsm (HSM wins; one seal)", () => {
@@ -315,6 +404,7 @@ describe("emulator install 2×2 — declared by installing, never skip-if-absent
     expect(r.ok).toBe(true);
     if (!r.ok) return;
     expect(r.path).toBe("ci-softhsm");
+    expect(usbInstallSealFromDecision(r)).toBe("hsm");
   });
 
   test("emulatorMatrixCell fail-missing never skip-passes", () => {
@@ -367,7 +457,7 @@ describe("setup integrate decision feeds the PKCS#11 overlay", () => {
   });
 
   test("blank companion on CardContact falls back to the NixOS OpenSC contract", () => {
-    const decision = integrateAtSetup({ requested: "auto" }, capture({ smartcardHsm: true }));
+    const decision = integrateAtSetup({ requested: "auto" }, capture({ smartcardHsm: "present" }));
     expect(sealOracleFromUnsealPath("pkcs11-smartcard")).toBe("smartcard-hsm");
     const plan = planSetupOverlayFromIntegrate(decision, "  ", true);
     expect(plan.modulePath).toBe(NIXOS_PKCS11_MODULE_PATH["smartcard-hsm"]);
@@ -438,7 +528,7 @@ describe("setup overlay reads the restored pointer file", () => {
   });
 
   test("missing restore file falls back to the NixOS contract", () => {
-    const decision = integrateAtSetup({ requested: "auto" }, capture({ smartcardHsm: true }));
+    const decision = integrateAtSetup({ requested: "auto" }, capture({ smartcardHsm: "present" }));
     const plan = planSetupFromRestoredCompanion(decision, {
       openedPath: USB_PKCS11_MODULE_POINTER,
       exists: false,
@@ -520,5 +610,103 @@ describe("setup overlay reads the restored pointer file", () => {
         "}",
       ].join("\n"),
     );
+  });
+});
+
+describe("parsePathRequest — named, not inferred from tpmrm0", () => {
+  test("missing is unmeasured, not auto and not pkcs11-tpm", () => {
+    expect(parsePathRequest(undefined)).toEqual({ ok: true, requested: null });
+    expect(consumeUnsealRequestFromEnv({})).toEqual({ ok: true, requested: null });
+  });
+
+  test("named PathRequest values round-trip", () => {
+    expect(parsePathRequest("auto")).toEqual({ ok: true, requested: "auto" });
+    expect(parsePathRequest("pkcs11-hsm")).toEqual({ ok: true, requested: "pkcs11-hsm" });
+    expect(parsePathRequest("pkcs11-tpm")).toEqual({ ok: true, requested: "pkcs11-tpm" });
+    expect(parsePathRequest("pkcs11-yubihsm")).toEqual({ ok: true, requested: "pkcs11-yubihsm" });
+    expect(parsePathRequest("pkcs11-smartcard")).toEqual({ ok: true, requested: "pkcs11-smartcard" });
+    expect(parsePathRequest("lucent-shamir")).toEqual({ ok: true, requested: "lucent-shamir" });
+    expect(
+      consumeUnsealRequestFromEnv({ [UNSEAL_REQUEST_ENV_KEY]: "pkcs11-tpm" }),
+    ).toEqual({ ok: true, requested: "pkcs11-tpm" });
+  });
+
+  test("tpmrm0 and /mnt are unknown, not pkcs11-tpm", () => {
+    expect(parsePathRequest(TPM_CHAR_DEVICE)).toEqual({ ok: false, reason: "unknown-request" });
+    expect(parsePathRequest("/mnt")).toEqual({ ok: false, reason: "unknown-request" });
+    expect(
+      consumeUnsealRequestFromEnv({ [UNSEAL_REQUEST_ENV_KEY]: TPM_CHAR_DEVICE }),
+    ).toEqual({ ok: false, reason: "unknown-request" });
+  });
+
+  test("empty and unsafe values refuse", () => {
+    expect(parsePathRequest("")).toEqual({ ok: false, reason: "empty-request" });
+    expect(parsePathRequest("pkcs11-tpm;reboot")).toEqual({ ok: false, reason: "unsafe-conf-value" });
+    expect(namedPathRequestErrorMessage("empty-request")).toBe("ZETA_UNSEAL_REQUEST requires a value");
+    expect(namedPathRequestErrorMessage("unknown-request")).toBe(
+      "ZETA_UNSEAL_REQUEST must be a named PathRequest",
+    );
+    expect(namedPathRequestErrorMessage("unsafe-conf-value")).toBe(
+      "ZETA_UNSEAL_REQUEST contains a value firstboot conf cannot carry",
+    );
+  });
+});
+
+describe("integrateAtSetupFromEnv — request from env, probe injected", () => {
+  test("missing request is unmeasured even when TPM is present — not auto", () => {
+    const probe = namedTpmPresent();
+    expect(integrateAtSetupFromEnv({}, probe)).toEqual({ ok: true, decision: null });
+    const auto = integrateAtSetup({ requested: "auto" }, hostCaptureFromNamedProbe(probe));
+    expect(auto.ok).toBe(true);
+    if (!auto.ok) return;
+    expect(auto.path).toBe("pkcs11-tpm");
+  });
+
+  test("named pkcs11-tpm with present TPM integrates; tpmrm0 still refuses", () => {
+    const probe = namedTpmPresent();
+    const named = integrateAtSetupFromEnv({ [UNSEAL_REQUEST_ENV_KEY]: "pkcs11-tpm" }, probe);
+    expect(named.ok).toBe(true);
+    if (!named.ok) return;
+    expect(named.decision).toEqual(
+      integrateAtSetup({ requested: "pkcs11-tpm" }, hostCaptureFromNamedProbe(probe)),
+    );
+    expect(
+      integrateAtSetupFromEnv({ [UNSEAL_REQUEST_ENV_KEY]: TPM_CHAR_DEVICE }, probe),
+    ).toEqual({ ok: false, reason: "unknown-request" });
+  });
+
+  test("named request still refuses when the named look found no device", () => {
+    const named = integrateAtSetupFromEnv({ [UNSEAL_REQUEST_ENV_KEY]: "pkcs11-tpm" }, namedMetalAbsent());
+    expect(named.ok).toBe(true);
+    if (!named.ok) return;
+    expect(named.decision).toEqual({
+      ok: false,
+      reason: "requested-pkcs11-not-accessible",
+      requested: "pkcs11-tpm",
+    });
+  });
+
+  test("null probe is unmeasured, not present", () => {
+    const named = integrateAtSetupFromEnv({ [UNSEAL_REQUEST_ENV_KEY]: "pkcs11-tpm" }, null);
+    expect(named.ok).toBe(true);
+    if (!named.ok) return;
+    expect(named.decision).toEqual({
+      ok: false,
+      reason: "probe-did-not-run",
+      requested: "pkcs11-tpm",
+    });
+  });
+
+  test("tpmrm0 on the probe is not present", () => {
+    const look: NamedHardwareProbe = { ...namedTpmPresent(), tpm2: "indeterminate" };
+    const named = integrateAtSetupFromEnv({ [UNSEAL_REQUEST_ENV_KEY]: "pkcs11-tpm" }, look);
+    expect(named.ok).toBe(true);
+    if (!named.ok) return;
+    expect(named.decision).toEqual({
+      ok: false,
+      reason: "probe-did-not-run",
+      requested: "pkcs11-tpm",
+    });
+    expect(look.tpmDeviceNode).toBe(TPM_CHAR_DEVICE);
   });
 });

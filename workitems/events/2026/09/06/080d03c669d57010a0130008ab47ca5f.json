@@ -1,0 +1,14 @@
+{
+  "id": "080d03c669d57010a0130008ab47ca5f",
+  "at": "2026-09-06T22:18:30.958Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1WCTENE087G0R003D6HZS5",
+    "type": "task",
+    "title": "Freeze volumes write ROOT EntityId",
+    "slug": "freeze-volumes-write-root-entityid",
+    "priority": "P2",
+    "filename": "081M1WCTENE087G0R003D6HZS5-freeze-volumes-write-root-entityid.md"
+  }
+}

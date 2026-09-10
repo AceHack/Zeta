@@ -1,0 +1,107 @@
+import bpy,math,random,json
+from pathlib import Path
+from mathutils import Vector,Quaternion
+from mathutils.kdtree import KDTree
+from mathutils.bvhtree import BVHTree
+R=Path('/Users/acehack/Documents/Blender/AceHack-Xenaa-Realistic');bpy.ops.wm.open_mainfile(filepath=str(R/'AceHack_Xenaa_Reference_Study.blend'))
+scene=bpy.context.scene
+source=(R/'scripts/build_reference_costumes.py').read_text();exec(source[source.index('def mat('):source.index('records=json.loads')])
+random.seed(1907)
+records=json.loads((R/'sources/anatomy-record.json').read_text())
+charcoalhair=mat('Groom / dark warm hair fibers',(.010,.008,.008),.46);charcoalhair.node_tree.nodes.get('Principled BSDF').inputs['Anisotropic'].default_value=.65
+silverhair=mat('Groom / subtle silver fibers',(.17,.16,.15),.52)
+for rec in records:
+ who=rec['Character'];male=who=='AceHack';C=bpy.data.collections[who+' | Character'];root=bpy.data.objects[who+' | Root'];rig=bpy.data.objects[who+' | Deformation Rig'];body=bpy.data.objects[who+' | Human'];H=rec['Height'];bone=rec['Bones']
+ kd=KDTree(len(body.data.vertices))
+ for v in body.data.vertices:kd.insert(v.co,v.index)
+ kd.balance();bg=body.vertex_groups['body'].index;ok={v.index for v in body.data.vertices if any(g.group==bg and g.weight>.5 for g in v.groups)}
+ bvh=BVHTree.FromPolygons([v.co for v in body.data.vertices],[list(p.vertices) for p in body.data.polygons if all(i in ok for i in p.vertices)])
+ hair=bpy.data.objects[who+' | Hair']
+ for mod in hair.modifiers:
+  if mod.type=='SUBSURF':mod.levels=2;mod.render_levels=3
+ for m in hair.data.materials:
+  bs=m.node_tree.nodes.get('Principled BSDF');bs.inputs['Specular IOR Level'].default_value=.02;bs.inputs['Roughness'].default_value=.92
+ # Fine continuous grooms carry the highlights; the fitted hair cap only fills gaps.
+ lines=[];silver=[]
+ if not male:
+  for k in range(6200):
+   side=-1 if random.random()<.56 else 1;depth=random.uniform(-.080,.085);part=random.uniform(.005,.024);phase=random.uniform(0,math.tau);length=random.uniform(.28,.49);pts=[]
+   rz=.134*math.sqrt(max(.25,1-(depth/.145)**2))
+   for j in range(29):
+    t=j/28
+    if t<.42:
+     a=.06+(t/.42)*1.60;x=part+side*(.087+random.random()*.0002)*math.sin(a);y=depth-.010*math.sin(a);z=H-.117+rz*math.cos(a)
+    else:
+     u=(t-.42)/.58;x=part+side*.087-.20*u*u+side*.014*math.sin(u*10+phase)*u;y=depth-.010+.10*u+.009*math.sin(u*9+phase)*u;z=H-.129-length*u+.014*math.sin(u*9+phase)*u
+    pts.append((x,y,z))
+   lines.append(pts)
+ else:
+  for k in range(5600):
+   x=random.uniform(-.077,.077);phase=random.uniform(0,math.tau);pts=[]
+   for j in range(21):
+    t=j/20;y=-.076+.18*t;xx=x+.018*math.sin(t*2.8);z=H-.020-.078*(abs(x)/.10)**2+.023*math.sin(t*math.pi)-.045*t*t
+    pts.append((xx,y,z+random.uniform(-.001,.001)))
+   (silver if abs(x)>.057 and random.random()<.34 else lines).append(pts)
+ multi_hair('Continuous fine hair groom',lines,.000105,charcoalhair)
+ if silver:multi_hair('Salt and pepper temple groom',silver,.00010,silverhair)
+ # Quiet embroidery and clean the redundant outline tattoos.
+ jac=mat('Reference subdued brocade '+who,(.018,.045,.028) if male else (.08,.014,.14),.59,.08)
+ for o in list(C.objects):
+  if 'Botanical ink leaf' in o.name:o.hide_render=True;o.hide_viewport=True
+  if any(s in o.name for s in ['Emerald waistcoat jacquard','Woven brocade stem','Woven brocade leaf']):o.data.materials.clear();o.data.materials.append(jac)
+ # Reinforce the fitted upper coat with a double seam, instead of extra large ornaments.
+ if male:
+  w=Vector(bone['wrist.R']['Tail'])+Vector((-.015,-.035,-.025));q=Quaternion((0,1,0),.34)
+  for o in C.objects:
+   if any(s in o.name for s in ['Cipherstorm staff shaft','Staff brass ferrule','Staff focus emerald','Staff crown prong']):
+    for v in o.data.vertices:v.co=w+q@(v.co-w)
+  # Lift the left forearm into a presenting gesture.
+  pb=rig.pose.bones['lowerarm01.L'];bpy.context.view_layer.update();direction=(pb.tail-pb.head).normalized();delta=direction.rotation_difference(Vector((.26,-.73,.63)).normalized());cur=pb.matrix.to_quaternion();local=cur.inverted()@delta@cur;pb.rotation_mode='QUATERNION';pb.rotation_quaternion=pb.rotation_quaternion@local
+  bpy.context.view_layer.update()
+  hand='wrist.L';pb=rig.pose.bones[hand];deform=pb.matrix@pb.bone.matrix_local.inverted();grip=deform@Vector(bone[hand]['Tail']);c=grip+Vector((0,-.008,.16))
+  before=set(C.objects)
+  # Compact gyroscopic machine, close to the reference's nested brass instrument.
+  for i,(r,tilt) in enumerate([(.075,.0),(.060,.65),(.043,-.70)]):
+   rot=Quaternion((1,0,0),tilt)@Quaternion((0,1,0),i*.45)
+   pts=[c+rot@Vector((r*math.cos(j*math.tau/64),r*math.sin(j*math.tau/64),0)) for j in range(64)]
+   curve('Floating cipher gyroscope ring',pts,.0023,brass,True,hand)
+   for j in range(0,64,8):sphere('Gyroscope rivet',pts[j],(.0025,.0025,.0025),brass,hand)
+  rod('Gyroscope central spindle',c+Vector((0,0,-.090)),c+Vector((0,0,.090)),.006,brass,hand)
+  for z,r in [(-.052,.034),(-.031,.027),(.030,.028),(.053,.034)]:
+   rod('Gyroscope brass housing',c+Vector((0,0,z-.005)),c+Vector((0,0,z+.005)),r,brass,hand)
+  sphere('Gyroscope emerald core',c,(.021,.021,.025),emerald,hand)
+  for j in range(6):
+   a=j*math.tau/6;curve('Gyroscope filigree column',[c+Vector((.023*math.cos(a),.023*math.sin(a),z)) for z in [-.050,0,.050]],.0012,brass,bone=hand)
+  # Props were designed in the current pose; map their vertices back to rest coordinates for binding.
+  inv=deform.inverted()
+  for o in set(C.objects)-before:
+   for v in o.data.vertices:v.co=inv@v.co
+ else:
+  # Subtle contrapposto: shift weight onto one leg and turn toward the camera.
+  pb=rig.pose.bones['spine05'];rest=pb.bone.matrix_local.to_quaternion();pb.rotation_mode='QUATERNION';pb.rotation_quaternion=rest.inverted()@Quaternion((0,1,0),-.025)@rest
+  pb=rig.pose.bones['head'];rest=pb.bone.matrix_local.to_quaternion();pb.rotation_mode='QUATERNION';pb.rotation_quaternion=rest.inverted()@Quaternion((0,0,1),-.09)@Quaternion((0,1,0),-.035)@rest
+  # Winged eyeliner closely follows the actual upper lid surface.
+  for s,side in [(1,'L'),(-1,'R')]:
+   ez=bone['eye.'+side]['Tail'][2];pts=[]
+   for j in range(16):
+    t=j/15;x=s*(.012+.037*t);z=ez+.002+.006*math.sin(t*math.pi)+.003*t;pts.append(ray(x,z,.00065))
+   curve('Subtle winged eyeliner',pts,.00045,ink,bone='head')
+ bpy.context.view_layer.update()
+# Directional studio lighting with restrained emerald and violet accents.
+for o in list(bpy.data.objects):
+ if o.type=='LIGHT':bpy.data.objects.remove(o,do_unlink=True)
+for name,loc,power,col,size in [('Warm portrait key',(-2.4,-3.4,3.3),440,(1,.78,.59),2.1),('Cool portrait key',(2.8,-2.0,2.8),260,(.74,.80,1),2),('Soft face fill',(0,-4,2.0),80,(1,.92,.83),2.8),('Violet edge',(2,1.2,2.8),210,(.53,.32,1),1.7),('Brass edge',(-2,1,2.7),260,(1,.65,.28),1.7)]:
+ d=bpy.data.lights.new(name,'AREA');d.energy=power;d.color=col;d.shape='DISK';d.size=size;o=bpy.data.objects.new(name,d);scene.collection.objects.link(o);o.location=loc;o.rotation_euler=(Vector((-.3 if loc[0]<0 else .5,0,1.2))-o.location).to_track_quat('-Z','Y').to_euler()
+scene.world.node_tree.nodes['Background'].inputs[1].default_value=.15;scene.view_settings.exposure=-.30
+cam=scene.camera;cam.data.lens=72;cam.location=(1.8,-6.8,2.25);cam.rotation_euler=(Vector((0,0,1))-cam.location).to_track_quat('-Z','Y').to_euler()
+scene.cycles.samples=96;scene.render.resolution_x=1800;scene.render.resolution_y=1500
+try:
+ p=bpy.context.preferences.addons['cycles'].preferences;p.compute_device_type='METAL';p.get_devices()
+ for d in p.devices:d.use=d.type=='METAL'
+ scene.cycles.device='GPU'
+except Exception:pass
+bpy.ops.file.pack_all();bpy.ops.wm.save_as_mainfile(filepath=str(R/'AceHack_Xenaa_Refined.blend'))
+scene.render.filepath=str(R/'renders/refined-duo-preview.png');bpy.ops.render.render(write_still=True)
+for rec,x in zip(records,[-.62,.62]):
+ H=rec['Height'];cam.location=(x+.20,-1.80,H-.04);cam.rotation_euler=(Vector((x,-.06,H-.16))-cam.location).to_track_quat('-Z','Y').to_euler();cam.data.lens=95;scene.render.resolution_x=1200;scene.render.resolution_y=1300;scene.render.filepath=str(R/'renders'/(rec['Character']+'-refined-portrait.png'));bpy.ops.render.render(write_still=True)
+print('POLISH_COMPLETE')

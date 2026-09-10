@@ -1,0 +1,12 @@
+{
+  "pr_number": 16979,
+  "archive_path": "docs/history/pr-reviews/PR-16979-feat-creds-overlay-argv-join-takes-from-json-look-json-probe-is-ignored.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-07T22:57:34.204Z",
+  "schema_version": "v1",
+  "commit_sha": "dceab44b07faf38f1587b3c88b69d2c65b7e21e0",
+  "title": "feat(creds): overlay argv join takes --from-json look; JSON probe is ignored",
+  "state": "MERGED",
+  "merged_at": "2026-09-07T22:56:53Z",
+  "head_ref": "cursor/overlay-from-json-argv-27c5"
+}

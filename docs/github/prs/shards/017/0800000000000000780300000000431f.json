@@ -1,0 +1,12 @@
+{
+  "pr_number": 17183,
+  "archive_path": "docs/history/pr-reviews/PR-17183-fix-setup-declared-recorded-auto-accept-for-rolling-from-url-rows-unblocks-insta.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-09T23:43:35.174Z",
+  "schema_version": "v1",
+  "commit_sha": "97459b49906af5d01cf8f86e227cbf0e6931aed3",
+  "title": "fix(setup): declared, recorded auto-accept for rolling from-url rows — unblocks install.sh fleet-wide",
+  "state": "MERGED",
+  "merged_at": "2026-09-09T23:42:46Z",
+  "head_ref": "agent/rolling-exception-auto-accept-081M24396B2087G0R000MDMDEA"
+}

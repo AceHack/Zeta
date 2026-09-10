@@ -1,0 +1,28 @@
+[
+  {
+    "character": "AceHack",
+    "head_y_correction": -0.075,
+    "neck_base_z": 1.475,
+    "torso_trim_z": 1.5655999999999999,
+    "neck_boundary_vertices": 77,
+    "arm_vertices": {
+      "Left": 1536,
+      "Right": 1536
+    },
+    "hair_vertices": 0,
+    "status": "candidate; motion and visual review pending"
+  },
+  {
+    "character": "Xenaa",
+    "head_y_correction": -0.085,
+    "neck_base_z": 1.435,
+    "torso_trim_z": 1.49968,
+    "neck_boundary_vertices": 118,
+    "arm_vertices": {
+      "Left": 1536,
+      "Right": 1536
+    },
+    "hair_vertices": 8453,
+    "status": "candidate; motion and visual review pending"
+  }
+]

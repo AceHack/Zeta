@@ -1,0 +1,14 @@
+{
+  "id": "080d042d9882e010a013000839745eac",
+  "at": "2026-09-09T10:24:59.996Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M22V642T087G0R001HKHR9T",
+    "type": "task",
+    "title": "adjudicate 38 dependabot alerts on byte-preserved research requirement records nothing installs",
+    "slug": "adjudicate-38-dependabot-alerts-on-byte-preserved-research-r",
+    "priority": "P2",
+    "filename": "081M22V642T087G0R001HKHR9T-adjudicate-38-dependabot-alerts-on-byte-preserved-research-r.md"
+  }
+}

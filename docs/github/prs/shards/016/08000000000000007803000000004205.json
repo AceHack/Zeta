@@ -1,0 +1,12 @@
+{
+  "pr_number": 16901,
+  "archive_path": "docs/history/pr-reviews/PR-16901-feat-creds-env-integrate-takes-named-probe-tpmrm0-is-not-a-capture.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-07T01:26:59.175Z",
+  "schema_version": "v1",
+  "commit_sha": "b863a4785efaa9d7418f5484b380ed00c9d3a7c5",
+  "title": "feat(creds): Env integrate takes named probe; tpmrm0 is not a capture",
+  "state": "MERGED",
+  "merged_at": "2026-09-07T01:26:24Z",
+  "head_ref": "cursor/env-named-probe-27c5"
+}

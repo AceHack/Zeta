@@ -1,0 +1,12 @@
+{
+  "pr_number": 16945,
+  "archive_path": "docs/history/pr-reviews/PR-16945-fix-cluster-dev-lane-fits-by-excluding-gmod-and-two-guards-that-were-wrong.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-07T15:30:40.263Z",
+  "schema_version": "v1",
+  "commit_sha": "fe4385bca8cc4dd599600020befa36a2156e0722",
+  "title": "fix(cluster): dev lane FITS by excluding gmod — and two guards that were wrong",
+  "state": "MERGED",
+  "merged_at": "2026-09-07T15:29:53Z",
+  "head_ref": "shadow/dev-lane-excludes-the-game-server"
+}

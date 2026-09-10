@@ -1,0 +1,16 @@
+{
+  "RecordKind": "Reviewer annotation of the actual failed first tool invocation; not a retrospectively generated execution log",
+  "RecordedAtUtc": "2026-09-07T15:23:57.528442+00:00",
+  "Complete": false,
+  "Scope": "Initial inline merge proof fetched raw API/body and checked main ancestry, then failed before completing changed-path comparison",
+  "HeadSha": "f99c9f4e2502263943d899ec7a506aa287f76558",
+  "ExitCode": 1,
+  "FailedCommand": [
+    "git",
+    "rev-parse",
+    "f99c9f4e2502263943d899ec7a506aa287f76558:.github/workflows/interp-lane.yml"
+  ],
+  "ObservedError": "fatal: path .github/workflows/interp-lane.yml exists on disk, but not in f99c9f4e2502263943d899ec7a506aa287f76558; subprocess.CalledProcessError, exit128",
+  "FollowupCheck": "git cat-file -t f99c9f4e2502263943d899ec7a506aa287f76558 returned fatal: git cat-file: could not get object info",
+  "Resolution": "Fetched the exact checked commit from the owner clone, then ran the retained standalone proof collector successfully; no source modification or GitHub mutation"
+}

@@ -1,0 +1,14 @@
+[
+  {
+    "character": "AceHack",
+    "bones": 50,
+    "finger_joints_per_hand": 15,
+    "scope": "Blender articulation; Effect House joint mapping not yet tested"
+  },
+  {
+    "character": "Xenaa",
+    "bones": 50,
+    "finger_joints_per_hand": 15,
+    "scope": "Blender articulation; Effect House joint mapping not yet tested"
+  }
+]

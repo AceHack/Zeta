@@ -1,0 +1,661 @@
+{
+  "SourceCommit": "d3bd541e1d043e199c4b54b5390450028473c1cd",
+  "Scope": "fixed owned source/Python fixture replay implementation validation; no complete coordinator/runtime admission",
+  "SourceFiles": [
+    {
+      "File": "src/Interp.Python/tests/test_hidden_switch_compiled_identity_replay.py",
+      "Bytes": 21660,
+      "Sha256": "0F15B0F967B281E17902304E6D8D5C1CB7870EFD051F2BED04D9228FECD87D8A"
+    },
+    {
+      "File": "src/Interp.Python/zeta_interp/hidden_switch_compiled_admission.py",
+      "Bytes": 14129,
+      "Sha256": "BD5BFEAA68735581E17BCEEB01C24AC0AF975021F35302DCBD76E30B2211EE91"
+    },
+    {
+      "File": "src/Interp.Python/zeta_interp/hidden_switch_compiled_certificate.py",
+      "Bytes": 19745,
+      "Sha256": "0AD02607FF6FD06620F9FC447B653E1798BBFBA566CD7A4142C0C3C0256ECEC3"
+    },
+    {
+      "File": "src/Interp.Python/zeta_interp/hidden_switch_compiled_certificate_cases.py",
+      "Bytes": 8344,
+      "Sha256": "F79FA50B58B3B393AEF15BB38528F92FDBCAAECBD8D824844B60B4B0A5236FA1"
+    },
+    {
+      "File": "src/Interp.Python/zeta_interp/hidden_switch_compiled_conformance.py",
+      "Bytes": 17853,
+      "Sha256": "A57C74457740BF1950C8F108CA179E4723E9911E919CBD4A30FE6EB58E0AADA2"
+    },
+    {
+      "File": "src/Interp.Python/zeta_interp/hidden_switch_compiled_identity_fixtures.py",
+      "Bytes": 35228,
+      "Sha256": "9F9915FCE386175FBF2AA1DE1073B831725FED70BF0B29520D85AACDD2569C8D"
+    },
+    {
+      "File": "src/Interp.Python/zeta_interp/hidden_switch_compiled_identity_replay.py",
+      "Bytes": 36876,
+      "Sha256": "00522B05E4679FBDA8D201F8B3847BC8CF00EE10BEAC5D03F8FD5CA1C7EB1150"
+    },
+    {
+      "File": "src/Interp.Python/zeta_interp/hidden_switch_compiled_ieee.py",
+      "Bytes": 7559,
+      "Sha256": "702A5E6E6BD330CB4D27DD3C3BDDBBEBA779EA8D6127249EFD7E9ECBFA54D8C4"
+    },
+    {
+      "File": "src/Interp.Python/zeta_interp/hidden_switch_compiled_python_identity.py",
+      "Bytes": 16256,
+      "Sha256": "102A339FF06364DF2EB3831EBDA98C74A964053C9C778D1043361014D00CFA2F"
+    },
+    {
+      "File": "src/Interp.Python/zeta_interp/hidden_switch_compiled_record_encoding.py",
+      "Bytes": 9555,
+      "Sha256": "892B59A1572B093805171E0F495126F006A72D56CA87260251C9544C29019744"
+    },
+    {
+      "File": "src/Interp.Python/zeta_interp/hidden_switch_compiled_sources.py",
+      "Bytes": 7226,
+      "Sha256": "7D048A1CD862934B6FA53D634FB05893852F8A528D8004B0297D78611742AC44"
+    },
+    {
+      "File": "src/Interp.Python/zeta_interp/hidden_switch_compiled_storage.py",
+      "Bytes": 10694,
+      "Sha256": "3C7A9C8FECF51B10AA034E4764D18E773AB892382E8CDB4BE3E0945D3CD01750"
+    }
+  ],
+  "Artifacts": [
+    {
+      "File": "capture-owned.tar.gz",
+      "Bytes": 4812800,
+      "Sha256": "8CA09CA17CECCF3A0735C23B715B1F00949451C7F74EDC7C943538F383DD5351",
+      "Encoding": "gzip",
+      "StoredBytes": 590364,
+      "StoredSha256": "5F3A5D0FE25484BEA47C4054EC710ED678749BDFF036CD36439E6BA78E65EDEA"
+    },
+    {
+      "File": "capture-owned-inventory.json.gz",
+      "Bytes": 262193,
+      "Sha256": "F2D3AC9DFB943979884AAAD793B95D2C3FA878A503CEE98B272349ED3F99B5FE",
+      "Encoding": "gzip",
+      "StoredBytes": 26703,
+      "StoredSha256": "F40FF35F407C43B92A685F0CD4B3A01D18B8D7FB5566837822DF49A0D15124EB"
+    },
+    {
+      "File": "pytest-owned-attempt-1.tar.gz",
+      "Bytes": 19077120,
+      "Sha256": "D26BB484E2A9A6A182156BE3649D803DF14AEBBB07678865CAD9A75B0B475919",
+      "Encoding": "gzip",
+      "StoredBytes": 2361790,
+      "StoredSha256": "929202FF51A959F6A877C143D761BE4ABEDB7E5EB0D0BEBDBD5824D133565F74"
+    },
+    {
+      "File": "pytest-owned-attempt-1-inventory.json.gz",
+      "Bytes": 1113773,
+      "Sha256": "C202DFD4FDA6AF65B270D67303716199FAD7287F77C8887B7009A989927B2DD6",
+      "Encoding": "gzip",
+      "StoredBytes": 100619,
+      "StoredSha256": "D33BBD6D62C3CCD3E317FA81869D21DA566F6574211A8F42D1359095C15236A8"
+    },
+    {
+      "File": "pytest-owned-attempt-2.tar.gz",
+      "Bytes": 19200000,
+      "Sha256": "6939BFB90ECE0EA81EEC1B436003926511D5628DBF67D10E0BF9922247B2F750",
+      "Encoding": "gzip",
+      "StoredBytes": 2369217,
+      "StoredSha256": "35D5B8DE74AE9E3CB851254B122C699068A61B19B731AE1D69D05D287618F726"
+    },
+    {
+      "File": "pytest-owned-attempt-2-inventory.json.gz",
+      "Bytes": 1127331,
+      "Sha256": "F0808130328C2B683E18A354AC5AE66DB2628916D92591D48261AD46D8F68270",
+      "Encoding": "gzip",
+      "StoredBytes": 102598,
+      "StoredSha256": "E177CAE776C05DE2E886F19488A104489FCD4C72B89DF238B80ACCD0C3A95F29"
+    },
+    {
+      "File": "pytest-owned-attempt-3.tar.gz",
+      "Bytes": 19200000,
+      "Sha256": "6C068A73D0CE552E4DB007323D94EDB09B1BBDD7B1E25798EBB8850D9025D4EA",
+      "Encoding": "gzip",
+      "StoredBytes": 2369332,
+      "StoredSha256": "B9FF1242D66377F2077A6ADCCDA2E27735763F35E2C3466207E64352228722CE"
+    },
+    {
+      "File": "pytest-owned-attempt-3-inventory.json.gz",
+      "Bytes": 1127331,
+      "Sha256": "8007A383C8F856CFAB3B24A700ED375795F181988980576A96EC8C88ABB14E07",
+      "Encoding": "gzip",
+      "StoredBytes": 102619,
+      "StoredSha256": "9105A2BA00A543149857EED6EDE6FCDD511A132417E51255AEC9B27FB0AC6EAC"
+    },
+    {
+      "File": "capture-stderr.log.gz",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "Encoding": "gzip",
+      "StoredBytes": 20,
+      "StoredSha256": "9CEFFB7310338057CFE71A4AE1E2C98D2C485D81CDEF906532A801F457A38D64"
+    },
+    {
+      "File": "capture-stdout.log.gz",
+      "Bytes": 177,
+      "Sha256": "D6BCC6BB782B67C724E01ED2B28D25EE69C64CA902FB5AF21C5FCB368E0199A6",
+      "Encoding": "gzip",
+      "StoredBytes": 139,
+      "StoredSha256": "D8B9E197B06EAA66C870001103B5196A50689622EBEDFF27935991FE8DDA09EB"
+    },
+    {
+      "File": "capture.py.gz",
+      "Bytes": 4337,
+      "Sha256": "AE939FE84D42D9F10782D326B058A15D78CE1A0F87D83C09CC164CBC830A34DD",
+      "Encoding": "gzip",
+      "StoredBytes": 1776,
+      "StoredSha256": "F4F7611532879EFD78BE75F75B2A061AC2106572D0D8DACA8C3A3EF1B878F519"
+    },
+    {
+      "File": "complete-replay.json.gz",
+      "Bytes": 5430112,
+      "Sha256": "DA745E862C3C2EFF26043D41D4D3DA338BB1A35B0254A47BB6227F4496B28EEC",
+      "Encoding": "gzip",
+      "StoredBytes": 573682,
+      "StoredSha256": "48111CE6B6E716C47069B010A68AE68E6C015AA33733C027A632A7EA9163BB5E"
+    },
+    {
+      "File": "contract.txt.gz",
+      "Bytes": 2708,
+      "Sha256": "B38A082193E345BE52E3602CD064FC08363A3A2CE702A5674D94CD19DE36375A",
+      "Encoding": "gzip",
+      "StoredBytes": 1355,
+      "StoredSha256": "4C68E72F8069D825F993450068B4C5A26D751087E789D3E37744D729AFFDD34E"
+    },
+    {
+      "File": "first-executed-hidden_switch_compiled_identity_replay.py.gz",
+      "Bytes": 29109,
+      "Sha256": "905856CEF7E59ACEE493FC07FC90BB79B2663594841A54BAF6681A66EC9D3CFD",
+      "Encoding": "gzip",
+      "StoredBytes": 7573,
+      "StoredSha256": "E4A5185A13930E3283A5FE79B735F1544EB69493E3EA357283AFA0B9C849677B"
+    },
+    {
+      "File": "first-executed-test_hidden_switch_compiled_identity_replay.py.gz",
+      "Bytes": 18053,
+      "Sha256": "AD1B15895A99DA043E393202509B5509DE22976CCDFFF830D4A3EB68C864CD5D",
+      "Encoding": "gzip",
+      "StoredBytes": 3887,
+      "StoredSha256": "4F72D139DD18DE6E8D37BED7F4E15773AEEF897D2498E286F597F1BAB0F38716"
+    },
+    {
+      "File": "format-2.log.gz",
+      "Bytes": 20,
+      "Sha256": "96A977F329EC3C59092D40E041A019B49DCF03CA04055E177AA0CCB8C27234DF",
+      "Encoding": "gzip",
+      "StoredBytes": 40,
+      "StoredSha256": "10D1F29FBF0F4CE6D2D3ACA6A94AB91FAF21C712B389879848ED269BD3C77D6F"
+    },
+    {
+      "File": "format-check-2.log.gz",
+      "Bytes": 26,
+      "Sha256": "3BC53BF3E981A98A34A852E175BF9B77AF841EDEA74FCA595D9AEDCBAF9A4938",
+      "Encoding": "gzip",
+      "StoredBytes": 46,
+      "StoredSha256": "9A1A2D79ACCCDB0F46930A600A1382606067033CFB52A4673DC15B0C1030D871"
+    },
+    {
+      "File": "format-check-3.log.gz",
+      "Bytes": 26,
+      "Sha256": "3BC53BF3E981A98A34A852E175BF9B77AF841EDEA74FCA595D9AEDCBAF9A4938",
+      "Encoding": "gzip",
+      "StoredBytes": 46,
+      "StoredSha256": "9A1A2D79ACCCDB0F46930A600A1382606067033CFB52A4673DC15B0C1030D871"
+    },
+    {
+      "File": "imports-2.log.gz",
+      "Bytes": 38,
+      "Sha256": "AAC3A0503D8B95052CC85FB9F1717DC82B74AA55853A5AA9749B41E30275D472",
+      "Encoding": "gzip",
+      "StoredBytes": 58,
+      "StoredSha256": "9A293A43CBBDFFC92644CBA254FC3DC7EA239470C11F304101B36540D7ABDBE9"
+    },
+    {
+      "File": "initial-hidden_switch_compiled_identity_replay.py.gz",
+      "Bytes": 29011,
+      "Sha256": "0094B90D93ACD06762A11420F2714056E49095621EB70910BBA605075D4DA68F",
+      "Encoding": "gzip",
+      "StoredBytes": 7521,
+      "StoredSha256": "0A661A8A1C87CF0AA112F6B02F35BBADA9B42DA01C53CFF4BF5B9B6EE550C394"
+    },
+    {
+      "File": "initial-test_hidden_switch_compiled_identity_replay.py.gz",
+      "Bytes": 18053,
+      "Sha256": "AD1B15895A99DA043E393202509B5509DE22976CCDFFF830D4A3EB68C864CD5D",
+      "Encoding": "gzip",
+      "StoredBytes": 3887,
+      "StoredSha256": "4F72D139DD18DE6E8D37BED7F4E15773AEEF897D2498E286F597F1BAB0F38716"
+    },
+    {
+      "File": "mypy-1.log.gz",
+      "Bytes": 236,
+      "Sha256": "9B15E3F1D3834165A53BF4DE417A3D4C9064FE767C7D60B6C64B488F736BA021",
+      "Encoding": "gzip",
+      "StoredBytes": 195,
+      "StoredSha256": "EE7C6846E2C5CC38E4622B7B0D3876986D75BA81F73185CBFEEBA920F0F43BFB"
+    },
+    {
+      "File": "mypy-2.log.gz",
+      "Bytes": 43,
+      "Sha256": "F9B031E5C45AA702CD4FEF028D465551CB20A2C4698E0913C7B00766B20AC4D8",
+      "Encoding": "gzip",
+      "StoredBytes": 63,
+      "StoredSha256": "76EACBBF7755358F4BE970D3CD86B2D0FFA287F96DB2193F42233534159C057D"
+    },
+    {
+      "File": "mypy-3.log.gz",
+      "Bytes": 43,
+      "Sha256": "F9B031E5C45AA702CD4FEF028D465551CB20A2C4698E0913C7B00766B20AC4D8",
+      "Encoding": "gzip",
+      "StoredBytes": 63,
+      "StoredSha256": "76EACBBF7755358F4BE970D3CD86B2D0FFA287F96DB2193F42233534159C057D"
+    },
+    {
+      "File": "operational-note.txt.gz",
+      "Bytes": 265,
+      "Sha256": "1374126BA9B523A2393A4FF0DCD52F5FA6D72E5FA9FBFE2AD6DD8A5825DDF851",
+      "Encoding": "gzip",
+      "StoredBytes": 199,
+      "StoredSha256": "DB478BB18FBC45A13ED1ACE791D2530E851354F0A019C8A1C8B1E07800AD2AC7"
+    },
+    {
+      "File": "preserve.py.gz",
+      "Bytes": 5489,
+      "Sha256": "0C55218B933FBE7C7CA1CE5DC9ACDB552622A57D04CBEDF814DB67CE815D2C37",
+      "Encoding": "gzip",
+      "StoredBytes": 1969,
+      "StoredSha256": "848CB65CBB5136580E32BE5A46A49E445076FF537A4F20CD46693BFE9E0B9934"
+    },
+    {
+      "File": "producer-fixture-00.json.gz",
+      "Bytes": 3959,
+      "Sha256": "BA3832DB8EA18215489C9516AE4D564B4D377C37E54BBDA1157342DB67B13582",
+      "Encoding": "gzip",
+      "StoredBytes": 1450,
+      "StoredSha256": "A13351664D1B5C7DA01092F9D47392DC20A26D61DCC555424D6CAEBCB4172A32"
+    },
+    {
+      "File": "producer-fixture-01.json.gz",
+      "Bytes": 3551,
+      "Sha256": "02EB97F254684431B7F3156A54FC2DCDF7174D17C578F44D49C518C641FFE9DE",
+      "Encoding": "gzip",
+      "StoredBytes": 1362,
+      "StoredSha256": "6611C49D143A3D8A41A47A35D8BA8A5C3C6116509A93159F123EEFB17EA2312B"
+    },
+    {
+      "File": "producer-fixture-02.json.gz",
+      "Bytes": 4112,
+      "Sha256": "617066231B3D59CB28BCFDB0C30320E5A1E67D5E43F4906552FC0B60E481076A",
+      "Encoding": "gzip",
+      "StoredBytes": 1553,
+      "StoredSha256": "F3E431CB416B475B26555382D1EEBB16380E71723E4C93FBE35E004100556D63"
+    },
+    {
+      "File": "producer-fixture-03.json.gz",
+      "Bytes": 3326,
+      "Sha256": "20BAAF939ED4589BB4F7533F90B665C8CD06E638F54C0D494BBF477262565E28",
+      "Encoding": "gzip",
+      "StoredBytes": 1287,
+      "StoredSha256": "BC9294C602460DD89911AE503F4A59320E39106985293C38931EF26CE32CDFB5"
+    },
+    {
+      "File": "producer-fixture-04.json.gz",
+      "Bytes": 3506,
+      "Sha256": "7E0E643179E9839D471EF6218E379F81C3F315B4E1F6CF679EC6115F39D0FCB2",
+      "Encoding": "gzip",
+      "StoredBytes": 1350,
+      "StoredSha256": "D14DDD0A9F601AC56872A78319898B9BCA37E5E873B3A030AF63A26D793CA6F4"
+    },
+    {
+      "File": "producer-fixture-05.json.gz",
+      "Bytes": 3793,
+      "Sha256": "5D91154B279B3298F117A8BEF5F51A358D3F74D8524CFF9FF576A67BC79D2C06",
+      "Encoding": "gzip",
+      "StoredBytes": 1449,
+      "StoredSha256": "928CC2DE84B07EB3B1E9F91A4EEAB9AF46ABCFFB7CCD0FB841CD3E9C84DBE62A"
+    },
+    {
+      "File": "producer-fixture-06.json.gz",
+      "Bytes": 3495,
+      "Sha256": "D5914D331B21E170497C007B16DDCF003D29A0DB3DBD72F396ABA4A6D7F2D169",
+      "Encoding": "gzip",
+      "StoredBytes": 1358,
+      "StoredSha256": "EDA6959F74D895881CA880FB18F28F5778C816BB276AF82F1C4C9A6466A3ABC3"
+    },
+    {
+      "File": "producer-fixture-07.json.gz",
+      "Bytes": 129394,
+      "Sha256": "8BC3D3E041F0F16825F628ADFB1E9B7A1AF7A10C5F2911D2FC9FFDAAAF38E02D",
+      "Encoding": "gzip",
+      "StoredBytes": 15784,
+      "StoredSha256": "0D4FBBCB41AECC1BC890BD4FF570DC99707318F26D00749404D4192B433E3C85"
+    },
+    {
+      "File": "producer-fixture-08.json.gz",
+      "Bytes": 120365,
+      "Sha256": "AA5623BC3BB85862B1031B3B49223C051FB2727C786BEDA240C0091BABDB38EB",
+      "Encoding": "gzip",
+      "StoredBytes": 14396,
+      "StoredSha256": "6D4EA1D6795CA7DC4E2217B967991BCF12A2CFC8436A3F0641036DC120CF34BF"
+    },
+    {
+      "File": "producer-fixture-09.json.gz",
+      "Bytes": 120370,
+      "Sha256": "F1CCCFB8F0F72B5D58E6D10745097DD90973009FF3A5B17BCD4017AF877D5588",
+      "Encoding": "gzip",
+      "StoredBytes": 14406,
+      "StoredSha256": "60C49C1D956F0FAB7A4FA86E367441F66E2762A90E5BE209577E44E3AA8A6DBA"
+    },
+    {
+      "File": "producer-fixture-10.json.gz",
+      "Bytes": 120364,
+      "Sha256": "32BDC0B2C533B2208BAE4DBDAD5AD9E6612DBB49593D530598B9BAB6385D5C62",
+      "Encoding": "gzip",
+      "StoredBytes": 14397,
+      "StoredSha256": "6EF4F467A4E7CBED427311DC4C1AE3F1661EF5203F9F650669E204B33F353F1D"
+    },
+    {
+      "File": "producer-fixture-11.json.gz",
+      "Bytes": 120343,
+      "Sha256": "D5865ECDB4811B963A6FC82C70D1AE6A8A693AFC1CB5A5A681F0265843FF8718",
+      "Encoding": "gzip",
+      "StoredBytes": 14388,
+      "StoredSha256": "BB783A3B1385044A3EACC07139E46A3CE60368E4033EFB65C2A46DF26A243366"
+    },
+    {
+      "File": "producer-fixture-12.json.gz",
+      "Bytes": 120370,
+      "Sha256": "B190410A7FA9AA5D9D525D0128DD6E726FCEB15C36C82C7B8CE5CAB478D00446",
+      "Encoding": "gzip",
+      "StoredBytes": 14394,
+      "StoredSha256": "1DE3D95A26BD528A255EB1A8E051D73CEA2D03777AD5FCC2DE060AC76727B3DF"
+    },
+    {
+      "File": "producer-fixture-13.json.gz",
+      "Bytes": 120370,
+      "Sha256": "4DFFCBD9AF73A74588EC9507F6CE66B9E07B36B9C8A5F79AD143B3353381EE64",
+      "Encoding": "gzip",
+      "StoredBytes": 14405,
+      "StoredSha256": "38CD4D8651F91E90F73FA9773B0732B36214790219A936541B07A1693B200024"
+    },
+    {
+      "File": "producer-fixture-14.json.gz",
+      "Bytes": 120383,
+      "Sha256": "57005BD387390B6634EBEBABE9A723C814F7299B2916FC955B016E850E76BDDE",
+      "Encoding": "gzip",
+      "StoredBytes": 14399,
+      "StoredSha256": "9B40F8EA587A42B8918DC2C512E08559F34451C85867ED952865812C545FE4AD"
+    },
+    {
+      "File": "recorded-fixtures.json.gz",
+      "Bytes": 1197589,
+      "Sha256": "1AFA59FA47336FDCA6836AC10FC14197787919693FC85B50AF7227F9BAACB200",
+      "Encoding": "gzip",
+      "StoredBytes": 117729,
+      "StoredSha256": "86E377415CBE2B2D25762C9F039B31ED4C8651A80A77E7ADB6D77CEBB44A7CEA"
+    },
+    {
+      "File": "replayed-fixture-00.json.gz",
+      "Bytes": 3953,
+      "Sha256": "0094B87BF6C67BED13EBBD0B93C437D447E516A13D0127F97A2CEE65EF690E7D",
+      "Encoding": "gzip",
+      "StoredBytes": 1442,
+      "StoredSha256": "9BF3149816C8D017C0957E2D81DAF7320B03758A4DB70F12380463E21084F06D"
+    },
+    {
+      "File": "replayed-fixture-01.json.gz",
+      "Bytes": 3545,
+      "Sha256": "314DAF0EA7BC64C306334CC95E93E47A3FEC6C9885AFFCF49E30F56D67F768D3",
+      "Encoding": "gzip",
+      "StoredBytes": 1354,
+      "StoredSha256": "2C076E90CB90E5BA7B8B94C5F2F4C11E2D51C9E0FEA6456D4735E2804F4AE0EA"
+    },
+    {
+      "File": "replayed-fixture-02.json.gz",
+      "Bytes": 4106,
+      "Sha256": "DF1D51F29F0F30FC4DF62C1E9DFF7B104DBF1FD46454BB5E920E5C5FCFFC7064",
+      "Encoding": "gzip",
+      "StoredBytes": 1547,
+      "StoredSha256": "54E831CE42FC04402E9DCE7CAB7B7C53D64F53C76D89DAF032F1B89A56A7116F"
+    },
+    {
+      "File": "replayed-fixture-03.json.gz",
+      "Bytes": 3320,
+      "Sha256": "9520ABB1F5753BE1F97AB7E2456A55471FD5785437441BD9F60071A4DCD8BBD1",
+      "Encoding": "gzip",
+      "StoredBytes": 1279,
+      "StoredSha256": "F88666DC2964694427ED6A3D83599BE9486537085FF03F15CDBF266C37D8E8E2"
+    },
+    {
+      "File": "replayed-fixture-04.json.gz",
+      "Bytes": 3500,
+      "Sha256": "AB83905CD3C32F4EDA1383D7C753E5218957AA77F34E0F69F170E36AE4B340BC",
+      "Encoding": "gzip",
+      "StoredBytes": 1340,
+      "StoredSha256": "8CF88A5C22BCDBCD647DFBC7F40C8EEAEDDD62CC4FCEB3004EFD24A2DF5AA19F"
+    },
+    {
+      "File": "replayed-fixture-05.json.gz",
+      "Bytes": 3787,
+      "Sha256": "EB1962B641501CF4653607D852B10B1AC1A31A8553E4BCA56875C79DE6743C6D",
+      "Encoding": "gzip",
+      "StoredBytes": 1440,
+      "StoredSha256": "F776FE2547D7EE72BAA7EE0BC6C19B1ABD82C359F72B9A4CA790A2B7ABBA45D4"
+    },
+    {
+      "File": "replayed-fixture-06.json.gz",
+      "Bytes": 3489,
+      "Sha256": "B5D850C8E22CC2FA89EAA2480D56766D5BE1EFFE96923B94B7C59EBC114036BF",
+      "Encoding": "gzip",
+      "StoredBytes": 1350,
+      "StoredSha256": "25E53A42AFD37D3C61336F73E32EF5E4E7E8B747405E504E03820595890330F6"
+    },
+    {
+      "File": "replayed-fixture-07.json.gz",
+      "Bytes": 129320,
+      "Sha256": "0809C9EFCB56DC67D8EF7E2DCDAB74B1A85A58AB59D1FD59415CF38D79E1D6CD",
+      "Encoding": "gzip",
+      "StoredBytes": 15767,
+      "StoredSha256": "9B518DAA5EDFFEC6FDF7D5CA1801E2DF0B3545564F5775F22AF1BA4A802DC300"
+    },
+    {
+      "File": "replayed-fixture-08.json.gz",
+      "Bytes": 120343,
+      "Sha256": "F98EAA24DDB80A96051234BC8E70DAC3A31144D8C9BF4B82B8364C513D74E14E",
+      "Encoding": "gzip",
+      "StoredBytes": 14377,
+      "StoredSha256": "823590F2FBA493D53E11082C99AEB81B08B0CCE8CA6FBD78377EC3967600CE71"
+    },
+    {
+      "File": "replayed-fixture-09.json.gz",
+      "Bytes": 120348,
+      "Sha256": "1FF9AE2597EC5572639F560C4F5FD6D2BE6195ABC4BBD37FE35FF7C23E996C92",
+      "Encoding": "gzip",
+      "StoredBytes": 14388,
+      "StoredSha256": "B806B442E3766F0BF596C2CFB307847E3285F9969A8127EC7C10CB83F35F5C0E"
+    },
+    {
+      "File": "replayed-fixture-10.json.gz",
+      "Bytes": 120342,
+      "Sha256": "9EC0024D9F5F0149F9A4D9689F46F9DC36A42BE0DEF22CC2CDC8C45E0E035104",
+      "Encoding": "gzip",
+      "StoredBytes": 14379,
+      "StoredSha256": "34A8B2000CBA6282D17B6FC14C694A3E619386B3FD13B4377B200930F1460E64"
+    },
+    {
+      "File": "replayed-fixture-11.json.gz",
+      "Bytes": 120321,
+      "Sha256": "6B82435D49AC1C928DE79C9A58712F995C7F6843A1CDAA15616EE821B2206DE1",
+      "Encoding": "gzip",
+      "StoredBytes": 14369,
+      "StoredSha256": "17ED0D87D2942F122C58AB108003017EA81B037BB823DC50A11DA9DD02EBBB3B"
+    },
+    {
+      "File": "replayed-fixture-12.json.gz",
+      "Bytes": 120348,
+      "Sha256": "E5608E3B20EEF4C58B8A953365B252F0548F9A9F2E6EC7AF9DEBE1FEAC5E841D",
+      "Encoding": "gzip",
+      "StoredBytes": 14375,
+      "StoredSha256": "712988B66CBE00C7A975F341A9E38C516D24731736F53D94F7399F6FCC081C88"
+    },
+    {
+      "File": "replayed-fixture-13.json.gz",
+      "Bytes": 120348,
+      "Sha256": "96A5F01F2D77BC5CE6BC3B2B095CEF0AACB47B649A6A3971A913497BEAA04F3F",
+      "Encoding": "gzip",
+      "StoredBytes": 14385,
+      "StoredSha256": "A4DFDAE2E818631EBDC51CEF94AEFD40DD421DA2040A9FC41A0979C1B6A80F74"
+    },
+    {
+      "File": "replayed-fixture-14.json.gz",
+      "Bytes": 120361,
+      "Sha256": "A1A2923E26CA9C4B15138E899C9BE7FE1F6D4886CEAEC30B1A8CD5AE9B74E989",
+      "Encoding": "gzip",
+      "StoredBytes": 14379,
+      "StoredSha256": "AA9A75CC77E26F57FB4E453152E1B6B3A675929FAC719DC038F5BF4D5372EE40"
+    },
+    {
+      "File": "ruff-1.log.gz",
+      "Bytes": 2226,
+      "Sha256": "94F2921DB990530B9605E7153055CD1D82B0FFCAF70D7F8C13ED677A9AE1A4A7",
+      "Encoding": "gzip",
+      "StoredBytes": 853,
+      "StoredSha256": "B94259CB1254867EA57BE16D96403AE1084C2C4DCF52C6F128A86C2AB4B609FD"
+    },
+    {
+      "File": "ruff-2.log.gz",
+      "Bytes": 19,
+      "Sha256": "82B3E6A6C090A57601D22943BD23FCA9218D1031DBE5A7B754092F9A156B4F18",
+      "Encoding": "gzip",
+      "StoredBytes": 39,
+      "StoredSha256": "F3AF4D142827F5AAD2EB0C72D556D325488A57FB6219AAC10AFEB51085667D53"
+    },
+    {
+      "File": "ruff-3.log.gz",
+      "Bytes": 19,
+      "Sha256": "82B3E6A6C090A57601D22943BD23FCA9218D1031DBE5A7B754092F9A156B4F18",
+      "Encoding": "gzip",
+      "StoredBytes": 39,
+      "StoredSha256": "F3AF4D142827F5AAD2EB0C72D556D325488A57FB6219AAC10AFEB51085667D53"
+    },
+    {
+      "File": "second-executed-hidden_switch_compiled_identity_replay.py.gz",
+      "Bytes": 36876,
+      "Sha256": "00522B05E4679FBDA8D201F8B3847BC8CF00EE10BEAC5D03F8FD5CA1C7EB1150",
+      "Encoding": "gzip",
+      "StoredBytes": 8375,
+      "StoredSha256": "95629E76E6A142460D13681DD122C60D83DB414A887B0E19B6FEABB396F8D8C2"
+    },
+    {
+      "File": "second-executed-test_hidden_switch_compiled_identity_replay.py.gz",
+      "Bytes": 21661,
+      "Sha256": "552F25535F048314620BB9AE8EF1BF843329C238DCFC207AA9F580AC6A0D3CC5",
+      "Encoding": "gzip",
+      "StoredBytes": 4443,
+      "StoredSha256": "34153D8F2AE691E01471F7795A2C8592FF9655F00DE5BA3E7561D9D07C925721"
+    },
+    {
+      "File": "tests-1.log.gz",
+      "Bytes": 100,
+      "Sha256": "3FBDD8CCF6CC2AB550F871313AF5933D88EB89A0173589C229663C07858013EF",
+      "Encoding": "gzip",
+      "StoredBytes": 53,
+      "StoredSha256": "BE759418ADDC232F83D1D72FA52D5BA08FEFF060D11AD7092DD51353A377CCCB"
+    },
+    {
+      "File": "tests-2.log.gz",
+      "Bytes": 1882,
+      "Sha256": "462D667FCD59706BB1EF4A3B44FD3E59DEE1D00633DEFFF37E14AF4B0C8453B7",
+      "Encoding": "gzip",
+      "StoredBytes": 783,
+      "StoredSha256": "89690DBAA89E7AD7A8CF05B75BCCFA5554949240D043580E844B9D13FDD9726C"
+    },
+    {
+      "File": "tests-3.log.gz",
+      "Bytes": 100,
+      "Sha256": "B0F5DB829BCE9B5ECB5352807C76DD85E8EEB77A7556F166F391BEAD3B6656A4",
+      "Encoding": "gzip",
+      "StoredBytes": 53,
+      "StoredSha256": "AFB8A4A35C037930CA963A98D7C6B3EF252089E12D62F07999A022A66B955E03"
+    },
+    {
+      "File": "validation.json.gz",
+      "Bytes": 13204,
+      "Sha256": "9615D179FDA5957ACECFF1E453E67FD77EE14653986CE67A1FCB7D4670727C5A",
+      "Encoding": "gzip",
+      "StoredBytes": 3415,
+      "StoredSha256": "F480784E3D6F4FC2CAE896872F65B93838AD149D20778F20AAA94C33A8C2FC50"
+    },
+    {
+      "File": "compiled-identity-replay-markdown.log.gz",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "Encoding": "gzip",
+      "StoredBytes": 20,
+      "StoredSha256": "9CEFFB7310338057CFE71A4AE1E2C98D2C485D81CDEF906532A801F457A38D64"
+    },
+    {
+      "File": "compiled-identity-replay-preflight.log.gz",
+      "Bytes": 1224,
+      "Sha256": "78384DE8312A3216342FC13B8F8682EAAEF4762D3EB4B3D06DAED458418E405E",
+      "Encoding": "gzip",
+      "StoredBytes": 405,
+      "StoredSha256": "A96E24BB16A9334442FD1E5FD894379C994BD63E91534FE5C91405B3B1F60C13"
+    },
+    {
+      "File": "publication-push.log.gz",
+      "Bytes": 1717,
+      "Sha256": "03BB3192E05E11C21A22F259013748373FB3DF3096647C0D0E558AAE34C317CB",
+      "Encoding": "gzip",
+      "StoredBytes": 667,
+      "StoredSha256": "D59E2E6816132CCC83B62347FA3764D042EB865EF639142FA00E910E5C4B8BC7"
+    }
+  ],
+  "OwnedTrees": [
+    {
+      "OriginalRoot": "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/.git/compiled-identity-replay-development/capture-owned",
+      "Archive": "capture-owned.tar.gz",
+      "Inventory": "capture-owned-inventory.json.gz",
+      "RegularFiles": 976,
+      "FileBytes": 2452262,
+      "Symlinks": 2,
+      "Directories": 376
+    },
+    {
+      "OriginalRoot": "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/.git/compiled-identity-replay-development/pytest-owned-attempt-1",
+      "Archive": "pytest-owned-attempt-1.tar.gz",
+      "Inventory": "pytest-owned-attempt-1-inventory.json.gz",
+      "RegularFiles": 3689,
+      "FileBytes": 10068327,
+      "Symlinks": 21,
+      "Directories": 1478
+    },
+    {
+      "OriginalRoot": "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/.git/compiled-identity-replay-development/pytest-owned-attempt-2",
+      "Archive": "pytest-owned-attempt-2.tar.gz",
+      "Inventory": "pytest-owned-attempt-2-inventory.json.gz",
+      "RegularFiles": 3730,
+      "FileBytes": 10088110,
+      "Symlinks": 23,
+      "Directories": 1496
+    },
+    {
+      "OriginalRoot": "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/.git/compiled-identity-replay-development/pytest-owned-attempt-3",
+      "Archive": "pytest-owned-attempt-3.tar.gz",
+      "Inventory": "pytest-owned-attempt-3-inventory.json.gz",
+      "RegularFiles": 3730,
+      "FileBytes": 10088110,
+      "Symlinks": 23,
+      "Directories": 1496
+    }
+  ],
+  "NativeLaunches": 0,
+  "PolicyCalls": 0,
+  "RegisteredSourceGeneration": false
+}

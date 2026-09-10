@@ -1,0 +1,14 @@
+{
+  "id": "080d03c6b566b010a0130008fd326195",
+  "at": "2026-09-06T22:28:50.006Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1WDDB6M087G0R002KN8DWQ",
+    "type": "task",
+    "title": "Specify the finite stochastic WSet to quantum channel bridge with exact witnesses",
+    "slug": "specify-the-finite-stochastic-wset-to-quantum-channel-bridge",
+    "priority": "P2",
+    "filename": "081M1WDDB6M087G0R002KN8DWQ-specify-the-finite-stochastic-wset-to-quantum-channel-bridge.md"
+  }
+}

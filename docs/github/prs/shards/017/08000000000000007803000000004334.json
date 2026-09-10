@@ -1,0 +1,12 @@
+{
+  "pr_number": 17204,
+  "archive_path": "docs/history/pr-reviews/PR-17204-fix-081m24fdnsy087g0r0005rm1cd-a-pr-stranded-on-a-poisoned-base-is-not-a-pr-with.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-10T02:02:01.436Z",
+  "schema_version": "v1",
+  "commit_sha": "0225a929f91eb56615db58bf8be4065f65c016cc",
+  "title": "fix(081M24FDNSY087G0R0005RM1CD): a PR stranded on a poisoned base is not a PR with failing tests",
+  "state": "MERGED",
+  "merged_at": "2026-09-10T02:01:16Z",
+  "head_ref": "pr-base-staleness-reader"
+}

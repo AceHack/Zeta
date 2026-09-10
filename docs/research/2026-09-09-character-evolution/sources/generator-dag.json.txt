@@ -1,0 +1,127 @@
+{
+  "schema": 1,
+  "status": "research-grade execution record; not a production DAG interpreter",
+  "nodes": [
+    {
+      "id": "AceHack/body-field",
+      "kind": "frozen-TripoSR-field",
+      "path": "/Users/acehack/Documents/Blender/Character-Learning-Lab/reconstruction-u2net/AceHack/scene-code.pt",
+      "sha256": "e0e89b7c9a4a59fe0df6db79c26ec66d19ed10524219618b2ce298248ab69cae",
+      "parents": []
+    },
+    {
+      "id": "AceHack/body-mesh",
+      "kind": "sample-density",
+      "resolution": 384,
+      "threshold": 25,
+      "parents": [
+        "AceHack/body-field"
+      ]
+    },
+    {
+      "id": "AceHack/head-reference",
+      "kind": "derived-raster-input",
+      "path": "references/AceHack-head-derived.png",
+      "sha256": "06c38a71e9d93643d317042d934190cd40716ce8ae2d0186ab37746afa795d56",
+      "parents": []
+    },
+    {
+      "id": "AceHack/head-field",
+      "kind": "TripoSR-after-U2Net",
+      "path": "heads/AceHack/scene-code.pt",
+      "sha256": "6294417ce1f1533711fb89483c791109dc17326d4e76f29edd4631335186edbc",
+      "parents": [
+        "AceHack/head-reference"
+      ]
+    },
+    {
+      "id": "AceHack/head-mesh",
+      "kind": "sample-density",
+      "resolution": 384,
+      "threshold": 25,
+      "parents": [
+        "AceHack/head-field"
+      ]
+    },
+    {
+      "id": "AceHack/assembly",
+      "kind": "Blender-composition",
+      "recipe": "compose_v5.py",
+      "parents": [
+        "AceHack/body-mesh",
+        "AceHack/head-mesh"
+      ],
+      "uncertainty": [
+        "unobserved sides and rear",
+        "likeness not accepted",
+        "open mesh boundaries",
+        "unrigged"
+      ]
+    },
+    {
+      "id": "Xenaa/body-field",
+      "kind": "frozen-TripoSR-field",
+      "path": "/Users/acehack/Documents/Blender/Character-Learning-Lab/reconstruction-u2net/Xenaa/scene-code.pt",
+      "sha256": "3e01cee97997f421e016ff2eea485946642a8e6c10db2b7a3fb3b52f468e3465",
+      "parents": []
+    },
+    {
+      "id": "Xenaa/body-mesh",
+      "kind": "sample-density",
+      "resolution": 384,
+      "threshold": 25,
+      "parents": [
+        "Xenaa/body-field"
+      ]
+    },
+    {
+      "id": "Xenaa/head-reference",
+      "kind": "derived-raster-input",
+      "path": "references/Xenaa-head-derived.png",
+      "sha256": "1de20618abb46749c2ec21665e4ecc02deeb09db4415d52674c3778644634d07",
+      "parents": []
+    },
+    {
+      "id": "Xenaa/head-field",
+      "kind": "TripoSR-after-U2Net",
+      "path": "heads/Xenaa/scene-code.pt",
+      "sha256": "c7997dc27b53979ccb2ef9c2aa08160adf464799bf4f4fc8627ae417897e3e59",
+      "parents": [
+        "Xenaa/head-reference"
+      ]
+    },
+    {
+      "id": "Xenaa/head-mesh",
+      "kind": "sample-density",
+      "resolution": 384,
+      "threshold": 25,
+      "parents": [
+        "Xenaa/head-field"
+      ]
+    },
+    {
+      "id": "Xenaa/assembly",
+      "kind": "Blender-composition",
+      "recipe": "compose_v5.py",
+      "parents": [
+        "Xenaa/body-mesh",
+        "Xenaa/head-mesh"
+      ],
+      "uncertainty": [
+        "unobserved sides and rear",
+        "likeness not accepted",
+        "open mesh boundaries",
+        "unrigged"
+      ]
+    },
+    {
+      "id": "duo-review",
+      "kind": "Blender-render-and-camera-orbit",
+      "recipe": "finalize_scene_v5.py",
+      "parents": [
+        "AceHack/assembly",
+        "Xenaa/assembly"
+      ]
+    }
+  ]
+}

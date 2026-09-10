@@ -574,7 +574,7 @@ describe("resource-rung / lane-cpu are checked against the ladder, not the prose
   // cannot tell them apart and does not try -- it reports disagreement, and a
   // human decides which kind it was. That is the whole design.
   test("the lane totals and their fits/over verdicts both hold today", () => {
-    expect(checkCitation(only("[cite: lane-cpu metal 8390 over]"), EVIDENCE, subject("hindsight", ""))).toBe(null);
+    expect(checkCitation(only("[cite: lane-cpu metal 7390 over]"), EVIDENCE, subject("hindsight", ""))).toBe(null);
     // `dev` has now cited THREE different pairs, and the sequence is the point:
     //   `1906 fits` -> `2906 over`  (gmod was always applied, never counted)
     //   `2906 over` -> `2006 fits`  (the rung learned to reach raw manifests)
@@ -596,7 +596,7 @@ describe("resource-rung / lane-cpu are checked against the ladder, not the prose
     //                                no new pods -- see single-node-budget.json)
     // Neither transition was a number edited to agree with prose; both went red
     // HERE first, which is the entire job of this mechanism.
-    expect(checkCitation(only("[cite: lane-cpu dev 1815 fits]"), EVIDENCE, subject("hindsight", ""))).toBe(null);
+    expect(checkCitation(only("[cite: lane-cpu dev 1715 fits]"), EVIDENCE, subject("hindsight", ""))).toBe(null);
     // The two superseded pairs are still refused, so a revert of the prose
     // without a revert of the ladder cannot pass.
     expect(checkCitation(only("[cite: lane-cpu dev 2906 over]"), EVIDENCE, subject("hindsight", ""))?.rule).toBe(
@@ -612,18 +612,18 @@ describe("resource-rung / lane-cpu are checked against the ladder, not the prose
     // claim. A citation that got the number right and the verdict wrong would
     // otherwise read as fully checked, so the polarity is resolved against the
     // envelope's own budget rather than trusted.
-    const wrongWay = checkCitation(only("[cite: lane-cpu metal 8390 fits]"), EVIDENCE, subject("hindsight", ""));
+    const wrongWay = checkCitation(only("[cite: lane-cpu metal 7390 fits]"), EVIDENCE, subject("hindsight", ""));
     expect(wrongWay?.rule).toBe("cited-lane-verdict-disagrees");
     expect(wrongWay?.detail).toContain("does NOT fit");
     // The dev side now needs the OTHER polarity to be the wrong one, because
     // the lane fits: right number, wrong verdict.
-    const alsoWrong = checkCitation(only("[cite: lane-cpu dev 1815 over]"), EVIDENCE, subject("hindsight", ""));
+    const alsoWrong = checkCitation(only("[cite: lane-cpu dev 1715 over]"), EVIDENCE, subject("hindsight", ""));
     expect(alsoWrong?.rule).toBe("cited-lane-verdict-disagrees");
     expect(alsoWrong?.detail).toContain("FITS");
   });
 
   test("a verdict word outside the pair is refused rather than ignored", () => {
-    const verdict = checkCitation(only("[cite: lane-cpu dev 1815 tight]"), EVIDENCE, subject("hindsight", ""));
+    const verdict = checkCitation(only("[cite: lane-cpu dev 1715 tight]"), EVIDENCE, subject("hindsight", ""));
     expect(verdict?.rule).toBe("cited-lane-verdict-disagrees");
   });
 
@@ -704,18 +704,28 @@ describe("hindsight is the symptom, and the ladder still says so", () => {
     // components at the dev rung's 25m floor. The CPU claim this test makes is
     // unchanged in kind -- the lane still fits on CPU and hindsight's removal
     // still would not have saved the metal rung.
-    expect(laneAtDev.cpuMillis).toBe(1815);
+    //   2026-09-07  `game-hosting` EXCLUDED     1715m, 785m of spare -- gmod left the
+    //                                            lane's excludeGlob-derived cohort so
+    //                                            the dev lane's memory would fit the
+    //                                            free runner (11148Mi -> 9100Mi). CPU
+    //                                            was never the binding axis here; this
+    //                                            entry moves it only as a side effect.
+    expect(laneAtDev.cpuMillis).toBe(1715);
     expect(laneAtDev.cpuMillis).toBeLessThanOrEqual(budget.cpuMillis);
-    expect(budget.cpuMillis - laneAtDev.cpuMillis).toBe(685);
-    // And gmod is still COUNTED, not excluded -- reachability is not removal.
-    // It contributes 100m at `dev` where it contributed 1000m, and the `metal`
-    // rung still carries the whole core.
+    expect(budget.cpuMillis - laneAtDev.cpuMillis).toBe(785);
+    // gmod is NO LONGER IN THE LANE, and this is inverted rather than deleted because
+    // the sentence it replaces was the finding at the time: "gmod is still COUNTED, not
+    // excluded -- reachability is not removal." True while the lane could afford it.
+    // Since 2026-09-07 it is excluded from the LANE and still governed in the
+    // CATALOGUE, so subtracting it from the lane's cohort removes nothing.
     const withoutGmod = EVIDENCE.devLaneDirs.filter((dir) => dir !== "game-hosting/gmod");
-    expect(laneAtDev.cpuMillis - resourceTotal(catalogue, "dev", withoutGmod).cpuMillis).toBe(100);
+    expect(laneAtDev.cpuMillis - resourceTotal(catalogue, "dev", withoutGmod).cpuMillis).toBe(0);
     expect(
       resourceTotal(catalogue, "metal", EVIDENCE.devLaneDirs).cpuMillis -
         resourceTotal(catalogue, "metal", withoutGmod).cpuMillis,
-    ).toBe(1000);
+    ).toBe(0);
+    // The rung still reaches it -- exclusion moved the cohort, it did not hide the cost.
+    expect(catalogue.claims.find((c) => c.dir === "game-hosting/gmod")?.cpuMillis["metal"]).toBe(1000);
   });
 
   test("the committed tree carries `metal`, which is the rung that does not fit", () => {

@@ -1,0 +1,14 @@
+{
+  "id": "080d043a0303a010a0130008a09a7ce4",
+  "at": "2026-09-09T17:38:58.292Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M23M0R3J087G0R000BBNXHV",
+    "type": "task",
+    "title": "Measure the SIMD ray tracer on a BVH-tractable scene, so the throughput number stops being a fact about 4_21",
+    "slug": "measure-the-simd-ray-tracer-on-a-bvh-tractable-scene-so-the",
+    "priority": "P2",
+    "filename": "081M23M0R3J087G0R000BBNXHV-measure-the-simd-ray-tracer-on-a-bvh-tractable-scene-so-the.md"
+  }
+}

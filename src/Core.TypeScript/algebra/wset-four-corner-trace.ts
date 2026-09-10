@@ -68,7 +68,7 @@
  * Landauer 1961 (reversibility and the erasure cost); Fritz 2020, Cho–Jacobs 2019 (the corners).
  */
 
-import type { FourCornerOwnership } from "../workflow-engine/types.ts";
+import type { FourCornerOwnership } from "../four-corner/ownership.ts";
 import { consolidateWSet, plusWSet, type StarRing, type WElement, type WSet } from "./wset.ts";
 
 // ─── The ring corner that admits a trace ─────────────────────────────────────────────────────

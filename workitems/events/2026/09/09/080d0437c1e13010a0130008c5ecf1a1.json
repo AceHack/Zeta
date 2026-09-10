@@ -1,0 +1,14 @@
+{
+  "id": "080d0437c1e13010a0130008c5ecf1a1",
+  "at": "2026-09-09T16:20:10.406Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M23FGF16087G0R0028KJKPA",
+    "type": "bug",
+    "title": "A comment claimed CodeQL alert 224 was cleared substantively; the alert is open on that exact line",
+    "slug": "a-comment-claimed-codeql-alert-224-was-cleared-substantively",
+    "priority": "P2",
+    "filename": "081M23FGF16087G0R0028KJKPA-a-comment-claimed-codeql-alert-224-was-cleared-substantively.md"
+  }
+}

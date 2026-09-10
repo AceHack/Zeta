@@ -1,0 +1,14 @@
+{
+  "id": "080d04469156c010a01300087214c2bc",
+  "at": "2026-09-10T00:57:50.040Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M24D4APR087G0R001QRQ071",
+    "type": "bug",
+    "title": "close five npm/pnpm advisory alerts: qs 6.16.0 in both site lockfiles and smol-toml past its override floor",
+    "slug": "close-five-npm-pnpm-advisory-alerts-qs-6-16-0-in-both-site-l",
+    "priority": "P2",
+    "filename": "081M24D4APR087G0R001QRQ071-close-five-npm-pnpm-advisory-alerts-qs-6-16-0-in-both-site-l.md"
+  }
+}

@@ -1,0 +1,155 @@
+from pathlib import Path
+from collections import Counter
+import datetime
+import hashlib
+import json
+import subprocess
+import sys
+
+OUT = Path(sys.argv[1])
+HEAD = 'a2bf4225cef685ff9c67037d8dbcf7e19b9704cb'
+REPO = 'Lucent-Financial-Group/Zeta'
+GH = '/opt/homebrew/bin/gh'
+PREFIX = f'repos/{REPO}'
+
+def now():
+    return datetime.datetime.now(datetime.timezone.utc).isoformat()
+
+def call(*argv):
+    return subprocess.check_output([GH, *argv])
+
+def api(path):
+    return json.loads(call('api', path))
+
+def save(name, value):
+    (OUT / name).write_text(json.dumps(value, indent=2) + '\n')
+
+def gql(query, cursor):
+    argv = ['api', 'graphql', '-f', 'query=' + query]
+    if cursor is not None:
+        argv += ['-f', 'cursor=' + cursor]
+    result = json.loads(call(*argv))
+    if result.get('errors'):
+        raise ValueError(result['errors'])
+    pr = result['data']['repository']['pullRequest']
+    assert pr['headRefOid'] == HEAD
+    return pr
+
+CHECKS = '''query($cursor:String) {
+ repository(owner:"Lucent-Financial-Group",name:"Zeta") {
+  pullRequest(number:16928) {headRefOid commits(last:1) {nodes {commit {
+   oid statusCheckRollup {state contexts(first:25,after:$cursor) {
+    totalCount pageInfo {hasNextPage endCursor}
+    nodes {__typename ... on CheckRun {
+     id databaseId name status conclusion detailsUrl startedAt completedAt
+     checkSuite {commit {oid} workflowRun {databaseId workflow {name}}}
+    } ... on StatusContext {id context state targetUrl createdAt}}
+ }}}}}}}
+}'''
+THREADS = '''query($cursor:String) {
+ repository(owner:"Lucent-Financial-Group",name:"Zeta") {
+  pullRequest(number:16928) {headRefOid reviewThreads(first:25,after:$cursor) {
+   totalCount pageInfo {hasNextPage endCursor}
+   nodes {id isResolved isOutdated path line originalLine
+    comments(first:100) {totalCount pageInfo {hasNextPage endCursor}
+     nodes {id databaseId body url createdAt lastEditedAt author {login}}}
+ }}}}
+}'''
+started = now()
+before = api(PREFIX + '/pulls/16928')
+assert before['head']['sha'] == HEAD
+
+def paged(query, select, filename):
+    cursor = None
+    pages = []
+    nodes = []
+    ids = set()
+    cursors = set()
+    total = None
+    for index in range(100):
+        observed = now()
+        pr = gql(query, cursor)
+        c = select(pr)
+        assert isinstance(c['totalCount'], int)
+        if total is None:
+            total = c['totalCount']
+        assert total == c['totalCount']
+        for node in c['nodes']:
+            assert node['id'] not in ids
+            ids.add(node['id'])
+        pages.append({'ObservedAtUtc':observed,'RequestedCursor':cursor,'HeadSha':HEAD,'Connection':c})
+        nodes.extend(c['nodes'])
+        if not c['pageInfo']['hasNextPage']:
+            assert len(nodes) == total
+            save(filename, {'HeadSha':HEAD,'DeclaredCount':total,'ObservedCount':len(nodes),'Pages':pages})
+            return nodes, len(pages)
+        cursor = c['pageInfo']['endCursor']
+        assert cursor and cursor not in cursors
+        cursors.add(cursor)
+    raise ValueError('Page cap exceeded')
+
+def check_connection(pr):
+    commit = pr['commits']['nodes'][0]['commit']
+    assert commit['oid'] == HEAD
+    return commit['statusCheckRollup']['contexts']
+
+checks, check_pages = paged(CHECKS, check_connection, 'check-pages.json')
+threads, thread_pages = paged(THREADS, lambda pr:pr['reviewThreads'], 'review-thread-pages.json')
+for thread in threads:
+    comments = thread['comments']
+    assert comments['pageInfo']['hasNextPage'] is False
+    assert comments['totalCount'] == len(comments['nodes'])
+
+required = subprocess.run([GH,'pr','checks','16928','--repo',REPO,'--required','--json','name,state,workflow,link,bucket,event'], capture_output=True)
+save('required-checks.json',{'ObservedAtUtc':now(),'HeadShaObservedBefore':HEAD,'ExitCode':required.returncode,'Stdout':json.loads(required.stdout),'Stderr':required.stderr.decode()})
+assert required.returncode == 0
+
+failed = [c for c in checks if c['__typename']=='CheckRun' and c['conclusion']=='FAILURE']
+for check in failed:
+    ident = check['databaseId']
+    job = api(PREFIX + f'/actions/jobs/{ident}')
+    assert job['head_sha']==HEAD
+    save(f'failed-job-{ident}.json',job)
+    log = call('api', PREFIX + f'/actions/jobs/{ident}/logs', '--allow-escape-sequences')
+    (OUT / f'failed-job-{ident}.log').write_bytes(log)
+    save(f'failed-check-{ident}.json',api(PREFIX + f'/check-runs/{ident}'))
+    save(f'failed-run-{job["run_id"]}.json',api(PREFIX + f'/actions/runs/{job["run_id"]}'))
+
+rules = []
+page = 1
+while True:
+    rows = api(PREFIX + f'/rulesets?per_page=100&page={page}&includes_parents=true')
+    rules.extend(rows)
+    if len(rows)<100:
+        break
+    page += 1
+    assert page<=100
+save('rulesets.json',rules)
+for rule in rules:
+    if rule['enforcement']=='active' and 'CI' in rule['name']:
+        save(f'ruleset-{rule["id"]}.json',api(PREFIX + f'/rulesets/{rule["id"]}'))
+workflow = call('api', PREFIX + f'/contents/.github/workflows/gate.yml?ref={HEAD}', '-H','Accept: application/vnd.github.raw+json')
+(OUT/'gate-workflow-at-head.yml.txt').write_bytes(workflow)
+after = api(PREFIX + '/pulls/16928')
+assert after['head']['sha'] == HEAD
+
+def project_pr(pr):
+    return {key:pr.get(key) for key in ('number','html_url','state','merged','mergeable','mergeable_state','updated_at','merge_commit_sha')} | {'HeadSha':pr['head']['sha'],'BaseSha':pr['base']['sha']}
+summary = {
+ 'StartedAtUtc':started,'FinishedAtUtc':now(),'HeadSha':HEAD,
+ 'PRBefore':project_pr(before),'PRAfter':project_pr(after),
+ 'CheckPages':check_pages,'CheckCount':len(checks),
+ 'CheckStates':dict(Counter(c.get('conclusion') or c.get('status') or c.get('state') for c in checks)),
+ 'ThreadPages':thread_pages,'ThreadCount':len(threads),
+ 'UnresolvedThreads':[{'Id':t['id'],'Path':t['path'],'Line':t['line'],'IsOutdated':t['isOutdated']} for t in threads if not t['isResolved']],
+ 'RequiredCheckCommandExitCode':required.returncode,
+ 'FailedChecks':[{'Name':c['name'],'Id':c['databaseId'],'Url':c['detailsUrl']} for c in failed],
+ 'Scope':'Read-only non-atomic API snapshot, exact PR head checked before/after and on every page; counts/IDs/cursors and terminal completeness checked. No rerun, cancellation, comment or thread mutation.'
+}
+save('snapshot.json',summary)
+manifest = {}
+for path in sorted(OUT.iterdir()):
+    data = path.read_bytes()
+    manifest[path.name] = {'Bytes':len(data),'Sha256':hashlib.sha256(data).hexdigest()}
+save('capture-manifest.json', {'Files':manifest})
+print(json.dumps(summary,indent=2))

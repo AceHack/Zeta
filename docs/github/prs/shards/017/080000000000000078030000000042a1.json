@@ -1,0 +1,12 @@
+{
+  "pr_number": 17057,
+  "archive_path": "docs/history/pr-reviews/PR-17057-feat-081m20w9ga4087g0r0015ydsnq-remap-epoch-crash-keeps-prior-contentid.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-08T16:37:34.566Z",
+  "schema_version": "v1",
+  "commit_sha": "03741bf5e8d046c6f315d6f80fbad441a866b2d2",
+  "title": "feat(081M20W9GA4087G0R0015YDSNQ): remap-epoch crash keeps prior ContentId",
+  "state": "MERGED",
+  "merged_at": "2026-09-08T16:36:51Z",
+  "head_ref": "feat/zetafs-pr12-remap-epoch-crash"
+}

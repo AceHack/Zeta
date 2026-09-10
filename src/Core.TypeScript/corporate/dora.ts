@@ -39,7 +39,7 @@
 import { ClaimState, ShardState, type WorkQueue } from "./work-market";
 import { isPassing, type GateEvaluation } from "./quality-gate";
 import type { QaCycleReport } from "./qa";
-import type { DoraMetrics } from "../workflow-engine/agent-loop/state-machine";
+import type { DoraMetrics } from "../protocol/agent-loop-contract";
 import type { ClassificationResult } from "../dora-classify/classify";
 
 /** A field the run could not measure, and why not. */

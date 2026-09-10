@@ -1,0 +1,12 @@
+{
+  "pr_number": 16905,
+  "archive_path": "docs/history/pr-reviews/PR-16905-feat-creds-map-frost-result-to-named-probe-tpmrm0-is-not-present.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-07T02:18:44.262Z",
+  "schema_version": "v1",
+  "commit_sha": "688ef8ae26618b567a4864e563c903ef7d3ace7a",
+  "title": "feat(creds): Map frost result to named probe; tpmrm0 is not present",
+  "state": "MERGED",
+  "merged_at": "2026-09-07T02:18:04Z",
+  "head_ref": "cursor/frost-named-probe-27c5"
+}

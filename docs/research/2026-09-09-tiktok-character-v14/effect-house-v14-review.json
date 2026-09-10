@@ -1,0 +1,42 @@
+{
+  "app_version": "5.14.0",
+  "Xenaa": {
+    "package_display_mb": 2.0,
+    "test_timestamp_ui": "2026-09-09 11:47",
+    "fps": 16.55,
+    "memory_mb": 50.35,
+    "result": "Passed",
+    "preview": "Mouth Open (Person 1)",
+    "mouth_open_visually_observed": true,
+    "graph": [
+      {
+        "node": "Face Avatar Drive",
+        "error": false,
+        "deformation": {
+          "type": "Component",
+          "value": "Guid(16162614975402512312, 16714714260981872804)"
+        }
+      }
+    ]
+  },
+  "scope": "Supplied prerecorded preview and Effect House test, not a live camera or phone trial; 11 prototype channels, not ARKit-52 complete; finger tracking not connected",
+  "AceHack": {
+    "package_display_mb": 1.9,
+    "test_timestamp_ui": "2026-09-09 12:01",
+    "fps": 16.55,
+    "memory_mb": 50.45,
+    "result": "Passed",
+    "preview": "Mouth Open (Person 1)",
+    "expression_motion_visually_observed": true,
+    "graph": [
+      {
+        "node": "Face Avatar Drive",
+        "error": false,
+        "deformation": {
+          "type": "Component",
+          "value": "Guid(16304597425202039032, 14984419995755455667)"
+        }
+      }
+    ]
+  }
+}

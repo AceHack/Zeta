@@ -1,0 +1,18 @@
+{
+  "Status": "passed",
+  "PublicationCut": "b65679674760e64bfe34e903646a2fd211d2420d",
+  "FullGateSource": "19efca924f6765bbdd3b4017f707fa8f08302bd1",
+  "NewSourceTestPaths": 5,
+  "SourceChangesAfterGate": 0,
+  "ParentClaimsAbsentFromPublication": true,
+  "RootClaimsPresent": true,
+  "IntegrationArchiveRecords": 6,
+  "IntegrationStoredBytes": 2739,
+  "IntegrationOriginalBytes": 8427,
+  "IntegrationManifestBytes": 2183,
+  "IntegrationManifestSha256": "333fcb88a73c3da06dad7b98deb17b061c35b217187fd662195c75f6dfdc2c8d",
+  "PublicationGateBytes": 1362,
+  "PublicationGateSha256": "c7561cf0e5dd61e406cffae95b49151dd32602169a68889a2fdb2068e889768d",
+  "OriginalRemovalFailureBytes": 230,
+  "OriginalRemovalFailureSha256": "a3c0c26dd04732b89bafb3bdd8d7d88d7fccdabdfd9b5f5d72bbf43b2301995c"
+}

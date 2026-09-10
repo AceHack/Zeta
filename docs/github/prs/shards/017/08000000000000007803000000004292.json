@@ -1,0 +1,12 @@
+{
+  "pr_number": 17042,
+  "archive_path": "docs/history/pr-reviews/PR-17042-feat-081m1zn86pb087g0r003226bcj-persist-mutbuf-as-one-tmp-rename-slot.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-08T05:13:28.883Z",
+  "schema_version": "v1",
+  "commit_sha": "d35c2b35d1b06d04427a9a4f6972bd1331305af8",
+  "title": "feat(081M1ZN86PB087G0R003226BCJ): persist mutbuf as one tmp-rename slot",
+  "state": "MERGED",
+  "merged_at": "2026-09-08T05:12:51Z",
+  "head_ref": "feat/zetafs-pr12-mutbuf-atomic-slot"
+}

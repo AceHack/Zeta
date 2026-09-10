@@ -1,0 +1,12 @@
+{
+  "pr_number": 16973,
+  "archive_path": "docs/history/pr-reviews/PR-16973-feat-creds-frost-look-cli-takes-bun-json-look-json-probe-is-ignored.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-07T21:32:15.980Z",
+  "schema_version": "v1",
+  "commit_sha": "e7a0ffc58ddc06db45240e8c1b99255eafd6ff2c",
+  "title": "feat(creds): frost look CLI takes bun JSON look; JSON probe is ignored",
+  "state": "MERGED",
+  "merged_at": "2026-09-07T21:31:39Z",
+  "head_ref": "cursor/frost-look-from-json-27c5"
+}

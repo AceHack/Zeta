@@ -1,0 +1,14 @@
+{
+  "id": "080d0440f4c4d010a01300080470cb98",
+  "at": "2026-09-09T21:41:41.658Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M241X64R087G0R0038NK0V3",
+    "type": "task",
+    "title": "Chart assertion census — per-chart tier and the vacuity column",
+    "slug": "chart-assertion-census-per-chart-tier-and-the-vacuity-column",
+    "priority": "P2",
+    "filename": "081M241X64R087G0R0038NK0V3-chart-assertion-census-per-chart-tier-and-the-vacuity-column.md"
+  }
+}

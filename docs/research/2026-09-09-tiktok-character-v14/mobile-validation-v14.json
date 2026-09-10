@@ -1,0 +1,587 @@
+[
+  {
+    "file": "mobile-export-v14/AceHack-body-v14.glb",
+    "bytes": 3476988,
+    "sha256": "aa470bcb1880c0cee53b4415b0730ce0bc835164f0d6c502a5368dc72f6b949c",
+    "joints": [
+      50
+    ],
+    "meshes": [
+      {
+        "name": "geometry_0",
+        "vertices_after_uv_splits": 13470,
+        "triangles": 17565,
+        "targets": [],
+        "skinned": true
+      },
+      {
+        "name": "geometry_0",
+        "vertices_after_uv_splits": 621,
+        "triangles": 1030,
+        "targets": [],
+        "skinned": true
+      },
+      {
+        "name": "geometry_0.001",
+        "vertices_after_uv_splits": 12836,
+        "triangles": 16522,
+        "targets": [
+          {
+            "name": "jawOpen",
+            "maximum_delta_m": 0.02121322956664627
+          },
+          {
+            "name": "jawLeft",
+            "maximum_delta_m": 0.004999999888241291
+          },
+          {
+            "name": "jawRight",
+            "maximum_delta_m": 0.004999999888241291
+          },
+          {
+            "name": "mouthSmileLeft",
+            "maximum_delta_m": 0.005670530215466647
+          },
+          {
+            "name": "mouthSmileRight",
+            "maximum_delta_m": 0.005676087211214531
+          },
+          {
+            "name": "mouthPucker",
+            "maximum_delta_m": 0.006314563656570959
+          },
+          {
+            "name": "browInnerUp",
+            "maximum_delta_m": 0.003999114036560059
+          },
+          {
+            "name": "browDownLeft",
+            "maximum_delta_m": 0.002599954605102539
+          },
+          {
+            "name": "browDownRight",
+            "maximum_delta_m": 0.002820730209350586
+          },
+          {
+            "name": "eyeBlinkLeft",
+            "maximum_delta_m": 0.00447392463684082
+          },
+          {
+            "name": "eyeBlinkRight",
+            "maximum_delta_m": 0.00422978401184082
+          }
+        ],
+        "skinned": true
+      },
+      {
+        "name": "AceHack Left radial arm topology",
+        "vertices_after_uv_splits": 1719,
+        "triangles": 2778,
+        "targets": [],
+        "skinned": true
+      },
+      {
+        "name": "AceHackLeftIndex",
+        "vertices_after_uv_splits": 1140,
+        "triangles": 2260,
+        "targets": [],
+        "skinned": true
+      },
+      {
+        "name": "geometry_0.008",
+        "vertices_after_uv_splits": 1993,
+        "triangles": 2541,
+        "targets": [],
+        "skinned": true
+      },
+      {
+        "name": "AceHack | Mouth cavity",
+        "vertices_after_uv_splits": 320,
+        "triangles": 636,
+        "targets": [],
+        "skinned": true
+      },
+      {
+        "name": "AceHack Right radial arm topology",
+        "vertices_after_uv_splits": 1661,
+        "triangles": 2778,
+        "targets": [],
+        "skinned": true
+      },
+      {
+        "name": "AceHackRightIndex",
+        "vertices_after_uv_splits": 1140,
+        "triangles": 2260,
+        "targets": [],
+        "skinned": true
+      },
+      {
+        "name": "geometry_0.011",
+        "vertices_after_uv_splits": 1873,
+        "triangles": 2224,
+        "targets": [],
+        "skinned": true
+      },
+      {
+        "name": "AceHack seated collar",
+        "vertices_after_uv_splits": 512,
+        "triangles": 1024,
+        "targets": [],
+        "skinned": true
+      },
+      {
+        "name": "AceHack tongue",
+        "vertices_after_uv_splits": 266,
+        "triangles": 528,
+        "targets": [],
+        "skinned": true
+      },
+      {
+        "name": "AceHack | Upper teeth strip",
+        "vertices_after_uv_splits": 784,
+        "triangles": 480,
+        "targets": [],
+        "skinned": true
+      }
+    ],
+    "images": [
+      {
+        "size": [
+          1024,
+          1024
+        ],
+        "bytes": 257263,
+        "format": "JPEG"
+      },
+      {
+        "size": [
+          1024,
+          1024
+        ],
+        "bytes": 268193,
+        "format": "JPEG"
+      },
+      {
+        "size": [
+          1024,
+          1024
+        ],
+        "bytes": 103129,
+        "format": "JPEG"
+      },
+      {
+        "size": [
+          1024,
+          1024
+        ],
+        "bytes": 85567,
+        "format": "JPEG"
+      }
+    ],
+    "checks": "finite all accessors; valid index ranges; nonzero morphs; image dimensions/bytes; normalized max-four weights when present",
+    "scope": "Structural subset audit, not complete Khronos validation or proof of deformation quality"
+  },
+  {
+    "file": "mobile-export-v14/Xenaa-body-v14.glb",
+    "bytes": 3388664,
+    "sha256": "8f98c115ed8e2b984822a4e03e1447feae88cd6139adfc3f2911caae2655aae1",
+    "joints": [
+      50
+    ],
+    "meshes": [
+      {
+        "name": "geometry_0.002",
+        "vertices_after_uv_splits": 13094,
+        "triangles": 16870,
+        "targets": [],
+        "skinned": true
+      },
+      {
+        "name": "geometry_0.002",
+        "vertices_after_uv_splits": 91,
+        "triangles": 150,
+        "targets": [],
+        "skinned": true
+      },
+      {
+        "name": "Continuous scalp and hair curtain",
+        "vertices_after_uv_splits": 3168,
+        "triangles": 6106,
+        "targets": [],
+        "skinned": true
+      },
+      {
+        "name": "Xenaa | Hair-free fitted jacket back",
+        "vertices_after_uv_splits": 880,
+        "triangles": 1638,
+        "targets": [],
+        "skinned": true
+      },
+      {
+        "name": "geometry_0.003",
+        "vertices_after_uv_splits": 11914,
+        "triangles": 17129,
+        "targets": [
+          {
+            "name": "jawOpen",
+            "maximum_delta_m": 0.02121322956664627
+          },
+          {
+            "name": "jawLeft",
+            "maximum_delta_m": 0.004999998956918716
+          },
+          {
+            "name": "jawRight",
+            "maximum_delta_m": 0.004999998956918716
+          },
+          {
+            "name": "mouthSmileLeft",
+            "maximum_delta_m": 0.005686928719566169
+          },
+          {
+            "name": "mouthSmileRight",
+            "maximum_delta_m": 0.005688318926831744
+          },
+          {
+            "name": "mouthPucker",
+            "maximum_delta_m": 0.006315293480618403
+          },
+          {
+            "name": "browInnerUp",
+            "maximum_delta_m": 0.003998994827270508
+          },
+          {
+            "name": "browDownLeft",
+            "maximum_delta_m": 0.0029947757720947266
+          },
+          {
+            "name": "browDownRight",
+            "maximum_delta_m": 0.0029761791229248047
+          },
+          {
+            "name": "eyeBlinkLeft",
+            "maximum_delta_m": 0.0048084259033203125
+          },
+          {
+            "name": "eyeBlinkRight",
+            "maximum_delta_m": 0.004571199417114258
+          }
+        ],
+        "skinned": true
+      },
+      {
+        "name": "Xenaa Left radial arm topology",
+        "vertices_after_uv_splits": 1729,
+        "triangles": 2778,
+        "targets": [],
+        "skinned": true
+      },
+      {
+        "name": "XenaaLeftIndex",
+        "vertices_after_uv_splits": 1140,
+        "triangles": 2260,
+        "targets": [],
+        "skinned": true
+      },
+      {
+        "name": "geometry_0.012",
+        "vertices_after_uv_splits": 1032,
+        "triangles": 1289,
+        "targets": [],
+        "skinned": true
+      },
+      {
+        "name": "Xenaa | Mouth cavity",
+        "vertices_after_uv_splits": 320,
+        "triangles": 636,
+        "targets": [],
+        "skinned": true
+      },
+      {
+        "name": "Xenaa Right radial arm topology",
+        "vertices_after_uv_splits": 1648,
+        "triangles": 2778,
+        "targets": [],
+        "skinned": true
+      },
+      {
+        "name": "XenaaRightIndex",
+        "vertices_after_uv_splits": 1140,
+        "triangles": 2260,
+        "targets": [],
+        "skinned": true
+      },
+      {
+        "name": "geometry_0.013",
+        "vertices_after_uv_splits": 1141,
+        "triangles": 1481,
+        "targets": [],
+        "skinned": true
+      },
+      {
+        "name": "Scalp to shoulder lock",
+        "vertices_after_uv_splits": 512,
+        "triangles": 992,
+        "targets": [],
+        "skinned": true
+      },
+      {
+        "name": "Xenaa seated collar",
+        "vertices_after_uv_splits": 512,
+        "triangles": 1024,
+        "targets": [],
+        "skinned": true
+      },
+      {
+        "name": "Xenaa tongue",
+        "vertices_after_uv_splits": 266,
+        "triangles": 528,
+        "targets": [],
+        "skinned": true
+      },
+      {
+        "name": "Xenaa | Upper teeth strip",
+        "vertices_after_uv_splits": 796,
+        "triangles": 480,
+        "targets": [],
+        "skinned": true
+      }
+    ],
+    "images": [
+      {
+        "size": [
+          1024,
+          1024
+        ],
+        "bytes": 230719,
+        "format": "JPEG"
+      },
+      {
+        "size": [
+          1024,
+          1024
+        ],
+        "bytes": 178865,
+        "format": "JPEG"
+      },
+      {
+        "size": [
+          1024,
+          1024
+        ],
+        "bytes": 86747,
+        "format": "JPEG"
+      },
+      {
+        "size": [
+          1024,
+          1024
+        ],
+        "bytes": 77931,
+        "format": "JPEG"
+      }
+    ],
+    "checks": "finite all accessors; valid index ranges; nonzero morphs; image dimensions/bytes; normalized max-four weights when present",
+    "scope": "Structural subset audit, not complete Khronos validation or proof of deformation quality"
+  },
+  {
+    "file": "mobile-export-v14/AceHack-face-v14.glb",
+    "bytes": 1076136,
+    "sha256": "4eeba66fdf795648d63924d0c2a2f658106d3aae7b1cfdb6145bfb6edf2064dd",
+    "joints": [],
+    "meshes": [
+      {
+        "name": "geometry_0.004",
+        "vertices_after_uv_splits": 12836,
+        "triangles": 16522,
+        "targets": [
+          {
+            "name": "jawOpen",
+            "maximum_delta_m": 0.02121322956664627
+          },
+          {
+            "name": "jawLeft",
+            "maximum_delta_m": 0.004999999888241291
+          },
+          {
+            "name": "jawRight",
+            "maximum_delta_m": 0.004999999888241291
+          },
+          {
+            "name": "mouthSmileLeft",
+            "maximum_delta_m": 0.005670530215466647
+          },
+          {
+            "name": "mouthSmileRight",
+            "maximum_delta_m": 0.005676087211214531
+          },
+          {
+            "name": "mouthPucker",
+            "maximum_delta_m": 0.006314563656570959
+          },
+          {
+            "name": "browInnerUp",
+            "maximum_delta_m": 0.003999114036560059
+          },
+          {
+            "name": "browDownLeft",
+            "maximum_delta_m": 0.002599954605102539
+          },
+          {
+            "name": "browDownRight",
+            "maximum_delta_m": 0.002820730209350586
+          },
+          {
+            "name": "eyeBlinkLeft",
+            "maximum_delta_m": 0.00447392463684082
+          },
+          {
+            "name": "eyeBlinkRight",
+            "maximum_delta_m": 0.00422978401184082
+          }
+        ],
+        "skinned": false
+      },
+      {
+        "name": "AceHack | Mouth cavity.001",
+        "vertices_after_uv_splits": 320,
+        "triangles": 636,
+        "targets": [],
+        "skinned": false
+      },
+      {
+        "name": "AceHack tongue.001",
+        "vertices_after_uv_splits": 266,
+        "triangles": 528,
+        "targets": [],
+        "skinned": false
+      },
+      {
+        "name": "AceHack | Upper teeth strip.001",
+        "vertices_after_uv_splits": 784,
+        "triangles": 480,
+        "targets": [],
+        "skinned": false
+      }
+    ],
+    "images": [
+      {
+        "size": [
+          1024,
+          1024
+        ],
+        "bytes": 268193,
+        "format": "JPEG"
+      }
+    ],
+    "checks": "finite all accessors; valid index ranges; nonzero morphs; image dimensions/bytes; normalized max-four weights when present",
+    "scope": "Structural subset audit, not complete Khronos validation or proof of deformation quality"
+  },
+  {
+    "file": "mobile-export-v14/Xenaa-face-v14.glb",
+    "bytes": 1120376,
+    "sha256": "739695977864d5b3ad179c4a784de7d20445f2014143a1322175c3bbb1a31607",
+    "joints": [],
+    "meshes": [
+      {
+        "name": "Continuous scalp and hair curtain.001",
+        "vertices_after_uv_splits": 3168,
+        "triangles": 6106,
+        "targets": [],
+        "skinned": false
+      },
+      {
+        "name": "geometry_0.005",
+        "vertices_after_uv_splits": 11914,
+        "triangles": 17129,
+        "targets": [
+          {
+            "name": "jawOpen",
+            "maximum_delta_m": 0.02121322956664627
+          },
+          {
+            "name": "jawLeft",
+            "maximum_delta_m": 0.004999998956918716
+          },
+          {
+            "name": "jawRight",
+            "maximum_delta_m": 0.004999998956918716
+          },
+          {
+            "name": "mouthSmileLeft",
+            "maximum_delta_m": 0.005686928719566169
+          },
+          {
+            "name": "mouthSmileRight",
+            "maximum_delta_m": 0.005688318926831744
+          },
+          {
+            "name": "mouthPucker",
+            "maximum_delta_m": 0.006315293480618403
+          },
+          {
+            "name": "browInnerUp",
+            "maximum_delta_m": 0.003998994827270508
+          },
+          {
+            "name": "browDownLeft",
+            "maximum_delta_m": 0.0029947757720947266
+          },
+          {
+            "name": "browDownRight",
+            "maximum_delta_m": 0.0029761791229248047
+          },
+          {
+            "name": "eyeBlinkLeft",
+            "maximum_delta_m": 0.0048084259033203125
+          },
+          {
+            "name": "eyeBlinkRight",
+            "maximum_delta_m": 0.004571199417114258
+          }
+        ],
+        "skinned": false
+      },
+      {
+        "name": "Xenaa | Mouth cavity.001",
+        "vertices_after_uv_splits": 320,
+        "triangles": 636,
+        "targets": [],
+        "skinned": false
+      },
+      {
+        "name": "Scalp to shoulder lock.001",
+        "vertices_after_uv_splits": 512,
+        "triangles": 992,
+        "targets": [],
+        "skinned": false
+      },
+      {
+        "name": "Xenaa tongue.001",
+        "vertices_after_uv_splits": 266,
+        "triangles": 528,
+        "targets": [],
+        "skinned": false
+      },
+      {
+        "name": "Xenaa | Upper teeth strip.001",
+        "vertices_after_uv_splits": 792,
+        "triangles": 480,
+        "targets": [],
+        "skinned": false
+      }
+    ],
+    "images": [
+      {
+        "size": [
+          1024,
+          1024
+        ],
+        "bytes": 178865,
+        "format": "JPEG"
+      }
+    ],
+    "checks": "finite all accessors; valid index ranges; nonzero morphs; image dimensions/bytes; normalized max-four weights when present",
+    "scope": "Structural subset audit, not complete Khronos validation or proof of deformation quality"
+  }
+]

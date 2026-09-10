@@ -1,0 +1,14 @@
+{
+  "id": "080d03f8155b3810a0130008e7a2bfbb",
+  "at": "2026-09-08T03:14:36.519Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1ZG5AV7087G0R001QGQQKH",
+    "type": "bug",
+    "title": "ArgoCD health failure drops the names of the Applications that missed",
+    "slug": "argocd-health-failure-drops-the-names-of-the-applications-th",
+    "priority": "P2",
+    "filename": "081M1ZG5AV7087G0R001QGQQKH-argocd-health-failure-drops-the-names-of-the-applications-th.md"
+  }
+}

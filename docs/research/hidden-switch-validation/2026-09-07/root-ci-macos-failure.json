@@ -1,0 +1,18 @@
+{
+  "SchemaVersion": 1,
+  "SourceCommit": "f52b00065eb8055a32aea4bd93628df7537f4949",
+  "WorkflowRun": 34123419677,
+  "JobId": 101746525214,
+  "FetchedUtc": "2026-09-07T13:07:11.179824+00:00",
+  "Command": [
+    "/opt/homebrew/bin/gh",
+    "api",
+    "repos/Lucent-Financial-Group/Zeta/actions/jobs/101746525214/logs",
+    "--allow-escape-sequences"
+  ],
+  "OriginalBytes": 1221473,
+  "OriginalSha256": "69e879944de9216638994c26fdad0a9fe5903aa3636411b2bf4713c09ef7b487",
+  "StoredBytes": 300898,
+  "StoredSha256": "ac9f2ca6869ddd4176afe950d014d2c26cf8e3be567c2a7f5a7a072175f596fd",
+  "RetrievalNote": "An earlier read of the hygiene and TOCTOU logs was refused by gh because they contain terminal escape sequences. This retrieval allows those bytes only into captured files; raw escape sequences are not printed."
+}

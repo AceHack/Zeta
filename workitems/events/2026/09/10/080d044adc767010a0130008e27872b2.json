@@ -1,0 +1,14 @@
+{
+  "id": "080d044adc767010a0130008e27872b2",
+  "at": "2026-09-10T03:27:54.062Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M24NQ3PD087G0R003E039EZ",
+    "type": "bug",
+    "title": "A failed spawn in the k3s preflight test reports as a missing remediation line",
+    "slug": "a-failed-spawn-in-the-k3s-preflight-test-reports-as-a-missin",
+    "priority": "P2",
+    "filename": "081M24NQ3PD087G0R003E039EZ-a-failed-spawn-in-the-k3s-preflight-test-reports-as-a-missin.md"
+  }
+}

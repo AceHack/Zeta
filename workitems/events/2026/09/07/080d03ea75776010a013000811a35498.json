@@ -1,0 +1,14 @@
+{
+  "id": "080d03ea75776010a013000811a35498",
+  "at": "2026-09-07T19:18:23.724Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1YMXBQC087G0R002SQYNWH",
+    "type": "task",
+    "title": "Fake VFS open close shared vs close-to-open",
+    "slug": "fake-vfs-open-close-shared-vs-close-to-open",
+    "priority": "P2",
+    "filename": "081M1YMXBQC087G0R002SQYNWH-fake-vfs-open-close-shared-vs-close-to-open.md"
+  }
+}

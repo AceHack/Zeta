@@ -1,0 +1,25 @@
+{
+  "Files": [
+    {
+      "File": "README.md",
+      "Bytes": 2372,
+      "Sha256": "b47fd333f1c88b0b2530108449f4ad191d00a82ecccbdde5db18deb472bebe00"
+    },
+    {
+      "File": "finding.json",
+      "Bytes": 1547,
+      "Sha256": "3dd595e0556a0013e5547157eb2371aaf8cbe379f3d3efc44a4fd30510c70046"
+    },
+    {
+      "File": "semgrep-drift-job-101780447107.json",
+      "Bytes": 2838,
+      "Sha256": "ea79f119244f538ab311ea59e29f3762269f75f2c9d4654bc30e3429d91bf614"
+    },
+    {
+      "File": "semgrep-drift-job-101780447107.log.gz",
+      "Bytes": 666728,
+      "Sha256": "eec9a32e096291097a5f2f8f85748630c588aa68ac0a38fb8b05425865706bfe"
+    }
+  ],
+  "Scope": "Retained failed-job evidence and source-artifact diagnosis; no repair success or new-head CI claim."
+}

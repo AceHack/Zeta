@@ -1,0 +1,13 @@
+{
+  "Protocol": "relational-identity-independent-replay-v1",
+  "SourceArchive": "archive/relational-identity-20260906-source-v4",
+  "SourceCommit": "159f7b0e65245d4ffae9ecbfe0702b1b7e987b2c",
+  "ExactSemanticMatch": true,
+  "SourceSnapshotVerified": true,
+  "TransportChecks": 288,
+  "MutationCases": 18,
+  "EntropyCases": 4,
+  "ScalingCases": 45,
+  "BaselineCases": 7,
+  "NativeReceiptSha256": "FCD591E93E499175756BCB9E76FC7A7EF04601A5CDB50F10F0E83A0281317D21"
+}

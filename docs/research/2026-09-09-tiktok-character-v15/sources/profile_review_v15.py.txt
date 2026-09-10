@@ -1,0 +1,8 @@
+"""Check the same side view that exposed the original attachment defects."""
+import bpy,json
+from pathlib import Path
+from mathutils import Vector
+R=Path(__file__).resolve().parent;O=R/'review';bpy.ops.wm.open_mainfile(filepath=str(O/'Blender-Quality-Review-v15.blend'));sc=bpy.context.scene;sc.frame_set(1)
+cam=sc.camera;target=Vector((0,-.1,1.03));cam.location=(4,-2.8,2.0);cam.rotation_euler=(target-cam.location).to_track_quat('-Z','Y').to_euler();cam.data.ortho_scale=3.1;sc.render.filepath=str(O/'side-review.png');bpy.ops.render.render(write_still=True)
+
+sc.frame_set(145);sc.render.filepath=str(O/'side-head-turn.png');bpy.ops.render.render(write_still=True)

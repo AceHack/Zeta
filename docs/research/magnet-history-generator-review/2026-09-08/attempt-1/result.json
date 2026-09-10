@@ -1,0 +1,139 @@
+{
+  "SourceCommit": "e6fdbe676a87750fc3ba2f4f79a55b043d6b3ba1",
+  "Scope": "Named source-byte bookkeeping; targeted reading is described in the report",
+  "Sources": [
+    {
+      "Path": "src/Core/WSet.fs",
+      "Bytes": 28690,
+      "Sha256": "39c89ef89b7b9140ca5043872e72cb6475dbef83b9ab10fcdd96603f606a5aae",
+      "CurrentEqualsGit": true
+    },
+    {
+      "Path": "src/Core/Orbit.fs",
+      "Bytes": 9925,
+      "Sha256": "9c621d3f5df010187c0c570a99b185afdafd94541d0eaaf565b8d27ba215eab1",
+      "CurrentEqualsGit": true
+    },
+    {
+      "Path": "src/Core/HierarchicalPlanning.fs",
+      "Bytes": 12994,
+      "Sha256": "5da2270057c1dfa70fe3cce47abfc24c213d8f6050f8e8bb678b38d6b08867c0",
+      "CurrentEqualsGit": true
+    },
+    {
+      "Path": "src/Core.TypeScript/ferry-throttler/four-corner-feedback.ts",
+      "Bytes": 18744,
+      "Sha256": "67dd747fe1c7688abf92b91a6ffa75afdffbc030f6d3c477e288778d66ff9ae7",
+      "CurrentEqualsGit": true
+    },
+    {
+      "Path": "src/Core.TypeScript/protocol/error-envelope.ts",
+      "Bytes": 11543,
+      "Sha256": "220f5a1e2ad3b2faf5d2a56a5ae055d91c0137eedf9bf0df256b60f5e46b44dd",
+      "CurrentEqualsGit": true
+    },
+    {
+      "Path": ".claude/rules/dual-use-detection-is-neutral-oracle-decides.md",
+      "Bytes": 30579,
+      "Sha256": "79e94fcd5634b8f4a12aa00fada3fe72fdf749d7a40e27a3c830b80c7565e6d0",
+      "CurrentEqualsGit": true
+    },
+    {
+      "Path": ".claude/skills/code-review-and-quality/blueprints/reducer.md",
+      "Bytes": 25382,
+      "Sha256": "44a017e286db2369bf50c85d11aeb9ad0cb6bc546fc4e68de920c4c6603edd8d",
+      "CurrentEqualsGit": true
+    },
+    {
+      "Path": "docs/GLOSSARY.md",
+      "Bytes": 87543,
+      "Sha256": "3a7bc6868161a2d0f2af2cc4a23140c15ae52c3ca45a40c88780afb436e69345",
+      "CurrentEqualsGit": true
+    },
+    {
+      "Path": "src/Arc.Python/zeta_arc/layered.py",
+      "Bytes": 11370,
+      "Sha256": "e2fbc885f2af9847143d9912227074225716f9841ac99bc2a7d1ffe0ed5c29cf",
+      "CurrentEqualsGit": true
+    },
+    {
+      "Path": "src/Arc.Python/zeta_arc/agent.py",
+      "Bytes": 32961,
+      "Sha256": "cf724a9ff6b08787bbc638674496a631fe7750f403c3647997de449b632aaa5d",
+      "CurrentEqualsGit": true
+    },
+    {
+      "Path": "src/Arc.Python/zeta_arc/scene_priors.py",
+      "Bytes": 31169,
+      "Sha256": "731aa1b4c2bf88b684dec45ec17350f867092cfe7a174e233e2019cdd6f1f303",
+      "CurrentEqualsGit": true
+    },
+    {
+      "Path": "src/Arc.Python/zeta_arc/scene_feedback.py",
+      "Bytes": 5554,
+      "Sha256": "450609e3145dea2ef336764d22d5ae48d48942450706fb429d4bd3713c5abfa8",
+      "CurrentEqualsGit": true
+    },
+    {
+      "Path": "src/Arc.Python/README.md",
+      "Bytes": 10953,
+      "Sha256": "28002490d20efde325a8fe7219ca7eaae8c357789e17d055903502134749a5d7",
+      "CurrentEqualsGit": true
+    },
+    {
+      "Path": "src/Arc.Python/tests/test_scene_feedback.py",
+      "Bytes": 4376,
+      "Sha256": "22ffba2dedf01b605523449095cbd6ea33b514f0bf527b410683458beb2f0d39",
+      "CurrentEqualsGit": true
+    },
+    {
+      "Path": "src/Arc.Python/tests/test_scene_priors.py",
+      "Bytes": 23037,
+      "Sha256": "2093f7ac0ee6a4ebaaf3a6c26db832083b0d7abd21b7ffcefc78e869ab736f19",
+      "CurrentEqualsGit": true
+    },
+    {
+      "Path": "src/Bayesian/FactorGraph.fs",
+      "Bytes": 11171,
+      "Sha256": "86ebef6ba9abd29499d40a15ac0727ff15cdb4dc72fe247a9c744ca6123df6f7",
+      "CurrentEqualsGit": true
+    },
+    {
+      "Path": "src/Bayesian/MultilayerBnn.fs",
+      "Bytes": 68551,
+      "Sha256": "4993ccf745fa348651da0b88eb50049f99bfc382fd5439aff2d4a49d9f0809e5",
+      "CurrentEqualsGit": true
+    },
+    {
+      "Path": "src/Bayesian/ReferenceFrameFactorHeterarchy.fs",
+      "Bytes": 40181,
+      "Sha256": "99aca0d06e85a4e67966a94b531d1d86add7f4409e410bbc1c52101182d76a6f",
+      "CurrentEqualsGit": true
+    },
+    {
+      "Path": "tests/Tests.FSharp/Formal/WSet.FourCornerTrace.Laws.Tests.fs",
+      "Bytes": 23061,
+      "Sha256": "f2bbe4268c10234d07b05208c504b6977556f845de3534c919960d6ecdbb3614",
+      "CurrentEqualsGit": true
+    },
+    {
+      "Path": "tests/Tests.FSharp/WSetFourCornerTraceTreaty.Tests.fs",
+      "Bytes": 10671,
+      "Sha256": "362187b4eccd90597b61b66565141b1b7e729a3972b6bc4e8c9bc44b82596000",
+      "CurrentEqualsGit": true
+    },
+    {
+      "Path": "docs/research/2026-09-08-arc-agi-3-readiness-and-no-cheating-boundary.md",
+      "Bytes": 12169,
+      "Sha256": "a4d70efe4f40e43c5d488ae7e549dd1df206827ca8f91b2016d266b35cdc61de",
+      "CurrentEqualsGit": true
+    }
+  ],
+  "Attachment": {
+    "Path": "/Users/acehack/.codex/attachments/8a484dca-8024-4796-af57-afdf9ff4e355/pasted-text.txt",
+    "Bytes": 28282,
+    "Sha256": "d5bb0ce914152bc439fbc683f59522443b5904b2e685a24973603cd63865c148"
+  },
+  "StudyOrModelProcessesLaunched": 0,
+  "GitProcessesLaunched": 21
+}

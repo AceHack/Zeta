@@ -1,0 +1,14 @@
+{
+  "id": "080d03e49c04f810a0130008e056bf65",
+  "at": "2026-09-07T15:53:56.639Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1Y9704Y087G0R001F9BGRY",
+    "type": "task",
+    "title": "Rotation verb for dev credentials — deliberate, targeted, never a mint",
+    "slug": "rotation-verb-for-dev-credentials-deliberate-targeted-never",
+    "priority": "P2",
+    "filename": "081M1Y9704Y087G0R001F9BGRY-rotation-verb-for-dev-credentials-deliberate-targeted-never.md"
+  }
+}

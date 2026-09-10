@@ -1,0 +1,72 @@
+import bpy,math,json
+from pathlib import Path
+from mathutils import Vector
+from mathutils.bvhtree import BVHTree
+R=Path('/Users/acehack/Documents/Blender/AceHack-Xenaa-Realistic');bpy.ops.wm.open_mainfile(filepath=str(R/'AceHack_Xenaa_Refined.blend'));scene=bpy.context.scene
+# Remove superseded detail passes that became visible as dangling seams or doubled lapels.
+for o in bpy.data.objects:
+ hide=any(t in o.name for t in ['Cuirass stitched perimeter','Harness stitch','Subtle winged eyeliner'])
+ if o.name.startswith('AceHack') and any(t in o.name for t in ['Swept fine hair fibers','Continuous fine hair groom','Salt and pepper temple groom','Ivory shirt collar','Silk necktie']):hide=True
+ if o.name.startswith('Xenaa') and any(t in o.name for t in ['Tailored coat facing','Purple lapel inlay','Coat fine edge piping','Cyan lapel trace','Cyan segmented lapel accent']):hide=True
+ if hide:o.hide_render=True;o.hide_viewport=True
+# Restore the authored shirt/collar topology and texture underneath the new coat and waistcoat.
+with bpy.data.libraries.load(str(R/'realistic-anatomy.blend'),link=False) as (src,dst):
+ dst.materials=[n for n in src.materials if 'male_elegantsuit01' in n]
+suit=bpy.data.objects['AceHack | Tailored suit'];m=next((m for m in dst.materials if m),None)
+if m:
+ suit.data.materials.append(m);ix=len(suit.data.materials)-1
+ for f in suit.data.polygons:
+  p=sum((suit.data.vertices[i].co for i in f.vertices),Vector())/len(f.vertices)
+  f.material_index=ix
+  if abs(p.x)<.032 and 1.28<p.z<1.515 and p.y<-.08:f.material_index=3
+# Project tattoos onto the smooth skinned surface, with submillimetre ink clearance.
+rig=bpy.data.objects['Xenaa | Deformation Rig'];body=bpy.data.objects['Xenaa | Human'];rig.data.pose_position='REST';bpy.context.view_layer.update();dep=bpy.context.evaluated_depsgraph_get();ev=body.evaluated_get(dep);me=ev.to_mesh();bvh=BVHTree.FromPolygons([v.co for v in me.vertices],[list(p.vertices) for p in me.polygons])
+for o in bpy.data.collections['Xenaa | Character'].objects:
+ if o.type=='MESH' and any(t in o.name for t in ['Botanical arm tattoo stem','Botanical filled tattoo leaf','Faint cyan botanical filament']):
+  for v in o.data.vertices:
+   p,n,_,d=bvh.find_nearest(v.co)
+   if p is not None:v.co=p+n*.00030
+rig.data.pose_position='POSE';ev.to_mesh_clear();bpy.context.view_layer.update()
+# A single clean raised collar, with a real opening in front.
+C=bpy.data.collections['Xenaa | Character'];root=bpy.data.objects['Xenaa | Root'];bone=rig.data.bones['neck01'];z=bone.head_local.z;vs=[];nu=40
+for j in range(3):
+ t=j/2
+ for i in range(nu+1):
+  a=.62+(math.tau-1.24)*i/nu;vs.append(((.059+.007*t)*math.sin(a),-.053*math.cos(a)+.006,z-.012+.061*t))
+fs=[tuple(reversed((j*(nu+1)+i,j*(nu+1)+i+1,(j+1)*(nu+1)+i+1,(j+1)*(nu+1)+i))) for j in range(2) for i in range(nu)]
+d=bpy.data.meshes.new('Raised collar');d.from_pydata(vs,[],fs);d.update();o=bpy.data.objects.new('Xenaa | Raised purple collar',d);C.objects.link(o);o.parent=root;d.materials.append(bpy.data.materials['Atelier / nightbloom silk']);d.materials.append(bpy.data.materials['Atelier / black grained leather'])
+for f in d.polygons:f.use_smooth=True
+vg=o.vertex_groups.new(name='neck01');vg.add(list(range(len(d.vertices))),1,'REPLACE');md=o.modifiers.new('Skinned collar','ARMATURE');md.object=rig;md=o.modifiers.new('Collar subdivision','SUBSURF');md.levels=2;md.render_levels=2;md=o.modifiers.new('Collar lining','SOLIDIFY');md.thickness=.003;md.material_offset=1
+# Store clear asset metadata and hide technical rig widgets for a clean opening view.
+for who in ['AceHack','Xenaa']:
+ c=bpy.data.collections[who+' | Character'];c.asset_mark();c.asset_data.description='Reference-guided '+who+' character study. Rigged anatomical mesh, separate tailored costume, editable accessories. Approximate likeness.'
+ for ob in c.objects:
+  if ob.type=='ARMATURE':ob.hide_render=True;ob.hide_set(True)
+  if ob.type=='MESH' and ob.data.has_custom_normals:ob.data.normals_split_custom_set([(0,0,0)]*len(ob.data.loops))
+ bpy.data.objects[who+' | Root']['Reference source']='Aaron-supplied character art, September 7 2026'
+scene['Revision']='Rebuilt after feedback: realistic anatomy and reference-guided costume study'
+scene['Quality scope']='Approximate likeness; studio asset study, not scan or production-ready cinematic character'
+scene['Research scope']='No learned Clifford generation or learning benchmark is established by this artwork'
+# Save with an attractive material viewport and editable scene organization.
+cam=scene.camera;cam.location=(1.8,-6.8,2.25);cam.rotation_euler=(Vector((0,0,1))-cam.location).to_track_quat('-Z','Y').to_euler();cam.data.lens=72
+scene.cycles.samples=144;scene.cycles.use_denoising=True;scene.render.resolution_x=2400;scene.render.resolution_y=2000;scene.render.resolution_percentage=100
+try:
+ p=bpy.context.preferences.addons['cycles'].preferences;p.compute_device_type='METAL';p.get_devices()
+ for dev in p.devices:dev.use=dev.type=='METAL'
+ scene.cycles.device='GPU'
+except Exception:pass
+bpy.ops.object.select_all(action='DESELECT')
+for screen in bpy.data.screens:
+ for area in screen.areas:
+  if area.type=='VIEW_3D':
+   area.spaces.active.region_3d.view_perspective='CAMERA';area.spaces.active.shading.type='MATERIAL';area.spaces.active.overlay.show_overlays=False
+bpy.context.preferences.filepaths.save_version=0;bpy.ops.file.pack_all()
+master=R/'AceHack_Xenaa_Reference_Revision.blend';bpy.ops.wm.save_as_mainfile(filepath=str(master))
+scene.render.filepath=str(R/'renders/AceHack-Xenaa-reference-revision.png');bpy.ops.render.render(write_still=True)
+# High resolution individual views, actual Blender geometry throughout.
+records=json.loads((R/'sources/anatomy-record.json').read_text())
+for rec,x in zip(records,[-.62,.62]):
+ who=rec['Character'];other='Xenaa' if who=='AceHack' else 'AceHack';bpy.data.collections[other+' | Character'].hide_render=True
+ cam.location=(x+.6,-4.8,1.9);cam.rotation_euler=(Vector((x,0,.98))-cam.location).to_track_quat('-Z','Y').to_euler();cam.data.lens=73;scene.render.resolution_x=1600;scene.render.resolution_y=2200;scene.render.filepath=str(R/'renders'/(who+'-reference-revision.png'));bpy.ops.render.render(write_still=True)
+ bpy.data.collections[other+' | Character'].hide_render=False
+print('FINAL_REVISION_SAVED',master)

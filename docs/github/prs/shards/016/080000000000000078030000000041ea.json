@@ -1,0 +1,12 @@
+{
+  "pr_number": 16874,
+  "archive_path": "docs/history/pr-reviews/PR-16874-feat-081m1wbdcr3087g0r001p68h7w-freeze-volumes-write-format-ns-bindings.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-06T22:18:12.974Z",
+  "schema_version": "v1",
+  "commit_sha": "d17f5813f1e3b7b1be7d10907a21e9f0705e28e2",
+  "title": "feat(081M1WBDCR3087G0R001P68H7W): freeze volumes write FORMAT ns=bindings",
+  "state": "MERGED",
+  "merged_at": "2026-09-06T22:17:39Z",
+  "head_ref": "feat/zetafs-freeze-writes-ns-bindings"
+}

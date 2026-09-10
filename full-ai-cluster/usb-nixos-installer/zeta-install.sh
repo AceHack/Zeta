@@ -142,11 +142,39 @@ assert_boot_disk_large_enough() {
 # ── Step 1: enumerate internal disks ──────────────────────────────
 # Fixed (RM=0), writable (RO=0), type=disk, NOT USB. Includes NVMe,
 # SATA, SAS, RAID volumes, etc. Excludes loop, removable, read-only.
-echo "Internal storage devices (fixed; USB excluded):"
+# HOTPLUG IS THE DISCRIMINATOR, NOT TRAN. The previous filter excluded only
+# what is KNOWN to be USB (`$5!="usb"`), which is "not proven external" rather
+# than "proven internal" -- and a Thunderbolt/USB4 NVMe enclosure reports
+# TRAN=nvme with RM=0, so it passed as internal. Since `disk_class` sorts NVMe
+# first and DEFAULT_BOOT takes the head of that list, an external SSD could be
+# selected as the BOOT disk purely on enumeration order, and every other disk
+# in scope becomes a whole-disk Longhorn target.
+#
+# `HOTPLUG` is 1 for a hot-pluggable bay -- Thunderbolt and USB enclosures --
+# and 0 for a soldered/internal controller, which is the distinction actually
+# wanted here. This keeps external drives ATTACHED and merely un-targetable,
+# because "unplug everything first" is not a usable instruction when the
+# installer stick itself lives in one of those hubs.
+#
+# FAIL-CLOSED BY CONSTRUCTION: if this filter empties the candidate set, the
+# existing `bail` below fires and nothing is wiped. Excluding a genuine
+# internal disk costs a refusal the operator can read; including an external
+# one costs their data.
+echo "Internal storage devices (fixed; USB and hot-plug bays excluded):"
 mapfile -t ALL_DISKS < <(
-  lsblk -d -p -n -o NAME,TYPE,RM,RO,TRAN |
-    awk '$2=="disk" && $3==0 && $4==0 && $5!="usb" {print $1}'
+  lsblk -d -p -n -o NAME,TYPE,RM,RO,TRAN,HOTPLUG |
+    awk '$2=="disk" && $3==0 && $4==0 && $5!="usb" && $6==0 {print $1}'
 )
+# Name what was withheld, so an operator whose internal bay reports HOTPLUG=1
+# sees WHY the set is short rather than meeting a bare "no internal disks".
+mapfile -t ZETA_EXCLUDED_HOTPLUG < <(
+  lsblk -d -p -n -o NAME,TYPE,RM,RO,TRAN,HOTPLUG |
+    awk '$2=="disk" && $3==0 && $4==0 && $5!="usb" && $6!=0 {print $1}'
+)
+if [[ ${#ZETA_EXCLUDED_HOTPLUG[@]} -gt 0 ]]; then
+  echo "  withheld as hot-plug/external (never wiped, never a boot target):"
+  for d in "${ZETA_EXCLUDED_HOTPLUG[@]}"; do echo "    $d"; done
+fi
 if [[ ${#ALL_DISKS[@]} -eq 0 ]]; then
   bail "no internal disks found; cannot install"
 fi
@@ -1475,7 +1503,19 @@ if [ "$ZETA_CANCEL_DEFAULT" = "abort" ]; then
     echo "        Reason: $ZETA_BREAKER_STATE breaker / repair-identity refusal above."
     echo "        Manual override once the cause is understood:"
     echo "          ZETA_MAX_DESTRUCTIVE_ATTEMPTS=<n> zeta-install $HOST"
-    exit 0
+    # EXIT 10, NOT 0 -- the same correction the keypress branch below already
+    # carries, applied to the branch that actually fires on a reformat.
+    #
+    # `zeta-first-boot.sh` reads 0 as success and goes on to print "Install
+    # complete. Rebooting in 10s". So a refusal to wipe was announcing a
+    # finished install and rebooting into the same USB, hitting the same gate,
+    # forever -- and because the R9 ledger append happens AFTER this gate, the
+    # breaker never counted the attempts and never tripped.
+    #
+    # This branch is not an edge case: the default flips to ABORT when any
+    # in-scope disk classifies `foreign-data`, and a machine being reformatted
+    # has an operating system on it. It is the ordinary path.
+    exit 10
   fi
   echo "[R7] Keypress received; proceeding past the gate deliberately."
 else
@@ -1519,6 +1559,54 @@ if [ "$ZETA_LEDGER_WRITABLE" = "1" ]; then
 else
   echo "[R9-breaker] ledger not writable; this attempt is NOT counted (breaker stays blind next boot)"
 fi
+
+# ── UEFI preflight — the last cheap refusal before the disk goes ──
+#
+# `common.nix` sets systemd-boot with canTouchEfiVariables, so `bootctl
+# install` needs /sys/firmware/efi/efivars. The installer ISO is HYBRID
+# (makeEfiBootable + makeUsbBootable), so it boots perfectly well in
+# legacy/CSM -- and most firmware menus offer both "USB HDD" and "UEFI: USB
+# HDD", one keystroke apart.
+#
+# Without this check the mistake is not caught until bootloader install, which
+# is AFTER wipe, partition, format and the full closure download: previous OS
+# gone, the better part of an hour gone, nothing bootable, and a drop to a
+# shell. With it, the cost is re-entering the boot menu.
+if [ ! -d /sys/firmware/efi ]; then
+  bail "not booted in UEFI mode (/sys/firmware/efi absent). This ISO is hybrid, so it will boot in legacy/CSM and then fail at bootloader install AFTER the disk has been wiped. Reboot and choose the 'UEFI:' entry for this USB device."
+fi
+echo "[preflight] UEFI mode confirmed (/sys/firmware/efi present)."
+
+# ── B4: the network is a HARD requirement, and it was checked AFTER the wipe ──
+#
+# `git clone "$REPO_URL" /mnt/etc/zeta` is at :1776. The wipe below is at :1583.
+# So on a machine with no working network the installer destroyed every disk in
+# scope and then, ~190 lines later, discovered it could not fetch the thing it
+# needed to install -- previous OS gone, nothing bootable, drop to a shell. That
+# is the same shape as the UEFI check directly above, which exists because the
+# identical mistake surfaced at `bootctl install` after the wipe.
+#
+# `git ls-remote` is the right probe rather than a ping: it exercises DNS, the
+# route, TCP, TLS and the repository actually being readable, which is the full
+# set of things `git clone` needs, and it transfers no objects. A ping would pass
+# on a network that blocks 443 or has no DNS.
+#
+# GIT_TERMINAL_PROMPT=0 so a credential prompt cannot hang a non-interactive
+# install waiting for a username; `timeout` bounds a black-hole route that
+# accepts SYN and never replies. Both failure modes otherwise hang here forever
+# rather than bailing, which on the zero-typing path means a machine that never
+# finishes and never says why.
+#
+# NOT COVERED, stated rather than implied: the closure download from the
+# substituter is a SECOND network dependency, later still, and this does not
+# probe it. A network that reaches GitHub but not the binary cache still fails
+# after the wipe. Narrowing that is separate work; this closes the first and
+# most common failure -- no working network at all.
+echo "[preflight] checking the repository is reachable before anything is destroyed ..."
+if ! GIT_TERMINAL_PROMPT=0 timeout 60 git ls-remote "$REPO_URL" HEAD >/dev/null 2>&1; then
+  bail "cannot reach $REPO_URL (git ls-remote failed or timed out after 60s). The install clones this repo AFTER wiping every disk in scope, so proceeding would destroy the current system and then fail with nothing bootable. Fix networking first -- the role prompt offers nmtui, or configure from the shell and re-run. Nothing has been wiped."
+fi
+echo "[preflight] repository reachable ($REPO_URL)."
 
 # ── Step 3: wipe every disk in scope ──────────────────────────────
 for d in "$BOOT_DISK" "${DATA_DISKS[@]}"; do
@@ -3395,9 +3483,15 @@ if [ -d "$ZETA_HOME" ]; then
   # Invoke firstboot-bao-env.ts the same way wifi/iserial helpers
   # run. Epoch is named installer-iso here (this block runs on the
   # live ISO after nixos-install into /mnt). Do not infer epoch
-  # from /mnt or /dev/tpmrm0. Do not invoke from zeta-first-boot.sh.
-  # Do not open /dev/tpmrm0. Do not fill /run/current-system/sw/bin/bao.
-  # Do not write Application.yaml. A null ask is not a seal.
+  # from /mnt or /dev/tpmrm0. Do not export ZETA_UNSEAL_REQUEST
+  # (missing is unmeasured, not auto). Do not invent a probe
+  # (missing is unmeasured, not present). Do not export
+  # ZETA_FROST_LOOK_OS / ZETA_FROST_LOOK_EFFECTS (missing is
+  # unmeasured look, not a live look). Do not invoke from
+  # zeta-first-boot.sh. Do not open /dev/tpmrm0. Do not fill
+  # /run/current-system/sw/bin/bao. Do not write Application.yaml.
+  # A null ask is not a seal. A null request is not auto.
+  # A null probe is not present. A null look is not a probe.
   BAO_ENV_HELPER="$ZETA_HOME/Zeta/src/Core.TypeScript/zflash/firstboot-bao-env.ts"
   if [ -z "${ZETA_BAO_LOAD_SITE:-}" ] || [ -z "${ZETA_BAO_PATH:-}" ]; then
     echo "[081M1W1NCDT087G0R002H3VG6Y-bao]   no bao names in env; consume skipped"
@@ -3417,9 +3511,24 @@ if [ -d "$ZETA_HOME" ]; then
       echo "[081M1W1NCDT087G0R002H3VG6Y-bao]   consume $BAO_ENV_JSON"
       BAO_ENV_ASK=$(printf '%s' "$BAO_ENV_JSON" | jq -c '.ask' 2>/dev/null || printf 'unparseable')
       BAO_ENV_EPOCH=$(printf '%s' "$BAO_ENV_JSON" | jq -c '.epoch' 2>/dev/null || printf 'unparseable')
+      BAO_ENV_REQUESTED=$(printf '%s' "$BAO_ENV_JSON" | jq -c '.requested' 2>/dev/null || printf 'unparseable')
+      BAO_ENV_PROBE=$(printf '%s' "$BAO_ENV_JSON" | jq -c '.probe' 2>/dev/null || printf 'unparseable')
+      BAO_ENV_LOOK=$(printf '%s' "$BAO_ENV_JSON" | jq -c '.look' 2>/dev/null || printf 'unparseable')
       echo "[081M1W6J9MH087G0R003VNMDDR-bao]   named epoch $BAO_ENV_EPOCH"
+      echo "[081M1WG1RJB087G0R001ADMJNK-bao]   named PathRequest $BAO_ENV_REQUESTED"
+      echo "[081M1WQNTZ0087G0R002Q8T8RT-bao]   named probe $BAO_ENV_PROBE"
+      echo "[081M1YGP8BF087G0R002Z1YH8R-bao]   named frost look $BAO_ENV_LOOK"
+      if [ "$BAO_ENV_REQUESTED" = "null" ]; then
+        echo "[081M1WG1RJB087G0R001ADMJNK-bao]   null request is unmeasured, not auto; not a seal"
+      fi
+      if [ "$BAO_ENV_PROBE" = "null" ]; then
+        echo "[081M1WQNTZ0087G0R002Q8T8RT-bao]   null probe is unmeasured, not present"
+      fi
+      if [ "$BAO_ENV_LOOK" = "null" ]; then
+        echo "[081M1YGP8BF087G0R002Z1YH8R-bao]   null look is unmeasured, not a live look"
+      fi
       if [ "$BAO_ENV_ASK" = "null" ]; then
-        echo "[081M1W1NCDT087G0R002H3VG6Y-bao]   null ask is not a named bao (tpmrm0 / non-bao path); not a seal"
+        echo "[081M1W1NCDT087G0R002H3VG6Y-bao]   null ask is not option D at this epoch (tpmrm0 / non-bao / ISO current-system); not a seal"
       else
         echo "[081M1W1NCDT087G0R002H3VG6Y-bao]   named ask $BAO_ENV_ASK; stanza unchanged"
       fi
@@ -3437,6 +3546,66 @@ if [ -d "$ZETA_HOME" ]; then
     rm -f /tmp/zeta-bao-env.err
   fi
   # ── 081M1W1NCDT087G0R002H3VG6Y: end named bao bun consume ──────
+
+  # ── 081M22M7G8M087G0R003R1C8Z4: automate the seal-path detection ──────
+  #
+  # The block above consumes a NAMED probe and correctly refuses to invent
+  # one: zflash may not spawn, so `firstboot-bao-env.ts` always reports
+  # `probe: null`. That is right, and it left the live look unrun on metal —
+  # the probe and the decision were both built and correct, and nothing
+  # executed both. `seal-path-detect.ts` is the join, and this is where it
+  # runs on real hardware for the first time.
+  #
+  # OBSERVATIONAL ONLY. It reports which seal path THIS host would get; it
+  # configures no seal, writes no stanza, and changes nothing about the
+  # install. Acting on the answer is the next rung and needs an operator
+  # decision (and, for an HSM, its password) — not a value this script picks.
+  #
+  # Product ladder is hsm → tpm → sidecar (one choice). `--request auto`
+  # asks "what is the strongest path this host can honour". A machine with
+  # neither HSM nor TPM is sidecar, not a failure. Two HSM vendors on one
+  # box is still one seal. A refused decision is a finding and is logged as
+  # one: `probe-did-not-run` means the look could not complete on this host,
+  # and that is exactly what an operator needs to see BEFORE the cluster
+  # is expected to unseal itself. Incomplete look is unmeasured, NOT
+  # "no hardware" and NOT sidecar.
+  SEAL_DETECT_HELPER="$ZETA_HOME/Zeta/tools/setup/persona-keys/seal-path-detect.ts"
+  if [ ! -f "$SEAL_DETECT_HELPER" ]; then
+    echo "[081M22M7G8M087G0R003R1C8Z4-seal]   helper absent; live look skipped"
+  else
+    set +e
+    SEAL_DETECT_JSON=$(
+      sudo --preserve-env=PATH -u "#$ZETA_UID" HOME="$ZETA_HOME" BUN_INSTALL="$ZETA_HOME/.bun" \
+        MISE_TRUSTED_CONFIG_PATHS="$ZETA_HOME/Zeta" \
+        bash -c "set -o pipefail; export PATH='/run/current-system/sw/bin:${ZETA_HOME}/.local/share/mise/shims:${ZETA_HOME}/.bun/bin:/usr/bin:/bin'; eval \"\$(mise activate bash 2>/dev/null || true)\"; cd '$ZETA_HOME/Zeta' && bun '$SEAL_DETECT_HELPER' --os nixos --effects real --request auto" \
+        2>/tmp/zeta-seal-detect.err
+    )
+    SEAL_DETECT_RC=$?
+    set -e
+    if [ "$SEAL_DETECT_RC" -eq 0 ]; then
+      SEAL_DETECT_PROBE=$(printf '%s' "$SEAL_DETECT_JSON" | jq -c '.probe' 2>/dev/null || printf 'unparseable')
+      SEAL_DETECT_DECISION=$(printf '%s' "$SEAL_DETECT_JSON" | jq -c '.decision' 2>/dev/null || printf 'unparseable')
+      SEAL_DETECT_PATH=$(printf '%s' "$SEAL_DETECT_JSON" | jq -r '.decision.path // ""' 2>/dev/null || printf '')
+      SEAL_DETECT_REASON=$(printf '%s' "$SEAL_DETECT_JSON" | jq -r '.decision.reason // ""' 2>/dev/null || printf '')
+      SEAL_DETECT_LADDER=$(printf '%s' "$SEAL_DETECT_JSON" | jq -r '.ladder // ""' 2>/dev/null || printf '')
+      echo "[081M22M7G8M087G0R003R1C8Z4-seal]   live look $SEAL_DETECT_PROBE"
+      echo "[081M22M7G8M087G0R003R1C8Z4-seal]   decision $SEAL_DETECT_DECISION"
+      if [ -n "$SEAL_DETECT_PATH" ]; then
+        echo "[081M22M7G8M087G0R003R1C8Z4-seal]   this host would seal on '$SEAL_DETECT_PATH' (ladder: ${SEAL_DETECT_LADDER:-unmeasured}; observed, not configured)"
+      elif [ "$SEAL_DETECT_REASON" = "probe-did-not-run" ]; then
+        echo "[081M22M7G8M087G0R003R1C8Z4-seal]   the look could not complete on this host; that is unmeasured, NOT 'no hardware'"
+      else
+        echo "[081M22M7G8M087G0R003R1C8Z4-seal]   no path: '$SEAL_DETECT_REASON'"
+      fi
+    else
+      echo "[081M22M7G8M087G0R003R1C8Z4-seal]   WARN: live look refused rc=$SEAL_DETECT_RC json='$SEAL_DETECT_JSON'" >&2
+    fi
+    if [ -s /tmp/zeta-seal-detect.err ]; then
+      sed -e 's/^/[081M22M7G8M087G0R003R1C8Z4-seal]   /' /tmp/zeta-seal-detect.err 2>/dev/null | tail -10
+    fi
+    rm -f /tmp/zeta-seal-detect.err
+  fi
+  # ── 081M22M7G8M087G0R003R1C8Z4: end seal-path live look ──────
 
   # ── Step 6.95c: iter-5.5.1 wifi NetworkManager profile write (081KZHJPJCF) ──────────────────
   # iter-5.2/6.6 staged /mnt/boot/zeta-wifi-credentials.json but could NOT write the NM profile
@@ -3613,6 +3782,18 @@ if [ -d "$ZETA_HOME" ]; then
   elif [ -z "${ZETA_CREDS_PASSPHRASE_VAL:-}" ]; then
     PICKER_OPT_OUT=1
     PICKER_SKIP_REASON="ZETA_CREDS_PASSPHRASE_VAL empty (operator skipped passphrase at Step 6.56)"
+    # T3 / 081M23BTKZ8087G0R002W6BFCF: WIPE / non-TTY skip is not a check
+    # that passed. Written HERE (picker skip), not at 6.56 — QEMU may fill
+    # ZETA_CREDS_PASSPHRASE_VAL from zeta-qemu-creds-passphrase after 6.56.
+    # Preseeded /mnt/boot/zeta-creds.enc is a different branch above and
+    # must not take this path.
+    if ! zeta_install_prompts_enabled; then
+      sudo mkdir -p /mnt/etc/zeta
+      echo "non-interactive install skipped cred-blob persistence; no /mnt/boot/zeta-creds.enc this install" \
+        | sudo tee /mnt/etc/zeta/CREDS-PERSISTENCE-SKIPPED >/dev/null
+      sudo chmod 0644 /mnt/etc/zeta/CREDS-PERSISTENCE-SKIPPED
+      echo "[iter-5.5.0] CREDS-PERSISTENCE-SKIPPED: non-interactive (ZETA_AUTO_CONFIRM=WIPE or non-TTY); no cred-blob this install"
+    fi
   fi
   if [ "$PICKER_OPT_OUT" = "0" ]; then
     USB_UUID="$(cat /etc/zeta/usb-uuid)"

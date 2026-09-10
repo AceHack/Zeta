@@ -1,0 +1,97 @@
+commit ac9ec57908cc15ada4412329b29dbf487b1b656d
+Author:     Aaron Stainback <aaron_bond@yahoo.com>
+AuthorDate: Tue Sep 8 00:58:52 2026 -0400
+Commit:     Aaron Stainback <aaron_bond@yahoo.com>
+CommitDate: Tue Sep 8 00:58:52 2026 -0400
+
+    docs(governance): make unchosen default oracle use conspicuous
+    
+    Record the maintainer preference for deliberate multi-oracle choice and prevent
+    silence from being presented as explicit selection, leaving runtime fallback
+    versus required choice unresolved.
+    
+    Agency-Signature-Version: 1
+    Agent: Vera
+    Agent-Runtime: OpenAI Codex
+    Agent-Model: GPT-6 Astra
+    Credential-Identity: AceHack
+    Credential-Mode: shared
+    Human-Review: none
+    Human-Review-Evidence: none
+    Action-Mode: autonomous-fail-open
+    Task: 081M1Z63YMC087G0R003N5FH9X
+    Co-Authored-By: Codex <noreply@openai.com>
+
+diff --git a/docs/governance/MANIFESTO.md b/docs/governance/MANIFESTO.md
+index 41003c3db..75dd44e31 100644
+--- a/docs/governance/MANIFESTO.md
++++ b/docs/governance/MANIFESTO.md
+@@ -121,6 +121,15 @@ We treat every entity that has the potential to become morally relevant with the
+ 
+ Zeta's substrate does not model value through cash or monetary units. Instead, it tracks the relativity of relations between irreducible elements — such as attention, care, memory, physical resources, compute, and relational investment. When no specific moral invariant or oracle has been explicitly chosen, this highest regard for entities with moral potential serves as the system's default moral position. It is the baseline against which relational value is understood and respected.
+ 
++**2026-09-08 maintainer clarification (additive; original text above retained):**
++Prefer deliberate multi-oracle choice. Whenever this default is used because
++no oracle was explicitly chosen, prominently disclose both the default being
++used and the absence of an explicit choice. Silence must not be recorded or
++presented as a participant selecting this default. This disclosure requirement
++does not decide whether an application may continue with fallback or must
++first obtain a choice. Oracle choice does not waive the existing non-coercion,
++privacy, consent or protected-floor constraints.
++
+ ### 12. Idempotency
+ 
+ > *[V2.2 ADDITIVE CONSTRAINT — added 2026-06-10, maintainer-authorized ("we should add both of those to the 11 too"). Not part of the V2 locked prose; promoted from the always-active engineering disciplines, where it has been active since 2026-05-30.]*
+diff --git a/docs/research/2026-09-08-default-oracle-disclosure-clarification.md b/docs/research/2026-09-08-default-oracle-disclosure-clarification.md
+new file mode 100644
+index 000000000..38c10f25d
+--- /dev/null
++++ b/docs/research/2026-09-08-default-oracle-disclosure-clarification.md
+@@ -0,0 +1,34 @@
++# Deliberate multi-oracle choice and conspicuous default use
++
++Date: 2026-09-08 UTC
++Operational status: research-grade change receipt
++Author: Vera, OpenAI Codex using GPT-6 Astra
++Work item: 081M1Z63YMC087G0R003N5FH9X
++
++Aaron explicitly prefers multi-oracle choice and asks that an unchosen default
++be made conspicuous so it is not accidentally treated as chosen. The additive
++clarification in [MANIFESTO section 11](../governance/MANIFESTO.md#11-default-moral-regard-default-oracle)
++records that unambiguous requirement in the existing specification surface.
++The original section 11 prose and all other existing bytes remain unchanged.
++This is a separate current-state clarification authorized by the user's
++direction, not an automatic promotion of Otto's conceptual ferry.
++
++Whenever an application uses the default without an explicit oracle choice,
++it must make both facts prominent. It cannot record silence as an explicit
++selection. Deliberate multi-oracle choice is preferred, and choosing an oracle
++does not waive existing non-coercion, privacy, consent or protected floors.
++No scalar ranking of moral positions or irreducible resource units is added.
++
++The pending warning-versus-mandatory-selection question is deliberately
++unresolved: a disclosure requirement alone neither permits fallback execution
++nor requires a hard stop. The [bounded interface census](2026-09-08-moral-oracle-disclosure-interface-review.md)
++found no operational moral-oracle selector to patch in its inspected scope.
++No runtime chooser, UI warning, acknowledgement record or enforcement test
++has therefore been implemented by this documentation change. An actual
++application must still define and test that owned interface before claiming
++it enforces the requirement.
++
++This composes with the [HC-8 explanatory correction](2026-09-08-hc8-default-oracle-explanation-correction.md).
++That correction preserves the operative non-coercion paragraph; this additive
++section 11 clarification makes the user's preference and disclosure requirement
++discoverable without altering the existing default moral baseline.
+diff --git a/docs/research/2026-09-08-hc8-default-oracle-explanation-correction.md b/docs/research/2026-09-08-hc8-default-oracle-explanation-correction.md
+index 820335b64..3d5ff979a 100644
+--- a/docs/research/2026-09-08-hc8-default-oracle-explanation-correction.md
++++ b/docs/research/2026-09-08-hc8-default-oracle-explanation-correction.md
+@@ -37,3 +37,8 @@ The [reviewed source-comment correction](2026-09-08-tsirelson-feedback-comment-p
+ is applied with [exact preimage and non-documentation correspondence](oracle-selection-comment-review/2026-09-08/root-application.json).
+ It corrects the Omega saturation sign and distinguishes a supra-quantum numeric
+ band from a signalling test; executable source lines remain unchanged.
++
++The separately authorized [default-disclosure clarification](2026-09-08-default-oracle-disclosure-clarification.md)
++adds the user's multi-oracle preference and conspicuous-default requirement to
++section 11 while retaining its original prose. This is a specification
++clarification, not a claim of runtime enforcement or a choice of fallback policy.

@@ -1,0 +1,12 @@
+{
+  "pr_number": 16886,
+  "archive_path": "docs/history/pr-reviews/PR-16886-feat-creds-report-named-unseal-request-in-iso-bun-json.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-06T23:39:23.974Z",
+  "schema_version": "v1",
+  "commit_sha": "c73954125b6859afb0bc097ae4c455af9d735b81",
+  "title": "feat(creds): Report named unseal request in ISO bun JSON",
+  "state": "MERGED",
+  "merged_at": "2026-09-06T23:38:49Z",
+  "head_ref": "cursor/iso-bun-named-unseal-request-27c5"
+}

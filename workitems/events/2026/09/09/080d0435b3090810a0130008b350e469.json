@@ -1,0 +1,14 @@
+{
+  "id": "080d0435b3090810a0130008b350e469",
+  "at": "2026-09-09T15:08:14.497Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M23BCR90087G0R002GYP7TE",
+    "type": "bug",
+    "title": "the included proof laundered a failed ArgoCD sync as reconciled whenever health was Healthy",
+    "slug": "the-included-proof-laundered-a-failed-argocd-sync-as-reconci",
+    "priority": "P2",
+    "filename": "081M23BCR90087G0R002GYP7TE-the-included-proof-laundered-a-failed-argocd-sync-as-reconci.md"
+  }
+}

@@ -15,6 +15,15 @@
 import type { MultibootPlan } from "./plan.ts";
 import { qemuUsbStorageDeviceArg } from "../qemu-usb-storage.ts";
 
+/**
+ * The FAT32 volume label the multiboot image is formatted with.
+ *
+ * FAT labels are at most 11 characters. Anything longer cannot be written, so a
+ * `root=LABEL=` longer than 11 names a device that can never appear.
+ */
+export const MULTIBOOT_FAT_LABEL = "ZETA_MB";
+
+
 /** Removable-media UEFI default loader path (FAT). */
 export const GRUB_EFI_IMAGE_PATH = "/EFI/BOOT/BOOTX64.EFI" as const;
 /** GRUB config beside the EFI binary (removable-media search path). */
@@ -309,11 +318,17 @@ export function planAssembleFatImage(
   });
 
   // Whole-file FAT32, volume label ZETA_MB (FAT label ≤11 chars).
+  //
+  // EXPORTED, and grub.cfg is checked against it. `grub.cfg` booted
+  // `root=LABEL=ZETA_MULTIBOOT` -- 14 chars, which a FAT label CANNOT hold, so the
+  // label was never written by anything and stage-1 looked for a device that does
+  // not exist. The constant now has one home and a test reads the committed
+  // grub.cfg back against it.
   steps.push({
     kind: "command",
     command: {
       command: "mformat",
-      args: ["-F", "-v", "ZETA_MB", "-i", mtoolsImageSpecifier, "::"],
+      args: ["-F", "-v", MULTIBOOT_FAT_LABEL, "-i", mtoolsImageSpecifier, "::"],
     },
   });
 

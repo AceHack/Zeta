@@ -1,0 +1,12 @@
+{
+  "pr_number": 17226,
+  "archive_path": "docs/history/pr-reviews/PR-17226-fix-081m24nq3pd087g0r003e039ez-a-failed-spawn-reported-as-a-missing-remediation-.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-10T03:48:03.279Z",
+  "schema_version": "v1",
+  "commit_sha": "f4d77e7835c65108b9ce8692dc5c42f9b6a65932",
+  "title": "fix(081M24NQ3PD087G0R003E039EZ): a failed spawn reported as a missing remediation line",
+  "state": "MERGED",
+  "merged_at": "2026-09-10T03:47:25Z",
+  "head_ref": "k3s-preflight-spawn-failure-must-name-itself"
+}

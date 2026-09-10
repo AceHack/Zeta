@@ -1,0 +1,12 @@
+{
+  "pr_number": 16868,
+  "archive_path": "docs/history/pr-reviews/PR-16868-feat-formal-verify-finite-nci-witness-receipt.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-06T22:21:00.747Z",
+  "schema_version": "v1",
+  "commit_sha": "96fd5630ea3ef2fe9cad3beaa48332d7f203096f",
+  "title": "feat(formal): verify finite NCI witness receipt",
+  "state": "MERGED",
+  "merged_at": "2026-09-06T22:20:25Z",
+  "head_ref": "lumen/nci-witness-verifier"
+}

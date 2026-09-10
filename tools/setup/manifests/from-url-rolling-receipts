@@ -1,0 +1,34 @@
+# Re-measure receipts for ROLLING from-url rows.
+#
+# Format: <dest>  sha256=<64-hex>  measured=<YYYY-MM-DD>  result=pass
+#         remeasure=<script>[:<arg>...]  evidence=<repo-relative path>
+#
+# WHY THIS FILE EXISTS. A rolling row's digest fails closed when upstream
+# rebuilds the asset, and the cheapest way to make a red tree green is to paste
+# the new digest into `from-url`. That one-line diff looks like housekeeping and
+# is actually a verifier swap: every claim the old verifier established is now
+# resting on a verifier nobody ran. So the pin is not enough on its own -- a
+# rolling digest must ALSO name the run that judged those exact bytes.
+#
+# `lint-verifier-jar-provenance.ts` refuses a rolling pin with no row here whose
+# sha256 matches, whose result is `pass`, whose `remeasure=` is the one the
+# manifest row declares (a weaker command does not buy the pin), and whose
+# evidence file exists. `bun tools/setup/repin-rolling.ts <dest>` writes the row
+# only after running that command itself and seeing it exit 0.
+#
+# THE HONEST LIMIT, stated so nobody mistakes this for a proof: a hand-written
+# row passes. Nothing here can distinguish an earned receipt from a typed one --
+# the same admission the AgencySignature block makes about copied attestations.
+# What the file buys is that the laundering is no longer a ONE-LINE diff that
+# reads as maintenance; it is a second, explicit, reviewable assertion about a
+# run that either happened or did not.
+#
+# Rows are APPEND-ONLY and historical rows stay. The digest that is live is
+# whichever one `from-url` currently pins; the rest are the lineage.
+#
+# 081M23ESC5B087G0R002HJ39DG
+
+src/Core.TLA/tla2tools.jar  sha256=82cc5759b43c7842410ece4f362850a27d2eb3416341335580a46629822a7896  measured=2026-09-09  result=pass  remeasure=src/Core.TypeScript/formal-verification/run-tlc.ts:--all  evidence=docs/cross-verify/2026-09-09-tla2tools-82cc5759-gate-sweep.md
+src/Core.TLA/tla2tools.jar  sha256=bb82311bc0493a8d30112a1baa0aece42a5f91b928866c7593930e390c14c340  measured=2026-09-09  result=pass  remeasure=src/Core.TypeScript/formal-verification/run-tlc.ts:--all  evidence=docs/cross-verify/2026-09-09-tla2tools-bb82311b-remeasure.md
+src/Core.TLA/tla2tools.jar  sha256=f629a67c1ade2cadfcd12670de9172e07629418502df76e9b9ccbf4a5aa0ed6e  measured=2026-09-09  result=pass  remeasure=src/Core.TypeScript/formal-verification/run-tlc.ts:--all  evidence=docs/cross-verify/2026-09-09-tla2tools-f629a67c-remeasure.md
+src/Core.TLA/tla2tools.jar  sha256=8836549e83db7f0b3f9fdde679ab56270d18e06198366d217d960738c02b9dbe  measured=2026-09-09  result=pass  remeasure=src/Core.TypeScript/formal-verification/run-tlc.ts:--all  evidence=docs/cross-verify/2026-09-09-tla2tools-8836549e-remeasure.md

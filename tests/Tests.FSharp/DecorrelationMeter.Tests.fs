@@ -34,9 +34,9 @@ let ``finite-sample honesty - the SAME S=4 pair at tiny n is NOT convicted (marg
     Assert.Equal(DMeter.WithinClassicalBound, DMeter.classifyPair 0.05 a b)
 
 [<Fact>]
-let ``an identical (S=2) pair sits within the classical bound`` () =
+let ``identical setting streams leave the cross-setting buckets unmeasured`` () =
     let a, _ = s4pair 25
-    Assert.Equal(DMeter.WithinClassicalBound, DMeter.classifyPair 0.05 a a) // identical ⇒ S = 2
+    Assert.Equal(DMeter.Unmeasured, DMeter.classifyPair 0.05 a a) // identical settings disclose only 00/11
 
 // ── fuse: spacelike-only, counting, order-independence, missing-probe skip ──────────────────────────
 
@@ -80,11 +80,12 @@ let ``fuse skips a pair missing a probe on either end (no reading, no conviction
 // WithinBoundFraction = fraction with NO channel/superdeterminism detected (NOT a decorrelation
 // measure — renamed from the false-green DecorrelatedFraction; see the module SOUNDNESS block).
 [<Fact>]
-let ``WithinBoundFraction is nan with no pairs and 1.0 when all within the classical bound`` () =
+let ``WithinBoundFraction is absent without measured pairs and one when all measured pairs are within bound`` () =
     let empty = DMeter.fuse 0.05 forkDag Map.empty [ "X"; "Y" ]
-    Assert.True(System.Double.IsNaN empty.WithinBoundFraction)
-    let a, _ = s4pair 25
-    let probes = Map.ofList [ "X", a; "Y", a ] // identical ⇒ S=2 ⇒ within bound (NOT proof of independence)
+    Assert.Equal<float option>(None, empty.WithinBoundFraction)
+    let a, b = s4pair 25
+    let localB = b |> List.map (fun round -> {round with Outcome=1})
+    let probes = Map.ofList [ "X", a; "Y", localB ] // complete constant local products, S=2
     let reading = DMeter.fuse 0.05 forkDag probes [ "X"; "Y" ]
     Assert.Equal(1, reading.WithinBound)
-    Assert.Equal(1.0, reading.WithinBoundFraction)
+    Assert.Equal<float option>(Some 1.0, reading.WithinBoundFraction)

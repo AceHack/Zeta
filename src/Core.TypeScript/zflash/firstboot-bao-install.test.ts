@@ -4,7 +4,9 @@ import { mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
+import { FROST_LOOK_EFFECTS_KEY, FROST_LOOK_OS_KEY } from "../../../tools/setup/persona-keys/named-frost-look.ts";
 import { TPM_CHAR_DEVICE } from "../cluster/bao-load-site.ts";
+import { UNSEAL_REQUEST_ENV_KEY } from "../cluster/unseal-path.ts";
 import {
   FIRSTBOOT_BAO_ELF_EPOCH_KEY,
   FIRSTBOOT_BAO_LOAD_SITE_KEY,
@@ -28,6 +30,9 @@ const INSTALL_START = "# ── 081M1VZRST2087G0R001QEJDWG: named bao site+path 
 const INSTALL_END = "# ── 081M1VZRST2087G0R001QEJDWG: end named bao pickup";
 const INVOKE_START = "# ── 081M1W1NCDT087G0R002H3VG6Y: named bao bun consume";
 const INVOKE_END = "# ── 081M1W1NCDT087G0R002H3VG6Y: end named bao bun consume";
+const SEAL_DETECT_START = "# ── 081M22M7G8M087G0R003R1C8Z4: automate the seal-path detection";
+const SEAL_DETECT_END = "# ── 081M22M7G8M087G0R003R1C8Z4: end seal-path live look";
+const SEAL_DETECT_HELPER_REL = "tools/setup/persona-keys/seal-path-detect.ts";
 const BAO_ENV_HELPER_REL = "src/Core.TypeScript/zflash/firstboot-bao-env.ts";
 
 const SITE_SED_BASH = `s/^${FIRSTBOOT_BAO_LOAD_SITE_KEY}='\\([^']*\\)'\\$/\\1/p`;
@@ -332,16 +337,38 @@ describe("zeta-install.sh named bao bun consume after 6.95a", () => {
     expect(executable.split(`export ${FIRSTBOOT_BAO_LOAD_SITE_KEY}=`).length - 1).toBe(1);
     expect(executable.split(`${FIRSTBOOT_BAO_PATH_KEY}='`).length - 1).toBe(1);
     expect(executable.split(`${FIRSTBOOT_BAO_ELF_EPOCH_KEY}='installer-iso'`).length - 1).toBe(1);
+    expect(executable.split(`${UNSEAL_REQUEST_ENV_KEY}=`).length - 1).toBe(0);
+    expect(executable.split(`${FROST_LOOK_OS_KEY}=`).length - 1).toBe(0);
+    expect(executable.split(`${FROST_LOOK_EFFECTS_KEY}=`).length - 1).toBe(0);
+    expect(executable.split("jq -c '.requested'").length - 1).toBe(1);
+    expect(executable.split("jq -c '.probe'").length - 1).toBe(1);
+    expect(executable.split("jq -c '.look'").length - 1).toBe(1);
+    expect(executable.split("--from-json").length - 1).toBe(0);
+    expect(block.split("null request is unmeasured, not auto").length - 1).toBe(1);
+    expect(block.split("null probe is unmeasured, not present").length - 1).toBe(1);
+    expect(block.split("null look is unmeasured, not a live look").length - 1).toBe(1);
+    expect(executable.split("planSetupFromNamedBaoElfEnv").length - 1).toBe(0);
+    expect(executable.split("integrateAtSetup").length - 1).toBe(0);
     expect(executable.split("[ -d /mnt ]").length - 1).toBe(0);
     expect(executable.split("test -d /mnt").length - 1).toBe(0);
     expect(executable.split(TPM_CHAR_DEVICE).length - 1).toBe(0);
     expect(executable.split(NIXOS_HOST_BAO).length - 1).toBe(0);
     expect(executable.split("Application.yaml").length - 1).toBe(0);
     expect(executable.split("seal ").length - 1).toBe(0);
+    expect(block.split("ISO current-system").length - 1).toBe(1);
+    expect(block.split("null ask is not a named bao").length - 1).toBe(0);
   });
 
   test("the helper the installer names still consumes option D from env", () => {
     expect(helper.endsWith(BAO_ENV_HELPER_REL.replace("src/Core.TypeScript/zflash/", ""))).toBe(true);
+    const helperSrc = readFileSync(helper, "utf8");
+    expect(helperSrc.split("integrateAtSetupFromEnv").length - 1).toBe(0);
+    expect(helperSrc.split("frost-hardware-probe").length - 1).toBe(0);
+    expect(helperSrc.split("named-frost-look-env").length - 1).toBe(0);
+    expect(helperSrc.split("namedProbeFromFrostLook").length - 1).toBe(0);
+    expect(helperSrc.split("realProbeEffects").length - 1).toBe(0);
+    expect(helperSrc.split("--from-json").length - 1).toBe(0);
+    expect(helperSrc.split("const probe: NamedHardwareProbe | null = null;").length - 1).toBe(1);
     const spawned = spawnSync(process.execPath, [helper], {
       encoding: "utf8",
       env: {
@@ -351,10 +378,17 @@ describe("zeta-install.sh named bao bun consume after 6.95a", () => {
       },
     });
     expect(spawned.status).toBe(0);
-    expect(JSON.parse(spawned.stdout)).toEqual({ ok: true, ask: nixosHostBaoAsk(), epoch: null });
+    expect(JSON.parse(spawned.stdout)).toEqual({
+      ok: true,
+      ask: nixosHostBaoAsk(),
+      epoch: null,
+      requested: null,
+      probe: null,
+      look: null,
+    });
   });
 
-  test("the helper the installer names reports installer-iso when that epoch is exported", () => {
+  test("the helper the installer names reports installer-iso and filters ISO current-system bao", () => {
     expect(helper.endsWith(BAO_ENV_HELPER_REL.replace("src/Core.TypeScript/zflash/", ""))).toBe(true);
     const spawned = spawnSync(process.execPath, [helper], {
       encoding: "utf8",
@@ -368,8 +402,11 @@ describe("zeta-install.sh named bao bun consume after 6.95a", () => {
     expect(spawned.status).toBe(0);
     expect(JSON.parse(spawned.stdout)).toEqual({
       ok: true,
-      ask: nixosHostBaoAsk(),
+      ask: null,
       epoch: "installer-iso",
+      requested: null,
+      probe: null,
+      look: null,
     });
   });
 
@@ -383,6 +420,118 @@ describe("zeta-install.sh named bao bun consume after 6.95a", () => {
       },
     });
     expect(spawned.status).toBe(0);
-    expect(JSON.parse(spawned.stdout)).toEqual({ ok: true, ask: null, epoch: null });
+    expect(JSON.parse(spawned.stdout)).toEqual({
+      ok: true,
+      ask: null,
+      epoch: null,
+      requested: null,
+      probe: null,
+      look: null,
+    });
+  });
+
+  test("the helper the installer names reports a named unseal request and refuses tpmrm0", () => {
+    const named = spawnSync(process.execPath, [helper], {
+      encoding: "utf8",
+      env: {
+        PATH: process.env.PATH,
+        [FIRSTBOOT_BAO_LOAD_SITE_KEY]: "on-host",
+        [FIRSTBOOT_BAO_PATH_KEY]: NIXOS_HOST_BAO,
+        [FIRSTBOOT_BAO_ELF_EPOCH_KEY]: "installer-iso",
+        [UNSEAL_REQUEST_ENV_KEY]: "pkcs11-tpm",
+      },
+    });
+    expect(named.status).toBe(0);
+    expect(JSON.parse(named.stdout)).toEqual({
+      ok: true,
+      ask: null,
+      epoch: "installer-iso",
+      requested: "pkcs11-tpm",
+      probe: null,
+      look: null,
+    });
+    const fromTpmrm0 = spawnSync(process.execPath, [helper], {
+      encoding: "utf8",
+      env: {
+        PATH: process.env.PATH,
+        [FIRSTBOOT_BAO_LOAD_SITE_KEY]: "on-host",
+        [FIRSTBOOT_BAO_PATH_KEY]: NIXOS_HOST_BAO,
+        [FIRSTBOOT_BAO_ELF_EPOCH_KEY]: "installer-iso",
+        [UNSEAL_REQUEST_ENV_KEY]: TPM_CHAR_DEVICE,
+      },
+    });
+    expect(fromTpmrm0.status).toBe(2);
+    expect(JSON.parse(fromTpmrm0.stdout)).toEqual({ ok: false, reason: "unknown-request" });
+  });
+
+  test("the helper the installer names reports frost-look keys and keeps probe null", () => {
+    const named = spawnSync(process.execPath, [helper], {
+      encoding: "utf8",
+      env: {
+        PATH: process.env.PATH,
+        [FIRSTBOOT_BAO_LOAD_SITE_KEY]: "on-host",
+        [FIRSTBOOT_BAO_PATH_KEY]: NIXOS_HOST_BAO,
+        [FIRSTBOOT_BAO_ELF_EPOCH_KEY]: "installer-iso",
+        [FROST_LOOK_OS_KEY]: "nixos",
+        [FROST_LOOK_EFFECTS_KEY]: "real",
+      },
+    });
+    expect(named.status).toBe(0);
+    expect(JSON.parse(named.stdout)).toEqual({
+      ok: true,
+      ask: null,
+      epoch: "installer-iso",
+      requested: null,
+      probe: null,
+      look: { os: "nixos", effects: "real" },
+    });
+    const fromTpmrm0 = spawnSync(process.execPath, [helper], {
+      encoding: "utf8",
+      env: {
+        PATH: process.env.PATH,
+        [FIRSTBOOT_BAO_LOAD_SITE_KEY]: "on-host",
+        [FIRSTBOOT_BAO_PATH_KEY]: NIXOS_HOST_BAO,
+        [FIRSTBOOT_BAO_ELF_EPOCH_KEY]: "installer-iso",
+        [FROST_LOOK_OS_KEY]: "nixos",
+        [FROST_LOOK_EFFECTS_KEY]: TPM_CHAR_DEVICE,
+      },
+    });
+    expect(fromTpmrm0.status).toBe(2);
+    expect(JSON.parse(fromTpmrm0.stdout)).toEqual({ ok: false, reason: "unknown-effects" });
+  });
+});
+
+describe("zeta-install.sh USB seal-path live look (081M22M7G8M / 081M246EAP)", () => {
+  const src = readFileSync(INSTALL_SH, "utf8");
+  const block = sliceMarkedBlock(src, SEAL_DETECT_START, SEAL_DETECT_END);
+  const executable = executableLines(block);
+
+  test("live look sits after named bao bun consume", () => {
+    expect(src.indexOf(SEAL_DETECT_START)).toBeGreaterThan(src.indexOf(INVOKE_END));
+  });
+
+  test("runs seal-path-detect with auto on a real NixOS look", () => {
+    expect(executable.split(SEAL_DETECT_HELPER_REL).length - 1).toBe(1);
+    expect(executable.split("--os nixos").length - 1).toBe(1);
+    expect(executable.split("--effects real").length - 1).toBe(1);
+    expect(executable.split("--request auto").length - 1).toBe(1);
+  });
+
+  test("logs the USB ladder (hsm then tpm then sidecar) and stays observational", () => {
+    expect(executable.split(".ladder").length - 1).toBe(1);
+    expect(executable.split("ladder:").length - 1).toBe(1);
+    expect(block.split("observed, not configured").length - 1).toBe(1);
+    expect(block.split("hsm → tpm → sidecar").length - 1).toBe(1);
+  });
+
+  test("does not configure a seal, call overlay, or invent a probe", () => {
+    expect(executable.split("Application.yaml").length - 1).toBe(0);
+    expect(executable.split('seal "pkcs11"').length - 1).toBe(0);
+    expect(executable.split("valuesObject").length - 1).toBe(0);
+    expect(executable.split("plan-setup-from-frost-look").length - 1).toBe(0);
+    expect(executable.split("planSetupFromNamedBaoElfEnv").length - 1).toBe(0);
+    expect(executable.split("overlay").length - 1).toBe(0);
+    expect(executable.split(TPM_CHAR_DEVICE).length - 1).toBe(0);
+    expect(executable.split("--from-json").length - 1).toBe(0);
   });
 });

@@ -1,0 +1,307 @@
+{
+  "Head": "c1e6f0497afcc5078b03bfe8e797dc12e684cf58",
+  "Artifacts": [
+    {
+      "File": "000-.git-precision-publication-compare-1.py.gz",
+      "OriginalPath": ".git/precision-publication-compare-1.py",
+      "Bytes": 6973,
+      "Sha256": "0042b4ea4c12411f66b0a3bfbab463bc15c3bfe493532722b8128967a9bae06b",
+      "StoredBytes": 2464,
+      "StoredSha256": "bf5755f269e3bc3e4168e8798dd32e018aec2232e7238fd588148243afd089c3"
+    },
+    {
+      "File": "001-.git-precision-publication-derive-1.stderr.gz",
+      "OriginalPath": ".git/precision-publication-derive-1.stderr",
+      "Bytes": 0,
+      "Sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "StoredBytes": 20,
+      "StoredSha256": "9ceffb7310338057cfe71a4ae1e2c98d2c485d81cdef906532a801f457a38d64"
+    },
+    {
+      "File": "002-.git-precision-publication-derive-1.stdout.gz",
+      "OriginalPath": ".git/precision-publication-derive-1.stdout",
+      "Bytes": 58,
+      "Sha256": "a7e77500e9825c542885667e9e7e2ebbda20cc7782627bedf5ec72bd2522b5e8",
+      "StoredBytes": 78,
+      "StoredSha256": "5a6b9640505b3f84f787298d9d7780c8d43db840bdbaf934f908cfe2e1382ca0"
+    },
+    {
+      "File": "003-.git-precision-publication-existing-import-1.json.gz",
+      "OriginalPath": ".git/precision-publication-existing-import-1.json",
+      "Bytes": 910,
+      "Sha256": "4623074315f248ac5e3e45f0f6b6c9f88ee79d657df850c50aef13c9630736f3",
+      "StoredBytes": 444,
+      "StoredSha256": "fcbbb83309a5475cd51c5b86fa96084af81f12d22974cdaa881f7227c28fcc9a"
+    },
+    {
+      "File": "004-.git-precision-publication-format-1.stderr.gz",
+      "OriginalPath": ".git/precision-publication-format-1.stderr",
+      "Bytes": 0,
+      "Sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "StoredBytes": 20,
+      "StoredSha256": "9ceffb7310338057cfe71a4ae1e2c98d2c485d81cdef906532a801f457a38d64"
+    },
+    {
+      "File": "005-.git-precision-publication-format-1.stdout.gz",
+      "OriginalPath": ".git/precision-publication-format-1.stdout",
+      "Bytes": 58,
+      "Sha256": "835c2bf8a992f1ddd1899e78af63a76781eadfe65e7b37eef59aa977f6aeb051",
+      "StoredBytes": 78,
+      "StoredSha256": "587b59539d47add9121051c9c0b5e254738e0cdc791371e1904f84cf83b90b8c"
+    },
+    {
+      "File": "006-.git-precision-publication-formatter-1-process.json.gz",
+      "OriginalPath": ".git/precision-publication-formatter-1/process.json",
+      "Bytes": 175,
+      "Sha256": "01ed289a25be04e5274ea66993b351851acbf4f200ca0b5cbd0de91fc5494fb1",
+      "StoredBytes": 164,
+      "StoredSha256": "f63df5eb7562d9180e00e1963dae94446b5bac8b090058e07e9bc7994ed59391"
+    },
+    {
+      "File": "007-.git-precision-publication-formatter-1-start.json.gz",
+      "OriginalPath": ".git/precision-publication-formatter-1/start.json",
+      "Bytes": 162,
+      "Sha256": "eab1eeb05007b99657985ee9bfb5846726d4a11155964e082b7f50b66736f1c4",
+      "StoredBytes": 156,
+      "StoredSha256": "98a320a5f3dd825baf345b68e6810bfd04ec644a1c629913622e793a14d0185a"
+    },
+    {
+      "File": "008-.git-precision-publication-formatter-1-stderr.gz",
+      "OriginalPath": ".git/precision-publication-formatter-1/stderr",
+      "Bytes": 5503,
+      "Sha256": "55fc4f62626bbf15ca4f1879604d1763ace97ffccbf62c2d8964b920a46e079e",
+      "StoredBytes": 572,
+      "StoredSha256": "f9f3fff1b832cf2515a1820b12e67ab1e0f03e69660c590da7375f769afb6c02"
+    },
+    {
+      "File": "009-.git-precision-publication-formatter-1-stdout.gz",
+      "OriginalPath": ".git/precision-publication-formatter-1/stdout",
+      "Bytes": 0,
+      "Sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "StoredBytes": 20,
+      "StoredSha256": "9ceffb7310338057cfe71a4ae1e2c98d2c485d81cdef906532a801f457a38d64"
+    },
+    {
+      "File": "010-.git-precision-publication-full-preflight-1-process.json.gz",
+      "OriginalPath": ".git/precision-publication-full-preflight-1/process.json",
+      "Bytes": 131,
+      "Sha256": "97f3ce7e33896bce79370cc727ca1baf91a09ba3adc88d945b2d08ec4086f094",
+      "StoredBytes": 138,
+      "StoredSha256": "3288d1964de968118316e084c918b3877093ef295e72dfbac587c4be9f7dc54c"
+    },
+    {
+      "File": "011-.git-precision-publication-full-preflight-1-start.json.gz",
+      "OriginalPath": ".git/precision-publication-full-preflight-1/start.json",
+      "Bytes": 123,
+      "Sha256": "c569e6e94b2c964204090fde7a3ac10079cf2f1a55630b2133b697876c4e3ad2",
+      "StoredBytes": 131,
+      "StoredSha256": "ace37c9e9f8f01034e342422d3ed5a2981a4ef656f0c7908aee725057971497c"
+    },
+    {
+      "File": "012-.git-precision-publication-full-preflight-1-stderr.gz",
+      "OriginalPath": ".git/precision-publication-full-preflight-1/stderr",
+      "Bytes": 49,
+      "Sha256": "2702855c35b0430a3432c3f284c32b80ecd46d83302246db156609015e6b2560",
+      "StoredBytes": 69,
+      "StoredSha256": "5c00a8fdc5d6679c6621d462c7a2386aeecfb66d2f3cf0f82cdbaf91a490ad35"
+    },
+    {
+      "File": "013-.git-precision-publication-full-preflight-1-stdout.gz",
+      "OriginalPath": ".git/precision-publication-full-preflight-1/stdout",
+      "Bytes": 1313,
+      "Sha256": "bab079ca25dc0ae422108d850a086d6753e5fadaefb06cb0fe8ab4b507869f51",
+      "StoredBytes": 408,
+      "StoredSha256": "cc7006133569f8b5ffb89d538817b8c5e5ba7c7bbafb728e0dae7dfeff35de7a"
+    },
+    {
+      "File": "014-.git-precision-publication-indexes.patch.gz",
+      "OriginalPath": ".git/precision-publication-indexes.patch",
+      "Bytes": 9151,
+      "Sha256": "7327c219ede82ee1fe6849a2604d9458447f01fd01ec90faf54968081ec24923",
+      "StoredBytes": 3713,
+      "StoredSha256": "f347265b654e33023e513b34b1c12ac800f3c36f15b6576e0531aed3254cd09e"
+    },
+    {
+      "File": "015-.git-precision-publication-main-fetch-1.log.gz",
+      "OriginalPath": ".git/precision-publication-main-fetch-1.log",
+      "Bytes": 153,
+      "Sha256": "3a8111aa765974122dea64bc95e1b2fd454ac5c1ebc5fd7f7e9e101edbcdd6be",
+      "StoredBytes": 136,
+      "StoredSha256": "2f05af92f24eaf20d66e7b89b233c77ea72b19a243be356a1cebdb8b089bf05f"
+    },
+    {
+      "File": "016-.git-precision-publication-native-replay-1-0-Zeta.Bayesian.dll.gz",
+      "OriginalPath": ".git/precision-publication-native-replay-1/0-Zeta.Bayesian.dll",
+      "Bytes": 1037824,
+      "Sha256": "dc8b62b1a119fec1ee48d08dcb2288d7bac73143cb8c3e1b336e0e1caf624fbb",
+      "StoredBytes": 480839,
+      "StoredSha256": "d49915af9765765d0a7eb696765344c3faa8737bfc5b034f6941cb2494a0ba57"
+    },
+    {
+      "File": "017-.git-precision-publication-native-replay-1-1-Zeta.Core.dll.gz",
+      "OriginalPath": ".git/precision-publication-native-replay-1/1-Zeta.Core.dll",
+      "Bytes": 9266176,
+      "Sha256": "dcdbd08e48acf5fb1ea8bc5a18eadf7746147ade44c0419bd257198e6c33c440",
+      "StoredBytes": 4261047,
+      "StoredSha256": "76653cd82ff18076f98cfbf34e0a4593a764a4ccd9030a3718eaccf67d93d04e"
+    },
+    {
+      "File": "018-.git-precision-publication-native-replay-1-assembly-before-observed-after.json.gz",
+      "OriginalPath": ".git/precision-publication-native-replay-1/assembly-before-observed-after.json",
+      "Bytes": 722,
+      "Sha256": "8b12e26abed0208cd56494271a37f26bfe43b98a57ccf54deb11718a25db14aa",
+      "StoredBytes": 393,
+      "StoredSha256": "e4d8a4ab7fa673da0d8785ff4989eb9911cb6dfcc8b9134641613797d0c14bf8"
+    },
+    {
+      "File": "019-.git-precision-publication-native-replay-1-capture-harness-failure-note.json.gz",
+      "OriginalPath": ".git/precision-publication-native-replay-1/capture-harness-failure-note.json",
+      "Bytes": 544,
+      "Sha256": "7bd4080a6dc292e19d9849bf1da6223dd53bb2eab359d43f2062c6110c5bd8ce",
+      "StoredBytes": 347,
+      "StoredSha256": "1ed6fd898d7fd9f85a29787ec65bf7a719539ea92d18eac422c8136e647eff24"
+    },
+    {
+      "File": "020-.git-precision-publication-native-replay-1-comparison.process.json.gz",
+      "OriginalPath": ".git/precision-publication-native-replay-1/comparison.process.json",
+      "Bytes": 148,
+      "Sha256": "33497f3a16e3d8f71ef98e5ebfbe80140a66b315e6f09a1b70f5e54ad719fe85",
+      "StoredBytes": 140,
+      "StoredSha256": "4c1a5c26732e55aa6c34d4ff2c47554582e06508f4a2f000ecd506c98f55f15c"
+    },
+    {
+      "File": "021-.git-precision-publication-native-replay-1-comparison.stderr.gz",
+      "OriginalPath": ".git/precision-publication-native-replay-1/comparison.stderr",
+      "Bytes": 0,
+      "Sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "StoredBytes": 20,
+      "StoredSha256": "9ceffb7310338057cfe71a4ae1e2c98d2c485d81cdef906532a801f457a38d64"
+    },
+    {
+      "File": "022-.git-precision-publication-native-replay-1-comparison.stdout.gz",
+      "OriginalPath": ".git/precision-publication-native-replay-1/comparison.stdout",
+      "Bytes": 1903,
+      "Sha256": "4d8521f904cbcf3d288529a7d7368bca60d5710f0962330b69cb326785992963",
+      "StoredBytes": 602,
+      "StoredSha256": "45c7ce71fb26d01d1428f52f456e21c7330bf0b580d0c1df37ad20a8092c8710"
+    },
+    {
+      "File": "023-.git-precision-publication-native-replay-1-process.json.gz",
+      "OriginalPath": ".git/precision-publication-native-replay-1/process.json",
+      "Bytes": 1404,
+      "Sha256": "2813b862f05c0b57a2a6b303ba3c40f19293679f6d8364b03eb573dbaae86ef0",
+      "StoredBytes": 682,
+      "StoredSha256": "50131387827d0afe371786aef617aa2558626ff8f859aa06b792457ee8c8b175"
+    },
+    {
+      "File": "024-.git-precision-publication-native-replay-1-stderr.gz",
+      "OriginalPath": ".git/precision-publication-native-replay-1/stderr",
+      "Bytes": 0,
+      "Sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "StoredBytes": 20,
+      "StoredSha256": "9ceffb7310338057cfe71a4ae1e2c98d2c485d81cdef906532a801f457a38d64"
+    },
+    {
+      "File": "025-.git-precision-publication-native-replay-1-stdout.gz",
+      "OriginalPath": ".git/precision-publication-native-replay-1/stdout",
+      "Bytes": 5216,
+      "Sha256": "dd32556f81002a7d0b1418cd00962fe919f2fcd9c6305639efe1b5e5eed20d7e",
+      "StoredBytes": 1363,
+      "StoredSha256": "0740aeb525440a56c8dfd59764999759f058c4e6b7f401b974b4a15c13f9c3fb"
+    },
+    {
+      "File": "026-.git-precision-publication-projects.patch.gz",
+      "OriginalPath": ".git/precision-publication-projects.patch",
+      "Bytes": 1026,
+      "Sha256": "bc9c988a3e3601962ff05cf1342cbdb922065e1ac0c5144b4740e928abf79f8e",
+      "StoredBytes": 336,
+      "StoredSha256": "2c3d6cfb172da8ac8e303c3b7984a8c1bc572b66e1c42d8c800a321af99da2a3"
+    },
+    {
+      "File": "027-.git-precision-publication-reviews-fetch-1.log.gz",
+      "OriginalPath": ".git/precision-publication-reviews-fetch-1.log",
+      "Bytes": 167,
+      "Sha256": "3054cd8ac688f7a3979d7247fde18deec8da6f21882ed7dd23c7612fc53a94fc",
+      "StoredBytes": 152,
+      "StoredSha256": "a997b79f00e86be297f20a5194bbc88ab48c7dfb771cf98d0d700152fa1009fb"
+    },
+    {
+      "File": "028-.git-precision-publication-reviews-import-1.log.gz",
+      "OriginalPath": ".git/precision-publication-reviews-import-1.log",
+      "Bytes": 6416,
+      "Sha256": "bd2a5ec5dfe22704dc73a74c74cf0c084bedc3bb009d11917ac53b4641184d5c",
+      "StoredBytes": 857,
+      "StoredSha256": "2ca41cab2b02fa7ee02cca29937ff0187ef7bd761796ad9842e455314e86bb23"
+    },
+    {
+      "File": "029-.git-precision-publication-root-fetch-1.log.gz",
+      "OriginalPath": ".git/precision-publication-root-fetch-1.log",
+      "Bytes": 167,
+      "Sha256": "3054cd8ac688f7a3979d7247fde18deec8da6f21882ed7dd23c7612fc53a94fc",
+      "StoredBytes": 152,
+      "StoredSha256": "a997b79f00e86be297f20a5194bbc88ab48c7dfb771cf98d0d700152fa1009fb"
+    },
+    {
+      "File": "030-.git-precision-publication-source-import-1.json.gz",
+      "OriginalPath": ".git/precision-publication-source-import-1.json",
+      "Bytes": 49074,
+      "Sha256": "c8192d9052f6848608b85e4d454bb16de72d7275345fa9cb28d6ce84375bd5da",
+      "StoredBytes": 9498,
+      "StoredSha256": "331ab4167b1568f58f6c0f1512f8bcc514fca9e169fee3b65b4efcaa0aca39f7"
+    },
+    {
+      "File": "031-.git-precision-publication-source-modes-1.json.gz",
+      "OriginalPath": ".git/precision-publication-source-modes-1.json",
+      "Bytes": 30164,
+      "Sha256": "32ec9727c6d58c9c5ebacdf51344fc90b138933201715828cfcbf42decc467f4",
+      "StoredBytes": 2008,
+      "StoredSha256": "c5b9b2bd77fc1a663ef51c512de2a43ce82de00036046e4f3169167830c7e5ed"
+    },
+    {
+      "File": "032-.git-precision-publication-start-1.log.gz",
+      "OriginalPath": ".git/precision-publication-start-1.log",
+      "Bytes": 155,
+      "Sha256": "20905a86404bf09be0efdabf34bf96bfa3625bac33550b38e5baabeb5bfd65bb",
+      "StoredBytes": 115,
+      "StoredSha256": "5426d73a344e949d19bcdc4ce0a2fc0337a9a1f11b14e224d445d40078925dbe"
+    }
+  ],
+  "Sources": [
+    {
+      "Path": "src/Bayesian/PrecisionGateKernels.fs",
+      "Bytes": 17206,
+      "Sha256": "4004196cb0ade8527dfebf83fbb3e6e42bd36208e38affd09906787a84901c02"
+    },
+    {
+      "Path": "src/Bayesian/Bayesian.fsproj",
+      "Bytes": 3276,
+      "Sha256": "1d33fbcabf186390c582a53256ac4b3186cadf60129f1b37b2d636dd2ac74bac"
+    },
+    {
+      "Path": "tests/Bayesian.Tests/PrecisionGateKernels.Tests.fs",
+      "Bytes": 13463,
+      "Sha256": "f443e58dd8c6d5e0c017d36a432dc6de121fd040dfa68d39e877e4a4ebfefebb"
+    },
+    {
+      "Path": "tests/Bayesian.Tests/Bayesian.Tests.fsproj",
+      "Bytes": 3575,
+      "Sha256": "b96a098c57f89908b5b78c98506b039c24cfbdccdaf77493de69f2c43a4bffb7"
+    },
+    {
+      "Path": "src/Research.FSharp/PrecisionGateKernelsReplay.fsx",
+      "Bytes": 5715,
+      "Sha256": "57d12eb0afed2b438c5e9dc37e78df0785e391b1ddf15f77e625f332a67fce05"
+    },
+    {
+      "Path": "src/Interp.Python/zeta_interp/precision_gate_kernels_reference.py",
+      "Bytes": 20245,
+      "Sha256": "91f71726c610364f5adf835fff08adb1353ab6f8ba9beaa6a68387cd55ac8258"
+    },
+    {
+      "Path": "docs/research/precision-gate-kernels-reference-validation/2026-09-08/reference-vectors.json",
+      "Bytes": 21985,
+      "Sha256": "ecab012f7084e17097594faabd2ee49ec7a76aa1da8a1fa4f2204ab8df841489"
+    }
+  ],
+  "Scope": "Actual publication preparation, full gate, formatter and fixed native/reference replay; two direct DLLs only, not transitive runtime closure."
+}

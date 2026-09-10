@@ -1,0 +1,27 @@
+# Re-measure receipts for `pinned-refs` rows.
+#
+# Format: <ref>  sha256:<64-hex>  measured=<YYYY-MM-DD>  result=pass  remeasure=<argv>
+#
+# WHY THIS FILE EXISTS. `--refresh` writes a row here ONLY after it has run that
+# row's declared `remeasure=` itself and seen it exit 0. Without the receipt, the
+# cheapest way to make a red pin green is to paste the new digest in by hand — a
+# one-line diff that reads as housekeeping and is actually an unverified bump.
+#
+# THE HONEST LIMIT, stated rather than implied: a hand-written row passes.
+# Nothing here can tell an earned receipt from a typed one — the same admission
+# `tools/setup/manifests/from-url-rolling-receipts` makes about rolling jars, and
+# the same one the AgencySignature block makes about copied attestations. What
+# the file buys is that the laundering stops being a one-line digest diff and
+# becomes a second, explicit, reviewable assertion about a run.
+#
+# ROWS ARE APPEND-ONLY. Historical rows stay; the digest that is LIVE is whatever
+# `pinned-refs` currently pins, and everything above it is the lineage.
+#
+# EMPTY IS THE CORRECT STATE TODAY, and saying so is not a formality. The eight
+# container pins in `pinned-refs` were established by MEASUREMENT (registry HTTP
+# API v2, cross-checked against Scorecard's independently computed remediation
+# digests, 2026-09-09) and not by a refresh, so no refresh has run and no receipt
+# has been earned. The first row here will be written by
+# `refresh-pins.ts --refresh <ref>` on the first upstream rebuild.
+#
+# 081M23NT5VX087G0R000KAFE45

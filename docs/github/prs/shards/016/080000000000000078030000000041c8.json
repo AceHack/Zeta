@@ -1,0 +1,12 @@
+{
+  "pr_number": 16840,
+  "archive_path": "docs/history/pr-reviews/PR-16840-feat-core-bounded-policy-tick-admissibility-receipt.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-06T20:49:46.231Z",
+  "schema_version": "v1",
+  "commit_sha": "c7e0619cfe2eb5ee93c9ea2f989bd8f517b35e99",
+  "title": "feat(core): bounded policy tick-admissibility receipt",
+  "state": "MERGED",
+  "merged_at": "2026-09-06T20:49:06Z",
+  "head_ref": "lumen/policy-admissibility-receipt"
+}

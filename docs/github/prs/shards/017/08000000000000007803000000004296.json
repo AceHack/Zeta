@@ -1,0 +1,12 @@
+{
+  "pr_number": 17046,
+  "archive_path": "docs/history/pr-reviews/PR-17046-feat-081m1zqtn7y087g0r0010rt03k-persist-catalog-slots-not-the-alias.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-08T05:51:13.478Z",
+  "schema_version": "v1",
+  "commit_sha": "14e2a7c0c4ad9290a95821302eeeecd6274cf96b",
+  "title": "feat(081M1ZQTN7Y087G0R0010RT03K): persist catalog slots not the alias",
+  "state": "MERGED",
+  "merged_at": "2026-09-08T05:50:37Z",
+  "head_ref": "feat/zetafs-d10-catalog-slot-only"
+}

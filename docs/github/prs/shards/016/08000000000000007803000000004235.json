@@ -1,0 +1,12 @@
+{
+  "pr_number": 16949,
+  "archive_path": "docs/history/pr-reviews/PR-16949-fix-forge-require-complete-paginated-merge-receipts.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-07T15:49:02.039Z",
+  "schema_version": "v1",
+  "commit_sha": "7fafe1f883599840c5e65c08ce5ebcaec3a0365d",
+  "title": "fix(forge): require complete paginated merge receipts",
+  "state": "MERGED",
+  "merged_at": "2026-09-07T15:48:25Z",
+  "head_ref": "claim/task-merge-observe-pagination-20260907"
+}

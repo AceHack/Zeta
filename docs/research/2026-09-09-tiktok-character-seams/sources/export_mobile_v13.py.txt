@@ -1,0 +1,79 @@
+"""Compact candidates after Blender motion checks; these exports are not EH-tested."""
+import bpy,json,math
+from pathlib import Path
+from mathutils import Vector,Matrix
+from mathutils.kdtree import KDTree
+R=Path(__file__).resolve().parent;O=R/'mobile-export-v13';O.mkdir(exist_ok=True)
+bpy.ops.wm.open_mainfile(filepath=str(R/'blender-v13/Characters-v13.blend'));scene=bpy.context.scene;scene.cycles.samples=4;scene.render.bake.margin=8;scene.render.bake.use_pass_direct=False;scene.render.bake.use_pass_indirect=False;scene.render.bake.use_pass_color=True
+records=[]
+for name in ['AceHack','Xenaa']:
+ rig=bpy.data.objects[name+' | Motion rig'];items=[o for o in rig.children if o.type=='MESH'];head=bpy.data.objects[name+' | Independent head generator'];shift=-.075 if name=='AceHack' else -.085;cut=1.605 if name=='AceHack' else 1.525
+ with bpy.data.libraries.load(str(R/'mobile-rig-v2/TikTok-Characters-T-pose.blend'),link=False) as (available,loaded):loaded.objects=[name+' | Independent head generator']
+ old=loaded.objects[0];tree=KDTree(len(old.data.vertices))
+ for v in old.data.vertices:tree.insert(v.co,v.index)
+ tree.balance();matches=[]
+ for v in head.data.vertices:
+  point=v.co-Vector((0,shift,0));pos,index,dist=tree.find(point);matches.append((index,dist))
+ head.shape_key_add(name='Basis');channels=[]
+ for key in old.data.shape_keys.key_blocks:
+  if key.name=='Basis':continue
+  out=head.shape_key_add(name=key.name);count=0
+  for i,v in enumerate(head.data.vertices):
+   idx,dist=matches[i]
+   if v.co.z>cut+.01 and dist<.004:
+    delta=key.data[idx].co-old.data.vertices[idx].co;out.data[i].co=v.co+delta;count+=delta.length>1e-6
+  channels.append({'name':key.name,'moved_vertices':count})
+ bpy.data.objects.remove(old,do_unlink=True)
+ for o in items:
+  bpy.ops.object.select_all(action='DESELECT');o.select_set(True);bpy.context.view_layer.objects.active=o
+  for mod in list(o.modifiers):
+   if mod.type!='ARMATURE':bpy.ops.object.modifier_apply(modifier=mod.name)
+  if o==head or 'arm surface' in o.name:
+   # Preserve each shader's original coordinates while creating a fresh bake atlas.
+   old_uv=o.data.uv_layers.active.name if o.data.uv_layers else None
+   for mat in o.data.materials:
+    if not mat or not mat.use_nodes:continue
+    for node in list(mat.node_tree.nodes):
+     if node.type=='TEX_IMAGE' and node.image and not node.inputs['Vector'].is_linked and old_uv:
+      uv=mat.node_tree.nodes.new('ShaderNodeUVMap');uv.uv_map=old_uv;mat.node_tree.links.new(uv.outputs['UV'],node.inputs['Vector'])
+   atlas=o.data.uv_layers.new(name='ExportAtlas');o.data.uv_layers.active=atlas;atlas.active_render=True
+   bpy.ops.object.mode_set(mode='EDIT');bpy.ops.mesh.select_all(action='SELECT');bpy.ops.uv.smart_project(angle_limit=1.25,island_margin=.015);bpy.ops.object.mode_set(mode='OBJECT')
+   size=1024 if o==head else 512;label=name+('-head' if o==head else '-'+o.name.split(' | ')[1].replace(' ','-'));image=bpy.data.images.new(label+'-v13',width=size,height=size,alpha=False)
+   for mat in o.data.materials:
+    node=mat.node_tree.nodes.new('ShaderNodeTexImage');node.image=image;mat.node_tree.nodes.active=node
+   bpy.ops.object.bake(type='DIFFUSE');image.filepath_raw=str(O/(label+'.jpg'));image.file_format='JPEG';scene.render.image_settings.quality=90;image.save();image.pack()
+   mat=bpy.data.materials.new(label+' baked v13');mat.use_nodes=True;p=mat.node_tree.nodes['Principled BSDF'];p.inputs['Roughness'].default_value=.75;node=mat.node_tree.nodes.new('ShaderNodeTexImage');node.image=image;mat.node_tree.links.new(node.outputs['Color'],p.inputs['Base Color']);o.data.materials.clear();o.data.materials.append(mat)
+   for p in o.data.polygons:p.material_index=0
+   for layer in list(o.data.uv_layers):
+    if layer.name!='ExportAtlas':o.data.uv_layers.remove(layer)
+  elif 'Continuous rooted hair' in o.name or 'Rooted shoulder lock' in o.name:
+   # Geometry carries the grooves. Noise bump is omitted rather than silently exported.
+   for mat in o.data.materials:
+    p=mat.node_tree.nodes.get('Principled BSDF')
+    if p:
+     for link in list(p.inputs['Normal'].links):mat.node_tree.links.remove(link)
+  o.data.validate(clean_customdata=True)
+ offset=rig.location.x;rig.location.x=0;bpy.context.view_layer.update();bpy.ops.object.select_all(action='DESELECT');rig.select_set(True)
+ for o in items:o.select_set(True)
+ path=O/(name+'-body-candidate.glb');bpy.ops.export_scene.gltf(filepath=str(path),use_selection=True,export_format='GLB',export_animations=False,export_morph=True,export_morph_normal=False,export_morph_tangent=False,export_image_format='JPEG',export_jpeg_quality=90)
+ records.append({'character':name,'kind':'upper-body rig candidate','file':path.name,'bytes':path.stat().st_size,'morph_channels':channels,'status':'Blender-tested scope only; not Effect House-tested'})
+ # A separate head/hair asset keeps the established face-effect anchor convention.
+ face=[];center=Vector((0,-.10+shift,(1.80 if name=='AceHack' else 1.72)-.025))
+ for source in [o for o in items if o==head or 'hair' in o.name.lower() or 'lock' in o.name.lower()]:
+  ob=source.copy();ob.data=source.data.copy();scene.collection.objects.link(ob);world=ob.matrix_world.copy();ob.parent=None;ob.matrix_world=world
+  for mod in list(ob.modifiers):
+   if mod.type=='ARMATURE':ob.modifiers.remove(mod)
+  if ob.data.shape_keys:
+   for key in ob.data.shape_keys.key_blocks:
+    for v in key.data:v.co-=center
+  else:
+   for v in ob.data.vertices:v.co-=center
+  face.append(ob)
+ bpy.ops.object.select_all(action='DESELECT')
+ for o in face:o.select_set(True)
+ path=O/(name+'-face-candidate.glb');bpy.ops.export_scene.gltf(filepath=str(path),use_selection=True,export_format='GLB',export_animations=False,export_skins=False,export_morph=True,export_morph_normal=False,export_morph_tangent=False,export_image_format='JPEG',export_jpeg_quality=90)
+ records.append({'character':name,'kind':'face candidate','file':path.name,'bytes':path.stat().st_size,'status':'Legacy 11 analytic channels transferred; no new facial-performance validation'})
+ for o in face:bpy.data.objects.remove(o,do_unlink=True)
+ rig.location.x=offset
+bpy.ops.wm.save_as_mainfile(filepath=str(O/'Mobile-Candidates-v13.blend'))
+(R/'mobile-export-v13-receipt.json').write_text(json.dumps(records,indent=2))

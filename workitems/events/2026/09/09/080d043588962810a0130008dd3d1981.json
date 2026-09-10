@@ -1,0 +1,14 @@
+{
+  "id": "080d043588962810a0130008dd3d1981",
+  "at": "2026-09-09T15:02:26.757Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M23B24P5087G0R002BJWEN1",
+    "type": "bug",
+    "title": "hat-system ships two ConstraintTemplates whose Rego never compiled, so no hat policy is enforced",
+    "slug": "hat-system-ships-two-constrainttemplates-whose-rego-never-co",
+    "priority": "P2",
+    "filename": "081M23B24P5087G0R002BJWEN1-hat-system-ships-two-constrainttemplates-whose-rego-never-co.md"
+  }
+}

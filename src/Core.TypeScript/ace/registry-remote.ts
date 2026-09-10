@@ -7,7 +7,7 @@ import type { IndexSignableContent } from "./index-signature.ts";
 import { verifyIndexSignature } from "./index-signature.ts";
 import { createHash } from "node:crypto";
 import { join } from "node:path";
-import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { mkdirSync, readFileSync } from "node:fs";
 import type { Registry, RegistryEntry, RemoteRegistryConfig } from "./store.ts";
 import { loadRegistry, readRegistriesConfig, registryCacheDir } from "./store.ts";
 
@@ -110,6 +110,22 @@ function blobPath(contentHash: string): string {
   return join(registryCacheDir(), "blobs", contentHash.replace("sha256:", "").replace("blake3:", "") + ".json");
 }
 import { ContentHash256 } from "../blake3/blake3.ts";
+import { fetchBounded, writeFileOwned } from "../io/safe-io.ts";
+
+/**
+ * 64 MiB for one registry index. Real indexes are kilobytes; this bounds a
+ * hostile or broken registry without ever bounding a real one.
+ */
+const INDEX_MAX_BYTES = 64 * 1024 * 1024;
+
+/**
+ * 30 s. There is a CACHE ON DISK: an unresponsive registry should fall back to
+ * it in seconds, not hang `ace install` forever with the answer already local.
+ */
+const INDEX_FETCH_TIMEOUT_MS = 30_000;
+
+/** 0o644 — the mode `writeFileSync` produced under the umask, kept exactly. */
+const CACHE_FILE_MODE = 0o644;
 
 function indexContentHash(body: string): string {
   return "blake3:" + ContentHash256.ofBytes(new TextEncoder().encode(body)).toHex();
@@ -131,14 +147,21 @@ export function writeCache(
 ): CacheMeta {
   const ch = indexContentHash(body);
   mkdirSync(join(registryCacheDir(), "blobs"), { recursive: true });
-  writeFileSync(blobPath(ch), body);
+  // CONTENT-ADDRESSED, so the path is a function of the bytes: two writers with
+  // the same body write the same file, and a writer with different bytes writes
+  // a different one. `writeFileOwned` makes each write ONE owned descriptor
+  // with an explicit mode; the cap on what can arrive here lives at the fetch
+  // in `fetchRemoteIndex`, which is the single door.
+  const blobWrite = writeFileOwned(blobPath(ch), body, { mode: CACHE_FILE_MODE });
+  if (!blobWrite.ok) throw new Error(`ace: cannot write registry cache blob: ${blobWrite.error.message}`);
   const meta: CacheMeta = {
     url, sequence_high_water: fields.sequence_high_water, index_content_hash: ch,
     fetched_at: new Date().toISOString(),
     ...(fields.etag !== undefined ? { etag: fields.etag } : {}),
     ...(fields.last_modified !== undefined ? { last_modified: fields.last_modified } : {}),
   };
-  writeFileSync(metaPath(url), JSON.stringify(meta, null, 2));
+  const metaWrite = writeFileOwned(metaPath(url), JSON.stringify(meta, null, 2), { mode: CACHE_FILE_MODE });
+  if (!metaWrite.ok) throw new Error(`ace: cannot write registry cache meta: ${metaWrite.error.message}`);
   return meta;
 }
 
@@ -178,32 +201,61 @@ export async function fetchRemoteIndex(
     return useCachedBody(cached.body);
   }
 
-  let res: Response;
-  try {
-    const headers: Record<string, string> = {};
-    if (cacheMeta.etag) headers["If-None-Match"] = cacheMeta.etag;
-    if (cacheMeta.last_modified) headers["If-Modified-Since"] = cacheMeta.last_modified;
-    res = await fetch(remote.url, { headers });
-  } catch {
+  // THE DOOR, AND BOTH FLOWS THROUGH IT ARE INTENDED.
+  //
+  // CodeQL reports the conditional-request headers as `js/file-access-to-http`
+  // (alert #202) -- `If-None-Match` / `If-Modified-Since` are read out of the
+  // on-disk cache and sent over the network -- and the cache write below as
+  // `js/http-to-file-access` (alert #196). Those two ARE the cache: a
+  // conditional request is built from what was stored last time, and what comes
+  // back is stored for next time. Neither is removable without deleting the
+  // cache, and the pair is several frames apart, which is why no regex found
+  // them.
+  //
+  // What was missing is the BOUND, and it belongs here rather than at
+  // `writeCache`, because `writeCache` has one caller and this is the only door
+  // the bytes come through. `await res.text()` had no cap, so a registry index
+  // larger than memory was an OOM rather than a refusal, and no deadline, so an
+  // unresponsive registry hung `ace install` indefinitely -- with a perfectly
+  // good cache sitting on disk that the timeout path would have used.
+  //
+  // `failOnHttpError: false` because 304 and non-200 are ANSWERS here, not
+  // failures: each one falls back to the cache. A truncated body is the one
+  // thing that is neither, so it is refused rather than parsed -- half a
+  // registry index that happens to parse is a package resolver's worst input.
+  const conditional: Record<string, string> = {};
+  if (cacheMeta.etag) conditional["If-None-Match"] = cacheMeta.etag;
+  if (cacheMeta.last_modified) conditional["If-Modified-Since"] = cacheMeta.last_modified;
+  const res = await fetchBounded(remote.url, {
+    headers: conditional,
+    maxBytes: INDEX_MAX_BYTES,
+    timeoutMs: INDEX_FETCH_TIMEOUT_MS,
+    failOnHttpError: false,
+  });
+  if (!res.ok) {
     if (cached) return useCachedBody(cached.body);
-    return { skipped: `${remote.url}: unreachable + no cache` };
+    return { skipped: `${remote.url}: ${res.error.kind} + no cache` };
   }
 
-  if (res.status === 304) {
+  if (res.value.status === 304) {
     if (cached) return useCachedBody(cached.body);
     return { skipped: `${remote.url}: 304 but no cache` };
   }
-  if (res.status !== 200) {
+  if (res.value.status !== 200) {
     if (cached) return useCachedBody(cached.body);
-    return { skipped: `${remote.url}: HTTP ${res.status} + no cache` };
+    return { skipped: `${remote.url}: HTTP ${String(res.value.status)} + no cache` };
   }
-  const body = await res.text();
+  if (res.value.truncated) {
+    if (cached) return useCachedBody(cached.body);
+    return { skipped: `${remote.url}: index exceeds the ${String(INDEX_MAX_BYTES)}-byte cap + no cache` };
+  }
+  const body = res.value.body;
   const parsed = parseIndex(body);
   if ("error" in parsed) return { error: `${remote.url}: ${parsed.error}` };
   const v = verifyIndex(parsed, remote, trustStore, cacheMeta, now, { offline: false });
   if (!v.ok) return { error: `${remote.url}: ${v.reason}` };
-  const etag = res.headers.get("ETag") ?? undefined;
-  const last_modified = res.headers.get("Last-Modified") ?? undefined;
+  const etag = res.value.headers["etag"];
+  const last_modified = res.value.headers["last-modified"];
   writeCache(remote.url, body, {
     sequence_high_water: Math.max(parsed.sequence, cacheMeta.sequence_high_water),
     ...(etag !== undefined ? { etag } : {}),

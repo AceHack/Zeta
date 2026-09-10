@@ -1,0 +1,11 @@
+src/Core/AntiSybil.fs: non-comment lines equal after the declared helper rename
+src/Core/SybilBft.fs: non-comment lines equal after the declared helper rename
+src/Core/SybilBftProtocol.fs: non-comment lines equal after the declared helper rename
+src/Core/SybilBftLiveness.fs: non-comment lines equal after the declared helper rename
+src/Core/SybilBftProgress.fs: non-comment lines equal after the declared helper rename
+src/Core/TwoTimescaleFold.fs: non-comment lines equal after the declared helper rename
+src/Core/ShapeAcceptance.fs: only declared display-string replacement
+Executable caller audit:
+No old helper references in src/ or tests/ outside build outputs.
+This is a source-line equivalence audit, not a parser or compiler proof.
+Independent parent review: API/code and dated report accepted; positive-threshold qualification applied.

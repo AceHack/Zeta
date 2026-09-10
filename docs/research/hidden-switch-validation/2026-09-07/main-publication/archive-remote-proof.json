@@ -1,0 +1,26 @@
+{
+  "ObservedAtUtc": "2026-09-07T14:58:55.764852+00:00",
+  "AllFiveOriginalTagsUnchanged": true,
+  "Expected": {
+    "registration": [
+      "2474dc79558390b57362d131f6d1c849280331c2",
+      "6a3150037a1e6be6ae89996dc8562f2061f7c75d"
+    ],
+    "implementation": [
+      "bb746ecdf7e25fa5b5d26c7b89d948d929c097a4",
+      "4fc82b611012bd2620a26e02afe6baba491fe553"
+    ],
+    "independent-reference": [
+      "0ab0afe5c7a76133efafc6d5583bad8b19387252",
+      "b8e93e65d771e057bcb287f1231e8580dee1d5a6"
+    ],
+    "native-source": [
+      "71d107a57000d1df81cf3e267ae64c243dfea877",
+      "31ee67f9b4ed68ce6d0b52d1bdeb223c48d57dbb"
+    ],
+    "results": [
+      "18299050b53045dedddedd1007d913d8f2ed2505",
+      "900c0f57a51bfb79d7e9a7b8156ef367d97824f8"
+    ]
+  }
+}

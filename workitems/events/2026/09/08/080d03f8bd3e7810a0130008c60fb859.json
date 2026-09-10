@@ -1,0 +1,14 @@
+{
+  "id": "080d03f8bd3e7810a0130008c60fb859",
+  "at": "2026-09-08T03:37:31.855Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1ZHF9YF087G0R002R267T3",
+    "type": "task",
+    "title": "Metal bring-up register under-reported: 24 rows OPEN while three had landed",
+    "slug": "metal-bring-up-register-under-reported-24-rows-open-while-th",
+    "priority": "P2",
+    "filename": "081M1ZHF9YF087G0R002R267T3-metal-bring-up-register-under-reported-24-rows-open-while-th.md"
+  }
+}

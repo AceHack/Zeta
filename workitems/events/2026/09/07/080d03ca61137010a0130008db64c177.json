@@ -1,0 +1,14 @@
+{
+  "id": "080d03ca61137010a0130008db64c177",
+  "at": "2026-09-07T00:37:07.822Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1WMR8KD087G0R003HZYY14",
+    "type": "task",
+    "title": "Overlay joins take named probe; tpmrm0 is not a capture",
+    "slug": "overlay-joins-take-named-probe-tpmrm0-is-not-a-capture",
+    "priority": "P2",
+    "filename": "081M1WMR8KD087G0R003HZYY14-overlay-joins-take-named-probe-tpmrm0-is-not-a-capture.md"
+  }
+}

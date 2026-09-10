@@ -1,0 +1,14 @@
+{
+  "id": "080d03c2f124f810a0130008edd1b359",
+  "at": "2026-09-06T20:17:10.815Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1W5W94Y087G0R001CTH6FH",
+    "type": "task",
+    "title": "measure the triangle corners — generator/joins/observability byte composition and its direction of travel",
+    "slug": "measure-the-triangle-corners-generator-joins-observability-b",
+    "priority": "P2",
+    "filename": "081M1W5W94Y087G0R001CTH6FH-measure-the-triangle-corners-generator-joins-observability-b.md"
+  }
+}

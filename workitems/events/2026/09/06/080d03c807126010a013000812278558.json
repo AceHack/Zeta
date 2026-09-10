@@ -1,0 +1,14 @@
+{
+  "id": "080d03c807126010a013000812278558",
+  "at": "2026-09-06T23:14:56.204Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1WG1RJB087G0R001ADMJNK",
+    "type": "task",
+    "title": "ISO bun consume reports named unseal request from env",
+    "slug": "iso-bun-consume-reports-named-unseal-request-from-env",
+    "priority": "P2",
+    "filename": "081M1WG1RJB087G0R001ADMJNK-iso-bun-consume-reports-named-unseal-request-from-env.md"
+  }
+}

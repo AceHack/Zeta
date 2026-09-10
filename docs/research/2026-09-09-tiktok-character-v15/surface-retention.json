@@ -1,0 +1,34 @@
+[
+  {
+    "character": "AceHack",
+    "source_body_faces": 165692,
+    "body_faces": 137550,
+    "leg_faces": 28142,
+    "hair_faces": 0,
+    "body_neutral_max_displacement_m": 2.5790741936372184e-07,
+    "head_translation_m": [
+      0.0,
+      -0.10499999672174454,
+      -0.029999999329447746
+    ],
+    "head_faces": 224780,
+    "joints": 50,
+    "status": "visual/deformation experiment; no mobile or facial acceptance"
+  },
+  {
+    "character": "Xenaa",
+    "source_body_faces": 161887,
+    "body_faces": 120382,
+    "leg_faces": 28236,
+    "hair_faces": 13269,
+    "body_neutral_max_displacement_m": 1.519626234052415e-07,
+    "head_translation_m": [
+      0.0,
+      -0.11500000208616257,
+      -0.017999999225139618
+    ],
+    "head_faces": 262435,
+    "joints": 50,
+    "status": "visual/deformation experiment; no mobile or facial acceptance"
+  }
+]

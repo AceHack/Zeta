@@ -1,0 +1,14 @@
+{
+  "id": "080d043b57251010a013000887d3c180",
+  "at": "2026-09-09T18:25:24.642Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M23PNS51087G0R002TVVV3C",
+    "type": "bug",
+    "title": "sealed-room gate was evadable by one space, and an unanchored regex misclassified a manifest",
+    "slug": "sealed-room-gate-was-evadable-by-one-space-and-an-unanchored",
+    "priority": "P2",
+    "filename": "081M23PNS51087G0R002TVVV3C-sealed-room-gate-was-evadable-by-one-space-and-an-unanchored.md"
+  }
+}

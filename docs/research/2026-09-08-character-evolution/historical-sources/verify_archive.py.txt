@@ -1,0 +1,13 @@
+from pathlib import Path
+import json,hashlib,zipfile
+root=Path('/Users/acehack/Documents/Blender/Character-Evolution-Archive-20260908')
+m=json.loads((root/'inventory.json').read_text())
+for a in m['archives']:
+ p=root/a['name'];assert hashlib.file_digest(p.open('rb'),'sha256').hexdigest()==a['sha256']
+ with zipfile.ZipFile(p) as z:
+  expected=[f for f in m['files'] if f['archive']==a['name']]
+  assert set(z.namelist())=={f['path'] for f in expected}
+  for f in expected:
+   with z.open(f['path']) as r:assert hashlib.file_digest(r,'sha256').hexdigest()==f['sha256']
+   assert z.getinfo(f['path']).file_size==f['bytes']
+ print('Verified',a['name'],len(expected),'files',flush=True)

@@ -1,0 +1,14 @@
+{
+  "id": "080d045dd9f51810a01300088440e2c2",
+  "at": "2026-09-10T14:31:39.427Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M25VPFN3087G0R001RN0SA6",
+    "type": "bug",
+    "title": "The YAML lint toolchain installs pip and yamllint unpinned by hash",
+    "slug": "the-yaml-lint-toolchain-installs-pip-and-yamllint-unpinned-b",
+    "priority": "P2",
+    "filename": "081M25VPFN3087G0R001RN0SA6-the-yaml-lint-toolchain-installs-pip-and-yamllint-unpinned-b.md"
+  }
+}

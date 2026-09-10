@@ -1,0 +1,20 @@
+{
+  "HeadBefore": "5158e0bf334299094683b68b98080d7273a7f802",
+  "PatchSha256": "28e6b982d5cb0cc2e80f54c76130360dc8939a406abb391b1dd487b1cf4563d1",
+  "Applied": true,
+  "Rows": [
+    {
+      "Path": "src/Core/Tsirelson.fs",
+      "BeforeSha256": "7403f6702faf134062c257c73516c56f986a4ad31ad576d7846953bacae83f92",
+      "AfterSha256": "c3f0a8e5b4a8d07ba71742be4d9a21020ee76b407bc0aa7cc4655a889a1037f6",
+      "NonDocumentationLinesIdentical": true
+    },
+    {
+      "Path": "src/Core/FeedbackThrottle.fs",
+      "BeforeSha256": "63c2feabc69522a93d562c78c1035919ace2f7e3506957c1092992c1000ace7c",
+      "AfterSha256": "4fb3d52ce450372dfb1f10483ff57dbce6b4fd12852c3b369b440c36d28909d9",
+      "NonDocumentationLinesIdentical": true
+    }
+  ],
+  "Scope": "Exact reviewed documentation comments only; no executable line changes or runtime/binary equivalence claim"
+}

@@ -10,6 +10,7 @@
 // The gate runs TLC under `dotnet test` (xUnit, no bun involved), and every
 // spawn below is a metadata command that finishes in well under a second.
 import { describe, expect, test } from "bun:test";
+import { dirname } from "node:path";
 import { spawnSync } from "node:child_process";
 import { loadTlcRegistry } from "./tlc-invocation";
 
@@ -52,5 +53,28 @@ describe("run-tlc CLI contract", () => {
   test("an unknown flag exits 3, distinct from a model failure", () => {
     const r = spawnSync("bun", [cli, "--nonsense"], { cwd: root(), encoding: "utf8" });
     expect(r.status).toBe(3);
+    // NAMED as a flag, not folded into "unknown model id". Both exit 3, so the
+    // code alone cannot tell them apart, and a reader with a typo'd flag would
+    // be sent looking for a model that was never meant to exist.
+    expect(r.stderr).toContain("unknown flag");
+  });
+
+  // Both refusals above are ARGV questions, answered before the toolchain is
+  // probed. That ordering was invisible while the jar was committed -- the probe
+  // always succeeded -- and it is exactly what broke when the jar became
+  // fetched: an unknown model id reported a missing toolchain, which is true and
+  // is not the answer to the question that was asked.
+  test("an argv error is answered even when the toolchain is not ready", () => {
+    // PATH narrowed to bun's own directory so `java` is not findable. Clearing
+    // PATH outright would make `bun` itself unfindable, and the test would then
+    // pass for the wrong reason -- a status of `undefined` is not exit 3.
+    const r = spawnSync(process.execPath, [cli, "NoSuchModel"], {
+      cwd: root(),
+      encoding: "utf8",
+      env: { ...process.env, PATH: dirname(process.execPath) },
+    });
+    expect(r.status).toBe(3);
+    expect(r.stderr).toContain("unknown model id");
+    expect(r.stderr).not.toContain("toolchain not ready");
   });
 });

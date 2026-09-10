@@ -1,0 +1,14 @@
+{
+  "id": "080d041908357810a01300080a8d949d",
+  "at": "2026-09-08T22:26:14.831Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M21J21NE087G0R002X2K0QN",
+    "type": "task",
+    "title": "D10 firstChangedWindow hashes a span not a copied window",
+    "slug": "d10-firstchangedwindow-hashes-a-span-not-a-copied-window",
+    "priority": "P2",
+    "filename": "081M21J21NE087G0R002X2K0QN-d10-firstchangedwindow-hashes-a-span-not-a-copied-window.md"
+  }
+}

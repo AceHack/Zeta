@@ -1,0 +1,161 @@
+{
+  "SourceCommit": "c97efff55ca56baa530e21c117527b8f2f4351ec",
+  "SourcePins": [
+    {
+      "File": "src/Research.FSharp.Cli/inventory_hidden_switch_transfers.py",
+      "Bytes": 13379,
+      "Sha256": "2728D513A19A1151C451BF50EC5AA21C776B0C8B9990E377280939E4D1751B71"
+    },
+    {
+      "File": "src/Research.FSharp.Cli/hidden_switch_retained_artifacts.py",
+      "Bytes": 7788,
+      "Sha256": "ADD43E5AB1616B9E6B8056B8AC1871217F8184CA127D71287295DCF43D677E7A"
+    },
+    {
+      "File": "src/Research.FSharp.Cli/hidden_switch_transfer_inputs.py",
+      "Bytes": 12373,
+      "Sha256": "F166A45CAF7EB105C17CC986B8B15260C26E67799DE9AD3EB7DF7F4873F3F11A"
+    },
+    {
+      "File": "src/Research.FSharp.Cli/hidden_switch_transfer_shapes.py",
+      "Bytes": 12102,
+      "Sha256": "AFF328E0DA812986DA043B2404251F9652F39694FE99F38FC2D617A9AD24F5B2"
+    },
+    {
+      "File": "src/Research.FSharp.Cli/decode_hidden_switch_methods.py",
+      "Bytes": 18726,
+      "Sha256": "95542B00FE4A16728BC1F04DE1914F91A952BFEBB61654143882B47E6AFD211B"
+    },
+    {
+      "File": "src/Research.FSharp.Cli/inspect_hidden_switch_bodies.py",
+      "Bytes": 10132,
+      "Sha256": "ACD80BF2420D5E33568D8D856ACCC25B9020DDD580DB93832F9B661B7331DEBF"
+    },
+    {
+      "File": "src/Research.FSharp.Cli/map_hidden_switch_methods.py",
+      "Bytes": 7717,
+      "Sha256": "2B5F8FB9B1B8F4D8B6DD219FB6D4EC4FBECDC69AC2C2306637E19658577BB027"
+    },
+    {
+      "File": "src/Research.FSharp.Cli/probe_hidden_switch_metadata.py",
+      "Bytes": 22353,
+      "Sha256": "9A3D1B8864F614598FB0B50B98604752FD80CB9FE8120CA3984C748A48BA79F0"
+    },
+    {
+      "File": "src/Research.FSharp.Cli/inspect_hidden_switch_calls.py",
+      "Bytes": 7424,
+      "Sha256": "343D5B5FE23ACB15FE5CC5C351B8E2D7584B09D62EBCE205249D670089516EF1"
+    },
+    {
+      "File": "src/Research.FSharp.Cli/capture_hidden_switch_dump.py",
+      "Bytes": 16991,
+      "Sha256": "446D7E8330F69C553F54D70A3E75D9B37D3B9C3BAD7BBB361CEEAE3473F7E821"
+    },
+    {
+      "File": "src/Research.FSharp.Cli/analyze_hidden_switch_dump.py",
+      "Bytes": 23970,
+      "Sha256": "46F247DCB8B11C52FB6435474F6DB7D772DD507B299D39C852F1E8E1ECEBE8B9"
+    },
+    {
+      "File": "src/Research.FSharp.Cli/hidden_switch_dump_memory.py",
+      "Bytes": 4829,
+      "Sha256": "F0D1D2F30D4A08CB3F7CDC8D402574F494A5920E40D0A05DFCBE2487AF342537"
+    },
+    {
+      "File": "src/Research.FSharp.Cli/test_hidden_switch_transfer_inputs.py",
+      "Bytes": 5938,
+      "Sha256": "902A2531D3337CCA6C4DA7B5D0194FFFF2F1FC8979438B2BD712A869811312F2"
+    },
+    {
+      "File": "src/Research.FSharp.Cli/test_inventory_hidden_switch_transfers.py",
+      "Bytes": 11807,
+      "Sha256": "E0D0D0DD6D0AE974ECCE0AD7839E674822B5E930D40F961B2934EC4F4CFB0D8A"
+    }
+  ],
+  "Records": [
+    {
+      "File": "hidden-switch-transfer-inventory-tests-1.log.gz",
+      "OriginalLocalFile": ".git/hidden-switch-transfer-inventory-tests-1.log",
+      "Bytes": 113,
+      "Sha256": "5C2D1BB5B5D6F1E8052B0396282144C7E358222AC037A4E265003950FAFA0371",
+      "StoredBytes": 55,
+      "StoredSha256": "DD208B4CAA9A9C633BC3107BDDCCE8CBD2A8DFF32F7E813D0ADCF9F430AAD5F0",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "hidden-switch-transfer-inventory-tests-2.log.gz",
+      "OriginalLocalFile": ".git/hidden-switch-transfer-inventory-tests-2.log",
+      "Bytes": 114,
+      "Sha256": "75CD4238F84A9DB2E697B8D7E5A90B29100EC22C5CF6E1B7E073C98CAE337E43",
+      "StoredBytes": 55,
+      "StoredSha256": "437136631E86C417A2C631EAF97ED7471859046C67B8C7EE8E43CD6487D2CFAF",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "hidden-switch-transfer-inventory-tests-3.log.gz",
+      "OriginalLocalFile": ".git/hidden-switch-transfer-inventory-tests-3.log",
+      "Bytes": 117,
+      "Sha256": "CFDF82B42977357FFB9B8066238A4217CEAD6FFFACC8BACC5C13D5CD6136654C",
+      "StoredBytes": 55,
+      "StoredSha256": "C999B85945710899B728D1041CCDFC0C770D330C1C5B8CD6105A27A9CEB60DD2",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "hidden-switch-transfer-inventory-combined-1.log.gz",
+      "OriginalLocalFile": ".git/hidden-switch-transfer-inventory-combined-1.log",
+      "Bytes": 166,
+      "Sha256": "A268FE0FAD9725059E8C15F411F837DFEE2F0FDC127B928976B1E353D530B715",
+      "StoredBytes": 56,
+      "StoredSha256": "14213A1A6BFA523B5CCE506889E125C10A9C52E1B359481E92CE3E0EB90756AB",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "hidden-switch-transfer-inventory-ruff-1.log.gz",
+      "OriginalLocalFile": ".git/hidden-switch-transfer-inventory-ruff-1.log",
+      "Bytes": 7855,
+      "Sha256": "CE922386BE42C9546E2E2A9ABF97AC95C07A313736E23343332606EB3C7361AF",
+      "StoredBytes": 2103,
+      "StoredSha256": "4F4382B37BAA9AA00BF91C38A6D97DDA4B0C985795D7E09077F3E0AE6D22F5BF",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "hidden-switch-transfer-inventory-ruff-2.log.gz",
+      "OriginalLocalFile": ".git/hidden-switch-transfer-inventory-ruff-2.log",
+      "Bytes": 39,
+      "Sha256": "BA2C763752132A3C06896CD52838F1555D4EF0F62B2896CA439C5BDB028351E4",
+      "StoredBytes": 59,
+      "StoredSha256": "1CF0547D0E6654AF5449731B78B1046D7E19C08A0B8BBE35083DF3137DA4D17B",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "hidden-switch-transfer-inventory-ruff-3.log.gz",
+      "OriginalLocalFile": ".git/hidden-switch-transfer-inventory-ruff-3.log",
+      "Bytes": 19,
+      "Sha256": "82B3E6A6C090A57601D22943BD23FCA9218D1031DBE5A7B754092F9A156B4F18",
+      "StoredBytes": 39,
+      "StoredSha256": "F3AF4D142827F5AAD2EB0C72D556D325488A57FB6219AAC10AFEB51085667D53",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "retain-transfer-inventory-preparation.py.gz",
+      "OriginalLocalFile": ".git/retain-transfer-inventory-preparation.py",
+      "Bytes": 2767,
+      "Sha256": "AF3D82C245999BCCC5AE2A96A5DAE378AFC77C3545502DDE43B4DA0804481975",
+      "StoredBytes": 1305,
+      "StoredSha256": "FB1A8EF799FB76C03DEB82593BF59747CDF8CBD12DF679BEFFD2A52A3A3B77A3",
+      "Encoding": "gzip"
+    }
+  ],
+  "FinalFocusedCases": 18,
+  "FinalCombinedCases": 67,
+  "Ruff": "passed",
+  "FixtureScope": "Pure synthetic complete8665 NOP roster, actual archived method000 metadata/JIT mutation fixtures and failure retention; no full actual inventory, new memory query or decoder/target execution.",
+  "PreparationNotes": [
+    "Initial Ruff import ordering, unused imports and catch-boundary annotations retained; corrected source passes.",
+    "Earlier14/15-case logs reflect evolving uncommitted drafts; final18-case and67-case logs are distinct.",
+    "An early unexecuted draft treated RawDumpAndCustodyFiles as an array; direct metadata inspection showed its actual custody-description string. Final code binds LocalOnlyDump from the actual capture outcome and exact target-custody metadata."
+  ],
+  "RuntimeAdmitted": false,
+  "BodyResolved": false,
+  "ClosureAdmitted": false
+}

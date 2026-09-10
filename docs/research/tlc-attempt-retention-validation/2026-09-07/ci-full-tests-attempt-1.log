@@ -1,0 +1,61 @@
+Test run for /Users/acehack/.zeta/agents/codex/Zeta-rendered-predictor-native-20260906/tests/Core.CSharp.Tests/bin/Release/net10.0/Core.CSharp.Tests.dll (.NETCoreApp,Version=v10.0)
+Test run for /Users/acehack/.zeta/agents/codex/Zeta-rendered-predictor-native-20260906/tests/Bayesian.Tests/bin/Release/net10.0/Bayesian.Tests.dll (.NETCoreApp,Version=v10.0)
+Test run for /Users/acehack/.zeta/agents/codex/Zeta-rendered-predictor-native-20260906/tests/Tests.CSharp/bin/Release/net10.0/Tests.CSharp.dll (.NETCoreApp,Version=v10.0)
+Test run for /Users/acehack/.zeta/agents/codex/Zeta-rendered-predictor-native-20260906/tests/Tests.FSharp/bin/Release/net10.0/Tests.FSharp.dll (.NETCoreApp,Version=v10.0)
+Test run for /Users/acehack/.zeta/agents/codex/Zeta-rendered-predictor-native-20260906/tests/Tests.FSharp.Git/bin/Release/net10.0/Tests.FSharp.Git.dll (.NETCoreApp,Version=v10.0)
+Test run for /Users/acehack/.zeta/agents/codex/Zeta-rendered-predictor-native-20260906/tests/Tests.CSharp.TypeProvider/bin/Release/net10.0/Tests.CSharp.TypeProvider.dll (.NETCoreApp,Version=v10.0)
+Test run for /Users/acehack/.zeta/agents/codex/Zeta-rendered-predictor-native-20260906/tests/Core.CSharp.Mediator.Tests/bin/Release/net10.0/Core.CSharp.Mediator.Tests.dll (.NETCoreApp,Version=v10.0)
+A total of 1 test files matched the specified pattern.
+A total of 1 test files matched the specified pattern.
+A total of 1 test files matched the specified pattern.
+A total of 1 test files matched the specified pattern.
+A total of 1 test files matched the specified pattern.
+A total of 1 test files matched the specified pattern.
+A total of 1 test files matched the specified pattern.
+Blame: Attaching crash dump utility to process dotnet (13912).
+Blame: Attaching crash dump utility to process dotnet (13913).
+Blame: Attaching crash dump utility to process dotnet (13915).
+Blame: Attaching crash dump utility to process dotnet (13917).
+Blame: Attaching crash dump utility to process dotnet (13918).
+Blame: Attaching crash dump utility to process dotnet (13914).
+Blame: Attaching crash dump utility to process dotnet (13916).
+Data collector 'Blame' message: All tests finished running, Sequence file will not be generated.
+Results File: /Users/acehack/.zeta/agents/codex/Zeta-rendered-predictor-native-20260906/tests/Core.CSharp.Tests/TestResults/tlc-retention-ci-final_net10.0_20260907091227.trx
+
+Passed!  - Failed:     0, Passed:    21, Skipped:     0, Total:    21, Duration: 83 ms - Core.CSharp.Tests.dll (net10.0)
+Data collector 'Blame' message: All tests finished running, Sequence file will not be generated.
+Results File: /Users/acehack/.zeta/agents/codex/Zeta-rendered-predictor-native-20260906/tests/Core.CSharp.Mediator.Tests/TestResults/tlc-retention-ci-final_net10.0_20260907091228.trx
+
+Passed!  - Failed:     0, Passed:    12, Skipped:     0, Total:    12, Duration: 79 ms - Core.CSharp.Mediator.Tests.dll (net10.0)
+Data collector 'Blame' message: All tests finished running, Sequence file will not be generated.
+Results File: /Users/acehack/.zeta/agents/codex/Zeta-rendered-predictor-native-20260906/tests/Tests.CSharp.TypeProvider/TestResults/tlc-retention-ci-final_net10.0_20260907091228.trx
+
+Passed!  - Failed:     0, Passed:     3, Skipped:     0, Total:     3, Duration: 19 ms - Tests.CSharp.TypeProvider.dll (net10.0)
+Data collector 'Blame' message: All tests finished running, Sequence file will not be generated.
+Results File: /Users/acehack/.zeta/agents/codex/Zeta-rendered-predictor-native-20260906/tests/Tests.FSharp.Git/TestResults/tlc-retention-ci-final_net10.0_20260907091230.trx
+
+Passed!  - Failed:     0, Passed:    38, Skipped:     0, Total:    38, Duration: 1 s - Tests.FSharp.Git.dll (net10.0)
+Data collector 'Blame' message: All tests finished running, Sequence file will not be generated.
+Results File: /Users/acehack/.zeta/agents/codex/Zeta-rendered-predictor-native-20260906/tests/Tests.CSharp/TestResults/tlc-retention-ci-final_net10.0_20260907091231.trx
+
+Passed!  - Failed:     0, Passed:   413, Skipped:     0, Total:   413, Duration: 3 s - Tests.CSharp.dll (net10.0)
+[xUnit.net 00:00:04.94]     Zeta.Tests.CollationCrossOracleTreatyTests.decide's tie-break uses the canonical collation [SKIP]
+  Skipped Zeta.Tests.CollationCrossOracleTreatyTests.decide's tie-break uses the canonical collation [1 ms]
+[xUnit.net 00:00:06.13]     Zeta.Tests.RxAdapterTests.A DEAD PIPELINE REFUSES NEW SUBSCRIBERS: after teardown the subject is disposed, not leaked [SKIP]
+[xUnit.net 00:00:06.13]     Zeta.Tests.RxAdapterTests.bounded pipeline completes after exactly count ticks and delivers count notifications [SKIP]
+  Skipped Zeta.Tests.RxAdapterTests.A DEAD PIPELINE REFUSES NEW SUBSCRIBERS: after teardown the subject is disposed, not leaked [1 ms]
+  Skipped Zeta.Tests.RxAdapterTests.bounded pipeline completes after exactly count ticks and delivers count notifications [1 ms]
+[xUnit.net 00:00:06.13]     Zeta.Tests.RxAdapterTests.TEARDOWN IS REAL: disposing the one handle stops notifications — the count stops moving [SKIP]
+  Skipped Zeta.Tests.RxAdapterTests.TEARDOWN IS REAL: disposing the one handle stops notifications — the count stops moving [1 ms]
+Data collector 'Blame' message: All tests finished running, Sequence file will not be generated.
+Results File: /Users/acehack/.zeta/agents/codex/Zeta-rendered-predictor-native-20260906/tests/Bayesian.Tests/TestResults/tlc-retention-ci-final_net10.0_20260907091235.trx
+
+Passed!  - Failed:     0, Passed:   503, Skipped:     0, Total:   503, Duration: 6 s - Bayesian.Tests.dll (net10.0)
+[xUnit.net 00:00:09.28]     Zeta.Tests.CollationCrossOracleTreatyTests.every shared catalog name denotes the same relation in every oracle [SKIP]
+  Skipped Zeta.Tests.CollationCrossOracleTreatyTests.every shared catalog name denotes the same relation in every oracle [1 ms]
+[xUnit.net 00:00:15.39]     Zeta.Tests.BenPortTests.BDN ADAPTER SMOKE (manual): wall meter drives the same case through the same port [SKIP]
+  Skipped Zeta.Tests.BenPortTests.BDN ADAPTER SMOKE (manual): wall meter drives the same case through the same port [1 ms]
+Data collector 'Blame' message: All tests finished running, Sequence file will not be generated.
+Results File: /Users/acehack/.zeta/agents/codex/Zeta-rendered-predictor-native-20260906/tests/Tests.FSharp/TestResults/tlc-retention-ci-final_net10.0_20260907092008.trx
+
+Passed!  - Failed:     0, Passed:  6549, Skipped:     6, Total:  6555, Duration: 7 m 36 s - Tests.FSharp.dll (net10.0)

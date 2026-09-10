@@ -1,0 +1,14 @@
+{
+  "id": "080d03df6041c010a01300081ec1a1d2",
+  "at": "2026-09-07T12:51:01.304Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1XYR21P087G0R0011Z1FP5",
+    "type": "task",
+    "title": "root flake stops declaring machines; the stale cluster tree has no blocking consumers left",
+    "slug": "root-flake-stops-declaring-machines-the-stale-cluster-tree-h",
+    "priority": "P2",
+    "filename": "081M1XYR21P087G0R0011Z1FP5-root-flake-stops-declaring-machines-the-stale-cluster-tree-h.md"
+  }
+}

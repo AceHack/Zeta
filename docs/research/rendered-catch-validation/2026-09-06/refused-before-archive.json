@@ -1,0 +1,99 @@
+{
+  "Protocol": "rendered-catch-actions-v1",
+  "Kind": "behavior",
+  "Complete": false,
+  "Failure": {
+    "Stage": "admission",
+    "Code": "archive-git",
+    "Detail": "fatal: Needed a single revision",
+    "Panel": null,
+    "Arm": null,
+    "Episode": null
+  },
+  "ProtocolSha256": "",
+  "InputSha256": "",
+  "CountsSha256Before": "",
+  "CountsSha256After": "",
+  "Config": {
+    "Arms": [
+      "order-two",
+      "bigram",
+      "last-beacon",
+      "fair-independent",
+      "known-lag-two"
+    ],
+    "Panels": [
+      {
+        "Name": "dot-three-quarter",
+        "Episodes": 1024,
+        "SourceSeed": 4001,
+        "SourceDomain": 401,
+        "ActionSeed": 5003,
+        "ActionDomain": 501,
+        "CopyProbability": 0.75,
+        "Geometry": "dot",
+        "Palette": "fixed"
+      },
+      {
+        "Name": "bar-three-quarter",
+        "Episodes": 1024,
+        "SourceSeed": 4001,
+        "SourceDomain": 402,
+        "ActionSeed": 5003,
+        "ActionDomain": 502,
+        "CopyProbability": 0.75,
+        "Geometry": "bar",
+        "Palette": "fixed"
+      },
+      {
+        "Name": "palette-three-quarter",
+        "Episodes": 1024,
+        "SourceSeed": 4001,
+        "SourceDomain": 403,
+        "ActionSeed": 5003,
+        "ActionDomain": 503,
+        "CopyProbability": 0.75,
+        "Geometry": "dot",
+        "Palette": "odd-complement"
+      },
+      {
+        "Name": "dot-iid-half",
+        "Episodes": 1024,
+        "SourceSeed": 4001,
+        "SourceDomain": 404,
+        "ActionSeed": 5003,
+        "ActionDomain": 504,
+        "CopyProbability": 0.5,
+        "Geometry": "dot",
+        "Palette": "fixed"
+      }
+    ],
+    "Symbols": 66,
+    "ScoredChoices": 64,
+    "WarmupKey": 0,
+    "EmulatorSeed": 1,
+    "CyclesPerCall": 17,
+    "RomBytes": 2247,
+    "ProjectionRows": 24,
+    "Cost": {
+      "SourceSeed": 7001,
+      "SourceDomain": 701,
+      "Episodes": 72,
+      "WarmupEpisodes": 8,
+      "TimedEpisodes": 64,
+      "ActionSeed": 8003,
+      "ActionDomain": 801,
+      "Repetitions": 5,
+      "Rotation": "left-by-repetition"
+    },
+    "PositiveGainNumerator": 15,
+    "PositiveGainDenominator": 100,
+    "NullGainNumerator": 3,
+    "NullGainDenominator": 100,
+    "MaximumCostRatio": 2
+  },
+  "Provenance": null,
+  "StartedAtUtc": "2026-09-06T23:09:41.9878700\u002B00:00",
+  "FinishedAtUtc": "2026-09-06T23:09:42.0140650\u002B00:00",
+  "Panels": []
+}

@@ -58,6 +58,16 @@ on:
       - "src/Core.TypeScript/cluster/derive-sync-waves.ts"
       - "src/Core.TypeScript/cluster/derive-sync-waves.test.ts"
       - "full-ai-cluster/k8s/sync-wave-dependency-graph.yaml"
+      # THE FILE THAT DEFINES THIS JOB'S CLUSTER DID NOT TRIGGER THIS JOB.
+      # `ci.kind-config.yaml` / `ci.cilium.kind-config.yaml` are the kind
+      # configs these steps pass to `--config`, so they decide what the cluster
+      # IS -- node count, CNI, and (as of the maxPods change) the pod ceiling
+      # that the scheduler enforces. Editing them could not re-run the only job
+      # that proves the cluster comes up, so a bootstrap change landed unverified
+      # by construction. That is the same shape as a check that cannot run
+      # looking like one that passed, one layer further out: here the check
+      # exists and is green, on a cluster built from a config it never saw.
+      - "full-ai-cluster/dev-cluster/profiles/**"
       - "src/Core.TypeScript/cluster/included-proof-summary.ts"
       - "src/Core.TypeScript/cluster/included-proof-summary.test.ts"
       - "src/Core.TypeScript/cluster/kubevirt-cdi-emulation-test.ts"
@@ -169,6 +179,16 @@ on:
       - "src/Core.TypeScript/cluster/derive-sync-waves.ts"
       - "src/Core.TypeScript/cluster/derive-sync-waves.test.ts"
       - "full-ai-cluster/k8s/sync-wave-dependency-graph.yaml"
+      # THE FILE THAT DEFINES THIS JOB'S CLUSTER DID NOT TRIGGER THIS JOB.
+      # `ci.kind-config.yaml` / `ci.cilium.kind-config.yaml` are the kind
+      # configs these steps pass to `--config`, so they decide what the cluster
+      # IS -- node count, CNI, and (as of the maxPods change) the pod ceiling
+      # that the scheduler enforces. Editing them could not re-run the only job
+      # that proves the cluster comes up, so a bootstrap change landed unverified
+      # by construction. That is the same shape as a check that cannot run
+      # looking like one that passed, one layer further out: here the check
+      # exists and is green, on a cluster built from a config it never saw.
+      - "full-ai-cluster/dev-cluster/profiles/**"
       - "src/Core.TypeScript/cluster/included-proof-summary.ts"
       - "src/Core.TypeScript/cluster/included-proof-summary.test.ts"
       - "src/Core.TypeScript/cluster/kubevirt-cdi-emulation-test.ts"
@@ -292,24 +312,37 @@ on:
         type: choice
         options: ["false", "true"]
 
-# `packages: read` is what lets this workflow's `github.token` pull the PRIVATE
-# GHCR packages behind the `platform` Application's two images. It is additive
-# and least-privilege: no write scope of any kind, and every other job in this
-# file is unaffected by having it available.
+# `packages: read` is KEPT but is NO LONGER LOAD-BEARING for the `platform`
+# Application's two images. It stays because it is additive, least-privilege (no
+# write scope of any kind), and the next image added here may well be private.
 #
-# LIKELY SUFFICIENT, NOT YET PROVEN, and the gap is named rather than rounded off.
-# MEASURED 2026-08-22 via `gh api /orgs/Lucent-Financial-Group/packages/container/
-# zeta-{platform-controller,portal}`: both packages are private AND both report
-# `repository.full_name = Lucent-Financial-Group/Zeta`, i.e. they are linked to
-# THIS repository, which is the condition under which a repo-scoped GITHUB_TOKEN
-# is granted read access. So this is a well-founded expectation.
+# MEASURED 2026-09-07, and this REPLACES the 2026-08-22 reasoning below it. All
+# four Lucent-Financial-Group container packages -- `zeta-ci-runtime`,
+# `zeta-orleans-silo`, `zeta-platform-controller`, `zeta-portal` -- are PUBLIC.
+# Verified by EXERCISE rather than by API report: an anonymous ghcr.io pull token
+# (no credential of any kind) returns HTTP 200 on `tags/list` for
+# `zeta-platform-controller` and `zeta-portal`. No `GITHUB_TOKEN`, no package
+# grant, and no `ZETA_GHCR_PULL_TOKEN` is required to pull them.
 #
-# It is still not a pull. `platform/**` remains in
-# `DEFAULT_ROOT_DEV_CATALOG.excludeGlob`, so no job here has actually presented
-# this token to GHCR and been served a layer, and package-to-repo linkage is
-# reported by the API rather than exercised by it. The first run with `platform`
-# un-deferred is what measures it; if the token is refused, the exit is a
-# package-level grant or a PAT in `ZETA_GHCR_PULL_TOKEN`, not a change here.
+# WHAT THIS PARAGRAPH USED TO SAY, kept rather than deleted because the shape of
+# the error is the lesson: "MEASURED 2026-08-22 ... both packages are private AND
+# both report `repository.full_name = Lucent-Financial-Group/Zeta` ... So this is
+# a well-founded expectation. It is still not a pull ... The first run with
+# `platform` un-deferred is what measures it; if the token is refused, the exit is
+# a package-level grant or a PAT in `ZETA_GHCR_PULL_TOKEN`."
+#
+# That reasoning was careful, correctly hedged, and became FALSE when the packages
+# were made public -- and nothing re-measured it. `lane-partition.ts` had already
+# caught exactly this ("`zeta-portal` and `zeta-platform-controller` had been made
+# public, the anonymous read prices them, and nothing had re-measured"), so the
+# repo held both the correction and the stale claim at once, in two files, for
+# over two weeks. A RESOLVED BLOCKER STILL BEING REPORTED is the same defect class
+# as a check that did not run looking like one that passed: it costs real work,
+# because the standing plan was to mint a PAT for a wall that is not there.
+#
+# So the GHCR half of `platform`'s deferral is CLOSED. Whatever still defers
+# `platform` is not a credential, and any future claim here should be re-exercised
+# rather than re-read.
 permissions:
   contents: read
   packages: read
@@ -342,6 +375,8 @@ jobs:
             ~/.dotnet/tools
             ~/.elan
             ~/.config/zeta
+            src/Core.TLA/tla2tools.jar
+            src/Core.Alloy/alloy.jar
           key: install-${{ runner.os }}-${{ runner.arch }}-full-${{ hashFiles('.mise.toml', '.mise.full.toml', 'tools/setup/**', 'global.json', '!tools/setup/persona-keys/**', '!tools/setup/op-token-setup.*', '!tools/setup/secret-clip.sh', '!tools/setup/manus-smoke-test.ts', '!tools/setup/build-lumen-persona-package.ts') }}
 
       - name: Restore apt archives (root fix for the exit-124 install-step class)
@@ -871,6 +906,8 @@ jobs:
             ~/.dotnet/tools
             ~/.elan
             ~/.config/zeta
+            src/Core.TLA/tla2tools.jar
+            src/Core.Alloy/alloy.jar
           key: install-${{ runner.os }}-${{ runner.arch }}-full-${{ hashFiles('.mise.toml', '.mise.full.toml', 'tools/setup/**', 'global.json', '!tools/setup/persona-keys/**', '!tools/setup/op-token-setup.*', '!tools/setup/secret-clip.sh', '!tools/setup/manus-smoke-test.ts', '!tools/setup/build-lumen-persona-package.ts') }}
 
       - name: Restore apt archives (root fix for the exit-124 install-step class)
@@ -975,7 +1012,27 @@ jobs:
 
       - name: Tear down kind cluster
         if: always()
-        run: bun src/Core.TypeScript/cluster/dev-cluster/kind-down.ts --cluster-name zeta-ci
+        # WHY THIS IS GUARDED (081M24HZCYN087G0R002MT55TV). `if: always()` means this
+        # step also runs when the TOOLCHAIN INSTALL failed -- and then there is no
+        # `bun`, so it died with `bun: command not found` and exit 127. Measured
+        # 2026-09-10 on `live kind ArgoCD health (ubuntu-24.04-arm)`, run
+        # 34427150482: the job showed TWO reds, and the LAST one -- the one a reader
+        # sees first -- was the missing bun. The actual cause was five steps earlier,
+        # a GitHub attestation-service 503 that stopped `mise install`.
+        #
+        # The guard exits 0 on exactly ONE condition, and it is the condition under
+        # which teardown is definitionally a no-op: no `bun` means the toolchain
+        # never installed, which means no cluster was ever created. A REAL teardown
+        # failure -- bun present, `kind-down.ts` non-zero -- still goes red, because
+        # nothing here touches that path. This is not error suppression; it is
+        # refusing to invent a second, misleading failure out of the first one.
+        run: |
+          set -euo pipefail
+          if ! command -v bun >/dev/null 2>&1; then
+            echo "::notice title=teardown skipped::No bun on PATH, so the toolchain install never completed and no cluster was created. Nothing to tear down. The real failure is the earlier toolchain step -- read that one, not this."
+            exit 0
+          fi
+          bun src/Core.TypeScript/cluster/dev-cluster/kind-down.ts --cluster-name zeta-ci
 
   # THE SECOND PROVIDER. k3d/k3s, not kind.
   #
@@ -1082,6 +1139,8 @@ jobs:
             ~/.dotnet/tools
             ~/.elan
             ~/.config/zeta
+            src/Core.TLA/tla2tools.jar
+            src/Core.Alloy/alloy.jar
           key: install-${{ runner.os }}-${{ runner.arch }}-full-${{ hashFiles('.mise.toml', '.mise.full.toml', 'tools/setup/**', 'global.json', '!tools/setup/persona-keys/**', '!tools/setup/op-token-setup.*', '!tools/setup/secret-clip.sh', '!tools/setup/manus-smoke-test.ts', '!tools/setup/build-lumen-persona-package.ts') }}
 
       - name: Restore apt archives (root fix for the exit-124 install-step class)
@@ -1396,7 +1455,17 @@ jobs:
 
       - name: Tear down k3d cluster
         if: always()
-        run: bun src/Core.TypeScript/cluster/dev-cluster/k3d-down.ts --config full-ai-cluster/dev-cluster/profiles/ci.k3d-config.yaml
+        # Guarded for the reason spelled out on the first `Tear down` step in this
+        # file: `if: always()` also fires when the toolchain never installed, and an
+        # unguarded `bun ...` then reports `command not found` as a second, later,
+        # misleading red. A genuine teardown failure still goes red.
+        run: |
+          set -euo pipefail
+          if ! command -v bun >/dev/null 2>&1; then
+            echo "::notice title=teardown skipped::No bun on PATH, so the toolchain install never completed and no cluster was created. Nothing to tear down. The real failure is the earlier toolchain step -- read that one, not this."
+            exit 0
+          fi
+          bun src/Core.TypeScript/cluster/dev-cluster/k3d-down.ts --config full-ai-cluster/dev-cluster/profiles/ci.k3d-config.yaml
 
 
   # THE CNI THE METAL CLUSTER WILL RUN, EXERCISED.
@@ -1453,6 +1522,8 @@ jobs:
             ~/.dotnet/tools
             ~/.elan
             ~/.config/zeta
+            src/Core.TLA/tla2tools.jar
+            src/Core.Alloy/alloy.jar
           key: install-${{ runner.os }}-${{ runner.arch }}-full-${{ hashFiles('.mise.toml', '.mise.full.toml', 'tools/setup/**', 'global.json', '!tools/setup/persona-keys/**', '!tools/setup/op-token-setup.*', '!tools/setup/secret-clip.sh', '!tools/setup/manus-smoke-test.ts', '!tools/setup/build-lumen-persona-package.ts') }}
 
       - name: Restore apt archives (root fix for the exit-124 install-step class)
@@ -1550,7 +1621,17 @@ jobs:
 
       - name: Tear down kind cluster
         if: always()
-        run: bun src/Core.TypeScript/cluster/dev-cluster/kind-down.ts --cluster-name zeta-ci-cilium
+        # Guarded for the reason spelled out on the first `Tear down` step in this
+        # file: `if: always()` also fires when the toolchain never installed, and an
+        # unguarded `bun ...` then reports `command not found` as a second, later,
+        # misleading red. A genuine teardown failure still goes red.
+        run: |
+          set -euo pipefail
+          if ! command -v bun >/dev/null 2>&1; then
+            echo "::notice title=teardown skipped::No bun on PATH, so the toolchain install never completed and no cluster was created. Nothing to tear down. The real failure is the earlier toolchain step -- read that one, not this."
+            exit 0
+          fi
+          bun src/Core.TypeScript/cluster/dev-cluster/kind-down.ts --cluster-name zeta-ci-cilium
 
   # THE MISSING CELL OF THE 2x2. Dispatch-gated; see `workflow_dispatch` above.
   #
@@ -1596,6 +1677,8 @@ jobs:
             ~/.dotnet/tools
             ~/.elan
             ~/.config/zeta
+            src/Core.TLA/tla2tools.jar
+            src/Core.Alloy/alloy.jar
           key: install-${{ runner.os }}-${{ runner.arch }}-full-${{ hashFiles('.mise.toml', '.mise.full.toml', 'tools/setup/**', 'global.json', '!tools/setup/persona-keys/**', '!tools/setup/op-token-setup.*', '!tools/setup/secret-clip.sh', '!tools/setup/manus-smoke-test.ts', '!tools/setup/build-lumen-persona-package.ts') }}
 
       - name: Restore apt archives (root fix for the exit-124 install-step class)
@@ -1741,7 +1824,17 @@ jobs:
 
       - name: Tear down kind cluster
         if: always()
-        run: bun src/Core.TypeScript/cluster/dev-cluster/kind-down.ts --cluster-name zeta-ci-cilium-included
+        # Guarded for the reason spelled out on the first `Tear down` step in this
+        # file: `if: always()` also fires when the toolchain never installed, and an
+        # unguarded `bun ...` then reports `command not found` as a second, later,
+        # misleading red. A genuine teardown failure still goes red.
+        run: |
+          set -euo pipefail
+          if ! command -v bun >/dev/null 2>&1; then
+            echo "::notice title=teardown skipped::No bun on PATH, so the toolchain install never completed and no cluster was created. Nothing to tear down. The real failure is the earlier toolchain step -- read that one, not this."
+            exit 0
+          fi
+          bun src/Core.TypeScript/cluster/dev-cluster/kind-down.ts --cluster-name zeta-ci-cilium-included
 
   live-kind-included:
     name: live kind included Synced+Healthy proof (${{ matrix.runner }})
@@ -1809,6 +1902,8 @@ jobs:
             ~/.dotnet/tools
             ~/.elan
             ~/.config/zeta
+            src/Core.TLA/tla2tools.jar
+            src/Core.Alloy/alloy.jar
           key: install-${{ runner.os }}-${{ runner.arch }}-full-${{ hashFiles('.mise.toml', '.mise.full.toml', 'tools/setup/**', 'global.json', '!tools/setup/persona-keys/**', '!tools/setup/op-token-setup.*', '!tools/setup/secret-clip.sh', '!tools/setup/manus-smoke-test.ts', '!tools/setup/build-lumen-persona-package.ts') }}
 
       - name: Restore apt archives (root fix for the exit-124 install-step class)
@@ -1948,6 +2043,196 @@ jobs:
         # parser is ever closed. It costs nothing meanwhile.
         run: bun src/Core.TypeScript/cluster/included-proof-summary.ts --log "$RUNNER_TEMP/included-proof.log"
 
+      # A CONSTRAINTTEMPLATE THAT DID NOT COMPILE IS A POLICY THAT IS NOT ENFORCED,
+      # and nothing above this line could see it. Gatekeeper generates the constraint
+      # CRD only after the Rego compiles; when it does not, the CRD never appears, the
+      # `wait-gatekeeper-hat-constraint-crds` Sync hook exhausts its backoffLimit, the
+      # hat-system sync fails -- and the Application still reports `health=Healthy`,
+      # because Constraints and ConstraintTemplates carry no ArgoCD health. Measured on
+      # runs 34323056405 (red) and 34338106811 (GREEN): all seven Hat Constraints sat
+      # OutOfSync in both, `hatconflict` and `hatnocycle` never compiled, and the lane
+      # passed anyway (081M23B24P5087G0R002BJWEN1).
+      #
+      # Gatekeeper itself is the oracle here -- it writes the compile error into
+      # `status.byPod[].errors` -- so this asserts against the thing that actually
+      # judges the policy rather than against a local parser.
+      #
+      # The zero-template case is a FAILURE, not a skip: a loop over an empty list
+      # passes trivially, which is exactly the check-that-cannot-fail this step exists
+      # to remove.
+      - name: Gatekeeper compiled every ConstraintTemplate
+        if: always() && steps.proof.conclusion != 'skipped'
+        run: |
+          set -o pipefail
+          # THE PROOF CAN FINISH BEFORE GATEKEEPER HAS ITS TEMPLATES, so this waits.
+          #
+          # MEASURED on run 34373356539: the verdict came at T+512s while
+          # hat-system still had `ServiceAccount/gatekeeper-crd-wait` OutOfSync and
+          # gatekeeper's own `constrainttemplates.templates.gatekeeper.sh` CRD had
+          # only just been created. Zero ConstraintTemplates existed, and this step
+          # -- correctly, by its own rule -- refused. But zero-at-that-instant is a
+          # RACE, not a finding: the proof passes hat-system through the
+          # `OutOfSync + Healthy` allowance, which admits an app whose resources are
+          # not applied YET as readily as one whose sync failed.
+          #
+          # So: wait, bounded. A bound that EXPIRES is still a failure, never a
+          # skip -- "gatekeeper compiled nothing" is the finding this step exists
+          # for, and waiting must not become a way of never saying it.
+          APPEAR_DEADLINE=$(( SECONDS + 300 ))
+          total=0
+          while [ "$SECONDS" -lt "$APPEAR_DEADLINE" ]; do
+            total="$(kubectl get constrainttemplates.templates.gatekeeper.sh -o json 2>/dev/null | jq -r ".items | length" 2>/dev/null | tail -1)"
+            case "$total" in ""|*[!0-9]*) total=0 ;; esac
+            if [ "$total" -gt 0 ]; then break; fi
+            sleep 10
+          done
+          if [ "$total" -eq 0 ]; then
+            echo "::error::no ConstraintTemplate exists after 300s -- gatekeeper compiled nothing, and a loop over an empty list would pass trivially"
+            exit 1
+          fi
+          # Compilation is also not instantaneous: gatekeeper fills status.created
+          # and status.byPod[].errors after it ingests each template. A template
+          # that FAILED to compile keeps its errors, so a non-empty `errors` is
+          # decided immediately; only "not yet created" is worth waiting on.
+          COMPILE_DEADLINE=$(( SECONDS + 180 ))
+          while :; do
+            snapshot="$(kubectl get constrainttemplates.templates.gatekeeper.sh -o json)"
+            errored="$(printf "%s" "$snapshot" | jq -r ".items[]
+                | select(((.status.byPod // []) | map(.errors // []) | flatten | length) > 0)
+                | \"\(.metadata.name): \((.status.byPod // []) | map(.errors // []) | flatten | map(.message) | join(\" ~ \"))\"")"
+            if [ -n "$errored" ]; then
+              echo "$errored"
+              echo "::error::a ConstraintTemplate did not compile; gatekeeper never generates its constraint CRD and the policy is not enforced"
+              exit 1
+            fi
+            uncreated="$(printf "%s" "$snapshot" | jq -r ".items[] | select(.status.created != true) | .metadata.name")"
+            if [ -z "$uncreated" ]; then break; fi
+            if [ "$SECONDS" -ge "$COMPILE_DEADLINE" ]; then
+              echo "$uncreated"
+              echo "::error::a ConstraintTemplate never reached status.created=true within 180s"
+              exit 1
+            fi
+            sleep 10
+          done
+          echo "all $total ConstraintTemplates compiled and created"
+
+      # A COMPILED TEMPLATE IS NOT AN INSTALLED POLICY.
+      #
+      # The step above proves gatekeeper compiled the Rego and generated the
+      # constraint CRDs. It says nothing about whether the seven CONSTRAINTS --
+      # the policy instances, the objects that actually enforce anything -- were
+      # ever applied. Those are separate objects, ArgoCD assigns them NO HEALTH,
+      # and `isApplicationSynced` admits `OutOfSync + Healthy` for git-directory
+      # apps like hat-system. So an app holding zero installed policies reads
+      # exactly like one holding seven.
+      #
+      # MEASURED on run 34390707656 -- the GREEN 37/37 main run, taken AFTER the
+      # template check landed. hat-system was `OutOfSync/Healthy` at proof time
+      # with all seven ConstraintTemplates `sync=OutOfSync health=-`, and not one
+      # of the seven Constraints present in the resource list at all. The
+      # template step then passed 31 seconds later because it waits. The half
+      # that is checked recovers and says so; this half had never been observed.
+      #
+      # The roster is DERIVED from the committed policy YAML by
+      # `hat-constraint-roster.ts`, which exits 1 on an empty roster and refuses
+      # a Constraint whose kind no template declares. A hardcoded list of seven
+      # names is the drift this repo has already been bitten by: an eighth policy
+      # lands and the check keeps passing over seven.
+      #
+      # GATES ON EXISTENCE, not on `status.byPod[].enforced`. Existence is what
+      # was FALSE in the measured runs, so it is a real falsifier today;
+      # enforcement is printed as diagnostics rather than gated because nothing
+      # has yet measured how long gatekeeper takes to load a fresh constraint on
+      # a cold kind node, and a timeout nobody measured is a flake dressed as a
+      # check. Promoting it is a follow-up with a measurement attached.
+      - name: Every Hat Constraint is applied
+        if: always() && steps.proof.conclusion != 'skipped'
+        run: |
+          set -o pipefail
+          bun src/Core.TypeScript/cluster/hat-constraint-roster.ts > "$RUNNER_TEMP/hat-constraints.txt"
+          if [ ! -s "$RUNNER_TEMP/hat-constraints.txt" ]; then
+            echo "::error::the Hat Constraint roster is empty -- a loop over it would pass trivially, which is the check-that-cannot-fail this step exists to remove"
+            exit 1
+          fi
+          cat "$RUNNER_TEMP/hat-constraints.txt"
+          DEADLINE=$(( SECONDS + 300 ))
+          while :; do
+            missing=""
+            while read -r kind name; do
+              [ -n "$kind" ] || continue
+              resource="$(printf '%s' "$kind" | tr '[:upper:]' '[:lower:]').constraints.gatekeeper.sh"
+              kubectl get "$resource" "$name" >/dev/null 2>&1 || missing="$missing $kind/$name"
+            done < "$RUNNER_TEMP/hat-constraints.txt"
+            if [ -z "$missing" ]; then break; fi
+            if [ "$SECONDS" -ge "$DEADLINE" ]; then
+              echo "::error::Hat Constraints never applied:$missing -- gatekeeper holds fewer policies than the repo declares, and ArgoCD gives Constraints no health so hat-system still reads Healthy"
+              exit 1
+            fi
+            sleep 10
+          done
+          echo "all Hat Constraints applied"
+          kubectl get constraints -o json 2>/dev/null | jq -r '.items[] | "\(.kind)/\(.metadata.name): byPod=\((.status.byPod // []) | length)"' || true
+
+      # THE POLICIES' DATA SOURCE, which the two checks above cannot see.
+      #
+      # Six of the seven Hat templates are REFERENTIAL -- their Rego reads other
+      # cluster objects out of `data.inventory`. Gatekeeper populates that
+      # inventory ONLY for kinds named in a `config.gatekeeper.sh` Config's
+      # `spec.sync.syncOnly`. MEASURED 2026-09-09: no such Config existed, so the
+      # inventory was empty, every comprehension over it yielded the empty list,
+      # and six policies that compiled and applied could not deny anything on any
+      # input (081M241X2YQ087G0R001K95PAB).
+      #
+      # `hat-constraint-roster.ts` refuses that STATICALLY, by tying each Rego
+      # inventory read to a syncOnly entry. This step is the live half, and it
+      # exists because the static check cannot see one thing: whether the Config
+      # the tree declares actually REACHED the cluster. ArgoCD gives a Config no
+      # health, exactly like a Constraint, so hat-system stays Healthy without it.
+      #
+      # The expected kinds are DERIVED from the committed Config, not restated:
+      # a hardcoded list of three would keep passing when a seventh policy adds a
+      # fourth kind.
+      - name: Gatekeeper syncs the kinds the Hat policies read
+        if: always() && steps.proof.conclusion != 'skipped'
+        # DECLARES ITSELF as a post-deploy functional assertion, so the chart
+        # census DERIVES the count rather than being told it. Without this the
+        # census reports `0 of 49` and is correct to; a hand-maintained registry
+        # would have owed an edit at whatever unattended moment these two branches
+        # happened to merge in. Convention + parser + limits:
+        # src/Core.TypeScript/cluster/chart-assertion-census.ts.
+        env:
+          ZETA_FUNCTIONAL_ASSERTION_FOR: hat-system
+        run: |
+          set -o pipefail
+          want="$(bun -e '
+            const { readHatPolicyRoster } = await import("./src/Core.TypeScript/cluster/hat-constraint-roster.ts");
+            const roster = readHatPolicyRoster(process.cwd());
+            for (const e of roster.synced) console.log(e.group + "/" + e.version + "/" + e.kind);
+          ')"
+          if [ -z "$want" ]; then
+            echo "::error::the committed Gatekeeper Config syncs NOTHING -- an empty syncOnly leaves data.inventory empty, which is the defect this step exists to catch, and comparing against an empty list would pass trivially"
+            exit 1
+          fi
+          echo "expected syncOnly:"; echo "$want"
+          DEADLINE=$(( SECONDS + 180 ))
+          while :; do
+            got="$(kubectl -n gatekeeper-system get config.config.gatekeeper.sh config -o json 2>/dev/null \
+              | jq -r '(.spec.sync.syncOnly // [])[] | "\(.group)/\(.version)/\(.kind)"' 2>/dev/null || true)"
+            missing=""
+            while read -r key; do
+              [ -n "$key" ] || continue
+              printf '%s\n' "$got" | grep -qxF "$key" || missing="$missing $key"
+            done <<< "$want"
+            if [ -z "$missing" ]; then break; fi
+            if [ "$SECONDS" -ge "$DEADLINE" ]; then
+              echo "live syncOnly:"; echo "${got:-<none>}"
+              echo "::error::gatekeeper is not syncing:$missing -- data.inventory stays empty for those kinds, so every referential Hat policy compiles, applies, and CANNOT DENY ANYTHING"
+              exit 1
+            fi
+            sleep 10
+          done
+          echo "gatekeeper syncs every kind the Hat policies read"
+
       # NAME THE RESOURCE, NOT JUST THE APPLICATION.
       #
       # Added 2026-08-21 after a run where `weaviate` reported
@@ -2024,7 +2309,17 @@ jobs:
 
       - name: Tear down kind cluster
         if: always()
-        run: bun src/Core.TypeScript/cluster/dev-cluster/kind-down.ts --cluster-name zeta-ci-included
+        # Guarded for the reason spelled out on the first `Tear down` step in this
+        # file: `if: always()` also fires when the toolchain never installed, and an
+        # unguarded `bun ...` then reports `command not found` as a second, later,
+        # misleading red. A genuine teardown failure still goes red.
+        run: |
+          set -euo pipefail
+          if ! command -v bun >/dev/null 2>&1; then
+            echo "::notice title=teardown skipped::No bun on PATH, so the toolchain install never completed and no cluster was created. Nothing to tear down. The real failure is the earlier toolchain step -- read that one, not this."
+            exit 0
+          fi
+          bun src/Core.TypeScript/cluster/dev-cluster/kind-down.ts --cluster-name zeta-ci-included
 
   # ---------------------------------------------------------------------------
   # DO THE VENDORED cdi/kubevirt BYTES ACTUALLY DEPLOY?
@@ -2079,6 +2374,8 @@ jobs:
             ~/.dotnet/tools
             ~/.elan
             ~/.config/zeta
+            src/Core.TLA/tla2tools.jar
+            src/Core.Alloy/alloy.jar
           key: install-${{ runner.os }}-${{ runner.arch }}-full-${{ hashFiles('.mise.toml', '.mise.full.toml', 'tools/setup/**', 'global.json', '!tools/setup/persona-keys/**', '!tools/setup/op-token-setup.*', '!tools/setup/secret-clip.sh', '!tools/setup/manus-smoke-test.ts', '!tools/setup/build-lumen-persona-package.ts') }}
 
       - name: Restore apt archives (root fix for the exit-124 install-step class)
@@ -2130,4 +2427,14 @@ jobs:
 
       - name: Tear down kind cluster
         if: always()
-        run: bun src/Core.TypeScript/cluster/dev-cluster/kind-down.ts --cluster-name zeta-ci-virt
+        # Guarded for the reason spelled out on the first `Tear down` step in this
+        # file: `if: always()` also fires when the toolchain never installed, and an
+        # unguarded `bun ...` then reports `command not found` as a second, later,
+        # misleading red. A genuine teardown failure still goes red.
+        run: |
+          set -euo pipefail
+          if ! command -v bun >/dev/null 2>&1; then
+            echo "::notice title=teardown skipped::No bun on PATH, so the toolchain install never completed and no cluster was created. Nothing to tear down. The real failure is the earlier toolchain step -- read that one, not this."
+            exit 0
+          fi
+          bun src/Core.TypeScript/cluster/dev-cluster/kind-down.ts --cluster-name zeta-ci-virt

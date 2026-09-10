@@ -1,0 +1,14 @@
+{
+  "id": "080d0438033be010a0130008b9e064b8",
+  "at": "2026-09-09T16:29:05.788Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M23G0SVW087G0R002WB1VPH",
+    "type": "task",
+    "title": "Narrow workflow GITHUB_TOKEN write grants from workflow level to job level",
+    "slug": "narrow-workflow-github-token-write-grants-from-workflow-leve",
+    "priority": "P2",
+    "filename": "081M23G0SVW087G0R002WB1VPH-narrow-workflow-github-token-write-grants-from-workflow-leve.md"
+  }
+}

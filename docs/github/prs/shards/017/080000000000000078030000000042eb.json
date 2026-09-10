@@ -1,0 +1,12 @@
+{
+  "pr_number": 17131,
+  "archive_path": "docs/history/pr-reviews/PR-17131-docs-security-file-the-research-record-dependabot-class-for-a-maintainer-decisio.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-09T10:47:07.765Z",
+  "schema_version": "v1",
+  "commit_sha": "c524e0788a023229802f913cd2954b2fc7873974",
+  "title": "docs(security): file the research-record dependabot class for a maintainer decision",
+  "state": "MERGED",
+  "merged_at": "2026-09-09T10:46:23Z",
+  "head_ref": "security/deferred-alert-decisions"
+}

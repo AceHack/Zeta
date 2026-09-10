@@ -1,0 +1,1 @@
+{"state": "dismissed", "dismissed_reason": "used in tests", "dismissed_comment": "Intentional descriptor-copy regression: replace opened pathname, then assert original fd bytes/hash in copy and different bytes at path. Two source reviews accepted exact038ff; unchanged test. Full rationale: PR16925 discussion_r3950272441. Only alerts895/896."}

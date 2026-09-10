@@ -1,0 +1,26 @@
+Warnings were encountered while loading the workspace. Set the verbosity option to the 'diagnostic' level to log warnings.
+Could not format '/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/src/Core/Core.fsproj'. Format currently supports only C# and Visual Basic projects.
+Could not format '/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/tests/Tests.FSharp/Tests.FSharp.fsproj'. Format currently supports only C# and Visual Basic projects.
+Could not format '/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/bench/Benchmarks/Benchmarks.fsproj'. Format currently supports only C# and Visual Basic projects.
+Could not format '/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/samples/Demo/Demo.fsproj'. Format currently supports only C# and Visual Basic projects.
+Could not format '/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/src/Bayesian/Bayesian.fsproj'. Format currently supports only C# and Visual Basic projects.
+Could not format '/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/tests/Bayesian.Tests/Bayesian.Tests.fsproj'. Format currently supports only C# and Visual Basic projects.
+Could not format '/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/bench/Feldera.Bench/Feldera.Bench.fsproj'. Format currently supports only C# and Visual Basic projects.
+Could not format '/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/samples/FactoryDemo.Api.FSharp/FactoryDemo.Api.FSharp.fsproj'. Format currently supports only C# and Visual Basic projects.
+Could not format '/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/samples/CrmSample/CrmSample.fsproj'. Format currently supports only C# and Visual Basic projects.
+Could not format '/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/src/Core.FSharp.SubstrateDiscovery/Zeta.SubstrateDiscovery.fsproj'. Format currently supports only C# and Visual Basic projects.
+Could not format '/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/src/Core.Telemetry/Zeta.Core.Telemetry.fsproj'. Format currently supports only C# and Visual Basic projects.
+Could not format '/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/src/Core.FSharp.ZetaId/Zeta.Core.FSharp.ZetaId.fsproj'. Format currently supports only C# and Visual Basic projects.
+Could not format '/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/src/Core.FSharp.TriBoolean/Zeta.Core.FSharp.TriBoolean.fsproj'. Format currently supports only C# and Visual Basic projects.
+Could not format '/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/src/Core.FSharp.Observe/Zeta.Core.FSharp.Observe.fsproj'. Format currently supports only C# and Visual Basic projects.
+Could not format '/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/src/Core.FSharp.Yaml/Zeta.Core.FSharp.Yaml.fsproj'. Format currently supports only C# and Visual Basic projects.
+Could not format '/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/src/Core.FSharp.Sha256/Zeta.Core.FSharp.Sha256.fsproj'. Format currently supports only C# and Visual Basic projects.
+Could not format '/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/src/Core.FSharp.AceCanonical/Zeta.Core.FSharp.AceCanonical.fsproj'. Format currently supports only C# and Visual Basic projects.
+Could not format '/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/src/Core.FSharp.Mediator/Zeta.Core.FSharp.Mediator.fsproj'. Format currently supports only C# and Visual Basic projects.
+Could not format '/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/tests/Core.FSharp.Mediator.Fixtures/Zeta.Tests.FSharp.MediatorFixtures.fsproj'. Format currently supports only C# and Visual Basic projects.
+Could not format '/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/src/Core.FSharp.Git/Zeta.Core.FSharp.Git.fsproj'. Format currently supports only C# and Visual Basic projects.
+Could not format '/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/tests/Tests.FSharp.Git/Tests.FSharp.Git.fsproj'. Format currently supports only C# and Visual Basic projects.
+Could not format '/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/src/Core.FSharp.ObserveBridge/Zeta.Core.FSharp.ObserveBridge.fsproj'. Format currently supports only C# and Visual Basic projects.
+Could not format '/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/src/Core.FSharp.Blake3/Zeta.Core.FSharp.Blake3.fsproj'. Format currently supports only C# and Visual Basic projects.
+Could not format '/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/clis/Zeta.Clis.fsproj'. Format currently supports only C# and Visual Basic projects.
+Could not format '/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/src/Core.FSharp.Cli/Zeta.Cli.fsproj'. Format currently supports only C# and Visual Basic projects.

@@ -1,0 +1,32 @@
+{
+  "FullGateSourceCommit": "bde72e83c58f8c6317c25cd603881a125ef39c91",
+  "NativeSourceUnchangedFrom": "e2a8f7fb23b57aba614da2499273f679bf0935ad",
+  "FullGate": {
+    "ExitCode": 0,
+    "PassedChecks": 18,
+    "FailedChecks": 0
+  },
+  "Formatter": {
+    "ExitCode": 0,
+    "FSharpSupported": false,
+    "Observed": "dotnet format reports only C# and Visual Basic support; not evidence of F# formatting"
+  },
+  "Artifacts": [
+    {
+      "File": "privacy-and-compiled-full-preflight-2.log.gz",
+      "Bytes": 1362,
+      "Sha256": "c7561cf0e5dd61e406cffae95b49151dd32602169a68889a2fdb2068e889768d",
+      "StoredBytes": 437,
+      "StoredSha256": "d7a238cfb20ba29f3e750c607ff137ce2206e09a382c0d2ae1b065eb37403d40",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "privacy-repair-dotnet-format-1.log.gz",
+      "Bytes": 5373,
+      "Sha256": "866b66c0e63f3f42d2de366ef8d23bf12f2d29fbc9ada7544cd4dac2de1c55ca",
+      "StoredBytes": 571,
+      "StoredSha256": "7304965ad45b780a0af4f139ea93fa5ef180b3c597d4aca860169807dab0db4a",
+      "Encoding": "gzip"
+    }
+  ]
+}

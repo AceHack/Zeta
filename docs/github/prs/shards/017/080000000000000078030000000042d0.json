@@ -1,0 +1,12 @@
+{
+  "pr_number": 17104,
+  "archive_path": "docs/history/pr-reviews/PR-17104-fix-cluster-capture-why-a-pod-keeps-dying-not-just-that-it-is-not-running.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-09T07:17:28.693Z",
+  "schema_version": "v1",
+  "commit_sha": "bb86553ab0452881609dee9ba41ff576af5b1f5f",
+  "title": "fix(cluster): capture WHY a pod keeps dying, not just that it is not running",
+  "state": "MERGED",
+  "merged_at": "2026-09-09T07:16:51Z",
+  "head_ref": "shadow/crashloop-logs-in-the-diagnostics-bundle"
+}

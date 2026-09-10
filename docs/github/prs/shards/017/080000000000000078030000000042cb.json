@@ -1,0 +1,12 @@
+{
+  "pr_number": 17099,
+  "archive_path": "docs/history/pr-reviews/PR-17099-feat-research-rung-2-drawings-with-every-edge-derived-rather-than-drawn.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-09T06:48:39.691Z",
+  "schema_version": "v1",
+  "commit_sha": "b09bc9eaf9943f41624a29cc692f2959dd041cf9",
+  "title": "feat(research): rung 2 — drawings, with every edge derived rather than drawn",
+  "state": "MERGED",
+  "merged_at": "2026-09-09T06:47:51Z",
+  "head_ref": "shadow/clifford-e8-rung2-drawings"
+}

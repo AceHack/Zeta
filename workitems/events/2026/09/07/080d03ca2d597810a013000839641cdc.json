@@ -1,0 +1,14 @@
+{
+  "id": "080d03ca2d597810a013000839641cdc",
+  "at": "2026-09-07T00:30:04.079Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1WMBASE087G0R00227EDR6",
+    "type": "task",
+    "title": "resolveAt prior phase still sees Live after unlink",
+    "slug": "resolveat-prior-phase-still-sees-live-after-unlink",
+    "priority": "P2",
+    "filename": "081M1WMBASE087G0R00227EDR6-resolveat-prior-phase-still-sees-live-after-unlink.md"
+  }
+}

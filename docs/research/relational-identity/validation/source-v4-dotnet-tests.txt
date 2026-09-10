@@ -1,0 +1,40 @@
+Test run for /Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/tests/Core.CSharp.Tests/bin/Release/net10.0/Core.CSharp.Tests.dll (.NETCoreApp,Version=v10.0)
+Test run for /Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/tests/Tests.CSharp/bin/Release/net10.0/Tests.CSharp.dll (.NETCoreApp,Version=v10.0)
+Test run for /Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/tests/Bayesian.Tests/bin/Release/net10.0/Bayesian.Tests.dll (.NETCoreApp,Version=v10.0)
+Test run for /Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/tests/Tests.FSharp/bin/Release/net10.0/Tests.FSharp.dll (.NETCoreApp,Version=v10.0)
+Test run for /Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/tests/Core.CSharp.Mediator.Tests/bin/Release/net10.0/Core.CSharp.Mediator.Tests.dll (.NETCoreApp,Version=v10.0)
+Test run for /Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/tests/Tests.FSharp.Git/bin/Release/net10.0/Tests.FSharp.Git.dll (.NETCoreApp,Version=v10.0)
+Test run for /Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/tests/Tests.CSharp.TypeProvider/bin/Release/net10.0/Tests.CSharp.TypeProvider.dll (.NETCoreApp,Version=v10.0)
+A total of 1 test files matched the specified pattern.A total of 1 test files matched the specified pattern.
+
+A total of 1 test files matched the specified pattern.A total of 1 test files matched the specified pattern.
+
+A total of 1 test files matched the specified pattern.
+A total of 1 test files matched the specified pattern.
+A total of 1 test files matched the specified pattern.
+
+Passed!  - Failed:     0, Passed:    21, Skipped:     0, Total:    21, Duration: 72 ms - Core.CSharp.Tests.dll (net10.0)
+
+Passed!  - Failed:     0, Passed:    12, Skipped:     0, Total:    12, Duration: 93 ms - Core.CSharp.Mediator.Tests.dll (net10.0)
+
+Passed!  - Failed:     0, Passed:     3, Skipped:     0, Total:     3, Duration: 25 ms - Tests.CSharp.TypeProvider.dll (net10.0)
+
+Passed!  - Failed:     0, Passed:    38, Skipped:     0, Total:    38, Duration: 1 s - Tests.FSharp.Git.dll (net10.0)
+
+Passed!  - Failed:     0, Passed:   413, Skipped:     0, Total:   413, Duration: 2 s - Tests.CSharp.dll (net10.0)
+
+Passed!  - Failed:     0, Passed:   503, Skipped:     0, Total:   503, Duration: 5 s - Bayesian.Tests.dll (net10.0)
+[xUnit.net 00:00:10.01]     Zeta.Tests.BenPortTests.BDN ADAPTER SMOKE (manual): wall meter drives the same case through the same port [SKIP]
+  Skipped Zeta.Tests.BenPortTests.BDN ADAPTER SMOKE (manual): wall meter drives the same case through the same port [1 ms]
+[xUnit.net 00:00:10.73]     Zeta.Tests.RxAdapterTests.A DEAD PIPELINE REFUSES NEW SUBSCRIBERS: after teardown the subject is disposed, not leaked [SKIP]
+  Skipped Zeta.Tests.RxAdapterTests.A DEAD PIPELINE REFUSES NEW SUBSCRIBERS: after teardown the subject is disposed, not leaked [1 ms]
+[xUnit.net 00:00:10.73]     Zeta.Tests.RxAdapterTests.TEARDOWN IS REAL: disposing the one handle stops notifications — the count stops moving [SKIP]
+[xUnit.net 00:00:10.73]     Zeta.Tests.RxAdapterTests.bounded pipeline completes after exactly count ticks and delivers count notifications [SKIP]
+  Skipped Zeta.Tests.RxAdapterTests.TEARDOWN IS REAL: disposing the one handle stops notifications — the count stops moving [1 ms]
+  Skipped Zeta.Tests.RxAdapterTests.bounded pipeline completes after exactly count ticks and delivers count notifications [1 ms]
+[xUnit.net 00:00:15.10]     Zeta.Tests.CollationCrossOracleTreatyTests.decide's tie-break uses the canonical collation [SKIP]
+[xUnit.net 00:00:15.10]     Zeta.Tests.CollationCrossOracleTreatyTests.every shared catalog name denotes the same relation in every oracle [SKIP]
+  Skipped Zeta.Tests.CollationCrossOracleTreatyTests.decide's tie-break uses the canonical collation [1 ms]
+  Skipped Zeta.Tests.CollationCrossOracleTreatyTests.every shared catalog name denotes the same relation in every oracle [1 ms]
+
+Passed!  - Failed:     0, Passed:  6478, Skipped:     6, Total:  6484, Duration: 5 m 32 s - Tests.FSharp.dll (net10.0)

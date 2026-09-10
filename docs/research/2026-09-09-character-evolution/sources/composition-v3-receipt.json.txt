@@ -1,0 +1,14 @@
+[
+  {
+    "name": "AceHack",
+    "height": 1.9,
+    "body_vertices": 83000,
+    "head_vertices": 152506
+  },
+  {
+    "name": "Xenaa",
+    "height": 1.82,
+    "body_vertices": 81135,
+    "head_vertices": 205343
+  }
+]

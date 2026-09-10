@@ -1,0 +1,36 @@
+"""Small geometry finish on the review candidate, preserving the tested topology."""
+import bpy,bmesh,math,json
+from pathlib import Path
+from mathutils import Vector
+R=Path(__file__).resolve().parent;O=R/'blender-v14';bpy.ops.wm.open_mainfile(filepath=str(O/'Characters-v14.blend'))
+for name,mouth in [('AceHack',1.692),('Xenaa',1.612)]:
+ head=bpy.data.objects[name+' | Independent head generator'];candidates=[v.co for v in head.data.vertices if abs(v.co.x)<.026 and abs(v.co.z-mouth)<.008];front=min(p.y for p in candidates);ob=bpy.data.objects[name+' | Upper teeth strip'];bm=bmesh.new();width=.047 if name=='AceHack' else .035
+ for k in range(8):
+  x=width*((k+.5)/8-.5);w=width/8-.0004;height=.006 if k in [3,4] else .0055 if k in [2,5] else .005
+  cube=bmesh.ops.create_cube(bm,size=1);center=Vector((x,front+.015+.005*(2*x/width)**2,mouth-.0025))
+  for v in cube['verts']:v.co=Vector((v.co.x*w,v.co.y*.004,v.co.z*height))+center
+ bmesh.ops.bevel(bm,geom=list(bm.edges),offset=.00065,segments=2,affect='EDGES');bmesh.ops.recalc_face_normals(bm,faces=list(bm.faces));bm.to_mesh(ob.data);bm.free();ob.data.update()
+ # Rebind the new tooth vertices to the existing head joint.
+ ob.vertex_groups.clear();group=ob.vertex_groups.new(name='Head');group.add(list(range(len(ob.data.vertices))),1,'REPLACE')
+ for key in head.data.shape_keys.key_blocks:key.value=0
+ # A small tongue surface is recessed behind the lower opening, hidden in neutral.
+ old=bpy.data.objects.get(name+' | Tongue')
+ if old:bpy.data.objects.remove(old,do_unlink=True)
+ bm=bmesh.new();bmesh.ops.create_uvsphere(bm,u_segments=24,v_segments=12,radius=1)
+ for v in bm.verts:v.co=Vector((v.co.x*width*.35,front+.040+v.co.y*.012,mouth-.019+v.co.z*.003))
+ me=bpy.data.meshes.new(name+' tongue');bm.to_mesh(me);bm.free();tongue=bpy.data.objects.new(name+' | Tongue',me);bpy.context.scene.collection.objects.link(tongue);tongue.location.x=head.matrix_world.translation.x
+ mat=bpy.data.materials.new(name+' | Tongue material');mat.use_nodes=True;bs=mat.node_tree.nodes['Principled BSDF'];bs.inputs['Base Color'].default_value=(.21,.044,.050,1);bs.inputs['Roughness'].default_value=.56;me.materials.append(mat)
+ for p in me.polygons:p.use_smooth=True
+ group=tongue.vertex_groups.new(name='Head');group.add(list(range(len(me.vertices))),1,'REPLACE');rig=head.parent;mod=tongue.modifiers.new('Head skin','ARMATURE');mod.object=rig;bpy.context.view_layer.update();world=tongue.matrix_world.copy();tongue.parent=rig;tongue.matrix_world=world
+# Raise the side/back jacket collar around the neck; keep the front notch open.
+collar=bpy.data.objects['Xenaa | Seated collar']
+if not collar.get('tailored_v14'):
+ for v in collar.data.vertices:
+  a=2*math.pi*(v.index//4)/64;t=(v.index%4)/3;v.co.z+=.070*t*(1-max(0,-math.sin(a))**2)
+ collar.data.update();collar['tailored_v14']=True
+# Subtle physical fluting on the swept lock reduces the broad flat ribbon reflection.
+lock=bpy.data.objects['Xenaa | Rooted shoulder lock']
+for v in lock.data.vertices:
+ t=(v.index//16)/31;a=2*math.pi*(v.index%16)/16;v.co.y+=.0018*math.cos(a*5)*(math.sin(math.pi*t)**2)
+lock.data.update()
+bpy.ops.wm.save_as_mainfile(filepath=str(O/'Characters-v14.blend'))

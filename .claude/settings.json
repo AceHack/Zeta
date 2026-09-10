@@ -102,16 +102,6 @@
         ]
       }
     ],
-    "SessionStart": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bun \"$CLAUDE_PROJECT_DIR\"/.claude/hooks/session-start-cron-verify.ts"
-          }
-        ]
-      }
-    ],
     "Stop": [
       {
         "hooks": [

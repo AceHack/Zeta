@@ -1,0 +1,14 @@
+{
+  "id": "080d03df99784010a013000885a59035",
+  "at": "2026-09-07T12:58:49.992Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1XZ6BR8087G0R002HHH3DQ",
+    "type": "task",
+    "title": "the drift publication lint reports enablement, not just shape",
+    "slug": "the-drift-publication-lint-reports-enablement-not-just-shape",
+    "priority": "P2",
+    "filename": "081M1XZ6BR8087G0R002HHH3DQ-the-drift-publication-lint-reports-enablement-not-just-shape.md"
+  }
+}

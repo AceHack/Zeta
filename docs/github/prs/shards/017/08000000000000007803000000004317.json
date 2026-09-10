@@ -1,0 +1,12 @@
+{
+  "pr_number": 17175,
+  "archive_path": "docs/history/pr-reviews/PR-17175-fix-demo-cart-fields-are-data-no-innerhtml-and-verified-needs-comparisons-that-h.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-10T01:58:50.325Z",
+  "schema_version": "v1",
+  "commit_sha": "4dc0a37147b1762670a7b49542f1bfeae37f8411",
+  "title": "fix(demo): cart fields are DATA — no innerHTML, and VERIFIED needs comparisons that happened",
+  "state": "MERGED",
+  "merged_at": "2026-09-10T01:58:07Z",
+  "head_ref": "shadow/xss-through-dom-cart-viewer"
+}

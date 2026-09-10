@@ -1,0 +1,126 @@
+{
+  "Protocol": "rendered-catch-actions-v1",
+  "Kind": "independent-replay",
+  "Complete": true,
+  "Failure": null,
+  "Passed": true,
+  "ExactMatch": true,
+  "MismatchCount": 0,
+  "MaximumAbsoluteError": 0.0,
+  "FullBehaviorEpisodes": 20480,
+  "BehaviorArmPanels": 20,
+  "CostRows": 25,
+  "CostWarmupEpisodes": 200,
+  "CostTimedEpisodes": 1600,
+  "InputSha256": "32D48E93BB5478286DA221A5982D99BD1D815CA43A304A5A54B8BBE2592109AC",
+  "CostInputSha256": "CCEF4861E45DD4300F7DA356A14AE6B62E7F72BA61DDD576B146177712B523C9",
+  "ProtocolSha256": "0EAF073F72339F0E48A48726E8D47A5568A0F213A93F5B565F920C2A8C6EC49F",
+  "CountsSha256": "8BEFD54B878D600A31A75BB5FA159588D2FDA4A849CAFB1410F03D6BC9B5B2A5",
+  "Provenance": {
+    "SourceCommit": "36fa2275e049017aefa6ebdfd77fdbd2dfbd5180",
+    "ImplementationArchive": "refs/tags/archive/experiments/081M1W8T690087G0R002DJ91MJ",
+    "ImplementationCommit": "36fa2275e049017aefa6ebdfd77fdbd2dfbd5180",
+    "SourceHashes": [
+      {
+        "File": "src/Core/Chip8.fs",
+        "Sha256": "1D6286765EE3471940A52C5F3E297E1D3252BA710CA515182EAF18DD1ED4437A"
+      },
+      {
+        "File": "src/Core/Chip8Cow.fs",
+        "Sha256": "F203973BF8F962F5C741305AC6FE1DB13F652CAF10B51D039BA4D9CC56C3C850"
+      },
+      {
+        "File": "src/Core/ControlScheme.fs",
+        "Sha256": "1FBA050D2E32DC59C6B7EB9CC40130F0152CCFCD2465B70CA7F94801DEB59F87"
+      },
+      {
+        "File": "src/Core/FrameMotion.fs",
+        "Sha256": "905EAB511A0F5CE877AE6E71003FFCFF7AEA3B2B5E86172D5B8883846528B67D"
+      },
+      {
+        "File": "src/Core/FrameSignals.fs",
+        "Sha256": "6D438A0B36981946C641EE4C03A3A5474ED63AB74883553B0CCCC6BF9FC4F8D5"
+      },
+      {
+        "File": "src/Core/GameEnvironment.fs",
+        "Sha256": "D4DE496B2DB5136C53F5761825A23862F55083FE04C7E475033B3748A890EED8"
+      },
+      {
+        "File": "src/Core/SplitMix64.fs",
+        "Sha256": "56D14EA951C459EF9509F934AE9AD65A293BEACBA841A2CBA8A2289693AAF174"
+      },
+      {
+        "File": "src/Research.FSharp/ResearchRandom.fs",
+        "Sha256": "4422C5EE4380A698FF479F0082C44E1453990C48AA034B9842719C4E0E7C79FF"
+      },
+      {
+        "File": "src/Research.FSharp/RenderedSignalCarrier.fs",
+        "Sha256": "E45BDA8B67FF3CD7B3B0E58FEBC787FAB4F0E7CB47A7C338661098F80704A7CA"
+      },
+      {
+        "File": "src/Research.FSharp/RenderedCatchReceipt.fs",
+        "Sha256": "748B22FEB0C15242FBE427D2A0C6EAF78208B5161ECCE71A4E65118C3CB1A4CD"
+      },
+      {
+        "File": "src/Research.FSharp/RenderedCatchCarrier.fs",
+        "Sha256": "C3AE69A68FE44DA89A69974D95CC9EFC71BF0793D921FCEC3441B9593BB19965"
+      },
+      {
+        "File": "src/Research.FSharp/RenderedCatchPolicy.fs",
+        "Sha256": "9FA63517A04634148D49C1FC4EC6D51391B028591C680C2FCC52D2598D20CAE5"
+      },
+      {
+        "File": "src/Research.FSharp/RenderedCatchExperiment.fs",
+        "Sha256": "7FE14499A105D981EE9E01617540B8BE8CF1EC427AD9D42174326DC2991189B1"
+      },
+      {
+        "File": "src/Research.FSharp/RenderedCatchRuntime.fsx",
+        "Sha256": "6DC3FCD30A4EF3B72CF9706D85DAED05E444C356E795EF4EE467018637BA8A77"
+      },
+      {
+        "File": "src/Research.FSharp/run-rendered-catch-experiment.fsx",
+        "Sha256": "76A013583089D090C7FB6BC91321EE70422A1F5083C246234CC27F92F6E4A4E4"
+      },
+      {
+        "File": "src/Research.FSharp/measure-rendered-catch-inference.fsx",
+        "Sha256": "968C1EFB51C7ACC0593F23D54D71D036812BCF9A6A4B01FF89FBDD28643FF426"
+      },
+      {
+        "File": "src/Research.FSharp/check-rendered-catch-kernel.fsx",
+        "Sha256": "0A83A674768CE9A6DBCB65AEB4BCB8E2B91C1FC1661172CB6994063FE36C8A28"
+      },
+      {
+        "File": "src/Interp.Python/zeta_interp/mess3_replay.py",
+        "Sha256": "EC79404E483298B4878AFF9F9D730B716A7C2ECEF06309445B9E55E19303199A"
+      },
+      {
+        "File": "src/Interp.Python/zeta_interp/rendered_catch_carrier.py",
+        "Sha256": "E9341904BF33323C5982845D39DD2C205AF6E3BD7853ACF416C0D2E9075002A4"
+      },
+      {
+        "File": "src/Interp.Python/zeta_interp/rendered_catch_replay.py",
+        "Sha256": "3E1770B4A18571E87E515E3CEFBB834C178BB5618B8ABA9B83073D8FA67E2918"
+      },
+      {
+        "File": "src/Interp.Python/zeta_interp/rendered_catch_verdict.py",
+        "Sha256": "5220028DB504BAFAC4517EE193AC5C2A6AE0B9003C110A89B8EF5BEA9929F509"
+      },
+      {
+        "File": "src/Research.FSharp/rendered-signal-results.json",
+        "Sha256": "C59468575B140DA146265182EE40B03D6F6B5103FAAC9A0137CE8A288DF357B3"
+      },
+      {
+        "File": "docs/research/2026-09-06-rendered-catch-actions-protocol.md",
+        "Sha256": "0EAF073F72339F0E48A48726E8D47A5568A0F213A93F5B565F920C2A8C6EC49F"
+      }
+    ],
+    "LoadedAssemblies": [],
+    "Runtime": "CPython 3.14.6",
+    "OperatingSystem": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+    "Arguments": [
+      "docs/research/rendered-catch-validation/2026-09-06/behavior.json",
+      "docs/research/rendered-catch-validation/2026-09-06/cost.json",
+      "docs/research/rendered-catch-validation/2026-09-06/replay.json"
+    ]
+  }
+}

@@ -705,6 +705,7 @@ export function laneImages(model: PartitionModel, lane: Lane): readonly string[]
 export function laneRootExclude(model: PartitionModel, lane: Lane): string {
   const members = new Set(lane.members);
   const nonMembers = model.roster.filter((r) => !members.has(r.name)).map((r) => `${r.dir}/Application.yaml`);
+
   const deferred = excludeGlobDirs(DEFAULT_ROOT_DEV_CATALOG.excludeGlob).map((dir) => `${dir}/Application.yaml`);
   const excluded = [...new Set([...nonMembers, ...deferred])].sort(stringCompare);
   return `{${excluded.join(",")}}`;

@@ -40,6 +40,19 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 
 const REPO_ROOT = join(import.meta.dir, "..", "..", "..");
+/**
+ * ONE source for the buffer bound, because the diagnostic that reports it must not be
+ * able to disagree with the limit that fired. The first draft hardcoded `64 * 1024` in
+ * the message: forcing the bound to 512 to test the guard produced the truncation error
+ * correctly and then reported the limit as 65536 -- a diagnostic lying about its own
+ * cause, inside the fix for a diagnostic that lied about its cause. Caught by that test,
+ * not by review.
+ *
+ * MEASURED: the refusal path prints 1,999 bytes, so this is ~32x headroom. Truncation is
+ * not the ordinary case; the guard exists because when it DOES happen it must say so.
+ */
+const SPAWN_MAX_BUFFER = 64 * 1024;
+
 const SCRIPT = join(REPO_ROOT, "full-ai-cluster/nixos/modules/k3s-join-intent-preflight.sh");
 const MODULE = join(REPO_ROOT, "full-ai-cluster/nixos/modules/k3s-join-intent-preflight.nix");
 
@@ -80,10 +93,16 @@ function inventory(dir: string): readonly string[] {
 function run(endpoint: string | null, resolved: Resolved): { code: number; out: string; root: string } {
   const f = fixture(endpoint);
   const before = inventory(f.root);
+  // Closed env. The hermetic suite runs files concurrently in one
+  // process; spreading process.env lets a sibling's BASH_ENV / ENV /
+  // SHELLOPTS / PATH rewrite become this spawn's input. Firstboot
+  // consume tests already pass only PATH. cat and tr need PATH.
   const r = spawnSync("bash", [SCRIPT], {
     encoding: "utf8",
+    maxBuffer: SPAWN_MAX_BUFFER,
     env: {
-      ...process.env,
+      PATH: process.env.PATH ?? "/usr/bin:/bin",
+      LC_ALL: "C",
       ZETA_JOIN_URL_FILE: f.joinUrlFile,
       ZETA_JOIN_TOKEN_FILE: join(f.root, "etc/zeta/k3s-join-token"),
       ZETA_RESOLVED_CLUSTER_INIT: resolved.clusterInit,
@@ -94,6 +113,37 @@ function run(endpoint: string | null, resolved: Resolved): { code: number; out: 
       ZETA_SERIAL_DEVICE: join(f.root, "no-such-serial"),
     },
   });
+  // A FAILED SPAWN MUST NAME ITSELF. `spawnSync` reports ENOBUFS (maxBuffer
+  // exceeded, output TRUNCATED), ENOENT and signals through `r.error`, and it
+  // still returns whatever partial `stdout`/`stderr` it captured. Concatenating
+  // those without checking turns any of them into a downstream assertion failure
+  // that says "the remediation line is missing" -- naming a defect in the SCRIPT
+  // for a defect in the HARNESS.
+  //
+  // That is not hypothetical. This test failed once in CI on 2026-09-10 and again
+  // on `main` on 2026-09-08 (PR-17008 review record) on exactly the
+  // `nixos-rebuild switch --impure` assertion, and the failure text pointed at the
+  // script's output rather than at whatever actually went wrong -- which is why
+  // PR #17008's fix (closing the spawn env) did not close it.
+  //
+  // MEASURED, so the bound is not guessed at: the refusal path prints 1,999 bytes
+  // against a 65,536 maxBuffer -- 32x headroom. So truncation is NOT the ordinary
+  // cause and raising the buffer would fix nothing. What was missing is the
+  // check, not the room.
+  if (r.error !== undefined) {
+    const why =
+      (r.error as NodeJS.ErrnoException).code === "ENOBUFS"
+        ? `output exceeded maxBuffer (${String(SPAWN_MAX_BUFFER)} bytes) and was TRUNCATED -- any assertion below this line is reading a partial transcript`
+        : r.error.message;
+    throw new Error(`k3s preflight spawn FAILED before its output could be judged: ${why}`);
+  }
+  // `null` stdout/stderr template as the literal "null", which then fails a
+  // `toMatch` for the same misleading reason. Absent output is absent, not "null".
+  if (typeof r.stdout !== "string" || typeof r.stderr !== "string") {
+    throw new Error(
+      `k3s preflight spawn produced no capturable output (stdout=${typeof r.stdout}, stderr=${typeof r.stderr}); status=${String(r.status)}`,
+    );
+  }
   // The negative property, checked on EVERY run rather than in one test: a
   // script that deleted something on the refusal path only would slip past a
   // single dedicated case.
@@ -233,6 +283,17 @@ describe("the markers are greppable and distinct", () => {
         if (a !== b) expect(a.startsWith(b)).toBe(false);
       }
     }
+  });
+});
+
+describe("the spawn env is closed", () => {
+  test("this file does not spread process.env into bash", () => {
+    // bun's hermetic suite shares one process across files. A spread
+    // of process.env is how a sibling BASH_ENV made the JOIN/FOUND
+    // remediation line disappear while --impure still matched.
+    const text = readFileSync(import.meta.path, "utf8");
+    const needle = ["...", "process.env"].join("");
+    expect(text.split(needle).length - 1).toBe(0);
   });
 });
 

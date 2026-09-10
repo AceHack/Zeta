@@ -1,0 +1,14 @@
+{
+  "id": "080d03c98ab93010a0130008e6ff9eed",
+  "at": "2026-09-07T00:07:51.846Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1WK2NS5087G0R002C5ACQ4",
+    "type": "task",
+    "title": "bindName refuses a directory cycle",
+    "slug": "bindname-refuses-a-directory-cycle",
+    "priority": "P2",
+    "filename": "081M1WK2NS5087G0R002C5ACQ4-bindname-refuses-a-directory-cycle.md"
+  }
+}

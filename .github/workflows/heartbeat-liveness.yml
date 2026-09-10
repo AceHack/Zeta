@@ -1,3 +1,25 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# DISABLED (`disabled_manually` in the Actions API) — 2026-08-29, and
+# heartbeat-liveness.yml on 2026-09-10. This is a maintainer decision, not rot.
+#
+# WHY: these are cadence workflows that COMMIT on a schedule, and the cost is
+# HISTORY, not tip. Measured on 2026-09-10: `liveness/observations` held 605
+# commits and 3,025 git objects to carry 409 KB of current content, at 84
+# commits/day; `drift-sweep.yml` committed a tick event into `docs/` on every
+# run. Quoting the tip size understates it — git keeps all of it.
+#
+# DO NOT re-enable to "restore telemetry". Re-enabling resumes exactly the
+# growth this stopped. A liveness signal is wanted again only with a bound on
+# history, which is the telemetry redesign, not this file.
+#
+# The design worth keeping from it: observations about a broken pipeline must
+# not depend on that pipeline (hence an orphan ref, not a PR flush). What it
+# lacked was a retention bound.
+#
+# Absence of runs here is the pause, NEVER evidence that work stopped — read
+# liveness from the work itself: commits on `main`, merged PRs, open
+# work-items. A lane's run-state is a question for the Actions API.
+# ─────────────────────────────────────────────────────────────────────────────
 # Watchdog: has the agent-heartbeat lane SUCCEEDED recently?
 #
 # WHY A SEPARATE WORKFLOW AND NOT ANOTHER STEP IN agent-heartbeat.yml.
@@ -66,24 +88,7 @@ on:
         default: "60"
 
 permissions:
-  actions: read # read agent-heartbeat run history — the whole input to the verdict
-  issues: write # raise/refresh the tracking issue so the alarm survives outside Actions
-  # WRITE, AS OF 2026-08-27, AND EXACTLY WHAT IT CAN AND CANNOT REACH.
-  #
-  # This is the workflow's own scoped GITHUB_TOKEN, the same grant `agent-heartbeat.yml` already
-  # holds. It is used for ONE thing: `git push origin HEAD:liveness/observations`. It provably
-  # cannot reach `main`, and that is a property of the repository rulesets rather than of this
-  # workflow's good behaviour — verified against the live API on 2026-08-27:
-  #
-  #   `CI Gate` (required_status_checks) has conditions.ref_name.include == ["~DEFAULT_BRANCH"],
-  #   and its ONLY bypass actor is RepositoryRole 5 with bypass_mode `pull_request`. GITHUB_TOKEN
-  #   is not that actor, and even that actor cannot push to `main` without a PR.
-  #
-  # So this grant buys the ability to write a non-default ref and nothing else. It is not the
-  # bypass actor that a literal "observations land as commits ON main" would require; that would
-  # be a credential able to push anything to `main`, enforced only by its own source code, and it
-  # is a security decision for the maintainer rather than a workflow edit.
-  contents: write
+  contents: read
 
 concurrency:
   group: heartbeat-liveness
@@ -99,6 +104,27 @@ concurrency:
 
 jobs:
   check:
+    permissions:
+      # NARROWED to job level 2026-09-09; the grants and their reasoning are unchanged.
+      actions: read # read agent-heartbeat run history, the whole input to the verdict
+      issues: write # raise/refresh the tracking issue so the alarm survives outside Actions
+      #
+      # contents: write is used for ONE thing: pushing HEAD to liveness/observations.
+      # It provably cannot reach main, and that is a property of the repository
+      # rulesets rather than of this workflow's good behaviour, verified against the
+      # live API on 2026-08-27:
+      #
+      #   CI Gate (required_status_checks) has conditions.ref_name.include ==
+      #   ["~DEFAULT_BRANCH"], and its ONLY bypass actor is RepositoryRole 5 with
+      #   bypass_mode pull_request. GITHUB_TOKEN is not that actor, and even that
+      #   actor cannot push to main without a PR.
+      #
+      # So this grant buys the ability to write a non-default ref and nothing else. It
+      # is not the bypass actor that a literal "observations land as commits ON main"
+      # would require; that would be a credential able to push anything to main,
+      # enforced only by its own source code, and it is a security decision for the
+      # maintainer rather than a workflow edit.
+      contents: write
     name: No successful heartbeat in N minutes?
     runs-on: ubuntu-24.04
     timeout-minutes: 5

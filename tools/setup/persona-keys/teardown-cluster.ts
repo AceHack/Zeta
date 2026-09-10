@@ -54,10 +54,15 @@
 // warnings, unlike silent SQL (the smart-cascade design). Reversible-by-regeneration: re-run
 // setup-cluster (new CA + re-rendered trust set) is the inverse.
 import { spawnSync } from "node:child_process";
-import { existsSync, readFileSync, readdirSync, rmSync, statSync, unlinkSync, writeFileSync } from "node:fs";
+import { existsSync, readFileSync, readdirSync, rmSync } from "node:fs";
 import { homedir } from "node:os";
 import { join } from "node:path";
 import { caPublicKeyPath } from "./ca.ts";
+// ONE erasure implementation, not two. This file carried a byte-identical copy of the
+// overwrite-then-unlink fallback, so it carried the same four defects (symlink-following,
+// O_TRUNC that could not overwrite, check-then-use on the path, no fsync) and would have
+// drifted from any fix applied to only one of them.
+import { overwriteAndUnlink } from "./teardown.ts";
 import { trustedUserCaKeysPath } from "./setup-cluster.ts";
 import { establishedFactor, requireBiometric, type BiometricAuth, type BiometricResult } from "./biometric.ts";
 export type { BiometricAuth, BiometricResult } from "./biometric.ts";
@@ -546,18 +551,7 @@ export function realEffects(): ClusterTeardownEffects {
       // back to a manual overwrite + unlink. NEVER reads the file's bytes into this process.
       const shredded = spawnSync("shred", ["-u", "-z", path], { stdio: "ignore" });
       if (shredded.status === 0 && !existsSync(path)) return true;
-      try {
-        const size = statSync(path).size;
-        if (size > 0) writeFileSync(path, Buffer.alloc(size, 0));
-      } catch {
-        // overwrite is best-effort; proceed to unlink regardless
-      }
-      try {
-        unlinkSync(path);
-      } catch {
-        return false;
-      }
-      return !existsSync(path);
+      return overwriteAndUnlink(path);
     },
     removeDir: (dir) => {
       try {

@@ -1,0 +1,14 @@
+{
+  "id": "080d03e775ef9810a0130008133cd039",
+  "at": "2026-09-07T17:33:36.115Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1YEXFFH087G0R002XK2YJG",
+    "type": "bug",
+    "title": "Windows capture read hit a sharing violation once the grandchild survived",
+    "slug": "windows-capture-read-hit-a-sharing-violation-once-the-grandc",
+    "priority": "P2",
+    "filename": "081M1YEXFFH087G0R002XK2YJG-windows-capture-read-hit-a-sharing-violation-once-the-grandc.md"
+  }
+}

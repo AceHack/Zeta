@@ -18,6 +18,7 @@
 // Future commands (not yet implemented): remove, inspect.
 
 import { chmodSync, existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
+import { fetchBounded, readFileBounded, writeFileOwned } from "../io/safe-io.ts";
 import { createPublicKey, createPrivateKey } from "node:crypto";
 import {
   defaultStorePath,
@@ -75,6 +76,61 @@ import {
   type AppDependencyGraphSpec,
   type UpgradeScheduleSpec,
 } from "./deps.ts";
+
+/**
+ * 64 MiB for one package document or registry index. `ace`'s own manifests are
+ * kilobytes; this bounds a hostile or broken source without ever bounding a
+ * real one.
+ */
+const PACKAGE_DOC_MAX_BYTES = 64 * 1024 * 1024;
+
+/** 60 s for one package document. A source that has not answered is not answering. */
+const PACKAGE_FETCH_TIMEOUT_MS = 60_000;
+
+/** 0o644 — the mode `writeFileSync` produced under the umask, kept exactly. */
+const LOCKFILE_MODE = 0o644;
+
+/**
+ * ONE DOOR for every package document `ace` reads, from a URL or a path.
+ *
+ * CodeQL reports four lockfile writes in this file and the store extraction in
+ * `store.ts` as `js/http-to-file-access` (alerts #208 #209 #210 #211 #199):
+ * bytes that arrived over HTTP reach a file sink. Those flows are what a
+ * PACKAGE MANAGER IS, and `store.ts` has said so in a comment since slice 3.
+ * They are not removable and this change does not pretend to remove them.
+ *
+ * What it removes is the SIX unbounded doors they came through. Every one of
+ * them was spelled
+ *
+ *     isHttp ? await (await fetch(u)).text() : readFileSync(u, "utf8")
+ *
+ * which has no byte cap, no deadline, no scheme check, and -- the one that bit
+ * in practice -- NO STATUS CHECK: a 404 body was parsed as a package manifest
+ * and surfaced as a JSON syntax error, which is the wrong diagnosis printed
+ * with total confidence.
+ *
+ * The cap belongs HERE rather than at each write, because there are five sinks
+ * and one door. Downstream, `installPackage` still verifies the content hash
+ * and `ace install` still runs the Ed25519 signature gate; this adds the bound
+ * those two gates always assumed.
+ */
+async function readPackageDocument(source: string): Promise<string> {
+  if (source.startsWith("http://") || source.startsWith("https://")) {
+    const res = await fetchBounded(source, {
+      maxBytes: PACKAGE_DOC_MAX_BYTES,
+      timeoutMs: PACKAGE_FETCH_TIMEOUT_MS,
+    });
+    if (!res.ok) throw new Error(`${source}: ${res.error.kind}: ${res.error.message}`);
+    if (res.value.truncated) {
+      throw new Error(`${source}: exceeds the ${String(PACKAGE_DOC_MAX_BYTES)}-byte cap; refusing a truncated document`);
+    }
+    return res.value.body;
+  }
+  const read = readFileBounded(source, { maxBytes: PACKAGE_DOC_MAX_BYTES });
+  if (!read.ok) throw new Error(`${source}: ${read.error.message}`);
+  return read.value.text;
+}
+
 
 interface ListArgs {
   readonly command: "list";
@@ -1070,15 +1126,18 @@ export async function main(argv: readonly string[]): Promise<number> {
       }
       const outPath = parsed.pubOut ?? "index.json";
       let prev: IndexDoc | null = null;
-      if (existsSync(outPath)) {
-        let prevRaw: string;
-        try {
-          prevRaw = readFileSync(outPath, "utf8");
-        } catch (e) {
-          console.error(`ace: publish refused: cannot read existing ${outPath}: ${(e as Error).message}`);
-          return 1;
-        }
-        const p = parseIndex(prevRaw);
+      // ONE lookup. `existsSync(outPath)` gating `readFileSync(outPath)` was two,
+      // and two lookups can disagree — another process may create, delete or replace
+      // the index in between (CodeQL js/file-system-race, CWE-367). `readFileBounded`
+      // opens once and reports ENOENT as `not-found`, which is the same question
+      // answered atomically. See src/Core.TypeScript/io/safe-io.ts.
+      const prevRead = readFileBounded(outPath);
+      if (!prevRead.ok && prevRead.error.kind !== "not-found") {
+        console.error(`ace: publish refused: cannot read existing ${outPath}: ${prevRead.error.message}`);
+        return 1;
+      }
+      if (prevRead.ok) {
+        const p = parseIndex(prevRead.value.text);
         if ("error" in p) {
           console.error(
             `ace: publish refused: existing ${outPath} is not a valid index (${p.error}) — refusing to reset sequence (would look like a rollback to consumers); remove or fix it`,
@@ -1141,10 +1200,11 @@ export async function main(argv: readonly string[]): Promise<number> {
         );
         return 1;
       }
-      try {
-        writeFileSync(outPath, serialized);
-      } catch (e) {
-        console.error(`ace: publish failed: cannot write ${outPath}: ${(e as Error).message}`);
+      // 0o644 is passed explicitly: safe-io defaults to 0o600 (private unless the
+      // caller says otherwise) and a published index is meant to be world-readable.
+      const wrote = writeFileOwned(outPath, serialized, { mode: 0o644 });
+      if (!wrote.ok) {
+        console.error(`ace: publish failed: cannot write ${outPath}: ${wrote.error.message}`);
         return 1;
       }
       console.log(`ace: published ${packages.length} package(s) at sequence ${seq} → ${outPath}`);
@@ -1169,18 +1229,17 @@ export async function main(argv: readonly string[]): Promise<number> {
         return 1;
       }
       const outPath = parsed.pubOut ?? "index.json";
-      if (!existsSync(outPath)) {
-        console.error(`ace: ${verb} refused: ${outPath} does not exist — cannot mark a version in a nonexistent index`);
+      // One open, ENOENT interpreted — see the note on the publish path above.
+      const prevRead = readFileBounded(outPath);
+      if (!prevRead.ok) {
+        console.error(
+          prevRead.error.kind === "not-found"
+            ? `ace: ${verb} refused: ${outPath} does not exist — cannot mark a version in a nonexistent index`
+            : `ace: ${verb} refused: cannot read ${outPath}: ${prevRead.error.message}`,
+        );
         return 1;
       }
-      let prevRaw: string;
-      try {
-        prevRaw = readFileSync(outPath, "utf8");
-      } catch (e) {
-        console.error(`ace: ${verb} refused: cannot read ${outPath}: ${(e as Error).message}`);
-        return 1;
-      }
-      const p = parseIndex(prevRaw);
+      const p = parseIndex(prevRead.value.text);
       if ("error" in p) {
         console.error(`ace: ${verb} refused: ${outPath} is not a valid index (${p.error}) — no silent reset`);
         return 1;
@@ -1230,10 +1289,9 @@ export async function main(argv: readonly string[]): Promise<number> {
         console.error(`ace: ${verb} refused: signing failed: ${(e as Error).message}`);
         return 1;
       }
-      try {
-        writeFileSync(outPath, serialized);
-      } catch (e) {
-        console.error(`ace: ${verb} failed: cannot write ${outPath}: ${(e as Error).message}`);
+      const wrote = writeFileOwned(outPath, serialized, { mode: 0o644 });
+      if (!wrote.ok) {
+        console.error(`ace: ${verb} failed: cannot write ${outPath}: ${wrote.error.message}`);
         return 1;
       }
       const verbed = verb === "revoke" ? "revoked" : verb === "quarantine" ? "quarantined" : "unquarantined";
@@ -1249,7 +1307,7 @@ export async function main(argv: readonly string[]): Promise<number> {
     if (pkgHash === undefined) {
       let raw: string;
       try {
-        raw = isHttp ? await (await fetch(parsed.regUrl!)).text() : readFileSync(storedUrl, "utf8");
+        raw = await readPackageDocument(isHttp ? parsed.regUrl! : storedUrl);
       } catch (e) {
         console.error(`ace: registry add: fetch/read failed: ${(e as Error).message}`);
         return 1;
@@ -1327,10 +1385,7 @@ export async function main(argv: readonly string[]): Promise<number> {
   if (parsed.command === "update") {
     let raw: string;
     try {
-      raw =
-        parsed.source.startsWith("http://") || parsed.source.startsWith("https://")
-          ? await (await fetch(parsed.source)).text()
-          : readFileSync(parsed.source, "utf8");
+      raw = await readPackageDocument(parsed.source);
     } catch (e) {
       console.error(`ace: download/read failed: ${(e as Error).message}`);
       return 1;
@@ -1379,8 +1434,7 @@ export async function main(argv: readonly string[]): Promise<number> {
     }
 
     if (Array.isArray(pkg.manifest.dependencies) && pkg.manifest.dependencies.length > 0) {
-      const fetchPackage = async (u: string): Promise<string> =>
-        u.startsWith("http://") || u.startsWith("https://") ? await (await fetch(u)).text() : readFileSync(u, "utf8");
+      const fetchPackage = readPackageDocument;
       const { registry, warnings, errors } = await loadRegistries({
         trustStore: await storage.loadTrustStore(bundledTrustPath(), trustStorePath()),
         offline: parsed.offline === true,
@@ -1415,10 +1469,14 @@ export async function main(argv: readonly string[]): Promise<number> {
         console.error(`ace: update refused: could not build lockfile: ${lf.error}`);
         return 1;
       }
-      try {
-        writeFileSync(parsed.lockfile, serializeLockfile(lf));
-      } catch (e) {
-        console.error(`ace: update failed: could not write lockfile ${parsed.lockfile}: ${(e as Error).message}`);
+      // The lockfile is DERIVED from registry documents that arrived over HTTP
+      // (CodeQL `js/http-to-file-access`). That derivation is what `ace update`
+      // IS; the cap for those bytes lives at `readPackageDocument` above, which
+      // is the one door they come through. This write is now one owned
+      // descriptor with an explicit mode instead of `writeFileSync`'s umask.
+      const lockWrite = writeFileOwned(parsed.lockfile, serializeLockfile(lf), { mode: LOCKFILE_MODE });
+      if (!lockWrite.ok) {
+        console.error(`ace: update failed: could not write lockfile ${parsed.lockfile}: ${lockWrite.error.message}`);
         return 1;
       }
       console.log(`ace: wrote lockfile ${parsed.lockfile} (${lf.nodes.length} deps)`);
@@ -1432,10 +1490,9 @@ export async function main(argv: readonly string[]): Promise<number> {
       console.error(`ace: update refused: unsafe file path in ${pkg.manifest.name}: ${leafUnsafe}`);
       return 1;
     }
-    try {
-      writeFileSync(parsed.lockfile, serializeLockfile(buildLeafLockfile(pkg)));
-    } catch (e) {
-      console.error(`ace: update failed: could not write lockfile ${parsed.lockfile}: ${(e as Error).message}`);
+    const leafWrite = writeFileOwned(parsed.lockfile, serializeLockfile(buildLeafLockfile(pkg)), { mode: LOCKFILE_MODE });
+    if (!leafWrite.ok) {
+      console.error(`ace: update failed: could not write lockfile ${parsed.lockfile}: ${leafWrite.error.message}`);
       return 1;
     }
     console.log(`ace: wrote lockfile ${parsed.lockfile} (0 deps)`);
@@ -1445,10 +1502,7 @@ export async function main(argv: readonly string[]): Promise<number> {
   if (parsed.command === "install") {
     let raw: string;
     try {
-      raw =
-        parsed.source.startsWith("http://") || parsed.source.startsWith("https://")
-          ? await (await fetch(parsed.source)).text()
-          : readFileSync(parsed.source, "utf8");
+      raw = await readPackageDocument(parsed.source);
     } catch (e) {
       console.error(`ace: download/read failed: ${(e as Error).message}`);
       return 1;
@@ -1561,10 +1615,7 @@ export async function main(argv: readonly string[]): Promise<number> {
         for (const node of lf.nodes) {
           let nodeRaw: string;
           try {
-            nodeRaw =
-              node.url.startsWith("http://") || node.url.startsWith("https://")
-                ? await (await fetch(node.url)).text()
-                : readFileSync(node.url, "utf8");
+            nodeRaw = await readPackageDocument(node.url);
           } catch (e) {
             console.error(
               `ace: install refused: fetch failed for ${node.name}@${node.version} (${node.url}): ${(e as Error).message}`,
@@ -1653,8 +1704,7 @@ export async function main(argv: readonly string[]): Promise<number> {
         console.error(`ace: installed ${lf.nodes.length + 1} from lockfile ${parsed.lockfile} (frozen)`);
         return 0;
       }
-      const fetchPackage = async (u: string): Promise<string> =>
-        u.startsWith("http://") || u.startsWith("https://") ? await (await fetch(u)).text() : readFileSync(u, "utf8");
+      const fetchPackage = readPackageDocument;
       const { registry, revoked, quarantined, warnings, errors } = await loadRegistries({
         trustStore: await storage.loadTrustStore(bundledTrustPath(), trustStorePath()),
         offline: parsed.offline === true,
@@ -1734,10 +1784,9 @@ export async function main(argv: readonly string[]): Promise<number> {
       if ("error" in lf) {
         console.error(`ace: WARNING: could not build lockfile: ${lf.error}`);
       } else {
-        try {
-          writeFileSync(parsed.lockfile, serializeLockfile(lf));
-        } catch (e) {
-          console.error(`ace: WARNING: could not write lockfile ${parsed.lockfile}: ${(e as Error).message}`);
+        const lockWrite = writeFileOwned(parsed.lockfile, serializeLockfile(lf), { mode: LOCKFILE_MODE });
+        if (!lockWrite.ok) {
+          console.error(`ace: WARNING: could not write lockfile ${parsed.lockfile}: ${lockWrite.error.message}`);
         }
       }
       console.log(
@@ -1814,10 +1863,9 @@ export async function main(argv: readonly string[]): Promise<number> {
     }
     // SLICE 5.4: default (non-frozen) path writes the trivial leaf lock; write failure is a warning.
     if (!parsed.frozen) {
-      try {
-        writeFileSync(parsed.lockfile, serializeLockfile(buildLeafLockfile(pkg)));
-      } catch (e) {
-        console.error(`ace: WARNING: could not write lockfile ${parsed.lockfile}: ${(e as Error).message}`);
+      const leafWrite = writeFileOwned(parsed.lockfile, serializeLockfile(buildLeafLockfile(pkg)), { mode: LOCKFILE_MODE });
+      if (!leafWrite.ok) {
+        console.error(`ace: WARNING: could not write lockfile ${parsed.lockfile}: ${leafWrite.error.message}`);
       }
     }
     return 0;

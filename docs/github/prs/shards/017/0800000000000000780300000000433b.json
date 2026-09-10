@@ -1,0 +1,12 @@
+{
+  "pr_number": 17211,
+  "archive_path": "docs/history/pr-reviews/PR-17211-fix-security-ops-file-only-two-thirds-of-codeql-js-analyses-on-main-never-run.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-10T02:34:34.862Z",
+  "schema_version": "v1",
+  "commit_sha": "e5e55aace370547b5c89877e8d3aceee03cf0e75",
+  "title": "fix(security-ops): FILE ONLY -- two thirds of CodeQL js analyses on main never run",
+  "state": "MERGED",
+  "merged_at": "2026-09-10T02:33:25Z",
+  "head_ref": "security/tranche6-codeql-cancelled-finding"
+}

@@ -1,0 +1,14 @@
+{
+  "id": "080d0415f7cd2010a013000814cfd664",
+  "at": "2026-09-08T20:39:08.964Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M21BXYD3087G0R003NRYGTK",
+    "type": "task",
+    "title": "D10 skip layout persist for single-leaf jumpropes",
+    "slug": "d10-skip-layout-persist-for-single-leaf-jumpropes",
+    "priority": "P2",
+    "filename": "081M21BXYD3087G0R003NRYGTK-d10-skip-layout-persist-for-single-leaf-jumpropes.md"
+  }
+}

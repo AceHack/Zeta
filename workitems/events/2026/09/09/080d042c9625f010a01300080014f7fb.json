@@ -1,0 +1,14 @@
+{
+  "id": "080d042c9625f010a01300080014f7fb",
+  "at": "2026-09-09T09:49:43.486Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M22S5H5T087G0R00093HKJW",
+    "type": "bug",
+    "title": "existsSync-then-write TOCTOU defeats four never-clobber guards on the mint paths",
+    "slug": "existssync-then-write-toctou-defeats-four-never-clobber-guar",
+    "priority": "P2",
+    "filename": "081M22S5H5T087G0R00093HKJW-existssync-then-write-toctou-defeats-four-never-clobber-guar.md"
+  }
+}

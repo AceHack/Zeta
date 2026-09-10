@@ -1,0 +1,12 @@
+{
+  "pr_number": 17100,
+  "archive_path": "docs/history/pr-reviews/PR-17100-feat-081m21m7fvz087g0r000pnh46e-blockcas-put-writes-next-slot-from-memory.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-08T23:31:20.580Z",
+  "schema_version": "v1",
+  "commit_sha": "a2b633903ca3b94530260f290ba3929efddf06a2",
+  "title": "feat(081M21M7FVZ087G0R000PNH46E): BlockCas Put writes next slot from memory",
+  "state": "MERGED",
+  "merged_at": "2026-09-08T23:30:39Z",
+  "head_ref": "feat/zetafs-d10-blockcas-put-memory-slot"
+}

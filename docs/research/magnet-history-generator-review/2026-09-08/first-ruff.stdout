@@ -1,0 +1,22 @@
+I001 [*] Import block is un-sorted or un-formatted
+ --> docs/research/magnet-history-generator-review/2026-09-08/source_audit.py:3:1
+  |
+1 |   """Pin inspected source bytes; no model, ARC, solver, or physics execution."""
+2 |
+3 | / import hashlib
+4 | | import json
+5 | | from pathlib import Path
+6 | | import subprocess
+  | |_________________^
+help: Organize imports
+  |
+4 | import json
+  - from pathlib import Path
+5 | import subprocess
+  -
+6 + from pathlib import Path
+7 |
+  |
+
+Found 1 error.
+[*] 1 fixable with the `--fix` option.

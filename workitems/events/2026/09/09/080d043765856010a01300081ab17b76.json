@@ -1,0 +1,14 @@
+{
+  "id": "080d043765856010a01300081ab17b76",
+  "at": "2026-09-09T16:07:33.804Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M23ESC5B087G0R002HJ39DG",
+    "type": "task",
+    "title": "Pin tla2tools under a reusable rolling-tag regime; de-vendor the jar",
+    "slug": "pin-tla2tools-under-a-reusable-rolling-tag-regime-de-vendor",
+    "priority": "P2",
+    "filename": "081M23ESC5B087G0R002HJ39DG-pin-tla2tools-under-a-reusable-rolling-tag-regime-de-vendor.md"
+  }
+}

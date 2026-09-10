@@ -1,0 +1,14 @@
+{
+  "id": "080d03c505114010a0130008c54f4f43",
+  "at": "2026-09-06T21:29:48.328Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1WA18H7087G0R000VAT75H",
+    "type": "bug",
+    "title": "ace generateArgoCD emitted a spec.source.path that resolved to nothing",
+    "slug": "ace-generateargocd-emitted-a-spec-source-path-that-resolved",
+    "priority": "P2",
+    "filename": "081M1WA18H7087G0R000VAT75H-ace-generateargocd-emitted-a-spec-source-path-that-resolved.md"
+  }
+}

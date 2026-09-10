@@ -9,8 +9,13 @@
  *
  * This module CLASSIFIES. It does not talk to USB, PAM, or OpenBao.
  * A capture is injected (from frost-hardware-probe / /etc/os-release /
- * sysfs). NixOS evaluation cannot see a hot-plugged HSM; it declares
- * the *role* and enables userspace. Presence is still a measurement.
+ * sysfs). A named probe snapshot maps to this capture
+ * (`hostCaptureFromNamedProbe`). `/dev/tpmrm0` is not `present`.
+ * A YubiKey CCID reader is not CardContact SmartCard-HSM. A
+ * PKCS#11 driver on disk is not an attached YubiHSM. A null
+ * snapshot is unmeasured, not absent. NixOS evaluation cannot
+ * see a hot-plugged HSM; it declares the *role* and enables
+ * userspace. Presence is still a measurement.
  *
  * A driver on disk is not a device (frost-hardware-probe). SoftHSM2
  * is never selected from a metal capture. Init stays gated on every
@@ -34,6 +39,23 @@ export type Tpm2CaptureState = "present" | "absent" | "unreadable" | "unavailabl
 
 export type YubiHsm2CaptureState = "attached" | "absent" | "indeterminate" | "not-asked";
 
+/**
+ * SmartCard-HSM capture, with an explicit UNMEASURED state.
+ *
+ * Was a bare `boolean`, and that is what made the defect unavoidable: a mapper
+ * that does not measure had two options and both were lies -- `true` claims
+ * presence, `false` claims absence. The frost->named mapper hardcoded
+ * `false` while correctly REFUSING to infer an HSM from a CCID reader, so the
+ * refusal was right and the value it wrote was not. Measured wrong on real
+ * hardware 2026-09-08: a SmartCard-HSM v4.1 was attached and provisioned.
+ *
+ * The bare boolean was also being read TWO WAYS in this file -- `false` meant
+ * "absent" when picking the oracle and "we did not look" when deciding whether
+ * anything had been probed. Its siblings carry `not-asked` precisely so that
+ * cannot happen to them.
+ */
+export type SmartcardHsmCaptureState = "present" | "absent" | "indeterminate" | "not-asked";
+
 export type RotationGate = "automatic-hsm" | "automatic-tpm" | "developer-fido" | "developer-biometric" | "ci-emulator";
 
 export type RotationRefuse =
@@ -51,7 +73,7 @@ export interface HostHardwareCapture {
   readonly tpm2: Tpm2CaptureState;
   readonly yubiHsm2: YubiHsm2CaptureState;
   /** CardContact / SmartCard-HSM (or another PKCS#11 smartcard HSM), not a YubiKey. */
-  readonly smartcardHsm: boolean;
+  readonly smartcardHsm: SmartcardHsmCaptureState;
   /** YubiKey / FIDO / CCID token — a developer factor, not a prod rotation oracle. */
   readonly yubikeyFido: boolean;
   readonly biometricEnrolled: boolean;
@@ -73,7 +95,7 @@ const EMPTY_CAPTURE: HostHardwareCapture = {
   os: "unknown",
   tpm2: "not-asked",
   yubiHsm2: "not-asked",
-  smartcardHsm: false,
+  smartcardHsm: "not-asked",
   yubikeyFido: false,
   biometricEnrolled: false,
   pkcs11ModuleOnDisk: false,
@@ -94,12 +116,50 @@ export function emptyCapture(overrides: Partial<HostHardwareCapture> = {}): Host
 }
 
 /**
+ * Named probe snapshot. Cluster does not open `/dev/tpmrm0`
+ * and does not import frost-hardware-probe (fs/spawn).
+ * `smartcardHsm` is named — a CCID reader / YubiKey is not
+ * CardContact SmartCard-HSM.
+ */
+export interface NamedHardwareProbe {
+  readonly os: OsFamily;
+  readonly tpm2: Tpm2CaptureState;
+  readonly tpmDeviceNode: string | null;
+  readonly yubiHsm2: YubiHsm2CaptureState;
+  readonly smartCardReaderAttached: boolean;
+  readonly yubikeyDetected: boolean;
+  readonly pkcs11ModuleOnDisk: boolean;
+  readonly smartcardHsm: SmartcardHsmCaptureState;
+}
+
+/**
+ * Map a named probe snapshot to a host capture. Null is
+ * unmeasured (`not-asked`), not `absent`. `/dev/tpmrm0` does
+ * not upgrade `tpm2` to `present`. A YubiKey / CCID reader
+ * does not set `smartcardHsm`. A PKCS#11 driver on disk does
+ * not set `yubiHsm2` to `attached`. Does not call
+ * `integrateAtSetup`.
+ */
+export function hostCaptureFromNamedProbe(probe: NamedHardwareProbe | null): HostHardwareCapture {
+  if (probe === null) return emptyCapture();
+  return emptyCapture({
+    os: probe.os,
+    tpm2: probe.tpm2,
+    yubiHsm2: probe.yubiHsm2,
+    smartcardHsm: probe.smartcardHsm,
+    yubikeyFido: probe.yubikeyDetected,
+    pkcs11ModuleOnDisk: probe.pkcs11ModuleOnDisk,
+    biometricEnrolled: false,
+  });
+}
+
+/**
  * Metal oracle from ATTACHED devices. SoftHSM2 / swtpm are never inferred
  * from a host capture — those are ci-emulator only.
  */
 export function pickSealOracleFromCapture(capture: HostHardwareCapture): SealOracle {
   if (capture.yubiHsm2 === "attached") return "yubihsm2";
-  if (capture.smartcardHsm) return "smartcard-hsm";
+  if (capture.smartcardHsm === "present") return "smartcard-hsm";
   if (capture.tpm2 === "present") return "tpm2-pkcs11";
   return "none";
 }
@@ -112,12 +172,16 @@ function hsmLooked(state: YubiHsm2CaptureState): boolean {
   return state === "attached" || state === "absent";
 }
 
+function smartcardLooked(state: SmartcardHsmCaptureState): boolean {
+  return state === "present" || state === "absent";
+}
+
 function hasAutomaticOracle(capture: HostHardwareCapture): boolean {
-  return capture.yubiHsm2 === "attached" || capture.smartcardHsm || capture.tpm2 === "present";
+  return capture.yubiHsm2 === "attached" || capture.smartcardHsm === "present" || capture.tpm2 === "present";
 }
 
 function automaticOracleUnprobed(capture: HostHardwareCapture): boolean {
-  return capture.tpm2 === "not-asked" && capture.yubiHsm2 === "not-asked" && !capture.smartcardHsm;
+  return capture.tpm2 === "not-asked" && capture.yubiHsm2 === "not-asked" && capture.smartcardHsm === "not-asked";
 }
 
 function automaticCheckDidNotRun(capture: HostHardwareCapture): boolean {
@@ -125,9 +189,11 @@ function automaticCheckDidNotRun(capture: HostHardwareCapture): boolean {
   const hsmStuck = capture.yubiHsm2 === "indeterminate";
   const tpmSilent = capture.tpm2 === "not-asked";
   const hsmSilent = capture.yubiHsm2 === "not-asked";
+  const cardStuck = capture.smartcardHsm === "indeterminate";
+  const cardSilent = capture.smartcardHsm === "not-asked";
   if (hasAutomaticOracle(capture)) return false;
-  if (tpmLooked(capture.tpm2) && hsmLooked(capture.yubiHsm2) && !capture.smartcardHsm) return false;
-  return tpmStuck || hsmStuck || tpmSilent || hsmSilent;
+  if (tpmLooked(capture.tpm2) && hsmLooked(capture.yubiHsm2) && smartcardLooked(capture.smartcardHsm)) return false;
+  return tpmStuck || hsmStuck || cardStuck || tpmSilent || hsmSilent || cardSilent;
 }
 
 export function assessHardware(role: BoxRole, capture: HostHardwareCapture): HardwareAssess {

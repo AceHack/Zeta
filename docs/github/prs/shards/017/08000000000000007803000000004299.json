@@ -1,0 +1,12 @@
+{
+  "pr_number": 17049,
+  "archive_path": "docs/history/pr-reviews/PR-17049-feat-081m1ztpqw0087g0r001zm8pfa-persist-catalog-once-after-freeze.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-08T06:45:06.694Z",
+  "schema_version": "v1",
+  "commit_sha": "8abc664dcd52227b6b9d7f14cac232521dac5502",
+  "title": "feat(081M1ZTPQW0087G0R001ZM8PFA): persist catalog once after freeze",
+  "state": "MERGED",
+  "merged_at": "2026-09-08T06:44:24Z",
+  "head_ref": "feat/zetafs-d10-one-post-freeze-catalog"
+}

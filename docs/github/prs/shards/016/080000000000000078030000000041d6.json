@@ -1,0 +1,12 @@
+{
+  "pr_number": 16854,
+  "archive_path": "docs/history/pr-reviews/PR-16854-feat-081m1w6s47p087g0r002fdfvq1-blockcas-planted-garbage-returns-missingleaves.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-06T20:56:36.921Z",
+  "schema_version": "v1",
+  "commit_sha": "a516a69cfff360ed34beb6c36c91b1caacca5f24",
+  "title": "feat(081M1W6S47P087G0R002FDFVQ1): BlockCas planted garbage returns MissingLeaves",
+  "state": "MERGED",
+  "merged_at": "2026-09-06T20:55:58Z",
+  "head_ref": "feat/zetafs-missingleaves-blockcas"
+}

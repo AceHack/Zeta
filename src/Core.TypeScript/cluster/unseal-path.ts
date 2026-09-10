@@ -10,7 +10,16 @@
  * This module CLASSIFIES. It does not talk to USB, OpenBao, or
  * 1Password. A capture is injected (host hardware, and the
  * restored PKCS#11 pointer file). SoftHSM2 / swtpm are job
- * declarations, never inferred from `/dev/tpmrm0`.
+ * declarations, never inferred from `/dev/tpmrm0`. A named
+ * PathRequest from env (`ZETA_UNSEAL_REQUEST`) is the same
+ * rule: missing is unmeasured, not `auto`; `/dev/tpmrm0` is
+ * not `pkcs11-tpm`. Parse does not call `integrateAtSetup`.
+ * Env join (`integrateAtSetupFromEnv`) injects a named probe
+ * snapshot (`NamedHardwareProbe | null`), mapped via
+ * `hostCaptureFromNamedProbe`. Missing request is unmeasured,
+ * not `auto`. Null probe is unmeasured, not present.
+ * `/dev/tpmrm0` is not a capture. Inner `integrateAtSetup`
+ * still takes a capture.
  *
  * OpenBao takes ONE seal per node. Multiple *paths* means the
  * fleet may mix PKCS#11-YubiHSM, PKCS#11-SmartCard-HSM,
@@ -39,7 +48,12 @@
  * docs/design/2026-09-04-credential-substrate-production-hardening-review.md.
  */
 
-import { emptyCapture, type HostHardwareCapture } from "./host-seal-profile.ts";
+import {
+  emptyCapture,
+  hostCaptureFromNamedProbe,
+  type HostHardwareCapture,
+  type NamedHardwareProbe,
+} from "./host-seal-profile.ts";
 import {
   planSetupPkcs11Overlay,
   USB_PKCS11_MODULE_POINTER,
@@ -54,6 +68,41 @@ export type UnsealPath =
   "pkcs11-yubihsm" | "pkcs11-smartcard" | "pkcs11-tpm" | "lucent-shamir" | "ci-softhsm" | "ci-swtpm" | "kind-shamir";
 
 /**
+ * USB-install product vocabulary. One choice from detected hardware:
+ * HSM if attached, else TPM if present, else the fetch-at-unseal sidecar.
+ * Almost no machine has two HSMs; if two vendors are attached, still one
+ * seal (`hsm`). Does not rename UnsealPath. CI maps simulators onto the
+ * same three rungs (SoftHSM → hsm, swtpm → tpm, kind/Lucent → sidecar).
+ */
+export type UsbInstallSeal = "hsm" | "tpm" | "sidecar";
+
+/** Project the internal path onto the USB-install ladder. Exhaustive. */
+export function usbInstallSealFromPath(path: UnsealPath): UsbInstallSeal {
+  switch (path) {
+    case "pkcs11-yubihsm":
+    case "pkcs11-smartcard":
+    case "ci-softhsm":
+      return "hsm";
+    case "pkcs11-tpm":
+    case "ci-swtpm":
+      return "tpm";
+    case "lucent-shamir":
+    case "kind-shamir":
+      return "sidecar";
+  }
+}
+
+/**
+ * Ladder is null when the look did not produce a path: missing request,
+ * refused PKCS#11, incomplete probe. A look that did not happen is not
+ * "sidecar" — sidecar is the completed negative (no HSM, no TPM).
+ */
+export function usbInstallSealFromDecision(decision: IntegrateDecision | null): UsbInstallSeal | null {
+  if (decision === null || !decision.ok) return null;
+  return usbInstallSealFromPath(decision.path);
+}
+
+/**
  * What setup asked for. `auto` picks the strongest accessible path.
  * `pkcs11-hsm` is request-only: either metal HSM vendor (YubiHSM or
  * CardContact SmartCard-HSM). The result names the vendor.
@@ -62,6 +111,71 @@ export type PathRequest = "auto" | "pkcs11-hsm" | UnsealPath;
 
 export interface SetupRequest {
   readonly requested: PathRequest;
+}
+
+/**
+ * First-boot / installer env key for a named PathRequest.
+ * Missing is unmeasured, not `auto`, not `pkcs11-tpm`.
+ */
+export const UNSEAL_REQUEST_ENV_KEY = "ZETA_UNSEAL_REQUEST";
+
+export type NamedPathRequestError = "empty-request" | "unknown-request" | "unsafe-conf-value";
+
+export type NamedPathRequestResult =
+  | { readonly ok: true; readonly requested: PathRequest | null }
+  | { readonly ok: false; readonly reason: NamedPathRequestError };
+
+/** Same allowlist as firstboot-role `SHELL_SAFE_CONF_VALUE_REGEX`. Cluster must not import zflash. */
+const SHELL_SAFE_REQUEST_REGEX = /^[A-Za-z0-9._:/@-]+$/;
+
+const PATH_REQUESTS: ReadonlySet<string> = new Set([
+  "auto",
+  "pkcs11-hsm",
+  "pkcs11-yubihsm",
+  "pkcs11-smartcard",
+  "pkcs11-tpm",
+  "lucent-shamir",
+  "ci-softhsm",
+  "ci-swtpm",
+  "kind-shamir",
+]);
+
+function isPathRequest(value: string): value is PathRequest {
+  return PATH_REQUESTS.has(value);
+}
+
+/**
+ * Named request from a string. Missing is unmeasured, not `auto`.
+ * `/dev/tpmrm0` and `/mnt` are unknown, not `pkcs11-tpm`.
+ * Does not open files. Does not call `integrateAtSetup`.
+ */
+export function parsePathRequest(value: string | undefined): NamedPathRequestResult {
+  if (value === undefined) return { ok: true, requested: null };
+  if (value.length === 0) return { ok: false, reason: "empty-request" };
+  if (!SHELL_SAFE_REQUEST_REGEX.test(value)) return { ok: false, reason: "unsafe-conf-value" };
+  if (isPathRequest(value)) return { ok: true, requested: value };
+  return { ok: false, reason: "unknown-request" };
+}
+
+/**
+ * Process env after bash sources a named request. Missing key
+ * is unmeasured. Does not infer `pkcs11-tpm` from `/dev/tpmrm0`.
+ */
+export function consumeUnsealRequestFromEnv(env: {
+  readonly [key: string]: string | undefined;
+}): NamedPathRequestResult {
+  return parsePathRequest(env[UNSEAL_REQUEST_ENV_KEY]);
+}
+
+export function namedPathRequestErrorMessage(reason: NamedPathRequestError): string {
+  switch (reason) {
+    case "empty-request":
+      return "ZETA_UNSEAL_REQUEST requires a value";
+    case "unknown-request":
+      return "ZETA_UNSEAL_REQUEST must be a named PathRequest";
+    case "unsafe-conf-value":
+      return "ZETA_UNSEAL_REQUEST contains a value firstboot conf cannot carry";
+  }
 }
 
 export type UnsealMechanism = "aes-gcm" | "must-pin-rsa-oaep" | "measure-on-device" | "none";
@@ -114,7 +228,7 @@ export function yubiHsmAccessible(capture: HostHardwareCapture): boolean {
 
 /** CardContact SmartCard-HSM (sc-hsm / OpenSC), not a YubiKey. */
 export function smartcardHsmAccessible(capture: HostHardwareCapture): boolean {
-  return capture.smartcardHsm;
+  return capture.smartcardHsm === "present";
 }
 
 export function hsmAccessible(capture: HostHardwareCapture): boolean {
@@ -281,6 +395,31 @@ export function integrateAtSetup(request: SetupRequest, capture: HostHardwareCap
     return { ok: false, reason: "probe-did-not-run", requested };
   }
   return ok("lucent-shamir");
+}
+
+export type IntegrateFromEnv =
+  | { readonly ok: true; readonly decision: IntegrateDecision | null }
+  | { readonly ok: false; readonly reason: NamedPathRequestError };
+
+/**
+ * Request from env, probe snapshot still injected. Missing
+ * request is unmeasured (`decision` null) — not `auto`.
+ * Null probe is unmeasured, not present. `/dev/tpmrm0`
+ * refuses at parse and does not call `integrateAtSetup`.
+ * `tpmDeviceNode` does not invent `tpm2: "present"`. Inner
+ * `integrateAtSetup` still takes a capture.
+ */
+export function integrateAtSetupFromEnv(
+  env: { readonly [key: string]: string | undefined },
+  probe: NamedHardwareProbe | null,
+): IntegrateFromEnv {
+  const parsed = consumeUnsealRequestFromEnv(env);
+  if (!parsed.ok) return parsed;
+  if (parsed.requested === null) return { ok: true, decision: null };
+  return {
+    ok: true,
+    decision: integrateAtSetup({ requested: parsed.requested }, hostCaptureFromNamedProbe(probe)),
+  };
 }
 
 /**

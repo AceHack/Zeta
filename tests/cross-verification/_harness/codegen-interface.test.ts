@@ -1,8 +1,10 @@
 import { describe, test, expect } from "bun:test";
 import {
   emitCSharp, emitTypeScript, emitRust, emitFSharp, emitPython, emitGo, emitQSharp,
+  applyTypeMap, IR_PRIMITIVES, STATIC_TYPE_MAPS,
   type InterfaceIr
 } from "./codegen-interface";
+import { generateVectors, readVectors } from "./codegen-interface-golden";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 
@@ -306,3 +308,153 @@ describe("codegen-interface — first-class collections & heat-sink", () => {
   });
 });
 
+
+// The falsifiers that let the `.replace` chains be retired (2026-09-09).
+//
+// The seven type-mapping functions in codegen-interface.ts used to CHAIN
+// `String.prototype.replace` calls. A chain is order-dependent: every later
+// pattern re-scans the OUTPUT of every earlier one, so an `int64` rewritten to
+// `int` is then rewritten again by the `int` link. Those chains were safe only
+// because several of their links mapped a token to ITSELF — ten of which CodeQL
+// flagged as js/identity-replacement — and a dead link is indistinguishable by
+// eye from a load-bearing one.
+//
+// Two things had to be true before the chains could go:
+//   1. the replacement CANNOT cascade (structural, not a fact about ordering)
+//   2. the emitted bytes did not move
+// The first block below is (1); the golden byte-lock is (2).
+
+describe("codegen-interface — single-pass type maps", () => {
+  test("applyTypeMap does not cascade, and a chain would", () => {
+    // The forcing case: the value of one entry is the key of another.
+    const map = { int64: "int", int: "long" } as const;
+
+    // One pass: `int64` is consumed whole, its output is never re-scanned.
+    expect(applyTypeMap("int64", map)).toBe("int");
+
+    // The chain this replaced, spelled out. If it agreed with the single pass
+    // the assertion above would be vacuous — so the disagreement is asserted.
+    const viaChain = "int64".replace(/\bint64\b/g, "int").replace(/\bint\b/g, "long");
+    expect(viaChain).toBe("long");
+    expect(viaChain).not.toBe(applyTypeMap("int64", map));
+  });
+
+  test("key declaration order cannot change the result", () => {
+    const probe = "int int64 bool string void T TWeight TState TEvent";
+    for (const [, map] of Object.entries(STATIC_TYPE_MAPS)) {
+      const reversed: Record<string, string> = {};
+      for (const k of Object.keys(map).reverse()) reversed[k] = map[k]!;
+      expect(applyTypeMap(probe, reversed)).toBe(applyTypeMap(probe, map));
+    }
+  });
+
+  test("longer keys win over their own prefixes", () => {
+    // `int` must never eat the head of `int64` regardless of declaration order.
+    expect(applyTypeMap("int64", { int: "A", int64: "B" })).toBe("B");
+    expect(applyTypeMap("int64", { int64: "B", int: "A" })).toBe("B");
+    expect(applyTypeMap("int", { int: "A", int64: "B" })).toBe("A");
+  });
+
+  test("a key a word boundary cannot anchor is REFUSED, not silently escaped", () => {
+    // An entry that can never fire is the vacuity class; loud beats dead.
+    expect(() => applyTypeMap("a.b", { "a.b": "c" })).toThrow(/not a bare word/);
+  });
+
+  test("every static map key is an IR primitive or a declared type param", () => {
+    const knownTypeParams = ["T", "TWeight", "TState", "TEvent"];
+    const allowed = new Set([...IR_PRIMITIVES, ...knownTypeParams]);
+    for (const [lang, map] of Object.entries(STATIC_TYPE_MAPS)) {
+      for (const key of Object.keys(map)) {
+        expect({ lang, key, known: allowed.has(key) }).toEqual({ lang, key, known: true });
+      }
+    }
+  });
+
+  test("which IR primitives each language leaves unmapped is PINNED", () => {
+    // A primitive absent from a map passes through unchanged. That is correct
+    // exactly when the language spells it the same way the IR does — which no
+    // test can check, so the set is pinned here and any change is loud.
+    //   cs: C# spells bool/string/void identically.
+    //   ts: TypeScript spells string/void identically.
+    // Every other language now maps all five. void missing from rs and go was a
+    // real miscompile (invalid Rust and invalid Go), fixed 2026-09-09.
+    const unmapped: Record<string, string[]> = {};
+    for (const [lang, map] of Object.entries(STATIC_TYPE_MAPS)) {
+      unmapped[lang] = IR_PRIMITIVES.filter(p => !(p in map)).slice().sort();
+    }
+    expect(unmapped).toEqual({
+      cs: ["bool", "string", "void"],
+      ts: ["string", "void"],
+      rs: [],
+      py: [],
+      go: [],
+      qs: [],
+    });
+  });
+});
+
+describe("codegen-interface — void is emitted as each language spells it", () => {
+  const voidIr: InterfaceIr = {
+    schema: "zeta-ir-v2-interface",
+    name: "ISink",
+    typeParams: [{ name: "T", variance: "invariant" }],
+    members: [
+      { name: "Accept", kind: "method", params: [{ name: "value", type: "T" }], returns: "void" },
+    ],
+  };
+
+  test("Rust returns unit, never the word void", () => {
+    const rs = emitRust(voidIr);
+    expect(rs).toContain("fn accept(&self, value: T) -> ();");
+    expect(rs).not.toContain("void");
+  });
+
+  test("Go omits the result type entirely, never the word void", () => {
+    const go = emitGo(voidIr);
+    // Anchored to end-of-line: a mutation that appended the empty return type
+    // left a TRAILING SPACE that only the golden byte-lock caught, so the
+    // assertion is pinned to the exact emitted line.
+    expect(go.split("\n")).toContain("    Accept(value T)");
+    expect(go).not.toContain("void");
+  });
+
+  test("C# and TypeScript keep void, which is how they spell it", () => {
+    expect(emitCSharp(voidIr)).toContain("public void Accept(T value);");
+    expect(emitTypeScript(voidIr)).toContain("Accept(value: T): void;");
+  });
+
+  test("Python and Q# use their own unit spellings", () => {
+    expect(emitPython(voidIr)).toContain("-> None");
+    expect(emitQSharp(voidIr)).toContain(": Unit");
+  });
+});
+
+describe("codegen-interface — golden byte-lock", () => {
+  test("all 7 emitters match the committed vectors for every IR fixture", () => {
+    const committed = readVectors();
+    const regenerated = generateVectors();
+
+    // Compare per fixture per language so a failure names the exact emitter,
+    // not one 90KB blob diff.
+    expect(Object.keys(regenerated).sort()).toEqual(Object.keys(committed).sort());
+    for (const fixture of Object.keys(regenerated)) {
+      for (const lang of Object.keys(regenerated[fixture]!)) {
+        expect(`${fixture}/${lang}\n${regenerated[fixture]![lang]}`)
+          .toBe(`${fixture}/${lang}\n${committed[fixture]?.[lang]}`);
+      }
+    }
+  });
+
+  test("the byte-lock is not vacuous — every emitter, real fixtures, no empties", () => {
+    const committed = readVectors();
+    const fixtures = Object.keys(committed);
+    expect(fixtures.length).toBeGreaterThanOrEqual(10);
+    for (const fixture of fixtures) {
+      expect(Object.keys(committed[fixture]!).sort())
+        .toEqual(["cs", "fs", "go", "py", "qs", "rs", "ts"]);
+      for (const emitted of Object.values(committed[fixture]!)) {
+        expect(emitted.length).toBeGreaterThan(0);
+      }
+    }
+  });
+});

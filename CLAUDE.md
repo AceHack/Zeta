@@ -53,31 +53,11 @@ See [`docs/CONFLICT-RESOLUTION.md`](docs/CONFLICT-RESOLUTION.md). On deadlock, t
   Full: `.claude/rules.bak/references-prior-art-not-our-code-search-excludes.md`.
 - **Thoughts free, actions razored** — journal to `memory/` freely; CLAUDE.md additions
   are razored (cooling-period, disposition-shaping bar). Full: `memory/feedback_thoughts_free_actions_razored_*`.
-- **Heartbeat-via-commit = externalized idle counter** — "Quiet."/"Holding." with no commit in the
-  prior tick window AND no named dependency IS the standing-by failure (the narrative self-counter is
-  unreliable; externalize it via
-  `git log --since="2min ago" origin/main 'refs/remotes/origin/heartbeat/*'`). **Include the
-  `heartbeat/*` refs**: telemetry lanes no longer push to `main` (ruleset "CI Gate" requires
-  `gate (required)` at push time, no bypass actors), they park on `heartbeat/*` and flush via PR.
-  Reading `origin/main` alone now under-reports liveness by up to a flush interval — and an
-  under-report here reads as the standing-by failure, i.e. a check that did not run looking like
-  one that passed. Fetch first: `git fetch origin '+refs/heads/heartbeat/*:refs/remotes/origin/heartbeat/*'`.
-  Every commit carries the
-  AgencySignature v1 trailer (10 fields + `Co-authored-by:`); audit via
-  `bun src/Core.TypeScript/hygiene/audit-agencysignature-main-tip.ts`.
-  Full: `.claude/rules.bak/holding-without-named-dependency-is-standing-by-failure.md`;
-  spec `docs/research/2026-04-26-gemini-deep-think-agencysignature-commit-attribution-convention-validation-and-refinement.md` §10.
-- **Liveness OBSERVATIONS live on `liveness/observations`, never on `main`** — the ticks flush via
-  PR (above); the *observations about* those ticks must never need one, or the report of a broken
-  pipeline would depend on that pipeline. They are direct-pushed to an orphan ref, every run,
-  including runs that find nothing wrong. Fetch first, exactly like `heartbeat/*`:
-  `git fetch origin '+refs/heads/liveness/*:refs/remotes/origin/liveness/*'`, then ask
-  **"is anyone still observing?"** — a question a check-run annotation cannot answer —
-  by putting the LEDGER in a worktree and reading THAT — `--dir` is the ledger, never the
-  repo checkout, and pointing it at the checkout prints "holds NO records at all" and
-  exits 1, which is a FALSE ALARM in the one check whose job is telling real silence from
-  apparent silence: `git worktree add --detach /tmp/lw origin/liveness/observations && bun
-  src/Core.TypeScript/agent-heartbeats/liveness-ledger.ts read --dir /tmp/lw`
-  (exit 1 = nobody has observed inside the threshold). One-file read, no worktree:
-  `git show origin/liveness/observations:latest.json`.
-  Full: `docs/DECISIONS/2026-08-27-liveness-observations-reach-main-without-a-pr.md`.
+- **Holding without a named dependency is the standing-by failure** — "Quiet."/"Holding." with
+  no work landed in the prior tick window AND no named dependency IS the failure; the narrative
+  self-counter is unreliable, so externalise it against something real (commits on `main`, a
+  merged PR, an open work-item). Every commit carries the AgencySignature v1 trailer: ten fields
+  plus `Co-authored-by:`. Audit via
+  `bun src/Core.TypeScript/hygiene/audit-agencysignature-main-tip.ts`. Full:
+  `.claude/rules.bak/holding-without-named-dependency-is-standing-by-failure.md`; spec
+  `docs/research/2026-04-26-gemini-deep-think-agencysignature-commit-attribution-convention-validation-and-refinement.md` §10.

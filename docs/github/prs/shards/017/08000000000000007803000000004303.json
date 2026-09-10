@@ -1,0 +1,31 @@
+{
+  "pr_number": 17155,
+  "archive_path": "docs/history/pr-reviews/PR-17155-feat-081m23ewjnv087g0r001myf1h7-rung-7-a-page-you-can-look-at-and-the-738-layer-.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7ssCw1",
+    "comment:PRRC_kwDOSF9kNM7ssCwh",
+    "comment:PRRC_kwDOSF9kNM7ssCwr",
+    "comment:PRRC_kwDOSF9kNM7ssCx5",
+    "comment:PRRC_kwDOSF9kNM7ssCxD",
+    "comment:PRRC_kwDOSF9kNM7ssCxU",
+    "comment:PRRC_kwDOSF9kNM7ssCxp",
+    "comment:PRRC_kwDOSF9kNM7ssGd_",
+    "comment:PRRC_kwDOSF9kNM7ssb-Z",
+    "thread:PRRT_kwDOSF9kNM6gwN-M",
+    "thread:PRRT_kwDOSF9kNM6gwN-Z",
+    "thread:PRRT_kwDOSF9kNM6gwN-o",
+    "thread:PRRT_kwDOSF9kNM6gwN98",
+    "thread:PRRT_kwDOSF9kNM6gwN9i",
+    "thread:PRRT_kwDOSF9kNM6gwN9n",
+    "thread:PRRT_kwDOSF9kNM6gwN9x",
+    "thread:PRRT_kwDOSF9kNM6gwQZc",
+    "thread:PRRT_kwDOSF9kNM6gweRX"
+  ],
+  "fetched_at": "2026-09-09T17:43:59.351Z",
+  "schema_version": "v1",
+  "commit_sha": "af9164a83983c6acfb7e0f2fc9b34d4480903dfe",
+  "title": "feat(081M23EWJNV087G0R001MYF1H7): rung 7 — a page you can look at, and the 738-layer measurement under it",
+  "state": "MERGED",
+  "merged_at": "2026-09-09T17:43:16Z",
+  "head_ref": "rung-7-viewable-e8-renderer-and-cpu-bvh"
+}

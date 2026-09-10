@@ -1,0 +1,107 @@
+{
+  "Schema": "zeta.independent-hygiene-review.v1",
+  "HistoricalManifest": "audit-identities-original.json.gz",
+  "HistoricalMappings": "helper-correction.json",
+  "Files": [
+    {
+      "File": "README-original.md.gz",
+      "Bytes": 656,
+      "Sha256": "8CB107E3C0E129656C8117F62F5A2F05946F6A2BC9A96676BBDAD03BEAB6E9DD"
+    },
+    {
+      "File": "README.md",
+      "Bytes": 2701,
+      "Sha256": "B1AAA5C4CD451B41C9C489B8E931B01FBE16EA7000C91C8D8E65C2F7CC3D6CA5"
+    },
+    {
+      "File": "audit-1.completion.json",
+      "Bytes": 203,
+      "Sha256": "06F3BE2759F1E6DDD95ACE8DCB4711DE65CF960E7DC510885F6C168AA3066F13"
+    },
+    {
+      "File": "audit-1.stderr.txt",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "File": "audit-1.stderr.txt.gz",
+      "Bytes": 20,
+      "Sha256": "9CEFFB7310338057CFE71A4AE1E2C98D2C485D81CDEF906532A801F457A38D64"
+    },
+    {
+      "File": "audit-1.stdout.json",
+      "Bytes": 9020,
+      "Sha256": "58002DC553083E90909BB2C3CC09A72B4A7D8D9B0C3BC3CE617E29FC9E875CAD"
+    },
+    {
+      "File": "audit-1.stdout.json.gz",
+      "Bytes": 2087,
+      "Sha256": "B993DCCC90019F0C547E230E66A386BC3EA32FB3A7C4404AB82D574BA5C17AB5"
+    },
+    {
+      "File": "audit-2.completion.json",
+      "Bytes": 123,
+      "Sha256": "C4B02200638037419EB565ECD311643A4DF06102A992828B83FD9C36AFB5341A"
+    },
+    {
+      "File": "audit-2.invocation.json",
+      "Bytes": 558,
+      "Sha256": "892AEB598B089493329C097E2BE9142CECF52D3C7CA781E6D2F45ACC6C80E99B"
+    },
+    {
+      "File": "audit-2.stderr.txt",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "File": "audit-2.stderr.txt.gz",
+      "Bytes": 20,
+      "Sha256": "9CEFFB7310338057CFE71A4AE1E2C98D2C485D81CDEF906532A801F457A38D64"
+    },
+    {
+      "File": "audit-2.stdout.json",
+      "Bytes": 9020,
+      "Sha256": "58002DC553083E90909BB2C3CC09A72B4A7D8D9B0C3BC3CE617E29FC9E875CAD"
+    },
+    {
+      "File": "audit-2.stdout.json.gz",
+      "Bytes": 2087,
+      "Sha256": "B993DCCC90019F0C547E230E66A386BC3EA32FB3A7C4404AB82D574BA5C17AB5"
+    },
+    {
+      "File": "audit-identities-original.json.gz",
+      "Bytes": 689,
+      "Sha256": "2BD09D15F3314A35C0BD6B87277BF07566A033B4668AAFC67B72D512401308DC"
+    },
+    {
+      "File": "audit-original.py.gz",
+      "Bytes": 2451,
+      "Sha256": "7C7E8E581D49D6AD878B7172239A13249956C100721FF728BA95C2750247C363"
+    },
+    {
+      "File": "audit.py",
+      "Bytes": 5815,
+      "Sha256": "FD986730A62019CDDFE844BB0C73789975632570DD9B29AFAFB3F396B696F0F6"
+    },
+    {
+      "File": "corrected-hygiene-readme.md.gz",
+      "Bytes": 1748,
+      "Sha256": "A80D65A268D3B0FDABC5657171020638C0465EEA80FC9AFC06AB468AF71B8E0C"
+    },
+    {
+      "File": "helper-correction.json",
+      "Bytes": 3446,
+      "Sha256": "C39DCBE790667C5B1669853D939B2F20D072CD6C4FE9D51269D5EA4E11EAA682"
+    },
+    {
+      "File": "original-hygiene-readme.md.gz",
+      "Bytes": 1688,
+      "Sha256": "BA77902A0646241141129BD1D1D7130679C406891793DEA9F39F61AF6A145CEE"
+    },
+    {
+      "File": "qualification.json",
+      "Bytes": 1615,
+      "Sha256": "A0CF5163D76B014694D6EBD425ADDA1BAEA5B06CB9A508E80EFA5E4E2F37B00D"
+    }
+  ]
+}

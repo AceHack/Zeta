@@ -1,0 +1,19 @@
+import bpy,sys,json
+from pathlib import Path
+R=Path('/Users/acehack/Documents/Blender/AceHack-Xenaa-Realistic')
+sys.path.insert(0,str(R/'sources/mpfb2/src'))
+original=bpy.utils.extension_path_user
+bpy.utils.extension_path_user=lambda package,*args,**kwargs: str(R/'sources/mpfb-user') if package=='mpfb' else original(package,*args,**kwargs)
+import mpfb,addon_utils
+mpfb.bl_info=mpfb.fake_bl_info
+bpy.context.preferences.use_preferences_save=False
+addon_utils.enable('mpfb',default_set=True,persistent=False)
+from mpfb.services.humanservice import HumanService
+from mpfb.services.targetservice import TargetService
+bpy.ops.object.select_all(action='SELECT');bpy.ops.object.delete(use_global=False)
+macro=TargetService.get_default_macro_info_dict();macro.update(gender=0.0,age=.28,muscle=.48,weight=.42,proportions=.65,height=.56);macro['race']={'asian':.80,'caucasian':.20,'african':0.0}
+h=HumanService.create_human(macro_detail_dict=macro);h.name='Xenaa Human Base'
+rig=HumanService.add_builtin_rig(h,'default')
+print('BASE_INFO',len(h.data.vertices),[(m.name,m.type) for m in h.modifiers]);print('BONES',[(b.name,list(b.head_local),list(b.tail_local)) for b in rig.data.bones])
+print('MESH_BOUNDS',list(h.dimensions));print('BASE_LOCATION',list(h.location));print('VGS',[g.name for g in h.vertex_groups][:70]);
+bpy.ops.wm.save_as_mainfile(filepath=str(R/'anatomy-base.blend'))

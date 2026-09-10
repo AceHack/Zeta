@@ -1,0 +1,1 @@
+{"Command": ["src/Interp.Python/.venv/bin/ruff", "format", "--check", "docs/research/magnet-history-generator-review/2026-09-08/coordinator_audit.py"], "ExitCode": 1}

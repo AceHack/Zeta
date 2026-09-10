@@ -1,0 +1,12 @@
+{
+  "pr_number": 17082,
+  "archive_path": "docs/history/pr-reviews/PR-17082-feat-research-complete-durable-room-admission-preflight-fields.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-08T21:39:36.647Z",
+  "schema_version": "v1",
+  "commit_sha": "15e030611a5f5fa2e249182e901344116dc2c2f3",
+  "title": "feat(research): complete durable room admission preflight fields",
+  "state": "MERGED",
+  "merged_at": "2026-09-08T21:38:56Z",
+  "head_ref": "lumen/durable-room-admission-completion"
+}

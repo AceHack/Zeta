@@ -1,0 +1,16 @@
+[
+  {
+    "character": "AceHack",
+    "part": "head",
+    "mean_nearest_distance": 0.05785594262551239,
+    "max_nearest_distance": 0.22340099961186066,
+    "method": "axiswise bounds alignment, inverse-distance 4-neighbor surface colors"
+  },
+  {
+    "character": "Xenaa",
+    "part": "head",
+    "mean_nearest_distance": 0.0350530939923651,
+    "max_nearest_distance": 0.18303580054801896,
+    "method": "axiswise bounds alignment, inverse-distance 4-neighbor surface colors"
+  }
+]

@@ -1,0 +1,46 @@
+replayed dot-three-quarter/order-two: 1024 episodes
+replayed dot-three-quarter/bigram: 1024 episodes
+replayed dot-three-quarter/last-beacon: 1024 episodes
+replayed dot-three-quarter/fair-independent: 1024 episodes
+replayed dot-three-quarter/known-lag-two: 1024 episodes
+replayed bar-three-quarter/order-two: 1024 episodes
+replayed bar-three-quarter/bigram: 1024 episodes
+replayed bar-three-quarter/last-beacon: 1024 episodes
+replayed bar-three-quarter/fair-independent: 1024 episodes
+replayed bar-three-quarter/known-lag-two: 1024 episodes
+replayed palette-three-quarter/order-two: 1024 episodes
+replayed palette-three-quarter/bigram: 1024 episodes
+replayed palette-three-quarter/last-beacon: 1024 episodes
+replayed palette-three-quarter/fair-independent: 1024 episodes
+replayed palette-three-quarter/known-lag-two: 1024 episodes
+replayed dot-iid-half/order-two: 1024 episodes
+replayed dot-iid-half/bigram: 1024 episodes
+replayed dot-iid-half/last-beacon: 1024 episodes
+replayed dot-iid-half/fair-independent: 1024 episodes
+replayed dot-iid-half/known-lag-two: 1024 episodes
+replayed cost 0/order-two
+replayed cost 0/bigram
+replayed cost 0/last-beacon
+replayed cost 0/fair-independent
+replayed cost 0/known-lag-two
+replayed cost 1/bigram
+replayed cost 1/last-beacon
+replayed cost 1/fair-independent
+replayed cost 1/known-lag-two
+replayed cost 1/order-two
+replayed cost 2/last-beacon
+replayed cost 2/fair-independent
+replayed cost 2/known-lag-two
+replayed cost 2/order-two
+replayed cost 2/bigram
+replayed cost 3/fair-independent
+replayed cost 3/known-lag-two
+replayed cost 3/order-two
+replayed cost 3/bigram
+replayed cost 3/last-beacon
+replayed cost 4/known-lag-two
+replayed cost 4/order-two
+replayed cost 4/bigram
+replayed cost 4/last-beacon
+replayed cost 4/fair-independent
+full replay passed: docs/research/rendered-catch-validation/2026-09-06/replay.json

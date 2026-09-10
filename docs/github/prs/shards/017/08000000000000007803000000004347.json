@@ -1,0 +1,12 @@
+{
+  "pr_number": 17223,
+  "archive_path": "docs/history/pr-reviews/PR-17223-fix-081m24mf5w3087g0r0004zz208-the-cancellation-falsifier-measured-the-rate-whic.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-10T03:28:16.377Z",
+  "schema_version": "v1",
+  "commit_sha": "8786ff7b96a87552df63895ff4ae94697563e752",
+  "title": "fix(081M24MF5W3087G0R0004ZZ208): the cancellation falsifier measured the RATE, which is the wrong thing",
+  "state": "MERGED",
+  "merged_at": "2026-09-10T03:27:34Z",
+  "head_ref": "codeql-falsifier-is-started-jobs-not-rate"
+}

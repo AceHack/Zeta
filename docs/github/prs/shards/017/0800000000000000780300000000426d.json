@@ -1,0 +1,12 @@
+{
+  "pr_number": 17005,
+  "archive_path": "docs/history/pr-reviews/PR-17005-fix-installer-three-guards-between-a-wrong-keystroke-and-a-lost-machine.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-08T01:49:43.047Z",
+  "schema_version": "v1",
+  "commit_sha": "d2b1af4be9d72b02c5b324b8b0c9de0ce390bf77",
+  "title": "fix(installer): three guards between a wrong keystroke and a lost machine",
+  "state": "MERGED",
+  "merged_at": "2026-09-08T01:49:05Z",
+  "head_ref": "shadow/installer-three-first-boot-guards"
+}

@@ -1,0 +1,14 @@
+{
+  "id": "080d03f31daf7010a0130008c2d7e4a1",
+  "at": "2026-09-08T00:20:58.990Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1Z67DFE087G0R0000V74WV",
+    "type": "task",
+    "title": "FUSE byte session CREATE MKDIR encode entry_out",
+    "slug": "fuse-byte-session-create-mkdir-encode-entry-out",
+    "priority": "P2",
+    "filename": "081M1Z67DFE087G0R0000V74WV-fuse-byte-session-create-mkdir-encode-entry-out.md"
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "ObservedAtUtc": "2026-09-07T10:23:44.865948+00:00",
+  "Log": "root-core-build.log",
+  "ReportedDiagnosticDirectory": "/var/folders/ln/xj3yny_946xc3hqyby4s6lh80000gn/T/MSBuildTempiMKR8g/",
+  "DirectoryExistsAtInspection": false,
+  "ConcurrentKnownWork": "Native writer full correctness build/test gate; no cost measurement",
+  "RootSourceChangesBeforeRetry": false,
+  "Cause": "unestablished"
+}

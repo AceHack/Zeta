@@ -1,0 +1,11 @@
+{
+  "Change": "Remove only unused import gzip from current helper; no audit rerun.",
+  "OriginalFile": "archive-audit-original.py.gz",
+  "OriginalBytes": 4016,
+  "OriginalSha256": "657248cd882aa2b442e9a3418d9583c6714b30b3a2c7762b2fb254dc1fd081ed",
+  "StoredBytes": 1518,
+  "StoredSha256": "a297728075f05f14767d0ecbc9e40c124087cc81727a856025d71acbb5b44e5c",
+  "CurrentFile": "archive-audit.py",
+  "CurrentBytes": 4004,
+  "CurrentSha256": "4e17563720e588e72a44ee51f09ecb99a69aeee365e017917f98c367c4be64ec"
+}

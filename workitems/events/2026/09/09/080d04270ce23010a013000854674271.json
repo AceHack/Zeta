@@ -1,0 +1,14 @@
+{
+  "id": "080d04270ce23010a013000854674271",
+  "at": "2026-09-09T06:36:13.254Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M22E3725087G0R000JCCAWV",
+    "type": "bug",
+    "title": "Crash-looping pods are invisible to the diagnostics bundle: phase is Running between restarts",
+    "slug": "crash-looping-pods-are-invisible-to-the-diagnostics-bundle-p",
+    "priority": "P2",
+    "filename": "081M22E3725087G0R000JCCAWV-crash-looping-pods-are-invisible-to-the-diagnostics-bundle-p.md"
+  }
+}

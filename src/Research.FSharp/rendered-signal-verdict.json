@@ -1,0 +1,201 @@
+{
+  "Protocol": "rendered-signal-verdict-v1",
+  "Complete": true,
+  "InputSha256": "C59468575B140DA146265182EE40B03D6F6B5103FAAC9A0137CE8A288DF357B3",
+  "CostInputSha256": "A614D40A4BE4242EFF73CBC07FC135E4489933962A9DABBE47FB2C293B718445",
+  "ReplayInputSha256": "38D5C504265B8EA041F5CBD1943A8BC87FEFFCDC250748DFFB3590B2B9A4A9BF",
+  "VerdictSourceSha256": "EFBC2F4E3C2CEA092FD95A59D98B9E5925EA6E7D1460A81CFAC2A470DD2D2609",
+  "Thresholds": {
+    "BigramLossGainBits": 0.05,
+    "OrderTwoLossGainBits": 0.01,
+    "MaximumBrierIncrease": 0.005,
+    "MaximumNuisanceAlarmIncrease": 0.02,
+    "MaximumEndToEndTimeRatio": 2.0,
+    "MaximumEndToEndAllocationRatio": 2.0
+  },
+  "Seeds": [
+    {
+      "Seed": 41,
+      "HeldoutPanels": [
+        {
+          "ContextLength": 16,
+          "Domain": 105,
+          "LossGainAgainstBigramBits": 0.18554658009175506,
+          "LossGainAgainstOrderTwoBits": -0.0008284156840205892,
+          "BrierIncreaseAgainstOrderTwo": 0.00022391887752573614,
+          "MemorySanityPassed": true,
+          "OrderTwoLossPassed": false,
+          "BrierPassed": true
+        },
+        {
+          "ContextLength": 64,
+          "Domain": 106,
+          "LossGainAgainstBigramBits": 0.1717054051045931,
+          "LossGainAgainstOrderTwoBits": 0.0003825796018008809,
+          "BrierIncreaseAgainstOrderTwo": -0.00010558849909284018,
+          "MemorySanityPassed": true,
+          "OrderTwoLossPassed": false,
+          "BrierPassed": true
+        }
+      ],
+      "NuisanceAlarmFraction": 0.025390625,
+      "OrderTwoNuisanceAlarmFraction": 0.0283203125,
+      "NuisanceAlarmIncrease": -0.0029296875,
+      "NuisanceAlarmPassed": true,
+      "EndToEnd": {
+        "MillisecondsPerCall": [
+          1.82116484375,
+          1.738315234375,
+          2.023775390625,
+          1.7688625,
+          1.764108203125
+        ],
+        "AllocatedBytesPerCall": [
+          864048.3125,
+          864048.15625,
+          864048.15625,
+          864048.15625,
+          864048.15625
+        ],
+        "MedianMillisecondsPerCall": 1.7688625,
+        "MedianAllocatedBytesPerCall": 864048.15625
+      },
+      "EndToEndTimeRatio": 0.9932270522224784,
+      "EndToEndAllocationRatio": 0.9997315685217087,
+      "EndToEndTimePassed": true,
+      "EndToEndAllocationPassed": true,
+      "MemorySanityPassed": true,
+      "PromotionConditionsMet": false
+    },
+    {
+      "Seed": 53,
+      "HeldoutPanels": [
+        {
+          "ContextLength": 16,
+          "Domain": 105,
+          "LossGainAgainstBigramBits": 0.1852344137971904,
+          "LossGainAgainstOrderTwoBits": -0.0011405819785852422,
+          "BrierIncreaseAgainstOrderTwo": 0.00030469735665580866,
+          "MemorySanityPassed": true,
+          "OrderTwoLossPassed": false,
+          "BrierPassed": true
+        },
+        {
+          "ContextLength": 64,
+          "Domain": 106,
+          "LossGainAgainstBigramBits": 0.17135256014622913,
+          "LossGainAgainstOrderTwoBits": 2.973464343691834e-05,
+          "BrierIncreaseAgainstOrderTwo": -1.1981412052691764e-05,
+          "MemorySanityPassed": true,
+          "OrderTwoLossPassed": false,
+          "BrierPassed": true
+        }
+      ],
+      "NuisanceAlarmFraction": 0.02978515625,
+      "OrderTwoNuisanceAlarmFraction": 0.0283203125,
+      "NuisanceAlarmIncrease": 0.00146484375,
+      "NuisanceAlarmPassed": true,
+      "EndToEnd": {
+        "MillisecondsPerCall": [
+          1.8114453125,
+          1.7435,
+          1.820113671875,
+          1.77758828125,
+          1.77671484375
+        ],
+        "AllocatedBytesPerCall": [
+          864048.3125,
+          864048.15625,
+          864048.15625,
+          864048.15625,
+          864048.15625
+        ],
+        "MedianMillisecondsPerCall": 1.77758828125,
+        "MedianAllocatedBytesPerCall": 864048.15625
+      },
+      "EndToEndTimeRatio": 0.9981266314657918,
+      "EndToEndAllocationRatio": 0.9997315685217087,
+      "EndToEndTimePassed": true,
+      "EndToEndAllocationPassed": true,
+      "MemorySanityPassed": true,
+      "PromotionConditionsMet": false
+    },
+    {
+      "Seed": 67,
+      "HeldoutPanels": [
+        {
+          "ContextLength": 16,
+          "Domain": 105,
+          "LossGainAgainstBigramBits": 0.18646429258867814,
+          "LossGainAgainstOrderTwoBits": 8.929681290248404e-05,
+          "BrierIncreaseAgainstOrderTwo": -2.649290757275602e-05,
+          "MemorySanityPassed": true,
+          "OrderTwoLossPassed": false,
+          "BrierPassed": true
+        },
+        {
+          "ContextLength": 64,
+          "Domain": 106,
+          "LossGainAgainstBigramBits": 0.17214738762745319,
+          "LossGainAgainstOrderTwoBits": 0.0008245621246609769,
+          "BrierIncreaseAgainstOrderTwo": -0.0002166642034154842,
+          "MemorySanityPassed": true,
+          "OrderTwoLossPassed": false,
+          "BrierPassed": true
+        }
+      ],
+      "NuisanceAlarmFraction": 0.0283203125,
+      "OrderTwoNuisanceAlarmFraction": 0.0283203125,
+      "NuisanceAlarmIncrease": 0.0,
+      "NuisanceAlarmPassed": true,
+      "EndToEnd": {
+        "MillisecondsPerCall": [
+          1.792348046875,
+          1.7507390625,
+          1.861186328125,
+          1.76783984375,
+          1.805954296875
+        ],
+        "AllocatedBytesPerCall": [
+          864048.3125,
+          864048.15625,
+          864048.15625,
+          864048.15625,
+          864048.15625
+        ],
+        "MedianMillisecondsPerCall": 1.792348046875,
+        "MedianAllocatedBytesPerCall": 864048.15625
+      },
+      "EndToEndTimeRatio": 1.0064143296352162,
+      "EndToEndAllocationRatio": 0.9997315685217087,
+      "EndToEndTimePassed": true,
+      "EndToEndAllocationPassed": true,
+      "MemorySanityPassed": true,
+      "PromotionConditionsMet": false
+    }
+  ],
+  "OrderTwoEndToEnd": {
+    "MillisecondsPerCall": [
+      1.780924609375,
+      1.7741203125,
+      1.750971484375,
+      1.819883984375,
+      1.8166140625
+    ],
+    "AllocatedBytesPerCall": [
+      864280.3125,
+      864280.15625,
+      864280.15625,
+      864280.15625,
+      864280.15625
+    ],
+    "MedianMillisecondsPerCall": 1.780924609375,
+    "MedianAllocatedBytesPerCall": 864280.15625
+  },
+  "MemorySanityPassed": true,
+  "PromotionEligible": false,
+  "AllRegisteredConditionsMet": false,
+  "NextCandidate": "order-two",
+  "Interpretation": "Engineering thresholds, not statistical significance. Passing earns only a newly preregistered acting-carrier trial; no ARC policy is promoted.",
+  "Arithmetic": "Inclusive thresholds applied to unrounded binary64 receipt metrics; cost ratios divide five-repetition medians of per-call measurements."
+}

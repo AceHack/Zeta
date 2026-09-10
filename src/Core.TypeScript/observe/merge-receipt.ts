@@ -41,7 +41,7 @@ import {
   type BacklogRow,
   type WorkLifecycleState,
 } from "../workflow-engine/agent-loop/work-lifecycle-state-machine";
-import type { AgentPersona } from "../workflow-engine/agent-loop/state-machine";
+import type { AgentPersona } from "../protocol/agent-loop-contract";
 
 /** A stand-in row for a synthetic `merge-pr-N` item, which has no backlog file behind it. */
 export function rowForPr(prNumber: number, title: string): BacklogRow {

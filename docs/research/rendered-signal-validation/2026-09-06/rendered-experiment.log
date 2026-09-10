@@ -1,0 +1,24 @@
+rendering registered training corpus
+seed=41 step=1 loss-nats=0.776623489
+seed=41 step=512 loss-nats=0.587589169
+seed=41 step=1024 loss-nats=0.587105203
+seed=53 step=1 loss-nats=0.925500418
+seed=53 step=512 loss-nats=0.585341842
+seed=53 step=1024 loss-nats=0.585471645
+seed=67 step=1 loss-nats=0.688192408
+seed=67 step=512 loss-nats=0.587328635
+seed=67 step=1024 loss-nats=0.587007252
+rendering/scoring prediction panel train-dot-16
+rendering/scoring prediction panel train-dot-64
+rendering/scoring prediction panel heldout-bar-16
+rendering/scoring prediction panel heldout-bar-64
+rendering/scoring prediction panel nuisance-16
+rendering/scoring prediction panel nuisance-64
+rendering/scoring detection panel unchanged
+rendering/scoring detection panel nuisance-null
+rendering/scoring detection panel permanent-half
+rendering/scoring detection panel permanent-quarter
+rendering/scoring detection panel transient-half
+real 104.63
+user 117.36
+sys 11.71

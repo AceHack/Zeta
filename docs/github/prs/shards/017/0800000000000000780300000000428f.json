@@ -1,0 +1,12 @@
+{
+  "pr_number": 17039,
+  "archive_path": "docs/history/pr-reviews/PR-17039-test-081m1zkqncy087g0r000k1b80d-crash-mid-write-mutbuf-persist-keeps-prior-bytes.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-08T04:42:48.400Z",
+  "schema_version": "v1",
+  "commit_sha": "9cc09171ca286b903a26c717169b46201dc9006e",
+  "title": "test(081M1ZKQNCY087G0R000K1B80D): crash-mid-write mutbuf persist keeps prior bytes",
+  "state": "MERGED",
+  "merged_at": "2026-09-08T04:42:06Z",
+  "head_ref": "feat/zetafs-pr12-mutbuf-crash"
+}

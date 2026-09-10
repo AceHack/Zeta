@@ -99,6 +99,8 @@ jobs:
             ~/.dotnet/tools
             ~/.elan
             ~/.config/zeta
+            src/Core.TLA/tla2tools.jar
+            src/Core.Alloy/alloy.jar
             ~/.rustup/toolchains/1.99.0-beta.3-*
             ~/.rustup/settings.toml
             ~/.rustup/update-hashes

@@ -1,0 +1,96 @@
+{
+  "Schema": "zeta.mixed-epoch.identity-codec-independent-review-custody.v1",
+  "SourceCommit": "02c2ac7249aba31cc8377c1804264c02fff35e47",
+  "Records": [
+    {
+      "File": "note.md.gz",
+      "Encoding": "gzip",
+      "Bytes": 6583,
+      "Sha256": "BB623AB96A329A075E8C9BC06953D7284DA62BA10766B0D06479D51A011F98C2",
+      "StoredBytes": 2996,
+      "StoredSha256": "ACC32719B496A24B859B43B463EA94AAE342C12405F8C749AA0F50A00DA33340",
+      "OriginalPath": ".git/mixed-message-codec-conventions-independent-review-1/note.md"
+    },
+    {
+      "File": "original-manifest.json.gz",
+      "Encoding": "gzip",
+      "Bytes": 1490,
+      "Sha256": "5959AC176F5B459122A5532F9B6C3AD26F8BD1FDCC0E519B2351C68F58AD063F",
+      "StoredBytes": 669,
+      "StoredSha256": "3707F60C6ECE43C58850AB9E5DE82ED82AF9CD0C2E2F0117E47240EA37AB1F14",
+      "OriginalPath": ".git/mixed-message-codec-conventions-independent-review-1/original-manifest.json"
+    },
+    {
+      "File": "custody.tar.gz.gz",
+      "Encoding": "gzip",
+      "Bytes": 830,
+      "Sha256": "71C8EB2B0C8D31B1CD247B4FCB2DFD2B60FEB6757A7D4FE45A6B4513595870E7",
+      "StoredBytes": 853,
+      "StoredSha256": "BEBAF5808F8A2C4EA68249B709C7D4028FB1678479896C5E87B3618FD8E24FCA",
+      "OriginalPath": ".git/mixed-message-codec-conventions-independent-review-1/custody.tar.gz"
+    },
+    {
+      "File": "audit.py.gz",
+      "Encoding": "gzip",
+      "Bytes": 4087,
+      "Sha256": "BC5C357B0E6C9501AA37C6672CDFE868A84504690CFB079C84E8035298E4D9E3",
+      "StoredBytes": 1738,
+      "StoredSha256": "7F0293AEE287458992FCB6695C213D6FF8B1A3CC1CA3159D24F17873775FC7CA",
+      "OriginalPath": ".git/mixed-message-codec-conventions-independent-review-1/audit.py"
+    },
+    {
+      "File": "result.json.gz",
+      "Encoding": "gzip",
+      "Bytes": 1500,
+      "Sha256": "A3CAFF5A09B24CEC5345AF2027D64A07DB5B0EE4FD3068443F1DD6A841CB5049",
+      "StoredBytes": 752,
+      "StoredSha256": "DFD9F516100D64E980D6319B7FFA78CAB7899EC190598BD79E8B450E73259705",
+      "OriginalPath": ".git/mixed-message-codec-conventions-independent-review-1/result.json"
+    },
+    {
+      "File": "invocation-observation.json.gz",
+      "Encoding": "gzip",
+      "Bytes": 264,
+      "Sha256": "30D14E42B6C5909F43A57610FDA22B727E0CAA426E28D7B9EA613182E1E04ADD",
+      "StoredBytes": 210,
+      "StoredSha256": "60A1F18E9B2C8927401E03CA3F900D54217BEBC32FC24B2EA3F94E2E07832304",
+      "OriginalPath": ".git/mixed-message-codec-conventions-independent-review-1/invocation-observation.json"
+    },
+    {
+      "File": "quick-gate-invocation.json.gz",
+      "Encoding": "gzip",
+      "Bytes": 118,
+      "Sha256": "AA3A212195600390C40779A7688F3BC9F842B9B1AAD2F50797F589D2673E02DB",
+      "StoredBytes": 119,
+      "StoredSha256": "995BCB7163029F10DFC94DE3B377F63D4D88552FBBF56C31CA1798BADF4243F4",
+      "OriginalPath": ".git/mixed-message-codec-conventions-independent-gate-1/invocation.json"
+    },
+    {
+      "File": "quick-gate-stdout.gz",
+      "Encoding": "gzip",
+      "Bytes": 1167,
+      "Sha256": "4167192A5F69F0E03959F4DF63DDA87D1D9D07C7F6F46AD058960CB384ACE0A4",
+      "StoredBytes": 375,
+      "StoredSha256": "D9609B6914A36A006AE5B1CEA9CE0934F941EA4D76997A7383732D422563C2EF",
+      "OriginalPath": ".git/mixed-message-codec-conventions-independent-gate-1/stdout"
+    },
+    {
+      "File": "quick-gate-stderr.gz",
+      "Encoding": "gzip",
+      "Bytes": 57,
+      "Sha256": "FC5CEA057558784B9285265B206AE14E6629D39610EC93EFC443C21AD0D05961",
+      "StoredBytes": 77,
+      "StoredSha256": "DC19432FFF48A51A2BE835947A121911035939B067CF6ED507E168F48EF85CC7",
+      "OriginalPath": ".git/mixed-message-codec-conventions-independent-gate-1/stderr"
+    },
+    {
+      "File": "quick-gate-completion.json.gz",
+      "Encoding": "gzip",
+      "Bytes": 75,
+      "Sha256": "5A226B74E6A1FDCC3304F81F92B9305BB85D3D7F285D90E6252405770834BAA9",
+      "StoredBytes": 91,
+      "StoredSha256": "F0CFF16B1466E79D57530200568459510183C6B711CF0CCBB79016C7613AFECD",
+      "OriginalPath": ".git/mixed-message-codec-conventions-independent-gate-1/completion.json"
+    }
+  ]
+}

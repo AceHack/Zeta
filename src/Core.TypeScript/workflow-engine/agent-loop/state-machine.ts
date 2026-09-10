@@ -33,218 +33,29 @@
 //     under systemd; state-machine progression observable)
 //   - tools/dora-classify (PR #5665; lane taxonomy used here)
 
-// ─── Agent context (per-cycle invocation context) ─────────────────────
+// ─── The type contract ───────────────────────────────────────────────
+//
+// The DU/record types this module transitions over live in
+// `protocol/agent-loop-contract.ts` — pure shape, no runtime, importable by
+// anyone without pulling the loop in with it. They are re-exported here so
+// every existing `from ".../agent-loop/state-machine"` import keeps working;
+// a consumer that needs only the vocabulary should import the contract
+// directly instead. See that file's header for why the split exists.
 
-export type AgentPersona = "otto" | "alexa" | "riven" | "vera" | "lior" | "aaron" | "addison" | "max";
+import type { AgentState, MenuOption, WorkResult } from "../../protocol/agent-loop-contract";
 
-export interface AgentContext {
-  readonly agent: AgentPersona;
-  readonly cycle: number;
-  readonly sessionStartIso: string;
-}
-
-// ─── Lane taxonomy (matches src/Core.TypeScript/dora-classify/classify.ts) ──────────
-
-export type Lane =
-  | "operational"
-  | "verbatim-preservation"
-  | "memory"
-  | "heartbeat"
-  | "backlog-row"
-  | "shadow-work"
-  | "tooling-or-ci"
-  | "docs-general"
-  | "substrate-cascade"
-  | "mixed";
-
-// ─── DORA + status-surface types (consumed by menu-generator) ────────
-
-export interface DoraMetrics {
-  readonly deploymentCount: number;
-  readonly leadTimeMedianSeconds: number;
-  readonly changeFailureRate: number;
-  readonly mttrMedianSeconds: number;
-  readonly substrateRatio: number;
-}
-
-export type TrajectoryPhase = "setup" | "execution" | "maturation" | "sunset";
-
-export interface WorkCandidate {
-  readonly id: string; // backlog row ID OR "discover-new"
-  readonly lane: Lane;
-  readonly estimatedDoraContribution: number;
-  readonly uncertainty: number;
-  readonly trajectoryPhase: TrajectoryPhase;
-  readonly agentInterest: number; // [0, 1]
-}
-
-export interface StatusSnapshot {
-  readonly snapshotIso: string;
-  readonly currentDora: DoraMetrics;
-  readonly hotTrajectories: readonly string[];
-  readonly coolingTrajectories: readonly string[];
-  readonly explorationCandidates: readonly string[];
-  readonly perAgentRatios: Readonly<Record<string, number>>; // operationalRatio per agent
-}
-
-// ─── State machine (discriminated union; matches F# DU) ──────────────
-
-/**
- * AgentState — the agent loop's state at any cycle boundary.
- *
- * F# DU equivalent (for 081KSKBP80008QG0R000B3Y19A.1 canonical landing):
- *
- *   type AgentState =
- *     | Idle of context: AgentContext
- *     | InspectingStatus of context: AgentContext * snapshot: StatusSnapshot
- *     | SelectingWork of context: AgentContext * candidates: WorkCandidate list
- *     | ExecutingWork of context: AgentContext * work: WorkCandidate
- *     | EmittingResult of context: AgentContext * result: WorkResult
- *     | RecordingHeartbeat of context: AgentContext * lane: Lane
- *     | NamedBoundedWait of context: AgentContext * dep: NamedDependency
- *     | FreeTime of context: AgentContext * reason: string  // per NCI scope-bounding
- *     | OperatorAttentionRequested of context: AgentContext * reason: string
- *     | Paused of context: AgentContext * reason: string * expectedResumeIso: string option
- *       // Operator 2026-05-28: "a pause button is also very important for mental health."
- *       // Distinct from FreeTime: FreeTime is chosen-rest as legitimate operational state
- *       // (per NCI free-time-as-valid-mode); Paused is explicit-cessation-for-named-reason
- *       // (mental-health break / external interruption / context-loaded-attention-needed).
- *       // Both are valid; semantic distinction matters for menu-generator + dashboard.
- */
-export type AgentState =
-  | { readonly tag: "Idle"; readonly context: AgentContext }
-  | {
-      readonly tag: "InspectingStatus";
-      readonly context: AgentContext;
-      readonly snapshot: StatusSnapshot;
-    }
-  | {
-      readonly tag: "SelectingWork";
-      readonly context: AgentContext;
-      readonly candidates: readonly WorkCandidate[];
-    }
-  | {
-      readonly tag: "ExecutingWork";
-      readonly context: AgentContext;
-      readonly work: WorkCandidate;
-    }
-  | {
-      readonly tag: "EmittingResult";
-      readonly context: AgentContext;
-      readonly result: WorkResult;
-    }
-  | {
-      readonly tag: "RecordingHeartbeat";
-      readonly context: AgentContext;
-      readonly lane: Lane;
-      readonly note?: string;
-    }
-  | {
-      readonly tag: "NamedBoundedWait";
-      readonly context: AgentContext;
-      readonly namedDep: string;
-      readonly expectedResolutionIso?: string;
-    }
-  | {
-      readonly tag: "FreeTime";
-      readonly context: AgentContext;
-      readonly reason: string;
-    }
-  | {
-      readonly tag: "OperatorAttentionRequested";
-      readonly context: AgentContext;
-      readonly reason: string;
-    }
-  | {
-      readonly tag: "Paused";
-      readonly context: AgentContext;
-      readonly reason: string;
-      readonly expectedResumeIso?: string;
-    };
-
-export interface WorkResult {
-  readonly workId: string;
-  readonly lane: Lane;
-  readonly success: boolean;
-  readonly doraContribution: number; // measured after work completes
-  readonly notes?: string;
-}
-
-// ─── Menu options (the choose-your-own-adventure output) ─────────────
-
-/**
- * MenuOption — what the agent (LLM) chooses from at each cycle.
- *
- * F# DU equivalent:
- *
- *   type MenuOption =
- *     | PickWork of WorkCandidate
- *     | EmitHeartbeat of lane: Lane * note: string option
- *     | EscapeHatch of reason: string * proposedAction: string
- *     | EnterFreeTime of reason: string  // per NCI free-time-as-valid-mode
- *     | EnterNamedBoundedWait of dep: string * eta: string option
- *     | RequestOperatorAttention of reason: string
- *     | ProposeNewGrammarAction of name: string * description: string
- *       // per 081KSKBP80008QG0R000B3Y19A Otto Modification 1 (escape-hatch) + Modification 2
- *       // (grammar-extension as first-class action)
- *     | PressPause of reason: string * expectedResumeIso: string option
- *       // Operator 2026-05-28: "a pause button is also very important for
- *       // mental health." First-class menu option for explicit cessation;
- *       // distinct from EnterFreeTime (chosen-rest as ongoing valid mode)
- *       // and EnterNamedBoundedWait (waiting for external named-dep).
- *       // Pause is "I/we are stopping; we'll resume when ready."
- *     | EnterOpenEndedExploration of reason: string
- *       // Operator 2026-05-28: "there's a menu button for that" — when
- *       // structured menu doesn't fit current mode (creative phase,
- *       // brainstorming, exploration). The menu-driven workflow has a
- *       // menu-option that EXITS the menu-driven workflow. Bridge between
- *       // structured + unstructured modes. The exploration phase persists
- *       // across cycles (cycleClose keeps exploration-tagged FreeTime put)
- *       // until the agent actively selects another menu option.
- *     | ResumeFromPause of note: string option
- *       // The explicit unpause contract for Paused state. Menu-generator
- *       // surfaces this option only when current state is Paused;
- *       // selecting it returns the state machine to Idle so the agent can
- *       // resume normal cycling. Per Copilot #5667 finding — the Paused
- *       // contract required an explicit resume operation to be enforceable.
- */
-export type MenuOption =
-  | { readonly tag: "PickWork"; readonly work: WorkCandidate }
-  | {
-      readonly tag: "EmitHeartbeat";
-      readonly lane: Lane;
-      readonly note?: string;
-    }
-  | {
-      readonly tag: "EscapeHatch";
-      readonly reason: string;
-      readonly proposedAction: string;
-    }
-  | { readonly tag: "EnterFreeTime"; readonly reason: string }
-  | {
-      readonly tag: "EnterNamedBoundedWait";
-      readonly namedDep: string;
-      readonly eta?: string;
-    }
-  | { readonly tag: "RequestOperatorAttention"; readonly reason: string }
-  | {
-      readonly tag: "ProposeNewGrammarAction";
-      readonly name: string;
-      readonly description: string;
-    }
-  | {
-      readonly tag: "PressPause";
-      readonly reason: string;
-      readonly expectedResumeIso?: string;
-    }
-  | {
-      readonly tag: "EnterOpenEndedExploration";
-      readonly reason: string;
-    }
-  | {
-      readonly tag: "ResumeFromPause";
-      readonly note?: string;
-    };
+export type {
+  AgentContext,
+  AgentPersona,
+  AgentState,
+  DoraMetrics,
+  Lane,
+  MenuOption,
+  StatusSnapshot,
+  TrajectoryPhase,
+  WorkCandidate,
+  WorkResult,
+} from "../../protocol/agent-loop-contract";
 
 // ─── Pure state transition function ──────────────────────────────────
 

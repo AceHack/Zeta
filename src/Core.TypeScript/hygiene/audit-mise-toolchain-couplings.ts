@@ -39,22 +39,24 @@
 // is read from `.mise.toml` every run. (A second hand-written list would be the defect
 // wearing a fix's clothes; the same reasoning as `mise-pin-parity.ts`.)
 //
-// COUPLING 2 — zig <-> the committed byte-lock artifact
+// COUPLING 2 — zig <-> the byte-lock artifact
 //
-// `src/wasm-dla/bytelock/dla-canonical-zig.wasm` is 1,314 bytes produced by zig 0.13.0 and
-// COMMITTED. It is one of the six modules the `no-binary-in-proof-lineage.md` exception
-// admits, and condition 3 of that exception is "reproducible from committed source".
+// `src/wasm-dla/bytelock/dla-canonical-zig.wasm` is 1,314 bytes produced by zig 0.13.0.
 //
-// The failure mode is specific and quiet: move the zig pin and the committed `.wasm` DOES
-// NOT CHANGE. The byte-lock still passes, because the byte-lock compares the artifact
-// against its golden vectors and both are unchanged. What has broken is the claim that the
-// artifact is reproducible from the pinned toolchain — the proof lineage is stale and every
-// check still says green. Nothing in the repo could see it.
+// IT WAS COMMITTED WHEN THIS CHECK WAS WRITTEN, and the failure mode it was written against
+// was that fact: move the zig pin and the committed `.wasm` DOES NOT CHANGE. The byte-lock
+// still passed, because it compares the artifact to its golden vectors and both were
+// unchanged; what had broken was the claim that the artifact is reproducible from the
+// pinned toolchain. Nothing in the repo could see it.
 //
-// So the pairing (zig version, artifact sha256) is recorded in
-// `audit-mise-toolchain-couplings.provenance.json` and checked in BOTH directions:
-// the compiler may not move without the artifact, and the artifact may not move without the
-// record. Either way a human must state which one is now true.
+// SINCE 2026-09-10 THE ARTIFACT IS BUILT, so that specific failure mode is gone — a pin bump
+// moves the bytes on the next run and the vectors judge the new ones. The pairing is still
+// recorded in `audit-mise-toolchain-couplings.provenance.json`, and it now answers a
+// stronger question: does zig 0.13.0 STILL PRODUCE THESE EXACT BYTES? A different or tampered
+// compiler that happened to satisfy the golden vectors would pass the byte-lock and fail
+// here. That comparison needs the artifact, hence zig, so it runs in `bytelock.yml` after the
+// build; on a toolchain-free lane this audit says so out loud rather than reporting a match
+// it did not compute. See `checkByteLockProvenance`.
 //
 // Run:   bun src/Core.TypeScript/hygiene/audit-mise-toolchain-couplings.ts
 // Exit:  0 — every restatement agrees with `.mise.toml`, byte-lock provenance intact
@@ -256,13 +258,63 @@ export function checkRestatements(
  * One direction alone would be half a guard: "compiler moved, artifact did not" is the
  * silent-staleness case, and "artifact moved, record did not" is the case where someone
  * regenerates and forgets to say under what.
+ *
+ * THE ARTIFACT IS NO LONGER COMMITTED (2026-09-10), and that changes what this check is
+ * FOR rather than whether it is needed.
+ *
+ * The failure mode this coupling was written against — "move the zig pin and the COMMITTED
+ * `.wasm` does not change, so the byte-lock passes over an artifact that is no longer
+ * reproducible from the pinned toolchain" — cannot happen any more. The substrate is
+ * rebuilt from the pinned zig on every byte-lock run, so a pin bump moves the bytes
+ * immediately and the golden vectors judge the new ones.
+ *
+ * What survives is the OTHER direction, and it is the more interesting one: the recorded
+ * sha256 says WHICH bytes zig 0.13.0 is supposed to produce. A different or tampered zig
+ * that still satisfied the golden vectors would pass the byte-lock and fail here. That
+ * check needs the artifact, which means it needs zig — so it runs where zig exists
+ * (`bytelock.yml`, after the build step) instead of on the toolchain-free `cross-verify`
+ * floor, and this function reports the difference rather than passing quietly.
+ *
+ * MEASURED, and it is why this is a real check rather than a formality: rebuilding the Zig
+ * substrate with zig 0.13.0 on macOS-arm64, ubuntu-x64 and ubuntu-arm64 reproduces the
+ * committed bytes EXACTLY (1,314 bytes, sha256 unchanged) — so the recorded pair is a
+ * genuine cross-platform constant, not a snapshot of one machine.
  */
 export function checkByteLockProvenance(root: string, zig: string | null, prov: Provenance): string[] {
   const problems: string[] = [];
   const artifact = join(root, prov.zig.artifact);
 
   if (!existsSync(artifact)) {
-    problems.push(`${PROVENANCE}: names \`${prov.zig.artifact}\`, which does not exist.`);
+    // NOT A PASS, and not a failure either — a reported absence with a named home.
+    //
+    // The artifact is built, so on a lane with no zig it is legitimately missing, and
+    // failing here would mean the cross-verify floor could never be green. Reporting
+    // nothing would be worse: it would make a check that inspected no bytes look like one
+    // that inspected them and agreed. So the absence is stated, and the one thing that can
+    // still be checked from here IS checked — that the workflow which does have zig
+    // actually runs this audit.
+    const workflow = join(root, ".github", "workflows", "bytelock.yml");
+    let wf = "";
+    try {
+      wf = readFileSync(workflow, "utf8");
+    } catch (e) {
+      if ((e as NodeJS.ErrnoException).code !== "ENOENT") throw e;
+    }
+    if (!wf.includes("audit-mise-toolchain-couplings.ts")) {
+      problems.push(
+        `BYTE-LOCK PROVENANCE UNCHECKED ANYWHERE: \`${prov.zig.artifact}\` is built rather than ` +
+          `committed, so it is absent on this toolchain-free lane — and ` +
+          `.github/workflows/bytelock.yml, the one lane that HAS zig, does not run this audit. ` +
+          `The recorded (zig ${prov.zig.version}, sha256 ${prov.zig.sha256}) pair is therefore ` +
+          `verified by nothing. Add the audit to that workflow after its build step.`,
+      );
+    } else {
+      console.log(
+        `[mise-toolchain-couplings] zig<->byte-lock provenance NOT CHECKED HERE: ` +
+          `${prov.zig.artifact} is built, not committed, and this lane has no zig. It is checked ` +
+          `in .github/workflows/bytelock.yml after the substrate build.`,
+      );
+    }
     return problems;
   }
 
@@ -306,10 +358,19 @@ function main(): void {
     process.exit(1);
   }
 
+  // THE SUMMARY MUST NOT CLAIM A COMPARISON IT DID NOT RUN. When the built substrate is
+  // absent, the sha256 was never computed — and a green line reading "matches its recorded
+  // provenance" would be exactly the check-that-did-not-run-looking-like-one-that-passed
+  // shape this file is a guard against. The sentence changes with the fact.
+  const artifactPresent = existsSync(join(root, prov.zig.artifact));
+  const zigClause = artifactPresent
+    ? `byte-lock ${prov.zig.artifact} sha256 ${prov.zig.sha256.slice(0, 12)}… matches its recorded ` +
+      `zig ${prov.zig.version} provenance`
+    : `byte-lock ${prov.zig.artifact} NOT COMPARED on this lane (built, not committed; no zig here) — ` +
+      `the (zig ${prov.zig.version}, sha256) pair is verified in bytelock.yml after the build`;
   console.log(
     `[mise-toolchain-couplings] ✓ rust ${rust ?? "?"} agrees across ${String(rustSites)} operative ` +
-      `restatement(s); zig ${zig ?? "?"} agrees across ${String(zigSites)}; byte-lock ${prov.zig.artifact} ` +
-      `sha256 ${prov.zig.sha256.slice(0, 12)}… matches its recorded zig ${prov.zig.version} provenance.`,
+      `restatement(s); zig ${zig ?? "?"} agrees across ${String(zigSites)}; ${zigClause}.`,
   );
 }
 

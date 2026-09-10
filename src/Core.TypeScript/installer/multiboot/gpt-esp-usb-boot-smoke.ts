@@ -131,8 +131,8 @@ export function gptEspGrubCfg(): string {
     "ls",
     'echo ""',
     `echo ${DEVLIST_END}`,
-    'menuentry "zeta-installer" {',
-    "  echo selected-zeta-installer",
+    'menuentry "placeholder-not-the-installer" {',
+    "  echo selected-placeholder-not-the-installer",
     "}",
     "",
   ].join("\n");
@@ -297,7 +297,7 @@ function buildEspBytes(input: {
   mkdirSync(stagingDir, { recursive: true });
 
   const planned = planMultibootUsb({
-    entries: [{ name: "zeta-installer", kind: "grub-iso-local", flakeAttr: "nix:.#installer-iso" }],
+    entries: [{ name: "placeholder-not-the-installer", kind: "grub-iso-local", flakeAttr: "nix:.#installer-iso" }],
   });
   if (!planned.ok) {
     return { ok: false, error: planned.error };
@@ -307,8 +307,8 @@ function buildEspBytes(input: {
     plan: planned.plan,
     artifacts: [
       {
-        name: "zeta-installer",
-        imagePath: "/boot/iso/zeta-installer.iso",
+        name: "placeholder-not-the-installer",
+        imagePath: "/boot/iso/not-an-installer-placeholder.bin",
         localPath: input.isoPath,
         sizeBytes: 64,
       },
@@ -470,7 +470,7 @@ export async function runGptEspUsbBootSmoke(): Promise<{
   }
 
   const tmpRoot = mkdtempSync(join(tmpdir(), "zeta-gpt-esp-smoke-"));
-  const isoPath = join(tmpRoot, "zeta-installer.iso");
+  const isoPath = join(tmpRoot, "not-an-installer-placeholder.bin");
   const efiPath = join(tmpRoot, "BOOTX64.EFI");
   writeFileSync(isoPath, "zeta-gpt-esp-smoke-iso\n");
 

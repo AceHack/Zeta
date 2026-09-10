@@ -1,0 +1,14 @@
+{
+  "id": "080d03c6b6378010a01300088e487b48",
+  "at": "2026-09-06T22:28:56.688Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1WDDHQG087G0R001NWF589",
+    "type": "bug",
+    "title": "arity-nonequality red on main: strengthen the NCI oracle-independence assertion",
+    "slug": "arity-nonequality-red-on-main-strengthen-the-nci-oracle-inde",
+    "priority": "P2",
+    "filename": "081M1WDDHQG087G0R001NWF589-arity-nonequality-red-on-main-strengthen-the-nci-oracle-inde.md"
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "id": "080d03ced98ae010a01300089f355aaf",
+  "at": "2026-09-07T03:13:23.292Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1WXPCAV087G0R002H1X6VY",
+    "type": "task",
+    "title": "Overlay argv/conf joins take frost result; tpmrm0 is not present",
+    "slug": "overlay-argv-conf-joins-take-frost-result-tpmrm0-is-not-pres",
+    "priority": "P2",
+    "filename": "081M1WXPCAV087G0R002H1X6VY-overlay-argv-conf-joins-take-frost-result-tpmrm0-is-not-pres.md"
+  }
+}

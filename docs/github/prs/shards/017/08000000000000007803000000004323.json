@@ -1,0 +1,12 @@
+{
+  "pr_number": 17187,
+  "archive_path": "docs/history/pr-reviews/PR-17187-fix-081m244sy6k087g0r002wdbczj-the-iso-lane-s-nix-eval-had-no-anti-vacuity-guard.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-10T00:58:22.051Z",
+  "schema_version": "v1",
+  "commit_sha": "9975b390013468a272f37312a7fd83b95f30d56e",
+  "title": "fix(081M244SY6K087G0R002WDBCZJ): the ISO lane's nix eval had no anti-vacuity guard, and its comment said the coverage did not exist",
+  "state": "MERGED",
+  "merged_at": "2026-09-10T00:57:40Z",
+  "head_ref": "agent/unrun-flake-eval-checks-081M243GZ19087G0R001F914Q4"
+}

@@ -1,0 +1,14 @@
+{
+  "id": "080d043829f0a810a01300083f1e69ad",
+  "at": "2026-09-09T16:34:22.869Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M23GAFGN087G0R001MSRGQY",
+    "type": "bug",
+    "title": "Erasure fallback zeroed a symlink target and could not overwrite in place",
+    "slug": "erasure-fallback-zeroed-a-symlink-target-and-could-not-overw",
+    "priority": "P2",
+    "filename": "081M23GAFGN087G0R001MSRGQY-erasure-fallback-zeroed-a-symlink-target-and-could-not-overw.md"
+  }
+}

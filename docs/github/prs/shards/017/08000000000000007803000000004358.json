@@ -1,0 +1,12 @@
+{
+  "pr_number": 17240,
+  "archive_path": "docs/history/pr-reviews/PR-17240-fix-081m25vpfn3087g0r001rn0sa6-hash-pin-the-yaml-lint-toolchain-and-stop-upgradi.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-10T15:37:58.898Z",
+  "schema_version": "v1",
+  "commit_sha": "66fdc3daf8ac66b75b25c7b4b2b6686851838800",
+  "title": "fix(081M25VPFN3087G0R001RN0SA6): hash-pin the YAML lint toolchain, and stop upgrading pip unpinned",
+  "state": "MERGED",
+  "merged_at": "2026-09-10T15:37:10Z",
+  "head_ref": "hash-pin-yamllint-install"
+}

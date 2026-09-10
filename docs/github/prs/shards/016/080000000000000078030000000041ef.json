@@ -1,0 +1,12 @@
+{
+  "pr_number": 16879,
+  "archive_path": "docs/history/pr-reviews/PR-16879-feat-creds-join-env-unseal-request-with-injected-capture.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-06T22:41:32.213Z",
+  "schema_version": "v1",
+  "commit_sha": "8d8dc6ff226a12994baf4fd08f1207ff3aff8ba3",
+  "title": "feat(creds): Join env unseal request with injected capture",
+  "state": "MERGED",
+  "merged_at": "2026-09-06T22:40:55Z",
+  "head_ref": "cursor/integrate-from-env-27c5"
+}

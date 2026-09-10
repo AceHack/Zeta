@@ -1,0 +1,343 @@
+{
+  "Scope": "Post hoc descriptive visualization; no new sampling, test, policy execution or timing.",
+  "ReturnRows": [
+    {
+      "Panel": "dot-switch",
+      "Arm": "belief-depth3",
+      "Episodes": 1024,
+      "Reward4Sum": 40169,
+      "NormalizationDenominator": 65536,
+      "MeanNormalizedReturn": 0.6129302978515625
+    },
+    {
+      "Panel": "dot-switch",
+      "Arm": "belief-myopic",
+      "Episodes": 1024,
+      "Reward4Sum": 31988,
+      "NormalizationDenominator": 65536,
+      "MeanNormalizedReturn": 0.48809814453125
+    },
+    {
+      "Panel": "dot-switch",
+      "Arm": "belief-myopic-padded",
+      "Episodes": 1024,
+      "Reward4Sum": 31988,
+      "NormalizationDenominator": 65536,
+      "MeanNormalizedReturn": 0.48809814453125
+    },
+    {
+      "Panel": "dot-switch",
+      "Arm": "latest-cue-depth3",
+      "Episodes": 1024,
+      "Reward4Sum": 28175,
+      "NormalizationDenominator": 65536,
+      "MeanNormalizedReturn": 0.4299163818359375
+    },
+    {
+      "Panel": "bar-switch",
+      "Arm": "belief-depth3",
+      "Episodes": 1024,
+      "Reward4Sum": 39665,
+      "NormalizationDenominator": 65536,
+      "MeanNormalizedReturn": 0.6052398681640625
+    },
+    {
+      "Panel": "bar-switch",
+      "Arm": "belief-myopic",
+      "Episodes": 1024,
+      "Reward4Sum": 32668,
+      "NormalizationDenominator": 65536,
+      "MeanNormalizedReturn": 0.49847412109375
+    },
+    {
+      "Panel": "bar-switch",
+      "Arm": "belief-myopic-padded",
+      "Episodes": 1024,
+      "Reward4Sum": 32668,
+      "NormalizationDenominator": 65536,
+      "MeanNormalizedReturn": 0.49847412109375
+    },
+    {
+      "Panel": "bar-switch",
+      "Arm": "latest-cue-depth3",
+      "Episodes": 1024,
+      "Reward4Sum": 28435,
+      "NormalizationDenominator": 65536,
+      "MeanNormalizedReturn": 0.4338836669921875
+    },
+    {
+      "Panel": "palette-switch",
+      "Arm": "belief-depth3",
+      "Episodes": 1024,
+      "Reward4Sum": 39812,
+      "NormalizationDenominator": 65536,
+      "MeanNormalizedReturn": 0.60748291015625
+    },
+    {
+      "Panel": "palette-switch",
+      "Arm": "belief-myopic",
+      "Episodes": 1024,
+      "Reward4Sum": 32124,
+      "NormalizationDenominator": 65536,
+      "MeanNormalizedReturn": 0.49017333984375
+    },
+    {
+      "Panel": "palette-switch",
+      "Arm": "belief-myopic-padded",
+      "Episodes": 1024,
+      "Reward4Sum": 32124,
+      "NormalizationDenominator": 65536,
+      "MeanNormalizedReturn": 0.49017333984375
+    },
+    {
+      "Panel": "palette-switch",
+      "Arm": "latest-cue-depth3",
+      "Episodes": 1024,
+      "Reward4Sum": 27341,
+      "NormalizationDenominator": 65536,
+      "MeanNormalizedReturn": 0.4171905517578125
+    },
+    {
+      "Panel": "dot-null",
+      "Arm": "belief-depth3",
+      "Episodes": 1024,
+      "Reward4Sum": 32916,
+      "NormalizationDenominator": 65536,
+      "MeanNormalizedReturn": 0.50225830078125
+    },
+    {
+      "Panel": "dot-null",
+      "Arm": "belief-myopic",
+      "Episodes": 1024,
+      "Reward4Sum": 32916,
+      "NormalizationDenominator": 65536,
+      "MeanNormalizedReturn": 0.50225830078125
+    },
+    {
+      "Panel": "dot-null",
+      "Arm": "belief-myopic-padded",
+      "Episodes": 1024,
+      "Reward4Sum": 32916,
+      "NormalizationDenominator": 65536,
+      "MeanNormalizedReturn": 0.50225830078125
+    },
+    {
+      "Panel": "dot-null",
+      "Arm": "latest-cue-depth3",
+      "Episodes": 1024,
+      "Reward4Sum": 32916,
+      "NormalizationDenominator": 65536,
+      "MeanNormalizedReturn": 0.50225830078125
+    }
+  ],
+  "CostRowsInOriginalOrder": [
+    {
+      "ExecutionRow": 1,
+      "Replicate": 0,
+      "OrderWithinReplicate": 0,
+      "Arm": "belief-depth3",
+      "WallMsTotal": 61.477042,
+      "TimedEpisodes": 64,
+      "WallMsPerWholeEpisode": 0.96057878125,
+      "DecimalQuotientOfRecordedWallTotal": "0.96057878125"
+    },
+    {
+      "ExecutionRow": 2,
+      "Replicate": 0,
+      "OrderWithinReplicate": 1,
+      "Arm": "belief-myopic",
+      "WallMsTotal": 56.211042,
+      "TimedEpisodes": 64,
+      "WallMsPerWholeEpisode": 0.87829753125,
+      "DecimalQuotientOfRecordedWallTotal": "0.87829753125"
+    },
+    {
+      "ExecutionRow": 3,
+      "Replicate": 0,
+      "OrderWithinReplicate": 2,
+      "Arm": "belief-myopic-padded",
+      "WallMsTotal": 59.863042,
+      "TimedEpisodes": 64,
+      "WallMsPerWholeEpisode": 0.93536003125,
+      "DecimalQuotientOfRecordedWallTotal": "0.93536003125"
+    },
+    {
+      "ExecutionRow": 4,
+      "Replicate": 0,
+      "OrderWithinReplicate": 3,
+      "Arm": "latest-cue-depth3",
+      "WallMsTotal": 59.25125,
+      "TimedEpisodes": 64,
+      "WallMsPerWholeEpisode": 0.92580078125,
+      "DecimalQuotientOfRecordedWallTotal": "0.92580078125"
+    },
+    {
+      "ExecutionRow": 5,
+      "Replicate": 1,
+      "OrderWithinReplicate": 0,
+      "Arm": "belief-myopic",
+      "WallMsTotal": 54.761791,
+      "TimedEpisodes": 64,
+      "WallMsPerWholeEpisode": 0.855652984375,
+      "DecimalQuotientOfRecordedWallTotal": "0.855652984375"
+    },
+    {
+      "ExecutionRow": 6,
+      "Replicate": 1,
+      "OrderWithinReplicate": 1,
+      "Arm": "belief-myopic-padded",
+      "WallMsTotal": 23.470166,
+      "TimedEpisodes": 64,
+      "WallMsPerWholeEpisode": 0.36672134375,
+      "DecimalQuotientOfRecordedWallTotal": "0.36672134375"
+    },
+    {
+      "ExecutionRow": 7,
+      "Replicate": 1,
+      "OrderWithinReplicate": 2,
+      "Arm": "latest-cue-depth3",
+      "WallMsTotal": 12.492167,
+      "TimedEpisodes": 64,
+      "WallMsPerWholeEpisode": 0.195190109375,
+      "DecimalQuotientOfRecordedWallTotal": "0.195190109375"
+    },
+    {
+      "ExecutionRow": 8,
+      "Replicate": 1,
+      "OrderWithinReplicate": 3,
+      "Arm": "belief-depth3",
+      "WallMsTotal": 12.527042,
+      "TimedEpisodes": 64,
+      "WallMsPerWholeEpisode": 0.19573503125,
+      "DecimalQuotientOfRecordedWallTotal": "0.19573503125"
+    },
+    {
+      "ExecutionRow": 9,
+      "Replicate": 2,
+      "OrderWithinReplicate": 0,
+      "Arm": "belief-myopic-padded",
+      "WallMsTotal": 12.367625,
+      "TimedEpisodes": 64,
+      "WallMsPerWholeEpisode": 0.193244140625,
+      "DecimalQuotientOfRecordedWallTotal": "0.193244140625"
+    },
+    {
+      "ExecutionRow": 10,
+      "Replicate": 2,
+      "OrderWithinReplicate": 1,
+      "Arm": "latest-cue-depth3",
+      "WallMsTotal": 13.038125,
+      "TimedEpisodes": 64,
+      "WallMsPerWholeEpisode": 0.203720703125,
+      "DecimalQuotientOfRecordedWallTotal": "0.203720703125"
+    },
+    {
+      "ExecutionRow": 11,
+      "Replicate": 2,
+      "OrderWithinReplicate": 2,
+      "Arm": "belief-depth3",
+      "WallMsTotal": 12.812125,
+      "TimedEpisodes": 64,
+      "WallMsPerWholeEpisode": 0.200189453125,
+      "DecimalQuotientOfRecordedWallTotal": "0.200189453125"
+    },
+    {
+      "ExecutionRow": 12,
+      "Replicate": 2,
+      "OrderWithinReplicate": 3,
+      "Arm": "belief-myopic",
+      "WallMsTotal": 9.759916,
+      "TimedEpisodes": 64,
+      "WallMsPerWholeEpisode": 0.1524986875,
+      "DecimalQuotientOfRecordedWallTotal": "0.1524986875"
+    },
+    {
+      "ExecutionRow": 13,
+      "Replicate": 3,
+      "OrderWithinReplicate": 0,
+      "Arm": "latest-cue-depth3",
+      "WallMsTotal": 13.023,
+      "TimedEpisodes": 64,
+      "WallMsPerWholeEpisode": 0.203484375,
+      "DecimalQuotientOfRecordedWallTotal": "0.203484375"
+    },
+    {
+      "ExecutionRow": 14,
+      "Replicate": 3,
+      "OrderWithinReplicate": 1,
+      "Arm": "belief-depth3",
+      "WallMsTotal": 13.154833,
+      "TimedEpisodes": 64,
+      "WallMsPerWholeEpisode": 0.205544265625,
+      "DecimalQuotientOfRecordedWallTotal": "0.205544265625"
+    },
+    {
+      "ExecutionRow": 15,
+      "Replicate": 3,
+      "OrderWithinReplicate": 2,
+      "Arm": "belief-myopic",
+      "WallMsTotal": 10.104584,
+      "TimedEpisodes": 64,
+      "WallMsPerWholeEpisode": 0.157884125,
+      "DecimalQuotientOfRecordedWallTotal": "0.157884125"
+    },
+    {
+      "ExecutionRow": 16,
+      "Replicate": 3,
+      "OrderWithinReplicate": 3,
+      "Arm": "belief-myopic-padded",
+      "WallMsTotal": 12.690917,
+      "TimedEpisodes": 64,
+      "WallMsPerWholeEpisode": 0.198295578125,
+      "DecimalQuotientOfRecordedWallTotal": "0.198295578125"
+    },
+    {
+      "ExecutionRow": 17,
+      "Replicate": 4,
+      "OrderWithinReplicate": 0,
+      "Arm": "belief-depth3",
+      "WallMsTotal": 12.937583,
+      "TimedEpisodes": 64,
+      "WallMsPerWholeEpisode": 0.202149734375,
+      "DecimalQuotientOfRecordedWallTotal": "0.202149734375"
+    },
+    {
+      "ExecutionRow": 18,
+      "Replicate": 4,
+      "OrderWithinReplicate": 1,
+      "Arm": "belief-myopic",
+      "WallMsTotal": 9.661166,
+      "TimedEpisodes": 64,
+      "WallMsPerWholeEpisode": 0.15095571875,
+      "DecimalQuotientOfRecordedWallTotal": "0.15095571875"
+    },
+    {
+      "ExecutionRow": 19,
+      "Replicate": 4,
+      "OrderWithinReplicate": 2,
+      "Arm": "belief-myopic-padded",
+      "WallMsTotal": 12.865167,
+      "TimedEpisodes": 64,
+      "WallMsPerWholeEpisode": 0.201018234375,
+      "DecimalQuotientOfRecordedWallTotal": "0.201018234375"
+    },
+    {
+      "ExecutionRow": 20,
+      "Replicate": 4,
+      "OrderWithinReplicate": 3,
+      "Arm": "latest-cue-depth3",
+      "WallMsTotal": 12.674166,
+      "TimedEpisodes": 64,
+      "WallMsPerWholeEpisode": 0.19803384375,
+      "DecimalQuotientOfRecordedWallTotal": "0.19803384375"
+    }
+  ],
+  "Checks": {
+    "InputByteBindings": true,
+    "MeansRecomputedFromOriginalReward4": 16,
+    "MeansEqualOriginalVerdict": true,
+    "CostRowsRetained": 20,
+    "CostArmMediansEqualOriginalVerdict": true,
+    "DroppedRows": 0
+  }
+}

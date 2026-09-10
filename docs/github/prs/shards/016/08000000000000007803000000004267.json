@@ -1,0 +1,12 @@
+{
+  "pr_number": 16999,
+  "archive_path": "docs/history/pr-reviews/PR-16999-research-preserve-compiled-replay-and-native-custody-evidence.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-08T01:49:13.551Z",
+  "schema_version": "v1",
+  "commit_sha": "470b435565f698180ae37898cc2d4025d65876e5",
+  "title": "research: preserve compiled replay and native custody evidence",
+  "state": "MERGED",
+  "merged_at": "2026-09-08T01:47:50Z",
+  "head_ref": "codex/compiled-replay-custody-publication-20260908"
+}

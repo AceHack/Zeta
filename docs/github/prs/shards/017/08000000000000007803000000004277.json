@@ -1,0 +1,12 @@
+{
+  "pr_number": 17015,
+  "archive_path": "docs/history/pr-reviews/PR-17015-docs-handoff-record-merged-arc-memory-contracts.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-08T02:30:24.423Z",
+  "schema_version": "v1",
+  "commit_sha": "7e716bb2e22ab89cbe31b33e2a32787708588e5a",
+  "title": "docs(handoff): record merged ARC memory contracts",
+  "state": "MERGED",
+  "merged_at": "2026-09-08T02:29:48Z",
+  "head_ref": "lumen/arc-memory-merged-handoff"
+}

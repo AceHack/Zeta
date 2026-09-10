@@ -1,0 +1,12 @@
+{
+  "pr_number": 17018,
+  "archive_path": "docs/history/pr-reviews/PR-17018-feat-081m1zce8w0087g0r0028bywv2-compact-blockcas-hex-for-zd4-n-32.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-08T02:36:40.436Z",
+  "schema_version": "v1",
+  "commit_sha": "6744d4e65134962e1814721e1a8469b229274f71",
+  "title": "feat(081M1ZCE8W0087G0R0028BYWV2): compact BlockCas hex for ZD4 N=32",
+  "state": "MERGED",
+  "merged_at": "2026-09-08T02:36:00Z",
+  "head_ref": "feat/zetadb-zd4-blockcas-compact-index"
+}

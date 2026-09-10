@@ -1,0 +1,12 @@
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+  Zeta.Core.Abstractions -> /Users/acehack/.zeta/agents/codex/Zeta-rendered-predictor-20260906/src/Core.Abstractions/bin/Release/net10.0/Zeta.Core.Abstractions.dll
+  Zeta.Core.FSharp.ZetaId -> /Users/acehack/.zeta/agents/codex/Zeta-rendered-predictor-20260906/src/Core.FSharp.ZetaId/bin/Release/net10.0/Zeta.Core.FSharp.ZetaId.dll
+  Zeta.Core.FSharp.Yaml -> /Users/acehack/.zeta/agents/codex/Zeta-rendered-predictor-20260906/src/Core.FSharp.Yaml/bin/Release/net10.0/Zeta.Core.FSharp.Yaml.dll
+  Core -> /Users/acehack/.zeta/agents/codex/Zeta-rendered-predictor-20260906/src/Core/bin/Release/net10.0/Zeta.Core.dll
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:22.01

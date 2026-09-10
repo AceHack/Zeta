@@ -1,0 +1,13 @@
+diff --git a/tests/Tests.FSharp/Tests.FSharp.fsproj b/tests/Tests.FSharp/Tests.FSharp.fsproj
+index 887fd2dfb..0806b0868 100644
+--- a/tests/Tests.FSharp/Tests.FSharp.fsproj
++++ b/tests/Tests.FSharp/Tests.FSharp.fsproj
+@@ -181,6 +181,8 @@
+     <Compile Include="ZetaFsStore.Tests.fs" />
+     <Compile Include="ZetaFsFormat.Tests.fs" />
+     <Compile Include="ZetaFsNamespace.Tests.fs" />
++    <Compile Include="ZetaFsCollator.Tests.fs" />
++    <Compile Include="ZetaFsPosixNode.Tests.fs" />
+     <Compile Include="ZetaFsCli.Tests.fs" />
+     <Compile Include="ZetaFsPolicy.Tests.fs" />
+     <Compile Include="ZetaFsPlacement.Tests.fs" />

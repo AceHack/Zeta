@@ -142,17 +142,25 @@ export const CROSS_VERIFY_AUDITS: readonly CrossVerifyAudit[] = [
   },
 
   // The `.claude/rules/no-binary-in-proof-lineage.md` exception, enforced rather than
-  // asserted. `src/wasm-dla/bytelock/` holds six committed `.wasm` substrate modules; they
-  // are the artifact UNDER TEST, not golden vectors, and the rule now says so — but a
-  // documented exception with no scope is a licence. This derives the allowed set from the
-  // byte-lock runner's own roster and the build script's own declared outputs, so a new
+  // asserted. `src/wasm-dla/bytelock/` HELD six committed `.wasm` substrate modules until
+  // 2026-09-10; they were the artifact UNDER TEST, not golden vectors, and the rule says so —
+  // but a documented exception with no scope is a licence. This derives the allowed set from
+  // the byte-lock runner's own roster and the build script's own declared outputs, so a new
   // binary in that directory is red until it is wired into both.
   //
-  // Two of its checks are here rather than in `bytelock.yml` on purpose. That workflow is
+  // The six are now BUILT in CI and the audit gained the other half: a roster substrate that
+  // is neither committed nor built-and-required is red too. That second condition is what
+  // this floor is actually buying now — `bytelock.yml` must NAME each built substrate in a
+  // required list, so a broken toolchain fails the byte-lock by name instead of quietly
+  // shrinking the roster.
+  //
+  // Its checks are here rather than in `bytelock.yml` on purpose. That workflow is
   // `push: main` — POST-MERGE by construction — so the malformed-artefact guard that would
   // have caught `dla-canonical-zig.wasm` shipping as an `ar` archive could only ever fire
-  // after the fact, and it did, for two weeks. The header check and the golden-vector text
-  // check need no toolchain, so they belong on the pre-merge floor.
+  // after the fact, and it did, for two weeks. Nothing this audit does needs a toolchain, so
+  // it belongs on the pre-merge floor: with the substrates built rather than committed, the
+  // header check has no subject on this lane and the audit prints the committed/built split
+  // so that shows as a stated fact rather than as a silent OK.
   {
     id: "proof-lineage-binaries",
     title: "Proof-lineage binary exception (no-binary-in-proof-lineage.md)",
@@ -203,6 +211,24 @@ export const CROSS_VERIFY_AUDITS: readonly CrossVerifyAudit[] = [
     id: "action-sha-roster",
     title: "Third-party actions match the SHA roster (AH007)",
     command: "bun src/Core.TypeScript/hygiene/audit-action-sha-roster.ts",
+  },
+
+  // A DEPENDENCY NOBODY VERIFIED, IN A MECHANISM NOBODY COUNTED.
+  //
+  // Aaron 2026-09-10: an unhashed dependency is SUPPORTED, is NOT PREFERRED, must be
+  // HANDLED SEPARATELY, and the handling must be WIRED EVERYWHERE. The wiring is
+  // `unhashed-pin.ts`; the counting is `docs/UNHASHED-DEPENDENCIES.md`, derived. Without
+  // this leg the page is a document that rots, which is worse than no page: five
+  // mechanisms each quietly permitting one unhashed dependency is not five small
+  // decisions, it is one large one nobody made.
+  //
+  // It fails BOTH ways, which is the property worth having: an unhashed dependency that
+  // is not on the page fails, AND a page entry the tree no longer produces fails, so the
+  // roster shrinks when a digest becomes available and cannot sit there looking justified.
+  {
+    id: "unhashed-dependencies",
+    title: "Unhashed dependencies are declared and inventoried (AH011)",
+    command: "bun src/Core.TypeScript/hygiene/audit-unhashed-dependencies.ts",
   },
 
   // A TASK ID THAT IS WELL-FORMED AND IDENTIFIES NOTHING.
@@ -294,6 +320,42 @@ export const CROSS_VERIFY_AUDITS: readonly CrossVerifyAudit[] = [
     id: "write-token-consistency",
     title: "Workflow write-token consistency (forge writes must reach the PAT)",
     command: "bun src/Core.TypeScript/hygiene/audit-workflow-write-token-consistency.ts",
+  },
+
+  // An evidence-producing workflow that cancels its own default-branch runs makes every
+  // number downstream of it unfalsifiable. Measured 2026-09-09 on `codeql.yml`: 61 of the
+  // last 100 runs on `main` cancelled, and the three most recent `javascript-typescript`
+  // analyses reporting `rules_count: 0, results_count: 0,
+  // error: "unsuccessful execution, exit code: 0"`. Two of the cancelled runs were exactly
+  // the ones that would have verified that session's own security fixes -- the defect
+  // demonstrating itself.
+  //
+  // The workflow's comment asserted the opposite ("schedule runs carry a distinct ref so
+  // they don't cancel each other"), which is backwards: push, schedule and merge_group all
+  // resolve `github.ref` to the same value on `main`. Prose could not hold this; a check
+  // can. Offline (reads committed workflow text, no sockets), so it belongs on the
+  // pre-merge floor.
+  // `install.ps1` retries a failed toolchain install on a known transient upstream signature.
+  // The signature list is MIRRORED -- authority in `ci/transient-toolchain-failure.ts` where it
+  // is unit-tested and mutation-checked, copy in the shell because a PowerShell bootstrap
+  // cannot import TypeScript. A mirrored list drifts, and the drift is asymmetric: a needle
+  // present in the shell but absent from the tested module is an UNTESTED retry, which is how
+  // a real reproducible failure quietly becomes intermittent green -- strictly worse than
+  // staying red, because nobody investigates a build that eventually passes.
+  //
+  // The parse is anchored to the PowerShell array literal rather than grepping the file,
+  // because the comment above that array quotes a needle as prose and a file-wide search would
+  // be satisfied by the comment. Offline, so it belongs on the pre-merge floor.
+  {
+    id: "transient-retry-parity",
+    title: "Transient-retry signatures identical in install.ps1 and the tested module",
+    command: "bun src/Core.TypeScript/hygiene/audit-transient-retry-parity.ts",
+  },
+
+  {
+    id: "scanner-cancels-itself",
+    title: "Evidence workflows must not cancel their own default-branch runs",
+    command: "bun src/Core.TypeScript/hygiene/audit-scanner-cancels-itself-on-main.ts",
   },
 
   // The falsifier for the PR-free heartbeat lane. Design:
@@ -416,6 +478,21 @@ export const CROSS_VERIFY_AUDITS: readonly CrossVerifyAudit[] = [
     command: "bun src/Core.TypeScript/hygiene/audit-dotnet-pin-parity.ts",
   },
 
+  // THE PIN'S CONSUMERS, which the entry above does not reach. `audit-dotnet-pin-parity`
+  // holds `.mise.toml` and `global.json` equal and is correct about those two files. It
+  // says nothing about the places that SPEND the pin. MEASURED 2026-09-09: 42 projects on
+  // `net10.0`, one on `net8.0` (`genesis/_src/auth-backend`), and two Dockerfiles naming
+  // `dotnet/sdk:8.0` / `dotnet/aspnet:8.0` while `orleans-silo` was on `10.0-noble`. The
+  // holdout is not in `Zeta.sln` and is not built by CI -- it carries a deliberately empty
+  // `Directory.Build.props` so it escapes the strict profile -- which is exactly why the
+  // drift was silent: the only surface that would have caught it is one nothing compiles.
+  // A pin nobody checks against the things it pins is a declaration, not a constraint.
+  {
+    id: "dotnet-band-unity",
+    title: "every TargetFramework and dotnet base image sits in the pinned band",
+    command: "bun src/Core.TypeScript/hygiene/audit-dotnet-runtime-band-unity.ts",
+  },
+
   // FIVE places install ArgoCD and they must name ONE chart version. The response to the
   // 2026-09-03 incident -- the k3s bootstrap moved to 10.6.0 and "this kind-lane pin was
   // the one left behind", so v2.13.2's Helm 3 could not render seaweedfs's Helm-4-only
@@ -519,6 +596,32 @@ export const CROSS_VERIFY_AUDITS: readonly CrossVerifyAudit[] = [
     command: "bun src/Core.TypeScript/hygiene/audit-mise-toolchain-couplings.ts",
   },
 
+  // The committed mise digests, and the two ways they stop meaning anything WITHOUT any
+  // file here looking wrong. (a) A pin moves in `.mise.toml` and `mise.lock` is not
+  // regenerated, so the committed digest describes the previous artifact — a one-line diff
+  // that reads as housekeeping. (b) `locked = true` disappears from `[settings]`, at which
+  // point mise silently fills a missing platform row from upstream and rewrites the lockfile
+  // in place; a lockfile that repairs itself is a cache wearing a lock's name. Neither is
+  // visible in review, because the subject is 600 lines of generated TOML.
+  //
+  // OFFLINE, and on the floor rather than in verify-mise-lock.yml for that reason: this
+  // reads four files and opens no socket, so it cannot redden a PR because a release host
+  // is down. The network half — does the digest still match what upstream serves — is the
+  // weekly + on-touch lane, where a third party's bad day is allowed to fail a run.
+  {
+    id: "mise-lock-coverage",
+    title: "mise lock coverage (config↔lock agreement · locked mode · exemption roster)",
+    command: "bun src/Core.TypeScript/hygiene/audit-mise-lock-coverage.ts",
+  },
+
+  // The falsifiers for the audit above. It is a coverage check, and a coverage check that
+  // has only been shown to pass cannot tell a working lock from a decorative one.
+  {
+    id: "mise-lock-coverage-tests",
+    title: "mise lock coverage falsifiers (stale pin · dropped platform · stale exemption)",
+    command: "bun test src/Core.TypeScript/hygiene/audit-mise-lock-coverage.test.ts",
+  },
+
   // Every zflash host arm must reach the ISO integrity gate before it writes to a block
   // device. Measured on main 2026-08-21: the manifest check existed in the macOS arm and
   // NOWHERE ELSE, so flash-usb-linux.ts and flash-usb-windows.ts wrote an image with no
@@ -614,6 +717,28 @@ export const CROSS_VERIFY_AUDITS: readonly CrossVerifyAudit[] = [
     id: "reason-truth",
     title: "ArgoCD deferral reasons — every cited anchor still holds (offline)",
     command: "bun src/Core.TypeScript/cluster/reason-truth.ts",
+  },
+
+  // THE VACUITY COLUMN, which no other roster entry supplies. Aaron 2026-09-09:
+  // "how many are fully tested green fully green and have some sort of test to make
+  // sure it's not vacuous?" -- and then, sharpening it: "can we not look at the logs
+  // or have some post deploy tests to tell what's working and what's not?"
+  //
+  // MEASURED that day: `argocd-health-test.ts` carries 72 references to
+  // Synced/Healthy and ZERO post-deploy functional assertions. The lane's `nc -z`
+  // and `git ls-remote` probes print OPEN/FAIL and `return 0` -- diagnostics, and
+  // the right shape for diagnostics, but none of them gates. So the whole lane
+  // asserts one class of thing: ArgoCD's opinion about reconciliation.
+  //
+  // This audit reports it per chart and refuses two gaps it can decide statically:
+  // a chart no lane applies and no registry accounts for, and a chart asserted
+  // Synced+Healthy whose committed resources are ALL kinds ArgoCD gives no health
+  // verdict (measured: deepseek-coder, qwen-coder). It is cheap -- it reads the
+  // committed manifests and touches no cluster.
+  {
+    id: "chart-assertion-census",
+    title: "every chart is applied by some job, and no chart is asserted vacuously",
+    command: "bun src/Core.TypeScript/cluster/chart-assertion-census.ts",
   },
 
   // A tracked source file holding a raw 0x00 byte reads as BINARY to grep/rg, so every
@@ -713,6 +838,29 @@ export const CROSS_VERIFY_AUDITS: readonly CrossVerifyAudit[] = [
       "  src/Core.TypeScript \\",
       "  --min-files 1500 \\",
       "  --baseline src/Core.TypeScript/hygiene/lint-check-then-use-file-races.baseline.json",
+    ].join("\n"),
+  },
+
+  // The SIBLING of the races lint above, for the two IO defect classes it does
+  // not own: a command line handed to a shell, and a response body reaching disk
+  // with no cap. Both are hand-rolled in ~40 files because there was nowhere to
+  // reach for the safe form; `src/Core.TypeScript/io/safe-io.ts` is now that
+  // place, and this leg is what stops a forty-first site landing.
+  //
+  // Measured when it landed: 2957 files, 50 pre-existing sites over 33 keys, all
+  // grandfathered in the baseline (AUDIT-LIFECYCLE.md step 5 -- a gate that
+  // demands a forty-file migration first is a gate that never lands). The
+  // baseline counts per (rule, file, signature), so a NEW site in an
+  // already-listed file still goes red. Exits 1 below --min-files, so a scope
+  // regression cannot report success the way `lint:markdown` did (#10712).
+  {
+    id: "hand-rolled-io",
+    title: "No hand-rolled shell spawns or unbounded fetch-to-disk (use io/safe-io.ts)",
+    command: [
+      "bun src/Core.TypeScript/hygiene/lint-hand-rolled-io.ts \\",
+      "  src/Core.TypeScript .github/workflows tools .claude \\",
+      "  --min-files 2000 \\",
+      "  --baseline src/Core.TypeScript/hygiene/lint-hand-rolled-io.baseline.json",
     ].join("\n"),
   },
 

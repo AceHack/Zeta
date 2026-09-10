@@ -407,18 +407,15 @@ export function listSupportingManifests(repoRoot = REPO_ROOT): readonly string[]
  * same refusal `manual-sync-policy.ts` makes for `zeta.io/sync-policy`.
  */
 export const DISCOVERED_BUT_UNASSERTED_REASONS: ReadonlyMap<string, string> = new Map([
-  [
-    "game-hosting/gmod/Application.yaml",
-    "Nested one level below the depth-1 roster in discoverExpectedApplications(); ArgoCD's non-segment-bounded " +
-      "glob DOES apply it, and it FAILS TO SYNC on every reconcile in the included lane: gatekeeper's " +
-      "check-ignore-label webhook denies the admission.gatekeeper.sh/ignore label that " +
-      "game-hosting/gmod/namespace.yaml carries, because `game-hosting` is absent from the exemptNamespaces list " +
-      "in applications/open-policy-agent/Application.yaml (`zeta-platform` is the worked precedent there). That " +
-      "is a live defect, not a deferral -- it is registered rather than fixed here because the fix is a policy " +
-      "change that only a live cluster can confirm, and this module's job is to stop it being INVISIBLE. " +
-      "Deepening the roster instead would change what the live lane asserts, which also cannot be verified " +
-      "off-cluster (081KSXN940008QG0R000SCP2H1).",
-  ],
+  // EMPTY as of 2026-09-07, and empty for a REASON rather than by neglect. Its one entry
+  // was `game-hosting/gmod/Application.yaml`; it retired when `game-hosting/gmod/**` joined
+  // the dev root's excludeGlob, because this map's `stale` direction is keyed on
+  // "discovered but unasserted" and an excluded Application is no longer discovered. The
+  // LIVE DEFECT that entry recorded -- gatekeeper's webhook denying gmod's ignore label --
+  // was CARRIED to the exclusion comment in ports.ts rather than deleted, precisely so that
+  // retiring a key here could not launder a defect out of the tree. An empty map that
+  // reached empty by deletion and one that reached it by fixing the cause look identical
+  // from here, which is why the move is recorded in both files.
 ]);
 
 /**

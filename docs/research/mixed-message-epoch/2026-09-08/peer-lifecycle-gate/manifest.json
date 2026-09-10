@@ -1,0 +1,124 @@
+{
+  "Scope": "Full repository gate and limited formatter observation on unchanged source bytes later pinned d16bafa2; no named scientific route",
+  "PeerSourceCommit": "d16bafa2a71e503878d645a8ea4f52244b5c227b",
+  "ImportedCoreSourceCommit": "15b43aa7271d100842c198a4378eef717e4acef8",
+  "SourceFiles": [
+    {
+      "Path": "src/Research.FSharp/MixedMessageEpochReplay.fsx",
+      "Bytes": 99661,
+      "Sha256": "5D0DD505F3849D7F989982DCAE5EBAB2898B8140AE74489540EC016B15AD7795"
+    },
+    {
+      "Path": "src/Bayesian/BoundedModuleLearner.fs",
+      "Bytes": 19114,
+      "Sha256": "C59FDB8F5F2178297DB350AD43BD54C1ABCF6422DEDD5A3C7F85B797CC5D8236"
+    },
+    {
+      "Path": "src/Bayesian/MixedMessageEpoch.fs",
+      "Bytes": 161298,
+      "Sha256": "95083B86417A20484BE24A862A6C24BB056ABF85DB56FDB34763D90FD9DE053E"
+    },
+    {
+      "Path": "src/Bayesian/Bayesian.fsproj",
+      "Bytes": 3426,
+      "Sha256": "24F474046E52A2B703EDA187587D1E15FCBFDA2C835075B7CC13B83AF7B8DCA0"
+    },
+    {
+      "Path": "tests/Bayesian.Tests/BoundedModuleLearner.Tests.fs",
+      "Bytes": 12338,
+      "Sha256": "9260CAC8F8EF58BC7EA927B31C0F1426FCC3B83A4790210AC25D4CFBA676F4A9"
+    },
+    {
+      "Path": "tests/Bayesian.Tests/MixedMessageEpoch.Tests.fs",
+      "Bytes": 25020,
+      "Sha256": "FACB2E4399E2D85CBF6FB5951A3F6CCDB0DB7F5D1D32823CD9EC48E7A033CDDB"
+    },
+    {
+      "Path": "tests/Bayesian.Tests/Bayesian.Tests.fsproj",
+      "Bytes": 3879,
+      "Sha256": "2361B22D257F61236AE0B9EA4266EEB4883B9E5419680FE5419FFD86C5C620AC"
+    }
+  ],
+  "Records": [
+    {
+      "File": "001.gz",
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-predictor-native-20260906/.git/mixed-message-peer-full-gate-1/completion.json",
+      "Bytes": 1350,
+      "Sha256": "74F208433BEEE581360A1F9F7BE257161A430281C3835CDDC80DD81ADC5946F7",
+      "StoredBytes": 593,
+      "StoredSha256": "6B3B1B031CAADB304CB4C9F46800EC20BF1A7735ABF48CD408D0F292D33E0E48"
+    },
+    {
+      "File": "002.gz",
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-predictor-native-20260906/.git/mixed-message-peer-full-gate-1/invocation.json",
+      "Bytes": 1345,
+      "Sha256": "F2A52630243C08A6B4169E4518A58947312EFC3802CC81BB5CAC9EA280AD29F2",
+      "StoredBytes": 586,
+      "StoredSha256": "759A692E73B2BBEF661D5697AE4E7D74721224AAF25EC0B9D929C09B74EB9C03"
+    },
+    {
+      "File": "003.gz",
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-predictor-native-20260906/.git/mixed-message-peer-full-gate-1/pid.json",
+      "Bytes": 15,
+      "Sha256": "33A3F50E066A8479DE31E5374590E8425D7D0A9432C6B6AAD831383DD8BBACE5",
+      "StoredBytes": 35,
+      "StoredSha256": "2CB7E321A4272F071E472FA1A6221F1C92952F9914FFC9A1A611544B3D9D04BD"
+    },
+    {
+      "File": "004.gz",
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-predictor-native-20260906/.git/mixed-message-peer-full-gate-1/run.py",
+      "Bytes": 1243,
+      "Sha256": "B050A7A44CE3A7FD7C9E4AF6E7203BE89FF11886F0126FEFA2512A5DBFE0BA45",
+      "StoredBytes": 604,
+      "StoredSha256": "91D0C0B1FB9303B3F162923CDFDA609B75D60F485ED13BE1D24B0BEDFC2A3EE7"
+    },
+    {
+      "File": "005.gz",
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-predictor-native-20260906/.git/mixed-message-peer-full-gate-1/stderr",
+      "Bytes": 49,
+      "Sha256": "2702855C35B0430A3432C3F284C32B80ECD46D83302246DB156609015E6B2560",
+      "StoredBytes": 69,
+      "StoredSha256": "5C00A8FDC5D6679C6621D462C7A2386AEECFB66D2F3CF0F82CDBAF91A490AD35"
+    },
+    {
+      "File": "006.gz",
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-predictor-native-20260906/.git/mixed-message-peer-full-gate-1/stdout",
+      "Bytes": 1313,
+      "Sha256": "BAB079CA25DC0AE422108D850A086D6753E5FADAEFB06CB0FE8AB4B507869F51",
+      "StoredBytes": 408,
+      "StoredSha256": "CC7006133569F8B5FFB89D538817B8C5E5BA7C7BBAFB728E0DAE7DFEFF35DE7A"
+    },
+    {
+      "File": "007.gz",
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-predictor-native-20260906/.git/mixed-message-peer-formatter-1/completion.json",
+      "Bytes": 81,
+      "Sha256": "CF82C1C601E9F7F9ACCB8F001A5389441610ACFD5C6392152790E6DFE9C6734B",
+      "StoredBytes": 92,
+      "StoredSha256": "60809B10D93CA5A3E18884678E0D4035EFEFF7860D86A8E79A7EC8C614E35F4F"
+    },
+    {
+      "File": "008.gz",
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-predictor-native-20260906/.git/mixed-message-peer-formatter-1/invocation.json",
+      "Bytes": 252,
+      "Sha256": "6A70A028ED487025F0282EF10E2FFAFD0DEA0A175E4439E4181EFD8C256C36FC",
+      "StoredBytes": 224,
+      "StoredSha256": "B84EA1D8B0D845DF28CCA12969C2451CFEEB8FDA264B47F658A6939714DE8935"
+    },
+    {
+      "File": "009.gz",
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-predictor-native-20260906/.git/mixed-message-peer-formatter-1/stderr",
+      "Bytes": 5399,
+      "Sha256": "535DC962B5C7272B914D941E9E171B58D7D063CD94E32087EB9340AD20B436FC",
+      "StoredBytes": 568,
+      "StoredSha256": "7128AC7DACB6587202E6567FF12721FF1E1A5C481ED8069920838613A4121BA6"
+    },
+    {
+      "File": "010.gz",
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-predictor-native-20260906/.git/mixed-message-peer-formatter-1/stdout",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "StoredBytes": 20,
+      "StoredSha256": "9CEFFB7310338057CFE71A4AE1E2C98D2C485D81CDEF906532A801F457A38D64"
+    }
+  ]
+}

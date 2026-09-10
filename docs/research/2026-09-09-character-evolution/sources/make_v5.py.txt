@@ -1,0 +1,22 @@
+from pathlib import Path
+root=Path(__file__).resolve().parent;s=(root/'compose_v4.py').read_text()
+s=s.replace("l.new(mix.outputs[0],bs.inputs['Base Color']);l.new(mix.outputs[0],bs.inputs['Emission Color']);bs.inputs['Roughness'].default_value=.78", """if name=='Xenaa':
+  position=n.new('ShaderNodeSeparateXYZ');l.new(geom.outputs['Position'],position.inputs[0])
+  minus=n.new('ShaderNodeMath');minus.operation='SUBTRACT';l.new(position.outputs['X'],minus.inputs[0]);minus.inputs[1].default_value=offset
+  absolute=n.new('ShaderNodeMath');absolute.operation='ABSOLUTE';l.new(minus.outputs[0],absolute.inputs[0])
+  def cmp(socket,op,value):
+   node=n.new('ShaderNodeMath');node.operation=op;l.new(socket,node.inputs[0]);node.inputs[1].default_value=value;return node.outputs[0]
+  def mul(a,b):
+   node=n.new('ShaderNodeMath');node.operation='MULTIPLY';l.new(a,node.inputs[0]);l.new(b,node.inputs[1]);return node.outputs[0]
+  def region(base,color,factor):
+   node=n.new('ShaderNodeMixRGB');l.new(factor,node.inputs[0]);l.new(base,node.inputs[1]);node.inputs[2].default_value=(*color,1);return node.outputs[0]
+  base=n.new('ShaderNodeRGB');base.outputs[0].default_value=(.024,.006,.043,1);color=base.outputs[0]
+  color=region(color,(.008,.01,.016),cmp(position.outputs['Z'],'LESS_THAN',target_h*.40))
+  color=region(color,(.008,.007,.011),cmp(position.outputs['Z'],'GREATER_THAN',target_h*.73))
+  arm=mul(cmp(absolute.outputs[0],'GREATER_THAN',target_h*.13),mul(cmp(position.outputs['Z'],'GREATER_THAN',target_h*.62),cmp(position.outputs['Z'],'LESS_THAN',target_h*.83)))
+  color=region(color,(.40,.215,.145),arm)
+  glove=mul(cmp(absolute.outputs[0],'GREATER_THAN',target_h*.15),cmp(position.outputs['Z'],'LESS_THAN',target_h*.64))
+  color=region(color,(.008,.01,.014),glove);l.new(color,mix.inputs[2])
+ l.new(mix.outputs[0],bs.inputs['Base Color']);l.new(mix.outputs[0],bs.inputs['Emission Color']);bs.inputs['Roughness'].default_value=.78""")
+s=s.replace('composed-v4','composed-v5').replace('composition-v4-receipt.json','composition-v5-receipt.json');(root/'compose_v5.py').write_text(s)
+s=(root/'finalize_scene_v4.py').read_text().replace("root/'composed-v4'", "root/'composed-v5'").replace("root/'delivery-v4'", "root/'delivery-v5'");(root/'finalize_scene_v5.py').write_text(s)

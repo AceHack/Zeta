@@ -71,12 +71,15 @@ jobs:
 
       - name: Install workspace dependencies
         working-directory: agentic-organization
+        # `npm ci` AND NOTHING ELSE -- see the sibling comment in
+        # agentic-organization-tests.yml. The `npm install` fallback this replaces
+        # answered "the committed lockfile does not apply" by installing an
+        # unpinned graph instead, behind a ::warning. Scorecard
+        # PinnedDependenciesID alert 782 was pointing at that command.
+        # 081M24FW4C0087G0R003EQRCYY
         run: |
           set -euo pipefail
-          if ! npm ci; then
-            echo "::warning title=stale lockfile::npm ci failed; falling back to npm install."
-            npm install
-          fi
+          npm ci
 
       - name: Start CockroachDB (single-node insecure)
         run: docker run -d --name crdb -p 26257:26257 cockroachdb/cockroach:v24.1.5 start-single-node --insecure

@@ -1,0 +1,23 @@
+import bpy,bmesh,json,math
+from pathlib import Path
+from mathutils import Vector
+R=Path(__file__).resolve().parent;O=R/'attachment-isolated';O.mkdir(exist_ok=True)
+bpy.ops.wm.open_mainfile(filepath=str(R/'mobile-v1/Mobile-Characters.blend'));scene=bpy.context.scene;scene.cycles.samples=12;scene.render.resolution_x=1000;scene.render.resolution_y=1000
+rows=[]
+for name,H in [('AceHack',1.9),('Xenaa',1.82)]:
+ body=bpy.data.objects[name+' | Body generator'];head=bpy.data.objects[name+' | Independent head generator']
+ records=[]
+ for ob in scene.objects:
+  if ob.type=='MESH' and any(ob.name.startswith(n+' | ') for n in ['AceHack','Xenaa']):ob.hide_render=not ob.name.startswith(name+' | ')
+ for z in [H*.77,H*.80,H*.82,H*.84,H*.86,H*.88,H*.90]:
+  vs=[v.co for v in body.data.vertices if abs(v.co.z-z)<.012 and abs(v.co.x)<.16]
+  records.append({'z':z,'count':len(vs),'x_range':[min(v.x for v in vs),max(v.x for v in vs)] if vs else [],'y_range':[min(v.y for v in vs),max(v.y for v in vs)] if vs else []})
+ rows.append({'name':name,'body_sections':records})
+ # Color by functional mesh, leaving surfaces opaque so gaps remain exposed.
+ for o in [ob for ob in scene.objects if ob.type=='MESH' and ob.name.startswith(name+' | ')]:
+  color=(.14,.38,.8) if 'head generator' in o.name else (.8,.13,.4) if 'hair' in o.name else (.15,.7,.28) if 'collar' in o.name else (.42,.42,.42)
+  m=bpy.data.materials.new('Diagnostic '+o.name);m.diffuse_color=(*color,1);m.use_nodes=True;m.node_tree.nodes['Principled BSDF'].inputs['Base Color'].default_value=(*color,1);m.node_tree.nodes['Principled BSDF'].inputs['Roughness'].default_value=.85;o.data.materials.clear();o.data.materials.append(m)
+ center=Vector((head.location.x,-.11,H*.85));cam=scene.camera;cam.animation_data_clear();cam.data.type='ORTHO';cam.data.ortho_scale=.70
+ for angle in [0,90,180]:
+  a=math.radians(angle);cam.location=center+Vector((3*math.sin(a),-3*math.cos(a),.02));cam.rotation_euler=(center-cam.location).to_track_quat('-Z','Y').to_euler();scene.render.filepath=str(O/f'{name}-{angle}.png');bpy.ops.render.render(write_still=True)
+(R/'attachment-isolated.json').write_text(json.dumps(rows,indent=2))

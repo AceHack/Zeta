@@ -1,0 +1,14 @@
+{
+  "id": "080d03c71fe5d010a013000829bfc123",
+  "at": "2026-09-06T22:43:22.426Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1WE7Z5S087G0R001WT3K6G",
+    "type": "task",
+    "title": "Overlay env join reads named unseal request from env",
+    "slug": "overlay-env-join-reads-named-unseal-request-from-env",
+    "priority": "P2",
+    "filename": "081M1WE7Z5S087G0R001WT3K6G-overlay-env-join-reads-named-unseal-request-from-env.md"
+  }
+}

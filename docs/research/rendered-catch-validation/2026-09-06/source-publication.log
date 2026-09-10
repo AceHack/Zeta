@@ -1,0 +1,48 @@
+Running pre-push self-checks (bun run preflight:quick)...
+$ bun ./src/Core.TypeScript/hygiene/preflight.ts --quick
+Preflight (quick: lints + tsc)
+
+▶ no-conflict-markers … PASS
+▶ no-empty-dirs … PASS
+▶ hook-script-paths … PASS
+▶ identity-registry-sync … PASS
+▶ auto-vivify check … PASS
+▶ ace build-graph drift … PASS
+▶ check-arity census drift … PASS
+▶ check-arity census drift (non-equality) … PASS
+▶ inventory items.json current … PASS
+▶ markdownlint … PASS
+▶ lint: TypeScript (tsc) … PASS
+▶ lint: F# … PASS
+▶ lint: C# … PASS
+▶ lint: Python … PASS
+▶ lint: Rust … PASS
+▶ lint: Go … PASS
+
+────────────────────────────────────────────────────────────
+Summary
+  ✓ no-conflict-markers
+  ✓ no-empty-dirs
+  ✓ hook-script-paths
+  ✓ identity-registry-sync
+  ✓ auto-vivify check
+  ✓ ace build-graph drift
+  ✓ check-arity census drift
+  ✓ check-arity census drift (non-equality)
+  ✓ inventory items.json current
+  ✓ markdownlint
+  ✓ lint: TypeScript (tsc)
+  ✓ lint: F#
+  ✓ lint: C#
+  ✓ lint: Python
+  ✓ lint: Rust
+  ✓ lint: Go
+
+✓ preflight: all 16 executed check(s) passed.
+✅ Preflight checks passed. Proceeding with push.
+remote: 
+remote: GitHub found 13 vulnerabilities on Lucent-Financial-Group/Zeta's default branch (7 high, 6 moderate). To find out more, visit:        
+remote:      https://github.com/Lucent-Financial-Group/Zeta/security/dependabot        
+remote: 
+To https://github.com/Lucent-Financial-Group/Zeta.git
+   1851a8bf5..36fa2275e  HEAD -> claim/task-rendered-catch-actions-20260906

@@ -17,11 +17,29 @@ type ContentHash256 =
     { Raw: byte[] } // exactly 32 bytes, raw BLAKE3-256 digest order
 
     /// Lowercase hex of the raw 32 bytes (no reversal) — the canonical proof rendering.
+    /// Appends into `sb` so catalog persist does not allocate a 64-char string
+    /// per id. Nibbles are appended as chars, not `ToString("x2")`.
+    member this.AppendHex(sb: System.Text.StringBuilder) : System.Text.StringBuilder =
+        if isNull this.Raw then
+            sb
+        else
+            let mutable i = 0
+
+            while i < this.Raw.Length do
+                let b = int this.Raw.[i]
+                let hi = b >>> 4
+                let lo = b &&& 0xF
+                sb.Append(if hi < 10 then char (48 + hi) else char (87 + hi))
+                |> ignore
+                sb.Append(if lo < 10 then char (48 + lo) else char (87 + lo))
+                |> ignore
+                i <- i + 1
+
+            sb
+
     member this.ToHex() : string =
         let sb = System.Text.StringBuilder(64)
-        for b in this.Raw do
-            sb.Append(b.ToString("x2")) |> ignore
-        sb.ToString()
+        this.AppendHex(sb).ToString()
 
     override this.Equals(o: obj) : bool =
         match o with

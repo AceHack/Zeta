@@ -1,0 +1,38 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <AssemblyName>Zeta.Research.HiddenSwitchCompiled</AssemblyName>
+    <RootNamespace>Zeta.Research</RootNamespace>
+    <IsPackable>false</IsPackable>
+    <UseAppHost>false</UseAppHost>
+    <RuntimeFrameworkVersion>10.0.11</RuntimeFrameworkVersion>
+    <RollForward>Disable</RollForward>
+    <TieredCompilation>false</TieredCompilation>
+    <TieredPGO>false</TieredPGO>
+    <PublishReadyToRun>false</PublishReadyToRun>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="../Research.FSharp/ResearchRandom.fs" Link="Research/ResearchRandom.fs" />
+    <Compile Include="../Research.FSharp/HiddenSwitchReceipt.fs" Link="Research/HiddenSwitchReceipt.fs" />
+    <Compile Include="../Research.FSharp/HiddenSwitchObservation.fs" Link="Research/HiddenSwitchObservation.fs" />
+    <Compile Include="../Research.FSharp/HiddenSwitchCarrier.fs" Link="Research/HiddenSwitchCarrier.fs" />
+    <Compile Include="../Research.FSharp/HiddenSwitchPolicy.fs" Link="Research/HiddenSwitchPolicy.fs" />
+    <Compile Include="../Research.FSharp/HiddenSwitchExperiment.fs" Link="Research/HiddenSwitchExperiment.fs" />
+    <Compile Include="../Research.FSharp/HiddenSwitchCompiledReceipt.fs" Link="Research/HiddenSwitchCompiledReceipt.fs" />
+    <Compile Include="../Research.FSharp/HiddenSwitchCompiledCertificate.fs" Link="Research/HiddenSwitchCompiledCertificate.fs" />
+    <Compile Include="../Research.FSharp/HiddenSwitchCompiledCertificateCheck.fs" Link="Research/HiddenSwitchCompiledCertificateCheck.fs" />
+    <Compile Include="../Research.FSharp/HiddenSwitchCompiledPolicy.fs" Link="Research/HiddenSwitchCompiledPolicy.fs" />
+    <Compile Include="../Research.FSharp/HiddenSwitchCompiledSelector.fs" Link="Research/HiddenSwitchCompiledSelector.fs" />
+    <Compile Include="../Research.FSharp/HiddenSwitchCompiledHand.fs" Link="Research/HiddenSwitchCompiledHand.fs" />
+    <Compile Include="../Research.FSharp/HiddenSwitchCompiledWitness.fs" Link="Research/HiddenSwitchCompiledWitness.fs" />
+    <Compile Include="../Research.FSharp/HiddenSwitchCompiledConformance.fs" Link="Research/HiddenSwitchCompiledConformance.fs" />
+    <Compile Include="../Research.FSharp/HiddenSwitchCompiledInterventions.fs" Link="Research/HiddenSwitchCompiledInterventions.fs" />
+    <Compile Include="../Research.FSharp/HiddenSwitchCompiledRefusals.fs" Link="Research/HiddenSwitchCompiledRefusals.fs" />
+    <Compile Include="../Research.FSharp/HiddenSwitchCompiledSemantic.fs" Link="Research/HiddenSwitchCompiledSemantic.fs" />
+    <Compile Include="../Research.FSharp/HiddenSwitchCompiledGraph.fs" Link="Research/HiddenSwitchCompiledGraph.fs" />
+    <Compile Include="Program.fs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="../Core/Core.fsproj" />
+  </ItemGroup>
+</Project>

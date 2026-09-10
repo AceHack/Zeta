@@ -1,0 +1,10 @@
+{
+  "files_verified_after_restore": 279,
+  "archive": {
+    "name": "tiktok-character-seams-v2.zip",
+    "bytes": 215381762,
+    "sha256": "4feb0e610be06ef24e75f3a0ac73486ec2f8991330f76052f8751686c182628a"
+  },
+  "restore_directory": "/Users/acehack/Documents/Blender/TikTok-Character-Archive-20260909/restore-check",
+  "scope": "Complete per-file restore and SHA256 validation; no entries overwritten"
+}

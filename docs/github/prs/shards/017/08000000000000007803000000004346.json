@@ -1,0 +1,12 @@
+{
+  "pr_number": 17222,
+  "archive_path": "docs/history/pr-reviews/PR-17222-refactor-harness-break-20-of-the-meta-harness-s-38-back-edges-cut-105-to-91.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-10T03:31:29.644Z",
+  "schema_version": "v1",
+  "commit_sha": "c319558327ebaa46561aa2e67f4c8ae412052017",
+  "title": "refactor(harness): break 20 of the meta-harness's 38 back-edges — cut 105 to 91",
+  "state": "MERGED",
+  "merged_at": "2026-09-10T03:30:43Z",
+  "head_ref": "shadow/break-meta-harness-back-edges"
+}

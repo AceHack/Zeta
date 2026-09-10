@@ -1,0 +1,12 @@
+{
+  "Argv": [
+    "/Users/acehack/.local/share/mise/installs/python/3.14.6/bin/python3",
+    "docs/research/projection-hygiene-independent-review/2026-09-08/audit.py"
+  ],
+  "Cwd": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906",
+  "SourceFile": "docs/research/projection-hygiene-independent-review/2026-09-08/audit.py",
+  "SourceBytes": 5815,
+  "SourceSha256": "FD986730A62019CDDFE844BB0C73789975632570DD9B29AFAFB3F396B696F0F6",
+  "BaseCommit": "b9654055876d7479567278740a7051d074a33ca9",
+  "StartedUnix": 1788860111.2800488
+}

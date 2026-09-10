@@ -1,0 +1,14 @@
+{
+  "id": "080d03df7b692810a013000857152f04",
+  "at": "2026-09-07T12:54:43.749Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1XYYV94087G0R003F7358C",
+    "type": "task",
+    "title": "github-settings drift: record the deliberate workflow disabling so the check regains its signal",
+    "slug": "github-settings-drift-record-the-deliberate-workflow-disabli",
+    "priority": "P2",
+    "filename": "081M1XYYV94087G0R003F7358C-github-settings-drift-record-the-deliberate-workflow-disabli.md"
+  }
+}

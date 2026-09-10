@@ -1,0 +1,7 @@
+bun test v1.3.13 (bf2e2cec)
+
+src/Core.TypeScript/formal-verification/nci-witness-capability.test.ts:
+(pass) NCI emitter exercised dependency and capability boundary > renders the pinned bytes from the four subject files with an exact read trace [128.38ms]
+(pass) NCI emitter exercised dependency and capability boundary > runs only the declared checker command and emits exact receipt bytes on its controlled success [37.78ms]
+(pass) NCI emitter exercised dependency and capability boundary > a controlled checker failure refuses before receipt revalidation [21.01ms]
+(pass) NCI emitter exercised dependency and capability boundary > a static checker import is refused by the actual module linker [12.74ms]

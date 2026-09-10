@@ -1,0 +1,17 @@
+[
+  {
+    "Path": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/src/Core/Cl3.fs",
+    "Bytes": 10216,
+    "Sha256": "c7204939d9a7fd15835ba921abde3b678c01c56c9309ff3d689fb24467b6066c"
+  },
+  {
+    "Path": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/src/Core/bin/Release/net10.0/Zeta.Core.dll",
+    "Bytes": 9268224,
+    "Sha256": "c49f1a2604618d6074d849bb475530338c3c2b80002676129ffab1569079295d"
+  },
+  {
+    "Path": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/src/Core.Abstractions/bin/Release/net10.0/Zeta.Core.Abstractions.dll",
+    "Bytes": 46592,
+    "Sha256": "48f2c96371502534ab4aaba7d97fcafff7d3a1731abb3578c545f033fda50382"
+  }
+]

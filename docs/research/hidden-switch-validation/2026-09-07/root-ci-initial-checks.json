@@ -1,0 +1,699 @@
+{
+  "SchemaVersion": 1,
+  "ObservedUtc": "2026-09-07T13:08:36.183978+00:00",
+  "PullRequest": 16928,
+  "SourceCommit": "f52b00065eb8055a32aea4bd93628df7537f4949",
+  "Command": [
+    "/opt/homebrew/bin/gh",
+    "api",
+    "repos/Lucent-Financial-Group/Zeta/commits/f52b00065eb8055a32aea4bd93628df7537f4949/check-runs?per_page=100",
+    "--paginate",
+    "--slurp"
+  ],
+  "ConclusionCounts": {
+    "failure": 6,
+    "success": 86,
+    "skipped": 4
+  },
+  "Checks": [
+    {
+      "Name": "drift (loud)",
+      "Id": 101750719253,
+      "Status": "completed",
+      "Conclusion": "failure",
+      "Url": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34123419677/job/101750719253"
+    },
+    {
+      "Name": "gate (required)",
+      "Id": 101750674988,
+      "Status": "completed",
+      "Conclusion": "failure",
+      "Url": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34123419677/job/101750674988"
+    },
+    {
+      "Name": "CodeQL",
+      "Id": 101746831127,
+      "Status": "completed",
+      "Conclusion": "success",
+      "Url": "https://github.com/Lucent-Financial-Group/Zeta/runs/101746831127"
+    },
+    {
+      "Name": "agencysignature (main tip)",
+      "Id": 101746811049,
+      "Status": "completed",
+      "Conclusion": "skipped",
+      "Url": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34123537897/job/101746811049"
+    },
+    {
+      "Name": "agencysignature (PR body)",
+      "Id": 101746810592,
+      "Status": "completed",
+      "Conclusion": "skipped",
+      "Url": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34123537897/job/101746810592"
+    },
+    {
+      "Name": "agencysignature (human-review evidence)",
+      "Id": 101746809358,
+      "Status": "completed",
+      "Conclusion": "success",
+      "Url": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34123537897/job/101746809358"
+    },
+    {
+      "Name": "Analyze (java-kotlin)",
+      "Id": 101746593931,
+      "Status": "completed",
+      "Conclusion": "success",
+      "Url": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34123419651/job/101746593931"
+    },
+    {
+      "Name": "Analyze (javascript-typescript)",
+      "Id": 101746593857,
+      "Status": "completed",
+      "Conclusion": "success",
+      "Url": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34123419651/job/101746593857"
+    },
+    {
+      "Name": "Analyze (csharp)",
+      "Id": 101746593823,
+      "Status": "completed",
+      "Conclusion": "success",
+      "Url": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34123419651/job/101746593823"
+    },
+    {
+      "Name": "Analyze (python)",
+      "Id": 101746593766,
+      "Status": "completed",
+      "Conclusion": "success",
+      "Url": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34123419651/job/101746593766"
+    },
+    {
+      "Name": "Analyze (actions)",
+      "Id": 101746593734,
+      "Status": "completed",
+      "Conclusion": "success",
+      "Url": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34123419651/job/101746593734"
+    },
+    {
+      "Name": "full-verify (7-lang oracle + cost + proofs)",
+      "Id": 101746525277,
+      "Status": "completed",
+      "Conclusion": "success",
+      "Url": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34123419677/job/101746525277"
+    },
+    {
+      "Name": "build-and-test (ubuntu-24.04)",
+      "Id": 101746525250,
+      "Status": "completed",
+      "Conclusion": "success",
+      "Url": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34123419677/job/101746525250"
+    },
+    {
+      "Name": "build-and-test (macos-26)",
+      "Id": 101746525214,
+      "Status": "completed",
+      "Conclusion": "failure",
+      "Url": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34123419677/job/101746525214"
+    },
+    {
+      "Name": "build-and-test (ubuntu-24.04-arm)",
+      "Id": 101746525193,
+      "Status": "completed",
+      "Conclusion": "success",
+      "Url": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34123419677/job/101746525193"
+    },
+    {
+      "Name": "cross-verify (image-source-provenance)",
+      "Id": 101746446232,
+      "Status": "completed",
+      "Conclusion": "success",
+      "Url": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34123419677/job/101746446232"
+    },
+    {
+      "Name": "cross-verify (concept-registry-drift)",
+      "Id": 101746446197,
+      "Status": "completed",
+      "Conclusion": "success",
+      "Url": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34123419677/job/101746446197"
+    },
+    {
+      "Name": "cross-verify (flash-entrypoint-parity)",
+      "Id": 101746446187,
+      "Status": "completed",
+      "Conclusion": "success",
+      "Url": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34123419677/job/101746446187"
+    },
+    {
+      "Name": "cross-verify (skip-token-cannot-land)",
+      "Id": 101746446185,
+      "Status": "completed",
+      "Conclusion": "success",
+      "Url": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34123419677/job/101746446185"
+    },
+    {
+      "Name": "cross-verify (mumps-zeta-id)",
+      "Id": 101746446154,
+      "Status": "completed",
+      "Conclusion": "success",
+      "Url": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34123419677/job/101746446154"
+    },
+    {
+      "Name": "cross-verify (argocd-pin-parity)",
+      "Id": 101746446138,
+      "Status": "completed",
+      "Conclusion": "success",
+      "Url": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34123419677/job/101746446138"
+    },
+    {
+      "Name": "lint (Rust)",
+      "Id": 101746446135,
+      "Status": "completed",
+      "Conclusion": "success",
+      "Url": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34123419677/job/101746446135"
+    },
+    {
+      "Name": "cross-verify (algebra-tower-drift)",
+      "Id": 101746446121,
+      "Status": "completed",
+      "Conclusion": "success",
+      "Url": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34123419677/job/101746446121"
+    },
+    {
+      "Name": "cross-verify (heartbeat-lane-attestations)",
+      "Id": 101746446091,
+      "Status": "completed",
+      "Conclusion": "success",
+      "Url": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34123419677/job/101746446091"
+    },
+    {
+      "Name": "cross-verify (image-source-provenance-tests)",
+      "Id": 101746446087,
+      "Status": "completed",
+      "Conclusion": "success",
+      "Url": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34123419677/job/101746446087"
+    },
+    {
+      "Name": "cross-verify (committed-chart-credentials)",
+      "Id": 101746446058,
+      "Status": "completed",
+      "Conclusion": "success",
+      "Url": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34123419677/job/101746446058"
+    },
+    {
+      "Name": "cross-verify (mise-toolchain-couplings)",
+      "Id": 101746446052,
+      "Status": "completed",
+      "Conclusion": "success",
+      "Url": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34123419677/job/101746446052"
+    },
+    {
+      "Name": "cross-verify (check-then-use-races)",
+      "Id": 101746446050,
+      "Status": "completed",
+      "Conclusion": "failure",
+      "Url": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34123419677/job/101746446050"
+    },
+    {
+      "Name": "cross-verify (dotnet-pin-parity)",
+      "Id": 101746446037,
+      "Status": "completed",
+      "Conclusion": "success",
+      "Url": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34123419677/job/101746446037"
+    },
+    {
+      "Name": "cross-verify (bootstrap-application-pin-parity)",
+      "Id": 101746446031,
+      "Status": "completed",
+      "Conclusion": "success",
+      "Url": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34123419677/job/101746446031"
+    },
+    {
+      "Name": "cross-verify (reason-truth)",
+      "Id": 101746446012,
+      "Status": "completed",
+      "Conclusion": "success",
+      "Url": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34123419677/job/101746446012"
+    },
+    {
+      "Name": "cross-verify (write-token-consistency)",
+      "Id": 101746446007,
+      "Status": "completed",
+      "Conclusion": "success",
+      "Url": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34123419677/job/101746446007"
+    },
+    {
+      "Name": "cross-verify (committed-chart-credentials-tests)",
+      "Id": 101746446005,
+      "Status": "completed",
+      "Conclusion": "success",
+      "Url": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34123419677/job/101746446005"
+    },
+    {
+      "Name": "lint (tick-history order)",
+      "Id": 101746445991,
+      "Status": "completed",
+      "Conclusion": "success",
+      "Url": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34123419677/job/101746445991"
+    },
+    {
+      "Name": "lint (F#)",
+      "Id": 101746445980,
+      "Status": "completed",
+      "Conclusion": "success",
+      "Url": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34123419677/job/101746445980"
+    },
+    {
+      "Name": "cross-verify (argocd-pin-parity-tests)",
+      "Id": 101746445979,
+      "Status": "completed",
+      "Conclusion": "success",
+      "Url": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34123419677/job/101746445979"
+    },
+    {
+      "Name": "path filter",
+      "Id": 101746445977,
+      "Status": "completed",
+      "Conclusion": "success",
+      "Url": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34123419677/job/101746445977"
+    },
+    {
+      "Name": "cross-verify (heartbeat-lane-audit-tests)",
+      "Id": 101746445975,
+      "Status": "completed",
+      "Conclusion": "success",
+      "Url": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34123419677/job/101746445975"
+    },
+    {
+      "Name": "cross-verify (task-zetaid-resolves)",
+      "Id": 101746445962,
+      "Status": "completed",
+      "Conclusion": "success",
+      "Url": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34123419677/job/101746445962"
+    },
+    {
+      "Name": "cross-verify (coauthor-identity-collision)",
+      "Id": 101746445959,
+      "Status": "completed",
+      "Conclusion": "success",
+      "Url": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34123419677/job/101746445959"
+    },
+    {
+      "Name": "cross-verify (credential-role-separation)",
+      "Id": 101746445953,
+      "Status": "completed",
+      "Conclusion": "success",
+      "Url": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34123419677/job/101746445953"
+    },
+    {
+      "Name": "cross-verify (action-sha-roster)",
+      "Id": 101746445950,
+      "Status": "completed",
+      "Conclusion": "success",
+      "Url": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34123419677/job/101746445950"
+    },
+    {
+      "Name": "cross-verify (zeta-id-gen-layout-drift)",
+      "Id": 101746445945,
+      "Status": "completed",
+      "Conclusion": "success",
+      "Url": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34123419677/job/101746445945"
+    },
+    {
+      "Name": "lint (no empty dirs)",
+      "Id": 101746445938,
+      "Status": "completed",
+      "Conclusion": "success",
+      "Url": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34123419677/job/101746445938"
+    },
+    {
+      "Name": "cross-verify (proof-lineage-binaries)",
+      "Id": 101746445934,
+      "Status": "completed",
+      "Conclusion": "success",
+      "Url": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34123419677/job/101746445934"
+    },
+    {
+      "Name": "lint (yaml/k8s)",
+      "Id": 101746445925,
+      "Status": "completed",
+      "Conclusion": "success",
+      "Url": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34123419677/job/101746445925"
+    },
+    {
+      "Name": "cross-verify (tech-radar-audit-tests)",
+      "Id": 101746445924,
+      "Status": "completed",
+      "Conclusion": "success",
+      "Url": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34123419677/job/101746445924"
+    },
+    {
+      "Name": "cross-verify (chart-target-revisions)",
+      "Id": 101746445920,
+      "Status": "completed",
+      "Conclusion": "success",
+      "Url": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34123419677/job/101746445920"
+    },
+    {
+      "Name": "lint (bash retirement inventory + hygiene unit tests)",
+      "Id": 101746445916,
+      "Status": "completed",
+      "Conclusion": "failure",
+      "Url": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34123419677/job/101746445916"
+    },
+    {
+      "Name": "cross-verify (stage0-independence)",
+      "Id": 101746445909,
+      "Status": "completed",
+      "Conclusion": "success",
+      "Url": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34123419677/job/101746445909"
+    },
+    {
+      "Name": "cross-verify (ace-suite)",
+      "Id": 101746445906,
+      "Status": "completed",
+      "Conclusion": "success",
+      "Url": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34123419677/job/101746445906"
+    },
+    {
+      "Name": "cross-verify (push-without-rebase)",
+      "Id": 101746445905,
+      "Status": "completed",
+      "Conclusion": "success",
+      "Url": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34123419677/job/101746445905"
+    },
+    {
+      "Name": "lint (Renderers/website)",
+      "Id": 101746445900,
+      "Status": "completed",
+      "Conclusion": "success",
+      "Url": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34123419677/job/101746445900"
+    },
+    {
+      "Name": "lint (actionlint)",
+      "Id": 101746445897,
+      "Status": "completed",
+      "Conclusion": "success",
+      "Url": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34123419677/job/101746445897"
+    },
+    {
+      "Name": "lint (semgrep)",
+      "Id": 101746445885,
+      "Status": "completed",
+      "Conclusion": "success",
+      "Url": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34123419677/job/101746445885"
+    },
+    {
+      "Name": "lint (\u00a733 migration xrefs)",
+      "Id": 101746445884,
+      "Status": "completed",
+      "Conclusion": "success",
+      "Url": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34123419677/job/101746445884"
+    },
+    {
+      "Name": "lint (archive header \u00a733)",
+      "Id": 101746445870,
+      "Status": "completed",
+      "Conclusion": "success",
+      "Url": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34123419677/job/101746445870"
+    },
+    {
+      "Name": "cross-verify (step-output-writers)",
+      "Id": 101746445863,
+      "Status": "completed",
+      "Conclusion": "success",
+      "Url": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34123419677/job/101746445863"
+    },
+    {
+      "Name": "cross-verify (bootstrap-application-pin-parity-tests)",
+      "Id": 101746445854,
+      "Status": "completed",
+      "Conclusion": "success",
+      "Url": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34123419677/job/101746445854"
+    },
+    {
+      "Name": "cross-verify (no-raw-nul-in-source)",
+      "Id": 101746445849,
+      "Status": "completed",
+      "Conclusion": "success",
+      "Url": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34123419677/job/101746445849"
+    },
+    {
+      "Name": "cross-verify (qsharp-oracles)",
+      "Id": 101746445837,
+      "Status": "completed",
+      "Conclusion": "success",
+      "Url": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34123419677/job/101746445837"
+    },
+    {
+      "Name": "lint (identity-dla site)",
+      "Id": 101746445834,
+      "Status": "completed",
+      "Conclusion": "success",
+      "Url": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34123419677/job/101746445834"
+    },
+    {
+      "Name": "cross-verify (tech-radar-claims)",
+      "Id": 101746445831,
+      "Status": "completed",
+      "Conclusion": "success",
+      "Url": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34123419677/job/101746445831"
+    },
+    {
+      "Name": "lint (Python)",
+      "Id": 101746445830,
+      "Status": "completed",
+      "Conclusion": "success",
+      "Url": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34123419677/job/101746445830"
+    },
+    {
+      "Name": "cross-verify (byte-lock-oracles)",
+      "Id": 101746445814,
+      "Status": "completed",
+      "Conclusion": "success",
+      "Url": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34123419677/job/101746445814"
+    },
+    {
+      "Name": "lint (structural hygiene)",
+      "Id": 101746445803,
+      "Status": "completed",
+      "Conclusion": "success",
+      "Url": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34123419677/job/101746445803"
+    },
+    {
+      "Name": "lint (TS)",
+      "Id": 101746445784,
+      "Status": "completed",
+      "Conclusion": "success",
+      "Url": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34123419677/job/101746445784"
+    },
+    {
+      "Name": "lint (C#)",
+      "Id": 101746445771,
+      "Status": "completed",
+      "Conclusion": "success",
+      "Url": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34123419677/job/101746445771"
+    },
+    {
+      "Name": "lint (no conflict markers)",
+      "Id": 101746445766,
+      "Status": "completed",
+      "Conclusion": "success",
+      "Url": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34123419677/job/101746445766"
+    },
+    {
+      "Name": "lint (tick-shard relative-paths)",
+      "Id": 101746445736,
+      "Status": "completed",
+      "Conclusion": "success",
+      "Url": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34123419677/job/101746445736"
+    },
+    {
+      "Name": "lint (Go)",
+      "Id": 101746445717,
+      "Status": "completed",
+      "Conclusion": "success",
+      "Url": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34123419677/job/101746445717"
+    },
+    {
+      "Name": "lint (markdownlint)",
+      "Id": 101746445708,
+      "Status": "completed",
+      "Conclusion": "success",
+      "Url": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34123419677/job/101746445708"
+    },
+    {
+      "Name": "lint (shellcheck)",
+      "Id": 101746445702,
+      "Status": "completed",
+      "Conclusion": "success",
+      "Url": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34123419677/job/101746445702"
+    },
+    {
+      "Name": "drift-canary",
+      "Id": 101746445697,
+      "Status": "completed",
+      "Conclusion": "success",
+      "Url": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34123419677/job/101746445697"
+    },
+    {
+      "Name": "lint (twitch-ai app)",
+      "Id": 101746445690,
+      "Status": "completed",
+      "Conclusion": "success",
+      "Url": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34123419677/job/101746445690"
+    },
+    {
+      "Name": "lint (semgrep drift)",
+      "Id": 101746445667,
+      "Status": "completed",
+      "Conclusion": "success",
+      "Url": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34123419677/job/101746445667"
+    },
+    {
+      "Name": "matrix setup",
+      "Id": 101746445656,
+      "Status": "completed",
+      "Conclusion": "success",
+      "Url": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34123419677/job/101746445656"
+    },
+    {
+      "Name": "drift (triangle corners)",
+      "Id": 101746445615,
+      "Status": "completed",
+      "Conclusion": "success",
+      "Url": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34123419677/job/101746445615"
+    },
+    {
+      "Name": "test (TS hermetic)",
+      "Id": 101746445553,
+      "Status": "completed",
+      "Conclusion": "failure",
+      "Url": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34123419677/job/101746445553"
+    },
+    {
+      "Name": "lint (build-graph completeness)",
+      "Id": 101746445534,
+      "Status": "completed",
+      "Conclusion": "success",
+      "Url": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34123419677/job/101746445534"
+    },
+    {
+      "Name": "test (TS environment-dependent)",
+      "Id": 101746445386,
+      "Status": "completed",
+      "Conclusion": "success",
+      "Url": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34123419677/job/101746445386"
+    },
+    {
+      "Name": "agencysignature (main tip)",
+      "Id": 101746443240,
+      "Status": "completed",
+      "Conclusion": "skipped",
+      "Url": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34123419660/job/101746443240"
+    },
+    {
+      "Name": "verify flush batch",
+      "Id": 101746442256,
+      "Status": "completed",
+      "Conclusion": "skipped",
+      "Url": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34123419662/job/101746442256"
+    },
+    {
+      "Name": "Path gate",
+      "Id": 101746442052,
+      "Status": "completed",
+      "Conclusion": "success",
+      "Url": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34123419651/job/101746442052"
+    },
+    {
+      "Name": "agencysignature (PR body)",
+      "Id": 101746442041,
+      "Status": "completed",
+      "Conclusion": "success",
+      "Url": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34123419660/job/101746442041"
+    },
+    {
+      "Name": "agencysignature (human-review evidence)",
+      "Id": 101746441883,
+      "Status": "completed",
+      "Conclusion": "success",
+      "Url": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34123419660/job/101746441883"
+    },
+    {
+      "Name": "mechanical lint auto-heal (produce patch)",
+      "Id": 101746441555,
+      "Status": "completed",
+      "Conclusion": "success",
+      "Url": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34123419756/job/101746441555"
+    },
+    {
+      "Name": "test",
+      "Id": 101746441350,
+      "Status": "completed",
+      "Conclusion": "success",
+      "Url": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34123419670/job/101746441350"
+    },
+    {
+      "Name": "audit actions/cache paths vs git ls-files",
+      "Id": 101746441219,
+      "Status": "completed",
+      "Conclusion": "success",
+      "Url": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34123419636/job/101746441219"
+    },
+    {
+      "Name": "interp lane (drift check)",
+      "Id": 101746440941,
+      "Status": "completed",
+      "Conclusion": "success",
+      "Url": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34123419663/job/101746440941"
+    },
+    {
+      "Name": "Analyze (java-kotlin)",
+      "Id": 101746439331,
+      "Status": "completed",
+      "Conclusion": "success",
+      "Url": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34123417556/job/101746439331"
+    },
+    {
+      "Name": "Analyze (javascript-typescript)",
+      "Id": 101746439328,
+      "Status": "completed",
+      "Conclusion": "success",
+      "Url": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34123417556/job/101746439328"
+    },
+    {
+      "Name": "Analyze (go)",
+      "Id": 101746439263,
+      "Status": "completed",
+      "Conclusion": "success",
+      "Url": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34123417556/job/101746439263"
+    },
+    {
+      "Name": "Analyze (python)",
+      "Id": 101746439188,
+      "Status": "completed",
+      "Conclusion": "success",
+      "Url": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34123417556/job/101746439188"
+    },
+    {
+      "Name": "Analyze (csharp)",
+      "Id": 101746439142,
+      "Status": "completed",
+      "Conclusion": "success",
+      "Url": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34123417556/job/101746439142"
+    },
+    {
+      "Name": "submit-nuget",
+      "Id": 101745989668,
+      "Status": "completed",
+      "Conclusion": "success",
+      "Url": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34123276502/job/101745989668"
+    }
+  ],
+  "LegacyStatusContextVerification": {
+    "ObservedUtc": "2026-09-07T13:30:03.044125+00:00",
+    "Endpoint": "repos/Lucent-Financial-Group/Zeta/commits/f52b00065eb8055a32aea4bd93628df7537f4949/status",
+    "TotalCount": 0,
+    "Statuses": [],
+    "Scope": "No legacy commit-status contexts supplement the paginated check-run snapshot. The legacy aggregate state is not used to infer check-run outcomes."
+  }
+}

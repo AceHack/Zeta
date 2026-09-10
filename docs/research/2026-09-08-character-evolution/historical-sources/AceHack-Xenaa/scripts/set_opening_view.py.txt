@@ -1,0 +1,11 @@
+import bpy
+from pathlib import Path
+r=Path('/Users/acehack/Documents/Blender/AceHack-Xenaa');s=bpy.context.scene;s.frame_set(1);s.camera=bpy.data.objects['Camera | Duo hero'];bpy.context.preferences.filepaths.save_version=0
+for screen in bpy.data.screens:
+ for area in screen.areas:
+  if area.type=='VIEW_3D':
+   sp=area.spaces.active;sp.region_3d.view_perspective='CAMERA';sp.overlay.show_overlays=False;sp.shading.type='MATERIAL'
+   if hasattr(sp.shading,'use_scene_lights'):sp.shading.use_scene_lights=True
+   if hasattr(sp.shading,'use_scene_world'):sp.shading.use_scene_world=True
+bpy.ops.wm.save_as_mainfile(filepath=str(r/'AceHack_Xenaa_Atelier.blend'))
+print('Opening view saved at frame 1, hero camera, material preview.')

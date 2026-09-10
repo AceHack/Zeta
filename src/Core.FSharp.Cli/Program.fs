@@ -122,7 +122,7 @@ let private resolve cwd : ZetaFsCli.Resolve =
         fun id ->
             match store with
             | None -> None
-            | Some dir -> FileSystemIo.tryReadBytesCapped fs maxCatBytes (ZetaFsCli.entityDataPath dir id) }
+            | Some dir -> ZetaFsMutbuf.tryReadPersisted dir id }
 
 let private runId (token: string) : int =
     ensureBlake3 ()

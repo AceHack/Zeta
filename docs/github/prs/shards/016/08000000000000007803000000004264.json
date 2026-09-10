@@ -1,0 +1,12 @@
+{
+  "pr_number": 16996,
+  "archive_path": "docs/history/pr-reviews/PR-16996-docs-research-record-arc-agi-3-readiness-boundary.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-08T01:02:57.822Z",
+  "schema_version": "v1",
+  "commit_sha": "3cc4f7f58c3a7ae61c0d1e966cfa67b792e15d36",
+  "title": "docs(research): record ARC-AGI-3 readiness boundary",
+  "state": "MERGED",
+  "merged_at": "2026-09-08T01:02:19Z",
+  "head_ref": "lumen/arc-agi-3-readiness"
+}

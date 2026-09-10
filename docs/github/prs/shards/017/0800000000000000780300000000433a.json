@@ -1,0 +1,12 @@
+{
+  "pr_number": 17210,
+  "archive_path": "docs/history/pr-reviews/PR-17210-fix-081m24gg4je087g0r003j9y98r-codeql-on-main-cancelled-61-of-its-last-100-runs-.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-10T02:33:36.616Z",
+  "schema_version": "v1",
+  "commit_sha": "a9151aba34ae11334898cae3205b83fde1e05dc3",
+  "title": "fix(081M24GG4JE087G0R003J9Y98R): CodeQL on main cancelled 61 of its last 100 runs, so every alert count rested on scans that never finished",
+  "state": "MERGED",
+  "merged_at": "2026-09-10T02:32:51Z",
+  "head_ref": "codeql-main-analyses-must-finish"
+}

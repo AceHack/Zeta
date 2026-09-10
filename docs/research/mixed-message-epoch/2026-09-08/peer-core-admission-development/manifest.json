@@ -1,0 +1,178 @@
+{
+  "Schema": "zeta.mixed-message.peer-core-admission-development.v1",
+  "CompletePeer": false,
+  "ActualCoreCodecsAndPreliminaryAdmission": true,
+  "SchedulerLearnerKernelProjectionInvoked": false,
+  "NamedControlsRun": false,
+  "CoreOriginalCommit": "b097d56eccc630046cd3bf618a362b01edeba329",
+  "CoreImportCommit": "243e4689ba1380e5b00e241d295426d2b25c7b07",
+  "CurrentSource": {
+    "Bytes": 45352,
+    "Sha256": "957F2D5337811959930A6F1C1B720B1ED72E2EDB5FEB1C23B5F62F0124CE82D8"
+  },
+  "ScopeLabelCorrection": "Raw final harness Scope retained the earlier metadata-only wording; eight new checks actually call compiled codecs/preliminary admission on a synthetic zero-operation plan. Invocation scope and report correct that label.",
+  "Records": [
+    {
+      "File": "development-MixedMessageEpochReplay.fsx.gz",
+      "Encoding": "gzip",
+      "Bytes": 45352,
+      "Sha256": "957F2D5337811959930A6F1C1B720B1ED72E2EDB5FEB1C23B5F62F0124CE82D8",
+      "StoredBytes": 10893,
+      "StoredSha256": "CD739C734A21466540A8E98916A462E539E4A01539FA1F12F7A3F0981697F3BA",
+      "OriginalPath": ".git/mixed-message-peer-core-admission-checks-1/MixedMessageEpochReplay.fsx"
+    },
+    {
+      "File": "development-checks.fsx.gz",
+      "Encoding": "gzip",
+      "Bytes": 26176,
+      "Sha256": "70A62271BC8FEDE2F02467781EDA1A1878EE07C281A32BD26F0AEAFE03E496FE",
+      "StoredBytes": 6438,
+      "StoredSha256": "38541E83D4D9CA49CC6C67119953EC9204AAEE997822409E16A3CB084F81E6AC",
+      "OriginalPath": ".git/mixed-message-peer-core-admission-checks-1/checks.fsx"
+    },
+    {
+      "File": "development-run.py.gz",
+      "Encoding": "gzip",
+      "Bytes": 1132,
+      "Sha256": "9BE58600F334E8B9CA8B471E0020200E1002FA60D5D4B99C88B7854DD117C398",
+      "StoredBytes": 618,
+      "StoredSha256": "4A9552B2914A537E85A92C5F99C70F1F9657813B397103928F9D504B92E6D7D8",
+      "OriginalPath": ".git/mixed-message-peer-core-admission-checks-1/run.py"
+    },
+    {
+      "File": "development-invocation.json.gz",
+      "Encoding": "gzip",
+      "Bytes": 677,
+      "Sha256": "E00132DDFB15FB1242E68FDA34430A574DA23C0E74AFD70BF923F8501A23C1B7",
+      "StoredBytes": 433,
+      "StoredSha256": "7D7CCF379936BDA7195D0A587514C261BB589323EE5FD7C24F52F7F73A56D8F6",
+      "OriginalPath": ".git/mixed-message-peer-core-admission-checks-1/invocation.json"
+    },
+    {
+      "File": "development-stdout.gz",
+      "Encoding": "gzip",
+      "Bytes": 19808,
+      "Sha256": "BC582F2359E9F5883C1199A0D8DA7A767C40AC0C3ADFA8BC8ADCC41E434D0329",
+      "StoredBytes": 2280,
+      "StoredSha256": "89218F43DF2F5B13452D7A2730A93D4101401599BE504A2115F5596F592C6C71",
+      "OriginalPath": ".git/mixed-message-peer-core-admission-checks-1/stdout"
+    },
+    {
+      "File": "development-stderr.gz",
+      "Encoding": "gzip",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "StoredBytes": 20,
+      "StoredSha256": "9CEFFB7310338057CFE71A4AE1E2C98D2C485D81CDEF906532A801F457A38D64",
+      "OriginalPath": ".git/mixed-message-peer-core-admission-checks-1/stderr"
+    },
+    {
+      "File": "development-completion.json.gz",
+      "Encoding": "gzip",
+      "Bytes": 69,
+      "Sha256": "B6E480C076259D293A26E6C6F4BFDC1B5EE3DFA561EF5FD66A37FA24394DCECE",
+      "StoredBytes": 88,
+      "StoredSha256": "8032362A6E021710FD54F153BFFEF43FAAFF1B4356720BD6E5B5E8C054401316",
+      "OriginalPath": ".git/mixed-message-peer-core-admission-checks-1/completion.json"
+    },
+    {
+      "File": "development-fixture.bin.gz",
+      "Encoding": "gzip",
+      "Bytes": 22,
+      "Sha256": "D144567A957809B4F0D76B814E7A8D1C8DD29E8C14580BDA272DB4454F52D026",
+      "StoredBytes": 42,
+      "StoredSha256": "6BEEF3052B67AFFE4E07BD00EE3D18D8771AD3F9F78F858F78F3AC1859A7A961",
+      "OriginalPath": ".git/mixed-message-peer-core-admission-checks-1/fixture.bin"
+    },
+    {
+      "File": "build-invocation.json.gz",
+      "Encoding": "gzip",
+      "Bytes": 988,
+      "Sha256": "3AF5AD4822F900CD625612C87080B1916AB1BA0C36BBF893D470ADD1BCFF1BBC",
+      "StoredBytes": 533,
+      "StoredSha256": "0F14DB32E2F631698169138569F121080EC70BAAD55FD4485C26964ED55672B4",
+      "OriginalPath": ".git/mixed-message-peer-core-codec-build-1/invocation.json"
+    },
+    {
+      "File": "build-stdout.gz",
+      "Encoding": "gzip",
+      "Bytes": 855,
+      "Sha256": "13F5922C9FB83D268AF456642B337DCA2F3BAED79EEC8ADDB262B5AE093542F2",
+      "StoredBytes": 260,
+      "StoredSha256": "1ECEBF2B514CDA8F9489E8F65DED7B813804C7D471FBD9137E45424BB8AFB4D8",
+      "OriginalPath": ".git/mixed-message-peer-core-codec-build-1/stdout"
+    },
+    {
+      "File": "build-stderr.gz",
+      "Encoding": "gzip",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "StoredBytes": 20,
+      "StoredSha256": "9CEFFB7310338057CFE71A4AE1E2C98D2C485D81CDEF906532A801F457A38D64",
+      "OriginalPath": ".git/mixed-message-peer-core-codec-build-1/stderr"
+    },
+    {
+      "File": "build-completion.json.gz",
+      "Encoding": "gzip",
+      "Bytes": 75,
+      "Sha256": "73BC60F57DABA479729C763DB4F391D6F0CFF6326DA90C8D4CFA21877B020D73",
+      "StoredBytes": 91,
+      "StoredSha256": "2FDD82BA27125CBEF5E12FF07438B32EEBC5D28F320F29D3A760EF73490175B3",
+      "OriginalPath": ".git/mixed-message-peer-core-codec-build-1/completion.json"
+    },
+    {
+      "File": "quick-invocation.json.gz",
+      "Encoding": "gzip",
+      "Bytes": 118,
+      "Sha256": "EB6519CAE11C86FB1B4739410C0B87D35EF844ACF503E104AE8C05E15F9029F8",
+      "StoredBytes": 119,
+      "StoredSha256": "72298B15BC419F94D8907552B5294E904216232960D17EA44B69A750AE3AD952",
+      "OriginalPath": ".git/mixed-message-peer-core-admission-gate-1/invocation.json"
+    },
+    {
+      "File": "quick-stdout.gz",
+      "Encoding": "gzip",
+      "Bytes": 1167,
+      "Sha256": "4167192A5F69F0E03959F4DF63DDA87D1D9D07C7F6F46AD058960CB384ACE0A4",
+      "StoredBytes": 375,
+      "StoredSha256": "D9609B6914A36A006AE5B1CEA9CE0934F941EA4D76997A7383732D422563C2EF",
+      "OriginalPath": ".git/mixed-message-peer-core-admission-gate-1/stdout"
+    },
+    {
+      "File": "quick-stderr.gz",
+      "Encoding": "gzip",
+      "Bytes": 57,
+      "Sha256": "FC5CEA057558784B9285265B206AE14E6629D39610EC93EFC443C21AD0D05961",
+      "StoredBytes": 77,
+      "StoredSha256": "DC19432FFF48A51A2BE835947A121911035939B067CF6ED507E168F48EF85CC7",
+      "OriginalPath": ".git/mixed-message-peer-core-admission-gate-1/stderr"
+    },
+    {
+      "File": "quick-completion.json.gz",
+      "Encoding": "gzip",
+      "Bytes": 69,
+      "Sha256": "B0B29356762615627AA39972C51C057C16160FCF3812D389424283639AD65782",
+      "StoredBytes": 88,
+      "StoredSha256": "3559BB893C1B90EED8AB16789629D93BF4D70C416B3DB70D9B40034C836EDF63",
+      "OriginalPath": ".git/mixed-message-peer-core-admission-gate-1/completion.json"
+    },
+    {
+      "File": "import-result.json.gz",
+      "Encoding": "gzip",
+      "Bytes": 537,
+      "Sha256": "7089D304696B89C352CD355DF4D4CFE50556F97156C5F02954A7ABF0E09593EA",
+      "StoredBytes": 307,
+      "StoredSha256": "526F724CC9394FF8AD658030FD5BC4EFE69C51372316A4DFA825071F779F54C5",
+      "OriginalPath": ".git/mixed-message-peer-core-checkpoint-import-1/result.json"
+    },
+    {
+      "File": "preserve.py.gz",
+      "Encoding": "gzip",
+      "Bytes": 2927,
+      "Sha256": "A621E1987E7E7AFABE24F71B54C5F427F4C10BBBAC2D5008509FD4BA1D622967",
+      "StoredBytes": 1262,
+      "StoredSha256": "94F4D2765EC9E4E735624270E0B85DAC913A50A5BEC70F9B9FAFC15923B346D9",
+      "OriginalPath": ".git/mixed-message-peer-core-admission-preservation-1/preserve.py"
+    }
+  ]
+}

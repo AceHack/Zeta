@@ -28,7 +28,8 @@
 //   3 — input-firewall rejected the prompt as not work-extractable
 
 import { closeSync, createWriteStream, mkdirSync, openSync, readSync, statSync } from "node:fs";
-import { spawn, spawnSync } from "node:child_process";
+import { spawn } from "node:child_process";
+import { spawnArgv, spawnShellDeclared, truncateUtf8Bytes } from "../io/safe-io.ts";
 import { dirname, join } from "node:path";
 import { tmpdir } from "node:os";
 import {
@@ -37,6 +38,14 @@ import {
   GEMINI_SUBSTANTIVE_TRIGGERS,
   peerFirewallCheck,
 } from "./_firewall";
+
+/**
+ * Ceiling on the PATH lookup that answers "is this CLI installed".
+ *
+ * A `which` that has not answered in ten seconds is a broken PATH, not a slow
+ * one, and the old form had no bound at all.
+ */
+const COMMAND_LOOKUP_TIMEOUT_MS = 10_000;
 
 const SPAWN_MAX_BUFFER = 64 * 1024 * 1024;
 const FILE_HEAD_BYTES = 20000;
@@ -187,13 +196,16 @@ function emitHelp(): void {
 }
 
 function commandAvailable(cmd: string): boolean {
-  // Match bash `command -v <cmd>` semantics: PATH existence, not
-  // `<cmd> --version` exit-status (Copilot P1 on #898 — some CLIs
-  // exit non-zero on --version which is irrelevant to availability).
-  const result = spawnSync("/bin/sh", ["-c", `command -v "${cmd}"`], {
-    stdio: "ignore",
-  });
-  return result.status === 0;
+  // An ARGUMENT VECTOR, so the name cannot become syntax. The old form
+  // interpolated `cmd` into a `/bin/sh -c` string, which made a program name a
+  // shell expression; every caller in this file passes a literal, so nothing
+  // hostile reached it, but the SHAPE is the defect and it is the shape that
+  // gets copied. `which` replaces `command -v` because `command` is a shell
+  // builtin -- there is no program of that name to exec -- and both answer the
+  // one question asked here: is there an executable of this name on PATH.
+  // Matches `peer-call/summon.ts#isCommandAvailable`.
+  const result = spawnArgv("which", [cmd], { timeoutMs: COMMAND_LOOKUP_TIMEOUT_MS });
+  return result.ok && result.value.status === 0;
 }
 
 function isRegularFile(path: string): boolean {
@@ -237,30 +249,33 @@ function readHead(path: string, bytes: number): ReadHeadResult {
 }
 
 function runContextCmd(contextCmd: string): string {
-  // Bash uses `eval "$context_cmd" 2>&1 | head -c 20000`. Match that
-  // shape end-to-end: pipe through `head -c <N>` so the shell pipeline
-  // short-circuits at the truncation boundary instead of buffering the
-  // full output up to SPAWN_MAX_BUFFER (Codex P2 on #898 — high-volume
-  // commands like wide `git diff` would otherwise block much longer
-  // and use much more memory than the bash original).
-  // Use /bin/bash -c (not /bin/sh -c) so bash-only features (`[[ ... ]]`,
-  // brace expansion, process substitution) accepted by the bash
-  // original's `eval` continue to work — Codex P2 on #898 noted that
-  // /bin/sh on Ubuntu is dash and accepts a strict POSIX subset.
-  // User intentionally supplies the shell command (per --context-cmd
-  // contract); same security posture as the bash original's `eval`.
-  const wrapped = `(${contextCmd}) 2>&1 | head -c ${String(CTX_HEAD_BYTES)}`;
-  const result = spawnSync("/bin/bash", ["-c", wrapped], {
-    encoding: "utf8",
-    maxBuffer: SPAWN_MAX_BUFFER,
+  // THE DECLARED SHELL, not a hand-rolled one. `--context-cmd`'s documented
+  // contract IS a shell command line -- "the same trust boundary as the bash
+  // original's `eval`" (peer-call/README) -- so narrowing it to an argument
+  // vector would break callers that pass pipelines. What changes is that the
+  // shell now lives in ONE reviewable function with a written reason
+  // (`spawnShellDeclared`, src/Core.TypeScript/io/safe-io.ts) instead of being
+  // open-coded here and in six sibling files. Same migration as
+  // `peer-call/summon.ts`, which is the worked example.
+  //
+  // THREE things change with it, and none of them is cosmetic:
+  //   * the `| head -c N` pipeline is gone. The bound is applied in THIS
+  //     process, in BYTES, by `truncateUtf8Bytes`. The old `.slice(0, N)`
+  //     counted UTF-16 code units, so a context command emitting non-ASCII
+  //     overran the bound it appeared to enforce.
+  //   * the child now has a deadline (safe-io's DEFAULT_TIMEOUT_MS). The
+  //     open-coded `spawnSync` had none, so a context command that never
+  //     returned hung the peer call forever.
+  //   * a spawn failure is REPORTED rather than rendered as an empty context
+  //     block, which read as "the command produced nothing".
+  const result = spawnShellDeclared("bash", `(${contextCmd}) 2>&1`, {
+    reason: "peer-call --context-cmd: the command line is the documented contract of the flag",
+    maxBytes: SPAWN_MAX_BUFFER,
   });
-  // Concatenate stdout + stderr: stdout carries the command output
-  // truncated by `head -c`; stderr carries shell parse errors (e.g.,
-  // syntax errors in contextCmd) which fall OUTSIDE the `( ... ) 2>&1`
-  // redirection. Per Codex P2 + Copilot on #899 / #898 the parse-error
-  // diagnostic must reach the prompt or the user sees an empty context
-  // block on a malformed cmd.
-  return `${result.stdout}${result.stderr}`.slice(0, CTX_HEAD_BYTES);
+  if (!result.ok) {
+    return `[context-cmd-error: ${result.error.kind}: ${result.error.message}]`;
+  }
+  return truncateUtf8Bytes(`${result.value.stdout}${result.value.stderr}`, CTX_HEAD_BYTES);
 }
 
 interface OutputCaptureResult {

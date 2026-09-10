@@ -12,16 +12,16 @@ let private bits (seed: int) (n: int) : int list =
           int ((s >>> 33) &&& 1UL) ]
 
 [<Fact>]
-let ``correlation: identical streams = 1.0, inverted = 1.0 (same source), independent ~ 0`` () =
+let ``correlation: nonempty identical and complemented fixtures score one, seeded pair scores below threshold`` () =
     let a = bits 1 400
     Assert.Equal(1.0, correlation a a)
     let inverted = a |> List.map (fun b -> 1 - b)
-    Assert.Equal(1.0, correlation a inverted) // an inverted replay is still one source
+    Assert.Equal(1.0, correlation a inverted) // a bit complement also has absolute agreement one
     let b = bits 99 400
-    Assert.True(correlation a b < 0.25) // genuinely independent ⇒ near chance
+    Assert.True(correlation a b < 0.25) // this fixed seeded pair has low observed agreement
 
 [<Fact>]
-let ``antiSybil: k genuinely-distinct identities ⇒ DistinctCount = k, AllDistinct`` () =
+let ``antiSybil: four seeded fixture streams form four singleton components`` () =
     let streams = [ bits 1 500; bits 2 500; bits 3 500; bits 4 500 ]
     let v = antiSybil 0.5 streams
     Assert.Equal(4, v.ClaimedCount)
@@ -29,25 +29,25 @@ let ``antiSybil: k genuinely-distinct identities ⇒ DistinctCount = k, AllDisti
     Assert.True(v.AllDistinct)
 
 [<Fact>]
-let ``antiSybil: the guarantee — k claims from s<k sources ⇒ DistinctCount ≤ s (forger caught)`` () =
-    // Adversary has 2 independent clocks but claims 5 identities by replaying.
+let ``antiSybil: exact copies of two seeded records form two components`` () =
+    // Five claims repeat two fixed records; this does not quantify over source recodings.
     let src0, src1 = bits 7 500, bits 8 500
-    let claimed = [ src0; src1; src0; src1; src0 ] // 5 claims, 2 sources
+    let claimed = [ src0; src1; src0; src1; src0 ] // 5 claims, 2 distinct records
     let v = antiSybil 0.5 claimed
     Assert.Equal(5, v.ClaimedCount)
-    Assert.Equal(2, v.DistinctCount) // forgery-cost floor exposed: only ever had 2 clocks
+    Assert.Equal(2, v.DistinctCount) // two connected components in this fixture
     Assert.False(v.AllDistinct)
-    // claims 0,2,4 share a source; 1,3 share the other
+    // claims 0,2,4 repeat one record; 1,3 repeat the other
     Assert.Equal(v.SourceOf.[0], v.SourceOf.[2])
     Assert.Equal(v.SourceOf.[0], v.SourceOf.[4])
     Assert.Equal(v.SourceOf.[1], v.SourceOf.[3])
     Assert.NotEqual(v.SourceOf.[0], v.SourceOf.[1])
 
 [<Fact>]
-let ``forgeryCostFloor: exact = ClaimedCount when no Sybil, collapses under reuse`` () =
-    Assert.Equal(3, forgeryCostFloor 0.5 [ bits 1 500; bits 2 500; bits 3 500 ])
+let ``correlationComponentCount matches the graph readout for singleton and repeated fixtures`` () =
+    Assert.Equal(3, correlationComponentCount 0.5 [ bits 1 500; bits 2 500; bits 3 500 ])
     let s = bits 5 500
-    Assert.Equal(1, forgeryCostFloor 0.5 [ s; s; s ]) // all one source ⇒ floor 1
+    Assert.Equal(1, correlationComponentCount 0.5 [ s; s; s ]) // identical nonempty records form one component
 
 [<Fact>]
 let ``antiSybil: deterministic / replayable (DST)`` () =
@@ -67,8 +67,8 @@ let ``antiSybil: empty input ⇒ zero distinct, AllDistinct vacuously true`` () 
 // ── Addendum-4 bridge lock (2026-07-02): the Sybil correlator IS the Bell correlator ──
 // For binary outcomes the CHSH correlator is E = P(agree) − P(disagree) = 2·frac − 1;
 // AntiSybil.correlation computes |E| (the abs deliberately catches inverted replays —
-// an anti-correlated clone is still one source). This fact is what makes the identity
-// layer's Sybil detection the same instrument as the physics Bell harness. See
+// a complemented record has perfect absolute agreement). This is an equality of
+// binary statistics, not an inference about controllers or four-setting CHSH. See
 // docs/research/2026-07-02-name-of-name-…md Addendum 4.
 
 [<Fact>]
@@ -86,11 +86,43 @@ let ``BRIDGE: AntiSybil.correlation = |E|, the CHSH correlator on binary outcome
             Assert.Equal(abs e, correlation a b, 12)
 
 [<Fact>]
-let ``BRIDGE: |E| = 1 exactly for a shared source (replay or inverted replay) — the S=4 limit case of sameness`` () =
+let ``BRIDGE: nonempty exact and complemented replay fixtures have absolute correlator one`` () =
     let a = bits 7 256
     let inverted = a |> List.map (fun x -> 1 - x)
     Assert.Equal(1.0, correlation a a, 12)
     Assert.Equal(1.0, correlation a inverted, 12)
+
+[<Fact>]
+let ``shared-state recoding: three balanced XOR masks evade every correlation edge for all four-bit bases`` () =
+    let masks = [ [ 0; 0; 0; 0 ]; [ 0; 1; 0; 1 ]; [ 0; 0; 1; 1 ] ]
+    for encoded in 0 .. 15 do
+        let shared = [ for bit in 0 .. 3 -> (encoded >>> bit) &&& 1 ]
+        let streams = masks |> List.map (fun mask -> List.map2 (^^^) shared mask)
+        // XOR cancels the shared state; each pair of masks differs in exactly half its bits.
+        for i in 0 .. 2 do
+            for j in i + 1 .. 2 do
+                Assert.Equal(0.0, correlation streams.[i] streams.[j])
+        let observed = antiSybil 0.5 streams
+        Assert.Equal(3, observed.DistinctCount)
+        Assert.True(observed.AllDistinct)
+        Assert.Equal(3, correlationComponentCount 0.5 streams)
+
+[<Fact>]
+let ``component connectivity is transitive and can merge two earlier components through a later bridge`` () =
+    let a, b, bridge = [ 0; 0; 0; 0 ], [ 0; 0; 1; 1 ], [ 0; 0; 0; 1 ]
+    Assert.Equal(0.0, correlation a b)
+    Assert.Equal(0.5, correlation a bridge)
+    Assert.Equal(0.5, correlation b bridge)
+    Assert.Equal(2, correlationComponentCount 0.5 [ a; b ])
+    let observed = antiSybil 0.5 [ a; b; bridge ]
+    Assert.Equal(1, observed.DistinctCount)
+    Assert.Equal(observed.SourceOf.[0], observed.SourceOf.[1])
+
+[<Fact>]
+let ``empty overlap zero is an observation convention and does not certify independence`` () =
+    Assert.Equal(0.0, correlation [] [ 1; 0 ])
+    Assert.Equal(2, correlationComponentCount 0.5 [ []; [] ])
+    Assert.True((antiSybil 0.5 [ []; [] ]).AllDistinct)
 
 // ── CHSH escalation (Addendum 4 → instrument): randomized settings close the strategic-forger gap ──
 

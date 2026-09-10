@@ -1,0 +1,14 @@
+{
+  "id": "080d03c45b130010a01300086ded30ab",
+  "at": "2026-09-06T21:06:35.744Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1W8PRK0087G0R000T7C4X8",
+    "type": "bug",
+    "title": "Refuse incomplete CHSH setting coverage before calibrated classification",
+    "slug": "refuse-incomplete-chsh-setting-coverage-before-calibrated-cl",
+    "priority": "P1",
+    "filename": "081M1W8PRK0087G0R000T7C4X8-refuse-incomplete-chsh-setting-coverage-before-calibrated-cl.md"
+  }
+}

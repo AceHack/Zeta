@@ -1,0 +1,12 @@
+{
+  "pr_number": 16865,
+  "archive_path": "docs/history/pr-reviews/PR-16865-feat-creds-filter-iso-current-system-bao-from-bun-consume-json.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-06T21:50:55.574Z",
+  "schema_version": "v1",
+  "commit_sha": "ddad7cca19319ae086abc96e84680f607c7617ec",
+  "title": "feat(creds): Filter ISO current-system bao from bun consume JSON",
+  "state": "MERGED",
+  "merged_at": "2026-09-06T21:50:10Z",
+  "head_ref": "cursor/consume-filters-iso-bao-27c5"
+}

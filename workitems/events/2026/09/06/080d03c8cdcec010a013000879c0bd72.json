@@ -1,0 +1,14 @@
+{
+  "id": "080d03c8cdcec010a013000879c0bd72",
+  "at": "2026-09-06T23:42:04.248Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1WHKEEQ087G0R0002B3SPG",
+    "type": "task",
+    "title": "Argv and conf overlay joins read named unseal request from env",
+    "slug": "argv-and-conf-overlay-joins-read-named-unseal-request-from-e",
+    "priority": "P2",
+    "filename": "081M1WHKEEQ087G0R0002B3SPG-argv-and-conf-overlay-joins-read-named-unseal-request-from-e.md"
+  }
+}

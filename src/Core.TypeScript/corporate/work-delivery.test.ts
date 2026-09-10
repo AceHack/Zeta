@@ -27,7 +27,7 @@ import {
 } from "./adapters";
 import { RunOutcome } from "./qa";
 import { AgentLoopMode, dispatcherFor, evaluatePromotionGate, type PromotionWindow } from "./slot-dispatch";
-import type { MenuOption } from "../workflow-engine/agent-loop/state-machine";
+import type { MenuOption } from "../protocol/agent-loop-contract";
 
 const chart = (() => {
   const r = buildOrgChart(SEED_HATS);

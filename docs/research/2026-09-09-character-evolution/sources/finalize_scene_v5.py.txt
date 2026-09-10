@@ -1,0 +1,33 @@
+"""Package the selected revision with review cameras and an orbit animation."""
+import bpy,math,json
+from pathlib import Path
+from mathutils import Vector
+root=Path(__file__).resolve().parent;out=root/'delivery-v5';out.mkdir(exist_ok=True)
+bpy.ops.wm.open_mainfile(filepath=str(root/'composed-v5'/'AceHack-Xenaa-Evolution.blend'))
+scene=bpy.context.scene
+for o in scene.objects:
+ if o.type=='MESH' and 'Body generator' in o.name:
+  m=o.modifiers.new('Gentle garment surface smoothing','SMOOTH');m.factor=.45;m.iterations=3
+center=Vector((0,0,.99));cam=scene.camera;cam.name='01 | Duo review'
+scene.render.resolution_x=2160;scene.render.resolution_y=1800;scene.cycles.samples=96
+cam.location=(.55,-5,1.17);cam.rotation_euler=(center-cam.location).to_track_quat('-Z','Y').to_euler();cam.data.ortho_scale=2.85
+scene.render.filepath=str(out/'AceHack-Xenaa-Evolution.png');bpy.ops.render.render(write_still=True)
+for name,x,h in [('AceHack',-.68,1.9),('Xenaa',.68,1.82)]:
+ data=cam.data.copy();portrait=bpy.data.objects.new(name+' | Portrait',data);scene.collection.objects.link(portrait);data.ortho_scale=.68;target=Vector((x,0,h*.875));portrait.location=target+Vector((.13,-2,.035));portrait.rotation_euler=(target-portrait.location).to_track_quat('-Z','Y').to_euler();scene.camera=portrait;scene.render.resolution_x=1200;scene.render.resolution_y=1400;scene.render.filepath=str(out/f'{name}-portrait.png');bpy.ops.render.render(write_still=True)
+scene.camera=cam;scene.render.resolution_x=2160;scene.render.resolution_y=1800
+orbit=bpy.data.objects.new('Turntable | Camera orbit',None);scene.collection.objects.link(orbit);orbit.location=center
+orbitcam=bpy.data.objects.new('02 | Animated turntable',cam.data.copy());scene.collection.objects.link(orbitcam);orbitcam.parent=orbit;orbitcam.location=(0,-5,.2);orbitcam.rotation_euler=Vector((0,5,-.2)).to_track_quat('-Z','Y').to_euler()
+for frame,angle in [(1,0),(97,2*math.pi)]:orbit.rotation_euler[2]=angle;orbit.keyframe_insert(data_path='rotation_euler',frame=frame)
+# New Blender layered actions still expose channels through action slots; sampled orbit uses explicit frame poses below.
+scene.frame_start=1;scene.frame_end=96;scene.render.fps=12
+scene['README']='Evolution 2026-09-09. Head and body are separate inferred meshes; editable collar joins. Main camera: duo. Portrait cameras: head inspection. Camera 02: orbit preview. Models remain unrigged; back/side materials and garment geometry remain provisional.'
+text=bpy.data.texts.new('START HERE - evolution');text.write(scene['README']+'\n\nThis is actual 3D geometry with frontal reference projection blended with inferred vertex color. Image-generated inputs are not Blender renders. Prior revisions and negative results are preserved in the accompanying source archive.\n')
+for screen in bpy.data.screens:
+ for area in screen.areas:
+  if area.type=='VIEW_3D':
+   space=area.spaces.active;space.region_3d.view_perspective='CAMERA';space.shading.type='MATERIAL';space.shading.use_scene_world=True;space.shading.use_scene_lights=True
+bpy.ops.object.select_all(action='DESELECT');scene.frame_set(1);scene.name='01 | Character atelier';turntable=scene.copy();turntable.name='02 | Turntable';turntable.camera=orbitcam;bpy.context.window.scene=scene;bpy.ops.wm.save_as_mainfile(filepath=str(out/'AceHack-Xenaa-Evolution-20260909.blend'))
+scene.camera=orbitcam;scene.render.resolution_x=1280;scene.render.resolution_y=1068;scene.cycles.samples=16;scene.render.image_settings.file_format='PNG'
+frames=out/'turntable-frames';frames.mkdir(exist_ok=True)
+for f in range(1,97):
+ scene.frame_set(f);orbit.rotation_euler[2]=2*math.pi*(f-1)/96;scene.render.filepath=str(frames/f'{f:04}.png');bpy.ops.render.render(write_still=True)

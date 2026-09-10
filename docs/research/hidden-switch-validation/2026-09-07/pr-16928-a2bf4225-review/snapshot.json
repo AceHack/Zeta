@@ -1,0 +1,48 @@
+{
+  "StartedAtUtc": "2026-09-07T14:11:35.792366+00:00",
+  "FinishedAtUtc": "2026-09-07T14:11:42.644742+00:00",
+  "HeadSha": "a2bf4225cef685ff9c67037d8dbcf7e19b9704cb",
+  "PRBefore": {
+    "number": 16928,
+    "html_url": "https://github.com/Lucent-Financial-Group/Zeta/pull/16928",
+    "state": "open",
+    "merged": false,
+    "mergeable": true,
+    "mergeable_state": "unstable",
+    "updated_at": "2026-09-07T13:39:05Z",
+    "merge_commit_sha": "d91098372a07b2771ac9c20634f76137a34732d3",
+    "HeadSha": "a2bf4225cef685ff9c67037d8dbcf7e19b9704cb",
+    "BaseSha": "a3926e6b277e994dad6b72da4b7dc29961aeb946"
+  },
+  "PRAfter": {
+    "number": 16928,
+    "html_url": "https://github.com/Lucent-Financial-Group/Zeta/pull/16928",
+    "state": "open",
+    "merged": false,
+    "mergeable": true,
+    "mergeable_state": "unstable",
+    "updated_at": "2026-09-07T13:39:05Z",
+    "merge_commit_sha": "d91098372a07b2771ac9c20634f76137a34732d3",
+    "HeadSha": "a2bf4225cef685ff9c67037d8dbcf7e19b9704cb",
+    "BaseSha": "a3926e6b277e994dad6b72da4b7dc29961aeb946"
+  },
+  "CheckPages": 4,
+  "CheckCount": 96,
+  "CheckStates": {
+    "SKIPPED": 3,
+    "SUCCESS": 92,
+    "FAILURE": 1
+  },
+  "ThreadPages": 1,
+  "ThreadCount": 1,
+  "UnresolvedThreads": [],
+  "RequiredCheckCommandExitCode": 0,
+  "FailedChecks": [
+    {
+      "Name": "drift (loud)",
+      "Id": 101768218792,
+      "Url": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34128437843/job/101768218792"
+    }
+  ],
+  "Scope": "Read-only non-atomic API snapshot, exact PR head checked before/after and on every page; counts/IDs/cursors and terminal completeness checked. No rerun, cancellation, comment or thread mutation."
+}

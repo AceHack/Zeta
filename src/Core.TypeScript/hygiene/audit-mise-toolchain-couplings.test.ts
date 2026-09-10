@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import {
   CANONICAL,
   PROVENANCE,
@@ -104,10 +104,31 @@ describe("the REAL tree — the state this check was written to protect", () => 
     expect(parseZigPin(canonical)).toMatch(/^\d+\.\d+\.\d+$/);
   });
 
-  test("the recorded byte-lock sha256 is the artifact's ACTUAL hash", () => {
-    // Not a restatement of a restatement: this hashes the committed bytes.
+  test("the recorded byte-lock sha256 is the artifact's ACTUAL hash — when the artifact is there", () => {
+    // Not a restatement of a restatement: this hashes the actual bytes.
+    //
+    // CONDITIONAL SINCE 2026-09-10, and the condition is load-bearing rather than an escape.
+    // The Zig substrate is BUILT rather than committed, so on a lane with no zig — this
+    // suite's own, and every hermetic tier — the file is legitimately absent and there are no
+    // bytes to hash. Asserting on them would go red for an environmental reason and teach
+    // nothing; skipping would be the vacuous half.
+    //
+    // So the assertion splits by which question is answerable HERE:
+    //
+    //   * artifact present (a developer who has just run `build-substrates.mjs`, or the
+    //     byte-lock job after its build step) — hash it, exactly as before.
+    //   * artifact absent — assert the thing that IS still checkable: that the one lane which
+    //     has zig actually runs the audit. Same guard `checkByteLockProvenance` applies,
+    //     pinned here so deleting that workflow step is a red test rather than a provenance
+    //     record nothing verifies.
     const prov = JSON.parse(readFileSync(PROVENANCE, "utf8")) as Provenance;
-    expect(sha256File(prov.zig.artifact)).toBe(prov.zig.sha256);
+    if (existsSync(prov.zig.artifact)) {
+      expect(sha256File(prov.zig.artifact)).toBe(prov.zig.sha256);
+      return;
+    }
+    expect(readFileSync(".github/workflows/bytelock.yml", "utf8")).toContain(
+      "audit-mise-toolchain-couplings.ts",
+    );
   });
 
   test("the recorded byte-lock zig version is the pinned one", () => {

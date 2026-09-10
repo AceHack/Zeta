@@ -1,0 +1,71 @@
+{
+  "Schema": "zeta.compiled-runtime-readiness.v1",
+  "Scope": "Metadata/source inspection only; no runtime admission, debugger attach, task execution, guards, streams or measurements",
+  "Files": [
+    {
+      "File": "dotnet-info.txt",
+      "Bytes": 2772,
+      "Sha256": "88d452a85fd40f9de962c73a88a5a7ce2ea308278f2e8324b5bfc432c062b709"
+    },
+    {
+      "File": "lldb-path.txt",
+      "Bytes": 56,
+      "Sha256": "02439ac77864584f0a33097429da8de50a46f93e17ff7b7cc5898bb4cf0b8e12"
+    },
+    {
+      "File": "lldb-version.txt",
+      "Bytes": 86,
+      "Sha256": "dd1381b955f2c05c936ffd58999345da841ee2203210013c8c21f4732e9aadc0"
+    },
+    {
+      "File": "identities.json",
+      "Bytes": 1593,
+      "Sha256": "39cf13dddd74cf036ad1a38b82fbc31e8679f722e0120b8832471f678bdd8b3f"
+    },
+    {
+      "File": "runtime-tag.txt",
+      "Bytes": 60,
+      "Sha256": "5490ae89fd8a7458dfd8d485b28f2a37af21c38c1a5b8d25c47503ff0d1b22f7"
+    },
+    {
+      "File": "runtimehandles-installed-commit-http.txt",
+      "Bytes": 4,
+      "Sha256": "f8bf41177a5f5e808a7ccb648b51080b031f15ca8018d91a576263d6cc626eb6"
+    },
+    {
+      "File": "runtimehandles-installed-commit-response.txt",
+      "Bytes": 14,
+      "Sha256": "d5558cd419c8d46bdc958064cb97f963d1ea793866414c025906ec15033512ed"
+    },
+    {
+      "File": "installed-version.txt",
+      "Bytes": 49,
+      "Sha256": "8faa991e6089e780a6d4bda8e28d3f52776f3e2683d9c476bd26a8447e706c14"
+    },
+    {
+      "File": "sw-vers.txt",
+      "Bytes": 65,
+      "Sha256": "cd5d6399b3785b04ceaae75045a9ca9f80f0bbc3526eff9d0c36b170ed1ec348"
+    },
+    {
+      "File": "uname.txt",
+      "Bytes": 20,
+      "Sha256": "83e116757bf361ada87a922313265a945238521f4545fae6f59034fd27807374"
+    },
+    {
+      "File": "verify-public-source.py",
+      "Bytes": 2096,
+      "Sha256": "50fceade24d09a637e63f9193d26442074ad0f92e3ee4f921cb5e1b0894f03fb"
+    },
+    {
+      "File": "public-source-verification.json",
+      "Bytes": 1725,
+      "Sha256": "b194af6a6c33dd26943685884ede010e51a19b4853f9346f5e9e23637c8fc481"
+    },
+    {
+      "File": "public-source-verification.log",
+      "Bytes": 1725,
+      "Sha256": "b194af6a6c33dd26943685884ede010e51a19b4853f9346f5e9e23637c8fc481"
+    }
+  ]
+}

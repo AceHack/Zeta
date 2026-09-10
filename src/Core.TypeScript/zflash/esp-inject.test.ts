@@ -8,7 +8,7 @@
 // declared in registry/environment-dependent-test-files.json. It still runs on
 // every PR, in `test (TS environment-dependent)`.
 import { describe, expect, test } from "bun:test";
-import { closeSync, copyFileSync, existsSync, openSync, readdirSync, rmSync, statSync } from "node:fs";
+import { closeSync, copyFileSync, existsSync, mkdtempSync, openSync, readdirSync, rmSync, statSync } from "node:fs";
 import { homedir, tmpdir } from "node:os";
 import { join } from "node:path";
 import { injectKeyIntoEsp, verifyKeyInEsp } from "./esp-inject.ts";
@@ -58,7 +58,17 @@ describe("injectKeyIntoEsp on a real ISO copy", () => {
     console.warn(`  [skip] no zeta-installer ISO — ${"absent" in found ? found.absent : ""}; FAT12 ESP inject not exercised`);
   }
   test.skipIf(!iso)("injects + reads back the key from the ISO's FAT12 ESP (fresh handle)" + why, () => {
-    const tmp = join(tmpdir(), `esp-inject-test-${process.pid}.iso`);
+    // A PRIVATE, UNPREDICTABLE directory -- not a name in the shared /tmp.
+    //
+    // This was `join(tmpdir(), `esp-inject-test-${process.pid}.iso`)` (CodeQL
+    // js/insecure-temporary-file, alerts 260 and 261). A pid is small, guessable
+    // and REUSED, so the full path is predictable to any local user, and both
+    // `copyFileSync` and `openSync(.., "r+")` FOLLOW SYMLINKS -- a pre-planted
+    // link at that path turns this test into an arbitrary-file overwrite running
+    // as the test user. `mkdtempSync` returns a 0700 directory with an
+    // unpredictable suffix, created atomically, which is the whole fix.
+    const tmpDir = mkdtempSync(join(tmpdir(), "esp-inject-test-"));
+    const tmp = join(tmpDir, "installer.iso");
     copyFileSync(iso!, tmp);
     try {
       const body = Buffer.from("ssh-ed25519 AAAAC3NzaC1lZDI1NTE5TESTKEY esp-inject-test\n", "utf8");
@@ -69,6 +79,13 @@ describe("injectKeyIntoEsp on a real ISO copy", () => {
       } finally {
         closeSync(fd);
       }
+      // THE RE-OPEN IS THE ASSERTION. CodeQL reports this as
+      // `js/file-system-race` (alert #256) because `tmp` was opened "r+" seven
+      // lines up. Reusing that handle would assert only that the bytes this
+      // test wrote are the bytes this test wrote -- exactly the vacuous check
+      // this line exists to avoid. `tmp` lives inside a 0700 `mkdtempSync`
+      // directory created for this test alone, so there is no second writer to
+      // race with.
       const fd2 = openSync(tmp, "r"); // re-open fresh: prove it persisted to the file
       try {
         expect(verifyKeyInEsp(fd2, body)).toBe(true);
@@ -76,7 +93,7 @@ describe("injectKeyIntoEsp on a real ISO copy", () => {
         closeSync(fd2);
       }
     } finally {
-      rmSync(tmp, { force: true });
+      rmSync(tmpDir, { recursive: true, force: true });
     }
   });
 });

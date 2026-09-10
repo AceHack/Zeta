@@ -104,21 +104,51 @@ they would fit. They are synced today by explicit steps in `gate.yml` and
 
 ## Project-specific binary artifacts
 
-The two verifier jars are COMMITTED to git (#8053), not downloaded: the
-toolchain is byte-pinned by the diff. Their version and sha256 below are
-DERIVED from the jars themselves and checked by
-`src/Core.TypeScript/hygiene/lint-verifier-jar-provenance.ts`; edit the jar
-and this table fails until it is updated. TLC composes its banner from the
-build timestamp and short rev, so the version below is exactly what
-`java -cp src/Core.TLA/tla2tools.jar tlc2.TLC` prints.
+Both verifier jars are now **fetched and digest-pinned**, and
+`src/Core.TypeScript/hygiene/lint-verifier-jar-provenance.ts` checks both — edit
+a jar, a pin, or this table out of agreement and it fails.
+
+- **Alloy is FETCHED** by `tools/setup/install.sh` from a digest-pinned row in
+  `tools/setup/manifests/from-url`; the digest is the pin, verified before the
+  file is put in place and re-verified on every subsequent run. MEASURED
+  2026-09-09: those bytes are **byte-identical** to the jar that used to be
+  committed, and v6.2.0 is the latest Alloy release, so de-vendoring changed the
+  verifier by exactly nothing.
+- **TLA+ is FETCHED under the ROLLING regime** (081M23ESC5B087G0R002HJ39DG).
+  `tlaplus` tags `v1.8.0` as a prerelease whose `tla2tools.jar` asset is
+  re-uploaded in place, so the row carries `rolling=` in addition to its digest.
+  The digest still fails closed on every rebuild — the point of the pin under a
+  mutable tag is DETECTION, not permission — and the remedy is
+  `bun tools/setup/repin-rolling.ts src/Core.TLA/tla2tools.jar`, which re-runs
+  all 52 gate models against the new bytes and refuses to move the pin unless
+  they pass. Bumping the digest by hand is the failure the whole regime exists
+  to stop: it swaps the model checker under every claim the model checker
+  established. The immutable alternative, v1.7.4 (2024-08-05), was declined
+  because it passes only 51/52 — it prints the generic
+  `Temporal properties were violated.` where 1.8.0 names _which_ property, and
+  the registry pins that discrimination as `expectDetail`. tla2tools is not on
+  Maven Central, so there is no immutable coordinate for the newer build.
+  MEASURED 2026-09-09: the tag served two different builds three hours apart,
+  so expect this pin to move roughly weekly rather than monthly.
+
+TLC composes its banner from the build timestamp and short rev, so the version
+below is exactly what `java -cp src/Core.TLA/tla2tools.jar tlc2.TLC` prints. It
+is derived from the bytes, never hand-typed.
 
 | Artifact                  | Version              | Path                                     | Why                                                      | Install command                                                                                                                               |
 | ------------------------- | -------------------- | ---------------------------------------- | -------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
-| **TLA+ / TLC** | `TLC2 Version 2026.05.18.174321 (rev: 8ba1027)` | `src/Core.TLA/tla2tools.jar` | Model-check every `src/Core.TLA/specs/*.tla` spec in CI | Committed to git; sha256 `71546dff3897a01b0ee4fa64135d9f5e9384d2b7e47b3cc20a16b655b0eb4f86` |
-| **Alloy** | `6.2.0.202501090817 (rev: 794226d)` | `src/Core.Alloy/alloy.jar` | Bounded-model structural invariants (Spine sizeDoubling) | Committed to git; sha256 `6b8c1cb5bc93bedfc7c61435c4e1ab6e688a242dc702a394628d9a9801edb78d` -- byte-identical to upstream v6.2.0 `org.alloytools.alloy.dist.jar` |
+| **TLA+ / TLC** | `TLC2 Version 2026.09.09.213036 (rev: ede5b88)` | `src/Core.TLA/tla2tools.jar` (gitignored) | Model-check every `src/Core.TLA/specs/*.tla` spec in CI | `tools/setup/install.sh` fetches the tlaplus v1.8.0 `tla2tools.jar` asset, pinned sha256 `8836549e83db7f0b3f9fdde679ab56270d18e06198366d217d960738c02b9dbe`, `rolling=` (re-pin with `tools/setup/repin-rolling.ts`) |
+| **Alloy** | `6.2.0.202501090817 (rev: 794226d)` | `src/Core.Alloy/alloy.jar` (gitignored) | Bounded-model structural invariants (Spine sizeDoubling) | `tools/setup/install.sh` fetches upstream v6.2.0 `org.alloytools.alloy.dist.jar`, pinned sha256 `6b8c1cb5bc93bedfc7c61435c4e1ab6e688a242dc702a394628d9a9801edb78d` |
 | **Feldera (cloned)**      | 0.342.0 `48312b6` (main, 2026-09-01) | `references/prior-art/feldera/` (gitignored) | Apples-to-apples Nexmark; MSRV 1.93.1, build with factory rust 1.99.0-beta.3 | `git clone --depth 1 https://github.com/feldera/feldera.git` |
 | **CTFP book (Milewski)**  | v1.3.0 PDF           | `docs/category-theory/ctfp-milewski.pdf` | Required-reading category theory reference               | `curl -sL -o ... https://github.com/hmemcpy/milewski-ctfp-pdf/.../category-theory-for-programmers.pdf`                                        |
 | **CTFP .NET (Bouderaux)** | archived snapshot    | `docs/category-theory/ctfp-dotnet/`      | F#/C# CT examples (no upstream tracking, .git stripped)  | `git clone ... && rm -rf .git .github`                                                                                                        |
+
+TLC's macOS ARM64 invocation uses C1-only compilation through the shared
+`registry/tlc-models.json` platform entry. The
+[2026-09-07 policy record](research/2026-09-07-tlc-macos-c1-policy.md) preserves
+the earlier failures, two complete controlled diagnostics and the limits of
+this workaround. The Java version and committed verifier jar remain pinned
+as listed above.
 
 ## dotnet global tools
 
@@ -176,7 +206,8 @@ audit is idempotent; `⚠ bump available` lines are actionable.
 # devcontainer). See
 # memory/feedback_install_script_is_preferred_update_method_2026_04_24.md.
 # .NET, Java, Rust, Python, and the other language runtimes come from `.mise.toml`.
-# SDKs + dotnet-stryker + elan (the TLC/Alloy jars are committed, not installed):
+# SDKs + dotnet-stryker + elan + both digest-pinned verifier jars (the TLC jar is
+# committed, not installed — see "Project-specific binary artifacts" above):
 ./tools/setup/install.sh            # reads .mise.toml + global.json pins
                                     # (CI-parity form; same as `bash tools/...`
                                     # but catches missing exec-bit / shebang
@@ -230,3 +261,28 @@ file builds green. See DEBT.md.
 - 2026-04-17 — bumped Meziantou 2→3, Test.Sdk 17→18, BenchmarkDotNet 0.15.4→0.15.8, System.Reactive 6.0.1→6.1.0, Apache.Arrow 22.0.0→22.1.0
 - 2026-04-17 (round 17) — added Lamport TLA+ book, an imported 81-entry upstream reference list from prior research, Adam Shostack EoP card game, `docs/security/THREAT-MODEL-SPACE-OPERA.md`, `docs/security/THREAT-MODEL.md`, `docs/security/SDL-CHECKLIST.md`, `docs/FAMILY-EMPATHY.md`, `docs/TECH-RADAR.md`, `docs/LOCKS.md`, `docs/PRIOR-ART-LIST.md`, `docs/DECISIONS/2026-04-17-lock-free-circuit-register.md`. Shipped 6 new code-owner skills (storage / algebra / query-planner / complexity / threat-model-critic / paper-peer-reviewer). Shipped `src/Core/BloomFilter.fs` (blocked + counting, cutting-edge) and `src/Core/Durability.fs` (DurabilityMode DU + WitnessDurableBackingStore skeleton). Added 5 SDL-derived Semgrep rules. Fixed 6 harsh-critic P0s (SpeculativeWatermark logic inversion, Hierarchy Comparer boxing, FastCdc O(n²) buffer scan, Residuated O(n) rebuild, ClosurePair Equals/GetHashCode mismatch, Hierarchy RecursiveSemiNaive monotonicity leak). Added 22 new tests in `Round17Tests.fs`; total suite 471 passing, 0 warnings, 0 errors.
 - 2026-04-17 (round 20) — Lean 4 + Mathlib chain-rule scaffold: `proofs/lean/lakefile.lean` now declares the Mathlib dep at tag `v4.12.0`, `proofs/lean/lean-toolchain` pins `leanprover/lean4:v4.12.0`, and `proofs/lean/ChainRule.lean` was expanded from a one-`sorry` stub to a named-sub-lemma skeleton (six discrete `sorry` goals + three closed lemmas). `proofs/lean/README.md` + `docs/research/mathlib-progress.md` document the sub-goals, effort estimates, and build gate. Flipped the Lean/elan INSTALLED row from "install on demand" to "install next round". `lake build` not verified locally — toolchain install is the round-21 opener.
+
+## Local character reconstruction research (2026-09-08)
+
+Installed in `/Users/acehack/Documents/Blender/Character-Learning-Lab`, separate
+from Zeta runtime dependencies. Source revisions and the resolved Python package
+list are retained with the character experiment; these are opt-in local tools.
+
+| Tool | Version / source revision | Purpose and installation |
+| --- | --- | --- |
+| TripoSR | `107cefdc244c39106fa830359024f6a2f1c78871` | Official Git clone; MIT single-image reconstruction model/code. Isolated Python 3.11 venv with pip dependencies. Model revision `5b521936b01fbe1890f6f9baed0254ab6351c04a`; checkpoint hash verified. |
+| torchmcubes | `3381600ddc3d2e4d74222f8495866be5fafbace4` | Local pip build for CPU mesh extraction. CMake C++ standard changed from 17 to 20 for installed PyTorch headers; patch retained. |
+| Hunyuan3D-Swift | `292331f4d26ddb80b9dcea6bcb5629ff82f12b82` | `swift build -c release` succeeded under Apple Swift 6.3.3. Model not run: output-use restrictions conflict with training another model from this evolution. |
+| MPFB | 2.0.17 source, `437dd513888a92399d1d3200d2e80859fae55abc` | Prior character revision used a local source checkout and MakeHuman system assets. Preserved in the anatomy archive with GPLv3 code / CC0 asset provenance; not installed as a global Blender extension. |
+
+The [character evolution record](research/2026-09-08-character-evolution/README.md)
+indexes the source, archive checks and remaining visual-quality limitations.
+
+TripoSG was subsequently installed in `Character-Learning-Lab/venv-sg` from
+source `fc5c40990181e2a756c4e0b1c2f4d6b5202faf8c`, with its MIT model at
+`2c1c516d22d58db486a058d98d31bb6177344e06`. Local inference uses Apple MPS,
+Diffusers 0.32.2, Transformers 4.48.3, PEFT 0.14.0 and PyTorch 2.14.0. The
+non-flash path avoids `diso`; the local patch and resolved dependencies are
+retained in the third character-study archive. U2Net was explicitly selected
+for masks after discovering rembg's newer default was BRIA RMBG 2.0; that
+default-mask intermediate is quarantined from unrestricted training.

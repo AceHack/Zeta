@@ -1,0 +1,66 @@
+{
+  "ArchiveMembers": 562,
+  "OriginalBytes": 3651442,
+  "Archive": {
+    "File": "custody.tar.gz",
+    "Bytes": 647003,
+    "Sha256": "1860339907378E047EBEA740713CB7493ED9A4EC0AC61567656F86023964297E"
+  },
+  "SourceFiles": [
+    {
+      "Path": "src/Interp.Python/zeta_interp/mixed_message_epoch_bridge.py",
+      "Bytes": 199844,
+      "Sha256": "2A6154EB842116837843E8E100AB08CF4A4C735C635ED693E8C3F58E11B4961B"
+    },
+    {
+      "Path": "src/Interp.Python/zeta_interp/mixed_message_epoch_controls.py",
+      "Bytes": 16771,
+      "Sha256": "03ED13D4D860D1E3B61B73AF265B7C65A8251B258623C16B1B1ED28EC6C51711"
+    },
+    {
+      "Path": "src/Interp.Python/tests/test_mixed_message_epoch_bridge.py",
+      "Bytes": 68585,
+      "Sha256": "1A533E6F2B1A17F8945B7C90E7BF3185411296756EAC16487327883CB74E9EDE"
+    },
+    {
+      "Path": "docs/research/2026-09-08-mixed-message-withdrawal-admission-clarification.md",
+      "Bytes": 4448,
+      "Sha256": "99576A0F9113839905463FF43CB35FF224524EDF8C207F38C7089984E7914DEE"
+    }
+  ],
+  "FilesystemNodes": 737,
+  "SymlinksRecorded": 40,
+  "AllMembersAndOriginalsMatched": true,
+  "FinalPythonSourceEqualsAllThreeCaptures": true,
+  "ClarificationEqualsOriginalRootGitBytes": true,
+  "RepositoryCommands": [
+    {
+      "Invocation": {
+        "Argv": [
+          "bun",
+          "run",
+          "preflight"
+        ],
+        "Cwd": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906"
+      },
+      "Completion": {
+        "ExitCode": 0,
+        "ElapsedSeconds": 590.2845539590053
+      }
+    },
+    {
+      "Invocation": {
+        "Argv": [
+          "dotnet",
+          "format",
+          "--verify-no-changes"
+        ],
+        "Cwd": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906"
+      },
+      "Completion": {
+        "ExitCode": 0,
+        "ElapsedSeconds": 17.504133915994316
+      }
+    }
+  ]
+}

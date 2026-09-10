@@ -1,0 +1,14 @@
+{
+  "id": "080d03e3d7e6a810a0130008879987da",
+  "at": "2026-09-07T15:27:10.037Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1Y7NZ6M087G0R0024N3NFT",
+    "type": "task",
+    "title": "Record where charts block zero-downtime credential rotation and what it costs",
+    "slug": "record-where-charts-block-zero-downtime-credential-rotation",
+    "priority": "P2",
+    "filename": "081M1Y7NZ6M087G0R0024N3NFT-record-where-charts-block-zero-downtime-credential-rotation.md"
+  }
+}

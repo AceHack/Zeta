@@ -1,0 +1,14 @@
+{
+  "id": "080d03c20bc5b010a013000818802f22",
+  "at": "2026-09-06T19:45:51.798Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1W42Y5N087G0R000N22236",
+    "type": "task",
+    "title": "Formalize relational receipt invariants and identity workload multiplier",
+    "slug": "formalize-relational-receipt-invariants-and-identity-workloa",
+    "priority": "P2",
+    "filename": "081M1W42Y5N087G0R000N22236-formalize-relational-receipt-invariants-and-identity-workloa.md"
+  }
+}

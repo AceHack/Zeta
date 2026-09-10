@@ -1,0 +1,46 @@
+{
+  "Accepted": true,
+  "ArchiveCut": "61f8e14ba9f89e790dce635ce5c86db5c619b63c",
+  "PreparedCopies": 4,
+  "NativeCallPaths": 81,
+  "PrelaunchSourceAndNativeObservations": 52,
+  "PrelaunchRemoteObservations": 2,
+  "DerivedRowsMatched": 88,
+  "AnalyticCenterContainments": [
+    {
+      "CaseId": "core/center",
+      "Mean": "-1/4",
+      "Variance": "1/2"
+    },
+    {
+      "CaseId": "core/displaced",
+      "Mean": "-1/8",
+      "Variance": "1/4"
+    },
+    {
+      "CaseId": "core/small-ratio",
+      "Mean": "-1/2",
+      "Variance": "1"
+    },
+    {
+      "CaseId": "core/large-ratio",
+      "Mean": "-1/2",
+      "Variance": "1"
+    },
+    {
+      "CaseId": "core/small-scale",
+      "Mean": "-8",
+      "Variance": "16"
+    },
+    {
+      "CaseId": "core/large-scale",
+      "Mean": "-1/64",
+      "Variance": "1/32"
+    },
+    {
+      "CaseId": "core/wide-variance",
+      "Mean": "-256",
+      "Variance": "512"
+    }
+  ]
+}

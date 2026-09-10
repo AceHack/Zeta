@@ -1,0 +1,50 @@
+{
+  "Scope": "full local gate on exact prerequisite publication source and final documentation-only release",
+  "GateSourceCommit": "2d1aff7686823c050fad8e093ac89a3180f29b48",
+  "MainBase": "fe90e36e80be59da23cc6c382b8bf377a75349f9",
+  "RootSourceCutoff": "f6830f83cbafd6b1a992a8a9bdf6bb1db87dd3fa",
+  "ExecutedChecks": 18,
+  "PassedChecks": 18,
+  "Artifacts": [
+    {
+      "File": "prerequisites-full-preflight-1.log.gz",
+      "Bytes": 1362,
+      "Sha256": "C7561CF0E5DD61E406CFFAE95B49151DD32602169A68889A2FDB2068E889768D",
+      "Encoding": "gzip",
+      "StoredBytes": 437,
+      "StoredSha256": "D7A238CFB20BA29F3E750C607FF137CE2206E09A382C0D2AE1B065EB37403D40"
+    },
+    {
+      "File": "prerequisites-publication-claim-push-1.log.gz",
+      "Bytes": 1987,
+      "Sha256": "DEC30E6604231C4BFE4F7693941BF8CB2B5D7D1BC11931A14F6372B259D0EC04",
+      "Encoding": "gzip",
+      "StoredBytes": 708,
+      "StoredSha256": "5A9D7741F47CDFF947AEEC904896C0B5EEBDE303B98A98739104E33299B3DFC8"
+    },
+    {
+      "File": "prerequisites-integration-1.log.gz",
+      "Bytes": 118,
+      "Sha256": "7D679287B26CE92AA96B30D52A1C93F32A6F648C7666E69560C72EAE6F327723",
+      "Encoding": "gzip",
+      "StoredBytes": 112,
+      "StoredSha256": "B4C12F403DD1AAD904235CAED5380872FFEB52D38D619E213E0D96FB6B994522"
+    },
+    {
+      "File": "prerequisites-review-import-1.log.gz",
+      "Bytes": 830,
+      "Sha256": "9127F97D6982CD9EFB0FE1AC1D9B189EC23BE037A5A35508CEA7B5BBBD9B0B76",
+      "Encoding": "gzip",
+      "StoredBytes": 280,
+      "StoredSha256": "3F0238F7CE789FE1DD718C45E924F57E34577FD39D005AD0C930CD639DF67C7B"
+    },
+    {
+      "File": "prerequisites-task-completion.log.gz",
+      "Bytes": 333,
+      "Sha256": "AB08839B5CF085FB2715DA88C19340BD313D781CE1580406E493977F9D4A7746",
+      "Encoding": "gzip",
+      "StoredBytes": 195,
+      "StoredSha256": "CB8D0129C948CBBB78D0A5EA17BA5895C1F249A17E2A3C56580EDFA533F823E5"
+    }
+  ]
+}

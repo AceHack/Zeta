@@ -1,0 +1,12 @@
+{
+  "pr_number": 16878,
+  "archive_path": "docs/history/pr-reviews/PR-16878-test-research-strengthen-sampled-rnn-allocation-validation.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-06T22:34:21.671Z",
+  "schema_version": "v1",
+  "commit_sha": "09117d8b505158f2a0deec9d7d193334e3e5f269",
+  "title": "test(research): Strengthen sampled RNN allocation validation",
+  "state": "MERGED",
+  "merged_at": "2026-09-06T22:33:38Z",
+  "head_ref": "codex/rendered-predictor-validation-20260906"
+}

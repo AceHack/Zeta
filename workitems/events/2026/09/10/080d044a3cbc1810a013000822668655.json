@@ -1,0 +1,14 @@
+{
+  "id": "080d044a3cbc1810a013000822668655",
+  "at": "2026-09-10T03:06:05.571Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M24MF5W3087G0R0004ZZ208",
+    "type": "bug",
+    "title": "The cancellation falsifier measured the wrong thing: rate, not started jobs",
+    "slug": "the-cancellation-falsifier-measured-the-wrong-thing-rate-not",
+    "priority": "P2",
+    "filename": "081M24MF5W3087G0R0004ZZ208-the-cancellation-falsifier-measured-the-wrong-thing-rate-not.md"
+  }
+}

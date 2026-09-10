@@ -1,11 +1,32 @@
 # Mechanism: from-installer — vendor install script (HTTPS) → PATH binary.
-# Format: <detect-binary>  <installer-url>  [interp=bash|sh]  [os=mac,linux]  [args=...]
+# Format: <detect-binary>  <installer-url>  <pin>  [interp=bash|sh]  [os=mac,linux]  [args=...]
+#
+# THE PIN IS MANDATORY, and it is one of three things (081M25Z29W4087G0R002Y0Q1MG):
+#
+#   sha256=<64-hex>                     the bytes are verified before the script is EXECUTED,
+#                                       and a mismatch means it is never spawned.
+#   sha256=tag-only  tagonly=<reason>   the URL carries a version-shaped tag and we pin the tag
+#                                       instead of the digest.
+#   sha256=unpinned  unpinned=<reason>  the endpoint has no version at all. The weakest claim,
+#                                       and it is REFUSED on a URL that does have a version tag.
+#
+# The reason is a VALUE, never a comment: a comment is copied along with the line it excuses.
+# Same vocabulary as from-url / from-elan / from-autotools-tarball — see
+# `src/Core.TypeScript/ace/setup-realizers/unhashed-pin.ts`. Every declared row appears in
+# `docs/UNHASHED-DEPENDENCIES.md`, which is derived, not hand-kept.
+#
+# WHAT THIS MECHANISM DOES, said plainly, because it is why the declaration matters most here:
+# it downloads a shell script over HTTPS and runs it with the operator's privileges. Until
+# 2026-09-10 there was no digest slot in this format, so all six rows below were unverified and
+# nothing in the tree recorded that. They are unverified still — vendor CLIs publish no stable
+# artifact — but the exposure is now declared, counted, and printed at install time instead of
+# being the silent default.
 #
 # Best-effort dev CLIs; non-interactive runs skip unless ZETA_INSTALL_FULL=1.
 
-grok          https://x.ai/cli/install.sh
-cursor-agent  https://cursor.com/install
-kiro-cli      https://cli.kiro.dev/install                                                            os=mac
-hermes        https://raw.githubusercontent.com/NousResearch/hermes-agent/main/scripts/install.sh    args=--skip-setup
-forge         https://forgecode.dev/cli                                                               interp=sh
-agy           https://antigravity.google/cli/install.sh
+grok          https://x.ai/cli/install.sh                                                            sha256=unpinned  unpinned=xai-serves-one-unversioned-install-endpoint-and-publishes-no-release-artifact
+cursor-agent  https://cursor.com/install                                                             sha256=unpinned  unpinned=cursor-publishes-a-single-rolling-install-endpoint-with-no-version-in-the-path
+kiro-cli      https://cli.kiro.dev/install                                                           sha256=unpinned  unpinned=kiro-cli-endpoint-is-unversioned-and-upstream-publishes-no-tagged-installer    os=mac
+hermes        https://raw.githubusercontent.com/NousResearch/hermes-agent/main/scripts/install.sh    sha256=unpinned  unpinned=installer-is-served-from-the-main-branch-so-there-is-no-tag-and-no-stable-digest    args=--skip-setup
+forge         https://forgecode.dev/cli                                                              sha256=unpinned  unpinned=forgecode-serves-one-rolling-cli-endpoint-with-no-versioned-path    interp=sh
+agy           https://antigravity.google/cli/install.sh                                              sha256=unpinned  unpinned=antigravity-serves-one-unversioned-install-endpoint-per-release-channel

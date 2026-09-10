@@ -48,7 +48,7 @@ on:
     types: [completed]
 
 permissions:
-  actions: write
+  contents: read
 
 concurrency:
   # Per-run key: two different cancelled gate runs must be evaluated
@@ -58,6 +58,9 @@ concurrency:
 
 jobs:
   rerun:
+    permissions:
+      # NARROWED to job level 2026-09-09. Re-runs the cancelled gate.
+      actions: write
     name: rerun cancelled gate run
     # Only `cancelled` reaches the runner. `failure` is deliberately excluded:
     # re-running a genuine failure converts a real red into a flaky green, which

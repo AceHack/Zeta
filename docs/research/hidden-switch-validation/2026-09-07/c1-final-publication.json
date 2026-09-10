@@ -1,0 +1,31 @@
+{
+  "VerifiedAtUtc": "2026-09-07T12:37:04.077222+00:00",
+  "PullRequest": {
+    "headRefOid": "e2a11ebc9ca5e94c02656e904ddef9ba1b4f32f5",
+    "mergeCommit": {
+      "oid": "536570576cfb980f6303be2040d8d3034b2ac13d"
+    },
+    "mergedAt": "2026-09-07T12:28:36Z",
+    "state": "MERGED",
+    "url": "https://github.com/Lucent-Financial-Group/Zeta/pull/16917"
+  },
+  "MainAncestryVerified": true,
+  "SourceBytesMatchCheckedHead": {
+    "registry/tlc-models.json": "1ED72341EAB59F78243F82781A837E4177BF67B61C55672D4BBCC75DF91EA4A8",
+    "src/Core.TypeScript/formal-verification/tlc-invocation.ts": "FB7AEE273A2C52BC100EE99EF4C9C8CCC807E9906D0C9F2B793ED2B27D3BB8BB",
+    "src/Core.TypeScript/formal-verification/tlc-invocation.test.ts": "F3CDD30AC2221F03F3CE60AFEB7A971BE57963FA558E50CF68C5D2971B9B05F4",
+    "tests/Tests.FSharp/Formal/Tlc.Runner.Tests.fs": "F3B974FE0BBD0A599BAEF0F8C0C44F9FB4740BB39CE0F51724520863CD4492DE",
+    "src/Core.Python/src/zeta/nci_witness_receipt_oracle.py": "AFC856A1A5AEB989577DD51C4397DD576F3CE76CBAA59A270EC7F68F8694D0BB",
+    "src/Core.Python/tests/test_nci_witness_receipt_oracle.py": "025AD5E89DFC6D329E4FF80CC9F1839E9AFD67174B1059E9E2D23774CB95CFA1",
+    "src/Core.TypeScript/formal-verification/nci-witness-receipt.test.ts": "EA73C978D015DA6DC824E9CDB8DDD7469171420A3F502A304702562314D9EEA5",
+    "src/Core.TypeScript/formal-verification/nci-witness-capability.test.ts": "8DBCADABEB2EF5EB9706FB7AC73061D8C6D60E766A981F7983DD81D1D9FA197C"
+  },
+  "PublicationOwnerVerifiedFinalRollup": {
+    "Success": 93,
+    "Skipped": 6,
+    "Failure": 1,
+    "Pending": 0,
+    "FailureScope": "nonblocking historical drift(loud) Windows ledger"
+  },
+  "ReviewDisposition": "CodeQL unreachable assertion false positive: retained line85/86 execution witness and independent reviews; resolved without source changes"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 17059,
+  "archive_path": "docs/history/pr-reviews/PR-17059-feat-081m20ydmyh087g0r002nxbfwn-reuse-prefix-jumprope-chunks-on-overwrite.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-08T17:14:18.914Z",
+  "schema_version": "v1",
+  "commit_sha": "fd23c1b04f420ddb34acc51f42a5faa83dbbea5a",
+  "title": "feat(081M20YDMYH087G0R002NXBFWN): reuse prefix Jumprope chunks on overwrite",
+  "state": "MERGED",
+  "merged_at": "2026-09-08T17:13:27Z",
+  "head_ref": "feat/zetafs-d9-reuse-prefix"
+}

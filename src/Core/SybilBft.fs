@@ -1,58 +1,46 @@
 namespace Zeta.Core
 
-/// **`SybilBft` — Byzantine fault tolerance whose quorum counts *distinct sources*, not *claimed identities*
-/// (Aaron 2026-06-08: "the start of a unique BFT").**
+/// Reference quorum arithmetic over the correlation components reported by `AntiSybil`.
+/// Each component contributes one agreed value, or is excluded if its claims disagree.
+/// Nonempty exact/complemented replay records collapse at thresholds at most one.
 ///
-/// Classical BFT (PBFT, HotStuff) assumes `n` participants are *already distinct* and needs `n ≥ 3f+1`,
-/// quorum `2f+1`. The unhandled attack underneath that assumption is **Sybil**: one Byzantine node forging
-/// `k` identities votes `k` times, inflating `n` and breaking the `f < n/3` bound. Permissionless chains
-/// patch this *economically* (PoW/PoS make each identity expensive). This module patches it **physically**:
-/// the quorum is taken over the **distinct entropy sources** found by `AntiSybil` (non-fungible drift, #7091),
-/// so forged identities collapse to the one clock that produced them *before* votes are counted.
-///
-/// **Anti-Sybil comes first, then voting** — that ordering is the novelty (the prior-art search 2026-06-08
-/// found PoW/PoS-gated committees and "consensus on the honest identity set," but none deriving the quorum
-/// from a physical proof-of-distinctness). The classical bound is recovered exactly, but on `d` = distinct
-/// sources rather than `k` = claims: safety needs `d ≥ 3f+1`, quorum `2f+1` distinct sources.
-///
-/// **Honest scope (peel):** inherits `AntiSybil`'s scope — sound against *exact* identity-replay; noisy
-/// forgeries sit on the detection/length curve. An **equivocating** source (same clock, conflicting votes
-/// across its claims) is detected and excluded — it cannot have its conflicting votes both counted, which is
-/// the other half of Byzantine behaviour. This is a *reference model*, not a wire protocol: no network,
-/// timeouts, view-change, or leader election yet. Route the adversary model to Aminata/Mateo; do not claim
-/// "a new BFT" outward before naming-expert + Ilyana + human review.
+/// Component count does not establish independent entropy or distinct controllers:
+/// balanced recodings of one shared stream can contribute multiple votes. Consequently
+/// the `2f+1` arithmetic is conditional on an external membership/admission and fault
+/// model; this module does not prove BFT safety or resistance to general Sybil attacks.
+/// The TLA+ model's given `SameId` relation is not implemented by this statistic.
 module SybilBft =
 
-    /// A vote: a *claimed* identity, the drift bit-stream that is supposed to certify its distinctness, and
-    /// the value it votes for.
+    /// A claimed identity, a supplied bit-stream observation, and a vote value.
+    /// The stream does not authenticate the claim or certify physical distinctness.
     type Vote<'v when 'v: comparison> =
         { Claimed: int
           Stream: int list
           Value: 'v }
 
-    /// How a distinct source voted after collapsing its claims.
+    /// How a correlation component voted after grouping its claims.
     type SourceVote<'v when 'v: comparison> =
-        | Agreed of 'v // all of this source's claims voted the same value — one honest-shaped vote
-        | Equivocated // this source's claims disagree — detected Byzantine equivocation, excluded from quorum
+        | Agreed of 'v // all component claims supply one value
+        | Equivocated // component claims disagree; excluded without inferring intent or provenance
 
-    /// Result of tallying votes by distinct source.
+    /// Result of tallying votes by observed component; source-named fields retain that meaning.
     type Tally<'v when 'v: comparison> =
-        { /// Distinct entropy sources detected (`AntiSybil.DistinctCount`) — the *real* `n` for the BFT bound.
+        { /// Number of observed correlation components (`AntiSybil.DistinctCount`).
           DistinctSources: int
-          /// Source id → how it voted (agreed value, or equivocated).
+          /// Invocation-local component id to agreed value or disagreement.
           BySource: Map<int, SourceVote<'v>>
-          /// Value → number of **distinct, non-equivocating** sources that voted for it.
+          /// Value to number of components with unanimous claims for that value.
           VotesByValue: Map<'v, int>
-          /// Distinct sources caught equivocating (Byzantine).
+          /// Number of components containing different vote values.
           Equivocators: int }
 
-    /// Tally `votes` by distinct source: collapse Sybil-correlated claims via `AntiSybil` (`threshold`), then
-    /// give **one** vote per distinct source — `Agreed v` if all its claims voted `v`, else `Equivocated`.
-    /// This is the anti-Sybil-first step: vote-stuffing collapses before counting.
+    /// Group votes by the correlation-threshold graph, then count one vote for each component
+    /// with a unanimous value. This limits identical record replay; deterministic recoding can
+    /// evade grouping. `Claimed` is not used for admission or authentication here.
     let tally (threshold: float) (votes: Vote<'v> list) : Tally<'v> =
         let streams = votes |> List.map (fun v -> v.Stream)
         let verdict = AntiSybil.antiSybil threshold streams
-        // Group claim indices by their detected source.
+        // Group input indices by their observed correlation component.
         let bySource =
             votes
             |> List.mapi (fun i v -> verdict.SourceOf.[i], v.Value)
@@ -78,18 +66,19 @@ module SybilBft =
           VotesByValue = votesByValue
           Equivocators = equivocators }
 
-    /// The Byzantine quorum size for `f` tolerated faulty sources: `2f+1`.
+    /// Quorum arithmetic for a caller-supplied fault budget: `2 * max(0,f) + 1`.
     let quorumSize (f: int) : int = 2 * (max 0 f) + 1
 
-    /// The max faulty sources the classical bound tolerates given `d` distinct sources: `⌊(d-1)/3⌋`.
+    /// Fault-budget arithmetic from a supplied participant count; the caller must justify that count.
     let maxFaults (distinctSources: int) : int = (max 0 distinctSources - 1) / 3
 
-    /// Does `value` have a `2f+1` quorum of **distinct** sources? (Sybil inflation already collapsed.)
+    /// Does `value` have at least `2f+1` unanimous component votes? No admission premise is checked.
     let hasQuorum (f: int) (value: 'v) (t: Tally<'v>) : bool =
         (t.VotesByValue |> Map.tryFind value |> Option.defaultValue 0) >= quorumSize f
 
-    /// The decided value, if any single value holds a `2f+1` distinct-source quorum. `f` is derived from the
-    /// distinct-source count (`maxFaults`), so the bound tracks *real* participants, not claimed ones.
+    /// First value in comparison order meeting the component-derived quorum, if any.
+    /// This reference arithmetic derives `f` from observed components; it does not establish
+    /// their controller distinctness or supply a protocol agreement proof.
     let decide (t: Tally<'v>) : 'v option =
         let f = maxFaults t.DistinctSources
         let q = quorumSize f

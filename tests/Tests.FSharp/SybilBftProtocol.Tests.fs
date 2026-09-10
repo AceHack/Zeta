@@ -31,7 +31,7 @@ let ``Pending→Committed announces exactly one Decision`` () =
     Assert.Equal<Message<string>>(Decision "commit", List.head decisions)
 
 [<Fact>]
-let ``THE GUARANTEE at protocol level: one clock forging 5 ids cannot drive the decision`` () =
+let ``five exact record copies cannot drive the configured quorum in the seeded fixture`` () =
     let evil = bits 9 500
     let inbox =
         [ propose 0 evil "evil"
@@ -46,7 +46,7 @@ let ``THE GUARANTEE at protocol level: one clock forging 5 ids cannot drive the 
     Assert.Equal(Some "good", committed v) // forged majority collapses to 1 source; honest 3 decide
 
 [<Fact>]
-let ``delivery-order independent: same vote set commits the same value (DST)`` () =
+let ``reversing the unanimous seeded fixture inbox preserves its committed value`` () =
     let inbox = honestInbox "x"
     let a, _ = receiveAll (init 4 0.5) inbox
     let b, _ = receiveAll (init 4 0.5) (List.rev inbox)
@@ -65,9 +65,9 @@ let ``decision is final / idempotent: later conflicting votes cannot unset or ch
     Assert.True(List.isEmpty (out |> List.filter (function Decision _ -> true | _ -> false)))
 
 [<Fact>]
-let ``the safety fix: a lone forged source (5 ids, 1 clock) does NOT commit prematurely`` () =
+let ``fixed quorum refuses five identical record claims before other component votes arrive`` () =
     // Before the membership-quorum fix this committed "evil" (d=1 ⇒ quorum 1). With Members=4 the quorum is
-    // fixed at 3, so one distinct source can never decide no matter how many ids it forges.
+    // fixed at 3, so these identical record copies contribute only one of the needed votes.
     let evil = bits 9 500
     let onlyEvil = [ for i in 0 .. 4 -> ballot i evil "evil" ]
     let v, out = receiveAll (init 4 0.5) onlyEvil
@@ -79,3 +79,23 @@ let ``informational Decision message does not affect the local tally`` () =
     let v, out = receive (init 4 0.5) (Decision "ignored")
     Assert.Equal(None, committed v)
     Assert.True(List.isEmpty out)
+
+[<Fact>]
+let ``one shared state recoded with three masks reaches the configured protocol quorum`` () =
+    let shared = [ 1; 0; 1; 1 ]
+    let masks = [ [ 0; 0; 0; 0 ]; [ 0; 1; 0; 1 ]; [ 0; 0; 1; 1 ] ]
+    let inbox =
+        masks |> List.mapi (fun i mask -> ballot i (List.map2 (^^^) shared mask) "one-controller")
+    let view, _ = receiveAll (init 4 0.5) inbox
+    Assert.Equal(3, quorum view)
+    Assert.Equal(Some "one-controller", committed view)
+
+[<Fact>]
+let ``sticky commitment and claim updates can preserve different decisions for the same final heard map`` () =
+    let record = [ 0; 1; 0; 1 ]
+    let a, b, last = ballot 0 record "A", ballot 0 record "B", ballot 0 record "last"
+    let left, _ = receiveAll (init 1 0.5) [ a; b; last ]
+    let right, _ = receiveAll (init 1 0.5) [ b; a; last ]
+    Assert.Equal<Map<int, Vote<string>>>(left.Heard, right.Heard)
+    Assert.Equal(Some "A", committed left)
+    Assert.Equal(Some "B", committed right)

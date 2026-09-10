@@ -1,0 +1,90 @@
+import bpy,bmesh,math,json
+from pathlib import Path
+from mathutils import Vector
+ROOT=Path(__file__).resolve().parent
+SOURCE=ROOT.parent/'Character-Evolution-20260909/delivery-v5/AceHack-Xenaa-Evolution-20260909.blend'
+bpy.ops.wm.open_mainfile(filepath=str(SOURCE));scene=bpy.context.scene
+# Work from the static atelier only; previous archive stays immutable.
+for sc in list(bpy.data.scenes):
+ if sc!=scene:bpy.data.scenes.remove(sc)
+scene.name='01 | Rebuilt joins'
+records=[]
+def material(name,color,rough=.72):
+ m=bpy.data.materials.new(name);m.use_nodes=True;b=m.node_tree.nodes.get('Principled BSDF');b.inputs['Base Color'].default_value=(*color,1);b.inputs['Roughness'].default_value=rough;b.inputs['Specular IOR Level'].default_value=.2
+ return m
+for name,H in [('AceHack',1.9),('Xenaa',1.82)]:
+ head=bpy.data.objects[name+' | Independent head generator'];body=bpy.data.objects[name+' | Body generator']
+ bpy.context.view_layer.objects.active=head
+ for mod in list(head.modifiers):bpy.ops.object.modifier_apply(modifier=mod.name)
+ # Move the head into the torso's sagittal center rather than behind the collar.
+ for v in head.data.vertices:v.co.y-=.033;v.co.z-=(.045 if name=='AceHack' else .018)
+ head.data.update()
+ cutz=1.655 if name=='AceHack' else 1.57
+ skin=material(name+' | Neck skin',(.43,.26,.175) if name=='AceHack' else (.54,.31,.20));head.data.materials.append(skin);skin_id=len(head.data.materials)-1
+ bm=bmesh.new();bm.from_mesh(head.data)
+ # Remove broad bust and the abrupt rear hair curtain below the skull. Face is retained.
+ if name=='Xenaa':
+  bmesh.ops.delete(bm,geom=[v for v in bm.verts if (v.co.y>-.075 and v.co.z<1.80) or (v.co.z<1.63 and abs(v.co.x)>.065)],context='VERTS')
+ bmesh.ops.bisect_plane(bm,geom=list(bm.verts)+list(bm.edges)+list(bm.faces),dist=.000001,plane_co=(0,0,cutz),plane_no=(0,0,1),clear_inner=True)
+ boundary=[e for e in bm.edges if e.is_boundary and all(abs(v.co.z-cutz)<.00001 for v in e.verts)]
+ # Continue each cut edge using shared vertices; seam is geometry, not a floating cover.
+ oldverts=set(v for e in boundary for v in e.verts);previous={v:v for v in oldverts}
+ for step in range(1,7):
+  t=step/6;current={}
+  for v in oldverts:
+   a=math.atan2(v.co.y+.066,v.co.x);rx=.067 if name=='AceHack' else .054;ry=.064 if name=='AceHack' else .053
+   target=Vector((rx*math.cos(a),-.07+ry*math.sin(a),1.525 if name=='AceHack' else 1.475))
+   current[v]=bm.verts.new(v.co.lerp(target,t))
+  for e in boundary:
+   a,b=e.verts;f=bm.faces.new((previous[b],previous[a],current[a],current[b]));f.material_index=skin_id;f.smooth=True
+  previous=current
+ bmesh.ops.recalc_face_normals(bm,faces=list(bm.faces));bm.to_mesh(head.data);bm.free();head.data.update()
+ if name=='Xenaa':
+  hairmat=material('Xenaa | Side hair correction',(.012,.009,.015),.62);head.data.materials.append(hairmat)
+  for poly in head.data.polygons:
+   c=poly.center
+   if abs(c.x)>.09 and c.y>-.15:poly.material_index=len(head.data.materials)-1
+ oldcollar=bpy.data.objects.get(name+' | Collar join')
+ if oldcollar:bpy.data.objects.remove(oldcollar,do_unlink=True)
+ # Tailored collar overlaps the neck at its hidden lower attachment.
+ cloth=material(name+' | Tailored collar',(.63,.60,.51) if name=='AceHack' else (.022,.012,.035),.78)
+ vs=[];fs=[];Kc=64
+ for j in range(Kc+1):
+  a=-math.pi/2+.52+(2*math.pi-1.04)*j/Kc
+  for top in [0,1]:
+   rx=(.075 if top else .11) if name=='AceHack' else (.072 if top else .10)
+   ry=rx*.87;z=(1.65 if top else 1.565) if name=='AceHack' else (1.608 if top else 1.51)
+   vs.append((rx*math.cos(a),-.070+ry*math.sin(a),z))
+ for j in range(Kc):fs.append((2*j,2*j+1,2*j+3,2*j+2))
+ me=bpy.data.meshes.new(name+' collar');me.from_pydata(vs,[],fs);me.update();co=bpy.data.objects.new(name+' | Fitted collar',me);scene.collection.objects.link(co);co.location=head.location;me.materials.append(cloth)
+ for poly in me.polygons:poly.use_smooth=True
+ sol=co.modifiers.new('Cloth thickness','SOLIDIFY');sol.thickness=.003
+ # Smooth noisy rear garment topology conservatively, preserving the reference silhouette.
+ smooth=body.modifiers.new('Garment surface relaxation','SMOOTH');smooth.factor=.28;smooth.iterations=5
+ if name=='Xenaa':
+  verts=[];faces=[];N=38;L=32;K=8
+  for strand in range(N):
+   theta=-.18+(math.pi+.36)*strand/(N-1);phase=strand*1.71
+   for j in range(L):
+    t=j/(L-1);a=.10+t*2.05
+    z=1.85-.39*t-(.12+.06*math.sin(phase))*t*t
+    rx=.125*min(1,math.sin(a)*1.35);ry=.13*min(1,math.sin(a)*1.4)
+    center=Vector((rx*math.cos(theta)-.115*t*t+.009*math.sin(t*12+phase)*t,-.055+ry*math.sin(theta)+.055*t*t,z))
+    width=(.012+.006*math.sin(phase)**2)*(min(1,t*8+.18))*(1-.83*t**7)
+    for k in range(K):
+     q=2*math.pi*k/K;verts.append(tuple(center+Vector((width*math.cos(q),width*.34*math.sin(q),.002*math.cos(q)))))
+   base=strand*L*K
+   for j in range(L-1):
+    for k in range(K):faces.append((base+j*K+k,base+j*K+(k+1)%K,base+(j+1)*K+(k+1)%K,base+(j+1)*K+k))
+  mesh=bpy.data.meshes.new('Layered swept hair');mesh.from_pydata(verts,[],faces);mesh.update();hair=bpy.data.objects.new(name+' | Rebuilt hair',mesh);scene.collection.objects.link(hair);hair.location=head.location
+  mesh.materials.append(material('Xenaa | Black hair',(.010,.008,.013),.50))
+  for p in mesh.polygons:p.use_smooth=True
+ records.append({'name':name,'cut_z':cutz,'shared_neck_seam_vertices':len(oldverts),'head_vertices':len(head.data.vertices),'head_translation':[0,-.033,-.018]})
+scene.render.resolution_x=1400;scene.render.resolution_y=1000;scene.render.resolution_percentage=100;scene.cycles.samples=24
+out=ROOT/'rebuild-v2';out.mkdir(exist_ok=True)
+cam=scene.camera;cam.animation_data_clear();cam.data.type='ORTHO';cam.data.ortho_scale=2.8
+for angle in [0,75,120,180]:
+ r=math.radians(angle);cam.location=(4*math.sin(r),-4*math.cos(r),1.25);cam.rotation_euler=(Vector((0,0,1))-cam.location).to_track_quat('-Z','Y').to_euler();scene.render.filepath=str(out/f'duo-{angle}.png');bpy.ops.render.render(write_still=True)
+cam.location=(.5,-5,1.3);cam.rotation_euler=(Vector((0,0,1))-cam.location).to_track_quat('-Z','Y').to_euler()
+bpy.ops.wm.save_as_mainfile(filepath=str(out/'Joined-Characters.blend'))
+(ROOT/'rebuild-v2-receipt.json').write_text(json.dumps(records,indent=2))

@@ -595,7 +595,7 @@ module ShapeAcceptance =
                 && AntiSybil.coordinationBandwidth sPair = 1.0
             ok,
             sprintf
-                "CHSH oracle live: conducted pair S = %d/1000 (regime=%A — PR-box by construction, above Tsirelson: that IS the conductor, reported not gated; bandwidth %d/1000), convicted; independent |S| = %d/1000 <= threshold %d/1000 (not convicted — and never ACQUITTED: low S proves nothing); %d distinct sources among %d claims (the forgery-cost floor)"
+                "CHSH oracle live: conducted pair S = %d/1000 (regime=%A — PR-box by construction, above Tsirelson: that IS the conductor, reported not gated; bandwidth %d/1000), convicted; independent |S| = %d/1000 <= threshold %d/1000 (not convicted — and never ACQUITTED: low S proves nothing); %d probe-threshold graph components among %d claims (no physical-source or controller count)"
                 (int (sPair * 1000.0))
                 pairRegime
                 (int (AntiSybil.coordinationBandwidth sPair * 1000.0))

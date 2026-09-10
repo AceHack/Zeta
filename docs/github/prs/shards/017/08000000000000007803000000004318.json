@@ -1,0 +1,12 @@
+{
+  "pr_number": 17176,
+  "archive_path": "docs/history/pr-reviews/PR-17176-feat-hygiene-unify-on-net-10-and-check-the-pin-against-its-consumers.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-10T02:28:00.683Z",
+  "schema_version": "v1",
+  "commit_sha": "b816aef22eb5fa353a61efd5421b4ccd381f3f22",
+  "title": "feat(hygiene): unify on .NET 10 — and check the pin against its consumers",
+  "state": "MERGED",
+  "merged_at": "2026-09-10T02:26:58Z",
+  "head_ref": "agent/dotnet10-unify-081M241X65G087G0R00298CCQ8"
+}

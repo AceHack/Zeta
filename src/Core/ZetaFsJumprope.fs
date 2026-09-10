@@ -18,10 +18,12 @@ open Zeta.Core.FSharp.Blake3
 /// FastCDC algorithm is `FastCdc.fs` as executed. This module does not change it.
 ///
 /// Alloc: freeze/build may allocate (CAS objects, leaf index, FastCDC already
-/// copied each chunk). Seek/pread is the hot path: binary search on a prefix
-/// array built at freeze, then a view over the stored payload. It does not
-/// ToArray the chunk, ToHex a ContentId, or re-parse CBOR. The skiplist CBOR
-/// is the durable encoding / ContentId; it is not the in-memory seek structure.
+/// copied each chunk). Encode writes canonical CBOR without a DynamicValue
+/// graph (081M239JRJ0087G0R001FCAKEH). Seek/pread is the hot path: binary
+/// search on a prefix array built at freeze, then a view over the stored
+/// payload. It does not ToArray the chunk, ToHex a ContentId, or re-parse
+/// CBOR. The skiplist CBOR is the durable encoding / ContentId; it is not
+/// the in-memory seek structure.
 module ZetaFsJumprope =
 
     [<Literal>]
@@ -113,21 +115,179 @@ module ZetaFsJumprope =
         | ChunkerId.FastCdcV1 -> 2048, 8192, 65536
         | ChunkerId.FastCdcV1Large -> 8192, 65536, 262144
 
-    let private dvBytes (b: byte[]) : DynamicValue =
-        DynamicValue.Bytes(ImmutableArray.CreateRange b)
-
-    let private dvObj (pairs: (string * DynamicValue) list) : DynamicValue =
-        DynamicValue.Object(
-            pairs
-            |> List.sortWith (fun (a, _) (b, _) -> String.Compare(a, b, StringComparison.Ordinal))
-        )
-
     let private hashBytes (bytes: byte[]) : ContentHash256 = ContentHash256.ofBytes bytes
 
-    let private putDv (cas: Cas) (dv: DynamicValue) : ContentHash256 * Cas =
-        let bytes = DynamicValue.toCanonicalCborOk dv
+    /// Growable RFC 8949 canonical writer. Jumprope encode used to build a
+    /// DynamicValue graph (lists, ImmutableArray, List<byte>) per object.
+    /// Identity is still `toCanonicalCbor` of the same maps; this writes
+    /// those bytes directly. Private buffer, not a public type.
+    [<Sealed>]
+    type private CborBuf() =
+        let mutable buf = Array.zeroCreate 256
+        let mutable n = 0
+
+        member _.Clear() = n <- 0
+
+        member this.Ensure(extra: int) =
+            let need = n + extra
+
+            if need > buf.Length then
+                let mutable cap = buf.Length
+
+                while cap < need do
+                    cap <- cap * 2
+
+                let bigger = Array.zeroCreate cap
+                Buffer.BlockCopy(buf, 0, bigger, 0, n)
+                buf <- bigger
+
+        member this.Add(b: byte) =
+            this.Ensure 1
+            buf.[n] <- b
+            n <- n + 1
+
+        member this.AddSpan(s: ReadOnlySpan<byte>) =
+            this.Ensure s.Length
+            s.CopyTo(Span<byte>(buf, n, s.Length))
+            n <- n + s.Length
+
+        member this.WriteHead(major: int, arg: uint64) =
+            let mt = byte (major <<< 5)
+
+            if arg <= 23UL then
+                this.Add(mt ||| byte arg)
+            elif arg <= 0xffUL then
+                this.Ensure 2
+                buf.[n] <- mt ||| 24uy
+                buf.[n + 1] <- byte arg
+                n <- n + 2
+            elif arg <= 0xffffUL then
+                this.Ensure 3
+                buf.[n] <- mt ||| 25uy
+                buf.[n + 1] <- byte (arg >>> 8)
+                buf.[n + 2] <- byte arg
+                n <- n + 3
+            elif arg <= 0xffffffffUL then
+                this.Ensure 5
+                buf.[n] <- mt ||| 26uy
+                buf.[n + 1] <- byte (arg >>> 24)
+                buf.[n + 2] <- byte (arg >>> 16)
+                buf.[n + 3] <- byte (arg >>> 8)
+                buf.[n + 4] <- byte arg
+                n <- n + 5
+            else
+                this.Ensure 9
+                buf.[n] <- mt ||| 27uy
+                n <- n + 1
+                let mutable shift = 56
+
+                while shift >= 0 do
+                    buf.[n] <- byte (arg >>> shift)
+                    n <- n + 1
+                    shift <- shift - 8
+
+        member this.WriteInt(v: int64) =
+            if v >= 0L then
+                this.WriteHead(0, uint64 v)
+            else
+                this.WriteHead(1, uint64 (~~~v))
+
+        member this.WriteTextUtf8(utf8: ReadOnlySpan<byte>) =
+            this.WriteHead(3, uint64 utf8.Length)
+            this.AddSpan utf8
+
+        member this.WriteBytes(s: ReadOnlySpan<byte>) =
+            this.WriteHead(2, uint64 s.Length)
+            this.AddSpan s
+
+        member _.ToArray() : byte[] =
+            let a = Array.zeroCreate n
+            Buffer.BlockCopy(buf, 0, a, 0, n)
+            a
+
+    let private tData = "data"B
+    let private tLen = "len"B
+    let private tT = "t"B
+    let private tChunk1 = "chunk/1"B
+    let private tContent = "content"B
+    let private tRopeLeaf1 = "rope-leaf/1"B
+    let private tEntries = "entries"B
+    let private tRopeLimb1 = "rope-limb/1"B
+    let private tChunker = "chunker"B
+    let private tEnd = "end"B
+    let private tRopeTrunk1 = "rope-trunk/1"B
+    let private tHash = "hash"B
+    let private tJump = "jump"B
+    let private tSpan = "span"B
+    let private tFastCdcV1 = "fastcdc-v1"B
+    let private tFastCdcV1Large = "fastcdc-v1-large"B
+
+    let private take (buf: CborBuf) : byte[] =
+        let bytes = buf.ToArray()
+        buf.Clear()
+        bytes
+
+    let private putEncoded (cas: Cas) (buf: CborBuf) : ContentHash256 * Cas =
+        let bytes = take buf
         let id = hashBytes bytes
         id, put cas id bytes
+
+    let private writeChunk (buf: CborBuf) (data: ReadOnlySpan<byte>) =
+        buf.WriteHead(5, 3UL)
+        buf.WriteTextUtf8(ReadOnlySpan<byte> tData)
+        buf.WriteBytes data
+        buf.WriteTextUtf8(ReadOnlySpan<byte> tLen)
+        buf.WriteInt(int64 data.Length)
+        buf.WriteTextUtf8(ReadOnlySpan<byte> tT)
+        buf.WriteTextUtf8(ReadOnlySpan<byte> tChunk1)
+
+    let private writeLeaf (buf: CborBuf) (chunk: ContentHash256) (len: uint64) =
+        buf.WriteHead(5, 3UL)
+        buf.WriteTextUtf8(ReadOnlySpan<byte> tContent)
+        buf.WriteBytes(ReadOnlySpan<byte> chunk.Raw)
+        buf.WriteTextUtf8(ReadOnlySpan<byte> tLen)
+        buf.WriteInt(int64 len)
+        buf.WriteTextUtf8(ReadOnlySpan<byte> tT)
+        buf.WriteTextUtf8(ReadOnlySpan<byte> tRopeLeaf1)
+
+    let private writeEntry (buf: CborBuf) (e: Entry) =
+        buf.WriteHead(5, 3UL)
+        buf.WriteTextUtf8(ReadOnlySpan<byte> tHash)
+        buf.WriteBytes(ReadOnlySpan<byte> e.Hash.Raw)
+        buf.WriteTextUtf8(ReadOnlySpan<byte> tJump)
+        buf.WriteInt(int64 e.Jump)
+        buf.WriteTextUtf8(ReadOnlySpan<byte> tSpan)
+        buf.WriteInt(int64 e.Span)
+
+    let private writeLimb (buf: CborBuf) (entries: Entry[]) =
+        buf.WriteHead(5, 2UL)
+        buf.WriteTextUtf8(ReadOnlySpan<byte> tEntries)
+        buf.WriteHead(4, uint64 entries.Length)
+
+        for e in entries do
+            writeEntry buf e
+
+        buf.WriteTextUtf8(ReadOnlySpan<byte> tT)
+        buf.WriteTextUtf8(ReadOnlySpan<byte> tRopeLimb1)
+
+    let private writeTrunk (buf: CborBuf) (chunker: ChunkerId) (entries: Entry[]) (endEntry: Entry) =
+        buf.WriteHead(5, 4UL)
+        buf.WriteTextUtf8(ReadOnlySpan<byte> tChunker)
+
+        match chunker with
+        | ChunkerId.FastCdcV1 -> buf.WriteTextUtf8(ReadOnlySpan<byte> tFastCdcV1)
+        | ChunkerId.FastCdcV1Large -> buf.WriteTextUtf8(ReadOnlySpan<byte> tFastCdcV1Large)
+
+        buf.WriteTextUtf8(ReadOnlySpan<byte> tEnd)
+        writeEntry buf endEntry
+        buf.WriteTextUtf8(ReadOnlySpan<byte> tEntries)
+        buf.WriteHead(4, uint64 entries.Length)
+
+        for e in entries do
+            writeEntry buf e
+
+        buf.WriteTextUtf8(ReadOnlySpan<byte> tT)
+        buf.WriteTextUtf8(ReadOnlySpan<byte> tRopeTrunk1)
 
     let private tryFind (pairs: (string * DynamicValue) list) (key: string) : DynamicValue option =
         pairs
@@ -177,48 +337,34 @@ module ZetaFsJumprope =
 
         byte (min MaxLevel (go 0 0))
 
-    let private encodeChunk (cas: Cas) (data: byte[]) : ContentHash256 * Cas =
-        let dv =
-            dvObj
-                [ "data", dvBytes data
-                  "len", DynamicValue.Int(int64 data.Length)
-                  "t", DynamicValue.String "chunk/1" ]
+    let private encodeChunk (buf: CborBuf) (cas: Cas) (data: byte[]) : ContentHash256 * Cas =
+        let span =
+            if isNull data then
+                ReadOnlySpan<byte>()
+            else
+                ReadOnlySpan<byte> data
 
-        let id, cas1 = putDv cas dv
-        id, putPayload cas1 id data
+        writeChunk buf span
+        let id, cas1 = putEncoded cas buf
+        id, putPayload cas1 id (if isNull data then Array.empty else data)
 
-    let private encodeLeaf (cas: Cas) (chunk: ContentHash256) (len: uint64) : ContentHash256 * Cas =
-        let dv =
-            dvObj
-                [ "content", dvBytes chunk.Raw
-                  "len", DynamicValue.Int(int64 len)
-                  "t", DynamicValue.String "rope-leaf/1" ]
+    let private encodeLeaf (buf: CborBuf) (cas: Cas) (chunk: ContentHash256) (len: uint64) : ContentHash256 * Cas =
+        writeLeaf buf chunk len
+        putEncoded cas buf
 
-        putDv cas dv
+    let private encodeLimb (buf: CborBuf) (cas: Cas) (entries: Entry[]) : ContentHash256 * Cas =
+        writeLimb buf entries
+        putEncoded cas buf
 
-    let private encodeEntry (e: Entry) : DynamicValue =
-        dvObj
-            [ "hash", dvBytes e.Hash.Raw
-              "jump", DynamicValue.Int(int64 e.Jump)
-              "span", DynamicValue.Int(int64 e.Span) ]
-
-    let private encodeLimb (cas: Cas) (entries: Entry[]) : ContentHash256 * Cas =
-        let dv =
-            dvObj
-                [ "entries", DynamicValue.Array [ for e in entries -> encodeEntry e ]
-                  "t", DynamicValue.String "rope-limb/1" ]
-
-        putDv cas dv
-
-    let private encodeTrunk (cas: Cas) (chunker: ChunkerId) (entries: Entry[]) (endEntry: Entry) : ContentHash256 * Cas =
-        let dv =
-            dvObj
-                [ "chunker", DynamicValue.String(chunkerName chunker)
-                  "end", encodeEntry endEntry
-                  "entries", DynamicValue.Array [ for e in entries -> encodeEntry e ]
-                  "t", DynamicValue.String "rope-trunk/1" ]
-
-        putDv cas dv
+    let private encodeTrunk
+        (buf: CborBuf)
+        (cas: Cas)
+        (chunker: ChunkerId)
+        (entries: Entry[])
+        (endEntry: Entry)
+        : ContentHash256 * Cas =
+        writeTrunk buf chunker entries endEntry
+        putEncoded cas buf
 
     let private decodeEntry (dv: DynamicValue) : Result<Entry, JumpropeError> =
         match asObject dv with
@@ -315,7 +461,7 @@ module ZetaFsJumprope =
 
         n
 
-    let rec private group (cas: Cas) (nodes: BuildLeaf[]) (origin: int) (count: int) : Entry[] * Cas =
+    let rec private group (buf: CborBuf) (cas: Cas) (nodes: BuildLeaf[]) (origin: int) (count: int) : Entry[] * Cas =
         if count <= 0 then
             [||], cas
         elif count = 1 then
@@ -387,8 +533,8 @@ module ZetaFsJumprope =
                               Span = n.Span
                               Jump = n.Level }
                     elif len > 1 then
-                        let child, next = group store nodes (origin + a) len
-                        let limbId, next2 = encodeLimb next child
+                        let child, next = group buf store nodes (origin + a) len
+                        let limbId, next2 = encodeLimb buf next child
 
                         acc.Add
                             { Hash = limbId
@@ -399,36 +545,7 @@ module ZetaFsJumprope =
 
                 acc.ToArray(), store
 
-    let private chunkAll (chunker: ChunkerId) (bytes: byte[]) : byte[][] =
-        let minC, avgC, maxC = sizes chunker
-        let c = FastCdcChunker(minC, avgC, maxC)
-        c.Push(ReadOnlySpan<byte> bytes)
-        c.Flush()
-        let chunks = c.DrainChunks()
-
-        if chunks.Length = 0 then
-            [| Array.empty |]
-        else
-            chunks
-
-    /// FastCDC + Jumprope. Small files (below min-chunk) are a single-leaf rope.
-    let build (chunker: ChunkerId) (bytes: byte[]) : Rope =
-        let chunks = chunkAll chunker bytes
-        let mutable cas = emptyCas ()
-        let leaves = ResizeArray<BuildLeaf>()
-
-        for ch in chunks do
-            let chunkId, cas1 = encodeChunk cas ch
-            let leafId, cas2 = encodeLeaf cas1 chunkId (uint64 ch.Length)
-            cas <- cas2
-
-            leaves.Add
-                { LeafId = leafId
-                  ChunkId = chunkId
-                  Span = uint64 ch.Length
-                  Level = levelOf leafId }
-
-        let nodes = leaves.ToArray()
+    let private ropeFromLeaves (buf: CborBuf) (chunker: ChunkerId) (cas: Cas) (nodes: BuildLeaf[]) : Rope =
         let last = nodes.[nodes.Length - 1]
 
         let endEntry =
@@ -437,8 +554,8 @@ module ZetaFsJumprope =
               Jump = last.Level }
 
         let prefixCount = nodes.Length - 1
-        let entries, cas2 = group cas nodes 0 prefixCount
-        let trunkId, cas3 = encodeTrunk cas2 chunker entries endEntry
+        let entries, cas2 = group buf cas nodes 0 prefixCount
+        let trunkId, cas3 = encodeTrunk buf cas2 chunker entries endEntry
         let span = sumSpan entries + endEntry.Span
         let starts = Array.zeroCreate nodes.Length
         let mutable off = 0UL
@@ -454,7 +571,169 @@ module ZetaFsJumprope =
           Leaves = [| for n in nodes -> n.ChunkId, n.Span |]
           Starts = starts }
 
+    let private encodeAllChunks (buf: CborBuf) (cas: Cas) (chunks: byte[][]) : BuildLeaf[] * Cas =
+        let leaves = ResizeArray<BuildLeaf>()
+        let mutable store = cas
+
+        for ch in chunks do
+            let chunkId, cas1 = encodeChunk buf store ch
+            let leafId, cas2 = encodeLeaf buf cas1 chunkId (uint64 ch.Length)
+            store <- cas2
+
+            leaves.Add
+                { LeafId = leafId
+                  ChunkId = chunkId
+                  Span = uint64 ch.Length
+                  Level = levelOf leafId }
+
+        leaves.ToArray(), store
+
+    let private chunkAll (chunker: ChunkerId) (bytes: byte[]) : byte[][] =
+        let minC, avgC, maxC = sizes chunker
+
+        if isNull bytes || bytes.Length = 0 then
+            [| Array.empty |]
+        elif bytes.Length <= minC then
+            // FastCdcChunker allocates maxChunk*4 (256 KiB at v1). A 1-byte
+            // freeze must not pay that. Copy so Cas does not alias mutbuf.
+            [| Array.copy bytes |]
+        else
+            let c = FastCdcChunker(minC, avgC, maxC)
+            c.Push(ReadOnlySpan<byte> bytes)
+            c.Flush()
+            let chunks = c.DrainChunks()
+
+            if chunks.Length = 0 then
+                [| Array.empty |]
+            else
+                chunks
+
+    /// FastCDC + Jumprope. Small files (below min-chunk) are a single-leaf rope.
+    let build (chunker: ChunkerId) (bytes: byte[]) : Rope =
+        let buf = CborBuf()
+        let chunks = chunkAll chunker bytes
+        let nodes, cas = encodeAllChunks buf (emptyCas ()) chunks
+        ropeFromLeaves buf chunker cas nodes
+
     let buildV1 (bytes: byte[]) : Rope = build ChunkerId.FastCdcV1 bytes
+
+    /// Last freeze's chunk layout. Starts + chunk ids, not payloads.
+    /// Holding payloads here would be a second copy of the file (D10).
+    type Prev =
+        { Content: ContentHash256
+          Span: uint64
+          Chunker: ChunkerId
+          Starts: uint64[]
+          Leaves: (ContentHash256 * uint64)[] }
+
+    let prevOf (rope: Rope) : Prev =
+        { Content = rope.Content
+          Span = rope.Span
+          Chunker = rope.Chunker
+          Starts = rope.Starts
+          Leaves = rope.Leaves }
+
+    /// Chunk ContentId only. `firstChangedWindow` must not put a Cas
+    /// (objects + payload copy) for every prefix window it walks.
+    let private chunkIdOfSpan (buf: CborBuf) (s: ReadOnlySpan<byte>) : ContentHash256 =
+        writeChunk buf s
+        hashBytes (take buf)
+
+    /// Index of the first previous window that does not match `bytes`.
+    /// `Leaves.Length` means every previous window matched (identical
+    /// same-span, or grow/append before the Flush-chunk adjustment).
+    let firstChangedWindow (prev: Prev) (bytes: byte[]) : int =
+        if isNull bytes || prev.Leaves.Length = 0 then
+            0
+        else
+            let buf = CborBuf()
+            let newLen = uint64 bytes.Length
+            let mutable first = 0
+            let mutable mismatch = false
+
+            while (not mismatch) && first < prev.Leaves.Length do
+                let id, span = prev.Leaves.[first]
+                let off = prev.Starts.[first]
+
+                if off >= newLen then
+                    mismatch <- true
+                elif off + span > newLen then
+                    mismatch <- true
+                else
+                    let n = int span
+                    let window = ReadOnlySpan<byte>(bytes, int off, n)
+
+                    if chunkIdOfSpan buf window <> id then
+                        mismatch <- true
+                    else
+                        first <- first + 1
+
+            first
+
+    let private encodePrefixLeaves (buf: CborBuf) (prev: Prev) (count: int) : ResizeArray<BuildLeaf> * Cas =
+        let prefix = ResizeArray<BuildLeaf>(count)
+        let mutable cas = emptyCas ()
+
+        for i in 0 .. count - 1 do
+            let chunkId, span = prev.Leaves.[i]
+            let leafId, cas1 = encodeLeaf buf cas chunkId span
+            cas <- cas1
+
+            prefix.Add
+                { LeafId = leafId
+                  ChunkId = chunkId
+                  Span = span
+                  Level = levelOf leafId }
+
+        prefix, cas
+
+    /// Hash previous windows until the first mismatch, then FastCDC the
+    /// suffix. Identical bytes reuse the trunk. Append re-chunks from the
+    /// last previous chunk (that chunk was a Flush, not a gear cut).
+    /// Truncate on a chunk boundary keeps the prefix. Mid-chunk truncate
+    /// FastCDC from that window. Empty prev falls back to `build`.
+    let buildFromPrev (prev: Prev) (bytes: byte[]) : Rope =
+        if isNull bytes || prev.Leaves.Length = 0 then
+            build prev.Chunker bytes
+        else
+            let newLen = uint64 bytes.Length
+            let mutable first = firstChangedWindow prev bytes
+            let matchedAll = first = prev.Leaves.Length
+
+            if matchedAll && newLen > prev.Span && prev.Leaves.Length > 0 then
+                first <- prev.Leaves.Length - 1
+
+            if matchedAll && newLen = prev.Span then
+                { Content = prev.Content
+                  Span = prev.Span
+                  Chunker = prev.Chunker
+                  Cas = emptyCas ()
+                  Leaves = prev.Leaves
+                  Starts = prev.Starts }
+            else
+                let rebuildAt = first
+
+                if rebuildAt >= prev.Starts.Length then
+                    build prev.Chunker bytes
+                else
+                    let buf = CborBuf()
+                    let off = int prev.Starts.[rebuildAt]
+                    let prefix, cas0 = encodePrefixLeaves buf prev rebuildAt
+
+                    if off >= bytes.Length then
+                        if prefix.Count = 0 then
+                            build prev.Chunker bytes
+                        else
+                            ropeFromLeaves buf prev.Chunker cas0 (prefix.ToArray())
+                    else
+                        let suffixBytes = Array.zeroCreate (bytes.Length - off)
+                        Buffer.BlockCopy(bytes, off, suffixBytes, 0, suffixBytes.Length)
+                        let suffixChunks = chunkAll prev.Chunker suffixBytes
+                        let suffix, cas2 = encodeAllChunks buf cas0 suffixChunks
+                        let nodes = Array.zeroCreate (prefix.Count + suffix.Length)
+                        prefix.CopyTo(nodes, 0)
+                        Array.Copy(suffix, 0, nodes, prefix.Count, suffix.Length)
+                        ropeFromLeaves buf prev.Chunker cas2 nodes
 
     let private payloadMemory (cas: Cas) (chunk: ContentHash256) : Result<ReadOnlyMemory<byte>, JumpropeError> =
         match tryGetPayload cas chunk with

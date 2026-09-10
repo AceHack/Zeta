@@ -1,0 +1,12 @@
+{
+  "pr_number": 17153,
+  "archive_path": "docs/history/pr-reviews/PR-17153-fix-security-erasure-fallback-zeroed-a-symlink-target-and-never-overwrote-in-pla.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-09T17:02:52.232Z",
+  "schema_version": "v1",
+  "commit_sha": "437c3fcb7fb75ac5e50e84969ba5a574f94ff534",
+  "title": "fix(security): erasure fallback zeroed a symlink target and never overwrote in place",
+  "state": "MERGED",
+  "merged_at": "2026-09-09T17:02:05Z",
+  "head_ref": "nazar/erasure-fallback-race"
+}

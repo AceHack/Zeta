@@ -371,8 +371,26 @@ point of committing the tool rather than the number. Reproduce with
 Two qualifications, because the first reading of the attribution was wrong and the correction
 matters: the largest contributor (`db/search-index`, +59.7 MB) is a **one-time landing**, not a
 monthly rate, and its rebuild cadence is `disabled_manually` — a deliberate choice under the
-size-reduction decision, not a lane that broke. The ongoing half is the PR archive
-(`docs/history`, +36.5 MB), which the archive-split draft already addresses.
+size-reduction decision, not a lane that broke.
+
+**And the second attribution needed correcting too — by the very rule this document argues
+for.** The first draft said the PR archive (`docs/history`, +36.5 MB) was "the ongoing half".
+That is true *over a 30-day window* and misleading *as a rate*, which is the same error as
+believing a dated measurement without re-running it. The daily series:
+
+| window | Δ per day |
+|---|---|
+| −21d … −12d | 0.75 – 1.7 MB |
+| **−12d → −11d** | **+15.95 MB** — 12 commits, 1,803 files, a day of very high PR volume |
+| **last 9 days** | **0.00 – 0.47 MB, averaging ≈0.27 MB** |
+
+So the archive's *current* rate is **≈8–14 MB/month, not 36.5** — a roughly five-fold drop that
+begins right where the cadence lanes were disabled. The lane is still active (it archived today),
+so this is a slowed rate rather than a stopped one.
+
+**Which means the size-reduction measures are working, and a 30-day total hid that.** A window
+long enough to include a spike reports the spike as a trend. The lesson is the document's own:
+a number is only as good as the window it was taken over, and the window has to be stated.
 
 **The search index is the cleanest instance of this document's own tension**: 60 MB of committed
 points whose generator exists, so they are regenerable — and committing them is precisely what

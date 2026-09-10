@@ -1,0 +1,51 @@
+{
+  "Schema": "zeta.mixed-epoch.invocation-static.v1",
+  "NamedControlExecuted": false,
+  "Records": [
+    {
+      "File": "completion.json.gz",
+      "Bytes": 431,
+      "Sha256": "7D2875C65C09D99F66CDB81AA3EB10EEDA774FA0215E3D8E6CE166890B7F4B22",
+      "StoredBytes": 313,
+      "StoredSha256": "472C5396350C3916146EDB57398A1BC5CDC358390BFA80B0120207D825A71F3D",
+      "Encoding": "gzip",
+      "OriginalPath": ".git/mixed-epoch-invocation-static-1/completion.json"
+    },
+    {
+      "File": "invoke.py.gz",
+      "Bytes": 7559,
+      "Sha256": "991B434155447B81B7B445147AD31AAF455F0C8B89191C383BF774D2BC7D8C54",
+      "StoredBytes": 2447,
+      "StoredSha256": "36409D477494AA6F03FD9305FF35DFDDA2A8E3AE8AA8930C9BC263899B5D2278",
+      "Encoding": "gzip",
+      "OriginalPath": ".git/mixed-epoch-invocation-static-1/invoke.py"
+    },
+    {
+      "File": "source.json.gz",
+      "Bytes": 201,
+      "Sha256": "8A89D753E9341A55CFDB77457B569D607E86CD21A4207CD81AF967172B2918FC",
+      "StoredBytes": 187,
+      "StoredSha256": "D9A70ED6739EB0479CB480398F4827529EA04B183BF3BE10179EE7E4CF300255",
+      "Encoding": "gzip",
+      "OriginalPath": ".git/mixed-epoch-invocation-static-1/source.json"
+    },
+    {
+      "File": "stderr.gz",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "StoredBytes": 20,
+      "StoredSha256": "9CEFFB7310338057CFE71A4AE1E2C98D2C485D81CDEF906532A801F457A38D64",
+      "Encoding": "gzip",
+      "OriginalPath": ".git/mixed-epoch-invocation-static-1/stderr"
+    },
+    {
+      "File": "stdout.gz",
+      "Bytes": 42,
+      "Sha256": "5D4B6D285B77932E3D08212C3B4974D0A803F98EC60408AC6CCF6A063FA6C19E",
+      "StoredBytes": 62,
+      "StoredSha256": "2F7B9C4111C2BA775333E2EA54F81225E3637B13E8892DF5AA0EB59733A00FCD",
+      "Encoding": "gzip",
+      "OriginalPath": ".git/mixed-epoch-invocation-static-1/stdout"
+    }
+  ]
+}

@@ -1,0 +1,6 @@
+from pathlib import Path
+root=Path(__file__).resolve().parent
+s=(root/'transfer_colors.py').read_text().replace("for kind in ['head','body']:","for kind in ['head']:").replace("root/'heads-sg'", "root/'heads-sg-float32'").replace("root/'transferred'", "root/'transferred-float32'").replace("transfer-receipts.json", "transfer-float32-receipts.json")
+(root/'transfer_colors_float32.py').write_text(s)
+s=(root/'review_sg_heads.py').read_text().replace("root/'transferred'", "root/'transferred-float32'").replace("root/'heads-sg'", "root/'heads-sg-float32'")
+(root/'review_sg_heads_float32.py').write_text(s)

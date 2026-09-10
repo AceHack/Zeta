@@ -1,0 +1,14 @@
+{
+  "id": "080d03e014b47810a0130008612c40f1",
+  "at": "2026-09-07T13:15:39.535Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1Y055ME087G0R003DTJBE2",
+    "type": "bug",
+    "title": "windows: Path.GetFullPath rewrites a virtual ZetaFs store path and the bindings refusal never fires",
+    "slug": "windows-path-getfullpath-rewrites-a-virtual-zetafs-store-pat",
+    "priority": "P2",
+    "filename": "081M1Y055ME087G0R003DTJBE2-windows-path-getfullpath-rewrites-a-virtual-zetafs-store-pat.md"
+  }
+}

@@ -90,6 +90,10 @@ module ZetaFsFormat =
     /// What `ZetaFsStore.init` writes for a new store from PR6 (`body=jumprope`).
     let pr6Default: Manifest = { pr1Default with Body = Body.Jumprope }
 
+    /// What a new freeze volume writes. Freeze does not speak JSON trees.
+    /// TagBinding objects are not this manifest.
+    let bindingsDefault: Manifest = { pr6Default with Ns = Namespace.Bindings }
+
     let errorName (e: FormatError) : string =
         match e with
         | FormatError.Empty -> "Empty"
@@ -342,7 +346,8 @@ module ZetaFsFormat =
             | Some bytes when bytes.Length = 0 -> Error FormatError.Empty
             | Some bytes -> parse (Encoding.UTF8.GetString bytes)
 
-    /// Git-trees polyfill. PR6 wires Jumprope as a body; `ns=bindings` still refuses.
+    /// Git-trees polyfill. PR6 wires Jumprope as a body. `ns=bindings` still
+    /// refuses here; freeze volumes write `bindingsDefault` instead.
     let requireGitTrees (m: Manifest) : Result<Manifest, FormatError> =
         match m.Ns with
         | Namespace.GitTrees -> Ok m
@@ -350,6 +355,13 @@ module ZetaFsFormat =
 
     /// PR1 name. Alias of `requireGitTrees` — jumprope is a git-trees body from PR6.
     let requireGitTreesBlob (m: Manifest) : Result<Manifest, FormatError> = requireGitTrees m
+
+    /// Freeze-volume reader. Refuses `ns=git-trees` so a bindings volume is
+    /// not parsed as JSON trees. Does not persist TagBinding objects.
+    let requireBindings (m: Manifest) : Result<Manifest, FormatError> =
+        match m.Ns with
+        | Namespace.Bindings -> Ok m
+        | Namespace.GitTrees -> Error(FormatError.ReaderDoesNotSupport("ns", "git-trees"))
 
     let write (fs: IFileSystem) (storeDir: string) (m: Manifest) =
         match m.Major with

@@ -1,0 +1,12 @@
+{
+  "pr_number": 16898,
+  "archive_path": "docs/history/pr-reviews/PR-16898-feat-creds-overlay-joins-take-named-probe-tpmrm0-is-not-a-capture.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-07T00:58:06.166Z",
+  "schema_version": "v1",
+  "commit_sha": "08e1ee103b34ad9d0d530cb1324c6cf3d87ad3c8",
+  "title": "feat(creds): Overlay joins take named probe; tpmrm0 is not a capture",
+  "state": "MERGED",
+  "merged_at": "2026-09-07T00:57:30Z",
+  "head_ref": "cursor/overlay-named-probe-27c5"
+}

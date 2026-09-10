@@ -1,0 +1,14 @@
+{
+  "id": "080d045bd347b810a0130008c8a75682",
+  "at": "2026-09-10T13:20:50.423Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M25QMT7Q087G0R002767X31",
+    "type": "bug",
+    "title": "The UEFI smoke lane names an installer it never boots",
+    "slug": "the-uefi-smoke-lane-names-an-installer-it-never-boots",
+    "priority": "P2",
+    "filename": "081M25QMT7Q087G0R002767X31-the-uefi-smoke-lane-names-an-installer-it-never-boots.md"
+  }
+}

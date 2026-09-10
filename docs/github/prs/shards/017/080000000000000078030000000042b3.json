@@ -1,0 +1,12 @@
+{
+  "pr_number": 17075,
+  "archive_path": "docs/history/pr-reviews/PR-17075-fix-installer-the-first-boot-remedy-named-a-command-no-flashing-tool-accepts.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-08T21:04:54.272Z",
+  "schema_version": "v1",
+  "commit_sha": "0a43fa379e45de4e27c487ff9579ec6d93afa4b5",
+  "title": "fix(installer): the first-boot remedy named a command no flashing tool accepts",
+  "state": "MERGED",
+  "merged_at": "2026-09-08T21:03:03Z",
+  "head_ref": "shadow/first-boot-remedy-names-a-real-command"
+}

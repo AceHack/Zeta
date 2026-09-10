@@ -1,0 +1,12 @@
+{
+  "pr_number": 16880,
+  "archive_path": "docs/history/pr-reviews/PR-16880-feat-081m1wctene087g0r003d6hzs5-freeze-volumes-write-root-entityid.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-06T22:38:19.266Z",
+  "schema_version": "v1",
+  "commit_sha": "d266b87f804724bf04d9350ab24eb13b2a4b0d9e",
+  "title": "feat(081M1WCTENE087G0R003D6HZS5): freeze volumes write ROOT EntityId",
+  "state": "MERGED",
+  "merged_at": "2026-09-06T22:37:38Z",
+  "head_ref": "feat/zetafs-freeze-writes-root"
+}

@@ -1,0 +1,14 @@
+{
+  "id": "080d03c4fd4e0010a0130008bfb36e76",
+  "at": "2026-09-06T21:28:44.736Z",
+  "by": "vera-codex",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1W9ZADZ087G0R000D9ZJ6M",
+    "type": "bug",
+    "title": "Correct AntiSybil component counts interpreted as physical source floors",
+    "slug": "correct-antisybil-component-counts-interpreted-as-physical-s",
+    "priority": "P2",
+    "filename": "081M1W9ZADZ087G0R000D9ZJ6M-correct-antisybil-component-counts-interpreted-as-physical-s.md"
+  }
+}

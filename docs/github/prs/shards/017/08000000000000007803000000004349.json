@@ -1,0 +1,12 @@
+{
+  "pr_number": 17225,
+  "archive_path": "docs/history/pr-reviews/PR-17225-fix-081m24mz2fr087g0r000bqrtje-tlc-runner-tests-946-read-a-file-its-writer-still.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-10T03:35:40.629Z",
+  "schema_version": "v1",
+  "commit_sha": "7d7bae5f3d045cbaecce698194c0f5fdf186fbf0",
+  "title": "fix(081M24MZ2FR087G0R000BQRTJE): Tlc.Runner.Tests:946 read a file its writer still holds open, with no tolerance",
+  "state": "MERGED",
+  "merged_at": "2026-09-10T03:35:03Z",
+  "head_ref": "tlc-pid-readback-needs-tolerance"
+}

@@ -1,0 +1,65 @@
+{
+  "StartedAtUtc": "2026-09-07T15:20:49.063969+00:00",
+  "FinishedAtUtc": "2026-09-07T15:20:55.426506+00:00",
+  "HeadSha": "f99c9f4e2502263943d899ec7a506aa287f76558",
+  "Complete": true,
+  "PRBefore": {
+    "number": 16928,
+    "state": "closed",
+    "draft": false,
+    "merged": true,
+    "mergeable": null,
+    "mergeable_state": "unknown",
+    "merge_commit_sha": "1193d505de42f7a9406e64389f1496a311fc4b28",
+    "merged_at": "2026-09-07T15:16:24Z",
+    "HeadSha": "f99c9f4e2502263943d899ec7a506aa287f76558",
+    "BaseSha": "c36ac21bf1c561ad0726d4dceb027d3c3cff823e"
+  },
+  "PRAfter": {
+    "number": 16928,
+    "state": "closed",
+    "draft": false,
+    "merged": true,
+    "mergeable": null,
+    "mergeable_state": "unknown",
+    "merge_commit_sha": "1193d505de42f7a9406e64389f1496a311fc4b28",
+    "merged_at": "2026-09-07T15:16:24Z",
+    "HeadSha": "f99c9f4e2502263943d899ec7a506aa287f76558",
+    "BaseSha": "c36ac21bf1c561ad0726d4dceb027d3c3cff823e"
+  },
+  "CheckPages": 2,
+  "CheckCount": 97,
+  "States": {
+    "SKIPPED": 3,
+    "SUCCESS": 93,
+    "FAILURE": 1
+  },
+  "NonSuccessChecks": [
+    {
+      "Id": 101791485850,
+      "Name": "drift (loud)",
+      "Status": "COMPLETED",
+      "Conclusion": "FAILURE",
+      "RunId": 34135719099
+    }
+  ],
+  "ThreadPages": 1,
+  "ThreadCount": 1,
+  "UnresolvedThreads": [],
+  "GateRuns": [
+    {
+      "Id": 34135719099,
+      "Event": "pull_request",
+      "CreatedAt": "2026-09-07T14:57:04Z",
+      "Status": "completed",
+      "Conclusion": "failure",
+      "Attempt": 1,
+      "JobConclusions": {
+        "success": 71,
+        "failure": 1
+      }
+    }
+  ],
+  "RequiredExitCode": 0,
+  "Scope": "Read-only bounded non-atomic snapshot; full pagination and fixed-head binding; no CI or PR mutation."
+}

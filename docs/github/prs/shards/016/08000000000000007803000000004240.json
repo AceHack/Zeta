@@ -1,0 +1,12 @@
+{
+  "pr_number": 16960,
+  "archive_path": "docs/history/pr-reviews/PR-16960-feat-081m1yf2fem087g0r000rp57xz-fake-vfs-pread-pwrite-truncate-via-mutbuf.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-07T18:14:46.074Z",
+  "schema_version": "v1",
+  "commit_sha": "d1f7d6d70e8b913a9dc1bda62f913de496553846",
+  "title": "feat(081M1YF2FEM087G0R000RP57XZ): Fake VFS pread pwrite truncate via mutbuf",
+  "state": "MERGED",
+  "merged_at": "2026-09-07T18:14:06Z",
+  "head_ref": "feat/zetafs-posix-vfs-pwrite"
+}

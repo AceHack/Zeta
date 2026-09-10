@@ -1,0 +1,12 @@
+{
+  "pr_number": 16853,
+  "archive_path": "docs/history/pr-reviews/PR-16853-refactor-cluster-derive-the-declared-tree-list-from-the-roster-not-from-four-har.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-06T20:47:28.999Z",
+  "schema_version": "v1",
+  "commit_sha": "35638a0838b9ad1d8e826fb224a2bc489cbccbdf",
+  "title": "refactor(cluster): derive the declared tree list from the roster, not from four hardcoded pairs",
+  "state": "MERGED",
+  "merged_at": "2026-09-06T20:46:49Z",
+  "head_ref": "shadow/derive-cluster-trees"
+}

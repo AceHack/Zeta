@@ -138,7 +138,9 @@ function main(argv: readonly string[]): number {
   const target = args[0];
 
   if (!target) {
-    process.stderr.write("Usage: bun src/Core.TypeScript/backlog/complete-workitem.ts <zetaid|path> [--dir workitems] [--dry-run]\n");
+    process.stderr.write(
+      "Usage: bun src/Core.TypeScript/backlog/complete-workitem.ts <zetaid|path> [--dir workitems] [--dry-run]\n",
+    );
     return 2;
   }
   const fromPath = resolvePath(target, dir);
@@ -162,11 +164,19 @@ function main(argv: readonly string[]): number {
   }
 
   mkdirSync(dirname(done.toPath), { recursive: true });
-  if (existsSync(done.toPath)) {
+  // NEVER CLOBBER, ATOMICALLY -- see new-workitem.ts for the full reasoning.
+  // `existsSync` then `writeFileSync` lets two concurrent completions both pass
+  // the guard and both write; `flag: "wx"` (O_CREAT|O_EXCL) makes the refusal
+  // real. This one matters more than the mint: the very next line rmSync()s the
+  // source, so a lost race would destroy the original after overwriting the
+  // destination. CodeQL js/file-system-race alert 465.
+  try {
+    writeFileSync(done.toPath, done.newContent, { encoding: "utf8", flag: "wx" });
+  } catch (e) {
+    if ((e as NodeJS.ErrnoException).code !== "EEXIST") throw e;
     process.stderr.write(`complete-workitem: refusing to overwrite existing ${done.toPath}\n`);
     return 2;
   }
-  writeFileSync(done.toPath, done.newContent, "utf8");
   rmSync(done.fromPath);
   const workItemsDir = dirname(done.fromPath);
 
@@ -186,9 +196,7 @@ function main(argv: readonly string[]): number {
     return 1;
   }
 
-  process.stdout.write(
-    `completed ${done.zetaid}\n  ${done.fromPath} → ${done.toPath}\n  event: ${stateResult.path}\n`,
-  );
+  process.stdout.write(`completed ${done.zetaid}\n  ${done.fromPath} → ${done.toPath}\n  event: ${stateResult.path}\n`);
   return 0;
 }
 

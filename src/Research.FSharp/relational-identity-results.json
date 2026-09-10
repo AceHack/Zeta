@@ -1,0 +1,2629 @@
+{
+  "LoadedCoreAssembly": {
+    "ModuleVersionId": "d6e49fb4-a752-9bc9-381a-5cc97f4bc739",
+    "Scope": "Identifies the loaded Core binary; fresh build is recorded separately, not a reproducible-build proof.",
+    "Sha256": "16F07C903545DB71754BACEF9B4A8F4A100FFD3EF55E1D3DE020B9F451F46D82"
+  },
+  "Measurement": {
+    "ElapsedMilliseconds": 109.2809,
+    "Platform": "macOS 26.6.2",
+    "ProcessCpuMilliseconds": 109.29,
+    "Runtime": ".NET 10.0.11",
+    "Scope": "One cold deterministic panel; current-thread managed allocation, not retained heap, energy or stipulated work costs.",
+    "ThreadAllocatedBytes": 33845400
+  },
+  "Protocol": "relational-identity-v1",
+  "ProtocolCommit": "4f470f40e",
+  "Semantic": {
+    "Baselines": [
+      {
+        "Name": "exact-replay",
+        "SharedController": true,
+        "BitsA": [
+          0,
+          0,
+          1,
+          1,
+          0,
+          0,
+          1,
+          1
+        ],
+        "BitsB": [
+          0,
+          0,
+          1,
+          1,
+          0,
+          0,
+          1,
+          1
+        ],
+        "ChshA": [
+          {
+            "Setting": 0,
+            "Outcome": 1
+          },
+          {
+            "Setting": 0,
+            "Outcome": 1
+          },
+          {
+            "Setting": 1,
+            "Outcome": 1
+          },
+          {
+            "Setting": 1,
+            "Outcome": 1
+          },
+          {
+            "Setting": 0,
+            "Outcome": 1
+          },
+          {
+            "Setting": 0,
+            "Outcome": 1
+          },
+          {
+            "Setting": 1,
+            "Outcome": 1
+          },
+          {
+            "Setting": 1,
+            "Outcome": 1
+          }
+        ],
+        "ChshB": [
+          {
+            "Setting": 0,
+            "Outcome": 1
+          },
+          {
+            "Setting": 1,
+            "Outcome": 1
+          },
+          {
+            "Setting": 0,
+            "Outcome": 1
+          },
+          {
+            "Setting": 1,
+            "Outcome": 1
+          },
+          {
+            "Setting": 0,
+            "Outcome": 1
+          },
+          {
+            "Setting": 1,
+            "Outcome": 1
+          },
+          {
+            "Setting": 0,
+            "Outcome": 1
+          },
+          {
+            "Setting": 1,
+            "Outcome": 1
+          }
+        ],
+        "Correlation": 1,
+        "ReplayFlag": true,
+        "SignatureOnly": "accepted",
+        "ReceiptStatus": "consistent-on-declared-cut",
+        "Spectrum": [
+          2
+        ],
+        "ReplayFalsePositive": false,
+        "ReplayFalseNegative": false
+      },
+      {
+        "Name": "inverted-replay",
+        "SharedController": true,
+        "BitsA": [
+          0,
+          0,
+          1,
+          1,
+          0,
+          0,
+          1,
+          1
+        ],
+        "BitsB": [
+          1,
+          1,
+          0,
+          0,
+          1,
+          1,
+          0,
+          0
+        ],
+        "ChshA": [
+          {
+            "Setting": 0,
+            "Outcome": 1
+          },
+          {
+            "Setting": 0,
+            "Outcome": 1
+          },
+          {
+            "Setting": 1,
+            "Outcome": 1
+          },
+          {
+            "Setting": 1,
+            "Outcome": 1
+          },
+          {
+            "Setting": 0,
+            "Outcome": 1
+          },
+          {
+            "Setting": 0,
+            "Outcome": 1
+          },
+          {
+            "Setting": 1,
+            "Outcome": 1
+          },
+          {
+            "Setting": 1,
+            "Outcome": 1
+          }
+        ],
+        "ChshB": [
+          {
+            "Setting": 0,
+            "Outcome": 1
+          },
+          {
+            "Setting": 1,
+            "Outcome": 1
+          },
+          {
+            "Setting": 0,
+            "Outcome": 1
+          },
+          {
+            "Setting": 1,
+            "Outcome": 1
+          },
+          {
+            "Setting": 0,
+            "Outcome": 1
+          },
+          {
+            "Setting": 1,
+            "Outcome": 1
+          },
+          {
+            "Setting": 0,
+            "Outcome": 1
+          },
+          {
+            "Setting": 1,
+            "Outcome": 1
+          }
+        ],
+        "Correlation": 1,
+        "ReplayFlag": true,
+        "SignatureOnly": "accepted",
+        "ReceiptStatus": "consistent-on-declared-cut",
+        "Spectrum": [
+          2
+        ],
+        "ReplayFalsePositive": false,
+        "ReplayFalseNegative": false
+      },
+      {
+        "Name": "shared-seed-orthogonal-code",
+        "SharedController": true,
+        "BitsA": [
+          0,
+          0,
+          1,
+          1,
+          0,
+          0,
+          1,
+          1
+        ],
+        "BitsB": [
+          0,
+          1,
+          0,
+          1,
+          0,
+          1,
+          0,
+          1
+        ],
+        "ChshA": [
+          {
+            "Setting": 0,
+            "Outcome": 1
+          },
+          {
+            "Setting": 0,
+            "Outcome": 1
+          },
+          {
+            "Setting": 1,
+            "Outcome": 1
+          },
+          {
+            "Setting": 1,
+            "Outcome": 1
+          },
+          {
+            "Setting": 0,
+            "Outcome": 1
+          },
+          {
+            "Setting": 0,
+            "Outcome": 1
+          },
+          {
+            "Setting": 1,
+            "Outcome": 1
+          },
+          {
+            "Setting": 1,
+            "Outcome": 1
+          }
+        ],
+        "ChshB": [
+          {
+            "Setting": 0,
+            "Outcome": 1
+          },
+          {
+            "Setting": 1,
+            "Outcome": 1
+          },
+          {
+            "Setting": 0,
+            "Outcome": 1
+          },
+          {
+            "Setting": 1,
+            "Outcome": 1
+          },
+          {
+            "Setting": 0,
+            "Outcome": 1
+          },
+          {
+            "Setting": 1,
+            "Outcome": 1
+          },
+          {
+            "Setting": 0,
+            "Outcome": 1
+          },
+          {
+            "Setting": 1,
+            "Outcome": 1
+          }
+        ],
+        "Correlation": 0,
+        "ReplayFlag": false,
+        "SignatureOnly": "accepted",
+        "ReceiptStatus": "consistent-on-declared-cut",
+        "Spectrum": [
+          2
+        ],
+        "ReplayFalsePositive": false,
+        "ReplayFalseNegative": true
+      },
+      {
+        "Name": "independent-finite-collision",
+        "SharedController": false,
+        "BitsA": [
+          0,
+          0,
+          1,
+          1,
+          0,
+          0,
+          1,
+          1
+        ],
+        "BitsB": [
+          0,
+          0,
+          1,
+          1,
+          0,
+          0,
+          1,
+          1
+        ],
+        "ChshA": [
+          {
+            "Setting": 0,
+            "Outcome": 1
+          },
+          {
+            "Setting": 0,
+            "Outcome": 1
+          },
+          {
+            "Setting": 1,
+            "Outcome": 1
+          },
+          {
+            "Setting": 1,
+            "Outcome": 1
+          },
+          {
+            "Setting": 0,
+            "Outcome": 1
+          },
+          {
+            "Setting": 0,
+            "Outcome": 1
+          },
+          {
+            "Setting": 1,
+            "Outcome": 1
+          },
+          {
+            "Setting": 1,
+            "Outcome": 1
+          }
+        ],
+        "ChshB": [
+          {
+            "Setting": 0,
+            "Outcome": 1
+          },
+          {
+            "Setting": 1,
+            "Outcome": 1
+          },
+          {
+            "Setting": 0,
+            "Outcome": 1
+          },
+          {
+            "Setting": 1,
+            "Outcome": 1
+          },
+          {
+            "Setting": 0,
+            "Outcome": 1
+          },
+          {
+            "Setting": 1,
+            "Outcome": 1
+          },
+          {
+            "Setting": 0,
+            "Outcome": 1
+          },
+          {
+            "Setting": 1,
+            "Outcome": 1
+          }
+        ],
+        "Correlation": 1,
+        "ReplayFlag": true,
+        "SignatureOnly": "accepted",
+        "ReceiptStatus": "consistent-on-declared-cut",
+        "Spectrum": [
+          2
+        ],
+        "ReplayFalsePositive": true,
+        "ReplayFalseNegative": false
+      },
+      {
+        "Name": "distinct-controller-transcript",
+        "SharedController": false,
+        "BitsA": [
+          0,
+          0,
+          1,
+          1,
+          0,
+          0,
+          1,
+          1
+        ],
+        "BitsB": [
+          0,
+          1,
+          0,
+          1,
+          0,
+          1,
+          0,
+          1
+        ],
+        "ChshA": [
+          {
+            "Setting": 0,
+            "Outcome": 1
+          },
+          {
+            "Setting": 0,
+            "Outcome": 1
+          },
+          {
+            "Setting": 1,
+            "Outcome": 1
+          },
+          {
+            "Setting": 1,
+            "Outcome": 1
+          },
+          {
+            "Setting": 0,
+            "Outcome": 1
+          },
+          {
+            "Setting": 0,
+            "Outcome": 1
+          },
+          {
+            "Setting": 1,
+            "Outcome": 1
+          },
+          {
+            "Setting": 1,
+            "Outcome": 1
+          }
+        ],
+        "ChshB": [
+          {
+            "Setting": 0,
+            "Outcome": 1
+          },
+          {
+            "Setting": 1,
+            "Outcome": 1
+          },
+          {
+            "Setting": 0,
+            "Outcome": 1
+          },
+          {
+            "Setting": 1,
+            "Outcome": 1
+          },
+          {
+            "Setting": 0,
+            "Outcome": 1
+          },
+          {
+            "Setting": 1,
+            "Outcome": 1
+          },
+          {
+            "Setting": 0,
+            "Outcome": 1
+          },
+          {
+            "Setting": 1,
+            "Outcome": 1
+          }
+        ],
+        "Correlation": 0,
+        "ReplayFlag": false,
+        "SignatureOnly": "accepted",
+        "ReceiptStatus": "consistent-on-declared-cut",
+        "Spectrum": [
+          2
+        ],
+        "ReplayFalsePositive": false,
+        "ReplayFalseNegative": false
+      },
+      {
+        "Name": "one-controller-same-transcript",
+        "SharedController": true,
+        "BitsA": [
+          0,
+          0,
+          1,
+          1,
+          0,
+          0,
+          1,
+          1
+        ],
+        "BitsB": [
+          0,
+          1,
+          0,
+          1,
+          0,
+          1,
+          0,
+          1
+        ],
+        "ChshA": [
+          {
+            "Setting": 0,
+            "Outcome": 1
+          },
+          {
+            "Setting": 0,
+            "Outcome": 1
+          },
+          {
+            "Setting": 1,
+            "Outcome": 1
+          },
+          {
+            "Setting": 1,
+            "Outcome": 1
+          },
+          {
+            "Setting": 0,
+            "Outcome": 1
+          },
+          {
+            "Setting": 0,
+            "Outcome": 1
+          },
+          {
+            "Setting": 1,
+            "Outcome": 1
+          },
+          {
+            "Setting": 1,
+            "Outcome": 1
+          }
+        ],
+        "ChshB": [
+          {
+            "Setting": 0,
+            "Outcome": 1
+          },
+          {
+            "Setting": 1,
+            "Outcome": 1
+          },
+          {
+            "Setting": 0,
+            "Outcome": 1
+          },
+          {
+            "Setting": 1,
+            "Outcome": 1
+          },
+          {
+            "Setting": 0,
+            "Outcome": 1
+          },
+          {
+            "Setting": 1,
+            "Outcome": 1
+          },
+          {
+            "Setting": 0,
+            "Outcome": 1
+          },
+          {
+            "Setting": 1,
+            "Outcome": 1
+          }
+        ],
+        "Correlation": 0,
+        "ReplayFlag": false,
+        "SignatureOnly": "accepted",
+        "ReceiptStatus": "consistent-on-declared-cut",
+        "Spectrum": [
+          2
+        ],
+        "ReplayFalsePositive": false,
+        "ReplayFalseNegative": true
+      },
+      {
+        "Name": "conducted-chsh",
+        "SharedController": true,
+        "BitsA": [
+          0,
+          0,
+          1,
+          1,
+          0,
+          0,
+          1,
+          1
+        ],
+        "BitsB": [
+          0,
+          1,
+          0,
+          1,
+          0,
+          1,
+          0,
+          1
+        ],
+        "ChshA": [
+          {
+            "Setting": 0,
+            "Outcome": 1
+          },
+          {
+            "Setting": 0,
+            "Outcome": 1
+          },
+          {
+            "Setting": 1,
+            "Outcome": 1
+          },
+          {
+            "Setting": 1,
+            "Outcome": 1
+          },
+          {
+            "Setting": 0,
+            "Outcome": 1
+          },
+          {
+            "Setting": 0,
+            "Outcome": 1
+          },
+          {
+            "Setting": 1,
+            "Outcome": 1
+          },
+          {
+            "Setting": 1,
+            "Outcome": 1
+          }
+        ],
+        "ChshB": [
+          {
+            "Setting": 0,
+            "Outcome": 1
+          },
+          {
+            "Setting": 1,
+            "Outcome": -1
+          },
+          {
+            "Setting": 0,
+            "Outcome": 1
+          },
+          {
+            "Setting": 1,
+            "Outcome": 1
+          },
+          {
+            "Setting": 0,
+            "Outcome": 1
+          },
+          {
+            "Setting": 1,
+            "Outcome": -1
+          },
+          {
+            "Setting": 0,
+            "Outcome": 1
+          },
+          {
+            "Setting": 1,
+            "Outcome": 1
+          }
+        ],
+        "Correlation": 0,
+        "ReplayFlag": false,
+        "SignatureOnly": "accepted",
+        "ReceiptStatus": "consistent-on-declared-cut",
+        "Spectrum": [
+          4
+        ],
+        "ReplayFalsePositive": false,
+        "ReplayFalseNegative": true
+      }
+    ],
+    "Entropy": [
+      {
+        "Name": "independent",
+        "Outcomes": [
+          [
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            1
+          ],
+          [
+            0,
+            1,
+            0
+          ],
+          [
+            0,
+            1,
+            1
+          ],
+          [
+            1,
+            0,
+            0
+          ],
+          [
+            1,
+            0,
+            1
+          ],
+          [
+            1,
+            1,
+            0
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "MaximumProbability": [
+          "1",
+          "8"
+        ],
+        "JointMinEntropyBits": 3,
+        "PairwiseIndependent": true,
+        "OneBitConditionalPremise": true
+      },
+      {
+        "Name": "copies",
+        "Outcomes": [
+          [
+            0,
+            0,
+            0
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "MaximumProbability": [
+          "1",
+          "2"
+        ],
+        "JointMinEntropyBits": 1,
+        "PairwiseIndependent": false,
+        "OneBitConditionalPremise": false
+      },
+      {
+        "Name": "inversion",
+        "Outcomes": [
+          [
+            0,
+            1,
+            0
+          ],
+          [
+            1,
+            0,
+            1
+          ]
+        ],
+        "MaximumProbability": [
+          "1",
+          "2"
+        ],
+        "JointMinEntropyBits": 1,
+        "PairwiseIndependent": false,
+        "OneBitConditionalPremise": false
+      },
+      {
+        "Name": "pairwise-independent-xor",
+        "Outcomes": [
+          [
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            1,
+            1
+          ],
+          [
+            1,
+            0,
+            1
+          ],
+          [
+            1,
+            1,
+            0
+          ]
+        ],
+        "MaximumProbability": [
+          "1",
+          "4"
+        ],
+        "JointMinEntropyBits": 2,
+        "PairwiseIndependent": true,
+        "OneBitConditionalPremise": false
+      }
+    ],
+    "Mutations": [
+      {
+        "Name": "baseline",
+        "Status": "consistent-on-declared-cut",
+        "Expected": [
+          "e0",
+          "e1",
+          "e2",
+          "e3"
+        ],
+        "MissingLeft": [],
+        "MissingRight": [],
+        "UnverifiedLeft": [],
+        "UnverifiedRight": [],
+        "RejectedLeft": [],
+        "RejectedRight": [],
+        "Conflicts": [],
+        "BoundaryParents": [],
+        "RepeatedLeft": 0,
+        "RepeatedRight": 0,
+        "Invariant": [
+          {
+            "Receipts": [
+              {
+                "EventId": "e0",
+                "Actor": "A",
+                "Counterparty": "B",
+                "Interaction": "i0",
+                "Channel": "vision",
+                "Claim": "color",
+                "Weight": 1,
+                "Parents": []
+              },
+              {
+                "EventId": "e1",
+                "Actor": "A",
+                "Counterparty": "B",
+                "Interaction": "i1",
+                "Channel": "vision",
+                "Claim": "color",
+                "Weight": -1,
+                "Parents": [
+                  "e0"
+                ]
+              },
+              {
+                "EventId": "e2",
+                "Actor": "B",
+                "Counterparty": "A",
+                "Interaction": "i0",
+                "Channel": "vision",
+                "Claim": "color",
+                "Weight": 1,
+                "Parents": [
+                  "e0"
+                ]
+              },
+              {
+                "EventId": "e3",
+                "Actor": "A",
+                "Counterparty": "B",
+                "Interaction": "i2",
+                "Channel": "receipt",
+                "Claim": "ack",
+                "Weight": 1,
+                "Parents": [
+                  "e1",
+                  "e2"
+                ]
+              }
+            ],
+            "CausalPairs": [
+              [
+                "e0",
+                "e1"
+              ],
+              [
+                "e0",
+                "e2"
+              ],
+              [
+                "e0",
+                "e3"
+              ],
+              [
+                "e1",
+                "e3"
+              ],
+              [
+                "e2",
+                "e3"
+              ]
+            ],
+            "Claims": [
+              [
+                "A",
+                "B",
+                "receipt",
+                "ack",
+                "1"
+              ],
+              [
+                "B",
+                "A",
+                "vision",
+                "color",
+                "1"
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "Name": "identical-replay",
+        "Status": "consistent-on-declared-cut",
+        "Expected": [
+          "e0",
+          "e1",
+          "e2",
+          "e3"
+        ],
+        "MissingLeft": [],
+        "MissingRight": [],
+        "UnverifiedLeft": [],
+        "UnverifiedRight": [],
+        "RejectedLeft": [],
+        "RejectedRight": [],
+        "Conflicts": [],
+        "BoundaryParents": [],
+        "RepeatedLeft": 0,
+        "RepeatedRight": 1,
+        "Invariant": [
+          {
+            "Receipts": [
+              {
+                "EventId": "e0",
+                "Actor": "A",
+                "Counterparty": "B",
+                "Interaction": "i0",
+                "Channel": "vision",
+                "Claim": "color",
+                "Weight": 1,
+                "Parents": []
+              },
+              {
+                "EventId": "e1",
+                "Actor": "A",
+                "Counterparty": "B",
+                "Interaction": "i1",
+                "Channel": "vision",
+                "Claim": "color",
+                "Weight": -1,
+                "Parents": [
+                  "e0"
+                ]
+              },
+              {
+                "EventId": "e2",
+                "Actor": "B",
+                "Counterparty": "A",
+                "Interaction": "i0",
+                "Channel": "vision",
+                "Claim": "color",
+                "Weight": 1,
+                "Parents": [
+                  "e0"
+                ]
+              },
+              {
+                "EventId": "e3",
+                "Actor": "A",
+                "Counterparty": "B",
+                "Interaction": "i2",
+                "Channel": "receipt",
+                "Claim": "ack",
+                "Weight": 1,
+                "Parents": [
+                  "e1",
+                  "e2"
+                ]
+              }
+            ],
+            "CausalPairs": [
+              [
+                "e0",
+                "e1"
+              ],
+              [
+                "e0",
+                "e2"
+              ],
+              [
+                "e0",
+                "e3"
+              ],
+              [
+                "e1",
+                "e3"
+              ],
+              [
+                "e2",
+                "e3"
+              ]
+            ],
+            "Claims": [
+              [
+                "A",
+                "B",
+                "receipt",
+                "ack",
+                "1"
+              ],
+              [
+                "B",
+                "A",
+                "vision",
+                "color",
+                "1"
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "Name": "changed-payload-old-attestation",
+        "Status": "authentication-rejected",
+        "Expected": [
+          "e0",
+          "e1",
+          "e2",
+          "e3"
+        ],
+        "MissingLeft": [],
+        "MissingRight": [],
+        "UnverifiedLeft": [],
+        "UnverifiedRight": [],
+        "RejectedLeft": [],
+        "RejectedRight": [
+          "e2"
+        ],
+        "Conflicts": [],
+        "BoundaryParents": [],
+        "RepeatedLeft": 0,
+        "RepeatedRight": 0,
+        "Invariant": []
+      },
+      {
+        "Name": "substituted-key",
+        "Status": "authentication-rejected",
+        "Expected": [
+          "e0",
+          "e1",
+          "e2",
+          "e3"
+        ],
+        "MissingLeft": [],
+        "MissingRight": [],
+        "UnverifiedLeft": [],
+        "UnverifiedRight": [],
+        "RejectedLeft": [],
+        "RejectedRight": [
+          "e2"
+        ],
+        "Conflicts": [],
+        "BoundaryParents": [],
+        "RepeatedLeft": 0,
+        "RepeatedRight": 0,
+        "Invariant": []
+      },
+      {
+        "Name": "authenticated-fork",
+        "Status": "authenticated-conflict",
+        "Expected": [
+          "e0",
+          "e1",
+          "e2",
+          "e3"
+        ],
+        "MissingLeft": [],
+        "MissingRight": [],
+        "UnverifiedLeft": [],
+        "UnverifiedRight": [],
+        "RejectedLeft": [],
+        "RejectedRight": [],
+        "Conflicts": [
+          "e2"
+        ],
+        "BoundaryParents": [],
+        "RepeatedLeft": 0,
+        "RepeatedRight": 0,
+        "Invariant": []
+      },
+      {
+        "Name": "authenticated-causal-cycle",
+        "Status": "authenticated-causal-cycle",
+        "Expected": [
+          "e0",
+          "e1",
+          "e2",
+          "e3"
+        ],
+        "MissingLeft": [],
+        "MissingRight": [],
+        "UnverifiedLeft": [],
+        "UnverifiedRight": [],
+        "RejectedLeft": [],
+        "RejectedRight": [],
+        "Conflicts": [],
+        "BoundaryParents": [],
+        "RepeatedLeft": 0,
+        "RepeatedRight": 0,
+        "Invariant": []
+      },
+      {
+        "Name": "missing-parent",
+        "Status": "unknown-coverage",
+        "Expected": [
+          "e0",
+          "e1",
+          "e2",
+          "e3"
+        ],
+        "MissingLeft": [],
+        "MissingRight": [
+          "e0"
+        ],
+        "UnverifiedLeft": [],
+        "UnverifiedRight": [],
+        "RejectedLeft": [],
+        "RejectedRight": [],
+        "Conflicts": [],
+        "BoundaryParents": [],
+        "RepeatedLeft": 0,
+        "RepeatedRight": 0,
+        "Invariant": []
+      },
+      {
+        "Name": "omitted-expected-event",
+        "Status": "unknown-coverage",
+        "Expected": [
+          "e0",
+          "e1",
+          "e2",
+          "e3"
+        ],
+        "MissingLeft": [],
+        "MissingRight": [
+          "e3"
+        ],
+        "UnverifiedLeft": [],
+        "UnverifiedRight": [],
+        "RejectedLeft": [],
+        "RejectedRight": [],
+        "Conflicts": [],
+        "BoundaryParents": [],
+        "RepeatedLeft": 0,
+        "RepeatedRight": 0,
+        "Invariant": []
+      },
+      {
+        "Name": "unavailable-verifier",
+        "Status": "unknown-coverage",
+        "Expected": [
+          "e0",
+          "e1",
+          "e2",
+          "e3"
+        ],
+        "MissingLeft": [],
+        "MissingRight": [],
+        "UnverifiedLeft": [],
+        "UnverifiedRight": [
+          "e2"
+        ],
+        "RejectedLeft": [],
+        "RejectedRight": [],
+        "Conflicts": [],
+        "BoundaryParents": [],
+        "RepeatedLeft": 0,
+        "RepeatedRight": 0,
+        "Invariant": []
+      },
+      {
+        "Name": "conflict-with-missing-coverage",
+        "Status": "authenticated-conflict",
+        "Expected": [
+          "e0",
+          "e1",
+          "e2",
+          "e3"
+        ],
+        "MissingLeft": [],
+        "MissingRight": [
+          "e3"
+        ],
+        "UnverifiedLeft": [],
+        "UnverifiedRight": [],
+        "RejectedLeft": [],
+        "RejectedRight": [],
+        "Conflicts": [
+          "e2"
+        ],
+        "BoundaryParents": [],
+        "RepeatedLeft": 0,
+        "RepeatedRight": 0,
+        "Invariant": []
+      },
+      {
+        "Name": "different-observation-channel",
+        "Status": "consistent-on-declared-cut",
+        "Expected": [
+          "e0",
+          "e1",
+          "e2",
+          "e3",
+          "e4"
+        ],
+        "MissingLeft": [],
+        "MissingRight": [],
+        "UnverifiedLeft": [],
+        "UnverifiedRight": [],
+        "RejectedLeft": [],
+        "RejectedRight": [],
+        "Conflicts": [],
+        "BoundaryParents": [],
+        "RepeatedLeft": 0,
+        "RepeatedRight": 0,
+        "Invariant": [
+          {
+            "Receipts": [
+              {
+                "EventId": "e0",
+                "Actor": "A",
+                "Counterparty": "B",
+                "Interaction": "i0",
+                "Channel": "vision",
+                "Claim": "color",
+                "Weight": 1,
+                "Parents": []
+              },
+              {
+                "EventId": "e1",
+                "Actor": "A",
+                "Counterparty": "B",
+                "Interaction": "i1",
+                "Channel": "vision",
+                "Claim": "color",
+                "Weight": -1,
+                "Parents": [
+                  "e0"
+                ]
+              },
+              {
+                "EventId": "e2",
+                "Actor": "B",
+                "Counterparty": "A",
+                "Interaction": "i0",
+                "Channel": "vision",
+                "Claim": "color",
+                "Weight": 1,
+                "Parents": [
+                  "e0"
+                ]
+              },
+              {
+                "EventId": "e3",
+                "Actor": "A",
+                "Counterparty": "B",
+                "Interaction": "i2",
+                "Channel": "receipt",
+                "Claim": "ack",
+                "Weight": 1,
+                "Parents": [
+                  "e1",
+                  "e2"
+                ]
+              },
+              {
+                "EventId": "e4",
+                "Actor": "B",
+                "Counterparty": "A",
+                "Interaction": "i0",
+                "Channel": "auditory",
+                "Claim": "color",
+                "Weight": 1,
+                "Parents": [
+                  "e0"
+                ]
+              }
+            ],
+            "CausalPairs": [
+              [
+                "e0",
+                "e1"
+              ],
+              [
+                "e0",
+                "e2"
+              ],
+              [
+                "e0",
+                "e3"
+              ],
+              [
+                "e0",
+                "e4"
+              ],
+              [
+                "e1",
+                "e3"
+              ],
+              [
+                "e2",
+                "e3"
+              ]
+            ],
+            "Claims": [
+              [
+                "A",
+                "B",
+                "receipt",
+                "ack",
+                "1"
+              ],
+              [
+                "B",
+                "A",
+                "auditory",
+                "color",
+                "1"
+              ],
+              [
+                "B",
+                "A",
+                "vision",
+                "color",
+                "1"
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "Name": "coherent-fabricated-counterparties",
+        "Status": "consistent-on-declared-cut",
+        "Expected": [
+          "e0",
+          "e1",
+          "e2",
+          "e3"
+        ],
+        "MissingLeft": [],
+        "MissingRight": [],
+        "UnverifiedLeft": [],
+        "UnverifiedRight": [],
+        "RejectedLeft": [],
+        "RejectedRight": [],
+        "Conflicts": [],
+        "BoundaryParents": [],
+        "RepeatedLeft": 0,
+        "RepeatedRight": 0,
+        "Invariant": [
+          {
+            "Receipts": [
+              {
+                "EventId": "e0",
+                "Actor": "A",
+                "Counterparty": "B",
+                "Interaction": "i0",
+                "Channel": "vision",
+                "Claim": "color",
+                "Weight": 1,
+                "Parents": []
+              },
+              {
+                "EventId": "e1",
+                "Actor": "A",
+                "Counterparty": "B",
+                "Interaction": "i1",
+                "Channel": "vision",
+                "Claim": "color",
+                "Weight": -1,
+                "Parents": [
+                  "e0"
+                ]
+              },
+              {
+                "EventId": "e2",
+                "Actor": "B",
+                "Counterparty": "A",
+                "Interaction": "i0",
+                "Channel": "vision",
+                "Claim": "color",
+                "Weight": 1,
+                "Parents": [
+                  "e0"
+                ]
+              },
+              {
+                "EventId": "e3",
+                "Actor": "A",
+                "Counterparty": "B",
+                "Interaction": "i2",
+                "Channel": "receipt",
+                "Claim": "ack",
+                "Weight": 1,
+                "Parents": [
+                  "e1",
+                  "e2"
+                ]
+              }
+            ],
+            "CausalPairs": [
+              [
+                "e0",
+                "e1"
+              ],
+              [
+                "e0",
+                "e2"
+              ],
+              [
+                "e0",
+                "e3"
+              ],
+              [
+                "e1",
+                "e3"
+              ],
+              [
+                "e2",
+                "e3"
+              ]
+            ],
+            "Claims": [
+              [
+                "A",
+                "B",
+                "receipt",
+                "ack",
+                "1"
+              ],
+              [
+                "B",
+                "A",
+                "vision",
+                "color",
+                "1"
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "Name": "coherent-fabricated-complete-graph",
+        "Status": "consistent-on-declared-cut",
+        "Expected": [
+          "f0-1",
+          "f0-2",
+          "f0-3",
+          "f1-0",
+          "f1-2",
+          "f1-3",
+          "f2-0",
+          "f2-1",
+          "f2-3",
+          "f3-0",
+          "f3-1",
+          "f3-2"
+        ],
+        "MissingLeft": [],
+        "MissingRight": [],
+        "UnverifiedLeft": [],
+        "UnverifiedRight": [],
+        "RejectedLeft": [],
+        "RejectedRight": [],
+        "Conflicts": [],
+        "BoundaryParents": [],
+        "RepeatedLeft": 0,
+        "RepeatedRight": 0,
+        "Invariant": [
+          {
+            "Receipts": [
+              {
+                "EventId": "f0-1",
+                "Actor": "fake0",
+                "Counterparty": "fake1",
+                "Interaction": "pair0-1",
+                "Channel": "fixture",
+                "Claim": "exchange",
+                "Weight": 1,
+                "Parents": []
+              },
+              {
+                "EventId": "f0-2",
+                "Actor": "fake0",
+                "Counterparty": "fake2",
+                "Interaction": "pair0-2",
+                "Channel": "fixture",
+                "Claim": "exchange",
+                "Weight": 1,
+                "Parents": []
+              },
+              {
+                "EventId": "f0-3",
+                "Actor": "fake0",
+                "Counterparty": "fake3",
+                "Interaction": "pair0-3",
+                "Channel": "fixture",
+                "Claim": "exchange",
+                "Weight": 1,
+                "Parents": []
+              },
+              {
+                "EventId": "f1-0",
+                "Actor": "fake1",
+                "Counterparty": "fake0",
+                "Interaction": "pair0-1",
+                "Channel": "fixture",
+                "Claim": "exchange",
+                "Weight": 1,
+                "Parents": []
+              },
+              {
+                "EventId": "f1-2",
+                "Actor": "fake1",
+                "Counterparty": "fake2",
+                "Interaction": "pair1-2",
+                "Channel": "fixture",
+                "Claim": "exchange",
+                "Weight": 1,
+                "Parents": []
+              },
+              {
+                "EventId": "f1-3",
+                "Actor": "fake1",
+                "Counterparty": "fake3",
+                "Interaction": "pair1-3",
+                "Channel": "fixture",
+                "Claim": "exchange",
+                "Weight": 1,
+                "Parents": []
+              },
+              {
+                "EventId": "f2-0",
+                "Actor": "fake2",
+                "Counterparty": "fake0",
+                "Interaction": "pair0-2",
+                "Channel": "fixture",
+                "Claim": "exchange",
+                "Weight": 1,
+                "Parents": []
+              },
+              {
+                "EventId": "f2-1",
+                "Actor": "fake2",
+                "Counterparty": "fake1",
+                "Interaction": "pair1-2",
+                "Channel": "fixture",
+                "Claim": "exchange",
+                "Weight": 1,
+                "Parents": []
+              },
+              {
+                "EventId": "f2-3",
+                "Actor": "fake2",
+                "Counterparty": "fake3",
+                "Interaction": "pair2-3",
+                "Channel": "fixture",
+                "Claim": "exchange",
+                "Weight": 1,
+                "Parents": []
+              },
+              {
+                "EventId": "f3-0",
+                "Actor": "fake3",
+                "Counterparty": "fake0",
+                "Interaction": "pair0-3",
+                "Channel": "fixture",
+                "Claim": "exchange",
+                "Weight": 1,
+                "Parents": []
+              },
+              {
+                "EventId": "f3-1",
+                "Actor": "fake3",
+                "Counterparty": "fake1",
+                "Interaction": "pair1-3",
+                "Channel": "fixture",
+                "Claim": "exchange",
+                "Weight": 1,
+                "Parents": []
+              },
+              {
+                "EventId": "f3-2",
+                "Actor": "fake3",
+                "Counterparty": "fake2",
+                "Interaction": "pair2-3",
+                "Channel": "fixture",
+                "Claim": "exchange",
+                "Weight": 1,
+                "Parents": []
+              }
+            ],
+            "CausalPairs": [],
+            "Claims": [
+              [
+                "fake0",
+                "fake1",
+                "fixture",
+                "exchange",
+                "1"
+              ],
+              [
+                "fake0",
+                "fake2",
+                "fixture",
+                "exchange",
+                "1"
+              ],
+              [
+                "fake0",
+                "fake3",
+                "fixture",
+                "exchange",
+                "1"
+              ],
+              [
+                "fake1",
+                "fake0",
+                "fixture",
+                "exchange",
+                "1"
+              ],
+              [
+                "fake1",
+                "fake2",
+                "fixture",
+                "exchange",
+                "1"
+              ],
+              [
+                "fake1",
+                "fake3",
+                "fixture",
+                "exchange",
+                "1"
+              ],
+              [
+                "fake2",
+                "fake0",
+                "fixture",
+                "exchange",
+                "1"
+              ],
+              [
+                "fake2",
+                "fake1",
+                "fixture",
+                "exchange",
+                "1"
+              ],
+              [
+                "fake2",
+                "fake3",
+                "fixture",
+                "exchange",
+                "1"
+              ],
+              [
+                "fake3",
+                "fake0",
+                "fixture",
+                "exchange",
+                "1"
+              ],
+              [
+                "fake3",
+                "fake1",
+                "fixture",
+                "exchange",
+                "1"
+              ],
+              [
+                "fake3",
+                "fake2",
+                "fixture",
+                "exchange",
+                "1"
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "Name": "unverified-alternative-with-covered-id",
+        "Status": "unknown-coverage",
+        "Expected": [
+          "e0",
+          "e1",
+          "e2",
+          "e3"
+        ],
+        "MissingLeft": [],
+        "MissingRight": [],
+        "UnverifiedLeft": [],
+        "UnverifiedRight": [
+          "e2"
+        ],
+        "RejectedLeft": [],
+        "RejectedRight": [],
+        "Conflicts": [],
+        "BoundaryParents": [],
+        "RepeatedLeft": 0,
+        "RepeatedRight": 0,
+        "Invariant": []
+      },
+      {
+        "Name": "open-causal-boundary",
+        "Status": "unknown-coverage",
+        "Expected": [
+          "e0",
+          "e1",
+          "e2",
+          "e3"
+        ],
+        "MissingLeft": [],
+        "MissingRight": [],
+        "UnverifiedLeft": [],
+        "UnverifiedRight": [],
+        "RejectedLeft": [],
+        "RejectedRight": [],
+        "Conflicts": [],
+        "BoundaryParents": [
+          "outside"
+        ],
+        "RepeatedLeft": 0,
+        "RepeatedRight": 0,
+        "Invariant": []
+      },
+      {
+        "Name": "causal-coordinate-reversal",
+        "Status": "refused-coordinates",
+        "Expected": [
+          "e0",
+          "e1",
+          "e2",
+          "e3"
+        ],
+        "MissingLeft": [],
+        "MissingRight": [],
+        "UnverifiedLeft": [],
+        "UnverifiedRight": [],
+        "RejectedLeft": [],
+        "RejectedRight": [],
+        "Conflicts": [],
+        "BoundaryParents": [],
+        "RepeatedLeft": 0,
+        "RepeatedRight": 0,
+        "Invariant": []
+      },
+      {
+        "Name": "coordinate-collision",
+        "Status": "refused-coordinates",
+        "Expected": [
+          "e0",
+          "e1",
+          "e2",
+          "e3"
+        ],
+        "MissingLeft": [],
+        "MissingRight": [],
+        "UnverifiedLeft": [],
+        "UnverifiedRight": [],
+        "RejectedLeft": [],
+        "RejectedRight": [],
+        "Conflicts": [],
+        "BoundaryParents": [],
+        "RepeatedLeft": 0,
+        "RepeatedRight": 0,
+        "Invariant": []
+      },
+      {
+        "Name": "empty-cut",
+        "Status": "consistent-on-declared-cut",
+        "Expected": [],
+        "MissingLeft": [],
+        "MissingRight": [],
+        "UnverifiedLeft": [],
+        "UnverifiedRight": [],
+        "RejectedLeft": [],
+        "RejectedRight": [],
+        "Conflicts": [],
+        "BoundaryParents": [],
+        "RepeatedLeft": 0,
+        "RepeatedRight": 0,
+        "Invariant": [
+          {
+            "Receipts": [],
+            "CausalPairs": [],
+            "Claims": []
+          }
+        ]
+      }
+    ],
+    "Scaling": [
+      {
+        "Name": "empty-0",
+        "Identities": 0,
+        "Required": 0,
+        "Observed": 0,
+        "Missing": 0,
+        "Baseline": "0",
+        "Relational": "0",
+        "Total": "0",
+        "Multiplier": []
+      },
+      {
+        "Name": "complete-0",
+        "Identities": 0,
+        "Required": 0,
+        "Observed": 0,
+        "Missing": 0,
+        "Baseline": "0",
+        "Relational": "0",
+        "Total": "0",
+        "Multiplier": []
+      },
+      {
+        "Name": "path-0",
+        "Identities": 0,
+        "Required": 0,
+        "Observed": 0,
+        "Missing": 0,
+        "Baseline": "0",
+        "Relational": "0",
+        "Total": "0",
+        "Multiplier": []
+      },
+      {
+        "Name": "star-0",
+        "Identities": 0,
+        "Required": 0,
+        "Observed": 0,
+        "Missing": 0,
+        "Baseline": "0",
+        "Relational": "0",
+        "Total": "0",
+        "Multiplier": []
+      },
+      {
+        "Name": "cycle-0",
+        "Identities": 0,
+        "Required": 0,
+        "Observed": 0,
+        "Missing": 0,
+        "Baseline": "0",
+        "Relational": "0",
+        "Total": "0",
+        "Multiplier": []
+      },
+      {
+        "Name": "empty-1",
+        "Identities": 1,
+        "Required": 0,
+        "Observed": 0,
+        "Missing": 0,
+        "Baseline": "32",
+        "Relational": "0",
+        "Total": "32",
+        "Multiplier": [
+          "1",
+          "1"
+        ]
+      },
+      {
+        "Name": "complete-1",
+        "Identities": 1,
+        "Required": 0,
+        "Observed": 0,
+        "Missing": 0,
+        "Baseline": "32",
+        "Relational": "0",
+        "Total": "32",
+        "Multiplier": [
+          "1",
+          "1"
+        ]
+      },
+      {
+        "Name": "path-1",
+        "Identities": 1,
+        "Required": 0,
+        "Observed": 0,
+        "Missing": 0,
+        "Baseline": "32",
+        "Relational": "0",
+        "Total": "32",
+        "Multiplier": [
+          "1",
+          "1"
+        ]
+      },
+      {
+        "Name": "star-1",
+        "Identities": 1,
+        "Required": 0,
+        "Observed": 0,
+        "Missing": 0,
+        "Baseline": "32",
+        "Relational": "0",
+        "Total": "32",
+        "Multiplier": [
+          "1",
+          "1"
+        ]
+      },
+      {
+        "Name": "cycle-1",
+        "Identities": 1,
+        "Required": 0,
+        "Observed": 0,
+        "Missing": 0,
+        "Baseline": "32",
+        "Relational": "0",
+        "Total": "32",
+        "Multiplier": [
+          "1",
+          "1"
+        ]
+      },
+      {
+        "Name": "empty-2",
+        "Identities": 2,
+        "Required": 0,
+        "Observed": 0,
+        "Missing": 0,
+        "Baseline": "64",
+        "Relational": "0",
+        "Total": "64",
+        "Multiplier": [
+          "1",
+          "1"
+        ]
+      },
+      {
+        "Name": "complete-2",
+        "Identities": 2,
+        "Required": 1,
+        "Observed": 0,
+        "Missing": 1,
+        "Baseline": "64",
+        "Relational": "8",
+        "Total": "72",
+        "Multiplier": [
+          "9",
+          "8"
+        ]
+      },
+      {
+        "Name": "path-2",
+        "Identities": 2,
+        "Required": 1,
+        "Observed": 0,
+        "Missing": 1,
+        "Baseline": "64",
+        "Relational": "8",
+        "Total": "72",
+        "Multiplier": [
+          "9",
+          "8"
+        ]
+      },
+      {
+        "Name": "star-2",
+        "Identities": 2,
+        "Required": 1,
+        "Observed": 0,
+        "Missing": 1,
+        "Baseline": "64",
+        "Relational": "8",
+        "Total": "72",
+        "Multiplier": [
+          "9",
+          "8"
+        ]
+      },
+      {
+        "Name": "cycle-2",
+        "Identities": 2,
+        "Required": 0,
+        "Observed": 0,
+        "Missing": 0,
+        "Baseline": "64",
+        "Relational": "0",
+        "Total": "64",
+        "Multiplier": [
+          "1",
+          "1"
+        ]
+      },
+      {
+        "Name": "empty-3",
+        "Identities": 3,
+        "Required": 0,
+        "Observed": 0,
+        "Missing": 0,
+        "Baseline": "96",
+        "Relational": "0",
+        "Total": "96",
+        "Multiplier": [
+          "1",
+          "1"
+        ]
+      },
+      {
+        "Name": "complete-3",
+        "Identities": 3,
+        "Required": 3,
+        "Observed": 2,
+        "Missing": 1,
+        "Baseline": "96",
+        "Relational": "24",
+        "Total": "120",
+        "Multiplier": [
+          "5",
+          "4"
+        ]
+      },
+      {
+        "Name": "path-3",
+        "Identities": 3,
+        "Required": 2,
+        "Observed": 1,
+        "Missing": 1,
+        "Baseline": "96",
+        "Relational": "16",
+        "Total": "112",
+        "Multiplier": [
+          "7",
+          "6"
+        ]
+      },
+      {
+        "Name": "star-3",
+        "Identities": 3,
+        "Required": 2,
+        "Observed": 1,
+        "Missing": 1,
+        "Baseline": "96",
+        "Relational": "16",
+        "Total": "112",
+        "Multiplier": [
+          "7",
+          "6"
+        ]
+      },
+      {
+        "Name": "cycle-3",
+        "Identities": 3,
+        "Required": 3,
+        "Observed": 2,
+        "Missing": 1,
+        "Baseline": "96",
+        "Relational": "24",
+        "Total": "120",
+        "Multiplier": [
+          "5",
+          "4"
+        ]
+      },
+      {
+        "Name": "empty-4",
+        "Identities": 4,
+        "Required": 0,
+        "Observed": 0,
+        "Missing": 0,
+        "Baseline": "128",
+        "Relational": "0",
+        "Total": "128",
+        "Multiplier": [
+          "1",
+          "1"
+        ]
+      },
+      {
+        "Name": "complete-4",
+        "Identities": 4,
+        "Required": 6,
+        "Observed": 5,
+        "Missing": 1,
+        "Baseline": "128",
+        "Relational": "48",
+        "Total": "176",
+        "Multiplier": [
+          "11",
+          "8"
+        ]
+      },
+      {
+        "Name": "path-4",
+        "Identities": 4,
+        "Required": 3,
+        "Observed": 2,
+        "Missing": 1,
+        "Baseline": "128",
+        "Relational": "24",
+        "Total": "152",
+        "Multiplier": [
+          "19",
+          "16"
+        ]
+      },
+      {
+        "Name": "star-4",
+        "Identities": 4,
+        "Required": 3,
+        "Observed": 2,
+        "Missing": 1,
+        "Baseline": "128",
+        "Relational": "24",
+        "Total": "152",
+        "Multiplier": [
+          "19",
+          "16"
+        ]
+      },
+      {
+        "Name": "cycle-4",
+        "Identities": 4,
+        "Required": 4,
+        "Observed": 3,
+        "Missing": 1,
+        "Baseline": "128",
+        "Relational": "32",
+        "Total": "160",
+        "Multiplier": [
+          "5",
+          "4"
+        ]
+      },
+      {
+        "Name": "empty-8",
+        "Identities": 8,
+        "Required": 0,
+        "Observed": 0,
+        "Missing": 0,
+        "Baseline": "256",
+        "Relational": "0",
+        "Total": "256",
+        "Multiplier": [
+          "1",
+          "1"
+        ]
+      },
+      {
+        "Name": "complete-8",
+        "Identities": 8,
+        "Required": 28,
+        "Observed": 27,
+        "Missing": 1,
+        "Baseline": "256",
+        "Relational": "224",
+        "Total": "480",
+        "Multiplier": [
+          "15",
+          "8"
+        ]
+      },
+      {
+        "Name": "path-8",
+        "Identities": 8,
+        "Required": 7,
+        "Observed": 6,
+        "Missing": 1,
+        "Baseline": "256",
+        "Relational": "56",
+        "Total": "312",
+        "Multiplier": [
+          "39",
+          "32"
+        ]
+      },
+      {
+        "Name": "star-8",
+        "Identities": 8,
+        "Required": 7,
+        "Observed": 6,
+        "Missing": 1,
+        "Baseline": "256",
+        "Relational": "56",
+        "Total": "312",
+        "Multiplier": [
+          "39",
+          "32"
+        ]
+      },
+      {
+        "Name": "cycle-8",
+        "Identities": 8,
+        "Required": 8,
+        "Observed": 7,
+        "Missing": 1,
+        "Baseline": "256",
+        "Relational": "64",
+        "Total": "320",
+        "Multiplier": [
+          "5",
+          "4"
+        ]
+      },
+      {
+        "Name": "empty-16",
+        "Identities": 16,
+        "Required": 0,
+        "Observed": 0,
+        "Missing": 0,
+        "Baseline": "512",
+        "Relational": "0",
+        "Total": "512",
+        "Multiplier": [
+          "1",
+          "1"
+        ]
+      },
+      {
+        "Name": "complete-16",
+        "Identities": 16,
+        "Required": 120,
+        "Observed": 119,
+        "Missing": 1,
+        "Baseline": "512",
+        "Relational": "960",
+        "Total": "1472",
+        "Multiplier": [
+          "23",
+          "8"
+        ]
+      },
+      {
+        "Name": "path-16",
+        "Identities": 16,
+        "Required": 15,
+        "Observed": 14,
+        "Missing": 1,
+        "Baseline": "512",
+        "Relational": "120",
+        "Total": "632",
+        "Multiplier": [
+          "79",
+          "64"
+        ]
+      },
+      {
+        "Name": "star-16",
+        "Identities": 16,
+        "Required": 15,
+        "Observed": 14,
+        "Missing": 1,
+        "Baseline": "512",
+        "Relational": "120",
+        "Total": "632",
+        "Multiplier": [
+          "79",
+          "64"
+        ]
+      },
+      {
+        "Name": "cycle-16",
+        "Identities": 16,
+        "Required": 16,
+        "Observed": 15,
+        "Missing": 1,
+        "Baseline": "512",
+        "Relational": "128",
+        "Total": "640",
+        "Multiplier": [
+          "5",
+          "4"
+        ]
+      },
+      {
+        "Name": "empty-32",
+        "Identities": 32,
+        "Required": 0,
+        "Observed": 0,
+        "Missing": 0,
+        "Baseline": "1024",
+        "Relational": "0",
+        "Total": "1024",
+        "Multiplier": [
+          "1",
+          "1"
+        ]
+      },
+      {
+        "Name": "complete-32",
+        "Identities": 32,
+        "Required": 496,
+        "Observed": 495,
+        "Missing": 1,
+        "Baseline": "1024",
+        "Relational": "3968",
+        "Total": "4992",
+        "Multiplier": [
+          "39",
+          "8"
+        ]
+      },
+      {
+        "Name": "path-32",
+        "Identities": 32,
+        "Required": 31,
+        "Observed": 30,
+        "Missing": 1,
+        "Baseline": "1024",
+        "Relational": "248",
+        "Total": "1272",
+        "Multiplier": [
+          "159",
+          "128"
+        ]
+      },
+      {
+        "Name": "star-32",
+        "Identities": 32,
+        "Required": 31,
+        "Observed": 30,
+        "Missing": 1,
+        "Baseline": "1024",
+        "Relational": "248",
+        "Total": "1272",
+        "Multiplier": [
+          "159",
+          "128"
+        ]
+      },
+      {
+        "Name": "cycle-32",
+        "Identities": 32,
+        "Required": 32,
+        "Observed": 31,
+        "Missing": 1,
+        "Baseline": "1024",
+        "Relational": "256",
+        "Total": "1280",
+        "Multiplier": [
+          "5",
+          "4"
+        ]
+      },
+      {
+        "Name": "empty-64",
+        "Identities": 64,
+        "Required": 0,
+        "Observed": 0,
+        "Missing": 0,
+        "Baseline": "2048",
+        "Relational": "0",
+        "Total": "2048",
+        "Multiplier": [
+          "1",
+          "1"
+        ]
+      },
+      {
+        "Name": "complete-64",
+        "Identities": 64,
+        "Required": 2016,
+        "Observed": 2015,
+        "Missing": 1,
+        "Baseline": "2048",
+        "Relational": "16128",
+        "Total": "18176",
+        "Multiplier": [
+          "71",
+          "8"
+        ]
+      },
+      {
+        "Name": "path-64",
+        "Identities": 64,
+        "Required": 63,
+        "Observed": 62,
+        "Missing": 1,
+        "Baseline": "2048",
+        "Relational": "504",
+        "Total": "2552",
+        "Multiplier": [
+          "319",
+          "256"
+        ]
+      },
+      {
+        "Name": "star-64",
+        "Identities": 64,
+        "Required": 63,
+        "Observed": 62,
+        "Missing": 1,
+        "Baseline": "2048",
+        "Relational": "504",
+        "Total": "2552",
+        "Multiplier": [
+          "319",
+          "256"
+        ]
+      },
+      {
+        "Name": "cycle-64",
+        "Identities": 64,
+        "Required": 64,
+        "Observed": 63,
+        "Missing": 1,
+        "Baseline": "2048",
+        "Relational": "512",
+        "Total": "2560",
+        "Multiplier": [
+          "5",
+          "4"
+        ]
+      }
+    ],
+    "Transport": {
+      "ArrivalOrders": 24,
+      "TopologicalOrders": [
+        [
+          "e0",
+          "e1",
+          "e2",
+          "e3"
+        ],
+        [
+          "e0",
+          "e2",
+          "e1",
+          "e3"
+        ]
+      ],
+      "Checks": 288,
+      "InverseChecks": 288,
+      "CompositionChecks": 288,
+      "Invariant": {
+        "Receipts": [
+          {
+            "EventId": "e0",
+            "Actor": "A",
+            "Counterparty": "B",
+            "Interaction": "i0",
+            "Channel": "vision",
+            "Claim": "color",
+            "Weight": 1,
+            "Parents": []
+          },
+          {
+            "EventId": "e1",
+            "Actor": "A",
+            "Counterparty": "B",
+            "Interaction": "i1",
+            "Channel": "vision",
+            "Claim": "color",
+            "Weight": -1,
+            "Parents": [
+              "e0"
+            ]
+          },
+          {
+            "EventId": "e2",
+            "Actor": "B",
+            "Counterparty": "A",
+            "Interaction": "i0",
+            "Channel": "vision",
+            "Claim": "color",
+            "Weight": 1,
+            "Parents": [
+              "e0"
+            ]
+          },
+          {
+            "EventId": "e3",
+            "Actor": "A",
+            "Counterparty": "B",
+            "Interaction": "i2",
+            "Channel": "receipt",
+            "Claim": "ack",
+            "Weight": 1,
+            "Parents": [
+              "e1",
+              "e2"
+            ]
+          }
+        ],
+        "CausalPairs": [
+          [
+            "e0",
+            "e1"
+          ],
+          [
+            "e0",
+            "e2"
+          ],
+          [
+            "e0",
+            "e3"
+          ],
+          [
+            "e1",
+            "e3"
+          ],
+          [
+            "e2",
+            "e3"
+          ]
+        ],
+        "Claims": [
+          [
+            "A",
+            "B",
+            "receipt",
+            "ack",
+            "1"
+          ],
+          [
+            "B",
+            "A",
+            "vision",
+            "color",
+            "1"
+          ]
+        ]
+      }
+    }
+  },
+  "SourceArchive": "archive/relational-identity-20260906-source-v4",
+  "SourceCommit": "159f7b0e65245d4ffae9ecbfe0702b1b7e987b2c",
+  "SourceHashes": [
+    {
+      "Path": "docs/research/relational-identity/2026-09-06-protocol.md",
+      "Sha256": "7EA3C66BDD83A45D82C156D36C5D6B54754C0ADFB6829B42766E9A39A95E3568"
+    },
+    {
+      "Path": "docs/research/relational-identity/2026-09-06-clarification.md",
+      "Sha256": "B5D02FFDF5ABC8D06E9F1D35E98727C7054CECE6DC7C33567DAC1B4B9B31046B"
+    },
+    {
+      "Path": "docs/research/relational-identity/2026-09-06-source-repairs.md",
+      "Sha256": "F658B7A0D140E1822AF13749D525B3BCBBA47E8ACD13E89E76D2822345555421"
+    },
+    {
+      "Path": "src/Research.FSharp/RelationalIdentity.fs",
+      "Sha256": "0430B00FB91F74D21112C242DD6F56E388E0FA177AB41C5CAEBC52427B1F3B58"
+    },
+    {
+      "Path": "src/Research.FSharp/RelationalIdentityExperiment.fs",
+      "Sha256": "E91CBAFE5BF31A6FE1840F44F3B0296F7C7A5EB91889565C77B7250E8B194CBF"
+    },
+    {
+      "Path": "src/Research.FSharp/run-relational-identity.fsx",
+      "Sha256": "9C5EE2D0B941EB34D20E3E7ED83295E78FA76AC7A6BE58E92F6456574DEF904F"
+    },
+    {
+      "Path": "src/Interp.Python/zeta_interp/relational_identity.py",
+      "Sha256": "4387FE30E23C5D6EB14B0234E8EB7422BFDD687F37D24BA0FC9BE7DF532D1714"
+    },
+    {
+      "Path": "src/Core/AntiSybil.fs",
+      "Sha256": "20CC8F598BB12BF0FD2584D6C0B6710EE0775D22CCCFADF8D9B72C1AAA1C81FF"
+    },
+    {
+      "Path": "src/Core/CoordinationSpectrum.fs",
+      "Sha256": "2E54E81D4EA5EB0A18B2B1CC09FE42AAFAE34F45F7935A999079EFB291512C43"
+    }
+  ]
+}

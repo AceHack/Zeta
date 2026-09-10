@@ -1,0 +1,8 @@
+{
+  "Provenance": "tool-observed failure, not captured raw stderr",
+  "ExitCode": 1,
+  "Failure": "AssertionError at line 79: one Console qualification alone did not reproduce final Replay source",
+  "DraftBytes": 5271,
+  "DraftSha256": "0bd5cb61b6ea92ee495b2fb3ba40d777d61fb34bff5e5d0711fdf6a0143e2423",
+  "Correction": "Also include System.Environment.Exit in the INTERACTIVE-only main; both edits are outside linked test code."
+}

@@ -1,0 +1,36 @@
+{
+  "ObservedAtUtc": "2026-09-07T15:35:18.562781+00:00",
+  "Scope": "Read-only candidate file identities and tool --info/--version; no build, debugger attach, task execution, guard computation or registered stream",
+  "Files": [
+    {
+      "Path": "/Users/acehack/.local/share/mise/dotnet-root/dotnet",
+      "Bytes": 141392,
+      "Sha256": "2ff302a3c5cecc4a371fd6482d2f5547c57d93eff9fe19919ef729a54f69ce04"
+    },
+    {
+      "Path": "/Users/acehack/.local/share/mise/dotnet-root/host/fxr/10.0.11/libhostfxr.dylib",
+      "Bytes": 425456,
+      "Sha256": "0470d25c71ba36f1e7491e5a11f6ba489924f52e9cf60e5fa87135dafced8433"
+    },
+    {
+      "Path": "/Users/acehack/.local/share/mise/dotnet-root/shared/Microsoft.NETCore.App/10.0.11/libhostpolicy.dylib",
+      "Bytes": 423040,
+      "Sha256": "511e01af076a9c8b4f982c202f389bc8e5b19d77b2d2b2c8b713a240dc93b031"
+    },
+    {
+      "Path": "/Users/acehack/.local/share/mise/dotnet-root/shared/Microsoft.NETCore.App/10.0.11/libcoreclr.dylib",
+      "Bytes": 6217584,
+      "Sha256": "10b24d0b11c7f6d838114744097bf10df9b08b906afc9016567631a1c009dfd0"
+    },
+    {
+      "Path": "/Users/acehack/.local/share/mise/dotnet-root/shared/Microsoft.NETCore.App/10.0.11/libclrjit.dylib",
+      "Bytes": 3100992,
+      "Sha256": "f7a10d53425c1fc3bd871e6d893d6ac531f7719b045c3a4488ec38550e29f367"
+    },
+    {
+      "Path": "/Users/acehack/.local/share/mise/dotnet-root/shared/Microsoft.NETCore.App/10.0.11/System.Private.CoreLib.dll",
+      "Bytes": 17088296,
+      "Sha256": "9ed74c2e2efeee87f1f2d7ffe1736b7e9164ce248516ea39402a725eedc87af6"
+    }
+  ]
+}

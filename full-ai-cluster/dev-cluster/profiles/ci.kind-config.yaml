@@ -7,5 +7,33 @@
 
 apiVersion: kind.x-k8s.io/v1alpha4
 kind: Cluster
+# THE POD-COUNT CEILING, RAISED -- and it is a COUNT limit, not a resource one.
+#
+# `live kind included Synced+Healthy proof` failed with the scheduler saying:
+#
+#   0/1 nodes are available: 1 Too many pods.
+#
+# That is kubelet's `maxPods`, whose default is 110 per node, and it is reached
+# by the NUMBER of pods regardless of how small their requests are. None of the
+# millicore/MiB budget work touches it: shrinking every request in the tree by
+# half would not schedule one more pod once the count ceiling is hit. Reading
+# "Too many pods" as a capacity problem sends you to the wrong lever entirely,
+# which is why the reason is written here rather than just the number.
+#
+# 250 IS HEADROOM, NOT A MEASUREMENT, AND IS LABELLED AS SUCH. The exact
+# steady-state pod count for the dev lane is UNMEASURED -- the failing run's
+# event log names 43 distinct pods, but that counts only pods that emitted an
+# event, so it is a floor and not a total. 250 is chosen to clear a ~110 ceiling
+# with room for the tree to grow, and the diagnostics step now prints the real
+# count so the next run replaces this estimate with a reading.
+#
+# WHY RAISING IT IS SAFE HERE: `maxPods` bounds pod COUNT, not the resources
+# they consume -- the scheduler still enforces every CPU and memory request
+# against the node's allocatable. So this cannot oversubscribe the runner; it
+# only stops the count from being the binding constraint before capacity is.
 nodes:
   - role: control-plane
+    kubeadmConfigPatches:
+      - |
+        kind: KubeletConfiguration
+        maxPods: 250

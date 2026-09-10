@@ -1,0 +1,14 @@
+{
+  "id": "080d045df617b810a0130008d03ebae5",
+  "at": "2026-09-10T14:35:29.911Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M25VXGQP087G0R0026XW1RW",
+    "type": "task",
+    "title": "Accept the tla2tools roll: banner drift warns loudly, the four model verdicts still fail",
+    "slug": "accept-the-tla2tools-roll-banner-drift-warns-loudly-the-four",
+    "priority": "P2",
+    "filename": "081M25VXGQP087G0R0026XW1RW-accept-the-tla2tools-roll-banner-drift-warns-loudly-the-four.md"
+  }
+}

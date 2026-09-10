@@ -1,0 +1,11 @@
+{
+  "Command": [
+    "python3",
+    ".git/freeze-projection-source-1.py"
+  ],
+  "ExitCode": 0,
+  "ExitObservation": "Actual exec tool return; no separately captured original invocation timestamp.",
+  "StdoutSha256": "F54457BE1680F99743874250622E70167A793083AE68946D69CCA401FAA034AF",
+  "StderrSha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+  "NumericalServicesEntered": 0
+}

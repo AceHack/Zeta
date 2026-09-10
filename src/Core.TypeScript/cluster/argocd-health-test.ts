@@ -32,6 +32,8 @@ import { parse as parseYaml } from "yaml";
 import { bootstrapKindClusterInProcess, bootstrapK3dClusterInProcess } from "./harness/bootstrap.ts";
 import {
   DEV_BOOTSTRAP_SECRETS,
+  DEV_SHARED_SECRETS,
+  type DevSharedSecretSpec,
   DEV_CILIUM_LB_KIND_MANIFEST_RELPATH,
   DEV_CILIUM_LB_KIND_POOL_NAME,
   DEV_GHCR_PULL_SECRET,
@@ -340,6 +342,37 @@ const SMOKE_MIN_APPLICATIONS = 20;
 export const PLATFORM_APP_DIR = "platform";
 
 export const DEV_EXCLUDED_REASONS: ReadonlyMap<string, string> = new Map([
+  [
+    "game-hosting/gmod",
+    "A GARRY'S MOD DEDICATED SERVER, and the SINGLE LARGEST MEMORY RESERVATION the dev lane " +
+      "carried: 2048Mi of a 9216Mi budget -- 18% -- to prove a Source-engine server loads a map " +
+      "and idles. Its own manifest calls it 'a game-server sample workload, not on the PoC " +
+      "critical path'. It is not the platform under test. " +
+      "WHY EXCLUDED RATHER THAN SHRUNK, which was tried first and reverted: the lane measured " +
+      "11148Mi against 9216Mi, over by 1932Mi, and gmod is the obvious 2048Mi -- but " +
+      "storage-profiles.json had already declined that cut per app, in writing. gmod: 'MEMORY IS " +
+      "UNCHANGED AT BOTH RUNGS AND DELIBERATELY SO ... cutting this request would trade a Pending " +
+      "pod for an evicted one.' mimir/kafka: 'an OOMKill here loses the un-consumed tail.' " +
+      "orleans/silo: 'evicting the silo does not slow the cluster down, it dissolves the " +
+      "membership the cluster IS.' Three reasoned refusals is not an obstacle to route around; the " +
+      "lane does not need a smaller game server, it needs one fewer. " +
+      "MEASURED: the lane becomes 40 Applications at 1715m / 9100Mi and FITS with 116Mi of spare, " +
+      "and NO REQUEST ANYWHERE CHANGES -- the metal rung the committed tree carries, and the " +
+      "16-core box deploys, is untouched. Applying the dev rung to the tree would have lowered " +
+      "metal too, which this file calls 'a maintainer call, not a CI convenience'. " +
+      "WHAT IS LOST: the lane stops applying and asserting gmod. That assertion is FAILING today " +
+      "anyway -- 'gmod did not schedule TODAY because its sync fails on gatekeeper's webhook' -- " +
+      "so a red assertion is given up, not a green one. " +
+      "LIFTS WHEN: the lane has 2048Mi of headroom again (a larger runner, or the metal cluster), " +
+      "at which point gmod returns UNCHANGED, because nothing about it was modified to make it leave. " +
+      "ANCHORS, CHECKED BY `reason-truth.ts` -- each names an artifact this tree holds, so a claim " +
+      "that outlives its artifact goes red instead of reading on: " +
+      "[cite: path full-ai-cluster/k8s/applications/game-hosting/gmod/statefulset.yaml] " +
+      "[cite: glob-defers game-hosting/gmod] " +
+      "[cite: resource-rung game-hosting/gmod dev 100] " +
+      "[cite: resource-rung game-hosting/gmod metal 1000] " +
+      "[cite: lane-cpu dev 1715 fits]",
+  ],
   // `agent-memory` is NOT here. It LEFT this map on 2026-09-03, and the entry is
   // recorded as closed rather than the lines silently deleted.
   //
@@ -616,14 +649,27 @@ export function auditDevExclusionReasons(
   repoRoot = REPO_ROOT,
   excludeGlob: string = DEFAULT_ROOT_DEV_CATALOG.excludeGlob,
 ): DevExclusionDrift {
+  // DEPTH 2, and this is the same blindness the resource ladder already had. A
+  // non-recursive walk reported a reason keyed on `game-hosting/gmod` as STALE --
+  // "a reason for a directory that no longer exists" -- about a directory that
+  // exists and that ArgoCD applies, because the include glob is not path-segment
+  // bounded (established against a live cluster in app-of-apps-discovery.ts). The
+  // ladder was widened when that cost 1000m; this audit was not. Depth 2 is where
+  // the tree actually stops, so that is where this stops.
   const applicationsRoot = join(repoRoot, "full-ai-cluster/k8s/applications");
-  const present = existsSync(applicationsRoot)
-    ? new Set(
-        readdirSync(applicationsRoot, { withFileTypes: true })
-          .filter((entry) => entry.isDirectory())
-          .map((entry) => entry.name),
-      )
-    : new Set<string>();
+  const topLevel = existsSync(applicationsRoot)
+    ? readdirSync(applicationsRoot, { withFileTypes: true })
+        .filter((entry) => entry.isDirectory())
+        .map((entry) => entry.name)
+    : [];
+  const present = new Set([
+    ...topLevel,
+    ...topLevel.flatMap((dir) =>
+      readdirSync(join(applicationsRoot, dir), { withFileTypes: true })
+        .filter((entry) => entry.isDirectory())
+        .map((entry) => `${dir}/${entry.name}`),
+    ),
+  ]);
   const globExcluded = rootDevCatalogExcludedDirs(excludeGlob);
 
   return {
@@ -1023,8 +1069,8 @@ export const APPLIED_BUT_UNASSERTED_REASONS: ReadonlyMap<string, string> = new M
       "[cite: chart-pin full-ai-cluster/hindsight hindsight 0.9.2] " +
       "[cite: resource-rung hindsight metal 1000] " +
       "[cite: resource-rung hindsight dev 75] " +
-      "[cite: lane-cpu metal 8390 over] " +
-      "[cite: lane-cpu dev 1815 fits] " +
+      "[cite: lane-cpu metal 7390 over] " +
+      "[cite: lane-cpu dev 1715 fits] " +
       "[cite: workflow-job k8s-argocd-health-test.yml dry-run] " +
       "[cite: path full-ai-cluster/k8s/bootstrap/root-application.yaml] " +
       "[cite: path maintainers/Addisons820/cluster-nodes/node-ad1efd/node.yaml] " +
@@ -2263,11 +2309,40 @@ function assertDevRegistryPullSecretPresent(plan: HarnessPlan): Failure | null {
   };
 }
 
+/**
+ * SHARED credentials are checked in EVERY namespace they are minted into, not
+ * just the producer's.
+ *
+ * This walk did not exist until 2026-09-09, and its absence is what let the
+ * Orleans silo crash-loop for days. `redis-auth` was minted only into namespace
+ * `redis`; the silo projects it in namespace `orleans`, where a `secretKeyRef`
+ * actually resolves. The bootstrap walk above passed -- the Secret WAS present,
+ * in the one namespace it looked at -- so the assertion that exists to catch a
+ * missing credential reported green for a missing credential. A per-namespace
+ * walk is the only form that can see it.
+ */
+function devSharedSecretFailure(plan: HarnessPlan, spec: DevSharedSecretSpec, namespace: string): Failure | null {
+  return devBootstrapSecretFailure(plan, {
+    namespace,
+    name: spec.name,
+    userKey: "",
+    passwordKey: "",
+    user: "",
+    reason: spec.reason,
+  });
+}
+
 function assertDevBootstrapSecretsPresent(plan: HarnessPlan): Failure | null {
   if (!isIncludedScope(plan.scope)) return null;
   for (const spec of DEV_BOOTSTRAP_SECRETS) {
     const failure = devBootstrapSecretFailure(plan, spec);
     if (failure !== null) return failure;
+  }
+  for (const spec of DEV_SHARED_SECRETS) {
+    for (const namespace of spec.namespaces) {
+      const failure = devSharedSecretFailure(plan, spec, namespace);
+      if (failure !== null) return failure;
+    }
   }
   return null;
 }
@@ -2428,6 +2503,13 @@ export function formatHealthWaitProgress(elapsedSec: number, verdicts: readonly 
  * OutOfSync/Degraded still waits. This does not repair mimir and does not
  * re-defer agent-memory.
  */
+/** The Applications a single poll reports as `Synced/Degraded`. One sample. */
+export function degradedApplicationNames(verdicts: readonly ApplicationVerdict[]): readonly string[] {
+  return verdicts
+    .filter((verdict) => !verdict.ok && verdict.healthStatus === "Degraded" && verdict.syncStatus === "Synced")
+    .map((verdict) => verdict.name);
+}
+
 export function degradedHealthTerminalFailure(verdicts: readonly ApplicationVerdict[]): Failure | null {
   const degraded = verdicts.filter(
     (verdict) => !verdict.ok && verdict.healthStatus === "Degraded" && verdict.syncStatus === "Synced",
@@ -2441,6 +2523,52 @@ export function degradedHealthTerminalFailure(verdicts: readonly ApplicationVerd
     detail: degraded,
   };
 }
+
+/**
+ * A DEGRADED READ ON ONE POLL IS NOT A DEGRADED APPLICATION.
+ *
+ * The predicate above is correct about what `Synced/Degraded` MEANS and wrong
+ * about how many samples it takes to know. Acting on a single poll converts a
+ * rollout blip into a hard stop, and the run then reports a failure the cluster
+ * had already recovered from -- the same shape as a check that did not run
+ * looking like one that passed, pointed the other way.
+ *
+ * MEASURED, run 34369317553 (main, `de612352`). The wait aborted at T+123s of a
+ * 2400s budget on `openziti-controller=Synced/Degraded`. The cluster events
+ * captured seconds later, in the same job:
+ *
+ *   49s  Updated health status: Progressing -> Degraded
+ *   32s  Updated health status: Degraded -> Progressing
+ *
+ * It had already left Degraded when the abort was printed. 2277 seconds of
+ * budget went unspent on an Application that was recovering.
+ *
+ * AND THE SAME APPLICATION DID THIS BEFORE. The docstring above records run
+ * 33830308187: the wait aborted on `openziti-controller=OutOfSync/Degraded`
+ * while the pod was still `Init:0/1`, and "events after the abort went
+ * Degraded -> Progressing -> Synced". The remedy then was to narrow the rule
+ * from any Degraded to `Synced/Degraded`. That narrowing was right and was not
+ * enough, because the defect was never WHICH sync status -- it was trusting one
+ * sample.
+ *
+ * So the abort now needs the SAME Application degraded on TWO CONSECUTIVE polls.
+ * The fail-fast property this exists for is kept: a genuinely dead workload is
+ * still abandoned after roughly one poll interval (15s in CI) instead of 2400s.
+ * What is removed is the single-sample false positive.
+ *
+ * Not a debounce over time, deliberately: consecutive POLLS, so the guarantee
+ * does not silently change when `--poll-sec` moves.
+ */
+export function confirmedDegradedTerminalFailure(
+  previous: readonly ApplicationVerdict[],
+  current: readonly ApplicationVerdict[],
+): Failure | null {
+  const previouslyDegraded = new Set(degradedApplicationNames(previous));
+  if (previouslyDegraded.size === 0) return null;
+  const confirmed = current.filter((verdict) => previouslyDegraded.has(verdict.name));
+  return degradedHealthTerminalFailure(confirmed);
+}
+
 
 export const REPO_BACKED_CHILD_WAIT_DIAGNOSTIC_COMMANDS: readonly {
   readonly label: string;
@@ -2495,14 +2623,118 @@ export const REPO_BACKED_CHILD_WAIT_DIAGNOSTIC_COMMANDS: readonly {
 ];
 
 export function mergeArgoCdTimeoutDiagnostics(failure: Failure, dumps: Readonly<Record<string, string>>): Failure {
+  // `failure.detail` has TWO shapes at the two call sites, and only one of them
+  // is a record. The ArgoCd-timeout site passes `{stdout, stderr, childCount}`;
+  // the health-wait site passes an ARRAY -- the verdicts for exactly the
+  // Applications that missed. `asRecord` returns null for an array, so spreading
+  // `existing` alone silently DROPPED the only field naming which app failed,
+  // leaving `ApplicationUnhealthy` reading "one or more included dev ArgoCD
+  // Applications are not Synced/Healthy" with no way to tell which. The names
+  // were computed and then thrown away one line before they were printed.
   const existing = asRecord(failure.detail) ?? {};
+  const unhealthy = Array.isArray(failure.detail) ? { unhealthy: failure.detail } : {};
   return {
     ...failure,
     detail: {
       ...existing,
+      ...unhealthy,
       diagnostics: dumps,
     },
   };
+}
+
+/**
+ * Containers that are RESTARTING, with the log line that says why.
+ *
+ * The static roster above answers "why is a pod not running". It cannot answer
+ * "why does this pod keep dying", and the difference is not academic: a
+ * CrashLoopBackOff pod is in phase **Running** between restarts, so it does not
+ * appear in `not-running-pods` at all. Measured 2026-09-08 on the live lane --
+ * `headscale` and `orleans` were the two Applications holding the whole
+ * `included Synced+Healthy` proof open, and neither showed up in that dump. Only
+ * `warning-events` caught them, with `BackOff restarting failed container`, which
+ * names the SYMPTOM. The container's own last words were nowhere in the bundle.
+ *
+ * `--previous` is the point: the current attempt is usually still starting or
+ * already dead, and the useful output is the exit of the attempt BEFORE this one.
+ *
+ * Bounded on purpose: the pod scan is one call, only restarting containers are
+ * logged, at most `MAX_CRASHLOOP_LOGS` of them, tail-limited. A diagnostic bundle
+ * that can itself hang or explode is a second failure on top of the first.
+ */
+const MAX_CRASHLOOP_LOGS = 8;
+const CRASHLOOP_LOG_TAIL = 60;
+
+interface RestartingContainer {
+  readonly namespace: string;
+  readonly pod: string;
+  readonly container: string;
+  readonly restarts: number;
+  readonly reason: string;
+}
+
+/** Exported for unit tests: parse `kubectl get pods -A -o json` into restarting containers. */
+export function restartingContainersFromPodsJson(stdout: string): RestartingContainer[] {
+  let parsed: unknown;
+  try {
+    parsed = JSON.parse(stdout);
+  } catch {
+    return [];
+  }
+  const items = asRecord(parsed)?.["items"];
+  if (!Array.isArray(items)) return [];
+  const out: RestartingContainer[] = [];
+  for (const item of items) {
+    const pod = asRecord(item);
+    const meta = asRecord(pod?.["metadata"]);
+    const status = asRecord(pod?.["status"]);
+    const namespace = typeof meta?.["namespace"] === "string" ? meta["namespace"] : "";
+    const name = typeof meta?.["name"] === "string" ? meta["name"] : "";
+    const statuses = status?.["containerStatuses"];
+    if (namespace === "" || name === "" || !Array.isArray(statuses)) continue;
+    for (const cs of statuses) {
+      const c = asRecord(cs);
+      const container = typeof c?.["name"] === "string" ? c["name"] : "";
+      const restarts = typeof c?.["restartCount"] === "number" ? c["restartCount"] : 0;
+      const waiting = asRecord(asRecord(c?.["state"])?.["waiting"]);
+      const reason = typeof waiting?.["reason"] === "string" ? waiting["reason"] : "";
+      // Either signal alone is enough: a container can be mid-restart with an
+      // empty waiting state, and one that has settled into backoff may have been
+      // counted already.
+      if (container !== "" && (restarts > 0 || reason === "CrashLoopBackOff")) {
+        out.push({ namespace, pod: name, container, restarts, reason });
+      }
+    }
+  }
+  return out.sort((a, b) => b.restarts - a.restarts);
+}
+
+function collectCrashLoopLogs(): Record<string, string> {
+  const dumps: Record<string, string> = {};
+  const listed = kubectl(["get", "pods", "-A", "-o", "json"], 20);
+  const restarting = restartingContainersFromPodsJson(listed.stdout);
+  if (restarting.length === 0) {
+    // A measurement, not an absence: saying so beats an empty key that reads as
+    // "nothing was looked at".
+    dumps["crashloop-logs"] = "(no restarting containers found)";
+    return dumps;
+  }
+  dumps["crashloop-summary"] = restarting
+    .map((r) => `${r.namespace}/${r.pod} [${r.container}] restarts=${String(r.restarts)} ${r.reason}`)
+    .join("\n");
+  for (const r of restarting.slice(0, MAX_CRASHLOOP_LOGS)) {
+    const result = kubectl(
+      ["-n", r.namespace, "logs", r.pod, "-c", r.container, "--previous", `--tail=${String(CRASHLOOP_LOG_TAIL)}`],
+      20,
+    );
+    const text = [result.stdout, result.stderr]
+      .filter((part) => part.length > 0)
+      .join("\n")
+      .slice(-4000);
+    dumps[`crashloop:${r.namespace}/${r.pod}/${r.container}`] =
+      text.length > 0 ? text : `(no previous-container log, exit ${String(result.status)})`;
+  }
+  return dumps;
 }
 
 function collectRepoBackedChildWaitDiagnostics(): Record<string, string> {
@@ -2515,7 +2747,7 @@ function collectRepoBackedChildWaitDiagnostics(): Record<string, string> {
       .slice(-4000);
     dumps[label] = text.length > 0 ? text : `(empty, exit ${String(result.status)})`;
   }
-  return dumps;
+  return { ...dumps, ...collectCrashLoopLogs() };
 }
 
 /**
@@ -2750,6 +2982,52 @@ function parseApplicationObjectOrFailure(
   }
 }
 
+/**
+ * ArgoCD's own name for "the sync operation FAILED", written into
+ * `status.conditions` and cleared when a later sync succeeds.
+ */
+export const SYNC_ERROR_CONDITION_TYPE = "SyncError";
+
+/**
+ * A FAILED SYNC IS NEVER RECONCILED, WHATEVER HEALTH SAYS.
+ *
+ * `isApplicationSynced` below accepts `OutOfSync + Healthy` -- deliberately,
+ * for benign StatefulSet and git-directory drift. But health is assessed per
+ * RESOURCE KIND, and the kinds ArgoCD has no health check for contribute
+ * nothing to it. Gatekeeper Constraints are such a kind. So an Application
+ * whose sync genuinely failed, and whose unapplied resources are all
+ * health-less, reads as `OutOfSync + Healthy` -- indistinguishable, to every
+ * predicate below, from an app that synced fine and drifted afterwards.
+ *
+ * MEASURED, on the lane this file is the proof for. `hat-system` carried
+ *
+ *   SyncError: Failed last sync attempt to [c73cc49e...]: one or more
+ *   synchronization tasks completed unsuccessfully (retried 10 times).
+ *
+ * in run 34323056405, with all seven Hat Constraints `OutOfSync`, and the same
+ * seven Constraints unapplied in run 34338106811 -- which the proof PASSED.
+ * The policy engine held zero installed policies in a green run, for as long
+ * as the lane has existed.
+ *
+ * The condition is what closes it, because it is ArgoCD stating the failure
+ * rather than us inferring it from two status strings that cannot carry it.
+ * Scoped to the auto-sync contract: a declared manual-sync app is judged by
+ * `manualSyncAssertion`, a different and weaker contract on purpose
+ * (./manual-sync-policy.ts).
+ *
+ * NOT TERMINAL. ArgoCD retries, and clears the condition when a sync succeeds,
+ * so an app carrying one stays a LAGGARD and the wait keeps waiting -- a
+ * transient failure still self-heals. Only one that survives the timeout fails
+ * the proof, which is the honest reading of "it never synced".
+ */
+export function failedSyncMessage(snapshot: ArgoApplicationSnapshot): string | null {
+  const condition = (snapshot.conditions ?? []).find(
+    (candidate) => candidate.type === SYNC_ERROR_CONDITION_TYPE,
+  );
+  if (condition === undefined) return null;
+  return condition.message.length > 0 ? condition.message : "sync operation failed";
+}
+
 export function isApplicationSynced(snapshot: ArgoApplicationSnapshot): boolean {
   if (snapshot.syncStatus === "Synced") return true;
   // Helm apps with benign StatefulSet drift often stay OutOfSync while Healthy after a successful sync.
@@ -2794,6 +3072,10 @@ export function isApplicationSynced(snapshot: ArgoApplicationSnapshot): boolean 
  */
 export function applicationOutcome(expected: ExpectedApplication, snapshot: ArgoApplicationSnapshot): AssertionOutcome {
   if (expected.manualSync) return manualSyncAssertion(snapshot);
+  const syncFailure = failedSyncMessage(snapshot);
+  if (syncFailure !== null) {
+    return { ok: false, reason: SYNC_ERROR_CONDITION_TYPE + ": " + syncFailure };
+  }
   const reconciled = isApplicationSynced(snapshot) ? snapshot.healthStatus === "Healthy" : false;
   if (reconciled) return { ok: true, reason: "" };
   const stated = snapshot.message === "" ? "expected Synced/Healthy" : snapshot.message;
@@ -2904,6 +3186,7 @@ async function waitForApplications(
   options: CliOptions,
 ): Promise<readonly ApplicationVerdict[] | Failure> {
   let lastVerdicts: readonly ApplicationVerdict[] = [];
+  let previousVerdicts: readonly ApplicationVerdict[] = [];
   const startedAt = Date.now();
   let lastProgressAt = startedAt;
   console.log(`Waiting: ArgoCD Applications Synced+Healthy (cap ${String(options.timeoutSeconds)}s)`);
@@ -2926,7 +3209,11 @@ async function waitForApplications(
           ? classifyApplications(plan.expectedApplications, snapshots)
           : classifyApplications(plan.expectedApplications, snapshots);
     if (lastVerdicts.every((verdict) => verdict.ok)) return null;
-    const degraded = degradedHealthTerminalFailure(lastVerdicts);
+    // TWO CONSECUTIVE POLLS, never one. See confirmedDegradedTerminalFailure:
+    // run 34369317553 aborted at T+123s of 2400s on a Degraded that the
+    // cluster's own events show had already gone back to Progressing.
+    const degraded = confirmedDegradedTerminalFailure(previousVerdicts, lastVerdicts);
+    previousVerdicts = lastVerdicts;
     if (degraded !== null) return degraded;
     const now = Date.now();
     if (now - lastProgressAt >= 60_000) {

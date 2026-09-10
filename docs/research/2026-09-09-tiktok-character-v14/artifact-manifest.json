@@ -1,0 +1,723 @@
+{
+  "current": "v14",
+  "previous": "v13",
+  "files": [
+    {
+      "path": "README.md",
+      "bytes": 941,
+      "sha256": "9b3fef384d7da8a59f5fb2c9f55feaec7c86c3468dd482051db2012e14321af1"
+    },
+    {
+      "path": "current/AceHack-Face-v14/Assets/AceHack-face-body/AceHack-face-body.glb",
+      "bytes": 1076136,
+      "sha256": "4eeba66fdf795648d63924d0c2a2f658106d3aae7b1cfdb6145bfb6edf2064dd"
+    },
+    {
+      "path": "current/AceHack-Face-v14/Assets/AceHack-face-body/AceHack-face-body.glb.extra",
+      "bytes": 2044,
+      "sha256": "4ad575729c84a738f8591c4a6d5008f6f955880b934748ad342d8d2fc3235759"
+    },
+    {
+      "path": "current/AceHack-Face-v14/Assets/AceHack-face-body/Materials/AceHack  Mouth interior.omtl",
+      "bytes": 14486,
+      "sha256": "1960c69900cce85d16bed31f79d09159091059e9d2d87a071d0e3d037ea6e335"
+    },
+    {
+      "path": "current/AceHack-Face-v14/Assets/AceHack-face-body/Materials/AceHack  Mouth interior.omtl.extra",
+      "bytes": 3385,
+      "sha256": "02fe3f216cf297d68d5d432140542580d61119a15bca9be008b523b377334807"
+    },
+    {
+      "path": "current/AceHack-Face-v14/Assets/AceHack-face-body/Materials/AceHack  Tongue material.omtl",
+      "bytes": 14486,
+      "sha256": "6eaef8e0c860e89d6e8602a53b4617ab473bcb58503ea27efe5ed5e5fbcae926"
+    },
+    {
+      "path": "current/AceHack-Face-v14/Assets/AceHack-face-body/Materials/AceHack  Tongue material.omtl.extra",
+      "bytes": 3386,
+      "sha256": "130cebda768f2538f243d4cb62154f4c2140a9832ff6e8b5ccb397724e28a759"
+    },
+    {
+      "path": "current/AceHack-Face-v14/Assets/AceHack-face-body/Materials/AceHack  Upper teeth.omtl",
+      "bytes": 14486,
+      "sha256": "e18d39cbd98e98f6993bdbcebe213b5513ab35d69e05bf8885327b153c0e3a8f"
+    },
+    {
+      "path": "current/AceHack-Face-v14/Assets/AceHack-face-body/Materials/AceHack  Upper teeth.omtl.extra",
+      "bytes": 3379,
+      "sha256": "3795f98fe3461f008b680b94733a15809d9d9b5c43945432dbbc8ddcf07821b2"
+    },
+    {
+      "path": "current/AceHack-Face-v14/Assets/AceHack-face-body/Materials/AceHack-head-review stable surface.omtl",
+      "bytes": 14518,
+      "sha256": "a864feca8443fc9586fa6c08e6adb3f2e0d96af544bca5f166a19bbd1fdaf153"
+    },
+    {
+      "path": "current/AceHack-Face-v14/Assets/AceHack-face-body/Materials/AceHack-head-review stable surface.omtl.extra",
+      "bytes": 3407,
+      "sha256": "7b973b92e456308190f3db40fce2d4bda9c6c5cb27f1b6e00b6c0bbb631f61b3"
+    },
+    {
+      "path": "current/AceHack-Face-v14/Assets/AceHack-face-body/Materials.extra",
+      "bytes": 370,
+      "sha256": "ebf52eee9f80b9fef1ed91b8a7c9d6ad03a34a28c3b4ae38fe060567ec71fd17"
+    },
+    {
+      "path": "current/AceHack-Face-v14/Assets/AceHack-face-body/Textures/AceHack-head-review-mobile1024.jpg",
+      "bytes": 268193,
+      "sha256": "9761e5af1efb1777cde2b48d73d53470b8796a8f9c3c6d42ee5957cbeb18ad0d"
+    },
+    {
+      "path": "current/AceHack-Face-v14/Assets/AceHack-face-body/Textures/AceHack-head-review-mobile1024.jpg.extra",
+      "bytes": 870,
+      "sha256": "cebcacacc4dab5166ca0f593269fec8c580953a3d89227ce55f7e23c7dcde63c"
+    },
+    {
+      "path": "current/AceHack-Face-v14/Assets/AceHack-face-body/Textures.extra",
+      "bytes": 369,
+      "sha256": "5a4ce0b11a26fdc6e498f50545456d755533dfdc97b7f27cbef6c8ec05465767"
+    },
+    {
+      "path": "current/AceHack-Face-v14/Assets/AceHack-face-body.extra",
+      "bytes": 378,
+      "sha256": "d9c490490cfd1da7f402a2c33e8c3098e33fa4501d57d42baf8885755b0f3eb5"
+    },
+    {
+      "path": "current/AceHack-Face-v14/Assets/language.json",
+      "bytes": 488,
+      "sha256": "d72cecea3e93bbeb946db8822f264300f5a809867cf3afb53641cefa6eca7154"
+    },
+    {
+      "path": "current/AceHack-Face-v14/Assets/main.scene",
+      "bytes": 15492,
+      "sha256": "2fbb67d861e7cb32b907af615c85779e3a44a4c0af5512fc7917d54d27d2dcde"
+    },
+    {
+      "path": "current/AceHack-Face-v14/Assets/main.scene.extra",
+      "bytes": 32450,
+      "sha256": "adacc6ea97637c7e7f653df922c85a99ea921e41985c5e36b31fb7911d026bbf"
+    },
+    {
+      "path": "current/AceHack-Face-v14/Assets/temp (1).folder/AceHack-face/AceHack-face.glb",
+      "bytes": 646720,
+      "sha256": "1c4f040c6f5917bb657ff27c060be10d22d736114c2422f5fec185ee55e33e54"
+    },
+    {
+      "path": "current/AceHack-Face-v14/Assets/temp (1).folder/AceHack-face/AceHack-face.glb.extra",
+      "bytes": 1453,
+      "sha256": "f6f5668f673c95136eabd69d3f96c2aea4a4883192b6af66cc47ab3f156b9a26"
+    },
+    {
+      "path": "current/AceHack-Face-v14/Assets/temp (1).folder/AceHack-face/Materials/AceHack-head  Baked mobile.omtl",
+      "bytes": 14521,
+      "sha256": "9794ce5a1b19b4cddf31bc1b84c8a8c7bb9eb28578642c03c9b2bef1cd9bc343"
+    },
+    {
+      "path": "current/AceHack-Face-v14/Assets/temp (1).folder/AceHack-face/Materials/AceHack-head  Baked mobile.omtl.extra",
+      "bytes": 3356,
+      "sha256": "dda0b3b2fc63c3dc4283642a4330d1ceeb215a7582389fb6ba5d2c95954e8dc0"
+    },
+    {
+      "path": "current/AceHack-Face-v14/Assets/temp (1).folder/AceHack-face/Textures/AceHack-head-basecolor.jpg",
+      "bytes": 197897,
+      "sha256": "303cabdd14c102bc5f55be259df02f3d9af3d64d8c6453ce6eecc4b6d651c451"
+    },
+    {
+      "path": "current/AceHack-Face-v14/Assets/temp (1).folder/AceHack-face/Textures/AceHack-head-basecolor.jpg.extra",
+      "bytes": 866,
+      "sha256": "c4927f61a113fbc6bc0f76ec3349b753b0178e77105fa50f0281e2f631801369"
+    },
+    {
+      "path": "current/AceHack-Face-v14/Assets/temp (1).folder/AceHack-face/folder.ignore",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "current/AceHack-Face-v14/Assets/temp (1).folder/folder.ignore",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "current/AceHack-Face-v14/Assets/temp (2).folder/AceHack-face-v14/AceHack-face-v14.glb",
+      "bytes": 1076136,
+      "sha256": "4eeba66fdf795648d63924d0c2a2f658106d3aae7b1cfdb6145bfb6edf2064dd"
+    },
+    {
+      "path": "current/AceHack-Face-v14/Assets/temp (2).folder/AceHack-face-v14/AceHack-face-v14.glb.extra",
+      "bytes": 2043,
+      "sha256": "b502b64fc63334007c0408a4191a0be01363f1e9267f1239b8f6d1fa2f6f0ee6"
+    },
+    {
+      "path": "current/AceHack-Face-v14/Assets/temp (2).folder/AceHack-face-v14/Materials/AceHack  Mouth interior.omtl",
+      "bytes": 14486,
+      "sha256": "1960c69900cce85d16bed31f79d09159091059e9d2d87a071d0e3d037ea6e335"
+    },
+    {
+      "path": "current/AceHack-Face-v14/Assets/temp (2).folder/AceHack-face-v14/Materials/AceHack  Mouth interior.omtl.extra",
+      "bytes": 3352,
+      "sha256": "9f6d6391184e5ff28e285d097f3d6d97ac887650d0b2cbfeecc7da6d9b55949f"
+    },
+    {
+      "path": "current/AceHack-Face-v14/Assets/temp (2).folder/AceHack-face-v14/Materials/AceHack  Tongue material.omtl",
+      "bytes": 14486,
+      "sha256": "6eaef8e0c860e89d6e8602a53b4617ab473bcb58503ea27efe5ed5e5fbcae926"
+    },
+    {
+      "path": "current/AceHack-Face-v14/Assets/temp (2).folder/AceHack-face-v14/Materials/AceHack  Tongue material.omtl.extra",
+      "bytes": 3354,
+      "sha256": "e57114fd4f14d07e9f81f6d51f6085b8efe3ba8ea30a0a13007fa9e0b35f62ca"
+    },
+    {
+      "path": "current/AceHack-Face-v14/Assets/temp (2).folder/AceHack-face-v14/Materials/AceHack  Upper teeth.omtl",
+      "bytes": 14486,
+      "sha256": "e18d39cbd98e98f6993bdbcebe213b5513ab35d69e05bf8885327b153c0e3a8f"
+    },
+    {
+      "path": "current/AceHack-Face-v14/Assets/temp (2).folder/AceHack-face-v14/Materials/AceHack  Upper teeth.omtl.extra",
+      "bytes": 3350,
+      "sha256": "eab0dc55dceb222ca3b8cf22ee999decd93855d0b2573d391afd58a3ee479322"
+    },
+    {
+      "path": "current/AceHack-Face-v14/Assets/temp (2).folder/AceHack-face-v14/Materials/AceHack-head-review stable surface.omtl",
+      "bytes": 14533,
+      "sha256": "ac1dab3844bd15ab78b53ebdc4535bb093d8cca91aa77189300e71327ab6ff64"
+    },
+    {
+      "path": "current/AceHack-Face-v14/Assets/temp (2).folder/AceHack-face-v14/Materials/AceHack-head-review stable surface.omtl.extra",
+      "bytes": 3362,
+      "sha256": "4bb75c240f719cfa4a8d7c4a807a3a8b03703170a190eda68b5dc3985f740cd7"
+    },
+    {
+      "path": "current/AceHack-Face-v14/Assets/temp (2).folder/AceHack-face-v14/Textures/AceHack-head-review-mobile1024.jpg",
+      "bytes": 268193,
+      "sha256": "9761e5af1efb1777cde2b48d73d53470b8796a8f9c3c6d42ee5957cbeb18ad0d"
+    },
+    {
+      "path": "current/AceHack-Face-v14/Assets/temp (2).folder/AceHack-face-v14/Textures/AceHack-head-review-mobile1024.jpg.extra",
+      "bytes": 885,
+      "sha256": "cac786da7f554a275b8952b0c040ce7e450d65a483f67909ac3ed3f2c6abc159"
+    },
+    {
+      "path": "current/AceHack-Face-v14/Assets/temp (2).folder/AceHack-face-v14/folder.ignore",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "current/AceHack-Face-v14/Assets/temp (2).folder/folder.ignore",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "current/AceHack-Face-v14/Assets/temp.folder/folder.ignore",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "current/AceHack-Face-v14/EffectSettings/BuiltinPropertySettingsModule.json",
+      "bytes": 135,
+      "sha256": "07b5524e579fda4892299bfd6b1fa5dba35035b2f970ef5e4e71394b6e7b4643"
+    },
+    {
+      "path": "current/AceHack-Face-v14/EffectSettings/MultiResolutionSettingsModule.json",
+      "bytes": 39,
+      "sha256": "19c99127e6627959bacc0ec5ffae600c1f9e12d429b09694d90b5436f4ab171b"
+    },
+    {
+      "path": "current/AceHack-Face-v14/EffectSettings/Physics2DSettingsModule.json",
+      "bytes": 994,
+      "sha256": "893fdb395c22fd58f6605970e3ba1b7bfa6c4ceae1e2da6ecbd88ee34f41b8ef"
+    },
+    {
+      "path": "current/AceHack-Face-v14/EffectSettings/PhysicsSettingsModule.json",
+      "bytes": 932,
+      "sha256": "036f2a50d52f99e2bbfc4046ca479d6f35728a75250bd94e86feacc003380f72"
+    },
+    {
+      "path": "current/AceHack-Face-v14/EffectSettings/SubmissionSettingsModule.json",
+      "bytes": 44,
+      "sha256": "beaaf5b66f442a666bb294ace7fe4adf559140a4d9c3a0e348069781a3770b60"
+    },
+    {
+      "path": "current/AceHack-Face-v14/Graph/ScriptTemplate/FaceAvatarDrive/CGFaceAvatarDrive.js",
+      "bytes": 1858,
+      "sha256": "97ae07d3a7418e04d3a7721c877b29d4e9ddf1292864a677e04f7996ad1b3b5c"
+    },
+    {
+      "path": "current/AceHack-Face-v14/Graph/ScriptTemplate/FaceAvatarDrive/node.json",
+      "bytes": 1628,
+      "sha256": "ed205fd09b24e2a6c9ff1621b8f316dd5540351ab69e8ec0772f9f84c50ed223"
+    },
+    {
+      "path": "current/AceHack-Face-v14/Graph/ScriptTemplate/OnStart/CGOnStart.js",
+      "bytes": 265,
+      "sha256": "ccc95679287ea4c4e2ed305ebbc5dafd840d17962eb88ada5301671296deb09e"
+    },
+    {
+      "path": "current/AceHack-Face-v14/Graph/ScriptTemplate/OnStart/node.json",
+      "bytes": 769,
+      "sha256": "ba5878b5dd2cfa13d9581056d1569ba47e8f06087903ff190a57f5dc5269bfb3"
+    },
+    {
+      "path": "current/AceHack-Face-v14/Graph/ScriptTemplate/OnUpdate/CGOnUpdate.js",
+      "bytes": 290,
+      "sha256": "719e97277a3a0f2695d4b16c4abd30c0fc4ad71e74ff1ae7c6c3d468325a5257"
+    },
+    {
+      "path": "current/AceHack-Face-v14/Graph/ScriptTemplate/OnUpdate/node.json",
+      "bytes": 1075,
+      "sha256": "99b1782c2f110328f8bf1e3911ca41de7f89ad2e45a32565d3821fb97d149433"
+    },
+    {
+      "path": "current/AceHack-Face-v14/Graph/graph.json",
+      "bytes": 9024,
+      "sha256": "6f1975e9c537254a96a4f6059f8c195ac3593970a9cc6dc9321ffbf16dfe1569"
+    },
+    {
+      "path": "current/AceHack-Face-v14/Icon/iconInfo.json",
+      "bytes": 41,
+      "sha256": "be1c08e0ce570846caf855ba86edd1762dfbd66d33e8dc6c820b17446ef62f57"
+    },
+    {
+      "path": "current/AceHack-Face-v14/effect.ehproj",
+      "bytes": 3011,
+      "sha256": "d2ea07551fcfe0d10adf60deb68f70d852530e6455a3b0311bc440f9c1bdc55b"
+    },
+    {
+      "path": "current/AceHack-body-v14.glb",
+      "bytes": 3476988,
+      "sha256": "aa470bcb1880c0cee53b4415b0730ce0bc835164f0d6c502a5368dc72f6b949c"
+    },
+    {
+      "path": "current/AceHack-face-v14.glb",
+      "bytes": 1076136,
+      "sha256": "4eeba66fdf795648d63924d0c2a2f658106d3aae7b1cfdb6145bfb6edf2064dd"
+    },
+    {
+      "path": "current/Blender-Motion-Review-v14.blend",
+      "bytes": 7116119,
+      "sha256": "ef7e69cc278d20cf4258ef8404c4f0df580b54db7ac731d0db8838634f85b021"
+    },
+    {
+      "path": "current/Blender-Motion-Review-v14.mp4",
+      "bytes": 2171786,
+      "sha256": "a12dfd04edb404a45a58c7e9241e4181ca4dd527b330470bf52f676305c6a009"
+    },
+    {
+      "path": "current/Characters-v14.blend",
+      "bytes": 7062932,
+      "sha256": "1b6c3781d4a07acbf79419b7c1ca2db9d31f155354e63a9d32e49f24fbe1d3a0"
+    },
+    {
+      "path": "current/TikTok-Candidates-v14.blend",
+      "bytes": 5479952,
+      "sha256": "3175462c59908ef97552c4e7a81715b5d0961c4b17e19bf85a0fd2a489438825"
+    },
+    {
+      "path": "current/Xenaa-Face-v14/Assets/AceHack-face-body/AceHack-face-body.glb",
+      "bytes": 1120376,
+      "sha256": "0ecc4b0767902abb5827b1baf194a1ae7f98a0b2ca71bc6a0ed36adddb5f5e61"
+    },
+    {
+      "path": "current/Xenaa-Face-v14/Assets/AceHack-face-body/AceHack-face-body.glb.extra",
+      "bytes": 2281,
+      "sha256": "384d2dc43a40b924237b655f2b4046da8af04dcb17a2ee712f428ada0466601d"
+    },
+    {
+      "path": "current/Xenaa-Face-v14/Assets/AceHack-face-body/Materials/Xenaa  Continuous black hair.omtl",
+      "bytes": 14486,
+      "sha256": "21a663b707070a1c06f388263d0394d8f10347a98a7e52f3dd0f4af515673632"
+    },
+    {
+      "path": "current/Xenaa-Face-v14/Assets/AceHack-face-body/Materials/Xenaa  Continuous black hair.omtl.extra",
+      "bytes": 3392,
+      "sha256": "cb9077ab0e8516bc1852b4bf62b0d224c9c4ff305ba605479433b6aabd302a40"
+    },
+    {
+      "path": "current/Xenaa-Face-v14/Assets/AceHack-face-body/Materials/Xenaa  Mouth interior.omtl",
+      "bytes": 14486,
+      "sha256": "1960c69900cce85d16bed31f79d09159091059e9d2d87a071d0e3d037ea6e335"
+    },
+    {
+      "path": "current/Xenaa-Face-v14/Assets/AceHack-face-body/Materials/Xenaa  Mouth interior.omtl.extra",
+      "bytes": 3379,
+      "sha256": "32f505e4f2f6834f5985b0a9cea8b34503797979e6c401681d9f99c1ed8cc092"
+    },
+    {
+      "path": "current/Xenaa-Face-v14/Assets/AceHack-face-body/Materials/Xenaa  Tongue material.omtl",
+      "bytes": 14486,
+      "sha256": "6eaef8e0c860e89d6e8602a53b4617ab473bcb58503ea27efe5ed5e5fbcae926"
+    },
+    {
+      "path": "current/Xenaa-Face-v14/Assets/AceHack-face-body/Materials/Xenaa  Tongue material.omtl.extra",
+      "bytes": 3379,
+      "sha256": "3a165ae766b21e646a4e669e3f49e1a7cb3a25f5f14a4d2f9b4ec71916a333dd"
+    },
+    {
+      "path": "current/Xenaa-Face-v14/Assets/AceHack-face-body/Materials/Xenaa  Upper teeth.omtl",
+      "bytes": 14486,
+      "sha256": "e18d39cbd98e98f6993bdbcebe213b5513ab35d69e05bf8885327b153c0e3a8f"
+    },
+    {
+      "path": "current/Xenaa-Face-v14/Assets/AceHack-face-body/Materials/Xenaa  Upper teeth.omtl.extra",
+      "bytes": 3373,
+      "sha256": "9162e523dd1b304146089ab007dd8d2e39b0f0f1f61d29470e6dfb28917c2c43"
+    },
+    {
+      "path": "current/Xenaa-Face-v14/Assets/AceHack-face-body/Materials/Xenaa-head-review stable surface.omtl",
+      "bytes": 14516,
+      "sha256": "3d6cedc58a60652a54d6eced05963d55876b1fed064b071d7b4ae6d2713bdbd3"
+    },
+    {
+      "path": "current/Xenaa-Face-v14/Assets/AceHack-face-body/Materials/Xenaa-head-review stable surface.omtl.extra",
+      "bytes": 3400,
+      "sha256": "708803442d32175a7f8b239a255af280a2bf46a9b5453119321a0b8055c40624"
+    },
+    {
+      "path": "current/Xenaa-Face-v14/Assets/AceHack-face-body/Materials.extra",
+      "bytes": 370,
+      "sha256": "ebf52eee9f80b9fef1ed91b8a7c9d6ad03a34a28c3b4ae38fe060567ec71fd17"
+    },
+    {
+      "path": "current/Xenaa-Face-v14/Assets/AceHack-face-body/Textures/Xenaa-head-review-mobile1024.jpg",
+      "bytes": 178865,
+      "sha256": "cffc13b8a2f5fc0cf504848e1ee3f84fd37011356932e730b98ac0068bd9dc67"
+    },
+    {
+      "path": "current/Xenaa-Face-v14/Assets/AceHack-face-body/Textures/Xenaa-head-review-mobile1024.jpg.extra",
+      "bytes": 864,
+      "sha256": "78919f8adfc885ca99f1ac9dd2c7218b28d5e80435e2832d25e4c9603c76c358"
+    },
+    {
+      "path": "current/Xenaa-Face-v14/Assets/AceHack-face-body/Textures.extra",
+      "bytes": 369,
+      "sha256": "5a4ce0b11a26fdc6e498f50545456d755533dfdc97b7f27cbef6c8ec05465767"
+    },
+    {
+      "path": "current/Xenaa-Face-v14/Assets/AceHack-face-body.extra",
+      "bytes": 378,
+      "sha256": "d9c490490cfd1da7f402a2c33e8c3098e33fa4501d57d42baf8885755b0f3eb5"
+    },
+    {
+      "path": "current/Xenaa-Face-v14/Assets/language.json",
+      "bytes": 488,
+      "sha256": "d72cecea3e93bbeb946db8822f264300f5a809867cf3afb53641cefa6eca7154"
+    },
+    {
+      "path": "current/Xenaa-Face-v14/Assets/main.scene",
+      "bytes": 17905,
+      "sha256": "c28182ffcbf7476444ba5560671607d54045238c6209545ed31f3da36b7be0b8"
+    },
+    {
+      "path": "current/Xenaa-Face-v14/Assets/main.scene.extra",
+      "bytes": 48840,
+      "sha256": "2547e29afe4003039ce3645dbafa8756cdc69161e11a4b27773406401ba4169d"
+    },
+    {
+      "path": "current/Xenaa-Face-v14/Assets/temp (1).folder/AceHack-face/AceHack-face.glb",
+      "bytes": 646720,
+      "sha256": "1c4f040c6f5917bb657ff27c060be10d22d736114c2422f5fec185ee55e33e54"
+    },
+    {
+      "path": "current/Xenaa-Face-v14/Assets/temp (1).folder/AceHack-face/AceHack-face.glb.extra",
+      "bytes": 1453,
+      "sha256": "f6f5668f673c95136eabd69d3f96c2aea4a4883192b6af66cc47ab3f156b9a26"
+    },
+    {
+      "path": "current/Xenaa-Face-v14/Assets/temp (1).folder/AceHack-face/Materials/AceHack-head  Baked mobile.omtl",
+      "bytes": 14521,
+      "sha256": "9794ce5a1b19b4cddf31bc1b84c8a8c7bb9eb28578642c03c9b2bef1cd9bc343"
+    },
+    {
+      "path": "current/Xenaa-Face-v14/Assets/temp (1).folder/AceHack-face/Materials/AceHack-head  Baked mobile.omtl.extra",
+      "bytes": 3356,
+      "sha256": "dda0b3b2fc63c3dc4283642a4330d1ceeb215a7582389fb6ba5d2c95954e8dc0"
+    },
+    {
+      "path": "current/Xenaa-Face-v14/Assets/temp (1).folder/AceHack-face/Textures/AceHack-head-basecolor.jpg",
+      "bytes": 197897,
+      "sha256": "303cabdd14c102bc5f55be259df02f3d9af3d64d8c6453ce6eecc4b6d651c451"
+    },
+    {
+      "path": "current/Xenaa-Face-v14/Assets/temp (1).folder/AceHack-face/Textures/AceHack-head-basecolor.jpg.extra",
+      "bytes": 866,
+      "sha256": "c4927f61a113fbc6bc0f76ec3349b753b0178e77105fa50f0281e2f631801369"
+    },
+    {
+      "path": "current/Xenaa-Face-v14/Assets/temp (1).folder/AceHack-face/folder.ignore",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "current/Xenaa-Face-v14/Assets/temp (1).folder/folder.ignore",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "current/Xenaa-Face-v14/Assets/temp.folder/folder.ignore",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "current/Xenaa-Face-v14/EffectSettings/BuiltinPropertySettingsModule.json",
+      "bytes": 135,
+      "sha256": "07b5524e579fda4892299bfd6b1fa5dba35035b2f970ef5e4e71394b6e7b4643"
+    },
+    {
+      "path": "current/Xenaa-Face-v14/EffectSettings/MultiResolutionSettingsModule.json",
+      "bytes": 39,
+      "sha256": "19c99127e6627959bacc0ec5ffae600c1f9e12d429b09694d90b5436f4ab171b"
+    },
+    {
+      "path": "current/Xenaa-Face-v14/EffectSettings/Physics2DSettingsModule.json",
+      "bytes": 994,
+      "sha256": "893fdb395c22fd58f6605970e3ba1b7bfa6c4ceae1e2da6ecbd88ee34f41b8ef"
+    },
+    {
+      "path": "current/Xenaa-Face-v14/EffectSettings/PhysicsSettingsModule.json",
+      "bytes": 932,
+      "sha256": "036f2a50d52f99e2bbfc4046ca479d6f35728a75250bd94e86feacc003380f72"
+    },
+    {
+      "path": "current/Xenaa-Face-v14/EffectSettings/SubmissionSettingsModule.json",
+      "bytes": 44,
+      "sha256": "beaaf5b66f442a666bb294ace7fe4adf559140a4d9c3a0e348069781a3770b60"
+    },
+    {
+      "path": "current/Xenaa-Face-v14/Graph/ScriptTemplate/FaceAvatarDrive/CGFaceAvatarDrive.js",
+      "bytes": 1858,
+      "sha256": "97ae07d3a7418e04d3a7721c877b29d4e9ddf1292864a677e04f7996ad1b3b5c"
+    },
+    {
+      "path": "current/Xenaa-Face-v14/Graph/ScriptTemplate/FaceAvatarDrive/node.json",
+      "bytes": 1628,
+      "sha256": "ed205fd09b24e2a6c9ff1621b8f316dd5540351ab69e8ec0772f9f84c50ed223"
+    },
+    {
+      "path": "current/Xenaa-Face-v14/Graph/ScriptTemplate/OnStart/CGOnStart.js",
+      "bytes": 265,
+      "sha256": "ccc95679287ea4c4e2ed305ebbc5dafd840d17962eb88ada5301671296deb09e"
+    },
+    {
+      "path": "current/Xenaa-Face-v14/Graph/ScriptTemplate/OnStart/node.json",
+      "bytes": 769,
+      "sha256": "ba5878b5dd2cfa13d9581056d1569ba47e8f06087903ff190a57f5dc5269bfb3"
+    },
+    {
+      "path": "current/Xenaa-Face-v14/Graph/ScriptTemplate/OnUpdate/CGOnUpdate.js",
+      "bytes": 290,
+      "sha256": "719e97277a3a0f2695d4b16c4abd30c0fc4ad71e74ff1ae7c6c3d468325a5257"
+    },
+    {
+      "path": "current/Xenaa-Face-v14/Graph/ScriptTemplate/OnUpdate/node.json",
+      "bytes": 1075,
+      "sha256": "99b1782c2f110328f8bf1e3911ca41de7f89ad2e45a32565d3821fb97d149433"
+    },
+    {
+      "path": "current/Xenaa-Face-v14/Graph/graph.json",
+      "bytes": 9024,
+      "sha256": "820f538023bbf0cc9f84ecc542bb525bbf7942174ba447e7087bc59a6275c03b"
+    },
+    {
+      "path": "current/Xenaa-Face-v14/Icon/iconInfo.json",
+      "bytes": 41,
+      "sha256": "be1c08e0ce570846caf855ba86edd1762dfbd66d33e8dc6c820b17446ef62f57"
+    },
+    {
+      "path": "current/Xenaa-Face-v14/effect.ehproj",
+      "bytes": 3019,
+      "sha256": "c1b9a73338bbdb29c5c5f571dbcd1517ebcb3501b83e051c5fdecefd1c75c196"
+    },
+    {
+      "path": "current/Xenaa-body-v14.glb",
+      "bytes": 3388664,
+      "sha256": "8f98c115ed8e2b984822a4e03e1447feae88cd6139adfc3f2911caae2655aae1"
+    },
+    {
+      "path": "current/Xenaa-face-v14.glb",
+      "bytes": 1120376,
+      "sha256": "739695977864d5b3ad179c4a784de7d20445f2014143a1322175c3bbb1a31607"
+    },
+    {
+      "path": "evidence/frame-0001.png",
+      "bytes": 2069780,
+      "sha256": "fcb746a490794ab4865bcf403525b7ed6e0b6422f5924a70b75354661513c6fe"
+    },
+    {
+      "path": "evidence/frame-0017.png",
+      "bytes": 2068584,
+      "sha256": "ae0ca4548566d7fc9d2f7e7f2fe30d72fb57fd0553c7160897b0c3860aac07a5"
+    },
+    {
+      "path": "evidence/frame-0081.png",
+      "bytes": 2066615,
+      "sha256": "cef402aa0f3c7868a8269573173b0d1052e2c8b22afda8ddc30e0c02f63cd9f7"
+    },
+    {
+      "path": "evidence/frame-0145.png",
+      "bytes": 2062193,
+      "sha256": "03867d73656216b500e0c2aed5f864748130ddffbe4a3c742ec1afa6a28435d6"
+    },
+    {
+      "path": "evidence/frame-0221.png",
+      "bytes": 2121016,
+      "sha256": "4449359bf01342daa34fcfbdd0ea37b4eceed80278f3eba413a40934adc60532"
+    },
+    {
+      "path": "evidence/frame-0269.png",
+      "bytes": 1898418,
+      "sha256": "a95325d18597407fec77114cfae7af0a349dbc49a6bfc6f9c04e55eed7382b45"
+    },
+    {
+      "path": "evidence/frame-0321.png",
+      "bytes": 1667285,
+      "sha256": "eb0d33d408dc60bf56647133795d761170b0948a9202a94570d1e7e3926b120f"
+    },
+    {
+      "path": "previous/AceHack-body-candidate.glb",
+      "bytes": 2056168,
+      "sha256": "1d3a6da65a85526bdf8b55c564280fb5d0776db90ac2eb307a38a6b467975bbe"
+    },
+    {
+      "path": "previous/AceHack-face-candidate.glb",
+      "bytes": 756176,
+      "sha256": "e094f388f26e4482486f433de82ac384f10d639980b31020cf13a654ab9a4489"
+    },
+    {
+      "path": "previous/Blender-Motion-Review-v13.blend",
+      "bytes": 14497961,
+      "sha256": "950e85d7326c8ec082a582d71ad319ea5f9e920660e7d58213342f3d89a5f3d8"
+    },
+    {
+      "path": "previous/Blender-Motion-Review-v13.mp4",
+      "bytes": 388207,
+      "sha256": "f04f59ea9ccbb6fd6883d6df167fd7c9a1c1f6ecb2f4ab284a4a5c76340cbe74"
+    },
+    {
+      "path": "previous/Xenaa-body-candidate.glb",
+      "bytes": 2480060,
+      "sha256": "c026b14b8cd0de17adf61860e26a895314b056119547e0d040f35eeee3dfe784"
+    },
+    {
+      "path": "previous/Xenaa-face-candidate.glb",
+      "bytes": 1237300,
+      "sha256": "e71dbd6d6d2e9ba09f32936f7698a38c832e2e89e784c2b1a858d03930626e23"
+    },
+    {
+      "path": "receipts/effect-house-v14-review.json",
+      "bytes": 1167,
+      "sha256": "5210111b42c3a309ea1e5629ac4d5bf902ef788a832d0b76e709b5e40266d8eb"
+    },
+    {
+      "path": "receipts/finger-rig-v14.json",
+      "bytes": 334,
+      "sha256": "338bb672837d31380ceb8be507c9414e83a716acf8de70f0d76206bdc8be08c0"
+    },
+    {
+      "path": "receipts/garment-lining-v14.json",
+      "bytes": 32230,
+      "sha256": "121e5db5e94ada2c61c8d0bb23a3c4417c3aa220169d202960932e3acf5342bd"
+    },
+    {
+      "path": "receipts/mobile-export-v14.json",
+      "bytes": 456,
+      "sha256": "4fa7ed639c31540a6c0627a8a8d5ea67fa16eef498692269f4e1dfd1a403f30c"
+    },
+    {
+      "path": "receipts/mobile-validation-v14.json",
+      "bytes": 14912,
+      "sha256": "92181eb672a3285e010a5c4f0752af343d32906943188bc4dda499d196cd6bec"
+    },
+    {
+      "path": "receipts/motion-validation-v14.json",
+      "bytes": 8686,
+      "sha256": "e6881e4b4d751b365e86a2efbbb85ab0f093183b1a5f9803a15e8049f21bf6ab"
+    },
+    {
+      "path": "receipts/portable-check.log",
+      "bytes": 213,
+      "sha256": "fc4f4e96e98b6b6e9bc1169699a1a9db3cedc93d70216f23671cc7599b3e2ce4"
+    },
+    {
+      "path": "receipts/portable-delivery.json",
+      "bytes": 1177,
+      "sha256": "dbc4c4ce1d091870cc665863e53741eb3f77af747fd272e7e9bf9c9f59052864"
+    },
+    {
+      "path": "receipts/roundtrip-validation-v14.json",
+      "bytes": 2292,
+      "sha256": "b3abba0637ce1b1921bfd27d76384cffc51ba754480018319495171cfff4c883"
+    },
+    {
+      "path": "receipts/sequence-v14.json",
+      "bytes": 2939,
+      "sha256": "22bc6560035caf1ded7a6bb260f6e24c4cd7c5292a8ccb9ea43eaa75b27a1608"
+    },
+    {
+      "path": "receipts/video-validation-v14.json",
+      "bytes": 234,
+      "sha256": "571bbb379e6a112c543cfab80a08d10e0f44b0ef6e760faaeb6c1a123170c54e"
+    },
+    {
+      "path": "sources/add_fingers_v14.py",
+      "bytes": 4171,
+      "sha256": "e426b5d69b5141f7735ac6424c2e6bdf71b75db89347b0647d9a90789bae6b54"
+    },
+    {
+      "path": "sources/audit_mobile_v14.py",
+      "bytes": 4164,
+      "sha256": "c5173aadec7b70e7af9c51b543da5f67d4d2baca6c0d1eadec0e3eddeeb568a9"
+    },
+    {
+      "path": "sources/close_slits_v14.py",
+      "bytes": 3321,
+      "sha256": "7f5de423e2006297966568f2fcb8dab75e980a352972f775910fcd354c775375"
+    },
+    {
+      "path": "sources/export_mobile_v14.py",
+      "bytes": 5507,
+      "sha256": "580b99597cb43b8f24b3b26da660bba4a568bfaeb74017cf0e7abf4a3ad80f2b"
+    },
+    {
+      "path": "sources/finish_v14.py",
+      "bytes": 13854,
+      "sha256": "aad5de3157c12a68f1f3d11e70db4672a6a72bf351ef72bb62274ef06bef2fce"
+    },
+    {
+      "path": "sources/polish_v14.py",
+      "bytes": 3189,
+      "sha256": "1183dbd298b819a14808d73a23b945a4e0034def6bedc8e86d276ff973b625a9"
+    },
+    {
+      "path": "sources/rebuild_blender_v14.py",
+      "bytes": 17410,
+      "sha256": "da38277a48481ad9b973a85afca48b65006f52adc1104dc259b43f7fe4835099"
+    },
+    {
+      "path": "sources/render_sequence_v14.py",
+      "bytes": 1309,
+      "sha256": "4330d1b52d1034f17eea0225d85ea11723a0b0d2184845e9d0737c68e83c835f"
+    },
+    {
+      "path": "sources/roundtrip_v14.py",
+      "bytes": 3235,
+      "sha256": "cf8bb8b1bae2a5018a8c43cf5d70ded8a223aa2e53990873ba38c25072d5f93b"
+    },
+    {
+      "path": "sources/sequence_v14.py",
+      "bytes": 5145,
+      "sha256": "d9c55799b6d20375bfb009f86a0258796e7b5d99b90cfdd6c824108bb84b08d1"
+    },
+    {
+      "path": "sources/validate_v14.py",
+      "bytes": 5640,
+      "sha256": "d15168189d0b480b7bfdf4465c9ced9b2643df9b708f230927b248b33b60ac01"
+    },
+    {
+      "path": "sources/verify_delivery.py",
+      "bytes": 857,
+      "sha256": "7713e08d9f81be98a1fc898f2ae1a093413d9e7e5b240c2ff9df089449e1b3d2"
+    }
+  ],
+  "historical_release": "https://github.com/Lucent-Financial-Group/Zeta/releases/tag/research-tiktok-character-seams-20260909",
+  "policy": "Two selected asset versions; immutable history not duplicated; working caches excluded"
+}

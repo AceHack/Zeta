@@ -1,0 +1,12 @@
+{
+  "pr_number": 16860,
+  "archive_path": "docs/history/pr-reviews/PR-16860-feat-creds-read-named-bao-epoch-from-env-at-overlay-join.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-06T21:23:36.742Z",
+  "schema_version": "v1",
+  "commit_sha": "93f2ecb4a7d2b9ff2e385583ae93af26a10667f1",
+  "title": "feat(creds): Read named bao epoch from env at overlay join",
+  "state": "MERGED",
+  "merged_at": "2026-09-06T21:23:04Z",
+  "head_ref": "cursor/env-join-reads-epoch-27c5"
+}

@@ -1,0 +1,7 @@
+Command: dotnet test tests/Tests.FSharp/Tests.FSharp.fsproj -c Release --no-build --filter FullyQualifiedName~HiddenSwitchTests
+Test run for /Users/acehack/.zeta/agents/codex/Zeta-rendered-catch-reference-20260906/tests/Tests.FSharp/bin/Release/net10.0/Tests.FSharp.dll (.NETCoreApp,Version=v10.0)
+A total of 1 test files matched the specified pattern.
+
+Passed!  - Failed:     0, Passed:    16, Skipped:     0, Total:    16, Duration: 184 ms - Tests.FSharp.dll (net10.0)
+
+ExitCode: 0

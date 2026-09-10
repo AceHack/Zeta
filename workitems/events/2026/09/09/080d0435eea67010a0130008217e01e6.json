@@ -1,0 +1,14 @@
+{
+  "id": "080d0435eea67010a0130008217e01e6",
+  "at": "2026-09-09T15:16:22.862Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M23BVN6C087G0R000JEC15P",
+    "type": "task",
+    "title": "lane coverage is printed but nothing fails when a chart falls out of every lane",
+    "slug": "lane-coverage-is-printed-but-nothing-fails-when-a-chart-fall",
+    "priority": "P2",
+    "filename": "081M23BVN6C087G0R000JEC15P-lane-coverage-is-printed-but-nothing-fails-when-a-chart-fall.md"
+  }
+}

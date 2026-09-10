@@ -18,6 +18,16 @@ let ``ContentHash256 known-answer: empty input is the full raw BLAKE3-256 digest
     Assert.Equal("af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262", h.ToHex())
 
 [<Fact>]
+let ``AppendHex of empty digest matches the known-answer lowercase hex`` () =
+    let h = ofBytes [||]
+    let sb = System.Text.StringBuilder(64)
+    h.AppendHex(sb) |> ignore
+    Assert.Equal(
+        "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+        sb.ToString()
+    )
+
+[<Fact>]
 let ``the 128-bit ContentAddress128 is DERIVABLE from the full ContentHash256 (lower 16 bytes LE)`` () =
     // empty input: lower 16 bytes of the raw digest, read LE => the 128-bit treaty value
     let addr = C256.toContentAddress128 (ofBytes [||])

@@ -1,0 +1,14 @@
+{
+  "id": "080d03c537cfd010a0130008a657dbc3",
+  "at": "2026-09-06T21:36:44.026Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1WADYFS087G0R0038FJBSX",
+    "type": "task",
+    "title": "record the byte-lock toolchain evidence so the infra/nixos decision needs no re-derivation",
+    "slug": "record-the-byte-lock-toolchain-evidence-so-the-infra-nixos-d",
+    "priority": "P2",
+    "filename": "081M1WADYFS087G0R0038FJBSX-record-the-byte-lock-toolchain-evidence-so-the-infra-nixos-d.md"
+  }
+}

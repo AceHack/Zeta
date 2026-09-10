@@ -1,0 +1,12 @@
+{
+  "Kind": "synthetic contradictory replay metadata; no new measurements",
+  "OriginalVerdictSourceSha256": "39A8EE4F4B37B5D5E5EEE5E12B2A9FFEA08EC69B696AAC1FE245C688D351155E",
+  "ChangedFields": {
+    "MaximumNumericError": 1.0,
+    "CostReplay.MaximumChecksumError": 1.0
+  },
+  "RegisteredMaximum": 1e-10,
+  "BeforeRepairComplete": true,
+  "OriginalNativeSha256": "C59468575B140DA146265182EE40B03D6F6B5103FAAC9A0137CE8A288DF357B3",
+  "OriginalCostSha256": "A614D40A4BE4242EFF73CBC07FC135E4489933962A9DABBE47FB2C293B718445"
+}

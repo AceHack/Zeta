@@ -1,0 +1,603 @@
+{
+  "Schema": "zeta.precision-projection.incomplete-preservation.v1",
+  "Complete": false,
+  "SourceCommit": "bf2da44b94e770d21add73ce53dacb8fb34259bf",
+  "Failure": {
+    "Kind": "transcribed-tool-observation",
+    "ExitCode": 1,
+    "Stage": "source-pins",
+    "Failure": "FileNotFoundError: Directory.Build.targets",
+    "Explanation": "Initial preservation created gzip records, then attempted an absent conventional build filename. No manifest or success was published. Original script and partial records remain unchanged."
+  },
+  "Records": [
+    {
+      "File": "001-precision-projection-native-build-1-Bayesian.fsproj.gz",
+      "Bytes": 3329,
+      "Sha256": "00a6a4c62843516af63d7dae6f712732a4142fd4691b180c2ceeab853b40bb6c",
+      "StoredBytes": 1047,
+      "StoredSha256": "4b6646ab24562e2794b559d3878b61794157a2a84bed4313a63f9598bb0277d2"
+    },
+    {
+      "File": "002-precision-projection-native-build-1-PrecisionGateProjection.fs.gz",
+      "Bytes": 34768,
+      "Sha256": "890eac9d05c23d4615fe0678dd63b6c4b2ace0843e9e46475cc72a06cd284ee8",
+      "StoredBytes": 8396,
+      "StoredSha256": "11ec54a08f59c8a955a2a43ee3c2719ba618f18f0757617ff4a86cdcc93446b2"
+    },
+    {
+      "File": "003-precision-projection-native-build-1-completion.json.gz",
+      "Bytes": 69,
+      "Sha256": "1e1cc730c799cba10c0c4f2150469b77987f6119711a63d234634601e7f9e830",
+      "StoredBytes": 88,
+      "StoredSha256": "bb5fbb9a921e28693a853d4dbc34e2024927b763aeda517aff065961a98687cd"
+    },
+    {
+      "File": "004-precision-projection-native-build-1-invocation.json.gz",
+      "Bytes": 150,
+      "Sha256": "bd278ee6a6b7106102e3831f350474e0d9a9b5d02c9843578cfe076ad55d1f7d",
+      "StoredBytes": 149,
+      "StoredSha256": "1b34c4c4d4b7e195d447ef889c87be86a5ec471802d80c7d7f442869ca79aa09"
+    },
+    {
+      "File": "005-precision-projection-native-build-1-stderr.gz",
+      "Bytes": 0,
+      "Sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "StoredBytes": 20,
+      "StoredSha256": "9ceffb7310338057cfe71a4ae1e2c98d2c485d81cdef906532a801f457a38d64"
+    },
+    {
+      "File": "006-precision-projection-native-build-1-stdout.gz",
+      "Bytes": 4752,
+      "Sha256": "324296e76d750205869e5a7d594656684f1fff6e87003f5ac77ae43c05d85ac5",
+      "StoredBytes": 529,
+      "StoredSha256": "c2209c29edf6acc928b559942d8f5285df5103208cdf1ba92f96502fbd727edd"
+    },
+    {
+      "File": "007-precision-projection-native-build-2-Bayesian.fsproj.gz",
+      "Bytes": 3329,
+      "Sha256": "00a6a4c62843516af63d7dae6f712732a4142fd4691b180c2ceeab853b40bb6c",
+      "StoredBytes": 1047,
+      "StoredSha256": "4b6646ab24562e2794b559d3878b61794157a2a84bed4313a63f9598bb0277d2"
+    },
+    {
+      "File": "008-precision-projection-native-build-2-PrecisionGateProjection.fs.gz",
+      "Bytes": 35810,
+      "Sha256": "845fe608dab6ec0c3dcb3c36655c094d583a0a78afe0e9402a0a0cabe06b88e6",
+      "StoredBytes": 8736,
+      "StoredSha256": "d01e2f256fb4027e183c7d30309e06d4ee140a05fff93c807ee961904075113b"
+    },
+    {
+      "File": "009-precision-projection-native-build-2-completion.json.gz",
+      "Bytes": 69,
+      "Sha256": "bd1b1b16e369d90ca7507abb2479aeeca7fc8a8757f6072a5734d3bcc5c125e9",
+      "StoredBytes": 88,
+      "StoredSha256": "7ee0107b04de87aed29dafb753f69dd1dc8ef25851723f796a7a0f49774f208d"
+    },
+    {
+      "File": "010-precision-projection-native-build-2-invocation.json.gz",
+      "Bytes": 150,
+      "Sha256": "2be6f0ce38484a3226b03fe4cf5e06b171d5d185a36ded9dff7e9b3187cb25ae",
+      "StoredBytes": 149,
+      "StoredSha256": "183b1f661f4a4724b07e0a225ed7e11be2791036d27c5bed01303ba92af7fed1"
+    },
+    {
+      "File": "011-precision-projection-native-build-2-stderr.gz",
+      "Bytes": 0,
+      "Sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "StoredBytes": 20,
+      "StoredSha256": "9ceffb7310338057cfe71a4ae1e2c98d2c485d81cdef906532a801f457a38d64"
+    },
+    {
+      "File": "012-precision-projection-native-build-2-stdout.gz",
+      "Bytes": 855,
+      "Sha256": "550fbe290a7ea815d783e18e2d3257cdbb88694261c5369276c8310dabae84c5",
+      "StoredBytes": 257,
+      "StoredSha256": "ef591c6be7858b5d82656730bf28a7ff1e2c40ce08a19b0e5d4001a63fab2d09"
+    },
+    {
+      "File": "013-precision-projection-native-preparation-1-fetch-0.json.gz",
+      "Bytes": 99,
+      "Sha256": "399d9b59f292f8b531a6d5a3f07ddb2a90638f2d1393641483d113b5638e5ac6",
+      "StoredBytes": 112,
+      "StoredSha256": "a18051fdcd67c59b96aaa8f27f784379b9367fb04383c167cfb5e9095d95ef47"
+    },
+    {
+      "File": "014-precision-projection-native-preparation-1-fetch-0.stderr.gz",
+      "Bytes": 132,
+      "Sha256": "f82c3dd5cda30df1f27284486163eb3a98732d6c21ef9439f5c8b83ae80c5cc6",
+      "StoredBytes": 135,
+      "StoredSha256": "35e750b5988c70f64127e063e549ae68a2c444c0606b55e5feee79878fac4d14"
+    },
+    {
+      "File": "015-precision-projection-native-preparation-1-fetch-0.stdout.gz",
+      "Bytes": 0,
+      "Sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "StoredBytes": 20,
+      "StoredSha256": "9ceffb7310338057cfe71a4ae1e2c98d2c485d81cdef906532a801f457a38d64"
+    },
+    {
+      "File": "016-precision-projection-native-preparation-1-fetch-1.json.gz",
+      "Bytes": 165,
+      "Sha256": "fd2703d3805f87dcfe5c9db6a6dc4c5fc7a9bf19181ed6ee39d038788a8af55d",
+      "StoredBytes": 159,
+      "StoredSha256": "3806f24885e8b165a55a0f2f9310dafe41b397f02aee6dfc012ffa17e632a17b"
+    },
+    {
+      "File": "017-precision-projection-native-preparation-1-fetch-1.stderr.gz",
+      "Bytes": 158,
+      "Sha256": "114a7d9298ac945a2e26dc28ec69de1f454af1b3806abdc1421f810cde7f54eb",
+      "StoredBytes": 150,
+      "StoredSha256": "cc7fc632b59db01db22c10b7afd44eb5b4989af6fa44ef13e9a7c80035073dbd"
+    },
+    {
+      "File": "018-precision-projection-native-preparation-1-fetch-1.stdout.gz",
+      "Bytes": 0,
+      "Sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "StoredBytes": 20,
+      "StoredSha256": "9ceffb7310338057cfe71a4ae1e2c98d2c485d81cdef906532a801f457a38d64"
+    },
+    {
+      "File": "019-precision-projection-native-preparation-1-fetch-owner.stderr.gz",
+      "Bytes": 158,
+      "Sha256": "3f97bb03ed593dc06f537aef4b1318ef0633026acc6e78f7027f6e5f97a6a88c",
+      "StoredBytes": 150,
+      "StoredSha256": "c4d4880ec26408b91a64f5df66c1c10d1956a44f444a1d42e7e2c4f2500c5da0"
+    },
+    {
+      "File": "020-precision-projection-native-preparation-1-fetch-owner.stdout.gz",
+      "Bytes": 0,
+      "Sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "StoredBytes": 20,
+      "StoredSha256": "9ceffb7310338057cfe71a4ae1e2c98d2c485d81cdef906532a801f457a38d64"
+    },
+    {
+      "File": "021-precision-projection-native-preparation-1-first-source-pin-refusal.json.gz",
+      "Bytes": 266,
+      "Sha256": "c680d1a226e7107ba79eb6db98cf64bdd80796464dd85b2775363a81834453c3",
+      "StoredBytes": 199,
+      "StoredSha256": "689a92227dd2d4c4a966c3a7f6f2023af4fab7b72d8a6aee69038d796e47f0d8"
+    },
+    {
+      "File": "022-precision-projection-native-preparation-1-frozen-contract.md.gz",
+      "Bytes": 38142,
+      "Sha256": "537054779bf9e0bfa9271b5cc56116fbc80b16c4a2be9f1b5e3c022fe95a0f8e",
+      "StoredBytes": 14513,
+      "StoredSha256": "a2872cebc46dcc26a139c48d5c1b116c64181433a51c60bb6e6d67a8ad2ef70c"
+    },
+    {
+      "File": "023-precision-projection-native-preparation-1-grammar-import.json.gz",
+      "Bytes": 503,
+      "Sha256": "2e1445e8b508c9cbe87445a3b429c39c8add5a33b91f590939f951fadf703710",
+      "StoredBytes": 297,
+      "StoredSha256": "fbd943cb92db45ba8b9313c853b614b73e8ca3101be2f5bf3e7d419b7546cdbb"
+    },
+    {
+      "File": "024-precision-projection-native-preparation-1-grammar-message.txt.gz",
+      "Bytes": 530,
+      "Sha256": "044bae04cd1c715249fce7ea9c7aacf3e1f5d9a323245622f6eacc84c6caa880",
+      "StoredBytes": 381,
+      "StoredSha256": "00968a28cd86113445cd1db5b3a1ebba44a9e649432e8151f4ff5cb6bcf8ff1c"
+    },
+    {
+      "File": "025-precision-projection-native-preparation-1-merge-diff-check-disposition.json.gz",
+      "Bytes": 667,
+      "Sha256": "9c13e5d331d565f9bfb6023a14cc512b983314d8af0454eb2935cf886036f81e",
+      "StoredBytes": 438,
+      "StoredSha256": "fd62a07667da8aacda413e2e86b766c19918ecf563d7bc8fee7e06772f7fa15d"
+    },
+    {
+      "File": "026-precision-projection-native-preparation-1-merge-diff-check.stderr.gz",
+      "Bytes": 0,
+      "Sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "StoredBytes": 20,
+      "StoredSha256": "9ceffb7310338057cfe71a4ae1e2c98d2c485d81cdef906532a801f457a38d64"
+    },
+    {
+      "File": "027-precision-projection-native-preparation-1-merge-diff-check.stdout.gz",
+      "Bytes": 362,
+      "Sha256": "7ba7957409b019c12c3f5d5835e0b16c0bcbdcb9f4d9661f53b99808a5490feb",
+      "StoredBytes": 221,
+      "StoredSha256": "b852e5c2722d13317853db8e5db7ba2b1ddee93ec4fa745570a3f1758d8a8004"
+    },
+    {
+      "File": "028-precision-projection-native-preparation-1-merge-main.json.gz",
+      "Bytes": 115,
+      "Sha256": "510beaeecb9569bca7d876b657498e4a988627cdfa84c505d17cea18f695cc2e",
+      "StoredBytes": 118,
+      "StoredSha256": "02d420703ba5f96879a0984ec56788d376a5cf985eb9b60bbf500dd96afa7acc"
+    },
+    {
+      "File": "029-precision-projection-native-preparation-1-merge-main.stderr.gz",
+      "Bytes": 0,
+      "Sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "StoredBytes": 20,
+      "StoredSha256": "9ceffb7310338057cfe71a4ae1e2c98d2c485d81cdef906532a801f457a38d64"
+    },
+    {
+      "File": "030-precision-projection-native-preparation-1-merge-main.stdout.gz",
+      "Bytes": 550,
+      "Sha256": "09f7c36c331bcc3c03875455a21c0861810c92198daa2a87034a1b1c396e6956",
+      "StoredBytes": 266,
+      "StoredSha256": "3fefff9259c3cb942f38666df50a50c1f417854bbe05c058680053f913d35122"
+    },
+    {
+      "File": "031-precision-projection-native-preparation-1-merge-message.txt.gz",
+      "Bytes": 650,
+      "Sha256": "991e60c89a081933a0d7fbcfa972d2c1eabbd189dc791943092700c6987935d7",
+      "StoredBytes": 436,
+      "StoredSha256": "f7b92b4630ef47525f2c884b09569284957e2a7639c724f9c92a103043b4362d"
+    },
+    {
+      "File": "032-precision-projection-native-preparation-1-registration-import.json.gz",
+      "Bytes": 1784,
+      "Sha256": "8b1a36064bcd69754469b936e524353b5061c8ee0907a8709a19222dbb6a168a",
+      "StoredBytes": 676,
+      "StoredSha256": "cd8de4f236512a94b5c7847d14dbc24328f807b7157d488c9f990b393d961a83"
+    },
+    {
+      "File": "033-precision-projection-native-preparation-1-registration-message.txt.gz",
+      "Bytes": 602,
+      "Sha256": "302b7a2ea45c9ac838cc80032ce5ef88e670ccae0f118d892faf13c29cf5518c",
+      "StoredBytes": 407,
+      "StoredSha256": "f9fe9b5723d5736e4960bc9935271cfb7ddc6199fc2dcfe0e1b71dcf558c2fe1"
+    },
+    {
+      "File": "034-precision-projection-native-preparation-1-zero-import.json.gz",
+      "Bytes": 499,
+      "Sha256": "5c7e9ebe0ec91c2b0b2a5717876a54e1f0741de9497a03a9df9d643715d78f91",
+      "StoredBytes": 295,
+      "StoredSha256": "1bf7ef40cdaacd824fd7f809bccb57436da4f5300e3c6f660aac73fac3cfae7f"
+    },
+    {
+      "File": "035-precision-projection-native-preparation-1-zero-message.txt.gz",
+      "Bytes": 533,
+      "Sha256": "e2bed123d2e422dfe4680c95aa43618fb99177233ecc5514b8a218dbc04ede30",
+      "StoredBytes": 380,
+      "StoredSha256": "91362634175e8a71b80d6800bfac3d0523326d79d806d513536011ddd4af0af6"
+    },
+    {
+      "File": "036-precision-projection-native-preservation-1-preserve.py.gz",
+      "Bytes": 3182,
+      "Sha256": "1b5d44cf8735576ed7573a276af7733d1e0e077b5f61f5da6a93cf06a1f1a1eb",
+      "StoredBytes": 1183,
+      "StoredSha256": "0732f14ee25bffd4943b93d61b7244ba13023cd3cd6fefdacbd7f36c69d8f0e1"
+    },
+    {
+      "File": "037-precision-projection-native-tests-1-Bayesian.Tests.fsproj.gz",
+      "Bytes": 3634,
+      "Sha256": "85c69f6b0e49dc723ecee635ad0787a4953088d8c81484413e8d1c7ffae73ba5",
+      "StoredBytes": 908,
+      "StoredSha256": "e6a8650c56f2f59c81bc2860bb191cbaef876d6011b34ba8c43919c1423b66d3"
+    },
+    {
+      "File": "038-precision-projection-native-tests-1-Bayesian.fsproj.gz",
+      "Bytes": 3329,
+      "Sha256": "00a6a4c62843516af63d7dae6f712732a4142fd4691b180c2ceeab853b40bb6c",
+      "StoredBytes": 1047,
+      "StoredSha256": "4b6646ab24562e2794b559d3878b61794157a2a84bed4313a63f9598bb0277d2"
+    },
+    {
+      "File": "039-precision-projection-native-tests-1-PrecisionGateProjection.Tests.fs.gz",
+      "Bytes": 12472,
+      "Sha256": "ff423eda36a3c431fffe7a09d54688a4da92167f4d9891e279529bee9a369076",
+      "StoredBytes": 3272,
+      "StoredSha256": "9c8729aefa54d654e4bfc12db1bc9dc8bcb195fe49a69cdcc1e6c829d7f834cf"
+    },
+    {
+      "File": "040-precision-projection-native-tests-1-PrecisionGateProjection.fs.gz",
+      "Bytes": 36187,
+      "Sha256": "55d1966631f069cfd05eda41b3be8208c31504f18b29e134fb86daefcbfe63cb",
+      "StoredBytes": 8835,
+      "StoredSha256": "e96a49291967560bb819c69aa5f402d79ba33964a5f108e683218478151f9289"
+    },
+    {
+      "File": "041-precision-projection-native-tests-1-completion.json.gz",
+      "Bytes": 69,
+      "Sha256": "2903e8fa5403b5e7a365702e9fc6c5f6255d03f1ec4a8cf3395eca956717e609",
+      "StoredBytes": 88,
+      "StoredSha256": "2da78d606717f8469b4c3235f2fa2e93798d09967e721961cbdf0e839bfd068b"
+    },
+    {
+      "File": "042-precision-projection-native-tests-1-invocation.json.gz",
+      "Bytes": 413,
+      "Sha256": "295027951880b5342598a17938efd0366a9ccd232aeed4349510ee080feaf6a6",
+      "StoredBytes": 291,
+      "StoredSha256": "09fc2fb475536c20235bd0f66cc2d7398142cd9532a16053098f2311211f28d0"
+    },
+    {
+      "File": "043-precision-projection-native-tests-1-stderr.gz",
+      "Bytes": 0,
+      "Sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "StoredBytes": 20,
+      "StoredSha256": "9ceffb7310338057cfe71a4ae1e2c98d2c485d81cdef906532a801f457a38d64"
+    },
+    {
+      "File": "044-precision-projection-native-tests-1-stdout.gz",
+      "Bytes": 4465,
+      "Sha256": "43c0cfdc6eaa0313cbf1627f2e6b97b173297ef7249b462fdf70f0ef6c99bdfe",
+      "StoredBytes": 721,
+      "StoredSha256": "8c65774b5d758e67d9f54b862a5297e1c04c1b55d2036b4ee1abc763e0ec6235"
+    },
+    {
+      "File": "045-precision-projection-native-tests-2-Bayesian.Tests.fsproj.gz",
+      "Bytes": 3634,
+      "Sha256": "85c69f6b0e49dc723ecee635ad0787a4953088d8c81484413e8d1c7ffae73ba5",
+      "StoredBytes": 908,
+      "StoredSha256": "e6a8650c56f2f59c81bc2860bb191cbaef876d6011b34ba8c43919c1423b66d3"
+    },
+    {
+      "File": "046-precision-projection-native-tests-2-Bayesian.fsproj.gz",
+      "Bytes": 3329,
+      "Sha256": "00a6a4c62843516af63d7dae6f712732a4142fd4691b180c2ceeab853b40bb6c",
+      "StoredBytes": 1047,
+      "StoredSha256": "4b6646ab24562e2794b559d3878b61794157a2a84bed4313a63f9598bb0277d2"
+    },
+    {
+      "File": "047-precision-projection-native-tests-2-PrecisionGateProjection.Tests.fs.gz",
+      "Bytes": 12593,
+      "Sha256": "2a35772f57d832cb2641673cacb71a65020e5d2cf4815244fd12d1582b3deff0",
+      "StoredBytes": 3324,
+      "StoredSha256": "aa6e51126392b49769b4f05bfc6eed946c043263175afa52cafb5872e93d363e"
+    },
+    {
+      "File": "048-precision-projection-native-tests-2-PrecisionGateProjection.fs.gz",
+      "Bytes": 36187,
+      "Sha256": "55d1966631f069cfd05eda41b3be8208c31504f18b29e134fb86daefcbfe63cb",
+      "StoredBytes": 8835,
+      "StoredSha256": "e96a49291967560bb819c69aa5f402d79ba33964a5f108e683218478151f9289"
+    },
+    {
+      "File": "049-precision-projection-native-tests-2-completion.json.gz",
+      "Bytes": 68,
+      "Sha256": "3b0bd8170d1106801c6b5e5d4a7faf4d78edf8a7f3b216fa9fb926f2df01ad26",
+      "StoredBytes": 85,
+      "StoredSha256": "89ed64986e525259fa74c1881f87d44d0c6503641cd5bbe3180b46d760a508c4"
+    },
+    {
+      "File": "050-precision-projection-native-tests-2-invocation.json.gz",
+      "Bytes": 1017,
+      "Sha256": "455149a21ac57fbabdc5e1c113fba3c455586403a039b76634b49e87ea35a1a2",
+      "StoredBytes": 555,
+      "StoredSha256": "1879d8c47b008613c42280cf70716945bf073c5f5ce5ba51d391ea594382a624"
+    },
+    {
+      "File": "051-precision-projection-native-tests-2-projection.trx.gz",
+      "Bytes": 46708,
+      "Sha256": "f9aeb5c8738e29d69faa0eea8a804c66c5c1b8a05dcc155a1d4381d92b3f2688",
+      "StoredBytes": 5231,
+      "StoredSha256": "aa58568128e6de0fd92aa7935054667e2dc2246d3f1a41502e877d36e3d22987"
+    },
+    {
+      "File": "052-precision-projection-native-tests-2-stderr.gz",
+      "Bytes": 0,
+      "Sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "StoredBytes": 20,
+      "StoredSha256": "9ceffb7310338057cfe71a4ae1e2c98d2c485d81cdef906532a801f457a38d64"
+    },
+    {
+      "File": "053-precision-projection-native-tests-2-stdout.gz",
+      "Bytes": 1427,
+      "Sha256": "90473a8e65f4a753f648eba1beac61eb1f7fcf4e2758878c34d3f4f12e93d844",
+      "StoredBytes": 394,
+      "StoredSha256": "3adf901c3c6e8fa02fbc78730cb060dc0a20c7d8ba86798d05aa50c949d9807d"
+    },
+    {
+      "File": "054-precision-projection-native-tests-3-Bayesian.Tests.fsproj.gz",
+      "Bytes": 3770,
+      "Sha256": "dd863d702023ce99ced1c1e7cda5b5e4732d7eae0ec10a3006b4176c107e3736",
+      "StoredBytes": 944,
+      "StoredSha256": "2f8f4763b8560031f5fd9846a85b975af383a3eba6089611c704417d153f1097"
+    },
+    {
+      "File": "055-precision-projection-native-tests-3-Bayesian.fsproj.gz",
+      "Bytes": 3329,
+      "Sha256": "00a6a4c62843516af63d7dae6f712732a4142fd4691b180c2ceeab853b40bb6c",
+      "StoredBytes": 1047,
+      "StoredSha256": "4b6646ab24562e2794b559d3878b61794157a2a84bed4313a63f9598bb0277d2"
+    },
+    {
+      "File": "056-precision-projection-native-tests-3-PrecisionGateProjection.Tests.fs.gz",
+      "Bytes": 18084,
+      "Sha256": "8f57cdc73bf94c957e3efa4b44c9e38a88b3d0355baf7d37157ee3e6ebda1ef9",
+      "StoredBytes": 4636,
+      "StoredSha256": "e2913cf93cb66e19adcdb24c2f3ae78f0dc42b02875882b791112f955eb6a841"
+    },
+    {
+      "File": "057-precision-projection-native-tests-3-PrecisionGateProjection.fs.gz",
+      "Bytes": 36582,
+      "Sha256": "288e0348edc4babeadb993ba1b80c1a45b6d426bab80e14c5e066165d5730d0d",
+      "StoredBytes": 8937,
+      "StoredSha256": "8fb1f313e5b60768594380621ebdeca585019059d761b095b89d5779ad1dbae6"
+    },
+    {
+      "File": "058-precision-projection-native-tests-3-PrecisionGateProjectionReplay.fsx.gz",
+      "Bytes": 12709,
+      "Sha256": "686caf11e0181fd8da5f373ea26b6a9060b9fbb4e35c5a81251b895256394c31",
+      "StoredBytes": 3959,
+      "StoredSha256": "506bd39ac3c80b0d5c89a29043f02dd675156d102b42e9bdf23a3727607fad10"
+    },
+    {
+      "File": "059-precision-projection-native-tests-3-completion.json.gz",
+      "Bytes": 68,
+      "Sha256": "4ac971302fe18f0f6bc06668ed08dff1ae53a321e01c47b8ea9013055936145e",
+      "StoredBytes": 87,
+      "StoredSha256": "677d61b66fb2eccd1f0d02e7780b81607661c284de289973e8bfa3c7f4e8d8ef"
+    },
+    {
+      "File": "060-precision-projection-native-tests-3-invocation.json.gz",
+      "Bytes": 1178,
+      "Sha256": "d2179559de0e9b19271457a8b4b81211da667c617d340fdae0ca1ba2ad8ca0f5",
+      "StoredBytes": 619,
+      "StoredSha256": "80983f08c0e88c83bab498bfed01be277f952ada6b7e3afdc7525d86e8b38493"
+    },
+    {
+      "File": "061-precision-projection-native-tests-3-stderr.gz",
+      "Bytes": 0,
+      "Sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "StoredBytes": 20,
+      "StoredSha256": "9ceffb7310338057cfe71a4ae1e2c98d2c485d81cdef906532a801f457a38d64"
+    },
+    {
+      "File": "062-precision-projection-native-tests-3-stdout.gz",
+      "Bytes": 1166,
+      "Sha256": "80e0c5e82835a157bedf18af8fc35ded99f833db2562194c8f611ca0a600f782",
+      "StoredBytes": 342,
+      "StoredSha256": "df2c0339dedce8e632ffcc28fd13076b070e3784dda6acd545304b8133f36b16"
+    },
+    {
+      "File": "063-precision-projection-native-tests-4-Bayesian.Tests.fsproj.gz",
+      "Bytes": 3770,
+      "Sha256": "dd863d702023ce99ced1c1e7cda5b5e4732d7eae0ec10a3006b4176c107e3736",
+      "StoredBytes": 944,
+      "StoredSha256": "2f8f4763b8560031f5fd9846a85b975af383a3eba6089611c704417d153f1097"
+    },
+    {
+      "File": "064-precision-projection-native-tests-4-Bayesian.fsproj.gz",
+      "Bytes": 3329,
+      "Sha256": "00a6a4c62843516af63d7dae6f712732a4142fd4691b180c2ceeab853b40bb6c",
+      "StoredBytes": 1047,
+      "StoredSha256": "4b6646ab24562e2794b559d3878b61794157a2a84bed4313a63f9598bb0277d2"
+    },
+    {
+      "File": "065-precision-projection-native-tests-4-PrecisionGateProjection.Tests.fs.gz",
+      "Bytes": 18076,
+      "Sha256": "b1f2aa954c1186da8471b4cdf3e8a6fadcdc2ffc0a4c1fddff1db03027c66df5",
+      "StoredBytes": 4634,
+      "StoredSha256": "da9f68046d723f5bfd2f193ae0eda8da2112515545759f9f08cb05fe816d4120"
+    },
+    {
+      "File": "066-precision-projection-native-tests-4-PrecisionGateProjection.fs.gz",
+      "Bytes": 36582,
+      "Sha256": "288e0348edc4babeadb993ba1b80c1a45b6d426bab80e14c5e066165d5730d0d",
+      "StoredBytes": 8937,
+      "StoredSha256": "8fb1f313e5b60768594380621ebdeca585019059d761b095b89d5779ad1dbae6"
+    },
+    {
+      "File": "067-precision-projection-native-tests-4-PrecisionGateProjectionReplay.fsx.gz",
+      "Bytes": 12709,
+      "Sha256": "686caf11e0181fd8da5f373ea26b6a9060b9fbb4e35c5a81251b895256394c31",
+      "StoredBytes": 3959,
+      "StoredSha256": "506bd39ac3c80b0d5c89a29043f02dd675156d102b42e9bdf23a3727607fad10"
+    },
+    {
+      "File": "068-precision-projection-native-tests-4-completion.json.gz",
+      "Bytes": 68,
+      "Sha256": "41c90def59d01c3af1dc1e3c9e164da87d9831e1135581661f5dacb62f3e8d80",
+      "StoredBytes": 87,
+      "StoredSha256": "c091a5b81cda1e0b6c636944ccba2b2a8b3e900fdaa24e4d357b0a165ee48d96"
+    },
+    {
+      "File": "069-precision-projection-native-tests-4-invocation.json.gz",
+      "Bytes": 1178,
+      "Sha256": "dc245ed654cd8d17be2123a019c6c58b315cc61363a5007fc1f3efb7d2dafdec",
+      "StoredBytes": 622,
+      "StoredSha256": "329554ec1e660be2ab1a8ef83f7a49c4ba88c7cf75bf1b219028a684b0fe3dd3"
+    },
+    {
+      "File": "070-precision-projection-native-tests-4-projection.trx.gz",
+      "Bytes": 54440,
+      "Sha256": "e5f25e58ced22a52bc7050972ecf5f20a3008d426edcedcf727c290b5f360e5f",
+      "StoredBytes": 6262,
+      "StoredSha256": "2ff70ff7cd1bf0b77df97699cb1468b0a35716fd54fb9dda590cce346fd4616f"
+    },
+    {
+      "File": "071-precision-projection-native-tests-4-stderr.gz",
+      "Bytes": 0,
+      "Sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "StoredBytes": 20,
+      "StoredSha256": "9ceffb7310338057cfe71a4ae1e2c98d2c485d81cdef906532a801f457a38d64"
+    },
+    {
+      "File": "072-precision-projection-native-tests-4-stdout.gz",
+      "Bytes": 1427,
+      "Sha256": "d224cc9838dc39060c62cb7c5dbc2e813077ba92530b231048a8af23ac5fc1c0",
+      "StoredBytes": 395,
+      "StoredSha256": "a5835bb983db2155f81e042a0742f777b120ddc8da5ed27172fd4044bd0a6ad1"
+    },
+    {
+      "File": "073-precision-projection-replay-startup-1-PrecisionGateProjectionReplay.fsx.gz",
+      "Bytes": 12709,
+      "Sha256": "686caf11e0181fd8da5f373ea26b6a9060b9fbb4e35c5a81251b895256394c31",
+      "StoredBytes": 3959,
+      "StoredSha256": "506bd39ac3c80b0d5c89a29043f02dd675156d102b42e9bdf23a3727607fad10"
+    },
+    {
+      "File": "074-precision-projection-replay-startup-1-completion.json.gz",
+      "Bytes": 68,
+      "Sha256": "b9f94b2688a46403aebf43db0e015fdf3ed19b0913daaa915c476aa4e2eaf28c",
+      "StoredBytes": 87,
+      "StoredSha256": "124b028abf567b304b327d284f136e49114d1f830cbf45f80548d553b2a8cdea"
+    },
+    {
+      "File": "075-precision-projection-replay-startup-1-invocation.json.gz",
+      "Bytes": 866,
+      "Sha256": "4807ca759ac4f8a9560dbf0ff675300b481af299a4693a1a00adcfcc90ed4b0a",
+      "StoredBytes": 484,
+      "StoredSha256": "71b377c65bc85b7aa2e609b9860c571dfe8e9a63ff9aaa5b37e4e7c1a97867a6"
+    },
+    {
+      "File": "076-precision-projection-replay-startup-1-stderr.gz",
+      "Bytes": 273,
+      "Sha256": "0b23b5b95fb89e8e9bd8b700c013810fc16b8f78eb20cb91fa60cacac6391119",
+      "StoredBytes": 235,
+      "StoredSha256": "ddd817e821bed4617016688ad1c0401d6acd712953f404c0a6def00c0e70473e"
+    },
+    {
+      "File": "077-precision-projection-replay-startup-1-stdout.gz",
+      "Bytes": 0,
+      "Sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "StoredBytes": 20,
+      "StoredSha256": "9ceffb7310338057cfe71a4ae1e2c98d2c485d81cdef906532a801f457a38d64"
+    },
+    {
+      "File": "078-precision-projection-replay-startup-2-PrecisionGateProjectionReplay.fsx.gz",
+      "Bytes": 12723,
+      "Sha256": "c1174406cc4e7d3164714c536207ad2bd72f085a38a3a816c8bc1b14ade917b2",
+      "StoredBytes": 3962,
+      "StoredSha256": "ff52ad99c857a88c41234e7c5c30da9431d32508d73d45893836cf5cd9aacee8"
+    },
+    {
+      "File": "079-precision-projection-replay-startup-2-completion.json.gz",
+      "Bytes": 68,
+      "Sha256": "c3c33130564b4db6989a9f4df4ff2e502f682e8df873d880655f59573103ab14",
+      "StoredBytes": 87,
+      "StoredSha256": "5296ee494ec6f158e7efeffd07f63e3b518c884a09967bdbb60d5eb726eed025"
+    },
+    {
+      "File": "080-precision-projection-replay-startup-2-invocation.json.gz",
+      "Bytes": 376,
+      "Sha256": "0aa60b9c74d8d1fb2c9699f485a46363240234707e406e2f71ee69c237d649ee",
+      "StoredBytes": 275,
+      "StoredSha256": "9dd4c200a2f23829bba8bb6302d130ceee6a4a6a3192190fbb679e59a4f9832f"
+    },
+    {
+      "File": "081-precision-projection-replay-startup-2-stderr.gz",
+      "Bytes": 0,
+      "Sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "StoredBytes": 20,
+      "StoredSha256": "9ceffb7310338057cfe71a4ae1e2c98d2c485d81cdef906532a801f457a38d64"
+    },
+    {
+      "File": "082-precision-projection-replay-startup-2-stdout.gz",
+      "Bytes": 428,
+      "Sha256": "a2f9a1abbf20ef76c189e244f92662dec9405b572d83353f11b9b9a33f12102c",
+      "StoredBytes": 298,
+      "StoredSha256": "207bb79fdf9dfd1a7f91dd919d3285087aa7c967af9e21dc14ad11aa523edc7e"
+    },
+    {
+      "File": "083-.git-precision-projection-build-graph-1.stdout.gz",
+      "Bytes": 58,
+      "Sha256": "a7e77500e9825c542885667e9e7e2ebbda20cc7782627bedf5ec72bd2522b5e8",
+      "StoredBytes": 78,
+      "StoredSha256": "5a6b9640505b3f84f787298d9d7780c8d43db840bdbaf934f908cfe2e1382ca0"
+    },
+    {
+      "File": "084-.git-precision-projection-build-graph-1.stderr.gz",
+      "Bytes": 0,
+      "Sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "StoredBytes": 20,
+      "StoredSha256": "9ceffb7310338057cfe71a4ae1e2c98d2c485d81cdef906532a801f457a38d64"
+    }
+  ],
+  "InventoryDisposition": "Reconstructed from the untouched stored prefixes after failure, not the absent original successful manifest."
+}

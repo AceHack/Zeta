@@ -1,0 +1,49 @@
+{
+  "BaseCommit": "cb6ab68e0f6833edcfc46a3b017731acaab1ccf8",
+  "ActingHead": "30dc175d239ba7ec685f25f4b6c6efed9e830bb3",
+  "BridgeHead": "378406111c651da099c9a7ad40ac255fc8e35624",
+  "LocalIntegrationCommit": "a8838542077e080c00963844422a1190c436cacd",
+  "Published": false,
+  "ManualScientificEdits": false,
+  "MergeConflicts": [],
+  "RetainedWorkflowFloor": 258,
+  "Workdir": "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/src/Interp.Python",
+  "PytestCounts": {
+    "tests": 299,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "JUnitTestCases": 299,
+  "PytestSummary": "299 passed, 1 warning in 104.92s (0:01:44)",
+  "ExistingWarning": "HookedTransformer deprecation in tests/test_activation_access.py",
+  "LiveNativeHandTest": {
+    "classname": "tests.test_rendered_catch_replay",
+    "name": "test_live_native_hand_kernel_matches_every_episode_byte_digest",
+    "time": "3.914"
+  },
+  "ExistingReleaseCore": {
+    "Path": "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/src/Core/bin/Release/net10.0/Zeta.Core.dll",
+    "SHA256": "72d2c2d7f7b0b66f7334cb4322208b0cca7b4a4eba73c177b82bb96735614120",
+    "FreshBuildPerformed": false
+  },
+  "Commands": {
+    "pytest": "uv run pytest -q --junitxml=/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/.git/acting-bridge-initial.xml",
+    "ruff": "uv run ruff check .",
+    "format": "uv run ruff format --check .",
+    "mypy": "uv run mypy zeta_interp/ tests/"
+  },
+  "ExitCodes": {
+    "pytest": 0,
+    "ruff": 0,
+    "format": 0,
+    "mypy": 0
+  },
+  "Logs": {
+    "pytest": "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/.git/acting-bridge-initial-pytest.log",
+    "junit": "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/.git/acting-bridge-initial.xml",
+    "ruff": "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/.git/acting-bridge-ruff.log",
+    "format": "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/.git/acting-bridge-format.log",
+    "mypy": "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/.git/acting-bridge-mypy.log"
+  }
+}

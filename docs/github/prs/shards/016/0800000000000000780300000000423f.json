@@ -1,0 +1,12 @@
+{
+  "pr_number": 16959,
+  "archive_path": "docs/history/pr-reviews/PR-16959-feat-081m1ycex7c087g0r003h40fbq-fake-vfs-getattr-setattr-via-posixmeta.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-07T17:35:23.959Z",
+  "schema_version": "v1",
+  "commit_sha": "73f0d946ab22dccce3a6051a65a6cd82ae6fc512",
+  "title": "feat(081M1YCEX7C087G0R003H40FBQ): Fake VFS getattr setattr via PosixMeta",
+  "state": "MERGED",
+  "merged_at": "2026-09-07T17:34:49Z",
+  "head_ref": "feat/zetafs-posix-vfs-getattr"
+}

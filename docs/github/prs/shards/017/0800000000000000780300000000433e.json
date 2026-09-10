@@ -1,0 +1,12 @@
+{
+  "pr_number": 17214,
+  "archive_path": "docs/history/pr-reviews/PR-17214-fix-081m24g4dx2087g0r0010ca1r0-safe-io-primitive-lint-stop-the-recurring-hand-ro.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-10T02:58:16.160Z",
+  "schema_version": "v1",
+  "commit_sha": "6164e298158cc2635c93a21ac2663263d4fa9982",
+  "title": "fix(081M24G4DX2087G0R0010CA1R0): safe-io primitive + lint — stop the recurring hand-rolled IO alert class",
+  "state": "MERGED",
+  "merged_at": "2026-09-10T02:57:28Z",
+  "head_ref": "fix/safe-io-primitive-stops-io-alert-class"
+}

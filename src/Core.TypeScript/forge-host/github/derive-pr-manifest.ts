@@ -57,11 +57,28 @@
  * Exit codes: 0 ok · 1 drift (check mode) · 2 shard-store integrity failure · 3 usage.
  */
 
-import { existsSync, readFileSync, writeFileSync } from "node:fs";
+import { readFileBounded, writeTextIfChanged } from "../../io/safe-io.ts";
 import { resolve, join } from "node:path";
 
 import type { ManifestEntry } from "./pr-manifest-shards.ts";
+
+/**
+ * The derived manifest is ~7.6 MiB on `main` and grows by one line per merged
+ * PR. 256 MiB is roughly thirty years of headroom at the current rate, and a
+ * manifest that reaches it is a defect worth failing loudly on rather than
+ * loading whole.
+ */
+const MANIFEST_MAX_BYTES = 256 * 1024 * 1024;
+
+/**
+ * 0o644 — the mode `writeFileSync` produced under the repo's umask, kept
+ * exactly. `writeTextIfChanged` defaults to 0o600, and a repository file that
+ * only its writer can read is a change nobody asked for.
+ */
+const REPO_FILE_MODE = 0o644;
+
 import {
+
   MANIFEST_RELATIVE,
   SHARD_ROOT_RELATIVE,
   deriveManifest,
@@ -182,13 +199,32 @@ export function runDerive(opts: DeriveOptions): DeriveOutcome {
   }
 
   const next = deriveManifest(loaded.entries);
-  const current = existsSync(manifestPath) ? readFileSync(manifestPath, "utf8") : "";
+  // ONE DESCRIPTOR, NOT THREE RESOLUTIONS OF ONE NAME. `existsSync(p) ?
+  // readFileSync(p) : ""` followed by `writeFileSync(p)` let "did it exist",
+  // "what was in it" and "what did we overwrite" describe different inodes, and
+  // the write was CONDITIONAL on the check — CodeQL `js/file-system-race`.
+  // `readFileBounded` opens once; ENOENT is `not-found`, which is the only
+  // error that means "absent". An unreadable-but-present manifest used to read
+  // as an empty one and get replaced with a derived file silently.
+  const read = readFileBounded(manifestPath, { maxBytes: MANIFEST_MAX_BYTES });
+  if (!read.ok && read.error.kind !== "not-found") {
+    out.push(`::error::cannot read ${MANIFEST_RELATIVE}: ${read.error.message}`);
+    return { code: 2, lines: out };
+  }
+  const current = read.ok ? read.value.text : "";
   const inSync = current === next;
 
   if (opts.write) {
     if (inSync) out.push(`${MANIFEST_RELATIVE} already current (${String(loaded.entries.length)} entries).`);
     else {
-      writeFileSync(manifestPath, next, "utf8");
+      const written = writeTextIfChanged(manifestPath, next, {
+        mode: REPO_FILE_MODE,
+        maxBytes: MANIFEST_MAX_BYTES,
+      });
+      if (!written.ok) {
+        out.push(`::error::cannot write ${MANIFEST_RELATIVE}: ${written.error.message}`);
+        return { code: 2, lines: out };
+      }
       out.push(`${MANIFEST_RELATIVE} rewritten from ${String(loaded.entries.length)} shards.`);
     }
     return { code: 0, lines: out };

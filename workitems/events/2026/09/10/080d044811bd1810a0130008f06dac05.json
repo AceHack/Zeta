@@ -1,0 +1,14 @@
+{
+  "id": "080d044811bd1810a0130008f06dac05",
+  "at": "2026-09-10T01:50:19.043Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M24G4DX2087G0R0010CA1R0",
+    "type": "bug",
+    "title": "Safe IO primitive + lint: stop the recurring hand-rolled fetch-to-disk / TOCTOU / shell-spawn alert class",
+    "slug": "safe-io-primitive-lint-stop-the-recurring-hand-rolled-fetch",
+    "priority": "P2",
+    "filename": "081M24G4DX2087G0R0010CA1R0-safe-io-primitive-lint-stop-the-recurring-hand-rolled-fetch.md"
+  }
+}

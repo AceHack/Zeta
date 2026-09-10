@@ -62,10 +62,10 @@ on:
       # manifest that PINS a third-party chart; the two charts we actually own
       # live under examples/helm-dependency-graph/charts and no workflow in the
       # tree had `examples/` in a paths filter, so they were never linted,
-      # rendered or parsed. `infra/k8s/tests/**` is here because the validators
+      # rendered or parsed. `full-ai-cluster/k8s/tests/**` is here because the validators
       # themselves changing is a reason to re-run them.
       - "examples/helm-dependency-graph/**"
-      - "infra/k8s/tests/**"
+      - "full-ai-cluster/k8s/tests/**"
       - ".github/workflows/helm-validate.yml"
       - ".mise.toml"
       - ".mise.full.toml"
@@ -83,10 +83,10 @@ on:
       # manifest that PINS a third-party chart; the two charts we actually own
       # live under examples/helm-dependency-graph/charts and no workflow in the
       # tree had `examples/` in a paths filter, so they were never linted,
-      # rendered or parsed. `infra/k8s/tests/**` is here because the validators
+      # rendered or parsed. `full-ai-cluster/k8s/tests/**` is here because the validators
       # themselves changing is a reason to re-run them.
       - "examples/helm-dependency-graph/**"
-      - "infra/k8s/tests/**"
+      - "full-ai-cluster/k8s/tests/**"
       - ".github/workflows/helm-validate.yml"
       - ".mise.toml"
       - ".mise.full.toml"
@@ -131,7 +131,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
-      - name: Cache install.sh outputs (mise runtimes + dotnet tools)
+      - name: Cache install.sh outputs (mise runtimes + dotnet tools + verifier jars)
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: |
@@ -141,6 +141,8 @@ jobs:
             ~/.dotnet/tools
             ~/.elan
             ~/.config/zeta
+            src/Core.TLA/tla2tools.jar
+            src/Core.Alloy/alloy.jar
           key: install-${{ runner.os }}-${{ runner.arch }}-base-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json', '!tools/setup/persona-keys/**', '!tools/setup/op-token-setup.*', '!tools/setup/secret-clip.sh', '!tools/setup/manus-smoke-test.ts', '!tools/setup/build-lumen-persona-package.ts') }}
 
       - name: Restore apt archives (root fix for the exit-124 install-step class)
@@ -167,7 +169,7 @@ jobs:
         run: bun install --frozen-lockfile
 
       - name: Validate Application manifests (offline)
-        run: bun infra/k8s/tests/validate-applications.ts --offline
+        run: bun full-ai-cluster/k8s/tests/validate-applications.ts --offline
 
       - name: Prove the validator can go red (mutation suite)
         # THE POINT OF THIS STEP. It copies the real manifest tree, breaks one
@@ -176,7 +178,7 @@ jobs:
         # so a validator that failed unconditionally would not satisfy it.
         # Verified 2026-08-14 by stubbing out the validator's non-zero exit:
         # 9 of the 12 cases went red immediately. 1.7 s.
-        run: bun test infra/k8s/tests/validate-applications.test.ts
+        run: bun test full-ai-cluster/k8s/tests/validate-applications.test.ts
 
       - name: Validate K3S first-boot bootstrap manifests
         # ADDED 2026-08-18. This lane already TRIGGERED on `infra/k8s/**`, so a
@@ -187,7 +189,7 @@ jobs:
         # kustomize Kustomization that K3S's auto-deploy cannot apply.
         # MEASURED on real K3S v1.31.4+k3s1: ArgoCD never installed, so nothing
         # under infra/k8s/applications/ ever deployed either. Offline, ~0.2 s.
-        run: bun infra/k8s/tests/validate-bootstrap.ts
+        run: bun full-ai-cluster/k8s/tests/validate-bootstrap.ts
 
       - name: Validate the full-ai-cluster K3S bootstrap roster
         # ADDED 2026-08-20. Same validator, second tree. It is a HARD gate with
@@ -197,7 +199,7 @@ jobs:
         # and a file in bootstrap/ that no entry names. Both were confirmed to
         # go red on this tree before this step was added, by half-removing the
         # vault manifest each way. Offline, ~0.3 s.
-        run: bun infra/k8s/tests/validate-bootstrap.ts --infra-dir full-ai-cluster
+        run: bun full-ai-cluster/k8s/tests/validate-bootstrap.ts --infra-dir full-ai-cluster
 
       - name: Validate the charts this repo owns (offline)
         # ADDED 2026-08-23 (Aaron: "we want our k8s helm charts all tested").
@@ -223,7 +225,7 @@ jobs:
         # asserting exit 0. The load-bearing case restores the retired
         # Kustomization verbatim — if it ever goes green, the cluster can
         # silently stop bootstrapping again. 2.0 s measured locally.
-        run: bun test infra/k8s/tests/validate-bootstrap.test.ts
+        run: bun test full-ai-cluster/k8s/tests/validate-bootstrap.test.ts
 
   charts:
     # Network half: does the pinned chart:version actually exist, does it
@@ -253,6 +255,8 @@ jobs:
             ~/.dotnet/tools
             ~/.elan
             ~/.config/zeta
+            src/Core.TLA/tla2tools.jar
+            src/Core.Alloy/alloy.jar
           key: install-${{ runner.os }}-${{ runner.arch }}-full-${{ hashFiles('.mise.toml', '.mise.full.toml', 'tools/setup/**', 'global.json', '!tools/setup/persona-keys/**', '!tools/setup/op-token-setup.*', '!tools/setup/secret-clip.sh', '!tools/setup/manus-smoke-test.ts', '!tools/setup/build-lumen-persona-package.ts') }}
 
       - name: Restore apt archives (root fix for the exit-124 install-step class)
@@ -297,13 +301,13 @@ jobs:
         run: |
           set -euo pipefail
           for attempt in 1 2; do
-            if bun infra/k8s/tests/validate-applications.ts --render; then
+            if bun full-ai-cluster/k8s/tests/validate-applications.ts --render; then
               exit 0
             fi
             echo "::warning::helm-validate attempt ${attempt} failed; retrying in $((attempt * 30))s"
             sleep $((attempt * 30))
           done
-          bun infra/k8s/tests/validate-applications.ts --render
+          bun full-ai-cluster/k8s/tests/validate-applications.ts --render
 
       - name: helm lint + helm template + kubeconform on the charts this repo owns
         # ADDED 2026-08-23. Same validator, --helm adds `helm lint`, a
@@ -346,14 +350,14 @@ jobs:
         #
         # It REFUSES below a floor of 6 CRs rather than reporting "0 failed" over a
         # collapsed scan, which is the same discipline the ratchet below applies to counts.
-        run: bun infra/k8s/tests/render-first-boot-charts.ts
+        run: bun full-ai-cluster/k8s/tests/render-first-boot-charts.ts
 
       - name: Prove the first-boot renderer parses what it claims (offline)
         # The render half is proven by the step above; these cases cover everything
         # upstream of the spawn, which is where this renderer would go quietly wrong -- a
         # parser that reads half a multi-document file still prints a confident Results
         # line. `spire-install.yaml` really does carry two HelmCharts.
-        run: bun test infra/k8s/tests/render-first-boot-charts.test.ts
+        run: bun test full-ai-cluster/k8s/tests/render-first-boot-charts.test.ts
 
       - name: Ratchet the full-ai-cluster tree (render + failure ceiling)
         # ADDED 2026-08-20. The 122-file, ~60-Application tree at
@@ -366,7 +370,7 @@ jobs:
         # when it starts to matter. continue-on-error would be worse: it permits
         # anything and can never fail, which is a check that constrains nothing.
         # So this is a RATCHET against a recorded ceiling in
-        # infra/k8s/tests/FULL-AI-CLUSTER-FAILURE-BASELINE.md. It fails if the
+        # full-ai-cluster/k8s/tests/FULL-AI-CLUSTER-FAILURE-BASELINE.md. It fails if the
         # count goes UP (regression) and ALSO if it goes DOWN without the
         # baseline being lowered -- otherwise the ceiling only ever rises and
         # stops meaning anything, and an earned improvement is silently
@@ -395,4 +399,4 @@ jobs:
         # No pipe: the ratchet spawns the validator and reads stdout and the exit
         # code as separate values, and refuses to report a count at all if no
         # 'Results:' line is present -- an empty run is not zero failures.
-        run: bun infra/k8s/tests/ratchet-app-failures.ts
+        run: bun full-ai-cluster/k8s/tests/ratchet-app-failures.ts

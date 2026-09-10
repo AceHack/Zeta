@@ -10,11 +10,12 @@
  * names without installer `fs`. Capture / overlay still live
  * in bao-elf-capture.ts (that module may read). Epoch is named
  * (`installer-iso` vs `installed-host`): the live ISO's
- * `/run/current-system/sw/bin/bao` is not option D. `/mnt`
- * existing does not pick the epoch. Does not expand
- * `ZetaFirstbootRole`. Bash export / sed-parse live in
- * `zeta-first-boot.sh` and `zeta-install.sh`; this module stays
- * pure and does not invoke bun.
+ * `/run/current-system/sw/bin/bao` is not option D. Env consume
+ * with a named epoch applies that filter so bun JSON ask is
+ * not option D on the ISO. `/mnt` existing does not pick the
+ * epoch. Does not expand `ZetaFirstbootRole`. Bash export /
+ * sed-parse live in `zeta-first-boot.sh` and `zeta-install.sh`;
+ * this module stays pure and does not invoke bun.
  *
  * Cite: firstboot-role.ts, bao-load-site.ts,
  * docs/research/2026-08-21-hands-off-metal-*.md §1.4.
@@ -350,8 +351,11 @@ export type FirstbootBaoElfEnvConsume =
   | { readonly ok: false; readonly reason: NamedBaoElfArgError };
 
 /**
- * Site+path plus named epoch. Missing epoch is unmeasured, not
- * `installed-host`. Does not open files. Does not infer epoch
+ * Site+path plus named epoch. When epoch is named, ISO
+ * current-system bao is not an ask (`namedBaoElfAskAtEpoch`).
+ * Missing epoch is unmeasured, not `installed-host` — the
+ * sourced ask is still reported (overlay join refuses
+ * `empty-epoch`). Does not open files. Does not infer epoch
  * from `/mnt` or `/dev/tpmrm0`.
  */
 export function consumeFirstbootBaoElfEnvWithEpoch(env: {
@@ -361,7 +365,14 @@ export function consumeFirstbootBaoElfEnvWithEpoch(env: {
   if (!parsed.ok) return parsed;
   const epochGot = parseBaoElfEpoch(env[FIRSTBOOT_BAO_ELF_EPOCH_KEY]);
   if (!epochGot.ok) return epochGot;
-  return { ok: true, ask: parsed.ask, epoch: epochGot.epoch };
+  if (epochGot.epoch === null) {
+    return { ok: true, ask: parsed.ask, epoch: null };
+  }
+  const ask =
+    parsed.ask === null
+      ? null
+      : namedBaoElfAskAtEpoch(parsed.ask.site, parsed.ask.openedPath, epochGot.epoch);
+  return { ok: true, ask, epoch: epochGot.epoch };
 }
 
 /**

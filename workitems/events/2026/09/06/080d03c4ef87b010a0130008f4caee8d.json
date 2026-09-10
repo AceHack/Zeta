@@ -1,0 +1,14 @@
+{
+  "id": "080d03c4ef87b010a0130008f4caee8d",
+  "at": "2026-09-06T21:26:51.894Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1W9VW7P087G0R0026A9J6Z",
+    "type": "task",
+    "title": "ISO bun consume filters current-system bao at named epoch",
+    "slug": "iso-bun-consume-filters-current-system-bao-at-named-epoch",
+    "priority": "P2",
+    "filename": "081M1W9VW7P087G0R0026A9J6Z-iso-bun-consume-filters-current-system-bao-at-named-epoch.md"
+  }
+}

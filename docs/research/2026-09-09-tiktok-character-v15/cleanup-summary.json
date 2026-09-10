@@ -1,0 +1,38 @@
+{
+  "authorization": "User requested cleanup of older local assets, 2026-09-09",
+  "scope": "Only archive-matching files in named duplicate restore folders; original working sources and environments retained",
+  "deleted_bytes": 3380128646,
+  "ledger_file": "receipts/local-cleanup-receipt.json",
+  "ledger_sha256": "40cc6ba369fdf958bf927ad466419d4206ae95056d643947bda54b1bc42daf73",
+  "archives": [
+    {
+      "root": "/Users/acehack/Documents/Blender/Character-Evolution-Restore-Check-20260909",
+      "archive": "Character-Evolution-Archive-20260909/character-composition-evolution.zip",
+      "archive_sha256": "db41f6989d28e3e13ed35e9bf700084d0a18b7a1f6205f527bfb940b350cb979",
+      "release": "https://github.com/Lucent-Financial-Group/Zeta/releases/tag/research-character-composition-20260909",
+      "deleted_files": 354
+    },
+    {
+      "root": "/Users/acehack/Documents/Blender/Character-Evolution-Restore-Check-20260908",
+      "archive": "Character-Evolution-Archive-20260908/AceHack-Xenaa-surviving-history.zip",
+      "archive_sha256": "da091d23c4370a478d77256c6c6eab4251732fdd9e2871ee61e6cd4419f7a79f",
+      "release": "https://github.com/Lucent-Financial-Group/Zeta/releases/tag/research-character-evolution-20260908",
+      "deleted_files": 203
+    },
+    {
+      "root": "/Users/acehack/Documents/Blender/Character-Evolution-Restore-Check-20260908",
+      "archive": "Character-Evolution-Archive-20260908/AceHack-Xenaa-Realistic-surviving-history.zip",
+      "archive_sha256": "a19bc31c736a04af5a4424eef45d05a0032140352c4800f6e446c483c66a131e",
+      "release": "https://github.com/Lucent-Financial-Group/Zeta/releases/tag/research-character-evolution-20260908",
+      "deleted_files": 3291
+    },
+    {
+      "root": "/Users/acehack/Documents/Blender/TikTok-Character-Archive-20260909/restore-check-v13",
+      "archive": "TikTok-Character-Archive-20260909/tiktok-blender-correction-v13.zip",
+      "archive_sha256": "93210ec888cc73fcd8e310bcd86fa5c8c0a37b4aa93ffb6913154e2ad22f6ded",
+      "release": "https://github.com/Lucent-Financial-Group/Zeta/releases/tag/research-tiktok-character-seams-20260909",
+      "deleted_files": 623
+    }
+  ],
+  "deleted_files": 4471
+}

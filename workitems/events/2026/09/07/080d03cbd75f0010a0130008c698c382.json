@@ -1,0 +1,14 @@
+{
+  "id": "080d03cbd75f0010a0130008c698c382",
+  "at": "2026-09-07T01:28:14.048Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1WQNTZ0087G0R002Q8T8RT",
+    "type": "task",
+    "title": "ISO bun consume reports unmeasured probe; tpmrm0 is not a probe",
+    "slug": "iso-bun-consume-reports-unmeasured-probe-tpmrm0-is-not-a-pro",
+    "priority": "P2",
+    "filename": "081M1WQNTZ0087G0R002Q8T8RT-iso-bun-consume-reports-unmeasured-probe-tpmrm0-is-not-a-pro.md"
+  }
+}

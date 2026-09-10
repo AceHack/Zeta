@@ -111,6 +111,7 @@ import {
   parseFindings,
   repoRoot,
   rhoFromUnionCoverage,
+  applyFrameRename,
   universeFromFileList,
 } from "./effective-agent-count.ts";
 
@@ -227,8 +228,24 @@ function frameAt(root: string, sha: string): readonly string[] {
   );
 }
 
-/** The per-agent DISTINCT sources drawn at a commit, optionally restricted to the last `window`. */
-function drawsAt(root: string, sha: string, window: number | null): readonly (readonly string[])[] {
+/**
+ * The per-agent DISTINCT sources drawn at a commit, optionally restricted to the last `window`.
+ *
+ * Takes the frame and applies `applyFrameRename` HERE rather than at each call site. That is
+ * deliberate: it was translated in `pointAt` first and `headRows` — the other caller — silently
+ * kept the untranslated paths, which dropped the renamed draws out of the indicator matrix and
+ * moved `rhoFromUnion` in the fourth decimal. A translation a caller can forget is one that will
+ * be forgotten, so it lives at the read boundary where every caller gets it.
+ *
+ * De-duplication happens AFTER translation, matching `measure()`: a ledger holding both the old
+ * and the new path for one file counts it once, because it is one sampling unit.
+ */
+function drawsAt(
+  root: string,
+  sha: string,
+  window: number | null,
+  frame: ReadonlySet<string>,
+): readonly (readonly string[])[] {
   return AGENTS.map((agent) => {
     const text =
       sha === WORKTREE
@@ -236,7 +253,7 @@ function drawsAt(root: string, sha: string, window: number | null): readonly (re
         : showOrNull(root, sha, `${CORPUS_DIR}/${agent}.jsonl`);
     const findings: readonly Finding[] = text === null ? [] : parseFindings(text);
     const slice = window === null ? findings : findings.slice(Math.max(0, findings.length - window));
-    return [...new Set(slice.map((f) => f.source))];
+    return [...new Set(slice.map((f) => applyFrameRename(f.source, frame)))];
   });
 }
 
@@ -255,7 +272,7 @@ function drawsAt(root: string, sha: string, window: number | null): readonly (re
 export function pointAt(root: string, c: Commit, window: number | null = null): Point {
   const frame = frameAt(root, c.sha);
   const frameSet = new Set(frame);
-  const draws = drawsAt(root, c.sha, window);
+  const draws = drawsAt(root, c.sha, window, frameSet);
 
   let strayDraws = 0;
   const union = new Set<string>();
@@ -389,7 +406,7 @@ export function bootstrapRhoFromUnion(
 /** Frame rows at `HEAD` (or a window of them), for the bootstrap. */
 export function headRows(root: string, window: number | null = null): readonly (readonly number[])[] {
   const frame = frameAt(root, WORKTREE);
-  const sets = drawsAt(root, WORKTREE, window).map((d) => new Set(d));
+  const sets = drawsAt(root, WORKTREE, window, new Set(frame)).map((d) => new Set(d));
   return frame.map((fl) => sets.map((s) => (s.has(fl) ? 1 : 0)));
 }
 

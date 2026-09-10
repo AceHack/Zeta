@@ -1,0 +1,12 @@
+{
+  "pr_number": 16863,
+  "archive_path": "docs/history/pr-reviews/PR-16863-refactor-cluster-derive-the-remaining-application-and-scan-roots-from-the-roster.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-06T21:45:24.482Z",
+  "schema_version": "v1",
+  "commit_sha": "9650f599710fde9a5e340957fb6c9b58edfa5317",
+  "title": "refactor(cluster): derive the remaining application and scan roots from the roster",
+  "state": "MERGED",
+  "merged_at": "2026-09-06T21:44:46Z",
+  "head_ref": "shadow/derive-cluster-trees-round-2"
+}

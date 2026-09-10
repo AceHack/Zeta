@@ -1,0 +1,12 @@
+{
+  "pr_number": 17002,
+  "archive_path": "docs/history/pr-reviews/PR-17002-docs-research-freeze-arc-offline-carry-forward-boundary.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-08T01:35:22.144Z",
+  "schema_version": "v1",
+  "commit_sha": "4b507557d7e73283dbbf0afe8fd6b9c84edd6cef",
+  "title": "docs(research): freeze ARC offline carry-forward boundary",
+  "state": "MERGED",
+  "merged_at": "2026-09-08T01:34:41Z",
+  "head_ref": "lumen/arc-offline-carry-forward-contract"
+}

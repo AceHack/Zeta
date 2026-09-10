@@ -13,13 +13,23 @@
  * First-boot conf/argv carrier emits both names or neither.
  * Conf consume parses those assignments back into a named ask.
  * Env join is the argv/conf sibling: sourced process env
- * into `planSetupFromNamedBaoElf`. Epoch is named — ISO
- * current-system bao is not option D. Role conf plus named bao
- * is one planner call; the role type is unchanged. Pure join
- * + argv parse + conf/env consume live in firstboot-bao-elf.ts
- * so zflash can consume sourced names without installer `fs`.
- * Does not expand `ZetaFirstbootRole`. Does not edit
- * `zeta-first-boot.sh`. Does not open the installer ISO's
+ * into `planSetupFromNamedBaoElf`. Epoch is named from that
+ * same env (`ZETA_BAO_ELF_EPOCH`) — a TypeScript caller cannot
+ * pass a different epoch than the env names. Unseal request
+ * is named from that same env (`ZETA_UNSEAL_REQUEST`) for
+ * argv, conf, and env joins — a TypeScript caller cannot pass
+ * `pkcs11-tpm` while env is missing. Probe snapshot stays
+ * injected (`NamedHardwareProbe | null`). Env join maps it.
+ * Null is unmeasured, not
+ * present. `/dev/tpmrm0` is not a capture. A TypeScript
+ * caller cannot pass `tpm2: "present"` without naming it on
+ * the probe. ISO current-system bao is not option D. Role
+ * conf plus named bao is one planner call; the role type is
+ * unchanged. Pure join + argv parse + conf/env consume live
+ * in firstboot-bao-elf.ts so zflash can consume sourced
+ * names without installer `fs`. Does not expand
+ * `ZetaFirstbootRole`. Does not edit `zeta-first-boot.sh`.
+ * Does not open the installer ISO's
  * `/run/current-system/sw/bin/bao` as metal option D.
  *
  * Cite: bao-load-site.ts, pkcs11-hostpath-overlay.ts,
@@ -33,19 +43,21 @@ import {
   type BaoElfCapture,
   type BaoLoadSite,
 } from "../cluster/bao-load-site.ts";
+import { type NamedHardwareProbe } from "../cluster/host-seal-profile.ts";
 import { USB_PKCS11_MODULE_POINTER, type OverlayPlan } from "../cluster/pkcs11-hostpath-overlay.ts";
 import {
+  integrateAtSetupFromEnv,
   planSetupFromRestoredCompanion,
   type IntegrateDecision,
+  type NamedPathRequestError,
   type RestoredPkcs11PointerCapture,
 } from "../cluster/unseal-path.ts";
 import {
-  consumeFirstbootBaoElfProcessEnv,
+  consumeFirstbootBaoElfEnvWithEpoch,
   namedBaoElfAsk,
   namedBaoElfAskAtEpoch,
   parseFirstbootBaoElfConf,
   parseNamedBaoElfArgs,
-  type BaoElfEpoch,
   type NamedBaoElfArgError,
   type NamedBaoElfAsk,
 } from "../zflash/firstboot-bao-elf.ts";
@@ -138,52 +150,105 @@ export function planSetupFromNamedBaoElf(
   return planSetupFromRestoredCompanion(decision, restore, baoElf);
 }
 
-export type FirstBootBaoElfFromArgv =
-  { readonly ok: true; readonly plan: OverlayPlan } | { readonly ok: false; readonly reason: NamedBaoElfArgError };
+export type FirstBootFromEnvError = NamedBaoElfArgError | NamedPathRequestError;
 
-/** First-boot calls this. Overlay still does not open files. */
-export function planSetupFromNamedBaoElfArgv(
-  decision: IntegrateDecision,
-  restore: RestoredPkcs11PointerCapture,
-  argv: readonly string[],
-  read: BaoElfRead,
-): FirstBootBaoElfFromArgv {
-  const parsed = parseNamedBaoElfArgs(argv);
-  if (!parsed.ok) return parsed;
-  return { ok: true, plan: planSetupFromNamedBaoElf(decision, restore, parsed.ask, read) };
+export type FirstBootBaoElfFromEnv =
+  { readonly ok: true; readonly plan: OverlayPlan } | { readonly ok: false; readonly reason: FirstBootFromEnvError };
+
+export type FirstBootBaoElfFromArgv = FirstBootBaoElfFromEnv;
+
+/**
+ * Unmeasured request is not `auto`. Null probe is unmeasured,
+ * not present. Env join maps the probe. Overlay only checks
+ * `decision.ok`; mapping null onto the existing refuse keeps
+ * oracle `"none"` without expanding IntegrateRefuse.
+ */
+function overlayDecisionFromEnv(
+  env: { readonly [key: string]: string | undefined },
+  probe: NamedHardwareProbe | null,
+):
+  | { readonly ok: true; readonly decision: IntegrateDecision }
+  | { readonly ok: false; readonly reason: NamedPathRequestError } {
+  const fromEnv = integrateAtSetupFromEnv(env, probe);
+  if (!fromEnv.ok) return fromEnv;
+  return { ok: true, decision: fromEnv.decision ?? { ok: false, reason: "no-path" } };
 }
 
-/** First-boot conf consume. Overlay still does not open files. */
+/**
+ * First-boot argv consume. Overlay still does not open files.
+ * Unseal request is named from env (`ZETA_UNSEAL_REQUEST`):
+ * missing is unmeasured, not `auto`. Probe snapshot stays
+ * injected. Null is unmeasured, not present. `/dev/tpmrm0`
+ * still refuses at parse and is not a capture. Does not add
+ * the request to ESP conf.
+ */
+export function planSetupFromNamedBaoElfArgv(
+  restore: RestoredPkcs11PointerCapture,
+  argv: readonly string[],
+  env: { readonly [key: string]: string | undefined },
+  read: BaoElfRead,
+  probe: NamedHardwareProbe | null,
+): FirstBootBaoElfFromEnv {
+  const fromEnv = overlayDecisionFromEnv(env, probe);
+  if (!fromEnv.ok) return fromEnv;
+  const parsed = parseNamedBaoElfArgs(argv);
+  if (!parsed.ok) return parsed;
+  return { ok: true, plan: planSetupFromNamedBaoElf(fromEnv.decision, restore, parsed.ask, read) };
+}
+
+/**
+ * First-boot conf consume. Overlay still does not open files.
+ * Unseal request is named from env (`ZETA_UNSEAL_REQUEST`):
+ * missing is unmeasured, not `auto`. Probe snapshot stays
+ * injected. Null is unmeasured, not present. `/dev/tpmrm0`
+ * still refuses at parse and is not a capture. Does not add
+ * the request to the conf body.
+ */
 export function planSetupFromNamedBaoElfConf(
-  decision: IntegrateDecision,
   restore: RestoredPkcs11PointerCapture,
   conf: string,
+  env: { readonly [key: string]: string | undefined },
   read: BaoElfRead,
-): FirstBootBaoElfFromArgv {
+  probe: NamedHardwareProbe | null,
+): FirstBootBaoElfFromEnv {
+  const fromEnv = overlayDecisionFromEnv(env, probe);
+  if (!fromEnv.ok) return fromEnv;
   const parsed = parseFirstbootBaoElfConf(conf);
   if (!parsed.ok) return parsed;
-  return { ok: true, plan: planSetupFromNamedBaoElf(decision, restore, parsed.ask, read) };
+  return { ok: true, plan: planSetupFromNamedBaoElf(fromEnv.decision, restore, parsed.ask, read) };
 }
 
 /**
  * First-boot env consume after bash export. Overlay still
- * does not open files. Epoch is named: `installer-iso` does
- * not open `NIXOS_HOST_BAO` (that string is the live ISO's
- * bao). `installed-host` may. Injected `read` is required.
- * A refused env is not filled with `NIXOS_HOST_BAO` or a
- * `/mnt/...` path. tpmrm0 is still not an ask. `/mnt`
- * existing does not pick the epoch.
+ * does not open files. Epoch is named from env
+ * (`ZETA_BAO_ELF_EPOCH`): `installer-iso` does not open
+ * `NIXOS_HOST_BAO` (that string is the live ISO's bao).
+ * `installed-host` may. Unseal request is named from env
+ * (`ZETA_UNSEAL_REQUEST`): missing is unmeasured, not `auto`.
+ * Probe snapshot stays injected. Null is unmeasured, not
+ * present. `/dev/tpmrm0` still refuses at parse and is not
+ * a capture. A named ask without a named epoch refuses
+ * (`empty-epoch`). Injected `read` is required. A refused
+ * env is not filled with `NIXOS_HOST_BAO` or a `/mnt/...`
+ * path. tpmrm0 is still not an ask. `/mnt` existing does
+ * not pick the epoch.
  */
 export function planSetupFromNamedBaoElfEnv(
-  decision: IntegrateDecision,
   restore: RestoredPkcs11PointerCapture,
   env: { readonly [key: string]: string | undefined },
-  epoch: BaoElfEpoch,
   read: BaoElfRead,
-): FirstBootBaoElfFromArgv {
-  const parsed = consumeFirstbootBaoElfProcessEnv(env);
+  probe: NamedHardwareProbe | null,
+): FirstBootBaoElfFromEnv {
+  const fromEnv = overlayDecisionFromEnv(env, probe);
+  if (!fromEnv.ok) return fromEnv;
+  const parsed = consumeFirstbootBaoElfEnvWithEpoch(env);
   if (!parsed.ok) return parsed;
+  if (parsed.ask !== null && parsed.epoch === null) {
+    return { ok: false, reason: "empty-epoch" };
+  }
   const ask =
-    parsed.ask === null ? null : namedBaoElfAskAtEpoch(parsed.ask.site, parsed.ask.openedPath, epoch);
-  return { ok: true, plan: planSetupFromNamedBaoElf(decision, restore, ask, read) };
+    parsed.ask === null || parsed.epoch === null
+      ? null
+      : namedBaoElfAskAtEpoch(parsed.ask.site, parsed.ask.openedPath, parsed.epoch);
+  return { ok: true, plan: planSetupFromNamedBaoElf(fromEnv.decision, restore, ask, read) };
 }

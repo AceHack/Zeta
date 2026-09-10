@@ -384,16 +384,156 @@ describe("the CLI exits non-zero on a directory carrying the defect", () => {
 });
 
 // ═══════════════════════════════════════════════════════════════════════════
+// THE WRITE HALF -- rule 1W, and the stat/write pairing added to rule 3.
+//
+// Falsifiers for the gap measured 2026-09-09: all 23 open `js/file-system-race`
+// alerts carry a WRITE on the flagged line, and not one of the three original
+// rules named a single write API. Every fixture below is reconstructed from a
+// shape that was live in the tree at that measurement -- never copied from a
+// file that has since been fixed, because a fixed file cannot be evidence that
+// anything can fail.
+// ═══════════════════════════════════════════════════════════════════════════
+
+describe("check-then-write -- the destructive half", () => {
+  test("a never-clobber guard written as existsSync-then-write is refused", () => {
+    const src = 'if (existsSync(p)) throw new Error("would clobber");\nwriteFileSync(p, body);\n';
+    const found = analyzeSource(src, "f.ts");
+    expect(rules(found)).toEqual(["check-then-write"]);
+    expect(found[0]?.signature).toBe("existsSync(p)->writeFileSync(p)");
+  });
+
+  test("the remedy named for a write is `wx`, and NOT the read remedy", () => {
+    const found = analyzeSource("if (!existsSync(p)) { writeFileSync(p, body); }\n", "f.ts");
+    expect(found[0]?.fix).toContain('flag: "wx"');
+    // The read remedy would be actively WRONG here: deleting the check in front
+    // of a create removes the only thing standing between two concurrent
+    // writers and a silent overwrite. If the two messages ever collapse into
+    // one, this assertion is what says so.
+    expect(found[0]?.fix).not.toContain("Delete the check");
+  });
+
+  test("mkdirSync gets `recursive`, a DIFFERENT remedy from writeFileSync's", () => {
+    const found = analyzeSource("if (!existsSync(d)) { mkdirSync(d); }\n", "f.ts");
+    expect(rules(found)).toEqual(["check-then-write"]);
+    expect(found[0]?.fix).toContain("recursive: true");
+    expect(found[0]?.fix).not.toContain('flag: "wx"');
+  });
+
+  test("createWriteStream gets `flags: wx`, the stream spelling not the write one", () => {
+    const found = analyzeSource("if (!existsSync(p)) { createWriteStream(p); }\n", "f.ts");
+    expect(rules(found)).toEqual(["check-then-write"]);
+    expect(found[0]?.fix).toContain('flags: "wx"');
+  });
+
+  test("a write with no check on the SAME path is not a finding", () => {
+    // The rule has to be able to stay quiet, or it is measuring nothing.
+    const src = "writeFileSync(p, body);\nif (existsSync(o)) { readFileSync(o, 'utf8'); }\n";
+    expect(rules(analyzeSource(src, "f.ts"))).toEqual(["check-then-use"]);
+  });
+
+  test("a check on ONE path and a write to ANOTHER does not pair", () => {
+    expect(analyzeSource("if (!existsSync(a)) { writeFileSync(b, body); }\n", "f.ts")).toEqual([]);
+  });
+
+  test("`toctou-ok:` on the check line suppresses the write finding too", () => {
+    const src = "if (!existsSync(p)) { // toctou-ok: bootstrap is single-writer\nwriteFileSync(p, b);\n}\n";
+    expect(analyzeSource(src, "f.ts")).toEqual([]);
+  });
+
+  test("vocab/gen's read-or-default ternary stays the READ rule, not the write rule", () => {
+    // vocab/gen/Reify.ts:78, alert 190. Exactly one finding, and it is the read.
+    // Were rule 1W ever to claim this shape, the remedy printed would be `wx`
+    // for a call that creates nothing.
+    const src = 'const cur = existsSync(OUT) ? readFileSync(OUT, "utf8") : "";\n';
+    expect(rules(analyzeSource(src, "f.ts"))).toEqual(["check-then-use"]);
+  });
+});
+
+describe("check-then-write scope", () => {
+  test("a write AFTER the guard's block closes does not pair with it", () => {
+    // Found by mutation: deleting the `write.index >= scopeEnd` bound left every
+    // falsifier green. Without this fixture the scope check is decoration -- a
+    // guard in one function would pair with a write in the next one down.
+    const src = "function a() { if (!existsSync(p)) { return; } }\nfunction b() { writeFileSync(p, x); }\n";
+    expect(analyzeSource(src, "f.ts")).toEqual([]);
+  });
+
+  test("a write BEFORE the check does not pair with it", () => {
+    // Found by mutation: deleting the `write.index <= check.end` bound left
+    // every falsifier green. Order matters -- writing and then asking whether
+    // the path exists is not check-then-use, and reporting it would put the
+    // linter's name on a finding that is not the class it refuses.
+    const src = "writeFileSync(p, x);\nif (!existsSync(p)) { return; }\n";
+    expect(analyzeSource(src, "f.ts")).toEqual([]);
+  });
+
+  test("a write nested DEEPER inside the guard's block still pairs", () => {
+    // The other side of the same bound: generous downward, strict upward.
+    const src = "if (!existsSync(p)) { for (const x of xs) { writeFileSync(p, x); } }\n";
+    expect(rules(analyzeSource(src, "f.ts"))).toEqual(["check-then-write"]);
+  });
+});
+
+describe("rmdirSync, the omission beside rmSync", () => {
+  test("existsSync gating rmdirSync is refused, exactly as rmSync is", () => {
+    // `rmSync` was in the list and `rmdirSync` was not, which made the refusal
+    // depend on which of two spellings of the same operation the author reached
+    // for. A gate that one synonym passes and the other fails is not a gate.
+    const src = "if (existsSync(d)) { rmdirSync(d); }\n";
+    expect(rules(analyzeSource(src, "f.ts"))).toEqual(["check-then-use"]);
+  });
+});
+
+describe("stat and use on ONE line", () => {
+  test("a stat and a read of the same path on one line still pair", () => {
+    // The pairing is bounded by OFFSET, not by line number. A line-number
+    // identity test discards this genuine pair, and self-pairing is impossible
+    // anyway because `statSync` is in neither use list.
+    const src = 'const m = statSync(p).mode; const b = readFileSync(p, "utf8");\n';
+    const found = analyzeSource(src, "f.ts");
+    expect(rules(found)).toEqual(["stat-then-use"]);
+    expect(found[0]?.signature).toBe("statSync(p)->readFileSync(p)");
+  });
+});
+
+describe("stat-then-WRITE -- the shred bug", () => {
+  // tools/setup/persona-keys/teardown.ts:490, alert 296. A size read decides how
+  // many zero bytes get written back over a private key. `sizeOnly` waives a
+  // stat beside a READ, because the read returns the whole file whatever the
+  // size said. It must NOT waive one beside a WRITE, where the size decides how
+  // many bytes are destroyed and which file receives them.
+  const SHRED = "const size = statSync(path).size;\nif (size > 0) writeFileSync(path, Buffer.alloc(size, 0));\n";
+
+  test("a size-only stat beside a WRITE is reported", () => {
+    const found = analyzeSource(SHRED, "f.ts");
+    expect(rules(found)).toEqual(["stat-then-use"]);
+    expect(found[0]?.signature).toBe("statSync(path)->writeFileSync(path)");
+  });
+
+  test("the same size-only stat beside a READ stays waived", () => {
+    // The pre-existing judgement this change must not have broken. Had adding
+    // writes to rule 3 also un-waived reads, this goes red.
+    const src = "const size = statSync(path).size;\nconst body = readFileSync(path, 'utf8');\n";
+    expect(analyzeSource(src, "f.ts")).toEqual([]);
+  });
+});
+
+// ═══════════════════════════════════════════════════════════════════════════
 // THE REAL TREE
 // ═══════════════════════════════════════════════════════════════════════════
 
-describe("src/Core.TypeScript, against the committed baseline", () => {
+describe("the WHOLE REPOSITORY, against the committed baseline", () => {
+  // Scope widened 2026-09-09 from `src/Core.TypeScript` to `.`. The narrow root
+  // was the second half of this lint's blindness to its own CodeQL query: 8 of
+  // the 23 open `js/file-system-race` alerts sat in four directories the walk
+  // never entered (vocab/gen, tools/setup/persona-keys, demo/identity-dla-site,
+  // src/Renderers/website). No amount of rule-widening could have reached them.
   test("no NEW check-then-use race, and nothing unlexable or unreadable", () => {
     const code = main([
-      "src/Core.TypeScript",
+      ".",
       "--quiet",
       "--min-files",
-      "1500",
+      "3400",
       "--baseline",
       "src/Core.TypeScript/hygiene/lint-check-then-use-file-races.baseline.json",
     ]);

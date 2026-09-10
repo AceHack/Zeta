@@ -1,0 +1,125 @@
+{
+  "BeforeImplementationCommit": "bd229f56aafb9a387285f59b198bb4b1bc6d5c2e",
+  "RepairedImplementationCommit": "e2a8f7fb23b57aba614da2499273f679bf0935ad",
+  "TestSourceCommit": "e2a8f7fb23b57aba614da2499273f679bf0935ad",
+  "TargetedAttempts": [
+    {
+      "Attempt": 1,
+      "Exit": 1,
+      "Observed": "Compiler exited139; no tests ran"
+    },
+    {
+      "Attempt": 2,
+      "Exit": 1,
+      "Passed": 9,
+      "Failed": 7,
+      "OriginalImplementationUnchanged": true
+    },
+    {
+      "Attempt": 3,
+      "Exit": 0,
+      "Passed": 16,
+      "Failed": 0,
+      "BoundaryGridCombinations": 512
+    }
+  ],
+  "InitialFullGate": {
+    "PassedChecks": 16,
+    "FailedChecks": [
+      "dotnet build",
+      "dotnet test"
+    ],
+    "Observed": "Compiler exit139 and test process exit139; no passing full-gate claim"
+  },
+  "ArtifactCount": 11,
+  "Artifacts": [
+    {
+      "File": "privacy-budget-regressions-before.log.gz",
+      "Bytes": 3773,
+      "Sha256": "58cfb81ede072d8f1850d6622214dd7975797cc11979a199db1667c65b6fb1f5",
+      "StoredBytes": 557,
+      "StoredSha256": "ac5f36d6b6c4c8f6b2d04cd36676df0e1171ad781948d62e2864a0bba261a6f5",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "privacy-budget-regressions-before-retry.log.gz",
+      "Bytes": 11218,
+      "Sha256": "d6a07ce533d656e9b33d6930e8224632e622447338c6c86cde645d9ae9f31ec8",
+      "StoredBytes": 1265,
+      "StoredSha256": "71b162f7121d82f44e1e1cf3eff547356dbde1cafc84d4728c81fa1afe3a1d58",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "privacy-budget-regressions-after.log.gz",
+      "Bytes": 4152,
+      "Sha256": "4a860b5555b6e2be1fb0adbb502166a6ca7cbf3908e9d9c101175e1fb470c8d3",
+      "StoredBytes": 614,
+      "StoredSha256": "f70d0fcef5076bfbdf930b8218ed1917aeaa0c372786c79066f05b083208042f",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "privacy-and-compiled-full-preflight-1.log.gz",
+      "Bytes": 17892,
+      "Sha256": "2585e27fb90dd262a21ce6f0ba2176e4124a00cdd26360b9b309ccbeac4c8889",
+      "StoredBytes": 1970,
+      "StoredSha256": "03914c6e7e3297ebbcc2b468cd63bac596a186f5765490c01c60c44d063f2cc6",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "privacy-budget-existing-contract-probe.fsx.gz",
+      "Bytes": 534,
+      "Sha256": "f69c88c689f1464d6892eeeb87702d605a76054148eeda4abe22f3354ed315a7",
+      "StoredBytes": 331,
+      "StoredSha256": "4fa2aeebb279e67518714f36544973aa5a3154b0b03ea675f09c60eb29f1e52d",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "privacy-budget-existing-contract-probe.log.gz",
+      "Bytes": 465,
+      "Sha256": "2ddce9d4b57df1c12862bd868a6f2d5ae68fc9ef1ade731ee81b8713698beefa",
+      "StoredBytes": 306,
+      "StoredSha256": "e24a9fe6bf7d365a3ae0ace95ff56c1cdfa219b768531abfbeee86d929cf8b4f",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "before-PrivacyEconomy.fs.gz",
+      "Bytes": 6829,
+      "Sha256": "c30a89a8f60cb407458a28f2cda628f2152e30cfa4961946befc2e98135eb9a4",
+      "StoredBytes": 2761,
+      "StoredSha256": "36087f42ce2e22ea1a76eb35ab1d72ca5c20a6c2adf819c8cc143e763107e5de",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "after-PrivacyEconomy.fs.gz",
+      "Bytes": 7279,
+      "Sha256": "5087fa8c89328ddc82691924870cdeef255637ade092e7c4c901c8693481002c",
+      "StoredBytes": 2968,
+      "StoredSha256": "383b72696c4fec31972634db2473a04de8772db81793add36ff63912077b36d7",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "regression-tests.fs.gz",
+      "Bytes": 5977,
+      "Sha256": "e10fd07b05f67191ea717ffef56ee016daaeaee64f73008e4d8547b940d0957e",
+      "StoredBytes": 1903,
+      "StoredSha256": "d1c9bc337f327bb2066c6576a8c221cc48b2cd46e2251cab3148256db768989c",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "selected-os-diagnostics.json.gz",
+      "Bytes": 5674,
+      "Sha256": "a68a37b3b4b303ee6fe287b801a4aedc299f4356159a4495104dd126a05cdc78",
+      "StoredBytes": 1171,
+      "StoredSha256": "947f32c999f4a67c47f2c3437c34c5cf8d0c794832005ac84897d14a50d05fa0",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "retainer.py.gz",
+      "Bytes": 4978,
+      "Sha256": "6ba5b373ad99ef15a89d4b921ab42cd54abedd28165eb276f0682293eae28950",
+      "StoredBytes": 2370,
+      "StoredSha256": "7884aa72abdf12ae5591c35d6613ef64c043fd29d52649d8d9e26cf6fe55c587",
+      "Encoding": "gzip"
+    }
+  ]
+}

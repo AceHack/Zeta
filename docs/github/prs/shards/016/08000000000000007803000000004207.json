@@ -1,0 +1,12 @@
+{
+  "pr_number": 16903,
+  "archive_path": "docs/history/pr-reviews/PR-16903-feat-creds-iso-bun-consume-reports-unmeasured-probe-tpmrm0-is-not-a-probe.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-07T01:53:23.163Z",
+  "schema_version": "v1",
+  "commit_sha": "e5202ffb574c067b94834477507c7959f61ed421",
+  "title": "feat(creds): ISO bun consume reports unmeasured probe; tpmrm0 is not a probe",
+  "state": "MERGED",
+  "merged_at": "2026-09-07T01:52:43Z",
+  "head_ref": "cursor/iso-bun-probe-null-27c5"
+}

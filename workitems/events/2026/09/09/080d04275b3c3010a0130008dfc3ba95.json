@@ -1,0 +1,14 @@
+{
+  "id": "080d04275b3c3010a0130008dfc3ba95",
+  "at": "2026-09-09T06:46:55.110Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M22EPSW4087G0R001DARBF8",
+    "type": "task",
+    "title": "PR12 BlockCas PutMany crash on second freeze keeps the first",
+    "slug": "pr12-blockcas-putmany-crash-on-second-freeze-keeps-the-first",
+    "priority": "P2",
+    "filename": "081M22EPSW4087G0R001DARBF8-pr12-blockcas-putmany-crash-on-second-freeze-keeps-the-first.md"
+  }
+}

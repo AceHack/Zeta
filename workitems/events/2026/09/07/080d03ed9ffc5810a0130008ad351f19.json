@@ -1,0 +1,14 @@
+{
+  "id": "080d03ed9ffc5810a0130008ad351f19",
+  "at": "2026-09-07T21:09:03.499Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1YV7ZWA087G0R001AWNBF7",
+    "type": "task",
+    "title": "FUSE dispatcher path-contextual dotdot merge gate",
+    "slug": "fuse-dispatcher-path-contextual-dotdot-merge-gate",
+    "priority": "P2",
+    "filename": "081M1YV7ZWA087G0R001AWNBF7-fuse-dispatcher-path-contextual-dotdot-merge-gate.md"
+  }
+}

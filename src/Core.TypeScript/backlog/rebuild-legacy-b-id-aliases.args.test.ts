@@ -26,7 +26,17 @@
 
 import { describe, expect, test } from "bun:test";
 import { spawnSync } from "node:child_process";
-import { mkdtempSync, mkdirSync, readdirSync, readFileSync, rmSync, statSync, writeFileSync } from "node:fs";
+import {
+  closeSync,
+  fstatSync,
+  mkdirSync,
+  mkdtempSync,
+  openSync,
+  readdirSync,
+  readFileSync,
+  rmSync,
+  writeFileSync,
+} from "node:fs";
 import { tmpdir } from "node:os";
 import { join, relative } from "node:path";
 
@@ -66,10 +76,19 @@ function snapshot(root: string): Snapshot {
       const full = join(dir, dirent.name);
       if (dirent.isDirectory()) walk(full);
       else if (dirent.isFile()) {
-        out.set(
-          relative(root, full),
-          `${statSync(full).mtimeMs}\u0000${readFileSync(full, "utf8")}`,
-        );
+        // BOTH FACTS FROM ONE HANDLE. `statSync(full).mtimeMs` and then
+        // `readFileSync(full)` resolve the name twice, so the mtime and the
+        // bytes can describe two different objects -- which in a SNAPSHOT
+        // comparison is the one defect that makes the assertion lie in both
+        // directions (a false "unchanged" and a false "changed"). CodeQL
+        // `js/file-system-race`. One `open`, one inode, both answers.
+        let fd: number | undefined;
+        try {
+          fd = openSync(full, "r");
+          out.set(relative(root, full), `${String(fstatSync(fd).mtimeMs)}\u0000${readFileSync(fd, "utf8")}`);
+        } finally {
+          if (fd !== undefined) closeSync(fd);
+        }
       }
     }
   }

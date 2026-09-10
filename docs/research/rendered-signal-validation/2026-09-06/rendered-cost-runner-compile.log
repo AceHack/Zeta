@@ -1,0 +1,1 @@
+usage: measure-rendered-signal-inference.fsx MODELS.json OUTPUT.json

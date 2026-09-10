@@ -1,0 +1,12 @@
+{
+  "pr_number": 16884,
+  "archive_path": "docs/history/pr-reviews/PR-16884-feat-creds-read-named-unseal-request-from-env-at-overlay-join.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-06T23:12:29.832Z",
+  "schema_version": "v1",
+  "commit_sha": "e172c1945548dfa8f9edc7de0429ac937dfcc700",
+  "title": "feat(creds): Read named unseal request from env at overlay join",
+  "state": "MERGED",
+  "merged_at": "2026-09-06T23:11:51Z",
+  "head_ref": "cursor/overlay-env-unseal-request-27c5"
+}

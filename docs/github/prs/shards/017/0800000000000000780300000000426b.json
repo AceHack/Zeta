@@ -1,0 +1,15 @@
+{
+  "pr_number": 17003,
+  "archive_path": "docs/history/pr-reviews/PR-17003-feat-cluster-openbao-shamir-unseal-adapters-the-payload-s-other-half.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7rpp7q",
+    "thread:PRRT_kwDOSF9kNM6gEIJl"
+  ],
+  "fetched_at": "2026-09-08T03:19:32.864Z",
+  "schema_version": "v1",
+  "commit_sha": "2165e7472aadd8b981106db79ba3e425d5299629",
+  "title": "feat(cluster): OpenBao Shamir unseal adapters — the payload's other half",
+  "state": "MERGED",
+  "merged_at": "2026-09-08T03:18:53Z",
+  "head_ref": "shadow/openbao-shamir-unseal-sidecar"
+}

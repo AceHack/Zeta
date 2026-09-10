@@ -1,0 +1,14 @@
+{
+  "id": "080d040e260a3810a01300086649e037",
+  "at": "2026-09-08T16:05:50.535Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M20W9GA4087G0R0015YDSNQ",
+    "type": "task",
+    "title": "PR12 remap-epoch crash keeps prior ContentId readable",
+    "slug": "pr12-remap-epoch-crash-keeps-prior-contentid-readable",
+    "priority": "P2",
+    "filename": "081M20W9GA4087G0R0015YDSNQ-pr12-remap-epoch-crash-keeps-prior-contentid-readable.md"
+  }
+}

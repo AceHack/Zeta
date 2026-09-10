@@ -1,0 +1,36 @@
+from pathlib import Path
+p=Path('/Users/acehack/Documents/Blender/AceHack-Xenaa/scripts/build_characters.py');s=p.read_text()
+s=s.replace("0,.46,texture=180)","0,.43)").replace("0,.40,texture=190)","0,.41)")
+s=s.replace("W=.077;H=.029", "W=.066;H=.023")
+s=s.replace("(.025,.008,.025),irism", "(.021,.008,.021),irism")
+s=s.replace("(.011,.004,.013),pupil", "(.010,.004,.012),pupil")
+s=s.replace("- .226", "- .226")
+s=s.replace("u*w,-.226-.018*sin(pi*t)","u*w,-.267-.018*sin(pi*t)")
+s=s.replace("[(x,-.23,hz-.17", "[(x,-.27,hz-.17")
+s=s.replace("(s*.034,-.327,hz-.085)","(s*.031,-.358,hz-.085)")
+s=s.replace("z=hz+.18+.07*(1-(x/.24)**2)","z=hz+.235+.08*(1-(x/.25)**2)")
+s=s.replace("(x-.04,-.16,hz+.40),(x-.03,.02,hz+.415)","(x-.04,-.16,hz+.34+.055*(1-(x/.25)**2)),(x-.03,.02,hz+.355+.07*(1-(x/.25)**2))")
+s=s.replace("# Shaped lip ribbons;", """# Nasal bridge and tip meet the facial surface; soften the tip with skin subsurface.
+ uv('Nose • sculpted tip',(0,-.325,hz-.054),(.041,.035,.037),sk,seg=40,rings=24)
+ for sign in [-1,1]:uv('Nose • alar wing',(sign*.032,-.319,hz-.078),(.024,.026,.019),sk,seg=32,rings=20)
+ # Shaped lip ribbons;""")
+start=s.index('def tattoo_arm(a,b):');end=s.index('\ndef character(',start)
+s=s[:start]+'''def tattoo_arm(a,b):
+ a=Vector(a);b=Vector(b);d=b-a;axis=d.normalized();front=Vector((0,-1,0));front=(front-axis*front.dot(axis)).normalized();u=front.cross(axis).normalized()
+ upper=(a.z>2.9);ra,rb=(.111,.085) if upper else (.10,.064)
+ def surface(t,angle):
+  radius=(ra*(1-t)+rb*t)*(1+.06*sin(pi*t))+.002
+  return a+d*t+radius*(front*cos(angle)+u*sin(angle))
+ for k in range(2):
+  phase=-.38+k*.78
+  pts=[surface(.07+.85*j/20,phase+.23*sin(j/20*7)) for j in range(21)]
+  curve('Tattoo • ink vine',pts,tattoo,.0018)
+  for j in range(5):
+   t=.13+j*.15;angle=phase+.23*sin((t-.07)/.85*7);side=(-1 if j%2 else 1)
+   leaf=[surface(t,angle),surface(t+.018,angle+side*.23),surface(t+.09,angle+side*.40),surface(t+.065,angle+side*.06)]
+   mesh('Tattoo • skin bound leaf',leaf,[(0,1,2,3)],tattoo,solid=.0005)
+   if k==0:curve('Tattoo • luminous vein',[leaf[0],surface(t+.044,angle+side*.20),leaf[2]],cyan,.0015)
+''' + s[end:]
+s=s.replace('renders/duo-refined.png','renders/duo-final-draft.png')
+p.write_text(s)
+import ast;ast.parse(s)

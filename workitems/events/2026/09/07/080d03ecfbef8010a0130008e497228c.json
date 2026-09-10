@@ -1,0 +1,14 @@
+{
+  "id": "080d03ecfbef8010a0130008e497228c",
+  "at": "2026-09-07T20:46:39.600Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1YSYZFG087G0R001TNK4ET",
+    "type": "task",
+    "title": "FUSE dispatcher truncate via mutbuf",
+    "slug": "fuse-dispatcher-truncate-via-mutbuf",
+    "priority": "P2",
+    "filename": "081M1YSYZFG087G0R001TNK4ET-fuse-dispatcher-truncate-via-mutbuf.md"
+  }
+}

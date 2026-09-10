@@ -125,6 +125,15 @@ prompts in order:
    On opt-out, the SPECIFIC reason is echoed (no generic
    `set ZETA_CREDS_*=1 to enable` message anymore).
 
+The seven prompts above are the **interactive override** path
+(`zeta-install.sh` on a TTY without `ZETA_AUTO_CONFIRM=WIPE`).
+First-boot auto-flow (Step 4) exports `ZETA_AUTO_CONFIRM=WIPE` and
+does **not** persist a cred-blob unless zflash preseeded
+`/mnt/boot/zeta-creds.enc` or QEMU supplied
+`/zeta-qemu-creds-passphrase` after Step 6.56. Otherwise the picker
+writes `/mnt/etc/zeta/CREDS-PERSISTENCE-SKIPPED` and
+`zeta-creds-restore` has nothing to unlock.
+
 ### Subsequent-boot credential restore (081KSKBP80008QG0R002XBRGN8 since 2026-05-27)
 
 Every boot of the installed system AFTER the first install

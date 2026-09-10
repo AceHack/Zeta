@@ -1,0 +1,12 @@
+{
+  "pr_number": 17165,
+  "archive_path": "docs/history/pr-reviews/PR-17165-fix-codegen-retire-the-identity-replacement-chains-and-the-void-miscompile-they-.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-09T19:06:45.147Z",
+  "schema_version": "v1",
+  "commit_sha": "ffddc47951f0d2d6bba537c0ca64517636bc96a6",
+  "title": "fix(codegen): retire the identity-replacement chains, and the void miscompile they hid",
+  "state": "MERGED",
+  "merged_at": "2026-09-09T19:02:37Z",
+  "head_ref": "codeql-identity-replacement-typemap-void"
+}

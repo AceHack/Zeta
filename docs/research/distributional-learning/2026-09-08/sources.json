@@ -1,0 +1,175 @@
+{
+  "ObservedAtUtc": "2026-09-08T00:26:19.371481+00:00",
+  "SourceCommit": "cb4514e06b61fcebb2600ea8ea7f11abd08c8bcd",
+  "SourceFiles": [
+    {
+      "File": "src/Bayesian/Message.fs",
+      "Bytes": 15816,
+      "Sha256": "983256b985671acfb2c136b6a82a614e53ebb87b7c9cda04fa4540e3c7c2eee7"
+    },
+    {
+      "File": "src/Bayesian/FactorGraph.fs",
+      "Bytes": 11171,
+      "Sha256": "86ebef6ba9abd29499d40a15ac0727ff15cdb4dc72fe247a9c744ca6123df6f7"
+    },
+    {
+      "File": "src/Bayesian/Ep.fs",
+      "Bytes": 7330,
+      "Sha256": "2d64ccbafc6c7f54ad93232f16f91ef56af64e604a65159e1a704129a7012450"
+    },
+    {
+      "File": "src/Bayesian/SignedProbitEp.fs",
+      "Bytes": 10630,
+      "Sha256": "b6dcef2de1f15b73d78511c876950fd726cc2590db6de6b298ad37b009af814c"
+    },
+    {
+      "File": "src/Bayesian/LocalConsensus.fs",
+      "Bytes": 4741,
+      "Sha256": "b059e72a0de84fb31fbc0115fb22b9269be198c46b7ebdb4b591ba5cb01da6aa"
+    },
+    {
+      "File": "src/Bayesian/QuantumFusion.fs",
+      "Bytes": 17841,
+      "Sha256": "cc0ce69916f35f2b76f3c7d2f74e82bae131f07044b0e00b4d05d019a3d70e4f"
+    },
+    {
+      "File": "src/Core/Sppf.fs",
+      "Bytes": 17599,
+      "Sha256": "b3b90f40d77f68d3554fe6a5277da42d0715a64c240e2fc8e59c4adcb4f3703c"
+    },
+    {
+      "File": "src/Core/PcfgEm.fs",
+      "Bytes": 3860,
+      "Sha256": "75ac609c7196b42c5132a610c25202e002cffceb65d5eaf927ca685cc69b31c6"
+    },
+    {
+      "File": "src/Core/ParseSoft.fs",
+      "Bytes": 6252,
+      "Sha256": "2222a48800ad4bd2543f120b9596e6c60bb69a72ef3b3a774c5f502608f26641"
+    },
+    {
+      "File": "src/Core/SoftValue.fs",
+      "Bytes": 45906,
+      "Sha256": "9beb3d0f397e0628915a29380d3ebfd0e8bdfc52a2a47758624ce8ecd22aa454"
+    },
+    {
+      "File": "src/Core/PredictionInference.fs",
+      "Bytes": 7733,
+      "Sha256": "a5e766d374440f6147989b2b643bda90361570f25d413e3fb3e9f30a0f32ba6f"
+    },
+    {
+      "File": "src/Core/PredictionScheduler.fs",
+      "Bytes": 6735,
+      "Sha256": "2b4f331cb4fa4781625bf372c2a3118062192c24c9dfdbcd25204e5e3ed424a2"
+    },
+    {
+      "File": "src/Core/Vision.fs",
+      "Bytes": 20441,
+      "Sha256": "59e1973bced7024e47ea1ead968b50be8701fd4ed45689914d41dab10a5b60ad"
+    },
+    {
+      "File": "src/Core/VisionAttention.fs",
+      "Bytes": 7199,
+      "Sha256": "eda8b208c4581e83ccb483deb59a21a6d566dae98c0eb323c8e4eb4a68a8a317"
+    },
+    {
+      "File": "src/Core/FerryThrottler.fs",
+      "Bytes": 50229,
+      "Sha256": "119bcb1b65bf84f6b54fe823a6953125b3a08c623774c5bab92182d967ca066e"
+    },
+    {
+      "File": "src/Core/SoftThrottle.fs",
+      "Bytes": 14399,
+      "Sha256": "d8340252b2b800195b2842ae582553be94bed0e1683a8e2133cea01f72445230"
+    },
+    {
+      "File": "src/Core/SoftScheduler.fs",
+      "Bytes": 18533,
+      "Sha256": "02272c58557bc0b9a4b629016f72e742257fb191c0ca7f3920be8be949d64ce7"
+    },
+    {
+      "File": "src/Core/ComplexityRegistry.fs",
+      "Bytes": 19385,
+      "Sha256": "e986b3ecdc944e914b493e9ec4f6f5829dd737e72fba510b121f0a8f83ee9466"
+    },
+    {
+      "File": "src/Core/SoftChip8Scheduler.fs",
+      "Bytes": 7132,
+      "Sha256": "a65aed4217423a0ffe1135319eea27e45bd868a67b0a60ec217d6faada1ffb23"
+    },
+    {
+      "File": "src/Core/SoftChip8.fs",
+      "Bytes": 5437,
+      "Sha256": "b36738b1b091473201e4974244a18b68da8b2909e1cf49651e36048b2202f774"
+    },
+    {
+      "File": "src/Core/ComputeReceipt.fs",
+      "Bytes": 6737,
+      "Sha256": "39a6d2aafa5af295607c38e7b77acf3e9e50279b467308ca7930b256343da288"
+    },
+    {
+      "File": "src/Core/PrivacyEconomy.fs",
+      "Bytes": 6829,
+      "Sha256": "c30a89a8f60cb407458a28f2cda628f2152e30cfa4961946befc2e98135eb9a4"
+    },
+    {
+      "File": "src/Core/PrivacyLedger.fs",
+      "Bytes": 10081,
+      "Sha256": "0476ee21408f00f7907f08f2c95d18295cf2bbedd5132ecf0eb5158a0a5d0101"
+    },
+    {
+      "File": "src/Core/CoEmpowerField.fs",
+      "Bytes": 8813,
+      "Sha256": "d4c00cffecee8d22114fee27701a42f7ac1820f9d8d148bcd8592d3766e180d9"
+    },
+    {
+      "File": "src/Core/Ctm.fs",
+      "Bytes": 24281,
+      "Sha256": "fa8eb0627c82fd9fadb1c5aff67f1883af2adac21f40fe67ea044c2e596d1da2"
+    },
+    {
+      "File": "src/Core.Lean4/Lean4/CostRecurrence.lean",
+      "Bytes": 11330,
+      "Sha256": "64b871c7b859aafeef5b6c6a37db343b9c26da321083153053eca468d94c7908"
+    }
+  ],
+  "SuppliedInputs": [
+    {
+      "Name": "Fuchs supplied transcript",
+      "Bytes": 44291,
+      "Sha256": "9c5606a1de711831e160389af1c279e5502ac7b35244fc0297280fe03d5800d9",
+      "FullTextInRepository": false,
+      "Source": "user-supplied attachment"
+    },
+    {
+      "Name": "User-identified Otto writeup and command transcript",
+      "Bytes": 7164,
+      "Sha256": "90fd01f86a3cebc9094b4bce9fea285eea20ee1af07f99deeef4814970c9a2ce",
+      "FullTextInRepository": false,
+      "Source": "user-supplied attachment"
+    }
+  ],
+  "ProbeArtifacts": [
+    {
+      "File": "privacy-budget-existing-contract-probe.fsx.gz",
+      "Bytes": 534,
+      "Sha256": "f69c88c689f1464d6892eeeb87702d605a76054148eeda4abe22f3354ed315a7",
+      "Encoding": "gzip",
+      "StoredBytes": 331,
+      "StoredSha256": "4fa2aeebb279e67518714f36544973aa5a3154b0b03ea675f09c60eb29f1e52d"
+    },
+    {
+      "File": "privacy-budget-existing-contract-probe.log.gz",
+      "Bytes": 465,
+      "Sha256": "2ddce9d4b57df1c12862bd868a6f2d5ae68fc9ef1ade731ee81b8713698beefa",
+      "Encoding": "gzip",
+      "StoredBytes": 306,
+      "StoredSha256": "e24a9fe6bf7d365a3ae0ace95ff56c1cdfa219b768531abfbeee86d929cf8b4f"
+    }
+  ],
+  "ProbeScope": "Three actual calls through source-loaded PrivacyEconomy.reward in dotnet fsi; no training, native study launch or performance measurement",
+  "TalkFetch": "web open failed; user-supplied transcript read",
+  "FerryCommit": "c1c94ebd61dd02363a0149c7d37e9cfb123e2316",
+  "FerryPR": 16993,
+  "FerryStateAtInitialRead": "OPEN"
+}

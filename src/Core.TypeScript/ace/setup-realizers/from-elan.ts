@@ -3,6 +3,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { parseMechanismManifest } from "../setup-manifest.ts";
 import { curlFetchToFile, verifySha256File } from "./curl-fetch.ts";
+import { resolvePin, unhashedInstallNotice } from "./unhashed-pin.ts";
 import {
   commandOnPath,
   finishResult,
@@ -68,10 +69,15 @@ export const realizeFromElan: SetupRealizer = async (ctx) => {
 
   const name = row.tokens[0] ?? "elan";
   const elanInitUrl = row.tokens[1];
-  const sha256 = row.attrs.sha256;
-  if (elanInitUrl === undefined || sha256 === undefined) {
-    throw new Error("from-elan: manifest row must include URL and sha256=");
+  if (elanInitUrl === undefined) {
+    throw new Error("from-elan: manifest row must include an installer URL");
   }
+  // UNHASHED IS A DECLARED CLASS HERE TOO (081M25Z29W4087G0R002Y0Q1MG). This used to be a bare
+  // `sha256 === undefined` refusal with no way past it, which is what made "not all dependencies
+  // have a stable sha" a wall rather than a case. `resolvePin` keeps the refusal for a row that
+  // says NOTHING and adds the two spellings that say something; it is the same vocabulary
+  // `from-url` uses, in one place, so this mechanism cannot drift into a dialect of its own.
+  const pin = resolvePin("from-elan", name, elanInitUrl, row.attrs);
 
   if (!commandOnPath("elan")) {
     ctx.log(`↓ from-elan: installing ${name} (Lean 4 toolchain manager)...`);
@@ -82,7 +88,13 @@ export const realizeFromElan: SetupRealizer = async (ctx) => {
       const installer = join(tmpDir, "elan-init.sh");
       try {
         await curlFetchToFile(installer, elanInitUrl);
-        verifySha256File(installer, sha256);
+        // An unhashed install must SAY it is one. Executing a downloaded shell script with no
+        // digest is the single most consequential thing this mechanism does, so the notice is a
+        // warning rather than a log line: it survives a quiet run and lands where an operator
+        // reading for problems will see it.
+        const notice = unhashedInstallNotice(pin, name, elanInitUrl);
+        if (notice !== null) ctx.warn(notice);
+        if (pin.kind === "digest") verifySha256File(installer, pin.sha256);
         await runElanInitWithRetry(ctx, installer);
       } finally {
         try {

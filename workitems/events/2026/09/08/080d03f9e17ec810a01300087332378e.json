@@ -1,0 +1,14 @@
+{
+  "id": "080d03f9e17ec810a01300087332378e",
+  "at": "2026-09-08T04:17:25.977Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1ZKRBYR087G0R003BAFQT4",
+    "type": "task",
+    "title": "StateSpace counts what it prunes: the first erasure meter",
+    "slug": "statespace-counts-what-it-prunes-the-first-erasure-meter",
+    "priority": "P2",
+    "filename": "081M1ZKRBYR087G0R003BAFQT4-statespace-counts-what-it-prunes-the-first-erasure-meter.md"
+  }
+}

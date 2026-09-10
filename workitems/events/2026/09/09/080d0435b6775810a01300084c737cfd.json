@@ -1,0 +1,14 @@
+{
+  "id": "080d0435b6775810a01300084c737cfd",
+  "at": "2026-09-09T15:08:42.603Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M23BDKQA087G0R001QEFR2E",
+    "type": "task",
+    "title": "D10 freeze intent and commit write CBOR without DynamicValue",
+    "slug": "d10-freeze-intent-and-commit-write-cbor-without-dynamicvalue",
+    "priority": "P2",
+    "filename": "081M23BDKQA087G0R001QEFR2E-d10-freeze-intent-and-commit-write-cbor-without-dynamicvalue.md"
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 17166,
+  "archive_path": "docs/history/pr-reviews/PR-17166-feat-081m23nt5vx087g0r000kafe45-ace-refresh-pin-and-refresh-are-one-mechanism.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-09T19:01:35.745Z",
+  "schema_version": "v1",
+  "commit_sha": "8193d58ec05d79b0345e363c5292197240008703",
+  "title": "feat(081M23NT5VX087G0R000KAFE45): ace refresh — pin and refresh are one mechanism",
+  "state": "MERGED",
+  "merged_at": "2026-09-09T19:00:48Z",
+  "head_ref": "agent/ace-refresh-pinned-deps-081M23NT5VX087G0R000KAFE45"
+}

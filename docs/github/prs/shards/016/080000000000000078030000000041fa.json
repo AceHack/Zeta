@@ -1,0 +1,12 @@
+{
+  "pr_number": 16890,
+  "archive_path": "docs/history/pr-reviews/PR-16890-feat-081m1whv7kd087g0r001cntj1m-unlinkfile-tombstone-persists-across-reopen.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-07T00:07:38.020Z",
+  "schema_version": "v1",
+  "commit_sha": "cb6ab68e0f6833edcfc46a3b017731acaab1ccf8",
+  "title": "feat(081M1WHV7KD087G0R001CNTJ1M): unlinkFile tombstone persists across reopen",
+  "state": "MERGED",
+  "merged_at": "2026-09-07T00:07:03Z",
+  "head_ref": "feat/zetafs-unlink-tombstone"
+}

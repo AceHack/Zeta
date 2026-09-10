@@ -1,0 +1,14 @@
+{
+  "id": "080d042c1fc3c010a0130008b6e1d792",
+  "at": "2026-09-09T09:33:33.688Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M22R7Y3Q087G0R003SY5869",
+    "type": "bug",
+    "title": "workflow token permissions: one undeclared block, two redundant top-level grants, one unexercised write scope",
+    "slug": "workflow-token-permissions-one-undeclared-block-two-redundan",
+    "priority": "P2",
+    "filename": "081M22R7Y3Q087G0R003SY5869-workflow-token-permissions-one-undeclared-block-two-redundan.md"
+  }
+}

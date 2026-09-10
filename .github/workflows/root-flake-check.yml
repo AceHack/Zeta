@@ -53,7 +53,6 @@ on:
       - "flake.nix"
       - "flake.lock"
       - "infra/nix-darwin/**"
-      - "infra/nixos/**"
       - ".github/workflows/root-flake-check.yml"
   push:
     branches: [main]
@@ -61,7 +60,6 @@ on:
       - "flake.nix"
       - "flake.lock"
       - "infra/nix-darwin/**"
-      - "infra/nixos/**"
   workflow_dispatch: {}
 
 permissions:
@@ -138,15 +136,21 @@ jobs:
           # Roster substrings chosen to appear under BOTH output formats:
           # upstream prints `checking flake output 'darwinConfigurations'`,
           # Determinate prints `✅ darwinConfigurations.zeta-mac`.
+          # ROSTER NARROWED 2026-09-07 (081M00QCHWA087G0R000GKKRXD), which this step
+          # requires be a reviewed diff rather than a silent omission.
+          # `nixosConfigurations.control-plane` left the roster because this flake no
+          # longer declares ANY machines — they live in full-ai-cluster/flake.nix, which
+          # has its own `nix flake check --all-systems` lane. `packages` replaces it so
+          # the roster still names three outputs and cannot shrink to nothing unnoticed.
           missing=""
-          for want in darwinConfigurations nixosConfigurations.control-plane devShells; do
+          for want in darwinConfigurations devShells packages; do
             grep -q "$want" /tmp/flake-check.log || missing="$missing $want"
           done
           if [ -n "$missing" ]; then
             echo "::error title=Root flake check coverage narrowed::expected outputs were not evaluated:$missing — the lane is greener than its coverage. If this omission is intentional, change the expected roster in this step so the narrowing is a reviewed diff."
             exit 1
           fi
-          echo "coverage roster present: darwinConfigurations, nixosConfigurations, devShells"
+          echo "coverage roster present: darwinConfigurations, devShells, packages"
 
       - name: Prove the lane can fail, on THIS runner, for the darwin path
         # NAMING THE ROSTER IS NOT MEASURING THE DEPTH. The step above proves

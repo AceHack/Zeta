@@ -1,0 +1,12 @@
+{
+  "pr_number": 17035,
+  "archive_path": "docs/history/pr-reviews/PR-17035-feat-081m1zhz7ew087g0r00006h4bk-cut-freeze-storm-alloc-for-d10.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-08T04:16:22.907Z",
+  "schema_version": "v1",
+  "commit_sha": "95e4154baadddd019ce4eabbee5c18352da7b87d",
+  "title": "feat(081M1ZHZ7EW087G0R00006H4BK): cut freeze-storm alloc for D10",
+  "state": "MERGED",
+  "merged_at": "2026-09-08T04:15:41Z",
+  "head_ref": "feat/zetadb-d10-freeze-alloc"
+}

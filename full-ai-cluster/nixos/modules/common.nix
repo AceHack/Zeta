@@ -402,6 +402,35 @@
     # P2 fix (PR #5388 Copilot review): comment now correctly notes
     # services.samba is NOT configured in this PR; lives in #5387.
     samba
+
+    # ── Byte-lock toolchain (DLA 9-substrate byte-lock) ─────────────────────────
+    # Aaron 2026-09-07, deciding this rather than the alternative on file: "we DO
+    # want to be able to run the whole toolchain on the real hardware and cluster,
+    # so we don't need to exclude." The alternative was to record that cluster
+    # hosts do not need it — measured true today (bytelock.yml runs only on
+    # ubuntu/macOS/Windows GitHub runners, installing wabt via apt/brew/choco) and
+    # rejected on purpose: what CI happens to do now is not the bound on what the
+    # cluster should be able to do.
+    #
+    # Carried from the older `infra/nixos/modules/common.nix`, which was the ONLY
+    # NixOS declaration of these and is scheduled for deletion
+    # (081M00QCHWA087G0R000GKKRXD). Without this block that deletion would have
+    # silently removed the toolchain from every NixOS host — a capability lost to
+    # a cleanup, which is the failure `src/wasm-dla/README.md` was rostered to
+    # prevent.
+    #
+    # The byte-lock (src/wasm-dla/bytelock/) verifies that all substrates produce
+    # byte-identical walker trajectories at any seed. Substrates: WAT, LLVM/C,
+    # Emscripten, Rust, AssemblyScript, Zig (WASM) + JS/V8, Lua 5.4, Go.
+    wabt        # wat2wasm / wasm2wat / wasm-validate — WAT bare-metal substrate
+    binaryen    # wasm-opt / wasm-as / wasm-dis — AssemblyScript's optimizer
+    emscripten  # emcc — C/C++ -> WASM; pulls llvm as a dep
+    nodejs      # host runtime for AssemblyScript's `asc`, and the JS/V8 substrate
+    zig         # `zig build-exe -target wasm32-freestanding`
+    llvm        # llc / llvm-as / opt — the IR layer between C and WASM
+    rustup      # Rust substrate; `rustup target add wasm32-unknown-unknown`
+    go          # Go WASM substrate (GOOS=js GOARCH=wasm)
+    lua5        # Lua 5.4 bytecode substrate (provides the lua5.4 binary)
   ];
 
   # iter-5.5.0 (B-0848 Phase 2, operator 2026-05-27 ALIGNMENT catch):

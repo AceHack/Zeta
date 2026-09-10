@@ -1,0 +1,695 @@
+{
+  "schema": 1,
+  "release_tag": "research-character-reconstruction-20260908",
+  "archives": [
+    {
+      "name": "reconstruction-and-projection-history.zip",
+      "bytes": 119747338,
+      "sha256": "e9a1d4095f5b4fcf87309a95ce844026ded5818b510336d941b9cbbef1e8679a"
+    }
+  ],
+  "files": [
+    {
+      "archive": "reconstruction-and-projection-history.zip",
+      "path": "Character-Learning-Lab/Hunyuan3D-Swift/LICENSE",
+      "bytes": 1069,
+      "sha256": "e0485dc21868a42682cf1255af42d1bf038cf5e80608b2006b5c69d65d426d7f"
+    },
+    {
+      "archive": "reconstruction-and-projection-history.zip",
+      "path": "Character-Learning-Lab/Hunyuan3D-Swift/Package.resolved",
+      "bytes": 656,
+      "sha256": "35c3c665e1daaa557c8fd15053f9ac34f7b66b7bc5b655515434034fe2a0a05b"
+    },
+    {
+      "archive": "reconstruction-and-projection-history.zip",
+      "path": "Character-Learning-Lab/Hunyuan3D-Swift/README.md",
+      "bytes": 2713,
+      "sha256": "5dd1b84e56b987208d5f4e70ce6adb977555b925342ebe3c47797ee4fb6c1c2b"
+    },
+    {
+      "archive": "reconstruction-and-projection-history.zip",
+      "path": "Character-Learning-Lab/TripoSR/LICENSE",
+      "bytes": 1080,
+      "sha256": "ade0a66629bdd7e01e46b3296b3851cff0fd27989bca53da470ad6e96ed620fb"
+    },
+    {
+      "archive": "reconstruction-and-projection-history.zip",
+      "path": "Character-Learning-Lab/TripoSR/README.md",
+      "bytes": 5419,
+      "sha256": "ed40f078c5e451c58eae716187e0128f0ce8575e467aab2440b4ed9c75e490b9"
+    },
+    {
+      "archive": "reconstruction-and-projection-history.zip",
+      "path": "Character-Learning-Lab/download_tripo.py",
+      "bytes": 1087,
+      "sha256": "79122429ae61e1da7b5e6868b0fc4ff3c20431e97851751df34abd0dabe6fbbe"
+    },
+    {
+      "archive": "reconstruction-and-projection-history.zip",
+      "path": "Character-Learning-Lab/mcubes-install-patched.log",
+      "bytes": 3029,
+      "sha256": "307baf2247482516e3cbcf699aef81cd820b0b198839edb23c39b3eed9e01644"
+    },
+    {
+      "archive": "reconstruction-and-projection-history.zip",
+      "path": "Character-Learning-Lab/mcubes-install.log",
+      "bytes": 64134,
+      "sha256": "b7388312623d952601dd67dff21609e3a43772bc29030e508af1290e6e7c4cc6"
+    },
+    {
+      "archive": "reconstruction-and-projection-history.zip",
+      "path": "Character-Learning-Lab/project-reference-v2.log",
+      "bytes": 1912,
+      "sha256": "21303f01094f55ac4fe51e22b8a3c19e7b1019c38f6720286e2bcce44796d496"
+    },
+    {
+      "archive": "reconstruction-and-projection-history.zip",
+      "path": "Character-Learning-Lab/project-reference.log",
+      "bytes": 1888,
+      "sha256": "1a3825ba936255f0f323391c720e9b736c3b11ceeadab2bda0f510b3648313ec"
+    },
+    {
+      "archive": "reconstruction-and-projection-history.zip",
+      "path": "Character-Learning-Lab/project_reference.py",
+      "bytes": 3137,
+      "sha256": "6a8a5776141662e689ca203987de7cf5534f66de72a985990faaf2565e6afa15"
+    },
+    {
+      "archive": "reconstruction-and-projection-history.zip",
+      "path": "Character-Learning-Lab/project_reference_v1.py",
+      "bytes": 2920,
+      "sha256": "a889837232ed7cfee7c5537bed93ce26c752a895d55e7290e9b3ec9c60780a52"
+    },
+    {
+      "archive": "reconstruction-and-projection-history.zip",
+      "path": "Character-Learning-Lab/reconstruct-fixed.log",
+      "bytes": 1496,
+      "sha256": "8e6290a97436302334830fc7ee71c6c17870771a2adff2f42a6389728559e6b0"
+    },
+    {
+      "archive": "reconstruction-and-projection-history.zip",
+      "path": "Character-Learning-Lab/reconstruct-masked.log",
+      "bytes": 14132,
+      "sha256": "f227ed24eb13fd601c956ab987e030ca283e136af5a26b8411bdcdfd2d4bd24a"
+    },
+    {
+      "archive": "reconstruction-and-projection-history.zip",
+      "path": "Character-Learning-Lab/reconstruct-mps-extraction-failure.log",
+      "bytes": 2328,
+      "sha256": "ecb0276d1ec82ade4685cdd6231994d3777bdc5cccfbc8460a061a0bfff82cbd"
+    },
+    {
+      "archive": "reconstruction-and-projection-history.zip",
+      "path": "Character-Learning-Lab/reconstruct-u2net.log",
+      "bytes": 4227,
+      "sha256": "2975f75b57fa13f01633ee37df9a58f081e3ed57651c89e983aa6ff136a5a5ac"
+    },
+    {
+      "archive": "reconstruction-and-projection-history.zip",
+      "path": "Character-Learning-Lab/reconstruct-white-baseline.py",
+      "bytes": 1736,
+      "sha256": "90c22be17e0e22959d02fa940fe7c36e6f0045166980e2e37ef9ed44c9f013ca"
+    },
+    {
+      "archive": "reconstruction-and-projection-history.zip",
+      "path": "Character-Learning-Lab/reconstruct.log",
+      "bytes": 2328,
+      "sha256": "ecb0276d1ec82ade4685cdd6231994d3777bdc5cccfbc8460a061a0bfff82cbd"
+    },
+    {
+      "archive": "reconstruction-and-projection-history.zip",
+      "path": "Character-Learning-Lab/reconstruct.py",
+      "bytes": 2153,
+      "sha256": "abef50d37b5c5124f0eee9f2e61443af3b4e1589d878850503c557e031c9321f"
+    },
+    {
+      "archive": "reconstruction-and-projection-history.zip",
+      "path": "Character-Learning-Lab/reconstruction/AceHack/AceHack-reconstruction.blend",
+      "bytes": 3377515,
+      "sha256": "10e61afbbfd5478a0bbdafbfab2f0baec7994cc867e5057c030993c2c6f628cb"
+    },
+    {
+      "archive": "reconstruction-and-projection-history.zip",
+      "path": "Character-Learning-Lab/reconstruction/AceHack/mesh.glb",
+      "bytes": 2401504,
+      "sha256": "c6696ae29843df274755fd3acbd0952f2db414b55df6515d81a86b0325a3bbfa"
+    },
+    {
+      "archive": "reconstruction-and-projection-history.zip",
+      "path": "Character-Learning-Lab/reconstruction/AceHack/receipt.json",
+      "bytes": 414,
+      "sha256": "da03ab448c6342b32d3e103db725402926a907622ae83c8868471cad3edd582d"
+    },
+    {
+      "archive": "reconstruction-and-projection-history.zip",
+      "path": "Character-Learning-Lab/reconstruction/AceHack/review-0.png",
+      "bytes": 1344535,
+      "sha256": "a04534ad6f41e630291e2570013c5bbb8fda59baf838fa8666bc41b2458a50e5"
+    },
+    {
+      "archive": "reconstruction-and-projection-history.zip",
+      "path": "Character-Learning-Lab/reconstruction/AceHack/review-180.png",
+      "bytes": 1364930,
+      "sha256": "72a96b365e6fb004209e958577b4098a355df15eb4e83efe6eaf3be666b942ab"
+    },
+    {
+      "archive": "reconstruction-and-projection-history.zip",
+      "path": "Character-Learning-Lab/reconstruction/AceHack/review-270.png",
+      "bytes": 1024114,
+      "sha256": "037fee099ade7409e17bf5cadf60af43f3cc55c128921255221d759def7fa074"
+    },
+    {
+      "archive": "reconstruction-and-projection-history.zip",
+      "path": "Character-Learning-Lab/reconstruction/AceHack/review-90.png",
+      "bytes": 1008607,
+      "sha256": "21e13d78ff05f9d5cf057f80b927b57cc306ff6f1888f3b57f974c02a1a84125"
+    },
+    {
+      "archive": "reconstruction-and-projection-history.zip",
+      "path": "Character-Learning-Lab/reconstruction/AceHack/scene-code.pt",
+      "bytes": 1967678,
+      "sha256": "bc022c2c93b3fe504cfc757a6d563776d44de938d926ad0a5df257c818fa65e4"
+    },
+    {
+      "archive": "reconstruction-and-projection-history.zip",
+      "path": "Character-Learning-Lab/reconstruction/Xenaa/Xenaa-reconstruction.blend",
+      "bytes": 3234674,
+      "sha256": "d5dda471b7136186575b6626e2b95f102b05915250399400c7fbef3ed127ffa9"
+    },
+    {
+      "archive": "reconstruction-and-projection-history.zip",
+      "path": "Character-Learning-Lab/reconstruction/Xenaa/mesh.glb",
+      "bytes": 2379664,
+      "sha256": "da2e6613ae32a7e266a87ee04034a58ab786ec8643a403f9cf137076c00d4d3c"
+    },
+    {
+      "archive": "reconstruction-and-projection-history.zip",
+      "path": "Character-Learning-Lab/reconstruction/Xenaa/receipt.json",
+      "bytes": 410,
+      "sha256": "9c112e4f70260756ab66d9fca2d2080b0b3741dd6ddf0c27b536c231b1d37c36"
+    },
+    {
+      "archive": "reconstruction-and-projection-history.zip",
+      "path": "Character-Learning-Lab/reconstruction/Xenaa/review-0.png",
+      "bytes": 1316720,
+      "sha256": "4a8bfa2813d99cb7f4c0d08d7aa8373159f38551cdf53d072d9abcabfe6acdf4"
+    },
+    {
+      "archive": "reconstruction-and-projection-history.zip",
+      "path": "Character-Learning-Lab/reconstruction/Xenaa/review-180.png",
+      "bytes": 1365516,
+      "sha256": "0539f75a2a8951c5d85a06d0b1c62086420398cdc2b56850139f67e6ce92465a"
+    },
+    {
+      "archive": "reconstruction-and-projection-history.zip",
+      "path": "Character-Learning-Lab/reconstruction/Xenaa/review-270.png",
+      "bytes": 950590,
+      "sha256": "83b4351d479c4e7403e00342e8dae6c1f0cc280f9346d36d5e4eb67bdd29153d"
+    },
+    {
+      "archive": "reconstruction-and-projection-history.zip",
+      "path": "Character-Learning-Lab/reconstruction/Xenaa/review-90.png",
+      "bytes": 950420,
+      "sha256": "1bfe66d7ab8cd96d1049c1f1babd0e629a232befc501f7215f2bfa4a65202da2"
+    },
+    {
+      "archive": "reconstruction-and-projection-history.zip",
+      "path": "Character-Learning-Lab/reconstruction/Xenaa/scene-code.pt",
+      "bytes": 1967678,
+      "sha256": "d267d590165657cfcdd1e277e1be8356dd24b5fd8fb56b601ef50554475d7aa4"
+    },
+    {
+      "archive": "reconstruction-and-projection-history.zip",
+      "path": "Character-Learning-Lab/reconstruction-archive.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "archive": "reconstruction-and-projection-history.zip",
+      "path": "Character-Learning-Lab/reconstruction-masked/AceHack/conditioning.png",
+      "bytes": 1271732,
+      "sha256": "cd6815790a53418d075aff0fea43737f4d59b4eebb1b3e9d76a1ed9d1cbb92af"
+    },
+    {
+      "archive": "reconstruction-and-projection-history.zip",
+      "path": "Character-Learning-Lab/reconstruction-masked/AceHack/mesh.glb",
+      "bytes": 1680000,
+      "sha256": "888b616e29655214644675f8cf46cba76b362c56506c30283a891d2c7446294b"
+    },
+    {
+      "archive": "reconstruction-and-projection-history.zip",
+      "path": "Character-Learning-Lab/reconstruction-masked/AceHack/receipt.json",
+      "bytes": 413,
+      "sha256": "14cf2201f4916c6b1bbbc2ac0b5c93745221b0435a3edd1dd58aec1617374856"
+    },
+    {
+      "archive": "reconstruction-and-projection-history.zip",
+      "path": "Character-Learning-Lab/reconstruction-masked/AceHack/scene-code.pt",
+      "bytes": 1967678,
+      "sha256": "72040b578f72cfb77db8cdd84014ca0ab11cc9d727c144a5bcc0bd3c62cf993c"
+    },
+    {
+      "archive": "reconstruction-and-projection-history.zip",
+      "path": "Character-Learning-Lab/reconstruction-masked/Xenaa/conditioning.png",
+      "bytes": 1046810,
+      "sha256": "1f9b39c2bfee573b270ba8f5441378fab8a6328f983962824be46871ee710755"
+    },
+    {
+      "archive": "reconstruction-and-projection-history.zip",
+      "path": "Character-Learning-Lab/reconstruction-masked/Xenaa/mesh.glb",
+      "bytes": 1558944,
+      "sha256": "28fdf5c8348e3e915e07d6d6f8f27ec73c1ce7760ea9eceabfce5183a331e22a"
+    },
+    {
+      "archive": "reconstruction-and-projection-history.zip",
+      "path": "Character-Learning-Lab/reconstruction-masked/Xenaa/receipt.json",
+      "bytes": 409,
+      "sha256": "6099cfdf22cc44d8b6f4390cc93fb6c5061b98ad2f1c861282baba3081e50ad5"
+    },
+    {
+      "archive": "reconstruction-and-projection-history.zip",
+      "path": "Character-Learning-Lab/reconstruction-masked/Xenaa/scene-code.pt",
+      "bytes": 1967678,
+      "sha256": "adeed6891c66bddcd4b5db102960ae00131350c552abd1a92ef8881ba6d5b695"
+    },
+    {
+      "archive": "reconstruction-and-projection-history.zip",
+      "path": "Character-Learning-Lab/reconstruction-projected/AceHack/AceHack-projected-study.blend",
+      "bytes": 3970203,
+      "sha256": "b11c5f600bbe9659f94cf3ca285debfd2c41388ea661b3a1cc930885bcba0b6e"
+    },
+    {
+      "archive": "reconstruction-and-projection-history.zip",
+      "path": "Character-Learning-Lab/reconstruction-projected/AceHack/projected-0.png",
+      "bytes": 2221038,
+      "sha256": "26e9982fffef2016bae4cdfee2a8387969d185b91b5cb3e27c71c8ec3cbba222"
+    },
+    {
+      "archive": "reconstruction-and-projection-history.zip",
+      "path": "Character-Learning-Lab/reconstruction-projected/AceHack/projected-180.png",
+      "bytes": 1845224,
+      "sha256": "78ec6902f00d6747ad70deeba790d83ef354b707a89a7c86012bc7d1c4f86e62"
+    },
+    {
+      "archive": "reconstruction-and-projection-history.zip",
+      "path": "Character-Learning-Lab/reconstruction-projected/AceHack/projected-30.png",
+      "bytes": 2175722,
+      "sha256": "e18e604ca60ed81e535ee2ffab3fcf4ab7ac09a948961ec0ef7dc58e63f473c0"
+    },
+    {
+      "archive": "reconstruction-and-projection-history.zip",
+      "path": "Character-Learning-Lab/reconstruction-projected/AceHack/projected-90.png",
+      "bytes": 1824409,
+      "sha256": "ebc813bcba4defbf593a7b763d298d7c6653394a0184cc96564ee62432f31bab"
+    },
+    {
+      "archive": "reconstruction-and-projection-history.zip",
+      "path": "Character-Learning-Lab/reconstruction-projected/Xenaa/Xenaa-projected-study.blend",
+      "bytes": 3778493,
+      "sha256": "e0fac065655798eb3e56bcecd05630ae1d2261990c579b2cc5da92663618bc80"
+    },
+    {
+      "archive": "reconstruction-and-projection-history.zip",
+      "path": "Character-Learning-Lab/reconstruction-projected/Xenaa/projected-0.png",
+      "bytes": 2036084,
+      "sha256": "f5027ad30ca6553cc09da342749a3675d79875cd8c1f64c6eb2dde016358cf7a"
+    },
+    {
+      "archive": "reconstruction-and-projection-history.zip",
+      "path": "Character-Learning-Lab/reconstruction-projected/Xenaa/projected-180.png",
+      "bytes": 1830927,
+      "sha256": "bfe420bc4a3e197f297e89266469ed3219726aa22261bcdc19d2753d735e80fa"
+    },
+    {
+      "archive": "reconstruction-and-projection-history.zip",
+      "path": "Character-Learning-Lab/reconstruction-projected/Xenaa/projected-30.png",
+      "bytes": 1976612,
+      "sha256": "4fb8928ead2885968c85620500f088fcc42ce0dab8fe894f5a81bfd97fd7b593"
+    },
+    {
+      "archive": "reconstruction-and-projection-history.zip",
+      "path": "Character-Learning-Lab/reconstruction-projected/Xenaa/projected-90.png",
+      "bytes": 1785619,
+      "sha256": "dfd51e8a8fcba3b624a946ed19f524b2caef40bdce577a614ce49f7ab8838306"
+    },
+    {
+      "archive": "reconstruction-and-projection-history.zip",
+      "path": "Character-Learning-Lab/reconstruction-projected-v2/AceHack/AceHack-projected-study.blend",
+      "bytes": 4156032,
+      "sha256": "d389fdf5874ebc1adcae006d53f39167b71f5a4a77dc102300e92d6557517c5e"
+    },
+    {
+      "archive": "reconstruction-and-projection-history.zip",
+      "path": "Character-Learning-Lab/reconstruction-projected-v2/AceHack/projected-0.png",
+      "bytes": 2255833,
+      "sha256": "821f3cc0f3275c9d2db24fd17b0922c0d56cf80637fd649e534e3c53df2cca61"
+    },
+    {
+      "archive": "reconstruction-and-projection-history.zip",
+      "path": "Character-Learning-Lab/reconstruction-projected-v2/AceHack/projected-180.png",
+      "bytes": 1990070,
+      "sha256": "be870c819a8e8e95986b8ace92c708f3584248f9becce879865590ef86f5e5d0"
+    },
+    {
+      "archive": "reconstruction-and-projection-history.zip",
+      "path": "Character-Learning-Lab/reconstruction-projected-v2/AceHack/projected-30.png",
+      "bytes": 2225261,
+      "sha256": "3766d3bf5a76ce9baa4b1ad63ad793936263ebbfb9274470f19d81459bbd6f9e"
+    },
+    {
+      "archive": "reconstruction-and-projection-history.zip",
+      "path": "Character-Learning-Lab/reconstruction-projected-v2/AceHack/projected-90.png",
+      "bytes": 1954720,
+      "sha256": "f7f75ea5a1ec97be654ab50a124e9a9e3e0d919b191dc1ea0229e67c07ca7e93"
+    },
+    {
+      "archive": "reconstruction-and-projection-history.zip",
+      "path": "Character-Learning-Lab/reconstruction-projected-v2/Xenaa/Xenaa-projected-study.blend",
+      "bytes": 3955328,
+      "sha256": "851192c50aacee88d6814d1ac32172d4b0226c952a94ce0adbe2cfbed4a53be6"
+    },
+    {
+      "archive": "reconstruction-and-projection-history.zip",
+      "path": "Character-Learning-Lab/reconstruction-projected-v2/Xenaa/projected-0.png",
+      "bytes": 2046285,
+      "sha256": "4aa25870e4be88288b349ceab89170a6e5ba48407facc586fb914fea9418a2cf"
+    },
+    {
+      "archive": "reconstruction-and-projection-history.zip",
+      "path": "Character-Learning-Lab/reconstruction-projected-v2/Xenaa/projected-180.png",
+      "bytes": 1921159,
+      "sha256": "f0714dbf7e23f227981300e770eaee8f81a37d78cab3db44c0c760dc401bf5ba"
+    },
+    {
+      "archive": "reconstruction-and-projection-history.zip",
+      "path": "Character-Learning-Lab/reconstruction-projected-v2/Xenaa/projected-30.png",
+      "bytes": 2005827,
+      "sha256": "eac4dc5802ae7077fada3a13b2168636fa3c0ffb0e4936c2081e40e4116b984a"
+    },
+    {
+      "archive": "reconstruction-and-projection-history.zip",
+      "path": "Character-Learning-Lab/reconstruction-projected-v2/Xenaa/projected-90.png",
+      "bytes": 1868869,
+      "sha256": "30e8422cd36d1aac6d8f39cc40496398d8be14943ea307be4900003b0e56dda5"
+    },
+    {
+      "archive": "reconstruction-and-projection-history.zip",
+      "path": "Character-Learning-Lab/reconstruction-u2net/AceHack/AceHack-reconstruction.blend",
+      "bytes": 2201833,
+      "sha256": "b391d4aa921335b168f467771dcd4496167fcd729eeec60a9280f28bea43e500"
+    },
+    {
+      "archive": "reconstruction-and-projection-history.zip",
+      "path": "Character-Learning-Lab/reconstruction-u2net/AceHack/AceHack-reconstruction.blend1",
+      "bytes": 2201832,
+      "sha256": "c3e63854c540bd6eb9c793758833c87e6646c9977906c3f7bf65c2facb964545"
+    },
+    {
+      "archive": "reconstruction-and-projection-history.zip",
+      "path": "Character-Learning-Lab/reconstruction-u2net/AceHack/conditioning.png",
+      "bytes": 1250984,
+      "sha256": "f813c4bdeed6dd55f71dbb62cc5700d72e1e068970ed9007d69bcd0bd4fa6af3"
+    },
+    {
+      "archive": "reconstruction-and-projection-history.zip",
+      "path": "Character-Learning-Lab/reconstruction-u2net/AceHack/mesh.glb",
+      "bytes": 1525212,
+      "sha256": "faeb1a3022fe54f314993d3267475edb925b1ca1c23f6ea6e5a332da2e5f1755"
+    },
+    {
+      "archive": "reconstruction-and-projection-history.zip",
+      "path": "Character-Learning-Lab/reconstruction-u2net/AceHack/orientation-review-v1/AceHack-reconstruction.blend",
+      "bytes": 2201819,
+      "sha256": "cedd2c066c659b192a8536501e15936eddabcdb70cddff3ba258ad049530a0f5"
+    },
+    {
+      "archive": "reconstruction-and-projection-history.zip",
+      "path": "Character-Learning-Lab/reconstruction-u2net/AceHack/orientation-review-v1/review-0.png",
+      "bytes": 1142291,
+      "sha256": "983b2c6afd8e670001ee88d3b0a179e9affb7a64067a57959f500c3feffe2d9a"
+    },
+    {
+      "archive": "reconstruction-and-projection-history.zip",
+      "path": "Character-Learning-Lab/reconstruction-u2net/AceHack/orientation-review-v1/review-180.png",
+      "bytes": 1136729,
+      "sha256": "b91cb97222ce57c81231c8c1db06ef2d40faa986fa9fc48255b6bb5aba7ad5c7"
+    },
+    {
+      "archive": "reconstruction-and-projection-history.zip",
+      "path": "Character-Learning-Lab/reconstruction-u2net/AceHack/orientation-review-v1/review-270.png",
+      "bytes": 1167624,
+      "sha256": "55bce884aea053c2a7ec8ef90b2c37efc1f5e676e5f94a865bec3ea53c6ff9a2"
+    },
+    {
+      "archive": "reconstruction-and-projection-history.zip",
+      "path": "Character-Learning-Lab/reconstruction-u2net/AceHack/orientation-review-v1/review-90.png",
+      "bytes": 1101783,
+      "sha256": "0e3997f0c019587188532f022114d29e5a3cdc286019b571a5a74fed2a8d0758"
+    },
+    {
+      "archive": "reconstruction-and-projection-history.zip",
+      "path": "Character-Learning-Lab/reconstruction-u2net/AceHack/receipt.json",
+      "bytes": 413,
+      "sha256": "a34d30688b644605711cddcf4a05f5294e19597a8b7a0f90f516e0b4163e942c"
+    },
+    {
+      "archive": "reconstruction-and-projection-history.zip",
+      "path": "Character-Learning-Lab/reconstruction-u2net/AceHack/review-0.png",
+      "bytes": 1100301,
+      "sha256": "fee3b65748432e43ea471aa9a69ff3a7a1b065bc3c0e5d2d67dc41fbb2bb84d7"
+    },
+    {
+      "archive": "reconstruction-and-projection-history.zip",
+      "path": "Character-Learning-Lab/reconstruction-u2net/AceHack/review-180.png",
+      "bytes": 1100450,
+      "sha256": "98dc8455a81ac5af7deb12337321da5f41ce2ea74c3038a0ed9a672b9e7bee4a"
+    },
+    {
+      "archive": "reconstruction-and-projection-history.zip",
+      "path": "Character-Learning-Lab/reconstruction-u2net/AceHack/review-270.png",
+      "bytes": 1039057,
+      "sha256": "5d270777dc08426de127963b3fb886ed00ec9a7cd45af3307202f44747559c9d"
+    },
+    {
+      "archive": "reconstruction-and-projection-history.zip",
+      "path": "Character-Learning-Lab/reconstruction-u2net/AceHack/review-90.png",
+      "bytes": 1021500,
+      "sha256": "b25157d110af57f13c1ffce863e96a0eda05cfbe7057c6d7c33ba5b6451fae43"
+    },
+    {
+      "archive": "reconstruction-and-projection-history.zip",
+      "path": "Character-Learning-Lab/reconstruction-u2net/AceHack/scene-code.pt",
+      "bytes": 1967678,
+      "sha256": "e0e89b7c9a4a59fe0df6db79c26ec66d19ed10524219618b2ce298248ab69cae"
+    },
+    {
+      "archive": "reconstruction-and-projection-history.zip",
+      "path": "Character-Learning-Lab/reconstruction-u2net/Xenaa/Xenaa-reconstruction.blend",
+      "bytes": 2167574,
+      "sha256": "15e4ed49a7979ac16cb34534c63a33bd7398ec3c57b95856cbe530340148af56"
+    },
+    {
+      "archive": "reconstruction-and-projection-history.zip",
+      "path": "Character-Learning-Lab/reconstruction-u2net/Xenaa/Xenaa-reconstruction.blend1",
+      "bytes": 2167588,
+      "sha256": "95f2f508edad4ede8d7983da12bd188aae162a0c587f95b728777b6f1fc2f8f3"
+    },
+    {
+      "archive": "reconstruction-and-projection-history.zip",
+      "path": "Character-Learning-Lab/reconstruction-u2net/Xenaa/conditioning.png",
+      "bytes": 1096227,
+      "sha256": "95c566088b7c52d716a6bc99d3feae3a79c3c475012badedc564209d5f0082c2"
+    },
+    {
+      "archive": "reconstruction-and-projection-history.zip",
+      "path": "Character-Learning-Lab/reconstruction-u2net/Xenaa/mesh.glb",
+      "bytes": 1500256,
+      "sha256": "69ed03429b3da5a2b16f65be6a7a8276d7e9ea351ba7a6f9bac5d3eb6d724c22"
+    },
+    {
+      "archive": "reconstruction-and-projection-history.zip",
+      "path": "Character-Learning-Lab/reconstruction-u2net/Xenaa/orientation-review-v1/Xenaa-reconstruction.blend",
+      "bytes": 2167568,
+      "sha256": "26a5c8d9d86eaaefdfbdfcc8e46f1c53b6260bbfaebc1fa49d8b5beca6f8e6a3"
+    },
+    {
+      "archive": "reconstruction-and-projection-history.zip",
+      "path": "Character-Learning-Lab/reconstruction-u2net/Xenaa/orientation-review-v1/review-0.png",
+      "bytes": 1140835,
+      "sha256": "a37b475f4ad38cba826b8e2f51b0fe44f087dcc0cc38f6753a2af2238f7a5104"
+    },
+    {
+      "archive": "reconstruction-and-projection-history.zip",
+      "path": "Character-Learning-Lab/reconstruction-u2net/Xenaa/orientation-review-v1/review-180.png",
+      "bytes": 1179234,
+      "sha256": "1a777e4456160a2bce2de6cc82d9e2648a568fe9120dbcc435428c773e715f22"
+    },
+    {
+      "archive": "reconstruction-and-projection-history.zip",
+      "path": "Character-Learning-Lab/reconstruction-u2net/Xenaa/orientation-review-v1/review-270.png",
+      "bytes": 1195199,
+      "sha256": "4bf85a67c834ad814410d7abfe35448c3c8ea5de35572720bc9dfe3ef73e97b2"
+    },
+    {
+      "archive": "reconstruction-and-projection-history.zip",
+      "path": "Character-Learning-Lab/reconstruction-u2net/Xenaa/orientation-review-v1/review-90.png",
+      "bytes": 1121341,
+      "sha256": "cc47ba7f4dcf52c0ccf5a255bb9805a87b8a49e46143c67f236d8c656b4718a3"
+    },
+    {
+      "archive": "reconstruction-and-projection-history.zip",
+      "path": "Character-Learning-Lab/reconstruction-u2net/Xenaa/receipt.json",
+      "bytes": 409,
+      "sha256": "1f23f3e0d7ae7430b0304bee7246b829c2920513a332b662124559c40399b0ff"
+    },
+    {
+      "archive": "reconstruction-and-projection-history.zip",
+      "path": "Character-Learning-Lab/reconstruction-u2net/Xenaa/review-0.png",
+      "bytes": 1063723,
+      "sha256": "65807f134718a8734a1d14482563b2d24dde7c203874994163a689b99b8b0cae"
+    },
+    {
+      "archive": "reconstruction-and-projection-history.zip",
+      "path": "Character-Learning-Lab/reconstruction-u2net/Xenaa/review-180.png",
+      "bytes": 1097611,
+      "sha256": "5323c912b6084771f07ca6a96d3b46ad54b18e4e1016b70c5232188843034a4e"
+    },
+    {
+      "archive": "reconstruction-and-projection-history.zip",
+      "path": "Character-Learning-Lab/reconstruction-u2net/Xenaa/review-270.png",
+      "bytes": 1029521,
+      "sha256": "16c6b4d05f533a0646d576503040987a12795fb13f93cbdec67d6b330acb8853"
+    },
+    {
+      "archive": "reconstruction-and-projection-history.zip",
+      "path": "Character-Learning-Lab/reconstruction-u2net/Xenaa/review-90.png",
+      "bytes": 1016454,
+      "sha256": "6adf2ba41bdfb7d9c591ab3681d4c2d12272b345f68a22e4671e3eb790aac3af"
+    },
+    {
+      "archive": "reconstruction-and-projection-history.zip",
+      "path": "Character-Learning-Lab/reconstruction-u2net/Xenaa/scene-code.pt",
+      "bytes": 1967678,
+      "sha256": "3e01cee97997f421e016ff2eea485946642a8e6c10db2b7a3fb3b52f468e3465"
+    },
+    {
+      "archive": "reconstruction-and-projection-history.zip",
+      "path": "Character-Learning-Lab/references/AceHack-derived.png",
+      "bytes": 1935332,
+      "sha256": "ac8e8f0a981db5ad17b86f23d90f2be598b54392e1537c61e2c950056b27cb86"
+    },
+    {
+      "archive": "reconstruction-and-projection-history.zip",
+      "path": "Character-Learning-Lab/references/Xenaa-derived.png",
+      "bytes": 2190624,
+      "sha256": "ffa562691bb78e2c2a0edfbccf913d4713a95410d9629e6c78ee32d1284a8c5c"
+    },
+    {
+      "archive": "reconstruction-and-projection-history.zip",
+      "path": "Character-Learning-Lab/references/Xenaa-white.png",
+      "bytes": 1658667,
+      "sha256": "7c4431ba64cc08e41d6671c8e43d86758eae5c153fd68ff9fb1a57761be4ee58"
+    },
+    {
+      "archive": "reconstruction-and-projection-history.zip",
+      "path": "Character-Learning-Lab/render-reconstruction.log",
+      "bytes": 2070,
+      "sha256": "599615932cdf928be6222b02db38fd211bc8f7873874a3658f88164b544561bd"
+    },
+    {
+      "archive": "reconstruction-and-projection-history.zip",
+      "path": "Character-Learning-Lab/render-u2net-frame-fixed.log",
+      "bytes": 2116,
+      "sha256": "9c69f6c7fc16254ff59c5486ec9ed3cbafd8b341da7d2666b990d250a52f0a0e"
+    },
+    {
+      "archive": "reconstruction-and-projection-history.zip",
+      "path": "Character-Learning-Lab/render-u2net-upright.log",
+      "bytes": 2117,
+      "sha256": "2befbbf1af0b86236b241b30aab32c36af941c9f41763b832f4e8b887eedaaf8"
+    },
+    {
+      "archive": "reconstruction-and-projection-history.zip",
+      "path": "Character-Learning-Lab/render-u2net.log",
+      "bytes": 2117,
+      "sha256": "c905ffb159bed1458a64c288f9a25b97df3c71164b2cab8c5d2a959bea65994d"
+    },
+    {
+      "archive": "reconstruction-and-projection-history.zip",
+      "path": "Character-Learning-Lab/render_reconstruction.py",
+      "bytes": 2599,
+      "sha256": "ab1e66754a07ff2ca521455d046bc799232e71dfbda768e6c2d2bdcf39bc0481"
+    },
+    {
+      "archive": "reconstruction-and-projection-history.zip",
+      "path": "Character-Learning-Lab/render_reconstruction_v1.py",
+      "bytes": 2543,
+      "sha256": "5c1f579f9d8adb15b468c44f7ce9ddb2d99d9caa723155335b669970cb6f0c14"
+    },
+    {
+      "archive": "reconstruction-and-projection-history.zip",
+      "path": "Character-Learning-Lab/requirements-resolved.txt",
+      "bytes": 1027,
+      "sha256": "14c0a8ad977483287ebb0023ababce44a0e3021c538bad2157fc54d0fcc0703a"
+    },
+    {
+      "archive": "reconstruction-and-projection-history.zip",
+      "path": "Character-Learning-Lab/swift-build.log",
+      "bytes": 9854,
+      "sha256": "540b7e11430d5f2ff8013fc36b0ab8437b0e431554471443a0062e8e206589a2"
+    },
+    {
+      "archive": "reconstruction-and-projection-history.zip",
+      "path": "Character-Learning-Lab/torchmcubes/LICENSE",
+      "bytes": 16726,
+      "sha256": "393eaf2b92b3d49bea139e39b6fd205b6e99c499999986aec5554586a830dfdd"
+    },
+    {
+      "archive": "reconstruction-and-projection-history.zip",
+      "path": "Character-Learning-Lab/torchmcubes/README.md",
+      "bytes": 2195,
+      "sha256": "b60e1cf967f8fd088d0011cf2a6177b32dd27f638426823b05374911dbb346f7"
+    },
+    {
+      "archive": "reconstruction-and-projection-history.zip",
+      "path": "Character-Learning-Lab/torchmcubes-cxx20.patch",
+      "bytes": 375,
+      "sha256": "d2e7cad342a87ef35d604029e1f39d178b56a3c5a7c0301a757cdfa61e81c035"
+    },
+    {
+      "archive": "reconstruction-and-projection-history.zip",
+      "path": "Character-Learning-Lab/triposr-mps.patch",
+      "bytes": 704,
+      "sha256": "caeb2b032d24caf0ea5abaade050e74e3d2a8c699d616171f7b48af65b18445a"
+    },
+    {
+      "archive": "reconstruction-and-projection-history.zip",
+      "path": "Character-Learning-Lab/weights/TripoSR/README.md",
+      "bytes": 2488,
+      "sha256": "5c12ef5b850c6ee2aa7454b1a264f6f8dfa95164384dbb1ab374acd917aa558b"
+    },
+    {
+      "archive": "reconstruction-and-projection-history.zip",
+      "path": "Character-Learning-Lab/weights/TripoSR/config.yaml",
+      "bytes": 987,
+      "sha256": "74ca708ce086bf68e97709ea6b3d91f14717921c04691e84043f0eb8fcc68e62"
+    },
+    {
+      "archive": "reconstruction-and-projection-history.zip",
+      "path": "Character-Learning-Lab/weights/TripoSR/upstream-manifest.json",
+      "bytes": 5275,
+      "sha256": "34e9bdbec8090062e05772c012c0d6d6e921b4ef115d924b735d35d1f885b9fc"
+    }
+  ],
+  "training_eligibility": {
+    "reconstruction-masked/": "Quarantined: rembg default selected BRIA RMBG 2.0; do not use as unrestricted training data",
+    "reconstruction-u2net/": "Explicit U2Net mask and MIT TripoSR; subject to rights in user references",
+    "reconstruction-projected-v2/": "Reference projection study, not high-quality full 3D acceptance"
+  },
+  "source_revisions": {
+    "TripoSR": "107cefdc244c39106fa830359024f6a2f1c78871",
+    "torchmcubes": "3381600ddc3d2e4d74222f8495866be5fafbace4",
+    "Hunyuan3D-Swift": "292331f4d26ddb80b9dcea6bcb5629ff82f12b82"
+  }
+}

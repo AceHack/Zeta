@@ -1,0 +1,12 @@
+{
+  "pr_number": 16876,
+  "archive_path": "docs/history/pr-reviews/PR-16876-docs-research-correct-the-pr-archive-attribution-from-a-30-day-total-to-a-rate.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-06T22:21:09.178Z",
+  "schema_version": "v1",
+  "commit_sha": "efbf0f1ddc1b6ded31ee8786bef84466ea2ce843",
+  "title": "docs(research): correct the PR-archive attribution from a 30-day total to a rate",
+  "state": "MERGED",
+  "merged_at": "2026-09-06T22:20:33Z",
+  "head_ref": "shadow/correct-archive-growth-rate"
+}

@@ -7,8 +7,20 @@
 // gate is never touched until the Core team promotes it.
 //   bun vocab/gen/Reify.ts          (regenerate)
 //   bun vocab/gen/Reify.ts --check   (verify fresh; exit 1 if stale)
-import { readdirSync, lstatSync, existsSync, readFileSync, writeFileSync, mkdirSync } from "node:fs";
+import { readdirSync, lstatSync, existsSync, readFileSync, mkdirSync } from "node:fs";
+import { readFileBounded, writeTextIfChanged } from "../../src/Core.TypeScript/io/safe-io.ts";
 import { join, basename, relative, dirname } from "node:path";
+
+
+/**
+ * 0o644 — the mode `writeFileSync` produced under the repo's umask, kept
+ * exactly. `writeTextIfChanged` defaults to 0o600, and a generated repository
+ * file that only its generator can read is a change nobody asked for.
+ */
+const GENERATED_FILE_MODE = 0o644;
+
+/** The generated F# source. 32 MiB is far above what `main` carries. */
+const GENERATED_MAX_BYTES = 32 * 1024 * 1024;
 
 const VOCAB = new URL("../", import.meta.url).pathname;
 const OUT = new URL("../Vocab.Generated.fs", import.meta.url).pathname;
@@ -69,12 +81,25 @@ fs += `    /// Lookup by term string — returns the same interned instance.\n`;
 fs += `    let byTerm : Map<string, Traveler> = all |> List.map (fun t -> t.Term, t) |> Map.ofList\n`;
 
 const check = process.argv.includes("--check");
-const cur = existsSync(OUT) ? readFileSync(OUT, "utf8") : "";
 if (check) {
+  // --check READS ONLY. One open; `not-found` is the only error that means
+  // "absent", so an unreadable generated file is reported as such instead of
+  // being compared against "" and declared stale for the wrong reason.
+  const read = readFileBounded(OUT, { maxBytes: GENERATED_MAX_BYTES });
+  if (!read.ok && read.error.kind !== "not-found") {
+    console.error(`Vocab.Generated.fs is UNREADABLE: ${read.error.message}`);
+    process.exit(1);
+  }
+  const cur = read.ok ? read.value.text : "";
   if (cur !== fs) { console.error("Vocab.Generated.fs is STALE — run: bun vocab/gen/Reify.ts"); process.exit(1); }
   console.log(`vocab-fsharp: up to date (${rows.length} travelers).`);
 } else {
   mkdirSync(dirname(OUT), { recursive: true });
-  writeFileSync(OUT, fs);
+  // ONE DESCRIPTOR EACH WAY, and the mtime-preserving no-op is kept: an
+  // unchanged generated file is not rewritten. `existsSync` + `readFileSync` +
+  // `writeFileSync` was three resolutions of one name (CodeQL
+  // `js/file-system-race`).
+  const written = writeTextIfChanged(OUT, fs, { mode: GENERATED_FILE_MODE, maxBytes: GENERATED_MAX_BYTES });
+  if (!written.ok) { console.error(`vocab-fsharp: cannot write ${OUT}: ${written.error.message}`); process.exit(1); }
   console.log(`vocab-fsharp: wrote ${rows.length} travelers -> ${relative(VOCAB + "..", OUT)}`);
 }

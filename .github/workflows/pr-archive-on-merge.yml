@@ -115,6 +115,25 @@ jobs:
       pull-requests: write
 
     steps:
+      # ABSENCE IS A NAMED REFUSAL, NOT A SUBSTITUTION.
+      #
+      # The checkout below carries the BRANCH-PUSH role credential. The comment
+      # on the flush step already assigned ZETA_TELEMETRY_FLUSH_TOKEN that role;
+      # the checkout itself still persisted GITHUB_TOKEN, so every synchronize
+      # on heartbeat/pr-archive parked gate.yml as completed/action_required
+      # (081M1EKTVH7087G0R002XC3GCW, remeasured 2026-09-09 on #17145 head
+      # f412a8d0211f, run 34394714180, 0 jobs). tick-metrics and society were
+      # treated for this exact actor; this lane was the remaining stall.
+      - name: Assert the branch-push credential is present
+        env:
+          BRANCH_PUSH_TOKEN: ${{ secrets.ZETA_TELEMETRY_FLUSH_TOKEN }}
+        run: |
+          if [ -z "${BRANCH_PUSH_TOKEN:-}" ]; then
+            echo "::error title=Missing ZETA_TELEMETRY_FLUSH_TOKEN::This lane holds the BRANCH-PUSH role and its credential is absent. There is no substitute: GITHUB_TOKEN carries different authority and its pushes do not trigger workflows. FIX: set repository secret ZETA_TELEMETRY_FLUSH_TOKEN on Lucent-Financial-Group/Zeta to a fine-grained PAT with Contents: read and write, Pull requests: read and write, Metadata: read. Role table: docs/security/2026-08-17-society-heartbeat-token-boundary-and-gate-start-failure.md"
+            exit 1
+          fi
+          echo "branch-push credential present (role=branch-push secret=ZETA_TELEMETRY_FLUSH_TOKEN)"
+
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -122,9 +141,55 @@ jobs:
           # manifest entries), and so the bot branch is based on current main.
           fetch-depth: 0
           ref: main
-          # Persist credentials so the post-archival bot-branch push uses
-          # GITHUB_TOKEN. (default true; explicit for clarity)
+          # THIS CHECKOUT'S CREDENTIAL IS THE ONE THAT PUSHES `heartbeat/pr-archive`.
+          # `flush-via-staging.ts flush` runs `git push --force-with-lease` with
+          # whatever the checkout persisted. A github-actions[bot] push creates
+          # gate.yml and parks it: status completed, conclusion action_required,
+          # 0 jobs, so `gate (required)` never publishes.
+          #
+          # ROLE: BRANCH-PUSH. One role, one secret. ZETA_PR_ARCHIVE_TOKEN remains
+          # the PR-create credential on the flush step below.
           persist-credentials: true
+          token: ${{ secrets.ZETA_TELEMETRY_FLUSH_TOKEN }}
+
+      - name: Preflight the push credential
+        env:
+          FALLBACK_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -uo pipefail
+
+          probe() { git push --dry-run origin "HEAD:refs/heads/credprobe/pr-archive" 2>&1; }
+
+          if OUT=$(probe); then
+            echo "[preflight] pr-archive: push credential is authorized for this repository."
+            exit 0
+          fi
+          echo "$OUT"
+
+          if ! printf '%s' "$OUT" | grep -qiE 'denied to|Authentication failed|Invalid username or token|error: 403'; then
+            echo "::warning title=pr-archive preflight inconclusive::the probe failed, but not with a credential answer. Leaving the credential as-is; the real push below will report the true error."
+            exit 0
+          fi
+
+          echo "::error title=pr-archive PAT cannot push::ZETA_TELEMETRY_FLUSH_TOKEN was denied by the remote. FIX: grant that fine-grained PAT 'Contents: read and write' on Lucent-Financial-Group/Zeta. Falling back to GITHUB_TOKEN: the lane keeps recording, but 'gate (required)' will NOT start on the flush PR (081M010H4KE)."
+
+          HDR_B64=$(printf 'x-access-token:%s' "$FALLBACK_TOKEN" | base64 | tr -d '\n')
+          echo "::add-mask::$HDR_B64"
+          git config --local --replace-all "http.https://github.com/.extraheader" "AUTHORIZATION: basic $HDR_B64"
+
+          if OUT2=$(probe); then
+            echo "[preflight] pr-archive: fallback credential verified against the remote; lane is DEGRADED but alive."
+            {
+              echo "### heartbeat/pr-archive is running on the FALLBACK credential"
+              echo ""
+              echo "\`ZETA_TELEMETRY_FLUSH_TOKEN\` was denied by the remote; \`GITHUB_TOKEN\` is verified and in use."
+              echo "Telemetry still lands on the staging branch. \`gate (required)\` will NOT start on the flush PR until the PAT can push."
+              echo "Fix: grant that fine-grained PAT **Contents: read and write** on this repository."
+            } >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+          echo "$OUT2"
+          echo "::error title=pr-archive has no working push credential::BOTH the PAT and GITHUB_TOKEN were denied. This is worse than #10850 and the lane is about to fail its push. Not exiting here so the archive is still computed and the push reports the authoritative error."
 
       - name: Setup Bun
         uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0

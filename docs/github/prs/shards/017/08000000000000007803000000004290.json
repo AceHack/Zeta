@@ -1,0 +1,12 @@
+{
+  "pr_number": 17040,
+  "archive_path": "docs/history/pr-reviews/PR-17040-feat-081m1zmgj0j087g0r001w8hx2v-persist-catalog-gen-in-memory.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-08T05:27:57.697Z",
+  "schema_version": "v1",
+  "commit_sha": "5d30e0f44b91acb78cea464458f4bc0b039009bf",
+  "title": "feat(081M1ZMGJ0J087G0R001W8HX2V): persist catalog gen in memory",
+  "state": "MERGED",
+  "merged_at": "2026-09-08T05:27:18Z",
+  "head_ref": "feat/zetafs-d10-catalog-gen-in-memory"
+}

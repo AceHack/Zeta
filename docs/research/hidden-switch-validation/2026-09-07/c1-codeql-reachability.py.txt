@@ -1,0 +1,36 @@
+import hashlib
+import importlib.util
+import json
+import subprocess
+import sys
+from pathlib import Path
+
+root = Path.cwd()
+source = root / "src/Core.Python/tests/test_nci_witness_receipt_oracle.py"
+spec = importlib.util.spec_from_file_location("reviewed_nci_receipt_tests", source)
+assert spec is not None and spec.loader is not None
+module = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(module)
+lines = []
+def record(frame, event, arg):
+    if event == "line" and frame.f_code.co_filename == str(source):
+        lines.append(frame.f_lineno)
+    return record
+sys.settrace(record)
+try:
+    module.test_named_refusal_survives_contextmanager_traceback_assignment()
+finally:
+    sys.settrace(None)
+assert 85 in lines and 86 in lines
+print(json.dumps({
+    "SourceCommit": subprocess.check_output(["git", "rev-parse", "HEAD"], text=True).strip(),
+    "TestFile": str(source.relative_to(root)),
+    "TestSha256": hashlib.sha256(source.read_bytes()).hexdigest(),
+    "Test": "test_named_refusal_survives_contextmanager_traceback_assignment",
+    "Python": sys.version,
+    "AssertionsEnabled": __debug__,
+    "ExecutedLines": lines,
+    "BothPostWithAssertionsReached": True,
+    "TestReturnedNormally": True,
+    "ScientificStreamsExecuted": False
+}, indent=2))

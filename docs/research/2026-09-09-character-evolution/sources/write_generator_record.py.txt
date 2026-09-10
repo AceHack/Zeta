@@ -1,0 +1,24 @@
+"""Record the manually executed generator composition; this is not a DAG executor."""
+from pathlib import Path
+import hashlib,json
+root=Path(__file__).resolve().parent;lab=root.parent/'Character-Learning-Lab'
+def digest(p):return hashlib.file_digest(p.open('rb'),'sha256').hexdigest()
+nodes=[]
+for name in ['AceHack','Xenaa']:
+ body=lab/'reconstruction-u2net'/name/'scene-code.pt';head=root/'heads'/name/'scene-code.pt';ref=root/'references'/f'{name}-head-derived.png'
+ nodes.extend([
+  dict(id=name+'/body-field',kind='frozen-TripoSR-field',path=str(body),sha256=digest(body),parents=[]),
+  dict(id=name+'/body-mesh',kind='sample-density',resolution=384,threshold=25,parents=[name+'/body-field']),
+  dict(id=name+'/head-reference',kind='derived-raster-input',path=str(ref.relative_to(root)),sha256=digest(ref),parents=[]),
+  dict(id=name+'/head-field',kind='TripoSR-after-U2Net',path=str(head.relative_to(root)),sha256=digest(head),parents=[name+'/head-reference']),
+  dict(id=name+'/head-mesh',kind='sample-density',resolution=384,threshold=25,parents=[name+'/head-field']),
+  dict(id=name+'/assembly',kind='Blender-composition',recipe='compose_v5.py',parents=[name+'/body-mesh',name+'/head-mesh'],uncertainty=['unobserved sides and rear','likeness not accepted','open mesh boundaries','unrigged'])])
+nodes.append(dict(id='duo-review',kind='Blender-render-and-camera-orbit',recipe='finalize_scene_v5.py',parents=['AceHack/assembly','Xenaa/assembly']))
+record=dict(schema=1,status='research-grade execution record; not a production DAG interpreter',nodes=nodes)
+ids=set();
+for n in nodes:
+ assert n['id'] not in ids
+ assert all(p in ids for p in n['parents'])
+ ids.add(n['id'])
+(root/'generator-dag.json').write_text(json.dumps(record,indent=2)+'\n')
+print('Verified unique node IDs and topological parent ordering:',len(nodes))

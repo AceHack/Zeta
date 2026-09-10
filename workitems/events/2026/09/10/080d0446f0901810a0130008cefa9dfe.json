@@ -1,0 +1,14 @@
+{
+  "id": "080d0446f0901810a0130008cefa9dfe",
+  "at": "2026-09-10T01:10:50.115Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M24DW4G0087G0R000MD0QEP",
+    "type": "task",
+    "title": "Branch sweep 2026-09-09: tag-and-delete 34 remote heads, 162 to 127",
+    "slug": "branch-sweep-2026-09-09-tag-and-delete-34-remote-heads-162-t",
+    "priority": "P2",
+    "filename": "081M24DW4G0087G0R000MD0QEP-branch-sweep-2026-09-09-tag-and-delete-34-remote-heads-162-t.md"
+  }
+}

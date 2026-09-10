@@ -1,0 +1,12 @@
+{
+  "pr_number": 16881,
+  "archive_path": "docs/history/pr-reviews/PR-16881-fix-formal-strengthen-the-nci-oracle-independence-assertion-main-was-red.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-06T22:49:19.497Z",
+  "schema_version": "v1",
+  "commit_sha": "76a80b74d5e25c2bd6681d648ed46d195397d73f",
+  "title": "fix(formal): strengthen the NCI oracle-independence assertion — main was red",
+  "state": "MERGED",
+  "merged_at": "2026-09-06T22:48:39Z",
+  "head_ref": "shadow/strengthen-nci-independence-assertion"
+}

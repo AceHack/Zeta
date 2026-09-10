@@ -1,0 +1,25 @@
+from pathlib import Path
+root=Path(__file__).resolve().parent
+s=(root/'compose_v1.py').read_text()
+s=s.replace("body=import_tsr(root/'fixed-latent'/name/'mesh-384.glb');body.name=name+' | Body generator'", "bpy.ops.import_scene.gltf(filepath=str(root/'transferred'/name/'body.glb'));body=[o for o in bpy.context.selected_objects if o.type=='MESH'][0];bpy.context.view_layer.objects.active=body;bpy.ops.object.transform_apply(location=True,rotation=True,scale=True);body.name=name+' | SG body generator'\n for p in body.data.polygons:p.use_smooth=True")
+s=s.replace("(v.co.z-hi.z)*scale+target_h", "(v.co.z-hi.z)*scale+target_h*1.035")
+s=s.replace("cut=[v for v in bm.verts if v.co.z<target_h*(.865 if name=='AceHack' else .795) and abs(v.co.x)<target_h*.052]", "cut=[v for v in bm.verts if v.co.z<target_h*.795 and abs(v.co.x)<target_h*.04]")
+s=s.replace("for o in [body,head]:o.location.x=offset", """# Repair only small open rings; large cut surfaces and garment boundaries remain explicit.
+ bm=bmesh.new();bm.from_mesh(head.data)
+ bmesh.ops.holes_fill(bm,edges=[e for e in bm.edges if e.is_boundary],sides=12)
+ bm.to_mesh(head.data);bm.free()
+ # Inferred back hair was pale. This declared material edit restores a dark rough hair surface.
+ hair=bpy.data.materials.new(name+' | Dark back hair');hair.use_nodes=True
+ n=hair.node_tree.nodes;l=hair.node_tree.links;bs=n.get('Principled BSDF')
+ bs.inputs['Base Color'].default_value=(.025,.015,.009,1) if name=='AceHack' else (.009,.007,.012,1)
+ bs.inputs['Roughness'].default_value=.72;bs.inputs['Specular IOR Level'].default_value=.18
+ noise=n.new('ShaderNodeTexNoise');noise.inputs['Scale'].default_value=150;noise.inputs['Detail'].default_value=2
+ bump=n.new('ShaderNodeBump');bump.inputs['Strength'].default_value=.16;bump.inputs['Distance'].default_value=.0015;l.new(noise.outputs['Fac'],bump.inputs['Height']);l.new(bump.outputs['Normal'],bs.inputs['Normal'])
+ head.data.materials.append(hair)
+ for p in head.data.polygons:
+  c=p.center
+  if (name=='Xenaa' and c.y>-.015) or (name=='AceHack' and c.y>-.01 and c.z>target_h*.945):p.material_index=len(head.data.materials)-1
+ smooth=head.modifiers.new('Conservative head smoothing','SMOOTH');smooth.factor=.4;smooth.iterations=3
+ for o in [body,head]:o.location.x=offset""")
+s=s.replace("composed-v1", "composed-v2").replace("composition-v1-receipt.json", "composition-v2-receipt.json")
+(root/'compose_v2.py').write_text(s)

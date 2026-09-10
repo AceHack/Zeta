@@ -1,0 +1,12 @@
+{
+  "pr_number": 16857,
+  "archive_path": "docs/history/pr-reviews/PR-16857-test-identity-formalize-causal-receipt-invariants-and-retain-sybil-counterexampl.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-06T21:24:27.644Z",
+  "schema_version": "v1",
+  "commit_sha": "af444a679d4e08a6b3b69aa9be98d4a63b1f5f0f",
+  "title": "test(identity): Formalize causal receipt invariants and retain Sybil counterexamples",
+  "state": "MERGED",
+  "merged_at": "2026-09-06T21:23:46Z",
+  "head_ref": "claim/task-relational-identity-20260906"
+}

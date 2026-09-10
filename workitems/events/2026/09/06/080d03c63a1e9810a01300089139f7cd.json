@@ -1,0 +1,14 @@
+{
+  "id": "080d03c63a1e9810a01300089139f7cd",
+  "at": "2026-09-06T22:12:00.083Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1WCEGYJ087G0R0039T2T39",
+    "type": "task",
+    "title": "Env unseal request joins injected capture; missing is not auto",
+    "slug": "env-unseal-request-joins-injected-capture-missing-is-not-aut",
+    "priority": "P2",
+    "filename": "081M1WCEGYJ087G0R0039T2T39-env-unseal-request-joins-injected-capture-missing-is-not-aut.md"
+  }
+}

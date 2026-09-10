@@ -164,11 +164,68 @@ env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 concurrency:
-  # PR force-push supersedes the previous run. Schedule runs
-  # carry a distinct ref (`refs/heads/main` on cron) so they
-  # don't cancel each other.
+  # PR force-push supersedes the previous run -- that is the case
+  # cancellation is FOR, and it is preserved below.
+  #
+  # It must NOT apply to `main`. The comment this replaces claimed
+  # "schedule runs carry a distinct ref (`refs/heads/main` on cron)
+  # so they don't cancel each other", which is exactly backwards:
+  # a push to `main`, a cron on `main`, and a merge_group all
+  # resolve `github.ref` to the SAME value, so they shared one
+  # group and killed each other. At ~84 commits/day on `main` the
+  # measured result (2026-09-09) was **61 of the last 100 runs
+  # cancelled**, and the three most recent `javascript-typescript`
+  # analyses reporting `rules_count: 0, results_count: 0,
+  # error: "unsuccessful execution, exit code: 0"`.
+  #
+  # That is this repo's worst failure class -- a check that did not
+  # run looking like one that passed -- sitting at the top of the
+  # security stack, because every alert count quoted from those
+  # analyses rested on scans that never finished.
+  #
+  # Cancelling is therefore scoped to pull requests only. Runs on
+  # `main` now queue and complete. Queuing is the accepted cost:
+  # a delayed analysis that finishes is worth more than a prompt
+  # one that is cancelled, because only the first produces data.
   group: codeql-${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+  #
+  # WHAT THIS DOES NOT FIX, recorded so the falsifier is not misread.
+  #
+  # `cancel-in-progress: false` protects a RUNNING workflow. It does not protect a PENDING
+  # one: when a newer run claims the group, GitHub keeps the newest pending run and cancels
+  # older pending ones. So a burst of pushes can still drop analyses that never started.
+  #
+  # Observed within a minute of this change landing (2026-09-10): run 34429876121 on
+  # `a9151aba` -- the fix's own merge commit, carrying the fix in its own workflow file --
+  # was cancelled at 02:33:29, one second after the next push queued at 02:33:28. It had
+  # `total_count: 0` jobs, i.e. it never started, which is what identifies this as the
+  # pending case rather than a failure of the setting.
+  #
+  # MEASURED AFTER THE FACT, AND IT CORRECTS WHAT THIS COMMENT FIRST SAID.
+  #
+  # The first draft predicted "a large reduction in the cancellation RATE". That is NOT what
+  # happened, and anyone checking the rate alone would conclude the fix failed and revert it.
+  #
+  # Measured on `main`, 2026-09-10, first 6 completed runs after the change:
+  #
+  #   cancellation rate   69% before  ->  67% after      <- barely moved
+  #   cancelled runs that had STARTED any job:
+  #                       4 of 4 before (2-6 jobs each)
+  #                       0 of 4 after  (0 jobs, 0 started)
+  #
+  # So the RATE is the wrong metric and the NATURE is the right one. Before, cancellation
+  # killed analyses that were already running -- real work destroyed, and the alert baseline
+  # left stale. After, it only drops QUEUED duplicates that had done no work, which is the
+  # pending-supersede case described above and is harmless.
+  #
+  # THE FALSIFIER, corrected: count cancelled runs whose jobs actually STARTED.
+  #
+  #   gh api ".../actions/runs/<id>/jobs" --jq '[.jobs[]|select(.started_at!=null)]|length'
+  #
+  # Zero of those is the fix working. A non-zero count is the fix not applying, and is the
+  # only reading that justifies revisiting this line. A high cancellation rate on its own
+  # says nothing -- it is dominated by superseded queue entries under a fast push cadence.
 
 jobs:
   # Fast pre-check: decide whether any code-scanned paths

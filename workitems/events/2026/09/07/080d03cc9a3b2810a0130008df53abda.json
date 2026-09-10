@@ -1,0 +1,14 @@
+{
+  "id": "080d03cc9a3b2810a0130008df53abda",
+  "at": "2026-09-07T01:54:50.341Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1WS6HV4087G0R001K1YWMN",
+    "type": "task",
+    "title": "Frost result becomes named probe; tpmrm0 is not present",
+    "slug": "frost-result-becomes-named-probe-tpmrm0-is-not-present",
+    "priority": "P2",
+    "filename": "081M1WS6HV4087G0R001K1YWMN-frost-result-becomes-named-probe-tpmrm0-is-not-present.md"
+  }
+}

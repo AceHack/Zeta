@@ -1,0 +1,61 @@
+{
+  "Scope": "Read existing archive members without extraction; no numerical execution",
+  "Manifest": {
+    "Path": "/Users/acehack/.zeta/agents/codex/Zeta-oracle-grounding-publication-20260908/docs/research/precision-gate-kernels/2026-09-08/pr-17041/manifest.json",
+    "Bytes": 253921,
+    "Sha256": "5be73e3799fa1fede6b050b792fe2a3ef48258c86477adbcba07533f26569fc4"
+  },
+  "Archive": {
+    "Path": "/Users/acehack/.zeta/agents/codex/Zeta-oracle-grounding-publication-20260908/docs/research/precision-gate-kernels/2026-09-08/pr-17041/custody.tar.gz",
+    "Bytes": 55663,
+    "Sha256": "0bd9e2e450aa0d4049d8a2bd9ac16411a08f9a544091649f1b9c8f7d30fb393c"
+  },
+  "TarBytes": 1454080,
+  "TarSha256": "b3af90babaa6961a9c2b754ac90956caacae7e32c3b83bc291f21e1daeea69bf",
+  "RegularMembersVerified": 1450,
+  "EveryMemberEqualsRetainedOriginal": true,
+  "MemberBytes": 438265,
+  "CorrectedProof": {
+    "Path": "/Users/acehack/.zeta/agents/codex/Zeta-oracle-grounding-publication-20260908/docs/research/precision-gate-kernels/2026-09-08/pr-17041/no-renames-proof.json",
+    "Bytes": 172492,
+    "Sha256": "430f8defad39f89725d63a52e5c617ac5ca8b4c43bea78ebd8a94a6a6c07683c"
+  },
+  "ReceiptReadme": {
+    "Path": "/Users/acehack/.zeta/agents/codex/Zeta-oracle-grounding-publication-20260908/docs/research/precision-gate-kernels/2026-09-08/pr-17041/README.md",
+    "Bytes": 2561,
+    "Sha256": "53d5aa535279aa83a87089579acf1aae01449a41da0119649f266841854ae398"
+  },
+  "PriorGateManifest": {
+    "Path": "/Users/acehack/.zeta/agents/codex/Zeta-oracle-grounding-publication-20260908/docs/research/precision-gate-kernels/2026-09-08/publication-validation/manifest.json",
+    "Bytes": 14235,
+    "Sha256": "9b309e43a009a8f9ff2eb9d397034e70539ca63e0679103ce809bab0d7bc30dd"
+  },
+  "PriorGateSourceCut": "c1e6f0497afcc5078b03bfe8e797dc12e684cf58",
+  "PriorGateProcess": {
+    "Head": "c1e6f0497afcc5078b03bfe8e797dc12e684cf58",
+    "Argv": [
+      "bun",
+      "run",
+      "preflight"
+    ],
+    "Exit": 0,
+    "Seconds": 634.5310740470886
+  },
+  "PriorGateStart": {
+    "Head": "c1e6f0497afcc5078b03bfe8e797dc12e684cf58",
+    "Argv": [
+      "bun",
+      "run",
+      "preflight"
+    ],
+    "StartEpoch": 1788841379.005795
+  },
+  "PriorGateStderr": "$ bun ./src/Core.TypeScript/hygiene/preflight.ts\n",
+  "PriorGateAll18MarkerPresent": true,
+  "NormalPushAll16MarkerPresent": true,
+  "AuditSource": {
+    "Path": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/docs/research/pr17041-merge-review/2026-09-08/archive-audit.py",
+    "Bytes": 4016,
+    "Sha256": "657248cd882aa2b442e9a3418d9583c6714b30b3a2c7762b2fb254dc1fd081ed"
+  }
+}

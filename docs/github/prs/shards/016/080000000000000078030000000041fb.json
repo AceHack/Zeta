@@ -1,0 +1,12 @@
+{
+  "pr_number": 16891,
+  "archive_path": "docs/history/pr-reviews/PR-16891-feat-research-specify-and-verify-the-finite-stochastic-channel-bridge.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-07T00:14:35.602Z",
+  "schema_version": "v1",
+  "commit_sha": "fa6918b9e9204183628594a4811346ec128c624c",
+  "title": "feat(research): Specify and verify the finite stochastic channel bridge",
+  "state": "MERGED",
+  "merged_at": "2026-09-07T00:13:57Z",
+  "head_ref": "claim/task-finite-stochastic-cqm-bridge-20260906"
+}

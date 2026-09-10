@@ -1,12 +1,10 @@
 namespace Zeta.Core
 
-/// **`SybilBftProtocol` — the wire protocol over the distinct-source quorum (Aaron 2026-06-08, shadow*).**
-///
-/// `SybilBft` (#7046) counts a quorum over *distinct entropy sources* rather than claimed identities. This is
-/// the **protocol state machine** that drives a single-shot agreement to that quorum: a deterministic reducer
-/// `receive : view → message → view × outbound`, transport-agnostic. The **anti-Sybil credential (the drift
-/// stream) travels with every message** — distinctness is established on the wire, per the Eve-protocol
-/// "nothing shared but the wire" target (081KT2T2J0008QG0R002R72323).
+/// A transport-agnostic reference reducer over `SybilBft`'s correlation-component votes.
+/// Supplied bit streams travel with votes so the receiver can compute the observation.
+/// They do not authenticate identities, enforce membership, or establish physical-source
+/// distinctness: one shared generator with balanced recodings can reach its quorum.
+/// A deployment needs a separately justified admission, membership, and fault model.
 ///
 /// **Scale-free / beautiful-on-1 (manifesto §1, §7):** the reducer is pure and deterministic — at DoP=1 a
 /// single cooperative loop folds messages in a replayable order (DST); at DoP=N the real transport fans the
@@ -42,17 +40,15 @@ namespace Zeta.Core
 /// part. Keep this module free of anything a shader can't run (it currently is: maps + folds over plain
 /// values).
 ///
-/// **Honest scope (peel):** single-shot agreement (one decision), one vote round — not multi-slot, no
-/// view-change / leader rotation / timeout-driven liveness yet (those are the next rungs). Safety (no two
-/// honest views commit different values) rests on `SybilBft`'s distinct-source quorum; liveness rests on the
-/// (not-yet-built) timeout/view-change layer. Inherits `AntiSybil`'s detection limit (sound vs exact replay).
+/// Scope: one sticky local decision and a fixed configured quorum. `SybilBftLiveness`
+/// supplies a separate logical-tick/view-change model. Neither model proves agreement
+/// for arbitrary supplied streams or authenticates controller distinctness.
 module SybilBftProtocol =
 
     open SybilBft
 
-    /// A wire message. Every message carries the sender's `Vote` — i.e. its claimed id, its drift stream
-    /// (the anti-Sybil credential), and the value — so a receiver can run the distinctness oracle from the
-    /// wire alone.
+    /// Proposals and ballots carry the claimed id, supplied stream, and value so a receiver
+    /// can recompute correlation components. These fields provide no authentication by themselves.
     type Message<'v when 'v: comparison> =
         | Proposal of Vote<'v> // a proposer puts a value forward (and thereby votes for it)
         | Ballot of Vote<'v> // a replica votes for a value
@@ -66,21 +62,20 @@ module SybilBftProtocol =
     /// A participant's local view: the **expected distinct membership** `Members` (the configured number of
     /// *distinct* participants — fixes `f` and the quorum, so an early sub-population cannot decide), every
     /// vote it has heard (keyed by claimed id; a node updating its vote is last-write-wins per claim —
-    /// cross-claim, same-source equivocation is caught by `SybilBft.tally`), the distinctness threshold, and
+    /// conflicting values within a correlation component are excluded by `SybilBft.tally`), the threshold, and
     /// its outcome.
     ///
-    /// **Why `Members` is fixed, not "distinct sources seen so far":** the safety bound is `2f+1` of the
-    /// *known* membership. Deriving the quorum from votes-arrived-so-far lets a single early source (e.g. a
-    /// forger's first claim, which collapses to `d=1` ⇒ quorum 1) commit prematurely. `Members` is the
-    /// configured distinct-participant count; the quorum is `2f+1` where `f = ⌊(Members-1)/3⌋`.
+    /// `Members` fixes quorum arithmetic instead of deriving it from arrived components:
+    /// otherwise one early component would produce quorum one. This supplied count does
+    /// not enforce an admitted roster or bound how many claims one controller submits.
     type View<'v when 'v: comparison> =
         { Members: int
           Threshold: float
           Heard: Map<int, Vote<'v>>
           Outcome: Outcome<'v> }
 
-    /// An empty view for an expected `members` distinct participants, at distinctness `threshold` (the
-    /// `AntiSybil.correlation` cutoff for "same source"). Quorum is fixed at `2f+1`, `f = ⌊(members-1)/3⌋`.
+    /// Empty view with configured membership count and a correlation-graph threshold.
+    /// Quorum is fixed at `2f+1`, `f = maxFaults members`; controller distinctness is not checked.
     let init (members: int) (threshold: float) : View<'v> =
         { Members = members
           Threshold = threshold
@@ -104,17 +99,16 @@ module SybilBftProtocol =
         | Committed _ -> v
         | Pending ->
             let t = tally v.Threshold (v.Heard |> Map.toList |> List.map snd)
-            // Decide against the FIXED membership quorum, not the distinct-sources-seen-so-far quorum —
-            // otherwise an early sub-population (e.g. a forger's lone collapsed source) commits prematurely.
+            // Use the configured quorum so one early component does not set quorum one.
             let q = quorum v
             match t.VotesByValue |> Map.toList |> List.tryFind (fun (_, n) -> n >= q) with
             | Some (value, _) -> { v with Outcome = Committed value }
             | None -> v
 
     /// Fold a received message into the local view, returning the new view and any messages to broadcast.
-    /// Deterministic: the new outcome depends only on the *set* of heard votes (commutative in arrival order),
-    /// so any delivery order reaching the same vote set commits the same value (DST §7). On the Pending→
-    /// Committed transition the node announces its `Decision` once.
+    /// Deterministic for an ordered input trace. Claim updates are last-write-wins and a prior
+    /// commitment remains final, so order independence is not a general contract. On the
+    /// Pending-to-Committed transition the node announces its `Decision` once.
     let receive (v: View<'v>) (m: Message<'v>) : View<'v> * Message<'v> list =
         match m with
         | Decision _ -> v, [] // informational — our own quorum tally is the source of truth

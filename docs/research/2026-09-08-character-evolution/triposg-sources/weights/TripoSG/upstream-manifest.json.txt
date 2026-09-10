@@ -1,0 +1,154 @@
+{
+  "_id": "67e0d3f7109f7b95fc56b25b",
+  "id": "VAST-AI/TripoSG",
+  "private": false,
+  "pipeline_tag": "image-to-3d",
+  "library_name": "diffusers",
+  "tags": [
+    "diffusers",
+    "safetensors",
+    "triposg",
+    "3d-generation",
+    "rectified-flow",
+    "image-to-3d",
+    "arxiv:2502.06608",
+    "license:mit",
+    "diffusers:TripoSGPipeline",
+    "region:us"
+  ],
+  "downloads": 4938,
+  "likes": 144,
+  "modelId": "VAST-AI/TripoSG",
+  "author": "VAST-AI",
+  "sha": "2c1c516d22d58db486a058d98d31bb6177344e06",
+  "lastModified": "2025-03-28T05:08:55.000Z",
+  "gated": false,
+  "disabled": false,
+  "model-index": null,
+  "config": {
+    "diffusers": {
+      "_class_name": "TripoSGPipeline"
+    }
+  },
+  "cardData": {
+    "license": "mit",
+    "pipeline_tag": "image-to-3d",
+    "tags": [
+      "triposg",
+      "3d-generation",
+      "rectified-flow"
+    ]
+  },
+  "siblings": [
+    {
+      "rfilename": ".gitattributes",
+      "blobId": "b2fd9eefc9bc7f77fa55c60257a6bf150595a3d3",
+      "size": 1564
+    },
+    {
+      "rfilename": "README.md",
+      "blobId": "d48215b406cdefabfc7c390b2a9a8d7801fe0394",
+      "size": 1465
+    },
+    {
+      "rfilename": "feature_extractor_dinov2/preprocessor_config.json",
+      "blobId": "ff5b47c2edcd1d3556d63c01a65d93b58b9efce1",
+      "size": 436
+    },
+    {
+      "rfilename": "image_encoder_dinov2/config.json",
+      "blobId": "c3f240c5cdb94dca9e2a4062ac0270bbe3d3c2e6",
+      "size": 1104
+    },
+    {
+      "rfilename": "image_encoder_dinov2/model.safetensors",
+      "blobId": "eab590d1cb1cab75defce430c5baa475c7d203de",
+      "size": 1217522888,
+      "lfs": {
+        "sha256": "399fba97a95f22c36834418bc69373364a99af3a1153da1c0fb31db567c92e23",
+        "size": 1217522888,
+        "pointerSize": 135
+      }
+    },
+    {
+      "rfilename": "model_index.json",
+      "blobId": "0afa776ede6a8db5688a859f9d2d3e3bf7c0bb6c",
+      "size": 525
+    },
+    {
+      "rfilename": "scheduler/scheduler_config.json",
+      "blobId": "da0fa53502688a5768223aa7f446473365ca9b1d",
+      "size": 158
+    },
+    {
+      "rfilename": "transformer/config.json",
+      "blobId": "a21d98d45b148c4831a53e002a4be20744e82b37",
+      "size": 191
+    },
+    {
+      "rfilename": "transformer/diffusion_pytorch_model.safetensors",
+      "blobId": "d2f2d7dc500ca70f32d3d31eceda5a2766be379f",
+      "size": 5758280104,
+      "lfs": {
+        "sha256": "9192b5923f7b605b394192809aa2ceb73bf0f4009674d8e3b999b45bb97d4bf2",
+        "size": 5758280104,
+        "pointerSize": 135
+      }
+    },
+    {
+      "rfilename": "vae/config.json",
+      "blobId": "c5d72c0a6aecccd736df57dcecd42212ed35c449",
+      "size": 335
+    },
+    {
+      "rfilename": "vae/diffusion_pytorch_model.safetensors",
+      "blobId": "68924328a3b62f48d807c9b89076d1646eda43f1",
+      "size": 970685468,
+      "lfs": {
+        "sha256": "a2e667c24927a5a35e5f19fcb4c75890e9399aa966b6db8131d7df733a750c8b",
+        "size": 970685468,
+        "pointerSize": 134
+      }
+    }
+  ],
+  "spaces": [
+    "VAST-AI/TripoSG",
+    "soiz1/img-3d-for-sc",
+    "DrStrangel0ve/3dprintpic",
+    "kendaaa/trip_w_oblaka",
+    "DelinaresMassates/TripoSG",
+    "cocktailpeanut/TripoSG",
+    "minhtung/TripoSG-l4",
+    "RobledoGoncalves/TripoSG",
+    "RobledoGoncalves/N-Zero",
+    "dadddddddddd/TripoSG",
+    "anvilinteractiv/PolyGenixAI6.0",
+    "guigonzalez/triposg-3d-generator",
+    "eigopop/tripo-3d-api",
+    "siva3091/3dforge-ai",
+    "efecelik/image-to-3d",
+    "crabsuffix/TripoSG",
+    "mrpixel555/Tripsolph",
+    "kendaaa/TripoSG_finall",
+    "Gusttave/TripoSG",
+    "gk8088lover/TripoSG",
+    "sacruise/ai-3d-generator",
+    "sacruise/threed-precision",
+    "khushidubeyokok/TripoSG",
+    "0notexist0/WorkSpace3dArena",
+    "jkorstad/forge-3d",
+    "silentchen/TripoSG",
+    "valamaks/TripoSG",
+    "CShah2218/tripo-3d-api",
+    "Zstan123/TripoSG",
+    "sarahyung/ai-3d-generator"
+  ],
+  "createdAt": "2025-03-24T03:39:35.000Z",
+  "safetensors": {
+    "parameters": {
+      "F32": 1439556160
+    },
+    "total": 1439556160
+  },
+  "usedStorage": 7946488460
+}

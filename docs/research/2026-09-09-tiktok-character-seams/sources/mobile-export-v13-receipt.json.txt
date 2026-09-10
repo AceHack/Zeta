@@ -1,0 +1,122 @@
+[
+  {
+    "character": "AceHack",
+    "kind": "upper-body rig candidate",
+    "file": "AceHack-body-candidate.glb",
+    "bytes": 2056168,
+    "morph_channels": [
+      {
+        "name": "jawOpen",
+        "moved_vertices": 432
+      },
+      {
+        "name": "jawLeft",
+        "moved_vertices": 852
+      },
+      {
+        "name": "jawRight",
+        "moved_vertices": 852
+      },
+      {
+        "name": "mouthSmileLeft",
+        "moved_vertices": 456
+      },
+      {
+        "name": "mouthSmileRight",
+        "moved_vertices": 512
+      },
+      {
+        "name": "mouthPucker",
+        "moved_vertices": 871
+      },
+      {
+        "name": "browInnerUp",
+        "moved_vertices": 302
+      },
+      {
+        "name": "browDownLeft",
+        "moved_vertices": 266
+      },
+      {
+        "name": "browDownRight",
+        "moved_vertices": 264
+      },
+      {
+        "name": "eyeBlinkLeft",
+        "moved_vertices": 78
+      },
+      {
+        "name": "eyeBlinkRight",
+        "moved_vertices": 60
+      }
+    ],
+    "status": "Blender-tested scope only; not Effect House-tested"
+  },
+  {
+    "character": "AceHack",
+    "kind": "face candidate",
+    "file": "AceHack-face-candidate.glb",
+    "bytes": 756176,
+    "status": "Legacy 11 analytic channels transferred; no new facial-performance validation"
+  },
+  {
+    "character": "Xenaa",
+    "kind": "upper-body rig candidate",
+    "file": "Xenaa-body-candidate.glb",
+    "bytes": 2480060,
+    "morph_channels": [
+      {
+        "name": "jawOpen",
+        "moved_vertices": 884
+      },
+      {
+        "name": "jawLeft",
+        "moved_vertices": 1932
+      },
+      {
+        "name": "jawRight",
+        "moved_vertices": 1932
+      },
+      {
+        "name": "mouthSmileLeft",
+        "moved_vertices": 1013
+      },
+      {
+        "name": "mouthSmileRight",
+        "moved_vertices": 1108
+      },
+      {
+        "name": "mouthPucker",
+        "moved_vertices": 2050
+      },
+      {
+        "name": "browInnerUp",
+        "moved_vertices": 497
+      },
+      {
+        "name": "browDownLeft",
+        "moved_vertices": 483
+      },
+      {
+        "name": "browDownRight",
+        "moved_vertices": 495
+      },
+      {
+        "name": "eyeBlinkLeft",
+        "moved_vertices": 150
+      },
+      {
+        "name": "eyeBlinkRight",
+        "moved_vertices": 115
+      }
+    ],
+    "status": "Blender-tested scope only; not Effect House-tested"
+  },
+  {
+    "character": "Xenaa",
+    "kind": "face candidate",
+    "file": "Xenaa-face-candidate.glb",
+    "bytes": 1237300,
+    "status": "Legacy 11 analytic channels transferred; no new facial-performance validation"
+  }
+]

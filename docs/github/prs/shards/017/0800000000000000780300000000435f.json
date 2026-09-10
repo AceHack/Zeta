@@ -1,0 +1,12 @@
+{
+  "pr_number": 17247,
+  "archive_path": "docs/history/pr-reviews/PR-17247-fix-bytelock-the-windows-wabt-url-was-guessed-and-a-build-failure-killed-the-leg.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-10T16:20:26.424Z",
+  "schema_version": "v1",
+  "commit_sha": "168cebc8daffc41ecd56b86c94d030ee1bf1700a",
+  "title": "fix(bytelock): the Windows wabt URL was guessed, and a build failure killed the leg",
+  "state": "MERGED",
+  "merged_at": "2026-09-10T16:19:39Z",
+  "head_ref": "agent/wasm-build-windows"
+}

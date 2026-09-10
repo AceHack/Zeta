@@ -267,6 +267,32 @@ jobs:
           # the only one whose checkout was being killed at the timeout.
           fetch-depth: 1
 
+          # TRUSTED BASE, NOT THE PR MERGE REF -- CodeQL alert #798,
+          # `actions/untrusted-checkout/medium`.
+          #
+          # The default for a `pull_request` trigger is the PR's merge ref, i.e.
+          # contributor-controlled code. This job never reads it: `detect` below
+          # fetches both SHAs explicitly and runs a TWO-DOT `git diff A B`, which
+          # compares two fetched OBJECTS and never consults the working tree. So
+          # the checkout existed only to provide a git directory.
+          #
+          # Checking out the base commit gives exactly the same git directory
+          # without placing untrusted code on disk. The diff is byte-identical
+          # because both endpoints are still fetched by SHA in `detect`, and the
+          # fail-closed property is unchanged -- a missing object still aborts on
+          # `fatal: bad object` rather than yielding a wrong changed-file set.
+          #
+          # Why this is a FIX and not a suppression: the alert is arguably a false
+          # positive today (workflow permissions are `contents: read`, the trigger
+          # is `pull_request` and not `pull_request_target`, and this job's only two
+          # `run:` blocks are inline shell that execute nothing from the tree). But
+          # "non-privileged AND executes nothing" is a property of the CURRENT job,
+          # held by nothing but review. A future step that reads a file from the
+          # tree would silently make the checkout load-bearing. Not putting the
+          # untrusted code there in the first place removes the class instead of
+          # arguing about this instance -- and it cost one line.
+          ref: ${{ github.event.pull_request.base.sha }}
+
       - id: detect
         if: github.event_name == 'pull_request'
         shell: bash
@@ -707,6 +733,16 @@ jobs:
           ZETA_PERF_OBS_FILE: ${{ runner.temp }}/zeta-perf-obs.log
         run: dotnet test Zeta.sln -c Release --no-build --verbosity normal --blame-crash --blame-hang-timeout 15m
 
+      - name: Retain unexpected TLC attempts
+        if: always() && needs.path-filter.outputs.code == 'true'
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: tlc-diagnostics-${{ matrix.os }}-${{ github.run_attempt }}
+          path: TestResults/tlc-diagnostics/
+          include-hidden-files: true
+          if-no-files-found: ignore
+          retention-days: 7
+
       - name: Perf assertion ledger (regression vs flake)
         # THE COLLECTOR. `PerfObservation.emit` (F#) has printed `##perf-obs` lines on every perf
         # assertion for weeks and nothing has ever read them -- two tested halves and no pipeline,
@@ -836,6 +872,8 @@ jobs:
             ~/.dotnet/tools
             ~/.elan
             ~/.config/zeta
+            src/Core.TLA/tla2tools.jar
+            src/Core.Alloy/alloy.jar
             ~/.rustup/toolchains/1.99.0-beta.3-*
             ~/.rustup/settings.toml
             ~/.rustup/update-hashes
@@ -921,6 +959,8 @@ jobs:
             ~/.dotnet/tools
             ~/.elan
             ~/.config/zeta
+            src/Core.TLA/tla2tools.jar
+            src/Core.Alloy/alloy.jar
             ~/.rustup/toolchains/1.99.0-beta.3-*
             ~/.rustup/settings.toml
             ~/.rustup/update-hashes
@@ -1036,11 +1076,45 @@ jobs:
         run: |
           set -euo pipefail
           python3 -m venv .venv-yamllint
-          .venv-yamllint/bin/python -m pip install --upgrade pip
-          .venv-yamllint/bin/pip install yamllint==1.38.0
+          # NO `pip install --upgrade pip`. That was an UNPINNED network install on
+          # every run (Scorecard #457) buying nothing: the venv's own pip installs a
+          # hash-pinned requirements file perfectly well, and upgrading it first meant
+          # the tool that enforces our pins was itself unpinned.
+          #
+          # `--require-hashes` is what makes the file below load-bearing: pip refuses
+          # ANY requirement in it that lacks a hash, so a future addition cannot be
+          # slipped in unpinned. Scorecard #458.
+          .venv-yamllint/bin/pip install --require-hashes --no-deps \
+            -r tools/setup/manifests/yamllint-requirements.txt
           go install github.com/yannh/kubeconform/cmd/kubeconform@v0.7.0
           echo "$PWD/.venv-yamllint/bin" >> "$GITHUB_PATH"
           echo "$(go env GOPATH)/bin" >> "$GITHUB_PATH"
+
+      # The manifest roots, DERIVED from the cluster-tree roster rather than spelled twice
+      # below. Two reasons, and the second is a live fragility rather than tidiness:
+      #
+      #   1. `infra/k8s` is scheduled for deletion (081M00QCHWA087G0R000GKKRXD). Spelled
+      #      literally, this job is a `blocking` consumer that the deletion commit must edit;
+      #      derived, it needs no change at all.
+      #   2. `find` ERRORS on a missing directory. If the tree is deleted without editing this
+      #      file, `lint (yaml/k8s)` breaks — and it breaks in the kubeconform step, which
+      #      reads as a schema failure rather than as a missing path. `existingClusterDirs`
+      #      emits only roots that are present, so the deletion degrades to "one fewer tree
+      #      scanned" instead of a misleading red.
+      #
+      # `agentic-organization/deploy` is not a cluster tree and stays literal.
+      - name: Declared cluster manifest roots (derived from the roster)
+        id: manifest-roots
+        run: |
+          set -euo pipefail
+          roots="$(bun -e 'import { existsSync } from "node:fs"; import { clusterK8sRoots, readDeclaredTrees } from "./src/Core.TypeScript/cluster/declared-cluster-trees.ts"; process.stdout.write(clusterK8sRoots(readDeclaredTrees()).filter((r) => existsSync(r)).join(" "))')"
+          if [ -z "$roots" ]; then
+            echo "REFUSED: the roster declares no cluster k8s root that exists on disk." >&2
+            echo "Scanning nothing would pass silently, which is the failure this step exists to avoid." >&2
+            exit 1
+          fi
+          echo "roots=$roots" >> "$GITHUB_OUTPUT"
+          echo "[yaml/k8s] manifest roots: $roots agentic-organization/deploy"
 
       - name: yamllint (k8s manifests)
         # relaxed profile: structural correctness (indent/dup-key/syntax), not
@@ -1050,7 +1124,12 @@ jobs:
         # were never validated by anything. They reach a cluster via ArgoCD sync, so a
         # malformed one failed at APPLY time on real hardware instead of here. That is
         # the wrong place to find it once runners live on USB-provisioned nodes.
-        run: yamllint -d relaxed full-ai-cluster/k8s/ infra/k8s/ agentic-organization/deploy/
+        env:
+          ROOTS: ${{ steps.manifest-roots.outputs.roots }}
+        run: |
+          set -euo pipefail
+          read -ra manifest_roots <<< "$ROOTS"
+          yamllint -d relaxed "${manifest_roots[@]}" agentic-organization/deploy/
 
       - name: kubeconform (k8s API-schema validation)
         # -ignore-missing-schemas: skip CRs we have no schema for; -skip:
@@ -1065,7 +1144,7 @@ jobs:
         # Kubernetes released most recently, which is NOT the version any of our
         # clusters run and which DRIFTS UNDER US with no commit here. The pin's
         # provenance was this repo's own already-declared target: the `kube-version`
-        # default in infra/k8s/tests/validate-applications.ts, which the helm-validate
+        # default in full-ai-cluster/k8s/tests/validate-applications.ts, which the helm-validate
         # lane had been rendering against for the other cluster tree. Two lanes
         # validating the same kinds against two different Kubernetes versions is the
         # drift that closed.
@@ -1078,15 +1157,18 @@ jobs:
         # which is how this comment's own stale number was found. MEASURED on the agentic-org tree before landing: 26
         # resources in 12 files, Valid 26 / Invalid 0 both with and without the flag,
         # so the pin changes no verdict today -- it fixes WHICH QUESTION is being asked.
+        env:
+          ROOTS: ${{ steps.manifest-roots.outputs.roots }}
         run: |
           # READ, not written here. This was a literal 1.33.0 while the observability
           # audit said 1.31.0 and k3s shipped 1.35.6 -- the very drift the comment above
           # says this pin closes, left open in a third lane.
+          read -ra manifest_roots <<< "$ROOTS"
           kube_version="$(python3 -c 'import json;print(json.load(open("full-ai-cluster/k8s/kubernetes-version.json"))["kubernetesVersion"])')"
           echo "[yaml/k8s] validating against Kubernetes $kube_version (declared)"
           crd_kinds="Application,Blueprint,CiliumL2AnnouncementPolicy,CiliumLoadBalancerIPPool,ClusterIssuer,ConstraintTemplate,Deployable,Gateway,HTTPRoute,Hat,HatConflict,HatCooldown,HatMaxBindings,HatMaxNew,HatNoCycle,HatPolicy,HatQuorum,HatWarmup,HelmChart,Policy"
           kc() {
-            find full-ai-cluster/k8s infra/k8s agentic-organization/deploy -type f \( -name '*.yaml' -o -name '*.yml' \) -print0 \
+            find "${manifest_roots[@]}" agentic-organization/deploy -type f \( -name '*.yaml' -o -name '*.yml' \) -print0 \
               | xargs -0 kubeconform -strict -ignore-missing-schemas -summary -schema-location default -kubernetes-version "$kube_version" -skip "$crd_kinds"
           }
           kc || { echo "[yaml/k8s] retry in 30s (schema-registry rate limit?)"; sleep 30; kc; } \
@@ -1192,6 +1274,8 @@ jobs:
             ~/.dotnet/tools
             ~/.elan
             ~/.config/zeta
+            src/Core.TLA/tla2tools.jar
+            src/Core.Alloy/alloy.jar
             ~/.rustup/toolchains/1.99.0-beta.3-*
             ~/.rustup/settings.toml
             ~/.rustup/update-hashes
@@ -1366,6 +1450,18 @@ jobs:
       - name: Run the ZetaFS virtual-path healer falsifiers
         run: bun test src/Core.TypeScript/hygiene/healers/zetafs-virtual-path.test.ts
 
+      # A k3s manifest declared on an AGENT is written and never applied — the deploy
+      # controller that submits them runs on a server. Found 2026-09-07 by evaluating the
+      # flake: worker-gpu (role=agent) declares nvidia-device-plugin, control-plane does not,
+      # and no ArgoCD Application exists — so GPUs are never advertised to the scheduler.
+      # Two hosts are acknowledged in the audit with a LIFTS condition; the roster may only
+      # shrink, and its own test goes red if a fix lands without trimming it.
+      - name: k3s manifests reach a server (an agent writes them and nothing applies them)
+        run: bun run hygiene:k3s-manifests-reach-a-server
+
+      - name: k3s manifest audit — falsifiers (proves it goes red)
+        run: bun test src/Core.TypeScript/hygiene/audit-k3s-manifests-reach-a-server.test.ts
+
       - name: Ambient-credential-hoist guard
         id: cred_hoist
         # Refuses any tracked executable surface that puts a credential into a
@@ -1393,6 +1489,20 @@ jobs:
         # Exits 2 if it scans fewer workflows than its floor, so a scope
         # regression cannot report success the way `lint:markdown` did (#10712).
         run: bun run hygiene:no-decide-by-grep
+
+      - name: No committed build intermediates (output must not outrank its source)
+        id: no_committed_build_intermediates
+        # .claude/rules/no-binary-in-proof-lineage.md excludes build intermediates
+        # from the "artifact under test" exception, but its enforcer
+        # (audit-proof-lineage-binaries.ts) is scoped to src/wasm-dla/bytelock/ --
+        # correct for that exception, silent about the rest of the tree. The gap
+        # was live: src/Core.Alloy/classes/AlloyRunner.class was tracked because
+        # .gitignore still named tools/alloy/classes/ after the tree moved.
+        # Alloy.Runner.Tests.fs skips javac when the .class is NEWER than the
+        # .java, so a committed intermediate silently decided what the
+        # formal-methods harness ran. Scorecard saw it (BinaryArtifactsID 244);
+        # no in-repo check did.
+        run: bun run hygiene:no-committed-build-intermediates
 
       - name: Orphaned doc comments (a docstring that documents the wrong symbol)
         id: orphaned_doc_comments
@@ -1971,6 +2081,84 @@ jobs:
       - name: Run check-tick-history-order
         run: bun src/Core.TypeScript/hygiene/check-tick-history-order.ts
 
+  # The triangle meter, as a NON-BLOCKING drift step (Aaron 2026-09-06: "wire it into
+  # gate as a non-blocking drift step").
+  #
+  # It reports where the tracked bytes sit across generator / joins / observability, and
+  # on a pull request also which way THIS PR moves the ratio. It is not in
+  # `registry/uncompensatable-floor.yaml`, so it cannot block a merge — the floor is the
+  # only thing `gate (required)` rolls up. That is deliberate: byte composition is a
+  # direction to watch, never a bar to clear, and a composition check that could block
+  # would be a bar nobody agreed to.
+  #
+  # WHY THE STEP IS `continue-on-error` AND WHAT THAT COSTS. The meter exits non-zero on
+  # one condition: over 20% of tracked bytes unclassified, meaning its rules no longer
+  # cover the tree and the number would be a guess. Swallowing that here is intentional —
+  # but this file already documents that a step-level swallow produces a green job with a
+  # failed step and no red X anywhere, which is precisely the class `drift (loud)` exists
+  # to surface. So the refusal is absorbed here and reported there. It is quiet in this
+  # job and loud in the one whose job is loudness, which is the arrangement this workflow
+  # already uses on purpose.
+  #
+  # NO `bun install`. The meter imports only `node:child_process`, `node:fs` and
+  # `node:path`, so the locked graph is not needed and an apt/registry stall cannot
+  # suppress the reading.
+  #
+  # It is invoked through the `hygiene:triangle-corners` package script rather than by
+  # path, because `audit-linter-coverage-vs-invocation` requires that a CONFIGURED tool
+  # be an INVOKED one — which is the same discipline this meter's own document argues
+  # under a different name: an artifact nobody consults stores nothing. Registering the
+  # script without wiring it here is exactly what that audit caught.
+  drift-triangle-corners:
+    name: drift (triangle corners)
+    timeout-minutes: 10
+    runs-on: ubuntu-24.04
+    if: always()
+
+    steps:
+      # `git ls-tree -r -l` reads tree entries AND blob sizes, so this must be an
+      # unfiltered checkout. depth 1 is enough — the meter measures ONE commit; the
+      # comparison base is fetched separately below, also at depth 1.
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Setup pinned Bun
+        uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
+        with:
+          bun-version: "1.3.13"
+
+      # A probe that fails is UNKNOWN, never a negative result. If the base commit
+      # cannot be fetched, this says so and the composition is still reported without a
+      # direction — it must never print "no movement" when it could not look.
+      - name: Fetch the comparison base (pull requests only)
+        id: base
+        if: github.event_name == 'pull_request'
+        continue-on-error: true
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        run: |
+          set -euo pipefail
+          if git fetch --depth=1 origin "$BASE_SHA" 2>/dev/null; then
+            echo "base=$BASE_SHA" >> "$GITHUB_OUTPUT"
+            echo "comparison base available: $BASE_SHA"
+          else
+            echo "base=" >> "$GITHUB_OUTPUT"
+            echo "comparison base UNAVAILABLE for $BASE_SHA - direction will be reported as unknown, not as zero"
+          fi
+
+      - name: Measure the triangle corners
+        continue-on-error: true
+        env:
+          BASE: ${{ steps.base.outputs.base }}
+        run: |
+          set -euo pipefail
+          if [ -n "${BASE:-}" ]; then
+            bun run hygiene:triangle-corners --since "$BASE"
+          else
+            echo "direction of travel: UNKNOWN (no comparison base on this event)"
+            bun run hygiene:triangle-corners
+          fi
+
   lint-no-conflict-markers:
     # Fail if any committed file contains git merge-conflict markers
     # (`<<<<<<<`, `=======`, `>>>>>>>`). Maintainer 2026-04-26 ask:
@@ -2002,6 +2190,8 @@ jobs:
             ~/.dotnet/tools
             ~/.elan
             ~/.config/zeta
+            src/Core.TLA/tla2tools.jar
+            src/Core.Alloy/alloy.jar
             ~/.rustup/toolchains/1.99.0-beta.3-*
             ~/.rustup/settings.toml
             ~/.rustup/update-hashes
@@ -2071,6 +2261,8 @@ jobs:
             ~/.dotnet/tools
             ~/.elan
             ~/.config/zeta
+            src/Core.TLA/tla2tools.jar
+            src/Core.Alloy/alloy.jar
             ~/.rustup/toolchains/1.99.0-beta.3-*
             ~/.rustup/settings.toml
             ~/.rustup/update-hashes
@@ -2137,6 +2329,8 @@ jobs:
             ~/.dotnet/tools
             ~/.elan
             ~/.config/zeta
+            src/Core.TLA/tla2tools.jar
+            src/Core.Alloy/alloy.jar
             ~/.rustup/toolchains/1.99.0-beta.3-*
             ~/.rustup/settings.toml
             ~/.rustup/update-hashes
@@ -2273,6 +2467,55 @@ jobs:
       - name: Clone-at-a-tag is still sufficient (no ace-as-resolver)
         run: bun src/Core.TypeScript/hygiene/lint-clone-at-tag-is-sufficient.ts
 
+      # The same invariant, one layer down. `tools/setup/manifests/pinned-refs` is a
+      # MIRROR of pins written at their point of use (a container digest lives in the
+      # Dockerfile, where `docker build` reads it with no package manager present).
+      # This refuses whenever a registry row disagrees with the file, which is what
+      # keeps the mirror from quietly becoming the source. OFFLINE -- no network.
+      # 081M23NT5VX087G0R000KAFE45
+      - name: Pinned refs still match their point of use (registry is a mirror)
+        run: bun src/Core.TypeScript/ace/refresh-pins.ts --verify
+
+      # The premise under the dismissal of Dependabot alert #15 (mathjs prototype
+      # pollution, riding on the `quantum-circuit` second oracle the maintainer kept).
+      # A dismissal whose premise nothing checks is the vacuity class; this is the
+      # check. Offline parts every run; the upstream part reports UNKNOWN when
+      # node_modules is absent, and UNKNOWN is never counted as a pass.
+      - name: mathjs dismissal premise still holds (alert #15)
+        run: bun src/Core.TypeScript/hygiene/lint-mathjs-dismissal-premise.ts
+
+      # An `overrides` entry is a SECURITY CONTROL written as a version string --
+      # it is how this tree carries a transitive dependency past a CVE its own
+      # parent will not release. Nothing checked that it took effect. Measured
+      # 2026-09-09: the `smol-toml` override had sat at 1.6.1 since 2026-04-21
+      # while markdownlint-cli2 declared an exact 1.7.0, so the override was
+      # silently DOWNGRADING the tool the markdown gate runs on -- to the version
+      # that never returns on CVE-2026-85730. This refuses an override that any
+      # lockfile has drifted from, that is a range rather than a pin, or that is
+      # NESTED (bun ignores nested overrides, so npm would show a fix bun never
+      # installs -- a fix only the scanner can see). OFFLINE -- no network.
+      # 081M24D4APR087G0R001QRQ071
+      - name: Root overrides take effect in BOTH lockfiles (not just the scanner's)
+        run: bun src/Core.TypeScript/hygiene/lint-overrides-take-effect.ts
+
+      # The declared auto-accept exceptions for ROLLING `from-url` rows. An
+      # exception with no enforcement is a licence, so this refuses a row that is
+      # EXPIRED, that runs past the 90-day ceiling, that names a NON-rolling row,
+      # that uses any accept= mode but `auto`, that has a duplicate, or whose
+      # tradeoff doc never states what an attacker gains. OFFLINE -- no network.
+      # 081M24396B2087G0R000MDMDEA
+      - name: Rolling auto-accept exceptions are declared, bounded and unexpired
+        run: bun src/Core.TypeScript/hygiene/lint-rolling-exceptions.ts
+
+      # ...and the PREMISE under the one exception that exists: the row's own
+      # `exitcheck=`, RUN rather than merely declared. A declared-but-never-
+      # executed check is the defect the lint above exists to prevent, one level
+      # up. Red when no gate-tier model expects the named-temporal diagnostic
+      # that only the rolling build provides -- i.e. when the reason for
+      # tolerating a rolling upstream at all has evaporated.
+      - name: tla2tools rolling premise still holds (the exception's own exitcheck)
+        run: bun src/Core.TypeScript/hygiene/lint-tla2tools-rolling-premise.ts
+
       # A flake ref evaluates PURE by default, and pure-eval `builtins.pathExists`
       # on an absolute path returns FALSE rather than erroring (measured 2026-08-21,
       # Nix 2.34.6). Every full-ai-cluster module reading /etc/zeta guards its
@@ -2288,6 +2531,11 @@ jobs:
             src/Core.TypeScript/hygiene/audit-build-graph-completeness.test.ts \
             src/Core.TypeScript/hygiene/lint-clone-at-tag-is-sufficient.test.ts \
             src/Core.TypeScript/hygiene/lint-nixos-rebuild-needs-impure.test.ts \
+            src/Core.TypeScript/hygiene/lint-mathjs-dismissal-premise.test.ts \
+            src/Core.TypeScript/hygiene/lint-rolling-exceptions.test.ts \
+            src/Core.TypeScript/hygiene/lint-overrides-take-effect.test.ts \
+            src/Core.TypeScript/ace/setup-realizers/rolling-exception.test.ts \
+            src/Core.TypeScript/ace/refresh-pins.test.ts \
             src/Core.TypeScript/ci/affected-legs.test.ts
 
       # OBSERVE-ONLY. Nothing reads these outputs yet, and that is deliberate: the
@@ -2766,6 +3014,14 @@ jobs:
       - name: Install root dependencies (the builder's imports)
         run: bun install --frozen-lockfile
 
+      # `stagePagesWasmAssets` THROWS on a missing WASM source, and since 2026-09-10 the six
+      # oracle modules are BUILT rather than committed — so this job has to build them for the
+      # same reason `pages-deploy.yml` does. This job runs the deploy's own build entry; if
+      # that entry needs an artefact then so does this job, or the two have drifted apart,
+      # which is exactly what this job exists to prevent.
+      - name: Build the six WASM oracle substrates from source
+        uses: ./.github/actions/build-wasm-substrates
+
       - name: Build the site exactly as pages-deploy does (install + check + pages build)
         run: bun ./src/Core.TypeScript/discovery/identity-dla-pages-build.ts
 
@@ -2857,6 +3113,8 @@ jobs:
             ~/.dotnet/tools
             ~/.elan
             ~/.config/zeta
+            src/Core.TLA/tla2tools.jar
+            src/Core.Alloy/alloy.jar
             ~/.rustup/toolchains/1.99.0-beta.3-*
             ~/.rustup/settings.toml
             ~/.rustup/update-hashes
@@ -2914,6 +3172,8 @@ jobs:
             ~/.dotnet/tools
             ~/.elan
             ~/.config/zeta
+            src/Core.TLA/tla2tools.jar
+            src/Core.Alloy/alloy.jar
             ~/.rustup/toolchains/1.99.0-beta.3-*
             ~/.rustup/settings.toml
             ~/.rustup/update-hashes
@@ -2971,6 +3231,8 @@ jobs:
             ~/.dotnet/tools
             ~/.elan
             ~/.config/zeta
+            src/Core.TLA/tla2tools.jar
+            src/Core.Alloy/alloy.jar
             ~/.rustup/toolchains/1.99.0-beta.3-*
             ~/.rustup/settings.toml
             ~/.rustup/update-hashes
@@ -3028,6 +3290,8 @@ jobs:
             ~/.dotnet/tools
             ~/.elan
             ~/.config/zeta
+            src/Core.TLA/tla2tools.jar
+            src/Core.Alloy/alloy.jar
             ~/.rustup/toolchains/1.99.0-beta.3-*
             ~/.rustup/settings.toml
             ~/.rustup/update-hashes
@@ -3085,6 +3349,8 @@ jobs:
             ~/.dotnet/tools
             ~/.elan
             ~/.config/zeta
+            src/Core.TLA/tla2tools.jar
+            src/Core.Alloy/alloy.jar
             ~/.rustup/toolchains/1.99.0-beta.3-*
             ~/.rustup/settings.toml
             ~/.rustup/update-hashes
@@ -3237,15 +3503,19 @@ jobs:
           - stage0-independence
           - step-output-writers
           - action-sha-roster
+          - unhashed-dependencies
           - task-zetaid-resolves
           - credential-role-separation
           - coauthor-identity-collision
           - write-token-consistency
+          - transient-retry-parity
+          - scanner-cancels-itself
           - heartbeat-lane-attestations
           - heartbeat-lane-audit-tests
           - push-without-rebase
           - skip-token-cannot-land
           - dotnet-pin-parity
+          - dotnet-band-unity
           - argocd-pin-parity
           - committed-chart-credentials
           - committed-chart-credentials-tests
@@ -3253,16 +3523,20 @@ jobs:
           - bootstrap-application-pin-parity-tests
           - argocd-pin-parity-tests
           - mise-toolchain-couplings
+          - mise-lock-coverage
+          - mise-lock-coverage-tests
           - flash-entrypoint-parity
           - chart-target-revisions
           - image-source-provenance
           - image-source-provenance-tests
           - reason-truth
+          - chart-assertion-census
           - no-raw-nul-in-source
           - concept-registry-drift
           - tech-radar-claims
           - tech-radar-audit-tests
           - check-then-use-races
+          - hand-rolled-io
           - mumps-zeta-id
           - zeta-id-gen-layout-drift
           - algebra-tower-drift
@@ -3456,6 +3730,15 @@ jobs:
         # neither may be a documentation-only proof artifact.
         run: bun test src/Core.TypeScript/planning/light-time-endpoint-speed-envelope.test.ts src/Core.TypeScript/planning/orbital-independent-check.test.ts
 
+      # `identity-dla-pages-wasm-behavior.test.ts` INSTANTIATES all six oracle modules and
+      # checks each against `testdata/golden-seed-*.json`. It used to read them out of the
+      # tree, because they were committed; since 2026-09-10 they are built. A test that
+      # cannot find its subject is not a skip here — `identity-dla-pages-wasm-assets.test.ts`
+      # asserts each source exists — so this step is what keeps the suite honest rather than
+      # what keeps it green.
+      - name: Build the six WASM oracle substrates the discovery suite instantiates
+        uses: ./.github/actions/build-wasm-substrates
+
       - name: Tier manifest (what the hermetic tier deliberately does not run, and why)
         # Printed BEFORE the suite, pass or fail, so the log states the tier's own boundary
         # instead of leaving a reader to infer it from an absence. It also exits non-zero on
@@ -3518,6 +3801,8 @@ jobs:
             ~/.dotnet/tools
             ~/.elan
             ~/.config/zeta
+            src/Core.TLA/tla2tools.jar
+            src/Core.Alloy/alloy.jar
             ~/.rustup/toolchains/1.99.0-beta.3-*
             ~/.rustup/settings.toml
             ~/.rustup/update-hashes
@@ -3614,7 +3899,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
-      - name: Cache install.sh outputs (mise runtimes + cargo + dotnet)
+      - name: Cache install.sh outputs (mise runtimes + cargo + dotnet + verifier jars)
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: |
@@ -3624,6 +3909,8 @@ jobs:
             ~/.dotnet/tools
             ~/.elan
             ~/.config/zeta
+            src/Core.TLA/tla2tools.jar
+            src/Core.Alloy/alloy.jar
             ~/.rustup/toolchains/1.99.0-beta.3-*
             ~/.rustup/settings.toml
             ~/.rustup/update-hashes
@@ -4097,11 +4384,22 @@ jobs:
           sparse-checkout: |
             src/Core.TypeScript/ci/drift-loud.ts
             src/Core.TypeScript/ci/verdict-drought.ts
+            src/Core.TypeScript/ci/workflow-enablement.ts
+            src/Core.TypeScript/io/safe-io.ts
+            registry/workflow-enablement.json
             data/platform-drift.json
           sparse-checkout-cone-mode: false
 
-      # Bun only — the reporter imports nothing but node built-ins, so this job never
-      # runs `bun install` (~2-4 min) for a ~30 s fold.
+      # Bun only — the reporter imports nothing but node built-ins and ONE in-repo
+      # module (`io/safe-io.ts`, which itself imports only node built-ins), so this
+      # job never runs `bun install` (~2-4 min) for a ~30 s fold.
+      #
+      # THE SPARSE LIST ABOVE IS LOAD-BEARING AND SILENT ABOUT IT, which is worth a
+      # line because it already bit: a sparse checkout does not fail at checkout time
+      # when a file is missing, it fails at RUN time with `Cannot find module`, in a
+      # job whose whole job is to report on other jobs. If either reporter grows an
+      # in-repo import, it must be added above or this lane goes red for a reason that
+      # has nothing to do with drift.
       - name: Setup Bun
         uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
 
@@ -4155,3 +4453,35 @@ jobs:
         run: |
           bun src/Core.TypeScript/ci/verdict-drought.ts \
             --repo "$REPO" --window 60
+
+      # THE THIRD QUESTION IN THIS JOB, and the one no static guard can reach.
+      #
+      # The two steps above ask "which failures were absorbed?" and "is main being checked
+      # at all?" -- both questions about runs that EXIST. This one asks whether a committed
+      # workflow is ALLOWED TO RUN. GitHub carries a per-workflow administrative `state`
+      # (active / disabled_manually / disabled_inactivity) that lives only in the forge, so
+      # a disabled lane sits at its correct path, valid, referenced by prose and rosters,
+      # and emits zero runs -- no run, no red X. Every workflow guard in this repo reads
+      # TEXT (lint-no-nested-workflow-dirs, lint-linter-coverage-vs-ci-invocation,
+      # lint-workflow-job-timeouts), so none of them can see it.
+      #
+      # Measured 2026-09-09: 16 of 105 workflows were disabled_manually and nothing named
+      # it. THOSE SIXTEEN ARE INTENTIONAL -- the maintainer stopped the cadence/heartbeat
+      # lanes because they commit on every scheduled run and were growing the repo, so this
+      # step records them and never argues for re-enabling any. The signal is the DELTA:
+      # the seventeenth disablement nobody wrote down, an entry that comes back to life, a
+      # roster row gone stale.
+      #
+      # DRIFT TIER, and forced rather than chosen: this is a live POPULATION query, which
+      # floor-live-remote-queries.ts refuses inside the blocking floor. A PR must not go red
+      # because somebody disabled a cadence lane an hour earlier.
+      #
+      # `if: always()` for the same reason as the step above -- one loud detector must never
+      # mute another.
+      - name: Report workflows the forge will not run, loudly
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+        run: |
+          bun src/Core.TypeScript/ci/workflow-enablement.ts --repo "$REPO"

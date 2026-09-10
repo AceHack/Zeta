@@ -1,0 +1,111 @@
+{
+  "CompletedUtc": "2026-09-06T20:18:54.989572+00:00",
+  "SourceCommit": "db9bb96d8b50489c0d5672d8ce579a083660cb24",
+  "Build": {
+    "FirstAttempt": "exit139 in unchanged SubstrateDiscovery compiler; retained",
+    "Isolation": "passed 0 warnings 0 errors",
+    "FullRetry": "passed 0 warnings 0 errors"
+  },
+  "Tests": {
+    "Failed": 0,
+    "Passed": 7470,
+    "Skipped": 6,
+    "Total": 7476,
+    "Assemblies": [
+      {
+        "Failed": 0,
+        "Passed": 21,
+        "Skipped": 0,
+        "Total": 21,
+        "Duration": "108 ms",
+        "Assembly": "Core.CSharp.Tests.dll"
+      },
+      {
+        "Failed": 0,
+        "Passed": 3,
+        "Skipped": 0,
+        "Total": 3,
+        "Duration": "21 ms",
+        "Assembly": "Tests.CSharp.TypeProvider.dll"
+      },
+      {
+        "Failed": 0,
+        "Passed": 12,
+        "Skipped": 0,
+        "Total": 12,
+        "Duration": "77 ms",
+        "Assembly": "Core.CSharp.Mediator.Tests.dll"
+      },
+      {
+        "Failed": 0,
+        "Passed": 38,
+        "Skipped": 0,
+        "Total": 38,
+        "Duration": "1 s",
+        "Assembly": "Tests.FSharp.Git.dll"
+      },
+      {
+        "Failed": 0,
+        "Passed": 413,
+        "Skipped": 0,
+        "Total": 413,
+        "Duration": "2 s",
+        "Assembly": "Tests.CSharp.dll"
+      },
+      {
+        "Failed": 0,
+        "Passed": 503,
+        "Skipped": 0,
+        "Total": 503,
+        "Duration": "6 s",
+        "Assembly": "Bayesian.Tests.dll"
+      },
+      {
+        "Failed": 0,
+        "Passed": 6480,
+        "Skipped": 6,
+        "Total": 6486,
+        "Duration": "5 m 39 s",
+        "Assembly": "Tests.FSharp.dll"
+      }
+    ]
+  },
+  "Format": {
+    "ExitCode": 0,
+    "Scope": "C#/VB supported; F# explicitly skipped by dotnet format"
+  },
+  "OwnSourceMismatches": [],
+  "ParentSourceMismatches": [
+    "src/Research.FSharp/RenderedSignalExperiment.fs",
+    "src/Research.FSharp/run-rendered-signal-experiment.fsx",
+    "src/Research.FSharp/measure-rendered-signal-inference.fsx",
+    "src/Research.FSharp/check-rendered-signal-kernel.fsx"
+  ],
+  "GitStatus": "",
+  "Logs": [
+    {
+      "Path": ".git/native-validation/build-retry.log",
+      "Sha256": "86d71bc4ccd5d0f515fbed28e64bd62f5849db41d5589cb44c43b00e6088a8a0"
+    },
+    {
+      "Path": ".git/native-validation/build.log",
+      "Sha256": "ec856e3a831b979dcea9c01806e4c7c650567bb176d4b9c3352e5c3b49fed54d"
+    },
+    {
+      "Path": ".git/native-validation/format.log",
+      "Sha256": "ae8df6a64c497f2902cd855c16aa7d23382405eae5e55aa25b6bfa733a8a7e14"
+    },
+    {
+      "Path": ".git/native-validation/sample.log",
+      "Sha256": "269d6112cee9abcf15fe84dd78e64fadb067d0a41243a95e3e9ba7f0207c297c"
+    },
+    {
+      "Path": ".git/native-validation/substrate-isolation.log",
+      "Sha256": "8508b1363a5a62ebe4b856ef6b34ed15fbff723b0485dd384057b05426b3c292"
+    },
+    {
+      "Path": ".git/native-validation/tests.log",
+      "Sha256": "7b9064d76a835143cc62438a8578f84782481c33eb413a4c2d5fcb0d2a2658cf"
+    }
+  ]
+}

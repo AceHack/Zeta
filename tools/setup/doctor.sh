@@ -9,12 +9,20 @@
 #   tools/setup/doctor.sh --json    # machine-readable output (future)
 #
 # Born round 32 after Aaron noted his jars ended up in random
-# locations before install.sh existed. Since #8053 the canonical
-# jars are COMMITTED to git at src/Core.TLA/tla2tools.jar and
-# src/Core.Alloy/alloy.jar -- the paths every runner loads -- so a
-# clone already has them and no install step fetches them. This
-# doctor checks the committed jars are intact and flags copies
-# elsewhere, which are the drift (081M001E114087G0R001AZF4KD).
+# locations before install.sh existed. The canonical paths every
+# runner loads are src/Core.TLA/tla2tools.jar and
+# src/Core.Alloy/alloy.jar, and since 081M23AST90087G0R00150MK76 they
+# arrive by two different routes:
+#
+#   tla2tools.jar  COMMITTED to git (#8053) -- a clone already has it,
+#                  and a missing file is a broken checkout.
+#   alloy.jar      FETCHED by install.sh from the digest-pinned row in
+#                  tools/setup/manifests/from-url -- a missing file
+#                  means install.sh has not run here yet.
+#
+# So the remedy differs by jar, and this doctor prints the right one.
+# It also flags copies elsewhere, which are the drift
+# (081M001E114087G0R001AZF4KD).
 
 set -euo pipefail
 
@@ -45,17 +53,22 @@ done
 echo
 
 # ── 2. Verifier jars at canonical locations ─────────────────────────
-echo "[2/7] Verifier jars (committed at the paths the runners load)"
+echo "[2/7] Verifier jars (at the paths the runners load)"
+# BOTH jars are fetched now (081M23ESC5B087G0R002HJ39DG). The TLA one used to be
+# committed, and its remedy used to be `git checkout --`, which after the
+# de-vendoring would have sent a user to restore a file git no longer tracks --
+# a remedy that cannot work is worse than none, because it reads as a diagnosis.
 for jar in "src/Core.TLA/tla2tools.jar" "src/Core.Alloy/alloy.jar"; do
+  remedy="it is fetched and digest-pinned; run: ./tools/setup/install.sh"
   if [ -f "$REPO_ROOT/$jar" ]; then
     size=$(stat -f%z "$REPO_ROOT/$jar" 2>/dev/null || stat -c%s "$REPO_ROOT/$jar" 2>/dev/null || echo 0)
     if [ "$size" -lt 100000 ]; then
-      warn "$jar exists but is suspiciously small (${size} B) — likely a broken checkout or an LFS-style placeholder"
+      warn "$jar exists but is suspiciously small (${size} B) — likely a broken checkout or a truncated fetch"
     else
       pass "$jar ($(( size / 1024 / 1024 )) MB)"
     fi
   else
-    fail "$jar missing — it is committed to git; restore with: git checkout -- $jar"
+    fail "$jar missing — $remedy"
   fi
 done
 
@@ -64,7 +77,7 @@ done
 if command -v bun >/dev/null 2>&1; then
   PROV="$REPO_ROOT/src/Core.TypeScript/hygiene/lint-verifier-jar-provenance.ts"
   if bun "$PROV" >/dev/null 2>&1; then
-    pass "jar provenance: docs match the committed jars"
+    pass "jar provenance: docs, manifest pins and rolling receipts all agree"
   else
     fail "jar provenance drift — run: bun $PROV"
   fi
@@ -74,14 +87,14 @@ fi
 echo
 
 # ── 3. Drift check: unused copies of the verifier jars ──────────────
-echo "[3/7] Jar-location drift (jars outside the committed src/Core.* paths)"
+echo "[3/7] Jar-location drift (jars outside the pinned src/Core.* paths)"
 DRIFT_FOUND=0
 for stray in $(find "$REPO_ROOT" \
                     -name "tla2tools*.jar" -o -name "alloy*.jar" \
                     2>/dev/null \
                     | grep -vE "/src/Core\.(TLA|Alloy)/" \
                     | grep -vE "/\.git/"); do
-  warn "stray verifier jar: ${stray#"$REPO_ROOT"/} -- the runners load the committed src/Core.TLA and src/Core.Alloy jars; this copy is unused (safe to delete)"
+  warn "stray verifier jar: ${stray#"$REPO_ROOT"/} -- the runners load the digest-pinned src/Core.TLA and src/Core.Alloy jars; this copy is unused (safe to delete)"
   DRIFT_FOUND=1
 done
 if [ "$DRIFT_FOUND" -eq 0 ]; then

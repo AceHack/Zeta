@@ -1,0 +1,291 @@
+{
+  "Schema": "zeta.precision-kernel-publication.independent-review.v1",
+  "HC8Commit": "8c2434003e638b36c347fb47a9397e4a848c041f",
+  "PublicationSource": "c1e6f0497afcc5078b03bfe8e797dc12e684cf58",
+  "PublicationEvidence": "e15821f4ab16ea70d16469d17fdb5d0252e00dd5",
+  "Scope": "Git/file/retained-byte bookkeeping; no project producer, comparator, native or test execution",
+  "Artifacts": [
+    {
+      "File": "00-archive-audit.py.gz",
+      "OriginalPath": ".git/precision-publication-independent-review-1/archive-audit.py",
+      "Bytes": 2227,
+      "Sha256": "24cd4b45c01367c0a475b2ab9bc173ebafd2e53221e051b8986d9505e293498c",
+      "StoredBytes": 1054,
+      "StoredSha256": "ee5e25ad7fa64e0935c7c55537aa6c81ed3d55abf124f5faec66f7ac94d8b1f0"
+    },
+    {
+      "File": "01-archive-process.json.gz",
+      "OriginalPath": ".git/precision-publication-independent-review-1/archive-process.json",
+      "Bytes": 12,
+      "Sha256": "340c11b4f67d82bc2269e32b423a47f7bff84fc090b5795edba7f82ef31ba2e5",
+      "StoredBytes": 32,
+      "StoredSha256": "36f734fd33beb9d96737af80b4d4fd2c5e821ddcdde6d282fb41ab7413b85e50"
+    },
+    {
+      "File": "02-archive-result.json.gz",
+      "OriginalPath": ".git/precision-publication-independent-review-1/archive-result.json",
+      "Bytes": 19411,
+      "Sha256": "0418180b9b564ed5590573fe54038eac1d574fc7b2aa0b176da84f87f9ad21fa",
+      "StoredBytes": 3617,
+      "StoredSha256": "2f4a6bfb3a772a35c21e610a7733f1483ede0bb582487c7abdd7da201fc60a16"
+    },
+    {
+      "File": "03-archive-stderr.txt.gz",
+      "OriginalPath": ".git/precision-publication-independent-review-1/archive-stderr.txt",
+      "Bytes": 0,
+      "Sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "StoredBytes": 20,
+      "StoredSha256": "9ceffb7310338057cfe71a4ae1e2c98d2c485d81cdef906532a801f457a38d64"
+    },
+    {
+      "File": "04-audit-attempt-1.py.gz",
+      "OriginalPath": ".git/precision-publication-independent-review-1/audit-attempt-1.py",
+      "Bytes": 11476,
+      "Sha256": "e96d3a750ea8360c9900134a136fef296c432de88a73eddac3b52f7302e8ad0c",
+      "StoredBytes": 4298,
+      "StoredSha256": "89a1d5b8470b4e4de1097868dcff58c0c116d0864fbb5e1cc6bc529826c98c33"
+    },
+    {
+      "File": "05-audit.py.gz",
+      "OriginalPath": ".git/precision-publication-independent-review-1/audit.py",
+      "Bytes": 11595,
+      "Sha256": "21805d8362e6e7318b9b45226a7d23b0e1d20be87b02877c0042551702d07775",
+      "StoredBytes": 4330,
+      "StoredSha256": "5509906e996dc160cbbb5a34aba921632cea1de4dacb907fccc6340ba66ca944"
+    },
+    {
+      "File": "06-process-2.json.gz",
+      "OriginalPath": ".git/precision-publication-independent-review-1/process-2.json",
+      "Bytes": 143,
+      "Sha256": "b096fcb34e794373faa48828b1b2d245357ce9dc1aa7c28bbef6310008b93589",
+      "StoredBytes": 143,
+      "StoredSha256": "6603c98f895e9b1ff415f3ca9666622740ccda36ad5935363276dab0fa64116d"
+    },
+    {
+      "File": "07-process.json.gz",
+      "OriginalPath": ".git/precision-publication-independent-review-1/process.json",
+      "Bytes": 142,
+      "Sha256": "c780e3d69a49c6d13ca9a9c4e77ca84e14b58918cc232b6c459edd54a24664a8",
+      "StoredBytes": 142,
+      "StoredSha256": "ce672b5816ea4d0b15ea497c434a47b7d34a826635aa31100f2d4f1bd340cb4b"
+    },
+    {
+      "File": "08-replay-audit-attempt-1.py.gz",
+      "OriginalPath": ".git/precision-publication-independent-review-1/replay-audit-attempt-1.py",
+      "Bytes": 4296,
+      "Sha256": "54034ccaa25283072bcb040b0713486791ffc55227ecb74be65aadd8e5d16a29",
+      "StoredBytes": 1597,
+      "StoredSha256": "661d130afb929a463c798ac8828baa1e05e7fa010db0dbfc62f86c64e2c435b9"
+    },
+    {
+      "File": "09-replay-audit.py.gz",
+      "OriginalPath": ".git/precision-publication-independent-review-1/replay-audit.py",
+      "Bytes": 4562,
+      "Sha256": "0f0c2d3aa88f4785d8360bef776c9533904b282591807cc8a80220dabd9eba20",
+      "StoredBytes": 1647,
+      "StoredSha256": "4552d156dc61d04febb18c1209837043e5ee2880d8e5ff2290672e76343fb829"
+    },
+    {
+      "File": "10-replay-process-2.json.gz",
+      "OriginalPath": ".git/precision-publication-independent-review-1/replay-process-2.json",
+      "Bytes": 50,
+      "Sha256": "02e51f3f4e15d69f048de39399f0db3f62312961f8f6b8bc3871a8614147a199",
+      "StoredBytes": 65,
+      "StoredSha256": "838f536d67cc3089a1a5ee23ee97b9079ac74f29f11ecaf73e65fbdb39613d96"
+    },
+    {
+      "File": "11-replay-process.json.gz",
+      "OriginalPath": ".git/precision-publication-independent-review-1/replay-process.json",
+      "Bytes": 49,
+      "Sha256": "fe26781eef028727b743658e2173f45981140af04f74c98f13a072bd947783d3",
+      "StoredBytes": 65,
+      "StoredSha256": "1eb1da3afc055ef5b7bc23a6702c3ef37906f1615166d6a506b009a7ad150a4d"
+    },
+    {
+      "File": "12-replay-result-2.json.gz",
+      "OriginalPath": ".git/precision-publication-independent-review-1/replay-result-2.json",
+      "Bytes": 9324,
+      "Sha256": "c0b343302a02cbf016c198b36c8aaf39c987540b0c85f22e4168eec55a5891cc",
+      "StoredBytes": 2275,
+      "StoredSha256": "241031a0fc8b55532320c8e313033feed9f5018f22f78d4726c9160ecac26503"
+    },
+    {
+      "File": "13-replay-result.json.gz",
+      "OriginalPath": ".git/precision-publication-independent-review-1/replay-result.json",
+      "Bytes": 0,
+      "Sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "StoredBytes": 20,
+      "StoredSha256": "9ceffb7310338057cfe71a4ae1e2c98d2c485d81cdef906532a801f457a38d64"
+    },
+    {
+      "File": "14-replay-stderr-2.txt.gz",
+      "OriginalPath": ".git/precision-publication-independent-review-1/replay-stderr-2.txt",
+      "Bytes": 0,
+      "Sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "StoredBytes": 20,
+      "StoredSha256": "9ceffb7310338057cfe71a4ae1e2c98d2c485d81cdef906532a801f457a38d64"
+    },
+    {
+      "File": "15-replay-stderr.txt.gz",
+      "OriginalPath": ".git/precision-publication-independent-review-1/replay-stderr.txt",
+      "Bytes": 505,
+      "Sha256": "fcee279e4d64a2d84dd39228d05dabfdb020d5e9f97a366f2a120b20735fe865",
+      "StoredBytes": 265,
+      "StoredSha256": "9d1201c392d2d7a98580d1a3981c19d298a828441fb9ec07b31821b86ec6de92"
+    },
+    {
+      "File": "16-result-2.json.gz",
+      "OriginalPath": ".git/precision-publication-independent-review-1/result-2.json",
+      "Bytes": 191964,
+      "Sha256": "9611029065236d2de61144c03455646bc4701ed328d2ba6104f42c0a55a353fb",
+      "StoredBytes": 24133,
+      "StoredSha256": "9d04420dd8881e9c9bd9a89abc1b1bbf730f4ecbedc46590e3a17213f7f2d620"
+    },
+    {
+      "File": "17-result.json.gz",
+      "OriginalPath": ".git/precision-publication-independent-review-1/result.json",
+      "Bytes": 0,
+      "Sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "StoredBytes": 20,
+      "StoredSha256": "9ceffb7310338057cfe71a4ae1e2c98d2c485d81cdef906532a801f457a38d64"
+    },
+    {
+      "File": "18-stderr-2.txt.gz",
+      "OriginalPath": ".git/precision-publication-independent-review-1/stderr-2.txt",
+      "Bytes": 0,
+      "Sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "StoredBytes": 20,
+      "StoredSha256": "9ceffb7310338057cfe71a4ae1e2c98d2c485d81cdef906532a801f457a38d64"
+    },
+    {
+      "File": "19-stderr.txt.gz",
+      "OriginalPath": ".git/precision-publication-independent-review-1/stderr.txt",
+      "Bytes": 883,
+      "Sha256": "75595d65472cf363f891f65a801f1f6bb1a49dc2488cb909ca47c3ef32975b75",
+      "StoredBytes": 446,
+      "StoredSha256": "6a15d7cc692f369cc42a3b9d4a4a96d7705306d0e12405892f208b761ade7a61"
+    },
+    {
+      "File": "20-adr-disposition-diff.txt.gz",
+      "OriginalPath": ".git/precision-publication-independent-review-1/adr-disposition-diff.txt",
+      "Bytes": 3841,
+      "Sha256": "7d261cbe42f05a6e8096e27a292b7a39ef510fcd0d0e672542f7bc93f5a9d7b5",
+      "StoredBytes": 1548,
+      "StoredSha256": "a3a4357a716b80035c6512e3da06cd68e27d5c74ecfbb32a83a278303933a9ba"
+    },
+    {
+      "File": "21-hc8-markdownlint-final-process.json.gz",
+      "OriginalPath": ".git/precision-publication-independent-review-1/hc8-markdownlint-final-process.json",
+      "Bytes": 12,
+      "Sha256": "340c11b4f67d82bc2269e32b423a47f7bff84fc090b5795edba7f82ef31ba2e5",
+      "StoredBytes": 32,
+      "StoredSha256": "36f734fd33beb9d96737af80b4d4fd2c5e821ddcdde6d282fb41ab7413b85e50"
+    },
+    {
+      "File": "22-hc8-markdownlint-final.stderr.gz",
+      "OriginalPath": ".git/precision-publication-independent-review-1/hc8-markdownlint-final.stderr",
+      "Bytes": 0,
+      "Sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "StoredBytes": 20,
+      "StoredSha256": "9ceffb7310338057cfe71a4ae1e2c98d2c485d81cdef906532a801f457a38d64"
+    },
+    {
+      "File": "23-hc8-markdownlint-final.stdout.gz",
+      "OriginalPath": ".git/precision-publication-independent-review-1/hc8-markdownlint-final.stdout",
+      "Bytes": 0,
+      "Sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "StoredBytes": 20,
+      "StoredSha256": "9ceffb7310338057cfe71a4ae1e2c98d2c485d81cdef906532a801f457a38d64"
+    },
+    {
+      "File": "24-hc8-markdownlint-process.json.gz",
+      "OriginalPath": ".git/precision-publication-independent-review-1/hc8-markdownlint-process.json",
+      "Bytes": 12,
+      "Sha256": "f74025654699efb08aebdbf38b634b470d5a33287b520c51ae5b075a5b1d09c9",
+      "StoredBytes": 32,
+      "StoredSha256": "110bd350aabe6e398df518e03235fd029d036ae0988f8d6cb34a92e8d4b4f2ca"
+    },
+    {
+      "File": "25-hc8-markdownlint.stderr.gz",
+      "OriginalPath": ".git/precision-publication-independent-review-1/hc8-markdownlint.stderr",
+      "Bytes": 198,
+      "Sha256": "680e0448846d2d684d0e15d044953400483920f23fc7209e7266da2ffeb7ebdf",
+      "StoredBytes": 122,
+      "StoredSha256": "86f8a1a241689bbbedf09b8cc788f6835a68b05efcd3ce5ba6782b6a690d7ef7"
+    },
+    {
+      "File": "26-hc8-markdownlint.stdout.gz",
+      "OriginalPath": ".git/precision-publication-independent-review-1/hc8-markdownlint.stdout",
+      "Bytes": 0,
+      "Sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "StoredBytes": 20,
+      "StoredSha256": "9ceffb7310338057cfe71a4ae1e2c98d2c485d81cdef906532a801f457a38d64"
+    },
+    {
+      "File": "27-publication-markdownlint-final-process.json.gz",
+      "OriginalPath": ".git/precision-publication-independent-review-1/publication-markdownlint-final-process.json",
+      "Bytes": 12,
+      "Sha256": "340c11b4f67d82bc2269e32b423a47f7bff84fc090b5795edba7f82ef31ba2e5",
+      "StoredBytes": 32,
+      "StoredSha256": "36f734fd33beb9d96737af80b4d4fd2c5e821ddcdde6d282fb41ab7413b85e50"
+    },
+    {
+      "File": "28-publication-markdownlint-final.stderr.gz",
+      "OriginalPath": ".git/precision-publication-independent-review-1/publication-markdownlint-final.stderr",
+      "Bytes": 0,
+      "Sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "StoredBytes": 20,
+      "StoredSha256": "9ceffb7310338057cfe71a4ae1e2c98d2c485d81cdef906532a801f457a38d64"
+    },
+    {
+      "File": "29-publication-markdownlint-final.stdout.gz",
+      "OriginalPath": ".git/precision-publication-independent-review-1/publication-markdownlint-final.stdout",
+      "Bytes": 0,
+      "Sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "StoredBytes": 20,
+      "StoredSha256": "9ceffb7310338057cfe71a4ae1e2c98d2c485d81cdef906532a801f457a38d64"
+    },
+    {
+      "File": "30-publication-markdownlint-process.json.gz",
+      "OriginalPath": ".git/precision-publication-independent-review-1/publication-markdownlint-process.json",
+      "Bytes": 12,
+      "Sha256": "340c11b4f67d82bc2269e32b423a47f7bff84fc090b5795edba7f82ef31ba2e5",
+      "StoredBytes": 32,
+      "StoredSha256": "36f734fd33beb9d96737af80b4d4fd2c5e821ddcdde6d282fb41ab7413b85e50"
+    },
+    {
+      "File": "31-publication-markdownlint.stderr.gz",
+      "OriginalPath": ".git/precision-publication-independent-review-1/publication-markdownlint.stderr",
+      "Bytes": 0,
+      "Sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "StoredBytes": 20,
+      "StoredSha256": "9ceffb7310338057cfe71a4ae1e2c98d2c485d81cdef906532a801f457a38d64"
+    },
+    {
+      "File": "32-publication-markdownlint.stdout.gz",
+      "OriginalPath": ".git/precision-publication-independent-review-1/publication-markdownlint.stdout",
+      "Bytes": 0,
+      "Sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "StoredBytes": 20,
+      "StoredSha256": "9ceffb7310338057cfe71a4ae1e2c98d2c485d81cdef906532a801f457a38d64"
+    },
+    {
+      "File": "33-handoff-correction-diff.txt.gz",
+      "OriginalPath": ".git/precision-publication-independent-review-1/handoff-correction-diff.txt",
+      "Bytes": 2851,
+      "Sha256": "762596b38b31acb4529d89a51c535463369afb53cf6763ca9ef78aeb7dfda7f5",
+      "StoredBytes": 1373,
+      "StoredSha256": "9a70cc7de0b9634bef2b05d62393985440b3ddadb8e9801eebdfde81a4e10877"
+    },
+    {
+      "File": "34-handoff-correction-result.json.gz",
+      "OriginalPath": ".git/precision-publication-independent-review-1/handoff-correction-result.json",
+      "Bytes": 575,
+      "Sha256": "bc93dac7d7106d5ae9c24438d7f2c4a75ff5154690b32a1e17bfe3a32daef640",
+      "StoredBytes": 372,
+      "StoredSha256": "b3560bfea82868f05af3634048237eedee256f5957887cd1c111b527703fd209"
+    }
+  ],
+  "DocumentationDisposition": "b98f5256fcc29fd9d75c4ca2d18f8be6b7a5385b",
+  "HandoffCorrection": "3fe633b4bac2cbb1fa5ebd7d5597b5de89e84132"
+}

@@ -57,7 +57,37 @@
 import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 
-const WORKFLOW_DIR = ".github/workflows";
+export const SETTINGS_EXPECTED = "src/Core.TypeScript/hygiene/github-settings.expected.json";
+
+/**
+ * Recorded workflow enablement, path -> state.
+ *
+ * Read from the settings expectation rather than the Actions API on purpose: this lint runs
+ * in a lane with no network guarantee, and that file is itself compared against the live repo
+ * by `check-github-settings-drift`. So the state here is only as fresh as that check is green
+ * — which is a dependency worth naming rather than hiding, and is strictly better than
+ * reporting nothing about enablement at all.
+ *
+ * Missing or unreadable file yields an empty map: the lint then says states are unrecorded
+ * rather than claiming every lane is live.
+ */
+export function recordedWorkflowStates(root: string): ReadonlyMap<string, string> {
+  let text: string;
+  try {
+    text = readFileSync(join(root, SETTINGS_EXPECTED), "utf-8");
+  } catch (e) {
+    if ((e as NodeJS.ErrnoException).code === "ENOENT") return new Map();
+    throw e;
+  }
+  const parsed = JSON.parse(text) as { workflows?: readonly { path?: unknown; state?: unknown }[] };
+  const out = new Map<string, string>();
+  for (const w of parsed.workflows ?? []) {
+    if (typeof w.path === "string" && typeof w.state === "string") out.set(w.path, w.state);
+  }
+  return out;
+}
+
+export const WORKFLOW_DIR = ".github/workflows";
 
 /**
  * A drift publication artifact, as a PATTERN rather than a list.
@@ -314,6 +344,40 @@ if (import.meta.main) {
     process.exit(1);
   }
 
-  console.log(`ok: ${String(lanes.length)} drift publication lane(s) route via PR, fail loudly, and probe capability`);
-  for (const l of lanes) console.log(`  - ${l}`);
+  // SHAPE IS NOT LIVENESS, and this lint's own origin is the argument for saying so.
+  // It exists because drift-sweep computed a ledger and could not publish it for ten days
+  // behind a green check. Every rule above reads the workflow FILE — so a lane that is
+  // correctly shaped and *switched off entirely* satisfies all three and prints "ok".
+  // That is the same green over a frozen dashboard, one level out.
+  //
+  // The enablement state is not in the file, so it is read from
+  // `github-settings.expected.json`, which records it and is itself drift-checked against
+  // the live repo by `check-github-settings-drift`. Being disabled is a legitimate choice
+  // and is NOT a failure here — but it must not be reported as a publishing lane.
+  const states = recordedWorkflowStates(process.cwd());
+  const disabled = lanes.filter((l) => states.get(`.github/workflows/${l}`) === "disabled_manually");
+  const unknown = lanes.filter((l) => !states.has(`.github/workflows/${l}`));
+
+  console.log(
+    `ok (SHAPE): ${String(lanes.length)} drift publication lane(s) route via PR, fail loudly, and probe capability`,
+  );
+  for (const l of lanes) {
+    const st = states.get(`.github/workflows/${l}`) ?? "state unrecorded";
+    console.log(`  - ${l}${st === "active" ? "" : `   [${st}]`}`);
+  }
+  if (disabled.length === lanes.length && lanes.length > 0) {
+    console.log("");
+    console.log(
+      `NOTE: ALL ${String(lanes.length)} validated lane(s) are disabled_manually, so none of them ` +
+        `publishes anything today. The shape rules above still hold; they are just not exercised. ` +
+        `This is stated because a bare "ok" here would read as "drift publication is healthy", ` +
+        `which is the exact confusion this lint was built to end.`,
+    );
+  } else if (disabled.length > 0) {
+    console.log("");
+    console.log(`NOTE: ${String(disabled.length)} of ${String(lanes.length)} lane(s) are disabled and publish nothing: ${disabled.join(", ")}`);
+  }
+  if (unknown.length > 0) {
+    console.log(`NOTE: ${String(unknown.length)} lane(s) have no recorded state: ${unknown.join(", ")}`);
+  }
 }

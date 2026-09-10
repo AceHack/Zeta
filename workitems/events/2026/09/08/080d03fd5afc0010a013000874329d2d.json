@@ -1,0 +1,14 @@
+{
+  "id": "080d03fd5afc0010a013000874329d2d",
+  "at": "2026-09-08T06:18:52.672Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1ZTPQW0087G0R001ZM8PFA",
+    "type": "task",
+    "title": "D10 applyRetention does not persist catalog noteFreeze does once",
+    "slug": "d10-applyretention-does-not-persist-catalog-notefreeze-does",
+    "priority": "P2",
+    "filename": "081M1ZTPQW0087G0R001ZM8PFA-d10-applyretention-does-not-persist-catalog-notefreeze-does.md"
+  }
+}

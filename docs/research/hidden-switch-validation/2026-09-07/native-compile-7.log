@@ -1,0 +1,8 @@
+
+
+/Users/acehack/.zeta/agents/codex/Zeta-rendered-predictor-native-20260906/src/Research.FSharp/HiddenSwitchRuntime.fsx(98,33): error FS0001: Type mismatch. Expecting a
+    'FieldId array'    
+but given a
+    'HiddenSwitchReceipt.LoadedAssembly array'    
+The type 'FieldId' does not match the type 'HiddenSwitchReceipt.LoadedAssembly'
+

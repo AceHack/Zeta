@@ -23,7 +23,7 @@
 
 import { readFileSync, writeFileSync, mkdirSync, rmSync } from "node:fs";
 import { join } from "node:path";
-import { execSync } from "node:child_process";
+import { execFileSync } from "node:child_process";
 
 interface IrOp { op: string; k?: number; s?: number; k_bigint?: string }
 interface ZetaIrV2 { schema: string; generator: string; version: number; width: number; ops: IrOp[] }
@@ -39,6 +39,31 @@ interface OracleResult {
   language: string;
   outputs: Record<string, string>; // input_id → output_value
   error?: string;
+}
+
+/**
+ * WHY A HELPER AND NOT `e.message`. `execSync` ran through a shell, so the rust
+ * lane could write a stderr redirect and fold the compiler diagnostics into
+ * stdout, where a failure carried them in `e.message`. `execFileSync` has no
+ * shell, so the two streams stay separate and `e.message` degrades to
+ * "Command failed: <argv>" -- the argv, never the reason. This puts stderr back
+ * in front of it.
+ *
+ * That matters more here than in ordinary tooling. Every catch below reports a
+ * failure as "<toolchain> not available", and `expectEveryLaneExecuted` quotes
+ * that string as the CAUSE a byte-lock oracle did not run. A real crash inside a
+ * lane, wearing a missing-toolchain label, is a wrong diagnosis attached to the
+ * N in "N independent implementations agree".
+ *
+ * 400 rather than the 100 the call sites used: a truncation that cuts a path in
+ * half names nothing.
+ */
+function describeExecFailure(e: unknown): string {
+  const err = e as { stderr?: unknown; message?: unknown };
+  const stderr = typeof err.stderr === "string" ? err.stderr.trim() : "";
+  const message = typeof err.message === "string" ? err.message : String(e);
+  const full = stderr ? stderr + " | " + message : message;
+  return full.slice(0, 400);
 }
 
 function generateAndRunTS(ir: ZetaIrV2, inputs: [string, string][], tmpDir: string): OracleResult {
@@ -58,10 +83,10 @@ process.stdout.write(JSON.stringify(out));`;
   const file = join(tmpDir, "oracle.ts");
   writeFileSync(file, script);
   try {
-    const stdout = execSync(`bun ${file}`, { encoding: "utf-8", timeout: 10000 });
+    const stdout = execFileSync("bun", [file], { encoding: "utf-8", timeout: 10000 });
     return { language: "typescript", outputs: JSON.parse(stdout) };
   } catch (e: any) {
-    return { language: "typescript", outputs: {}, error: e.message };
+    return { language: "typescript", outputs: {}, error: describeExecFailure(e) };
   }
 }
 
@@ -86,10 +111,10 @@ sys.stdout.write(json.dumps(out))`;
   const file = join(tmpDir, "oracle.py");
   writeFileSync(file, script);
   try {
-    const stdout = execSync(`python3 ${file}`, { encoding: "utf-8", timeout: 10000 });
+    const stdout = execFileSync("python3", [file], { encoding: "utf-8", timeout: 10000 });
     return { language: "python", outputs: JSON.parse(stdout) };
   } catch (e: any) {
-    return { language: "python", outputs: {}, error: e.message };
+    return { language: "python", outputs: {}, error: describeExecFailure(e) };
   }
 }
 
@@ -125,10 +150,10 @@ ${inputLines}
   const file = join(tmpDir, "oracle.go");
   writeFileSync(file, script);
   try {
-    const stdout = execSync(`go run ${file}`, { encoding: "utf-8", timeout: 30000 });
+    const stdout = execFileSync("go", ["run", file], { encoding: "utf-8", timeout: 30000 });
     return { language: "go", outputs: JSON.parse(stdout) };
   } catch (e: any) {
-    return { language: "go", outputs: {}, error: e.message };
+    return { language: "go", outputs: {}, error: describeExecFailure(e) };
   }
 }
 
@@ -158,10 +183,10 @@ sb.Append(string.Join(",", pairs));
 sb.Append("}");
 Console.Write(sb.ToString());`);
   try {
-    const stdout = execSync(`dotnet run --project ${projDir}`, { encoding: "utf-8", timeout: 60000 });
+    const stdout = execFileSync("dotnet", ["run", "--project", projDir], { encoding: "utf-8", timeout: 60000 });
     return { language: "csharp", outputs: JSON.parse(stdout) };
   } catch (e: any) {
-    return { language: "csharp", outputs: {}, error: `dotnet run failed: ${(e.message || "").slice(0, 100)}` };
+    return { language: "csharp", outputs: {}, error: `dotnet run failed: ${describeExecFailure(e)}` };
   }
 }
 
@@ -187,11 +212,11 @@ ${inputLines}
   writeFileSync(file, script);
   try {
     const bin = join(tmpDir, "oracle_rs");
-    execSync(`rustc ${file} -o ${bin} 2>&1`, { encoding: "utf-8", timeout: 30000 });
-    const stdout = execSync(bin, { encoding: "utf-8", timeout: 10000 });
+    execFileSync("rustc", [file, "-o", bin], { encoding: "utf-8", timeout: 30000 });
+    const stdout = execFileSync(bin, [], { encoding: "utf-8", timeout: 10000 });
     return { language: "rust", outputs: JSON.parse(stdout) };
   } catch (e: any) {
-    return { language: "rust", outputs: {}, error: `rustc not available or failed: ${(e.message || "").slice(0, 100)}` };
+    return { language: "rust", outputs: {}, error: `rustc not available or failed: ${describeExecFailure(e)}` };
   }
 }
 
@@ -215,10 +240,10 @@ printf "{%s}" (String.concat "," pairs)`;
   const file = join(tmpDir, "oracle.fsx");
   writeFileSync(file, script);
   try {
-    const stdout = execSync(`dotnet fsi ${file}`, { encoding: "utf-8", timeout: 30000 });
+    const stdout = execFileSync("dotnet", ["fsi", file], { encoding: "utf-8", timeout: 30000 });
     return { language: "fsharp", outputs: JSON.parse(stdout) };
   } catch (e: any) {
-    return { language: "fsharp", outputs: {}, error: `dotnet fsi not available or failed: ${(e.message || "").slice(0, 100)}` };
+    return { language: "fsharp", outputs: {}, error: `dotnet fsi not available or failed: ${describeExecFailure(e)}` };
   }
 }
 
@@ -273,10 +298,10 @@ sys.stdout.write(json.dumps(out))
   writeFileSync(file, pyScript);
   const venvPython = join(process.cwd(), "src/Core.Python/.venv/bin/python3");
   try {
-    const stdout = execSync(`${venvPython} ${file}`, { encoding: "utf-8", timeout: 30000 });
+    const stdout = execFileSync(venvPython, [file], { encoding: "utf-8", timeout: 30000 });
     return { language: "qsharp", outputs: JSON.parse(stdout) };
   } catch (e: any) {
-    return { language: "qsharp", outputs: {}, error: `qdk not available: ${(e.message || "").slice(0, 100)}` };
+    return { language: "qsharp", outputs: {}, error: `qdk not available: ${describeExecFailure(e)}` };
   }
 }
 

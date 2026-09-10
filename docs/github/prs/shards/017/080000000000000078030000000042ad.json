@@ -1,0 +1,12 @@
+{
+  "pr_number": 17069,
+  "archive_path": "docs/history/pr-reviews/PR-17069-docs-research-audit-durable-room-admission-readiness.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-08T19:24:56.491Z",
+  "schema_version": "v1",
+  "commit_sha": "c5c1f7cf5b3ac1d6e615ebc19c361f6e14987cf0",
+  "title": "docs(research): audit durable room admission readiness",
+  "state": "MERGED",
+  "merged_at": "2026-09-08T19:24:17Z",
+  "head_ref": "lumen/durable-room-admission-readiness-audit"
+}

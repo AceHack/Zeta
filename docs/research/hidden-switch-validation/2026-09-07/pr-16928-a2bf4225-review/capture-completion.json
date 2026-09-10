@@ -1,0 +1,13 @@
+{
+  "RecordedAtUtc": "2026-09-07T14:14:14.763822+00:00",
+  "APICollectionComplete": true,
+  "CollectorProcessExitCode": 1,
+  "CollectorFailureStage": "final-file-inventory",
+  "CollectorFailure": "IsADirectoryError on capture-1-incomplete after snapshot.json and every requested API/log record had already been written. No API output was changed; a separate subsequent inventory hashes the retained files.",
+  "OriginalWorkflow": {
+    "Bytes": 256078,
+    "Sha256": "6c5f1be46c7a200ef7998072dfb16db8ebb4baa1564d9537af68088f8342487c"
+  },
+  "IncompleteCaptureDirectory": "../pr-16928-a2bf4225-capture-1-incomplete",
+  "Scope": "Successful bounded API collection and later hash inventory are distinguished from the collector process failure; no rerun/cancellation/comment/alert dismissal."
+}

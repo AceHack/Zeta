@@ -1,0 +1,59 @@
+import bpy,math,json
+from pathlib import Path
+from mathutils import Vector
+ROOT=Path(__file__).resolve().parent
+bpy.ops.wm.open_mainfile(filepath=str(ROOT/'rebuild-v3/Joined-Characters.blend'))
+scene=bpy.context.scene;scene.cycles.samples=8;scene.render.bake.margin=12;scene.render.bake.use_pass_direct=False;scene.render.bake.use_pass_indirect=False;scene.render.bake.use_pass_color=True
+OUT=ROOT/'mobile-v1';OUT.mkdir(exist_ok=True)
+records=[]
+for name in ['AceHack','Xenaa']:
+ items=[o for o in scene.objects if o.type=='MESH' and o.name.startswith(name+' | ') and any(s in o.name for s in ['generator','Rebuilt hair','Fitted collar'])]
+ for o in items:
+  bpy.ops.object.select_all(action='DESELECT');o.select_set(True);bpy.context.view_layer.objects.active=o
+  for mod in list(o.modifiers):bpy.ops.object.modifier_apply(modifier=mod.name)
+  budget=7600 if 'head generator' in o.name else 14000 if 'Body generator' in o.name else 3200 if 'hair' in o.name else 600
+  before=len(o.data.polygons)
+  if before>budget:
+   d=o.modifiers.new('Mobile triangle budget','DECIMATE');d.ratio=budget/before;d.use_collapse_triangulate=True;bpy.ops.object.modifier_apply(modifier=d.name)
+  # Bind the original shader UV explicitly before adding the export atlas.
+  source_uv=o.data.uv_layers.active.name if o.data.uv_layers else None
+  for mat in o.data.materials:
+   if not mat or not mat.use_nodes:continue
+   for n in mat.node_tree.nodes:
+    if n.type=='TEX_IMAGE' and n.image and not n.inputs['Vector'].is_linked and source_uv:
+     uv=mat.node_tree.nodes.new('ShaderNodeUVMap');uv.uv_map=source_uv;mat.node_tree.links.new(uv.outputs['UV'],n.inputs['Vector'])
+  if 'generator' in o.name:
+   atlas=o.data.uv_layers.new(name='MobileAtlas');o.data.uv_layers.active=atlas;atlas.active_render=True
+   bpy.ops.object.mode_set(mode='EDIT');bpy.ops.mesh.select_all(action='SELECT');bpy.ops.uv.smart_project(angle_limit=1.25,island_margin=.015);bpy.ops.object.mode_set(mode='OBJECT')
+   label=name+('-head' if 'head generator' in o.name else '-body')
+   img=bpy.data.images.new(label+'-basecolor',width=1024,height=1024,alpha=False)
+   for mat in o.data.materials:
+    node=mat.node_tree.nodes.new('ShaderNodeTexImage');node.image=img;mat.node_tree.nodes.active=node
+   bpy.ops.object.bake(type='DIFFUSE')
+   img.filepath_raw=str(OUT/(label+'.png'));img.file_format='PNG';img.save();img.pack()
+   mat=bpy.data.materials.new(label+' | Baked mobile');mat.use_nodes=True;bs=mat.node_tree.nodes.get('Principled BSDF');bs.inputs['Roughness'].default_value=.77;bs.inputs['Specular IOR Level'].default_value=.18
+   tex=mat.node_tree.nodes.new('ShaderNodeTexImage');tex.image=img;mat.node_tree.links.new(tex.outputs['Color'],bs.inputs['Base Color'])
+   o.data.materials.clear();o.data.materials.append(mat)
+   for p in o.data.polygons:p.material_index=0
+   for uv in list(o.data.uv_layers):
+    if uv.name!='MobileAtlas':o.data.uv_layers.remove(uv)
+  else:
+   if not o.data.uv_layers:o.data.uv_layers.new(name='MobileAtlas')
+   bpy.ops.object.mode_set(mode='EDIT');bpy.ops.mesh.select_all(action='SELECT');bpy.ops.uv.smart_project(island_margin=.02);bpy.ops.object.mode_set(mode='OBJECT')
+  for p in o.data.polygons:p.use_smooth=True
+  for attr in list(o.data.color_attributes):o.data.color_attributes.remove(attr)
+  records.append({'character':name,'mesh':o.name,'vertices':len(o.data.vertices),'triangles':sum(len(p.vertices)-2 for p in o.data.polygons)})
+ # Export centered single-character asset; restore offset for comparison render.
+ offset=items[0].location.x
+ for o in items:o.location.x-=offset
+ bpy.ops.object.select_all(action='DESELECT')
+ for o in items:o.select_set(True)
+ bpy.ops.export_scene.gltf(filepath=str(OUT/(name+'-neutral.glb')),use_selection=True,export_format='GLB',export_animations=False,export_texcoords=True,export_normals=True,export_materials='EXPORT',export_yup=True)
+ for o in items:o.location.x+=offset
+scene.render.resolution_x=1600;scene.render.resolution_y=1200;scene.cycles.samples=32
+cam=scene.camera;cam.data.ortho_scale=2.85
+for angle in [0,75,180]:
+ r=math.radians(angle);cam.location=(4*math.sin(r),-4*math.cos(r),1.25);cam.rotation_euler=(Vector((0,0,1))-cam.location).to_track_quat('-Z','Y').to_euler();scene.render.filepath=str(OUT/f'neutral-{angle}.png');bpy.ops.render.render(write_still=True)
+cam.location=(.5,-5,1.3);cam.rotation_euler=(Vector((0,0,1))-cam.location).to_track_quat('-Z','Y').to_euler()
+bpy.ops.wm.save_as_mainfile(filepath=str(OUT/'Mobile-Characters.blend'))
+(ROOT/'mobile-v1-mesh-receipt.json').write_text(json.dumps(records,indent=2))

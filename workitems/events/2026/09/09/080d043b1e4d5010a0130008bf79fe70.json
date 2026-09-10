@@ -1,0 +1,14 @@
+{
+  "id": "080d043b1e4d5010a0130008bf79fe70",
+  "at": "2026-09-09T18:17:38.986Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M23P7JDA087G0R003MM6MM9",
+    "type": "bug",
+    "title": "codegen-interface identity-replacement chains hid a Rust and Go void miscompile",
+    "slug": "codegen-interface-identity-replacement-chains-hid-a-rust-and",
+    "priority": "P2",
+    "filename": "081M23P7JDA087G0R003MM6MM9-codegen-interface-identity-replacement-chains-hid-a-rust-and.md"
+  }
+}

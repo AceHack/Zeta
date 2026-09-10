@@ -1,0 +1,14 @@
+{
+  "id": "080d0442c1abb010a01300080e550c52",
+  "at": "2026-09-09T22:44:37.366Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M245GDBN087G0R000QWR0M4",
+    "type": "task",
+    "title": "First-class is Z-set schema evolution and key rotation, not Jumprope",
+    "slug": "first-class-is-z-set-schema-evolution-and-key-rotation-not-j",
+    "priority": "P1",
+    "filename": "081M245GDBN087G0R000QWR0M4-first-class-is-z-set-schema-evolution-and-key-rotation-not-j.md"
+  }
+}

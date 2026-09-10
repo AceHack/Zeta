@@ -1,0 +1,182 @@
+{
+  "Schema": "zeta.mixed-message-epoch.source-census.v1",
+  "Scope": "Read-only source and design census; not a runtime or implementation archive admission",
+  "Repository": "https://github.com/Lucent-Financial-Group/Zeta",
+  "SourceCommit": "15c634e096674c757f3656c0b8ff9aaa0b5cf203",
+  "Files": [
+    {
+      "Path": "docs/research/2026-09-03-bayesian-circuit-and-edge-module-contract.md",
+      "GitBlob": "2d4e35ecf529735772bd3b531259a9a3d81f683d",
+      "Bytes": 4028,
+      "Sha256": "D6BB4E2A13ED15AF54A8078870CFDD67399D50A82B28BDDC572E55397FC26F00"
+    },
+    {
+      "Path": "docs/research/2026-09-03-bayesian-evidence-composition-roadmap.md",
+      "GitBlob": "4179f3eb9b6b34ab6f73f8348dacf05459e9e0ba",
+      "Bytes": 6856,
+      "Sha256": "0CD6BBF22AC5F9DF71432644A6E2789CA67F657F610782DFD82421C2C160AA80"
+    },
+    {
+      "Path": "docs/research/2026-09-03-bayesian-circuit-vs-network-split-and-edge-bnn-spec-fold-vs-epoch-learn-parameters-not-messages.md",
+      "GitBlob": "0e89a916c581d1f104d67654da7610c443f55235",
+      "Bytes": 59233,
+      "Sha256": "F5A8D4DCA012D6FD3E96D4E8A8E9F37C7DBCE9570140B0D78CA3EF889598A153"
+    },
+    {
+      "Path": "docs/research/2026-09-08-composable-learning-circuit-continuation.md",
+      "GitBlob": "fff76d1717e268870d70bf7afc44c271552c3797",
+      "Bytes": 9582,
+      "Sha256": "F57C5AB2F43AE0F22948CCD770B0F770A8A09E54E2476BB2B0BF66F089A73300"
+    },
+    {
+      "Path": "docs/research/2026-09-08-precision-gated-experts-design-and-source-audit.md",
+      "GitBlob": "b9d4705ba5bf820e10f2f585765ef6de9eeebf28",
+      "Bytes": 20947,
+      "Sha256": "A061231CBCA69264C9FC57EE0E797AA8E350A08EFFDA31FB60D58FAE701E1BDA"
+    },
+    {
+      "Path": "docs/DECISIONS/2026-09-08-density-consistent-precision-gate-kernels.md",
+      "GitBlob": "2080f6cac660ef31744c872d3a011b6840284fee",
+      "Bytes": 10271,
+      "Sha256": "F4065D3B40D5E18A98B138FC4B02E4E4A586FFB0189DC4D0D395FBF7B026979E"
+    },
+    {
+      "Path": "docs/WONT-DO.md",
+      "GitBlob": "0a92b097ce6c1895cbd5af76d7557b6ccc911a1f",
+      "Bytes": 48954,
+      "Sha256": "4D92A5587F8A7756B15C4888DF707E0EC62982C599DF19490D5535CBEFE930E8"
+    },
+    {
+      "Path": "src/Bayesian/Message.fs",
+      "GitBlob": "6a817690a9fa5adc367a4d8890b3a26fab4a762d",
+      "Bytes": 15816,
+      "Sha256": "983256B985671ACFB2C136B6A82A614E53EBB87B7C9CDA04FA4540E3C7C2EEE7"
+    },
+    {
+      "Path": "src/Bayesian/FactorGraph.fs",
+      "GitBlob": "61b8efa91b9d3d40bbbcbed5696d73f806caace4",
+      "Bytes": 11171,
+      "Sha256": "86EBEF6BA9ABD29499D40A15AC0727FF15CDB4DC72FE247A9C744CA6123DF6F7"
+    },
+    {
+      "Path": "src/Bayesian/PrecisionGateKernels.fs",
+      "GitBlob": "399aac4dda05ed37ccd51afbc37528e67ae2050c",
+      "Bytes": 17206,
+      "Sha256": "4004196CB0ADE8527DFEBF83FBB3E6E42BD36208E38AFFD09906787A84901C02"
+    },
+    {
+      "Path": "src/Bayesian/PrecisionGateProjection.fs",
+      "GitBlob": "8940daab5af8ecce869c3ebfa8afe876e8dd658b",
+      "Bytes": 36804,
+      "Sha256": "05F0DD3D50011698A198D68E2CA5AA0741855F79C5ABC97D235700FBABDE465E"
+    },
+    {
+      "Path": "src/Bayesian/SignedProbitEp.fs",
+      "GitBlob": "f00ffa438b39d0267e1c54b8fd4f2c749604c177",
+      "Bytes": 10630,
+      "Sha256": "B6DCEF2DE1F15B73D78511C876950FD726CC2590DB6DE6B298AD37B009AF814C"
+    },
+    {
+      "Path": "src/Bayesian/ToyBosonFermionBnn.fs",
+      "GitBlob": "ac0a797919e5a191be54753c604413629e4a9a9e",
+      "Bytes": 27101,
+      "Sha256": "31FA751C50E314E4E77B649A2BC1D2B51374502707B1C20AAB2E841EF866626A"
+    },
+    {
+      "Path": "src/Bayesian/MultilayerBnn.fs",
+      "GitBlob": "8c70971d9e0c454b4a05bde10e0d7c1d9c9a6b67",
+      "Bytes": 68551,
+      "Sha256": "4993CCF745FA348651DA0B88EB50049F99BFC382FD5439AFF2D4A49D9F0809E5"
+    },
+    {
+      "Path": "src/Bayesian/ReferenceFrameFactorHeterarchy.fs",
+      "GitBlob": "b0f188db82969d5b68ce44c778430d76fd39186f",
+      "Bytes": 40181,
+      "Sha256": "99ACA0D06E85A4E67966A94B531D1D86ADD7F4409E410BBC1C52101182D76A6F"
+    },
+    {
+      "Path": "src/Core/Graph.fs",
+      "GitBlob": "96301e96b0ac597b67442f5c49cf569be0b4a91c",
+      "Bytes": 38663,
+      "Sha256": "73EF78F0E0111A22655E7F88A325F336DEEE2BCCDA170EC613ACD5CCD4BABD52"
+    },
+    {
+      "Path": "src/Core/NestedCircuit.fs",
+      "GitBlob": "3c47191c6bcf63998f5baf7028462a0064541044",
+      "Bytes": 5383,
+      "Sha256": "71F4C373A25D179A9959ABAF58A3BBF65513FE15B7D0DA8CBE1CA98158B128EB"
+    },
+    {
+      "Path": "src/Core/SoftScheduler.fs",
+      "GitBlob": "fba48133adca2b23d4cc0237fcfdf1a67c7d9659",
+      "Bytes": 18533,
+      "Sha256": "02272C58557BC0B9A4B629016F72E742257FB191C0CA7F3920BE8BE949D64CE7"
+    },
+    {
+      "Path": "src/Core/ReceiptScheduler.fs",
+      "GitBlob": "6eef42639b01a152817553eb4964c22e19c4bc68",
+      "Bytes": 11426,
+      "Sha256": "81F6DCA880EEEEFCC63902E334F20E8E3668A41DB49969A3C0886B63CC150855"
+    },
+    {
+      "Path": "src/Core.TypeScript/research/composable-factor-benchmark/crdt-belief-fusion.ts",
+      "GitBlob": "e122df2e4772b4dc1f01cec06e04158badf72dcb",
+      "Bytes": 15372,
+      "Sha256": "3DC437C75E9646CC38D5E074E40E94BA40AB416B64B5783A0AC6AA3385CA3186"
+    },
+    {
+      "Path": "src/Core.TypeScript/research/composable-factor-benchmark/crdt-evidence-query-adapter.ts",
+      "GitBlob": "d2c89c78c6989d0fe544940e31dda982ed19628f",
+      "Bytes": 5887,
+      "Sha256": "E134F35571A61922BDCC0E622B1D960D87760C2B8B16CB866BD0D23E22F78F8C"
+    },
+    {
+      "Path": "src/Core.TypeScript/research/composable-factor-benchmark/etth1-static-ensemble.ts",
+      "GitBlob": "dfb95adb03d29acd4c4784c453d0ab2dacbefd55",
+      "Bytes": 23091,
+      "Sha256": "6B9CBDDBCFEC640B5692CE5300AFBE3DB4EC08E0171C998ACCD4E5E62A9C9DEC"
+    },
+    {
+      "Path": "src/Interp.Python/zeta_interp/precision_gate_projection_intervals.py",
+      "GitBlob": "900990d3abe9fb17cb7c498ca849d671ec0460ad",
+      "Bytes": 10864,
+      "Sha256": "FD8DB23E1B077A5BC3B9396E964C30BF927FE7E27A37DFE83AE5412988138616"
+    },
+    {
+      "Path": "src/Interp.Python/zeta_interp/precision_gate_projection_reference.py",
+      "GitBlob": "06b51496f38b84f502bfb7479e8665150e777dd9",
+      "Bytes": 61549,
+      "Sha256": "C1063F29F5C63FD70E7E9923EB10D32037191559194FD2EFEC4A35619191E25B"
+    }
+  ],
+  "PriorResultReport": {
+    "Commit": "61f8e14ba9f89e790dce635ce5c86db5c619b63c",
+    "Path": "docs/research/2026-09-08-precision-gate-projection-registered-results.md",
+    "Bytes": 5567,
+    "Sha256": "F5F3A56D21E4A1A79CF67C8D56955E3EDF0FE710ACC838EA6B2C1DF2704C4027",
+    "ObservedSummaryOnly": {
+      "CaseId": "stress/cancellation",
+      "Rows": [
+        {
+          "Index": 45,
+          "Operation": "NativeSolve",
+          "Outcome": "candidate"
+        },
+        {
+          "Index": 46,
+          "Operation": "ReferenceRoot",
+          "Outcome": "refused",
+          "Code": "IterationLimit"
+        },
+        {
+          "Index": 47,
+          "Operation": "CertifyNative",
+          "Outcome": "refused",
+          "Code": "NoRootEnclosure"
+        }
+      ]
+    },
+    "IndependentRawResultReplayPerformed": false
+  },
+  "ProposalStatus": "Proposed, not registered or implemented"
+}

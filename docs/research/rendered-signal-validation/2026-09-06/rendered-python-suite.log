@@ -1,0 +1,9 @@
+........................................................................ [ 64%]
+........................................                                 [100%]
+=============================== warnings summary ===============================
+tests/test_activation_access.py::test_reads_a_hidden_state_with_the_declared_shape
+  /Users/acehack/.zeta/agents/codex/Zeta-rendered-predictor-20260906/src/Interp.Python/zeta_interp/activations.py:60: DeprecationWarning: HookedTransformer is deprecated and will be removed in 4.0. Use TransformerBridge.boot_transformers(...) instead, then call enable_compatibility_mode() for HookedTransformer-equivalent numerics.
+    return HookedTransformer(cfg)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+112 passed, 1 warning in 67.07s (0:01:07)

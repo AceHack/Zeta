@@ -1,0 +1,215 @@
+{
+  "Schema": "zeta.projection.integration-validation.v1",
+  "Archive": {
+    "Path": "custody.tar.gz",
+    "Bytes": 119192,
+    "Sha256": "DAE8EC3A3DD005CBD0B991D6310BE91B92766C76E64ADA3DAF1DE0953CE03FCA"
+  },
+  "Members": [
+    {
+      "Path": "projection-integrated-python-tests-1/0-stderr",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "projection-integrated-python-tests-1/0-stdout",
+      "Bytes": 1644,
+      "Sha256": "5A53F285227751E1AB99DB9F830E8DC016A561D7C9CA47AD209D687A7DE0855D"
+    },
+    {
+      "Path": "projection-integrated-python-tests-1/1-stderr",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "projection-integrated-python-tests-1/1-stdout",
+      "Bytes": 341,
+      "Sha256": "38E372BE30CE21622CA3A7BC350374D0D02DF866F26E3FC9277BFB3650EDEF8D"
+    },
+    {
+      "Path": "projection-integrated-python-tests-1/2-stderr",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "projection-integrated-python-tests-1/2-stdout",
+      "Bytes": 1239,
+      "Sha256": "BABA88298725944A6E73BA833D16D433CBF7B3AA3777DDD2C2919BE293B14498"
+    },
+    {
+      "Path": "projection-integrated-python-tests-1/process.json",
+      "Bytes": 2721,
+      "Sha256": "3DEC16DB5D46AB1229F24609B0A02083D63810ED5410F3FE869D02780C01859C"
+    },
+    {
+      "Path": "projection-integrated-python-tests-1/source-00.py",
+      "Bytes": 9695,
+      "Sha256": "D5EA9704C1E33429D990F66BA862BC5ED25A1F5C7C9A15E33A8B8D621CA71124"
+    },
+    {
+      "Path": "projection-integrated-python-tests-1/source-01.py",
+      "Bytes": 11850,
+      "Sha256": "FA748BBB30A4647D85E264E803F2FFEBE4214CDA222CB84FF623A0BA1893EE5E"
+    },
+    {
+      "Path": "projection-integrated-python-tests-1/source-02.py",
+      "Bytes": 10864,
+      "Sha256": "FD8DB23E1B077A5BC3B9396E964C30BF927FE7E27A37DFE83AE5412988138616"
+    },
+    {
+      "Path": "projection-integrated-python-tests-1/source-03.py",
+      "Bytes": 33669,
+      "Sha256": "0A643CC17F39E2536CAA963A1CFD6E200D83CCA91CC443799D45C7316E54E6DE"
+    },
+    {
+      "Path": "projection-integrated-python-tests-1/source-04.py",
+      "Bytes": 61549,
+      "Sha256": "C1063F29F5C63FD70E7E9923EB10D32037191559194FD2EFEC4A35619191E25B"
+    },
+    {
+      "Path": "projection-integrated-python-tests-1/source-05.py",
+      "Bytes": 25193,
+      "Sha256": "AADA2881E4200760D66FBDE688A93F314A99FB061D03F408F68880E384A8B7F0"
+    },
+    {
+      "Path": "projection-integrated-python-tests-1/source-06.py",
+      "Bytes": 6185,
+      "Sha256": "7D60A095DA1C5E536E657900D32C7C50A08BC8EE44928AF9A1268C2F4D7B7F61"
+    },
+    {
+      "Path": "projection-integrated-python-tests-1/source-07.py",
+      "Bytes": 7989,
+      "Sha256": "95F6F2C131E490F5850297E4B9B1B7FAB4EB79237853E4F50875449911812500"
+    },
+    {
+      "Path": "projection-integrated-python-tests-1/source-08.py",
+      "Bytes": 8333,
+      "Sha256": "C673182CCC199A2D10D4C085F0D0EDBDC6D6D71CD1872BE535EE0D55291619F6"
+    },
+    {
+      "Path": "projection-integrated-python-tests-1/source-09.py",
+      "Bytes": 16989,
+      "Sha256": "2624EC723FA2EC962B9A30469A95D4AE6B60AEA3150BDCFFBC9F0983F0EB34B8"
+    },
+    {
+      "Path": "projection-integrated-python-tests-1/source-10.py",
+      "Bytes": 48250,
+      "Sha256": "0D96B6F27592DC34C4396C044369E043156D25A4986DFC2B4FEF1B2A3F402755"
+    },
+    {
+      "Path": "projection-integrated-python-tests-1/source-11.py",
+      "Bytes": 22687,
+      "Sha256": "6C418F7E8F44037EA03623379326C2B04090863EB61D981629610FE19F840D24"
+    },
+    {
+      "Path": "projection-integrated-python-tests-1/start.json",
+      "Bytes": 5438,
+      "Sha256": "0E768F7CA7D3488CCCE0A5F2F08B503B7B8C49916C7B6CC97CB1F367B4E47517"
+    },
+    {
+      "Path": "projection-integrated-python-tests-2/0-stderr",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "projection-integrated-python-tests-2/0-stdout",
+      "Bytes": 19,
+      "Sha256": "82B3E6A6C090A57601D22943BD23FCA9218D1031DBE5A7B754092F9A156B4F18"
+    },
+    {
+      "Path": "projection-integrated-python-tests-2/1-stderr",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "projection-integrated-python-tests-2/1-stdout",
+      "Bytes": 99,
+      "Sha256": "43CC16670BD2B3DB4EE26A86B7A4417ED07B3E8B70B5348E087F4E1811F6A30B"
+    },
+    {
+      "Path": "projection-integrated-python-tests-2/2-stderr",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "projection-integrated-python-tests-2/2-stdout",
+      "Bytes": 44,
+      "Sha256": "8B88F6D12BD312C1B024B66D07A7F7619A68482AC4D64E475759B1823199FAA5"
+    },
+    {
+      "Path": "projection-integrated-python-tests-2/process.json",
+      "Bytes": 2339,
+      "Sha256": "CBF13442735BF15D722E2B570396DBA29B49E4429E5262F73F36E93047FED507"
+    },
+    {
+      "Path": "projection-integrated-python-tests-2/source-00.py",
+      "Bytes": 9695,
+      "Sha256": "D5EA9704C1E33429D990F66BA862BC5ED25A1F5C7C9A15E33A8B8D621CA71124"
+    },
+    {
+      "Path": "projection-integrated-python-tests-2/source-01.py",
+      "Bytes": 11850,
+      "Sha256": "FA748BBB30A4647D85E264E803F2FFEBE4214CDA222CB84FF623A0BA1893EE5E"
+    },
+    {
+      "Path": "projection-integrated-python-tests-2/source-02.py",
+      "Bytes": 10864,
+      "Sha256": "FD8DB23E1B077A5BC3B9396E964C30BF927FE7E27A37DFE83AE5412988138616"
+    },
+    {
+      "Path": "projection-integrated-python-tests-2/source-03.py",
+      "Bytes": 33669,
+      "Sha256": "0A643CC17F39E2536CAA963A1CFD6E200D83CCA91CC443799D45C7316E54E6DE"
+    },
+    {
+      "Path": "projection-integrated-python-tests-2/source-04.py",
+      "Bytes": 61549,
+      "Sha256": "C1063F29F5C63FD70E7E9923EB10D32037191559194FD2EFEC4A35619191E25B"
+    },
+    {
+      "Path": "projection-integrated-python-tests-2/source-05.py",
+      "Bytes": 25597,
+      "Sha256": "41D01A033295C28CC9D51F8510F4C3C1DF9BA87AF028A2D0E299835602BF9CF6"
+    },
+    {
+      "Path": "projection-integrated-python-tests-2/source-06.py",
+      "Bytes": 6185,
+      "Sha256": "7D60A095DA1C5E536E657900D32C7C50A08BC8EE44928AF9A1268C2F4D7B7F61"
+    },
+    {
+      "Path": "projection-integrated-python-tests-2/source-07.py",
+      "Bytes": 7989,
+      "Sha256": "95F6F2C131E490F5850297E4B9B1B7FAB4EB79237853E4F50875449911812500"
+    },
+    {
+      "Path": "projection-integrated-python-tests-2/source-08.py",
+      "Bytes": 8332,
+      "Sha256": "BCCB9B8E32BBBC2E61C5CB557B1E3E0016C92768C8D90F99B10C8232FD3220F7"
+    },
+    {
+      "Path": "projection-integrated-python-tests-2/source-09.py",
+      "Bytes": 16989,
+      "Sha256": "2624EC723FA2EC962B9A30469A95D4AE6B60AEA3150BDCFFBC9F0983F0EB34B8"
+    },
+    {
+      "Path": "projection-integrated-python-tests-2/source-10.py",
+      "Bytes": 48249,
+      "Sha256": "49715787CCF0FC69A38B39D720CDADB3F2F95D523A26E1582E01DA5A4F47A22C"
+    },
+    {
+      "Path": "projection-integrated-python-tests-2/source-11.py",
+      "Bytes": 24771,
+      "Sha256": "4726B5CCD43F5B88674C7DEEF7C8B72033351C72DAFED7FE9CBAD10946FBB4C8"
+    },
+    {
+      "Path": "projection-integrated-python-tests-2/start.json",
+      "Bytes": 2490,
+      "Sha256": "DC6EBCA868588970F386813B7FD466F0919BF5D5BF71F0C528FAB6606CF99C8F"
+    },
+    {
+      "Path": "claim-push-1.log",
+      "Bytes": 2086,
+      "Sha256": "A90DF9BB7816A0EB9F5290EC106A5757C5D6CF83C9435EC8AF9672D42862C64B"
+    }
+  ]
+}

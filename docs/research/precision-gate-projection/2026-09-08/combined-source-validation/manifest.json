@@ -1,0 +1,33 @@
+{
+  "SourceHead": "6f805bf1bd3cb124f058d2dd6fedf1192b8c8671",
+  "Artifacts": [
+    {
+      "File": "process.json.gz",
+      "Bytes": 41,
+      "Sha256": "2214e2d715d2ef8899e2860fe1eb53300663681b259a2d40bdd60f491fd45a3d",
+      "StoredBytes": 59,
+      "StoredSha256": "5419b0877121754d291e2a04fd03fd73cec21e005562737ceb659cacc99da881"
+    },
+    {
+      "File": "start.json.gz",
+      "Bytes": 303,
+      "Sha256": "a25f4cea44a4cd48d6b8f06a6c814fab70ea0abf7fa32b3972c0334f3efdbdea",
+      "StoredBytes": 203,
+      "StoredSha256": "5532db764d303585b530cefcc2c642c3a2ac7d943499871691395d30d5010a76"
+    },
+    {
+      "File": "stderr.gz",
+      "Bytes": 0,
+      "Sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "StoredBytes": 20,
+      "StoredSha256": "9ceffb7310338057cfe71a4ae1e2c98d2c485d81cdef906532a801f457a38d64"
+    },
+    {
+      "File": "stdout.gz",
+      "Bytes": 179,
+      "Sha256": "d14ad61786f7c301a6fb1ef4cbc57ceac24496d06dc206fd87c25ed09d38bd2b",
+      "StoredBytes": 61,
+      "StoredSha256": "0c04cc10402d8e7c6ee2fb4e5a869c6b51ca0c0fbdb941261ccd887db60c7371"
+    }
+  ]
+}

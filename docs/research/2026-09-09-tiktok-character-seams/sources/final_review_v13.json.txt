@@ -1,0 +1,37 @@
+{
+  "date": "2026-09-09",
+  "reviewer": "Vera, OpenAI Codex (GPT-6)",
+  "status": "Selected for Blender upper-body motion review, not user-approved or production-ready",
+  "user_rejection_supersedes": "The first-pass claim of improved neutral attachment is not acceptance. V3 joins and v1-v5 body rigs remain failed references.",
+  "selected_blender": "blender-v13/Blender-Motion-Review-v13.blend",
+  "selected_video": "blender-v13/Blender-Motion-Review-v13.mp4",
+  "observed_improvements": [
+    "Forward head correction seats the visible neck inside the torso in isolated side views.",
+    "The lower neck stays torso-fixed while the complete face follows the head.",
+    "Separated and rebuilt arm surfaces avoid the former long coat-tail stretching in the tested poses.",
+    "A continuous rear hair surface covers the missing scalp section; the recovered shoulder hair and new locks follow Head rather than torso weights."
+  ],
+  "numerical_scope": "Fourteen character-pose cases: independent 60-degree arm lifts, 60-degree elbow bends, head yaw +/-30, head nod 20, neck bend 15. Evaluated vertices, not only stored weights.",
+  "visual_limits": [
+    "Shoulder and arm transition seams, material changes and reconstructed surface noise remain visible.",
+    "Hair remains an inferred coarse surface with a front-cap transition, collar intersections and no secondary dynamics.",
+    "Head/body and hair parts overlap; this is not a watertight unified character or a collision-free guarantee.",
+    "The leg and coat geometry remains pelvis-bound. Full-body dance tracking is not ready.",
+    "The 11 transferred facial channels are the earlier analytic prototypes; no mouth cavity, lip separation or fitted performance validation was added.",
+    "Rear likeness and geometry are inferred from single-view art, not independently observed."
+  ],
+  "ui_status": "CUA reported the Mac locked and automatic unlock unsuccessful. Live Blender playback/opening and further Effect House tests could not be performed after the correction.",
+  "diagnostic_failures": [
+    "v6 flat torso trimming and high Xenaa chin cut regressed appearance.",
+    "v7-v10 shoulder caps, arm segmentation and atlas seam transfer required more work.",
+    "v10/v11 profile cameras used parent-local X; some front/back outputs were blank. v12/v13 cameras use world X. Blank images are not validation evidence.",
+    "The first official FBX extraction accidentally selected the macOS resource fork; the correct named FBX was subsequently extracted and inspected."
+  ],
+  "next_order": [
+    "Inspect and scrub the marked v13 Blender sequence after unlock.",
+    "Refine shoulder topology, inferred caps and hair/collar intersections against the reference images.",
+    "Build and verify a consistent T-pose and leg/garment separation before claiming full-body retargeting.",
+    "Retest the new face candidates in separate Effect House projects and on a phone; prior app performance results do not transfer automatically.",
+    "Replace analytic face channels with fitted eyelid/lip topology and a mouth cavity."
+  ]
+}

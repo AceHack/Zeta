@@ -1,0 +1,15 @@
+{
+  "SourceCommit": "c1cf790218d0584330743cf0178f9dc75772c439",
+  "EvidenceCommit": "dd6fc286b02b9346f0f5b78dfb273e4f267ba4f4",
+  "ReviewScope": "Read-only retained metadata and file-identity audit; reviewer did not query or read raw dump",
+  "Records": [
+    {
+      "File": "review-checks.json.gz",
+      "Bytes": 19102,
+      "Sha256": "1566002930792e144e65d8f75d352cfe969fba861e5d1b9852abaf21c938b7d3",
+      "StoredBytes": 5118,
+      "StoredSha256": "e90dcfbdfe2b1980827a76e359b01d8e84a965270e6ae53c46c009366a5834ef",
+      "Encoding": "gzip; mtime=0; losslessly verified"
+    }
+  ]
+}

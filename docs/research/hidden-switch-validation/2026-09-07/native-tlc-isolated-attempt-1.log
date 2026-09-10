@@ -1,0 +1,75 @@
+Test run for /Users/acehack/.zeta/agents/codex/Zeta-rendered-predictor-native-20260906/tests/Tests.FSharp/bin/Release/net10.0/Tests.FSharp.dll (.NETCoreApp,Version=v10.0)
+A total of 1 test files matched the specified pattern.
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v3.1.5+1b188a7b0a (64-bit .NET 10.0.11)
+[xUnit.net 00:00:00.34]   Discovering: Tests.FSharp
+[xUnit.net 00:00:01.65]   Discovered:  Tests.FSharp
+[xUnit.net 00:00:01.79]   Starting:    Tests.FSharp
+[xUnit.net 00:00:15.40]     Zeta.Tests.Formal.TlcRunnerTests.TLC checks the pinned model(id: "BftConsensus") [FAIL]
+[xUnit.net 00:00:15.40]       System.Exception : BftConsensus expected a clean run; TLC did not report the completion marker (exit 134).
+[xUnit.net 00:00:15.40]       stdout tail:
+[xUnit.net 00:00:15.40]       tial states...
+[xUnit.net 00:00:15.40]       Finished computing initial states: 1 distinct state generated at 2026-09-07 06:32:18.
+[xUnit.net 00:00:15.40]       Progress(9) at 2026-09-07 06:32:21: 703,577 states generated (703,577 s/min), 136,610 distinct states found (136,610 ds/min), 87,712 states left on queue.
+[xUnit.net 00:00:15.40]       #
+[xUnit.net 00:00:15.40]       # A fatal error has been detected by the Java Runtime Environment:
+[xUnit.net 00:00:15.40]       #
+[xUnit.net 00:00:15.40]       #  SIGBUS (0xa) at pc=0x000000012ba723ec, pid=82208, tid=33027
+[xUnit.net 00:00:15.40]       #
+[xUnit.net 00:00:15.40]       # JRE version: OpenJDK Runtime Environment (26.0+35) (build 26+35-2893)
+[xUnit.net 00:00:15.40]       # Java VM: OpenJDK 64-Bit Server VM (26+35-2893, mixed mode, sharing, tiered, compressed oops, compressed class ptrs, serial gc, bsd-aarch64)
+[xUnit.net 00:00:15.40]       # Problematic frame:
+[xUnit.net 00:00:15.40]       # j  tlc2.value.impl.FcnRcdValue.write(Ltlc2/value/IValueOutputStream;)V+138
+[xUnit.net 00:00:15.40]       #
+[xUnit.net 00:00:15.40]       # No core dump will be written. Core dumps have been disabled. To enable core dumping, try "ulimit -c unlimited" before starting Java again
+[xUnit.net 00:00:15.40]       #
+[xUnit.net 00:00:15.40]       # An error report file with more information is saved as:
+[xUnit.net 00:00:15.40]       # /var/folders/ln/xj3yny_946xc3hqyby4s6lh80000gn/T/tlc_run_BftConsensus_f3aae1cb-5952-4ce8-acc5-4da6ce329a20/hs_err_pid82208.log
+[xUnit.net 00:00:15.40]       [13.325s][warning][os] Loading hsdis library failed
+[xUnit.net 00:00:15.40]       #
+[xUnit.net 00:00:15.40]       # If you would like to submit a bug report, please visit:
+[xUnit.net 00:00:15.40]       #   https://bugreport.java.com/bugreport/crash.jsp
+[xUnit.net 00:00:15.40]       #
+[xUnit.net 00:00:15.40]       
+[xUnit.net 00:00:15.40]       Stack Trace:
+[xUnit.net 00:00:15.40]            at Microsoft.FSharp.Core.PrintfModule.PrintFormatToStringThenFail@1447.Invoke(String message)
+[xUnit.net 00:00:15.40]         /Users/acehack/.zeta/agents/codex/Zeta-rendered-predictor-native-20260906/tests/Tests.FSharp/Formal/Tlc.Runner.Tests.fs(414,0): at Zeta.Tests.Formal.TlcRunnerTests.judge(PinnedModel model, Int32 exitCode, String stdout)
+[xUnit.net 00:00:15.40]            at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+[xUnit.net 00:00:15.40]            at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)
+[xUnit.net 00:00:15.40]   Finished:    Tests.FSharp (ID = '7cb8f5e549e0605a8d29110a5dbf480aa18cdc1bd0891a0aaec85ae8593dd75e')
+  Failed Zeta.Tests.Formal.TlcRunnerTests.TLC checks the pinned model(id: "BftConsensus") [13 s]
+  Error Message:
+   System.Exception : BftConsensus expected a clean run; TLC did not report the completion marker (exit 134).
+stdout tail:
+tial states...
+Finished computing initial states: 1 distinct state generated at 2026-09-07 06:32:18.
+Progress(9) at 2026-09-07 06:32:21: 703,577 states generated (703,577 s/min), 136,610 distinct states found (136,610 ds/min), 87,712 states left on queue.
+#
+# A fatal error has been detected by the Java Runtime Environment:
+#
+#  SIGBUS (0xa) at pc=0x000000012ba723ec, pid=82208, tid=33027
+#
+# JRE version: OpenJDK Runtime Environment (26.0+35) (build 26+35-2893)
+# Java VM: OpenJDK 64-Bit Server VM (26+35-2893, mixed mode, sharing, tiered, compressed oops, compressed class ptrs, serial gc, bsd-aarch64)
+# Problematic frame:
+# j  tlc2.value.impl.FcnRcdValue.write(Ltlc2/value/IValueOutputStream;)V+138
+#
+# No core dump will be written. Core dumps have been disabled. To enable core dumping, try "ulimit -c unlimited" before starting Java again
+#
+# An error report file with more information is saved as:
+# /var/folders/ln/xj3yny_946xc3hqyby4s6lh80000gn/T/tlc_run_BftConsensus_f3aae1cb-5952-4ce8-acc5-4da6ce329a20/hs_err_pid82208.log
+[13.325s][warning][os] Loading hsdis library failed
+#
+# If you would like to submit a bug report, please visit:
+#   https://bugreport.java.com/bugreport/crash.jsp
+#
+
+  Stack Trace:
+     at Microsoft.FSharp.Core.PrintfModule.PrintFormatToStringThenFail@1447.Invoke(String message)
+   at Zeta.Tests.Formal.TlcRunnerTests.judge(PinnedModel model, Int32 exitCode, String stdout) in /Users/acehack/.zeta/agents/codex/Zeta-rendered-predictor-native-20260906/tests/Tests.FSharp/Formal/Tlc.Runner.Tests.fs:line 414
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)
+
+Test Run Failed.
+Total tests: 1
+     Failed: 1
+ Total time: 15.6807 Seconds

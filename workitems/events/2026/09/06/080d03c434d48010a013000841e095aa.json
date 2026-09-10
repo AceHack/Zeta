@@ -1,0 +1,14 @@
+{
+  "id": "080d03c434d48010a013000841e095aa",
+  "at": "2026-09-06T21:01:22.448Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1W8D6MF087G0R003405R3N",
+    "type": "task",
+    "title": "Overlay env join reads named epoch from env",
+    "slug": "overlay-env-join-reads-named-epoch-from-env",
+    "priority": "P2",
+    "filename": "081M1W8D6MF087G0R003405R3N-overlay-env-join-reads-named-epoch-from-env.md"
+  }
+}

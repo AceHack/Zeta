@@ -1,0 +1,6 @@
+{
+  "Path": "/Users/acehack/.local/share/mise/installs/python/3.14.6/bin/python3.14",
+  "Bytes": 18090720,
+  "Sha256": "ce2c74e2fda42cb068fb2d365cfae20e6935b28b749f558d0f8f2e3bcf55cdd4",
+  "Scope": "Executable identity observed after synthetic replay; no complete runtime closure claim"
+}

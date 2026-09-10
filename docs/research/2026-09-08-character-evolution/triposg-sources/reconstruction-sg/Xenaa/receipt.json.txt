@@ -1,0 +1,8 @@
+{
+  "seconds": 30.11818991601467,
+  "vertices": 43748,
+  "faces": 83380,
+  "method": "TripoSG fp16 MPS, 30 steps, dense 128 cubed, non-flash CPU marching cubes",
+  "source_image": "Xenaa-white.png",
+  "texture": "none"
+}

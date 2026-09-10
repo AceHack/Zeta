@@ -1,0 +1,12 @@
+{
+  "pr_number": 16867,
+  "archive_path": "docs/history/pr-reviews/PR-16867-docs-cluster-record-the-byte-lock-toolchain-evidence-instead-of-leaving-it-to-be.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-06T21:56:20.792Z",
+  "schema_version": "v1",
+  "commit_sha": "e06e611f81c62d3e7264a186c14fab1c6d5336b8",
+  "title": "docs(cluster): record the byte-lock toolchain evidence instead of leaving it to be re-derived",
+  "state": "MERGED",
+  "merged_at": "2026-09-06T21:55:41Z",
+  "head_ref": "shadow/record-bytelock-toolchain-evidence"
+}

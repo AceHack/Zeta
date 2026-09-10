@@ -21,7 +21,7 @@ let ``empty view: progress fraction is 0, not decided`` () =
     Assert.Equal(3, p.Quorum) // 2f+1 for 4 members, f=1
 
 [<Fact>]
-let ``fraction climbs as distinct sources report, hits 1.0 at commit`` () =
+let ``fraction climbs for the seeded singleton-component fixture and reaches one at commit`` () =
     let lv = init 4 0.5 10
     let lv = fst (receive lv (ballot "go" 0))
     let p1 = observe lv
@@ -75,3 +75,18 @@ let ``deterministic / replayable (DST): same schedule, same trace`` () =
     let schedule = [ (1, [ ballot "a" 0 ]); (2, [ ballot "a" 1 ]) ]
     let run () = trace (init 4 0.5 100) 9 (bits 9 200) schedule |> List.map fraction
     Assert.Equal<float list>(run (), run ())
+
+[<Fact>]
+let ``a later correlation bridge decreases the fraction within the same undecided view`` () =
+    let a, b, bridge = [ 0; 0; 0; 0 ], [ 0; 0; 1; 1 ], [ 0; 0; 0; 1 ]
+    let cast i stream state = fst (receive state (Safety(SybilBftProtocol.ballot i stream "value")))
+    let before = init 4 0.5 10 |> cast 0 a |> cast 1 b
+    let after = before |> cast 2 bridge
+    let p, q = observe before, observe after
+    Assert.Equal(p.ViewNum, q.ViewNum)
+    Assert.Equal(None, p.Committed)
+    Assert.Equal(None, q.Committed)
+    Assert.Equal(2, p.DistinctSources)
+    Assert.Equal(1, q.DistinctSources)
+    Assert.Equal(2.0 / 3.0, fraction p)
+    Assert.Equal(1.0 / 3.0, fraction q)

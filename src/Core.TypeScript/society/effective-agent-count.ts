@@ -502,14 +502,77 @@ export interface Report {
   readonly unionEquivalentCount: number;
 }
 
+/**
+ * Files that MOVED after they were sampled, old path -> new path.
+ *
+ * The findings ledgers are APPEND-ONLY and their `address` is a hash over `[source, test,
+ * mutation, agent, tick, outcome]`, so editing a recorded path would both violate append-only
+ * and re-address a historical record. But a moved file is the SAME SAMPLING UNIT — it is still
+ * in the population, under a different name — so dropping the draw would shrink the sample and
+ * silently bias rho, which is precisely what `assertFrameContainsDraws` exists to prevent.
+ *
+ * So the reconciliation happens HERE, at the read boundary: the ledger keeps what it recorded,
+ * and the draw is translated into the frame's current vocabulary. This is a rename, not a
+ * correction — the finding is unchanged.
+ *
+ * Add a row when a file carrying historical findings is moved. `frameRenamesAreLive` refuses a
+ * row whose target is absent from the frame, so this map cannot rot into a silent no-op.
+ */
+export const FRAME_RENAMES: ReadonlyMap<string, string> = new Map([
+  // 081M1WBKHTT087G0R003J1FDSH — the cluster validators moved out of the tree scheduled for
+  // deletion. Same files, same depth, new root.
+  // SOURCE paths only. The frame is "every tracked `.ts` WITH a distinguishing test", so it holds
+  // the sources and never the `.test.ts` siblings — and `applyFrameRename` is applied to
+  // `f.source`. A `.test.ts` row here could never be live, and `frameRenamesAreLive` would refuse
+  // it. (It did, which is how the scope of this map got settled rather than guessed.)
+  ["infra/k8s/tests/validate-applications.ts", "full-ai-cluster/k8s/tests/validate-applications.ts"],
+  ["infra/k8s/tests/validate-bootstrap.ts", "full-ai-cluster/k8s/tests/validate-bootstrap.ts"],
+]);
+
+/**
+ * Translate a recorded draw into the vocabulary of the frame it is being checked against.
+ *
+ * FRAME-AWARE ON PURPOSE, and this is the whole subtlety. `rho-series` computes the same
+ * statistic at HISTORICAL commits, where the recorded path is the CORRECT one and the post-move
+ * path does not exist yet. A blind rename would fix the tip and break every point before the
+ * move — trading one out-of-frame draw for hundreds.
+ *
+ * So the rule is: a path already in the frame is left alone, and a rename is applied only if it
+ * LANDS in the frame. Never invent a path the frame does not have; if neither resolves, return
+ * the original and let `assertFrameContainsDraws` say so.
+ */
+export function applyFrameRename(path: string, frame: ReadonlySet<string>): string {
+  if (frame.has(path)) return path;
+  const target = FRAME_RENAMES.get(path);
+  return target !== undefined && frame.has(target) ? target : path;
+}
+
+/**
+ * Every rename TARGET must be in the frame. A row whose target is absent is either a typo or a
+ * rename that has since been undone — in both cases the map would silently stop translating and
+ * the draw would go out of frame again, which is the failure this map exists to prevent.
+ */
+export function frameRenamesAreLive(frame: readonly string[]): readonly string[] {
+  const inFrame = new Set(frame);
+  return [...FRAME_RENAMES.values()].filter((t) => !inFrame.has(t));
+}
+
 export function measure(root: string): Report {
   const frame = enumerateUniverse(root);
+  const frameSet = new Set(frame);
+  const deadRenames = frameRenamesAreLive(frame);
+  if (deadRenames.length > 0) {
+    throw new Error(
+      `FRAME_RENAMES names ${String(deadRenames.length)} target(s) absent from the frame — the map ` +
+        `has rotted and would translate a draw to nowhere:\n  ${deadRenames.join("\n  ")}`,
+    );
+  }
   const draws = new Map<string, ReadonlySet<string>>();
   const all: Finding[] = [];
   for (const agent of AGENTS) {
     const findings = readFindings(root, agent);
     all.push(...findings);
-    draws.set(agent, new Set(findings.map((f) => f.source)));
+    draws.set(agent, new Set(findings.map((f) => applyFrameRename(f.source, frameSet))));
   }
   assertFrameContainsDraws(frame, draws);
 

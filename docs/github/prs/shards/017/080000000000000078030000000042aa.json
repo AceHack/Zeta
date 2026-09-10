@@ -1,0 +1,12 @@
+{
+  "pr_number": 17066,
+  "archive_path": "docs/history/pr-reviews/PR-17066-fix-ci-qemu-phase-1-must-uefi-boot-legacy-bios-made-the-b3-preflight-refuse.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-08T19:16:27.644Z",
+  "schema_version": "v1",
+  "commit_sha": "fd75967f65817da1ef6956f9ab9fd9464efd6a3d",
+  "title": "fix(ci): QEMU phase 1 must UEFI-boot; legacy BIOS made the B3 preflight refuse",
+  "state": "MERGED",
+  "merged_at": "2026-09-08T19:15:47Z",
+  "head_ref": "shadow/qemu-phase1-boots-uefi"
+}

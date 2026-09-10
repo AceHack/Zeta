@@ -1,0 +1,126 @@
+[
+  {
+    "character": "AceHack",
+    "bones": 20,
+    "head_vertices": 3901,
+    "targets": [
+      {
+        "channel": "jawOpen",
+        "maximum_delta_m": 0.012165525288208951,
+        "moved_vertices": 432,
+        "lower_neck_max_delta_m": 0
+      },
+      {
+        "channel": "jawLeft",
+        "maximum_delta_m": 0.0069968245091092405,
+        "moved_vertices": 857,
+        "lower_neck_max_delta_m": 5.947994339449696e-13
+      },
+      {
+        "channel": "jawRight",
+        "maximum_delta_m": 0.0069968245091092405,
+        "moved_vertices": 857,
+        "lower_neck_max_delta_m": 5.947994339449696e-13
+      },
+      {
+        "channel": "mouthSmileLeft",
+        "maximum_delta_m": 0.00869362298802502,
+        "moved_vertices": 461,
+        "lower_neck_max_delta_m": 6.685659073778718e-13
+      },
+      {
+        "channel": "mouthSmileRight",
+        "maximum_delta_m": 0.009145673646202394,
+        "moved_vertices": 515,
+        "lower_neck_max_delta_m": 6.716434925276591e-13
+      },
+      {
+        "channel": "mouthPucker",
+        "maximum_delta_m": 0.006996925762557839,
+        "moved_vertices": 877,
+        "lower_neck_max_delta_m": 5.949332270793183e-13
+      },
+      {
+        "channel": "browInnerUp",
+        "maximum_delta_m": 0.005857349333690755,
+        "moved_vertices": 302,
+        "lower_neck_max_delta_m": 0
+      },
+      {
+        "channel": "browDownLeft",
+        "maximum_delta_m": 0.0037692571549859492,
+        "moved_vertices": 266,
+        "lower_neck_max_delta_m": 0
+      },
+      {
+        "channel": "browDownRight",
+        "maximum_delta_m": 0.004167129660572694,
+        "moved_vertices": 264,
+        "lower_neck_max_delta_m": 0
+      }
+    ],
+    "bytes": 1690044
+  },
+  {
+    "character": "Xenaa",
+    "bones": 20,
+    "head_vertices": 4210,
+    "targets": [
+      {
+        "channel": "jawOpen",
+        "maximum_delta_m": 0.012165524054668846,
+        "moved_vertices": 884,
+        "lower_neck_max_delta_m": 0
+      },
+      {
+        "channel": "jawLeft",
+        "maximum_delta_m": 0.006976133295710065,
+        "moved_vertices": 1933,
+        "lower_neck_max_delta_m": 7.752311824561979e-08
+      },
+      {
+        "channel": "jawRight",
+        "maximum_delta_m": 0.006976133295710065,
+        "moved_vertices": 1933,
+        "lower_neck_max_delta_m": 7.752311824561979e-08
+      },
+      {
+        "channel": "mouthSmileLeft",
+        "maximum_delta_m": 0.00876331324156486,
+        "moved_vertices": 1015,
+        "lower_neck_max_delta_m": 5.2099582264017644e-08
+      },
+      {
+        "channel": "mouthSmileRight",
+        "maximum_delta_m": 0.00911724288020168,
+        "moved_vertices": 1109,
+        "lower_neck_max_delta_m": 1.0447879914310164e-07
+      },
+      {
+        "channel": "mouthPucker",
+        "maximum_delta_m": 0.006994504297023914,
+        "moved_vertices": 2051,
+        "lower_neck_max_delta_m": 8.316753998441681e-08
+      },
+      {
+        "channel": "browInnerUp",
+        "maximum_delta_m": 0.005792761302548338,
+        "moved_vertices": 498,
+        "lower_neck_max_delta_m": 0
+      },
+      {
+        "channel": "browDownLeft",
+        "maximum_delta_m": 0.004250444369072837,
+        "moved_vertices": 484,
+        "lower_neck_max_delta_m": 0
+      },
+      {
+        "channel": "browDownRight",
+        "maximum_delta_m": 0.004373852145021926,
+        "moved_vertices": 495,
+        "lower_neck_max_delta_m": 0
+      }
+    ],
+    "bytes": 2043760
+  }
+]

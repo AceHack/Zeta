@@ -1,0 +1,12 @@
+{
+  "Argv": [
+    "bun",
+    "run",
+    "preflight"
+  ],
+  "Cwd": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908",
+  "ExitCode": 1,
+  "Started": "2026-09-08T14:39:23.271994+00:00",
+  "Finished": "2026-09-08T14:43:33.152186+00:00",
+  "ElapsedSeconds": 249.8786878749961
+}

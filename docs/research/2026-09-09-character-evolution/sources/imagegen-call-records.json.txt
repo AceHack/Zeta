@@ -1,0 +1,16 @@
+[
+  {
+    "prompt": "Use case: identity-preserve. Create a photorealistic 3D reconstruction conditioning reference of ONLY AceHack's head and complete neck, based closely on the attached character portrait. Exact straight-on front orthographic view: eyes level, nose centered, both ears equally visible, no head yaw or tilt. Preserve the distinctive middle-aged face, swept-back dark hair with gray temples, full neatly trimmed gray beard and mustache, rectangular black glasses and small emerald circular cybernetic attachment at his temple. Serious gentle expression, lips closed. Include whole hair silhouette and neck down to collarbone, but NO shoulders, NO clothing, NO pedestal or stand. Head upright centered, occupies 78 percent of square image height, pure solid white background. Soft neutral even studio lighting, minimal cast shadow. Detailed natural skin and individual hair, no stylization, no text, no game UI. This image is a derived reference for subsequent actual 3D reconstruction, not a mesh render.",
+    "referenced_image_paths": [
+      "/Users/acehack/Downloads/ChatGPT Image Sep 7, 2026, 09_14_32 AM.png"
+    ],
+    "output": "references/AceHack-head-derived.png"
+  },
+  {
+    "prompt": "Use case: identity-preserve. Create a photorealistic 3D reconstruction conditioning reference of ONLY Xenaa's head and complete neck based closely on the attached portrait. Exact straight-on front orthographic view: eyes level, nose centered, both sides of face equally visible, no head yaw or tilt. Preserve her recognizable adult face, dark almond-shaped eyes, arched brows, warm light skin tone, full natural lips, and long flowing black hair with a natural side part. Show hair as coherent dense locks reaching just below the neck on either side, gently swept back from the cheeks so face is unobstructed; no frizzy isolated wisps. Include whole hair silhouette and neck down to collarbone, NO shoulders, NO clothing, NO pedestal or stand. Head upright centered, occupies 78 percent of square image height, pure solid white background. Soft neutral even studio lighting, minimal cast shadow. Natural detailed skin, realistic hair, no stylization, no text, no earrings for this reconstruction input. Keep her likeness and confident neutral expression. This is a derived conditioning image for subsequent actual 3D mesh reconstruction.",
+    "referenced_image_paths": [
+      "/Users/acehack/Downloads/ChatGPT Image Sep 7, 2026, 07_28_27 AM.png"
+    ],
+    "output": "references/Xenaa-head-derived.png"
+  }
+]

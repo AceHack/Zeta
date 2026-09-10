@@ -1,0 +1,12 @@
+{
+  "pr_number": 17052,
+  "archive_path": "docs/history/pr-reviews/PR-17052-specify-checked-mixed-message-and-learned-module-epochs.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-08T11:53:23.186Z",
+  "schema_version": "v1",
+  "commit_sha": "84cc7a0cd2c78bff2ca01fc699fa4d054d3a8223",
+  "title": "Specify checked mixed-message and learned-module epochs",
+  "state": "MERGED",
+  "merged_at": "2026-09-08T11:52:11Z",
+  "head_ref": "codex/mixed-message-epoch-proposal-20260908"
+}

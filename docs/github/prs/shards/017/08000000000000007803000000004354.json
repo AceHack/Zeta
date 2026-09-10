@@ -1,0 +1,12 @@
+{
+  "pr_number": 17236,
+  "archive_path": "docs/history/pr-reviews/PR-17236-fix-ace-six-unbounded-package-document-doors-become-one-bounded.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-10T15:33:48.310Z",
+  "schema_version": "v1",
+  "commit_sha": "e4f56537bed5ce393ccf27ed6ecef359b6f8d682",
+  "title": "fix(ace): six unbounded package-document doors become one, bounded",
+  "state": "MERGED",
+  "merged_at": "2026-09-10T15:33:05Z",
+  "head_ref": "sec7/ace-registry-bounded"
+}

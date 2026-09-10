@@ -1,0 +1,54 @@
+{
+  "blender": "5.2.1 LTS",
+  "scene": "01 | Character atelier",
+  "scenes": [
+    "01 | Character atelier",
+    "02 | Turntable"
+  ],
+  "cameras": [
+    "01 | Duo review",
+    "AceHack | Portrait",
+    "Xenaa | Portrait",
+    "02 | Animated turntable"
+  ],
+  "meshes": [
+    {
+      "name": "AceHack | Body generator",
+      "vertices": 83000,
+      "faces": 165692
+    },
+    {
+      "name": "AceHack | Independent head generator",
+      "vertices": 112656,
+      "faces": 224780
+    },
+    {
+      "name": "AceHack | Collar join",
+      "vertices": 98,
+      "faces": 48
+    },
+    {
+      "name": "Xenaa | Body generator",
+      "vertices": 81135,
+      "faces": 161887
+    },
+    {
+      "name": "Xenaa | Independent head generator",
+      "vertices": 131730,
+      "faces": 262435
+    },
+    {
+      "name": "Xenaa | Collar join",
+      "vertices": 98,
+      "faces": 48
+    }
+  ],
+  "packed_images": [
+    "AceHack-square-alpha.png",
+    "alpha.png",
+    "alpha.png.001",
+    "Xenaa-square-alpha.png"
+  ],
+  "finite_vertices": true,
+  "rigged": false
+}

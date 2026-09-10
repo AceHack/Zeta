@@ -1,0 +1,12 @@
+{
+  "pr_number": 16894,
+  "archive_path": "docs/history/pr-reviews/PR-16894-feat-081m1wk2ns5087g0r002c5acq4-bindname-refuses-a-directory-cycle.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-07T00:29:49.782Z",
+  "schema_version": "v1",
+  "commit_sha": "d4e623c11db9dbde6fd789bf8012a48b92605e24",
+  "title": "feat(081M1WK2NS5087G0R002C5ACQ4): bindName refuses a directory cycle",
+  "state": "MERGED",
+  "merged_at": "2026-09-07T00:29:09Z",
+  "head_ref": "feat/zetafs-bind-cycle-refuse"
+}

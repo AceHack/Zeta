@@ -1,7 +1,7 @@
 # Trajectory - USB / zflash Installer
 
 Status: active — shipped + iterating; first surfaced as a trajectory 2026-05-29 from substrate inventory (the flashing mechanism works on `origin/main`; this surface was missing, so the workstream lived head-only)
-Last refreshed: 2026-09-06
+Last refreshed: 2026-09-07
 Type: workstream (current-focus) — a trajectory the operator is _actively powering_. Many trajectories can be tracked; only a few are workstreams at once (finite-focus / WIP-bounded — a workstream is a trajectory under sustained thrust, and thrust budget is finite, so most trajectories coast). (Genus = "trajectory"; "workstream" is the species: a trajectory under sustained thrust toward a deliverable, vs. emergent-posture trajectories like `anti-infection`. See [`factory-trajectory-surface`](../factory-trajectory-surface/RESUME.md) for the genus/species taxonomy.) One of the operator's three current cluster workstreams (encryption / usb-zflash / ts-workflow-engine).
 Eventual encoding (design-stage — the human maintainer 2026-05-23 genetic-ID substrate + Clifford/HKT): this trajectory's state is trackable as a 128-bit genetic-ID seed (discrete, reversible via parser-combinator ↔ generator-function) → Clifford-space path (continuous, eventual). Mirrors the three-lane I8-lattice / I9-manifold split.
 Current blocker: hardware — metal S6 first-login + WiFi radio / Touch ID / TPM
@@ -530,6 +530,122 @@ ISO bun names epoch
 `ZETA_BAO_ELF_EPOCH='installer-iso'` as a
 literal after 6.95a; `/mnt` is unknown,
 not `installer-iso`.
+Env join reads named epoch
+(`081M1W8D6MF087G0R003405R3N`) from
+`ZETA_BAO_ELF_EPOCH`; a named ask without
+a named epoch refuses; still does not
+invent an integrate decision.
+ISO bun filters current-system bao
+(`081M1W9VW7P087G0R0026A9J6Z`) so bun JSON
+ask is null at `installer-iso` plus
+`NIXOS_HOST_BAO`.
+Named unseal request
+(`081M1WBA6RX087G0R002450S9J`) from
+`ZETA_UNSEAL_REQUEST`; `/dev/tpmrm0` is
+not `pkcs11-tpm`; still does not invent
+an integrate decision.
+Env request joins injected capture
+(`081M1WCEGYJ087G0R0039T2T39`); missing
+is unmeasured, not `auto`.
+Overlay env join reads unseal request
+(`081M1WE7Z5S087G0R001WT3K6G`) from
+`ZETA_UNSEAL_REQUEST`; capture stays
+injected.
+ISO bun consume reports named unseal
+request (`081M1WG1RJB087G0R001ADMJNK`);
+missing is unmeasured, not `auto`; does
+not export a default request.
+Argv/conf overlay joins read unseal
+request (`081M1WHKEEQ087G0R0002B3SPG`)
+from `ZETA_UNSEAL_REQUEST`; capture stays
+injected; does not add the request to
+ESP conf.
+Named probe snapshot becomes host
+capture (`081M1WK36Y1087G0R003WT976Y`);
+`/dev/tpmrm0` is not `present`.
+Overlay joins take named probe
+(`081M1WMR8KD087G0R003HZYY14`);
+null is unmeasured, not present;
+`/dev/tpmrm0` is not a capture.
+Env integrate takes named probe
+(`081M1WP0C7B087G0R000VK9E0V`);
+overlay passes the probe through.
+ISO bun consume reports unmeasured
+probe (`081M1WQNTZ0087G0R002Q8T8RT`);
+null is unmeasured, not present.
+Frost result becomes named probe
+(`081M1WS6HV4087G0R001K1YWMN`);
+`/dev/tpmrm0` is not `present`; a
+YubiKey is not CardContact; still
+does not run the live probe from
+`zeta-install.sh`.
+Overlay env join takes frost result
+(`081M1WTR4BW087G0R0001NVXWQ`);
+null frost result is unmeasured, not
+present; ISO bun `probe` stays null.
+Overlay argv/conf joins take frost
+result (`081M1WXPCAV087G0R002H1X6VY`);
+does not add the request to ESP conf;
+ISO bun `probe` stays null.
+Frost look with injected effects
+(`081M1WYXT4S087G0R002K1TK4Y`);
+null effects is unmeasured, not a
+live look; ISO bun `probe` stays null.
+Overlay joins take frost look
+(`081M1XYSWV0087G0R000ZFKBTD`);
+null effects is unmeasured, not a
+live look; result joins stay
+result-only; ISO bun `probe` stays
+null.
+Frost look CLI takes named effects
+(`081M1Y39EJJ087G0R003Z00P0Y`);
+missing effects is unmeasured, not
+a live look; `/dev/tpmrm0` is not
+`real`; ISO bun `probe` stays null.
+Frost look CLI argv takes named
+effects (`081M1Y5WKS2087G0R002Q7ZKS7`);
+missing `--effects` is unmeasured;
+`--os` is required; ISO bun `probe`
+stays null.
+Frost look CLI conf takes named
+effects (`081M1YAHFVV087G0R001G2TXRE`);
+missing effects is unmeasured;
+`--from-conf` does not write ESP;
+ISO bun `probe` stays null.
+Overlay named-key joins take frost-look
+keys (`081M1YCFES8087G0R000R3MV6Y`);
+parse is not the CLI; ISO bun `probe`
+stays null.
+ISO bun consume reports named frost-look
+keys (`081M1YGP8BF087G0R002Z1YH8R`);
+missing is unmeasured `look`; named
+`"real"` still leaves `probe` null.
+Overlay optional named joins match ISO bun
+missing frost-look keys
+(`081M1YNNVFQ087G0R001J5SEPD`); missing
+both keys is unmeasured, not `missing-os`;
+NamedEnv still requires OS; ISO bun
+`probe` stays null.
+Overlay optional named join takes ISO bun
+JSON look (`081M1YQKYXQ087G0R000NXN8JN`);
+JSON `probe` is ignored even when
+non-null; ISO bun `probe` stays null.
+Frost look CLI takes bun JSON look
+(`081M1YS9661087G0R001YK5CEY`); `--from-json`
+uses `look`; JSON `probe` is ignored;
+ISO bun `probe` stays null.
+Overlay optional named argv takes bun JSON
+`--from-json` (`081M1YWR8EB087G0R002X0SFX7`);
+JSON `probe` is ignored even when
+non-null; ISO bun `probe` stays null.
+Overlay named argv takes bun JSON `--from-json`
+(`081M1Z1FHDW087G0R00210Z0PG`); null look is
+`missing-os`; JSON `probe` is ignored;
+ISO bun `probe` stays null.
+Overlay named bun JSON join takes look
+(`081M1Z36ZJ4087G0R003HFMT2K`); null look is
+`missing-os`; JSON `probe` is ignored;
+ISO bun `probe` stays null.
 glibc-host-into-musl-image is not a
 module; Application.yaml stays Shamir.
 

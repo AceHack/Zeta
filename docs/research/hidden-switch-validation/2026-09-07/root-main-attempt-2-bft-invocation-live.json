@@ -1,0 +1,1140 @@
+{
+  "Argv": [
+    "-Xms64m",
+    "-Xmx4g",
+    "-XX:\u002BUseSerialGC",
+    "-XX:-UseTypeSpeculation",
+    "-XX:TieredStopAtLevel=1",
+    "-XX:ErrorFile=/Users/acehack/.zeta/agents/codex/Zeta-rendered-catch-reference-20260906/TestResults/tlc-diagnostics/BftConsensus-e5f8fd404b3d4cf6935d8a02227ebb1f/hs_err_pid%p.log",
+    "-cp",
+    "/Users/acehack/.zeta/agents/codex/Zeta-rendered-catch-reference-20260906/src/Core.TLA/tla2tools.jar",
+    "tlc2.TLC",
+    "-metadir",
+    "/Users/acehack/.zeta/agents/codex/Zeta-rendered-catch-reference-20260906/TestResults/tlc-diagnostics/BftConsensus-e5f8fd404b3d4cf6935d8a02227ebb1f/states",
+    "-workers",
+    "1",
+    "-config",
+    "BftConsensus.cfg",
+    "BftConsensus"
+  ],
+  "Attempt": 1,
+  "Inputs": [
+    {
+      "Source": {
+        "File": "AsyncStreamEnumerator.cfg",
+        "Bytes": 152,
+        "Sha256": "191C5D57BC700006A5F700DB479FF50EBAA6F984357D8BC2D71333911A42844F"
+      },
+      "Copied": {
+        "File": "AsyncStreamEnumerator.cfg",
+        "Bytes": 152,
+        "Sha256": "191C5D57BC700006A5F700DB479FF50EBAA6F984357D8BC2D71333911A42844F"
+      }
+    },
+    {
+      "Source": {
+        "File": "AsyncStreamEnumerator.tla",
+        "Bytes": 2359,
+        "Sha256": "5439AC9301EF6ED739241FC5DCCFCBE29E9A276989600D36EB5CF9FC05DE0D8D"
+      },
+      "Copied": {
+        "File": "AsyncStreamEnumerator.tla",
+        "Bytes": 2359,
+        "Sha256": "5439AC9301EF6ED739241FC5DCCFCBE29E9A276989600D36EB5CF9FC05DE0D8D"
+      }
+    },
+    {
+      "Source": {
+        "File": "BftConsensus.cfg",
+        "Bytes": 3979,
+        "Sha256": "73C219CE14D7A838C2345BE4C82C8B0B0F209283FB0928AE7E895E5374565BDE"
+      },
+      "Copied": {
+        "File": "BftConsensus.cfg",
+        "Bytes": 3979,
+        "Sha256": "73C219CE14D7A838C2345BE4C82C8B0B0F209283FB0928AE7E895E5374565BDE"
+      }
+    },
+    {
+      "Source": {
+        "File": "BftConsensus.tla",
+        "Bytes": 13793,
+        "Sha256": "E859DAAAA872C9DF903886573AD5FB6D17849CF6637DF37C25376ABE8D04854F"
+      },
+      "Copied": {
+        "File": "BftConsensus.tla",
+        "Bytes": 13793,
+        "Sha256": "E859DAAAA872C9DF903886573AD5FB6D17849CF6637DF37C25376ABE8D04854F"
+      }
+    },
+    {
+      "Source": {
+        "File": "BftLiveness.cfg",
+        "Bytes": 367,
+        "Sha256": "6F2290531D4BF26035B66F930579908AB27FA728AA52DB9B704A9CBC3481DE30"
+      },
+      "Copied": {
+        "File": "BftLiveness.cfg",
+        "Bytes": 367,
+        "Sha256": "6F2290531D4BF26035B66F930579908AB27FA728AA52DB9B704A9CBC3481DE30"
+      }
+    },
+    {
+      "Source": {
+        "File": "BftSybilConsensus.cfg",
+        "Bytes": 174,
+        "Sha256": "C94ECC79882C96422639FBF23A251BD7FF3467B27D6B758E61014E115F133D82"
+      },
+      "Copied": {
+        "File": "BftSybilConsensus.cfg",
+        "Bytes": 174,
+        "Sha256": "C94ECC79882C96422639FBF23A251BD7FF3467B27D6B758E61014E115F133D82"
+      }
+    },
+    {
+      "Source": {
+        "File": "BftSybilConsensus.tla",
+        "Bytes": 6258,
+        "Sha256": "0FE597C557D912A17F1E96DD2CF6405BF0B33AE9BBEAAF91CD6CDA52238FAB43"
+      },
+      "Copied": {
+        "File": "BftSybilConsensus.tla",
+        "Bytes": 6258,
+        "Sha256": "0FE597C557D912A17F1E96DD2CF6405BF0B33AE9BBEAAF91CD6CDA52238FAB43"
+      }
+    },
+    {
+      "Source": {
+        "File": "Bifurcation.cfg",
+        "Bytes": 202,
+        "Sha256": "716A252FFB75D5749DAD1ACC644EA7230AEC66669089861AABD61B5FF3CDD728"
+      },
+      "Copied": {
+        "File": "Bifurcation.cfg",
+        "Bytes": 202,
+        "Sha256": "716A252FFB75D5749DAD1ACC644EA7230AEC66669089861AABD61B5FF3CDD728"
+      }
+    },
+    {
+      "Source": {
+        "File": "Bifurcation.tla",
+        "Bytes": 3511,
+        "Sha256": "9216119D3BC3D0E9B805694AAD1C5127E5679BFD405E4F1AC6E88909F050AEC4"
+      },
+      "Copied": {
+        "File": "Bifurcation.tla",
+        "Bytes": 3511,
+        "Sha256": "9216119D3BC3D0E9B805694AAD1C5127E5679BFD405E4F1AC6E88909F050AEC4"
+      }
+    },
+    {
+      "Source": {
+        "File": "BpExactOnTree.cfg",
+        "Bytes": 81,
+        "Sha256": "0CC90B2E95BB5D77442E76CAB5F28A7DF7D394DFD6C1DA24DDAAE0A6AE0B4E65"
+      },
+      "Copied": {
+        "File": "BpExactOnTree.cfg",
+        "Bytes": 81,
+        "Sha256": "0CC90B2E95BB5D77442E76CAB5F28A7DF7D394DFD6C1DA24DDAAE0A6AE0B4E65"
+      }
+    },
+    {
+      "Source": {
+        "File": "BpExactOnTree.tla",
+        "Bytes": 4730,
+        "Sha256": "ED6D3999969AAF9011B3AC27A468296B1A2D8993EDFFBBF4E237D8390AEBEE6C"
+      },
+      "Copied": {
+        "File": "BpExactOnTree.tla",
+        "Bytes": 4730,
+        "Sha256": "ED6D3999969AAF9011B3AC27A468296B1A2D8993EDFFBBF4E237D8390AEBEE6C"
+      }
+    },
+    {
+      "Source": {
+        "File": "ChaosEnvDeterminism.cfg",
+        "Bytes": 634,
+        "Sha256": "16D6DDF94904B2F7EEB76B9F6AB0F7A744111F563E97B801E19C0AC22C5E9CA2"
+      },
+      "Copied": {
+        "File": "ChaosEnvDeterminism.cfg",
+        "Bytes": 634,
+        "Sha256": "16D6DDF94904B2F7EEB76B9F6AB0F7A744111F563E97B801E19C0AC22C5E9CA2"
+      }
+    },
+    {
+      "Source": {
+        "File": "ChaosEnvDeterminism.tla",
+        "Bytes": 3225,
+        "Sha256": "CAE3C1B9183897083ECC9A7083B11628B0705A239A38F34D34D29452FBBA6C42"
+      },
+      "Copied": {
+        "File": "ChaosEnvDeterminism.tla",
+        "Bytes": 3225,
+        "Sha256": "CAE3C1B9183897083ECC9A7083B11628B0705A239A38F34D34D29452FBBA6C42"
+      }
+    },
+    {
+      "Source": {
+        "File": "CircuitRegistration.cfg",
+        "Bytes": 908,
+        "Sha256": "13D461D9202B7C166B738DB069173F056718FBEF30B1B69AD56F416816A98FB8"
+      },
+      "Copied": {
+        "File": "CircuitRegistration.cfg",
+        "Bytes": 908,
+        "Sha256": "13D461D9202B7C166B738DB069173F056718FBEF30B1B69AD56F416816A98FB8"
+      }
+    },
+    {
+      "Source": {
+        "File": "CircuitRegistration.tla",
+        "Bytes": 5849,
+        "Sha256": "9F0775FA0FA57B889ABFFADB3AC230B1A7D438014C89E69903CAD5CAAAE0C24F"
+      },
+      "Copied": {
+        "File": "CircuitRegistration.tla",
+        "Bytes": 5849,
+        "Sha256": "9F0775FA0FA57B889ABFFADB3AC230B1A7D438014C89E69903CAD5CAAAE0C24F"
+      }
+    },
+    {
+      "Source": {
+        "File": "ConsistentHashRebalance.cfg",
+        "Bytes": 140,
+        "Sha256": "B3F423978A2EDA8566DCDAE6BCC496B1E175321B76D28F511024D580FE9EB5F2"
+      },
+      "Copied": {
+        "File": "ConsistentHashRebalance.cfg",
+        "Bytes": 140,
+        "Sha256": "B3F423978A2EDA8566DCDAE6BCC496B1E175321B76D28F511024D580FE9EB5F2"
+      }
+    },
+    {
+      "Source": {
+        "File": "ConsistentHashRebalance.tla",
+        "Bytes": 2515,
+        "Sha256": "6C760B2942188D62DD1AC22DE3C27753CABD56BE9325700E415C88CF14ECBD47"
+      },
+      "Copied": {
+        "File": "ConsistentHashRebalance.tla",
+        "Bytes": 2515,
+        "Sha256": "6C760B2942188D62DD1AC22DE3C27753CABD56BE9325700E415C88CF14ECBD47"
+      }
+    },
+    {
+      "Source": {
+        "File": "DbspSpec.cfg",
+        "Bytes": 306,
+        "Sha256": "00B42651FBD5EE0400A5272F112DE6D3517E7686CB8D3C6D437D00F3847EF64D"
+      },
+      "Copied": {
+        "File": "DbspSpec.cfg",
+        "Bytes": 306,
+        "Sha256": "00B42651FBD5EE0400A5272F112DE6D3517E7686CB8D3C6D437D00F3847EF64D"
+      }
+    },
+    {
+      "Source": {
+        "File": "DbspSpec.tla",
+        "Bytes": 2682,
+        "Sha256": "0481752F90E2C7D5DE12DCBBC9F055AC6ADA8578DA608BA6C342C2E3822EC06B"
+      },
+      "Copied": {
+        "File": "DbspSpec.tla",
+        "Bytes": 2682,
+        "Sha256": "0481752F90E2C7D5DE12DCBBC9F055AC6ADA8578DA608BA6C342C2E3822EC06B"
+      }
+    },
+    {
+      "Source": {
+        "File": "DictionaryStripedCAS.cfg",
+        "Bytes": 163,
+        "Sha256": "25615F687F788F10DDAE4855E714FBBDEC084730586E295E5A5203337E197BCF"
+      },
+      "Copied": {
+        "File": "DictionaryStripedCAS.cfg",
+        "Bytes": 163,
+        "Sha256": "25615F687F788F10DDAE4855E714FBBDEC084730586E295E5A5203337E197BCF"
+      }
+    },
+    {
+      "Source": {
+        "File": "DictionaryStripedCAS.tla",
+        "Bytes": 2144,
+        "Sha256": "774DD38E9ED70B98A9BB864B05E10AA3C3EDB8135EC247117FFA1EEE4A14BABA"
+      },
+      "Copied": {
+        "File": "DictionaryStripedCAS.tla",
+        "Bytes": 2144,
+        "Sha256": "774DD38E9ED70B98A9BB864B05E10AA3C3EDB8135EC247117FFA1EEE4A14BABA"
+      }
+    },
+    {
+      "Source": {
+        "File": "EngagementLiveness.cfg",
+        "Bytes": 940,
+        "Sha256": "14CFC28D820ED176A71B3C1BFAC1EDDE1C3ABE674F53B50103E4CEA4E391A9A2"
+      },
+      "Copied": {
+        "File": "EngagementLiveness.cfg",
+        "Bytes": 940,
+        "Sha256": "14CFC28D820ED176A71B3C1BFAC1EDDE1C3ABE674F53B50103E4CEA4E391A9A2"
+      }
+    },
+    {
+      "Source": {
+        "File": "EngagementLiveness.tla",
+        "Bytes": 7817,
+        "Sha256": "F278CF332E011DC9E8DC175A2B58BD605C5A7D2049D5E1BDE850893E9FFC36BB"
+      },
+      "Copied": {
+        "File": "EngagementLiveness.tla",
+        "Bytes": 7817,
+        "Sha256": "F278CF332E011DC9E8DC175A2B58BD605C5A7D2049D5E1BDE850893E9FFC36BB"
+      }
+    },
+    {
+      "Source": {
+        "File": "FeatureFlagsResolution.cfg",
+        "Bytes": 84,
+        "Sha256": "322EC2F31A0716BB8EFFF7E2183F627AF47E834D238B1DEA19040B5863855400"
+      },
+      "Copied": {
+        "File": "FeatureFlagsResolution.cfg",
+        "Bytes": 84,
+        "Sha256": "322EC2F31A0716BB8EFFF7E2183F627AF47E834D238B1DEA19040B5863855400"
+      }
+    },
+    {
+      "Source": {
+        "File": "FeatureFlagsResolution.tla",
+        "Bytes": 4689,
+        "Sha256": "DE8A9F1F273B4118402ED1FC0A71604C44117F94FA4D8EE5D40CC56C1EA13707"
+      },
+      "Copied": {
+        "File": "FeatureFlagsResolution.tla",
+        "Bytes": 4689,
+        "Sha256": "DE8A9F1F273B4118402ED1FC0A71604C44117F94FA4D8EE5D40CC56C1EA13707"
+      }
+    },
+    {
+      "Source": {
+        "File": "InfoTheoreticSharder.cfg",
+        "Bytes": 188,
+        "Sha256": "8CF84B2731A7384284110523A6E217682316371E7BA129BBB387651EAF24BF34"
+      },
+      "Copied": {
+        "File": "InfoTheoreticSharder.cfg",
+        "Bytes": 188,
+        "Sha256": "8CF84B2731A7384284110523A6E217682316371E7BA129BBB387651EAF24BF34"
+      }
+    },
+    {
+      "Source": {
+        "File": "InfoTheoreticSharder.tla",
+        "Bytes": 11533,
+        "Sha256": "61C50585AF41AD072A8CC2687D11F53D5BDFBABAA2EF91F2B29972AC00E23936"
+      },
+      "Copied": {
+        "File": "InfoTheoreticSharder.tla",
+        "Bytes": 11533,
+        "Sha256": "61C50585AF41AD072A8CC2687D11F53D5BDFBABAA2EF91F2B29972AC00E23936"
+      }
+    },
+    {
+      "Source": {
+        "File": "NciLiveness.cfg",
+        "Bytes": 136,
+        "Sha256": "F513BA2F1126CF5E139772D4223B85044B8D88CF7BF80A2CFA6A097D83984D43"
+      },
+      "Copied": {
+        "File": "NciLiveness.cfg",
+        "Bytes": 136,
+        "Sha256": "F513BA2F1126CF5E139772D4223B85044B8D88CF7BF80A2CFA6A097D83984D43"
+      }
+    },
+    {
+      "Source": {
+        "File": "NciLiveness.tla",
+        "Bytes": 3507,
+        "Sha256": "927343F4339909B118C6407FC4CE2BF320B4AEFDF4AE77982568E2416F9F9BBB"
+      },
+      "Copied": {
+        "File": "NciLiveness.tla",
+        "Bytes": 3507,
+        "Sha256": "927343F4339909B118C6407FC4CE2BF320B4AEFDF4AE77982568E2416F9F9BBB"
+      }
+    },
+    {
+      "Source": {
+        "File": "NciNonUrgency.cfg",
+        "Bytes": 208,
+        "Sha256": "98E80EEEF8949FFD598CD29CC7AD44DC70EAE1636DEA6F3CF2B7954BC62340B9"
+      },
+      "Copied": {
+        "File": "NciNonUrgency.cfg",
+        "Bytes": 208,
+        "Sha256": "98E80EEEF8949FFD598CD29CC7AD44DC70EAE1636DEA6F3CF2B7954BC62340B9"
+      }
+    },
+    {
+      "Source": {
+        "File": "NciNonUrgency.tla",
+        "Bytes": 8706,
+        "Sha256": "3444CB6E66904406460143A27FC8932F30AAC4B4D78AD37D09F59DFC0822319F"
+      },
+      "Copied": {
+        "File": "NciNonUrgency.tla",
+        "Bytes": 8706,
+        "Sha256": "3444CB6E66904406460143A27FC8932F30AAC4B4D78AD37D09F59DFC0822319F"
+      }
+    },
+    {
+      "Source": {
+        "File": "NciNonUrgencyProofs.tla",
+        "Bytes": 3381,
+        "Sha256": "52975CBC407EFCFF23970143A3AB2324414BBEDF6D441BC593A7558629CAFFC4"
+      },
+      "Copied": {
+        "File": "NciNonUrgencyProofs.tla",
+        "Bytes": 3381,
+        "Sha256": "52975CBC407EFCFF23970143A3AB2324414BBEDF6D441BC593A7558629CAFFC4"
+      }
+    },
+    {
+      "Source": {
+        "File": "NciSafety.cfg",
+        "Bytes": 138,
+        "Sha256": "6FBE5A40F86B52095FCCB27EAC1841BAC2469E129615F9C2EC8CC7101B6B8E0A"
+      },
+      "Copied": {
+        "File": "NciSafety.cfg",
+        "Bytes": 138,
+        "Sha256": "6FBE5A40F86B52095FCCB27EAC1841BAC2469E129615F9C2EC8CC7101B6B8E0A"
+      }
+    },
+    {
+      "Source": {
+        "File": "NciSafety.tla",
+        "Bytes": 4315,
+        "Sha256": "A7348BAE4F8A53B359B7A884701A943CFCE14B03B2101F51E5A37723761BA5FA"
+      },
+      "Copied": {
+        "File": "NciSafety.tla",
+        "Bytes": 4315,
+        "Sha256": "A7348BAE4F8A53B359B7A884701A943CFCE14B03B2101F51E5A37723761BA5FA"
+      }
+    },
+    {
+      "Source": {
+        "File": "NciSafetyProofs.tla",
+        "Bytes": 3877,
+        "Sha256": "45982883D878EA5C4985C4DDA34145A61C272E2EC60752A4DE15B6A0116F233F"
+      },
+      "Copied": {
+        "File": "NciSafetyProofs.tla",
+        "Bytes": 3877,
+        "Sha256": "45982883D878EA5C4985C4DDA34145A61C272E2EC60752A4DE15B6A0116F233F"
+      }
+    },
+    {
+      "Source": {
+        "File": "NciUnbounded.cfg",
+        "Bytes": 255,
+        "Sha256": "CCBDD6329CFABE0581E379D895B07AF2A6A3C84228495E46A30C7E9A90C4DDBC"
+      },
+      "Copied": {
+        "File": "NciUnbounded.cfg",
+        "Bytes": 255,
+        "Sha256": "CCBDD6329CFABE0581E379D895B07AF2A6A3C84228495E46A30C7E9A90C4DDBC"
+      }
+    },
+    {
+      "Source": {
+        "File": "NciUnbounded.tla",
+        "Bytes": 4613,
+        "Sha256": "17FFF7B8386F6972D57A9E9AF7D73F5333755BF3D6A60146164152EC42D22651"
+      },
+      "Copied": {
+        "File": "NciUnbounded.tla",
+        "Bytes": 4613,
+        "Sha256": "17FFF7B8386F6972D57A9E9AF7D73F5333755BF3D6A60146164152EC42D22651"
+      }
+    },
+    {
+      "Source": {
+        "File": "NonRegisterCollapse.cfg",
+        "Bytes": 163,
+        "Sha256": "EA712663754EB3241D3C080A4C802D6F33C0E3EF89C511B6F0030F80DD0435DB"
+      },
+      "Copied": {
+        "File": "NonRegisterCollapse.cfg",
+        "Bytes": 163,
+        "Sha256": "EA712663754EB3241D3C080A4C802D6F33C0E3EF89C511B6F0030F80DD0435DB"
+      }
+    },
+    {
+      "Source": {
+        "File": "NonRegisterCollapse.tla",
+        "Bytes": 3939,
+        "Sha256": "FB380CC5675D32C69938182FA097CBB648565DAF60AB8F8217A9B6FD7602ED7B"
+      },
+      "Copied": {
+        "File": "NonRegisterCollapse.tla",
+        "Bytes": 3939,
+        "Sha256": "FB380CC5675D32C69938182FA097CBB648565DAF60AB8F8217A9B6FD7602ED7B"
+      }
+    },
+    {
+      "Source": {
+        "File": "OperatorLifecycleRace.cfg",
+        "Bytes": 97,
+        "Sha256": "85318E3DF2A958C9DB647BED3C755AA4029DB95C4B224E70F72FE724320EA4D0"
+      },
+      "Copied": {
+        "File": "OperatorLifecycleRace.cfg",
+        "Bytes": 97,
+        "Sha256": "85318E3DF2A958C9DB647BED3C755AA4029DB95C4B224E70F72FE724320EA4D0"
+      }
+    },
+    {
+      "Source": {
+        "File": "OperatorLifecycleRace.tla",
+        "Bytes": 1635,
+        "Sha256": "BF6B5F7DD5779A4B03EBDA5D9E01D6DB0B9BCC9C1AA6DF15668991C1FC5BC609"
+      },
+      "Copied": {
+        "File": "OperatorLifecycleRace.tla",
+        "Bytes": 1635,
+        "Sha256": "BF6B5F7DD5779A4B03EBDA5D9E01D6DB0B9BCC9C1AA6DF15668991C1FC5BC609"
+      }
+    },
+    {
+      "Source": {
+        "File": "PermanentHarmHorizon.cfg",
+        "Bytes": 83,
+        "Sha256": "95573ED6E306320D51122C5D48EC862E1CD5F492595152E1AAF6E7002DF67BC4"
+      },
+      "Copied": {
+        "File": "PermanentHarmHorizon.cfg",
+        "Bytes": 83,
+        "Sha256": "95573ED6E306320D51122C5D48EC862E1CD5F492595152E1AAF6E7002DF67BC4"
+      }
+    },
+    {
+      "Source": {
+        "File": "PermanentHarmHorizon.tla",
+        "Bytes": 6476,
+        "Sha256": "DC55F7C63CAD004D43455F6FC8ECA023D5C86ABDE1505D29E6BFC34934CE8F3C"
+      },
+      "Copied": {
+        "File": "PermanentHarmHorizon.tla",
+        "Bytes": 6476,
+        "Sha256": "DC55F7C63CAD004D43455F6FC8ECA023D5C86ABDE1505D29E6BFC34934CE8F3C"
+      }
+    },
+    {
+      "Source": {
+        "File": "PredictiveLookahead.cfg",
+        "Bytes": 2168,
+        "Sha256": "AFB030A728BDDC1055AFF594C8EF8EC5F2B3D0E84D784705B18146209D688620"
+      },
+      "Copied": {
+        "File": "PredictiveLookahead.cfg",
+        "Bytes": 2168,
+        "Sha256": "AFB030A728BDDC1055AFF594C8EF8EC5F2B3D0E84D784705B18146209D688620"
+      }
+    },
+    {
+      "Source": {
+        "File": "PredictiveLookahead.tla",
+        "Bytes": 17604,
+        "Sha256": "D05810020FFAD966A33BDBD958703C194B3726914C583E688FADFB62F02DC66A"
+      },
+      "Copied": {
+        "File": "PredictiveLookahead.tla",
+        "Bytes": 17604,
+        "Sha256": "D05810020FFAD966A33BDBD958703C194B3726914C583E688FADFB62F02DC66A"
+      }
+    },
+    {
+      "Source": {
+        "File": "QuorumCollateral.cfg",
+        "Bytes": 339,
+        "Sha256": "850C3F52B613BC60D876A998DD563542DCFB98B2C794D199C3EDDF9D14357E83"
+      },
+      "Copied": {
+        "File": "QuorumCollateral.cfg",
+        "Bytes": 339,
+        "Sha256": "850C3F52B613BC60D876A998DD563542DCFB98B2C794D199C3EDDF9D14357E83"
+      }
+    },
+    {
+      "Source": {
+        "File": "QuorumCollateral.tla",
+        "Bytes": 18589,
+        "Sha256": "7870850A5CCBEB89463148E913BB979611F92890E854D3E6882578A06D99315A"
+      },
+      "Copied": {
+        "File": "QuorumCollateral.tla",
+        "Bytes": 18589,
+        "Sha256": "7870850A5CCBEB89463148E913BB979611F92890E854D3E6882578A06D99315A"
+      }
+    },
+    {
+      "Source": {
+        "File": "QuorumCollateralCompulsion.cfg",
+        "Bytes": 270,
+        "Sha256": "15842B718F363B2529F552ACE1F239B22FA428149FD4C9BA0AB04A97338450F7"
+      },
+      "Copied": {
+        "File": "QuorumCollateralCompulsion.cfg",
+        "Bytes": 270,
+        "Sha256": "15842B718F363B2529F552ACE1F239B22FA428149FD4C9BA0AB04A97338450F7"
+      }
+    },
+    {
+      "Source": {
+        "File": "QuorumCollateralCompulsionR1.cfg",
+        "Bytes": 270,
+        "Sha256": "401FE07341B077F593EE86B02372D1565F6CD2BE778688176ABC7167C7E2D56C"
+      },
+      "Copied": {
+        "File": "QuorumCollateralCompulsionR1.cfg",
+        "Bytes": 270,
+        "Sha256": "401FE07341B077F593EE86B02372D1565F6CD2BE778688176ABC7167C7E2D56C"
+      }
+    },
+    {
+      "Source": {
+        "File": "QuorumCollateralDeterrenceR2.cfg",
+        "Bytes": 270,
+        "Sha256": "5BC0AD51FD5DC0B280CABB48BDE01629DD549A02D29D2129E6F5AD47A1A2D653"
+      },
+      "Copied": {
+        "File": "QuorumCollateralDeterrenceR2.cfg",
+        "Bytes": 270,
+        "Sha256": "5BC0AD51FD5DC0B280CABB48BDE01629DD549A02D29D2129E6F5AD47A1A2D653"
+      }
+    },
+    {
+      "Source": {
+        "File": "QuorumCollateralDeterrenceR4.cfg",
+        "Bytes": 270,
+        "Sha256": "41B4D879E1848C577DA8C4D7846E3A23B654380876B79ABACA20E1A4BDB01818"
+      },
+      "Copied": {
+        "File": "QuorumCollateralDeterrenceR4.cfg",
+        "Bytes": 270,
+        "Sha256": "41B4D879E1848C577DA8C4D7846E3A23B654380876B79ABACA20E1A4BDB01818"
+      }
+    },
+    {
+      "Source": {
+        "File": "QuorumCollateralR1.cfg",
+        "Bytes": 339,
+        "Sha256": "06D76A7D69C82A65180680620D7529F5E17F2837138AF6DDF1A08B9D1E989292"
+      },
+      "Copied": {
+        "File": "QuorumCollateralR1.cfg",
+        "Bytes": 339,
+        "Sha256": "06D76A7D69C82A65180680620D7529F5E17F2837138AF6DDF1A08B9D1E989292"
+      }
+    },
+    {
+      "Source": {
+        "File": "QuorumCollateralR2.cfg",
+        "Bytes": 339,
+        "Sha256": "E4243EF7800D05B60D324E03F08CC061D6907DEA6695E568170231DDE2B8545C"
+      },
+      "Copied": {
+        "File": "QuorumCollateralR2.cfg",
+        "Bytes": 339,
+        "Sha256": "E4243EF7800D05B60D324E03F08CC061D6907DEA6695E568170231DDE2B8545C"
+      }
+    },
+    {
+      "Source": {
+        "File": "QuorumCollateralR3.cfg",
+        "Bytes": 339,
+        "Sha256": "5DAD3F8648955B1E2FF12F02629DCE515B53058CE85F382E25AD8557C0E3916E"
+      },
+      "Copied": {
+        "File": "QuorumCollateralR3.cfg",
+        "Bytes": 339,
+        "Sha256": "5DAD3F8648955B1E2FF12F02629DCE515B53058CE85F382E25AD8557C0E3916E"
+      }
+    },
+    {
+      "Source": {
+        "File": "QuorumCollateralThreshold.cfg",
+        "Bytes": 294,
+        "Sha256": "1CAA75345522E5B85F07BF4160B7F21214F51F20703B76A9692C7A7EDA5BA9C8"
+      },
+      "Copied": {
+        "File": "QuorumCollateralThreshold.cfg",
+        "Bytes": 294,
+        "Sha256": "1CAA75345522E5B85F07BF4160B7F21214F51F20703B76A9692C7A7EDA5BA9C8"
+      }
+    },
+    {
+      "Source": {
+        "File": "QuorumCollateralThresholdWitness.cfg",
+        "Bytes": 269,
+        "Sha256": "0C69C53E75599539D4888801A67BBE34443C870DA1D552E773972258A1F26EBD"
+      },
+      "Copied": {
+        "File": "QuorumCollateralThresholdWitness.cfg",
+        "Bytes": 269,
+        "Sha256": "0C69C53E75599539D4888801A67BBE34443C870DA1D552E773972258A1F26EBD"
+      }
+    },
+    {
+      "Source": {
+        "File": "QuorumCollateralWitness.cfg",
+        "Bytes": 300,
+        "Sha256": "2E1AFEC0AC30BA15E45A704877E39EDD19AF1EF338AAF7655329610C5DFEEACA"
+      },
+      "Copied": {
+        "File": "QuorumCollateralWitness.cfg",
+        "Bytes": 300,
+        "Sha256": "2E1AFEC0AC30BA15E45A704877E39EDD19AF1EF338AAF7655329610C5DFEEACA"
+      }
+    },
+    {
+      "Source": {
+        "File": "QuorumCollateralWitnessConflict.cfg",
+        "Bytes": 271,
+        "Sha256": "50204D0FE136EAF34A89533D259C934BFE298E1BE1DDD9A46E9DCC590FE176B4"
+      },
+      "Copied": {
+        "File": "QuorumCollateralWitnessConflict.cfg",
+        "Bytes": 271,
+        "Sha256": "50204D0FE136EAF34A89533D259C934BFE298E1BE1DDD9A46E9DCC590FE176B4"
+      }
+    },
+    {
+      "Source": {
+        "File": "QuorumPhaseCancellation.cfg",
+        "Bytes": 2068,
+        "Sha256": "2A4E0F63F4D610F2D08670200AF0A951E0F76BA3CB93E9A49C8A6F354F1599E8"
+      },
+      "Copied": {
+        "File": "QuorumPhaseCancellation.cfg",
+        "Bytes": 2068,
+        "Sha256": "2A4E0F63F4D610F2D08670200AF0A951E0F76BA3CB93E9A49C8A6F354F1599E8"
+      }
+    },
+    {
+      "Source": {
+        "File": "QuorumPhaseCancellation.tla",
+        "Bytes": 9402,
+        "Sha256": "BAC8E099064AC391A22A85D6B548EF71F41655A8F49F3B93318817FFE7AC556F"
+      },
+      "Copied": {
+        "File": "QuorumPhaseCancellation.tla",
+        "Bytes": 9402,
+        "Sha256": "BAC8E099064AC391A22A85D6B548EF71F41655A8F49F3B93318817FFE7AC556F"
+      }
+    },
+    {
+      "Source": {
+        "File": "QuorumPhaseHonestSplit.cfg",
+        "Bytes": 2069,
+        "Sha256": "24CE570B52A4F32175D3C2EDFAD74946200B5632B0FFC1F1EE8730034AA00511"
+      },
+      "Copied": {
+        "File": "QuorumPhaseHonestSplit.cfg",
+        "Bytes": 2069,
+        "Sha256": "24CE570B52A4F32175D3C2EDFAD74946200B5632B0FFC1F1EE8730034AA00511"
+      }
+    },
+    {
+      "Source": {
+        "File": "QuorumPhaseOddParity.cfg",
+        "Bytes": 2075,
+        "Sha256": "872B1612588F940B30E22BF9F0A562644D52555D31A6170660C4D3029ADF0C6C"
+      },
+      "Copied": {
+        "File": "QuorumPhaseOddParity.cfg",
+        "Bytes": 2075,
+        "Sha256": "872B1612588F940B30E22BF9F0A562644D52555D31A6170660C4D3029ADF0C6C"
+      }
+    },
+    {
+      "Source": {
+        "File": "QuorumPhaseUnnormalised.cfg",
+        "Bytes": 2051,
+        "Sha256": "0DEED630F4EFA98523A0E31CB8C7AFC3890D677360C8D354CE44341F083488AC"
+      },
+      "Copied": {
+        "File": "QuorumPhaseUnnormalised.cfg",
+        "Bytes": 2051,
+        "Sha256": "0DEED630F4EFA98523A0E31CB8C7AFC3890D677360C8D354CE44341F083488AC"
+      }
+    },
+    {
+      "Source": {
+        "File": "RecoveryHomeostat.cfg",
+        "Bytes": 134,
+        "Sha256": "747DDA1CC1B47269BB39D7BB78E875F3F1E7B0A8C05C8B85F3DE38FC5E72B45D"
+      },
+      "Copied": {
+        "File": "RecoveryHomeostat.cfg",
+        "Bytes": 134,
+        "Sha256": "747DDA1CC1B47269BB39D7BB78E875F3F1E7B0A8C05C8B85F3DE38FC5E72B45D"
+      }
+    },
+    {
+      "Source": {
+        "File": "RecoveryHomeostat.tla",
+        "Bytes": 4859,
+        "Sha256": "BC4412AACED2F43840C60BB6BAD2D3118C8DD3F75B022650625F2A65D4062649"
+      },
+      "Copied": {
+        "File": "RecoveryHomeostat.tla",
+        "Bytes": 4859,
+        "Sha256": "BC4412AACED2F43840C60BB6BAD2D3118C8DD3F75B022650625F2A65D4062649"
+      }
+    },
+    {
+      "Source": {
+        "File": "RecursiveCountingLFP.cfg",
+        "Bytes": 91,
+        "Sha256": "EECFD7B54A5DBEFA04CB5462085E3F05E315AD5D3A93799F74CBA90907C3C85A"
+      },
+      "Copied": {
+        "File": "RecursiveCountingLFP.cfg",
+        "Bytes": 91,
+        "Sha256": "EECFD7B54A5DBEFA04CB5462085E3F05E315AD5D3A93799F74CBA90907C3C85A"
+      }
+    },
+    {
+      "Source": {
+        "File": "RecursiveCountingLFP.tla",
+        "Bytes": 3423,
+        "Sha256": "186F6820C63BB9938AAC58B9A91086F170F5FBF992E2EF99402CFC943A5D8890"
+      },
+      "Copied": {
+        "File": "RecursiveCountingLFP.tla",
+        "Bytes": 3423,
+        "Sha256": "186F6820C63BB9938AAC58B9A91086F170F5FBF992E2EF99402CFC943A5D8890"
+      }
+    },
+    {
+      "Source": {
+        "File": "RecursiveSignedSemiNaive.cfg",
+        "Bytes": 910,
+        "Sha256": "BDED54171E911BC2A38A29F4FA3E1FDAF553A84A2DA110DB227939C35C835A90"
+      },
+      "Copied": {
+        "File": "RecursiveSignedSemiNaive.cfg",
+        "Bytes": 910,
+        "Sha256": "BDED54171E911BC2A38A29F4FA3E1FDAF553A84A2DA110DB227939C35C835A90"
+      }
+    },
+    {
+      "Source": {
+        "File": "RecursiveSignedSemiNaive.tla",
+        "Bytes": 8569,
+        "Sha256": "5F35FE80D91D020BA32981B45F9A80F3A402A1447AE5ED35396C4E3BDA80D400"
+      },
+      "Copied": {
+        "File": "RecursiveSignedSemiNaive.tla",
+        "Bytes": 8569,
+        "Sha256": "5F35FE80D91D020BA32981B45F9A80F3A402A1447AE5ED35396C4E3BDA80D400"
+      }
+    },
+    {
+      "Source": {
+        "File": "RefuseBinding.cfg",
+        "Bytes": 218,
+        "Sha256": "59EF88C03C6B0CDC513252D8BD8FBD9B6B01B183C3404DB10072A74DB15CBB4D"
+      },
+      "Copied": {
+        "File": "RefuseBinding.cfg",
+        "Bytes": 218,
+        "Sha256": "59EF88C03C6B0CDC513252D8BD8FBD9B6B01B183C3404DB10072A74DB15CBB4D"
+      }
+    },
+    {
+      "Source": {
+        "File": "RefuseBinding.tla",
+        "Bytes": 5007,
+        "Sha256": "8D7A3063239635F813203BF2B5FA4BBA2BA544C489D96B704DB1E4A0466906D1"
+      },
+      "Copied": {
+        "File": "RefuseBinding.tla",
+        "Bytes": 5007,
+        "Sha256": "8D7A3063239635F813203BF2B5FA4BBA2BA544C489D96B704DB1E4A0466906D1"
+      }
+    },
+    {
+      "Source": {
+        "File": "SmokeCheck.cfg",
+        "Bytes": 60,
+        "Sha256": "B665ADB171FCE51A686F6D07AA6F6BEAA0111CB080712C0029288250125E7EDE"
+      },
+      "Copied": {
+        "File": "SmokeCheck.cfg",
+        "Bytes": 60,
+        "Sha256": "B665ADB171FCE51A686F6D07AA6F6BEAA0111CB080712C0029288250125E7EDE"
+      }
+    },
+    {
+      "Source": {
+        "File": "SmokeCheck.tla",
+        "Bytes": 408,
+        "Sha256": "B76420F6D69D07E7B4258F654CCCAC42C4E892155EACBF70719E482AD73CC2F4"
+      },
+      "Copied": {
+        "File": "SmokeCheck.tla",
+        "Bytes": 408,
+        "Sha256": "B76420F6D69D07E7B4258F654CCCAC42C4E892155EACBF70719E482AD73CC2F4"
+      }
+    },
+    {
+      "Source": {
+        "File": "SpineAsyncProtocol.cfg",
+        "Bytes": 146,
+        "Sha256": "E6EB42DCBDCDBDCC6341DEC8C8306D8885520879132A55514E77736254044E21"
+      },
+      "Copied": {
+        "File": "SpineAsyncProtocol.cfg",
+        "Bytes": 146,
+        "Sha256": "E6EB42DCBDCDBDCC6341DEC8C8306D8885520879132A55514E77736254044E21"
+      }
+    },
+    {
+      "Source": {
+        "File": "SpineAsyncProtocol.tla",
+        "Bytes": 4403,
+        "Sha256": "99326D9B7DA03DB6736B74825C2872914885921D0429259A90775FC338040CB9"
+      },
+      "Copied": {
+        "File": "SpineAsyncProtocol.tla",
+        "Bytes": 4403,
+        "Sha256": "99326D9B7DA03DB6736B74825C2872914885921D0429259A90775FC338040CB9"
+      }
+    },
+    {
+      "Source": {
+        "File": "SpineMergeInvariants.cfg",
+        "Bytes": 449,
+        "Sha256": "DCAA72490711CDA16A2BCF8973239E8BF9AFD65EA7D9F034466FA01367FF0193"
+      },
+      "Copied": {
+        "File": "SpineMergeInvariants.cfg",
+        "Bytes": 449,
+        "Sha256": "DCAA72490711CDA16A2BCF8973239E8BF9AFD65EA7D9F034466FA01367FF0193"
+      }
+    },
+    {
+      "Source": {
+        "File": "SpineMergeInvariants.tla",
+        "Bytes": 4097,
+        "Sha256": "61DBAF5163DDD2142BBBDD6892F1298B5E48DF57233202FE62469D5CA9972E1E"
+      },
+      "Copied": {
+        "File": "SpineMergeInvariants.tla",
+        "Bytes": 4097,
+        "Sha256": "61DBAF5163DDD2142BBBDD6892F1298B5E48DF57233202FE62469D5CA9972E1E"
+      }
+    },
+    {
+      "Source": {
+        "File": "TickMonotonicity.cfg",
+        "Bytes": 99,
+        "Sha256": "11193FA5A1D56DA13DD8174C7D46F2C41EB0A2F12DBF4B47EDE37CD9FF1EC3E8"
+      },
+      "Copied": {
+        "File": "TickMonotonicity.cfg",
+        "Bytes": 99,
+        "Sha256": "11193FA5A1D56DA13DD8174C7D46F2C41EB0A2F12DBF4B47EDE37CD9FF1EC3E8"
+      }
+    },
+    {
+      "Source": {
+        "File": "TickMonotonicity.tla",
+        "Bytes": 1540,
+        "Sha256": "D7B99A2C364CC6F7348A10FB2B2D4DDADA94778512470B631FFCD7D49ABE4E43"
+      },
+      "Copied": {
+        "File": "TickMonotonicity.tla",
+        "Bytes": 1540,
+        "Sha256": "D7B99A2C364CC6F7348A10FB2B2D4DDADA94778512470B631FFCD7D49ABE4E43"
+      }
+    },
+    {
+      "Source": {
+        "File": "TransactionInterleaving.cfg",
+        "Bytes": 99,
+        "Sha256": "EA96BE2F10CD7943A8554BB22910B8410FB32FADCBCFA4EA8F57740B2C4D1156"
+      },
+      "Copied": {
+        "File": "TransactionInterleaving.cfg",
+        "Bytes": 99,
+        "Sha256": "EA96BE2F10CD7943A8554BB22910B8410FB32FADCBCFA4EA8F57740B2C4D1156"
+      }
+    },
+    {
+      "Source": {
+        "File": "TransactionInterleaving.tla",
+        "Bytes": 2735,
+        "Sha256": "159C866BFA9031CCB5F77CC323306F4EF01878145CFCE698F2390D89C1FF0719"
+      },
+      "Copied": {
+        "File": "TransactionInterleaving.tla",
+        "Bytes": 2735,
+        "Sha256": "159C866BFA9031CCB5F77CC323306F4EF01878145CFCE698F2390D89C1FF0719"
+      }
+    },
+    {
+      "Source": {
+        "File": "TwoPCSink.cfg",
+        "Bytes": 102,
+        "Sha256": "F9AA370F5C58EEA344BE94D5AE8D0F60916B3CDB93D2F35E410625332AFCB522"
+      },
+      "Copied": {
+        "File": "TwoPCSink.cfg",
+        "Bytes": 102,
+        "Sha256": "F9AA370F5C58EEA344BE94D5AE8D0F60916B3CDB93D2F35E410625332AFCB522"
+      }
+    },
+    {
+      "Source": {
+        "File": "TwoPCSink.tla",
+        "Bytes": 4708,
+        "Sha256": "5A7492BFEF933C608EF1C1BCF5399BC5FA2A7E5924D5276742CC68601C0588EE"
+      },
+      "Copied": {
+        "File": "TwoPCSink.tla",
+        "Bytes": 4708,
+        "Sha256": "5A7492BFEF933C608EF1C1BCF5399BC5FA2A7E5924D5276742CC68601C0588EE"
+      }
+    },
+    {
+      "Source": {
+        "File": "WagerSolvency.cfg",
+        "Bytes": 277,
+        "Sha256": "B40EE6AFB1688BA325741FD06FE9B7D79E0420527537FD06EAE54CA958AE975A"
+      },
+      "Copied": {
+        "File": "WagerSolvency.cfg",
+        "Bytes": 277,
+        "Sha256": "B40EE6AFB1688BA325741FD06FE9B7D79E0420527537FD06EAE54CA958AE975A"
+      }
+    },
+    {
+      "Source": {
+        "File": "WagerSolvency.tla",
+        "Bytes": 9729,
+        "Sha256": "DA5775F327D45099C1BB4C07E06F34511F0EFB110A55A06A1D5AE6E04830AAB9"
+      },
+      "Copied": {
+        "File": "WagerSolvency.tla",
+        "Bytes": 9729,
+        "Sha256": "DA5775F327D45099C1BB4C07E06F34511F0EFB110A55A06A1D5AE6E04830AAB9"
+      }
+    },
+    {
+      "Source": {
+        "File": "WagerSolvencyNoSplit.cfg",
+        "Bytes": 278,
+        "Sha256": "85BFB648C3C32558D7CC09DF11542FA778088839201F00522033D35A1A17F90D"
+      },
+      "Copied": {
+        "File": "WagerSolvencyNoSplit.cfg",
+        "Bytes": 278,
+        "Sha256": "85BFB648C3C32558D7CC09DF11542FA778088839201F00522033D35A1A17F90D"
+      }
+    },
+    {
+      "Source": {
+        "File": "WagerSolvencyPhantom.cfg",
+        "Bytes": 251,
+        "Sha256": "D6A214FEB05C68F6F002E4D5AE97BE78AC8474AF9DE0047D3A986D7AEFDD84AC"
+      },
+      "Copied": {
+        "File": "WagerSolvencyPhantom.cfg",
+        "Bytes": 251,
+        "Sha256": "D6A214FEB05C68F6F002E4D5AE97BE78AC8474AF9DE0047D3A986D7AEFDD84AC"
+      }
+    },
+    {
+      "Source": {
+        "File": "WagerSolvencyStaleAttestation.cfg",
+        "Bytes": 250,
+        "Sha256": "A15A2C74DEA394350AF1E65409DA78C22142C1433E9EB67BFC1C8E4A16866A72"
+      },
+      "Copied": {
+        "File": "WagerSolvencyStaleAttestation.cfg",
+        "Bytes": 250,
+        "Sha256": "A15A2C74DEA394350AF1E65409DA78C22142C1433E9EB67BFC1C8E4A16866A72"
+      }
+    },
+    {
+      "Source": {
+        "File": "WagerSolvencyWitness.cfg",
+        "Bytes": 246,
+        "Sha256": "BA1E04AEF3CFCCCA6A39D04CF371684B9276047D8E38B6D1D5A479B388DA49D8"
+      },
+      "Copied": {
+        "File": "WagerSolvencyWitness.cfg",
+        "Bytes": 246,
+        "Sha256": "BA1E04AEF3CFCCCA6A39D04CF371684B9276047D8E38B6D1D5A479B388DA49D8"
+      }
+    }
+  ],
+  "Jar": {
+    "File": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-catch-reference-20260906/src/Core.TLA/tla2tools.jar",
+    "Bytes": 4357353,
+    "Sha256": "71546DFF3897A01B0EE4FA64135D9F5E9384D2B7E47B3CC20A16B655B0EB4F86"
+  },
+  "Java": "/Users/acehack/.local/share/mise/installs/java/26/bin/java",
+  "Model": {
+    "Id": "BftConsensus",
+    "Module": "BftConsensus",
+    "Config": "BftConsensus.cfg",
+    "Expect": "valid",
+    "ExpectDetail": "",
+    "ExitCode": 0,
+    "Tier": "gate",
+    "Deadlock": "on-vacuous",
+    "DistinctStates": 4665495
+  },
+  "Registry": {
+    "File": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-catch-reference-20260906/registry/tlc-models.json",
+    "Bytes": 22775,
+    "Sha256": "1ED72341EAB59F78243F82781A837E4177BF67B61C55672D4BBCC75DF91EA4A8"
+  },
+  "Runner": "fsharp",
+  "RunnerAssembly": {
+    "File": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-catch-reference-20260906/tests/Tests.FSharp/bin/Release/net10.0/Tests.FSharp.dll",
+    "Bytes": 9832448,
+    "Sha256": "568690D46ADC6EB0772BBBC620660B0DDDE763360CFDD3EF0CACC8DEB3DA221E"
+  },
+  "RunnerAssemblyMvid": "b6f1d9bb-8daa-0fd9-1081-a49a674891ea",
+  "RunnerRuntime": ".NET 10.0.11",
+  "RunnerSource": [
+    {
+      "File": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-catch-reference-20260906/tests/Tests.FSharp/Formal/Tlc.Attempts.fs",
+      "Bytes": 9729,
+      "Sha256": "3E31F7F94D9E843479C8BB6BA2F4E0BD613DABB1B312CBEFC002C488BEC797B3"
+    },
+    {
+      "File": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-catch-reference-20260906/tests/Tests.FSharp/Formal/Tlc.Runner.Tests.fs",
+      "Bytes": 47795,
+      "Sha256": "7D2A4B5425B0CD62CD9E29F593ED87C7A1FCEB3FC9A6271DE1826E2406C759B9"
+    }
+  ],
+  "Schema": 1,
+  "SourceCommit": "4d7b13947bef9b53a65c043885971ceefa168e87",
+  "SourceSnapshotMeaning": "working-tree input hashes; SourceCommit is checkout HEAD, not a clean-source assertion",
+  "Stage": "source-identity",
+  "StartedAtUtc": "2026-09-07T14:11:41.164095+00:00",
+  "TimeoutMilliseconds": null,
+  "WorkingDirectory": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-catch-reference-20260906/TestResults/tlc-diagnostics/BftConsensus-e5f8fd404b3d4cf6935d8a02227ebb1f/workspace"
+}

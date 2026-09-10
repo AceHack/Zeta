@@ -186,9 +186,25 @@ jobs:
             min_substrates: "8"
             required_substrates: "WAT,LLVM/C,Emscripten,Rust,AssemblyScript,Zig,JS (V8),Go"
             blocking: false
+          # EMSCRIPTEN DROPS OFF THIS LEG ONLY, and the reason is upstream rather than ours.
+          # Until 2026-09-10 this leg loaded a COMMITTED `dla-canonical-emcc.wasm`, so it
+          # never needed emcc; now that the substrate is built from source, the leg needs a
+          # toolchain that does not exist. MEASURED, run 34490525095, job 102915769149:
+          #
+          #     Resolving SDK alias 'latest' to '6.0.9'
+          #     error: tool or SDK not found: 'sdk-releases-<sha>-64bit'
+          #
+          # emsdk publishes no Windows-arm64 SDK. `windows-2025` installs it in 46s and
+          # builds the substrate fine, so this is an ARM64-Windows fact, not a Windows one.
+          #
+          # 8 -> 7 IS A MEASUREMENT, NOT A CONCESSION. The floor still equals the number of
+          # substrates this leg can actually supply a toolchain for, which is what makes an
+          # aggregate floor per-route by exhaustion: any OTHER substrate going dark still
+          # drops the count below 7 and exits 2. Raise it back the day emsdk ships arm64.
           - os: windows-11-arm
-            min_substrates: "8"
-            required_substrates: "WAT,LLVM/C,Emscripten,Rust,AssemblyScript,Zig,JS (V8),Go"
+            min_substrates: "7"
+            required_substrates: "WAT,LLVM/C,Rust,AssemblyScript,Zig,JS (V8),Go"
+            skip_emscripten: true
             blocking: false
 
     steps:
@@ -281,6 +297,14 @@ jobs:
         # created when possible -- the same problem macOS had, where brew's `lua`
         # formula gave 5.5 as `lua` and the leg reported Lua 5.4 absent until
         # `lua@5.4` was installed specifically.
+        #
+        # NOW MEASURED (run 34490525095): `choco install wabt` succeeds and leaves NO
+        # `wat2wasm` on PATH on either Windows leg. The line below is kept because the
+        # package also ships the rest of wabt and costs 6s, but it is NOT what supplies
+        # the assembler -- `build-wasm-substrates` fetches wabt's own release archive on
+        # Windows for exactly this reason. An install step that reports success while
+        # providing nothing is the check-that-cannot-fail shape, and it hid here for five
+        # days behind a committed `.wasm` that meant nobody needed the tool.
         shell: pwsh
         run: |
           choco install -y wabt --no-progress 2>&1 | Out-Null
@@ -317,6 +341,58 @@ jobs:
         shell: bash
         run: node build-substrates.mjs --only=Go
 
+      # THE OTHER SIX SUBSTRATES USED TO BE COMMITTED `.wasm` FILES. They are built here now,
+      # from the same committed sources the audit already required them to be reproducible
+      # from, by the same `build-substrates.mjs` recipe the Go step above runs.
+      #
+      # This is the sentence `src/wasm-dla/bytelock/.gitignore` wrote for its own successor:
+      # "Add a toolchain to the workflow and the corresponding file should stop being tracked,
+      # not start being trusted." The toolchains are measured (run 34490525095, 52-75s total
+      # on Linux and macOS) and every rebuilt module reproduces the UNCHANGED
+      # `testdata/golden-seed-*.json` vectors on every leg that can build it.
+      #
+      # NOTHING IN THE FLOORS BELOW WAS RELAXED TO MAKE THIS PASS, with one measured
+      # exception that is stated in the matrix: emsdk publishes no Windows-arm64 SDK, so
+      # `windows-11-arm` drops Emscripten from its required list and its floor from 8 to 7.
+      # That is a leg honestly reporting a toolchain it does not have — the same disposition
+      # `lua5.4` already gets there — not a floor lowered to hide a build failure.
+      - name: Build the six WASM substrates from source
+        uses: ./.github/actions/build-wasm-substrates
+        with:
+          skip-emscripten: ${{ matrix.skip_emscripten || 'false' }}
+          # THE FLOORS BELOW ARE THE JUDGE, NOT THIS STEP. A missing toolchain is
+          # environmental and must not block (this workflow's own header says so); a
+          # substrate that computes the WRONG BYTES must, and does. Failing here would take
+          # the leg down on the first missing toolchain and destroy the report the
+          # cross-processor comparison needs — measured on run 34497580746, where a bad wabt
+          # URL killed both Windows legs before Rust, Zig or Emscripten were ever attempted.
+          # BYTELOCK_REQUIRED_SUBSTRATES names anything that fails to run.
+          fail-on-build-error: "false"
+
+      # THE ZIG PROVENANCE PAIR, CHECKED WHERE ZIG EXISTS. `audit-mise-toolchain-couplings.ts`
+      # records (zig 0.13.0, sha256 of dla-canonical-zig.wasm) and used to verify it against
+      # the COMMITTED artefact on the `cross-verify` floor. That floor is deliberately
+      # toolchain-free, so once the substrate became a build output the pair had no lane that
+      # could see it — the audit now says so out loud there and is run HERE instead, on the
+      # freshly-built bytes.
+      #
+      # This is strictly stronger than what it replaces. Against a committed file the check
+      # could only say "these bytes still hash to what we wrote down"; against a rebuilt one
+      # it says "zig 0.13.0 STILL PRODUCES these bytes", which is the claim the record was
+      # always making. Linux and macOS only: it is a reproducibility statement about the
+      # pinned compiler, and running it on legs where the substrate may be absent would turn
+      # a real finding into environmental noise.
+      - name: Setup pinned Bun (for the provenance audit below)
+        if: startsWith(matrix.os, 'ubuntu') || startsWith(matrix.os, 'macos')
+        uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
+        with:
+          bun-version: "1.3.13"
+
+      - name: Verify zig 0.13.0 still reproduces the recorded byte-lock artefact
+        if: startsWith(matrix.os, 'ubuntu') || startsWith(matrix.os, 'macos')
+        shell: bash
+        run: bun src/Core.TypeScript/hygiene/audit-mise-toolchain-couplings.ts
+
       - name: Versions (recorded so a drift can be attributed to a toolchain change)
         shell: bash
         run: |
@@ -324,6 +400,12 @@ jobs:
           go version || echo "go: ABSENT"
           wat2wasm --version || echo "wat2wasm: ABSENT"
           lua5.4 -v || echo "lua5.4: ABSENT"
+          clang --version | head -1 || echo "clang: ABSENT"
+          wasm-ld --version || echo "wasm-ld: ABSENT"
+          rustc --version || echo "rustc: ABSENT"
+          zig version || echo "zig: ABSENT"
+          emcc --version | head -1 || echo "emcc: ABSENT"
+          node_modules/.bin/asc --version 2>/dev/null || echo "asc: ABSENT"
 
       - name: Run the N-oracle byte-lock
         working-directory: src/wasm-dla/bytelock

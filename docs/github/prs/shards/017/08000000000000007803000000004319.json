@@ -1,0 +1,16 @@
+{
+  "pr_number": 17177,
+  "archive_path": "docs/history/pr-reviews/PR-17177-fix-ace-the-prototype-guard-blocked-names-the-cursor-could-still-land-on-a-proto.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7s1rH7",
+    "comment:PRRC_kwDOSF9kNM7s6vh2",
+    "thread:PRRT_kwDOSF9kNM6g2lWj"
+  ],
+  "fetched_at": "2026-09-10T02:27:46.895Z",
+  "schema_version": "v1",
+  "commit_sha": "cd92cd798653a025ac681fb67cb1b7e4ca52edc3",
+  "title": "fix(ace): the prototype guard blocked NAMES; the cursor could still LAND on a prototype",
+  "state": "MERGED",
+  "merged_at": "2026-09-10T02:27:06Z",
+  "head_ref": "shadow/prototype-pollution-deps"
+}

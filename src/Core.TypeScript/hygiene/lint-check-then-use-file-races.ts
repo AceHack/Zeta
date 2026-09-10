@@ -119,6 +119,54 @@
 // defect the floor exists to refuse, which is the best available argument that
 // "written and reviewed" is not a defence against this shape.
 //
+//
+// ═══════════════════════════════════════════════════════════════════════════
+// THE WRITE HALF, ADDED 2026-09-09 -- AND WHY IT WAS THE WHOLE POPULATION
+// ═══════════════════════════════════════════════════════════════════════════
+//
+// Everything above this block is the audit as first written: three rules over
+// READS, scoped to src/Core.TypeScript, carrying a 295-signature baseline. It
+// was built as a floor beneath CodeQL's `js/file-system-race`.
+//
+// It could not see a single live instance of that query. Measured against the
+// 23 alerts open on 2026-09-09:
+//
+//   * ALL 23 carry a WRITE on the flagged line. `writeFileSync`, `mkdirSync`
+//     and `createWriteStream` appeared in NO rule -- `GATED_USES` excluded
+//     writes by design, and the design note gave the reason as "the remedy
+//     differs", which is true and is not a reason to skip the class.
+//   * 8 of them sat in four directories the walk never entered: `vocab/gen`,
+//     `tools/setup/persona-keys`, `demo/identity-dla-site`,
+//     `src/Renderers/website`. At file granularity the lint's baseline
+//     overlapped 9 of the 17 flagged files; it now overlaps 15.
+//
+// So the floor was quiet about the exact population it existed to catch, and
+// "0 new findings" -- printed in six PR write-ups in this repo -- was true and
+// meant nothing. That is this file's own named failure mode, a check that did
+// not run looking like one that passed, sitting inside the check.
+//
+// WHAT CHANGED, and each one is pinned by a fixture and survives no mutant:
+//
+//   * RULE 1W `check-then-write` -- an existence gate and a later WRITE to the
+//     same path text. Carries a PER-API remedy (`WRITE_FIX`), because
+//     `FIX_READ`'s "delete the check" is actively wrong in front of a create:
+//     it removes the only thing between two writers and a silent overwrite.
+//     The remedy is to make the check atomic (`wx`), not to delete it.
+//   * RULE 3 now considers writes. `statSync(p).size` beside
+//     `writeFileSync(p, ...)` is the shred bug live in
+//     `tools/setup/persona-keys/teardown.ts` (alert 296): the size decides how
+//     many zero bytes are written back over a private key, so losing that race
+//     means zeroing a file whose size was never measured while leaving the
+//     secret intact. `sizeOnly` waives a stat beside a READ and must not waive
+//     one beside a WRITE.
+//   * SCOPE is the whole repository (`.`), not one subtree. A floor with a
+//     smaller footprint than the query it backstops is quiet about ground it
+//     never walked. 3781 files, ~2s, 510 baselined signatures.
+//   * `rmdirSync` joins `rmSync`; the pairing identity is an OFFSET, not a
+//     line number.
+//
+// The 510-signature baseline is NOT a claim that those are acceptable. It is
+// the same grandfathering the section above describes, at the new scope.
 // ═══════════════════════════════════════════════════════════════════════════
 // SUPPRESSION
 // ═══════════════════════════════════════════════════════════════════════════
@@ -154,10 +202,12 @@ const STAT_BRANCH_SUFFIX =
 /**
  * Filesystem operations whose failure the check was pretending to prevent.
  *
- * Reads and path-consuming operations, not writes: `if (!existsSync(d))
- * mkdirSync(d)` is a different (also real) shape whose fix is
- * `{ recursive: true }`, and mixing the two would make one refusal message
- * name the wrong remedy. The named remedy is the reason a lint gets obeyed.
+ * Reads and path-consuming operations. WRITES ARE A SEPARATE LIST -- see
+ * `WRITE_USES` -- and the reason is the remedy, not the severity: the fix for
+ * `existsSync(d)` gating `readFileSync(d)` is "interpret the ENOENT", and the
+ * fix for `existsSync(p)` gating `writeFileSync(p)` is `{ flag: "wx" }`. One
+ * refusal message cannot name both without naming the wrong one for half its
+ * findings, and the named remedy is the reason a lint gets obeyed.
  */
 export const GATED_USES: readonly string[] = [
   "readFileSync",
@@ -170,11 +220,58 @@ export const GATED_USES: readonly string[] = [
   "renameSync",
   "unlinkSync",
   "rmSync",
+  "rmdirSync",
   "appendFileSync",
   "truncateSync",
   "chmodSync",
   "utimesSync",
 ];
+
+/**
+ * Path-first operations that CREATE OR REPLACE the path.
+ *
+ * The half `GATED_USES` deliberately omitted, and the more damaging half: a
+ * check-then-READ that loses its race returns stale bytes, while a
+ * check-then-WRITE that loses its race destroys bytes that were never yours.
+ *
+ * Measured 2026-09-09, and it is the reason this list exists: ALL TWENTY-THREE
+ * open `js/file-system-race` alerts on this repository carry a WRITE on the
+ * flagged line, and this linter -- written for exactly that CodeQL query, and
+ * carrying a baseline of 295 signatures -- saw not one of them, because none of
+ * these three names appeared anywhere in any of its rules. The lint was a floor
+ * beneath a query whose entire live population it was structurally blind to.
+ *
+ * Only APIs whose FIRST argument is the affected path are listed. `symlinkSync`
+ * and `linkSync` take `(target, path)`, so pairing them on the first argument
+ * would name the source rather than the destination -- and a refusal that names
+ * the wrong file is worse than no refusal, because it teaches the reader to
+ * distrust the next one.
+ */
+export const WRITE_USES: readonly string[] = ["writeFileSync", "mkdirSync", "createWriteStream"];
+
+/**
+ * The remedy per write API, deliberately NOT one shared sentence.
+ *
+ * This is the whole reason writes are a second list rather than more entries in
+ * `GATED_USES`: `FIX_READ` says "delete the check and interpret the failure",
+ * which is right for a read and actively wrong for a create -- deleting the
+ * check in front of a `writeFileSync` removes the only thing standing between
+ * two concurrent writers and a silent overwrite. The remedy is to make the
+ * check ATOMIC (`wx`), not to remove it.
+ */
+const WRITE_FIX: Readonly<Record<string, string>> = {
+  writeFileSync:
+    'Let the kernel decide the race: `writeFileSync(p, body, { flag: "wx" })` is O_CREAT|O_EXCL, so a ' +
+    "concurrent creator loses with EEXIST rather than silently overwriting -- catch it and emit the " +
+    "refusal the check was only pretending to make. When the write is a read-modify-write rather than a " +
+    'never-clobber, hold ONE descriptor across both halves instead: `openSync(p, "r+")`.',
+  mkdirSync:
+    "Pass `{ recursive: true }`. It is idempotent by construction -- an already-present directory is not " +
+    "an error -- so the check it replaces was never buying anything the call does not already give you.",
+  createWriteStream:
+    'Pass `{ flags: "wx" }` so creation is exclusive, and handle the stream\'s `error` event for EEXIST. ' +
+    "A stream opened with the default `w` truncates whatever is at the path by the time it opens.",
+};
 
 /**
  * Uses for which a preceding `statSync` is a race worth reporting even when the stat only read
@@ -184,14 +281,26 @@ export const GATED_USES: readonly string[] = [
 const STAT_THEN_DESTRUCTIVE: ReadonlySet<string> = new Set([
   "unlinkSync",
   "rmSync",
+  "rmdirSync",
   "renameSync",
   "truncateSync",
   "chmodSync",
   "utimesSync",
+  // `writeFileSync` is here because of a LIVE INSTANCE, not for symmetry.
+  // `tools/setup/persona-keys/teardown.ts` secure-erases a private key by
+  // reading `statSync(path).size` and then writing `Buffer.alloc(size, 0)` back
+  // over the path. Replace the path between those two calls and the process
+  // zeroes a file whose size it never measured -- having left the secret it
+  // meant to destroy fully intact. That is precisely the boundary of the
+  // `sizeOnly` carve-out below: a size read is benign beside a READ, because
+  // the read returns the whole file whatever the size said, and it is NOT
+  // benign beside a WRITE, where the size decides how many bytes are destroyed.
+  "writeFileSync",
 ]);
 
 export type Rule =
   | "check-then-use"
+  | "check-then-write"
   | "readdir-then-stat"
   | "stat-then-use"
   | "unparsed"
@@ -763,6 +872,7 @@ export function analyzeSource(original: string, path: string): readonly Finding[
 
   const checks = findCalls(original, masked, EXISTENCE_CHECKS);
   const uses = findCalls(original, masked, GATED_USES);
+  const writes = findCalls(original, masked, WRITE_USES);
 
   // RULE 1 -- an existence gate and a later use of the SAME path text, in the
   // block that encloses the gate.
@@ -795,6 +905,59 @@ export function analyzeSource(original: string, path: string): readonly Finding[
           "answer the check returned is already stale when the use runs. The check " +
           "reads as defensive and prevents nothing.",
         fix: FIX_READ,
+      });
+    }
+  }
+
+  // RULE 1W -- an existence gate and a later WRITE to the SAME path text, in
+  // the block that encloses the gate. The half rule 1 was written to exclude.
+  //
+  // WHY THE POLARITY OF THE GATE IS NOT INSPECTED. `if (!existsSync(p)) write(p)`
+  // is a never-clobber guard and `if (existsSync(p)) write(p)` is an update-only
+  // guard, and BOTH are racy in the same way -- the first loses to a concurrent
+  // creator and overwrites it, the second loses to a concurrent deleter and
+  // recreates a file the deleter meant gone. Distinguishing them would need the
+  // branch structure this linter does not parse, and would buy a distinction
+  // that changes neither the verdict nor, for `writeFileSync`, the remedy.
+  //
+  // THE FALSE POSITIVE THAT REMAINS, stated here because this file's contract is
+  // that limits are named rather than discovered: a write ALREADY carrying
+  // `{ flag: "wx" }` is still reported. Suppress it with `toctou-ok:` naming the
+  // flag. Reading the options object to decide would mean parsing an arbitrary
+  // expression for a property that can arrive by spread, by variable, or by
+  // conditional -- and a check that silently accepts `{ ...opts }` because it
+  // could not see inside is the vacuity class. Refusing loudly and being argued
+  // down in a suppression is the honest side of that trade.
+  for (const check of checks) {
+    if (check.path === "") continue;
+    if (suppressed.has(check.line)) continue;
+    const scopeEnd = enclosingBlockEnd(masked, check.end);
+    if (!isExistenceGate(check, masked, scopeEnd)) continue;
+    for (const write of writes) {
+      if (write.index <= check.end || write.index >= scopeEnd) continue;
+      if (write.path !== check.path) continue;
+      findings.push({
+        rule: "check-then-write",
+        file: path,
+        line: check.line,
+        signature: check.api + "(" + check.path + ")->" + write.api + "(" + write.path + ")",
+        detail:
+          check.api +
+          "(" +
+          check.path +
+          ") at line " +
+          String(check.line) +
+          " gates " +
+          write.api +
+          "(" +
+          write.path +
+          ") at line " +
+          String(write.line) +
+          ". This is the DESTRUCTIVE half of check-then-use: the check's answer is already stale " +
+          "when the write runs, so a path created between the two is silently overwritten and a " +
+          "path deleted between the two is silently recreated. A never-clobber guard written this " +
+          "way refuses nothing -- it only narrows the window in which it fails to.",
+        fix: WRITE_FIX[write.api] ?? FIX_READ,
       });
     }
   }
@@ -847,9 +1010,30 @@ export function analyzeSource(original: string, path: string): readonly Finding[
     // this rule's own comment warns about, so the pairing is bounded to the enclosing block.
     const scopeEnd = listingScopeEnd(masked, st.end);
     const scopeStart = enclosingBlockStart(masked, st.index);
-    for (const use of uses) {
+    // WRITES ARE INCLUDED HERE, unlike in rule 1, and the asymmetry is deliberate.
+    // Rule 1 splits reads from writes because the REMEDY differs. Rule 3 asks a
+    // different question -- "were these two answers taken from the same inode?" --
+    // and that question does not care which direction the bytes moved. Excluding
+    // writes here is what let the `teardown.ts` shred bug (a `statSync().size`
+    // deciding how many zero bytes to write back) sit unreported: it is a
+    // `sizeOnly` stat, so it survives the carve-out below only by being paired
+    // with a destructive use, and `writeFileSync` was in neither list.
+    for (const use of [...uses, ...writes]) {
       if (use.path !== st.path) continue;
-      if (use.line === st.line) continue;
+      // IDENTITY BY OFFSET, NOT BY LINE. This guard exists to stop a call
+      // pairing with itself, and `statSync` appears in neither `uses` nor
+      // `writes`, so self-pairing was never possible -- the line test only ever
+      // discarded genuine pairs that happened to share a line.
+      //
+      // HONEST SCOPE OF THE FIX, because the first draft of this comment
+      // claimed more and was falsified by measurement: it changes NOTHING in
+      // the current tree (510 signatures before and after). It was written for
+      // alert 720, whose `statSync(full).mtimeMs` and `readFileSync(full)` do
+      // share a line -- and that one is still missed, for a different reason
+      // (they sit in two SEPARATE `${...}` substitutions, so they are not in a
+      // common block). What the change does buy is a one-line stat-then-read in
+      // ordinary code, which is pinned by a fixture rather than by this comment.
+      if (use.index === st.index) continue;
       if (suppressed.has(use.line)) continue;
       if (use.index < scopeStart || use.index > scopeEnd) continue;
       if (sizeOnly && !STAT_THEN_DESTRUCTIVE.has(use.api)) continue;
@@ -876,7 +1060,7 @@ export function analyzeSource(original: string, path: string): readonly Finding[
           "different files. Replace the file between them and one answer belongs to a file " +
           "the other answer never saw, with nothing reporting it.",
         fix:
-          "Open once and ask the DESCRIPTOR: `const fd = openSync(p, \"r\"); try { " +
+          'Open once and ask the DESCRIPTOR: `const fd = openSync(p, "r"); try { ' +
           "fstatSync(fd); readFileSync(fd); } finally { closeSync(fd); }`. One handle, one " +
           "inode, both answers, no window.",
       });

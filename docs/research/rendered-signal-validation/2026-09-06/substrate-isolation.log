@@ -1,0 +1,11 @@
+  Zeta.Core.FSharp.ZetaId -> /Users/acehack/.zeta/agents/codex/Zeta-rendered-predictor-native-20260906/src/Core.FSharp.ZetaId/bin/Release/net10.0/Zeta.Core.FSharp.ZetaId.dll
+  Zeta.Core.FSharp.Yaml -> /Users/acehack/.zeta/agents/codex/Zeta-rendered-predictor-native-20260906/src/Core.FSharp.Yaml/bin/Release/net10.0/Zeta.Core.FSharp.Yaml.dll
+  Zeta.Core.Abstractions -> /Users/acehack/.zeta/agents/codex/Zeta-rendered-predictor-native-20260906/src/Core.Abstractions/bin/Release/net10.0/Zeta.Core.Abstractions.dll
+  Core -> /Users/acehack/.zeta/agents/codex/Zeta-rendered-predictor-native-20260906/src/Core/bin/Release/net10.0/Zeta.Core.dll
+  Zeta.SubstrateDiscovery -> /Users/acehack/.zeta/agents/codex/Zeta-rendered-predictor-native-20260906/src/Core.FSharp.SubstrateDiscovery/bin/Release/net10.0/Zeta.SubstrateDiscovery.dll
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:01.68

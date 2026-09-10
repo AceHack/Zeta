@@ -11,6 +11,10 @@ import {
   EXPECTED_RETAINED_SHELL,
   RETAINED_SHELL_SCOPE,
   trackedNonLeanShellFilesFromGit,
+  findRemotePipeToInterpreter,
+  maskCommentsAndStrings,
+  remotePipeScanFiles,
+  scanRemotePipeSites,
 } from "./check-bash-retirement-inventory";
 
 function runGit(args: readonly string[], cwd: string): void {
@@ -367,5 +371,158 @@ describe("renderReport", () => {
     expect(rendered).toContain("### Missing category entries");
     expect(rendered).toContain(uncategorized);
     expect(rendered).not.toContain(`## Missing retained ${RETAINED_SHELL_SCOPE} files`);
+  });
+});
+
+// ─────────────────────────────────────────────────────────────────────────────
+// REMOTE FETCH PIPED INTO AN INTERPRETER  (081M24HZCYN087G0R002MT55TV)
+//
+// Every test here is written so that deleting the check turns it red. The two that carry the
+// most weight are the VERBATIM pre-fix line (the check must have failed on the tree as it
+// stood) and the six prose look-alikes measured beside it (a check that cannot tell a mention
+// from a call is one nobody will keep).
+// ─────────────────────────────────────────────────────────────────────────────
+
+/** Verbatim from tools/setup/common/install-rust-wasm32.sh as it stood on origin/main. */
+const PRE_FIX_RUSTUP = [
+  "# Step 1: Install rustup if not present",
+  "if ! command -v rustup >/dev/null 2>&1; then",
+  '  echo "Installing rustup (Rust ${RUST_VERSION})..."',
+  "  curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | \\",
+  '    sh -s -- -y --default-toolchain "$RUST_VERSION" --no-modify-path',
+  "fi",
+].join("\n");
+
+describe("findRemotePipeToInterpreter — the pre-fix tree must have been RED", () => {
+  test("catches the rustup site whose pipe and interpreter are on DIFFERENT physical lines", () => {
+    const hits = findRemotePipeToInterpreter(PRE_FIX_RUSTUP);
+    expect(hits.length).toBe(1);
+    // Reported at the line the logical line STARTS on, which is where a reader must go.
+    expect(hits[0]?.line).toBe(4);
+  });
+
+  test("catches the ollama shape #17200 removed from two workflows", () => {
+    const hits = findRemotePipeToInterpreter(
+      "      - run: |\n          curl -fsSL https://ollama.com/install.sh | sh\n",
+    );
+    expect(hits.length).toBe(1);
+  });
+
+  test("catches wget, and an interpreter reached through an intermediate stage", () => {
+    expect(findRemotePipeToInterpreter("wget -qO- https://x.invalid/i.sh | bash\n").length).toBe(1);
+    expect(findRemotePipeToInterpreter("curl -sL https://x.invalid/i.gz | gunzip | sh\n").length).toBe(1);
+  });
+
+  test("catches sudo/env in front of the interpreter", () => {
+    expect(findRemotePipeToInterpreter("curl -sL https://x.invalid/i.sh | sudo bash\n").length).toBe(1);
+    expect(findRemotePipeToInterpreter("curl -sL https://x.invalid/i.sh | env FOO=1 python3\n").length).toBe(1);
+  });
+});
+
+describe("findRemotePipeToInterpreter — the six prose look-alikes measured on the tree", () => {
+  test("a COMMENT describing the removed installer is not a call", () => {
+    // Three of these live in .github/workflows today, explaining what #17200 replaced.
+    expect(findRemotePipeToInterpreter("# WAS `curl -fsSL https://ollama.com/install.sh | sh`, hourly.\n")).toEqual([]);
+  });
+
+  test("an ECHO of the command in a human-facing error message is not a call", () => {
+    // tools/setup/host-loop-bootstrap.sh prints exactly this to tell a human what to do.
+    expect(
+      findRemotePipeToInterpreter(
+        'echo "ERROR: bun not found. Install via: curl -fsSL https://bun.sh/install | bash"\n',
+      ),
+    ).toEqual([]);
+  });
+
+  test("a trailing comment on a real line still leaves the real line visible", () => {
+    const hits = findRemotePipeToInterpreter("curl -sL https://x.invalid/i.sh | sh   # yes, really\n");
+    expect(hits.length).toBe(1);
+  });
+
+  test("`||` is a control operator and does not make the next word an interpreter", () => {
+    expect(findRemotePipeToInterpreter("curl -fsS https://x.invalid/a || sh_fallback\n")).toEqual([]);
+    expect(findRemotePipeToInterpreter("curl -fsS https://x.invalid/a -o /tmp/a || bash /tmp/retry\n")).toEqual([]);
+  });
+
+  test("a fetch piped into something that is NOT an interpreter is allowed", () => {
+    expect(findRemotePipeToInterpreter("curl -sL https://x.invalid/a.tgz | tar -xz -C /usr/local\n")).toEqual([]);
+    expect(findRemotePipeToInterpreter("curl -sS https://api.example.com/v1 | jq -r .sha\n")).toEqual([]);
+  });
+
+  test("a local pipe with no URL is not the shape being refused", () => {
+    expect(findRemotePipeToInterpreter("curl file:///tmp/x | sh\n")).toEqual([]);
+  });
+
+  test("the sanctioned replacement itself is not a hit", () => {
+    expect(
+      findRemotePipeToInterpreter(
+        "bun src/Core.TypeScript/ace/install-pinned-artifact.ts --pin tools/setup/rustup-pin.json\n",
+      ),
+    ).toEqual([]);
+  });
+});
+
+describe("maskCommentsAndStrings preserves the geometry the line numbers depend on", () => {
+  test("length and newline positions are unchanged", () => {
+    const text = 'a="one" # two\nb=3\n';
+    const masked = maskCommentsAndStrings(text);
+    expect(masked.length).toBe(text.length);
+    expect(masked.split("\n").length).toBe(text.split("\n").length);
+  });
+
+  test("`$#` and a URL fragment do not open a comment", () => {
+    expect(maskCommentsAndStrings("echo $# https://h/x#frag\n").trim()).toBe("echo $# https://h/x#frag");
+  });
+
+  test("an unterminated quote does not swallow the rest of the file", () => {
+    // A YAML block scalar full of prose apostrophes would otherwise mask every following line,
+    // which would make this whole check silently vacuous on the files that matter most.
+    const hits = findRemotePipeToInterpreter("# the runner's own note\ncurl -sL https://x.invalid/i.sh | sh\n");
+    expect(hits.length).toBe(1);
+  });
+});
+
+describe("the report refuses a remote pipe", () => {
+  test("hasDrift is true and the render names the file, the line and the REPLACEMENT", () => {
+    const report = buildInventoryReport(EXPECTED_RETAINED_SHELL, EXPECTED_RETAINED_SHELL, [
+      { file: "tools/setup/common/install-rust-wasm32.sh", line: 32, snippet: "curl … | sh" },
+    ]);
+    expect(hasDrift(report)).toBe(true);
+    const rendered = renderReport(report);
+    expect(rendered).toContain("tools/setup/common/install-rust-wasm32.sh:32");
+    // A refusal that does not say what to do instead is one that gets worked around.
+    expect(rendered).toContain("install-pinned-artifact.ts");
+    expect(rendered).toContain("tools/setup/manifests/from-url");
+  });
+
+  test("an allowlist-integrity failure does not HIDE a remote pipe", () => {
+    // The early return for allowlist drift used to build a report from scratch; a site dropped
+    // there would be a check that silently stopped running whenever another one failed.
+    const duplicated = [...EXPECTED_RETAINED_SHELL, EXPECTED_RETAINED_SHELL[0] ?? ""];
+    const report = buildInventoryReport(EXPECTED_RETAINED_SHELL, duplicated, [
+      { file: "x.sh", line: 1, snippet: "curl … | sh" },
+    ]);
+    expect(report.remotePipeSites.length).toBe(1);
+    expect(hasDrift(report)).toBe(true);
+  });
+
+  test("no sites, no drift — the check can pass", () => {
+    const report = buildInventoryReport(EXPECTED_RETAINED_SHELL, EXPECTED_RETAINED_SHELL, []);
+    expect(report.remotePipeSites).toEqual([]);
+    expect(hasDrift(report)).toBe(false);
+  });
+});
+
+describe("the live tree", () => {
+  test("scans the retained shell surface AND every workflow", () => {
+    const files = remotePipeScanFiles(resolve(import.meta.dir, "../../.."));
+    expect(files).toContain("tools/setup/common/install-rust-wasm32.sh");
+    expect(files.some((f) => f.startsWith(".github/workflows/"))).toBe(true);
+    // The archives are other agents' preserved memory and are not a live surface.
+    expect(files.some((f) => f.startsWith("docs/recovered-orphan-branches-"))).toBe(false);
+  });
+
+  test("carries NO remote pipe into an interpreter", () => {
+    expect(scanRemotePipeSites(resolve(import.meta.dir, "../../.."))).toEqual([]);
   });
 });

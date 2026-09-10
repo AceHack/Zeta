@@ -1,0 +1,14 @@
+{
+  "id": "080d0414dec99810a013000894dd7421",
+  "at": "2026-09-08T20:00:46.899Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M219QP9K087G0R003H3MH2W",
+    "type": "bug",
+    "title": "First-boot printed zflash --role as the remedy; no device-flashing entrypoint accepts it",
+    "slug": "first-boot-printed-zflash-role-as-the-remedy-no-device-flash",
+    "priority": "P2",
+    "filename": "081M219QP9K087G0R003H3MH2W-first-boot-printed-zflash-role-as-the-remedy-no-device-flash.md"
+  }
+}

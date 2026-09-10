@@ -1,0 +1,12 @@
+{
+  "pr_number": 16875,
+  "archive_path": "docs/history/pr-reviews/PR-16875-ci-gate-derive-the-yaml-k8s-manifest-roots-from-the-roster-not-from-two-spelled-.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-06T22:21:23.978Z",
+  "schema_version": "v1",
+  "commit_sha": "21bde22ace44d2dcd7bd61236735345d879b3b83",
+  "title": "ci(gate): derive the yaml/k8s manifest roots from the roster, not from two spelled lists",
+  "state": "MERGED",
+  "merged_at": "2026-09-06T22:20:37Z",
+  "head_ref": "shadow/derive-gate-yaml-k8s-dirs"
+}

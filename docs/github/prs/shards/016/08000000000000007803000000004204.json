@@ -1,0 +1,12 @@
+{
+  "pr_number": 16900,
+  "archive_path": "docs/history/pr-reviews/PR-16900-docs-handoff-preserve-verified-unattended-research-continuation.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-07T01:23:23.997Z",
+  "schema_version": "v1",
+  "commit_sha": "1c097cf4ad7a0d81b9bbe2e4a54cc154d24718d9",
+  "title": "docs(handoff): Preserve verified unattended research continuation",
+  "state": "MERGED",
+  "merged_at": "2026-09-07T01:22:44Z",
+  "head_ref": "claim/task-unattended-research-handoff-20260906"
+}

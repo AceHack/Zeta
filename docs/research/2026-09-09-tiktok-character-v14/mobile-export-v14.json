@@ -1,0 +1,28 @@
+[
+  {
+    "file": "AceHack-face-v14.glb",
+    "bytes": 1076136,
+    "kind": "face",
+    "morphs": 11
+  },
+  {
+    "file": "AceHack-body-v14.glb",
+    "bytes": 3476988,
+    "kind": "body",
+    "bones": 50,
+    "rest_pose": "T"
+  },
+  {
+    "file": "Xenaa-face-v14.glb",
+    "bytes": 1120376,
+    "kind": "face",
+    "morphs": 11
+  },
+  {
+    "file": "Xenaa-body-v14.glb",
+    "bytes": 3388664,
+    "kind": "body",
+    "bones": 50,
+    "rest_pose": "T"
+  }
+]

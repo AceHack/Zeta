@@ -1,0 +1,14 @@
+{
+  "id": "080d0447b6b9f010a0130008f97529ec",
+  "at": "2026-09-10T01:37:53.470Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M24FDNSY087G0R0005RM1CD",
+    "type": "bug",
+    "title": "PRs stranded on a poisoned base look like PRs with failing tests",
+    "slug": "prs-stranded-on-a-poisoned-base-look-like-prs-with-failing-t",
+    "priority": "P2",
+    "filename": "081M24FDNSY087G0R0005RM1CD-prs-stranded-on-a-poisoned-base-look-like-prs-with-failing-t.md"
+  }
+}

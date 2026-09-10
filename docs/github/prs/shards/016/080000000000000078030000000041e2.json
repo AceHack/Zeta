@@ -1,0 +1,12 @@
+{
+  "pr_number": 16866,
+  "archive_path": "docs/history/pr-reviews/PR-16866-fix-ace-generateargocd-emitted-a-spec-source-path-that-resolved-to-nothing.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-06T21:53:25.522Z",
+  "schema_version": "v1",
+  "commit_sha": "9e7622efe0ee849b8f798d60c8797aabe8b90832",
+  "title": "fix(ace): generateArgoCD emitted a spec.source.path that resolved to nothing",
+  "state": "MERGED",
+  "merged_at": "2026-09-06T21:52:47Z",
+  "head_ref": "shadow/ace-argocd-path-repoint"
+}

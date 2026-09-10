@@ -1,0 +1,112 @@
+"""One explicitly authorized alternate-runtime diagnostic; never a gate retry."""
+
+import datetime
+import hashlib
+import json
+import os
+from pathlib import Path
+import re
+import subprocess
+import sys
+import time
+import uuid
+
+
+def sha256(path):
+    with path.open("rb") as source:
+        return hashlib.file_digest(source, "sha256").hexdigest()
+
+
+root = Path(__file__).resolve().parents[2]
+java = Path("/Users/acehack/.local/share/mise/installs/java/26/bin/java")
+for option in ("JAVA_TOOL_OPTIONS", "JDK_JAVA_OPTIONS", "_JAVA_OPTIONS"):
+    if os.environ.get(option):
+        raise SystemExit(f"Refusing unrecorded ambient JVM options: {option}")
+started = datetime.datetime.now(datetime.timezone.utc)
+run_dir = root / ".git/tlc-diagnostics" / (
+    started.strftime("bft-c1-%Y%m%dT%H%M%SZ-") + uuid.uuid4().hex[:8]
+)
+run_dir.mkdir(exist_ok=False)
+paths = [
+    "src/Core.TLA/tla2tools.jar",
+    "src/Core.TLA/specs/BftConsensus.tla",
+    "src/Core.TLA/specs/BftConsensus.cfg",
+    "registry/tlc-models.json",
+]
+expected_hashes = {
+    paths[0]: "71546dff3897a01b0ee4fa64135d9f5e9384d2b7e47b3cc20a16b655b0eb4f86",
+    paths[1]: "e859daaaa872c9df903886573ad5fb6d17849cf6637df37c25376abe8d04854f",
+    paths[2]: "73c219ce14d7a838c2345be4c82c8b0b0f209283fb0928ae7e895e5374565bde",
+    paths[3]: "44f1ca2feb2c7ba9cab47f06d2fcd60c097ef6d55ed602299f0e1a645791de54",
+}
+for name, expected in expected_hashes.items():
+    if sha256(root / name) != expected:
+        raise SystemExit(f"Refusing changed pinned input: {name}")
+argv = [
+    str(java), "-Xms64m", "-Xmx4g", "-XX:+UseSerialGC",
+    "-XX:-UseTypeSpeculation", "-XX:TieredStopAtLevel=1",
+    f"-XX:ErrorFile={run_dir}/hs_err_pid%p.log",
+    "-cp", str(root / paths[0]), "tlc2.TLC",
+    "-metadir", str(run_dir / "states"), "-workers", "1",
+    "-config", "BftConsensus.cfg", "BftConsensus",
+]
+metadata = {
+    "Scope": "Alternate-runtime diagnostic; not pinned-gate success or automatic retry",
+    "StartedAtUtc": started.isoformat(),
+    "WorkingDirectory": str(root / "src/Core.TLA/specs"),
+    "SourceCommit": subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=root, text=True).strip(),
+    "WorkingTreeStatus": subprocess.check_output(["git", "status", "--porcelain"], cwd=root, text=True),
+    "Argv": argv,
+    "Runtime": subprocess.run([str(java), "-version"], capture_output=True, text=True, check=True).stderr,
+    "JavaExecutableSha256": sha256(java.resolve()),
+    "JavaReleaseSha256": sha256(java.resolve().parents[1] / "release"),
+    "InputSha256": {name: sha256(root / name) for name in paths},
+    "LauncherSha256": sha256(Path(__file__)),
+    "AmbientJvmOptions": "All three known JVM injection variables absent or empty",
+    "ChangedScientificInputs": [],
+    "CompilerPolicyAddition": "-XX:TieredStopAtLevel=1",
+    "ExternalSafetyTimeoutSeconds": 900,
+    "ExpectedDistinctStates": 4665495,
+    "ExpectedBanner": "TLC2 Version 2026.05.18.174321 (rev: 8ba1027)",
+    "RandomSeedPolicy": "TLC defaults retained; report emitted seed and FP index without claiming old-run equality",
+}
+with (run_dir / "attempt.json").open("x") as handle:
+    json.dump(metadata, handle, indent=2)
+print(run_dir, flush=True)
+timer = time.monotonic()
+timed_out = False
+with (run_dir / "stdout.log").open("x") as stdout, (run_dir / "stderr.log").open("x") as stderr:
+    process = subprocess.Popen(argv, cwd=metadata["WorkingDirectory"], stdout=stdout, stderr=stderr)
+    try:
+        return_code = process.wait(timeout=900)
+    except subprocess.TimeoutExpired:
+        timed_out = True
+        process.kill()
+        return_code = process.wait()
+text = (run_dir / "stdout.log").read_text() + (run_dir / "stderr.log").read_text()
+distinct = [int(value.replace(",", "")) for value in re.findall(r"([\d,]+) distinct states found", text)]
+complete = "Model checking completed. No error has been found." in text
+passed = (
+    not timed_out and return_code == 0 and complete
+    and metadata["ExpectedBanner"] in text
+    and bool(distinct) and distinct[-1] == metadata["ExpectedDistinctStates"]
+    and "Error:" not in text and "fatal error" not in text
+)
+result = {
+    "FinishedAtUtc": datetime.datetime.now(datetime.timezone.utc).isoformat(),
+    "ElapsedSeconds": time.monotonic() - timer,
+    "ExitCode": return_code,
+    "TimedOut": timed_out,
+    "CompletionMarker": complete,
+    "DistinctStates": distinct[-1] if distinct else None,
+    "DiagnosticPassed": passed,
+    "PinnedGatePassed": False,
+    "InputBytesUnchanged": all(sha256(root / name) == digest for name, digest in metadata["InputSha256"].items()),
+    "StdoutSha256": sha256(run_dir / "stdout.log"),
+    "StderrSha256": sha256(run_dir / "stderr.log"),
+    "CrashReports": [str(path.relative_to(run_dir)) for path in run_dir.glob("hs_err_pid*.log")],
+}
+with (run_dir / "result.json").open("x") as handle:
+    json.dump(result, handle, indent=2)
+print(json.dumps(result, indent=2), flush=True)
+sys.exit(0 if passed and result["InputBytesUnchanged"] else 1)

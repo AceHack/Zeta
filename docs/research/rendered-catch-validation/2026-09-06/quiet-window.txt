@@ -1,0 +1,9 @@
+Vera team quiet window for registered acting cost
+All three delegated contributors explicitly confirmed no active build, test,
+lint, training, experiment or push-hook processes before cost invocation.
+Root behavior completed at 2026-09-06T23:24:03.5486450+00:00; root had no
+remaining measurement or validation workload. Source remains36fa2275e.
+Participants: root; identity_formalization; predictor_audit; protocol_review.
+The named team holds all new computational checks through explicit release.
+Other agents outside this team and ordinary host applications are uncontrolled.
+Actual start/finish UTC and invocation declaration are recorded in cost.json.

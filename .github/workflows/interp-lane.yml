@@ -132,18 +132,23 @@ jobs:
             exit 1
           fi
 
+      - name: Build the native rendered-signal reference
+        # The live cross-language hand fixture invokes FSI and loads these
+        # assemblies. A fresh lane checkout has no prior Core build to reuse.
+        run: dotnet build src/Core/Core.fsproj -c Release
+
       - name: Run activation-access and learned-state checks
         env:
           # The floor that makes a green here mean something. A pytest that
-          # collects 0 tests exits 5, but a suite that silently shrinks from 72
+          # collects 0 tests exits 5, but a suite that silently shrinks from 258
           # to 2 exits 0 and looks identical to success.
           #
           # FAIL-CLOSED: `set -u` below makes an unset variable exit non-zero,
           # so deleting this entry turns the job red rather than quietly
           # disabling the check.
-          # Nine activation-access, eighteen Mess3, 38 predictive-state,
-          # and seven learned/factored-comparison cases.
-          INTERP_MIN_TESTS: "72"
+          # The 157 predecessor/identity cases plus 101 acting carrier,
+          # full-envelope, and independent-verdict cases.
+          INTERP_MIN_TESTS: "431"
         run: |
           set -euo pipefail
           uv run --project src/Interp.Python pytest src/Interp.Python/tests -q \

@@ -1,0 +1,21 @@
+{
+  "SchemaVersion": 1,
+  "SourceCommit": "f52b00065eb8055a32aea4bd93628df7537f4949",
+  "Command": [
+    "uv",
+    "run",
+    "pytest",
+    "tests/test_hidden_switch_reference.py::test_registered_constants_and_hand_tapes_are_complete_and_immutable",
+    "-q"
+  ],
+  "WorkingDirectory": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-catch-reference-20260906/src/Interp.Python",
+  "StartedUtc": "2026-09-07T13:09:32.915232+00:00",
+  "CompletedUtc": "2026-09-07T13:09:38.879244+00:00",
+  "ExitCode": 0,
+  "LogSha256": "07e03b714d10ca8c27a57414c1fdc1537a460fcedf9804a16f9cc9bf20bfc684",
+  "Files": {
+    "src/Interp.Python/zeta_interp/hidden_switch_reference.py": "7130fbf88e4a5f7393ad59cffd6c56637b3d226f630b8cf547167d319bf880e2",
+    "src/Interp.Python/tests/test_hidden_switch_reference.py": "aeeed7696f0e5d058228281ed6c47396fa1146ef337cfd8f2f0f41ba71b49fa5"
+  },
+  "Scope": "Existing reference public panel-roster and explicit hand-tape conformance test. No registered source generation, cost measurement, implementation edit or replay replacement."
+}

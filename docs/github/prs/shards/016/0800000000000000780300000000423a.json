@@ -1,0 +1,12 @@
+{
+  "pr_number": 16954,
+  "archive_path": "docs/history/pr-reviews/PR-16954-feat-creds-frost-look-cli-conf-takes-named-effects-tpmrm0-is-not-real.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-07T16:49:20.721Z",
+  "schema_version": "v1",
+  "commit_sha": "a7226d1c6c3101b6201bc3b39c31c68c8d128bba",
+  "title": "feat(creds): Frost look CLI conf takes named effects; tpmrm0 is not real",
+  "state": "MERGED",
+  "merged_at": "2026-09-07T16:48:37Z",
+  "head_ref": "cursor/frost-look-conf-27c5"
+}

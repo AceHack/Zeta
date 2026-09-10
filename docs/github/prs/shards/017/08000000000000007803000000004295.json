@@ -1,0 +1,12 @@
+{
+  "pr_number": 17045,
+  "archive_path": "docs/history/pr-reviews/PR-17045-preserve-magnet-source-and-history-generator-learning-direction.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-08T05:58:15.845Z",
+  "schema_version": "v1",
+  "commit_sha": "3f241c5b8d155adab74b82e003ae450d29a32c0a",
+  "title": "Preserve magnet source and history-generator learning direction",
+  "state": "MERGED",
+  "merged_at": "2026-09-08T05:57:36Z",
+  "head_ref": "codex/magnet-history-source-20260908"
+}

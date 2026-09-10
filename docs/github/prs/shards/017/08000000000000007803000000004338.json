@@ -1,0 +1,12 @@
+{
+  "pr_number": 17208,
+  "archive_path": "docs/history/pr-reviews/PR-17208-fix-081m24ffkgj087g0r002bz23sb-branch-sweep-reads-pr-state-compares-content-and-.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-10T02:11:54.127Z",
+  "schema_version": "v1",
+  "commit_sha": "e34cf10cf37d00d8759f8195bf2e4458519cae9f",
+  "title": "fix(081M24FFKGJ087G0R002BZ23SB): branch sweep reads PR state, compares content, and cannot half-run",
+  "state": "MERGED",
+  "merged_at": "2026-09-10T02:11:03Z",
+  "head_ref": "fix/branch-sweep-preserve-delete-transaction"
+}

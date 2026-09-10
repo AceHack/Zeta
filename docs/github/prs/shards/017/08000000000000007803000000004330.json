@@ -1,0 +1,12 @@
+{
+  "pr_number": 17200,
+  "archive_path": "docs/history/pr-reviews/PR-17200-fix-ci-replace-curl-pipe-sh-ollama-installs-with-the-pinned-installer-we-already.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-10T01:41:04.301Z",
+  "schema_version": "v1",
+  "commit_sha": "c11610df19b656ced016fa5842dc484daa02ed25",
+  "title": "fix(ci): replace curl-pipe-sh Ollama installs with the pinned installer we already shipped",
+  "state": "MERGED",
+  "merged_at": "2026-09-10T01:40:21Z",
+  "head_ref": "security/tranche6-curl-pipe-sh"
+}

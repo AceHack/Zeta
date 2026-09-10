@@ -1,0 +1,14 @@
+{
+  "id": "080d0410e6a5e010a01300082455546a",
+  "at": "2026-09-08T17:42:02.684Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M211SN5W087G0R00129M1E6",
+    "type": "task",
+    "title": "D9 append-length FastCDC from last chunk not full rebuild",
+    "slug": "d9-append-length-fastcdc-from-last-chunk-not-full-rebuild",
+    "priority": "P2",
+    "filename": "081M211SN5W087G0R00129M1E6-d9-append-length-fastcdc-from-last-chunk-not-full-rebuild.md"
+  }
+}

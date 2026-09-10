@@ -1,0 +1,65 @@
+{
+  "AntiSybilSourceSha256": "20CC8F598BB12BF0FD2584D6C0B6710EE0775D22CCCFADF8D9B72C1AAA1C81FF",
+  "Cases": [
+    {
+      "BucketCounts": [
+        100,
+        0,
+        100,
+        100
+      ],
+      "CalibratedComponents": 1,
+      "Delta": 0.01,
+      "HacMargin": 0.7008695693009243,
+      "MeterAboveBound": true,
+      "Name": "missing-01-constant-local",
+      "Rounds": 300,
+      "Score": 3,
+      "StationarityComponents": 1,
+      "StationarityTolerance": 0,
+      "Stationary": true
+    },
+    {
+      "BucketCounts": [
+        100,
+        100,
+        100,
+        100
+      ],
+      "CalibratedComponents": 2,
+      "Delta": 0.01,
+      "HacMargin": 0.6069708517540585,
+      "MeterAboveBound": false,
+      "Name": "complete-constant-local",
+      "Rounds": 400,
+      "Score": 2,
+      "StationarityComponents": 2,
+      "StationarityTolerance": 0,
+      "Stationary": true
+    },
+    {
+      "BucketCounts": [
+        1000,
+        1,
+        1000,
+        1000
+      ],
+      "CalibratedComponents": 1,
+      "Delta": 0.01,
+      "HacMargin": 0.35682102349568745,
+      "MeterAboveBound": true,
+      "Name": "single-01-alternating-local",
+      "Rounds": 3001,
+      "Score": 3,
+      "StationarityComponents": 1,
+      "StationarityTolerance": 0.01,
+      "Stationary": true
+    }
+  ],
+  "LoadedCoreMvid": "c1684778-41b0-ebce-0421-37bd1002728b",
+  "LoadedCoreSha256": "6F2083A3D8BD4E8EE5C70CD0BCB3768424EF9AD6A1A959D698A0AA7CCBA80B78",
+  "Protocol": "chsh-coverage-defect-witness-v1",
+  "ReviewedMainCommit": "cfc3f53f011b21ce54d9d9380d9de244b6b4015f",
+  "Runtime": ".NET 10.0.11",
+  "Scope": "Deterministic local-response witnesses and control; no false-positive frequency or full calibration theorem."
+}

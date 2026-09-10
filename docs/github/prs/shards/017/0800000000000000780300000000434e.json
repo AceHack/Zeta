@@ -1,0 +1,12 @@
+{
+  "pr_number": 17230,
+  "archive_path": "docs/history/pr-reviews/PR-17230-fix-setup-windows-stops-installing-kubernetes-tooling-it-never-uses.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-10T13:56:51.474Z",
+  "schema_version": "v1",
+  "commit_sha": "5b603d45572c3935884b69d7ad25aa701f65758e",
+  "title": "fix(setup): Windows stops installing Kubernetes tooling it never uses",
+  "state": "MERGED",
+  "merged_at": "2026-09-10T13:56:05Z",
+  "head_ref": "fix/windows-host-tier-drops-k8s"
+}

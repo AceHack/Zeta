@@ -75,9 +75,12 @@ function inventory(dir: string): readonly string[] {
 }
 
 function run(f: Fixture): { readonly status: number; readonly stdout: string } {
+  // Closed env. Same reason as lint-k3s-join-intent-preflight.test.ts:
+  // the hermetic suite shares process.env across concurrent files.
   const result = spawnSync("bash", [SCRIPT], {
     env: {
-      ...process.env,
+      PATH: process.env.PATH ?? "/usr/bin:/bin",
+      LC_ALL: "C",
       ZETA_JOIN_URL_FILE: f.joinUrlFile,
       ZETA_DATASTORE_DIR: f.datastoreDir,
       // A path that cannot exist, so the `-w` guard takes its false branch and
@@ -86,6 +89,7 @@ function run(f: Fixture): { readonly status: number; readonly stdout: string } {
       ZETA_SERIAL_DEVICE: join(f.root, "no-such-serial-device"),
     },
     encoding: "utf8",
+    maxBuffer: 64 * 1024,
   });
   return { status: result.status ?? -1, stdout: `${result.stdout}${result.stderr}` };
 }
@@ -208,5 +212,11 @@ describe("unit wiring — fail closed, not fail open", () => {
         enabled: true,
       });
     }
+  });
+
+  test("this file does not spread process.env into bash", () => {
+    const text = readFileSync(import.meta.path, "utf8");
+    const needle = ["...", "process.env"].join("");
+    expect(text.split(needle).length - 1).toBe(0);
   });
 });

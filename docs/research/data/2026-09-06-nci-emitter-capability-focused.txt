@@ -1,0 +1,28 @@
+bun test v1.3.13 (bf2e2cec)
+
+src/Core.TypeScript/formal-verification/nci-witness-capability.test.ts:
+(pass) NCI emitter exercised dependency and capability boundary > renders the pinned bytes from the four subject files with an exact read trace [50.16ms]
+(pass) NCI emitter exercised dependency and capability boundary > runs only the declared checker command and emits exact receipt bytes on its controlled success [14.20ms]
+(pass) NCI emitter exercised dependency and capability boundary > a controlled checker failure refuses before receipt revalidation [12.03ms]
+(pass) NCI emitter exercised dependency and capability boundary > a static checker import is refused by the actual module linker [8.05ms]
+(pass) NCI emitter exercised dependency and capability boundary > a computed dynamic import is refused by syntax admission before VM execution [6.20ms]
+(pass) NCI emitter exercised dependency and capability boundary > direct checker read is refused even with the unchanged static import roster [5.45ms]
+(pass) NCI emitter exercised dependency and capability boundary > aliased checker read is refused even with the unchanged static import roster [5.41ms]
+(pass) NCI emitter exercised dependency and capability boundary > computed Python subprocess is refused even with the unchanged static import roster [5.27ms]
+(pass) NCI emitter exercised dependency and capability boundary > different runtime arguments is refused even with the unchanged static import roster [4.80ms]
+(pass) NCI emitter exercised dependency and capability boundary > caught checker-read refusal is refused even with the unchanged static import roster [7.35ms]
+
+src/Core.TypeScript/formal-verification/nci-witness-receipt.test.ts:
+(pass) finite NciNonUrgency witness receipt > renders and accepts the one pinned bounded witness [6.86ms]
+(pass) finite NciNonUrgency witness receipt > both committed cross-surface receipts reproduce the finite canonical witness [4.75ms]
+(pass) finite NciNonUrgency witness receipt > a one-byte model change refuses before a witness can be rendered [3.76ms]
+(pass) finite NciNonUrgency witness receipt > a missing pinned input refuses from the same attempted read [2.32ms]
+(pass) finite NciNonUrgency witness receipt > changed jar and registry inputs refuse rather than reusing the bounded witness [9.09ms]
+(pass) finite NciNonUrgency witness receipt > a reordered or incomplete valid JSON receipt is refused [7.07ms]
+(pass) finite NciNonUrgency witness receipt > an altered completed-model result cannot become an NCI witness [4.35ms]
+(pass) finite NciNonUrgency witness receipt > the witness data cannot be a policy score or authority grant [2.50ms]
+
+ 18 pass
+ 0 fail
+ 37 expect() calls
+Ran 18 tests across 2 files. [496.00ms]

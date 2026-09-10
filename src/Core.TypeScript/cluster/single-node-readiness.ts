@@ -46,6 +46,7 @@
 // Whether that is acceptable for a PoC is the ledger's (human's) call.
 
 import { readFileSync, readdirSync, existsSync, statSync } from "node:fs";
+import { clusterDirs } from "./declared-cluster-trees.ts";
 import { join, relative, resolve, sep } from "node:path";
 import { parseAllDocuments } from "yaml";
 // Ordinal (code-point) ordering, per .claude/rules/culture-invariant-by-default.md.
@@ -1505,12 +1506,12 @@ function listYaml(dir: string, depth = 0): readonly string[] {
   });
 }
 
-export const DEFAULT_ROOTS: readonly string[] = [
-  "full-ai-cluster/k8s/applications",
-  "full-ai-cluster/k8s/bootstrap",
-  "infra/k8s/applications",
-  "infra/k8s/bootstrap",
-];
+/**
+ * Derived from the tree roster rather than listed — see `declared-cluster-trees.ts`. The
+ * order is unchanged (per tree, then applications before bootstrap), and the derivation
+ * refuses if a declared tree is missing from disk, which a literal list could not detect.
+ */
+export const DEFAULT_ROOTS: readonly string[] = clusterDirs(["applications", "bootstrap"]);
 
 /**
  * The `storage-profile` check: does the tree actually run the profile the

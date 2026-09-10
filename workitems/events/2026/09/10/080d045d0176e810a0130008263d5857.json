@@ -1,0 +1,14 @@
+{
+  "id": "080d045d0176e810a0130008263d5857",
+  "at": "2026-09-10T14:02:05.917Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M25T0BPW087G0R000GS9Y1V",
+    "type": "bug",
+    "title": "unbounded fetch feeding a file sink: put the cap at the door, not at each sink (js/http-to-file-access, js/file-access-to-http)",
+    "slug": "unbounded-fetch-feeding-a-file-sink-put-the-cap-at-the-door",
+    "priority": "P2",
+    "filename": "081M25T0BPW087G0R000GS9Y1V-unbounded-fetch-feeding-a-file-sink-put-the-cap-at-the-door.md"
+  }
+}

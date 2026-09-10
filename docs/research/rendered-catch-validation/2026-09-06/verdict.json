@@ -1,0 +1,598 @@
+{
+  "Protocol": "rendered-catch-actions-v1",
+  "Kind": "verdict",
+  "Complete": true,
+  "Failure": null,
+  "InputSha256": "32D48E93BB5478286DA221A5982D99BD1D815CA43A304A5A54B8BBE2592109AC",
+  "CostInputSha256": "CCEF4861E45DD4300F7DA356A14AE6B62E7F72BA61DDD576B146177712B523C9",
+  "ReplayInputSha256": "6EBA064EC98F71B226FD549DD8FA32388A6D05D9D2ED2919214BEB12A05F2934",
+  "ProtocolSha256": "0EAF073F72339F0E48A48726E8D47A5568A0F213A93F5B565F920C2A8C6EC49F",
+  "CountsSha256": "8BEFD54B878D600A31A75BB5FA159588D2FDA4A849CAFB1410F03D6BC9B5B2A5",
+  "Provenance": {
+    "SourceCommit": "36fa2275e049017aefa6ebdfd77fdbd2dfbd5180",
+    "ImplementationArchive": "refs/tags/archive/experiments/081M1W8T690087G0R002DJ91MJ",
+    "ImplementationCommit": "36fa2275e049017aefa6ebdfd77fdbd2dfbd5180",
+    "SourceHashes": [
+      {
+        "File": "src/Core/Chip8.fs",
+        "Sha256": "1D6286765EE3471940A52C5F3E297E1D3252BA710CA515182EAF18DD1ED4437A"
+      },
+      {
+        "File": "src/Core/Chip8Cow.fs",
+        "Sha256": "F203973BF8F962F5C741305AC6FE1DB13F652CAF10B51D039BA4D9CC56C3C850"
+      },
+      {
+        "File": "src/Core/ControlScheme.fs",
+        "Sha256": "1FBA050D2E32DC59C6B7EB9CC40130F0152CCFCD2465B70CA7F94801DEB59F87"
+      },
+      {
+        "File": "src/Core/FrameMotion.fs",
+        "Sha256": "905EAB511A0F5CE877AE6E71003FFCFF7AEA3B2B5E86172D5B8883846528B67D"
+      },
+      {
+        "File": "src/Core/FrameSignals.fs",
+        "Sha256": "6D438A0B36981946C641EE4C03A3A5474ED63AB74883553B0CCCC6BF9FC4F8D5"
+      },
+      {
+        "File": "src/Core/GameEnvironment.fs",
+        "Sha256": "D4DE496B2DB5136C53F5761825A23862F55083FE04C7E475033B3748A890EED8"
+      },
+      {
+        "File": "src/Core/SplitMix64.fs",
+        "Sha256": "56D14EA951C459EF9509F934AE9AD65A293BEACBA841A2CBA8A2289693AAF174"
+      },
+      {
+        "File": "src/Research.FSharp/ResearchRandom.fs",
+        "Sha256": "4422C5EE4380A698FF479F0082C44E1453990C48AA034B9842719C4E0E7C79FF"
+      },
+      {
+        "File": "src/Research.FSharp/RenderedSignalCarrier.fs",
+        "Sha256": "E45BDA8B67FF3CD7B3B0E58FEBC787FAB4F0E7CB47A7C338661098F80704A7CA"
+      },
+      {
+        "File": "src/Research.FSharp/RenderedCatchReceipt.fs",
+        "Sha256": "748B22FEB0C15242FBE427D2A0C6EAF78208B5161ECCE71A4E65118C3CB1A4CD"
+      },
+      {
+        "File": "src/Research.FSharp/RenderedCatchCarrier.fs",
+        "Sha256": "C3AE69A68FE44DA89A69974D95CC9EFC71BF0793D921FCEC3441B9593BB19965"
+      },
+      {
+        "File": "src/Research.FSharp/RenderedCatchPolicy.fs",
+        "Sha256": "9FA63517A04634148D49C1FC4EC6D51391B028591C680C2FCC52D2598D20CAE5"
+      },
+      {
+        "File": "src/Research.FSharp/RenderedCatchExperiment.fs",
+        "Sha256": "7FE14499A105D981EE9E01617540B8BE8CF1EC427AD9D42174326DC2991189B1"
+      },
+      {
+        "File": "src/Research.FSharp/RenderedCatchRuntime.fsx",
+        "Sha256": "6DC3FCD30A4EF3B72CF9706D85DAED05E444C356E795EF4EE467018637BA8A77"
+      },
+      {
+        "File": "src/Research.FSharp/run-rendered-catch-experiment.fsx",
+        "Sha256": "76A013583089D090C7FB6BC91321EE70422A1F5083C246234CC27F92F6E4A4E4"
+      },
+      {
+        "File": "src/Research.FSharp/measure-rendered-catch-inference.fsx",
+        "Sha256": "968C1EFB51C7ACC0593F23D54D71D036812BCF9A6A4B01FF89FBDD28643FF426"
+      },
+      {
+        "File": "src/Research.FSharp/check-rendered-catch-kernel.fsx",
+        "Sha256": "0A83A674768CE9A6DBCB65AEB4BCB8E2B91C1FC1661172CB6994063FE36C8A28"
+      },
+      {
+        "File": "src/Interp.Python/zeta_interp/mess3_replay.py",
+        "Sha256": "EC79404E483298B4878AFF9F9D730B716A7C2ECEF06309445B9E55E19303199A"
+      },
+      {
+        "File": "src/Interp.Python/zeta_interp/rendered_catch_carrier.py",
+        "Sha256": "E9341904BF33323C5982845D39DD2C205AF6E3BD7853ACF416C0D2E9075002A4"
+      },
+      {
+        "File": "src/Interp.Python/zeta_interp/rendered_catch_replay.py",
+        "Sha256": "3E1770B4A18571E87E515E3CEFBB834C178BB5618B8ABA9B83073D8FA67E2918"
+      },
+      {
+        "File": "src/Interp.Python/zeta_interp/rendered_catch_verdict.py",
+        "Sha256": "5220028DB504BAFAC4517EE193AC5C2A6AE0B9003C110A89B8EF5BEA9929F509"
+      },
+      {
+        "File": "src/Research.FSharp/rendered-signal-results.json",
+        "Sha256": "C59468575B140DA146265182EE40B03D6F6B5103FAAC9A0137CE8A288DF357B3"
+      },
+      {
+        "File": "docs/research/2026-09-06-rendered-catch-actions-protocol.md",
+        "Sha256": "0EAF073F72339F0E48A48726E8D47A5568A0F213A93F5B565F920C2A8C6EC49F"
+      }
+    ],
+    "LoadedAssemblies": [],
+    "Runtime": "CPython 3.14.6",
+    "OperatingSystem": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+    "Arguments": [
+      "/Users/acehack/.zeta/agents/codex/Zeta-rendered-catch-reference-20260906/src/Interp.Python/.venv/bin/python3",
+      "/Users/acehack/.zeta/agents/codex/Zeta-rendered-catch-reference-20260906/src/Interp.Python/zeta_interp/rendered_catch_verdict.py",
+      "docs/research/rendered-catch-validation/2026-09-06/behavior.json",
+      "docs/research/rendered-catch-validation/2026-09-06/cost.json",
+      "docs/research/rendered-catch-validation/2026-09-06/replay.json",
+      "docs/research/rendered-catch-validation/2026-09-06/verdict.json",
+      "--root",
+      "/Users/acehack/.zeta/agents/codex/Zeta-rendered-catch-reference-20260906"
+    ]
+  },
+  "AdmissionPassed": true,
+  "DescriptiveCostRatios": [
+    {
+      "Name": "order-two",
+      "ReferenceArm": "bigram",
+      "Ratios": {
+        "MillisecondsPerEpisode": {
+          "Ratio": 0.9870793806954431,
+          "Status": "finite"
+        },
+        "AllocatedBytesPerEpisode": {
+          "Ratio": 0.9994612391331381,
+          "Status": "finite"
+        },
+        "CpuMillisecondsPerEpisode": {
+          "Ratio": 1.0003399721136799,
+          "Status": "finite"
+        }
+      }
+    },
+    {
+      "Name": "bigram",
+      "ReferenceArm": "bigram",
+      "Ratios": {
+        "MillisecondsPerEpisode": {
+          "Ratio": 1.0,
+          "Status": "finite"
+        },
+        "AllocatedBytesPerEpisode": {
+          "Ratio": 1.0,
+          "Status": "finite"
+        },
+        "CpuMillisecondsPerEpisode": {
+          "Ratio": 1.0,
+          "Status": "finite"
+        }
+      }
+    },
+    {
+      "Name": "last-beacon",
+      "ReferenceArm": "bigram",
+      "Ratios": {
+        "MillisecondsPerEpisode": {
+          "Ratio": 0.9919878607786875,
+          "Status": "finite"
+        },
+        "AllocatedBytesPerEpisode": {
+          "Ratio": 0.9999721946735055,
+          "Status": "finite"
+        },
+        "CpuMillisecondsPerEpisode": {
+          "Ratio": 0.9887417110877769,
+          "Status": "finite"
+        }
+      }
+    },
+    {
+      "Name": "fair-independent",
+      "ReferenceArm": "bigram",
+      "Ratios": {
+        "MillisecondsPerEpisode": {
+          "Ratio": 0.9859249063544537,
+          "Status": "finite"
+        },
+        "AllocatedBytesPerEpisode": {
+          "Ratio": 0.999890656990866,
+          "Status": "finite"
+        },
+        "CpuMillisecondsPerEpisode": {
+          "Ratio": 0.9387447713149605,
+          "Status": "finite"
+        }
+      }
+    },
+    {
+      "Name": "known-lag-two",
+      "ReferenceArm": "bigram",
+      "Ratios": {
+        "MillisecondsPerEpisode": {
+          "Ratio": 1.004137339235629,
+          "Status": "finite"
+        },
+        "AllocatedBytesPerEpisode": {
+          "Ratio": 0.9976405129042651,
+          "Status": "finite"
+        },
+        "CpuMillisecondsPerEpisode": {
+          "Ratio": 0.9700963206506044,
+          "Status": "finite"
+        }
+      }
+    }
+  ],
+  "ReturnConditions": [
+    {
+      "Panel": "dot-three-quarter",
+      "Control": "bigram",
+      "OrderTwoHits": 49169,
+      "ControlHits": 32833,
+      "TotalDifference": 16336,
+      "MeanHitFractionDifference": 0.249267578125,
+      "LeftOperand": 1633600,
+      "Operator": ">=",
+      "RightOperand": 983040,
+      "Passed": true
+    },
+    {
+      "Panel": "dot-three-quarter",
+      "Control": "last-beacon",
+      "OrderTwoHits": 49169,
+      "ControlHits": 32833,
+      "TotalDifference": 16336,
+      "MeanHitFractionDifference": 0.249267578125,
+      "LeftOperand": 1633600,
+      "Operator": ">=",
+      "RightOperand": 983040,
+      "Passed": true
+    },
+    {
+      "Panel": "dot-three-quarter",
+      "Control": "fair-independent",
+      "OrderTwoHits": 49169,
+      "ControlHits": 33063,
+      "TotalDifference": 16106,
+      "MeanHitFractionDifference": 0.245758056640625,
+      "LeftOperand": 1610600,
+      "Operator": ">=",
+      "RightOperand": 983040,
+      "Passed": true
+    },
+    {
+      "Panel": "bar-three-quarter",
+      "Control": "bigram",
+      "OrderTwoHits": 48983,
+      "ControlHits": 32954,
+      "TotalDifference": 16029,
+      "MeanHitFractionDifference": 0.2445831298828125,
+      "LeftOperand": 1602900,
+      "Operator": ">=",
+      "RightOperand": 983040,
+      "Passed": true
+    },
+    {
+      "Panel": "bar-three-quarter",
+      "Control": "last-beacon",
+      "OrderTwoHits": 48983,
+      "ControlHits": 32954,
+      "TotalDifference": 16029,
+      "MeanHitFractionDifference": 0.2445831298828125,
+      "LeftOperand": 1602900,
+      "Operator": ">=",
+      "RightOperand": 983040,
+      "Passed": true
+    },
+    {
+      "Panel": "bar-three-quarter",
+      "Control": "fair-independent",
+      "OrderTwoHits": 48983,
+      "ControlHits": 32825,
+      "TotalDifference": 16158,
+      "MeanHitFractionDifference": 0.246551513671875,
+      "LeftOperand": 1615800,
+      "Operator": ">=",
+      "RightOperand": 983040,
+      "Passed": true
+    },
+    {
+      "Panel": "palette-three-quarter",
+      "Control": "bigram",
+      "OrderTwoHits": 49062,
+      "ControlHits": 32565,
+      "TotalDifference": 16497,
+      "MeanHitFractionDifference": 0.2517242431640625,
+      "LeftOperand": 1649700,
+      "Operator": ">=",
+      "RightOperand": 983040,
+      "Passed": true
+    },
+    {
+      "Panel": "palette-three-quarter",
+      "Control": "last-beacon",
+      "OrderTwoHits": 49062,
+      "ControlHits": 32565,
+      "TotalDifference": 16497,
+      "MeanHitFractionDifference": 0.2517242431640625,
+      "LeftOperand": 1649700,
+      "Operator": ">=",
+      "RightOperand": 983040,
+      "Passed": true
+    },
+    {
+      "Panel": "palette-three-quarter",
+      "Control": "fair-independent",
+      "OrderTwoHits": 49062,
+      "ControlHits": 32767,
+      "TotalDifference": 16295,
+      "MeanHitFractionDifference": 0.2486419677734375,
+      "LeftOperand": 1629500,
+      "Operator": ">=",
+      "RightOperand": 983040,
+      "Passed": true
+    },
+    {
+      "Panel": "dot-iid-half",
+      "Control": "bigram",
+      "OrderTwoHits": 32914,
+      "ControlHits": 32779,
+      "TotalDifference": 135,
+      "MeanHitFractionDifference": 0.0020599365234375,
+      "LeftOperand": 13500,
+      "Operator": "<=",
+      "RightOperand": 196608,
+      "Passed": true
+    },
+    {
+      "Panel": "dot-iid-half",
+      "Control": "last-beacon",
+      "OrderTwoHits": 32914,
+      "ControlHits": 32779,
+      "TotalDifference": 135,
+      "MeanHitFractionDifference": 0.0020599365234375,
+      "LeftOperand": 13500,
+      "Operator": "<=",
+      "RightOperand": 196608,
+      "Passed": true
+    },
+    {
+      "Panel": "dot-iid-half",
+      "Control": "fair-independent",
+      "OrderTwoHits": 32914,
+      "ControlHits": 32822,
+      "TotalDifference": 92,
+      "MeanHitFractionDifference": 0.00140380859375,
+      "LeftOperand": 9200,
+      "Operator": "<=",
+      "RightOperand": 196608,
+      "Passed": true
+    }
+  ],
+  "KnownLagTwoConformance": [
+    {
+      "Panel": "dot-three-quarter",
+      "ComparedChoices": 65536,
+      "Passed": true
+    },
+    {
+      "Panel": "bar-three-quarter",
+      "ComparedChoices": 65536,
+      "Passed": true
+    },
+    {
+      "Panel": "palette-three-quarter",
+      "ComparedChoices": 65536,
+      "Passed": true
+    },
+    {
+      "Panel": "dot-iid-half",
+      "ComparedChoices": 65536,
+      "Passed": true
+    }
+  ],
+  "CostMedians": [
+    {
+      "Name": "order-two",
+      "Repetitions": [
+        {
+          "Repetition": 0,
+          "MillisecondsPerEpisode": 35.574765625,
+          "CpuMillisecondsPerEpisode": 57.322890625,
+          "AllocatedBytesPerEpisode": 38346696.125
+        },
+        {
+          "Repetition": 1,
+          "MillisecondsPerEpisode": 14.085134375,
+          "CpuMillisecondsPerEpisode": 32.688421875,
+          "AllocatedBytesPerEpisode": 38245433.25
+        },
+        {
+          "Repetition": 2,
+          "MillisecondsPerEpisode": 14.1342734375,
+          "CpuMillisecondsPerEpisode": 32.000421875,
+          "AllocatedBytesPerEpisode": 38245433.25
+        },
+        {
+          "Repetition": 3,
+          "MillisecondsPerEpisode": 14.3284609375,
+          "CpuMillisecondsPerEpisode": 35.09115625,
+          "AllocatedBytesPerEpisode": 38245433.25
+        },
+        {
+          "Repetition": 4,
+          "MillisecondsPerEpisode": 14.047275,
+          "CpuMillisecondsPerEpisode": 30.258921875,
+          "AllocatedBytesPerEpisode": 38245433.25
+        }
+      ],
+      "MedianMillisecondsPerEpisode": 14.1342734375,
+      "MedianCpuMillisecondsPerEpisode": 32.688421875,
+      "MedianAllocatedBytesPerEpisode": 38245433.25
+    },
+    {
+      "Name": "bigram",
+      "Repetitions": [
+        {
+          "Repetition": 0,
+          "MillisecondsPerEpisode": 16.1366140625,
+          "CpuMillisecondsPerEpisode": 39.631421875,
+          "AllocatedBytesPerEpisode": 38266021.5
+        },
+        {
+          "Repetition": 1,
+          "MillisecondsPerEpisode": 13.923784375,
+          "CpuMillisecondsPerEpisode": 27.553875,
+          "AllocatedBytesPerEpisode": 38266039.0
+        },
+        {
+          "Repetition": 2,
+          "MillisecondsPerEpisode": 14.09804375,
+          "CpuMillisecondsPerEpisode": 31.55778125,
+          "AllocatedBytesPerEpisode": 38266049.5
+        },
+        {
+          "Repetition": 3,
+          "MillisecondsPerEpisode": 14.3192875,
+          "CpuMillisecondsPerEpisode": 32.6773125,
+          "AllocatedBytesPerEpisode": 38266049.5
+        },
+        {
+          "Repetition": 4,
+          "MillisecondsPerEpisode": 14.455809375,
+          "CpuMillisecondsPerEpisode": 35.676015625,
+          "AllocatedBytesPerEpisode": 38266049.5
+        }
+      ],
+      "MedianMillisecondsPerEpisode": 14.3192875,
+      "MedianCpuMillisecondsPerEpisode": 32.6773125,
+      "MedianAllocatedBytesPerEpisode": 38266049.5
+    },
+    {
+      "Name": "last-beacon",
+      "Repetitions": [
+        {
+          "Repetition": 0,
+          "MillisecondsPerEpisode": 13.4817953125,
+          "CpuMillisecondsPerEpisode": 15.603546875,
+          "AllocatedBytesPerEpisode": 38264954.0
+        },
+        {
+          "Repetition": 1,
+          "MillisecondsPerEpisode": 14.52701875,
+          "CpuMillisecondsPerEpisode": 35.242,
+          "AllocatedBytesPerEpisode": 38264985.5
+        },
+        {
+          "Repetition": 2,
+          "MillisecondsPerEpisode": 14.204559375,
+          "CpuMillisecondsPerEpisode": 34.419828125,
+          "AllocatedBytesPerEpisode": 38264985.5
+        },
+        {
+          "Repetition": 3,
+          "MillisecondsPerEpisode": 14.2320703125,
+          "CpuMillisecondsPerEpisode": 32.309421875,
+          "AllocatedBytesPerEpisode": 38264985.5
+        },
+        {
+          "Repetition": 4,
+          "MillisecondsPerEpisode": 14.132378125,
+          "CpuMillisecondsPerEpisode": 31.23146875,
+          "AllocatedBytesPerEpisode": 38264985.5
+        }
+      ],
+      "MedianMillisecondsPerEpisode": 14.204559375,
+      "MedianCpuMillisecondsPerEpisode": 32.309421875,
+      "MedianAllocatedBytesPerEpisode": 38264985.5
+    },
+    {
+      "Name": "fair-independent",
+      "Repetitions": [
+        {
+          "Repetition": 0,
+          "MillisecondsPerEpisode": 13.371621875,
+          "CpuMillisecondsPerEpisode": 16.3748125,
+          "AllocatedBytesPerEpisode": 38261833.875
+        },
+        {
+          "Repetition": 1,
+          "MillisecondsPerEpisode": 14.1177421875,
+          "CpuMillisecondsPerEpisode": 33.146453125,
+          "AllocatedBytesPerEpisode": 38261865.375
+        },
+        {
+          "Repetition": 2,
+          "MillisecondsPerEpisode": 14.4259,
+          "CpuMillisecondsPerEpisode": 33.413390625,
+          "AllocatedBytesPerEpisode": 38261865.375
+        },
+        {
+          "Repetition": 3,
+          "MillisecondsPerEpisode": 14.1207546875,
+          "CpuMillisecondsPerEpisode": 30.53559375,
+          "AllocatedBytesPerEpisode": 38261865.375
+        },
+        {
+          "Repetition": 4,
+          "MillisecondsPerEpisode": 14.0563046875,
+          "CpuMillisecondsPerEpisode": 30.67565625,
+          "AllocatedBytesPerEpisode": 38261865.375
+        }
+      ],
+      "MedianMillisecondsPerEpisode": 14.1177421875,
+      "MedianCpuMillisecondsPerEpisode": 30.67565625,
+      "MedianAllocatedBytesPerEpisode": 38261865.375
+    },
+    {
+      "Name": "known-lag-two",
+      "Repetitions": [
+        {
+          "Repetition": 0,
+          "MillisecondsPerEpisode": 13.322525,
+          "CpuMillisecondsPerEpisode": 16.809234375,
+          "AllocatedBytesPerEpisode": 38175733.25
+        },
+        {
+          "Repetition": 1,
+          "MillisecondsPerEpisode": 14.37853125,
+          "CpuMillisecondsPerEpisode": 37.284875,
+          "AllocatedBytesPerEpisode": 38175761.25
+        },
+        {
+          "Repetition": 2,
+          "MillisecondsPerEpisode": 16.574221875,
+          "CpuMillisecondsPerEpisode": 29.963171875,
+          "AllocatedBytesPerEpisode": 38175761.25
+        },
+        {
+          "Repetition": 3,
+          "MillisecondsPerEpisode": 14.03098125,
+          "CpuMillisecondsPerEpisode": 31.700140625,
+          "AllocatedBytesPerEpisode": 38175761.25
+        },
+        {
+          "Repetition": 4,
+          "MillisecondsPerEpisode": 14.7234734375,
+          "CpuMillisecondsPerEpisode": 35.870109375,
+          "AllocatedBytesPerEpisode": 38175761.25
+        }
+      ],
+      "MedianMillisecondsPerEpisode": 14.37853125,
+      "MedianCpuMillisecondsPerEpisode": 31.700140625,
+      "MedianAllocatedBytesPerEpisode": 38175761.25
+    }
+  ],
+  "CostConditions": [
+    {
+      "Metric": "MillisecondsPerEpisode",
+      "OrderTwoMedian": 14.1342734375,
+      "BigramMedian": 14.3192875,
+      "Ratio": 0.9870793806954431,
+      "MaximumRatio": 2.0,
+      "Passed": true
+    },
+    {
+      "Metric": "AllocatedBytesPerEpisode",
+      "OrderTwoMedian": 38245433.25,
+      "BigramMedian": 38266049.5,
+      "Ratio": 0.9994612391331381,
+      "MaximumRatio": 2.0,
+      "Passed": true
+    }
+  ],
+  "PromotionEligible": true,
+  "AllRegisteredConditionsMet": true,
+  "Interpretation": "Registered practical thresholds for a supplied-representation contextual bandit; no statistical-significance, planning, learned-vision or ARC claim.",
+  "Arithmetic": "Exact integer hit thresholds; five-repetition medians of whole-episode resources including primary and shadow execution. Timing metadata is not independently remeasured."
+}

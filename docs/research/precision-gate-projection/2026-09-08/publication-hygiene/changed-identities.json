@@ -1,0 +1,79 @@
+{
+  "Head": "61f8e14ba9f89e790dce635ce5c86db5c619b63c",
+  "ChangedFiles": [
+    {
+      "Path": "src/Interp.Python/pyproject.toml",
+      "BeforeBytes": 4499,
+      "AfterBytes": 4639,
+      "BeforeSha256": "9AF39874A0B47567E148E33558D1A1A7ABAE4196EAE4AD915E1ECD0C61508B95",
+      "AfterSha256": "A6AA55A1FB237784994BA0609192B4E73E1784C1F7FC634DA238CBEE7A45DFF2"
+    },
+    {
+      "Path": "src/Interp.Python/tests/test_precision_gate_projection_run.py",
+      "BeforeBytes": 24771,
+      "AfterBytes": 24772,
+      "BeforeSha256": "4726B5CCD43F5B88674C7DEEF7C8B72033351C72DAFED7FE9CBAD10946FBB4C8",
+      "AfterSha256": "1B0C3E2ECB9C482A1801FF38362DE93F29914DC16D3F368CD77E72D9C7368EC7",
+      "AstIdentical": true,
+      "OnlyNewlinesChanged": true
+    },
+    {
+      "Path": "src/Interp.Python/tests/test_precision_gate_projection_cases.py",
+      "BeforeBytes": 6185,
+      "AfterBytes": 6186,
+      "BeforeSha256": "7D60A095DA1C5E536E657900D32C7C50A08BC8EE44928AF9A1268C2F4D7B7F61",
+      "AfterSha256": "14DA824114C27660A6316DA17B7FC6AE3CBFB9FE54538B23D460977F1F60CEE8",
+      "AstIdentical": true,
+      "OnlyNewlinesChanged": true
+    },
+    {
+      "Path": "src/Interp.Python/tests/test_precision_gate_projection_comparison.py",
+      "BeforeBytes": 7989,
+      "AfterBytes": 7990,
+      "BeforeSha256": "95F6F2C131E490F5850297E4B9B1B7FAB4EB79237853E4F50875449911812500",
+      "AfterSha256": "3DFABB8ABC986EB34EA00E65A44C97E1FB6256CBC8654551294F55CC25876001",
+      "AstIdentical": true,
+      "OnlyNewlinesChanged": true
+    },
+    {
+      "Path": "src/Interp.Python/tests/test_precision_gate_projection_reference.py",
+      "BeforeBytes": 48249,
+      "AfterBytes": 48250,
+      "BeforeSha256": "49715787CCF0FC69A38B39D720CDADB3F2F95D523A26E1582E01DA5A4F47A22C",
+      "AfterSha256": "0D96B6F27592DC34C4396C044369E043156D25A4986DFC2B4FEF1B2A3F402755",
+      "AstIdentical": true,
+      "OnlyNewlinesChanged": true
+    },
+    {
+      "Path": "src/Interp.Python/tests/test_precision_gate_projection_intervals.py",
+      "BeforeBytes": 8332,
+      "AfterBytes": 8333,
+      "BeforeSha256": "BCCB9B8E32BBBC2E61C5CB557B1E3E0016C92768C8D90F99B10C8232FD3220F7",
+      "AfterSha256": "C673182CCC199A2D10D4C085F0D0EDBDC6D6D71CD1872BE535EE0D55291619F6",
+      "AstIdentical": true,
+      "OnlyNewlinesChanged": true
+    },
+    {
+      "Path": "src/Interp.Python/tests/test_precision_gate_projection_driver.py",
+      "BeforeBytes": 32565,
+      "AfterBytes": 32566,
+      "BeforeSha256": "2FBDE2C8A68790C454BD140973145A9E0665DC9AC88C894DDBB4A3826D6C11B6",
+      "AfterSha256": "9952B5B2C36B57DAE74428D2C1C4FD7027511DD7D92683AA2C5CDE2B6F21962B",
+      "AstIdentical": true,
+      "OnlyNewlinesChanged": true
+    },
+    {
+      "Path": "src/Interp.Python/tests/test_precision_gate_projection_process.py",
+      "BeforeBytes": 19857,
+      "AfterBytes": 19858,
+      "BeforeSha256": "98A5FE6BE65318C41128901507F62BB927487A7425071B9AC0FA72A3117373EF",
+      "AfterSha256": "576466C29E1ADFCEF2F037EE92E5DB6D298A4575AD589E83F13BAD0F3E2B4422",
+      "AstIdentical": true,
+      "OnlyNewlinesChanged": true
+    }
+  ],
+  "FrozenSourceFilesCompared": 47,
+  "UnchangedFiles": 39,
+  "RuntimeSourceChanged": false,
+  "ProjectChange": "Only explicit Ruff first-party package classification"
+}

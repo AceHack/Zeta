@@ -1,0 +1,12 @@
+{
+  "pr_number": 16851,
+  "archive_path": "docs/history/pr-reviews/PR-16851-feat-hygiene-measure-the-triangle-corners-and-the-first-number-says-we-are-movin.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-06T21:14:28.163Z",
+  "schema_version": "v1",
+  "commit_sha": "929d1929e5d506c19c1f440525d9ad260745837c",
+  "title": "feat(hygiene): measure the triangle corners — and the first number says we are moving the wrong way",
+  "state": "MERGED",
+  "merged_at": "2026-09-06T21:13:52Z",
+  "head_ref": "shadow/triangle-composition-meter"
+}

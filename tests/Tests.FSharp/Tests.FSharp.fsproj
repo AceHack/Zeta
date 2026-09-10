@@ -61,6 +61,8 @@
     <Compile Include="Algebra/ProbabilitySemiring.Boundary.Tests.fs" />
     <Compile Include="../../src/Research.FSharp/SimplexBeliefComparison.fs" Link="Research/SimplexBeliefComparison.fs" />
     <Compile Include="SimplexBeliefComparison.Tests.fs" />
+    <Compile Include="../../src/Research.FSharp/FiniteStochasticBridge.fs" Link="Research/FiniteStochasticBridge.fs" />
+    <Compile Include="FiniteStochasticBridge.Tests.fs" />
     <Compile Include="../../src/Research.FSharp/ResearchRandom.fs" Link="Research/ResearchRandom.fs" />
     <Compile Include="../../src/Research.FSharp/Mess3.fs" Link="Research/Mess3.fs" />
     <Compile Include="../../src/Research.FSharp/SmallRnn.fs" Link="Research/SmallRnn.fs" />
@@ -77,6 +79,40 @@
     <Compile Include="../../src/Research.FSharp/LagChangeDetection.fs" Link="Research/LagChangeDetection.fs" />
     <Compile Include="../../src/Research.FSharp/SharedFactorFilter.fs" Link="Research/SharedFactorFilter.fs" />
     <Compile Include="FactoredPredictive.Tests.fs" />
+    <Compile Include="../../src/Research.FSharp/RenderedSignalCarrier.fs" Link="Research/RenderedSignalCarrier.fs" />
+    <Compile Include="../../src/Research.FSharp/RenderedSignalPrediction.fs" Link="Research/RenderedSignalPrediction.fs" />
+    <Compile Include="../../src/Research.FSharp/RenderedSignalDetection.fs" Link="Research/RenderedSignalDetection.fs" />
+    <Compile Include="../../src/Research.FSharp/RenderedSignalExperiment.fs" Link="Research/RenderedSignalExperiment.fs" />
+    <Compile Include="RenderedSignal.Tests.fs" />
+    <Compile Include="../../src/Research.FSharp/RenderedCatchReceipt.fs" Link="Research/RenderedCatchReceipt.fs" />
+    <Compile Include="../../src/Research.FSharp/RenderedCatchCarrier.fs" Link="Research/RenderedCatchCarrier.fs" />
+    <Compile Include="../../src/Research.FSharp/RenderedCatchPolicy.fs" Link="Research/RenderedCatchPolicy.fs" />
+    <Compile Include="../../src/Research.FSharp/RenderedCatchExperiment.fs" Link="Research/RenderedCatchExperiment.fs" />
+    <Compile Include="RenderedCatch.Tests.fs" />
+    <Compile Include="../../src/Research.FSharp/HiddenSwitchReceipt.fs" Link="Research/HiddenSwitchReceipt.fs" />
+    <Compile Include="../../src/Research.FSharp/HiddenSwitchObservation.fs" Link="Research/HiddenSwitchObservation.fs" />
+    <Compile Include="../../src/Research.FSharp/HiddenSwitchCarrier.fs" Link="Research/HiddenSwitchCarrier.fs" />
+    <Compile Include="../../src/Research.FSharp/HiddenSwitchPolicy.fs" Link="Research/HiddenSwitchPolicy.fs" />
+    <Compile Include="../../src/Research.FSharp/HiddenSwitchExperiment.fs" Link="Research/HiddenSwitchExperiment.fs" />
+    <Compile Include="HiddenSwitch.Tests.fs" />
+    <Compile Include="../../src/Research.FSharp/HiddenSwitchCompiledReceipt.fs" Link="Research/HiddenSwitchCompiledReceipt.fs" />
+    <Compile Include="../../src/Research.FSharp/HiddenSwitchCompiledCertificate.fs" Link="Research/HiddenSwitchCompiledCertificate.fs" />
+    <Compile Include="../../src/Research.FSharp/HiddenSwitchCompiledCertificateCheck.fs" Link="Research/HiddenSwitchCompiledCertificateCheck.fs" />
+    <Compile Include="../../src/Research.FSharp/HiddenSwitchCompiledPolicy.fs" Link="Research/HiddenSwitchCompiledPolicy.fs" />
+    <Compile Include="../../src/Research.FSharp/HiddenSwitchCompiledSelector.fs" Link="Research/HiddenSwitchCompiledSelector.fs" />
+    <Compile Include="../../src/Research.FSharp/HiddenSwitchCompiledHand.fs" Link="Research/HiddenSwitchCompiledHand.fs" />
+    <Compile Include="../../src/Research.FSharp/HiddenSwitchCompiledWitness.fs" Link="Research/HiddenSwitchCompiledWitness.fs" />
+    <Compile Include="../../src/Research.FSharp/HiddenSwitchCompiledConformance.fs" Link="Research/HiddenSwitchCompiledConformance.fs" />
+    <Compile Include="../../src/Research.FSharp/HiddenSwitchCompiledInterventions.fs" Link="Research/HiddenSwitchCompiledInterventions.fs" />
+    <Compile Include="../../src/Research.FSharp/HiddenSwitchCompiledRefusals.fs" Link="Research/HiddenSwitchCompiledRefusals.fs" />
+    <Compile Include="../../src/Research.FSharp/HiddenSwitchCompiledSemantic.fs" Link="Research/HiddenSwitchCompiledSemantic.fs" />
+    <Compile Include="HiddenSwitchCompiled.Tests.fs" />
+    <Compile Include="HiddenSwitchCompiledCertificate.Tests.fs" />
+    <Compile Include="HiddenSwitchCompiledCertificateCheck.Tests.fs" />
+    <Compile Include="HiddenSwitchCompiledSemantic.Tests.fs" />
+    <Compile Include="../../src/Research.FSharp.Cli/MetadataProbe/Admission.fs" Link="Research/HiddenSwitchMetadataAdmission.fs" />
+    <Compile Include="../../src/Research.FSharp.Cli/MetadataProbe/NativeImages.fs" Link="Research/HiddenSwitchMetadataNativeImages.fs" />
+    <Compile Include="HiddenSwitchMetadata.Tests.fs" />
     <Compile Include="Algebra/Spine.AsyncProtocol.Properties.fs" />
     <Compile Include="ProbabilitySemiring.CrossVerify.Tests.fs" />
     <Compile Include="YinYang.Tests.fs" />
@@ -169,6 +205,9 @@
     <Compile Include="ZetaFsStore.Tests.fs" />
     <Compile Include="ZetaFsFormat.Tests.fs" />
     <Compile Include="ZetaFsNamespace.Tests.fs" />
+    <Compile Include="ZetaFsCollator.Tests.fs" />
+    <Compile Include="ZetaFsPosixNode.Tests.fs" />
+    <Compile Include="ZetaFsPosixMeta.Tests.fs" />
     <Compile Include="ZetaFsCli.Tests.fs" />
     <Compile Include="ZetaFsPolicy.Tests.fs" />
     <Compile Include="ZetaFsPlacement.Tests.fs" />
@@ -177,6 +216,11 @@
     <Compile Include="ZetaFsPath.Tests.fs" />
     <Compile Include="InMemoryFileSystemPathIdentity.Tests.fs" />
     <Compile Include="ZetaFsFreeze.Tests.fs" />
+    <Compile Include="ZetaFsPosixVfs.Tests.fs" />
+    <Compile Include="ZetaFsFuse.Tests.fs" />
+    <Compile Include="ZetaFsFuseAbi.Tests.fs" />
+    <Compile Include="ZetaFsFuseSession.Tests.fs" />
+    <Compile Include="ZetaFsFuseSessionLookup.Tests.fs" />
     <Compile Include="ZetaFsCrypto.Tests.fs" />
     <Compile Include="ZetaFsReclaim.Tests.fs" />
     <Compile Include="ZetaFsDualFold.Tests.fs" />
@@ -224,7 +268,11 @@
     <Compile Include="Optic.Tests.fs" />
     <Compile Include="Conjugate.Tests.fs" />
     <Compile Include="BitGan.Tests.fs" />
+    <Compile Include="../../src/Research.FSharp/RelationalIdentity.fs" Link="Research/RelationalIdentity.fs" />
+    <Compile Include="../../src/Research.FSharp/RelationalIdentityExperiment.fs" Link="Research/RelationalIdentityExperiment.fs" />
+    <Compile Include="RelationalIdentity.Tests.fs" />
     <Compile Include="AntiSybil.Tests.fs" />
+    <Compile Include="ChshCoverage.Tests.fs" />
     <Compile Include="ReportTriage.Tests.fs" />
     <Compile Include="AntiSybilCaveatA.Property.Tests.fs" />
     <Compile Include="ChshBand.Property.Tests.fs" />
@@ -625,6 +673,7 @@
     <Compile Include="Storage/DeltaLog.Tests.fs" />
     <Compile Include="Storage/DeltaCodec.Tests.fs" />
     <Compile Include="Storage/DiskDeltaLog.Tests.fs" />
+    <Compile Include="Storage/Zd4ProductExistence.Tests.fs" />
     <Compile Include="Storage/DurabilityTier.Tests.fs" />
     <Compile Include="Storage/RecoverableSpine.Tests.fs" />
     <Compile Include="Storage/DurableSaga.Tests.fs" />
@@ -723,6 +772,7 @@
     <Compile Include="Formal/NftCommitDomainSep.Z3.Tests.fs" />
     <Compile Include="Formal/Sketch.Laws.Tests.fs" />
     <Compile Include="Formal/Metric.Bounds.Tests.fs" />
+    <Compile Include="Formal/Tlc.Attempts.fs" />
     <Compile Include="Formal/Tlc.Runner.Tests.fs" />
     <Compile Include="Formal/Alloy.Runner.Tests.fs" />
     <Compile Include="Formal/Sharder.InfoTheoretic.Tests.fs" />
@@ -775,6 +825,8 @@
     <Compile Include="QuerySurface.Equivalence.Tests.fs" />
     <Compile Include="StreamTableDuality.Tests.fs" />
     <Compile Include="ToyBosonFermionParity.Tests.fs" />
+    <Compile Include="E8Render.Tests.fs" />
+    <Compile Include="H3Render.Tests.fs" />
   </ItemGroup>
 
   <ItemGroup>
@@ -792,6 +844,7 @@
     <ProjectReference Include="..\..\src\Core.FSharp.ObserveBridge\Zeta.Core.FSharp.ObserveBridge.fsproj" />
     <ProjectReference Include="..\..\src\Core.FSharp.Yaml\Zeta.Core.FSharp.Yaml.fsproj" />
     <ProjectReference Include="..\..\src\Core.FSharp.Sha256\Zeta.Core.FSharp.Sha256.fsproj" />
+    <ProjectReference Include="..\..\src\Core.FSharp.E8Render\Zeta.Core.FSharp.E8Render.fsproj" />
     <ProjectReference Include="..\..\src\Core.FSharp.AceCanonical\Zeta.Core.FSharp.AceCanonical.fsproj" />
     <ProjectReference Include="..\..\src\Core.FSharp.Mediator\Zeta.Core.FSharp.Mediator.fsproj" />
     <!-- The dogfood verb surface. Referenced so a compiler reads `clis/Verbs.fs` at all — before
@@ -828,5 +881,9 @@
     <!-- TEST-ONLY: the in-memory exporter is the seam that turns "an OTLP exporter is
          wired" into "the counters and spans actually arrive". Not a production dep. -->
     <PackageReference Include="OpenTelemetry.Exporter.InMemory" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="../../src/Research.FSharp.Cli/MetadataProbe/dependencies.json" Link="MetadataProbe.dependencies.json" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../../docs/research/hidden-switch-compiled-validation/2026-09-07/clrmd-mapping-attempt-1/mapping.json.gz" Link="MetadataProbe.mapping.json.gz" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 </Project>

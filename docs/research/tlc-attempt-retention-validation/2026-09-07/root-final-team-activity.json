@@ -1,0 +1,8 @@
+{
+  "RecordedAtUtc": "2026-09-07T11:39:53.826930+00:00",
+  "Scope": "Known team activity during the combined validation gate; not a registered cost window",
+  "RootGateStartedAtUtc": "2026-09-07T11:34:48.992034+00:00",
+  "KnownOverlap": "The retention author reported a pre-existing quick preflight already at C# whitespace lint after root build launch; it subsequently finished all sixteen checks and the author reported quiescence. Exact process overlap duration was not measured.",
+  "OtherTeamLanes": "Policy owner released its final push-hook window before root launch and restricted subsequent activity to GitHub/API monitoring. Independent reviewer performed read-only review and documentation.",
+  "Limits": "No whole-host isolation or causal explanation of prior compiler/runtime failures is inferred. A separately coordinated quiet window is required for registered costs."
+}

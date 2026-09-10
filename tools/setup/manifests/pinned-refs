@@ -1,0 +1,120 @@
+# Mechanism: pinned-refs — the REFRESH registry for pins written at their point of use.
+# Tool: src/Core.TypeScript/ace/refresh-pins.ts   (`ace refresh`)
+#
+# THIS FILE IS A MIRROR, NEVER A SOURCE. Nothing in any build path reads it.
+# Every pin it records is written where it is USED — a container digest is
+# `FROM image:tag@sha256:...` inside the Dockerfile, and `docker build` resolves
+# it with no package manager present. Delete this file, delete all of `ace`, and
+# every pinned dependency in the tree still resolves exactly as it did.
+# `.claude/rules/clone-at-tag-stays-sufficient.md`: `ace` may be the good path
+# and may never be the only one — the discriminator is EXIT, not degree.
+#
+# `bun src/Core.TypeScript/ace/refresh-pins.ts --verify` is the falsifier for
+# that claim: it refuses whenever a row's digest differs from the digest actually
+# written at its point of use. If this file ever quietly became the source of
+# truth, the inline pin would drift and --verify would go red.
+#
+# ── WHY A REGISTRY AT ALL ────────────────────────────────────────────────────
+#
+# A pin nobody can refresh is how a security posture rots: a base image frozen in
+# March keeps every CVE it shipped with, and does so silently. A refresh that does
+# not re-pin is how supply-chain integrity is lost. So the two are ONE mechanism,
+# and the rows below are what makes the refresh possible and the staleness
+# REPORTABLE — `--report` classifies each row fresh / moved / past-horizon /
+# unknown, so "we pinned it and never looked again" is a finding, not a silence.
+#
+# UNKNOWN IS NOT FRESH. A resolver that could not run reports `unknown`, which is
+# printed as its own class and never folded into the fresh count.
+#
+# ── FORMAT ───────────────────────────────────────────────────────────────────
+#
+#   <kind>  <file>  <ref>  <pin>  update=  remeasure=  horizon=  pinned=
+#
+#   kind      container | npm-advisory | nuget | npm-lock | pip   (closed set)
+#   file      the POINT OF USE — the committed file the pin is written into
+#   ref       the mutable upstream name the pin is anchored to
+#   pin       sha256:<64 hex>, or a version for npm-advisory
+#   update    follow-tag (refresh re-resolves) | frozen (refresh refuses)
+#   remeasure MANDATORY, colon-encoded argv. The run that must exit 0 before a new
+#             pin is kept. A row without it is a PARSE ERROR, not a default — a
+#             digest nothing re-measured is an unverified bump wearing a pin's
+#             clothes, and it lands as a one-line diff that reads as housekeeping.
+#   horizon   days after which the row is reported stale even if upstream has not
+#             moved. A POLICY number, not a measurement: 60d for base images is a
+#             judgement about how long an unexamined pin should be allowed to sit,
+#             not a claim about anyone's rebuild cadence.
+#   pinned    YYYY-MM-DD the current pin was measured
+#
+# ── WHAT "CHECKED" MEANS PER KIND — THEY DIFFER, AND THAT IS THE POINT ───────
+#
+#   container   The digest is the registry's manifest digest for the tag.
+#               Re-measure = the Dockerfile still BUILDS on the new base. Weak but
+#               real: it catches a base whose toolchain or layout moved under us.
+#               Resolver: implemented (Registry HTTP API v2, Docker-Content-Digest).
+#
+#   npm-advisory  Not a file pin. The subject is a DISMISSED advisory whose premise
+#               can expire, and the thing being re-checked is "does upstream still
+#               publish no release that admits the patched dependency?" Re-measure
+#               is by hand, because reversing a dismissal is a judgement.
+#               Resolver: implemented (npm registry; latest release's declared range).
+#
+#   nuget       Pinned by `packages.lock.json` contentHash; checked by
+#               `dotnet restore --locked-mode`. NO RESOLVER YET — a row of this kind
+#               reports `unknown`, which is the honest answer.
+#   npm-lock    Pinned by `package-lock.json` integrity; checked by `npm ci`. Same.
+#   pip         Pinned by the PyPI artifact hash; checked by
+#               `pip install --require-hashes`. Same.
+#
+#   downloadThenRun  HAS NO KIND HERE ON PURPOSE. A fetched file is already owned by
+#               `tools/setup/manifests/from-url` (sha256 mandatory per row, the
+#               realizer refuses a row without one) and refreshed by
+#               `tools/setup/repin-rolling.ts`. Building a second mechanism for the
+#               same subject would be the duplication this registry exists to avoid.
+#
+# ── PROVENANCE OF THE DIGESTS BELOW ──────────────────────────────────────────
+#
+# MEASURED 2026-09-09 by `refresh-pins.ts --resolve` against each registry's
+# HTTP API v2, and CROSS-CHECKED against a second, independent computation: the
+# `PinnedDependenciesID` remediation tips OpenSSF Scorecard published for alerts
+# #888 #889 #283 #284 #238 #181 #179 #176. All six digests agreed byte for byte.
+# Two sources that should agree, agreeing — the same discipline
+# `refresh-ollama-pin.ts` applies to the Ollama pin, and the reason no digest here
+# was taken from a single reading.
+#
+# 081M23NT5VX087G0R000KAFE45
+
+container  full-ai-cluster/orleans-silo/Dockerfile  mcr.microsoft.com/dotnet/sdk:10.0-noble  sha256:4ea6fe75dd36706bb6d8c3c293d4c4315840f5d76ea28ac97def77e3ec487fa5  update=follow-tag  remeasure=docker:build:--quiet:-f:full-ai-cluster/orleans-silo/Dockerfile:full-ai-cluster/orleans-silo  horizon=60  pinned=2026-09-09
+container  full-ai-cluster/orleans-silo/Dockerfile  mcr.microsoft.com/dotnet/runtime:10.0-noble  sha256:399e54a8a7e35c3aba78398b2840455d45185cba20b831b8a2b46f849f4f5001  update=follow-tag  remeasure=docker:build:--quiet:-f:full-ai-cluster/orleans-silo/Dockerfile:full-ai-cluster/orleans-silo  horizon=60  pinned=2026-09-09
+container  genesis/_src/auth-backend/Dockerfile  mcr.microsoft.com/dotnet/sdk:10.0-noble  sha256:4ea6fe75dd36706bb6d8c3c293d4c4315840f5d76ea28ac97def77e3ec487fa5  update=follow-tag  remeasure=docker:build:--quiet:-f:genesis/_src/auth-backend/Dockerfile:genesis/_src/auth-backend  horizon=60  pinned=2026-09-09
+container  genesis/_src/auth-backend/Dockerfile  mcr.microsoft.com/dotnet/aspnet:10.0-noble  sha256:1fe86375600b62e6566b465da9553eef0621f13c67f40fe764cd8dbb1dee1497  update=follow-tag  remeasure=docker:build:--quiet:-f:genesis/_src/auth-backend/Dockerfile:genesis/_src/auth-backend  horizon=60  pinned=2026-09-09
+container  full-ai-cluster/portal/Dockerfile  oven/bun:1.3.14-alpine  sha256:5acc90a93e91ff07bf72aa90a7c9f0fa189765aec90b47bdbf2152d2196383c0  update=follow-tag  remeasure=docker:build:--quiet:-f:full-ai-cluster/portal/Dockerfile:full-ai-cluster/portal  horizon=60  pinned=2026-09-09
+container  full-ai-cluster/platform-controller/Dockerfile  oven/bun:1.3.14-alpine  sha256:5acc90a93e91ff07bf72aa90a7c9f0fa189765aec90b47bdbf2152d2196383c0  update=follow-tag  remeasure=docker:build:--quiet:-f:full-ai-cluster/platform-controller/Dockerfile:full-ai-cluster/platform-controller  horizon=60  pinned=2026-09-09
+#
+# Windows only. `docker build` for a servercore base cannot run on a Linux host,
+# so a refresh of this row REFUSES there rather than writing a digest nothing
+# judged. That is the mechanism working: fail-closed on the machine that cannot
+# do the re-measure, not a quiet bump on the machine that can reach the registry.
+container  src/Core.TypeScript/ci/dockerfiles/windows-install-ps1-test/Dockerfile  mcr.microsoft.com/windows/servercore:ltsc2025  sha256:e18a49cbc074dfaa8e106296d51cebd62bbf6effb999f134a5c48eed1c2334e1  update=follow-tag  remeasure=docker:build:--quiet:-f:src/Core.TypeScript/ci/dockerfiles/windows-install-ps1-test/Dockerfile:src/Core.TypeScript/ci/dockerfiles/windows-install-ps1-test  horizon=60  pinned=2026-09-09
+#
+# ── THE DISMISSAL THAT MUST NOT BE ALLOWED TO GO QUIET ───────────────────────
+#
+# Dependabot alert #15 (GHSA-x2fc-mxcx-w4mf, high, `mathjs` prototype pollution
+# via deepExtend on configuration update) rides on `quantum-circuit`, which the
+# maintainer has ruled STAYS: it is a declared `role=second-oracle` cross-verify
+# oracle, and that standing outweighs an alert count.
+#
+# MEASURED 2026-09-09, npm registry: quantum-circuit has 240 published releases;
+# `latest` is 0.9.250; the declared `mathjs` range across ALL 240 is one of
+# ^3.8.0 / ^3.20.2 / ^6.0.3 / ^6.6.5, so the highest major any release has EVER
+# admitted is 6. The advisory's first patched version is 7.5.1. There is
+# therefore no version fix — not today, and not in any release ever published.
+#
+# The dismissal's premise is enforced offline by
+# `src/Core.TypeScript/hygiene/lint-mathjs-dismissal-premise.ts`. What that lint
+# CANNOT see is upstream changing its mind, so the expiry is this row: when
+# quantum-circuit's latest release declares a mathjs range admitting 7.x, the
+# resolver returns FIX-AVAILABLE, --report says `moved`, and the dismissal gets
+# revisited rather than aging into a permanent silence.
+#
+# ref grammar: npm:<package>!<dependency>@<first-patched-major>
+npm-advisory  package.json  npm:quantum-circuit!mathjs@7  0.9.250  update=follow-tag  remeasure=manual:revisit-the-dismissal-a-reversal-is-a-judgement  horizon=90  pinned=2026-09-09

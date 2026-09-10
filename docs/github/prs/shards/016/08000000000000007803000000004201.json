@@ -1,0 +1,12 @@
+{
+  "pr_number": 16897,
+  "archive_path": "docs/history/pr-reviews/PR-16897-feat-081m1wmbase087g0r00227edr6-resolveat-prior-phase-still-sees-live-after-unli.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-07T00:51:53.207Z",
+  "schema_version": "v1",
+  "commit_sha": "0f955cfbd8a3f17dcbc449fd747948fe4ed6566c",
+  "title": "feat(081M1WMBASE087G0R00227EDR6): resolveAt prior phase still sees Live after unlink",
+  "state": "MERGED",
+  "merged_at": "2026-09-07T00:51:14Z",
+  "head_ref": "feat/zetafs-resolve-at-prior-phase"
+}

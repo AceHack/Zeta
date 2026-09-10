@@ -1,0 +1,5 @@
+{
+  "Status": "coordinator tool-observed, not raw captured stderr",
+  "OriginalAttempt": "Archive wrote deterministic gzip members, then FileNotFoundError for docs/MANIFESTO.md before manifest and README creation.",
+  "Correction": "Located actual docs/governance/MANIFESTO.md with rg --files. Verified previously written gzip bytes unchanged and completed manifest. No validation process rerun."
+}

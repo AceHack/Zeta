@@ -1,0 +1,49 @@
+from pathlib import Path
+import collections
+import datetime
+import gzip
+import hashlib
+import json
+import re
+import xml.etree.ElementTree as ET
+
+root = Path.cwd()
+out = root / "docs/research/hidden-switch-validation/2026-09-07"
+completion = json.loads((out / "root-main-gate-attempt-2-completion.json").read_text())
+if completion["TestCommandExitCode"] != 0:
+    raise RuntimeError("Recovery did not complete successfully; preserve failure separately")
+projects = []
+all_rows = []
+records = []
+for path in sorted((root / "tests").glob("*/TestResults/hidden-switch-main-2*.trx")):
+    raw = path.read_bytes()
+    tree = ET.fromstring(raw)
+    rows = [{"Name": node.attrib["testName"], "Outcome": node.attrib["outcome"], "Duration": node.attrib.get("duration")} for node in tree.iter() if node.tag.endswith("UnitTestResult")]
+    all_rows += rows
+    outcomes = dict(collections.Counter(row["Outcome"] for row in rows))
+    project = path.parents[1].name
+    projects.append({"Project": project, "Total": len(rows), "Outcomes": outcomes, "SummaryOutcome": next(node.attrib.get("outcome") for node in tree.iter() if node.tag.endswith("ResultSummary"))})
+    zipped = gzip.compress(raw, mtime=0)
+    target = out / ("root-main-attempt-2-" + project + ".trx.gz")
+    with target.open("xb") as handle:
+        handle.write(zipped)
+    records.append({"File": target.name, "Bytes": len(zipped), "Sha256": hashlib.sha256(zipped).hexdigest(), "OriginalFile": str(path.relative_to(root)), "OriginalBytes": len(raw), "OriginalSha256": hashlib.sha256(raw).hexdigest()})
+models = []
+focused = []
+for row in all_rows:
+    if "TlcRunnerTests." not in row["Name"]:
+        continue
+    match = re.search(r'TLC checks the pinned model\(id: "([^"]+)"\)', row["Name"])
+    if match:
+        models.append({"Id": match[1], "Outcome": row["Outcome"], "Duration": row["Duration"]})
+    else:
+        focused.append(row)
+hidden = [row for row in all_rows if "HiddenSwitchTests." in row["Name"]]
+expected = sorted(row["id"] for row in json.loads((root / "registry/tlc-models.json").read_text())["models"] if row["tier"] == "gate")
+actual = sorted(row["Id"] for row in models)
+result = {"SourceCommit": completion["SourceCommit"], "CollectedAtUtc": datetime.datetime.now(datetime.timezone.utc).isoformat(), "Projects": projects, "TrxArchives": records, "GateModels": models, "ExpectedGateModelIds": expected, "ExactGateRosterMatch": actual == expected, "FocusedTlcCases": focused, "HiddenSwitchCases": hidden, "Total": len(all_rows), "Outcomes": dict(collections.Counter(row["Outcome"] for row in all_rows)), "Completion": completion, "RemainingTlcDirectories": sorted(p.name for p in (root / "TestResults/tlc-diagnostics").iterdir()) if (root / "TestResults/tlc-diagnostics").exists() else [], "Scope": "One unchanged-source full-solution recovery after a retained test-host crash. Does not establish the crash cause, replace the original failure, or rerun a registered experiment."}
+with (out / "root-main-gate-attempt-2-result.json").open("x") as handle:
+    json.dump(result, handle, indent=2)
+print(json.dumps({"Projects": projects, "Outcomes": result["Outcomes"], "GateModels": len(models), "ExactGateRosterMatch": actual == expected, "FocusedTlcCases": len(focused), "HiddenSwitchCases": len(hidden), "RemainingTlcDirectories": result["RemainingTlcDirectories"]}, indent=2))
+if len(projects) != 7 or actual != expected or len(focused) != 18 or len(hidden) != 16 or any(row["Outcome"] != "Passed" for row in models + focused + hidden) or any(row["Outcome"] not in ("Passed", "NotExecuted") for row in all_rows):
+    raise RuntimeError("Unexpected validation coverage or outcome; inspect retained result")

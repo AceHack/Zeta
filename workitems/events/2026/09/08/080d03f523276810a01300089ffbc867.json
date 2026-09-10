@@ -1,0 +1,14 @@
+{
+  "id": "080d03f523276810a01300089ffbc867",
+  "at": "2026-09-08T01:31:38.093Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1ZA8S7C087G0R002P9NX40",
+    "type": "task",
+    "title": "ZD4 product-existence: host FS group-commit vs zetafs both legs run",
+    "slug": "zd4-product-existence-host-fs-group-commit-vs-zetafs-both-le",
+    "priority": "P1",
+    "filename": "081M1ZA8S7C087G0R002P9NX40-zd4-product-existence-host-fs-group-commit-vs-zetafs-both-le.md"
+  }
+}

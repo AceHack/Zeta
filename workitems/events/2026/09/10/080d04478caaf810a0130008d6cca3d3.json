@@ -1,0 +1,14 @@
+{
+  "id": "080d04478caaf810a0130008d6cca3d3",
+  "at": "2026-09-10T01:32:08.927Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M24F35AY087G0R001DQDA0X",
+    "type": "bug",
+    "title": "the byte-lock harness builds nine shell command strings; execFileSync removes the shell and the misdiagnosis it caused",
+    "slug": "the-byte-lock-harness-builds-nine-shell-command-strings-exec",
+    "priority": "P2",
+    "filename": "081M24F35AY087G0R001DQDA0X-the-byte-lock-harness-builds-nine-shell-command-strings-exec.md"
+  }
+}

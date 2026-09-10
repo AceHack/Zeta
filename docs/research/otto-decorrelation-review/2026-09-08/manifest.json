@@ -1,0 +1,96 @@
+{
+  "AuditSource": {
+    "Bytes": 5924,
+    "Sha256": "d3cfbace3b3c1ca61807b79e69ea5160ecdcd97ae516ad95e76cad6cf4191ee1"
+  },
+  "Records": [
+    {
+      "File": "pr17026.stdout.gz",
+      "Original": {
+        "Bytes": 4716,
+        "Sha256": "f1b2ba31e9e134c5bf99d4665980ebbe60afe01e0a353d5c42e95b079f7e1d3e"
+      },
+      "Stored": {
+        "Bytes": 2357,
+        "Sha256": "9294e72837ec0d0469c4dad9957d802248fe935ee5ca7ba6f34782ffb6b62ee2"
+      }
+    },
+    {
+      "File": "pr17026.stderr.gz",
+      "Original": {
+        "Bytes": 0,
+        "Sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "Stored": {
+        "Bytes": 20,
+        "Sha256": "9ceffb7310338057cfe71a4ae1e2c98d2c485d81cdef906532a801f457a38d64"
+      }
+    },
+    {
+      "File": "pr17026.invocation.json.gz",
+      "Original": {
+        "Bytes": 214,
+        "Sha256": "34ab901375e2ecc45b5e2b0a957b5f2107be5f8e53b8b31ed128a87bbcd69d9a"
+      },
+      "Stored": {
+        "Bytes": 173,
+        "Sha256": "e5f6b7508d73fbca706f00cc11794b4a23c7f330e45bf69a72276fb44d9266a8"
+      }
+    },
+    {
+      "File": "remote.stdout.gz",
+      "Original": {
+        "Bytes": 162,
+        "Sha256": "d1279a90e6a2e5168cb4abb8c2e807ceaf7fff3a7b159fb0bb2e8ee7a7e46bc1"
+      },
+      "Stored": {
+        "Bytes": 142,
+        "Sha256": "4fcbbe98c0ab40f92e9cbc49547cd1f6a905bd96827946bc5f72b6bf8b6984b0"
+      }
+    },
+    {
+      "File": "remote.stderr.gz",
+      "Original": {
+        "Bytes": 0,
+        "Sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "Stored": {
+        "Bytes": 20,
+        "Sha256": "9ceffb7310338057cfe71a4ae1e2c98d2c485d81cdef906532a801f457a38d64"
+      }
+    },
+    {
+      "File": "remote.invocation.json.gz",
+      "Original": {
+        "Bytes": 187,
+        "Sha256": "e4fd41b41dc7ef6f0c686b97aefb3568d1cbf6d00b664115e21978138d93bad3"
+      },
+      "Stored": {
+        "Bytes": 147,
+        "Sha256": "810ebe325af4a0440be18357ab0e1aaaa4d1ed85c9d1bbe1d03cb0907ffa41d8"
+      }
+    },
+    {
+      "File": "ferry-document.gz",
+      "Original": {
+        "Bytes": 28048,
+        "Sha256": "ba82c5992137638877f06ab7aa51b859c1cf70cf740a6a1be4e42394100e8680"
+      },
+      "Stored": {
+        "Bytes": 11482,
+        "Sha256": "0ba914863fc27b1c4b6c2413a9aab7ef9b5b560f6d0e978cfa3c3e9196810e73"
+      }
+    },
+    {
+      "File": "result.json.gz",
+      "Original": {
+        "Bytes": 20307,
+        "Sha256": "3631ec76400f3b3b57a2130fd6cb3718b58723c4be2de7a330b7673b26c7170a"
+      },
+      "Stored": {
+        "Bytes": 3264,
+        "Sha256": "25c343ba762e80eac92e50752f0cf711133132b4245e173c1b906a5cae01a191"
+      }
+    }
+  ]
+}

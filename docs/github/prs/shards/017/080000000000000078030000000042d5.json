@@ -1,0 +1,12 @@
+{
+  "pr_number": 17109,
+  "archive_path": "docs/history/pr-reviews/PR-17109-test-081m22epsw4087g0r001darbf8-putmany-crash-on-freeze-b-keeps-freeze-a.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-09T07:19:14.782Z",
+  "schema_version": "v1",
+  "commit_sha": "f750c1d7d3d98a04d83058ada1840dfeba861ca8",
+  "title": "test(081M22EPSW4087G0R001DARBF8): PutMany crash on freeze B keeps freeze A",
+  "state": "MERGED",
+  "merged_at": "2026-09-09T07:18:33Z",
+  "head_ref": "feat/zetafs-pr12-putmany-crash-second-freeze"
+}

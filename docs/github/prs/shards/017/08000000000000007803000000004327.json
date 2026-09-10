@@ -1,0 +1,12 @@
+{
+  "pr_number": 17191,
+  "archive_path": "docs/history/pr-reviews/PR-17191-docs-081m24bb3td087g0r001pjtw9a-scenarios-3-and-4-boot-legacy-csm-the-serial-tai.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-10T00:49:52.951Z",
+  "schema_version": "v1",
+  "commit_sha": "605111e48c5b15bb89acc076f2d0ead172073883",
+  "title": "docs(081M24BB3TD087G0R001PJTW9A): scenarios 3 and 4 boot legacy CSM — the serial tail said so",
+  "state": "MERGED",
+  "merged_at": "2026-09-10T00:48:53Z",
+  "head_ref": "agent/qemu-scenarios-boot-legacy-081M243GZ19087G0R001F914Q4"
+}

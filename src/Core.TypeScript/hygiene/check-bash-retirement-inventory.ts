@@ -13,7 +13,7 @@
 //   bun src/Core.TypeScript/hygiene/check-bash-retirement-inventory.ts --json
 
 import { spawnSync } from "node:child_process";
-import { closeSync, existsSync, openSync, readSync } from "node:fs";
+import { closeSync, existsSync, openSync, readFileSync, readSync } from "node:fs";
 import { basename, join } from "node:path";
 
 type ExitCode = 0 | 1 | 2;
@@ -55,12 +55,21 @@ export interface RetainedShellCategorySummary {
   readonly files: readonly string[];
 }
 
+/** One `curl … | sh`-shaped site: a remote fetch whose output is executed by an interpreter. */
+export interface RemotePipeSite {
+  readonly file: string;
+  /** 1-based physical line where the logical line STARTS (a `| \` continuation keeps this honest). */
+  readonly line: number;
+  readonly snippet: string;
+}
+
 export interface InventoryReport {
   readonly retained: readonly string[];
   readonly expectedRetained: readonly string[];
   readonly retainedCategories: readonly RetainedShellCategorySummary[];
   readonly allowlistIntegrity: AllowlistIntegrity;
   readonly drift: InventoryDrift;
+  readonly remotePipeSites: readonly RemotePipeSite[];
 }
 
 const SPAWN_MAX_BUFFER = 64 * 1024 * 1024;
@@ -406,6 +415,237 @@ function readFirstLine(path: string): string {
   }
 }
 
+// ─────────────────────────────────────────────────────────────────────────────
+// REMOTE FETCH PIPED INTO AN INTERPRETER  (081M24HZCYN087G0R002MT55TV)
+//
+// The inventory above governs WHICH shell files exist. This governs the one thing they must
+// never CONTAIN, and it lives here rather than in a new entrypoint on purpose: it reuses this
+// file's scope definition (tracked, non-archived, shell-family) instead of building a second
+// inventory that could drift from it, and it runs inside the gate job this file already has.
+//
+// WHAT IT REFUSES, and why that shape and not "no network":
+//
+//     curl -fsSL https://example.com/install.sh | sh
+//
+// executes the bytes as its FIRST act. There is no committed digest, no version, and nothing
+// in the repo that could notice the remote script changed — so no check performed afterwards
+// would be a check at all. §13 noninterference: influence through an undeclared, unmetered
+// channel. Fetching is fine; fetching-then-executing-unverified is not.
+//
+// THE REPLACEMENT IS NAMED IN THE REFUSAL, because a linter that only says "no" gets bypassed:
+//   * a binary or installer  -> a pin file + src/Core.TypeScript/ace/install-pinned-artifact.ts
+//                               (.github/ollama-pin.json, tools/setup/rustup-pin.json)
+//   * a plain file           -> a row in tools/setup/manifests/from-url, sha256= mandatory
+//
+// WHY A LEXER AND NOT A GREP. Measured on the tree the day this was written: a naive line grep
+// finds SEVEN sites, and SIX of them are prose — three comments in workflows *describing* the
+// installer that was removed, an `echo "…curl … | bash"` in a human-facing error message, and
+// two comments in linux.sh explaining why `curl mise.run | sh` is not used. A check that
+// cannot tell a mention from a call would either be permanently red or be deleted. So comments
+// and quoted strings are masked before matching, and only a command position after a `|`
+// counts. The seventh was the real one:
+//     tools/setup/common/install-rust-wasm32.sh:32
+// which a one-line grep also misses on its own, because the `|` is followed by a backslash
+// continuation and the interpreter is on the NEXT physical line. Both halves are
+// regression-tested.
+//
+// KNOWN LIMITS, stated because an unstated blind spot reads as coverage:
+//   * `eval`, a variable command name (`"$DL" | sh`), or a fetch inside a called script are
+//     invisible here — the same process boundary measure-shell-key-exposure.ts stops at.
+//   * `sh -c "$(curl …)"` is command substitution rather than a pipe and is NOT matched today.
+//   * It reads committed TEXT, never a running machine.
+
+const FETCH_COMMANDS: ReadonlySet<string> = new Set(["curl", "wget", "fetch", "invoke-webrequest", "iwr"]);
+const PIPED_INTERPRETERS: ReadonlySet<string> = new Set([
+  "sh",
+  "bash",
+  "zsh",
+  "dash",
+  "ksh",
+  "python",
+  "python3",
+  "perl",
+  "ruby",
+  "node",
+  "bun",
+  "iex",
+]);
+/**
+ * Words that may sit in front of the real command in a pipeline segment.
+ *
+ * A LEXER VOCABULARY, not an argv. Nothing here is spawned -- these are the tokens skipped
+ * while looking for the command word in text read off disk, so `curl … | sudo bash` is
+ * recognised as piping into bash rather than into sudo.
+ */
+// zeta-elevator-not-argv: parser vocabulary; these words are compared against file text, never spawned.
+const COMMAND_PREFIXES: ReadonlySet<string> = new Set(["sudo", "env", "command", "exec", "nohup", "time"]);
+
+/**
+ * Blank out comments and quoted-string CONTENT, preserving length and every newline so that
+ * line numbers computed afterwards are the file's real ones.
+ *
+ * `#` opens a comment only at a line start or after whitespace — which is both the shell rule
+ * and the YAML rule, and is what keeps `$#` and `https://host/x#frag` from truncating a line.
+ */
+export function maskCommentsAndStrings(text: string): string {
+  const out = text.split("");
+  let quote: '"' | "'" | undefined;
+  let inComment = false;
+  for (let i = 0; i < text.length; i++) {
+    const ch = text[i] ?? "";
+    if (ch === "\n") {
+      inComment = false;
+      // An unterminated quote must not swallow the rest of the file: a YAML block scalar is
+      // full of apostrophes in prose, and one of them would otherwise mask every line after it.
+      quote = undefined;
+      continue;
+    }
+    if (inComment) {
+      out[i] = " ";
+      continue;
+    }
+    if (quote !== undefined) {
+      if (ch === "\\" && quote === '"') {
+        out[i] = " ";
+        const next = text[i + 1];
+        if (next !== undefined && next !== "\n") out[++i] = " ";
+        continue;
+      }
+      out[i] = " ";
+      if (ch === quote) quote = undefined;
+      continue;
+    }
+    if (ch === '"' || ch === "'") {
+      quote = ch;
+      out[i] = " ";
+      continue;
+    }
+    if (ch === "#") {
+      const prev = i === 0 ? "\n" : (text[i - 1] ?? "");
+      if (prev === "\n" || prev === " " || prev === "\t" || prev === "\r") {
+        inComment = true;
+        out[i] = " ";
+      }
+      continue;
+    }
+  }
+  return out.join("");
+}
+
+interface LogicalLine {
+  readonly startLine: number;
+  readonly text: string;
+}
+
+/**
+ * Join backslash-continuations into one logical line, remembering the physical line it started
+ * on. This is the half a one-line grep cannot have: the site this check was written for put
+ * the pipe on line 32 and the `sh` on line 33.
+ */
+export function logicalLines(masked: string): readonly LogicalLine[] {
+  const physical = masked.split("\n");
+  const joined: LogicalLine[] = [];
+  let buffer = "";
+  let start = 1;
+  for (let i = 0; i < physical.length; i++) {
+    const raw = physical[i] ?? "";
+    if (buffer === "") start = i + 1;
+    const continues = raw.endsWith("\\");
+    buffer += continues ? `${raw.slice(0, -1)} ` : raw;
+    if (!continues) {
+      joined.push({ startLine: start, text: buffer });
+      buffer = "";
+    }
+  }
+  if (buffer !== "") joined.push({ startLine: start, text: buffer });
+  return joined;
+}
+
+/** The first real command word of a pipeline segment, lowercased; `sudo`/`env`/`VAR=` skipped. */
+function leadingCommand(segment: string): string {
+  for (const raw of segment.trim().split(/\s+/)) {
+    // Surrounding punctuation is stripped so that recognition does not silently depend on the
+    // masking pass having run. Without this, an unmasked `… | bash"` reads as the command
+    // `bash"` and the check would report clean for the wrong reason -- a mutation of the
+    // masker would then leave every prose test green, which is a falsifier that cannot fail.
+    const word = raw.replace(/^[`'"(,;]+/, "").replace(/[`'"),;]+$/, "");
+    if (word.length === 0) continue;
+    if (/^[A-Za-z_][A-Za-z0-9_]*=/.test(word)) continue;
+    const base = basename(word).toLowerCase();
+    if (COMMAND_PREFIXES.has(base)) continue;
+    return base;
+  }
+  return "";
+}
+
+/**
+ * Sites where a remote fetch's output is piped into an interpreter.
+ *
+ * Pure: same text, same answer, no filesystem and no clock — which is what makes the fixture
+ * carrying the exact pre-fix `install-rust-wasm32.sh` line a real regression test rather than
+ * a snapshot of whatever the tree happens to contain.
+ */
+export function findRemotePipeToInterpreter(text: string): readonly { line: number; snippet: string }[] {
+  const found: { line: number; snippet: string }[] = [];
+  for (const { startLine, text: line } of logicalLines(maskCommentsAndStrings(text))) {
+    if (!line.includes("|")) continue;
+    // `||` is a control operator, never a pipe. Neutralised before splitting so that
+    // `curl … || echo x` cannot be read as piping into `echo`.
+    const segments = line.replace(/\|\|/g, "   ").split("|");
+    const head = segments[0] ?? "";
+    const fetches = head
+      .trim()
+      .split(/\s+/)
+      .some((word) => FETCH_COMMANDS.has(basename(word).toLowerCase()));
+    if (!fetches) continue;
+    // A remote name must be present. `curl` reading a local file and piping it is not the
+    // shape being refused, and requiring the scheme keeps that out of the count.
+    if (!/https?:\/\//i.test(head)) continue;
+    for (const segment of segments.slice(1)) {
+      if (PIPED_INTERPRETERS.has(leadingCommand(segment))) {
+        found.push({ line: startLine, snippet: line.replace(/\s+/g, " ").trim() });
+        break;
+      }
+    }
+  }
+  return found;
+}
+
+/** Files whose CONTENT is scanned: the retained shell surface, plus every workflow. */
+export function remotePipeScanFiles(repoRoot: string): readonly string[] {
+  const shell = trackedNonLeanShellFilesFromGit(repoRoot);
+  const workflows = trackedGitFiles(repoRoot)
+    .map(({ path }) => path)
+    // Workflow `run:` blocks are shell too, and they are where the last two instances of this
+    // shape actually lived (#17200). Excluding them would have made this check green on a tree
+    // that still carried the defect twice.
+    .filter((path) => path.startsWith(".github/workflows/") && (path.endsWith(".yml") || path.endsWith(".yaml")))
+    .filter((path) => !isInactiveShellInventoryPath(path));
+  // ORDINAL, not localeCompare: this is a machine-read path list, and
+  // `.claude/rules/culture-invariant-by-default.md` makes ordinal the default for keys. The
+  // existing localeCompare sorts in this file predate that and are baselined; a new one would
+  // add debt to a ratchet that exists to shrink.
+  return [...new Set([...shell, ...workflows])].sort((a, b) => (a < b ? -1 : a > b ? 1 : 0));
+}
+
+export function scanRemotePipeSites(repoRoot: string = repoRootFromGit()): readonly RemotePipeSite[] {
+  const sites: RemotePipeSite[] = [];
+  for (const file of remotePipeScanFiles(repoRoot)) {
+    let text: string;
+    try {
+      text = readFileSync(join(repoRoot, file), "utf8");
+    } catch {
+      // Tracked but unreadable (a broken symlink, a sparse checkout). Skipped rather than
+      // asserted on: this check's subject is content that exists, not the checkout's shape.
+      continue;
+    }
+    for (const hit of findRemotePipeToInterpreter(text)) {
+      sites.push({ file, line: hit.line, snippet: hit.snippet });
+    }
+  }
+  return sites;
+}
+
 function inspectAllowlistIntegrity(expectedRetained: readonly string[]): AllowlistIntegrity {
   const counts = new Map<string, number>();
   const expectedSet = new Set(expectedRetained);
@@ -469,9 +709,13 @@ function buildRetainedCategorySummary(expectedRetained: readonly string[]): read
 export function buildInventoryReport(
   retained: readonly string[],
   expectedRetained: readonly string[] = EXPECTED_RETAINED_SHELL,
+  remotePipeSites: readonly RemotePipeSite[] = [],
 ): InventoryReport {
   const allowlistIntegrity = inspectAllowlistIntegrity(expectedRetained);
   const retainedCategories = buildRetainedCategorySummary(expectedRetained);
+  // Carried through the allowlist-integrity early return as well: a duplicate row in the
+  // allowlist must not hide a live `curl | sh`, or the loudest failure would mask the worst one.
+  const sites = [...remotePipeSites];
   if (hasAllowlistIntegrityDrift(allowlistIntegrity)) {
     return {
       retained: [...retained].sort((a, b) => a.localeCompare(b)),
@@ -482,6 +726,7 @@ export function buildInventoryReport(
         unexpected: [],
         missingRetained: [],
       },
+      remotePipeSites: sites,
     };
   }
 
@@ -496,6 +741,7 @@ export function buildInventoryReport(
       unexpected: retained.filter((file) => !expectedSet.has(file)).sort((a, b) => a.localeCompare(b)),
       missingRetained: expectedRetained.filter((file) => !retainedSet.has(file)).sort((a, b) => a.localeCompare(b)),
     },
+    remotePipeSites: sites,
   };
 }
 
@@ -503,7 +749,8 @@ export function hasDrift(report: InventoryReport): boolean {
   return (
     hasAllowlistIntegrityDrift(report.allowlistIntegrity) ||
     report.drift.unexpected.length > 0 ||
-    report.drift.missingRetained.length > 0
+    report.drift.missingRetained.length > 0 ||
+    report.remotePipeSites.length > 0
   );
 }
 
@@ -520,6 +767,7 @@ export function renderReport(report: InventoryReport): string {
   lines.push(`allowlist_stale_category_entries: ${String(report.allowlistIntegrity.staleCategoryEntries.length)}`);
   lines.push(`unexpected: ${String(report.drift.unexpected.length)}`);
   lines.push(`missing_retained: ${String(report.drift.missingRetained.length)}`);
+  lines.push(`remote_pipe_to_interpreter: ${String(report.remotePipeSites.length)}`);
   lines.push("");
   lines.push("## Retained shell categories");
   lines.push("");
@@ -566,6 +814,24 @@ export function renderReport(report: InventoryReport): string {
     }
     return `${lines.join("\n")}\n`;
   }
+  if (report.remotePipeSites.length > 0) {
+    lines.push("## Remote fetch piped into an interpreter");
+    lines.push("");
+    lines.push("A remote script handed straight to a shell executes BEFORE anything can check it, so no");
+    lines.push("check performed afterwards is a check at all (manifesto §13, noninterference). Use the");
+    lines.push("mechanism that already exists instead of adding a second one:");
+    lines.push("");
+    lines.push(
+      "  binary / installer -> a pin file + `bun src/Core.TypeScript/ace/install-pinned-artifact.ts --pin <pin.json>`",
+    );
+    lines.push("                        models: .github/ollama-pin.json, tools/setup/rustup-pin.json");
+    lines.push("  plain file         -> a row in tools/setup/manifests/from-url (sha256= is mandatory)");
+    lines.push("");
+    for (const site of report.remotePipeSites) {
+      lines.push(`- ${site.file}:${String(site.line)}: ${site.snippet}`);
+    }
+    lines.push("");
+  }
   if (report.drift.unexpected.length > 0) {
     lines.push("## Unexpected non-Lean shell files");
     lines.push("");
@@ -588,7 +854,8 @@ function usage(): string {
     "  bun src/Core.TypeScript/hygiene/check-bash-retirement-inventory.ts --enforce",
     "  bun src/Core.TypeScript/hygiene/check-bash-retirement-inventory.ts --json",
     "",
-    `Checks that non-Lean tracked shell-family files match ${RETAINED_SHELL_SCOPE}.`,
+    `Checks that non-Lean tracked shell-family files match ${RETAINED_SHELL_SCOPE},`,
+    "and that no retained shell file or workflow pipes a remote fetch into an interpreter.",
   ].join("\n");
 }
 
@@ -605,7 +872,12 @@ export function main(argv: readonly string[] = process.argv.slice(2)): ExitCode 
 
   let report: InventoryReport;
   try {
-    report = buildInventoryReport(trackedNonLeanShellFilesFromGit());
+    const repoRoot = repoRootFromGit();
+    report = buildInventoryReport(
+      trackedNonLeanShellFilesFromGit(repoRoot),
+      EXPECTED_RETAINED_SHELL,
+      scanRemotePipeSites(repoRoot),
+    );
   } catch (err) {
     process.stderr.write(`ERROR: ${(err as Error).message}\n`);
     return 2;

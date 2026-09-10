@@ -1,0 +1,48 @@
+from pathlib import Path
+import subprocess,datetime,json,hashlib,sys
+root=Path.cwd();out=root/'docs/research/hidden-switch-results/2026-09-07'
+out.mkdir(parents=True,exist_ok=True)
+def now(): return datetime.datetime.now(datetime.timezone.utc).isoformat()
+def git(*args): return subprocess.check_output(['git',*args],text=True).strip()
+source=git('rev-parse','HEAD')
+tag='archive/experiments/081M1XK02XM087G0R00043EW05-implementation'
+assert source==git('rev-parse',tag+'^{commit}'),'measurement HEAD must equal implementation archive'
+assert git('cat-file','-t',tag)=='tag'
+remote=dict(line.split()[::-1] for line in subprocess.check_output(['git','ls-remote','origin','refs/tags/'+tag,'refs/tags/'+tag+'^{}'],text=True).splitlines())
+assert remote['refs/tags/'+tag]==git('rev-parse',tag)
+assert remote['refs/tags/'+tag+'^{}']==source
+manifest=json.loads((root/'docs/research/hidden-switch-validation/2026-09-07/implementation-source-manifest.json').read_text())
+for item in manifest['SourceHashes']:
+ p=root/item['File']; expected=item['Sha256']
+ assert hashlib.sha256(p.read_bytes()).hexdigest().upper()==expected,item['File']
+ assert hashlib.sha256(subprocess.check_output(['git','show',source+':'+item['File']])).hexdigest().upper()==expected
+binary_paths=['src/Core/bin/Release/net10.0/Zeta.Core.dll','src/Core.Abstractions/bin/Release/net10.0/Zeta.Core.Abstractions.dll']
+binaries={p:hashlib.sha256((root/p).read_bytes()).hexdigest() for p in binary_paths}
+quiet='This Codex team held builds, tests, lints, training and push hooks idle during costs; remote CI monitoring and light documentation were allowed. No exclusive host control is claimed.'
+activity='The macOS user session, Codex, other agent applications, browser and system services remained running. Other writers are outside this team coordination. Before/after process-name snapshots are retained without command arguments; their sampled CPU values are descriptive and do not establish absence of overlap.'
+record={'StartedAtUtc':now(),'SourceCommit':source,'ImplementationTag':tag,'RemoteArchive':remote,'LoadedBinarySha256Before':binaries,'QuietWindowDeclaration':quiet,'HostActivity':activity,'Commands':[]}
+for phase,argv in [('behavior',['dotnet','fsi','src/Research.FSharp/run-hidden-switch-experiment.fsx',str(out/'behavior-attempt-1.json')]),('cost',['dotnet','fsi','src/Research.FSharp/measure-hidden-switch-inference.fsx',str(out/'behavior-attempt-1.json'),str(out/'cost-attempt-1.json'),quiet,activity])]:
+ assert git('rev-parse','HEAD')==source
+ for p,h in binaries.items(): assert hashlib.sha256((root/p).read_bytes()).hexdigest()==h,p
+ for suffix in ['.json','.json.partial','.log']:
+  assert not (out/(phase+'-attempt-1'+suffix)).exists(),'refuse existing phase artifact'
+ if phase=='cost':
+  b=json.loads((out/'behavior-attempt-1.json').read_text());assert b['Complete'] and b['Failure'] is None,'behavior must complete before cost'
+ snapshot=subprocess.check_output(['ps','-axo','pid,ppid,state,pcpu,pmem,etime,comm'])
+ with (out/(phase+'-processes-before.log')).open('xb') as f: f.write(snapshot)
+ start=now()
+ with (out/(phase+'-attempt-1.log')).open('xb') as f:
+  f.write(('Command: '+repr(argv)+'\nSourceCommit: '+source+'\nStartedAtUtc: '+start+'\n').encode());f.flush()
+  result=subprocess.run(argv,stdout=f,stderr=subprocess.STDOUT)
+  f.write(('\nExitCode: '+str(result.returncode)+'\nCompletedAtUtc: '+now()+'\n').encode())
+ record['Commands'].append({'Phase':phase,'Args':argv,'StartedAtUtc':start,'CompletedAtUtc':now(),'ExitCode':result.returncode})
+ print(phase,'exit',result.returncode,flush=True)
+ with (out/(phase+'-processes-after.log')).open('xb') as f: f.write(subprocess.check_output(['ps','-axo','pid,ppid,state,pcpu,pmem,etime,comm']))
+ if result.returncode: break
+record['CompletedAtUtc']=now();record['FinalSourceCommit']=git('rev-parse','HEAD')
+record['LoadedBinarySha256After']={p:hashlib.sha256((root/p).read_bytes()).hexdigest() for p in binary_paths}
+record['Files']={p.name:{'Sha256':hashlib.sha256(p.read_bytes()).hexdigest(),'Bytes':p.stat().st_size} for p in out.iterdir() if p.is_file()}
+with (out/'measurement-attempt-1.json').open('x') as f: json.dump(record,f,indent=2);f.write('\n')
+assert record['FinalSourceCommit']==source
+assert record['LoadedBinarySha256After']==binaries
+sys.exit(result.returncode)

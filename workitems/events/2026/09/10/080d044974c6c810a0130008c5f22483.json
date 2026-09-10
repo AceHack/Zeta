@@ -1,0 +1,14 @@
+{
+  "id": "080d044974c6c810a0130008c5f22483",
+  "at": "2026-09-10T02:38:47.513Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M24JX66S087G0R001PY3MKB",
+    "type": "task",
+    "title": "break the named meta-harness back-edges by inverting to weight-free contracts (repo-split round 4, recommendation 3)",
+    "slug": "break-the-named-meta-harness-back-edges-by-inverting-to-weig",
+    "priority": "P2",
+    "filename": "081M24JX66S087G0R001PY3MKB-break-the-named-meta-harness-back-edges-by-inverting-to-weig.md"
+  }
+}

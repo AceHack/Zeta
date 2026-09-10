@@ -1,0 +1,14 @@
+{
+  "id": "080d03c7b0f7b010a01300083afd51c2",
+  "at": "2026-09-06T23:03:10.838Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1WFC7QN087G0R0029EQNT0",
+    "type": "task",
+    "title": "Persist TagBindings on freeze volumes",
+    "slug": "persist-tagbindings-on-freeze-volumes",
+    "priority": "P2",
+    "filename": "081M1WFC7QN087G0R0029EQNT0-persist-tagbindings-on-freeze-volumes.md"
+  }
+}

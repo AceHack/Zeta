@@ -1,0 +1,12 @@
+{
+  "pr_number": 16883,
+  "archive_path": "docs/history/pr-reviews/PR-16883-feat-081m1wdz3xm087g0r0006h2ky6-volume-root-loads-the-crockford-26-hub.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-06T23:00:20.817Z",
+  "schema_version": "v1",
+  "commit_sha": "7525f484732afba2abcfbf35ce270d9ff496805a",
+  "title": "feat(081M1WDZ3XM087G0R0006H2KY6): Volume.Root loads the Crockford-26 hub",
+  "state": "MERGED",
+  "merged_at": "2026-09-06T22:59:43Z",
+  "head_ref": "feat/zetafs-volume-root"
+}

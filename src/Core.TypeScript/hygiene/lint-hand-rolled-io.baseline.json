@@ -1,0 +1,23 @@
+{
+  "shell-string-spawn|src/Core.TypeScript/ace/ace-node-runtime-parity.test.ts|shell-argv-sh": 1,
+  "shell-string-spawn|src/Core.TypeScript/algebra/chsh-band-gate-agreement.test.ts|execSync": 2,
+  "shell-string-spawn|src/Core.TypeScript/algebra/cost-envelope.test.ts|execSync": 2,
+  "shell-string-spawn|src/Core.TypeScript/ci/apt-manifest-host-tier.test.ts|shell-argv-bash": 1,
+  "shell-string-spawn|src/Core.TypeScript/cluster/seal-emulator-install.ts|shell-argv-sh": 1,
+  "shell-string-spawn|src/Core.TypeScript/complexity/complexity-generator.ts|execSync": 1,
+  "shell-string-spawn|src/Core.TypeScript/forge-host/github/batch-resolve-pr-threads.ts|shell-argv-sh": 1,
+  "shell-string-spawn|src/Core.TypeScript/hygiene/change-rate-spectrum.ts|execSync": 2,
+  "shell-string-spawn|src/Core.TypeScript/hygiene/lint-a1-parent-key.test.ts|execSync": 1,
+  "shell-string-spawn|src/Core.TypeScript/hygiene/lint-hand-rolled-io.ts|shell-true": 1,
+  "shell-string-spawn|src/Core.TypeScript/hygiene/signal-death.test.ts|shell-argv-bash": 6,
+  "shell-string-spawn|src/Core.TypeScript/installer/repair-mode-existing-install.test.ts|shell-argv-sh": 3,
+  "shell-string-spawn|src/Core.TypeScript/io/safe-io.test.ts|shell-argv-sh": 1,
+  "shell-string-spawn|src/Core.TypeScript/io/safe-io.test.ts|shell-true": 1,
+  "shell-string-spawn|src/Core.TypeScript/observe/kiro-executor.ts|shell-argv-bash": 1,
+  "shell-string-spawn|src/Core.TypeScript/observe/subscription-executor.ts|shell-argv-bash": 1,
+  "shell-string-spawn|src/Core.TypeScript/service/adapters/task-scheduler.ts|shell-true": 4,
+  "shell-string-spawn|src/Core.TypeScript/zeta-id/zeta-id-generator.ts|execSync": 4,
+  "shell-string-spawn|src/Core.TypeScript/zflash/cli.ts|shell-argv-sh": 1,
+  "shell-string-spawn|src/Core.TypeScript/zflash/firstboot-bao-install.test.ts|shell-argv-bash": 2,
+  "shell-string-spawn|src/Core.TypeScript/zflash/flash-usb-linux.ts|shell-argv-sh": 1
+}

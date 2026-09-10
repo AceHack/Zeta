@@ -767,6 +767,7 @@ type SimulatedBlockIo(blockSize: int, ?media: IReadOnlyDictionary<uint64, byte[]
     let commitOrder = ResizeArray<uint64>()
     let recorded = ResizeArray<BlockIoOp>()
     let mutable writes = 0
+    let mutable reads = 0
     let mutable logicalBytes = 0L
     let corruptXor = 0xA5uy
 
@@ -875,6 +876,8 @@ type SimulatedBlockIo(blockSize: int, ?media: IReadOnlyDictionary<uint64, byte[]
 
     member _.Writes = lock lockObj (fun () -> writes)
 
+    member _.Reads = lock lockObj (fun () -> reads)
+
     member _.CommitOrder = lock lockObj (fun () -> commitOrder.ToArray())
 
     /// Issued completed Write/Flush ops in call order — what acted.
@@ -912,6 +915,7 @@ type SimulatedBlockIo(blockSize: int, ?media: IReadOnlyDictionary<uint64, byte[]
 
         member _.Read(lba, dst) =
             ensureInRange lba dst.Length
+            lock lockObj (fun () -> reads <- reads + 1)
 
             if dst.Length = 0 then
                 0
@@ -1157,6 +1161,32 @@ module BlockSuper =
         else
             None
 
+    /// High bit of the uint16 key-length: payload is raw even-length lowercase
+    /// hex decoded to bytes. Clears the UTF-8 tax on ContentAddress128 names
+    /// (32 hex chars → 16 bytes) so a 4096-byte ZCA2 superblock holds the ZD4
+    /// 32-freeze storm (96 jumprope objects). Old slots with the bit clear
+    /// still decode as UTF-8.
+    let private hexKeyBit = 0x8000
+
+    let private isLowerHex (s: string) =
+        let n = s.Length
+
+        if n < 2 || (n &&& 1) <> 0 then
+            false
+        else
+            let mutable i = 0
+            let mutable ok = true
+
+            while ok && i < n do
+                let c = s.[i]
+
+                if (c >= '0' && c <= '9') || (c >= 'a' && c <= 'f') then
+                    i <- i + 1
+                else
+                    ok <- false
+
+            ok
+
     let private parseCasEntries (buf: byte[]) : (string * int64 * int) array option =
         let count = BinaryPrimitives.ReadInt32LittleEndian(ReadOnlySpan(buf, 16, 4))
 
@@ -1172,13 +1202,20 @@ module BlockSuper =
                 if o + 2 > buf.Length then
                     ok <- false
                 else
-                    let klen = int (BinaryPrimitives.ReadUInt16LittleEndian(ReadOnlySpan(buf, o, 2)))
+                    let stored = int (BinaryPrimitives.ReadUInt16LittleEndian(ReadOnlySpan(buf, o, 2)))
                     o <- o + 2
+                    let compact = (stored &&& hexKeyBit) <> 0
+                    let klen = stored &&& 0x7FFF
 
                     if klen < 1 || o + klen + 12 > buf.Length then
                         ok <- false
                     else
-                        let key = Encoding.UTF8.GetString(buf, o, klen)
+                        let key =
+                            if compact then
+                                Convert.ToHexStringLower(buf, o, klen)
+                            else
+                                Encoding.UTF8.GetString(buf, o, klen)
+
                         o <- o + klen
                         let pos = BinaryPrimitives.ReadInt64LittleEndian(ReadOnlySpan(buf, o, 8))
                         o <- o + 8
@@ -1204,12 +1241,23 @@ module BlockSuper =
         let mutable o = 20
 
         for key, pos, len in entries do
-            let kb = Encoding.UTF8.GetBytes key
+            let compact = isLowerHex key
+            let kb =
+                if compact then
+                    Convert.FromHexString key
+                else
+                    Encoding.UTF8.GetBytes key
 
             if o + 2 + kb.Length + 8 + 4 > buf.Length then
                 invalidOp "BlockCas index does not fit in one superblock"
 
-            BinaryPrimitives.WriteUInt16LittleEndian(Span(buf, o, 2), uint16 kb.Length)
+            let stored =
+                if compact then
+                    kb.Length ||| hexKeyBit
+                else
+                    kb.Length
+
+            BinaryPrimitives.WriteUInt16LittleEndian(Span(buf, o, 2), uint16 stored)
             o <- o + 2
             Buffer.BlockCopy(kb, 0, buf, o, kb.Length)
             o <- o + kb.Length
@@ -1251,27 +1299,82 @@ module BlockSuper =
         BinaryPrimitives.WriteUInt32LittleEndian(Span(buf, 4, 4), crcOf buf)
         io.Write(lba, System.ReadOnlyMemory<byte>.op_Implicit buf) |> ignore
 
+    let private encodeCasIndex (buf: byte[]) (index: Dictionary<string, struct (int64 * int)>) =
+        BinaryPrimitives.WriteInt32LittleEndian(Span(buf, 16, 4), index.Count)
+        let mutable o = 20
+
+        for kv in index do
+            let struct (pos, len) = kv.Value
+            let compact = isLowerHex kv.Key
+            let kb =
+                if compact then
+                    Convert.FromHexString kv.Key
+                else
+                    Encoding.UTF8.GetBytes kv.Key
+
+            if o + 2 + kb.Length + 8 + 4 > buf.Length then
+                invalidOp "BlockCas index does not fit in one superblock"
+
+            let stored =
+                if compact then
+                    kb.Length ||| hexKeyBit
+                else
+                    kb.Length
+
+            BinaryPrimitives.WriteUInt16LittleEndian(Span(buf, o, 2), uint16 stored)
+            o <- o + 2
+            Buffer.BlockCopy(kb, 0, buf, o, kb.Length)
+            o <- o + kb.Length
+            BinaryPrimitives.WriteInt64LittleEndian(Span(buf, o, 8), pos)
+            o <- o + 8
+            BinaryPrimitives.WriteInt32LittleEndian(Span(buf, o, 4), len)
+            o <- o + 4
+
+    /// Publish `index` into `lba` as generation `gen`. Does not read either
+    /// slot. BlockCas holds the live slot/gen so Put is not parseCas × 2.
+    let writeCasFromIndex
+        (io: IBlockIo)
+        (lba: uint64)
+        (gen: int64)
+        (index: Dictionary<string, struct (int64 * int)>)
+        =
+        let buf = Array.zeroCreate io.BlockSize
+        Buffer.BlockCopy(casMagic, 0, buf, 0, 4)
+        BinaryPrimitives.WriteInt64LittleEndian(Span(buf, 8, 8), gen)
+        encodeCasIndex buf index
+        BinaryPrimitives.WriteUInt32LittleEndian(Span(buf, 4, 4), crcOf buf)
+        io.Write(lba, System.ReadOnlyMemory<byte>.op_Implicit buf) |> ignore
+
+    let tryReadCasState (io: IBlockIo) : (uint64 * int64 * (string * int64 * int) array) option =
+        pick (parseCas (readSlot io 0UL)) (parseCas (readSlot io 1UL))
+
     let tryReadCas (io: IBlockIo) : (string * int64 * int) array option =
-        match pick (parseCas (readSlot io 0UL)) (parseCas (readSlot io 1UL)) with
+        match tryReadCasState io with
         | Some(_, _, entries) -> Some entries
         | None -> None
 
 /// Content-addressed objects on an `IBlockIo`. Payload starts at LBA 2.
 /// LBA 0 and 1 hold checksummed `ZCA2` copies. Crash during `Put` leaves the
-/// previous generation readable. Keys are ordinal hex strings.
+/// previous generation readable. Keys are ordinal strings. Lowercase even-length
+/// hex (ContentAddress128 / 32 chars) encodes as raw bytes with the uint16
+/// length high bit set, so ~135 compact names fit a 4096-byte superblock.
+/// UTF-8 remains for non-hex names; old UTF-8 hex slots still decode.
 [<Sealed>]
 type BlockCas(io: IBlockIo) =
     let index = Dictionary<string, struct (int64 * int)>(StringComparer.Ordinal)
     let lockObj = obj ()
     let origin = BlockLog.origin io
     let mutable pos = origin
+    let mutable deleteCrashArm: string option = None
+    let mutable publishedSlot: uint64 option = None
+    let mutable gen = 0L
 
     do
         if io.BlockSize <= 0 then
             invalidArg (nameof io) "block size must be positive"
 
-        match BlockSuper.tryReadCas io with
-        | Some entries ->
+        match BlockSuper.tryReadCasState io with
+        | Some(slot, g, entries) ->
             let mutable endAt = origin
 
             for key, start, len in entries do
@@ -1282,7 +1385,19 @@ type BlockCas(io: IBlockIo) =
                     endAt <- e
 
             pos <- endAt
+            publishedSlot <- Some slot
+            gen <- g
         | None -> ()
+
+    let persistIndex () =
+        let lba, nextGen =
+            match publishedSlot with
+            | None -> 0UL, 1L
+            | Some s -> 1UL - s, gen + 1L
+
+        BlockSuper.writeCasFromIndex io lba nextGen index
+        publishedSlot <- Some lba
+        gen <- nextGen
 
     let xorLastByte (start: int64) (len: int) : bool =
         if len <= 0 then
@@ -1345,57 +1460,89 @@ type BlockCas(io: IBlockIo) =
 
             n)
 
+    /// Append each new payload, then publish the superblock once. Index and
+    /// superblock update only after that Write returns. A torn superblock
+    /// slot does not publish the names. Existing keys are skipped.
+    member _.PutMany(pairs: (string * byte[])[]) =
+        if isNull pairs then
+            invalidArg (nameof pairs) "pairs must not be null"
+
+        lock lockObj (fun () ->
+            let added = ResizeArray<string>()
+            let mutable cursor = pos
+
+            try
+                for key, bytes in pairs do
+                    if String.IsNullOrEmpty key then
+                        invalidArg (nameof pairs) "key must be non-empty"
+
+                    if isNull bytes then
+                        invalidArg (nameof pairs) "bytes must not be null"
+
+                    if not (index.ContainsKey key) then
+                        let start = cursor
+                        let after =
+                            BlockLog.append io start (System.ReadOnlyMemory<byte>.op_Implicit bytes)
+
+                        index.[key] <- struct (start, bytes.Length)
+                        added.Add key
+                        cursor <- after
+
+                if added.Count > 0 then
+                    persistIndex ()
+                    pos <- cursor
+            with _ ->
+                for key in added do
+                    index.Remove key |> ignore
+
+                reraise ())
+
     /// Append `bytes` through `BlockLog` after the superblock. Index and
     /// superblock update only after both the payload Write and the superblock
     /// Write return. A torn superblock slot does not publish the name.
-    member _.Put(key: string, bytes: byte[]) =
-        if String.IsNullOrEmpty key then
-            invalidArg (nameof key) "key must be non-empty"
+    member this.Put(key: string, bytes: byte[]) =
+        this.PutMany([| key, bytes |])
 
-        if isNull bytes then
-            invalidArg (nameof bytes) "bytes must not be null"
+    /// One-shot: next matching Delete unpublishes the key then throws
+    /// `CrashMidSweepException`. Remaining keys stay. Same shape as
+    /// `InMemoryFileSystem.ArmCrashOnDelete`.
+    member _.ArmCrashOnDelete(keyContains: string) =
+        if String.IsNullOrEmpty keyContains then
+            invalidArg (nameof keyContains) "keyContains must be non-empty"
 
-        lock lockObj (fun () ->
-            if index.ContainsKey key then
-                ()
-            else
-                let start = pos
-                let after =
-                    BlockLog.append io start (System.ReadOnlyMemory<byte>.op_Implicit bytes)
-
-                let snapshot = Dictionary(index, StringComparer.Ordinal)
-                snapshot.[key] <- struct (start, bytes.Length)
-
-                let entries =
-                    [| for kv in snapshot ->
-                           let struct (s, n) = kv.Value
-                           kv.Key, s, n |]
-
-                BlockSuper.writeCas io entries
-                index.[key] <- struct (start, bytes.Length)
-                pos <- after)
+        lock lockObj (fun () -> deleteCrashArm <- Some keyContains)
 
     /// Unpublish `key`. Superblock first, then RAM, so a torn slot keeps
     /// the previous generation (the name still exists). Payload bytes stay
     /// on the log until a later compaction. Missing key is a no-op.
+    /// Armed crash-mid-sweep throws after the key is unpublished so a
+    /// partial tick leaves extra garbage, not a missing live object.
     member _.Delete(key: string) : bool =
         if isNull key then
             false
         else
             lock lockObj (fun () ->
-                if not (index.ContainsKey key) then
-                    false
-                else
-                    let snapshot = Dictionary(index, StringComparer.Ordinal)
-                    snapshot.Remove key |> ignore
-
-                    let entries =
-                        [| for kv in snapshot ->
-                               let struct (s, n) = kv.Value
-                               kv.Key, s, n |]
-
-                    BlockSuper.writeCas io entries
+                match index.TryGetValue key with
+                | false, _ -> false
+                | true, held ->
                     index.Remove key |> ignore
+
+                    try
+                        persistIndex ()
+                    with _ ->
+                        index.[key] <- held
+                        reraise ()
+
+                    let crash =
+                        match deleteCrashArm with
+                        | Some needle when key.IndexOf(needle, StringComparison.Ordinal) >= 0 ->
+                            deleteCrashArm <- None
+                            true
+                        | _ -> false
+
+                    if crash then
+                        raise (CrashMidSweepException key)
+
                     true)
 
 

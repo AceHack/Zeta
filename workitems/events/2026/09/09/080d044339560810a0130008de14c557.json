@@ -1,0 +1,14 @@
+{
+  "id": "080d044339560810a0130008de14c557",
+  "at": "2026-09-09T23:00:57.665Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M246EAP0087G0R003FFYST2",
+    "type": "task",
+    "title": "USB install picks hsm then tpm then sidecar; CI tests all three",
+    "slug": "usb-install-picks-hsm-then-tpm-then-sidecar-ci-tests-all-thr",
+    "priority": "P2",
+    "filename": "081M246EAP0087G0R003FFYST2-usb-install-picks-hsm-then-tpm-then-sidecar-ci-tests-all-thr.md"
+  }
+}

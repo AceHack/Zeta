@@ -1,0 +1,27 @@
+Original full job-log SHA256: 36A4929B2821818E784D8E398442717AF2D777030A9A26AAAF8B3D87BC383FD7
+Run: 34060359580; job: 101560251247; head: 69ba5db2f663a44e81d85e1c70bfb02c660fb7e5
+
+2026-09-06T21:22:38.3728069Z [xUnit.net 00:00:31.17]     Zeta.Tests.FactoredPredictiveTests.RNN inference allocation does not grow with context length [FAIL]
+2026-09-06T21:22:38.3730487Z [xUnit.net 00:00:31.17]       Assert.Equal() Failure: Values differ
+2026-09-06T21:22:38.3744159Z [xUnit.net 00:00:31.17]       Expected: 39936
+2026-09-06T21:22:38.3744498Z [xUnit.net 00:00:31.17]       Actual:   39952
+2026-09-06T21:22:38.3745699Z [xUnit.net 00:00:31.17]       Stack Trace:
+2026-09-06T21:22:38.3799910Z [xUnit.net 00:00:31.17]         /_//tests/Tests.FSharp/FactoredPredictive.Tests.fs(99,0): at Zeta.Tests.FactoredPredictiveTests.RNN inference allocation does not grow with context length()
+2026-09-06T21:22:38.3829712Z [xUnit.net 00:00:31.17]            at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+2026-09-06T21:22:38.3851981Z [xUnit.net 00:00:31.17]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+2026-09-06T21:22:38.4598176Z   Passed Zeta.Tests.RoomConsultationTests.RC-7 receipt preserves the request and cost attribution [< 1 ms]
+2026-09-06T21:22:38.4629747Z   Passed Zeta.Tests.RoomConsultationTests.RC-8 portable golden vectors pin hit miss boundary and cost accounting [4 ms]
+2026-09-06T21:22:38.4639742Z   Passed Zeta.Tests.RoomConsultationTests.RC-5 invalid policy refuses before lookup or compute [2 ms]
+2026-09-06T21:22:38.4660188Z   Passed Zeta.Tests.RoomConsultationTests.RC-4 a room boundary is never crossed or looked through [< 1 ms]
+2026-09-06T21:22:38.4662361Z   Passed Zeta.Tests.RoomConsultationTests.RC-2 a full hit avoids compute but still pays lookup [< 1 ms]
+2026-09-06T21:22:38.4681551Z   Passed Zeta.Tests.RoomConsultationTests.RC-6 negative horizons are typed refusals [< 1 ms]
+2026-09-06T21:22:38.4682507Z   Failed Zeta.Tests.FactoredPredictiveTests.RNN inference allocation does not grow with context length [97 ms]
+2026-09-06T21:22:38.4683030Z   Error Message:
+2026-09-06T21:22:38.4683243Z    Assert.Equal() Failure: Values differ
+2026-09-06T21:22:38.4683506Z Expected: 39936
+2026-09-06T21:22:38.4683700Z Actual:   39952
+2026-09-06T21:22:38.4683885Z   Stack Trace:
+2026-09-06T21:22:38.4684503Z      at Zeta.Tests.FactoredPredictiveTests.RNN inference allocation does not grow with context length() in /_//tests/Tests.FSharp/FactoredPredictive.Tests.fs:line 99
+2026-09-06T21:22:38.4685401Z    at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+2026-09-06T21:22:38.4686067Z    at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+2026-09-06T21:22:38.4687284Z   Passed Zeta.Tests.FuzzDecodeBoundaryTests.Fuzz: fromArrow is total on arbitrary bytes (never throws) [1 s]

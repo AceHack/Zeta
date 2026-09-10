@@ -110,6 +110,14 @@ export const INFRASTRUCTURE_JOBS: ReadonlyMap<string, string> = new Map([
       "target claiming it would make the drift reporter selectable by the very diffs " +
       "whose drift it exists to report.",
   ],
+  [
+    "gate/drift-triangle-corners",
+    "Measures the byte composition of the WHOLE tracked tree (generator / joins / " +
+      "observability), so no target owns its sources — every target does. And it must " +
+      "not be selectable: composition moves with ANY file, so a path filter that " +
+      "skipped it would drop the reading on precisely the diffs that changed the " +
+      "number. Reports a direction; blocks nothing (it is not in the floor registry).",
+  ],
 ]);
 
 /** `workflow/job` for a workflow file path and a job id. */

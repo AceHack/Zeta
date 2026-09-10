@@ -3,7 +3,7 @@
 **Author:** Ani (Grok Build) / Aaron 2026-09-02
 **Date:** 2026-09-02
 **Work item:** `081M1HGD1QA087G0R001GRHPFW`
-**Composes with:** ZetaFS first product `081M1C59ZG4087G0R000VM8DZN`
+**Composes with:** ZetaFS store spec `081M1C59ZG4087G0R000VM8DZN` (store satellite, not the database identity)
 **Status:** Product design. Pieces are in-tree; the assembled engine is not.
 **Register:** product design. Does not replace [`docs/ROADMAP.md`](../ROADMAP.md) (hub) or the ZetaFS first-product spec. This is the **ZetaDB satellite**.
 **Extends (do not contradict):**
@@ -32,11 +32,15 @@ This PR does **not** ship ZetaFS v0.9. Crash recovery stays `toy` until first-pr
 
 ZetaDB is the **whole database**: event log as source of truth, tables as incremental materialized views over that log, a streaming SQL pipeline on top of Rx / LINQ / F# computation expressions, protocol adapters so existing clients can migrate, and ZetaFS as the custom store *if and only if* it makes the database faster or safer than a host filesystem plus the ferry.
 
+The **first-class pieces** are DBSP, Z-sets, and G-sets: 0-downtime schema evolution and key rotation (same overlap-window rotator), Flink-like incremental join onto materialized tables. Code storage, document storage, event streaming, transactional processing, multi-planet CALM. Jumprope, POSIX, FUSE, video/images are **sprinkles** — later, not the identity (`081M245GDBN087G0R000QWR0M4`). Agents carrying source is not a 2026-09-09 invention: it is [`durable-functions-as-the-db`](../research/2026-06-21-durable-functions-as-the-db-codebase-on-zsets-functions-rotate-like-keys-futamura.md) plus the VISION compiler ladder. `081M23K0S2W087G0R001H50Z8M` is a pointer, not the origin.
+
 **Feel, not clone:** Apache Flink (unified batch + streaming) and [Reaqtor](https://github.com/reaqtive/reaqtor) (durable standing Rx queries that survive restart). Feldera is the **DBSP competitor**, not the product shape.
 
 **Not Feldera-on-Postgres.** Feldera's own docs: DBSP is a query engine, not a database. Their storage is their own (`PosixBackend` / `MemoryBackend`, log-structured batches). Postgres appears as **connectors** (input: SQL query → JSON → Feldera; output: experimental INSERT/UPDATE/DELETE or CDC). ZetaDB does not sit on Postgres, MySQL, or any other engine for compute or for the WAL. We wire the entire stack. Protocol adapters speak *their wire*; they do not borrow *their storage*.
 
 **Relativistic, no appointed hub.** Any node may replicate any table or stream and run operations on it. "Replica" is a misnomer — placement is per-stream, not a full copy of the universe. Data **and code** move. There is no split-brain as a failure class: forward progress first, later CRDT reconciliation, or work thrown away, or a named permanent fork. That is why the filesystem must treat fork as first-class.
+
+**Aim (not shipped):** the fastest DBSP database that still **agrees across planets**. The honest statement is not "geo consensus is impossible, therefore federate." Cross-site is already a **strictly weaker coupling than consensus**: commutative observe / a CALM-monotonic fold. **Raft is the wrong tool** — it buys a total order nobody across sites needs, at a price that scales with distance. Same distinction CALM draws (Hellerstein & Alvaro, CIDR 2011 *The Declarative Imperative*; CACM 2020 *Keeping CALM*): monotonic ⇒ coordination-free; non-monotone exclusive claims still need consensus, and those stay local or gated, not geo-Rafted. Earth–Mars light time is minutes, unsynced; HLC-as-linearizability dies there. The designed path is commutative observe + phase-canonical order + local time never entering the shared fold. See [`docs/research/2026-07-11-multi-planet-convergence-three-drift-axes-commutative-observe-adinkra-ecc-hlc-canonical-order-one-attack-vector.md`](../research/2026-07-11-multi-planet-convergence-three-drift-axes-commutative-observe-adinkra-ecc-hlc-canonical-order-one-attack-vector.md), [`docs/research/2026-06-08-the-reorder-loophole-is-bounded-by-commutativity-non-reversible-claims-need-consensus.md`](../research/2026-06-08-the-reorder-loophole-is-bounded-by-commutativity-non-reversible-claims-need-consensus.md), and [`docs/handoffs/2026-08-13-orbital-asymmetry-brief-for-manus.md`](../handoffs/2026-08-13-orbital-asymmetry-brief-for-manus.md). Spacelike vs timelike is already in-tree (`BusRegime` InCone/OutOfCone). This is `toy` until a named interplanetary delay is in the DST corpus. It is still a product reason Earth-only filesystems (and geo-Raft) do not offer. Aaron + Otto 2026-09-08 (`081M21DBXV8087G0R003HFHJK2`).
 
 ---
 
@@ -52,6 +56,34 @@ ZetaDB is the **whole database**: event log as source of truth, tables as increm
 8. **TigerBeetle-shaped ambition on the commit path**, with honesty: we have not metered that yet. Auto-batch + mux/full-duplex + zero-alloc Z-set ops are the *bets*, not the measured result.
 9. **No central tip.** Partitioned Z-set tips joined by shippable Rx queries ([no-single-tip design](2026-08-28-there-is-no-single-tip-partitioned-zset-tips-joined-by-shippable-rx-queries.md)).
 10. **Historical data compresses toward a generator.** When a generator can reproduce a history, the original bytes need not stay on disk. That is the columnar idea aimed at the **event store**, not only at tables.
+11. **Cross-site agreement without geo-Raft.** Fastest DBSP on one planet is not the product if the fold diverges across a light cone. The shared conclusion sees only agreed phase; a node's wall-clock steers only local actions. That is weaker than consensus (CALM-monotonic). Raft across sites is the wrong tool. Not shipped. Not a claim we beat Feldera on Earth today.
+12. **Agents carry source and evolve it without downtime.** Already specified 2026-06-21: the codebase lives on Z-sets; a deploy is a key-rotation (overlap window); rollback is a retraction. VISION compiler ladder: tick-N loads tick-(N−1)'s compiler edits. Harny / `gen/` / Ace are **separate lanes** (`docs/PRODUCT-LANES.md`), not a filesystem feature. EntityId + phase binding is the store half. Not a sidecar REPL. Not shipped.
+
+---
+
+## First-class vs sprinkle (Aaron 2026-09-09)
+
+Adversarial path check (`081M245GDBN087G0R000QWR0M4`). The queue has been freeze-storm / Jumprope / CAS DST. The product is not that.
+
+**First-class (if removed, it is a different database):**
+
+| Piece | Where it already is | Job |
+|---|---|---|
+| Z-set retract/assert | `src/Core/ZSet.fs` | data, schema, keys, code versions |
+| G-set expand | `src/Core/GSet.fs` | monotone overlap (CALM, coordination-free) |
+| Schema as Z-set | `src/Core/SchemaZ.fs`, `SchemaEvolution.fs`, `docs/specs/zero-downtime-schema-evolution/` | 0-downtime evolution; TLC + FsCheck on the primitive |
+| Key rotation | `src/Core/KeyCustody.fs`, ADR 2026-06-15 | **same overlap rotator as schema** — do not build a second one |
+| Incremental join → tables | `src/Core/Incremental.fs` `IncrementalJoin`; QuerySurface **must** lower to it | Flink-like standing join; still `toy` as a workload |
+| Event log as truth | `GroupCommitDiskDeltaLog` **on a host directory** | WAL; tables are `I` of standing queries |
+| CALM fold | `local-time-never-enters-the-shared-fold`; 2026-07-11 multi-planet research | multi-planet low consensus; Raft declined |
+
+**Sprinkle (wait unless a first-class caller needs it):** Jumprope as product identity, POSIX/FUSE, freeze-storm 12 MiB peels, video/image blobs, native NVMe, TPM. Jumprope stays a **body codec** for code/docs/WAL segments that actually grow. Large blobs are second.
+
+**FS that is still essential, not sprinkle:** stable EntityId across `write()`, first-class fork, typed `Buffered\|Journaled\|Durable` on the log. Those serve schema FKs, named divergence, and the WAL. They do not require Jumprope to be the face of the product. ZD4 still kills ZetaFS-as-product only on those earn-reasons, **not** on batching.
+
+**Wrong tree:** more freeze-volume DST while `QuerySurface` stays toy and `SchemaZ` / `KeyCustody` never ride the WAL. **Right tree:** wire schema deltas and key windows as events on the log; materialize tables through `IncrementalJoin`; keep the custom volume parked until that has a caller.
+
+S2 "schema evolution PROVEN" is the DynamicValue field algebra + a TLC overlap model (~27,848 states in the pitch). Spec refuses version numbers (`docs/specs/zero-downtime-schema-evolution/requirements.md`). Catalog `ensure` is LWW `TableStream` DML (`Catalog.fs`); `StreamTableDuality` instance B is last-writer-wins, **not commutative** — cannot sit under multi-planet CALM. S2 does **not** prove live catalog overlap, key rotation on the WAL, or multi-planet schema. Do not round that up.
 
 ---
 
@@ -74,7 +106,7 @@ ZetaDB is the **whole database**: event log as source of truth, tables as increm
 | Postgres | Input connector + experimental output sink | Wire **adapter** only; never the WAL |
 | Feel | Incremental SQL over changing inputs | Flink unified batch/stream + Reaqtor durable Rx |
 | Testing | Rust benches, their pipeline manager | DoP=1 DST, chaos, four-oracle byte-lock, alloc benches |
-| Distribution | Multi-node (they beat us here today) | Relativistic, per-stream placement, no split-brain |
+| Distribution | Multi-node (they beat us here today); one light cone | Relativistic, per-stream placement, no split-brain; **aim** CALM/commutative fold across light cones, not geo-Raft (designed, not shipped) |
 | SQL | Mature compiler | Host-language first; ANSI SQL is the product overlay |
 
 ROADMAP already records where they beat us (distribution, SQL compiler, compiled Rust circuits, production time). This document does not reopen those as insults; it names the product that *closes* the SQL and storage gaps without becoming them.
@@ -130,6 +162,10 @@ Local time never filters the shared fold (`.claude/rules/local-time-never-enters
 
 | Piece | Path | Register | What it actually is |
 |---|---|---|---|
+| Schema as Z-set | `src/Core/SchemaZ.fs`, `SchemaEvolution.fs` | primitive shipped; live catalog overlap unmetered | Evolution = retract+insert. Spec: `docs/specs/zero-downtime-schema-evolution/`. **First-class.** |
+| G-set | `src/Core/GSet.fs` | four-oracle proven | Expand-safe monotone floor. Overlap window uses this, then Z-set contract. **First-class.** Not the Bloom sketch. |
+| Incremental join | `src/Core/Incremental.fs` `IncrementalJoin` | shipped operator; QuerySurface still **toy** | Three-term bilinear. Streaming join **is** this. Flink-shaped tables. **First-class.** |
+| Key rotation | `src/Core/KeyCustody.fs` | three-slot primitive | Previous/current/next. Sibling of schema overlap. **First-class.** Not a volume-key lifetime clock. |
 | LINQ on streams | `src/Core/Query.fs` | unmetered | Fluent `Where`/`Select`/`Join` on `Stream<ZSet<_>>`. Not F# `query { }`. |
 | One plan, two modes | `src/Core/QuerySurface.fs` | **toy** | `IQueryable` / `IQbservable` → one plan. Batch vs streaming. Mode-equivalence test exists; no real workload. |
 | `zeta { }` CE | `src/Core/ZetaSqlBuilder.fs` | unmetered | Typed eager CE. Delegates to `ZSet.filter/map/join/flatMap` (the Seq copies were a defect). Sibling of `ToyPlan`, not merged. |
@@ -223,7 +259,7 @@ Mux / full-duplex on the wire (Arrow Flight stream duplex is shipped in-process)
 
 ## Testing — FoundationDB DST, DoP=1→N, alloc honesty
 
-- **DST:** every scored path closes under `ISimulationEnvironment`. Crash-mid-write *intercept* landed (`ArmCrashMidWrite`); recovery stays `toy` until the rest of ZetaFS PR12. Do not claim Durable recovery before that corpus.
+- **DST:** every scored path closes under `ISimulationEnvironment`. Crash-mid-write *intercept* landed (`ArmCrashMidWrite`); remap-epoch crash of a 1-byte-edit freeze keeps the prior ContentId (`081M20W9GA4087G0R0015YDSNQ`); recovery stays `toy` until the rest of ZetaFS PR12. Do not claim Durable recovery before that corpus.
 - **DoP=1 is the correctness knob;** DoP=N is throughput. Same ferry.
 - **Allocations are a column, not a footnote.** Unique-key Nexmark already reports Allocated/tick (~23.4 B/key Q1, ~11.7 B/key Q2, identical across ubuntu/mac/windows).
 - **Realistic workloads** are the next metering step after Nexmark micro: unique-key Q1–Q8, then a standing-query mix (Reaqtor-shaped), then an OLTP-shaped event-sourced mix (not TPC-C as a religion — as a *shape*: many small writes, ferry-batched). The point of realistic workloads is to see whether ZetaFS beats host FS + `GroupCommitDiskDeltaLog`.
@@ -255,6 +291,10 @@ ROADMAP two-plane split stays: data plane is fast and dumb; Futamura / `gen/` / 
 
 Shipping a query to another node is the no-single-tip mechanism. Shipping an operator implementation (specialized IL, WASM procedure ABI from the browser ADR) is the code-mobility half. Untrusted procs need a metered host before they join automatic ticks (ADR already says `trusted-cooperative`).
 
+**Zero-downtime source evolution (Aaron 2026-09-09).** Not hot-patch of a running image in place. Old ContentId stays readable and running. New freeze is a new ContentId (D9: bits only for new chunks). Binding update at a **phase** is the switch. Standing queries keep ticking (Reaqtor feel, plus the *code they run* can be replaced). Compiler is a standing query over the source Z-set: source deltas → artifacts; those artifacts are `Regen` until the generator is metered (D3). Per-entity policy: proofs / signed source `keep-all`; working copies `rolling`; scratch `none`; derived pretty-print / object files `regen`.
+
+Jumprope's earn on this use is the **volume fork** of an agent's tree and the **artifacts** (IL, WASM, goldens), not FastCDC of a median 7 KiB `.fs` file. This repo's source is ~89% over 2 KiB and almost never 500 KiB; prefix-share pays on the compiled/log bodies and on a few large modules (`ZetaFsFreeze.fs` ~119 KiB), not on every stub. Designed. Not shipped.
+
 ---
 
 ## ZetaFS requirements from ZetaDB
@@ -272,8 +312,32 @@ ZetaFS exists **for ZetaDB**. If another filesystem plus the ferry is better for
 5. **Per-entity policy on one volume** — `keep-all` catalog next to `rolling` WAL next to `none` scratch.
 6. **Typed durability notified to the DB** — `Buffered | Journaled | Durable`.
 7. **No central tip / ordinal shared fold.**
+8. **Spacelike vs timelike / multi-planet fold.** APFS/ext4/ReFS assume one planet's wall-clock and one light cone. Geo-Raft buys a total order nobody across sites needs, at a price that scales with distance. ZetaFS history is keyed by **phase**, never wall-clock (`local-time-never-enters-the-shared-fold`). Cross-site is CALM-monotonic (weaker than consensus), not "federate because consensus is impossible." Not a claim that Mars is shipped (`081M21DBXV8087G0R003HFHJK2`).
 
-Until a bench of "ZetaDB small-write storm on ZetaFS" vs "same storm on APFS/ext4 + GroupCommitDiskDeltaLog" exists, the FS-speed claim stays `toy`. This document names that bench; it does not invent its numbers.
+The both-legs host-FS storm now runs in CI (`Zd4ProductExistence.Tests.fs`):
+32 concurrent `GroupCommitDiskDeltaLog` appends and 32 Journaled freezes on
+PhysicalFileSystem (product BlockCas path). Compact hex keys in the ZCA2
+superblock hold the 96 jumprope objects. One named ShortRun exists
+(`docs/research/2026-09-08-zd4-named-unmetered-n32-shortrun-one-mac.md`,
+`081M1ZE5WSP087G0R002CVMVCN`): host mean 8.9 ms (tight); freeze mean 181 ms
+with StdDev 84 ms, so the ratio is not a measurement. The FS-speed claim
+stays `toy`. Do not copy those numbers into README. Do not kill
+ZetaFS-as-product on batching. FUSE completeness is not this proof. Apple
+Developer Program is not this proof.
+
+**Jumprope is not the 1-byte batcher (Aaron 2026-09-09, `081M23DC9S6087G0R003P8VCDT`).**
+It is the seekable CAS body for **multi-chunk** files (D9 prefix-share, fork,
+seek). A 1-byte freeze is a single-leaf rope; FastCDC does not run
+(`min = 2048`). Small DB records ride the log boat. Chunk **file bodies**
+above min; do not mint a Jumprope per tiny append. **"Large"** means more
+than one FastCDC chunk (operationally > 2 KiB); prefix-share is worth the
+CAS objects at **hundreds of KiB** (500 KiB falsifiers). Detail and the
+size table live in the first-product Jumprope section.
+
+**Rust second version after ZD4.** F# stays the first oracle. A Rust
+oracle of the same FORMAT/goldens is allowed only if ZD4 says the custom
+FS earned it. If ZD4 kills it on those earn-reasons, do not write the
+Rust FS. Large sequential boats, big slices. Not a rewrite now.
 
 ### ReFS-shaped resilience (Aaron 2026-09-02)
 
@@ -282,7 +346,7 @@ Until a bench of "ZetaDB small-write storm on ZetaFS" vs "same storm on APFS/ext
 We do **not** implement ReFS, copy its on-disk format, or take a Windows-only path. Requirements that crossed the wall:
 
 1. **Pointer-not-copy (D9).** A clone, a snapshot, a small overwrite, a fork: update Bindings / Jumprope leaf ids / ContentId. Write bits only for new or mutated chunks. This is already the Jumprope + CAS shape; the volume path must not fall back to copying the file.
-2. **Crash DST for FS *and* DB (D12).** FoundationDB-shaped: crash-mid-write, reorder, corrupt-last-write, same seed. ChaosEnv is still flush-fail 5%; that hook now also fires from the freeze IBlockIo door and FileSync, and freeze maps it to `FreezeError.Fsync` (process lived). Power outage (`ArmPowerOutageOnFlush`) and bad-memory (`ArmBadMemoryOnWrite`) are separate doors, not one crash. The intercept is `InMemoryFileSystem.ArmCrashMidWrite` on the shared `IFileSystem` door (freeze torn-tail + GroupCommit torn-tail). Plain freeze-log replay restores intact boats. Corrupt-last-write and reorder doors landed. Journaled/Durable boats write intent, Flush, put leaves, then commit (`intent-before-leaf-flush`). Sealed-log replay landed. Reclaim crash-mid-sweep intercept landed. Mid-log CRC keeps the prefix. `IBlockIo` is still the device primitive; `BlockIoFerry` is the Haskell-IO-shaped interpreter generated from `FerryThrottler` (including adjacent whole-block coalesce). `SimulatedBlockIo` is the LBA DST door (not POSIX). Journaled freeze log and CAS objects can ride `IBlockIo` in DST (`createManualWithBlockStore`); LBA 0 and 1 are checksummed superblock copies (`ZFL2` / `ZCA2`), payload starts at LBA 2. Sealed journaled frames can replay through `IBlockIo` (`createManualWithSealedBlocks`), including CAS objects on a second disk (`createManualWithSealedBlockStore`). Journaled freeze can ride the `FileSystemBlockIo` polyfill (`createManualWithFileLog`), including sealed frames (`createManualWithSealedFileLog`) and CAS objects on a second host file (`createManualWithFileBlockStore` / `createManualWithSealedFileBlockStore`). `IFileSystem.WriteAt` crash-arms the LBA span, not the whole host file. DST `createManual` and `create` ride `FileSystemBlockIo` for the log and for CAS objects (`cas`). A crash-mid-write of the second freeze keeps the first. A polyfill corrupt-last-write of the second freeze acks and keeps the first (last-8 of a 4096-byte RMW is often padding, so that test does not claim the second freeze is unreadable). A polyfill reorder holds the next WriteAt; the following superblock WriteAt publishes both; reopen keeps the first. Raw frame-stream tests use `createManualStream`. Torn-sector (`ArmTornSector`) overlays a 512-byte prefix of the NEW write and acks; the rest of the LBA stays OLD. `GroupCommitDiskDeltaLog` defaults to the device door (`IBlockIo` / `ZGL2`). POSIX append (`useBlockIo = false`) remains for whole-file Dispose tests. Recovery works on both doors; no bench compares them. Native NVMe is still open.
+2. **Crash DST for FS *and* DB (D12).** FoundationDB-shaped: crash-mid-write, reorder, corrupt-last-write, same seed. ChaosEnv is still flush-fail 5%; that hook now also fires from the freeze IBlockIo door and FileSync, and freeze maps it to `FreezeError.Fsync` (process lived). Power outage (`ArmPowerOutageOnFlush`) and bad-memory (`ArmBadMemoryOnWrite`) are separate doors, not one crash. The intercept is `InMemoryFileSystem.ArmCrashMidWrite` on the shared `IFileSystem` door (freeze torn-tail + GroupCommit torn-tail). Plain freeze-log replay restores intact boats. Corrupt-last-write and reorder doors landed. Journaled/Durable boats write intent, Flush, put leaves, then commit (`intent-before-leaf-flush`). Sealed-log replay landed. Reclaim crash-mid-sweep intercept landed. Mid-log CRC keeps the prefix. `IBlockIo` is still the device primitive; `BlockIoFerry` is the Haskell-IO-shaped interpreter generated from `FerryThrottler` (including adjacent whole-block coalesce). `SimulatedBlockIo` is the LBA DST door (not POSIX). Journaled freeze log and CAS objects can ride `IBlockIo` in DST (`createManualWithBlockStore`); LBA 0 and 1 are checksummed superblock copies (`ZFL2` / `ZCA2`), payload starts at LBA 2. Sealed journaled frames can replay through `IBlockIo` (`createManualWithSealedBlocks`), including CAS objects on a second disk (`createManualWithSealedBlockStore`). Journaled freeze can ride the `FileSystemBlockIo` polyfill (`createManualWithFileLog`), including sealed frames (`createManualWithSealedFileLog`) and CAS objects on a second host file (`createManualWithFileBlockStore` / `createManualWithSealedFileBlockStore`). `IFileSystem.WriteAt` crash-arms the LBA span, not the whole host file. DST `createManual` and `create` ride `FileSystemBlockIo` for the log and for CAS objects (`cas`). A crash-mid-write of the second freeze keeps the first. A polyfill corrupt-last-write of the second freeze acks and keeps the first (last-8 of a 4096-byte RMW is often padding, so that test does not claim the second freeze is unreadable). A polyfill reorder holds the next WriteAt; the following superblock WriteAt publishes both; reopen keeps the first. Raw frame-stream tests use `createManualStream`. Torn-sector (`ArmTornSector`) overlays a 512-byte prefix of the NEW write and acks; the rest of the LBA stays OLD. `GroupCommitDiskDeltaLog` defaults to the device door (`IBlockIo` / `ZGL2`). POSIX append (`useBlockIo = false`) remains for whole-file Dispose tests. Recovery works on both doors; no bench compares them. Crash-mid-write of a 1-byte-edit freeze keeps the prior ContentId (`081M20W9GA4087G0R0015YDSNQ`). Native NVMe is still open.
 3. **Cache co-design (D10).** If the DB and the FS each keep a buffer of the same bytes, we pay RAM twice and we lie about whose `Buffered` won. One authority. Preferred: library-FS, DB owns mutbuf, POSIX mount is a view (already K6). `Durability.OsBuffered` and freeze `Buffered` must be the same named class, or a documented mapping. **Mapping landed** (`DurabilityFreezeMap`): not an equivalence (Journaled has no twin; Windows Durable refuse vs StableStorage still ships). Cache authority is still two buffers. ReFS's allocate-on-write metadata plus a lazy cache manager is a known RAM explosion (KB 4016173); do not copy that caching.
 4. **CoW must not 10× the volume (D11).** This is why `keep-all | rolling | none | regen` exist. A DB that freezes every small write under `keep-all` will look like git. Rolling/none/regen are the bound. The falsifier is reclaim-eligibility, not a comment.
 
@@ -312,10 +376,10 @@ These are additive to K1–K18 / E1–E12 / C1–C10. They do not reopen them.
 | **D6** | Per-stream / per-table placement: a node need not hold every stream. | "Replica" is a misnomer. | Designed as partitioned tips; not a volume feature |
 | **D7** | Notify ZetaDB of durability class (already K6). Observer does not throw. | Tables must not read a Journaled name with missing leaves (E2). | Freeze observer exists |
 | **D8** | ShivaGC / Futamura: historical data may become a generator. Collecting a generator that still has live `Regen` refs is forbidden. | Same as D3. | ShivaGc is DynamicValue mark-sweep, not volume |
-| **D9** | Pointer-not-copy (ReFS-shaped allocate-on-write). Forks and small edits remap ids; bits written only for new chunks. | Space and crash: in-place metadata is a torn-write class. | Jumprope prefix-share + `DagFs.editLocal` converge. Volume freeze still whole-object. |
-| **D10** | One cache authority. DB and FS must not each buffer the same bytes. `Buffered` is one class. | RAM + DST: two caches are two truths. | `Durability.fs` vs freeze classes are two vocabularies. |
+| **D9** | Pointer-not-copy (ReFS-shaped allocate-on-write). Forks and small edits remap ids; bits written only for new chunks. | Space and crash: in-place metadata is a torn-write class. | Jumprope prefix-share + `DagFs.editLocal` converge. Freeze boat carries only unknown CAS objects (`081M20TMRD9087G0R0035Y762D`). Crash-mid-write of that remap boat keeps the prior ContentId (`081M20W9GA4087G0R0015YDSNQ`). Same-span overwrite FastCDC only from the first mismatched window (`081M20YDMYH087G0R002NXBFWN`); the window walk hashes chunk ids without a Cas put (`081M21GEXXY087G0R001WJ79KG`) and hashes a ReadOnlySpan over the file bytes (`081M21J21NE087G0R002X2K0QN`). Append re-chunks from the last previous window (`081M211SN5W087G0R00129M1E6`); mid-file insert FastCDC from the first mismatched window (`081M214YS9J087G0R0011YKARN`); truncate FastCDC from the first mismatched window (`081M218759R087G0R000ESY8EY`); mid-file delete FastCDC from the first mismatched window (`081M219CMZE087G0R000GSEAQJ`). Layout persists under `layout/<entity>` (`081M21080ZQ087G0R0037YY66R`); single-leaf does not persist (`081M21BXYD3087G0R003NRYGTK`). Torn layout falls back (`081M213CHF9087G0R0032FB65S`). |
+| **D10** | One cache authority. DB and FS must not each buffer the same bytes. `Buffered` is one class. | RAM + DST: two caches are two truths. | Two vocabularies remain. Freeze-storm thread alloc < 12 MiB after FastCDC skip + persist-once, in-memory catalog gen, slot-only persist, no boat-success rewrite, one post-freeze catalog write, no single-leaf layout persist, one UTF-8 catalog payload, firstChangedWindow hashes chunk ids without a Cas put (`081M21GEXXY087G0R001WJ79KG`), hashes a span not a copied window (`081M21J21NE087G0R002X2K0QN`), BlockCas Put writes the next slot from memory (`081M21M7FVZ087G0R000PNH46E`), PutMany publishes the superblock once per freeze item (`081M21NVSJ2087G0R002J9WVRP`), catalog persist appends hex without ToHex strings (`081M22GKEXS087G0R0033JNZ2F`), jumprope encode writes canonical CBOR without a DynamicValue graph (`081M239JRJ0087G0R001FCAKEH`), and freeze intent/commit write the same maps without DynamicValue (`081M23BDKQA087G0R001QEFR2E`); still unmetered vs host 351 KiB. |
 | **D11** | CoW amplification bounded by policy. `rolling(N)` after M>N freezes ⇒ ≥ M−N bodies reclaim-eligible. | Else the DB explodes the volume (git-forever). | Caller supplies `RollingLive`; window fold not yet the reclaim input. |
-| **D12** | Crash DST for filesystem **and** database on the same door. | ReFS-class survival is earned by a seed, not a journal story. | Intercepts + plain/sealed replay + reclaim sweep + intent-before-leaves + mid-CRC prefix keep landed. Native device I/O still open. Recovery stays `toy`. |
+| **D12** | Crash DST for filesystem **and** database on the same door. | ReFS-class survival is earned by a seed, not a journal story. | Intercepts + plain/sealed replay + reclaim sweep + intent-before-leaves + mid-CRC prefix keep landed. Crash-mid-write during freeze B's BlockCas PutMany keeps freeze A readable on CloneMedia (`081M22EPSW4087G0R001DARBF8`). Native device I/O still open. Recovery stays `toy`. |
 
 **Cannot claim today:** POSIX mount, crash-safe Durable, `ns=bindings`, Windows Durable, ZetaFS faster than APFS for small writes, ReFS-class repair on one disk.
 
@@ -389,8 +453,62 @@ Independently reviewable. Tests green or it does not land. ZetaFS numbered PRs s
 
 ### ZD4 — Product-existence bench: host FS + group-commit vs `.zetafs`
 
-- **Files:** bench + first-product metering path. Small-write storm. Numbers stay `toy` until both legs run.
-- **Depends on:** ZD2 (otherwise we are comparing ferry-on-host vs freeze-without-ferry — not a FS comparison).
+- **Files:** `tests/Tests.FSharp/Storage/Zd4ProductExistence.Tests.fs` + `bench/Benchmarks/Zd4ProductExistenceBench.fs`. Small-write storm N=32 on PhysicalFileSystem (product BlockCas path).
+- **First peel:** both legs RUN at N=16 (`081M1ZA8S7C087G0R002P9NX40`).
+- **Second peel:** compact BlockCas hex keys so N=32 unique 1-byte jumpropes fit one ZCA2 superblock (`081M1ZCE8W0087G0R0028BYWV2`). Host: 32 concurrent `GroupCommitDiskDeltaLog` appends → one `delta-*.segment`. `.zetafs`: 32 Journaled `freezeAsync` + `pumpLog` → one boat of 32. No Stopwatch. No winner.
+- **Named run:** ShortRun 2026-09-08 on one M2 Ultra, N=32
+  (`081M1ZE5WSP087G0R002CVMVCN`). Host mean 8.9 ms. Freeze mean 181 ms /
+  StdDev 84 ms — ratio unmetered. Alloc 351 KB vs 94 MB is the D10 smell.
+- **D10 first peel:** skip FastCDC 256 KiB buffer for files ≤ min-chunk;
+  persist catalog once per freeze not per CAS put
+  (`081M1ZHZ7EW087G0R00006H4BK`). Thread-alloc bound 48 MiB (measured 36 MiB).
+- **D10 second peel:** catalog persist increments in-memory generation;
+  does not re-decode both slots (`081M1ZMGJ0J087G0R001W8HX2V`). Slots stay
+  reopen truth. Bound stays 48 MiB. Still unmetered vs host.
+- **D10 third peel:** persist writes only `known.pins.0` / `known.pins.1`;
+  not the `known.pins` alias (`081M1ZQTN7Y087G0R0010RT03K`). Leftover
+  alias still loads if both slots are missing. Bound stays 48 MiB.
+- **D10 fourth peel:** FreezeLog boat success does not persist catalog
+  again (`081M1ZS5N52087G0R0005S5ZYJ`). Per-item persist before commit
+  remains. Bound stays 48 MiB.
+- **D10 fifth peel:** applyRetention updates pins in memory; noteFreeze
+  persists once (`081M1ZTPQW0087G0R001ZM8PFA`). One Journaled freeze
+  ends at catalog gen 2. Bound stays 48 MiB.
+- **D10 sixth peel:** single-leaf jumpropes do not persist `layout/<entity>`
+  (`081M21BXYD3087G0R003NRYGTK`). LastLayout stays in memory. Bound
+  stays 48 MiB.
+- **D10 seventh peel:** catalog persist builds one StringBuilder payload,
+  CRCs that span, writes header plus those bytes (`081M21F108S087G0R003JK8WST`).
+  Bound stays 48 MiB.
+- **D10 eighth peel:** `firstChangedWindow` hashes chunk/1 CBOR without
+  putting a Cas (`081M21GEXXY087G0R001WJ79KG`). 500 KiB 1-byte-edit walk
+  < 4 MiB. Bound stays 48 MiB.
+- **D10 ninth peel:** `firstChangedWindow` hashes a ReadOnlySpan over
+  the file bytes (`081M21J21NE087G0R002X2K0QN`). No `Array.zeroCreate` /
+  `BlockCopy` per prefix window. 500 KiB 1-byte-edit walk < 3 MiB.
+  Bound stays 48 MiB.
+- **D10 tenth peel:** BlockCas Put writes the next ZCA2 slot from the
+  in-memory index (`081M21M7FVZ087G0R000PNH46E`). Does not parseCas both
+  slots or copy the Dictionary per object. Freeze-storm bound 12 MiB.
+- **D10 eleventh peel:** BlockCas PutMany appends every new payload then
+  writeCasFromIndex once (`081M21NVSJ2087G0R002J9WVRP`). Freeze putLeaves
+  uses it. Bound stays 12 MiB.
+- **D10 twelfth peel:** catalog persist AppendHex's ContentHash256 nibbles
+  into the StringBuilder (`081M22GKEXS087G0R0033JNZ2F`). No ToHex string
+  per pin. Bound stays 12 MiB.
+- **D10 thirteenth peel:** layout persist AppendHex's content, object, and
+  leaf ids (`081M22J5T0T087G0R00189SA2P`). Single-leaf still skips layout.
+  Bound stays 12 MiB.
+- **D10 fourteenth peel:** jumprope encode writes canonical CBOR without
+  building a DynamicValue graph (`081M239JRJ0087G0R001FCAKEH`). 32×1-byte
+  builds < 256 KiB (DynamicValue path was 296376 bytes). Freeze-storm
+  bound stays 12 MiB.
+- **D10 fifteenth peel:** freeze intent/commit write those maps without
+  DynamicValue (`081M23BDKQA087G0R001QEFR2E`). Historical key order
+  kept (decode is by name). Bound stays 12 MiB.
+- **Numbers stay `toy`.** Not copied into README.
+- **Depends on:** ZD2 (landed). Workitem `081M1ZA8S7C087G0R002P9NX40`.
+- **Does not:** claim ZetaFS is faster than APFS/ext4; FUSE; Apple Developer Program; kill ZetaFS-as-product on batching; claim multi-planet agreement is shipped; put Raft on the geo path.
 
 ### ZD5 — ZetaDB SQL package (separate from Core)
 
@@ -435,7 +553,7 @@ ZetaFS PR12 (DST corpus) and PR13 (FUSE) remain on the FS spec. They are not del
 1. **Public names** for ZetaDB / ZetaFS — still gated.
 2. **First SQL subset** — which ANSI:2023 features are in v0 vs later (windows? `MATCH_RECOGNIZE` is ROADMAP P2 CEP). Do not silently pick "all of Postgres."
 3. **ZD6 before or after ZD5** — a Postgres-wire *empty server* can prove the adapter without SQL. Prefer a real catalog if ZD5 is close; otherwise a host-language catalog is an allowed thinner cut.
-4. **When ZetaFS-as-product is killed** — only after ZD4 has numbers. Until then it stays the designed store.
+4. **When ZetaFS-as-product is killed** — only after ZD4 has numbers **and** those numbers are read against the reasons it must earn (CAS / fork / `Regen` / placement / policy / durability / ReFS-shaped crash **and** a CALM/commutative fold that does not geo-Raft). Batching-alone loss does not kill. Multi-planet agreement is designed, not metered. Raft across sites is declined, not deferred. Until then it stays the designed store. A **Rust second version** is allowed only if that test says the custom FS earned it (`081M23DC9S6087G0R003P8VCDT`).
 5. **Bloom vs anti-bloom vs CQF** — two grow-only filters (three-valued, no saturation, G-set) vs counting Bloom (shipped) vs CQF (radar Trial, variable-width counts). Settled by ZD10 measurements, not by preferring the story. Resurrection (insert after delete) is UNKNOWN in the two-filter form; that may lose to counting/CQF on retract-heavy workloads.
 
 ---
@@ -451,3 +569,4 @@ ZetaFS PR12 (DST corpus) and PR13 (FUSE) remain on the FS spec. They are not del
 - Bloom, *Space/time trade-offs in hash coding with allowable errors*, CACM 1970; Fan et al., *Summary cache*, SIGCOMM 1998 (counting Bloom); Shapiro et al., *A comprehensive study of Convergent and Commutative Replicated Data Types*, INRIA 2011 (G-Set). Deletable Bloom is WONT-DO (Rothenberg 2010); two grow-only filters are a different construction.
 - Zhou et al., FoundationDB, SIGMOD 2021; Will Wilson, DST, Strange Loop 2014; TigerBeetle journal (ambition, not a measured claim).
 - ReFS (Beacon, not a port): Sinofsky, "Building the next generation file system for Windows: ReFS" (Building Windows 8, 2012) — allocate-on-write / shadow paging; [Block cloning](https://learn.microsoft.com/en-us/windows-server/storage/refs/block-cloning); [Integrity streams](https://learn.microsoft.com/en-us/windows-server/storage/refs/integrity-streams); Lorie, *Physical Integrity in a Large Segmented Database* (ACM TODS 1977) for shadow paging. KB 4016173 — allocate-on-write metadata + lazy cache can explode RAM.
+- Multi-planet fold (designed, not shipped; **not geo-Raft**): CALM — Hellerstein & Alvaro, CIDR 2011 *The Declarative Imperative*; CACM 2020 *Keeping CALM*. In-repo: [`docs/research/2026-07-11-multi-planet-convergence-three-drift-axes-commutative-observe-adinkra-ecc-hlc-canonical-order-one-attack-vector.md`](../research/2026-07-11-multi-planet-convergence-three-drift-axes-commutative-observe-adinkra-ecc-hlc-canonical-order-one-attack-vector.md); [`docs/research/2026-06-08-the-reorder-loophole-is-bounded-by-commutativity-non-reversible-claims-need-consensus.md`](../research/2026-06-08-the-reorder-loophole-is-bounded-by-commutativity-non-reversible-claims-need-consensus.md); Earth–Mars light-time [`docs/handoffs/2026-08-13-orbital-asymmetry-brief-for-manus.md`](../handoffs/2026-08-13-orbital-asymmetry-brief-for-manus.md); `local-time-never-enters-the-shared-fold`.

@@ -14,9 +14,11 @@ const pointersJsonPath = join(repoRoot, "tools", "setup", "ace-mechanism-pointer
 
 describe("setup mechanism pointers (Ace time-crystal deps)", () => {
   // The two jar rows were deleted (081M001E114087G0R001AZF4KD): nothing read
-  // what they wrote, and their URL was a re-uploadable tag. What survives is
-  // the invariant every future row must satisfy -- vacuous today, load-bearing
-  // the moment someone adds one.
+  // what they wrote, and their URL was a re-uploadable tag. The invariant they
+  // failed stayed behind, vacuous for as long as the manifest held no rows --
+  // and stopped being vacuous on 081M23AST90087G0R00150MK76, which added the
+  // Alloy jar row to a path the runners really do load under a digest that
+  // really does pin it. This assertion now has a subject.
   test("every from-url row carries an https URL and a sha256 pin", () => {
     const text = readFileSync(join(repoRoot, "tools/setup/manifests/from-url"), "utf8");
     for (const entry of parseMechanismManifest(text)) {
@@ -41,9 +43,11 @@ describe("setup mechanism pointers (Ace time-crystal deps)", () => {
     );
     for (const p of pointers) {
       expect(p.schema).toBe("zeta.ace.package-manager-pointers.v1");
+      // from-url left this set on 081M23AST90087G0R00150MK76: it now carries the
+      // digest-pinned Alloy jar row, so it is held to the same has-dependencies
+      // bar as every other mechanism rather than to the empty-manifest exemption.
       if (
         p.manifest === "tools/setup/manifests/from-dotnet-workload"
-        || p.manifest === "tools/setup/manifests/from-url"
         || p.manifest === "tools/setup/manifests/from-deb"
       ) {
         expect(p.dependencies.length).toBe(0);

@@ -1,0 +1,14 @@
+{
+  "id": "080d043ae8bbf010a01300082ad59cdc",
+  "at": "2026-09-09T18:10:20.158Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M23NT5VX087G0R000KAFE45",
+    "type": "task",
+    "title": "ace refresh: pin and refresh as one mechanism for pinned dependencies",
+    "slug": "ace-refresh-pin-and-refresh-as-one-mechanism-for-pinned-depe",
+    "priority": "P2",
+    "filename": "081M23NT5VX087G0R000KAFE45-ace-refresh-pin-and-refresh-as-one-mechanism-for-pinned-depe.md"
+  }
+}

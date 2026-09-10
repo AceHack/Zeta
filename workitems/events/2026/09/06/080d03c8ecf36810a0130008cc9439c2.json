@@ -1,0 +1,14 @@
+{
+  "id": "080d03c8ecf36810a0130008cc9439c2",
+  "at": "2026-09-06T23:46:19.373Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1WHV7KD087G0R001CNTJ1M",
+    "type": "task",
+    "title": "unlinkFile tombstone persists across freeze reopen",
+    "slug": "unlinkfile-tombstone-persists-across-freeze-reopen",
+    "priority": "P2",
+    "filename": "081M1WHV7KD087G0R001CNTJ1M-unlinkfile-tombstone-persists-across-freeze-reopen.md"
+  }
+}

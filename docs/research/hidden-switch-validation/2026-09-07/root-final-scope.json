@@ -1,0 +1,38 @@
+{
+  "SourceCommit": "7e9b8681c2e619316ed2439fd313cb8ae3d5f42e",
+  "StartedAtUtc": "2026-09-07T12:07:38.075422+00:00",
+  "RegisteredSourcesGenerated": false,
+  "Commands": [
+    {
+      "File": "root-final-core-python.log",
+      "Args": [
+        "uv",
+        "run",
+        "--project",
+        "src/Core.Python",
+        "pytest",
+        "src/Core.Python/tests",
+        "-q"
+      ],
+      "ExitCode": 0,
+      "Sha256": "ce9b33195c64fee0c5519648a238c3cc223757b782ce65fb35315270bac21a74"
+    },
+    {
+      "File": "root-final-nci-ts.log",
+      "Args": [
+        "mise",
+        "exec",
+        "bun@1.3.13",
+        "--",
+        "bun",
+        "test",
+        "src/Core.TypeScript/formal-verification/nci-witness-receipt.test.ts",
+        "src/Core.TypeScript/formal-verification/nci-witness-capability.test.ts",
+        "src/Core.TypeScript/observe/attestation-consent-expiry-receipt.test.ts"
+      ],
+      "ExitCode": 0,
+      "Sha256": "11343f76ed3cda46ec52c3fdefa27c843ded725d1dd9bf4b6a49fd4192cbecd8"
+    }
+  ],
+  "CompletedAtUtc": "2026-09-07T12:08:57.483887+00:00"
+}

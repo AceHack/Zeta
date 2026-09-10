@@ -1354,6 +1354,10 @@
     {
       "key": "tlaps-proof.yml:prove",
       "reason": "MEASURED 2026-08-22: the last 40 runs are 33 `cancelled` + 7 `failure`; the most recent SUCCESS is run 28550177205 on 2026-07-01, outside the sampling window. Measuring a cancelled run would measure the kill, not the work. That the lane has not been green in seven weeks is a separate finding and is NOT what this audit is for; recorded here so it is not lost. Falls back to the weak pre-apt bound, which its 3600s timeout satisfies with room."
+    },
+    {
+      "key": "verify-mise-lock.yml:verify",
+      "reason": "MEASURED 2026-09-10: this workflow is INTRODUCED in the same change that adds this row, so it has run zero times and there is no history to sample. Falls back to the weak pre-apt bound: 420 (ci apt budget) + 10 (apt_kill_after) + 120 (PRE_APT_RESERVE_SECONDS) = 550s, which its 1500s (`timeout-minutes: 25`) satisfies with wide room. THE 25 MINUTES IS NOT APT AND IS NOT PADDING: this job installs no apt packages at all -- it fetches one pinned mise tarball and runs bun -- and the ceiling is sized for the three `mise lock` passes over 12 platforms that make up the drift check, plus two small real installs. THIS ROW IS TEMPORARY, unlike scaffold-stage1-create-repos and tlaps-proof above: the lane runs on every PR touching the lockfiles, the mise configs or the installers, AND weekly on a cron, so it starts producing successful runs immediately. Refresh it into `jobs` with `bun src/Core.TypeScript/hygiene/refresh-apt-job-timings.ts` once it has history, and delete this row -- leaving it would be an unmeasured hole kept open by nothing but inertia."
     }
   ]
 }

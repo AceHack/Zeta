@@ -1,0 +1,202 @@
+{
+  "Scope": "Read-only bounded crash-location review; no test, build, debugger execution or runtime mutation. Raw IPS and process-memory dump remain local only.",
+  "SourceCommit": "4d7b13947bef9b53a65c043885971ceefa168e87",
+  "OriginalLog": {
+    "File": "root-main-tests-attempt-1.log",
+    "Sha256": "DA435F7CC74AB1A01A47F6972C1224FC2086E5C067709BE34725EEA5342EA5C4"
+  },
+  "IpsSource": {
+    "LocalFileName": "Tests.FSharp-2026-09-07-095711.ips",
+    "Bytes": 420982,
+    "Sha256": "F0626570CF01D5293814778BCF808468866192DB5163832B7109C8D91522B0F6",
+    "RawBytesCommitted": false,
+    "Extraction": "Only matching test process, runtime exception, faulting-thread stack and OS/version fields; other threads, registers, private environment and incident metadata omitted."
+  },
+  "Process": {
+    "Name": "Tests.FSharp",
+    "Pid": 54977,
+    "LaunchLocal": "2026-09-07 09:55:26.1602 -0400",
+    "CaptureLocal": "2026-09-07 09:57:10.7679 -0400",
+    "OsVersion": {
+      "train": "macOS 26.6.2",
+      "build": "25G83",
+      "releaseType": "User"
+    }
+  },
+  "Exception": {
+    "codes": "0x0000000000000001, 0x000081010d20e010",
+    "rawCodes": [
+      1,
+      141841515208720
+    ],
+    "type": "EXC_BAD_ACCESS",
+    "signal": "SIGSEGV",
+    "subtype": "KERN_INVALID_ADDRESS at 0x000081010d20e010 -> 0x000001010d20e010 (possible pointer authentication failure)"
+  },
+  "Termination": {
+    "flags": 0,
+    "code": 11,
+    "namespace": "SIGNAL",
+    "indicator": "Segmentation fault: 11",
+    "byProc": "exc handler",
+    "byPid": 54977
+  },
+  "FaultingThread": {
+    "Index": 80,
+    "Name": ".NET BGC",
+    "Frames": [
+      {
+        "Image": "libcoreclr.dylib",
+        "ImageUuid": "6cb64ff2-42ff-30ea-bc45-4640fa3b0d03",
+        "ImageOffset": 3374448,
+        "Symbol": "SVR::gc_heap::revisit_written_page(unsigned char*, unsigned char*, int, unsigned char*&, unsigned char*&, int, unsigned long&)",
+        "SymbolLocation": 288
+      },
+      {
+        "Image": "libcoreclr.dylib",
+        "ImageUuid": "6cb64ff2-42ff-30ea-bc45-4640fa3b0d03",
+        "ImageOffset": 3372024,
+        "Symbol": "SVR::gc_heap::revisit_written_pages(int, int)",
+        "SymbolLocation": 1488
+      },
+      {
+        "Image": "libcoreclr.dylib",
+        "ImageUuid": "6cb64ff2-42ff-30ea-bc45-4640fa3b0d03",
+        "ImageOffset": 3246048,
+        "Symbol": "SVR::gc_heap::background_mark_phase()",
+        "SymbolLocation": 2520
+      },
+      {
+        "Image": "libcoreclr.dylib",
+        "ImageUuid": "6cb64ff2-42ff-30ea-bc45-4640fa3b0d03",
+        "ImageOffset": 3238352,
+        "Symbol": "SVR::gc_heap::gc1()",
+        "SymbolLocation": 512
+      },
+      {
+        "Image": "libcoreclr.dylib",
+        "ImageUuid": "6cb64ff2-42ff-30ea-bc45-4640fa3b0d03",
+        "ImageOffset": 3366144,
+        "Symbol": "SVR::gc_heap::bgc_thread_function()",
+        "SymbolLocation": 204
+      },
+      {
+        "Image": "libcoreclr.dylib",
+        "ImageUuid": "6cb64ff2-42ff-30ea-bc45-4640fa3b0d03",
+        "ImageOffset": 2442584,
+        "Symbol": "(anonymous namespace)::CreateSuspendableThread(void (*)(void*), void*, char16_t const*)::$_0::__invoke(void*)",
+        "SymbolLocation": 132
+      },
+      {
+        "Image": "libcoreclr.dylib",
+        "ImageUuid": "6cb64ff2-42ff-30ea-bc45-4640fa3b0d03",
+        "ImageOffset": 3951088,
+        "Symbol": "CorUnix::CPalThread::ThreadEntry(void*)",
+        "SymbolLocation": 352
+      },
+      {
+        "Image": "libsystem_pthread.dylib",
+        "ImageUuid": "a373f0b0-9880-326a-88b4-dd8be4e33072",
+        "ImageOffset": 27736,
+        "Symbol": "_pthread_start",
+        "SymbolLocation": 136
+      },
+      {
+        "Image": "libsystem_pthread.dylib",
+        "ImageUuid": "a373f0b0-9880-326a-88b4-dd8be4e33072",
+        "ImageOffset": 7196,
+        "Symbol": "thread_start",
+        "SymbolLocation": 8
+      }
+    ]
+  },
+  "CurrentRuntimeFile": {
+    "Path": "/Users/acehack/.local/share/mise/dotnet-root/shared/Microsoft.NETCore.App/10.0.11/libcoreclr.dylib",
+    "Bytes": 6217584,
+    "Sha256": "10B24D0B11C7F6D838114744097BF10DF9B08B906AFC9016567631A1C009DFD0",
+    "MachOLcUuid": [
+      "6cb64ff2-42ff-30ea-bc45-4640fa3b0d03"
+    ],
+    "MatchesFaultingImageUuid": true,
+    "Limit": "Current on-disk file digest plus matching Mach-O image UUID; this does not hash original mapped process pages or establish a source-to-binary theorem."
+  },
+  "RuntimeConfig": {
+    "File": "root-main-crash-runtimeconfig.json",
+    "Bytes": 587,
+    "Sha256": "8A493BFB781588CB83ACF029730FCCBB962DCBA965736C0D406D26C4D9C9831D"
+  },
+  "Sequence": {
+    "SourceFileName": "Sequence_b36e455d67e749d1b4d200b7b4b0b183.xml",
+    "Bytes": 468079,
+    "Sha256": "1194D43A142D413EE963D44A8BD4656E3C3286B9DD962F9AD37792816FAD16F7",
+    "Started": 1228,
+    "Completed": 1204,
+    "InFlight": [
+      "Zeta.Tests.Formal.E8LieAlgebraTests.KILLING: kappa(e_a, f_a) = 60 for every one of the 240 roots",
+      "Zeta.Tests.DecorrelationExcessTests.FALSIFIER - classifyByPValue holds false-conviction \u2264 \u03b4 at every k; the old quantile path does not",
+      "Zeta.Tests.FuzzDecodeBoundaryTests.Fuzz: fromArrow is total on arbitrary bytes (never throws)",
+      "Zeta.Tests.Storage.DurabilitySimTests.DST: recovery invariant holds at EVERY crash point (deterministic enumeration)",
+      "Zeta.Tests.CpuSynthTests.THE LAW: the fully-gate CPU equals Isa.eval on branch/loop/straight-line programs",
+      "Zeta.Tests.Formal.ToffoliGateLawsTests.Weight multiplication fragment references no unallocated wire",
+      "Zeta.Tests.FiniteStochasticBridgeTests.registered sparse matrix-unit witnesses retain all negative controls",
+      "Zeta.Tests.Storage.FsPicklerSerializerTests.option keys round-trip with Some and None",
+      "Zeta.Tests.Algebra.VeridicalityTests.antiConsensusGate accepts two claims from two distinct roots",
+      "Zeta.Tests.Properties.FuzzTests.fuzz: any chain of linear ops is equivalent to itself across two circuits",
+      "Zeta.Tests.FSharp.Blake3.CrossVerifyTests.cross-verify five blake3-256 vectors match TS+Rust hex",
+      "Zeta.Tests.FrameDeltaLegsTests.a frame delta round-trips through Arrow (Arrow leg)",
+      "Zeta.Tests.ToyBosonFermionParityTests.TBF-22 the posterior degrades AT the code's unique-decoding radius, not before it",
+      "Zeta.Tests.Formal.MetricBoundsTests.Z3: per-row failure probability \u2264 1/e (P1+P2+width combined)",
+      "Zeta.Tests.FSharp.Algebra.CellSchedulerTests.sequential and ferry runners agree on a non-commutative multi-message cell",
+      "Zeta.Tests.TimeGenTests.STAGED: S = 4 by explicit staged schedule \u2014 and the label SAYS it is staged, not physical",
+      "Zeta.Tests.Operators.SpeculativeWatermarkTests.speculative window DISC mode matches positive-only output",
+      "Zeta.Tests.Storage.DeltaCodecTests.both codecs decode to the same ZSet (seam is interchangeable)",
+      "Zeta.Tests.Operators.FusionTests.FilterFilter declares IsLinear",
+      "Zeta.Tests.BraidTests.MENO-BRAID: braidRinv inverts braidR (both orders)",
+      "Zeta.Tests.StreamTableDualityTests.A - the value-level integrate agrees with Circuit.IntegrateZSet tick by tick",
+      "Zeta.Tests.Runtime.RuntimeTests.DbspRuntime shards a workload across workers and gathers",
+      "Zeta.Tests.Formal.CrdtLawsTests.Z3 proves pointwise map join is the LEAST upper bound (componentwise \u2264)",
+      "Zeta.Tests.FrameMotionTests.motion policy selection is conservative on ties and refuses incomparable receipts"
+    ],
+    "Limit": "Concurrent sequence does not identify one causal test; incomplete rows are not assertion failures."
+  },
+  "Dump": {
+    "LocalWriter": "Zeta-rendered-catch-reference-20260906",
+    "RelativePath": "tests/Tests.FSharp/TestResults/e1d5fabc-c6ef-4359-90f4-2e0fea9b0522/Tests.FSharp_54977_1788789425_crashdump.dmp",
+    "Bytes": 10468103592,
+    "ModifiedAtUtc": "2026-09-07T13:57:10.685061+00:00",
+    "Sha256": "ABD497B983909C83455B64C1FDF8BBD998AEEC4DC6D90FB7F5FD519C1858FA6B",
+    "HashStatus": "Completed one read-only streaming pass after the unchanged recovery invocation finished; raw dump remains local only.",
+    "RawBytesCommitted": false,
+    "Custody": "Local ignored diagnostic artifact; no git-canonical preservation claim for raw process memory.",
+    "HashStartedAtUtc": "2026-09-07T14:18:05.462912+00:00",
+    "HashFinishedAtUtc": "2026-09-07T14:18:11.407106+00:00",
+    "ReadBytes": 10468103592,
+    "ObservedFileSizeMtimeInodeUnchanged": true
+  },
+  "SurvivorObservation": {
+    "KnownPids": [
+      54931,
+      54933,
+      54934,
+      54935,
+      54936,
+      54937,
+      54938,
+      54977
+    ],
+    "MatchedKnownPidsOrRootPathNativeJavaProcesses": [],
+    "Method": "Read ps process metadata; no kill/restart. The absence is a point observation, not a complete descendant-isolation proof.",
+    "ObservedBeforeRecoveryStartedAtUtc": "2026-09-07T14:09:31.170+00:00"
+  },
+  "Recommendation": "One unchanged full-solution --no-build rerun with fresh result prefix. Preserve this failure; if the crash recurs, stop ordinary retries and design an isolation diagnostic. No GC/JVM/source/runtime-policy change.",
+  "RecoveryLogObservation": {
+    "File": "root-main-tests-attempt-2.log",
+    "Bytes": 6781,
+    "Sha256": "8DA846AF7583D6B604DB31E72B7430D046716F6EBED72B0E93632EB5DE5721C5",
+    "ExitCode": 0,
+    "FinishedAtUtc": "2026-09-07T14:17:03.764288+00:00",
+    "FSharpPassed": 6578,
+    "FSharpSkipped": 6,
+    "Scope": "Read completed root invocation log only; did not rerun or independently reparse the full recovery suite. Owner separately reports 7,568 passes / 6 skips and unchanged input/output hashes."
+  }
+}

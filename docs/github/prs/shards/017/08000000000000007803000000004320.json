@@ -1,0 +1,12 @@
+{
+  "pr_number": 17184,
+  "archive_path": "docs/history/pr-reviews/PR-17184-fix-081m244gqwp087g0r002gzbq45-the-26-facets-falsifier-flaked-on-a-set-it-built-.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-10T00:58:37.498Z",
+  "schema_version": "v1",
+  "commit_sha": "41230858bf059d36a0d36b99234629286466b493",
+  "title": "fix(081M244GQWP087G0R002GZBQ45): the 26-facets falsifier flaked on a Set it built 120,960 times",
+  "state": "MERGED",
+  "merged_at": "2026-09-10T00:57:56Z",
+  "head_ref": "agent/face-lattice-flake-081M243GZ19087G0R001F914Q4"
+}

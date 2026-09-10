@@ -1,0 +1,14 @@
+{
+  "id": "080d03c5ce3ad810a01300088812f94f",
+  "at": "2026-09-06T21:57:16.251Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1WBKHTT087G0R003J1FDSH",
+    "type": "task",
+    "title": "move the cluster validators out of the tree scheduled for deletion",
+    "slug": "move-the-cluster-validators-out-of-the-tree-scheduled-for-de",
+    "priority": "P2",
+    "filename": "081M1WBKHTT087G0R003J1FDSH-move-the-cluster-validators-out-of-the-tree-scheduled-for-de.md"
+  }
+}

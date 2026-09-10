@@ -1,0 +1,31 @@
+from pathlib import Path
+root=Path(__file__).resolve().parent
+s=(root/'compose_v2.py').read_text()
+a="bpy.ops.import_scene.gltf(filepath=str(root/'transferred'/name/'body.glb'));body=[o for o in bpy.context.selected_objects if o.type=='MESH'][0];bpy.context.view_layer.objects.active=body;bpy.ops.object.transform_apply(location=True,rotation=True,scale=True);body.name=name+' | SG body generator'"
+s=s.replace(a,"body=import_tsr(root/'fixed-latent'/name/'mesh-384.glb');body.name=name+' | Body generator'")
+s=s.replace("target_h*1.035", "target_h*1.022")
+s=s.replace("name=='Xenaa' and c.y>-.015", "name=='Xenaa' and c.y>-.055").replace("name=='AceHack' and c.y>-.01 and c.z>target_h*.945", "name=='AceHack' and c.y>-.055 and c.z>target_h*.955")
+s=s.replace("for o in [body,head]:o.location.x=offset", """# Suppress neutral-white hallucinations in inferred garment colors; front reference remains separate.
+ attr=body.data.color_attributes.active_color
+ if attr:
+  for item in attr.data:
+   c=item.color_srgb
+   if min(c[:3])>.48 and max(c[:3])-min(c[:3])<.10:item.color_srgb=(.055,.05,.065,1)
+ for o in [body,head]:o.location.x=offset
+ # A small explicit collar joins the generators while retaining their separate editability.
+ collar_mat=bpy.data.materials.new(name+' | Constructed collar');collar_mat.diffuse_color=(.55,.5,.4,1) if name=='AceHack' else (.025,.012,.045,1);collar_mat.use_nodes=True
+ collar_mat.node_tree.nodes['Principled BSDF'].inputs['Base Color'].default_value=collar_mat.diffuse_color
+ collar_mat.node_tree.nodes['Principled BSDF'].inputs['Roughness'].default_value=.78
+ verts=[];faces=[];segments=48
+ for j in range(segments+1):
+  a=-math.pi/2+.58+j*(2*math.pi-1.16)/segments
+  for upper in [0,1]:
+   radius=target_h*(.040 if upper else .050)
+   z=target_h*((.883 if name=='AceHack' else .874) if upper else .839)
+   verts.append((offset+radius*math.cos(a),-.008+radius*.85*math.sin(a),z))
+ for j in range(segments):faces.append((2*j,2*j+1,2*j+3,2*j+2))
+ mesh=bpy.data.meshes.new(name+' collar mesh');mesh.from_pydata(verts,[],faces);mesh.update();collar=bpy.data.objects.new(name+' | Collar join',mesh);scene_collection=bpy.context.scene.collection;scene_collection.objects.link(collar);mesh.materials.append(collar_mat)
+ sol=collar.modifiers.new('Cloth thickness','SOLIDIFY');sol.thickness=.002
+ bevel=collar.modifiers.new('Soft seam','BEVEL');bevel.width=.0015;bevel.segments=2""")
+s=s.replace("composed-v2", "composed-v3").replace("composition-v2-receipt.json", "composition-v3-receipt.json")
+(root/'compose_v3.py').write_text(s)

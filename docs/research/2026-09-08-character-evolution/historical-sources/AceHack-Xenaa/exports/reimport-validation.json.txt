@@ -1,0 +1,48 @@
+{
+  "BlenderVersion": "5.2.1 LTS",
+  "Passed": true,
+  "Rows": [
+    {
+      "Character": "AceHack",
+      "File": "/Users/acehack/Documents/Blender/AceHack-Xenaa/exports/AceHack.glb",
+      "Sha256": "0bb932510da824566d7b0ab6faf4a30e5ec944fbc81e6b3023cd6f93122968c1",
+      "GlbScenes": 1,
+      "GlbMeshes": 1,
+      "ReimportedMeshObjects": 1,
+      "ReimportedTriangles": 786232,
+      "ReimportedVertices": 439815,
+      "BoundsMin": [
+        -0.5389939546585083,
+        -0.2554999589920044,
+        0.0
+      ],
+      "BoundsMax": [
+        0.7155000567436218,
+        0.4540232717990875,
+        2.0484421253204346
+      ],
+      "FinitePositions": true
+    },
+    {
+      "Character": "Xenaa",
+      "File": "/Users/acehack/Documents/Blender/AceHack-Xenaa/exports/Xenaa.glb",
+      "Sha256": "0bfba5510b9c221494ac3ccf7ddf7c851c2a2a3269ea591865cd213d9ab17c45",
+      "GlbScenes": 1,
+      "GlbMeshes": 1,
+      "ReimportedMeshObjects": 1,
+      "ReimportedTriangles": 719362,
+      "ReimportedVertices": 396452,
+      "BoundsMin": [
+        -0.5595308542251587,
+        -0.21752144396305084,
+        0.0
+      ],
+      "BoundsMax": [
+        0.6541042327880859,
+        0.4540233314037323,
+        2.0199408531188965
+      ],
+      "FinitePositions": true
+    }
+  ]
+}

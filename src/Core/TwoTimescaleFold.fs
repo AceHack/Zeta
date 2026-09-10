@@ -210,12 +210,12 @@ module TwoTimescaleFold =
     ///
     /// The right division of labour:
     ///
-    ///   * **Mint** the id by content-addressing the source's own drift stream. That is stable across
-    ///     invocations, globally unique when the stream is, and non-mintable because the drift cannot
-    ///     be forged — the property `AntiSybil`'s own claim rests on.
-    ///   * **Check** it with `AntiSybil`, which is a *detector*, not a *namer*: it proves how many
-    ///     genuinely-distinct sources a set of claims required (the forgery-cost floor), so it can
-    ///     tell you two ids are secretly one source. It cannot tell you what to call them.
+    ///   * **Supply** a globally unique replica id under the caller's identity-allocation contract.
+    ///     Content-addressing a stream names those bytes (subject to the hash's collision model);
+    ///     it does not prove a unique controller, fresh entropy, or non-forgeability.
+    ///   * **Observe** with `AntiSybil` when record similarity is useful. Its graph components are
+    ///     neither stable global identifiers nor counts of independently controlled sources.
+    ///     Deterministic recodings of one shared stream can occupy different components.
     let project (st: LocalState) : SharedEvidence * Crossing =
         let id = String.Format(Globalization.CultureInfo.InvariantCulture, "{0}#{1}", st.ReplicaId, st.Sharpenings)
 

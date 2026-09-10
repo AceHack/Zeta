@@ -4,7 +4,12 @@ Date: 2026-09-06
 From: Vera, OpenAI Codex, GPT-6 Astra
 To: a fresh Vera session starting in GPT-6 Astra
 Operational status: research-grade handoff
-Baseline: `origin/main` after PR #16826
+Original baseline: `origin/main` after PR #16826
+Continuation: prediction-to-action, identity/coverage, finite-channel and NCI results, 2026-09-06
+
+The [consolidated unattended continuation](2026-09-06-vera-unattended-research-continuation.md)
+indexes all eight verified merges, exact archive references, combined validation
+and the next bounded preregistration. Start there for the latest re-entry snapshot.
 
 ## Fresh Vera bootstrap
 
@@ -15,11 +20,22 @@ Paste this into a fresh GPT-6 Astra session:
 > handoff, the Simplex/WSet verdict, both predictive-state result documents,
 > the Alexa pairwise-memory ferry and its grounding correction, and the QBism
 > source record linked below. Keep every correspondence in an evidence
-> register. First preregister the bounded non-ARC chronological
-> rendered-signal predictor described here. In a separate research lane,
-> specify the invariant that two skewed agents' pairwise memories both
-> preserve; do not call the construction Lorentz-invariant, anti-Sybil, CQM,
-> or universal until the required map, laws, and adversarial tests exist.
+> register. Read the rendered-signal result: every RNN beats bigram but fails
+> the registered improvement over order-two. Read the registered rendered-catch
+> result: frozen order-two achieves approximately 75% versus 50% for the
+> bigram, last-beacon and fair baselines on three structured panels. The
+> known-lag-two diagnostic matches order-two. Full replay is exact and both
+> cost caps are met.
+> The goal, projection and action meanings are supplied; action-conditioned
+> hidden dynamics and planning still require a new preregistration. Read the relational-identity
+> result: its invariant is authenticated receipt content, causal order and the
+> signed claim map on a declared closed cut. Keep conditional entropy bits
+> separate from stipulated work: B=sum b_i, R=sum r_e, M=1+R/B for B>0.
+> Pairwise consistency and correlation-component counts cannot establish
+> distinct controllers. Read the component and CHSH coverage corrections. Do not
+> infer distinct controllers or Lorentz invariance. Read the finite classical
+> C/K functors: C targets commutative channels, while K uses ordinary Karoubi
+> dephasing objects. Neither establishes CQM/WSet equivalence or universality.
 > Preserve protocols before results, retain independent replay, and route any
 > ARC integration only after frozen held-out non-ARC evidence.
 
@@ -31,11 +47,114 @@ Immediate pointers for that second lane:
 
 ## Start here
 
+Continuation, 2026-09-06: the
+[chronological rendered-signal result](../research/2026-09-06-rendered-signal-predictor-results.md)
+completes work item `081M1W41PKD087G0R0024JFXHT` under a remotely preserved
+[preregistration](../research/2026-09-06-rendered-signal-predictor-protocol.md).
+All three RNNs beat bigram on both held-out renderings, but none meets the
+.01-bit improvement against order-two. All 102 prediction/detector arm-panels,
+120 cost rows and one complete retraining reproduce independently. Keep
+order-two as the next acting-carrier candidate. Rendering dominates total
+cost; token-only RNN inference is about fourteen times slower here.
+That passive comparison measured no action return or ARC result.
+
+The subsequent [registered rendered-catch result](../research/2026-09-06-rendered-catch-actions-results.md)
+completes `081M1W8T690087G0R002DJ91MJ`. Its implementation archive is
+`36fa2275e049017aefa6ebdfd77fdbd2dfbd5180`, published before measurement.
+Across 20,480 behavioral episodes, frozen order-two catches 74.74% to 75.03%
+of targets on the dot, bar and palette panels versus roughly 50% for the
+bigram, last-beacon and fair baselines. The known-lag-two diagnostic matches
+order-two's actions and returns.
+Its largest independent-symbol-panel advantage is 0.206 percentage points.
+All 20 behavioral arm-panels and 25 cost rows replay exactly, including 200
+warmup and 1,600 timed episodes. Order-two/bigram median wall and allocation
+ratios are 0.987079 and 0.999461. All registered conditions pass. The first
+timing repetition is retained; these ratios do not establish a speed advantage.
+This verifies supplied-goal predictor-to-key composition, not learned vision,
+goal acquisition, planning, action-dependent dynamics or an ARC policy.
+
+The separate
+[relational-identity result](../research/relational-identity/2026-09-06-results.md)
+landed in [PR #16857](https://github.com/Lucent-Financial-Group/Zeta/pull/16857).
+Independent replay matched 288 coordinate transports with inverse/composition
+checks, 18 mutations, four entropy fixtures, 45 workload rows and seven
+baseline rows. The invariant is actor-bound authenticated receipt content,
+transitive causal order and the consolidated signed claim map on a declared
+closed event cut. The coordinate-forgetting functor preserves identity and
+composition in that restricted domain; no physical boost or spacetime metric
+was constructed.
+
+Additive min-entropy follows from the declared pointwise conditional innovation
+bounds, including earlier innovations and adversary information. Pairwise
+independence alone fails: for independent fair `U,V`, `(U,V,U XOR V)` has only
+two joint bits. The multiplier
+is a separate work-accounting identity: `B=sum b_i`, `R=sum r_e`,
+`M=1+R/B`, `C=B*M=B+R` for `B>0`. A fabricated complete receipt graph remains
+internally consistent under the permissive fixture verifier. This result does
+not prove source non-fungibility, price a Sybil attack, or identify controllers.
+
+The [component interpretation correction](../research/relational-identity/2026-09-06-component-interpretation-correction.md)
+landed in [PR #16871](https://github.com/Lucent-Financial-Group/Zeta/pull/16871).
+The shipped quantity is now named `correlationComponentCount`: a common-source
+XOR construction can produce multiple apparently uncorrelated components,
+and adding a bridge can reduce component count/progress. Neither physical
+controller multiplicity nor generally monotone progress follows. Conditional
+entropy assumptions and an external identity oracle remain separate premises.
+
+The [CHSH coverage audit](../research/chsh-coverage/2026-09-06-audit.md)
+landed in [PR #16869](https://github.com/Lucent-Financial-Group/Zeta/pull/16869).
+Missing setting buckets now refuse calibrated certification, and the smallest
+bucket caps the reported effective sample count. Raw descriptive S remains
+available; unmeasured bounds stay absent rather than becoming favorable zeros.
+The cap is an engineering safeguard, not a general HAC validity theorem, and
+causal incomparability alone does not establish physical no-signaling.
+
+The [finite stochastic channel result](../research/2026-09-06-finite-stochastic-cqm-bridge-results.md)
+landed in [PR #16891](https://github.com/Lucent-Financial-Group/Zeta/pull/16891).
+Fourteen groups and 957 exact rational cases agree with independent replay.
+The faithful symmetric monoidal C functor targets commutative algebras with
+complex-linear CP trace-preserving maps. The ordinary full-matrix identity
+fails: `E(I_n)=Delta_n`. K instead preserves the identity of dephasing objects
+in the ordinary Karoubi category, with dephasing-sandwiched symmetry; this is
+not the dagger Karoubi construction. Signed weights need not preserve the
+fixed positive cone. The proofs and finite witnesses establish no CQM/WSet
+equivalence, universality, Clifford structure or Lorentz invariance.
+
+The [NCI emitter capability correction](../research/2026-09-06-nci-emitter-capability-correction.md)
+landed in [PR #16887](https://github.com/Lucent-Financial-Group/Zeta/pull/16887).
+The real type-erased emitter matches 920 canonical bytes and declared effect
+traces. Its pinned-Bun fixture uses AST admission to refuse dynamic imports;
+the controlled delegated TLC result and trusted-code fixture establish neither
+transitive independence nor a `node:vm` security boundary.
+
+The next empirical step is a separately registered action-conditioned hidden
+dynamics task with declared representation, goal and planning controls.
+Preserve each new protocol, source snapshot and falsifier before its result.
+Current claims and result records determine status; a proposed follow-up is
+not a completed experiment. The supplied-goal catch result alone cannot
+justify ARC integration or any new identity/physics equivalence.
+
+Re-entry environment notes: run from a writer-owned clone with its local
+`.mise.toml` trusted and a login shell so signing and all preflight tools are
+available. The live worldview-refresh entry point is
+`src/Core.TypeScript/forge-host/github/refresh-worldview.ts`; the older
+`tools/github/refresh-worldview.ts` bootstrap pointer is stale. A full build
+can transiently exit 139 in an unchanged F# project; preserve the failure,
+try that project in isolation, and verify the full retry before calling green.
+For the opt-in interp lane, run Ruff and `mypy zeta_interp/ tests/` from
+`src/Interp.Python`; root quick preflight covers the Core/ARC Python projects,
+and root-invoked Ruff can classify first-party test imports differently.
+The live Python/F# hand fixture requires a prior Release Core build.
+The combined acting/bridge suite has 299 Python cases; the workflow floor now
+counts both lanes. Preserve the final 7,527-test native integration gate and
+CI-mapped fixture-path repair separately from the original measured snapshots;
+the [consolidated handoff](2026-09-06-vera-unattended-research-continuation.md)
+links their raw evidence and the archive/admission hazards.
+
 This handoff is the shortest route back into the work without replaying the
-whole conversation. The predictive-state experiments named below are landed on
-`main`. There is no unpublished result or half-finished predictive experiment
-to recover. The active work is now synthesis, selection of the next registered
-experiment, and eventual composition with the ARC-AGI-3 lane.
+whole conversation. The completed batches below form the preserved baseline.
+The continuation advances registered non-ARC action experiments and concrete
+measurement repairs before considering composition with the ARC-AGI-3 lane.
 
 Read in this order:
 
@@ -52,6 +171,23 @@ Read in this order:
    before interpreting any public ARC run.
 6. [MiniGrid adapter result](../research/2026-09-06-minigrid-empty-5x5-v310-adapter-conformance-result.md)
    for the newest external non-ARC carrier boundary.
+7. [Rendered-signal result](../research/2026-09-06-rendered-signal-predictor-results.md)
+   for the completed chronological frame boundary, stronger-control verdict,
+   independent replay, retained admission repair and cost accounting.
+8. [Relational-identity result](../research/relational-identity/2026-09-06-results.md)
+   for the declared-cut invariant, conditional entropy premise, pairwise work
+   multiplier and preserved collusion/coverage counterexamples.
+9. [Rendered-catch result](../research/2026-09-06-rendered-catch-actions-results.md)
+   for real key actions, exact independent replay, matched whole-episode costs
+   and the supplied-representation contextual-bandit boundary.
+10. [Identity component correction](../research/relational-identity/2026-09-06-component-interpretation-correction.md)
+    and [CHSH coverage audit](../research/chsh-coverage/2026-09-06-audit.md)
+    for repaired shipped measurements and their retained counterexamples.
+11. [Finite stochastic channel result](../research/2026-09-06-finite-stochastic-cqm-bridge-results.md)
+    for explicit C/K functors, the ordinary identity counterexample and the
+    fixed positive-cone boundary.
+12. [NCI emitter capability correction](../research/2026-09-06-nci-emitter-capability-correction.md)
+    for the executed capability fixture and retained runtime/admission limits.
 
 The one-sentence thesis is:
 
@@ -355,11 +491,13 @@ The bridge is therefore not "put the HMM in ARC." It is:
 This sequence lets the research improve the ARC lane without letting ARC's
 public roster leak backward into model selection.
 
-## Recommended first task for the fresh session
+## Original first-task specification, now completed
 
-Preregister one bounded experiment called, in substance, "chronological
-rendered-signal prediction before ARC integration." Do not edit the hosted
-default while doing it.
+The original first task was "chronological rendered-signal prediction before
+ARC integration." Its [result](../research/2026-09-06-rendered-signal-predictor-results.md)
+is now preserved. The following was the specification, retained for context;
+the fresh task is an explicitly registered action-before-feedback experiment
+using the selected simpler candidate.
 
 Freeze the following before collecting results:
 

@@ -1,0 +1,14 @@
+{
+  "id": "080d040d530d5010a0130008b631819e",
+  "at": "2026-09-08T15:37:02.122Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M20TMRD9087G0R0035Y762D",
+    "type": "task",
+    "title": "D9 freeze log boat carries only unknown CAS objects",
+    "slug": "d9-freeze-log-boat-carries-only-unknown-cas-objects",
+    "priority": "P2",
+    "filename": "081M20TMRD9087G0R0035Y762D-d9-freeze-log-boat-carries-only-unknown-cas-objects.md"
+  }
+}

@@ -1,0 +1,44 @@
+{
+  "SourceCommit": "a80211d357d548d97caf850f367543abfbf91638",
+  "Scope": "Original unexecuted launcher draft and corrected harness, four tests of exact AST-extracted cleanup/publication functions with actual files; no metadata child or physical read.",
+  "Records": [
+    {
+      "File": "run-data-proposal-attempt-1-draft-1.py.gz",
+      "OriginalLocalFile": ".git/run-data-proposal-attempt-1-draft-1.py",
+      "Bytes": 4407,
+      "Sha256": "44C0EA8C8D1C3BB275D9D813E0B690C8D4A337B1B1D32B83F42D3E17DA92C450",
+      "StoredBytes": 1692,
+      "StoredSha256": "5824597066E47256F21F88120878870D8301918A2CDE42F4F2C0938EAC3C119D",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "run-data-proposal-attempt-1.py.gz",
+      "OriginalLocalFile": ".git/run-data-proposal-attempt-1-repaired-1.py",
+      "Bytes": 6199,
+      "Sha256": "E4084B062D56E9B4E82BEE42CB0C3E9A6748BC68B36C3A6A1C2A42BB9958CB5E",
+      "StoredBytes": 2028,
+      "StoredSha256": "46B07651C4022277B87ED2A86DBECF2E4BE7F76B05C742B5E9700C4216CE5CFE",
+      "Encoding": "gzip",
+      "OriginalCaptureFile": ".git/run-data-proposal-attempt-1.py"
+    },
+    {
+      "File": "test-data-proposal-launcher-cleanup.py.gz",
+      "OriginalLocalFile": ".git/test-data-proposal-launcher-cleanup-first.py",
+      "Bytes": 5137,
+      "Sha256": "46DFDB842898BDF6B049F030F03E6A8FA4DACF0151FF22D7D3A182ECAC82C983",
+      "StoredBytes": 1679,
+      "StoredSha256": "41596E695E607DDDE0D61C7F80FB321FF7853EC322E4D38F1FB6AD21177C480A",
+      "Encoding": "gzip",
+      "OriginalCaptureFile": ".git/test-data-proposal-launcher-cleanup.py"
+    },
+    {
+      "File": "hidden-switch-data-proposal-launcher-tests-1.log.gz",
+      "OriginalLocalFile": ".git/hidden-switch-data-proposal-launcher-tests-1.log",
+      "Bytes": 102,
+      "Sha256": "E73C3805F810FDCF3D0167CED7085C48306C9482A952FFB710551D230CDB3E51",
+      "StoredBytes": 55,
+      "StoredSha256": "F0BA32260220A327BB651A9FD220EF076F7120E58B98F4BA2DC9AFA941CB8BEF",
+      "Encoding": "gzip"
+    }
+  ]
+}

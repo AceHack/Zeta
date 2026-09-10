@@ -1,0 +1,12 @@
+{
+  "pr_number": 16946,
+  "archive_path": "docs/history/pr-reviews/PR-16946-feat-081m1y48fw2087g0r002h43e44-readdir-live-names-without-dot-or-dot-dot.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-07T15:01:59.270Z",
+  "schema_version": "v1",
+  "commit_sha": "aaafde7e963fc32c817b38c26d77cb29e5719769",
+  "title": "feat(081M1Y48FW2087G0R002H43E44): readdir live names without dot or dot-dot",
+  "state": "MERGED",
+  "merged_at": "2026-09-07T15:01:18Z",
+  "head_ref": "feat/zetafs-readdir-live-names"
+}
