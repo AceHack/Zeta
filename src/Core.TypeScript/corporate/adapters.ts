@@ -1215,8 +1215,14 @@ export function commandTestRunner(input: {
 export function commitsAhead(
   run: (args: readonly string[]) => { readonly status: number | null; readonly stdout?: string },
   branch: string,
+  /**
+   * What the branch is measured AGAINST. Defaults to `HEAD` for the caller that checks the base
+   * out first, and must be named explicitly by the caller that deliberately does not -- there,
+   * HEAD is the operator's own work and counting against it answers a different question.
+   */
+  into: string = "HEAD",
 ): number | undefined {
-  const counted = run(["rev-list", "--count", `HEAD..${branch}`]);
+  const counted = run(["rev-list", "--count", `${into}..${branch}`]);
   if (counted.status !== 0) return undefined;
   const n = Number.parseInt((counted.stdout ?? "").trim(), 10);
   return Number.isNaN(n) ? undefined : n;
@@ -1395,7 +1401,16 @@ export function worktreeDirName(branch: string): string {
  * A worktree gives each change its own directory and its own HEAD. The shared repository's checked
  * out branch never moves, so `open` is safe to call while another change is still in flight.
  *
- * `merge` merges into the base branch IN THE MAIN REPOSITORY and then removes the worktree —
+ * `merge` merges into the BASE BRANCH, named — never into `HEAD`. That distinction is the whole
+ * bug this paragraph used to describe incorrectly: `git merge <branch>` merges into whatever is
+ * checked out, and the property above guarantees that is NOT the base. Measured against a clone
+ * sitting on a feature branch: the change branched from `main`, and the merge landed on the
+ * feature branch while `main` never moved. The run called it delivered.
+ *
+ * So the base is merged in a worktree of its own when the shared checkout is somewhere else, and
+ * in place when it is already there. Either way the operator's own HEAD and working tree are
+ * exactly where they were left.
+ *
  * `--no-ff`, for the same reason as the sibling adapter: a fast-forward leaves no record that a
  * change existed. Removal is part of merging rather than a separate cleanup step, because a
  * worktree left behind holds a lock on its branch and the next run's `open` would refuse.
@@ -1431,7 +1446,10 @@ export function gitWorktreeChangeControl(input: {
     },
     merge: async (handle) => {
       // BEFORE the merge, because afterwards the answer is always zero and the question is lost.
-      const ahead = commitsAhead(git, handle.branch);
+      // MEASURED AGAINST THE BASE, not against HEAD: this adapter deliberately leaves the shared
+      // checkout alone, so HEAD is the operator's own branch and `HEAD..work/x` counts commits
+      // that have nothing to do with whether this change carries anything.
+      const ahead = commitsAhead(git, handle.branch, input.baseBranch);
       if (ahead === undefined) return { ok: false, reason: `could not tell whether ${handle.branch} has anything to merge` };
       if (ahead === 0) {
         // The worktree may well hold files — the work ran. Uncommitted files are not a change, and
@@ -1439,11 +1457,46 @@ export function gitWorktreeChangeControl(input: {
         // is lying in that tree into a commit nobody wrote.
         return { ok: false, reason: `${handle.branch} has no commits: the work left nothing committed, and a merge that moves nothing is not a merge` };
       }
-      const merged = git(["merge", "--no-ff", "-m", `merge ${handle.changeId}`, handle.branch]);
-      if (merged.error !== undefined) return { ok: false, reason: `git could not run: ${merged.error.message}` };
+
+      // ── WHERE THE MERGE LANDS, DECIDED RATHER THAN INHERITED ──────────────
+      // `git merge` merges into HEAD. Run in the shared repository that is the operator's branch,
+      // which is the one place this change must never go. When the shared checkout already sits on
+      // the base, merging in place is both correct and cheapest; when it does not, the base is
+      // borrowed into a worktree of its own so the operator's HEAD and files are not touched.
+      const head = git(["rev-parse", "--abbrev-ref", "HEAD"]);
+      if (head.status !== 0) return { ok: false, reason: `could not read the checked-out branch: ${(head.stderr ?? "").trim()}` };
+      const onBase = String(head.stdout ?? "").trim() === input.baseBranch;
+      const borrowed = join(input.worktreeRoot, worktreeDirName(`into-${input.baseBranch}`));
+      if (!onBase) {
+        const lent = git(["worktree", "add", borrowed, input.baseBranch]);
+        if (lent.error !== undefined) return { ok: false, reason: `git could not run: ${lent.error.message}` };
+        if (lent.status !== 0) {
+          // The commonest cause is the base being checked out in ANOTHER worktree, which git
+          // refuses to duplicate. Refusing here is right: the alternative is merging somewhere
+          // else and calling it delivered, which is the defect this whole block exists for.
+          return {
+            ok: false,
+            reason:
+              `could not merge into '${input.baseBranch}': it is not checked out here and a worktree for it ` +
+              `could not be opened: ${(lent.stderr ?? "").trim()}`,
+          };
+        }
+      }
+      const mergeAt = onBase ? input.cwd : borrowed;
+      const merged = git(["merge", "--no-ff", "-m", `merge ${handle.changeId}`, handle.branch], mergeAt);
+      // The borrowed checkout is released whichever way the merge went — it holds a lock on the
+      // base branch, and leaving it behind would make the NEXT change unmergeable.
+      const release = (): void => {
+      };
+      if (merged.error !== undefined) {
+        release();
+        return { ok: false, reason: `git could not run: ${merged.error.message}` };
+      }
       if (merged.status !== 0) {
+        release();
         return { ok: false, reason: `merge of ${handle.branch} refused: ${(merged.stderr ?? "").trim()}` };
       }
+      release();
       // Only after the merge SUCCEEDED. Removing it first would destroy the work if the merge then
       // refused, and the branch would be the only copy of something nobody could look at.
       const removed = git(["worktree", "remove", "--force", handle.workdir ?? worktreeDirName(handle.branch)]);
@@ -1459,7 +1512,11 @@ export function gitWorktreeChangeControl(input: {
           ],
         };
       }
-      const at = revisionOf(git, "HEAD");
+      // THE MERGE COMMIT, read off the BRANCH THAT RECEIVED IT. `HEAD` here is the shared
+      // checkout, which this adapter has just gone to some trouble not to move — so reading it
+      // would report the operator's own tip as the change's landing commit, and the tree hash
+      // filed against every bound check would belong to somebody else's work.
+      const at = revisionOf(git, input.baseBranch);
       return {
         ok: true,
         value: at.ok ? { ...handle, commit: at.revision.commit, tree: at.revision.tree } : handle,

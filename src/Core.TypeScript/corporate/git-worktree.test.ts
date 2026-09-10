@@ -150,6 +150,168 @@ describe("TWO CHANGES OPEN AT ONCE", () => {
   });
 });
 
+describe("THE MERGE LANDS ON THE BASE, NOT ON WHATEVER IS CHECKED OUT", () => {
+  // -- WHY EVERY OTHER TEST IN THIS FILE MISSED IT --------------------------
+  // `repo()` leaves `main` checked out, and `main` is also the base. HEAD and the base were the
+  // same ref in every test here, so `git merge --no-ff <branch>` -- which merges into HEAD -- was
+  // indistinguishable from one that merges into the base. The fixture could not reach the state
+  // production is normally in: a repository sitting on a feature branch.
+  //
+  // MEASURED 2026-09-10 against a clone of a working repository on a feature branch: the change
+  // branched from `main` correctly, the merge landed on the FEATURE branch, `main` never moved,
+  // and the run reported `1 landed` and delivered.
+
+  /** The fixture's repository, moved onto a feature branch with work in progress on it. */
+  function onFeatureBranch(label: string) {
+    const made = repo(label);
+    const git = (...args: string[]) => {
+      const r = spawnSync("git", args, { cwd: made.cwd, encoding: "utf-8" });
+      if (r.status !== 0) throw new Error(`git ${args.join(" ")}: ${r.stderr ?? ""}`);
+    };
+    git("checkout", "-b", "mine");
+    // Uncommitted work, because the operator's files are the other thing that must survive.
+    writeFileSync(join(made.cwd, "UNCOMMITTED.txt"), "work in progress\n");
+    return made;
+  }
+
+  const tipOf = (cwd: string, ref: string) =>
+    spawnSync("git", ["rev-parse", ref], { cwd, encoding: "utf-8" }).stdout.trim();
+
+  test("the base branch receives the merge and the checked-out branch does not", async () => {
+    const { cwd, worktreeRoot } = onFeatureBranch("target");
+    const mineBefore = tipOf(cwd, "mine");
+    const mainBefore = tipOf(cwd, "main");
+    expect(mineBefore).toBe(mainBefore); // branched from main a moment ago
+
+    const change = gitWorktreeChangeControl({ cwd, worktreeRoot, baseBranch: "main" });
+    const opened = await change.open(node("task-1"), { branch: "work/task-1" });
+    if (!opened.ok) throw new Error(opened.reason);
+    commitIn(checkoutOf(opened.value), "one.txt", "work\n");
+
+    const merged = await change.merge(opened.value);
+    expect(merged.ok).toBe(true);
+
+    // THE BASE MOVED...
+    expect(tipOf(cwd, "main")).not.toBe(mainBefore);
+    // ...AND THE OPERATOR'S BRANCH DID NOT. This is the assertion the old code fails: it moved
+    // `mine` and left `main` exactly where it was.
+    expect(tipOf(cwd, "mine")).toBe(mineBefore);
+
+    // AND THE COMMIT IT REPORTS IS THE ONE IT MADE. Read off the shared HEAD this would be the
+    // operator's tip, and the tree hash filed against every bound check would belong to somebody
+    // else's work — a verdict attributed to content that was never reviewed.
+    if (!merged.ok) throw new Error(merged.reason);
+    expect(merged.value.commit).toBe(tipOf(cwd, "main"));
+    expect(merged.value.commit).not.toBe(tipOf(cwd, "mine"));
+  });
+
+  test("WHAT COUNTS AS 'NOTHING TO MERGE' IS ASKED OF THE BASE, not of the operator's branch", async () => {
+    // The guard that refuses an empty branch counts commits. Counted from HEAD, it answers a
+    // question about the OPERATOR's branch: if their branch already contains the change's commits,
+    // `HEAD..work/x` is zero and a change with real work in it is refused as empty.
+    //
+    // Not contrived — it is exactly the state the previous defect left behind, since that bug
+    // merged changes onto whatever branch was checked out. So the repair path was blocked by the
+    // same assumption that caused the damage.
+    const { cwd, worktreeRoot } = onFeatureBranch("counted");
+    const git = (...args: string[]) => spawnSync("git", args, { cwd, encoding: "utf-8" });
+
+    const change = gitWorktreeChangeControl({ cwd, worktreeRoot, baseBranch: "main" });
+    const opened = await change.open(node("task-1"), { branch: "work/task-1" });
+    if (!opened.ok) throw new Error(opened.reason);
+    commitIn(checkoutOf(opened.value), "one.txt", "work\n");
+
+    // The operator's branch takes the work too, so HEAD is no longer BEHIND the change branch…
+    expect(git("merge", "--no-ff", "-m", "operator took it", "work/task-1").status).toBe(0);
+    // …and a HEAD-relative count now says zero while a base-relative count still says one.
+    expect(commitsAhead((a) => git(...a), "work/task-1")).toBe(0);
+    expect(commitsAhead((a) => git(...a), "work/task-1", "main")).toBeGreaterThan(0);
+
+    // The merge must still happen: the BASE has not seen this work.
+    const mainBefore = tipOf(cwd, "main");
+    const merged = await change.merge(opened.value);
+    if (!merged.ok) throw new Error(merged.reason);
+    expect(tipOf(cwd, "main")).not.toBe(mainBefore);
+  });
+
+  test("the operator's HEAD and working tree are where they were left", async () => {
+    const { cwd, worktreeRoot } = onFeatureBranch("untouched");
+    const change = gitWorktreeChangeControl({ cwd, worktreeRoot, baseBranch: "main" });
+    const opened = await change.open(node("task-1"), { branch: "work/task-1" });
+    if (!opened.ok) throw new Error(opened.reason);
+    commitIn(checkoutOf(opened.value), "one.txt", "work\n");
+    expect((await change.merge(opened.value)).ok).toBe(true);
+
+    expect(
+      spawnSync("git", ["rev-parse", "--abbrev-ref", "HEAD"], { cwd, encoding: "utf-8" }).stdout.trim(),
+    ).toBe("mine");
+    // The borrowed checkout must not have swept the operator's untracked file away.
+    expect(existsSync(join(cwd, "UNCOMMITTED.txt"))).toBe(true);
+  });
+
+  test("THE BORROWED CHECKOUT IS RELEASED — otherwise the NEXT change cannot merge", async () => {
+    // A worktree left on the base holds a lock on it, so a second merge would be refused by git
+    // with a message about the branch already being checked out. Two changes, in sequence, is the
+    // falsifier for the release: the second one only works if the first cleaned up after itself.
+    const { cwd, worktreeRoot } = onFeatureBranch("released");
+    const change = gitWorktreeChangeControl({ cwd, worktreeRoot, baseBranch: "main" });
+
+    for (const id of ["task-1", "task-2"]) {
+      const opened = await change.open(node(id), { branch: `work/${id}` });
+      if (!opened.ok) throw new Error(opened.reason);
+      commitIn(checkoutOf(opened.value), `${id}.txt`, "work\n");
+      const merged = await change.merge(opened.value);
+      if (!merged.ok) throw new Error(`${id}: ${merged.reason}`);
+    }
+
+    // Only the shared checkout remains; nothing was left holding the base.
+    const trees = spawnSync("git", ["worktree", "list"], { cwd, encoding: "utf-8" }).stdout.trim().split("\n");
+    expect(trees).toHaveLength(1);
+    // Both changes are on the base, in order.
+    const log = spawnSync("git", ["log", "--oneline", "main"], { cwd, encoding: "utf-8" }).stdout;
+    expect(log).toContain("work/task-1");
+    expect(log).toContain("work/task-2");
+  });
+
+  test("a failed merge also releases the base, and says what refused", async () => {
+    // The release must not be on the success path only: a conflict that left the base checked out
+    // would turn one failed change into a permanently unmergeable repository.
+    const { cwd, worktreeRoot } = onFeatureBranch("conflict");
+    const git = (...args: string[]) => spawnSync("git", args, { cwd, encoding: "utf-8" });
+
+    const change = gitWorktreeChangeControl({ cwd, worktreeRoot, baseBranch: "main" });
+    const opened = await change.open(node("task-1"), { branch: "work/task-1" });
+    if (!opened.ok) throw new Error(opened.reason);
+    commitIn(checkoutOf(opened.value), "clash.txt", "from the change\n");
+
+    // A conflicting commit placed on the BASE, without disturbing the checked-out branch.
+    const side = join(worktreeRoot, "seed-base");
+    expect(git("worktree", "add", side, "main").status).toBe(0);
+    writeFileSync(join(side, "clash.txt"), "from the base\n");
+    expect(spawnSync("git", ["add", "clash.txt"], { cwd: side, encoding: "utf-8" }).status).toBe(0);
+    expect(spawnSync("git", ["commit", "-m", "base side"], { cwd: side, encoding: "utf-8" }).status).toBe(0);
+    expect(git("worktree", "remove", "--force", side).status).toBe(0);
+
+    const merged = await change.merge(opened.value);
+    expect(merged.ok).toBe(false);
+
+    // THE BASE IS STILL MERGEABLE. Nothing is holding it, so a later change is not blocked by
+    // this one's failure. The CHANGE's own worktree is deliberately still there — a failed merge
+    // leaves the work on disk, which a sibling test in this file pins — so the assertion NAMES
+    // the borrowed checkout rather than counting, or it would contradict that rule.
+    const trees = spawnSync("git", ["worktree", "list"], { cwd, encoding: "utf-8" }).stdout;
+    expect(trees).not.toContain(worktreeDirName("into-main"));
+    expect(trees).toContain(worktreeDirName("work/task-1"));
+
+    // …and the proof that the base is really free: a SECOND change merges cleanly afterwards.
+    const next = await change.open(node("task-2"), { branch: "work/task-2" });
+    if (!next.ok) throw new Error(next.reason);
+    commitIn(checkoutOf(next.value), "two.txt", "work\n");
+    const after = await change.merge(next.value);
+    if (!after.ok) throw new Error(after.reason);
+  });
+});
+
 describe("the refusals", () => {
   test("a branch that already exists is refused, not silently reused", async () => {
     const { cwd, worktreeRoot } = repo("dup");
