@@ -1769,6 +1769,22 @@ export async function main(argv: readonly string[]): Promise<number> {
     ...(args.store === undefined
       ? {}
       : { priorCascade: foldOrganization(readEvents(args.store)).cascade }),
+    // WHAT HAS ALREADY LANDED. Read from the log for the same reason `priorCascade` is: it is a
+    // fact about history and this run has none of its own.
+    //
+    // THIS LINE WAS MISSING, AND ITS ABSENCE DISABLED A GUARD RATHER THAN A FEATURE. The runtime
+    // refuses to call a goal delivered when the cascade says done and no commit exists -- but
+    // only when `alreadyLanded` is supplied, because absent it the honest reading is NOT MEASURED
+    // and a runtime that judged that as "nothing landed" would fail every store-less run. That
+    // clause is right; what was wrong is that the ordinary path never measured. `run-org` builds
+    // two dependency objects and only the `--week` one carried this field, so the guard was a
+    // reader with no writer on every run the CLI documents.
+    //
+    // MEASURED 2026-09-10 against a real clone: the change failed to open, nothing merged, `main`
+    // never moved -- and the run printed `goal DELIVERED` with the disagreement logged beside it.
+    ...(args.store === undefined
+      ? {}
+      : { alreadyLanded: new Set(foldLandedChanges(readEvents(args.store)).keys()) }),
     acceptingHatId: "cto",
     resourceAuthorityHatId: "rmo_office",
     priorityDeciderHatId: "cto",

@@ -7,7 +7,10 @@
  */
 
 import { describe, expect, test } from "bun:test";
-import { readFileSync } from "node:fs";
+import { execFileSync } from "node:child_process";
+import { mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 import { fidelityOf, Port } from "./providers";
 import { WorkState, WorkType as WorkTypeValue, type CascadeNode } from "./goal-cascade";
 import { artifactProducersFromArgs, churnThresholdFor, gateAttemptsFor, hasSource, main, parseArgs, PRE_CODE_GATES, providersFromArgs, trackerMapper, KNOWN_FLAGS, unknownFlags} from "./run-org";
@@ -337,6 +340,78 @@ describe("the default run delivers", () => {
       expect(out).toContain(tool);
     }
   });
+});
+
+describe("THE CLI SUPPLIES THE HISTORY THE DELIVERY GUARD NEEDS", () => {
+  // -- WHY THIS TEST IS HERE AND NOT IN real-adapters.test.ts ----------------
+  // That file pins the done-with-nothing-merged rule from every angle -- and hands the runtime
+  // `alreadyLanded` itself, in the test. `run-org` builds TWO dependency objects, and only the
+  // `--week` one carried the field, so on every ordinary run it arrived undefined and the rule
+  // skipped itself by its own "not measured is not a failure" clause. The runtime was covered; the
+  // WIRING was not, and the wiring is what shipped.
+  //
+  // MEASURED 2026-09-10 against a real clone of a working repository: nothing merged, `main` never
+  // moved, and the CLI printed `goal DELIVERED` with the disagreement logged beside it.
+
+  function tinyRepo(): string {
+    const dir = mkdtempSync(join(tmpdir(), "zeta-cli-hist-"));
+    const git = (...a: string[]) => execFileSync("git", a, { cwd: dir, encoding: "utf-8" });
+    git("init", "-q", "-b", "main");
+    git("config", "user.email", "t@example.com");
+    git("config", "user.name", "T");
+    writeFileSync(join(dir, "README.md"), "# checkout\n");
+    git("add", "-A");
+    git("commit", "-q", "-m", "init");
+    return dir;
+  }
+
+  test("a run whose work never lands is NOT DELIVERED, and says why", async () => {
+    const repo = tinyRepo();
+    const store = mkdtempSync(join(tmpdir(), "zeta-cli-store-"));
+    const wt = mkdtempSync(join(tmpdir(), "zeta-cli-wt-"));
+    const lines: string[] = [];
+    const log = console.log;
+    console.log = (...a: unknown[]) => void lines.push(a.map(String).join(" "));
+    try {
+      // Real change control, simulated work -- so the cascade completes and the repository stays
+      // exactly where it started. Whether that combination is USEFUL is beside the point; what
+      // matters is that the two records disagree, which is the only condition this rule reads.
+      const code = await main([
+        "--git", repo, "--base", "main", "--worktrees", wt, "--store", store, "--until", "2",
+      ]);
+
+      const out = lines.join("\n");
+      // NOTHING MERGED. The premise of the assertions below, checked against git rather than
+      // assumed -- a test that asserted the verdict without checking the repository would pass
+      // just as happily if the run HAD merged something.
+      expect(
+        execFileSync("git", ["log", "--merges", "--oneline", "main"], { cwd: repo, encoding: "utf-8" }).trim(),
+      ).toBe("");
+
+      // ...so the run must not claim delivery, and must name the reason.
+      expect(code).toBe(1);
+      expect(out).toContain("NOT DELIVERED");
+      expect(out).toContain("no commit exists for it");
+    } finally {
+      console.log = log;
+      rmSync(repo, { recursive: true, force: true });
+      rmSync(store, { recursive: true, force: true });
+      rmSync(wt, { recursive: true, force: true });
+    }
+  }, 180_000);
+
+  // -- WHAT THIS TEST DOES NOT PROVE, stated rather than implied ------------
+  // Mutation-checked 2026-09-10, five ways. Three go red here and a fourth (the autonomy loop
+  // dropping the history between cycles) goes red in `autonomy.test.ts`, which is where it
+  // belongs. ONE SURVIVES: replacing the fold with `new Set<string>()` -- an empty history --
+  // changes nothing, because in this scenario nothing lands and an empty history is correct.
+  //
+  // The direction that would catch it is a resumed CLI run over work that DID land, which
+  // cannot be written here today: `--work-cmd` runs with `cwd: args.git`, the BASE checkout,
+  // not the change's worktree, so no CLI-driven work can commit onto a work branch. The
+  // equivalent is pinned one layer down, in `real-adapters.test.ts` -- 'A RESUMED RUN OVER
+  // ALREADY-MERGED WORK STILL DELIVERS' -- with the history handed to the runtime directly.
+  // So the guard's firing is falsified at this seam; its staying quiet is falsified below it.
 });
 
 describe("the failure modes exit non-zero", () => {
