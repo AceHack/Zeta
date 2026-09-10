@@ -51,6 +51,8 @@ import { spawnSync } from "node:child_process";
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname } from "node:path";
 
+import { absentByContent, mainContentIndex, parseLsTree } from "./triage-orphan-branches";
+
 const REPO = process.env.ZETA_REAPER_REPO ?? "Lucent-Financial-Group/Zeta";
 const REMOTE = process.env.ZETA_REAPER_REMOTE ?? "origin";
 
@@ -188,25 +190,27 @@ function openBases(prs: Pr[]): Set<string> {
   return s;
 }
 
-function basenamesOnMain(): Set<string> {
-  const out = git(["ls-tree", "-r", "--name-only", `${REMOTE}/main`]);
-  const set = new Set<string>();
-  for (const line of out.split("\n")) {
-    const i = line.lastIndexOf("/");
-    const base = i === -1 ? line : line.slice(i + 1);
-    if (base.length > 0) set.add(base);
-  }
-  return set;
+/**
+ * Every blob OID in main's tree — the CONTENT hashes, not the file names.
+ *
+ * THIS USED TO BE `basenamesOnMain`, and the change is a defect fix rather than
+ * a refactor. Comparing basenames is not comparing content: measured 2026-09-09,
+ * `claim/task-compiled-capture-five-publication-20260907` passed the basename
+ * gate carrying 2,566 files and 23,286 insertions absent from main, because its
+ * generated custody logs collided on basename with unrelated files. A blob OID
+ * is a hash of the exact bytes, so two files match only when they are the same
+ * file. Shared with triage-orphan-branches.ts so the two tools cannot drift.
+ */
+function contentOidsOnMain(): ReadonlySet<string> {
+  return mainContentIndex(parseLsTree(git(["ls-tree", "-r", `${REMOTE}/main`])));
 }
 
-const EPHEMERAL = ["docs/hygiene-history/", "docs/pr-discussions/"];
-
 /** The triage-orphan-branches.ts content gate, reused as the final guard: does
- *  this branch introduce a file whose basename is absent from main? If so its
- *  content never landed and the branch is NOT safe, whatever its PR says. */
+ *  this branch introduce a file whose exact CONTENT is absent from main? If so
+ *  its bytes never landed and the branch is NOT safe, whatever its PR says. */
 function absentContent(
   branch: string,
-  mainBases: Set<string>,
+  mainOids: ReadonlySet<string>,
 ): { ran: true; absent: string[] } | { ran: false; why: string } {
   // FAIL CLOSED. `git diff A...B` needs a merge base; on a shallow clone there
   // is none and the command exits non-zero. The inherited helper swallowed that
@@ -215,21 +219,24 @@ function absentContent(
   // looking like one that passed — measured on this repo 2026-08-24, where a
   // shallow clone made the gate return "safe" for all 3,629 branches.
   // A gate that cannot run must refuse, never pass.
+  // `--raw` carries the destination blob OID; `--name-only` carried only paths,
+  // which is how a basename gate came to be the only option available here.
   const r = spawnSync(
     "git",
-    ["diff", `${REMOTE}/main...${REMOTE}/${branch}`, "--diff-filter=AM", "--name-only"],
+    ["diff", "--raw", "--diff-filter=AM", `${REMOTE}/main...${REMOTE}/${branch}`],
     { encoding: "utf8", maxBuffer: 512 * 1024 * 1024 },
   );
   if (r.status !== 0) return { ran: false, why: (r.stderr ?? "").trim().split("\n")[0] ?? "git diff failed" };
-  const diff = (r.stdout ?? "").trim();
-  const absent: string[] = [];
-  for (const f of diff.split("\n").filter((x) => x.length > 0)) {
-    if (EPHEMERAL.some((p) => f.startsWith(p))) continue;
-    const i = f.lastIndexOf("/");
-    const base = i === -1 ? f : f.slice(i + 1);
-    if (!mainBases.has(base)) absent.push(f);
+  const adds: { path: string; oid: string }[] = [];
+  for (const line of (r.stdout ?? "").split("\n")) {
+    // `:<srcmode> <dstmode> <srcoid> <dstoid> <status>\t<path>`
+    const tab = line.indexOf("\t");
+    if (tab === -1 || !line.startsWith(":")) continue;
+    const dstOid = line.slice(1, tab).split(/\s+/)[3];
+    if (dstOid === undefined || /^0+$/.test(dstOid)) continue;
+    adds.push({ path: line.slice(tab + 1), oid: dstOid });
   }
-  return { ran: true, absent };
+  return { ran: true, absent: [...absentByContent(adds, mainOids)] };
 }
 
 function writeLines(path: string, lines: readonly string[]): void {
@@ -270,7 +277,7 @@ function census(windowDays: number): number {
   const prMap = loadPrMap();
   const allPrs = JSON.parse(readFileSync(`${CACHE_DIR}/all-prs.json`, "utf8")) as Pr[];
   const bases = openBases(allPrs);
-  const mainBases = basenamesOnMain();
+  const mainOids = contentOidsOnMain();
   const nowMs = Date.now();
   const cutoffMs = windowDays * 86400 * 1000;
 
@@ -308,7 +315,7 @@ function census(windowDays: number): number {
     else if (pr.state === "CLOSED") bucket = "CLOSED_PR";
     else if (nowMs - new Date(tipIso).getTime() < cutoffMs) bucket = "RECENT";
     else {
-      const gate = absentContent(branch, mainBases);
+      const gate = absentContent(branch, mainOids);
       if (!gate.ran) { bucket = "UNCHECKABLE"; absent = [gate.why]; }
       else { absent = gate.absent; bucket = gate.absent.length === 0 ? "MERGED_PR" : "CONTENT_HELD"; }
     }

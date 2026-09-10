@@ -1,0 +1,14 @@
+{
+  "id": "080d0447be709810a0130008a386e39b",
+  "at": "2026-09-10T01:38:56.659Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M24FFKGJ087G0R002BZ23SB",
+    "type": "bug",
+    "title": "branch-sweep triage prunes open-PR branches, compares basenames not content, and preserves without deleting",
+    "slug": "branch-sweep-triage-prunes-open-pr-branches-compares-basenam",
+    "priority": "P2",
+    "filename": "081M24FFKGJ087G0R002BZ23SB-branch-sweep-triage-prunes-open-pr-branches-compares-basenam.md"
+  }
+}
