@@ -340,9 +340,31 @@ let private judge (model: PinnedModel) (exitCode: int) (stdout: string) =
             "TLC DID NOT RUN on %s — the JVM failed to start, so this says NOTHING about the model or the jar's version. NOT toolchain drift: retry, and if it persists give the runner more memory or lower TLC's heap.\nstdout head:\n%s"
             model.Id (stdout.Substring(0, min 400 stdout.Length))
 
+    // BANNER DRIFT WARNS; IT DOES NOT FAIL. Maintainer decision, Aaron 2026-09-10, after the
+    // third roll in about 24 hours reddened `main`: "lets not fail on that, and just let it
+    // keep rolling and accept the security risk i've said several times."
+    //
+    // What makes this an accepted risk rather than a hole: the banner is ONE of five verdicts
+    // and the only one that asks WHICH BUILD RAN. The other four -- exit code, completion
+    // marker, pinned error substring, pinned exhaustive state count -- ask whether the MODEL
+    // verified, and all four stay hard failures below. So the rule this encodes is:
+    //
+    //     we accept a different BUILD; we do not accept a different RESULT.
+    //
+    // A rolled TLC that still reaches the pinned state count on every pinned model has not
+    // changed any conclusion. One that does not will fail on the verdict that measures it,
+    // and will fail with a message about the model rather than about the jar.
+    //
+    // Upstream's `v1.8.0` is a PRERELEASE TAG THAT GETS RE-CUT: the URL is stable and the
+    // bytes are not. bb82311b -> 8836549e -> ede5b88 -> 8ab94b6 in a day. Failing on that is
+    // failing on someone else's release cadence.
+    //
+    // The warning is LOUD and goes to stderr, because an accepted risk that nobody can see is
+    // not an accepted risk -- it is an unnoticed one. It names the re-pin command so the drift
+    // is cheap to close when someone chooses to.
     if not (stdout.Contains(pinnedBanner, StringComparison.Ordinal)) then
-        failwithf
-            "TOOLCHAIN DRIFT on %s: the registry pins %s and this jar reports something else. A different TLC is a different experiment.\nstdout head:\n%s"
+        eprintfn
+            "TOOLCHAIN DRIFT ACCEPTED on %s: the registry pins %s and this jar reports something else. The four model verdicts below still apply, so a changed RESULT still fails. Re-pin with `bun tools/setup/repin-rolling.ts src/Core.TLA/tla2tools.jar`.\nstdout head:\n%s"
             model.Id pinnedBanner (stdout.Substring(0, min 400 stdout.Length))
     let clean = stdout.Contains(cleanMarker, StringComparison.Ordinal)
     if String.Equals(model.Expect, "violation", StringComparison.Ordinal) then
@@ -648,14 +670,29 @@ let ``a JVM that never started is reported as such, not as toolchain drift`` () 
     Assert.Contains("NOTHING about the model", ex.Message)
 
 [<Fact>]
-let ``a jar reporting a different version IS toolchain drift`` () =
-    // The other half. A guard that called everything an environment fault would be as wrong as the
-    // one that called everything drift, and it would silently accept an unpinned checker.
-    let wrongJar = "TLC2 Version 1900.01.01.000000 (rev: deadbee)\nModel checking completed.\n"
+let ``a jar reporting a different version is ACCEPTED, but a different RESULT still fails`` () =
+    // The other half, rewritten 2026-09-10 with the maintainer's decision to accept the roll.
+    //
+    // This is the test that stops the acceptance from becoming a hole. Banner drift alone must
+    // NOT throw -- that is the accepted risk. Banner drift plus a result the registry does not
+    // expect MUST still throw, and must throw about the RESULT, not about the jar.
+    // The FULL completion marker, not a prefix. The previous version of this test carried
+    // "Model checking completed." alone and passed anyway, because it threw on the BANNER
+    // before reaching the clean-run check -- so the truncated fixture never mattered. Once
+    // the banner only warns, the fixture has to actually satisfy the verdicts that remain.
+    // That is the test noticing its own under-specification, which is the point of relaxing
+    // one verdict and keeping four.
+    let wrongJarCleanRun =
+        "TLC2 Version 1900.01.01.000000 (rev: deadbee)\nModel checking completed. No error has been found\n"
 
-    let ex = Assert.Throws<Exception>(fun () -> judge aModel 0 wrongJar)
+    // A rolled build that still produces the expected outcome: accepted, no exception.
+    judge aModel 0 wrongJarCleanRun
 
-    Assert.Contains("TOOLCHAIN DRIFT", ex.Message)
+    // The same rolled build with a nonzero exit: still fails, and the message is about the run
+    // rather than about the version. If this ever starts reporting drift instead, the four
+    // substantive verdicts have been swallowed by the one we chose to relax.
+    let ex = Assert.Throws<Exception>(fun () -> judge aModel 1 wrongJarCleanRun)
+    Assert.DoesNotContain("TOOLCHAIN DRIFT", ex.Message)
     Assert.DoesNotContain("TLC DID NOT RUN", ex.Message)
 
 
