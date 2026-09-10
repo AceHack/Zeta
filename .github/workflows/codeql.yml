@@ -189,6 +189,25 @@ concurrency:
   # one that is cancelled, because only the first produces data.
   group: codeql-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+  #
+  # WHAT THIS DOES NOT FIX, recorded so the falsifier is not misread.
+  #
+  # `cancel-in-progress: false` protects a RUNNING workflow. It does not protect a PENDING
+  # one: when a newer run claims the group, GitHub keeps the newest pending run and cancels
+  # older pending ones. So a burst of pushes can still drop analyses that never started.
+  #
+  # Observed within a minute of this change landing (2026-09-10): run 34429876121 on
+  # `a9151aba` -- the fix's own merge commit, carrying the fix in its own workflow file --
+  # was cancelled at 02:33:29, one second after the next push queued at 02:33:28. It had
+  # `total_count: 0` jobs, i.e. it never started, which is what identifies this as the
+  # pending case rather than a failure of the setting.
+  #
+  # So the expected outcome is a large reduction, NOT zero. The sibling workflow is the
+  # calibration: `scorecard.yml` has run `cancel-in-progress: false` all along and still
+  # cancels ~3% of runs on `main` (n=99), against this workflow's 62% before the change.
+  # Anyone re-running the zero-rule ratio should read a residual few percent as SUCCESS.
+  # Reading it as failure would be the same error in the other direction -- concluding a
+  # working check is broken, and reverting to the configuration that produced 62%.
 
 jobs:
   # Fast pre-check: decide whether any code-scanned paths
