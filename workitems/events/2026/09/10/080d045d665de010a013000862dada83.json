@@ -1,0 +1,14 @@
+{
+  "id": "080d045d665de010a013000862dada83",
+  "at": "2026-09-10T14:15:52.508Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M25TSJXV087G0R002TD84V6",
+    "type": "bug",
+    "title": "tla2tools rolled a third time and reddened main",
+    "slug": "tla2tools-rolled-a-third-time-and-reddened-main",
+    "priority": "P2",
+    "filename": "081M25TSJXV087G0R002TD84V6-tla2tools-rolled-a-third-time-and-reddened-main.md"
+  }
+}
