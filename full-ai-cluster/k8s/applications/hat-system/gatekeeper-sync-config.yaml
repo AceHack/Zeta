@@ -1,0 +1,77 @@
+# Gatekeeper's replication cache -- WITHOUT THIS, SIX OF THE SEVEN HAT POLICIES
+# CANNOT DENY ANYTHING, on any cluster, for any input.
+#
+# -- THE DEFECT (measured 2026-09-09, 081M241X2YQ087G0R001K95PAB) -----------
+# Six of the seven Hat ConstraintTemplates are REFERENTIAL: their Rego reads
+# other cluster objects out of `data.inventory` rather than deciding from the
+# admission review alone.
+#
+#   01-cooldown            data.inventory.namespace[ns][...]["HatSwap"]
+#   02-max-bindings        data.inventory.namespace[ns][...]["HatBinding"]
+#   03-conflict-of-interest  ...["Hat"] and ...["HatBinding"]
+#   04-quorum              data.inventory.cluster[...]["Hat"]
+#   06-max-new-hats        data.inventory.cluster[...]["Hat"]
+#   07-no-supervisor-cycles  data.inventory.cluster[...]["Hat"]
+#
+# Gatekeeper populates `data.inventory` ONLY for the kinds named in this
+# object's `spec.sync.syncOnly`. No `config.gatekeeper.sh` Config existed
+# anywhere in the tree, and the gatekeeper chart does not create one -- so the
+# inventory was empty, every comprehension over it produced the empty list, and
+# every `count(...) >= threshold` compared 0 against a positive number.
+#
+# THE POLICIES WERE NOT WRONG. Their Rego is correct and their inventory paths
+# match the CRD scopes exactly: `Hat` is `scope: Cluster` and is read from
+# `data.inventory.cluster`; `HatBinding` and `HatSwap` are `scope: Namespaced`
+# and are read from `data.inventory.namespace[ns]`. The data they query was
+# simply never delivered.
+#
+# THIS IS THE THIRD LAYER OF ONE VACUITY, and the deepest:
+#
+#   1. the template did not COMPILE       -- caught 2026-09-09 by the lane's
+#                                            "Gatekeeper compiled every ConstraintTemplate"
+#   2. the Constraint was never APPLIED   -- caught by "Every Hat Constraint is applied"
+#   3. the Constraint ENFORCES NOTHING    -- this file; nothing could see it
+#
+# Every one of the three reconciles perfectly and reports Healthy. That is the
+# whole argument for post-deploy assertions over reconciliation verdicts:
+# `Synced + Healthy` is ArgoCD's opinion about reconciliation, and a policy
+# engine holding seven policies that cannot fire is exactly what perfect
+# reconciliation looks like.
+#
+# -- WHY IT LIVES HERE RATHER THAN IN open-policy-agent/ --------------------
+# It is gatekeeper's object, so `open-policy-agent/` is the defensible
+# alternative and is recorded as such. It sits here because the syncOnly list
+# and the policies that depend on it must move TOGETHER: adding an eighth
+# referential policy without extending this list reintroduces the defect
+# silently. `hat-constraint-roster.ts` refuses exactly that, and it can only
+# refuse it while both halves are in one place.
+#
+# -- COST ------------------------------------------------------------------
+# Gatekeeper caches only these three kinds, not the whole cluster. `syncOnly`
+# is an allowlist by design, and a broad one is a real memory cost on the audit
+# pod -- so this list stays minimal and is derived from what the Rego actually
+# reads. `HatPolicy` is deliberately ABSENT: no template queries it.
+apiVersion: config.gatekeeper.sh/v1alpha1
+kind: Config
+metadata:
+  # Gatekeeper reads exactly one Config, and it must be named `config` in the
+  # namespace gatekeeper runs in. Any other name is silently ignored -- which
+  # would be this defect a second time, wearing a fix.
+  name: config
+  namespace: gatekeeper-system
+  annotations:
+    # After the gatekeeper chart (wave -25) and before the ConstraintTemplates
+    # (wave 1), so the cache is configured before anything queries it.
+    argocd.argoproj.io/sync-wave: "0"
+spec:
+  sync:
+    syncOnly:
+      - group: society.zeta.io
+        version: v1alpha1
+        kind: Hat
+      - group: society.zeta.io
+        version: v1alpha1
+        kind: HatBinding
+      - group: society.zeta.io
+        version: v1alpha1
+        kind: HatSwap
