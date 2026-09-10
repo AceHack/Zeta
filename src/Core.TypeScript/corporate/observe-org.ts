@@ -65,7 +65,6 @@ import {
 } from "./org-presentation";
 import type { HatBinding } from "./hat-binding";
 
-/** What one work item is doing right now, and what the organization intends next. */
 /**
  * One stage of a work item's journey, as a person reads it.
  *
@@ -129,6 +128,7 @@ export interface StageView {
   readonly rubberStamped: boolean;
 }
 
+/** What one work item is doing right now, and what the organization intends next. */
 export interface WorkView {
   readonly workId: string;
   readonly title: string;

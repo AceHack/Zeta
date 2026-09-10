@@ -31,6 +31,7 @@
  */
 
 import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
+import type { Dirent } from "node:fs";
 import { createHash } from "node:crypto";
 import { join } from "node:path";
 
@@ -202,7 +203,18 @@ function dayIntersects(parts: readonly string[], window: ShardWindow): boolean {
  * the opens and parses are essentially the whole read.
  */
 function walkShards(dir: string, out: string[], window?: ShardWindow, below: readonly string[] = []): void {
-  const entries = readdirSync(dir, { withFileTypes: true });
+  // ── ASK ONCE, INTERPRET THE FAILURE ──────────────────────────────────────
+  // Not `if (existsSync(dir))` around this. That is check-then-use: the answer is stale the moment
+  // it returns, and a directory can be created or removed in the gap — so the guard reads as
+  // defensive and prevents nothing, which is worse than no guard because it is read as protection.
+  // One syscall, one answer. A store nobody has written to yet is a normal state, not an error.
+  let entries: readonly Dirent[];
+  try {
+    entries = readdirSync(dir, { withFileTypes: true });
+  } catch (error) {
+    if ((error as NodeJS.ErrnoException).code === "ENOENT") return;
+    throw error;
+  }
   // Only ask about this directory's own trailing triple, and only when it holds shards.
   const skipFiles = window !== undefined && !dayIntersects(below.slice(-3), window);
   for (const entry of entries) {
@@ -227,7 +239,6 @@ function walkShards(dir: string, out: string[], window?: ShardWindow, below: rea
  * ask without paying for the contents it already has.
  */
 export function shardFiles(root: string, window?: ShardWindow): readonly string[] {
-  if (!existsSync(root)) return [];
   const files: string[] = [];
   walkShards(root, files, window);
   return files;

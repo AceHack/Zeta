@@ -359,13 +359,6 @@ export function gateDemand(input: {
 }
 
 /**
- * Has this item crossed every gate its own type owes?
- *
- * SEPARATE FROM `isDelivered`, which asks about children. An item is finished when BOTH hold, and
- * keeping them apart is what lets the two failures be told apart: gates passed with children
- * outstanding is a premature sign-off, children delivered with gates outstanding is unreviewed work.
- */
-/**
  * The gates this item owes that have NO passing evaluation on the record.
  *
  * The evidence form of `gatesComplete`: it answers "what is missing" rather than "is anything
@@ -387,6 +380,13 @@ export function missingGates(
   });
 }
 
+/**
+ * Has this item crossed every gate its own type owes?
+ *
+ * SEPARATE FROM `isDelivered`, which asks about children. An item is finished when BOTH hold, and
+ * keeping them apart is what lets the two failures be told apart: gates passed with children
+ * outstanding is a premature sign-off, children delivered with gates outstanding is unreviewed work.
+ */
 export function gatesComplete(
   workType: WorkType,
   workId: string,

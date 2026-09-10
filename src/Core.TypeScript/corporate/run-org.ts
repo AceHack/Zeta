@@ -242,13 +242,6 @@ const REPORTS: readonly ExternalEvent[] = [
 ];
 
 /**
- * Parse `--price <model>=<in>,<out>` into a price table.
- *
- * A malformed entry is DROPPED rather than defaulted to zero. A zero price would render as free
- * work, which is the exact figure `meter.ts` exists to keep off the screen — so an unparseable
- * price leaves that model unpriced, and the total says so by carrying its denominator.
- */
-/**
  * A reviser backed by a command.
  *
  * The conversation reaches it on STDIN as JSON and the new document comes back on STDOUT. That way
@@ -375,6 +368,13 @@ export function unknownFlags(argv: readonly string[]): readonly string[] {
   return out;
 }
 
+/**
+ * Parse `--price <model>=<in>,<out>` into a price table.
+ *
+ * A malformed entry is DROPPED rather than defaulted to zero. A zero price would render as free
+ * work, which is the exact figure `meter.ts` exists to keep off the screen — so an unparseable
+ * price leaves that model unpriced, and the total says so by carrying its denominator.
+ */
 export function pricingFrom(
   entries: readonly string[],
 ): Record<string, { readonly inPerMillion: number; readonly outPerMillion: number }> {
@@ -617,7 +617,6 @@ export interface Args {
   readonly confluenceLimit: number | undefined;
 }
 
-/** The value after a flag, or undefined. A flag with nothing after it is the same as absent. */
 /**
  * What a person has decided about a work item's gate, read from the action queue.
  *
@@ -656,6 +655,7 @@ export function humanDecisionsFrom(
   };
 }
 
+/** The value after a flag, or undefined. A flag with nothing after it is the same as absent. */
 function valueAfter(argv: readonly string[], flag: string): string | undefined {
   const i = argv.indexOf(flag);
   return i >= 0 ? argv[i + 1] : undefined;
@@ -832,17 +832,6 @@ export function argRefusals(args: Args): readonly string[] {
 }
 
 /**
- * Choose the adapter for every port from the flags.
- *
- * Note what this does NOT do: fall back. A flag naming a real adapter always produces that adapter,
- * and a port with no flag always produces the simulated one — there is no case where asking for
- * reality quietly yields a simulation, which is the failure `providers.ts` exists to prevent.
- *
- * The command adapters pass exactly ONE argument: the work item's id, or the test case's. Never the
- * title, never anything a reporter typed. A work item arrives from intake, which with `--inbox` is a
- * directory somebody else can write to; its text is untrusted input to this process.
- */
-/**
  * How many times work may be re-presented to the gates, given what the operator asked for.
  *
  * `--churn` bundles a whole posture (a lower churn threshold AND a higher attempt bound) for
@@ -867,24 +856,6 @@ export const PRE_CODE_GATES: readonly GateKind[] = ORDERED_GATES.slice(
   ORDERED_GATES.indexOf(GateKind.ImplementationReview),
 );
 
-/**
- * A producer per pre-code gate, or none at all.
- *
- * DERIVED from the chain rather than listed, so a gate inserted before implementation gets a
- * producer without anyone remembering to add it here — the failure this whole exercise keeps
- * finding is a list that stopped matching the thing it described.
- */
-/**
- * Put the organization's own documents where a shell-based author can read them.
- *
- * The DataSourcePort is the interface — a git repository today, a wiki or a ticket system tomorrow.
- * Everything downstream of this function sees files, so a new source is a new implementation of two
- * methods and nothing here changes.
- *
- * `limit` is not decoration. A source can hold thousands of documents and an author has one prompt;
- * handing it everything would push the material that matters out of the window and cost a fortune
- * doing it. The cap is the caller's, and a run that hit it says so rather than silently truncating.
- */
 /**
  * What the organization already knows ABOUT THIS ITEM, written where an author can read it.
  *
@@ -937,6 +908,17 @@ export function groundingFor(
   };
 }
 
+/**
+ * Put the organization's own documents where a shell-based author can read them.
+ *
+ * The DataSourcePort is the interface — a git repository today, a wiki or a ticket system tomorrow.
+ * Everything downstream of this function sees files, so a new source is a new implementation of two
+ * methods and nothing here changes.
+ *
+ * `limit` is not decoration. A source can hold thousands of documents and an author has one prompt;
+ * handing it everything would push the material that matters out of the window and cost a fortune
+ * doing it. The cap is the caller's, and a run that hit it says so rather than silently truncating.
+ */
 export async function materialiseContext(
   source: DataSourcePort,
   dir: string,
@@ -1085,6 +1067,13 @@ export function feedbackFromActions(
       .map((a) => ({ gate: String(a.detail?.["gate"] ?? "unknown"), said: a.reason }));
 }
 
+/**
+ * A producer per pre-code gate, or none at all.
+ *
+ * DERIVED from the chain rather than listed, so a gate inserted before implementation gets a
+ * producer without anyone remembering to add it here — the failure this whole exercise keeps
+ * finding is a list that stopped matching the thing it described.
+ */
 export function artifactProducersFromArgs(
   args: Args,
   contextFor?: (gate: GateKind, node: CascadeNode) => readonly string[],
@@ -1134,6 +1123,17 @@ export function churnThresholdFor(args: Args): number | undefined {
   return args.churnThreshold ?? (args.churn ? 2 : undefined);
 }
 
+/**
+ * Choose the adapter for every port from the flags.
+ *
+ * Note what this does NOT do: fall back. A flag naming a real adapter always produces that adapter,
+ * and a port with no flag always produces the simulated one — there is no case where asking for
+ * reality quietly yields a simulation, which is the failure `providers.ts` exists to prevent.
+ *
+ * The command adapters pass exactly ONE argument: the work item's id, or the test case's. Never the
+ * title, never anything a reporter typed. A work item arrives from intake, which with `--inbox` is a
+ * directory somebody else can write to; its text is untrusted input to this process.
+ */
 export function providersFromArgs(args: Args, events: readonly ExternalEvent[], qaFallback: RunOutcome): ProviderSet {
   // Spread rather than assigned: `exactOptionalPropertyTypes` is on, so an explicit `undefined`
   // would not mean "absent" and would override each adapter's own default with nothing.

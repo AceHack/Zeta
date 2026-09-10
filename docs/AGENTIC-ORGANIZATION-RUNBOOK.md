@@ -7,7 +7,7 @@ branch, runs the real test suite, and merges — or refuses, with a reason.
 It is **language-agnostic**: git is git, a worker is a command, a test runner is a command.
 Verified end to end against TypeScript, Java, Python and C# repositories.
 
-> **Reading this as an AI agent?** Skip to [§11](#11-for-an-ai-agent). Run
+> **Reading this as an AI agent?** Skip to [§13](#13-for-an-ai-agent). Run
 > `bun src/Core.TypeScript/corporate/org-cli.ts describe` first — it prints the entire command
 > surface as JSON, generated from the same table the parser uses, so it cannot go stale.
 
@@ -33,34 +33,213 @@ checkpoints. Set a checkpoint, or bind checks, or both.
 
 ## 2. How it works
 
+### 2.1 The shape of the thing
+
+An organization is four parts, and keeping them apart is what makes it predictable:
+
+| Part | What it is | Where it lives |
+|---|---|---|
+| **The chart** | 124 hats over six levels — executive board, C-suite, 16 directors, 13 managers, 4 leads, 85 contributors | Seeded, same every run |
+| **The cascade** | The work itself: a goal breaks into initiatives, those into projects, those into tasks | Derived from the log |
+| **The gates** | What each piece of work must cross before it counts as done | Fixed per work type |
+| **The ports** | Five seams to the outside world — intake, work execution, test execution, review, change control | You choose the adapter |
+
+The chart is the *company*. The cascade is the *work*. Nothing in the chart knows about your
+repository, and nothing in the cascade knows about your language.
+
+### 2.2 What happens when you give it work
+
+Say you state one goal. In order:
+
+**1 — Intake accepts or refuses it.** A ticket is normalised and classified: defect, feature,
+incident, capability request, goal. It can be *refused* here, and a refusal is useful — a defect
+with no reproduction steps is turned away rather than queued, because a defect nobody can reproduce
+is a task nobody can finish. Duplicates are refused on an idempotency key, so the same ticket
+arriving twice is one piece of work.
+
+**2 — The C-suite prices it.** Severity, customer impact, release risk, blocked-downstream count
+and effort go into a priority. The deciding hat records what it chose *and* what was recommended,
+so a later reader can see where judgement differed from the formula.
+
+**3 — It cascades down the chart.** The goal is accepted by an executive, who owns it; an
+initiative is created under it and owned by a director; a project under that, owned by a manager;
+tasks under that, owned by a lead. **The ladder bends to fit the chart it actually has** — most
+departments are director-then-contributors with no manager rung, so a rung with nobody at its
+nominal level is owned by the nearest supervisory level below, and failing that by the parent
+itself. Accountability rolls up; it never evaporates.
+
+**4 — Somebody is staffed onto it.** The resource authority scores available agents and assigns
+one, which binds that agent to a hat and reserves time on a calendar. Work that nobody can be
+staffed onto is a *blocker*, not a silent stall.
+
+**5 — The work item walks its gate chain.** Each work type owes a different chain — this is fixed,
+and it is the part most worth understanding:
+
 ```
-  intake ──► cascade ──► staffing ──► gate chain ──► change control ──► DELIVERED
-   │           │            │             │                │
- a ticket   goal→          a hat        each gate      a real branch,
- arrives    initiative→    picks it     approves,      a real merge —
- (file,     project→       up            rejects, or   or a refusal
- tracker,   task                         waits for
- webhook)                                a person
+goal                business_context_grooming -> customer_rfp_review -> final_business_validation
+initiative          brd_approval -> cost_approval
+project             peer_review -> architecture_design -> architecture_approval
+                        -> adversarial_review -> final_architecture_review
+task / defect       implementation_review -> qa_uat -> runtime_validation -> release_readiness
+capability_request  cost_approval -> (then the task chain)
+incident            runtime_validation -> final_business_validation
 ```
 
-Five ideas carry the whole thing:
+Read that as a shape rather than a list: **business gates at the top, architecture gates in the
+middle, implementation and verification gates at the leaves.** A goal is never implementation-
+reviewed; a task is never asked to justify its business case. The work is judged by the question
+appropriate to its altitude.
 
-1. **Everything is an event.** The organization's state is a fold over an append-only log. No
-   snapshot can disagree with it, because there is no snapshot.
-2. **Ports, not integrations.** Intake, work execution, test execution, review and change control
-   are five interfaces. Each has a simulated implementation and a real one. A run reports which
-   ports it actually reached — a simulated run says so.
-3. **A refusal is a result.** "Nobody could review this" and "this was reviewed and approved" are
-   never confused. Refusals contradict delivery; they are not logged beside it.
-4. **DELIVERED implies a commit.** If change control is real and nothing landed, the goal is not
-   delivered — checked against the log, so a resumed run does not re-litigate work that shipped.
-5. **Bounded, always.** Runs converge or stop with a named reason (`delivered`, `halted`,
-   `no_progress`, or the cycle bound). A repository whose tests cannot pass makes it **stop**,
-   not spin.
+Two gates are worth calling out. `business_context_grooming` **reads before it judges** — it
+searches your connected sources and produces a set of *citations*, not a summary, so a reviewer can
+open exactly what the agent read at the revision it read. And `adversarial_review` is the one gate
+whose job is to fail: every other gate asks "is this acceptable?", which a tired reviewer answers
+yes to; that one asks "where does this break?"
+
+**6 — A change is opened, the work is performed, tests run.** Change control creates a git worktree
+and a branch. Your `--work-cmd` runs *inside that worktree* and must commit its own work. Your
+`--test-cmd` runs there too — so tests judge the branch, not the base.
+
+**7 — It merges, or it does not.** A branch with no commits is refused: a merge that moves nothing
+is not a merge. If the merge succeeds, the commit and its tree are recorded, and the goal can be
+called delivered. If it fails, the run says so and the goal is not delivered — a refusal
+contradicts the claim rather than sitting quietly beside it.
+
+**8 — The cycle repeats until it converges.** `--until N` runs at most N cycles and stops early
+with a named reason: `delivered`, `halted` (an escalation stopped a task), or `no_progress` (a
+cycle changed nothing — same gate verdicts, same items done, same changes landed as the cycle
+before). It cannot spin.
+
+### 2.3 What the agent doing the work can say back
+
+A worker is just a command, but it can speak a small declared protocol on stdout, and the
+organization listens:
+
+| Line it prints | What the organization does |
+|---|---|
+| `<path>` | Treats it as a produced artifact a reviewer can open |
+| `relied on <memoryId>` | Records which memory it actually used, so unused memory is visible |
+| `ask: <question>` | **Refuses the gate** and raises the question — to a colleague, or to you |
+| `learned: <key> :: <lesson>` | Files a lesson that is recalled into a later agent's prompt |
+
+`ask:` is the important one. An agent that cannot say "this requirement is ambiguous" has only two
+options left — guess, or go quiet — and the guess arrives at a review as somebody else's problem.
+Questions are **bounded**: three rounds per item, and the agent is told how many it has left, so
+consultation cannot become an infinite negotiation.
+
+### 2.4 What is real and what is simulated
+
+Every port has a simulated implementation and a real one, and **a run tells you which it used**:
+
+```
+work_execution  assumed      simulated  assumes every work item succeeds; performs nothing
+change_control  git-worktree real       one worktree per change under /tmp/wt, branched from main
+```
+
+This matters more than it looks. A fully simulated run exercises the *organization* — the chart,
+the cascade, the gates — and performs no work. It is fast, deterministic, replayable, and proves
+nothing about your code. A run with real change control and a real test command proves something
+about your code and is not replayable. Both are legitimate; confusing them is not, which is why
+the report always says.
 
 ---
 
-## 3. Setup
+## 3. Two ways to give it work
+
+The mode you pick at `org create` decides **where work comes from** — not how it is processed. The
+chart, the cascade and the gates are identical either way.
+
+### 3.1 Greenfield — you are the customer
+
+`--intake greenfield`. You state goals; the business hats groom them into work. No sources are
+required and `org configure` will not ask for any.
+
+Use it for: building something that does not exist yet, a spike, a prototype, or any case where
+the requirement lives in your head rather than in a tracker.
+
+```bash
+ocli goal --org acme --title "a URL shortener with an expiry policy" \
+  --reason "support is fielding dead-link tickets daily"
+```
+
+**What to expect.** The first gates have little to read, so grooming will honestly report finding
+nothing — *"this domain has no prior art for this work"* is a real answer, not a failure. Expect
+the agents to use `ask:` more here, because a one-line goal genuinely is under-specified. That is
+the system working: answer the questions and the next cycle is better informed.
+
+**How to get the most from it.** Put the *why* in `--reason`, not just the *what*. "Support is
+fielding dead-link tickets daily" tells the business hats what success looks like; "build a
+shortener" does not. Set `--checkpoint grooming` for the first few runs so you see what it
+understood before it builds against that understanding.
+
+### 3.2 Established — the work already exists somewhere
+
+`--intake source_synced`, plus at least one connected source. Goals and backlog come from Jira,
+Confluence, Linear or a git repository. An organization in this mode with no sources is **refused
+at run time** — it would read an empty backlog forever.
+
+Use it for: an existing defect queue, a tracker backlog, or any codebase with history worth
+reading.
+
+```bash
+ocli org source add --org acme --kind jira --source-id acme-jira \
+  --location https://acme.atlassian.net --auth-file ~/.secrets/jira.json
+ocli demand --org acme          # what it now owes
+```
+
+**What changes, in practice.** Grooming has something to read, so it cites real documents and real
+prior art, and `business_context_grooming` stops being a formality. Terms in the work item that
+match *nothing* in your corpus are reported as **new ground** — which is exactly the signal you
+want on an established codebase, because it says "this part has no precedent here, look closely".
+
+**How to get the most from it.** Connect the *code* as a source as well as the tracker
+(`--kind git`) — a defect groomed against the tracker alone knows what was reported, not what
+exists. And prefer webhooks over polling (§8) so a triage ticket assigned at 09:02 is not picked up
+at the next cycle boundary.
+
+### 3.3 Which to choose
+
+| | Greenfield | Established |
+|---|---|---|
+| Where goals come from | You, via `goal` | Connected sources |
+| Sources required | No | **Yes** — refused at run time without one |
+| Grooming finds | Usually nothing, and says so | Real citations, plus "new ground" |
+| Expect `ask:` | Often — a stated goal is thin | Rarely — the ticket carries context |
+| Best first checkpoint | `grooming` | `approach` |
+
+You can run both against the same repository: a source-synced organization working the backlog,
+and a greenfield one for a goal you are exploring.
+
+---
+
+## 4. Getting the best out of it
+
+Six things that make the difference between a run that delivers and a run that spins:
+
+1. **Give the worker a real command.** The default work executor *assumes success and performs
+   nothing*. It is there so you can exercise the organization without a repository. If you want
+   code, pass `--work-cmd`; if the run reports `work_execution assumed simulated`, nothing was
+   built.
+2. **The worker must commit.** Change control deliberately refuses to commit on a performer's
+   behalf — committing whatever else is lying in the tree would be a commit nobody wrote. A branch
+   with no commits is refused at merge, and you will see `0 landed`.
+3. **Point the test command at something that can fail.** A suite that passes on the base branch
+   hands every change a green gate that proves nothing about it. The fastest sanity check is to
+   run your `--test-cmd` on a clean checkout and confirm it goes red for the work you are asking
+   for.
+4. **Start with a checkpoint, then remove it.** Run the first few goals with `--checkpoint
+   grooming`. Read what it understood. When it stops surprising you, drop the checkpoint and let
+   it run the whole chain.
+5. **Answer the questions.** `ocli questions` is not a log; it is a queue of things an agent
+   decided it could not settle alone. Three rounds per item, then it proceeds on what it has.
+6. **Bind checks before you trust it unattended** (§9). A gate answered by a reviewer is an
+   opinion; a gate answered by your CI's own audits is a fact, keyed to the exact tree it judged.
+
+**And one thing to expect rather than fix:** `no_progress` is a normal ending. It means a cycle
+changed nothing — usually a gate rejecting for a reason worth reading. Read the refusals before
+raising `--until`.
+
+## 5. Setup
 
 **Prerequisites:** [Bun](https://bun.sh) ≥ 1.4, Git, Node ≥ 20. Plus whatever toolchain the
 repository you point it at needs (Maven, Python, .NET…).
@@ -96,7 +275,7 @@ alias here works when you type it and fails inside any script — including one 
 
 ---
 
-## 4. Your first organization
+## 6. Your first organization
 
 `org configure` is a **guided setup that reads its state from reality** — it never stores "step 3
 of 5", so it is resumable and it never nags. Ask it, do what it says, ask it again.
@@ -125,7 +304,7 @@ ocli org configure --org acme
 
 ---
 
-## 5. Give it work, and run it
+## 7. Give it work, and run it
 
 State a goal:
 
@@ -151,7 +330,7 @@ bun src/Core.TypeScript/corporate/run-org.ts \
 | `--work-cmd` / `--work-arg` | The performer. **It must commit its own work** — change control refuses to commit on its behalf, and refuses to merge a branch with nothing on it |
 | `--test-cmd` / `--test-arg` | Your suite, whatever language. `bun test`, `mvn -o test`, `python -m unittest`, `dotnet test` |
 | `--until N` | Converge for at most N cycles. It stops earlier when delivered, halted, or making no progress |
-| `--inbox <dir>` | Read inbound work items from a directory (see §6) |
+| `--inbox <dir>` | Read inbound work items from a directory (see §8) |
 | `--store <dir>` | Where the event log lives. Defaults from the registry |
 
 Read the outcome. The run prints which ports were **real** versus **simulated**, what happened
@@ -162,7 +341,7 @@ step by step, and `changes: N projected, M landed`.
 
 ---
 
-## 6. Connect real sources of work
+## 8. Connect real sources of work
 
 **A tracker or wiki (read-only — nothing is ever written back):**
 
@@ -193,7 +372,7 @@ to decide how often your company works.
 
 ---
 
-## 7. Make a gate run your checks
+## 9. Make a gate run your checks
 
 By default a gate is answered by a review port. You can instead require that **real checks pass**:
 
@@ -214,7 +393,7 @@ Three things to know:
 
 ---
 
-## 8. Keep humans in the loop (optional)
+## 10. Keep humans in the loop (optional)
 
 ```bash
 ocli org create ... --checkpoint grooming --checkpoint approach
@@ -242,7 +421,7 @@ Choosing **no** checkpoints is a real answer and means it runs the whole chain i
 
 ---
 
-## 9. Watch it
+## 11. Watch it
 
 ```bash
 bun src/Core.TypeScript/corporate/serve-org.ts  --org acme   # read-only dashboard
@@ -257,7 +436,7 @@ exactly that reason.
 
 ---
 
-## 10. Troubleshooting
+## 12. Troubleshooting
 
 | Symptom | Cause | Fix |
 |---|---|---|
@@ -271,7 +450,7 @@ exactly that reason.
 
 ---
 
-## 11. For an AI agent
+## 13. For an AI agent
 
 Give the agent this section verbatim.
 

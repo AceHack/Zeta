@@ -504,43 +504,6 @@ function capture(label: string, text: string): string {
 }
 
 /**
- * Work performed by running a command.
- *
- * The command and its arguments come from the CALLER as an array — never a shell line, and never
- * built from a work item's own text. A work item is untrusted input to this process: it arrives
- * from intake, which may be a directory somebody else writes to, so letting its title reach a shell
- * would be a command-injection seam wearing an org chart.
- *
- * `argsFor` may use the node to choose ARGUMENTS (a path, an id). Those are passed as separate
- * argv entries, so a title containing `; rm -rf /` is one argument called `; rm -rf /` and not a
- * second command.
- */
-/**
- * Something that MAKES the document a pre-code gate will judge.
- *
- * Eleven of the fourteen gates had no producer, so there was nothing at those phases for a reviewer
- * to read. A run therefore had two honest options — approve on nothing, or reject on nothing — and
- * both are the same failure wearing different clothes: the gate is not evaluating the work.
- *
- * This is the third spawn adapter and it keeps the two rules the others keep. THE EXIT CODE DECIDES
- * whether the phase produced anything; a command that prints apologies and exits 0 has produced
- * something, and one that prints a document and exits 1 has not. And `shell: false`, because a work
- * item's title arrives from intake and must never reach a shell.
- *
- * Its STDOUT is the reference list, one per line — the paths a reviewer can open. An empty list from
- * a zero exit is reported as produced-but-cited-nothing rather than smoothed into success, because a
- * gate whose evidence list is empty is exactly what an approval with nothing behind it looks like.
- *
- * `priorArtifacts` is passed on the command line, so the phase can build on the last: the BRD writer
- * is handed the RFP analysis, the architect the BRD, the cost reviewer the architecture.
- */
-/**
- * The line an author uses to say which memory it actually used: `relied on [<memoryId>]`.
- *
- * Named once, so the parser and any producer that wants to be understood agree by construction
- * rather than by two string literals that happen to match.
- */
-/**
  * How much a spawned command may print before the runner gives up on it.
  *
  * ── THE DEFECT THIS CLOSES ───────────────────────────────────────────────────
@@ -557,6 +520,12 @@ function capture(label: string, text: string): string {
  */
 export const MAX_COMMAND_OUTPUT_BYTES = 64 * 1024 * 1024;
 
+/**
+ * The line an author uses to say which memory it actually used: `relied on [<memoryId>]`.
+ *
+ * Named once, so the parser and any producer that wants to be understood agree by construction
+ * rather than by two string literals that happen to match.
+ */
 export const CITED_PREFIX = "relied on ";
 
 /**
@@ -609,6 +578,25 @@ export function learningsFrom(lines: readonly string[]): readonly Learning[] {
     .filter((l) => l.value !== "");
 }
 
+/**
+ * Something that MAKES the document a pre-code gate will judge.
+ *
+ * Eleven of the fourteen gates had no producer, so there was nothing at those phases for a reviewer
+ * to read. A run therefore had two honest options — approve on nothing, or reject on nothing — and
+ * both are the same failure wearing different clothes: the gate is not evaluating the work.
+ *
+ * This is the third spawn adapter and it keeps the two rules the others keep. THE EXIT CODE DECIDES
+ * whether the phase produced anything; a command that prints apologies and exits 0 has produced
+ * something, and one that prints a document and exits 1 has not. And `shell: false`, because a work
+ * item's title arrives from intake and must never reach a shell.
+ *
+ * Its STDOUT is the reference list, one per line — the paths a reviewer can open. An empty list from
+ * a zero exit is reported as produced-but-cited-nothing rather than smoothed into success, because a
+ * gate whose evidence list is empty is exactly what an approval with nothing behind it looks like.
+ *
+ * `priorArtifacts` is passed on the command line, so the phase can build on the last: the BRD writer
+ * is handed the RFP analysis, the architect the BRD, the cost reviewer the architecture.
+ */
 export function commandArtifactProducer(input: {
   readonly command: string;
   readonly gate: GateKind;
@@ -873,6 +861,18 @@ export function workBriefEnv(node: CascadeNode, ctx: WorkContext): Record<string
   };
 }
 
+/**
+ * Work performed by running a command.
+ *
+ * The command and its arguments come from the CALLER as an array — never a shell line, and never
+ * built from a work item's own text. A work item is untrusted input to this process: it arrives
+ * from intake, which may be a directory somebody else writes to, so letting its title reach a shell
+ * would be a command-injection seam wearing an org chart.
+ *
+ * `argsFor` may use the node to choose ARGUMENTS (a path, an id). Those are passed as separate
+ * argv entries, so a title containing `; rm -rf /` is one argument called `; rm -rf /` and not a
+ * second command.
+ */
 export function commandWorkExecutor(input: {
   readonly command: string;
   readonly argsFor: (node: CascadeNode) => readonly string[];
@@ -1223,15 +1223,6 @@ export function commitsAhead(
 }
 
 /**
- * Changes as real git branches.
- *
- * `open` creates a branch; `merge` merges it back. Both refuse on a non-zero exit rather than
- * reporting a merge that did not happen — the one thing change control cannot do is claim a merge.
- *
- * MERGE IS `--no-ff` ON PURPOSE: a fast-forward leaves no record that a change existed, and this
- * port's whole job is that the record and the repository agree.
- */
-/**
  * Parse `git diff --numstat` into per-file counts.
  *
  * Two shapes matter and both are handled rather than smoothed:
@@ -1285,6 +1276,15 @@ export function revisionOf(
   return { ok: true, revision: { commit, tree } };
 }
 
+/**
+ * Changes as real git branches.
+ *
+ * `open` creates a branch; `merge` merges it back. Both refuse on a non-zero exit rather than
+ * reporting a merge that did not happen — the one thing change control cannot do is claim a merge.
+ *
+ * MERGE IS `--no-ff` ON PURPOSE: a fast-forward leaves no record that a change existed, and this
+ * port's whole job is that the record and the repository agree.
+ */
 export function gitChangeControl(input: {
   readonly cwd: string;
   readonly baseBranch: string;

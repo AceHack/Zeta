@@ -537,11 +537,6 @@ export function evaluateGate(
 }
 
 /**
- * Run the whole chain for one work item until it merges, fails, or runs out of owners.
- *
- * Returns every evaluation, so a caller can see WHERE it stopped rather than only that it did.
- */
-/**
  * Where a person may be required to sign off, if the operator asks for it.
  *
  * BOTH ARE OPTIONAL AND OFF BY DEFAULT. With neither configured the organization runs the whole
@@ -593,6 +588,11 @@ export interface GateRunResult {
   readonly refusals: readonly string[];
 }
 
+/**
+ * Run the whole chain for one work item until it merges, fails, or runs out of owners.
+ *
+ * Returns every evaluation, so a caller can see WHERE it stopped rather than only that it did.
+ */
 export function runGateChain(
   chart: OrgChart,
   input: {

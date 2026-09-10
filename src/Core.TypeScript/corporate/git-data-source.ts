@@ -364,18 +364,6 @@ export function simulatedDataSource(
 }
 
 /**
- * Read several sources as one — the G-Set union the agent-bus already models.
- *
- * `agent-bus/g-set-view.ts` states the property this relies on: the union of documents from
- * disjoint sources is grow-only, commutative and idempotent, so no coordinator is needed and merge
- * order does not matter. Documents are keyed by `ref`, which contains the revision — so the same
- * file at two revisions is two documents, and the same file read twice is one.
- *
- * A refusal from ANY source refuses the whole union. Silently unioning the sources that answered
- * would produce a context that looks complete and is missing a repository, which is the failure
- * mode a merged view is most likely to hide.
- */
-/**
  * The organization's OWN documents — what it has written, not what it was given.
  *
  * ── WHY THIS IS A SEPARATE SOURCE ───────────────────────────────────────────
@@ -469,6 +457,18 @@ export function directoryDataSource(input: {
   };
 }
 
+/**
+ * Read several sources as one — the G-Set union the agent-bus already models.
+ *
+ * `agent-bus/g-set-view.ts` states the property this relies on: the union of documents from
+ * disjoint sources is grow-only, commutative and idempotent, so no coordinator is needed and merge
+ * order does not matter. Documents are keyed by `ref`, which contains the revision — so the same
+ * file at two revisions is two documents, and the same file read twice is one.
+ *
+ * A refusal from ANY source refuses the whole union. Silently unioning the sources that answered
+ * would produce a context that looks complete and is missing a repository, which is the failure
+ * mode a merged view is most likely to hide.
+ */
 export function unionOf(sources: readonly DataSourcePort[], name = "union"): DataSourcePort {
   const gather = async (
     take: (s: DataSourcePort) => Promise<PortResult<readonly SourceDocument[]>>,

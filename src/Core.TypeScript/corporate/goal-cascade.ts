@@ -250,28 +250,6 @@ export function childrenOf(cascade: Cascade, workId: string): readonly CascadeNo
 }
 
 /**
- * The hat that should own a rung beneath `parentHatId`.
- *
- * Candidates are the hats at `level` that report up to the parent. They are ranked by distance in
- * the reporting line — closest first, which is the hat a real organization would hand it to.
- *
- * `mustSupportLevel` breaks the ties, and it is not a refinement: without it this function picks an
- * owner who cannot carry the rung BELOW, and the cascade dies one step after committing to them.
- * Found by running it — under this chart the CTO has three directors at equal distance, and the
- * first by declaration order (`architecture_director`) has no manager beneath it, so every goal
- * accepted by the CTO decomposed into an initiative that could never become a project. The plan
- * looked staffed and was not.
- *
- * So among the nearest candidates, prefer one that actually has a team at the next level. That is
- * still derived from the graph — "give it to a director who has managers" is what an organization
- * does, not a special case about any particular hat.
- *
- * When NONE of them can support the next rung, the nearest is still returned rather than
- * `undefined`: the honest failure is the specific refusal at the next `decompose` ("no manager hat
- * reports up to X"), which names the real gap, rather than a vaguer one here about a rung that has
- * not been reached yet.
- */
-/**
  * What an owner of `workType` must be able to reach.
  *
  * ALWAYS A CONTRIBUTOR, at every rung, and the two earlier answers were both wrong in the same

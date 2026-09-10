@@ -256,18 +256,6 @@ export function project(input: ProjectionInput): Projection {
 }
 
 /**
- * Where the projection and the organization DISAGREE.
- *
- * The whole point of a derived projection is that it cannot drift — but "cannot" is a claim, and
- * this is the check. Each disagreement below is a state the two records could reach independently
- * and that no honest run should produce:
- *
- *   - the change merged while the task is not delivered,
- *   - the task is done while the change never merged,
- *   - the change merged with a gate unpassed,
- *   - the lifecycle refused a transition the organization believed it had made.
- */
-/**
  * The organization calls this work DONE and its change record never reached `Merged`.
  *
  * ── WHY THIS IS A NAMED PREDICATE AND NOT AN INLINE CONDITION ────────────────
@@ -294,6 +282,18 @@ export function doneWithNothingMerged(
   return node?.state === WorkState.Done && projection.state.tag !== "Merged";
 }
 
+/**
+ * Where the projection and the organization DISAGREE.
+ *
+ * The whole point of a derived projection is that it cannot drift — but "cannot" is a claim, and
+ * this is the check. Each disagreement below is a state the two records could reach independently
+ * and that no honest run should produce:
+ *
+ *   - the change merged while the task is not delivered,
+ *   - the task is done while the change never merged,
+ *   - the change merged with a gate unpassed,
+ *   - the lifecycle refused a transition the organization believed it had made.
+ */
 export function disagreementsWith(
   projection: Projection,
   input: { readonly cascade: Cascade; readonly workId: string; readonly queue: WorkQueue },

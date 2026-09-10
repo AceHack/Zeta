@@ -54,12 +54,6 @@ export interface DocumentView {
 }
 
 /**
- * Every document written for a set of work items, oldest first.
- *
- * Ordered by when it was written rather than by gate, because that is the order the work happened
- * in and a reader following a ticket is following time.
- */
-/**
  * The last segment of a path, under either separator.
  *
  * `split("/")` alone left a Windows run rendering `C:\Users\...\brd_approval.md` as the file's
@@ -71,6 +65,12 @@ export function baseName(path: string): string {
   return at < 0 ? path : path.slice(at + 1);
 }
 
+/**
+ * Every document written for a set of work items, oldest first.
+ *
+ * Ordered by when it was written rather than by gate, because that is the order the work happened
+ * in and a reader following a ticket is following time.
+ */
 export function documentViews(
   chart: OrgChart,
   folded: FoldedOrganization,

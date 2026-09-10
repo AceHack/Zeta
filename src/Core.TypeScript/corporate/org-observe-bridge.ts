@@ -1485,25 +1485,6 @@ export function contextPackFor(view: OrgView, hatId: string, resourceAuthorityHa
 }
 
 /**
- * What this hat is blocked on and has NOT already said so about.
- *
- * ── REPEATING A REPORT IS NOT ESCALATING IT ──────────────────────────────────
- * Measured over a 200-round drive: a blocked implementer chose `request_information` every single
- * round and the organization accumulated 200 identical signals about one blocker. Nothing was
- * wrong with any individual step — the hat was blocked, the surface said so, the signal routed —
- * and the aggregate was a livelock wearing the appearance of activity.
- *
- * The rule is the one `deliberationsOf` already uses for turns: YOU SPEAK ONCE. A blocker the hat
- * has raised stays off its surface until the blocker itself clears, because the organization's
- * record already holds it and a second copy adds nothing a reader did not have.
- *
- * ── AND THE UNANSWERED CASE IS SOMEBODY ELSE'S JOB ───────────────────────────
- * The obvious objection is that a report nobody acts on should be raised again. It should — by
- * ESCALATION, not by repetition, and `lag-detection.ts` already does exactly that:
- * `blocker_owner_silent` fires when the owner has not answered inside the SLA and addresses the
- * finding PAST them. Re-reporting to the same hat is the thing that already went unanswered.
- */
-/**
  * Work that has run out of attempts at the gates, as a blocker its assignee has not yet raised.
  *
  * ── A COUNTER NOBODY READ AT THE LIMIT ───────────────────────────────────────
@@ -1596,6 +1577,25 @@ function exhaustionOf(view: OrgView, hatId: string, m: MissingInformation): Exha
   return { kind: "no_owner_in_org", forBlockerKind: m.kind };
 }
 
+/**
+ * What this hat is blocked on and has NOT already said so about.
+ *
+ * ── REPEATING A REPORT IS NOT ESCALATING IT ──────────────────────────────────
+ * Measured over a 200-round drive: a blocked implementer chose `request_information` every single
+ * round and the organization accumulated 200 identical signals about one blocker. Nothing was
+ * wrong with any individual step — the hat was blocked, the surface said so, the signal routed —
+ * and the aggregate was a livelock wearing the appearance of activity.
+ *
+ * The rule is the one `deliberationsOf` already uses for turns: YOU SPEAK ONCE. A blocker the hat
+ * has raised stays off its surface until the blocker itself clears, because the organization's
+ * record already holds it and a second copy adds nothing a reader did not have.
+ *
+ * ── AND THE UNANSWERED CASE IS SOMEBODY ELSE'S JOB ───────────────────────────
+ * The obvious objection is that a report nobody acts on should be raised again. It should — by
+ * ESCALATION, not by repetition, and `lag-detection.ts` already does exactly that:
+ * `blocker_owner_silent` fires when the owner has not answered inside the SLA and addresses the
+ * finding PAST them. Re-reporting to the same hat is the thing that already went unanswered.
+ */
 function unraisedBlockers(view: OrgView, hatId: string): readonly MissingInformation[] {
   const mine = [...(view.blockers?.get(hatId) ?? []), ...exhaustedAtGates(view, hatId)];
   if (mine.length === 0) return mine;

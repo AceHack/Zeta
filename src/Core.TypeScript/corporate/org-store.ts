@@ -117,12 +117,6 @@ export function mintRunId(input: {
 }
 
 /**
- * Append a run: every event as its own shard, plus the run's summary.
- *
- * Idempotent at the record level — re-appending the same run writes the same bytes to the same
- * paths, so replaying a run is an upsert rather than a duplicated history.
- */
-/**
  * Write ONE event, as it happens.
  *
  * `appendRun` writes the whole trace at the end, which is correct for history and useless for
@@ -141,6 +135,12 @@ export function appendEvent(event: OrgEvent, root: string): string {
   );
 }
 
+/**
+ * Append a run: every event as its own shard, plus the run's summary.
+ *
+ * Idempotent at the record level — re-appending the same run writes the same bytes to the same
+ * paths, so replaying a run is an upsert rather than a duplicated history.
+ */
 export function appendRun(
   input: {
     readonly atMs: number;

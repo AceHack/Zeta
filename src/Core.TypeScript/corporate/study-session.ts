@@ -206,21 +206,21 @@ export function openStudySession(input: OpenStudyInput): StudySessionResult {
   };
 }
 
-/**
- * ── YIELDING TO WORK BELONGS TO `replanForWork`, NOT HERE ────────────────────
- * This module once carried a `releaseStudyFor` that CANCELLED study blocks overlapping incoming
- * work. `org-life.replanForWork` already does that job and does it better, and the two disagreed on
- * the point that matters: it MOVES the block and reports the delay, arguing — correctly — that
- * cancelling "would make the organisation look instantly available and quietly lose the reading".
- *
- * It is also already wired for this: `Reflection`, the block type a study session uses, is in its
- * `YIELDS_TO_WORK` set. So study already yields to work through it, and a second mechanism with the
- * opposite semantics would have meant a study hour was cancelled or postponed depending on which
- * caller happened to run — with the budget returning in one case and not the other.
- *
- * Removed rather than kept as an alias, because two names for one decision is how the disagreement
- * comes back.
- */
+// ── A NOTE ABOUT SOMETHING THAT IS NOT HERE ─────────────────────────────────
+// ── YIELDING TO WORK BELONGS TO `replanForWork`, NOT HERE ────────────────────
+// This module once carried a `releaseStudyFor` that CANCELLED study blocks overlapping incoming
+// work. `org-life.replanForWork` already does that job and does it better, and the two disagreed on
+// the point that matters: it MOVES the block and reports the delay, arguing — correctly — that
+// cancelling "would make the organisation look instantly available and quietly lose the reading".
+//
+// It is also already wired for this: `Reflection`, the block type a study session uses, is in its
+// `YIELDS_TO_WORK` set. So study already yields to work through it, and a second mechanism with the
+// opposite semantics would have meant a study hour was cancelled or postponed depending on which
+// caller happened to run — with the budget returning in one case and not the other.
+//
+// Removed rather than kept as an alias, because two names for one decision is how the disagreement
+// comes back.
+//
 
 /**
  * Hats that have study allowance left right now.

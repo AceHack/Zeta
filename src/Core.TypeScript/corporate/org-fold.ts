@@ -466,12 +466,6 @@ export function foldPriorities(events: readonly OrgEvent[]): readonly PriorityDe
 }
 
 /**
- * Every gate verdict, in order.
- *
- * ALL of them, not the latest per gate: the churn signal is the COUNT of rejections, so collapsing
- * to the newest verdict per gate would erase exactly the history that makes churn visible.
- */
-/**
  * Every blocker the organization raised OUT to a person, from the log.
  *
  * Keyed by `blockerId` so replaying the log yields one blocker rather than a duplicate queue —
@@ -491,6 +485,12 @@ export function foldBlockers(events: readonly OrgEvent[]): readonly RaisedBlocke
   return out;
 }
 
+/**
+ * Every gate verdict, in order.
+ *
+ * ALL of them, not the latest per gate: the churn signal is the COUNT of rejections, so collapsing
+ * to the newest verdict per gate would erase exactly the history that makes churn visible.
+ */
 export function foldGateEvaluations(events: readonly OrgEvent[]): readonly GateEvaluation[] {
   const out: GateEvaluation[] = [];
   const seen = new Set<string>();
@@ -690,13 +690,6 @@ export interface FoldedOrganization {
   readonly factCount: number;
 }
 
-/**
- * The whole organization, from the log alone.
- *
- * An EMPTY log folds to an empty organization rather than throwing: a store nobody has written to
- * is a normal state, and it is distinguishable from a broken one by `factCount` being zero while
- * `refusals` is empty.
- */
 /** What one phase made. */
 export interface PhaseOutput {
   readonly workId: string;
@@ -929,19 +922,6 @@ export function foldHatsWorn(events: readonly OrgEvent[]): ReadonlySet<string> {
 }
 
 /**
- * Every metered port crossing, in the order the log holds them.
- *
- * No de-duplication and no last-wins: two calls to the same port for the same gate are two calls
- * that both cost money, and collapsing them would under-report a retry — which is precisely the
- * case somebody checking a bill is looking for.
- */
-/**
- * Every meeting, from the log.
- *
- * Keyed by meeting id so re-reading a log does not double-count, and so a meeting re-booked at a
- * new time appears once, at the time it was last booked for.
- */
-/**
  * The most recent census, or `undefined` when no tick has taken one.
  *
  * The LATEST only. A census is a snapshot of one instant, and keeping every one of them would let
@@ -958,6 +938,12 @@ export function foldPresence(events: readonly OrgEvent[]): PresenceCensus | unde
   return latest;
 }
 
+/**
+ * Every meeting, from the log.
+ *
+ * Keyed by meeting id so re-reading a log does not double-count, and so a meeting re-booked at a
+ * new time appears once, at the time it was last booked for.
+ */
 export function foldMeetings(events: readonly OrgEvent[]): readonly FoldedMeeting[] {
   const byId = new Map<string, FoldedMeeting>();
   for (const event of factEvents(events)) {
@@ -1001,6 +987,13 @@ export function foldMeetings(events: readonly OrgEvent[]): readonly FoldedMeetin
   return [...byId.values()];
 }
 
+/**
+ * Every metered port crossing, in the order the log holds them.
+ *
+ * No de-duplication and no last-wins: two calls to the same port for the same gate are two calls
+ * that both cost money, and collapsing them would under-report a retry — which is precisely the
+ * case somebody checking a bill is looking for.
+ */
 export function foldMeters(events: readonly OrgEvent[]): readonly MeteredCall[] {
   const out: MeteredCall[] = [];
   for (const event of events) {
@@ -1081,6 +1074,13 @@ export function foldPhaseOutputs(events: readonly OrgEvent[]): ReadonlyMap<strin
   return out;
 }
 
+/**
+ * The whole organization, from the log alone.
+ *
+ * An EMPTY log folds to an empty organization rather than throwing: a store nobody has written to
+ * is a normal state, and it is distinguishable from a broken one by `factCount` being zero while
+ * `refusals` is empty.
+ */
 export function foldOrganization(events: readonly OrgEvent[]): FoldedOrganization {
   // ── THERE IS NO CHECKPOINT HERE, AND THAT IS A MEASURED DECISION ──────────
   // The obvious next optimisation is to snapshot this result, key it on (last event id, fold
