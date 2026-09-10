@@ -99,7 +99,7 @@ module ReportTriage =
     // ── The (area, jurisdiction) key — needs no change to TravelerRankLedger ────────────────────────
 
     /// ASCII Unit Separator: cannot collide with a human-authored area or jurisdiction name.
-    let [<Literal>] private KeySeparator = ""
+    let [<Literal>] private KeySeparator = "\u001F"
 
     /// Compose an (area, jurisdiction) pair into a `TravelerRankLedger` hatDomain.
     ///

@@ -12,7 +12,7 @@ namespace Zeta.Core
 [<RequireQualifiedAccess>]
 module SwarmBoardAnsi =
 
-    let private esc (code: string) = "[" + code + "m"
+    let private esc (code: string) = "\u001B[" + code + "m"
     let private reset = esc "0"
 
     /// The door-game heat ladder: cool=green, warm=yellow, hot=red (bright), cold/zero=dim.
@@ -68,6 +68,6 @@ module SwarmBoardAnsi =
     /// case — the extension discipline: color absent ⇒ identical layout, not a different screen).
     let plain (who: string) (b: SwarmBoard.Board) : string list =
         let strip (s: string) =
-            System.Text.RegularExpressions.Regex.Replace(s, "\\[[0-9;]*m", "")
+            System.Text.RegularExpressions.Regex.Replace(s, "\u001B\\[[0-9;]*m", "")
 
         render who b |> List.map strip

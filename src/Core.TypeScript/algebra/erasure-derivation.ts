@@ -123,7 +123,7 @@ export function measureErasure<T>(
 
 /** Deterministic, locale-independent rendering of a list of parts for use as an image key. */
 export function imageKey(parts: readonly string[]): string {
-  return parts.join("");
+  return parts.join("\u001F");
 }
 
 /** Ordinal (code-point) sort — the canonical collation, never a locale one. */

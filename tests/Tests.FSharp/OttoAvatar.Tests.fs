@@ -79,4 +79,4 @@ let ``the animation breathes: idle and blink differ exactly at the eyes and feet
 let ``the avatar renders deterministically through ZetaMax (same frame, same bytes)`` () =
     let f = composite "idle"
     Assert.Equal<string list>(ZetaMax.render f, ZetaMax.render f)
-    Assert.True(ZetaMax.render f |> List.head |> fun l -> l.Contains "[36m" || l.Contains "[37m")
+    Assert.True(ZetaMax.render f |> List.head |> fun l -> l.Contains "\u001B[36m" || l.Contains "\u001B[37m")

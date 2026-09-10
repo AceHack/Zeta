@@ -40,6 +40,6 @@ let ``Mono1 zero case: plain is the SAME screen with color stripped — layout i
     let mono = SwarmBoardAnsi.plain "aaron" (board ())
     Assert.Equal(List.length colored, List.length mono)
     Assert.DoesNotContain("[", String.concat "" mono |> fun s -> s) |> ignore
-    Assert.False(mono |> String.concat "" |> fun s -> s.Contains "")
+    Assert.False(mono |> String.concat "" |> fun s -> s.Contains "\u001B")
     // occupants visible at their rooms in the mono render too
     Assert.Contains(mono, fun (l: string) -> l.Contains "forge" && l.Contains "max")

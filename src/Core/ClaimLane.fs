@@ -471,11 +471,11 @@ module ClaimLane =
     /// another rather than an in-place mutation.
     let atomOf (c: Claim) : string =
         String.Join(
-            "",
+            "\u001F",
             [ c.Id
               c.Body
-              String.Join("", c.Cites |> Set.toList)
-              String.Join("", c.Anchors |> Set.toList)
+              String.Join("\u001E", c.Cites |> Set.toList)
+              String.Join("\u001E", c.Anchors |> Set.toList)
               c.Prose ])
 
     let private weight (w: float) : Complex = { Real = w; Imag = 0.0 }

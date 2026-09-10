@@ -79,12 +79,37 @@ export interface RawNulSite {
  * the step that could normalise the byte away, and a check must not be able to lose the
  * thing it is looking for on the way in.
  */
+/**
+ * The WHOLE C0 control class, not just NUL — and 0x7F.
+ *
+ * WHY THIS WIDENED (2026-09-10). The audit caught NUL and nothing else, and five tracked
+ * TypeScript files carried other raw control bytes underneath it: 0x1F as a field separator
+ * (`liveness-ledger`, `erasure-derivation`, `shadow-observer`), 0x1B for an ANSI clear-screen
+ * (`observe-org`), 0x01 as a commit separator (`oracle-stack-evidence`).
+ *
+ * The cost was not cosmetic. **CodeQL could not PARSE those files** — "A parse error occurred:
+ * Invalid character" — so it analysed none of them, and a file that is never analysed reports
+ * zero alerts, which is indistinguishable from a file that is clean. That is the vacuity class
+ * at repository scale: the scanner looked green because it had been silently blinded.
+ *
+ * Same remedy as NUL and for the same reason: every legitimate use is a separator or a
+ * sentinel inside a literal, where `\u001F` is byte-identical at runtime. Verified on the
+ * five: the escaped source still yields code point 31, and CodeQL builds a database from it
+ * without a parse error.
+ *
+ * TAB (0x09), LF (0x0A) and CR (0x0D) are excluded — they are ordinary text.
+ */
+export function isRawControlByte(b: number): boolean {
+  if (b === 0x09 || b === 0x0a || b === 0x0d) return false;
+  return b <= 0x1f || b === 0x7f;
+}
+
 export function findRawNulSites(path: string, bytes: Uint8Array): readonly RawNulSite[] {
   const perLine = new Map<number, number>();
   let line = 1;
   for (const b of bytes) {
     if (b === 0x0a) line += 1;
-    else if (b === 0x00) perLine.set(line, (perLine.get(line) ?? 0) + 1);
+    else if (isRawControlByte(b)) perLine.set(line, (perLine.get(line) ?? 0) + 1);
   }
   return [...perLine.entries()]
     .sort((a, b) => a[0] - b[0]) // line numbers: numeric order, no collation involved

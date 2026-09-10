@@ -84,7 +84,7 @@ export interface ShadowEvent {
 }
 
 /** v2 delta-detect: structured result from pressRestoreArrow. The
- *  AppleScript returns one stdout line "<verdict><delta>" (ASCII Unit
+ *  AppleScript returns one stdout line "<verdict>\u001F<delta>" (ASCII Unit
  *  Separator); this type is the parsed form. */
 export interface RestoreArrowResult {
   /** "pressed:<app>" | "skipped:<reason>" | "error:<reason>" */
@@ -99,7 +99,7 @@ export type RestoreArrowFn = () => Promise<RestoreArrowResult>;
 
 /** ASCII Unit Separator — delimiter between verdict and delta in the
  *  restore-arrow AppleScript output. Unlikely to appear in user input. */
-export const RESTORE_ARROW_SEP = "";
+export const RESTORE_ARROW_SEP = "\u001F";
 
 /** Parse the restore-arrow AppleScript stdout line into verdict + delta. */
 export function parseRestoreArrowOutput(raw: string): RestoreArrowResult {

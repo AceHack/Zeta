@@ -278,7 +278,7 @@ export function renderObservationLine(observation: LivenessObservation): string 
  * apart from an unidentified observer really are two observations.
  */
 export function observationKey(observation: LivenessObservation): string {
-  return `${observation.observer}${observation.observerRunId ?? observation.observedAt}`;
+  return `${observation.observer}\u001F${observation.observerRunId ?? observation.observedAt}`;
 }
 
 /**

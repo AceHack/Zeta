@@ -31,19 +31,19 @@ let ``the boson/fermion CHECKERBOARD is visible: parity alternates at every step
 let ``all FOUR generator colors appear (R, G, B, cyan — the N=4 chromotopology on our channels)`` () =
     let all = AdinkraViz.render None |> String.concat "\n"
     for c in [ 1; 2; 4; 6 ] do
-        Assert.Contains(sprintf "[3%dm" c, all)
+        Assert.Contains(sprintf "\u001B[3%dm" c, all)
 
 [<Fact>]
 let ``THE SHINE: selecting a generator brightens its edges and DIMS the other three (the prism)`` () =
     let shone = AdinkraViz.render (Some 2) |> String.concat "\n"
-    Assert.Contains("[34m", shone) // bit 2's color (blue, 4) still bright
-    Assert.Contains("[2m", shone) // and dimming exists — the unselected generators recede
+    Assert.Contains("\u001B[34m", shone) // bit 2's color (blue, 4) still bright
+    Assert.Contains("\u001B[2m", shone) // and dimming exists — the unselected generators recede
     // the unselected generator colors are NOT bright (they are dimmed, so their bright color codes do not appear)
-    Assert.DoesNotContain("[31m", shone)
-    Assert.DoesNotContain("[32m", shone)
-    Assert.DoesNotContain("[36m", shone)
+    Assert.DoesNotContain("\u001B[31m", shone)
+    Assert.DoesNotContain("\u001B[32m", shone)
+    Assert.DoesNotContain("\u001B[36m", shone)
     let unshone = AdinkraViz.render None |> String.concat "\n"
-    Assert.DoesNotContain("[2m", unshone) // no shine: nothing dimmed, all four live together
+    Assert.DoesNotContain("\u001B[2m", unshone) // no shine: nothing dimmed, all four live together
 
 [<Fact>]
 let ``deterministic + registered + cost-declared (the budget lint holds)`` () =

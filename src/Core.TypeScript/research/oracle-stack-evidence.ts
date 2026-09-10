@@ -18,7 +18,7 @@ for (let i = 2; i < process.argv.length; i += 2) {
 const since = args.get("since") ?? "2026-06-10 00:00";
 const until = args.get("until") ?? "now";
 
-const SEP = "COMMIT";
+const SEP = "\u0001COMMIT\u0001";
 // ARGUMENT VECTOR, not a shell string. `--since` and `--until` come straight
 // from argv, and inside a shell string every character in them is syntax
 // (CodeQL js/indirect-command-line-injection). `spawnArgv` hands the vector to

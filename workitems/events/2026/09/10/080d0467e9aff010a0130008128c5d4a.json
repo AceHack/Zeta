@@ -1,0 +1,14 @@
+{
+  "id": "080d0467e9aff010a0130008128c5d4a",
+  "at": "2026-09-10T20:23:19.806Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M26FTDFX087G0R002SY0G1Z",
+    "type": "bug",
+    "title": "CodeQL could not parse 12 source files, so it analysed none of them",
+    "slug": "codeql-could-not-parse-12-source-files-so-it-analysed-none-o",
+    "priority": "P2",
+    "filename": "081M26FTDFX087G0R002SY0G1Z-codeql-could-not-parse-12-source-files-so-it-analysed-none-o.md"
+  }
+}

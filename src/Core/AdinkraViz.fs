@@ -43,9 +43,9 @@ namespace Zeta.Core
 [<RequireQualifiedAccess>]
 module AdinkraViz =
 
-    let private esc (c: int) = sprintf "[3%dm" c
-    let private dim = "[2m"
-    let private reset = "[0m"
+    let private esc (c: int) = sprintf "\u001B[3%dm" c
+    let private dim = "\u001B[2m"
+    let private reset = "\u001B[0m"
 
     /// Gray code order for the 4×4 layout (adjacent cells differ in exactly one bit).
     let private gray = [| 0; 1; 3; 2 |]
