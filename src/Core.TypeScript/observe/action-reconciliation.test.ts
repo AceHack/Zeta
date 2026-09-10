@@ -39,14 +39,21 @@ describe("the table is total and self-consistent", () => {
     // `request_information`, `assign_work`. Before them the grammar had exactly one communication
     // verb and it addressed the human.
     //
-    // +6 generative verbs: `set_direction`, `draft_business_doc`, `decide_priority`,
+    // +9 generative verbs: `set_direction`, `draft_business_doc`, `decide_priority`,
     // `size_hat_supply`, `break_down_work`, `submit_work`, `escalate_churn`, `convene_chain`,
     // `decide_spend`. Before them every verb in the grammar ADVANCED work
     // that already existed and none of them made any, so an organization built from this grammar
     // ran to a fixed point and stopped. The fifth was added after measuring the first four: the
     // drive set sixteen directions and then stopped with sixteen root goals and nothing under
     // any of them.
-    expect(ALL_KINDS).toHaveLength(30);
+    //
+    // +1 `raise_to_human`, which is why this number is 31 and not 30. It was added to the table
+    // and this count was not updated with it — the suite it lives in was not re-run, and a count
+    // test is exactly the kind that goes stale silently when the thing it counts is what changed.
+    // Recorded rather than quietly corrected: the lesson is that the number has to move in the
+    // same commit as the row, and the falsifier below (`ALL_KINDS` against the union type) is what
+    // makes the count meaningful rather than decorative.
+    expect(ALL_KINDS).toHaveLength(31);
   });
 
   test("every row's key agrees with its own kind — a copy-paste row is a real risk here", () => {

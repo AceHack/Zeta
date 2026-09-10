@@ -39,7 +39,7 @@
  */
 
 import { Database } from "bun:sqlite";
-import { existsSync, mkdirSync, readFileSync, rmSync } from "node:fs";
+import { mkdirSync, readFileSync, rmSync } from "node:fs";
 import { join } from "node:path";
 import { shardFiles } from "../shard-store/shard-store";
 import type { OrgEvent } from "./org-event";
@@ -223,8 +223,12 @@ export function dropIndex(root: string): void {
   closeIndex(root);
   const at = indexPath(root);
   for (const suffix of ["", "-wal", "-shm"]) {
-    const f = `${at}${suffix}`;
-    if (existsSync(f)) rmSync(f, { force: true });
+    // NO `existsSync` GUARD. `force: true` already means "do not complain if it is not there", so
+    // the check answered a question the call does not ask — and answered it in a window during
+    // which the file can appear or vanish. `lint-check-then-use-file-races` is right about it: a
+    // check that reads as defensive and prevents nothing is worse than no check, because it is
+    // read as protection. One syscall, one answer.
+    rmSync(`${at}${suffix}`, { force: true });
   }
 }
 
