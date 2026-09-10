@@ -61,15 +61,27 @@ function json(body: unknown, status = 200): Response {
 }
 
 /**
- * Constrain an external key to ONE path segment before it becomes a filename.
+ * REFUSE a key that cannot safely become a filename, rather than mangling it into one.
  *
- * Mirrors `safeId` in room-store.ts deliberately rather than importing it: that one is
- * private to its module and describes ROOM ids. Keeping them separate means neither can be
- * widened for the other's benefit.
+ * This began as a `replace()` that rewrote unsafe characters to `-`. That stops the
+ * traversal, but it is the weaker design in two ways. It SILENTLY ACCEPTS a key that is not
+ * the key the tracker sent — two different tickets can mangle to the same filename and the
+ * second quietly overwrites the first — and a rewrite carries no information back to the
+ * caller, so a misconfigured source keeps posting keys that land somewhere unexpected and
+ * nothing ever says so.
+ *
+ * Refusing says which key was rejected and why, and it cannot collide.
+ *
+ * It also closes `js/http-to-file-access` #937, and the reason is worth recording because it
+ * is not obvious: CodeQL treats a regex TEST that gates a branch as a taint barrier
+ * (`SanitizingRegExpTest`), while a `replace()` is only a barrier when it replaces with the
+ * empty string — measured on CLI 2.27.0, `.replace(x, "")` is silent and `.replace(x, "-")`
+ * is loud. So the mangling form could never have closed the alert no matter how strict it
+ * was. The better design and the one the analyser can see are the same design here, which is
+ * the outcome to prefer over any suppression.
  */
-function safeInboxKey(key: string): string {
-  const cleaned = key.replace(/[^A-Za-z0-9._-]/gu, "-").replace(/^\.+/u, "-");
-  return cleaned === "" ? "-" : cleaned.slice(0, 100);
+function isSafeInboxKey(key: string): boolean {
+  return /^[A-Za-z0-9][A-Za-z0-9._-]{0,99}$/u.test(key);
 }
 
 /** Which tickets this organization has already been asked to take. */
@@ -249,7 +261,13 @@ export async function workRoutes(
     // (`js/http-to-file-access`), and the traversal is the part that makes it matter rather
     // than merely look untidy. Same discipline and same shape as `safeId` in room-store.ts:
     // one segment, never a traversal, never empty, bounded length.
-    const file = join(config.inboxDir, `jira-${safeInboxKey(issue.value.key)}.json`);
+    // The key reaches the FILESYSTEM, so it is refused before it gets there rather than
+    // reshaped on the way. It arrives from an HTTP response; a key of `../../etc/whatever`
+    // would otherwise write outside the inbox entirely.
+    if (!isSafeInboxKey(issue.value.key)) {
+      return json({ ok: false, reason: `refusing ticket key ${JSON.stringify(issue.value.key)}: not a single safe path segment` }, 400);
+    }
+    const file = join(config.inboxDir, `jira-${issue.value.key}.json`);
     writeFileSync(file, `${JSON.stringify(event, null, 2)}\n`, "utf-8");
     return json({
       ok: true,
