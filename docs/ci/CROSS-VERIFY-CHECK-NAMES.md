@@ -94,6 +94,7 @@ generator that read an EMPTY roster cannot pass.
 | `cross-verify (reason-truth)`                           | ArgoCD deferral reasons — every cited anchor still holds (offline)                 |
 | `cross-verify (chart-assertion-census)`                 | every chart is applied by some job, and no chart is asserted vacuously             |
 | `cross-verify (no-raw-nul-in-source)`                   | No raw NUL in tracked source (an audit must be able to read the file)              |
+| `cross-verify (author-evidence-declarations)`           | Author-evidence declarations are coherent (.authorevidence)                        |
 | `cross-verify (concept-registry-drift)`                 | Concept registry vs published page (docs/CONCEPT-REGISTRY.md)                      |
 | `cross-verify (tech-radar-claims)`                      | Tech radar claims the repo can still support (paths resolve, in-use tools ringed)  |
 | `cross-verify (tech-radar-audit-tests)`                 | Tech-radar audit unit tests (a check that cannot fail is not a check)              |

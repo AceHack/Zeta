@@ -1,0 +1,151 @@
+# .authorevidence — author-evidence declarations. The AI-relevant `.editorconfig`.
+#
+# `.editorconfig` says what the CANONICAL FORM of a thing is. This file says the same, and
+# then two things `.editorconfig` has no place for:
+#
+#   * what a deviation from that form MECHANICALLY CAUSES, and
+#   * how much that deviation is worth AS EVIDENCE, given who authored it.
+#
+# WHY THE SECOND ONE NEEDED A FILE. For a human author, putting a raw control byte into
+# source costs real effort — Ctrl-V quoting, a hex editor, a paste out of terminal output.
+# Effort is evidence: not proof, but a real signal, and reviewers have leaned on it for
+# decades without ever writing it down. For an LLM author the raw byte and its `\u001b`
+# escape are adjacent in output space and cost one token each. The same artifact therefore
+# carries no intent signal at all, and the diff is byte-identical either way.
+#
+# So the prior every reviewer holds — "someone went out of their way to put an ESC here" —
+# is exactly wrong for the now-common case, and it is wrong SILENTLY. This file makes the
+# prior explicit so it can be argued with in a pull request instead of applied in someone's
+# head. Aaron, 2026-09-10: "it will be easier to agree on what matters when."
+#
+# THIS IS A METER, NOT AN ORACLE. Every field below reports a fact or a declared weight.
+# There is no verdict field, and `src/Core.TypeScript/hygiene/author-evidence.ts --check`
+# refuses one from being smuggled into the prose. The judgement — what to DO about an
+# observation — belongs to a human or to a policy layer, and there are many of those on
+# purpose (`.claude/rules/dual-use-detection-is-neutral-oracle-decides.md`).
+#
+# THE FILE IS TEXT AND STAYS TEXT. A probe for a control character is written as the six
+# characters `\u001b`, never the byte. A declaration file carrying the form it declares
+# against would be unreadable to the greps that drive every other check here — and would be
+# the fourth instance in one day of the exact defect this file is about.
+#
+# ── FORMAT ────────────────────────────────────────────────────────────────────────
+#
+#   [glob]                        `.editorconfig` scoping: no `/` means match the basename
+#   <signal>.canonical          = the form that is correct here
+#   <signal>.deviation          = the form that departs from it
+#   <signal>.detect             = built-in detector id (c0-control-bytes | invisible-characters
+#                                 | trailing-whitespace)
+#   <signal>.gate               = path of the audit that REFUSES the deviation, or `none`
+#   <signal>.consequence        = what the deviation mechanically causes. No intent words.
+#   <signal>.reversible         = yes | no  (Aaron's malice threshold is built on this)
+#   <signal>.effort.<class>     = zero | trivial | moderate | high
+#   <signal>.weight.<class>     = none | weak | moderate | strong
+#   <signal>.probe-deviation    = a sample the detector MUST fire on
+#   <signal>.probe-canonical    = a sample the detector MUST NOT fire on
+#
+# Author classes are `human`, `llm`, `generator`, `unknown` — exactly what the resolver can
+# emit from AgencySignature trailers. A weight for a class nothing can produce would be a
+# dead letter, so no other class is accepted.
+#
+# THREE REFUSALS THE PARSER MAKES, so this is a check and not a wish:
+#   1. `weight` may never exceed the ceiling its `effort` sets. `effort = zero` admits only
+#      `weight = none`. The belief the thesis says is unsupported is literally unwritable.
+#      `weight.unknown` must be `none`: with the class unresolved there is no effort to
+#      condition on, and an empty grep is `unknown`, never a negative result.
+#   2. `consequence` may not contain intent vocabulary.
+#   3. Each detector must fire on its own `probe-deviation` and stay silent on its own
+#      `probe-canonical`. A declaration whose detector cannot separate its own probes
+#      constrains nothing and is refused.
+#
+# THE EFFORT COLUMN IS A `toy` MODEL (`.claude/rules/toy-is-free-metered-must-be-earned.md`).
+# Nobody has measured the keystroke cost of a raw ESC for a human or the token cost for a
+# model. What is metered here is the COHERENCE of the declarations and the FIRING of the
+# detectors — not the truth of the effort estimates. Research doc, with the experiment that
+# would promote them: `docs/research/2026-09-10-effort-cost-was-an-evidential-channel-and-ai-authorship-collapsed-it.md`
+
+root = true
+version = 1
+
+# ── Source code ───────────────────────────────────────────────────────────────────
+#
+# RAW C0 CONTROL BYTES. Measured 2026-09-10 on this tree: 11 tracked code files carry one —
+# five holding 0x1B (all of them ANSI-rendering code and its tests, where the byte is the
+# subject), plus 0x01, 0x1E and 0x1F sites elsewhere. Under the pre-AI prior each of those
+# would have read as somebody going out of their way. Every one of them is inside a string
+# or char literal where the escape has the identical runtime value.
+[*.{ts,tsx,js,jsx,mjs,cjs,fs,fsx,fsi,cs,rs,go,zig,py,c,h,cpp,hpp,wat,sh,bash,sql,toml,yml,yaml}]
+
+c0-control-bytes.canonical = the \uXXXX escape, which has the identical runtime value
+c0-control-bytes.deviation = the raw C0 or DEL byte
+c0-control-bytes.detect = c0-control-bytes
+c0-control-bytes.gate = src/Core.TypeScript/hygiene/audit-no-raw-nul-in-source.ts
+c0-control-bytes.consequence = grep and rg classify the file as binary and print `binary file matches` with exit 0; CodeQL fails to parse it and contributes no alerts. Every text audit then matches nothing and reports clean, which is indistinguishable from a file that was searched and found sound.
+c0-control-bytes.reversible = yes
+# `human` is capped at `weak`, one rank UNDER its effort ceiling, because typed and pasted
+# are indistinguishable in the artifact. A human who pipes `tput setaf 1` into a heredoc
+# spends almost nothing. The honest ceiling is set by the CHEAPEST way a human could have
+# produced it, not by the most laborious.
+c0-control-bytes.effort.human = moderate
+c0-control-bytes.weight.human = weak
+c0-control-bytes.effort.llm = zero
+c0-control-bytes.weight.llm = none
+c0-control-bytes.effort.generator = zero
+c0-control-bytes.weight.generator = none
+c0-control-bytes.effort.unknown = zero
+c0-control-bytes.weight.unknown = none
+c0-control-bytes.probe-deviation = \u001b[0m
+c0-control-bytes.probe-canonical = \\u001b[0m
+
+# TRAILING WHITESPACE is the control row, and it earns its place by being an effort-cost
+# signal that was NEVER evidence for anybody. Every author class sits at zero, so every
+# weight is `none`, and the coherence rule derives that rather than anyone asserting it.
+# A format in which every row came out "no information" would be useless; a format in which
+# no row does would be flattering. This one is genuinely uninformative and says so.
+trailing-whitespace.canonical = the line ends at its last non-space character
+trailing-whitespace.deviation = the line ends in space or tab
+trailing-whitespace.detect = trailing-whitespace
+trailing-whitespace.gate = none
+trailing-whitespace.consequence = the diff shows a changed line that carries no changed content, so review attention lands on a line where nothing happened.
+trailing-whitespace.reversible = yes
+trailing-whitespace.effort.human = zero
+trailing-whitespace.weight.human = none
+trailing-whitespace.effort.llm = zero
+trailing-whitespace.weight.llm = none
+trailing-whitespace.effort.generator = zero
+trailing-whitespace.weight.generator = none
+trailing-whitespace.effort.unknown = zero
+trailing-whitespace.weight.unknown = none
+trailing-whitespace.probe-deviation = const x = 1;\u0020\u0020
+trailing-whitespace.probe-canonical = const x = 1;
+
+# ── Prose and code alike ──────────────────────────────────────────────────────────
+#
+# INVISIBLE CHARACTERS — zero-width, soft hyphen, BOM, word joiner, and the bidirectional
+# overrides of Boucher & Anderson's *Trojan Source* (2023). This is the sharpest published
+# case of the general problem: source that renders one way and compiles another.
+#
+# Measured 2026-09-10 on this tree: 1234 occurrences of U+200B across 51 files, and the
+# largest cluster is `docs/history/pr-reviews/*` where the archived body reads
+# `@\u200bRJSonnenberg` — GitHub's own mention-escaping, preserved verbatim by an archiver.
+# Nobody put those there. Under the old prior, 1234 hidden zero-width characters inside
+# usernames is the single most alarming thing in the repository; measured, it is one
+# third-party generator doing its job and one archiver faithfully not editing the record.
+[*.{ts,tsx,js,jsx,mjs,cjs,fs,fsx,fsi,cs,rs,go,zig,py,md}]
+
+invisible-characters.canonical = every character in the file occupies visual space, or is a named escape
+invisible-characters.deviation = a zero-width, bidirectional-override, or otherwise non-rendering character
+invisible-characters.detect = invisible-characters
+invisible-characters.gate = none
+invisible-characters.consequence = the rendered text and the byte sequence differ, so a reviewer compares one string while the compiler, the matcher, or the URL resolver compares another; two identifiers that look identical are not, and reordering overrides make a line execute in an order other than the one displayed.
+invisible-characters.reversible = yes
+invisible-characters.effort.human = moderate
+invisible-characters.weight.human = weak
+invisible-characters.effort.llm = zero
+invisible-characters.weight.llm = none
+invisible-characters.effort.generator = zero
+invisible-characters.weight.generator = none
+invisible-characters.effort.unknown = zero
+invisible-characters.weight.unknown = none
+invisible-characters.probe-deviation = @\u200bRJSonnenberg
+invisible-characters.probe-canonical = @RJSonnenberg

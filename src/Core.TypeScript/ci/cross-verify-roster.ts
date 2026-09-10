@@ -753,6 +753,28 @@ export const CROSS_VERIFY_AUDITS: readonly CrossVerifyAudit[] = [
     command: "bun src/Core.TypeScript/hygiene/audit-no-raw-nul-in-source.ts",
   },
 
+  // The row above REFUSES a form. This one checks the repo's written-down answer to a
+  // different question: what does that form MEAN, and how much is it worth as EVIDENCE?
+  //
+  // Reviewers have read effort as intent for decades -- a raw control byte in a diff took
+  // Ctrl-V quoting or a hex editor, so somebody meant it. For an LLM author the raw byte
+  // and its escape are adjacent in output space and cost one token each, so the identical
+  // artifact now carries no intent signal at all. `.authorevidence` writes that prior down
+  // per path and per author class so it can be argued with in a PR instead of applied
+  // silently, and this step refuses an INCOHERENT declaration: a weight above what its
+  // effort supports (zero effort admits only `weight = none`), intent vocabulary in the
+  // neutral prose field, a detector that cannot separate its own declared probes, or a
+  // gate path that does not exist.
+  //
+  // It NEVER fails on repository findings -- that is `--report`, which always exits 0,
+  // because a meter reports and the gates named in each declaration refuse. Measured
+  // 2026-09-10: 1525 observations across the tree, every single one at `weight: none`.
+  {
+    id: "author-evidence-declarations",
+    title: "Author-evidence declarations are coherent (.authorevidence)",
+    command: "bun src/Core.TypeScript/hygiene/author-evidence.ts --check",
+  },
+
   // Addison Cooper's Genesis concept vocabulary is published as a static page that is
   // hand-copied into a DIFFERENT repository (lucent-financial-group.github.io) — no build
   // step, no CI, nothing connecting it back here. It drifted exactly as you would expect:

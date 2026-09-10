@@ -3532,6 +3532,7 @@ jobs:
           - reason-truth
           - chart-assertion-census
           - no-raw-nul-in-source
+          - author-evidence-declarations
           - concept-registry-drift
           - tech-radar-claims
           - tech-radar-audit-tests
