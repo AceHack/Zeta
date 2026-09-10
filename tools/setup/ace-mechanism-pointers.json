@@ -13,7 +13,7 @@
       {
         "ecosystem": "from-url",
         "spec": "src/Core.TLA/tla2tools.jar https://github.com/tlaplus/tlaplus/releases/download/v1.8.0/tla2tools.jar",
-        "update": "when-drift-bump-pin"
+        "update": "pinned-url"
       }
     ]
   },

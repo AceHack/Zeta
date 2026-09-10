@@ -90,4 +90,12 @@
 # tlaplus release carrying the named-property diagnostic — is not ours to
 # schedule, so a shorter window would buy a renewal ritual rather than new
 # information. The ceiling is what makes the row revisitable at all.
-src/Core.TLA/tla2tools.jar  accept=auto  verify=deferred  declared=2026-09-09  expires=2026-12-08  exitcheck=src/Core.TypeScript/hygiene/lint-tla2tools-rolling-premise.ts  tradeoff=docs/agendas/ace-package-manager/2026-09-09-rolling-from-url-auto-accept-exceptions-design.md
+# RETIRED 2026-09-10. This dest now carries `sha256=tag-only` in `from-url`, so there
+# is no digest for an exception to auto-accept and this row could never fire again.
+# An exception that cannot fire is a check that cannot fail, which is the thing this
+# repo refuses hardest -- so it is deleted rather than left as reassuring ceremony.
+#
+# The exposure did not change. The row already granted "whoever can publish to that tag
+# chooses the verifier this repo runs"; the tag-only pin says the same thing in one
+# field instead of five, without an expiry that re-blocks the fleet on a date nobody
+# chose. See the tagonly= reason on the from-url row.

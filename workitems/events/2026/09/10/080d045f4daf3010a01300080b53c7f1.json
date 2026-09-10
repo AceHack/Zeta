@@ -1,0 +1,14 @@
+{
+  "id": "080d045f4daf3010a01300080b53c7f1",
+  "at": "2026-09-10T15:22:24.614Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M25YKDF6087G0R002XC2Z8Z",
+    "type": "task",
+    "title": "Tag-only pins: a rolling row may pin its tag instead of a digest",
+    "slug": "tag-only-pins-a-rolling-row-may-pin-its-tag-instead-of-a-dig",
+    "priority": "P2",
+    "filename": "081M25YKDF6087G0R002XC2Z8Z-tag-only-pins-a-rolling-row-may-pin-its-tag-instead-of-a-dig.md"
+  }
+}

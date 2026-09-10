@@ -64,6 +64,8 @@ export interface JarProvenance {
   readonly rolling?: string;
   /** The manifest pin. Present iff the regime is a fetched one. */
   readonly pinnedSha256?: string;
+  /** `tagonly=<reason>` from the manifest row, when it declared no digest. */
+  readonly tagOnlyReason?: string;
   /** sha256 of the bytes on disk. Null when a fetched jar has not been installed. */
   readonly sha256: string | null;
   /** Derived from META-INF/MANIFEST.MF. Null when the bytes are absent. */
@@ -84,6 +86,8 @@ export interface UrlPin {
   readonly derivedPins: readonly string[];
   /** `identity=jar-tlc|jar-alloy`: how to read a human identity out of the bytes. */
   readonly identity: string | undefined;
+  /** `tagonly=<reason>`: why this row pins its TAG and carries no digest. */
+  readonly tagOnly: string | undefined;
 }
 
 /** One row of `from-url-rolling-receipts`. */
@@ -141,6 +145,9 @@ export function alloyVersionFromManifest(text: string): string {
 const TLA_JAR = "src/Core.TLA/tla2tools.jar";
 const ALLOY_JAR = "src/Core.Alloy/alloy.jar";
 const JARS: readonly string[] = [TLA_JAR, ALLOY_JAR];
+/** The literal a row uses to declare it pins its tag rather than a digest. */
+const TAG_ONLY_PIN = "tag-only";
+
 const FROM_URL_MANIFEST = "tools/setup/manifests/from-url";
 export const ROLLING_RECEIPTS = "tools/setup/manifests/from-url-rolling-receipts";
 const DOCS = ["docs/INSTALLED.md", "docs/dependency-status.md"];
@@ -176,15 +183,17 @@ export function parseFromUrlPins(text: string): readonly UrlPin[] {
     let pinSurfaces: string[] = [];
     let derivedPins: string[] = [];
     let identity: string | undefined;
+    let tagOnly: string | undefined;
     for (const token of tokens.slice(2)) {
-      if (token.startsWith("sha256=")) sha256 = token.slice("sha256=".length).toLowerCase();
+      if (token.startsWith("tagonly=")) tagOnly = token.slice("tagonly=".length);
+      else if (token.startsWith("sha256=")) sha256 = token.slice("sha256=".length).toLowerCase();
       else if (token.startsWith("rolling=")) rolling = token.slice("rolling=".length);
       else if (token.startsWith("remeasure=")) remeasure = token.slice("remeasure=".length);
       else if (token.startsWith("identity=")) identity = token.slice("identity=".length);
       else if (token.startsWith("pinsurfaces=")) pinSurfaces = splitList(token, "pinsurfaces=");
       else if (token.startsWith("derivedpins=")) derivedPins = splitList(token, "derivedpins=");
     }
-    pins.push({ dest, url, sha256, rolling, remeasure, pinSurfaces, derivedPins, identity });
+    pins.push({ dest, url, sha256, rolling, remeasure, pinSurfaces, derivedPins, identity, tagOnly });
   }
   return pins;
 }
@@ -300,7 +309,16 @@ export function deriveJarProvenance(
       jarPath,
       regime,
       ...(pin?.rolling == null ? {} : { rolling: pin.rolling }),
-      ...(pin === undefined ? {} : { pinnedSha256: pin.sha256 ?? "" }),
+      // Spread the optional key ONLY when it has a value: under exactOptionalPropertyTypes,
+      // `tagOnlyReason: undefined` is not the same as the key being absent, and the stricter
+      // tsconfig CI runs refuses it (TS2379). My local `tsc -p tsconfig.json` did not — a
+      // reminder that the orchestrator config is the one that decides.
+      ...(pin === undefined
+        ? {}
+        : {
+            pinnedSha256: pin.sha256 ?? "",
+            ...(pin.tagOnly === undefined ? {} : { tagOnlyReason: pin.tagOnly }),
+          }),
       sha256: present ? inputs.hashOf(jarPath) : null,
       version: present ? inputs.versionOf(jarPath) : null,
     });
@@ -326,6 +344,21 @@ export function checkVerifierJarProvenance(
     // The digest the docs must carry: the manifest pin for a fetched jar (it is
     // the pin whether or not the bytes are here), the bytes for a committed one.
     if (fetched) {
+      // TAG-ONLY: a row that DECLARED it has no digest (Aaron 2026-09-10 -- "not all
+      // dependencies have a stable sha"). The obligation does not disappear, it CHANGES:
+      // a digest row must prove its digest was measured; a tag-only row must prove it
+      // said why it has none. Silently exempting it would make this check narrower
+      // without saying so, which is the failure mode the check exists to catch.
+      if (jar.pinnedSha256 === TAG_ONLY_PIN) {
+        if (jar.tagOnlyReason === undefined || jar.tagOnlyReason.trim() === "") {
+          failures.push(
+            FROM_URL_MANIFEST + " row for " + jar.jarPath + " is sha256=tag-only but carries no" +
+              " tagonly=<reason>. An unhashed dependency is allowed and is NOT the default; the" +
+              " reason is what keeps it from spreading by copy-paste",
+          );
+        }
+        continue;
+      }
       if (jar.pinnedSha256 === undefined || !SHA256_HEX.test(jar.pinnedSha256)) {
         failures.push(
           FROM_URL_MANIFEST + " row for " + jar.jarPath + " has no valid sha256= pin",
@@ -398,6 +431,11 @@ function checkRollingPins(
   for (const pin of parseFromUrlPins(inputs.manifestText)) {
     if (pin.rolling === null) continue;
     if (pin.sha256 === null) continue; // already reported by the fetched-regime check
+    // A receipt BINDS A DIGEST to the evidence run that judged those exact bytes. A
+    // tag-only row has no digest to bind, so there is nothing a receipt could say --
+    // demanding one would be demanding a signature on a blank cheque. Its own
+    // obligation (tagonly=<reason>) is checked above.
+    if (pin.sha256 === TAG_ONLY_PIN) continue;
     if (pin.remeasure === null) {
       failures.push(
         FROM_URL_MANIFEST + " row for " + pin.dest + " is rolling=" + pin.rolling +

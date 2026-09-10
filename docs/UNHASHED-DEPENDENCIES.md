@@ -14,9 +14,9 @@
 
 ## Counts
 
-- **Declared unhashed:** 6 — each one names its own reason on its own row.
+- **Declared unhashed:** 7 — each one names its own reason on its own row.
 - **Undeclared unhashed:** 169 — visible and countable, but not yet declarable. This number must only fall.
-- **Digest-covered:** 1947.
+- **Digest-covered:** 1942.
 
 ## Declared — an unhashed dependency that says why
 
@@ -32,6 +32,7 @@ comment, because a comment travels with the line that copies it.
 | `from-installer` | `grok` | unpinned | xai-serves-one-unversioned-install-endpoint-and-publishes-no-release-artifact | `tools/setup/manifests/from-installer` |
 | `from-installer` | `hermes` | unpinned | installer-is-served-from-the-main-branch-so-there-is-no-tag-and-no-stable-digest | `tools/setup/manifests/from-installer` |
 | `from-installer` | `kiro-cli` | unpinned | kiro-cli-endpoint-is-unversioned-and-upstream-publishes-no-tagged-installer | `tools/setup/manifests/from-installer` |
+| `from-url` | `src/Core.TLA/tla2tools.jar` | tag-only | upstream-recuts-the-v1.8.0-prerelease-asset-so-no-digest-is-stable-and-repin-rolling-deadlocks-on-its-own-remeasure | `tools/setup/manifests/from-url` |
 
 ## Undeclared — seen, counted, not yet declarable
 
@@ -78,7 +79,7 @@ Listed so the numbers above are a ratio rather than a scare.
 | `from-elan` | `elan` | `tools/setup/manifests/from-elan` |
 | `from-opam-git` | `tlapm` | `tools/setup/manifests/from-opam-git` |
 | `from-url` | `src/Core.Alloy/alloy.jar` | `tools/setup/manifests/from-url` |
-| `from-url` | `src/Core.TLA/tla2tools.jar` | `tools/setup/manifests/from-url` |
+| `from-zip` | `~/.zeta/codeql-cli` | `tools/setup/manifests/from-zip` |
 | `github-actions` | `324 SHA-pinned reference(s)` | `.github/workflows` |
 | `npm` | `40 integrity-covered package(s)` | `agentic-organization/package-lock.json` |
 | `npm` | `433 integrity-covered package(s)` | `bun.lock` |
@@ -88,7 +89,6 @@ Listed so the numbers above are a ratio rather than a scare.
 | `npm` | `870 integrity-covered package(s)` | `package-lock.json` |
 | `npm` | `43 integrity-covered package(s)` | `src/apps/twitch-ai/bun.lock` |
 | `npm` | `92 integrity-covered package(s)` | `src/apps/twitch-ai/package-lock.json` |
-| `npm` | `8 integrity-covered package(s)` | `tools/setup/persona-keys/bun.lock` |
 | `yamllint-requirements.txt` | `PyYAML` | `tools/setup/manifests/yamllint-requirements.txt` |
 | `yamllint-requirements.txt` | `pathspec` | `tools/setup/manifests/yamllint-requirements.txt` |
 | `yamllint-requirements.txt` | `yamllint` | `tools/setup/manifests/yamllint-requirements.txt` |

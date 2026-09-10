@@ -2,6 +2,7 @@ import { spawnSync } from "node:child_process";
 import { mkdirSync, renameSync, unlinkSync } from "node:fs";
 import { dirname } from "node:path";
 import { parseMechanismManifest } from "../setup-manifest.ts";
+import { resolvePin, TAG_ONLY, UNPINNED, type PinAttrs } from "./unhashed-pin.ts";
 import {
   curlFetchToFile,
   resolveRepoRelativeDest,
@@ -26,23 +27,51 @@ const MANIFEST = "tools/setup/manifests/from-url";
 
 type Attrs = Readonly<Record<string, string>>;
 
-const SHA256_HEX = /^[0-9a-f]{64}$/;
+// SHA256_HEX moved to unhashed-pin.ts with the rest of the pin vocabulary.
 
 // A URL is a name, not a pin. GitHub release assets can be re-uploaded under
 // an unchanged tag -- tlaplus v1.8.0 is a rolling prerelease that has served
 // at least two different tla2tools.jar builds -- so the digest is the only
 // thing that says which bytes arrived. Mandatory here as in from-elan and
 // from-autotools-tarball. See 081M001E114087G0R001AZF4KD.
-function requireSha256(destRel: string, attrs: Attrs): string {
-  const sha256 = attrs.sha256;
-  if (sha256 === undefined) {
-    throw new Error(`from-url ${destRel}: sha256= pin required`);
+/**
+ * Pin resolution for a `from-url` row.
+ *
+ * DELEGATES to `unhashed-pin.ts` rather than carrying its own copy. Both landed the
+ * same afternoon from the same instruction (Aaron 2026-09-10: "we need to wire these
+ * everywhere"), and for a few minutes this file and that module each implemented the
+ * vocabulary independently -- which is precisely the "fourth dialect" the instruction
+ * was meant to prevent. The shared module merged first, so this defers to it: one
+ * spelling of `tag-only` / `unpinned`, one reason-quality floor, one set of refusals.
+ *
+ * The URL is passed as a PARAMETER because a manifest row's URL is POSITIONAL
+ * (`entry.tokens[1]`); an earlier draft read `attrs.url`, which does not exist, so the
+ * tag check saw an empty string and every real tag-only row would have thrown at
+ * install time while its unit tests stayed green. See `from-url-tag-only.test.ts`,
+ * which resolves the COMMITTED manifest rather than a hand-built shape.
+ */
+export function requireSha256(destRel: string, attrs: Attrs, url: string): string {
+  const pin = resolvePin("from-url", destRel, url, attrs as PinAttrs);
+  switch (pin.kind) {
+    case "digest":
+      return pin.sha256;
+    case "tag-only":
+      return TAG_ONLY;
+    case "unpinned":
+      return UNPINNED;
   }
-  const normalized = sha256.toLowerCase();
-  if (!SHA256_HEX.test(normalized)) {
-    throw new Error(`from-url ${destRel}: sha256= must be 64 hex chars`);
-  }
-  return normalized;
+  // `resolvePin` returns a closed union; this is unreachable and exists so the
+  // compiler can see a terminal path rather than inferring `undefined`.
+  throw new Error(`from-url ${destRel}: unreachable pin kind`);
+}
+
+/**
+ * True when the row DECLARED it has no digest, either way. The verify path below has
+ * nothing to compare against in both cases, and the distinction between them is about
+ * whether a tag exists to pin -- which `resolvePin` has already enforced by here.
+ */
+export function isUnhashedPin(pin: string): boolean {
+  return pin === TAG_ONLY || pin === UNPINNED;
 }
 
 /**
@@ -146,6 +175,17 @@ async function downloadWithOuterRetry(
       continue;
     }
 
+    // A TAG-ONLY row has no digest to disagree with. It still hashes the bytes --
+    // the digest is RECORDED so an operator can see what arrived and diff two
+    // machines -- but the value is a report, never a verdict. Logged at accept time
+    // rather than swallowed: an unpinned install nobody can see is worse than the
+    // pin it replaced.
+    if (isUnhashedPin(sha256)) {
+      log(`  ${sha256} pin: accepted ${dest} sha256=${fetched} (no digest pinned; see the reason on its row)`);
+      renameSync(part, dest);
+      return;
+    }
+
     if (fetched === sha256) {
       renameSync(part, dest);
       return;
@@ -222,7 +262,7 @@ export const realizeFromUrl: SetupRealizer = async (ctx) => {
     const url = entry.tokens[1];
     if (destRel === undefined || url === undefined) continue;
 
-    const sha256 = requireSha256(destRel, entry.attrs);
+    const sha256 = requireSha256(destRel, entry.attrs, url);
     checkRequires(entry.attrs.requires, ctx.warn);
 
     const dest = resolveRepoRelativeDest(ctx.repoRoot, destRel);
