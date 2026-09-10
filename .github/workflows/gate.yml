@@ -256,17 +256,17 @@ jobs:
           GH_EVENT: ${{ github.event_name }}
         run: |
           echo "Event ${GH_EVENT} (not pull_request) — emitting code=true (full build), no checkout needed."
-          echo "code=true" >> "$GITHUB_OUTPUT"
           # Non-PR events (push to main / merge_group / dispatch) run EVERY
           # domain. path-filter is never the mechanism that hides a change
-          # from main-tip CI -- the same invariant `code=true` above holds.
-          echo "csharp=true" >> "$GITHUB_OUTPUT"
-          echo "fsharp=true" >> "$GITHUB_OUTPUT"
-          echo "go=true" >> "$GITHUB_OUTPUT"
-          echo "markdown=true" >> "$GITHUB_OUTPUT"
-          echo "python=true" >> "$GITHUB_OUTPUT"
-          echo "rust=true" >> "$GITHUB_OUTPUT"
-          echo "workflows=true" >> "$GITHUB_OUTPUT"
+          # from main-tip CI -- the same invariant `code=true` holds.
+          # One block redirect rather than eight: shellcheck SC2129, and it is
+          # also the honest shape, since these lines are one emission.
+          {
+            echo "code=true"
+            for d in csharp fsharp go markdown python rust workflows; do
+              echo "${d}=true"
+            done
+          } >> "$GITHUB_OUTPUT"
 
       - name: Checkout
         if: github.event_name == 'pull_request'
