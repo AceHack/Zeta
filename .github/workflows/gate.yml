@@ -4326,6 +4326,8 @@ jobs:
           sparse-checkout: |
             src/Core.TypeScript/ci/drift-loud.ts
             src/Core.TypeScript/ci/verdict-drought.ts
+            src/Core.TypeScript/ci/workflow-enablement.ts
+            registry/workflow-enablement.json
             data/platform-drift.json
           sparse-checkout-cone-mode: false
 
@@ -4384,3 +4386,35 @@ jobs:
         run: |
           bun src/Core.TypeScript/ci/verdict-drought.ts \
             --repo "$REPO" --window 60
+
+      # THE THIRD QUESTION IN THIS JOB, and the one no static guard can reach.
+      #
+      # The two steps above ask "which failures were absorbed?" and "is main being checked
+      # at all?" -- both questions about runs that EXIST. This one asks whether a committed
+      # workflow is ALLOWED TO RUN. GitHub carries a per-workflow administrative `state`
+      # (active / disabled_manually / disabled_inactivity) that lives only in the forge, so
+      # a disabled lane sits at its correct path, valid, referenced by prose and rosters,
+      # and emits zero runs -- no run, no red X. Every workflow guard in this repo reads
+      # TEXT (lint-no-nested-workflow-dirs, lint-linter-coverage-vs-ci-invocation,
+      # lint-workflow-job-timeouts), so none of them can see it.
+      #
+      # Measured 2026-09-09: 16 of 105 workflows were disabled_manually and nothing named
+      # it. THOSE SIXTEEN ARE INTENTIONAL -- the maintainer stopped the cadence/heartbeat
+      # lanes because they commit on every scheduled run and were growing the repo, so this
+      # step records them and never argues for re-enabling any. The signal is the DELTA:
+      # the seventeenth disablement nobody wrote down, an entry that comes back to life, a
+      # roster row gone stale.
+      #
+      # DRIFT TIER, and forced rather than chosen: this is a live POPULATION query, which
+      # floor-live-remote-queries.ts refuses inside the blocking floor. A PR must not go red
+      # because somebody disabled a cadence lane an hour earlier.
+      #
+      # `if: always()` for the same reason as the step above -- one loud detector must never
+      # mute another.
+      - name: Report workflows the forge will not run, loudly
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+        run: |
+          bun src/Core.TypeScript/ci/workflow-enablement.ts --repo "$REPO"

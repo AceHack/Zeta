@@ -1,0 +1,127 @@
+{
+  "$comment": [
+    "workflow-enablement.json -- every workflow whose forge state is NOT active.",
+    "",
+    "Enforcer: src/Core.TypeScript/ci/workflow-enablement.ts, run in the drift (loud) job.",
+    "",
+    "A disabled workflow sits at its correct path, is valid YAML, is named by prose and by",
+    "rosters, and produces ZERO runs. No run means no red X, so it is the vacuity class in its",
+    "purest administrative form -- and every workflow guard in this repo reads TEXT, so none of",
+    "them can see it. The state lives only in the forge.",
+    "",
+    "THIS FILE IS A RECORD, NOT A DEFECT LIST. An entry does not demand that the lane be switched back on; several of these were stopped deliberately because they committed to the repo on every run and were growing it. The point of the row is that the silence is legible.",
+    "",
+    "The audit goes RED when: a non-active workflow is missing here (the next silent",
+    "disablement); an entry here is active again (a stale row hides the next real one); an entry",
+    "names a path the forge does not list; an entry has no reason or a bad classification."
+  ],
+  "version": 1,
+  "classifications": {
+    "intentional": "A maintainer decided this lane should not run, and the reason says why. Recorded for visibility, never as a defect list.",
+    "unreviewed": "Measured non-active with no recorded decision. Reported as a warning on every run until someone classifies it. NOT a backlog: the remedy may well be `intentional`."
+  },
+  "entries": [
+    {
+      "path": ".github/workflows/agent-heartbeat.yml",
+      "state": "disabled_manually",
+      "classification": "intentional",
+      "reason": "INTENTIONAL, maintainer decision (Aaron, 2026-09-09): these cadence/heartbeat lanes were stopped because they were growing the Zeta repository uncontrollably. Several hold contents:write and COMMIT on every scheduled run -- drift-sweep.yml writes a tick event to docs/drift-events/ per cadence, which is exactly the growth this decision removed. Re-enabling any of them resumes that growth, so re-enablement is NOT the remedy and is not proposed here. This row exists so the lane's silence is VISIBLE rather than invisible: a workflow that produces no runs can produce no red X, and nothing else in this repository can see that. If a lane's function is ever wanted back, it needs a NON-COMMITTING host -- a design note for later, not a defect now."
+    },
+    {
+      "path": ".github/workflows/archive-strand-alarm.yml",
+      "state": "disabled_manually",
+      "classification": "intentional",
+      "reason": "INTENTIONAL, maintainer decision (Aaron, 2026-09-09): these cadence/heartbeat lanes were stopped because they were growing the Zeta repository uncontrollably. Several hold contents:write and COMMIT on every scheduled run -- drift-sweep.yml writes a tick event to docs/drift-events/ per cadence, which is exactly the growth this decision removed. Re-enabling any of them resumes that growth, so re-enablement is NOT the remedy and is not proposed here. This row exists so the lane's silence is VISIBLE rather than invisible: a workflow that produces no runs can produce no red X, and nothing else in this repository can see that. If a lane's function is ever wanted back, it needs a NON-COMMITTING host -- a design note for later, not a defect now."
+    },
+    {
+      "path": ".github/workflows/artifact-freshness.yml",
+      "state": "disabled_manually",
+      "classification": "intentional",
+      "reason": "INTENTIONAL, maintainer decision (Aaron, 2026-09-09): these cadence/heartbeat lanes were stopped because they were growing the Zeta repository uncontrollably. Several hold contents:write and COMMIT on every scheduled run -- drift-sweep.yml writes a tick event to docs/drift-events/ per cadence, which is exactly the growth this decision removed. Re-enabling any of them resumes that growth, so re-enablement is NOT the remedy and is not proposed here. This row exists so the lane's silence is VISIBLE rather than invisible: a workflow that produces no runs can produce no red X, and nothing else in this repository can see that. If a lane's function is ever wanted back, it needs a NON-COMMITTING host -- a design note for later, not a defect now."
+    },
+    {
+      "path": ".github/workflows/budget-snapshot-cadence.yml",
+      "state": "disabled_manually",
+      "classification": "intentional",
+      "reason": "INTENTIONAL, maintainer decision (Aaron, 2026-09-09): these cadence/heartbeat lanes were stopped because they were growing the Zeta repository uncontrollably. Several hold contents:write and COMMIT on every scheduled run -- drift-sweep.yml writes a tick event to docs/drift-events/ per cadence, which is exactly the growth this decision removed. Re-enabling any of them resumes that growth, so re-enablement is NOT the remedy and is not proposed here. This row exists so the lane's silence is VISIBLE rather than invisible: a workflow that produces no runs can produce no red X, and nothing else in this repository can see that. If a lane's function is ever wanted back, it needs a NON-COMMITTING host -- a design note for later, not a defect now."
+    },
+    {
+      "path": ".github/workflows/context-cost-trend-cadence.yml",
+      "state": "disabled_manually",
+      "classification": "intentional",
+      "reason": "INTENTIONAL, maintainer decision (Aaron, 2026-09-09): these cadence/heartbeat lanes were stopped because they were growing the Zeta repository uncontrollably. Several hold contents:write and COMMIT on every scheduled run -- drift-sweep.yml writes a tick event to docs/drift-events/ per cadence, which is exactly the growth this decision removed. Re-enabling any of them resumes that growth, so re-enablement is NOT the remedy and is not proposed here. This row exists so the lane's silence is VISIBLE rather than invisible: a workflow that produces no runs can produce no red X, and nothing else in this repository can see that. If a lane's function is ever wanted back, it needs a NON-COMMITTING host -- a design note for later, not a defect now."
+    },
+    {
+      "path": ".github/workflows/drift-dashboard-cadence.yml",
+      "state": "disabled_manually",
+      "classification": "intentional",
+      "reason": "INTENTIONAL, maintainer decision (Aaron, 2026-09-09): these cadence/heartbeat lanes were stopped because they were growing the Zeta repository uncontrollably. Several hold contents:write and COMMIT on every scheduled run -- drift-sweep.yml writes a tick event to docs/drift-events/ per cadence, which is exactly the growth this decision removed. Re-enabling any of them resumes that growth, so re-enablement is NOT the remedy and is not proposed here. This row exists so the lane's silence is VISIBLE rather than invisible: a workflow that produces no runs can produce no red X, and nothing else in this repository can see that. If a lane's function is ever wanted back, it needs a NON-COMMITTING host -- a design note for later, not a defect now."
+    },
+    {
+      "path": ".github/workflows/drift-sweep.yml",
+      "state": "disabled_manually",
+      "classification": "intentional",
+      "reason": "INTENTIONAL, maintainer decision (Aaron, 2026-09-09): these cadence/heartbeat lanes were stopped because they were growing the Zeta repository uncontrollably. Several hold contents:write and COMMIT on every scheduled run -- drift-sweep.yml writes a tick event to docs/drift-events/ per cadence, which is exactly the growth this decision removed. Re-enabling any of them resumes that growth, so re-enablement is NOT the remedy and is not proposed here. This row exists so the lane's silence is VISIBLE rather than invisible: a workflow that produces no runs can produce no red X, and nothing else in this repository can see that. If a lane's function is ever wanted back, it needs a NON-COMMITTING host -- a design note for later, not a defect now."
+    },
+    {
+      "path": ".github/workflows/heartbeat-liveness.yml",
+      "state": "disabled_manually",
+      "classification": "intentional",
+      "reason": "INTENTIONAL, maintainer decision (Aaron, 2026-09-09): these cadence/heartbeat lanes were stopped because they were growing the Zeta repository uncontrollably. Several hold contents:write and COMMIT on every scheduled run -- drift-sweep.yml writes a tick event to docs/drift-events/ per cadence, which is exactly the growth this decision removed. Re-enabling any of them resumes that growth, so re-enablement is NOT the remedy and is not proposed here. This row exists so the lane's silence is VISIBLE rather than invisible: a workflow that produces no runs can produce no red X, and nothing else in this repository can see that. If a lane's function is ever wanted back, it needs a NON-COMMITTING host -- a design note for later, not a defect now."
+    },
+    {
+      "path": ".github/workflows/lockfile-healer.yml",
+      "state": "disabled_manually",
+      "classification": "intentional",
+      "reason": "INTENTIONAL, maintainer decision (Aaron, 2026-09-09): these cadence/heartbeat lanes were stopped because they were growing the Zeta repository uncontrollably. Several hold contents:write and COMMIT on every scheduled run -- drift-sweep.yml writes a tick event to docs/drift-events/ per cadence, which is exactly the growth this decision removed. Re-enabling any of them resumes that growth, so re-enablement is NOT the remedy and is not proposed here. This row exists so the lane's silence is VISIBLE rather than invisible: a workflow that produces no runs can produce no red X, and nothing else in this repository can see that. If a lane's function is ever wanted back, it needs a NON-COMMITTING host -- a design note for later, not a defect now."
+    },
+    {
+      "path": ".github/workflows/manifesto-citation-snapshot-cadence.yml",
+      "state": "disabled_manually",
+      "classification": "intentional",
+      "reason": "INTENTIONAL, maintainer decision (Aaron, 2026-09-09): these cadence/heartbeat lanes were stopped because they were growing the Zeta repository uncontrollably. Several hold contents:write and COMMIT on every scheduled run -- drift-sweep.yml writes a tick event to docs/drift-events/ per cadence, which is exactly the growth this decision removed. Re-enabling any of them resumes that growth, so re-enablement is NOT the remedy and is not proposed here. This row exists so the lane's silence is VISIBLE rather than invisible: a workflow that produces no runs can produce no red X, and nothing else in this repository can see that. If a lane's function is ever wanted back, it needs a NON-COMMITTING host -- a design note for later, not a defect now."
+    },
+    {
+      "path": ".github/workflows/pr-categorization-cadence.yml",
+      "state": "disabled_manually",
+      "classification": "intentional",
+      "reason": "INTENTIONAL, maintainer decision (Aaron, 2026-09-09): these cadence/heartbeat lanes were stopped because they were growing the Zeta repository uncontrollably. Several hold contents:write and COMMIT on every scheduled run -- drift-sweep.yml writes a tick event to docs/drift-events/ per cadence, which is exactly the growth this decision removed. Re-enabling any of them resumes that growth, so re-enablement is NOT the remedy and is not proposed here. This row exists so the lane's silence is VISIBLE rather than invisible: a workflow that produces no runs can produce no red X, and nothing else in this repository can see that. If a lane's function is ever wanted back, it needs a NON-COMMITTING host -- a design note for later, not a defect now."
+    },
+    {
+      "path": ".github/workflows/pr-manifest-integrity.yml",
+      "state": "disabled_manually",
+      "classification": "intentional",
+      "reason": "INTENTIONAL, maintainer decision (Aaron, 2026-09-09): these cadence/heartbeat lanes were stopped because they were growing the Zeta repository uncontrollably. Several hold contents:write and COMMIT on every scheduled run -- drift-sweep.yml writes a tick event to docs/drift-events/ per cadence, which is exactly the growth this decision removed. Re-enabling any of them resumes that growth, so re-enablement is NOT the remedy and is not proposed here. This row exists so the lane's silence is VISIBLE rather than invisible: a workflow that produces no runs can produce no red X, and nothing else in this repository can see that. If a lane's function is ever wanted back, it needs a NON-COMMITTING host -- a design note for later, not a defect now."
+    },
+    {
+      "path": ".github/workflows/proof-closure-drift.yml",
+      "state": "disabled_manually",
+      "classification": "intentional",
+      "reason": "INTENTIONAL, maintainer decision (Aaron, 2026-09-09): these cadence/heartbeat lanes were stopped because they were growing the Zeta repository uncontrollably. Several hold contents:write and COMMIT on every scheduled run -- drift-sweep.yml writes a tick event to docs/drift-events/ per cadence, which is exactly the growth this decision removed. Re-enabling any of them resumes that growth, so re-enablement is NOT the remedy and is not proposed here. This row exists so the lane's silence is VISIBLE rather than invisible: a workflow that produces no runs can produce no red X, and nothing else in this repository can see that. If a lane's function is ever wanted back, it needs a NON-COMMITTING host -- a design note for later, not a defect now."
+    },
+    {
+      "path": ".github/workflows/search-index-cadence.yml",
+      "state": "disabled_manually",
+      "classification": "intentional",
+      "reason": "INTENTIONAL, maintainer decision (Aaron, 2026-09-09): these cadence/heartbeat lanes were stopped because they were growing the Zeta repository uncontrollably. Several hold contents:write and COMMIT on every scheduled run -- drift-sweep.yml writes a tick event to docs/drift-events/ per cadence, which is exactly the growth this decision removed. Re-enabling any of them resumes that growth, so re-enablement is NOT the remedy and is not proposed here. This row exists so the lane's silence is VISIBLE rather than invisible: a workflow that produces no runs can produce no red X, and nothing else in this repository can see that. If a lane's function is ever wanted back, it needs a NON-COMMITTING host -- a design note for later, not a defect now."
+    },
+    {
+      "path": ".github/workflows/society-heartbeat.yml",
+      "state": "disabled_manually",
+      "classification": "intentional",
+      "reason": "INTENTIONAL, maintainer decision (Aaron, 2026-09-09): these cadence/heartbeat lanes were stopped because they were growing the Zeta repository uncontrollably. Several hold contents:write and COMMIT on every scheduled run -- drift-sweep.yml writes a tick event to docs/drift-events/ per cadence, which is exactly the growth this decision removed. Re-enabling any of them resumes that growth, so re-enablement is NOT the remedy and is not proposed here. This row exists so the lane's silence is VISIBLE rather than invisible: a workflow that produces no runs can produce no red X, and nothing else in this repository can see that. If a lane's function is ever wanted back, it needs a NON-COMMITTING host -- a design note for later, not a defect now."
+    },
+    {
+      "path": ".github/workflows/tick-metrics.yml",
+      "state": "disabled_manually",
+      "classification": "intentional",
+      "reason": "INTENTIONAL, maintainer decision (Aaron, 2026-09-09): these cadence/heartbeat lanes were stopped because they were growing the Zeta repository uncontrollably. Several hold contents:write and COMMIT on every scheduled run -- drift-sweep.yml writes a tick event to docs/drift-events/ per cadence, which is exactly the growth this decision removed. Re-enabling any of them resumes that growth, so re-enablement is NOT the remedy and is not proposed here. This row exists so the lane's silence is VISIBLE rather than invisible: a workflow that produces no runs can produce no red X, and nothing else in this repository can see that. If a lane's function is ever wanted back, it needs a NON-COMMITTING host -- a design note for later, not a defect now."
+    },
+    {
+      "path": ".github/workflows/zetadb-scheduled-node.yml",
+      "state": "disabled_manually",
+      "classification": "intentional",
+      "reason": "INTENTIONAL, maintainer decision (Aaron, 2026-09-09): these cadence/heartbeat lanes were stopped because they were growing the Zeta repository uncontrollably. Several hold contents:write and COMMIT on every scheduled run -- drift-sweep.yml writes a tick event to docs/drift-events/ per cadence, which is exactly the growth this decision removed. Re-enabling any of them resumes that growth, so re-enablement is NOT the remedy and is not proposed here. This row exists so the lane's silence is VISIBLE rather than invisible: a workflow that produces no runs can produce no red X, and nothing else in this repository can see that. If a lane's function is ever wanted back, it needs a NON-COMMITTING host -- a design note for later, not a defect now."
+    }
+  ]
+}
