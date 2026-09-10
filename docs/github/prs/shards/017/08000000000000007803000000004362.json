@@ -1,0 +1,12 @@
+{
+  "pr_number": 17250,
+  "archive_path": "docs/history/pr-reviews/PR-17250-fix-bytelock-windows-could-not-start-the-compilers-it-had-installed.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-10T17:13:59.514Z",
+  "schema_version": "v1",
+  "commit_sha": "851480756d43f03546449abc641f7ab0f3ba786c",
+  "title": "fix(bytelock): Windows could not START the compilers it had installed",
+  "state": "MERGED",
+  "merged_at": "2026-09-10T17:12:16Z",
+  "head_ref": "agent/wasm-build-windows2"
+}
