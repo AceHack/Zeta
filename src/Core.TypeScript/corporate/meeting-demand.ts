@@ -14,6 +14,7 @@
  * condition stops being derivable and the meeting stops being proposed. Nothing recurs on a timer.
  */
 
+import { stringCompare } from "../collation/collation.ts";
 import type { Cascade } from "./goal-cascade";
 import type { RaisedBlocker } from "./human-blocker";
 import type { Memory } from "./memory";
@@ -193,7 +194,7 @@ function memoryConflicts(input: MeetingDemandInput): NonNullable<MeetingInput["m
 
   const out: NonNullable<MeetingInput["memoryConflicts"]>[number][] = [];
   for (const [memoryId, key] of conflicted) {
-    const scopes = [...(writers.get(memoryId) ?? new Set<string>())].sort((a, b) => a.localeCompare(b));
+    const scopes = [...(writers.get(memoryId) ?? new Set<string>())].sort((a, b) => stringCompare(a, b));
     if (scopes.length < 2) continue;
     out.push({ key, scopes });
   }

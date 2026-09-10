@@ -40,6 +40,7 @@
  * review of that design on the same slot under the same name.
  */
 
+import { stringCompare } from "../collation/collation.ts";
 import type { GateStep } from "./gate-demand";
 import { isAuthorizing, type HatBinding } from "./hat-binding";
 import type { OrgChart } from "./org-chart";
@@ -346,5 +347,5 @@ export function hatsToProvision(
   }
   return [...counts.entries()]
     .map(([hatId, waiting]) => ({ hatId, waiting }))
-    .sort((a, b) => (b.waiting - a.waiting) || a.hatId.localeCompare(b.hatId));
+    .sort((a, b) => (b.waiting - a.waiting) || stringCompare(a.hatId, b.hatId));
 }

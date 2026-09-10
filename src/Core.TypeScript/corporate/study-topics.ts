@@ -32,6 +32,7 @@
  * had recorded wrongly.
  */
 
+import { stringCompare } from "../collation/collation.ts";
 import type { GateStep } from "./gate-demand";
 import type { SourceDocument } from "./providers";
 
@@ -155,7 +156,7 @@ export function topicsFor(input: TopicInput): readonly StudyTopic[] {
 
   // Ties broken by path so the same sources rank the same way twice — a study plan that reshuffled
   // between runs would make the org's own reading list unreplayable.
-  out.sort((a, b) => b.weight - a.weight || a.path.localeCompare(b.path));
+  out.sort((a, b) => b.weight - a.weight || stringCompare(a.path, b.path));
   return input.limit === undefined ? out : out.slice(0, input.limit);
 }
 

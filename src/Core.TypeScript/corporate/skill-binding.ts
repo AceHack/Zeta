@@ -28,6 +28,7 @@
  * than a theory.
  */
 
+import { stringCompare } from "../collation/collation.ts";
 import type { GateKind } from "./quality-gate";
 
 /** Where a skill comes from. The distinction an operator cares about when something misbehaves. */
@@ -163,10 +164,10 @@ export function resolve(
  */
 export function bindingsOf(bindings: readonly SkillBinding[]): readonly SkillBinding[] {
   return [...bindings].sort((a, b) => {
-    const g = String(a.gate).localeCompare(String(b.gate));
+    const g = stringCompare(String(a.gate), String(b.gate));
     if (g !== 0) return g;
     // Organization-wide first, then scoped — the order somebody reads a configuration in.
-    return (a.scopeWorkId ?? "").localeCompare(b.scopeWorkId ?? "");
+    return stringCompare(a.scopeWorkId ?? "", b.scopeWorkId ?? "");
   });
 }
 

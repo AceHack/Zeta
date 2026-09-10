@@ -6,7 +6,7 @@
 import { describe, test, expect, afterEach } from "bun:test";
 import { waitUntil } from "../testing/deterministic-async";
 import { startRealtimeServer, type RealtimeServer } from "./realtime-server";
-import { createRealtimeClient, type RealtimeClient } from "./realtime-client";
+import { createRealtimeClient, sanitizeForLog, type RealtimeClient } from "./realtime-client";
 
 let server: RealtimeServer | null = null;
 let client: RealtimeClient | null = null;
@@ -99,4 +99,37 @@ describe("realtime client ↔ server integration", () => {
     client1.close();
     client2.close();
   });
+});
+
+describe("sanitizeForLog — the whole control-character class, not two members of it", () => {
+  test("strips CR and LF, so a forged log LINE is impossible", () => {
+    expect(sanitizeForLog("real\nINFO: forged line\rmore")).toBe("real INFO: forged line more");
+  });
+
+  test("strips ESC — the one a CR/LF-only filter let through", () => {
+    // `\u001b[2K` clears the operator's current terminal line; an OSC sequence
+    // can rewrite the window title. Both arrive from a WebSocket peer. Narrow
+    // the character class back to [\n\r] and this test dies.
+    expect(sanitizeForLog("before\u001b[2Kafter")).toBe("before [2Kafter");
+    expect(sanitizeForLog("t\u001b]0;pwned\u0007x")).toBe("t ]0;pwned x");
+  });
+
+  test("strips DEL and the C1 range", () => {
+    expect(sanitizeForLog("a\u007Fb\u0085c\u009Bd")).toBe("a b c d");
+  });
+
+  test("leaves ordinary text, including non-ASCII, alone", () => {
+    expect(sanitizeForLog("héllo — ok")).toBe("héllo — ok");
+  });
+
+  test("bounds the result at 200 characters", () => {
+    expect(sanitizeForLog("x".repeat(500))).toHaveLength(200);
+  });
+
+  // NOT TESTED, because the property does not exist: whether the strip runs
+  // before or after the 200-character cut. The replacement maps one character
+  // to one space, so it is length-preserving and the two orders are provably
+  // equal on every input. An earlier draft of this file asserted the order and
+  // the swapped-order mutant SURVIVED -- a check that could not fail, dressed
+  // as a falsifier. Recorded here instead of deleted silently.
 });

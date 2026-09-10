@@ -131,7 +131,11 @@ describe("THE DASHBOARD'S OWN SCRIPT IS CHECKED — tsc cannot see inside a temp
     const src = readFileSync(join(import.meta.dir, "serve-org.ts"), "utf-8");
     const page = /const PAGE = `([\s\S]*?)`;/.exec(src);
     expect(page).not.toBeNull();
-    const script = /<script>([\s\S]*)<\/script>/.exec(page![1]!);
+    // CASE-INSENSITIVE: `<SCRIPT>` is the same tag to a browser, and a filter that matches
+    // only the lower-case spelling is the classic bad-tag-filter defect (CodeQL
+    // `js/bad-tag-filter`, alert #935). Here it would silently extract nothing and the
+    // `not.toBeNull()` below would be the only thing that noticed.
+    const script = /<script>([\s\S]*)<\/script>/i.exec(page![1]!);
     expect(script).not.toBeNull();
     expect(() => new Function(script![1]!)).not.toThrow();
   });

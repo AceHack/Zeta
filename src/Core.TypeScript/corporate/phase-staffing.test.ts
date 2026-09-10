@@ -7,6 +7,7 @@
  * chart says owns the phase, and that the function refuses rather than falling back when it cannot.
  */
 
+import { stringCompare } from "../collation/collation.ts";
 import { describe, expect, test } from "bun:test";
 import { buildOrgChart, type OrgChart } from "./org-chart";
 import { SEED_HATS } from "./org-seed";
@@ -64,7 +65,7 @@ describe("the DISCIPLINE is read off the chart, not from a table", () => {
     const a = candidatesFor(CHART, GateKind.BusinessContextGrooming).candidates.map((c) => c.hatId);
     const b = candidatesFor(CHART, GateKind.BusinessContextGrooming).candidates.map((c) => c.hatId);
     expect(a).toEqual(b);
-    expect([...a].sort((x, y) => x.localeCompare(y))).toEqual(a);
+    expect([...a].sort((x, y) => stringCompare(x, y))).toEqual(a);
   });
 });
 

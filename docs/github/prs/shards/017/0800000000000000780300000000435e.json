@@ -1,0 +1,12 @@
+{
+  "pr_number": 17246,
+  "archive_path": "docs/history/pr-reviews/PR-17246-feat-081m25z29w4087g0r002y0q1mg-unhashed-dependency-is-a-declared-class-wired-ac.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-10T16:25:15.393Z",
+  "schema_version": "v1",
+  "commit_sha": "26253aa90b499347335773bce1d07939092da319",
+  "title": "feat(081M25Z29W4087G0R002Y0Q1MG): unhashed dependency is a declared class, wired across mechanisms, with a derived inventory",
+  "state": "MERGED",
+  "merged_at": "2026-09-10T16:24:31Z",
+  "head_ref": "unhashed-dependency-first-class"
+}

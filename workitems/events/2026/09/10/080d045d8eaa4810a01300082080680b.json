@@ -1,0 +1,14 @@
+{
+  "id": "080d045d8eaa4810a01300082080680b",
+  "at": "2026-09-10T14:21:22.633Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M25V3NA8087G0R0033NM76A",
+    "type": "bug",
+    "title": "log sanitiser stripped only CR/LF, and one Dockerfile floated its base image (js/log-injection, PinnedDependenciesID)",
+    "slug": "log-sanitiser-stripped-only-cr-lf-and-one-dockerfile-floated",
+    "priority": "P2",
+    "filename": "081M25V3NA8087G0R0033NM76A-log-sanitiser-stripped-only-cr-lf-and-one-dockerfile-floated.md"
+  }
+}

@@ -22,6 +22,7 @@
  *      silently drops work to take a meeting is not more responsive, it is less trustworthy.
  */
 
+import { stringCompare } from "../collation/collation.ts";
 import type { Cascade } from "./goal-cascade";
 import { deliveredSet, WorkState } from "./goal-cascade";
 import type { OrgChart } from "./org-chart";
@@ -209,7 +210,7 @@ export function proposeSelfDirected(input: SelfDirectedInput): readonly SelfDire
   // go to hats that can actually use them rather than being spent on refusals.
   const ordered = [...input.idle]
     .filter((h) => input.mayStudy === undefined || input.mayStudy(h.hatId))
-    .sort((a, b) => a.hatId.localeCompare(b.hatId));
+    .sort((a, b) => stringCompare(a.hatId, b.hatId));
   for (const hat of ordered.slice(0, limit)) {
     const department = input.departmentOf?.(hat.hatId);
     // Rotate the kind with the cycle so a hat studies, then writes it down, then tends what it wrote.
@@ -547,7 +548,7 @@ export function presenceOf(input: PresenceInput): readonly HatPresence[] {
   const studying = new Map(input.studying.map((s) => [s.hatId, s.subject]));
 
   return [...input.allHatIds]
-    .sort((a, b) => a.localeCompare(b))
+    .sort((a, b) => stringCompare(a, b))
     .map((hatId): HatPresence => {
       if (demanded.has(hatId)) {
         return { hatId, presence: Presence.Working, because: "live work needs this authority" };
@@ -596,7 +597,7 @@ export function waking(
   demandedNow: readonly string[],
 ): readonly string[] {
   const wasAsleep = new Set(before.filter((p) => p.presence === Presence.Asleep).map((p) => p.hatId));
-  return [...new Set(demandedNow)].filter((h) => wasAsleep.has(h)).sort((a, b) => a.localeCompare(b));
+  return [...new Set(demandedNow)].filter((h) => wasAsleep.has(h)).sort((a, b) => stringCompare(a, b));
 }
 
 // ─── Meetings ────────────────────────────────────────────────────────────────
@@ -712,7 +713,7 @@ export function proposeMeetings(input: MeetingInput): readonly MeetingProposal[]
   const stalledAfter = input.stalledAfterMs ?? 86_400_000;
   const out: MeetingProposal[] = [];
 
-  for (const r of [...(input.repeatedRejections ?? [])].sort((a, b) => a.workId.localeCompare(b.workId))) {
+  for (const r of [...(input.repeatedRejections ?? [])].sort((a, b) => stringCompare(a.workId, b.workId))) {
     if (r.attempts < 2) continue;
     if (r.authorHatId === r.reviewerHatId) continue; // nobody meets themselves
     out.push({
@@ -727,7 +728,7 @@ export function proposeMeetings(input: MeetingInput): readonly MeetingProposal[]
     });
   }
 
-  for (const h of [...(input.heldForPeople ?? [])].sort((a, b) => a.workId.localeCompare(b.workId))) {
+  for (const h of [...(input.heldForPeople ?? [])].sort((a, b) => stringCompare(a.workId, b.workId))) {
     if (input.nowMs - h.heldSinceMs < stalledAfter) continue;
     if (h.escalateToHatId === undefined || h.escalateToHatId === h.ownerHatId) continue;
     out.push({
@@ -742,7 +743,7 @@ export function proposeMeetings(input: MeetingInput): readonly MeetingProposal[]
     });
   }
 
-  for (const b of [...(input.unresolvedBlockers ?? [])].sort((x, y) => x.blockerId.localeCompare(y.blockerId))) {
+  for (const b of [...(input.unresolvedBlockers ?? [])].sort((x, y) => stringCompare(x.blockerId, y.blockerId))) {
     out.push({
       meetingId: `meet-blocker-${b.blockerId}`,
       reason: MeetingReason.UnresolvedBlocker,
@@ -757,7 +758,7 @@ export function proposeMeetings(input: MeetingInput): readonly MeetingProposal[]
     });
   }
 
-  for (const c of [...(input.memoryConflicts ?? [])].sort((a, b) => a.key.localeCompare(b.key))) {
+  for (const c of [...(input.memoryConflicts ?? [])].sort((a, b) => stringCompare(a.key, b.key))) {
     if (c.scopes.length < 2) continue;
     out.push({
       meetingId: `meet-memory-${c.key}`,
@@ -853,7 +854,7 @@ export function hatDemand(cascade: Cascade): readonly HatDemand[] {
   }
   return [...byHat.entries()]
     .map(([hatId, forWorkIds]) => ({ hatId, forWorkIds }))
-    .sort((a, b) => a.hatId.localeCompare(b.hatId));
+    .sort((a, b) => stringCompare(a.hatId, b.hatId));
 }
 
 export const HatMove = { Don: "don", Doff: "doff", Keep: "keep" } as const;

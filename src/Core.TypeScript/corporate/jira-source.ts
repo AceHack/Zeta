@@ -141,7 +141,14 @@ export type JiraResult<T> = { readonly ok: true; readonly value: T } | { readonl
 async function call(credentials: JiraCredentials, path: string): Promise<JiraResult<unknown>> {
   let response: Response;
   try {
-    response = await fetch(`${credentials.baseUrl}${path}`, {
+    // The url is ASSEMBLED, so it is checked before the token is attached: a `path` that
+    // begins `//host` or carries its own scheme would otherwise silently retarget the
+    // request while still looking like a relative path. `js/file-access-to-http` #942/#941.
+    const target = `${credentials.baseUrl}${path}`;
+    if (new URL(target).origin !== new URL(credentials.baseUrl).origin) {
+      throw new Error(`refusing to send credentials to ${new URL(target).origin} — configured base is ${credentials.baseUrl}`);
+    }
+    response = await fetch(target, {
       headers: { Authorization: authHeader(credentials), Accept: "application/json" },
     });
   } catch (error) {

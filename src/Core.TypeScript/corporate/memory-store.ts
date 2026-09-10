@@ -24,7 +24,7 @@
  * resolved path, not on the input, because that is the only form that cannot be tricked.
  */
 
-import { existsSync, mkdirSync, readdirSync, readFileSync, statSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
 import { spawnSync } from "node:child_process";
 import { join, resolve, sep } from "node:path";
 
@@ -143,7 +143,9 @@ export function directoryMemoryStore(root: string): MemoryStore {
 
     const statePath = mdPath.replace(/\.md$/, ".state.json");
     let state: MemoryState | undefined;
-    if (existsSync(statePath)) {
+    {
+      // No `existsSync` gate: the try/catch below ALREADY handles a missing file, so the
+      // check only added a window in which the answer could go stale (CWE-367).
       try {
         state = JSON.parse(readFileSync(statePath, "utf-8")) as MemoryState;
       } catch {
@@ -180,10 +182,19 @@ export function directoryMemoryStore(root: string): MemoryStore {
   };
 
   const walk = (dir: string, out: string[]): void => {
-    if (!existsSync(dir)) return;
-    for (const entry of readdirSync(dir)) {
+    // Let the read decide existence, and take the kind FROM the listing: two races closed
+    // at once (CWE-367). A directory that is gone is empty, which is what the old
+    // `existsSync` early-return meant anyway.
+    let entries: readonly import("node:fs").Dirent[];
+    try {
+      entries = readdirSync(dir, { withFileTypes: true });
+    } catch {
+      return;
+    }
+    for (const dirent of entries) {
+      const entry = dirent.name;
       const full = join(dir, entry);
-      if (statSync(full).isDirectory()) {
+      if (dirent.isDirectory()) {
         // `.git` is skipped so a repository's own objects are never read as memories.
         if (entry !== ".git") walk(full, out);
       } else if (entry.endsWith(".md")) {

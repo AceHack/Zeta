@@ -6,6 +6,7 @@
  * must be refused, and the refusal must say why rather than quietly handing back a shorter one.
  */
 
+import { stringCompare } from "../collation/collation.ts";
 import { describe, expect, test } from "bun:test";
 import {
   DEFAULT_STUDY_BUDGET,
@@ -304,7 +305,7 @@ describe("who still has allowance", () => {
   test("the list is ordered, so the same state proposes the same way twice", () => {
     const ids = ["zeta_hat", "alpha_hat", "mid_hat"];
     const left = hatsWithStudyLeft(EMPTY_CALENDAR, ids, NOW).map((h) => h.hatId);
-    expect(left).toEqual([...ids].sort((a, b) => a.localeCompare(b)));
+    expect(left).toEqual([...ids].sort((a, b) => stringCompare(a, b)));
   });
 
   test("everyone fresh has the full allowance", () => {

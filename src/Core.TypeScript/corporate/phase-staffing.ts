@@ -28,6 +28,7 @@
  * picks inside it.
  */
 
+import { stringCompare } from "../collation/collation.ts";
 import type { OrgChart, OrgHat } from "./org-chart";
 import { GateKind, gateOwners } from "./quality-gate";
 
@@ -73,7 +74,7 @@ export function candidatesFor(chart: OrgChart, gate: GateKind): PhaseStaffing {
   }
 
   const departmentIds = [...new Set(approvers.map((h) => h.departmentId).filter((d): d is string => d !== undefined))].sort(
-    (a, b) => a.localeCompare(b),
+    (a, b) => stringCompare(a, b),
   );
   if (departmentIds.length === 0) {
     return {
@@ -92,7 +93,7 @@ export function candidatesFor(chart: OrgChart, gate: GateKind): PhaseStaffing {
     // guaranteed to fail at the gate they were picked for.
     .filter((h) => !approverIds.has(h.id))
     .map((h) => ({ hatId: h.id, name: h.name, departmentId: h.departmentId as string }))
-    .sort((a, b) => a.hatId.localeCompare(b.hatId));
+    .sort((a, b) => stringCompare(a.hatId, b.hatId));
 
   return {
     gate,

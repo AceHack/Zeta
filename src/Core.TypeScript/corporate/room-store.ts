@@ -17,7 +17,8 @@
  * input and remain unable to alter what it reports.
  */
 
-import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
+import { stringCompare } from "../collation/collation.ts";
+import { mkdirSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 
 import {
@@ -91,9 +92,17 @@ export function appendRoomEvent(dir: string, event: RoomEvent): string {
 /** Every event for one room, in write order. */
 export function readRoomEvents(dir: string, roomId: string): readonly RoomEvent[] {
   const roomDir = join(dir, safeId(roomId));
-  if (!existsSync(roomDir)) return [];
+  // The read decides existence. A room directory that is gone has no events, which is
+  // exactly what the `existsSync` early-return meant -- without the window between the
+  // question and the answer (CWE-367).
+  let names: readonly string[];
+  try {
+    names = readdirSync(roomDir);
+  } catch {
+    return [];
+  }
   const out: RoomEvent[] = [];
-  for (const entry of readdirSync(roomDir).sort()) {
+  for (const entry of [...names].sort()) {
     if (!entry.endsWith(".json")) continue;
     try {
       out.push(JSON.parse(readFileSync(join(roomDir, entry), "utf-8")) as RoomEvent);
@@ -108,8 +117,13 @@ export function readRoomEvents(dir: string, roomId: string): readonly RoomEvent[
 }
 
 export function listRoomIds(dir: string): readonly string[] {
-  if (!existsSync(dir)) return [];
-  return readdirSync(dir).sort();
+  try {
+    return readdirSync(dir).sort();
+  } catch {
+    // No directory means no rooms — the same answer the `existsSync` gate gave, reached
+    // without a window in which the check could go stale.
+    return [];
+  }
 }
 
 /**
@@ -169,7 +183,7 @@ export function foldRoom(events: readonly RoomEvent[]): IterationRoom | undefine
     openedBy: first.openedBy,
     openedAtMs: first.atMs,
     state,
-    turns: turns.sort((a, b) => (a.atMs === b.atMs ? a.turnId.localeCompare(b.turnId) : a.atMs - b.atMs)),
+    turns: turns.sort((a, b) => (a.atMs === b.atMs ? stringCompare(a.turnId, b.turnId) : a.atMs - b.atMs)),
     revisions: revisions.sort((a, b) => a.revision - b.revision),
     ...(approvedRevision === undefined ? {} : { approvedRevision }),
     ...(closedAtMs === undefined ? {} : { closedAtMs }),
