@@ -1,0 +1,12 @@
+{
+  "pr_number": 17255,
+  "archive_path": "docs/history/pr-reviews/PR-17255-fix-081m26ftdfx087g0r002sy0g1z-codeql-could-not-parse-12-source-files-so-it-anal.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-10T20:47:44.985Z",
+  "schema_version": "v1",
+  "commit_sha": "b7b5d499883ac14e231e8d5367a8238b97034e83",
+  "title": "fix(081M26FTDFX087G0R002SY0G1Z): CodeQL could not PARSE 12 source files, so it analysed none of them",
+  "state": "MERGED",
+  "merged_at": "2026-09-10T20:47:02Z",
+  "head_ref": "codeql-cannot-parse-what-it-cannot-read"
+}
