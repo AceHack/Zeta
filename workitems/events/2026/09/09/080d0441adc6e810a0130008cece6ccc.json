@@ -1,0 +1,14 @@
+{
+  "id": "080d0441adc6e810a0130008cece6ccc",
+  "at": "2026-09-09T22:06:57.245Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M243BE6V087G0R002K3YREW",
+    "type": "bug",
+    "title": "setNestedProperty prototype guard blocks segment NAMES but not a cursor that LANDS on a prototype object",
+    "slug": "setnestedproperty-prototype-guard-blocks-segment-names-but-n",
+    "priority": "P2",
+    "filename": "081M243BE6V087G0R002K3YREW-setnestedproperty-prototype-guard-blocks-segment-names-but-n.md"
+  }
+}

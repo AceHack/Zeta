@@ -191,30 +191,129 @@ export function getTargetPath(target: string): string {
  */
 const UNWRITABLE_SEGMENTS: ReadonlySet<string> = new Set(["__proto__", "constructor", "prototype"]);
 
+/**
+ * True when `value` is somebody's `.prototype`.
+ *
+ * THE SEGMENT-NAME GUARD ALONE DID NOT CLOSE THE HOLE, MEASURED 2026-09-09:
+ *
+ *   setNestedProperty(o, "a", Object.prototype);   // an ordinary value write
+ *   setNestedProperty(o, "a.polluted", "yes");     // no forbidden segment ANYWHERE
+ *   ({}).polluted === "yes"                        // every object in the process
+ *
+ * Refusing the NAMES `__proto__` / `constructor` / `prototype` stops a path from SPELLING
+ * its way to the prototype chain. It does nothing about a path that WALKS there, because
+ * the traversal follows values, and a value can be a prototype object under any name at
+ * all. So the guard has to sit on what the cursor LANDS ON, not only on what the path says.
+ *
+ * Test: an object is somebody's prototype exactly when its own-or-inherited `constructor`
+ * is a function whose `.prototype` is that object. True for `Object.prototype`,
+ * `Array.prototype`, and any class's prototype; false for `{}` and for
+ * `Object.create(null)`. A plain object that merely SETS `constructor` reads as a
+ * prototype and is refused -- fail-closed, which is the direction to be wrong in.
+ */
+function isPrototypeObject(value: object): boolean {
+  const ctor = (value as { constructor?: unknown }).constructor;
+  return typeof ctor === "function" && (ctor as { prototype?: unknown }).prototype === value;
+}
+
+/**
+ * Define an own, plain, writable data property -- NEVER `container[key] = value`.
+ *
+ * Assignment RUNS the `__proto__` setter, so `o["__proto__"] = x` mutates the prototype and
+ * leaves no own property behind. `defineProperty` defines an own property instead, so even
+ * a forbidden key that somehow reached here becomes inert data rather than a prototype
+ * mutation. Verified 2026-09-09: assignment gives `hasOwnProperty false, prototype CHANGED`;
+ * defineProperty gives `hasOwnProperty true, prototype unchanged`. For every ordinary key
+ * the two are indistinguishable -- writable, enumerable, configurable, so `Object.keys`,
+ * spread and `JSON.stringify` all behave exactly as before.
+ *
+ * EXPORTED SO IT CAN BE FALSIFIED. `setNestedProperty` refuses the dangerous keys before it
+ * ever gets here, so through the public path this helper can only be called with keys for
+ * which assignment and `defineProperty` agree -- which means swapping it back to assignment
+ * changes nothing observable and no test would go red. MEASURED: that mutation survived the
+ * whole suite. A safety property no test can distinguish is decoration, so the helper is
+ * exported and tested against the key that separates the two.
+ */
+export function defineOwn(container: object, key: string, value: unknown): void {
+  // THE CONTAINER, NOT THE KEY. `defineProperty` already makes every KEY inert -- that is
+  // what the tests below pin, and it is why `__proto__` is safe here. What it does NOT make
+  // safe is the TARGET: `defineOwn(Object.prototype, "x", …)` defines an own property on
+  // `Object.prototype` itself and reaches every object that inherits from it.
+  //
+  // Through the public path `setNestedProperty` already refuses this (PASS 2). But this
+  // helper is EXPORTED -- deliberately, so the defineProperty-vs-assignment property can be
+  // falsified -- and an exported function is a surface with its own callers, not an
+  // implementation detail. CodeQL alert 929 (`js/prototype-pollution-utility`) named exactly
+  // that gap, and it was right: the guard sat one level up from the door it protected.
+  //
+  // Guarding the container rather than the key leaves the existing falsifiers untouched --
+  // they pass a plain object and vary the key, which is the axis that separates
+  // `defineProperty` from assignment.
+  if (isPrototypeObject(container)) {
+    throw new Error(
+      `defineOwn refuses a prototype object as its container: writing ${JSON.stringify(key)} through it would reach every object that inherits from it`,
+    );
+  }
+  Object.defineProperty(container, key, { value, writable: true, enumerable: true, configurable: true });
+}
+
+/**
+ * Write `value` at a dotted `path` under `obj`, creating intermediate objects.
+ *
+ * REFUSALS ARE ATOMIC. Every guard runs before anything is written, so a refused path
+ * leaves `obj` exactly as it arrived; a refusal that half-applied would leave the caller
+ * with a shape neither it nor the spec asked for, which is worse than what it refused.
+ */
 export function setNestedProperty(obj: any, path: string, value: any): void {
-  const parts = path.split(".");
-  if (parts.length === 0 || parts[0] === "") {
+  if (obj === null || typeof obj !== "object") {
+    throw new Error(`nested path target must be an object, got ${obj === null ? "null" : typeof obj}: ${path}`);
+  }
+  if (path === "") {
     throw new Error("nested path must be non-empty");
   }
-  // REFUSED, not silently skipped: a path that names the prototype chain is a spec that
-  // means something other than what it says, and quietly writing it somewhere else would
-  // hide that. Same register as the empty-path throw above.
-  const unwritable = parts.find((part) => UNWRITABLE_SEGMENTS.has(part));
-  if (unwritable !== undefined) {
-    throw new Error(`nested path segment '${unwritable}' is not a value key: ${path}`);
-  }
-  let current = obj;
-  for (let i = 0; i < parts.length - 1; i++) {
+  const parts = path.split(".");
+
+  // PASS 1 -- the path as WRITTEN. Read-only.
+  for (let i = 0; i < parts.length; i++) {
     const part = parts[i]!;
-    // OWN property, not `in`: `in` walks the prototype chain, so `toString` and friends
-    // "exist" on every object and the walk would descend into an inherited function
-    // instead of creating the intermediate object the path asks for.
-    if (!Object.prototype.hasOwnProperty.call(current, part)) {
-      current[part] = {};
+    // REFUSED, not silently skipped: `a..b` and `a.` both write a key named "" that no
+    // spec asked for. Same register as the prototype-chain refusal below -- a path that
+    // means something other than what it says is a defect in the spec, not an input to
+    // be normalised. MEASURED 2026-09-09: `a..b` used to yield {"a":{"":{"b":1}}}.
+    if (part === "") {
+      throw new Error(`nested path segment ${i} is empty: ${JSON.stringify(path)}`);
     }
-    current = current[part];
+    if (UNWRITABLE_SEGMENTS.has(part)) {
+      throw new Error(`nested path segment ${JSON.stringify(part)} is not a value key: ${path}`);
+    }
   }
-  current[parts[parts.length - 1]!] = value;
+
+  // PASS 2 -- the containers that ALREADY EXIST. Still read-only.
+  let current: any = obj;
+  let depth = 0;
+  // OWN property, not `in`: `in` walks the prototype chain, so `toString` and friends
+  // "exist" on every object and the walk would descend into an inherited function instead
+  // of creating the intermediate object the path asks for.
+  while (depth < parts.length - 1 && Object.prototype.hasOwnProperty.call(current, parts[depth]!)) {
+    const part = parts[depth]!;
+    const next = current[part];
+    if (next === null || typeof next !== "object") {
+      throw new Error(`nested path segment ${JSON.stringify(part)} already holds a ${next === null ? "null" : typeof next}, which is not a container: ${path}`);
+    }
+    if (isPrototypeObject(next)) {
+      throw new Error(`nested path segment ${JSON.stringify(part)} resolves to a prototype object; writing through it would reach every object that inherits from it: ${path}`);
+    }
+    current = next;
+    depth += 1;
+  }
+
+  // PASS 3 -- write. Every guard has passed; nothing below can throw.
+  for (; depth < parts.length - 1; depth += 1) {
+    const fresh = {};
+    defineOwn(current, parts[depth]!, fresh);
+    current = fresh;
+  }
+  defineOwn(current, parts[parts.length - 1]!, value);
 }
 
 export function resolveGraph(graph: AppDependencyGraphSpec, chartsDir?: string): ResolvedGraph {
