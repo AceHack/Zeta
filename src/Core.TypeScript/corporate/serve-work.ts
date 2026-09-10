@@ -253,24 +253,37 @@ export async function workRoutes(
     const issue = await fetchJiraIssue(credentials.credentials, key);
     if (!issue.ok) return json({ ok: false, reason: issue.reason }, 404);
 
-    const event: ExternalEvent = issueToEvent(issue.value);
-    mkdirSync(config.inboxDir, { recursive: true });
-    // Named by key, so loading the same ticket twice OVERWRITES rather than queueing it twice. The
-    // organization's own duplicate refusal still applies on the second run; this just stops the
-    // inbox filling with copies of one request.
-    // THE KEY REACHES THE FILESYSTEM, so it is constrained to one path segment first. It
-    // arrives from an HTTP response, and a key of `../../etc/whatever` would otherwise write
-    // outside the inbox entirely — the write is the sink CodeQL names in alert #937
-    // (`js/http-to-file-access`), and the traversal is the part that makes it matter rather
-    // than merely look untidy. Same discipline and same shape as `safeId` in room-store.ts:
-    // one segment, never a traversal, never empty, bounded length.
-    // The key reaches the FILESYSTEM, so it is refused before it gets there rather than
-    // reshaped on the way. It arrives from an HTTP response; a key of `../../etc/whatever`
-    // would otherwise write outside the inbox entirely.
-    if (!isSafeInboxKey(issue.value.key)) {
-      return json({ ok: false, reason: `refusing ticket key ${JSON.stringify(issue.value.key)}: not a single safe path segment` }, 400);
+    // VALIDATE FIRST, THEN BUILD FROM THE VALIDATED VALUE.
+    //
+    // The key arrives over HTTP and reaches two sinks: the FILENAME and the event's
+    // `externalId`. It used to be tested after `issueToEvent` had already read it, so the
+    // refusal guarded the filename while the event carried the unchecked value — and CodeQL
+    // traced exactly that, `issueToEvent(issue.value) [externalId]` straight through
+    // `JSON.stringify` to the write (`js/http-to-file-access` #937). The guard was real and
+    // was standing in the wrong place.
+    //
+    // Same defect as the one diagnosed in `safe-io.ts`: a barrier has to be applied to the
+    // value that CONTINUES, on the continuing branch. Testing a sibling expression, or the
+    // same expression later, protects nothing downstream of the first read.
+    const issueKey = issue.value.key;
+    if (!isSafeInboxKey(issueKey)) {
+      return json(
+        { ok: false, reason: `refusing ticket key ${JSON.stringify(issueKey)}: not a single safe path segment` },
+        400,
+      );
     }
-    const file = join(config.inboxDir, `jira-${issue.value.key}.json`);
+
+    // `externalId` is taken from the VALIDATED binding rather than re-read from the response,
+    // so the value in the event is the value that passed the test — not merely one that
+    // happens to equal it.
+    const event: ExternalEvent = { ...issueToEvent(issue.value), externalId: issueKey };
+    mkdirSync(config.inboxDir, { recursive: true });
+    // Named by key, so loading the same ticket twice OVERWRITES rather than queueing it twice.
+    // The organization's own duplicate refusal still applies on the second run; this just
+    // stops the inbox filling with copies of one request. A key of `../../etc/whatever` would
+    // write outside the inbox entirely, which is why the refusal above runs before anything
+    // reads it.
+    const file = join(config.inboxDir, `jira-${issueKey}.json`);
     const inboxBody = `${JSON.stringify(event, null, 2)}\n`;
     // BOUNDED. The ticket's title and body are remote text by nature — that is the feature,
     // and `js/http-to-file-access` #937 describes it accurately: writing an HTTP-delivered
@@ -280,7 +293,7 @@ export async function workRoutes(
     // tracker that has been misconfigured or compromised is exactly the source that would.
     // A megabyte is far above any real ticket and far below anything that hurts.
     if (inboxBody.length > MAX_INBOX_BYTES) {
-      return json({ ok: false, reason: `refusing ticket ${issue.value.key}: ${String(inboxBody.length)} bytes exceeds the ${String(MAX_INBOX_BYTES)}-byte inbox ceiling` }, 413);
+      return json({ ok: false, reason: `refusing ticket ${issueKey}: ${String(inboxBody.length)} bytes exceeds the ${String(MAX_INBOX_BYTES)}-byte inbox ceiling` }, 413);
     }
     writeFileSync(file, inboxBody, "utf-8");
     return json({
