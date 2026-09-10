@@ -51,6 +51,60 @@ function Invoke-Tool {
   try { & $Cmd 2>&1 | ForEach-Object { Write-Host "$_" } } finally { $ErrorActionPreference = $prev }
   if ($LASTEXITCODE -ne 0) { throw "$What failed (exit $LASTEXITCODE)" }
 }
+
+# NARROW retry for failures produced by an external service that never answered.
+#
+# Measured 2026-09-10, `build-and-test (windows-11-arm)` on `main`: mise refused to install
+# kubeconform because GitHub's attestation service returned 503 "trust-metadata-api service
+# unavailable". Failing closed on an unverifiable artifact is CORRECT and stays. Giving up
+# after one attempt is not: the whole Windows lane went red on `main` for an outage measured
+# in seconds.
+#
+# The distinction this rests on, and the reason the list is short: a verification that RAN and
+# said no must never be retried away -- only one that COULD NOT RUN is re-attemptable. A 5xx is
+# the server declining to answer, not an answer. A checksum mismatch, a 404, or "no matching
+# attestation found" are answers, and they fail immediately here as they always did.
+#
+# The needles are mirrored from `src/Core.TypeScript/ci/transient-toolchain-failure.ts`, where
+# the classification is unit-tested (11 falsifiers; mutating the default verdict to `retry` is
+# killed by 5, truncating this needle to "attestation" by 1). `audit-transient-retry-parity.ts`
+# fails if the two lists drift, because a retry predicate that is broader here than there is
+# exactly how red quietly becomes intermittent green.
+$script:TransientToolNeedles = @(
+  'trust-metadata-api service unavailable',
+  '503 Service Unavailable',
+  '502 Bad Gateway',
+  '504 Gateway Time-out'
+)
+
+function Invoke-ToolWithTransientRetry {
+  param(
+    [Parameter(Mandatory)][scriptblock]$Cmd,
+    [string]$What = 'native command',
+    [int]$MaxAttempts = 3
+  )
+  for ($attempt = 1; $attempt -le $MaxAttempts; $attempt++) {
+    $prev = $ErrorActionPreference
+    $ErrorActionPreference = 'Continue'
+    try { $out = @(& $Cmd 2>&1 | ForEach-Object { Write-Host "$_"; "$_" }) } finally { $ErrorActionPreference = $prev }
+    if ($LASTEXITCODE -eq 0) { return }
+
+    $joined = ($out -join "`n")
+    $matched = $null
+    foreach ($needle in $script:TransientToolNeedles) {
+      if ($joined -like "*$needle*") { $matched = $needle; break }
+    }
+    # DEFAULT IS FAIL-NOW. A predicate that defaulted to retry would eventually swallow a
+    # real defect, and turning red into slow-green is worse than staying red.
+    if ($null -eq $matched) { throw "$What failed (exit $LASTEXITCODE)" }
+    if ($attempt -ge $MaxAttempts) {
+      throw "$What failed (exit $LASTEXITCODE) after $MaxAttempts attempts; last transient signature was '$matched'. An outage that outlasts the budget is an outage worth failing on."
+    }
+    $delayMs = 2000 * [math]::Pow(2, [math]::Min($attempt, 4) - 1)
+    Write-Host "warn: $What hit a transient upstream failure ('$matched'); attempt $attempt of $MaxAttempts, retrying in $([int]$delayMs)ms"
+    Start-Sleep -Milliseconds ([int]$delayMs)
+  }
+}
 # Capture native output with the same PowerShell 5.1 stderr discipline as Invoke-Tool. Used when
 # the output is data consumed by this script rather than progress intended for the console.
 function Get-ToolOutput {
@@ -467,7 +521,7 @@ try {
       Write-Host "warn: Windows ARM64 omits optional mise tool '$tool': $($unsupported[$tool])"
     }
     $miseInstallSpecs = @(Get-MiseConfiguredToolSpecs -ExcludedTools (@($unsupported.Keys) + @('java')))
-    Invoke-Tool { mise install --yes @miseInstallSpecs } 'mise install --yes (Windows ARM64 supported tool graph)'
+    Invoke-ToolWithTransientRetry { mise install --yes @miseInstallSpecs } 'mise install --yes (Windows ARM64 supported tool graph)'
     $runtimeBinPaths = @(Get-ToolOutput { mise bin-paths --quiet @miseInstallSpecs } 'mise bin-paths --quiet (Windows ARM64 supported tool graph)')
     # Later bootstrap steps use `mise exec -- bun ...`. Its default exec_auto_install setting
     # otherwise expands back to the whole config and retries the three unsupported tools before
@@ -475,7 +529,7 @@ try {
     # that implicit expansion for the remainder of this Windows ARM64 process.
     $env:MISE_EXEC_AUTO_INSTALL = 'false'
   } else {
-    Invoke-Tool { mise install --yes } 'mise install --yes'
+    Invoke-ToolWithTransientRetry { mise install --yes } 'mise install --yes'
     $runtimeBinPaths = @(Get-ToolOutput { mise bin-paths --quiet } 'mise bin-paths --quiet')
   }
   Publish-ZetaRuntimePaths $runtimeBinPaths

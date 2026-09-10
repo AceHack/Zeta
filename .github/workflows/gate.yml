@@ -3465,6 +3465,7 @@ jobs:
           - credential-role-separation
           - coauthor-identity-collision
           - write-token-consistency
+          - transient-retry-parity
           - scanner-cancels-itself
           - heartbeat-lane-attestations
           - heartbeat-lane-audit-tests

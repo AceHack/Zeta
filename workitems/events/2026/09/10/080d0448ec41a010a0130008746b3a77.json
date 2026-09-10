@@ -1,0 +1,14 @@
+{
+  "id": "080d0448ec41a010a0130008746b3a77",
+  "at": "2026-09-10T02:20:09.140Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M24HV21K087G0R0015TD0MV",
+    "type": "bug",
+    "title": "A GitHub attestation 503 fails the Windows toolchain install with no retry",
+    "slug": "a-github-attestation-503-fails-the-windows-toolchain-install",
+    "priority": "P2",
+    "filename": "081M24HV21K087G0R0015TD0MV-a-github-attestation-503-fails-the-windows-toolchain-install.md"
+  }
+}

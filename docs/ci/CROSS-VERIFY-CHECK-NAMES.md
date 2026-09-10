@@ -69,6 +69,7 @@ generator that read an EMPTY roster cannot pass.
 | `cross-verify (credential-role-separation)`             | Workflow credential role separation (one role, one secret)                         |
 | `cross-verify (coauthor-identity-collision)`            | Co-author identity collision (AH005 — plain-username GitHub noreply form)          |
 | `cross-verify (write-token-consistency)`                | Workflow write-token consistency (forge writes must reach the PAT)                 |
+| `cross-verify (transient-retry-parity)`                 | Transient-retry signatures identical in install.ps1 and the tested module          |
 | `cross-verify (scanner-cancels-itself)`                 | Evidence workflows must not cancel their own default-branch runs                   |
 | `cross-verify (heartbeat-lane-attestations)`            | PR-free heartbeat lane attestations (armed; vacuous until the lane exists)         |
 | `cross-verify (heartbeat-lane-audit-tests)`             | Heartbeat-lane audit unit tests (a check that cannot fail is not a check)          |

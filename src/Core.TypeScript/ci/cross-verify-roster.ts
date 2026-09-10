@@ -309,6 +309,23 @@ export const CROSS_VERIFY_AUDITS: readonly CrossVerifyAudit[] = [
   // resolve `github.ref` to the same value on `main`. Prose could not hold this; a check
   // can. Offline (reads committed workflow text, no sockets), so it belongs on the
   // pre-merge floor.
+  // `install.ps1` retries a failed toolchain install on a known transient upstream signature.
+  // The signature list is MIRRORED -- authority in `ci/transient-toolchain-failure.ts` where it
+  // is unit-tested and mutation-checked, copy in the shell because a PowerShell bootstrap
+  // cannot import TypeScript. A mirrored list drifts, and the drift is asymmetric: a needle
+  // present in the shell but absent from the tested module is an UNTESTED retry, which is how
+  // a real reproducible failure quietly becomes intermittent green -- strictly worse than
+  // staying red, because nobody investigates a build that eventually passes.
+  //
+  // The parse is anchored to the PowerShell array literal rather than grepping the file,
+  // because the comment above that array quotes a needle as prose and a file-wide search would
+  // be satisfied by the comment. Offline, so it belongs on the pre-merge floor.
+  {
+    id: "transient-retry-parity",
+    title: "Transient-retry signatures identical in install.ps1 and the tested module",
+    command: "bun src/Core.TypeScript/hygiene/audit-transient-retry-parity.ts",
+  },
+
   {
     id: "scanner-cancels-itself",
     title: "Evidence workflows must not cancel their own default-branch runs",
