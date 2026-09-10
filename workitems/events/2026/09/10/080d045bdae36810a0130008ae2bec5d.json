@@ -1,0 +1,14 @@
+{
+  "id": "080d045bdae36810a0130008ae2bec5d",
+  "at": "2026-09-10T13:21:52.749Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M25QPQ3C087G0R001CY0G4N",
+    "type": "bug",
+    "title": "peer-call runContextCmd clones spawn a shell from a command-line string (js/indirect-command-line-injection x7)",
+    "slug": "peer-call-runcontextcmd-clones-spawn-a-shell-from-a-command",
+    "priority": "P2",
+    "filename": "081M25QPQ3C087G0R001CY0G4N-peer-call-runcontextcmd-clones-spawn-a-shell-from-a-command.md"
+  }
+}

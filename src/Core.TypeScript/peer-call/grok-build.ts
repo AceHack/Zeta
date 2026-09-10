@@ -46,6 +46,7 @@
 
 import { closeSync, mkdirSync, openSync, readSync, statSync, writeSync } from "node:fs";
 import { spawnSync } from "node:child_process";
+import { spawnShellDeclared, truncateUtf8Bytes } from "../io/safe-io.ts";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import {
@@ -241,30 +242,35 @@ function readFileHead(path: string, maxBytes: number): string {
 }
 
 function runContextCmd(contextCmd: string, maxBytes: number): string {
-  // Bash-equivalent: `eval "$context_cmd" 2>&1 | head -c <maxBytes>`.
-  // Pipe through `head -c <N>` so the shell pipeline short-circuits at
-  // the truncation boundary instead of buffering the full output up to
-  // SPAWN_MAX_BUFFER. Same posture as grok.ts: user intentionally
-  // supplies the shell command (per --context-cmd contract); the shell
-  // does its own quoting/escaping.
+  // THE DECLARED SHELL, not a hand-rolled one. `--context-cmd`'s documented
+  // contract IS a shell command line -- "the same trust boundary as the bash
+  // original's `eval`" (peer-call/README) -- so narrowing it to an argument
+  // vector would break callers that pass pipelines. What changes is that the
+  // shell now lives in ONE reviewable function with a written reason
+  // (`spawnShellDeclared`, src/Core.TypeScript/io/safe-io.ts) instead of being
+  // open-coded here and in six sibling files. Same migration as
+  // `peer-call/summon.ts`, which is the worked example.
   //
-  // stdout + stderr both flow into the output: stdout is the command
-  // output truncated by `head -c`; stderr carries shell parse errors
-  // (e.g., syntax errors in contextCmd) which fall OUTSIDE the
-  // `( ... ) 2>&1` redirection. If we dropped stderr, a malformed
-  // context-cmd would render an empty context block silently. We also
-  // surface a non-zero exit so the caller sees failure rather than
-  // silently empty output.
-  const wrapped = `(${contextCmd}) 2>&1 | head -c ${String(maxBytes)}`;
-  const result = spawnSync("/bin/sh", ["-c", wrapped], {
-    encoding: "utf8",
-    maxBuffer: SPAWN_MAX_BUFFER,
+  // THREE things change with it, and none of them is cosmetic:
+  //   * the `| head -c N` pipeline is gone. The bound is applied in THIS
+  //     process, in BYTES, by `truncateUtf8Bytes`. The old `.slice(0, N)`
+  //     counted UTF-16 code units, so a context command emitting non-ASCII
+  //     overran the bound it appeared to enforce.
+  //   * the child now has a deadline (safe-io's DEFAULT_TIMEOUT_MS). The
+  //     open-coded `spawnSync` had none, so a context command that never
+  //     returned hung the peer call forever.
+  //   * a spawn failure is REPORTED rather than rendered as an empty context
+  //     block, which read as "the command produced nothing".
+  const result = spawnShellDeclared("sh", `(${contextCmd}) 2>&1`, {
+    reason: "peer-call --context-cmd: the command line is the documented contract of the flag",
+    maxBytes: SPAWN_MAX_BUFFER,
   });
-  // encoding: "utf8" guarantees stdout/stderr are strings, not Buffer | null.
-  let text = `${result.stdout}${result.stderr}`;
-  if (text.length > maxBytes) text = text.slice(0, maxBytes);
-  if (result.status !== null && result.status !== 0) {
-    text += `\n[context-cmd-exit: ${String(result.status)}]`;
+  if (!result.ok) {
+    return `[context-cmd-error: ${result.error.kind}: ${result.error.message}]`;
+  }
+  let text = truncateUtf8Bytes(`${result.value.stdout}${result.value.stderr}`, maxBytes);
+  if (result.value.status !== null && result.value.status !== 0) {
+    text += `\n[context-cmd-exit: ${String(result.value.status)}]`;
   }
   return text;
 }
