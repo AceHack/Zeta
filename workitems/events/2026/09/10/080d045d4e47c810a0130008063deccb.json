@@ -1,0 +1,14 @@
+{
+  "id": "080d045d4e47c810a0130008063deccb",
+  "at": "2026-09-10T14:12:35.193Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M25TKJ7R087G0R000910SA6",
+    "type": "bug",
+    "title": "ace fetched package documents through six unbounded doors (js/http-to-file-access, js/file-access-to-http)",
+    "slug": "ace-fetched-package-documents-through-six-unbounded-doors-js",
+    "priority": "P2",
+    "filename": "081M25TKJ7R087G0R000910SA6-ace-fetched-package-documents-through-six-unbounded-doors-js.md"
+  }
+}

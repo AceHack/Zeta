@@ -824,6 +824,34 @@ export interface FetchOutcome {
   readonly body: string;
   readonly truncated: boolean;
   readonly bytes: number;
+  /**
+   * Response headers, lower-cased names, as a plain object.
+   *
+   * Present because a conditional-request cache cannot be built without
+   * `etag` / `last-modified`, and a caller forced back to bare `fetch` to read
+   * one header loses the cap, the deadline and the scheme check along with it.
+   * Copied out rather than handed over live: the `Response` is gone by the time
+   * this returns, and a header bag that can be mutated by a caller is a
+   * different object from the one that arrived.
+   */
+  readonly headers: Readonly<Record<string, string>>;
+}
+
+/**
+ * Lower-cased header names to values. Repeated names arrive already joined.
+ *
+ * The `toLowerCase()` is REDUNDANT under the Fetch spec, which already
+ * guarantees lower-cased names from `Headers.forEach`, and it is kept anyway as
+ * an explicit statement of this field's contract rather than an inherited one.
+ * Measured: removing it changes no observable behaviour, so no test pins it --
+ * said out loud in `safe-io.test.ts` instead of dressed up as a falsifier.
+ */
+function collectHeaders(res: Response): Readonly<Record<string, string>> {
+  const out: Record<string, string> = {};
+  res.headers.forEach((value, name) => {
+    out[name.toLowerCase()] = value;
+  });
+  return out;
 }
 
 function checkUrl(url: string): IoError | null {
@@ -869,6 +897,7 @@ export async function fetchBounded(url: string, options: FetchOptions = {}): Pro
     if ((options.failOnHttpError ?? true) && !res.ok) {
       return fail(ioError("http-status", `${url} answered HTTP ${String(res.status)}`));
     }
+    const headers = collectHeaders(res);
     const chunks = await drainBounded(res.body, maxBytes);
     if (!chunks.ok) return chunks;
     return ok({
@@ -876,6 +905,7 @@ export async function fetchBounded(url: string, options: FetchOptions = {}): Pro
       body: Buffer.concat(chunks.value.chunks).toString("utf8"),
       truncated: chunks.value.truncated,
       bytes: chunks.value.bytes,
+      headers,
     });
   } catch (e) {
     if ((e as Error | undefined)?.name === "AbortError") {

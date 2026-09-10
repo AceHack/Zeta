@@ -139,6 +139,14 @@ export function installPackage(storePath: string, pkg: AcePackage): InstallResul
   //       the signed+trusted path is authenticity-verified, and `--allow-no-signature` is required to
   //       install an unsigned one. The CodeQL js/http-to-file-access alert remains a true
   //       intended-flow observation (the http→file write is the package manager's function).
+  //
+  //       WHAT CHANGED 2026-09-10: the bytes now arrive through ONE bounded door,
+  //       `ace.ts#readPackageDocument`, which caps the body, deadlines the transfer,
+  //       refuses any scheme but http/https, and refuses a non-2xx instead of parsing
+  //       the error page as a manifest. Six unbounded `await (await fetch(u)).text()`
+  //       call sites used to feed this write; there is now one. The flow is unchanged
+  //       and still reported -- what is gone is the unboundedness the path guard and
+  //       the hash check above always assumed.
   const unsafe = validatePackagePaths(pkg);
   if (unsafe !== null) {
     return { ok: false, error: `unsafe file path in package: ${unsafe}` };

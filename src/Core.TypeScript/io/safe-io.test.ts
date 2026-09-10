@@ -456,6 +456,11 @@ describe("network primitives", () => {
     fetch(req) {
       const url = new URL(req.url);
       if (url.pathname === "/small") return new Response("hello");
+      if (url.pathname === "/etagged") {
+        return new Response("cached-body", {
+          headers: { ETag: '"abc123"', "Last-Modified": "Wed, 10 Sep 2026 00:00:00 GMT" },
+        });
+      }
       if (url.pathname === "/big") return new Response("x".repeat(100_000));
       if (url.pathname === "/teapot") return new Response("no", { status: 418 });
       if (url.pathname === "/slow") {
@@ -492,6 +497,26 @@ describe("network primitives", () => {
     if (r.ok) {
       expect(r.value.body).toBe("hello");
       expect(r.value.truncated).toBe(false);
+    }
+  });
+
+  test("fetchBounded hands back response headers, lower-cased", async () => {
+    // Without this a conditional-request cache has to drop back to bare
+    // `fetch` to read one header -- losing the cap, the deadline and the
+    // scheme check with it. Delete `headers` from the outcome and this dies.
+    const r = await fetchBounded(`${base}/etagged`);
+    expect(r.ok).toBe(true);
+    if (r.ok) {
+      // The server sends `ETag` and `Last-Modified`; they arrive lower-cased.
+      expect(r.value.headers.etag).toBe('"abc123"');
+      expect(r.value.headers["last-modified"]).toBe("Wed, 10 Sep 2026 00:00:00 GMT");
+      // NOT ASSERTED, deliberately: that `collectHeaders` is what lower-cased
+      // them. The Fetch spec already guarantees `Headers.forEach` yields
+      // lower-cased names, so removing the `toLowerCase()` call leaves every
+      // observable behaviour identical -- MEASURED: that mutant survived the
+      // whole suite. The call stays as an explicit statement of the field's
+      // contract, and pretending a test pins it would be a check that cannot
+      // fail.
     }
   });
 
