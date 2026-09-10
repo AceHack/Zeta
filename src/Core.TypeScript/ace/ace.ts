@@ -18,6 +18,7 @@
 // Future commands (not yet implemented): remove, inspect.
 
 import { chmodSync, existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
+import { readFileBounded, writeFileOwned } from "../io/safe-io.ts";
 import { createPublicKey, createPrivateKey } from "node:crypto";
 import {
   defaultStorePath,
@@ -1070,15 +1071,18 @@ export async function main(argv: readonly string[]): Promise<number> {
       }
       const outPath = parsed.pubOut ?? "index.json";
       let prev: IndexDoc | null = null;
-      if (existsSync(outPath)) {
-        let prevRaw: string;
-        try {
-          prevRaw = readFileSync(outPath, "utf8");
-        } catch (e) {
-          console.error(`ace: publish refused: cannot read existing ${outPath}: ${(e as Error).message}`);
-          return 1;
-        }
-        const p = parseIndex(prevRaw);
+      // ONE lookup. `existsSync(outPath)` gating `readFileSync(outPath)` was two,
+      // and two lookups can disagree — another process may create, delete or replace
+      // the index in between (CodeQL js/file-system-race, CWE-367). `readFileBounded`
+      // opens once and reports ENOENT as `not-found`, which is the same question
+      // answered atomically. See src/Core.TypeScript/io/safe-io.ts.
+      const prevRead = readFileBounded(outPath);
+      if (!prevRead.ok && prevRead.error.kind !== "not-found") {
+        console.error(`ace: publish refused: cannot read existing ${outPath}: ${prevRead.error.message}`);
+        return 1;
+      }
+      if (prevRead.ok) {
+        const p = parseIndex(prevRead.value.text);
         if ("error" in p) {
           console.error(
             `ace: publish refused: existing ${outPath} is not a valid index (${p.error}) — refusing to reset sequence (would look like a rollback to consumers); remove or fix it`,
@@ -1141,10 +1145,11 @@ export async function main(argv: readonly string[]): Promise<number> {
         );
         return 1;
       }
-      try {
-        writeFileSync(outPath, serialized);
-      } catch (e) {
-        console.error(`ace: publish failed: cannot write ${outPath}: ${(e as Error).message}`);
+      // 0o644 is passed explicitly: safe-io defaults to 0o600 (private unless the
+      // caller says otherwise) and a published index is meant to be world-readable.
+      const wrote = writeFileOwned(outPath, serialized, { mode: 0o644 });
+      if (!wrote.ok) {
+        console.error(`ace: publish failed: cannot write ${outPath}: ${wrote.error.message}`);
         return 1;
       }
       console.log(`ace: published ${packages.length} package(s) at sequence ${seq} → ${outPath}`);
@@ -1169,18 +1174,17 @@ export async function main(argv: readonly string[]): Promise<number> {
         return 1;
       }
       const outPath = parsed.pubOut ?? "index.json";
-      if (!existsSync(outPath)) {
-        console.error(`ace: ${verb} refused: ${outPath} does not exist — cannot mark a version in a nonexistent index`);
+      // One open, ENOENT interpreted — see the note on the publish path above.
+      const prevRead = readFileBounded(outPath);
+      if (!prevRead.ok) {
+        console.error(
+          prevRead.error.kind === "not-found"
+            ? `ace: ${verb} refused: ${outPath} does not exist — cannot mark a version in a nonexistent index`
+            : `ace: ${verb} refused: cannot read ${outPath}: ${prevRead.error.message}`,
+        );
         return 1;
       }
-      let prevRaw: string;
-      try {
-        prevRaw = readFileSync(outPath, "utf8");
-      } catch (e) {
-        console.error(`ace: ${verb} refused: cannot read ${outPath}: ${(e as Error).message}`);
-        return 1;
-      }
-      const p = parseIndex(prevRaw);
+      const p = parseIndex(prevRead.value.text);
       if ("error" in p) {
         console.error(`ace: ${verb} refused: ${outPath} is not a valid index (${p.error}) — no silent reset`);
         return 1;
@@ -1230,10 +1234,9 @@ export async function main(argv: readonly string[]): Promise<number> {
         console.error(`ace: ${verb} refused: signing failed: ${(e as Error).message}`);
         return 1;
       }
-      try {
-        writeFileSync(outPath, serialized);
-      } catch (e) {
-        console.error(`ace: ${verb} failed: cannot write ${outPath}: ${(e as Error).message}`);
+      const wrote = writeFileOwned(outPath, serialized, { mode: 0o644 });
+      if (!wrote.ok) {
+        console.error(`ace: ${verb} failed: cannot write ${outPath}: ${wrote.error.message}`);
         return 1;
       }
       const verbed = verb === "revoke" ? "revoked" : verb === "quarantine" ? "quarantined" : "unquarantined";

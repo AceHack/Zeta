@@ -94,6 +94,7 @@ generator that read an EMPTY roster cannot pass.
 | `cross-verify (tech-radar-claims)`                      | Tech radar claims the repo can still support (paths resolve, in-use tools ringed)  |
 | `cross-verify (tech-radar-audit-tests)`                 | Tech-radar audit unit tests (a check that cannot fail is not a check)              |
 | `cross-verify (check-then-use-races)`                   | No check-then-use filesystem races (TOCTOU, CWE-367)                               |
+| `cross-verify (hand-rolled-io)`                         | No hand-rolled shell spawns or unbounded fetch-to-disk (use io/safe-io.ts)         |
 | `cross-verify (mumps-zeta-id)`                          | Execute MUMPS zeta-id packer                                                       |
 | `cross-verify (zeta-id-gen-layout-drift)`               | zeta-id generated layouts vs the layout YAML                                       |
 | `cross-verify (algebra-tower-drift)`                    | Algebra-tower drift-check (semiring→ring→kleene + star-ring)                       |

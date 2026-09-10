@@ -3490,6 +3490,7 @@ jobs:
           - tech-radar-claims
           - tech-radar-audit-tests
           - check-then-use-races
+          - hand-rolled-io
           - mumps-zeta-id
           - zeta-id-gen-layout-drift
           - algebra-tower-drift

@@ -7,7 +7,7 @@
 // Usage: bun src/Core.TypeScript/research/oracle-stack-evidence.ts [--since "2026-06-10 00:00"] [--until now]
 // (explicit times: git approxidate mis-parses some bare dates — found on first run)
 
-import { execSync } from "node:child_process";
+import { spawnArgv } from "../io/safe-io.ts";
 
 const args = new Map<string, string>();
 for (let i = 2; i < process.argv.length; i += 2) {
@@ -19,10 +19,28 @@ const since = args.get("since") ?? "2026-06-10 00:00";
 const until = args.get("until") ?? "now";
 
 const SEP = "COMMIT";
-const raw = execSync(
-  `git log origin/main --since="${since}" --until="${until}" --format='${SEP}%H%x09%ad%x09%s%n%b' --date=short`,
-  { encoding: "utf8", maxBuffer: 64 * 1024 * 1024 },
+// ARGUMENT VECTOR, not a shell string. `--since` and `--until` come straight
+// from argv, and inside a shell string every character in them is syntax
+// (CodeQL js/indirect-command-line-injection). `spawnArgv` hands the vector to
+// `execve` with no interpreter in between, so the same input is a git argument
+// and nothing else. See src/Core.TypeScript/io/safe-io.ts.
+const gitLog = spawnArgv(
+  "git",
+  [
+    "log",
+    "origin/main",
+    `--since=${since}`,
+    `--until=${until}`,
+    `--format=${SEP}%H%x09%ad%x09%s%n%b`,
+    "--date=short",
+  ],
+  { maxBytes: 64 * 1024 * 1024 },
 );
+if (!gitLog.ok) {
+  process.stderr.write(`oracle-stack-evidence: git log failed: ${gitLog.error.message}\n`);
+  process.exit(1);
+}
+const raw = gitLog.value.stdout;
 
 interface Entry {
   sha: string;

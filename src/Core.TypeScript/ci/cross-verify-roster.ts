@@ -772,6 +772,29 @@ export const CROSS_VERIFY_AUDITS: readonly CrossVerifyAudit[] = [
     ].join("\n"),
   },
 
+  // The SIBLING of the races lint above, for the two IO defect classes it does
+  // not own: a command line handed to a shell, and a response body reaching disk
+  // with no cap. Both are hand-rolled in ~40 files because there was nowhere to
+  // reach for the safe form; `src/Core.TypeScript/io/safe-io.ts` is now that
+  // place, and this leg is what stops a forty-first site landing.
+  //
+  // Measured when it landed: 2957 files, 50 pre-existing sites over 33 keys, all
+  // grandfathered in the baseline (AUDIT-LIFECYCLE.md step 5 -- a gate that
+  // demands a forty-file migration first is a gate that never lands). The
+  // baseline counts per (rule, file, signature), so a NEW site in an
+  // already-listed file still goes red. Exits 1 below --min-files, so a scope
+  // regression cannot report success the way `lint:markdown` did (#10712).
+  {
+    id: "hand-rolled-io",
+    title: "No hand-rolled shell spawns or unbounded fetch-to-disk (use io/safe-io.ts)",
+    command: [
+      "bun src/Core.TypeScript/hygiene/lint-hand-rolled-io.ts \\",
+      "  src/Core.TypeScript .github/workflows tools .claude \\",
+      "  --min-files 2000 \\",
+      "  --baseline src/Core.TypeScript/hygiene/lint-hand-rolled-io.baseline.json",
+    ].join("\n"),
+  },
+
   // Executes mumps_zeta_id.m (subset interpreter). compare.ts already pins
   // the committed JSON; this step runs the routine so a layout edit in the
   // .m file cannot hide behind a stale mumps-output.json.
