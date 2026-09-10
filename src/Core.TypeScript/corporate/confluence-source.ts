@@ -54,11 +54,19 @@ export function textFromStorage(xhtml: string): string {
     .replace(/<br\s*\/?>/gi, "\n")
     .replace(/<[^>]+>/g, " ")
     .replace(/&nbsp;/gi, " ")
-    .replace(/&amp;/gi, "&")
     .replace(/&lt;/gi, "<")
     .replace(/&gt;/gi, ">")
     .replace(/&quot;/gi, '"')
     .replace(/&#(\d+);/g, (_m, d: string) => String.fromCharCode(Number(d)))
+    // `&amp;` LAST, and that ordering is the whole correctness of this chain.
+    //
+    // Decoded first, it feeds its own output back into the decoders below it: `&amp;lt;`
+    // becomes `&lt;` on this line and then `<` on the next, so text a page DISPLAYS as the
+    // literal characters `&lt;` arrives as markup. That is double-unescaping (CodeQL
+    // `js/double-escaping`, alert #936), and it is the standard reason every entity decoder
+    // puts the ampersand at the end: `&amp;` is the escape for the escape character, so
+    // undoing it early re-arms every other rule.
+    .replace(/&amp;/gi, "&")
     .replace(/[ \t]+/g, " ")
     .replace(/\n{3,}/g, "\n\n")
     .trim();
@@ -86,7 +94,31 @@ function documentOf(page: ConfluencePage): SourceDocument {
   };
 }
 
+/**
+ * Refuse to attach a credential to an origin the operator did not configure.
+ *
+ * `js/file-access-to-http` names the shape here — a token read from a file reaching an
+ * outbound request — and the shape is the INTENDED one: authenticating to an API is what
+ * these sources exist to do. What the alert cannot see is whether the request can reach an
+ * origin other than the configured one, and that is the part actually worth controlling.
+ *
+ * So the credential is BOUND TO ITS ORIGIN. A url assembled from a path that starts `//`
+ * or carries its own scheme, or any future caller that passes a url from response data,
+ * is refused before the header is built rather than after the token has left.
+ */
+function sameOriginAsConfigured(url: string, configuredBase: string): boolean {
+  try {
+    return new URL(url).origin === new URL(configuredBase).origin;
+  } catch {
+    // An unparseable url is not "probably fine": refuse it.
+    return false;
+  }
+}
+
 async function fetchJson(url: string, credentials: JiraCredentials, timeoutMs: number): Promise<unknown> {
+  if (!sameOriginAsConfigured(url, credentials.baseUrl)) {
+    throw new Error(`refusing to send credentials to ${new URL(url).origin} — configured base is ${credentials.baseUrl}`);
+  }
   const controller = new AbortController();
   const timer = setTimeout(() => { controller.abort(); }, timeoutMs);
   try {

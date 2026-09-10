@@ -57,7 +57,7 @@
  */
 
 import { execFileSync } from "node:child_process";
-import { readdirSync, readFileSync, statSync } from "node:fs";
+import { closeSync, fstatSync, openSync, readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
 import { Fidelity, Port, type DataSourcePort, type PortResult, type SourceDocument } from "./providers";
 
@@ -409,26 +409,36 @@ export function directoryDataSource(input: {
         const entry = dirent.name;
         const full = join(at, entry);
         const next = rel === "" ? entry : `${rel}/${entry}`;
-        let stat;
-        try {
-          stat = statSync(full);
-        } catch {
-          continue;
-        }
-        if (stat.isDirectory()) {
+        // The KIND comes from the listing, so there is no second question to the filesystem
+        // here at all — the `statSync` this replaces was the other half of the race the
+        // one-descriptor read below closes.
+        if (dirent.isDirectory()) {
           walk(full, next);
           continue;
         }
         if (!exts.some((e) => entry.endsWith(e))) continue;
+        // ONE DESCRIPTOR for the bytes AND the mtime. The previous form called `statSync(full)`
+        // and then `readFileSync(full)`, asking the filesystem about the same path twice and
+        // taking the revision from the first answer while the content came from the second —
+        // so a file rewritten in between produced a document whose recorded revision was not
+        // the revision of the bytes it carries. That is a citation that quietly lies, which is
+        // worse here than a read that fails. CodeQL alert #938 (`js/file-system-race`).
         let content = "";
+        let mtimeMs: number;
         try {
-          content = readFileSync(full, "utf-8");
+          const fd = openSync(full, "r");
+          try {
+            mtimeMs = fstatSync(fd).mtimeMs;
+            content = readFileSync(fd, "utf-8");
+          } finally {
+            closeSync(fd);
+          }
         } catch {
           continue;
         }
         // The REVISION is the file's own mtime. A wiki page has a version; a written record has the
         // moment it was written, and a citation with no revision is not a citation.
-        const revision = String(Math.floor(stat.mtimeMs));
+        const revision = String(Math.floor(mtimeMs));
         out.push({ path: next, revision, content, ref: `${name}:${revision}:${next}` });
       }
     };

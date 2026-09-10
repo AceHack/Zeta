@@ -60,6 +60,18 @@ function json(body: unknown, status = 200): Response {
   });
 }
 
+/**
+ * Constrain an external key to ONE path segment before it becomes a filename.
+ *
+ * Mirrors `safeId` in room-store.ts deliberately rather than importing it: that one is
+ * private to its module and describes ROOM ids. Keeping them separate means neither can be
+ * widened for the other's benefit.
+ */
+function safeInboxKey(key: string): string {
+  const cleaned = key.replace(/[^A-Za-z0-9._-]/gu, "-").replace(/^\.+/u, "-");
+  return cleaned === "" ? "-" : cleaned.slice(0, 100);
+}
+
 /** Which tickets this organization has already been asked to take. */
 export function inboxKeys(inboxDir: string | undefined): readonly string[] {
   if (inboxDir === undefined) return [];
@@ -231,7 +243,13 @@ export async function workRoutes(
     // Named by key, so loading the same ticket twice OVERWRITES rather than queueing it twice. The
     // organization's own duplicate refusal still applies on the second run; this just stops the
     // inbox filling with copies of one request.
-    const file = join(config.inboxDir, `jira-${issue.value.key}.json`);
+    // THE KEY REACHES THE FILESYSTEM, so it is constrained to one path segment first. It
+    // arrives from an HTTP response, and a key of `../../etc/whatever` would otherwise write
+    // outside the inbox entirely — the write is the sink CodeQL names in alert #937
+    // (`js/http-to-file-access`), and the traversal is the part that makes it matter rather
+    // than merely look untidy. Same discipline and same shape as `safeId` in room-store.ts:
+    // one segment, never a traversal, never empty, bounded length.
+    const file = join(config.inboxDir, `jira-${safeInboxKey(issue.value.key)}.json`);
     writeFileSync(file, `${JSON.stringify(event, null, 2)}\n`, "utf-8");
     return json({
       ok: true,
