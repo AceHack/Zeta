@@ -4,11 +4,39 @@ Date: 2026-09-08 UTC
 Author: Vera, OpenAI Codex using GPT-6 Astra
 Operational status: research-grade continuity record
 Lifecycle: active
-Status: scalar component verified on main; bounded learning contract accepted for implementation
+Status: scalar component on main; assembled implementation admitted; named execution pending
+
+**Current model-switch entry point:** read the
+[execution-ready handoff](2026-09-08-vera-model-switch-execution-ready.md).
+Final admission `26eb850ed` is imported as `dec1050fd`; the capsule and source
+reviews are complete. No named M4/M5/frozen query has run. The historical
+implementation checkpoints below retain their original sequence; the new
+handoff supersedes their pending-source/admission wording.
+
+Current implementation source is complete for bounded assembled validation:
+core owner `d7e8e3806` (71 focused controls), bridge `567a9f004` and completed
+peer `d16bafa2a`. The core/invoker independent reviews are imported. Read the
+[assembled validation record](../research/2026-09-08-mixed-message-assembled-validation.md):
+the original gate crashed in a Tests.FSharp background-GC path; a separate
+unchanged diagnostic run passed 7,835 tests with six existing skips. Cause
+remains unresolved. The Python default-temp fixture correction is imported at owner `cf5744d70`;
+all 111 bridge tests and strict typing pass in the assembled clone. Production
+bridge bytes are unchanged.
+
+Read the [withdrawal clarification](../research/2026-09-08-mixed-message-withdrawal-admission-clarification.md),
+[fixed invoker](../research/mixed-message-epoch-implementation/2026-09-08/registered-source/README.md)
+and [observation-helper repairs](../research/2026-09-08-mixed-message-observation-helper-review.md)
+before final source admission. Final freeze is 0DBFF44E, capture FBD0DF78 and
+launcher CC7FBF89; use their complete hashes in the source records. Independent
+manifest/archive hashes must be supplied explicitly. No named M4/M5/frozen
+query has run. The selected-source/direct-runtime capsule and independent assembled admission
+are complete; use the new handoff for the unchanged first attempts. Do not replay the earlier scalar experiment or open 9307/9409.
 
 ## Bootstrap
 
-Continue in a writer-owned clone from current origin/main. Read the projection
+Continue in the existing writer and pushed integration branch identified by
+the model-switch handoff; starting only from main would omit the admitted
+implementation. Read the projection
 [integration register](../research/2026-09-08-precision-gate-projection-integration-register.md)
 and [registered result](../research/2026-09-08-precision-gate-projection-registered-results.md),
 then the [mixed-message/learned-module epoch proposal](../research/2026-09-08-mixed-message-learned-module-epoch-proposal.md)
@@ -120,3 +148,29 @@ budgets and compensation context; they do not change the numerical controls.
 The [current comparator census](../research/2026-09-08-current-forecast-comparator-source-census.md)
 records Chronos-2 and TimesFM-3 source/model metadata. No comparator weights,
 dataset or benchmark output was downloaded, and no winner was selected.
+
+## Accepted design publication and current implementation cut
+
+PR17052 is [verified on main](../research/research-main-publication/2026-09-08/pr-17052/README.md)
+at `84cc7a0cd2c78bff2ca01fc699fa4d054d3a8223`, with 89 successful and three
+skipped final checks, exact whole-tree/124-path agreement and clean shared view.
+Read the [identity/codec conventions](../research/2026-09-08-mixed-message-epoch-identity-codec-conventions.md)
+before finishing core, peer or bridge source. Their exact implementation pins
+and actual M4/M5 controls remain outstanding. The first local canonical JSON
+mismatch is preserved; the proposed raw-query64 restriction was a review error
+and was withdrawn in favor of the original training-only raw bound.
+
+The [independent convention review](../research/2026-09-08-mixed-message-epoch-identity-codec-independent-review.md)
+accepts the exact note and original serialization witness at owner commit
+`442325f26cc4c86876f226f09ba0189a29cc4097`. The bridge owner also owns the inert
+mixed_message_epoch_controls.py plan builders; they execute no experiment on
+import. Root retains the first registered execution and assembled source-admission
+responsibility. Development controls are not those registered executions.
+
+The first [learner/codec implementation checkpoint](../research/2026-09-08-mixed-message-core-implementation-checkpoint.md)
+is imported after remote verification; the runtime remains unfinished. Read the
+[separate frozen nested-query registration](../research/2026-09-08-mixed-message-frozen-nested-query-register.md)
+before constructing its plan. It fixes a hidden 0.75 input at origin eight,
+actual learned child/parent artifacts and an explicit output alias, without
+another fit or a fifth M5 session. The root import receipt and outstanding
+source/execution gates are indexed by the implementation register.

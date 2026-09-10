@@ -1,0 +1,49 @@
+{
+  "Schema": "zeta.research-witness-custody.v1",
+  "Scope": "minimal .NET default JSON and Python standard-library serialization only; no epoch or numerical invocation",
+  "Archive": "custody.tar.gz",
+  "ArchiveBytes": 830,
+  "ArchiveSha256": "71C8EB2B0C8D31B1CD247B4FCB2DFD2B60FEB6757A7D4FE45A6B4513595870E7",
+  "Members": [
+    {
+      "Path": "call.json",
+      "Bytes": 426,
+      "Sha256": "DB10DF0E0392154194BF109644CA464500D5E17E83D6FA1B14404567DBAF3558"
+    },
+    {
+      "Path": "codec.fsx",
+      "Bytes": 328,
+      "Sha256": "103092A033FD513ACC369816746E3E57622E177A527BE0619564B1371FD0FC41"
+    },
+    {
+      "Path": "python-call.json",
+      "Bytes": 452,
+      "Sha256": "6B0D90D647C116CA4C8585B32EE48966397BCCA3064FFD8DA955E14777936616"
+    },
+    {
+      "Path": "python-canonical.py",
+      "Bytes": 146,
+      "Sha256": "7A0E5A13714FBFD21905D86B764DB61B621927562FA2A1D4997D5EF1CD077E99"
+    },
+    {
+      "Path": "python-stderr",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "python-stdout",
+      "Bytes": 68,
+      "Sha256": "599C4EFDB468C6C629B5EC64E1E69AFC02502C87402E5BF1821DD5E9314480F2"
+    },
+    {
+      "Path": "stderr",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "stdout",
+      "Bytes": 101,
+      "Sha256": "91AFBB342BFC3B40D9159AC0CA3455CC2772CE81CB51F9D65D3C6F824AB53EE6"
+    }
+  ]
+}

@@ -1,0 +1,60 @@
+{
+  "ArchiveMembers": 1352,
+  "OriginalBytes": 12227580,
+  "Archive": {
+    "File": "custody.tar.gz",
+    "Bytes": 3634980,
+    "Sha256": "BEDB41FBE2E19672E310C884268E76B044D0B1D4559AFFBB6309EEC33D9E592E"
+  },
+  "SourceFiles": [
+    {
+      "Path": "src/Interp.Python/zeta_interp/mixed_message_epoch_bridge.py",
+      "Bytes": 197818,
+      "Sha256": "F59E8C26AFC442AD9F13E8B1344BB4FEFC61FC75EB4A96ABB0739C7E95175576"
+    },
+    {
+      "Path": "src/Interp.Python/zeta_interp/mixed_message_epoch_controls.py",
+      "Bytes": 16771,
+      "Sha256": "03ED13D4D860D1E3B61B73AF265B7C65A8251B258623C16B1B1ED28EC6C51711"
+    },
+    {
+      "Path": "src/Interp.Python/tests/test_mixed_message_epoch_bridge.py",
+      "Bytes": 55954,
+      "Sha256": "DCD478071B8F79FACB35DC028185F28A9C97707818ECF7C2CD83C65BB80DD4F3"
+    }
+  ],
+  "FilesystemNodes": 2121,
+  "SymlinksRecorded": 210,
+  "AllMembersAndOriginalsMatched": true,
+  "FinalSourceEqualsAllThreeFinalCaptures": true,
+  "RepositoryGates": [
+    {
+      "Command": {
+        "Argv": [
+          "bun",
+          "run",
+          "preflight"
+        ],
+        "Cwd": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906"
+      },
+      "Completion": {
+        "ExitCode": 0,
+        "ElapsedSeconds": 580.7330776249873
+      }
+    },
+    {
+      "Command": {
+        "Argv": [
+          "dotnet",
+          "format",
+          "--verify-no-changes"
+        ],
+        "Cwd": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906"
+      },
+      "Completion": {
+        "ExitCode": 0,
+        "ElapsedSeconds": 16.242463792004855
+      }
+    }
+  ]
+}

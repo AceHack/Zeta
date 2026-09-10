@@ -1,0 +1,607 @@
+{
+  "Schema": "zeta.mixed-epoch.bridge-portability-custody.v1",
+  "OriginalProductionCommit": "567a9f004cf67b9df6d4a82c55fadaaf4fdd0b9b",
+  "OriginalOwnerHead": "95d7dca78e771089237fec60eceba45482d1558c",
+  "Archive": {
+    "Path": "custody.tar.gz",
+    "Bytes": 569543,
+    "Sha256": "750AE2E4405A039650A13657CB65615069646EBE726D36AA2D74C1AFCFF5D7B0"
+  },
+  "OriginalBytes": 2717190,
+  "Members": [
+    {
+      "Path": "epoch-bridge-portability-1/final-identities.json",
+      "OriginalFile": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/epoch-bridge-portability-1/final-identities.json",
+      "Bytes": 636,
+      "Sha256": "18ED9FC2B82B9E6F8E3338F56B4AA701E788BD0D7291968F24616C602AAA84B3"
+    },
+    {
+      "Path": "epoch-bridge-portability-1/original-identities.json",
+      "OriginalFile": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/epoch-bridge-portability-1/original-identities.json",
+      "Bytes": 672,
+      "Sha256": "137C24142CCDDC6A343593936D59C5A74A45B755390866179713711D9AC19F7F"
+    },
+    {
+      "Path": "epoch-bridge-portability-1/owner-after/completion.json",
+      "OriginalFile": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/epoch-bridge-portability-1/owner-after/completion.json",
+      "Bytes": 54,
+      "Sha256": "5B0F73AE4CE2C26149C3909660A41BF5B365F0E553E9BEC47943594B88A01833"
+    },
+    {
+      "Path": "epoch-bridge-portability-1/owner-after/invocation.json",
+      "OriginalFile": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/epoch-bridge-portability-1/owner-after/invocation.json",
+      "Bytes": 595,
+      "Sha256": "62F67BBD9E3797F0BDD710816FB4E103231C0CEB1CEB499DC49266C3E0361391"
+    },
+    {
+      "Path": "epoch-bridge-portability-1/owner-after/mixed_message_epoch_bridge.py",
+      "OriginalFile": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/epoch-bridge-portability-1/owner-after/mixed_message_epoch_bridge.py",
+      "Bytes": 199844,
+      "Sha256": "2A6154EB842116837843E8E100AB08CF4A4C735C635ED693E8C3F58E11B4961B"
+    },
+    {
+      "Path": "epoch-bridge-portability-1/owner-after/mixed_message_epoch_controls.py",
+      "OriginalFile": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/epoch-bridge-portability-1/owner-after/mixed_message_epoch_controls.py",
+      "Bytes": 16771,
+      "Sha256": "03ED13D4D860D1E3B61B73AF265B7C65A8251B258623C16B1B1ED28EC6C51711"
+    },
+    {
+      "Path": "epoch-bridge-portability-1/owner-after/sources.json",
+      "OriginalFile": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/epoch-bridge-portability-1/owner-after/sources.json",
+      "Bytes": 560,
+      "Sha256": "9E40B65C8615384178AB96DFC287B5B0C46BE1D96927CACB0E36A7D41304E931"
+    },
+    {
+      "Path": "epoch-bridge-portability-1/owner-after/stderr",
+      "OriginalFile": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/epoch-bridge-portability-1/owner-after/stderr",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "epoch-bridge-portability-1/owner-after/stdout",
+      "OriginalFile": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/epoch-bridge-portability-1/owner-after/stdout",
+      "Bytes": 180,
+      "Sha256": "047C2B8B84217D5D466F39806104604D6EE5DB7168DB86DF1FBC01DD72F13A8E"
+    },
+    {
+      "Path": "epoch-bridge-portability-1/owner-after/test_mixed_message_epoch_bridge.py",
+      "OriginalFile": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/epoch-bridge-portability-1/owner-after/test_mixed_message_epoch_bridge.py",
+      "Bytes": 68674,
+      "Sha256": "F8CD056B3DA953074E0FC556BD157F98A7A0345A6FA6A456AE5D4557D94DE3A7"
+    },
+    {
+      "Path": "epoch-bridge-portability-1/owner-before/completion.json",
+      "OriginalFile": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/epoch-bridge-portability-1/owner-before/completion.json",
+      "Bytes": 53,
+      "Sha256": "859C7E266BA0C3FCC6119FC8B63ED8B314522942937899DEFD395B4EF92FE2D7"
+    },
+    {
+      "Path": "epoch-bridge-portability-1/owner-before/invocation.json",
+      "OriginalFile": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/epoch-bridge-portability-1/owner-before/invocation.json",
+      "Bytes": 668,
+      "Sha256": "0FA3C1E4FB0C2925C7179FA5C4F8F3942239326669C9B8A7608A8FA915359917"
+    },
+    {
+      "Path": "epoch-bridge-portability-1/owner-before/mixed_message_epoch_bridge.py",
+      "OriginalFile": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/epoch-bridge-portability-1/owner-before/mixed_message_epoch_bridge.py",
+      "Bytes": 199844,
+      "Sha256": "2A6154EB842116837843E8E100AB08CF4A4C735C635ED693E8C3F58E11B4961B"
+    },
+    {
+      "Path": "epoch-bridge-portability-1/owner-before/mixed_message_epoch_controls.py",
+      "OriginalFile": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/epoch-bridge-portability-1/owner-before/mixed_message_epoch_controls.py",
+      "Bytes": 16771,
+      "Sha256": "03ED13D4D860D1E3B61B73AF265B7C65A8251B258623C16B1B1ED28EC6C51711"
+    },
+    {
+      "Path": "epoch-bridge-portability-1/owner-before/sources.json",
+      "OriginalFile": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/epoch-bridge-portability-1/owner-before/sources.json",
+      "Bytes": 560,
+      "Sha256": "678322F6E81D70AF34A2A1EBD5DDFAD4E5632CEFA75F6718712AFDEACB2B412C"
+    },
+    {
+      "Path": "epoch-bridge-portability-1/owner-before/stderr",
+      "OriginalFile": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/epoch-bridge-portability-1/owner-before/stderr",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "epoch-bridge-portability-1/owner-before/stdout",
+      "OriginalFile": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/epoch-bridge-portability-1/owner-before/stdout",
+      "Bytes": 2427,
+      "Sha256": "DF17F43F74A6DD42ADD6D47479F15014195B74E155E68F2DED57BD0624FB8962"
+    },
+    {
+      "Path": "epoch-bridge-portability-1/owner-before/test_mixed_message_epoch_bridge.py",
+      "OriginalFile": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/epoch-bridge-portability-1/owner-before/test_mixed_message_epoch_bridge.py",
+      "Bytes": 68585,
+      "Sha256": "1A533E6F2B1A17F8945B7C90E7BF3185411296756EAC16487327883CB74E9EDE"
+    },
+    {
+      "Path": "epoch-bridge-portability-1/owner-final/completion.json",
+      "OriginalFile": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/epoch-bridge-portability-1/owner-final/completion.json",
+      "Bytes": 53,
+      "Sha256": "E550761D60963C64FEAE3A88B43DFE624451AD1ECB190EEB52A7BD800E4DA0BC"
+    },
+    {
+      "Path": "epoch-bridge-portability-1/owner-final/invocation.json",
+      "OriginalFile": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/epoch-bridge-portability-1/owner-final/invocation.json",
+      "Bytes": 595,
+      "Sha256": "62F67BBD9E3797F0BDD710816FB4E103231C0CEB1CEB499DC49266C3E0361391"
+    },
+    {
+      "Path": "epoch-bridge-portability-1/owner-final/mixed_message_epoch_bridge.py",
+      "OriginalFile": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/epoch-bridge-portability-1/owner-final/mixed_message_epoch_bridge.py",
+      "Bytes": 199844,
+      "Sha256": "2A6154EB842116837843E8E100AB08CF4A4C735C635ED693E8C3F58E11B4961B"
+    },
+    {
+      "Path": "epoch-bridge-portability-1/owner-final/mixed_message_epoch_controls.py",
+      "OriginalFile": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/epoch-bridge-portability-1/owner-final/mixed_message_epoch_controls.py",
+      "Bytes": 16771,
+      "Sha256": "03ED13D4D860D1E3B61B73AF265B7C65A8251B258623C16B1B1ED28EC6C51711"
+    },
+    {
+      "Path": "epoch-bridge-portability-1/owner-final/sources.json",
+      "OriginalFile": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/epoch-bridge-portability-1/owner-final/sources.json",
+      "Bytes": 560,
+      "Sha256": "75F8AC9642DE37BB89BA382F619F8670DD5A003F180EC36C6917DB565CDB52C0"
+    },
+    {
+      "Path": "epoch-bridge-portability-1/owner-final/stderr",
+      "OriginalFile": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/epoch-bridge-portability-1/owner-final/stderr",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "epoch-bridge-portability-1/owner-final/stdout",
+      "OriginalFile": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/epoch-bridge-portability-1/owner-final/stdout",
+      "Bytes": 180,
+      "Sha256": "65DE166BEFADD5954C9467BDE436B8B142394F12431618D0F9C5F64516BB8526"
+    },
+    {
+      "Path": "epoch-bridge-portability-1/owner-final/test_mixed_message_epoch_bridge.py",
+      "OriginalFile": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/epoch-bridge-portability-1/owner-final/test_mixed_message_epoch_bridge.py",
+      "Bytes": 68707,
+      "Sha256": "4C8ECC4B2CBF514265D93C138847039B3CEFA5EB50FBEF1AA1D7A75C78CC74A8"
+    },
+    {
+      "Path": "epoch-bridge-portability-1/owner-original/src/Interp.Python/tests/test_mixed_message_epoch_bridge.py",
+      "OriginalFile": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/epoch-bridge-portability-1/owner-original/src/Interp.Python/tests/test_mixed_message_epoch_bridge.py",
+      "Bytes": 68585,
+      "Sha256": "1A533E6F2B1A17F8945B7C90E7BF3185411296756EAC16487327883CB74E9EDE"
+    },
+    {
+      "Path": "epoch-bridge-portability-1/owner-original/src/Interp.Python/zeta_interp/mixed_message_epoch_bridge.py",
+      "OriginalFile": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/epoch-bridge-portability-1/owner-original/src/Interp.Python/zeta_interp/mixed_message_epoch_bridge.py",
+      "Bytes": 199844,
+      "Sha256": "2A6154EB842116837843E8E100AB08CF4A4C735C635ED693E8C3F58E11B4961B"
+    },
+    {
+      "Path": "epoch-bridge-portability-1/owner-original/src/Interp.Python/zeta_interp/mixed_message_epoch_controls.py",
+      "OriginalFile": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/epoch-bridge-portability-1/owner-original/src/Interp.Python/zeta_interp/mixed_message_epoch_controls.py",
+      "Bytes": 16771,
+      "Sha256": "03ED13D4D860D1E3B61B73AF265B7C65A8251B258623C16B1B1ED28EC6C51711"
+    },
+    {
+      "Path": "epoch-bridge-portability-1/prior-basetemp/completion.json",
+      "OriginalFile": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/epoch-bridge-portability-1/prior-basetemp/completion.json",
+      "Bytes": 54,
+      "Sha256": "9D9A36C603EA94F7A4708AC3303BBF6AB39FFA802FFE3C98E131B050F3E29921"
+    },
+    {
+      "Path": "epoch-bridge-portability-1/prior-basetemp/invocation.json",
+      "OriginalFile": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/epoch-bridge-portability-1/prior-basetemp/invocation.json",
+      "Bytes": 629,
+      "Sha256": "B1A1ABD6C6EFE4807EFED3CD408CEAAA1E9D4B14D37D12AD0157873C3D5AEA09"
+    },
+    {
+      "Path": "epoch-bridge-portability-1/prior-basetemp/run-epoch-development-current-copy.py",
+      "OriginalFile": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/epoch-bridge-portability-1/prior-basetemp/run-epoch-development-current-copy.py",
+      "Bytes": 1275,
+      "Sha256": "2F0566389AC23F28E5624CCA8CD06D739E2EF4041A45C2E55A4DFD41F9AE0FE1"
+    },
+    {
+      "Path": "epoch-bridge-portability-1/prior-basetemp/stderr",
+      "OriginalFile": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/epoch-bridge-portability-1/prior-basetemp/stderr",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "epoch-bridge-portability-1/prior-basetemp/stdout",
+      "OriginalFile": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/epoch-bridge-portability-1/prior-basetemp/stdout",
+      "Bytes": 180,
+      "Sha256": "9127557D5CC2A6DDF47D793331F52C29FB8EB2529A0243A06C2049B0D9B46AD3"
+    },
+    {
+      "Path": "epoch-bridge-portability-1/prior-basetemp/test_mixed_message_epoch_bridge.py",
+      "OriginalFile": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/epoch-bridge-portability-1/prior-basetemp/test_mixed_message_epoch_bridge.py",
+      "Bytes": 68585,
+      "Sha256": "1A533E6F2B1A17F8945B7C90E7BF3185411296756EAC16487327883CB74E9EDE"
+    },
+    {
+      "Path": "epoch-bridge-portability-1/root-original/call-2/completion.json",
+      "OriginalFile": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/epoch-bridge-portability-1/root-original/call-2/completion.json",
+      "Bytes": 472,
+      "Sha256": "4FA034E2D6B8F36279D851507E81CEC187291195055A3A729A376C07E3409183"
+    },
+    {
+      "Path": "epoch-bridge-portability-1/root-original/call-2/source-after.json",
+      "OriginalFile": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/epoch-bridge-portability-1/root-original/call-2/source-after.json",
+      "Bytes": 1202,
+      "Sha256": "779963BD41913644E5F6B7E870EE99D1CEFDA4597E2D0F75A181F446078BA620"
+    },
+    {
+      "Path": "epoch-bridge-portability-1/root-original/call-2/stderr",
+      "OriginalFile": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/epoch-bridge-portability-1/root-original/call-2/stderr",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "epoch-bridge-portability-1/root-original/call-2/stdout",
+      "OriginalFile": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/epoch-bridge-portability-1/root-original/call-2/stdout",
+      "Bytes": 2493,
+      "Sha256": "5CA908A68BAFF4B59BED39418D2906847A415A2A351E93EB56956C5DB4CB1CD2"
+    },
+    {
+      "Path": "epoch-bridge-portability-1/root-original/source-07",
+      "OriginalFile": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/epoch-bridge-portability-1/root-original/source-07",
+      "Bytes": 199844,
+      "Sha256": "2A6154EB842116837843E8E100AB08CF4A4C735C635ED693E8C3F58E11B4961B"
+    },
+    {
+      "Path": "epoch-bridge-portability-1/root-original/source-08",
+      "OriginalFile": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/epoch-bridge-portability-1/root-original/source-08",
+      "Bytes": 16771,
+      "Sha256": "03ED13D4D860D1E3B61B73AF265B7C65A8251B258623C16B1B1ED28EC6C51711"
+    },
+    {
+      "Path": "epoch-bridge-portability-1/root-original/source-09",
+      "OriginalFile": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/epoch-bridge-portability-1/root-original/source-09",
+      "Bytes": 68585,
+      "Sha256": "1A533E6F2B1A17F8945B7C90E7BF3185411296756EAC16487327883CB74E9EDE"
+    },
+    {
+      "Path": "epoch-bridge-portability-1/root-original/sources.json",
+      "OriginalFile": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/epoch-bridge-portability-1/root-original/sources.json",
+      "Bytes": 2678,
+      "Sha256": "A387A7B409EA96597BDA4230F0CAFEB6B8490676988D7A87F2280B91956686CE"
+    },
+    {
+      "Path": "epoch-bridge-portability-1/source.diff",
+      "OriginalFile": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/epoch-bridge-portability-1/source.diff",
+      "Bytes": 2044,
+      "Sha256": "E80A1AA3A0F0549DBE63B73095EB674BA324A518F61F7FA28CC5D8A687AC75F9"
+    },
+    {
+      "Path": "epoch-bridge-portability-checks-1/format-completion.json",
+      "OriginalFile": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/epoch-bridge-portability-checks-1/format-completion.json",
+      "Bytes": 55,
+      "Sha256": "53A32E3411784CD6AB227ED6D8BAC33D5D8BAB6620F3C40363DD8A7BE9FF5808"
+    },
+    {
+      "Path": "epoch-bridge-portability-checks-1/format-invocation.json",
+      "OriginalFile": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/epoch-bridge-portability-checks-1/format-invocation.json",
+      "Bytes": 602,
+      "Sha256": "F930D731349A170CDD7F2D9E21D3EFB4FFCEF5FC64B96907D17E10C4ADD8B93E"
+    },
+    {
+      "Path": "epoch-bridge-portability-checks-1/format-stderr",
+      "OriginalFile": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/epoch-bridge-portability-checks-1/format-stderr",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "epoch-bridge-portability-checks-1/format-stdout",
+      "OriginalFile": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/epoch-bridge-portability-checks-1/format-stdout",
+      "Bytes": 488,
+      "Sha256": "09571755206807677D88721A0EDB5375E34D73A28E76257E81EB0C981C29916E"
+    },
+    {
+      "Path": "epoch-bridge-portability-checks-1/mixed_message_epoch_bridge.py",
+      "OriginalFile": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/epoch-bridge-portability-checks-1/mixed_message_epoch_bridge.py",
+      "Bytes": 199844,
+      "Sha256": "2A6154EB842116837843E8E100AB08CF4A4C735C635ED693E8C3F58E11B4961B"
+    },
+    {
+      "Path": "epoch-bridge-portability-checks-1/mixed_message_epoch_controls.py",
+      "OriginalFile": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/epoch-bridge-portability-checks-1/mixed_message_epoch_controls.py",
+      "Bytes": 16771,
+      "Sha256": "03ED13D4D860D1E3B61B73AF265B7C65A8251B258623C16B1B1ED28EC6C51711"
+    },
+    {
+      "Path": "epoch-bridge-portability-checks-1/mypy-completion.json",
+      "OriginalFile": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/epoch-bridge-portability-checks-1/mypy-completion.json",
+      "Bytes": 54,
+      "Sha256": "C4D2AD3EF9BFFE25720A664256F965E3AC2AE095664CCACA296B160A18051988"
+    },
+    {
+      "Path": "epoch-bridge-portability-checks-1/mypy-invocation.json",
+      "OriginalFile": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/epoch-bridge-portability-checks-1/mypy-invocation.json",
+      "Bytes": 593,
+      "Sha256": "EDF08D6221A584FB748B9204F0A8FB5100BF3CE4A12275246A16F1BC2C9BBF92"
+    },
+    {
+      "Path": "epoch-bridge-portability-checks-1/mypy-stderr",
+      "OriginalFile": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/epoch-bridge-portability-checks-1/mypy-stderr",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "epoch-bridge-portability-checks-1/mypy-stdout",
+      "OriginalFile": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/epoch-bridge-portability-checks-1/mypy-stdout",
+      "Bytes": 43,
+      "Sha256": "8228FCC5CE46D42D01CAF3CD941F4E9C5F2BCC372BB5B147A2F0572D2DD675A8"
+    },
+    {
+      "Path": "epoch-bridge-portability-checks-1/ruff-completion.json",
+      "OriginalFile": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/epoch-bridge-portability-checks-1/ruff-completion.json",
+      "Bytes": 55,
+      "Sha256": "1BBC79B29978CE632B8D634D557816E3EBC89079C86D71B5C6BB278B092EEF5B"
+    },
+    {
+      "Path": "epoch-bridge-portability-checks-1/ruff-invocation.json",
+      "OriginalFile": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/epoch-bridge-portability-checks-1/ruff-invocation.json",
+      "Bytes": 590,
+      "Sha256": "88447669325E170CA0822F6CA4349BBFA6BD960DA42F164591A884DA2B05610C"
+    },
+    {
+      "Path": "epoch-bridge-portability-checks-1/ruff-stderr",
+      "OriginalFile": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/epoch-bridge-portability-checks-1/ruff-stderr",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "epoch-bridge-portability-checks-1/ruff-stdout",
+      "OriginalFile": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/epoch-bridge-portability-checks-1/ruff-stdout",
+      "Bytes": 19,
+      "Sha256": "82B3E6A6C090A57601D22943BD23FCA9218D1031DBE5A7B754092F9A156B4F18"
+    },
+    {
+      "Path": "epoch-bridge-portability-checks-1/test_mixed_message_epoch_bridge.py",
+      "OriginalFile": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/epoch-bridge-portability-checks-1/test_mixed_message_epoch_bridge.py",
+      "Bytes": 68674,
+      "Sha256": "F8CD056B3DA953074E0FC556BD157F98A7A0345A6FA6A456AE5D4557D94DE3A7"
+    },
+    {
+      "Path": "epoch-bridge-portability-checks-2/format-completion.json",
+      "OriginalFile": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/epoch-bridge-portability-checks-2/format-completion.json",
+      "Bytes": 56,
+      "Sha256": "FEF6C4C58D4E00E35F231F383DE34D149E43C2747DE28D9B8E37EBAE0DA29CC7"
+    },
+    {
+      "Path": "epoch-bridge-portability-checks-2/format-invocation.json",
+      "OriginalFile": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/epoch-bridge-portability-checks-2/format-invocation.json",
+      "Bytes": 602,
+      "Sha256": "F930D731349A170CDD7F2D9E21D3EFB4FFCEF5FC64B96907D17E10C4ADD8B93E"
+    },
+    {
+      "Path": "epoch-bridge-portability-checks-2/format-stderr",
+      "OriginalFile": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/epoch-bridge-portability-checks-2/format-stderr",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "epoch-bridge-portability-checks-2/format-stdout",
+      "OriginalFile": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/epoch-bridge-portability-checks-2/format-stdout",
+      "Bytes": 26,
+      "Sha256": "EEE76F865DE5A9F2456950F710AE5D5F9B5BD0EA02AA54F614C5EED6642A0BFD"
+    },
+    {
+      "Path": "epoch-bridge-portability-checks-2/mixed_message_epoch_bridge.py",
+      "OriginalFile": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/epoch-bridge-portability-checks-2/mixed_message_epoch_bridge.py",
+      "Bytes": 199844,
+      "Sha256": "2A6154EB842116837843E8E100AB08CF4A4C735C635ED693E8C3F58E11B4961B"
+    },
+    {
+      "Path": "epoch-bridge-portability-checks-2/mixed_message_epoch_controls.py",
+      "OriginalFile": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/epoch-bridge-portability-checks-2/mixed_message_epoch_controls.py",
+      "Bytes": 16771,
+      "Sha256": "03ED13D4D860D1E3B61B73AF265B7C65A8251B258623C16B1B1ED28EC6C51711"
+    },
+    {
+      "Path": "epoch-bridge-portability-checks-2/mypy-completion.json",
+      "OriginalFile": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/epoch-bridge-portability-checks-2/mypy-completion.json",
+      "Bytes": 54,
+      "Sha256": "958BF9CCE5C86E52CEA105C3F81CA91E1B60B2EA937F1C5FFC706C527B8330CC"
+    },
+    {
+      "Path": "epoch-bridge-portability-checks-2/mypy-invocation.json",
+      "OriginalFile": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/epoch-bridge-portability-checks-2/mypy-invocation.json",
+      "Bytes": 593,
+      "Sha256": "EDF08D6221A584FB748B9204F0A8FB5100BF3CE4A12275246A16F1BC2C9BBF92"
+    },
+    {
+      "Path": "epoch-bridge-portability-checks-2/mypy-stderr",
+      "OriginalFile": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/epoch-bridge-portability-checks-2/mypy-stderr",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "epoch-bridge-portability-checks-2/mypy-stdout",
+      "OriginalFile": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/epoch-bridge-portability-checks-2/mypy-stdout",
+      "Bytes": 43,
+      "Sha256": "8228FCC5CE46D42D01CAF3CD941F4E9C5F2BCC372BB5B147A2F0572D2DD675A8"
+    },
+    {
+      "Path": "epoch-bridge-portability-checks-2/ruff-completion.json",
+      "OriginalFile": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/epoch-bridge-portability-checks-2/ruff-completion.json",
+      "Bytes": 55,
+      "Sha256": "77E9F4896FBB942E9454ED0F8E1A7B2D1E0464B2A81810E0A4A6B6B9252647C9"
+    },
+    {
+      "Path": "epoch-bridge-portability-checks-2/ruff-invocation.json",
+      "OriginalFile": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/epoch-bridge-portability-checks-2/ruff-invocation.json",
+      "Bytes": 590,
+      "Sha256": "88447669325E170CA0822F6CA4349BBFA6BD960DA42F164591A884DA2B05610C"
+    },
+    {
+      "Path": "epoch-bridge-portability-checks-2/ruff-stderr",
+      "OriginalFile": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/epoch-bridge-portability-checks-2/ruff-stderr",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "epoch-bridge-portability-checks-2/ruff-stdout",
+      "OriginalFile": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/epoch-bridge-portability-checks-2/ruff-stdout",
+      "Bytes": 19,
+      "Sha256": "82B3E6A6C090A57601D22943BD23FCA9218D1031DBE5A7B754092F9A156B4F18"
+    },
+    {
+      "Path": "epoch-bridge-portability-checks-2/test_mixed_message_epoch_bridge.py",
+      "OriginalFile": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/epoch-bridge-portability-checks-2/test_mixed_message_epoch_bridge.py",
+      "Bytes": 68707,
+      "Sha256": "4C8ECC4B2CBF514265D93C138847039B3CEFA5EB50FBEF1AA1D7A75C78CC74A8"
+    },
+    {
+      "Path": "epoch-bridge-repository-gate-5/1-completion.json",
+      "OriginalFile": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/epoch-bridge-repository-gate-5/1-completion.json",
+      "Bytes": 53,
+      "Sha256": "9D58C8ECD3C86977A11B97F473305666C28AA4773D5B188E4961ECDA365EADB5"
+    },
+    {
+      "Path": "epoch-bridge-repository-gate-5/1-invocation.json",
+      "OriginalFile": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/epoch-bridge-repository-gate-5/1-invocation.json",
+      "Bytes": 124,
+      "Sha256": "544C42143B19DBE54D711AE43C50394E86FFF8DC1E642E79A51CCFBDBC01AF8B"
+    },
+    {
+      "Path": "epoch-bridge-repository-gate-5/1-stderr",
+      "OriginalFile": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/epoch-bridge-repository-gate-5/1-stderr",
+      "Bytes": 94,
+      "Sha256": "9DA71A0E867B2ADAA037A34ABF022B4E9E5BA0937F973A4C17F2EE5DD44C4619"
+    },
+    {
+      "Path": "epoch-bridge-repository-gate-5/1-stdout",
+      "OriginalFile": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/epoch-bridge-repository-gate-5/1-stdout",
+      "Bytes": 7575,
+      "Sha256": "1582F617858200DADE3C3FFD27404D8B9DB39D7D971F7920689B8B84560E13DC"
+    },
+    {
+      "Path": "epoch-bridge-repository-gate-5/2-completion.json",
+      "OriginalFile": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/epoch-bridge-repository-gate-5/2-completion.json",
+      "Bytes": 54,
+      "Sha256": "309B42FB558DE1EB998E63FE5DBA4F4E7C8B10503A6B2D3266F8C9349F90E9A2"
+    },
+    {
+      "Path": "epoch-bridge-repository-gate-5/2-invocation.json",
+      "OriginalFile": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/epoch-bridge-repository-gate-5/2-invocation.json",
+      "Bytes": 140,
+      "Sha256": "EC988C42EE37AC770C46710D5C6314844FEA64AD8309507F356BCF1AFA30A6AE"
+    },
+    {
+      "Path": "epoch-bridge-repository-gate-5/2-stderr",
+      "OriginalFile": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/epoch-bridge-repository-gate-5/2-stderr",
+      "Bytes": 5451,
+      "Sha256": "AAA272CA68637D4F4CCC696A0BB9A6EA6931F441746FFCEB3715731FC5DCFFC7"
+    },
+    {
+      "Path": "epoch-bridge-repository-gate-5/2-stdout",
+      "OriginalFile": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/epoch-bridge-repository-gate-5/2-stdout",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "epoch-bridge-repository-gate-5/mixed_message_epoch_bridge.py",
+      "OriginalFile": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/epoch-bridge-repository-gate-5/mixed_message_epoch_bridge.py",
+      "Bytes": 199844,
+      "Sha256": "2A6154EB842116837843E8E100AB08CF4A4C735C635ED693E8C3F58E11B4961B"
+    },
+    {
+      "Path": "epoch-bridge-repository-gate-5/mixed_message_epoch_controls.py",
+      "OriginalFile": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/epoch-bridge-repository-gate-5/mixed_message_epoch_controls.py",
+      "Bytes": 16771,
+      "Sha256": "03ED13D4D860D1E3B61B73AF265B7C65A8251B258623C16B1B1ED28EC6C51711"
+    },
+    {
+      "Path": "epoch-bridge-repository-gate-5/test_mixed_message_epoch_bridge.py",
+      "OriginalFile": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/epoch-bridge-repository-gate-5/test_mixed_message_epoch_bridge.py",
+      "Bytes": 68707,
+      "Sha256": "4C8ECC4B2CBF514265D93C138847039B3CEFA5EB50FBEF1AA1D7A75C78CC74A8"
+    },
+    {
+      "Path": "epoch-bridge-build-retry-1/Core.fsproj",
+      "OriginalFile": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/epoch-bridge-build-retry-1/Core.fsproj",
+      "Bytes": 25586,
+      "Sha256": "1CF9BF481C15509DA39692A6409D75BC3E2BC5FC5B28E6DFD903B620B6A2A680"
+    },
+    {
+      "Path": "epoch-bridge-build-retry-1/completion.json",
+      "OriginalFile": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/epoch-bridge-build-retry-1/completion.json",
+      "Bytes": 54,
+      "Sha256": "3997F7497957C652CEAEA9ECD5DFB195F7A80C9324E42D480C25873F790AB716"
+    },
+    {
+      "Path": "epoch-bridge-build-retry-1/invocation.json",
+      "OriginalFile": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/epoch-bridge-build-retry-1/invocation.json",
+      "Bytes": 175,
+      "Sha256": "6E14EEE5BA536B1ABDC874004CB233061DC956EBB37D70DA173912C34BE2BF27"
+    },
+    {
+      "Path": "epoch-bridge-build-retry-1/mixed_message_epoch_bridge.py",
+      "OriginalFile": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/epoch-bridge-build-retry-1/mixed_message_epoch_bridge.py",
+      "Bytes": 199844,
+      "Sha256": "2A6154EB842116837843E8E100AB08CF4A4C735C635ED693E8C3F58E11B4961B"
+    },
+    {
+      "Path": "epoch-bridge-build-retry-1/mixed_message_epoch_controls.py",
+      "OriginalFile": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/epoch-bridge-build-retry-1/mixed_message_epoch_controls.py",
+      "Bytes": 16771,
+      "Sha256": "03ED13D4D860D1E3B61B73AF265B7C65A8251B258623C16B1B1ED28EC6C51711"
+    },
+    {
+      "Path": "epoch-bridge-build-retry-1/source-after.json",
+      "OriginalFile": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/epoch-bridge-build-retry-1/source-after.json",
+      "Bytes": 798,
+      "Sha256": "04CAB6E5920131AA258F59807897DF3AF21D00940D29CECBAF24F95DC21D5559"
+    },
+    {
+      "Path": "epoch-bridge-build-retry-1/stderr",
+      "OriginalFile": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/epoch-bridge-build-retry-1/stderr",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "epoch-bridge-build-retry-1/stdout",
+      "OriginalFile": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/epoch-bridge-build-retry-1/stdout",
+      "Bytes": 9261,
+      "Sha256": "881271F88405FEE3A9334CF7C01A7A2BD35515E8072B029AE0E6E70FCB8ACBB8"
+    },
+    {
+      "Path": "epoch-bridge-build-retry-1/test_mixed_message_epoch_bridge.py",
+      "OriginalFile": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/epoch-bridge-build-retry-1/test_mixed_message_epoch_bridge.py",
+      "Bytes": 68707,
+      "Sha256": "4C8ECC4B2CBF514265D93C138847039B3CEFA5EB50FBEF1AA1D7A75C78CC74A8"
+    },
+    {
+      "Path": "run-epoch-portability-check.py",
+      "OriginalFile": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/run-epoch-portability-check.py",
+      "Bytes": 1667,
+      "Sha256": "B6A8831FAEAB8553B934E8BADD672EC058CB9E3BB41237CBA40BA476AF862E0F"
+    },
+    {
+      "Path": "run-epoch-checks.py",
+      "OriginalFile": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/run-epoch-checks.py",
+      "Bytes": 1367,
+      "Sha256": "189DDAF14571149BB1066D2B1AFE990D52C37B5E2D3BA27E6E81940EFA8E9BA5"
+    },
+    {
+      "Path": "run-epoch-repository-gate-5.py",
+      "OriginalFile": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/run-epoch-repository-gate-5.py",
+      "Bytes": 1111,
+      "Sha256": "5B724976A8D0CE71AE7E61166F24FFCA20FD961BFBD59E413825D6DF2B1235C0"
+    },
+    {
+      "Path": "retry-epoch-bridge-build-1.py",
+      "OriginalFile": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/retry-epoch-bridge-build-1.py",
+      "Bytes": 1486,
+      "Sha256": "D5D4657B0BD7AFF53D3021B1546EDFDE4DFD65CD62FAE3B65C3F106753862DE1"
+    },
+    {
+      "Path": "preserve-epoch-bridge-portability-1.py",
+      "OriginalFile": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/preserve-epoch-bridge-portability-1.py",
+      "Bytes": 2786,
+      "Sha256": "AAFD148CC5AEFA02B3FAFDD020963CAEBA1105B0433A9425C1514D387F9296CD"
+    }
+  ]
+}

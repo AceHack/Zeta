@@ -1,0 +1,77 @@
+{
+  "SourceCommit": "1a71b4ff0eebd80e7528bfa93d8971d8726b4470",
+  "SourceFiles": [
+    {
+      "Path": "src/Bayesian/BoundedModuleLearner.fs",
+      "Copy": "source-00",
+      "Bytes": 19114,
+      "Sha256": "C59FDB8F5F2178297DB350AD43BD54C1ABCF6422DEDD5A3C7F85B797CC5D8236"
+    },
+    {
+      "Path": "src/Bayesian/MixedMessageEpoch.fs",
+      "Copy": "source-01",
+      "Bytes": 167510,
+      "Sha256": "B75CEF997AF2D7D98BF7043039A63B94ED6E770C675EBAADBFC644A79DB57CB2"
+    },
+    {
+      "Path": "src/Bayesian/Bayesian.fsproj",
+      "Copy": "source-02",
+      "Bytes": 3426,
+      "Sha256": "24F474046E52A2B703EDA187587D1E15FCBFDA2C835075B7CC13B83AF7B8DCA0"
+    },
+    {
+      "Path": "tests/Bayesian.Tests/BoundedModuleLearner.Tests.fs",
+      "Copy": "source-03",
+      "Bytes": 12338,
+      "Sha256": "9260CAC8F8EF58BC7EA927B31C0F1426FCC3B83A4790210AC25D4CFBA676F4A9"
+    },
+    {
+      "Path": "tests/Bayesian.Tests/MixedMessageEpoch.Tests.fs",
+      "Copy": "source-04",
+      "Bytes": 67508,
+      "Sha256": "F13889BB9450F7BB0AF7F41E019841196512347414BC38DB797A5E041D25DB2B"
+    },
+    {
+      "Path": "tests/Bayesian.Tests/Bayesian.Tests.fsproj",
+      "Copy": "source-05",
+      "Bytes": 3879,
+      "Sha256": "2361B22D257F61236AE0B9EA4266EEB4883B9E5419680FE5419FFD86C5C620AC"
+    },
+    {
+      "Path": "src/Research.FSharp/MixedMessageEpochReplay.fsx",
+      "Copy": "source-06",
+      "Bytes": 99661,
+      "Sha256": "5D0DD505F3849D7F989982DCAE5EBAB2898B8140AE74489540EC016B15AD7795"
+    },
+    {
+      "Path": "src/Interp.Python/zeta_interp/mixed_message_epoch_bridge.py",
+      "Copy": "source-07",
+      "Bytes": 199844,
+      "Sha256": "2A6154EB842116837843E8E100AB08CF4A4C735C635ED693E8C3F58E11B4961B"
+    },
+    {
+      "Path": "src/Interp.Python/zeta_interp/mixed_message_epoch_controls.py",
+      "Copy": "source-08",
+      "Bytes": 16771,
+      "Sha256": "03ED13D4D860D1E3B61B73AF265B7C65A8251B258623C16B1B1ED28EC6C51711"
+    },
+    {
+      "Path": "src/Interp.Python/tests/test_mixed_message_epoch_bridge.py",
+      "Copy": "source-09",
+      "Bytes": 68585,
+      "Sha256": "1A533E6F2B1A17F8945B7C90E7BF3185411296756EAC16487327883CB74E9EDE"
+    },
+    {
+      "Path": "docs/research/mixed-message-epoch-implementation/2026-09-08/registered-source/invoke.py",
+      "Copy": "source-10",
+      "Bytes": 11511,
+      "Sha256": "CC7FBF89E681909374591516B4227F3D93373E9B5F089C039994B0CA46055E69"
+    },
+    {
+      "Path": "docs/research/mixed-message-epoch-implementation/2026-09-08/registered-source/README.md",
+      "Copy": "source-11",
+      "Bytes": 6039,
+      "Sha256": "D45A9F084C6CA2F79E7017BD30CD698AA54650C29C24E5F23A6804537B553741"
+    }
+  ]
+}

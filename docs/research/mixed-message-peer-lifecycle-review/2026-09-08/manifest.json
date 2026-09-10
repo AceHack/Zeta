@@ -1,0 +1,95 @@
+{
+  "ReviewedCommit": "d16bafa2a71e503878d645a8ea4f52244b5c227b",
+  "Reviewer": "Vera, OpenAI Codex using GPT-6 Astra",
+  "Scope": "independent source and retained-data audit; no peer/core/numerical execution",
+  "Records": [
+    {
+      "File": "audit.py.gz",
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/epoch-peer-lifecycle-audit-1/audit.py",
+      "Bytes": 2248,
+      "Sha256": "7B6B0C1F9D5C4124CC5B39DD2B5A6C9AF9E77E0BBB16BF48B23813DC82500B65",
+      "StoredBytes": 923,
+      "StoredSha256": "A83E8332FCB8EB94131A1CD6140AE0DD05A656C17BC741E398A51B90D9921205"
+    },
+    {
+      "File": "audit-invocation.json.gz",
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/epoch-peer-lifecycle-audit-1/invocation.json",
+      "Bytes": 234,
+      "Sha256": "26CF6696ECC9DA20FEE7BDEDCA094B1EB04B7D3D72D606664D88C00089231E20",
+      "StoredBytes": 206,
+      "StoredSha256": "7F476D95C61501D0147B8E9457719231C6E8972DD18D9E4547A4DAF01A810170"
+    },
+    {
+      "File": "audit-completion.json.gz",
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/epoch-peer-lifecycle-audit-1/completion.json",
+      "Bytes": 55,
+      "Sha256": "968C41C646BD9DB71CFFC28C6CE62C50FCE57AEEB2BA4B634927ED42B024B8CB",
+      "StoredBytes": 73,
+      "StoredSha256": "80A7D11601FE96FA94D00D190D7D27D03B8C0F0DDFFEAAF27CC726282CA2C6B5"
+    },
+    {
+      "File": "audit-stdout.json.gz",
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/epoch-peer-lifecycle-audit-1/stdout",
+      "Bytes": 44786,
+      "Sha256": "336D8A7F888C75CB962CDC2BA610BB704ADB3748080A65B4CB3379BE8F96D741",
+      "StoredBytes": 6473,
+      "StoredSha256": "B41332C1E1537A005FC88CD0446F468254251E29AAA9677BB29D2255A28F0B1F"
+    },
+    {
+      "File": "audit-stderr.gz",
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/epoch-peer-lifecycle-audit-1/stderr",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "StoredBytes": 20,
+      "StoredSha256": "9CEFFB7310338057CFE71A4AE1E2C98D2C485D81CDEF906532A801F457A38D64"
+    },
+    {
+      "File": "reviewed-source.fsx.gz",
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/epoch-peer-lifecycle-review-source-1/MixedMessageEpochReplay.fsx",
+      "Bytes": 99661,
+      "Sha256": "5D0DD505F3849D7F989982DCAE5EBAB2898B8140AE74489540EC016B15AD7795",
+      "StoredBytes": 21558,
+      "StoredSha256": "92BFC6EB9E5DB1C6942C09E241CB5656D9D83388295A06AB3B904F278F57CCD8"
+    },
+    {
+      "File": "original-source-observation.json.gz",
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/epoch-peer-lifecycle-review-source-1/identity.json",
+      "Bytes": 297,
+      "Sha256": "13FB7CFC4763C3D7D2B7C843752475DA9A9BA8853B31DCE27CC975BCC7E6157C",
+      "StoredBytes": 259,
+      "StoredSha256": "6F39C1D07F89460AC13097C7A98FDABA77150541AAF77869927B655587E886D6"
+    },
+    {
+      "File": "immutable-pin.json.gz",
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/epoch-peer-lifecycle-review-source-1/immutable-pin.json",
+      "Bytes": 485,
+      "Sha256": "ACC11AE947EC1AB9B7266AF42A1BE76B32D6244C8425E3A26A14C78978179AE3",
+      "StoredBytes": 339,
+      "StoredSha256": "67B1F4B635AE5B86241A155992926C63AF7524A1953233EE6102DC9B59181401"
+    },
+    {
+      "File": "owner-manifest.json.gz",
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/epoch-peer-lifecycle-review-source-1/owner-manifest.json",
+      "Bytes": 40991,
+      "Sha256": "E665EBCF365E134326D48263C08C2AA722D6FD794895A3F545707C5C4CFBD7D6",
+      "StoredBytes": 7484,
+      "StoredSha256": "40E7F2DCD73DC37D1609E05220CE1FAC7F90FEEB55F4BC9A49761D3C0A6F049A"
+    },
+    {
+      "File": "diff-from-a59.txt.gz",
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/epoch-peer-lifecycle-review-source-1/diff-from-a59.txt",
+      "Bytes": 39790,
+      "Sha256": "093717E6761B036EC394D354D000E8D97BEC1706D4ED67DD5C851FB57AA3D1C7",
+      "StoredBytes": 8444,
+      "StoredSha256": "F49BAFA98F8792C595FD9E9880B3695D20908598FECC8B392D81F75DB6FBD617"
+    },
+    {
+      "File": "preserve.py.gz",
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/preserve-peer-lifecycle-review-1.py",
+      "Bytes": 2074,
+      "Sha256": "1AD0436568F510336931EA4CF378DC3EEDE892EF8323571630A3A32AA11E5824",
+      "StoredBytes": 855,
+      "StoredSha256": "B35A2CC7F24EB8E91B5D1FEFD8A7D637172D64F9611B07DA6A63F1E6239F61A1"
+    }
+  ]
+}

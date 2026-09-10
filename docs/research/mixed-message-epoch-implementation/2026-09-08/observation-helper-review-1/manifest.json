@@ -1,0 +1,2677 @@
+{
+  "Schema": "zeta.mixed-epoch.observation-helper-review.v1",
+  "Scope": "Original static findings, repaired finite helpers and six isolated injected-outcome fixtures; no named or real numerical/service subprocess execution; FIFO metadata only",
+  "Archive": {
+    "File": "custody.tar.gz",
+    "Bytes": 7964196,
+    "Sha256": "3FAE2D5591BEDE100A3DB9F91D7462705CC3282AF71DE7CA5AD5DA83277B0143"
+  },
+  "Records": [
+    {
+      "Name": ".git/check-mixed-observation-capture-1.py",
+      "Bytes": 3705,
+      "Sha256": "25B4F643C9165EAB5B2108F2B0989263CEBCCF034364F2884929B2E71985DA7F"
+    },
+    {
+      "Name": ".git/check-mixed-observation-freeze-1.py",
+      "Bytes": 3627,
+      "Sha256": "0674B8EC7D1CE71C0C2D8BAE09906821031D7762FF542A2C69BD0CB69CF1F11B"
+    },
+    {
+      "Name": ".git/freeze-mixed-assembled-source-1.py",
+      "Bytes": 8506,
+      "Sha256": "D6C6B6BF9CB8599AC68BAA6458096E93D11C1EB5136193B0B86F4B62E352319A"
+    },
+    {
+      "Name": ".git/mixed-observation-capture-fixtures-1/after-read-raised/.git/mixed-registered-execution-1/attempts/retained.txt",
+      "Bytes": 28,
+      "Sha256": "6589029606FBD5D4D079C50C5FB460476C007B68A4CB79518E1EFED025243E8B"
+    },
+    {
+      "Name": ".git/mixed-observation-capture-fixtures-1/after-read-raised/.git/mixed-registered-execution-1/m4/attempt-inventory.json",
+      "Bytes": 173,
+      "Sha256": "2B5EECD87D8DA9F8A2A7A47254433B7F09580C5942EFDEFCDCCC9F05A23E9F4B"
+    },
+    {
+      "Name": ".git/mixed-observation-capture-fixtures-1/after-read-raised/.git/mixed-registered-execution-1/m4/caller-admission.json",
+      "Bytes": 243,
+      "Sha256": "C84A65324099D36467C1A0C04A4A94E9EDA397D982A69BF0A82FFCBBF2EB2FA1"
+    },
+    {
+      "Name": ".git/mixed-observation-capture-fixtures-1/after-read-raised/.git/mixed-registered-execution-1/m4/capture.py",
+      "Bytes": 6936,
+      "Sha256": "FBD0DF785D5AECAE47591D73EA3062050825F33241880B67668B462ADDAC2462"
+    },
+    {
+      "Name": ".git/mixed-observation-capture-fixtures-1/after-read-raised/.git/mixed-registered-execution-1/m4/child-return.json",
+      "Bytes": 62,
+      "Sha256": "AAFD0C9F3A8A5DF31EC547A454AB4FF46FB9F037A1E14DE1048580331C24CF50"
+    },
+    {
+      "Name": ".git/mixed-observation-capture-fixtures-1/after-read-raised/.git/mixed-registered-execution-1/m4/completion.json",
+      "Bytes": 441,
+      "Sha256": "FB925FE8393C3CA404459E91924CFB71DA6AD5379448EE99336870A2CA6AFCB7"
+    },
+    {
+      "Name": ".git/mixed-observation-capture-fixtures-1/after-read-raised/.git/mixed-registered-execution-1/m4/error-001.json",
+      "Bytes": 109,
+      "Sha256": "9E814FC2770504DF42870EED442C941E49E0A07D778C64125BB9C2AF101BF64F"
+    },
+    {
+      "Name": ".git/mixed-observation-capture-fixtures-1/after-read-raised/.git/mixed-registered-execution-1/m4/inventory-0001.json",
+      "Bytes": 157,
+      "Sha256": "41E7378C45280D10B129C9657569C46955870A3AFADE72E22A0AF1564504721D"
+    },
+    {
+      "Name": ".git/mixed-observation-capture-fixtures-1/after-read-raised/.git/mixed-registered-execution-1/m4/invocation.json",
+      "Bytes": 1516,
+      "Sha256": "719D36D0E98929A73B7AF753067B695A729A9622E3DB2970C4C23B3FE44C4FD1"
+    },
+    {
+      "Name": ".git/mixed-observation-capture-fixtures-1/after-read-raised/.git/mixed-registered-execution-1/m4/service-manifest.json",
+      "Bytes": 154,
+      "Sha256": "582B2D801AE3D7C587B03F83944D55F3D2F46E14064DFE8D724070E0924E3A91"
+    },
+    {
+      "Name": ".git/mixed-observation-capture-fixtures-1/after-read-raised/.git/mixed-registered-execution-1/m4/source-after-000.json",
+      "Bytes": 212,
+      "Sha256": "656788BF7D9308070B57E4D20D1A67E9E12AD6862C4E1233E9625C7C9631D31C"
+    },
+    {
+      "Name": ".git/mixed-observation-capture-fixtures-1/after-read-raised/.git/mixed-registered-execution-1/m4/source-after.json",
+      "Bytes": 226,
+      "Sha256": "AB824AA38EF1F623D8D79DFFCA0004B5CFB9168D5EAE2D77521E161075FF47C1"
+    },
+    {
+      "Name": ".git/mixed-observation-capture-fixtures-1/after-read-raised/.git/mixed-registered-execution-1/m4/source-before-000.json",
+      "Bytes": 306,
+      "Sha256": "BE408CE31AA6BACC4F0A44DFB524AB8E3101591F65047C26B7DDB63F146F8D2E"
+    },
+    {
+      "Name": ".git/mixed-observation-capture-fixtures-1/after-read-raised/.git/mixed-registered-execution-1/m4/source-before.json",
+      "Bytes": 324,
+      "Sha256": "ADD4410E2621EC33C711ADB31801438783D263C67060500806D7575B6CDDF25D"
+    },
+    {
+      "Name": ".git/mixed-observation-capture-fixtures-1/after-read-raised/.git/mixed-registered-execution-1/m4/stderr",
+      "Bytes": 23,
+      "Sha256": "BBE6CF0E56CB0FC3D330E165B7A3240A34E0B28494325D822E2CFAC8C33C03AD"
+    },
+    {
+      "Name": ".git/mixed-observation-capture-fixtures-1/after-read-raised/.git/mixed-registered-execution-1/m4/stdout",
+      "Bytes": 23,
+      "Sha256": "DBEE3C448CE73DB7BA2EC1C7A78E9405A6DC3C3017388E888CED178F1BD75ACF"
+    },
+    {
+      "Name": ".git/mixed-observation-capture-fixtures-1/after-read-raised/docs/research/mixed-message-epoch-implementation/2026-09-08/implementation-source/custody.tar.gz",
+      "Bytes": 2852,
+      "Sha256": "56906F4957329863E2BF2DA7FA0E2BFCB65008C99B9A3F15553E1C17EFC55522"
+    },
+    {
+      "Name": ".git/mixed-observation-capture-fixtures-1/after-read-raised/docs/research/mixed-message-epoch-implementation/2026-09-08/implementation-source/service-manifest.json",
+      "Bytes": 154,
+      "Sha256": "582B2D801AE3D7C587B03F83944D55F3D2F46E14064DFE8D724070E0924E3A91"
+    },
+    {
+      "Name": ".git/mixed-observation-capture-fixtures-1/after-read-raised/fixture-stdout",
+      "Bytes": 441,
+      "Sha256": "FB925FE8393C3CA404459E91924CFB71DA6AD5379448EE99336870A2CA6AFCB7"
+    },
+    {
+      "Name": ".git/mixed-observation-capture-fixtures-1/after-read-raised/selected.txt",
+      "Bytes": 13,
+      "Sha256": "67F26DA2F4C4E87FA358E20CAD9411A2DE6A7BE6AB148677EDF3CB529EBAD3EE"
+    },
+    {
+      "Name": ".git/mixed-observation-capture-fixtures-1/child-nonzero/.git/mixed-registered-execution-1/attempts/retained.txt",
+      "Bytes": 28,
+      "Sha256": "6589029606FBD5D4D079C50C5FB460476C007B68A4CB79518E1EFED025243E8B"
+    },
+    {
+      "Name": ".git/mixed-observation-capture-fixtures-1/child-nonzero/.git/mixed-registered-execution-1/m4/attempt-inventory.json",
+      "Bytes": 173,
+      "Sha256": "2B5EECD87D8DA9F8A2A7A47254433B7F09580C5942EFDEFCDCCC9F05A23E9F4B"
+    },
+    {
+      "Name": ".git/mixed-observation-capture-fixtures-1/child-nonzero/.git/mixed-registered-execution-1/m4/caller-admission.json",
+      "Bytes": 243,
+      "Sha256": "2C7139295DECAE8049937ED9F68C8DF3A3248C3679390E3A9D69609714C71E99"
+    },
+    {
+      "Name": ".git/mixed-observation-capture-fixtures-1/child-nonzero/.git/mixed-registered-execution-1/m4/capture.py",
+      "Bytes": 6936,
+      "Sha256": "FBD0DF785D5AECAE47591D73EA3062050825F33241880B67668B462ADDAC2462"
+    },
+    {
+      "Name": ".git/mixed-observation-capture-fixtures-1/child-nonzero/.git/mixed-registered-execution-1/m4/child-return.json",
+      "Bytes": 63,
+      "Sha256": "525A2277FAC15E73D542FD41E45EACF5889059B7FB905BF1A1F48F64EAB2DE1A"
+    },
+    {
+      "Name": ".git/mixed-observation-capture-fixtures-1/child-nonzero/.git/mixed-registered-execution-1/m4/completion.json",
+      "Bytes": 309,
+      "Sha256": "694810A730AF30BC09D22DD2A3EEA39A493E1D6910DB83583B50BB1832DD0B91"
+    },
+    {
+      "Name": ".git/mixed-observation-capture-fixtures-1/child-nonzero/.git/mixed-registered-execution-1/m4/inventory-0001.json",
+      "Bytes": 157,
+      "Sha256": "41E7378C45280D10B129C9657569C46955870A3AFADE72E22A0AF1564504721D"
+    },
+    {
+      "Name": ".git/mixed-observation-capture-fixtures-1/child-nonzero/.git/mixed-registered-execution-1/m4/invocation.json",
+      "Bytes": 1492,
+      "Sha256": "8EA1F2E49A3913542AD1109BC542CD7323D1634E5C0FB5BB26C5800C658366BA"
+    },
+    {
+      "Name": ".git/mixed-observation-capture-fixtures-1/child-nonzero/.git/mixed-registered-execution-1/m4/service-manifest.json",
+      "Bytes": 154,
+      "Sha256": "582B2D801AE3D7C587B03F83944D55F3D2F46E14064DFE8D724070E0924E3A91"
+    },
+    {
+      "Name": ".git/mixed-observation-capture-fixtures-1/child-nonzero/.git/mixed-registered-execution-1/m4/source-after-000.json",
+      "Bytes": 302,
+      "Sha256": "3D507FB47E75291A9E32F1CDDF08E0D3B88FB74C406EA3ED9A02CA7666C852C9"
+    },
+    {
+      "Name": ".git/mixed-observation-capture-fixtures-1/child-nonzero/.git/mixed-registered-execution-1/m4/source-after.json",
+      "Bytes": 320,
+      "Sha256": "D3F879E215698D3C2F02551CD42B74EA356E0AEC9813D9E2F05E16B5C4D38A16"
+    },
+    {
+      "Name": ".git/mixed-observation-capture-fixtures-1/child-nonzero/.git/mixed-registered-execution-1/m4/source-before-000.json",
+      "Bytes": 302,
+      "Sha256": "3D507FB47E75291A9E32F1CDDF08E0D3B88FB74C406EA3ED9A02CA7666C852C9"
+    },
+    {
+      "Name": ".git/mixed-observation-capture-fixtures-1/child-nonzero/.git/mixed-registered-execution-1/m4/source-before.json",
+      "Bytes": 320,
+      "Sha256": "D3F879E215698D3C2F02551CD42B74EA356E0AEC9813D9E2F05E16B5C4D38A16"
+    },
+    {
+      "Name": ".git/mixed-observation-capture-fixtures-1/child-nonzero/.git/mixed-registered-execution-1/m4/stderr",
+      "Bytes": 23,
+      "Sha256": "BBE6CF0E56CB0FC3D330E165B7A3240A34E0B28494325D822E2CFAC8C33C03AD"
+    },
+    {
+      "Name": ".git/mixed-observation-capture-fixtures-1/child-nonzero/.git/mixed-registered-execution-1/m4/stdout",
+      "Bytes": 23,
+      "Sha256": "DBEE3C448CE73DB7BA2EC1C7A78E9405A6DC3C3017388E888CED178F1BD75ACF"
+    },
+    {
+      "Name": ".git/mixed-observation-capture-fixtures-1/child-nonzero/docs/research/mixed-message-epoch-implementation/2026-09-08/implementation-source/custody.tar.gz",
+      "Bytes": 2852,
+      "Sha256": "56906F4957329863E2BF2DA7FA0E2BFCB65008C99B9A3F15553E1C17EFC55522"
+    },
+    {
+      "Name": ".git/mixed-observation-capture-fixtures-1/child-nonzero/docs/research/mixed-message-epoch-implementation/2026-09-08/implementation-source/service-manifest.json",
+      "Bytes": 154,
+      "Sha256": "582B2D801AE3D7C587B03F83944D55F3D2F46E14064DFE8D724070E0924E3A91"
+    },
+    {
+      "Name": ".git/mixed-observation-capture-fixtures-1/child-nonzero/fixture-stdout",
+      "Bytes": 309,
+      "Sha256": "694810A730AF30BC09D22DD2A3EEA39A493E1D6910DB83583B50BB1832DD0B91"
+    },
+    {
+      "Name": ".git/mixed-observation-capture-fixtures-1/child-nonzero/selected.txt",
+      "Bytes": 13,
+      "Sha256": "67F26DA2F4C4E87FA358E20CAD9411A2DE6A7BE6AB148677EDF3CB529EBAD3EE"
+    },
+    {
+      "Name": ".git/mixed-observation-capture-fixtures-1/launch-raised/.git/mixed-registered-execution-1/m4/attempt-inventory.json",
+      "Bytes": 3,
+      "Sha256": "37517E5F3DC66819F61F5A7BB8ACE1921282415F10551D2DEFA5C3EB0985B570"
+    },
+    {
+      "Name": ".git/mixed-observation-capture-fixtures-1/launch-raised/.git/mixed-registered-execution-1/m4/caller-admission.json",
+      "Bytes": 243,
+      "Sha256": "0E57AEBB5A5CFE5203AE31B674C5A35556992D82BB4F25E9380EF2DC379121D2"
+    },
+    {
+      "Name": ".git/mixed-observation-capture-fixtures-1/launch-raised/.git/mixed-registered-execution-1/m4/capture.py",
+      "Bytes": 6936,
+      "Sha256": "FBD0DF785D5AECAE47591D73EA3062050825F33241880B67668B462ADDAC2462"
+    },
+    {
+      "Name": ".git/mixed-observation-capture-fixtures-1/launch-raised/.git/mixed-registered-execution-1/m4/completion.json",
+      "Bytes": 425,
+      "Sha256": "E75D49744D1166D0D99D91EBC5A90AEB76463538741256C16DE5CE4CDA1018EB"
+    },
+    {
+      "Name": ".git/mixed-observation-capture-fixtures-1/launch-raised/.git/mixed-registered-execution-1/m4/error-001.json",
+      "Bytes": 90,
+      "Sha256": "889C303ABE3853BD183CB5D5610F96EF7E4EDB2CAEEE67CBBFBF6E6D78E2649A"
+    },
+    {
+      "Name": ".git/mixed-observation-capture-fixtures-1/launch-raised/.git/mixed-registered-execution-1/m4/invocation.json",
+      "Bytes": 1492,
+      "Sha256": "5DF5B1EA719CC6534E397E777CB42A6DAC0B5BF6109ECEC7685ED61582F21E43"
+    },
+    {
+      "Name": ".git/mixed-observation-capture-fixtures-1/launch-raised/.git/mixed-registered-execution-1/m4/service-manifest.json",
+      "Bytes": 154,
+      "Sha256": "582B2D801AE3D7C587B03F83944D55F3D2F46E14064DFE8D724070E0924E3A91"
+    },
+    {
+      "Name": ".git/mixed-observation-capture-fixtures-1/launch-raised/.git/mixed-registered-execution-1/m4/source-after-000.json",
+      "Bytes": 302,
+      "Sha256": "0F59A952C98DED1B58933671B471EB2354C17A8B55C526C85C1EF5C0E7D855AF"
+    },
+    {
+      "Name": ".git/mixed-observation-capture-fixtures-1/launch-raised/.git/mixed-registered-execution-1/m4/source-after.json",
+      "Bytes": 320,
+      "Sha256": "42EFD2C76BBD71CA96F463DCC0B5AD60EEBE32DCD8D381754020509AF838A559"
+    },
+    {
+      "Name": ".git/mixed-observation-capture-fixtures-1/launch-raised/.git/mixed-registered-execution-1/m4/source-before-000.json",
+      "Bytes": 302,
+      "Sha256": "0F59A952C98DED1B58933671B471EB2354C17A8B55C526C85C1EF5C0E7D855AF"
+    },
+    {
+      "Name": ".git/mixed-observation-capture-fixtures-1/launch-raised/.git/mixed-registered-execution-1/m4/source-before.json",
+      "Bytes": 320,
+      "Sha256": "42EFD2C76BBD71CA96F463DCC0B5AD60EEBE32DCD8D381754020509AF838A559"
+    },
+    {
+      "Name": ".git/mixed-observation-capture-fixtures-1/launch-raised/.git/mixed-registered-execution-1/m4/stderr",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Name": ".git/mixed-observation-capture-fixtures-1/launch-raised/.git/mixed-registered-execution-1/m4/stdout",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Name": ".git/mixed-observation-capture-fixtures-1/launch-raised/docs/research/mixed-message-epoch-implementation/2026-09-08/implementation-source/custody.tar.gz",
+      "Bytes": 2852,
+      "Sha256": "56906F4957329863E2BF2DA7FA0E2BFCB65008C99B9A3F15553E1C17EFC55522"
+    },
+    {
+      "Name": ".git/mixed-observation-capture-fixtures-1/launch-raised/docs/research/mixed-message-epoch-implementation/2026-09-08/implementation-source/service-manifest.json",
+      "Bytes": 154,
+      "Sha256": "582B2D801AE3D7C587B03F83944D55F3D2F46E14064DFE8D724070E0924E3A91"
+    },
+    {
+      "Name": ".git/mixed-observation-capture-fixtures-1/launch-raised/fixture-stdout",
+      "Bytes": 425,
+      "Sha256": "E75D49744D1166D0D99D91EBC5A90AEB76463538741256C16DE5CE4CDA1018EB"
+    },
+    {
+      "Name": ".git/mixed-observation-capture-fixtures-1/launch-raised/selected.txt",
+      "Bytes": 13,
+      "Sha256": "67F26DA2F4C4E87FA358E20CAD9411A2DE6A7BE6AB148677EDF3CB529EBAD3EE"
+    },
+    {
+      "Name": ".git/mixed-observation-capture-fixtures-1/results.json",
+      "Bytes": 1320,
+      "Sha256": "517C087A23DD919C0E4A80A81BB3B6491B175F658937D3CA680C2239A43B631B"
+    },
+    {
+      "Name": ".git/mixed-observation-capture-fixtures-1/reviewed-source.py",
+      "Bytes": 6936,
+      "Sha256": "FBD0DF785D5AECAE47591D73EA3062050825F33241880B67668B462ADDAC2462"
+    },
+    {
+      "Name": ".git/mixed-observation-capture-fixtures-1/wrong-accepted-manifest/.git/mixed-registered-execution-1/m4/attempt-inventory.json",
+      "Bytes": 3,
+      "Sha256": "37517E5F3DC66819F61F5A7BB8ACE1921282415F10551D2DEFA5C3EB0985B570"
+    },
+    {
+      "Name": ".git/mixed-observation-capture-fixtures-1/wrong-accepted-manifest/.git/mixed-registered-execution-1/m4/caller-admission.json",
+      "Bytes": 243,
+      "Sha256": "A67385D338F1131EDDCBFF9BE0E749F0B9584D197B416E4BC3C979C6AD00C0DF"
+    },
+    {
+      "Name": ".git/mixed-observation-capture-fixtures-1/wrong-accepted-manifest/.git/mixed-registered-execution-1/m4/capture.py",
+      "Bytes": 6936,
+      "Sha256": "FBD0DF785D5AECAE47591D73EA3062050825F33241880B67668B462ADDAC2462"
+    },
+    {
+      "Name": ".git/mixed-observation-capture-fixtures-1/wrong-accepted-manifest/.git/mixed-registered-execution-1/m4/completion.json",
+      "Bytes": 455,
+      "Sha256": "71ECE7663D857D7011B2649A746B0CF7BA2E60E706FD8D13604E0DB971F2F92F"
+    },
+    {
+      "Name": ".git/mixed-observation-capture-fixtures-1/wrong-accepted-manifest/.git/mixed-registered-execution-1/m4/error-001.json",
+      "Bytes": 118,
+      "Sha256": "78EC5A2D108502BB01635915FF1292B25FB1E935B523EB6DDFA27EB1415B9005"
+    },
+    {
+      "Name": ".git/mixed-observation-capture-fixtures-1/wrong-accepted-manifest/docs/research/mixed-message-epoch-implementation/2026-09-08/implementation-source/custody.tar.gz",
+      "Bytes": 2852,
+      "Sha256": "56906F4957329863E2BF2DA7FA0E2BFCB65008C99B9A3F15553E1C17EFC55522"
+    },
+    {
+      "Name": ".git/mixed-observation-capture-fixtures-1/wrong-accepted-manifest/docs/research/mixed-message-epoch-implementation/2026-09-08/implementation-source/service-manifest.json",
+      "Bytes": 154,
+      "Sha256": "582B2D801AE3D7C587B03F83944D55F3D2F46E14064DFE8D724070E0924E3A91"
+    },
+    {
+      "Name": ".git/mixed-observation-capture-fixtures-1/wrong-accepted-manifest/fixture-stdout",
+      "Bytes": 455,
+      "Sha256": "71ECE7663D857D7011B2649A746B0CF7BA2E60E706FD8D13604E0DB971F2F92F"
+    },
+    {
+      "Name": ".git/mixed-observation-capture-fixtures-1/wrong-accepted-manifest/selected.txt",
+      "Bytes": 13,
+      "Sha256": "67F26DA2F4C4E87FA358E20CAD9411A2DE6A7BE6AB148677EDF3CB529EBAD3EE"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/fifo-source-refusal/.git/mixed-source-freeze-prefix-1/0000.json",
+      "Bytes": 151,
+      "Sha256": "A5CAA82240A68E2CD84D97CD8314A9BBAC94673837C24556A1A654CA2A2E55B6"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/fifo-source-refusal/.git/mixed-source-freeze-prefix-1/0000.raw",
+      "Bytes": 8506,
+      "Sha256": "D6C6B6BF9CB8599AC68BAA6458096E93D11C1EB5136193B0B86F4B62E352319A"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/fifo-source-refusal/.git/mixed-source-freeze-prefix-1/0001.json",
+      "Bytes": 153,
+      "Sha256": "75B1A52CE53DB7B3DEC940A6EE4F06D50D7BBCAC4739D486124231BDD953EF98"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/fifo-source-refusal/.git/mixed-source-freeze-prefix-1/0001.raw",
+      "Bytes": 325,
+      "Sha256": "2741516AAFDD8ACA6476B8F512A0CB9AABEDA37D99046A4195198E2A515EA915"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/fifo-source-refusal/Directory.Packages.props",
+      "Bytes": 25,
+      "Sha256": "127703B340F355ED3905EDC0D9BA7D85AAA4FB607D4AE37437ACED455C39CC6C"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/fifo-source-refusal/docs/DECISIONS/2026-09-08-checked-mixed-message-module-epochs.md",
+      "Bytes": 25,
+      "Sha256": "127703B340F355ED3905EDC0D9BA7D85AAA4FB607D4AE37437ACED455C39CC6C"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/fifo-source-refusal/docs/research/2026-09-08-checked-mixed-message-module-epoch-source-contract.md",
+      "Bytes": 25,
+      "Sha256": "127703B340F355ED3905EDC0D9BA7D85AAA4FB607D4AE37437ACED455C39CC6C"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/fifo-source-refusal/docs/research/2026-09-08-mixed-message-epoch-identity-codec-conventions.md",
+      "Bytes": 25,
+      "Sha256": "127703B340F355ED3905EDC0D9BA7D85AAA4FB607D4AE37437ACED455C39CC6C"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/fifo-source-refusal/docs/research/2026-09-08-mixed-message-epoch-transport-amendment.md",
+      "Bytes": 25,
+      "Sha256": "127703B340F355ED3905EDC0D9BA7D85AAA4FB607D4AE37437ACED455C39CC6C"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/fifo-source-refusal/docs/research/2026-09-08-mixed-message-frozen-nested-query-register.md",
+      "Bytes": 25,
+      "Sha256": "127703B340F355ED3905EDC0D9BA7D85AAA4FB607D4AE37437ACED455C39CC6C"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/fifo-source-refusal/docs/research/2026-09-08-mixed-message-withdrawal-admission-clarification.md",
+      "Bytes": 25,
+      "Sha256": "127703B340F355ED3905EDC0D9BA7D85AAA4FB607D4AE37437ACED455C39CC6C"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/fifo-source-refusal/docs/research/2026-09-08-precision-gate-projection-decimal-admission-clarification.md",
+      "Bytes": 25,
+      "Sha256": "127703B340F355ED3905EDC0D9BA7D85AAA4FB607D4AE37437ACED455C39CC6C"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/fifo-source-refusal/docs/research/2026-09-08-precision-gate-projection-rendered-zero-clarification.md",
+      "Bytes": 25,
+      "Sha256": "127703B340F355ED3905EDC0D9BA7D85AAA4FB607D4AE37437ACED455C39CC6C"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/fifo-source-refusal/docs/research/mixed-message-epoch-implementation/2026-09-08/registered-source/README.md",
+      "Bytes": 25,
+      "Sha256": "127703B340F355ED3905EDC0D9BA7D85AAA4FB607D4AE37437ACED455C39CC6C"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/fifo-source-refusal/docs/research/mixed-message-epoch-implementation/2026-09-08/registered-source/invoke.py",
+      "Bytes": 25,
+      "Sha256": "127703B340F355ED3905EDC0D9BA7D85AAA4FB607D4AE37437ACED455C39CC6C"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/fifo-source-refusal/docs/research/precision-gate-projection/2026-09-08/implementation-source/implementation-manifest.json",
+      "Bytes": 19,
+      "Sha256": "F9B26669A5C08267C67D682044BBC6A53A4BDA13A0DEB00FC6532C0CB175B80E"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/fifo-source-refusal/fixture-stderr",
+      "Bytes": 325,
+      "Sha256": "2741516AAFDD8ACA6476B8F512A0CB9AABEDA37D99046A4195198E2A515EA915"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/fifo-source-refusal/fixture-stdout",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/fifo-source-refusal/global.json",
+      "Bytes": 25,
+      "Sha256": "127703B340F355ED3905EDC0D9BA7D85AAA4FB607D4AE37437ACED455C39CC6C"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/fifo-source-refusal/src/Bayesian/Bayesian.fsproj",
+      "Bytes": 25,
+      "Sha256": "127703B340F355ED3905EDC0D9BA7D85AAA4FB607D4AE37437ACED455C39CC6C"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/fifo-source-refusal/src/Bayesian/BoundedModuleLearner.fs",
+      "Bytes": 25,
+      "Sha256": "127703B340F355ED3905EDC0D9BA7D85AAA4FB607D4AE37437ACED455C39CC6C"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/fifo-source-refusal/src/Bayesian/FactorGraph.fs",
+      "Bytes": 25,
+      "Sha256": "127703B340F355ED3905EDC0D9BA7D85AAA4FB607D4AE37437ACED455C39CC6C"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/fifo-source-refusal/src/Bayesian/MixedMessageEpoch.fs",
+      "Bytes": 25,
+      "Sha256": "127703B340F355ED3905EDC0D9BA7D85AAA4FB607D4AE37437ACED455C39CC6C"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/fifo-source-refusal/src/Bayesian/PrecisionGateKernels.fs",
+      "Bytes": 25,
+      "Sha256": "127703B340F355ED3905EDC0D9BA7D85AAA4FB607D4AE37437ACED455C39CC6C"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/fifo-source-refusal/src/Bayesian/PrecisionGateProjection.fs",
+      "Bytes": 25,
+      "Sha256": "127703B340F355ED3905EDC0D9BA7D85AAA4FB607D4AE37437ACED455C39CC6C"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/fifo-source-refusal/src/Bayesian/bin/Release/net10.0/Zeta.Bayesian.dll",
+      "Bytes": 25,
+      "Sha256": "127703B340F355ED3905EDC0D9BA7D85AAA4FB607D4AE37437ACED455C39CC6C"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/fifo-source-refusal/src/Core.Abstractions/bin/Release/net10.0/Zeta.Core.Abstractions.dll",
+      "Bytes": 25,
+      "Sha256": "127703B340F355ED3905EDC0D9BA7D85AAA4FB607D4AE37437ACED455C39CC6C"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/fifo-source-refusal/src/Core/Core.fsproj",
+      "Bytes": 25,
+      "Sha256": "127703B340F355ED3905EDC0D9BA7D85AAA4FB607D4AE37437ACED455C39CC6C"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/fifo-source-refusal/src/Core/SoftScheduler.fs",
+      "Bytes": 25,
+      "Sha256": "127703B340F355ED3905EDC0D9BA7D85AAA4FB607D4AE37437ACED455C39CC6C"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/fifo-source-refusal/src/Core/bin/Release/net10.0/Zeta.Core.dll",
+      "Bytes": 25,
+      "Sha256": "127703B340F355ED3905EDC0D9BA7D85AAA4FB607D4AE37437ACED455C39CC6C"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/fifo-source-refusal/src/Interp.Python/pyproject.toml",
+      "Bytes": 25,
+      "Sha256": "127703B340F355ED3905EDC0D9BA7D85AAA4FB607D4AE37437ACED455C39CC6C"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/fifo-source-refusal/src/Interp.Python/tests/test_mixed_message_epoch_bridge.py",
+      "Bytes": 25,
+      "Sha256": "127703B340F355ED3905EDC0D9BA7D85AAA4FB607D4AE37437ACED455C39CC6C"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/fifo-source-refusal/src/Interp.Python/uv.lock",
+      "Bytes": 25,
+      "Sha256": "127703B340F355ED3905EDC0D9BA7D85AAA4FB607D4AE37437ACED455C39CC6C"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/fifo-source-refusal/src/Interp.Python/zeta_interp/__init__.py",
+      "Bytes": 25,
+      "Sha256": "127703B340F355ED3905EDC0D9BA7D85AAA4FB607D4AE37437ACED455C39CC6C"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/fifo-source-refusal/src/Interp.Python/zeta_interp/activations.py",
+      "Bytes": 25,
+      "Sha256": "127703B340F355ED3905EDC0D9BA7D85AAA4FB607D4AE37437ACED455C39CC6C"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/fifo-source-refusal/src/Interp.Python/zeta_interp/hidden_switch_compiled_admission.py",
+      "Bytes": 25,
+      "Sha256": "127703B340F355ED3905EDC0D9BA7D85AAA4FB607D4AE37437ACED455C39CC6C"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/fifo-source-refusal/src/Interp.Python/zeta_interp/hidden_switch_compiled_ieee.py",
+      "Bytes": 25,
+      "Sha256": "127703B340F355ED3905EDC0D9BA7D85AAA4FB607D4AE37437ACED455C39CC6C"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/fifo-source-refusal/src/Interp.Python/zeta_interp/hidden_switch_compiled_record_encoding.py",
+      "Bytes": 25,
+      "Sha256": "127703B340F355ED3905EDC0D9BA7D85AAA4FB607D4AE37437ACED455C39CC6C"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/fifo-source-refusal/src/Interp.Python/zeta_interp/hidden_switch_compiled_record_store.py",
+      "Bytes": 25,
+      "Sha256": "127703B340F355ED3905EDC0D9BA7D85AAA4FB607D4AE37437ACED455C39CC6C"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/fifo-source-refusal/src/Interp.Python/zeta_interp/hidden_switch_compiled_storage.py",
+      "Bytes": 25,
+      "Sha256": "127703B340F355ED3905EDC0D9BA7D85AAA4FB607D4AE37437ACED455C39CC6C"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/fifo-source-refusal/src/Interp.Python/zeta_interp/mixed_message_epoch_bridge.py",
+      "Bytes": 25,
+      "Sha256": "127703B340F355ED3905EDC0D9BA7D85AAA4FB607D4AE37437ACED455C39CC6C"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/fifo-source-refusal/src/Interp.Python/zeta_interp/mixed_message_epoch_controls.py",
+      "Bytes": 25,
+      "Sha256": "127703B340F355ED3905EDC0D9BA7D85AAA4FB607D4AE37437ACED455C39CC6C"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/fifo-source-refusal/src/Interp.Python/zeta_interp/precision_gate_projection_intervals.py",
+      "Bytes": 25,
+      "Sha256": "127703B340F355ED3905EDC0D9BA7D85AAA4FB607D4AE37437ACED455C39CC6C"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/fifo-source-refusal/src/Interp.Python/zeta_interp/precision_gate_projection_process.py",
+      "Bytes": 25,
+      "Sha256": "127703B340F355ED3905EDC0D9BA7D85AAA4FB607D4AE37437ACED455C39CC6C"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/fifo-source-refusal/src/Interp.Python/zeta_interp/precision_gate_projection_reference.py",
+      "Bytes": 25,
+      "Sha256": "127703B340F355ED3905EDC0D9BA7D85AAA4FB607D4AE37437ACED455C39CC6C"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/fifo-source-refusal/src/Research.FSharp/MixedMessageEpochReplay.fsx",
+      "Bytes": 25,
+      "Sha256": "127703B340F355ED3905EDC0D9BA7D85AAA4FB607D4AE37437ACED455C39CC6C"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/fifo-source-refusal/src/Research.FSharp/PrecisionGateProjectionReplay.fsx",
+      "Bytes": 25,
+      "Sha256": "127703B340F355ED3905EDC0D9BA7D85AAA4FB607D4AE37437ACED455C39CC6C"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/fifo-source-refusal/tests/Bayesian.Tests/Bayesian.Tests.fsproj",
+      "Bytes": 25,
+      "Sha256": "127703B340F355ED3905EDC0D9BA7D85AAA4FB607D4AE37437ACED455C39CC6C"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/fifo-source-refusal/tests/Bayesian.Tests/BoundedModuleLearner.Tests.fs",
+      "Bytes": 25,
+      "Sha256": "127703B340F355ED3905EDC0D9BA7D85AAA4FB607D4AE37437ACED455C39CC6C"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/fifo-source-refusal/tests/Bayesian.Tests/MixedMessageEpoch.Tests.fs",
+      "Bytes": 25,
+      "Sha256": "127703B340F355ED3905EDC0D9BA7D85AAA4FB607D4AE37437ACED455C39CC6C"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0000.json",
+      "Bytes": 151,
+      "Sha256": "A5CAA82240A68E2CD84D97CD8314A9BBAC94673837C24556A1A654CA2A2E55B6"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0000.raw",
+      "Bytes": 8506,
+      "Sha256": "D6C6B6BF9CB8599AC68BAA6458096E93D11C1EB5136193B0B86F4B62E352319A"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0001.json",
+      "Bytes": 162,
+      "Sha256": "FDE4464CB46A5849C94359ADABC1A4DEF226E6A3D48C85E0EF0F6E05F9808301"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0001.raw",
+      "Bytes": 25,
+      "Sha256": "127703B340F355ED3905EDC0D9BA7D85AAA4FB607D4AE37437ACED455C39CC6C"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0002.json",
+      "Bytes": 152,
+      "Sha256": "03217F6B9DA5326EBCFB08D1444CF7D7B3E08D0F43E9FE3442CBA9797B260A12"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0002.raw",
+      "Bytes": 25,
+      "Sha256": "127703B340F355ED3905EDC0D9BA7D85AAA4FB607D4AE37437ACED455C39CC6C"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0003.json",
+      "Bytes": 151,
+      "Sha256": "B19C852BFC3D57CE59AC07B072A6C4E69387D15EE97AC3AB08CB50AB6CC29317"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0003.raw",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0004.json",
+      "Bytes": 162,
+      "Sha256": "4B2B03A039634469BA9DAE63546293EF9942FD6E7C36504BDDEDEC044566A40E"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0004.raw",
+      "Bytes": 129,
+      "Sha256": "0FB97F2EDF14381DA852EC31D50520C378ED79C6C195BD9901AF364DB1221AEA"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0005.json",
+      "Bytes": 165,
+      "Sha256": "8704D3B762FD53636D3C0F33DAD8500FA7C22D1CE5866FA29431FD8E6AE32D82"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0005.raw",
+      "Bytes": 25,
+      "Sha256": "127703B340F355ED3905EDC0D9BA7D85AAA4FB607D4AE37437ACED455C39CC6C"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0006.json",
+      "Bytes": 152,
+      "Sha256": "0E110068159E83040AB8B86E19F4A9DD1C90EAAA18B2E035191655EADB99D123"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0006.raw",
+      "Bytes": 25,
+      "Sha256": "127703B340F355ED3905EDC0D9BA7D85AAA4FB607D4AE37437ACED455C39CC6C"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0007.json",
+      "Bytes": 151,
+      "Sha256": "E7182386ECB23EC8CB45588C30D26B754E1B5D8EC3DEDA305FF708EF6B7D6E32"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0007.raw",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0008.json",
+      "Bytes": 162,
+      "Sha256": "5C6FC189518FA88A1ACB221A5A9E5AF546135A1F2C54767A1D2168AA6311558D"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0008.raw",
+      "Bytes": 132,
+      "Sha256": "EC0A567383D717ACA17CE2859B7A5B1A3ED6A3EDA3804456505D1E96B19813A1"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0009.json",
+      "Bytes": 205,
+      "Sha256": "5943E001939A8BC89381AACDE6B3FC64A1C9AB82C74ABC724756BE2A11F09AE4"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0009.raw",
+      "Bytes": 25,
+      "Sha256": "127703B340F355ED3905EDC0D9BA7D85AAA4FB607D4AE37437ACED455C39CC6C"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0010.json",
+      "Bytes": 152,
+      "Sha256": "B9C94DD9D8F7B01B2589933CB55BF80EE9EC861DE692DE1D1F4C7DE08A1E576D"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0010.raw",
+      "Bytes": 25,
+      "Sha256": "127703B340F355ED3905EDC0D9BA7D85AAA4FB607D4AE37437ACED455C39CC6C"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0011.json",
+      "Bytes": 151,
+      "Sha256": "839B66AA8F801F096E59808E4443BCD1BCABA4D80E59BD290A6F7131FC9C8B52"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0011.raw",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0012.json",
+      "Bytes": 162,
+      "Sha256": "9C8CF810303F3079A4E42FFD4B68FE0B8A0A97C93EABC668AF5AB7E81EAF2D42"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0012.raw",
+      "Bytes": 173,
+      "Sha256": "18E4CD6F286F371E670307287D122C62A2DC137D2D2207E773BACDB326587926"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0013.json",
+      "Bytes": 219,
+      "Sha256": "F130135017C99E64DCE11EC61F5F102E3F6075FFBD4C732AC9A9A01E7E02F758"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0013.raw",
+      "Bytes": 25,
+      "Sha256": "127703B340F355ED3905EDC0D9BA7D85AAA4FB607D4AE37437ACED455C39CC6C"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0014.json",
+      "Bytes": 152,
+      "Sha256": "0F0498BFE1FA19FE0626483E34045487D75694BA0975F25F220CD031C23366A7"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0014.raw",
+      "Bytes": 25,
+      "Sha256": "127703B340F355ED3905EDC0D9BA7D85AAA4FB607D4AE37437ACED455C39CC6C"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0015.json",
+      "Bytes": 151,
+      "Sha256": "F604C85CFEC49D26509535D6658836AAB7B97FD10AA739F973763E89FAE3FC7D"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0015.raw",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0016.json",
+      "Bytes": 162,
+      "Sha256": "BE90012C190A09FA5C8A4867ADF2159972D4D47AD295644AC4BB2BD213DA8F4D"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0016.raw",
+      "Bytes": 186,
+      "Sha256": "1970AC9B6011A9E8FC9551975740A715EAB4ECB663F516B87D2D3467A36B4781"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0017.json",
+      "Bytes": 215,
+      "Sha256": "F094598CB644DC5DE1C5908561F8E2FCCC40839F63CD0C33E8EF67853B9C95CB"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0017.raw",
+      "Bytes": 25,
+      "Sha256": "127703B340F355ED3905EDC0D9BA7D85AAA4FB607D4AE37437ACED455C39CC6C"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0018.json",
+      "Bytes": 152,
+      "Sha256": "FAE6028F6E4A0AEC3C0BC055CD16F34D642A411635B35FC8950B85C6FC2B8F6B"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0018.raw",
+      "Bytes": 25,
+      "Sha256": "127703B340F355ED3905EDC0D9BA7D85AAA4FB607D4AE37437ACED455C39CC6C"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0019.json",
+      "Bytes": 151,
+      "Sha256": "ACE6FA75F2B1AB1EF94B659A34D7EBF82BF6BC926EF4AD0F842ABAD902FA9173"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0019.raw",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0020.json",
+      "Bytes": 162,
+      "Sha256": "CDC3A7C16270E7B5F531026798C35F013E0A397929AB447FA452BC1ED5D77457"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0020.raw",
+      "Bytes": 182,
+      "Sha256": "01E449819F733B40A9EAB1F30DA267975DCC51D9C2734E2A3BA92C9759815E95"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0021.json",
+      "Bytes": 208,
+      "Sha256": "E041DCB3BC5E94B7FBE1B78050DCE8DF56262491C7E4DA059E888A6CF2811D12"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0021.raw",
+      "Bytes": 25,
+      "Sha256": "127703B340F355ED3905EDC0D9BA7D85AAA4FB607D4AE37437ACED455C39CC6C"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0022.json",
+      "Bytes": 152,
+      "Sha256": "E85D9DBD4734DF884A0FABADF58DDB6A78B8E16A7024256996B56AB87C74E64C"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0022.raw",
+      "Bytes": 25,
+      "Sha256": "127703B340F355ED3905EDC0D9BA7D85AAA4FB607D4AE37437ACED455C39CC6C"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0023.json",
+      "Bytes": 151,
+      "Sha256": "42CE731666C291DE51306976AE06F0CF28CF23A300E04C88A5E94BD8741AF732"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0023.raw",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0024.json",
+      "Bytes": 162,
+      "Sha256": "D2519B6A423BD58F4E9028C324C14814B5A2122E8C5F0E6887575334B122C892"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0024.raw",
+      "Bytes": 175,
+      "Sha256": "E4598AF58CCCCA6BAADBBAFAF318E984056B34549F06E3FAA08D7EF504874479"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0025.json",
+      "Bytes": 211,
+      "Sha256": "DFDB8240D49871FD4DF1487307319ABD743EF299FA1F76F541A70713A48B5A19"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0025.raw",
+      "Bytes": 25,
+      "Sha256": "127703B340F355ED3905EDC0D9BA7D85AAA4FB607D4AE37437ACED455C39CC6C"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0026.json",
+      "Bytes": 152,
+      "Sha256": "EBEB87C39284B14CC7B343545A0E5120159DC7A3ADD75BDD48F5C418CBD35324"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0026.raw",
+      "Bytes": 25,
+      "Sha256": "127703B340F355ED3905EDC0D9BA7D85AAA4FB607D4AE37437ACED455C39CC6C"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0027.json",
+      "Bytes": 151,
+      "Sha256": "CE0A528F174EB0D19E3F3574ADEB6CC7B7D58F824730FA09DD42A7B0B64D53BD"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0027.raw",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0028.json",
+      "Bytes": 162,
+      "Sha256": "BE45811DB71827B2C2508361A23862E73B180DD183571C06F8FAF2BFD4C2B6C1"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0028.raw",
+      "Bytes": 179,
+      "Sha256": "5003A1158F918D6D648AE94496B8970973C7533842E7938028D4942A85234A05"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0029.json",
+      "Bytes": 217,
+      "Sha256": "058473A9CD79FF65EB1E2CE381F9BF578175DD3D3953F3FA4C0954AECF4F6041"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0029.raw",
+      "Bytes": 25,
+      "Sha256": "127703B340F355ED3905EDC0D9BA7D85AAA4FB607D4AE37437ACED455C39CC6C"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0030.json",
+      "Bytes": 152,
+      "Sha256": "4E81E4C39252AEA87CAF11436155B2567E69BD1047344BB2FCB5176E7A5DDE33"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0030.raw",
+      "Bytes": 25,
+      "Sha256": "127703B340F355ED3905EDC0D9BA7D85AAA4FB607D4AE37437ACED455C39CC6C"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0031.json",
+      "Bytes": 151,
+      "Sha256": "23CCA38D30D4F764CAE340AD5DA70D518EAAD63AB353C9B690C512071CC00974"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0031.raw",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0032.json",
+      "Bytes": 162,
+      "Sha256": "C7912A1FD7767A4147E858943FE11164A29FEB6F8DF9E8115D0049ABD4BC9399"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0032.raw",
+      "Bytes": 184,
+      "Sha256": "365F79FEC7E6A47CD6177949D29C765653227BA8AACAD0FF90D6ACA35433DE85"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0033.json",
+      "Bytes": 226,
+      "Sha256": "EFAD08B88121B292AA5D29EFACD8F29835FD5919404E6768F421FC809E591E0D"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0033.raw",
+      "Bytes": 25,
+      "Sha256": "127703B340F355ED3905EDC0D9BA7D85AAA4FB607D4AE37437ACED455C39CC6C"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0034.json",
+      "Bytes": 152,
+      "Sha256": "E0FF0E60192817E4F575B667F2540603F6CA65B87BCC24F7D2B36C58459ECA0C"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0034.raw",
+      "Bytes": 25,
+      "Sha256": "127703B340F355ED3905EDC0D9BA7D85AAA4FB607D4AE37437ACED455C39CC6C"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0035.json",
+      "Bytes": 151,
+      "Sha256": "BF43A7467862B9A93064D25A7C1B9DF3CF833D402930CB8ECFDC721E0B80EA8C"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0035.raw",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0036.json",
+      "Bytes": 162,
+      "Sha256": "744BE3E6598568B321D76AAD00E5128D18D55C5AA8ED0D880DF3CCE63C00A19A"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0036.raw",
+      "Bytes": 193,
+      "Sha256": "CD05DCFE248FD6847C3551EC6A61195AFF8FA2A30B9B3616F5965C9F6C017A03"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0037.json",
+      "Bytes": 222,
+      "Sha256": "6D57ECECE4E3B306A568FAF6C636B17427F95D626047DDCCBD2D39F30739AE85"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0037.raw",
+      "Bytes": 25,
+      "Sha256": "127703B340F355ED3905EDC0D9BA7D85AAA4FB607D4AE37437ACED455C39CC6C"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0038.json",
+      "Bytes": 152,
+      "Sha256": "51771F02D62BF2375940E3DCFAE5116D8EE19FD9C5E355DDE859B20269CA3EE5"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0038.raw",
+      "Bytes": 25,
+      "Sha256": "127703B340F355ED3905EDC0D9BA7D85AAA4FB607D4AE37437ACED455C39CC6C"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0039.json",
+      "Bytes": 151,
+      "Sha256": "3E2F6202F188EA1333F744F944018A2AA0A5A77442183EDB8F2F480A08E1BAE6"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0039.raw",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0040.json",
+      "Bytes": 162,
+      "Sha256": "51D5336CCAE11D1E4E0F0B54A286E38B299DC443CCCFB37C87E973306AD3ABFB"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0040.raw",
+      "Bytes": 189,
+      "Sha256": "59C963EF70C6485188BE5131CED290E681FE0E92C96F0EA9A0878CAEB7BF6223"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0041.json",
+      "Bytes": 228,
+      "Sha256": "673A88EF4FAE0423942CD2CB3432263A0B4224E4931EEAF38D61AEED4243511A"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0041.raw",
+      "Bytes": 25,
+      "Sha256": "127703B340F355ED3905EDC0D9BA7D85AAA4FB607D4AE37437ACED455C39CC6C"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0042.json",
+      "Bytes": 153,
+      "Sha256": "E93756DFF5FCC1F852EF68A8A1C8FE52CF9A2C87FCB572DCE1035E80975BF890"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0042.raw",
+      "Bytes": 25,
+      "Sha256": "127703B340F355ED3905EDC0D9BA7D85AAA4FB607D4AE37437ACED455C39CC6C"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0043.json",
+      "Bytes": 152,
+      "Sha256": "37BB34DC9D1DD27F78BE4232FAA19BAF4AB8891414797EA167FD07D47A6FD46A"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0043.raw",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0044.json",
+      "Bytes": 163,
+      "Sha256": "537125191186A7702F3EC0D9EA83461B30AEE8D410672F7AC0A4F9F69F81D0A1"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0044.raw",
+      "Bytes": 195,
+      "Sha256": "2F62BA187619736D903630BA52883420B16209F3FFAF873C35760C496F6A7935"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0045.json",
+      "Bytes": 228,
+      "Sha256": "5109C12C6AE4F95BFAA74A14A83B2892B0BD4D8AFEF95E1E686B4991EDC876E2"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0045.raw",
+      "Bytes": 25,
+      "Sha256": "127703B340F355ED3905EDC0D9BA7D85AAA4FB607D4AE37437ACED455C39CC6C"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0046.json",
+      "Bytes": 153,
+      "Sha256": "AD2BC3B9B3852735E1BE2A5956C9D9AABBAA7B071AED16BE63AFCD154AEC7D76"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0046.raw",
+      "Bytes": 25,
+      "Sha256": "127703B340F355ED3905EDC0D9BA7D85AAA4FB607D4AE37437ACED455C39CC6C"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0047.json",
+      "Bytes": 152,
+      "Sha256": "FB8064511C5451291E3B009D5C17E1AAF322009C35E01951D096D9C5D784CA41"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0047.raw",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0048.json",
+      "Bytes": 163,
+      "Sha256": "3F197B303D2B796534D8CF1BC9896AD102D8D6ABE85C58568C5F82B394E7A79F"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0048.raw",
+      "Bytes": 196,
+      "Sha256": "AE1FA0934B486AF599957EE395F79521C261C9EE0CC79C433111381925D269FF"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0049.json",
+      "Bytes": 152,
+      "Sha256": "02D46FD25F64DFC4C199A0CB9D03AC770CCC903AA587480678082DB6E48DC253"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0049.raw",
+      "Bytes": 25,
+      "Sha256": "127703B340F355ED3905EDC0D9BA7D85AAA4FB607D4AE37437ACED455C39CC6C"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0050.json",
+      "Bytes": 153,
+      "Sha256": "20C5BA2C85C5A5EB4458BC7EED07384CFE4B0AE448DEC52D8A79A9149D62F9D3"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0050.raw",
+      "Bytes": 25,
+      "Sha256": "127703B340F355ED3905EDC0D9BA7D85AAA4FB607D4AE37437ACED455C39CC6C"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0051.json",
+      "Bytes": 152,
+      "Sha256": "1A4E1EE90DE8CFA5AFFB3FD6474BE738BDA6413E4DFA890EB822291A58666721"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0051.raw",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0052.json",
+      "Bytes": 163,
+      "Sha256": "12C65A0E272415727E4BADFEEE564798BAEE2A46806F5B72D03E38139AF7CE80"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0052.raw",
+      "Bytes": 120,
+      "Sha256": "5F29B811467B83ECB0B903C05197B90194E517F650FA3A35E4C477C4ADE4980C"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0053.json",
+      "Bytes": 169,
+      "Sha256": "625DBF4172BD76BCD5919ECE54378CD3FD0B7340A11EE6749D90AB6B9EEE15E8"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0053.raw",
+      "Bytes": 25,
+      "Sha256": "127703B340F355ED3905EDC0D9BA7D85AAA4FB607D4AE37437ACED455C39CC6C"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0054.json",
+      "Bytes": 153,
+      "Sha256": "76A8859D1CA8A648A68F7441B47A38FBCECAC79C63C19F1279CFED302876063A"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0054.raw",
+      "Bytes": 25,
+      "Sha256": "127703B340F355ED3905EDC0D9BA7D85AAA4FB607D4AE37437ACED455C39CC6C"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0055.json",
+      "Bytes": 152,
+      "Sha256": "05A9F46003470CE45ED1DE071249728B112DD6609CB36480A377DAD95C9AEEF3"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0055.raw",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0056.json",
+      "Bytes": 163,
+      "Sha256": "4C1E45DD6B37ABFA4F92A3C89DDEA7FDE99F3CA93725342EF2092956EA0D2F2F"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0056.raw",
+      "Bytes": 136,
+      "Sha256": "3E008E3E3F903F42DC2B72F734C58C7F7ED5EB902CE682B2C46B7F4BBE391A2F"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0057.json",
+      "Bytes": 177,
+      "Sha256": "5EBFFD036BB297CC848B96F009C444DD3A9A0035760A4BCEF2268D1FA90E48F5"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0057.raw",
+      "Bytes": 25,
+      "Sha256": "127703B340F355ED3905EDC0D9BA7D85AAA4FB607D4AE37437ACED455C39CC6C"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0058.json",
+      "Bytes": 153,
+      "Sha256": "62389BAA1F684EF9270C57A6096789F0B8C1BCFE4E0B353FB51B45A678823DA9"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0058.raw",
+      "Bytes": 25,
+      "Sha256": "127703B340F355ED3905EDC0D9BA7D85AAA4FB607D4AE37437ACED455C39CC6C"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0059.json",
+      "Bytes": 152,
+      "Sha256": "2FAF8DED7D042A8F28FBFADD12569A36CB2066F4DFBAE8CB20CD740215225DD0"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0059.raw",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0060.json",
+      "Bytes": 163,
+      "Sha256": "DA395576E93E2CCBE2970E020975924727B4BDB988F62FE2CBC0335A2C45E589"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0060.raw",
+      "Bytes": 144,
+      "Sha256": "8A234C62AD411F9C7A539D74597277855AE04B922C485B80DF052756702A73B5"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0061.json",
+      "Bytes": 168,
+      "Sha256": "7E3AF644236613A7B6FA58998DB1238E92AB32BB2B78F2488757D66920259D52"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0061.raw",
+      "Bytes": 25,
+      "Sha256": "127703B340F355ED3905EDC0D9BA7D85AAA4FB607D4AE37437ACED455C39CC6C"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0062.json",
+      "Bytes": 153,
+      "Sha256": "A9A140B051018B4952AF0774C3348654F41A7F30A62DBCC313163161C4663D50"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0062.raw",
+      "Bytes": 25,
+      "Sha256": "127703B340F355ED3905EDC0D9BA7D85AAA4FB607D4AE37437ACED455C39CC6C"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0063.json",
+      "Bytes": 152,
+      "Sha256": "624A04F8922AC175CC3A60171C4D58F4BCDFA2C04293D040F56B8F37A4DD869D"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0063.raw",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0064.json",
+      "Bytes": 163,
+      "Sha256": "E7CE41E6FC49FC9F0F9700AEFDB6F86013141E0A2F4F538A5DC759C2F4297243"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0064.raw",
+      "Bytes": 136,
+      "Sha256": "BFBC6AF078E7F4FC9396CDEB31F233BCC971FB731DC19BDCC16F7AA6425A5FB8"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0065.json",
+      "Bytes": 174,
+      "Sha256": "39EF592B46B0D21033FB905336BEA5501C65F8B7D837ED3AFCA8B444EED11ABC"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0065.raw",
+      "Bytes": 25,
+      "Sha256": "127703B340F355ED3905EDC0D9BA7D85AAA4FB607D4AE37437ACED455C39CC6C"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0066.json",
+      "Bytes": 153,
+      "Sha256": "4C9BDAE27B08FF0683CEB0291FDAF0E56F87F1CF7E0966DF09D10CEACE09EAFB"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0066.raw",
+      "Bytes": 25,
+      "Sha256": "127703B340F355ED3905EDC0D9BA7D85AAA4FB607D4AE37437ACED455C39CC6C"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0067.json",
+      "Bytes": 152,
+      "Sha256": "E18B515605F4B580E455AF07E1259743ED4A43E609BDF4EC7D622800FA659D67"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0067.raw",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0068.json",
+      "Bytes": 163,
+      "Sha256": "1EFE7FD457A54368A4F034F98BBC00929C0C552268E66709EABA018FF913A4C6"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0068.raw",
+      "Bytes": 141,
+      "Sha256": "00442DD58AC540400F1BBA92C5E3B40477ADD70A897AAF8457A6480EAF190509"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0069.json",
+      "Bytes": 177,
+      "Sha256": "316BE50D1ABF171ECC0EA69294100AE9B49B81CC1EB2992D6B73784FA639E869"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0069.raw",
+      "Bytes": 25,
+      "Sha256": "127703B340F355ED3905EDC0D9BA7D85AAA4FB607D4AE37437ACED455C39CC6C"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0070.json",
+      "Bytes": 153,
+      "Sha256": "7D5125FC37D39CEE1E54DB2D1FCF5DD43B49C4E43CF561F0B9561D568D41B7D8"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0070.raw",
+      "Bytes": 25,
+      "Sha256": "127703B340F355ED3905EDC0D9BA7D85AAA4FB607D4AE37437ACED455C39CC6C"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0071.json",
+      "Bytes": 152,
+      "Sha256": "753FF29FA101DB1B560A1511789D896A2177058714410D96934667AD05FE5874"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0071.raw",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0072.json",
+      "Bytes": 163,
+      "Sha256": "78C708EA867D5EE066C4828568EC82BDFB27E3A3113803E769F28BAEAAFC580C"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0072.raw",
+      "Bytes": 144,
+      "Sha256": "C59B9E0FD174F1AE01DF3609ADCE9797ABBC958A95D13AC8EC5ABB92D2CFF7FD"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0073.json",
+      "Bytes": 180,
+      "Sha256": "1CCF6B472304C640E7C8E0D1AF0ECC9D003EFAB54DB2913242A23E5C1895097B"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0073.raw",
+      "Bytes": 25,
+      "Sha256": "127703B340F355ED3905EDC0D9BA7D85AAA4FB607D4AE37437ACED455C39CC6C"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0074.json",
+      "Bytes": 153,
+      "Sha256": "A75062991B1A32379CEEEFE7A14036905088899896B8D102C3E786F8BFD62BE2"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0074.raw",
+      "Bytes": 25,
+      "Sha256": "127703B340F355ED3905EDC0D9BA7D85AAA4FB607D4AE37437ACED455C39CC6C"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0075.json",
+      "Bytes": 152,
+      "Sha256": "D71CDF821D0C0BE5DC44505AC82B91BC3F32256F40115A99D2FA67A83ACFE4AF"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0075.raw",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0076.json",
+      "Bytes": 163,
+      "Sha256": "C0818F8BEEB3943AD9A7FE72CC951ADB8120AB0207E060B3721FF52E19227593"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0076.raw",
+      "Bytes": 147,
+      "Sha256": "44764F17476A32D55430BA665B2FB704F81C7497936D1AE58389EB4626F26B9B"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0077.json",
+      "Bytes": 161,
+      "Sha256": "EBDCB2DE91D6A78515805C50A457F6D494F09A5EC2AFBE688C433B6558D69016"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0077.raw",
+      "Bytes": 25,
+      "Sha256": "127703B340F355ED3905EDC0D9BA7D85AAA4FB607D4AE37437ACED455C39CC6C"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0078.json",
+      "Bytes": 153,
+      "Sha256": "20AE4BC0C6CC7F99607B384F9001ACB6B2F9C06F341528028550620BC68A64A9"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0078.raw",
+      "Bytes": 25,
+      "Sha256": "127703B340F355ED3905EDC0D9BA7D85AAA4FB607D4AE37437ACED455C39CC6C"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0079.json",
+      "Bytes": 152,
+      "Sha256": "EF0A4E613B079B07670845344AA9A6905E28EE81779BDDB188D44B3F97AB0718"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0079.raw",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0080.json",
+      "Bytes": 163,
+      "Sha256": "EDACB3EA4D11E9FE5AFA31AC3C66C484DE4AF77D8FDDD097D4E7F0584C67DE79"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0080.raw",
+      "Bytes": 128,
+      "Sha256": "8B7B9F2A7349B4A308B232C641AC73683BE121A7BA55E5584A2183F1719AA915"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0081.json",
+      "Bytes": 166,
+      "Sha256": "7179F69E3A92B734A496BE6F922EDBBC773BEEC29D3501363361645F055A83DB"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0081.raw",
+      "Bytes": 25,
+      "Sha256": "127703B340F355ED3905EDC0D9BA7D85AAA4FB607D4AE37437ACED455C39CC6C"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0082.json",
+      "Bytes": 153,
+      "Sha256": "9C1ED3656288F5F2D2036D6192917000F8244DFD2C217C7A32E98701B7FE9647"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0082.raw",
+      "Bytes": 25,
+      "Sha256": "127703B340F355ED3905EDC0D9BA7D85AAA4FB607D4AE37437ACED455C39CC6C"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0083.json",
+      "Bytes": 152,
+      "Sha256": "89727D72E703A439A1AEFCD867635B84C1D3EBF361144E802216789C375F3C7E"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0083.raw",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0084.json",
+      "Bytes": 163,
+      "Sha256": "525F60054B2D37A548DA7F10A62720A8A00E345B93BACEDDA0655DD285195080"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0084.raw",
+      "Bytes": 133,
+      "Sha256": "4C75BFD7D58E29BBD2EE703AC3BD991438D4C474B3DAECF6179BEBA709609B18"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0085.json",
+      "Bytes": 173,
+      "Sha256": "336EBFE18FBD8EE4D5FBA9B5D331DA380D59E70A47CB39E7C2F2989DA26BA99E"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0085.raw",
+      "Bytes": 25,
+      "Sha256": "127703B340F355ED3905EDC0D9BA7D85AAA4FB607D4AE37437ACED455C39CC6C"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0086.json",
+      "Bytes": 153,
+      "Sha256": "19352EB7A0AED4FFDE774DA46087E23B2E24095DD7B0B510EE419BDF0924B9A6"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0086.raw",
+      "Bytes": 25,
+      "Sha256": "127703B340F355ED3905EDC0D9BA7D85AAA4FB607D4AE37437ACED455C39CC6C"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0087.json",
+      "Bytes": 152,
+      "Sha256": "64950611798ABEA58AEDAA8D2B501DFCE272CC863B0E10005214965631A68E91"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0087.raw",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0088.json",
+      "Bytes": 163,
+      "Sha256": "99E6CDBFA5ED97A65856DA40850C40AC07C908E7BB1F4BF650AEB7AC99C69491"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0088.raw",
+      "Bytes": 140,
+      "Sha256": "039999F9EA9E3E3EA4AA81EF3EFB9E11277C4F2DC47E3EC5A7C4148FEA32A108"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0089.json",
+      "Bytes": 199,
+      "Sha256": "267C8086C53DCFC8FDF7AC8FCF71020ECFD513B73B01BAAB8EFFDEA8576B44EF"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0089.raw",
+      "Bytes": 25,
+      "Sha256": "127703B340F355ED3905EDC0D9BA7D85AAA4FB607D4AE37437ACED455C39CC6C"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0090.json",
+      "Bytes": 153,
+      "Sha256": "D4E2A5EBA532893D8C3D2354B7CECE2EAADB97A9C2C174F1223FDF9BBDC16D76"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0090.raw",
+      "Bytes": 25,
+      "Sha256": "127703B340F355ED3905EDC0D9BA7D85AAA4FB607D4AE37437ACED455C39CC6C"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0091.json",
+      "Bytes": 152,
+      "Sha256": "B860629BB93AF8491A463BA8955A496FD8E16D0FBB602CF85825D8CD4482A478"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0091.raw",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0092.json",
+      "Bytes": 163,
+      "Sha256": "BDC0E06841AED6BFDFDFF52D9AA620E007B919561199F447260FB60CCBEB42ED"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0092.raw",
+      "Bytes": 166,
+      "Sha256": "B4972869BB1C79D7CF0C7278FCC448E9EFD9E4C46FAD5DF1435E681A051767CA"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0093.json",
+      "Bytes": 166,
+      "Sha256": "A37942AFC32D5A932454CEFE2E8420474441FB6AA619FECEBCF40CF4521CCF96"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0093.raw",
+      "Bytes": 25,
+      "Sha256": "127703B340F355ED3905EDC0D9BA7D85AAA4FB607D4AE37437ACED455C39CC6C"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0094.json",
+      "Bytes": 153,
+      "Sha256": "19E2C88640802D1FDF2ED1454BBE94A36F5D286683A493719FA24E43882B511C"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0094.raw",
+      "Bytes": 25,
+      "Sha256": "127703B340F355ED3905EDC0D9BA7D85AAA4FB607D4AE37437ACED455C39CC6C"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0095.json",
+      "Bytes": 152,
+      "Sha256": "ACC79E07BA16978BBA48252A9F0DD2973882D2057A306423978204646D9C24B0"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0095.raw",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0096.json",
+      "Bytes": 163,
+      "Sha256": "F7F83C228F77A6F7EAE85BF3EC1BFA17F97BB9FE21EEC3845E28B8B228E7D665"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0096.raw",
+      "Bytes": 133,
+      "Sha256": "75BDEB2FF4B2506A46A0A1CB0543BB5B7E89FE32296C03D52F152D9A73EB1950"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0097.json",
+      "Bytes": 182,
+      "Sha256": "1688F85280D666DAA20BC091E25867D2249940732C8D12C1774BEEF0D58423B9"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0097.raw",
+      "Bytes": 25,
+      "Sha256": "127703B340F355ED3905EDC0D9BA7D85AAA4FB607D4AE37437ACED455C39CC6C"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0098.json",
+      "Bytes": 153,
+      "Sha256": "F4098DE2848B6DCC400996202C9C3F735E228D87BA116CB24E0C9CBA98E5C205"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0098.raw",
+      "Bytes": 25,
+      "Sha256": "127703B340F355ED3905EDC0D9BA7D85AAA4FB607D4AE37437ACED455C39CC6C"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0099.json",
+      "Bytes": 152,
+      "Sha256": "65E1E543A0D4D5E19387B9A2C23C94D0720993C66F01EBB438D59CFD0C77770C"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0099.raw",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0100.json",
+      "Bytes": 163,
+      "Sha256": "6D5DB8ACD4C5EB8C9153D5317FAB9276295E0744085397675F5F0280239837B1"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0100.raw",
+      "Bytes": 149,
+      "Sha256": "723711B44E98985FDA26F9CA58E5E6B860AE3B4F685BF49555AAE03D9387D803"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0101.json",
+      "Bytes": 185,
+      "Sha256": "A21DEE119AA907FF3592AA78AA0A26E110ABB47FB4BE74D721FF404081666D8C"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0101.raw",
+      "Bytes": 25,
+      "Sha256": "127703B340F355ED3905EDC0D9BA7D85AAA4FB607D4AE37437ACED455C39CC6C"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0102.json",
+      "Bytes": 153,
+      "Sha256": "D04A8B49FCF96082F784577CF079C2CB57BDF4C7197800CA8C41B3FDAFC0CFBC"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0102.raw",
+      "Bytes": 25,
+      "Sha256": "127703B340F355ED3905EDC0D9BA7D85AAA4FB607D4AE37437ACED455C39CC6C"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0103.json",
+      "Bytes": 152,
+      "Sha256": "AFC9250C10A5E33DE6AD6E956706B46645770CD912CD3B73A8C8A95CA44D0972"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0103.raw",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0104.json",
+      "Bytes": 163,
+      "Sha256": "058CB7E0255D8F4EDE88FBD2CD7BFE7F33C412C5D4EB9D1FB765184D25AAAF20"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0104.raw",
+      "Bytes": 152,
+      "Sha256": "0C85E35FB3CC85A05D0818325A2FDAE837F48D3B413668F12457EA646E41B63D"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0105.json",
+      "Bytes": 206,
+      "Sha256": "C13FA5E5296C957F7AD557887D24F0426107353A1C52CC1076807B43D10587CE"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0105.raw",
+      "Bytes": 25,
+      "Sha256": "127703B340F355ED3905EDC0D9BA7D85AAA4FB607D4AE37437ACED455C39CC6C"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0106.json",
+      "Bytes": 153,
+      "Sha256": "BAB23AEFED56965421C72CEACAACB86AF3BE19DB1E2368CDF8CEFF2888F73936"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0106.raw",
+      "Bytes": 25,
+      "Sha256": "127703B340F355ED3905EDC0D9BA7D85AAA4FB607D4AE37437ACED455C39CC6C"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0107.json",
+      "Bytes": 152,
+      "Sha256": "6A45CB9855AEDA25B361269D03F63B7CB208B931FDBC109CC280A177C8A3C4A6"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0107.raw",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0108.json",
+      "Bytes": 163,
+      "Sha256": "D844E3A54A2D0C00129B3E288DD090A9B4C4D510E78D0CF96B52F1566B399401"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0108.raw",
+      "Bytes": 173,
+      "Sha256": "97BB260C59E376644096B733EC17953F25020E4F8E6334C0AB989EDE4AF1D37F"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0109.json",
+      "Bytes": 201,
+      "Sha256": "41D3136E72CF10855AB8488CA9C97BF0C8A23A63B20003F8A1EC728C4FD2B2FE"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0109.raw",
+      "Bytes": 25,
+      "Sha256": "127703B340F355ED3905EDC0D9BA7D85AAA4FB607D4AE37437ACED455C39CC6C"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0110.json",
+      "Bytes": 153,
+      "Sha256": "58C3DF6F631D05F7F9481AC3DBC187101258816D455051B2B1A81DF1E849DDEA"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0110.raw",
+      "Bytes": 25,
+      "Sha256": "127703B340F355ED3905EDC0D9BA7D85AAA4FB607D4AE37437ACED455C39CC6C"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0111.json",
+      "Bytes": 152,
+      "Sha256": "6302DEFDF1A59906588A852D54B49A259B5ABE510B2A353B0FF3FCF1B73143EC"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0111.raw",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0112.json",
+      "Bytes": 163,
+      "Sha256": "88AA39AB1758BF6FC13C4A2179E760ACA84E498CADB237AA632D0710C86E260B"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0112.raw",
+      "Bytes": 168,
+      "Sha256": "F1D078E9F07D34BC58C7BBF386563B2ECAC33F67A0B44AA06B5660DDC486CA3A"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0113.json",
+      "Bytes": 212,
+      "Sha256": "91C4A718A4A251EDCA610B830BDC838CA9BD5D42A09A96FA6D225A90D4722E85"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0113.raw",
+      "Bytes": 25,
+      "Sha256": "127703B340F355ED3905EDC0D9BA7D85AAA4FB607D4AE37437ACED455C39CC6C"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0114.json",
+      "Bytes": 153,
+      "Sha256": "906E097B9DF55872DFD92F1F6A00155B5A5CA99C6EA12C688412C6B275246EA9"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0114.raw",
+      "Bytes": 25,
+      "Sha256": "127703B340F355ED3905EDC0D9BA7D85AAA4FB607D4AE37437ACED455C39CC6C"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0115.json",
+      "Bytes": 152,
+      "Sha256": "BECBB95EE8FCB003B73C58F59A12442F64B7403B5658993ECD7C793B6EDD938A"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0115.raw",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0116.json",
+      "Bytes": 163,
+      "Sha256": "2BB9977754F44494074F6DB53A776031FAD11E3B9708F103B2A22D37CE22CA02"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0116.raw",
+      "Bytes": 179,
+      "Sha256": "970AB4D006F794AAD614B7C5EE78DDAC8A43C0899995D329C16DFD49AE05FA05"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0117.json",
+      "Bytes": 209,
+      "Sha256": "27D220BD0008A05A3D4CB25EE5CBF1BFF01DB16D6266020FF87CADB85C3FDD79"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0117.raw",
+      "Bytes": 25,
+      "Sha256": "127703B340F355ED3905EDC0D9BA7D85AAA4FB607D4AE37437ACED455C39CC6C"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0118.json",
+      "Bytes": 153,
+      "Sha256": "65976627CBC65351C1D1DC9521EE91954DB16FFC1ADDCD087057C23BF3827E85"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0118.raw",
+      "Bytes": 25,
+      "Sha256": "127703B340F355ED3905EDC0D9BA7D85AAA4FB607D4AE37437ACED455C39CC6C"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0119.json",
+      "Bytes": 152,
+      "Sha256": "E9C85E6FA80B5AE775E7155B90EF9F73EB1BD51F2C9CC6D22AE58C3E408BCCD0"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0119.raw",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0120.json",
+      "Bytes": 163,
+      "Sha256": "6D51E82F1A9006E0D13EC76BF2AB82B595B152EE5962A5F339AF29112E5010E1"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0120.raw",
+      "Bytes": 176,
+      "Sha256": "B0C722853C38CDE2BC2C8B5B339C2137128D671094A726D4864E7D66A2F33C8B"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0121.json",
+      "Bytes": 204,
+      "Sha256": "B7164FF3BD48BE75447B910FF0AEDC18AB8CAA860CA89347B4670EDD35CCAB72"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0121.raw",
+      "Bytes": 25,
+      "Sha256": "127703B340F355ED3905EDC0D9BA7D85AAA4FB607D4AE37437ACED455C39CC6C"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0122.json",
+      "Bytes": 153,
+      "Sha256": "581F84E79378063C5CF2A08F89B3038B1D219EF436B4A68BF46E998DF86D2608"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0122.raw",
+      "Bytes": 25,
+      "Sha256": "127703B340F355ED3905EDC0D9BA7D85AAA4FB607D4AE37437ACED455C39CC6C"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0123.json",
+      "Bytes": 152,
+      "Sha256": "EBE96A26EFFB4B7E04A19C4FAE63795B1772CDD4A519E2D38CFD3BD564D43C1B"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0123.raw",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0124.json",
+      "Bytes": 163,
+      "Sha256": "1887641AF1A15EB0C8B3BFEBE528D6227E9E1A579100B727A0676A7FDB171FAD"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0124.raw",
+      "Bytes": 171,
+      "Sha256": "DCE9AB12B980F5D203CDD8763A7756E0FE4F7439AE09B433665031ED627A8AF7"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0125.json",
+      "Bytes": 200,
+      "Sha256": "5612ACF1A4AA159C1BC9EA86AABE8701ED1838193EA61E567238043CAEC945B5"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0125.raw",
+      "Bytes": 25,
+      "Sha256": "127703B340F355ED3905EDC0D9BA7D85AAA4FB607D4AE37437ACED455C39CC6C"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0126.json",
+      "Bytes": 153,
+      "Sha256": "26BE3F0E79B6C0DB72EAC7F70FCD25E773E3EA5200C55C9DA941A2371A9B96A2"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0126.raw",
+      "Bytes": 25,
+      "Sha256": "127703B340F355ED3905EDC0D9BA7D85AAA4FB607D4AE37437ACED455C39CC6C"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0127.json",
+      "Bytes": 152,
+      "Sha256": "9DD278C7E221ED618ED213A8C4C896CECD8D840F0676A3B383F904D421516805"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0127.raw",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0128.json",
+      "Bytes": 163,
+      "Sha256": "E0AF3F1BAC7A9357FEB78ADB83ADDFB88E9A2A26215DBD819B24D0859649445D"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0128.raw",
+      "Bytes": 167,
+      "Sha256": "57CDAA23F5607B725BCE10DFCD220BE900D162781B9DB1F96B1F5957D1359608"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0129.json",
+      "Bytes": 202,
+      "Sha256": "672460634323AA055DC04DDCA3F5DB34FE25C5B133C7755181EAB563F169D854"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0129.raw",
+      "Bytes": 25,
+      "Sha256": "127703B340F355ED3905EDC0D9BA7D85AAA4FB607D4AE37437ACED455C39CC6C"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0130.json",
+      "Bytes": 153,
+      "Sha256": "426D6A05439C2C371F0E91EC1EA356303C75EF80D97E08D0625131FADF26B9D4"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0130.raw",
+      "Bytes": 25,
+      "Sha256": "127703B340F355ED3905EDC0D9BA7D85AAA4FB607D4AE37437ACED455C39CC6C"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0131.json",
+      "Bytes": 152,
+      "Sha256": "48AAEA5725D1AD7AC2E5D76794727E4868292A4A3FD63EC4C23F7377D3C24229"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0131.raw",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0132.json",
+      "Bytes": 163,
+      "Sha256": "805DBF5DE163628A8FE25C67434B4A84B7477128039A1150A97D842A0893384A"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0132.raw",
+      "Bytes": 169,
+      "Sha256": "5360A2B27DFECD707D765F32A251CD318F2F26459AFD95BB9A098D2EC29FD66A"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0133.json",
+      "Bytes": 209,
+      "Sha256": "EE83F719CEFC20B60928FB8765AFF4DB566499F17A8489673E8D5680AF429B78"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0133.raw",
+      "Bytes": 25,
+      "Sha256": "127703B340F355ED3905EDC0D9BA7D85AAA4FB607D4AE37437ACED455C39CC6C"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0134.json",
+      "Bytes": 153,
+      "Sha256": "4C75608F8FE51DCB0492DB0CA7AAEAACB3829F7F42E1792EB4492DD92C1769CB"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0134.raw",
+      "Bytes": 25,
+      "Sha256": "127703B340F355ED3905EDC0D9BA7D85AAA4FB607D4AE37437ACED455C39CC6C"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0135.json",
+      "Bytes": 152,
+      "Sha256": "F47026A9C644A1F6F26092B5860B6CDD333C0E92E835F53C40F4B06F14BC3D3B"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0135.raw",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0136.json",
+      "Bytes": 163,
+      "Sha256": "A184DA7A5B017911727BF07C4B666B712D2EA59C8868669BF7F62B7BB4A9E9F7"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0136.raw",
+      "Bytes": 176,
+      "Sha256": "E426B29A057A93C0C5216F175041508D5C9BEEC4161D4DBF2BC9229EC7C46788"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0137.json",
+      "Bytes": 207,
+      "Sha256": "FF62DA227FE447B6BE0E74B57DCA990B2B7F7A8BC996D6F829D1EBF4E1245635"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0137.raw",
+      "Bytes": 25,
+      "Sha256": "127703B340F355ED3905EDC0D9BA7D85AAA4FB607D4AE37437ACED455C39CC6C"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0138.json",
+      "Bytes": 153,
+      "Sha256": "1021A2252450F0D64B6CC033FBB6F4D344D5F54E89D5B2496641026B522EFE9F"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0138.raw",
+      "Bytes": 25,
+      "Sha256": "127703B340F355ED3905EDC0D9BA7D85AAA4FB607D4AE37437ACED455C39CC6C"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0139.json",
+      "Bytes": 152,
+      "Sha256": "4EA3570F4C8413EB1D3C1724DAF486596B701DAFEFF0D5C04D4428273EEC8285"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0139.raw",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0140.json",
+      "Bytes": 163,
+      "Sha256": "CE1EA0A4BF68C0790E67B6CE93C9A1BCB0372A2747547CBCADC1E95D9948156C"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0140.raw",
+      "Bytes": 174,
+      "Sha256": "CEAF391D3C0DCDBFDAC1CDD3BE123F6263B5B7A735A13BC99BB243DBB8D29348"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0141.json",
+      "Bytes": 209,
+      "Sha256": "34ED98DE52C769ADF0181DC79343BA8BFAB5D8CC7292FD2356664485732D0778"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0141.raw",
+      "Bytes": 25,
+      "Sha256": "127703B340F355ED3905EDC0D9BA7D85AAA4FB607D4AE37437ACED455C39CC6C"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0142.json",
+      "Bytes": 153,
+      "Sha256": "C6C6BBF5532447D5BE871E1B23253B0813B7BC9B1558E1140F4A6CF907DF3FF0"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0142.raw",
+      "Bytes": 25,
+      "Sha256": "127703B340F355ED3905EDC0D9BA7D85AAA4FB607D4AE37437ACED455C39CC6C"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0143.json",
+      "Bytes": 152,
+      "Sha256": "2C9560372505468A7A9490AFADA85E62AB287BE6E43C54172BAA1F99F0DCB71B"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0143.raw",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0144.json",
+      "Bytes": 163,
+      "Sha256": "D140E8BEE5CB57D8A0B264BE43E175C62A564B2E1DA3754949C8C74B300DFD85"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0144.raw",
+      "Bytes": 176,
+      "Sha256": "79A926546C36ED3207DDB26023165B47133590E0B4550F34C9B7A37EC26B518A"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0145.json",
+      "Bytes": 188,
+      "Sha256": "184EE8399818991ACE9A39CB66097A544C498E2C2D015790ABFEED21AE965681"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0145.raw",
+      "Bytes": 25,
+      "Sha256": "127703B340F355ED3905EDC0D9BA7D85AAA4FB607D4AE37437ACED455C39CC6C"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0146.json",
+      "Bytes": 153,
+      "Sha256": "41DD18D833E53C341076C4B11EA7B62E3CB4C0A60D6850C25244F7305784A786"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0146.raw",
+      "Bytes": 25,
+      "Sha256": "127703B340F355ED3905EDC0D9BA7D85AAA4FB607D4AE37437ACED455C39CC6C"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0147.json",
+      "Bytes": 152,
+      "Sha256": "701D052B4C21617ACD2E754D2F98D741E78CBE16979202CA0D22BE35D764F70A"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0147.raw",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0148.json",
+      "Bytes": 163,
+      "Sha256": "A5A64664D2B5A598EA0361B9036A4237774C6C980DEB3883240C6A7F5732C075"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0148.raw",
+      "Bytes": 155,
+      "Sha256": "6F80344FAF35093DD189C53F352302B044759FEC6CD3212987FE0EAA252B7364"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0149.json",
+      "Bytes": 194,
+      "Sha256": "DE935A63EA3A1FA48FD1FDAAC4B5FD476EA2CB86FAE00AF2C08D49EBB92CC210"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0149.raw",
+      "Bytes": 25,
+      "Sha256": "127703B340F355ED3905EDC0D9BA7D85AAA4FB607D4AE37437ACED455C39CC6C"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0150.json",
+      "Bytes": 153,
+      "Sha256": "B986F5BD6229EE58C66518D66B6901D43F901E259B869B8271E6924B5891F4AD"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0150.raw",
+      "Bytes": 25,
+      "Sha256": "127703B340F355ED3905EDC0D9BA7D85AAA4FB607D4AE37437ACED455C39CC6C"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0151.json",
+      "Bytes": 152,
+      "Sha256": "03DB0A8CF9C173FD3383172871BB014F411053907D5583908D97D019567AD9C8"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0151.raw",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0152.json",
+      "Bytes": 163,
+      "Sha256": "F0E9E33A25ACADE063CF135631C7E1DCF6BB3AE8F62C4CAFBEF9B0EE813B042A"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0152.raw",
+      "Bytes": 161,
+      "Sha256": "0E021196966998BA005B2C39301EAF07BD9B79B96BC30BD0FA6CB6C19FB54320"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0153.json",
+      "Bytes": 183,
+      "Sha256": "6DE6CF190D1F8BDD78D25CBCD80F4A5B61FCD731454156D1ECEAB774033919C8"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0153.raw",
+      "Bytes": 25,
+      "Sha256": "127703B340F355ED3905EDC0D9BA7D85AAA4FB607D4AE37437ACED455C39CC6C"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0154.json",
+      "Bytes": 153,
+      "Sha256": "B2A89A43C0BEA3E12E334E6F5C9EEDB58474B2BF2B9616B251390C4AC294A602"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0154.raw",
+      "Bytes": 25,
+      "Sha256": "127703B340F355ED3905EDC0D9BA7D85AAA4FB607D4AE37437ACED455C39CC6C"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0155.json",
+      "Bytes": 152,
+      "Sha256": "7C7BF6594CECF2137BDA1CEDF19A109A1C622E801AEF9CB949EC75BE111AACE2"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0155.raw",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0156.json",
+      "Bytes": 163,
+      "Sha256": "0BE089C22C2C5061116DFF156BA51DEAE8E87852620F7D2A624F5B8285C0FF23"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0156.raw",
+      "Bytes": 150,
+      "Sha256": "D6D7869B1E1E7BBB31492A3D90FB932B18BDE920A60A3D2D8720DABAA7E1F16F"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0157.json",
+      "Bytes": 191,
+      "Sha256": "36A30C8585505FD8C96E5DC16049A8ECDA7E4AC9EDAD841D85FFFBA0995F5067"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0157.raw",
+      "Bytes": 25,
+      "Sha256": "127703B340F355ED3905EDC0D9BA7D85AAA4FB607D4AE37437ACED455C39CC6C"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0158.json",
+      "Bytes": 153,
+      "Sha256": "F709324F1A0F2C50364BA1BC202328EDF523A5E625A6373A2ADA2ABD10EB17ED"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0158.raw",
+      "Bytes": 25,
+      "Sha256": "127703B340F355ED3905EDC0D9BA7D85AAA4FB607D4AE37437ACED455C39CC6C"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0159.json",
+      "Bytes": 152,
+      "Sha256": "2DE82C57476A58AFA2A9A0F4971846611882B967271BF8CE6E94B67BD0B3E8AA"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0159.raw",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0160.json",
+      "Bytes": 163,
+      "Sha256": "9E0130C62A27D9ACCC9D17028AACE6C2AAFB47A6838EAC52187BFF424004BA2A"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0160.raw",
+      "Bytes": 158,
+      "Sha256": "37F34E765BE3486BCD1A28D6A42ACD75D38400C93C53A2F1D0830D1D42976A46"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0161.json",
+      "Bytes": 188,
+      "Sha256": "F36C65D494D2022DAF612B2BDA706115A3725CDEF9F6D1A56647DF4C30816A8D"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0161.raw",
+      "Bytes": 25,
+      "Sha256": "127703B340F355ED3905EDC0D9BA7D85AAA4FB607D4AE37437ACED455C39CC6C"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0162.json",
+      "Bytes": 153,
+      "Sha256": "558FB7CB2A367A6CAB1989C257535A6AD2C82D878C35ACC0323F5047C6FB070B"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0162.raw",
+      "Bytes": 25,
+      "Sha256": "127703B340F355ED3905EDC0D9BA7D85AAA4FB607D4AE37437ACED455C39CC6C"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0163.json",
+      "Bytes": 152,
+      "Sha256": "186F40E1F5263BC530AFA9EB8E076A58409BA67EFE53620A9A87DEF61ED171A1"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0163.raw",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0164.json",
+      "Bytes": 163,
+      "Sha256": "94FFA57C47DD64E3D4BF6554C55E43FA00F980B01E5A649D4732147C611937B4"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0164.raw",
+      "Bytes": 155,
+      "Sha256": "A33811F220644BE35E5B3FDF42E1AC220E4F7B42B72AD9A068C896432E18B047"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0165.json",
+      "Bytes": 152,
+      "Sha256": "5498D5C4106C36E018CF50203304E402792E8DAA6F86722F5DA6B696F8FB1ACB"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0165.raw",
+      "Bytes": 18090720,
+      "Sha256": "CE2C74E2FDA42CB068FB2D365CFAE20E6935B28B749F558D0F8F2E3BCF55CDD4"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0166.json",
+      "Bytes": 150,
+      "Sha256": "B899328D1D6E1E6DD52F213C86893011E81976855B9AD853B7DF1E37D67E02CE"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0166.raw",
+      "Bytes": 141392,
+      "Sha256": "2FF302A3C5CECC4A371FD6482D2F5547C57D93EFF9FE19919EF729A54F69CE04"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0167.json",
+      "Bytes": 188,
+      "Sha256": "3673BB187FA33379E69B70341AE092B9AF151377787FCDF22069AA550B906425"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0167.raw",
+      "Bytes": 25,
+      "Sha256": "127703B340F355ED3905EDC0D9BA7D85AAA4FB607D4AE37437ACED455C39CC6C"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0168.json",
+      "Bytes": 194,
+      "Sha256": "670347D91175B77CDE684202FE6B8279CF9CF380AD34E7C3FA49482F8385B8F2"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0168.raw",
+      "Bytes": 25,
+      "Sha256": "127703B340F355ED3905EDC0D9BA7D85AAA4FB607D4AE37437ACED455C39CC6C"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0169.json",
+      "Bytes": 182,
+      "Sha256": "BF0543084536CB306CCB0BEA99C340DA571DA877746A4A573C9F0C0EFA9E4F36"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0169.raw",
+      "Bytes": 25,
+      "Sha256": "127703B340F355ED3905EDC0D9BA7D85AAA4FB607D4AE37437ACED455C39CC6C"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0170.json",
+      "Bytes": 208,
+      "Sha256": "3834BFD9D634EDB6DDD0419A465E39E593366A8A136405039BBF90289A32BDA0"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0170.raw",
+      "Bytes": 25,
+      "Sha256": "127703B340F355ED3905EDC0D9BA7D85AAA4FB607D4AE37437ACED455C39CC6C"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0171.json",
+      "Bytes": 190,
+      "Sha256": "8BBD8901032D1BEB55CFA3EC9FB129C29319454E5957348A42FFF5A32DD1D812"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0171.raw",
+      "Bytes": 25,
+      "Sha256": "127703B340F355ED3905EDC0D9BA7D85AAA4FB607D4AE37437ACED455C39CC6C"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0172.json",
+      "Bytes": 157,
+      "Sha256": "8F0A1B2AEB75C261AC0ED8AA483F9939D9FE9E27063A21F516F890DDFD608DF0"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0172.raw",
+      "Bytes": 14694,
+      "Sha256": "8EEC602114768792A9042E4BF262B9CB91095E3419A1677A69166C9308B74D24"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0173.json",
+      "Bytes": 163,
+      "Sha256": "8C8EE0D9F29897F6BC044873C8DAB5856529B2225EB1EFF2DC300F6DC04E2F63"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0173.raw",
+      "Bytes": 123,
+      "Sha256": "AFB1F55BDAC9BDBF010562607BEB147C98AE88409CB8943CEAAF1697575B7519"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0174.json",
+      "Bytes": 153,
+      "Sha256": "0C6DA0FE952BC64EF4C9EEB9AFB58157CE14B14F7D4B2EED12F8441A7120AB88"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0174.raw",
+      "Bytes": 26,
+      "Sha256": "B89B2C4E35EC362E2E11C688C7007BC06F0B8DB9964951092D9B9541D10D5A44"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0175.json",
+      "Bytes": 153,
+      "Sha256": "740780CC7E06180D230EEF6BFA558269ED558AEC5D4ED2A54ED0CAD252E9FB03"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0175.raw",
+      "Bytes": 26,
+      "Sha256": "60712FB920D889641A1DDDCAB1E93B97407A00F7E5654B6C850629E143B89DCC"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0176.json",
+      "Bytes": 163,
+      "Sha256": "365463344672A06A01F3FA612F07040A021F2B0FF83014DA59D93252EBC654F5"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0176.raw",
+      "Bytes": 152,
+      "Sha256": "C06A8CE4EC3B6C84DD73740F4FDCDEDB2AA7D4ECE3B3354DADAAEDEB56BA76AD"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0177.json",
+      "Bytes": 153,
+      "Sha256": "D21E086AD21C84FD77EE81C2BB8D3E55D2DE1F934EE1F6C7863BBC7E39A97052"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/.git/mixed-source-freeze-prefix-1/0177.raw",
+      "Bytes": 180,
+      "Sha256": "D396EBF8B6465C28D0D0B40FF59A5152D435BB25AA618ECD16EF70830C60AA45"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/Directory.Build.props",
+      "Bytes": 25,
+      "Sha256": "127703B340F355ED3905EDC0D9BA7D85AAA4FB607D4AE37437ACED455C39CC6C"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/Directory.Packages.props",
+      "Bytes": 25,
+      "Sha256": "127703B340F355ED3905EDC0D9BA7D85AAA4FB607D4AE37437ACED455C39CC6C"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/docs/DECISIONS/2026-09-08-checked-mixed-message-module-epochs.md",
+      "Bytes": 25,
+      "Sha256": "127703B340F355ED3905EDC0D9BA7D85AAA4FB607D4AE37437ACED455C39CC6C"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/docs/research/2026-09-08-checked-mixed-message-module-epoch-source-contract.md",
+      "Bytes": 25,
+      "Sha256": "127703B340F355ED3905EDC0D9BA7D85AAA4FB607D4AE37437ACED455C39CC6C"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/docs/research/2026-09-08-mixed-message-epoch-identity-codec-conventions.md",
+      "Bytes": 25,
+      "Sha256": "127703B340F355ED3905EDC0D9BA7D85AAA4FB607D4AE37437ACED455C39CC6C"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/docs/research/2026-09-08-mixed-message-epoch-transport-amendment.md",
+      "Bytes": 25,
+      "Sha256": "127703B340F355ED3905EDC0D9BA7D85AAA4FB607D4AE37437ACED455C39CC6C"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/docs/research/2026-09-08-mixed-message-frozen-nested-query-register.md",
+      "Bytes": 25,
+      "Sha256": "127703B340F355ED3905EDC0D9BA7D85AAA4FB607D4AE37437ACED455C39CC6C"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/docs/research/2026-09-08-mixed-message-withdrawal-admission-clarification.md",
+      "Bytes": 25,
+      "Sha256": "127703B340F355ED3905EDC0D9BA7D85AAA4FB607D4AE37437ACED455C39CC6C"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/docs/research/2026-09-08-precision-gate-projection-decimal-admission-clarification.md",
+      "Bytes": 25,
+      "Sha256": "127703B340F355ED3905EDC0D9BA7D85AAA4FB607D4AE37437ACED455C39CC6C"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/docs/research/2026-09-08-precision-gate-projection-rendered-zero-clarification.md",
+      "Bytes": 25,
+      "Sha256": "127703B340F355ED3905EDC0D9BA7D85AAA4FB607D4AE37437ACED455C39CC6C"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/docs/research/mixed-message-epoch-implementation/2026-09-08/implementation-source/service-manifest.json",
+      "Bytes": 14694,
+      "Sha256": "8EEC602114768792A9042E4BF262B9CB91095E3419A1677A69166C9308B74D24"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/docs/research/mixed-message-epoch-implementation/2026-09-08/implementation-source/service-manifest.sha256",
+      "Bytes": 65,
+      "Sha256": "5EFEAB46FAA0C4ADE978B502C090F7F28EE913345C0029732A959D4A0A00F9CC"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/docs/research/mixed-message-epoch-implementation/2026-09-08/registered-source/README.md",
+      "Bytes": 25,
+      "Sha256": "127703B340F355ED3905EDC0D9BA7D85AAA4FB607D4AE37437ACED455C39CC6C"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/docs/research/mixed-message-epoch-implementation/2026-09-08/registered-source/invoke.py",
+      "Bytes": 25,
+      "Sha256": "127703B340F355ED3905EDC0D9BA7D85AAA4FB607D4AE37437ACED455C39CC6C"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/docs/research/precision-gate-projection/2026-09-08/implementation-source/implementation-manifest.json",
+      "Bytes": 19,
+      "Sha256": "F9B26669A5C08267C67D682044BBC6A53A4BDA13A0DEB00FC6532C0CB175B80E"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/fixture-stderr",
+      "Bytes": 180,
+      "Sha256": "D396EBF8B6465C28D0D0B40FF59A5152D435BB25AA618ECD16EF70830C60AA45"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/fixture-stdout",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/global.json",
+      "Bytes": 25,
+      "Sha256": "127703B340F355ED3905EDC0D9BA7D85AAA4FB607D4AE37437ACED455C39CC6C"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/src/Bayesian/Bayesian.fsproj",
+      "Bytes": 25,
+      "Sha256": "127703B340F355ED3905EDC0D9BA7D85AAA4FB607D4AE37437ACED455C39CC6C"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/src/Bayesian/BoundedModuleLearner.fs",
+      "Bytes": 25,
+      "Sha256": "127703B340F355ED3905EDC0D9BA7D85AAA4FB607D4AE37437ACED455C39CC6C"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/src/Bayesian/FactorGraph.fs",
+      "Bytes": 25,
+      "Sha256": "127703B340F355ED3905EDC0D9BA7D85AAA4FB607D4AE37437ACED455C39CC6C"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/src/Bayesian/MixedMessageEpoch.fs",
+      "Bytes": 25,
+      "Sha256": "127703B340F355ED3905EDC0D9BA7D85AAA4FB607D4AE37437ACED455C39CC6C"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/src/Bayesian/PrecisionGateKernels.fs",
+      "Bytes": 25,
+      "Sha256": "127703B340F355ED3905EDC0D9BA7D85AAA4FB607D4AE37437ACED455C39CC6C"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/src/Bayesian/PrecisionGateProjection.fs",
+      "Bytes": 25,
+      "Sha256": "127703B340F355ED3905EDC0D9BA7D85AAA4FB607D4AE37437ACED455C39CC6C"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/src/Bayesian/bin/Release/net10.0/Zeta.Bayesian.dll",
+      "Bytes": 25,
+      "Sha256": "127703B340F355ED3905EDC0D9BA7D85AAA4FB607D4AE37437ACED455C39CC6C"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/src/Core.Abstractions/bin/Release/net10.0/Zeta.Core.Abstractions.dll",
+      "Bytes": 25,
+      "Sha256": "127703B340F355ED3905EDC0D9BA7D85AAA4FB607D4AE37437ACED455C39CC6C"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/src/Core/Core.fsproj",
+      "Bytes": 25,
+      "Sha256": "127703B340F355ED3905EDC0D9BA7D85AAA4FB607D4AE37437ACED455C39CC6C"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/src/Core/SoftScheduler.fs",
+      "Bytes": 25,
+      "Sha256": "127703B340F355ED3905EDC0D9BA7D85AAA4FB607D4AE37437ACED455C39CC6C"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/src/Core/bin/Release/net10.0/Zeta.Core.dll",
+      "Bytes": 25,
+      "Sha256": "127703B340F355ED3905EDC0D9BA7D85AAA4FB607D4AE37437ACED455C39CC6C"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/src/Interp.Python/pyproject.toml",
+      "Bytes": 25,
+      "Sha256": "127703B340F355ED3905EDC0D9BA7D85AAA4FB607D4AE37437ACED455C39CC6C"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/src/Interp.Python/tests/test_mixed_message_epoch_bridge.py",
+      "Bytes": 25,
+      "Sha256": "127703B340F355ED3905EDC0D9BA7D85AAA4FB607D4AE37437ACED455C39CC6C"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/src/Interp.Python/uv.lock",
+      "Bytes": 25,
+      "Sha256": "127703B340F355ED3905EDC0D9BA7D85AAA4FB607D4AE37437ACED455C39CC6C"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/src/Interp.Python/zeta_interp/__init__.py",
+      "Bytes": 25,
+      "Sha256": "127703B340F355ED3905EDC0D9BA7D85AAA4FB607D4AE37437ACED455C39CC6C"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/src/Interp.Python/zeta_interp/activations.py",
+      "Bytes": 25,
+      "Sha256": "127703B340F355ED3905EDC0D9BA7D85AAA4FB607D4AE37437ACED455C39CC6C"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/src/Interp.Python/zeta_interp/hidden_switch_compiled_admission.py",
+      "Bytes": 25,
+      "Sha256": "127703B340F355ED3905EDC0D9BA7D85AAA4FB607D4AE37437ACED455C39CC6C"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/src/Interp.Python/zeta_interp/hidden_switch_compiled_ieee.py",
+      "Bytes": 25,
+      "Sha256": "127703B340F355ED3905EDC0D9BA7D85AAA4FB607D4AE37437ACED455C39CC6C"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/src/Interp.Python/zeta_interp/hidden_switch_compiled_record_encoding.py",
+      "Bytes": 25,
+      "Sha256": "127703B340F355ED3905EDC0D9BA7D85AAA4FB607D4AE37437ACED455C39CC6C"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/src/Interp.Python/zeta_interp/hidden_switch_compiled_record_store.py",
+      "Bytes": 25,
+      "Sha256": "127703B340F355ED3905EDC0D9BA7D85AAA4FB607D4AE37437ACED455C39CC6C"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/src/Interp.Python/zeta_interp/hidden_switch_compiled_storage.py",
+      "Bytes": 25,
+      "Sha256": "127703B340F355ED3905EDC0D9BA7D85AAA4FB607D4AE37437ACED455C39CC6C"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/src/Interp.Python/zeta_interp/mixed_message_epoch_bridge.py",
+      "Bytes": 25,
+      "Sha256": "127703B340F355ED3905EDC0D9BA7D85AAA4FB607D4AE37437ACED455C39CC6C"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/src/Interp.Python/zeta_interp/mixed_message_epoch_controls.py",
+      "Bytes": 25,
+      "Sha256": "127703B340F355ED3905EDC0D9BA7D85AAA4FB607D4AE37437ACED455C39CC6C"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/src/Interp.Python/zeta_interp/precision_gate_projection_intervals.py",
+      "Bytes": 25,
+      "Sha256": "127703B340F355ED3905EDC0D9BA7D85AAA4FB607D4AE37437ACED455C39CC6C"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/src/Interp.Python/zeta_interp/precision_gate_projection_process.py",
+      "Bytes": 25,
+      "Sha256": "127703B340F355ED3905EDC0D9BA7D85AAA4FB607D4AE37437ACED455C39CC6C"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/src/Interp.Python/zeta_interp/precision_gate_projection_reference.py",
+      "Bytes": 25,
+      "Sha256": "127703B340F355ED3905EDC0D9BA7D85AAA4FB607D4AE37437ACED455C39CC6C"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/src/Research.FSharp/MixedMessageEpochReplay.fsx",
+      "Bytes": 25,
+      "Sha256": "127703B340F355ED3905EDC0D9BA7D85AAA4FB607D4AE37437ACED455C39CC6C"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/src/Research.FSharp/PrecisionGateProjectionReplay.fsx",
+      "Bytes": 25,
+      "Sha256": "127703B340F355ED3905EDC0D9BA7D85AAA4FB607D4AE37437ACED455C39CC6C"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/tests/Bayesian.Tests/Bayesian.Tests.fsproj",
+      "Bytes": 25,
+      "Sha256": "127703B340F355ED3905EDC0D9BA7D85AAA4FB607D4AE37437ACED455C39CC6C"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/tests/Bayesian.Tests/BoundedModuleLearner.Tests.fs",
+      "Bytes": 25,
+      "Sha256": "127703B340F355ED3905EDC0D9BA7D85AAA4FB607D4AE37437ACED455C39CC6C"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/late-metadata-refusal/tests/Bayesian.Tests/MixedMessageEpoch.Tests.fs",
+      "Bytes": 25,
+      "Sha256": "127703B340F355ED3905EDC0D9BA7D85AAA4FB607D4AE37437ACED455C39CC6C"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/results.json",
+      "Bytes": 1128,
+      "Sha256": "B352C8E637A805065704F15E7F486DE475F4FF70AFAC085EE00EA9717581B87A"
+    },
+    {
+      "Name": ".git/mixed-observation-freeze-fixtures-1/reviewed-source.py",
+      "Bytes": 8506,
+      "Sha256": "D6C6B6BF9CB8599AC68BAA6458096E93D11C1EB5136193B0B86F4B62E352319A"
+    },
+    {
+      "Name": ".git/mixed-observation-helper-review-original-1/freeze-mixed-assembled-source-1.py",
+      "Bytes": 6213,
+      "Sha256": "E77ED4272FC1D23803A5F92777B1E2346AC22CCDDC3AC9FF6323D0C1592DD918"
+    },
+    {
+      "Name": ".git/mixed-observation-helper-review-original-1/review-findings.json",
+      "Bytes": 498,
+      "Sha256": "0CA916786AF514EE26C0BA04F0665643D95E23227A5DCAE04C85521FC3F1E121"
+    },
+    {
+      "Name": ".git/mixed-observation-helper-review-original-1/run-mixed-registered-1.py",
+      "Bytes": 3168,
+      "Sha256": "D7981095EDD315E15CD376F217D39518E7C78AF31846815066611CF9EAAC17DA"
+    },
+    {
+      "Name": ".git/preserve-mixed-observation-helpers-1.py",
+      "Bytes": 2249,
+      "Sha256": "B3CA0066FC93632FF810DA4D35A3A18243921E8DA2777F933B099AD68E01A065"
+    },
+    {
+      "Name": ".git/run-mixed-registered-1.py",
+      "Bytes": 6936,
+      "Sha256": "FBD0DF785D5AECAE47591D73EA3062050825F33241880B67668B462ADDAC2462"
+    },
+    {
+      "Name": "inventory.json",
+      "Bytes": 108847,
+      "Sha256": "9B812F761575BBB5176FD58AC1F01BBCA04499BE5386C0E091C9A501EEECC2F3"
+    }
+  ],
+  "RawBytes": 18536114
+}

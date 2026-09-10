@@ -1,0 +1,66 @@
+{
+  "Schema": "zeta.mixed-epoch.implementation-custody.v1",
+  "SourceCommit": "3c3a76ad6674bb40b2e1309021735950c282d8d5",
+  "ManifestSha256": "F92041F0DBC344DA877DFA970B3C5C7AD6817C8285AAA28E164872F2CE6D56F1",
+  "SelectedSourceCount": 65,
+  "DirectFileCount": 7,
+  "DirectArchive": [
+    {
+      "Role": "@python",
+      "OriginalPath": "/Users/acehack/.local/share/mise/installs/python/3.14.6/bin/python3.14",
+      "ArchivePath": "direct/python",
+      "Bytes": 18090720,
+      "Sha256": "CE2C74E2FDA42CB068FB2D365CFAE20E6935B28B749F558D0F8F2E3BCF55CDD4"
+    },
+    {
+      "Role": "@host",
+      "OriginalPath": "/Users/acehack/.local/share/mise/dotnet-root/dotnet",
+      "ArchivePath": "direct/dotnet",
+      "Bytes": 141392,
+      "Sha256": "2FF302A3C5CECC4A371FD6482D2F5547C57D93EFF9FE19919EF729A54F69CE04"
+    },
+    {
+      "Role": "src/Research.FSharp/MixedMessageEpochReplay.fsx",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/src/Research.FSharp/MixedMessageEpochReplay.fsx",
+      "ArchivePath": "sources/src/Research.FSharp/MixedMessageEpochReplay.fsx",
+      "Bytes": 99661,
+      "Sha256": "5D0DD505F3849D7F989982DCAE5EBAB2898B8140AE74489540EC016B15AD7795"
+    },
+    {
+      "Role": "src/Research.FSharp/PrecisionGateProjectionReplay.fsx",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/src/Research.FSharp/PrecisionGateProjectionReplay.fsx",
+      "ArchivePath": "sources/src/Research.FSharp/PrecisionGateProjectionReplay.fsx",
+      "Bytes": 12723,
+      "Sha256": "C1174406CC4E7D3164714C536207AD2BD72F085A38A3A816C8BC1B14ADE917B2"
+    },
+    {
+      "Role": "src/Core/bin/Release/net10.0/Zeta.Core.dll",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/src/Core/bin/Release/net10.0/Zeta.Core.dll",
+      "ArchivePath": "direct/src/Core/bin/Release/net10.0/Zeta.Core.dll",
+      "Bytes": 9268224,
+      "Sha256": "C49F1A2604618D6074D849BB475530338C3C2B80002676129FFAB1569079295D"
+    },
+    {
+      "Role": "src/Core.Abstractions/bin/Release/net10.0/Zeta.Core.Abstractions.dll",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/src/Core.Abstractions/bin/Release/net10.0/Zeta.Core.Abstractions.dll",
+      "ArchivePath": "direct/src/Core.Abstractions/bin/Release/net10.0/Zeta.Core.Abstractions.dll",
+      "Bytes": 46592,
+      "Sha256": "48F2C96371502534AB4AABA7D97FCAFFF7D3A1731ABB3578C545F033FDA50382"
+    },
+    {
+      "Role": "src/Bayesian/bin/Release/net10.0/Zeta.Bayesian.dll",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/src/Bayesian/bin/Release/net10.0/Zeta.Bayesian.dll",
+      "ArchivePath": "direct/src/Bayesian/bin/Release/net10.0/Zeta.Bayesian.dll",
+      "Bytes": 1819136,
+      "Sha256": "7F39E537242EFD6F609812413AF39BBC66DBA2B6457F95539D4A4719986E80C9"
+    }
+  ],
+  "Invocations": [
+    "m4-registered-1",
+    "m5-registered-1",
+    "frozen-nested-1"
+  ],
+  "NamedControlsEntered": false,
+  "PassiveManifestAdmissionReturned": "ServiceManifest",
+  "Scope": "Committed selected source and directly observed executables/scripts/DLLs, not transitive runtime closure or source-to-machine proof. Metadata and passive manifest admission only; no peer, native producer, learner, reference or certificate execution."
+}

@@ -1,0 +1,72 @@
+{
+  "Schema": "zeta.mixed-epoch.bridge-root-review.v1",
+  "SourceCommit": "8e1fe19a074368c3fd48f5f6cb871b1ce5d6b141",
+  "Scope": "Read-only exact source/archive review and original draft findings; no source/numerical/control execution",
+  "Archive": "custody.tar.gz",
+  "ArchiveBytes": 87417,
+  "ArchiveSha256": "F81FAF71C58257852738042203916ECB33DD7FBB7A46765DC6171FFCB594FB8C",
+  "OriginalBytes": 604568,
+  "RecordCount": 10,
+  "Records": [
+    {
+      "Name": "originals/mixed-epoch-bridge-draft-review-2/bridge-draft.py",
+      "OriginalPath": ".git/mixed-epoch-bridge-draft-review-2/bridge-draft.py",
+      "Bytes": 166476,
+      "Sha256": "5B6E046D7D4924FC968C6A08DF631B8A1D04CD2EFA68C702CE4B79C88DE561D6"
+    },
+    {
+      "Name": "originals/mixed-epoch-bridge-draft-review-2/observation.json",
+      "OriginalPath": ".git/mixed-epoch-bridge-draft-review-2/observation.json",
+      "Bytes": 586,
+      "Sha256": "3A7CBBF50EF8FE5A33906A09158F8CDE01EF92F07189E55630BC21DB3A1F1EFF"
+    },
+    {
+      "Name": "originals/mixed-epoch-bridge-draft-review-2/scalar-binding-precondition.json",
+      "OriginalPath": ".git/mixed-epoch-bridge-draft-review-2/scalar-binding-precondition.json",
+      "Bytes": 1030,
+      "Sha256": "592BD08E2AB504FA72365AB4567FC3233348FA4E85CA56AF4651DBB9599FD77B"
+    },
+    {
+      "Name": "originals/mixed-epoch-bridge-draft-review-3/bridge-draft.py",
+      "OriginalPath": ".git/mixed-epoch-bridge-draft-review-3/bridge-draft.py",
+      "Bytes": 196052,
+      "Sha256": "2323E7CDAA73333AE83ED5926A41A2603BB7134694D7F0C27E40D414541E9E34"
+    },
+    {
+      "Name": "originals/mixed-epoch-bridge-draft-review-3/observation.json",
+      "OriginalPath": ".git/mixed-epoch-bridge-draft-review-3/observation.json",
+      "Bytes": 719,
+      "Sha256": "F7EAF26820F65153B8AC60B5019FEECF255C07D942C299E335B712C610BB7D69"
+    },
+    {
+      "Name": "originals/mixed-epoch-bridge-root-review-1/completion.json",
+      "OriginalPath": ".git/mixed-epoch-bridge-root-review-1/completion.json",
+      "Bytes": 337,
+      "Sha256": "602B21DA0877A8A62B57E9F254F7B5CD6980C38C5A9AD6A129F2F6F45FFF9D0C"
+    },
+    {
+      "Name": "originals/mixed-epoch-bridge-root-review-1/counter-knowledge-finding.json",
+      "OriginalPath": ".git/mixed-epoch-bridge-root-review-1/counter-knowledge-finding.json",
+      "Bytes": 1015,
+      "Sha256": "E2B4AC33D681030DD87F2BF67B26AD1AEC8D761A8A774467CA7C8C5F2F2A323E"
+    },
+    {
+      "Name": "originals/mixed-epoch-bridge-root-review-1/stderr",
+      "OriginalPath": ".git/mixed-epoch-bridge-root-review-1/stderr",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Name": "originals/mixed-epoch-bridge-root-review-1/stdout.json",
+      "OriginalPath": ".git/mixed-epoch-bridge-root-review-1/stdout.json",
+      "Bytes": 235991,
+      "Sha256": "3BC2816ADE5A35A5C3FF0B3DC7E6CB36ED924489C4CEE187DBCB0E61DDFD4A21"
+    },
+    {
+      "Name": "originals/mixed-epoch-bridge-root-review.py",
+      "OriginalPath": ".git/mixed-epoch-bridge-root-review.py",
+      "Bytes": 2362,
+      "Sha256": "28542EB8EE9991033FE3A8B6DD0B22ED113FEC52BCCB4CBD226A885FD7FE6B1B"
+    }
+  ]
+}

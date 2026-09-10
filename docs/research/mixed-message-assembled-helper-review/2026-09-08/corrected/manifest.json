@@ -1,0 +1,132 @@
+{
+  "Schema": "zeta.mixed-assembled-helper-review.v1",
+  "Scope": "Selected source/fixture result snapshots and read-only reviewer audit; original coordinator fixture custody remains separately retained",
+  "Records": [
+    {
+      "Name": "audit-completion.json",
+      "OriginalFile": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/mixed-assembled-helper-review-3/audit-completion.json",
+      "File": "000-audit-completion.json.gz",
+      "Bytes": 55,
+      "Sha256": "C17C1336A006464DB5AE31962AA927B0A572BBE8E49FB5B2270843C10F232219",
+      "StoredBytes": 73,
+      "StoredSha256": "ED65320F42C7BF6FB246F6CE4206BB22C0FB243B0064DD9BF32333376C5D8C24"
+    },
+    {
+      "Name": "audit-invocation.json",
+      "OriginalFile": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/mixed-assembled-helper-review-3/audit-invocation.json",
+      "File": "001-audit-invocation.json.gz",
+      "Bytes": 293,
+      "Sha256": "2BE07EFEE60C36B622C0180706FE2D1937BC8F9138E8C62788B5FC819709BDAC",
+      "StoredBytes": 189,
+      "StoredSha256": "73326DC3D63523BF187D38773C7A42DB956BA7C817E09FD7168DA458474508DF"
+    },
+    {
+      "Name": "audit-stderr",
+      "OriginalFile": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/mixed-assembled-helper-review-3/audit-stderr",
+      "File": "002-audit-stderr.gz",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "StoredBytes": 20,
+      "StoredSha256": "9CEFFB7310338057CFE71A4AE1E2C98D2C485D81CDEF906532A801F457A38D64"
+    },
+    {
+      "Name": "audit-stdout",
+      "OriginalFile": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/mixed-assembled-helper-review-3/audit-stdout",
+      "File": "003-audit-stdout.gz",
+      "Bytes": 827,
+      "Sha256": "CC0A30A46D79BC8927BB535D5EE0E85686E3A92BADA2AFBB8485564EF68ADFD6",
+      "StoredBytes": 385,
+      "StoredSha256": "083381B2664EA9E113770FF748D231300DB331A8145DA032C9A5BA62F7349269"
+    },
+    {
+      "Name": "audit.py",
+      "OriginalFile": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/mixed-assembled-helper-review-3/audit.py",
+      "File": "004-audit.py.gz",
+      "Bytes": 2536,
+      "Sha256": "D821FCFE3F02AC19E0B36364D771CF6A8AD1A6CA7FD7A7B7D315B285E5120685",
+      "StoredBytes": 1135,
+      "StoredSha256": "86BB91A185C5F99DC885EF1F3239836371765D278A75BA48194B2447F3D896E0"
+    },
+    {
+      "Name": "check-mixed-observation-freeze-2.py",
+      "OriginalFile": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/mixed-assembled-helper-review-3/check-mixed-observation-freeze-2.py",
+      "File": "005-check-mixed-observation-freeze-2.py.gz",
+      "Bytes": 3627,
+      "Sha256": "5437884451FE41293E2DFA761DB08D23528DA8B7BFB2F3019E2E2E1C42A76EDC",
+      "StoredBytes": 1612,
+      "StoredSha256": "15DDADDE3A49EE8884B2B6A3B44F6BE55EC250F949F923286BA523742D605144"
+    },
+    {
+      "Name": "check-mixed-observation-freeze-3.py",
+      "OriginalFile": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/mixed-assembled-helper-review-3/check-mixed-observation-freeze-3.py",
+      "File": "006-check-mixed-observation-freeze-3.py.gz",
+      "Bytes": 4315,
+      "Sha256": "D6EA65614EBB3A50CE22F6E73F30FA255FE911AF8E188C7BE7DD07ABD0EC292A",
+      "StoredBytes": 1841,
+      "StoredSha256": "10B03FE7B1834D9C5CF4078EEC04C0A3EC1A2E6CD7EEABFF906DC757883F39BA"
+    },
+    {
+      "Name": "freeze-mixed-assembled-source-1.py",
+      "OriginalFile": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/mixed-assembled-helper-review-3/freeze-mixed-assembled-source-1.py",
+      "File": "007-freeze-mixed-assembled-source-1.py.gz",
+      "Bytes": 8553,
+      "Sha256": "0DBFF44E506F9EF175318F10018C340A0CDEB2B2F70602518DCFE47B92DD2970",
+      "StoredBytes": 3194,
+      "StoredSha256": "D4D361E6D6808BA4B5B8A2F8BC4C5A8C7C16E5EC562C3D3614C0E673103D43C0"
+    },
+    {
+      "Name": "mixed-observation-freeze-fixtures-2/results.json",
+      "OriginalFile": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/mixed-assembled-helper-review-3/mixed-observation-freeze-fixtures-2/results.json",
+      "File": "008-results.json.gz",
+      "Bytes": 1128,
+      "Sha256": "4BB10ACB5C24004F52AF5F780C5AD3B6D8900020593912F022300CB5E658A627",
+      "StoredBytes": 504,
+      "StoredSha256": "1A1E3B8C4AA9CAEF828D9A726495C678A0E5415040483E0D1E9ABA8DAD0AC7F3"
+    },
+    {
+      "Name": "mixed-observation-freeze-fixtures-2/reviewed-source.py",
+      "OriginalFile": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/mixed-assembled-helper-review-3/mixed-observation-freeze-fixtures-2/reviewed-source.py",
+      "File": "009-reviewed-source.py.gz",
+      "Bytes": 8553,
+      "Sha256": "0DBFF44E506F9EF175318F10018C340A0CDEB2B2F70602518DCFE47B92DD2970",
+      "StoredBytes": 3194,
+      "StoredSha256": "D4D361E6D6808BA4B5B8A2F8BC4C5A8C7C16E5EC562C3D3614C0E673103D43C0"
+    },
+    {
+      "Name": "mixed-observation-freeze-fixtures-3/results.json",
+      "OriginalFile": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/mixed-assembled-helper-review-3/mixed-observation-freeze-fixtures-3/results.json",
+      "File": "010-results.json.gz",
+      "Bytes": 595,
+      "Sha256": "A63AC5E328DCCBB256C06EEE276395C82147C595C840D48742FF0F7E4AF48036",
+      "StoredBytes": 355,
+      "StoredSha256": "EDBA53231E1E2E498B4ED017FF175460E8427D2B4A7D1F1CA98D1270EA968198"
+    },
+    {
+      "Name": "mixed-observation-freeze-fixtures-3/reviewed-source.py",
+      "OriginalFile": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/mixed-assembled-helper-review-3/mixed-observation-freeze-fixtures-3/reviewed-source.py",
+      "File": "011-reviewed-source.py.gz",
+      "Bytes": 8553,
+      "Sha256": "0DBFF44E506F9EF175318F10018C340A0CDEB2B2F70602518DCFE47B92DD2970",
+      "StoredBytes": 3194,
+      "StoredSha256": "D4D361E6D6808BA4B5B8A2F8BC4C5A8C7C16E5EC562C3D3614C0E673103D43C0"
+    },
+    {
+      "Name": "run-mixed-registered-1.py",
+      "OriginalFile": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/mixed-assembled-helper-review-3/run-mixed-registered-1.py",
+      "File": "012-run-mixed-registered-1.py.gz",
+      "Bytes": 6936,
+      "Sha256": "FBD0DF785D5AECAE47591D73EA3062050825F33241880B67668B462ADDAC2462",
+      "StoredBytes": 2642,
+      "StoredSha256": "2272C4BC27477E4A7C1C8C202FFF20F44439573280335356B0897BD92310E006"
+    },
+    {
+      "Name": "source-identities.json",
+      "OriginalFile": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/mixed-assembled-helper-review-3/source-identities.json",
+      "File": "013-source-identities.json.gz",
+      "Bytes": 1375,
+      "Sha256": "32E8799949DD0BA8C532D736E8D133B96B2EA3AAE33718865193CAAE37C31E3A",
+      "StoredBytes": 486,
+      "StoredSha256": "060B45AF9FE4C0BF1A85CF3D9C66836E7FB4066C931E930083E28FF86CB1FEA8"
+    }
+  ]
+}

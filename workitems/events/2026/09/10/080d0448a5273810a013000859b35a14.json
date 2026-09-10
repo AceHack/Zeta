@@ -1,0 +1,14 @@
+{
+  "id": "080d0448a5273810a013000859b35a14",
+  "at": "2026-09-10T02:10:26.663Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M24H9976087G0R0001DRA3W",
+    "type": "task",
+    "title": "Land the checked mixed-message module-epoch implementation from its abandoned swarm branch",
+    "slug": "land-the-checked-mixed-message-module-epoch-implementation-f",
+    "priority": "P2",
+    "filename": "081M24H9976087G0R0001DRA3W-land-the-checked-mixed-message-module-epoch-implementation-f.md"
+  }
+}

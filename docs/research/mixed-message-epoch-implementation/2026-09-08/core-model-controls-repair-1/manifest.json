@@ -1,0 +1,317 @@
+{
+  "Scope": "test-only actual-plan-identity correction and quick-gate history; unchanged production source;71 focused tests; named routes closed",
+  "SourceFiles": [
+    {
+      "Path": "src/Bayesian/BoundedModuleLearner.fs",
+      "Bytes": 19114,
+      "Sha256": "C59FDB8F5F2178297DB350AD43BD54C1ABCF6422DEDD5A3C7F85B797CC5D8236"
+    },
+    {
+      "Path": "src/Bayesian/MixedMessageEpoch.fs",
+      "Bytes": 167510,
+      "Sha256": "B75CEF997AF2D7D98BF7043039A63B94ED6E770C675EBAADBFC644A79DB57CB2"
+    },
+    {
+      "Path": "tests/Bayesian.Tests/BoundedModuleLearner.Tests.fs",
+      "Bytes": 12338,
+      "Sha256": "9260CAC8F8EF58BC7EA927B31C0F1426FCC3B83A4790210AC25D4CFBA676F4A9"
+    },
+    {
+      "Path": "tests/Bayesian.Tests/MixedMessageEpoch.Tests.fs",
+      "Bytes": 67508,
+      "Sha256": "F13889BB9450F7BB0AF7F41E019841196512347414BC38DB797A5E041D25DB2B"
+    },
+    {
+      "Path": "src/Bayesian/Bayesian.fsproj",
+      "Bytes": 3426,
+      "Sha256": "24F474046E52A2B703EDA187587D1E15FCBFDA2C835075B7CC13B83AF7B8DCA0"
+    },
+    {
+      "Path": "tests/Bayesian.Tests/Bayesian.Tests.fsproj",
+      "Bytes": 3879,
+      "Sha256": "2361B22D257F61236AE0B9EA4266EEB4883B9E5419680FE5419FFD86C5C620AC"
+    }
+  ],
+  "Records": [
+    {
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/.git/mixed-core-model-controls-1/audit.py",
+      "File": "001.gz",
+      "Bytes": 1146,
+      "Sha256": "A976E8BAA5A6BFAA315632EFBF180537038867642A0AA3A921579943D3C787BB",
+      "StoredBytes": 544,
+      "StoredSha256": "F3F75C1D42E94D6142588D84C85466BE3DD5E51AE626729E4B5A605FB54B3330"
+    },
+    {
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/.git/mixed-core-model-controls-1/capture-repair.py",
+      "File": "002.gz",
+      "Bytes": 1915,
+      "Sha256": "1B59DB2BA6D361A7C891A0B75B0CA5409AB443EE038476D9984729B84B7E2D26",
+      "StoredBytes": 863,
+      "StoredSha256": "63CC243520422DD6EC443B9196F31F8589545B2373EA8321B3E29F65ED3ADEEB"
+    },
+    {
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/.git/mixed-core-model-controls-1/quick-1/completion.json",
+      "File": "003.gz",
+      "Bytes": 2333,
+      "Sha256": "2D49DF309C7E6B2925796069512843177B522BB10AA73C8749E56EBF7C2689F9",
+      "StoredBytes": 586,
+      "StoredSha256": "521F5CEF320702B62BC027D7CB9F65BE8577EA9CCE5F546EDCBCF0F9A9A053B6"
+    },
+    {
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/.git/mixed-core-model-controls-1/quick-1/invocation.json",
+      "File": "004.gz",
+      "Bytes": 1187,
+      "Sha256": "C901891DBEF80701C6B700472367863DD6D177AA03855E86B416DD5C10308649",
+      "StoredBytes": 539,
+      "StoredSha256": "7346647B79B499A2545D2FF23F5BAA05A015406EBC409CA94478D6B490843061"
+    },
+    {
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/.git/mixed-core-model-controls-1/quick-1/stderr",
+      "File": "005.gz",
+      "Bytes": 108,
+      "Sha256": "A4F58D26504DADDE6DF6DC2EB536B3F0B7CE0C8771D447FF019A4E5B16A45E84",
+      "StoredBytes": 112,
+      "StoredSha256": "BA4A38BB09B28E742A3A3D330F7E2B0FE87364D4755F6A138FE7A2B66D272041"
+    },
+    {
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/.git/mixed-core-model-controls-1/quick-1/stdout",
+      "File": "006.gz",
+      "Bytes": 3420,
+      "Sha256": "177C24997137A07695DB2ADDA019C1C53894D0AC4F7DE455B9DA4B0ED78E2579",
+      "StoredBytes": 1292,
+      "StoredSha256": "879A6EB53D42819EB748F7AF1065E8341CB8AB89A9B65F36BF650AC673232936"
+    },
+    {
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/.git/mixed-core-model-controls-1/quick-2/completion.json",
+      "File": "007.gz",
+      "Bytes": 2333,
+      "Sha256": "393489E7A7578268649556A7A62053E5E23D169AD3E8573DED7E3E2EA964129C",
+      "StoredBytes": 587,
+      "StoredSha256": "5BC7A2716B087C1B6CF2F1C8A2CF3FA0AC3BE2228D0A9CAD2B3AA8A39CC87382"
+    },
+    {
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/.git/mixed-core-model-controls-1/quick-2/invocation.json",
+      "File": "008.gz",
+      "Bytes": 1187,
+      "Sha256": "1BBC34D6356AA31E16D153324DEFA5076E54F611DDE027BFCA32EF0646E92F15",
+      "StoredBytes": 539,
+      "StoredSha256": "ED6514A2C1328021C2C149FACE6495243E5881C9681C4E33E87C611D8FAE6E57"
+    },
+    {
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/.git/mixed-core-model-controls-1/quick-2/stderr",
+      "File": "009.gz",
+      "Bytes": 57,
+      "Sha256": "FC5CEA057558784B9285265B206AE14E6629D39610EC93EFC443C21AD0D05961",
+      "StoredBytes": 77,
+      "StoredSha256": "DC19432FFF48A51A2BE835947A121911035939B067CF6ED507E168F48EF85CC7"
+    },
+    {
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/.git/mixed-core-model-controls-1/quick-2/stdout",
+      "File": "010.gz",
+      "Bytes": 1167,
+      "Sha256": "4167192A5F69F0E03959F4DF63DDA87D1D9D07C7F6F46AD058960CB384ACE0A4",
+      "StoredBytes": 375,
+      "StoredSha256": "D9609B6914A36A006AE5B1CEA9CE0934F941EA4D76997A7383732D422563C2EF"
+    },
+    {
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/.git/mixed-epoch-core-development/test-owner-controls-arity-repair-1/result.json",
+      "File": "011.gz",
+      "Bytes": 1420,
+      "Sha256": "590D1BD0246FF519B6C4D63E66D6A735AA8456CFD8DC496D5F314EDAA8B88381",
+      "StoredBytes": 611,
+      "StoredSha256": "62FBEC54F3A14C7B3FB9166F7EF6E7F1C036B209DF0C88C0CE42A2102207359A"
+    },
+    {
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/.git/mixed-epoch-core-development/test-owner-controls-arity-repair-1/returns/m6-flat-gamma-call.json",
+      "File": "012.gz",
+      "Bytes": 5246,
+      "Sha256": "654377722D19F1DA22DFF97B97BF2FEFF88F8A0256B8F9DE696C2D6EF3868AB9",
+      "StoredBytes": 1142,
+      "StoredSha256": "A8071C4DE0EEF64F28024148AE1DCCF2BC25869FDC104D9DBC70C9BD509F44DC"
+    },
+    {
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/.git/mixed-epoch-core-development/test-owner-controls-arity-repair-1/returns/m6-flat.json",
+      "File": "013.gz",
+      "Bytes": 12401,
+      "Sha256": "69FC76A599FC5B957FABDBDA61FA977559D41A41FA77B34C65A65DEEBA7791D0",
+      "StoredBytes": 1869,
+      "StoredSha256": "14900C897429053D73AC8CFD621099B3E07141A188916DFF11E46D0127717C45"
+    },
+    {
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/.git/mixed-epoch-core-development/test-owner-controls-arity-repair-1/returns/m6-nested-gamma-call.json",
+      "File": "014.gz",
+      "Bytes": 5250,
+      "Sha256": "5A3B747AF8A806C7BD1D1F0FBE49988135D92A87838D44A1E15B0BBB3B33499A",
+      "StoredBytes": 1148,
+      "StoredSha256": "D8E8FF3081F9770D95FCDE3E1839B7BAC5461D687D530036365096CAC2461485"
+    },
+    {
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/.git/mixed-epoch-core-development/test-owner-controls-arity-repair-1/returns/m6-nested.json",
+      "File": "015.gz",
+      "Bytes": 12401,
+      "Sha256": "6C54B988C7B086318AA30EF1F69B0344368CCB07261AEA89D4538A29F9274769",
+      "StoredBytes": 1869,
+      "StoredSha256": "204CA32CADEF3F413677E0C68155109771056CB24BE7735B19966A8280FD9472"
+    },
+    {
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/.git/mixed-epoch-core-development/test-owner-controls-arity-repair-1/returns/m7-compensated.json",
+      "File": "016.gz",
+      "Bytes": 63053,
+      "Sha256": "E6952473A0C6C1C0EDF5511866AD6476A78066D90DA48ACA1791216FFDD02199",
+      "StoredBytes": 3447,
+      "StoredSha256": "7799960BCD2C43DBAE3B24E86E1FC71104E85BA5F65C3A03E6686F281BEB2715"
+    },
+    {
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/.git/mixed-epoch-core-development/test-owner-controls-arity-repair-1/returns/m7-direct.json",
+      "File": "017.gz",
+      "Bytes": 64087,
+      "Sha256": "241E58D05E9C5AB87C5D657ADEF6714EC4C2C8C3D466E7BD5D9C5545F04F72E2",
+      "StoredBytes": 3182,
+      "StoredSha256": "694CBC10F52B3FAA871E0659E36E12774C4F52094DDF77B183B3D50C5AA743A6"
+    },
+    {
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/.git/mixed-epoch-core-development/test-owner-controls-arity-repair-1/returns/m7-fresh.json",
+      "File": "018.gz",
+      "Bytes": 12210,
+      "Sha256": "A61D3ECE391857620327C7042B8CE45F84D81D957480F2C9311D8205AB61661F",
+      "StoredBytes": 1680,
+      "StoredSha256": "C90ABC49A27BCD378894D2FBA04FB7E67631C40F300D8811C972CABE37DF47EA"
+    },
+    {
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/.git/mixed-epoch-core-development/test-owner-controls-arity-repair-1/returns/m7-original.json",
+      "File": "019.gz",
+      "Bytes": 12210,
+      "Sha256": "87F5C52F704F183AE504F6D3792FF44EAC6B54AA4A893E4AAF41682A68203305",
+      "StoredBytes": 1671,
+      "StoredSha256": "6A6171913A4E73C3533F585CC61791C6A8131BBAAAE35A1AAF0FA8A18657F8AA"
+    },
+    {
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/.git/mixed-epoch-core-development/test-owner-controls-arity-repair-1/returns/m7-pure-site-withdrawal.json",
+      "File": "020.gz",
+      "Bytes": 65395,
+      "Sha256": "290335AFB17826405139DDEBBD8615B7EFEE59BE9DF383AF1D962EF3404C81CA",
+      "StoredBytes": 4481,
+      "StoredSha256": "B17D9C45A30A913B73BA7B77DB9A7E348F3E7897DBBCA46FD02080A3C2960370"
+    },
+    {
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/.git/mixed-epoch-core-development/test-owner-controls-arity-repair-1/returns/m7-synthetic-carrier-query.json",
+      "File": "021.gz",
+      "Bytes": 18505,
+      "Sha256": "370BA40F61986D6F3B95BB3196D61919D7EA22FD2E838DD635B5E725D01BE868",
+      "StoredBytes": 3166,
+      "StoredSha256": "29775B5877EED7384E8EDEEAC14BEA25D6E0274428BC7743A4A062CC1528F13A"
+    },
+    {
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/.git/mixed-epoch-core-development/test-owner-controls-arity-repair-1/returns/m7-unapplied.json",
+      "File": "022.gz",
+      "Bytes": 6204,
+      "Sha256": "D68A5479545EC379A1A03A5923D4FFDE309C4A15A6506FB96E28F4C18929819A",
+      "StoredBytes": 1371,
+      "StoredSha256": "ABB6A9FCB2CEAAF2E1ABC42A9996C67115A5659903AB5499022C86F4D36F46FD"
+    },
+    {
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/.git/mixed-epoch-core-development/test-owner-controls-arity-repair-1/returns/m8-learned.json",
+      "File": "023.gz",
+      "Bytes": 100191,
+      "Sha256": "4CC9B9170E797641271E6807D1BDDFB93635472C3285FC5BEBFFCE92F44FEF13",
+      "StoredBytes": 7880,
+      "StoredSha256": "CD0359563EC9A07A8B9FC0E6E23EF6339187BDFDC55ADC0EB9AE7122E59DC122"
+    },
+    {
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/.git/mixed-epoch-core-development/test-owner-controls-arity-repair-1/returns/m8-permuted.json",
+      "File": "024.gz",
+      "Bytes": 100263,
+      "Sha256": "AC92A29E92CB2F2FDC3F460C5BA11148223FAEE22B5D6ED1E1CF64827BB92EB8",
+      "StoredBytes": 7891,
+      "StoredSha256": "088E32FCACEDFD89851109FEBEE0F994117765517EE4A189B66D781C525D7F31"
+    },
+    {
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/.git/mixed-epoch-core-development/test-owner-controls-arity-repair-1/returns/m8-training-only-evaluations.json",
+      "File": "025.gz",
+      "Bytes": 20299,
+      "Sha256": "90E2458F1F29CD13250C1AD1708F4EFC15CF403569BD84528620FDB4BC017729",
+      "StoredBytes": 1628,
+      "StoredSha256": "60DD5B7AA66121AE27FD58AD86CA1E79EB654C28C632C439001957EC14D66473"
+    },
+    {
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/.git/mixed-epoch-core-development/test-owner-controls-arity-repair-1/returns/withdrawal-cold-start.json",
+      "File": "026.gz",
+      "Bytes": 29626,
+      "Sha256": "525E53923DCCE42E81BDC1921E5801E71F9A2A654C91FE9C9840BFD582BA6E48",
+      "StoredBytes": 2549,
+      "StoredSha256": "DF18CA26A8999B6EA946219086E267BC4A437673A101D7E0115FECD5D4F0BABC"
+    },
+    {
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/.git/mixed-epoch-core-development/test-owner-controls-arity-repair-1/returns.json",
+      "File": "027.gz",
+      "Bytes": 2194,
+      "Sha256": "03C31419A5AB6800E5B793C24179BDF563FE9920147F452612F0798A9CCCB788",
+      "StoredBytes": 924,
+      "StoredSha256": "E7CBE1CF809A630D796BF5C2755EF7DCA609DCC51244716D9B5F44392DAC587D"
+    },
+    {
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/.git/mixed-epoch-core-development/test-owner-controls-arity-repair-1/source-0",
+      "File": "028.gz",
+      "Bytes": 19114,
+      "Sha256": "C59FDB8F5F2178297DB350AD43BD54C1ABCF6422DEDD5A3C7F85B797CC5D8236",
+      "StoredBytes": 4635,
+      "StoredSha256": "7511B230453621E8946B9C0D48DC107662D0ADF1B27DACF75E33665EDE3C4D7F"
+    },
+    {
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/.git/mixed-epoch-core-development/test-owner-controls-arity-repair-1/source-1",
+      "File": "029.gz",
+      "Bytes": 167510,
+      "Sha256": "B75CEF997AF2D7D98BF7043039A63B94ED6E770C675EBAADBFC644A79DB57CB2",
+      "StoredBytes": 38375,
+      "StoredSha256": "452E5200E1DA2248DA49593EF85CEA9029A5998E68F7F5077498A7A269CB0685"
+    },
+    {
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/.git/mixed-epoch-core-development/test-owner-controls-arity-repair-1/source-2",
+      "File": "030.gz",
+      "Bytes": 12338,
+      "Sha256": "9260CAC8F8EF58BC7EA927B31C0F1426FCC3B83A4790210AC25D4CFBA676F4A9",
+      "StoredBytes": 3543,
+      "StoredSha256": "09570582BF30F9BEA22AED3CF76FAB631FBC6AE2DEC819553886F4B7A166919C"
+    },
+    {
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/.git/mixed-epoch-core-development/test-owner-controls-arity-repair-1/source-3",
+      "File": "031.gz",
+      "Bytes": 67508,
+      "Sha256": "F13889BB9450F7BB0AF7F41E019841196512347414BC38DB797A5E041D25DB2B",
+      "StoredBytes": 16014,
+      "StoredSha256": "E9E8389B5F80DB8FBBF4C5C1C24E265888452D48D904787539D268898EC99FD4"
+    },
+    {
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/.git/mixed-epoch-core-development/test-owner-controls-arity-repair-1/source-4",
+      "File": "032.gz",
+      "Bytes": 3426,
+      "Sha256": "24F474046E52A2B703EDA187587D1E15FCBFDA2C835075B7CC13B83AF7B8DCA0",
+      "StoredBytes": 1070,
+      "StoredSha256": "F7C0D070DDFCB0B74463724B1B9FE56D537F8DFA79872DE7985467A3E4974962"
+    },
+    {
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/.git/mixed-epoch-core-development/test-owner-controls-arity-repair-1/source-5",
+      "File": "033.gz",
+      "Bytes": 3879,
+      "Sha256": "2361B22D257F61236AE0B9EA4266EEB4883B9E5419680FE5419FFD86C5C620AC",
+      "StoredBytes": 966,
+      "StoredSha256": "6DE2648DF0EC91C9FF9A788041056DDB60BD8188C042E5E9BE38572FF13AE57D"
+    },
+    {
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/.git/mixed-epoch-core-development/test-owner-controls-arity-repair-1/stderr",
+      "File": "034.gz",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "StoredBytes": 20,
+      "StoredSha256": "9CEFFB7310338057CFE71A4AE1E2C98D2C485D81CDEF906532A801F457A38D64"
+    },
+    {
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/.git/mixed-epoch-core-development/test-owner-controls-arity-repair-1/stdout",
+      "File": "035.gz",
+      "Bytes": 1321,
+      "Sha256": "63C6ACA9FA62756DA99B3306A446C1748C0586BE64F1B666E487957421B8F3C5",
+      "StoredBytes": 393,
+      "StoredSha256": "C925728B236C868B826E493891933920A9B27C7BF13E4881D731094BFE9318E5"
+    }
+  ]
+}

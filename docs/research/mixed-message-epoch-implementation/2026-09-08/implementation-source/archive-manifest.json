@@ -1,0 +1,1502 @@
+{
+  "Schema": "zeta.mixed-epoch.implementation-archive.v1",
+  "SourceCommit": "3c3a76ad6674bb40b2e1309021735950c282d8d5",
+  "ManifestSha256": "F92041F0DBC344DA877DFA970B3C5C7AD6817C8285AAA28E164872F2CE6D56F1",
+  "Archive": {
+    "Path": "custody.tar.gz",
+    "Bytes": 39770169,
+    "Sha256": "E51A00FC29FA2A13B09F152AB0F55908B7E03982036E5084F54A221815149445"
+  },
+  "Members": [
+    {
+      "Path": "freeze-source.py",
+      "Bytes": 8553,
+      "Sha256": "0DBFF44E506F9EF175318F10018C340A0CDEB2B2F70602518DCFE47B92DD2970"
+    },
+    {
+      "Path": "sources/.mise.toml",
+      "Bytes": 20933,
+      "Sha256": "5CA1B929B4F9F02F41C3759C832C5BB4E9602AC5306638510A19884801D8FA7D"
+    },
+    {
+      "Path": "git-source/0-stdout",
+      "Bytes": 20933,
+      "Sha256": "5CA1B929B4F9F02F41C3759C832C5BB4E9602AC5306638510A19884801D8FA7D"
+    },
+    {
+      "Path": "git-source/0-stderr",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "git-source/0-completion.json",
+      "Bytes": 136,
+      "Sha256": "46C91DE2D1063DDB23D048B7EA8069061EDDBC35F083C3C60050720309757535"
+    },
+    {
+      "Path": "sources/Directory.Build.props",
+      "Bytes": 2530,
+      "Sha256": "06BE09ECBFCB99CE927687617848688CF16F98460C0EB03EBB3F6FF8179BECFA"
+    },
+    {
+      "Path": "git-source/1-stdout",
+      "Bytes": 2530,
+      "Sha256": "06BE09ECBFCB99CE927687617848688CF16F98460C0EB03EBB3F6FF8179BECFA"
+    },
+    {
+      "Path": "git-source/1-stderr",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "git-source/1-completion.json",
+      "Bytes": 145,
+      "Sha256": "807212441B49BFA9671A0FA122419CE0378E7B81091B78BF0D4E0376CCDB1139"
+    },
+    {
+      "Path": "sources/Directory.Packages.props",
+      "Bytes": 7113,
+      "Sha256": "807B4F9172DCFA69B0DAD58ED1E7C9571B2021D3C7A931E155339FAD772C5560"
+    },
+    {
+      "Path": "git-source/2-stdout",
+      "Bytes": 7113,
+      "Sha256": "807B4F9172DCFA69B0DAD58ED1E7C9571B2021D3C7A931E155339FAD772C5560"
+    },
+    {
+      "Path": "git-source/2-stderr",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "git-source/2-completion.json",
+      "Bytes": 150,
+      "Sha256": "50B353F4394D83DEEB0C168E9162ED7D6330DB4B254923FCB8AA6562D2DB5423"
+    },
+    {
+      "Path": "sources/Zeta.sln",
+      "Bytes": 70956,
+      "Sha256": "5E7E39E6AC0E919F9BAB2C45A34EFA9A92E097F7C18DD6A01B6435653D3C5D9C"
+    },
+    {
+      "Path": "git-source/3-stdout",
+      "Bytes": 70956,
+      "Sha256": "5E7E39E6AC0E919F9BAB2C45A34EFA9A92E097F7C18DD6A01B6435653D3C5D9C"
+    },
+    {
+      "Path": "git-source/3-stderr",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "git-source/3-completion.json",
+      "Bytes": 134,
+      "Sha256": "74AE992C32C4BF90A5F631546516FFE22EEA208A8FBEA393441C4DC89F141351"
+    },
+    {
+      "Path": "sources/docs/DECISIONS/2026-09-08-checked-mixed-message-module-epochs.md",
+      "Bytes": 7418,
+      "Sha256": "A91EDD715BFC1333EE57129E28D6801416BA7D7B3070D3F54755F1D5CBB647FD"
+    },
+    {
+      "Path": "git-source/4-stdout",
+      "Bytes": 7418,
+      "Sha256": "A91EDD715BFC1333EE57129E28D6801416BA7D7B3070D3F54755F1D5CBB647FD"
+    },
+    {
+      "Path": "git-source/4-stderr",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "git-source/4-completion.json",
+      "Bytes": 190,
+      "Sha256": "9E417A579DDD3EFD9E55ECA29DE79B50D345E6A83F361DF6C63E6455D04264AE"
+    },
+    {
+      "Path": "sources/docs/DECISIONS/2026-09-08-density-consistent-precision-gate-kernels.md",
+      "Bytes": 11200,
+      "Sha256": "BB37C0560984A8D457C9688C283E8B9CC01C72AE7FA7632F453147524484F0E8"
+    },
+    {
+      "Path": "git-source/5-stdout",
+      "Bytes": 11200,
+      "Sha256": "BB37C0560984A8D457C9688C283E8B9CC01C72AE7FA7632F453147524484F0E8"
+    },
+    {
+      "Path": "git-source/5-stderr",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "git-source/5-completion.json",
+      "Bytes": 196,
+      "Sha256": "DC5E5547B87BBA0A46A4C5C7F2646E3B9A270B2432EE6FA0D9746149B78D0475"
+    },
+    {
+      "Path": "sources/docs/research/2026-09-08-checked-mixed-message-module-epoch-source-contract.md",
+      "Bytes": 53198,
+      "Sha256": "4234015EE650FA7190CF3375C58654499F3BB9EC9C96E4BE21D2FC97A30EC979"
+    },
+    {
+      "Path": "git-source/6-stdout",
+      "Bytes": 53198,
+      "Sha256": "4234015EE650FA7190CF3375C58654499F3BB9EC9C96E4BE21D2FC97A30EC979"
+    },
+    {
+      "Path": "git-source/6-stderr",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "git-source/6-completion.json",
+      "Bytes": 204,
+      "Sha256": "C70D928131FB7EF1F2097658E8DEE9EB4A2B613B2780C381558865606352E7EB"
+    },
+    {
+      "Path": "sources/docs/research/2026-09-08-mixed-message-epoch-identity-codec-conventions.md",
+      "Bytes": 6583,
+      "Sha256": "BB623AB96A329A075E8C9BC06953D7284DA62BA10766B0D06479D51A011F98C2"
+    },
+    {
+      "Path": "git-source/7-stdout",
+      "Bytes": 6583,
+      "Sha256": "BB623AB96A329A075E8C9BC06953D7284DA62BA10766B0D06479D51A011F98C2"
+    },
+    {
+      "Path": "git-source/7-stderr",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "git-source/7-completion.json",
+      "Bytes": 200,
+      "Sha256": "9234AC6819D7B93233AD28229A4F634C18EB7D28643E136B71378E3AC7FD3637"
+    },
+    {
+      "Path": "sources/docs/research/2026-09-08-mixed-message-epoch-transport-amendment.md",
+      "Bytes": 10513,
+      "Sha256": "ABB0E47938DF9ECD8CD4A64536289451D70FF0245B84EF9C05D1A2710C340707"
+    },
+    {
+      "Path": "git-source/8-stdout",
+      "Bytes": 10513,
+      "Sha256": "ABB0E47938DF9ECD8CD4A64536289451D70FF0245B84EF9C05D1A2710C340707"
+    },
+    {
+      "Path": "git-source/8-stderr",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "git-source/8-completion.json",
+      "Bytes": 193,
+      "Sha256": "7BA7D14494A3DBCA1D37C9D6BDC25EB1B19E0FA7999BA3170E167F17BFE1AF6D"
+    },
+    {
+      "Path": "sources/docs/research/2026-09-08-mixed-message-frozen-nested-query-register.md",
+      "Bytes": 5984,
+      "Sha256": "823995732D03E3D93F735CC04C836D591C1F6CA96A69C8D4B7E5A22700A53707"
+    },
+    {
+      "Path": "git-source/9-stdout",
+      "Bytes": 5984,
+      "Sha256": "823995732D03E3D93F735CC04C836D591C1F6CA96A69C8D4B7E5A22700A53707"
+    },
+    {
+      "Path": "git-source/9-stderr",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "git-source/9-completion.json",
+      "Bytes": 196,
+      "Sha256": "BDC297152F064B3E945B8C06A45B80761D3E7F5FBB278E38465B63A9C89E5FC7"
+    },
+    {
+      "Path": "sources/docs/research/2026-09-08-mixed-message-withdrawal-admission-clarification.md",
+      "Bytes": 4448,
+      "Sha256": "99576A0F9113839905463FF43CB35FF224524EDF8C207F38C7089984E7914DEE"
+    },
+    {
+      "Path": "git-source/10-stdout",
+      "Bytes": 4448,
+      "Sha256": "99576A0F9113839905463FF43CB35FF224524EDF8C207F38C7089984E7914DEE"
+    },
+    {
+      "Path": "git-source/10-stderr",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "git-source/10-completion.json",
+      "Bytes": 202,
+      "Sha256": "5E3EFA68F4AD7E2EE58713E383BB2A9CE64A21C5DE31C62C61D7B042D8890825"
+    },
+    {
+      "Path": "sources/docs/research/2026-09-08-precision-gate-projection-decimal-admission-clarification.md",
+      "Bytes": 2025,
+      "Sha256": "BA359E4FEC2484A680B6B149E6E887FBEA82AFBB67A15EAFBDB99949101BDAB8"
+    },
+    {
+      "Path": "git-source/11-stdout",
+      "Bytes": 2025,
+      "Sha256": "BA359E4FEC2484A680B6B149E6E887FBEA82AFBB67A15EAFBDB99949101BDAB8"
+    },
+    {
+      "Path": "git-source/11-stderr",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "git-source/11-completion.json",
+      "Bytes": 211,
+      "Sha256": "208CA0303702F784B3F5F1AB94E255EA83A9D1BC92E400E10C2AEC0B21AE2049"
+    },
+    {
+      "Path": "sources/docs/research/2026-09-08-precision-gate-projection-proposed-contract.md",
+      "Bytes": 38142,
+      "Sha256": "537054779BF9E0BFA9271B5CC56116FBC80B16C4A2BE9F1B5E3C022FE95A0F8E"
+    },
+    {
+      "Path": "git-source/12-stdout",
+      "Bytes": 38142,
+      "Sha256": "537054779BF9E0BFA9271B5CC56116FBC80B16C4A2BE9F1B5E3C022FE95A0F8E"
+    },
+    {
+      "Path": "git-source/12-stderr",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "git-source/12-completion.json",
+      "Bytes": 197,
+      "Sha256": "FECAE30A30C79AB7F636921D56A5753459693E0AC265835FC446C402CDDB500C"
+    },
+    {
+      "Path": "sources/docs/research/2026-09-08-precision-gate-projection-rendered-zero-clarification.md",
+      "Bytes": 2146,
+      "Sha256": "67B7C9EFB6B42CEFE341507738B6122FAC4BEDF18C07A72564F3DEEFEE71235E"
+    },
+    {
+      "Path": "git-source/13-stdout",
+      "Bytes": 2146,
+      "Sha256": "67B7C9EFB6B42CEFE341507738B6122FAC4BEDF18C07A72564F3DEEFEE71235E"
+    },
+    {
+      "Path": "git-source/13-stderr",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "git-source/13-completion.json",
+      "Bytes": 206,
+      "Sha256": "6512DB5EBD13CA839DD0FE00AA9108B62E49AD7DEFAC23CB51F2075EC32D0241"
+    },
+    {
+      "Path": "sources/docs/research/mixed-message-epoch-implementation/2026-09-08/registered-source/README.md",
+      "Bytes": 6039,
+      "Sha256": "D45A9F084C6CA2F79E7017BD30CD698AA54650C29C24E5F23A6804537B553741"
+    },
+    {
+      "Path": "git-source/14-stdout",
+      "Bytes": 6039,
+      "Sha256": "D45A9F084C6CA2F79E7017BD30CD698AA54650C29C24E5F23A6804537B553741"
+    },
+    {
+      "Path": "git-source/14-stderr",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "git-source/14-completion.json",
+      "Bytes": 211,
+      "Sha256": "7D54A9506F6F882ACAD491208AFFDBF84F7E864310AD5BD0C67E62A4454A24C1"
+    },
+    {
+      "Path": "sources/docs/research/mixed-message-epoch-implementation/2026-09-08/registered-source/invoke.py",
+      "Bytes": 11511,
+      "Sha256": "CC7FBF89E681909374591516B4227F3D93373E9B5F089C039994B0CA46055E69"
+    },
+    {
+      "Path": "git-source/15-stdout",
+      "Bytes": 11511,
+      "Sha256": "CC7FBF89E681909374591516B4227F3D93373E9B5F089C039994B0CA46055E69"
+    },
+    {
+      "Path": "git-source/15-stderr",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "git-source/15-completion.json",
+      "Bytes": 212,
+      "Sha256": "B56C1FE550D74BCA56552488837013C81D490292B65CB804162098962DE499D0"
+    },
+    {
+      "Path": "sources/global.json",
+      "Bytes": 491,
+      "Sha256": "6A5420114228737C4F177E41B4DE73ED8A19F9C108A02BE9DCEF1BF4D05FD2E3"
+    },
+    {
+      "Path": "git-source/16-stdout",
+      "Bytes": 491,
+      "Sha256": "6A5420114228737C4F177E41B4DE73ED8A19F9C108A02BE9DCEF1BF4D05FD2E3"
+    },
+    {
+      "Path": "git-source/16-stderr",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "git-source/16-completion.json",
+      "Bytes": 137,
+      "Sha256": "834073624E1F49DD015AADF531357E86CE5A1A6A34F1170AF1DF128657027A6A"
+    },
+    {
+      "Path": "sources/src/Bayesian/Bayesian.fsproj",
+      "Bytes": 3426,
+      "Sha256": "24F474046E52A2B703EDA187587D1E15FCBFDA2C835075B7CC13B83AF7B8DCA0"
+    },
+    {
+      "Path": "git-source/17-stdout",
+      "Bytes": 3426,
+      "Sha256": "24F474046E52A2B703EDA187587D1E15FCBFDA2C835075B7CC13B83AF7B8DCA0"
+    },
+    {
+      "Path": "git-source/17-stderr",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "git-source/17-completion.json",
+      "Bytes": 154,
+      "Sha256": "EC85113B09616EC632BB8C31E39CDDFBBE6A476F6835D97CB760961F104AF739"
+    },
+    {
+      "Path": "sources/src/Bayesian/BoundedModuleLearner.fs",
+      "Bytes": 19114,
+      "Sha256": "C59FDB8F5F2178297DB350AD43BD54C1ABCF6422DEDD5A3C7F85B797CC5D8236"
+    },
+    {
+      "Path": "git-source/18-stdout",
+      "Bytes": 19114,
+      "Sha256": "C59FDB8F5F2178297DB350AD43BD54C1ABCF6422DEDD5A3C7F85B797CC5D8236"
+    },
+    {
+      "Path": "git-source/18-stderr",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "git-source/18-completion.json",
+      "Bytes": 162,
+      "Sha256": "F6058FA0C2B124F18F7F406E9147C2FDFF6B796197766F5179934439C732752C"
+    },
+    {
+      "Path": "sources/src/Bayesian/FactorGraph.fs",
+      "Bytes": 11171,
+      "Sha256": "86EBEF6BA9ABD29499D40A15AC0727FF15CDB4DC72FE247A9C744CA6123DF6F7"
+    },
+    {
+      "Path": "git-source/19-stdout",
+      "Bytes": 11171,
+      "Sha256": "86EBEF6BA9ABD29499D40A15AC0727FF15CDB4DC72FE247A9C744CA6123DF6F7"
+    },
+    {
+      "Path": "git-source/19-stderr",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "git-source/19-completion.json",
+      "Bytes": 153,
+      "Sha256": "33DCB79D006308D9712DCFFB12D02D208ACEFAC4A51A0EDD8B6DF9500DD3B5F8"
+    },
+    {
+      "Path": "sources/src/Bayesian/Message.fs",
+      "Bytes": 15816,
+      "Sha256": "983256B985671ACFB2C136B6A82A614E53EBB87B7C9CDA04FA4540E3C7C2EEE7"
+    },
+    {
+      "Path": "git-source/20-stdout",
+      "Bytes": 15816,
+      "Sha256": "983256B985671ACFB2C136B6A82A614E53EBB87B7C9CDA04FA4540E3C7C2EEE7"
+    },
+    {
+      "Path": "git-source/20-stderr",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "git-source/20-completion.json",
+      "Bytes": 149,
+      "Sha256": "4A677021588AF192FD356922E451AF1D6FDEEBB38466D366A08D3A0C5F775D79"
+    },
+    {
+      "Path": "sources/src/Bayesian/MixedMessageEpoch.fs",
+      "Bytes": 167510,
+      "Sha256": "B75CEF997AF2D7D98BF7043039A63B94ED6E770C675EBAADBFC644A79DB57CB2"
+    },
+    {
+      "Path": "git-source/21-stdout",
+      "Bytes": 167510,
+      "Sha256": "B75CEF997AF2D7D98BF7043039A63B94ED6E770C675EBAADBFC644A79DB57CB2"
+    },
+    {
+      "Path": "git-source/21-stderr",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "git-source/21-completion.json",
+      "Bytes": 159,
+      "Sha256": "6AAAF40735F3D7955CCC1F53FDABB1C47B772BB43A4F84A6C4016D73A043A1C9"
+    },
+    {
+      "Path": "sources/src/Bayesian/PrecisionGateKernels.fs",
+      "Bytes": 17206,
+      "Sha256": "4004196CB0ADE8527DFEBF83FBB3E6E42BD36208E38AFFD09906787A84901C02"
+    },
+    {
+      "Path": "git-source/22-stdout",
+      "Bytes": 17206,
+      "Sha256": "4004196CB0ADE8527DFEBF83FBB3E6E42BD36208E38AFFD09906787A84901C02"
+    },
+    {
+      "Path": "git-source/22-stderr",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "git-source/22-completion.json",
+      "Bytes": 162,
+      "Sha256": "55F529DC9D60E10E3421A57A1F0E76FBC75EBB07EF4E88C45D834E69896C2BF2"
+    },
+    {
+      "Path": "sources/src/Bayesian/PrecisionGateProjection.fs",
+      "Bytes": 36804,
+      "Sha256": "05F0DD3D50011698A198D68E2CA5AA0741855F79C5ABC97D235700FBABDE465E"
+    },
+    {
+      "Path": "git-source/23-stdout",
+      "Bytes": 36804,
+      "Sha256": "05F0DD3D50011698A198D68E2CA5AA0741855F79C5ABC97D235700FBABDE465E"
+    },
+    {
+      "Path": "git-source/23-stderr",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "git-source/23-completion.json",
+      "Bytes": 165,
+      "Sha256": "4A150E364DEA70C304C621A2C26554F908C0D69CE3E62D3640A915627C379C23"
+    },
+    {
+      "Path": "sources/src/Core.Abstractions/Zeta.Core.Abstractions.csproj",
+      "Bytes": 1349,
+      "Sha256": "5145F0AB97A8123F9E367CDF5EBECA0B72B33D121DCF04E7F703C3B4D6EF6522"
+    },
+    {
+      "Path": "git-source/24-stdout",
+      "Bytes": 1349,
+      "Sha256": "5145F0AB97A8123F9E367CDF5EBECA0B72B33D121DCF04E7F703C3B4D6EF6522"
+    },
+    {
+      "Path": "git-source/24-stderr",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "git-source/24-completion.json",
+      "Bytes": 177,
+      "Sha256": "271263308384D6DC284AB98DBC7DAB72CF89DE7A77A2E1C6075B4BC9BD54563C"
+    },
+    {
+      "Path": "sources/src/Core.FSharp.Yaml/Zeta.Core.FSharp.Yaml.fsproj",
+      "Bytes": 500,
+      "Sha256": "B5CCD5FCB7966305C80C13374A4DC2E628B34992A7A65F3F583093BD97A24C5B"
+    },
+    {
+      "Path": "git-source/25-stdout",
+      "Bytes": 500,
+      "Sha256": "B5CCD5FCB7966305C80C13374A4DC2E628B34992A7A65F3F583093BD97A24C5B"
+    },
+    {
+      "Path": "git-source/25-stderr",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "git-source/25-completion.json",
+      "Bytes": 174,
+      "Sha256": "359C024F627EEBBA950EA9A70D57148C88094DE2C58A41A3BB81CD6BBE67BEB4"
+    },
+    {
+      "Path": "sources/src/Core.FSharp.ZetaId/Zeta.Core.FSharp.ZetaId.fsproj",
+      "Bytes": 555,
+      "Sha256": "0731DDB5F55F966EEBF96A8EF35E8D5D44B25A97B5380E317343ADBF14356AED"
+    },
+    {
+      "Path": "git-source/26-stdout",
+      "Bytes": 555,
+      "Sha256": "0731DDB5F55F966EEBF96A8EF35E8D5D44B25A97B5380E317343ADBF14356AED"
+    },
+    {
+      "Path": "git-source/26-stderr",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "git-source/26-completion.json",
+      "Bytes": 179,
+      "Sha256": "72A6AFAE71C04C0258C590B1919009575202529B4783EBFB3B17E81892971BD8"
+    },
+    {
+      "Path": "sources/src/Core.TypeScript/ace/build-graph.json",
+      "Bytes": 88448,
+      "Sha256": "30BB3351A001E6E446053D18179C153567066094625D13B919303F8F987E4FC9"
+    },
+    {
+      "Path": "git-source/27-stdout",
+      "Bytes": 88448,
+      "Sha256": "30BB3351A001E6E446053D18179C153567066094625D13B919303F8F987E4FC9"
+    },
+    {
+      "Path": "git-source/27-stderr",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "git-source/27-completion.json",
+      "Bytes": 166,
+      "Sha256": "E350FCE6C649F9AE9A7F92D07AB4E597F4A0D8B747534F913AE0CD0F80A0A5F3"
+    },
+    {
+      "Path": "sources/src/Core/Core.fsproj",
+      "Bytes": 25586,
+      "Sha256": "1CF9BF481C15509DA39692A6409D75BC3E2BC5FC5B28E6DFD903B620B6A2A680"
+    },
+    {
+      "Path": "git-source/28-stdout",
+      "Bytes": 25586,
+      "Sha256": "1CF9BF481C15509DA39692A6409D75BC3E2BC5FC5B28E6DFD903B620B6A2A680"
+    },
+    {
+      "Path": "git-source/28-stderr",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "git-source/28-completion.json",
+      "Bytes": 146,
+      "Sha256": "8F2D02990ACB56C53A19CD76602321C90823734425B81AFC41DEFFD963978A9A"
+    },
+    {
+      "Path": "sources/src/Core/ProbabilitySemiring.fs",
+      "Bytes": 8376,
+      "Sha256": "9289FAB0568DAB9F075B28D8EB91D2B681DDEDABB7BB90717190C10BF07F9170"
+    },
+    {
+      "Path": "git-source/29-stdout",
+      "Bytes": 8376,
+      "Sha256": "9289FAB0568DAB9F075B28D8EB91D2B681DDEDABB7BB90717190C10BF07F9170"
+    },
+    {
+      "Path": "git-source/29-stderr",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "git-source/29-completion.json",
+      "Bytes": 157,
+      "Sha256": "59E92441FE1218EC1D52A77D12B281610CBF564A7E464A078F5F87B929446096"
+    },
+    {
+      "Path": "sources/src/Core/Result.fs",
+      "Bytes": 1152,
+      "Sha256": "C2F07DC84DFA5F44215BAA1C6DFA88D4D0CE294F8A411FF43A433ADA5725BEB1"
+    },
+    {
+      "Path": "git-source/30-stdout",
+      "Bytes": 1152,
+      "Sha256": "C2F07DC84DFA5F44215BAA1C6DFA88D4D0CE294F8A411FF43A433ADA5725BEB1"
+    },
+    {
+      "Path": "git-source/30-stderr",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "git-source/30-completion.json",
+      "Bytes": 144,
+      "Sha256": "E8DF9074BA9B45A724C8558B1ACF5921AB444AA2DFA5ECB7E077FFE21702195A"
+    },
+    {
+      "Path": "sources/src/Core/SoftScheduler.fs",
+      "Bytes": 18533,
+      "Sha256": "02272C58557BC0B9A4B629016F72E742257FB191C0CA7F3920BE8BE949D64CE7"
+    },
+    {
+      "Path": "git-source/31-stdout",
+      "Bytes": 18533,
+      "Sha256": "02272C58557BC0B9A4B629016F72E742257FB191C0CA7F3920BE8BE949D64CE7"
+    },
+    {
+      "Path": "git-source/31-stderr",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "git-source/31-completion.json",
+      "Bytes": 150,
+      "Sha256": "F34E168BB97FF8DFF0E377F086E6D36BFCE5A08CBCDB775A204A834B9DC05642"
+    },
+    {
+      "Path": "sources/src/Interp.Python/pyproject.toml",
+      "Bytes": 4639,
+      "Sha256": "A6AA55A1FB237784994BA0609192B4E73E1784C1F7FC634DA238CBEE7A45DFF2"
+    },
+    {
+      "Path": "git-source/32-stdout",
+      "Bytes": 4639,
+      "Sha256": "A6AA55A1FB237784994BA0609192B4E73E1784C1F7FC634DA238CBEE7A45DFF2"
+    },
+    {
+      "Path": "git-source/32-stderr",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "git-source/32-completion.json",
+      "Bytes": 158,
+      "Sha256": "88568E8C485ABB8CEEF62EFA9B40A1BF2591CA4E905EDC326B328547B3AAA37B"
+    },
+    {
+      "Path": "sources/src/Interp.Python/tests/test_mixed_message_epoch_bridge.py",
+      "Bytes": 68707,
+      "Sha256": "4C8ECC4B2CBF514265D93C138847039B3CEFA5EB50FBEF1AA1D7A75C78CC74A8"
+    },
+    {
+      "Path": "git-source/33-stdout",
+      "Bytes": 68707,
+      "Sha256": "4C8ECC4B2CBF514265D93C138847039B3CEFA5EB50FBEF1AA1D7A75C78CC74A8"
+    },
+    {
+      "Path": "git-source/33-stderr",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "git-source/33-completion.json",
+      "Bytes": 183,
+      "Sha256": "AB415BA15124739F9F1BF8930C5843C84264AAE4F22EBA0FBBC3AB9564B2B271"
+    },
+    {
+      "Path": "sources/src/Interp.Python/tests/test_precision_gate_projection_cases.py",
+      "Bytes": 6186,
+      "Sha256": "14DA824114C27660A6316DA17B7FC6AE3CBFB9FE54538B23D460977F1F60CEE8"
+    },
+    {
+      "Path": "git-source/34-stdout",
+      "Bytes": 6186,
+      "Sha256": "14DA824114C27660A6316DA17B7FC6AE3CBFB9FE54538B23D460977F1F60CEE8"
+    },
+    {
+      "Path": "git-source/34-stderr",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "git-source/34-completion.json",
+      "Bytes": 189,
+      "Sha256": "F849661FF0B5885376D2031C9B295FBA32033F2422B4AAFA206C0CDBCDCBBA74"
+    },
+    {
+      "Path": "sources/src/Interp.Python/tests/test_precision_gate_projection_comparison.py",
+      "Bytes": 7990,
+      "Sha256": "3DFABB8ABC986EB34EA00E65A44C97E1FB6256CBC8654551294F55CC25876001"
+    },
+    {
+      "Path": "git-source/35-stdout",
+      "Bytes": 7990,
+      "Sha256": "3DFABB8ABC986EB34EA00E65A44C97E1FB6256CBC8654551294F55CC25876001"
+    },
+    {
+      "Path": "git-source/35-stderr",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "git-source/35-completion.json",
+      "Bytes": 194,
+      "Sha256": "309F322E10EBAEB8620A45AE32E0FE1F29D14FB00F2FC9C08220DDCE06D5B530"
+    },
+    {
+      "Path": "sources/src/Interp.Python/tests/test_precision_gate_projection_driver.py",
+      "Bytes": 32566,
+      "Sha256": "9952B5B2C36B57DAE74428D2C1C4FD7027511DD7D92683AA2C5CDE2B6F21962B"
+    },
+    {
+      "Path": "git-source/36-stdout",
+      "Bytes": 32566,
+      "Sha256": "9952B5B2C36B57DAE74428D2C1C4FD7027511DD7D92683AA2C5CDE2B6F21962B"
+    },
+    {
+      "Path": "git-source/36-stderr",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "git-source/36-completion.json",
+      "Bytes": 190,
+      "Sha256": "63683CC6627BA7A330A53D591D7A43F11255E91F2809CAF1B6F92C092B4B111E"
+    },
+    {
+      "Path": "sources/src/Interp.Python/tests/test_precision_gate_projection_intervals.py",
+      "Bytes": 8333,
+      "Sha256": "C673182CCC199A2D10D4C085F0D0EDBDC6D6D71CD1872BE535EE0D55291619F6"
+    },
+    {
+      "Path": "git-source/37-stdout",
+      "Bytes": 8333,
+      "Sha256": "C673182CCC199A2D10D4C085F0D0EDBDC6D6D71CD1872BE535EE0D55291619F6"
+    },
+    {
+      "Path": "git-source/37-stderr",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "git-source/37-completion.json",
+      "Bytes": 193,
+      "Sha256": "5324021AEF08C755E6E043F9999E8BA944FBE6BF77B19A58B873A4262A32E2D1"
+    },
+    {
+      "Path": "sources/src/Interp.Python/tests/test_precision_gate_projection_process.py",
+      "Bytes": 19858,
+      "Sha256": "576466C29E1ADFCEF2F037EE92E5DB6D298A4575AD589E83F13BAD0F3E2B4422"
+    },
+    {
+      "Path": "git-source/38-stdout",
+      "Bytes": 19858,
+      "Sha256": "576466C29E1ADFCEF2F037EE92E5DB6D298A4575AD589E83F13BAD0F3E2B4422"
+    },
+    {
+      "Path": "git-source/38-stderr",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "git-source/38-completion.json",
+      "Bytes": 191,
+      "Sha256": "6E89CBD15EE646CFE9CC58D9B542A5E820E5473354421437EDBF06E05218AFE1"
+    },
+    {
+      "Path": "sources/src/Interp.Python/tests/test_precision_gate_projection_reference.py",
+      "Bytes": 48250,
+      "Sha256": "0D96B6F27592DC34C4396C044369E043156D25A4986DFC2B4FEF1B2A3F402755"
+    },
+    {
+      "Path": "git-source/39-stdout",
+      "Bytes": 48250,
+      "Sha256": "0D96B6F27592DC34C4396C044369E043156D25A4986DFC2B4FEF1B2A3F402755"
+    },
+    {
+      "Path": "git-source/39-stderr",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "git-source/39-completion.json",
+      "Bytes": 193,
+      "Sha256": "CBC931B7F1ADB401406483A375DC7257F34F4F0DBF74D6DB03E63C903E00F15F"
+    },
+    {
+      "Path": "sources/src/Interp.Python/tests/test_precision_gate_projection_run.py",
+      "Bytes": 24772,
+      "Sha256": "1B0C3E2ECB9C482A1801FF38362DE93F29914DC16D3F368CD77E72D9C7368EC7"
+    },
+    {
+      "Path": "git-source/40-stdout",
+      "Bytes": 24772,
+      "Sha256": "1B0C3E2ECB9C482A1801FF38362DE93F29914DC16D3F368CD77E72D9C7368EC7"
+    },
+    {
+      "Path": "git-source/40-stderr",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "git-source/40-completion.json",
+      "Bytes": 187,
+      "Sha256": "CEB6DFD519E3223B711072D869CF1E31EBE32E0C5AE438A046C86C5432DF7996"
+    },
+    {
+      "Path": "sources/src/Interp.Python/uv.lock",
+      "Bytes": 344990,
+      "Sha256": "3550FDE780C137D9CAA009B9B371A2C43F227C1A8654BBA7D8BA5ADE56BC53A2"
+    },
+    {
+      "Path": "git-source/41-stdout",
+      "Bytes": 344990,
+      "Sha256": "3550FDE780C137D9CAA009B9B371A2C43F227C1A8654BBA7D8BA5ADE56BC53A2"
+    },
+    {
+      "Path": "git-source/41-stderr",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "git-source/41-completion.json",
+      "Bytes": 151,
+      "Sha256": "A2D6A3E29D73181049E63ADEA4F9D6DBB1F9B7E080F8D99DC5357DCC5ADD2196"
+    },
+    {
+      "Path": "sources/src/Interp.Python/zeta_interp/__init__.py",
+      "Bytes": 382,
+      "Sha256": "FA6DE54ED3F65FD8C7CE8895D68A2D4B0FE040735E55A8E2D01C3BBCF8BE50C9"
+    },
+    {
+      "Path": "git-source/42-stdout",
+      "Bytes": 382,
+      "Sha256": "FA6DE54ED3F65FD8C7CE8895D68A2D4B0FE040735E55A8E2D01C3BBCF8BE50C9"
+    },
+    {
+      "Path": "git-source/42-stderr",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "git-source/42-completion.json",
+      "Bytes": 167,
+      "Sha256": "4D6CA1DD316182D6A4321044212E6EBF298F3ABCB1E7B9D6784DC431574A90D1"
+    },
+    {
+      "Path": "sources/src/Interp.Python/zeta_interp/activations.py",
+      "Bytes": 3847,
+      "Sha256": "0ECF88098099B11D192A9F1916F342A2DDA3556FE75024E8A95D5BE08ABD5B19"
+    },
+    {
+      "Path": "git-source/43-stdout",
+      "Bytes": 3847,
+      "Sha256": "0ECF88098099B11D192A9F1916F342A2DDA3556FE75024E8A95D5BE08ABD5B19"
+    },
+    {
+      "Path": "git-source/43-stderr",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "git-source/43-completion.json",
+      "Bytes": 170,
+      "Sha256": "C6766BADED3CACA59C5B1BD82F6B625D9918D3A4830EAC0F79B91C28B548D814"
+    },
+    {
+      "Path": "sources/src/Interp.Python/zeta_interp/hidden_switch_compiled_admission.py",
+      "Bytes": 14129,
+      "Sha256": "BD5BFEAA68735581E17BCEEB01C24AC0AF975021F35302DCBD76E30B2211EE91"
+    },
+    {
+      "Path": "git-source/44-stdout",
+      "Bytes": 14129,
+      "Sha256": "BD5BFEAA68735581E17BCEEB01C24AC0AF975021F35302DCBD76E30B2211EE91"
+    },
+    {
+      "Path": "git-source/44-stderr",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "git-source/44-completion.json",
+      "Bytes": 191,
+      "Sha256": "C0C0A8A58E80AA355D5D047FC76968B709967254A6558B40DA235D2EBED58C34"
+    },
+    {
+      "Path": "sources/src/Interp.Python/zeta_interp/hidden_switch_compiled_ieee.py",
+      "Bytes": 7559,
+      "Sha256": "702A5E6E6BD330CB4D27DD3C3BDDBBEBA779EA8D6127249EFD7E9ECBFA54D8C4"
+    },
+    {
+      "Path": "git-source/45-stdout",
+      "Bytes": 7559,
+      "Sha256": "702A5E6E6BD330CB4D27DD3C3BDDBBEBA779EA8D6127249EFD7E9ECBFA54D8C4"
+    },
+    {
+      "Path": "git-source/45-stderr",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "git-source/45-completion.json",
+      "Bytes": 186,
+      "Sha256": "634D24B5A35A526703680379D2F92EE8CEB59CEC75898BC4D3108114F086F17B"
+    },
+    {
+      "Path": "sources/src/Interp.Python/zeta_interp/hidden_switch_compiled_record_encoding.py",
+      "Bytes": 9555,
+      "Sha256": "892B59A1572B093805171E0F495126F006A72D56CA87260251C9544C29019744"
+    },
+    {
+      "Path": "git-source/46-stdout",
+      "Bytes": 9555,
+      "Sha256": "892B59A1572B093805171E0F495126F006A72D56CA87260251C9544C29019744"
+    },
+    {
+      "Path": "git-source/46-stderr",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "git-source/46-completion.json",
+      "Bytes": 197,
+      "Sha256": "911E42C8FA7906CD1E9A13FB24D295E4BB6D7617232C2F14A1918E55A143D5BD"
+    },
+    {
+      "Path": "sources/src/Interp.Python/zeta_interp/hidden_switch_compiled_record_store.py",
+      "Bytes": 20305,
+      "Sha256": "75BA7825F7E925460B411C977C4F9F4F34D55BA40383B4F47482C1DB652E1008"
+    },
+    {
+      "Path": "git-source/47-stdout",
+      "Bytes": 20305,
+      "Sha256": "75BA7825F7E925460B411C977C4F9F4F34D55BA40383B4F47482C1DB652E1008"
+    },
+    {
+      "Path": "git-source/47-stderr",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "git-source/47-completion.json",
+      "Bytes": 194,
+      "Sha256": "9930371DBBF06881412B170A05594FC612D8D935B4CC6C795AF1A1B62207FEF8"
+    },
+    {
+      "Path": "sources/src/Interp.Python/zeta_interp/hidden_switch_compiled_storage.py",
+      "Bytes": 10694,
+      "Sha256": "3C7A9C8FECF51B10AA034E4764D18E773AB892382E8CDB4BE3E0945D3CD01750"
+    },
+    {
+      "Path": "git-source/48-stdout",
+      "Bytes": 10694,
+      "Sha256": "3C7A9C8FECF51B10AA034E4764D18E773AB892382E8CDB4BE3E0945D3CD01750"
+    },
+    {
+      "Path": "git-source/48-stderr",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "git-source/48-completion.json",
+      "Bytes": 188,
+      "Sha256": "69ADFBDAFE7847B935A01D03D17E05EC5E9111A866FA572FF178567A5CA0B915"
+    },
+    {
+      "Path": "sources/src/Interp.Python/zeta_interp/mixed_message_epoch_bridge.py",
+      "Bytes": 199844,
+      "Sha256": "2A6154EB842116837843E8E100AB08CF4A4C735C635ED693E8C3F58E11B4961B"
+    },
+    {
+      "Path": "git-source/49-stdout",
+      "Bytes": 199844,
+      "Sha256": "2A6154EB842116837843E8E100AB08CF4A4C735C635ED693E8C3F58E11B4961B"
+    },
+    {
+      "Path": "git-source/49-stderr",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "git-source/49-completion.json",
+      "Bytes": 184,
+      "Sha256": "8780E20D22532BC90F5311015548B70D2A92467F56116C5BF00BC9AD1E15475A"
+    },
+    {
+      "Path": "sources/src/Interp.Python/zeta_interp/mixed_message_epoch_controls.py",
+      "Bytes": 16771,
+      "Sha256": "03ED13D4D860D1E3B61B73AF265B7C65A8251B258623C16B1B1ED28EC6C51711"
+    },
+    {
+      "Path": "git-source/50-stdout",
+      "Bytes": 16771,
+      "Sha256": "03ED13D4D860D1E3B61B73AF265B7C65A8251B258623C16B1B1ED28EC6C51711"
+    },
+    {
+      "Path": "git-source/50-stderr",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "git-source/50-completion.json",
+      "Bytes": 186,
+      "Sha256": "B1F396F2466777EE6D09655D685065A2CDE0C2B4B78487A62F96779A07FF373F"
+    },
+    {
+      "Path": "sources/src/Interp.Python/zeta_interp/precision_gate_projection_cases.py",
+      "Bytes": 9695,
+      "Sha256": "D5EA9704C1E33429D990F66BA862BC5ED25A1F5C7C9A15E33A8B8D621CA71124"
+    },
+    {
+      "Path": "git-source/51-stdout",
+      "Bytes": 9695,
+      "Sha256": "D5EA9704C1E33429D990F66BA862BC5ED25A1F5C7C9A15E33A8B8D621CA71124"
+    },
+    {
+      "Path": "git-source/51-stderr",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "git-source/51-completion.json",
+      "Bytes": 189,
+      "Sha256": "44129F5E2171B2FB1A00DE87F41F3B4B245F8092D6DB959B64F4898411789D1B"
+    },
+    {
+      "Path": "sources/src/Interp.Python/zeta_interp/precision_gate_projection_comparison.py",
+      "Bytes": 11850,
+      "Sha256": "FA748BBB30A4647D85E264E803F2FFEBE4214CDA222CB84FF623A0BA1893EE5E"
+    },
+    {
+      "Path": "git-source/52-stdout",
+      "Bytes": 11850,
+      "Sha256": "FA748BBB30A4647D85E264E803F2FFEBE4214CDA222CB84FF623A0BA1893EE5E"
+    },
+    {
+      "Path": "git-source/52-stderr",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "git-source/52-completion.json",
+      "Bytes": 195,
+      "Sha256": "C129FD39DBF79CF995CC31BA77E28A174444574E4FFD268182B46B929197A50C"
+    },
+    {
+      "Path": "sources/src/Interp.Python/zeta_interp/precision_gate_projection_driver.py",
+      "Bytes": 40992,
+      "Sha256": "83537F7105042FC077D348EC6F59FD8D44318C0233D1804B01381A6A4EE51706"
+    },
+    {
+      "Path": "git-source/53-stdout",
+      "Bytes": 40992,
+      "Sha256": "83537F7105042FC077D348EC6F59FD8D44318C0233D1804B01381A6A4EE51706"
+    },
+    {
+      "Path": "git-source/53-stderr",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "git-source/53-completion.json",
+      "Bytes": 191,
+      "Sha256": "8E030F182C9F4B65297F7F226FF5AC62DDAE64EAD8ADEF094C83024DD4CBEF78"
+    },
+    {
+      "Path": "sources/src/Interp.Python/zeta_interp/precision_gate_projection_intervals.py",
+      "Bytes": 10864,
+      "Sha256": "FD8DB23E1B077A5BC3B9396E964C30BF927FE7E27A37DFE83AE5412988138616"
+    },
+    {
+      "Path": "git-source/54-stdout",
+      "Bytes": 10864,
+      "Sha256": "FD8DB23E1B077A5BC3B9396E964C30BF927FE7E27A37DFE83AE5412988138616"
+    },
+    {
+      "Path": "git-source/54-stderr",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "git-source/54-completion.json",
+      "Bytes": 193,
+      "Sha256": "05364728EFB0DDF48309DA53CE5766EE0840BB8EBF797075CBCC9E9E19E8964D"
+    },
+    {
+      "Path": "sources/src/Interp.Python/zeta_interp/precision_gate_projection_process.py",
+      "Bytes": 35009,
+      "Sha256": "EC3EADA6DA2AC70067EEE2CE7121F2C553FC9817F6F147FA18965D2E8729EF88"
+    },
+    {
+      "Path": "git-source/55-stdout",
+      "Bytes": 35009,
+      "Sha256": "EC3EADA6DA2AC70067EEE2CE7121F2C553FC9817F6F147FA18965D2E8729EF88"
+    },
+    {
+      "Path": "git-source/55-stderr",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "git-source/55-completion.json",
+      "Bytes": 192,
+      "Sha256": "CDF3192E83B9A343D7F0E12C6AAC66BCDD736FD9152084DC6484BECCBAAF27B0"
+    },
+    {
+      "Path": "sources/src/Interp.Python/zeta_interp/precision_gate_projection_reference.py",
+      "Bytes": 61549,
+      "Sha256": "C1063F29F5C63FD70E7E9923EB10D32037191559194FD2EFEC4A35619191E25B"
+    },
+    {
+      "Path": "git-source/56-stdout",
+      "Bytes": 61549,
+      "Sha256": "C1063F29F5C63FD70E7E9923EB10D32037191559194FD2EFEC4A35619191E25B"
+    },
+    {
+      "Path": "git-source/56-stderr",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "git-source/56-completion.json",
+      "Bytes": 194,
+      "Sha256": "AB79DA789D574976C1CD17AA88AFCF60BD6AAABD4093E91F5CF930AFFD071708"
+    },
+    {
+      "Path": "sources/src/Interp.Python/zeta_interp/precision_gate_projection_run.py",
+      "Bytes": 25597,
+      "Sha256": "41D01A033295C28CC9D51F8510F4C3C1DF9BA87AF028A2D0E299835602BF9CF6"
+    },
+    {
+      "Path": "git-source/57-stdout",
+      "Bytes": 25597,
+      "Sha256": "41D01A033295C28CC9D51F8510F4C3C1DF9BA87AF028A2D0E299835602BF9CF6"
+    },
+    {
+      "Path": "git-source/57-stderr",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "git-source/57-completion.json",
+      "Bytes": 188,
+      "Sha256": "CB0244FCE152C779697ED1D8B6C2439ED3746A728C1F0390D892D160CA34B568"
+    },
+    {
+      "Path": "sources/src/Research.FSharp/MixedMessageEpochReplay.fsx",
+      "Bytes": 99661,
+      "Sha256": "5D0DD505F3849D7F989982DCAE5EBAB2898B8140AE74489540EC016B15AD7795"
+    },
+    {
+      "Path": "git-source/58-stdout",
+      "Bytes": 99661,
+      "Sha256": "5D0DD505F3849D7F989982DCAE5EBAB2898B8140AE74489540EC016B15AD7795"
+    },
+    {
+      "Path": "git-source/58-stderr",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "git-source/58-completion.json",
+      "Bytes": 173,
+      "Sha256": "9B2DDF4A9E2454E9A3E6E57447B62BCAC87AECCE68CC573BE90C179F687A4BA6"
+    },
+    {
+      "Path": "sources/src/Research.FSharp/PrecisionGateProjectionReplay.fsx",
+      "Bytes": 12723,
+      "Sha256": "C1174406CC4E7D3164714C536207AD2BD72F085A38A3A816C8BC1B14ADE917B2"
+    },
+    {
+      "Path": "git-source/59-stdout",
+      "Bytes": 12723,
+      "Sha256": "C1174406CC4E7D3164714C536207AD2BD72F085A38A3A816C8BC1B14ADE917B2"
+    },
+    {
+      "Path": "git-source/59-stderr",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "git-source/59-completion.json",
+      "Bytes": 179,
+      "Sha256": "FAC79C36990A0E14CCA18D2CBC2EDCF8FA920CD8AF7DC0C0ABA253DF43C8EB48"
+    },
+    {
+      "Path": "sources/tests/Bayesian.Tests/Bayesian.Tests.fsproj",
+      "Bytes": 3879,
+      "Sha256": "2361B22D257F61236AE0B9EA4266EEB4883B9E5419680FE5419FFD86C5C620AC"
+    },
+    {
+      "Path": "git-source/60-stdout",
+      "Bytes": 3879,
+      "Sha256": "2361B22D257F61236AE0B9EA4266EEB4883B9E5419680FE5419FFD86C5C620AC"
+    },
+    {
+      "Path": "git-source/60-stderr",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "git-source/60-completion.json",
+      "Bytes": 168,
+      "Sha256": "B652DB983B1F5BC125EB97EEA805D5478620380DD3DB3617E301A7222A607A0C"
+    },
+    {
+      "Path": "sources/tests/Bayesian.Tests/BoundedModuleLearner.Tests.fs",
+      "Bytes": 12338,
+      "Sha256": "9260CAC8F8EF58BC7EA927B31C0F1426FCC3B83A4790210AC25D4CFBA676F4A9"
+    },
+    {
+      "Path": "git-source/61-stdout",
+      "Bytes": 12338,
+      "Sha256": "9260CAC8F8EF58BC7EA927B31C0F1426FCC3B83A4790210AC25D4CFBA676F4A9"
+    },
+    {
+      "Path": "git-source/61-stderr",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "git-source/61-completion.json",
+      "Bytes": 176,
+      "Sha256": "60B64B57D4D99D866F52D435658CEB1AEE4AE7E31F51C7FA429441D8606D9BAA"
+    },
+    {
+      "Path": "sources/tests/Bayesian.Tests/MixedMessageEpoch.Tests.fs",
+      "Bytes": 67508,
+      "Sha256": "F13889BB9450F7BB0AF7F41E019841196512347414BC38DB797A5E041D25DB2B"
+    },
+    {
+      "Path": "git-source/62-stdout",
+      "Bytes": 67508,
+      "Sha256": "F13889BB9450F7BB0AF7F41E019841196512347414BC38DB797A5E041D25DB2B"
+    },
+    {
+      "Path": "git-source/62-stderr",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "git-source/62-completion.json",
+      "Bytes": 173,
+      "Sha256": "D9874C23AFBEF7C36C22CBF0DD43F435F5FB0C329BAE183E64748ECD60582BB4"
+    },
+    {
+      "Path": "sources/tests/Bayesian.Tests/PrecisionGateKernels.Tests.fs",
+      "Bytes": 13463,
+      "Sha256": "F443E58DD8C6D5E0C017D36A432DC6DE121FD040DFA68D39E877E4A4EBFEFEBB"
+    },
+    {
+      "Path": "git-source/63-stdout",
+      "Bytes": 13463,
+      "Sha256": "F443E58DD8C6D5E0C017D36A432DC6DE121FD040DFA68D39E877E4A4EBFEFEBB"
+    },
+    {
+      "Path": "git-source/63-stderr",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "git-source/63-completion.json",
+      "Bytes": 176,
+      "Sha256": "25FB7BA68C6ABF30AA33948CD7179F92C250B7CD8779A8DAFB11B66CF18FDD6E"
+    },
+    {
+      "Path": "sources/tests/Bayesian.Tests/PrecisionGateProjection.Tests.fs",
+      "Bytes": 20227,
+      "Sha256": "A30C59C6D35878FC57CC0C0AE3BD563BADA13D2BD035EE42AC84CEB7FA773857"
+    },
+    {
+      "Path": "git-source/64-stdout",
+      "Bytes": 20227,
+      "Sha256": "A30C59C6D35878FC57CC0C0AE3BD563BADA13D2BD035EE42AC84CEB7FA773857"
+    },
+    {
+      "Path": "git-source/64-stderr",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "git-source/64-completion.json",
+      "Bytes": 179,
+      "Sha256": "99EBD04CB9632FBB84348ED8A70E3E98DDD62C0E9F9750DDFF0D6D2022F3D79C"
+    },
+    {
+      "Path": "direct-observation/@python",
+      "Bytes": 18090720,
+      "Sha256": "CE2C74E2FDA42CB068FB2D365CFAE20E6935B28B749F558D0F8F2E3BCF55CDD4"
+    },
+    {
+      "Path": "direct/python",
+      "Bytes": 18090720,
+      "Sha256": "CE2C74E2FDA42CB068FB2D365CFAE20E6935B28B749F558D0F8F2E3BCF55CDD4"
+    },
+    {
+      "Path": "direct-observation/@host",
+      "Bytes": 141392,
+      "Sha256": "2FF302A3C5CECC4A371FD6482D2F5547C57D93EFF9FE19919EF729A54F69CE04"
+    },
+    {
+      "Path": "direct/dotnet",
+      "Bytes": 141392,
+      "Sha256": "2FF302A3C5CECC4A371FD6482D2F5547C57D93EFF9FE19919EF729A54F69CE04"
+    },
+    {
+      "Path": "direct-observation/src_Research.FSharp_MixedMessageEpochReplay.fsx",
+      "Bytes": 99661,
+      "Sha256": "5D0DD505F3849D7F989982DCAE5EBAB2898B8140AE74489540EC016B15AD7795"
+    },
+    {
+      "Path": "direct-observation/src_Research.FSharp_PrecisionGateProjectionReplay.fsx",
+      "Bytes": 12723,
+      "Sha256": "C1174406CC4E7D3164714C536207AD2BD72F085A38A3A816C8BC1B14ADE917B2"
+    },
+    {
+      "Path": "direct-observation/src_Core_bin_Release_net10.0_Zeta.Core.dll",
+      "Bytes": 9268224,
+      "Sha256": "C49F1A2604618D6074D849BB475530338C3C2B80002676129FFAB1569079295D"
+    },
+    {
+      "Path": "direct/src/Core/bin/Release/net10.0/Zeta.Core.dll",
+      "Bytes": 9268224,
+      "Sha256": "C49F1A2604618D6074D849BB475530338C3C2B80002676129FFAB1569079295D"
+    },
+    {
+      "Path": "direct-observation/src_Core.Abstractions_bin_Release_net10.0_Zeta.Core.Abstractions.dll",
+      "Bytes": 46592,
+      "Sha256": "48F2C96371502534AB4AABA7D97FCAFFF7D3A1731ABB3578C545F033FDA50382"
+    },
+    {
+      "Path": "direct/src/Core.Abstractions/bin/Release/net10.0/Zeta.Core.Abstractions.dll",
+      "Bytes": 46592,
+      "Sha256": "48F2C96371502534AB4AABA7D97FCAFFF7D3A1731ABB3578C545F033FDA50382"
+    },
+    {
+      "Path": "direct-observation/src_Bayesian_bin_Release_net10.0_Zeta.Bayesian.dll",
+      "Bytes": 1819136,
+      "Sha256": "7F39E537242EFD6F609812413AF39BBC66DBA2B6457F95539D4A4719986E80C9"
+    },
+    {
+      "Path": "direct/src/Bayesian/bin/Release/net10.0/Zeta.Bayesian.dll",
+      "Bytes": 1819136,
+      "Sha256": "7F39E537242EFD6F609812413AF39BBC66DBA2B6457F95539D4A4719986E80C9"
+    },
+    {
+      "Path": "service-manifest.json",
+      "Bytes": 22381,
+      "Sha256": "F92041F0DBC344DA877DFA970B3C5C7AD6817C8285AAA28E164872F2CE6D56F1"
+    },
+    {
+      "Path": "environment/0-invocation.json",
+      "Bytes": 123,
+      "Sha256": "DC65EC069D20A301FF9EEBAD7EFEA722FE113C8E5C504313014CD10B508C749D"
+    },
+    {
+      "Path": "environment/0-stdout",
+      "Bytes": 2767,
+      "Sha256": "85C2F898DBA09469E806021E10BDBD8E12E85BFBA2D67EA7002201DB7A21C634"
+    },
+    {
+      "Path": "environment/0-stderr",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "environment/0-completion.json",
+      "Bytes": 150,
+      "Sha256": "B95107657B79177E426BF020E3629DA689A1156606D5EDCA7194E8331F2A0088"
+    },
+    {
+      "Path": "environment/1-invocation.json",
+      "Bytes": 447,
+      "Sha256": "B1D4836B40F26EA42981C349CAC86D928F8F642E2592F7C9B84DFA0DBC8A5F79"
+    },
+    {
+      "Path": "environment/1-stdout",
+      "Bytes": 490,
+      "Sha256": "7B2B90AE651D0511793EE0E87A347F200A4AE6FA31E8517FAC68B94B0A73EFE4"
+    },
+    {
+      "Path": "environment/1-stderr",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "environment/1-completion.json",
+      "Bytes": 478,
+      "Sha256": "BC8C75AB5C6838BBA616C5CAE44C91B600542D65EFFB47B8A5D6A0EE64B854FC"
+    },
+    {
+      "Path": "direct-after-raw/@python",
+      "Bytes": 18090720,
+      "Sha256": "CE2C74E2FDA42CB068FB2D365CFAE20E6935B28B749F558D0F8F2E3BCF55CDD4"
+    },
+    {
+      "Path": "direct-after/@python.json",
+      "Bytes": 134,
+      "Sha256": "5BFBAB3CAFEB5D3B9A9E5AC67DC8253341106B03247849BBBEADADB0975C45A7"
+    },
+    {
+      "Path": "direct-after-raw/@host",
+      "Bytes": 141392,
+      "Sha256": "2FF302A3C5CECC4A371FD6482D2F5547C57D93EFF9FE19919EF729A54F69CE04"
+    },
+    {
+      "Path": "direct-after/@host.json",
+      "Bytes": 130,
+      "Sha256": "88B5BDD2ECF9C00B231FF5390F110D59DF23A7A58C3121E841A68F321B223CEF"
+    },
+    {
+      "Path": "direct-after-raw/src_Research.FSharp_MixedMessageEpochReplay.fsx",
+      "Bytes": 99661,
+      "Sha256": "5D0DD505F3849D7F989982DCAE5EBAB2898B8140AE74489540EC016B15AD7795"
+    },
+    {
+      "Path": "direct-after/src_Research.FSharp_MixedMessageEpochReplay.fsx.json",
+      "Bytes": 171,
+      "Sha256": "0354F99C4BCAA235AEB1882A29808C27FD48861DA680732DF704D8456EEE34CF"
+    },
+    {
+      "Path": "direct-after-raw/src_Research.FSharp_PrecisionGateProjectionReplay.fsx",
+      "Bytes": 12723,
+      "Sha256": "C1174406CC4E7D3164714C536207AD2BD72F085A38A3A816C8BC1B14ADE917B2"
+    },
+    {
+      "Path": "direct-after/src_Research.FSharp_PrecisionGateProjectionReplay.fsx.json",
+      "Bytes": 177,
+      "Sha256": "A696442A038E7E124E478780570A127BB519F48111E30F5591FC809122433EBC"
+    },
+    {
+      "Path": "direct-after-raw/src_Core_bin_Release_net10.0_Zeta.Core.dll",
+      "Bytes": 9268224,
+      "Sha256": "C49F1A2604618D6074D849BB475530338C3C2B80002676129FFAB1569079295D"
+    },
+    {
+      "Path": "direct-after/src_Core_bin_Release_net10.0_Zeta.Core.dll.json",
+      "Bytes": 168,
+      "Sha256": "B21C8DAD1EF33232442992053484562B612703E3CF6A1519CE19DD19992859BC"
+    },
+    {
+      "Path": "direct-after-raw/src_Core.Abstractions_bin_Release_net10.0_Zeta.Core.Abstractions.dll",
+      "Bytes": 46592,
+      "Sha256": "48F2C96371502534AB4AABA7D97FCAFFF7D3A1731ABB3578C545F033FDA50382"
+    },
+    {
+      "Path": "direct-after/src_Core.Abstractions_bin_Release_net10.0_Zeta.Core.Abstractions.dll.json",
+      "Bytes": 192,
+      "Sha256": "5374205AE535081E09C74853DFD1D48A9E70C44AC03BB6B561F785C834424EA7"
+    },
+    {
+      "Path": "direct-after-raw/src_Bayesian_bin_Release_net10.0_Zeta.Bayesian.dll",
+      "Bytes": 1819136,
+      "Sha256": "7F39E537242EFD6F609812413AF39BBC66DBA2B6457F95539D4A4719986E80C9"
+    },
+    {
+      "Path": "direct-after/src_Bayesian_bin_Release_net10.0_Zeta.Bayesian.dll.json",
+      "Bytes": 176,
+      "Sha256": "3D10F24400057DC558943C51679224C5EDDE2CE28ADD7BE26E1ED08B157BBA9A"
+    },
+    {
+      "Path": "source-custody.json",
+      "Bytes": 3383,
+      "Sha256": "134A326586F66CA738FFB2C25044B25FD5D6B769D0D91D6FDFE4090C17BC06F1"
+    },
+    {
+      "Path": "run-registered.py",
+      "Bytes": 6936,
+      "Sha256": "FBD0DF785D5AECAE47591D73EA3062050825F33241880B67668B462ADDAC2462"
+    }
+  ]
+}

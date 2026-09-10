@@ -1,0 +1,2 @@
+$ bun ./src/Core.TypeScript/hygiene/preflight.ts
+error: script "preflight" exited with code 1

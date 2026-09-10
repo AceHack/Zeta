@@ -1,0 +1,531 @@
+{
+  "Schema": "zeta.mixed-epoch.assembled-validation.v1",
+  "Scope": "First full gate failure and separate unchanged-source diagnostic recovery; original Python default-temp failure, formatter/mypy and source/import records. No named M4/M5/frozen-query route.",
+  "Archive": {
+    "File": "custody.tar.gz",
+    "Bytes": 6147915,
+    "Sha256": "7685B51BECB144499A1621DD048A234CA7F64C17E6DCC1C23D9CF1B8C4C945C2"
+  },
+  "OriginalCount": 86,
+  "ObjectCount": 69,
+  "OriginalBytes": 66539151,
+  "ObjectBytes": 66533406,
+  "Records": [
+    {
+      "OriginalPath": ".git/mixed-assembled-gate-1/call-0/completion.json",
+      "Object": "objects/A4B974628FCCB892C2F35E3C23ACA1E114622BD0EA2B97424A33383C297B55D5",
+      "Bytes": 296,
+      "Sha256": "A4B974628FCCB892C2F35E3C23ACA1E114622BD0EA2B97424A33383C297B55D5"
+    },
+    {
+      "OriginalPath": ".git/mixed-assembled-gate-1/call-0/source-after.json",
+      "Object": "objects/779963BD41913644E5F6B7E870EE99D1CEFDA4597E2D0F75A181F446078BA620",
+      "Bytes": 1202,
+      "Sha256": "779963BD41913644E5F6B7E870EE99D1CEFDA4597E2D0F75A181F446078BA620"
+    },
+    {
+      "OriginalPath": ".git/mixed-assembled-gate-1/call-0/stderr",
+      "Object": "objects/9DA71A0E867B2ADAA037A34ABF022B4E9E5BA0937F973A4C17F2EE5DD44C4619",
+      "Bytes": 94,
+      "Sha256": "9DA71A0E867B2ADAA037A34ABF022B4E9E5BA0937F973A4C17F2EE5DD44C4619"
+    },
+    {
+      "OriginalPath": ".git/mixed-assembled-gate-1/call-0/stdout",
+      "Object": "objects/165E43D8785B417FFFF15FCED639CA78FC52CC85974F4626DC1C4335F0E28EFF",
+      "Bytes": 12425,
+      "Sha256": "165E43D8785B417FFFF15FCED639CA78FC52CC85974F4626DC1C4335F0E28EFF"
+    },
+    {
+      "OriginalPath": ".git/mixed-assembled-gate-1/call-1/completion.json",
+      "Object": "objects/13CEE0CF497DBF70E687BBC81C1B78FBC3D7371013AAA27F31FFAD7163ACE0B9",
+      "Bytes": 313,
+      "Sha256": "13CEE0CF497DBF70E687BBC81C1B78FBC3D7371013AAA27F31FFAD7163ACE0B9"
+    },
+    {
+      "OriginalPath": ".git/mixed-assembled-gate-1/call-1/source-after.json",
+      "Object": "objects/779963BD41913644E5F6B7E870EE99D1CEFDA4597E2D0F75A181F446078BA620",
+      "Bytes": 1202,
+      "Sha256": "779963BD41913644E5F6B7E870EE99D1CEFDA4597E2D0F75A181F446078BA620"
+    },
+    {
+      "OriginalPath": ".git/mixed-assembled-gate-1/call-1/stderr",
+      "Object": "objects/C29F29AEC2E7D76966A50F5340789DC4C4D43114D090BE35BA123920EDBBB551",
+      "Bytes": 5321,
+      "Sha256": "C29F29AEC2E7D76966A50F5340789DC4C4D43114D090BE35BA123920EDBBB551"
+    },
+    {
+      "OriginalPath": ".git/mixed-assembled-gate-1/call-1/stdout",
+      "Object": "objects/E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "OriginalPath": ".git/mixed-assembled-gate-1/call-2/completion.json",
+      "Object": "objects/4FA034E2D6B8F36279D851507E81CEC187291195055A3A729A376C07E3409183",
+      "Bytes": 472,
+      "Sha256": "4FA034E2D6B8F36279D851507E81CEC187291195055A3A729A376C07E3409183"
+    },
+    {
+      "OriginalPath": ".git/mixed-assembled-gate-1/call-2/source-after.json",
+      "Object": "objects/779963BD41913644E5F6B7E870EE99D1CEFDA4597E2D0F75A181F446078BA620",
+      "Bytes": 1202,
+      "Sha256": "779963BD41913644E5F6B7E870EE99D1CEFDA4597E2D0F75A181F446078BA620"
+    },
+    {
+      "OriginalPath": ".git/mixed-assembled-gate-1/call-2/stderr",
+      "Object": "objects/E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "OriginalPath": ".git/mixed-assembled-gate-1/call-2/stdout",
+      "Object": "objects/5CA908A68BAFF4B59BED39418D2906847A415A2A351E93EB56956C5DB4CB1CD2",
+      "Bytes": 2493,
+      "Sha256": "5CA908A68BAFF4B59BED39418D2906847A415A2A351E93EB56956C5DB4CB1CD2"
+    },
+    {
+      "OriginalPath": ".git/mixed-assembled-gate-1/call-3/completion.json",
+      "Object": "objects/F164308571EB44BE68D852EC87B461D1B66C7681894F02BB0F79F9FD2BE78326",
+      "Bytes": 577,
+      "Sha256": "F164308571EB44BE68D852EC87B461D1B66C7681894F02BB0F79F9FD2BE78326"
+    },
+    {
+      "OriginalPath": ".git/mixed-assembled-gate-1/call-3/source-after.json",
+      "Object": "objects/779963BD41913644E5F6B7E870EE99D1CEFDA4597E2D0F75A181F446078BA620",
+      "Bytes": 1202,
+      "Sha256": "779963BD41913644E5F6B7E870EE99D1CEFDA4597E2D0F75A181F446078BA620"
+    },
+    {
+      "OriginalPath": ".git/mixed-assembled-gate-1/call-3/stderr",
+      "Object": "objects/E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "OriginalPath": ".git/mixed-assembled-gate-1/call-3/stdout",
+      "Object": "objects/8228FCC5CE46D42D01CAF3CD941F4E9C5F2BCC372BB5B147A2F0572D2DD675A8",
+      "Bytes": 43,
+      "Sha256": "8228FCC5CE46D42D01CAF3CD941F4E9C5F2BCC372BB5B147A2F0572D2DD675A8"
+    },
+    {
+      "OriginalPath": ".git/mixed-assembled-gate-1/source-00",
+      "Object": "objects/C59FDB8F5F2178297DB350AD43BD54C1ABCF6422DEDD5A3C7F85B797CC5D8236",
+      "Bytes": 19114,
+      "Sha256": "C59FDB8F5F2178297DB350AD43BD54C1ABCF6422DEDD5A3C7F85B797CC5D8236"
+    },
+    {
+      "OriginalPath": ".git/mixed-assembled-gate-1/source-01",
+      "Object": "objects/B75CEF997AF2D7D98BF7043039A63B94ED6E770C675EBAADBFC644A79DB57CB2",
+      "Bytes": 167510,
+      "Sha256": "B75CEF997AF2D7D98BF7043039A63B94ED6E770C675EBAADBFC644A79DB57CB2"
+    },
+    {
+      "OriginalPath": ".git/mixed-assembled-gate-1/source-02",
+      "Object": "objects/24F474046E52A2B703EDA187587D1E15FCBFDA2C835075B7CC13B83AF7B8DCA0",
+      "Bytes": 3426,
+      "Sha256": "24F474046E52A2B703EDA187587D1E15FCBFDA2C835075B7CC13B83AF7B8DCA0"
+    },
+    {
+      "OriginalPath": ".git/mixed-assembled-gate-1/source-03",
+      "Object": "objects/9260CAC8F8EF58BC7EA927B31C0F1426FCC3B83A4790210AC25D4CFBA676F4A9",
+      "Bytes": 12338,
+      "Sha256": "9260CAC8F8EF58BC7EA927B31C0F1426FCC3B83A4790210AC25D4CFBA676F4A9"
+    },
+    {
+      "OriginalPath": ".git/mixed-assembled-gate-1/source-04",
+      "Object": "objects/F13889BB9450F7BB0AF7F41E019841196512347414BC38DB797A5E041D25DB2B",
+      "Bytes": 67508,
+      "Sha256": "F13889BB9450F7BB0AF7F41E019841196512347414BC38DB797A5E041D25DB2B"
+    },
+    {
+      "OriginalPath": ".git/mixed-assembled-gate-1/source-05",
+      "Object": "objects/2361B22D257F61236AE0B9EA4266EEB4883B9E5419680FE5419FFD86C5C620AC",
+      "Bytes": 3879,
+      "Sha256": "2361B22D257F61236AE0B9EA4266EEB4883B9E5419680FE5419FFD86C5C620AC"
+    },
+    {
+      "OriginalPath": ".git/mixed-assembled-gate-1/source-06",
+      "Object": "objects/5D0DD505F3849D7F989982DCAE5EBAB2898B8140AE74489540EC016B15AD7795",
+      "Bytes": 99661,
+      "Sha256": "5D0DD505F3849D7F989982DCAE5EBAB2898B8140AE74489540EC016B15AD7795"
+    },
+    {
+      "OriginalPath": ".git/mixed-assembled-gate-1/source-07",
+      "Object": "objects/2A6154EB842116837843E8E100AB08CF4A4C735C635ED693E8C3F58E11B4961B",
+      "Bytes": 199844,
+      "Sha256": "2A6154EB842116837843E8E100AB08CF4A4C735C635ED693E8C3F58E11B4961B"
+    },
+    {
+      "OriginalPath": ".git/mixed-assembled-gate-1/source-08",
+      "Object": "objects/03ED13D4D860D1E3B61B73AF265B7C65A8251B258623C16B1B1ED28EC6C51711",
+      "Bytes": 16771,
+      "Sha256": "03ED13D4D860D1E3B61B73AF265B7C65A8251B258623C16B1B1ED28EC6C51711"
+    },
+    {
+      "OriginalPath": ".git/mixed-assembled-gate-1/source-09",
+      "Object": "objects/1A533E6F2B1A17F8945B7C90E7BF3185411296756EAC16487327883CB74E9EDE",
+      "Bytes": 68585,
+      "Sha256": "1A533E6F2B1A17F8945B7C90E7BF3185411296756EAC16487327883CB74E9EDE"
+    },
+    {
+      "OriginalPath": ".git/mixed-assembled-gate-1/source-10",
+      "Object": "objects/CC7FBF89E681909374591516B4227F3D93373E9B5F089C039994B0CA46055E69",
+      "Bytes": 11511,
+      "Sha256": "CC7FBF89E681909374591516B4227F3D93373E9B5F089C039994B0CA46055E69"
+    },
+    {
+      "OriginalPath": ".git/mixed-assembled-gate-1/source-11",
+      "Object": "objects/D45A9F084C6CA2F79E7017BD30CD698AA54650C29C24E5F23A6804537B553741",
+      "Bytes": 6039,
+      "Sha256": "D45A9F084C6CA2F79E7017BD30CD698AA54650C29C24E5F23A6804537B553741"
+    },
+    {
+      "OriginalPath": ".git/mixed-assembled-gate-1/sources.json",
+      "Object": "objects/A387A7B409EA96597BDA4230F0CAFEB6B8490676988D7A87F2280B91956686CE",
+      "Bytes": 2678,
+      "Sha256": "A387A7B409EA96597BDA4230F0CAFEB6B8490676988D7A87F2280B91956686CE"
+    },
+    {
+      "OriginalPath": ".git/mixed-assembled-recovery-1/after.json",
+      "Object": "objects/C23938A645AC652EE921D4574E6232EDDEEF7AF72518F701DD9568EE29C9962E",
+      "Bytes": 2139,
+      "Sha256": "C23938A645AC652EE921D4574E6232EDDEEF7AF72518F701DD9568EE29C9962E"
+    },
+    {
+      "OriginalPath": ".git/mixed-assembled-recovery-1/before.json",
+      "Object": "objects/C23938A645AC652EE921D4574E6232EDDEEF7AF72518F701DD9568EE29C9962E",
+      "Bytes": 2139,
+      "Sha256": "C23938A645AC652EE921D4574E6232EDDEEF7AF72518F701DD9568EE29C9962E"
+    },
+    {
+      "OriginalPath": ".git/mixed-assembled-recovery-1/completion.json",
+      "Object": "objects/DB3A7169660F536BA4FDA875C0F2DAB6B1EC1CA03BB3BCBDE9247826EF94AACB",
+      "Bytes": 158,
+      "Sha256": "DB3A7169660F536BA4FDA875C0F2DAB6B1EC1CA03BB3BCBDE9247826EF94AACB"
+    },
+    {
+      "OriginalPath": ".git/mixed-assembled-recovery-1/invocation.json",
+      "Object": "objects/32D72F976602AB6A29C7CF855871A6327001E472BA1D205D51266FAAFC206CCE",
+      "Bytes": 662,
+      "Sha256": "32D72F976602AB6A29C7CF855871A6327001E472BA1D205D51266FAAFC206CCE"
+    },
+    {
+      "OriginalPath": ".git/mixed-assembled-recovery-1/process-before.json",
+      "Object": "objects/6A71DFA0D29A28BF2FFF330B6F318FFAEBA9C9F68835D9060CFA353DF0796BFD",
+      "Bytes": 240,
+      "Sha256": "6A71DFA0D29A28BF2FFF330B6F318FFAEBA9C9F68835D9060CFA353DF0796BFD"
+    },
+    {
+      "OriginalPath": ".git/mixed-assembled-recovery-1/stderr",
+      "Object": "objects/E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "OriginalPath": ".git/mixed-assembled-recovery-1/stdout",
+      "Object": "objects/E000871F35654CDE1098AFEDA2A904488EC3809CAF11AEF6413DF72CA5630AC0",
+      "Bytes": 6526,
+      "Sha256": "E000871F35654CDE1098AFEDA2A904488EC3809CAF11AEF6413DF72CA5630AC0"
+    },
+    {
+      "OriginalPath": ".git/mixed-assembled-recovery-1/test-results/mixed-assembled-recovery-1_net10.0_20260908105342.trx",
+      "Object": "objects/B98FCC325FA94B2D26D90FEA466D44628BABE73B3B30475F66CA6CA499DAFFC8",
+      "Bytes": 31294,
+      "Sha256": "B98FCC325FA94B2D26D90FEA466D44628BABE73B3B30475F66CA6CA499DAFFC8"
+    },
+    {
+      "OriginalPath": ".git/mixed-assembled-recovery-1/test-results/mixed-assembled-recovery-1_net10.0_20260908105343.trx",
+      "Object": "objects/C71D667C847E4C5DFFF0074C3951DB7D80A957A4F251E1FD9B9A0960CB9ECA14",
+      "Bytes": 19474,
+      "Sha256": "C71D667C847E4C5DFFF0074C3951DB7D80A957A4F251E1FD9B9A0960CB9ECA14"
+    },
+    {
+      "OriginalPath": ".git/mixed-assembled-recovery-1/test-results/mixed-assembled-recovery-1_net10.0_20260908105344.trx",
+      "Object": "objects/893BFF31CA92CC56CF0624D9CAE68CF34396FEC1453CDBA0F7D7AA7D4B012931",
+      "Bytes": 6243,
+      "Sha256": "893BFF31CA92CC56CF0624D9CAE68CF34396FEC1453CDBA0F7D7AA7D4B012931"
+    },
+    {
+      "OriginalPath": ".git/mixed-assembled-recovery-1/test-results/mixed-assembled-recovery-1_net10.0_20260908105345.trx",
+      "Object": "objects/CC300044EBA331A7046806EB09C1BF5DEE68300F96D35CA6533605F0F4B42F28",
+      "Bytes": 57215,
+      "Sha256": "CC300044EBA331A7046806EB09C1BF5DEE68300F96D35CA6533605F0F4B42F28"
+    },
+    {
+      "OriginalPath": ".git/mixed-assembled-recovery-1/test-results/mixed-assembled-recovery-1_net10.0_20260908105346.trx",
+      "Object": "objects/A3BF5DD58E1E29DB1843225FDC9F625CEDF834C6FE5BE8FCAEC504CD41F7BC1F",
+      "Bytes": 578354,
+      "Sha256": "A3BF5DD58E1E29DB1843225FDC9F625CEDF834C6FE5BE8FCAEC504CD41F7BC1F"
+    },
+    {
+      "OriginalPath": ".git/mixed-assembled-recovery-1/test-results/mixed-assembled-recovery-1_net10.0_20260908105348.trx",
+      "Object": "objects/7F0D92CE0F330F85A56B80576F3E8B3414DBFE9574247CDEF6E896982ABD480A",
+      "Bytes": 946297,
+      "Sha256": "7F0D92CE0F330F85A56B80576F3E8B3414DBFE9574247CDEF6E896982ABD480A"
+    },
+    {
+      "OriginalPath": ".git/mixed-assembled-recovery-1/test-results/mixed-assembled-recovery-1_net10.0_20260908110124.trx",
+      "Object": "objects/DD5EFDF31002A26505C5854264E79AE6315D180808C739A54055046EFD537BC1",
+      "Bytes": 9693913,
+      "Sha256": "DD5EFDF31002A26505C5854264E79AE6315D180808C739A54055046EFD537BC1"
+    },
+    {
+      "OriginalPath": ".git/mixed-assembled-recovery-1/trx-outcome-qualification.json",
+      "Object": "objects/4C0619110C513B3AD02776385895D26318D783F93FC0122878F0521713C8C439",
+      "Bytes": 1293,
+      "Sha256": "4C0619110C513B3AD02776385895D26318D783F93FC0122878F0521713C8C439"
+    },
+    {
+      "OriginalPath": ".git/mixed-assembled-recovery-1/trx-summary.json",
+      "Object": "objects/70A854732949FAEFC36BA412AED95B3F8314E22A96F52FD755176532CA74E7B4",
+      "Bytes": 4332,
+      "Sha256": "70A854732949FAEFC36BA412AED95B3F8314E22A96F52FD755176532CA74E7B4"
+    },
+    {
+      "OriginalPath": ".git/mixed-assembled-recovery-1/vstest-diagnostic.host.26-09-08_10-53-42_01924_5.log",
+      "Object": "objects/90D26C0B1303A8D60DED720348563AC65576BA149C039ABEC247A455FB2DEF37",
+      "Bytes": 97850,
+      "Sha256": "90D26C0B1303A8D60DED720348563AC65576BA149C039ABEC247A455FB2DEF37"
+    },
+    {
+      "OriginalPath": ".git/mixed-assembled-recovery-1/vstest-diagnostic.host.26-09-08_10-53-42_01925_5.log",
+      "Object": "objects/07B7B7D089A27D49B973AD6F55645323053A07A2692CE5F43B6196398657D52C",
+      "Bytes": 2367742,
+      "Sha256": "07B7B7D089A27D49B973AD6F55645323053A07A2692CE5F43B6196398657D52C"
+    },
+    {
+      "OriginalPath": ".git/mixed-assembled-recovery-1/vstest-diagnostic.host.26-09-08_10-53-42_01955_5.log",
+      "Object": "objects/707851648EB2BB96595256432E7C10401A274443379FC28DF470B7128BAB3EAD",
+      "Bytes": 1513742,
+      "Sha256": "707851648EB2BB96595256432E7C10401A274443379FC28DF470B7128BAB3EAD"
+    },
+    {
+      "OriginalPath": ".git/mixed-assembled-recovery-1/vstest-diagnostic.host.26-09-08_10-53-42_03639_5.log",
+      "Object": "objects/A2EB4B3E7F780186678FFB3D3608D4BECC08874565D3B8E53CEECDA8566700A6",
+      "Bytes": 25353325,
+      "Sha256": "A2EB4B3E7F780186678FFB3D3608D4BECC08874565D3B8E53CEECDA8566700A6"
+    },
+    {
+      "OriginalPath": ".git/mixed-assembled-recovery-1/vstest-diagnostic.host.26-09-08_10-53-42_07062_5.log",
+      "Object": "objects/B1E685E5E9BB93EA80B31A505946F65496659999DAEB3333728151FC52832284",
+      "Bytes": 150200,
+      "Sha256": "B1E685E5E9BB93EA80B31A505946F65496659999DAEB3333728151FC52832284"
+    },
+    {
+      "OriginalPath": ".git/mixed-assembled-recovery-1/vstest-diagnostic.host.26-09-08_10-53-42_07422_5.log",
+      "Object": "objects/EDBCA1926C78043F40A7E680A9DD11DC81BA21698DDA0B3A9D63999111ED5C86",
+      "Bytes": 72522,
+      "Sha256": "EDBCA1926C78043F40A7E680A9DD11DC81BA21698DDA0B3A9D63999111ED5C86"
+    },
+    {
+      "OriginalPath": ".git/mixed-assembled-recovery-1/vstest-diagnostic.host.26-09-08_10-53-42_10079_5.log",
+      "Object": "objects/635E55D885A109CD1E310CE0E019340A92FA95A77D3B2AF03E2B6F4FB1E85BE8",
+      "Bytes": 46292,
+      "Sha256": "635E55D885A109CD1E310CE0E019340A92FA95A77D3B2AF03E2B6F4FB1E85BE8"
+    },
+    {
+      "OriginalPath": ".git/mixed-assembled-recovery-1/vstest-diagnostic.log",
+      "Object": "objects/C6FD7221A21270E330AC943FD4DCD94BB264EA289D1B5ACDC5AA8897FA9F7E6D",
+      "Bytes": 24798435,
+      "Sha256": "C6FD7221A21270E330AC943FD4DCD94BB264EA289D1B5ACDC5AA8897FA9F7E6D"
+    },
+    {
+      "OriginalPath": ".git/core-model-root-import-1/0/completion.json",
+      "Object": "objects/E510EAB339B6AC6E4E54DFFB46FFEF0D7BB76CD220476470A3035C8E69FE8841",
+      "Bytes": 261,
+      "Sha256": "E510EAB339B6AC6E4E54DFFB46FFEF0D7BB76CD220476470A3035C8E69FE8841"
+    },
+    {
+      "OriginalPath": ".git/core-model-root-import-1/0/stderr",
+      "Object": "objects/E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "OriginalPath": ".git/core-model-root-import-1/0/stdout",
+      "Object": "objects/DF071447487419E6F17AD795B4EC04D593B4AF2CC8A8866F87488CDF6EA7C883",
+      "Bytes": 94,
+      "Sha256": "DF071447487419E6F17AD795B4EC04D593B4AF2CC8A8866F87488CDF6EA7C883"
+    },
+    {
+      "OriginalPath": ".git/core-model-root-import-1/1/completion.json",
+      "Object": "objects/3A885CB602D4B3DA63D6E19A53EEF9A573515BBAFD510E464830241F8F69AF26",
+      "Bytes": 246,
+      "Sha256": "3A885CB602D4B3DA63D6E19A53EEF9A573515BBAFD510E464830241F8F69AF26"
+    },
+    {
+      "OriginalPath": ".git/core-model-root-import-1/1/stderr",
+      "Object": "objects/6FF305173EC6D4B7397C576455D39DFFAC94172A039E8C84ED4FE5B2BAC638ED",
+      "Bytes": 252,
+      "Sha256": "6FF305173EC6D4B7397C576455D39DFFAC94172A039E8C84ED4FE5B2BAC638ED"
+    },
+    {
+      "OriginalPath": ".git/core-model-root-import-1/1/stdout",
+      "Object": "objects/E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "OriginalPath": ".git/core-model-root-import-1/2/completion.json",
+      "Object": "objects/F6924F4480B7A42D0FE5E3573849B52ACE1088D9D519C760144BE5B9089F27EB",
+      "Bytes": 274,
+      "Sha256": "F6924F4480B7A42D0FE5E3573849B52ACE1088D9D519C760144BE5B9089F27EB"
+    },
+    {
+      "OriginalPath": ".git/core-model-root-import-1/2/stderr",
+      "Object": "objects/E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "OriginalPath": ".git/core-model-root-import-1/2/stdout",
+      "Object": "objects/3BACF1C42DE1C2B2B503871609E3DB1D20AC6DE51316FA4CA3645DA3A0F7127E",
+      "Bytes": 30515,
+      "Sha256": "3BACF1C42DE1C2B2B503871609E3DB1D20AC6DE51316FA4CA3645DA3A0F7127E"
+    },
+    {
+      "OriginalPath": ".git/core-model-root-import-1/3/completion.json",
+      "Object": "objects/F71EF62ECFCAD8601EB7C60258EBC025DD52DCCD3C49D1229F1B5561384A0254",
+      "Bytes": 271,
+      "Sha256": "F71EF62ECFCAD8601EB7C60258EBC025DD52DCCD3C49D1229F1B5561384A0254"
+    },
+    {
+      "OriginalPath": ".git/core-model-root-import-1/3/stderr",
+      "Object": "objects/E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "OriginalPath": ".git/core-model-root-import-1/3/stdout",
+      "Object": "objects/A791D60460F9293EE1583FCFBF693F2C4193A1A9DF15B38D11A72A9585A26875",
+      "Bytes": 36128,
+      "Sha256": "A791D60460F9293EE1583FCFBF693F2C4193A1A9DF15B38D11A72A9585A26875"
+    },
+    {
+      "OriginalPath": ".git/final-core-invoker-reviews-root-import-1/0/completion.json",
+      "Object": "objects/E6EA2EB65AF56A47D1077FD3AA079C5A1D515445D346B619110A192EC5176045",
+      "Bytes": 254,
+      "Sha256": "E6EA2EB65AF56A47D1077FD3AA079C5A1D515445D346B619110A192EC5176045"
+    },
+    {
+      "OriginalPath": ".git/final-core-invoker-reviews-root-import-1/0/stderr",
+      "Object": "objects/E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "OriginalPath": ".git/final-core-invoker-reviews-root-import-1/0/stdout",
+      "Object": "objects/D193A3D4C0C9A4A05764AAEC667782B038BE069848E324339A2A95E1A85FE106",
+      "Bytes": 86,
+      "Sha256": "D193A3D4C0C9A4A05764AAEC667782B038BE069848E324339A2A95E1A85FE106"
+    },
+    {
+      "OriginalPath": ".git/final-core-invoker-reviews-root-import-1/1/completion.json",
+      "Object": "objects/4FB7A18F330C358196CD1423F49BB160684EF4BC4A881777DE7D7EBB57E00256",
+      "Bytes": 237,
+      "Sha256": "4FB7A18F330C358196CD1423F49BB160684EF4BC4A881777DE7D7EBB57E00256"
+    },
+    {
+      "OriginalPath": ".git/final-core-invoker-reviews-root-import-1/1/stderr",
+      "Object": "objects/8711B129ED367D861E26F6BCC17247A86BC5FE221BFF4762A9F5E2E43F8C6439",
+      "Bytes": 228,
+      "Sha256": "8711B129ED367D861E26F6BCC17247A86BC5FE221BFF4762A9F5E2E43F8C6439"
+    },
+    {
+      "OriginalPath": ".git/final-core-invoker-reviews-root-import-1/1/stdout",
+      "Object": "objects/E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "OriginalPath": ".git/final-core-invoker-reviews-root-import-1/2/completion.json",
+      "Object": "objects/AE24830790EBB2C8CEC8B42F9CA298D5F1ADCB5A6E3C5E0A6EB33108CB52584E",
+      "Bytes": 273,
+      "Sha256": "AE24830790EBB2C8CEC8B42F9CA298D5F1ADCB5A6E3C5E0A6EB33108CB52584E"
+    },
+    {
+      "OriginalPath": ".git/final-core-invoker-reviews-root-import-1/2/stderr",
+      "Object": "objects/E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "OriginalPath": ".git/final-core-invoker-reviews-root-import-1/2/stdout",
+      "Object": "objects/D62812B71E6CD10CE6A42343345806AFE73F041A39DB5AB764D3FE4785BE13A7",
+      "Bytes": 2069,
+      "Sha256": "D62812B71E6CD10CE6A42343345806AFE73F041A39DB5AB764D3FE4785BE13A7"
+    },
+    {
+      "OriginalPath": ".git/final-core-invoker-reviews-root-import-1/3/completion.json",
+      "Object": "objects/FDFB5C5529B0CE2E62EC68C255F84FE63CACCC393F7CA7E7C07EA3FCB6FD9B5E",
+      "Bytes": 271,
+      "Sha256": "FDFB5C5529B0CE2E62EC68C255F84FE63CACCC393F7CA7E7C07EA3FCB6FD9B5E"
+    },
+    {
+      "OriginalPath": ".git/final-core-invoker-reviews-root-import-1/3/stderr",
+      "Object": "objects/E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "OriginalPath": ".git/final-core-invoker-reviews-root-import-1/3/stdout",
+      "Object": "objects/DA855023B645A9DADE4307841C81F67F01F0F2C70750C7463F42677CD8D54245",
+      "Bytes": 1750,
+      "Sha256": "DA855023B645A9DADE4307841C81F67F01F0F2C70750C7463F42677CD8D54245"
+    },
+    {
+      "OriginalPath": ".git/final-core-invoker-reviews-root-import-1/4/completion.json",
+      "Object": "objects/A946733FD5B15F7E5B07A1EF4BD4B69ED4BDFC6CD7B1A43A0C29423510D8D48B",
+      "Bytes": 274,
+      "Sha256": "A946733FD5B15F7E5B07A1EF4BD4B69ED4BDFC6CD7B1A43A0C29423510D8D48B"
+    },
+    {
+      "OriginalPath": ".git/final-core-invoker-reviews-root-import-1/4/stderr",
+      "Object": "objects/E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "OriginalPath": ".git/final-core-invoker-reviews-root-import-1/4/stdout",
+      "Object": "objects/9D4C09B92A4E3D381F55FD0195590C2DCD8EF2B5D3733815D211BEEF5CC35F63",
+      "Bytes": 1445,
+      "Sha256": "9D4C09B92A4E3D381F55FD0195590C2DCD8EF2B5D3733815D211BEEF5CC35F63"
+    },
+    {
+      "OriginalPath": ".git/final-core-invoker-reviews-root-import-1/5/completion.json",
+      "Object": "objects/7E000B8BFB75DA28241AD501C417A12C701268419ADAECE805E57A19D88FD7B5",
+      "Bytes": 271,
+      "Sha256": "7E000B8BFB75DA28241AD501C417A12C701268419ADAECE805E57A19D88FD7B5"
+    },
+    {
+      "OriginalPath": ".git/final-core-invoker-reviews-root-import-1/5/stderr",
+      "Object": "objects/E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "OriginalPath": ".git/final-core-invoker-reviews-root-import-1/5/stdout",
+      "Object": "objects/D07BC513285E3BC954DE0E402CC5D9B6D5A70EF9F6BCE00795DFFDB3398A9D85",
+      "Bytes": 997,
+      "Sha256": "D07BC513285E3BC954DE0E402CC5D9B6D5A70EF9F6BCE00795DFFDB3398A9D85"
+    },
+    {
+      "OriginalPath": ".git/mixed-assembled-gate.py",
+      "Object": "objects/6E6FB3065A114D1CCE5ADB5675C26879915FC2A2B4973EDD27CF746F95E70607",
+      "Bytes": 2727,
+      "Sha256": "6E6FB3065A114D1CCE5ADB5675C26879915FC2A2B4973EDD27CF746F95E70607"
+    },
+    {
+      "OriginalPath": ".git/run-mixed-assembled-recovery-1.py",
+      "Object": "objects/2C67DC2BBD4F14DE3BBF99513600022ECBAA77D96DA1E62B245969E6178ED8EB",
+      "Bytes": 2023,
+      "Sha256": "2C67DC2BBD4F14DE3BBF99513600022ECBAA77D96DA1E62B245969E6178ED8EB"
+    },
+    {
+      "OriginalPath": ".git/preserve-mixed-assembled-gate-1.py",
+      "Object": "objects/3EAA4DD31032C2BBBBFDA683EF1B426D25017130FD57ACD98B200177FF737F1C",
+      "Bytes": 2112,
+      "Sha256": "3EAA4DD31032C2BBBBFDA683EF1B426D25017130FD57ACD98B200177FF737F1C"
+    }
+  ]
+}
