@@ -1,0 +1,33 @@
+{
+  "SourceCommit": "a80211d357d548d97caf850f367543abfbf91638",
+  "Scope": "Final launcher plus five tests of exact extracted functions. Prior main wait exit survives later join refusal; bounded console explicitly flushes within its guard. No metadata child has run.",
+  "Records": [
+    {
+      "File": "run-data-proposal-attempt-1.py.gz",
+      "OriginalLocalFile": ".git/run-data-proposal-attempt-1.py",
+      "Bytes": 6783,
+      "Sha256": "29650060363DA14BD947A1F3B6B966C5DEAAAA3ACCCE574C7A4D4DC0CED4B11B",
+      "StoredBytes": 2176,
+      "StoredSha256": "13C8B6CCAAD62770C8A2CA317B97039ED7982FF125CD8FBE5BAFC6E067F6943C",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "test-data-proposal-launcher-cleanup.py.gz",
+      "OriginalLocalFile": ".git/test-data-proposal-launcher-cleanup.py",
+      "Bytes": 5729,
+      "Sha256": "86269C8761477C2FE1AB0FC7BCEED9531E9CD32CFFBF37A170940B4ECD6E4969",
+      "StoredBytes": 1820,
+      "StoredSha256": "76B69869800B209638C72E267D4A686C9119AC8784FE27F8884F96478B2804E9",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "hidden-switch-data-proposal-launcher-tests-2.log.gz",
+      "OriginalLocalFile": ".git/hidden-switch-data-proposal-launcher-tests-2.log",
+      "Bytes": 103,
+      "Sha256": "0F7E4B97443E54ACA647179972594D13BB587AFCBF151FAB8228148587EA844A",
+      "StoredBytes": 54,
+      "StoredSha256": "C580EF3E8A1959DF085B87418F6A659A63C14E1257D08C69E1E7F5CD0E93E84E",
+      "Encoding": "gzip"
+    }
+  ]
+}

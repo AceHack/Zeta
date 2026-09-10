@@ -650,3 +650,9 @@ preserves actual fresh execution of the fifteen Git/Python fixtures, complete
 result and child-trace comparison, explicit root/PID associations and disjoint
 owned roots. It retains original raw records and incomplete actual outcomes
 without promoting them to complete outer/source/runtime admission.
+
+The [native-dependent pure replay implementation record](2026-09-07-hidden-switch-compiled-native-replay-validation.md)
+executes all 43 fixed Python calls and separately compares 31 original native
+certificate reports. Fresh preparation fixes every input and operation;
+completed, pending-native and failure results retain distinct prefixes. Native
+launch/source/runtime custody and the final complete outer chain remain separate.

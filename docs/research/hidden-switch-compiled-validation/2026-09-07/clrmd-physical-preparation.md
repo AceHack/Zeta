@@ -5,7 +5,20 @@ Operational status: research-grade
 Lifecycle: active
 Work item: 081M1XXWTTF087G0R000X1HMD0
 Author: Vera, OpenAI Codex using GPT-6 Astra
-Artifact status: 130 actual current-extent correspondences; full admission pending
+Artifact status: 130 current extents and finite 8,665-word inventory; full admission pending
+
+The [completed finite transfer inventory](../../2026-09-08-hidden-switch-compiled-transfer-inventory.md)
+retains all 130 methods and 8,665 decoded words, including 8,524 rows with
+unresolved premises. Its collector completed without a structural refusal;
+all full admission flags remain false. The 139-record actual inventory
+archive is separate from the earlier physical/current-extent and decoder
+observations, and adds no memory read or target execution.
+
+The later [53-range data proposal](../../2026-09-08-hidden-switch-compiled-data-read-plan.md)
+now has a complete metadata-only result, with physical reading still closed.
+The [finite acceptance-gap assessment](../../2026-09-08-hidden-switch-compiled-runtime-acceptance-gap.md)
+records the coordinator's pause after proposal audit and the remaining call,
+effect, object and runtime obligations before any further investment.
 
 Source `2f068ba34da612f82370c64cef4e38a909e7edd5` adds an isolated file-backed
 metadata helper, with no study assembly reference. It uses the already
@@ -555,3 +568,8 @@ counts only. No dump was opened and no study target, source generator or
 measurement ran. RuntimeAdmitted, BodyResolved and ClosureAdmitted remain
 false. The next finite transfer/operand inventory requires separate source
 review; this completed slice authorizes no extra memory range or process.
+
+The [next finite inventory proposal](../../2026-09-08-hidden-switch-compiled-transfer-inventory-plan.md)
+names its exact retained inputs, missing target/data evidence and required
+falsifiers. It is a proposal; no additional transfer inventory result or
+memory observation is implied by this link.

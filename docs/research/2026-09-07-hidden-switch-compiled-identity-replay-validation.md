@@ -133,7 +133,7 @@ the actual capture inventory is a separate preservation step.
 ## Retained raw evidence
 
 The [lossless manifest](hidden-switch-compiled-validation/2026-09-07/identity-replay-attempt-1/manifest.json)
-binds twelve source/helper/test files and 68 artifacts containing 74,728,326
+binds twelve source/helper/test files and 69 artifacts containing 74,730,043
 original bytes. Four streaming tar/gzip archives retain the complete original
 owned trees. Every archived member was checked against its original file
 length/hash or symlink target without extraction, and the complete decompressed
@@ -171,3 +171,20 @@ Focused Markdown validation and all sixteen quick-preflight checks passed after
 the evidence and index were written. Their exact output is retained in the
 manifest; this scoped publication check does not replace a whole-repository
 native gate or the separate final coordinator admission.
+
+## Independent inventory acceptance and publication
+
+Independent review 299d8782cecbebcd72afb4a10e96b8e45add0932 verified the
+original 68-artifact inventory at evidence commit
+5a75a5eb05518394450dfd3631d0e27523b456c9: every stored/decompressed identity,
+twelve source pins, four complete tar/inventory/local-tree correspondences,
+32 capture references, fifteen producer/fresh result associations and original
+and fresh child stdout/trace bindings. The reviewer ran the bounded evidence
+audit, and no fixtures, children, native code, policies or registered sources.
+The signed audit script and results were delivered for coordinator integration.
+
+The isolated publication ref codex/hidden-switch-compiled-reference-20260907
+was remotely verified at 5a75a5eb05518394450dfd3631d0e27523b456c9 after all
+sixteen ordinary push checks passed. This follow-up adds only that push log to
+the original audited inventory and records the dated acceptance; it does not
+change the accepted replay source or any earlier raw artifact.

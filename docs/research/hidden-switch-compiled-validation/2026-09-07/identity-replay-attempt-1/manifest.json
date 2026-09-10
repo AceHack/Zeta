@@ -607,6 +607,14 @@
       "Encoding": "gzip",
       "StoredBytes": 405,
       "StoredSha256": "A96E24BB16A9334442FD1E5FD894379C994BD63E91534FE5C91405B3B1F60C13"
+    },
+    {
+      "File": "publication-push.log.gz",
+      "Bytes": 1717,
+      "Sha256": "03BB3192E05E11C21A22F259013748373FB3DF3096647C0D0E558AAE34C317CB",
+      "Encoding": "gzip",
+      "StoredBytes": 667,
+      "StoredSha256": "D59E2E6816132CCC83B62347FA3764D042EB865EF639142FA00E910E5C4B8BC7"
     }
   ],
   "OwnedTrees": [

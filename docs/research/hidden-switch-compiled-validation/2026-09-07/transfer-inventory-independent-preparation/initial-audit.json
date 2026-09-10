@@ -1,0 +1,67 @@
+{
+  "Scope": "Read-only preparation byte audit and manifest-only proposed footprint; no project module imported, no full retained transfer classification performed.",
+  "SourceCommit": "c97efff55ca56baa530e21c117527b8f2f4351ec",
+  "EvidenceCommit": "5cf6d40ceac8ab0ccef1e00f62ade5072d8f43d1",
+  "PreparationManifestBytes": 6876,
+  "PreparationManifestSha256": "3F2A0F2A5AF32AA753D1B9B8A473D4E6A5CF79206ABBF86CD873F830A6A7A5A7",
+  "Records": 8,
+  "SourcePins": 14,
+  "StoredBytes": 3727,
+  "OriginalBytes": 11190,
+  "ProposedInputRecords": 534,
+  "ProposedOriginalRecordBytes": 6747916,
+  "ProposedManifestBytes": 416997,
+  "ProposedTotalOriginalBytes": 7164913,
+  "ProposedMaximumOriginalBytes": 903574,
+  "ProposedMaximumStoredBytes": 96637,
+  "LogObservations": [
+    {
+      "File": "hidden-switch-transfer-inventory-tests-1.log.gz",
+      "Bytes": 113,
+      "Sha256": "5C2D1BB5B5D6F1E8052B0396282144C7E358222AC037A4E265003950FAFA0371",
+      "Text": "..............\n----------------------------------------------------------------------\nRan 14 tests in 0.116s\n\nOK\n"
+    },
+    {
+      "File": "hidden-switch-transfer-inventory-tests-2.log.gz",
+      "Bytes": 114,
+      "Sha256": "75CD4238F84A9DB2E697B8D7E5A90B29100EC22C5CF6E1B7E073C98CAE337E43",
+      "Text": "...............\n----------------------------------------------------------------------\nRan 15 tests in 0.116s\n\nOK\n"
+    },
+    {
+      "File": "hidden-switch-transfer-inventory-tests-3.log.gz",
+      "Bytes": 117,
+      "Sha256": "CFDF82B42977357FFB9B8066238A4217CEAD6FFFACC8BACC5C13D5CD6136654C",
+      "Text": "..................\n----------------------------------------------------------------------\nRan 18 tests in 0.346s\n\nOK\n"
+    },
+    {
+      "File": "hidden-switch-transfer-inventory-combined-1.log.gz",
+      "Bytes": 166,
+      "Sha256": "A268FE0FAD9725059E8C15F411F837DFEE2F0FDC127B928976B1E353D530B715",
+      "Text": "...................................................................\n----------------------------------------------------------------------\nRan 67 tests in 0.439s\n\nOK\n"
+    },
+    {
+      "File": "hidden-switch-transfer-inventory-ruff-1.log.gz",
+      "Bytes": 7855,
+      "Sha256": "CE922386BE42C9546E2E2A9ABF97AC95C07A313736E23343332606EB3C7361AF",
+      "Text": "I001 [*] Import block is un-sorted or un-formatted\n  --> src/Research.FSharp.Cli/inventory_hidden_switch_transfers.py:2:1\n   |\n 1 |   \"\"\"Finite retained-word transfer/literal inventory; never launches a process or opens dump memory.\"\"\"\n 2 | / from __future__ import annotations\n 3 | |\n 4 | | import ast\n 5 | | from collections import Counter\n 6 | | from datetime import datetime, timezone\n 7 | | import json\n 8 | | import os\n 9 | | from pathlib import Path\n10 | | import re\n11 | | import sys\n12 | |\n13 | | from hidden_switch_retained_artifacts import MIB, check_identity, regular_bytes, sha\n14 | | from hidden_switch_transfer_inputs import FLAGS, loaded_inputs, require\n15 | | from hidden_switch_transfer_shapes import classify_word\n   | |_______________________________________________________^\n16 |\n17 |   MAX_RECORD = 2 * MIB\n   |\nhelp: Organize imports\n   |\n4  | import ast\n   - from collections import Counter\n   - from datetime import datetime, timezone\n5  | import json\n6  | import os\n   - from pathlib import Path\n7  | import re\n8  | import sys\n9  + from collections import Counter\n10 + from datetime import datetime, timezone\n11 + from pathlib import Path\n12 |\n   |\n\nBLE001 Do not catch blind exception: `Exception`\n  --> src/Research.FSharp.Cli/inventory_hidden_switch_transfers.py:43:12\n   |\n41 |     try:\n42 |         stream.close()\n43 |     except Exception as error:  # close failure is explicit and cannot replace the first failure\n   |            ^^^^^^^^^\n44 |         if primary is not None:\n45 |             primary.add_note(\"secondary output close: \" + type(error).__name__ + \": \" + str(error)[:1024])\n   |\n\nBLE001 Do not catch blind exception: `Exception`\n   --> src/Research.FSharp.Cli/inventory_hidden_switch_transfers.py:207:12\n    |\n205 |             check_identity(regular_bytes(Path(__file__).with_name(pin[\"File\"]), 256 * 1024), pin[\"Bytes\"], pin[\"Sha256\"])\n206 |         state[\"InputsUnchanged\"] = True\n207 |     except Exception as error:  # retain original collector/publication failure and actual available active diagnostic\n    |            ^^^^^^^^^\n208 |         primary = failure(state[\"Locator\"][\"Stage\"], error)\n209 |     finally:\n    |\n\nBLE001 Do not catch blind exception: `Exception`\n   --> src/Research.FSharp.Cli/inventory_hidden_switch_transfers.py:220:20\n    |\n218 |                 raw, report = bounded_terminal(report)\n219 |                 exclusive_bytes(Path(attempt) / \"outcome.json\", raw)\n220 |             except Exception as error:  # independent compact attempt after failed terminal publication\n    |                    ^^^^^^^^^\n221 |                 report[\"Complete\"] = False\n222 |                 report[\"PublicationFailure\"] = failure(\"terminal-publication\", error)\n    |\n\nBLE001 Do not catch blind exception: `Exception`\n   --> src/Research.FSharp.Cli/inventory_hidden_switch_transfers.py:227:24\n    |\n225 |                                     \"PublicationFailure\": report[\"PublicationFailure\"], \"Locator\": state[\"Locator\"],\n226 |                                     \"Methods\": len(state[\"Completed\"]), \"Words\": state[\"Words\"], **FLAGS}, 16384))\n227 |                 except Exception as secondary:\n    |                        ^^^^^^^^^\n228 |                     report[\"SecondaryPublicationFailure\"] = failure(\"secondary-terminal-publication\", secondary)\n229 |     return report\n    |\n\nBLE001 Do not catch blind exception: `Exception`\n   --> src/Research.FSharp.Cli/inventory_hidden_switch_transfers.py:239:12\n    |\n237 |     try:\n238 |         print(json.dumps({key: outcome[key] for key in [\"Kind\", \"Complete\", \"Failure\", \"Methods\", \"Words\", \"UnresolvedWords\", *FLAGS]\u2026\n239 |     except Exception:  # console is secondary to independent owned outcome; no new success claim\n    |            ^^^^^^^^^\n240 |         sys.exit(2)\n241 |     sys.exit(0 if outcome[\"Complete\"] else 2)\n    |\n\nI001 [*] Import block is un-sorted or un-formatted\n  --> src/Research.FSharp.Cli/test_hidden_switch_transfer_inputs.py:1:1\n   |\n 1 | / import copy\n 2 | | import gzip\n 3 | | import json\n 4 | | from pathlib import Path\n 5 | | import unittest\n 6 | |\n 7 | | from hidden_switch_retained_artifacts import RetainedStore\n 8 | | from hidden_switch_transfer_inputs import MANIFESTS, full_flags_false, mapping_association, physical_association\n 9 | | from inspect_hidden_switch_bodies import parse_blocks\n10 | | from map_hidden_switch_methods import map_methods\n   | |_________________________________________________^\nhelp: Organize imports\n   |\n3  | import json\n4  + import unittest\n5  | from pathlib import Path\n   - import unittest\n6  |\n7  | from hidden_switch_retained_artifacts import RetainedStore\n   - from hidden_switch_transfer_inputs import MANIFESTS, full_flags_false, mapping_association, physical_association\n8  + from hidden_switch_transfer_inputs import (\n9  +     MANIFESTS,\n10 +     full_flags_false,\n11 +     mapping_association,\n12 +     physical_association,\n13 + )\n14 | from inspect_hidden_switch_bodies import parse_blocks\n   |\n\nF401 [*] `gzip` imported but unused\n --> src/Research.FSharp.Cli/test_hidden_switch_transfer_inputs.py:2:8\n  |\n1 | import copy\n2 | import gzip\n  |        ^^^^\n3 | import json\n4 | from pathlib import Path\n  |\nhelp: Remove unused import: `gzip`\n  |\n1 | import copy\n  - import gzip\n2 | import json\n  |\n\nF401 [*] `json` imported but unused\n --> src/Research.FSharp.Cli/test_hidden_switch_transfer_inputs.py:3:8\n  |\n1 | import copy\n2 | import gzip\n3 | import json\n  |        ^^^^\n4 | from pathlib import Path\n5 | import unittest\n  |\nhelp: Remove unused import: `json`\n  |\n2 | import gzip\n  - import json\n3 | from pathlib import Path\n  |\n\nI001 [*] Import block is un-sorted or un-formatted\n  --> src/Research.FSharp.Cli/test_inventory_hidden_switch_transfers.py:1:1\n   |\n 1 | / from collections import Counter\n 2 | | import copy\n 3 | | import json\n 4 | | import os\n 5 | | from pathlib import Path\n 6 | | import tempfile\n 7 | | import unittest\n 8 | | from unittest.mock import patch\n 9 | |\n10 | | from hidden_switch_transfer_inputs import FLAGS\n11 | | from hidden_switch_transfer_shapes import ranges_admitted\n12 | | from inventory_hidden_switch_transfers import (\n13 | |     MAX_RECORD, MAX_WORD, Publisher, bounded_terminal, classified_method, encode,\n14 | |     exclusive_bytes, run, source_inventory, terminal_record,\n15 | | )\n   | |_^\nhelp: Organize imports\n   |\n   - from collections import Counter\n1  | import copy\n2  | import json\n3  | import os\n   - from pathlib import Path\n4  | import tempfile\n5  | import unittest\n6  + from collections import Counter\n7  + from pathlib import Path\n8  | from unittest.mock import patch\n--------------------------------------------------------------------------------\n12 | from inventory_hidden_switch_transfers import (\n   -     MAX_RECORD, MAX_WORD, Publisher, bounded_terminal, classified_method, encode,\n   -     exclusive_bytes, run, source_inventory, terminal_record,\n13 +     MAX_RECORD,\n14 +     MAX_WORD,\n15 +     Publisher,\n16 +     bounded_terminal,\n17 +     classified_method,\n18 +     encode,\n19 +     exclusive_bytes,\n20 +     run,\n21 +     source_inventory,\n22 +     terminal_record,\n23 | )\n   |\n\nF401 [*] `copy` imported but unused\n --> src/Research.FSharp.Cli/test_inventory_hidden_switch_transfers.py:2:8\n  |\n1 | from collections import Counter\n2 | import copy\n  |        ^^^^\n3 | import json\n4 | import os\n  |\nhelp: Remove unused import: `copy`\n  |\n1 | from collections import Counter\n  - import copy\n2 | import json\n  |\n\nF401 [*] `os` imported but unused\n --> src/Research.FSharp.Cli/test_inventory_hidden_switch_transfers.py:4:8\n  |\n2 | import copy\n3 | import json\n4 | import os\n  |        ^^\n5 | from pathlib import Path\n6 | import tempfile\n  |\nhelp: Remove unused import: `os`\n  |\n3 | import json\n  - import os\n4 | from pathlib import Path\n  |\n\nFound 12 errors.\n[*] 7 fixable with the `--fix` option.\n"
+    },
+    {
+      "File": "hidden-switch-transfer-inventory-ruff-2.log.gz",
+      "Bytes": 39,
+      "Sha256": "BA2C763752132A3C06896CD52838F1555D4EF0F62B2896CA439C5BDB028351E4",
+      "Text": "Found 7 errors (7 fixed, 0 remaining).\n"
+    },
+    {
+      "File": "hidden-switch-transfer-inventory-ruff-3.log.gz",
+      "Bytes": 19,
+      "Sha256": "82B3E6A6C090A57601D22943BD23FCA9218D1031DBE5A7B754092F9A156B4F18",
+      "Text": "All checks passed!\n"
+    },
+    {
+      "File": "retain-transfer-inventory-preparation.py.gz",
+      "Bytes": 2767,
+      "Sha256": "AF3D82C245999BCCC5AE2A96A5DAE378AFC77C3545502DDE43B4DA0804481975",
+      "Text": "retention script bytes checked"
+    }
+  ]
+}

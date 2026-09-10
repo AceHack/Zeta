@@ -1,0 +1,82 @@
+{
+  "SourceCommit": "a80211d357d548d97caf850f367543abfbf91638",
+  "Scope": "Guarded pre-child identity prefix and explicit 32MiB Python image limit; exact preparation manifest binding. Original inspected draft and8 fixtures remain distinct from final9 exact-function fixtures. No metadata child or range query has run during this repair.",
+  "ReviewedSourceIdentities": {
+    "run-data-proposal-attempt-2.py": "741927F2980759CF50DEBDBB561D9BF801B673D63F64DE67CF603CD062577FFF",
+    "test-data-proposal-launcher-startup.py": "05BB15DDD6B308880B651BFEDD697D33FE781280DE3EDB0544AB54E04426EA63"
+  },
+  "Records": [
+    {
+      "File": "run-data-proposal-attempt-2-before-preparation-pin.py.gz",
+      "OriginalLocalFile": ".git/run-data-proposal-attempt-2-before-preparation-pin.py",
+      "Bytes": 8916,
+      "Sha256": "DAE252F1FD071302239FA5019097BBBB764232D023871CF8D3CEA85E4E708E90",
+      "StoredBytes": 2633,
+      "StoredSha256": "5FA4CB57100EE919D4F7F8A3FB3D2CF8F52F2D698F6C7CA1875C3973FCD7022B",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "test-data-proposal-launcher-startup-before-preparation-pin.py.gz",
+      "OriginalLocalFile": ".git/test-data-proposal-launcher-startup-before-preparation-pin.py",
+      "Bytes": 9009,
+      "Sha256": "CBA071BD77E40692EDFA02FD6BCB446C3775427F7970CC5635E59CCD053CEAE8",
+      "StoredBytes": 2576,
+      "StoredSha256": "646A48B14D3EFFDFD70BF3610AF9493556B398C32F9124A79F1B212BAB03D2CD",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "hidden-switch-data-proposal-launcher-startup-tests-1.log.gz",
+      "OriginalLocalFile": ".git/hidden-switch-data-proposal-launcher-startup-tests-1.log",
+      "Bytes": 106,
+      "Sha256": "316558A93BA028238BCD514BBEC8A07C6B5122F2FA8E4CE8499B5D85BC6111F8",
+      "StoredBytes": 54,
+      "StoredSha256": "D002A86E218085FB85F21CCC15002634000A32401F6AA8BB4EA99DD5BC0A65B7",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "run-data-proposal-attempt-2.py.gz",
+      "OriginalLocalFile": ".git/run-data-proposal-attempt-2.py",
+      "Bytes": 9105,
+      "Sha256": "741927F2980759CF50DEBDBB561D9BF801B673D63F64DE67CF603CD062577FFF",
+      "StoredBytes": 2728,
+      "StoredSha256": "8C82E05E1DB73302F82EF31970B6F6795B55F5161EE46B3B3066CAF31DA5F43D",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "test-data-proposal-launcher-startup.py.gz",
+      "OriginalLocalFile": ".git/test-data-proposal-launcher-startup.py",
+      "Bytes": 10773,
+      "Sha256": "05BB15DDD6B308880B651BFEDD697D33FE781280DE3EDB0544AB54E04426EA63",
+      "StoredBytes": 2973,
+      "StoredSha256": "5FADC1A2B8AE4769863860F7EB03E471281647F79A9C3DD062505F2685B4D5B5",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "hidden-switch-data-proposal-launcher-startup-tests-2.log.gz",
+      "OriginalLocalFile": ".git/hidden-switch-data-proposal-launcher-startup-tests-2.log",
+      "Bytes": 107,
+      "Sha256": "0490208E5A254F2F2E6E0F70F7A5EE55157ACCF27688D6887C0492CC0A5B37E0",
+      "StoredBytes": 54,
+      "StoredSha256": "D10B72427CAE34781235C5511FBFBD020B7B247FD3A61495CEE17496C49F579D",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "hidden-switch-data-proposal-pre-retry-preservation-check.json.gz",
+      "OriginalLocalFile": ".git/hidden-switch-data-proposal-pre-retry-preservation-check.json",
+      "Bytes": 1014,
+      "Sha256": "0EAE57CA42CD52454DB497952870FF5DBD85447B625518D64FEE6A9C27034A2F",
+      "StoredBytes": 234,
+      "StoredSha256": "FD59FE9108339AEE0CC2A92F0F7D9EF35A1C97E802B545CF69BF53B2967A756A",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "retain-data-proposal-startup-repair.py.gz",
+      "OriginalLocalFile": ".git/retain-data-proposal-startup-repair.py",
+      "Bytes": 2400,
+      "Sha256": "30162C9954271BB582B2E27F7E16A8E2BC6A3F5D3DFE4E2CE060236BE1ABC7FC",
+      "StoredBytes": 1105,
+      "StoredSha256": "8AEDF989C9F526A8F3D369F805620F50862269AB978AC98D52CF8023B7749839",
+      "Encoding": "gzip"
+    }
+  ]
+}

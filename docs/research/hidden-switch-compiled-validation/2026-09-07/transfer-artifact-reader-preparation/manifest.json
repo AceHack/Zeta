@@ -1,0 +1,138 @@
+{
+  "SourceCommit": "e9d4c654da515097b13aa1d9f57f744155198ca9",
+  "InitialSourceCommit": "aef64955ea6401d6c52f3f4985f793b0bedaf18f",
+  "SourcePins": [
+    {
+      "File": "src/Research.FSharp.Cli/hidden_switch_retained_artifacts.py",
+      "Bytes": 7788,
+      "Sha256": "ADD43E5AB1616B9E6B8056B8AC1871217F8184CA127D71287295DCF43D677E7A"
+    },
+    {
+      "File": "src/Research.FSharp.Cli/test_hidden_switch_retained_artifacts.py",
+      "Bytes": 8509,
+      "Sha256": "3771DA1C1A0197CBC190020E8BD0E70720A569C1E7B624737EB11DCB2F95A813"
+    }
+  ],
+  "Records": [
+    {
+      "File": "hidden-switch-retained-artifacts-tests-1.log.gz",
+      "OriginalLocalFile": ".git/hidden-switch-retained-artifacts-tests-1.log",
+      "Bytes": 109,
+      "Sha256": "C0A234441CECC9937A09C7CBC31CEE2A9774CD3F1DCE8048B17104E7E417C7F1",
+      "StoredBytes": 55,
+      "StoredSha256": "97FBD416E1DB6120A673E490047BC45B663CB21323AB72DA1A65C1D3FFD46BC8",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "hidden-switch-retained-artifacts-tests-2.log.gz",
+      "OriginalLocalFile": ".git/hidden-switch-retained-artifacts-tests-2.log",
+      "Bytes": 111,
+      "Sha256": "7552BD12AE276340729A65D44A110F392BC7234A9105E01401A941279FA79DFD",
+      "StoredBytes": 55,
+      "StoredSha256": "9B5C2BBD2ACE51F9A7E648859BECAAC3144B3CCB69C1E86DD005AB3AD282E80D",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "hidden-switch-retained-artifacts-tests-3.log.gz",
+      "OriginalLocalFile": ".git/hidden-switch-retained-artifacts-tests-3.log",
+      "Bytes": 112,
+      "Sha256": "F41F027EB8DE778295CE32988DA832BE6619310D72B84BD0C842CA544E1496D2",
+      "StoredBytes": 55,
+      "StoredSha256": "752198BFFF3D3BDFE49D8A5CCAE6F96E977BF71A9BBDE7E6E79A9988C1B35490",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "hidden-switch-retained-artifacts-combined-1.log.gz",
+      "OriginalLocalFile": ".git/hidden-switch-retained-artifacts-combined-1.log",
+      "Bytes": 131,
+      "Sha256": "65D9FB8CC8E5810DE3AC11BC2E1AE7D9D3D73FAA69D9172EE9487FC72EDFC8E7",
+      "StoredBytes": 55,
+      "StoredSha256": "72B659EC0BE97B5D539B7C9B3E4455105E475B4356A58A343C6E918BD6D33611",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "hidden-switch-retained-artifacts-combined-2.log.gz",
+      "OriginalLocalFile": ".git/hidden-switch-retained-artifacts-combined-2.log",
+      "Bytes": 132,
+      "Sha256": "518F81DBF5447F2CA3454DA044418F146139DD96E7AD2BF1211EA01FF42C868A",
+      "StoredBytes": 55,
+      "StoredSha256": "17E776137B363CA4C5C8723E64EE4E83965DAEF20F66D3A8DD5ABB421681D398",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "hidden-switch-retained-artifacts-ruff-1.log.gz",
+      "OriginalLocalFile": ".git/hidden-switch-retained-artifacts-ruff-1.log",
+      "Bytes": 2540,
+      "Sha256": "66777B8AF398B2C5BD02661F9020FBAC5DCFBC11653BF53A0EA7782133E2B1A1",
+      "StoredBytes": 901,
+      "StoredSha256": "7E87B74DD74D553839CF75BE2502015DDA57DA5484077CD30B98F979D51A1D46",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "hidden-switch-retained-artifacts-ruff-2.log.gz",
+      "OriginalLocalFile": ".git/hidden-switch-retained-artifacts-ruff-2.log",
+      "Bytes": 39,
+      "Sha256": "6F4E3C8CB6A43F32A8B47ADD0B65207F17BD814C84308623B3720AD789C0D769",
+      "StoredBytes": 59,
+      "StoredSha256": "9D277452151F7EB25EEDC0ED3A50AE8D880C1BE165118E070BA7EAA1F4B5E7AC",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "hidden-switch-retained-artifacts-ruff-3.log.gz",
+      "OriginalLocalFile": ".git/hidden-switch-retained-artifacts-ruff-3.log",
+      "Bytes": 2127,
+      "Sha256": "96E2001EF8406720D622BBC3AAD41F3BE0D41C1A5344665C808DB28BFB560184",
+      "StoredBytes": 629,
+      "StoredSha256": "5DA3FAE28D29839214161B594866E469192C547B93F05E48C3D2DF5D485D167E",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "hidden-switch-retained-artifacts-ruff-4.log.gz",
+      "OriginalLocalFile": ".git/hidden-switch-retained-artifacts-ruff-4.log",
+      "Bytes": 19,
+      "Sha256": "82B3E6A6C090A57601D22943BD23FCA9218D1031DBE5A7B754092F9A156B4F18",
+      "StoredBytes": 39,
+      "StoredSha256": "F3AF4D142827F5AAD2EB0C72D556D325488A57FB6219AAC10AFEB51085667D53",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "hidden-switch-retained-artifacts-ruff-5.log.gz",
+      "OriginalLocalFile": ".git/hidden-switch-retained-artifacts-ruff-5.log",
+      "Bytes": 19,
+      "Sha256": "82B3E6A6C090A57601D22943BD23FCA9218D1031DBE5A7B754092F9A156B4F18",
+      "StoredBytes": 39,
+      "StoredSha256": "F3AF4D142827F5AAD2EB0C72D556D325488A57FB6219AAC10AFEB51085667D53",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "hidden-switch-retained-json-overflow-1.log.gz",
+      "OriginalLocalFile": ".git/hidden-switch-retained-json-overflow-1.log",
+      "Bytes": 45,
+      "Sha256": "673D9AA05C467EFF95B819A6D03BB1834EB537353AAFF91FE32DC06D5AD38680",
+      "StoredBytes": 60,
+      "StoredSha256": "79BEBBF3C43335427CED33E4E8EED9A3D5E1CB53DE2FE9716C30EDC1538D7909",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "retain-transfer-artifact-reader.py.gz",
+      "OriginalLocalFile": ".git/retain-transfer-artifact-reader.py",
+      "Bytes": 2494,
+      "Sha256": "11763969C88B53662B55DBE9EE4D4659519B0C3C3E6E88AF0B9BE216353E1C07",
+      "StoredBytes": 1194,
+      "StoredSha256": "D3C95651A1879F1835BA42C4003D3B7654E970978B1D232A31BCCF8A7A607B38",
+      "Encoding": "gzip"
+    }
+  ],
+  "FinalFocusedCases": 13,
+  "FinalCombinedCases": 33,
+  "Ruff": "passed",
+  "Finding": "Default parse_float converted 1e400 and nested -1e400 to infinities; finite parse_float now refuses.",
+  "PreparationNotes": [
+    "An initial root-cwd test command failed opening ../../.git output before Python ran. Corrected command ran from src/Research.FSharp.Cli.",
+    "Initial Ruff import-order/loop-binding and later fixture loop-binding/nested-with findings are retained; final clean source is pinned.",
+    "Earlier 10/12-case logs and initial 32-case combined pass describe evolving uncommitted snapshots; final focused13 and combined33 are distinct."
+  ],
+  "RuntimeAdmitted": false,
+  "BodyResolved": false,
+  "ClosureAdmitted": false
+}
