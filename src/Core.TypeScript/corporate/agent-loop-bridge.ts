@@ -45,18 +45,20 @@ import { isPassing, type GateEvaluation } from "./quality-gate";
 import { PRIORITY_ORDER, priorityRank, type PriorityDecision } from "./prioritization";
 import { chooseWithinLegal, firstLegalChooser, type OrgChooser } from "./org-decision";
 import type { QaCycleReport } from "./qa";
-import {
-  cycleClose,
-  postResultTransition,
-  transition,
-  type AgentContext,
-  type AgentState,
-  type Lane,
-  type MenuOption,
-  type StatusSnapshot,
-  type WorkCandidate,
-  type WorkResult,
-} from "../workflow-engine/agent-loop/state-machine";
+// The vocabulary comes from the contract; the transitions come from the loop.
+// Kept as two imports on purpose: the first is a dependency on a shape anyone
+// may hold, the second is the residual dependency on the meta-harness's
+// behaviour, and separating them is what makes the residual one countable.
+import type {
+  AgentContext,
+  AgentState,
+  Lane,
+  MenuOption,
+  StatusSnapshot,
+  WorkCandidate,
+  WorkResult,
+} from "../protocol/agent-loop-contract";
+import { cycleClose, postResultTransition, transition } from "../workflow-engine/agent-loop/state-machine";
 import { generateMenu, isNonCoercive, type NamedDependencyOffer } from "../workflow-engine/agent-loop/menu-generator";
 import type { Dispatch, SlotDispatcher } from "./slot-dispatch";
 

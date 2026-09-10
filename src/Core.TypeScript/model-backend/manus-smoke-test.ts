@@ -1,15 +1,30 @@
 // manus-smoke-test.ts — one live task.create to verify the Manus key authenticates (shadow*).
 // Aaron 2026-07-03: "did it get a real key? … can we test it works real quick?"
 //
+//   bun src/Core.TypeScript/model-backend/manus-smoke-test.ts
+//
+// ── WHY IT MOVED OUT OF `tools/setup/` (2026-09-10) ──────────────────────────
+// It lived in `tools/setup/` because running it is a setup ceremony. But what it
+// EXERCISES is `manus-task.ts` and `backend.ts` — it is this backend's live
+// smoke test, and nothing in the install path calls it. Those two imports were
+// the whole of the bootstrap surface's dependency on the meta-harness, and
+// round 4 named them as the load-bearing pair of the harness's 38 back-edges
+// (`docs/research/2026-09-09-repo-split-round-4-*.md` §3.1): a surface that has
+// to work BEFORE anything else does must not need the harness to be present.
+// The graph's own rule settles where it goes instead — a consumer that exists
+// only to exercise a component belongs inside that component (the same reading
+// that puts `ci/`'s QEMU harness with `zflash`, §3.3). Nothing about the test
+// changed; only the directory it is typed from.
+//
 // Reads zeta-manus-api-key from the macOS Keychain at the edge (NEVER logged), wraps `fetch` as the
 // HttpTransport, and fires ONE minimal task.create. Prints only the outcome:
 //   200 + task_id  → the key is REAL and authenticates (a tiny task lands in the Manus app).
 //   401            → bad key / wrong paste.
 // The key never touches stdout.
 
-import { readGenericPassword, describeStatus } from "../../src/Core.TypeScript/secrets/keychain-macos.ts";
-import { createTask } from "../../src/Core.TypeScript/model-backend/manus-task.ts";
-import type { HttpTransport } from "../../src/Core.TypeScript/model-backend/backend.ts";
+import { readGenericPassword, describeStatus } from "../secrets/keychain-macos.ts";
+import { createTask } from "./manus-task.ts";
+import type { HttpTransport } from "./backend.ts";
 
 // Was: execFileSync("security", ["find-generic-password", …]).
 //

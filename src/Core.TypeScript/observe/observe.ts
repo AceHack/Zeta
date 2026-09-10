@@ -61,7 +61,7 @@
 
 import { chooseIndex, ollamaBackend, type ModelBackend } from "../accelerator/local-llm";
 import { describeFirstSession, firstSessionOracle, type NodeSessionState } from "./first-session";
-import type { FourCornerOwnership } from "../workflow-engine/types";
+import type { FourCornerOwnership } from "../four-corner/ownership";
 import type { WhyContext } from "../bayesian/why-chain";
 import type { ChannelMeterSnapshot } from "../chip8/channel-grant";
 

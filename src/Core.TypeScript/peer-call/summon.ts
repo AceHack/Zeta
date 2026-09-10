@@ -42,28 +42,12 @@ const SPAWN_MAX_BYTES = 64 * 1024 * 1024;
 const LLM_RESPONSE_MAX_BYTES = 16 * 1024 * 1024;
 const CTX_HEAD_BYTES = 20000;
 
-export interface SummonOptions {
-  readonly model?: string | undefined;
-  readonly file?: string | undefined;
-  readonly contextCmd?: string | undefined;
-  readonly outputFile?: string | undefined;
-  readonly allowEmpty?: boolean | undefined;
-  readonly json?: boolean | undefined;
-  readonly stream?: boolean | undefined;
-  readonly review?: boolean | undefined;
-}
-
-export interface SummonResult {
-  readonly success: boolean;
-  readonly exitCode: number;
-  readonly outputFile: string;
-  readonly stdout: string;
-  readonly stderr: string;
-}
-
-export interface ISummon {
-  summon(persona: string, prompt: string, options?: SummonOptions): Promise<SummonResult>;
-}
+// The port and its two records live in `protocol/summon-contract.ts` — pure
+// shape, importable without pulling this module's registry / firewall / CLI /
+// WebSocket weight in with them. Re-exported here so every existing importer is
+// unchanged; a consumer that needs only the shape should import the contract.
+import type { ISummon, SummonOptions, SummonResult } from "../protocol/summon-contract";
+export type { ISummon, SummonOptions, SummonResult } from "../protocol/summon-contract";
 
 export class PersonaSummoner implements ISummon {
   async summon(persona: string, prompt: string, options: SummonOptions = {}): Promise<SummonResult> {

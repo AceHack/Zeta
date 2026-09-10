@@ -769,6 +769,31 @@ decision — repo creation is a gated class and it is Aaron's.
   still free to move it.
 - **Then** run the §8 falsifier. Extract only if it passes.
 
+> **ADDENDUM 2026-09-10 — this was done, and two of the numbers above are wrong.**
+> Work item `081M24JX66S087G0R001PY3MKB`, PR #17222. Re-running
+> `repo-split-cut-cost.ts` over variant A at `4c03fbd24` reproduced 105 / 38 exactly,
+> and then two figures in this section did not survive contact:
+>
+> - **The named clusters are 24 edges, not 22.** `corporate/` is **15**, not 13. The
+>   38 total is unchanged, so this is an attribution slip inside the clusters rather
+>   than drift in the graph.
+> - **105 → 83 was not reachable, and the reason is structural.** That projection
+>   prices the breaks at zero. An inverted contract costs one forward edge per
+>   *importing harness file*, so a floor exists that no amount of care gets under.
+>   Six such edges were added and the cut landed at **91** with **18** back-edges
+>   (20 broken). Reaching 83 would have required pulling consumers inside the
+>   boundary, which §3.1 already prices as net worse (variant B: 122).
+>
+> The break itself was not "invert to a published interface" in the sense of a new
+> runtime seam: **8 of `corporate/`'s 15 edges were type-only imports**, and lifting
+> the agent loop's DU/record types into `protocol/agent-loop-contract.ts` dissolved
+> them. The remaining **7 are value imports** — `transition`, `generateMenu`,
+> `isNonCoercive`, `applyTransition`, `isTerminal`, `currentState`, `readHistory`,
+> `mainAsync` — and they were left standing on purpose. `corporate/` *calls* the
+> loop, in a direction its own header declares and `register-boundary.test.ts`
+> enforces; a consumer calling a library is not a cycle, and a split turns it into a
+> published dependency rather than a blocker.
+
 ### Fourth — **`zflash` + `installer` + `pam` + `ci` (cut 68), after `tools/setup` is resolved.**
 
 - Six of its twelve back-edges originate in `tools/setup/`. **They are the same problem as §7 and they

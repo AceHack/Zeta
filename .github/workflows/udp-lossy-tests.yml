@@ -35,5 +35,11 @@ jobs:
       - name: Install dependencies
         run: bun install
 
+      # Was one file (observe/udp-lossy-loop.test.ts) asserting a transport claim
+      # and a participant claim at once. Split so each half sits with its subject;
+      # both paths are named here so neither can silently stop running.
       - name: Run UDP Lossy Event Loop Tests
-        run: bun test src/Core.TypeScript/observe/udp-lossy-loop.test.ts
+        run: |
+          bun test \
+            src/Core.TypeScript/model-backend/udp-lossy-persona-interrupt.test.ts \
+            src/Core.TypeScript/observe/cloud-persona-participant.test.ts

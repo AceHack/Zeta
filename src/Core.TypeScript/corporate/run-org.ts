@@ -120,7 +120,7 @@ import type { DataSourcePort } from "./providers";
 import { DEFAULT_PIPELINE } from "./pipeline";
 import { foldObserveActTicks } from "./org-fold";
 import { emit } from "./org-event";
-import type { AgentState } from "../workflow-engine/agent-loop/state-machine";
+import type { AgentState } from "../protocol/agent-loop-contract";
 import { GateKind, GateOutcome, NO_PROPOSER } from "./quality-gate";
 import type { OrgChart } from "./org-chart";
 import type { OrgRuntimeDeps, OrgRuntimeReport } from "./org-runtime";

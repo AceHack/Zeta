@@ -22,7 +22,7 @@ import {
   type PromotionWindow,
 } from "./slot-dispatch";
 import { Fidelity } from "./providers";
-import type { MenuOption } from "../workflow-engine/agent-loop/state-machine";
+import type { MenuOption } from "../protocol/agent-loop-contract";
 
 const pickWork: MenuOption = {
   tag: "PickWork",

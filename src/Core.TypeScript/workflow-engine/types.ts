@@ -118,24 +118,18 @@ export interface State {
  * Four-corner ownership type per asymmetric-authorship rule +
  * the 4-corner-monad 081KSKBP80008QG0R000B3Y19A substrate.
  *
- * Per operator + Mika substrate-engineering thread (PR #5516
- * substrate + Prism iterator/generator-asymmetry extension):
- *   - TIn — caller authors; flows caller → function
- *   - TOut — function produces; flows function → caller (value-branch)
- *   - TOutFeedback — function authors; flows function → caller (control-flow signals)
- *   - TInFeedback — CO-OWNED (both caller AND function contribute variants;
- *     stream/observable context per asymmetric-authorship four-corner
- *     ownership extension)
+ * The shape itself is universal — it says who AUTHORS each corner and nothing
+ * about workflows — so it now lives in `four-corner/ownership.ts`, beside the
+ * string-quad instantiation that descends from it, and is importable without
+ * pulling the workflow engine in with it. Its per-corner documentation and the
+ * Mika / PR #5516 lineage live there; it is imported back and re-exported here
+ * so every existing importer is unchanged.
  *
  * PoC scaffold uses these as type parameters; full F# 4-corner monad CE
  * builder is 081KSKBP80008QG0R000B3Y19A.4 (deferred).
  */
-export interface FourCornerOwnership<TIn, TOut, TOutFeedback, TInFeedback> {
-  readonly tIn: TIn;
-  readonly tOut?: TOut;
-  readonly tOutFeedback?: TOutFeedback;
-  readonly tInFeedback?: TInFeedback;
-}
+import type { FourCornerOwnership } from "../four-corner/ownership";
+export type { FourCornerOwnership } from "../four-corner/ownership";
 
 /**
  * Tick — one cycle of the workflow engine agent loop.
