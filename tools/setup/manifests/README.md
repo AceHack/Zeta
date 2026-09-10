@@ -31,7 +31,7 @@ manifest. Measured rather than assumed — the pointer set is
 
 | manifest family                       | declared in        | realized by                                           | in ace's pointer set |
 | ------------------------------------- | ------------------ | ----------------------------------------------------- | -------------------- |
-| the 15 `from-*`                       | `manifests/from-*` | `ace-realize --all` (macos.sh step 6)                 | **yes** (18 entries) |
+| the 16 `from-*`                       | `manifests/from-*` | `ace-realize --all` (macos.sh step 6)                 | **yes** (19 entries) |
 | `brew`, `brew-cask`, `apt`, `windows` | `manifests/<name>` | shell loop in `macos.sh` / `linux.sh` / `install.ps1` | **no**               |
 
 So the four OS-native package managers are the part that has not moved yet.
@@ -127,7 +127,7 @@ decomposes by **consumer role** instead and has no manifest layer at all. Zeta's
 shape is a third: one file per mechanism, tier as an inline token. The trade is
 explicit — Zeta hand-rolls an `awk` parser that `brew bundle` would provide for
 free, and in exchange keeps one uniform format across brew, apt, windows and the
-15 `from-*` mechanisms that no single native tool spans. Migrating `brew`/
+16 `from-*` mechanisms that no single native tool spans. Migrating `brew`/
 `brew-cask` to native Brewfile syntax would delete that parser and is a real
 option; it is not free, because 26 rows carry per-row rationale that a Brewfile
 has nowhere to put. See `docs/backlog/P1/081KSGS9H0008QG0R0031PBNGA-*` (the

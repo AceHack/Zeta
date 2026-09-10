@@ -1,0 +1,84 @@
+# Mechanism: from-zip — pinned release ZIP → extracted directory (+ optional PATH shim).
+#
+# Format:
+#   <dest-dir>  <zip-url>  sha256=<64-hex>  bin=<path-inside-dest>  opt-in=<ENV_VAR>
+#               [shim=<name>]  [when=darwin|linux,amd64|arm64|...]  [tier=slim|standard|full]
+#
+# <dest-dir> is repo-root-relative unless it starts with ~ or /.
+#
+# WHY THIS MECHANISM EXISTS AT ALL. `from-url` downloads ONE FILE to ONE PATH and can never
+# unpack it — a limitation the tree already recorded as a blocker in
+# `tools/setup/manifests/windows` ("from-url can DOWNLOAD a file but never unpack or install
+# one … (a) a Windows-side unzip-to-PATH mechanism (new mechanism -- needs sign-off)"). Vendors
+# that ship a self-contained toolchain — the CodeQL CLI here, the YubiHSM2 SDK in that note —
+# publish a per-platform ZIP and nothing else, so there was no declarative way to name them.
+# They were therefore installed by hand, on one machine, pinned by nothing. That is precisely
+# the state the dependency discipline exists to prevent, and it is what this mechanism ends.
+#
+# THE PIN IS MANDATORY, and it is one of the three declared forms
+# (src/Core.TypeScript/ace/setup-realizers/unhashed-pin.ts):
+#   sha256=<64-hex>                     verified before a single byte is extracted.
+#   sha256=tag-only  tagonly=<reason>   the URL carries a version tag; we pin the tag.
+#   sha256=unpinned  unpinned=<reason>  no version at all. Refused when a tag exists.
+# The reason is a VALUE, never a comment — a comment is copied along with the line it excuses.
+# Every declared row lands in docs/UNHASHED-DEPENDENCIES.md, which is derived and gate-checked.
+#
+# `opt-in=<ENV_VAR>` IS REQUIRED AND A ROW WITHOUT ONE IS REFUSED, not defaulted to install.
+# A release bundle is heavy by construction — that is why the vendor shipped a ZIP instead of a
+# binary — so an un-gated row here would put hundreds of megabytes on every laptop, CI runner
+# and devcontainer layer that ever runs install.sh. If what you have is a SMALL zip, this is
+# the wrong mechanism: `from-url` plus a `from-shim` row costs nothing and needs no gate.
+#
+# `tier=` answers a DIFFERENT question from `opt-in=`, and keeping them apart is deliberate:
+#   tier   — can this HOST run the tool at all (memory class)?  A slim host is excluded even
+#            if its operator asks.
+#   opt-in — did the operator ASK for the download?  A full-tier host is excluded until it does.
+# Both must pass. Neither substitutes for the other.
+#
+# WHAT MAKES A RE-RUN CHEAP AND HONEST. Extraction destroys the artifact whose digest we
+# verified, so a directory cannot be re-hashed on the next run. Each install therefore writes
+# `<dest>/.zeta-from-zip.json` recording the URL and the digest that produced it, and the
+# realizer re-installs whenever that receipt is absent or disagrees with the row. PRESENT IS
+# NOT THE SAME AS CORRECT: a hand-placed tree with no receipt is re-installed from the pin
+# rather than adopted, which is the whole difference between a pinned dependency and a
+# directory that happens to exist.
+#
+# ── CodeQL CLI (081M26EV2K8087G0R001Z1FG08) ────────────────────────────────────────────────
+#
+# READS IT: src/Core.TypeScript/formal-verification/run-codeql.ts, by the literal path
+# ~/.zeta/codeql-cli/codeql/codeql (and by `codeql` on PATH, via the shim= below).
+#
+# WHY IT IS A DEPENDENCY AND NOT A CI DETAIL. `.github/workflows/codeql.yml` runs
+# github/codeql-action, which brings its own bundle — so nothing in CI needs this row. What
+# needed it is the HUMAN LOOP: a PR spent SIX round-trips guessing what the analyser would
+# accept, because the only feedback was a CI run. The same four alerts reproduce locally in
+# about fifteen seconds once the CLI exists (measured 2026-09-10: 6s to build a scoped
+# database over four fixture files, 9s to run javascript-security-extended over it). The CLI
+# was already on the maintainer's machine at exactly this path — downloaded ad hoc by an
+# agent, pinned by nothing, present on one host. This row is that download, declared.
+#
+# PINS IT: the four sha256 values below, each CROSS-CHECKED against three independent
+# publications of the same release, measured 2026-09-10:
+#   (1) the GitHub release API's own `assets[].digest` field,
+#   (2) upstream's published `<asset>.checksum.txt` sibling asset,
+#   (3) for win64, the scoop Main bucket's `codeql.json` `hash` (0320fd90…, identical).
+# All three agree for every asset. v2.27.0 published 2026-09-09.
+#
+# VERSION: v2.27.0 is the bundle `github/codeql-action` v4.37.9 resolves, which is what makes
+# a local reproduction comparable to the CI alert rather than merely similar. When CI's
+# action version moves, this row moves with it — a local CLI that is NEWER than CI's is not a
+# reproduction, it is a different measurement wearing the same name.
+#
+# SIZE, STATED BECAUSE IT IS THE COST THE OPT-IN BUYS BACK: osx64 1.09 GB, linux64 411 MB,
+# linux-arm64 393 MB, win64 416 MB (compressed, from the release API). macOS is the expensive
+# one because its asset is a universal bundle carrying both architectures.
+#
+# tier=standard, not full: the gate is whether the host can RUN an analysis (CodeQL wants
+# ~8 GB), which is the standard tier's own boundary. It is deliberately not `full`, because
+# `tools/setup/install.ps1` narrows Windows to ZETA_HOST_TIER=standard and a Windows developer
+# who explicitly asks for the CLI should get it. The download cost is carried by `opt-in=`.
+
+~/.zeta/codeql-cli  https://github.com/github/codeql-cli-binaries/releases/download/v2.27.0/codeql-osx64.zip        sha256=95e96dce9eff1c626e4da1f30d6dda00a893ee5015037045bf142947a8578781  bin=codeql/codeql      shim=codeql  opt-in=ZETA_INSTALL_CODEQL  when=darwin        tier=standard
+~/.zeta/codeql-cli  https://github.com/github/codeql-cli-binaries/releases/download/v2.27.0/codeql-linux64.zip      sha256=9ce76544eff4cb7f5b6d3c3ae14598686dd63dbb7dbc61ffd9b52a7e73151bd2  bin=codeql/codeql      shim=codeql  opt-in=ZETA_INSTALL_CODEQL  when=linux,amd64   tier=standard
+~/.zeta/codeql-cli  https://github.com/github/codeql-cli-binaries/releases/download/v2.27.0/codeql-linux-arm64.zip  sha256=219310fb0b2c2fb616b34afc1efefcf2dcd41debf2dfb05f6b2c7f3de8aa38ca  bin=codeql/codeql      shim=codeql  opt-in=ZETA_INSTALL_CODEQL  when=linux,arm64   tier=standard
+~/.zeta/codeql-cli  https://github.com/github/codeql-cli-binaries/releases/download/v2.27.0/codeql-win64.zip        sha256=0320fd9070c3582b09805d9ac82211816a580edec695c5b2baf52fcc51d658d5  bin=codeql/codeql.exe               opt-in=ZETA_INSTALL_CODEQL  when=windows       tier=standard

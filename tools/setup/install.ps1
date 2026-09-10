@@ -603,7 +603,7 @@ if (Test-Path $agentCliManifest) {
 }
 Repair-CodexConfigServiceTier
 
-# 5a. The from-url realizer -- the ONE mechanism manifest Windows was silently
+# 5a. The from-url + from-zip realizers -- the mechanism manifests Windows was silently
 # skipping. `install.ps1` re-implements `manifests\windows` and
 # `manifests\from-bun-global` inline and drove NO Bun realizer at all, so a
 # Windows box provisioned by this script never got `src/Core.Alloy/alloy.jar`
@@ -630,6 +630,26 @@ if (Test-Path $setupRealize) {
     $urCode = Invoke-ToolSoft { mise exec -- bun src/Core.TypeScript/ace/setup-realize.ts from-url }
     if ($urCode -eq 0) { Write-Host 'ok from-url realizer -- digest-pinned verifier jars fetched' }
     else { Write-Host "warn: from-url realizer failed (exit $urCode); verifier jars may be absent; continuing" }
+
+    # from-zip -- the SECOND mechanism Windows drives, added with the mechanism itself
+    # (081M26EV2K8087G0R001Z1FG08). Same reasoning as from-url above and the same graceful
+    # shape, plus one property that makes it cheaper to turn on than that one was: EVERY
+    # from-zip row is opt-in gated, so on a host that has not set the row's env var this is a
+    # manifest read and nothing else. It cannot add a download to a Windows install by
+    # accident -- only by being asked.
+    #
+    # Today that means: nothing happens here unless ZETA_INSTALL_CODEQL=1, in which case the
+    # digest-pinned CodeQL CLI (codeql-win64.zip) lands in %USERPROFILE%\.zeta\codeql-cli.
+    # Extraction on Windows goes through `tar -xf`, which is bsdtar on Windows 10 1803+ and
+    # reads ZIP; `unzip` is tried first and is simply absent here.
+    #
+    # HONEST LIMIT, stated rather than implied: this row has NOT been exercised on a Windows
+    # host. The Unix rows were installed end-to-end (macOS, 2026-09-10); the Windows leg is
+    # wired and unverified, and `from-zip` writes no PATH shim on Windows because a symlink
+    # needs a privilege this script deliberately does not take.
+    $zipCode = Invoke-ToolSoft { mise exec -- bun src/Core.TypeScript/ace/setup-realize.ts from-zip }
+    if ($zipCode -eq 0) { Write-Host 'ok from-zip realizer -- opt-in release bundles (no-op unless opted in)' }
+    else { Write-Host "warn: from-zip realizer failed (exit $zipCode); opt-in bundles may be absent; continuing" }
   } finally { Pop-Location }
 } else {
   Write-Host 'warn: setup-realize.ts missing; skipping from-url realizer'

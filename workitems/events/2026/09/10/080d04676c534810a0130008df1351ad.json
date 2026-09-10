@@ -1,0 +1,14 @@
+{
+  "id": "080d04676c534810a0130008df1351ad",
+  "at": "2026-09-10T20:06:12.841Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M26EV2K8087G0R001Z1FG08",
+    "type": "task",
+    "title": "codeql cli is a pinned first-class dependency with a one-command local reproduce wrapper",
+    "slug": "codeql-cli-is-a-pinned-first-class-dependency-with-a-one-com",
+    "priority": "P2",
+    "filename": "081M26EV2K8087G0R001Z1FG08-codeql-cli-is-a-pinned-first-class-dependency-with-a-one-com.md"
+  }
+}

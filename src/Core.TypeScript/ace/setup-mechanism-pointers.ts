@@ -177,6 +177,16 @@ export function buildSetupMechanismPointers(): ReadonlyArray<PackageManagerPoint
       defaultUpdate: "self-updating",
     }),
     pointerFromMechanismManifest({
+      mechanism: "from-zip",
+      text: readManifest("from-zip"),
+      purpose:
+        "Pinned per-platform release ZIP → extracted directory + PATH shim (CodeQL CLI)",
+      realizer: bunMechanismRealizer("from-zip"),
+      manifest: "tools/setup/manifests/from-zip",
+      optIn: ["ZETA_INSTALL_CODEQL=1"],
+      defaultUpdate: "pinned-url",
+    }),
+    pointerFromMechanismManifest({
       mechanism: "from-ollama",
       text: readManifest("from-ollama"),
       purpose: "Local-LLM primitive — ollama runtime + pinned model",

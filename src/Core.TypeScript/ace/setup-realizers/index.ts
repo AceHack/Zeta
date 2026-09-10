@@ -16,6 +16,7 @@ import { realizeFromUrl } from "./from-url.ts";
 import { realizeFromUvProject } from "./from-uv-project.ts";
 import { realizeFromUvTool } from "./from-uv-tool.ts";
 import { realizeFromUvVenv } from "./from-uv-venv.ts";
+import { realizeFromZip } from "./from-zip.ts";
 import type { SetupRealizer } from "./shared.ts";
 
 export const SETUP_REALIZERS: Readonly<Record<string, SetupRealizer>> = {
@@ -37,6 +38,7 @@ export const SETUP_REALIZERS: Readonly<Record<string, SetupRealizer>> = {
   "from-uv-project": realizeFromUvProject,
   "from-uv-tool": realizeFromUvTool,
   "from-uv-venv": realizeFromUvVenv,
+  "from-zip": realizeFromZip,
 };
 
 /** Matches tools/setup/linux.sh install-graph order (pre-mise, after apt). */
@@ -62,6 +64,9 @@ export const POST_MISE_REALIZER_IDS = [
   "from-dotnet-global",
   "from-dotnet-workload",
   "from-url",
+  // After from-url, before the best-effort tail: from-zip rows are opt-in and each is a
+  // large download, so nothing downstream may depend on one having happened.
+  "from-zip",
   "from-opam-git",
   "from-agda-cubical",
   "from-bun-global",

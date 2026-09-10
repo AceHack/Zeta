@@ -55,6 +55,13 @@ export function whenMatches(spec: string | undefined, warn?: (message: string) =
       case "darwin":
         if (process.platform !== "darwin") return false;
         break;
+      // `windows`, not `win32`: the clause names the OS a manifest author is thinking about;
+      // `process.platform` is the implementation detail underneath it. Added for `from-zip`,
+      // whose rows are genuinely per-platform release assets — the first mechanism here with
+      // a Windows row that `tools/setup/install.ps1` actually drives.
+      case "windows":
+        if (process.platform !== "win32") return false;
+        break;
       default:
         warn?.(`unknown when= clause '${trimmed}'; treating as non-match`);
         return false;

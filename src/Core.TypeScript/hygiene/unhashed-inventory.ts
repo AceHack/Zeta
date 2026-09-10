@@ -87,6 +87,7 @@ export const MECHANISMS: readonly MechanismDescriptor[] = [
   { manifest: "from-autotools-tarball", shape: "tokens", hasDigestSlot: true },
   { manifest: "from-installer", shape: "tokens", hasDigestSlot: true },
   { manifest: "from-deb", shape: "tokens", hasDigestSlot: true },
+  { manifest: "from-zip", shape: "tokens", hasDigestSlot: true },
   // A pip requirements file under `--require-hashes`: every row carries `--hash=sha256:` and pip
   // REFUSES any requirement in the file that does not. Landed on main 2026-09-10 for Scorecard
   // #457/#458, and this audit refused it on the same day for being undescribed -- which is the
