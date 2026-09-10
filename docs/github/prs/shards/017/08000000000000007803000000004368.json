@@ -1,0 +1,12 @@
+{
+  "pr_number": 17256,
+  "archive_path": "docs/history/pr-reviews/PR-17256-feat-setup-pin-the-codeql-cli-and-ship-a-one-command-local-reproduce.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-10T21:03:28.804Z",
+  "schema_version": "v1",
+  "commit_sha": "d528d3f180134c43ec0c0517082154060720042a",
+  "title": "feat(setup): pin the CodeQL CLI and ship a one-command local reproduce",
+  "state": "MERGED",
+  "merged_at": "2026-09-10T21:02:46Z",
+  "head_ref": "feat/081M26EV2K8087G0R001Z1FG08-codeql-cli-pinned-dependency"
+}

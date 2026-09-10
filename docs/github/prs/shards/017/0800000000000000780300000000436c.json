@@ -1,0 +1,12 @@
+{
+  "pr_number": 17260,
+  "archive_path": "docs/history/pr-reviews/PR-17260-research-081m26hvj2b087g0r000v685f7-developer-tooling-assumes-decorrelated-autho.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-10T21:29:34.974Z",
+  "schema_version": "v1",
+  "commit_sha": "45836a0a76392a52890afeb1bd65376606ae312b",
+  "title": "research(081M26HVJ2B087G0R000V685F7): developer tooling assumes decorrelated authors; LLM agents do not have that property",
+  "state": "MERGED",
+  "merged_at": "2026-09-10T21:28:49Z",
+  "head_ref": "agent/correlated-authorship-tooling-081M26HVJ2B087G0R000V685F7"
+}
