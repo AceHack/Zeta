@@ -56,8 +56,35 @@ export function readJiraCredentials(path: string): { readonly ok: true; readonly
     token === "" ? "token" : undefined,
   ].filter((m): m is string => m !== undefined);
   if (missing.length > 0) return { ok: false, reason: `${path} is missing: ${missing.join(", ")}` };
+  if (!HEADER_SAFE_CREDENTIAL.test(token)) {
+    return { ok: false, reason: `${path}: token is not header-safe — it must be printable ASCII with no spaces or control characters` };
+  }
+  if (!HEADER_SAFE_CREDENTIAL.test(email)) {
+    return { ok: false, reason: `${path}: email is not header-safe — it must be printable ASCII with no spaces or control characters` };
+  }
   return { ok: true, credentials: { baseUrl, email, token } };
 }
+
+/**
+ * A credential that will become an HTTP header must be PRINTABLE ASCII WITH NO SPACES.
+ *
+ * This is a real refusal, not a formality. A value carrying CR or LF is a header-injection
+ * vector — it can terminate the `Authorization` header and append attacker-chosen headers to
+ * the request. A value carrying a space or a control character is not a token at all: it is a
+ * misread file, an error message JSON-encoded into the field, or a whole document where a key
+ * was expected. In every one of those cases the right move is to refuse at parse time rather
+ * than attach whatever bytes were there to an outbound request.
+ *
+ * It ALSO closes `js/file-access-to-http` — a file read reaching an outbound request — at every
+ * fetch site fed by these credentials, because `SanitizingRegExpTest` is one of CodeQL's
+ * DEFAULT taint barriers. That is a side effect of the check, not its purpose. It is worth
+ * writing down because the alternative was measured and does not work: data extensions
+ * (`barrierModel`, `sinkModel`) do not affect what a BUILT-IN query reports, through any of the
+ * three delivery routes including the one `github/codeql-action` itself uses. A guard the
+ * default barriers already recognise is the mechanism that works — and unlike a suppression it
+ * refuses bad input at runtime too.
+ */
+const HEADER_SAFE_CREDENTIAL = /^[\u0021-\u007E]+$/u;
 
 function authHeader(credentials: JiraCredentials): string {
   return `Basic ${Buffer.from(`${credentials.email}:${credentials.token}`).toString("base64")}`;

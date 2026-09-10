@@ -49,6 +49,12 @@ export function readLinearCredentials(
   // should not be told their key is missing when it is plainly there under the other name.
   const apiKey = typeof it["apiKey"] === "string" ? it["apiKey"].trim() : typeof it["token"] === "string" ? it["token"].trim() : "";
   if (apiKey === "") return { ok: false, reason: `${path} is missing: apiKey` };
+  // Same refusal and same reasoning as `readJiraCredentials`: a credential bound for an
+  // `Authorization` header cannot carry CR, LF, a space or any control character without
+  // being either a header-injection vector or a misread file.
+  if (!/^[\u0021-\u007E]+$/u.test(apiKey)) {
+    return { ok: false, reason: `${path}: apiKey is not header-safe — it must be printable ASCII with no spaces or control characters` };
+  }
   const apiUrl = typeof it["apiUrl"] === "string" && it["apiUrl"].trim() !== "" ? it["apiUrl"].trim() : LINEAR_API_URL;
   return { ok: true, credentials: { apiKey, apiUrl } };
 }
