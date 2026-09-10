@@ -57,7 +57,7 @@
  */
 
 import { execFileSync } from "node:child_process";
-import { closeSync, fstatSync, openSync, readFileSync, readdirSync } from "node:fs";
+import { closeSync, constants, fstatSync, openSync, readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
 import { Fidelity, Port, type DataSourcePort, type PortResult, type SourceDocument } from "./providers";
 
@@ -426,7 +426,13 @@ export function directoryDataSource(input: {
         let content = "";
         let mtimeMs: number;
         try {
-          const fd = openSync(full, "r");
+          // O_RDONLY as an explicit NUMERIC flag, not the string "r". They are the same
+          // thing, but the string form is what CodeQL's `js/insecure-temporary-file` read as
+          // a possible CREATE when the walk root happens to be under the OS temp dir (alert
+          // #945 — introduced by the very fix that closed the stat-then-read race #938, which
+          // is the relocation pattern landing on me). O_RDONLY cannot create a file, and
+          // saying so in the flag rather than in a mode string leaves nothing to infer.
+          const fd = openSync(full, constants.O_RDONLY);
           try {
             mtimeMs = fstatSync(fd).mtimeMs;
             content = readFileSync(fd, "utf-8");
