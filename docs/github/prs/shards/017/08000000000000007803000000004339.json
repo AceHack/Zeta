@@ -1,0 +1,12 @@
+{
+  "pr_number": 17209,
+  "archive_path": "docs/history/pr-reviews/PR-17209-docs-081m24g5rhw087g0r000qav588-repo-split-round-4-aaron-s-named-candidates-meas.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-10T02:28:18.280Z",
+  "schema_version": "v1",
+  "commit_sha": "53e3c6fb4a9fcbac336a30800eb8803e9b1ac24c",
+  "title": "docs(081M24G5RHW087G0R000QAV588): repo split round 4 — Aaron's named candidates measured, and the ace coupling that already exists",
+  "state": "MERGED",
+  "merged_at": "2026-09-10T02:27:35Z",
+  "head_ref": "agent/repo-split-round-4"
+}
