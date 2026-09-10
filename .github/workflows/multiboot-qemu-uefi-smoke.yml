@@ -53,7 +53,12 @@ concurrency:
 
 jobs:
   uefi-menu-smoke:
-    name: multiboot QEMU UEFI menu smoke
+    # NAMES WHAT IT PROVES. This lane boots a GRUB EFI built by real `grub-mkimage`
+    # from a real FAT/ESP image under OVMF and asserts the menu is reached over serial.
+    # It does NOT boot the installer: the menu entry only `echo`s, and the file it points
+    # at is a placeholder of a few bytes. The previous name plus a placeholder called
+    # `zeta-installer.iso` read, in a checks list, as installer coverage.
+    name: ESP+GRUB menu reached under OVMF (no installer ISO)
     runs-on: ubuntu-24.04
     timeout-minutes: 30
     steps:

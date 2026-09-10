@@ -90,8 +90,8 @@ export function smokeGrubCfg(): string {
     "terminal_input serial",
     "terminal_output serial",
     `echo ${UEFI_MENU_MARKER}`,
-    'menuentry "zeta-installer" {',
-    "  echo selected-zeta-installer",
+    'menuentry "placeholder-not-the-installer" {',
+    "  echo selected-placeholder-not-the-installer",
     "}",
     "",
   ].join("\n");
@@ -210,7 +210,7 @@ export async function runUefiMenuSmoke(): Promise<{
   }
 
   const tmpRoot = mkdtempSync(join(tmpdir(), "zeta-uefi-menu-smoke-"));
-  const isoPath = join(tmpRoot, "zeta-installer.iso");
+  const isoPath = join(tmpRoot, "not-an-installer-placeholder.bin");
   const efiPath = join(tmpRoot, "BOOTX64.EFI");
   const outImg = join(tmpRoot, "zeta-multiboot.img");
   const stagingDir = join(tmpRoot, "staging");
@@ -231,7 +231,7 @@ export async function runUefiMenuSmoke(): Promise<{
   const planned = planMultibootUsb({
     entries: [
       {
-        name: "zeta-installer",
+        name: "placeholder-not-the-installer",
         kind: "grub-iso-local",
         flakeAttr: "nix:.#installer-iso",
       },
@@ -245,8 +245,8 @@ export async function runUefiMenuSmoke(): Promise<{
     plan: planned.plan,
     artifacts: [
       {
-        name: "zeta-installer",
-        imagePath: "/boot/iso/zeta-installer.iso",
+        name: "placeholder-not-the-installer",
+        imagePath: "/boot/iso/not-an-installer-placeholder.bin",
         localPath: isoPath,
         sizeBytes: 64,
       },
