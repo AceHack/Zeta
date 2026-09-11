@@ -23,7 +23,7 @@
  * usage: bun observe-cli.ts --store <dir> --hat <hatId> [--actions <dir>] [--json] <command> [...]
  */
 
-import { existsSync, readFileSync, statSync } from "node:fs";
+import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 
 import {
@@ -256,8 +256,23 @@ export function readAttachment(items: readonly ItemContext[], workId: string, re
     return { ok: false, reason: `'${ref}' is not attached to ${workId} — it has: ${item.attachments.map((a) => a.ref).join(", ") || "nothing"}` };
   }
   const at = resolve(listed.ref);
-  if (!existsSync(at) || !statSync(at).isFile()) return { ok: false, reason: `'${ref}' is recorded on ${workId} but is not a readable file (it may be a reference rather than a document)` };
-  const text = readFileSync(at, "utf-8");
+  // READ, THEN INTERPRET — never `existsSync`/`statSync` and then read
+  // (`js/file-system-race`, CWE-367). The file can change between the question
+  // and the answer, and the check was redundant anyway: the read itself reports
+  // both conditions the guard was testing, and reports them more precisely than
+  // a boolean can. EISDIR is what "not a file" actually looks like from a read.
+  let text: string;
+  try {
+    text = readFileSync(at, "utf-8");
+  } catch (err) {
+    const code = (err as NodeJS.ErrnoException | undefined)?.code;
+    const why =
+      code === "ENOENT" ? "is recorded but no longer on disk"
+      : code === "EISDIR" ? "is a directory, not a document"
+      : code === "EACCES" || code === "EPERM" ? "is not readable"
+      : "could not be read";
+    return { ok: false, reason: `'${ref}' ${why} on ${workId} (it may be a reference rather than a document)` };
+  }
   return {
     ok: true,
     text: text.length <= ATTACHMENT_LIMIT ? text : `${text.slice(0, ATTACHMENT_LIMIT)}\n\n… ${String(text.length - ATTACHMENT_LIMIT)} more characters in ${at}`,
