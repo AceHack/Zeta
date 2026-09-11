@@ -25,6 +25,8 @@ import { GateKind, GateOutcome, ORDERED_GATES, mayEvaluate } from "./quality-gat
 import { RunOutcome } from "./qa";
 import { ShardState } from "./work-market";
 import { Fidelity, Port } from "./providers";
+import { ProcessSetting, type SettingBinding } from "./practice";
+import { defaultProviderSet } from "./org-runtime";
 import type { ProducerPort } from "./pipeline";
 import { PriorityClass } from "./prioritization";
 import { AnchorState } from "./discussion-anchor";
@@ -850,3 +852,107 @@ describe("EVERY RUNG RECALLS, NOT ONLY THE LEAVES", () => {
     }
   });
 });
+
+describe("THE PROCESS DECIDES WHERE WORK BRANCHES — through the runtime, not beside it", () => {
+  // -- WHY THIS TEST EXISTS ---------------------------------------------------
+  // `branch-topology.test.ts` proves the derivation and `practice.test.ts` proves the settings
+  // resolve. Neither proves the RUNTIME hands one to the other, and two mutations deleting exactly
+  // that pass-through survived the whole suite. That is the shape `Method` shipped in — a resolver
+  // with full coverage and nothing calling it — so the assertion here is on what the change-control
+  // port was actually asked for.
+
+  /** A change port that records the (branch, base) it was asked to open, and refuses nothing. */
+  function recordingChange(): {
+    readonly port: OrgRuntimeDeps["providers"] extends undefined ? never : unknown;
+    readonly opened: { branch: string; base?: string }[];
+  } {
+    const opened: { branch: string; base?: string }[] = [];
+    const port = {
+      meta: { port: Port.ChangeControl, name: "recording", fidelity: Fidelity.Simulated, describes: "records what it is asked to open" },
+      open: async (_node: unknown, ctx: { readonly branch: string; readonly base?: string }) => {
+        opened.push({ branch: ctx.branch, ...(ctx.base === undefined ? {} : { base: ctx.base }) });
+        return {
+          ok: true as const,
+          value: { changeId: `${ctx.branch}@c`, branch: ctx.branch, ...(ctx.base === undefined ? {} : { base: ctx.base }) },
+          evidence: [],
+        };
+      },
+      merge: async (handle: { readonly branch: string }) => ({ ok: true as const, value: { changeId: "m", branch: handle.branch }, evidence: [] }),
+    };
+    return { port: port as never, opened };
+  }
+
+  /** Run the pipeline with a recording change port and the given settings. */
+  async function basesFor(settings: readonly SettingBinding[]): Promise<{ branch: string; base?: string }[]> {
+    const rec = recordingChange();
+    const base = deps();
+    // THE DEFAULT SET, with only `change` replaced. `deps()` supplies no providers at all — the
+    // runtime builds them — so spreading `base.providers` gave an object with one member and the
+    // recorder wrapper threw on the missing intake port.
+    await runOrgRuntime({
+      ...base,
+      providers: { ...defaultProviderSet(base), change: rec.port },
+      ...(settings.length === 0 ? {} : { settings }),
+    } as OrgRuntimeDeps);
+    return rec.opened;
+  }
+
+  test("with nothing set, the shape decides and the runtime asks for no base", async () => {
+    // The fixture decomposes one request into ONE code item, so nothing collects and every change is
+    // cut from the adapter's own trunk — which the runtime expresses by saying nothing.
+    const opened = await basesFor([]);
+    expect(opened.length).toBeGreaterThan(0);
+    expect(opened.every((o) => o.base === undefined)).toBe(true);
+  }, 60_000);
+
+  test("A `collect` SETTING REACHES THE PORT as a base", async () => {
+    // `collect` on the fixture's project forces a branch the shape rule would not give — so a base
+    // appears in what the port was asked for, and it could only have come through the runtime.
+    const opened = await basesFor([
+      {
+        setting: ProcessSetting.IntegrationBranch,
+        value: "collect",
+        scope: "T-1",
+        why: "this epic will grow and we want one MR for it from the start",
+        // SCOPED BY TICKET, which also proves ticket-matching survives the trip: the fixture mints
+        // its own work ids and an operator has never seen them.
+      },
+    ]);
+    expect(opened.length).toBeGreaterThan(0);
+    const withBase = opened.filter((o) => o.base !== undefined);
+    expect(withBase.length).toBeGreaterThan(0);
+    // Named after the collection, not after an internal id.
+    expect(withBase[0]?.base).toContain("feature/");
+  }, 60_000);
+
+  test("...and a `direct` SETTING takes it away again — with its own control", async () => {
+    // THE CONTROL IS IN THE TEST, because "no base appeared" is also what an unconfigured run
+    // produces. Without the first half this would pass on a runtime that ignored settings entirely.
+    const everything: SettingBinding[] = [
+      { setting: ProcessSetting.IntegrationBranch, value: "collect", why: "this team works on feature branches" },
+    ];
+    const withBranches = await basesFor(everything);
+    expect(withBranches.some((o) => o.base !== undefined)).toBe(true);
+
+    // …and one ticket pulled back out of it.
+    const pulledOut = await basesFor([
+      ...everything,
+      { setting: ProcessSetting.IntegrationBranch, value: "direct", scope: "T-1", why: "this one ships on its own" },
+    ]);
+    expect(pulledOut.every((o) => o.base === undefined)).toBe(true);
+  }, 60_000);
+
+  // -- WHAT THIS BLOCK DOES NOT PROVE, stated rather than implied --------------
+  // Mutation-checked: 16 of 17 mutations go red. The survivor is deleting the `settings` pass-through
+  // on the COLLECTION-LANDING call, one line below the branching one proven above.
+  //
+  // It is unreachable from this harness. Landing a collection needs the collection itself Done with
+  // every code item under it Done, and a change port of REAL fidelity; this fixture's project is
+  // still `open` after a cycle, and seeding a fully-Done `priorCascade` did not reach it either. The
+  // rule itself is covered in `branch-topology.test.ts` — `collectionsReadyToLand` with and without a
+  // `direct` setting — so what is unproven is narrowly that the RUNTIME hands its settings to it.
+  //
+  // Recorded because an unfalsifiable line is worth knowing about, and because the honest place to
+  // close it is an end-to-end run over real git where a feature branch actually lands.
+});
+

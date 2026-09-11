@@ -171,7 +171,7 @@ import type { ProducerPort } from "./pipeline";
 import type { OrgChart } from "./org-chart";
 import type { OrgRuntimeDeps, OrgRuntimeReport } from "./org-runtime";
 import type { NextAction } from "../observe/observe";
-import { guidanceFrom, type Directive, type Practice } from "./practice";
+import { guidanceFrom, type Directive, type Practice, type SettingBinding } from "./practice";
 import { DEFAULT_DIRECTIVES, DEFAULT_PRACTICES } from "./practice-defaults";
 import { renderRepoSkills } from "./repo-skills";
 import { branchNameIn } from "./branch-topology";
@@ -653,6 +653,8 @@ export interface Args {
    * be re-read after a source changed, and the rendering belongs at the point of use.
    */
   readonly repoSources: readonly { readonly sourceId: string; readonly location: string }[];
+  /** What the process does at mechanical decisions. See `ProcessSetting`. */
+  readonly settings: readonly SettingBinding[];
   /** PATH to the Atlassian credentials file. Never a token — see the parser. */
   readonly confluenceAuthFile: string | undefined;
   /** Space keys to read. Empty reads whatever the CQL matches. */
@@ -755,6 +757,7 @@ export function parseArgs(argv: readonly string[]): Args {
     practices: [],
     directives: [],
     repoSources: [],
+    settings: [],
     confluenceAuthFile: valueAfter(argv, "--confluence-auth-file"),
     confluenceSpaces: valuesAfter(argv, "--confluence-space"),
     confluenceCql: valueAfter(argv, "--confluence-cql"),
@@ -1379,6 +1382,7 @@ export function withOrgDefaults(args: Args, orgId: string, registryJson: string 
       // repeat it per run is how a configuration surface becomes decoration.
       practices: args.practices.length > 0 ? args.practices : (org.practices ?? []),
       directives: args.directives.length > 0 ? args.directives : (org.directives ?? []),
+      settings: args.settings.length > 0 ? args.settings : (org.settings ?? []),
       // GIT SOURCES ONLY: a tracker or a wiki has no skills directory to read.
       repoSources:
         args.repoSources.length > 0
@@ -1830,6 +1834,13 @@ export async function main(argv: readonly string[]): Promise<number> {
     // to the same agent out of eighty-five eligible. Derived from the store, so reputation
     // accumulates across runs instead of resetting every process.
     observations: priorObservationsFrom(args.store),
+    // WHAT THE PROCESS DOES at mechanical decisions — the branching disposition among them. Read
+    // from the register rather than derived: a stabilization epic and a feature epic are the same
+    // shape, and only an operator knows which is which.
+    //
+    // SUPPLIED TO BOTH dependency objects. A field on one only is exactly how `alreadyLanded`
+    // stayed undefined on the ordinary path for the whole life of that field.
+    ...(args.settings.length === 0 ? {} : { settings: args.settings }),
     // WHAT THIS ORGANIZATION WAS ALREADY DOING. Without it every run re-accepts the same intake
     // under fresh ids, so nothing a run learns - an answer, a verdict, a document - can reach the
     // next one, and no work can outlive the process that started it.
@@ -2208,6 +2219,13 @@ export async function main(argv: readonly string[]): Promise<number> {
     // to the same agent out of eighty-five eligible. Derived from the store, so reputation
     // accumulates across runs instead of resetting every process.
     observations: priorObservationsFrom(args.store),
+    // WHAT THE PROCESS DOES at mechanical decisions — the branching disposition among them. Read
+    // from the register rather than derived: a stabilization epic and a feature epic are the same
+    // shape, and only an operator knows which is which.
+    //
+    // SUPPLIED TO BOTH dependency objects. A field on one only is exactly how `alreadyLanded`
+    // stayed undefined on the ordinary path for the whole life of that field.
+    ...(args.settings.length === 0 ? {} : { settings: args.settings }),
     // WHAT THIS ORGANIZATION WAS ALREADY DOING. Without it every run re-accepts the same intake
     // under fresh ids, so nothing a run learns - an answer, a verdict, a document - can reach the
     // next one, and no work can outlive the process that started it.

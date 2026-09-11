@@ -29,11 +29,15 @@ import {
   renderPractice,
   resolvePractice,
   subjectRosterFor,
+  ProcessSetting,
+  SETTING_VALUES,
   validateDirective,
   validatePractice,
+  validateSetting,
   type Practice,
   type PracticeSkill,
   type PracticeSubject,
+  type SettingBinding,
 } from "./practice";
 import { DEFAULT_DIRECTIVES, DEFAULT_PRACTICES } from "./practice-defaults";
 import { repoSkillsIn } from "./repo-skills";
@@ -611,6 +615,69 @@ export async function main(argv: readonly string[], deps: CliDeps): Promise<numb
       return Exit.Ok;
     }
 
+    case "org setting bind": {
+      const chosen = resolveOrg(registry, flagValue(flags, "--org"));
+      if ("reason" in chosen) { deps.err(chosen.reason); return Exit.NotFound; }
+      const name = (flagValue(flags, "--setting") ?? "").trim();
+      const value = (flagValue(flags, "--value") ?? "").trim();
+      const why = (flagValue(flags, "--why") ?? "").trim();
+      const scope = (flagValue(flags, "--for") ?? "").trim();
+      if (name === "") { deps.err(`--setting is required — known: ${Object.values(ProcessSetting).join(", ")}`); return Exit.Usage; }
+      if (value === "") { deps.err("--value is required"); return Exit.Usage; }
+
+      const binding: SettingBinding = {
+        setting: name as ProcessSetting,
+        value,
+        ...(scope === "" ? {} : { scope }),
+        why,
+      };
+      const valid = validateSetting(binding);
+      if (!valid.ok) { deps.err(valid.reason); return Exit.Refused; }
+
+      const existing = chosen.org.settings ?? [];
+      const sameKey = (b: SettingBinding) => b.setting === binding.setting && (b.scope ?? "") === scope;
+      const replaced = existing.some(sameKey);
+      const updated = updateOrg(registry, {
+        ...chosen.org,
+        settings: [...existing.filter((b) => !sameKey(b)), binding],
+      });
+      if (!updated.ok) { deps.err(updated.reason); return Exit.Refused; }
+      registry = updated.registry;
+      deps.writeFile(registryPath, serializeRegistry(registry));
+
+      emit(deps, json, { org: chosen.org.orgId, setting: binding, replaced }, () =>
+        `${replaced ? "changed" : "set"} '${name}' to '${value}'` +
+        `${scope === "" ? " organization-wide" : ` for '${scope}'`} on '${chosen.org.orgId}'\n` +
+        `  because ${why}\n`,
+      );
+      return Exit.Ok;
+    }
+
+    case "org setting unbind": {
+      const chosen = resolveOrg(registry, flagValue(flags, "--org"));
+      if ("reason" in chosen) { deps.err(chosen.reason); return Exit.NotFound; }
+      const name = (flagValue(flags, "--setting") ?? "").trim();
+      const scope = (flagValue(flags, "--for") ?? "").trim();
+      if (name === "") { deps.err("--setting is required"); return Exit.Usage; }
+
+      const existing = chosen.org.settings ?? [];
+      const sameKey = (b: SettingBinding) => b.setting === name && (b.scope ?? "") === scope;
+      if (!existing.some(sameKey)) {
+        deps.err(`'${name}' is not set${scope === "" ? " organization-wide" : ` for '${scope}'`} on '${chosen.org.orgId}'`);
+        return Exit.NotFound;
+      }
+      // DELETED, not suppressed. Unlike a practice there is no register default to come back: unset
+      // means the MECHANICAL default applies, which is what removing this returns the item to.
+      const updated = updateOrg(registry, { ...chosen.org, settings: existing.filter((b) => !sameKey(b)) });
+      if (!updated.ok) { deps.err(updated.reason); return Exit.Refused; }
+      registry = updated.registry;
+      deps.writeFile(registryPath, serializeRegistry(registry));
+      emit(deps, json, { org: chosen.org.orgId, setting: name, scope, removed: true }, () =>
+        `'${name}'${scope === "" ? "" : ` for '${scope}'`} is unset: the mechanical default applies again\n`,
+      );
+      return Exit.Ok;
+    }
+
     case "org practice bind": {
       const chosen = resolveOrg(registry, flagValue(flags, "--org"));
       if ("reason" in chosen) { deps.err(chosen.reason); return Exit.NotFound; }
@@ -763,6 +830,12 @@ export async function main(argv: readonly string[], deps: CliDeps): Promise<numb
           ...(row.practice.scopeWorkId === undefined ? {} : { scopeWorkId: row.practice.scopeWorkId }),
         })),
         directives: directives.map((row) => ({ ...row.directive, byDefault: row.byDefault })),
+        // LISTED HERE rather than in a command of their own: a setting is the same configuration
+        // answering the same question, and a second listing is a second place to forget to look.
+        settings: (chosen.org.settings ?? []).map((b) => ({
+          ...b,
+          legalValues: SETTING_VALUES[b.setting],
+        })),
         repoSkills: repos,
         resolvedFor: ancestry,
       };
@@ -777,6 +850,16 @@ export async function main(argv: readonly string[], deps: CliDeps): Promise<numb
             resolvePractice([row.practice], row.practice.subject, ancestry, DEFAULT_PRACTICES),
           );
           if (rendered !== "") out.push(rendered);
+        }
+        const settings = chosen.org.settings ?? [];
+        out.push(
+          settings.length === 0
+            ? `no process settings — every mechanical decision takes its default`
+            : `${String(settings.length)} process setting(s)`,
+        );
+        for (const b of settings) {
+          out.push(`  ${String(b.setting)} = ${b.value}${b.scope === undefined ? "  (organization-wide)" : `  for ${b.scope}`}`);
+          out.push(`    because ${b.why}`);
         }
         out.push(`${String(directives.length)} standing directive(s)`);
         for (const row of directives) {

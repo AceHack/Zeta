@@ -32,8 +32,10 @@ import { validateBindings, type SkillBinding } from "./skill-binding";
 import {
   validateDirective,
   validatePractices,
+  validateSettings,
   type Directive,
   type Practice,
+  type SettingBinding,
 } from "./practice";
 
 /** How work ENTERS an organization. Never affects which gates apply — see `gate-demand`. */
@@ -195,6 +197,14 @@ export interface OrgRecord {
    * would then be missing from whichever one nobody remembered.
    */
   readonly directives?: readonly Directive[];
+  /**
+   * What the process DOES at decisions the runtime makes mechanically — see `ProcessSetting`.
+   *
+   * The third member of the SDLC surface, beside `practices` (what an agent reaches for and reads)
+   * and `directives` (what holds regardless). Scoped the same way, so one programme or one epic can
+   * work differently from the rest.
+   */
+  readonly settings?: readonly SettingBinding[];
   readonly createdAtMs: number;
 }
 
@@ -275,6 +285,8 @@ export function validateOrg(org: OrgRecord): OrgCheck {
   // exactly like a process somebody is following.
   const practices = validatePractices(org.practices ?? []);
   if (!practices.ok) return { ok: false, reason: practices.reason };
+  const settings = validateSettings(org.settings ?? []);
+  if (!settings.ok) return { ok: false, reason: settings.reason };
   for (const directive of org.directives ?? []) {
     const one = validateDirective(directive);
     if (!one.ok) return { ok: false, reason: one.reason };

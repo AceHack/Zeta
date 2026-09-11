@@ -148,6 +148,7 @@ describe("argument parsing", () => {
       // The process layer, empty by default: an organization states its own, and one that has
       // stated nothing follows the register's few defaults rather than these fields.
       practices: [], directives: [], repoSources: [],
+      settings: [],
       // Absent means each adapter keeps its own default. Two minutes is right for a build command
       // and wrong for an agent, so the choice belongs to whoever knows which one they wired up.
       portTimeoutMs: undefined,

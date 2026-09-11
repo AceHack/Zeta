@@ -78,6 +78,7 @@ import {
   collectionsReadyToLand,
   integrationFor,
 } from "./branch-topology";
+import type { SettingBinding } from "./practice";
 import {
   advanceAll,
   beginBinding,
@@ -325,6 +326,14 @@ export interface OrgRuntimeDeps extends HumanCheckpointDeps {
    * the reading that turns every resumed run into a false failure.
    */
   readonly alreadyLanded?: ReadonlySet<string>;
+  /**
+   * The organization's SDLC settings — what the process DOES at mechanical decisions.
+   *
+   * Absent means every such decision takes its default, which is what every caller meant before
+   * settings existed. `integration_branch` is the one this runtime reads: an epic set to `direct`
+   * gives its children no feature branch and is never landed as a collection itself.
+   */
+  readonly settings?: readonly SettingBinding[];
   /**
    * Which checks answer which gate, and what those checks are.
    *
@@ -2394,7 +2403,11 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
       // a caller asks for the adapter's own trunk — the runtime does not know the trunk and must
       // not learn it, or the same fact lives in two places and drifts.
       const branch = branchNameIn(cascade, task);
-      const under = integrationFor({ cascade, workId: task.workId });
+      const under = integrationFor({
+        cascade,
+        workId: task.workId,
+        ...(deps.settings === undefined ? {} : { settings: deps.settings }),
+      });
       const openedResult = await providers.change.open(
         task,
         under === undefined ? { branch } : { branch, base: under.branch },
@@ -3421,7 +3434,10 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
   // and emit a `change_merged` fact for it, which is a landing nobody can check — the vacuity class
   // wearing a success. A simulated run therefore behaves exactly as it did.
   if (providers.change.meta.fidelity === Fidelity.Real) {
-    for (const ready of collectionsReadyToLand({ cascade })) {
+    for (const ready of collectionsReadyToLand({
+      cascade,
+      ...(deps.settings === undefined ? {} : { settings: deps.settings }),
+    })) {
       // ALREADY ON THE TRUNK, from an earlier run. Asked of the LOG, for the same reason the
       // done-with-nothing-merged rule asks it: this run has no history of its own, and a second
       // merge of a landed collection is either a refusal that reads as a defect or an empty merge

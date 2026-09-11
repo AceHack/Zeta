@@ -294,6 +294,147 @@ export function validateDirective(d: Directive): PracticeCheck {
   return { ok: true };
 }
 
+/**
+ * A knob the process turns at a decision the runtime makes mechanically.
+ *
+ * ── WHY THIS IS NOT A PRACTICE ───────────────────────────────────────────────
+ * A practice is read by an AGENT — an ordered chain of skills and a sentence about how the work is
+ * done. A setting is read by the RUNTIME, which cannot act on prose: "this epic gets no feature
+ * branch" has to resolve to a value some code branches on.
+ *
+ * Kept in this module rather than in its own because it is the same configuration surface answering
+ * the same question — *how does this organization work* — and the alternative is what the first
+ * attempt at this actually did: a separate registry field, separate commands, and a separate path
+ * into the runtime, for one boolean. The next knob would have needed its own again.
+ */
+export const ProcessSetting = {
+  /**
+   * Whether a collection of work carries an integration branch.
+   *
+   *   `collect` — a feature branch: its children merge into it, and it merges to the trunk once done.
+   *   `direct`  — no branch: its children are cut from the trunk and merge back individually.
+   *
+   * UNSET is a third answer and the usual one: the shape decides, which is a collection of two or
+   * more code-producing items. This setting exists because shape cannot tell a feature from a bucket.
+   * Measured on the real AIAGENT project: `AIAGENT-796` ("Dev Portal: Stabilization") has 148
+   * children spanning years of unrelated work, `AIAGENT-1519` has 12 that are one feature, and both
+   * collect. What separates them is coherence, which no property of the cascade exposes.
+   */
+  IntegrationBranch: "integration_branch",
+} as const;
+export type ProcessSetting = (typeof ProcessSetting)[keyof typeof ProcessSetting];
+
+/**
+ * What each setting will accept.
+ *
+ * A CLOSED SET PER SETTING, checked at bind and at load. A free-form value would make
+ * `integration_branch=directly` a stored row that lists as configuration and governs nothing — the
+ * defect class this register spends most of its guards on.
+ */
+export const SETTING_VALUES: Readonly<Record<ProcessSetting, readonly string[]>> = {
+  [ProcessSetting.IntegrationBranch]: ["collect", "direct"],
+};
+
+export interface SettingBinding {
+  readonly setting: ProcessSetting;
+  readonly value: string;
+  /**
+   * What this applies to: a work id, or a TICKET KEY, or absent for organization-wide.
+   *
+   * Both vocabularies, because they belong to different readers — an operator writes `AIAGENT-796`
+   * and the cascade calls the same node `proj-013`. Demanding the internal id would make this
+   * unusable from a command line; accepting only the ticket would make it unusable in a cascade with
+   * no upstream.
+   */
+  readonly scope?: string;
+  /** Why the process works this way here. A knob with no reason is indistinguishable from a typo. */
+  readonly why: string;
+}
+
+export function validateSetting(binding: SettingBinding): PracticeCheck {
+  const names = Object.values(ProcessSetting) as readonly string[];
+  if (!names.includes(binding.setting)) {
+    return { ok: false, reason: `'${String(binding.setting)}' is not a process setting — known: ${names.join(", ")}` };
+  }
+  const legal = SETTING_VALUES[binding.setting];
+  if (!legal.includes(binding.value)) {
+    return {
+      ok: false,
+      reason: `'${binding.value}' is not a value for '${String(binding.setting)}' — known: ${legal.join(", ")}`,
+    };
+  }
+  if (binding.why.trim() === "") {
+    return { ok: false, reason: `'${String(binding.setting)}' was set with no reason: say why the process works this way here` };
+  }
+  return { ok: true };
+}
+
+export function validateSettings(bindings: readonly SettingBinding[]): PracticeCheck {
+  const seen = new Set<string>();
+  for (const b of bindings) {
+    const one = validateSetting(b);
+    if (!one.ok) return one;
+    // ONE VALUE PER SETTING PER SCOPE. Two would resolve by array order — a rule nobody stated and
+    // nobody can see, exactly as for practices.
+    const key = `${String(b.setting)}|${b.scope ?? ""}`;
+    if (seen.has(key)) {
+      return {
+        ok: false,
+        reason:
+          `'${String(b.setting)}' is already set at ${b.scope === undefined ? "organization scope" : `'${b.scope}'`}` +
+          ": replace it rather than adding a second",
+      };
+    }
+    seen.add(key);
+  }
+  return { ok: true };
+}
+
+export interface SettingResolution {
+  readonly setting: ProcessSetting;
+  /** Absent means NOTHING IS SET, which is a real answer and usually the right one. */
+  readonly value?: string;
+  readonly scope?: string;
+  readonly why?: string;
+  readonly because: string;
+}
+
+/**
+ * What a setting is, for one thing.
+ *
+ * `candidates` are the names this thing answers to, NEAREST FIRST — its work id, its ticket, then its
+ * parents' ids and tickets. The caller assembles them because this module holds the rule and the
+ * cascade holds the shape; `settingCandidates` does it for the ordinary case.
+ *
+ * UNSET IS NOT A FAILURE. It means the mechanical default applies — for `integration_branch`, the
+ * shape rule — and a resolver that invented a value here would silently replace that default with
+ * a guess.
+ */
+export function resolveSetting(
+  bindings: readonly SettingBinding[],
+  setting: ProcessSetting,
+  candidates: readonly string[] = [],
+): SettingResolution {
+  const forSetting = bindings.filter((b) => b.setting === setting);
+  for (const name of candidates) {
+    const scoped = forSetting.find((b) => b.scope === name);
+    if (scoped !== undefined) {
+      return {
+        setting,
+        value: scoped.value,
+        scope: name,
+        why: scoped.why,
+        because: `set for '${name}' specifically, which is nearer than any organization-wide setting`,
+      };
+    }
+  }
+  const orgWide = forSetting.find((b) => b.scope === undefined);
+  if (orgWide !== undefined) {
+    return { setting, value: orgWide.value, why: orgWide.why, because: "set organization-wide" };
+  }
+  return { setting, because: `nothing is set for '${String(setting)}', so the mechanical default applies` };
+}
+
 export interface PracticeResolution {
   readonly subject: PracticeSubject;
   /** Whether anything at all governs this subject. */
