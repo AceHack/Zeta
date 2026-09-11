@@ -1919,6 +1919,41 @@ export function gitWorktreeChangeControl(input: {
       // the agent that resolves it works. `abortSync` is the way back out.
       return { ok: true, value: { ...unchanged, conflicts }, evidence: [{ kind: "trace", ref: `sync-conflicted:${target}` }] };
     },
+    syncWithOwnBranch: async (handle) => {
+      const at = handle.workdir ?? input.cwd;
+      // WHAT OTHERS PUSHED TO THE CHANGE'S OWN BRANCH. MEASURED on dev-portal !1222: an automated
+      // `npm audit fix` commit landed on the request's branch after the handoff, and the follow-up's
+      // push was refused as behind - so a reviewed, verified fix never reached the reviewer, and the
+      // comment it answered stayed open. Merged in, never rebased: the branch is under review.
+      const fetched = git(["fetch", "--quiet", remote, handle.branch], at);
+      if (fetched.error !== undefined) return { ok: false, reason: `git could not run: ${fetched.error.message}` };
+      if (fetched.status !== 0) {
+        // A branch the remote does not have yet has nothing of anybody else's on it.
+        const missing = /couldn't find remote ref|not found/i.test(String(fetched.stderr ?? ""));
+        return missing
+          ? { ok: true, value: { target: `${remote}/${handle.branch}`, behindBy: 0, applied: false, conflicts: [] }, evidence: [] }
+          : { ok: false, reason: `could not fetch ${remote}/${handle.branch}: ${(fetched.stderr ?? "").trim().slice(0, 400)}` };
+      }
+      const theirs = `${remote}/${handle.branch}`;
+      const head = String(git(["rev-parse", theirs], at).stdout ?? "").trim() || undefined;
+      const behind = commitsAhead((a) => git(a, at), theirs, handle.branch);
+      if (behind === undefined) return { ok: false, reason: `could not tell what ${theirs} has that ${handle.branch} does not` };
+      const unchanged = { target: theirs, behindBy: behind, applied: false, conflicts: [] as readonly string[], ...(head === undefined ? {} : { head }) };
+      if (behind === 0) return { ok: true, value: unchanged, evidence: [] };
+      const dirty = git(["status", "--porcelain", "--untracked-files=no"], at);
+      if (dirty.status !== 0 || lines(dirty.stdout).length > 0) {
+        return { ok: false, reason: `${handle.branch} has uncommitted changes in ${at}: commit or discard them before others' commits are merged in` };
+      }
+      const merged = git(["merge", "--no-ff", "--no-edit", "-m", `Merge ${theirs} into ${handle.branch}`, theirs], at);
+      if (merged.error !== undefined) return { ok: false, reason: `git could not run: ${merged.error.message}` };
+      if (merged.status === 0) return { ok: true, value: { ...unchanged, applied: true }, evidence: [{ kind: "trace", ref: `pulled:${theirs}` }] };
+      const conflicts = lines(git(["diff", "--name-only", "--diff-filter=U"], at).stdout);
+      if (conflicts.length === 0) {
+        git(["merge", "--abort"], at);
+        return { ok: false, reason: `merging ${theirs} into ${handle.branch} refused: ${(merged.stderr ?? merged.stdout ?? "").trim().slice(0, 400)}` };
+      }
+      return { ok: true, value: { ...unchanged, conflicts }, evidence: [{ kind: "trace", ref: `pull-conflicted:${theirs}` }] };
+    },
     abortSync: async (handle) => {
       const at = handle.workdir ?? input.cwd;
       if (git(["rev-parse", "-q", "--verify", "MERGE_HEAD"], at).status !== 0) return { ok: true, value: true, evidence: [] };

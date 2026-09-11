@@ -1316,4 +1316,74 @@ describe("AFTER THE HANDOFF: THE REQUEST SAYS WHAT THE ORGANIZATION CONFIGURED, 
       for (const d of [repo, inbox, wt, scratch]) rmSync(d, { recursive: true, force: true });
     }
   }, 240_000);
+  test("MEASURED on dev-portal !1222: a commit SOMEBODY ELSE pushed to the request's branch is merged in before the follow-up works - never rebased - so its push is not refused as behind", async () => {
+    const repo = realRepo();
+    const git = (at: string, ...a: string[]) => execFileSync("git", a, { cwd: at, encoding: "utf-8" });
+    const origin = mkdtempSync(join(tmpdir(), "zeta-ob-origin-"));
+    git(origin, "init", "-q", "--bare", "-b", "main");
+    git(repo, "remote", "add", "origin", origin);
+    git(repo, "push", "-q", "origin", "main");
+    const inbox = realInbox();
+    const wt = mkdtempSync(join(tmpdir(), "zeta-ob-wt-"));
+    const scratch = mkdtempSync(join(tmpdir(), "zeta-ob-"));
+    const bot = mkdtempSync(join(tmpdir(), "zeta-ob-bot-"));
+    const h = stubCounting(scratch);
+    const events: OrgEvent[] = [];
+    const noComment = { postComment: async () => ({ ok: true as const, value: {}, evidence: [] }) };
+    try {
+      const change = () => gitWorktreeChangeControl({ cwd: repo, baseBranch: "main", worktreeRoot: wt, handoff: { command: h.command, args: h.args } });
+      const first = await runAgainst(repo, inbox, { change: change() }, { settings: [], changeRequests, describeChange: fullDescription, ...noComment, onEvent: (e: OrgEvent) => events.push(e) });
+      const workId = first.changesHandedOff[0] as string;
+      const handed = foldHandedOffChanges(events);
+      const branch = handed.get(workId)?.branch as string;
+      // The request is on the review system; then a bot pushes a commit to it.
+      git(repo, "push", "-q", "origin", branch);
+      git(bot, "clone", "-q", "--branch", branch, origin, ".");
+      git(bot, "config", "user.email", "bot@example.com");
+      git(bot, "config", "user.name", "Bot");
+      writeFileSync(join(bot, "package-lock.json"), "{\"audit\":\"fixed\"}\n");
+      git(bot, "add", "-A");
+      git(bot, "commit", "-q", "-m", "chore: automated npm audit fix");
+      git(bot, "push", "-q", "origin", branch);
+      const botCommit = git(bot, "rev-parse", "HEAD").trim();
+
+      const reviewed: FollowUpReviewRequest[] = [];
+      const second = await runAgainst(repo, realInbox(), { change: change() }, {
+        settings: [],
+        changeRequests,
+        describeChange: fullDescription,
+        ...noComment,
+        alreadyHandedOff: new Set(handed.keys()),
+        handedOffChanges: handed,
+        actionItems: foldActionItems(events),
+        afterOpenDone: foldAfterOpen(events),
+        feedback: [{ deliveryId: "note-5", source: "gitlab", itemKind: "diff_comment", summary: "clear the menu id", author: "reviewer", changeUrl: "https://review.example/p/-/merge_requests/7#note_5" }],
+        defaultBase: "main",
+        verifyChange: async () => ({ ok: true as const, value: "green", evidence: [] }),
+        followUp: async (req: { items: readonly { actionItemId: string }[]; workdir?: string }) => {
+          // The session works on what people are looking at: the bot's commit is already there.
+          expect(git(req.workdir as string, "log", "--format=%H").includes(botCommit)).toBe(true);
+          writeFileSync(join(req.workdir as string, "fix.md"), "cleared\n");
+          git(req.workdir as string, "add", "-A");
+          git(req.workdir as string, "commit", "-q", "-m", "clear the menu id");
+          return { ok: true as const, value: { decisions: req.items.map((i) => ({ actionItemId: i.actionItemId, outcome: "addressed" as const, how: "cleared it; test added" })), syncWithTarget: false, summary: "s" }, evidence: [] };
+        },
+        reviewFollowUp: async (r: FollowUpReviewRequest) => {
+          reviewed.push(r);
+          return { ok: true as const, value: { approved: true, reason: "ok" }, evidence: [] };
+        },
+        answer: async (r: AnswerRequest) => ({ ok: true as const, value: r.items.map((i) => ({ actionItemId: i.actionItemId, resolved: true })), evidence: [] }),
+        onEvent: (e: OrgEvent) => events.push(e),
+      });
+      expect(second.followUps?.[0]?.refused).toEqual([]);
+      expect(second.followUps?.[0]?.handedOffAgain).toBe(true);
+      // Merged in, never rebased: the bot's commit is an ancestor of what is pushed, unchanged.
+      expect(() => git(repo, "merge-base", "--is-ancestor", botCommit, branch)).not.toThrow();
+      // What people last saw is the bot's commit - the review covers only what came after it.
+      expect(reviewed.every((r) => r.from === botCommit)).toBe(true);
+      expect(foldActionItems(events).get(workId)?.find((i) => i.actionItemId === "gitlab:note-5")?.settled?.outcome).toBe("addressed");
+    } finally {
+      for (const d of [repo, origin, inbox, wt, scratch, bot]) rmSync(d, { recursive: true, force: true });
+    }
+  }, 240_000);
 });

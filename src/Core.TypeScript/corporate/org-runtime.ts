@@ -4141,6 +4141,39 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
         items,
         canSync,
       };
+      // ── WHAT OTHERS PUSHED TO THIS CHANGE'S BRANCH COMES IN FIRST ──────────
+      // MEASURED on dev-portal !1222: a bot pushed an `npm audit fix` commit to the request's branch
+      // after the handoff; the follow-up fixed the reviewer's comment, passed review and verification,
+      // and its push was refused as behind - so nothing reached the reviewer and the thread stayed
+      // open. Merged in before the session starts, so it works on what people are looking at; what
+      // they are looking at (the remote head) is also where "moved" and the review range start.
+      let shownHead = handedMap.get(workId)?.commit;
+      if (providers.change.syncWithOwnBranch !== undefined) {
+        const own = await providers.change.syncWithOwnBranch(handle);
+        if (!own.ok) return { workId, decided: [], handedOffAgain: false, refused: [`could not bring in what others pushed to ${handle.branch}: ${own.reason}`] };
+        if (own.value.head !== undefined) shownHead = own.value.head;
+        if (own.value.conflicts.length > 0) {
+          const resolved = await deps.followUp!({ ...where, mode: "resolve", conflicts: own.value.conflicts });
+          const again = await providers.change.syncWithOwnBranch(handle);
+          if (!resolved.ok || !again.ok || again.value.behindBy > 0 || again.value.conflicts.length > 0) {
+            await providers.change.abortSync?.(handle);
+            return {
+              workId,
+              decided: [],
+              handedOffAgain: false,
+              refused: [`what others pushed to ${handle.branch} conflicted in ${own.value.conflicts.join(", ")} and was not resolved - backed out, nothing pushed`],
+            };
+          }
+        }
+        if (own.value.behindBy > 0) {
+          note({
+            kind: OrgEventKind.ChangeProjected,
+            subjectId: workId,
+            decision: `brought in ${String(own.value.behindBy)} commit(s) others pushed to ${handle.branch} (merged, not rebased)`,
+            atMs: warmedAt,
+          });
+        }
+      }
       const before = providers.change.revision === undefined ? undefined : await providers.change.revision(handle);
       const triage = await deps.followUp!({ ...where, mode: "triage" });
       if (!triage.ok) return { workId, decided: [], handedOffAgain: false, refused: [`the follow-up of ${workId} did not complete: ${triage.reason}`] };
@@ -4190,7 +4223,7 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
       // session must not treat them as already reviewed. UNKNOWN IS TREATED AS MOVED: re-verifying a
       // change that did not move costs a run; skipping the verification of one that did would hand
       // people something nobody checked.
-      const lastShown = handedMap.get(workId)?.commit;
+      const lastShown = shownHead;
       const moved =
         afterRev?.ok === true && lastShown !== undefined
           ? afterRev.value.commit !== lastShown
