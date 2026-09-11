@@ -1,0 +1,12 @@
+{
+  "pr_number": 17285,
+  "archive_path": "docs/history/pr-reviews/2026/09/11/PR-17285-chore-081m28kfagv087g0r000bkeazk-move-14-378-flat-pr-review-records-into-dated-b.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-11T16:42:35.407Z",
+  "schema_version": "v1",
+  "commit_sha": "405e23fecc71f2bcf79b3d0ccef7b98efaceac8c",
+  "title": "chore(081M28KFAGV087G0R000BKEAZK): move 14,378 flat PR-review records into dated buckets",
+  "state": "MERGED",
+  "merged_at": "2026-09-11T16:41:43Z",
+  "head_ref": "chore/pr-archive-migrate-records"
+}

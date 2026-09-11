@@ -1,0 +1,12 @@
+{
+  "pr_number": 17283,
+  "archive_path": "docs/history/pr-reviews/2026/09/11/PR-17283-feat-081m28kf7p5087g0r00046kb5m-bucket-the-pr-review-archive-into-dated-yyyy-mm-.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-11T16:36:33.677Z",
+  "schema_version": "v1",
+  "commit_sha": "a76ab71bf84cafe50b25891abdbeda8729f72ba0",
+  "title": "feat(081M28KF7P5087G0R00046KB5M): bucket the PR-review archive into dated YYYY/MM/DD folders",
+  "state": "MERGED",
+  "merged_at": "2026-09-11T16:35:48Z",
+  "head_ref": "chore/pr-archive-daily-buckets"
+}

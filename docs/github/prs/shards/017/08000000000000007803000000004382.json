@@ -1,0 +1,12 @@
+{
+  "pr_number": 17282,
+  "archive_path": "docs/history/pr-reviews/PR-17282-docs-hygiene-both-churn-candidates-stay-containment-measured-first-and-the-docum.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-11T16:32:26.631Z",
+  "schema_version": "v1",
+  "commit_sha": "858c956b6f4ebf795ea1591faeec5be135464ae5",
+  "title": "docs(hygiene): both churn candidates STAY — containment measured first, and the documented path back to churn is closed",
+  "state": "MERGED",
+  "merged_at": "2026-09-11T16:31:25Z",
+  "head_ref": "shadow/churn-containment-loop-tick-and-backlog"
+}
