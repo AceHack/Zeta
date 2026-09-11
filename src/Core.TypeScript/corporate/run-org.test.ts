@@ -17,6 +17,7 @@ import { artifactProducersFromArgs, churnThresholdFor, gateAttemptsFor, hasSourc
 import { RunOutcome } from "./qa";
 import { GateKind, ORDERED_GATES } from "./quality-gate";
 import { Severity } from "./intake";
+import { readEvents } from "./org-store";
 
 /** Run `main`, capturing what it printed. */
 async function capture(argv: readonly string[]): Promise<{ code: number; out: string }> {
@@ -481,6 +482,53 @@ describe("THE CLI SUPPLIES THE HISTORY THE DELIVERY GUARD NEEDS", () => {
       rmSync(repo, { recursive: true, force: true });
       rmSync(store, { recursive: true, force: true });
       rmSync(wt, { recursive: true, force: true });
+    }
+  }, 180_000);
+});
+
+describe("A RUN OVER A STORE APPENDS TO ITS HISTORY", () => {
+  // MEASURED on the Agentic Team's first real run: every process started at epoch 0 with its id
+  // counter at 1, so a resumed run's `work_assigned` (its `evt-021`) sorted before the earlier run's
+  // `work_created` for the same leaf (`evt-033`), the fold dropped the assignment, and the next
+  // resume found three tickets' leaves unstaffed.
+  test("a second run's events follow the first's, and never reuse its ids", async () => {
+    const store = mkdtempSync(join(tmpdir(), "zeta-cli-append-"));
+    try {
+      expect((await capture(["--store", store, "--until", "2"])).code).not.toBe(2);
+      const first = readEvents(store);
+      expect(first.length).toBeGreaterThan(0);
+      const firstKeys = new Set(first.map((e) => JSON.stringify(e)));
+      const lastOfFirst = Math.max(...first.map((e) => e.atMs));
+
+      expect((await capture(["--store", store, "--until", "2"])).code).not.toBe(2);
+      const all = readEvents(store);
+      const second = all.filter((e) => !firstKeys.has(JSON.stringify(e)));
+      expect(second.length).toBeGreaterThan(0);
+      expect(Math.min(...second.map((e) => e.atMs))).toBeGreaterThan(lastOfFirst);
+      const firstIds = new Set(first.map((e) => e.id));
+      expect(second.filter((e) => firstIds.has(e.id)).map((e) => e.id)).toEqual([]);
+
+      // And the property the fold depends on: nothing is assigned before it exists.
+      const created = new Set<string>();
+      for (const e of all) {
+        const fact = (e as { fact?: { kind?: string; workId?: string } }).fact;
+        if (fact?.kind === "work_created" && fact.workId !== undefined) created.add(fact.workId);
+        if (fact?.kind === "work_assigned" && fact.workId !== undefined) expect(created.has(fact.workId)).toBe(true);
+      }
+    } finally {
+      rmSync(store, { recursive: true, force: true });
+    }
+  }, 180_000);
+
+  test("--now at or before the store's last event is refused, not interleaved", async () => {
+    const store = mkdtempSync(join(tmpdir(), "zeta-cli-now-"));
+    try {
+      await capture(["--store", store, "--now", "2026-09-10T00:00:00.000Z"]);
+      const { code, out } = await capture(["--store", store, "--now", "2026-09-10T00:00:00.000Z"]);
+      expect(code).toBe(2);
+      expect(out).toContain("not after the store's last event");
+    } finally {
+      rmSync(store, { recursive: true, force: true });
     }
   }, 180_000);
 });

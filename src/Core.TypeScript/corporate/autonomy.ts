@@ -83,8 +83,12 @@ export interface AutonomyOptions {
    * autonomous loop and an unbounded one — so the caller states it.
    */
   readonly maxCycles: number;
-  /** Advances the clock between cycles, so a run is not frozen at one instant. */
-  readonly nextNowMs?: (cycle: number, prev: number) => number;
+  /**
+   * Advances the clock between cycles, so a run is not frozen at one instant. Handed the cycle's
+   * report, because a cycle stamps some of its events AHEAD of the instant it started at, and a
+   * next cycle that starts before them interleaves with the one before it.
+   */
+  readonly nextNowMs?: (cycle: number, prev: number, report: OrgRuntimeReport) => number;
   /** Called after each cycle, for a caller that wants to watch. Never decides anything. */
   readonly onCycle?: (cycle: number, report: OrgRuntimeReport) => void;
 }
@@ -200,7 +204,7 @@ export async function runUntilSettled(
     }
 
     previous = progress;
-    nowMs = options.nextNowMs?.(cycle, nowMs) ?? nowMs;
+    nowMs = options.nextNowMs?.(cycle, nowMs, report) ?? nowMs;
   }
 
   return settled(

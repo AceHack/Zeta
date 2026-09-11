@@ -137,7 +137,7 @@ import { ScheduleBlockType } from "./work-schedule";
 import { observeForHat } from "./work-batch";
 import { isLeafType, WorkType as WorkTypeValue } from "./goal-cascade";
 import { associateGoal, EMPTY_BOOK, openPortfolio, PortfolioKind, retirePortfolio } from "./portfolio";
-import { appendEvent, appendRun, deliveryRate, readEvents } from "./org-store";
+import { appendEvent, appendRun, deliveryRate, logHighWater, readEvents } from "./org-store";
 import { runUntilSettled } from "./autonomy";
 import { decideSupply, endorseRecommendation } from "./rmo";
 import { authorityFor, pressureBoard } from "./schedule-pressure";
@@ -1699,11 +1699,25 @@ export async function main(argv: readonly string[]): Promise<number> {
     return 2;
   }
 
-  let n = 0;
+  // A RUN OVER A STORE APPENDS TO IT. Its clock starts after the log's last instant and its counter
+  // after the log's highest minted id; otherwise every process restarts at epoch 0 and `-001`, and
+  // its events interleave with the previous run's instead of following them. See `logHighWater`.
+  const history = args.store === undefined ? { atMs: undefined, counter: 0 } : logHighWater(readEvents(args.store));
+  let n = history.counter;
   const createId = (p: string): string => `${p}-${String(++n).padStart(3, "0")}`;
   // Epoch 0 unless the caller declares otherwise — see `--now`. Never `Date.now()`: an ambient
   // clock would make this run unreplayable and would leak wall time into the observe-act window.
-  const nowMs = args.now === undefined ? 0 : Date.parse(args.now);
+  // The store's own last instant is not ambient: it is an input, and the same store gives the same
+  // start.
+  const declaredNow = args.now === undefined ? undefined : Date.parse(args.now);
+  if (declaredNow !== undefined && history.atMs !== undefined && declaredNow <= history.atMs) {
+    console.error(
+      `[org] --now ${args.now} is not after the store's last event (atMs ${String(history.atMs)}); ` +
+        "this run's history would interleave with the one already there. Omit --now to continue after it.",
+    );
+    return 2;
+  }
+  const nowMs = declaredNow ?? (history.atMs === undefined ? 0 : history.atMs + 1);
 
   // ── A WEEK OF THE ORGANIZATION RUNNING ITSELF ─────────────────────────────
   // The drive as a SHIPPED path, not only a tested one. Everything below this line and above the
@@ -2260,7 +2274,12 @@ export async function main(argv: readonly string[]): Promise<number> {
             maxCycles: Number.parseInt(args.until, 10),
             // The clock advances between cycles: the runtime keys its ids on the instant, so a
             // frozen clock would mint colliding ids across cycles and fold two runs into one.
-            nextNowMs: (_c, prev) => prev + 1,
+            //
+            // PAST EVERYTHING THE CYCLE WROTE, not one tick past where it began. A cycle stamps its
+            // reviews ahead of its start (MEASURED: cycle 1 at 0 wrote at 60000), so `prev + 1`
+            // started cycle 2 at 1 — before cycle 1's own verdicts in the log.
+            nextNowMs: (_c, prev, cycleReport) =>
+              cycleReport.trace.reduce((hi, e) => Math.max(hi, e.atMs), prev) + 1,
           },
           runOrgRuntime,
         );

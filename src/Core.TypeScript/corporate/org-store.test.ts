@@ -13,9 +13,11 @@ import { basename, join } from "node:path";
 import {
   appendEvent,
   appendRun,
+  compareMintedIds,
   decidedUnder,
   deliveryRate,
   eventsFor,
+  logHighWater,
   mintRunId,
   readEvents,
   readRuns,
@@ -350,5 +352,47 @@ describe("A RUN CAN BE WATCHED WHILE IT IS STILL RUNNING", () => {
     const seen: string[] = [];
     const report = await runOrgRuntime(deps({ onEvent: (e) => void seen.push(e.id) }));
     expect(seen).toEqual(report.trace.map((e) => e.id));
+  });
+});
+
+describe("THE LOG IS READ IN THE ORDER IT WAS MINTED", () => {
+  test("a counter past 999 still sorts after 999 — digit runs compare as numbers", () => {
+    // `createId` pads to three digits. As strings `evt-1000` < `evt-999`, so every instant with a
+    // thousand ids behind it folded a transition before the item it moves.
+    expect(compareMintedIds("evt-999", "evt-1000")).toBeLessThan(0);
+    expect(compareMintedIds("evt-1000", "evt-999")).toBeGreaterThan(0);
+    expect(compareMintedIds("evt-021", "evt-033")).toBeLessThan(0);
+    expect(compareMintedIds("evt-033", "evt-033")).toBe(0);
+    // Total even where the numbers agree and the padding does not.
+    expect(compareMintedIds("evt-7", "evt-007")).not.toBe(0);
+    expect(Math.sign(compareMintedIds("evt-7", "evt-007"))).toBe(-Math.sign(compareMintedIds("evt-007", "evt-7")));
+  });
+
+  test("readEvents orders one instant by minting order, not by string", () => {
+    const root = mkdtempSync(join(tmpdir(), "zeta-org-order-"));
+    try {
+      const at = (id: string): OrgEvent => ({
+        id, kind: OrgEventKind.DecisionRecorded, subjectId: "x", actorHatId: "cto",
+        supervisorChain: [], decision: id, atMs: 5, evidenceRefs: [],
+      }) as unknown as OrgEvent;
+      for (const id of ["evt-1000", "evt-999", "evt-1001", "evt-998"]) appendEvent(at(id), root);
+      expect(readEvents(root).map((e) => e.id)).toEqual(["evt-998", "evt-999", "evt-1000", "evt-1001"]);
+    } finally {
+      rmSync(root, { recursive: true, force: true });
+    }
+  });
+
+  test("logHighWater names the last instant and the highest minted counter, from any field", () => {
+    const e = (id: string, atMs: number, fact?: unknown): OrgEvent =>
+      ({ id, atMs, kind: OrgEventKind.DecisionRecorded, subjectId: "task-024", decision: "", evidenceRefs: [], ...(fact === undefined ? {} : { fact }) }) as unknown as OrgEvent;
+    const hw = logHighWater([
+      e("evt-021", 0),
+      e("evt-436", 60001, { kind: "binding", bindingId: "bind-512", ticket: "AIAGENT-1660" }),
+      e("evt-tick-0-1", 3),
+    ]);
+    expect(hw.atMs).toBe(60001);
+    // `bind-512` is buried in a fact and still counts; the ticket key is not a minted id.
+    expect(hw.counter).toBe(512);
+    expect(logHighWater([])).toEqual({ atMs: undefined, counter: 0 });
   });
 });
