@@ -754,3 +754,29 @@ describe("THE AGENT THAT WRITES THE CODE IS TOLD WHAT EVERY DOCUMENT AUTHOR WAS"
     expect(producers.has(GateKind.Reproduction)).toBe(true);
   });
 });
+
+describe("A LATER GATE IS PERFORMED WHEN THE ORGANIZATION SAYS HOW", () => {
+  // UAT is an ACT, not a judgement over a diff — and with no performer the org's own `qa_uat` practice
+  // described work nobody did. The organization decides, by stating the practice.
+  const { performedGates } = require("./run-org") as typeof import("./run-org");
+  const uat = { subject: { kind: "gate", id: "qa_uat" }, skills: [], directive: "run UAT", why: "users" } as never;
+
+  test("with no stated practice, later gates stay judgement-only — the old behaviour", () => {
+    expect(performedGates([])).toEqual([...PRE_CODE_GATES]);
+  });
+
+  test("a stated qa_uat practice gives QA a performer; the runtime's own two are never taken", () => {
+    const gates = performedGates([uat]);
+    expect(gates).toContain(GateKind.QaUat);
+    expect(gates).not.toContain(GateKind.ImplementationReview);
+    expect(gates).not.toContain(GateKind.RuntimeValidation);
+    const bound = [{ subject: { kind: "gate", id: "implementation_review" }, skills: [], directive: "x", why: "y" }] as never;
+    expect(performedGates(bound)).not.toContain(GateKind.ImplementationReview);
+  });
+
+  test("…and the CLI wires a producer for it", () => {
+    const withUat = artifactProducersFromArgs({ ...parseArgs(["--artifact-cmd", "node"]), practices: [uat] });
+    expect(withUat.has(GateKind.QaUat)).toBe(true);
+    expect(withUat.has(GateKind.FinalBusinessValidation)).toBe(false);
+  });
+});

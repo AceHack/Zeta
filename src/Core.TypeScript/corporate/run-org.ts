@@ -172,7 +172,7 @@ import type { ProducerPort } from "./pipeline";
 import type { OrgChart } from "./org-chart";
 import type { OrgRuntimeDeps, OrgRuntimeReport } from "./org-runtime";
 import type { NextAction } from "../observe/observe";
-import { guidanceFrom, type Directive, type Practice, type SettingBinding } from "./practice";
+import { guidanceFrom, PracticeSubjectKind, type Directive, type Practice, type SettingBinding } from "./practice";
 import { DEFAULT_DIRECTIVES, DEFAULT_PRACTICES } from "./practice-defaults";
 import { renderRepoSkills } from "./repo-skills";
 import { branchNameIn } from "./branch-topology";
@@ -941,6 +941,29 @@ export const PRE_CODE_GATES: readonly GateKind[] = ORDERED_GATES.slice(
 );
 
 /**
+ * The gates an agent PERFORMS: every pre-code gate, plus any later gate the organization has said HOW
+ * it is performed — a practice bound to that gate.
+ *
+ * A later gate was judgement-only, on the reasoning that it "already has something real to judge".
+ * That holds for a final review, which reads the diff. It does not hold for UAT: user acceptance is an
+ * ACT — somebody runs the product the way a user would — and with no performer the organization's
+ * own `qa_uat` practice ("give the on-screen test steps and run UAT") described work nobody did. So
+ * the organization decides, by stating the practice; one that states none keeps the old behaviour.
+ * Implementation and runtime validation are never here: the runtime's own producers own them.
+ */
+export function performedGates(practices: readonly Practice[]): readonly GateKind[] {
+  const stated = new Set(
+    practices.filter((p) => p.subject.kind === PracticeSubjectKind.Gate).map((p) => p.subject.id),
+  );
+  return ORDERED_GATES.filter(
+    (g) =>
+      g !== GateKind.ImplementationReview &&
+      g !== GateKind.RuntimeValidation &&
+      (PRE_CODE_GATES.includes(g) || stated.has(String(g))),
+  );
+}
+
+/**
  * What the organization already knows ABOUT THIS ITEM, written where an author can read it.
  *
  * Targeted rather than blanket: `groom` derives search terms from the work item and asks the source
@@ -1174,7 +1197,7 @@ export function artifactProducersFromArgs(
   const out = new Map<GateKind, ProducerPort>();
   if (args.artifactCmd === undefined) return out;
   const budget = args.portTimeoutMs === undefined ? {} : { timeoutMs: args.portTimeoutMs };
-  for (const gate of PRE_CODE_GATES) {
+  for (const gate of performedGates(args.practices)) {
     out.set(
       gate,
       commandArtifactProducer({
@@ -1187,7 +1210,7 @@ export function artifactProducersFromArgs(
           ...args.artifactArgs,
           String(g),
           node.workId,
-          ...PRE_CODE_GATES.flatMap((prior) => ctx.priorArtifacts.get(prior)?.refs ?? []),
+          ...ORDERED_GATES.flatMap((prior) => ctx.priorArtifacts.get(prior)?.refs ?? []),
         ],
         ...(contextFor === undefined ? {} : { contextFor }),
         // The other half of `ask:` — what a person said last time reaches the agent that asked.
