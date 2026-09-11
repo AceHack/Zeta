@@ -48,6 +48,7 @@
 
 import {
   childrenOf,
+  isLeafType,
   nodeById,
   WorkState,
   WorkType,
@@ -55,6 +56,11 @@ import {
   type CascadeNode,
 } from "./goal-cascade";
 import { producesCode } from "./gate-demand";
+import {
+  ProcessSetting,
+  resolveSetting,
+  type SettingBinding,
+} from "./practice";
 
 /**
  * How many code-producing items must sit under an ancestor before it is worth a branch of its own.
@@ -289,6 +295,69 @@ export function ancestorsOf(cascade: Cascade, workId: string): readonly CascadeN
   return out;
 }
 
+/**
+ * The names a work item answers to, for scoped configuration — its own first, then its ancestors'.
+ *
+ * Each rung contributes BOTH its work id and its ticket, because a setting may be written either way
+ * and an operator writes the ticket. Nearest first, so the nearest statement wins.
+ */
+export function settingCandidates(cascade: Cascade, workId: string): readonly string[] {
+  const out: string[] = [];
+  const add = (node: CascadeNode | undefined): void => {
+    if (node === undefined) return;
+    out.push(node.workId);
+    const ticket = ticketOf(node.requestRef);
+    if (ticket !== undefined) out.push(ticket);
+  };
+  add(nodeById(cascade, workId));
+  for (const ancestor of ancestorsOf(cascade, workId)) add(ancestor);
+  return out;
+}
+
+/**
+ * What the process says about this node's own branching, if anything.
+ *
+ * Resolved against the node ALONE — its own id and its own ticket, never its ancestors' — because
+ * the walk in `integrationFor` asks this of each rung in turn, and inheriting the answer would make
+ * every rung under a `direct` epic report `direct` about itself.
+ *
+ * …but an ORGANIZATION-WIDE value does apply, and leaving it out was a defect a mutation caught:
+ * `org setting bind --setting integration_branch --value direct` with no `--for` stored a row and
+ * changed nothing. "We do not use feature branches" is a real thing to say, and a command that
+ * accepts it must mean it.
+ */
+function statedForThisItem(
+  node: CascadeNode,
+  settings: readonly SettingBinding[],
+): string | undefined {
+  const ticket = ticketOf(node.requestRef);
+  const own = [node.workId, ...(ticket === undefined ? [] : [ticket])];
+  // SCOPED ROWS ONLY. This answers "was THIS item singled out", and an organization-wide `direct`
+  // is not that — it is a statement about collections. Reading it here made an org-wide `direct`
+  // short-circuit at the LEAF, so an epic explicitly set to `collect` never got its branch.
+  const scoped = settings.filter(
+    (b) => b.setting === ProcessSetting.IntegrationBranch && b.scope !== undefined,
+  );
+  return resolveSetting(scoped, ProcessSetting.IntegrationBranch, own).value;
+}
+
+/**
+ * Whether this rung carries an integration branch, as the process sees it.
+ *
+ * Scoped first, then ORGANIZATION-WIDE — "we do not use feature branches" is exactly an org-wide
+ * answer to this question, and leaving it out was a defect a mutation caught: the CLI stored the
+ * row and the decision ignored it.
+ */
+function dispositionOf(
+  node: CascadeNode,
+  settings: readonly SettingBinding[],
+): string | undefined {
+  const ticket = ticketOf(node.requestRef);
+  const own = [node.workId, ...(ticket === undefined ? [] : [ticket])];
+  const mine = settings.filter((b) => b.setting === ProcessSetting.IntegrationBranch);
+  return resolveSetting(mine, ProcessSetting.IntegrationBranch, own).value;
+}
+
 /** An integration branch a plan depends on. */
 export interface IntegrationBranch {
   /** The collecting node this branch belongs to. */
@@ -330,6 +399,8 @@ export function branchPlanFor(input: {
   readonly trunk: string;
   readonly prefixes?: Readonly<Partial<Record<WorkType, string>>>;
   readonly collectsAt?: number;
+  /** The organization's SDLC settings. See `ProcessSetting`. */
+  readonly settings?: readonly SettingBinding[];
 }): BranchPlan | { readonly reason: string } {
   const node = nodeById(input.cascade, input.workId);
   if (node === undefined) return { reason: `no work item '${input.workId}' in the cascade` };
@@ -364,6 +435,8 @@ export function integrationFor(input: {
   readonly workId: string;
   readonly prefixes?: Readonly<Partial<Record<WorkType, string>>>;
   readonly collectsAt?: number;
+  /** The organization's SDLC settings. `integration_branch` is the one read here. */
+  readonly settings?: readonly SettingBinding[];
 }): { readonly workId: string; readonly branch: string } | undefined {
   const node = nodeById(input.cascade, input.workId);
   if (node === undefined) return undefined;
@@ -376,14 +449,39 @@ export function integrationFor(input: {
   // code and therefore also collects — the over-counting the header describes, one rung up, and
   // it puts a second integration level back exactly where it was removed. A collection is where
   // the work is assembled and reviewed as a whole; once it is approved it goes to the trunk.
-  if (collects(input.cascade, node, at)) return undefined;
+  const settings = input.settings ?? [];
+  /** Whether a rung takes the branch: what the process says, or the shape when it says nothing. */
+  const takesBranch = (n: CascadeNode): boolean => {
+    // A LEAF IS NEVER A COLLECTION. Needed once an organization-wide value applies: `collect`
+    // stated for everything would otherwise make every story "take" the branch, and a rung that
+    // takes the branch IS the branch — so every story would get none.
+    if (isLeafType(n.workType)) return false;
+    const said = dispositionOf(n, settings);
+    if (said === "collect") return true;
+    // LIVE AGAIN, now that an organization-wide value applies: with nothing scoped anywhere, an
+    // org-wide `direct` is read HERE or it is read nowhere. It was briefly deleted as dead, which
+    // it was — only because org-wide was being ignored, which was the defect.
+    if (said === "direct") return false;
+    return collects(input.cascade, n, at);
+  };
 
-  // NEAREST FIRST, and the first hit wins. `ancestorsOf` already returns nearest-first, so this
-  // is a `find` rather than a fold — the ancestors above the one that takes the branch are not
-  // 'also collecting', they are the same code counted again from further away.
-  const nearest = ancestorsOf(input.cascade, input.workId).find((a) => collects(input.cascade, a, at));
-  if (nearest === undefined) return undefined;
-  return { workId: nearest.workId, branch: branchNameIn(input.cascade, nearest, prefixes) };
+  // THE NODE'S OWN DISPOSITION FIRST. A rung that takes a branch IS the integration branch and has
+  // none of its own, and one marked `direct` has none by instruction.
+  if (statedForThisItem(node, settings) === "direct") return undefined;
+  if (takesBranch(node)) return undefined;
+
+  // NEAREST FIRST. A loop rather than a `find` because `direct` has to STOP the walk: the ancestors
+  // above the one that takes the branch are not 'also collecting', they are the same code counted
+  // again from further away — and a `direct` rung in between means there is nothing to count toward.
+  for (const ancestor of ancestorsOf(input.cascade, input.workId)) {
+    // SHIELDS EVERYTHING UNDER IT. Continuing past a `direct` epic would land a stabilization bug
+    // on whatever unrelated feature happened to sit above it.
+    if (statedForThisItem(ancestor, settings) === "direct") return undefined;
+    if (takesBranch(ancestor)) {
+      return { workId: ancestor.workId, branch: branchNameIn(input.cascade, ancestor, prefixes) };
+    }
+  }
+  return undefined;
 }
 
 /**
@@ -398,6 +496,8 @@ export function changeContextFor(input: {
   readonly workId: string;
   readonly prefixes?: Readonly<Partial<Record<WorkType, string>>>;
   readonly collectsAt?: number;
+  /** The organization's SDLC settings. See `ProcessSetting`. */
+  readonly settings?: readonly SettingBinding[];
 }): { readonly branch: string; readonly base?: string } | undefined {
   const node = nodeById(input.cascade, input.workId);
   if (node === undefined) return undefined;
@@ -426,12 +526,19 @@ export function collectionsReadyToLand(input: {
   readonly cascade: Cascade;
   readonly prefixes?: Readonly<Partial<Record<WorkType, string>>>;
   readonly collectsAt?: number;
+  /** The organization's SDLC settings. See `ProcessSetting`. */
+  readonly settings?: readonly SettingBinding[];
 }): readonly IntegrationBranch[] {
   const at = input.collectsAt ?? COLLECTS_AT;
   const prefixes = input.prefixes ?? DEFAULT_BRANCH_PREFIXES;
   const out: IntegrationBranch[] = [];
+  const settings = input.settings ?? [];
   for (const node of input.cascade.nodes) {
-    if (!collects(input.cascade, node, at)) continue;
+    // WHETHER THIS RUNG CARRIES A BRANCH AT ALL. `direct` needs no separate skip here: a shielded
+    // collection is named by none of its children, and the check below already excludes it. A
+    // mutation removing an explicit `direct` case changed nothing, so there is no explicit case.
+    const said = dispositionOf(node, settings);
+    if (said !== "collect" && !collects(input.cascade, node, at)) continue;
     // A collection nobody routed work under has no branch to land. `integrationFor` is the
     // authority on that, so it is ASKED rather than re-derived: a collection that collects but
     // that no leaf named would otherwise be merged from a branch that was never created.

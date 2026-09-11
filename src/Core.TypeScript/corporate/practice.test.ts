@@ -24,8 +24,14 @@ import {
   validateDirective,
   validatePractice,
   validatePractices,
+  ProcessSetting,
+  resolveSetting,
+  SETTING_VALUES,
+  validateSetting,
+  validateSettings,
   type Directive,
   type Practice,
+  type SettingBinding,
 } from "./practice";
 
 const gateSubject = { kind: PracticeSubjectKind.Gate, id: String(GateKind.BrdApproval) } as const;
@@ -280,6 +286,76 @@ describe("THE REGISTER'S DEFAULTS, AND THE THIRD STATE THAT KEEPS THEM FROM BEIN
     const replaced = practicesInForce([practice({ subject: defectSubject })], [registerDefault]);
     expect(replaced).toHaveLength(1);
     expect(replaced[0]?.byDefault).toBe(false);
+  });
+});
+
+describe("A PROCESS SETTING IS A CLOSED ROSTER, BOTH HALVES", () => {
+  // Written with four refusals and NOT ONE of them asserted — the matrix found every one. A validator
+  // nothing calls is the vacuity class with a type signature.
+
+  const ok: SettingBinding = {
+    setting: ProcessSetting.IntegrationBranch,
+    value: "direct",
+    scope: "AIAGENT-796",
+    why: "a stabilization epic gathers unrelated work",
+  };
+
+  test("a good binding passes", () => {
+    expect(validateSetting(ok).ok).toBe(true);
+    expect(validateSettings([ok]).ok).toBe(true);
+  });
+
+  test("AN UNKNOWN SETTING NAME is refused, and the message names what exists", () => {
+    // A free-form key would store, list as configuration, and govern nothing.
+    const bad = validateSetting({ ...ok, setting: "integraton_branch" as ProcessSetting });
+    expect(bad.ok).toBe(false);
+    if (bad.ok) throw new Error("expected a refusal");
+    expect(bad.reason).toContain("not a process setting");
+    expect(bad.reason).toContain("integration_branch");
+  });
+
+  test("AN ILLEGAL VALUE is refused, and the message names what is legal", () => {
+    const bad = validateSetting({ ...ok, value: "directly" });
+    expect(bad.ok).toBe(false);
+    if (bad.ok) throw new Error("expected a refusal");
+    expect(bad.reason).toContain("directly");
+    expect(bad.reason).toContain("collect");
+    // …and the roster is what the refusal is checked against, not a second copy of it.
+    expect(SETTING_VALUES[ProcessSetting.IntegrationBranch]).toEqual(["collect", "direct"]);
+  });
+
+  test("NO REASON is refused — a knob with none is indistinguishable from a typo", () => {
+    const bad = validateSetting({ ...ok, why: "   " });
+    expect(bad.ok).toBe(false);
+    if (bad.ok) throw new Error("expected a refusal");
+    expect(bad.reason).toContain("no reason");
+  });
+
+  test("TWO VALUES FOR ONE SETTING AT ONE SCOPE are refused", () => {
+    // Two would resolve by array order — a rule nobody stated and nobody can see.
+    const bad = validateSettings([ok, { ...ok, value: "collect" }]);
+    expect(bad.ok).toBe(false);
+    if (bad.ok) throw new Error("expected a refusal");
+    expect(bad.reason).toContain("already set");
+    // …but the same setting at DIFFERENT scopes is the point of scoping.
+    expect(validateSettings([ok, { ...ok, scope: "AIAGENT-1519", value: "collect" }]).ok).toBe(true);
+    // …and org-wide is a different scope from any item.
+    expect(validateSettings([ok, { setting: ok.setting, value: "collect", why: "w" }]).ok).toBe(true);
+  });
+
+  test("UNSET ANSWERS NOTHING, and that is a real answer", () => {
+    // The mechanical default applies. A resolver that invented a value here would silently replace
+    // that default with a guess, which is worse than either.
+    const r = resolveSetting([], ProcessSetting.IntegrationBranch, ["AIAGENT-796"]);
+    expect(r.value).toBeUndefined();
+    expect(r.because).toContain("mechanical default");
+  });
+
+  test("the NEAREST scope wins, then organization-wide", () => {
+    const orgWide: SettingBinding = { setting: ok.setting, value: "collect", why: "we branch everything" };
+    expect(resolveSetting([orgWide, ok], ok.setting, ["AIAGENT-796"]).value).toBe("direct");
+    expect(resolveSetting([orgWide, ok], ok.setting, ["AIAGENT-1519"]).value).toBe("collect");
+    expect(resolveSetting([orgWide, ok], ok.setting, ["AIAGENT-1519"]).because).toContain("organization-wide");
   });
 });
 

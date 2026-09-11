@@ -190,6 +190,32 @@ export const COMMANDS: readonly CommandSpec[] = [
     writes: false,
   },
   {
+    name: "org setting bind",
+    what: "Set what the process DOES at a decision the runtime makes mechanically — e.g. whether an epic carries a feature branch.",
+    then: "Scope it with --for, which takes a work id OR a ticket key. `integration_branch=direct` on a stabilization epic sends its children straight to the trunk; unset, the shape decides. Shown by `org practice list` with the rest of the process.",
+    flags: [
+      ORG_FLAG,
+      { name: "--setting", what: "Which knob. Refused if it is not one this register knows.", required: true, takesValue: true, oneOf: ["integration_branch"] },
+      { name: "--value", what: "Its value. Refused if it is not one this setting accepts.", required: true, takesValue: true, oneOf: ["collect", "direct"] },
+      { name: "--why", what: "Why the process works this way here. A knob with no reason is indistinguishable from a typo.", required: true, takesValue: true },
+      { name: "--for", what: "A work id or ticket key this applies to, and everything under it. Omit for organization-wide.", takesValue: true },
+      JSON_FLAG,
+    ],
+    writes: true,
+  },
+  {
+    name: "org setting unbind",
+    what: "Unset a process setting. The mechanical default applies again.",
+    then: "Removed rather than suppressed: unset means the default decides, which is what removing this returns the item to.",
+    flags: [
+      ORG_FLAG,
+      { name: "--setting", what: "Which knob to unset.", required: true, takesValue: true, oneOf: ["integration_branch"] },
+      { name: "--for", what: "The scope to unset it at. Omit for organization-wide.", takesValue: true },
+      JSON_FLAG,
+    ],
+    writes: true,
+  },
+  {
     name: "org practice bind",
     what: "State HOW this organization does something — an ordered chain of skills and the process in your own words. Optional; unstated subjects are done however the repository and the agent see fit.",
     then: "Scope it with --for to give one program, or one STAGE of a program, its own process. Order is precedence: the first skill is what to reach for, the rest are what to reach for when it does not apply. `org practice list` shows what is in force.",

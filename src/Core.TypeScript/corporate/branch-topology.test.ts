@@ -10,6 +10,7 @@
 
 import { describe, expect, test } from "bun:test";
 import { externalRefOf } from "./intake";
+import { ProcessSetting, type SettingBinding } from "./practice";
 import { WorkState, WorkType, type Cascade, type CascadeNode } from "./goal-cascade";
 import {
   ancestorsOf,
@@ -18,6 +19,7 @@ import {
   changeContextFor,
   branchPlanFor,
   codeProducingUnder,
+  collectionsReadyToLand,
   collects,
   descendantsOf,
   isBranchPlan,
@@ -392,6 +394,219 @@ describe("THE TWO CASES THAT MATTER", () => {
     expect(plan.base).toBe(plan.integration?.branch as string);
     // …and the change's own branch is not the integration branch, or the merge would be a no-op.
     expect(plan.branch).not.toBe(plan.base);
+  });
+});
+
+describe("A COLLECTION THAT IS NOT A FEATURE — configured, because shape cannot tell", () => {
+  // -- THE MEASUREMENT THIS EXISTS FOR --------------------------------------
+  // From the real AIAGENT project:
+  //
+  //     AIAGENT-796  "Dev Portal: Stabilization"   148 children, years of unrelated bugs and stories
+  //     AIAGENT-1519 "Agentic TPM Overhaul"         12 children, one coherent feature
+  //
+  // Both collect by the shape rule and only the second is a feature. One branch holding 148 unrelated
+  // fixes is a second trunk that never merges, and every fix on it waits for every other. What
+  // separates them is COHERENCE, which nothing in the cascade exposes — so it is stated as process,
+  // through the same SDLC surface as everything else, and not through a mechanism of its own.
+
+  /** An epic with two stories under it, the epic carrying `ticket`. */
+  function epicWith(ticket: string): Cascade {
+    return {
+      nodes: [
+        node("goal-1", WorkType.Goal),
+        node("epic-1", WorkType.Project, "goal-1", { requestRef: externalRefOf("jira", ticket), title: "the epic" }),
+        node("leaf-1", WorkType.Task, "epic-1", { requestRef: externalRefOf("jira", "S-1"), title: "story one" }),
+        node("leaf-2", WorkType.Task, "epic-1", { requestRef: externalRefOf("jira", "S-2"), title: "story two" }),
+      ],
+    };
+  }
+
+  const direct = (scope: string): readonly SettingBinding[] => [
+    {
+      setting: ProcessSetting.IntegrationBranch,
+      value: "direct",
+      scope,
+      why: "a stabilization epic gathers unrelated work; one branch for all of it never merges",
+    },
+  ];
+
+  test("UNSET, an epic that collects carries a feature branch", () => {
+    // The default, unchanged. This is the assertion that makes the next one mean something.
+    const plan = branchPlanFor({ cascade: epicWith("AIAGENT-1519"), workId: "leaf-1", trunk: "main" });
+    if (!isBranchPlan(plan)) throw new Error(plan.reason);
+    expect(plan.base).toBe("feature/AIAGENT-1519");
+    expect(plan.integration?.workId).toBe("epic-1");
+  });
+
+  test("SET `direct` BY TICKET, its stories go straight to the trunk", () => {
+    // Matched on the ticket, because that is what an operator writes. The cascade calls this node
+    // `epic-1` and nobody outside it knows that.
+    const cascade = epicWith("AIAGENT-796");
+    const plan = branchPlanFor({
+      cascade,
+      workId: "leaf-1",
+      trunk: "main",
+      settings: direct("AIAGENT-796"),
+    });
+    if (!isBranchPlan(plan)) throw new Error(plan.reason);
+    expect(plan.base).toBe("main");
+    expect(plan.integration).toBeUndefined();
+    // …and the story still carries its own name, so the branch is findable.
+    expect(plan.branch).toBe("story/S-1");
+  });
+
+  test("...and BY WORK ID too, for a cascade with no upstream", () => {
+    const cascade = epicWith("AIAGENT-796");
+    const plan = branchPlanFor({ cascade, workId: "leaf-1", trunk: "main", settings: direct("epic-1") });
+    if (!isBranchPlan(plan)) throw new Error(plan.reason);
+    expect(plan.integration).toBeUndefined();
+  });
+
+  test("A `direct` EPIC SHIELDS EVERYTHING UNDER IT", () => {
+    // Walking past it would land a stabilization bug on whatever unrelated feature sat above — which
+    // is worse than the branch it was avoiding, because now two unrelated things share a merge.
+    const cascade: Cascade = {
+      nodes: [
+        node("goal-1", WorkType.Goal),
+        node("big-1", WorkType.Initiative, "goal-1", { requestRef: externalRefOf("jira", "PROG-1"), title: "the programme" }),
+        node("epic-1", WorkType.Project, "big-1", { requestRef: externalRefOf("jira", "AIAGENT-796"), title: "stabilization" }),
+        node("leaf-1", WorkType.Task, "epic-1", { requestRef: externalRefOf("jira", "S-1"), title: "story one" }),
+        node("leaf-2", WorkType.Task, "epic-1", { requestRef: externalRefOf("jira", "S-2"), title: "story two" }),
+      ],
+    };
+    // The programme collects (two code items under it), so without shielding the story would base on it.
+    expect(codeProducingUnder(cascade, "big-1")).toBe(2);
+    const unshielded = branchPlanFor({ cascade, workId: "leaf-1", trunk: "main" });
+    if (!isBranchPlan(unshielded)) throw new Error(unshielded.reason);
+    expect(unshielded.base).toBe("feature/AIAGENT-796");
+
+    const shielded = branchPlanFor({ cascade, workId: "leaf-1", trunk: "main", settings: direct("AIAGENT-796") });
+    if (!isBranchPlan(shielded)) throw new Error(shielded.reason);
+    expect(shielded.base).toBe("main");
+    expect(shielded.integration).toBeUndefined();
+  });
+
+  test("a `direct` collection is NEVER LANDED as one", () => {
+    // It has no branch, so there is nothing of its to merge — and waiting for all 148 children before
+    // merging any of them is exactly what setting it `direct` prevents.
+    const done = (c: Cascade): Cascade => ({
+      nodes: c.nodes.map((n) => ({ ...n, state: WorkState.Done })),
+    });
+    const cascade = done(epicWith("AIAGENT-796"));
+    expect(collectionsReadyToLand({ cascade }).map((r) => r.workId)).toEqual(["epic-1"]);
+    expect(collectionsReadyToLand({ cascade, settings: direct("AIAGENT-796") })).toEqual([]);
+  });
+
+  test("`collect` FORCES a branch the shape rule would not give", () => {
+    // The other direction, and it is why the setting has two values rather than being a boolean flag
+    // for buckets: an epic of one story that will grow can be given its branch up front.
+    const one: Cascade = {
+      nodes: [
+        node("epic-1", WorkType.Project, undefined, { requestRef: externalRefOf("jira", "FEAT-9"), title: "the epic" }),
+        node("leaf-1", WorkType.Task, "epic-1", { requestRef: externalRefOf("jira", "S-1"), title: "story one" }),
+      ],
+    };
+    expect(codeProducingUnder(one, "epic-1")).toBe(1);
+    const bare = branchPlanFor({ cascade: one, workId: "leaf-1", trunk: "main" });
+    if (!isBranchPlan(bare)) throw new Error(bare.reason);
+    expect(bare.integration).toBeUndefined();
+
+    const forced = branchPlanFor({
+      cascade: one,
+      workId: "leaf-1",
+      trunk: "main",
+      settings: [{
+        setting: ProcessSetting.IntegrationBranch,
+        value: "collect",
+        scope: "FEAT-9",
+        why: "this epic will grow and we want one MR for it from the start",
+      }],
+    });
+    if (!isBranchPlan(forced)) throw new Error(forced.reason);
+    expect(forced.base).toBe("feature/FEAT-9");
+  });
+
+  test("AN ORGANIZATION-WIDE `direct` TURNS FEATURE BRANCHES OFF ENTIRELY", () => {
+    // THE DEFECT A MUTATION CAUGHT. `dispositionOf` only looked at scoped rows, so this setting was
+    // accepted by the CLI, stored, listed as configuration — and filtered out of the decision. "We do
+    // not use feature branches" is a real thing to say and the command claimed to have stored it.
+    const cascade = epicWith("AIAGENT-1519");
+    const plan = branchPlanFor({
+      cascade,
+      workId: "leaf-1",
+      trunk: "main",
+      settings: [{
+        setting: ProcessSetting.IntegrationBranch,
+        value: "direct",
+        why: "this team merges every story to main on its own",
+      }],
+    });
+    if (!isBranchPlan(plan)) throw new Error(plan.reason);
+    expect(plan.base).toBe("main");
+    expect(plan.integration).toBeUndefined();
+  });
+
+  test("...and a per-item `collect` still beats the organization-wide `direct`", () => {
+    // Precedence, asserted where it is used: what was said about THIS epic beats what was said about
+    // all of them, which is the whole reason scoping exists.
+    const cascade = epicWith("AIAGENT-1519");
+    const plan = branchPlanFor({
+      cascade,
+      workId: "leaf-1",
+      trunk: "main",
+      settings: [
+        { setting: ProcessSetting.IntegrationBranch, value: "direct", why: "off by default here" },
+        { setting: ProcessSetting.IntegrationBranch, value: "collect", scope: "AIAGENT-1519", why: "except this one" },
+      ],
+    });
+    if (!isBranchPlan(plan)) throw new Error(plan.reason);
+    expect(plan.base).toBe("feature/AIAGENT-1519");
+  });
+
+  test("A LEAF IS NEVER A COLLECTION, even under an organization-wide `collect`", () => {
+    // Needed once org-wide applies. Without it a story would "take" the branch, and a rung that takes
+    // the branch IS the branch — so the story would get none and its epic's would go unused.
+    const cascade = epicWith("AIAGENT-1519");
+    const plan = branchPlanFor({
+      cascade,
+      workId: "leaf-1",
+      trunk: "main",
+      settings: [{ setting: ProcessSetting.IntegrationBranch, value: "collect", why: "branch everything" }],
+    });
+    if (!isBranchPlan(plan)) throw new Error(plan.reason);
+    expect(plan.base).toBe("feature/AIAGENT-1519");
+    expect(plan.integration?.workId).toBe("epic-1");
+  });
+
+  test("A STORY ITSELF marked `direct` goes to the trunk regardless of its epic", () => {
+    // The node's own disposition, which is a different check from the ancestor shield — one story
+    // pulled out of an otherwise normal feature.
+    const cascade = epicWith("AIAGENT-1519");
+    const plan = branchPlanFor({
+      cascade,
+      workId: "leaf-1",
+      trunk: "main",
+      settings: [{ setting: ProcessSetting.IntegrationBranch, value: "direct", scope: "S-1", why: "this one ships ahead of the feature" }],
+    });
+    if (!isBranchPlan(plan)) throw new Error(plan.reason);
+    expect(plan.base).toBe("main");
+    // …and its sibling is untouched.
+    const sibling = branchPlanFor({
+      cascade,
+      workId: "leaf-2",
+      trunk: "main",
+      settings: [{ setting: ProcessSetting.IntegrationBranch, value: "direct", scope: "S-1", why: "w" }],
+    });
+    if (!isBranchPlan(sibling)) throw new Error(sibling.reason);
+    expect(sibling.base).toBe("feature/AIAGENT-1519");
+  });
+
+  test("A SETTING FOR A DIFFERENT ITEM does not leak", () => {
+    // Scoped means scoped. A `direct` on some other epic must not turn this one's branch off.
+    const cascade = epicWith("AIAGENT-1519");
+    const plan = branchPlanFor({ cascade, workId: "leaf-1", trunk: "main", settings: direct("AIAGENT-796") });
+    if (!isBranchPlan(plan)) throw new Error(plan.reason);
+    expect(plan.base).toBe("feature/AIAGENT-1519");
   });
 });
 
