@@ -814,6 +814,26 @@ if (mode === "follow-up") {
         "write to the tracker, so say where a thing belongs (\"this needs its own ticket for X\") - never \"I'll file it\".",
         "Set `respond: false` ONLY for an item that asked nothing of the change -",
         "a review-trigger keyword, a bot announcing it has started - where a reply would be noise.",
+        ...(env.ORG_PIPELINE_POLICY === "until_green"
+          ? [
+              "",
+              "A RED PIPELINE (item kind `pipeline_failed`) IS NOT FINISHED BY BEING EXPLAINED. Here, the work is not",
+              "done until this request's own pipeline passes, so `declined` is not available on one: the person who",
+              "merges reads a red pipeline, not the argument for why it does not count. Open the failure (its url and",
+              "detail name the jobs and carry the end of their logs) and decide which it is:",
+              "- it is this change's fault: fix it on this branch, with a test where one can exist, and `addressed`",
+              "  says what was wrong and what you changed.",
+              "- it is real but not yours (already failing on the target, a dependency, the runner): `addressed` only",
+              "  if you did something that makes this pipeline pass - otherwise `deferred`, saying exactly what would",
+              "  turn it green and who can do it. It stays open and you will be asked again after the next pipeline.",
+              "- it is infrastructure (a runner timeout, a port already in use, an out-of-space agent): say so in `how`",
+              "  WITH the evidence - and it is still `deferred`, not declined, unless you changed something that stops",
+              "  it happening again. A green run locally is not a green pipeline; it is an argument, and the request is",
+              "  still red. If the same flake keeps failing, making it not flake IS the work.",
+              "You are asked about a red pipeline a limited number of times before a person is told instead, so spend",
+              "those on making it pass rather than on restating the diagnosis.",
+            ]
+          : []),
         canSync
           ? "An item of kind behind_target means the target moved ahead of this change. You cannot merge it yourself; if the change should be brought level, set `syncWithTarget` and the organization will merge the target in (conflicts come back to you)."
           : "An item of kind behind_target means the target moved ahead. This organization only records that; bringing the change level is not available here, so decide whether anything else needs doing.",
