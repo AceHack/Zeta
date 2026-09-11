@@ -19,7 +19,7 @@
  */
 
 import { spawnSync } from "node:child_process";
-import { existsSync, mkdirSync, readdirSync, readFileSync, renameSync } from "node:fs";
+import { mkdirSync, readdirSync, readFileSync, renameSync } from "node:fs";
 import { join } from "node:path";
 import type { ActionItem, HandedOffChange } from "./org-fold";
 import type { FeedbackDelivery, FollowUpOutcome, FollowUpRequest, ItemDecision } from "./change-followup";
@@ -61,8 +61,15 @@ export function commandDescriber(spec: CommandSpec, fallbackCwd: string): (r: De
     if (ran.error !== undefined) return { ok: false, reason: `'${spec.command}' could not run: ${ran.error.message}` };
     if (ran.status !== 0) return { ok: false, reason: `the description author exited ${String(ran.status)}: ${tail(ran.stderr)}` };
     const path = String(ran.stdout ?? "").split(/\r?\n/)[0]?.trim() ?? "";
-    if (path === "" || !existsSync(path)) return { ok: false, reason: `the description author named no readable file (got '${path.slice(0, 200)}')` };
-    return { ok: true, value: readFileSync(path, "utf-8"), evidence: [{ kind: "trace", ref: `description:${path}` }] };
+    // READ, THEN INTERPRET THE FAILURE - never check-then-read, whose answer is stale by the read.
+    let text: string;
+    try {
+      if (path === "") throw new Error("no path");
+      text = readFileSync(path, "utf-8");
+    } catch {
+      return { ok: false, reason: `the description author named no readable file (got '${path.slice(0, 200)}')` };
+    }
+    return { ok: true, value: text, evidence: [{ kind: "trace", ref: `description:${path}` }] };
   };
 }
 
@@ -158,11 +165,17 @@ export function asDelivery(raw: unknown): FeedbackDelivery | undefined {
  * in silence: a webhook the organization cannot read is feedback somebody gave and nobody saw.
  */
 export function readFeedbackDir(dir: string): { readonly deliveries: readonly FeedbackDelivery[]; readonly files: readonly string[]; readonly unreadable: readonly string[] } {
-  if (!existsSync(dir)) return { deliveries: [], files: [], unreadable: [] };
+  let names: readonly string[];
+  try {
+    names = readdirSync(dir);
+  } catch {
+    // No directory is no feedback - read, then interpret, rather than check-then-read.
+    return { deliveries: [], files: [], unreadable: [] };
+  }
   const deliveries: FeedbackDelivery[] = [];
   const files: string[] = [];
   const unreadable: string[] = [];
-  for (const name of readdirSync(dir).filter((n) => n.endsWith(".json")).sort()) {
+  for (const name of names.filter((n) => n.endsWith(".json")).sort()) {
     const path = join(dir, name);
     try {
       const parsed = JSON.parse(readFileSync(path, "utf-8")) as unknown;
