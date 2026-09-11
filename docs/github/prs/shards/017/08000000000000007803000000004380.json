@@ -1,0 +1,12 @@
+{
+  "pr_number": 17280,
+  "archive_path": "docs/history/pr-reviews/2026/09/11/PR-17280-fix-security-close-five-codeql-alerts-by-removing-the-flow-not-the-report.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-11T16:45:40.406Z",
+  "schema_version": "v1",
+  "commit_sha": "29cb6d46728328dfce2d95f85811b96e2a7ce99a",
+  "title": "fix(security): close five CodeQL alerts by removing the flow, not the report",
+  "state": "MERGED",
+  "merged_at": "2026-09-11T16:44:58Z",
+  "head_ref": "fix/codeql-alerts-081M28K03G0087G0R00026PN5K"
+}

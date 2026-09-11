@@ -1,0 +1,12 @@
+{
+  "pr_number": 17287,
+  "archive_path": "docs/history/pr-reviews/2026/09/11/PR-17287-docs-081m28nf4ks087g0r001epsa4k-decline-the-archive-repo-split-reconcile-the-sha.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-11T17:08:35.125Z",
+  "schema_version": "v1",
+  "commit_sha": "a0d86c92e0f0390373e6a1341b47c2d72292f3e2",
+  "title": "docs(081M28NF4KS087G0R001EPSA4K): decline the archive repo-split; reconcile the shard docstring with dated buckets",
+  "state": "MERGED",
+  "merged_at": "2026-09-11T17:07:54Z",
+  "head_ref": "close-archive-split-draft"
+}

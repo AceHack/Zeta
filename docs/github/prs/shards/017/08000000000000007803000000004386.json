@@ -1,0 +1,12 @@
+{
+  "pr_number": 17286,
+  "archive_path": "docs/history/pr-reviews/2026/09/11/PR-17286-feat-hygiene-unbounded-growth-register-bounded-vs-unbounded-per-file-and-folder-.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-11T18:00:15.116Z",
+  "schema_version": "v1",
+  "commit_sha": "5b3ce226eb73a556ae9799c3f322f57d65e15f33",
+  "title": "feat(hygiene): unbounded-growth register — bounded vs unbounded per file and folder, with a cost model demanded for the rest",
+  "state": "MERGED",
+  "merged_at": "2026-09-11T17:59:24Z",
+  "head_ref": "shadow/unbounded-growth-register"
+}

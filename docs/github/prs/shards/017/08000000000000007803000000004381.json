@@ -1,0 +1,12 @@
+{
+  "pr_number": 17281,
+  "archive_path": "docs/history/pr-reviews/2026/09/11/PR-17281-fix-security-validate-the-two-file-sourced-values-that-become-outbound-requests.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-11T16:46:48.782Z",
+  "schema_version": "v1",
+  "commit_sha": "efa8956da75c2f8f77f7ba4f99187e44ee4d5be9",
+  "title": "fix(security): validate the two file-sourced values that become outbound requests",
+  "state": "MERGED",
+  "merged_at": "2026-09-11T16:46:09Z",
+  "head_ref": "fix/codeql-file-to-http-081M28KN26R087G0R002AAHWTS"
+}
