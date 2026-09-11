@@ -148,6 +148,43 @@ describe("AFTER THE HANDOFF: THE DESCRIPTION AND THE FOLLOW-UP", () => {
     r.cleanup();
   });
 
+  test("check-answers: told the CURRENT description and every answer, reads only, and prints a result per answer", () => {
+    // MEASURED on MR !162: a reply cited description content that did not exist, and nothing checked it.
+    const dir = mkdtempSync(join(tmpdir(), "check-"));
+    const file = join(dir, "check.json");
+    writeFileSync(file, JSON.stringify({ description: "## Resolution\nNo backfill; see rebaseline.", items: [{ actionItemId: "gitlab:note-9", summary: "why no backfill?", outcome: "declined", how: "history is append-only", commit: "abc" }] }));
+    const r = run(["check-answers", "task-9"], ok({ results: [{ id: "gitlab:note-9", confirmed: true, unconfirmed: [] }] }), { ORG_CHECK_FILE: file, ORG_BRANCH: "defect/x" });
+    expect(r.status).toBe(0);
+    const input = r.seen?.input ?? "";
+    expect(input).toContain("## Resolution\nNo backfill; see rebaseline.");
+    expect(input).toContain("history is append-only");
+    expect(input).toContain("confirmed = true only if EVERY claim holds");
+    expect(r.seen?.argv).not.toContain("Edit");
+    expect(JSON.parse(r.stdout.trim().split(/\r?\n/).pop() as string)).toEqual({ results: [{ id: "gitlab:note-9", confirmed: true, unconfirmed: [] }] });
+    r.cleanup();
+    rmSync(dir, { recursive: true, force: true });
+  });
+
+  test("a FOLLOW-UP review is told the commits and their claims, and must prove each fix's test fails without it", () => {
+    // MEASURED on MR !164: a follow-up commit's claimed fix had half no test would miss; it was never reviewed.
+    const r = run(["review", "implementation_review", "task-9"], ok({ verdict: "reject", reason: "no test fails without the loadingStates guard", lookedAt: ["diff"] }), {
+      ORG_REVIEW_AS: "code_reviewer",
+      ORG_FOLLOWUP_REVIEW: JSON.stringify({ from: "452fcafab1a2", to: "e9f5b769b246", items: [{ summary: "stale abort clobbers loadingStates", outcome: "addressed", how: "guarded the finally blocks" }] }),
+    });
+    expect(r.status).toBe(1);
+    const input = r.seen?.input ?? "";
+    expect(input).toContain("THIS IS A FOLLOW-UP REVIEW");
+    expect(input).toContain("git diff 452fcafab1a2..e9f5b769b246");
+    expect(input).toContain("guarded the finally blocks");
+    expect(input).toContain("confirm it FAILS");
+    expect(input).toContain("Never change");
+    r.cleanup();
+    // An ordinary gate review is not told any of this.
+    const plain = run(["review", "implementation_review", "task-9"], ok({ verdict: "approve", reason: "ok", lookedAt: [] }));
+    expect(plain.seen?.input).not.toContain("FOLLOW-UP REVIEW");
+    plain.cleanup();
+  });
+
   test("describe on a re-handoff is told what reviewers were answered, and that the description must carry it", () => {
     // MEASURED on MR !162: a reply said the rollout note was in the description; the rewrite had none.
     const r = run(["describe", "task-9"], ok({ description: "## Root cause\nA race." }), {
@@ -376,25 +413,9 @@ describe("A SESSION THAT RUNS OUT OF TIME IS STOPPED WITH EVERYTHING IT STARTED"
     writeFileSync(
       stub,
       `const {spawn}=require("child_process");const fs=require("fs");` +
-        // UNREF'D, NOT DETACHED — and the difference is the whole test. `unref()` lets the
-        // stub exit without waiting for this child; `detached: true` would additionally call
-        // `setsid()`, which puts the child in its OWN process group.
-        //
-        // The comment here used to say detaching was needed because Node "would otherwise put
-        // the child in a job object that dies with its parent, and the test would pass without
-        // any tree kill at all." MEASURED 2026-09-11, and that is not what happens on POSIX:
-        //
-        //   plain     parent exits -> grandchild ALIVE, pgid still the parent's group
-        //                          -> kill(-pgid) KILLS it
-        //   detached  parent exits -> grandchild ALIVE, pgid is its own (setsid)
-        //                          -> kill(-pgid) returns ESRCH, grandchild SURVIVES
-        //
-        // So the test is non-vacuous without detaching — the grandchild outlives its parent
-        // either way, and only the group kill reaps it — and WITH detaching it asserted
-        // something `sweepLeftovers`'s POSIX path cannot deliver by construction. That is why
-        // both of these tests failed. The job-object reasoning describes Windows, where
-        // `taskkill /T` walks the parent/child table and reaps a detached grandchild fine.
-        `const g=spawn(process.execPath,["-e","setInterval(()=>{},1000)"],{stdio:"ignore"});g.unref();` +
+        // DETACHED, like Claude Code's own shells: Node would otherwise put the child in a job object
+        // that dies with its parent, and the test would pass without any tree kill at all.
+        `const g=spawn(process.execPath,["-e","setInterval(()=>{},1000)"],{stdio:"ignore",detached:true});g.unref();` +
         `fs.writeFileSync(${JSON.stringify(pidFile)},String(g.pid));setInterval(()=>{},1000);`,
     );
     const r = spawnSync("node", [AGENT, "work", "task-9"], {
@@ -416,7 +437,7 @@ describe("A SESSION THAT RUNS OUT OF TIME IS STOPPED WITH EVERYTHING IT STARTED"
       // a real failure (the tree was never killed) still fails on any machine.
       await waitUntil(() => !isAlive(pid), {
         timeoutMs: 20_000,
-        describe: `the grandchild ${String(pid)} to be killed with its session`,
+        describe: `the detached grandchild ${String(pid)} to be killed with its session`,
       });
     } finally {
       rmSync(dir, { recursive: true, force: true });
@@ -435,10 +456,7 @@ describe("A SESSION THAT ENDS NORMALLY LEAVES NOTHING RUNNING", () => {
     writeFileSync(
       stub,
       `const {spawn}=require("child_process");const fs=require("fs");` +
-        // UNREF'D, NOT DETACHED — see the measurement at the sibling test above: a plain
-        // grandchild keeps its parent's process group after being reparented, so `kill(-pgid)`
-        // reaches it; a `setsid()` child does not, and no POSIX group kill ever can.
-        `const g=spawn(process.execPath,["-e","setInterval(()=>{},1000)"],{stdio:"ignore"});g.unref();` +
+        `const g=spawn(process.execPath,["-e","setInterval(()=>{},1000)"],{stdio:"ignore",detached:true});g.unref();` +
         `fs.writeFileSync(${JSON.stringify(pidFile)},String(g.pid));` +
         `process.stdin.on("data",()=>{});process.stdin.on("end",()=>{process.stdout.write(${JSON.stringify(answer)});process.exit(0);});`,
     );
@@ -460,7 +478,7 @@ describe("A SESSION THAT ENDS NORMALLY LEAVES NOTHING RUNNING", () => {
       // a real failure (the tree was never killed) still fails on any machine.
       await waitUntil(() => !isAlive(pid), {
         timeoutMs: 20_000,
-        describe: `the grandchild ${String(pid)} to be killed with its session`,
+        describe: `the detached grandchild ${String(pid)} to be killed with its session`,
       });
     } finally {
       rmSync(dir, { recursive: true, force: true });

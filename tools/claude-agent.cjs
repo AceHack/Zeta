@@ -50,8 +50,8 @@ function fail(code, message) {
   process.exit(code);
 }
 
-if (mode !== "work" && mode !== "gate" && mode !== "review" && mode !== "describe" && mode !== "follow-up") {
-  fail(2, "usage: claude-agent.cjs work <workId> | gate <gate> <workId> [refs...] | review <gate> <workId> | describe <workId> | follow-up <workId>");
+if (mode !== "work" && mode !== "gate" && mode !== "review" && mode !== "describe" && mode !== "follow-up" && mode !== "check-answers") {
+  fail(2, "usage: claude-agent.cjs work <workId> | gate <gate> <workId> [refs...] | review <gate> <workId> | describe <workId> | follow-up <workId> | check-answers <workId>");
 }
 
 /** The Claude Code binary: stated, else the npm-installed native one, else `claude` on PATH. */
@@ -190,19 +190,6 @@ function descendantsOf(rootPid, seen) {
 function sweepLeftovers(win, rootPid, seen, startedAt) {
   if (rootPid === undefined) return;
   if (!win) {
-    // WHAT THIS REACHES, AND WHAT IT DOES NOT. The child is spawned `detached` on POSIX, so
-    // it leads its own process group and `rootPid` IS that group. Process-group membership is
-    // INHERITED and SURVIVES REPARENTING - measured 2026-09-11: a grandchild whose parent has
-    // already exited still reports the parent's pgid, and this kill reaps it. That is the
-    // measured AIAGENT-1661 case (QA servers outliving their session).
-    //
-    // It does NOT reach a descendant that called `setsid()` itself (Node's `detached: true`):
-    // that process leaves the group, `kill(-rootPid)` returns ESRCH, and it survives. No POSIX
-    // group or session kill can reach it, because it is deliberately in neither. Catching that
-    // class needs a subreaper (`PR_SET_CHILD_SUBREAPER`, Linux-only, not reachable from Node)
-    // or a cgroup - or the sampling the Windows branch below does, which is why that branch
-    // exists at all. Stated rather than implied: a process that opts out of the group is out
-    // of this sweep's reach, and this function does not pretend otherwise.
     try {
       process.kill(-rootPid, "SIGKILL");
     } catch {
@@ -564,6 +551,28 @@ if (mode === "review") {
     "work move - an accurate document whose own conclusion is that the work is NOT ready, not fixed, or",
     "still blocked is a REJECTION, with what is left as your reason. Before relying on anything an",
     "author reports as still open, check it against the item's current record: it may have closed since.",
+    ...(() => {
+      if (!env.ORG_FOLLOWUP_REVIEW) return [];
+      let fu;
+      try {
+        fu = JSON.parse(env.ORG_FOLLOWUP_REVIEW);
+      } catch {
+        return [];
+      }
+      return [
+        "",
+        "THIS IS A FOLLOW-UP REVIEW. The work was already reviewed and is in front of people; since then, the commits",
+        String(fu.from).slice(0, 12) + ".." + String(fu.to).slice(0, 12) + " were made in answer to review feedback. Judge THOSE commits",
+        "(`git diff " + fu.from + ".." + fu.to + "`), against what the follow-up claims they do:",
+        JSON.stringify(fu.items || [], null, 2),
+        "For every item claimed as addressed: is the problem really fixed, and does a test prove it? PROVE the test is",
+        "not vacuous: in a SCRATCH copy (`git -C <checkout> worktree add --detach <tmp> " + fu.to + "`), put the production",
+        "files back as they were (`git -C <tmp> checkout " + fu.from + " -- <production file>`), keep the new test, run it",
+        "and confirm it FAILS, then remove the copy (`git -C <checkout> worktree remove --force <tmp>`). Never change",
+        "the author's checkout. A claimed fix with no test that fails without it, or an account that says more",
+        "than the diff does, is a REJECTION - name the item and what is missing.",
+      ];
+    })(),
   ].join(NL);
   const schema = {
     type: "object",
@@ -733,6 +742,65 @@ if (mode === "follow-up") {
   const a = r.answer;
   process.stdout.write(r.usage + NL);
   process.stdout.write(JSON.stringify({ decisions: resolving ? [] : a.decisions || [], syncWithTarget: !resolving && canSync && a.syncWithTarget === true, summary: String(a.summary || "") }) + NL);
+  process.exit(0);
+}
+
+// ═════════════════════════════════════════════════════════════════════════════
+// check-answers — confirm every claim in an answer before a reviewer reads it
+// ═════════════════════════════════════════════════════════════════════════════
+if (mode === "check-answers") {
+  const workId = rest[0];
+  if (!workId) fail(2, "check-answers needs <workId>");
+  if (!env.ORG_CHECK_FILE) fail(2, "check-answers needs ORG_CHECK_FILE: the answers to check");
+  let spec;
+  try {
+    spec = JSON.parse(readFileSync(env.ORG_CHECK_FILE, "utf-8"));
+  } catch (err) {
+    fail(2, "ORG_CHECK_FILE could not be read: " + String(err && err.message));
+  }
+  const items = Array.isArray(spec.items) ? spec.items : [];
+  const prompt = [
+    preamble("answer_checker", workId),
+    "",
+    "YOUR TASK NOW: these answers are about to be posted to reviewers on the merge request for work item " + workId + ".",
+    "You did not write them. Check each one before anybody reads it. This checkout is the change (" + (env.ORG_BRANCH || "?") + ").",
+    "",
+    "For EVERY answer, find each factual claim it makes and check it against the evidence:",
+    "- a commit (\"Fixed in abc123\") exists on this branch and contains what the answer says it does (`git show`);",
+    "- a file, function, line or test it names exists and does what it says - read it; run a test only if a claim rests on it;",
+    "- what it says the merge request's description states is actually in the description below;",
+    "- what it says was changed, is changed; what it says was NOT changed, and why, is true of the code.",
+    "confirmed = true only if EVERY claim holds. Otherwise list each claim that does not, specifically (\"says the",
+    "Rollout section is in the description; the description has no rollout content\"). Opinions and reasoning are",
+    "not claims - judge only what can be checked. You change nothing.",
+    "",
+    "THE MERGE REQUEST'S DESCRIPTION, as it stands now:",
+    spec.description === null || spec.description === undefined ? "(not available - any claim about what the description says cannot be confirmed)" : String(spec.description),
+    "",
+    "THE ANSWERS (id, what was raised, the outcome, the answer, the commit it cites):",
+    JSON.stringify(items, null, 2),
+  ].join(NL);
+  const schema = {
+    type: "object",
+    properties: {
+      results: {
+        type: "array",
+        items: {
+          type: "object",
+          properties: {
+            id: { type: "string" },
+            confirmed: { type: "boolean" },
+            unconfirmed: { type: "array", items: { type: "string" } },
+          },
+          required: ["id", "confirmed", "unconfirmed"],
+        },
+      },
+    },
+    required: ["results"],
+  };
+  const r = await runClaude(prompt, schema, JUDGE, process.cwd());
+  process.stdout.write(r.usage + NL);
+  process.stdout.write(JSON.stringify({ results: r.answer.results || [] }) + NL);
   process.exit(0);
 }
 })().catch((e) => fail(4, "claude-agent failed: " + String((e && e.message) || e)));

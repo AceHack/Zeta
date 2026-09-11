@@ -718,6 +718,9 @@ describe("HOW A MERGE REQUEST IS WRITTEN IS STATED, AND ONLY WHAT CAN MEAN SOMET
       "--keep-out", "*.png",
       "--sync", "merge_target",
       "--replies", "reply_and_resolve",
+      "--after-open", "comment=aireview",
+      "--after-update", "comment=aireview",
+      "--review-rounds", "6",
       "--why", "reviewers read the problem first",
     ]);
     expect(code).toBe(Exit.Ok);
@@ -729,19 +732,50 @@ describe("HOW A MERGE REQUEST IS WRITTEN IS STATED, AND ONLY WHAT CAN MEAN SOMET
     expect(await main(["org", "change-requests", "show", "--org", "elera"], h.deps)).toBe(Exit.Ok);
     expect(h.stdout.join("")).toContain("## Root cause");
     expect(h.stdout.join("")).toContain("reviewers' comments: reply_and_resolve");
+    expect(h.stdout.join("")).toContain("after each fix is pushed: comment 'aireview' (up to 6 rounds, then a person decides)");
   });
 
   test("a section with no statement, an unknown sync method, rebasing, or no answer about replies is refused and nothing is written", async () => {
     const h = harness();
     await main(CREATE, h.deps);
     const before = h.files.get(REG);
-    const replies = ["--replies", "reply"];
+    const replies = ["--replies", "reply", "--after-open", "none", "--after-update", "none"];
     expect(await set(h, ["--section", "Root cause", "--sync", "merge_target", ...replies, "--why", "w"])).toBe(Exit.Usage);
     expect(await set(h, ["--section", "Root cause=why", "--sync", "rebase", ...replies, "--why", "w"])).toBe(Exit.Usage);
     expect(await set(h, ["--section", "Root cause= ", "--sync", "merge_target", ...replies, "--why", "w"])).toBe(Exit.Refused);
     // Whether a reviewer is answered is asked, never defaulted - and only a known answer is kept.
     expect(await set(h, ["--section", "Root cause=why", "--sync", "merge_target", "--why", "w"])).toBe(Exit.Usage);
     expect(await set(h, ["--section", "Root cause=why", "--sync", "merge_target", "--replies", "sometimes", "--why", "w"])).toBe(Exit.Usage);
+    expect(h.files.get(REG)).toBe(before);
+  });
+});
+
+describe("HOW A RUN STARTS IS STATED WITH THE ORGANIZATION, NEVER A CREDENTIAL", () => {
+  const profileFile = "/cfg/tpm.json";
+  const setProfile = (h: Harness, body: unknown, why = "comments should not wait for a person") => {
+    h.files.set(profileFile, JSON.stringify(body));
+    return main(["org", "run-profile", "set", "--org", "elera", "--name", "agentic-tpm", "--from", profileFile, "--why", why], h.deps);
+  };
+  const args = ["--org", "elera", "--store", "/s/tpm", "--git", "/r/tpm"];
+
+  test("a profile is stored and listed back, its environment by key only", async () => {
+    const h = harness();
+    await main(CREATE, h.deps);
+    expect(await setProfile(h, { args, env: { VERIFY_STEPS: "[]" }, everyMinutes: 5, maxRunMinutes: 720 })).toBe(Exit.Ok);
+    const saved = JSON.parse(h.files.get(REG) ?? "{}") as { orgs: { runProfiles?: { name: string; everyMinutes: number }[] }[] };
+    expect(saved.orgs[0]?.runProfiles?.map((p) => [p.name, p.everyMinutes])).toEqual([["agentic-tpm", 5]]);
+    h.stdout.length = 0;
+    expect(await main(["org", "run-profile", "list", "--org", "elera"], h.deps)).toBe(Exit.Ok);
+    expect(h.stdout.join("")).toContain("agentic-tpm: every 5 min");
+  });
+
+  test("a secret in the environment, a missing store, or another organization is refused and nothing is written", async () => {
+    const h = harness();
+    await main(CREATE, h.deps);
+    const before = h.files.get(REG);
+    expect(await setProfile(h, { args, env: { GITLAB_TOKEN: "glpat-secret" }, everyMinutes: 5, maxRunMinutes: 60 })).toBe(Exit.Refused);
+    expect(await setProfile(h, { args: ["--org", "elera"], env: {}, everyMinutes: 5, maxRunMinutes: 60 })).toBe(Exit.Refused);
+    expect(await setProfile(h, { args: ["--org", "other", "--store", "/s"], env: {}, everyMinutes: 5, maxRunMinutes: 60 })).toBe(Exit.Refused);
     expect(h.files.get(REG)).toBe(before);
   });
 });

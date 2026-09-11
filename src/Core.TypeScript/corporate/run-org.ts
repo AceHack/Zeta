@@ -144,8 +144,12 @@ import type { ChangeRequestConfig } from "./change-request";
 import type { FeedbackDelivery as FeedbackDeliveryT } from "./change-followup";
 import {
   commandAnswerer,
+  commandAnswerChecker,
+  commandChangeReader,
+  commandCommenter,
   commandDescriber,
   commandFollowUp,
+  commandFollowUpReview,
   commandVerifier,
   consumeFeedback,
   pollFeedback,
@@ -167,7 +171,7 @@ import { foldCalendar, foldOrganization } from "./org-fold";
 import { authorIndexFrom, observationsFrom } from "./reputation-from-log";
 import type { ReputationObservation } from "./reputation";
 import { foldHatsWorn,
-  foldActionItems, foldHandedOffChanges, foldLandedChanges, foldObserveActTicks, foldPresence } from "./org-fold";
+  foldActionItems, foldAfterOpen, foldAfterUpdate, foldHandedOffChanges, foldLandedChanges, foldObserveActTicks, foldPresence } from "./org-fold";
 import { emit } from "./org-event";
 import { awaitingHumanReview, describeChangeLine } from "./handoff-report";
 import type { AgentState } from "../workflow-engine/agent-loop/state-machine";
@@ -180,6 +184,7 @@ import { resolve as resolveSkill, type Resolution, type SkillBinding } from "./s
 import { orgById, parseRegistry, runReadinessOf } from "./org-registry";
 import { HumanActionKind, isPaused, type HumanAction } from "./human-action";
 import { mkdirSync, readdirSync, readFileSync, writeFileSync, statSync } from "node:fs";
+import { releaseOnExit, takeStoreLock } from "./store-lock";
 import { join, resolve } from "node:path";
 import type { ProducerPort } from "./pipeline";
 import type { OrgChart } from "./org-chart";
@@ -946,7 +951,26 @@ export function argRefusals(args: Args): readonly string[] {
             "this organization has not said whether a reviewer's comment is answered on its thread once the team has decided about it: " +
               "run 'org change-requests set' with --replies reply_and_resolve|reply|none",
           );
-        } else if (args.changeRequests.replies !== "none" && args.answerCmd === undefined) {
+        }
+        if (args.changeRequests.afterOpen === undefined) {
+          out.push(
+            "this organization has not said what happens once a merge request is open (for example: comment 'aireview'): " +
+              "run 'org change-requests set' with --after-open 'comment=<text>' (repeatable) or --after-open none",
+          );
+        } else if (args.changeRequests.afterOpen.length > 0 && args.answerCmd === undefined) {
+          out.push(
+            `once a request is open this organization does ${args.changeRequests.afterOpen.map((s) => `${s.kind} '${s.body}'`).join(", ")}: give --answer-cmd (with --answer-arg) to do it`,
+          );
+        }
+        if (args.changeRequests.afterUpdate === undefined) {
+          out.push(
+            "this organization has not said what happens after a fix is pushed to an open merge request (for example: comment 'aireview' again, so review goes back and forth until it is clean): " +
+              "run 'org change-requests set' with --after-update 'comment=<text>' or --after-update none",
+          );
+        } else if (args.changeRequests.afterUpdate.length > 0 && args.answerCmd === undefined) {
+          out.push("after a fix is pushed this organization asks for review again: give --answer-cmd (with --answer-arg) to ask");
+        }
+        if (args.changeRequests.replies !== undefined && args.changeRequests.replies !== "none" && args.answerCmd === undefined) {
           out.push(
             `reviewers here are answered on their threads (replies: ${args.changeRequests.replies}): give --answer-cmd (with --answer-arg) to post the answers`,
           );
@@ -1603,7 +1627,23 @@ export function attachAfterHandoff(deps: Record<string, unknown>, args: Args, fe
   if (args.describeCmd !== undefined) deps["describeChange"] = commandDescriber({ command: args.describeCmd, args: args.describeArgs, ...budget }, cwd);
   if (args.followUpCmd !== undefined) deps["followUp"] = commandFollowUp({ command: args.followUpCmd, args: args.followUpArgs, ...budget }, cwd);
   if (args.workVerify !== undefined) deps["verifyChange"] = commandVerifier({ command: args.workVerify, args: args.workVerifyArgs, ...budget }, cwd);
-  if (args.answerCmd !== undefined) deps["answer"] = commandAnswerer({ command: args.answerCmd, args: args.answerArgs, ...budget }, cwd);
+  if (args.answerCmd !== undefined) {
+    deps["answer"] = commandAnswerer({ command: args.answerCmd, args: args.answerArgs, ...budget }, cwd);
+    deps["postComment"] = commandCommenter({ command: args.answerCmd, args: args.answerArgs, ...budget }, cwd);
+    deps["readChange"] = commandChangeReader({ command: args.answerCmd, args: args.answerArgs, ...budget }, cwd);
+    // Every answer is checked before it is posted, by a session behind the follow-up command.
+    if (args.followUpCmd !== undefined) {
+      deps["checkAnswers"] = commandAnswerChecker({ command: args.followUpCmd, args: args.followUpArgs, ...budget }, cwd);
+    }
+  }
+  // A follow-up's commits go through the same review command the original work's gates used.
+  if (args.reviewCmd !== undefined) {
+    deps["reviewFollowUp"] = commandFollowUpReview({ command: args.reviewCmd, args: args.reviewArgs, ...budget }, cwd);
+  }
+  if (store !== undefined) {
+    Object.defineProperty(deps, "afterOpenDone", { enumerable: true, configurable: true, get: () => foldAfterOpen(readEvents(store)) });
+    Object.defineProperty(deps, "afterUpdateDone", { enumerable: true, configurable: true, get: () => foldAfterUpdate(readEvents(store)) });
+  }
 }
 
 /**
@@ -1737,6 +1777,19 @@ export async function main(argv: readonly string[]): Promise<number> {
   if (refusals.length > 0) {
     for (const reason of refusals) console.error(`refused: ${reason}`);
     return 2;
+  }
+
+  // ── ONE RUN AT A TIME ON A STORE ──────────────────────────────────────────
+  // A watcher starts runs by itself now, and two over one store would raise, follow up and push the
+  // same things twice. Taken before anything is read or written; given back however this exits.
+  if (args.store !== undefined) {
+    mkdirSync(args.store, { recursive: true });
+    const lock = takeStoreLock(args.store);
+    if (!lock.ok) {
+      console.error(`refused: another run is using ${args.store} (pid ${String(lock.heldBy.pid)}, since ${lock.heldBy.startedAt}) - one run at a time on a store`);
+      return 2;
+    }
+    releaseOnExit(lock.release);
   }
 
   // ── EVERY AGENT THIS RUN SPAWNS IS TOLD WHERE ITS WORLDVIEW IS ─────────────

@@ -371,6 +371,12 @@ export interface ChangeControlPort {
   syncWithTarget?(handle: ChangeHandle, opts: { readonly apply: boolean }): Promise<PortResult<ChangeSync>>;
   /** Back out a sync left in progress. Idempotent: nothing in progress is success. */
   abortSync?(handle: ChangeHandle): Promise<PortResult<true>>;
+  /**
+   * Merge in what OTHERS pushed to the change's own branch since the handoff (a bot's commit, a
+   * reviewer's suggestion applied in the UI), so the next push is not refused as behind. `head` is
+   * the remote branch's commit - what people are looking at now. Conflicts are left in progress.
+   */
+  syncWithOwnBranch?(handle: ChangeHandle): Promise<PortResult<ChangeSync>>;
 }
 
 /** Where a change stands against its target, and what a sync did about it. */
@@ -383,6 +389,8 @@ export interface ChangeSync {
   readonly applied: boolean;
   /** Paths left conflicted by an applied merge, which is then IN PROGRESS. Empty otherwise. */
   readonly conflicts: readonly string[];
+  /** The remote ref's commit, when known - for the change's own branch, what reviewers see now. */
+  readonly head?: string;
 }
 
 /** What a change is proposed AS: the words a reviewer reads first, and where it should go. */

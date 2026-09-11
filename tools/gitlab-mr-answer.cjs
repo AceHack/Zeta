@@ -89,8 +89,52 @@ try {
 } catch {
   fail(2, "stdin is not JSON");
 }
-const items = Array.isArray(input && input.items) ? input.items : [];
 const m = /\/merge_requests\/(\d+)/.exec(String((input && input.changeUrl) || ""));
+
+// ── READ the request as it stands: `{"op":"read","changeUrl"}` -> {"description"} ───
+// What an answer's "the description says ..." is checked against before the answer is posted.
+if (input && input.op === "read") {
+  if (!m) fail(2, "the change has no merge request to read");
+  try {
+    const mr = api(["projects/:id/merge_requests/" + m[1]]);
+    emit({ description: String((mr && mr.description) || "") });
+    process.exit(0);
+  } catch (e) {
+    fail(3, String((e && e.message) || e));
+  }
+}
+
+// ── A COMMENT OF THE ORGANIZATION'S OWN, on the request ─────────────────────
+// `{"op":"comment","changeUrl","body"}` - a configured after-open step (e.g. the `aireview` trigger).
+// Prints {"replyId"} so the organization recognises its own comment when it reads the request back.
+if (input && input.op === "comment") {
+  if (!m) fail(2, "the change has no merge request to comment on");
+  const body = String(input.body || "");
+  if (body.trim() === "") fail(2, "a comment needs a body");
+  try {
+    // ALREADY SAID IS DONE. A request that already carries this exact comment - a person posted
+    // `aireview` by hand before the step existed, or an earlier post whose record was lost - needs
+    // no second one: posting it again would start a second review round nobody asked for.
+    // A RE-REVIEW REQUEST (`repeat`) is the same words every round, and every round must be asked.
+    for (let page = 1; input.repeat !== true && page < 50; page++) {
+      const notes = api(["projects/:id/merge_requests/" + m[1] + "/notes?per_page=100&page=" + page]);
+      if (!Array.isArray(notes) || notes.length === 0) break;
+      const same = notes.find((n) => !n.system && String(n.body || "").trim() === body.trim());
+      if (same) {
+        emit({ replyId: "note-" + String(same.id), already: true });
+        process.exit(0);
+      }
+      if (notes.length < 100) break;
+    }
+    const posted = api(["-X", "POST", "projects/:id/merge_requests/" + m[1] + "/notes", "-H", "Content-Type: application/json", "--input", "-"], JSON.stringify({ body }));
+    emit({ replyId: posted && posted.id !== undefined ? "note-" + String(posted.id) : undefined });
+    process.exit(0);
+  } catch (e) {
+    fail(3, String((e && e.message) || e));
+  }
+}
+
+const items = Array.isArray(input && input.items) ? input.items : [];
 if (!m) {
   for (const it of items) emit({ actionItemId: it.actionItemId, skipped: "the change has no merge request to answer on", resolved: false });
   process.exit(0);

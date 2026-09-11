@@ -30,6 +30,7 @@ import type { Method as MethodBinding } from "../observe/observe";
 import { CHECKPOINT_VALUES, isHumanCheckpoint, type HumanCheckpoint } from "./quality-gate";
 import { validateBindings, type SkillBinding } from "./skill-binding";
 import { validateChangeRequests, type ChangeRequestConfig } from "./change-request";
+import { validateRunProfiles, type RunProfile } from "./run-profile";
 import {
   validateDirective,
   validatePractices,
@@ -231,6 +232,11 @@ export interface OrgRecord {
    * real repository with `delivery=human_review` and no answer here.
    */
   readonly changeRequests?: ChangeRequestConfig;
+  /**
+   * How this organization's runs are started - one profile per body of work - so a watcher can start
+   * them when something happens rather than when a person remembers. See `run-profile.ts`.
+   */
+  readonly runProfiles?: readonly RunProfile[];
   readonly createdAtMs: number;
 }
 
@@ -313,6 +319,10 @@ export function validateOrg(org: OrgRecord): OrgCheck {
   if (!practices.ok) return { ok: false, reason: practices.reason };
   const settings = validateSettings(org.settings ?? []);
   if (!settings.ok) return { ok: false, reason: settings.reason };
+  if (org.runProfiles !== undefined) {
+    const rp = validateRunProfiles(org.runProfiles, org.orgId);
+    if (!rp.ok) return { ok: false, reason: `run profiles: ${rp.reason}` };
+  }
   if (org.changeRequests !== undefined) {
     const cr = validateChangeRequests(org.changeRequests);
     if (!cr.ok) return { ok: false, reason: `merge requests: ${cr.reason}` };

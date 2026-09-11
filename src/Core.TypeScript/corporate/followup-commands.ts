@@ -21,10 +21,22 @@
  */
 
 import { spawnSync } from "node:child_process";
-import { mkdirSync, readdirSync, readFileSync, renameSync } from "node:fs";
+import { mkdirSync, mkdtempSync, readdirSync, readFileSync, renameSync, rmSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
 import { join } from "node:path";
 import type { ActionItem, HandedOffChange } from "./org-fold";
-import type { AnswerRequest, AnswerResult, FeedbackDelivery, FollowUpOutcome, FollowUpRequest, ItemDecision } from "./change-followup";
+import type {
+  AnswerCheck,
+  AnswerCheckRequest,
+  AnswerRequest,
+  AnswerResult,
+  FeedbackDelivery,
+  FollowUpOutcome,
+  FollowUpRequest,
+  FollowUpReviewRequest,
+  FollowUpReviewVerdict,
+  ItemDecision,
+} from "./change-followup";
 import { sectionsBrief, type DescribeRequest } from "./change-request";
 import type { ChangeHandle, PortResult } from "./providers";
 
@@ -187,6 +199,88 @@ export function commandAnswerer(spec: CommandSpec, fallbackCwd: string): (r: Ans
     // A non-zero exit with no results is a failure; with results, the results are what happened.
     if (ran.status !== 0 && results.length === 0) return { ok: false, reason: `the answerer exited ${String(ran.status)}: ${tail(ran.stderr)}` };
     return { ok: true, value: results, evidence: [] };
+  };
+}
+
+/**
+ * Answers checked before posting, by a session behind the follow-up command (`<cmd> ...
+ * check-answers <workId>` in the change's checkout). What it checks travels in a FILE named by
+ * ORG_CHECK_FILE - descriptions and accounts outgrow an environment variable on Windows (32K).
+ * It prints `{"results":[{"id","confirmed","unconfirmed"}]}` as its last JSON line.
+ */
+export function commandAnswerChecker(spec: CommandSpec, fallbackCwd: string) {
+  return async (r: AnswerCheckRequest): Promise<PortResult<readonly AnswerCheck[]>> => {
+    const dir = mkdtempSync(join(tmpdir(), "org-check-"));
+    const file = join(dir, "check.json");
+    try {
+      writeFileSync(file, JSON.stringify({ description: r.description ?? null, items: r.items }), { mode: 0o600 });
+      const ran = run(spec, ["check-answers", r.workId], r.workdir ?? fallbackCwd, { ORG_CHECK_FILE: file, ORG_BRANCH: r.branch });
+      if (ran.error !== undefined) return { ok: false, reason: `the answer checker '${spec.command}' could not run: ${ran.error.message}` };
+      if (ran.status !== 0) return { ok: false, reason: `the answer checker exited ${String(ran.status)}: ${tail(ran.stderr)}` };
+      const out = lastJson(ran.stdout);
+      const results = Array.isArray(out?.["results"]) ? (out?.["results"] as unknown[]) : undefined;
+      if (results === undefined) return { ok: false, reason: "the answer checker printed no results" };
+      // AN ITEM THE CHECKER SAID NOTHING ABOUT IS NOT CONFIRMED: silence is not a check.
+      return {
+        ok: true,
+        value: r.items.map((i) => {
+          const x = results.find((y) => typeof y === "object" && y !== null && (y as Record<string, unknown>)["id"] === i.actionItemId) as Record<string, unknown> | undefined;
+          const unconfirmed = Array.isArray(x?.["unconfirmed"]) ? (x?.["unconfirmed"] as unknown[]).map(String).filter((s) => s.trim() !== "") : [];
+          return x === undefined
+            ? { actionItemId: i.actionItemId, confirmed: false, unconfirmed: ["the checker said nothing about this answer"] }
+            : { actionItemId: i.actionItemId, confirmed: x["confirmed"] === true && unconfirmed.length === 0, unconfirmed };
+        }),
+        evidence: [],
+      };
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  };
+}
+
+/** A request's current description, through the answerer command (`op: "read"`). */
+export function commandChangeReader(spec: CommandSpec, fallbackCwd: string) {
+  return async (changeUrl: string): Promise<PortResult<{ readonly description: string }>> => {
+    const ran = run(spec, [], fallbackCwd, {}, JSON.stringify({ op: "read", changeUrl }));
+    if (ran.error !== undefined) return { ok: false, reason: `'${spec.command}' could not run: ${ran.error.message}` };
+    if (ran.status !== 0) return { ok: false, reason: `reading the request exited ${String(ran.status)}: ${tail(ran.stderr)}` };
+    const out = lastJson(ran.stdout);
+    if (typeof out?.["description"] !== "string") return { ok: false, reason: "reading the request returned no description" };
+    return { ok: true, value: { description: out["description"] }, evidence: [] };
+  };
+}
+
+/**
+ * A follow-up's commits reviewed through the run's own review command (`<cmd> ... <gate> <workId>`
+ * in the change's checkout), told what it is reviewing in ORG_FOLLOWUP_REVIEW. Exit 0 approves.
+ */
+export function commandFollowUpReview(spec: CommandSpec, fallbackCwd: string) {
+  return async (r: FollowUpReviewRequest): Promise<PortResult<FollowUpReviewVerdict>> => {
+    const ran = run(spec, [r.gate, r.workId], r.workdir ?? fallbackCwd, {
+      ORG_REVIEW_AS: r.reviewerHatId,
+      ORG_BRANCH: r.branch,
+      ORG_FOLLOWUP_REVIEW: JSON.stringify({ from: r.from, to: r.to, items: r.items }),
+      ...(r.workdir === undefined ? {} : { ORG_WORKDIR: r.workdir }),
+    });
+    if (ran.error !== undefined) return { ok: false, reason: `the reviewer '${spec.command}' could not run: ${ran.error.message}` };
+    const said = String(ran.stdout ?? "").trim().split(/\r?\n/).filter((l) => !l.startsWith("usage:")).join(" ").slice(0, 2000);
+    if (ran.status !== 0 && ran.status !== 1) return { ok: false, reason: `the reviewer exited ${String(ran.status)}: ${tail(ran.stderr) || said}` };
+    return { ok: true, value: { approved: ran.status === 0, reason: said === "" ? `exit ${String(ran.status)}` : said }, evidence: [] };
+  };
+}
+
+/**
+ * The organization's own comment on a request, through the answerer command (`op: "comment"`) - how
+ * configured after-open steps are performed. Prints `{"replyId"}` so the comment is recognised later.
+ */
+export function commandCommenter(spec: CommandSpec, fallbackCwd: string) {
+  return async (r: { readonly workId: string; readonly changeUrl?: string; readonly branch: string; readonly body: string; readonly repeat?: boolean }): Promise<PortResult<{ readonly replyId?: string }>> => {
+    const ran = run(spec, [], fallbackCwd, { ORG_BRANCH: r.branch }, JSON.stringify({ op: "comment", changeUrl: r.changeUrl ?? "", body: r.body, repeat: r.repeat === true }));
+    if (ran.error !== undefined) return { ok: false, reason: `the commenter '${spec.command}' could not run: ${ran.error.message}` };
+    if (ran.status !== 0) return { ok: false, reason: `the commenter exited ${String(ran.status)}: ${tail(ran.stderr)}` };
+    const out = lastJson(ran.stdout);
+    const replyId = typeof out?.["replyId"] === "string" && out["replyId"] !== "" ? out["replyId"] : undefined;
+    return { ok: true, value: replyId === undefined ? {} : { replyId }, evidence: [] };
   };
 }
 

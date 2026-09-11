@@ -811,6 +811,8 @@ export interface HandedOffChange {
   readonly url?: string;
   readonly commit?: string;
   readonly base?: string;
+  /** The commit of the FIRST handoff - a later, different `commit` means a follow-up pushed a fix. */
+  readonly firstCommit?: string;
 }
 
 /**
@@ -825,6 +827,7 @@ export function foldHandedOffChanges(events: readonly OrgEvent[]): ReadonlyMap<s
   for (const event of events) {
     if (event.fact?.kind !== "change_handed_off") continue;
     const x = event.fact;
+    const firstCommit = out.get(x.workId)?.firstCommit ?? x.commit;
     out.set(x.workId, {
       workId: x.workId,
       changeId: x.changeId,
@@ -832,9 +835,44 @@ export function foldHandedOffChanges(events: readonly OrgEvent[]): ReadonlyMap<s
       ...(x.url === undefined ? {} : { url: x.url }),
       ...(x.commit === undefined ? {} : { commit: x.commit }),
       ...(x.base === undefined ? {} : { base: x.base }),
+      ...(firstCommit === undefined ? {} : { firstCommit }),
     });
   }
   return out;
+}
+
+/** The after-open steps already performed, by work id: step keys, and the ids of what they posted. */
+export function foldAfterOpen(events: readonly OrgEvent[]): ReadonlyMap<string, { readonly done: ReadonlySet<string>; readonly replyIds: readonly string[] }> {
+  const out = new Map<string, { done: Set<string>; replyIds: string[] }>();
+  for (const event of events) {
+    const f = event.fact;
+    if (f?.kind !== "change_after_open") continue;
+    const entry = out.get(f.workId) ?? { done: new Set<string>(), replyIds: [] };
+    entry.done.add(f.stepKey);
+    if (f.replyId !== undefined) entry.replyIds.push(f.replyId);
+    out.set(f.workId, entry);
+  }
+  return out;
+}
+
+/**
+ * The review rounds requested on each change after a follow-up pushed it: which (step@commit) were
+ * done, how many distinct pushes that is, and the ids of what they posted.
+ */
+export function foldAfterUpdate(
+  events: readonly OrgEvent[],
+): ReadonlyMap<string, { readonly done: ReadonlySet<string>; readonly rounds: number; readonly replyIds: readonly string[] }> {
+  const out = new Map<string, { done: Set<string>; commits: Set<string>; replyIds: string[] }>();
+  for (const event of events) {
+    const f = event.fact;
+    if (f?.kind !== "change_after_update") continue;
+    const entry = out.get(f.workId) ?? { done: new Set<string>(), commits: new Set<string>(), replyIds: [] };
+    entry.done.add(`${f.stepKey}@${f.commit}`);
+    entry.commits.add(f.commit);
+    if (f.replyId !== undefined) entry.replyIds.push(f.replyId);
+    out.set(f.workId, entry);
+  }
+  return new Map([...out].map(([w, e]) => [w, { done: e.done, rounds: e.commits.size, replyIds: e.replyIds }]));
 }
 
 /** One action item on a piece of work: what happened, and whether it has been dealt with. */
