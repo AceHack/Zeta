@@ -2530,6 +2530,11 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
       .filter((n): n is CascadeNode => n !== undefined && n.state !== WorkState.Canceled);
 
   for (const task of staffedTasks) {
+    // ALREADY ON THE TRUNK, from an earlier run: nothing to walk and no change to open. MEASURED on
+    // the Agentic Team's run: a resumed run re-opened a change for a defect merged hours earlier,
+    // found its old checkout directory still on disk, and refused - and the refusal was the first
+    // thing in a run that then made no progress at all.
+    if (deps.alreadyLanded?.has(task.workId) === true) continue;
     const heldBy = heldByAncestor(task);
     if (heldBy !== undefined) {
       const why = governanceBlocked.get(heldBy);
@@ -2578,6 +2583,7 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
             (d) =>
               d.state !== WorkState.Done &&
               producesCode(d.workType) &&
+              !passedBefore(d.workId, GateKind.ImplementationReview) &&
               !gateEvaluations.some(
                 (e) => e.workId === d.workId && e.gate === GateKind.ImplementationReview && isPassing(e.outcome),
               ),
@@ -3570,7 +3576,12 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
   const changes = projectAll({
     cascade,
     queue,
-    gateEvaluations,
+    // EVERY VERDICT THE WORK HAS, not only this cycle's. A leaf whose early steps passed in an
+    // earlier run carries those verdicts (see `priorGateEvaluations`) and walks only what is left -
+    // so this cycle holds its QA and release verdicts and not its implementation review, and a
+    // projection built from this cycle alone stopped at InReview. MEASURED on AIAGENT-1661: done in
+    // the cascade, every step approved, and never merged.
+    gateEvaluations: uniqueVerdicts([...(deps.priorGateEvaluations ?? []), ...gateEvaluations]),
     pickedBy,
     nowMs: warmedAt,
   });
@@ -3622,6 +3633,8 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
       continue;
     }
     if (c.projection.state.tag !== "Merged") continue;
+    // Landed by an earlier run: merging it again is an empty merge or a refusal, never progress.
+    if (deps.alreadyLanded?.has(c.workId) === true) continue;
     // The handle from when the work STARTED, not a fresh one. Re-opening here would branch off
     // whatever the repository looks like now and merge something that never held the work.
     const handle = openedChanges.get(c.workId);
@@ -4048,4 +4061,20 @@ export function staffingReadout(
     bindings,
     nowMs,
   });
+}
+
+/**
+ * Verdicts with repeats removed, keyed the way the log's own fold keys them - so the same verdict
+ * seen as carried and as recorded this cycle counts once, and a merge cannot manufacture churn.
+ */
+export function uniqueVerdicts(verdicts: readonly GateEvaluation[]): readonly GateEvaluation[] {
+  const seen = new Set<string>();
+  const out: GateEvaluation[] = [];
+  for (const e of verdicts) {
+    const key = `${e.workId}|${e.gate}|${e.outcome}|${e.byHatId}|${String(e.atMs)}|${e.reason}`;
+    if (seen.has(key)) continue;
+    seen.add(key);
+    out.push(e);
+  }
+  return out;
 }

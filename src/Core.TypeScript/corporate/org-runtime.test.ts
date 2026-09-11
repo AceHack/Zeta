@@ -1319,6 +1319,35 @@ describe("A LEAF'S RETRY RESUMES AT THE STEP THAT WAS TURNED BACK", () => {
   }, 60_000);
 });
 
+describe("A CHANGE IS JUDGED ON EVERY VERDICT ITS WORK HAS, NOT THIS CYCLE'S", () => {
+  // MEASURED on AIAGENT-1661: reproduction and implementation review passed in one run, QA and
+  // release in the next - and the change, projected from the second run's verdicts alone, stopped
+  // at InReview. Done in the cascade, every step approved, never merged.
+  test("a leaf whose early steps passed before still reaches Merged when the rest pass now", async () => {
+    const first = await runOrgRuntime(deps());
+    const leaf = first.changes[0]?.workId;
+    expect(leaf).toBeDefined();
+    const carried = first.gateEvaluations.filter(
+      (e) => e.workId === leaf && (e.gate === GateKind.Reproduction || e.gate === GateKind.ImplementationReview),
+    );
+    expect(carried.length).toBeGreaterThanOrEqual(2);
+
+    const resumed = await runOrgRuntime(deps({ priorGateEvaluations: carried }));
+    // The early steps were not walked again...
+    expect(resumed.gateEvaluations.some((e) => e.workId === leaf && e.gate === GateKind.ImplementationReview)).toBe(false);
+    // ...and the change still reached Merged, because it was judged on all of them.
+    expect(resumed.changes.find((c) => c.workId === leaf)?.projection.state.tag).toBe("Merged");
+  }, 60_000);
+
+  test("work that already landed is neither walked nor merged again", async () => {
+    const first = await runOrgRuntime(deps());
+    const leaf = first.changes[0]?.workId ?? "";
+    const again = await runOrgRuntime(deps({ alreadyLanded: new Set([leaf]) }));
+    expect(again.gateEvaluations.some((e) => e.workId === leaf)).toBe(false);
+    expect(again.changesLanded).not.toContain(leaf);
+  }, 60_000);
+});
+
 describe("A VERDICT IS IN THE RECORD THE MOMENT IT IS MADE", () => {
   // MEASURED on AIAGENT-1661: verdicts reached the log only when the whole walk returned, so the
   // release-readiness author, opening the item through observe mid-walk, was shown QA "rejected"
