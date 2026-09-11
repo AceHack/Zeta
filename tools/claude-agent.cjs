@@ -333,6 +333,11 @@ async function runClaude(prompt, schema, allowed, cwd) {
 }
 
 /** Who the agent is and how it sees the organization. The same preamble for every mode. */
+/** Where this work's evidence lives: the organization's record, beside its step documents. */
+function evidenceDir(workId) {
+  return resolve(env.ORG_DOCS_DIR || join(process.cwd(), ".org-docs"), workId, "evidence").split("\\").join("/");
+}
+
 function preamble(hat, workId) {
   const observe = env.ORG_OBSERVE_CMD ? "observe" : undefined;
   return [
@@ -364,6 +369,13 @@ function preamble(hat, workId) {
     env.ORG_REPO_SKILLS ? "THE REPOSITORY'S OWN SKILLS (prefer them where they apply):" + NL + env.ORG_REPO_SKILLS + NL : "",
     "Cite only what you actually read, where you read it. A quotation attributed to a file must be in that file.",
     "Stop only processes YOU started, by their PID - never by name: other agents and people share this machine.",
+    // THE ORGANIZATION'S RECORD IS NOT THE PRODUCT. MEASURED on the first three merge requests: a UAT
+    // screenshot committed into the repository, a step document committed as docs/task-012/, and
+    // code comments citing task-024 and docs/goal-017/... - ids and paths a reviewer of the change
+    // can never open. What the organization produces about the work stays with the organization.
+    "EVIDENCE BELONGS TO THE ORGANIZATION, NOT THE PRODUCT. Screenshots, recordings, logs, notes and documents you produce about this work go in " +
+      evidenceDir(workId) +
+      " and are cited from your answer; never commit them into the repository, and never make a test write them into the working tree. Never mention the organization's internal ids (task-..., goal-..., proj-...) or its documents in anything you commit - the people reviewing the change cannot see them. The ticket key is the only reference the repository needs.",
     env.ORG_FEEDBACK ? "THIS WORK CAME BACK. What was said, newest first - address every point:" + NL + env.ORG_FEEDBACK + NL : "",
     env.ORG_ANSWERS ? "A PERSON ALREADY ANSWERED (do not ask these again):" + NL + env.ORG_ANSWERS + NL : "",
   ].filter((l) => l !== "").join(NL);
@@ -455,7 +467,12 @@ if (mode === "gate") {
     rounds === "0"
       ? "You have NO question rounds left: do the step on your best reading and state any assumption inside the document."
       : "If something only a PERSON can settle is genuinely missing (a business decision, an intention, a constraint nobody wrote down), put the questions in `questions` and leave `document` empty. You have " + rounds + " round(s) left for this work; never re-ask anything answered." + NL +
-        "IF THE STEP'S QUESTION CANNOT HONESTLY BE ANSWERED YES WITHOUT A PERSON - for instance a defect you could not reproduce - you MUST ask: put each question in `questions`, and fold a one-line summary of what you tried into the question itself so the person has the context. A document whose conclusion is a question reaches nobody; a question in `questions` reaches a person and holds the work until they answer.",
+        "IF THE STEP'S QUESTION CANNOT HONESTLY BE ANSWERED YES WITHOUT A PERSON you MUST ask: put each question in `questions`, and fold a one-line summary of what you tried into the question itself so the person has the context. A document whose conclusion is a question reaches nobody; a question in `questions` reaches a person and holds the work until they answer." + NL +
+        // WHAT A PERSON IS FOR. MEASURED on AIAGENT-1658 and 1659: both reproductions failed, both
+        // went to the reporter, and 1659's had passed on the MOCK data provider while production runs
+        // SQL - its own document named code worth suspecting. A failed reproduction beside suspicious
+        // code says the environment is wrong, and that is the organization's to fix, not the reporter's.
+        "Before you ask, exhaust what the repository can tell you. A question is for a fact only a person holds (an intention, a decision, something that happened outside the code) - never for something reading or running the code would settle. In particular, work you could not make happen is not by itself a question: if the code looks suspicious, the environment is what differs, so make it match the real one and chase the suspicion.",
     "If you worked something out that the next agent would otherwise rediscover the hard way, add it to `learned`.",
   ].join(NL);
   const schema = {

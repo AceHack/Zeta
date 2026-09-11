@@ -63,6 +63,30 @@ describe("THE WORLDVIEW IS ASKED FOR — the prompt carries the observe command,
     r.cleanup();
   });
 
+  test("EVIDENCE STAYS WITH THE ORGANIZATION: every mode names the work's evidence directory and forbids committing it", () => {
+    // MEASURED on the first three merge requests: a committed UAT screenshot, a step document under
+    // docs/task-012/, and code comments citing task-024 - none of which a reviewer can open.
+    for (const args of [["work", "task-9"], ["gate", "qa_uat", "task-9"]] as const) {
+      const r = run(args, ok({ summary: "s", commit: "", testsRun: [], blocked: "", questions: ["q"], title: "", document: "", files: [], plan: [], learned: [] }));
+      const input = r.seen?.input ?? "";
+      expect(input).toContain(join(r.dir, "docs", "task-9", "evidence").split("\\").join("/"));
+      expect(input).toContain("never commit them into the repository");
+      expect(input).toContain("Never mention the organization's internal ids");
+      r.cleanup();
+    }
+  });
+
+  test("A FAILED REPRODUCTION IS NOT A QUESTION: the author is told to chase the code before asking a person", () => {
+    // MEASURED on AIAGENT-1659: the reproduction passed on the mock provider, production runs SQL,
+    // and the author asked the reporter instead of reproducing on the path production takes.
+    const r = run(["gate", "reproduction", "task-9"], ok({ questions: ["q"], title: "", document: "", files: [], plan: [], learned: [] }));
+    const input = r.seen?.input ?? "";
+    expect(input).toContain("exhaust what the repository can tell you");
+    expect(input).toContain("the environment is what differs");
+    expect(input).not.toContain("for instance a defect you could not reproduce");
+    r.cleanup();
+  });
+
   test("an integrating git act is never allowed, in any mode", () => {
     const r = run(["work", "task-9"], ok({ summary: "s", commit: "", testsRun: [], blocked: "" }));
     const argv = r.seen?.argv ?? [];
