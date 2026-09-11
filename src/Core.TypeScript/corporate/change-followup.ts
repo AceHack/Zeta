@@ -152,6 +152,29 @@ export interface FollowUpReviewVerdict {
   readonly reason: string;
 }
 
+/**
+ * Every answer checked before a reviewer reads it. MEASURED on MR !162: a reply said "the Rollout
+ * note [is] now appended to the description" - it was not, and nothing between the session that wrote
+ * the account and the thread it was posted to looked. A checker confirms each factual claim in an
+ * answer against the change's checkout and the request's CURRENT description; an answer with a claim
+ * it cannot confirm is not posted, and its item is reopened with what did not hold.
+ */
+export interface AnswerCheckRequest {
+  readonly workId: string;
+  readonly branch: string;
+  readonly workdir?: string;
+  /** The request's description as it stands now - what "the description says" is checked against. */
+  readonly description?: string;
+  readonly items: readonly { readonly actionItemId: string; readonly summary: string; readonly outcome: string; readonly how: string; readonly commit?: string }[];
+}
+
+export interface AnswerCheck {
+  readonly actionItemId: string;
+  readonly confirmed: boolean;
+  /** The claims that did not hold, in the checker's words. Empty when confirmed. */
+  readonly unconfirmed: readonly string[];
+}
+
 /** One settled item to answer where it was raised. */
 export interface AnswerItem {
   readonly actionItemId: string;

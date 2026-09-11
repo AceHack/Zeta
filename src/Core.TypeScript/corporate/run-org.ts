@@ -144,6 +144,8 @@ import type { ChangeRequestConfig } from "./change-request";
 import type { FeedbackDelivery as FeedbackDeliveryT } from "./change-followup";
 import {
   commandAnswerer,
+  commandAnswerChecker,
+  commandChangeReader,
   commandCommenter,
   commandDescriber,
   commandFollowUp,
@@ -1619,6 +1621,11 @@ export function attachAfterHandoff(deps: Record<string, unknown>, args: Args, fe
   if (args.answerCmd !== undefined) {
     deps["answer"] = commandAnswerer({ command: args.answerCmd, args: args.answerArgs, ...budget }, cwd);
     deps["postComment"] = commandCommenter({ command: args.answerCmd, args: args.answerArgs, ...budget }, cwd);
+    deps["readChange"] = commandChangeReader({ command: args.answerCmd, args: args.answerArgs, ...budget }, cwd);
+    // Every answer is checked before it is posted, by a session behind the follow-up command.
+    if (args.followUpCmd !== undefined) {
+      deps["checkAnswers"] = commandAnswerChecker({ command: args.followUpCmd, args: args.followUpArgs, ...budget }, cwd);
+    }
   }
   // A follow-up's commits go through the same review command the original work's gates used.
   if (args.reviewCmd !== undefined) {

@@ -148,6 +148,23 @@ describe("AFTER THE HANDOFF: THE DESCRIPTION AND THE FOLLOW-UP", () => {
     r.cleanup();
   });
 
+  test("check-answers: told the CURRENT description and every answer, reads only, and prints a result per answer", () => {
+    // MEASURED on MR !162: a reply cited description content that did not exist, and nothing checked it.
+    const dir = mkdtempSync(join(tmpdir(), "check-"));
+    const file = join(dir, "check.json");
+    writeFileSync(file, JSON.stringify({ description: "## Resolution\nNo backfill; see rebaseline.", items: [{ actionItemId: "gitlab:note-9", summary: "why no backfill?", outcome: "declined", how: "history is append-only", commit: "abc" }] }));
+    const r = run(["check-answers", "task-9"], ok({ results: [{ id: "gitlab:note-9", confirmed: true, unconfirmed: [] }] }), { ORG_CHECK_FILE: file, ORG_BRANCH: "defect/x" });
+    expect(r.status).toBe(0);
+    const input = r.seen?.input ?? "";
+    expect(input).toContain("## Resolution\nNo backfill; see rebaseline.");
+    expect(input).toContain("history is append-only");
+    expect(input).toContain("confirmed = true only if EVERY claim holds");
+    expect(r.seen?.argv).not.toContain("Edit");
+    expect(JSON.parse(r.stdout.trim().split(/\r?\n/).pop() as string)).toEqual({ results: [{ id: "gitlab:note-9", confirmed: true, unconfirmed: [] }] });
+    r.cleanup();
+    rmSync(dir, { recursive: true, force: true });
+  });
+
   test("a FOLLOW-UP review is told the commits and their claims, and must prove each fix's test fails without it", () => {
     // MEASURED on MR !164: a follow-up commit's claimed fix had half no test would miss; it was never reviewed.
     const r = run(["review", "implementation_review", "task-9"], ok({ verdict: "reject", reason: "no test fails without the loadingStates guard", lookedAt: ["diff"] }), {

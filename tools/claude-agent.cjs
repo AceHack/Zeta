@@ -50,8 +50,8 @@ function fail(code, message) {
   process.exit(code);
 }
 
-if (mode !== "work" && mode !== "gate" && mode !== "review" && mode !== "describe" && mode !== "follow-up") {
-  fail(2, "usage: claude-agent.cjs work <workId> | gate <gate> <workId> [refs...] | review <gate> <workId> | describe <workId> | follow-up <workId>");
+if (mode !== "work" && mode !== "gate" && mode !== "review" && mode !== "describe" && mode !== "follow-up" && mode !== "check-answers") {
+  fail(2, "usage: claude-agent.cjs work <workId> | gate <gate> <workId> [refs...] | review <gate> <workId> | describe <workId> | follow-up <workId> | check-answers <workId>");
 }
 
 /** The Claude Code binary: stated, else the npm-installed native one, else `claude` on PATH. */
@@ -742,6 +742,65 @@ if (mode === "follow-up") {
   const a = r.answer;
   process.stdout.write(r.usage + NL);
   process.stdout.write(JSON.stringify({ decisions: resolving ? [] : a.decisions || [], syncWithTarget: !resolving && canSync && a.syncWithTarget === true, summary: String(a.summary || "") }) + NL);
+  process.exit(0);
+}
+
+// ═════════════════════════════════════════════════════════════════════════════
+// check-answers — confirm every claim in an answer before a reviewer reads it
+// ═════════════════════════════════════════════════════════════════════════════
+if (mode === "check-answers") {
+  const workId = rest[0];
+  if (!workId) fail(2, "check-answers needs <workId>");
+  if (!env.ORG_CHECK_FILE) fail(2, "check-answers needs ORG_CHECK_FILE: the answers to check");
+  let spec;
+  try {
+    spec = JSON.parse(readFileSync(env.ORG_CHECK_FILE, "utf-8"));
+  } catch (err) {
+    fail(2, "ORG_CHECK_FILE could not be read: " + String(err && err.message));
+  }
+  const items = Array.isArray(spec.items) ? spec.items : [];
+  const prompt = [
+    preamble("answer_checker", workId),
+    "",
+    "YOUR TASK NOW: these answers are about to be posted to reviewers on the merge request for work item " + workId + ".",
+    "You did not write them. Check each one before anybody reads it. This checkout is the change (" + (env.ORG_BRANCH || "?") + ").",
+    "",
+    "For EVERY answer, find each factual claim it makes and check it against the evidence:",
+    "- a commit (\"Fixed in abc123\") exists on this branch and contains what the answer says it does (`git show`);",
+    "- a file, function, line or test it names exists and does what it says - read it; run a test only if a claim rests on it;",
+    "- what it says the merge request's description states is actually in the description below;",
+    "- what it says was changed, is changed; what it says was NOT changed, and why, is true of the code.",
+    "confirmed = true only if EVERY claim holds. Otherwise list each claim that does not, specifically (\"says the",
+    "Rollout section is in the description; the description has no rollout content\"). Opinions and reasoning are",
+    "not claims - judge only what can be checked. You change nothing.",
+    "",
+    "THE MERGE REQUEST'S DESCRIPTION, as it stands now:",
+    spec.description === null || spec.description === undefined ? "(not available - any claim about what the description says cannot be confirmed)" : String(spec.description),
+    "",
+    "THE ANSWERS (id, what was raised, the outcome, the answer, the commit it cites):",
+    JSON.stringify(items, null, 2),
+  ].join(NL);
+  const schema = {
+    type: "object",
+    properties: {
+      results: {
+        type: "array",
+        items: {
+          type: "object",
+          properties: {
+            id: { type: "string" },
+            confirmed: { type: "boolean" },
+            unconfirmed: { type: "array", items: { type: "string" } },
+          },
+          required: ["id", "confirmed", "unconfirmed"],
+        },
+      },
+    },
+    required: ["results"],
+  };
+  const r = await runClaude(prompt, schema, JUDGE, process.cwd());
+  process.stdout.write(r.usage + NL);
+  process.stdout.write(JSON.stringify({ results: r.answer.results || [] }) + NL);
   process.exit(0);
 }
 })().catch((e) => fail(4, "claude-agent failed: " + String((e && e.message) || e)));

@@ -91,6 +91,19 @@ try {
 }
 const m = /\/merge_requests\/(\d+)/.exec(String((input && input.changeUrl) || ""));
 
+// ── READ the request as it stands: `{"op":"read","changeUrl"}` -> {"description"} ───
+// What an answer's "the description says ..." is checked against before the answer is posted.
+if (input && input.op === "read") {
+  if (!m) fail(2, "the change has no merge request to read");
+  try {
+    const mr = api(["projects/:id/merge_requests/" + m[1]]);
+    emit({ description: String((mr && mr.description) || "") });
+    process.exit(0);
+  } catch (e) {
+    fail(3, String((e && e.message) || e));
+  }
+}
+
 // ── A COMMENT OF THE ORGANIZATION'S OWN, on the request ─────────────────────
 // `{"op":"comment","changeUrl","body"}` - a configured after-open step (e.g. the `aireview` trigger).
 // Prints {"replyId"} so the organization recognises its own comment when it reads the request back.

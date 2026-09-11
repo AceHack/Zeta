@@ -122,6 +122,8 @@ import {
   answersOwed,
   correlateFeedback,
   followUpOrder,
+  type AnswerCheck,
+  type AnswerCheckRequest,
   type AnswerRequest,
   type AnswerResult,
   type FeedbackDelivery,
@@ -401,6 +403,10 @@ export interface OrgRuntimeDeps extends HumanCheckpointDeps {
    * only once what settles it is in front of people. See `answersOwed`.
    */
   readonly answer?: (request: AnswerRequest) => Promise<PortResult<readonly AnswerResult[]>>;
+  /** Checks every factual claim in the answers owed on a change before any is posted. See `AnswerCheckRequest`. */
+  readonly checkAnswers?: (request: AnswerCheckRequest) => Promise<PortResult<readonly AnswerCheck[]>>;
+  /** A request's current description - what an answer's "the description says" is checked against. */
+  readonly readChange?: (changeUrl: string) => Promise<PortResult<{ readonly description: string }>>;
   /**
    * Verdicts from earlier cycles and earlier runs, so a step that PASSED is not walked again.
    *
@@ -4377,12 +4383,56 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
           refusals.push(`settled items on ${workId} are owed an answer (replies: ${replies}) and nothing is configured to give it`);
           continue;
         }
+        // ── EVERY ANSWER IS CHECKED BEFORE A REVIEWER READS IT ──────────────
+        // MEASURED on MR !162: a reply told the reviewer the description carried a rollout note it did
+        // not. Each factual claim is checked against the change's checkout and the request's CURRENT
+        // description; an answer with a claim that does not hold is not posted, and its item goes back
+        // to be decided with what failed. A check that could not run posts nothing: unchecked is not
+        // confirmed.
+        let toPost = owed;
+        if (deps.checkAnswers !== undefined) {
+          const at = await reopen(workId);
+          const read = change.url !== undefined && deps.readChange !== undefined ? await deps.readChange(change.url) : undefined;
+          const summaryOfItem = new Map(items.map((i) => [i.actionItemId, i.summary]));
+          const checked = await deps.checkAnswers({
+            workId,
+            branch: change.branch,
+            ...(at?.workdir === undefined ? {} : { workdir: at.workdir }),
+            ...(read?.ok === true ? { description: read.value.description } : {}),
+            items: owed.map((o) => ({
+              actionItemId: o.actionItemId,
+              summary: summaryOfItem.get(o.actionItemId) ?? o.actionItemId,
+              outcome: o.outcome,
+              how: o.how,
+              ...(o.commit === undefined ? {} : { commit: o.commit }),
+            })),
+          });
+          if (!checked.ok) {
+            refusals.push(`the answers owed on ${workId} could not be checked, so none was posted: ${checked.reason}`);
+            continue;
+          }
+          const failed = checked.value.filter((c) => !c.confirmed);
+          for (const c of failed) {
+            const why =
+              `your answer was checked before it was posted and did not hold: ${c.unconfirmed.join("; ")}. ` +
+              "It was not posted. Decide again, and make every claim in the answer true where the reviewer can see it.";
+            note({
+              kind: OrgEventKind.ChangeProjected,
+              subjectId: workId,
+              decision: `action item ${c.actionItemId} reopened: its answer did not survive the check - ${c.unconfirmed.join("; ").slice(0, 300)}`,
+              atMs: warmedAt,
+              fact: { kind: "action_item_reopened", workId, actionItemId: c.actionItemId, why },
+            });
+          }
+          toPost = owed.filter((o) => checked.value.some((c) => c.actionItemId === o.actionItemId && c.confirmed));
+          if (toPost.length === 0) continue;
+        }
         const r = await deps.answer({
           workId,
           ...(change.url === undefined ? {} : { changeUrl: change.url }),
           branch: change.branch,
           resolve: replies === "reply_and_resolve",
-          items: owed,
+          items: toPost,
         });
         if (!r.ok) {
           refusals.push(`could not answer the items on ${workId}: ${r.reason}`);

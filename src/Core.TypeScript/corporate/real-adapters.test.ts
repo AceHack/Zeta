@@ -39,7 +39,7 @@ import {
 import { gitDataSource } from "./git-data-source";
 import { foldActionItems, foldAfterOpen, foldHandedOffChanges, foldLandedChanges } from "./org-fold";
 import type { OrgEvent } from "./org-event";
-import type { AnswerItem, AnswerRequest, FollowUpReviewRequest } from "./change-followup";
+import type { AnswerCheckRequest, AnswerItem, AnswerRequest, FollowUpReviewRequest } from "./change-followup";
 import type { DescribeRequest } from "./change-request";
 import { Fidelity, Port } from "./providers";
 
@@ -1223,6 +1223,95 @@ describe("AFTER THE HANDOFF: THE REQUEST SAYS WHAT THE ORGANIZATION CONFIGURED, 
       expect(third.followUps?.[0]?.handedOffAgain).toBe(true);
       expect(h.count()).toBe(2);
       expect(foldActionItems(events).get(workId)?.find((i) => i.actionItemId === "gitlab:note-7")?.settled?.outcome).toBe("addressed");
+    } finally {
+      for (const d of [repo, inbox, wt, scratch]) rmSync(d, { recursive: true, force: true });
+    }
+  }, 240_000);
+  test("EVERY ANSWER IS CHECKED BEFORE A REVIEWER READS IT: one that does not hold is not posted and its item reopens; a check that cannot run posts nothing", async () => {
+    const repo = realRepo();
+    const inbox = realInbox();
+    const wt = mkdtempSync(join(tmpdir(), "zeta-ck-wt-"));
+    const scratch = mkdtempSync(join(tmpdir(), "zeta-ck-"));
+    const h = stubCounting(scratch);
+    const events: OrgEvent[] = [];
+    const noComment = { postComment: async () => ({ ok: true as const, value: {}, evidence: [] }) };
+    try {
+      const change = () => gitWorktreeChangeControl({ cwd: repo, baseBranch: "main", worktreeRoot: wt, handoff: { command: h.command, args: h.args } });
+      const first = await runAgainst(repo, inbox, { change: change() }, { settings: [], changeRequests, describeChange: fullDescription, ...noComment, onEvent: (e: OrgEvent) => events.push(e) });
+      const workId = first.changesHandedOff[0] as string;
+      const handed = foldHandedOffChanges(events);
+      const feedback = [
+        { deliveryId: "note-11", source: "gitlab", itemKind: "comment", summary: "is there a rollout note?", author: "reviewer", changeUrl: "https://review.example/p/-/merge_requests/7#note_11" },
+        { deliveryId: "note-12", source: "gitlab", itemKind: "comment", summary: "why no backfill?", author: "reviewer", changeUrl: "https://review.example/p/-/merge_requests/7#note_12" },
+      ];
+      const posted: string[] = [];
+      const later = (over: Record<string, unknown>) =>
+        runAgainst(repo, realInbox(), { change: change() }, {
+          settings: [],
+          changeRequests,
+          describeChange: fullDescription,
+          ...noComment,
+          alreadyHandedOff: new Set(handed.keys()),
+          handedOffChanges: foldHandedOffChanges(events),
+          actionItems: foldActionItems(events),
+          afterOpenDone: foldAfterOpen(events),
+          feedback,
+          defaultBase: "main",
+          verifyChange: async () => ({ ok: true as const, value: "green", evidence: [] }),
+          readChange: async () => ({ ok: true as const, value: { description: "## Problem statement\nIt broke." }, evidence: [] }),
+          answer: async (r: AnswerRequest) => {
+            posted.push(...r.items.map((i) => i.actionItemId));
+            return { ok: true as const, value: r.items.map((i) => ({ actionItemId: i.actionItemId, resolved: true })), evidence: [] };
+          },
+          onEvent: (e: OrgEvent) => events.push(e),
+          ...over,
+        });
+      const decide = {
+        followUp: async (req: { items: readonly { actionItemId: string }[] }) => ({
+          ok: true as const,
+          value: {
+            decisions: req.items.map((i) => ({
+              actionItemId: i.actionItemId,
+              outcome: "declined" as const,
+              how: i.actionItemId === "gitlab:note-11" ? "the rollout note is in the description" : "history is append-only by design",
+            })),
+            syncWithTarget: false,
+            summary: "s",
+          },
+          evidence: [],
+        }),
+      };
+
+      // A check that cannot run: NOTHING is posted, and nothing is lost - both stay owed.
+      await later({ ...decide, checkAnswers: async () => ({ ok: false as const, reason: "the checker could not start" }) });
+      expect(posted).toEqual([]);
+
+      // The check finds one claim false: that answer is withheld and its item reopened; the other is posted.
+      let seenDescription: string | undefined;
+      await later({
+        followUp: async () => {
+          throw new Error("both items are settled and owed an answer - nothing is open to decide");
+        },
+        checkAnswers: async (r: AnswerCheckRequest) => {
+          seenDescription = r.description;
+          return {
+            ok: true as const,
+            value: r.items.map((i) =>
+              i.actionItemId === "gitlab:note-11"
+                ? { actionItemId: i.actionItemId, confirmed: false, unconfirmed: ["says the rollout note is in the description; the description has no rollout content"] }
+                : { actionItemId: i.actionItemId, confirmed: true, unconfirmed: [] },
+            ),
+            evidence: [],
+          };
+        },
+      });
+      expect(seenDescription).toContain("## Problem statement");
+      expect(posted).toEqual(["gitlab:note-12"]);
+      const items = foldActionItems(events).get(workId) ?? [];
+      const withheld = items.find((i) => i.actionItemId === "gitlab:note-11");
+      expect(withheld?.settled).toBeUndefined();
+      expect(withheld?.reopened?.why).toContain("the description has no rollout content");
+      expect(items.find((i) => i.actionItemId === "gitlab:note-12")?.answered).toBeDefined();
     } finally {
       for (const d of [repo, inbox, wt, scratch]) rmSync(d, { recursive: true, force: true });
     }
