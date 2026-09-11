@@ -22,6 +22,7 @@
  */
 
 import type { ActionItem, HandedOffChange } from "./org-fold";
+import type { PipelinePolicy } from "./change-request";
 
 /** One thing that happened, normalized, before it is known which work it concerns. */
 export interface FeedbackDelivery {
@@ -223,6 +224,36 @@ export function placeOnThisMachine(text: string): string | undefined {
 }
 
 /**
+ * UNDER `until_green`, A RED PIPELINE CANNOT BE DECLINED.
+ *
+ * MEASURED on agentic-tpm !164: pipelines 189179 and 189289 were raised as action items, diagnosed
+ * as a MongoMemoryServer flake - carefully, with the whole suite green locally at the same SHA - and
+ * DECLINED. The reasoning may well be right. The request was still red, and the organization
+ * considered itself finished with it; the person who merges reads the pipeline, not the argument.
+ *
+ * So the decision is KEPT, with its reasoning, and turned into a DEFERRAL: the item stays open, and
+ * the organization is asked about it again after the next pipeline, until it passes or a person is
+ * told. The follow-up prompt says the same thing; this is what holds when the session says it anyway.
+ * Everything else - addressed, deferred, any decision on any other kind of item - passes through
+ * untouched: this narrows one outcome on one kind of item, and decides nothing about the work.
+ */
+export function keepRedPipelinesOpen(
+  items: readonly ActionItem[],
+  decisions: readonly ItemDecision[],
+  policy: PipelinePolicy | undefined,
+): { readonly decisions: readonly ItemDecision[]; readonly kept: readonly string[] } {
+  if (policy !== "until_green") return { decisions, kept: [] };
+  const pipelines = new Set(items.filter((i) => i.itemKind === "pipeline_failed").map((i) => i.actionItemId));
+  const kept: string[] = [];
+  const out = decisions.map((d) => {
+    if (d.outcome !== "declined" || !pipelines.has(d.actionItemId)) return d;
+    kept.push(d.actionItemId);
+    return { ...d, outcome: "deferred" as const, how: `${d.how} (kept open: this organization's work is not done until the pipeline passes)` };
+  });
+  return { decisions: out, kept };
+}
+
+/**
  * The settled items on one change still owed an answer, and those the organization decided to leave
  * unanswered (recorded as such without asking anyone, so they are not owed forever).
  *
@@ -293,6 +324,12 @@ export interface FollowUpRequest {
   readonly conflicts?: readonly string[];
   /** Whether bringing the change up to date is on offer here (`merge_target`), or only noting it (`flag_only`). */
   readonly canSync: boolean;
+  /**
+   * What a red pipeline means here. Under `until_green` a pipeline item cannot be finished by
+   * explaining it: the session is told so, because a careful diagnosis is exactly what it reached
+   * for the last time (agentic-tpm !164, pipelines 189179 and 189289, both declined as flakes).
+   */
+  readonly pipelines?: PipelinePolicy;
 }
 
 export interface FollowUpOutcome {

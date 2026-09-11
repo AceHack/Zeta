@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import { acceptedDecisions, answersOwed, correlateFeedback, followUpOrder, type FeedbackDelivery } from "./change-followup";
+import { acceptedDecisions, answersOwed, correlateFeedback, followUpOrder, keepRedPipelinesOpen, type FeedbackDelivery } from "./change-followup";
 import { foldActionItems, openActionItems, type ActionItem, type HandedOffChange } from "./org-fold";
 import type { OrgEvent } from "./org-event";
 
@@ -179,5 +179,39 @@ describe("A SETTLEMENT THAT DID NOT STAND IS REOPENED, NOT DROPPED", () => {
     const settledAgain = foldActionItems(again).get("task-24") ?? [];
     expect(openActionItems(again).get("task-24")).toBeUndefined();
     expect(answersOwed(settledAgain).owed.map((o) => o.actionItemId)).toEqual(["gitlab:note-1975496"]);
+  });
+});
+
+describe("UNDER until_green A RED PIPELINE IS NOT FINISHED BY BEING EXPLAINED", () => {
+  const item = (actionItemId: string, itemKind: string): ActionItem =>
+    ({ workId: "task-40", actionItemId, source: "gitlab", itemKind, summary: "s", raisedAtMs: 1 });
+  const items = [item("gitlab:pipeline-55-failed", "pipeline_failed"), item("gitlab:note-7", "diff_comment")];
+  // What the organization actually said on agentic-tpm !164, in the shape a session returns it.
+  const asFlake = { actionItemId: "gitlab:pipeline-55-failed", outcome: "declined" as const, how: "a MongoMemoryServer flake; the suite is green locally at this SHA", respond: true };
+  const onComment = { actionItemId: "gitlab:note-7", outcome: "declined" as const, how: "the problem cannot happen: the filter runs first", respond: true };
+
+  test("a declined pipeline is kept open, with its reasoning, and named so a person can be told", () => {
+    const { decisions, kept } = keepRedPipelinesOpen(items, [asFlake, onComment], "until_green");
+    expect(kept).toEqual(["gitlab:pipeline-55-failed"]);
+    const red = decisions.find((d) => d.actionItemId === "gitlab:pipeline-55-failed");
+    expect(red?.outcome).toBe("deferred");
+    // THE REASONING SURVIVES: it is kept open, not overruled - the diagnosis may well be right.
+    expect(red?.how).toContain("a MongoMemoryServer flake");
+    expect(red?.how).toContain("not done until the pipeline passes");
+    // A comment is still the organization's to decline: this narrows one outcome on one kind of item.
+    expect(decisions.find((d) => d.actionItemId === "gitlab:note-7")).toEqual(onComment);
+  });
+
+  test("a pipeline it actually fixed, or one it already left open, passes through untouched", () => {
+    const fixed = { actionItemId: "gitlab:pipeline-55-failed", outcome: "addressed" as const, how: "the port was hardcoded; it now takes a free one", respond: true };
+    const left = { actionItemId: "gitlab:pipeline-55-failed", outcome: "deferred" as const, how: "waiting on the runner image", respond: true };
+    expect(keepRedPipelinesOpen(items, [fixed], "until_green")).toEqual({ decisions: [fixed], kept: [] });
+    expect(keepRedPipelinesOpen(items, [left], "until_green")).toEqual({ decisions: [left], kept: [] });
+  });
+
+  test("under flag_only, and where nobody has stated a policy, the organization decides for itself", () => {
+    expect(keepRedPipelinesOpen(items, [asFlake], "flag_only").decisions).toEqual([asFlake]);
+    expect(keepRedPipelinesOpen(items, [asFlake], "none").decisions).toEqual([asFlake]);
+    expect(keepRedPipelinesOpen(items, [asFlake], undefined).decisions).toEqual([asFlake]);
   });
 });

@@ -970,6 +970,12 @@ export function argRefusals(args: Args): readonly string[] {
         } else if (args.changeRequests.afterUpdate.length > 0 && args.answerCmd === undefined) {
           out.push("after a fix is pushed this organization asks for review again: give --answer-cmd (with --answer-arg) to ask");
         }
+        if (args.changeRequests.pipelines === undefined) {
+          out.push(
+            "this organization has not said what a red pipeline on its own merge request means (a failure it may decide against, or work that is not done until the pipeline passes): " +
+              "run 'org change-requests set' with --pipelines until_green|flag_only|none",
+          );
+        }
         if (args.changeRequests.replies !== undefined && args.changeRequests.replies !== "none" && args.answerCmd === undefined) {
           out.push(
             `reviewers here are answered on their threads (replies: ${args.changeRequests.replies}): give --answer-cmd (with --answer-arg) to post the answers`,

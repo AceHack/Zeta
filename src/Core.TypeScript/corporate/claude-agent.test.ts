@@ -34,6 +34,8 @@ function run(args: readonly string[], result: Record<string, unknown>, extraEnv:
       ...process.env,
       ORG_CLAUDE_BIN: "node",
       ORG_CLAUDE_BIN_ARGS: JSON.stringify([stub]),
+      // A model is required of every call - the tests state one, exactly as an organization must.
+      ORG_CLAUDE_MODEL: "stub-model",
       ORG_OBSERVE_CMD: "observe --store S",
       ORG_DOCS_DIR: join(dir, "docs"),
       ORG_TICKET: "AIAGENT-1659",
@@ -356,7 +358,10 @@ describe("AUTHENTICATION", () => {
     const withToken = r.seen?.argv ?? [];
     const without = run(["work", "task-9"], ok({ summary: "s", commit: "", testsRun: [], blocked: "" }));
     expect(withToken.length).toBeGreaterThan(0);
-    expect(withToken).toEqual(without.seen?.argv ?? []);
+    // The guard settings file is a fresh temp path each run; the claim is about the TOKEN, so the
+    // one path that legitimately differs is normalised rather than compared.
+    const sameShape = (argv: readonly string[]) => argv.map((a, i) => (argv[i - 1] === "--settings" ? "<guard settings>" : a));
+    expect(sameShape(withToken)).toEqual(sameShape(without.seen?.argv ?? []));
     without.cleanup();
     r.cleanup();
     rmSync(dir, { recursive: true, force: true });
@@ -421,7 +426,7 @@ describe("A SESSION THAT RUNS OUT OF TIME IS STOPPED WITH EVERYTHING IT STARTED"
     const r = spawnSync("node", [AGENT, "work", "task-9"], {
       cwd: dir,
       encoding: "utf-8",
-      env: { ...process.env, ORG_CLAUDE_BIN: "node", ORG_CLAUDE_BIN_ARGS: JSON.stringify([stub]), ORG_CLAUDE_TIMEOUT_MS: "2500" },
+      env: { ...process.env, ORG_CLAUDE_BIN: "node", ORG_CLAUDE_BIN_ARGS: JSON.stringify([stub]), ORG_CLAUDE_MODEL: "stub-model", ORG_CLAUDE_TIMEOUT_MS: "2500" },
       timeout: 60_000,
     });
     try {
@@ -463,7 +468,7 @@ describe("A SESSION THAT ENDS NORMALLY LEAVES NOTHING RUNNING", () => {
     const r = spawnSync("node", [AGENT, "review", "qa_uat", "task-9"], {
       cwd: dir,
       encoding: "utf-8",
-      env: { ...process.env, ORG_CLAUDE_BIN: "node", ORG_CLAUDE_BIN_ARGS: JSON.stringify([stub]) },
+      env: { ...process.env, ORG_CLAUDE_BIN: "node", ORG_CLAUDE_BIN_ARGS: JSON.stringify([stub]), ORG_CLAUDE_MODEL: "stub-model" },
       timeout: 90_000,
     });
     try {
@@ -484,4 +489,92 @@ describe("A SESSION THAT ENDS NORMALLY LEAVES NOTHING RUNNING", () => {
       rmSync(dir, { recursive: true, force: true });
     }
   }, 120_000);
+});
+
+describe("A MODEL IS CHOSEN BY THE ORGANIZATION, NEVER INHERITED FROM WHATEVER IS INSTALLED", () => {
+  test("no model configured is a REFUSAL - the call is not made", () => {
+    // MEASURED 2026-09-11: nothing set a model, so every agent silently took the installed CLI's
+    // default (an Opus build from a package 127 releases old) and a day of runs cost about $3,900
+    // at Opus rates. An unstated model is now the same as any other unstated configuration: refused.
+    const r = run(["work", "task-9"], ok({ summary: "s", commit: "", testsRun: [], blocked: "" }), { ORG_CLAUDE_MODEL: "", ORG_CLAUDE_MODEL_BY_HAT: "" });
+    expect(r.status).toBe(2);
+    expect(r.stderr).toContain("no model is configured");
+    expect(r.seen).toBeUndefined();
+    r.cleanup();
+  });
+
+  test("each hat thinks with the model the organization gave IT, and the map is the operator's", () => {
+    const byHat = JSON.stringify({ default: "cheap-model", backend_implementer: "expensive-model" });
+    const a = run(["work", "task-9"], ok({ summary: "s", commit: "", testsRun: [], blocked: "" }), { ORG_CLAUDE_MODEL: "", ORG_CLAUDE_MODEL_BY_HAT: byHat, ORG_ASSIGNEE: "backend_implementer" });
+    expect(a.seen?.argv.join(" ")).toContain("--model expensive-model");
+    a.cleanup();
+    const b = run(["work", "task-9"], ok({ summary: "s", commit: "", testsRun: [], blocked: "" }), { ORG_CLAUDE_MODEL: "", ORG_CLAUDE_MODEL_BY_HAT: byHat, ORG_ASSIGNEE: "release_manager" });
+    expect(b.seen?.argv.join(" ")).toContain("--model cheap-model");
+    b.cleanup();
+  });
+
+  test("a hat with no entry and no default is refused rather than quietly given the other hat's model", () => {
+    const r = run(["work", "task-9"], ok({ summary: "s", commit: "", testsRun: [], blocked: "" }), { ORG_CLAUDE_MODEL: "", ORG_CLAUDE_MODEL_BY_HAT: JSON.stringify({ reviewer: "m" }), ORG_ASSIGNEE: "backend_implementer" });
+    expect(r.status).toBe(2);
+    expect(r.stderr).toContain("backend_implementer");
+    r.cleanup();
+  });
+});
+
+describe("EVERY CALL LEAVES A COST LINE SAYING WHERE THE MONEY WENT AND WHY", () => {
+  test("the ledger carries the money AND its provenance - work item, hat, mode, model, session, reason", () => {
+    const store = mkdtempSync(join(tmpdir(), "org-cost-"));
+    try {
+      const answered = {
+        type: "result", subtype: "success", is_error: false,
+        structured_output: { summary: "s", commit: "", testsRun: [], blocked: "" },
+        session_id: "sess-77", total_cost_usd: 1.25, num_turns: 12, duration_ms: 900,
+        usage: { input_tokens: 10, output_tokens: 5, cache_read_input_tokens: 4000, cache_creation_input_tokens: 200 },
+      };
+      const r = run(["work", "task-9"], answered, {
+        ORG_STORE: store, ORG_ASSIGNEE: "backend_implementer", ORG_CLAUDE_MODEL: "stated-model",
+        ORG_ID: "acme", ORG_PROFILE: "dev-portal",
+        ORG_RUN_REASON: "a comment was left on the request of task-9",
+      });
+      expect(r.status).toBe(0);
+      const day = new Date().toISOString().slice(0, 10);
+      const lines = readFileSync(join(store, "cost", day + ".jsonl"), "utf-8").trim().split(String.fromCharCode(10));
+      expect(lines.length).toBe(1);
+      const line = JSON.parse(lines[0] as string) as Record<string, unknown>;
+      expect(line["costUsd"]).toBe(1.25);
+      expect(line["workId"]).toBe("task-9");
+      expect(line["hat"]).toBe("backend_implementer");
+      expect(line["mode"]).toBe("work");
+      expect(line["model"]).toBe("stated-model");
+      expect(line["sessionId"]).toBe("sess-77");
+      expect(line["cacheReadTokens"]).toBe(4000);
+      expect(line["cacheWriteTokens"]).toBe(200);
+      // WHY the money was spent, not only how much: the reason the run was started travels with it.
+      expect(line["reason"]).toBe("a comment was left on the request of task-9");
+      expect(line["org"]).toBe("acme");
+      expect(line["profile"]).toBe("dev-portal");
+      r.cleanup();
+    } finally {
+      rmSync(store, { recursive: true, force: true });
+    }
+  });
+
+  test("the cost of a call is on the usage line too, so a run log shows it without opening the ledger", () => {
+    const answered = {
+      type: "result", subtype: "success", is_error: false,
+      structured_output: { summary: "s", commit: "", testsRun: [], blocked: "" },
+      total_cost_usd: 0.5, usage: { input_tokens: 1, output_tokens: 2 },
+    };
+    const r = run(["work", "task-9"], answered, { ORG_CLAUDE_MODEL: "stated-model" });
+    expect(r.stdout).toContain("cost=$0.5000");
+    expect(r.stdout).toContain("model=stated-model");
+    r.cleanup();
+  });
+
+  test("nowhere to write the ledger is SAID, never swallowed", () => {
+    const r = run(["work", "task-9"], ok({ summary: "s", commit: "", testsRun: [], blocked: "" }), { ORG_CLAUDE_MODEL: "m", ORG_STORE: "", ORG_COST_DIR: "" });
+    expect(r.status).toBe(0);
+    expect(r.stderr).toContain("cost not recorded");
+    r.cleanup();
+  });
 });

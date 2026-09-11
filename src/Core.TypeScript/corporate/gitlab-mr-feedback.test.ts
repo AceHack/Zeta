@@ -81,6 +81,51 @@ describe("WHAT HAPPENED TO A REQUEST BECOMES DELIVERIES, AND ONLY READS ARE MADE
     expect(String(r.deliveries[0]?.["summary"])).toContain("by max");
   });
 
+  test("A RED PIPELINE ARRIVES WITH WHAT FAILED: the failing jobs and the end of their logs", () => {
+    const r = poll(
+      {
+        "projects/:id/merge_requests/162/notes": [],
+        "projects/:id/merge_requests/162": { state: "opened", target_branch: "master", head_pipeline: { id: 55, status: "failed", sha: "bcc152b0aa11", web_url: "https://git.example/p/55" } },
+        "projects/:id/pipelines/55/jobs": [
+          { id: 900, name: "Unit Tests", stage: "test", status: "success" },
+          { id: 901, name: "Server Tests", stage: "test", status: "failed", failure_reason: "script_failure", web_url: "https://git.example/j/901" },
+          { id: 902, name: "Client Tests", stage: "test", status: "failed", web_url: "https://git.example/j/902" },
+        ],
+        "projects/:id/jobs/901/trace": "Instance failed to start within 10000ms",
+        "projects/:id/jobs/902/trace": "Tests: 131 failed, 2274 passed",
+        "projects/:id/repository/branches/master": { commit: { id: "1234" } },
+      },
+      [{ workId: "task-24", branch: "b", url: MR }],
+    );
+    const red = r.deliveries.find((d) => d["deliveryId"] === "pipeline-55-failed");
+    expect(String(red?.["summary"])).toContain("failed at bcc152b0aa11");
+    const detail = String(red?.["detail"]);
+    // The names of what failed, and what each one said - the session decides, so it must be able to read.
+    expect(detail).toContain("2 job(s) did not pass");
+    expect(detail).toContain("Server Tests [test, script_failure]");
+    expect(detail).toContain("Instance failed to start within 10000ms");
+    expect(detail).toContain("Tests: 131 failed, 2274 passed");
+    // A job that passed is not in it, and the detail reaches the runtime intact.
+    expect(detail).not.toContain("Unit Tests");
+    expect(asDelivery(red as Record<string, unknown>)?.detail).toBe(detail);
+    expect(r.calls).not.toContain("--method");
+  });
+
+  test("A PIPELINE WHOSE JOBS CANNOT BE READ SAYS SO - never an empty detail that reads like no reason", () => {
+    const r = poll(
+      {
+        "projects/:id/merge_requests/162/notes": [],
+        "projects/:id/merge_requests/162": { state: "opened", target_branch: "master", head_pipeline: { id: 55, status: "canceled", web_url: "https://git.example/p/55" } },
+        "projects/:id/repository/branches/master": { commit: { id: "1234" } },
+      },
+      [{ workId: "task-24", branch: "b", url: MR }],
+    );
+    const red = r.deliveries.find((d) => d["deliveryId"] === "pipeline-55-failed");
+    // A cancelled pipeline is not a green one, and the organization has to say that out loud.
+    expect(String(red?.["summary"])).toContain("canceled");
+    expect(String(red?.["detail"])).toContain("its jobs could not be read");
+  });
+
   test("COULD NOT LOOK IS NOT NOTHING HAPPENED: a poll that reads no request fails", () => {
     const r = poll({}, [{ workId: "task-24", branch: "b", url: MR }]);
     expect(r.status).toBe(3);

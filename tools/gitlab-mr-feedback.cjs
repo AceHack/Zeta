@@ -67,6 +67,43 @@ function emit(delivery) {
   process.stdout.write(JSON.stringify(delivery) + NL);
 }
 
+/** How much of one failed job's log travels with the delivery. The end is where the reason is. */
+const TRACE_TAIL = Number(env.ORG_PIPELINE_TRACE_CHARS || 4000);
+/** At most this many failed jobs are opened - a pipeline that failed wholesale must not fill a store. */
+const TRACE_JOBS = Number(env.ORG_PIPELINE_TRACE_JOBS || 3);
+
+/**
+ * The failing jobs of a pipeline, and the end of each one's log.
+ *
+ * Read, never judged: which of these is a flake, this change's fault, or the target's is the
+ * organization's call. Anything unreadable is SAID so, never left as an empty detail that would read
+ * like a pipeline that failed for no reason.
+ */
+function pipelineDetail(pipe) {
+  const lines = ["pipeline " + String(pipe.id) + " " + String(pipe.status) + ": " + String(pipe.web_url || "")];
+  let jobs;
+  try {
+    jobs = api("projects/:id/pipelines/" + String(pipe.id) + "/jobs?per_page=100");
+  } catch (err) {
+    return lines.concat("its jobs could not be read: " + String((err && err.message) || err)).join(NL);
+  }
+  const bad = (Array.isArray(jobs) ? jobs : []).filter((j) => j && (j.status === "failed" || j.status === "canceled"));
+  if (bad.length === 0) return lines.concat("no job reports a failure - the pipeline itself did (a timeout, a runner, or a stage that never started)").join(NL);
+  lines.push(bad.length + " job(s) did not pass: " + bad.map((j) => String(j.name) + " [" + String(j.stage) + (j.failure_reason ? ", " + String(j.failure_reason) : "") + "]").join(", "));
+  for (const j of bad.slice(0, TRACE_JOBS)) {
+    let trace = "";
+    try {
+      const r = spawnSync(glab(), [...prefix, "api", "projects/:id/jobs/" + String(j.id) + "/trace"], { encoding: "utf-8", shell: false, windowsHide: true, maxBuffer: 64 * 1024 * 1024 });
+      trace = r.status === 0 ? String(r.stdout || "") : "(its log could not be read: " + String(r.stderr || "").trim().slice(0, 200) + ")";
+    } catch (err) {
+      trace = "(its log could not be read: " + String((err && err.message) || err) + ")";
+    }
+    lines.push("", "--- " + String(j.name) + " (" + String(j.web_url || j.id) + "), last " + String(TRACE_TAIL) + " characters ---", trace.slice(-TRACE_TAIL));
+  }
+  if (bad.length > TRACE_JOBS) lines.push("", "and " + String(bad.length - TRACE_JOBS) + " more failing job(s) - open the pipeline for those");
+  return lines.join(NL);
+}
+
 let input;
 try {
   input = JSON.parse(readFileSync(0, "utf-8"));
@@ -88,8 +125,20 @@ for (const c of changes) {
       emit({ deliveryId: "mr-" + iid + "-" + mr.state, source, itemKind: mr.state, summary: "the merge request was " + mr.state + (mr.merged_by ? " by " + mr.merged_by.username : mr.closed_by ? " by " + mr.closed_by.username : ""), url: mrUrl, changeUrl: mrUrl });
     }
     const pipe = mr && mr.head_pipeline;
-    if (pipe && pipe.status === "failed") {
-      emit({ deliveryId: "pipeline-" + String(pipe.id) + "-failed", source, itemKind: "pipeline_failed", summary: "the request's pipeline " + String(pipe.id) + " failed", url: String(pipe.web_url || mrUrl), changeUrl: mrUrl });
+    // A pipeline that did not pass. `canceled` counts: a person merging sees a request that is not
+    // green either way, and "it was cancelled" is something the organization has to say out loud.
+    if (pipe && (pipe.status === "failed" || pipe.status === "canceled")) {
+      emit({
+        deliveryId: "pipeline-" + String(pipe.id) + "-failed",
+        source,
+        itemKind: "pipeline_failed",
+        summary: "the request's pipeline " + String(pipe.id) + " " + String(pipe.status) + " at " + String(pipe.sha || "").slice(0, 12),
+        // WHAT FAILED, NOT THAT SOMETHING DID. A delivery saying only "the pipeline failed" leaves
+        // the session to guess, and the guess it reached for on !164 was "infrastructure".
+        detail: pipelineDetail(pipe),
+        url: String(pipe.web_url || mrUrl),
+        changeUrl: mrUrl,
+      });
     }
     if (mr && mr.target_branch) targets.set(mr.target_branch, true);
     // Every note, oldest first, page by page. System notes are GitLab narrating itself.

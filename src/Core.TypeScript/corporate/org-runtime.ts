@@ -122,6 +122,7 @@ import {
   answersOwed,
   correlateFeedback,
   followUpOrder,
+  keepRedPipelinesOpen,
   type AnswerCheck,
   type AnswerCheckRequest,
   type AnswerRequest,
@@ -4146,6 +4147,7 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
         ...(handle.workdir === undefined ? {} : { workdir: handle.workdir }),
         items,
         canSync,
+        ...(deps.changeRequests?.pipelines === undefined ? {} : { pipelines: deps.changeRequests.pipelines }),
       };
       // ── WHAT OTHERS PUSHED TO THIS CHANGE'S BRANCH COMES IN FIRST ──────────
       // MEASURED on dev-portal !1222: a bot pushed an `npm audit fix` commit to the request's branch
@@ -4183,8 +4185,13 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
       const before = providers.change.revision === undefined ? undefined : await providers.change.revision(handle);
       const triage = await deps.followUp!({ ...where, mode: "triage" });
       if (!triage.ok) return { workId, decided: [], handedOffAgain: false, refused: [`the follow-up of ${workId} did not complete: ${triage.reason}`] };
-      const { accepted, refused: bad } = acceptedDecisions(items, triage.value.decisions);
+      const { accepted: decided, refused: bad } = acceptedDecisions(items, triage.value.decisions);
       refused.push(...bad);
+      // A red pipeline is not finished by being explained - see `keepRedPipelinesOpen`.
+      const { decisions: accepted, kept } = keepRedPipelinesOpen(items, decided, deps.changeRequests?.pipelines);
+      for (const id of kept) {
+        refused.push(`${id} on ${workId} was declined, and a red pipeline is not declined here (pipelines: until_green) - it stays open`);
+      }
 
       let synced: FollowUpReport["synced"];
       if (triage.value.syncWithTarget) {
