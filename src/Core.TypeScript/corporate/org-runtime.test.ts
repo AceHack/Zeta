@@ -1319,6 +1319,36 @@ describe("A LEAF'S RETRY RESUMES AT THE STEP THAT WAS TURNED BACK", () => {
   }, 60_000);
 });
 
+describe("A VERDICT IS IN THE RECORD THE MOMENT IT IS MADE", () => {
+  // MEASURED on AIAGENT-1661: verdicts reached the log only when the whole walk returned, so the
+  // release-readiness author, opening the item through observe mid-walk, was shown QA "rejected"
+  // from the attempt before - the approval that let it start was not in the record yet.
+  test("when a later step's author runs, the earlier step's verdict is already in the log", async () => {
+    const events: OrgEvent[] = [];
+    let seenAtAuthoring: string[] | undefined;
+    const release: ProducerPort = {
+      meta: { port: Port.WorkExecution, name: "rr", fidelity: Fidelity.Real, describes: "release readiness" },
+      produce: async (node) => {
+        seenAtAuthoring = events
+          .filter((e) => e.fact?.kind === "gates_evaluated")
+          .flatMap((e) => (e.fact?.kind === "gates_evaluated" ? e.fact.evaluations : []))
+          .filter((v) => v.workId === node.workId)
+          .map((v) => String(v.gate));
+        return { ok: true, value: { refs: ["docs/rr.md"], summary: "ready" }, evidence: [] };
+      },
+    };
+    const base = deps();
+    await runOrgRuntime({
+      ...base,
+      artifactProducers: new Map([[GateKind.ReleaseReadiness, release]]),
+      onEvent: (e: OrgEvent) => events.push(e),
+    } as OrgRuntimeDeps);
+    expect(seenAtAuthoring).toBeDefined();
+    expect(seenAtAuthoring).toContain("qa_uat");
+    expect(seenAtAuthoring).toContain("runtime_validation");
+  }, 60_000);
+});
+
 describe("A STEP THAT STOPS WITHOUT A VERDICT SAYS WHY, ON THE ITEM", () => {
   // MEASURED on AIAGENT-1662: the implementation step was turned back with no verdict. The reason
   // lived in the process's `refusals` until it exited, so the log, observe, and the next attempt's

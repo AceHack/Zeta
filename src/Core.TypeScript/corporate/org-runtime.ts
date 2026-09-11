@@ -883,6 +883,23 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
   const note = (input: Parameters<typeof emit>[2]): void => {
     record(emit(deps.chart, deps.createId("evt"), input));
   };
+  /**
+   * A verdict into the log THE MOMENT IT IS MADE, so observe is current while the walk continues.
+   * The walk's own summary event still records the whole list at the end; the fold keys verdicts on
+   * their content, so the same verdict recorded twice is one verdict.
+   */
+  const verdictNow =
+    (workId: string) =>
+    (evaluation: GateEvaluation): void => {
+      note({
+        kind: OrgEventKind.QualityGateEvaluation,
+        subjectId: workId,
+        actorHatId: evaluation.byHatId,
+        decision: `'${String(evaluation.gate)}' ${String(evaluation.outcome)}`,
+        atMs: evaluation.atMs,
+        fact: { kind: "gates_evaluated", evaluations: [evaluation] },
+      });
+    };
   const levels = new Set<HatLevel>();
   const engage = (hatId: string): void => {
     const l = deps.chart.byId.get(hatId)?.level;
@@ -2352,6 +2369,7 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
       // `gateChooserFrom` rejects everything, which would make every upper rung permanently
       // blocked — safe, and useless.
       prepare: askGovernanceReviewer,
+      onEvaluated: verdictNow(node.workId),
       // The reviewer's own references, on top of whatever the phase produced — the same as the
       // leaf walk. This is what puts a document behind a business approval.
       extraEvidenceFor: (gate) => govReviewEvidence.get(gate) ?? [],
@@ -2946,6 +2964,7 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
         ...(handle === undefined ? {} : { handle }),
         // The reviewer is asked HERE — after this phase produced, before its gate is judged.
         prepare: askTheReviewer,
+        onEvaluated: verdictNow(task.workId),
         // A reviewer's own references, on top of whatever the phase produced.
         extraEvidenceFor: (gate) => reviewEvidence.get(gate) ?? [],
         // Absent ⇒ meters carry tokens and no cost. Never a built-in table.
@@ -3492,6 +3511,7 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
       atMs: warmedAt,
       proposerHatId: node.ownerHatId,
       prepare: askAcceptanceReviewer,
+      onEvaluated: verdictNow(node.workId),
       extraEvidenceFor: (gate) => acceptEvidence.get(gate) ?? [],
       ...((gates) => (gates.size === 0 ? {} : { humanRequiredAt: gates }))(
         humanGatesFor(deps.checkpoints ?? []),
