@@ -1,0 +1,16 @@
+{
+  "pr_number": 17296,
+  "archive_path": "docs/history/pr-reviews/2026/09/11/PR-17296-feat-corporate-after-an-mr-opens-configured-steps-reviewed-follow-ups-descriptio.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7uAhM8",
+    "comment:PRRC_kwDOSF9kNM7uEWXq",
+    "thread:PRRT_kwDOSF9kNM6hoGpN"
+  ],
+  "fetched_at": "2026-09-11T23:22:15.096Z",
+  "schema_version": "v1",
+  "commit_sha": "92e7ca9b7287eb3504302b9103140becc774a201",
+  "title": "feat(corporate): after an MR opens - configured steps, reviewed follow-ups, descriptions that match the answers",
+  "state": "MERGED",
+  "merged_at": "2026-09-11T23:21:24Z",
+  "head_ref": "org-after-handoff-review"
+}
