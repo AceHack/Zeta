@@ -389,6 +389,37 @@ export type OrgFact =
       /** Where it can be reviewed — the merge request's address, when the review system gave one. */
       readonly url?: string;
       readonly commit?: string;
+      /** What it was proposed against, so feedback about that target moving can find it. */
+      readonly base?: string;
+    }
+  | {
+      /**
+       * Something happened to a handed-off change that somebody may need to act on - a reviewer's
+       * comment, the request being updated or closed, its target moving ahead of it. Recorded as an
+       * ACTION ITEM on the work, never as an instruction: the organization decides what, if
+       * anything, to do about it, and when.
+       */
+      readonly kind: "action_item_raised";
+      readonly workId: string;
+      /** Stable across re-deliveries of the same event, so raising is idempotent. */
+      readonly actionItemId: string;
+      /** Where it came from - the configured source or the review system. */
+      readonly source: string;
+      /** What kind of thing happened, in the source's own words (`comment`, `behind_target`, `closed`, ...). */
+      readonly itemKind: string;
+      readonly summary: string;
+      readonly detail?: string;
+      readonly url?: string;
+      readonly author?: string;
+    }
+  | {
+      /** An action item was dealt with - addressed, declined with a reason, or overtaken by events. */
+      readonly kind: "action_item_settled";
+      readonly workId: string;
+      readonly actionItemId: string;
+      readonly outcome: "addressed" | "declined" | "superseded";
+      readonly how: string;
+      readonly byHatId?: string;
     }
   | {
       /**

@@ -7,8 +7,9 @@
  * and prints the request's URL. It NEVER merges, approves, or sets auto-merge: integrating is a
  * person's act, and the organization's last act on a change is to put it in front of one.
  *
- * IDEMPOTENT: if a merge request from this branch into this base is already open, its URL is
- * printed and nothing new is created — a resumed run must not open a second review of one change.
+ * IDEMPOTENT: if a merge request from this branch into this base is already open, its title and
+ * description are brought up to date and its URL printed; nothing new is created — a resumed run or
+ * a follow-up must not open a second review of one change.
  *
  * ── CONTRACT (the change-control adapter's `handoff` command) ────────────────
  *   ORG_BRANCH            the branch to propose                       (required)
@@ -88,7 +89,21 @@ const query =
   "&target_branch=" + encodeURIComponent(base);
 const open = api([query]);
 if (Array.isArray(open) && open.length > 0 && typeof open[0].web_url === "string") {
-  process.stdout.write("already open" + NL + open[0].web_url + NL);
+  // ALREADY OPEN: its words are brought up to date, never a second request opened. A follow-up that
+  // changed the branch changed what the request should say, and a reviewer reading yesterday's
+  // description over today's diff is being misled. Only the title and description are written -
+  // nothing about who may merge it, or when.
+  const current = open[0];
+  const description = readFileSync(descriptionFile, "utf-8");
+  if (current.title !== title || current.description !== description) {
+    api(
+      ["--method", "PUT", "--header", "Content-Type: application/json", "--input", "-", "projects/:id/merge_requests/" + String(current.iid)],
+      JSON.stringify({ title, description }),
+    );
+    process.stdout.write("already open - description updated" + NL + current.web_url + NL);
+  } else {
+    process.stdout.write("already open" + NL + current.web_url + NL);
+  }
   process.exit(0);
 }
 

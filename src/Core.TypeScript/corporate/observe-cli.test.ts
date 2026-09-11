@@ -92,6 +92,26 @@ describe("THE RECORD OF A WORK ITEM, as an agent opens it", () => {
     }
   }, 60_000);
 
+  test("an ACTION ITEM on a handed-off change is on its item, with its id, open until it is settled - and counted where the item says where it is", async () => {
+    const events = await recordedRun();
+    const leaf = worldFor({ events, hatId: "qa_engineer", actions: [] }).items?.find((i) => i.kind === WorkType.Defect);
+    const id = leaf?.id ?? "";
+    const raised = {
+      id: "evt-ai-1", kind: "change_projected", subjectId: id, decision: "", atMs: 100, evidenceRefs: [], supervisorChain: [],
+      fact: { kind: "action_item_raised", workId: id, actionItemId: "gitlab:note-8", source: "gitlab", itemKind: "comment", summary: "please explain the race", author: "reviewer" },
+    } as unknown as OrgEvent;
+    const open = worldFor({ events: [...events, raised], hatId: "qa_engineer", actions: [] }).items?.find((i) => i.id === id);
+    expect(open?.comments.some((c) => c.about === "action item" && c.text.includes("[gitlab:note-8]") && c.text.endsWith("- OPEN") && c.by === "reviewer")).toBe(true);
+    expect(open?.where?.some((w) => w.includes("1 open action item"))).toBe(true);
+    const settled = {
+      id: "evt-ai-2", kind: "change_projected", subjectId: id, decision: "", atMs: 101, evidenceRefs: [], supervisorChain: [],
+      fact: { kind: "action_item_settled", workId: id, actionItemId: "gitlab:note-8", outcome: "addressed", how: "added a comment on the lock" },
+    } as unknown as OrgEvent;
+    const closed = worldFor({ events: [...events, raised, settled], hatId: "qa_engineer", actions: [] }).items?.find((i) => i.id === id);
+    expect(closed?.comments.some((c) => c.text.includes("addressed: added a comment on the lock"))).toBe(true);
+    expect(closed?.where?.some((w) => w.includes("open action item"))).toBe(false);
+  }, 60_000);
+
   test("what a hat holds is what is assigned to it or owned by it while open", () => {
     const nodes = [
       { workId: "a", workType: WorkType.Defect, title: "a", state: "in_progress", ownerHatId: "lead", assigneeHatId: "dev" },

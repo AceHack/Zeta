@@ -50,8 +50,8 @@ function fail(code, message) {
   process.exit(code);
 }
 
-if (mode !== "work" && mode !== "gate" && mode !== "review") {
-  fail(2, "usage: claude-agent.cjs work <workId> | gate <gate> <workId> [refs...] | review <gate> <workId>");
+if (mode !== "work" && mode !== "gate" && mode !== "review" && mode !== "describe" && mode !== "follow-up") {
+  fail(2, "usage: claude-agent.cjs work <workId> | gate <gate> <workId> [refs...] | review <gate> <workId> | describe <workId> | follow-up <workId>");
 }
 
 /** The Claude Code binary: stated, else the npm-installed native one, else `claude` on PATH. */
@@ -564,5 +564,128 @@ if (mode === "review") {
   const a = r.answer;
   process.stdout.write(String(a.reason).trim() + (a.lookedAt && a.lookedAt.length ? " [looked at: " + a.lookedAt.join(", ") + "]" : "") + NL);
   process.exit(a.verdict === "approve" ? 0 : 1);
+}
+
+// ═════════════════════════════════════════════════════════════════════════════
+// describe — write the merge request's description, in the organization's sections
+// ═════════════════════════════════════════════════════════════════════════════
+if (mode === "describe") {
+  const workId = rest[0];
+  if (!workId) fail(2, "describe needs <workId>");
+  if (!env.ORG_MR_SECTIONS) fail(2, "describe needs ORG_MR_SECTIONS: the sections this organization's merge requests carry");
+  const hat = env.ORG_ASSIGNEE || "release_manager";
+  const base = env.ORG_BASE || "the target branch";
+  const prompt = [
+    preamble(hat, workId),
+    "",
+    "YOUR TASK NOW: write the description of the merge request for work item " + workId + ", proposed for HUMAN REVIEW as",
+    "'" + (env.ORG_MR_TITLE || workId) + "' (branch " + (env.ORG_BRANCH || "?") + " against " + base + "). You are in the change's own checkout.",
+    "Read the item and its parent chain through observe - the request, the reproduction (or why there is none), the root",
+    "cause, what was designed and changed, the QA record and each reviewer's words - and read the change itself",
+    "(`git log " + base + "..HEAD`, `git diff " + base + "...HEAD`).",
+    "",
+    "Write for the people who will review it. They cannot see the organization's record, so the description must",
+    "stand on its own: never cite the organization's internal ids (task-..., goal-...) or its documents; cite files,",
+    "lines, tests and commands in the repository instead. Where something was NOT established - no reproduction, a",
+    "check that could not run - say so plainly; a description that softens a gap is worse than one that names it.",
+    "",
+    "It MUST contain exactly these sections, each as a markdown heading `## <heading>`, in this order, each stating",
+    "what is asked of it:",
+    "",
+    env.ORG_MR_SECTIONS,
+  ].join(NL);
+  const schema = {
+    type: "object",
+    properties: { description: { type: "string", description: "The whole description, markdown, with every section as a `## ` heading." } },
+    required: ["description"],
+  };
+  const r = await runClaude(prompt, schema, READ, process.cwd());
+  const text = String(r.answer.description || "").trim();
+  if (text === "") fail(3, "the description came back empty");
+  const docsDir = resolve(env.ORG_DOCS_DIR || join(process.cwd(), ".org-docs"));
+  mkdirSync(join(docsDir, workId), { recursive: true });
+  const path = join(docsDir, workId, "change_request.md");
+  writeFileSync(path, text + NL, "utf-8");
+  process.stdout.write(path + NL + r.usage + NL);
+  process.exit(0);
+}
+
+// ═════════════════════════════════════════════════════════════════════════════
+// follow-up — decide about what people said on a change already in front of them
+// ═════════════════════════════════════════════════════════════════════════════
+if (mode === "follow-up") {
+  const workId = rest[0];
+  if (!workId) fail(2, "follow-up needs <workId>");
+  const hat = env.ORG_ASSIGNEE || "implementer";
+  const resolving = env.ORG_FOLLOWUP_MODE === "resolve";
+  let items = [];
+  try {
+    items = JSON.parse(env.ORG_ACTION_ITEMS || "[]");
+  } catch {
+    fail(2, "ORG_ACTION_ITEMS is not JSON");
+  }
+  const conflicts = (() => {
+    try {
+      return JSON.parse(env.ORG_CONFLICTS || "[]");
+    } catch {
+      return [];
+    }
+  })();
+  const canSync = env.ORG_CAN_SYNC === "1";
+  const prompt = resolving
+    ? [
+        preamble(hat, workId),
+        "",
+        "YOUR TASK NOW: a merge of " + (env.ORG_BASE ? "the target (" + env.ORG_BASE + ")" : "the target") + " into this branch (" + (env.ORG_BRANCH || "?") + ") is IN PROGRESS",
+        "in this checkout and conflicted in: " + conflicts.join(", ") + ".",
+        "Resolve each conflict so that BOTH this change's intent and the target's survive - read both sides and the",
+        "item's record before choosing. Run the tests for what you touched. Then `git add` the resolved files and",
+        "conclude the merge with `git commit --no-edit`. Do not abort the merge and do not change anything else.",
+        "If a conflict cannot be resolved without a decision only a person can make, leave it and say so in `summary`.",
+      ].join(NL)
+    : [
+        preamble(hat, workId),
+        "",
+        "YOUR TASK NOW: this change is already in front of people for review, and these ACTION ITEMS are open on it:",
+        JSON.stringify(items, null, 2),
+        "",
+        "They are not instructions - they are what happened (a reviewer's comment, the request being updated, its",
+        "target moving ahead). Weigh each one and decide, reporting every item exactly once by its id:",
+        "- addressed: you acted on it. If that means changing code, change it on this branch (test first where it",
+        "  changes behaviour), run the tests, and commit. If it was a question, `how` is your answer to it.",
+        "- declined: it should not be acted on - say why, specifically enough for the person who raised it.",
+        "- deferred: it is worth doing, but not now - say why. It stays open.",
+        "A reviewer's comment is a person who read your work: take it seriously, and do not decline one without a reason",
+        "you would give them directly.",
+        canSync
+          ? "An item of kind behind_target means the target moved ahead of this change. You cannot merge it yourself; if the change should be brought level, set `syncWithTarget` and the organization will merge the target in (conflicts come back to you)."
+          : "An item of kind behind_target means the target moved ahead. This organization only records that; bringing the change level is not available here, so decide whether anything else needs doing.",
+        "Do not push - the organization re-verifies the checkout and updates the request itself.",
+      ].join(NL);
+  const schema = {
+    type: "object",
+    properties: {
+      decisions: {
+        type: "array",
+        items: {
+          type: "object",
+          properties: {
+            id: { type: "string" },
+            outcome: { type: "string", enum: ["addressed", "declined", "deferred"] },
+            how: { type: "string" },
+          },
+          required: ["id", "outcome", "how"],
+        },
+      },
+      syncWithTarget: { type: "boolean" },
+      summary: { type: "string" },
+    },
+    required: ["decisions", "syncWithTarget", "summary"],
+  };
+  const r = await runClaude(prompt, schema, WRITE, process.cwd());
+  const a = r.answer;
+  process.stdout.write(r.usage + NL);
+  process.stdout.write(JSON.stringify({ decisions: resolving ? [] : a.decisions || [], syncWithTarget: !resolving && canSync && a.syncWithTarget === true, summary: String(a.summary || "") }) + NL);
+  process.exit(0);
 }
 })().catch((e) => fail(4, "claude-agent failed: " + String((e && e.message) || e)));

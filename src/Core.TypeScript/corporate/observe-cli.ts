@@ -44,7 +44,7 @@ import { childrenOf, isLeafType, nodeById, WorkState, type CascadeNode } from ".
 import type { HumanAction } from "./human-action";
 import { buildOrgChart, type OrgChart } from "./org-chart";
 import { OrgEventKind, type OrgEvent } from "./org-event";
-import { foldBoard, foldHandedOffChanges, foldOrganization, foldSupervisorSignals, type FoldedOrganization } from "./org-fold";
+import { foldActionItems, foldBoard, foldHandedOffChanges, foldOrganization, foldSupervisorSignals, type FoldedOrganization } from "./org-fold";
 import { orgSurfaceFor } from "./org-observe-bridge";
 import { SEED_HATS } from "./org-seed";
 import { readEvents, readRuns } from "./org-store";
@@ -74,6 +74,7 @@ export function itemContextsFrom(
   const board = foldBoard(events);
   const views = new Map(work.map((w) => [w.workId, w] as const));
   const handedOff = foldHandedOffChanges(events);
+  const actionItems = foldActionItems(events);
   const refusedOn = new Map<string, OrgEvent[]>();
   for (const e of events) {
     if (e.kind !== OrgEventKind.Refusal) continue;
@@ -141,6 +142,21 @@ export function itemContextsFrom(
     for (const e of refusedOn.get(node.workId) ?? []) {
       comments.push({ by: e.actorHatId ?? "organization", text: e.decision, atMs: e.atMs, about: "refused" });
     }
+    // ACTION ITEMS: what happened to the change after it was handed to people - a reviewer's comment,
+    // the request updated, its target moving ahead - and whether the organization has dealt with it.
+    // Shown with their ids, because deciding about one means naming it.
+    const items = actionItems.get(node.workId) ?? [];
+    for (const i of items) {
+      comments.push({
+        by: i.author ?? i.source,
+        text:
+          `[${i.actionItemId}] ${i.itemKind}: ${i.summary}` +
+          (i.settled === undefined ? " - OPEN" : ` - ${i.settled.outcome}: ${i.settled.how}`) +
+          (i.url === undefined ? "" : ` (${i.url})`),
+        atMs: i.raisedAtMs,
+        about: "action item",
+      });
+    }
     comments.sort((a, b) => (a.atMs ?? 0) - (b.atMs ?? 0));
 
     const ticket = node.requestRef === undefined ? undefined : parseRequestRef(node.requestRef);
@@ -153,6 +169,9 @@ export function itemContextsFrom(
       // IN FRONT OF PEOPLE: handed off for review, and the next act is theirs, not the organization's.
       ...((h) => (h === undefined ? [] : [`awaiting human review at ${h.url ?? `branch ${h.branch}`} - nothing was merged`]))(
         handedOff.get(node.workId),
+      ),
+      ...((open) => (open === 0 ? [] : [`${String(open)} open action item(s) on this change - see its comments`]))(
+        (actionItems.get(node.workId) ?? []).filter((i) => i.settled === undefined).length,
       ),
     ];
     const kids = childrenOf(folded.cascade, node.workId).map((c: CascadeNode) => c.workId);

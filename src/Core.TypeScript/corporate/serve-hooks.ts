@@ -30,7 +30,7 @@ import { createServer } from "node:http";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { trackerMapper } from "./intake";
-import { acceptDelivery, fileDelivery, isSignatureScheme, type WebhookConfig } from "./webhook-intake";
+import { acceptDelivery, acceptFeedbackDelivery, fileDelivery, fileFeedback, isSignatureScheme, type WebhookConfig } from "./webhook-intake";
 import { orgById, parseRegistry, type OrgRecord } from "./org-registry";
 
 /** Where the registry lives. Same resolution the CLI uses, so both see one list of organizations. */
@@ -94,6 +94,7 @@ export function hooksOf(org: OrgRecord): {
       ...(w.severityMap === undefined ? {} : { severityMap: w.severityMap }),
       ...(w.acceptTypes === undefined ? {} : { acceptTypes: w.acceptTypes }),
       ...(w.typePath === undefined ? {} : { typePath: w.typePath }),
+      ...(w.purpose === undefined ? {} : { purpose: w.purpose }),
     });
   }
   return { hooks, refused };
@@ -105,6 +106,11 @@ export const MAX_BODY_BYTES = 1_000_000;
 export interface HookServerDeps {
   readonly hooks: readonly WebhookConfig[];
   readonly inbox: string;
+  /**
+   * Where `change_feedback` deliveries are filed - the organization's feedback directory, which the
+   * next run reads and turns into action items. Absent: such hooks are refused at start.
+   */
+  readonly feedbackDir?: string;
   readonly readSecret: (path: string) => string | undefined;
   /** Reported so an operator can see arrivals without tailing a directory. */
   readonly log: (line: string) => void;
@@ -136,6 +142,30 @@ export function handleDelivery(
     return { status: 404, body: "no hook at this path" };
   }
 
+  // The provider's own id where it gives one, so a RETRY overwrites its first file instead of adding
+  // a second copy of one event. Falling back to the clock is honest and slightly worse: a retry then
+  // arrives as a new delivery and is de-duplicated later, on the idempotency key.
+  const deliveryId =
+    input.headers["linear-delivery"] ??
+    input.headers["x-github-delivery"] ??
+    input.headers["x-gitlab-event-uuid"] ??
+    input.headers["x-delivery-id"] ??
+    `at-${String(deps.nowMs())}`;
+
+  // FEEDBACK ABOUT A CHANGE ALREADY IN FRONT OF PEOPLE IS NOT NEW WORK. It is filed for the
+  // after-the-handoff seam, where it becomes an action item on the work it concerns.
+  if (config.purpose === "change_feedback") {
+    if (deps.feedbackDir === undefined) return { status: 503, body: "this hook files feedback and no feedback directory is configured" };
+    const fb = acceptFeedbackDelivery({ config, rawBody: input.rawBody, headers: input.headers, readSecret: deps.readSecret, deliveryId });
+    if (!fb.ok) {
+      deps.log(`  refused ${sourceId}: ${fb.reason}`);
+      return { status: fb.status, body: fb.reason };
+    }
+    const at = fileFeedback(deps.feedbackDir, fb.delivery);
+    deps.log(`  feedback ${sourceId} (${fb.delivery["itemKind"] ?? "?"}): -> ${at}`);
+    return { status: 202, body: "accepted" };
+  }
+
   const toEvent = trackerMapper(`hook:${sourceId}`, config.map, config.severityMap ?? []);
   const accepted = acceptDelivery({
     config,
@@ -147,11 +177,7 @@ export function handleDelivery(
     // adding a second copy of one event. Falling back to the clock is honest and slightly worse:
     // a retry then arrives as a new delivery and is de-duplicated later, at intake, on the
     // idempotency key.
-    deliveryId:
-      input.headers["linear-delivery"] ??
-      input.headers["x-github-delivery"] ??
-      input.headers["x-delivery-id"] ??
-      `at-${String(deps.nowMs())}`,
+    deliveryId,
   });
 
   if (!accepted.ok) {
@@ -231,11 +257,12 @@ export async function main(argv: readonly string[]): Promise<number> {
   };
   const orgId = valueAfter("--org");
   const inbox = valueAfter("--inbox");
+  const feedbackDir = valueAfter("--feedback");
   const host = valueAfter("--host") ?? "127.0.0.1";
   const port = Number.parseInt(valueAfter("--port") ?? "4320", 10);
 
   if (orgId === undefined || inbox === undefined) {
-    console.error("usage: serve-hooks.ts --org <id> --inbox <dir> [--port 4320] [--host 127.0.0.1]");
+    console.error("usage: serve-hooks.ts --org <id> --inbox <dir> [--feedback <dir>] [--port 4320] [--host 127.0.0.1]");
     return 3;
   }
 
@@ -257,7 +284,15 @@ export async function main(argv: readonly string[]): Promise<number> {
     return 2;
   }
 
-  const { hooks, refused } = hooksOf(org);
+  const served = hooksOf(org);
+  // A FEEDBACK HOOK WITH NOWHERE TO FILE IS NOT SERVED - said by name, like every other hook that cannot be.
+  const hooks = served.hooks.filter((h) => h.purpose !== "change_feedback" || feedbackDir !== undefined);
+  const refused = [
+    ...served.refused,
+    ...served.hooks
+      .filter((h) => h.purpose === "change_feedback" && feedbackDir === undefined)
+      .map((h) => ({ sourceId: h.sourceId, reason: "it files feedback on handed-off changes, and no --feedback directory was given (the organization reads <store>/feedback)" })),
+  ];
   // LOUD, AND BEFORE ANYTHING ELSE. A hook that is not served is an integration that silently stops
   // delivering, and the provider will keep reporting success on its side.
   for (const bad of refused) {
@@ -278,6 +313,7 @@ export async function main(argv: readonly string[]): Promise<number> {
     {
       hooks,
       inbox,
+      ...(feedbackDir === undefined ? {} : { feedbackDir }),
       readSecret: (path) => {
         try {
           return readFileSync(path, "utf-8");

@@ -17,7 +17,7 @@
  */
 
 import { readBlockers } from "./blocker-outbox";
-import { isSignatureScheme, type WebhookConfig } from "./webhook-intake";
+import { FEEDBACK_FIELDS, GITLAB_FEEDBACK_MAP, isSignatureScheme, type WebhookConfig } from "./webhook-intake";
 import { checksFromRoster, selectChecks, type CheckBinding } from "./check-roster";
 import { isDefaultMethod, methodsFor } from "./method-defaults";
 import {
@@ -455,7 +455,27 @@ export async function main(argv: readonly string[], deps: CliDeps): Promise<numb
       // which is the difference between a convenience and a hardcoded integration.
       const preset = flagValue(flags, "--preset");
       const given = flagValues(flags, "--map");
-      const map = given.length > 0 ? given : preset === "linear" ? [...LINEAR_WEBHOOK_MAP] : [];
+      // WHAT A DELIVERY IS: new work (the default), or feedback on a change already in front of
+      // people - which becomes an action item on its work, never new work.
+      const purposeRaw = (flagValue(flags, "--purpose") ?? (preset === "gitlab-feedback" ? "change_feedback" : "intake")).trim();
+      if (purposeRaw !== "intake" && purposeRaw !== "change_feedback") {
+        deps.err(`'${purposeRaw}' is not a purpose - intake or change_feedback`);
+        return Exit.Refused;
+      }
+      const map = given.length > 0
+        ? given
+        : preset === "linear"
+          ? [...LINEAR_WEBHOOK_MAP]
+          : preset === "gitlab-feedback"
+            ? [...GITLAB_FEEDBACK_MAP]
+            : [];
+      if (purposeRaw === "change_feedback") {
+        const unknown = map.map((p) => p.slice(0, Math.max(0, p.indexOf("=")))).filter((f) => !(FEEDBACK_FIELDS as readonly string[]).includes(f));
+        if (unknown.length > 0) {
+          deps.err(`a feedback hook maps ${FEEDBACK_FIELDS.join(", ")} - not ${unknown.join(", ")}`);
+          return Exit.Refused;
+        }
+      }
       if (map.length === 0) {
         deps.err("--map is required (or --preset): without it nothing knows which field is the title");
         return Exit.Refused;
@@ -475,6 +495,7 @@ export async function main(argv: readonly string[], deps: CliDeps): Promise<numb
         ...(severityMap.length === 0 ? {} : { severityMap }),
         ...(flagValues(flags, "--accept-type").length === 0 ? {} : { acceptTypes: flagValues(flags, "--accept-type") }),
         ...(typePath === undefined ? {} : { typePath }),
+        ...(purposeRaw === "change_feedback" ? { purpose: "change_feedback" as const } : {}),
       };
 
       // ONE HOOK PER SOURCE. Two would mean two secrets on one endpoint and no way to say which

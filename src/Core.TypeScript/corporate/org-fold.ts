@@ -810,6 +810,7 @@ export interface HandedOffChange {
   readonly branch: string;
   readonly url?: string;
   readonly commit?: string;
+  readonly base?: string;
 }
 
 /**
@@ -830,7 +831,71 @@ export function foldHandedOffChanges(events: readonly OrgEvent[]): ReadonlyMap<s
       branch: x.branch,
       ...(x.url === undefined ? {} : { url: x.url }),
       ...(x.commit === undefined ? {} : { commit: x.commit }),
+      ...(x.base === undefined ? {} : { base: x.base }),
     });
+  }
+  return out;
+}
+
+/** One action item on a piece of work: what happened, and whether it has been dealt with. */
+export interface ActionItem {
+  readonly workId: string;
+  readonly actionItemId: string;
+  readonly source: string;
+  readonly itemKind: string;
+  readonly summary: string;
+  readonly detail?: string;
+  readonly url?: string;
+  readonly author?: string;
+  readonly raisedAtMs: number;
+  /** Absent while OPEN. */
+  readonly settled?: { readonly outcome: string; readonly how: string; readonly byHatId?: string; readonly atMs: number };
+}
+
+/**
+ * Every action item, by work id, in the order raised - open and settled alike.
+ *
+ * RAISING IS IDEMPOTENT: the same event delivered twice (a webhook retry, a poll that sees the same
+ * comment again) has the same id and folds to one item. A settle for an id never raised is ignored
+ * rather than inventing an item nobody saw.
+ */
+export function foldActionItems(events: readonly OrgEvent[]): ReadonlyMap<string, readonly ActionItem[]> {
+  const byId = new Map<string, ActionItem>();
+  for (const event of events) {
+    const f = event.fact;
+    if (f?.kind === "action_item_raised") {
+      if (byId.has(f.actionItemId)) continue;
+      byId.set(f.actionItemId, {
+        workId: f.workId,
+        actionItemId: f.actionItemId,
+        source: f.source,
+        itemKind: f.itemKind,
+        summary: f.summary,
+        ...(f.detail === undefined ? {} : { detail: f.detail }),
+        ...(f.url === undefined ? {} : { url: f.url }),
+        ...(f.author === undefined ? {} : { author: f.author }),
+        raisedAtMs: event.atMs,
+      });
+    } else if (f?.kind === "action_item_settled") {
+      const item = byId.get(f.actionItemId);
+      if (item === undefined) continue;
+      byId.set(f.actionItemId, {
+        ...item,
+        settled: { outcome: f.outcome, how: f.how, ...(f.byHatId === undefined ? {} : { byHatId: f.byHatId }), atMs: event.atMs },
+      });
+    }
+  }
+  const out = new Map<string, ActionItem[]>();
+  for (const item of byId.values()) out.set(item.workId, [...(out.get(item.workId) ?? []), item]);
+  return out;
+}
+
+/** The OPEN action items, by work id. Work with none is absent. */
+export function openActionItems(events: readonly OrgEvent[]): ReadonlyMap<string, readonly ActionItem[]> {
+  const out = new Map<string, readonly ActionItem[]>();
+  for (const [workId, items] of foldActionItems(events)) {
+    const open = items.filter((i) => i.settled === undefined);
+    if (open.length > 0) out.set(workId, open);
   }
   return out;
 }

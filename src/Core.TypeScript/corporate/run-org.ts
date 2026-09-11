@@ -139,6 +139,16 @@ import { isLeafType, WorkType as WorkTypeValue } from "./goal-cascade";
 import { associateGoal, EMPTY_BOOK, openPortfolio, PortfolioKind, retirePortfolio } from "./portfolio";
 import { appendEvent, appendRun, deliveryRate, logHighWater, readEvents } from "./org-store";
 import { runUntilSettled } from "./autonomy";
+import type { ChangeRequestConfig } from "./change-request";
+import type { FeedbackDelivery as FeedbackDeliveryT } from "./change-followup";
+import {
+  commandDescriber,
+  commandFollowUp,
+  commandVerifier,
+  consumeFeedback,
+  pollFeedback,
+  readFeedbackDir,
+} from "./followup-commands";
 import { decideSupply, endorseRecommendation } from "./rmo";
 import { authorityFor, pressureBoard } from "./schedule-pressure";
 import { isFullyMeasured, renderDora } from "./dora";
@@ -155,7 +165,7 @@ import { foldCalendar, foldOrganization } from "./org-fold";
 import { authorIndexFrom, observationsFrom } from "./reputation-from-log";
 import type { ReputationObservation } from "./reputation";
 import { foldHatsWorn,
-  foldHandedOffChanges, foldLandedChanges, foldObserveActTicks, foldPresence } from "./org-fold";
+  foldActionItems, foldHandedOffChanges, foldLandedChanges, foldObserveActTicks, foldPresence } from "./org-fold";
 import { emit } from "./org-event";
 import type { AgentState } from "../workflow-engine/agent-loop/state-machine";
 import { CHECKPOINT_VALUES, GateKind, GateOutcome, NO_PROPOSER, ORDERED_GATES, isHumanCheckpoint, type HumanCheckpoint } from "./quality-gate";
@@ -330,6 +340,7 @@ export const KNOWN_FLAGS: ReadonlySet<string> = new Set([
   "--work-agent-arg", "--work-arg", "--work-cmd", "--work-model", "--work-verify",
   "--work-verify-arg", "--worktrees", "--worktree-setup", "--worktree-setup-arg", "--supply-target", "--resume", "--help", "-h",
   "--handoff-cmd", "--handoff-arg", "--delivery",
+  "--describe-cmd", "--describe-arg", "--follow-up-cmd", "--follow-up-arg", "--feedback-dir", "--feedback-cmd", "--feedback-arg",
 ]);
 
 /**
@@ -348,7 +359,7 @@ export const KNOWN_FLAGS: ReadonlySet<string> = new Set([
  */
 export const OPAQUE_VALUE_FLAGS: ReadonlySet<string> = new Set([
   "--artifact-arg", "--meeting-arg", "--review-arg", "--room-arg", "--study-arg", "--test-arg",
-  "--work-agent-arg", "--work-arg", "--work-verify-arg", "--worktree-setup-arg", "--handoff-arg",
+  "--work-agent-arg", "--work-arg", "--work-verify-arg", "--worktree-setup-arg", "--handoff-arg", "--describe-arg", "--follow-up-arg", "--feedback-arg",
   // A header is `Key: value`, which cannot begin with a dash — but it is passed through untouched
   // to a remote service, so the same rule applies: this CLI does not get an opinion about its shape.
   "--tracker-header",
@@ -602,6 +613,19 @@ export interface Args {
   /** The command that hands a finished change to people - pushes it and opens its review. */
   readonly handoffCmd: string | undefined;
   readonly handoffArgs: readonly string[];
+  /** Who writes a merge request's description in the organization's configured sections. See `followup-commands.ts`. */
+  readonly describeCmd: string | undefined;
+  readonly describeArgs: readonly string[];
+  /** The session that decides about a handed-off change's open action items. */
+  readonly followUpCmd: string | undefined;
+  readonly followUpArgs: readonly string[];
+  /** Where webhook deliveries about handed-off changes are filed. Default: `<store>/feedback`. */
+  readonly feedbackDir: string | undefined;
+  /** A poller of the review system: given the handed-off changes on stdin, prints deliveries as JSON lines. */
+  readonly feedbackCmd: string | undefined;
+  readonly feedbackArgs: readonly string[];
+  /** How this organization's merge requests are written and kept current. Read from the registry. */
+  readonly changeRequests?: ChangeRequestConfig;
   /** Wearers per hat the RMO authorizes — how many open tasks one contributor hat may carry. */
   readonly supplyTarget: number | undefined;
   /**
@@ -829,6 +853,13 @@ export function parseArgs(argv: readonly string[]): Args {
     worktreeSetupArgs: valuesAfter(argv, "--worktree-setup-arg"),
     handoffCmd: valueAfter(argv, "--handoff-cmd"),
     handoffArgs: valuesAfter(argv, "--handoff-arg"),
+    describeCmd: valueAfter(argv, "--describe-cmd"),
+    describeArgs: valuesAfter(argv, "--describe-arg"),
+    followUpCmd: valueAfter(argv, "--follow-up-cmd"),
+    followUpArgs: valuesAfter(argv, "--follow-up-arg"),
+    feedbackDir: valueAfter(argv, "--feedback-dir"),
+    feedbackCmd: valueAfter(argv, "--feedback-cmd"),
+    feedbackArgs: valuesAfter(argv, "--feedback-arg"),
     supplyTarget: ((v) => (v === undefined ? undefined : Number.parseInt(v, 10)))(valueAfter(argv, "--supply-target")),
     qaFails: argv.includes("--qa-fails") || argv.includes("--churn"),
     churn: argv.includes("--churn"),
@@ -885,6 +916,23 @@ export function argRefusals(args: Args): readonly string[] {
           "but nothing says how: give --worktrees and a --handoff-cmd (with --handoff-arg) that pushes a branch and opens " +
           "its review - or state --delivery merge if this organization integrates its own changes",
       );
+    }
+    // HOW THE REQUEST IS WRITTEN AND KEPT CURRENT IS THE OPERATOR'S TO SAY, and a run that would open
+    // one without it is refused now rather than when the first change finishes. See `change-request.ts`.
+    if (delivery !== "merge") {
+      if (args.changeRequests === undefined) {
+        out.push(
+          "this organization hands changes to people and has not said how its merge requests are written or kept current: " +
+            "run 'org configure' - the hand_off_changes step - or 'org change-requests set'",
+        );
+      } else {
+        if (args.describeCmd === undefined) {
+          out.push(`merge requests here must carry ${args.changeRequests.sections.map((x) => x.heading).join(" / ")}: give --describe-cmd (with --describe-arg) to write them`);
+        }
+        if (args.followUpCmd === undefined) {
+          out.push("feedback on this organization's merge requests becomes action items: give --follow-up-cmd (with --follow-up-arg) so somebody decides about them");
+        }
+      }
     }
   }
   // A stated setting must be a real one: `--delivery merged` is refused, never read as unset.
@@ -1535,6 +1583,32 @@ function priorObservationsFrom(storeDir: string | undefined): readonly Reputatio
  * An explicit flag always wins: this fills in what the command line left unsaid, and overrides
  * nothing.
  */
+/**
+ * The after-the-handoff dependencies, attached to a run's dependency object.
+ *
+ * WHAT IS HANDED OFF AND WHAT IS OPEN ARE GETTERS OVER THE LOG, not values read once: the autonomy
+ * loop re-spreads the dependencies every cycle, and a value read before cycle 1 would show cycle 2
+ * none of the items cycle 1 raised or settled - so it would raise them again and follow them up twice.
+ */
+export function attachAfterHandoff(deps: Record<string, unknown>, args: Args, feedback: readonly FeedbackDeliveryT[]): void {
+  const store = args.store;
+  if (store !== undefined) {
+    Object.defineProperty(deps, "handedOffChanges", { enumerable: true, configurable: true, get: () => foldHandedOffChanges(readEvents(store)) });
+    Object.defineProperty(deps, "actionItems", { enumerable: true, configurable: true, get: () => foldActionItems(readEvents(store)) });
+  }
+  const cwd = args.git ?? process.cwd();
+  const budget = args.portTimeoutMs === undefined ? {} : { timeoutMs: args.portTimeoutMs };
+  deps["defaultBase"] = args.baseBranch;
+  // HOW MANY CHANGES ARE FOLLOWED UP AT ONCE is the supply the RMO authorized, not a number invented
+  // here: a follow-up is a contributor's session like any other piece of work.
+  if (args.supplyTarget !== undefined && Number.isFinite(args.supplyTarget) && args.supplyTarget > 0) deps["maxFollowUps"] = args.supplyTarget;
+  if (feedback.length > 0) deps["feedback"] = feedback;
+  if (args.changeRequests !== undefined) deps["changeRequests"] = args.changeRequests;
+  if (args.describeCmd !== undefined) deps["describeChange"] = commandDescriber({ command: args.describeCmd, args: args.describeArgs, ...budget }, cwd);
+  if (args.followUpCmd !== undefined) deps["followUp"] = commandFollowUp({ command: args.followUpCmd, args: args.followUpArgs, ...budget }, cwd);
+  if (args.workVerify !== undefined) deps["verifyChange"] = commandVerifier({ command: args.workVerify, args: args.workVerifyArgs, ...budget }, cwd);
+}
+
 export function withOrgDefaults(args: Args, orgId: string, registryJson: string | undefined): { readonly args: Args } | { readonly reason: string } {
   if (registryJson === undefined) return { reason: `no organization registry found — create one with 'org create --id ${orgId} ...'` };
   const parsed = parseRegistry(registryJson);
@@ -1580,6 +1654,11 @@ export function withOrgDefaults(args: Args, orgId: string, registryJson: string 
         ),
         ...args.settings,
       ],
+      ...(args.changeRequests !== undefined
+        ? {}
+        : org.changeRequests === undefined
+          ? {}
+          : { changeRequests: org.changeRequests }),
       // GIT SOURCES ONLY: a tracker or a wiki has no skills directory to read.
       repoSources:
         args.repoSources.length > 0
@@ -2331,6 +2410,24 @@ export async function main(argv: readonly string[]): Promise<number> {
     );
   }
 
+  // ── AFTER THE HANDOFF: WHAT PEOPLE SAID ABOUT WHAT IS ALREADY IN FRONT OF THEM ──
+  // Webhook deliveries filed in the feedback directory, plus whatever a poller of the review system
+  // reports. Both only READ the review system. Each becomes an action item on its work, decided about
+  // by the organization - see `change-followup.ts`.
+  const feedbackDir = args.feedbackDir ?? (args.store === undefined ? undefined : join(args.store, "feedback"));
+  const filed = feedbackDir === undefined ? { deliveries: [], files: [], unreadable: [] } : readFeedbackDir(feedbackDir);
+  for (const name of filed.unreadable) console.log(`  feedback file '${name}' in ${String(feedbackDir)} is not a delivery this organization can read - left in place`);
+  const polled =
+    args.feedbackCmd === undefined || args.store === undefined
+      ? { deliveries: [] }
+      : pollFeedback(
+          { command: args.feedbackCmd, args: args.feedbackArgs, ...(args.portTimeoutMs === undefined ? {} : { timeoutMs: args.portTimeoutMs }) },
+          args.git ?? process.cwd(),
+          foldHandedOffChanges(readEvents(args.store)),
+        );
+  if (polled.refusal !== undefined) console.log(`  ${polled.refusal}`);
+  attachAfterHandoff(runtimeDeps as unknown as Record<string, unknown>, args, [...filed.deliveries, ...polled.deliveries]);
+
   // ── ONE CYCLE, OR UNTIL IT SETTLES ────────────────────────────────────────
   // Absent `--until`, this is the single cycle the CLI has always run. With it, the driver keeps
   // going and reports WHY it stopped — delivered, an escalation halted a task, a cycle changed
@@ -2358,6 +2455,9 @@ export async function main(argv: readonly string[]): Promise<number> {
           runOrgRuntime,
         );
   const report = settled?.last ?? (await runOrgRuntime(runtimeDeps));
+  // Read deliveries are moved aside only once the run that raised them has finished. Raising is
+  // idempotent, so a file read twice costs nothing; a file moved before it was raised would be lost.
+  if (feedbackDir !== undefined) consumeFeedback(feedbackDir, filed.files);
 
   if (args.json) {
     console.log(JSON.stringify(report, null, 2));

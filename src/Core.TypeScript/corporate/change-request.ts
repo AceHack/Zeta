@@ -163,3 +163,15 @@ export function keptOutPaths(paths: readonly string[], keepOut: readonly string[
 export function sectionsBrief(sections: readonly ChangeRequestSection[]): string {
   return sections.map((s) => `## ${s.heading.trim()}\n${s.states.trim()}`).join("\n\n");
 }
+
+/** What the author of a merge request's description is asked to write about. */
+export interface DescribeRequest {
+  readonly workId: string;
+  /** The title the request will carry. */
+  readonly title: string;
+  readonly branch: string;
+  readonly base?: string;
+  /** The change's own checkout, where its diff can be read. */
+  readonly workdir?: string;
+  readonly sections: readonly ChangeRequestSection[];
+}

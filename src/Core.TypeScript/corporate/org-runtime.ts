@@ -114,8 +114,19 @@ import {
   type Pipeline,
   type ProducerPort,
 } from "./pipeline";
-import { Fidelity, fidelityLine, recordingProviders, runFidelityOf, type ChangeHandle, type ChangeProposal, type DataSourcePort, type ProviderSet, type ReviewVerdict, type RunFidelity,
+import { Fidelity, fidelityLine, recordingProviders, runFidelityOf, type ChangeHandle, type ChangeProposal, type DataSourcePort, type PortResult, type ProviderSet, type ReviewVerdict, type RunFidelity,
   fidelityOf,} from "./providers";
+import type { ActionItem, HandedOffChange } from "./org-fold";
+import {
+  acceptedDecisions,
+  correlateFeedback,
+  followUpOrder,
+  type FeedbackDelivery,
+  type FollowUpOutcome,
+  type FollowUpReport,
+  type FollowUpRequest,
+} from "./change-followup";
+import { missingSections, type ChangeRequestConfig, type DescribeRequest } from "./change-request";
 import { autoApproveReview, simulatedChangeControl, simulatedIntake, simulatedTestRunner, simulatedWorkExecutor } from "./adapters";
 import { associateGoal, EMPTY_BOOK, openPortfolio, type PortfolioKind } from "./portfolio";
 import {
@@ -336,6 +347,40 @@ export interface OrgRuntimeDeps extends HumanCheckpointDeps {
    * organization is concerned: it is neither walked again nor proposed a second time.
    */
   readonly alreadyHandedOff?: ReadonlySet<string>;
+  /**
+   * The handed-off changes themselves - branch, review address, base - so an event about one of them
+   * can find its work. Folded from the log by the caller (`foldHandedOffChanges`).
+   */
+  readonly handedOffChanges?: ReadonlyMap<string, HandedOffChange>;
+  /** Every action item raised so far, open and settled, by work id. Folded by the caller (`foldActionItems`). */
+  readonly actionItems?: ReadonlyMap<string, readonly ActionItem[]>;
+  /**
+   * What happened to handed-off changes since the last cycle - comments, updates, a target moving -
+   * from webhooks or a poll of the review system. Each becomes an ACTION ITEM on its work; none is an
+   * instruction. See `change-followup.ts`.
+   */
+  readonly feedback?: readonly FeedbackDelivery[];
+  /** The branch a change targets when its handoff did not record one. */
+  readonly defaultBase?: string;
+  /**
+   * How a finished change is put in front of people - required sections, what it may never add, how
+   * it is kept current. See `change-request.ts`. Absent: the organization's own summary is proposed.
+   */
+  readonly changeRequests?: ChangeRequestConfig;
+  /**
+   * Who WRITES a merge request's description, in the configured sections. An agent's account of the
+   * work, checked mechanically for every section before anything is handed off.
+   */
+  readonly describeChange?: (request: DescribeRequest) => Promise<PortResult<string>>;
+  /**
+   * The session that decides about a handed-off change's open action items - address, decline with a
+   * reason, or leave for later - and, in `resolve` mode, resolves a conflicted sync.
+   */
+  readonly followUp?: (request: FollowUpRequest) => Promise<PortResult<FollowUpOutcome>>;
+  /** Whether a change's checkout still passes after a follow-up changed it. Required before it is handed off again. */
+  readonly verifyChange?: (handle: ChangeHandle) => Promise<PortResult<string>>;
+  /** At most this many handed-off changes are followed up in one cycle. Default 2. */
+  readonly maxFollowUps?: number;
   /**
    * Verdicts from earlier cycles and earlier runs, so a step that PASSED is not walked again.
    *
@@ -637,6 +682,10 @@ export interface OrgRuntimeReport {
   readonly changesDoneUnmerged: readonly string[];
   /** The work ids whose change was handed to people for review in this run - pushed and proposed, never merged. */
   readonly changesHandedOff: readonly string[];
+  /** Action items raised this cycle from feedback on handed-off changes. Optional so older fixtures still type. */
+  readonly actionItemsRaised?: readonly string[];
+  /** Handed-off changes the organization followed up this cycle, and what came of it. */
+  readonly followUps?: readonly FollowUpReport[];
   readonly delivered: boolean;
   /**
    * What happened, as TYPED events — queryable by subject, by actor, and by LINE OF AUTHORITY.
@@ -3637,26 +3686,64 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
     ];
     return { title, description: lines.join(String.fromCharCode(10)), ...(handle.base === undefined ? {} : { base: handle.base }) };
   };
-  const handOff = async (workId: string, handle: ChangeHandle): Promise<void> => {
+  /**
+   * Hand a change to people. `again` is a follow-up re-pushing work already in front of them: it is
+   * reported with the follow-up, never counted as this run's delivery.
+   */
+  const handOff = async (workId: string, handle: ChangeHandle, again = false): Promise<boolean> => {
+    const failed = (reason: string): false => {
+      refusals.push(reason);
+      if (!again) changesUnhandedOff.push(workId);
+      return false;
+    };
     if (providers.change.handoff === undefined) {
-      refusals.push(
+      return failed(
         `change control '${providers.change.meta.name}' cannot hand ${handle.branch} to people for review, ` +
           `and delivery is '${deliveryRule.value ?? "unset"}': the organization does not merge it instead`,
       );
-      changesUnhandedOff.push(workId);
-      return;
     }
-    const handed = await providers.change.handoff(handle, proposalFor(workId, handle));
-    if (!handed.ok) {
-      refusals.push(`change control '${providers.change.meta.name}' could not hand ${handle.branch} to people: ${handed.reason}`);
-      changesUnhandedOff.push(workId);
-      return;
+    const proposal = proposalFor(workId, handle);
+    // ── WHAT THE REQUEST SAYS IS THE ORGANIZATION'S CONVENTION, NOT OURS ─────
+    // MEASURED on the first three merge requests: a list of gate verdicts, where the operator wanted
+    // the problem, whether it reproduced, the root cause, the resolution and how the fix was confirmed.
+    // With sections configured, an agent writes the description from the record and the diff, and
+    // every section is CHECKED before anything is pushed: a request missing one is not handed off.
+    const cr = deps.changeRequests;
+    let description = proposal.description;
+    if (cr !== undefined) {
+      if (deps.describeChange === undefined) {
+        return failed(
+          `merge requests here must carry ${cr.sections.map((x) => x.heading).join(" / ")}, and nothing is configured to write them: ${handle.branch} was not handed off`,
+        );
+      }
+      const written = await deps.describeChange({
+        workId,
+        title: proposal.title,
+        branch: handle.branch,
+        ...(handle.base === undefined ? {} : { base: handle.base }),
+        ...(handle.workdir === undefined ? {} : { workdir: handle.workdir }),
+        sections: cr.sections,
+      });
+      if (!written.ok) return failed(`the merge request for ${workId} could not be written: ${written.reason}`);
+      const missing = missingSections(written.value, cr.sections);
+      if (missing.length > 0) {
+        return failed(`the merge request written for ${workId} does not carry: ${missing.join(", ")} - ${handle.branch} was not handed off`);
+      }
+      description =
+        `${written.value.trim()}\n\n---\n` +
+        "_Opened by the organization for HUMAN REVIEW. Nothing has been merged; integrating this change is a person's decision._";
     }
-    changesHandedOff.push(workId);
+    const handed = await providers.change.handoff(handle, {
+      ...proposal,
+      description,
+      ...(cr === undefined ? {} : { keepOut: cr.keepOut }),
+    });
+    if (!handed.ok) return failed(`change control '${providers.change.meta.name}' could not hand ${handle.branch} to people: ${handed.reason}`);
+    if (!again) changesHandedOff.push(workId);
     note({
       kind: OrgEventKind.ChangeProjected,
       subjectId: workId,
-      decision: `handed to people for review: ${handed.value.url ?? handed.value.branch} - nothing was merged`,
+      decision: `${again ? "updated for review" : "handed to people for review"}: ${handed.value.url ?? handed.value.branch} - nothing was merged`,
       toState: "awaiting_human_review",
       atMs: warmedAt,
       fact: {
@@ -3666,8 +3753,10 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
         branch: handed.value.branch,
         ...(handed.value.url === undefined ? {} : { url: handed.value.url }),
         ...(handed.value.commit === undefined ? {} : { commit: handed.value.commit }),
+        ...(handle.base === undefined ? {} : { base: handle.base }),
       },
     });
+    return true;
   };
   const changes = projectAll({
     cascade,
@@ -3864,6 +3953,201 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
           ...(landed.value.tree === undefined ? {} : { tree: landed.value.tree }),
         },
       });
+    }
+  }
+
+  // ── AFTER THE HANDOFF: WHAT PEOPLE SAID, AND WHAT THE ORGANIZATION DOES ABOUT IT ──────
+  //
+  // A merge request is a conversation, and until this existed the organization handed a change off
+  // and never looked at it again. Feedback (comments, updates, the target moving) is recorded as
+  // ACTION ITEMS on the work it concerns - never as instructions: nothing here re-runs a gate or
+  // reopens a step. The organization then weighs each handed-off change's open items and decides,
+  // item by item, whether to address, decline or defer it; the decision is the session's, and this
+  // only carries the items to it, checks the answer, and does the mechanical halves it asks for
+  // (bringing the change level with its target, verifying, pushing it again). See `change-followup.ts`.
+  const actionItemsRaised: string[] = [];
+  const followUps: FollowUpReport[] = [];
+  if (providers.change.meta.fidelity === Fidelity.Real) {
+    const handedMap = new Map<string, HandedOffChange>(deps.handedOffChanges ?? []);
+    const allItems = new Map<string, ActionItem[]>([...(deps.actionItems ?? new Map<string, readonly ActionItem[]>())].map(([w, v]) => [w, [...v]]));
+    const known = new Set([...allItems.values()].flat().map((i) => i.actionItemId));
+    const raise = (
+      workId: string,
+      actionItemId: string,
+      d: { readonly source: string; readonly itemKind: string; readonly summary: string; readonly detail?: string; readonly url?: string; readonly author?: string },
+    ): void => {
+      // IDEMPOTENT: a webhook retry, or a poll that sees the same comment again, raises nothing new.
+      if (known.has(actionItemId)) return;
+      known.add(actionItemId);
+      note({
+        kind: OrgEventKind.ChangeProjected,
+        subjectId: workId,
+        decision: `action item on ${workId} (${d.itemKind}${d.author === undefined ? "" : ` by ${d.author}`}): ${d.summary.split(/\s+/).join(" ").slice(0, 200)}`,
+        atMs: warmedAt,
+        fact: { kind: "action_item_raised", workId, actionItemId, ...d },
+      });
+      allItems.set(workId, [...(allItems.get(workId) ?? []), { workId, actionItemId, ...d, raisedAtMs: warmedAt }]);
+      actionItemsRaised.push(actionItemId);
+    };
+    const fromDelivery = (x: FeedbackDelivery) => ({
+      source: x.source,
+      itemKind: x.itemKind,
+      summary: x.summary,
+      ...(x.detail === undefined ? {} : { detail: x.detail }),
+      ...(x.url === undefined ? {} : { url: x.url }),
+      ...(x.author === undefined ? {} : { author: x.author }),
+    });
+    /** The change's own checkout, rejoined - never a fresh branch, which would lose what was reviewed. */
+    const reopen = async (workId: string): Promise<ChangeHandle | undefined> => {
+      const h = handedMap.get(workId);
+      const node = nodeById(cascade, workId);
+      if (h === undefined || node === undefined) return undefined;
+      const opened = await providers.change.open(node, { branch: h.branch, ...(h.base === undefined ? {} : { base: h.base }) });
+      if (!opened.ok) {
+        refusals.push(`could not reopen ${h.branch} for ${workId}: ${opened.reason}`);
+        return undefined;
+      }
+      return opened.value;
+    };
+
+    const corr = correlateFeedback(deps.feedback ?? [], handedMap, deps.defaultBase ?? "master");
+    for (const m of corr.aboutChange) raise(m.workId, m.actionItemId, fromDelivery(m.delivery));
+    for (const d of corr.unmatched) {
+      note({
+        kind: OrgEventKind.ChangeProjected,
+        subjectId: goalId,
+        decision: `feedback from ${d.source} (${d.itemKind}) concerns no change this organization handed off - not attached to anything`,
+        atMs: warmedAt,
+      });
+    }
+    // A TARGET THAT MOVED IS MEASURED, NOT ASSUMED: an item is raised only for a change that is
+    // actually behind, so a push that the change already contains asks nobody to do anything.
+    for (const m of corr.targetMoved) {
+      if (known.has(m.actionItemId) || providers.change.syncWithTarget === undefined) continue;
+      const handle = await reopen(m.workId);
+      if (handle === undefined) continue;
+      const at = await providers.change.syncWithTarget(handle, { apply: false });
+      if (!at.ok) {
+        refusals.push(`could not tell whether ${handle.branch} is behind its target: ${at.reason}`);
+        continue;
+      }
+      if (at.value.behindBy === 0) continue;
+      raise(m.workId, m.actionItemId, {
+        ...fromDelivery(m.delivery),
+        itemKind: "behind_target",
+        summary: `${at.value.target} moved ahead: this change is ${String(at.value.behindBy)} commit(s) behind it`,
+      });
+    }
+
+    const followUpOne = async (workId: string, items: readonly ActionItem[]): Promise<FollowUpReport> => {
+      const refused: string[] = [];
+      const handle = await reopen(workId);
+      if (handle === undefined) return { workId, decided: [], handedOffAgain: false, refused: [`could not reopen the change for ${workId}`] };
+      const node = nodeById(cascade, workId);
+      const hatId = node?.assigneeHatId ?? node?.ownerHatId ?? "implementer";
+      const canSync = deps.changeRequests?.sync === "merge_target" && providers.change.syncWithTarget !== undefined;
+      const where = {
+        workId,
+        hatId,
+        branch: handle.branch,
+        ...(handle.base === undefined ? {} : { base: handle.base }),
+        ...(handle.workdir === undefined ? {} : { workdir: handle.workdir }),
+        items,
+        canSync,
+      };
+      const before = providers.change.revision === undefined ? undefined : await providers.change.revision(handle);
+      const triage = await deps.followUp!({ ...where, mode: "triage" });
+      if (!triage.ok) return { workId, decided: [], handedOffAgain: false, refused: [`the follow-up of ${workId} did not complete: ${triage.reason}`] };
+      const { accepted, refused: bad } = acceptedDecisions(items, triage.value.decisions);
+      refused.push(...bad);
+
+      let synced: FollowUpReport["synced"];
+      if (triage.value.syncWithTarget) {
+        if (!canSync) {
+          refused.push("bringing the change up to date was asked for, and this organization only flags a change that is behind (sync: flag_only)");
+        } else {
+          const s = await providers.change.syncWithTarget!(handle, { apply: true });
+          if (!s.ok) {
+            refused.push(`could not bring ${handle.branch} up to date: ${s.reason}`);
+          } else if (s.value.conflicts.length === 0) {
+            synced = s.value;
+          } else {
+            // A CONFLICT IS JUDGEMENT: the merge is left in progress and a session resolves it. If it
+            // does not, the merge is backed out whole - never pushed half-resolved.
+            const resolved = await deps.followUp!({ ...where, mode: "resolve", conflicts: s.value.conflicts });
+            const after = await providers.change.syncWithTarget!(handle, { apply: false });
+            if (!resolved.ok || !after.ok || after.value.behindBy > 0) {
+              await providers.change.abortSync?.(handle);
+              refused.push(`merging ${s.value.target} conflicted in ${s.value.conflicts.join(", ")} and was not resolved - backed out`);
+              synced = { ...s.value, applied: false };
+            } else {
+              synced = { ...s.value, applied: true, conflicts: [] };
+            }
+          }
+        }
+      }
+
+      const afterRev = providers.change.revision === undefined ? undefined : await providers.change.revision(handle);
+      // UNKNOWN IS TREATED AS MOVED: re-verifying a change that did not move costs a run; skipping the
+      // verification of one that did would hand people something nobody checked.
+      const moved = before?.ok === true && afterRev?.ok === true ? before.value.commit !== afterRev.value.commit : true;
+      let handedOffAgain = false;
+      let attempted = false;
+      if (moved) {
+        const verified = deps.verifyChange === undefined
+          ? ({ ok: false, reason: "nothing is configured to verify a followed-up change" } as const)
+          : await deps.verifyChange(handle);
+        if (!verified.ok) refused.push(`the followed-up change was not handed off again - it does not pass verification: ${verified.reason}`);
+        else {
+          attempted = true;
+          handedOffAgain = await handOff(workId, handle, true);
+        }
+      } else if (accepted.some((d) => d.outcome === "addressed")) {
+        // NOTHING MOVED, AND SOMETHING WAS STILL ADDRESSED - an answered question, a description
+        // asked to be rewritten. The request is re-described so what people read matches what the
+        // organization now says about it; no code changed, so nothing needs verifying again.
+        attempted = true;
+        handedOffAgain = await handOff(workId, handle, true);
+      }
+      // AN ITEM IS SETTLED ONLY WHEN WHAT SETTLES IT IS IN FRONT OF PEOPLE: an "addressed" comment on a
+      // change that was then not pushed has been addressed nowhere a reviewer can see.
+      const settleable = moved ? handedOffAgain : !attempted || handedOffAgain;
+      for (const d of accepted) {
+        if (d.outcome === "deferred" || !settleable) continue;
+        note({
+          kind: OrgEventKind.ChangeProjected,
+          subjectId: workId,
+          actorHatId: hatId,
+          decision: `action item ${d.actionItemId} ${d.outcome}: ${d.how.split(/\s+/).join(" ").slice(0, 200)}`,
+          atMs: warmedAt,
+          fact: { kind: "action_item_settled", workId, actionItemId: d.actionItemId, outcome: d.outcome, how: d.how, byHatId: hatId },
+        });
+      }
+      note({
+        kind: OrgEventKind.ChangeProjected,
+        subjectId: workId,
+        actorHatId: hatId,
+        decision:
+          `followed up ${workId}: ${String(accepted.filter((d) => d.outcome !== "deferred").length)} of ${String(items.length)} item(s) decided` +
+          `${synced === undefined ? "" : synced.applied ? `, brought level with ${synced.target}` : ", not brought level"}` +
+          `${handedOffAgain ? ", request updated" : ""}${refused.length === 0 ? "" : ` - ${refused.join("; ")}`}`,
+        atMs: warmedAt,
+      });
+      return { workId, decided: accepted, ...(synced === undefined ? {} : { synced }), handedOffAgain, refused };
+    };
+
+    if (deps.followUp !== undefined) {
+      const open = new Map<string, readonly ActionItem[]>();
+      for (const [w, items] of allItems) {
+        const o = items.filter((i) => i.settled === undefined);
+        if (o.length > 0 && handedMap.has(w)) open.set(w, o);
+      }
+      for (const workId of followUpOrder(open).slice(0, Math.max(0, deps.maxFollowUps ?? 2))) {
+        followUps.push(await followUpOne(workId, open.get(workId) ?? []));
+      }
+    } else if ([...allItems.values()].some((items) => items.some((i) => i.settled === undefined))) {
+      // SAID, not silently kept: open items nobody is configured to look at are work waiting on nobody.
+      refusals.push("handed-off changes have open action items and nothing is configured to follow them up");
     }
   }
 
@@ -4082,6 +4366,8 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
     changesLanded,
     changesDoneUnmerged,
     changesHandedOff,
+    actionItemsRaised,
+    followUps,
     delivered,
     trace,
     events: trace.map(render),

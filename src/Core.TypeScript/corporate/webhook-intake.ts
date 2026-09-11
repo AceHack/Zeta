@@ -56,6 +56,12 @@ export const SignatureScheme = {
   /** Hex digest behind a `<algo>=` prefix, e.g. GitHub's `sha256=…`. */
   HmacSha256Prefixed: "hmac_sha256_prefixed",
   /**
+   * The header carries the shared secret ITSELF, e.g. GitLab's `X-Gitlab-Token`. Weaker than a
+   * signature - the secret travels with every delivery, so the endpoint must be reached over TLS -
+   * and still compared in constant time. Named so it is chosen, never fallen into.
+   */
+  SharedToken: "shared_token",
+  /**
    * NO VERIFICATION — anyone who can reach the endpoint can add work to the organization.
    *
    * It is not refused anywhere, and saying so plainly matters: `verifyDelivery` returns `ok` for it
@@ -108,7 +114,38 @@ export interface WebhookConfig {
   readonly acceptTypes?: readonly string[];
   /** Where the delivery's type lives, e.g. `action` or `type`. Required to use `acceptTypes`. */
   readonly typePath?: string;
+  /**
+   * What a delivery IS to this organization.
+   *
+   *   `intake` (absent)  - new work: filed where intake reads it, the behaviour every hook had.
+   *   `change_feedback`  - something that happened to a change already in front of people (a review
+   *                        comment, the request updated, its target pushed). Filed as a delivery for
+   *                        the after-the-handoff seam, where it becomes an ACTION ITEM on its work -
+   *                        never new work. `map` then names the delivery's fields (see
+   *                        `FEEDBACK_FIELDS`), each a dotted path, with `a|b` taking the first present.
+   */
+  readonly purpose?: "intake" | "change_feedback";
 }
+
+/** The fields a `change_feedback` hook may map. Anything else in its `map` is refused at add time. */
+export const FEEDBACK_FIELDS = ["deliveryId", "itemKind", "summary", "detail", "url", "author", "branch", "changeUrl", "target", "targetCommit"] as const;
+
+/**
+ * GitLab's merge-request events as feedback. Field NAMES only, every one visible in the registry and
+ * overridable: a note carries its text and the request it is on; a push to the target carries `ref`
+ * and `after`, which is what lets the organization measure whether its open requests fell behind.
+ */
+export const GITLAB_FEEDBACK_MAP: readonly string[] = [
+  "itemKind=object_attributes.action|object_kind",
+  "summary=object_attributes.note|object_attributes.title|ref",
+  "detail=object_attributes.note|object_attributes.description",
+  "url=object_attributes.url",
+  "author=user.username|user_username",
+  "branch=merge_request.source_branch|object_attributes.source_branch",
+  "changeUrl=merge_request.url|object_attributes.url",
+  "target=ref",
+  "targetCommit=after",
+];
 
 /**
  * A path that was not configured means "the whole thing", which `atPath` cannot express.
@@ -157,6 +194,15 @@ export function verifyDelivery(input: {
   const offered = input.headers[header];
   if (offered === undefined || offered === "") {
     return { ok: false, reason: `the delivery carried no '${header}' header` };
+  }
+
+  if (config.scheme === SignatureScheme.SharedToken) {
+    // The secret itself, compared through a digest of each side so the comparison is constant-time
+    // AND length-independent: comparing raw buffers would have to reject a length mismatch first,
+    // which leaks the secret's length to anybody patient enough to send a few requests.
+    const a = createHmac("sha256", "shared-token").update(offered.trim(), "utf8").digest();
+    const b = createHmac("sha256", "shared-token").update(secret.trim(), "utf8").digest();
+    return timingSafeEqual(a, b) ? { ok: true } : { ok: false, reason: "the token does not match" };
   }
 
   const digest = createHmac("sha256", secret.trim()).update(input.rawBody, "utf8").digest("hex");
@@ -266,5 +312,70 @@ export function fileDelivery(dir: string, sourceId: string, deliveryId: string, 
   const name = `${sourceId}-${deliveryId}`.replace(SAFE, "-").slice(0, 120);
   const path = join(dir, `${name}.json`);
   writeFileSync(path, `${JSON.stringify(event, null, 2)}\n`, "utf-8");
+  return path;
+}
+
+/**
+ * Turn a verified `change_feedback` delivery into a feedback delivery, or say why not.
+ *
+ * Each mapped field is a dotted path, and `a|b|c` takes the first that is present and not empty -
+ * one provider sends several event shapes to one endpoint, and a note and a push keep their text in
+ * different places. A delivery with no summary or kind is refused: an action item nobody can read is
+ * not an action item.
+ */
+export function acceptFeedbackDelivery(input: {
+  readonly config: WebhookConfig;
+  readonly rawBody: string;
+  readonly headers: Readonly<Record<string, string | undefined>>;
+  readonly readSecret: (path: string) => string | undefined;
+  readonly deliveryId: string;
+}):
+  | { readonly ok: true; readonly delivery: Record<string, string> }
+  | { readonly ok: false; readonly reason: string; readonly status: number } {
+  const verified = verifyDelivery(input);
+  if (!verified.ok) return { ok: false, reason: verified.reason, status: 401 };
+  let parsed: unknown;
+  try {
+    parsed = JSON.parse(input.rawBody);
+  } catch (err) {
+    return { ok: false, reason: `the delivery body is not JSON: ${err instanceof Error ? err.message : String(err)}`, status: 400 };
+  }
+  const { config } = input;
+  if (config.acceptTypes !== undefined && config.acceptTypes.length > 0) {
+    const kind = at(parsed, config.typePath);
+    const named = typeof kind === "string" ? kind : "";
+    if (!config.acceptTypes.includes(named)) return { ok: false, reason: `'${named}' is not one of the accepted types`, status: 200 };
+  }
+  const item = at(parsed, config.itemPath);
+  const out: Record<string, string> = { source: config.sourceId, deliveryId: input.deliveryId };
+  for (const pair of config.map) {
+    const eq = pair.indexOf("=");
+    if (eq <= 0) continue;
+    const field = pair.slice(0, eq).trim();
+    if (!(FEEDBACK_FIELDS as readonly string[]).includes(field)) continue;
+    for (const path of pair.slice(eq + 1).split("|").map((p) => p.trim()).filter((p) => p !== "")) {
+      const v = atPath(item, path);
+      if (typeof v === "string" && v.trim() !== "") {
+        out[field] = v;
+        break;
+      }
+      if (typeof v === "number") {
+        out[field] = String(v);
+        break;
+      }
+    }
+  }
+  if ((out["summary"] ?? "").trim() === "" || (out["itemKind"] ?? "").trim() === "") {
+    return { ok: false, reason: "the mapping produced no summary or kind - check the 'summary=' and 'itemKind=' paths", status: 400 };
+  }
+  return { ok: true, delivery: out };
+}
+
+/** Write an accepted feedback delivery where the organization's next run reads it. Named by its id, so a retry overwrites itself. */
+export function fileFeedback(dir: string, delivery: Record<string, string>): string {
+  mkdirSync(dir, { recursive: true });
+  const name = `${delivery["source"] ?? "hook"}-${delivery["deliveryId"] ?? "delivery"}`.replace(SAFE, "-").slice(0, 120);
+  const path = join(dir, `${name}.json`);
+  writeFileSync(path, `${JSON.stringify(delivery, null, 2)}\n`, "utf-8");
   return path;
 }

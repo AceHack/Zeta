@@ -1,0 +1,216 @@
+/**
+ * corporate/followup-commands.ts — the operator's commands behind the after-the-handoff seams.
+ *
+ * Four seams, each a COMMAND the operator supplies, for the same reason the handoff is one: how a
+ * description is written, how a session decides about feedback, how a checkout is verified and how a
+ * review system is read are the project's knowledge, not the register's.
+ *
+ *   describe   `<cmd> ... describe <workId>` in the change's checkout; prints the path of a markdown
+ *              description on its first line. Told the sections in ORG_MR_SECTIONS.
+ *   follow-up  `<cmd> ... follow-up <workId>` in the change's checkout; prints its decisions as a JSON
+ *              object on its last line. Told the open items in ORG_ACTION_ITEMS.
+ *   verify     the run's own `--work-verify`, re-run in the change's checkout after it moved.
+ *   feedback   `<cmd> ...`, given the handed-off changes on stdin as JSON, prints deliveries as JSON
+ *              lines. Plus a directory webhooks file deliveries into. Both are READS: nothing here
+ *              writes to the review system.
+ *
+ * Every spawn is `shell: false`, nothing untrusted reaches argv, and a command that fails is a
+ * refusal carried back to the runtime - never a default that pretends it succeeded.
+ */
+
+import { spawnSync } from "node:child_process";
+import { existsSync, mkdirSync, readdirSync, readFileSync, renameSync } from "node:fs";
+import { join } from "node:path";
+import type { ActionItem, HandedOffChange } from "./org-fold";
+import type { FeedbackDelivery, FollowUpOutcome, FollowUpRequest, ItemDecision } from "./change-followup";
+import { sectionsBrief, type DescribeRequest } from "./change-request";
+import type { ChangeHandle, PortResult } from "./providers";
+
+export interface CommandSpec {
+  readonly command: string;
+  readonly args: readonly string[];
+  readonly timeoutMs?: number;
+}
+
+const MAX_OUTPUT = 32 * 1024 * 1024;
+
+function run(spec: CommandSpec, extra: readonly string[], cwd: string, env: Record<string, string>, input?: string) {
+  return spawnSync(spec.command, [...spec.args, ...extra], {
+    cwd,
+    env: { ...process.env, ...env },
+    encoding: "utf-8",
+    shell: false,
+    timeout: spec.timeoutMs ?? 3_000_000,
+    maxBuffer: MAX_OUTPUT,
+    ...(input === undefined ? {} : { input }),
+  });
+}
+
+const tail = (t: string | null | undefined): string => String(t ?? "").trim().split(/\r?\n/).slice(-6).join(" | ").slice(0, 600);
+
+/** A description author behind a command. See the module header for its protocol. */
+export function commandDescriber(spec: CommandSpec, fallbackCwd: string): (r: DescribeRequest) => Promise<PortResult<string>> {
+  return async (r) => {
+    const ran = run(spec, ["describe", r.workId], r.workdir ?? fallbackCwd, {
+      ORG_MR_SECTIONS: sectionsBrief(r.sections),
+      ORG_MR_TITLE: r.title,
+      ORG_BRANCH: r.branch,
+      ...(r.base === undefined ? {} : { ORG_BASE: r.base }),
+      ...(r.workdir === undefined ? {} : { ORG_WORKDIR: r.workdir }),
+    });
+    if (ran.error !== undefined) return { ok: false, reason: `'${spec.command}' could not run: ${ran.error.message}` };
+    if (ran.status !== 0) return { ok: false, reason: `the description author exited ${String(ran.status)}: ${tail(ran.stderr)}` };
+    const path = String(ran.stdout ?? "").split(/\r?\n/)[0]?.trim() ?? "";
+    if (path === "" || !existsSync(path)) return { ok: false, reason: `the description author named no readable file (got '${path.slice(0, 200)}')` };
+    return { ok: true, value: readFileSync(path, "utf-8"), evidence: [{ kind: "trace", ref: `description:${path}` }] };
+  };
+}
+
+/** The last line of output that parses as a JSON object. */
+function lastJson(stdout: string | null | undefined): Record<string, unknown> | undefined {
+  const lines = String(stdout ?? "").split(/\r?\n/).map((l) => l.trim()).filter((l) => l.startsWith("{"));
+  for (let i = lines.length - 1; i >= 0; i--) {
+    try {
+      const v = JSON.parse(lines[i] as string) as unknown;
+      if (typeof v === "object" && v !== null && !Array.isArray(v)) return v as Record<string, unknown>;
+    } catch {
+      // not this line
+    }
+  }
+  return undefined;
+}
+
+/** A follow-up session behind a command. See the module header for its protocol. */
+export function commandFollowUp(spec: CommandSpec, fallbackCwd: string): (r: FollowUpRequest) => Promise<PortResult<FollowUpOutcome>> {
+  return async (r) => {
+    const items = r.items.map((i: ActionItem) => ({
+      id: i.actionItemId,
+      kind: i.itemKind,
+      source: i.source,
+      summary: i.summary,
+      ...(i.detail === undefined ? {} : { detail: i.detail }),
+      ...(i.author === undefined ? {} : { author: i.author }),
+      ...(i.url === undefined ? {} : { url: i.url }),
+    }));
+    const ran = run(spec, ["follow-up", r.workId], r.workdir ?? fallbackCwd, {
+      ORG_FOLLOWUP_MODE: r.mode,
+      ORG_ACTION_ITEMS: JSON.stringify(items),
+      ORG_CAN_SYNC: r.canSync ? "1" : "0",
+      ORG_ASSIGNEE: r.hatId,
+      ORG_BRANCH: r.branch,
+      ...(r.base === undefined ? {} : { ORG_BASE: r.base }),
+      ...(r.workdir === undefined ? {} : { ORG_WORKDIR: r.workdir }),
+      ...(r.conflicts === undefined ? {} : { ORG_CONFLICTS: JSON.stringify(r.conflicts) }),
+    });
+    if (ran.error !== undefined) return { ok: false, reason: `'${spec.command}' could not run: ${ran.error.message}` };
+    if (ran.status !== 0) return { ok: false, reason: `the follow-up session exited ${String(ran.status)}: ${tail(ran.stderr)}` };
+    const out = lastJson(ran.stdout);
+    if (out === undefined) return { ok: false, reason: "the follow-up session printed no decisions" };
+    const decisions = Array.isArray(out["decisions"])
+      ? (out["decisions"] as unknown[]).flatMap((d): ItemDecision[] => {
+          if (typeof d !== "object" || d === null) return [];
+          const x = d as Record<string, unknown>;
+          return [{ actionItemId: String(x["id"] ?? x["actionItemId"] ?? ""), outcome: String(x["outcome"] ?? "") as ItemDecision["outcome"], how: String(x["how"] ?? "") }];
+        })
+      : [];
+    return {
+      ok: true,
+      value: { decisions, syncWithTarget: out["syncWithTarget"] === true, summary: String(out["summary"] ?? "") },
+      evidence: [],
+    };
+  };
+}
+
+/** Re-run the work verifier in a change's own checkout. Exit 0 is a pass; anything else is the reason. */
+export function commandVerifier(spec: CommandSpec, fallbackCwd: string): (h: ChangeHandle) => Promise<PortResult<string>> {
+  return async (h) => {
+    const workId = h.changeId.includes("@") ? h.changeId.slice(h.changeId.lastIndexOf("@") + 1) : h.changeId;
+    const ran = run(spec, [workId], h.workdir ?? fallbackCwd, { ORG_BRANCH: h.branch });
+    if (ran.error !== undefined) return { ok: false, reason: `'${spec.command}' could not run: ${ran.error.message}` };
+    return ran.status === 0
+      ? { ok: true, value: tail(ran.stdout), evidence: [{ kind: "trace", ref: `verified:${h.branch}` }] }
+      : { ok: false, reason: `exit ${String(ran.status)}: ${tail(ran.stderr) || tail(ran.stdout)}` };
+  };
+}
+
+/** A delivery that can mean something, or undefined. Fields that do not type-check are dropped, never guessed. */
+export function asDelivery(raw: unknown): FeedbackDelivery | undefined {
+  if (typeof raw !== "object" || raw === null) return undefined;
+  const x = raw as Record<string, unknown>;
+  const str = (k: string): string | undefined => (typeof x[k] === "string" && (x[k] as string).trim() !== "" ? (x[k] as string) : undefined);
+  const deliveryId = str("deliveryId");
+  const source = str("source");
+  const itemKind = str("itemKind");
+  const summary = str("summary");
+  if (deliveryId === undefined || source === undefined || itemKind === undefined || summary === undefined) return undefined;
+  const out: Record<string, string> = { deliveryId, source, itemKind, summary };
+  for (const k of ["detail", "url", "author", "branch", "changeUrl", "target", "targetCommit"]) {
+    const v = str(k);
+    if (v !== undefined) out[k] = v;
+  }
+  return out as unknown as FeedbackDelivery;
+}
+
+/**
+ * The deliveries waiting in the feedback directory, and the files they came from.
+ *
+ * A file holds one delivery or an array of them. One that does not parse is REPORTED, never dropped
+ * in silence: a webhook the organization cannot read is feedback somebody gave and nobody saw.
+ */
+export function readFeedbackDir(dir: string): { readonly deliveries: readonly FeedbackDelivery[]; readonly files: readonly string[]; readonly unreadable: readonly string[] } {
+  if (!existsSync(dir)) return { deliveries: [], files: [], unreadable: [] };
+  const deliveries: FeedbackDelivery[] = [];
+  const files: string[] = [];
+  const unreadable: string[] = [];
+  for (const name of readdirSync(dir).filter((n) => n.endsWith(".json")).sort()) {
+    const path = join(dir, name);
+    try {
+      const parsed = JSON.parse(readFileSync(path, "utf-8")) as unknown;
+      const all = (Array.isArray(parsed) ? parsed : [parsed]).map(asDelivery);
+      if (all.some((d) => d === undefined)) unreadable.push(name);
+      deliveries.push(...all.filter((d): d is FeedbackDelivery => d !== undefined));
+      files.push(path);
+    } catch {
+      unreadable.push(name);
+    }
+  }
+  return { deliveries, files, unreadable };
+}
+
+/** Move read deliveries aside, so the next run starts from what is new. Raising is idempotent either way. */
+export function consumeFeedback(dir: string, files: readonly string[]): void {
+  if (files.length === 0) return;
+  const done = join(dir, "consumed");
+  mkdirSync(done, { recursive: true });
+  for (const f of files) {
+    try {
+      renameSync(f, join(done, f.slice(Math.max(f.lastIndexOf("/"), f.lastIndexOf("\\")) + 1)));
+    } catch {
+      // A file that cannot be moved is read again next time; the log's idempotency absorbs it.
+    }
+  }
+}
+
+/** Ask a poller what happened to the handed-off changes. It is given them on stdin; it prints deliveries as JSON lines. */
+export function pollFeedback(
+  spec: CommandSpec,
+  cwd: string,
+  changes: ReadonlyMap<string, HandedOffChange>,
+): { readonly deliveries: readonly FeedbackDelivery[]; readonly refusal?: string } {
+  if (changes.size === 0) return { deliveries: [] };
+  const ran = run(spec, [], cwd, {}, JSON.stringify({ changes: [...changes.values()] }));
+  if (ran.error !== undefined) return { deliveries: [], refusal: `the feedback poller '${spec.command}' could not run: ${ran.error.message}` };
+  if (ran.status !== 0) return { deliveries: [], refusal: `the feedback poller exited ${String(ran.status)}: ${tail(ran.stderr)}` };
+  const deliveries: FeedbackDelivery[] = [];
+  for (const line of String(ran.stdout ?? "").split(/\r?\n/)) {
+    const t = line.trim();
+    if (!t.startsWith("{")) continue;
+    try {
+      const d = asDelivery(JSON.parse(t));
+      if (d !== undefined) deliveries.push(d);
+    } catch {
+      // a line that is not a delivery is the poller talking
+    }
+  }
+  return { deliveries };
+}

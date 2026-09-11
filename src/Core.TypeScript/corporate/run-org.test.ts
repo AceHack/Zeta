@@ -139,7 +139,8 @@ describe("argument parsing", () => {
       // Every gate unreviewed means AUTO-APPROVE — the register's own long-standing behaviour,
       // which is now an adapter that says so rather than a constant nobody could see.
       reviewQueue: undefined, reviewCmd: undefined, reviewArgs: [],
-      worktrees: undefined, worktreeSetup: undefined, worktreeSetupArgs: [], handoffCmd: undefined, handoffArgs: [], supplyTarget: undefined,
+      worktrees: undefined, worktreeSetup: undefined, worktreeSetupArgs: [], handoffCmd: undefined, handoffArgs: [],
+      describeCmd: undefined, describeArgs: [], followUpCmd: undefined, followUpArgs: [], feedbackDir: undefined, feedbackCmd: undefined, feedbackArgs: [], supplyTarget: undefined,
       // The three ports that had no command-line path until now. Absent still means simulated, and
       // the fidelity block still says so — reaching a tracker, an agent or a model is opt-in.
       reviewModel: undefined, tracker: undefined, trackerItems: undefined,
@@ -591,6 +592,32 @@ describe("A REAL REPOSITORY IS HANDED TO PEOPLE UNLESS SOMEONE SAID MERGE", () =
     expect(merging.some((r) => r.includes("hands finished changes to people"))).toBe(false);
     const handing = argRefusals(parseArgs(["--git", "/r", "--worktrees", "/w", "--handoff-cmd", "node", "--handoff-arg", "mr.cjs"]));
     expect(handing.some((r) => r.includes("hands finished changes to people"))).toBe(false);
+  });
+
+  test("HOW THE REQUEST IS WRITTEN IS REQUIRED: no statement, then no author or no follow-up, are each refused before the run starts", () => {
+    const handing = ["--git", "/r", "--worktrees", "/w", "--handoff-cmd", "node", "--handoff-arg", "mr.cjs"];
+    expect(argRefusals(parseArgs(handing)).some((r) => r.includes("has not said how its merge requests are written") && r.includes("org configure"))).toBe(true);
+    const stated = { ...parseArgs(handing), changeRequests: { sections: [{ heading: "Root cause", states: "why" }], keepOut: [], sync: "merge_target" as const, why: "w" } };
+    const missing = argRefusals(stated);
+    expect(missing.some((r) => r.includes("--describe-cmd") && r.includes("Root cause"))).toBe(true);
+    expect(missing.some((r) => r.includes("--follow-up-cmd"))).toBe(true);
+    const complete = argRefusals({ ...parseArgs([...handing, "--describe-cmd", "node", "--follow-up-cmd", "node"]), changeRequests: stated.changeRequests });
+    expect(complete.some((r) => r.includes("merge request") || r.includes("--follow-up-cmd"))).toBe(false);
+    // An organization that merges its own changes owes none of it.
+    expect(argRefusals(parseArgs(["--git", "/r", "--delivery", "merge"])).some((r) => r.includes("merge requests"))).toBe(false);
+  });
+
+  test("the organization's merge-request statement reaches the run from the registry", () => {
+    const registry = JSON.stringify({
+      version: 1,
+      orgs: [{
+        orgId: "o", name: "O", storeDir: "/s", intake: "greenfield", autonomy: "directed",
+        policy: basePolicy("o", "existing_harness"), sources: [], humanCheckpoints: [], skills: [], createdAtMs: 1,
+        changeRequests: { sections: [{ heading: "Root cause", states: "why" }], keepOut: ["*.png"], sync: "flag_only", why: "w" },
+      }],
+    });
+    const resolved = withOrgDefaults(parseArgs([]), "o", registry);
+    expect("args" in resolved && resolved.args.changeRequests?.sync).toBe("flag_only");
   });
 
   test("a --delivery that is not a value is refused, never read as unset", () => {

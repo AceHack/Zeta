@@ -97,6 +97,60 @@ describe("THE WORLDVIEW IS ASKED FOR — the prompt carries the observe command,
   });
 });
 
+describe("AFTER THE HANDOFF: THE DESCRIPTION AND THE FOLLOW-UP", () => {
+  test("describe: told the organization's sections, reads only, writes the description where the runtime reads it", () => {
+    const r = run(["describe", "task-9"], ok({ description: "## Root cause\nA race." }), {
+      ORG_MR_SECTIONS: "## Root cause\nwhy, with file:line",
+      ORG_MR_TITLE: "AIAGENT-1659: cases not persisted",
+      ORG_BASE: "main",
+    });
+    expect(r.status).toBe(0);
+    const input = r.seen?.input ?? "";
+    expect(input).toContain("## Root cause\nwhy, with file:line");
+    expect(input).toContain("never cite the organization's internal ids");
+    expect(r.seen?.argv).not.toContain("Edit");
+    const path = r.stdout.split(/\r?\n/)[0] as string;
+    expect(path.endsWith(join("task-9", "change_request.md"))).toBe(true);
+    expect(readFileSync(path, "utf-8")).toContain("A race.");
+    r.cleanup();
+  });
+
+  test("describe refuses to run without sections - it would write a request nobody configured", () => {
+    const r = run(["describe", "task-9"], ok({ description: "x" }));
+    expect(r.status).toBe(2);
+    r.cleanup();
+  });
+
+  test("follow-up: the items reach the session, its decisions come back as the last JSON line, and a sync it may not ask for is dropped", () => {
+    const items = JSON.stringify([{ id: "gitlab:n1", kind: "comment", summary: "rename x" }, { id: "gitlab:t@task-9", kind: "behind_target", summary: "main moved" }]);
+    const answer = ok({ decisions: [{ id: "gitlab:n1", outcome: "addressed", how: "renamed" }], syncWithTarget: true, summary: "s" });
+    const flagOnly = run(["follow-up", "task-9"], answer, { ORG_ACTION_ITEMS: items, ORG_CAN_SYNC: "0" });
+    expect(flagOnly.status).toBe(0);
+    expect(flagOnly.seen?.input).toContain("rename x");
+    expect(flagOnly.seen?.input).toContain("bringing the change level is not available here");
+    const last = JSON.parse(flagOnly.stdout.trim().split(/\r?\n/).pop() as string) as { decisions: { id: string }[]; syncWithTarget: boolean };
+    expect(last.decisions.map((d) => d.id)).toEqual(["gitlab:n1"]);
+    expect(last.syncWithTarget).toBe(false);
+    flagOnly.cleanup();
+    const canSync = run(["follow-up", "task-9"], answer, { ORG_ACTION_ITEMS: items, ORG_CAN_SYNC: "1" });
+    expect((JSON.parse(canSync.stdout.trim().split(/\r?\n/).pop() as string) as { syncWithTarget: boolean }).syncWithTarget).toBe(true);
+    canSync.cleanup();
+  });
+
+  test("follow-up in resolve mode is told the conflicted paths and decides nothing about items", () => {
+    const r = run(["follow-up", "task-9"], ok({ decisions: [{ id: "x", outcome: "addressed", how: "h" }], syncWithTarget: true, summary: "resolved" }), {
+      ORG_FOLLOWUP_MODE: "resolve",
+      ORG_CONFLICTS: JSON.stringify(["README.md"]),
+      ORG_CAN_SYNC: "1",
+    });
+    expect(r.seen?.input).toContain("conflicted in: README.md");
+    const last = JSON.parse(r.stdout.trim().split(/\r?\n/).pop() as string) as { decisions: unknown[]; syncWithTarget: boolean };
+    expect(last.decisions).toEqual([]);
+    expect(last.syncWithTarget).toBe(false);
+    r.cleanup();
+  });
+});
+
 describe("A FAILURE IS NEVER FILED AS WORK DONE", () => {
   test("is_error decides, not subtype — the logged-out CLI says 'success' and is an error", () => {
     const r = run(["work", "task-9"], { type: "result", subtype: "success", is_error: true, result: "Not logged in · Please run /login" });
