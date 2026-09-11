@@ -1,0 +1,14 @@
+{
+  "id": "080d048a787c6810a013000801ebb5f0",
+  "at": "2026-09-11T16:31:12.781Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M28MY3WC087G0R001XQ51MF",
+    "type": "task",
+    "title": "Unbounded-growth register — classify every accumulating file and folder bounded vs unbounded, and demand a cost model for the rest",
+    "slug": "unbounded-growth-register-classify-every-accumulating-file-a",
+    "priority": "P2",
+    "filename": "081M28MY3WC087G0R001XQ51MF-unbounded-growth-register-classify-every-accumulating-file-a.md"
+  }
+}

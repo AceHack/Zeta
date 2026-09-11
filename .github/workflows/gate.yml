@@ -2793,6 +2793,37 @@ jobs:
       # a skip token BUILT by `echo` into `git commit --file=-` — was folded into AH002
       # itself rather than shipped as a third overlapping check.
 
+      - name: Unbounded-growth register (bounded vs unbounded per file and per folder)
+        id: unbounded_growth_register
+        # Aaron 2026-09-11: "basically we are trying to track bounded vs unbounded growth per
+        # file / folder, and for anything that is unbounded forever that's a huge smell ...
+        # anything that is unbounded history, we need a scaling and cost model, or else it's
+        # unfounded and will fall over eventually."
+        #
+        # LIVES IN THIS JOB BECAUSE THIS JOB HAS HISTORY. `lint-structural-hygiene` is the one
+        # gate job that checks out with `fetch-depth: 0`; every other job is shallow, and in a
+        # shallow clone this audit's own liveness floor refuses -- "the history walk saw 1
+        # commit ... a check that inspected nothing is not a check that passed." That refusal
+        # is CORRECT and is not softened: it was landing in `lint (bash retirement ...)`, which
+        # fetches depth 1, so the audit could never run there. Moved rather than given a
+        # bounded `--deepen`, because a truncated walk produces UNDERCOUNTED versions and every
+        # pinned ceiling would then be measured against a number that is quietly wrong.
+        #
+        # Walks HEAD's history once (no network, no refs beyond the checked-out tip, so the
+        # verdict is a function of the repository) and checks `registry/unbounded-growth-
+        # register.json`. It REPORTS hot paths, unfounded rows, retired rows, and the
+        # bounded-at-tip/unbounded-in-history class; it FAILS only when a registered path
+        # crosses the ceiling somebody consciously set for it.
+        #
+        # DRIFT TIER, deliberately and for a specific reason: `memory/MEMORY.md` is a live
+        # surface that would trip the ratchet during an ordinary day's work, and a check that
+        # blocks main for doing the expected thing gets disabled rather than obeyed.
+        #
+        # NOT a disapproval list. The register is an OPTIMIZATION RECORD -- in a perfect world
+        # you keep every version of everything, and this is where we wrote down where we chose
+        # to pay instead.
+        run: bun run hygiene:unbounded-growth-register
+
   lint-no-empty-dirs:
     # Fail if a committed directory has no files — almost always a
     # forgotten artefact (an agent-created skill folder without a

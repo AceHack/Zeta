@@ -60,6 +60,7 @@
     "hygiene:no-hand-rolled-io": "bun ./src/Core.TypeScript/hygiene/lint-hand-rolled-io.ts src/Core.TypeScript .github/workflows tools .claude --min-files 2000 --baseline src/Core.TypeScript/hygiene/lint-hand-rolled-io.baseline.json",
     "hygiene:no-check-then-use-file-races": "bun ./src/Core.TypeScript/hygiene/lint-check-then-use-file-races.ts . --min-files 3400 --baseline src/Core.TypeScript/hygiene/lint-check-then-use-file-races.baseline.json",
     "hygiene:no-ambient-time-in-tests": "bun ./src/Core.TypeScript/hygiene/audit-ambient-time-in-tests.ts",
+    "hygiene:unbounded-growth-register": "bun ./src/Core.TypeScript/hygiene/audit-single-file-rewrite-churn.ts",
     "hygiene:check-arity": "bun ./src/Core.TypeScript/hygiene/audit-check-arity.ts",
     "hygiene:check-arity-nonequality": "bun ./src/Core.TypeScript/hygiene/audit-check-arity-nonequality.ts",
     "hygiene:scan-floor-routes": "bun ./src/Core.TypeScript/hygiene/audit-scan-floor-routes.ts",
