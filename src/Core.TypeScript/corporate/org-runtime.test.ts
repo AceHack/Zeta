@@ -956,3 +956,50 @@ describe("THE PROCESS DECIDES WHERE WORK BRANCHES — through the runtime, not b
   // close it is an end-to-end run over real git where a feature branch actually lands.
 });
 
+
+describe("THE ORGANIZATION'S OWN ANSWER TO AN UNREPRODUCED DEFECT reaches the work", () => {
+  // Intake can admit a defect with its reproduction OWED — but that is worth nothing unless the
+  // runtime passes the setting to triage AND the agent is told the reproduction is its first job.
+  const unreproduced: ExternalEvent = {
+    source: "jira",
+    externalId: "AIAGENT-1658",
+    kind: IntakeKind.Defect,
+    title: "archiving a non-latest session closes the latest instead",
+    body: "When you have multiple sessions and you archive one that isn't the most recent, it closes the last one.",
+    parentExternalId: "AIAGENT-796",
+    parentTitle: "Dev Portal catch-all",
+    severity: Severity.Medium,
+    evidenceRefs: ["https://example.atlassian.net/browse/AIAGENT-1658"],
+  };
+  const reproduceFirst: SettingBinding = {
+    setting: ProcessSetting.UnreproducedDefects,
+    value: "reproduce_first",
+    why: "our defect practice starts by reproducing — we do not bounce the ticket back",
+  };
+
+  test("unset, it is refused — and the refusal is a fact", async () => {
+    const events: OrgEvent[] = [];
+    const report = await runOrgRuntime(deps({ externalEvents: [unreproduced], onEvent: (e) => events.push(e) }));
+    expect(report.cascade.nodes.length).toBe(0);
+    expect(events.some((e) => e.fact?.kind === "intake_refused")).toBe(true);
+  }, 60_000);
+
+  test("with `reproduce_first`, it is admitted, and EVERY RUNG is told what the requester wrote", async () => {
+    const report = await runOrgRuntime(deps({ externalEvents: [unreproduced], settings: [reproduceFirst] }));
+    expect(report.cascade.nodes.length).toBeGreaterThan(0);
+    for (const n of report.cascade.nodes) {
+      expect(n.brief).toContain("closes the last one");
+      // The parent the ticket was filed under — what branching settings key on.
+      expect(n.brief).toContain("AIAGENT-796");
+      // …and the obligation, so the agent reproduces before it fixes.
+      expect(n.brief).toContain("No reproduction was supplied");
+    }
+  }, 60_000);
+
+  test("a defect that CAME with a reproduction is not told it owes one", async () => {
+    const withSteps: ExternalEvent = { ...unreproduced, externalId: "AIAGENT-1", reproduction: "1. archive session 2 of 3" };
+    const report = await runOrgRuntime(deps({ externalEvents: [withSteps], settings: [reproduceFirst] }));
+    expect(report.cascade.nodes.length).toBeGreaterThan(0);
+    expect(report.cascade.nodes.every((n) => !(n.brief ?? "").includes("No reproduction was supplied"))).toBe(true);
+  }, 60_000);
+});

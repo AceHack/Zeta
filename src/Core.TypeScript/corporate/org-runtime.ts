@@ -78,7 +78,7 @@ import {
   collectionsReadyToLand,
   integrationFor,
 } from "./branch-topology";
-import type { SettingBinding } from "./practice";
+import { ProcessSetting, resolveSetting, type SettingBinding } from "./practice";
 import {
   advanceAll,
   beginBinding,
@@ -96,6 +96,7 @@ import {
   type ExternalEvent,
   type IntakeItem,
   type IntakeRefusal,
+  type UnreproducedPolicy,
   externalRefOf,
 } from "./intake";
 import { bindWearerToLoop } from "./loop-policy";
@@ -744,6 +745,37 @@ export function defaultProviderSet(deps: {
  * the order it happens. Splitting it into ten helpers would hide the one thing it exists to show —
  * that these modules compose.
  */
+/**
+ * What an agent working this item is told the requester wrote — the whole ticket.
+ *
+ * The body when there is one (description and every comment), the reproduction when it is all
+ * there is, the tracker parent it was filed under, and — when the reproduction is OWED — a line
+ * saying so, because an agent not told the reproduction is its first job will start on a fix for
+ * a defect nobody has observed.
+ */
+export function briefOf(item: IntakeItem): string | undefined {
+  const parts: string[] = [];
+  if (item.body !== undefined && item.body !== "") parts.push(item.body);
+  else if (item.reproduction !== undefined && item.reproduction !== "") parts.push(item.reproduction);
+  if (item.parentExternalId !== undefined) {
+    parts.push(`Filed under ${item.parentExternalId}${item.parentTitle === undefined ? "" : ` — ${item.parentTitle}`}.`);
+  }
+  if (item.reproductionOwed === true) {
+    parts.push(
+      "No reproduction was supplied with this ticket. Establishing one — as a test that fails " +
+        "before the fix — is the first step. If it cannot be established, say what was tried and " +
+        "ask, rather than fixing a defect nobody has observed.",
+    );
+  }
+  return parts.length === 0 ? undefined : parts.join("\n\n");
+}
+
+/** The organization's `unreproduced_defects` setting, or the register's refusal when unset. */
+export function unreproducedPolicyOf(settings: readonly SettingBinding[] | undefined): UnreproducedPolicy {
+  const v = resolveSetting(settings ?? [], ProcessSetting.UnreproducedDefects, []).value;
+  return v === "reproduce_first" ? "reproduce_first" : "refuse";
+}
+
 export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeReport> {
   // The ports, resolved ONCE. Defaulting here rather than at each call site means one place decides
   // what this run is touching, and one place reports it.
@@ -819,7 +851,14 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
   if (!polled.ok) refusals.push(`intake source '${providers.intake.meta.name}': ${polled.reason}`);
   const inbound = polled.ok ? polled.value : [];
   for (const raw of inbound) {
-    const r = receive(raw, { itemId: deps.createId("in"), nowMs: deps.nowMs, seen });
+    const r = receive(raw, {
+      itemId: deps.createId("in"),
+      nowMs: deps.nowMs,
+      seen,
+      // THE ORGANIZATION'S OWN ANSWER to "what about a defect nobody reproduced yet". Unset keeps
+      // the register's refusal; `reproduce_first` admits it with the reproduction owed.
+      unreproduced: unreproducedPolicyOf(deps.settings),
+    });
     if (!r.ok) {
       refusedIntake.push(r.refusal);
       refusals.push(`intake: ${r.refusal.reason} — ${r.refusal.message}`);
@@ -1112,9 +1151,10 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
       // went no further than the intake item — so the organization could not answer "what did we
       // do about this request" from its own work, in any run.
       requestRef: item.externalRef,
-      // WHAT THE REQUESTER WROTE, carried past intake. Without it every agent working this goal
-      // knows only its one-line title and asks for detail the person already supplied.
-      ...(item.reproduction === undefined ? {} : { brief: item.reproduction }),
+      // WHAT THE REQUESTER WROTE, carried past intake — THE WHOLE TICKET. This line used to read
+      // `brief: item.reproduction` under this same comment, so an agent got the steps and never
+      // the impact, the session id, or the reporter's suspected cause. Measured on AIAGENT-1659.
+      ...((b) => (b === undefined ? {} : { brief: b }))(briefOf(item)),
     });
     if (!goal.ok) {
       // ONE refusal, not the whole run. A goal the chart will not accept is that item's problem;
@@ -1142,7 +1182,7 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
         // ON THE FACT TOO, or a replayed organization loses what the requester said and its agents
         // start asking for detail the person supplied at intake. The round-trip test is what
         // catches this: the run held a brief the fold did not.
-        ...(item.reproduction === undefined ? {} : { brief: item.reproduction }),
+        ...((b) => (b === undefined ? {} : { brief: b }))(briefOf(item)),
       },
     });
   }

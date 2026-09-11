@@ -21,6 +21,19 @@
  */
 
 /** Exit codes. An agent reads these before it reads stdout. */
+import { ProcessSetting, SETTING_VALUES } from "./practice";
+
+/**
+ * The setting names and every legal value, DERIVED from the roster rather than restated.
+ *
+ * Both were literals while there was one setting, and adding a second would have left the CLI
+ * refusing its name — a surface listing fewer knobs than exist is the same defect as one listing
+ * more. Per-setting validity is still `validateSetting`'s; this only stops the parser refusing a
+ * value that some OTHER setting accepts.
+ */
+const SETTING_NAMES: readonly string[] = Object.values(ProcessSetting);
+const SETTING_VALUE_NAMES: readonly string[] = [...new Set(Object.values(SETTING_VALUES).flat())];
+
 export const Exit = {
   Ok: 0,
   /** The command ran and the organization declined. Not a failure of the CLI. */
@@ -195,8 +208,8 @@ export const COMMANDS: readonly CommandSpec[] = [
     then: "Scope it with --for, which takes a work id OR a ticket key. `integration_branch=direct` on a stabilization epic sends its children straight to the trunk; unset, the shape decides. Shown by `org practice list` with the rest of the process.",
     flags: [
       ORG_FLAG,
-      { name: "--setting", what: "Which knob. Refused if it is not one this register knows.", required: true, takesValue: true, oneOf: ["integration_branch"] },
-      { name: "--value", what: "Its value. Refused if it is not one this setting accepts.", required: true, takesValue: true, oneOf: ["collect", "direct"] },
+      { name: "--setting", what: "Which knob. Refused if it is not one this register knows.", required: true, takesValue: true, oneOf: SETTING_NAMES },
+      { name: "--value", what: "Its value. Refused if it is not one this setting accepts.", required: true, takesValue: true, oneOf: SETTING_VALUE_NAMES },
       { name: "--why", what: "Why the process works this way here. A knob with no reason is indistinguishable from a typo.", required: true, takesValue: true },
       { name: "--for", what: "A work id or ticket key this applies to, and everything under it. Omit for organization-wide.", takesValue: true },
       JSON_FLAG,
@@ -209,7 +222,7 @@ export const COMMANDS: readonly CommandSpec[] = [
     then: "Removed rather than suppressed: unset means the default decides, which is what removing this returns the item to.",
     flags: [
       ORG_FLAG,
-      { name: "--setting", what: "Which knob to unset.", required: true, takesValue: true, oneOf: ["integration_branch"] },
+      { name: "--setting", what: "Which knob to unset.", required: true, takesValue: true, oneOf: SETTING_NAMES },
       { name: "--for", what: "The scope to unset it at. Omit for organization-wide.", takesValue: true },
       JSON_FLAG,
     ],

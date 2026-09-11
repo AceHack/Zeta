@@ -84,7 +84,7 @@ import {
   shardHolder,
   traceHealth,
 } from "./org-status";
-import { atPath, externalRefOf, headersFrom, IntakeKind, Severity, normalize, trackerMapper, type ExternalEvent } from "./intake";
+import { atPath, externalRefOf, headerSourceFrom, inlineCredentialHeaders, IntakeKind, Severity, normalize, trackerMapper, type ExternalEvent } from "./intake";
 // Re-exported where they used to live, so no caller has to move with them. They are INTAKE
 // concerns — somebody else's JSON becoming an `ExternalEvent` — and a webhook receiver needs
 // the same mapping without importing the whole runner.
@@ -162,6 +162,7 @@ import { GateKind, GateOutcome, NO_PROPOSER, ORDERED_GATES, type HumanCheckpoint
 import { readActions } from "./action-queue";
 import { groom } from "./grooming";
 import { confluenceSource } from "./confluence-source";
+import { jiraIntake } from "./jira-source";
 import { resolve as resolveSkill, type Resolution, type SkillBinding } from "./skill-binding";
 import { orgById, parseRegistry, runReadinessOf } from "./org-registry";
 import { HumanActionKind, type HumanAction } from "./human-action";
@@ -323,6 +324,7 @@ export const KNOWN_FLAGS: ReadonlySet<string> = new Set([
   "--review-model", "--review-queue", "--room-arg", "--room-cmd", "--rooms", "--source-repo",
   "--source-subdir", "--store", "--study-arg", "--study-cmd", "--test-arg", "--test-cmd",
   "--confluence-auth-file", "--confluence-space", "--confluence-cql", "--confluence-limit",
+  "--jira-auth-file", "--jira-jql", "--jira-limit",
   "--tracker", "--tracker-header", "--tracker-items", "--tracker-map", "--tracker-severity",
   "--tracker-source", "--until", "--week", "--window-start", "--window-target", "--work-agent",
   "--work-agent-arg", "--work-arg", "--work-cmd", "--work-model", "--work-verify",
@@ -363,7 +365,7 @@ export const FLAG_ALIASES: Readonly<Record<string, string>> = {
   "--at": "--now",
   "--time": "--now",
   "--date": "--now",
-  "--jira": "--tracker",
+  "--jira": "--jira-auth-file",
   "--out": "--store",
   "--output": "--store",
   "--dir": "--store",
@@ -662,6 +664,14 @@ export interface Args {
   /** A CQL expression, when the caller knows exactly which pages matter. */
   readonly confluenceCql: string | undefined;
   readonly confluenceLimit: number | undefined;
+  /**
+   * PATH to the Jira credentials file — never a token. With `jiraJql`, intake is the whole-ticket
+   * Jira reader: description, every comment, and the parent the branching settings key on.
+   */
+  readonly jiraAuthFile: string | undefined;
+  /** Which issues this organization takes. Configuration, never built from a ticket's own text. */
+  readonly jiraJql: string | undefined;
+  readonly jiraLimit: number | undefined;
 }
 
 /**
@@ -759,6 +769,9 @@ export function parseArgs(argv: readonly string[]): Args {
     repoSources: [],
     settings: [],
     confluenceAuthFile: valueAfter(argv, "--confluence-auth-file"),
+    jiraAuthFile: valueAfter(argv, "--jira-auth-file"),
+    jiraJql: valueAfter(argv, "--jira-jql"),
+    jiraLimit: ((v) => (v === undefined ? undefined : Number.parseInt(v, 10)))(valueAfter(argv, "--jira-limit")),
     confluenceSpaces: valuesAfter(argv, "--confluence-space"),
     confluenceCql: valueAfter(argv, "--confluence-cql"),
     confluenceLimit: ((v) => (v === undefined ? undefined : Number.parseInt(v, 10)))(
@@ -878,6 +891,21 @@ export function argRefusals(args: Args): readonly string[] {
   }
   if (args.workVerify !== undefined && args.workAgent === undefined && args.workModel === undefined) {
     out.push("--work-verify was given with nothing to verify: add --work-agent or --work-model");
+  }
+  for (const name of inlineCredentialHeaders(args.trackerHeaders)) {
+    // ARGV IS WORLD-READABLE. Refused, not warned: a run that starts has already leaked it.
+    out.push(`--tracker-header ${name} carries a credential by value, and argv is readable by every process on the machine — write it to a file and pass ${name}:@<path>`);
+  }
+  if ((args.jiraAuthFile === undefined) !== (args.jiraJql === undefined)) {
+    // HALF a Jira source is not one. Credentials with no query would read nothing; a query with no
+    // credentials cannot be sent. Either way the run would look configured and take no work.
+    out.push("--jira-auth-file and --jira-jql come as a pair: the file says who is asking, the JQL says which issues this organization takes");
+  }
+  if (args.jiraAuthFile !== undefined && args.tracker !== undefined) {
+    out.push("--jira-auth-file and --tracker both name the intake; supply one, because work can only have arrived one way");
+  }
+  if (args.jiraLimit !== undefined && (Number.isNaN(args.jiraLimit) || args.jiraLimit < 1)) {
+    out.push("--jira-limit takes a positive count");
   }
   return out;
 }
@@ -1198,12 +1226,21 @@ export function providersFromArgs(args: Args, events: readonly ExternalEvent[], 
   const budget = args.portTimeoutMs === undefined ? {} : { timeoutMs: args.portTimeoutMs };
   return {
     intake:
-      args.tracker !== undefined
+      // THE WHOLE-TICKET READER when Jira is named. `--jira` used to alias the generic field-map
+      // tracker, which read four fields and no thread — so the org's own `read-the-whole-ticket`
+      // directive was unfollowable from the one path real tickets arrive by.
+      args.jiraAuthFile !== undefined && args.jiraJql !== undefined
+        ? jiraIntake({
+            credentialsPath: args.jiraAuthFile,
+            jql: args.jiraJql,
+            ...(args.jiraLimit === undefined ? {} : { maxResults: args.jiraLimit }),
+          })
+        : args.tracker !== undefined
         ? httpIntake({
             url: args.tracker,
             ...(args.trackerItems === undefined ? {} : { itemsAt: (body) => atPath(body, args.trackerItems ?? "") }),
             mapper: trackerMapper(args.trackerSource, args.trackerMap, args.trackerSeverity),
-            headers: headersFrom(args.trackerHeaders),
+            headers: headerSourceFrom(args.trackerHeaders),
           })
         : args.inbox === undefined
           ? simulatedIntake(events)

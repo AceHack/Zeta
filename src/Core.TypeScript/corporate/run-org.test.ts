@@ -11,7 +11,7 @@ import { execFileSync } from "node:child_process";
 import { mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { fidelityOf, Port } from "./providers";
+import { Fidelity, fidelityOf, Port } from "./providers";
 import { WorkState, WorkType as WorkTypeValue, type CascadeNode } from "./goal-cascade";
 import { artifactProducersFromArgs, churnThresholdFor, gateAttemptsFor, hasSource, main, parseArgs, PRE_CODE_GATES, providersFromArgs, trackerMapper, KNOWN_FLAGS, unknownFlags} from "./run-org";
 import { RunOutcome } from "./qa";
@@ -144,6 +144,7 @@ describe("argument parsing", () => {
       trackerHeaders: [], trackerMap: [], trackerSource: "tracker", trackerSeverity: [],
       workAgent: undefined, workModel: undefined, until: undefined, windowStart: undefined, windowTarget: undefined, now: undefined, agentDelivers: false, sourceRepos: [], sourceSubdir: undefined,
       confluenceAuthFile: undefined, confluenceSpaces: [], confluenceCql: undefined, confluenceLimit: undefined,
+      jiraAuthFile: undefined, jiraJql: undefined, jiraLimit: undefined,
       skillBindings: [], workAgentArgs: [], workVerify: undefined, workVerifyArgs: [],
       // The process layer, empty by default: an organization states its own, and one that has
       // stated nothing follows the register's few defaults rather than these fields.
@@ -586,5 +587,80 @@ describe("PROVIDERS ARE CHOSEN AT THE COMMAND LINE, and never fall back", () => 
     );
     expect(r.ok).toBe(true);
     if (r.ok) expect(r.value.artifacts).toEqual(["-e", "process.exit(0)", "task-9"]);
+  });
+});
+
+describe("JIRA REACHES THE ORGANIZATION THROUGH THE WHOLE-TICKET READER, and no secret rides in argv", () => {
+  // MEASURED on the first real run: `--jira` aliased the generic field-map tracker, so the org never
+  // read a comment or a parent; and that tracker authenticated with an `authorization` header BY
+  // VALUE on the command line.
+  const { argRefusals, FLAG_ALIASES } = require("./run-org") as typeof import("./run-org");
+  const { headerSourceFrom, inlineCredentialHeaders } = require("./intake") as typeof import("./intake");
+  const { httpIntake } = require("./adapters") as typeof import("./adapters");
+
+  test("--jira-auth-file with --jira-jql makes intake the Jira reader, carrying the JQL", () => {
+    const p = providersFromArgs(parseArgs(["--jira-auth-file", "/nowhere/creds.json", "--jira-jql", "key = AIAGENT-1659"]), [], RunOutcome.Passed);
+    expect(p.intake.meta.name).toBe("jira");
+    expect(p.intake.meta.describes).toContain("key = AIAGENT-1659");
+    expect(p.intake.meta.fidelity).toBe(Fidelity.Real);
+  });
+
+  test("`--jira` means the Jira reader now, not the field-map tracker", () => {
+    expect(FLAG_ALIASES["--jira"]).toBe("--jira-auth-file");
+  });
+
+  test("half a Jira source is refused, either half", () => {
+    expect(argRefusals(parseArgs(["--jira-auth-file", "/c.json"])).some((r) => r.includes("--jira-jql"))).toBe(true);
+    expect(argRefusals(parseArgs(["--jira-jql", "key = X"])).some((r) => r.includes("--jira-auth-file"))).toBe(true);
+    expect(argRefusals(parseArgs(["--jira-auth-file", "/c.json", "--jira-jql", "key = X"]))).toEqual([]);
+  });
+
+  test("Jira and a generic tracker together are refused — work arrives one way", () => {
+    const r = argRefusals(parseArgs(["--jira-auth-file", "/c.json", "--jira-jql", "k", "--tracker", "https://t"]));
+    expect(r.some((x) => x.includes("--tracker"))).toBe(true);
+  });
+
+  test("A CREDENTIAL HEADER BY VALUE IS REFUSED; by @file it is accepted", () => {
+    const inline = argRefusals(parseArgs(["--tracker", "https://t", "--tracker-header", "authorization: Basic c2VjcmV0"]));
+    expect(inline.some((x) => x.includes("authorization:@<path>"))).toBe(true);
+    // The refusal names the header and never repeats its value.
+    expect(inline.join(" ")).not.toContain("c2VjcmV0");
+    expect(argRefusals(parseArgs(["--tracker", "https://t", "--tracker-header", "authorization:@/secrets/jira"]))).toEqual([]);
+    expect(argRefusals(parseArgs(["--tracker", "https://t", "--tracker-header", "x-trace: 1"]))).toEqual([]);
+    expect(inlineCredentialHeaders(["X-Api-Key: k", "cookie: a=b", "private-token: t", "accept: json"])).toEqual(["X-Api-Key", "cookie", "private-token"]);
+  });
+
+  test("an @file header is READ AT CALL TIME — a rotated token applies on the next poll", () => {
+    const dir = mkdtempSync(join(tmpdir(), "hdr-"));
+    try {
+      const f = join(dir, "auth");
+      writeFileSync(f, "Basic one\n");
+      const headers = headerSourceFrom([`authorization:@${f}`, "x-trace: 1"]);
+      expect(headers()).toEqual({ authorization: "Basic one", "x-trace": "1" });
+      writeFileSync(f, "Basic two");
+      expect(headers()["authorization"]).toBe("Basic two");
+      writeFileSync(f, "  ");
+      expect(() => headers()).toThrow(/empty/);
+      expect(() => headerSourceFrom([`authorization:@${join(dir, "missing")}`])()).toThrow(/cannot read/);
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
+  test("...and the per-poll value is what the request actually sends", async () => {
+    let n = 0;
+    const seen: string[] = [];
+    const src = httpIntake({
+      url: "https://tracker.invalid/items",
+      mapper: () => { throw new Error("no items expected"); },
+      headers: () => ({ authorization: `Bearer ${String(++n)}` }),
+      fetchImpl: (async (_u: string | URL, init?: RequestInit) => {
+        seen.push(String((init?.headers as Record<string, string>)["authorization"]));
+        return new Response("[]", { status: 200 });
+      }) as typeof fetch,
+    });
+    await src.poll();
+    await src.poll();
+    expect(seen).toEqual(["Bearer 1", "Bearer 2"]);
   });
 });

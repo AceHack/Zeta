@@ -321,6 +321,17 @@ export const ProcessSetting = {
    * collect. What separates them is coherence, which no property of the cascade exposes.
    */
   IntegrationBranch: "integration_branch",
+  /**
+   * What happens to a defect that arrives with no reproduction.
+   *
+   *   `refuse`          — declined at intake, visibly. The register's original position.
+   *   `reproduce_first` — admitted, with establishing a reproduction as the first obligation.
+   *
+   * UNSET means `refuse`. Measured on the Agentic Team's first real run: `refuse` bounced four of
+   * five live tickets, including one whose summary IS its reproduction and three that are
+   * investigations — for an organization whose own defect practice says "reproduce it first".
+   */
+  UnreproducedDefects: "unreproduced_defects",
 } as const;
 export type ProcessSetting = (typeof ProcessSetting)[keyof typeof ProcessSetting];
 
@@ -333,6 +344,7 @@ export type ProcessSetting = (typeof ProcessSetting)[keyof typeof ProcessSetting
  */
 export const SETTING_VALUES: Readonly<Record<ProcessSetting, readonly string[]>> = {
   [ProcessSetting.IntegrationBranch]: ["collect", "direct"],
+  [ProcessSetting.UnreproducedDefects]: ["refuse", "reproduce_first"],
 };
 
 export interface SettingBinding {

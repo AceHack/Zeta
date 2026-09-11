@@ -440,7 +440,11 @@ export function httpIntake(input: {
    * which is how a signature grows something unfalsifiable.
    */
   readonly mapper: (item: unknown) => ExternalEvent;
-  readonly headers?: Readonly<Record<string, string>>;
+  /**
+   * Static headers, or a function computing them PER POLL — which is how a credential read from a
+   * file at call time reaches the request without ever being a value in argv.
+   */
+  readonly headers?: Readonly<Record<string, string>> | (() => Readonly<Record<string, string>>);
   readonly timeoutMs?: number;
   readonly name?: string;
   readonly fetchImpl?: typeof fetch;
@@ -458,8 +462,9 @@ export function httpIntake(input: {
       const timer = setTimeout(() => controller.abort(), input.timeoutMs ?? 30_000);
       let body: unknown;
       try {
+        const headers = typeof input.headers === "function" ? input.headers() : input.headers;
         const res = await doFetch(input.url, {
-          headers: { accept: "application/json", ...input.headers },
+          headers: { accept: "application/json", ...headers },
           signal: controller.signal,
         });
         if (!res.ok) {
