@@ -1,0 +1,12 @@
+{
+  "pr_number": 17293,
+  "archive_path": "docs/history/pr-reviews/2026/09/11/PR-17293-feat-081m28x3e6e087g0r001q58wvj-gate-selects-jobs-from-the-build-graph-not-from-.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-11T23:05:04.041Z",
+  "schema_version": "v1",
+  "commit_sha": "97f3ba813ec4b014c2029e13bb482a11ae88289b",
+  "title": "feat(081M28X3E6E087G0R001Q58WVJ): gate selects jobs from the build graph, not from hand-written path filters",
+  "state": "MERGED",
+  "merged_at": "2026-09-11T23:04:21Z",
+  "head_ref": "shadow/gate-selects-jobs-from-the-graph"
+}
