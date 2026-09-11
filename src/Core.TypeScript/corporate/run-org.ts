@@ -139,6 +139,7 @@ import { isLeafType, WorkType as WorkTypeValue } from "./goal-cascade";
 import { associateGoal, EMPTY_BOOK, openPortfolio, PortfolioKind, retirePortfolio } from "./portfolio";
 import { appendEvent, appendRun, deliveryRate, logHighWater, readEvents } from "./org-store";
 import { runUntilSettled } from "./autonomy";
+import { humanRejectionEvents, humanRejectionsToRecord } from "./human-verdicts";
 import type { ChangeRequestConfig } from "./change-request";
 import type { FeedbackDelivery as FeedbackDeliveryT } from "./change-followup";
 import {
@@ -168,7 +169,7 @@ import { foldHatsWorn,
   foldActionItems, foldHandedOffChanges, foldLandedChanges, foldObserveActTicks, foldPresence } from "./org-fold";
 import { emit } from "./org-event";
 import type { AgentState } from "../workflow-engine/agent-loop/state-machine";
-import { CHECKPOINT_VALUES, GateKind, GateOutcome, NO_PROPOSER, ORDERED_GATES, isHumanCheckpoint, type HumanCheckpoint } from "./quality-gate";
+import { CHECKPOINT_VALUES, GateKind, GateOutcome, NO_PROPOSER, ORDERED_GATES, humanGatesFor, isHumanCheckpoint, type HumanCheckpoint } from "./quality-gate";
 import { readActions } from "./action-queue";
 import { groom } from "./grooming";
 import { confluenceSource } from "./confluence-source";
@@ -2157,6 +2158,28 @@ export async function main(argv: readonly string[]): Promise<number> {
     args.qaFails ? RunOutcome.Failed : RunOutcome.Passed,
     performerEnvFrom(args, guidance, args.store === undefined ? undefined : foldOrganization(readEvents(args.store)).cascade),
   );
+  // ── A PERSON'S "NO" STANDS AT ANY STEP ─────────────────────────────────────
+  // Written into the log once, as the step's newest verdict, before anything reads the verdicts -
+  // see `human-verdicts.ts`. MEASURED on AIAGENT-1658: a reproduction approved over a replica of the
+  // component, rejected by the requester, and the approval still stood.
+  if (args.store !== undefined && args.actions !== undefined) {
+    const prior = readEvents(args.store);
+    const folded = foldOrganization(prior);
+    const hw = logHighWater(prior);
+    const toRecord = humanRejectionsToRecord({
+      actions: readActions(args.actions),
+      evaluations: folded.gateEvaluations,
+      known: new Set(folded.cascade.nodes.map((n) => n.workId)),
+      checkpointGates: new Set([...humanGatesFor(args.checkpoints)].map(String)),
+      atMs: (hw.atMs ?? 0) + 1,
+    });
+    let minted = hw.counter;
+    for (const e of humanRejectionEvents(toRecord, () => `evt-${String(++minted).padStart(3, "0")}`)) {
+      appendEvent(e, args.store);
+      console.log(`  ${e.decision}`);
+    }
+  }
+
   const runtimeDeps = {
     chart,
     externalEvents: intake,
