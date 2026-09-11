@@ -412,3 +412,130 @@ different items, and two items escalating to `add_agents` — and `tech_lead` as
 raises none.
 
 **All eight signal families now have senders.**
+
+---
+
+## Addendum, 2026-09-07 — the doc sweep, and where it stops
+
+Twelve modules against `agentic-organization/docs`, each with falsifiers and a mutation matrix.
+The list is in the git log; what follows is only what the sweep TAUGHT, and what it could not
+reach.
+
+### Four defects the matrices found that a reading would not have
+
+1. **A guardrail that could not fail.** `alternateWorkFor` built its candidate list *from* the
+   approved scope and then checked those candidates *against* that scope. Protection in name
+   only, at the exact seam where scope creep enters. Every open task is a candidate now, each
+   carrying its own scope, and the module's comparison does the refusing.
+2. **A gate that could not open.** The first `readinessOf` gated the whole maturity ladder, so a
+   signed waiver could never unblock anything. The mirror of a check that cannot fail, and just
+   as useless — the doc's waiver removes the CAUSE, not a step.
+3. **`goal-cascade.assign` overwrote an existing assignee and returned ok** — a reassignment
+   performed by whoever called first, with no trigger, no notice, nothing preserved.
+4. **A steal judged at the menu's clock**, freezing a verdict so work could sit with an owner who
+   went silent afterwards. It is judged at the application's clock now, and observations older
+   than the SLA are refused: past that gap, an owner quiet throughout and one that answered just
+   after the read leave the same record.
+
+### The harness was also wrong, and that is the one worth keeping
+
+Dropping the `seen` set from `org-graph`'s traversal makes `pathExists` loop forever on a cycle —
+the strongest possible kill. The runner had no deadline, so it hung and reported NOTHING, twice.
+
+Two obvious fixes both fail, and the failure is instructive:
+
+- `bun test --timeout` cannot interrupt a **synchronous** infinite loop. It never yields the
+  event loop, so the runner's own deadline never gets a turn.
+- `subprocess.run(timeout=)` with `capture_output` kills the child and then blocks reading pipes
+  its grandchildren still hold open.
+
+Output goes to a file rather than a pipe now, so the kill returns and a hang is reported as the
+kill it is. Every earlier matrix in this register ran without that, which means **a hanging
+mutant anywhere before today would have been invisible.**
+
+### What this register deliberately does NOT implement, and why
+
+Naming it, because "everything in the docs" is not achievable here and pretending otherwise
+would be the vacuity class applied to a work report.
+
+| doc area | why it is not implemented here |
+|---|---|
+| LGTM stack, Kubernetes/k3s, CockroachDB, Temporal, Dapr, NATS, OpenZiti | infrastructure. A pure-TS register can declare the port; it cannot be the cluster |
+| MCP tool surfaces (`create_handoff_brief`, `read_memory`, …) | transport over mechanisms that now exist. The verbs are here; the server is not |
+| Hindsight memory | an external service. `providers.ts` is where its port would land |
+| The full hat catalog — 16 departments, 100+ hats | DATA, not mechanism. `org-seed.ts` carries 8 departments and 29 hats. Expanding it is real doc-implementation work with wide blast radius on existing routing tests, and the doc calls its own catalog a "starter data model" |
+
+The first three are ports, and the register's discipline already covers them: a port that is
+simulated says so, and `weak-point.ts` reports a seam expected real and found otherwise as a
+`telemetry_gap`. The fourth is the only remaining item that is genuinely this layer's work.
+
+### The shape that kept recurring
+
+Nine of the twelve modules ended up carrying the same distinction under different names —
+`notChecked`, `not_recorded`, `unresolved`, `degraded`, `UNDERIVED_EDGE_KINDS`. In every case the
+defect being refused is identical: **a thing nobody looked at, rendered identically to a thing
+that was looked at and found clean.** It is the one failure this organization cannot see from the
+inside, because the report of a healthy system and the report of an unobserved one are the same
+document.
+
+---
+
+## Correction and addendum, 2026-09-07 — a claim I made without a falsifier
+
+### The correction
+
+The addendum above says the hat catalog is *"the one remaining item that is genuinely this layer's
+work"* and the report accompanying it said **"several blocker and lag routings currently fall back
+because the chart lacks the hat."**
+
+**That was false, and I never measured it.** The 29-hat seed resolved every owner
+`BLOCKER_POLICY` names, in policy order, with zero fallbacks — because the policy had been written
+against the hats that existed. Measured both ways after the expansion: 0 absent owners before, 0
+after.
+
+It is worth naming how the error was made, because the shape recurs. `ownersFor` skips an absent
+hat SILENTLY, and that skip is correct — an organization without a security engineer should still
+reach its security director. Given a mechanism that is deliberately quiet and a chart that was
+admittedly a subset, "therefore routings are falling back" is the obvious inference. It is also
+exactly the inference nobody could contradict, because nothing reported the answer.
+
+**A plausible unmeasured claim about a silent mechanism is the same defect as the silent
+mechanism.** Both produce confident statements nobody checked. This register spent the session
+building detectors for the second and then committed the first about its own data.
+
+### What now answers it
+
+`routing-coverage.ts` — does every hat the policies name actually exist. Three cases, because they
+cost differently: **unroutable** (nobody), **first-owner-absent** (routing succeeds and quietly
+lands on a later owner), **complete**. The seed's coverage is asserted at zero in a test, so the
+next claim about routing has a number to check against rather than a plausibility argument.
+
+### What the expansion was actually worth
+
+Not fixing fallbacks — there were none. Two things:
+
+1. The organization now IS the reference: 16 departments, 124 hats (118 ported plus six the
+   register keeps, because the reference owns only seven of its thirteen quality gates and a
+   verbatim port would leave six unownable).
+2. **It exposed two real defects**, and this is the argument for growing a fixture even when
+   nothing is known to be wrong with it:
+   - `ownerForRung` broke ties by DECLARATION ORDER. Invisible with one candidate per level;
+     at sixteen departments the winner was whichever the file listed first.
+   - `decompose` passed `mustSupportLevel: undefined` for a leaf, switching off the
+     can-this-owner-carry-the-work check at the one rung where the work is done.
+
+Both are the session's recurring class — a choice that looks derived and is actually incidental —
+and neither was reachable while the chart was small enough for the answer to be unique.
+
+### The nine names, resolved
+
+`observation-ledger.ts` gives the one question a single answer: `observed` / `not_run` /
+`no_detector`. The third state is the one nothing had — a gap in the SYSTEM rather than in the run,
+which is what `UNDERIVED_EDGE_KINDS` was reaching for. `observation-sources.ts` adapts the nine
+rather than rewriting them, because each local word is right in its context, and every adapter
+reads a field its module already derives, so a thirteenth lag condition appears in the ledger
+without anyone editing an adapter.
+
+`fullyObserved` deliberately does not mean "no findings". A ledger with findings and no blind spots
+is a trustworthy report of problems; one with no findings and eleven blind spots is not a report at
+all — and treating them alike makes the healthy-LOOKING one the safer-looking one.

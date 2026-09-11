@@ -93,8 +93,12 @@ describe("a delivery MERGES, and that is what success means", () => {
     expect(out.landed).toBe(true);
     expect(out.doraContribution).toBe(1);
     // CAUSATION, not correlation: this exact branch was merged by this delivery.
-    expect(merged).toEqual(["work/task-1"]);
-    expect(out.evidenceRefs).toContain("merge:work/task-1");
+    //
+    // NAMED AFTER THE WORK, not after this organization's internal id. `work/task-1` told a
+    // reviewer nothing; the branch now carries the item's own description, or its ticket where
+    // one is not shared with a sibling — see `branchNameFor`.
+    expect(merged).toEqual(["story/stop-the-double-apply"]);
+    expect(out.evidenceRefs).toContain("merge:story/stop-the-double-apply");
   });
 
   test("the evidence is what the PHASES produced, not a label", async () => {
@@ -301,8 +305,8 @@ describe("THE JOIN: a chosen slot causes the delivery", () => {
 
     const d = await dispatcher.dispatch(pickWork);
 
-    expect(opened).toEqual(["work/task-1"]);
-    expect(merged).toEqual(["work/task-1"]);
+    expect(opened).toEqual(["story/stop-the-double-apply"]);
+    expect(merged).toEqual(["story/stop-the-double-apply"]);
     expect(d.performed).toBe(true);
     expect(d.result?.success).toBe(true);
     expect(d.result?.doraContribution).toBe(1);

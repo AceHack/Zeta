@@ -1,0 +1,680 @@
+/**
+ * generative-work.test.ts — an empty company, and whether it can start itself.
+ *
+ * The load-bearing test is the last one, and it is a measurement rather than a scenario: hand the
+ * drive a chart, an empty cascade and nothing else, and see whether an organization comes out.
+ * Before these verbs existed the answer was a single round of `explore` — every hat had a menu, and
+ * every item on it advanced work that did not exist.
+ *
+ * The rest are the three livelocks. All three had the same shape — an act offered, chosen, applied
+ * and leaving its own precondition standing — and the third one was introduced by this file's own
+ * subject, which is why the ratio is asserted directly rather than inferred from a round count.
+ */
+
+import { describe, expect, test } from "bun:test";
+import {
+  breakdownOpenings,
+  directionOpenings,
+  escalationOpenings,
+  meetingOpenings,
+  spendOpenings,
+  draftingOpenings,
+  GenerativeKind,
+  generativeOpeningsFor,
+  priorityOpenings,
+  staffingOpenings,
+  submissionOpenings,
+  supplyOpenings,
+} from "./generative-work";
+import { Domain } from "./domain-ontology";
+import { WorkState, WorkType, type CascadeNode } from "./goal-cascade";
+import { buildOrgChart } from "./org-chart";
+import { SEED_HATS } from "./org-seed";
+import { driveUntilSettled, type DriveDeps, type DriveState } from "./org-drive";
+import { EMPTY_BOARD } from "./discussion-anchor";
+import { EMPTY_CALENDAR } from "./work-schedule";
+import { PriorityClass } from "./prioritization";
+
+const chart = (() => {
+  const r = buildOrgChart(SEED_HATS);
+  if (!r.ok) throw new Error(r.reason);
+  return r.chart;
+})();
+
+/**
+ * A skeleton company, for the tests the full seed cannot falsify.
+ *
+ * The seed covers all fifteen blocker policies, so supply gaps are unreachable against it. This
+ * keeps eight hats and nothing else, which leaves eleven policies with no owner — a real chart with
+ * real gaps rather than a hand-built list of them.
+ */
+const thinChart = (() => {
+  const keep = new Set([
+    "executive_board_member",
+    "ceo",
+    "coo",
+    "cto",
+    "engineering_director",
+    "engineering_manager",
+    "tech_lead",
+    "backend_implementer",
+    "rmo_office",
+  ]);
+  const r = buildOrgChart(SEED_HATS.filter((h) => keep.has(h.id)));
+  if (!r.ok) throw new Error(r.reason);
+  return r.chart;
+})();
+
+const NONE: ReadonlySet<string> = new Set();
+
+function node(over: Partial<CascadeNode> = {}): CascadeNode {
+  return {
+    workId: "w-1",
+    workType: WorkType.Project,
+    title: "a project",
+    state: WorkState.Open,
+    ownerHatId: "engineering_manager",
+    domain: Domain.Implementation,
+    ...over,
+  };
+}
+
+describe("DIRECTION — a domain nobody pointed anywhere", () => {
+  test("every domain with no live work is open, to the executive its department answers to", () => {
+    const open = directionOpenings(chart, []);
+    expect(open).toHaveLength(16);
+    // SIX EXECUTIVES, NOT ONE. The first version of `executiveOver` sorted candidates ordinally
+    // and every domain came out the CEO's, engineering included — "ceo" sorts before "cto". That
+    // is the alphabetical routing this register was rewritten to end, reintroduced one module
+    // later, and this assertion is what caught it.
+    expect(new Map(open.map((o) => [o.domain, o.byHatId]))).toEqual(
+      new Map([
+        [Domain.Governance, "ceo"],
+        [Domain.ProgramCoordination, "coo"],
+        [Domain.ProductDiscovery, "ceo"],
+        [Domain.BusinessRequirements, "ceo"],
+        [Domain.Architecture, "cto"],
+        [Domain.Implementation, "cto"],
+        [Domain.EngineeringManagement, "cto"],
+        [Domain.QualityVerification, "coo"],
+        [Domain.TestAutomation, "cto"],
+        [Domain.Security, "cto"],
+        [Domain.Delivery, "coo"],
+        [Domain.Memory, "coo"],
+        [Domain.Documentation, "chief_architect"],
+        // OPERATIONS MOVED FROM THE CFO TO THE COO, and that is the point of the third rule in
+        // `executiveOver`. `cost_controller` sits in the operations department and reports to the
+        // CFO — one hat, one level up — so the nearest-executive rule handed the whole domain to a
+        // line that contains no contributors at any depth. Every operations direction the CFO
+        // accepted was one nobody could do, reported week after week as a rung gap.
+        [Domain.Operations, "coo"],
+        [Domain.Observability, "coo"],
+        [Domain.CapabilityExpansion, "ceo"],
+      ]),
+    );
+  });
+
+  test("A DOMAIN WITH LIVE WORK IS NOT OPEN — the act closes its own opening", () => {
+    // The property all three livelocks in this drive violated. If setting a direction left the
+    // domain still looking empty, the C-suite would set it again every round forever.
+    const open = directionOpenings(chart, [node({ domain: Domain.Implementation })]);
+    expect(open.map((o) => o.domain)).not.toContain(Domain.Implementation);
+    expect(open).toHaveLength(15);
+  });
+
+  test("DELIVERED WORK LEAVES THE DOMAIN EMPTY AGAIN — which is the point of a company", () => {
+    // A domain whose work is all done is not a domain that is finished forever. This is the
+    // mechanism by which the C-suite keeps having something to decide.
+    const done = node({ domain: Domain.Implementation, state: WorkState.Done });
+    expect(directionOpenings(chart, [done]).map((o) => o.domain)).toContain(Domain.Implementation);
+  });
+
+  test("the subject id is DERIVED from the domain AND its generation", () => {
+    // The domain alone was enough while a direction was set once and never finished. Now that
+    // delivery rolls up, a domain whose cascade completes reopens — and reusing the id would have
+    // `acceptGoal` refuse a duplicate every round forever. Still derived, so a re-offer within a
+    // round is the same opening rather than a new one.
+    expect(directionOpenings(chart, [])[0]?.subjectId).toBe("direction-governance-1");
+  });
+});
+
+describe("BREAKDOWN — and the refusal it must not become", () => {
+  test("a live non-leaf with nothing under it is open, to its OWNER", () => {
+    const open = breakdownOpenings(chart, [node()], "rmo_office", NONE);
+    expect(open).toHaveLength(1);
+    expect(open[0]?.kind).toBe(GenerativeKind.BreakDownWork);
+    expect(open[0]?.byHatId).toBe("engineering_manager");
+  });
+
+  test("ONCE IT HAS A CHILD IT IS CLOSED", () => {
+    const parent = node();
+    const child = node({ workId: "w-2", workType: WorkType.Task, parentWorkId: "w-1", ownerHatId: "tech_lead" });
+    expect(breakdownOpenings(chart, [parent, child], "rmo_office", NONE).map((o) => o.subjectId)).not.toContain("w-1");
+  });
+
+  test("A LEAF IS NEVER OFFERED — that opening could never close", () => {
+    // Every leaf type, not just `task`. The bottom of the ladder is decided by `nextRung`, which
+    // answers undefined for all five, and asserting only `task` would leave the other four
+    // untested against a guard that could easily have been written as `workType === Task`.
+    for (const workType of [WorkType.Task, WorkType.Defect, WorkType.CapabilityRequest, WorkType.Review, WorkType.Incident]) {
+      expect(breakdownOpenings(chart, [node({ workType, ownerHatId: "tech_lead" })], "rmo_office", NONE)).toEqual([]);
+    }
+  });
+
+  test("A DEPARTMENT WITH NO MANAGER STAFFS ITSELF — the ladder bends before it reports", () => {
+    // This used to be a supply gap and is now an ordinary breakdown. `architecture_director` has no
+    // manager and no lead, and it has seven architects: it owns its own projects and its own tasks,
+    // which is what a small department does. Reporting that to the RMO as a shortfall was the rigid
+    // ladder complaining about an organization that was working fine.
+    const stuck = node({ ownerHatId: "architecture_director", domain: Domain.Architecture });
+    const open = breakdownOpenings(chart, [stuck], "rmo_office", NONE);
+    expect(open).toHaveLength(1);
+    expect(open[0]?.kind).toBe(GenerativeKind.BreakDownWork);
+    expect(open[0]?.byHatId).toBe("architecture_director");
+  });
+
+  test("WORK NOBODY IN THE LINE CAN DO BECOMES A SUPPLY GAP, not a retry", () => {
+    // MEASURED, not imagined: `break_down_work` was once chosen 257 times for 31 successful
+    // breakdowns, the remaining 226 refused every round. The gap is narrower now that the ladder
+    // bends — it fires only when the line contains no CONTRIBUTOR, so there is nobody to hand the
+    // work to at any level. `cost_controller` is that case: one manager under the CFO, supervising
+    // nobody.
+    const stuck = node({ ownerHatId: "cost_controller", domain: Domain.Operations });
+    const open = breakdownOpenings(chart, [stuck], "rmo_office", NONE);
+    expect(open).toHaveLength(1);
+    expect(open[0]?.kind).toBe(GenerativeKind.SizeHatSupply);
+    expect(open[0]?.byHatId).toBe("rmo_office");
+    // THE RUNG IS `lead`, not `manager`. A project's children are tasks and a task is owned at
+    // lead level — read off `CASCADE_RUNGS`, never off intuition.
+    expect(open[0]?.subjectId).toBe("rung:cost_controller:lead");
+  });
+
+  test("...and FORTY-SEVEN items behind ONE absent manager are ONE request", () => {
+    // Keyed on the missing rung rather than on the work, because the alternative buries the gap
+    // under a request per item — which is the same defect as reporting it 226 times, spread out.
+    const many = Array.from({ length: 47 }, (_, i) =>
+      node({ workId: `w-${i}`, ownerHatId: "cost_controller", domain: Domain.Operations }),
+    );
+    expect(breakdownOpenings(chart, many, "rmo_office", NONE)).toHaveLength(1);
+  });
+
+  test("A GAP ALREADY RAISED IS NOT RAISED AGAIN", () => {
+    const stuck = node({ ownerHatId: "cost_controller", domain: Domain.Operations });
+    const raised = new Set(["rung:cost_controller:lead"]);
+    expect(breakdownOpenings(chart, [stuck], "rmo_office", raised)).toEqual([]);
+  });
+});
+
+describe("SUPPLY — raised once, and only by a hat that exists", () => {
+  test("THE FULL CHART HAS NO ROUTING GAPS — measured, and stated so the next test is not vacuous", () => {
+    // `routingCoverage` checks 15 blocker policies against this chart and finds ZERO absent owners.
+    // So a falsifier for "supply gaps are raised once" written against the seed would be asserting
+    // a rule over an empty list — a check that cannot fail, which is the defect this whole register
+    // was built to hunt. Recorded here, and the real test below uses a chart that HAS gaps.
+    expect(supplyOpenings(chart, "rmo_office", NONE)).toEqual([]);
+  });
+
+  test("a THINNED chart has eleven, all the RMO's", () => {
+    const open = supplyOpenings(thinChart, "rmo_office", NONE);
+    expect(open).toHaveLength(11);
+    expect(open.every((o) => o.byHatId === "rmo_office")).toBe(true);
+  });
+
+  test("EVERY ONE OF THEM, RAISED, LEAVES NOTHING", () => {
+    // The whole livelock fix in one assertion: 2199 choices across 18 rounds before it existed.
+    const all = new Set(supplyOpenings(thinChart, "rmo_office", NONE).map((o) => o.subjectId));
+    expect(supplyOpenings(thinChart, "rmo_office", all)).toEqual([]);
+  });
+
+  test("an unknown resource authority is offered nothing, rather than the chart being guessed", () => {
+    expect(supplyOpenings(thinChart, "no_such_hat", NONE)).toEqual([]);
+  });
+});
+
+describe("DRAFTING and PRICING", () => {
+  test("live work with no artifact is open, to an IC in the work's own department", () => {
+    const open = draftingOpenings(chart, [node()], NONE);
+    expect(open).toHaveLength(1);
+    expect(chart.byId.get(open[0]?.byHatId ?? "")?.departmentId).toBe("engineering");
+  });
+
+  test("AN EXISTING DOCUMENT CLOSES IT", () => {
+    expect(draftingOpenings(chart, [node()], new Set(["doc-w-1"]))).toEqual([]);
+  });
+
+  test("a GOAL is never offered a document — it is a direction, not a deliverable", () => {
+    const goal = node({ workType: WorkType.Goal, ownerHatId: "ceo" });
+    expect(draftingOpenings(chart, [goal], NONE)).toEqual([]);
+  });
+
+  test("work with no domain is not offered one either — nobody knows who would write it", () => {
+    const { domain: _none, ...noDomain } = node();
+    expect(draftingOpenings(chart, [noDomain], NONE)).toEqual([]);
+  });
+
+  test("PRICING IS THE SUPERVISOR'S, not the owner's", () => {
+    // An owner setting the priority of its own work is a preference, and `alternate-work.ts`
+    // guards against work that bypasses the priority policy — which would be a check against a
+    // number the same hat chose.
+    const open = priorityOpenings(chart, [node()], NONE);
+    expect(open).toHaveLength(1);
+    expect(open[0]?.byHatId).toBe("engineering_director");
+    expect(open[0]?.options).toEqual([...Object.values(PriorityClass)]);
+  });
+
+  test("a hat with NO supervisor prices its own work", () => {
+    // The top of a chart has nobody to ask, and refusing there would leave the company's own goals
+    // permanently unpriced — a gate that cannot open. The CEO is NOT that hat in this chart; the
+    // board member above it is, which is worth knowing before assuming where a chart ends.
+    expect(priorityOpenings(chart, [node({ ownerHatId: "ceo" })], NONE)[0]?.byHatId).toBe("executive_board_member");
+    const top = node({ ownerHatId: "executive_board_member" });
+    expect(priorityOpenings(chart, [top], NONE)[0]?.byHatId).toBe("executive_board_member");
+  });
+
+  test("AN ALREADY-PRICED ITEM IS CLOSED", () => {
+    expect(priorityOpenings(chart, [node()], new Set(["w-1"]))).toEqual([]);
+  });
+});
+
+describe("the menu is ordinal, and it is one hat's", () => {
+  test("only this hat's openings, sorted by (kind, subject)", () => {
+    const input = {
+      chart,
+      cascade: [node(), node({ workId: "w-0" })],
+      artifactIds: NONE,
+      pricedWorkIds: NONE,
+      resourceAuthorityHatId: "rmo_office",
+    };
+    const mine = generativeOpeningsFor(input, "engineering_manager");
+    expect(mine.every((o) => o.byHatId === "engineering_manager")).toBe(true);
+    expect(mine.map((o) => o.subjectId)).toEqual(["w-0", "w-1"]);
+  });
+
+  test("A HAT WITH NOTHING TO DECIDE GETS AN EMPTY MENU, not a default one", () => {
+    const input = {
+      chart,
+      cascade: [node()],
+      artifactIds: new Set(["doc-w-1"]),
+      pricedWorkIds: new Set(["w-1"]),
+      resourceAuthorityHatId: "rmo_office",
+    };
+    expect(generativeOpeningsFor(input, "backend_implementer")).toEqual([]);
+  });
+});
+
+describe("AN EMPTY COMPANY STARTS ITSELF", () => {
+  // The measurement this module exists for. Nothing below is a fixture the drive was handed: it is
+  // a chart, an empty cascade, and 200 rounds.
+  const out = (() => {
+    let n = 0;
+    const state: DriveState = {
+      view: {
+        chart,
+        board: EMPTY_BOARD,
+        signals: [],
+        cascade: [],
+        artifacts: new Map(),
+        blockers: new Map(),
+      },
+      cascade: { nodes: [] },
+      calendar: EMPTY_CALENDAR,
+    };
+    const deps: DriveDeps = {
+      chart,
+      nowMs: 1_000_000,
+      createId: (p) => `${p}-${String(++n)}`,
+      resourceAuthorityHatId: "rmo_office",
+    };
+    return driveUntilSettled(state, chart.hats.map((h) => h.id), deps, 200);
+  })();
+
+  test("sixteen directions, set by the C-suite, one per domain", () => {
+    const goals = out.state.cascade.nodes.filter((n) => n.workType === WorkType.Goal);
+    expect(goals).toHaveLength(16);
+    // THE CFO IS NOT AMONG THEM ANY MORE, deliberately: an executive whose line cannot reach a
+    // contributor is not a nearer answer to "who directs this domain", it is a wrong one. The CFO
+    // directs the MONEY — see `spend-decision.ts` — which is a different kind of act and needs no
+    // team beneath it.
+    expect(new Set(goals.map((g) => g.ownerHatId))).toEqual(
+      new Set(["ceo", "coo", "cto", "chief_architect"]),
+    );
+    expect(new Set(goals.map((g) => g.domain))).toEqual(new Set(Object.values(Domain)));
+  });
+
+  test("...which BECAME work, DOCUMENTS and PRICES — not sixteen goals and a silence", () => {
+    // The first four verbs alone produced exactly that: sixteen root goals, nothing underneath,
+    // no documents. `break_down_work` is the fifth, and it was added because of this measurement.
+    const nodes = out.state.cascade.nodes;
+    expect(nodes.length).toBeGreaterThan(16);
+    expect(out.state.view.artifacts.size).toBeGreaterThan(0);
+    expect(out.state.view.priorities?.size).toBe(nodes.length);
+  });
+
+  test("EVERY DESCENDANT INHERITED ITS DIRECTION'S DOMAIN", () => {
+    expect(out.state.cascade.nodes.filter((n) => n.domain === undefined)).toEqual([]);
+  });
+
+  test("NOT ONE REFUSAL, over the whole run", () => {
+    // The livelock signature. Three have been found in this drive and every one of them showed up
+    // here first, as an act chosen far more often than the organization accepted it.
+    const refused = out.rounds.flatMap((r) => r.ticks).filter((t) => t.refusals.length > 0);
+    expect(refused.map((t) => `${t.hatId}:${t.chosen?.kind}:${t.refusals[0]}`)).toEqual([]);
+  });
+
+  test("and it SETTLES — generative is not the same as never finished", () => {
+    expect(out.settled).toBe(true);
+    expect(out.rounds.slice(0, -1).filter((r) => r.changes === 0)).toEqual([]);
+  });
+});
+
+describe("SUBMISSION — the assignee says it is done, the organization decides", () => {
+  const task = (over: Partial<CascadeNode> = {}) =>
+    node({ workId: "t-1", workType: WorkType.Task, ownerHatId: "tech_lead", assigneeHatId: "backend_implementer", ...over });
+
+  test("offered to the ASSIGNEE, never the owner", () => {
+    // The hat that did the work is the only one that can say it is finished, and `runGateChain`
+    // then keeps that same hat off every gate. Offering the owner would let one hat propose and
+    // approve in a single act.
+    const open = submissionOpenings([task()], new Map(), 3);
+    expect(open).toHaveLength(1);
+    expect(open[0]?.byHatId).toBe("backend_implementer");
+    expect(open[0]?.kind).toBe(GenerativeKind.SubmitWork);
+  });
+
+  test("unassigned work is not submittable — nobody has done it", () => {
+    const { assigneeHatId: _none, ...unassigned } = task();
+    expect(submissionOpenings([unassigned], new Map(), 3)).toEqual([]);
+  });
+
+  test("a NON-LEAF is not submittable — a project is finished by its children", () => {
+    expect(submissionOpenings([task({ workType: WorkType.Project })], new Map(), 3)).toEqual([]);
+  });
+
+  test("finished work is not resubmitted", () => {
+    expect(submissionOpenings([task({ state: WorkState.Done })], new Map(), 3)).toEqual([]);
+  });
+
+  test("THE ATTEMPT BOUND CLOSES IT — a turn-back leaves the work open, so this is the guard", () => {
+    // Without a bound, a rejected submission is re-offered every round forever: the fourth
+    // instance of this drive's one recurring livelock.
+    expect(submissionOpenings([task()], new Map([["t-1", 2]]), 3)).toHaveLength(1);
+    expect(submissionOpenings([task()], new Map([["t-1", 3]]), 3)).toEqual([]);
+  });
+
+  test("...and the reason SAYS which case it is", () => {
+    expect(submissionOpenings([task()], new Map(), 3)[0]?.because).toContain("assigned and open");
+    expect(submissionOpenings([task()], new Map([["t-1", 1]]), 3)[0]?.because).toContain("came back from the gates");
+  });
+
+  test("NO ATTEMPT TRACKING MEANS NO SUBMISSION AT ALL", () => {
+    // `generativeOpeningsFor` offers none without `gates`, because a register that cannot count
+    // attempts cannot bound them, and an unbounded offer is a loop rather than a permission.
+    const input = {
+      chart,
+      cascade: [task()],
+      artifactIds: new Set(["doc-t-1"]),
+      pricedWorkIds: new Set(["t-1"]),
+      resourceAuthorityHatId: "rmo_office",
+    };
+    expect(generativeOpeningsFor(input, "backend_implementer")).toEqual([]);
+    const withGates = generativeOpeningsFor(
+      { ...input, gates: { attempts: new Map(), maxAttempts: 3 } },
+      "backend_implementer",
+    );
+    expect(withGates.map((o) => o.kind)).toEqual([GenerativeKind.SubmitWork]);
+  });
+});
+
+describe("STAFFING — a lead who supervises nobody, and the work that dies there", () => {
+  // MEASURED, and it is a fact about the shipped chart: tasks are owned at LEAD level, and three of
+  // the seed's four leads have zero individual contributors under them.
+  //
+  //   team_lead 0 · mission_control_lead 0 · customer_feedback_lead 0 · tech_lead 2
+  //
+  // A full simulated week produced four tasks and delivered one. The other three sat open forever
+  // and nothing said why — every step correct, the aggregate wrong, and silent.
+  const orphan = node({ workId: "t-9", workType: WorkType.Task, ownerHatId: "team_lead" });
+
+  test("work under a hat with no contributors is a SUPPLY gap, to the RMO", () => {
+    const open = staffingOpenings(chart, [orphan], "rmo_office", NONE);
+    expect(open).toHaveLength(1);
+    expect(open[0]?.byHatId).toBe("rmo_office");
+    expect(open[0]?.subjectId).toBe("staff:team_lead");
+  });
+
+  test("A LEAD THAT DOES HAVE CONTRIBUTORS IS NOT A GAP — it just has not assigned yet", () => {
+    // The permissive half, and the important one: a signal that fires on the ordinary case stops
+    // being read. `tech_lead` has two implementers, so its unassigned task is ordinary.
+    const ordinary = node({ workId: "t-8", workType: WorkType.Task, ownerHatId: "tech_lead" });
+    expect(staffingOpenings(chart, [ordinary], "rmo_office", NONE)).toEqual([]);
+  });
+
+  test("already-assigned work is not a staffing gap", () => {
+    expect(staffingOpenings(chart, [{ ...orphan, assigneeHatId: "someone" }], "rmo_office", NONE)).toEqual([]);
+  });
+
+  test("MANY TASKS UNDER ONE HOLLOW LEAD ARE ONE HIRING PROBLEM", () => {
+    const many = Array.from({ length: 12 }, (_, i) => ({ ...orphan, workId: `t-${String(i)}` }));
+    expect(staffingOpenings(chart, many, "rmo_office", NONE)).toHaveLength(1);
+  });
+
+  test("raised once", () => {
+    expect(staffingOpenings(chart, [orphan], "rmo_office", new Set(["staff:team_lead"]))).toEqual([]);
+  });
+
+  test("KEPT SEPARATE FROM THE MISSING-RUNG GAP — different repairs", () => {
+    // `breakdownOpenings` reports "no hat exists at the rung below"; this reports "the rung's hat
+    // exists and has nobody under it". Collapsing them would report a hiring problem as a
+    // reorganization one.
+    const stuck = node({ ownerHatId: "cost_controller", domain: Domain.Operations });
+    const rungGap = breakdownOpenings(chart, [stuck], "rmo_office", NONE)[0];
+    expect(rungGap?.subjectId).toContain("rung:");
+    expect(staffingOpenings(chart, [orphan], "rmo_office", NONE)[0]?.subjectId).toContain("staff:");
+  });
+});
+
+describe("ESCALATION — the writer for a counter nobody read at the limit", () => {
+  const GATES = { attempts: new Map([["t-1", 3]]), maxAttempts: 3 };
+  const task = (over: Partial<CascadeNode> = {}) =>
+    node({ workId: "t-1", workType: WorkType.Task, ownerHatId: "tech_lead", assigneeHatId: "backend_implementer", ...over });
+
+  test("exhausted work is offered to a MANAGER OR ABOVE, never to its owner", () => {
+    // The owner ruling on its own churn would be the failing loop assessing itself.
+    // `escalationDeciderFor` walks up from the owner until it finds a level that holds the
+    // authority — from a tech lead, that is the engineering manager.
+    const open = escalationOpenings(chart, [task()], GATES, NONE);
+    expect(open).toHaveLength(1);
+    expect(open[0]?.kind).toBe(GenerativeKind.EscalateChurn);
+    expect(open[0]?.byHatId).toBe("engineering_manager");
+    expect(open[0]?.byHatId).not.toBe("tech_lead");
+  });
+
+  test("BELOW THE BOUND THERE IS NOTHING TO ESCALATE — the hat can still try", () => {
+    const early = { attempts: new Map([["t-1", 2]]), maxAttempts: 3 };
+    expect(escalationOpenings(chart, [task()], early, NONE)).toEqual([]);
+  });
+
+  test("ONE RULING PER ITEM — the bound that stops the pump", () => {
+    // A ruling that `changes_the_input` gives the work its attempts back. Offer a second and the
+    // pair becomes a pump: exhaust, escalate, reset, exhaust — real work every round, refusing
+    // nothing, forever. This drive has produced that shape four times.
+    expect(escalationOpenings(chart, [task()], GATES, new Set(["t-1"]))).toEqual([]);
+  });
+
+  test("finished and cancelled work is not escalated", () => {
+    for (const state of [WorkState.Done, WorkState.Canceled]) {
+      expect(escalationOpenings(chart, [task({ state })], GATES, NONE)).toEqual([]);
+    }
+  });
+
+  test("A NON-LEAF THAT SOMEHOW EXHAUSTED IS STILL ESCALATED — the bound is about attempts", () => {
+    // Deliberately not filtered to leaves. Only leaves are submitted today, so a non-leaf with
+    // spent attempts should be impossible — and silently ignoring it would make the impossible
+    // state invisible rather than absent.
+    const project = node({ workId: "t-1", workType: WorkType.Project, ownerHatId: "engineering_manager" });
+    expect(escalationOpenings(chart, [project], GATES, NONE)).toHaveLength(1);
+  });
+
+  test("nobody with the authority means no opening, rather than a ruling by somebody without it", () => {
+    // The board is the top of the chart. `escalationDeciderFor` finds itself there, which does hold
+    // the authority — so this asserts the honest opposite: there IS always a decider in this chart,
+    // and the guard exists for charts where the walk runs out.
+    const top = node({ workId: "t-1", workType: WorkType.Task, ownerHatId: "executive_board_member" });
+    expect(escalationOpenings(chart, [top], GATES, NONE)[0]?.byHatId).toBe("executive_board_member");
+  });
+});
+
+describe("THE CHAIN MEETS — a planned review, not a repair", () => {
+  /** A goal, its project, and a staffed task under it: three rungs, three different owners. */
+  const CHAIN: readonly CascadeNode[] = [
+    { workId: "g", workType: WorkType.Goal, title: "g", state: WorkState.Open, ownerHatId: "cto" },
+    { workId: "p", workType: WorkType.Project, title: "p", state: WorkState.Open, ownerHatId: "engineering_director", parentWorkId: "g" },
+    {
+      workId: "t",
+      workType: WorkType.Task,
+      title: "the task",
+      state: WorkState.Open,
+      ownerHatId: "tech_lead",
+      parentWorkId: "p",
+      assigneeHatId: "backend_implementer",
+    },
+  ];
+
+  test("staffed work with a chain above it is offered to its OWNER", () => {
+    const open = meetingOpenings(chart, CHAIN, NONE);
+    expect(open).toHaveLength(1);
+    expect(open[0]?.kind).toBe(GenerativeKind.ConveneChain);
+    expect(open[0]?.byHatId).toBe("tech_lead");
+    expect(open[0]?.subjectId).toBe("t");
+  });
+
+  test("UNSTAFFED WORK IS NOT — a chain convening over work nobody is doing is a meeting about an intention", () => {
+    const { assigneeHatId: _none, ...unstaffed } = CHAIN[2] as CascadeNode;
+    expect(meetingOpenings(chart, [CHAIN[0]!, CHAIN[1]!, unstaffed], NONE)).toEqual([]);
+  });
+
+  test("ONCE — a meeting that exists is a meeting that happened", () => {
+    // The calendar is the record and the opening reads its own effect back, so offering again is
+    // the livelock this drive has produced four times.
+    expect(meetingOpenings(chart, CHAIN, new Set(["t"]))).toEqual([]);
+  });
+
+  test("A CHAIN OF ONE IS NOT A MEETING — and `scheduleMeeting` would refuse it", () => {
+    // The bending ladder makes this the normal case in ten of sixteen departments: one hat owns the
+    // initiative, the project and the task. Offering it a meeting with itself would be an act the
+    // organization refuses — the menu's own rule forbids that.
+    const solo: readonly CascadeNode[] = [
+      { workId: "g2", workType: WorkType.Goal, title: "g", state: WorkState.Open, ownerHatId: "architecture_director" },
+      {
+        workId: "t2",
+        workType: WorkType.Task,
+        title: "t",
+        state: WorkState.Open,
+        ownerHatId: "architecture_director",
+        parentWorkId: "g2",
+        assigneeHatId: "architect",
+      },
+    ];
+    expect(meetingOpenings(chart, solo, NONE)).toEqual([]);
+  });
+
+  test("finished and abandoned work convenes nobody", () => {
+    for (const state of [WorkState.Done, WorkState.Canceled]) {
+      const closed = [CHAIN[0]!, CHAIN[1]!, { ...(CHAIN[2] as CascadeNode), state }];
+      expect(meetingOpenings(chart, closed, NONE)).toEqual([]);
+    }
+  });
+
+  test("a non-leaf is not offered one — the review is of the work being DONE", () => {
+    const project = [CHAIN[0]!, { ...(CHAIN[1] as CascadeNode), assigneeHatId: "backend_implementer" }];
+    expect(meetingOpenings(chart, project, NONE)).toEqual([]);
+  });
+
+  test("NO CALENDAR MEANS NO OFFER — an organization that keeps none cannot hold a meeting twice", () => {
+    const input = {
+      chart,
+      cascade: CHAIN,
+      artifactIds: new Set(["doc-t"]),
+      pricedWorkIds: new Set(["g", "p", "t"]),
+      resourceAuthorityHatId: "rmo_office",
+    };
+    expect(generativeOpeningsFor(input, "tech_lead").filter((o) => o.kind === GenerativeKind.ConveneChain)).toEqual([]);
+    const withCalendar = generativeOpeningsFor({ ...input, met: NONE }, "tech_lead");
+    expect(withCalendar.map((o) => o.kind)).toContain(GenerativeKind.ConveneChain);
+  });
+});
+
+describe("SPEND REACHES THE HAT THAT HOLDS THE MONEY", () => {
+  const NODES: readonly CascadeNode[] = [
+    { workId: "w-1", workType: WorkType.Task, title: "t", state: WorkState.Open, ownerHatId: "tech_lead" },
+    { workId: "w-done", workType: WorkType.Task, title: "d", state: WorkState.Done, ownerHatId: "tech_lead" },
+  ];
+  const PRICED = new Set(["w-1"]);
+  const p = (over: Record<string, unknown> = {}) => ({
+    proposalId: "sp-1",
+    workId: "w-1",
+    what: "a hosted thing",
+    cost: 500,
+    proposedByHatId: "tech_lead",
+    search: { kind: "searched" as const, found: [] },
+    ...over,
+  });
+
+  test("offered to the CFO — derived from the blocker taxonomy, not declared again", () => {
+    const open = spendOpenings(chart, NODES, PRICED, [p()], NONE);
+    expect(open).toHaveLength(1);
+    expect(open[0]?.kind).toBe(GenerativeKind.DecideSpend);
+    expect(open[0]?.byHatId).toBe("cfo");
+  });
+
+  test("NEVER TO THE PROPOSER — the next authority takes it instead", () => {
+    // `decideSpend` refuses self-approval, and the menu must not offer what the organization will
+    // refuse. With the CFO proposing, the ruling falls to the program director.
+    const open = spendOpenings(chart, NODES, PRICED, [p({ proposedByHatId: "cfo" })], NONE);
+    expect(open[0]?.byHatId).toBe("program_director");
+  });
+
+  test("RULED ONCE", () => {
+    expect(spendOpenings(chart, NODES, PRICED, [p()], new Set(["sp-1"]))).toEqual([]);
+  });
+
+  test("A COST THAT IS NOT A COST IS NOT OFFERED — `decideSpend` refuses it, so the menu may not", () => {
+    for (const cost of [0, -5, Number.NaN]) {
+      expect(spendOpenings(chart, NODES, PRICED, [p({ cost })], NONE)).toEqual([]);
+    }
+  });
+
+  test("UNPRICED LIVE WORK WAITS — the price arrives a round later", () => {
+    // Measured: offering here returned two of three proposals for "no decided priority", both of
+    // which had a real answer one round away. The CFO ticks before the supervisor who sets it.
+    expect(spendOpenings(chart, NODES, NONE, [p()], NONE)).toEqual([]);
+  });
+
+  test("WORK THAT DOES NOT EXIST YET WAITS TOO", () => {
+    // Every proposal in a drive that starts from an empty cascade names work the first round has
+    // not created. Offering them produced three rulings of "not work this organization holds" for
+    // goals that appeared moments later.
+    expect(spendOpenings(chart, NODES, PRICED, [p({ workId: "nope" })], NONE)).toEqual([]);
+  });
+
+  test("FINISHED WORK IS RULED ON, not waited on — its price will never be set", () => {
+    // Pricing is offered on live work alone, so a proposal whose goal completed before anybody got
+    // to it would wait for something that will never happen.
+    const open = spendOpenings(chart, NODES, NONE, [p({ workId: "w-done" })], NONE);
+    expect(open).toHaveLength(1);
+    expect(open[0]?.byHatId).toBe("cfo");
+  });
+
+  test("NO PROPOSALS DECLARED MEANS NONE OFFERED — this register does not invent costs", () => {
+    const input = {
+      chart,
+      cascade: NODES,
+      artifactIds: new Set(["doc-w-1"]),
+      pricedWorkIds: PRICED,
+      resourceAuthorityHatId: "rmo_office",
+    };
+    expect(generativeOpeningsFor(input, "cfo").filter((o) => o.kind === GenerativeKind.DecideSpend)).toEqual([]);
+    const withSpend = generativeOpeningsFor({ ...input, spend: { proposals: [p()], ruled: NONE } }, "cfo");
+    expect(withSpend.map((o) => o.kind)).toContain(GenerativeKind.DecideSpend);
+  });
+});

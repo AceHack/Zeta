@@ -194,8 +194,20 @@ describe("RUNTIME VALIDATION STAYS EVIDENCE-DRIVEN", () => {
     );
     const leaves = report.cascade.nodes.filter((n) => n.assigneeHatId !== undefined).map((n) => n.workId);
     expect(leaves.length).toBeGreaterThan(0);
-    const seen = [...new Set(asked.map((a) => a.workId))].sort();
-    expect(seen).toEqual([...leaves].sort());
+    const seen = new Set(asked.map((a) => a.workId));
+    // EVERY LEAF IS STILL ASKED ABOUT — that is the property under test, and it holds.
+    for (const id of leaves) expect(seen.has(id)).toBe(true);
+    // AND SO ARE THE RUNGS ABOVE, which is new and deliberate: a director's initiative and a
+    // manager's project now cross their own gates, so a reviewer is asked about them too. The old
+    // assertion was set equality against leaves alone, which would fail the moment the hierarchy
+    // started governing rather than decorating.
+    const governed = report.cascade.nodes
+      .filter((n) => n.assigneeHatId === undefined && n.state !== "canceled")
+      .map((n) => n.workId);
+    expect(governed.some((id) => seen.has(id))).toBe(true);
+    // Nothing OUTSIDE the cascade is ever asked about.
+    const known = new Set(report.cascade.nodes.map((n) => n.workId));
+    for (const id of seen) expect(known.has(id)).toBe(true);
   });
 
   test("the reviewer is handed the QA EVIDENCE, so it can judge from more than a title", async () => {

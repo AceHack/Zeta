@@ -13,16 +13,10 @@
 
 import { describe, expect, test } from "bun:test";
 import { execFileSync } from "node:child_process";
-import { mkdtempSync, rmSync, writeFileSync } from "node:fs";
+import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { tmpdir } from "node:os";
-import {
-  DEFAULT_TEXT_EXTENSIONS,
-  gitDataSource,
-  MAX_DOCUMENT_BYTES,
-  simulatedDataSource,
-  unionOf,
-} from "./git-data-source";
+import { DEFAULT_TEXT_EXTENSIONS, MAX_DOCUMENT_BYTES, directoryDataSource, gitDataSource, simulatedDataSource, unionOf, readBlobs } from "./git-data-source";
 import { Fidelity, Port, type SourceDocument } from "./providers";
 
 const REPO = process.cwd();
@@ -113,23 +107,88 @@ describe("documents are CITABLE — read at a resolved commit, not at a moving n
   });
 });
 
+describe("THE BATCHED READ IS BYTE-EXACT", () => {
+  const KNOWN = "docs/DECISIONS/2026-09-06-the-delivery-lifecycle-audited-against-what-was-asked-for.md";
+
+  test("a blob matches `git show` exactly, to the byte", () => {
+    // `cat-file --batch` gives a BYTE length and the stream is parsed as a Buffer for that reason:
+    // decoding as UTF-8 first puts every offset after the first non-ASCII character out by one,
+    // and these documents are full of em-dashes. An off-by-one here silently truncates every
+    // document in the repository by one character, which nothing else would notice.
+    const viaShow = execFileSync("git", ["show", `${HEAD}:${KNOWN}`], {
+      cwd: REPO,
+      encoding: "utf-8",
+      maxBuffer: 32 * 1024 * 1024,
+    });
+    const viaBatch = readBlobs(REPO, HEAD, [KNOWN]).get(KNOWN);
+    expect(viaBatch).toBe(viaShow);
+  });
+
+  test("several blobs in one call are each byte-exact, so the offsets carry", () => {
+    // The failure mode a single-file test cannot see: the cursor must advance past each blob AND
+    // the newline git writes after it, or every document after the first is shifted.
+    const listing = execFileSync("git", ["ls-tree", "-r", "--name-only", HEAD, "--", "docs/DECISIONS"], {
+      cwd: REPO,
+      encoding: "utf-8",
+      maxBuffer: 32 * 1024 * 1024,
+    });
+    const paths = listing.split("\n").filter((p) => p.endsWith(".md")).slice(0, 6);
+    expect(paths.length).toBeGreaterThan(1);
+
+    const batch = readBlobs(REPO, HEAD, paths);
+    for (const path of paths) {
+      const viaShow = execFileSync("git", ["show", `${HEAD}:${path}`], {
+        cwd: REPO,
+        encoding: "utf-8",
+        maxBuffer: 32 * 1024 * 1024,
+      });
+      expect(batch.get(path)).toBe(viaShow);
+    }
+  });
+
+  test("a path that does not exist at that revision is ABSENT, not empty", () => {
+    // Absent and empty are the two answers that must never be confused: an empty string would let
+    // the caller hand an agent a document that does not exist, and the caller's refusal — which
+    // turns a missing blob into a failed read rather than a shorter document set — depends on
+    // telling them apart.
+    const got = readBlobs(REPO, HEAD, ["docs/DECISIONS/no-such-file-xyz.md"]);
+    expect(got.has("docs/DECISIONS/no-such-file-xyz.md")).toBe(false);
+  });
+
+  test("a missing path does not shift the blobs asked for alongside it", () => {
+    const got = readBlobs(REPO, HEAD, ["docs/DECISIONS/no-such-file-xyz.md", KNOWN]);
+    const viaShow = execFileSync("git", ["show", `${HEAD}:${KNOWN}`], {
+      cwd: REPO,
+      encoding: "utf-8",
+      maxBuffer: 32 * 1024 * 1024,
+    });
+    expect(got.get(KNOWN)).toBe(viaShow);
+  });
+
+  test("asking for nothing runs no subprocess and returns nothing", () => {
+    expect(readBlobs(REPO, HEAD, []).size).toBe(0);
+  });
+});
+
 describe("TEXT ONLY", () => {
-  test("the default extension list holds no binary formats", () => {
+  test("the default extension list is EXACTLY these seven text formats", () => {
     // `no-binary-in-proof-lineage`: a grooming artifact citing a `.png` cites something nobody can
     // check, and decoding one would put replacement characters into an agent's context.
     //
-    // The claim rides on a POSITIVE exact-equality pin, not an absence check. An `not.toContain`
-    // per binary extension only witnesses the six renderings we happened to name; a seventh binary
-    // format silently added to the allowlist would pass every one of them. Pinning the whole list
-    // makes ANY addition — binary or otherwise — fail here until the maintainer restates the set.
-    expect([...DEFAULT_TEXT_EXTENSIONS]).toEqual([".md", ".txt", ".json", ".yml", ".yaml", ".toml", ".csv"]);
-
-    // And, redundantly but explicitly: the intersection with a known binary set is empty. Expressed
-    // as an equality on the computed intersection so the check itself can fail rather than assert an
-    // absence.
-    const binary = [".png", ".jpg", ".pdf", ".wasm", ".zip", ".exe"];
-    const leaked = DEFAULT_TEXT_EXTENSIONS.filter((e) => binary.includes(e));
-    expect(leaked).toEqual([]);
+    // AN EXACT PIN, NOT A LIST OF ABSENCES. This was six `not.toContain(binary)` assertions,
+    // and `audit-check-arity-nonequality` was right to refuse them: an absence assertion
+    // witnesses ONE RENDERING of a leak, never its absence. `not.toContain(".png")` also
+    // passes on an EMPTY list, and on any list that merely happens to lack `.png` — so the
+    // claim "holds no binary formats" was riding on a check that could not fail in the
+    // direction that matters.
+    //
+    // Pinning the whole value carries the claim instead: adding `.png` fails, emptying the
+    // list fails, and so does any drift nobody meant. The binary check below is now a
+    // DERIVED consequence rather than the evidence, which is why it can stay readable.
+    expect(DEFAULT_TEXT_EXTENSIONS).toEqual([".md", ".txt", ".json", ".yml", ".yaml", ".toml", ".csv"]);
+    for (const ext of DEFAULT_TEXT_EXTENSIONS) {
+      expect([".png", ".jpg", ".pdf", ".wasm", ".zip", ".exe"]).not.toContain(ext);
+    }
   });
 
   test("a file outside the extension list is not read at all", async () => {
@@ -343,5 +402,63 @@ describe("properties this repository's own tree cannot distinguish", () => {
     } finally {
       rmSync(dir, { recursive: true, force: true });
     }
+  });
+});
+
+describe("THE ORGANIZATION'S OWN RECORD IS A SOURCE, AND THE CORPUS IS READ-ONLY", () => {
+  const scratch = () => mkdtempSync(join(tmpdir(), "orgrec-"));
+
+  test("it reads the documents the organization wrote, with a citable revision", async () => {
+    const dir = scratch();
+    mkdirSync(join(dir, "task-011"), { recursive: true });
+    writeFileSync(join(dir, "task-011", "brd_approval.md"), "# BRD\n1. archival writes to blob", "utf-8");
+    const source = directoryDataSource({ dir });
+    const read = await source.read();
+    expect(read.ok).toBe(true);
+    if (read.ok) {
+      expect(read.value).toHaveLength(1);
+      const doc = read.value[0]!;
+      expect(doc.path).toBe("task-011/brd_approval.md");
+      // A citation with no revision is not a citation.
+      expect(doc.revision).not.toBe("");
+      expect(doc.ref).toContain(doc.revision);
+      expect(doc.ref).toContain("task-011/brd_approval.md");
+    }
+  });
+
+  test("a record that does not exist yet is EMPTY, not a refusal", async () => {
+    // The first run has written nothing. Refusing here would make `unionOf` refuse, and take the
+    // real corpus down with it — the organization would lose its wiki because it had no history.
+    const source = directoryDataSource({ dir: join(tmpdir(), "definitely-not-here-" + String(Date.now())) });
+    const read = await source.read();
+    expect(read.ok).toBe(true);
+    if (read.ok) expect(read.value).toEqual([]);
+  });
+
+  test("query finds by path OR content, so a later phase can reach an earlier conclusion", async () => {
+    const dir = scratch();
+    writeFileSync(join(dir, "architecture_design.md"), "the archival orchestrator owns this", "utf-8");
+    writeFileSync(join(dir, "cost_approval.md"), "no cost implication", "utf-8");
+    const source = directoryDataSource({ dir });
+    const byContent = await source.query("orchestrator");
+    const byPath = await source.query("cost");
+    expect(byContent.ok && byContent.value).toHaveLength(1);
+    expect(byPath.ok && byPath.value).toHaveLength(1);
+  });
+
+  test("THE PORT CANNOT WRITE. The corpus it reads is not something it can edit", () => {
+    // This is the guarantee, and it is structural rather than a promise: an organization that
+    // rewrites the company wiki as a side effect of grooming a defect is doing damage, and "we will
+    // be careful" is not a control. The port surface is read and query. There is nowhere to put a
+    // write, so no adapter can grow one without changing this interface in front of a reviewer.
+    const source = directoryDataSource({ dir: tmpdir() });
+    expect(Object.keys(source).sort()).toEqual(["meta", "query", "read"]);
+  });
+
+  test("ordering is ORDINAL, so two runs see the same corpus in the same order", async () => {
+    const dir = scratch();
+    for (const n of ["c.md", "a.md", "b.md"]) writeFileSync(join(dir, n), n, "utf-8");
+    const read = await directoryDataSource({ dir }).read();
+    expect(read.ok && read.value.map((d) => d.path)).toEqual(["a.md", "b.md", "c.md"]);
   });
 });

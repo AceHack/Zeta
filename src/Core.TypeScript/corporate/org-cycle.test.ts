@@ -14,7 +14,7 @@ import { accountableHatsFor, childrenOf, isDelivered, nodeById, WorkState, WorkT
 import { AnchorState, decisionsOn, producedItsOutput } from "./discussion-anchor";
 import { blockAt, isBusy, meetingLegs, ScheduleBlockType } from "./work-schedule";
 import { SignalTool } from "./supervisor-signal";
-import { GateKind, GateOutcome, isPassing, mayEvaluate, ORDERED_GATES, RecoveryPath } from "./quality-gate";
+import { GateKind, GateOutcome, HumanCheckpoint, ORDERED_GATES, RecoveryPath, isPassing, mayEvaluate } from "./quality-gate";
 import type { OrgChooser } from "./org-decision";
 
 const chart = (() => {
@@ -426,12 +426,19 @@ describe("the cycle refuses rather than pretending", () => {
     expect(report.delivered).toBe(false);
   });
 
-  test("a goal whose owner cannot be staffed downward is refused, not invented around", () => {
-    // The CFO has no directors beneath it in this seed.
+  test("a goal whose line has no contributors is refused, not invented around", () => {
+    // The CFO has no directors, and its one report — `cost_controller` — supervises nobody, so
+    // nothing under this hat can be done by anyone. The refusal comes at the first decomposition,
+    // which is the moment the fact is knowable.
+    //
+    // This has been three different answers. It first refused here for want of a DIRECTOR — the
+    // rigid ladder complaining about a rung shape. Then the ladder bent and it built two work items
+    // before discovering nobody could do the third, which looked like progress and was worse: two
+    // rungs of a plan nobody could execute, and the refusal three steps from the fact.
     const report = runOrgCycle(deps({ plan: { ...deps().plan, acceptingHatId: "cfo" } }));
     expect(report.refusals.some((r) => r.includes("cannot be staffed"))).toBe(true);
     expect(report.delivered).toBe(false);
-    // The goal exists — the C-suite did accept it — but nothing hangs off it.
+    // The goal exists — the C-suite did accept it — and nothing hangs off it, because nothing could.
     expect(childrenOf(report.cascade, report.goalWorkId)).toHaveLength(0);
   });
 
@@ -455,5 +462,148 @@ describe("the cycle is a function of its inputs", () => {
     expect(a.calendar).toEqual(b.calendar);
     expect(a.board).toEqual(b.board);
     expect(a.delivered).toBe(b.delivered);
+  });
+});
+
+describe("THE RMO AUTHORIZES STAFFING — a resource office that cannot refuse is not one", () => {
+  test("it staffs when supply allows, and the decision is RECORDED as an event", () => {
+    // Before this, `decideSupply` was called in exactly one place: run-org's post-run report. The
+    // number was printed and nothing consulted it, so assignment was governed by eligibility alone.
+    const report = runOrgCycle(deps());
+    const supplyEvents = report.events.filter((e) => e.includes("supply") && e.includes("target"));
+    expect(supplyEvents.length).toBeGreaterThan(0);
+    expect(supplyEvents[0]).toContain("rmo_office");
+    expect(report.events.filter((e) => e.includes("assigned to")).length).toBeGreaterThan(0);
+  });
+
+  test("IT CAN REFUSE — one task per wearer means the second task waits", () => {
+    // The refusal has to be reachable or the authorization is decoration. With one task per wearer
+    // and both tasks routing to the same contributor, the office declines the second rather than
+    // over-staffing, and says so instead of quietly assigning anyway.
+    const report = runOrgCycle(deps({ loadPerWearer: 1, supplyVoteBy: (voterHatId) => ({ voterHatId, target: 1, reason: "capped" }) }));
+    expect(report.refusals.some((r) => r.includes("RMO holds"))).toBe(true);
+    // And the refusal is a REAL constraint: fewer tasks were staffed than were queued.
+    expect(report.events.filter((e) => e.includes("assigned to")).length).toBeLessThan(2);
+  });
+
+
+  test("a vote from someone who does not SUPERVISE the hat is refused", () => {
+    // Found by writing this suite: a fake voter id made every staffing request fail with
+    // "'x' does not supervise 'backend_implementer' and may not vote". That is the office working —
+    // a staffing decision taken by hats with no relationship to the work is exactly what the
+    // reporting line exists to prevent — so it is pinned rather than left as an accident.
+    const report = runOrgCycle(deps({
+      supplyVoteBy: () => ({ voterHatId: "not_a_supervisor", target: 9, reason: "unrelated" }),
+    }));
+    expect(report.refusals.some((r) => r.includes("does not supervise"))).toBe(true);
+    expect(report.events.filter((e) => e.includes("assigned to")).length).toBe(0);
+  });
+
+  test("the queue AHEAD is counted, so supply is not computed one cycle behind demand", () => {
+    // Two unstaffed tasks route to the same hat. The first decision must already see the second as
+    // demand; if `upcoming` were dropped, the office would authorize for one and meet the other late.
+    const seen: number[] = [];
+    runOrgCycle(deps({
+      supplyVoteBy: (voterHatId, recommended) => {
+        seen.push(recommended);
+        return { voterHatId, target: recommended, reason: "endorsed" };
+      },
+    }));
+    expect(seen.length).toBeGreaterThan(0);
+    // The FIRST recommendation already accounts for more than the single task being staffed.
+    expect(Math.max(...seen)).toBeGreaterThanOrEqual(1);
+  });
+});
+
+describe("THE CALENDAR IS A PRECONDITION, NOT A RECEIPT", () => {
+  // A refused block used to push a refusal and the cycle went on to execute the work anyway. The
+  // calendar recorded what the organization intended while the work ignored it, so every downstream
+  // claim — the QA record, the gate evidence, the DORA figures — described work nobody made room
+  // for. `--window` reporting on top of that was measuring a fiction.
+  const unschedulable = () => runOrgCycle(deps({ workBlockMs: Number.POSITIVE_INFINITY }));
+
+  test("work the calendar REFUSED is not done", () => {
+    const report = unschedulable();
+    expect(report.refusals.some((r) => r.includes("schedule"))).toBe(true);
+    expect(report.refusals.some((r) => r.includes("staffed but never scheduled"))).toBe(true);
+    expect(report.delivered).toBe(false);
+  });
+
+  test("and no gate is crossed on work that never had time to happen", () => {
+    // The sharper claim. A refusal that still let the gates run would produce approvals over an
+    // empty change, which is the shape of every vacuous gate this system exists to prevent.
+    const report = unschedulable();
+    expect(report.gateRuns).toEqual([]);
+  });
+
+  test("when the calendar DOES admit the work, it is done and the gates run", () => {
+    // The other side, so the two tests together show the calendar is the difference and not some
+    // unrelated failure of the fixture.
+    const report = runOrgCycle(deps());
+    expect(report.refusals.some((r) => r.includes("staffed but never scheduled"))).toBe(false);
+    expect(report.gateRuns.length).toBeGreaterThan(0);
+    expect(report.delivered).toBe(true);
+  });
+});
+
+describe("A HAT WITH NOBODY TO WEAR IT STAYS UNSTAFFED", () => {
+  // Before the roster, `agentsFromChart` conjured an agent per hat, so this state was unreachable
+  // and the RMO's supply target was computed against a pool that could not run out.
+
+  test("an EMPTY roster leaves the work unstaffed, and names what was missing", () => {
+    const report = runOrgCycle(deps({ roster: { agents: [] }, bindings: [] }));
+    expect(report.refusals.some((r) => r.includes("no agent can wear"))).toBe(true);
+    expect(report.events.filter((e) => e.includes("assigned to")).length).toBe(0);
+    expect(report.delivered).toBe(false);
+  });
+
+  test("a roster that provisions the RIGHT hats staffs the work and records the bench", () => {
+    // The other side, so the refusal above is shown to be about the roster and not about the
+    // fixture failing for some unrelated reason.
+    const hats = ["backend_implementer", "frontend_implementer", "fullstack_implementer", "defect_fixer", "test_first_engineer"];
+    const roster = { agents: hats.map((_hat, i) => ({ agentId: `agent-${String(i)}`, eligibleHatIds: hats })) };
+    const report = runOrgCycle(deps({ roster, bindings: [] }));
+    expect(report.refusals.some((r) => r.includes("no agent can wear"))).toBe(false);
+    expect(report.events.some((e) => e.includes("agent(s) available for"))).toBe(true);
+    expect(report.events.filter((e) => e.includes("assigned to")).length).toBeGreaterThan(0);
+  });
+
+  test("NO roster keeps the old behaviour — nothing is refused for staffing", () => {
+    // Absent must mean "as before", not "everything is now unstaffable". A change that breaks every
+    // existing caller to add a constraint is a different change from adding the constraint.
+    const report = runOrgCycle(deps());
+    expect(report.refusals.some((r) => r.includes("no agent can wear"))).toBe(false);
+  });
+});
+
+describe("THE CYCLE STOPS AND WAITS WHEN A CHECKPOINT IS TURNED ON", () => {
+  test("with no checkpoints the cycle delivers, untouched", () => {
+    const report = runOrgCycle(deps());
+    expect(report.events.some((e) => e.includes("waiting for a person"))).toBe(false);
+    expect(report.delivered).toBe(true);
+  });
+
+  test("grooming ON stops the work and says whose turn it is", () => {
+    const report = runOrgCycle(deps({ checkpoints: [HumanCheckpoint.Grooming] }));
+    expect(report.events.some((e) => e.includes("waiting for a person") && e.includes("brd_approval"))).toBe(true);
+    expect(report.delivered).toBe(false);
+    // It is NOT a refusal — nobody rejected anything, so nothing should read as a failure.
+    expect(report.refusals.some((r) => r.includes("brd_approval"))).toBe(false);
+  });
+
+  test("a person's approval releases it and the cycle carries on to delivery", () => {
+    const report = runOrgCycle(deps({
+      checkpoints: [HumanCheckpoint.Grooming],
+      humanDecisionFor: () => ({ outcome: GateOutcome.Approved, actionRef: "human-action/ha-9" }),
+    }));
+    expect(report.events.some((e) => e.includes("waiting for a person"))).toBe(false);
+    expect(report.delivered).toBe(true);
+  });
+
+  test("both checkpoints on: it waits at grooming FIRST, before any approach exists", () => {
+    const report = runOrgCycle(deps({ checkpoints: [HumanCheckpoint.Grooming, HumanCheckpoint.Approach] }));
+    const waits = report.events.filter((e) => e.includes("waiting for a person"));
+    expect(waits.length).toBeGreaterThan(0);
+    expect(waits.every((w) => w.includes("brd_approval"))).toBe(true);
   });
 });

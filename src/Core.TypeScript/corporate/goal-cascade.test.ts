@@ -13,7 +13,10 @@ import {
   LEAF_TYPES,
   nextRung,
   nodeById,
+  deliveredSet,
+  liveWorkSet,
   ownerForRung,
+  restateDirection,
   rungFor,
   setState,
   unstaffedTasks,
@@ -22,6 +25,7 @@ import {
   type Cascade,
 } from "./goal-cascade";
 import { buildOrgChart, reportsUpTo } from "./org-chart";
+import { Domain } from "./domain-ontology";
 import { SEED_HATS } from "./org-seed";
 
 const chart = (() => {
@@ -130,25 +134,41 @@ describe("ownership is derived from the graph", () => {
     expect(ownerForRung(chart, "manager", "backend_implementer")).toBeUndefined();
   });
 
-  test("a tie is broken toward an owner who can carry the NEXT rung", () => {
-    // The regression this pins was live and silent. Three directors report to the CTO at equal
-    // distance — architecture, engineering, security — and only engineering has a manager beneath
-    // it. Without the tie-break, declaration order picked `architecture_director`, so every goal
-    // the CTO accepted produced an initiative that could never become a project: a plan that read
-    // as staffed and was not, failing one rung after the decision was made.
-    const blind = ownerForRung(chart, "director", "cto");
-    const aware = ownerForRung(chart, "director", "cto", "manager");
-    expect(aware?.id).toBe("engineering_director");
-    // The two genuinely differ here, which is what makes this test load-bearing rather than
-    // decorative — if they agreed, the tie-break would be untested by construction.
-    expect(blind?.id).not.toBe(aware?.id);
+  test("a tie is broken toward an owner who can DELEGATE the rung below", () => {
+    // Five directors report to the CTO at equal distance — architecture, engineering, QA
+    // engineering, security, documentation — and only two have a manager beneath them.
+    // `architecture_director` sorts first alphabetically, so without this preference every
+    // domainless goal the CTO accepted landed there and the whole cascade was owned by one hat
+    // three levels above the people doing it.
+    //
+    // ASSERTED WITHOUT `mustSupportLevel`, which is what makes it a preference rather than the
+    // filter it used to be confused with: nothing here REQUIRES a manager, and the ordering still
+    // prefers one. `architecture_director` is named as the loser so the test fails if the
+    // preference silently stops applying rather than merely changing its mind.
+    const chosen = ownerForRung(chart, "director", "cto");
+    expect(chosen?.id).toBe("engineering_director");
+    expect(chosen?.id).not.toBe("architecture_director");
   });
 
-  test("distance still beats support — a nearer owner is not skipped for a further one", () => {
-    // The tie-break is a TIE break, and this needs a chart the seed cannot provide: a nearer
-    // candidate that CANNOT support the next rung alongside a further one that can. In the seed
-    // every such pair happens to tie on distance, so the seed cannot tell the two orderings apart.
-    // Purpose-built rather than contorting the seed to make a witness.
+  test("...and the preference is NOT a requirement — a department with no manager still gets an owner", () => {
+    // Ten of this chart's sixteen departments have no manager rung at all. A filter here would
+    // refuse decomposition in every one of them to protect a structure the organization does not
+    // have, which is a gate that cannot open.
+    const owner = ownerForRung(chart, "director", "cto", undefined, Domain.Architecture);
+    expect(owner?.id).toBe("architecture_director");
+  });
+
+  test("`mustSupportLevel` is a REQUIREMENT — distance does not override it", () => {
+    // The distinction this pins was the defect. `mustSupportLevel` used to nudge the sort, so a
+    // candidate that could not support the next rung still won when it was nearest — and the
+    // failure surfaced a rung later, as an assignment refusal naming a hat nobody had chosen.
+    //
+    // A caller saying "this owner must be able to reach a manager" is stating a requirement, not a
+    // preference, and honouring it is what lets the search DESCEND to a level that can instead of
+    // handing back an owner it already knows cannot.
+    //
+    // Purpose-built rather than contorted from the seed: it needs a nearer candidate that CANNOT
+    // support alongside a further one that can, and in the seed every such pair ties on distance.
     const built = buildOrgChart([
       { id: "root", name: "Board", level: "executive_board", departmentId: "d" },
       // Distance 1 from root, and no manager beneath it.
@@ -161,19 +181,63 @@ describe("ownership is derived from the graph", () => {
     expect(built.ok).toBe(true);
     if (!built.ok) return;
 
-    // The nearer director wins even though it cannot carry the rung below. Ordering by support
-    // first would hand the work over the head of the hat that is actually closest.
-    expect(ownerForRung(built.chart, "director", "root", "manager")?.id).toBe("near_dir");
+    // The one that satisfies the requirement wins, even though it is further away.
+    expect(ownerForRung(built.chart, "director", "root", "manager")?.id).toBe("far_dir");
+
+    // AND DISTANCE STILL DECIDES AMONG CANDIDATES THAT ALL QUALIFY — otherwise this would have
+    // replaced one arbitrary rule with another. Drop the requirement and the nearer one wins.
+    expect(ownerForRung(built.chart, "director", "root")?.id).toBe("near_dir");
+  });
+
+  test("THE LADDER BENDS: a rung with nobody at its level falls to the parent itself", () => {
+    // Six of this chart's directors have no manager beneath them and no lead either, so a project
+    // in those departments has nobody at its nominal rung. Refusing there would stall ten of
+    // sixteen departments over a structure the reference organization does not have — so the
+    // director owns its own projects, which is what happens in a small department.
+    expect(ownerForRung(chart, "manager", "architecture_director")?.id).toBe("architecture_director");
+  });
+
+  test("...but NEVER to a hat too junior to wear it", () => {
+    // Caught by this test on the first version of the bending ladder: the manager rung was handed
+    // to the individual contributor itself. A hat wearing a rung above its own level is not a small
+    // department improvising, it is the hierarchy inverting.
+    expect(ownerForRung(chart, "manager", "backend_implementer")).toBeUndefined();
   });
 });
 
 describe("decomposition refuses rather than inventing", () => {
-  test("a goal whose owner has no director beneath it cannot be staffed", () => {
-    // The CFO has no directors reporting to it in this seed.
-    let c = must(acceptGoal(EMPTY_CASCADE, chart, { workId: "g", title: "cost", acceptingHatId: "cfo" }));
+  test("A LINE WITH NO CONTRIBUTORS IS REFUSED AT THE FIRST DECOMPOSITION", () => {
+    // The CFO has no directors, and its one report — `cost_controller` — supervises nobody. So
+    // nothing under this hat can ever be done by anyone, and the honest moment to say so is the
+    // first time somebody tries to plan it.
+    //
+    // This has now been three different answers, and the middle one was the interesting mistake.
+    // It first refused here for want of a DIRECTOR — the rigid ladder complaining about a rung
+    // shape. Then the ladder bent, the requirement narrowed to leaves, and it built two work items
+    // the cost controller owned before discovering nobody could do the third. That looked like
+    // progress and was worse: two rungs of a plan nobody could execute, and the refusal three steps
+    // from the fact.
+    const c = must(acceptGoal(EMPTY_CASCADE, chart, { workId: "g", title: "cost", acceptingHatId: "cfo" }));
     const r = decompose(c, chart, "g", [{ workId: "i", title: "x" }]);
     expect(r.ok).toBe(false);
-    if (!r.ok) expect(r.reason).toContain("cannot be staffed");
+    // AND THE MESSAGE NAMES THE REAL CAUSE. It used to say "no director hat reports up to X", which
+    // sent a reader looking for a director that would not have helped — the search descends past
+    // director and past the parent. What is missing is somebody to do the work.
+    if (!r.ok) expect(r.reason).toContain("no individual_contributor reports up to 'cfo'");
+  });
+
+  test("A STERILE MANAGER IS SKIPPED, and its director owns the work instead", () => {
+    // The subtler half of the same rule, and the reason it applies at EVERY rung rather than only
+    // at leaves. `business_analysis` has one manager, `business_approver`, and it supervises
+    // nobody; its director supervises five contributors. A project routed to the manager could not
+    // be broken down at all, and the register reported a hiring shortfall for a department with
+    // five people in it.
+    let c = must(acceptGoal(EMPTY_CASCADE, chart, { workId: "g", title: "brd", acceptingHatId: "ceo" }));
+    c = must(decompose(c, chart, "g", [{ workId: "i", title: "x", domain: Domain.BusinessRequirements }]));
+    expect(nodeById(c, "i")?.ownerHatId).toBe("ba_director");
+    c = must(decompose(c, chart, "i", [{ workId: "p", title: "y" }]));
+    expect(nodeById(c, "p")?.ownerHatId).toBe("ba_director");
+    expect(nodeById(c, "p")?.ownerHatId).not.toBe("business_approver");
   });
 
   test("decomposing into zero children is refused", () => {
@@ -427,5 +491,158 @@ describe("THE BOTTOM RUNG IS NOT ONE SHAPE", () => {
     const done = setState(made.cascade, "inc1", WorkState.Done);
     expect(done.ok).toBe(false);
     if (!done.ok) expect(done.reason).toContain("incident");
+  });
+});
+
+describe("RESTATING A DIRECTION — a separate verb, because a silent overwrite is not a decision", () => {
+  // Reachable from the drive only along the happy path, so every refusal here is tested directly.
+  // A mutation run proved that necessary: deleting four of these five guards killed nothing,
+  // because no cadence ever produced an input that tripped them.
+  const chart = (() => {
+    const r = buildOrgChart(SEED_HATS);
+    if (!r.ok) throw new Error(r.reason);
+    return r.chart;
+  })();
+
+  function withGoal(): Cascade {
+    const r = acceptGoal({ nodes: [] }, chart, {
+      workId: "g-1",
+      title: "grow the business",
+      acceptingHatId: "ceo",
+      atMs: 100,
+    });
+    if (!r.ok) throw new Error(r.reason);
+    return r.cascade;
+  }
+
+  test("acceptGoal RECORDS WHEN — without it nothing can ever go stale", () => {
+    expect(withGoal().nodes[0]?.directedAtMs).toBe(100);
+  });
+
+  test("a clockless acceptGoal records NO time, rather than a convenient one", () => {
+    const r = acceptGoal({ nodes: [] }, chart, { workId: "g-2", title: "t", acceptingHatId: "ceo" });
+    if (!r.ok) throw new Error(r.reason);
+    expect(r.cascade.nodes[0]?.directedAtMs).toBeUndefined();
+  });
+
+  test("the holder restates it: NEW OBJECTIVE, NEW CLOCK", () => {
+    const r = restateDirection(withGoal(), chart, { workId: "g-1", title: "grow it faster", byHatId: "ceo", atMs: 500 });
+    if (!r.ok) throw new Error(r.reason);
+    expect(r.cascade.nodes[0]?.title).toBe("grow it faster");
+    expect(r.cascade.nodes[0]?.directedAtMs).toBe(500);
+  });
+
+  test("ONLY THE ONE NAMED — a restatement is not a broadcast", () => {
+    const two = acceptGoal(withGoal(), chart, { workId: "g-2", title: "hold the line", acceptingHatId: "ceo", atMs: 100 });
+    if (!two.ok) throw new Error(two.reason);
+    const r = restateDirection(two.cascade, chart, { workId: "g-1", title: "changed", byHatId: "ceo", atMs: 500 });
+    if (!r.ok) throw new Error(r.reason);
+    expect(r.cascade.nodes.find((n) => n.workId === "g-2")?.title).toBe("hold the line");
+    expect(r.cascade.nodes.find((n) => n.workId === "g-2")?.directedAtMs).toBe(100);
+  });
+
+  test("REFUSED: a work item that is not a direction", () => {
+    const cascade: Cascade = {
+      nodes: [{ workId: "t-1", workType: WorkType.Task, title: "t", state: WorkState.Open, ownerHatId: "ceo" }],
+    };
+    const r = restateDirection(cascade, chart, { workId: "t-1", title: "x", byHatId: "ceo", atMs: 1 });
+    expect(r.ok).toBe(false);
+    if (!r.ok) expect(r.reason).toContain("not a direction");
+  });
+
+  test("REFUSED: a lead restating the company's direction", () => {
+    const r = restateDirection(withGoal(), chart, { workId: "g-1", title: "x", byHatId: "tech_lead", atMs: 1 });
+    expect(r.ok).toBe(false);
+    if (!r.ok) expect(r.reason).toContain("restated at the top");
+  });
+
+  test("REFUSED: ANOTHER EXECUTIVE redirecting a peer's domain", () => {
+    // Both are c_suite, so the level check passes and only this one stands between them. Without
+    // it any executive could redirect any other's domain, which is not a hierarchy.
+    const r = restateDirection(withGoal(), chart, { workId: "g-1", title: "x", byHatId: "cto", atMs: 1 });
+    expect(r.ok).toBe(false);
+    if (!r.ok) expect(r.reason).toContain("held by 'ceo'");
+  });
+
+  test("REFUSED: a restatement that states nothing", () => {
+    const r = restateDirection(withGoal(), chart, { workId: "g-1", title: "   ", byHatId: "ceo", atMs: 1 });
+    expect(r.ok).toBe(false);
+    if (!r.ok) expect(r.reason).toContain("states nothing");
+  });
+
+  test("REFUSED: a direction that does not exist, and an unknown hat", () => {
+    expect(restateDirection(withGoal(), chart, { workId: "nope", title: "x", byHatId: "ceo", atMs: 1 }).ok).toBe(false);
+    expect(restateDirection(withGoal(), chart, { workId: "g-1", title: "x", byHatId: "ghost", atMs: 1 }).ok).toBe(false);
+  });
+});
+
+describe("TWO ROLL-UPS, AND THEY MAY NEVER DISAGREE", () => {
+  /**
+   * Every shape that matters, in one cascade: a delivered branch, an abandoned one, a mixed one, a
+   * childless goal, and a leaf of each terminal state.
+   */
+  const SHAPES: Cascade = {
+    nodes: [
+      // g-done: every leaf finished.
+      { workId: "g-done", workType: WorkType.Goal, title: "d", state: WorkState.Open, ownerHatId: "cto" },
+      { workId: "p-done", workType: WorkType.Project, title: "d", state: WorkState.Open, ownerHatId: "cto", parentWorkId: "g-done" },
+      { workId: "t-done", workType: WorkType.Task, title: "d", state: WorkState.Done, ownerHatId: "cto", parentWorkId: "p-done" },
+      // g-abandoned: every leaf cancelled. NOT delivered, and NOT live — two different facts.
+      { workId: "g-abandoned", workType: WorkType.Goal, title: "a", state: WorkState.Open, ownerHatId: "cto" },
+      { workId: "p-abandoned", workType: WorkType.Project, title: "a", state: WorkState.Open, ownerHatId: "cto", parentWorkId: "g-abandoned" },
+      { workId: "t-abandoned", workType: WorkType.Task, title: "a", state: WorkState.Canceled, ownerHatId: "cto", parentWorkId: "p-abandoned" },
+      // g-mixed: one cancelled leaf and one that is still open.
+      { workId: "g-mixed", workType: WorkType.Goal, title: "m", state: WorkState.Open, ownerHatId: "cto" },
+      { workId: "t-mixed-a", workType: WorkType.Task, title: "m", state: WorkState.Canceled, ownerHatId: "cto", parentWorkId: "g-mixed" },
+      { workId: "t-mixed-b", workType: WorkType.Task, title: "m", state: WorkState.Open, ownerHatId: "cto", parentWorkId: "g-mixed" },
+      // g-bare: accepted and never broken down.
+      { workId: "g-bare", workType: WorkType.Goal, title: "b", state: WorkState.Open, ownerHatId: "cto" },
+    ],
+  };
+
+  test("`deliveredSet` AGREES WITH `isDelivered` on every node", () => {
+    // The strongest form this can take, and it exists because a mutation run showed that
+    // `deliveredSet` — a faster copy of the same rule — could forget "all children cancelled is not
+    // delivered" and kill nothing. Two implementations of one question is the defect; asserting
+    // they agree is the guard that survives either being edited.
+    for (const node of SHAPES.nodes) {
+      expect([node.workId, deliveredSet(SHAPES).has(node.workId)]).toEqual([
+        node.workId,
+        isDelivered(SHAPES, node.workId),
+      ]);
+    }
+  });
+
+  test("delivered is exactly the branch that FINISHED", () => {
+    expect([...deliveredSet(SHAPES)].sort()).toEqual(["g-done", "p-done", "t-done"]);
+  });
+
+  test("LIVE IS A DIFFERENT QUESTION, and the abandoned branch is where they part", () => {
+    // `g-abandoned` is neither delivered nor live. Asking only the first left its domain occupied
+    // forever by work nobody would ever do again — measured as a three-day run that cancelled its
+    // way through everything and set zero new directions.
+    const live = liveWorkSet(SHAPES);
+    expect(live.has("g-abandoned")).toBe(false);
+    expect(deliveredSet(SHAPES).has("g-abandoned")).toBe(false);
+    expect([...live].sort()).toEqual(["g-bare", "g-mixed", "t-mixed-b"]);
+  });
+
+  test("a goal nobody has broken down yet is LIVE — it needs work, it has not had it", () => {
+    expect(liveWorkSet(SHAPES).has("g-bare")).toBe(true);
+    expect(deliveredSet(SHAPES).has("g-bare")).toBe(false);
+  });
+
+  test("neither walks forever on a cascade whose parents form a cycle", () => {
+    // Guarded rather than assumed: nothing here builds one, and an unguarded recursion over
+    // caller-supplied data is a hang waiting for the first malformed input — the one failure a test
+    // cannot report.
+    const cyclic: Cascade = {
+      nodes: [
+        { workId: "a", workType: WorkType.Project, title: "a", state: WorkState.Open, ownerHatId: "cto", parentWorkId: "b" },
+        { workId: "b", workType: WorkType.Project, title: "b", state: WorkState.Open, ownerHatId: "cto", parentWorkId: "a" },
+      ],
+    };
+    expect(deliveredSet(cyclic).size).toBe(0);
+    expect(liveWorkSet(cyclic).size).toBe(0);
   });
 });

@@ -11,8 +11,9 @@ import { buildOrgChart } from "./org-chart";
 import { SEED_HATS } from "./org-seed";
 import { IntakeKind, Severity, type ExternalEvent } from "./intake";
 import { RunOutcome } from "./qa";
-import { GateKind, GateOutcome , ORDERED_GATES} from "./quality-gate";
-import { WorkState, setState, childrenOf } from "./goal-cascade";
+import { GateKind, GateOutcome } from "./quality-gate";
+import { WorkState, WorkType, setState, childrenOf } from "./goal-cascade";
+import { chainFor, producesCode } from "./gate-demand";
 import { isTerminal } from "../workflow-engine/agent-loop/work-lifecycle-state-machine";
 
 const chart = (() => {
@@ -70,7 +71,9 @@ const projectRun = async (over?: Partial<OrgRuntimeDeps>) => {
 describe("a delivered task becomes a MERGED change", () => {
   test("the full canonical path, in order", async () => {
     const { projections } = await projectRun();
-    expect(projections).toHaveLength(2);
+    // ONE, not two. The run's leaves are a defect and a `review`; only the defect produces code, so
+    // only it is a change. The verification item has no branch to open — see `producesCode`.
+    expect(projections).toHaveLength(1);
     for (const p of projections) {
       expect(p.projection.state.tag).toBe("Merged");
       expect(p.projection.terminal).toBe(true);
@@ -160,7 +163,10 @@ describe("the projection is DERIVED — it cannot be advanced on its own", () =>
     })!;
     expect(facts.assigneeHatId).toBeDefined();
     expect(facts.shardId).toBeDefined();
-    expect(facts.gateEvaluations.length).toBe(ORDERED_GATES.length);
+    // The DEFECT's own chain — implementation review, QA, runtime validation, release readiness —
+    // not every canonical gate. `ORDERED_GATES.length` here asserted the old model, in which one
+    // implementer walked all fourteen.
+    expect(facts.gateEvaluations.length).toBe(chainFor(WorkType.Defect).length);
     expect(facts.cancelled).toBe(false);
     expect(factsFor("ghost", { cascade: report.cascade, queue: report.queue, gateEvaluations: [], nowMs: 0 })).toBeUndefined();
   });
@@ -229,13 +235,22 @@ describe("DISAGREEMENT IS DETECTABLE — the point of a derived projection", () 
     const facts = factsFor(taskId, {
       cascade: forged, queue: report.queue, gateEvaluations: report.gateEvaluations, nowMs: 0,
     })!;
+    const node = report.cascade.nodes.find((n) => n.workId === taskId)!;
     const projection = project({
-      facts,
+      // `owedGates` has to be supplied here. `factsFor` gathers what the register recorded and does
+      // not know the item's TYPE, and a projection with no owed set falls back to all fourteen
+      // canonical gates — which this item does not owe, so it would never reach `Merged` and the
+      // disagreement this test exists to detect could not arise.
+      facts: { ...facts, owedGates: chainFor(node.workType) },
       row: { id: taskId, title: "t", priority: "P2", filePath: "x", trajectory: "y" },
       prNumber: 1,
       nowMs: 0,
     });
     const d = disagreementsWith(projection, { cascade: forged, workId: taskId, queue: report.queue });
+    // The projection only reaches `Merged` once the item's OWN chain has passed, so the fixture
+    // supplies `owedGates` for the type under test. Without it the projection stops short of
+    // merging and the disagreement this test exists to detect never arises — the test would pass
+    // for the wrong reason, which is worse than failing.
     expect(d.some((x) => x.includes("change merged but"))).toBe(true);
   });
 
@@ -243,8 +258,11 @@ describe("DISAGREEMENT IS DETECTABLE — the point of a derived projection", () 
     const { report, projections } = await projectRun();
     const ids = new Set(projections.map((p) => p.workId));
     for (const node of report.cascade.nodes) {
-      const isLeaf = childrenOf(report.cascade, node.workId).length === 0;
-      expect(ids.has(node.workId)).toBe(isLeaf);
+      // A goal is still not a pull request — and neither is a verification task. What is projected
+      // is a leaf THAT PRODUCES CODE; the rest have nothing to merge.
+      const projectable =
+        childrenOf(report.cascade, node.workId).length === 0 && producesCode(node.workType);
+      expect(ids.has(node.workId)).toBe(projectable);
     }
   });
 });

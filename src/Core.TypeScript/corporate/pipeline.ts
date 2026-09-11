@@ -36,11 +36,12 @@
  * gates, and saying so out loud is better than a check that pretends every process is this one.
  */
 
+import { meterCall, type PortMeter, type Pricing } from "./meter";
 import type { CascadeNode } from "./goal-cascade";
 import type { ChangeHandle, PortResult, ProviderMeta } from "./providers";
 import { evaluateGate, gateOwners, GateKind, ORDERED_GATES, type GateEvaluation, type GateOutcome, type RecoveryPath } from "./quality-gate";
 import type { OrgChart, OrgHat } from "./org-chart";
-import type { OrgChooser } from "./org-decision";
+import { preferChooser, type OrgChooser } from "./org-decision";
 
 /** What a phase produced, and the references a gate can then judge it by. */
 export interface Artifact {
@@ -53,6 +54,22 @@ export interface Artifact {
   readonly refs: readonly string[];
   /** One line for the trace. Never the evidence itself. */
   readonly summary: string;
+  /**
+   * Memory ids the author says it relied on.
+   *
+   * SEPARATE FROM `refs`, and that separation is the fix for a real defect: a citation is not a
+   * document. While these lived in `refs` they were recorded as produced artifacts, counted in the
+   * artifact total, and handed to the next phase as a prior to go and read — so a document's
+   * "Read before writing this" listed `relied on [5:agent|...]` as though it were a file.
+   */
+  readonly citations?: readonly string[];
+  /**
+   * What this step worked out along the way, for whoever does it next.
+   *
+   * Separate from `refs`: a lesson is not a document the gate judges, it is a by-product of having
+   * done the work. Carried so the organization can write it where the next agent will find it.
+   */
+  readonly learned?: readonly { readonly key: string; readonly value: string }[];
 }
 
 /** Everything a producer is given. The change is open by the time any producer runs. */
@@ -214,12 +231,55 @@ export interface PipelineRunInput {
     /** Everything produced so far, so a late reviewer can see the whole trail rather than one step. */
     soFar: ReadonlyMap<GateKind, Artifact>,
   ) => Promise<void>;
+  /**
+   * Gates that may not pass without a PERSON. Absent or empty = fully agentic, the default.
+   *
+   * The same seam `runGateChain` carries, and it has to exist HERE too: this is the function the
+   * real runtime walks. A checkpoint configured on the fixture and absent from the production path
+   * is a setting that appears to work and never stops anything — which is worse than not offering
+   * it, because somebody would rely on it.
+   */
+  readonly humanRequiredAt?: ReadonlySet<GateKind>;
+  /** The person's answer for a gate, and the reference to the action that carried it. */
+  readonly humanDecisionFor?: (
+    gate: GateKind,
+  ) => { readonly outcome: GateOutcome; readonly actionRef: string } | undefined;
+  /**
+   * Dollars per million tokens, per model. Absent ⇒ meters carry tokens and no cost.
+   *
+   * Absent is the DEFAULT and it is not a degraded mode: an unpriced run records everything needed
+   * to price it later, and reports "not priced" rather than a number nobody configured.
+   */
+  readonly pricing?: Pricing;
+  /** The clock the meters read. Injected so a test measures what it decides to measure. */
+  readonly now?: () => number;
+}
+
+/** What happened while a phase produced: what it said, how long it took, what it cost. */
+export interface PhaseTranscript {
+  readonly output: readonly string[];
+  readonly durationMs: number;
+  /**
+   * The measured crossing.
+   *
+   * Present whenever a producer ran, INCLUDING when it refused — a refusal costs wall time and
+   * often costs tokens, and dropping it would make a run that failed expensively look free.
+   */
+  readonly meter: PortMeter;
 }
 
 export interface PipelineRunResult {
   readonly evaluations: readonly GateEvaluation[];
   readonly passed: ReadonlySet<GateKind>;
   readonly artifacts: ReadonlyMap<GateKind, Artifact>;
+  /**
+   * What each producer SAID, keyed by gate — its captured output, and how long it took.
+   *
+   * Separate from `artifacts` because they answer different questions: an artifact is what the
+   * phase made, and this is what happened while it made it. A phase can produce a document and
+   * print a warning, and only one of those two is the reason a reviewer should look closer.
+   */
+  readonly transcripts: ReadonlyMap<GateKind, PhaseTranscript>;
   readonly complete: boolean;
   readonly blockedAt: GateKind | undefined;
   readonly refusals: readonly string[];
@@ -228,6 +288,25 @@ export interface PipelineRunResult {
    * because a producer refused — a thing that was never made has no review to recover from.
    */
   readonly recovery: RecoveryPath | undefined;
+  /**
+   * Questions a person has to answer before this gate can be attempted again.
+   *
+   * Carried up rather than left in a refusal string, because a question that only appears in a log
+   * line is a question nobody is asked. The organization routes these to whoever is outside it;
+   * this layer neither writes them nor reads them.
+   *
+   * `blockedAt` says WHICH gate is waiting, so the answers come back to the step that asked.
+   */
+  readonly questions: readonly string[];
+  /**
+   * The gate WAITING ON A PERSON, if the walk stopped for one.
+   *
+   * Deliberately not `blockedAt`. A block means somebody looked and said no, and the recovery path
+   * sends the work backwards; waiting means nobody has looked yet and the work is fine. Collapsing
+   * them would make an unanswered checkpoint indistinguishable from a failed review, and the
+   * organization would "recover" from a decision nobody made.
+   */
+  readonly awaitingHuman?: GateKind;
 }
 
 /**
@@ -246,17 +325,73 @@ export async function runPipeline(chart: OrgChart, input: PipelineRunInput): Pro
   const evaluations: GateEvaluation[] = [];
   const refusals: string[] = [];
   const artifacts = new Map<GateKind, Artifact>();
+  const transcripts = new Map<GateKind, PhaseTranscript>();
   let passed: ReadonlySet<GateKind> = new Set<GateKind>();
 
   for (const phase of input.pipeline) {
     const gate = phase.gate;
 
+    // ── A CHECKPOINT WAITS FOR A PERSON ───────────────────────────────────
+    // BEFORE the producer runs, not merely before the gate is evaluated. `brd_approval` and
+    // `architecture_approval` are the two moments where a person's "no" is still cheap, and their
+    // whole value is that nothing downstream has been built yet. Producing first and waiting second
+    // would spend the model call this checkpoint exists to make unnecessary.
+    const human =
+      input.humanRequiredAt?.has(gate) === true ? input.humanDecisionFor?.(gate) : undefined;
+    if (input.humanRequiredAt?.has(gate) === true && human === undefined) {
+      return {
+        evaluations,
+        passed,
+        artifacts,
+      transcripts,
+        complete: false,
+        blockedAt: undefined,
+        questions: [],
+        refusals,
+        recovery: undefined,
+        awaitingHuman: gate,
+      };
+    }
+
     let produced: Artifact | undefined;
-    if (phase.produce !== undefined) {
-      const result = await phase.produce.produce(input.node, contextFrom(input.handle, artifacts));
+    const produce = phase.produce;
+    if (produce !== undefined) {
+      // ── THE CROSSING IS MEASURED AT THE MEMBRANE ──────────────────────
+      // This used to be a bare `Date.now()` pair whose result was written to the transcript and
+      // never went any further, so the register could tell you a phase took four minutes and could
+      // not tell you what it spent. `meterCall` returns the port result UNCHANGED and hands back
+      // the measurement beside it — §13's metered channel, actually metered.
+      const metered = await meterCall(
+        {
+          port: produce.meta.port,
+          provider: produce.meta.name,
+          fidelity: produce.meta.fidelity,
+          ...(input.pricing === undefined ? {} : { pricing: input.pricing }),
+          ...(input.now === undefined ? {} : { now: input.now }),
+        },
+        () => produce.produce(input.node, contextFrom(input.handle, artifacts)),
+      );
+      const result = metered.result;
+      // KEPT WHETHER IT SUCCEEDED OR NOT. A producer that refused is the one whose output somebody
+      // most needs to read, and the early return below used to take it with it.
+      //
+      // The duration is LOCAL and stays local: it steers a reader's eye, never the fold. It is
+      // reported, never folded into a decision — see `local-time-never-enters-the-shared-fold`.
+      transcripts.set(gate, {
+        output: result.ok ? result.evidence.map((e) => e.ref) : [`refused:${result.reason}`],
+        durationMs: metered.meter.durationMs,
+        meter: metered.meter,
+      });
       if (!result.ok) {
-        refusals.push(`producer '${phase.produce.meta.name}' for '${gate}' on ${input.workId}: ${result.reason}`);
-        return { evaluations, passed, artifacts, complete: false, blockedAt: gate, refusals, recovery: undefined };
+        refusals.push(`producer '${produce.meta.name}' for '${gate}' on ${input.workId}: ${result.reason}`);
+        return {
+          evaluations, passed, artifacts, transcripts, complete: false, blockedAt: gate, refusals,
+          recovery: undefined,
+          // WHAT THE PRODUCER ASKED, if it asked anything. A producer that simply failed asks
+          // nothing, and turning its failure into a question would make the person the error
+          // handler for the organization's own problems.
+          questions: result.questions ?? [],
+        };
       }
       produced = result.value;
       artifacts.set(gate, produced);
@@ -275,7 +410,7 @@ export async function runPipeline(chart: OrgChart, input: PipelineRunInput): Pro
           ? `the only hat holding '${gate}' is '${input.proposerHatId}', which did the work`
           : `no hat holds the approval scope for '${gate}'`,
       );
-      return { evaluations, passed, artifacts, complete: false, blockedAt: gate, refusals, recovery: undefined };
+      return { evaluations, passed, artifacts, transcripts, complete: false, blockedAt: gate, refusals, recovery: undefined, questions: [] };
     }
 
     // WHAT THE PHASE MADE IS WHAT THE GATE IS JUDGED ON. Evidence stops being a field somebody
@@ -287,10 +422,12 @@ export async function runPipeline(chart: OrgChart, input: PipelineRunInput): Pro
       gate,
       evaluatorHatId: evaluator.id,
       passed,
-      chooser: input.chooser,
+      // The person's answer goes through the SAME seam a derived outcome uses. The hat still
+      // records the gate; the decision is the human's, and the evidence below says whose.
+      chooser: human === undefined ? input.chooser : preferChooser(human.outcome, "human checkpoint"),
       atMs: input.atMs,
       proposerHatId: input.proposerHatId,
-      evidenceRefs,
+      evidenceRefs: human === undefined ? evidenceRefs : [...evidenceRefs, human.actionRef],
       // THE CHAIN IS THIS PIPELINE'S, not the canonical one. Ordering is still enforced — a phase
       // cannot be reached before the ones this pipeline puts ahead of it — but the process being
       // enforced is the one the caller declared.
@@ -298,16 +435,16 @@ export async function runPipeline(chart: OrgChart, input: PipelineRunInput): Pro
     });
     if (!result.ok) {
       refusals.push(result.reason);
-      return { evaluations, passed, artifacts, complete: false, blockedAt: gate, refusals, recovery: undefined };
+      return { evaluations, passed, artifacts, transcripts, complete: false, blockedAt: gate, refusals, recovery: undefined, questions: [] };
     }
     evaluations.push(result.evaluation);
     passed = result.passed;
     if (!passed.has(gate)) {
       // The gate was evaluated and did not pass. The pipeline stops here; the recovery path on the
       // evaluation says where the work goes back to.
-      return { evaluations, passed, artifacts, complete: false, blockedAt: gate, refusals, recovery: result.recovery };
+      return { evaluations, passed, artifacts, transcripts, complete: false, blockedAt: gate, refusals, recovery: result.recovery, questions: [] };
     }
   }
 
-  return { evaluations, passed, artifacts, complete: true, blockedAt: undefined, refusals, recovery: undefined };
+  return { evaluations, passed, artifacts, transcripts, complete: true, blockedAt: undefined, refusals, recovery: undefined, questions: [] };
 }

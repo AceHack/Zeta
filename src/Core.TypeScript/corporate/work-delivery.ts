@@ -46,6 +46,7 @@ import type { ProviderSet, ReviewVerdict } from "./providers";
 // becomes a cycle; if the runtime is ever wired to `deliverWorkItem`, move `gateChooserFrom` to a
 // neutral home first.
 import { gateChooserFrom } from "./org-runtime";
+import { branchNameFor } from "./branch-topology";
 
 /** What one delivery needs. Everything injected: no ambient providers, no ambient clock. */
 export interface DeliveryInput {
@@ -56,7 +57,15 @@ export interface DeliveryInput {
   readonly atMs: number;
   /** The hat that did the work, so no gate is evaluated by its author. */
   readonly proposerHatId: string;
-  /** Branch name for the change. Defaults to `work/<workId>`. */
+  /**
+   * Branch name for the change. Defaults to the work's own name — see `branchNameFor`.
+   *
+   * NO `base` HERE, and that is a limit rather than an omission: this function takes ONE node and
+   * an integration branch is a fact about the node's ANCESTORS, which it has no cascade to walk.
+   * A caller that wants a story under a feature passes both through `changeContextFor` and hands
+   * the result to the port itself. Recorded because the alternative — accepting a `base` this
+   * function cannot derive or check — would look like support and silently do nothing.
+   */
   readonly branch?: string;
   /** Evidence for gates whose producer is not the source of it — the test runs, typically. */
   readonly extraEvidenceFor?: (gate: GateKind) => readonly string[];
@@ -111,7 +120,9 @@ export interface DeliveryOutcome {
 export async function deliverWorkItem(input: DeliveryInput): Promise<DeliveryOutcome> {
   const workId = input.node.workId;
   const refusals: string[] = [];
-  const branch = input.branch ?? `work/${workId}`;
+  // Named after the WORK, like the runtime's own path. `input.branch` still wins, because a
+  // caller that already knows the topology should not have it re-derived under it.
+  const branch = input.branch ?? branchNameFor(input.node);
 
   // ── THE CHANGE IS OPENED FIRST ──────────────────────────────────────────
   // Producers write inside it, so the branch has to exist before the first phase runs.

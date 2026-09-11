@@ -1,0 +1,114 @@
+/**
+ * durable-reads.test.ts — one bad shard must not make a whole store unreadable.
+ *
+ * The failure mode this exists for is the ordinary one: a process is killed while writing an event,
+ * leaving a truncated file. Before this, the next read threw straight out of `JSON.parse` — so the
+ * single crash durability is supposed to survive made the organization permanently unreadable.
+ *
+ * The opposite error is equally real and is why `shardProblems` exists: a store that quietly drops
+ * what it cannot parse reads as a smaller organization, and nobody finds out. Skipped, never
+ * silent.
+ */
+
+import { describe, expect, test } from "bun:test";
+import { mkdtempSync, writeFileSync, readFileSync, mkdirSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
+import { Category } from "../zeta-id/types";
+import { readShards, shardProblems, writeShard } from "./shard-store";
+
+interface Note {
+  readonly id: string;
+  readonly body: string;
+}
+
+const identify = (n: Note): string => n.id;
+
+/** A store with three good records, and the path of one of them. */
+function storeOfThree(): { readonly root: string; readonly victim: string } {
+  const root = mkdtempSync(join(tmpdir(), "durable-"));
+  const paths = [1, 2, 3].map((i) =>
+    writeShard(
+      { value: { id: `n-${String(i)}`, body: `body ${String(i)}` }, atMs: i * 1_000, category: Category.Workflow },
+      root,
+    ),
+  );
+  return { root, victim: paths[1] as string };
+}
+
+describe("a truncated shard is survived, not fatal", () => {
+  test("THREE GOOD RECORDS READ BACK", () => {
+    const { root } = storeOfThree();
+    expect(readShards<Note>(root, identify)).toHaveLength(3);
+  });
+
+  test("A HALF-WRITTEN FILE LEAVES THE OTHER TWO READABLE", () => {
+    // Exactly what a process killed mid-write leaves behind.
+    const { root, victim } = storeOfThree();
+    const whole = readFileSync(victim, "utf-8");
+    writeFileSync(victim, whole.slice(0, Math.max(1, Math.floor(whole.length / 3))));
+    const read = readShards<Note>(root, identify);
+    expect(read).toHaveLength(2);
+    expect(read.map((n) => n.id).sort()).toEqual(["n-1", "n-3"]);
+  });
+
+  test("an EMPTY file is survived too — the zero-byte case of the same crash", () => {
+    const { root, victim } = storeOfThree();
+    writeFileSync(victim, "");
+    expect(readShards<Note>(root, identify)).toHaveLength(2);
+  });
+
+  test("garbage that is not JSON at all is survived", () => {
+    const { root, victim } = storeOfThree();
+    writeFileSync(victim, "\u0000\u0000not json at all\u0000");
+    expect(readShards<Note>(root, identify)).toHaveLength(2);
+  });
+});
+
+describe("SKIPPED IS NOT SILENT", () => {
+  test("the unreadable file is reportable, with a reason", () => {
+    // Without this a store quietly missing events reads as a smaller organization and nobody knows,
+    // which is the worse of the two failures.
+    const { root, victim } = storeOfThree();
+    writeFileSync(victim, "{ truncated");
+    const problems = shardProblems(root);
+    expect(problems).toHaveLength(1);
+    expect(problems[0]?.file).toBe(victim);
+    expect((problems[0]?.reason ?? "").length).toBeGreaterThan(0);
+  });
+
+  test("a HEALTHY store reports no problems — the check can come back clean", () => {
+    const { root } = storeOfThree();
+    expect(shardProblems(root)).toEqual([]);
+  });
+
+  test("every skipped record is accounted for: read + problems = written", () => {
+    const { root, victim } = storeOfThree();
+    writeFileSync(victim, "nope");
+    expect(readShards<Note>(root, identify).length + shardProblems(root).length).toBe(3);
+  });
+});
+
+describe("the store still refuses what is not its own", () => {
+  test("a stray non-shard file is ignored and is NOT reported as corruption", () => {
+    // A README beside the data is not a broken record; conflating the two would make the problem
+    // report cry wolf on every store somebody left a note in.
+    const { root } = storeOfThree();
+    writeFileSync(join(root, "README.json"), '{"note":"a person left this here"}');
+    expect(readShards<Note>(root, identify)).toHaveLength(3);
+    expect(shardProblems(root)).toEqual([]);
+  });
+
+  test("a missing root reads empty and reports nothing", () => {
+    const root = join(tmpdir(), `absent-${String(Date.now())}-${String(Math.trunc(1e6))}`);
+    expect(readShards<Note>(root, identify)).toEqual([]);
+    expect(shardProblems(root)).toEqual([]);
+  });
+
+  test("an empty directory is a normal state, not a fault", () => {
+    const root = mkdtempSync(join(tmpdir(), "empty-"));
+    mkdirSync(join(root, "2026", "09", "09"), { recursive: true });
+    expect(readShards<Note>(root, identify)).toEqual([]);
+    expect(shardProblems(root)).toEqual([]);
+  });
+});

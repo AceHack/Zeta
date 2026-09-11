@@ -30,7 +30,7 @@
  */
 
 import { LEVEL_RANK, supervisorChainOf, type OrgChart } from "./org-chart";
-import { childrenOf, isLeafType, WorkState, type Cascade } from "./goal-cascade";
+import { childrenOf, isLeafType, WorkState, type Cascade, type CascadeNode } from "./goal-cascade";
 import { PRIORITY_ORDER, priorityRank, type PriorityDecision } from "./prioritization";
 
 /** How much open work one wearer is expected to carry. Above this, the hat needs another wearer. */
@@ -57,6 +57,18 @@ export interface SupplyInput {
   readonly priorities: readonly PriorityDecision[];
   /** Open work carried by one wearer before another is needed. */
   readonly loadPerWearer?: number;
+  /**
+   * Work that will need a wearer but does not have one yet, with the hat each item would go to.
+   *
+   * Without this, supply is computed from ASSIGNED work only — so a hat is never authorized to grow
+   * until after the queue has already been forced onto the wearers it has. The RMO would be
+   * perpetually one cycle behind demand, staffing for the backlog it just absorbed rather than the
+   * one in front of it, which is the opposite of what a resource office is for.
+   *
+   * The caller supplies the routing because the caller is the one about to perform it; inferring it
+   * here would be a second, quietly divergent opinion about who does what.
+   */
+  readonly upcoming?: readonly { readonly node: CascadeNode; readonly hatId: string }[];
 }
 
 /**
@@ -76,6 +88,11 @@ export function requiredSupply(hatId: string, input: SupplyInput): number {
     if (childrenOf(input.cascade, node.workId).length > 0) continue;
     if (node.state === WorkState.Done || node.state === WorkState.Canceled) continue;
     weighted += priorityWeight(input.priorities.find((p) => p.workId === node.workId));
+  }
+  for (const item of input.upcoming ?? []) {
+    if (item.hatId !== hatId) continue;
+    if (item.node.state === WorkState.Done || item.node.state === WorkState.Canceled) continue;
+    weighted += priorityWeight(input.priorities.find((p) => p.workId === item.node.workId));
   }
   return Math.ceil(weighted / perWearer);
 }

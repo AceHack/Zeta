@@ -22,6 +22,7 @@
  * authority did without knowing in advance which hats are in it.
  */
 
+import type { PortMeter } from "./meter";
 import { supervisorChainOf, type OrgChart } from "./org-chart";
 import type { WorkState, WorkType } from "./goal-cascade";
 import type { ScheduleBlockState, ScheduleBlockType } from "./work-schedule";
@@ -34,6 +35,8 @@ import type { RunFidelity } from "./providers";
 import type { ObserveActTick } from "./observe-act-window";
 import type { SupervisorSignal } from "./supervisor-signal";
 import type { AnchorPost, DecisionRecord, DiscussionAnchor } from "./discussion-anchor";
+import type { IntakeItem } from "./intake";
+import type { RaisedBlocker } from "./human-blocker";
 
 export const OrgEventKind = {
   IntakeReceived: "intake_received",
@@ -90,6 +93,19 @@ export type OrgFact =
       readonly title: string;
       readonly ownerHatId: string;
       readonly parentWorkId?: string;
+      /** What asked for it — see `request.ts`. Absent for work the organization raised itself. */
+      readonly requestRef?: string;
+      /**
+       * What this work waits for — see `CascadeNode.dependsOn`.
+       *
+       * ON THE FACT, not only in memory, because a cascade folded from the log has to be the same
+       * organization the run was working. A round-trip test caught this immediately: the run held
+       * a dependency the replay did not, so a resumed organization would have scheduled a check
+       * before the thing it checks.
+       */
+      readonly dependsOn?: readonly string[];
+      /** What the requester wrote — see `CascadeNode.brief`. */
+      readonly brief?: string;
     }
   | { readonly kind: "work_assigned"; readonly workId: string; readonly assigneeHatId: string }
   | { readonly kind: "work_state"; readonly workId: string; readonly state: WorkState }
@@ -130,6 +146,14 @@ export type OrgFact =
    * rate are both folds over these.
    */
   | { readonly kind: "gates_evaluated"; readonly evaluations: readonly GateEvaluation[] }
+  /**
+   * A blocker that LEFT the organization, with its whole content.
+   *
+   * The event alone used to carry only a sentence and the id in `evidenceRefs`, so a reader could
+   * see THAT something was raised and never WHAT — which made the raise unanswerable from the log
+   * and left `openBlockers` with nothing to read.
+   */
+  | { readonly kind: "blocker_raised"; readonly blocker: RaisedBlocker }
   /** A long-lived container was opened. It outlives every goal inside it — see `portfolio.ts`. */
   | {
       readonly kind: "portfolio_opened";
@@ -227,6 +251,372 @@ export type OrgFact =
    * never see the "before". This is the history that makes the distinction possible.
    */
   | { readonly kind: "qa_cycle"; readonly report: QaCycleReport }
+  /**
+   * WHAT A PHASE MADE, so a reviewer can be shown the thing they are judging.
+   *
+   * The gap this closes was the worst kind: a writer with no reader. `runPipeline` produced an
+   * artifact for every phase and `historyFromPhases` assembled them into a document — and none of it
+   * reached the log, so it died with the process. An observer could report that `brd_approval` was
+   * approved and could not show the BRD, or say whether one existed. A person asked to approve it
+   * was being asked to approve a gate name.
+   *
+   * `refs` is where the thing IS; `summary` is one line about it. An EMPTY `refs` is the honest
+   * record of a phase that produced nothing, and is the single most useful thing this fact carries —
+   * it is what lets a dashboard refuse to present a rubber stamp as a decision.
+   */
+  /**
+   * THE CHANGE A PIECE OF WORK BECAME — branch, merge request, worktree.
+   *
+   * The log recorded `change is Merged` and threw the handle away, so the one question a developer
+   * opens a ticket to answer — *where is the branch, where is the MR* — could not be answered from
+   * the history at all. The state was kept and the address was not.
+   */
+  /**
+   * A REQUEST THE ORGANIZATION TOOK ON — the outside asking for work, recorded as data.
+   *
+   * Intake already mints a collision-proof key and already refuses duplicates and defects with no
+   * reproduction steps. Both outcomes were prose in the trace, so neither survived the fold: an
+   * organization could not list what it had been asked to do, and — worse — could not list what it
+   * had DECLINED, while the person who filed it waited.
+   */
+  | {
+      readonly kind: "intake_accepted";
+      readonly item: IntakeItem;
+    }
+  /**
+   * A REQUEST THE ORGANIZATION DECLINED, with its reason.
+   *
+   * Carried separately from `Refusal` events because a refused request has an addressee: somebody
+   * filed it and is owed the answer. A refusal that only exists in a list of run refusals is a
+   * decision nobody outside the run will ever see.
+   */
+  | {
+      readonly kind: "intake_refused";
+      readonly reason: string;
+      readonly message: string;
+      readonly title: string;
+      readonly externalRef?: string;
+    }
+  | {
+      readonly kind: "change_opened";
+      readonly workId: string;
+      readonly changeId: string;
+      readonly branch: string;
+      readonly url?: string;
+      readonly workdir?: string;
+    }
+  /**
+   * A change that ACTUALLY LANDED, with where it landed.
+   *
+   * ── WHY THE LOG AND NOT THE PROJECTION ───────────────────────────────────
+   * A projection describes what one run did. "Has a commit ever existed for this work" is a
+   * question across runs, and holding the projection to it is how a RESUMED run comes to believe
+   * nothing was ever committed for work that shipped last week — measured, 2026-09-10: run 1
+   * delivered with a merge commit in git, run 2 resumed and called the same item unlanded while the
+   * commit sat there. The log is the only record here that outlives the process.
+   *
+   * `commit` and `tree` are OPTIONAL because an adapter may not be able to name them — a simulated
+   * port has no repository. Absent means "this port could not say", never "no commit exists"; the
+   * fact's presence is what says the merge happened.
+   */
+  /**
+   * A CHECK THAT RAN, and the exact content it judged.
+   *
+   * ── WHY THE TREE IS ON THE FACT ──────────────────────────────────────────
+   * A verdict that does not say which code it looked at cannot be reused and cannot be audited —
+   * "the artifact you edited is not the one that ran" is a failure this register has paid for
+   * repeatedly, and a gate result with no content address is exactly that failure waiting to
+   * happen. With the tree recorded, re-running a gate over unchanged content reuses the answer, and
+   * changed content CANNOT reuse it, which is the half that matters.
+   *
+   * TREE RATHER THAN COMMIT: two commits over identical content share a tree, so a rebase, an
+   * amend or a cherry-pick does not invalidate work already done — and those are most of what a
+   * working branch does.
+   *
+   * `outcome` distinguishes a green check from a green check nothing can falsify. They are not the
+   * same evidence and the log must not flatten them into one.
+   */
+  | {
+      readonly kind: "check_result";
+      readonly workId: string;
+      readonly checkId: string;
+      readonly tree: string;
+      readonly outcome: string;
+      readonly exitCode?: number;
+      readonly detail: string;
+      readonly durationMs: number;
+      readonly falsifierPassed?: boolean;
+    }
+  /**
+   * A CHECK THAT RAN, and the exact content it judged.
+   *
+   * ── WHY THE TREE IS ON THE FACT ──────────────────────────────────────────
+   * A verdict that does not say which code it looked at cannot be reused and cannot be audited —
+   * "the artifact you edited is not the one that ran" is a failure this register has paid for
+   * repeatedly, and a gate result with no content address is exactly that failure waiting to
+   * happen. With the tree recorded, re-running a gate over unchanged content reuses the answer, and
+   * changed content CANNOT reuse it, which is the half that matters.
+   *
+   * TREE RATHER THAN COMMIT: two commits over identical content share a tree, so a rebase, an
+   * amend or a cherry-pick does not invalidate work already done — and those are most of what a
+   * working branch does.
+   *
+   * `outcome` distinguishes a green check from a green check nothing can falsify. They are not the
+   * same evidence and the log must not flatten them into one.
+   */
+  | {
+      readonly kind: "check_result";
+      readonly workId: string;
+      readonly checkId: string;
+      readonly tree: string;
+      readonly outcome: string;
+      readonly exitCode?: number;
+      readonly detail: string;
+      readonly durationMs: number;
+      readonly falsifierPassed?: boolean;
+    }
+  | {
+      readonly kind: "change_merged";
+      readonly workId: string;
+      readonly changeId: string;
+      readonly branch: string;
+      readonly commit?: string;
+      /** The tree the merge produced — the cache key a gate keys its checks on. */
+      readonly tree?: string;
+    }
+  | {
+      readonly kind: "phase_output";
+      readonly workId: string;
+      readonly gate: string;
+      readonly refs: readonly string[];
+      readonly summary: string;
+      readonly producedByHatId: string;
+      /**
+       * WHAT THE ADAPTER ACTUALLY SAID — the captured stdout and stderr of the command behind this
+       * phase, up to `MAX_CAPTURED_OUTPUT`.
+       *
+       * The adapters have captured this since they were written, and it was dropped one layer up:
+       * `runPipeline` carried the artifact's `refs` into the gate's evidence and discarded the
+       * producer's own `evidence`, which is where the output lives. So a run could tell you a gate
+       * passed and could never tell you what the agent behind it printed — which is the whole
+       * substance of the work for anyone reading it as a developer rather than as a board.
+       */
+      readonly output?: readonly string[];
+      readonly durationMs?: number;
+    }
+  /**
+   * ONE CROSSING OF ONE PORT, MEASURED — duration, tokens, and cost where a price was configured.
+   *
+   * The fact that makes every money figure in every view derivable instead of invented. Carried per
+   * call rather than per run so that "what did this task cost" and "what does this hat spend" are
+   * both folds of the same rows rather than two separately-maintained counters that drift.
+   *
+   * `workId` and `hatId` are the dimensions worth slicing by and both are OPTIONAL: an intake poll
+   * belongs to no work item, and a run-level call belongs to no hat. Attributing those to a
+   * convenient owner would make the per-item totals add up to more than the run.
+   */
+  | {
+      readonly kind: "metered_call";
+      readonly meter: PortMeter;
+      readonly workId?: string;
+      readonly hatId?: string;
+      readonly gate?: string;
+    }
+  /**
+   * WHAT A CHANGE ACTUALLY TOUCHED — a path and its added/removed line counts, per file.
+   *
+   * `change_opened` records the address of a change; this records its content. Without it a
+   * "Changes" view can name a branch and cannot say what is in it, which is the one question
+   * anybody opening that view has.
+   *
+   * Line counts come from the change-control adapter's own diff, never from an agent's summary of
+   * what it says it did. The agent's claim is testimony and lives in `phase_output`; this is the
+   * measurement, and keeping them apart is what lets the two disagree in the open.
+   */
+  | {
+      readonly kind: "change_files";
+      readonly workId: string;
+      readonly changeId: string;
+      readonly files: readonly ChangedFile[];
+    }
+  /**
+   * A DOCUMENT AN AGENT WROTE, resolved to something a reader can open.
+   *
+   * `phase_output` already carries the refs a phase cited, and a ref is not a document: it may be a
+   * plan line, a URL, or a path that no longer exists. This fact is emitted only for refs that
+   * RESOLVED to bytes on disk at the moment the phase finished, and carries the size that was read.
+   * A documents view built on refs alone lists things it cannot open.
+   */
+  | {
+      readonly kind: "document_written";
+      readonly workId: string;
+      readonly gate: string;
+      readonly path: string;
+      readonly bytes: number;
+      readonly producedByHatId: string;
+    }
+  /**
+   * SOMETHING THE ORGANIZATION LEARNED, and where it belongs.
+   *
+   * The write itself, not the file. The file is the store's business; this is the fact that at this
+   * moment this hat came to believe this, which is what a fold needs to rebuild what is known
+   * without reading a filesystem it may not have.
+   */
+  | {
+      readonly kind: "memory_written";
+      readonly memoryId: string;
+      readonly tier: string;
+      readonly scope: string;
+      readonly key: string;
+      readonly writtenBy: string;
+      /** new | reinforced | conflicted — three genuinely different things happened. */
+      readonly outcome: "new" | "reinforced" | "conflicted";
+      readonly value: string;
+    }
+  /**
+   * A memory moved through its lifecycle: went stale, was archived, was promoted.
+   *
+   * Carries the WEIGHT that justified it. A phase change with no number behind it is a decision
+   * nobody can check, and archiving is the one that means never again.
+   */
+  | {
+      readonly kind: "memory_phase";
+      readonly memoryId: string;
+      readonly from: string;
+      readonly to: string;
+      readonly authority: string;
+      readonly weight: number;
+      readonly why: string;
+    }
+  /**
+   * A HAT SPENT TIME ON SOMETHING NOBODY ASKED FOR — and what it was supposed to produce.
+   *
+   * The block and its intended output travel together on purpose. A free-time block recorded
+   * without its output would make "the organization is learning" unfalsifiable, which is the exact
+   * failure `org-life.ts` is built to avoid.
+   */
+  | {
+      readonly kind: "self_directed";
+      readonly hatId: string;
+      readonly selfDirectedKind: string;
+      readonly subject: string;
+      readonly startMs: number;
+      readonly endMs: number;
+      /** The memory key it must write. Absent output later is then visible as a block that produced nothing. */
+      readonly producesKey: string;
+    }
+  /**
+   * A PERSON TOOK AN AGENT'S TIME, and what that cost the schedule.
+   *
+   * `displaced` is the point. An organization that silently drops work to take a meeting is not
+   * more responsive, it is less trustworthy — so the delay is recorded with the interruption.
+   */
+  | {
+      readonly kind: "conversation_preempted";
+      readonly hatId: string;
+      readonly withHuman: string;
+      readonly blockId: string;
+      readonly displaced: readonly { readonly blockId: string; readonly byMs: number }[];
+    }
+  /** A room where a person and an agent iterate on a document. */
+  | {
+      readonly kind: "room_opened";
+      readonly roomId: string;
+      readonly workId: string;
+      readonly gate: string;
+      readonly documentPath: string;
+      readonly withHatId: string;
+      readonly openedBy: string;
+    }
+  | {
+      readonly kind: "room_turn";
+      readonly roomId: string;
+      readonly turnId: string;
+      readonly speakerKind: string;
+      readonly speaker: string;
+      readonly text: string;
+      readonly producedRevision?: number;
+    }
+  | {
+      readonly kind: "room_revision";
+      readonly roomId: string;
+      readonly revision: number;
+      readonly byHatId: string;
+      readonly text: string;
+      readonly inResponseToTurnId?: string;
+    }
+  /** The room ended. `approvedRevision` is present only when somebody approved something specific. */
+  | {
+      readonly kind: "room_closed";
+      readonly roomId: string;
+      readonly state: string;
+      readonly byHuman: string;
+      readonly reason: string;
+      readonly approvedRevision?: number;
+    }
+  /**
+   * AUTHORITY WAS PUT ON OR TAKEN OFF.
+   *
+   * The record that makes "who was allowed to do this, at the time they did it" answerable. A
+   * register where every hat is always active cannot answer that, which is the only question an
+   * audit asks.
+   */
+  /**
+   * AN AGENT SAID IT USED SOMETHING IT WAS TOLD.
+   *
+   * The other half of the memory economy. Without it `citedCount` never moves, `utilityRatio` sits
+   * at its neutral value forever, and a memory that was injected twenty times and never relied on
+   * is indistinguishable from one that saved every run it appeared in.
+   */
+  | {
+      readonly kind: "memory_cited";
+      readonly memoryId: string;
+      readonly byHatId: string;
+      readonly workId?: string;
+    }
+  /**
+   * Where every hat was at one instant: working, in a room, studying, or asleep.
+   *
+   * ONE FACT FOR THE WHOLE CENSUS rather than one per hat. The interesting number is the shape of
+   * the day — how many were asleep while three worked — and splitting it into seventy facts would
+   * make that a query rather than a reading, and would let a partial write report a half-populated
+   * organisation as a real one.
+   */
+  /**
+   * A meeting HAPPENED, and what came out of it.
+   *
+   * Separate from `meeting_planned` because booking an hour and holding it are different facts and
+   * an organisation that conflated them could report a calendar as an achievement. `produced` is
+   * what the attendees actually put on the table; EMPTY IS A REAL VALUE and is recorded as one —
+   * "we met and nothing came of it" is the finding a meeting register exists to surface.
+   */
+  | {
+      readonly kind: "meeting_held";
+      readonly meetingId: string;
+      readonly attendeeHatIds: readonly string[];
+      readonly atMs: number;
+      /** What it had to produce, carried forward so the output can be judged against the ask. */
+      readonly mustProduce: string;
+      /** What it did produce. Empty means nothing, and that is not smoothed over. */
+      readonly produced: string;
+      /** Why nothing came out, when nothing did. */
+      readonly reason?: string;
+    }
+  | {
+      readonly kind: "presence_census";
+      readonly atMs: number;
+      readonly counts: Readonly<Record<string, number>>;
+      /** Hats that were asleep last tick and are needed now. Empty is normal and is not padded. */
+      readonly waking: readonly string[];
+      /** The full census, so a page can say what each hat was doing rather than only how many. */
+      readonly hats: readonly { readonly hatId: string; readonly presence: string; readonly because: string; readonly subject?: string }[];
+    }
+  | {
+      readonly kind: "hat_move";
+      readonly hatId: string;
+      readonly move: string;
+      readonly why: string;
+    }
   | {
       readonly kind: "meeting_planned";
       readonly meetingId: string;
@@ -235,7 +625,27 @@ export type OrgFact =
       readonly startMs: number;
       readonly endMs: number;
       readonly workItemId?: string;
+      /**
+       * WHY it was booked — `MeetingReason` from `org-life.ts`.
+       *
+       * Optional because the accountable-chain meeting the runtime books has no such cause; it is
+       * part of walking a work item, not a response to a condition. Optional rather than a filler
+       * value, so "this meeting has no stated cause" stays visibly different from a cause nobody
+       * chose. A meeting whose reason is absent is one nothing can later tell you to stop holding.
+       */
+      readonly reason?: string;
+      /** What it is about, in a sentence somebody can decide from. */
+      readonly about?: string;
+      /** What has to come out of it. See `MeetingProposal.mustProduce`. */
+      readonly mustProduce?: string;
     };
+
+/** One file a change touched, as the change-control adapter's own diff reports it. */
+export interface ChangedFile {
+  readonly path: string;
+  readonly added: number;
+  readonly removed: number;
+}
 
 export interface OrgEvent {
   readonly id: string;

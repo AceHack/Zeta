@@ -30,6 +30,7 @@
  * reading of a pure function called twice.
  */
 
+import type { Cascade } from "./goal-cascade";
 import type { OrgRuntimeDeps, OrgRuntimeReport } from "./org-runtime";
 
 export const StopReason = {
@@ -122,8 +123,44 @@ export async function runUntilSettled(
   let previous: Progress | undefined;
   let nowMs = deps.nowMs;
 
+  /**
+   * The work as the LAST CYCLE left it.
+   *
+   * ── THE DEFECT THIS CLOSES ───────────────────────────────────────────────
+   * `deps.priorCascade` is read from the store once, before this loop starts, so every cycle here
+   * saw the same empty history and accepted the same intake again — minting a whole new goal,
+   * initiative, project and pair of leaves each time round. MEASURED: one run of five cycles left
+   * five parallel cascades for one request in the log, and questions raised by cycle one were
+   * addressed to work cycle two had already replaced.
+   *
+   * A loop whose iterations cannot see each other is not a loop; it is the same first cycle run
+   * repeatedly. Carrying the cascade forward is what makes the second cycle a CONTINUATION.
+   */
+  let carried: Cascade | undefined = deps.priorCascade;
+
+  /**
+   * What has LANDED, accumulated across cycles.
+   *
+   * The same defect the paragraph above describes, one field over: `deps.alreadyLanded` is folded
+   * from the store once, before this loop, so cycle 2 cannot see what cycle 1 merged. Left that
+   * way, an item merged in cycle 1 comes back in cycle 2 as done-with-no-commit and the run refuses
+   * to deliver work it just shipped. A loop whose iterations cannot see each other is not a loop.
+   *
+   * Stays `undefined` when the caller supplied nothing, so "not measured" survives the loop rather
+   * than becoming an empty set that reads as "nothing has ever landed".
+   */
+  let landed: Set<string> | undefined =
+    deps.alreadyLanded === undefined ? undefined : new Set(deps.alreadyLanded);
+
   for (let cycle = 1; cycle <= options.maxCycles; cycle += 1) {
-    const report = await run({ ...deps, nowMs });
+    const report = await run({
+      ...deps,
+      nowMs,
+      ...(carried === undefined ? {} : { priorCascade: carried }),
+      ...(landed === undefined ? {} : { alreadyLanded: landed }),
+    });
+    carried = report.cascade;
+    if (landed !== undefined) for (const id of report.changesLanded) landed.add(id);
     reports.push(report);
     options.onCycle?.(cycle, report);
 

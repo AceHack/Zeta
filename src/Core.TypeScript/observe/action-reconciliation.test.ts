@@ -29,16 +29,31 @@ const OTHER: BacklogItem = { id: "081KQ0YZ80008QG0R002T6TM7Z", title: "Someone e
 const MERGE: BacklogItem = { id: "merge-pr-42", title: "Merge PR 42", ready: true, ambiguous: false };
 
 describe("the table is total and self-consistent", () => {
-  test("covers exactly the 21 NextAction kinds", () => {
+  test("covers exactly the 30 NextAction kinds", () => {
     // SIXTEEN until the grammar gained peer verbs. The number is pinned rather than derived on
     // purpose — the table is `Record<ActionKind, ActionRow>`, so a new kind cannot be missing a
     // row, but it CAN be added without anyone noticing the grammar grew. This assertion is the
     // noticing.
     //
-    // The five additions are `review_artifact`, `respond_to_artifact`, `convene_meeting`,
-    // `request_information` and `assign_work`. Before them the grammar had exactly one
-    // communication verb and it addressed the human.
-    expect(ALL_KINDS).toHaveLength(21);
+    // +5 peer verbs: `review_artifact`, `respond_to_artifact`, `convene_meeting`,
+    // `request_information`, `assign_work`. Before them the grammar had exactly one communication
+    // verb and it addressed the human.
+    //
+    // +9 generative verbs: `set_direction`, `draft_business_doc`, `decide_priority`,
+    // `size_hat_supply`, `break_down_work`, `submit_work`, `escalate_churn`, `convene_chain`,
+    // `decide_spend`. Before them every verb in the grammar ADVANCED work
+    // that already existed and none of them made any, so an organization built from this grammar
+    // ran to a fixed point and stopped. The fifth was added after measuring the first four: the
+    // drive set sixteen directions and then stopped with sixteen root goals and nothing under
+    // any of them.
+    //
+    // +1 `raise_to_human`, which is why this number is 31 and not 30. It was added to the table
+    // and this count was not updated with it — the suite it lives in was not re-run, and a count
+    // test is exactly the kind that goes stale silently when the thing it counts is what changed.
+    // Recorded rather than quietly corrected: the lesson is that the number has to move in the
+    // same commit as the row, and the falsifier below (`ALL_KINDS` against the union type) is what
+    // makes the count meaningful rather than decorative.
+    expect(ALL_KINDS).toHaveLength(31);
   });
 
   test("every row's key agrees with its own kind — a copy-paste row is a real risk here", () => {
@@ -147,7 +162,10 @@ describe("the hat gate did not widen — every level, every kind", () => {
             case "convene":
               return auth.canConvene;
             case "assign_work":
+            case "direct_resources":
               return auth.canCreateWork;
+            case "set_direction":
+              return level === "c_suite" || level === "executive_board";
           }
         })();
         expect(hatFilter([action], auth).length === 1).toBe(expected);

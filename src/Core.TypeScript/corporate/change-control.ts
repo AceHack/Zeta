@@ -43,8 +43,9 @@ import {
 } from "../workflow-engine/agent-loop/work-lifecycle-state-machine";
 import type { AgentPersona } from "../protocol/agent-loop-contract";
 import { childrenOf, nodeById, WorkState, type Cascade } from "./goal-cascade";
-import { isPassing, ORDERED_GATES, type GateEvaluation } from "./quality-gate";
+import { isPassing, ORDERED_GATES, type GateEvaluation, type GateKind } from "./quality-gate";
 import { ShardState, type WorkQueue } from "./work-market";
+import { chainFor, producesCode } from "./gate-demand";
 
 /** What the organization did to one task, in the order it did it. */
 export interface OrgFacts {
@@ -58,6 +59,16 @@ export interface OrgFacts {
   readonly shardId?: string;
   readonly gateEvaluations: readonly GateEvaluation[];
   readonly cancelled: boolean;
+  /**
+   * The gates THIS work item owes — its own type's chain.
+   *
+   * Absent means "every canonical gate", which is what this module assumed unconditionally until a
+   * run measured the consequence: once the runtime began walking each work type's own chain, no
+   * item could satisfy all fourteen, so nothing merged and every task reported as done-in-the-
+   * cascade-but-InReview. The owed set travels with the facts because the change lifecycle has no
+   * business knowing what a defect owes versus a task — that rule lives in `gate-demand`.
+   */
+  readonly owedGates?: readonly GateKind[];
 }
 
 /** Gather the facts for one task from the register's own state. */
@@ -214,7 +225,14 @@ export function project(input: ProjectionInput): Projection {
   // Every gate passed ⇒ the threads are resolved and it is approved. Derived from the verdicts,
   // never asserted — an unfinished chain simply does not reach this.
   const passed = new Set(facts.gateEvaluations.filter((e) => isPassing(e.outcome)).map((e) => e.gate));
-  const allPassed = ORDERED_GATES.every((g) => passed.has(g));
+  // The item's OWN chain when it declared one, else every canonical gate. A work type owing three
+  // gates must not be held to fourteen it never walks.
+  const owed = facts.owedGates ?? ORDERED_GATES;
+  // AN EMPTY CHAIN NEVER APPROVES. `[].every()` is vacuously true, so an item that owes nothing
+  // would merge having crossed no gate at all — approval by having nothing to satisfy, which is
+  // the vacuity class wearing a completed chain. Owing nothing is a configuration to investigate,
+  // never a change to land.
+  const allPassed = owed.length > 0 && owed.every((g) => passed.has(g));
   if (allPassed) {
     step({ tag: "Approve", approvedAt: iso(input.nowMs) });
   }
@@ -238,6 +256,33 @@ export function project(input: ProjectionInput): Projection {
 }
 
 /**
+ * The organization calls this work DONE and its change record never reached `Merged`.
+ *
+ * ── WHY THIS IS A NAMED PREDICATE AND NOT AN INLINE CONDITION ────────────────
+ * Two readers need it and they must never disagree. `disagreementsWith` reports it as one
+ * disagreement among several; `runOrgRuntime` needs the SAME question answered to decide whether a
+ * goal may be called delivered. Written twice, the two drift, and the drift is invisible: the run
+ * reports the disagreement in a refusal and delivers anyway, which is precisely the state this
+ * predicate was extracted to end.
+ *
+ * MEASURED, 2026-09-10, in the `newco` store:
+ *
+ *   "change control task-011: 'task-011' is done in the cascade but the change is Claimed"
+ *   "decision": "goal DELIVERED"
+ *
+ * The detector fired, the refusal was recorded, and the run delivered over a repository in which
+ * nothing had landed — because `changesUnlanded` (the only list DELIVERED consults) is populated
+ * behind `if (projection.state.tag !== "Merged") continue;`, which this exact case never passes.
+ */
+export function doneWithNothingMerged(
+  projection: Projection,
+  input: { readonly cascade: Cascade; readonly workId: string },
+): boolean {
+  const node = nodeById(input.cascade, input.workId);
+  return node?.state === WorkState.Done && projection.state.tag !== "Merged";
+}
+
+/**
  * Where the projection and the organization DISAGREE.
  *
  * The whole point of a derived projection is that it cannot drift — but "cannot" is a claim, and
@@ -256,12 +301,11 @@ export function disagreementsWith(
   const out: string[] = [];
   const node = nodeById(input.cascade, input.workId);
   const merged = projection.state.tag === "Merged";
-  const taskDone = node?.state === WorkState.Done;
 
-  if (merged && !taskDone) {
+  if (merged && node?.state !== WorkState.Done) {
     out.push(`change merged but '${input.workId}' is ${node?.state ?? "missing"} in the cascade`);
   }
-  if (taskDone && !merged) {
+  if (doneWithNothingMerged(projection, input)) {
     out.push(`'${input.workId}' is done in the cascade but the change is ${projection.state.tag}`);
   }
   for (const r of projection.refused) {
@@ -283,7 +327,12 @@ export function projectAll(input: {
   readonly nowMs: number;
   readonly branchPrefix?: string;
 }): readonly { readonly workId: string; readonly projection: Projection; readonly disagreements: readonly string[] }[] {
-  const leaves = input.cascade.nodes.filter((n) => childrenOf(input.cascade, n.workId).length === 0);
+  // Leaves THAT PRODUCE CODE. A verification item has no branch — projecting one for it invented a
+  // change nothing ever wrote to, and the real git port then refused the empty merge. See
+  // `producesCode`.
+  const leaves = input.cascade.nodes.filter(
+    (n) => childrenOf(input.cascade, n.workId).length === 0 && producesCode(n.workType),
+  );
   return leaves.map((node, i) => {
     const facts = factsFor(node.workId, input);
     // The canonical row shape, filled honestly: this work came from the corporate register rather
@@ -296,8 +345,12 @@ export function projectAll(input: {
       filePath: `corporate/cascade/${node.workId}`,
       trajectory: "corporate-register",
     };
+    const owedGates = chainFor(node.workType);
     const projection = project({
-      facts: facts ?? { workId: node.workId, gateEvaluations: [], cancelled: false },
+      facts: {
+        ...(facts ?? { workId: node.workId, gateEvaluations: [], cancelled: false }),
+        owedGates,
+      },
       row,
       prNumber: 1000 + i,
       nowMs: input.nowMs,

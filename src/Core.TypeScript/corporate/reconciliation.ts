@@ -57,6 +57,16 @@ export const DisagreementKind = {
   TrackerDisagrees: "tracker_disagrees",
   /** The goal is delivered while a change it depended on never landed. */
   DeliveredOverUnlandedChange: "delivered_over_unlanded_change",
+  /**
+   * The item is DONE and its change never reached `Merged` — so no commit exists for finished work.
+   *
+   * Distinct from `ProjectedMergedButNotLanded`, and the distinction is the whole reason this kind
+   * exists: there, the organization projected a merge and the port refused, so `organizationSays`
+   * is honestly "merged". Here the organization never claimed a merge at all — the projection sat
+   * at `Claimed` — and reporting it as the other kind would describe the organization as believing
+   * something it never believed, sending a reader to look for a merge nobody projected.
+   */
+  DoneWithNothingMerged: "done_with_nothing_merged",
 } as const;
 
 export type DisagreementKind = (typeof DisagreementKind)[keyof typeof DisagreementKind];
@@ -81,12 +91,46 @@ export const Party = {
 
 export type Party = (typeof Party)[keyof typeof Party];
 
+/**
+ * Which party a disagreement is WITH.
+ *
+ * A property of the kind, not of the instance: `landed_but_not_done` is always a disagreement with
+ * the repository, `tracker_disagrees` always with the tracker. It lives here rather than in a
+ * consumer because a second copy of this mapping is a second thing to keep in step, and the copy
+ * is the one that drifts when a kind is added.
+ */
+export function partyOf(kind: DisagreementKind): Party {
+  switch (kind) {
+    case DisagreementKind.ProjectedMergedButNotLanded:
+    case DisagreementKind.LandedButNotDone:
+    case DisagreementKind.DeliveredOverUnlandedChange:
+    case DisagreementKind.DoneWithNothingMerged:
+      return Party.Repository;
+    case DisagreementKind.DoneWithoutGates:
+      return Party.Gates;
+    case DisagreementKind.TrackerDisagrees:
+      return Party.Tracker;
+  }
+  return assertNeverKind(kind);
+}
+
+function assertNeverKind(x: never): never {
+  throw new Error(`unhandled disagreement kind: ${String(x)}`);
+}
+
 export interface ReconcileInput {
   readonly cascade: readonly CascadeNode[];
   /** Work ids the change-control port actually merged. */
   readonly changesLanded: readonly string[];
   /** Projected as merged, and the port refused. */
   readonly changesUnlanded: readonly string[];
+  /**
+   * Done in the cascade with a change that never reached `Merged`, under REAL change control.
+   *
+   * Optional so every existing caller keeps compiling and keeps meaning what it meant; absent is
+   * "not measured", which for a simulated run is the honest answer.
+   */
+  readonly changesDoneUnmerged?: readonly string[];
   readonly gateEvaluations: readonly GateEvaluation[];
   readonly delivered: boolean;
   /**
@@ -127,6 +171,7 @@ export function reconcile(input: ReconcileInput): ReconciliationReport {
   const disagreements: Disagreement[] = [];
   const landed = new Set(input.changesLanded);
   const unlanded = new Set(input.changesUnlanded);
+  const doneUnmerged = new Set(input.changesDoneUnmerged ?? []);
   const judged = new Set(input.gateEvaluations.map((g) => g.workId));
 
   for (const node of input.cascade) {
@@ -139,6 +184,16 @@ export function reconcile(input: ReconcileInput): ReconciliationReport {
         organizationSays: "merged",
         realitySays: "not merged",
         detail: `${node.workId} was projected as merged and the change-control port refused it`,
+      });
+    }
+
+    if (doneUnmerged.has(node.workId)) {
+      disagreements.push({
+        kind: DisagreementKind.DoneWithNothingMerged,
+        workId: node.workId,
+        organizationSays: "done",
+        realitySays: "no merged change",
+        detail: `${node.workId} is done in the cascade and its change never reached Merged — nothing was committed for it`,
       });
     }
 

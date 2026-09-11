@@ -6,6 +6,7 @@
  * already tested; what was never tested is that they meet.
  */
 
+import { uncertaintyOf } from "./agent-loop-bridge";
 import { afterEach, describe, expect, test } from "bun:test";
 import { mkdtempSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
@@ -312,10 +313,21 @@ describe("END TO END — pick real work, record it, resume", () => {
 
     const after = resumedSurface(store, AT_MS);
     expect(after.folded.qa.length).toBe(before.folded.qa.length + 1);
-    // The surface CHANGED because of it: the item now carries more unresolved trouble against it,
-    // which is what raises it as somewhere a look pays.
-    const uncertaintyOf = (r: typeof after) => r.surface.candidates.find((c) => c.id === leaf.workId)?.uncertainty ?? 0;
-    expect(uncertaintyOf(after)).toBeGreaterThan(uncertaintyOf(before));
+    // The surface CARRIES it: the item's uncertainty accounts for a QA failure that no gate ever
+    // recorded, which is what raises it as somewhere a look pays.
+    //
+    // Asserted as "counts it and is at maximum" rather than "went up". `uncertaintyOf` is
+    // `min(1, signals/3)`, and a leaf whose gate was retried to exhaustion already carries three
+    // signals — so once retries stopped collapsing into one log entry, the before-state was
+    // already saturated and a strictly-greater comparison could never hold. The property under
+    // test is that the QA history contributes at all, and that is shown directly.
+    const uncertaintyIn = (r: typeof after) =>
+      r.surface.candidates.find((c) => c.id === leaf.workId)?.uncertainty ?? 0;
+    expect(uncertaintyIn(after)).toBeGreaterThanOrEqual(uncertaintyIn(before));
+    expect(uncertaintyIn(after)).toBe(1);
+    // And the QA half is load-bearing: drop the gate verdicts and the QA history alone still
+    // raises it off zero.
+    expect(uncertaintyOf(leaf.workId, [], after.folded.qa)).toBeGreaterThan(0);
   });
 
   test("the resumed priorities and gate verdicts come back too", async () => {

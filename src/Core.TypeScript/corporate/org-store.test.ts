@@ -11,6 +11,7 @@ import { mkdirSync, mkdtempSync, readdirSync, readFileSync, rmSync, writeFileSyn
 import { tmpdir } from "node:os";
 import { basename, join } from "node:path";
 import {
+  appendEvent,
   appendRun,
   decidedUnder,
   deliveryRate,
@@ -24,7 +25,7 @@ import { buildOrgChart } from "./org-chart";
 import { SEED_HATS } from "./org-seed";
 import { IntakeKind, Severity, type ExternalEvent } from "./intake";
 import { RunOutcome } from "./qa";
-import { OrgEventKind, type OrgEvent } from "./org-event";
+import { emit, OrgEventKind, type OrgEvent } from "./org-event";
 
 const roots: string[] = [];
 function tempRoot(): string {
@@ -303,5 +304,51 @@ describe("EVENT IDENTITY IS THE CONTENT ADDRESS, not the writer's id", () => {
     walk(join(root, "events"));
     expect(readEvents(root)).toHaveLength(onDisk.length);
     expect(onDisk).toHaveLength(3);
+  });
+});
+
+describe("A RUN CAN BE WATCHED WHILE IT IS STILL RUNNING", () => {
+  test("events appended one at a time read back in order, before any run summary exists", () => {
+    // The live view is a FOLD OVER THE LOG, not a second copy of the state. That only works if a
+    // partial log reads correctly — `appendRun` has not been called and there is no RunRecord yet.
+    const root = mkdtempSync(join(tmpdir(), "livestore-"));
+    const made = [3, 1, 2].map((n) =>
+      appendEvent(
+        emit(chart, `evt-${String(n)}`, {
+          kind: OrgEventKind.WorkItemTransition,
+          atMs: n * 1000,
+          actorHatId: "tech_lead",
+          subjectId: `task-${String(n)}`,
+          decision: `moved ${String(n)}`,
+        }),
+        root,
+      ),
+    );
+    expect(made).toHaveLength(3);
+    expect(readRuns(root)).toEqual([]);
+
+    // ORDERED BY THE EVENT'S OWN CLOCK, not by write order or filename — so a watcher folding a
+    // half-written log sees the organization's sequence, not the filesystem's.
+    const back = readEvents(root);
+    expect(back.map((e) => e.subjectId)).toEqual(["task-1", "task-2", "task-3"]);
+  });
+
+  test("an observer that THROWS does not stop the organization", async () => {
+    // A dashboard is a reader. A reader that can halt the thing it reads is not observability.
+    const report = await runOrgRuntime(
+      deps({
+        onEvent: () => {
+          throw new Error("the dashboard fell over");
+        },
+      }),
+    );
+    expect(report.delivered).toBe(true);
+    expect(report.trace.length).toBeGreaterThan(0);
+  });
+
+  test("every event the run records reaches the observer — no second path", async () => {
+    const seen: string[] = [];
+    const report = await runOrgRuntime(deps({ onEvent: (e) => void seen.push(e.id) }));
+    expect(seen).toEqual(report.trace.map((e) => e.id));
   });
 });

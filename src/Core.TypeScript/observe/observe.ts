@@ -61,7 +61,7 @@
 
 import { chooseIndex, ollamaBackend, type ModelBackend } from "../accelerator/local-llm";
 import { describeFirstSession, firstSessionOracle, type NodeSessionState } from "./first-session";
-import type { FourCornerOwnership } from "../four-corner/ownership";
+import type { FourCornerOwnership } from "../workflow-engine/types";
 import type { WhyContext } from "../bayesian/why-chain";
 import type { ChannelMeterSnapshot } from "../chip8/channel-grant";
 
@@ -167,6 +167,166 @@ export interface MissingInformation {
   readonly about: string;
   /** The work it is blocking, so the ask is not abstract. */
   readonly blocking: string;
+  /**
+   * WHAT KIND of blocker this is, if the agent can say — an opaque string here.
+   *
+   * The core does not know what kinds exist; a register interprets it and decides who that
+   * reaches. Optional because an agent that cannot classify its own blocker must still be able to
+   * report it: an unclassified blocker goes to whoever triages, and refusing it would leave the
+   * agent with nothing to do but guess or go quiet.
+   */
+  readonly kind?: string;
+  /**
+   * What only a PERSON can settle, if the agent can say — an opaque string here.
+   *
+   * Present means the agent is claiming no colleague can answer this: a legal call, a spend it has
+   * no budget for, a customer's intent, access it may not grant itself. The core does not check the
+   * claim and cannot — whether a decision belongs to an organization is not a fact the organization
+   * contains. A register decides what to do with it and records that this branch was UNCHECKED.
+   */
+  readonly needsHuman?: string;
+}
+
+/**
+ * HOW AN ORGANIZATION RAN OUT — the reason a blocker is leaving it for a person.
+ *
+ * A discriminated union rather than a boolean, because "the org cannot solve this" is a CLAIM, and
+ * a claim nobody can check is the escape hatch that eventually carries everything. Two of the three
+ * forms below are checkable against the chart by whoever receives them; the third names an
+ * authority the organization was never given. None of them is "I would rather ask a person."
+ */
+export type Exhaustion =
+  /**
+   * Nobody here can hold it. Checkable: the register looks the kind up in its own chart.
+   *
+   * This is the form that must NOT require a prior attempt. An organization with no security hat
+   * cannot ask its security hat first, and demanding evidence of an impossible attempt would trap
+   * exactly the blocker that most needs a person.
+   */
+  | { readonly kind: "no_owner_in_org"; readonly forBlockerKind: string }
+  /**
+   * The people who own it were asked, and it is still stuck.
+   *
+   * `askedHatIds` MUST be non-empty — see `acceptBlocker`. An exhaustion that names nobody is an
+   * agent asserting it tried, and an assertion that costs nothing is the vacuity class: a check
+   * that cannot fail, wearing the shape of diligence.
+   */
+  | { readonly kind: "owners_could_not_resolve"; readonly askedHatIds: readonly string[] }
+  /**
+   * A decision the organization is not allowed to make at all.
+   *
+   * Money it has no budget for, access it may not grant itself, a person's consent, a legal call,
+   * anything outside its own authority. No amount of internal escalation produces this answer,
+   * because the answer was never the organization's to give.
+   */
+  | { readonly kind: "outside_org_authority"; readonly what: string };
+
+/**
+ * Something that has stopped, that the organization itself cannot unstick.
+ *
+ * This is the ONLY thing in the grammar addressed OUTSIDE the organization. `request_information`
+ * asks a colleague; this asks a person, and it exists because an organization made entirely of
+ * agents will otherwise choose plausibly at exactly the moments a person would have said "no, not
+ * that" — and the cost surfaces at a gate, or in a merge request, rather than in a question.
+ */
+export interface HumanBlocker {
+  /** A stable id, so raising the same blocker twice is one blocker and not two. */
+  readonly blockerId: string;
+  /** What is not known or not permitted. */
+  readonly about: string;
+  /** The work that has stopped. Never empty — a blocker blocking nothing is an opinion. */
+  readonly blocking: string;
+  /** The taxonomy's name for it, if the agent could classify it. Opaque here. */
+  readonly kind?: string;
+  /** How the organization ran out. */
+  readonly exhaustion: Exhaustion;
+  /** What the agent would do with an answer, so the person is told what their reply unblocks. */
+  readonly unblocks: string;
+}
+
+/**
+ * A generative act on offer — one that makes work rather than advancing it.
+ *
+ * A DISCRIMINATED UNION rather than one shape with optional fields, so the fields that belong to
+ * one kind cannot be read on another. The first draft was the flat shape and the compiler could not
+ * prove the builder below handled every kind, which is the same exhaustiveness the action table
+ * buys everywhere else here.
+ */
+export type GenerativeOpening =
+  | {
+      readonly kind: "set_direction";
+      readonly subjectId: string;
+      readonly prompt: string;
+      readonly domain?: string;
+      /** True when this replaces a direction that exists. A restatement is a different act. */
+      readonly restates?: boolean;
+    }
+  | {
+      readonly kind: "draft_business_doc";
+      readonly subjectId: string;
+      readonly prompt: string;
+      readonly forWorkId: string;
+    }
+  | {
+      readonly kind: "decide_priority";
+      readonly subjectId: string;
+      readonly prompt: string;
+      /** Most urgent first. The surface owns the order; the chooser owns the choice. */
+      readonly options: readonly string[];
+    }
+  | { readonly kind: "size_hat_supply"; readonly subjectId: string; readonly prompt: string }
+  | {
+      readonly kind: "break_down_work";
+      readonly subjectId: string;
+      readonly prompt: string;
+      /** The id the first child would take. Supplied by the register, so a re-offer is the same act. */
+      readonly childId: string;
+    }
+  | { readonly kind: "submit_work"; readonly subjectId: string; readonly prompt: string }
+  | { readonly kind: "escalate_churn"; readonly subjectId: string; readonly prompt: string }
+  | { readonly kind: "convene_chain"; readonly subjectId: string; readonly prompt: string }
+  | { readonly kind: "decide_spend"; readonly subjectId: string; readonly prompt: string };
+
+/**
+ * HOW to take a verb well, when a register has an opinion about it.
+ *
+ * ── WHY THE CORE DOES NOT RESOLVE THIS ───────────────────────────────────────
+ * `skillId` is an OPAQUE STRING. The grammar never opens it, never validates it, and never learns
+ * what methods exist — exactly as `MissingInformation.kind` is opaque, and for the same reason:
+ * whether a given method exists, and what it says, is not a fact this grammar contains. A register
+ * resolves it; a driver puts it in front of the model. An enum here would be the core deciding what
+ * good practice is, which is the hardcoding this seam exists to avoid.
+ *
+ * ── AND IT IS AN OFFER, NOT AN OBLIGATION ────────────────────────────────────
+ * Absent means no method is offered and the agent proceeds as it always did — the same shape as
+ * every other optional field on `World`. Nothing here makes a standalone agent owe anything new.
+ */
+export interface Method {
+  /** The action kind this applies to, matched against `NextAction["kind"]`. */
+  readonly kind: string;
+  /** Opaque to the core. A register knows what it names. */
+  readonly skillId: string;
+  /**
+   * Why this method is offered here.
+   *
+   * Carried so an agent handed a method can tell whether it still applies to what it is actually
+   * doing, rather than following it because it arrived. A method with no reason is an instruction,
+   * and instructions are what this register keeps refusing to hardcode.
+   */
+  readonly why: string;
+}
+
+/**
+ * The method for an action, or `undefined` when none is offered.
+ *
+ * FIRST MATCH WINS and the order is the register's. Two methods for one kind is a configuration
+ * somebody should see rather than a merge this function performs quietly.
+ */
+export function methodFor(
+  methods: readonly Method[] | undefined,
+  kind: string,
+): Method | undefined {
+  return (methods ?? []).find((m) => m.kind === kind);
 }
 
 export interface World {
@@ -182,10 +342,34 @@ export interface World {
   readonly reviewsAsked?: readonly ReviewAsk[];
   readonly deliberations?: readonly OpenDeliberation[];
   readonly missing?: readonly MissingInformation[];
+  /**
+   * Blockers that have run out of organization — the ones that must reach a person.
+   *
+   * Optional like the rest of the surface: absent means the verb is simply not offered, and an
+   * agent with no organization behind it sees the menu it always saw.
+   */
+  readonly unresolvable?: readonly HumanBlocker[];
   /** Work this agent may hand to someone else, with who is eligible. */
   readonly assignable?: readonly { readonly item: BacklogItem; readonly toHatIds: readonly string[] }[];
   /** Hats this agent could pull into a room, and the artifact it would convene over. */
   readonly convenable?: readonly { readonly artifactId: string; readonly withHatIds: readonly string[] }[];
+  /**
+   * Generative acts open to this agent — making work rather than advancing it.
+   *
+   * `prompt` is the QUESTION, never the answer. A deterministic driver takes it verbatim, which is
+   * what keeps a drive replayable; a driver with a model behind it answers it and supplies its own
+   * text. The grammar cannot tell the two apart, and must not be able to.
+   */
+  readonly generative?: readonly GenerativeOpening[];
+  /**
+   * How to take particular verbs well. Absent means no method is offered for anything.
+   *
+   * This is the third question a surface has to answer. The menu says WHAT may be done and the
+   * openings say WHAT is being looked at; without this an agent is told it may ask a question and
+   * never told what a good question looks like — so it asks one shallow one, gets a shallow answer,
+   * and proceeds on it.
+   */
+  readonly methods?: readonly Method[];
   readonly operator?: OperatorChannel;
   readonly mode?: Mode; // the persisted mode (carried across ticks; absent = unset)
   readonly forgeState?: ForgeState; // PR/CI state from the forge host (optional — absent if no forge resolved)
@@ -437,9 +621,149 @@ export type NextAction =
   /** Pull named peers into a room over an artifact — spends their calendars, so it is gated. */
   | { kind: "convene_meeting"; artifactId: string; withHatIds: readonly string[]; reason: string }
   /** Say what is missing. NEVER GATED — see the reconciliation row. */
-  | { kind: "request_information"; about: string; blocking: string; reason: string }
+  | { kind: "request_information"; about: string; blocking: string; reason: string; blockerKind?: string }
+  /**
+   * Raise a blocker OUT of the organization, to a person. NEVER GATED, for the same reason.
+   *
+   * The only verb whose addressee is outside the org chart. `respond_to_operator` answers a person
+   * who already spoke; this one interrupts a person who did not. That is why it carries its
+   * `exhaustion` — the addressee is owed the reason their attention is being spent.
+   */
+  | {
+      kind: "raise_to_human";
+      blockerId: string;
+      about: string;
+      blocking: string;
+      exhaustion: Exhaustion;
+      unblocks: string;
+      reason: string;
+      blockerKind?: string;
+    }
   /** Hand a work item to someone. Wires `canCreateWork`, which had no action until now. */
-  | { kind: "assign_work"; item: BacklogItem; toHatId: string; reason: string };
+  | { kind: "assign_work"; item: BacklogItem; toHatId: string; reason: string }
+
+  // ── MAKING WORK, NOT ONLY ADVANCING IT ───────────────────────────────────
+  // Every verb above this line moves work that already exists. Measured over 200 rounds, an
+  // organization built from them alone reaches a fixed point and stops: it can staff, review,
+  // escalate and deliver a cascade, and it can never produce the next one. The acts that produce
+  // one existed and were reachable only from a script that called them in a fixed order — so the
+  // C-suite did not set direction, the script did, and named a C-suite hat as the one it happened
+  // to.
+  //
+  // Generic like the rest: `subjectId` is a string the core does not interpret, and a register
+  // decides what it names. The core still does not know what an organization is.
+  /** State or restate what a part of the company is for. */
+  | { kind: "set_direction"; subjectId: string; objective: string; domain?: string; restates?: boolean; reason: string }
+  /** Write the document a piece of work is missing. */
+  | { kind: "draft_business_doc"; subjectId: string; forWorkId: string; title: string; reason: string }
+  /** Say how urgent something is, from an offered set. */
+  | { kind: "decide_priority"; subjectId: string; priority: string; reason: string }
+  /** Say the organization is missing a hat. The only verb whose effect is on the CHART. */
+  | { kind: "size_hat_supply"; subjectId: string; reason: string }
+  /** Turn one thing into the things it is made of. The verb that makes a ladder run. */
+  | { kind: "break_down_work"; subjectId: string; childId: string; title: string; reason: string }
+  /** Say the work is finished. What happens next is not this agent's to decide. */
+  | { kind: "submit_work"; subjectId: string; reason: string }
+  /** Decide what changes when work keeps coming back. A management act. */
+  | { kind: "escalate_churn"; subjectId: string; reason: string }
+  /** Get every level accountable for a piece of work into one room. */
+  | { kind: "convene_chain"; subjectId: string; reason: string }
+  /** Rule on money: pay, take the free way, or do neither. */
+  | { kind: "decide_spend"; subjectId: string; reason: string };
+
+
+/**
+ * One opening, as the action that takes it.
+ *
+ * ONE FUNCTION for the lead action and the candidate list, because the two disagreeing is how a
+ * chooser ends up unable to pick the thing the observer told it to do. The `reason` is the
+ * opening's own prompt — the agent is being asked a question, and the menu should say which.
+ */
+function raiseAction(b: HumanBlocker): NextAction {
+  return {
+    kind: "raise_to_human",
+    blockerId: b.blockerId,
+    about: b.about,
+    blocking: b.blocking,
+    exhaustion: b.exhaustion,
+    unblocks: b.unblocks,
+    reason: whyItLeft(b),
+    ...(b.kind === undefined ? {} : { blockerKind: b.kind }),
+  };
+}
+
+/**
+ * The sentence a person reads first.
+ *
+ * Total over `Exhaustion`, so a fourth way of running out is a compile error here rather than a
+ * blocker that reaches somebody with no account of why it did.
+ */
+export function whyItLeft(b: HumanBlocker): string {
+  switch (b.exhaustion.kind) {
+    case "no_owner_in_org":
+      return `${b.blocking} is stopped on ${b.about}, and nobody here holds '${b.exhaustion.forBlockerKind}'`;
+    case "owners_could_not_resolve":
+      return `${b.blocking} is stopped on ${b.about}; ${b.exhaustion.askedHatIds.join(", ")} could not resolve it`;
+    case "outside_org_authority":
+      return `${b.blocking} is stopped on ${b.about} — ${b.exhaustion.what} is not this organization's to decide`;
+  }
+}
+
+function generativeAction(g: GenerativeOpening): NextAction {
+  switch (g.kind) {
+    case "set_direction":
+      return {
+        kind: "set_direction",
+        subjectId: g.subjectId,
+        // THE PROMPT AS THE OBJECTIVE is the deterministic driver's answer, not the only one. A
+        // caller with a model behind it replaces this before the action reaches an effect.
+        objective: g.prompt,
+        ...(g.domain === undefined ? {} : { domain: g.domain }),
+        ...(g.restates === undefined ? {} : { restates: g.restates }),
+        reason: g.prompt,
+      };
+    case "draft_business_doc":
+      return {
+        kind: "draft_business_doc",
+        subjectId: g.subjectId,
+        forWorkId: g.forWorkId,
+        title: g.prompt,
+        reason: g.prompt,
+      };
+    case "decide_priority":
+      return {
+        kind: "decide_priority",
+        subjectId: g.subjectId,
+        // THE FIRST OPTION, and the surface orders them most-urgent-first, so a deterministic
+        // driver prices everything `expedite`. That is deliberate and visible rather than hidden
+        // behind a "sensible default": a register that wants a different answer supplies a chooser,
+        // and one that supplies none should not be able to pretend it decided anything.
+        priority: g.options[0] ?? "",
+        reason: g.prompt,
+      };
+    case "size_hat_supply":
+      return { kind: "size_hat_supply", subjectId: g.subjectId, reason: g.prompt };
+    case "submit_work":
+      return { kind: "submit_work", subjectId: g.subjectId, reason: g.prompt };
+    case "escalate_churn":
+      return { kind: "escalate_churn", subjectId: g.subjectId, reason: g.prompt };
+    case "convene_chain":
+      return { kind: "convene_chain", subjectId: g.subjectId, reason: g.prompt };
+    case "decide_spend":
+      return { kind: "decide_spend", subjectId: g.subjectId, reason: g.prompt };
+    case "break_down_work":
+      return {
+        kind: "break_down_work",
+        subjectId: g.subjectId,
+        childId: g.childId,
+        // ONE CHILD, and named after the question. The deterministic driver's answer, exactly as
+        // `set_direction` takes the prompt as its objective — a caller with a model behind it says
+        // what the pieces actually are.
+        title: g.prompt,
+        reason: g.prompt,
+      };
+  }
+}
 
 /**
  * Pure controller. Priority: operator > offered-work > forward-default.
@@ -501,6 +825,14 @@ export function observe(world: World): NextAction {
   // always prefer new work to unblocking each other builds a backlog of half-finished things and a
   // queue of people waiting. None of them is forced: they are what `observe` RECOMMENDS, and the
   // free modes remain in the menu beside them exactly as before.
+  // ABOVE `request_information`, and that ordering is the whole point of the verb. Something in
+  // `unresolvable` has ALREADY run out of organization; asking the organization again is the loop
+  // it is trying to leave. Below the operator and the persisted free mode, exactly like every other
+  // work-shaped verb — being stuck does not cancel the agent's freedom, it just makes this the
+  // recommendation when the agent is working.
+  const forPerson = world.unresolvable?.[0];
+  if (forPerson) return raiseAction(forPerson);
+
   const blocked = world.missing?.[0];
   if (blocked) {
     return {
@@ -508,6 +840,7 @@ export function observe(world: World): NextAction {
       about: blocked.about,
       blocking: blocked.blocking,
       reason: `${blocked.blocking} is blocked on ${blocked.about}`,
+      ...(blocked.kind === undefined ? {} : { blockerKind: blocked.kind }),
     };
   }
   const asked = world.reviewsAsked?.[0];
@@ -560,6 +893,12 @@ export function observe(world: World): NextAction {
       reason: `${room2.artifactId} has two heads and needs one`,
     };
   }
+
+  // MAKING WORK, as the lead action. Same placement argument as in the candidate list: below
+  // everything a colleague is waiting on, above exploring. An organization whose lead action is
+  // always `explore` when its queues are empty is one that never decides anything again.
+  const opening = world.generative?.[0];
+  if (opening !== undefined) return generativeAction(opening);
 
   // Forge-aware: if no backlog work is ready but clean PRs exist, signal
   // that merge work is available. The action is "do_item" with a synthetic
@@ -618,7 +957,18 @@ export function observe(world: World): NextAction {
 }
 
 /** One-line human-readable render of a chosen action (for the foreground loop). */
-export function renderAction(a: NextAction): string {
+export function renderAction(a: NextAction, methods?: readonly Method[]): string {
+  // ── THE METHOD IS SAID BESIDE THE VERB ────────────────────────────────────
+  // This is the whole point of the seam. A method held on `World` that no rendering mentions is a
+  // method no agent ever reads — the surface would know how to do the thing and never say so.
+  // Appended rather than substituted: the verb is still the verb, and an agent that ignores the
+  // method still sees exactly the line it saw before.
+  const how = methodFor(methods, a.kind);
+  const suffix = how === undefined ? "" : `  [how: ${how.skillId} — ${how.why}]`;
+  return renderVerb(a) + suffix;
+}
+
+function renderVerb(a: NextAction): string {
   switch (a.kind) {
     case "preserve_ferry":
       return `[preserve]  ${a.reason}`;
@@ -752,12 +1102,16 @@ export function buildMenu(world: World): NextAction[] {
       reason: `'${d.title}' is open and you are in it`,
     });
   }
+  for (const b of world.unresolvable ?? []) {
+    candidates.push(raiseAction(b));
+  }
   for (const m of world.missing ?? []) {
     candidates.push({
       kind: "request_information",
       about: m.about,
       blocking: m.blocking,
       reason: `${m.blocking} is blocked on ${m.about}`,
+      ...(m.kind === undefined ? {} : { blockerKind: m.kind }),
     });
   }
   for (const c of world.convenable ?? []) {
@@ -772,6 +1126,16 @@ export function buildMenu(world: World): NextAction[] {
     for (const to of a.toHatIds) {
       candidates.push({ kind: "assign_work", item: a.item, toHatId: to, reason: `hand '${a.item.id}' to ${to}` });
     }
+  }
+
+  // ── MAKING WORK ──────────────────────────────────────────────────────────
+  // AFTER everything somebody is waiting on, and BEFORE the free modes. Both halves of that
+  // placement are load-bearing. Above the free modes, because an organization that explores past a
+  // domain with no direction leaves it with no direction; below the peer verbs, because a hat that
+  // sets a new direction while a colleague waits on its review has not been generative, it has been
+  // absent.
+  for (const g of world.generative ?? []) {
+    candidates.push(generativeAction(g));
   }
 
   const needs = world.backlog.find((i) => i.needsNewAction);
@@ -1118,11 +1482,34 @@ export function simulate(world: World, action: NextAction): World {
     // of an action whose effect is not local, and inventing a local effect here (dropping the
     // assigned item from this agent's backlog, say) would make the pure simulation disagree with
     // what actually happened.
+    // RAISING IT IS A LOCAL CHANGE, unlike its neighbours below, and the difference is real rather
+    // than a convenience. `unresolvable` is a list in THIS agent's own world of things it has yet
+    // to hand out; once handed out, it is a person's, and the agent has nothing left to do with it
+    // but wait. Leaving it in place would make the deterministic controller pick the same blocker
+    // every tick forever — which is measured behaviour for `request_information` (see the
+    // bridge's 200-round note) and is not worth reproducing on purpose.
+    case "raise_to_human": {
+      const left = (world.unresolvable ?? []).filter((b) => b.blockerId !== action.blockerId);
+      return { ...world, unresolvable: left };
+    }
     case "review_artifact":
     case "respond_to_artifact":
     case "convene_meeting":
     case "request_information":
     case "assign_work":
+    // THE GENERATIVE VERBS CHANGE THE ORGANIZATION, NOT THIS SNAPSHOT. `simulate` models one
+    // agent's own world — its backlog, its mode, its operator channel — and none of these touch
+    // any of that. Setting a direction creates work in a cascade this function cannot see, and
+    // writing the change here would be a second, divergent copy of what `org-drive.apply` does.
+    case "set_direction":
+    case "draft_business_doc":
+    case "decide_priority":
+    case "size_hat_supply":
+    case "break_down_work":
+    case "submit_work":
+    case "escalate_churn":
+    case "convene_chain":
+    case "decide_spend":
       return world;
   }
 }

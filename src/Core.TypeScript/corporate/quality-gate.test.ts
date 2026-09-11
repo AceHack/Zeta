@@ -6,22 +6,25 @@ import {
   type OrgChooser,
 } from "./org-decision";
 import {
-  allGatesPassed,
-  evaluateGate,
+  CHECKPOINT_GATE,
   GateKind,
   GateOutcome,
+  HumanCheckpoint,
+  NO_PROPOSER,
+  ORDERED_GATES,
+  RecoveryPath,
+  allGatesPassed,
+  evaluateGate,
   gateOwners,
   gateProgress,
+  humanGatesFor,
   isPassing,
   legalGateOutcomes,
   legalGateOutcomesFor,
   mayEvaluate,
   nextLegalGate,
-  ORDERED_GATES,
   recoveryPathFor,
-  RecoveryPath,
   runGateChain,
-  NO_PROPOSER,
 } from "./quality-gate";
 import { buildOrgChart } from "./org-chart";
 import { SEED_HATS } from "./org-seed";
@@ -36,6 +39,47 @@ const approve: OrgChooser<GateOutcome> = preferChooser<GateOutcome>(GateOutcome.
 const reject: OrgChooser<GateOutcome> = preferChooser<GateOutcome>(GateOutcome.Rejected, "reject");
 
 // ─── The decision kernel ────────────────────────────────────────────────────
+
+describe("THE ORDER OF THE CHAIN IS A DECISION, NOT AN ACCIDENT", () => {
+  test("the gates run in the agreed sequence, architecture before business at the end", () => {
+    // Pinned because the order was changed once and NOTHING failed. A sequence every other part of
+    // the system trusts — `nextLegalGate` refuses to skip, recovery paths are keyed to position —
+    // was resting on the order somebody happened to type.
+    //
+    // Architecture sits before business deliberately: the architect asks whether the code does what
+    // it claims, the business validator whether it delivers the outcome. Business-first lets the
+    // organization accept an outcome built on a structure it has not examined, and then treat
+    // re-opening that structure as a regression against its own approval.
+    expect([...ORDERED_GATES]).toEqual([
+      GateKind.BusinessContextGrooming,
+      GateKind.CustomerRfpReview,
+      GateKind.BrdApproval,
+      GateKind.PeerReview,
+      GateKind.ArchitectureDesign,
+      GateKind.ArchitectureApproval,
+      GateKind.CostApproval,
+      GateKind.AdversarialReview,
+      GateKind.ImplementationReview,
+      GateKind.QaUat,
+      GateKind.RuntimeValidation,
+      GateKind.FinalArchitectureReview,
+      GateKind.FinalBusinessValidation,
+      GateKind.ReleaseReadiness,
+    ]);
+  });
+
+  test("no gate is legal until every prior one has passed", () => {
+    // The north star's words: `nextLegalGate` makes a gate legal iff all priors passed. Asserted
+    // against the WHOLE chain rather than a sample, so a gate added in the middle cannot quietly
+    // become skippable.
+    const passed = new Set<GateKind>();
+    for (const gate of ORDERED_GATES) {
+      expect(nextLegalGate(passed)).toBe(gate);
+      passed.add(gate);
+    }
+    expect(nextLegalGate(passed)).toBeUndefined();
+  });
+});
 
 describe("determinism sets the legal options; the agent picks inside them", () => {
   test("an in-range pick is taken as given", () => {
@@ -182,8 +226,13 @@ describe("who owns a gate is DERIVED from the hats' approval scopes", () => {
   });
 
   test("owners are the hats that hold the scope, and nobody else", () => {
+    // The reference catalog grants `runtime_validation` to its own QA reviewer and verifier as
+    // well, so the owner set grew with the seed. What the test is about is that ownership is
+    // DERIVED from the scope and held by nobody else — so it asserts the membership rule rather
+    // than a headcount that changes whenever the organization does.
     const owners = gateOwners(chart, GateKind.RuntimeValidation).map((h) => h.id);
-    expect(owners.sort()).toEqual(["qa_director", "qa_engineer", "qa_manager"]);
+    expect(owners.sort()).toEqual(["qa_director", "qa_engineer", "qa_manager", "qa_reviewer", "qa_verifier"]);
+    expect(owners.every((id) => chart.byId.get(id)?.approvalScopes?.includes(GateKind.RuntimeValidation))).toBe(true);
     expect(mayEvaluate(chart, "qa_engineer", GateKind.RuntimeValidation)).toBe(true);
     // A dev is not a QA reviewer, however senior its own line.
     expect(mayEvaluate(chart, "backend_implementer", GateKind.RuntimeValidation)).toBe(false);
@@ -422,5 +471,90 @@ describe("the whole chain", () => {
     });
     expect(run.merged).toBe(false);
     expect(run.refusals[0]).toContain("approval scope");
+  });
+});
+
+describe("TWO OPTIONAL CHECKPOINTS — off unless an operator asks for them", () => {
+  const chain = (over: Record<string, unknown> = {}) =>
+    runGateChain(chart, {
+      workId: "w1",
+      chooser: preferChooser<GateOutcome>(GateOutcome.Approved, "approve"),
+      atMs: 0,
+      proposerHatId: NO_PROPOSER,
+      ...over,
+    });
+
+  test("with NO checkpoints the whole chain runs agentically — the default is unchanged", () => {
+    // Every existing caller depends on this. A checkpoint that switched itself on would be a change
+    // of kind, not of configuration.
+    const run = chain();
+    expect(run.awaitingHuman).toBeUndefined();
+    expect(run.merged).toBe(true);
+  });
+
+  test("grooming stops at brd_approval and WAITS — it does not fail", () => {
+    const run = chain({ humanRequiredAt: humanGatesFor([HumanCheckpoint.Grooming]) });
+    expect(run.awaitingHuman).toBe(GateKind.BrdApproval);
+    expect(run.merged).toBe(false);
+    // Waiting is not rejection: nobody looked, so there is nothing to recover FROM.
+    expect(run.blockedAt).toBeUndefined();
+    expect(run.recovery).toBeUndefined();
+    // And no evaluation was recorded for the gate nobody answered.
+    expect(run.evaluations.some((e) => e.gate === GateKind.BrdApproval)).toBe(false);
+  });
+
+  test("the approach checkpoint stops later, at architecture_approval", () => {
+    const run = chain({ humanRequiredAt: humanGatesFor([HumanCheckpoint.Approach]) });
+    expect(run.awaitingHuman).toBe(GateKind.ArchitectureApproval);
+    // Everything before it still ran, so the person is deciding with the grooming already done.
+    expect(run.passed.has(GateKind.BrdApproval)).toBe(true);
+  });
+
+  test("BOTH checkpoints stop at the FIRST one, not both at once", () => {
+    const run = chain({ humanRequiredAt: humanGatesFor([HumanCheckpoint.Grooming, HumanCheckpoint.Approach]) });
+    expect(run.awaitingHuman).toBe(GateKind.BrdApproval);
+  });
+
+  test("a person's APPROVAL lets the chain continue, and the evidence names the action", () => {
+    const run = chain({
+      humanRequiredAt: humanGatesFor([HumanCheckpoint.Grooming]),
+      humanDecisionFor: (gate: GateKind) =>
+        gate === GateKind.BrdApproval
+          ? { outcome: GateOutcome.Approved, actionRef: "human-action/ha-1" }
+          : undefined,
+    });
+    expect(run.awaitingHuman).toBeUndefined();
+    expect(run.merged).toBe(true);
+    const brd = run.evaluations.find((e) => e.gate === GateKind.BrdApproval);
+    // An approval with no traceable origin is what the audit requirement exists to prevent.
+    expect(brd?.evidenceRefs).toContain("human-action/ha-1");
+  });
+
+  test("a person's REJECTION stops the work and takes the recovery path", () => {
+    const run = chain({
+      humanRequiredAt: humanGatesFor([HumanCheckpoint.Grooming]),
+      humanDecisionFor: () => ({ outcome: GateOutcome.Rejected, actionRef: "human-action/ha-2" }),
+    });
+    expect(run.awaitingHuman).toBeUndefined();
+    expect(run.blockedAt).toBe(GateKind.BrdApproval);
+    expect(run.merged).toBe(false);
+  });
+
+  test("a decision for a gate that is NOT a checkpoint is ignored", () => {
+    // Otherwise a stray action could decide a gate the operator never handed to a person.
+    const run = chain({
+      humanRequiredAt: new Set<GateKind>(),
+      humanDecisionFor: () => ({ outcome: GateOutcome.Rejected, actionRef: "human-action/ha-3" }),
+    });
+    expect(run.merged).toBe(true);
+  });
+
+  test("the checkpoints map to the two moments where a NO is still cheap", () => {
+    expect(CHECKPOINT_GATE.grooming).toBe(GateKind.BrdApproval);
+    expect(CHECKPOINT_GATE.approach).toBe(GateKind.ArchitectureApproval);
+    // Both sit before implementation_review, so nothing has been built when a person is asked.
+    const impl = ORDERED_GATES.indexOf(GateKind.ImplementationReview);
+    expect(ORDERED_GATES.indexOf(CHECKPOINT_GATE.grooming)).toBeLessThan(impl);
+    expect(ORDERED_GATES.indexOf(CHECKPOINT_GATE.approach)).toBeLessThan(impl);
   });
 });

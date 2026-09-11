@@ -122,6 +122,22 @@ pathIgnorePatterns = [
   "tools/lean4/.lake/**",
   "tools/alloy/**",
   "tools/tla/**",
+  # PLAYWRIGHT SPECS ARE A DIFFERENT RUNNER, NOT A DIFFERENT TIER.
+  # `uat/` holds acceptance specs driven by `playwright/test` against a live server, and
+  # `bun test` collects `*.spec.ts` as readily as `*.test.ts` -- so adding one Playwright file
+  # silently enrolled it in the bun suite. It failed exactly as it was built to:
+  # "APP_DIR is not set: acceptance has no service to run against, WHICH IS NOT A PASS",
+  # thrown at module load, which bun counts as the run's `1 error`.
+  #
+  # The refusal is correct and stays. What was wrong is that bun collected it at all.
+  #
+  # This goes in BOTH configs on purpose. The hermetic-only list below is for tests that a
+  # DIFFERENT bun lane still runs, and `environment-dependent-test-files.ts` is red on an
+  # entry "that no pull_request-lane `bun test` executes" -- excluding a file from one tier
+  # while nothing else runs it is "a deletion wearing a split's face". No bun lane should ever
+  # run a Playwright spec, so this is a wrong-runner exclusion rather than a tier split, and
+  # set equality between the two configs is preserved with no registry entry.
+  "uat/**",
 
   # ── HERMETIC-TIER ONLY. Each runs in `test (TS environment-dependent)` and is
   #    declared, with the NAME of the dependency it needs, in

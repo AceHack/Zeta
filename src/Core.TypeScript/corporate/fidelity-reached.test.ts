@@ -239,6 +239,60 @@ describe("runFidelityOf derives, and cannot be told", () => {
   });
 });
 
+describe("WRAPPING A PORT MUST NOT AMPUTATE ITS OPTIONAL METHODS", () => {
+  // ── THE DEFECT THIS PINS, MEASURED 2026-09-10 ────────────────────────────
+  // `recordingProviders` rebuilds the change port field by field, so an optional method the wrapped
+  // adapter implements ceased to exist once wrapped. Every caller guards with
+  // `port.changed !== undefined`, so nothing errored — the feature simply never ran. `change_files`
+  // had never been emitted by any run through `runOrgRuntime`, despite a call site that explains at
+  // length why the measurement matters more than an agent's account of what it changed.
+  //
+  // Found by wiring a SECOND optional method and watching it arrive undefined. The first one had
+  // been silently gone the whole time, which is exactly how this class of defect behaves.
+  const withOptionals = (): ProviderSet => {
+    const base = simulatedSet();
+    return {
+      ...base,
+      change: {
+        ...base.change,
+        changed: async () => ({ ok: true as const, value: [{ path: "a.ts", added: 1, removed: 0 }], evidence: [] }),
+        revision: async () => ({ ok: true as const, value: { commit: "c".repeat(40), tree: "t".repeat(40) }, evidence: [] }),
+      },
+    };
+  };
+
+  test("an optional method that exists before wrapping still exists after", () => {
+    const wrapped = recordingProviders(withOptionals());
+    expect(wrapped.providers.change.changed).toBeDefined();
+    expect(wrapped.providers.change.revision).toBeDefined();
+  });
+
+  test("...and it still answers", async () => {
+    const wrapped = recordingProviders(withOptionals());
+    const rev = await wrapped.providers.change.revision?.({ changeId: "c", branch: "b" });
+    expect(rev?.ok).toBe(true);
+    const diff = await wrapped.providers.change.changed?.({ changeId: "c", branch: "b" });
+    expect(diff?.ok).toBe(true);
+  });
+
+  test("an adapter that does NOT implement them is not given empty ones", () => {
+    // The other direction matters just as much: `undefined` is how an adapter says "I cannot tell
+    // you", and manufacturing a method that returns nothing would turn that into "nothing changed".
+    const wrapped = recordingProviders(simulatedSet());
+    expect(wrapped.providers.change.changed).toBeUndefined();
+    expect(wrapped.providers.change.revision).toBeUndefined();
+  });
+
+  test("calling an optional method marks the port as reached", () => {
+    // It is the recording wrapper: a method it forwards without marking would under-report what the
+    // run touched, which is the fidelity report lying in the safe direction and still lying.
+    const wrapped = recordingProviders(withOptionals());
+    return wrapped.providers.change.revision?.({ changeId: "c", branch: "b" }).then(() => {
+      expect(wrapped.invoked()).toContain(Port.ChangeControl);
+    });
+  });
+});
+
 describe("recordingProviders records what actually ran", () => {
   test("a port nobody calls is not in the invoked set", async () => {
     const rec = recordingProviders(simulatedSet());

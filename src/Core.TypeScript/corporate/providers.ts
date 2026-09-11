@@ -42,6 +42,7 @@ import type { CascadeNode } from "./goal-cascade";
 import type { RunOutcome, TestCase } from "./qa";
 import type { GateKind, GateOutcome } from "./quality-gate";
 import type { EvidenceRef } from "./discussion-anchor";
+import type { PortUsage } from "./meter";
 
 /** Whether a provider actually touches anything outside this process. */
 export const Fidelity = {
@@ -97,8 +98,45 @@ export interface ProviderMeta {
 
 /** A result shape shared by every port, so a provider can REFUSE rather than throw or lie. */
 export type PortResult<T> =
-  | { readonly ok: true; readonly value: T; readonly evidence: readonly EvidenceRef[] }
-  | { readonly ok: false; readonly reason: string };
+  | {
+      readonly ok: true;
+      readonly value: T;
+      readonly evidence: readonly EvidenceRef[];
+      /**
+       * What the call CONSUMED, when the adapter can say — tokens and the model that spent them.
+       *
+       * Optional because most ports call no model: a git clone and a directory poll cross a
+       * declared channel and spend no tokens. Absent means "not reported", which `meter.ts` keeps
+       * distinct from "reported as zero" all the way to the screen. A dashboard may not turn one
+       * into the other.
+       */
+      readonly usage?: PortUsage;
+    }
+  | {
+      readonly ok: false;
+      readonly reason: string;
+      /**
+       * What the agent needs a PERSON to answer before it can do this step.
+       *
+       * ── WHY THIS IS A FIELD AND NOT A MODULE ─────────────────────────────
+       * An organization has to be able to ask. The first attempt at that was a module which decided
+       * — in TypeScript, by regular expression — what makes a requirement ambiguous, wrote out ten
+       * questions to ask about it, and named the hat that would do the asking. That is not an
+       * organization; it is one person's interview compiled in, and every requirement it ever saw
+       * would get the questions its author happened to think of.
+       *
+       * The agent doing the step is the only thing that knows what it is missing. So the mechanism
+       * is a CHANNEL, not a questionnaire: any port, at any gate, may come back with questions
+       * instead of an artifact, and the organization's job is to route them to a person, hold the
+       * gate while they are open, and hand the answers back. What gets asked is not this layer's
+       * business, and nothing here can name a question or a hat.
+       *
+       * Empty or absent means the refusal is the organization's own to resolve — the ordinary case,
+       * and the one that must not be turned into a question, or every internal failure leaves
+       * through the escape hatch and the person becomes the error handler.
+       */
+      readonly questions?: readonly string[];
+    };
 
 // ─── The ports ──────────────────────────────────────────────────────────────
 
@@ -168,7 +206,11 @@ export interface TestRunner {
   readonly meta: ProviderMeta;
   run(
     testCase: TestCase,
-    ctx: { readonly branch: string },
+    // `workdir` for the SAME reason `WorkContext` carries one: a change that opened its own
+    // checkout must be TESTED in that checkout. Without it a runner falls back to the base
+    // directory, where the change does not exist — so `runtime_validation`, the only gate that
+    // reads real test evidence rather than a reviewer's opinion, judges the wrong tree.
+    ctx: { readonly branch: string; readonly workdir?: string },
   ): Promise<PortResult<{ readonly outcome: RunOutcome }>>;
 }
 
@@ -208,6 +250,18 @@ export interface ReviewPort {
 export interface ChangeHandle {
   readonly changeId: string;
   readonly branch: string;
+  /**
+   * WHAT THIS CHANGE WAS CUT FROM, and what its merge must therefore target.
+   *
+   * Carried on the HANDLE rather than only in the open-context, because `merge(handle)` is all
+   * the runtime passes and a base known only at `open` would be gone by the time it decides
+   * anything. A story cut from its feature branch has to go back into that feature branch, and
+   * an adapter holding one configured trunk cannot work that out.
+   *
+   * Absent means the adapter's own configured base — which is what every caller meant before
+   * this field existed, so an adapter that ignores it behaves exactly as it did.
+   */
+  readonly base?: string;
   readonly url?: string;
   /**
    * Where this change's work should happen, when it has a place of its own.
@@ -218,12 +272,78 @@ export interface ChangeHandle {
    * inside is a directory the run pays for and never uses.
    */
   readonly workdir?: string;
+  /**
+   * The commit this change is AT, when the adapter can name one.
+   *
+   * Filled in by `merge` with the merge commit, and by `revision` with the branch tip. Absent means
+   * the adapter cannot say — a simulated port, or a branch with nothing on it — and absent must
+   * never be read as "no commit exists": those are different facts and only one of them is a defect.
+   */
+  readonly commit?: string;
+  /**
+   * The TREE this change holds — `git rev-parse <branch>^{tree}`.
+   *
+   * The better cache key of the two, and the reason both are carried. Two commits with different
+   * messages, authors or parents over identical content have the same tree, so a check already run
+   * against that tree does not need running again; keyed by COMMIT it would rerun on every rebase,
+   * amend and cherry-pick, which is most of what a working branch does.
+   */
+  readonly tree?: string;
 }
 
 export interface ChangeControlPort {
   readonly meta: ProviderMeta;
-  open(node: CascadeNode, ctx: { readonly branch: string }): Promise<PortResult<ChangeHandle>>;
+  /**
+   * Open a change on `ctx.branch`, cut from `ctx.base`.
+   *
+   * `base` is OPTIONAL so every existing caller keeps working: absent, the adapter uses the one
+   * it was configured with. Present, it may name a branch that DOES NOT EXIST YET — an
+   * integration branch is created by the first change that needs it, because nothing else knows
+   * when the collection became real. An adapter that cannot create it must refuse rather than
+   * silently fall back to its trunk: that fallback is the whole class of defect this field
+   * exists to close, since the work would land somewhere plausible and wrong.
+   */
+  open(
+    node: CascadeNode,
+    ctx: { readonly branch: string; readonly base?: string },
+  ): Promise<PortResult<ChangeHandle>>;
   merge(handle: ChangeHandle): Promise<PortResult<ChangeHandle>>;
+  /**
+   * WHAT THE CHANGE TOUCHED — path, lines added, lines removed.
+   *
+   * OPTIONAL, because an adapter that cannot diff should say so by not implementing this rather
+   * than by returning an empty list. Those two are different facts and a view must be able to tell
+   * them apart: "no files changed" is a finding, and "this adapter cannot tell you" is not.
+   *
+   * The counts come from the adapter's own diff of the branch, never from an agent's account of
+   * what it did. The claim lives in `phase_output` as testimony; this is the measurement.
+   */
+  changed?(handle: ChangeHandle): Promise<PortResult<readonly ChangedFileCount[]>>;
+  /**
+   * WHERE THE CHANGE IS NOW — its commit and its tree, read at the moment of asking.
+   *
+   * Optional for the same reason `changed` is: an adapter that cannot answer must decline to
+   * implement it rather than return zeroes, because "this port has no revisions" and "this branch
+   * is empty" are different answers and a caller has to be able to tell them apart.
+   *
+   * Asked rather than remembered. A handle is created at `open`, when the branch is empty and there
+   * is no revision to record; everything interesting happens after. So the revision is a question
+   * about the repository right now, not a field frozen at the wrong moment.
+   */
+  revision?(handle: ChangeHandle): Promise<PortResult<ChangeRevision>>;
+}
+
+/** A change's position in the repository. Both are full hex object names, never abbreviated. */
+export interface ChangeRevision {
+  readonly commit: string;
+  readonly tree: string;
+}
+
+/** One file in a diff. Mirrors `git diff --numstat`, which is where the first adapter reads it. */
+export interface ChangedFileCount {
+  readonly path: string;
+  readonly added: number;
+  readonly removed: number;
 }
 
 export type AnyProvider = IntakeSource | WorkExecutor | TestRunner | ReviewPort | ChangeControlPort | DataSourcePort;
@@ -530,6 +650,35 @@ export function recordingProviders(set: ProviderSet): {
           mark(Port.ChangeControl);
           return set.change.merge(handle);
         },
+        // ── THE OPTIONAL HALVES MUST SURVIVE THE WRAPPER ────────────────────
+        // This object is rebuilt field by field, so an optional method the wrapped port implements
+        // simply CEASES TO EXIST once it is wrapped — and every caller guards with
+        // `port.changed !== undefined`, so the feature does not fail, it silently never happens.
+        //
+        // MEASURED: `changed` has been dropped here since the wrapper was written, which is why no
+        // run through `runOrgRuntime` has ever emitted the `change_files` fact its call site
+        // carefully explains. Found while wiring `revision` and watching it arrive as undefined.
+        //
+        // Spread conditionally rather than assigned unconditionally: under
+        // `exactOptionalPropertyTypes` an explicit `revision: undefined` is not the same as an
+        // absent one, and a present-but-undefined method is exactly the shape those guards read as
+        // "this adapter cannot do it".
+        ...(set.change.changed === undefined
+          ? {}
+          : {
+              changed: async (handle: ChangeHandle) => {
+                mark(Port.ChangeControl);
+                return set.change.changed!(handle);
+              },
+            }),
+        ...(set.change.revision === undefined
+          ? {}
+          : {
+              revision: async (handle: ChangeHandle) => {
+                mark(Port.ChangeControl);
+                return set.change.revision!(handle);
+              },
+            }),
       },
     },
   };

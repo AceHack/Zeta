@@ -402,6 +402,8 @@ db/ledgers/privacy/
 # commit on 2026-09-01. Ignoring it is the fix; the cache itself is fine.
 .helm-schema-cache/
 
+# Playwright run output — artifacts of a run, never the run itself.
+test-results/
 # Generated character media stays inside versioned release ZIPs; see docs/CHARACTER-ASSET-STORAGE.md.
 /docs/research/*character*/**/*.png
 /docs/research/*character*/**/*.jpg

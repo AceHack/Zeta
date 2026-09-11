@@ -77,6 +77,14 @@ export interface OrgHat {
   readonly ttlMs?: number;
   readonly cooldownMs?: number;
   readonly successionPolicy?: "rotate" | "renew" | "appoint" | "none";
+  /**
+   * How many agents may wear this hat AT ONCE.
+   *
+   * Absent means one, which is what the binding rules already enforced implicitly. Stating it makes
+   * capacity a property of the hat rather than an accident of the binding check — and makes it
+   * something an operator can raise for a hat that genuinely takes a team, or lower to throttle one.
+   */
+  readonly maxWearers?: number;
 }
 
 export interface OrgChart {

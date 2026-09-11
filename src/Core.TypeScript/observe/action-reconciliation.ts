@@ -58,7 +58,24 @@ export type HatGate =
   /** Pulling peers into a room. Spends OTHER hats' calendars, so it needs its own authority. */
   | "convene"
   /** Handing work to someone. The action `canCreateWork` was waiting for. */
-  | "assign_work";
+  | "assign_work"
+  /**
+   * Saying what a part of the company is FOR. A LEVEL check, not a bit.
+   *
+   * The only gate here that is not one of `HatAuthority`'s booleans, and deliberately: direction is
+   * not a capability somebody can be granted at any level, it is the thing the top of a chart
+   * exists to do. `goal-cascade.acceptGoal` already refuses a goal accepted below c_suite, so a bit
+   * that could be set on a lead would put two different answers in the system.
+   */
+  | "set_direction"
+  /**
+   * Deciding what the organization spends itself on — priority, and hat supply.
+   *
+   * Rides `canCreateWork` alongside `assign_work`, which is the same authority read three ways:
+   * who does it, how urgent it is, and whether a hat for it exists at all. Three separate bits
+   * would have to be kept in step, and the first one to drift would be silent.
+   */
+  | "direct_resources";
 
 /** What a room's `ScopePredicate` must permit for this kind. */
 export type ScopeRequirement =
@@ -96,7 +113,46 @@ export const ACTION_RECONCILIATION: Record<ActionKind, ActionRow> = {
   // supervisor's attention; not asking costs the work. Cf. the free modes: the thing that must
   // never be gated is the agent's ability to be honest about its own state.
   request_information: { kind: "request_information", gate: "never_gated", scope: "unrestricted", freeMode: false, leadSlot: null },
+  // NEVER GATED, and here the argument is stronger than it is for `request_information`. A gate on
+  // this verb is a gate on an agent's ability to reach a person when the organization has run out
+  // of answers — which is precisely the situation in which a gate has nobody left to open it. An
+  // agent that cannot say "this needs a human" when it does is one whose remaining options are to
+  // guess or to go quiet, and the guess arrives at a review as somebody else's problem.
+  raise_to_human: { kind: "raise_to_human", gate: "never_gated", scope: "unrestricted", freeMode: false, leadSlot: null },
   assign_work: { kind: "assign_work", gate: "assign_work", scope: "item_in_scope", freeMode: false, leadSlot: null },
+
+  // ── MAKING WORK ──────────────────────────────────────────────────────────
+  // `scope: "unrestricted"` on all four, and it is not a shrug. A room's item scope is a fence
+  // around work that ALREADY EXISTS — `itemIdOf` reads a `BacklogItem` off the action — and none of
+  // these carries one: a direction has no work item because it is what produces them, and a supply
+  // gap is about the chart rather than the backlog. Scoping them by backlog membership would refuse
+  // every one of them in every room, which is a gate that can never open.
+  set_direction: { kind: "set_direction", gate: "set_direction", scope: "unrestricted", freeMode: false, leadSlot: null },
+  draft_business_doc: { kind: "draft_business_doc", gate: "collaborate", scope: "unrestricted", freeMode: false, leadSlot: null },
+  decide_priority: { kind: "decide_priority", gate: "direct_resources", scope: "unrestricted", freeMode: false, leadSlot: null },
+  size_hat_supply: { kind: "size_hat_supply", gate: "direct_resources", scope: "unrestricted", freeMode: false, leadSlot: null },
+  // `decompose`'s gate, because it IS decomposition — one rung of a cascade rather than one backlog
+  // item's sub-tasks. A second authority for the same act would be two answers to "may this hat
+  // break work down", and the first one to drift would be silent.
+  break_down_work: { kind: "break_down_work", gate: "decompose", scope: "unrestricted", freeMode: false, leadSlot: null },
+  // `execute_item`'s gate, because submitting work IS the last step of doing it — and an IC must be
+  // able to. The bit is `canDoWork`, true at every level including individual contributor, which is
+  // the whole point: the tier that exists to do the work must be able to say it is finished.
+  submit_work: { kind: "submit_work", gate: "execute_item", scope: "unrestricted", freeMode: false, leadSlot: null },
+  // `direct_resources`, alongside assignment and priority: deciding what the organization spends
+  // itself on when a plan is not working is the same authority as deciding what it spends itself on
+  // in the first place. `decideEscalation` applies its own, stricter check — manager and above —
+  // and this gate is the menu's half of it.
+  escalate_churn: { kind: "escalate_churn", gate: "direct_resources", scope: "unrestricted", freeMode: false, leadSlot: null },
+  // `convene`, the same authority as pulling peers into a room over an artifact — because it is the
+  // same act. Both spend OTHER hats' calendars, which is exactly what that gate was carved for, and
+  // a second gate meaning the same thing would be two answers to one question.
+  convene_chain: { kind: "convene_chain", gate: "convene", scope: "unrestricted", freeMode: false, leadSlot: null },
+  // `direct_resources`, with assignment, priority and hat supply: money is the fourth thing the
+  // organization spends itself on, and it is the same authority read a fourth way. The register
+  // applies a far stricter check of its own — `decideSpend` accepts only the hats that own
+  // `budget_exceeded` — and this gate is the menu's half of it.
+  decide_spend: { kind: "decide_spend", gate: "direct_resources", scope: "unrestricted", freeMode: false, leadSlot: null },
   // Operator priority — above the menu, so no slot; c_suite+ only.
   preserve_ferry: {
     kind: "preserve_ferry",
@@ -220,6 +276,16 @@ export const FREE_MODE_KINDS: readonly ActionKind[] = ["explore", "play", "self_
  * Kinds the grammar has attached no authority to. Ungated TODAY — this is a roster of a known gap,
  * not a claim that these are safe. Pinned by a test so it shrinks only on purpose.
  */
+/**
+ * Every action kind there is, derived from the table rather than written beside it.
+ *
+ * A second hand-maintained list would drift from this one silently, and the way it would show up is
+ * a verb that exists and cannot be configured — or worse, a configuration accepted for a verb that
+ * does not exist. `action-reconciliation.test.ts` already asserts the table is TOTAL over
+ * `ActionKind`, so deriving from it inherits that guarantee instead of restating it.
+ */
+export const ACTION_KINDS: readonly string[] = Object.keys(ACTION_RECONCILIATION);
+
 export const UNGATED_KINDS: readonly ActionKind[] = Object.values(ACTION_RECONCILIATION)
   .filter((r) => r.gate === "not_yet_assigned")
   .map((r) => r.kind);

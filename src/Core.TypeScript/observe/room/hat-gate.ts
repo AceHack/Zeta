@@ -48,11 +48,11 @@ export interface HatAuthority {
   /**
    * Can this hat create NEW work items / PRs?
    *
-   * HONEST NOTE: after `canDoWork` took over `do_item`, no action in the current 16-slot grammar
-   * is gated on this bit — the grammar has no "create a work item" action (`decompose` creates
-   * sub-tasks and is gated by `canDecompose`). It is kept because the distinction is real and the
-   * grammar is expected to grow one, and it is called out here rather than left as a silently
-   * dead field. Wiring it to an action is the grammar owner's call, not this filter's.
+   * NO LONGER DEAD. This field carried an honest note saying nothing was gated on it — true when
+   * written, and false since `assign_work` landed. Three actions read it now: `assign_work`,
+   * `decide_priority` and `size_hat_supply` — who does the work, how urgent it is, and whether a
+   * hat for it exists. That is one authority over how the organization spends itself, and an IC
+   * (`canCreateWork: false`) holds none of it.
    */
   readonly canCreateWork: boolean;
   /** Can this hat decompose items? (always true for lead+) */
@@ -145,6 +145,15 @@ function isAuthorized(action: NextAction, auth: HatAuthority): boolean {
     // creating work for them, and an IC (`canCreateWork: false`) does not hand out tasks.
     case "assign_work":
       return auth.canCreateWork;
+    // Priority and hat supply are the same authority as assignment, read two other ways. See the
+    // gate's own docstring for why they are not three separate bits.
+    case "direct_resources":
+      return auth.canCreateWork;
+    // THE ONE LEVEL CHECK. `acceptGoal` refuses a goal accepted below c_suite, and a boolean here
+    // could be set on a lead — putting two different answers about who directs the company into
+    // the same system.
+    case "set_direction":
+      return auth.level === "c_suite" || auth.level === "executive_board";
     case "execute_item": {
       const id = itemIdOf(action);
       return id === null ? auth.canDoWork : canExecuteItem(id, auth);

@@ -17,7 +17,10 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { spawnSync } from "node:child_process";
 
-import { agentWorkExecutor, commandWorkExecutor, commitsAhead, gitChangeControl, gitWorktreeChangeControl, worktreeDirName } from "./adapters";
+import { agentWorkExecutor, branchExists, commandWorkExecutor, commitsAhead, gitChangeControl, gitWorktreeChangeControl, worktreeDirName } from "./adapters";
+import { changeContextFor, collectionsReadyToLand } from "./branch-topology";
+import { externalRefOf } from "./intake";
+import type { Cascade } from "./goal-cascade";
 import { Fidelity } from "./providers";
 import { WorkState, WorkType, type CascadeNode } from "./goal-cascade";
 
@@ -147,6 +150,321 @@ describe("TWO CHANGES OPEN AT ONCE", () => {
     expect(parents.stdout.trim().split(/ +/)).toHaveLength(3);
     // A worktree left behind holds a lock on its branch, and the next run's open would refuse.
     expect(existsSync(checkoutOf(opened.value))).toBe(false);
+  });
+});
+
+describe("THE MERGE LANDS ON THE BASE, NOT ON WHATEVER IS CHECKED OUT", () => {
+  // -- WHY EVERY OTHER TEST IN THIS FILE MISSED IT --------------------------
+  // `repo()` leaves `main` checked out, and `main` is also the base. HEAD and the base were the
+  // same ref in every test here, so `git merge --no-ff <branch>` -- which merges into HEAD -- was
+  // indistinguishable from one that merges into the base. The fixture could not reach the state
+  // production is normally in: a repository sitting on a feature branch.
+  //
+  // MEASURED 2026-09-10 against a clone of a working repository on a feature branch: the change
+  // branched from `main` correctly, the merge landed on the FEATURE branch, `main` never moved,
+  // and the run reported `1 landed` and delivered.
+
+  /** The fixture's repository, moved onto a feature branch with work in progress on it. */
+  function onFeatureBranch(label: string) {
+    const made = repo(label);
+    const git = (...args: string[]) => {
+      const r = spawnSync("git", args, { cwd: made.cwd, encoding: "utf-8" });
+      if (r.status !== 0) throw new Error(`git ${args.join(" ")}: ${r.stderr ?? ""}`);
+    };
+    git("checkout", "-b", "mine");
+    // Uncommitted work, because the operator's files are the other thing that must survive.
+    writeFileSync(join(made.cwd, "UNCOMMITTED.txt"), "work in progress\n");
+    return made;
+  }
+
+  const tipOf = (cwd: string, ref: string) =>
+    spawnSync("git", ["rev-parse", ref], { cwd, encoding: "utf-8" }).stdout.trim();
+
+  test("the base branch receives the merge and the checked-out branch does not", async () => {
+    const { cwd, worktreeRoot } = onFeatureBranch("target");
+    const mineBefore = tipOf(cwd, "mine");
+    const mainBefore = tipOf(cwd, "main");
+    expect(mineBefore).toBe(mainBefore); // branched from main a moment ago
+
+    const change = gitWorktreeChangeControl({ cwd, worktreeRoot, baseBranch: "main" });
+    const opened = await change.open(node("task-1"), { branch: "work/task-1" });
+    if (!opened.ok) throw new Error(opened.reason);
+    commitIn(checkoutOf(opened.value), "one.txt", "work\n");
+
+    const merged = await change.merge(opened.value);
+    expect(merged.ok).toBe(true);
+
+    // THE BASE MOVED...
+    expect(tipOf(cwd, "main")).not.toBe(mainBefore);
+    // ...AND THE OPERATOR'S BRANCH DID NOT. This is the assertion the old code fails: it moved
+    // `mine` and left `main` exactly where it was.
+    expect(tipOf(cwd, "mine")).toBe(mineBefore);
+
+    // AND THE COMMIT IT REPORTS IS THE ONE IT MADE. Read off the shared HEAD this would be the
+    // operator's tip, and the tree hash filed against every bound check would belong to somebody
+    // else's work — a verdict attributed to content that was never reviewed.
+    if (!merged.ok) throw new Error(merged.reason);
+    expect(merged.value.commit).toBe(tipOf(cwd, "main"));
+    expect(merged.value.commit).not.toBe(tipOf(cwd, "mine"));
+  });
+
+  test("WHAT COUNTS AS 'NOTHING TO MERGE' IS ASKED OF THE BASE, not of the operator's branch", async () => {
+    // The guard that refuses an empty branch counts commits. Counted from HEAD, it answers a
+    // question about the OPERATOR's branch: if their branch already contains the change's commits,
+    // `HEAD..work/x` is zero and a change with real work in it is refused as empty.
+    //
+    // Not contrived — it is exactly the state the previous defect left behind, since that bug
+    // merged changes onto whatever branch was checked out. So the repair path was blocked by the
+    // same assumption that caused the damage.
+    const { cwd, worktreeRoot } = onFeatureBranch("counted");
+    const git = (...args: string[]) => spawnSync("git", args, { cwd, encoding: "utf-8" });
+
+    const change = gitWorktreeChangeControl({ cwd, worktreeRoot, baseBranch: "main" });
+    const opened = await change.open(node("task-1"), { branch: "work/task-1" });
+    if (!opened.ok) throw new Error(opened.reason);
+    commitIn(checkoutOf(opened.value), "one.txt", "work\n");
+
+    // The operator's branch takes the work too, so HEAD is no longer BEHIND the change branch…
+    expect(git("merge", "--no-ff", "-m", "operator took it", "work/task-1").status).toBe(0);
+    // …and a HEAD-relative count now says zero while a base-relative count still says one.
+    expect(commitsAhead((a) => git(...a), "work/task-1")).toBe(0);
+    expect(commitsAhead((a) => git(...a), "work/task-1", "main")).toBeGreaterThan(0);
+
+    // The merge must still happen: the BASE has not seen this work.
+    const mainBefore = tipOf(cwd, "main");
+    const merged = await change.merge(opened.value);
+    if (!merged.ok) throw new Error(merged.reason);
+    expect(tipOf(cwd, "main")).not.toBe(mainBefore);
+  });
+
+  test("the operator's HEAD and working tree are where they were left", async () => {
+    const { cwd, worktreeRoot } = onFeatureBranch("untouched");
+    const change = gitWorktreeChangeControl({ cwd, worktreeRoot, baseBranch: "main" });
+    const opened = await change.open(node("task-1"), { branch: "work/task-1" });
+    if (!opened.ok) throw new Error(opened.reason);
+    commitIn(checkoutOf(opened.value), "one.txt", "work\n");
+    expect((await change.merge(opened.value)).ok).toBe(true);
+
+    expect(
+      spawnSync("git", ["rev-parse", "--abbrev-ref", "HEAD"], { cwd, encoding: "utf-8" }).stdout.trim(),
+    ).toBe("mine");
+    // The borrowed checkout must not have swept the operator's untracked file away.
+    expect(existsSync(join(cwd, "UNCOMMITTED.txt"))).toBe(true);
+  });
+
+  test("THE BORROWED CHECKOUT IS RELEASED — otherwise the NEXT change cannot merge", async () => {
+    // A worktree left on the base holds a lock on it, so a second merge would be refused by git
+    // with a message about the branch already being checked out. Two changes, in sequence, is the
+    // falsifier for the release: the second one only works if the first cleaned up after itself.
+    const { cwd, worktreeRoot } = onFeatureBranch("released");
+    const change = gitWorktreeChangeControl({ cwd, worktreeRoot, baseBranch: "main" });
+
+    for (const id of ["task-1", "task-2"]) {
+      const opened = await change.open(node(id), { branch: `work/${id}` });
+      if (!opened.ok) throw new Error(opened.reason);
+      commitIn(checkoutOf(opened.value), `${id}.txt`, "work\n");
+      const merged = await change.merge(opened.value);
+      if (!merged.ok) throw new Error(`${id}: ${merged.reason}`);
+    }
+
+    // Only the shared checkout remains; nothing was left holding the base.
+    const trees = spawnSync("git", ["worktree", "list"], { cwd, encoding: "utf-8" }).stdout.trim().split("\n");
+    expect(trees).toHaveLength(1);
+    // Both changes are on the base, in order.
+    const log = spawnSync("git", ["log", "--oneline", "main"], { cwd, encoding: "utf-8" }).stdout;
+    expect(log).toContain("work/task-1");
+    expect(log).toContain("work/task-2");
+  });
+
+  test("a failed merge also releases the base, and says what refused", async () => {
+    // The release must not be on the success path only: a conflict that left the base checked out
+    // would turn one failed change into a permanently unmergeable repository.
+    const { cwd, worktreeRoot } = onFeatureBranch("conflict");
+    const git = (...args: string[]) => spawnSync("git", args, { cwd, encoding: "utf-8" });
+
+    const change = gitWorktreeChangeControl({ cwd, worktreeRoot, baseBranch: "main" });
+    const opened = await change.open(node("task-1"), { branch: "work/task-1" });
+    if (!opened.ok) throw new Error(opened.reason);
+    commitIn(checkoutOf(opened.value), "clash.txt", "from the change\n");
+
+    // A conflicting commit placed on the BASE, without disturbing the checked-out branch.
+    const side = join(worktreeRoot, "seed-base");
+    expect(git("worktree", "add", side, "main").status).toBe(0);
+    writeFileSync(join(side, "clash.txt"), "from the base\n");
+    expect(spawnSync("git", ["add", "clash.txt"], { cwd: side, encoding: "utf-8" }).status).toBe(0);
+    expect(spawnSync("git", ["commit", "-m", "base side"], { cwd: side, encoding: "utf-8" }).status).toBe(0);
+    expect(git("worktree", "remove", "--force", side).status).toBe(0);
+
+    const merged = await change.merge(opened.value);
+    expect(merged.ok).toBe(false);
+
+    // THE BASE IS STILL MERGEABLE. Nothing is holding it, so a later change is not blocked by
+    // this one's failure. The CHANGE's own worktree is deliberately still there — a failed merge
+    // leaves the work on disk, which a sibling test in this file pins — so the assertion NAMES
+    // the borrowed checkout rather than counting, or it would contradict that rule.
+    const trees = spawnSync("git", ["worktree", "list"], { cwd, encoding: "utf-8" }).stdout;
+    expect(trees).not.toContain(worktreeDirName("into-main"));
+    expect(trees).toContain(worktreeDirName("work/task-1"));
+
+    // …and the proof that the base is really free: a SECOND change merges cleanly afterwards.
+    const next = await change.open(node("task-2"), { branch: "work/task-2" });
+    if (!next.ok) throw new Error(next.reason);
+    commitIn(checkoutOf(next.value), "two.txt", "work\n");
+    const after = await change.merge(next.value);
+    if (!after.ok) throw new Error(after.reason);
+  });
+});
+
+describe("A FEATURE'S STORIES LAND ON THE FEATURE, AND THE FEATURE ON THE TRUNK", () => {
+  // -- WHY THIS TEST EXISTS AT THIS LAYER ------------------------------------
+  // `run-org`'s fixture decomposes one request into ONE code item, so no end-to-end run can reach
+  // the feature case at all. Measured on the folded cascade of a real run: `under=1` at every rung,
+  // no integration branch, straight to the trunk — correct, and unable to exercise the other half.
+  // So the cascade is built here and the REAL adapter is driven from it.
+
+  /** goal -> initiative -> project(FEAT-1) -> two stories(S-1, S-2). A collection, measured. */
+  function collecting(state: "open" | "done"): Cascade {
+    const base = { ownerHatId: "tech_lead", state: state === "done" ? WorkState.Done : WorkState.Open };
+    return {
+      nodes: [
+        { workId: "goal-1", workType: WorkType.Goal, title: "the outcome", ...base },
+        { workId: "init-1", workType: WorkType.Initiative, title: "the epic", parentWorkId: "goal-1", ...base },
+        {
+          workId: "proj-1", workType: WorkType.Project, title: "the feature", parentWorkId: "init-1",
+          requestRef: externalRefOf("jira", "FEAT-1"), ...base,
+        },
+        {
+          workId: "leaf-1", workType: WorkType.Task, title: "story one", parentWorkId: "proj-1",
+          requestRef: externalRefOf("jira", "S-1"), assigneeHatId: "backend_implementer", ...base,
+        },
+        {
+          workId: "leaf-2", workType: WorkType.Task, title: "story two", parentWorkId: "proj-1",
+          requestRef: externalRefOf("jira", "S-2"), assigneeHatId: "backend_implementer", ...base,
+        },
+      ],
+    };
+  }
+
+  const tipOf = (cwd: string, ref: string) =>
+    spawnSync("git", ["rev-parse", ref], { cwd, encoding: "utf-8" }).stdout.trim();
+
+  test("both stories merge into the feature; the TRUNK does not move until the collection lands", async () => {
+    const { cwd, worktreeRoot } = repo("feature");
+    const cascade = collecting("open");
+    const change = gitWorktreeChangeControl({ cwd, worktreeRoot, baseBranch: "main" });
+    const mainAtStart = tipOf(cwd, "main");
+
+    for (const [id, file] of [["leaf-1", "one.txt"], ["leaf-2", "two.txt"]] as const) {
+      const ctx = changeContextFor({ cascade, workId: id });
+      if (ctx === undefined) throw new Error(`no context for ${id}`);
+      // The derivation, asserted where it is USED rather than only in its own unit test.
+      expect(ctx.base).toBe("feature/FEAT-1");
+
+      const opened = await change.open(
+        cascade.nodes.find((n) => n.workId === id) as CascadeNode,
+        ctx,
+      );
+      if (!opened.ok) throw new Error(`${id}: ${opened.reason}`);
+      // THE HANDLE REMEMBERS. Without this `merge` would target the adapter's trunk and the feature
+      // branch would stay empty while main collected the stories one at a time.
+      expect(opened.value.base).toBe("feature/FEAT-1");
+
+      commitIn(checkoutOf(opened.value), file, "work\n");
+      const merged = await change.merge(opened.value);
+      if (!merged.ok) throw new Error(`${id}: ${merged.reason}`);
+    }
+
+    // THE FEATURE BRANCH EXISTS AND HOLDS BOTH — created by the first story that needed it, joined
+    // by the second. Nothing upstream created it; that is the whole point of doing it in `open`.
+    expect(branchExists((a) => spawnSync("git", [...a], { cwd, encoding: "utf-8" }), "feature/FEAT-1")).toBe(true);
+    const onFeature = spawnSync("git", ["log", "--oneline", "feature/FEAT-1"], { cwd, encoding: "utf-8" }).stdout;
+    expect(onFeature).toContain("story/S-1");
+    expect(onFeature).toContain("story/S-2");
+
+    // ...AND THE TRUNK HAS SEEN NONE OF IT. A story that reached main directly would mean the
+    // feature was never reviewable as a whole, which is the reason an integration branch exists.
+    expect(tipOf(cwd, "main")).toBe(mainAtStart);
+  });
+
+  test("the collection lands on the trunk ONLY once it and every code item under it are done", async () => {
+    const { cwd, worktreeRoot } = repo("collection");
+    const change = gitWorktreeChangeControl({ cwd, worktreeRoot, baseBranch: "main" });
+
+    for (const [id, file] of [["leaf-1", "one.txt"], ["leaf-2", "two.txt"]] as const) {
+      const open = collecting("open");
+      const ctx = changeContextFor({ cascade: open, workId: id });
+      const opened = await change.open(open.nodes.find((n) => n.workId === id) as CascadeNode, ctx as { branch: string });
+      if (!opened.ok) throw new Error(opened.reason);
+      commitIn(checkoutOf(opened.value), file, "work\n");
+      const merged = await change.merge(opened.value);
+      if (!merged.ok) throw new Error(merged.reason);
+    }
+
+    // WHILE ANYTHING IS OPEN, NOTHING LANDS. This is the guard against half a feature on the trunk.
+    expect(collectionsReadyToLand({ cascade: collecting("open") })).toEqual([]);
+
+    // Done, and every code item under it done.
+    const ready = collectionsReadyToLand({ cascade: collecting("done") });
+    expect(ready.map((r) => r.workId)).toEqual(["proj-1"]);
+    expect(ready[0]?.branch).toBe("feature/FEAT-1");
+
+    // The collection merges with NO base on the handle — which is how it asks for the trunk.
+    const mainBefore = tipOf(cwd, "main");
+    const landed = await change.merge({ changeId: "feature/FEAT-1@proj-1", branch: "feature/FEAT-1" });
+    if (!landed.ok) throw new Error(landed.reason);
+    expect(tipOf(cwd, "main")).not.toBe(mainBefore);
+
+    // BOTH STORIES ARE NOW ON THE TRUNK, through the feature, in one merge.
+    const onMain = spawnSync("git", ["log", "--oneline", "main"], { cwd, encoding: "utf-8" }).stdout;
+    expect(onMain).toContain("story/S-1");
+    expect(onMain).toContain("story/S-2");
+    expect(onMain).toContain("feature/FEAT-1");
+  });
+
+  test("A RESUME REJOINS: the same item opened twice does not refuse, and does not lose its commit", async () => {
+    // MEASURED before the rejoin existed: a second cycle over one item died on
+    // `fatal: a branch named 'work/task-015' already exists`, and the run then called the item done
+    // with nothing merged — its own branch, from its own previous cycle, read as somebody else's.
+    const { cwd, worktreeRoot } = repo("resume");
+    const cascade = collecting("open");
+    const change = gitWorktreeChangeControl({ cwd, worktreeRoot, baseBranch: "main" });
+    const node1 = cascade.nodes.find((n) => n.workId === "leaf-1") as CascadeNode;
+    const ctx = changeContextFor({ cascade, workId: "leaf-1" }) as { branch: string; base?: string };
+
+    const first = await change.open(node1, ctx);
+    if (!first.ok) throw new Error(first.reason);
+    commitIn(checkoutOf(first.value), "one.txt", "work\n");
+    const tip = tipOf(cwd, "story/S-1");
+
+    // The worktree is still on disk — the cycle did not merge. Opening again must hand back the
+    // same checkout rather than refusing.
+    const again = await change.open(node1, ctx);
+    if (!again.ok) throw new Error(again.reason);
+    expect(again.value.workdir).toBe(first.value.workdir);
+    expect(again.value.base).toBe("feature/FEAT-1");
+    // AND THE COMMIT SURVIVED. A rejoin that re-cut the branch from its base would silently discard
+    // whatever the earlier cycle did, which is worse than the refusal it replaced.
+    expect(tipOf(cwd, "story/S-1")).toBe(tip);
+
+    // The integration branch is JOINED, not re-created: still one branch, still where it was.
+    expect(branchExists((a) => spawnSync("git", [...a], { cwd, encoding: "utf-8" }), "feature/FEAT-1")).toBe(true);
+  });
+
+  test("a directory that is NOT this change's checkout is refused, not adopted", async () => {
+    // The rejoin above must not become "any directory with the right name will do": work performed
+    // in an unrelated tree would never reach the merge, and the run would report it delivered.
+    const { cwd, worktreeRoot } = repo("stale");
+    const cascade = collecting("open");
+    const change = gitWorktreeChangeControl({ cwd, worktreeRoot, baseBranch: "main" });
+    const ctx = changeContextFor({ cascade, workId: "leaf-1" }) as { branch: string; base?: string };
+
+    mkdirSync(join(worktreeRoot, worktreeDirName(ctx.branch)), { recursive: true });
+    writeFileSync(join(worktreeRoot, worktreeDirName(ctx.branch), "junk.txt"), "not a checkout\n");
+
+    const opened = await change.open(cascade.nodes.find((n) => n.workId === "leaf-1") as CascadeNode, ctx);
+    expect(opened.ok).toBe(false);
+    if (opened.ok) throw new Error("expected a refusal");
+    expect(opened.reason).toContain("is not a checkout of");
   });
 });
 

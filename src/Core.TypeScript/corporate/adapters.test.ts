@@ -19,6 +19,7 @@ import { join } from "node:path";
 import { spawnSync } from "node:child_process";
 
 import {
+  commandArtifactProducer,
   commandTestRunner,
   commandWorkExecutor,
   directoryIntake,
@@ -32,6 +33,8 @@ import {
   simulatedWorkExecutor,
 } from "./adapters";
 import { Fidelity, Port } from "./providers";
+import { GateKind } from "./quality-gate";
+import type { Artifact, PhaseContext } from "./pipeline";
 import { ExecutionMode, RunOutcome, TestCaseStatus, type TestCase } from "./qa";
 import { IntakeKind, Severity, type ExternalEvent } from "./intake";
 import { WorkState, WorkType, type CascadeNode } from "./goal-cascade";
@@ -53,6 +56,11 @@ const node = (workId: string, title = "a task"): CascadeNode => ({
   state: WorkState.Open,
   ownerHatId: "tech_lead",
   assigneeHatId: "backend_implementer",
+});
+
+const phaseCtx = (prior: ReadonlyMap<GateKind, Artifact> = new Map()): PhaseContext => ({
+  branch: "work/w1",
+  priorArtifacts: prior,
 });
 
 const testCase = (testCaseId: string): TestCase => ({
@@ -371,5 +379,62 @@ describe("gitChangeControl — a real repository", () => {
     expect(commandWorkExecutor({ command: SELF, argsFor: () => [], cwd: "." }).meta.fidelity).toBe(Fidelity.Real);
     expect(commandTestRunner({ command: SELF, argsFor: () => [], cwd: "." }).meta.fidelity).toBe(Fidelity.Real);
     expect(directoryIntake(".").meta.fidelity).toBe(Fidelity.Real);
+  });
+});
+
+describe("A PRE-CODE GATE MUST HAVE SOMETHING TO JUDGE", () => {
+  // Eleven of fourteen gates had no producer, so the reviewer at those phases was choosing between
+  // approving nothing and rejecting nothing. Both are the gate failing to evaluate the work.
+  const produce = (script: string, gate: GateKind = GateKind.BrdApproval) =>
+    commandArtifactProducer({
+      command: SELF,
+      gate,
+      argsFor: () => ["-e", script],
+      cwd: scratch("artifact"),
+    });
+
+  test("THE EXIT CODE DECIDES whether the phase produced anything", async () => {
+    // A command that prints a document and fails has not produced it; one that prints nothing and
+    // succeeds has produced something that cites nothing. Both facts are kept, neither smoothed.
+    const failed = await produce("console.log('docs/brd.md'); process.exit(1)").produce(node("w1"), phaseCtx());
+    expect(failed.ok).toBe(false);
+
+    const ok = await produce("console.log('docs/brd.md')").produce(node("w1"), phaseCtx());
+    expect(ok.ok).toBe(true);
+    if (ok.ok) expect(ok.value.refs).toEqual(["docs/brd.md"]);
+  });
+
+  test("STDOUT IS THE EVIDENCE — every cited artifact reaches the gate", async () => {
+    const out = await produce("console.log('docs/brd.md'); console.log('docs/rules.md')")
+      .produce(node("w1"), phaseCtx());
+    expect(out.ok).toBe(true);
+    if (out.ok) {
+      expect(out.value.refs).toEqual(["docs/brd.md", "docs/rules.md"]);
+      // These become the gate's evidenceRefs, so a reviewer is shown exactly what was written.
+      expect(out.evidence?.map((e) => e.ref)).toEqual(["docs/brd.md", "docs/rules.md"]);
+    }
+  });
+
+  test("a zero exit that cites NOTHING says so, rather than passing as a success", async () => {
+    // This is what an approval with nothing behind it looks like, and it must be legible as that.
+    const out = await produce("process.exit(0)").produce(node("w1"), phaseCtx());
+    expect(out.ok).toBe(true);
+    if (out.ok) {
+      expect(out.value.refs).toEqual([]);
+      expect(out.value.summary).toContain("cited nothing");
+    }
+  });
+
+  test("the producer is REAL in the fidelity report, and names the gate it serves", () => {
+    const port = produce("process.exit(0)", GateKind.ArchitectureApproval);
+    expect(port.meta.fidelity).toBe(Fidelity.Real);
+    expect(port.meta.describes).toContain("architecture_approval");
+  });
+
+  test("a work item's TITLE never reaches a shell", async () => {
+    // Titles arrive from intake, which is a directory somebody else can write to.
+    const hostile = node("w1", "; echo pwned > owned.txt");
+    const out = await produce("console.log('docs/brd.md')").produce(hostile, phaseCtx());
+    expect(out.ok).toBe(true);
   });
 });

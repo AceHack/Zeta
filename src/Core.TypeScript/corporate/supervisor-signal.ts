@@ -46,6 +46,7 @@ import {
 } from "./discussion-anchor";
 import { nearestSupervisorAtOrAbove, supervisorOf, type HatLevel, type OrgChart, type OrgHat } from "./org-chart";
 import { gateOwners, type GateKind } from "./quality-gate";
+import { isBlockerKind, routeBlocker } from "./blocker-taxonomy";
 
 /** The eight starter families, verbatim from the reference table. */
 export const SignalTool = {
@@ -91,7 +92,22 @@ export type SignalRouting =
    * rather than from the chain. That is the discipline the whole module is built on — the sender
    * names the tool and the scope, and the organization decides who that reaches.
    */
-  | "scope_holder";
+  | "scope_holder"
+  /**
+   * The hat that OWNS this kind of blocker — `ANTI_STALL_PRIORITY_RUNTIME.md`'s typed routing.
+   *
+   * Its own criticism of what came before: *"Blockers need typed routing. A generic `blocked` state
+   * is too weak."* Routing every blocker to the reporter's supervisor sent a credential problem and
+   * a missing architecture to the same manager, who could act on neither and had to re-route both
+   * by hand — the triage the taxonomy exists to skip.
+   *
+   * UNLIKE `scope_holder`, an unclassified one does NOT refuse: it falls back to the supervisor,
+   * because that is the doc's own lifecycle — `blocker_detected -> blocker_classified ->
+   * owner_hat_recommended`. A blocker nobody has typed yet has a legitimate destination, which is
+   * the hat whose job the triage is. A review request with no gate has none, which is why that one
+   * refuses.
+   */
+  | "blocker_owner";
 
 export interface SignalToolPolicy {
   readonly tool: SignalTool;
@@ -123,7 +139,7 @@ export const SIGNAL_POLICY: Readonly<Record<SignalTool, SignalToolPolicy>> = {
   },
   [SignalTool.ReportBlocker]: {
     tool: SignalTool.ReportBlocker,
-    routing: "supervisor",
+    routing: "blocker_owner",
     evidenceAnyOf: ["trace", "log", "test"],
     expectedOutput: ExpectedOutput.FollowUp,
     whenToUse: "work cannot move without supervisor triage or routing",
@@ -240,6 +256,15 @@ export function routeSignal(
       // request in front of a hat with no standing over the requester's work.
       if (rmo === undefined) return undefined;
       return rmo;
+    }
+    case "blocker_owner": {
+      // The classified path. An unclassified blocker falls through to the supervisor below,
+      // which is the triage step rather than a failure to route.
+      if (scope !== undefined && isBlockerKind(scope)) {
+        const owner = routeBlocker(chart, scope, fromHatId);
+        if (owner !== undefined) return owner;
+      }
+      return supervisorOf(chart, fromHatId);
     }
     case "scope_holder": {
       if (scope === undefined) return undefined;

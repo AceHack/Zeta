@@ -22,6 +22,8 @@ import { buildOrgChart } from "./org-chart";
 import { SEED_HATS } from "./org-seed";
 import { SignalTool, type SupervisorSignal } from "./supervisor-signal";
 import { AnchorState, AnchorType, EMPTY_BOARD, ExpectedOutput, type DiscussionAnchor } from "./discussion-anchor";
+import { acceptAction, HumanActionKind, type HumanAction } from "./human-action";
+import { observe } from "../observe/observe";
 import { headsOf, mergeHistories, openArtifact, revise, type ArtifactHistory } from "./artifact-deliberation";
 import { WorkState, WorkType, type CascadeNode } from "./goal-cascade";
 import type { NextAction } from "../observe/observe";
@@ -359,5 +361,349 @@ describe("YOU SPEAK ONCE PER VERSION — deliberation, not chatter", () => {
     // when their opinion is worth having. A rule that silenced them permanently would make the
     // first version the only one anybody reviewed.
     expect(deliberationsOf(withPost("qa_director", "some-older-revision"), "qa_director").length).toBe(1);
+  });
+});
+
+describe("SUBMITTING WORK — the assignee, and nobody else", () => {
+  const submit = (subjectId: string): NextAction => ({ kind: "submit_work", subjectId, reason: "done" });
+  const assigned = (over: Partial<CascadeNode> = {}) =>
+    view({ cascade: [node({ assigneeHatId: "backend_implementer", ...over })] });
+
+  test("the assignee's submission becomes a submission effect carrying the PROPOSER", () => {
+    // Carried rather than re-derived at the point of application, because `runGateChain` uses it to
+    // keep every gate off the hat that did the work — and the cascade is about to change.
+    const r = effectOf(assigned(), "backend_implementer", submit("task-1"), { signalId: "s", anchorId: "a" }, 1, "rmo_office");
+    expect(r.ok).toBe(true);
+    if (r.ok) expect(r.effect).toEqual({ kind: "submission", workId: "task-1", proposerHatId: "backend_implementer" });
+  });
+
+  test("REFUSED: a hat submitting work assigned to somebody else", () => {
+    // Re-derived here rather than trusted from the menu: the surface was built at an earlier
+    // moment and the work may have been reassigned since, which would put the real assignee's name
+    // on somebody else's claim.
+    const r = effectOf(assigned(), "frontend_implementer", submit("task-1"), { signalId: "s", anchorId: "a" }, 1, "rmo_office");
+    expect(r.ok).toBe(false);
+    if (!r.ok) expect(r.reason).toContain("assigned to 'backend_implementer'");
+  });
+
+  test("REFUSED: work nobody has done", () => {
+    const r = effectOf(view({ cascade: [node()] }), "backend_implementer", submit("task-1"), { signalId: "s", anchorId: "a" }, 1, "rmo_office");
+    expect(r.ok).toBe(false);
+    if (!r.ok) expect(r.reason).toContain("no assignee");
+  });
+
+  test("REFUSED: work that is already finished, or cancelled", () => {
+    for (const state of [WorkState.Done, WorkState.Canceled]) {
+      const r = effectOf(assigned({ state }), "backend_implementer", submit("task-1"), { signalId: "s", anchorId: "a" }, 1, "rmo_office");
+      expect(r.ok).toBe(false);
+      if (!r.ok) expect(r.reason).toContain(`already ${state}`);
+    }
+  });
+
+  test("REFUSED: a work item that does not exist", () => {
+    const r = effectOf(assigned(), "backend_implementer", submit("nope"), { signalId: "s", anchorId: "a" }, 1, "rmo_office");
+    expect(r.ok).toBe(false);
+  });
+});
+
+describe("EXHAUSTED AT THE GATES is a blocker, not a silence", () => {
+  // `submissionOpenings` bounds resubmission so a turned-back item is not offered forever. Correct,
+  // and by itself it produced a counter nobody read at the limit: the count reached the bound, the
+  // opening closed, and the work sat open with nobody told. This is the writer for that reader.
+  const withAttempts = (count: number, over: Partial<CascadeNode> = {}) =>
+    view({
+      cascade: [node({ assigneeHatId: "backend_implementer", ...over })],
+      gateAttempts: { counts: new Map([["task-1", count]]), maxAttempts: 3 },
+    });
+
+  test("at the bound, the assignee has a classified blocker to raise", () => {
+    const missing = orgSurfaceFor(withAttempts(3), "backend_implementer").missing ?? [];
+    expect(missing).toHaveLength(1);
+    expect(missing[0]?.kind).toBe("release_blocked");
+    expect(missing[0]?.blocking).toBe("task-1");
+  });
+
+  test("BELOW THE BOUND IT IS NOT A BLOCKER — the hat can still try", () => {
+    // Reporting a first turn-back as a blocker would fire on the ordinary case, and a signal that
+    // fires on the ordinary case stops being read.
+    expect(orgSurfaceFor(withAttempts(2), "backend_implementer").missing ?? []).toEqual([]);
+    expect(orgSurfaceFor(withAttempts(0), "backend_implementer").missing ?? []).toEqual([]);
+  });
+
+  test("FINISHED WORK IS NOT BLOCKED, whatever it cost to get there", () => {
+    // An item that took every attempt and then passed is not stuck; reporting it would leave a
+    // blocker standing against work that is done.
+    expect(orgSurfaceFor(withAttempts(3, { state: WorkState.Done }), "backend_implementer").missing ?? []).toEqual([]);
+  });
+
+  test("it is the ASSIGNEE'S blocker, not the owner's", () => {
+    expect(orgSurfaceFor(withAttempts(3), "engineering_manager").missing ?? []).toEqual([]);
+  });
+
+  test("NO GATE TRACKING MEANS NO REPORT — a register that cannot count cannot claim", () => {
+    const untracked = view({ cascade: [node({ assigneeHatId: "backend_implementer" })] });
+    expect(orgSurfaceFor(untracked, "backend_implementer").missing ?? []).toEqual([]);
+  });
+});
+
+describe("A DIRECTION IS NOT AN OUT-OF-DOMAIN FALLBACK", () => {
+  // Measured from a five-day run: seventeen supply reports reached the RMO and SIXTEEN of them were
+  // the design working. A direction is held by an executive by rule — `acceptGoal` refuses one
+  // accepted below c_suite — and an executive is in the governance department, not in the
+  // department that owns the domain. So every goal read as a fallback.
+  //
+  // A signal that fires on the ordinary case stops being read, and the one real fallback in that
+  // list is what it would have cost.
+  const goal = node({
+    workId: "direction-implementation",
+    workType: WorkType.Goal,
+    title: "ship it",
+    ownerHatId: "cto",
+    domain: "implementation",
+  });
+
+  test("a goal held by an executive raises NOTHING", () => {
+    const supply = orgSurfaceFor(view({ cascade: [goal] }), "rmo_office", "rmo_office").generative ?? [];
+    expect(supply.filter((g) => g.subjectId.startsWith("domain-fallback:"))).toEqual([]);
+  });
+
+  test("...and a PROJECT genuinely outside its domain still does", () => {
+    // The falsifier's other half: excluding goals must not silence the real thing. The seed's
+    // engineering line changes department at the manager rung, so an implementation project owned
+    // there is out of domain — measured, and the reason `domain-ontology.ts` reports fallbacks.
+    const project = node({
+      workId: "proj-1",
+      workType: WorkType.Project,
+      title: "cart",
+      ownerHatId: "engineering_manager",
+      domain: "implementation",
+    });
+    const supply = orgSurfaceFor(view({ cascade: [project] }), "rmo_office", "rmo_office").generative ?? [];
+    // KEYED ON THE STRUCTURAL FACT — this domain landing in that department — rather than on the
+    // work item. One report per item buried the handful of real facts under a hundred copies of
+    // themselves as the weeks ran; measured at 42 reports for five distinct truths.
+    expect(supply.map((g) => g.subjectId)).toContain("domain-fallback:implementation:engineering_management");
+  });
+});
+
+describe("ESCALATING CHURN — a ruling, or an honest refusal", () => {
+  const escalate = (subjectId: string): NextAction => ({ kind: "escalate_churn", subjectId, reason: "stuck" });
+
+  test("a manager's ruling becomes an escalation effect carrying the ACTION and what it does", () => {
+    // `haltsTheLoop` is carried rather than re-derived at the point of application, because it is
+    // the only part of an escalation this register can act on today and losing it would leave the
+    // ruling as a note.
+    const v = view({ cascade: [node({ assigneeHatId: "backend_implementer" })] });
+    const r = effectOf(v, "engineering_manager", escalate("task-1"), { signalId: "s", anchorId: "a" }, 1, "rmo_office");
+    expect(r.ok).toBe(true);
+    if (r.ok && r.effect.kind === "escalation") {
+      expect(r.effect.workId).toBe("task-1");
+      expect(r.effect.byHatId).toBe("engineering_manager");
+      expect(typeof r.effect.haltsTheLoop).toBe("boolean");
+      expect(r.effect.signal.tool).toBe(SignalTool.RequestEscalation);
+      // The ACTION is the signal's title, so the next reader learns what was decided rather than
+      // only that something was.
+      expect(r.effect.signal.title).toBe(r.effect.action);
+    } else {
+      throw new Error("expected an escalation effect");
+    }
+  });
+
+  test("REFUSED: a hat below manager may not rule on churn", () => {
+    // `decideEscalation`'s own check, surfaced here rather than discovered three layers down.
+    const v = view({ cascade: [node({ assigneeHatId: "backend_implementer" })] });
+    const r = effectOf(v, "backend_implementer", escalate("task-1"), { signalId: "s", anchorId: "a" }, 1, "rmo_office");
+    expect(r.ok).toBe(false);
+    if (!r.ok) expect(r.reason).toContain("escalation is decided at manager and above");
+  });
+
+  test("REFUSED: work that does not exist", () => {
+    const r = effectOf(view(), "engineering_manager", escalate("nope"), { signalId: "s", anchorId: "a" }, 1, "rmo_office");
+    expect(r.ok).toBe(false);
+    if (!r.ok) expect(r.reason).toContain("no work item");
+  });
+});
+
+describe("TALKING TO AN AGENT — a message reaches it, and the reply comes back", () => {
+  // The loop this closes: a note written into a room used to sit in the queue, visible to whoever
+  // opened the page and invisible to the organization. The hat it was addressed to went on picking
+  // work. That is a chat window with nobody on the other end.
+  //
+  // It travels on the OPERATOR CHANNEL rather than a new verb, because `observe.ts` already puts
+  // `respond_to_operator` above everything except a durability save — a person talking to you is
+  // the highest-signal thing in the world, and a second surface for it would be a second priority
+  // to keep in step with the first.
+
+  const roomAnchor: DiscussionAnchor = {
+    anchorId: "a1",
+    anchorType: AnchorType.SupervisorSignal,
+    title: "brd_approval",
+    purpose: "decide it",
+    expectedOutput: ExpectedOutput.GateResult,
+    participantHatIds: ["backend_implementer", "product_director"],
+    openedByHatId: "backend_implementer",
+    openedAtMs: 10,
+    state: AnchorState.Open,
+    workItemId: "task-1",
+  };
+
+  const said = (over: Record<string, unknown> = {}): HumanAction => {
+    const r = acceptAction({
+      kind: HumanActionKind.PostToRoom,
+      byHuman: "Max",
+      subjectId: "a1",
+      reason: "asked the reviewer a question",
+      atMs: 100,
+      detail: { message: "what evidence did you read here?" },
+      ...over,
+    });
+    if (!r.ok) throw new Error(r.reason);
+    return r.action;
+  };
+
+  const withRoom = (over: Partial<OrgView> = {}): OrgView =>
+    view({ board: { ...EMPTY_BOARD, anchors: [roomAnchor] }, ...over });
+
+  test("a message lights the operator channel for a hat IN that room", () => {
+    const surface = orgSurfaceFor(withRoom({ humanActions: [said()] }), "product_director");
+    expect(surface.operator?.pendingMessage).toBe(true);
+  });
+
+  test("...and OUTRANKS the work — observe recommends answering the person", () => {
+    // The whole point of using this channel. If it merely appeared somewhere on the menu, an agent
+    // with a backlog would answer eventually, which for a person waiting is the same as never.
+    const surface = orgSurfaceFor(withRoom({ humanActions: [said()] }), "product_director");
+    const next = observe({ backlog: [{ id: "b1", title: "something else", ready: true, ambiguous: false }], ...surface });
+    expect(next.kind).toBe("respond_to_operator");
+  });
+
+  test("a hat that is NOT in the room is not told to answer", () => {
+    // A message is addressed to a conversation, and a hat outside it has nothing to answer. Waking
+    // every hat for every message is how an operator channel becomes noise nobody reads.
+    expect(orgSurfaceFor(withRoom({ humanActions: [said()] }), "cfo").operator).toBeUndefined();
+  });
+
+  test("a message into a room the board does not hold reaches nobody", () => {
+    expect(orgSurfaceFor(withRoom({ humanActions: [said({ subjectId: "ghost" })] }), "product_director").operator)
+      .toBeUndefined();
+  });
+
+  test("with nobody talking, the channel is ABSENT — not present and empty", () => {
+    // Absent means "not wired", which is what every existing caller is and must stay.
+    expect(orgSurfaceFor(withRoom(), "product_director").operator).toBeUndefined();
+  });
+
+  test("THE REPLY CLEARS IT, and only a reply in that room by that hat does", () => {
+    const replied = withRoom({
+      humanActions: [said()],
+      board: {
+        ...EMPTY_BOARD,
+        anchors: [roomAnchor],
+        posts: [
+          { postId: "p1", anchorId: "a1", byHatId: "product_director", atMs: 200, body: "I read the diff", evidence: [] },
+        ],
+      },
+    });
+    expect(orgSurfaceFor(replied, "product_director").operator).toBeUndefined();
+  });
+
+  test("a reply written BEFORE the message does not answer it", () => {
+    // Derived from the transcript and its clock, never from a read flag — a flag and the transcript
+    // can disagree, and the disagreement looks like an agent that answered something it did not.
+    const stale = withRoom({
+      humanActions: [said()],
+      board: {
+        ...EMPTY_BOARD,
+        anchors: [roomAnchor],
+        posts: [
+          { postId: "p0", anchorId: "a1", byHatId: "product_director", atMs: 50, body: "earlier", evidence: [] },
+        ],
+      },
+    });
+    expect(orgSurfaceFor(stale, "product_director").operator?.pendingMessage).toBe(true);
+  });
+
+  test("somebody ELSE replying does not answer for you", () => {
+    const other = withRoom({
+      humanActions: [said()],
+      board: {
+        ...EMPTY_BOARD,
+        anchors: [roomAnchor],
+        posts: [
+          { postId: "p1", anchorId: "a1", byHatId: "backend_implementer", atMs: 200, body: "not mine", evidence: [] },
+        ],
+      },
+    });
+    expect(orgSurfaceFor(other, "product_director").operator?.pendingMessage).toBe(true);
+  });
+
+  test("the reply goes to the room the message was IN, chosen by the register", () => {
+    // The agent says it is answering the operator; which conversation that is, is not its to pick.
+    const r = effectOf(
+      withRoom({ humanActions: [said()] }),
+      "product_director",
+      { kind: "respond_to_operator", reason: "I read the change and the tests" },
+      { signalId: "s", anchorId: "unused" },
+      300,
+      "rmo_office",
+    );
+    expect(r.ok).toBe(true);
+    if (!r.ok) return;
+    expect(r.effect.kind).toBe("reply_to_person");
+    if (r.effect.kind === "reply_to_person") {
+      expect(r.effect.anchorId).toBe("a1");
+      expect(r.effect.byHatId).toBe("product_director");
+      expect(r.effect.body).toBe("I read the change and the tests");
+    }
+  });
+
+  test("THE OLDEST MESSAGE IS ANSWERED FIRST", () => {
+    // Answering the newest first is how the first question never gets answered.
+    const second: DiscussionAnchor = { ...roomAnchor, anchorId: "a2", title: "peer_review" };
+    const v = view({
+      board: { ...EMPTY_BOARD, anchors: [roomAnchor, second] },
+      humanActions: [said({ subjectId: "a2", atMs: 400, actionId: "ha-late" }), said({ atMs: 100, actionId: "ha-early" })],
+    });
+    const r = effectOf(v, "product_director", { kind: "respond_to_operator", reason: "answering" },
+      { signalId: "s", anchorId: "x" }, 500, "rmo_office");
+    expect(r.ok && r.effect.kind === "reply_to_person" ? r.effect.anchorId : "").toBe("a1");
+  });
+
+  test("answering when nobody is waiting is REFUSED, not a quiet no-op", () => {
+    // A silent success would hide an agent that had misread its own surface.
+    const r = effectOf(withRoom(), "product_director", { kind: "respond_to_operator", reason: "hello?" },
+      { signalId: "s", anchorId: "x" }, 300, "rmo_office");
+    expect(r.ok).toBe(false);
+    if (!r.ok) expect(r.reason).toContain("nobody is waiting");
+  });
+});
+
+describe("THE SURFACE CARRIES HOW, NOT ONLY WHAT", () => {
+  const GRILL = {
+    kind: "request_information",
+    skillId: "requirement-grilling",
+    why: "a single shallow question gets a shallow answer and the work proceeds on it",
+  } as const;
+
+  test("methods supplied by the caller reach the surface", () => {
+    // The seam is only worth having if it is CONNECTED. A bridge that accepts methods and drops
+    // them compiles, ships, and leaves every agent exactly as uninformed as before — the
+    // reader-with-no-writer shape, one layer up.
+    const surface = orgSurfaceFor(view(), "backend_implementer", undefined, undefined, [GRILL]);
+    expect(surface.methods).toEqual([GRILL]);
+  });
+
+  test("no methods means the field is ABSENT, not an empty list", () => {
+    // Absent and empty are different answers: absent is "this organization has no opinion", empty
+    // would be "it has an opinion and the opinion is nothing". Every existing caller passes none.
+    expect(orgSurfaceFor(view(), "backend_implementer").methods).toBeUndefined();
+    expect(orgSurfaceFor(view(), "backend_implementer", undefined, undefined, []).methods).toBeUndefined();
+  });
+
+  test("the bridge does not interpret a method it was handed", () => {
+    // It must be able to carry one it has never heard of, or a register cannot ship a method
+    // without changing this file.
+    const invented = { kind: "review_artifact", skillId: "never-heard-of-it", why: "because" } as const;
+    expect(orgSurfaceFor(view(), "backend_implementer", undefined, undefined, [invented]).methods).toEqual([invented]);
   });
 });

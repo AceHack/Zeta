@@ -177,7 +177,10 @@ describe("the status reads a REAL run", () => {
   test("gate health reports progress and where a rejection would send it", async () => {
     const r = await run({ qaFallback: RunOutcome.Failed });
     const taskId = r.gateRuns[0]!.taskId;
-    const g = gateHealth(chart, taskId, r.gateEvaluations);
+    // THE TYPE TRAVELS WITH THE ID. Without it `gateHealth` reports against every canonical gate
+    // and named `business_context_grooming` as next for a task whose type never walks it.
+    const node = r.cascade.nodes.find((n) => n.workId === taskId);
+    const g = gateHealth(chart, taskId, r.gateEvaluations, node?.workType);
     expect(g.merged).toBe(false);
     expect(g.progress).toBeGreaterThan(0);
     expect(g.nextGate).toBe(GateKind.RuntimeValidation);
@@ -275,9 +278,14 @@ describe("the status reads a REAL run", () => {
   test("chart health finds supervisors with nobody beneath them", () => {
     const h = chartHealth(chart, [], 0);
     expect(h.levels[0]?.level).toBe("executive_board");
-    // The seed genuinely has directors with no team — that is a staffing fact worth surfacing.
+    // The seed genuinely has supervisors with no team — that is a staffing fact worth surfacing,
+    // and WHICH ones is a property of the org chart rather than of this test. Asserting a specific
+    // id pinned the old eight-department subset; `team_lead` is named because it is the one the
+    // cascade would otherwise have handed work it could not staff.
     expect(h.childlessSupervisors.length).toBeGreaterThan(0);
-    expect(h.childlessSupervisors).toContain("hat_approval_steward");
+    expect(h.childlessSupervisors).toContain("team_lead");
+    // ...and a supervisor WITH a team is never listed.
+    expect(h.childlessSupervisors).not.toContain("tech_lead");
     expect(h.wornHats).toEqual([]);
   });
 
