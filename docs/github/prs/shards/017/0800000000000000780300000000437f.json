@@ -1,0 +1,12 @@
+{
+  "pr_number": 17279,
+  "archive_path": "docs/history/pr-reviews/PR-17279-chore-081m28jyycc087g0r003423hap-retire-docs-github-prs-manifest-jsonl-a-derived.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-11T16:17:16.498Z",
+  "schema_version": "v1",
+  "commit_sha": "092661ed9e0cbf12fc51ffde4e74c3cf1d493083",
+  "title": "chore(081M28JYYCC087G0R003423HAP): retire docs/github/prs/manifest.jsonl — a derived index with no reader",
+  "state": "MERGED",
+  "merged_at": "2026-09-11T16:16:33Z",
+  "head_ref": "drop-derived-pr-manifest"
+}
