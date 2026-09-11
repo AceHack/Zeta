@@ -194,6 +194,21 @@ describe("AN IMPLEMENTER COMMITS AS IT GOES, KNOWING ITS LIMIT", () => {
   });
 });
 
+describe("AN AGENT STOPS ONLY WHAT IT STARTED", () => {
+  // MEASURED on AIAGENT-1662: `taskkill /IM mongod-...exe` from a QA agent stopped five processes,
+  // every mongod on the machine with that name.
+  test("stopping processes by name is denied in every mode, and the prompt says why", () => {
+    for (const args of [["work", "task-9"], ["gate", "qa_uat", "task-9"], ["review", "qa_uat", "task-9"]]) {
+      const r = run(args, ok({ summary: "s", commit: "", testsRun: [], blocked: "", questions: [], title: "t", document: "d", files: [], plan: [], learned: [], verdict: "approve", reason: "r", lookedAt: [] }));
+      const argv = r.seen?.argv ?? [];
+      expect(argv).toContain("Bash(taskkill /IM:*)");
+      expect(argv).toContain("Bash(pkill:*)");
+      expect(r.seen?.input).toContain("by their PID - never by name");
+      r.cleanup();
+    }
+  });
+});
+
 describe("A SESSION THAT RUNS OUT OF TIME IS STOPPED WITH EVERYTHING IT STARTED", () => {
   // MEASURED on AIAGENT-1662: the agent was killed at a fixed 25 minutes, and its shells and a jest
   // run with its own mongod kept running afterwards, competing with the next step's tests.

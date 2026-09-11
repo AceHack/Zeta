@@ -105,6 +105,11 @@ function childEnv() {
 const NEVER = [
   "Bash(git push:*)", "Bash(git merge:*)", "Bash(git rebase:*)", "Bash(git checkout:*)",
   "Bash(git switch:*)", "Bash(git reset:*)", "Bash(git branch -D:*)", "Bash(git worktree:*)",
+  // STOPPING PROCESSES BY NAME. MEASURED on AIAGENT-1662: a QA agent cleaned up its own test
+  // database with `taskkill /IM mongod-...exe` and five processes answered - every mongod on the
+  // machine with that name, whoever started it. An agent stops what it started, by PID.
+  "Bash(taskkill /IM:*)", "Bash(taskkill /im:*)", "Bash(taskkill /F /IM:*)", "Bash(taskkill /f /im:*)",
+  "Bash(killall:*)", "Bash(pkill:*)",
 ];
 /** Reading: the repository, its history, and the organization's record. */
 const READ = [
@@ -262,6 +267,7 @@ function preamble(hat, workId) {
       : "",
     env.ORG_REPO_SKILLS ? "THE REPOSITORY'S OWN SKILLS (prefer them where they apply):" + NL + env.ORG_REPO_SKILLS + NL : "",
     "Cite only what you actually read, where you read it. A quotation attributed to a file must be in that file.",
+    "Stop only processes YOU started, by their PID - never by name: other agents and people share this machine.",
     env.ORG_FEEDBACK ? "THIS WORK CAME BACK. What was said, newest first - address every point:" + NL + env.ORG_FEEDBACK + NL : "",
     env.ORG_ANSWERS ? "A PERSON ALREADY ANSWERED (do not ask these again):" + NL + env.ORG_ANSWERS + NL : "",
   ].filter((l) => l !== "").join(NL);
