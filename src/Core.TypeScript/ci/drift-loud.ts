@@ -905,7 +905,90 @@ interface ApiJob {
  * that happens to parse is the worst possible outcome for a fold that decides
  * whether main is healthy.
  */
+/**
+ * Statuses that mean THE LOOKUP DID NOT HAPPEN, not that the answer is no.
+ *
+ * 502/503/504 are GitHub's edge failing, 429 is its rate limiter, 500 is its
+ * server. None of them is evidence about drift, and treating them as a red
+ * check is the conflation this repository already carved elsewhere:
+ *
+ *   "a failing `gh` would surface as the pipeline's status and be read as
+ *    'the claim is refuted', when it is in fact 'the lookup did not happen'"
+ *      -- agencysignature-enforcement.yml
+ *
+ * MEASURED 2026-09-11: a single `502` on
+ * `actions/runs/34508975922/jobs?per_page=100` threw out of `fetchRun` and
+ * turned `drift (loud)` red on TWO merged PRs (#17275, #17276). Nothing had
+ * drifted. A drift lane that reds on upstream weather trains its readers to
+ * ignore it, which costs more than the lane is worth.
+ */
+const TRANSIENT_STATUSES: ReadonlySet<number> = new Set([429, 500, 502, 503, 504]);
+
+/**
+ * Is this status "the lookup did not happen" rather than an answer?
+ *
+ * Exported because it is the load-bearing decision in this file and the one a
+ * test can actually pin. The retry LOOP needs a fetch seam to test and does not
+ * have one; the CLASSIFICATION does not, and getting it wrong in either
+ * direction is the whole risk: retrying a 404 spends the budget to be told no
+ * again, and treating a 502 as an answer is the bug this replaced.
+ */
+export function isTransientStatus(status: number): boolean {
+  return TRANSIENT_STATUSES.has(status);
+}
+
+/** Bounded, jittered backoff. Small because CI minutes are the budget being spent. */
+const GH_RETRY_DELAYS_MS: readonly number[] = [400, 1200, 3000];
+
+/** Raised when the API could not be reached — `unknown`, never a finding. */
+export class GhLookupUnavailable extends Error {
+  // Explicit fields, not parameter properties: `erasableSyntaxOnly` is on, and
+  // a parameter property is syntax that has to be EMITTED rather than erased.
+  readonly url: string;
+  readonly lastStatus: number | undefined;
+  constructor(url: string, lastStatus: number | undefined, message: string) {
+    super(message);
+    this.name = "GhLookupUnavailable";
+    this.url = url;
+    this.lastStatus = lastStatus;
+  }
+}
+
 async function ghJson<T>(url: string, token: string): Promise<T> {
+  let lastStatus: number | undefined;
+  let lastWhy = "";
+  for (let attempt = 0; attempt <= GH_RETRY_DELAYS_MS.length; attempt += 1) {
+    try {
+      return await ghJsonOnce<T>(url, token);
+    } catch (err) {
+      if (!(err instanceof GhTransient)) throw err; // a real refusal: 404, truncation, bad JSON
+      lastStatus = err.status;
+      lastWhy = err.message;
+      const delay = GH_RETRY_DELAYS_MS[attempt];
+      if (delay === undefined) break;
+      // Jitter so a fleet of lanes hitting one degraded edge does not resonate.
+      await new Promise((ok) => setTimeout(ok, delay + Math.floor(Math.random() * 200)));
+    }
+  }
+  throw new GhLookupUnavailable(
+    url,
+    lastStatus,
+    `${lastWhy} — retried ${String(GH_RETRY_DELAYS_MS.length)}x. This is UNKNOWN, not a drift finding: ` +
+      "the lookup did not happen, so nothing was measured either way.",
+  );
+}
+
+/** A status the caller should retry. Separate class so a 404 is never swallowed. */
+class GhTransient extends Error {
+  readonly status: number;
+  constructor(status: number, message: string) {
+    super(message);
+    this.name = "GhTransient";
+    this.status = status;
+  }
+}
+
+async function ghJsonOnce<T>(url: string, token: string): Promise<T> {
   const res = await fetchBounded(url, {
     headers: {
       accept: "application/vnd.github+json",
@@ -916,9 +999,14 @@ async function ghJson<T>(url: string, token: string): Promise<T> {
     timeoutMs: GH_API_TIMEOUT_MS,
     failOnHttpError: false,
   });
-  if (!res.ok) throw new Error(`GitHub API unreachable for ${url}: ${res.error.message}`);
+  // A transport failure is the same class as a 502: the lookup did not happen.
+  if (!res.ok) throw new GhTransient(0, `GitHub API unreachable for ${url}: ${res.error.message}`);
   if (res.value.status < 200 || res.value.status >= 300) {
-    throw new Error(`GitHub API ${String(res.value.status)} for ${url}`);
+    const msg = `GitHub API ${String(res.value.status)} for ${url}`;
+    if (TRANSIENT_STATUSES.has(res.value.status)) throw new GhTransient(res.value.status, msg);
+    // 404 / 401 / 422 are ANSWERS. They stay loud and unretried — retrying a
+    // refusal just spends the budget to be told no again, more slowly.
+    throw new Error(msg);
   }
   if (res.value.truncated) {
     throw new Error(
@@ -1303,5 +1391,34 @@ async function main(): Promise<number> {
 }
 
 if (import.meta.main) {
-  process.exit(await main());
+  try {
+    process.exit(await main());
+  } catch (err) {
+    // THE LOOKUP DID NOT HAPPEN IS NOT A DRIFT FINDING.
+    //
+    // This file already draws that distinction for detector liveness -- "not
+    // verified, not broken" -- and simply never applied it to the API calls it
+    // is built out of. A single 502 on one `actions/runs/<id>/jobs` request
+    // reddened this lane on two merged PRs (#17275, #17276) on 2026-09-11 with
+    // nothing drifted, and a drift lane that reds on upstream weather teaches
+    // its readers to ignore it, which costs more than the lane is worth.
+    //
+    // Exit 0, LOUDLY, for the same reason the liveness path does: the lane
+    // measured nothing, so it has found nothing, and the one thing it must not
+    // do is let that read as a clean bill of health. Every other error still
+    // throws -- a 404 or a truncated body is an ANSWER and stays fatal.
+    if (err instanceof GhLookupUnavailable) {
+      console.log(
+        `\n::warning title=drift (loud): UNMEASURED::GitHub API unavailable (` +
+          `${err.lastStatus === undefined ? "transport" : `HTTP ${String(err.lastStatus)}`}) for ${err.url}`,
+      );
+      console.log(
+        "\nEXIT 0 -- DRIFT WAS NOT MEASURED ON THIS ATTEMPT. The GitHub API could not be reached " +
+          "after retries, so this run says nothing about whether main is drifting: not clean, not dirty, " +
+          "UNKNOWN. Re-run the lane to get an actual reading.",
+      );
+      process.exit(0);
+    }
+    throw err;
+  }
 }

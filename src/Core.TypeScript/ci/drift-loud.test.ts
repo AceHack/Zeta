@@ -18,31 +18,7 @@
 
 import { describe, expect, test } from "bun:test";
 
-import {
-  CANARY_JOB_NAME,
-  CANARY_STEP_NAME,
-  DEFAULT_THRESHOLDS,
-  ROLLUP_JOB_NAME,
-  SWALLOWED_STEP,
-  annotationLines,
-  assertDetectorLive,
-  bandOf,
-  censusOfRun,
-  foldAbsorption,
-  isInstrument,
-  oldestRunId,
-  orderNewestFirst,
-  publicationIsStale,
-  readPublishedWatermark,
-  readPublisherState,
-  renderMarkdown,
-  runIsRed,
-  severityOf,
-  stalenessVerdict,
-  type JobRecord,
-  type RunRecord,
-  type Thresholds,
-} from "./drift-loud.ts";
+import { CANARY_JOB_NAME, CANARY_STEP_NAME, DEFAULT_THRESHOLDS, GhLookupUnavailable, ROLLUP_JOB_NAME, SWALLOWED_STEP, annotationLines, assertDetectorLive, bandOf, censusOfRun, foldAbsorption, isInstrument, isTransientStatus, oldestRunId, orderNewestFirst, publicationIsStale, readPublishedWatermark, readPublisherState, renderMarkdown, runIsRed, severityOf, stalenessVerdict, type JobRecord, type RunRecord, type Thresholds } from "./drift-loud.ts";
 import type { LedgerRead, PublisherState, StalenessVerdict } from "./drift-loud.ts";
 
 const WIN = "build-and-test (windows-2025)";
@@ -775,4 +751,39 @@ describe("runIsRed — a warning must not exit 1", () => {
     expect(runIsRed(1, "live", warn)).toBe(true);
     expect(runIsRed(0, "quiet", warn)).toBe(true);
   });
+});
+
+describe("a failed lookup is UNKNOWN, never a drift finding", () => {
+  test("GitHub's own weather is transient — retry, do not report", () => {
+    // 502 is the one measured on 2026-09-11; the rest are the same class.
+    for (const s of [429, 500, 502, 503, 504]) expect(isTransientStatus(s)).toBe(true);
+  });
+
+  test("a REFUSAL is an answer and must stay loud — retrying it just spends budget", () => {
+    for (const s of [400, 401, 403, 404, 409, 422]) expect(isTransientStatus(s)).toBe(false);
+  });
+
+  test("success is not transient either (the guard must not swallow a 200)", () => {
+    for (const s of [200, 201, 204]) expect(isTransientStatus(s)).toBe(false);
+  });
+
+  test("GhLookupUnavailable carries what the operator needs to act", () => {
+    const e = new GhLookupUnavailable("https://api.github.com/x", 502, "boom");
+    expect(e.url).toBe("https://api.github.com/x");
+    expect(e.lastStatus).toBe(502);
+    expect(e).toBeInstanceOf(Error);
+    // Distinguishable from a real refusal by TYPE, not by string matching — the
+    // entry point rethrows anything that is not this.
+    expect(e.name).toBe("GhLookupUnavailable");
+  });
+
+  test("a transport failure (no status) is the same class as a 502", () => {
+    const e = new GhLookupUnavailable("https://api.github.com/x", undefined, "unreachable");
+    expect(e.lastStatus).toBeUndefined();
+  });
+
+  // NOT COVERED, stated rather than implied: the retry loop itself and the
+  // entry point's exit-0-with-a-warning both need a fetch seam this file does
+  // not have. What is pinned here is the classification, which is where a wrong
+  // answer does the damage.
 });

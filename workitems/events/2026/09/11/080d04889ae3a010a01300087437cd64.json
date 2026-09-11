@@ -1,0 +1,14 @@
+{
+  "id": "080d04889ae3a010a01300087437cd64",
+  "at": "2026-09-11T15:26:00.308Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M28H6Q3M087G0R003WN6F8H",
+    "type": "bug",
+    "title": "drift loud reds on a transient GitHub 502",
+    "slug": "drift-loud-reds-on-a-transient-github-502",
+    "priority": "P2",
+    "filename": "081M28H6Q3M087G0R003WN6F8H-drift-loud-reds-on-a-transient-github-502.md"
+  }
+}
