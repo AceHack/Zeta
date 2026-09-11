@@ -328,7 +328,7 @@ export const KNOWN_FLAGS: ReadonlySet<string> = new Set([
   "--tracker", "--tracker-header", "--tracker-items", "--tracker-map", "--tracker-severity",
   "--tracker-source", "--until", "--week", "--window-start", "--window-target", "--work-agent",
   "--work-agent-arg", "--work-arg", "--work-cmd", "--work-model", "--work-verify",
-  "--work-verify-arg", "--worktrees", "--worktree-setup", "--worktree-setup-arg", "--resume", "--help", "-h",
+  "--work-verify-arg", "--worktrees", "--worktree-setup", "--worktree-setup-arg", "--supply-target", "--resume", "--help", "-h",
 ]);
 
 /**
@@ -596,6 +596,8 @@ export interface Args {
   /** What makes a new worktree runnable, run once inside it. See `gitWorktreeChangeControl`. */
   readonly worktreeSetup: string | undefined;
   readonly worktreeSetupArgs: readonly string[];
+  /** Wearers per hat the RMO authorizes — how many open tasks one contributor hat may carry. */
+  readonly supplyTarget: number | undefined;
   /**
    * The window the goal is supposed to land inside, as two ISO instants.
    *
@@ -811,6 +813,7 @@ export function parseArgs(argv: readonly string[]): Args {
     worktrees: valueAfter(argv, "--worktrees"),
     worktreeSetup: valueAfter(argv, "--worktree-setup"),
     worktreeSetupArgs: valuesAfter(argv, "--worktree-setup-arg"),
+    supplyTarget: ((v) => (v === undefined ? undefined : Number.parseInt(v, 10)))(valueAfter(argv, "--supply-target")),
     qaFails: argv.includes("--qa-fails") || argv.includes("--churn"),
     churn: argv.includes("--churn"),
     json: argv.includes("--json"),
@@ -908,6 +911,9 @@ export function argRefusals(args: Args): readonly string[] {
   }
   if (args.jiraAuthFile !== undefined && args.tracker !== undefined) {
     out.push("--jira-auth-file and --tracker both name the intake; supply one, because work can only have arrived one way");
+  }
+  if (args.supplyTarget !== undefined && (Number.isNaN(args.supplyTarget) || args.supplyTarget < 1)) {
+    out.push("--supply-target takes a positive count of wearers per hat");
   }
   if (args.jiraLimit !== undefined && (Number.isNaN(args.jiraLimit) || args.jiraLimit < 1)) {
     out.push("--jira-limit takes a positive count");
@@ -2014,6 +2020,7 @@ export async function main(argv: readonly string[]): Promise<number> {
     ...(args.store === undefined
       ? {}
       : { alreadyLanded: new Set(foldLandedChanges(readEvents(args.store)).keys()) }),
+    ...(args.supplyTarget === undefined ? {} : { supplyTarget: args.supplyTarget }),
     // WHAT ALREADY PASSED, so a resumed run does not re-walk approved steps.
     ...(args.store === undefined
       ? {}

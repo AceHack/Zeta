@@ -1304,3 +1304,26 @@ describe("A LEAF'S RETRY RESUMES AT THE STEP THAT WAS TURNED BACK", () => {
     expect(report.delivered).toBe(true);
   }, 60_000);
 });
+
+describe("A HAT CARRIES AS MANY OPEN TASKS AS WEARERS ARE AUTHORIZED FOR IT", () => {
+  // MEASURED on the first real run: three tickets, two contributor hats under the lead who owns every
+  // leaf — one ticket took both, waited on a person, and the other two were never started.
+  const two: ExternalEvent[] = [
+    { ...GOOD, externalId: "T-1", title: "checkout double-charges" },
+    { ...GOOD, externalId: "T-2", title: "refund posts twice" },
+  ];
+  const unstaffed = (r: { refusals: readonly string[] }) => r.refusals.filter((x) => x.includes("no free individual-contributor hat")).length;
+
+  test("at the default supply of 1, two requests cannot both be staffed — the control", async () => {
+    const report = await runOrgRuntime(deps({ externalEvents: two }));
+    expect(unstaffed(report)).toBeGreaterThan(0);
+  }, 60_000);
+
+  test("with supply 2, both requests' work is staffed", async () => {
+    const report = await runOrgRuntime(deps({ externalEvents: two, supplyTarget: 2 }));
+    expect(unstaffed(report)).toBe(0);
+    const leaves = report.cascade.nodes.filter((n) => isLeafType(n.workType));
+    expect(leaves.length).toBe(4);
+    expect(leaves.every((n) => n.assigneeHatId !== undefined)).toBe(true);
+  }, 60_000);
+});

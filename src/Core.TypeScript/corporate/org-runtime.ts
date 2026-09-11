@@ -1506,16 +1506,22 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
     // refusals, and the autonomy loop stopped with NO_PROGRESS while 83 people sat idle.
     //
     // An organization whose workforce only ever shrinks does not converge on anything.
-    const alreadyCarrying = new Set(
-      cascade.nodes
-        .filter((n) => n.state !== WorkState.Done && n.state !== WorkState.Canceled)
-        .map((n) => n.assigneeHatId)
-        .filter((h): h is string => h !== undefined),
-    );
+    //
+    // …AND A HAT CARRIES AS MANY OPEN TASKS AS WEARERS ARE AUTHORIZED FOR IT, not one. A hat is a
+    // ROLE; `supplyTarget` is how many agents may wear it at once. Counting it as a single seat
+    // MEASURED on the Agentic Team's first real run: three tickets, two contributor hats under the
+    // lead who owns every leaf — one ticket's items took both, one of those waited on a person, and
+    // the other two tickets were never started. At the default supply of 1 this is exactly the old
+    // rule; the same agent still never takes two tasks at once (below).
+    const openCarried = new Map<string, number>();
+    for (const n of cascade.nodes) {
+      if (n.state === WorkState.Done || n.state === WorkState.Canceled || n.assigneeHatId === undefined) continue;
+      openCarried.set(n.assigneeHatId, (openCarried.get(n.assigneeHatId) ?? 0) + 1);
+    }
     const targetHat = deps.chart.hats.find(
       (h) =>
         h.level === "individual_contributor" &&
-        !alreadyCarrying.has(h.id) &&
+        (openCarried.get(h.id) ?? 0) < supplyTarget &&
         reportsUpTo(deps.chart, h.id, task.ownerHatId),
     );
     if (targetHat === undefined) {
@@ -1570,7 +1576,7 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
     }
 
     // A hat is WORN, not owned: the binding warms up, activates, and will expire.
-    const may = mayTakeHat(bindings, outcome.agentId, targetHat.id, deps.nowMs);
+    const may = mayTakeHat(bindings, outcome.agentId, targetHat.id, deps.nowMs, supplyTarget);
     if (!may.ok) {
       refusals.push(`bind ${outcome.agentId} to ${targetHat.id}: ${may.reason}`);
       continue;

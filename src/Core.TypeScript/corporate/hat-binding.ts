@@ -275,10 +275,30 @@ export function mayTakeHat(
   agentId: string,
   hatId: string,
   nowMs: number,
+  /**
+   * How many agents the RMO authorized to wear this hat at once. Default 1 — one wearer at a time.
+   *
+   * A hat is a ROLE. With one seat per role, MEASURED on the Agentic Team's first real run, three
+   * tickets shared two contributor hats and only one ticket could ever move; the org's own
+   * `supplyTarget` ("wearers per hat the RMO has authorized") existed and nothing honoured it.
+   */
+  supply = 1,
 ): { readonly ok: true } | { readonly ok: false; readonly reason: string } {
-  const live = bindings.find((b) => b.hatId === hatId && !isTerminal(b.phase));
-  if (live !== undefined) {
-    return { ok: false, reason: `hat '${hatId}' is held by '${live.wearerAgentId}' (${live.phase})` };
+  const live = bindings.filter((b) => b.hatId === hatId && !isTerminal(b.phase));
+  // The SAME agent never holds the same hat twice — that is one person in two places, not supply.
+  const mine = live.find((b) => b.wearerAgentId === agentId);
+  if (mine !== undefined) {
+    return { ok: false, reason: `hat '${hatId}' is already held by '${agentId}' (${mine.phase})` };
+  }
+  if (live.length >= Math.max(1, supply)) {
+    const first = live[0] as HatBinding;
+    return {
+      ok: false,
+      reason:
+        supply <= 1
+          ? `hat '${hatId}' is held by '${first.wearerAgentId}' (${first.phase})`
+          : `hat '${hatId}' is at its authorized supply (${String(live.length)}/${String(supply)} wearers)`,
+    };
   }
   const cooling = bindings.find(
     (b) =>
