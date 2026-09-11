@@ -195,6 +195,13 @@ export interface WorkContext {
   readonly branch: string;
   /** The change's own checkout, when change control opened one. See `ChangeHandle.workdir`. */
   readonly workdir?: string;
+  /**
+   * What the phases before this one produced — the reproduction, the design — keyed by gate.
+   *
+   * The pipeline held these in `PhaseContext.priorArtifacts` and dropped them at the work
+   * executor, so the agent that fixes a defect was never told where its reproduction was.
+   */
+  readonly priorPhases?: readonly { readonly gate: string; readonly refs: readonly string[]; readonly summary?: string }[];
 }
 
 export interface WorkExecutor {

@@ -2488,9 +2488,16 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
     const workProducer: ProducerPort = {
       meta: providers.work.meta,
       produce: async (node, ctx) => {
+        const prior = [...ctx.priorArtifacts].map(([gate, a]) => ({
+          gate: String(gate),
+          refs: a.refs,
+          ...(a.summary === undefined ? {} : { summary: a.summary }),
+        }));
         const performed = await providers.work.execute(node, {
           branch: ctx.branch,
           ...(ctx.workdir === undefined ? {} : { workdir: ctx.workdir }),
+          // WHAT CAME BEFORE — for a defect, the reproduction this change must turn green.
+          ...(prior.length === 0 ? {} : { priorPhases: prior }),
         });
         if (!performed.ok) return { ok: false, reason: performed.reason };
         if (!performed.value.succeeded) {

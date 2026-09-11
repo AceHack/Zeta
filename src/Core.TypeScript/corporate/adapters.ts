@@ -55,6 +55,7 @@ import type { Artifact, PhaseContext, ProducerPort } from "./pipeline";
 import { RunOutcome, type TestCase } from "./qa";
 import type { ExternalEvent } from "./intake";
 import type { CascadeNode } from "./goal-cascade";
+import { parseRequestRef } from "./request";
 
 // ─── Simulated: what the register already did, now labelled ─────────────────
 
@@ -889,6 +890,14 @@ export function workBriefEnv(node: CascadeNode, ctx: WorkContext): Record<string
     ...(node.parentWorkId === undefined ? {} : { ORG_PARENT_ID: node.parentWorkId }),
     ...(node.assigneeHatId === undefined ? {} : { ORG_ASSIGNEE: node.assigneeHatId }),
     ...(ctx.workdir === undefined ? {} : { ORG_WORKDIR: ctx.workdir }),
+    // THE TICKET, by the name its tracker uses. `commit-carries-the-ticket` was unfollowable while
+    // the only id an agent saw was this organization's internal one.
+    ...((r) => (r === undefined ? {} : { ORG_TICKET: r.externalId, ORG_TICKET_SOURCE: r.source }))(
+      node.requestRef === undefined ? undefined : parseRequestRef(node.requestRef),
+    ),
+    ...(ctx.priorPhases === undefined || ctx.priorPhases.length === 0
+      ? {}
+      : { ORG_PRIOR_ARTIFACTS: JSON.stringify(ctx.priorPhases) }),
   };
 }
 
@@ -1098,11 +1107,17 @@ export function commandProposal(input: {
   readonly argsFor: (node: CascadeNode) => readonly string[];
   readonly cwd: string;
   readonly timeoutMs?: number;
+  /**
+   * HOW THIS ORGANIZATION WORKS, for the agent writing the change: its practice, its standing
+   * directives, what a reviewer said when this work came back. The document authors were told
+   * all of it; the one agent that writes CODE was told a title and an id.
+   */
+  readonly envFor?: (node: CascadeNode) => Readonly<Record<string, string>>;
 }): (node: CascadeNode, ctx: WorkContext) => AgentAttempt {
   return (node, ctx) => {
     const run = spawnSync(input.command, [...input.argsFor(node)], {
       cwd: ctx.workdir ?? input.cwd,
-      env: workBriefEnv(node, ctx),
+      env: { ...workBriefEnv(node, ctx), ...(input.envFor?.(node) ?? {}) },
       encoding: "utf-8",
       timeout: input.timeoutMs ?? 120_000,
       shell: false,

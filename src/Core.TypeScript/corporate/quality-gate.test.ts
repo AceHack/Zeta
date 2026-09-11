@@ -59,6 +59,8 @@ describe("THE ORDER OF THE CHAIN IS A DECISION, NOT AN ACCIDENT", () => {
       GateKind.ArchitectureApproval,
       GateKind.CostApproval,
       GateKind.AdversarialReview,
+      // A defect is reproduced immediately before it is fixed — see `GateKind.Reproduction`.
+      GateKind.Reproduction,
       GateKind.ImplementationReview,
       GateKind.QaUat,
       GateKind.RuntimeValidation,

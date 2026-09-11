@@ -81,6 +81,21 @@ export const GateKind = {
    * the documents, not inside any one of them.
    */
   AdversarialReview: "adversarial_review",
+  /**
+   * The defect is REPRODUCED before anybody fixes it — as steps AND as something that fails.
+   *
+   * A fix for a defect nobody observed is a belief about the defect. This gate asks whether the
+   * failure was actually made to happen: by reading the code when the cause is plain, and by
+   * running the program when it is not. Its artifact is the reproduction a person can follow and
+   * a test that fails on the unfixed code — which the implementation after it must turn green.
+   *
+   * It is also the organization's cheapest "is this even a bug?": a reproduction attempt that
+   * finds the behaviour is as designed stops the work here, before a fix exists to defend.
+   *
+   * Immediately before implementation, because that is where the branch already exists and a
+   * failing test committed now is the first commit the fix builds on.
+   */
+  Reproduction: "reproduction",
   ImplementationReview: "implementation_review",
   /** User-acceptance: does it do what the BRD said, judged by someone who did not build it. */
   QaUat: "qa_uat",
@@ -113,6 +128,7 @@ export const ORDERED_GATES: readonly GateKind[] = [
   GateKind.ArchitectureApproval,
   GateKind.CostApproval,
   GateKind.AdversarialReview,
+  GateKind.Reproduction,
   GateKind.ImplementationReview,
   GateKind.QaUat,
   GateKind.RuntimeValidation,
@@ -275,6 +291,11 @@ export function recoveryPathFor(gate: GateKind): RecoveryPath {
     case GateKind.PeerReview:
       // A peer rejecting the groomed context sends it back to grooming, not to engineering: the
       // defect is in what was understood, and building on it faster does not fix it.
+      return RecoveryPath.ReopenDiscoveryOrBrd;
+    case GateKind.Reproduction:
+      // A defect that could not be reproduced is a defect NOT YET UNDERSTOOD — the report is missing
+      // something, or the behaviour is as designed. Both are discovery's to resolve with whoever
+      // filed it; sending it to engineering would be asking for a fix to something nobody has seen.
       return RecoveryPath.ReopenDiscoveryOrBrd;
     case GateKind.ArchitectureDesign:
     case GateKind.ArchitectureApproval:

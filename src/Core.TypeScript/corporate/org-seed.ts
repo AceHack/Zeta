@@ -138,12 +138,12 @@ export const SEED_HATS: readonly OrgHat[] = [
   { id: "capability_request_triage", name: "Capability Request Triage", level: "individual_contributor", departmentId: D.EngineeringManagement, reportsTo: "engineering_manager" },
 
   // -- Qa And Verification --
-  { id: "qa_director", name: "QA Director", level: "director", departmentId: D.QaAndVerification, reportsTo: "coo", approvalScopes: [G.RuntimeValidation, G.QaUat, G.AdversarialReview] },
+  { id: "qa_director", name: "QA Director", level: "director", departmentId: D.QaAndVerification, reportsTo: "coo", approvalScopes: [G.RuntimeValidation, G.QaUat, G.AdversarialReview, G.Reproduction] },
   { id: "qa_verifier", name: "QA Verifier", level: "individual_contributor", departmentId: D.QaAndVerification, reportsTo: "qa_director", approvalScopes: [G.RuntimeValidation] },
   { id: "qa_reviewer", name: "QA Reviewer", level: "individual_contributor", departmentId: D.QaAndVerification, reportsTo: "qa_director", approvalScopes: [G.RuntimeValidation, "qa_signoff"] },
   { id: "browser_automation_qa", name: "Browser Automation QA", level: "individual_contributor", departmentId: D.QaAndVerification, reportsTo: "qa_director" },
   { id: "regression_verifier", name: "Regression Verifier", level: "individual_contributor", departmentId: D.QaAndVerification, reportsTo: "qa_director" },
-  { id: "reproducibility_analyst", name: "Reproducibility Analyst", level: "individual_contributor", departmentId: D.QaAndVerification, reportsTo: "qa_director" },
+  { id: "reproducibility_analyst", name: "Reproducibility Analyst", level: "individual_contributor", departmentId: D.QaAndVerification, reportsTo: "qa_director", approvalScopes: [G.Reproduction] },
   { id: "evidence_package_author", name: "Evidence Package Author", level: "individual_contributor", departmentId: D.QaAndVerification, reportsTo: "qa_director" },
 
   // -- Qa Engineering --
@@ -243,9 +243,9 @@ export const SEED_HATS: readonly OrgHat[] = [
   // tech_lead: carries peer_review, adversarial_review and implementation_review - no reference hat owns the first two, and the two implementers report through it
   { id: "tech_lead", name: "Tech Lead", level: "lead", departmentId: D.Engineering, reportsTo: "engineering_manager", approvalScopes: [G.ImplementationReview, G.PeerReview, G.AdversarialReview] },
   // qa_manager: carries qa_uat and runtime_validation; the reference has no QA manager between director and verifier
-  { id: "qa_manager", name: "QA Manager", level: "manager", departmentId: D.QaAndVerification, reportsTo: "qa_director", approvalScopes: [G.RuntimeValidation, G.QaUat] },
+  { id: "qa_manager", name: "QA Manager", level: "manager", departmentId: D.QaAndVerification, reportsTo: "qa_director", approvalScopes: [G.RuntimeValidation, G.QaUat, G.Reproduction] },
   // qa_engineer: the executing QA hat under qa_manager, carrying qa_uat and runtime_validation
-  { id: "qa_engineer", name: "QA Engineer", level: "individual_contributor", departmentId: D.QaAndVerification, reportsTo: "qa_manager", approvalScopes: [G.RuntimeValidation, G.QaUat] },
+  { id: "qa_engineer", name: "QA Engineer", level: "individual_contributor", departmentId: D.QaAndVerification, reportsTo: "qa_manager", approvalScopes: [G.RuntimeValidation, G.QaUat, G.Reproduction] },
   // security_engineer: the first responder for a credential or policy blocker, under security_director
   { id: "security_engineer", name: "Security Engineer", level: "individual_contributor", departmentId: D.SecurityAndCompliance, reportsTo: "security_director" },
 ];

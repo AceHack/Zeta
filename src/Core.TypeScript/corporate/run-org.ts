@@ -1204,6 +1204,36 @@ export function artifactProducersFromArgs(
   return out;
 }
 
+/**
+ * What the agent that WRITES THE CHANGE is told — the same things every document author already was.
+ *
+ * The practice and directives for `implementation_review` (the gate its work is judged at), what a
+ * person said when they turned this work back, and what they answered when it asked. Each variable
+ * is omitted rather than emptied when there is nothing, so an agent can tell silence from an empty
+ * statement — the convention `commandArtifactProducer` keeps.
+ */
+export function performerEnvFrom(
+  args: Args,
+  guidance: (gate: GateKind, node: CascadeNode) => { readonly practice?: string; readonly directives?: string; readonly repoSkills?: string },
+  cascade?: Cascade,
+): (node: CascadeNode) => Readonly<Record<string, string>> {
+  const feedback = feedbackFromActions(args.actions);
+  const answers = answersFromOutbox(args.blockers, args.actions, cascade);
+  return (node) => {
+    const g = guidance(GateKind.ImplementationReview, node);
+    const said = feedback(node.workId);
+    const told = answers(node);
+    return {
+      ORG_GATE: String(GateKind.ImplementationReview),
+      ...(g.practice === undefined || g.practice === "" ? {} : { ORG_PRACTICE: g.practice }),
+      ...(g.directives === undefined || g.directives === "" ? {} : { ORG_DIRECTIVES: g.directives }),
+      ...(g.repoSkills === undefined || g.repoSkills === "" ? {} : { ORG_REPO_SKILLS: g.repoSkills }),
+      ...(said.length === 0 ? {} : { ORG_FEEDBACK: JSON.stringify(said) }),
+      ...(told.length === 0 ? {} : { ORG_ANSWERS: JSON.stringify(told) }),
+    };
+  };
+}
+
 /** Same precedence as {@link gateAttemptsFor}: the narrow flag beats the posture `--churn` bundles. */
 export function churnThresholdFor(args: Args): number | undefined {
   return args.churnThreshold ?? (args.churn ? 2 : undefined);
@@ -1220,7 +1250,13 @@ export function churnThresholdFor(args: Args): number | undefined {
  * title, never anything a reporter typed. A work item arrives from intake, which with `--inbox` is a
  * directory somebody else can write to; its text is untrusted input to this process.
  */
-export function providersFromArgs(args: Args, events: readonly ExternalEvent[], qaFallback: RunOutcome): ProviderSet {
+export function providersFromArgs(
+  args: Args,
+  events: readonly ExternalEvent[],
+  qaFallback: RunOutcome,
+  /** What the code-writing agent is told about how this organization works. See `performerEnvFrom`. */
+  performerEnv?: (node: CascadeNode) => Readonly<Record<string, string>>,
+): ProviderSet {
   // Spread rather than assigned: `exactOptionalPropertyTypes` is on, so an explicit `undefined`
   // would not mean "absent" and would override each adapter's own default with nothing.
   const budget = args.portTimeoutMs === undefined ? {} : { timeoutMs: args.portTimeoutMs };
@@ -1271,6 +1307,7 @@ export function providersFromArgs(args: Args, events: readonly ExternalEvent[], 
               command: args.workAgent,
               argsFor: (node) => [...args.workAgentArgs, node.workId],
               cwd: args.git ?? process.cwd(),
+              ...(performerEnv === undefined ? {} : { envFor: performerEnv }),
               ...budget,
             }),
             // The verifier decides. A different command on purpose — the same one would be the
@@ -1861,7 +1898,27 @@ export async function main(argv: readonly string[]): Promise<number> {
 
   const intake = stated.length > 0 ? stated : REPORTS;
 
-  const providers = providersFromArgs(args, intake, args.qaFails ? RunOutcome.Failed : RunOutcome.Passed);
+  // ── HOW THE WORK IS DONE — built ONCE, for every agent that does it ───────
+  // It used to be built inline for the document authors only, so the agent writing the code was the
+  // one agent in the organization never told the practice it was held to.
+  const guidance = guidanceFrom({
+    practices: args.practices,
+    directives: args.directives,
+    defaultPractices: DEFAULT_PRACTICES,
+    defaultDirectives: DEFAULT_DIRECTIVES,
+    ...(args.store === undefined
+      ? {}
+      : { cascade: foldOrganization(readEvents(args.store)).cascade }),
+    // READ ONCE PER RUN. A repository's skill directory does not change mid-run, and reading
+    // it per phase would stat the same files for every gate of every item.
+    repoSkills: renderRepoSkills(args.repoSources),
+  });
+  const providers = providersFromArgs(
+    args,
+    intake,
+    args.qaFails ? RunOutcome.Failed : RunOutcome.Passed,
+    performerEnvFrom(args, guidance, args.store === undefined ? undefined : foldOrganization(readEvents(args.store)).cascade),
+  );
   const runtimeDeps = {
     chart,
     externalEvents: intake,
@@ -1963,18 +2020,7 @@ export async function main(argv: readonly string[]): Promise<number> {
       // ── HOW THE WORK IS DONE, reaching the agent that does it ──────────────
       // The last join, and the one the whole layer is for: a process nothing hands to an agent is
       // a configuration surface that reads as governance and governs nothing.
-      guidanceFrom({
-        practices: args.practices,
-        directives: args.directives,
-        defaultPractices: DEFAULT_PRACTICES,
-        defaultDirectives: DEFAULT_DIRECTIVES,
-        ...(args.store === undefined
-          ? {}
-          : { cascade: foldOrganization(readEvents(args.store)).cascade }),
-        // READ ONCE PER RUN. A repository's skill directory does not change mid-run, and reading
-        // it per phase would stat the same files for every gate of every item.
-        repoSkills: renderRepoSkills(args.repoSources),
-      }),
+      guidance,
     ),
     ...((n) => (n === undefined ? {} : { maxGateAttempts: n }))(gateAttemptsFor(args)),
     // ── THE TWO HALVES OF A CHECKPOINT, AND THEY TRAVEL TOGETHER ───────────

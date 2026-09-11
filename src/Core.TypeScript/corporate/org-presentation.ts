@@ -123,6 +123,10 @@ export const GATE_LABELS: Readonly<Record<string, { readonly label: string; read
     label: "Adversarial Review",
     asks: "What is wrong with this design? Attack it before the customer does.",
   },
+  reproduction: {
+    label: "Reproduction",
+    asks: "Did we actually make this defect happen, and is there a test that fails because of it?",
+  },
   implementation_review: {
     label: "Implementation Review",
     asks: "Does the code do what the design said, and is it worth keeping?",

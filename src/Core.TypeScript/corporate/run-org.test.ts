@@ -664,3 +664,93 @@ describe("JIRA REACHES THE ORGANIZATION THROUGH THE WHOLE-TICKET READER, and no 
     expect(seen).toEqual(["Bearer 1", "Bearer 2"]);
   });
 });
+
+describe("THE AGENT THAT WRITES THE CODE IS TOLD WHAT EVERY DOCUMENT AUTHOR WAS", () => {
+  // Measured: the performer got a title, an id and a branch. No ticket key (so
+  // `commit-carries-the-ticket` was unfollowable), no practice, no directives, no reproduction,
+  // and — when a person turned its work back — not why.
+  const { performerEnvFrom, PRE_CODE_GATES } = require("./run-org") as typeof import("./run-org");
+  const { workBriefEnv, commandProposal } = require("./adapters") as typeof import("./adapters");
+  const { externalRefOf } = require("./intake") as typeof import("./intake");
+  const node = {
+    workId: "task-9",
+    title: "fix archive",
+    workType: WorkTypeValue.Defect,
+    state: WorkState.InProgress,
+    ownerHatId: "lead",
+    requestRef: externalRefOf("jira", "AIAGENT-1658"),
+  } as unknown as CascadeNode;
+
+  test("the ticket key and the earlier phases reach the environment", () => {
+    const env = workBriefEnv(node, {
+      branch: "bug/AIAGENT-1658",
+      priorPhases: [{ gate: "reproduction", refs: ["tests/archive.spec.ts"], summary: "fails" }],
+    });
+    expect(env["ORG_TICKET"]).toBe("AIAGENT-1658");
+    expect(env["ORG_TICKET_SOURCE"]).toBe("jira");
+    expect(JSON.parse(env["ORG_PRIOR_ARTIFACTS"] ?? "[]")[0].refs).toEqual(["tests/archive.spec.ts"]);
+    // Nothing earlier, nothing emitted — silence stays distinguishable from an empty list.
+    expect(workBriefEnv(node, { branch: "b" })["ORG_PRIOR_ARTIFACTS"]).toBeUndefined();
+  });
+
+  test("the practice, the directives and a reviewer's rejection reach the performer", () => {
+    const dir = mkdtempSync(join(tmpdir(), "perf-"));
+    try {
+      writeFileSync(
+        join(dir, "reject.json"),
+        JSON.stringify({
+          actionId: "a1", kind: "reject_gate", subjectId: "task-9", atMs: 5, reason: "the test passes without the fix",
+          detail: { gate: "implementation_review" }, byHuman: "max",
+        }),
+      );
+      const env = performerEnvFrom(
+        parseArgs(["--actions", dir]),
+        () => ({ practice: "write the failing test first", directives: "commit carries the ticket" }),
+      )(node);
+      expect(env["ORG_PRACTICE"]).toBe("write the failing test first");
+      expect(env["ORG_DIRECTIVES"]).toBe("commit carries the ticket");
+      expect(env["ORG_GATE"]).toBe("implementation_review");
+      const said = JSON.parse(env["ORG_FEEDBACK"] ?? "[]");
+      expect(said.map((f: { said: string }) => f.said)).toContain("the test passes without the fix");
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
+  test("...and they reach the CHILD PROCESS, not just a function's return value", () => {
+    const perform = commandProposal({
+      command: process.execPath,
+      argsFor: () => ["-e", "process.stdout.write(String(process.env.ORG_PRACTICE) + '|' + String(process.env.ORG_TICKET))"],
+      cwd: process.cwd(),
+      envFor: () => ({ ORG_PRACTICE: "tdd" }),
+    });
+    expect(perform(node, { branch: "b" }).summary).toContain("tdd|AIAGENT-1658");
+  });
+
+  test("THE JOIN: providersFromArgs hands that env to the real work executor", async () => {
+    // Tested through the ASSEMBLED executor, because each half above passing says nothing about
+    // whether the CLI connects them — the shape `Method` shipped in, and the mutation that found this.
+    const p = providersFromArgs(
+      parseArgs([
+        "--work-agent", process.execPath,
+        "--work-agent-arg", "-e",
+        "--work-agent-arg", "process.stdout.write('practice=' + String(process.env.ORG_PRACTICE))",
+        "--work-verify", process.execPath,
+        "--work-verify-arg", "-e",
+        "--work-verify-arg", "0",
+      ]),
+      [],
+      RunOutcome.Passed,
+      () => ({ ORG_PRACTICE: "tdd" }),
+    );
+    const done = await p.work.execute(node, { branch: "b" });
+    expect(done.ok).toBe(true);
+    if (done.ok) expect(done.value.summary).toContain("practice=tdd");
+  });
+
+  test("the reproduction gate gets a document producer like every pre-code gate — derived, not listed", () => {
+    expect(PRE_CODE_GATES).toContain(GateKind.Reproduction);
+    const producers = artifactProducersFromArgs(parseArgs(["--artifact-cmd", "node"]));
+    expect(producers.has(GateKind.Reproduction)).toBe(true);
+  });
+});

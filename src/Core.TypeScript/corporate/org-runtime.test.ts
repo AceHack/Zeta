@@ -1003,3 +1003,91 @@ describe("THE ORGANIZATION'S OWN ANSWER TO AN UNREPRODUCED DEFECT reaches the wo
     expect(report.cascade.nodes.every((n) => !(n.brief ?? "").includes("No reproduction was supplied"))).toBe(true);
   }, 60_000);
 });
+
+describe("A DEFECT IS REPRODUCED BEFORE IT IS FIXED — as a gate, not a sentence", () => {
+  // User direction 2026-09-10: a defect with no steps is reproduced by QA (read the code; if the
+  // cause is not plain, run the program) and the steps and a failing test exist BEFORE the fix.
+  // Before this the only trace of that obligation was a line in the brief.
+
+  /** Records every step, in order, and what the fixer was handed. */
+  function recorder() {
+    const order: string[] = [];
+    const handed: (readonly { gate: string; refs: readonly string[] }[] | undefined)[] = [];
+    const reproduce: ProducerPort = {
+      meta: { port: Port.WorkExecution, name: "qa-repro", fidelity: Fidelity.Real, describes: "reproduces" },
+      produce: async (node) => {
+        order.push(`reproduce:${node.workId}`);
+        return { ok: true, value: { refs: ["tests/repro.test.ts"], summary: "fails on the unfixed code" }, evidence: [] };
+      },
+    };
+    const work = {
+      meta: { port: Port.WorkExecution, name: "fixer", fidelity: Fidelity.Real, describes: "fixes" },
+      execute: async (node: { workId: string }, ctx: { readonly priorPhases?: readonly { gate: string; refs: readonly string[] }[] }) => {
+        order.push(`fix:${node.workId}`);
+        handed.push(ctx.priorPhases);
+        return { ok: true as const, value: { workId: node.workId, succeeded: true, artifacts: ["src/fix.ts"], summary: "fixed" }, evidence: [] };
+      },
+    };
+    return { order, handed, reproduce, work };
+  }
+
+  test("the defect's chain owes reproduction, first, and a task's does not", () => {
+    expect(chainFor(WorkType.Defect)[0]).toBe(GateKind.Reproduction);
+    expect(chainFor(WorkType.Defect).indexOf(GateKind.Reproduction)).toBeLessThan(
+      chainFor(WorkType.Defect).indexOf(GateKind.ImplementationReview),
+    );
+    expect(chainFor(WorkType.Task)).not.toContain(GateKind.Reproduction);
+    // An incident may not repeat on demand — the register already says so at intake.
+    expect(chainFor(WorkType.Incident)).not.toContain(GateKind.Reproduction);
+  });
+
+  test("QA may evaluate it; somebody owns it, so it cannot block delivery by being orphaned", () => {
+    expect(mayEvaluate(chart, "qa_engineer", GateKind.Reproduction)).toBe(true);
+    expect(mayEvaluate(chart, "reproducibility_analyst", GateKind.Reproduction)).toBe(true);
+  });
+
+  test("REPRODUCTION RUNS BEFORE THE FIX, and the fixer is HANDED the reproduction", async () => {
+    const rec = recorder();
+    const base = deps();
+    const report = await runOrgRuntime({
+      ...base,
+      providers: { ...defaultProviderSet(base), work: rec.work as never },
+      artifactProducers: new Map([[GateKind.Reproduction, rec.reproduce]]),
+    } as OrgRuntimeDeps);
+    const r = rec.order.findIndex((s) => s.startsWith("reproduce:"));
+    const f = rec.order.findIndex((s) => s.startsWith("fix:"));
+    expect(r).toBeGreaterThanOrEqual(0);
+    expect(f).toBeGreaterThan(r);
+    // What the reproduction wrote reaches the agent that writes the fix.
+    const first = rec.handed[0] ?? [];
+    expect(first.some((p) => p.gate === GateKind.Reproduction && p.refs.includes("tests/repro.test.ts"))).toBe(true);
+    // …and it is the gate's own evidence, so a reviewer of the reproduction sees the test.
+    expect(
+      report.gateEvaluations.some((e) => e.gate === GateKind.Reproduction && e.evidenceRefs.includes("tests/repro.test.ts")),
+    ).toBe(true);
+  }, 60_000);
+
+  test("A REPRODUCTION THAT DOES NOT HOLD STOPS THE WORK — nothing is fixed", async () => {
+    const rec = recorder();
+    const base = deps();
+    const rejectsReproduction = {
+      meta: { port: Port.Review, name: "strict", fidelity: Fidelity.Real, describes: "rejects reproduction" },
+      review: async (req: { gate: GateKind }) => ({
+        ok: true as const,
+        value:
+          req.gate === GateKind.Reproduction
+            ? { outcome: GateOutcome.Rejected, reason: "could not make it happen: behaviour matches the spec" }
+            : { outcome: GateOutcome.Approved, reason: "ok" },
+        evidence: [],
+      }),
+    };
+    const report = await runOrgRuntime({
+      ...base,
+      providers: { ...defaultProviderSet(base), work: rec.work as never, review: rejectsReproduction as never },
+      artifactProducers: new Map([[GateKind.Reproduction, rec.reproduce]]),
+    } as OrgRuntimeDeps);
+    expect(rec.order.some((s) => s.startsWith("reproduce:"))).toBe(true);
+    expect(rec.order.some((s) => s.startsWith("fix:"))).toBe(false);
+    expect(report.delivered).toBe(false);
+  }, 60_000);
+});

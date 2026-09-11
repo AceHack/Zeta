@@ -37,6 +37,8 @@ import { OutcomeClass, type ReputationObservation } from "./reputation";
  */
 export const GATE_SPEAKS_TO: Readonly<Partial<Record<GateKind, OutcomeClass>>> = {
   [GateKind.QaUat]: OutcomeClass.Quality,
+  // A reproduction that holds is evidence the organization understood what failed — reliability.
+  [GateKind.Reproduction]: OutcomeClass.Reliability,
   [GateKind.RuntimeValidation]: OutcomeClass.Reliability,
   [GateKind.ReleaseReadiness]: OutcomeClass.Reliability,
   [GateKind.AdversarialReview]: OutcomeClass.Safety,

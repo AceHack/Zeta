@@ -89,7 +89,14 @@ export const CHAIN_BY_TYPE: Readonly<Record<WorkType, readonly GateKind[]>> = {
   // that — not that it may reach production having skipped the release gate. Omitting it here made
   // "a gate nobody owns blocks delivery" untestable on a defect: stripping the gate's owners
   // changed nothing, because nothing owed it.
+  //
+  // AND IT IS REPRODUCED FIRST, AS A GATE. Intake used to be the only place reproduction was
+  // asked about, and it could only accept or refuse — so under `reproduce_first` a defect was
+  // admitted with a sentence saying somebody should reproduce it and no step in which anybody did.
+  // Owed by EVERY defect, not only the unreproduced ones: steps a reporter supplied are a claim,
+  // and turning them into a failing test is the same work that checks the claim.
   [WorkType.Defect]: [
+    GateKind.Reproduction,
     GateKind.ImplementationReview,
     GateKind.QaUat,
     GateKind.RuntimeValidation,
