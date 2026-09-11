@@ -8,6 +8,7 @@
  */
 
 import { describe, expect, test } from "bun:test";
+import { waitUntil } from "../testing/deterministic-async.ts";
 import { spawnSync } from "node:child_process";
 import { existsSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
@@ -53,6 +54,23 @@ function run(args: readonly string[], result: Record<string, unknown>, extraEnv:
 }
 
 const ok = (structured: unknown) => ({ type: "result", subtype: "success", is_error: false, structured_output: structured, usage: { input_tokens: 10, output_tokens: 5 } });
+
+/**
+ * Is this pid still running? `kill(pid, 0)` sends no signal and only asks.
+ *
+ * Extracted because both tree-kill tests need it and a predicate that throws is
+ * not a predicate -- `waitUntil` wants a boolean, and swallowing the ESRCH here
+ * keeps the try/catch out of the assertion.
+ */
+function isAlive(pid: number): boolean {
+  try {
+    process.kill(pid, 0);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 
 describe("THE WORLDVIEW IS ASKED FOR — the prompt carries the observe command, not the work", () => {
   test("every mode tells the agent to open its dashboard and item through observe", () => {
@@ -324,16 +342,17 @@ describe("A SESSION THAT RUNS OUT OF TIME IS STOPPED WITH EVERYTHING IT STARTED"
       expect(r.status).not.toBe(0);
       expect(r.stderr).toContain("did not finish within");
       const pid = Number(readFileSync(pidFile, "utf-8"));
-      let alive = true;
-      for (let i = 0; i < 20 && alive; i += 1) {
-        try {
-          process.kill(pid, 0);
-          await new Promise((ok) => setTimeout(ok, 250));
-        } catch {
-          alive = false;
-        }
-      }
-      expect(alive).toBe(false);
+      // POLL THE PROPERTY, DO NOT SLEEP TOWARD IT. The old loop slept 250ms up
+      // to twenty times and then asserted, which asserts that five seconds was
+      // enough on THIS machine at THIS moment -- and it was not: this test and
+      // its sibling were the only two failures in the file on a developer
+      // laptop, at ~7.6s and ~5.1s. `waitUntil` returns at the first instant
+      // the process is gone, so a loaded runner only makes it wait longer, and
+      // a real failure (the tree was never killed) still fails on any machine.
+      await waitUntil(() => !isAlive(pid), {
+        timeoutMs: 20_000,
+        describe: `the detached grandchild ${String(pid)} to be killed with its session`,
+      });
     } finally {
       rmSync(dir, { recursive: true, force: true });
     }
@@ -364,16 +383,17 @@ describe("A SESSION THAT ENDS NORMALLY LEAVES NOTHING RUNNING", () => {
     try {
       expect(r.status).toBe(0);
       const pid = Number(readFileSync(pidFile, "utf-8"));
-      let alive = true;
-      for (let i = 0; i < 20 && alive; i += 1) {
-        try {
-          process.kill(pid, 0);
-          await new Promise((ok) => setTimeout(ok, 250));
-        } catch {
-          alive = false;
-        }
-      }
-      expect(alive).toBe(false);
+      // POLL THE PROPERTY, DO NOT SLEEP TOWARD IT. The old loop slept 250ms up
+      // to twenty times and then asserted, which asserts that five seconds was
+      // enough on THIS machine at THIS moment -- and it was not: this test and
+      // its sibling were the only two failures in the file on a developer
+      // laptop, at ~7.6s and ~5.1s. `waitUntil` returns at the first instant
+      // the process is gone, so a loaded runner only makes it wait longer, and
+      // a real failure (the tree was never killed) still fails on any machine.
+      await waitUntil(() => !isAlive(pid), {
+        timeoutMs: 20_000,
+        describe: `the detached grandchild ${String(pid)} to be killed with its session`,
+      });
     } finally {
       rmSync(dir, { recursive: true, force: true });
     }
