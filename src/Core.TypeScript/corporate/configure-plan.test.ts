@@ -351,11 +351,20 @@ describe("A FINISHED CHANGE'S ROUTE TO PEOPLE IS ASKED, NEVER ASSUMED", () => {
     expect(unanswered.complete).toBe(false);
     expect(stepOf(unanswered, ConfigureStep.HandOffChanges).current).toContain("nobody has said whether reviewers' comments are answered");
     expect(unanswered.next?.command).toContain("--replies reply_and_resolve|reply|none");
-    const done = planFor(
+    // Nor is a red pipeline: an organization that was never asked has not said it does not care.
+    const noPipelines = planFor(
       withRepo({ settings: deliveryIs("human_review"), changeRequests: { ...statement, replies: "reply_and_resolve", afterOpen: [{ kind: "comment" as const, body: "aireview" }], afterUpdate: [{ kind: "comment" as const, body: "aireview" }] } }),
       true,
     );
+    expect(noPipelines.complete).toBe(false);
+    expect(stepOf(noPipelines, ConfigureStep.HandOffChanges).current).toContain("nobody has said what a red pipeline means here");
+    expect(noPipelines.next?.command).toContain("--pipelines until_green|flag_only|none");
+    const done = planFor(
+      withRepo({ settings: deliveryIs("human_review"), changeRequests: { ...statement, replies: "reply_and_resolve", afterOpen: [{ kind: "comment" as const, body: "aireview" }], afterUpdate: [{ kind: "comment" as const, body: "aireview" }], pipelines: "until_green" as const } }),
+      true,
+    );
     expect(done.complete).toBe(true);
+    expect(stepOf(done, ConfigureStep.HandOffChanges).current).toContain("a red pipeline: until_green");
     expect(stepOf(done, ConfigureStep.HandOffChanges).current).toContain("kept current by merge_target");
     expect(stepOf(done, ConfigureStep.HandOffChanges).current).toContain("reviewers' comments: reply_and_resolve");
   });

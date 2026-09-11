@@ -96,6 +96,61 @@ describe("IS THERE ANYTHING THE ORGANIZATION HAS NOT SEEN?", () => {
   });
 });
 
+describe("A RED PIPELINE IS NOT SETTLED BY BEING EXPLAINED", () => {
+  const red = {
+    deliveryId: "pipeline-55-failed",
+    source: "gitlab",
+    itemKind: "pipeline_failed",
+    summary: "the request's pipeline 55 failed at bcc152b0aa11",
+    changeUrl: "https://git.example/p/-/merge_requests/164",
+  };
+  // The organization decided about it already - raised, then declined as a flake. That is what
+  // happened on agentic-tpm !164, and the request stayed red.
+  const declined = [
+    ev({ kind: "action_item_raised", workId: "task-40", actionItemId: "gitlab:pipeline-55-failed", source: "gitlab", itemKind: "pipeline_failed", summary: "s" }),
+    ev({ kind: "action_item_settled", workId: "task-40", actionItemId: "gitlab:pipeline-55-failed", outcome: "declined", how: "a MongoMemoryServer flake; green locally at the same SHA", respond: true }),
+    ev({ kind: "action_item_answered", workId: "task-40", actionItemId: "gitlab:pipeline-55-failed", replyId: "note-51", resolved: true }),
+  ];
+  const untilGreen = { ...cr, pipelines: "until_green" as const };
+
+  test("under until_green a failing pipeline is still a reason, however the organization decided about it", () => {
+    const v = watchReasons(input({ events: [handedOff, aireviewDone, ...declined], deliveries: [red], changeRequests: untilGreen, seen: new Set(["gitlab:pipeline-55-failed"]) }));
+    expect(v.reasons).toEqual(["the request of task-40 is red: the request's pipeline 55 failed at bcc152b0aa11 (try 1 of 3)"]);
+    expect(v.redPipelines).toEqual(["gitlab:pipeline-55-failed"]);
+  });
+
+  test("under flag_only the same pipeline, already decided, is not news again", () => {
+    const v = watchReasons(input({ events: [handedOff, aireviewDone, ...declined], deliveries: [red], changeRequests: { ...cr, pipelines: "flag_only" as const } }));
+    expect(v.reasons).toEqual([]);
+  });
+
+  test("a pipeline that went green stops being a reason, and the tries do not carry to the next one", () => {
+    const v = watchReasons(input({ events: [handedOff, aireviewDone, ...declined], deliveries: [], changeRequests: untilGreen, pipelineTries: { "gitlab:pipeline-55-failed": 3 } }));
+    expect(v.reasons).toEqual([]);
+    const next = { ...red, deliveryId: "pipeline-56-failed", summary: "the request's pipeline 56 failed at 9aa1b2c3" };
+    const after = watchReasons(input({ events: [handedOff, aireviewDone, ...declined], deliveries: [next], changeRequests: untilGreen, pipelineTries: { "gitlab:pipeline-55-failed": 3 } }));
+    expect(after.reasons).toEqual(["the request of task-40 is red: the request's pipeline 56 failed at 9aa1b2c3 (try 1 of 3)"]);
+  });
+
+  test("SPENT, NOT SPINNING: after its allowance the pipeline is a person's, and no run is started for it", () => {
+    const v = watchReasons(input({ events: [handedOff, aireviewDone, ...declined], deliveries: [red], changeRequests: untilGreen, pipelineTries: { "gitlab:pipeline-55-failed": 3 } }));
+    expect(v.reasons).toEqual([]);
+    expect(v.atLimit).toEqual(["gitlab:pipeline-55-failed on task-40"]);
+    // The allowance is the organization's to state.
+    const generous = watchReasons(input({ events: [handedOff, aireviewDone, ...declined], deliveries: [red], changeRequests: { ...untilGreen, pipelineAttempts: 5 }, pipelineTries: { "gitlab:pipeline-55-failed": 3 } }));
+    expect(generous.reasons).toEqual(["the request of task-40 is red: the request's pipeline 55 failed at bcc152b0aa11 (try 4 of 5)"]);
+    expect(generous.atLimit).toEqual([]);
+  });
+
+  test("an organization that has not stated a pipeline policy is not treated as having said `none`", () => {
+    // NOT STATED is refused by run-org, never quietly read as "pipelines do not matter here". What a
+    // watcher does with it is the old behaviour: raised once, like any other delivery.
+    const v = watchReasons(input({ events: [handedOff, aireviewDone], deliveries: [red] }));
+    expect(v.reasons).toEqual(["new pipeline_failed on task-40"]);
+    expect(v.redPipelines).toEqual([]);
+  });
+});
+
 describe("THE SAME REASONS DO NOT START THE SAME RUN OVER AND OVER", () => {
   const v = watchReasons(input({ deliveries: [comment("note-9")] }));
   test("unchanged reasons inside the retry window: no run; after it: one more try", () => {

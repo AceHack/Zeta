@@ -315,10 +315,10 @@ export function planFor(org: OrgRecord, hasWork: boolean): ConfigurePlan {
     command:
       "org setting bind --setting delivery --value human_review|merge --why <why>  and then  " +
       "org change-requests set --section \"<Heading>=<what it must state>\" ... [--keep-out <glob> ...] " +
-      "--sync merge_target|flag_only --replies reply_and_resolve|reply|none --after-open 'comment=<text>'|none --after-update 'comment=<text>'|none [--review-rounds <n>] --why <why>",
+      "--sync merge_target|flag_only --replies reply_and_resolve|reply|none --after-open 'comment=<text>'|none --after-update 'comment=<text>'|none [--review-rounds <n>] --pipelines until_green|flag_only|none --why <why>",
     satisfied:
       !changesRepos ||
-      (delivery !== undefined && (delivery === "merge" || (cr !== undefined && cr.replies !== undefined && cr.afterOpen !== undefined && cr.afterUpdate !== undefined))),
+      (delivery !== undefined && (delivery === "merge" || (cr !== undefined && cr.replies !== undefined && cr.afterOpen !== undefined && cr.afterUpdate !== undefined && cr.pipelines !== undefined))),
     required: changesRepos,
     current: !changesRepos
       ? "not needed - this organization changes no repository"
@@ -339,7 +339,9 @@ export function planFor(org: OrgRecord, hasWork: boolean): ConfigurePlan {
               "; " +
               (cr.afterUpdate === undefined
                 ? "nobody has said whether review is asked for again after each fix"
-                : `after each fix: ${cr.afterUpdate.length === 0 ? "nothing" : cr.afterUpdate.map((s) => `${s.kind} '${s.body}'`).join(", ")}`),
+                : `after each fix: ${cr.afterUpdate.length === 0 ? "nothing" : cr.afterUpdate.map((s) => `${s.kind} '${s.body}'`).join(", ")}`) +
+              "; " +
+              (cr.pipelines === undefined ? "nobody has said what a red pipeline means here" : `a red pipeline: ${cr.pipelines}`),
   };
 
   const work: PlanStep = {

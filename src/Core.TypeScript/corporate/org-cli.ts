@@ -87,8 +87,10 @@ import { humanGatesFor, type GateKind, type HumanCheckpoint } from "./quality-ga
 import { bindingsOf, resolve, SkillSource, validateBinding, type SkillBinding }
   from "./skill-binding";
 import { planFor, planForNothing } from "./configure-plan";
-import { validateChangeRequests, type AfterOpenStep, type ChangeRequestConfig, type ChangeRequestSection, type ReplyPolicy, type SyncMethod } from "./change-request";
+import { validateChangeRequests, type AfterOpenStep, type ChangeRequestConfig, type ChangeRequestSection, type PipelinePolicy, type ReplyPolicy, type SyncMethod } from "./change-request";
 import { profileArg, validateRunProfiles, type RunProfile } from "./run-profile";
+import { join } from "node:path";
+import { foldCost, readCostDir, renderCost, type CostLine } from "./cost-ledger";
 import {
   Exit,
   flagValue,
@@ -730,6 +732,7 @@ export async function main(argv: readonly string[], deps: CliDeps): Promise<numb
         }
       }
       const roundsRaw = flagValue(flags, "--review-rounds");
+      const triesRaw = flagValue(flags, "--pipeline-attempts");
       const config: ChangeRequestConfig = {
         sections,
         keepOut: flagValues(flags, "--keep-out").map((v) => v.trim()).filter((v) => v !== ""),
@@ -739,6 +742,9 @@ export async function main(argv: readonly string[], deps: CliDeps): Promise<numb
         afterOpen,
         afterUpdate,
         ...(roundsRaw === undefined ? {} : { reviewRounds: Number(roundsRaw) }),
+        // Asked here too: an organization that was asked and said nothing is refused, not defaulted.
+        pipelines: (flagValue(flags, "--pipelines") ?? "").trim() as PipelinePolicy,
+        ...(triesRaw === undefined ? {} : { pipelineAttempts: Number(triesRaw) }),
         why: (flagValue(flags, "--why") ?? "").trim(),
       };
       const valid = validateChangeRequests(config);
@@ -753,6 +759,7 @@ export async function main(argv: readonly string[], deps: CliDeps): Promise<numb
         `${sections.map((x) => x.heading).join(" / ")}; kept current by ${config.sync}; reviewers answered: ${config.replies}` +
         `; once open: ${afterOpen.length === 0 ? "nothing" : afterOpen.map((s) => `${s.kind} '${s.body}'`).join(", ")}` +
         `; after each fix: ${afterUpdate.length === 0 ? "nothing" : afterUpdate.map((s) => `${s.kind} '${s.body}'`).join(", ")}` +
+        `; a red pipeline: ${config.pipelines}` +
         `${config.keepOut.length === 0 ? "" : `; never adds ${config.keepOut.join(", ")}`}\n  because ${config.why}\n`,
       );
       return Exit.Ok;
@@ -791,6 +798,49 @@ export async function main(argv: readonly string[], deps: CliDeps): Promise<numb
       emit(deps, json, { org: chosen.org.orgId, profile: { ...profile, env: Object.keys(profile.env) }, replaced }, () =>
         `${replaced ? "changed" : "stated"} run profile '${profile.name}' on '${chosen.org.orgId}': looked at every ${String(profile.everyMinutes)} min, ` +
         `a run stopped after ${String(profile.maxRunMinutes)} min, store ${profileArg(profile, "--store") ?? "?"}\n  because ${profile.why}\n`,
+      );
+      return Exit.Ok;
+    }
+
+    case "org cost": {
+      const chosen = resolveOrg(registry, flagValue(flags, "--org"));
+      if ("reason" in chosen) { deps.err(chosen.reason); return Exit.NotFound; }
+      const one = flagValue(flags, "--store");
+      const stores = one !== undefined
+        ? [one]
+        : (chosen.org.runProfiles ?? []).flatMap((p) => { const s = profileArg(p, "--store"); return s === undefined ? [] : [s]; });
+      if (stores.length === 0) {
+        deps.err(`'${chosen.org.orgId}' has no run profiles and no --store was given, so there is nowhere to read a ledger from`);
+        return Exit.NotFound;
+      }
+      const since = flagValue(flags, "--since");
+      const until = flagValue(flags, "--until");
+      let lines: CostLine[] = [];
+      let unreadable = 0;
+      for (const s of stores) {
+        const read = readCostDir(join(s, "cost"), since, until);
+        lines = [...lines, ...read.lines];
+        unreadable += read.unreadable;
+      }
+      const fold = foldCost(lines);
+      emit(deps, json, {
+        org: chosen.org.orgId,
+        total: fold.total,
+        byDay: Object.fromEntries(fold.byDay),
+        byWork: Object.fromEntries(fold.byWork),
+        byHat: Object.fromEntries(fold.byHat),
+        byMode: Object.fromEntries(fold.byMode),
+        byModel: Object.fromEntries(fold.byModel),
+        byProfile: Object.fromEntries(fold.byProfile),
+        byReason: Object.fromEntries(fold.byReason),
+        withoutCost: fold.withoutCost,
+        duplicates: fold.duplicates,
+        unreadable,
+      }, () =>
+        (fold.total.calls === 0
+          ? `nothing is recorded for '${chosen.org.orgId}' in that range - a run that predates the ledger left no line`
+          : renderCost(fold, { reasons: hasFlag(flags, "--reasons") })) +
+        (unreadable === 0 ? "" : `${String(unreadable)} ledger line(s) could not be read and are not counted`) + String.fromCharCode(10),
       );
       return Exit.Ok;
     }

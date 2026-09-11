@@ -721,10 +721,11 @@ describe("HOW A MERGE REQUEST IS WRITTEN IS STATED, AND ONLY WHAT CAN MEAN SOMET
       "--after-open", "comment=aireview",
       "--after-update", "comment=aireview",
       "--review-rounds", "6",
+      "--pipelines", "until_green",
       "--why", "reviewers read the problem first",
     ]);
     expect(code).toBe(Exit.Ok);
-    const saved = JSON.parse(h.files.get(REG) ?? "{}") as { orgs: { changeRequests?: { sections: { heading: string }[]; sync: string; replies?: string } }[] };
+    const saved = JSON.parse(h.files.get(REG) ?? "{}") as { orgs: { changeRequests?: { sections: { heading: string }[]; sync: string; replies?: string; pipelines?: string } }[] };
     expect(saved.orgs[0]?.changeRequests?.sections.map((s) => s.heading)).toEqual(["Problem statement", "Root cause"]);
     expect(saved.orgs[0]?.changeRequests?.sync).toBe("merge_target");
     expect(saved.orgs[0]?.changeRequests?.replies).toBe("reply_and_resolve");
@@ -733,19 +734,23 @@ describe("HOW A MERGE REQUEST IS WRITTEN IS STATED, AND ONLY WHAT CAN MEAN SOMET
     expect(h.stdout.join("")).toContain("## Root cause");
     expect(h.stdout.join("")).toContain("reviewers' comments: reply_and_resolve");
     expect(h.stdout.join("")).toContain("after each fix is pushed: comment 'aireview' (up to 6 rounds, then a person decides)");
+    expect(saved.orgs[0]?.changeRequests?.pipelines).toBe("until_green");
   });
 
   test("a section with no statement, an unknown sync method, rebasing, or no answer about replies is refused and nothing is written", async () => {
     const h = harness();
     await main(CREATE, h.deps);
     const before = h.files.get(REG);
-    const replies = ["--replies", "reply", "--after-open", "none", "--after-update", "none"];
+    const replies = ["--replies", "reply", "--after-open", "none", "--after-update", "none", "--pipelines", "flag_only"];
     expect(await set(h, ["--section", "Root cause", "--sync", "merge_target", ...replies, "--why", "w"])).toBe(Exit.Usage);
     expect(await set(h, ["--section", "Root cause=why", "--sync", "rebase", ...replies, "--why", "w"])).toBe(Exit.Usage);
     expect(await set(h, ["--section", "Root cause= ", "--sync", "merge_target", ...replies, "--why", "w"])).toBe(Exit.Refused);
     // Whether a reviewer is answered is asked, never defaulted - and only a known answer is kept.
     expect(await set(h, ["--section", "Root cause=why", "--sync", "merge_target", "--why", "w"])).toBe(Exit.Usage);
     expect(await set(h, ["--section", "Root cause=why", "--sync", "merge_target", "--replies", "sometimes", "--why", "w"])).toBe(Exit.Usage);
+    // And what a red pipeline means is asked the same way: not stated is refused, not read as "none".
+    expect(await set(h, ["--section", "Root cause=why", "--sync", "merge_target", "--replies", "reply", "--after-open", "none", "--after-update", "none", "--why", "w"])).toBe(Exit.Usage);
+    expect(await set(h, ["--section", "Root cause=why", "--sync", "merge_target", ...replies.slice(0, 6), "--pipelines", "eventually", "--why", "w"])).toBe(Exit.Usage);
     expect(h.files.get(REG)).toBe(before);
   });
 });

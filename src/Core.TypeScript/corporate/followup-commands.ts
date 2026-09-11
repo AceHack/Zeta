@@ -123,6 +123,7 @@ export function commandFollowUp(spec: CommandSpec, fallbackCwd: string): (r: Fol
       ORG_FOLLOWUP_MODE: r.mode,
       ORG_ACTION_ITEMS: JSON.stringify(items),
       ORG_CAN_SYNC: r.canSync ? "1" : "0",
+      ...(r.pipelines === undefined ? {} : { ORG_PIPELINE_POLICY: r.pipelines }),
       ORG_ASSIGNEE: r.hatId,
       ORG_BRANCH: r.branch,
       ...(r.base === undefined ? {} : { ORG_BASE: r.base }),

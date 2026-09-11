@@ -37,7 +37,7 @@
  */
 "use strict";
 const { spawnSync } = require("node:child_process");
-const { existsSync, mkdirSync, mkdtempSync, readFileSync, realpathSync, writeFileSync } = require("node:fs");
+const { appendFileSync, existsSync, mkdirSync, mkdtempSync, readFileSync, realpathSync, writeFileSync } = require("node:fs");
 const { tmpdir } = require("node:os");
 const { delimiter, isAbsolute, join, resolve } = require("node:path");
 
@@ -285,19 +285,121 @@ function leftBehind(cwd) {
 }
 
 /**
+ * WHAT MAY ENTER CONTEXT - a hook, not a request in a prompt.
+ *
+ * The cost of a thing entering an agent's context is its size times the number of turns that come
+ * after it, because every turn re-sends the whole conversation. MEASURED 2026-09-11: 1.46 billion
+ * cache-read tokens over 6.2M tokens of unique content, a 235x amplification. Asking an agent
+ * nicely to be frugal is a suggestion it will have forgotten by turn forty; a PreToolUse hook
+ * decides before the read happens. `org-context-guard.cjs` refuses pictures, whole reads of large
+ * files, and a path this session has already read - each refusal naming the cheaper route to the
+ * same information, so nothing the agent could learn before is out of reach. ORG_CONTEXT_GUARD=off
+ * turns it off for a run that needs to prove what it costs without it.
+ */
+function guardSettings() {
+  if (env.ORG_CONTEXT_GUARD === "off") return undefined;
+  const guard = join(__dirname, "org-context-guard.cjs");
+  if (!existsSync(guard)) return undefined;
+  const dir = mkdtempSync(join(tmpdir(), "org-guard-"));
+  const file = join(dir, "settings.json");
+  const command = JSON.stringify(process.execPath) + " " + JSON.stringify(guard);
+  writeFileSync(file, JSON.stringify({ hooks: { PreToolUse: [{ matcher: "Read", hooks: [{ type: "command", command }] }] } }));
+  return file;
+}
+const GUARD = guardSettings();
+
+/**
+ * WHICH MODEL A HAT THINKS WITH - stated, never inherited.
+ *
+ * MEASURED 2026-09-11: no model was configured anywhere - not here, not in the run profiles, not in
+ * settings - so every agent silently took whatever the installed CLI defaulted to (claude-opus-4-7,
+ * from an npm install 127 releases behind the one the operator was using). A day of runs cost about
+ * $3,900 at Opus rates because nobody chose. So a model is now REQUIRED, the same way every other
+ * piece of organization configuration is: ORG_CLAUDE_MODEL_BY_HAT is a JSON object of hat -> model
+ * with an optional "default" key, ORG_CLAUDE_MODEL is the one-model form, and neither set is a
+ * refusal rather than a guess. Nothing here names a hat or a model: the map is the operator's.
+ */
+function modelFor(hat) {
+  let byHat;
+  if (env.ORG_CLAUDE_MODEL_BY_HAT) {
+    try {
+      byHat = JSON.parse(env.ORG_CLAUDE_MODEL_BY_HAT);
+    } catch {
+      fail(2, "ORG_CLAUDE_MODEL_BY_HAT is not JSON");
+    }
+    if (byHat === null || typeof byHat !== "object" || Array.isArray(byHat)) {
+      fail(2, "ORG_CLAUDE_MODEL_BY_HAT is not an object of hat -> model");
+    }
+  }
+  const picked = (byHat && (byHat[hat] || byHat.default)) || env.ORG_CLAUDE_MODEL;
+  if (!picked) {
+    fail(2, "no model is configured for the hat '" + String(hat) + "': set ORG_CLAUDE_MODEL_BY_HAT" +
+      " (a JSON object of hat -> model, optionally with a \"default\") or ORG_CLAUDE_MODEL." +
+      " The organization does not inherit whichever model the installed CLI happens to default to.");
+  }
+  return String(picked);
+}
+
+/**
+ * WHAT A CALL COST, AND WHY IT WAS MADE - one line per agent call, in the organization's own record.
+ *
+ * Claude Code reports total_cost_usd on every -p call and this tool threw it away, keeping a single
+ * unstructured `usage:` line that mostly never reached a log at all: of about 200 agent calls on
+ * 2026-09-11, eight left a trace, and the day's spend had to be reconstructed from the harness's
+ * private transcripts. A ledger line carries the money AND its provenance - work item, hat, mode,
+ * model, session, and the reason the run was started (ORG_RUN_REASON, set by whoever started it) -
+ * so `where did it go, and why` is a fold over the organization's own record, not a forensic dig.
+ *
+ * Keyed by the session id, so re-reading a ledger and folding it twice cannot double-count.
+ */
+function recordCost(meta, out, model, ms) {
+  const store = env.ORG_COST_DIR || (env.ORG_STORE ? join(env.ORG_STORE, "cost") : undefined);
+  if (store === undefined) {
+    process.stderr.write("cost not recorded: neither ORG_COST_DIR nor ORG_STORE is set" + NL);
+    return;
+  }
+  const u = out.usage || {};
+  const line = {
+    at: new Date().toISOString(),
+    org: env.ORG_ID || null,
+    profile: env.ORG_PROFILE || null,
+    workId: meta.workId || null,
+    hat: meta.hat || null,
+    mode: mode,
+    model: model,
+    sessionId: out.session_id || null,
+    costUsd: typeof out.total_cost_usd === "number" ? out.total_cost_usd : null,
+    durationMs: ms,
+    agentTurns: typeof out.num_turns === "number" ? out.num_turns : null,
+    inputTokens: u.input_tokens || 0,
+    outputTokens: u.output_tokens || 0,
+    cacheReadTokens: u.cache_read_input_tokens || 0,
+    cacheWriteTokens: u.cache_creation_input_tokens || 0,
+    reason: env.ORG_RUN_REASON || null,
+  };
+  try {
+    mkdirSync(store, { recursive: true });
+    appendFileSync(join(store, line.at.slice(0, 10) + ".jsonl"), JSON.stringify(line) + NL);
+  } catch (err) {
+    process.stderr.write("cost not recorded: " + String((err && err.message) || err) + NL);
+  }
+}
+/**
  * Run one Claude Code session and return its structured answer.
  *
  * `is_error` DECIDES, not `subtype`: measured, a logged-out CLI answers `subtype: "success"` with
  * `is_error: true` and a result of "Not logged in". Reading `subtype` would file that as work done.
  */
-async function runClaude(prompt, schema, allowed, cwd) {
+async function runClaude(prompt, schema, allowed, cwd, meta) {
   const args = [
     "-p", "--output-format", "json", "--permission-mode", "dontAsk",
     "--json-schema", JSON.stringify(schema),
     "--allowedTools", ...allowed,
     "--disallowedTools", ...NEVER,
   ];
-  if (env.ORG_CLAUDE_MODEL) args.push("--model", env.ORG_CLAUDE_MODEL);
+  const model = modelFor((meta && meta.hat) || env.ORG_ASSIGNEE || "default");
+  args.push("--model", model);
+  if (GUARD !== undefined) args.push("--settings", GUARD);
   // A stand-in for the binary, for tests: `ORG_CLAUDE_BIN=node ORG_CLAUDE_BIN_ARGS=["stub.cjs"]`.
   let pre = [];
   if (env.ORG_CLAUDE_BIN_ARGS) {
@@ -308,6 +410,7 @@ async function runClaude(prompt, schema, allowed, cwd) {
     }
   }
   const budgetMs = claudeBudgetMs();
+  const startedMs = Date.now();
   const run = await runBounded(claudeBin(), [...pre, ...args], { cwd, env: childEnv(), input: prompt, budgetMs });
   if (run.timedOut) {
     fail(4, "Claude Code did not finish within " + String(Math.round(budgetMs / 60_000)) + " min; it and everything it started were stopped" + leftBehind(cwd));
@@ -323,11 +426,13 @@ async function runClaude(prompt, schema, allowed, cwd) {
   if (out.structured_output === undefined || out.structured_output === null) {
     fail(4, "Claude Code returned no structured answer: " + String(out.result).slice(0, 600));
   }
+  recordCost(meta || {}, out, model, Date.now() - startedMs);
   const u = out.usage || {};
   return {
     answer: out.structured_output,
     usage: "usage: in=" + String((u.input_tokens || 0) + (u.cache_read_input_tokens || 0) + (u.cache_creation_input_tokens || 0)) +
-      " out=" + String(u.output_tokens || 0) + " model=" + String(env.ORG_CLAUDE_MODEL || "claude-code"),
+      " out=" + String(u.output_tokens || 0) + " model=" + model +
+      (typeof out.total_cost_usd === "number" ? " cost=$" + out.total_cost_usd.toFixed(4) : ""),
     denied: (out.permission_denials || []).map((d) => d.tool_name + " " + JSON.stringify(d.tool_input || {}).slice(0, 120)),
   };
 }
@@ -422,7 +527,7 @@ if (mode === "work") {
     },
     required: ["summary", "commit", "testsRun", "blocked"],
   };
-  const r = await runClaude(prompt, schema, WRITE, process.cwd());
+  const r = await runClaude(prompt, schema, WRITE, process.cwd(), { hat, workId });
   const a = r.answer;
   if (String(a.blocked || "").trim() !== "") fail(3, "blocked: " + a.blocked);
   process.stdout.write(String(a.summary).trim() + NL);
@@ -488,7 +593,7 @@ if (mode === "gate") {
     },
     required: ["questions", "title", "document", "files", "plan", "learned"],
   };
-  const r = await runClaude(prompt, schema, own ? WRITE : READ, process.cwd());
+  const r = await runClaude(prompt, schema, own ? WRITE : READ, process.cwd(), { hat, workId });
   const a = r.answer;
   const asks = (a.questions || []).map((q) => String(q).trim()).filter((q) => q !== "");
   const lessons = (a.learned || []).map((l) => "learned: " + String(l.key).trim() + " :: " + String(l.lesson).trim());
@@ -583,7 +688,7 @@ if (mode === "review") {
     },
     required: ["verdict", "reason", "lookedAt"],
   };
-  const r = await runClaude(prompt, schema, JUDGE, process.cwd());
+  const r = await runClaude(prompt, schema, JUDGE, process.cwd(), { hat, workId });
   const a = r.answer;
   process.stdout.write(String(a.reason).trim() + (a.lookedAt && a.lookedAt.length ? " [looked at: " + a.lookedAt.join(", ") + "]" : "") + NL);
   process.exit(a.verdict === "approve" ? 0 : 1);
@@ -632,7 +737,7 @@ if (mode === "describe") {
     properties: { description: { type: "string", description: "The whole description, markdown, with every section as a `## ` heading." } },
     required: ["description"],
   };
-  const r = await runClaude(prompt, schema, READ, process.cwd());
+  const r = await runClaude(prompt, schema, READ, process.cwd(), { hat, workId });
   const text = String(r.answer.description || "").trim();
   if (text === "") fail(3, "the description came back empty");
   const docsDir = resolve(env.ORG_DOCS_DIR || join(process.cwd(), ".org-docs"));
@@ -738,7 +843,7 @@ if (mode === "follow-up") {
     },
     required: ["decisions", "syncWithTarget", "summary"],
   };
-  const r = await runClaude(prompt, schema, WRITE, process.cwd());
+  const r = await runClaude(prompt, schema, WRITE, process.cwd(), { hat, workId });
   const a = r.answer;
   process.stdout.write(r.usage + NL);
   process.stdout.write(JSON.stringify({ decisions: resolving ? [] : a.decisions || [], syncWithTarget: !resolving && canSync && a.syncWithTarget === true, summary: String(a.summary || "") }) + NL);
@@ -798,7 +903,7 @@ if (mode === "check-answers") {
     },
     required: ["results"],
   };
-  const r = await runClaude(prompt, schema, JUDGE, process.cwd());
+  const r = await runClaude(prompt, schema, JUDGE, process.cwd(), { hat: env.ORG_REVIEW_AS || "answer_checker", workId });
   process.stdout.write(r.usage + NL);
   process.stdout.write(JSON.stringify({ results: r.answer.results || [] }) + NL);
   process.exit(0);

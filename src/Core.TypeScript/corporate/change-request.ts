@@ -89,6 +89,38 @@ export interface AfterOpenStep {
   readonly body: string;
 }
 
+/**
+ * What a RED PIPELINE on an open request means to this organization.
+ *
+ * MEASURED on agentic-tpm, 2026-09-11: pipelines 189179 and 189289 failed, the organization raised
+ * each as an action item, diagnosed both as an infrastructure flake (MongoMemoryServer start
+ * timeouts, with the suite green locally at the same SHA) - and DECLINED them. The diagnosis was
+ * careful and may well be right. The request was still red, and the organization had decided it was
+ * finished with it. A person merging reads a red pipeline, not the argument for why it does not
+ * count. So `until_green` says: a diagnosis is not a resolution. While the head pipeline is not
+ * green the organization keeps being asked about it - after every push, for every new pipeline -
+ * and when it has tried `pipelineAttempts` times without turning it green it stops and says so to a
+ * person rather than declining it quietly.
+ *
+ * A CLOSED SET, because a policy nothing reads would be stored and change nothing.
+ */
+export const PipelinePolicy = {
+  /** Not done until the request's own pipeline passes. Retried, then raised to a person. */
+  UntilGreen: "until_green",
+  /** A failure is raised once, like any comment; the organization may decide against it. */
+  FlagOnly: "flag_only",
+  /** Pipelines are not this organization's business (e.g. there are none). */
+  None: "none",
+} as const;
+export type PipelinePolicy = (typeof PipelinePolicy)[keyof typeof PipelinePolicy];
+
+export function isPipelinePolicy(value: string): value is PipelinePolicy {
+  return (Object.values(PipelinePolicy) as readonly string[]).includes(value);
+}
+
+/** Runs spent on ONE red pipeline before a person is asked, when the organization has not said. */
+export const DEFAULT_PIPELINE_ATTEMPTS = 3;
+
 /** Re-reviews requested on one request before a person decides, when the organization has not said. */
 export const DEFAULT_REVIEW_ROUNDS = 10;
 
@@ -135,6 +167,17 @@ export interface ChangeRequestConfig {
    * a guard against two agents disagreeing forever, never a quiet stop. Default 10.
    */
   readonly reviewRounds?: number;
+  /**
+   * What a red pipeline on an open request means here. REQUIRED where asked, like `replies`: absent
+   * reads as NOT YET STATED, never as `none` - an organization that has not been asked about its
+   * pipelines has not said they do not matter.
+   */
+  readonly pipelines?: PipelinePolicy;
+  /**
+   * Under `until_green`: runs spent on ONE pipeline before the organization stops and asks a person.
+   * A guard against retrying a failure it cannot fix, never a quiet stop. Default 3.
+   */
+  readonly pipelineAttempts?: number;
   /** Why merge requests are written this way here. A convention with no reason is followed until it is wrong. */
   readonly why: string;
 }
@@ -176,6 +219,15 @@ export function validateChangeRequests(c: ChangeRequestConfig): PracticeCheck {
   }
   if (c.reviewRounds !== undefined && (!Number.isInteger(c.reviewRounds) || c.reviewRounds < 1 || c.reviewRounds > 50)) {
     return { ok: false, reason: `reviewRounds must be a whole number from 1 to 50 - it is when a person is asked, not whether` };
+  }
+  if (c.pipelines !== undefined && !isPipelinePolicy(String(c.pipelines))) {
+    return {
+      ok: false,
+      reason: `'${String(c.pipelines)}' is not a way to treat a red pipeline — known: ${Object.values(PipelinePolicy).join(", ")}`,
+    };
+  }
+  if (c.pipelineAttempts !== undefined && (!Number.isInteger(c.pipelineAttempts) || c.pipelineAttempts < 1 || c.pipelineAttempts > 20)) {
+    return { ok: false, reason: `pipelineAttempts must be a whole number from 1 to 20 - it is when a person is asked, not whether` };
   }
   for (const s of [...(c.afterOpen ?? []), ...(c.afterUpdate ?? [])]) {
     if (!(Object.values(AfterOpenKind) as readonly string[]).includes(String(s.kind))) {
