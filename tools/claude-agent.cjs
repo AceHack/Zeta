@@ -291,6 +291,10 @@ if (mode === "work") {
     "- Test first where the practice says so. If an earlier step left a reproduction (a failing test), it",
     "  must FAIL before your change and PASS after it - run it both ways and report both results.",
     "- Run the repository's own tests for what you touched, the way its instructions say to.",
+    "- COMMIT AS YOU GO: each piece that is done and whose tests pass is its own commit, the moment it",
+    "  is. Your session has a time limit" + (claudeBudgetMs() ? " of about " + String(Math.round(claudeBudgetMs() / 60_000)) + " minutes" : "") + "; work that is only in the",
+    "  working tree when it runs out has to be re-verified by whoever picks it up. If a test run hangs,",
+    "  bound it (a timeout, --forceExit) rather than waiting on it again.",
     "- If you cannot do this properly, set `blocked` to exactly why. A refused step is recoverable; a faked one is not.",
   ].join(NL);
   const schema = {

@@ -182,6 +182,18 @@ describe("A REVIEW JUDGES WHETHER THE WORK MAY MOVE, NOT WHETHER THE DOCUMENT IS
   });
 });
 
+describe("AN IMPLEMENTER COMMITS AS IT GOES, KNOWING ITS LIMIT", () => {
+  // MEASURED on AIAGENT-1662: two implementation sessions ran out of time with everything still in
+  // the working tree - tests, route changes, a jest config - so the next attempt had to re-verify
+  // all of it from scratch.
+  test("the work prompt states the budget and asks for a commit per finished piece", () => {
+    const r = run(["work", "task-9"], ok({ summary: "s", commit: "", testsRun: [], blocked: "" }), { ORG_PORT_TIMEOUT_MS: "3000000" });
+    expect(r.seen?.input).toContain("COMMIT AS YOU GO");
+    expect(r.seen?.input).toContain("about 49 minutes");
+    r.cleanup();
+  });
+});
+
 describe("A SESSION THAT RUNS OUT OF TIME IS STOPPED WITH EVERYTHING IT STARTED", () => {
   // MEASURED on AIAGENT-1662: the agent was killed at a fixed 25 minutes, and its shells and a jest
   // run with its own mongod kept running afterwards, competing with the next step's tests.
