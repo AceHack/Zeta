@@ -397,6 +397,15 @@ export interface World {
   readonly cheatEngine?: CheatEngineState;
   /** Capability labels restricting what channels this agent/world instance can access */
   readonly agentCapabilities?: string[];
+  /**
+   * The work this agent can OPEN, as the record has it. See `ItemContext`.
+   *
+   * Optional like the rest of the surface. Absent means the agent was shown no items — it does not
+   * mean there are none, and `renderDashboard` says which.
+   */
+  readonly items?: readonly ItemContext[];
+  /** The ids in `items` this agent HOLDS: assigned to it, owned by it, or waiting on it. */
+  readonly holding?: readonly string[];
 }
 
 export interface CheatEngineState {
@@ -954,6 +963,214 @@ export function observe(world: World): NextAction {
   // No backlog work pending → forward self-direction (explore), NOT idle rest.
   // play / self_reflect / free_time remain freely choosable via the menu.
   return { kind: "explore", reason: EXPLORE_REASON };
+}
+
+// ─── The item record, and the dashboard ─────────────────────────────────────
+//
+// AN AGENT'S WORLDVIEW IS ASKED FOR, NEVER PUSHED. A work item carries what was done on it and what
+// was said about it — the way a ticket carries its description, its attachments and its comment
+// thread — and an agent that wants that opens the item. Nothing below is copied into a prompt: the
+// dashboard lists what exists and HOW TO OPEN IT, and the agent navigates.
+//
+// GENERIC ON PURPOSE. This core does not know what a gate, a document, a branch or a review is. A
+// step is a named thing that must happen for the item to move forward; an attachment is a reference
+// somebody left on it; a comment is something somebody said. A register fills them in its own words.
+
+/** Something that must happen for an item to move forward, and where it stands. */
+export interface ItemStep {
+  readonly name: string;
+  /** The register's word for where it stands. Opaque here; `done` is what the core reads. */
+  readonly state: string;
+  readonly done: boolean;
+  /** What this step asks, so whoever is doing it knows what it is for. */
+  readonly asks?: string;
+  readonly by?: string;
+  /** What whoever decided it said — the reason behind a pass, and above all behind a rejection. */
+  readonly note?: string;
+  readonly atMs?: number;
+  /** What this step left on the item. The same refs appear in `ItemContext.attachments`. */
+  readonly attachments?: readonly string[];
+}
+
+/** A reference somebody left on an item. */
+export interface ItemAttachment {
+  readonly ref: string;
+  /** The step it came from, when it came from one. */
+  readonly from?: string;
+  readonly by?: string;
+  readonly note?: string;
+  readonly atMs?: number;
+}
+
+/** Something somebody said about an item. */
+export interface ItemComment {
+  readonly by: string;
+  readonly text: string;
+  readonly atMs?: number;
+  /** What it was said about — a step, a question, a room. */
+  readonly about?: string;
+}
+
+/**
+ * One piece of work as the record has it: what it is, where it stands, what was done on it, what was
+ * said about it, and what it is linked to.
+ *
+ * LINKS, NOT INHERITANCE. A parent's attachments are not copied onto the child; the child names its
+ * parent and the agent opens it. That keeps each item's record its own, and keeps the agent's
+ * picture of the work exactly what it chose to look at.
+ */
+export interface ItemContext {
+  readonly id: string;
+  readonly title: string;
+  readonly status: string;
+  readonly kind?: string;
+  /** What the item is, as whoever asked for it wrote it. */
+  readonly description?: string;
+  /** Where the work physically is — a branch, a checkout, a URL. */
+  readonly where?: readonly string[];
+  readonly parentId?: string;
+  readonly childIds?: readonly string[];
+  readonly dependsOn?: readonly string[];
+  /** Who holds it. */
+  readonly holderId?: string;
+  readonly steps: readonly ItemStep[];
+  readonly attachments: readonly ItemAttachment[];
+  readonly comments: readonly ItemComment[];
+}
+
+/**
+ * How to reach each part of the surface, in whatever form the caller serves it — a command, a URL,
+ * a tool name. Supplied by the caller because the core does not know how it is being served.
+ */
+export interface Navigation {
+  readonly dashboard: string;
+  readonly item: (id: string) => string;
+  readonly attachment: (id: string, ref: string) => string;
+  /** Anything else the surface offers. */
+  readonly more?: readonly { readonly what: string; readonly how: string }[];
+}
+
+/** The first step on an item that has not happened yet. */
+export function nextStepOf(item: ItemContext): ItemStep | undefined {
+  return item.steps.find((st) => !st.done);
+}
+
+/**
+ * The step on an item that most recently went AGAINST it and has not since passed.
+ *
+ * What an agent picking the item up most needs to know: the work came back, and here is why.
+ */
+export function turnedBackOn(item: ItemContext): ItemStep | undefined {
+  return item.steps.find((st) => !st.done && st.note !== undefined && st.by !== undefined);
+}
+
+/**
+ * The agent's front page: what it holds, what it could do next, what is waiting on it, what matters,
+ * and where to look for each.
+ *
+ * ORDERED BY WHAT THE AGENT MUST DO FIRST. The inbox is above the holdings because a question or a
+ * review asked of this agent is somebody else's work stopped on it; the action list is the menu, and
+ * its first line is what the organization would do in the agent's place — offered, not imposed.
+ */
+export function renderDashboard(world: World, who: string, nav: Navigation): string {
+  const out: string[] = [];
+  const items = world.items ?? [];
+  const byId = new Map(items.map((it) => [it.id, it] as const));
+  const held = (world.holding ?? []).map((id) => byId.get(id)).filter((it): it is ItemContext => it !== undefined);
+
+  out.push(`DASHBOARD — ${who}`);
+  out.push("");
+
+  // ── WAITING ON YOU ─────────────────────────────────────────────────────────
+  const inbox: string[] = [];
+  for (const r of world.reviewsAsked ?? []) {
+    inbox.push(`review asked   ${r.artifactId} @ ${r.revisionId} for '${r.forGate}' by ${r.askedByHatId}   → ${nav.item(r.artifactId)}`);
+  }
+  for (const d of world.deliberations ?? []) inbox.push(`room open      ${d.anchorId} '${d.title}' on ${d.artifactId}`);
+  if (world.operator?.pendingMessage === true) inbox.push("a person is waiting for your reply");
+  for (const m of world.missing ?? []) inbox.push(`you are blocked on: ${m.about}`);
+  out.push(`INBOX (${String(inbox.length)})`);
+  out.push(...(inbox.length === 0 ? ["  nothing is waiting on you"] : inbox.map((l) => "  " + l)));
+  out.push("");
+
+  // ── WHAT YOU HOLD ──────────────────────────────────────────────────────────
+  out.push(`YOU HOLD (${String(held.length)})`);
+  if (held.length === 0) out.push(world.items === undefined ? "  (no items were shown to this view)" : "  nothing");
+  for (const it of held) {
+    const next = nextStepOf(it);
+    out.push(`  ${it.id}  [${it.status}]  ${it.title}`);
+    out.push(`      next: ${next === undefined ? "nothing owed" : next.name}   → ${nav.item(it.id)}`);
+  }
+  out.push("");
+
+  // ── WHAT MATTERS ───────────────────────────────────────────────────────────
+  const important: string[] = [];
+  for (const it of held) {
+    const back = turnedBackOn(it);
+    if (back !== undefined) important.push(`${it.id} came BACK at '${back.name}' — ${back.by}: ${back.note}`);
+  }
+  for (const b of world.unresolvable ?? []) important.push(`waiting on a person: ${b.about} (blocks ${b.blocking})`);
+  out.push(`IMPORTANT (${String(important.length)})`);
+  out.push(...(important.length === 0 ? ["  nothing flagged"] : important.map((l) => "  " + l)));
+  out.push("");
+
+  // ── WHAT YOU COULD DO ──────────────────────────────────────────────────────
+  const menu = buildMenu(world);
+  out.push(`ACTIONS (${String(menu.length)}) — the first is what the organization would do in your place; the choice is yours`);
+  for (const a of menu.slice(0, 12)) out.push("  " + renderAction(a, world.methods));
+  if (menu.length > 12) out.push(`  … and ${String(menu.length - 12)} more`);
+  out.push("");
+
+  // ── WHERE TO LOOK ──────────────────────────────────────────────────────────
+  out.push("WHERE TO LOOK");
+  out.push(`  this page                 ${nav.dashboard}`);
+  out.push(`  any item                  ${nav.item("<id>")}   (description, steps, attachments, comments, links)`);
+  out.push(`  an item's attachment      ${nav.attachment("<id>", "<ref>")}`);
+  for (const m of nav.more ?? []) out.push(`  ${m.what.padEnd(26)}${m.how}`);
+  const others = items.filter((it) => !(world.holding ?? []).includes(it.id));
+  if (others.length > 0) {
+    out.push("");
+    out.push(`OTHER ITEMS YOU CAN OPEN (${String(others.length)})`);
+    for (const it of others.slice(0, 20)) out.push(`  ${it.id}  [${it.status}]  ${it.title}`);
+    if (others.length > 20) out.push(`  … and ${String(others.length - 20)} more`);
+  }
+  return out.join("\n");
+}
+
+/** One item, opened: the ticket, its steps, its attachments, its thread, its links. */
+export function renderItem(item: ItemContext, nav: Navigation): string {
+  const out: string[] = [];
+  out.push(`${item.id}  [${item.status}]  ${item.title}`);
+  if (item.kind !== undefined) out.push(`  kind      ${item.kind}`);
+  if (item.holderId !== undefined) out.push(`  held by   ${item.holderId}`);
+  for (const w of item.where ?? []) out.push(`  where     ${w}`);
+  if (item.parentId !== undefined) out.push(`  parent    ${item.parentId}   → ${nav.item(item.parentId)}`);
+  for (const c of item.childIds ?? []) out.push(`  child     ${c}   → ${nav.item(c)}`);
+  for (const d of item.dependsOn ?? []) out.push(`  waits on  ${d}   → ${nav.item(d)}`);
+  out.push("");
+  out.push("DESCRIPTION");
+  out.push(item.description === undefined || item.description.trim() === "" ? "  (none written)" : item.description.split("\n").map((l) => "  " + l).join("\n"));
+  out.push("");
+  out.push(`STEPS (${String(item.steps.filter((st) => st.done).length)}/${String(item.steps.length)} done)`);
+  if (item.steps.length === 0) out.push("  none owed");
+  for (const st of item.steps) {
+    out.push(`  ${st.done ? "✔" : "·"} ${st.name.padEnd(28)} ${st.state}${st.by === undefined ? "" : `  by ${st.by}`}`);
+    if (st.asks !== undefined) out.push(`      asks: ${st.asks}`);
+    if (st.note !== undefined && st.note.trim() !== "") out.push(`      said: ${st.note}`);
+    for (const a of st.attachments ?? []) out.push(`      left: ${a}`);
+  }
+  out.push("");
+  out.push(`ATTACHMENTS (${String(item.attachments.length)})`);
+  if (item.attachments.length === 0) out.push("  none");
+  for (const a of item.attachments) {
+    out.push(`  ${a.ref}${a.from === undefined ? "" : `   (from ${a.from}${a.by === undefined ? "" : `, ${a.by}`})`}`);
+    out.push(`      open: ${nav.attachment(item.id, a.ref)}`);
+  }
+  out.push("");
+  out.push(`COMMENTS (${String(item.comments.length)})`);
+  if (item.comments.length === 0) out.push("  none");
+  for (const c of item.comments) out.push(`  ${c.by}${c.about === undefined ? "" : ` on ${c.about}`}: ${c.text}`);
+  return out.join("\n");
 }
 
 /** One-line human-readable render of a chosen action (for the foreground loop). */

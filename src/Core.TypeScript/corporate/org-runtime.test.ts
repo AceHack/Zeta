@@ -12,7 +12,7 @@
  * make look right.
  */
 
-import { chainFor } from "./gate-demand";
+import { chainFor, chainOf } from "./gate-demand";
 import { describe, expect, test } from "bun:test";
 import { agentsFromChart, gateStaffing, runOrgRuntime, staffingReadout, type OrgRuntimeDeps } from "./org-runtime";
 import { buildOrgChart, reportsUpTo } from "./org-chart";
@@ -991,16 +991,21 @@ describe("THE ORGANIZATION'S OWN ANSWER TO AN UNREPRODUCED DEFECT reaches the wo
       expect(n.brief).toContain("closes the last one");
       // The parent the ticket was filed under — what branching settings key on.
       expect(n.brief).toContain("AIAGENT-796");
-      // …and the obligation, so the agent reproduces before it fixes.
-      expect(n.brief).toContain("No reproduction was supplied");
+      // The FACT that no steps came with it — but not an instruction to reproduce. That obligation is
+      // the defect's own `reproduction` step; copied onto every rung it made a reviewer reject the
+      // goal's grooming for not reproducing the bug (measured on the rehearsal run).
+      expect(n.brief).toContain("No reproduction steps were supplied");
+      expect(n.brief).not.toContain("is the first step");
     }
+    const defect = report.cascade.nodes.find((n) => n.workType === WorkType.Defect);
+    expect(chainOf(defect ?? WorkType.Defect)[0]).toBe(GateKind.Reproduction);
   }, 60_000);
 
   test("a defect that CAME with a reproduction is not told it owes one", async () => {
     const withSteps: ExternalEvent = { ...unreproduced, externalId: "AIAGENT-1", reproduction: "1. archive session 2 of 3" };
     const report = await runOrgRuntime(deps({ externalEvents: [withSteps], settings: [reproduceFirst] }));
     expect(report.cascade.nodes.length).toBeGreaterThan(0);
-    expect(report.cascade.nodes.every((n) => !(n.brief ?? "").includes("No reproduction was supplied"))).toBe(true);
+    expect(report.cascade.nodes.every((n) => !(n.brief ?? "").includes("No reproduction steps were supplied"))).toBe(true);
   }, 60_000);
 });
 
@@ -1167,5 +1172,45 @@ describe("THE EXISTING SYSTEM IS UNDERSTOOD BEFORE ANYTHING IS REQUIRED OF IT", 
     expect(new Set(onGoal)).toEqual(new Set([GateKind.BusinessContextGrooming, GateKind.SystemContext]));
     expect(report.gateEvaluations.some((e) => e.gate === GateKind.BrdApproval || e.gate === GateKind.ArchitectureDesign)).toBe(false);
     expect(report.delivered).toBe(true);
+  }, 60_000);
+});
+
+describe("WHAT A PHASE MADE IS ON THE RECORD BEFORE ANYBODY IS ASKED TO JUDGE IT", () => {
+  // MEASURED on the rehearsal run: a reviewer judging from `observe` found "0 attachments — no work
+  // has been produced" and rejected the goal twice. Outputs reached the log only after the whole walk,
+  // and a governance rung's documents never at all.
+  test("at the moment each reviewer is asked, the log already holds the phase output and its document", async () => {
+    const events: OrgEvent[] = [];
+    const sawAtReview: { gate: string; output: boolean; document: boolean }[] = [];
+    const base = deps();
+    const watching = {
+      meta: { port: Port.Review, name: "watching", fidelity: Fidelity.Real, describes: "checks the record when asked" },
+      review: async (req: { gate: GateKind; workId: string }) => {
+        const has = (kind: string) =>
+          events.some((e) => e.fact?.kind === kind && (e.fact as { workId?: string; gate?: string }).workId === req.workId && (e.fact as { gate?: string }).gate === String(req.gate));
+        if (req.gate === GateKind.BusinessContextGrooming || req.gate === GateKind.Reproduction) {
+          sawAtReview.push({ gate: String(req.gate), output: has("phase_output"), document: has("document_written") });
+        }
+        return { ok: true as const, value: { outcome: GateOutcome.Approved, reason: "ok" }, evidence: [] };
+      },
+    };
+    await runOrgRuntime({
+      ...base,
+      onEvent: (e: OrgEvent) => events.push(e),
+      providers: { ...defaultProviderSet(base), review: watching as never },
+      artifactProducers: new Map([
+        [GateKind.BusinessContextGrooming, stubProducer("docs/grooming.md")],
+        [GateKind.Reproduction, stubProducer("docs/repro.md")],
+      ]),
+      documentAt: (ref: string) => (ref.startsWith("docs/") ? { path: ref, bytes: 10 } : undefined),
+    } as OrgRuntimeDeps);
+    expect(sawAtReview.map((s) => s.gate).sort()).toEqual([GateKind.BusinessContextGrooming, GateKind.Reproduction].sort());
+    for (const s of sawAtReview) {
+      expect(s.output).toBe(true);
+      expect(s.document).toBe(true);
+    }
+    // …and recorded ONCE, not again after the walk.
+    const outputs = events.filter((e) => e.fact?.kind === "phase_output" && (e.fact as { gate: string }).gate === GateKind.Reproduction);
+    expect(outputs.length).toBe(1);
   }, 60_000);
 });

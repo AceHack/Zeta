@@ -167,7 +167,7 @@ import { resolve as resolveSkill, type Resolution, type SkillBinding } from "./s
 import { orgById, parseRegistry, runReadinessOf } from "./org-registry";
 import { HumanActionKind, type HumanAction } from "./human-action";
 import { mkdirSync, readdirSync, readFileSync, writeFileSync, statSync } from "node:fs";
-import { join } from "node:path";
+import { join, resolve } from "node:path";
 import type { ProducerPort } from "./pipeline";
 import type { OrgChart } from "./org-chart";
 import type { OrgRuntimeDeps, OrgRuntimeReport } from "./org-runtime";
@@ -1515,6 +1515,25 @@ export async function main(argv: readonly string[]): Promise<number> {
   if (refusals.length > 0) {
     for (const reason of refusals) console.error(`refused: ${reason}`);
     return 2;
+  }
+
+  // ── EVERY AGENT THIS RUN SPAWNS IS TOLD WHERE ITS WORLDVIEW IS ─────────────
+  // Not what it contains — HOW TO ASK. An agent is handed who it is and this command, and reads the
+  // dashboard, its items, their attachments and their threads for itself (`observe-cli.ts`). Set on
+  // this process's environment so every child inherits it: work agents, document authors and
+  // reviewers alike, whichever adapter spawned them. Only with a store: without one there is no
+  // record to observe, and pointing an agent at an empty one would tell it nothing is going on.
+  if (args.store !== undefined) {
+    const fwd = (p: string): string => p.split(String.fromCharCode(92)).join("/");
+    process.env["ORG_STORE"] = fwd(resolve(args.store));
+    process.env["ORG_OBSERVE_CMD"] ??=
+      // `bun` by NAME when that is what is running: the children inherit this PATH, and a read-only
+      // agent can then be allowed exactly `Bash(bun:*)` rather than a quoted absolute path no
+      // permission pattern matches.
+      `${/bun(\.exe)?$/i.test(process.execPath) ? "bun" : `"${fwd(process.execPath)}"`} "${fwd(resolve(import.meta.dir, "observe-cli.ts"))}" --store "${fwd(resolve(args.store))}"` +
+      (args.actions === undefined ? "" : ` --actions "${fwd(resolve(args.actions))}"`);
+    // Where authored documents go, so what an agent writes lands beside the record that lists it.
+    process.env["ORG_DOCS_DIR"] ??= fwd(join(resolve(args.store), "docs"));
   }
 
   // ── SOMEBODY IS WAITING IN A ROOM ─────────────────────────────────────────

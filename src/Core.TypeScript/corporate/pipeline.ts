@@ -230,6 +230,8 @@ export interface PipelineRunInput {
     produced: Artifact | undefined,
     /** Everything produced so far, so a late reviewer can see the whole trail rather than one step. */
     soFar: ReadonlyMap<GateKind, Artifact>,
+    /** What the producer printed and what it cost, so the caller can record the phase whole. */
+    transcript?: PhaseTranscript,
   ) => Promise<void>;
   /**
    * Gates that may not pass without a PERSON. Absent or empty = fully agentic, the default.
@@ -398,7 +400,7 @@ export async function runPipeline(chart: OrgChart, input: PipelineRunInput): Pro
     }
 
     // The thing exists now, so whoever judges it can be asked about it.
-    if (input.prepare !== undefined) await input.prepare(gate, produced, artifacts);
+    if (input.prepare !== undefined) await input.prepare(gate, produced, artifacts, transcripts.get(gate));
 
     // The proposer is excluded before an evaluator is picked, so a chart where the author is the
     // only scope-holder BLOCKS rather than self-approving.

@@ -110,6 +110,7 @@ import {
   gatesOf,
   withProducers,
   type Artifact,
+  type PhaseTranscript,
   type Pipeline,
   type ProducerPort,
 } from "./pipeline";
@@ -767,13 +768,11 @@ export function briefOf(item: IntakeItem): string | undefined {
         ? "."
         : `, filed under ${item.parentExternalId}${item.parentTitle === undefined ? "" : ` — ${item.parentTitle}`}.`),
   );
-  if (item.reproductionOwed === true) {
-    parts.push(
-      "No reproduction was supplied with this ticket. Establishing one — as a test that fails " +
-        "before the fix — is the first step. If it cannot be established, say what was tried and " +
-        "ask, rather than fixing a defect nobody has observed.",
-    );
-  }
+  // NO "REPRODUCTION IS OWED" SENTENCE. It used to be appended here, and so it sat on EVERY rung's
+  // description — MEASURED, a reviewer judging the goal's grooming rejected it for not having
+  // established a reproduction, which is the defect leaf's `reproduction` step and not grooming's.
+  // The obligation is a step on the item that owes it; a sentence copied to every rung is not.
+  if (item.reproductionOwed === true) parts.push("No reproduction steps were supplied with this ticket.");
   return parts.length === 0 ? undefined : parts.join("\n\n");
 }
 
@@ -1990,6 +1989,54 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
   // `rankCandidates` produced, so this IS the ranking rather than a second opinion about it. Used
   // to pick each phase's author from the discipline that owns it; see `phase-staffing.ts`.
   const preferredHats = bindings.filter((b) => isAuthorizing(b, warmedAt)).map((b) => b.hatId);
+
+  // ── WHAT A PHASE MADE REACHES THE LOG THE MOMENT IT IS MADE ──────────────
+  // Before anybody is asked to judge it. MEASURED: a reviewer told to judge from `observe` opened
+  // the item and found "0 attachments — no work has been produced", and was right — outputs were
+  // written only after the whole walk, and a governance rung's documents never at all. A record
+  // that lags the work is a record a reviewer cannot use, whoever the reviewer is.
+  const recordedEarly = new Set<string>();
+  const recordProduced = (
+    workId: string,
+    gate: GateKind,
+    art: Artifact,
+    producedByHatId: string,
+    actorHatId: string | undefined,
+    said: PhaseTranscript | undefined,
+  ): void => {
+    note({
+      kind: OrgEventKind.DecisionRecorded,
+      subjectId: workId,
+      actorHatId,
+      decision: `produced for '${String(gate)}': ${art.summary}`,
+      atMs: warmedAt,
+      evidenceRefs: art.refs,
+      fact: {
+        kind: "phase_output",
+        workId,
+        gate: String(gate),
+        refs: art.refs,
+        summary: art.summary,
+        producedByHatId,
+        ...(said === undefined ? {} : { output: said.output, durationMs: said.durationMs }),
+      },
+    });
+    // Only refs that resolved to bytes — a refs list carries plan lines and urls too.
+    for (const ref of art.refs) {
+      const doc = deps.documentAt?.(ref);
+      if (doc === undefined) continue;
+      note({
+        kind: OrgEventKind.DecisionRecorded,
+        subjectId: workId,
+        actorHatId,
+        decision: `wrote ${doc.path} (${String(doc.bytes)} bytes) at '${String(gate)}'`,
+        atMs: warmedAt,
+        evidenceRefs: [ref],
+        fact: { kind: "document_written", workId, gate: String(gate), path: doc.path, bytes: doc.bytes, producedByHatId },
+      });
+    }
+    recordedEarly.add(`${workId}::${String(gate)}`);
+  };
   const reviewers = deps.agents.map((a) => a.agentId).filter((id) => !wearers.includes(id));
 
   for (const shard of [...queue.shards]) {
@@ -2111,7 +2158,9 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
       gate: GateKind,
       produced: Artifact | undefined,
       soFar: ReadonlyMap<GateKind, Artifact>,
+      said?: PhaseTranscript,
     ): Promise<void> => {
+      if (produced !== undefined) recordProduced(node.workId, gate, produced, node.ownerHatId, node.ownerHatId, said);
       const trail = [...soFar.values()].flatMap((a) => a.refs);
       const shown = [...new Set([...(produced?.refs ?? []), ...trail])];
       const verdict = await providers.review.review({
@@ -2295,6 +2344,8 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
     // in memory and died with the process: the gate would read as approved with nothing to show
     // for it. Same fact shape the leaf walk writes, so one reader serves both.
     for (const [gate, art] of governed.artifacts.entries()) {
+      // Already on the record if its reviewer was asked — see `recordProduced`.
+      if (recordedEarly.has(`${node.workId}::${String(gate)}`)) continue;
       const said = governed.transcripts.get(gate);
       note({
         kind: OrgEventKind.DecisionRecorded,
@@ -2676,11 +2727,21 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
     // reviewer was asked about an architecture before the architecture had been written.
     const reviewed = new Map<GateKind, ReviewVerdict>();
     const reviewEvidence = new Map<GateKind, readonly string[]>();
+    // WHO AUTHORED A PHASE — see the comment where the phases are recorded. Hoisted so a phase
+    // recorded the moment it is made is attributed exactly as it would be after the walk.
+    const authorOf = (gate: GateKind): { hatId: string; staffed: boolean } => {
+      const staffing = candidatesFor(deps.chart, gate);
+      const picked = authorFor(staffing, preferredHats);
+      if (picked !== undefined) return { hatId: picked.hatId, staffed: true };
+      return { hatId: task.assigneeHatId ?? NO_PROPOSER, staffed: false };
+    };
     const askTheReviewer = async (
       gate: GateKind,
       produced: Artifact | undefined,
       soFar: ReadonlyMap<GateKind, Artifact>,
+      said?: PhaseTranscript,
     ): Promise<void> => {
+      if (produced !== undefined) recordProduced(task.workId, gate, produced, authorOf(gate).hatId, task.assigneeHatId, said);
       if (gate === GateKind.RuntimeValidation) return;
       // WHAT THIS PHASE MADE, PLUS THE WHOLE TRAIL BEHIND IT. A reviewer judging from a title is
       // the thing the evidence work was for; a LATE reviewer judging only from its own phase would
@@ -2905,12 +2966,6 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
       // hat in it wins. When it offers nobody qualified the phase falls back to the task's holder
       // AND the fallback is recorded, so "an implementer wrote the RFP review" is visible as a
       // staffing failure rather than looking like the normal case.
-      const authorOf = (gate: GateKind): { hatId: string; staffed: boolean } => {
-        const staffing = candidatesFor(deps.chart, gate);
-        const picked = authorFor(staffing, preferredHats);
-        if (picked !== undefined) return { hatId: picked.hatId, staffed: true };
-        return { hatId: task.assigneeHatId ?? NO_PROPOSER, staffed: false };
-      };
 
       for (const phase of produced) {
         const author = authorOf(phase.gate as GateKind);
@@ -2931,7 +2986,8 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
           );
         }
         const said = walked.transcripts.get(phase.gate as GateKind);
-        note({
+        const early = recordedEarly.has(`${task.workId}::${phase.gate}`);
+        if (!early) note({
           kind: OrgEventKind.DecisionRecorded,
           subjectId: task.workId,
           actorHatId: task.assigneeHatId,
@@ -2970,7 +3026,7 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
         // ── WHICH OF ITS REFS ARE ACTUALLY DOCUMENTS ──────────────────────
         // Only the ones that resolved to bytes. A refs list contains plan lines and urls too, and a
         // documents view built on the whole list offers a reader files that will not open.
-        for (const ref of phase.refs) {
+        for (const ref of early ? [] : phase.refs) {
           const doc = deps.documentAt?.(ref);
           if (doc === undefined) continue;
           note({

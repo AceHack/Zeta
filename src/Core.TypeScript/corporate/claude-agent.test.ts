@@ -1,0 +1,154 @@
+/**
+ * claude-agent.test.ts — the Claude Code client speaks each seam's protocol, and never files a
+ * failure as work done.
+ *
+ * Driven against a STAND-IN for the Claude binary (a script that answers with a canned JSON result
+ * and records what it was sent), so these pin the mapping without spending on a model. The real
+ * binary is exercised by the rehearsal run, not here.
+ */
+
+import { describe, expect, test } from "bun:test";
+import { spawnSync } from "node:child_process";
+import { existsSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join, resolve } from "node:path";
+
+const AGENT = resolve(import.meta.dir, "..", "..", "..", "tools", "claude-agent.cjs");
+
+/** Run the agent with a stand-in Claude that answers `result` and records its argv and stdin. */
+function run(args: readonly string[], result: Record<string, unknown>, extraEnv: Record<string, string> = {}) {
+  const dir = mkdtempSync(join(tmpdir(), "claude-agent-"));
+  const stub = join(dir, "stub.cjs");
+  const sent = join(dir, "sent.json");
+  writeFileSync(
+    stub,
+    `const fs=require("fs");let input="";process.stdin.on("data",d=>input+=d);process.stdin.on("end",()=>{` +
+      `fs.writeFileSync(${JSON.stringify(sent)},JSON.stringify({argv:process.argv.slice(2),input,token:process.env.CLAUDE_CODE_OAUTH_TOKEN||null}));` +
+      `process.stdout.write(${JSON.stringify(JSON.stringify(result))});});`,
+  );
+  const r = spawnSync(process.execPath === "" ? "node" : "node", [AGENT, ...args], {
+    cwd: dir,
+    encoding: "utf-8",
+    env: {
+      ...process.env,
+      ORG_CLAUDE_BIN: "node",
+      ORG_CLAUDE_BIN_ARGS: JSON.stringify([stub]),
+      ORG_OBSERVE_CMD: "observe --store S",
+      ORG_DOCS_DIR: join(dir, "docs"),
+      ORG_TICKET: "AIAGENT-1659",
+      ...extraEnv,
+    },
+  });
+  const seen = existsSync(sent) ? (JSON.parse(readFileSync(sent, "utf-8")) as { argv: string[]; input: string; token: string | null }) : undefined;
+  return { ...r, seen, dir, cleanup: () => rmSync(dir, { recursive: true, force: true }) };
+}
+
+const ok = (structured: unknown) => ({ type: "result", subtype: "success", is_error: false, structured_output: structured, usage: { input_tokens: 10, output_tokens: 5 } });
+
+describe("THE WORLDVIEW IS ASKED FOR — the prompt carries the observe command, not the work", () => {
+  test("every mode tells the agent to open its dashboard and item through observe", () => {
+    const r = run(["work", "task-9"], ok({ summary: "fixed", commit: "abc", testsRun: [], blocked: "" }), { ORG_ASSIGNEE: "backend_implementer" });
+    expect(r.status).toBe(0);
+    expect(r.seen?.input).toContain("observe --store S --hat backend_implementer dashboard");
+    expect(r.seen?.input).toContain("observe --store S --hat backend_implementer item task-9");
+    r.cleanup();
+  });
+
+  test("THE PROMPT TRAVELS ON STDIN, never argv", () => {
+    const r = run(["work", "task-9"], ok({ summary: "s", commit: "", testsRun: [], blocked: "" }));
+    expect(r.seen?.argv.join(" ")).not.toContain("YOUR TASK NOW");
+    expect(r.seen?.input).toContain("YOUR TASK NOW");
+    r.cleanup();
+  });
+
+  test("an integrating git act is never allowed, in any mode", () => {
+    const r = run(["work", "task-9"], ok({ summary: "s", commit: "", testsRun: [], blocked: "" }));
+    const argv = r.seen?.argv ?? [];
+    expect(argv).toContain("--disallowedTools");
+    expect(argv).toContain("Bash(git push:*)");
+    expect(argv).toContain("dontAsk");
+    r.cleanup();
+  });
+});
+
+describe("A FAILURE IS NEVER FILED AS WORK DONE", () => {
+  test("is_error decides, not subtype — the logged-out CLI says 'success' and is an error", () => {
+    const r = run(["work", "task-9"], { type: "result", subtype: "success", is_error: true, result: "Not logged in · Please run /login" });
+    expect(r.status).not.toBe(0);
+    expect(r.stderr).toContain("Not logged in");
+    r.cleanup();
+  });
+
+  test("a blocked implementer refuses the step with its reason", () => {
+    const r = run(["work", "task-9"], ok({ summary: "", commit: "", testsRun: [], blocked: "the reproduction test does not exist" }));
+    expect(r.status).toBe(3);
+    expect(r.stderr).toContain("the reproduction test does not exist");
+    r.cleanup();
+  });
+
+  test("an author that produced neither a document nor a question refuses", () => {
+    const r = run(["gate", "reproduction", "task-9"], ok({ questions: [], title: "", document: "", files: [], plan: [], learned: [] }));
+    expect(r.status).toBe(3);
+    r.cleanup();
+  });
+});
+
+describe("EACH SEAM'S PROTOCOL", () => {
+  test("gate: a document is written under the docs dir and its path printed, with plan and lessons", () => {
+    const r = run(["gate", "system_context", "goal-1"], ok({ questions: [], title: "System context", document: "The hub stores cases in …", files: [], plan: ["read the case store"], learned: [{ key: "hub-sync", lesson: "sync rewrites rows" }] }));
+    expect(r.status).toBe(0);
+    const lines = r.stdout.trim().split(/\r?\n/);
+    const doc = lines[0] as string;
+    expect(doc.endsWith(join("goal-1", "system_context.md"))).toBe(true);
+    expect(readFileSync(doc, "utf-8")).toContain("The hub stores cases in");
+    expect(lines).toContain("- read the case store");
+    expect(lines).toContain("learned: hub-sync :: sync rewrites rows");
+    r.cleanup();
+  });
+
+  test("gate: questions become `ask:` lines and NO document is written", () => {
+    const r = run(["gate", "system_context", "goal-1"], ok({ questions: ["Which program's tempo config is authoritative?"], title: "", document: "", files: [], plan: [], learned: [] }));
+    expect(r.status).toBe(0);
+    expect(r.stdout).toContain("ask: Which program's tempo config is authoritative?");
+    expect(existsSync(join(r.dir, "docs", "goal-1", "system_context.md"))).toBe(false);
+    r.cleanup();
+  });
+
+  test("gate: WITHOUT its own checkout the author may only read", () => {
+    const r = run(["gate", "system_context", "goal-1"], ok({ questions: ["q"], title: "", document: "", files: [], plan: [], learned: [] }));
+    const allowed = r.seen?.argv ?? [];
+    expect(allowed).not.toContain("Edit");
+    expect(allowed).not.toContain("Write");
+    r.cleanup();
+  });
+
+  test("review: approve exits 0, reject exits 1, and the reason is what it printed", () => {
+    const yes = run(["review", "reproduction", "task-9"], ok({ verdict: "approve", reason: "fails on main for the stated reason", lookedAt: ["test/x.test.ts"] }));
+    expect(yes.status).toBe(0);
+    expect(yes.stdout).toContain("fails on main for the stated reason");
+    yes.cleanup();
+    const no = run(["review", "reproduction", "task-9"], ok({ verdict: "reject", reason: "the test passes on main", lookedAt: [] }));
+    expect(no.status).toBe(1);
+    expect(no.stdout).toContain("the test passes on main");
+    no.cleanup();
+  });
+});
+
+describe("AUTHENTICATION", () => {
+  test("by default the local CLI login is used — no token is set by this client", () => {
+    const r = run(["work", "task-9"], ok({ summary: "s", commit: "", testsRun: [], blocked: "" }), { CLAUDE_CODE_OAUTH_TOKEN: "" });
+    expect(r.seen?.token ?? "").toBe("");
+    r.cleanup();
+  });
+
+  test("a token FILE is read at call time into the child's environment — never onto argv", () => {
+    const dir = mkdtempSync(join(tmpdir(), "tok-"));
+    const f = join(dir, "t.txt");
+    writeFileSync(f, "sk-test-token\n");
+    const r = run(["work", "task-9"], ok({ summary: "s", commit: "", testsRun: [], blocked: "" }), { ORG_CLAUDE_TOKEN_FILE: f });
+    expect(r.seen?.token).toBe("sk-test-token");
+    expect((r.seen?.argv ?? []).join(" ")).not.toContain("sk-test-token");
+    r.cleanup();
+    rmSync(dir, { recursive: true, force: true });
+  });
+});
