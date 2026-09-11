@@ -837,6 +837,20 @@ export function foldHandedOffChanges(events: readonly OrgEvent[]): ReadonlyMap<s
   return out;
 }
 
+/** The after-open steps already performed, by work id: step keys, and the ids of what they posted. */
+export function foldAfterOpen(events: readonly OrgEvent[]): ReadonlyMap<string, { readonly done: ReadonlySet<string>; readonly replyIds: readonly string[] }> {
+  const out = new Map<string, { done: Set<string>; replyIds: string[] }>();
+  for (const event of events) {
+    const f = event.fact;
+    if (f?.kind !== "change_after_open") continue;
+    const entry = out.get(f.workId) ?? { done: new Set<string>(), replyIds: [] };
+    entry.done.add(f.stepKey);
+    if (f.replyId !== undefined) entry.replyIds.push(f.replyId);
+    out.set(f.workId, entry);
+  }
+  return out;
+}
+
 /** One action item on a piece of work: what happened, and whether it has been dealt with. */
 export interface ActionItem {
   readonly workId: string;

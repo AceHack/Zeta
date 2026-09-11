@@ -128,8 +128,10 @@ import {
   type FollowUpOutcome,
   type FollowUpReport,
   type FollowUpRequest,
+  type FollowUpReviewRequest,
+  type FollowUpReviewVerdict,
 } from "./change-followup";
-import { missingSections, type ChangeRequestConfig, type DescribeRequest } from "./change-request";
+import { afterOpenKey, missingSections, type ChangeRequestConfig, type DescribeRequest } from "./change-request";
 import { autoApproveReview, simulatedChangeControl, simulatedIntake, simulatedTestRunner, simulatedWorkExecutor } from "./adapters";
 import { associateGoal, EMPTY_BOOK, openPortfolio, type PortfolioKind } from "./portfolio";
 import {
@@ -357,6 +359,10 @@ export interface OrgRuntimeDeps extends HumanCheckpointDeps {
   readonly handedOffChanges?: ReadonlyMap<string, HandedOffChange>;
   /** Every action item raised so far, open and settled, by work id. Folded by the caller (`foldActionItems`). */
   readonly actionItems?: ReadonlyMap<string, readonly ActionItem[]>;
+  /** The after-open steps already performed, by work id (`foldAfterOpen`). */
+  readonly afterOpenDone?: ReadonlyMap<string, { readonly done: ReadonlySet<string>; readonly replyIds: readonly string[] }>;
+  /** Posts a comment on a handed-off change - how configured after-open steps are performed. */
+  readonly postComment?: (request: { readonly workId: string; readonly changeUrl?: string; readonly branch: string; readonly body: string }) => Promise<PortResult<{ readonly replyId?: string }>>;
   /**
    * What happened to handed-off changes since the last cycle - comments, updates, a target moving -
    * from webhooks or a poll of the review system. Each becomes an ACTION ITEM on its work; none is an
@@ -384,6 +390,11 @@ export interface OrgRuntimeDeps extends HumanCheckpointDeps {
   readonly verifyChange?: (handle: ChangeHandle) => Promise<PortResult<string>>;
   /** At most this many handed-off changes are followed up in one cycle. Default 2. */
   readonly maxFollowUps?: number;
+  /**
+   * Reviews a follow-up's commits at one of the item's post-work gates before they are pushed - the
+   * same review the original work passed. Absent: follow-up code is verified but not reviewed.
+   */
+  readonly reviewFollowUp?: (request: FollowUpReviewRequest) => Promise<PortResult<FollowUpReviewVerdict>>;
   /**
    * Who ANSWERS a settled item where it was raised - a reply on the reviewer's thread, and resolving
    * it when `changeRequests.replies` says so. Called only for SETTLED items, and an item is settled
@@ -3651,6 +3662,8 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
   const changesHandedOff: string[] = [];
   /** Due to be handed off, and the handoff failed or could not be attempted. */
   const changesUnhandedOff: string[] = [];
+  /** Handed off in THIS run - so what follows a request's opening happens in the run that opened it. */
+  const handedThisRun = new Map<string, HandedOffChange>();
   // -- WHO INTEGRATES: the organization, or a person ------------------------------
   // A REAL repository is merged into only when the operator said `delivery=merge`. Anything else -
   // `human_review`, or nothing said at all - means the organization hands the change to people and
@@ -3772,6 +3785,14 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
         ...(handed.value.commit === undefined ? {} : { commit: handed.value.commit }),
         ...(handle.base === undefined ? {} : { base: handle.base }),
       },
+    });
+    handedThisRun.set(workId, {
+      workId,
+      changeId: handle.changeId,
+      branch: handed.value.branch,
+      ...(handed.value.url === undefined ? {} : { url: handed.value.url }),
+      ...(handed.value.commit === undefined ? {} : { commit: handed.value.commit }),
+      ...(handle.base === undefined ? {} : { base: handle.base }),
     });
     return true;
   };
@@ -3986,7 +4007,7 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
   const actionItemsAnswered: string[] = [];
   const followUps: FollowUpReport[] = [];
   if (providers.change.meta.fidelity === Fidelity.Real) {
-    const handedMap = new Map<string, HandedOffChange>(deps.handedOffChanges ?? []);
+    const handedMap = new Map<string, HandedOffChange>([...(deps.handedOffChanges ?? []), ...handedThisRun]);
     const allItems = new Map<string, ActionItem[]>([...(deps.actionItems ?? new Map<string, readonly ActionItem[]>())].map(([w, v]) => [w, [...v]]));
     const known = new Set([...allItems.values()].flat().map((i) => i.actionItemId));
     // THE ORGANIZATION'S OWN ANSWERS COME BACK ON THE NEXT READ - a reply is a comment like any other.
@@ -3994,6 +4015,41 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
     const ownReplies = new Set(
       [...allItems.values()].flat().flatMap((i) => (i.answered?.replyId === undefined ? [] : [`${i.source}:${i.answered.replyId}`])),
     );
+    // ...and so do the comments its after-open steps posted (an `aireview` trigger, say). The id is
+    // matched without its source prefix, since the step does not know which source will read it back.
+    const ownPosted = new Set([...(deps.afterOpenDone?.values() ?? [])].flatMap((e) => e.replyIds));
+
+    // ── AFTER A REQUEST OPENS: THE ORGANIZATION'S OWN CONVENTION, ONCE ──────
+    // Configured per organization (`changeRequests.afterOpen`) - e.g. comment `aireview` so the AI
+    // review runs; what it then says comes back as comments, which become action items like any other.
+    // Each step is done ONCE per request and recorded; one that fails is tried again next run.
+    const steps = deps.changeRequests?.afterOpen ?? [];
+    if (steps.length > 0) {
+      for (const [workId, change] of handedMap) {
+        const done = deps.afterOpenDone?.get(workId)?.done ?? new Set<string>();
+        for (const step of steps) {
+          const key = afterOpenKey(step);
+          if (done.has(key)) continue;
+          if (deps.postComment === undefined) {
+            refusals.push(`after a request opens this organization does '${key}', and nothing is configured to do it`);
+            break;
+          }
+          const posted = await deps.postComment({ workId, ...(change.url === undefined ? {} : { changeUrl: change.url }), branch: change.branch, body: step.body });
+          if (!posted.ok) {
+            refusals.push(`could not do '${key}' on ${workId}'s request: ${posted.reason}`);
+            continue;
+          }
+          if (posted.value.replyId !== undefined) ownPosted.add(posted.value.replyId);
+          note({
+            kind: OrgEventKind.ChangeProjected,
+            subjectId: workId,
+            decision: `after the request opened: ${key}`,
+            atMs: warmedAt,
+            fact: { kind: "change_after_open", workId, stepKey: key, ...(posted.value.replyId === undefined ? {} : { replyId: posted.value.replyId }) },
+          });
+        }
+      }
+    }
     const raise = (
       workId: string,
       actionItemId: string,
@@ -4001,6 +4057,7 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
     ): void => {
       // IDEMPOTENT: a webhook retry, or a poll that sees the same comment again, raises nothing new.
       if (known.has(actionItemId) || ownReplies.has(actionItemId)) return;
+      if (ownPosted.has(actionItemId.slice(actionItemId.indexOf(":") + 1))) return;
       known.add(actionItemId);
       note({
         kind: OrgEventKind.ChangeProjected,
@@ -4122,12 +4179,75 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
         ),
         ...accepted.filter((d) => d.outcome !== "deferred").map((d) => ({ summary: summaryOf.get(d.actionItemId) ?? d.actionItemId, outcome: d.outcome, how: d.how })),
       ];
-      // UNKNOWN IS TREATED AS MOVED: re-verifying a change that did not move costs a run; skipping the
-      // verification of one that did would hand people something nobody checked.
-      const moved = before?.ok === true && afterRev?.ok === true ? before.value.commit !== afterRev.value.commit : true;
+      // MOVED IS MEASURED AGAINST WHAT PEOPLE LAST SAW, not against where this session started: a
+      // follow-up whose review was turned back leaves its commits on the branch unpushed, and the next
+      // session must not treat them as already reviewed. UNKNOWN IS TREATED AS MOVED: re-verifying a
+      // change that did not move costs a run; skipping the verification of one that did would hand
+      // people something nobody checked.
+      const lastShown = handedMap.get(workId)?.commit;
+      const moved =
+        afterRev?.ok === true && lastShown !== undefined
+          ? afterRev.value.commit !== lastShown
+          : before?.ok === true && afterRev?.ok === true
+            ? before.value.commit !== afterRev.value.commit
+            : true;
       let handedOffAgain = false;
       let attempted = false;
-      if (moved) {
+      // ── THE FOLLOW-UP'S CODE IS REVIEWED LIKE THE ORIGINAL WAS, BEFORE IT IS PUSHED ──────────
+      // The item's own post-work review gates (implementation_review, qa_uat - whichever its chain
+      // owes), each by an owner who is not the hat that made the change. A rejection stops the push,
+      // and its reason goes back to the next session on the items it claimed to settle.
+      let reviewRejected: string | undefined;
+      if (moved && deps.reviewFollowUp !== undefined && afterRev?.ok === true) {
+        const chain = node === undefined ? [] : chainOf(node);
+        const from = lastShown ?? (before?.ok === true ? before.value.commit : undefined);
+        for (const gate of [GateKind.ImplementationReview, GateKind.QaUat].filter((g) => chain.includes(g))) {
+          if (from === undefined) break;
+          const reviewer = gateOwners(deps.chart, gate).find((h) => h.id !== hatId);
+          if (reviewer === undefined) {
+            refused.push(`nobody but ${hatId} may review ${String(gate)} on ${workId}'s follow-up, so it was not pushed`);
+            reviewRejected = `no independent reviewer for ${String(gate)}`;
+            break;
+          }
+          const v = await deps.reviewFollowUp({
+            gate: String(gate),
+            reviewerHatId: reviewer.id,
+            workId,
+            branch: handle.branch,
+            ...(handle.workdir === undefined ? {} : { workdir: handle.workdir }),
+            from,
+            to: afterRev.value.commit,
+            items: accepted.filter((d) => d.outcome !== "deferred").map((d) => ({ summary: summaryOf.get(d.actionItemId) ?? d.actionItemId, outcome: d.outcome, how: d.how })),
+          });
+          const verdict = !v.ok ? `could not be reviewed: ${v.reason}` : v.value.approved ? "approved" : "rejected";
+          note({
+            kind: OrgEventKind.ChangeProjected,
+            subjectId: workId,
+            actorHatId: reviewer.id,
+            decision: `follow-up ${String(gate)} ${verdict} by ${reviewer.id} (${from.slice(0, 8)}..${afterRev.value.commit.slice(0, 8)})${v.ok ? `: ${v.value.reason.split(/\s+/).join(" ").slice(0, 400)}` : ""}`,
+            atMs: warmedAt,
+          });
+          if (!v.ok || !v.value.approved) {
+            reviewRejected = `${String(gate)} by ${reviewer.id}: ${v.ok ? v.value.reason : v.reason}`;
+            refused.push(`the follow-up on ${workId} was not pushed - ${reviewRejected.slice(0, 300)}`);
+            break;
+          }
+        }
+      }
+      if (moved && reviewRejected !== undefined) {
+        // Turned back: nothing is pushed, and each item this session claimed is left OPEN with the
+        // reviewer's reason, so the next session fixes what was found instead of repeating itself.
+        for (const d of accepted.filter((x) => x.outcome !== "deferred")) {
+          note({
+            kind: OrgEventKind.ChangeProjected,
+            subjectId: workId,
+            actorHatId: hatId,
+            decision: `action item ${d.actionItemId} left open: the follow-up's review turned it back`,
+            atMs: warmedAt,
+            fact: { kind: "action_item_deferred", workId, actionItemId: d.actionItemId, why: `your change for this was reviewed and turned back - ${reviewRejected}`, byHatId: hatId },
+          });
+        }
+      } else if (moved) {
         const verified = deps.verifyChange === undefined
           ? ({ ok: false, reason: "nothing is configured to verify a followed-up change" } as const)
           : await deps.verifyChange(handle);

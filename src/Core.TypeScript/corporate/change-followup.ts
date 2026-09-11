@@ -125,6 +125,33 @@ export interface ItemDecision {
   readonly respond?: boolean;
 }
 
+/**
+ * A follow-up's CODE, put through the same review the original work passed before it is pushed.
+ *
+ * MEASURED on MR !164: a follow-up commit claimed two review findings were fixed with tests; removing
+ * one half of the fix left every test green. It went from "the tests pass" straight to the reviewer's
+ * inbox, because a follow-up had no review step at all - the original work's implementation_review
+ * and qa_uat were never asked about the commits that came after them.
+ */
+export interface FollowUpReviewRequest {
+  readonly gate: string;
+  /** Who reviews: an owner of the gate who is NOT the hat that made the follow-up. */
+  readonly reviewerHatId: string;
+  readonly workId: string;
+  readonly branch: string;
+  readonly workdir?: string;
+  /** The last commit in front of people. Everything after it is unreviewed, whoever made it. */
+  readonly from: string;
+  readonly to: string;
+  /** What the follow-up says those commits do, item by item. */
+  readonly items: readonly { readonly summary: string; readonly outcome: string; readonly how: string }[];
+}
+
+export interface FollowUpReviewVerdict {
+  readonly approved: boolean;
+  readonly reason: string;
+}
+
 /** One settled item to answer where it was raised. */
 export interface AnswerItem {
   readonly actionItemId: string;

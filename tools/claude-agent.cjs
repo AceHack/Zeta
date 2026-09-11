@@ -190,19 +190,6 @@ function descendantsOf(rootPid, seen) {
 function sweepLeftovers(win, rootPid, seen, startedAt) {
   if (rootPid === undefined) return;
   if (!win) {
-    // WHAT THIS REACHES, AND WHAT IT DOES NOT. The child is spawned `detached` on POSIX, so
-    // it leads its own process group and `rootPid` IS that group. Process-group membership is
-    // INHERITED and SURVIVES REPARENTING - measured 2026-09-11: a grandchild whose parent has
-    // already exited still reports the parent's pgid, and this kill reaps it. That is the
-    // measured AIAGENT-1661 case (QA servers outliving their session).
-    //
-    // It does NOT reach a descendant that called `setsid()` itself (Node's `detached: true`):
-    // that process leaves the group, `kill(-rootPid)` returns ESRCH, and it survives. No POSIX
-    // group or session kill can reach it, because it is deliberately in neither. Catching that
-    // class needs a subreaper (`PR_SET_CHILD_SUBREAPER`, Linux-only, not reachable from Node)
-    // or a cgroup - or the sampling the Windows branch below does, which is why that branch
-    // exists at all. Stated rather than implied: a process that opts out of the group is out
-    // of this sweep's reach, and this function does not pretend otherwise.
     try {
       process.kill(-rootPid, "SIGKILL");
     } catch {
@@ -564,6 +551,28 @@ if (mode === "review") {
     "work move - an accurate document whose own conclusion is that the work is NOT ready, not fixed, or",
     "still blocked is a REJECTION, with what is left as your reason. Before relying on anything an",
     "author reports as still open, check it against the item's current record: it may have closed since.",
+    ...(() => {
+      if (!env.ORG_FOLLOWUP_REVIEW) return [];
+      let fu;
+      try {
+        fu = JSON.parse(env.ORG_FOLLOWUP_REVIEW);
+      } catch {
+        return [];
+      }
+      return [
+        "",
+        "THIS IS A FOLLOW-UP REVIEW. The work was already reviewed and is in front of people; since then, the commits",
+        String(fu.from).slice(0, 12) + ".." + String(fu.to).slice(0, 12) + " were made in answer to review feedback. Judge THOSE commits",
+        "(`git diff " + fu.from + ".." + fu.to + "`), against what the follow-up claims they do:",
+        JSON.stringify(fu.items || [], null, 2),
+        "For every item claimed as addressed: is the problem really fixed, and does a test prove it? PROVE the test is",
+        "not vacuous: in a SCRATCH copy (`git -C <checkout> worktree add --detach <tmp> " + fu.to + "`), put the production",
+        "files back as they were (`git -C <tmp> checkout " + fu.from + " -- <production file>`), keep the new test, run it",
+        "and confirm it FAILS, then remove the copy (`git -C <checkout> worktree remove --force <tmp>`). Never change",
+        "the author's checkout. A claimed fix with no test that fails without it, or an account that says more",
+        "than the diff does, is a REJECTION - name the item and what is missing.",
+      ];
+    })(),
   ].join(NL);
   const schema = {
     type: "object",

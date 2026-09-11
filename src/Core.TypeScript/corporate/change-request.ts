@@ -70,6 +70,28 @@ export function isReplyPolicy(value: string): value is ReplyPolicy {
   return (Object.values(ReplyPolicy) as readonly string[]).includes(value);
 }
 
+/**
+ * Something the organization does ONCE, right after it opens a merge request - the project's own
+ * convention for what follows an MR, never the register's. The example that asked for it: this
+ * organization's reviewers are an AI review that runs when somebody comments `aireview`, so every
+ * request it opens should get that comment, and what the review then says arrives as feedback like any
+ * other comment. A CLOSED SET of kinds: a step kind nothing performs would be stored and do nothing.
+ */
+export const AfterOpenKind = {
+  /** Post this comment on the request. */
+  Comment: "comment",
+} as const;
+export type AfterOpenKind = (typeof AfterOpenKind)[keyof typeof AfterOpenKind];
+
+export interface AfterOpenStep {
+  readonly kind: AfterOpenKind;
+  /** For `comment`: the comment's text, exactly as posted. */
+  readonly body: string;
+}
+
+/** A step's identity: the same step is performed once per request, and a changed step is a new one. */
+export const afterOpenKey = (s: AfterOpenStep): string => `${s.kind}:${s.body.trim()}`;
+
 /** One section a merge request's description must carry. */
 export interface ChangeRequestSection {
   /** The heading as a reviewer sees it — `## <heading>` in the description. */
@@ -94,6 +116,11 @@ export interface ChangeRequestConfig {
    * `none`, and never as a reason to refuse the whole registry.
    */
   readonly replies?: ReplyPolicy;
+  /**
+   * What the organization does once each request is open, in order. REQUIRED where it is asked, like
+   * `replies`: an empty list is a real answer ("nothing"), absent means NOT YET STATED.
+   */
+  readonly afterOpen?: readonly AfterOpenStep[];
   /** Why merge requests are written this way here. A convention with no reason is followed until it is wrong. */
   readonly why: string;
 }
@@ -132,6 +159,14 @@ export function validateChangeRequests(c: ChangeRequestConfig): PracticeCheck {
       ok: false,
       reason: `'${String(c.replies)}' is not a way to answer a reviewer's comment — known: ${Object.values(ReplyPolicy).join(", ")}`,
     };
+  }
+  for (const s of c.afterOpen ?? []) {
+    if (!(Object.values(AfterOpenKind) as readonly string[]).includes(String(s.kind))) {
+      return { ok: false, reason: `'${String(s.kind)}' is not something the organization can do after opening a request — known: ${Object.values(AfterOpenKind).join(", ")}` };
+    }
+    if (typeof s.body !== "string" || s.body.trim() === "" || s.body.length > 10_000) {
+      return { ok: false, reason: `an after-open ${String(s.kind)} needs a body of 1 to 10000 characters` };
+    }
   }
   if (c.why.trim() === "") {
     return { ok: false, reason: "merge requests were configured with no reason: say why they are written this way here" };

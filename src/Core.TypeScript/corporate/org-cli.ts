@@ -87,7 +87,7 @@ import { humanGatesFor, type GateKind, type HumanCheckpoint } from "./quality-ga
 import { bindingsOf, resolve, SkillSource, validateBinding, type SkillBinding }
   from "./skill-binding";
 import { planFor, planForNothing } from "./configure-plan";
-import { validateChangeRequests, type ChangeRequestConfig, type ChangeRequestSection, type ReplyPolicy, type SyncMethod } from "./change-request";
+import { validateChangeRequests, type AfterOpenStep, type ChangeRequestConfig, type ChangeRequestSection, type ReplyPolicy, type SyncMethod } from "./change-request";
 import {
   Exit,
   flagValue,
@@ -709,12 +709,23 @@ export async function main(argv: readonly string[], deps: CliDeps): Promise<numb
         if (at <= 0) { deps.err(`--section '${raw}' must be '<Heading>=<what it must state>'`); return Exit.Usage; }
         sections.push({ heading: raw.slice(0, at).trim(), states: raw.slice(at + 1).trim() });
       }
+      // WHAT FOLLOWS AN OPENED REQUEST is asked, always: `none` is an answer, silence is not.
+      const afterOpenRaw = flagValues(flags, "--after-open").map((v) => v.trim());
+      const afterOpen: AfterOpenStep[] = [];
+      if (!(afterOpenRaw.length === 1 && afterOpenRaw[0] === "none")) {
+        for (const raw of afterOpenRaw) {
+          const at = raw.indexOf("=");
+          if (at <= 0) { deps.err(`--after-open '${raw}' must be '<kind>=<text>' (e.g. comment=aireview) or 'none'`); return Exit.Usage; }
+          afterOpen.push({ kind: raw.slice(0, at).trim() as AfterOpenStep["kind"], body: raw.slice(at + 1).trim() });
+        }
+      }
       const config: ChangeRequestConfig = {
         sections,
         keepOut: flagValues(flags, "--keep-out").map((v) => v.trim()).filter((v) => v !== ""),
         sync: (flagValue(flags, "--sync") ?? "").trim() as SyncMethod,
         // Asked here, always: an absent answer is refused below rather than stored as "not stated".
         replies: (flagValue(flags, "--replies") ?? "").trim() as ReplyPolicy,
+        afterOpen,
         why: (flagValue(flags, "--why") ?? "").trim(),
       };
       const valid = validateChangeRequests(config);
@@ -727,6 +738,7 @@ export async function main(argv: readonly string[], deps: CliDeps): Promise<numb
       emit(deps, json, { org: chosen.org.orgId, changeRequests: config, replaced }, () =>
         `${replaced ? "changed" : "stated"} how '${chosen.org.orgId}' writes merge requests: ` +
         `${sections.map((x) => x.heading).join(" / ")}; kept current by ${config.sync}; reviewers answered: ${config.replies}` +
+        `; once open: ${afterOpen.length === 0 ? "nothing" : afterOpen.map((s) => `${s.kind} '${s.body}'`).join(", ")}` +
         `${config.keepOut.length === 0 ? "" : `; never adds ${config.keepOut.join(", ")}`}\n  because ${config.why}\n`,
       );
       return Exit.Ok;
@@ -745,6 +757,7 @@ export async function main(argv: readonly string[], deps: CliDeps): Promise<numb
               cr.keepOut.length === 0 ? "  a change may add anything" : `  a change may never add: ${cr.keepOut.join(", ")}`,
               `  kept current by: ${cr.sync}`,
               `  reviewers' comments: ${cr.replies ?? "NOT STATED - run 'org change-requests set' with --replies"}`,
+              `  once a request is open: ${cr.afterOpen === undefined ? "NOT STATED - run 'org change-requests set' with --after-open" : cr.afterOpen.length === 0 ? "nothing" : cr.afterOpen.map((s) => `${s.kind} '${s.body}'`).join(", ")}`,
               `  because ${cr.why}`,
               "",
             ].join("\n"),
