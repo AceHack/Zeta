@@ -1,6 +1,53 @@
-# DRAFT — the PR-review archive moves to its own repo
+# DECLINED — the PR-review archive moves to its own repo
 
-**Status: DRAFT. Nothing has moved, nothing is deleted, and this is not authorised.**
+**Status: DECLINED, 2026-09-11, by Aaron. Nothing moved. The archive stays in Zeta.**
+
+> *"pr reviews seem to belong in the same repo, since that's what they are against, and it does
+> not cost many bytes — and we can fix file/folder sprawl with dated folders. in a perfect world
+> it's one file per merge to main."*
+
+Three reasons, and the third is why this document is closed rather than deferred:
+
+1. **Colocation is the point.** The records are *about* this repo's PRs. Splitting them puts the
+   evidence in a different place from the thing it is evidence for.
+2. **The cost is small at the current rate** — see the correction below.
+3. **The sprawl this document was reacting to has been fixed by other means.** PRs #17283/#17285
+   bucketed `docs/history/pr-reviews/` by `merged_at` into `YYYY/MM/DD/` — 119 day directories,
+   median 93 files, max 522. The flat 14,378-file directory that motivated the split is gone.
+
+## THE MEASUREMENT BELOW EXPIRED BEFORE IT WAS ACTED ON
+
+The "64% of accretion" figure was measured over a 30-day window ending 2026-09-06. **That window
+is almost entirely BEFORE the 2026-08-29 batch disable of the cadence workflows**, and the rate
+changed by more than an order of magnitude on that date:
+
+| window | files/day into the two archive trees |
+|---|---:|
+| 2026-08-12 → 08-29 (before the pause) | **1,974** |
+| 2026-08-29 → 09-11 (after) | **120** |
+
+So the document is not wrong — it accurately described a regime that ended a week before anyone
+read it. Re-measure before reviving any part of this; the premise is dated, not false.
+
+A second correction, from the growth register work the same day: **rewrite count is a poor proxy
+for on-disk cost.** `data/tick-history.json` has 1,090 committed versions summing to 189.3 MB raw
+and occupies **241 KB on disk** — 805×, because git delta-compresses canonically-ordered appends.
+Size arguments in this document that reason from counts or raw sums overstate the case. The
+**file count** (28,757 across both trees) is the part that survives, and it is a tree/scan cost
+rather than a byte cost.
+
+## What remains true and worth keeping
+
+The open question this document framed correctly is *where data should live*, and the answer for
+the archive is "here, bucketed." The tiering discipline it gestures at is now recorded as a
+general rule — bounded vs unbounded growth, a cost model per unbounded path, and DV2.0 satellite
+depth as the tier — in `registry/unbounded-growth-register.json` and its audit (PR #17286).
+
+The original draft follows, unedited, as the record of the analysis.
+
+---
+
+**Original draft, unedited (Status at the time: DRAFT, not authorised).**
 Written on Aaron's 2026-09-06 request — *"draft the archive repo split"* — after the
 measurement in `081M1TRJ3X5087G0R0032TNP8H`. The decision is his; this is the shape of it,
 with the costs named rather than discovered later.

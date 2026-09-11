@@ -70,8 +70,26 @@
  * zero-padded to 3 digits. Date directories are the in-tree convention for event ledgers
  * because events ARE their timestamp; a PR archive is keyed by its number, and a date-derived
  * directory would reintroduce exactly the path-instability the timestamp note above rejects.
- * The bucket bounds fan-out to ≤1000 files per directory (`docs/history/pr-reviews/` already
- * holds ~6000 in ONE flat directory, so this is the conservative side of in-tree practice).
+ * The bucket bounds fan-out to ≤1000 files per directory.
+ *
+ * UPDATED 2026-09-11 — the sentence here used to add that `docs/history/pr-reviews/` "already
+ * holds ~6000 in ONE flat directory, so this is the conservative side of in-tree practice."
+ * Both halves have expired: it held **14,378**, and it is no longer flat — PRs #17283/#17285
+ * bucketed it by `merged_at` into `YYYY/MM/DD/` (119 day directories, median 93 files, max 522
+ * on the busiest merge day).
+ *
+ * AND THAT IS NOT A CONTRADICTION OF THE PARAGRAPH ABOVE, which argues against date directories.
+ * The two stores are keyed differently BECAUSE THEY ARE ASKED DIFFERENT QUESTIONS:
+ *
+ *   shards   keyed by PR NUMBER   — a path computable from the number alone, so lookup is one
+ *                                   O(1) read with no scan. That is what the resolver uses.
+ *   records  keyed by MERGE DATE  — a merged PR *is* an event with a timestamp, which is the
+ *                                   exact condition this paragraph names as justifying dates.
+ *
+ * Applying date buckets to the shards would destroy the O(1) lookup and reintroduce the
+ * path-instability noted above; applying number buckets to the records would have bounded
+ * fan-out without recording when anything happened. Keeping both keys is the design, and
+ * `resolveArchivePath` is the bridge — it reads one shard to turn a number into a dated path.
  *
  * ORDERING RULE FOR THE DERIVED INDEX (state it, because it is a contract)
  * -----------------------------------------------------------------------

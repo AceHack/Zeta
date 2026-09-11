@@ -1,0 +1,14 @@
+{
+  "id": "080d048abc93c810a0130008694074d2",
+  "at": "2026-09-11T16:40:30.585Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M28NF4KS087G0R001EPSA4K",
+    "type": "task",
+    "title": "Close the archive-split draft and reconcile the shard docstring",
+    "slug": "close-the-archive-split-draft-and-reconcile-the-shard-docstr",
+    "priority": "P2",
+    "filename": "081M28NF4KS087G0R001EPSA4K-close-the-archive-split-draft-and-reconcile-the-shard-docstr.md"
+  }
+}

@@ -56,7 +56,7 @@ Moving those is genuinely easy and genuinely low-value — a few hundred files. 
 different project wearing the same word.
 
 **Recommendation: do not split "docs". Split `docs/history` + `docs/github` (the PR archive,
-already drafted separately in `2026-09-06-DRAFT-the-pr-review-archive-moves-to-its-own-repo.md`,
+already drafted separately in `2026-09-06-DECLINED-the-pr-review-archive-moves-to-its-own-repo.md`,
 28k files and 64% of Zeta's growth), and leave the rest until the prose/substrate boundary is
 drawn deliberately rather than by directory name.**
 
@@ -417,7 +417,7 @@ Written now, while the plan is cheap to change:
 
 ## Pointers
 
-- `docs/DECISIONS/2026-09-06-DRAFT-the-pr-review-archive-moves-to-its-own-repo.md` — step 3, drafted in full.
+- `docs/DECISIONS/2026-09-06-DECLINED-the-pr-review-archive-moves-to-its-own-repo.md` — step 3, **DECLINED 2026-09-11 by Aaron**: the PR-review archive stays in Zeta, because the records are *about* this repo's PRs and the sprawl that motivated the move was fixed instead by dated buckets (#17283/#17285). **This plan's step 3 is therefore closed, and the rest of this draft is untouched and still open** — the decline was scoped to the archive, not to the repo split as a whole. That document also records why its own measurement expired: it was taken before the 2026-08-29 cadence pause cut archive accretion from 1,974 to 120 files/day, so any step here reasoning from those figures needs re-measuring.
 - `docs/DECISIONS/2026-04-22-three-repo-split-zeta-forge-ace.md` — the existing split decision; this is a different axis (change rate and language, not dependency closure).
 - `.claude/rules/clone-at-tag-stays-sufficient.md` — the constraint every new repo must satisfy.
 - `.claude/rules/itron-hub-patent-boundary-p2p-is-the-upgrade.md` — why the treaty may not live inside an oracle.
