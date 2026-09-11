@@ -36,6 +36,12 @@ import type { OrgRuntimeDeps, OrgRuntimeReport } from "./org-runtime";
 
 export const StopReason = {
   Delivered: "delivered",
+  /**
+   * Every change the run finished is IN FRONT OF PEOPLE for review, and nothing was merged. The
+   * organization's part is done; the next act is a person's. Not "delivered", which says the work
+   * reached its destination.
+   */
+  HandedOff: "handed_off",
   Halted: "halted",
   NoProgress: "no_progress",
   BoundReached: "bound_reached",
@@ -191,7 +197,14 @@ export async function runUntilSettled(
     const progress = progressOf(report);
 
     if (report.delivered) {
-      return settled(cycle, StopReason.Delivered, reports, `delivered after ${String(cycle)} cycle(s)`);
+      return report.changesHandedOff.length > 0
+        ? settled(
+            cycle,
+            StopReason.HandedOff,
+            reports,
+            `handed ${String(report.changesHandedOff.length)} change(s) to people for review after ${String(cycle)} cycle(s) - nothing was merged`,
+          )
+        : settled(cycle, StopReason.Delivered, reports, `delivered after ${String(cycle)} cycle(s)`);
     }
     if (report.halted.length > 0) {
       const first = report.halted[0];

@@ -31,6 +31,7 @@ const report = (over: Partial<OrgRuntimeReport> = {}): OrgRuntimeReport =>
     halted: [],
     gateEvaluations: [],
     changesLanded: [],
+    changesHandedOff: [],
     cascade: { nodes: [] },
     ...over,
   }) as unknown as OrgRuntimeReport;
@@ -263,5 +264,16 @@ describe("progressOf reduces a cycle to what must move", () => {
     expect(sameProgress(base, { ...base, workItemsDone: 2 })).toBe(false);
     expect(sameProgress(base, { ...base, changesLanded: 2 })).toBe(false);
     expect(sameProgress(base, { ...base, delivered: true })).toBe(false);
+  });
+});
+
+describe("HANDED OFF IS NOT DELIVERED", () => {
+  // The Agentic Team's first handoff printed "DELIVERED: delivered after 1 cycle(s)" for a run that
+  // merged nothing and opened three merge requests for people to review.
+  test("a cycle whose finished work went to people for review stops as handed_off, and says so", async () => {
+    const r = await runUntilSettled(deps, { maxCycles: 3 }, scripted([report({ delivered: true, changesHandedOff: ["task-1", "task-2"] })]));
+    expect(r.stoppedBecause).toBe(StopReason.HandedOff);
+    expect(r.summary).toContain("handed 2 change(s) to people for review");
+    expect(r.summary).toContain("nothing was merged");
   });
 });
