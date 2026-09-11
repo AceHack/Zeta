@@ -1,0 +1,14 @@
+{
+  "id": "080d04688fc3f810a0130008766dd250",
+  "at": "2026-09-10T20:46:00.319Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M26H3Y3Z087G0R002NKX6NP",
+    "type": "bug",
+    "title": "Agent-Model and Agent-Runtime are free text, so the attribution corpus cannot be correlated",
+    "slug": "agent-model-and-agent-runtime-are-free-text-so-the-attributi",
+    "priority": "P2",
+    "filename": "081M26H3Y3Z087G0R002NKX6NP-agent-model-and-agent-runtime-are-free-text-so-the-attributi.md"
+  }
+}
