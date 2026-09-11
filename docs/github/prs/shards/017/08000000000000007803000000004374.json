@@ -1,0 +1,12 @@
+{
+  "pr_number": 17268,
+  "archive_path": "docs/history/pr-reviews/PR-17268-fix-081m26nhrm9087g0r0029wzghs-main-is-red-on-actionlint-restore-the-sc2129-fix-.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-11T14:30:03.684Z",
+  "schema_version": "v1",
+  "commit_sha": "b1ce7698d180ff2c75ee0c60e5c8d374a13b8d56",
+  "title": "fix(081M26NHRM9087G0R0029WZGHS): main is red on actionlint — restore the SC2129 fix and the stranded local-checks runner",
+  "state": "MERGED",
+  "merged_at": "2026-09-11T14:29:19Z",
+  "head_ref": "restore-actionlint-and-local-checks"
+}

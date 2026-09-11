@@ -1,0 +1,12 @@
+{
+  "pr_number": 17258,
+  "archive_path": "docs/history/pr-reviews/PR-17258-fix-081m26h3y3z087g0r002nkx6np-the-attribution-corpus-was-100-populated-and-ungr.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-11T14:26:33.142Z",
+  "schema_version": "v1",
+  "commit_sha": "5799d96a1451a192b30e6785799319992a184926",
+  "title": "fix(081M26H3Y3Z087G0R002NKX6NP): the attribution corpus was 100% populated and ungroupable",
+  "state": "MERGED",
+  "merged_at": "2026-09-11T14:25:47Z",
+  "head_ref": "agent-identity-roster"
+}
