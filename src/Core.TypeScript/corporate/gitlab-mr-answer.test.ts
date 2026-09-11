@@ -10,7 +10,7 @@ import { describe, expect, test } from "bun:test";
 import { mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
-import { commandAnswerer } from "./followup-commands";
+import { commandAnswerer, commandCommenter } from "./followup-commands";
 import type { AnswerItem, AnswerResult } from "./change-followup";
 
 const ANSWERER = resolve(import.meta.dir, "..", "..", "..", "tools", "gitlab-mr-answer.cjs");
@@ -79,6 +79,51 @@ const ok = (r: Awaited<ReturnType<typeof answer>>["r"]): readonly AnswerResult[]
   if (!r.ok) throw new Error(r.reason);
   return r.value;
 };
+
+describe("AN AFTER-OPEN COMMENT IS POSTED ONCE, AND NEVER WHEN THE REQUEST ALREADY CARRIES IT", () => {
+  async function comment(existing: { id: number; body: string; system?: boolean }[]) {
+    const dir = mkdtempSync(join(tmpdir(), "mr-comment-"));
+    const stub = join(dir, "glab.cjs");
+    const calls = join(dir, "calls.jsonl");
+    writeFileSync(
+      stub,
+      `const fs=require("fs");const a=process.argv.slice(2);const mi=a.indexOf("-X");const method=mi>=0?a[mi+1]:"GET";` +
+        `const path=a.find(x=>x.startsWith("projects/"));const body=a.includes("--input")?JSON.parse(fs.readFileSync(0,"utf-8")):undefined;` +
+        `fs.appendFileSync(${JSON.stringify(calls)},JSON.stringify({method,path,body})+"\\n");` +
+        `if(method==="GET"){process.stdout.write(JSON.stringify(path.includes("page=1")?${JSON.stringify(existing)}:[]));process.exit(0);}` +
+        `process.stdout.write(JSON.stringify({id:777}));`,
+    );
+    process.env["ORG_GLAB_BIN"] = "node";
+    process.env["ORG_GLAB_BIN_ARGS"] = JSON.stringify([stub]);
+    try {
+      const post = commandCommenter({ command: "node", args: [ANSWERER] }, dir);
+      const r = await post({ workId: "task-9", changeUrl: MR, branch: "b", body: "aireview" });
+      let seen: Call[] = [];
+      try {
+        seen = readFileSync(calls, "utf-8").split("\n").filter((l) => l !== "").map((l) => JSON.parse(l) as Call);
+      } catch {
+        seen = [];
+      }
+      return { r, calls: seen };
+    } finally {
+      delete process.env["ORG_GLAB_BIN"];
+      delete process.env["ORG_GLAB_BIN_ARGS"];
+      rmSync(dir, { recursive: true, force: true });
+    }
+  }
+
+  test("on a request without it, the comment is posted and its id returned so it is recognised later", async () => {
+    const { r, calls } = await comment([{ id: 5, body: "looks fine" }]);
+    expect(r.ok && r.value.replyId).toBe("note-777");
+    expect(calls.find((c) => c.method === "POST")?.body?.body).toBe("aireview");
+  });
+
+  test("MEASURED on MRs !162-!164: a request a person already commented `aireview` on gets no second one", async () => {
+    const { r, calls } = await comment([{ id: 1975454, body: "aireview" }]);
+    expect(r.ok && r.value.replyId).toBe("note-1975454");
+    expect(calls.some((c) => c.method === "POST")).toBe(false);
+  });
+});
 
 describe("A REVIEWER IS ANSWERED ON THEIR OWN THREAD", () => {
   test("a fixed comment gets a reply naming the commit and what changed, on ITS thread, and the thread is resolved", async () => {
