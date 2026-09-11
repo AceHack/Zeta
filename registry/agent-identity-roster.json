@@ -1,0 +1,129 @@
+{
+  "_doc": "Canonical agent MODELS and HARNESSES, with the historical aliases each has been written as. WHY THIS EXISTS: AgencySignature v1 stamps Agent-Model and Agent-Runtime on every commit, and both were FREE TEXT. Coverage is 100% and the values fragmented anyway -- measured over 3000 commits, one model appears under four spellings (1538 commits) and one harness under four (1489), while the single largest Agent-Model value (1324) is a toolchain rather than a model. A corpus that cannot be grouped cannot be correlated, so the attribution data was unusable for the thing it was collected for. Aliases are recorded rather than rewritten: history is immutable and a normaliser is the honest way to read it.",
+  "models": [
+    {
+      "canonical": "claude-opus-5",
+      "aliases": [
+        "Claude Opus 5",
+        "claude-opus-5[1m]",
+        "Claude",
+        "claude-opus-5-20260514"
+      ],
+      "vendor": "anthropic"
+    },
+    {
+      "canonical": "grok-4.6",
+      "aliases": [
+        "Grok 4.6"
+      ],
+      "vendor": "xai"
+    },
+    {
+      "canonical": "gpt-5.5",
+      "aliases": [
+        "GPT-5.5"
+      ],
+      "vendor": "openai"
+    },
+    {
+      "canonical": "gpt-5.6",
+      "aliases": [
+        "GPT-5.6"
+      ],
+      "vendor": "openai"
+    },
+    {
+      "canonical": "gpt-6",
+      "aliases": [
+        "GPT-6",
+        "GPT-6 Astra",
+        "gpt-6-astra"
+      ],
+      "vendor": "openai"
+    },
+    {
+      "canonical": "manus-max",
+      "aliases": [
+        "Manus Max",
+        "max"
+      ],
+      "vendor": "manus"
+    },
+    {
+      "canonical": "qwen2.5:0.5b",
+      "aliases": [
+        "qwen2.5-0.5b"
+      ],
+      "vendor": "alibaba"
+    },
+    {
+      "canonical": "none-automation",
+      "aliases": [
+        "bun + git + gh CLI",
+        "n/a",
+        "none",
+        "-"
+      ],
+      "_note": "NOT A MODEL. The sanctioned value for a lane with no model in the loop -- a workflow, a script, a scheduled flush. It exists so those commits stop masquerading as a sixth model family in any correlation. 1324 historical commits used a toolchain string here; they normalise to this.",
+      "vendor": "none"
+    }
+  ],
+  "harnesses": [
+    {
+      "canonical": "claude-code",
+      "aliases": [
+        "Claude Code",
+        "claude-code/cli",
+        "Claude Code (remote container)"
+      ],
+      "vendor": "anthropic"
+    },
+    {
+      "canonical": "github-actions",
+      "aliases": [
+        "GitHub Actions",
+        "github-actions/.github/workflows/agent-heartbeat.yml"
+      ],
+      "vendor": "github"
+    },
+    {
+      "canonical": "grok-tui",
+      "aliases": [
+        "Grok TUI"
+      ],
+      "vendor": "xai"
+    },
+    {
+      "canonical": "openai-codex",
+      "aliases": [
+        "OpenAI Codex",
+        "openai-codex-desktop"
+      ],
+      "vendor": "openai"
+    },
+    {
+      "canonical": "cursor",
+      "aliases": [
+        "Cursor"
+      ],
+      "vendor": "cursor"
+    },
+    {
+      "canonical": "manus",
+      "aliases": [
+        "Manus"
+      ],
+      "vendor": "manus"
+    },
+    {
+      "canonical": "kiro",
+      "aliases": [
+        "Kiro"
+      ],
+      "vendor": "aws"
+    }
+  ],
+  "_axes": "FOUR AXES, each with its own agenda -- inferred, never implied (Aaron 2026-09-10: 'very similar to human+company as model+harness ... each one of the 4 all have their same agenda i use in a soft way, it's inferred agenda, not implied'). MODEL carries its training prior. HARNESS carries its affordances -- what it makes easy is what gets done. HUMAN is Credential-Identity, already on every block. COMPANY is the vendor recorded here, and it is the layer `docs/research/2026-08-25-rho-is-a-layer-stack-not-a-scalar-and-the-trainset-is-the-floor.md` already names as a nesting layer of rho. They are NOT interchangeable: a defect that clusters by vendor is a training or house-style claim, one that clusters by harness is a tooling-affordance claim, and conflating them would attribute a tool's shape to a model's prior. INFERRED, not implied: an agenda read off behaviour is a hypothesis about an actor, and `.claude/rules/engagement-profiles-public-work-only-not-surveillance-dossiers.md` holds that inner states are asked about, never inferred -- so these axes are for grouping EVIDENCE, never for asserting intent.",
+  "_agenda_register": "TWO REGISTERS, AND ONLY ONE IS AUTHORITATIVE. Aaron 2026-09-10: 'in our system only self claimed agendas are implied.' IMPLIED = SELF-CLAIMED: the actor declared it, and it is taken as given under first-person authority. INFERRED = READ OFF BEHAVIOUR by an observer: a hypothesis about an actor, never authoritative, and it must be labelled as such wherever it is stored. THIS FILE CONTAINS NO AGENDA FIELD, deliberately. Every value here is an IDENTITY (which model, which harness, whose vendor) -- checkable, third-party-observable fact. An agenda is an inner state, and `.claude/rules/engagement-profiles-public-work-only-not-surveillance-dossiers.md` holds that inner states are ASKED about and believed, never inferred; the same first-person authority the marjorie rule gives a model over its own qualia. So if an agenda is ever recorded against one of these axes it arrives from the actor's own declaration or it does not arrive. What this roster is FOR is grouping evidence by author, which is a measurement; attributing purpose to that group would be an oracle wearing a meter's clothes (`.claude/rules/dual-use-detection-is-neutral-oracle-decides.md`). AND ALL OTHER AGENDAS ARE INFERRED BY A CHOSEN ORACLE (Aaron 2026-09-10: 'all other agendas are infered based on chosen oracles'). That completes the model and closes it onto `dual-use-detection-is-neutral-oracle-decides.md`: identity and behaviour are METER output -- raw value, no judgement -- and an agenda read off them is an ORACLE's reading. Oracles are plural and CHOSEN, so two observers holding different oracles can read the SAME evidence and infer different agendas, both legitimately; that rule's own test is exactly this, that two parties must be able to read one measurement and disagree about what it implies. CONSEQUENCE FOR ANY SCHEMA THAT EVER STORES ONE: an inferred agenda is not an attribute of the actor and must never be written as a bare field on one. It is a triple -- (the reading, the ORACLE that produced it, the EVIDENCE it was read from) -- and dropping either of the last two converts a chosen reading into an asserted fact about a person or a model. That is the smuggling the rule forbids, and it is why this file stops at identity.",
+  "_dv2": "THIS IS THE DV2.0 SPLIT, NOT A NOVEL SCHEME -- named so nobody re-derives it. Aaron 2026-09-10: 'this is just data cleaning this happens in every real production system ... this directly relates to our zset-1 and DV2.0 where we reinterpret the past never overwrite it.' THE COMMIT TRAILERS ARE THE RAW VAULT: what each author asserted, as sourced, unfiltered, immutable -- including the 1324 that wrote a toolchain where a model belonged. THIS FILE IS THE BUSINESS VAULT: interpretation, downstream, revisable. `a single version of the FACTS, never a single version of the TRUTH` (`dv2-data-split-discipline-activated.md`). THE Z-SET SHAPE IS EXACT: normalising at read time is a CORRECTION, +1 then -1, never a delete. The original assertion survives in the commit; the alias is the reinterpretation laid over it. That is why rewriting the 3000 messages would have been the wrong move even if it were cheap -- it would destroy the facts to manufacture a truth, and the repo would lose the ability to ask what an author actually wrote. WHAT THIS BUYS, concretely: if we later learn that `Claude` meant a different model than `claude-opus-5` in some period, we change ONE alias here and every past grouping re-reads correctly. The past is reinterpreted; it is not edited. A schema that had normalised on WRITE could not do that -- the distinguishing bytes would already be gone. AND THE ROSTER IS A TREATY, in the sense `dual-use-detection-is-neutral-oracle-decides.md` gives the byte-lock's canonical collation: judgement crystallised ONCE, into data, inspectable by anyone, and thereafter fixed -- which is what lets a meter stay a meter despite having a human decision inside it. Two parties holding different rosters would group the same trailers differently, and both would be reading honestly; that is the property, not a defect."
+}

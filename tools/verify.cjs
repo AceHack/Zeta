@@ -127,11 +127,24 @@ if (process.env.VERIFY_STEPS) {
     if (!sha) return undefined;
     fs.mkdirSync(cacheDir, { recursive: true });
     const key = path.join(cacheDir, sha + "-" + String(index) + "-" + Buffer.from(JSON.stringify(step)).toString("base64url").slice(0, 40) + ".json");
-    if (fs.existsSync(key)) return new Set(JSON.parse(fs.readFileSync(key, "utf-8")));
+    // READ, THEN INTERPRET (js/file-system-race, CWE-367). `existsSync` then
+    // `readFileSync` leaves a window, and in a world-writable temp dir that
+    // window is the whole attack. A cache miss and an unreadable entry want the
+    // same handling anyway — measure the baseline — so one try/catch covers
+    // both and needs no prior question.
+    try {
+      return new Set(JSON.parse(fs.readFileSync(key, "utf-8")));
+    } catch {
+      // absent, unreadable, or corrupt: all mean "no usable cache entry"
+    }
     process.stderr.write("[verify] measuring the trunk baseline for step " + String(index + 1) + " at " + sha.slice(0, 9) + "\n");
     const b = runStep(step, baselineCwd);
     if (b.failing === undefined) return undefined;
-    fs.writeFileSync(key, JSON.stringify([...b.failing]));
+    // 0o600: this lands in `os.tmpdir()` by default (line 79), which is
+    // world-writable, and a cache another user can rewrite is a cache that can
+    // hand this tool a fabricated baseline — `js/insecure-temporary-file`
+    // (CWE-377). Owner-only is also simply what a private cache should be.
+    fs.writeFileSync(key, JSON.stringify([...b.failing]), { mode: 0o600 });
     return b.failing;
   }
 

@@ -39,7 +39,16 @@ function run(args: readonly string[], result: Record<string, unknown>, extraEnv:
       ...extraEnv,
     },
   });
-  const seen = existsSync(sent) ? (JSON.parse(readFileSync(sent, "utf-8")) as { argv: string[]; input: string; token: string | null }) : undefined;
+  // READ, THEN INTERPRET ENOENT. `existsSync(sent)` gating `readFileSync(sent)`
+  // answers a question that is already stale by the time the read runs, and the
+  // read reports absence itself. Absent means "the stub was never invoked",
+  // which is exactly the `undefined` this produced before.
+  let seen: { argv: string[]; input: string; token: string | null } | undefined;
+  try {
+    seen = JSON.parse(readFileSync(sent, "utf-8")) as { argv: string[]; input: string; token: string | null };
+  } catch {
+    seen = undefined;
+  }
   return { ...r, seen, dir, cleanup: () => rmSync(dir, { recursive: true, force: true }) };
 }
 
@@ -199,7 +208,10 @@ describe("EACH SEAM'S PROTOCOL", () => {
     const r = run(["gate", "qa_uat", "task-3"], ok({ questions: ["Real-stack Playwright or the API steps?"], title: "QA", document: "## what I verified\nall green", files: [], plan: [], learned: [] }));
     expect(r.status).toBe(0);
     const draft = join(r.dir, "docs", "task-3", "qa_uat.draft.md");
-    expect(existsSync(draft)).toBe(true);
+    // The read IS the existence assertion: a missing draft makes `readFileSync`
+    // throw ENOENT naming the path, which fails this test more informatively
+    // than `expect(false).toBe(true)` did. The separate `existsSync` added a
+    // stale-by-construction window and no signal.
     expect(readFileSync(draft, "utf-8")).toContain("all green");
     expect(r.stdout).toContain("ask: Real-stack Playwright or the API steps? [draft so far: ");
     // Still a question, not an artifact: the submitted document does not exist and no path line is emitted alone.
