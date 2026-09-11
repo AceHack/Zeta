@@ -42,6 +42,8 @@
 import { readdirSync, readFileSync, existsSync } from "node:fs";
 import { join } from "node:path";
 
+import { walkArchiveDocs } from "../forge-host/github/pr-archive-paths.ts";
+
 const DEFAULT_ARCHIVE_DIR = "docs/history/pr-reviews";
 const DEFAULT_SHARD_DIR = "docs/github/prs/shards";
 const OWNER = "Lucent-Financial-Group";
@@ -128,11 +130,12 @@ function readShards(dir: string): Map<number, { fetchedAt: string; mergedAt: str
 function readArchive(dir: string, shardDir: string): ArchiveDoc[] {
   const shards = readShards(shardDir);
   const out: ArchiveDoc[] = [];
-  for (const name of readdirSync(dir)) {
-    if (!name.endsWith(".md")) continue;
+  // RECURSIVE — bucketed `YYYY/MM/DD/`; a flat read yields zero docs and a vacuous pass.
+  for (const rel of walkArchiveDocs(dir)) {
+    const name = rel.slice(rel.lastIndexOf("/") + 1);
     const m = FILENAME_RE.exec(name);
     if (m === null) continue;
-    const rec = RECORDED_RE.exec(readFileSync(join(dir, name), "utf8"));
+    const rec = RECORDED_RE.exec(readFileSync(join(dir, rel), "utf8"));
     if (rec === null) continue; // no Outcome table -> not a comparable doc
     const prNumber = Number.parseInt(m[1]!, 10);
     const shard = shards.get(prNumber);

@@ -76,6 +76,8 @@
 import { existsSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join, resolve } from "node:path";
 
+import { walkArchiveDocs } from "./pr-archive-paths.ts";
+
 const DEFAULT_ARCHIVE_DIR = "docs/history/pr-reviews";
 const DEFAULT_SHARD_DIR = "docs/github/prs/shards";
 const DEFAULT_OWNER = "Lucent-Financial-Group";
@@ -361,11 +363,15 @@ export function reconcileOne(pr: number, fx: ReconcileEffects): ReconcileOutcome
 export function indexArchiveDocs(dir: string): Map<number, string> {
   const out = new Map<number, string>();
   if (!existsSync(dir)) return out;
-  for (const name of readdirSync(dir)) {
-    if (!name.endsWith(".md")) continue;
+  // RECURSIVE. The archive is bucketed `YYYY/MM/DD/` (081M28KF7P5087G0R00046KB5M); a flat
+  // `readdirSync` here would match zero `.md` files and this function would return an EMPTY
+  // map — which every caller reads as "no PR is archived", i.e. a silent false negative that
+  // looks like a clean run. `walkArchiveDocs` tolerates both layouts.
+  for (const rel of walkArchiveDocs(dir)) {
+    const name = rel.slice(rel.lastIndexOf("/") + 1);
     const m = FILENAME_RE.exec(name);
     if (m === null) continue;
-    out.set(Number.parseInt(m[1]!, 10), join(dir, name));
+    out.set(Number.parseInt(m[1]!, 10), join(dir, rel));
   }
   return out;
 }

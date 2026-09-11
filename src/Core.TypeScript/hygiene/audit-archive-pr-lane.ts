@@ -59,7 +59,7 @@
 // clean — "checked 0 records" must never read as success. A lane with no open
 // archive PRs IS a legitimately healthy state and passes.
 
-import { readdirSync } from "node:fs";
+import { walkArchiveDocs } from "../forge-host/github/pr-archive-paths.ts";
 import { resolve } from "node:path";
 
 /** Default grace window: past this, a redundant archive PR is stranded, not racing. */
@@ -116,7 +116,11 @@ export function parseSourcePr(headRef: string): number | null {
  */
 export function indexArchivedPrs(prReviewsDir: string): Set<number> {
   const out = new Set<number>();
-  for (const name of readdirSync(prReviewsDir)) {
+  // RECURSIVE — the archive is bucketed `YYYY/MM/DD/`. A flat read returns the year
+  // directories, matches none of them, and reports an EMPTY archived set, which this audit
+  // reads as "nothing has ever been archived" and passes on.
+  for (const rel of walkArchiveDocs(prReviewsDir)) {
+    const name = rel.slice(rel.lastIndexOf("/") + 1);
     const m = /^PR-0*(\d+)-/.exec(name);
     if (m === null) continue;
     const n = Number.parseInt(m[1]!, 10);

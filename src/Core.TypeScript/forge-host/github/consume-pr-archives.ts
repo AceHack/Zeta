@@ -49,7 +49,7 @@ const REPO_FILE_MODE = 0o644;
  */
 const MANIFEST_MAX_BYTES = 256 * 1024 * 1024;
 
-import { basename, dirname } from "node:path";
+import { dirname } from "node:path";
 
 import { stripRemotePrefix } from "../../git/ref-prefix.ts";
 import { MANIFEST_RELATIVE, SHARD_ROOT_RELATIVE, shardPathFor } from "./pr-manifest-shards.ts";
@@ -138,15 +138,18 @@ for (const branch of branches) {
     skippedNoMd++;
     continue;
   }
-  const mdWrite = writeFileOwned(
-    `${REVIEW_DIR}/${basename(added)}`,
-    content.endsWith("\n") ? content : content + "\n",
-    {
-      mode: REPO_FILE_MODE,
-    },
-  );
+  // WRITE IT WHERE THE BRANCH PUT IT. This was `${REVIEW_DIR}/${basename(added)}`, which
+  // FLATTENS: the archive is bucketed `YYYY/MM/DD/` (081M28KF7P5087G0R00046KB5M), so a
+  // branch carrying `docs/history/pr-reviews/2026/09/11/PR-N-x.md` would be consumed back
+  // into the flat root — re-creating the very directory this change exists to empty, one
+  // orphan-branch drain at a time. `added` is already repo-relative and already verified to
+  // start with `${REVIEW_DIR}/`, so it IS the destination.
+  mkdirSync(dirname(added), { recursive: true });
+  const mdWrite = writeFileOwned(added, content.endsWith("\n") ? content : content + "\n", {
+    mode: REPO_FILE_MODE,
+  });
   if (!mdWrite.ok) {
-    console.error(`cannot write ${REVIEW_DIR}/${basename(added)}: ${mdWrite.error.message}`);
+    console.error(`cannot write ${added}: ${mdWrite.error.message}`);
     process.exit(2);
   }
 

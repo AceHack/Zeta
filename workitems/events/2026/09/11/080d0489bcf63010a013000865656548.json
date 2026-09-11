@@ -1,0 +1,14 @@
+{
+  "id": "080d0489bcf63010a013000865656548",
+  "at": "2026-09-11T16:05:36.582Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M28KF7P5087G0R00046KB5M",
+    "type": "task",
+    "title": "Bucket docs/history/pr-reviews into dated YYYY/MM/DD folders: writer, resolver, recursive walk",
+    "slug": "bucket-docs-history-pr-reviews-into-dated-yyyy-mm-dd-folders",
+    "priority": "P2",
+    "filename": "081M28KF7P5087G0R00046KB5M-bucket-docs-history-pr-reviews-into-dated-yyyy-mm-dd-folders.md"
+  }
+}

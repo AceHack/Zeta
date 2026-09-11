@@ -32,8 +32,10 @@
 // both numerator and denominator. Silently counting an errored fetch as "0 threads, agrees"
 // would reproduce, inside the checker, exactly the defect the checker exists to find.
 
-import { readdirSync, readFileSync } from "node:fs";
+import { readFileSync } from "node:fs";
 import { join } from "node:path";
+
+import { walkArchiveDocs } from "../forge-host/github/pr-archive-paths.ts";
 
 const DEFAULT_ARCHIVE_DIR = "docs/history/pr-reviews";
 const OWNER = "Lucent-Financial-Group";
@@ -63,11 +65,12 @@ const FILENAME_RE = /^PR-(\d+)-/;
 
 function readArchive(dir: string): ArchiveDoc[] {
   const out: ArchiveDoc[] = [];
-  for (const name of readdirSync(dir)) {
-    if (!name.endsWith(".md")) continue;
+  // RECURSIVE — bucketed `YYYY/MM/DD/`; a flat read yields zero docs and a vacuous pass.
+  for (const rel of walkArchiveDocs(dir)) {
+    const name = rel.slice(rel.lastIndexOf("/") + 1);
     const m = FILENAME_RE.exec(name);
     if (m === null) continue;
-    const text = readFileSync(join(dir, name), "utf8");
+    const text = readFileSync(join(dir, rel), "utf8");
     const rec = RECORDED_RE.exec(text);
     if (rec === null) continue; // no Outcome table -> not a comparable doc
     out.push({

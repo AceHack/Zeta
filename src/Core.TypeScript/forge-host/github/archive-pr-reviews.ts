@@ -57,6 +57,7 @@ import {
   writeShard,
   type ManifestEntry,
 } from "./pr-manifest-shards.ts";
+import { bucketFor } from "./pr-archive-paths.ts";
 import { isArchiveEligible } from "./archive-eligibility.ts";
 
 /**
@@ -853,7 +854,15 @@ export interface WriteArchiveResult {
 export function writeArchive(archive: PRReviewArchive, outputDir: string): WriteArchiveResult {
   const slug = slugify(archive.metadata.title);
   const filename = `PR-${archive.metadata.number}-${slug}.md`;
-  const path = resolve(outputDir, filename);
+  // DATED BUCKET, NOT THE FLAT ROOT (081M28KF7P5087G0R00046KB5M). `outputDir` used to be
+  // the whole answer and the directory reached 14,378 files. The bucket is derived from
+  // the PR's own `merged_at` — never from the wall clock — so a backfill of an old PR
+  // lands beside its neighbours instead of on the day the backfill happened to run, and a
+  // re-run is a byte-identical no-op rather than a move. See `pr-archive-paths.ts` for the
+  // measured fan-out that picked daily over monthly, and for why an undated record gets a
+  // named bucket rather than a guessed date.
+  const decision = bucketFor(archive.metadata.mergedAt);
+  const path = resolve(outputDir, decision.bucket, filename);
   const rendered = renderArchive(archive);
   try {
     mkdirSync(dirname(path), { recursive: true });
