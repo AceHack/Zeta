@@ -283,8 +283,34 @@ export function parseChangedFiles(text: string): readonly string[] {
 export type PathClass =
   | { readonly kind: "always"; readonly path: string }
   | { readonly kind: "target"; readonly path: string; readonly targets: readonly string[] }
-  | { readonly kind: "inert"; readonly path: string }
+  | { readonly kind: "inert"; readonly path: string; readonly targets: readonly string[] }
   | { readonly kind: "unknown"; readonly path: string };
+
+/**
+ * A target whose `sources` claim the WHOLE TREE (`**`).
+ *
+ * These exist for properties of the tree rather than of any file --
+ * `leg:tree-structure` carries the empty-directory and structural-hygiene legs --
+ * and they are correct as declared. What they must NOT do is answer the question
+ * "is this path claimed by anything", because a target matching `**` answers yes
+ * for every path that will ever exist.
+ *
+ * That is not hypothetical: it is what happened here. `classifyPath` consulted
+ * `hits.length > 0` before reaching either `inert` or `unknown`, so the moment
+ * `leg:tree-structure` was declared, BOTH of those branches became unreachable --
+ * including the `unknown` fail-safe whose entire job is escalating an unclaimed
+ * path to a full run. Measured 2026-09-11, before this fix: a change to
+ * `some/totally/unknown/path.xyz` returned `mode: "selective"` with exactly two
+ * legs on (`lint-no-empty-dirs`, `lint-structural-hygiene`) and the whole
+ * uncompensatable floor off. A guard that cannot fire is not a guard, and this
+ * one was guarding the wiring of job selection onto this graph.
+ *
+ * So tree-wide targets are still SEEDED by every path (that is what `**` means),
+ * and they no longer COUNT as the claim that suppresses the fail-safe.
+ */
+function isTreeWide(t: BuildTarget): boolean {
+  return t.sources.some((s) => s === "**" || s === "**/*");
+}
 
 /**
  * Classify one changed path. Order matters and is deliberate:
@@ -295,14 +321,19 @@ export function classifyPath(graph: BuildGraph, path: string): PathClass {
   const p = normalizePath(path);
   if (matchesAny(graph.always, p)) return { kind: "always", path: p };
   const hits: string[] = [];
+  let claimed = false;
   for (const t of graph.targets) {
-    if (matchesAny(t.sources, p)) hits.push(t.id);
+    if (!matchesAny(t.sources, p)) continue;
+    hits.push(t.id);
+    if (!isTreeWide(t)) claimed = true;
   }
-  if (hits.length > 0) {
-    hits.sort(ordinalCompare);
-    return { kind: "target", path: p, targets: hits };
-  }
-  if (matchesAny(graph.inert, p)) return { kind: "inert", path: p };
+  hits.sort(ordinalCompare);
+  // `claimed`, not `hits.length` -- see `isTreeWide`. A tree-wide target matches
+  // every path, so counting it here is what silently killed the two branches below.
+  if (claimed) return { kind: "target", path: p, targets: hits };
+  // Declared-inert paths still seed the tree-wide targets: adding a doc DOES change
+  // the tree, so the empty-directory and structural-hygiene legs still apply to it.
+  if (matchesAny(graph.inert, p)) return { kind: "inert", path: p, targets: hits };
   return { kind: "unknown", path: p };
 }
 
@@ -377,9 +408,29 @@ function seedFromChanges(graph: BuildGraph, changedPaths: readonly string[]): Se
   const escalatingPaths: string[] = [];
   for (const raw of changedPaths) {
     const c = classifyPath(graph, raw);
-    if (c.kind === "always") escalatingPaths.push(c.path);
-    else if (c.kind === "target") for (const id of c.targets) seed.add(id);
-    else if (c.kind === "unknown") unknownPaths.push(c.path);
+    switch (c.kind) {
+      case "always":
+        escalatingPaths.push(c.path);
+        break;
+      // Inert joins target rather than being dropped: a declared-inert path still
+      // seeds whatever tree-wide targets claim `**`, because adding a doc does
+      // change the tree. Before this, `inert` was unreachable and this branch
+      // never ran (see `isTreeWide`).
+      case "target":
+      case "inert":
+        for (const id of c.targets) seed.add(id);
+        break;
+      case "unknown":
+        unknownPaths.push(c.path);
+        break;
+      default: {
+        // A new PathClass kind is a COMPILE error here rather than a silent
+        // bucket — the failure this whole change is about is a path quietly
+        // landing somewhere that selects no work.
+        const exhaustive: never = c;
+        throw new Error(`unhandled path class: ${JSON.stringify(exhaustive)}`);
+      }
+    }
   }
   unknownPaths.sort(ordinalCompare);
   escalatingPaths.sort(ordinalCompare);

@@ -1,0 +1,14 @@
+{
+  "id": "080d048de4a4b810a01300087f98cab5",
+  "at": "2026-09-11T18:30:50.263Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M28VS54P087G0R0034MJXH0",
+    "type": "bug",
+    "title": "A tree-wide build-graph target made the unclaimed-path fail-safe unreachable",
+    "slug": "a-tree-wide-build-graph-target-made-the-unclaimed-path-fail",
+    "priority": "P2",
+    "filename": "081M28VS54P087G0R0034MJXH0-a-tree-wide-build-graph-target-made-the-unclaimed-path-fail.md"
+  }
+}

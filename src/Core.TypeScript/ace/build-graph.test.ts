@@ -171,6 +171,83 @@ describe("classification", () => {
   });
 });
 
+describe("a tree-wide target must not suppress the unclaimed-path fail-safe", () => {
+  // WHY THIS BLOCK EXISTS, stated plainly because the omission is the lesson:
+  // every test above runs against TOY, and TOY has no target claiming `**`. The
+  // repo graph does (`leg:tree-structure`, for the empty-directory and structural-
+  // hygiene legs, which are properties of the TREE rather than of any file). The
+  // moment that target was declared, `classifyPath`'s `hits.length > 0` check
+  // matched EVERY path, and both branches below it -- `inert` and the `unknown`
+  // fail-safe -- became unreachable. The suite stayed green throughout, because
+  // the fixture could not express the condition the real graph created.
+  //
+  // Measured on the repo graph before the fix (2026-09-11): a change to a path no
+  // target claims returned `mode: "selective"` with two legs on and the entire
+  // uncompensatable floor off. That is the exact shape of "a check that did not
+  // run looking like one that passed", sitting under the wiring of job selection.
+  const TREE_WIDE: BuildGraph = {
+    ...TOY,
+    targets: [
+      ...TOY.targets,
+      {
+        id: "tree",
+        kind: "t",
+        sources: ["**"],
+        dependsOn: [],
+        legs: ["gate/tree"],
+        origin: "declared",
+        requiredQuorum: toyQuorum("T1"),
+      },
+    ],
+  };
+
+  test("an unclaimed path is `unknown` even though a `**` target matches it", () => {
+    expect(classifyPath(TREE_WIDE, "somewhere/new/file.rs").kind).toBe("unknown");
+  });
+
+  test("and that `unknown` still escalates the whole build to full", () => {
+    const d = affectedTargets(TREE_WIDE, ["somewhere/new/file.rs"]);
+    expect(d.mode).toBe("full");
+    expect(d.unknownPaths).toEqual(["somewhere/new/file.rs"]);
+    // The point of escalating: the floor legs are ON, not merely the tree-wide one.
+    expect([...d.legs].sort()).toEqual(["gate/a", "gate/b", "gate/tree"]);
+  });
+
+  test("a declared-inert path is `inert`, not swallowed as a target hit", () => {
+    expect(classifyPath(TREE_WIDE, "notes/x.md").kind).toBe("inert");
+  });
+
+  test("but an inert path STILL seeds the tree-wide target — adding a doc changes the tree", () => {
+    const d = affectedTargets(TREE_WIDE, ["notes/x.md"]);
+    expect(d.mode).toBe("selective");
+    expect(d.legs).toEqual(["gate/tree"]);
+  });
+
+  test("a specifically-claimed path stays selective and carries the tree-wide leg too", () => {
+    const d = affectedTargets(TREE_WIDE, ["a/x.ts"]);
+    expect(d.mode).toBe("selective");
+    expect([...d.legs].sort()).toEqual(["gate/a", "gate/b", "gate/tree"]);
+  });
+
+  test("THE REPO GRAPH: an unclaimed path escalates to full", () => {
+    // Against the checked-in graph, not the fixture — the fixture is what hid this.
+    const graph = JSON.parse(readFileSync(join(REPO_ROOT, GRAPH_PATH), "utf-8")) as BuildGraph;
+    const d = affectedTargets(graph, ["some/totally/unknown/path.xyz"]);
+    expect(d.mode).toBe("full");
+  });
+
+  test("THE REPO GRAPH: a docs-only change is still selective and still runs no floor leg", () => {
+    // The other direction, and the reason the fix is not simply "escalate more":
+    // `docs/**` is declared inert, so a docs-only PR must NOT be dragged to full.
+    const graph = JSON.parse(readFileSync(join(REPO_ROOT, GRAPH_PATH), "utf-8")) as BuildGraph;
+    const d = affectedTargets(graph, ["docs/FOO.md"]);
+    expect(d.mode).toBe("selective");
+    expect(d.legs).not.toContain("gate/build-and-test");
+    expect(d.legs).not.toContain("gate/lint-typescript");
+    expect(d.legs).not.toContain("gate/cross-verify");
+  });
+});
+
 describe("reverse closure — dirty flows toward consumers", () => {
   test("a change to a dirties b and c transitively", () => {
     expect(reverseClosure(TOY, ["a"])).toEqual(["a", "b", "c"]);

@@ -1,0 +1,7 @@
+# ΔU: 081M28VS54P087G0R0034MJXH0 — tree-wide target made the unclaimed-path fail-safe unreachable
+
+- **measure:** classifyPath consulted hits.length > 0 before reaching inert or unknown; leg:tree-structure declares sources: ["**"], so hits was never empty and BOTH branches below it were dead code. Measured on the repo graph: a change to an unclaimed path returned mode=selective with 2 legs on (lint-no-empty-dirs, lint-structural-hygiene) and the entire uncompensatable floor off. After the fix the same input returns mode=full. 387 of 69018 tracked files (0.56%) are unclaimed and now escalate.
+- **ΔU > 0 because:** the selector is the input to wiring CI job selection onto the graph; a fail-safe that cannot fire is the vacuity class sitting directly under the floor. The uncertainty reduced is whether selective mode can silently drop a required check — it could, and now cannot for this cause.
+- **witnessed by:** src/Core.TypeScript/ace/build-graph.test.ts, describe("a tree-wide target must not suppress the unclaimed-path fail-safe"): 4 of its 7 tests fail when the fix is reverted to hits.length > 0 (mutation run 2026-09-11, 90 pass / 4 fail)
+- **provenance:** self-directed (attested by shadow (this session), while wiring affected-legs.ts into gate.yml at Aaron's authorization)
+- **lineage:** found by testing affected-legs.ts on an unknown path before gating floor jobs on its output
