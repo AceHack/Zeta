@@ -673,7 +673,9 @@ if (mode === "follow-up") {
         "responsive; it is shipping a mistake a reviewer handed you.",
         "`how` IS POSTED AS YOUR REPLY ON THE REVIEWER'S THREAD once the change is pushed - write it to them: for",
         "addressed, what you changed and where (file and function) and which test proves it; for declined, why not.",
-        "Plain and specific, no internal ids. Set `respond: false` ONLY for an item that asked nothing of the change -",
+        "Plain and specific, no internal ids. Promise nothing you cannot do from here: you cannot file tickets or",
+        "write to the tracker, so say where a thing belongs (\"this needs its own ticket for X\") - never \"I'll file it\".",
+        "Set `respond: false` ONLY for an item that asked nothing of the change -",
         "a review-trigger keyword, a bot announcing it has started - where a reply would be noise.",
         canSync
           ? "An item of kind behind_target means the target moved ahead of this change. You cannot merge it yourself; if the change should be brought level, set `syncWithTarget` and the organization will merge the target in (conflicts come back to you)."
