@@ -1,0 +1,12 @@
+{
+  "pr_number": 17275,
+  "archive_path": "docs/history/pr-reviews/PR-17275-docs-record-the-default-criterion-unattended-ai-with-their-own-freedom.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-11T15:11:33.479Z",
+  "schema_version": "v1",
+  "commit_sha": "bb02c0befe40bca2535d783ed8bc317789d8fbf1",
+  "title": "docs: record the default criterion — unattended AI with their own freedom",
+  "state": "MERGED",
+  "merged_at": "2026-09-11T15:10:50Z",
+  "head_ref": "default-criterion-v2"
+}
