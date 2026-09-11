@@ -178,15 +178,31 @@ if (process.env.VERIFY_STEPS) {
     //   fails on trunk too                          -> pre-existing (tolerated, printed)
     //   passes when the change is re-run            -> did not reproduce (tolerated, printed as FLAKY)
     // Anything the re-run cannot measure stays the change's: an unmeasured retry never acquits.
+    // MEASURED again on AIAGENT-1658: ONE re-run per side was not enough either. portalEntrypointScript
+    // flips on BOTH trunk and the change under load, so each attempt one of its tests happened to fail
+    // on the change's re-run and pass on trunk's - by chance - and a client-only change was refused for
+    // a server script test. So the re-run is repeated (VERIFY_RERUNS, default 3), and a failure is the
+    // change's only if it fails on EVERY re-run of the change and on NO re-run of trunk. A test that is
+    // merely intermittent passes one of those by chance with probability 1 - (fail rate)^N x (pass rate)^N.
     if (added.length > 0) {
       const esc = (f) => (step.report === "jest" ? f.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") : f);
       const files = [...new Set(added.map((t) => t.split(" :: ")[0]))].map(esc);
       const narrowed = { ...step, argv: [...step.argv, ...files] };
-      process.stderr.write("[verify] re-running " + String(added.length) + " new failure(s) on the change and on trunk before attributing them\n");
-      const again = runStep(narrowed, cwd);
-      const onTrunk = runStep(narrowed, baselineCwd);
-      const reproduced = added.filter((t) => (again.failing === undefined ? true : again.failing.has(t)));
-      const trunkToo = new Set(added.filter((t) => onTrunk.failing !== undefined && onTrunk.failing.has(t)));
+      const reruns = Math.max(1, Number.parseInt(process.env.VERIFY_RERUNS || "3", 10) || 3);
+      process.stderr.write("[verify] re-running " + String(added.length) + " new failure(s) on the change and on trunk (up to " + String(reruns) + "x) before attributing them\n");
+      let reproducedSet = new Set(added);
+      const trunkToo = new Set();
+      for (let k = 0; k < reruns; k++) {
+        // Stop as soon as nothing is left that could still be the change's.
+        if ([...reproducedSet].every((t) => trunkToo.has(t))) break;
+        const again = runStep(narrowed, cwd);
+        // An unmeasurable re-run acquits nothing: it keeps every candidate.
+        if (again.failing !== undefined) reproducedSet = new Set([...reproducedSet].filter((t) => again.failing.has(t)));
+        if ([...reproducedSet].every((t) => trunkToo.has(t))) break;
+        const onTrunk = runStep(narrowed, baselineCwd);
+        if (onTrunk.failing !== undefined) for (const t of added) if (onTrunk.failing.has(t)) trunkToo.add(t);
+      }
+      const reproduced = added.filter((t) => reproducedSet.has(t));
       for (const t of trunkToo) {
         process.stderr.write("[verify] FAILS ON TRUNK TOO when re-run (pre-existing, intermittent there): " + t + "\n");
         record("  fails on trunk too: " + t);

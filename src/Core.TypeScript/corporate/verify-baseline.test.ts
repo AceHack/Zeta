@@ -124,6 +124,22 @@ describe("ONE SAMPLE IS NOT AN ATTRIBUTION: a new failure is measured again befo
     r.cleanup();
   });
 
+  test("MEASURED again on AIAGENT-1658: ONE re-run is not enough - a test that fails twice more and passes on the third re-run is still not the change's", () => {
+    const x: [string, string] = ["server/entrypoint.test.ts", "pins the heap"];
+    const r = setup([], { runs: [[x], [x], [x], []] });
+    expect(r.status).toBe(0);
+    expect(r.stderr).toContain("FLAKY - not attributed to this change): server/entrypoint.test.ts :: pins the heap");
+    r.cleanup();
+  });
+
+  test("...and a test trunk fails only on its third re-run is pre-existing, however steadily the change fails it", () => {
+    const x: [string, string] = ["server/entrypoint.test.ts", "leaves the default"];
+    const r = setup({ runs: [[], [], [], [x]] }, [x]);
+    expect(r.status).toBe(0);
+    expect(r.stderr).toContain("FAILS ON TRUNK TOO when re-run (pre-existing, intermittent there): server/entrypoint.test.ts :: leaves the default");
+    r.cleanup();
+  });
+
   test("only the flaky one is excused: a real new failure beside it still refuses the change", () => {
     const r = setup([], { runs: [[["a.test.ts", "flaky"], ["b.test.ts", "real"]], [["b.test.ts", "real"]]] });
     expect(r.status).toBe(1);
