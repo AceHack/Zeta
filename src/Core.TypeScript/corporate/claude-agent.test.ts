@@ -98,6 +98,10 @@ describe("THE WORLDVIEW IS ASKED FOR — the prompt carries the observe command,
       const input = r.seen?.input ?? "";
       expect(input).toContain(join(r.dir, "docs", "task-9", "evidence").split("\\").join("/"));
       expect(input).toContain("never commit them into the repository");
+      // MEASURED on AIAGENT-1658: told not to let a test write into the working tree, the author
+      // committed a spec that wrote its screenshots to the evidence directory's absolute path instead.
+      expect(input).toContain("no committed file may contain its path, or any path on this machine");
+      expect(input).toContain("test.info().outputPath()");
       expect(input).toContain("Never mention the organization's internal ids");
       r.cleanup();
     }

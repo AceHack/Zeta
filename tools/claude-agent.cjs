@@ -375,7 +375,8 @@ function preamble(hat, workId) {
     // can never open. What the organization produces about the work stays with the organization.
     "EVIDENCE BELONGS TO THE ORGANIZATION, NOT THE PRODUCT. Screenshots, recordings, logs, notes and documents you produce about this work go in " +
       evidenceDir(workId) +
-      " and are cited from your answer; never commit them into the repository, and never make a test write them into the working tree. Never mention the organization's internal ids (task-..., goal-..., proj-...) or its documents in anything you commit - the people reviewing the change cannot see them. The ticket key is the only reference the repository needs.",
+      " and are cited from your answer; never commit them into the repository, and never make a test write them into the working tree. " +
+      "That directory is yours, not the product's: no committed file may contain its path, or any path on this machine. A committed test writes what it captures to its runner's own output location (Playwright's test.info().outputPath(), a temporary directory), and you copy what you want to keep into the evidence directory after you run it. Never mention the organization's internal ids (task-..., goal-..., proj-...) or its documents in anything you commit - the people reviewing the change cannot see them. The ticket key is the only reference the repository needs.",
     env.ORG_FEEDBACK ? "THIS WORK CAME BACK. What was said, newest first - address every point:" + NL + env.ORG_FEEDBACK + NL : "",
     env.ORG_ANSWERS ? "A PERSON ALREADY ANSWERED (do not ask these again):" + NL + env.ORG_ANSWERS + NL : "",
   ].filter((l) => l !== "").join(NL);
