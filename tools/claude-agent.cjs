@@ -286,7 +286,8 @@ if (mode === "gate") {
     "",
     rounds === "0"
       ? "You have NO question rounds left: do the step on your best reading and state any assumption inside the document."
-      : "If something only a PERSON can settle is genuinely missing (a business decision, an intention, a constraint nobody wrote down), put the questions in `questions` and leave `document` empty. You have " + rounds + " round(s) left for this work; never re-ask anything answered.",
+      : "If something only a PERSON can settle is genuinely missing (a business decision, an intention, a constraint nobody wrote down), put the questions in `questions` and leave `document` empty. You have " + rounds + " round(s) left for this work; never re-ask anything answered." + NL +
+        "IF THE STEP'S QUESTION CANNOT HONESTLY BE ANSWERED YES WITHOUT A PERSON - for instance a defect you could not reproduce - you MUST ask: put each question in `questions`, and fold a one-line summary of what you tried into the question itself so the person has the context. A document whose conclusion is a question reaches nobody; a question in `questions` reaches a person and holds the work until they answer.",
     "If you worked something out that the next agent would otherwise rediscover the hard way, add it to `learned`.",
   ].join(NL);
   const schema = {
