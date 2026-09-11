@@ -239,6 +239,8 @@ export const COMMANDS: readonly CommandSpec[] = [
       { name: "--sync", what: "When the target moves on: merge it into the request (`merge_target`), or only record that the request is behind (`flag_only`).", required: true, takesValue: true, oneOf: ["merge_target", "flag_only"] },
       { name: "--replies", what: "Once the team has decided about a reviewer's comment: reply on the thread with what was changed (or why not) and resolve it (`reply_and_resolve`), reply only (`reply`), or say nothing on the thread (`none`).", required: true, takesValue: true, oneOf: ["reply_and_resolve", "reply", "none"] },
       { name: "--after-open", what: "What the team does once, right after it opens a merge request: `comment=<text>` posts that comment (e.g. `comment=aireview` to start the AI review). Repeatable, in order. `none` says nothing happens.", required: true, takesValue: true },
+      { name: "--after-update", what: "What the team does after EACH push of a fix to an open merge request: `comment=<text>` (e.g. `comment=aireview`, so the reviewer reviews the fix and review goes back and forth until a round raises nothing new), or `none`.", required: true, takesValue: true },
+      { name: "--review-rounds", what: "At most this many re-reviews are asked for on one request before a person decides (default 10).", takesValue: true },
       { name: "--why", what: "Why merge requests are written this way here.", required: true, takesValue: true },
       JSON_FLAG,
     ],

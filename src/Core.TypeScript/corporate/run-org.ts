@@ -171,7 +171,7 @@ import { foldCalendar, foldOrganization } from "./org-fold";
 import { authorIndexFrom, observationsFrom } from "./reputation-from-log";
 import type { ReputationObservation } from "./reputation";
 import { foldHatsWorn,
-  foldActionItems, foldAfterOpen, foldHandedOffChanges, foldLandedChanges, foldObserveActTicks, foldPresence } from "./org-fold";
+  foldActionItems, foldAfterOpen, foldAfterUpdate, foldHandedOffChanges, foldLandedChanges, foldObserveActTicks, foldPresence } from "./org-fold";
 import { emit } from "./org-event";
 import { awaitingHumanReview, describeChangeLine } from "./handoff-report";
 import type { AgentState } from "../workflow-engine/agent-loop/state-machine";
@@ -962,6 +962,14 @@ export function argRefusals(args: Args): readonly string[] {
             `once a request is open this organization does ${args.changeRequests.afterOpen.map((s) => `${s.kind} '${s.body}'`).join(", ")}: give --answer-cmd (with --answer-arg) to do it`,
           );
         }
+        if (args.changeRequests.afterUpdate === undefined) {
+          out.push(
+            "this organization has not said what happens after a fix is pushed to an open merge request (for example: comment 'aireview' again, so review goes back and forth until it is clean): " +
+              "run 'org change-requests set' with --after-update 'comment=<text>' or --after-update none",
+          );
+        } else if (args.changeRequests.afterUpdate.length > 0 && args.answerCmd === undefined) {
+          out.push("after a fix is pushed this organization asks for review again: give --answer-cmd (with --answer-arg) to ask");
+        }
         if (args.changeRequests.replies !== undefined && args.changeRequests.replies !== "none" && args.answerCmd === undefined) {
           out.push(
             `reviewers here are answered on their threads (replies: ${args.changeRequests.replies}): give --answer-cmd (with --answer-arg) to post the answers`,
@@ -1634,6 +1642,7 @@ export function attachAfterHandoff(deps: Record<string, unknown>, args: Args, fe
   }
   if (store !== undefined) {
     Object.defineProperty(deps, "afterOpenDone", { enumerable: true, configurable: true, get: () => foldAfterOpen(readEvents(store)) });
+    Object.defineProperty(deps, "afterUpdateDone", { enumerable: true, configurable: true, get: () => foldAfterUpdate(readEvents(store)) });
   }
 }
 

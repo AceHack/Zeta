@@ -719,6 +719,8 @@ describe("HOW A MERGE REQUEST IS WRITTEN IS STATED, AND ONLY WHAT CAN MEAN SOMET
       "--sync", "merge_target",
       "--replies", "reply_and_resolve",
       "--after-open", "comment=aireview",
+      "--after-update", "comment=aireview",
+      "--review-rounds", "6",
       "--why", "reviewers read the problem first",
     ]);
     expect(code).toBe(Exit.Ok);
@@ -730,13 +732,14 @@ describe("HOW A MERGE REQUEST IS WRITTEN IS STATED, AND ONLY WHAT CAN MEAN SOMET
     expect(await main(["org", "change-requests", "show", "--org", "elera"], h.deps)).toBe(Exit.Ok);
     expect(h.stdout.join("")).toContain("## Root cause");
     expect(h.stdout.join("")).toContain("reviewers' comments: reply_and_resolve");
+    expect(h.stdout.join("")).toContain("after each fix is pushed: comment 'aireview' (up to 6 rounds, then a person decides)");
   });
 
   test("a section with no statement, an unknown sync method, rebasing, or no answer about replies is refused and nothing is written", async () => {
     const h = harness();
     await main(CREATE, h.deps);
     const before = h.files.get(REG);
-    const replies = ["--replies", "reply", "--after-open", "none"];
+    const replies = ["--replies", "reply", "--after-open", "none", "--after-update", "none"];
     expect(await set(h, ["--section", "Root cause", "--sync", "merge_target", ...replies, "--why", "w"])).toBe(Exit.Usage);
     expect(await set(h, ["--section", "Root cause=why", "--sync", "rebase", ...replies, "--why", "w"])).toBe(Exit.Usage);
     expect(await set(h, ["--section", "Root cause= ", "--sync", "merge_target", ...replies, "--why", "w"])).toBe(Exit.Refused);

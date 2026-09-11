@@ -170,3 +170,28 @@ describe("A RUN PROFILE HOLDS HOW A RUN STARTS - NEVER A CREDENTIAL", () => {
     expect(validateRunProfiles([ok, { ...ok, name: "copy" }]).ok).toBe(false);
   });
 });
+
+describe("THE WATCHER KEEPS THE REVIEW LOOP MOVING", () => {
+  const withRounds = { ...cr, afterUpdate: [{ kind: "comment" as const, body: "aireview" }], reviewRounds: 3 };
+  const pushed = ev({ kind: "change_handed_off", workId: "task-40", changeId: "c", branch: "defect/x", url: "https://git.example/p/-/merge_requests/164", base: "master", commit: "fix2" });
+
+  test("a fix pushed with no re-review asked for yet is a reason; asked, it is not; past the limit it is not either", () => {
+    const base = { events: [handedOff, aireviewDone, pushed], changeRequests: withRounds };
+    expect(watchReasons(input(base)).reasons.some((r) => r.includes("review has not been asked for again"))).toBe(true);
+    const asked = ev({ kind: "change_after_update", workId: "task-40", stepKey: "comment:aireview", commit: "fix2", replyId: "note-9" });
+    expect(watchReasons(input({ ...base, events: [...base.events, asked] })).reasons).toEqual([]);
+    const spent = { ...withRounds, reviewRounds: 1 };
+    const oldRound = ev({ kind: "change_after_update", workId: "task-40", stepKey: "comment:aireview", commit: "fix1" });
+    expect(watchReasons(input({ events: [handedOff, aireviewDone, pushed, oldRound], changeRequests: spent })).reasons).toEqual([]);
+  });
+
+  test("an item reopened by a turned-back review is NEWS - its signature differs from the launch that raised it", () => {
+    const raised = ev({ kind: "action_item_raised", workId: "task-40", actionItemId: "gitlab:note-3", source: "gitlab", itemKind: "diff_comment", summary: "s" });
+    const before = watchReasons(input({ events: [handedOff, aireviewDone, raised] }));
+    const reopened = ev({ kind: "action_item_reopened", workId: "task-40", actionItemId: "gitlab:note-3", why: "turned back" });
+    const after = watchReasons(input({ events: [handedOff, aireviewDone, raised, reopened] }));
+    expect(after.reasons).toEqual(["gitlab:note-3 on task-40 was reopened"]);
+    expect(after.signature).not.toBe(before.signature);
+    expect(shouldLaunch(after, { seen: [], lastSignature: before.signature, lastLaunchMs: 0 }, 60_000, 5).launch).toBe(true);
+  });
+});

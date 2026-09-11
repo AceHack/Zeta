@@ -438,6 +438,18 @@ export type OrgFact =
     }
   | {
       /**
+       * A configured after-update step (e.g. `aireview` again) was performed after a follow-up pushed
+       * the change at `commit` - one review round. Keyed by step AND commit: each push is its own
+       * round, and the same push never asks twice.
+       */
+      readonly kind: "change_after_update";
+      readonly workId: string;
+      readonly stepKey: string;
+      readonly commit: string;
+      readonly replyId?: string;
+    }
+  | {
+      /**
        * A settled action item is OPEN AGAIN: its settlement did not stand. MEASURED on MR !162: a
        * blocking finding was "addressed" by a rollout runbook that existed only in the organization's
        * own evidence directory - the answer could not be posted, and nothing the reviewer could see

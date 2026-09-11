@@ -301,7 +301,9 @@ export function planFor(org: OrgRecord, hasWork: boolean): ConfigurePlan {
       "And when a reviewer comments: once the team has decided (fixed it, or decided not to), should it reply " +
       "on the thread with what it changed or why not, and resolve the thread - reply only - or say nothing there? " +
       "And once a merge request is open, should the team do anything first - for example comment 'aireview' so " +
-      "your AI review runs? What the review then says comes back as comments the team works like any other.",
+      "your AI review runs? What the review then says comes back as comments the team works like any other. " +
+      "And after each fix is pushed, should it ask for review again (for example comment 'aireview' again) so review " +
+      "goes back and forth until a round comes back clean - and after how many rounds should a person decide instead?",
     why:
       "A merge request is what your reviewers read, so its sections are your convention, not ours. The " +
       "team produces evidence - screenshots, step documents - that belongs with the team, and a pattern " +
@@ -313,10 +315,10 @@ export function planFor(org: OrgRecord, hasWork: boolean): ConfigurePlan {
     command:
       "org setting bind --setting delivery --value human_review|merge --why <why>  and then  " +
       "org change-requests set --section \"<Heading>=<what it must state>\" ... [--keep-out <glob> ...] " +
-      "--sync merge_target|flag_only --replies reply_and_resolve|reply|none --after-open 'comment=<text>'|none --why <why>",
+      "--sync merge_target|flag_only --replies reply_and_resolve|reply|none --after-open 'comment=<text>'|none --after-update 'comment=<text>'|none [--review-rounds <n>] --why <why>",
     satisfied:
       !changesRepos ||
-      (delivery !== undefined && (delivery === "merge" || (cr !== undefined && cr.replies !== undefined && cr.afterOpen !== undefined))),
+      (delivery !== undefined && (delivery === "merge" || (cr !== undefined && cr.replies !== undefined && cr.afterOpen !== undefined && cr.afterUpdate !== undefined))),
     required: changesRepos,
     current: !changesRepos
       ? "not needed - this organization changes no repository"
@@ -333,7 +335,11 @@ export function planFor(org: OrgRecord, hasWork: boolean): ConfigurePlan {
               "; " +
               (cr.afterOpen === undefined
                 ? "nobody has said what happens once a request is open"
-                : `once open: ${cr.afterOpen.length === 0 ? "nothing" : cr.afterOpen.map((s) => `${s.kind} '${s.body}'`).join(", ")}`),
+                : `once open: ${cr.afterOpen.length === 0 ? "nothing" : cr.afterOpen.map((s) => `${s.kind} '${s.body}'`).join(", ")}`) +
+              "; " +
+              (cr.afterUpdate === undefined
+                ? "nobody has said whether review is asked for again after each fix"
+                : `after each fix: ${cr.afterUpdate.length === 0 ? "nothing" : cr.afterUpdate.map((s) => `${s.kind} '${s.body}'`).join(", ")}`),
   };
 
   const work: PlanStep = {

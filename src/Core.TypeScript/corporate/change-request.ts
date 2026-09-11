@@ -89,6 +89,9 @@ export interface AfterOpenStep {
   readonly body: string;
 }
 
+/** Re-reviews requested on one request before a person decides, when the organization has not said. */
+export const DEFAULT_REVIEW_ROUNDS = 10;
+
 /** A step's identity: the same step is performed once per request, and a changed step is a new one. */
 export const afterOpenKey = (s: AfterOpenStep): string => `${s.kind}:${s.body.trim()}`;
 
@@ -121,6 +124,17 @@ export interface ChangeRequestConfig {
    * `replies`: an empty list is a real answer ("nothing"), absent means NOT YET STATED.
    */
   readonly afterOpen?: readonly AfterOpenStep[];
+  /**
+   * What the organization does after EACH push of a follow-up that changed the code - e.g. comment
+   * `aireview` again, so the reviewer reviews the fix. With it, review is a back-and-forth that runs
+   * until a round raises nothing new. REQUIRED where asked, like `afterOpen`; empty is "nothing".
+   */
+  readonly afterUpdate?: readonly AfterOpenStep[];
+  /**
+   * At most this many re-reviews are requested on one request before a person is asked to decide -
+   * a guard against two agents disagreeing forever, never a quiet stop. Default 10.
+   */
+  readonly reviewRounds?: number;
   /** Why merge requests are written this way here. A convention with no reason is followed until it is wrong. */
   readonly why: string;
 }
@@ -160,7 +174,10 @@ export function validateChangeRequests(c: ChangeRequestConfig): PracticeCheck {
       reason: `'${String(c.replies)}' is not a way to answer a reviewer's comment — known: ${Object.values(ReplyPolicy).join(", ")}`,
     };
   }
-  for (const s of c.afterOpen ?? []) {
+  if (c.reviewRounds !== undefined && (!Number.isInteger(c.reviewRounds) || c.reviewRounds < 1 || c.reviewRounds > 50)) {
+    return { ok: false, reason: `reviewRounds must be a whole number from 1 to 50 - it is when a person is asked, not whether` };
+  }
+  for (const s of [...(c.afterOpen ?? []), ...(c.afterUpdate ?? [])]) {
     if (!(Object.values(AfterOpenKind) as readonly string[]).includes(String(s.kind))) {
       return { ok: false, reason: `'${String(s.kind)}' is not something the organization can do after opening a request — known: ${Object.values(AfterOpenKind).join(", ")}` };
     }

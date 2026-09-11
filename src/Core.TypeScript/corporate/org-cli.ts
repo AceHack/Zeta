@@ -720,6 +720,16 @@ export async function main(argv: readonly string[], deps: CliDeps): Promise<numb
           afterOpen.push({ kind: raw.slice(0, at).trim() as AfterOpenStep["kind"], body: raw.slice(at + 1).trim() });
         }
       }
+      const afterUpdateRaw = flagValues(flags, "--after-update").map((v) => v.trim());
+      const afterUpdate: AfterOpenStep[] = [];
+      if (!(afterUpdateRaw.length === 1 && afterUpdateRaw[0] === "none")) {
+        for (const raw of afterUpdateRaw) {
+          const at = raw.indexOf("=");
+          if (at <= 0) { deps.err(`--after-update '${raw}' must be '<kind>=<text>' (e.g. comment=aireview) or 'none'`); return Exit.Usage; }
+          afterUpdate.push({ kind: raw.slice(0, at).trim() as AfterOpenStep["kind"], body: raw.slice(at + 1).trim() });
+        }
+      }
+      const roundsRaw = flagValue(flags, "--review-rounds");
       const config: ChangeRequestConfig = {
         sections,
         keepOut: flagValues(flags, "--keep-out").map((v) => v.trim()).filter((v) => v !== ""),
@@ -727,6 +737,8 @@ export async function main(argv: readonly string[], deps: CliDeps): Promise<numb
         // Asked here, always: an absent answer is refused below rather than stored as "not stated".
         replies: (flagValue(flags, "--replies") ?? "").trim() as ReplyPolicy,
         afterOpen,
+        afterUpdate,
+        ...(roundsRaw === undefined ? {} : { reviewRounds: Number(roundsRaw) }),
         why: (flagValue(flags, "--why") ?? "").trim(),
       };
       const valid = validateChangeRequests(config);
@@ -740,6 +752,7 @@ export async function main(argv: readonly string[], deps: CliDeps): Promise<numb
         `${replaced ? "changed" : "stated"} how '${chosen.org.orgId}' writes merge requests: ` +
         `${sections.map((x) => x.heading).join(" / ")}; kept current by ${config.sync}; reviewers answered: ${config.replies}` +
         `; once open: ${afterOpen.length === 0 ? "nothing" : afterOpen.map((s) => `${s.kind} '${s.body}'`).join(", ")}` +
+        `; after each fix: ${afterUpdate.length === 0 ? "nothing" : afterUpdate.map((s) => `${s.kind} '${s.body}'`).join(", ")}` +
         `${config.keepOut.length === 0 ? "" : `; never adds ${config.keepOut.join(", ")}`}\n  because ${config.why}\n`,
       );
       return Exit.Ok;
@@ -809,6 +822,7 @@ export async function main(argv: readonly string[], deps: CliDeps): Promise<numb
               cr.keepOut.length === 0 ? "  a change may add anything" : `  a change may never add: ${cr.keepOut.join(", ")}`,
               `  kept current by: ${cr.sync}`,
               `  reviewers' comments: ${cr.replies ?? "NOT STATED - run 'org change-requests set' with --replies"}`,
+              `  after each fix is pushed: ${cr.afterUpdate === undefined ? "NOT STATED - run 'org change-requests set' with --after-update" : cr.afterUpdate.length === 0 ? "nothing" : cr.afterUpdate.map((s) => `${s.kind} '${s.body}'`).join(", ") + ` (up to ${String(cr.reviewRounds ?? 10)} rounds, then a person decides)`}`,
               `  once a request is open: ${cr.afterOpen === undefined ? "NOT STATED - run 'org change-requests set' with --after-open" : cr.afterOpen.length === 0 ? "nothing" : cr.afterOpen.map((s) => `${s.kind} '${s.body}'`).join(", ")}`,
               `  because ${cr.why}`,
               "",

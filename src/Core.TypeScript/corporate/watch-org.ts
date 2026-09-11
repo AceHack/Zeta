@@ -30,8 +30,8 @@ import { closeSync, mkdirSync, openSync, readFileSync, renameSync, writeFileSync
 import { join, resolve } from "node:path";
 import { answersOwed, correlateFeedback, type FeedbackDelivery } from "./change-followup";
 import type { ChangeRequestConfig } from "./change-request";
-import { afterOpenKey } from "./change-request";
-import { foldActionItems, foldAfterOpen, foldHandedOffChanges } from "./org-fold";
+import { afterOpenKey, DEFAULT_REVIEW_ROUNDS } from "./change-request";
+import { foldActionItems, foldAfterOpen, foldAfterUpdate, foldHandedOffChanges } from "./org-fold";
 import type { OrgEvent } from "./org-event";
 import { pollFeedback, readFeedbackDir } from "./followup-commands";
 import { parseRegistry, type OrgRecord } from "./org-registry";
@@ -68,7 +68,7 @@ export function watchReasons(input: WatchInput): WatchVerdict {
   const afterOpen = foldAfterOpen(input.events);
   const known = new Set([...items.values()].flat().map((i) => i.actionItemId));
   const ownReplies = new Set([...items.values()].flat().flatMap((i) => (i.answered?.replyId === undefined ? [] : [`${i.source}:${i.answered.replyId}`])));
-  const ownPosted = new Set([...afterOpen.values()].flatMap((e) => e.replyIds));
+  const ownPosted = new Set([...afterOpen.values(), ...foldAfterUpdate(input.events).values()].flatMap((e) => e.replyIds));
   const reasons: string[] = [];
   const keys: string[] = [];
 
@@ -104,10 +104,25 @@ export function watchReasons(input: WatchInput): WatchVerdict {
     }
     for (const i of list) {
       if (i.settled === undefined && i.deferred === undefined) {
-        reasons.push(`${i.actionItemId} on ${workId} was raised and never decided`);
-        keys.push(`u:${i.actionItemId}`);
+        reasons.push(`${i.actionItemId} on ${workId} ${i.reopened === undefined ? "was raised and never decided" : "was reopened"}`);
+        // The item STATE is in the key: a reopen after a turned-back review is news, not the same reason again.
+        keys.push(`u:${i.actionItemId}@${String(i.reopened?.atMs ?? i.raisedAtMs)}`);
       }
     }
+  }
+
+  // A FIX WAS PUSHED AND REVIEW HAS NOT BEEN ASKED FOR AGAIN (the post failed, or the run ended first).
+  const afterUpdate = foldAfterUpdate(input.events);
+  const limit = input.changeRequests?.reviewRounds ?? DEFAULT_REVIEW_ROUNDS;
+  for (const [workId, change] of handed) {
+    const steps = input.changeRequests?.afterUpdate ?? [];
+    if (steps.length === 0 || change.commit === undefined || change.firstCommit === undefined || change.commit === change.firstCommit) continue;
+    const rec = afterUpdate.get(workId);
+    if ((rec?.rounds ?? 0) >= limit) continue;
+    const pending = steps.filter((st) => !(rec?.done.has(`${afterOpenKey(st)}@${change.commit as string}`) ?? false));
+    if (pending.length === 0) continue;
+    reasons.push(`a fix was pushed to the request of ${workId} at ${change.commit.slice(0, 8)} and review has not been asked for again`);
+    keys.push(`r:${workId}@${change.commit}`);
   }
 
   for (const [workId] of handed) {

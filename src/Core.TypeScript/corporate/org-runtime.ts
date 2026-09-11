@@ -133,7 +133,7 @@ import {
   type FollowUpReviewRequest,
   type FollowUpReviewVerdict,
 } from "./change-followup";
-import { afterOpenKey, missingSections, type ChangeRequestConfig, type DescribeRequest } from "./change-request";
+import { afterOpenKey, DEFAULT_REVIEW_ROUNDS, missingSections, type ChangeRequestConfig, type DescribeRequest } from "./change-request";
 import { autoApproveReview, simulatedChangeControl, simulatedIntake, simulatedTestRunner, simulatedWorkExecutor } from "./adapters";
 import { associateGoal, EMPTY_BOOK, openPortfolio, type PortfolioKind } from "./portfolio";
 import {
@@ -363,8 +363,14 @@ export interface OrgRuntimeDeps extends HumanCheckpointDeps {
   readonly actionItems?: ReadonlyMap<string, readonly ActionItem[]>;
   /** The after-open steps already performed, by work id (`foldAfterOpen`). */
   readonly afterOpenDone?: ReadonlyMap<string, { readonly done: ReadonlySet<string>; readonly replyIds: readonly string[] }>;
-  /** Posts a comment on a handed-off change - how configured after-open steps are performed. */
-  readonly postComment?: (request: { readonly workId: string; readonly changeUrl?: string; readonly branch: string; readonly body: string }) => Promise<PortResult<{ readonly replyId?: string }>>;
+  /** The review rounds requested after follow-up pushes, by work id (`foldAfterUpdate`). */
+  readonly afterUpdateDone?: ReadonlyMap<string, { readonly done: ReadonlySet<string>; readonly rounds: number; readonly replyIds: readonly string[] }>;
+  /**
+   * Posts a comment on a handed-off change - how configured after-open and after-update steps are
+   * performed. `repeat`: post even when the request already carries the same text (a re-review
+   * request is the same words each round, and each round must be asked).
+   */
+  readonly postComment?: (request: { readonly workId: string; readonly changeUrl?: string; readonly branch: string; readonly body: string; readonly repeat?: boolean }) => Promise<PortResult<{ readonly replyId?: string }>>;
   /**
    * What happened to handed-off changes since the last cycle - comments, updates, a target moving -
    * from webhooks or a poll of the review system. Each becomes an ACTION ITEM on its work; none is an
@@ -4023,7 +4029,7 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
     );
     // ...and so do the comments its after-open steps posted (an `aireview` trigger, say). The id is
     // matched without its source prefix, since the step does not know which source will read it back.
-    const ownPosted = new Set([...(deps.afterOpenDone?.values() ?? [])].flatMap((e) => e.replyIds));
+    const ownPosted = new Set([...(deps.afterOpenDone?.values() ?? []), ...(deps.afterUpdateDone?.values() ?? [])].flatMap((e) => e.replyIds));
 
     // ── AFTER A REQUEST OPENS: THE ORGANIZATION'S OWN CONVENTION, ONCE ──────
     // Configured per organization (`changeRequests.afterOpen`) - e.g. comment `aireview` so the AI
@@ -4274,16 +4280,17 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
         }
       }
       if (moved && reviewRejected !== undefined) {
-        // Turned back: nothing is pushed, and each item this session claimed is left OPEN with the
-        // reviewer's reason, so the next session fixes what was found instead of repeating itself.
+        // Turned back: nothing is pushed, and each item this session claimed is REOPENED with the
+        // reviewer's reason - open and due, not deferred - so the watcher starts the next round at
+        // once and the next session fixes what was found. Review is a back-and-forth until it passes.
         for (const d of accepted.filter((x) => x.outcome !== "deferred")) {
           note({
             kind: OrgEventKind.ChangeProjected,
             subjectId: workId,
             actorHatId: hatId,
-            decision: `action item ${d.actionItemId} left open: the follow-up's review turned it back`,
+            decision: `action item ${d.actionItemId} reopened: the follow-up's review turned it back`,
             atMs: warmedAt,
-            fact: { kind: "action_item_deferred", workId, actionItemId: d.actionItemId, why: `your change for this was reviewed and turned back - ${reviewRejected}`, byHatId: hatId },
+            fact: { kind: "action_item_reopened", workId, actionItemId: d.actionItemId, why: `your change for this was reviewed and turned back - ${reviewRejected}` },
           });
         }
       } else if (moved) {
@@ -4474,6 +4481,70 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
         for (const x of r.value) {
           if ("error" in x) refusals.push(`could not answer ${x.actionItemId}: ${x.error}`);
           else answered(x.actionItemId, x);
+        }
+      }
+    }
+
+    // ── REVIEW IS A BACK-AND-FORTH UNTIL IT COMES BACK CLEAN ──────────────
+    // After a follow-up PUSHED a fix and its answers are posted, the organization asks for review
+    // again (`changeRequests.afterUpdate`, e.g. `aireview`), so the reviewer judges the fix rather
+    // than the version it already commented on. What that round says comes back as feedback; a round
+    // that raises nothing new ends the loop. Each push is one round, asked once; after
+    // `reviewRounds` the organization stops asking and says so - a person decides from there.
+    const updateSteps = deps.changeRequests?.afterUpdate ?? [];
+    if (updateSteps.length > 0) {
+      const limit = deps.changeRequests?.reviewRounds ?? DEFAULT_REVIEW_ROUNDS;
+      const current = new Map(handedMap);
+      for (const [w, c] of handedThisRun) {
+        const was = handedMap.get(w);
+        current.set(w, { ...c, ...(was?.firstCommit ?? was?.commit ? { firstCommit: (was?.firstCommit ?? was?.commit) as string } : {}) });
+      }
+      for (const [workId, change] of current) {
+        const commit = change.commit;
+        const first = change.firstCommit;
+        // Only a PUSHED FIX is a new round: the first handoff is covered by after-open steps.
+        if (commit === undefined || first === undefined || commit === first) continue;
+        const record = deps.afterUpdateDone?.get(workId);
+        const done = new Set(record?.done ?? []);
+        let rounds = record?.rounds ?? 0;
+        const asked = updateSteps.every((s) => done.has(`${afterOpenKey(s)}@${commit}`));
+        if (asked) continue;
+        if (rounds >= limit) {
+          refusals.push(
+            `${workId}: ${String(limit)} review rounds have been asked for and the reviewer still raises findings - ` +
+              "the organization stops asking; a person decides whether this change is done",
+          );
+          continue;
+        }
+        if (deps.postComment === undefined) {
+          refusals.push(`after a follow-up is pushed this organization asks for review again, and nothing is configured to ask`);
+          continue;
+        }
+        let countedThisPush = false;
+        for (const step of updateSteps) {
+          const key = afterOpenKey(step);
+          if (done.has(`${key}@${commit}`)) continue;
+          const posted = await deps.postComment({
+            workId,
+            ...(change.url === undefined ? {} : { changeUrl: change.url }),
+            branch: change.branch,
+            body: step.body,
+            repeat: true,
+          });
+          if (!posted.ok) {
+            refusals.push(`could not ask for review again on ${workId}'s request ('${key}'): ${posted.reason}`);
+            continue;
+          }
+          if (posted.value.replyId !== undefined) ownPosted.add(posted.value.replyId);
+          if (!countedThisPush) rounds += 1;
+          countedThisPush = true;
+          note({
+            kind: OrgEventKind.ChangeProjected,
+            subjectId: workId,
+            decision: `review round ${String(rounds)} of ${String(limit)} asked for after the fix at ${commit.slice(0, 8)}: ${key}`,
+            atMs: warmedAt,
+            fact: { kind: "change_after_update", workId, stepKey: key, commit, ...(posted.value.replyId === undefined ? {} : { replyId: posted.value.replyId }) },
+          });
         }
       }
     }

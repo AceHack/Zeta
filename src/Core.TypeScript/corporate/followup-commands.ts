@@ -274,8 +274,8 @@ export function commandFollowUpReview(spec: CommandSpec, fallbackCwd: string) {
  * configured after-open steps are performed. Prints `{"replyId"}` so the comment is recognised later.
  */
 export function commandCommenter(spec: CommandSpec, fallbackCwd: string) {
-  return async (r: { readonly workId: string; readonly changeUrl?: string; readonly branch: string; readonly body: string }): Promise<PortResult<{ readonly replyId?: string }>> => {
-    const ran = run(spec, [], fallbackCwd, { ORG_BRANCH: r.branch }, JSON.stringify({ op: "comment", changeUrl: r.changeUrl ?? "", body: r.body }));
+  return async (r: { readonly workId: string; readonly changeUrl?: string; readonly branch: string; readonly body: string; readonly repeat?: boolean }): Promise<PortResult<{ readonly replyId?: string }>> => {
+    const ran = run(spec, [], fallbackCwd, { ORG_BRANCH: r.branch }, JSON.stringify({ op: "comment", changeUrl: r.changeUrl ?? "", body: r.body, repeat: r.repeat === true }));
     if (ran.error !== undefined) return { ok: false, reason: `the commenter '${spec.command}' could not run: ${ran.error.message}` };
     if (ran.status !== 0) return { ok: false, reason: `the commenter exited ${String(ran.status)}: ${tail(ran.stderr)}` };
     const out = lastJson(ran.stdout);

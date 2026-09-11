@@ -37,7 +37,7 @@ import {
   revisionOf,
 } from "./adapters";
 import { gitDataSource } from "./git-data-source";
-import { foldActionItems, foldAfterOpen, foldHandedOffChanges, foldLandedChanges } from "./org-fold";
+import { foldActionItems, foldAfterOpen, foldAfterUpdate, foldHandedOffChanges, foldLandedChanges } from "./org-fold";
 import type { OrgEvent } from "./org-event";
 import type { AnswerCheckRequest, AnswerItem, AnswerRequest, FollowUpReviewRequest } from "./change-followup";
 import type { DescribeRequest } from "./change-request";
@@ -933,6 +933,7 @@ describe("AFTER THE HANDOFF: THE REQUEST SAYS WHAT THE ORGANIZATION CONFIGURED, 
     sync: "merge_target" as const,
     replies: "reply_and_resolve" as const,
     afterOpen: [{ kind: "comment" as const, body: "aireview" }],
+    afterUpdate: [] as { kind: "comment"; body: string }[],
     why: "reviewers read the problem first",
   };
   const fullDescription = async () => ({ ok: true as const, value: "## Problem statement\nIt broke.\n\n## Root cause\nA race.", evidence: [] });
@@ -1202,7 +1203,9 @@ describe("AFTER THE HANDOFF: THE REQUEST SAYS WHAT THE ORGANIZATION CONFIGURED, 
       expect(h.count()).toBe(1); // NOT pushed again
       const open = foldActionItems(events).get(workId)?.find((i) => i.actionItemId === "gitlab:note-7");
       expect(open?.settled).toBeUndefined();
-      expect(open?.deferred?.why).toContain("the new test passes with the cap removed");
+      // REOPENED, not deferred: open and due, so the watcher starts the next round at once.
+      expect(open?.deferred).toBeUndefined();
+      expect(open?.reopened?.why).toContain("the new test passes with the cap removed");
 
       // Next time the session adds NOTHING - but the unpushed commit is still unreviewed, so it is
       // reviewed from what people last saw, and only then pushed.
@@ -1384,6 +1387,65 @@ describe("AFTER THE HANDOFF: THE REQUEST SAYS WHAT THE ORGANIZATION CONFIGURED, 
       expect(foldActionItems(events).get(workId)?.find((i) => i.actionItemId === "gitlab:note-5")?.settled?.outcome).toBe("addressed");
     } finally {
       for (const d of [repo, origin, inbox, wt, scratch, bot]) rmSync(d, { recursive: true, force: true });
+    }
+  }, 240_000);
+  test("REVIEW GOES BACK AND FORTH UNTIL IT IS CLEAN: after each pushed fix review is asked for again, once per push, until the round limit - then a person decides", async () => {
+    const repo = realRepo();
+    const git = (at: string, ...a: string[]) => execFileSync("git", a, { cwd: at, encoding: "utf-8" });
+    const inbox = realInbox();
+    const wt = mkdtempSync(join(tmpdir(), "zeta-rr-wt-"));
+    const scratch = mkdtempSync(join(tmpdir(), "zeta-rr-"));
+    const h = stubCounting(scratch);
+    const events: OrgEvent[] = [];
+    const rounds = { ...changeRequests, afterUpdate: [{ kind: "comment" as const, body: "aireview" }], reviewRounds: 1 };
+    const posts: { body: string; repeat?: boolean }[] = [];
+    let noteSeq = 800;
+    const postComment = async (r: { body: string; repeat?: boolean }) => {
+      posts.push({ body: r.body, ...(r.repeat === undefined ? {} : { repeat: r.repeat }) });
+      return { ok: true as const, value: { replyId: `note-${String(++noteSeq)}` }, evidence: [] };
+    };
+    try {
+      const change = () => gitWorktreeChangeControl({ cwd: repo, baseBranch: "main", worktreeRoot: wt, handoff: { command: h.command, args: h.args } });
+      const first = await runAgainst(repo, inbox, { change: change() }, { settings: [], changeRequests: rounds, describeChange: fullDescription, postComment, onEvent: (e: OrgEvent) => events.push(e) });
+      const workId = first.changesHandedOff[0] as string;
+      // The first handoff gets the after-OPEN comment only - not a re-review.
+      expect(posts).toEqual([{ body: "aireview" }]);
+      const round = (deliveryId: string) =>
+        runAgainst(repo, realInbox(), { change: change() }, {
+          settings: [],
+          changeRequests: rounds,
+          describeChange: fullDescription,
+          postComment,
+          alreadyHandedOff: new Set(foldHandedOffChanges(events).keys()),
+          handedOffChanges: foldHandedOffChanges(events),
+          actionItems: foldActionItems(events),
+          afterOpenDone: foldAfterOpen(events),
+          afterUpdateDone: foldAfterUpdate(events),
+          feedback: [{ deliveryId, source: "gitlab", itemKind: "diff_comment", summary: `finding ${deliveryId}`, author: "ai-review", changeUrl: `https://review.example/p/-/merge_requests/7#${deliveryId}` }],
+          defaultBase: "main",
+          verifyChange: async () => ({ ok: true as const, value: "green", evidence: [] }),
+          followUp: async (req: { items: readonly { actionItemId: string }[]; workdir?: string }) => {
+            writeFileSync(join(req.workdir as string, `${deliveryId}.md`), "fixed\n");
+            git(req.workdir as string, "add", "-A");
+            git(req.workdir as string, "commit", "-q", "-m", `fix ${deliveryId}`);
+            return { ok: true as const, value: { decisions: req.items.map((i) => ({ actionItemId: i.actionItemId, outcome: "addressed" as const, how: "fixed; test added" })), syncWithTarget: false, summary: "s" }, evidence: [] };
+          },
+          answer: async (r: AnswerRequest) => ({ ok: true as const, value: r.items.map((i) => ({ actionItemId: i.actionItemId, resolved: true })), evidence: [] }),
+          onEvent: (e: OrgEvent) => events.push(e),
+        });
+
+      // Round 1: the reviewer's finding is fixed and pushed - so review is asked for AGAIN, same words.
+      await round("note-1");
+      expect(posts).toEqual([{ body: "aireview" }, { body: "aireview", repeat: true }]);
+      expect(foldAfterUpdate(events).get(workId)?.rounds).toBe(1);
+
+      // The re-review finds something else; it is fixed and pushed - but the limit (1) is reached:
+      // no third request, and the run says a person decides.
+      const second = await round("note-2");
+      expect(posts).toHaveLength(2);
+      expect(second.refusals.some((r) => r.includes("review rounds have been asked for") && r.includes("a person decides"))).toBe(true);
+    } finally {
+      for (const d of [repo, inbox, wt, scratch]) rmSync(d, { recursive: true, force: true });
     }
   }, 240_000);
 });

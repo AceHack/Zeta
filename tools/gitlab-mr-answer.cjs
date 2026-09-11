@@ -115,7 +115,8 @@ if (input && input.op === "comment") {
     // ALREADY SAID IS DONE. A request that already carries this exact comment - a person posted
     // `aireview` by hand before the step existed, or an earlier post whose record was lost - needs
     // no second one: posting it again would start a second review round nobody asked for.
-    for (let page = 1; page < 50; page++) {
+    // A RE-REVIEW REQUEST (`repeat`) is the same words every round, and every round must be asked.
+    for (let page = 1; input.repeat !== true && page < 50; page++) {
       const notes = api(["projects/:id/merge_requests/" + m[1] + "/notes?per_page=100&page=" + page]);
       if (!Array.isArray(notes) || notes.length === 0) break;
       const same = notes.find((n) => !n.system && String(n.body || "").trim() === body.trim());
