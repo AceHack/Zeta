@@ -191,9 +191,17 @@ function preamble(hat, workId) {
         ].join(NL)
       : "No `observe` command was provided (ORG_OBSERVE_CMD is unset), so you cannot see the organization's record. Say so in your answer rather than guessing what it contains.",
     "",
-    env.ORG_PRACTICE ? "HOW THIS ORGANIZATION DOES THIS STEP:" + NL + env.ORG_PRACTICE + NL : "",
-    env.ORG_DIRECTIVES ? "STANDING DIRECTIVES:" + NL + env.ORG_DIRECTIVES + NL : "",
+    // EACH BLOCK SAYS WHOSE IT IS. MEASURED on AIAGENT-1659: unattributed, the organization's
+    // directives were quoted in a document as if they were the repository's CLAUDE.md, and the
+    // reviewer rejected it for citation fabrication. Right call; the prompt had made it easy.
+    env.ORG_PRACTICE
+      ? "HOW THIS ORGANIZATION DOES THIS STEP (the ORGANIZATION's practice - if you cite it, cite it as the organization's, never as a file in the repository):" + NL + env.ORG_PRACTICE + NL
+      : "",
+    env.ORG_DIRECTIVES
+      ? "THIS ORGANIZATION'S STANDING DIRECTIVES (the ORGANIZATION's, not the repository's - cite them as such):" + NL + env.ORG_DIRECTIVES + NL
+      : "",
     env.ORG_REPO_SKILLS ? "THE REPOSITORY'S OWN SKILLS (prefer them where they apply):" + NL + env.ORG_REPO_SKILLS + NL : "",
+    "Cite only what you actually read, where you read it. A quotation attributed to a file must be in that file.",
     env.ORG_FEEDBACK ? "THIS WORK CAME BACK. What was said, newest first - address every point:" + NL + env.ORG_FEEDBACK + NL : "",
     env.ORG_ANSWERS ? "A PERSON ALREADY ANSWERED (do not ask these again):" + NL + env.ORG_ANSWERS + NL : "",
   ].filter((l) => l !== "").join(NL);
