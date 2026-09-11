@@ -145,6 +145,83 @@ function claudeBudgetMs() {
  * shells and a jest run - with its own mongod - kept running after the agent was gone, competing
  * with the next step's test runs for the machine.
  */
+/** Every process on the machine as { pid, ppid, created } - Windows only; empty when unreadable. */
+function processTable() {
+  const r = spawnSync(
+    "powershell",
+    ["-NoProfile", "-NonInteractive", "-Command",
+      "Get-CimInstance Win32_Process | ForEach-Object { '' + $_.ProcessId + ',' + $_.ParentProcessId + ',' + $_.CreationDate.ToFileTimeUtc() }"],
+    { encoding: "utf-8", shell: false, windowsHide: true, timeout: 30_000, maxBuffer: 16 * 1024 * 1024 },
+  );
+  if (r.status !== 0) return [];
+  return String(r.stdout || "")
+    .split(/\r?\n/)
+    .map((l) => l.trim().split(","))
+    .filter((p) => p.length === 3 && p[0] !== "")
+    .map(([pid, ppid, created]) => ({ pid: Number(pid), ppid: Number(ppid), created: String(created) }));
+}
+
+/** The live descendants of `rootPid`, including children of ones already seen whose parent has died. */
+function descendantsOf(rootPid, seen) {
+  const table = processTable();
+  const roots = new Set([rootPid, ...seen.keys()]);
+  const out = [];
+  let grew = true;
+  while (grew) {
+    grew = false;
+    for (const p of table) {
+      if (p.pid === process.pid || roots.has(p.pid) && p.pid !== rootPid) continue;
+      if (roots.has(p.ppid) && !out.some((o) => o.pid === p.pid)) {
+        out.push(p);
+        roots.add(p.pid);
+        grew = true;
+      }
+    }
+  }
+  return out;
+}
+
+/**
+ * Stop whatever the session left running once it has ended. A process is stopped only when it is
+ * provably the session's: the same pid AND the same creation time as when it was seen under the
+ * session, or started after the session began by a process that was - so a recycled pid is never
+ * touched. Never this process itself.
+ */
+function sweepLeftovers(win, rootPid, seen, startedAt) {
+  if (rootPid === undefined) return;
+  if (!win) {
+    try {
+      process.kill(-rootPid, "SIGKILL");
+    } catch {
+      // the group is gone - nothing was left behind
+    }
+    return;
+  }
+  const table = processTable();
+  const startedFt = (BigInt(startedAt) + 11644473600000n) * 10000n; // ms since 1970 -> FILETIME
+  const ours = new Set();
+  for (const p of table) if (seen.get(p.pid) === p.created) ours.add(p.pid);
+  let grew = true;
+  while (grew) {
+    grew = false;
+    for (const p of table) {
+      if (ours.has(p.pid) || p.pid === process.pid) continue;
+      const parentIsOurs = p.ppid === rootPid || ours.has(p.ppid);
+      let newer = false;
+      try {
+        newer = BigInt(p.created) >= startedFt;
+      } catch {
+        newer = false;
+      }
+      if (parentIsOurs && newer) {
+        ours.add(p.pid);
+        grew = true;
+      }
+    }
+  }
+  for (const pid of ours) spawnSync("taskkill", ["/T", "/F", "/PID", String(pid)], { shell: false, windowsHide: true });
+}
+
 function runBounded(command, args, { cwd, env: childEnvironment, input, budgetMs }) {
   const { spawn } = require("node:child_process");
   return new Promise((done) => {
@@ -159,19 +236,38 @@ function runBounded(command, args, { cwd, env: childEnvironment, input, budgetMs
     child.on("error", (e) => {
       error = e;
     });
-    const timer = setTimeout(() => {
-      timedOut = true;
-      if (win) spawnSync("taskkill", ["/T", "/F", "/PID", String(child.pid)], { shell: false, windowsHide: true });
-      else {
+    // ── WHAT THE SESSION STARTED, remembered while it runs ────────────────────
+    // A session that ends normally can still leave its background processes running: MEASURED on
+    // AIAGENT-1661, three QA-harness servers (each holding a checkout open) outlived the sessions
+    // that started them by hours, and the checkout could not be moved. On Windows a dead parent's
+    // children are not findable from it, so the tree is sampled while it lives and swept at the end.
+    const startedAt = Date.now();
+    const seen = new Map(); // pid -> creation stamp
+    const sample = () => {
+      if (!win || child.pid === undefined) return;
+      for (const p of descendantsOf(child.pid, seen)) seen.set(p.pid, p.created);
+    };
+    const sampler = win ? setInterval(sample, 20_000) : undefined;
+    const stopTree = () => {
+      if (win) {
+        if (child.pid !== undefined) spawnSync("taskkill", ["/T", "/F", "/PID", String(child.pid)], { shell: false, windowsHide: true });
+      } else {
         try {
           process.kill(-child.pid, "SIGKILL");
         } catch {
           child.kill("SIGKILL");
         }
       }
+    };
+    const timer = setTimeout(() => {
+      timedOut = true;
+      sample();
+      stopTree();
     }, budgetMs);
     child.on("close", (status) => {
       clearTimeout(timer);
+      if (sampler !== undefined) clearInterval(sampler);
+      sweepLeftovers(win, child.pid, seen, startedAt);
       done({ status, stdout: Buffer.concat(out).toString("utf-8"), stderr: Buffer.concat(err).toString("utf-8"), timedOut, error });
     });
     // THE PROMPT ON STDIN — never argv, which every process on the machine can read and which

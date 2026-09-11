@@ -249,3 +249,43 @@ describe("A SESSION THAT RUNS OUT OF TIME IS STOPPED WITH EVERYTHING IT STARTED"
     }
   }, 60_000);
 });
+
+describe("A SESSION THAT ENDS NORMALLY LEAVES NOTHING RUNNING", () => {
+  // MEASURED on AIAGENT-1661: three QA-harness servers outlived the sessions that started them by
+  // hours, holding the change's checkout open so it could not even be moved.
+  test("a background process the session started is stopped when the session answers and exits", async () => {
+    const dir = mkdtempSync(join(tmpdir(), "claude-agent-leftover-"));
+    const stub = join(dir, "leaves.cjs");
+    const pidFile = join(dir, "leftover.pid");
+    const answer = JSON.stringify({ type: "result", subtype: "success", is_error: false, structured_output: { verdict: "approve", reason: "ok", lookedAt: [] }, usage: {} });
+    writeFileSync(
+      stub,
+      `const {spawn}=require("child_process");const fs=require("fs");` +
+        `const g=spawn(process.execPath,["-e","setInterval(()=>{},1000)"],{stdio:"ignore",detached:true});g.unref();` +
+        `fs.writeFileSync(${JSON.stringify(pidFile)},String(g.pid));` +
+        `process.stdin.on("data",()=>{});process.stdin.on("end",()=>{process.stdout.write(${JSON.stringify(answer)});process.exit(0);});`,
+    );
+    const r = spawnSync("node", [AGENT, "review", "qa_uat", "task-9"], {
+      cwd: dir,
+      encoding: "utf-8",
+      env: { ...process.env, ORG_CLAUDE_BIN: "node", ORG_CLAUDE_BIN_ARGS: JSON.stringify([stub]) },
+      timeout: 90_000,
+    });
+    try {
+      expect(r.status).toBe(0);
+      const pid = Number(readFileSync(pidFile, "utf-8"));
+      let alive = true;
+      for (let i = 0; i < 20 && alive; i += 1) {
+        try {
+          process.kill(pid, 0);
+          await new Promise((ok) => setTimeout(ok, 250));
+        } catch {
+          alive = false;
+        }
+      }
+      expect(alive).toBe(false);
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  }, 120_000);
+});
