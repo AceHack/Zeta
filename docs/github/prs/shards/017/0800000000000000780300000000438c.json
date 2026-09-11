@@ -1,0 +1,12 @@
+{
+  "pr_number": 17292,
+  "archive_path": "docs/history/pr-reviews/2026/09/11/PR-17292-fix-corporate-agent-cjs-validates-the-two-argv-values-that-become-a-path.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-11T19:32:12.959Z",
+  "schema_version": "v1",
+  "commit_sha": "9be345d12d8e7b88c936ce9c847a4e05dffef889",
+  "title": "fix(corporate): agent.cjs validates the two argv values that become a path",
+  "state": "MERGED",
+  "merged_at": "2026-09-11T19:31:27Z",
+  "head_ref": "shadow/code-scanning-sweep"
+}

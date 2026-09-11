@@ -1,0 +1,19 @@
+{
+  "pr_number": 17271,
+  "archive_path": "docs/history/pr-reviews/2026/09/11/PR-17271-feat-corporate-the-branching-rule-is-sdlc-configuration-not-a-system-of-its-own.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7tkixp",
+    "comment:PRRC_kwDOSF9kNM7tlUkQ",
+    "comment:PRRC_kwDOSF9kNM7tlUkn",
+    "thread:PRRT_kwDOSF9kNM6hV4e0",
+    "thread:PRRT_kwDOSF9kNM6hV4fG",
+    "thread:PRRT_kwDOSF9kNM6hVX6M"
+  ],
+  "fetched_at": "2026-09-11T19:10:06.672Z",
+  "schema_version": "v1",
+  "commit_sha": "de47765e3cad1bd0795dfc6ea9f1be731f243f17",
+  "title": "feat(corporate): the branching rule is SDLC configuration, not a system of its own",
+  "state": "MERGED",
+  "merged_at": "2026-09-11T19:09:04Z",
+  "head_ref": "org-sdlc-branch-settings"
+}
