@@ -100,6 +100,9 @@ export function commandFollowUp(spec: CommandSpec, fallbackCwd: string): (r: Fol
       ...(i.detail === undefined ? {} : { detail: i.detail }),
       ...(i.author === undefined ? {} : { author: i.author }),
       ...(i.url === undefined ? {} : { url: i.url }),
+      // Decided once already, and that did not stand: the session is told why, so it does not repeat it.
+      ...(i.reopened === undefined ? {} : { reopenedBecause: i.reopened.why }),
+      ...(i.deferred === undefined ? {} : { deferredBefore: i.deferred.why }),
     }));
     const ran = run(spec, ["follow-up", r.workId], r.workdir ?? fallbackCwd, {
       ORG_FOLLOWUP_MODE: r.mode,

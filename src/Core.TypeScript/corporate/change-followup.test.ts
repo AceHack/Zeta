@@ -119,10 +119,18 @@ describe("A SETTLED ITEM IS OWED AN ANSWER WHERE IT WAS RAISED", () => {
       "copied to /Users/max/work/evidence.png",
     ];
     for (const how of leaky) {
-      const { owed, unanswered } = answersOwed([settled("x", { respond: true, how })]);
+      const { owed, unanswered, withheld } = answersOwed([settled("x", { respond: true, how })]);
       expect(owed).toEqual([]);
-      expect(unanswered[0]?.why).toContain("names a place the reviewer cannot open");
+      expect(unanswered).toEqual([]);
+      // WITHHELD IS NOT A DEAD END: the item goes back to be decided, told why.
+      expect(withheld[0]?.why).toContain("which they cannot open");
     }
+    // An item recorded as skipped for this reason before reopening existed is reopened too.
+    const legacy = settled("old", { how: leaky[0] as string }, { resolved: false, skipped: "its account names a place the reviewer cannot open (C:\\Users\\x) - not posted", atMs: 5 });
+    expect(answersOwed([legacy]).withheld.map((w) => w.actionItemId)).toEqual(["old"]);
+    // ...but an item answered for any other reason is left alone.
+    const fine = settled("done", { how: "server/src/a.ts" }, { replyId: "note-1", resolved: true, atMs: 5 });
+    expect(answersOwed([fine]).withheld).toEqual([]);
     // Repository paths, URLs and code are what a reviewer can open - those are posted.
     for (const how of [
       "server/src/routes/oversight.ts:176 caps the limit; test in server/src/__tests__/routes/x.test.ts",
@@ -149,5 +157,27 @@ describe("THE ANSWER IS FOLDED ONTO ITS ITEM, SO IT IS NEVER GIVEN TWICE", () =>
     expect(folded?.settled).toMatchObject({ respond: true, commit: "abc" });
     expect(folded?.answered).toMatchObject({ replyId: "note-7", resolved: true });
     expect(answersOwed(folded === undefined ? [] : [folded]).owed).toEqual([]);
+  });
+});
+
+describe("A SETTLEMENT THAT DID NOT STAND IS REOPENED, NOT DROPPED", () => {
+  test("reopening clears the settlement and its answer, keeps why, and the item is open again", () => {
+    const ev = (atMs: number, fact: unknown) => ({ id: `e${String(atMs)}`, kind: "change_projected", subjectId: "task-24", decision: "", atMs, evidenceRefs: [], supervisorChain: [], fact }) as unknown as OrgEvent;
+    const log = [
+      ev(1, { kind: "action_item_raised", workId: "task-24", actionItemId: "gitlab:note-1975496", source: "gitlab", itemKind: "diff_comment", summary: "no backfill" }),
+      ev(2, { kind: "action_item_settled", workId: "task-24", actionItemId: "gitlab:note-1975496", outcome: "addressed", how: "runbook drafted at C:\\Users\\x\\.agent-org\\y" }),
+      ev(3, { kind: "action_item_answered", workId: "task-24", actionItemId: "gitlab:note-1975496", resolved: false, skipped: "its account names a place" }),
+      ev(4, { kind: "action_item_reopened", workId: "task-24", actionItemId: "gitlab:note-1975496", why: "the runbook is only in the evidence directory" }),
+    ];
+    const item = foldActionItems(log).get("task-24")?.[0];
+    expect(item?.settled).toBeUndefined();
+    expect(item?.answered).toBeUndefined();
+    expect(item?.reopened?.why).toContain("only in the evidence directory");
+    expect(openActionItems(log).get("task-24")?.map((i) => i.actionItemId)).toEqual(["gitlab:note-1975496"]);
+    // Settled again after reopening, it is closed again - and owed a fresh answer.
+    const again = [...log, ev(5, { kind: "action_item_settled", workId: "task-24", actionItemId: "gitlab:note-1975496", outcome: "addressed", how: "the rollout note is now in the request's Resolution section", respond: true })];
+    const settledAgain = foldActionItems(again).get("task-24") ?? [];
+    expect(openActionItems(again).get("task-24")).toBeUndefined();
+    expect(answersOwed(settledAgain).owed.map((o) => o.actionItemId)).toEqual(["gitlab:note-1975496"]);
   });
 });

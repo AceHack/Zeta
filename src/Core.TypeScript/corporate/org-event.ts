@@ -427,6 +427,19 @@ export type OrgFact =
     }
   | {
       /**
+       * A settled action item is OPEN AGAIN: its settlement did not stand. MEASURED on MR !162: a
+       * blocking finding was "addressed" by a rollout runbook that existed only in the organization's
+       * own evidence directory - the answer could not be posted, and nothing the reviewer could see
+       * had settled it. The settlement and any answer are cleared; the item goes back to be decided.
+       */
+      readonly kind: "action_item_reopened";
+      readonly workId: string;
+      readonly actionItemId: string;
+      /** Why, in words the next session acts on. */
+      readonly why: string;
+    }
+  | {
+      /**
        * An action item was ANSWERED where it was raised - a reply on the reviewer's own thread, and the
        * thread resolved when the organization resolves them. MEASURED on MRs !162-!164: 26 comments
        * decided and acted on, and not one reviewer was told, because the decision lived only here.

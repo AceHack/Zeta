@@ -163,6 +163,9 @@ describe("AFTER THE HANDOFF: THE DESCRIPTION AND THE FOLLOW-UP", () => {
     expect(flagOnly.seen?.input).toContain("A SUGGESTED FIX IS A CLAIM - CHECK IT BEFORE YOU ACT ON IT");
     expect(flagOnly.seen?.input).toContain("`how` IS POSTED AS YOUR REPLY ON THE REVIEWER'S THREAD");
     expect(flagOnly.seen?.argv.join(" ")).toContain('"respond"');
+    // MEASURED on MR !163: "belongs in its own ticket" was deferred twice, and the reviewer heard nothing.
+    expect(flagOnly.seen?.input).toContain("is DECLINED for this change: say why and name where it belongs");
+    expect(flagOnly.seen?.input).toContain("`reopenedBecause`");
     const last = JSON.parse(flagOnly.stdout.trim().split(/\r?\n/).pop() as string) as { decisions: { id: string }[]; syncWithTarget: boolean };
     expect(last.decisions.map((d) => d.id)).toEqual(["gitlab:n1"]);
     expect(last.syncWithTarget).toBe(false);

@@ -182,18 +182,32 @@ export function placeOnThisMachine(text: string): string | undefined {
 export function answersOwed(items: readonly ActionItem[]): {
   readonly owed: readonly AnswerItem[];
   readonly unanswered: readonly { readonly actionItemId: string; readonly why: string }[];
+  /** Settlements that cannot be answered as written - they are REOPENED with this reason, never dropped. */
+  readonly withheld: readonly { readonly actionItemId: string; readonly why: string }[];
 } {
   const owed: AnswerItem[] = [];
   const unanswered: { actionItemId: string; why: string }[] = [];
+  const withheld: { actionItemId: string; why: string }[] = [];
   for (const i of items) {
-    if (i.settled === undefined || i.answered !== undefined) continue;
-    if (i.settled.respond === false) {
-      unanswered.push({ actionItemId: i.actionItemId, why: "the organization decided it asked nothing of the change" });
+    if (i.settled === undefined) continue;
+    const leak = placeOnThisMachine(i.settled.how);
+    // A WITHHELD ANSWER IS NOT A DEAD END. MEASURED on MR !162: the account named the organization's
+    // own evidence directory, the guard below refused to post it, and the item was recorded as
+    // skipped - so a blocking finding stayed unanswered for good. What settles a reviewer's comment
+    // has to be somewhere the reviewer can see, so the item goes back to be decided again. An item
+    // already recorded as skipped for this reason (before reopening existed) is reopened the same way.
+    if (leak !== undefined && i.settled.respond !== false && (i.answered === undefined || i.answered.skipped?.startsWith(WITHHELD) === true)) {
+      withheld.push({
+        actionItemId: i.actionItemId,
+        why:
+          `your account could not be posted to the reviewer: it names ${leak}, which they cannot open. ` +
+          "Whatever settles this has to be where the reviewer can see it - in the change, in the request's description, or in the reply itself.",
+      });
       continue;
     }
-    const leak = placeOnThisMachine(i.settled.how);
-    if (leak !== undefined) {
-      unanswered.push({ actionItemId: i.actionItemId, why: `its account names a place the reviewer cannot open (${leak}) - not posted` });
+    if (i.answered !== undefined) continue;
+    if (i.settled.respond === false) {
+      unanswered.push({ actionItemId: i.actionItemId, why: "the organization decided it asked nothing of the change" });
       continue;
     }
     owed.push({
@@ -207,8 +221,11 @@ export function answersOwed(items: readonly ActionItem[]): {
       when: i.settled.respond === true ? "always" : "if_thread",
     });
   }
-  return { owed, unanswered };
+  return { owed, unanswered, withheld };
 }
+
+/** How a withheld answer was recorded before reopening existed - recognised so those items reopen too. */
+const WITHHELD = "its account names a place the reviewer cannot open";
 
 /** What a follow-up session was asked to look at. */
 export interface FollowUpRequest {

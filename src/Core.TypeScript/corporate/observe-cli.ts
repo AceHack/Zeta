@@ -175,7 +175,9 @@ export function itemContextsFrom(
                   : ` [answered on the thread${i.answered.resolved ? ", resolved" : ""}]`)
             : i.deferred !== undefined
               ? ` - OPEN, left open by ${i.deferred.byHatId ?? "the organization"}: ${i.deferred.why}`
-              : " - OPEN") +
+              : i.reopened !== undefined
+                ? ` - OPEN, REOPENED: ${i.reopened.why}`
+                : " - OPEN") +
           (i.url === undefined ? "" : ` (${i.url})`),
         atMs: i.raisedAtMs,
         about: "action item",

@@ -4211,7 +4211,16 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
       for (const [workId, items] of allItems) {
         const change = handedMap.get(workId);
         if (change === undefined) continue;
-        const { owed, unanswered } = answersOwed(items);
+        const { owed, unanswered, withheld } = answersOwed(items);
+        for (const w of withheld) {
+          note({
+            kind: OrgEventKind.ChangeProjected,
+            subjectId: workId,
+            decision: `action item ${w.actionItemId} reopened: ${w.why}`,
+            atMs: warmedAt,
+            fact: { kind: "action_item_reopened", workId, actionItemId: w.actionItemId, why: w.why },
+          });
+        }
         const answered = (actionItemId: string, r: { readonly replyId?: string; readonly resolved: boolean; readonly skipped?: string }): void => {
           note({
             kind: OrgEventKind.ChangeProjected,

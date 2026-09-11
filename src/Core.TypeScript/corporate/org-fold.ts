@@ -861,6 +861,8 @@ export interface ActionItem {
   readonly deferred?: { readonly why: string; readonly byHatId?: string; readonly atMs: number };
   /** Answered where it was raised. Absent until then - a settled item with no answer is owed one. */
   readonly answered?: { readonly replyId?: string; readonly resolved: boolean; readonly skipped?: string; readonly atMs: number };
+  /** Settled once, and that settlement did not stand - why. The item is OPEN; the next session is told this. */
+  readonly reopened?: { readonly why: string; readonly atMs: number };
 }
 
 /**
@@ -905,6 +907,12 @@ export function foldActionItems(events: readonly OrgEvent[]): ReadonlyMap<string
           ...(f.commit === undefined ? {} : { commit: f.commit }),
         },
       });
+    } else if (f?.kind === "action_item_reopened") {
+      const item = byId.get(f.actionItemId);
+      if (item === undefined) continue;
+      // OPEN AGAIN: the settlement and its answer are dropped, the reason kept for whoever decides next.
+      const { settled: _s, answered: _a, ...rest } = item;
+      byId.set(f.actionItemId, { ...rest, reopened: { why: f.why, atMs: event.atMs } });
     } else if (f?.kind === "action_item_answered") {
       const item = byId.get(f.actionItemId);
       if (item === undefined) continue;
