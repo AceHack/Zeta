@@ -32,17 +32,50 @@
  * would reach a reviewer with the uncertainty stripped off.
  */
 "use strict";
-const { writeFileSync, mkdirSync, readFileSync, existsSync } = require("node:fs");
+const { writeFileSync, mkdirSync, readFileSync, readdirSync } = require("node:fs");
 const { join, resolve } = require("node:path");
 
 const MODEL = process.env.ORG_MODEL || "qwen2.5:7b";
 const HOST = process.env.OLLAMA_HOST || "http://127.0.0.1:11434";
 const OUT_DIR = process.env.ORG_DOCS_DIR || join(process.cwd(), ".org-docs");
 
+// ── THE TWO ARGV VALUES THAT BECOME A FILESYSTEM PATH ──────────────────────
+// `workId` becomes a DIRECTORY and `gate` becomes a FILENAME, down at the
+// bottom of `main`: `mkdirSync(join(OUT_DIR, workId))` then
+// `join(OUT_DIR, workId, gate + ".md")`. Neither was checked, so a workId of
+// `../../..` wrote this organization's document wherever it liked — and a
+// workId is not this process's own invention: it travels from a ticket key
+// that `serve-work.ts` accepts off an inbox, which is why THAT file has
+// validated the same shape since the day CodeQL found it there.
+//
+// ONE PREDICATE, and it is not this file's. `src/Core.TypeScript/corporate/
+// safe-path-segment.ts` owns it; `uat-three-criteria.ts` was the second site
+// and this is the third, exactly as that module's own docstring predicted. It
+// cannot be imported here — this is a CommonJS script run by `node`, and that
+// module is TypeScript — so the pattern is RESTATED and then PINNED to the
+// original by `safe-path-segment.test.ts`, which reads both files and fails if
+// the two ever drift. A copy nothing compares is how the second copy got
+// written; a copy a test compares is a copy in name only.
+//
+// TEST AND REFUSE, NEVER MANGLE. A sanitised `..` would silently address a
+// different file than the caller named, and the caller would never learn it.
+const SAFE_PATH_SEGMENT = /^[A-Za-z0-9][A-Za-z0-9._-]{0,99}$/u;
+
 const [gate, workId, ...refs] = process.argv.slice(2);
 if (!gate || !workId) {
   process.stderr.write("usage: agent.cjs <gate> <workId> [prior/context paths...]\n");
   process.exit(2);
+}
+// Checked BEFORE anything else happens — before the prompt is built and long
+// before the model is called — so a malformed id costs nothing and cannot
+// reach disk by any later path.
+for (const [name, value] of [["gate", gate], ["workId", workId]]) {
+  if (!SAFE_PATH_SEGMENT.test(value)) {
+    process.stderr.write(
+      "[agent] refusing: " + name + " is not a single safe path segment: " + JSON.stringify(value) + "\n",
+    );
+    process.exit(2);
+  }
 }
 
 const title = process.env.ORG_WORK_TITLE || "";
@@ -81,15 +114,53 @@ const skillName = process.env.ORG_SKILL || "";
 const skillSource = process.env.ORG_SKILL_SOURCE || "repo";
 const skillWhy = process.env.ORG_SKILL_WHY || "";
 
+// ── ASK THE FILESYSTEM ONCE, NOT TWICE ─────────────────────────────────────
+// Every read below used to be gated by `existsSync(p)` first. That reads as
+// care and is the opposite: between the question and the answer the path can
+// be created, deleted or replaced — by another agent in this fleet, by a `git
+// checkout`, by a background clone — so the two calls can disagree and the
+// check bought nothing the read does not already tell you (CWE-367; the
+// in-tree lint `lint-check-then-use-file-races.ts` refuses exactly this
+// shape). Perform the operation; interpret its failure.
+//
+// `null` means "this path did not open", which the callers report. It is not
+// the same as "this file is empty", which is a real answer and survives.
+function readOrNull(at) {
+  try {
+    return readFileSync(at, "utf-8");
+  } catch (e) {
+    const code = e && e.code;
+    // A path that is absent, is not a directory on the way down, is itself a
+    // directory, or is not ours to read, is context this step did not get.
+    // Anything else is a fault and stays a fault.
+    if (code === "ENOENT" || code === "ENOTDIR" || code === "EISDIR" || code === "EACCES") return null;
+    throw e;
+  }
+}
+
 /** Skills the checkout itself ships, as `.claude/skills/<name>/SKILL.md`. */
 function repoSkills(root) {
   const dir = join(root, ".claude", "skills");
-  if (!existsSync(dir)) return [];
+  let entries;
+  try {
+    // `withFileTypes` so the kind of each entry comes from the SAME directory
+    // read that named it, rather than from a second `statSync` on a path that
+    // may by then be something else.
+    entries = readdirSync(dir, { withFileTypes: true });
+  } catch (e) {
+    const code = e && e.code;
+    if (code === "ENOENT" || code === "ENOTDIR" || code === "EACCES") return [];
+    throw e;
+  }
   const out = [];
-  for (const name of require("node:fs").readdirSync(dir)) {
+  for (const entry of entries) {
+    if (!entry.isDirectory()) continue;
     for (const file of ["SKILL.md", "skill.md"]) {
-      const at = join(dir, name, file);
-      if (existsSync(at)) { out.push({ name, path: at }); break; }
+      const at = join(dir, entry.name, file);
+      // Read now and KEEP the text. Probing for existence and reading later
+      // is the same two-question shape one level up.
+      const text = readOrNull(at);
+      if (text !== null) { out.push({ name: entry.name, path: at, text }); break; }
     }
   }
   return out;
@@ -101,12 +172,12 @@ const available = repoSkills(process.env.ORG_WORKDIR || process.cwd());
 const chosen = skillName === ""
   ? available.slice(0, 4)
   : available.filter((sk) => sk.name === skillName).concat(available.filter((sk) => sk.name !== skillName)).slice(0, 3);
+// No `.filter(t => t !== "")` any more: it guarded against the read below
+// having thrown, and the read now happens at discovery. Every element here
+// carries a `--- skill: ` header, so the filter could never have removed one
+// — a check that cannot fail reads as care and is noise.
 const skillText = chosen
-  .map((sk) => {
-    try { return "--- skill: " + sk.name + " ---" + NEWLINE + readFileSync(sk.path, "utf-8").slice(0, 4000); }
-    catch { return ""; }
-  })
-  .filter((t) => t !== "")
+  .map((sk) => "--- skill: " + sk.name + " ---" + NEWLINE + sk.text.slice(0, 4000))
   .join(NEWLINE);
 
 /** What a person has already told this work. The other half of `ask:`. */
@@ -120,12 +191,18 @@ try {
 /** Documents the organization gave this step to work from. Read, never invented. */
 const context = [];
 for (const r of refs) {
-  try {
-    const at = resolve(r);
-    if (existsSync(at)) context.push({ ref: r, text: readFileSync(at, "utf-8").slice(0, 6000) });
-  } catch {
-    /* a path that will not open is context this step did not get; it says so below by omission */
+  const text = readOrNull(resolve(r));
+  if (text === null) {
+    // SAID, not omitted. This used to fall through silently on the reasoning
+    // that the absence "says so by omission" — but the only surface that
+    // carries the omission is `relied on <ref>` lines that never appear, and
+    // a line that never appears is indistinguishable from a step that was
+    // handed nothing. A context document the organization meant to supply and
+    // this step could not open is a fact the operator needs, on stderr, now.
+    process.stderr.write("[agent] context not readable, continuing without it: " + r + "\n");
+    continue;
   }
+  context.push({ ref: r, text: text.slice(0, 6000) });
 }
 
 const prompt = [
