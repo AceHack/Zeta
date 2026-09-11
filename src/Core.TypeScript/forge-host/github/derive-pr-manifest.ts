@@ -214,6 +214,32 @@ export function runDerive(opts: DeriveOptions): DeriveOutcome {
   const current = read.ok ? read.value.text : "";
   const inSync = current === next;
 
+  // RETIRED IS NOT DRIFTED.
+  //
+  // `docs/github/prs/manifest.jsonl` was deleted deliberately: it was a DERIVED
+  // index with no reader, its repair lane (`agent-heartbeat.yml`) is paused, and
+  // all 13,592 of its records are present in the shard ledger -- with the 117
+  // that differed being WRONG in the manifest, carrying repo HEAD instead of the
+  // PR's own merge commit.
+  //
+  // Without this arm, check mode reads an absent file as an empty one and
+  // reports every derived line as drift forever. That would be a check that
+  // cannot pass, reporting a deliberate decision as a defect -- and it would
+  // land on whoever re-enables `pr-manifest-integrity` after the redesign, who
+  // is the person least equipped to know why.
+  //
+  // `--write` is deliberately NOT short-circuited: regenerating the view on
+  // demand is what makes deleting the committed copy lossless, and asking for
+  // it explicitly is an answer to a different question than "is it in sync".
+  if (!read.ok && !opts.write) {
+    out.push(
+      `${MANIFEST_RELATIVE} is absent, and that is RETIRED rather than drifted — the shard store ` +
+        `(${String(loaded.entries.length)} entries) is the ledger and nothing reads this view. ` +
+        "Run with --write to regenerate it on demand.",
+    );
+    return { code: 0, lines: out };
+  }
+
   if (opts.write) {
     if (inSync) out.push(`${MANIFEST_RELATIVE} already current (${String(loaded.entries.length)} entries).`);
     else {

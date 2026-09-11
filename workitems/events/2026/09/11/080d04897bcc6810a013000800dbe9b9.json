@@ -1,0 +1,14 @@
+{
+  "id": "080d04897bcc6810a013000800dbe9b9",
+  "at": "2026-09-11T15:56:42.765Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M28JYYCC087G0R003423HAP",
+    "type": "task",
+    "title": "Retire the derived PR manifest",
+    "slug": "retire-the-derived-pr-manifest",
+    "priority": "P2",
+    "filename": "081M28JYYCC087G0R003423HAP-retire-the-derived-pr-manifest.md"
+  }
+}
