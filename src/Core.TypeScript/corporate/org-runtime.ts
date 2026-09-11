@@ -33,7 +33,8 @@
  */
 
 import type { Pricing } from "./meter";
-import { acceptanceGateFor, chainFor, missingGates, producesCode } from "./gate-demand";
+import { acceptanceGateFor, chainFor, chainOf, missingGates, producesCode } from "./gate-demand";
+import { parseRequestRef } from "./request";
 import {
   assignHat,
   eligibleFor,
@@ -78,7 +79,7 @@ import {
   collectionsReadyToLand,
   integrationFor,
 } from "./branch-topology";
-import { ProcessSetting, resolveSetting, type SettingBinding } from "./practice";
+import { ProcessSetting, resolveSetting, settingList, type SettingBinding } from "./practice";
 import {
   advanceAll,
   beginBinding,
@@ -232,7 +233,7 @@ const NO_QA_VERDICT = {
  * nothing rather than falling back to the whole pipeline, because the fallback is the defect.
  */
 function chainForTask(node: CascadeNode, pipeline: Pipeline): readonly GateKind[] {
-  const owed = new Set(chainFor(node.workType));
+  const owed = new Set(chainOf(node));
   return gatesOf(pipeline).filter((g) => owed.has(g));
 }
 
@@ -757,9 +758,15 @@ export function briefOf(item: IntakeItem): string | undefined {
   const parts: string[] = [];
   if (item.body !== undefined && item.body !== "") parts.push(item.body);
   else if (item.reproduction !== undefined && item.reproduction !== "") parts.push(item.reproduction);
-  if (item.parentExternalId !== undefined) {
-    parts.push(`Filed under ${item.parentExternalId}${item.parentTitle === undefined ? "" : ` — ${item.parentTitle}`}.`);
-  }
+  // WHAT KIND OF REQUEST this is, and where it was filed. An agent describing the system around a
+  // DEFECT is documenting what exists; around a feature it is the ground a design is drawn on — and
+  // a project-rung agent could otherwise only see that its own node is a `project`.
+  parts.push(
+    `This request is a ${String(item.kind).replace(/_/g, " ")}` +
+      (item.parentExternalId === undefined
+        ? "."
+        : `, filed under ${item.parentExternalId}${item.parentTitle === undefined ? "" : ` — ${item.parentTitle}`}.`),
+  );
   if (item.reproductionOwed === true) {
     parts.push(
       "No reproduction was supplied with this ticket. Establishing one — as a test that fails " +
@@ -768,6 +775,37 @@ export function briefOf(item: IntakeItem): string | undefined {
     );
   }
   return parts.length === 0 ? undefined : parts.join("\n\n");
+}
+
+/**
+ * What each rung above this intake owes, when it is a defect and the organization said: `none` owes
+ * nothing, a LIST owes those gates on the rung whose chain carries each. `full` or unset is
+ * `undefined` — the register's own chains.
+ *
+ * Resolved against the TICKET and the EPIC it was filed under, nearest first, so a programme can
+ * keep the full ladder for its defects while the organization at large does not.
+ */
+export function upperRungChainFor(
+  item: IntakeItem,
+  settings: readonly SettingBinding[] | undefined,
+): { readonly owesAt: (rung: WorkType) => readonly GateKind[]; readonly value: string; readonly why: string } | undefined {
+  if (item.workType !== WorkType.Defect) return undefined;
+  const ticket = parseRequestRef(item.externalRef)?.externalId;
+  const candidates = [
+    ...(ticket === undefined ? [] : [ticket]),
+    ...(item.parentExternalId === undefined ? [] : [item.parentExternalId]),
+  ];
+  const r = resolveSetting(settings ?? [], ProcessSetting.DefectRungGates, candidates);
+  if (r.value === undefined || r.value === "full") return undefined;
+  const list = r.value === "none" ? [] : settingList(ProcessSetting.DefectRungGates, r.value);
+  // AN UNREADABLE VALUE IS NOT `none`. Validation refuses it at bind time; one that reached here
+  // anyway keeps the full ladder rather than silently dropping every gate above the defect.
+  if (list === undefined) return undefined;
+  return {
+    owesAt: (rung) => chainFor(rung).filter((g) => list.includes(String(g))),
+    value: r.value,
+    why: r.why ?? r.because,
+  };
 }
 
 /** The organization's `unreproduced_defects` setting, or the register's refusal when unset. */
@@ -1143,10 +1181,13 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
     }
 
     const thisGoalId = deps.createId("goal");
+    // WHAT THE RUNGS ABOVE THIS OWE, decided here and recorded on each — see `upperRungChainFor`.
+    const upper = upperRungChainFor(item, deps.settings);
     const goal = acceptGoal(cascade, deps.chart, {
       workId: thisGoalId,
       title: item.title,
       acceptingHatId: deps.acceptingHatId,
+      ...(upper === undefined ? {} : { owes: upper.owesAt(WorkType.Goal) }),
       // THE LINK BACK TO WHATEVER ASKED. `externalRef` is minted by intake and, until this line,
       // went no further than the intake item — so the organization could not answer "what did we
       // do about this request" from its own work, in any run.
@@ -1183,8 +1224,22 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
         // start asking for detail the person supplied at intake. The round-trip test is what
         // catches this: the run held a brief the fold did not.
         ...((b) => (b === undefined ? {} : { brief: b }))(briefOf(item)),
+        ...(upper === undefined ? {} : { owes: upper.owesAt(WorkType.Goal) }),
       },
     });
+    if (upper !== undefined) {
+      // SAID, not only done: a reader of the log must be able to see why this defect's goal,
+      // initiative and project carry no BRD, cost or architecture gates, and who decided that.
+      note({
+        kind: OrgEventKind.DecisionRecorded,
+        subjectId: thisGoalId,
+        actorHatId: deps.acceptingHatId,
+        decision:
+          `defect_rung_gates=${upper.value}: the rungs above '${item.title}' owe ` +
+          `${[WorkType.Goal, WorkType.Initiative, WorkType.Project].flatMap((t) => upper.owesAt(t)).join(", ") || "no gates"} — ${upper.why}`,
+        atMs: deps.nowMs,
+      });
+    }
   }
 
   const firstGoal = startedGoals[0];
@@ -1261,12 +1316,14 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
     prefix: string,
     workType?: WorkType,
     dependsOn?: readonly string[],
+    owes?: readonly GateKind[],
   ): readonly string[] => {
     const children = titles.map((title) => ({
       workId: deps.createId(prefix),
       title,
       ...(workType === undefined ? {} : { workType }),
       ...(dependsOn === undefined || dependsOn.length === 0 ? {} : { dependsOn }),
+      ...(owes === undefined ? {} : { owes }),
     }));
     // HOW MANY PEOPLE THIS LINE HAS FREE, counted from the cascade as it stands. The chart cannot
     // answer this and must not try — a chart that changed shape as work arrived would make two runs
@@ -1324,6 +1381,7 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
             ...(n.requestRef === undefined ? {} : { requestRef: n.requestRef }),
             ...(n.dependsOn === undefined || n.dependsOn.length === 0 ? {} : { dependsOn: n.dependsOn }),
             ...(n.brief === undefined ? {} : { brief: n.brief }),
+            ...(n.owes === undefined ? {} : { owes: n.owes }),
           },
         });
       }
@@ -1336,8 +1394,11 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
     // project and pair of leaves under the same goal every single run — the work would never
     // finish, because there would always be more of it than the run before.
     if (started.resumed === true) continue;
-    const initiatives = step(started.goalId, [`initiative for ${started.item.title}`], "init");
-    const projects = initiatives.flatMap((i) => step(i, [`project for ${started.item.title}`], "proj"));
+    const upper = upperRungChainFor(started.item, deps.settings);
+    const initiatives = step(started.goalId, [`initiative for ${started.item.title}`], "init", undefined, undefined, upper?.owesAt(WorkType.Initiative));
+    const projects = initiatives.flatMap((i) =>
+      step(i, [`project for ${started.item.title}`], "proj", undefined, undefined, upper?.owesAt(WorkType.Project)),
+    );
     // THE LEAF CARRIES THE INTAKE'S OWN CLASSIFICATION. Intake decides an inbound event is a
     // defect or an incident; creating the executable work as a plain `task` regardless would
     // discard that a second time, one layer below where it was first thrown away. The VERIFY leaf
@@ -2163,7 +2224,7 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
     // was delivered; crossing it over open children is the premature sign-off `gate-demand` refuses,
     // and it has to be refused here too or the walk would grant what the demand model withholds.
     const delivered = deliveredSet(cascade);
-    const acceptance = acceptanceGateFor(node.workType);
+    const acceptance = acceptanceGateFor(node);
     const kids = childrenOf(cascade, node.workId).filter((c: CascadeNode) => c.state !== WorkState.Canceled);
     const childrenDone = kids.length > 0 && kids.every((c: CascadeNode) => delivered.has(c.workId));
     const walkable = owed.filter((g) => g !== acceptance || childrenDone);
@@ -3147,7 +3208,7 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
     // process's belief that its own walk finished. A verdict that never reached the log is a
     // verdict no second reader can see, and marking work done on it would let the cascade and the
     // record disagree about whether anything was ever approved.
-    const owedButUnproven = missingGates(task.workType, task.workId, gateEvaluations);
+    const owedButUnproven = missingGates(task, task.workId, gateEvaluations);
     if (owedButUnproven.length > 0) {
       refusals.push(
         `${task.workId} is not done: no passing verdict on the record for ` +
@@ -3160,7 +3221,7 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
     if (!closed.ok) refusals.push(`complete ${task.workId}: ${closed.reason}`);
     else {
       cascade = closed.cascade;
-      const owed = chainFor(task.workType);
+      const owed = chainOf(task);
       note({
         kind: OrgEventKind.QualityGateEvaluation,
         subjectId: task.workId,
@@ -3242,10 +3303,10 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
     if (isLeafType(node.workType)) continue;
     if (node.state === WorkState.Canceled) continue;
 
-    const acceptance = acceptanceGateFor(node.workType);
+    const acceptance = acceptanceGateFor(node);
     if (acceptance === undefined) continue;
     // Already crossed? Nothing to do. Asked of the RECORD, not of this run's memory.
-    if (missingGates(node.workType, node.workId, gateEvaluations).length === 0) continue;
+    if (missingGates(node, node.workId, gateEvaluations).length === 0) continue;
 
     const deliveredNow = deliveredSet(cascade);
     const kids = childrenOf(cascade, node.workId).filter((c: CascadeNode) => c.state !== WorkState.Canceled);
@@ -3253,7 +3314,7 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
 
     // EVERY OTHER GATE FIRST. Accepting a rung whose earlier gates never passed would let a final
     // validation stand in for the architecture review it was supposed to follow.
-    const stillOwed = missingGates(node.workType, node.workId, gateEvaluations);
+    const stillOwed = missingGates(node, node.workId, gateEvaluations);
     if (stillOwed.length > 1 || stillOwed[0] !== acceptance) {
       refusals.push(
         `${node.workId} cannot be accepted yet: still owes ${stillOwed.filter((g) => g !== acceptance).join(", ")}`,

@@ -502,3 +502,26 @@ describe("WHAT REACHES THE AGENT", () => {
     expect(out.practice).toBeUndefined();
   });
 });
+
+describe("A LIST SETTING IS VALIDATED ELEMENT BY ELEMENT", () => {
+  const { validateSetting, settingList } = require("./practice") as typeof import("./practice");
+  const bind = (value: string) => ({ setting: ProcessSetting.DefectRungGates, value, why: "because" });
+  test("whole values and lists of upper-rung gates are accepted", () => {
+    expect(validateSetting(bind("full")).ok).toBe(true);
+    expect(validateSetting(bind("none")).ok).toBe(true);
+    expect(validateSetting(bind("business_context_grooming,system_context")).ok).toBe(true);
+    expect(settingList(ProcessSetting.DefectRungGates, "business_context_grooming, system_context")).toEqual([
+      "business_context_grooming",
+      "system_context",
+    ]);
+  });
+  test("a gate no upper rung owes, a typo, a duplicate, or an empty element is REFUSED", () => {
+    // `reproduction` is the defect's own — the setting governs the rungs ABOVE it.
+    expect(validateSetting(bind("reproduction")).ok).toBe(false);
+    expect(validateSetting(bind("system_contxt")).ok).toBe(false);
+    expect(validateSetting(bind("system_context,system_context")).ok).toBe(false);
+    expect(validateSetting(bind("system_context,")).ok).toBe(false);
+    // A list is not a value for a setting that does not take lists.
+    expect(validateSetting({ setting: ProcessSetting.IntegrationBranch, value: "collect,direct", why: "x" }).ok).toBe(false);
+  });
+});

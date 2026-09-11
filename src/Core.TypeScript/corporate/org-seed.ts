@@ -78,7 +78,7 @@ export const SEED_HATS: readonly OrgHat[] = [
   { id: "cto", name: "CTO", level: "c_suite", departmentId: D.ExecutiveBoardAndGovernance, reportsTo: "ceo", approvalScopes: ["technical_standards", "major_technical_gates", "architecture_escalation"] },
   { id: "coo", name: "COO", level: "c_suite", departmentId: D.ExecutiveBoardAndGovernance, reportsTo: "ceo", approvalScopes: ["operating_cadence", "process_changes", "incident_process", "schedule_policy"] },
   { id: "cfo", name: "CFO", level: "c_suite", departmentId: D.ExecutiveBoardAndGovernance, reportsTo: "ceo", approvalScopes: [G.CostApproval, "budget_ceilings", "cost_exceptions", "capacity_scaling"] },
-  { id: "chief_architect", name: "Chief Architect", level: "c_suite", departmentId: D.ExecutiveBoardAndGovernance, reportsTo: "cto", approvalScopes: [G.ArchitectureApproval, G.FinalArchitectureReview, G.AdversarialReview] },
+  { id: "chief_architect", name: "Chief Architect", level: "c_suite", departmentId: D.ExecutiveBoardAndGovernance, reportsTo: "cto", approvalScopes: [G.ArchitectureApproval, G.FinalArchitectureReview, G.AdversarialReview, G.SystemContext] },
   { id: "policy_steward", name: "Policy Steward", level: "director", departmentId: D.ExecutiveBoardAndGovernance, reportsTo: "ceo", approvalScopes: ["policy_review"] },
   { id: "hat_approval_steward", name: "Hat Approval Steward", level: "director", departmentId: D.ExecutiveBoardAndGovernance, reportsTo: "ceo", approvalScopes: ["new_hat_classes", "sensitive_hat_activation"] },
 
@@ -109,7 +109,7 @@ export const SEED_HATS: readonly OrgHat[] = [
   { id: "domain_researcher", name: "Domain Researcher", level: "individual_contributor", departmentId: D.BusinessAnalysis, reportsTo: "ba_director" },
 
   // -- Architecture --
-  { id: "architecture_director", name: "Architecture Director", level: "director", departmentId: D.Architecture, reportsTo: "cto", approvalScopes: [G.ArchitectureApproval, G.ArchitectureDesign, G.FinalArchitectureReview, G.AdversarialReview] },
+  { id: "architecture_director", name: "Architecture Director", level: "director", departmentId: D.Architecture, reportsTo: "cto", approvalScopes: [G.ArchitectureApproval, G.ArchitectureDesign, G.FinalArchitectureReview, G.AdversarialReview, G.SystemContext] },
   { id: "architect", name: "Architect", level: "individual_contributor", departmentId: D.Architecture, reportsTo: "architecture_director", approvalScopes: [G.ArchitectureApproval] },
   { id: "conceptual_architect", name: "Conceptual Architect", level: "individual_contributor", departmentId: D.Architecture, reportsTo: "architecture_director" },
   { id: "architecture_reviewer", name: "Architecture Reviewer", level: "individual_contributor", departmentId: D.Architecture, reportsTo: "architecture_director", approvalScopes: [G.ArchitectureApproval] },
@@ -239,7 +239,7 @@ export const SEED_HATS: readonly OrgHat[] = [
   // product_manager: carries BRD/RFP/grooming/final-validation gates; the reference splits those across product_owner, brd_reviewer and business_approver
   { id: "product_manager", name: "Product Manager", level: "manager", departmentId: D.ProductAndCustomerDiscovery, reportsTo: "product_director", approvalScopes: [G.CustomerRfpReview, G.BrdApproval, G.FinalBusinessValidation, G.BusinessContextGrooming, G.PeerReview, G.QaUat] },
   // solution_architect: carries architecture_design AND architecture_approval; the reference's `architect` holds only the approval
-  { id: "solution_architect", name: "Solution Architect", level: "individual_contributor", departmentId: D.Architecture, reportsTo: "architecture_director", approvalScopes: [G.ArchitectureApproval, G.ArchitectureDesign] },
+  { id: "solution_architect", name: "Solution Architect", level: "individual_contributor", departmentId: D.Architecture, reportsTo: "architecture_director", approvalScopes: [G.ArchitectureApproval, G.ArchitectureDesign, G.SystemContext] },
   // tech_lead: carries peer_review, adversarial_review and implementation_review - no reference hat owns the first two, and the two implementers report through it
   { id: "tech_lead", name: "Tech Lead", level: "lead", departmentId: D.Engineering, reportsTo: "engineering_manager", approvalScopes: [G.ImplementationReview, G.PeerReview, G.AdversarialReview] },
   // qa_manager: carries qa_uat and runtime_validation; the reference has no QA manager between director and verifier

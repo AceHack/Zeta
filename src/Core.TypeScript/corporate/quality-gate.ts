@@ -46,6 +46,19 @@ export const GateKind = {
    * cannot: was the context READ from somewhere a second party could read too?
    */
   BusinessContextGrooming: "business_context_grooming",
+  /**
+   * The EXISTING system around the affected site, understood and written down — before anybody
+   * writes a requirement or a design for changing it.
+   *
+   * Not a design. A description: what the components in and around the affected site are for,
+   * what they are trying to accomplish, how they fit together, and the business they serve. For a
+   * feature it is what the BRD and the architecture are drafted against; for a defect it is what
+   * "supposed to" means, which a reproduction and a fix are both judged by.
+   *
+   * Second, after grooming: grooming reads what the organization has WRITTEN about the business;
+   * this reads the system itself. A BRD drafted without it describes a system nobody looked at.
+   */
+  SystemContext: "system_context",
   CustomerRfpReview: "customer_rfp_review",
   BrdApproval: "brd_approval",
   /**
@@ -121,6 +134,7 @@ export type GateKind = (typeof GateKind)[keyof typeof GateKind];
  */
 export const ORDERED_GATES: readonly GateKind[] = [
   GateKind.BusinessContextGrooming,
+  GateKind.SystemContext,
   GateKind.CustomerRfpReview,
   GateKind.BrdApproval,
   GateKind.PeerReview,
@@ -286,6 +300,8 @@ export type RecoveryPath = (typeof RecoveryPath)[keyof typeof RecoveryPath];
 export function recoveryPathFor(gate: GateKind): RecoveryPath {
   switch (gate) {
     case GateKind.BusinessContextGrooming:
+    // A system description that does not hold is a misreading of what exists — discovery's to redo.
+    case GateKind.SystemContext:
     case GateKind.CustomerRfpReview:
     case GateKind.BrdApproval:
     case GateKind.PeerReview:

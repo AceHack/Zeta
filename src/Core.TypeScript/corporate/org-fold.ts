@@ -92,6 +92,9 @@ export function foldCascade(events: readonly OrgEvent[]): Cascade {
             ? {}
             : { dependsOn: [...fact.dependsOn] }),
           ...(fact.brief === undefined ? {} : { brief: fact.brief }),
+          // THE STATED CHAIN, or a resumed organization walks its defect's initiative through a BRD
+          // the run that created it had decided it did not owe.
+          ...(fact.owes === undefined ? {} : { owes: [...fact.owes] }),
         } as CascadeNode);
         break;
       }

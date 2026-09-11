@@ -27,7 +27,7 @@ import { supervisorChainOf, type OrgChart } from "./org-chart";
 import type { WorkState, WorkType } from "./goal-cascade";
 import type { ScheduleBlockState, ScheduleBlockType } from "./work-schedule";
 import type { PriorityClass } from "./prioritization";
-import type { GateEvaluation } from "./quality-gate";
+import type { GateEvaluation, GateKind } from "./quality-gate";
 import type { PortfolioKind } from "./portfolio";
 import type { WorkQueue } from "./work-market";
 import type { QaCycleReport } from "./qa";
@@ -106,6 +106,8 @@ export type OrgFact =
       readonly dependsOn?: readonly string[];
       /** What the requester wrote — see `CascadeNode.brief`. */
       readonly brief?: string;
+      /** The gates the organization stated this item owes — see `CascadeNode.owes`. */
+      readonly owes?: readonly GateKind[];
     }
   | { readonly kind: "work_assigned"; readonly workId: string; readonly assigneeHatId: string }
   | { readonly kind: "work_state"; readonly workId: string; readonly state: WorkState }

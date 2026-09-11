@@ -39,6 +39,7 @@ import {
   type OrgHat,
 } from "./org-chart";
 import { departmentFor, type Domain } from "./domain-ontology";
+import type { GateKind } from "./quality-gate";
 
 /** The kinds of work in the cascade. Ordered top-down. */
 export const WorkType = {
@@ -193,6 +194,15 @@ export interface CascadeNode {
    * narrows the ask rather than repeating it.
    */
   readonly brief?: string;
+  /**
+   * The gates THIS item owes, when the organization stated them for it. Absent means its type's.
+   *
+   * DATA, NOT A RULE IN A READER. Decided once, when the item is created, from the process in force
+   * then — and recorded, so every reader (the fold, gate demand, change control, the CLI) sees the
+   * same chain, and a setting changed next week does not silently rewrite what this item owed.
+   * An empty list is a real answer: owned and accountable, and governed by its children's gates.
+   */
+  readonly owes?: readonly GateKind[];
   /**
    * What this work is ABOUT — the fact the chart never carried.
    *
@@ -482,6 +492,8 @@ export function acceptGoal(
     readonly requestRef?: string;
     /** What the requester wrote. See `CascadeNode.brief`. */
     readonly brief?: string;
+    /** The gates this goal owes, when the organization stated them. See `CascadeNode.owes`. */
+    readonly owes?: readonly GateKind[];
     /** When the direction was stated. Absent means this organization has no clock. */
     readonly atMs?: number;
   },
@@ -512,6 +524,7 @@ export function acceptGoal(
           ...(input.domain === undefined ? {} : { domain: input.domain }),
           ...(input.requestRef === undefined ? {} : { requestRef: input.requestRef }),
           ...(input.brief === undefined ? {} : { brief: input.brief }),
+          ...(input.owes === undefined ? {} : { owes: [...input.owes] }),
           ...(input.atMs === undefined ? {} : { directedAtMs: input.atMs }),
         },
       ],
@@ -591,6 +604,8 @@ export function decompose(
     readonly dependsOn?: readonly string[];
     /** What this child is about, in the requester's words. Inherited when absent. */
     readonly brief?: string;
+    /** The gates this child owes, when stated. NOT inherited — see `CascadeNode.owes`. */
+    readonly owes?: readonly GateKind[];
   }[],
   /**
    * How many contributors under a hat are free. See `ownerForRung`.
@@ -686,6 +701,7 @@ export function decompose(
       ...(requestRef === undefined ? {} : { requestRef }),
       ...(child.dependsOn === undefined || child.dependsOn.length === 0 ? {} : { dependsOn: [...child.dependsOn] }),
       ...((child.brief ?? parent.brief) === undefined ? {} : { brief: child.brief ?? parent.brief }),
+      ...(child.owes === undefined ? {} : { owes: [...child.owes] }),
     });
   }
   return { ok: true, cascade: { nodes } };

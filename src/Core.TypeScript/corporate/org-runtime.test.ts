@@ -1091,3 +1091,81 @@ describe("A DEFECT IS REPRODUCED BEFORE IT IS FIXED — as a gate, not a sentenc
     expect(report.delivered).toBe(false);
   }, 60_000);
 });
+
+describe("A DEFECT'S RUNGS MAY OWE ONLY THE WORK'S OWN GATES — a setting, recorded on the node", () => {
+  // MEASURED: one defect cost 18 gate evaluations under the full ladder — a BRD, a cost ruling and
+  // four architecture gates to fix one bug. `defect_governance=leaf_only` keeps the rungs (somebody
+  // is accountable) and drops their document gates; the decision is made once and RECORDED.
+  const { upperRungChainFor } = require("./org-runtime") as typeof import("./org-runtime");
+  const leafOnly: SettingBinding = { setting: ProcessSetting.DefectRungGates, value: "none", why: "defects follow the defect practice" };
+  const item = (over: Record<string, unknown> = {}) =>
+    ({ externalRef: externalRefOf("jira", "AIAGENT-1659"), workType: WorkType.Defect, parentExternalId: "AIAGENT-791", ...over }) as never;
+
+  test("it applies to a defect, only when set, and a nearer scope wins", () => {
+    expect(upperRungChainFor(item(), [leafOnly])?.owesAt(WorkType.Initiative)).toEqual([]);
+    expect(upperRungChainFor(item(), [])).toBeUndefined();
+    expect(upperRungChainFor(item({ workType: WorkType.Task }), [leafOnly])).toBeUndefined();
+    // A programme keeps the full ladder for its defects — scoped by the EPIC the ticket was filed under.
+    const keepFor791: SettingBinding = { setting: ProcessSetting.DefectRungGates, value: "full", scope: "AIAGENT-791", why: "regulated programme" };
+    expect(upperRungChainFor(item(), [leafOnly, keepFor791])).toBeUndefined();
+  });
+
+  test("under leaf_only the rungs EXIST and are owned, but owe and cross nothing; the defect still does", async () => {
+    const events: OrgEvent[] = [];
+    const report = await runOrgRuntime(deps({ settings: [leafOnly], onEvent: (e) => events.push(e) }));
+    const upper = report.cascade.nodes.filter((n) => !isLeafType(n.workType));
+    expect(upper.map((n) => n.workType).sort()).toEqual([WorkType.Goal, WorkType.Initiative, WorkType.Project].sort());
+    for (const n of upper) {
+      expect(n.owes).toEqual([]);
+      expect(report.gateEvaluations.some((e) => e.workId === n.workId)).toBe(false);
+    }
+    const defect = report.cascade.nodes.find((n) => n.workType === WorkType.Defect);
+    expect(report.gateEvaluations.some((e) => e.workId === defect?.workId && e.gate === GateKind.Reproduction)).toBe(true);
+    expect(report.delivered).toBe(true);
+    // SAID, with the reason, on the record.
+    expect(events.some((e) => e.decision.includes("defect_rung_gates=none") && e.decision.includes("defects follow the defect practice"))).toBe(true);
+    // …and on the FACT, so the fold agrees with the run.
+    const created = events.filter((e) => e.fact?.kind === "work_created" && e.fact.workType !== WorkType.Defect && e.fact.workType !== WorkType.Review);
+    expect(created.length).toBe(3);
+    expect(created.every((e) => e.fact?.kind === "work_created" && Array.isArray(e.fact.owes) && e.fact.owes.length === 0)).toBe(true);
+  }, 60_000);
+
+  test("unset, the full ladder is unchanged — the control", async () => {
+    const report = await runOrgRuntime(deps());
+    const initiative = report.cascade.nodes.find((n) => n.workType === WorkType.Initiative);
+    expect(initiative?.owes).toBeUndefined();
+    expect(report.gateEvaluations.some((e) => e.workId === initiative?.workId && e.gate === GateKind.BrdApproval)).toBe(true);
+  }, 60_000);
+});
+
+describe("THE EXISTING SYSTEM IS UNDERSTOOD BEFORE ANYTHING IS REQUIRED OF IT", () => {
+  // User direction 2026-09-10: for any work — feature or defect — the design and business around the
+  // affected site are understood first; that is what a BRD and a design are drafted against, and for
+  // a defect it is where the upper rungs stop.
+  const understandOnly: SettingBinding = {
+    setting: ProcessSetting.DefectRungGates,
+    value: "business_context_grooming,system_context",
+    why: "understand the system around the defect; no BRD or new design for a bug",
+  };
+
+  test("every goal owes system_context, right after grooming and before any requirement", () => {
+    const goal = chainFor(WorkType.Goal);
+    expect(goal.indexOf(GateKind.SystemContext)).toBe(goal.indexOf(GateKind.BusinessContextGrooming) + 1);
+    expect(ORDERED_GATES.indexOf(GateKind.SystemContext)).toBeLessThan(ORDERED_GATES.indexOf(GateKind.BrdApproval));
+    expect(mayEvaluate(chart, "solution_architect", GateKind.SystemContext)).toBe(true);
+  });
+
+  test("a defect under a gate LIST owes exactly those — on the rung that carries each — and still delivers", async () => {
+    const report = await runOrgRuntime(deps({ settings: [understandOnly] }));
+    const goal = report.cascade.nodes.find((n) => n.workType === WorkType.Goal);
+    const initiative = report.cascade.nodes.find((n) => n.workType === WorkType.Initiative);
+    const project = report.cascade.nodes.find((n) => n.workType === WorkType.Project);
+    expect(goal?.owes).toEqual([GateKind.BusinessContextGrooming, GateKind.SystemContext]);
+    expect(initiative?.owes).toEqual([]);
+    expect(project?.owes).toEqual([]);
+    const onGoal = report.gateEvaluations.filter((e) => e.workId === goal?.workId).map((e) => e.gate);
+    expect(new Set(onGoal)).toEqual(new Set([GateKind.BusinessContextGrooming, GateKind.SystemContext]));
+    expect(report.gateEvaluations.some((e) => e.gate === GateKind.BrdApproval || e.gate === GateKind.ArchitectureDesign)).toBe(false);
+    expect(report.delivered).toBe(true);
+  }, 60_000);
+});

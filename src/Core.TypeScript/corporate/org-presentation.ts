@@ -115,6 +115,10 @@ export const GATE_LABELS: Readonly<Record<string, { readonly label: string; read
     label: "Architecture Approval",
     asks: "Is this the right design — before anybody builds it?",
   },
+  system_context: {
+    label: "System Context",
+    asks: "Do we understand what the system around this does today, and why — before we change it?",
+  },
   cost_approval: {
     label: "Cost Approval",
     asks: "Is the money worth it, and is it in budget?",

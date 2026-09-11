@@ -67,7 +67,7 @@ import {
 } from "./org-registry";
 import {
   CHAIN_BY_TYPE,
-  chainFor,
+  chainOf,
   demandFor,
   gateDemand,
   gatesComplete,
@@ -1103,7 +1103,7 @@ export async function main(argv: readonly string[], deps: CliDeps): Promise<numb
         deps.err(`no work item '${workId}' in '${chosen.org.orgId}'`);
         return Exit.NotFound;
       }
-      const chain = chainFor(node.workType);
+      const chain = chainOf(node);
       const evaluations = folded.gateEvaluations.filter((e) => e.workId === workId);
       const all = gateDemand({ cascade: folded.cascade, evaluations: folded.gateEvaluations });
       const view = {
@@ -1114,7 +1114,7 @@ export async function main(argv: readonly string[], deps: CliDeps): Promise<numb
         ownerHatId: node.ownerHatId,
         assigneeHatId: node.assigneeHatId,
         chain,
-        gatesComplete: gatesComplete(node.workType, workId, folded.gateEvaluations),
+        gatesComplete: gatesComplete(node, workId, folded.gateEvaluations),
         ran: evaluations.map((e) => ({
           gate: e.gate,
           outcome: e.outcome,

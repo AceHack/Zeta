@@ -52,6 +52,8 @@ describe("THE ORDER OF THE CHAIN IS A DECISION, NOT AN ACCIDENT", () => {
     // re-opening that structure as a regression against its own approval.
     expect([...ORDERED_GATES]).toEqual([
       GateKind.BusinessContextGrooming,
+      // The existing system is understood before anything is required of it — see `GateKind.SystemContext`.
+      GateKind.SystemContext,
       GateKind.CustomerRfpReview,
       GateKind.BrdApproval,
       GateKind.PeerReview,

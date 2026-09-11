@@ -52,6 +52,7 @@ import type { Cascade } from "./goal-cascade";
 import type { CascadeNode } from "./goal-cascade";
 import { WorkType } from "./goal-cascade";
 import { ORDERED_GATES } from "./quality-gate";
+import { chainFor } from "./gate-demand";
 import { SkillSource, type SkillSource as SkillSourceT } from "./skill-binding";
 
 /** What a practice governs. Each kind names a roster that already exists. */
@@ -332,6 +333,20 @@ export const ProcessSetting = {
    * investigations — for an organization whose own defect practice says "reproduce it first".
    */
   UnreproducedDefects: "unreproduced_defects",
+  /**
+   * Which gates the rungs ABOVE a defect owe.
+   *
+   *   `full`   — the register's ladder: every rung owes its whole chain. UNSET means this.
+   *   `none`   — the rungs are created and owned (somebody is accountable) but owe no gates.
+   *   a LIST   — e.g. `business_context_grooming,system_context`: only these, each on the rung
+   *              whose chain carries it. Understand the system; do not write a BRD or a new
+   *              design to fix a bug.
+   *
+   * MEASURED: one defect cost 18 gate evaluations under `full`, ten of them documents about the
+   * business case and architecture of a bug fix. Scoped by ticket or by the epic it was filed
+   * under, so an organization can keep the full ladder for one programme's defects.
+   */
+  DefectRungGates: "defect_rung_gates",
 } as const;
 export type ProcessSetting = (typeof ProcessSetting)[keyof typeof ProcessSetting];
 
@@ -345,6 +360,7 @@ export type ProcessSetting = (typeof ProcessSetting)[keyof typeof ProcessSetting
 export const SETTING_VALUES: Readonly<Record<ProcessSetting, readonly string[]>> = {
   [ProcessSetting.IntegrationBranch]: ["collect", "direct"],
   [ProcessSetting.UnreproducedDefects]: ["refuse", "reproduce_first"],
+  [ProcessSetting.DefectRungGates]: ["full", "none"],
 };
 
 export interface SettingBinding {
@@ -363,16 +379,41 @@ export interface SettingBinding {
   readonly why: string;
 }
 
+/**
+ * Settings whose value may also be a COMMA LIST drawn from a roster — the elements it may name.
+ *
+ * A gate list cannot be a closed roster of whole values without enumerating every combination, and
+ * enumerating them would be this register choosing which combinations an organization may have.
+ */
+export const SETTING_LIST_OF: Readonly<Partial<Record<ProcessSetting, readonly string[]>>> = {
+  // Every gate an UPPER rung owes — a defect's leaf chain is not the setting's to change.
+  [ProcessSetting.DefectRungGates]: [
+    ...new Set([WorkType.Goal, WorkType.Initiative, WorkType.Project].flatMap((t) => chainFor(t).map(String))),
+  ],
+};
+
+/** The elements of a list value, or `undefined` when it is not a list this setting accepts. */
+export function settingList(setting: ProcessSetting, value: string): readonly string[] | undefined {
+  const roster = SETTING_LIST_OF[setting];
+  if (roster === undefined) return undefined;
+  const parts = value.split(",").map((p) => p.trim());
+  if (parts.some((p) => p === "") || new Set(parts).size !== parts.length) return undefined;
+  return parts.every((p) => roster.includes(p)) ? parts : undefined;
+}
+
 export function validateSetting(binding: SettingBinding): PracticeCheck {
   const names = Object.values(ProcessSetting) as readonly string[];
   if (!names.includes(binding.setting)) {
     return { ok: false, reason: `'${String(binding.setting)}' is not a process setting — known: ${names.join(", ")}` };
   }
   const legal = SETTING_VALUES[binding.setting];
-  if (!legal.includes(binding.value)) {
+  if (!legal.includes(binding.value) && settingList(binding.setting, binding.value) === undefined) {
+    const list = SETTING_LIST_OF[binding.setting];
     return {
       ok: false,
-      reason: `'${binding.value}' is not a value for '${String(binding.setting)}' — known: ${legal.join(", ")}`,
+      reason:
+        `'${binding.value}' is not a value for '${String(binding.setting)}' — known: ${legal.join(", ")}` +
+        (list === undefined ? "" : `, or a comma list of distinct: ${list.join(", ")}`),
     };
   }
   if (binding.why.trim() === "") {

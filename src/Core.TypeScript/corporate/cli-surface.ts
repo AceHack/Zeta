@@ -21,7 +21,7 @@
  */
 
 /** Exit codes. An agent reads these before it reads stdout. */
-import { ProcessSetting, SETTING_VALUES } from "./practice";
+import { ProcessSetting } from "./practice";
 
 /**
  * The setting names and every legal value, DERIVED from the roster rather than restated.
@@ -32,7 +32,6 @@ import { ProcessSetting, SETTING_VALUES } from "./practice";
  * value that some OTHER setting accepts.
  */
 const SETTING_NAMES: readonly string[] = Object.values(ProcessSetting);
-const SETTING_VALUE_NAMES: readonly string[] = [...new Set(Object.values(SETTING_VALUES).flat())];
 
 export const Exit = {
   Ok: 0,
@@ -209,7 +208,7 @@ export const COMMANDS: readonly CommandSpec[] = [
     flags: [
       ORG_FLAG,
       { name: "--setting", what: "Which knob. Refused if it is not one this register knows.", required: true, takesValue: true, oneOf: SETTING_NAMES },
-      { name: "--value", what: "Its value. Refused if it is not one this setting accepts.", required: true, takesValue: true, oneOf: SETTING_VALUE_NAMES },
+      { name: "--value", what: "Its value — one this setting accepts, or for a list setting a comma list of what it may name. Checked against the setting itself; refused, never defaulted.", required: true, takesValue: true },
       { name: "--why", what: "Why the process works this way here. A knob with no reason is indistinguishable from a typo.", required: true, takesValue: true },
       { name: "--for", what: "A work id or ticket key this applies to, and everything under it. Omit for organization-wide.", takesValue: true },
       JSON_FLAG,
