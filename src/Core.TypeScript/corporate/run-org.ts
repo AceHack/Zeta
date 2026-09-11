@@ -170,7 +170,7 @@ import { foldHatsWorn,
 import { emit } from "./org-event";
 import type { AgentState } from "../workflow-engine/agent-loop/state-machine";
 import { CHECKPOINT_VALUES, GateKind, GateOutcome, NO_PROPOSER, ORDERED_GATES, humanGatesFor, isHumanCheckpoint, type HumanCheckpoint } from "./quality-gate";
-import { readActions } from "./action-queue";
+import { queueProblems, readActions } from "./action-queue";
 import { groom } from "./grooming";
 import { confluenceSource } from "./confluence-source";
 import { jiraIntake } from "./jira-source";
@@ -1734,7 +1734,8 @@ export async function main(argv: readonly string[]): Promise<number> {
       // agent can then be allowed exactly `Bash(bun:*)` rather than a quoted absolute path no
       // permission pattern matches.
       `${/bun(\.exe)?$/i.test(process.execPath) ? "bun" : `"${fwd(process.execPath)}"`} "${fwd(resolve(import.meta.dir, "observe-cli.ts"))}" --store "${fwd(resolve(args.store))}"` +
-      (args.actions === undefined ? "" : ` --actions "${fwd(resolve(args.actions))}"`);
+      (args.actions === undefined ? "" : ` --actions "${fwd(resolve(args.actions))}"`) +
+      (args.blockers === undefined ? "" : ` --blockers "${fwd(resolve(args.blockers))}"`);
     // Where authored documents go, so what an agent writes lands beside the record that lists it.
     process.env["ORG_DOCS_DIR"] ??= fwd(join(resolve(args.store), "docs"));
   }
@@ -2431,6 +2432,14 @@ export async function main(argv: readonly string[]): Promise<number> {
         ? "  (no --blockers outbox: a blocker the organization cannot resolve reaches nobody)"
         : `  blockers raised to a person land in ${args.blockers}`,
     );
+  }
+  // WHAT A PERSON FILED AND THE RUN CANNOT READ, said out loud. MEASURED: three notes to two runs
+  // lacked `detail.message`, were dropped by the reader, and neither run said so - the person
+  // believed the organization had been told, and nobody had.
+  if (args.actions !== undefined) {
+    for (const p of queueProblems(args.actions)) {
+      console.log(`  !! NOT READ: ${p.file} in ${args.actions} - ${p.reason}`);
+    }
   }
 
   // ── AFTER THE HANDOFF: WHAT PEOPLE SAID ABOUT WHAT IS ALREADY IN FRONT OF THEM ──

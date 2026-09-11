@@ -39,9 +39,11 @@ import {
   type World,
 } from "../observe/observe";
 import { readActions } from "./action-queue";
+import { readBlockers } from "./blocker-outbox";
+import type { RaisedBlocker } from "./human-blocker";
 import { chainOf } from "./gate-demand";
 import { childrenOf, isLeafType, nodeById, WorkState, type CascadeNode } from "./goal-cascade";
-import type { HumanAction } from "./human-action";
+import { HumanActionKind, type HumanAction } from "./human-action";
 import { buildOrgChart, type OrgChart } from "./org-chart";
 import { OrgEventKind, type OrgEvent } from "./org-event";
 import { foldActionItems, foldBoard, foldHandedOffChanges, foldOrganization, foldSupervisorSignals, type FoldedOrganization } from "./org-fold";
@@ -70,6 +72,11 @@ export function itemContextsFrom(
   actions: readonly HumanAction[],
   /** For hat names beside ids. Absent, the ids are shown. */
   chart?: OrgChart,
+  /**
+   * Questions raised to a person that live in the blocker OUTBOX rather than the log. Without them an
+   * item never showed what it asked - or what the person answered.
+   */
+  outbox: readonly RaisedBlocker[] = [],
 ): readonly ItemContext[] {
   const board = foldBoard(events);
   const views = new Map(work.map((w) => [w.workId, w] as const));
@@ -133,8 +140,16 @@ export function itemContextsFrom(
         ...(a.detail?.["gate"] === undefined ? {} : { about: a.detail["gate"] }),
       });
     }
-    for (const b of folded.blockers.filter((x) => x.blocking === node.workId)) {
+    const asked = [...new Map([...folded.blockers, ...outbox].map((b) => [b.blockerId, b] as const)).values()];
+    for (const b of asked.filter((x) => x.blocking === node.workId)) {
       comments.push({ by: b.byHatId, text: `asked a person: ${b.about}`, atMs: b.atMs, about: "question" });
+      // AND WHAT THE PERSON ANSWERED, on the same item. An answer is filed against the QUESTION, so
+      // the loop above (subject = this item) never saw it. MEASURED on AIAGENT-1659: a reviewer
+      // opened the item, found the author citing the requester's instruction, could not find the
+      // instruction anywhere on the record, and rejected the step as a fabricated citation.
+      for (const a of actions.filter((x) => x.kind === HumanActionKind.AnswerBlocker && x.subjectId === b.blockerId)) {
+        comments.push({ by: a.byHuman, text: `answered: ${a.detail?.["answer"] ?? a.reason}`, atMs: a.atMs, about: "answer" });
+      }
     }
     for (const r of w?.refusals ?? []) comments.push({ by: "organization", text: r, about: "refused" });
     // What the organization declined to do FOR THIS ITEM, as the runtime recorded it — a step whose
@@ -214,6 +229,8 @@ export function worldFor(input: {
   readonly events: readonly OrgEvent[];
   readonly hatId: string;
   readonly actions: readonly HumanAction[];
+  /** The blocker outbox, so an item shows the questions it raised and what the person answered. */
+  readonly blockers?: readonly RaisedBlocker[];
   readonly resourceAuthorityHatId?: string;
   readonly nowMs?: number;
   readonly runs?: number;
@@ -236,7 +253,7 @@ export function worldFor(input: {
     input.hatId,
     input.resourceAuthorityHatId ?? "rmo_office",
   );
-  const items = itemContextsFrom(input.events, folded, view.work, input.actions, built.chart);
+  const items = itemContextsFrom(input.events, folded, view.work, input.actions, built.chart, input.blockers ?? []);
   const holding = holdingOf(folded.cascade.nodes, input.hatId, (surface.reviewsAsked ?? []).map((r) => r.artifactId));
   // THE WORK THIS HAT HOLDS IS ITS BACKLOG. Ready when everything it waits on is done — the same
   // `dependsOn` edge the runtime holds work on, read here rather than restated.
@@ -311,10 +328,10 @@ export async function main(argv: readonly string[], print: (s: string) => void =
   const store = valueAfter(argv, "--store");
   const hatId = valueAfter(argv, "--hat");
   if (store === undefined || hatId === undefined) {
-    print("usage: observe-cli.ts --store <dir> --hat <hatId> [--actions <dir>] [--json] <dashboard | item <workId> | attachment <workId> <ref> | menu>");
+    print("usage: observe-cli.ts --store <dir> --hat <hatId> [--actions <dir>] [--blockers <dir>] [--json] <dashboard | item <workId> | attachment <workId> <ref> | menu>");
     return 2;
   }
-  const flagsWithValues = new Set(["--store", "--hat", "--actions"]);
+  const flagsWithValues = new Set(["--store", "--hat", "--actions", "--blockers"]);
   const positional: string[] = [];
   for (let i = 0; i < argv.length; i++) {
     const a = argv[i] as string;
@@ -326,7 +343,14 @@ export async function main(argv: readonly string[], print: (s: string) => void =
   const actionsDir = valueAfter(argv, "--actions");
   const actions = actionsDir === undefined ? [] : readActions(actionsDir);
   const events = readEvents(store);
-  const { world, items } = worldFor({ events, hatId, actions, runs: readRuns(store).length });
+  const blockersDir = valueAfter(argv, "--blockers");
+  const { world, items } = worldFor({
+    events,
+    hatId,
+    actions,
+    runs: readRuns(store).length,
+    ...(blockersDir === undefined ? {} : { blockers: readBlockers(blockersDir) }),
+  });
   const nav = navigationFor(process.env["ORG_OBSERVE_CMD"] ?? `bun ${JSON.stringify(resolve(import.meta.dir, "observe-cli.ts"))} --store ${JSON.stringify(store)}`, hatId);
   const json = argv.includes("--json");
 

@@ -112,6 +112,22 @@ describe("THE RECORD OF A WORK ITEM, as an agent opens it", () => {
     expect(closed?.where?.some((w) => w.includes("open action item"))).toBe(false);
   }, 60_000);
 
+  test("WHAT A PERSON ANSWERED IS ON THE ITEM: a question from the blocker outbox and its answer both show - a reviewer can find the instruction the author cites", async () => {
+    // MEASURED on AIAGENT-1659: answers are filed against the QUESTION, the question lived only in
+    // the outbox, and a reviewer rejected the author's citation of the requester as fabricated.
+    const events = await recordedRun();
+    const leaf = worldFor({ events, hatId: "qa_engineer", actions: [] }).items?.find((i) => i.kind === WorkType.Defect);
+    const id = leaf?.id ?? "";
+    const blocker = { blockerId: "ask-x-1", byHatId: "backend_implementer", about: "which epic key?", blocking: id, unblocks: "reproduction", atMs: 1, why: "w", exhaustion: { kind: "outside_org_authority", what: "reproduction" } } as never;
+    const answer = { actionId: "answer-ask-x-1", kind: "answer_blocker", byHuman: "max", atMs: 2, subjectId: "ask-x-1", reason: "r", detail: { answer: "chase the code; the transcript is gone" } } as never;
+    const item = worldFor({ events, hatId: "qa_director", actions: [answer], blockers: [blocker] }).items?.find((i) => i.id === id);
+    expect(item?.comments.some((c) => c.about === "question" && c.text.includes("which epic key?"))).toBe(true);
+    expect(item?.comments.some((c) => c.about === "answer" && c.by === "max" && c.text.includes("chase the code"))).toBe(true);
+    // Without the outbox the question and its answer are invisible - which is the defect.
+    const blind = worldFor({ events, hatId: "qa_director", actions: [answer] }).items?.find((i) => i.id === id);
+    expect(blind?.comments.some((c) => c.about === "answer")).toBe(false);
+  }, 60_000);
+
   test("what a hat holds is what is assigned to it or owned by it while open", () => {
     const nodes = [
       { workId: "a", workType: WorkType.Defect, title: "a", state: "in_progress", ownerHatId: "lead", assigneeHatId: "dev" },
