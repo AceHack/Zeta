@@ -1,0 +1,14 @@
+{
+  "id": "080d0486a2ed4810a0130008ef4f94e6",
+  "at": "2026-09-11T14:17:11.849Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M28D8QD8087G0R002SJK2DR",
+    "type": "task",
+    "title": "Guard the Playwright-spec wrong-runner class",
+    "slug": "guard-the-playwright-spec-wrong-runner-class",
+    "priority": "P2",
+    "filename": "081M28D8QD8087G0R002SJK2DR-guard-the-playwright-spec-wrong-runner-class.md"
+  }
+}
