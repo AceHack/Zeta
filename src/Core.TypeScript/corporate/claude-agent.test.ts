@@ -49,8 +49,10 @@ describe("THE WORLDVIEW IS ASKED FOR — the prompt carries the observe command,
   test("every mode tells the agent to open its dashboard and item through observe", () => {
     const r = run(["work", "task-9"], ok({ summary: "fixed", commit: "abc", testsRun: [], blocked: "" }), { ORG_ASSIGNEE: "backend_implementer" });
     expect(r.status).toBe(0);
-    expect(r.seen?.input).toContain("observe --store S --hat backend_implementer dashboard");
-    expect(r.seen?.input).toContain("observe --store S --hat backend_implementer item task-9");
+    expect(r.seen?.input).toContain("observe --hat backend_implementer dashboard");
+    expect(r.seen?.input).toContain("observe --hat backend_implementer item task-9");
+    // `observe` is a COMMAND ON PATH, so a read-only agent can be allowed exactly `Bash(observe:*)`.
+    expect(r.seen?.argv).not.toContain("Bash(bun:*)");
     r.cleanup();
   });
 

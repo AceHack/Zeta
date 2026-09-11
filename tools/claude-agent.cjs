@@ -37,8 +37,9 @@
  */
 "use strict";
 const { spawnSync } = require("node:child_process");
-const { existsSync, mkdirSync, readFileSync, writeFileSync } = require("node:fs");
-const { isAbsolute, join, resolve } = require("node:path");
+const { existsSync, mkdirSync, mkdtempSync, readFileSync, realpathSync, writeFileSync } = require("node:fs");
+const { tmpdir } = require("node:os");
+const { delimiter, isAbsolute, join, resolve } = require("node:path");
 
 const NL = String.fromCharCode(10);
 const env = process.env;
@@ -63,9 +64,30 @@ function claudeBin() {
   return "claude";
 }
 
+/**
+ * `observe` as a COMMAND ON PATH, not a quoted interpreter-and-script line.
+ *
+ * Two reasons, one measured. The agent types `observe dashboard` and nothing longer; and a read-only
+ * agent can be allowed EXACTLY `Bash(observe:*)`. Allowing the interpreter instead (`Bash(bun:*)`)
+ * was measured to be write access by another name: on the rehearsal a "read-only" author changed a
+ * test file by running code through it.
+ */
+function observeShimDir() {
+  if (!env.ORG_OBSERVE_CMD) return undefined;
+  const dir = mkdtempSync(join(tmpdir(), "org-observe-"));
+  writeFileSync(join(dir, "observe"), "#!/usr/bin/env bash" + NL + "exec " + env.ORG_OBSERVE_CMD + ' "$@"' + NL, { mode: 0o755 });
+  writeFileSync(join(dir, "observe.cmd"), "@echo off" + String.fromCharCode(13) + NL + env.ORG_OBSERVE_CMD + " %*" + String.fromCharCode(13) + NL);
+  return dir;
+}
+const SHIM = observeShimDir();
+
 /** The child's environment. The token, when a file names one, goes HERE and nowhere else. */
 function childEnv() {
   const out = { ...env };
+  if (SHIM !== undefined) {
+    const key = Object.keys(out).find((k) => k.toUpperCase() === "PATH") || "PATH";
+    out[key] = SHIM + delimiter + (out[key] || "");
+  }
   if (env.ORG_CLAUDE_TOKEN_FILE) {
     let token = "";
     try {
@@ -87,13 +109,13 @@ const NEVER = [
 /** Reading: the repository, its history, and the organization's record. */
 const READ = [
   "Read", "Glob", "Grep",
-  "Bash(bun:*)", "Bash(git log:*)", "Bash(git show:*)", "Bash(git diff:*)", "Bash(git status:*)",
+  "Bash(observe:*)", "Bash(git log:*)", "Bash(git show:*)", "Bash(git diff:*)", "Bash(git status:*)",
   "Bash(git grep:*)", "Bash(git ls-files:*)", "Bash(git merge-base:*)", "Bash(git -C:*)", "Bash(ls:*)",
 ];
 /** Changing a checkout: everything, minus the integrating acts above. */
 const WRITE = ["Read", "Glob", "Grep", "Edit", "Write", "TodoWrite", "Bash"];
 /** Judging: reading, plus running what the repository runs, so a reviewer can check a claim. */
-const JUDGE = [...READ, "Bash(npm test:*)", "Bash(npm run:*)", "Bash(npx:*)", "Bash(node:*)"];
+const JUDGE = [...READ, "Bash(npm test:*)", "Bash(npm run:*)", "Bash(npx:*)", "Bash(node:*)", "Bash(bun:*)"];
 
 /**
  * Run one Claude Code session and return its structured answer.
@@ -151,7 +173,7 @@ function runClaude(prompt, schema, allowed, cwd) {
 
 /** Who the agent is and how it sees the organization. The same preamble for every mode. */
 function preamble(hat, workId) {
-  const observe = env.ORG_OBSERVE_CMD;
+  const observe = env.ORG_OBSERVE_CMD ? "observe" : undefined;
   return [
     "You are acting as the hat '" + hat + "' in a software organization, on work item " + workId + ".",
     "",
@@ -231,7 +253,17 @@ if (mode === "gate") {
   const hat = env.ORG_ASSIGNEE || env.ORG_WORK_OWNER || "author";
   // A CHECKOUT OF ITS OWN means this step may change code (a reproduction commits its failing test).
   // Without one the agent is reading a shared clone and may change nothing in it.
-  const own = env.ORG_WORKDIR && resolve(env.ORG_WORKDIR) === resolve(process.cwd());
+  // COMPARED BY REAL PATH. MEASURED: the worktree path carried the 8.3 short form (`MAX~1.CHA`) and
+  // the process saw the long one, so a textual compare said "not your checkout" and the author of a
+  // reproduction was denied the write it needed — and asked a person for permission.
+  const real = (p) => {
+    try {
+      return realpathSync.native(p).toLowerCase();
+    } catch {
+      return resolve(p).toLowerCase();
+    }
+  };
+  const own = Boolean(env.ORG_WORKDIR) && real(env.ORG_WORKDIR) === real(process.cwd());
   const docsDir = resolve(env.ORG_DOCS_DIR || join(process.cwd(), ".org-docs"));
   const rounds = env.ORG_ASK_ROUNDS_LEFT || "unbounded";
   const prompt = [
@@ -265,6 +297,7 @@ if (mode === "gate") {
   const a = r.answer;
   const asks = (a.questions || []).map((q) => String(q).trim()).filter((q) => q !== "");
   const lessons = (a.learned || []).map((l) => "learned: " + String(l.key).trim() + " :: " + String(l.lesson).trim());
+  for (const d of r.denied) process.stderr.write("[claude-agent] denied " + d + NL);
   if (asks.length > 0) {
     for (const q of asks) process.stdout.write("ask: " + q.split(NL).join(" ") + NL);
     for (const l of lessons) process.stdout.write(l + NL);

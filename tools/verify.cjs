@@ -43,6 +43,38 @@ function record(line) {
   }
 }
 
+// ── SEVERAL COMMANDS, WHEN THE PROJECT VERIFIES WITH SEVERAL ───────────────────
+// `VERIFY_STEPS` is a JSON array of argv arrays, run in order in `cwd`; the FIRST that fails decides.
+// A monorepo verifies its server and its client separately, and chaining them through a shell would
+// put a shell back on a path that deliberately has none.
+if (process.env.VERIFY_STEPS) {
+  let steps;
+  try {
+    steps = JSON.parse(process.env.VERIFY_STEPS);
+  } catch {
+    process.stderr.write("[verify] VERIFY_STEPS is not JSON\n");
+    process.exit(1);
+  }
+  if (!Array.isArray(steps) || steps.length === 0 || !steps.every((s) => Array.isArray(s) && s.length > 0)) {
+    process.stderr.write("[verify] VERIFY_STEPS must be a non-empty array of non-empty argv arrays\n");
+    process.exit(1);
+  }
+  for (const [stepCmd, ...stepArgs] of steps) {
+    const began = Date.now();
+    const r = spawnSync(stepCmd, stepArgs, { cwd, encoding: "utf-8", shell: false, timeout: timeoutMs, maxBuffer: 64 * 1024 * 1024 });
+    process.stdout.write(r.stdout || "");
+    process.stderr.write(r.stderr || "");
+    const secs = Math.round((Date.now() - began) / 1000);
+    record("ran cwd=" + cwd + " cmd=" + stepCmd + " " + stepArgs.join(" ") + " -> " + (r.error ? "ERROR " + r.error.message : "exit " + String(r.status)) + " in " + String(secs) + "s");
+    if (r.error !== undefined || r.status !== 0) {
+      process.stderr.write("[verify] step failed: " + stepCmd + " " + stepArgs.join(" ") + "\n");
+      process.exit(1);
+    }
+  }
+  process.stderr.write("[verify] " + String(steps.length) + " step(s) passed\n");
+  process.exit(0);
+}
+
 if (!cmd) {
   process.stderr.write("[verify] VERIFY_CMD is not set: nothing was configured to verify this\n");
   record("REFUSED cwd=" + cwd + " reason=no VERIFY_CMD");

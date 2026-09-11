@@ -1094,6 +1094,11 @@ describe("A DEFECT IS REPRODUCED BEFORE IT IS FIXED — as a gate, not a sentenc
     expect(rec.order.some((s) => s.startsWith("reproduce:"))).toBe(true);
     expect(rec.order.some((s) => s.startsWith("fix:"))).toBe(false);
     expect(report.delivered).toBe(false);
+    // …and NOTHING VERIFIES the change that was never implemented (measured on the rehearsal: a
+    // verify leaf reviewed a branch with no commits).
+    const verify = report.cascade.nodes.find((n) => n.workType === WorkType.Review);
+    expect(report.gateEvaluations.some((e) => e.workId === verify?.workId)).toBe(false);
+    expect(report.refusals.some((r) => r.includes("nothing in it yet to verify"))).toBe(true);
   }, 60_000);
 });
 

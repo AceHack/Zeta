@@ -151,6 +151,7 @@ import {
   GateKind,
   GateOutcome,
   gateOwners,
+  isPassing,
   humanGatesFor,
   ORDERED_GATES,
   type HumanCheckpoint,
@@ -2512,6 +2513,30 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
       refusals.push(
         `${task.workId} is held: it depends on '${waitingOn.workId}' (${waitingOn.title}), ` +
           `which is ${String(waitingOn.state)} and has opened no change`,
+      );
+      continue;
+    }
+    // …AND HELD UNTIL THERE IS SOMETHING IN THAT CHANGE TO JUDGE. A change that is open is not a
+    // change that has code in it: MEASURED on the rehearsal run, the defect's reproduction was
+    // rejected, nothing was ever implemented — and the verify leaf, seeing an open change, went ahead
+    // and wrote a peer review of a branch with no commits. A review of nothing is the vacuity this
+    // organization exists to refuse. So a dependency that writes code must have PASSED its
+    // implementation step, in this run, before anything that verifies it starts.
+    const unjudged =
+      subjectChange === undefined
+        ? undefined
+        : blocking.find(
+            (d) =>
+              d.state !== WorkState.Done &&
+              producesCode(d.workType) &&
+              !gateEvaluations.some(
+                (e) => e.workId === d.workId && e.gate === GateKind.ImplementationReview && isPassing(e.outcome),
+              ),
+          );
+    if (unjudged !== undefined) {
+      refusals.push(
+        `${task.workId} is held: '${unjudged.workId}' has opened a change but has not passed ` +
+          `'${GateKind.ImplementationReview}', so there is nothing in it yet to verify`,
       );
       continue;
     }
