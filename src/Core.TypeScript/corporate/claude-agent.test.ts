@@ -230,6 +230,21 @@ describe("AFTER THE HANDOFF: THE DESCRIPTION AND THE FOLLOW-UP", () => {
     canSync.cleanup();
   });
 
+  test("follow-up: under until_green the session is told a red pipeline cannot be declined - and is told nothing about pipelines otherwise", () => {
+    const items = JSON.stringify([{ id: "gitlab:pipeline-55-failed", kind: "pipeline_failed", summary: "the request's pipeline 55 failed" }]);
+    const answer = ok({ decisions: [{ id: "gitlab:pipeline-55-failed", outcome: "deferred", how: "the runner ran out of disk" }], syncWithTarget: false, summary: "s" });
+    const told = run(["follow-up", "task-9"], answer, { ORG_ACTION_ITEMS: items, ORG_CAN_SYNC: "0", ORG_PIPELINE_POLICY: "until_green" });
+    expect(told.status).toBe(0);
+    // MEASURED on agentic-tpm !164: two red pipelines were declined as a flake, and the request stayed red.
+    expect(told.seen?.input).toContain("A RED PIPELINE (item kind `pipeline_failed`) IS NOT FINISHED BY BEING EXPLAINED");
+    expect(told.seen?.input).toContain("A green run locally is not a green pipeline");
+    told.cleanup();
+    // An organization whose pipelines are its own business is not lectured about them.
+    const quiet = run(["follow-up", "task-9"], answer, { ORG_ACTION_ITEMS: items, ORG_CAN_SYNC: "0", ORG_PIPELINE_POLICY: "flag_only" });
+    expect(quiet.seen?.input).not.toContain("IS NOT FINISHED BY BEING EXPLAINED");
+    quiet.cleanup();
+  });
+
   test("follow-up in resolve mode is told the conflicted paths and decides nothing about items", () => {
     const r = run(["follow-up", "task-9"], ok({ decisions: [{ id: "x", outcome: "addressed", how: "h" }], syncWithTarget: true, summary: "resolved" }), {
       ORG_FOLLOWUP_MODE: "resolve",
