@@ -42,6 +42,11 @@ import { lockHolder } from "./store-lock";
 /** An unchanged set of reasons is retried at most once every this many intervals. */
 export const RETRY_EVERY = 6;
 
+/** A run that exits non-zero faster than this never reached the organization. */
+export const FAST_FAILURE_MS = 60_000;
+/** How many of those in a row are retried at once before the backoff applies anyway. */
+export const FAST_FAILURES = 3;
+
 export interface WatchInput {
   readonly events: readonly OrgEvent[];
   /** What the profile's poller and its webhook directory report right now. */
@@ -141,6 +146,8 @@ interface WatchState {
   readonly seen: readonly string[];
   readonly lastSignature?: string;
   readonly lastLaunchMs?: number;
+  /** Consecutive runs that died before they ran. Cleared by one that ran. */
+  readonly fastFailures?: number;
 }
 
 function readState(store: string): WatchState {
@@ -248,9 +255,17 @@ export async function watchProfile(
   const polledNote = "refusal" in polled && polled.refusal !== undefined ? ` (the poll said: ${polled.refusal})` : "";
   if (!decision.launch) return decision.why + polledNote;
 
+  const startedMs = deps.nowMs();
   const child = deps.start(profile, join(store, "run.log"));
   running.set(profile.name, child);
-  writeState(store, { seen: [...state.seen, ...verdict.newDeliveries], lastSignature: verdict.signature, lastLaunchMs: deps.nowMs() });
+  // The consecutive-fast-failure count is carried across the launch - dropping it here would reset
+  // the cap on every retry, and the retrying would never stop.
+  writeState(store, {
+    seen: [...state.seen, ...verdict.newDeliveries],
+    lastSignature: verdict.signature,
+    lastLaunchMs: deps.nowMs(),
+    ...(state.fastFailures === undefined ? {} : { fastFailures: state.fastFailures }),
+  });
   log(store, `started a run (pid ${String(child.pid)}): ${decision.why}`);
   const limit = setTimeout(() => {
     log(store, `the run passed its ${String(profile.maxRunMinutes)}-minute limit - stopping pid ${String(child.pid)} and what it started`);
@@ -259,7 +274,38 @@ export async function watchProfile(
   child.once("exit", (code) => {
     clearTimeout(limit);
     running.delete(profile.name);
-    log(store, `the run ended (exit ${String(code)})`);
+    const tookMs = deps.nowMs() - startedMs;
+    log(store, `the run ended (exit ${String(code)}) after ${String(Math.round(tookMs / 1000))}s`);
+    // ── A RUN THAT DIED BEFORE IT RAN IS NOT AN ANSWER ────────────────────
+    // MEASURED on dev-portal, 2026-09-11 22:34:33: a run exited 66 in 79ms having written nothing -
+    // the entry file was briefly unreadable (this tree lives under a syncing folder). Two review
+    // findings a person had just filed were recorded as SEEN at launch, which is permanent: nothing
+    // would ever have raised them again, and the unchanged reasons were also under the retry
+    // backoff, so the organization would have sat still for half an hour and then found nothing to
+    // do. A run that died before it ran saw nothing, so it is not allowed to have seen anything:
+    // what it marked is given back and the signature forgotten, and the next look tries again.
+    // FAST_FAILURES in a row stops the retrying - in case it is not transient - but the deliveries
+    // are handed back every time, because losing a person's comment is the worse failure.
+    if (code !== 0 && tookMs < FAST_FAILURE_MS) {
+      const now = readState(store);
+      const fails = (now.fastFailures ?? 0) + 1;
+      // Only what THIS launch claimed: `watchReasons` was handed `state.seen`, so newDeliveries
+      // never contains anything an earlier run already handled.
+      const claimed = new Set(verdict.newDeliveries);
+      const { lastSignature: _forgotten, ...rest } = now;
+      const handedBack: WatchState = { ...rest, seen: now.seen.filter((id) => !claimed.has(id)), fastFailures: fails };
+      if (fails <= FAST_FAILURES) {
+        writeState(store, handedBack);
+        log(store, `it died in under ${String(FAST_FAILURE_MS / 1000)}s (${String(fails)} in a row) - it saw nothing, so the next look tries again`);
+      } else {
+        // Still hand the deliveries back; only the retrying stops.
+        writeState(store, { ...handedBack, ...(now.lastSignature === undefined ? {} : { lastSignature: now.lastSignature }) });
+        log(store, `${String(fails)} runs in a row died before they ran - waiting out the backoff; look at ${join(store, "run.log")}`);
+      }
+      return;
+    }
+    const after = readState(store);
+    if ((after.fastFailures ?? 0) > 0) writeState(store, { ...after, fastFailures: 0 });
   });
   return `started: ${decision.why}${polledNote}`;
 }

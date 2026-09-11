@@ -122,6 +122,94 @@ describe("A RUN IS STARTED ONLY WHEN THE STORE IS FREE, AND WHAT IT WAS STARTED 
     }
   });
 
+  test("A RUN THAT DIED BEFORE IT RAN SAW NOTHING: the comment it was started for is raised again, not lost", async () => {
+    const store = mkdtempSync(join(tmpdir(), "watch-crash-"));
+    try {
+      const { appendEvent } = await import("./org-store");
+      appendEvent(handedOff, store);
+      appendEvent(aireviewDone, store);
+      const { mkdirSync } = await import("node:fs");
+      mkdirSync(join(store, "feedback"), { recursive: true });
+      // An older comment a run already handled. A later crash must not resurrect it.
+      writeFileSync(join(store, "feedback", "hook-0.json"), JSON.stringify(comment("note-11")));
+      const profile: RunProfile = { name: "tpm", args: ["--org", "acme", "--store", store], env: {}, everyMinutes: 5, maxRunMinutes: 60, why: "w" };
+      const org = { orgId: "acme", changeRequests: cr } as unknown as OrgRecord;
+      const starts: number[] = [];
+      // MEASURED 2026-09-11: 79ms and exit 66, having written nothing. The clock does not move, so
+      // every one of these ends inside FAST_FAILURE_MS.
+      const deps = { start: () => { starts.push(1); return fakeChild(); }, nowMs: () => 1_000 };
+      const running = new Map<string, ChildProcess>();
+      const state = (): { seen: string[]; lastSignature?: string; fastFailures?: number } =>
+        JSON.parse(readFileSync(join(store, "watch", "state.json"), "utf-8"));
+
+      expect(await watchProfile(org, profile, deps, running)).toContain("started: new diff_comment on task-40");
+      (running.get("tpm") as unknown as EventEmitter).emit("exit", 0);
+      expect(state().seen).toEqual(["gitlab:note-11"]);
+
+      writeFileSync(join(store, "feedback", "hook-1.json"), JSON.stringify(comment("note-77")));
+      expect(await watchProfile(org, profile, deps, running)).toContain("started: new diff_comment on task-40");
+      expect(state().seen).toContain("gitlab:note-77");
+      (running.get("tpm") as unknown as EventEmitter).emit("exit", 66);
+      // It never reached the organization, so it is not allowed to have seen the comment - but the
+      // one an earlier run DID handle stays handled.
+      expect(state().seen).not.toContain("gitlab:note-77");
+      expect(state().seen).toContain("gitlab:note-11");
+      expect(state().lastSignature).toBeUndefined();
+      expect(state().fastFailures).toBe(1);
+
+      // The very next look starts a run again rather than waiting out the backoff.
+      expect(await watchProfile(org, profile, deps, running)).toContain("started: new diff_comment on task-40");
+      (running.get("tpm") as unknown as EventEmitter).emit("exit", 66);
+      expect(await watchProfile(org, profile, deps, running)).toContain("started:");
+      (running.get("tpm") as unknown as EventEmitter).emit("exit", 66);
+      expect(await watchProfile(org, profile, deps, running)).toContain("started:");
+      (running.get("tpm") as unknown as EventEmitter).emit("exit", 66);
+      expect(starts.length).toBe(5);
+      // A fourth death in a row is not transient: the retrying stops - but the comment is STILL
+      // handed back, because losing what a person wrote is the worse failure.
+      expect(state().fastFailures).toBe(4);
+      expect(state().seen).not.toContain("gitlab:note-77");
+      expect(await watchProfile(org, profile, deps, running)).toContain("the same 1 reason(s) as the last run");
+      expect(starts.length).toBe(5);
+
+      // A run that FAILED after really running is a different animal: the organization saw the
+      // comment and decided against it, or died trying. That is not undone here - it is its own
+      // failure to look at, and handing the delivery back would raise it again forever.
+      let clock = 1_000 + 40 * 60_000;
+      (deps as { nowMs: () => number }).nowMs = () => clock;
+      expect(await watchProfile(org, profile, deps, running)).toContain("started:");
+      clock += 20 * 60_000;
+      (running.get("tpm") as unknown as EventEmitter).emit("exit", 1);
+      expect(state().seen).toContain("gitlab:note-77");
+      expect(state().fastFailures).toBe(0);
+    } finally {
+      rmSync(store, { recursive: true, force: true });
+    }
+  });
+
+  test("a run that ran keeps what it saw, and clears the fast-failure count", async () => {
+    const store = mkdtempSync(join(tmpdir(), "watch-ran-"));
+    try {
+      const { appendEvent } = await import("./org-store");
+      appendEvent(handedOff, store);
+      appendEvent(aireviewDone, store);
+      const { mkdirSync } = await import("node:fs");
+      mkdirSync(join(store, "feedback"), { recursive: true });
+      writeFileSync(join(store, "feedback", "hook-1.json"), JSON.stringify(comment("note-77")));
+      const profile: RunProfile = { name: "tpm", args: ["--org", "acme", "--store", store], env: {}, everyMinutes: 5, maxRunMinutes: 60, why: "w" };
+      const org = { orgId: "acme", changeRequests: cr } as unknown as OrgRecord;
+      const deps = { start: () => fakeChild(), nowMs: () => 1_000 };
+      const running = new Map<string, ChildProcess>();
+      expect(await watchProfile(org, profile, deps, running)).toContain("started:");
+      (running.get("tpm") as unknown as EventEmitter).emit("exit", 0);
+      const state = JSON.parse(readFileSync(join(store, "watch", "state.json"), "utf-8"));
+      expect(state.seen).toContain("gitlab:note-77");
+      expect(state.lastSignature).toBeString();
+    } finally {
+      rmSync(store, { recursive: true, force: true });
+    }
+  });
+
   test("ONE RUN AT A TIME: a store another living process holds is left alone - including a run a person started", async () => {
     const store = mkdtempSync(join(tmpdir(), "watch-lock-"));
     const other = spawn(process.execPath, ["-e", "setTimeout(() => {}, 60000)"], { stdio: "ignore" });
