@@ -1,0 +1,12 @@
+{
+  "pr_number": 17291,
+  "archive_path": "docs/history/pr-reviews/2026/09/11/PR-17291-fix-081m28vs54p087g0r0034mjxh0-a-tree-wide-target-made-the-unclaimed-path-fail-s.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-11T19:07:49.037Z",
+  "schema_version": "v1",
+  "commit_sha": "2fbdf3003e914c2a6794a06d4bc54325dce392a0",
+  "title": "fix(081M28VS54P087G0R0034MJXH0): a tree-wide target made the unclaimed-path fail-safe unreachable",
+  "state": "MERGED",
+  "merged_at": "2026-09-11T19:07:06Z",
+  "head_ref": "shadow/build-graph-failsafe-unreachable"
+}
