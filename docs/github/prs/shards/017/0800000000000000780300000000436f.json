@@ -1,0 +1,12 @@
+{
+  "pr_number": 17263,
+  "archive_path": "docs/history/pr-reviews/PR-17263-feat-081m26k4nrf087g0r003qvf7gb-0-6-verb-coverage-7-7-commands-per-question-and-.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-10T23:54:18.716Z",
+  "schema_version": "v1",
+  "commit_sha": "7ed50b26d1a159fe0e6f2bdbc2d4b9a586aef1f4",
+  "title": "feat(081M26K4NRF087G0R003QVF7GB): 0.6% verb coverage, 7.7 commands per question — and the ranking basis decides which way the arrow points",
+  "state": "MERGED",
+  "merged_at": "2026-09-10T23:53:32Z",
+  "head_ref": "adhoc-command-shape-audit"
+}
