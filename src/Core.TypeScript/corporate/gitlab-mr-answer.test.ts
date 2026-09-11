@@ -7,7 +7,7 @@
  */
 
 import { describe, expect, test } from "bun:test";
-import { mkdtempSync, readFileSync, rmSync, writeFileSync, existsSync } from "node:fs";
+import { mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 import { commandAnswerer } from "./followup-commands";
@@ -46,9 +46,16 @@ async function answer(items: AnswerItem[], resolveThreads: boolean, opts: { fail
   try {
     const run = commandAnswerer({ command: "node", args: [ANSWERER] }, dir);
     const r = await run({ workId: "task-040", changeUrl: MR, branch: "defect/x", resolve: resolveThreads, items });
-    const seen: Call[] = existsSync(calls)
-      ? readFileSync(calls, "utf-8").split("\n").filter((l) => l !== "").map((l) => JSON.parse(l) as Call)
-      : [];
+    // READ, THEN INTERPRET ENOENT. `existsSync` gating `readFileSync` leaves a
+    // window the answer is stale in, and the read reports absence itself --
+    // absent here means "the stub recorded no calls", which is exactly the empty
+    // array the ternary produced.
+    let seen: Call[];
+    try {
+      seen = readFileSync(calls, "utf-8").split("\n").filter((l) => l !== "").map((l) => JSON.parse(l) as Call);
+    } catch {
+      seen = [];
+    }
     return { r, calls: seen };
   } finally {
     delete process.env["ORG_GLAB_BIN"];
