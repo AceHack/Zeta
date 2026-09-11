@@ -168,6 +168,7 @@ import type { ReputationObservation } from "./reputation";
 import { foldHatsWorn,
   foldActionItems, foldHandedOffChanges, foldLandedChanges, foldObserveActTicks, foldPresence } from "./org-fold";
 import { emit } from "./org-event";
+import { awaitingHumanReview, describeChangeLine } from "./handoff-report";
 import type { AgentState } from "../workflow-engine/agent-loop/state-machine";
 import { CHECKPOINT_VALUES, GateKind, GateOutcome, NO_PROPOSER, ORDERED_GATES, humanGatesFor, isHumanCheckpoint, type HumanCheckpoint } from "./quality-gate";
 import { queueProblems, readActions } from "./action-queue";
@@ -2547,14 +2548,24 @@ export async function main(argv: readonly string[]): Promise<number> {
   }
 
   // HANDED OFF IS NOT DELIVERED, and the banner must not blur them: the work is in front of people,
-  // nothing reached the trunk, and the next act is theirs.
+  // nothing reached the trunk, and the next act is theirs. Asked of the RECORD, not of this run's
+  // own handoffs: a run that only followed up on earlier ones hands nothing off anew, and MEASURED
+  // 2026-09-11 it printed DELIVERED while three merge requests sat open and unmerged.
+  const awaitingReview = awaitingHumanReview({
+    changes: report.changes,
+    handedOffThisRun: report.changesHandedOff,
+    handedOffOnRecord: new Set(args.store === undefined ? [] : foldHandedOffChanges(readEvents(args.store)).keys()),
+    landed: report.changesLanded,
+  });
   const banner = !report.delivered
     ? "NOT DELIVERED"
-    : report.changesHandedOff.length > 0
+    : awaitingReview.length > 0
       ? "HANDED OFF FOR HUMAN REVIEW - nothing was merged"
       : "DELIVERED";
   console.log(`\n=== ${banner} ===`);
-  for (const w of report.changesHandedOff) console.log(`  awaiting human review: ${w}`);
+  for (const w of awaitingReview) {
+    console.log(`  awaiting human review: ${w}${report.changesHandedOff.includes(w) ? "" : " (handed off earlier)"}`);
+  }
   console.log(`levels engaged: ${report.levelsEngaged.join(" → ")}`);
 
   // Printed on EVERY run, not only the interesting ones. A run that reached a shell and did not
@@ -3287,8 +3298,12 @@ export async function main(argv: readonly string[]): Promise<number> {
   console.log(`
 --- change control ---`);
   for (const c of report.changes) {
-    console.log(`  ${c.workId}: ${c.projection.state.tag}` +
-      `   (${c.projection.applied.map((a) => a.tag).join(" → ")})`);
+    // The organization's model calls "every gate approved" Merged; a change handed to people instead
+    // is printed as what it is.
+    console.log(`  ${describeChangeLine(
+      { workId: c.workId, state: c.projection.state.tag, applied: c.projection.applied.map((a) => a.tag) },
+      awaitingReview,
+    )}`);
     for (const d of c.disagreements) console.log(`     !! ${d}`);
   }
 
