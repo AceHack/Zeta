@@ -297,19 +297,22 @@ export function planFor(org: OrgRecord, hasWork: boolean): ConfigurePlan {
       "review? If merge requests: what must each one say (for example: problem statement, whether it was " +
       "reproduced and if not what gave it away, root cause, resolution steps, how the fix was confirmed), " +
       "what must never be committed into your repositories (screenshots, the team's own notes), and when " +
-      "the target branch moves on, should the team merge it into the request or only flag that it is behind?",
+      "the target branch moves on, should the team merge it into the request or only flag that it is behind? " +
+      "And when a reviewer comments: once the team has decided (fixed it, or decided not to), should it reply " +
+      "on the thread with what it changed or why not, and resolve the thread - reply only - or say nothing there?",
     why:
       "A merge request is what your reviewers read, so its sections are your convention, not ours. The " +
       "team produces evidence - screenshots, step documents - that belongs with the team, and a pattern " +
       "list keeps it out of your repositories. Bringing a request up to date changes a branch people are " +
       "reviewing, so it is your call; rebasing is not offered because it needs a force-push. Feedback on " +
       "a request - comments, updates, the target moving - reaches the team as action items on the work, " +
-      "and the team decides what to do about them.",
+      "and the team decides what to do about them. Answering a reviewer speaks in your name on their " +
+      "thread, and resolving closes a conversation a person opened, so both are your call too.",
     command:
       "org setting bind --setting delivery --value human_review|merge --why <why>  and then  " +
       "org change-requests set --section \"<Heading>=<what it must state>\" ... [--keep-out <glob> ...] " +
-      "--sync merge_target|flag_only --why <why>",
-    satisfied: !changesRepos || (delivery !== undefined && (delivery === "merge" || cr !== undefined)),
+      "--sync merge_target|flag_only --replies reply_and_resolve|reply|none --why <why>",
+    satisfied: !changesRepos || (delivery !== undefined && (delivery === "merge" || (cr !== undefined && cr.replies !== undefined))),
     required: changesRepos,
     current: !changesRepos
       ? "not needed - this organization changes no repository"
@@ -321,7 +324,8 @@ export function planFor(org: OrgRecord, hasWork: boolean): ConfigurePlan {
             ? "changes go to people for review, but nobody has said what a merge request says or how it is kept current"
             : `merge requests carry ${cr.sections.map((x) => x.heading).join(" / ")}; ` +
               `${cr.keepOut.length === 0 ? "nothing kept out" : `keeping out ${cr.keepOut.join(", ")}`}; ` +
-              `kept current by ${cr.sync}`,
+              `kept current by ${cr.sync}; ` +
+              (cr.replies === undefined ? "nobody has said whether reviewers' comments are answered" : `reviewers' comments: ${cr.replies}`),
   };
 
   const work: PlanStep = {

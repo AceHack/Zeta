@@ -143,6 +143,7 @@ import { humanRejectionEvents, humanRejectionsToRecord } from "./human-verdicts"
 import type { ChangeRequestConfig } from "./change-request";
 import type { FeedbackDelivery as FeedbackDeliveryT } from "./change-followup";
 import {
+  commandAnswerer,
   commandDescriber,
   commandFollowUp,
   commandVerifier,
@@ -343,6 +344,7 @@ export const KNOWN_FLAGS: ReadonlySet<string> = new Set([
   "--work-verify-arg", "--worktrees", "--worktree-setup", "--worktree-setup-arg", "--supply-target", "--resume", "--help", "-h",
   "--handoff-cmd", "--handoff-arg", "--delivery",
   "--describe-cmd", "--describe-arg", "--follow-up-cmd", "--follow-up-arg", "--feedback-dir", "--feedback-cmd", "--feedback-arg",
+  "--answer-cmd", "--answer-arg",
 ]);
 
 /**
@@ -361,7 +363,7 @@ export const KNOWN_FLAGS: ReadonlySet<string> = new Set([
  */
 export const OPAQUE_VALUE_FLAGS: ReadonlySet<string> = new Set([
   "--artifact-arg", "--meeting-arg", "--review-arg", "--room-arg", "--study-arg", "--test-arg",
-  "--work-agent-arg", "--work-arg", "--work-verify-arg", "--worktree-setup-arg", "--handoff-arg", "--describe-arg", "--follow-up-arg", "--feedback-arg",
+  "--work-agent-arg", "--work-arg", "--work-verify-arg", "--worktree-setup-arg", "--handoff-arg", "--describe-arg", "--follow-up-arg", "--feedback-arg", "--answer-arg",
   // A header is `Key: value`, which cannot begin with a dash — but it is passed through untouched
   // to a remote service, so the same rule applies: this CLI does not get an opinion about its shape.
   "--tracker-header",
@@ -626,6 +628,9 @@ export interface Args {
   /** A poller of the review system: given the handed-off changes on stdin, prints deliveries as JSON lines. */
   readonly feedbackCmd: string | undefined;
   readonly feedbackArgs: readonly string[];
+  /** Who answers a settled comment on its thread: given one change's items on stdin, prints one result per item. */
+  readonly answerCmd: string | undefined;
+  readonly answerArgs: readonly string[];
   /** How this organization's merge requests are written and kept current. Read from the registry. */
   readonly changeRequests?: ChangeRequestConfig;
   /** Wearers per hat the RMO authorizes — how many open tasks one contributor hat may carry. */
@@ -862,6 +867,8 @@ export function parseArgs(argv: readonly string[]): Args {
     feedbackDir: valueAfter(argv, "--feedback-dir"),
     feedbackCmd: valueAfter(argv, "--feedback-cmd"),
     feedbackArgs: valuesAfter(argv, "--feedback-arg"),
+    answerCmd: valueAfter(argv, "--answer-cmd"),
+    answerArgs: valuesAfter(argv, "--answer-arg"),
     supplyTarget: ((v) => (v === undefined ? undefined : Number.parseInt(v, 10)))(valueAfter(argv, "--supply-target")),
     qaFails: argv.includes("--qa-fails") || argv.includes("--churn"),
     churn: argv.includes("--churn"),
@@ -933,6 +940,16 @@ export function argRefusals(args: Args): readonly string[] {
         }
         if (args.followUpCmd === undefined) {
           out.push("feedback on this organization's merge requests becomes action items: give --follow-up-cmd (with --follow-up-arg) so somebody decides about them");
+        }
+        if (args.changeRequests.replies === undefined) {
+          out.push(
+            "this organization has not said whether a reviewer's comment is answered on its thread once the team has decided about it: " +
+              "run 'org change-requests set' with --replies reply_and_resolve|reply|none",
+          );
+        } else if (args.changeRequests.replies !== "none" && args.answerCmd === undefined) {
+          out.push(
+            `reviewers here are answered on their threads (replies: ${args.changeRequests.replies}): give --answer-cmd (with --answer-arg) to post the answers`,
+          );
         }
       }
     }
@@ -1586,6 +1603,7 @@ export function attachAfterHandoff(deps: Record<string, unknown>, args: Args, fe
   if (args.describeCmd !== undefined) deps["describeChange"] = commandDescriber({ command: args.describeCmd, args: args.describeArgs, ...budget }, cwd);
   if (args.followUpCmd !== undefined) deps["followUp"] = commandFollowUp({ command: args.followUpCmd, args: args.followUpArgs, ...budget }, cwd);
   if (args.workVerify !== undefined) deps["verifyChange"] = commandVerifier({ command: args.workVerify, args: args.workVerifyArgs, ...budget }, cwd);
+  if (args.answerCmd !== undefined) deps["answer"] = commandAnswerer({ command: args.answerCmd, args: args.answerArgs, ...budget }, cwd);
 }
 
 /**

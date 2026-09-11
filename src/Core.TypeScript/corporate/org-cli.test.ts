@@ -717,24 +717,31 @@ describe("HOW A MERGE REQUEST IS WRITTEN IS STATED, AND ONLY WHAT CAN MEAN SOMET
       "--section", "Root cause=why it happened",
       "--keep-out", "*.png",
       "--sync", "merge_target",
+      "--replies", "reply_and_resolve",
       "--why", "reviewers read the problem first",
     ]);
     expect(code).toBe(Exit.Ok);
-    const saved = JSON.parse(h.files.get(REG) ?? "{}") as { orgs: { changeRequests?: { sections: { heading: string }[]; sync: string } }[] };
+    const saved = JSON.parse(h.files.get(REG) ?? "{}") as { orgs: { changeRequests?: { sections: { heading: string }[]; sync: string; replies?: string } }[] };
     expect(saved.orgs[0]?.changeRequests?.sections.map((s) => s.heading)).toEqual(["Problem statement", "Root cause"]);
     expect(saved.orgs[0]?.changeRequests?.sync).toBe("merge_target");
+    expect(saved.orgs[0]?.changeRequests?.replies).toBe("reply_and_resolve");
     h.stdout.length = 0;
     expect(await main(["org", "change-requests", "show", "--org", "elera"], h.deps)).toBe(Exit.Ok);
     expect(h.stdout.join("")).toContain("## Root cause");
+    expect(h.stdout.join("")).toContain("reviewers' comments: reply_and_resolve");
   });
 
-  test("a section with no statement, an unknown sync method, or rebasing is refused and nothing is written", async () => {
+  test("a section with no statement, an unknown sync method, rebasing, or no answer about replies is refused and nothing is written", async () => {
     const h = harness();
     await main(CREATE, h.deps);
     const before = h.files.get(REG);
-    expect(await set(h, ["--section", "Root cause", "--sync", "merge_target", "--why", "w"])).toBe(Exit.Usage);
-    expect(await set(h, ["--section", "Root cause=why", "--sync", "rebase", "--why", "w"])).toBe(Exit.Usage);
-    expect(await set(h, ["--section", "Root cause= ", "--sync", "merge_target", "--why", "w"])).toBe(Exit.Refused);
+    const replies = ["--replies", "reply"];
+    expect(await set(h, ["--section", "Root cause", "--sync", "merge_target", ...replies, "--why", "w"])).toBe(Exit.Usage);
+    expect(await set(h, ["--section", "Root cause=why", "--sync", "rebase", ...replies, "--why", "w"])).toBe(Exit.Usage);
+    expect(await set(h, ["--section", "Root cause= ", "--sync", "merge_target", ...replies, "--why", "w"])).toBe(Exit.Refused);
+    // Whether a reviewer is answered is asked, never defaulted - and only a known answer is kept.
+    expect(await set(h, ["--section", "Root cause=why", "--sync", "merge_target", "--why", "w"])).toBe(Exit.Usage);
+    expect(await set(h, ["--section", "Root cause=why", "--sync", "merge_target", "--replies", "sometimes", "--why", "w"])).toBe(Exit.Usage);
     expect(h.files.get(REG)).toBe(before);
   });
 });

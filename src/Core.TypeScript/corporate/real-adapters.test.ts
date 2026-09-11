@@ -39,6 +39,7 @@ import {
 import { gitDataSource } from "./git-data-source";
 import { foldActionItems, foldHandedOffChanges, foldLandedChanges } from "./org-fold";
 import type { OrgEvent } from "./org-event";
+import type { AnswerItem, AnswerRequest } from "./change-followup";
 import { Fidelity, Port } from "./providers";
 
 const chart = (() => {
@@ -925,7 +926,7 @@ describe("AFTER THE HANDOFF: THE REQUEST SAYS WHAT THE ORGANIZATION CONFIGURED, 
     { heading: "Problem statement", states: "what the reporter saw" },
     { heading: "Root cause", states: "why, with file:line" },
   ];
-  const changeRequests = { sections, keepOut: ["*.png"], sync: "merge_target" as const, why: "reviewers read the problem first" };
+  const changeRequests = { sections, keepOut: ["*.png"], sync: "merge_target" as const, replies: "reply_and_resolve" as const, why: "reviewers read the problem first" };
   const fullDescription = async () => ({ ok: true as const, value: "## Problem statement\nIt broke.\n\n## Root cause\nA race.", evidence: [] });
 
   function stubCounting(dir: string): { command: string; args: string[]; seen: string; count: () => number } {
@@ -1011,6 +1012,19 @@ describe("AFTER THE HANDOFF: THE REQUEST SAYS WHAT THE ORGANIZATION CONFIGURED, 
         { deliveryId: "target-main-1", source: "gitlab", itemKind: "target_moved", summary: "main moved", target: "refs/heads/main" },
       ];
       const asked: { mode: string; items: number; canSync: boolean }[] = [];
+      // THE ANSWERER records what it was asked and WHEN - how many pushes had happened by then.
+      const answered: { pushesSoFar: number; resolve: boolean; items: readonly AnswerItem[] }[] = [];
+      let replySeq = 500;
+      const answer = (failFor: string) => async (req: AnswerRequest) => {
+        answered.push({ pushesSoFar: h.count(), resolve: req.resolve, items: req.items });
+        return {
+          ok: true as const,
+          value: req.items.map((i) =>
+            i.actionItemId === failFor ? { actionItemId: i.actionItemId, error: "GitLab said 502" } : { actionItemId: i.actionItemId, replyId: `note-${String(++replySeq)}`, resolved: true },
+          ),
+          evidence: [],
+        };
+      };
       const second = await runAgainst(repo, realInbox(), { change: change() }, {
         settings: [],
         changeRequests,
@@ -1037,6 +1051,8 @@ describe("AFTER THE HANDOFF: THE REQUEST SAYS WHAT THE ORGANIZATION CONFIGURED, 
             evidence: [],
           };
         },
+        // The moved-target item's answer fails this time; it must be tried again, never lost.
+        answer: answer(`gitlab:target-main-1@${workId}`),
         onEvent: (e: OrgEvent) => events.push(e),
       });
       expect(second.actionItemsRaised?.length).toBe(2);
@@ -1052,7 +1068,22 @@ describe("AFTER THE HANDOFF: THE REQUEST SAYS WHAT THE ORGANIZATION CONFIGURED, 
       expect(items.length).toBe(2);
       expect(items.every((i) => i.settled?.outcome === "addressed")).toBe(true);
 
-      // The same feedback delivered again raises nothing and asks nobody anything.
+      // ANSWERED ONLY AFTER THE PUSH, citing the commit that was pushed, and resolved as configured.
+      const branchHead = git(repo, "rev-parse", branch).trim();
+      expect(answered).toHaveLength(1);
+      expect(answered[0]?.pushesSoFar).toBe(2);
+      expect(answered[0]?.resolve).toBe(true);
+      const comment = answered[0]?.items.find((i) => i.actionItemId === "gitlab:note-1");
+      expect(comment).toMatchObject({ outcome: "addressed", how: "explained the race; merged main in", commit: branchHead, when: "always" });
+      // The one whose answer failed is NOT recorded as answered - it is still owed.
+      const afterSecond = foldActionItems(events).get(workId) ?? [];
+      expect(afterSecond.find((i) => i.actionItemId === "gitlab:note-1")?.answered?.replyId).toBe("note-501");
+      expect(afterSecond.find((i) => i.actionItemId.startsWith("gitlab:target-main-1"))?.answered).toBeUndefined();
+      expect(second.refusals.some((r) => r.includes("GitLab said 502"))).toBe(true);
+
+      // The same feedback delivered again raises nothing and asks nobody anything - and the
+      // organization's OWN reply, read back from the review system, is not raised as feedback.
+      const ownReply = { deliveryId: "note-501", source: "gitlab", itemKind: "comment", summary: "Fixed in abc", changeUrl: "https://review.example/p/-/merge_requests/7#note_501" };
       const third = await runAgainst(repo, realInbox(), { change: change() }, {
         settings: [],
         changeRequests,
@@ -1061,14 +1092,20 @@ describe("AFTER THE HANDOFF: THE REQUEST SAYS WHAT THE ORGANIZATION CONFIGURED, 
         alreadyHandedOff: new Set(handed.keys()),
         handedOffChanges: foldHandedOffChanges(events),
         actionItems: foldActionItems(events),
-        feedback,
+        feedback: [...feedback, ownReply],
         defaultBase: "main",
         followUp: async () => {
           throw new Error("nothing is open - nobody should be asked");
         },
+        answer: answer("none"),
+        onEvent: (e: OrgEvent) => events.push(e),
       });
       expect(third.actionItemsRaised).toEqual([]);
       expect(third.followUps).toEqual([]);
+      // THE FAILED ANSWER IS TRIED AGAIN, and only it: the answered one is not answered twice.
+      expect(answered).toHaveLength(2);
+      expect(answered[1]?.items.map((i) => i.actionItemId)).toEqual([`gitlab:target-main-1@${workId}`]);
+      expect(third.actionItemsAnswered).toEqual([`gitlab:target-main-1@${workId}`]);
     } finally {
       for (const d of [repo, origin, others, inbox, wt, scratch]) rmSync(d, { recursive: true, force: true });
     }

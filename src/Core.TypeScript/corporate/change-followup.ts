@@ -118,6 +118,75 @@ export interface ItemDecision {
   readonly outcome: "addressed" | "declined" | "deferred";
   /** What was done, or why not. Required: an item closed with no account is an item nobody can check. */
   readonly how: string;
+  /**
+   * Whether the person who raised it is answered where they raised it (default: yes). `false` is for
+   * an item that asked nothing of the change - a review-trigger keyword, a bot saying it has started.
+   */
+  readonly respond?: boolean;
+}
+
+/** One settled item to answer where it was raised. */
+export interface AnswerItem {
+  readonly actionItemId: string;
+  readonly source: string;
+  readonly itemKind: string;
+  /** Where it was raised - the address the answer goes to. */
+  readonly url?: string;
+  readonly outcome: string;
+  readonly how: string;
+  readonly commit?: string;
+  /**
+   * `always`: the organization decided to answer it. `if_thread`: settled before answering existed,
+   * so nobody decided - answer only where it is a thread a reviewer can resolve, which is where an
+   * unanswered comment actually waits on somebody.
+   */
+  readonly when: "always" | "if_thread";
+}
+
+/** What an answerer is asked to do for one handed-off change. */
+export interface AnswerRequest {
+  readonly workId: string;
+  readonly changeUrl?: string;
+  readonly branch: string;
+  readonly workdir?: string;
+  /** Resolve each thread after replying (`reply_and_resolve`), or leave that to the reviewers (`reply`). */
+  readonly resolve: boolean;
+  readonly items: readonly AnswerItem[];
+}
+
+/** What came of answering one item. An `error` is not recorded, so the item is tried again next time. */
+export type AnswerResult =
+  | { readonly actionItemId: string; readonly replyId?: string; readonly resolved: boolean; readonly skipped?: string }
+  | { readonly actionItemId: string; readonly error: string };
+
+/**
+ * The settled items on one change still owed an answer, and those the organization decided to leave
+ * unanswered (recorded as such without asking anyone, so they are not owed forever).
+ *
+ * ORDER IS THE POINT: only a SETTLED item is answered, and an item is settled only once what settles
+ * it is in front of people - so a reply saying "fixed in abc123" is never posted before abc123 is.
+ */
+export function answersOwed(items: readonly ActionItem[]): { readonly owed: readonly AnswerItem[]; readonly unanswered: readonly string[] } {
+  const owed: AnswerItem[] = [];
+  const unanswered: string[] = [];
+  for (const i of items) {
+    if (i.settled === undefined || i.answered !== undefined) continue;
+    if (i.settled.respond === false) {
+      unanswered.push(i.actionItemId);
+      continue;
+    }
+    owed.push({
+      actionItemId: i.actionItemId,
+      source: i.source,
+      itemKind: i.itemKind,
+      ...(i.url === undefined ? {} : { url: i.url }),
+      outcome: i.settled.outcome,
+      how: i.settled.how,
+      ...(i.settled.commit === undefined ? {} : { commit: i.settled.commit }),
+      when: i.settled.respond === true ? "always" : "if_thread",
+    });
+  }
+  return { owed, unanswered };
 }
 
 /** What a follow-up session was asked to look at. */

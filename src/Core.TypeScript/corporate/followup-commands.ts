@@ -11,8 +11,10 @@
  *              object on its last line. Told the open items in ORG_ACTION_ITEMS.
  *   verify     the run's own `--work-verify`, re-run in the change's checkout after it moved.
  *   feedback   `<cmd> ...`, given the handed-off changes on stdin as JSON, prints deliveries as JSON
- *              lines. Plus a directory webhooks file deliveries into. Both are READS: nothing here
- *              writes to the review system.
+ *              lines. Plus a directory webhooks file deliveries into. Both are READS.
+ *   answer     `<cmd> ...`, given one change's settled items on stdin, replies where each was raised
+ *              and prints one result per item as a JSON line. The one seam that writes to the review
+ *              system - and only what the organization already decided and recorded.
  *
  * Every spawn is `shell: false`, nothing untrusted reaches argv, and a command that fails is a
  * refusal carried back to the runtime - never a default that pretends it succeeded.
@@ -22,7 +24,7 @@ import { spawnSync } from "node:child_process";
 import { mkdirSync, readdirSync, readFileSync, renameSync } from "node:fs";
 import { join } from "node:path";
 import type { ActionItem, HandedOffChange } from "./org-fold";
-import type { FeedbackDelivery, FollowUpOutcome, FollowUpRequest, ItemDecision } from "./change-followup";
+import type { AnswerRequest, AnswerResult, FeedbackDelivery, FollowUpOutcome, FollowUpRequest, ItemDecision } from "./change-followup";
 import { sectionsBrief, type DescribeRequest } from "./change-request";
 import type { ChangeHandle, PortResult } from "./providers";
 
@@ -117,7 +119,13 @@ export function commandFollowUp(spec: CommandSpec, fallbackCwd: string): (r: Fol
       ? (out["decisions"] as unknown[]).flatMap((d): ItemDecision[] => {
           if (typeof d !== "object" || d === null) return [];
           const x = d as Record<string, unknown>;
-          return [{ actionItemId: String(x["id"] ?? x["actionItemId"] ?? ""), outcome: String(x["outcome"] ?? "") as ItemDecision["outcome"], how: String(x["how"] ?? "") }];
+          return [{
+            actionItemId: String(x["id"] ?? x["actionItemId"] ?? ""),
+            outcome: String(x["outcome"] ?? "") as ItemDecision["outcome"],
+            how: String(x["how"] ?? ""),
+            // Only an explicit `false` withholds the answer: a session that says nothing about it answers.
+            ...(x["respond"] === false ? { respond: false } : { respond: true }),
+          }];
         })
       : [];
     return {
@@ -137,6 +145,42 @@ export function commandVerifier(spec: CommandSpec, fallbackCwd: string): (h: Cha
     return ran.status === 0
       ? { ok: true, value: tail(ran.stdout), evidence: [{ kind: "trace", ref: `verified:${h.branch}` }] }
       : { ok: false, reason: `exit ${String(ran.status)}: ${tail(ran.stderr) || tail(ran.stdout)}` };
+  };
+}
+
+/**
+ * An answerer behind a command: given one change's owed answers on stdin as JSON, it replies where
+ * each item was raised and prints one result per item as a JSON line. The only seam that WRITES to
+ * the review system, and it writes only what the organization already decided and recorded.
+ */
+export function commandAnswerer(spec: CommandSpec, fallbackCwd: string): (r: AnswerRequest) => Promise<PortResult<readonly AnswerResult[]>> {
+  return async (r) => {
+    const ran = run(spec, [], r.workdir ?? fallbackCwd, { ORG_BRANCH: r.branch }, JSON.stringify(r));
+    if (ran.error !== undefined) return { ok: false, reason: `the answerer '${spec.command}' could not run: ${ran.error.message}` };
+    const results: AnswerResult[] = [];
+    for (const line of String(ran.stdout ?? "").split(/\r?\n/)) {
+      const t = line.trim();
+      if (!t.startsWith("{")) continue;
+      try {
+        const x = JSON.parse(t) as Record<string, unknown>;
+        const id = typeof x["actionItemId"] === "string" ? x["actionItemId"] : "";
+        if (!r.items.some((i) => i.actionItemId === id)) continue;
+        if (typeof x["error"] === "string") results.push({ actionItemId: id, error: x["error"] });
+        else {
+          results.push({
+            actionItemId: id,
+            resolved: x["resolved"] === true,
+            ...(typeof x["replyId"] === "string" && x["replyId"] !== "" ? { replyId: x["replyId"] } : {}),
+            ...(typeof x["skipped"] === "string" && x["skipped"] !== "" ? { skipped: x["skipped"] } : {}),
+          });
+        }
+      } catch {
+        // a line that is not a result is the answerer talking
+      }
+    }
+    // A non-zero exit with no results is a failure; with results, the results are what happened.
+    if (ran.status !== 0 && results.length === 0) return { ok: false, reason: `the answerer exited ${String(ran.status)}: ${tail(ran.stderr)}` };
+    return { ok: true, value: results, evidence: [] };
   };
 }
 

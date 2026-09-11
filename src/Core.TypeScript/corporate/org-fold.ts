@@ -849,9 +849,18 @@ export interface ActionItem {
   readonly author?: string;
   readonly raisedAtMs: number;
   /** Absent while OPEN. */
-  readonly settled?: { readonly outcome: string; readonly how: string; readonly byHatId?: string; readonly atMs: number };
+  readonly settled?: {
+    readonly outcome: string;
+    readonly how: string;
+    readonly byHatId?: string;
+    readonly atMs: number;
+    readonly respond?: boolean;
+    readonly commit?: string;
+  };
   /** The latest time it was weighed and left open, and why. The item is still open. */
   readonly deferred?: { readonly why: string; readonly byHatId?: string; readonly atMs: number };
+  /** Answered where it was raised. Absent until then - a settled item with no answer is owed one. */
+  readonly answered?: { readonly replyId?: string; readonly resolved: boolean; readonly skipped?: string; readonly atMs: number };
 }
 
 /**
@@ -887,7 +896,26 @@ export function foldActionItems(events: readonly OrgEvent[]): ReadonlyMap<string
       if (item === undefined) continue;
       byId.set(f.actionItemId, {
         ...item,
-        settled: { outcome: f.outcome, how: f.how, ...(f.byHatId === undefined ? {} : { byHatId: f.byHatId }), atMs: event.atMs },
+        settled: {
+          outcome: f.outcome,
+          how: f.how,
+          ...(f.byHatId === undefined ? {} : { byHatId: f.byHatId }),
+          atMs: event.atMs,
+          ...(f.respond === undefined ? {} : { respond: f.respond }),
+          ...(f.commit === undefined ? {} : { commit: f.commit }),
+        },
+      });
+    } else if (f?.kind === "action_item_answered") {
+      const item = byId.get(f.actionItemId);
+      if (item === undefined) continue;
+      byId.set(f.actionItemId, {
+        ...item,
+        answered: {
+          ...(f.replyId === undefined ? {} : { replyId: f.replyId }),
+          resolved: f.resolved,
+          ...(f.skipped === undefined ? {} : { skipped: f.skipped }),
+          atMs: event.atMs,
+        },
       });
     }
   }

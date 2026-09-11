@@ -140,7 +140,7 @@ describe("argument parsing", () => {
       // which is now an adapter that says so rather than a constant nobody could see.
       reviewQueue: undefined, reviewCmd: undefined, reviewArgs: [],
       worktrees: undefined, worktreeSetup: undefined, worktreeSetupArgs: [], handoffCmd: undefined, handoffArgs: [],
-      describeCmd: undefined, describeArgs: [], followUpCmd: undefined, followUpArgs: [], feedbackDir: undefined, feedbackCmd: undefined, feedbackArgs: [], supplyTarget: undefined,
+      describeCmd: undefined, describeArgs: [], followUpCmd: undefined, followUpArgs: [], feedbackDir: undefined, feedbackCmd: undefined, feedbackArgs: [], answerCmd: undefined, answerArgs: [], supplyTarget: undefined,
       // The three ports that had no command-line path until now. Absent still means simulated, and
       // the fidelity block still says so — reaching a tracker, an agent or a model is opt-in.
       reviewModel: undefined, tracker: undefined, trackerItems: undefined,
@@ -601,8 +601,16 @@ describe("A REAL REPOSITORY IS HANDED TO PEOPLE UNLESS SOMEONE SAID MERGE", () =
     const missing = argRefusals(stated);
     expect(missing.some((r) => r.includes("--describe-cmd") && r.includes("Root cause"))).toBe(true);
     expect(missing.some((r) => r.includes("--follow-up-cmd"))).toBe(true);
-    const complete = argRefusals({ ...parseArgs([...handing, "--describe-cmd", "node", "--follow-up-cmd", "node"]), changeRequests: stated.changeRequests });
-    expect(complete.some((r) => r.includes("merge request") || r.includes("--follow-up-cmd"))).toBe(false);
+    // WHETHER A REVIEWER IS ANSWERED is part of the statement: unstated is refused, never read as "none".
+    expect(missing.some((r) => r.includes("reviewer's comment is answered") && r.includes("--replies"))).toBe(true);
+    const answering = { ...stated.changeRequests, replies: "reply_and_resolve" as const };
+    const noAnswerer = argRefusals({ ...parseArgs([...handing, "--describe-cmd", "node", "--follow-up-cmd", "node"]), changeRequests: answering });
+    expect(noAnswerer.some((r) => r.includes("--answer-cmd") && r.includes("reply_and_resolve"))).toBe(true);
+    const complete = argRefusals({ ...parseArgs([...handing, "--describe-cmd", "node", "--follow-up-cmd", "node", "--answer-cmd", "node", "--answer-arg", "a.cjs"]), changeRequests: answering });
+    expect(complete.some((r) => r.includes("merge request") || r.includes("--follow-up-cmd") || r.includes("--answer-cmd") || r.includes("answered"))).toBe(false);
+    // An organization that says nothing on threads needs no answerer.
+    const silent = argRefusals({ ...parseArgs([...handing, "--describe-cmd", "node", "--follow-up-cmd", "node"]), changeRequests: { ...answering, replies: "none" as const } });
+    expect(silent.some((r) => r.includes("--answer-cmd"))).toBe(false);
     // An organization that merges its own changes owes none of it.
     expect(argRefusals(parseArgs(["--git", "/r", "--delivery", "merge"])).some((r) => r.includes("merge requests"))).toBe(false);
   });

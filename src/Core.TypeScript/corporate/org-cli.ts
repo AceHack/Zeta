@@ -87,7 +87,7 @@ import { humanGatesFor, type GateKind, type HumanCheckpoint } from "./quality-ga
 import { bindingsOf, resolve, SkillSource, validateBinding, type SkillBinding }
   from "./skill-binding";
 import { planFor, planForNothing } from "./configure-plan";
-import { validateChangeRequests, type ChangeRequestConfig, type ChangeRequestSection, type SyncMethod } from "./change-request";
+import { validateChangeRequests, type ChangeRequestConfig, type ChangeRequestSection, type ReplyPolicy, type SyncMethod } from "./change-request";
 import {
   Exit,
   flagValue,
@@ -713,6 +713,8 @@ export async function main(argv: readonly string[], deps: CliDeps): Promise<numb
         sections,
         keepOut: flagValues(flags, "--keep-out").map((v) => v.trim()).filter((v) => v !== ""),
         sync: (flagValue(flags, "--sync") ?? "").trim() as SyncMethod,
+        // Asked here, always: an absent answer is refused below rather than stored as "not stated".
+        replies: (flagValue(flags, "--replies") ?? "").trim() as ReplyPolicy,
         why: (flagValue(flags, "--why") ?? "").trim(),
       };
       const valid = validateChangeRequests(config);
@@ -724,7 +726,7 @@ export async function main(argv: readonly string[], deps: CliDeps): Promise<numb
       deps.writeFile(registryPath, serializeRegistry(registry));
       emit(deps, json, { org: chosen.org.orgId, changeRequests: config, replaced }, () =>
         `${replaced ? "changed" : "stated"} how '${chosen.org.orgId}' writes merge requests: ` +
-        `${sections.map((x) => x.heading).join(" / ")}; kept current by ${config.sync}` +
+        `${sections.map((x) => x.heading).join(" / ")}; kept current by ${config.sync}; reviewers answered: ${config.replies}` +
         `${config.keepOut.length === 0 ? "" : `; never adds ${config.keepOut.join(", ")}`}\n  because ${config.why}\n`,
       );
       return Exit.Ok;
@@ -742,6 +744,7 @@ export async function main(argv: readonly string[], deps: CliDeps): Promise<numb
               ...cr.sections.map((x) => `  ## ${x.heading}\n     ${x.states}`),
               cr.keepOut.length === 0 ? "  a change may add anything" : `  a change may never add: ${cr.keepOut.join(", ")}`,
               `  kept current by: ${cr.sync}`,
+              `  reviewers' comments: ${cr.replies ?? "NOT STATED - run 'org change-requests set' with --replies"}`,
               `  because ${cr.why}`,
               "",
             ].join("\n"),
