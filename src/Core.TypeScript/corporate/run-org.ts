@@ -328,7 +328,7 @@ export const KNOWN_FLAGS: ReadonlySet<string> = new Set([
   "--tracker", "--tracker-header", "--tracker-items", "--tracker-map", "--tracker-severity",
   "--tracker-source", "--until", "--week", "--window-start", "--window-target", "--work-agent",
   "--work-agent-arg", "--work-arg", "--work-cmd", "--work-model", "--work-verify",
-  "--work-verify-arg", "--worktrees", "--resume", "--help", "-h",
+  "--work-verify-arg", "--worktrees", "--worktree-setup", "--worktree-setup-arg", "--resume", "--help", "-h",
 ]);
 
 /**
@@ -347,7 +347,7 @@ export const KNOWN_FLAGS: ReadonlySet<string> = new Set([
  */
 export const OPAQUE_VALUE_FLAGS: ReadonlySet<string> = new Set([
   "--artifact-arg", "--meeting-arg", "--review-arg", "--room-arg", "--study-arg", "--test-arg",
-  "--work-agent-arg", "--work-arg", "--work-verify-arg",
+  "--work-agent-arg", "--work-arg", "--work-verify-arg", "--worktree-setup-arg",
   // A header is `Key: value`, which cannot begin with a dash — but it is passed through untouched
   // to a remote service, so the same rule applies: this CLI does not get an opinion about its shape.
   "--tracker-header",
@@ -593,6 +593,9 @@ export interface Args {
    * adapter. Supplying this makes each change its own directory.
    */
   readonly worktrees: string | undefined;
+  /** What makes a new worktree runnable, run once inside it. See `gitWorktreeChangeControl`. */
+  readonly worktreeSetup: string | undefined;
+  readonly worktreeSetupArgs: readonly string[];
   /**
    * The window the goal is supposed to land inside, as two ISO instants.
    *
@@ -806,6 +809,8 @@ export function parseArgs(argv: readonly string[]): Args {
     git: valueAfter(argv, "--git"),
     baseBranch: valueAfter(argv, "--base") ?? "main",
     worktrees: valueAfter(argv, "--worktrees"),
+    worktreeSetup: valueAfter(argv, "--worktree-setup"),
+    worktreeSetupArgs: valuesAfter(argv, "--worktree-setup-arg"),
     qaFails: argv.includes("--qa-fails") || argv.includes("--churn"),
     churn: argv.includes("--churn"),
     json: argv.includes("--json"),
@@ -1363,7 +1368,12 @@ export function providersFromArgs(
         ? simulatedChangeControl()
         : args.worktrees === undefined
           ? gitChangeControl({ cwd: args.git, baseBranch: args.baseBranch })
-          : gitWorktreeChangeControl({ cwd: args.git, baseBranch: args.baseBranch, worktreeRoot: args.worktrees }),
+          : gitWorktreeChangeControl({
+              cwd: args.git,
+              baseBranch: args.baseBranch,
+              worktreeRoot: args.worktrees,
+              ...(args.worktreeSetup === undefined ? {} : { setup: { command: args.worktreeSetup, args: args.worktreeSetupArgs } }),
+            }),
   };
 }
 

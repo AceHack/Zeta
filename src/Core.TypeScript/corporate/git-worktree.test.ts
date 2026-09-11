@@ -740,3 +740,36 @@ describe("a merge git REFUSES is still a refusal — the conflict path", () => {
     git("merge", "--abort");
   });
 });
+
+describe("A NEW WORKTREE IS MADE RUNNABLE BEFORE ANYTHING IS SENT INTO IT", () => {
+  // MEASURED on the Agentic Team's repositories: every one is an npm monorepo, and a fresh worktree
+  // has no `node_modules` — every verifier and QA run in it would fail for a reason unrelated to the
+  // change.
+  const LINKER = join(import.meta.dir, "..", "..", "..", "tools", "link-deps.cjs");
+
+  test("the setup runs once in the new worktree and the base's dependency directories are linked", async () => {
+    const { cwd, worktreeRoot } = repo("setup");
+    mkdirSync(join(cwd, "node_modules", "left-pad"), { recursive: true });
+    writeFileSync(join(cwd, "node_modules", "left-pad", "index.js"), "module.exports = 1;\n");
+    const port = gitWorktreeChangeControl({ cwd, baseBranch: "main", worktreeRoot, setup: { command: "node", args: [LINKER] } });
+    const opened = await port.open(node("w-1"), { branch: "bug/SETUP-1" });
+    expect(opened.ok).toBe(true);
+    if (!opened.ok) return;
+    const wd = opened.value.workdir as string;
+    expect(readFileSync(join(wd, "node_modules", "left-pad", "index.js"), "utf-8")).toContain("module.exports");
+  });
+
+  test("a setup that FAILS refuses the change — never a checkout whose tests cannot run", async () => {
+    const { cwd, worktreeRoot } = repo("setup-fail");
+    const port = gitWorktreeChangeControl({ cwd, baseBranch: "main", worktreeRoot, setup: { command: "node", args: ["-e", "process.exit(7)"] } });
+    const opened = await port.open(node("w-2"), { branch: "bug/SETUP-2" });
+    expect(opened.ok).toBe(false);
+    if (!opened.ok) expect(opened.reason).toContain("could not be made runnable");
+  });
+
+  test("with no setup the adapter behaves as it always did", async () => {
+    const { cwd, worktreeRoot } = repo("no-setup");
+    const port = gitWorktreeChangeControl({ cwd, baseBranch: "main", worktreeRoot });
+    expect((await port.open(node("w-3"), { branch: "bug/SETUP-3" })).ok).toBe(true);
+  });
+});

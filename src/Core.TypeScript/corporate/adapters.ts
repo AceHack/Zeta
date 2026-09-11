@@ -1521,6 +1521,18 @@ export function gitWorktreeChangeControl(input: {
   /** Where the per-change checkouts live. One directory per branch. */
   readonly worktreeRoot: string;
   readonly name?: string;
+  /**
+   * What makes a freshly cut worktree RUNNABLE — the project's dependencies, generated files.
+   *
+   * A worktree is a checkout, not an installation: MEASURED on the Agentic Team's three repositories,
+   * each is an npm monorepo and a new worktree has no `node_modules`, so every verifier and every
+   * QA run in it would fail for a reason that has nothing to do with the change. How to make a
+   * checkout runnable is the project's knowledge, so it is a COMMAND the operator supplies, run in
+   * the new worktree with `ORG_BASE_CHECKOUT` / `ORG_WORKTREE` / `ORG_BRANCH` set. Run once, when
+   * the worktree is created — never on a rejoin. A setup that fails REFUSES the open: a change cut
+   * into a checkout that cannot run would be judged by tests that never ran.
+   */
+  readonly setup?: { readonly command: string; readonly args: readonly string[]; readonly timeoutMs?: number };
 }): ChangeControlPort {
   const git = (args: readonly string[], at = input.cwd) =>
     spawnSync("git", [...args], { cwd: at, encoding: "utf-8", shell: false, maxBuffer: MAX_COMMAND_OUTPUT_BYTES });
@@ -1611,6 +1623,24 @@ export function gitWorktreeChangeControl(input: {
       if (made.error !== undefined) return { ok: false, reason: `git could not run: ${made.error.message}` };
       if (made.status !== 0) {
         return { ok: false, reason: `could not open a worktree for ${ctx.branch}: ${(made.stderr ?? "").trim()}` };
+      }
+      if (input.setup !== undefined) {
+        const ready = spawnSync(input.setup.command, [...input.setup.args], {
+          cwd: workdir,
+          env: { ...process.env, ORG_BASE_CHECKOUT: input.cwd, ORG_WORKTREE: workdir, ORG_BRANCH: ctx.branch },
+          encoding: "utf-8",
+          shell: false,
+          timeout: input.setup.timeoutMs ?? 900_000,
+          maxBuffer: MAX_COMMAND_OUTPUT_BYTES,
+        });
+        if (ready.error !== undefined || ready.status !== 0) {
+          return {
+            ok: false,
+            reason:
+              `the worktree for ${ctx.branch} could not be made runnable by '${input.setup.command}': ` +
+              (ready.error?.message ?? `exit ${String(ready.status)} ${(ready.stderr ?? "").trim().slice(0, 400)}`),
+          };
+        }
       }
       // WHO OWNS THIS CHECKOUT. Written after the worktree exists, so a failed `add` leaves no
       // claim behind. A write that fails is not fatal: the marker only ever REFUSES a reuse, so
