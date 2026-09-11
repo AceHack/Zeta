@@ -160,6 +160,9 @@ if (process.env.VERIFY_STEPS) {
       for (const t of added) process.stderr.write("[verify] NEW FAILURE introduced by this change: " + t + "\n");
       if (r.failing.size === 0) process.stderr.write("[verify] the step failed but reported no failing test — refused, not tolerated\n");
       record("step " + String(i + 1) + " NEW failures: " + String(added.length) + ", tolerated: " + String(tolerated.length));
+      // WHICH ONES, not only how many: a count in a log is a number nobody can act on.
+      for (const t of added.slice(0, 30)) record("  new failure: " + t);
+      if (added.length > 30) record("  ... and " + String(added.length - 30) + " more");
       process.exit(1);
     }
     record("step " + String(i + 1) + " failed only on trunk-red tests (" + String(tolerated.length) + " tolerated, 0 new)");

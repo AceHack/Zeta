@@ -509,6 +509,13 @@ function capture(label: string, text: string): string {
   return `${label}:${text.slice(0, MAX_CAPTURED_OUTPUT)}…[truncated ${String(text.length - MAX_CAPTURED_OUTPUT)} chars]`;
 }
 
+/** The last `n` non-empty lines of a command's output, each capped — where a verdict's reasons are. */
+export function tailLines(text: string, n: number): readonly string[] {
+  const lines = text.split(/\r?\n/).map((l) => l.trimEnd()).filter((l) => l.trim() !== "");
+  const tail = lines.slice(-n).map((l) => (l.length > 300 ? `${l.slice(0, 300)}…` : l));
+  return lines.length > n ? [`…(${String(lines.length - n)} earlier line(s))`, ...tail] : tail;
+}
+
 /**
  * How much a spawned command may print before the runner gives up on it.
  *
@@ -1044,13 +1051,20 @@ export function agentWorkExecutor(input: {
 
       // THE VERIFIER DECIDES. `attempt` contributes evidence and prose and never touches this line.
       const succeeded = run.status === 0;
+      // AND WHEN IT SAYS NO, IT SAYS WHY. MEASURED on AIAGENT-1662: the verifier reported 23 new
+      // test failures and named every one - and the record kept "verifier exited 1", so the next
+      // attempt, and anyone reading the item, knew the work was refused and not what broke. The
+      // verifier's own last words are its reason; they travel with the refusal.
+      const said = succeeded ? [] : tailLines(run.stderr ?? "", 25);
       return {
         ok: true,
         value: {
           workId: node.workId,
           succeeded,
           artifacts: attempt.artifacts,
-          summary: `agent: ${attempt.summary} — verifier exited ${String(run.status)}`,
+          summary:
+            `agent: ${attempt.summary} — verifier exited ${String(run.status)}` +
+            (said.length === 0 ? "" : `\nthe verifier said:\n${said.join("\n")}`),
         },
         evidence: [
           { kind: "trace", ref: `agent-said:${attempt.summary}` },
