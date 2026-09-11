@@ -45,7 +45,7 @@ import type { AgentPersona } from "../protocol/agent-loop-contract";
 import { childrenOf, nodeById, WorkState, type Cascade } from "./goal-cascade";
 import { isPassing, ORDERED_GATES, type GateEvaluation, type GateKind } from "./quality-gate";
 import { ShardState, type WorkQueue } from "./work-market";
-import { chainFor, producesCode } from "./gate-demand";
+import { chainOf, producesCode } from "./gate-demand";
 
 /** What the organization did to one task, in the order it did it. */
 export interface OrgFacts {
@@ -345,7 +345,7 @@ export function projectAll(input: {
       filePath: `corporate/cascade/${node.workId}`,
       trajectory: "corporate-register",
     };
-    const owedGates = chainFor(node.workType);
+    const owedGates = chainOf(node);
     const projection = project({
       facts: {
         ...(facts ?? { workId: node.workId, gateEvaluations: [], cancelled: false }),

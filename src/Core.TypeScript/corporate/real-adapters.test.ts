@@ -20,9 +20,9 @@
 
 import { describe, expect, test } from "bun:test";
 import { execFileSync } from "node:child_process";
-import { mkdtempSync, mkdirSync, rmSync, writeFileSync } from "node:fs";
+import { mkdtempSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
-import { join } from "node:path";
+import { basename, join } from "node:path";
 import { agentsFromChart, runOrgRuntime, type OrgRuntimeDeps } from "./org-runtime";
 import { buildOrgChart } from "./org-chart";
 import { SEED_HATS } from "./org-seed";
@@ -37,7 +37,10 @@ import {
   revisionOf,
 } from "./adapters";
 import { gitDataSource } from "./git-data-source";
-import { foldLandedChanges } from "./org-fold";
+import { foldActionItems, foldHandedOffChanges, foldLandedChanges } from "./org-fold";
+import type { OrgEvent } from "./org-event";
+import type { AnswerItem, AnswerRequest } from "./change-followup";
+import type { DescribeRequest } from "./change-request";
 import { Fidelity, Port } from "./providers";
 
 const chart = (() => {
@@ -88,7 +91,7 @@ function realInbox(): string {
 async function runAgainst(
   repo: string,
   inbox: string,
-  over: { readonly work?: unknown } = {},
+  over: { readonly work?: unknown; readonly change?: unknown } = {},
   runtime: Record<string, unknown> = {},
   worktreeRoot?: string,
 ) {
@@ -105,6 +108,9 @@ async function runAgainst(
     nowMs: 0,
     workBlockMs: 3_600_000,
     leaseMs: 300_000,
+    // The ORGANIZATION'S OWN MERGE is what this suite exercises, so it is stated - a real
+    // repository is otherwise never merged into (see `ProcessSetting.Delivery`).
+    settings: [{ setting: "delivery", value: "merge", why: "this suite exercises the organization's own merge" }],
     ...runtime,
     dataSource: gitDataSource({ repoDir: repo, ref: "main", extensions: [".md"] }),
     providers: {
@@ -657,6 +663,7 @@ describe("NO SIMULATED PORT AT ALL", () => {
         nowMs: 0,
         workBlockMs: 3_600_000,
         leaseMs: 300_000,
+        settings: [{ setting: "delivery", value: "merge", why: "this test exercises the organization's own merge" }],
         dataSource: gitDataSource({ repoDir: repo, ref: "main", extensions: [".md"] }),
         providers: {
           intake: directoryIntake(inbox),
@@ -705,4 +712,411 @@ describe("NO SIMULATED PORT AT ALL", () => {
       rmSync(inbox, { recursive: true, force: true });
     }
   }, 180_000);
+});
+
+describe("A REVIEWER RUNS IN THE WORK'S OWN CHECKOUT", () => {
+  // MEASURED on AIAGENT-1662: a QA reviewer ran the change's Playwright spec from the shared base
+  // checkout and the screenshot it wrote sat, untracked, at the path the branch commits - a merge
+  // into that checkout would have been refused.
+  test("a request that names a workdir is run there; one that does not, in the configured directory", async () => {
+    const shared = mkdtempSync(join(tmpdir(), "review-shared-"));
+    const own = mkdtempSync(join(tmpdir(), "review-own-"));
+    const port = commandReview({ command: process.execPath, argsFor: () => ["-e", "console.log(process.cwd())"], cwd: shared });
+    const inOwn = await port.review({ gate: "qa_uat" as never, workId: "task-1", evidence: [], workdir: own });
+    const inShared = await port.review({ gate: "qa_uat" as never, workId: "task-1", evidence: [] });
+    const said = (r: typeof inOwn): string => (r.ok ? r.value.reason.toLowerCase() : "");
+    // By the directory's own name: the temp root may print in its 8.3 short form.
+    expect(said(inOwn)).toContain(basename(own).toLowerCase());
+    expect(said(inOwn)).not.toContain(basename(shared).toLowerCase());
+    expect(said(inShared)).toContain(basename(shared).toLowerCase());
+    rmSync(shared, { recursive: true, force: true });
+    rmSync(own, { recursive: true, force: true });
+  });
+});
+
+describe("A REAL REPOSITORY IS HANDED TO PEOPLE, NEVER MERGED INTO, UNLESS SOMEONE SAID MERGE", () => {
+  // MEASURED on the Agentic Team's first real run: with nothing said about delivery, the runtime
+  // merged two defects into its clone's master - the one act the operator would never allow.
+  function handoffStub(dir: string): { command: string; args: string[]; seen: string } {
+    const seen = join(dir, "handoff-seen.json");
+    const stub = join(dir, "handoff.cjs");
+    writeFileSync(
+      stub,
+      `const fs=require("fs");fs.writeFileSync(${JSON.stringify(seen)},JSON.stringify({branch:process.env.ORG_BRANCH,base:process.env.ORG_BASE,title:process.env.ORG_TITLE,description:fs.readFileSync(process.env.ORG_DESCRIPTION_FILE,"utf-8")}));` +
+        `console.log("opened");console.log("https://review.example/mr/1");`,
+    );
+    return { command: process.execPath, args: [stub], seen };
+  }
+  const merges = (repo: string): string[] =>
+    execFileSync("git", ["log", "--merges", "--oneline", "main"], { cwd: repo, encoding: "utf-8" })
+      .split("\n")
+      .filter((l) => l.trim() !== "");
+
+  test("with no delivery setting the finished change is handed off: main gets no merge, the review is recorded", async () => {
+    const repo = realRepo();
+    const inbox = realInbox();
+    const wt = mkdtempSync(join(tmpdir(), "zeta-handoff-wt-"));
+    const scratch = mkdtempSync(join(tmpdir(), "zeta-handoff-"));
+    const h = handoffStub(scratch);
+    try {
+      const events: { kind: string; decision: string; fact?: { kind?: string; url?: string } }[] = [];
+      const report = await runAgainst(
+        repo,
+        inbox,
+        { change: gitWorktreeChangeControl({ cwd: repo, baseBranch: "main", worktreeRoot: wt, handoff: { command: h.command, args: h.args } }) },
+        { settings: [], onEvent: (e: never) => events.push(e) },
+      );
+      expect(merges(repo)).toEqual([]);
+      expect(report.changesLanded).toEqual([]);
+      expect(report.changesHandedOff.length).toBeGreaterThan(0);
+      const fact = events.find((e) => e.fact?.kind === "change_handed_off")?.fact;
+      expect(fact?.url).toBe("https://review.example/mr/1");
+      expect(events.some((e) => e.decision.includes("HANDED OFF for human review"))).toBe(true);
+      const seen = JSON.parse(readFileSync(h.seen, "utf-8")) as { base: string; title: string; description: string };
+      expect(seen.base).toBe("main");
+      expect(seen.title.startsWith("PROJ-9:")).toBe(true);
+      expect(seen.description).toContain("Nothing has been merged");
+    } finally {
+      for (const d of [repo, inbox, wt, scratch]) rmSync(d, { recursive: true, force: true });
+    }
+  }, 120_000);
+
+  test("an adapter that cannot hand off is REFUSED, never merged instead", async () => {
+    const repo = realRepo();
+    const inbox = realInbox();
+    const wt = mkdtempSync(join(tmpdir(), "zeta-nohandoff-wt-"));
+    try {
+      const report = await runAgainst(repo, inbox, {}, { settings: [] }, wt);
+      expect(merges(repo)).toEqual([]);
+      expect(report.delivered).toBe(false);
+      expect(report.refusals.some((r) => r.includes("cannot hand") && r.includes("does not merge it instead"))).toBe(true);
+    } finally {
+      for (const d of [repo, inbox, wt]) rmSync(d, { recursive: true, force: true });
+    }
+  }, 120_000);
+
+  test("work already in front of a reviewer is neither walked again nor proposed a second time", async () => {
+    const repo = realRepo();
+    const inbox = realInbox();
+    const wt = mkdtempSync(join(tmpdir(), "zeta-resume-wt-"));
+    const scratch = mkdtempSync(join(tmpdir(), "zeta-resume-"));
+    const h = handoffStub(scratch);
+    try {
+      const change = () => gitWorktreeChangeControl({ cwd: repo, baseBranch: "main", worktreeRoot: wt, handoff: { command: h.command, args: h.args } });
+      const first = await runAgainst(repo, inbox, { change: change() }, { settings: [] });
+      const handed = new Set(first.changesHandedOff);
+      expect(handed.size).toBeGreaterThan(0);
+      const again = await runAgainst(repo, mkdtempSync(join(tmpdir(), "zeta-empty-inbox-")), { change: change() }, {
+        settings: [],
+        alreadyHandedOff: handed,
+        priorCascade: first.cascade,
+      });
+      expect(again.changesHandedOff).toEqual([]);
+      expect(again.gateEvaluations.some((e) => handed.has(e.workId))).toBe(false);
+    } finally {
+      for (const d of [repo, inbox, wt, scratch]) rmSync(d, { recursive: true, force: true });
+    }
+  }, 180_000);
+});
+
+describe("A HANDED-OFF CHANGE: WHAT IT MAY CARRY, AND KEEPING IT CURRENT WITHOUT REWRITING IT", () => {
+  /** A bare `origin`, a clone the organization works in, and a second clone standing in for other people. */
+  function withRemote(): { origin: string; repo: string; others: string; wt: string; git: (at: string, ...a: string[]) => string; cleanup: () => void } {
+    const origin = mkdtempSync(join(tmpdir(), "zeta-origin-"));
+    const git = (at: string, ...a: string[]) => execFileSync("git", a, { cwd: at, encoding: "utf-8" });
+    git(origin, "init", "-q", "--bare", "-b", "main");
+    const repo = realRepo();
+    git(repo, "remote", "add", "origin", origin);
+    git(repo, "push", "-q", "origin", "main");
+    const others = mkdtempSync(join(tmpdir(), "zeta-others-"));
+    git(others, "clone", "-q", origin, ".");
+    git(others, "config", "user.email", "o@example.com");
+    git(others, "config", "user.name", "O");
+    const wt = mkdtempSync(join(tmpdir(), "zeta-sync-wt-"));
+    return { origin, repo, others, wt, git, cleanup: () => { for (const d of [origin, repo, others, wt]) rmSync(d, { recursive: true, force: true }); } };
+  }
+  const node = { workId: "task-1" } as never;
+
+  test("a change that ADDS a kept-out path is refused before anything is pushed; editing an existing one is not", async () => {
+    const r = withRemote();
+    const scratch = mkdtempSync(join(tmpdir(), "zeta-keepout-"));
+    const seen = join(scratch, "ran");
+    const stub = join(scratch, "handoff.cjs");
+    writeFileSync(stub, `require("fs").writeFileSync(${JSON.stringify(seen)},"1");console.log("https://review.example/mr/2");`);
+    try {
+      const port = gitWorktreeChangeControl({ cwd: r.repo, baseBranch: "main", worktreeRoot: r.wt, handoff: { command: process.execPath, args: [stub] } });
+      const opened = await port.open(node, { branch: "defect/X-1" });
+      if (!opened.ok) throw new Error(opened.reason);
+      const at = opened.value.workdir as string;
+      mkdirSync(join(at, "shots"), { recursive: true });
+      writeFileSync(join(at, "shots", "after.png"), "png");
+      writeFileSync(join(at, "fix.ts"), "export const x = 1;\n");
+      r.git(at, "add", "-A");
+      r.git(at, "commit", "-q", "-m", "X-1: fix");
+      const refused = await port.handoff!(opened.value, { title: "X-1", description: "d", keepOut: ["*.png"] });
+      expect(refused.ok).toBe(false);
+      expect(refused.ok ? "" : refused.reason).toContain("shots/after.png");
+      expect(() => readFileSync(seen)).toThrow();
+      r.git(at, "rm", "-q", "shots/after.png");
+      r.git(at, "commit", "-q", "-m", "X-1: keep evidence out");
+      const handed = await port.handoff!(opened.value, { title: "X-1", description: "d", keepOut: ["*.png"] });
+      expect(handed.ok).toBe(true);
+    } finally {
+      r.cleanup();
+      rmSync(scratch, { recursive: true, force: true });
+    }
+  }, 60_000);
+
+  test("behind the target is MEASURED against the remote, and bringing it level MERGES the target in - history is not rewritten", async () => {
+    const r = withRemote();
+    try {
+      const port = gitWorktreeChangeControl({ cwd: r.repo, baseBranch: "main", worktreeRoot: r.wt });
+      const opened = await port.open(node, { branch: "defect/X-2" });
+      if (!opened.ok) throw new Error(opened.reason);
+      const at = opened.value.workdir as string;
+      writeFileSync(join(at, "fix.ts"), "export const x = 1;\n");
+      r.git(at, "add", "-A");
+      r.git(at, "commit", "-q", "-m", "X-2: fix");
+      const before = r.git(at, "rev-parse", "HEAD").trim();
+      // Somebody else moves main on the review system.
+      writeFileSync(join(r.others, "other.md"), "moved\n");
+      r.git(r.others, "add", "-A");
+      r.git(r.others, "commit", "-q", "-m", "main moves");
+      r.git(r.others, "push", "-q", "origin", "main");
+
+      const measured = await port.syncWithTarget!(opened.value, { apply: false });
+      expect(measured.ok && measured.value).toMatchObject({ target: "origin/main", behindBy: 1, applied: false });
+      const synced = await port.syncWithTarget!(opened.value, { apply: true });
+      expect(synced.ok && synced.value.applied).toBe(true);
+      // The change's own commit is still an ancestor: merged in, not rebased over.
+      expect(() => r.git(at, "merge-base", "--is-ancestor", before, "HEAD")).not.toThrow();
+      const after = await port.syncWithTarget!(opened.value, { apply: false });
+      expect(after.ok && after.value.behindBy).toBe(0);
+    } finally {
+      r.cleanup();
+    }
+  }, 60_000);
+
+  test("a conflicting target is left MID-MERGE with its conflicts named, and abortSync backs it out", async () => {
+    const r = withRemote();
+    try {
+      const port = gitWorktreeChangeControl({ cwd: r.repo, baseBranch: "main", worktreeRoot: r.wt });
+      const opened = await port.open(node, { branch: "defect/X-3" });
+      if (!opened.ok) throw new Error(opened.reason);
+      const at = opened.value.workdir as string;
+      writeFileSync(join(at, "README.md"), "# ours\n");
+      r.git(at, "commit", "-q", "-am", "X-3: ours");
+      writeFileSync(join(r.others, "README.md"), "# theirs\n");
+      r.git(r.others, "commit", "-q", "-am", "theirs");
+      r.git(r.others, "push", "-q", "origin", "main");
+
+      const synced = await port.syncWithTarget!(opened.value, { apply: true });
+      expect(synced.ok && synced.value).toMatchObject({ applied: false, conflicts: ["README.md"] });
+      expect(() => r.git(at, "rev-parse", "-q", "--verify", "MERGE_HEAD")).not.toThrow();
+      const aborted = await port.abortSync!(opened.value);
+      expect(aborted.ok).toBe(true);
+      expect(() => r.git(at, "rev-parse", "-q", "--verify", "MERGE_HEAD")).toThrow();
+    } finally {
+      r.cleanup();
+    }
+  }, 60_000);
+});
+
+describe("AFTER THE HANDOFF: THE REQUEST SAYS WHAT THE ORGANIZATION CONFIGURED, AND FEEDBACK BECOMES ACTION ITEMS IT DECIDES ABOUT", () => {
+  const sections = [
+    { heading: "Problem statement", states: "what the reporter saw" },
+    { heading: "Root cause", states: "why, with file:line" },
+  ];
+  const changeRequests = { sections, keepOut: ["*.png"], sync: "merge_target" as const, replies: "reply_and_resolve" as const, why: "reviewers read the problem first" };
+  const fullDescription = async () => ({ ok: true as const, value: "## Problem statement\nIt broke.\n\n## Root cause\nA race.", evidence: [] });
+
+  function stubCounting(dir: string): { command: string; args: string[]; seen: string; count: () => number } {
+    const seen = join(dir, "seen.json");
+    const calls = join(dir, "calls.txt");
+    const stub = join(dir, "handoff.cjs");
+    writeFileSync(
+      stub,
+      `const fs=require("fs");fs.appendFileSync(${JSON.stringify(calls)},"x");` +
+        `fs.writeFileSync(${JSON.stringify(seen)},JSON.stringify({description:fs.readFileSync(process.env.ORG_DESCRIPTION_FILE,"utf-8")}));` +
+        `console.log("https://review.example/p/-/merge_requests/7");`,
+    );
+    const count = (): number => {
+      try {
+        return readFileSync(calls, "utf-8").length;
+      } catch {
+        return 0;
+      }
+    };
+    return { command: process.execPath, args: [stub], seen, count };
+  }
+
+  test("the description is written in the configured sections, checked, and a description missing one is NOT handed off", async () => {
+    const repo = realRepo();
+    const inbox = realInbox();
+    const wt = mkdtempSync(join(tmpdir(), "zeta-cr-wt-"));
+    const scratch = mkdtempSync(join(tmpdir(), "zeta-cr-"));
+    const h = stubCounting(scratch);
+    try {
+      const change = () => gitWorktreeChangeControl({ cwd: repo, baseBranch: "main", worktreeRoot: wt, handoff: { command: h.command, args: h.args } });
+      const partial = await runAgainst(repo, inbox, { change: change() }, {
+        settings: [],
+        changeRequests,
+        describeChange: async () => ({ ok: true as const, value: "## Problem statement\nIt broke.", evidence: [] }),
+      });
+      expect(partial.changesHandedOff).toEqual([]);
+      expect(partial.refusals.some((r) => r.includes("does not carry: Root cause"))).toBe(true);
+      expect(h.count()).toBe(0);
+    } finally {
+      for (const d of [repo, inbox, wt, scratch]) rmSync(d, { recursive: true, force: true });
+    }
+  }, 120_000);
+
+  test("a comment and a moved target become action items; the organization decides, brings the change level, re-verifies and updates the request - and only then are the items settled", async () => {
+    const repo = realRepo();
+    const git = (at: string, ...a: string[]) => execFileSync("git", a, { cwd: at, encoding: "utf-8" });
+    const origin = mkdtempSync(join(tmpdir(), "zeta-cr-origin-"));
+    git(origin, "init", "-q", "--bare", "-b", "main");
+    git(repo, "remote", "add", "origin", origin);
+    git(repo, "push", "-q", "origin", "main");
+    const others = mkdtempSync(join(tmpdir(), "zeta-cr-others-"));
+    git(others, "clone", "-q", origin, ".");
+    git(others, "config", "user.email", "o@example.com");
+    git(others, "config", "user.name", "O");
+    const inbox = realInbox();
+    const wt = mkdtempSync(join(tmpdir(), "zeta-cr-wt-"));
+    const scratch = mkdtempSync(join(tmpdir(), "zeta-cr-"));
+    const h = stubCounting(scratch);
+    const events: OrgEvent[] = [];
+    try {
+      const change = () => gitWorktreeChangeControl({ cwd: repo, baseBranch: "main", worktreeRoot: wt, handoff: { command: h.command, args: h.args } });
+      const first = await runAgainst(repo, inbox, { change: change() }, {
+        settings: [],
+        changeRequests,
+        describeChange: fullDescription,
+        onEvent: (e: OrgEvent) => events.push(e),
+      });
+      expect(first.changesHandedOff.length).toBe(1);
+      const workId = first.changesHandedOff[0] as string;
+      const seen = JSON.parse(readFileSync(h.seen, "utf-8")) as { description: string };
+      expect(seen.description).toContain("## Root cause");
+      expect(seen.description).toContain("Nothing has been merged");
+      const handed = foldHandedOffChanges(events);
+      const branch = handed.get(workId)?.branch as string;
+
+      // People react: a reviewer comments, and main moves on without the change.
+      writeFileSync(join(others, "moved.md"), "main moved\n");
+      git(others, "add", "-A");
+      git(others, "commit", "-q", "-m", "main moves");
+      git(others, "push", "-q", "origin", "main");
+      const feedback = [
+        { deliveryId: "note-1", source: "gitlab", itemKind: "comment", summary: "please add a comment explaining the race", author: "reviewer", changeUrl: "https://review.example/p/-/merge_requests/7#note_1" },
+        { deliveryId: "target-main-1", source: "gitlab", itemKind: "target_moved", summary: "main moved", target: "refs/heads/main" },
+      ];
+      const asked: { mode: string; items: number; canSync: boolean }[] = [];
+      // THE ANSWERER records what it was asked and WHEN - how many pushes had happened by then.
+      const answered: { pushesSoFar: number; resolve: boolean; items: readonly AnswerItem[] }[] = [];
+      let replySeq = 500;
+      const answer = (failFor: string) => async (req: AnswerRequest) => {
+        answered.push({ pushesSoFar: h.count(), resolve: req.resolve, items: req.items });
+        return {
+          ok: true as const,
+          value: req.items.map((i) =>
+            i.actionItemId === failFor ? { actionItemId: i.actionItemId, error: "GitLab said 502" } : { actionItemId: i.actionItemId, replyId: `note-${String(++replySeq)}`, resolved: true },
+          ),
+          evidence: [],
+        };
+      };
+      const described: DescribeRequest[] = [];
+      const second = await runAgainst(repo, realInbox(), { change: change() }, {
+        settings: [],
+        changeRequests,
+        describeChange: async (req: DescribeRequest) => {
+          described.push(req);
+          return fullDescription();
+        },
+        priorCascade: first.cascade,
+        alreadyHandedOff: new Set(handed.keys()),
+        handedOffChanges: handed,
+        actionItems: foldActionItems(events),
+        feedback,
+        defaultBase: "main",
+        verifyChange: async () => ({ ok: true as const, value: "green", evidence: [] }),
+        followUp: async (req: { mode: string; items: readonly { actionItemId: string }[]; canSync: boolean; workdir?: string }) => {
+          asked.push({ mode: req.mode, items: req.items.length, canSync: req.canSync });
+          writeFileSync(join(req.workdir as string, "WHY.md"), "the race\n");
+          git(req.workdir as string, "add", "-A");
+          git(req.workdir as string, "commit", "-q", "-m", "explain the race");
+          return {
+            ok: true as const,
+            value: {
+              decisions: req.items.map((i) => ({ actionItemId: i.actionItemId, outcome: "addressed" as const, how: "explained the race; merged main in" })),
+              syncWithTarget: true,
+              summary: "done",
+            },
+            evidence: [],
+          };
+        },
+        // The moved-target item's answer fails this time; it must be tried again, never lost.
+        answer: answer(`gitlab:target-main-1@${workId}`),
+        onEvent: (e: OrgEvent) => events.push(e),
+      });
+      expect(second.actionItemsRaised?.length).toBe(2);
+      expect(asked).toEqual([{ mode: "triage", items: 2, canSync: true }]);
+      const fu = second.followUps?.[0];
+      expect(fu?.refused).toEqual([]);
+      expect(fu?.synced?.applied).toBe(true);
+      expect(fu?.handedOffAgain).toBe(true);
+      expect(h.count()).toBe(2);
+      // Merged in, never rebased: main's commit is now an ancestor of the branch.
+      expect(() => git(repo, "merge-base", "--is-ancestor", "origin/main", branch)).not.toThrow();
+      const items = foldActionItems(events).get(workId) ?? [];
+      expect(items.length).toBe(2);
+      expect(items.every((i) => i.settled?.outcome === "addressed")).toBe(true);
+
+      // THE REWRITTEN DESCRIPTION IS TOLD WHAT REVIEWERS WERE ANSWERED - MEASURED on MR !162, a reply
+      // pointed at a rollout note the re-written description never carried.
+      expect(described.at(-1)?.settled).toContainEqual({ summary: "please add a comment explaining the race", outcome: "addressed", how: "explained the race; merged main in" });
+
+      // ANSWERED ONLY AFTER THE PUSH, citing the commit that was pushed, and resolved as configured.
+      const branchHead = git(repo, "rev-parse", branch).trim();
+      expect(answered).toHaveLength(1);
+      expect(answered[0]?.pushesSoFar).toBe(2);
+      expect(answered[0]?.resolve).toBe(true);
+      const comment = answered[0]?.items.find((i) => i.actionItemId === "gitlab:note-1");
+      expect(comment).toMatchObject({ outcome: "addressed", how: "explained the race; merged main in", commit: branchHead, when: "always" });
+      // The one whose answer failed is NOT recorded as answered - it is still owed.
+      const afterSecond = foldActionItems(events).get(workId) ?? [];
+      expect(afterSecond.find((i) => i.actionItemId === "gitlab:note-1")?.answered?.replyId).toBe("note-501");
+      expect(afterSecond.find((i) => i.actionItemId.startsWith("gitlab:target-main-1"))?.answered).toBeUndefined();
+      expect(second.refusals.some((r) => r.includes("GitLab said 502"))).toBe(true);
+
+      // The same feedback delivered again raises nothing and asks nobody anything - and the
+      // organization's OWN reply, read back from the review system, is not raised as feedback.
+      const ownReply = { deliveryId: "note-501", source: "gitlab", itemKind: "comment", summary: "Fixed in abc", changeUrl: "https://review.example/p/-/merge_requests/7#note_501" };
+      const third = await runAgainst(repo, realInbox(), { change: change() }, {
+        settings: [],
+        changeRequests,
+        describeChange: fullDescription,
+        priorCascade: second.cascade,
+        alreadyHandedOff: new Set(handed.keys()),
+        handedOffChanges: foldHandedOffChanges(events),
+        actionItems: foldActionItems(events),
+        feedback: [...feedback, ownReply],
+        defaultBase: "main",
+        followUp: async () => {
+          throw new Error("nothing is open - nobody should be asked");
+        },
+        answer: answer("none"),
+        onEvent: (e: OrgEvent) => events.push(e),
+      });
+      expect(third.actionItemsRaised).toEqual([]);
+      expect(third.followUps).toEqual([]);
+      // THE FAILED ANSWER IS TRIED AGAIN, and only it: the answered one is not answered twice.
+      expect(answered).toHaveLength(2);
+      expect(answered[1]?.items.map((i) => i.actionItemId)).toEqual([`gitlab:target-main-1@${workId}`]);
+      expect(third.actionItemsAnswered).toEqual([`gitlab:target-main-1@${workId}`]);
+    } finally {
+      for (const d of [repo, origin, others, inbox, wt, scratch]) rmSync(d, { recursive: true, force: true });
+    }
+  }, 240_000);
 });

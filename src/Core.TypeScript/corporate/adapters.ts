@@ -30,7 +30,8 @@
  */
 
 import { spawnSync } from "node:child_process";
-import { existsSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
+import { existsSync, mkdtempSync, readdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
 import { join } from "node:path";
 
 import {
@@ -38,6 +39,9 @@ import {
   type ChangeRevision,
   Port,
   type ChangeControlPort,
+  type ChangeHandle,
+  type ChangeHandoff,
+  type ChangeProposal,
   type IntakeSource,
   type PortResult,
   type ReviewPort,
@@ -55,6 +59,8 @@ import type { Artifact, PhaseContext, ProducerPort } from "./pipeline";
 import { RunOutcome, type TestCase } from "./qa";
 import type { ExternalEvent } from "./intake";
 import type { CascadeNode } from "./goal-cascade";
+import { parseRequestRef } from "./request";
+import { keptOutPaths } from "./change-request";
 
 // ─── Simulated: what the register already did, now labelled ─────────────────
 
@@ -231,7 +237,8 @@ export function commandReview(input: {
     },
     review: async (request) => {
       const run = spawnSync(input.command, [...input.argsFor(request)], {
-        cwd: input.cwd,
+        // The work's own checkout when the request names one; the configured directory otherwise.
+        cwd: request.workdir ?? input.cwd,
         encoding: "utf-8",
         timeout: input.timeoutMs ?? 120_000,
         shell: false,
@@ -440,7 +447,11 @@ export function httpIntake(input: {
    * which is how a signature grows something unfalsifiable.
    */
   readonly mapper: (item: unknown) => ExternalEvent;
-  readonly headers?: Readonly<Record<string, string>>;
+  /**
+   * Static headers, or a function computing them PER POLL — which is how a credential read from a
+   * file at call time reaches the request without ever being a value in argv.
+   */
+  readonly headers?: Readonly<Record<string, string>> | (() => Readonly<Record<string, string>>);
   readonly timeoutMs?: number;
   readonly name?: string;
   readonly fetchImpl?: typeof fetch;
@@ -458,8 +469,9 @@ export function httpIntake(input: {
       const timer = setTimeout(() => controller.abort(), input.timeoutMs ?? 30_000);
       let body: unknown;
       try {
+        const headers = typeof input.headers === "function" ? input.headers() : input.headers;
         const res = await doFetch(input.url, {
-          headers: { accept: "application/json", ...input.headers },
+          headers: { accept: "application/json", ...headers },
           signal: controller.signal,
         });
         if (!res.ok) {
@@ -501,6 +513,13 @@ function capture(label: string, text: string): string {
   if (text.length <= MAX_CAPTURED_OUTPUT) return `${label}:${text}`;
   // Truncation is VISIBLE. Silently clipping evidence makes a long failure look like a short one.
   return `${label}:${text.slice(0, MAX_CAPTURED_OUTPUT)}…[truncated ${String(text.length - MAX_CAPTURED_OUTPUT)} chars]`;
+}
+
+/** The last `n` non-empty lines of a command's output, each capped — where a verdict's reasons are. */
+export function tailLines(text: string, n: number): readonly string[] {
+  const lines = text.split(/\r?\n/).map((l) => l.trimEnd()).filter((l) => l.trim() !== "");
+  const tail = lines.slice(-n).map((l) => (l.length > 300 ? `${l.slice(0, 300)}…` : l));
+  return lines.length > n ? [`…(${String(lines.length - n)} earlier line(s))`, ...tail] : tail;
 }
 
 /**
@@ -884,6 +903,14 @@ export function workBriefEnv(node: CascadeNode, ctx: WorkContext): Record<string
     ...(node.parentWorkId === undefined ? {} : { ORG_PARENT_ID: node.parentWorkId }),
     ...(node.assigneeHatId === undefined ? {} : { ORG_ASSIGNEE: node.assigneeHatId }),
     ...(ctx.workdir === undefined ? {} : { ORG_WORKDIR: ctx.workdir }),
+    // THE TICKET, by the name its tracker uses. `commit-carries-the-ticket` was unfollowable while
+    // the only id an agent saw was this organization's internal one.
+    ...((r) => (r === undefined ? {} : { ORG_TICKET: r.externalId, ORG_TICKET_SOURCE: r.source }))(
+      node.requestRef === undefined ? undefined : parseRequestRef(node.requestRef),
+    ),
+    ...(ctx.priorPhases === undefined || ctx.priorPhases.length === 0
+      ? {}
+      : { ORG_PRIOR_ARTIFACTS: JSON.stringify(ctx.priorPhases) }),
   };
 }
 
@@ -1030,13 +1057,20 @@ export function agentWorkExecutor(input: {
 
       // THE VERIFIER DECIDES. `attempt` contributes evidence and prose and never touches this line.
       const succeeded = run.status === 0;
+      // AND WHEN IT SAYS NO, IT SAYS WHY. MEASURED on AIAGENT-1662: the verifier reported 23 new
+      // test failures and named every one - and the record kept "verifier exited 1", so the next
+      // attempt, and anyone reading the item, knew the work was refused and not what broke. The
+      // verifier's own last words are its reason; they travel with the refusal.
+      const said = succeeded ? [] : tailLines(run.stderr ?? "", 25);
       return {
         ok: true,
         value: {
           workId: node.workId,
           succeeded,
           artifacts: attempt.artifacts,
-          summary: `agent: ${attempt.summary} — verifier exited ${String(run.status)}`,
+          summary:
+            `agent: ${attempt.summary} — verifier exited ${String(run.status)}` +
+            (said.length === 0 ? "" : `\nthe verifier said:\n${said.join("\n")}`),
         },
         evidence: [
           { kind: "trace", ref: `agent-said:${attempt.summary}` },
@@ -1093,11 +1127,17 @@ export function commandProposal(input: {
   readonly argsFor: (node: CascadeNode) => readonly string[];
   readonly cwd: string;
   readonly timeoutMs?: number;
+  /**
+   * HOW THIS ORGANIZATION WORKS, for the agent writing the change: its practice, its standing
+   * directives, what a reviewer said when this work came back. The document authors were told
+   * all of it; the one agent that writes CODE was told a title and an id.
+   */
+  readonly envFor?: (node: CascadeNode) => Readonly<Record<string, string>>;
 }): (node: CascadeNode, ctx: WorkContext) => AgentAttempt {
   return (node, ctx) => {
     const run = spawnSync(input.command, [...input.argsFor(node)], {
       cwd: ctx.workdir ?? input.cwd,
-      env: workBriefEnv(node, ctx),
+      env: { ...workBriefEnv(node, ctx), ...(input.envFor?.(node) ?? {}) },
       encoding: "utf-8",
       timeout: input.timeoutMs ?? 120_000,
       shell: false,
@@ -1501,16 +1541,125 @@ export function gitWorktreeChangeControl(input: {
   /** Where the per-change checkouts live. One directory per branch. */
   readonly worktreeRoot: string;
   readonly name?: string;
+  /**
+   * What makes a freshly cut worktree RUNNABLE — the project's dependencies, generated files.
+   *
+   * A worktree is a checkout, not an installation: MEASURED on the Agentic Team's three repositories,
+   * each is an npm monorepo and a new worktree has no `node_modules`, so every verifier and every
+   * QA run in it would fail for a reason that has nothing to do with the change. How to make a
+   * checkout runnable is the project's knowledge, so it is a COMMAND the operator supplies, run in
+   * the new worktree with `ORG_BASE_CHECKOUT` / `ORG_WORKTREE` / `ORG_BRANCH` set. Run once, when
+   * the worktree is created — never on a rejoin. A setup that fails REFUSES the open: a change cut
+   * into a checkout that cannot run would be judged by tests that never ran.
+   */
+  readonly setup?: { readonly command: string; readonly args: readonly string[]; readonly timeoutMs?: number };
+  /**
+   * HOW A CHANGE IS HANDED TO PEOPLE — the command that pushes it and opens its review.
+   *
+   * The review system is the project's knowledge, so it is a COMMAND the operator supplies, run in
+   * the change's checkout with `ORG_BRANCH` / `ORG_BASE` / `ORG_TITLE` / `ORG_DESCRIPTION_FILE` /
+   * `ORG_COMMIT` set; the last line it prints that is a URL is the review's address. Absent, this
+   * adapter cannot hand off, and a run that must hand off refuses to use it.
+   */
+  readonly handoff?: { readonly command: string; readonly args: readonly string[]; readonly timeoutMs?: number };
+  /**
+   * The remote a handed-off change is reviewed on — where its target is read from when measuring how
+   * far behind it is. Default `origin`, which is what the handoff pushes to.
+   */
+  readonly remote?: string;
 }): ChangeControlPort {
   const git = (args: readonly string[], at = input.cwd) =>
     spawnSync("git", [...args], { cwd: at, encoding: "utf-8", shell: false, maxBuffer: MAX_COMMAND_OUTPUT_BYTES });
+  const handoffCmd = input.handoff;
+  const remote = (input.remote ?? "").trim() || "origin";
+  /**
+   * The target as the REVIEW SYSTEM sees it when this clone knows it, else the local branch. A change
+   * that has had the remote target merged in, diffed against a stale local one, would be blamed for
+   * every file the target itself added since.
+   */
+  const targetRef = (into: string, at = input.cwd): string =>
+    git(["rev-parse", "--verify", "--quiet", `refs/remotes/${remote}/${into}`], at).status === 0 ? `${remote}/${into}` : into;
+  const lines = (text: string | null | undefined): readonly string[] =>
+    String(text ?? "").split(/\r?\n/).map((l) => l.trim()).filter((l) => l !== "");
   return {
     meta: {
       port: Port.ChangeControl,
       name: input.name ?? "git-worktree",
       fidelity: Fidelity.Real,
-      describes: `one worktree per change under ${input.worktreeRoot}, branched from ${input.baseBranch}`,
+      describes:
+        `one worktree per change under ${input.worktreeRoot}, branched from ${input.baseBranch}` +
+        (handoffCmd === undefined ? "" : `; handed to people by '${handoffCmd.command}'`),
     },
+    ...(handoffCmd === undefined
+      ? {}
+      : {
+          handoff: async (handle: ChangeHandle, proposal: ChangeProposal): Promise<PortResult<ChangeHandoff>> => {
+            const into = (proposal.base ?? handle.base ?? "").trim() || input.baseBranch;
+            // NOTHING TO REVIEW IS A REFUSAL, not an empty merge request a person has to discover.
+            const ahead = commitsAhead(git, handle.branch, into);
+            if (ahead === undefined) return { ok: false, reason: `could not tell whether ${handle.branch} has anything to review` };
+            if (ahead === 0) return { ok: false, reason: `${handle.branch} has no commits ahead of ${into}: there is nothing to hand to a reviewer` };
+            // WHAT THE ORGANIZATION KEEPS OUT, refused before anything is pushed. MEASURED on the
+            // first merge requests: a UAT screenshot committed into the repository. ADDED paths only
+            // (added, or renamed into place): a change that edits a file the product already has is
+            // the product's business.
+            const keepOut = proposal.keepOut ?? [];
+            if (keepOut.length > 0) {
+              const added = git(["diff", "--name-only", "--diff-filter=AR", `${targetRef(into)}...${handle.branch}`]);
+              if (added.status !== 0) {
+                return { ok: false, reason: `could not list what ${handle.branch} adds, so could not check it against what the organization keeps out: ${(added.stderr ?? "").trim()}` };
+              }
+              const bad = keptOutPaths(lines(added.stdout), keepOut);
+              if (bad.length > 0) {
+                return {
+                  ok: false,
+                  reason:
+                    `${handle.branch} adds what this organization keeps out of its merge requests: ${bad.join(", ")} - ` +
+                    "evidence belongs in the organization's record, not the repository; remove it from the branch",
+                };
+              }
+            }
+            const head = git(["rev-parse", handle.branch]);
+            const commit = head.status === 0 ? String(head.stdout ?? "").trim() : undefined;
+            // The description travels as a FILE: it is long, it is markdown, and argv is world-readable.
+            const dir = mkdtempSync(join(tmpdir(), "org-handoff-"));
+            const descriptionFile = join(dir, "description.md");
+            writeFileSync(descriptionFile, proposal.description, { encoding: "utf-8", mode: 0o600 });
+            const ran = spawnSync(handoffCmd.command, [...handoffCmd.args], {
+              cwd: handle.workdir ?? input.cwd,
+              env: {
+                ...process.env,
+                ORG_BRANCH: handle.branch,
+                ORG_BASE: into,
+                ORG_TITLE: proposal.title,
+                ORG_DESCRIPTION_FILE: descriptionFile,
+                ...(commit === undefined ? {} : { ORG_COMMIT: commit }),
+              },
+              encoding: "utf-8",
+              shell: false,
+              timeout: handoffCmd.timeoutMs ?? 300_000,
+              maxBuffer: MAX_COMMAND_OUTPUT_BYTES,
+            });
+            rmSync(dir, { recursive: true, force: true });
+            if (ran.error !== undefined) return { ok: false, reason: `'${handoffCmd.command}' could not run: ${ran.error.message}` };
+            if (ran.status !== 0) {
+              return {
+                ok: false,
+                reason: `handing off ${handle.branch} failed (exit ${String(ran.status)}): ${(ran.stderr ?? "").trim().slice(0, 600)}`,
+              };
+            }
+            const url = String(ran.stdout ?? "")
+              .split(/\r?\n/)
+              .map((l) => l.trim())
+              .filter((l) => /^https?:\/\//.test(l))
+              .pop();
+            return {
+              ok: true,
+              value: { branch: handle.branch, ...(url === undefined ? {} : { url }), ...(commit === undefined ? {} : { commit }) },
+              evidence: [{ kind: "trace", ref: url === undefined ? `handed-off:${handle.branch}` : `review:${url}` }],
+            };
+          },
+        }),
     open: async (node, ctx) => {
       const workdir = join(input.worktreeRoot, worktreeDirName(ctx.branch));
       const base = (ctx.base ?? "").trim() === "" ? input.baseBranch : (ctx.base as string);
@@ -1591,6 +1740,24 @@ export function gitWorktreeChangeControl(input: {
       if (made.error !== undefined) return { ok: false, reason: `git could not run: ${made.error.message}` };
       if (made.status !== 0) {
         return { ok: false, reason: `could not open a worktree for ${ctx.branch}: ${(made.stderr ?? "").trim()}` };
+      }
+      if (input.setup !== undefined) {
+        const ready = spawnSync(input.setup.command, [...input.setup.args], {
+          cwd: workdir,
+          env: { ...process.env, ORG_BASE_CHECKOUT: input.cwd, ORG_WORKTREE: workdir, ORG_BRANCH: ctx.branch },
+          encoding: "utf-8",
+          shell: false,
+          timeout: input.setup.timeoutMs ?? 900_000,
+          maxBuffer: MAX_COMMAND_OUTPUT_BYTES,
+        });
+        if (ready.error !== undefined || ready.status !== 0) {
+          return {
+            ok: false,
+            reason:
+              `the worktree for ${ctx.branch} could not be made runnable by '${input.setup.command}': ` +
+              (ready.error?.message ?? `exit ${String(ready.status)} ${(ready.stderr ?? "").trim().slice(0, 400)}`),
+          };
+        }
       }
       // WHO OWNS THIS CHECKOUT. Written after the worktree exists, so a failed `add` leaves no
       // claim behind. A write that fails is not fatal: the marker only ever REFUSES a reuse, so
@@ -1717,6 +1884,48 @@ export function gitWorktreeChangeControl(input: {
       return at.ok
         ? { ok: true, value: at.revision, evidence: [{ kind: "trace", ref: `rev:${at.revision.commit}` }] }
         : { ok: false, reason: at.reason };
+    },
+    syncWithTarget: async (handle, opts) => {
+      const into = (handle.base ?? "").trim() || input.baseBranch;
+      const at = handle.workdir ?? input.cwd;
+      // THE TARGET AS REVIEWERS SEE IT: fetched, never the clone's local branch, which moves only
+      // when somebody moves it and would report every handed-off change as current forever.
+      const fetched = git(["fetch", "--quiet", remote, into], at);
+      if (fetched.error !== undefined) return { ok: false, reason: `git could not run: ${fetched.error.message}` };
+      if (fetched.status !== 0) return { ok: false, reason: `could not fetch ${remote}/${into}: ${(fetched.stderr ?? "").trim().slice(0, 400)}` };
+      const target = `${remote}/${into}`;
+      const behind = commitsAhead((a) => git(a, at), target, handle.branch);
+      if (behind === undefined) return { ok: false, reason: `could not tell how far ${handle.branch} is behind ${target}` };
+      const unchanged = { target, behindBy: behind, applied: false, conflicts: [] as readonly string[] };
+      if (!opts.apply || behind === 0) return { ok: true, value: unchanged, evidence: [{ kind: "trace", ref: `behind:${String(behind)}:${target}` }] };
+      // A DIRTY CHECKOUT IS NOT MERGED INTO: the merge would mix somebody's uncommitted work into a
+      // commit nobody wrote, which is the same refusal `merge` makes for the same reason.
+      const dirty = git(["status", "--porcelain", "--untracked-files=no"], at);
+      if (dirty.status !== 0 || lines(dirty.stdout).length > 0) {
+        return { ok: false, reason: `${handle.branch} has uncommitted changes in ${at}: commit or discard them before it is brought up to date` };
+      }
+      const merged = git(["merge", "--no-ff", "--no-edit", "-m", `Merge ${target} into ${handle.branch}`, target], at);
+      if (merged.error !== undefined) return { ok: false, reason: `git could not run: ${merged.error.message}` };
+      if (merged.status === 0) {
+        return { ok: true, value: { ...unchanged, applied: true }, evidence: [{ kind: "trace", ref: `synced:${target}` }] };
+      }
+      const conflicts = lines(git(["diff", "--name-only", "--diff-filter=U"], at).stdout);
+      if (conflicts.length === 0) {
+        // Refused for a reason that is not a conflict: nothing is left half-done.
+        git(["merge", "--abort"], at);
+        return { ok: false, reason: `merging ${target} into ${handle.branch} refused: ${(merged.stderr ?? merged.stdout ?? "").trim().slice(0, 400)}` };
+      }
+      // LEFT IN PROGRESS, on purpose: resolving a conflict is judgement, and the checkout is where
+      // the agent that resolves it works. `abortSync` is the way back out.
+      return { ok: true, value: { ...unchanged, conflicts }, evidence: [{ kind: "trace", ref: `sync-conflicted:${target}` }] };
+    },
+    abortSync: async (handle) => {
+      const at = handle.workdir ?? input.cwd;
+      if (git(["rev-parse", "-q", "--verify", "MERGE_HEAD"], at).status !== 0) return { ok: true, value: true, evidence: [] };
+      const aborted = git(["merge", "--abort"], at);
+      return aborted.status === 0
+        ? { ok: true, value: true, evidence: [{ kind: "trace", ref: `sync-aborted:${handle.branch}` }] }
+        : { ok: false, reason: `could not back out the merge in ${at}: ${(aborted.stderr ?? "").trim()}` };
     },
   };
 }

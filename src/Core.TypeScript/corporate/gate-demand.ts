@@ -67,6 +67,8 @@ import { GateKind, isPassing, type GateEvaluation, type GateOutcome } from "./qu
 export const CHAIN_BY_TYPE: Readonly<Record<WorkType, readonly GateKind[]>> = {
   [WorkType.Goal]: [
     GateKind.BusinessContextGrooming,
+    // UNDERSTAND WHAT EXISTS before anything is required of it — see `GateKind.SystemContext`.
+    GateKind.SystemContext,
     GateKind.CustomerRfpReview,
     GateKind.FinalBusinessValidation,
   ],
@@ -89,7 +91,14 @@ export const CHAIN_BY_TYPE: Readonly<Record<WorkType, readonly GateKind[]>> = {
   // that — not that it may reach production having skipped the release gate. Omitting it here made
   // "a gate nobody owns blocks delivery" untestable on a defect: stripping the gate's owners
   // changed nothing, because nothing owed it.
+  //
+  // AND IT IS REPRODUCED FIRST, AS A GATE. Intake used to be the only place reproduction was
+  // asked about, and it could only accept or refuse — so under `reproduce_first` a defect was
+  // admitted with a sentence saying somebody should reproduce it and no step in which anybody did.
+  // Owed by EVERY defect, not only the unreproduced ones: steps a reporter supplied are a claim,
+  // and turning them into a failing test is the same work that checks the claim.
   [WorkType.Defect]: [
+    GateKind.Reproduction,
     GateKind.ImplementationReview,
     GateKind.QaUat,
     GateKind.RuntimeValidation,
@@ -143,6 +152,20 @@ export function chainFor(workType: WorkType): readonly GateKind[] {
   return CHAIN_BY_TYPE[workType] ?? [];
 }
 
+/** A work type, or a node — which may carry the chain its organization stated for it. */
+export type ChainSubject = WorkType | Pick<CascadeNode, "workType" | "owes">;
+
+/**
+ * The chain this item owes: its STATED chain when it has one, else its type's.
+ *
+ * Every reader that holds the node asks this rather than `chainFor(node.workType)`, or the runtime
+ * would walk one chain while the CLI, change control and gate demand reported another.
+ */
+export function chainOf(subject: ChainSubject): readonly GateKind[] {
+  if (typeof subject === "string") return chainFor(subject);
+  return subject.owes ?? chainFor(subject.workType);
+}
+
 /**
  * Gates that may not be crossed until the rung's children are delivered.
  *
@@ -151,10 +174,15 @@ export function chainFor(workType: WorkType): readonly GateKind[] {
  * tasks are unbuilt. Without this an epic could pass every gate it owns and be Done above unfinished
  * children, which is the "signed off on something that did not work" failure stated structurally.
  */
-export function acceptanceGateFor(workType: WorkType): GateKind | undefined {
+export function acceptanceGateFor(subject: ChainSubject): GateKind | undefined {
+  const workType = typeof subject === "string" ? subject : subject.workType;
   if (isLeafType(workType)) return undefined;
-  const chain = chainFor(workType);
-  return chain[chain.length - 1];
+  // THE TYPE'S acceptance gate, and only while the item still owes it. "The last gate of whatever
+  // is left" would make a trimmed goal's GROOMING its acceptance gate — held until the fix was
+  // delivered, which is the understanding arriving after the thing it was for.
+  const typeChain = chainFor(workType);
+  const accepting = typeChain[typeChain.length - 1];
+  return accepting !== undefined && chainOf(subject).includes(accepting) ? accepting : undefined;
 }
 
 /**
@@ -246,8 +274,8 @@ function stepFor(
 ): { readonly ready?: GateStep; readonly blocked?: BlockedStep } {
   if (node.state === WorkState.Canceled) return {};
 
-  const chain = chainFor(node.workType);
-  const acceptance = acceptanceGateFor(node.workType);
+  const chain = chainOf(node);
+  const acceptance = acceptanceGateFor(node);
 
   for (const gate of chain) {
     const record = latest.get(`${node.workId} ${gate}`);
@@ -369,12 +397,12 @@ export function gateDemand(input: {
  * second survives the process, which is what makes it the one worth marking work done on.
  */
 export function missingGates(
-  workType: WorkType,
+  subject: ChainSubject,
   workId: string,
   evaluations: readonly GateEvaluation[],
 ): readonly GateKind[] {
   const latest = latestByGate(evaluations);
-  return chainFor(workType).filter((gate) => {
+  return chainOf(subject).filter((gate) => {
     const record = latest.get(`${workId} ${gate}`);
     return record === undefined || !isPassing(record.outcome);
   });
@@ -388,12 +416,12 @@ export function missingGates(
  * outstanding is a premature sign-off, children delivered with gates outstanding is unreviewed work.
  */
 export function gatesComplete(
-  workType: WorkType,
+  subject: ChainSubject,
   workId: string,
   evaluations: readonly GateEvaluation[],
 ): boolean {
   const latest = latestByGate(evaluations);
-  return chainFor(workType).every((gate) => {
+  return chainOf(subject).every((gate) => {
     const record = latest.get(`${workId} ${gate}`);
     return record !== undefined && isPassing(record.outcome);
   });

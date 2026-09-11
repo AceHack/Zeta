@@ -11,12 +11,14 @@ import { execFileSync } from "node:child_process";
 import { mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { fidelityOf, Port } from "./providers";
+import { Fidelity, fidelityOf, Port } from "./providers";
 import { WorkState, WorkType as WorkTypeValue, type CascadeNode } from "./goal-cascade";
-import { artifactProducersFromArgs, churnThresholdFor, gateAttemptsFor, hasSource, main, parseArgs, PRE_CODE_GATES, providersFromArgs, trackerMapper, KNOWN_FLAGS, unknownFlags} from "./run-org";
+import { pausedFromActions, argRefusals, withOrgDefaults, artifactProducersFromArgs, churnThresholdFor, gateAttemptsFor, hasSource, main, parseArgs, PRE_CODE_GATES, providersFromArgs, trackerMapper, KNOWN_FLAGS, unknownFlags} from "./run-org";
 import { RunOutcome } from "./qa";
 import { GateKind, ORDERED_GATES } from "./quality-gate";
 import { Severity } from "./intake";
+import { readEvents } from "./org-store";
+import { basePolicy } from "./org-policy";
 
 /** Run `main`, capturing what it printed. */
 async function capture(argv: readonly string[]): Promise<{ code: number; out: string }> {
@@ -118,7 +120,7 @@ describe("argument parsing", () => {
       // NO CHECKPOINTS BY DEFAULT, and this is the assertion that keeps it that way. A default that
       // drifted to "both" would stop every unattended run at its first gate, and the run would look
       // like it had crashed rather than like it was waiting.
-      actions: undefined, blockers: undefined, checkpoints: [],
+      actions: undefined, blockers: undefined, checkpoints: [], unknownCheckpoints: [],
       // NO PRICE TABLE BY DEFAULT. Every crossing is still measured; the cost is reported absent
       // rather than as a number nobody configured — see `meter.ts`.
       pricing: {},
@@ -137,17 +139,20 @@ describe("argument parsing", () => {
       // Every gate unreviewed means AUTO-APPROVE — the register's own long-standing behaviour,
       // which is now an adapter that says so rather than a constant nobody could see.
       reviewQueue: undefined, reviewCmd: undefined, reviewArgs: [],
-      worktrees: undefined,
+      worktrees: undefined, worktreeSetup: undefined, worktreeSetupArgs: [], handoffCmd: undefined, handoffArgs: [],
+      describeCmd: undefined, describeArgs: [], followUpCmd: undefined, followUpArgs: [], feedbackDir: undefined, feedbackCmd: undefined, feedbackArgs: [], answerCmd: undefined, answerArgs: [], supplyTarget: undefined,
       // The three ports that had no command-line path until now. Absent still means simulated, and
       // the fidelity block still says so — reaching a tracker, an agent or a model is opt-in.
       reviewModel: undefined, tracker: undefined, trackerItems: undefined,
       trackerHeaders: [], trackerMap: [], trackerSource: "tracker", trackerSeverity: [],
       workAgent: undefined, workModel: undefined, until: undefined, windowStart: undefined, windowTarget: undefined, now: undefined, agentDelivers: false, sourceRepos: [], sourceSubdir: undefined,
       confluenceAuthFile: undefined, confluenceSpaces: [], confluenceCql: undefined, confluenceLimit: undefined,
+      jiraAuthFile: undefined, jiraJql: undefined, jiraLimit: undefined,
       skillBindings: [], workAgentArgs: [], workVerify: undefined, workVerifyArgs: [],
       // The process layer, empty by default: an organization states its own, and one that has
       // stated nothing follows the register's few defaults rather than these fields.
       practices: [], directives: [], repoSources: [],
+      settings: [],
       // Absent means each adapter keeps its own default. Two minutes is right for a build command
       // and wrong for an agent, so the choice belongs to whoever knows which one they wired up.
       portTimeoutMs: undefined,
@@ -408,7 +413,7 @@ describe("THE CLI SUPPLIES THE HISTORY THE DELIVERY GUARD NEEDS", () => {
       // exactly where it started. Whether that combination is USEFUL is beside the point; what
       // matters is that the two records disagree, which is the only condition this rule reads.
       const code = await main([
-        "--git", repo, "--base", "main", "--worktrees", wt, "--store", store, "--until", "2",
+        "--git", repo, "--base", "main", "--worktrees", wt, "--store", store, "--until", "2", "--delivery", "merge",
       ]);
 
       const out = lines.join("\n");
@@ -450,7 +455,7 @@ describe("THE CLI SUPPLIES THE HISTORY THE DELIVERY GUARD NEEDS", () => {
       // Work that genuinely commits, onto the change's own branch in its own worktree. `-m` takes
       // the workId, which `argsFor` appends last.
       const argv = [
-        "--git", repo, "--base", "main", "--worktrees", wt, "--store", store, "--until", "3",
+        "--git", repo, "--base", "main", "--worktrees", wt, "--store", store, "--until", "3", "--delivery", "merge",
         "--work-cmd", "git",
         "--work-arg", "commit", "--work-arg", "--allow-empty", "--work-arg", "-m",
       ];
@@ -481,6 +486,171 @@ describe("THE CLI SUPPLIES THE HISTORY THE DELIVERY GUARD NEEDS", () => {
       rmSync(wt, { recursive: true, force: true });
     }
   }, 180_000);
+});
+
+describe("A RUN OVER A STORE APPENDS TO ITS HISTORY", () => {
+  // MEASURED on the Agentic Team's first real run: every process started at epoch 0 with its id
+  // counter at 1, so a resumed run's `work_assigned` (its `evt-021`) sorted before the earlier run's
+  // `work_created` for the same leaf (`evt-033`), the fold dropped the assignment, and the next
+  // resume found three tickets' leaves unstaffed.
+  test("a second run's events follow the first's, and never reuse its ids", async () => {
+    const store = mkdtempSync(join(tmpdir(), "zeta-cli-append-"));
+    try {
+      expect((await capture(["--store", store, "--until", "2"])).code).not.toBe(2);
+      const first = readEvents(store);
+      expect(first.length).toBeGreaterThan(0);
+      const firstKeys = new Set(first.map((e) => JSON.stringify(e)));
+      const lastOfFirst = Math.max(...first.map((e) => e.atMs));
+
+      expect((await capture(["--store", store, "--until", "2"])).code).not.toBe(2);
+      const all = readEvents(store);
+      const second = all.filter((e) => !firstKeys.has(JSON.stringify(e)));
+      expect(second.length).toBeGreaterThan(0);
+      expect(Math.min(...second.map((e) => e.atMs))).toBeGreaterThan(lastOfFirst);
+      const firstIds = new Set(first.map((e) => e.id));
+      expect(second.filter((e) => firstIds.has(e.id)).map((e) => e.id)).toEqual([]);
+
+      // And the property the fold depends on: nothing is assigned before it exists.
+      const created = new Set<string>();
+      for (const e of all) {
+        const fact = (e as { fact?: { kind?: string; workId?: string } }).fact;
+        if (fact?.kind === "work_created" && fact.workId !== undefined) created.add(fact.workId);
+        if (fact?.kind === "work_assigned" && fact.workId !== undefined) expect(created.has(fact.workId)).toBe(true);
+      }
+    } finally {
+      rmSync(store, { recursive: true, force: true });
+    }
+  }, 180_000);
+
+  test("--now at or before the store's last event is refused, not interleaved", async () => {
+    const store = mkdtempSync(join(tmpdir(), "zeta-cli-now-"));
+    try {
+      await capture(["--store", store, "--now", "2026-09-10T00:00:00.000Z"]);
+      const { code, out } = await capture(["--store", store, "--now", "2026-09-10T00:00:00.000Z"]);
+      expect(code).toBe(2);
+      expect(out).toContain("not after the store's last event");
+    } finally {
+      rmSync(store, { recursive: true, force: true });
+    }
+  }, 180_000);
+});
+
+describe("AN AGENT'S TIME LIMIT IS THE ORGANIZATION'S", () => {
+  // MEASURED on AIAGENT-1662: the agent stopped itself at a fixed 25 minutes inside a 50-minute step.
+  test("--port-timeout-ms reaches every child as ORG_PORT_TIMEOUT_MS", async () => {
+    const before = process.env["ORG_PORT_TIMEOUT_MS"];
+    delete process.env["ORG_PORT_TIMEOUT_MS"];
+    try {
+      await capture(["--port-timeout-ms", "3000000"]);
+      expect(process.env["ORG_PORT_TIMEOUT_MS"]).toBe("3000000");
+    } finally {
+      if (before === undefined) delete process.env["ORG_PORT_TIMEOUT_MS"];
+      else process.env["ORG_PORT_TIMEOUT_MS"] = before;
+    }
+  }, 120_000);
+});
+
+describe("A PERSON CAN STOP THE ORGANIZATION BETWEEN CYCLES", () => {
+  test("a queued pause_run reads as paused, with who and why; a later resume_run clears it", () => {
+    const actions = mkdtempSync(join(tmpdir(), "zeta-cli-pause-"));
+    try {
+      const paused = pausedFromActions(actions);
+      expect(paused()).toBeUndefined();
+      writeFileSync(
+        join(actions, "pause-1.json"),
+        JSON.stringify({ actionId: "pause-1", kind: "pause_run", byHuman: "max", atMs: 1, subjectId: "run", reason: "restarting on new code" }),
+      );
+      // Read at each call, so a pause filed mid-run is seen at the next boundary.
+      expect(paused()).toBe("paused by max: restarting on new code");
+      writeFileSync(
+        join(actions, "resume-1.json"),
+        JSON.stringify({ actionId: "resume-1", kind: "resume_run", byHuman: "max", atMs: 2, subjectId: "run", reason: "new code is in" }),
+      );
+      expect(paused()).toBeUndefined();
+    } finally {
+      rmSync(actions, { recursive: true, force: true });
+    }
+  });
+});
+
+describe("--checkpoint TAKES A NAME OR A GATE, AND REFUSES ANYTHING ELSE", () => {
+  test("a gate is a checkpoint; a typo is refused, not silently dropped", () => {
+    const ok = parseArgs(["--checkpoint", "approach", "--checkpoint", "release_readiness"]);
+    expect(ok.checkpoints).toEqual(["approach", "release_readiness"]);
+    expect(argRefusals(ok).some((r) => r.includes("--checkpoint"))).toBe(false);
+    const typo = parseArgs(["--checkpoint", "release-readiness"]);
+    expect(typo.checkpoints).toEqual([]);
+    expect(argRefusals(typo).some((r) => r.includes("'release-readiness' is neither a checkpoint nor a gate"))).toBe(true);
+  });
+});
+
+describe("A REAL REPOSITORY IS HANDED TO PEOPLE UNLESS SOMEONE SAID MERGE", () => {
+  test("a --git run that will hand changes off must say how, before it starts", () => {
+    const bare = argRefusals(parseArgs(["--git", "/r"]));
+    expect(bare.some((r) => r.includes("hands finished changes to people") && r.includes("--handoff-cmd"))).toBe(true);
+    const merging = argRefusals(parseArgs(["--git", "/r", "--delivery", "merge"]));
+    expect(merging.some((r) => r.includes("hands finished changes to people"))).toBe(false);
+    const handing = argRefusals(parseArgs(["--git", "/r", "--worktrees", "/w", "--handoff-cmd", "node", "--handoff-arg", "mr.cjs"]));
+    expect(handing.some((r) => r.includes("hands finished changes to people"))).toBe(false);
+  });
+
+  test("HOW THE REQUEST IS WRITTEN IS REQUIRED: no statement, then no author or no follow-up, are each refused before the run starts", () => {
+    const handing = ["--git", "/r", "--worktrees", "/w", "--handoff-cmd", "node", "--handoff-arg", "mr.cjs"];
+    expect(argRefusals(parseArgs(handing)).some((r) => r.includes("has not said how its merge requests are written") && r.includes("org configure"))).toBe(true);
+    const stated = { ...parseArgs(handing), changeRequests: { sections: [{ heading: "Root cause", states: "why" }], keepOut: [], sync: "merge_target" as const, why: "w" } };
+    const missing = argRefusals(stated);
+    expect(missing.some((r) => r.includes("--describe-cmd") && r.includes("Root cause"))).toBe(true);
+    expect(missing.some((r) => r.includes("--follow-up-cmd"))).toBe(true);
+    // WHETHER A REVIEWER IS ANSWERED is part of the statement: unstated is refused, never read as "none".
+    expect(missing.some((r) => r.includes("reviewer's comment is answered") && r.includes("--replies"))).toBe(true);
+    const answering = { ...stated.changeRequests, replies: "reply_and_resolve" as const };
+    const noAnswerer = argRefusals({ ...parseArgs([...handing, "--describe-cmd", "node", "--follow-up-cmd", "node"]), changeRequests: answering });
+    expect(noAnswerer.some((r) => r.includes("--answer-cmd") && r.includes("reply_and_resolve"))).toBe(true);
+    const complete = argRefusals({ ...parseArgs([...handing, "--describe-cmd", "node", "--follow-up-cmd", "node", "--answer-cmd", "node", "--answer-arg", "a.cjs"]), changeRequests: answering });
+    expect(complete.some((r) => r.includes("merge request") || r.includes("--follow-up-cmd") || r.includes("--answer-cmd") || r.includes("answered"))).toBe(false);
+    // An organization that says nothing on threads needs no answerer.
+    const silent = argRefusals({ ...parseArgs([...handing, "--describe-cmd", "node", "--follow-up-cmd", "node"]), changeRequests: { ...answering, replies: "none" as const } });
+    expect(silent.some((r) => r.includes("--answer-cmd"))).toBe(false);
+    // An organization that merges its own changes owes none of it.
+    expect(argRefusals(parseArgs(["--git", "/r", "--delivery", "merge"])).some((r) => r.includes("merge requests"))).toBe(false);
+  });
+
+  test("the organization's merge-request statement reaches the run from the registry", () => {
+    const registry = JSON.stringify({
+      version: 1,
+      orgs: [{
+        orgId: "o", name: "O", storeDir: "/s", intake: "greenfield", autonomy: "directed",
+        policy: basePolicy("o", "existing_harness"), sources: [], humanCheckpoints: [], skills: [], createdAtMs: 1,
+        changeRequests: { sections: [{ heading: "Root cause", states: "why" }], keepOut: ["*.png"], sync: "flag_only", why: "w" },
+      }],
+    });
+    const resolved = withOrgDefaults(parseArgs([]), "o", registry);
+    expect("args" in resolved && resolved.args.changeRequests?.sync).toBe("flag_only");
+  });
+
+  test("a --delivery that is not a value is refused, never read as unset", () => {
+    expect(argRefusals(parseArgs(["--delivery", "merged"])).some((r) => r.includes("'merged' is not a value for 'delivery'"))).toBe(true);
+  });
+
+  test("--delivery is LAYERED over the organization's settings, never instead of them", () => {
+    const registry = JSON.stringify({
+      version: 1,
+      orgs: [{
+        orgId: "o", name: "O", storeDir: "/s", intake: "greenfield", autonomy: "directed",
+        policy: basePolicy("o", "existing_harness"), sources: [], humanCheckpoints: [], skills: [], createdAtMs: 1,
+        settings: [
+          { setting: "unreproduced_defects", value: "reproduce_first", why: "org says so" },
+          { setting: "delivery", value: "human_review", why: "org says so" },
+        ],
+      }],
+    });
+    const r = withOrgDefaults(parseArgs(["--delivery", "merge"]), "o", registry);
+    if ("reason" in r) throw new Error(r.reason);
+    const bySetting = new Map(r.args.settings.map((b) => [b.setting, b.value] as const));
+    expect(bySetting.get("unreproduced_defects" as never)).toBe("reproduce_first");
+    expect(bySetting.get("delivery" as never)).toBe("merge");
+    expect(r.args.settings.filter((b) => b.setting === "delivery")).toHaveLength(1);
+  });
 });
 
 describe("the failure modes exit non-zero", () => {
@@ -585,5 +755,236 @@ describe("PROVIDERS ARE CHOSEN AT THE COMMAND LINE, and never fall back", () => 
     );
     expect(r.ok).toBe(true);
     if (r.ok) expect(r.value.artifacts).toEqual(["-e", "process.exit(0)", "task-9"]);
+  });
+});
+
+describe("JIRA REACHES THE ORGANIZATION THROUGH THE WHOLE-TICKET READER, and no secret rides in argv", () => {
+  // MEASURED on the first real run: `--jira` aliased the generic field-map tracker, so the org never
+  // read a comment or a parent; and that tracker authenticated with an `authorization` header BY
+  // VALUE on the command line.
+  const { argRefusals, FLAG_ALIASES } = require("./run-org") as typeof import("./run-org");
+  const { headerSourceFrom, inlineCredentialHeaders } = require("./intake") as typeof import("./intake");
+  const { httpIntake } = require("./adapters") as typeof import("./adapters");
+
+  test("--jira-auth-file with --jira-jql makes intake the Jira reader, carrying the JQL", () => {
+    const p = providersFromArgs(parseArgs(["--jira-auth-file", "/nowhere/creds.json", "--jira-jql", "key = AIAGENT-1659"]), [], RunOutcome.Passed);
+    expect(p.intake.meta.name).toBe("jira");
+    expect(p.intake.meta.describes).toContain("key = AIAGENT-1659");
+    expect(p.intake.meta.fidelity).toBe(Fidelity.Real);
+  });
+
+  test("`--jira` means the Jira reader now, not the field-map tracker", () => {
+    expect(FLAG_ALIASES["--jira"]).toBe("--jira-auth-file");
+  });
+
+  test("half a Jira source is refused, either half", () => {
+    expect(argRefusals(parseArgs(["--jira-auth-file", "/c.json"])).some((r) => r.includes("--jira-jql"))).toBe(true);
+    expect(argRefusals(parseArgs(["--jira-jql", "key = X"])).some((r) => r.includes("--jira-auth-file"))).toBe(true);
+    expect(argRefusals(parseArgs(["--jira-auth-file", "/c.json", "--jira-jql", "key = X"]))).toEqual([]);
+  });
+
+  test("Jira and a generic tracker together are refused — work arrives one way", () => {
+    const r = argRefusals(parseArgs(["--jira-auth-file", "/c.json", "--jira-jql", "k", "--tracker", "https://t"]));
+    expect(r.some((x) => x.includes("--tracker"))).toBe(true);
+  });
+
+  test("A CREDENTIAL HEADER BY VALUE IS REFUSED; by @file it is accepted", () => {
+    const inline = argRefusals(parseArgs(["--tracker", "https://t", "--tracker-header", "authorization: Basic c2VjcmV0"]));
+    expect(inline.some((x) => x.includes("authorization:@<path>"))).toBe(true);
+    // The refusal names the header and never repeats its value.
+    expect(inline.join(" ")).not.toContain("c2VjcmV0");
+    expect(argRefusals(parseArgs(["--tracker", "https://t", "--tracker-header", "authorization:@/secrets/jira"]))).toEqual([]);
+    expect(argRefusals(parseArgs(["--tracker", "https://t", "--tracker-header", "x-trace: 1"]))).toEqual([]);
+    expect(inlineCredentialHeaders(["X-Api-Key: k", "cookie: a=b", "private-token: t", "accept: json"])).toEqual(["X-Api-Key", "cookie", "private-token"]);
+  });
+
+  test("an @file header is READ AT CALL TIME — a rotated token applies on the next poll", () => {
+    const dir = mkdtempSync(join(tmpdir(), "hdr-"));
+    try {
+      const f = join(dir, "auth");
+      writeFileSync(f, "Basic one\n");
+      const headers = headerSourceFrom([`authorization:@${f}`, "x-trace: 1"]);
+      expect(headers()).toEqual({ authorization: "Basic one", "x-trace": "1" });
+      writeFileSync(f, "Basic two");
+      expect(headers()["authorization"]).toBe("Basic two");
+      writeFileSync(f, "  ");
+      expect(() => headers()).toThrow(/empty/);
+      expect(() => headerSourceFrom([`authorization:@${join(dir, "missing")}`])()).toThrow(/cannot read/);
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
+  test("...and the per-poll value is what the request actually sends", async () => {
+    let n = 0;
+    const seen: string[] = [];
+    const src = httpIntake({
+      url: "https://tracker.invalid/items",
+      mapper: () => { throw new Error("no items expected"); },
+      headers: () => ({ authorization: `Bearer ${String(++n)}` }),
+      fetchImpl: (async (_u: string | URL, init?: RequestInit) => {
+        seen.push(String((init?.headers as Record<string, string>)["authorization"]));
+        return new Response("[]", { status: 200 });
+      }) as typeof fetch,
+    });
+    await src.poll();
+    await src.poll();
+    expect(seen).toEqual(["Bearer 1", "Bearer 2"]);
+  });
+});
+
+describe("THE AGENT THAT WRITES THE CODE IS TOLD WHAT EVERY DOCUMENT AUTHOR WAS", () => {
+  // Measured: the performer got a title, an id and a branch. No ticket key (so
+  // `commit-carries-the-ticket` was unfollowable), no practice, no directives, no reproduction,
+  // and — when a person turned its work back — not why.
+  const { performerEnvFrom, PRE_CODE_GATES } = require("./run-org") as typeof import("./run-org");
+  const { workBriefEnv, commandProposal } = require("./adapters") as typeof import("./adapters");
+  const { externalRefOf } = require("./intake") as typeof import("./intake");
+  const node = {
+    workId: "task-9",
+    title: "fix archive",
+    workType: WorkTypeValue.Defect,
+    state: WorkState.InProgress,
+    ownerHatId: "lead",
+    requestRef: externalRefOf("jira", "AIAGENT-1658"),
+  } as unknown as CascadeNode;
+
+  test("the ticket key and the earlier phases reach the environment", () => {
+    const env = workBriefEnv(node, {
+      branch: "bug/AIAGENT-1658",
+      priorPhases: [{ gate: "reproduction", refs: ["tests/archive.spec.ts"], summary: "fails" }],
+    });
+    expect(env["ORG_TICKET"]).toBe("AIAGENT-1658");
+    expect(env["ORG_TICKET_SOURCE"]).toBe("jira");
+    expect(JSON.parse(env["ORG_PRIOR_ARTIFACTS"] ?? "[]")[0].refs).toEqual(["tests/archive.spec.ts"]);
+    // Nothing earlier, nothing emitted — silence stays distinguishable from an empty list.
+    expect(workBriefEnv(node, { branch: "b" })["ORG_PRIOR_ARTIFACTS"]).toBeUndefined();
+  });
+
+  test("the practice, the directives and a reviewer's rejection reach the performer", () => {
+    const dir = mkdtempSync(join(tmpdir(), "perf-"));
+    try {
+      writeFileSync(
+        join(dir, "reject.json"),
+        JSON.stringify({
+          actionId: "a1", kind: "reject_gate", subjectId: "task-9", atMs: 5, reason: "the test passes without the fix",
+          detail: { gate: "implementation_review" }, byHuman: "max",
+        }),
+      );
+      const env = performerEnvFrom(
+        parseArgs(["--actions", dir]),
+        () => ({ practice: "write the failing test first", directives: "commit carries the ticket" }),
+      )(node);
+      expect(env["ORG_PRACTICE"]).toBe("write the failing test first");
+      expect(env["ORG_DIRECTIVES"]).toBe("commit carries the ticket");
+      expect(env["ORG_GATE"]).toBe("implementation_review");
+      const said = JSON.parse(env["ORG_FEEDBACK"] ?? "[]");
+      expect(said.map((f: { said: string }) => f.said)).toContain("the test passes without the fix");
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
+  test("...and they reach the CHILD PROCESS, not just a function's return value", () => {
+    const perform = commandProposal({
+      command: process.execPath,
+      argsFor: () => ["-e", "process.stdout.write(String(process.env.ORG_PRACTICE) + '|' + String(process.env.ORG_TICKET))"],
+      cwd: process.cwd(),
+      envFor: () => ({ ORG_PRACTICE: "tdd" }),
+    });
+    expect(perform(node, { branch: "b" }).summary).toContain("tdd|AIAGENT-1658");
+  });
+
+  test("THE JOIN: providersFromArgs hands that env to the real work executor", async () => {
+    // Tested through the ASSEMBLED executor, because each half above passing says nothing about
+    // whether the CLI connects them — the shape `Method` shipped in, and the mutation that found this.
+    const p = providersFromArgs(
+      parseArgs([
+        "--work-agent", process.execPath,
+        "--work-agent-arg", "-e",
+        "--work-agent-arg", "process.stdout.write('practice=' + String(process.env.ORG_PRACTICE))",
+        "--work-verify", process.execPath,
+        "--work-verify-arg", "-e",
+        "--work-verify-arg", "0",
+      ]),
+      [],
+      RunOutcome.Passed,
+      () => ({ ORG_PRACTICE: "tdd" }),
+    );
+    const done = await p.work.execute(node, { branch: "b" });
+    expect(done.ok).toBe(true);
+    if (done.ok) expect(done.value.summary).toContain("practice=tdd");
+  });
+
+  test("the reproduction gate gets a document producer like every pre-code gate — derived, not listed", () => {
+    expect(PRE_CODE_GATES).toContain(GateKind.Reproduction);
+    const producers = artifactProducersFromArgs(parseArgs(["--artifact-cmd", "node"]));
+    expect(producers.has(GateKind.Reproduction)).toBe(true);
+  });
+});
+
+describe("A LATER GATE IS PERFORMED WHEN THE ORGANIZATION SAYS HOW", () => {
+  // UAT is an ACT, not a judgement over a diff — and with no performer the org's own `qa_uat` practice
+  // described work nobody did. The organization decides, by stating the practice.
+  const { performedGates } = require("./run-org") as typeof import("./run-org");
+  const uat = { subject: { kind: "gate", id: "qa_uat" }, skills: [], directive: "run UAT", why: "users" } as never;
+
+  test("with no stated practice, later gates stay judgement-only — the old behaviour", () => {
+    expect(performedGates([])).toEqual([...PRE_CODE_GATES]);
+  });
+
+  test("a stated qa_uat practice gives QA a performer; the runtime's own two are never taken", () => {
+    const gates = performedGates([uat]);
+    expect(gates).toContain(GateKind.QaUat);
+    expect(gates).not.toContain(GateKind.ImplementationReview);
+    expect(gates).not.toContain(GateKind.RuntimeValidation);
+    const bound = [{ subject: { kind: "gate", id: "implementation_review" }, skills: [], directive: "x", why: "y" }] as never;
+    expect(performedGates(bound)).not.toContain(GateKind.ImplementationReview);
+  });
+
+  test("…and the CLI wires a producer for it", () => {
+    const withUat = artifactProducersFromArgs({ ...parseArgs(["--artifact-cmd", "node"]), practices: [uat] });
+    expect(withUat.has(GateKind.QaUat)).toBe(true);
+    expect(withUat.has(GateKind.FinalBusinessValidation)).toBe(false);
+  });
+});
+
+describe("WHAT A PERSON FILES MID-RUN REACHES THE NEXT ATTEMPT", () => {
+  // With real agents a run lasts hours. Read once at start, a reviewer's objection or a person's
+  // answer filed while it ran could only reach the NEXT run.
+  const { feedbackFromActions } = require("./run-org") as typeof import("./run-org");
+  test("a rejection written AFTER the reader was built is still read", () => {
+    const dir = mkdtempSync(join(tmpdir(), "late-"));
+    try {
+      const feedback = feedbackFromActions(dir);
+      expect(feedback("task-9")).toEqual([]);
+      writeFileSync(
+        join(dir, "late.json"),
+        JSON.stringify({ actionId: "a1", kind: "reject_gate", subjectId: "task-9", atMs: 5, reason: "the fix edits the handler; the writer is elsewhere", detail: { gate: "implementation_review" }, byHuman: "max" }),
+      );
+      expect(feedback("task-9").map((f) => f.said)).toEqual(["the fix edits the handler; the writer is elsewhere"]);
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+});
+
+describe("A LATER GATE'S AUTHOR IS HANDED DOCUMENTS, never argv or captured output", () => {
+  // MEASURED on AIAGENT-1660: the release-readiness author was launched with the work executor's argv
+  // and the ENTIRE captured test output as arguments — a 32K command-line limit from never starting.
+  const { isReadableFile } = require("./run-org") as typeof import("./run-org");
+  test("a real file is a document; argv, captured output and plan lines are not", () => {
+    const dir = mkdtempSync(join(tmpdir(), "refs-"));
+    try {
+      const doc = join(dir, "qa_uat.md");
+      writeFileSync(doc, "# uat");
+      expect(isReadableFile(doc)).toBe(true);
+      expect(isReadableFile("stdout:✓ mongod 7.0.14 binary cached\n ❯ src/x.test.ts")).toBe(false);
+      expect(isReadableFile("exit:0")).toBe(false);
+      expect(isReadableFile("claude-agent.cjs")).toBe(false);
+      expect(isReadableFile(dir)).toBe(false);
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
   });
 });

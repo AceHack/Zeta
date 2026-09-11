@@ -92,6 +92,9 @@ export function foldCascade(events: readonly OrgEvent[]): Cascade {
             ? {}
             : { dependsOn: [...fact.dependsOn] }),
           ...(fact.brief === undefined ? {} : { brief: fact.brief }),
+          // THE STATED CHAIN, or a resumed organization walks its defect's initiative through a BRD
+          // the run that created it had decided it did not owe.
+          ...(fact.owes === undefined ? {} : { owes: [...fact.owes] }),
         } as CascadeNode);
         break;
       }
@@ -781,6 +784,12 @@ export interface LandedChange {
 export function foldLandedChanges(events: readonly OrgEvent[]): ReadonlyMap<string, LandedChange> {
   const out = new Map<string, LandedChange>();
   for (const event of events) {
+    // A MERGE A PERSON UNDID is not landed any more. Both facts stay in the log; the fold reads
+    // them in order, so a later merge of the same work would count again.
+    if (event.fact?.kind === "change_merge_reverted") {
+      out.delete(event.fact.workId);
+      continue;
+    }
     if (event.fact?.kind !== "change_merged") continue;
     const x = event.fact;
     out.set(x.workId, {
@@ -790,6 +799,145 @@ export function foldLandedChanges(events: readonly OrgEvent[]): ReadonlyMap<stri
       commit: x.commit,
       tree: x.tree,
     });
+  }
+  return out;
+}
+
+/** A change handed to people for review, as the log recorded it. */
+export interface HandedOffChange {
+  readonly workId: string;
+  readonly changeId: string;
+  readonly branch: string;
+  readonly url?: string;
+  readonly commit?: string;
+  readonly base?: string;
+}
+
+/**
+ * Every change the organization handed to people, by work id - the latest handoff wins.
+ *
+ * The companion of `foldLandedChanges` for an organization that never merges: it is how a resumed
+ * run knows a change is already in front of a reviewer, so it neither walks it again nor opens a
+ * second review of it.
+ */
+export function foldHandedOffChanges(events: readonly OrgEvent[]): ReadonlyMap<string, HandedOffChange> {
+  const out = new Map<string, HandedOffChange>();
+  for (const event of events) {
+    if (event.fact?.kind !== "change_handed_off") continue;
+    const x = event.fact;
+    out.set(x.workId, {
+      workId: x.workId,
+      changeId: x.changeId,
+      branch: x.branch,
+      ...(x.url === undefined ? {} : { url: x.url }),
+      ...(x.commit === undefined ? {} : { commit: x.commit }),
+      ...(x.base === undefined ? {} : { base: x.base }),
+    });
+  }
+  return out;
+}
+
+/** One action item on a piece of work: what happened, and whether it has been dealt with. */
+export interface ActionItem {
+  readonly workId: string;
+  readonly actionItemId: string;
+  readonly source: string;
+  readonly itemKind: string;
+  readonly summary: string;
+  readonly detail?: string;
+  readonly url?: string;
+  readonly author?: string;
+  readonly raisedAtMs: number;
+  /** Absent while OPEN. */
+  readonly settled?: {
+    readonly outcome: string;
+    readonly how: string;
+    readonly byHatId?: string;
+    readonly atMs: number;
+    readonly respond?: boolean;
+    readonly commit?: string;
+  };
+  /** The latest time it was weighed and left open, and why. The item is still open. */
+  readonly deferred?: { readonly why: string; readonly byHatId?: string; readonly atMs: number };
+  /** Answered where it was raised. Absent until then - a settled item with no answer is owed one. */
+  readonly answered?: { readonly replyId?: string; readonly resolved: boolean; readonly skipped?: string; readonly atMs: number };
+  /** Settled once, and that settlement did not stand - why. The item is OPEN; the next session is told this. */
+  readonly reopened?: { readonly why: string; readonly atMs: number };
+}
+
+/**
+ * Every action item, by work id, in the order raised - open and settled alike.
+ *
+ * RAISING IS IDEMPOTENT: the same event delivered twice (a webhook retry, a poll that sees the same
+ * comment again) has the same id and folds to one item. A settle for an id never raised is ignored
+ * rather than inventing an item nobody saw.
+ */
+export function foldActionItems(events: readonly OrgEvent[]): ReadonlyMap<string, readonly ActionItem[]> {
+  const byId = new Map<string, ActionItem>();
+  for (const event of events) {
+    const f = event.fact;
+    if (f?.kind === "action_item_raised") {
+      if (byId.has(f.actionItemId)) continue;
+      byId.set(f.actionItemId, {
+        workId: f.workId,
+        actionItemId: f.actionItemId,
+        source: f.source,
+        itemKind: f.itemKind,
+        summary: f.summary,
+        ...(f.detail === undefined ? {} : { detail: f.detail }),
+        ...(f.url === undefined ? {} : { url: f.url }),
+        ...(f.author === undefined ? {} : { author: f.author }),
+        raisedAtMs: event.atMs,
+      });
+    } else if (f?.kind === "action_item_deferred") {
+      const item = byId.get(f.actionItemId);
+      if (item === undefined || item.settled !== undefined) continue;
+      byId.set(f.actionItemId, { ...item, deferred: { why: f.why, ...(f.byHatId === undefined ? {} : { byHatId: f.byHatId }), atMs: event.atMs } });
+    } else if (f?.kind === "action_item_settled") {
+      const item = byId.get(f.actionItemId);
+      if (item === undefined) continue;
+      byId.set(f.actionItemId, {
+        ...item,
+        settled: {
+          outcome: f.outcome,
+          how: f.how,
+          ...(f.byHatId === undefined ? {} : { byHatId: f.byHatId }),
+          atMs: event.atMs,
+          ...(f.respond === undefined ? {} : { respond: f.respond }),
+          ...(f.commit === undefined ? {} : { commit: f.commit }),
+        },
+      });
+    } else if (f?.kind === "action_item_reopened") {
+      const item = byId.get(f.actionItemId);
+      if (item === undefined) continue;
+      // OPEN AGAIN: the settlement and its answer are dropped, the reason kept for whoever decides next.
+      const { settled: _s, answered: _a, ...rest } = item;
+      byId.set(f.actionItemId, { ...rest, reopened: { why: f.why, atMs: event.atMs } });
+    } else if (f?.kind === "action_item_answered") {
+      const item = byId.get(f.actionItemId);
+      if (item === undefined) continue;
+      byId.set(f.actionItemId, {
+        ...item,
+        answered: {
+          ...(f.replyId === undefined ? {} : { replyId: f.replyId }),
+          resolved: f.resolved,
+          ...(f.skipped === undefined ? {} : { skipped: f.skipped }),
+          atMs: event.atMs,
+        },
+      });
+    }
+  }
+  const out = new Map<string, ActionItem[]>();
+  for (const item of byId.values()) out.set(item.workId, [...(out.get(item.workId) ?? []), item]);
+  return out;
+}
+
+/** The OPEN action items, by work id. Work with none is absent. */
+export function openActionItems(events: readonly OrgEvent[]): ReadonlyMap<string, readonly ActionItem[]> {
+  const out = new Map<string, readonly ActionItem[]>();
+  for (const [workId, items] of foldActionItems(events)) {
+    const open = items.filter((i) => i.settled === undefined);
+    if (open.length > 0) out.set(workId, open);
   }
   return out;
 }

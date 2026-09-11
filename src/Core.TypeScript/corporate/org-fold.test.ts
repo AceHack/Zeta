@@ -11,7 +11,7 @@
  */
 
 import { describe, expect, test } from "bun:test";
-import { factEvents, foldCalendar, foldCascade, foldGateEvaluations, foldOrganization, foldPortfolioBook, foldPriorities, foldQaCycles, foldQueues, foldRefusals } from "./org-fold";
+import { factEvents, foldCalendar, foldCascade, foldGateEvaluations, foldLandedChanges, foldOrganization, foldPortfolioBook, foldPriorities, foldQaCycles, foldQueues, foldRefusals } from "./org-fold";
 import { isStudyBlock } from "./study-session";
 import { ClaimState, ShardState, emptyQueue, type WorkQueue } from "./work-market";
 import { mergeQueues } from "./run-agent";
@@ -563,5 +563,23 @@ describe("mergeQueues — a union, because picking one would hide the others' wo
     const empty = mergeQueues([]);
     expect(empty.shards).toEqual([]);
     expect(empty.revision).toBe(0);
+  });
+});
+
+describe("A MERGE A PERSON UNDID IS NOT LANDED ANY MORE", () => {
+  // MEASURED on the Agentic Team's first real run: two defects were merged into the clone's master,
+  // which the operator never allows; the merges were reset, and without a fact saying so every later
+  // run read them as landed and would never have handed them to people for review.
+  const ev = (atMs: number, fact: unknown) =>
+    ({ id: `evt-${String(atMs)}`, atMs, kind: "change_projected", subjectId: "task-1", decision: "", evidenceRefs: [], fact }) as never;
+  const merged = (atMs: number) => ev(atMs, { kind: "change_merged", workId: "task-1", changeId: "c", branch: "defect/X" });
+  const reverted = (atMs: number) => ev(atMs, { kind: "change_merge_reverted", workId: "task-1", branch: "defect/X", reason: "operator never allows" });
+
+  test("merged then reverted reads as not landed; both facts stay in the log", () => {
+    expect(foldLandedChanges([merged(1), reverted(2)]).has("task-1")).toBe(false);
+  });
+
+  test("merged again after a revert reads as landed - the fold is ordered, not a veto", () => {
+    expect(foldLandedChanges([merged(1), reverted(2), merged(3)]).has("task-1")).toBe(true);
   });
 });

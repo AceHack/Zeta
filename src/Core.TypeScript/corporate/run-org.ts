@@ -84,7 +84,7 @@ import {
   shardHolder,
   traceHealth,
 } from "./org-status";
-import { atPath, externalRefOf, headersFrom, IntakeKind, Severity, normalize, trackerMapper, type ExternalEvent } from "./intake";
+import { atPath, externalRefOf, headerSourceFrom, inlineCredentialHeaders, IntakeKind, Severity, normalize, trackerMapper, type ExternalEvent } from "./intake";
 // Re-exported where they used to live, so no caller has to move with them. They are INTAKE
 // concerns — somebody else's JSON becoming an `ExternalEvent` — and a webhook receiver needs
 // the same mapping without importing the whole runner.
@@ -137,8 +137,20 @@ import { ScheduleBlockType } from "./work-schedule";
 import { observeForHat } from "./work-batch";
 import { isLeafType, WorkType as WorkTypeValue } from "./goal-cascade";
 import { associateGoal, EMPTY_BOOK, openPortfolio, PortfolioKind, retirePortfolio } from "./portfolio";
-import { appendEvent, appendRun, deliveryRate, readEvents } from "./org-store";
+import { appendEvent, appendRun, deliveryRate, logHighWater, readEvents } from "./org-store";
 import { runUntilSettled } from "./autonomy";
+import { humanRejectionEvents, humanRejectionsToRecord } from "./human-verdicts";
+import type { ChangeRequestConfig } from "./change-request";
+import type { FeedbackDelivery as FeedbackDeliveryT } from "./change-followup";
+import {
+  commandAnswerer,
+  commandDescriber,
+  commandFollowUp,
+  commandVerifier,
+  consumeFeedback,
+  pollFeedback,
+  readFeedbackDir,
+} from "./followup-commands";
 import { decideSupply, endorseRecommendation } from "./rmo";
 import { authorityFor, pressureBoard } from "./schedule-pressure";
 import { isFullyMeasured, renderDora } from "./dora";
@@ -155,23 +167,25 @@ import { foldCalendar, foldOrganization } from "./org-fold";
 import { authorIndexFrom, observationsFrom } from "./reputation-from-log";
 import type { ReputationObservation } from "./reputation";
 import { foldHatsWorn,
-  foldLandedChanges, foldObserveActTicks, foldPresence } from "./org-fold";
+  foldActionItems, foldHandedOffChanges, foldLandedChanges, foldObserveActTicks, foldPresence } from "./org-fold";
 import { emit } from "./org-event";
+import { awaitingHumanReview, describeChangeLine } from "./handoff-report";
 import type { AgentState } from "../workflow-engine/agent-loop/state-machine";
-import { GateKind, GateOutcome, NO_PROPOSER, ORDERED_GATES, type HumanCheckpoint } from "./quality-gate";
-import { readActions } from "./action-queue";
+import { CHECKPOINT_VALUES, GateKind, GateOutcome, NO_PROPOSER, ORDERED_GATES, humanGatesFor, isHumanCheckpoint, type HumanCheckpoint } from "./quality-gate";
+import { queueProblems, readActions } from "./action-queue";
 import { groom } from "./grooming";
 import { confluenceSource } from "./confluence-source";
+import { jiraIntake } from "./jira-source";
 import { resolve as resolveSkill, type Resolution, type SkillBinding } from "./skill-binding";
 import { orgById, parseRegistry, runReadinessOf } from "./org-registry";
-import { HumanActionKind, type HumanAction } from "./human-action";
+import { HumanActionKind, isPaused, type HumanAction } from "./human-action";
 import { mkdirSync, readdirSync, readFileSync, writeFileSync, statSync } from "node:fs";
-import { join } from "node:path";
+import { join, resolve } from "node:path";
 import type { ProducerPort } from "./pipeline";
 import type { OrgChart } from "./org-chart";
 import type { OrgRuntimeDeps, OrgRuntimeReport } from "./org-runtime";
 import type { NextAction } from "../observe/observe";
-import { guidanceFrom, type Directive, type Practice } from "./practice";
+import { guidanceFrom, PracticeSubjectKind, ProcessSetting, resolveSetting, validateSetting, type Directive, type Practice, type SettingBinding } from "./practice";
 import { DEFAULT_DIRECTIVES, DEFAULT_PRACTICES } from "./practice-defaults";
 import { renderRepoSkills } from "./repo-skills";
 import { branchNameIn } from "./branch-topology";
@@ -323,10 +337,14 @@ export const KNOWN_FLAGS: ReadonlySet<string> = new Set([
   "--review-model", "--review-queue", "--room-arg", "--room-cmd", "--rooms", "--source-repo",
   "--source-subdir", "--store", "--study-arg", "--study-cmd", "--test-arg", "--test-cmd",
   "--confluence-auth-file", "--confluence-space", "--confluence-cql", "--confluence-limit",
+  "--jira-auth-file", "--jira-jql", "--jira-limit",
   "--tracker", "--tracker-header", "--tracker-items", "--tracker-map", "--tracker-severity",
   "--tracker-source", "--until", "--week", "--window-start", "--window-target", "--work-agent",
   "--work-agent-arg", "--work-arg", "--work-cmd", "--work-model", "--work-verify",
-  "--work-verify-arg", "--worktrees", "--resume", "--help", "-h",
+  "--work-verify-arg", "--worktrees", "--worktree-setup", "--worktree-setup-arg", "--supply-target", "--resume", "--help", "-h",
+  "--handoff-cmd", "--handoff-arg", "--delivery",
+  "--describe-cmd", "--describe-arg", "--follow-up-cmd", "--follow-up-arg", "--feedback-dir", "--feedback-cmd", "--feedback-arg",
+  "--answer-cmd", "--answer-arg",
 ]);
 
 /**
@@ -345,7 +363,7 @@ export const KNOWN_FLAGS: ReadonlySet<string> = new Set([
  */
 export const OPAQUE_VALUE_FLAGS: ReadonlySet<string> = new Set([
   "--artifact-arg", "--meeting-arg", "--review-arg", "--room-arg", "--study-arg", "--test-arg",
-  "--work-agent-arg", "--work-arg", "--work-verify-arg",
+  "--work-agent-arg", "--work-arg", "--work-verify-arg", "--worktree-setup-arg", "--handoff-arg", "--describe-arg", "--follow-up-arg", "--feedback-arg", "--answer-arg",
   // A header is `Key: value`, which cannot begin with a dash — but it is passed through untouched
   // to a remote service, so the same rule applies: this CLI does not get an opinion about its shape.
   "--tracker-header",
@@ -363,7 +381,7 @@ export const FLAG_ALIASES: Readonly<Record<string, string>> = {
   "--at": "--now",
   "--time": "--now",
   "--date": "--now",
-  "--jira": "--tracker",
+  "--jira": "--jira-auth-file",
   "--out": "--store",
   "--output": "--store",
   "--dir": "--store",
@@ -460,6 +478,8 @@ export interface Args {
    * like one that crashed.
    */
   readonly checkpoints: readonly HumanCheckpoint[];
+  /** `--checkpoint` values that are neither a checkpoint name nor a gate. Refused, never dropped. */
+  readonly unknownCheckpoints: readonly string[];
   /**
    * Which adapter answers each port. Absent means the SIMULATED one — explicitly, and the run says
    * so in its own output. Reaching reality is opt-in and visible at the command line.
@@ -591,6 +611,30 @@ export interface Args {
    * adapter. Supplying this makes each change its own directory.
    */
   readonly worktrees: string | undefined;
+  /** What makes a new worktree runnable, run once inside it. See `gitWorktreeChangeControl`. */
+  readonly worktreeSetup: string | undefined;
+  readonly worktreeSetupArgs: readonly string[];
+  /** The command that hands a finished change to people - pushes it and opens its review. */
+  readonly handoffCmd: string | undefined;
+  readonly handoffArgs: readonly string[];
+  /** Who writes a merge request's description in the organization's configured sections. See `followup-commands.ts`. */
+  readonly describeCmd: string | undefined;
+  readonly describeArgs: readonly string[];
+  /** The session that decides about a handed-off change's open action items. */
+  readonly followUpCmd: string | undefined;
+  readonly followUpArgs: readonly string[];
+  /** Where webhook deliveries about handed-off changes are filed. Default: `<store>/feedback`. */
+  readonly feedbackDir: string | undefined;
+  /** A poller of the review system: given the handed-off changes on stdin, prints deliveries as JSON lines. */
+  readonly feedbackCmd: string | undefined;
+  readonly feedbackArgs: readonly string[];
+  /** Who answers a settled comment on its thread: given one change's items on stdin, prints one result per item. */
+  readonly answerCmd: string | undefined;
+  readonly answerArgs: readonly string[];
+  /** How this organization's merge requests are written and kept current. Read from the registry. */
+  readonly changeRequests?: ChangeRequestConfig;
+  /** Wearers per hat the RMO authorizes — how many open tasks one contributor hat may carry. */
+  readonly supplyTarget: number | undefined;
   /**
    * The window the goal is supposed to land inside, as two ISO instants.
    *
@@ -653,6 +697,8 @@ export interface Args {
    * be re-read after a source changed, and the rendering belongs at the point of use.
    */
   readonly repoSources: readonly { readonly sourceId: string; readonly location: string }[];
+  /** What the process does at mechanical decisions. See `ProcessSetting`. */
+  readonly settings: readonly SettingBinding[];
   /** PATH to the Atlassian credentials file. Never a token — see the parser. */
   readonly confluenceAuthFile: string | undefined;
   /** Space keys to read. Empty reads whatever the CQL matches. */
@@ -660,6 +706,14 @@ export interface Args {
   /** A CQL expression, when the caller knows exactly which pages matter. */
   readonly confluenceCql: string | undefined;
   readonly confluenceLimit: number | undefined;
+  /**
+   * PATH to the Jira credentials file — never a token. With `jiraJql`, intake is the whole-ticket
+   * Jira reader: description, every comment, and the parent the branching settings key on.
+   */
+  readonly jiraAuthFile: string | undefined;
+  /** Which issues this organization takes. Configuration, never built from a ticket's own text. */
+  readonly jiraJql: string | undefined;
+  readonly jiraLimit: number | undefined;
 }
 
 /**
@@ -755,7 +809,19 @@ export function parseArgs(argv: readonly string[]): Args {
     practices: [],
     directives: [],
     repoSources: [],
+    // `--delivery` is the one setting a run may state on its own command line: who integrates a
+    // finished change is a person's statement, and a one-off run must be able to make it without
+    // editing the organization. Layered over the organization's settings, never instead of them.
+    settings: ((v) =>
+      v === undefined
+        ? []
+        : [{ setting: ProcessSetting.Delivery, value: v, why: "stated on the command line for this run (--delivery)" }])(
+      valueAfter(argv, "--delivery"),
+    ),
     confluenceAuthFile: valueAfter(argv, "--confluence-auth-file"),
+    jiraAuthFile: valueAfter(argv, "--jira-auth-file"),
+    jiraJql: valueAfter(argv, "--jira-jql"),
+    jiraLimit: ((v) => (v === undefined ? undefined : Number.parseInt(v, 10)))(valueAfter(argv, "--jira-limit")),
     confluenceSpaces: valuesAfter(argv, "--confluence-space"),
     confluenceCql: valueAfter(argv, "--confluence-cql"),
     confluenceLimit: ((v) => (v === undefined ? undefined : Number.parseInt(v, 10)))(
@@ -790,6 +856,20 @@ export function parseArgs(argv: readonly string[]): Args {
     git: valueAfter(argv, "--git"),
     baseBranch: valueAfter(argv, "--base") ?? "main",
     worktrees: valueAfter(argv, "--worktrees"),
+    worktreeSetup: valueAfter(argv, "--worktree-setup"),
+    worktreeSetupArgs: valuesAfter(argv, "--worktree-setup-arg"),
+    handoffCmd: valueAfter(argv, "--handoff-cmd"),
+    handoffArgs: valuesAfter(argv, "--handoff-arg"),
+    describeCmd: valueAfter(argv, "--describe-cmd"),
+    describeArgs: valuesAfter(argv, "--describe-arg"),
+    followUpCmd: valueAfter(argv, "--follow-up-cmd"),
+    followUpArgs: valuesAfter(argv, "--follow-up-arg"),
+    feedbackDir: valueAfter(argv, "--feedback-dir"),
+    feedbackCmd: valueAfter(argv, "--feedback-cmd"),
+    feedbackArgs: valuesAfter(argv, "--feedback-arg"),
+    answerCmd: valueAfter(argv, "--answer-cmd"),
+    answerArgs: valuesAfter(argv, "--answer-arg"),
+    supplyTarget: ((v) => (v === undefined ? undefined : Number.parseInt(v, 10)))(valueAfter(argv, "--supply-target")),
     qaFails: argv.includes("--qa-fails") || argv.includes("--churn"),
     churn: argv.includes("--churn"),
     json: argv.includes("--json"),
@@ -800,12 +880,14 @@ export function parseArgs(argv: readonly string[]): Args {
     // rather than reporting outcomes it did not have.
     meetingCmd: valueAfter(argv, "--meeting-cmd"),
     meetingArgs: valuesAfter(argv, "--meeting-arg"),
-    // REPEATABLE, and anything that is not one of the two names is dropped rather than guessed at.
-    // A typo silently enabling a checkpoint would stop a run for a reason its operator never asked
-    // for; a typo silently enabling nothing is visible in the banner printed at startup.
+    // REPEATABLE: a checkpoint name or any gate. An unknown value is REFUSED in `argRefusals`, not
+    // dropped here - dropping it silently asked for no checkpoint at all.
     checkpoints: argv
       .map((a, i) => (a === "--checkpoint" ? argv[i + 1] : undefined))
-      .filter((v): v is HumanCheckpoint => v === "grooming" || v === "approach"),
+      .filter(isHumanCheckpoint),
+    unknownCheckpoints: argv
+      .map((a, i) => (a === "--checkpoint" ? argv[i + 1] : undefined))
+      .filter((v): v is string => v !== undefined && !isHumanCheckpoint(v)),
     cycleOnly: argv.includes("--cycle"),
     week: argv.includes("--week"),
     // Spread rather than assigned, because `exactOptionalPropertyTypes` is on and an explicit
@@ -831,6 +913,55 @@ export function parseArgs(argv: readonly string[]): Args {
  */
 export function argRefusals(args: Args): readonly string[] {
   const out: string[] = [];
+  // A REAL REPOSITORY IS NEVER MERGED INTO UNLESS THE OPERATOR SAID SO (`delivery=merge`); every
+  // other run hands a finished change to people. Such a run must say HOW, and is told so before it
+  // spends hours reaching the point where it needs to. MEASURED on the Agentic Team's first real
+  // run: with nothing said, the runtime merged two defects into its clone's master.
+  if (args.git !== undefined) {
+    const delivery = resolveSetting(args.settings, ProcessSetting.Delivery, []).value;
+    if (delivery !== "merge" && (args.worktrees === undefined || args.handoffCmd === undefined)) {
+      out.push(
+        `this run reaches a real repository (--git) and hands finished changes to people (delivery: ${delivery ?? "unset"}), ` +
+          "but nothing says how: give --worktrees and a --handoff-cmd (with --handoff-arg) that pushes a branch and opens " +
+          "its review - or state --delivery merge if this organization integrates its own changes",
+      );
+    }
+    // HOW THE REQUEST IS WRITTEN AND KEPT CURRENT IS THE OPERATOR'S TO SAY, and a run that would open
+    // one without it is refused now rather than when the first change finishes. See `change-request.ts`.
+    if (delivery !== "merge") {
+      if (args.changeRequests === undefined) {
+        out.push(
+          "this organization hands changes to people and has not said how its merge requests are written or kept current: " +
+            "run 'org configure' - the hand_off_changes step - or 'org change-requests set'",
+        );
+      } else {
+        if (args.describeCmd === undefined) {
+          out.push(`merge requests here must carry ${args.changeRequests.sections.map((x) => x.heading).join(" / ")}: give --describe-cmd (with --describe-arg) to write them`);
+        }
+        if (args.followUpCmd === undefined) {
+          out.push("feedback on this organization's merge requests becomes action items: give --follow-up-cmd (with --follow-up-arg) so somebody decides about them");
+        }
+        if (args.changeRequests.replies === undefined) {
+          out.push(
+            "this organization has not said whether a reviewer's comment is answered on its thread once the team has decided about it: " +
+              "run 'org change-requests set' with --replies reply_and_resolve|reply|none",
+          );
+        } else if (args.changeRequests.replies !== "none" && args.answerCmd === undefined) {
+          out.push(
+            `reviewers here are answered on their threads (replies: ${args.changeRequests.replies}): give --answer-cmd (with --answer-arg) to post the answers`,
+          );
+        }
+      }
+    }
+  }
+  // A stated setting must be a real one: `--delivery merged` is refused, never read as unset.
+  for (const b of args.settings) {
+    const ok = validateSetting(b);
+    if (!ok.ok) out.push(ok.reason);
+  }
+  for (const v of args.unknownCheckpoints) {
+    out.push(`--checkpoint '${v}' is neither a checkpoint nor a gate — expected one of ${CHECKPOINT_VALUES.join(", ")}`);
+  }
   if (args.workAgent !== undefined && args.workVerify !== undefined && args.workModel !== undefined) {
     out.push("--work-agent and --work-model both name a performer; supply one, because the run can only have done the work one way");
   }
@@ -876,6 +1007,24 @@ export function argRefusals(args: Args): readonly string[] {
   if (args.workVerify !== undefined && args.workAgent === undefined && args.workModel === undefined) {
     out.push("--work-verify was given with nothing to verify: add --work-agent or --work-model");
   }
+  for (const name of inlineCredentialHeaders(args.trackerHeaders)) {
+    // ARGV IS WORLD-READABLE. Refused, not warned: a run that starts has already leaked it.
+    out.push(`--tracker-header ${name} carries a credential by value, and argv is readable by every process on the machine — write it to a file and pass ${name}:@<path>`);
+  }
+  if ((args.jiraAuthFile === undefined) !== (args.jiraJql === undefined)) {
+    // HALF a Jira source is not one. Credentials with no query would read nothing; a query with no
+    // credentials cannot be sent. Either way the run would look configured and take no work.
+    out.push("--jira-auth-file and --jira-jql come as a pair: the file says who is asking, the JQL says which issues this organization takes");
+  }
+  if (args.jiraAuthFile !== undefined && args.tracker !== undefined) {
+    out.push("--jira-auth-file and --tracker both name the intake; supply one, because work can only have arrived one way");
+  }
+  if (args.supplyTarget !== undefined && (Number.isNaN(args.supplyTarget) || args.supplyTarget < 1)) {
+    out.push("--supply-target takes a positive count of wearers per hat");
+  }
+  if (args.jiraLimit !== undefined && (Number.isNaN(args.jiraLimit) || args.jiraLimit < 1)) {
+    out.push("--jira-limit takes a positive count");
+  }
   return out;
 }
 
@@ -903,6 +1052,39 @@ export const PRE_CODE_GATES: readonly GateKind[] = ORDERED_GATES.slice(
   0,
   ORDERED_GATES.indexOf(GateKind.ImplementationReview),
 );
+
+/** Is this ref a file an author could open? Refs also carry plan lines, argv and captured output. */
+export function isReadableFile(ref: string): boolean {
+  if (ref.length > 1024 || ref.includes(String.fromCharCode(10))) return false;
+  try {
+    return statSync(ref).isFile();
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * The gates an agent PERFORMS: every pre-code gate, plus any later gate the organization has said HOW
+ * it is performed — a practice bound to that gate.
+ *
+ * A later gate was judgement-only, on the reasoning that it "already has something real to judge".
+ * That holds for a final review, which reads the diff. It does not hold for UAT: user acceptance is an
+ * ACT — somebody runs the product the way a user would — and with no performer the organization's
+ * own `qa_uat` practice ("give the on-screen test steps and run UAT") described work nobody did. So
+ * the organization decides, by stating the practice; one that states none keeps the old behaviour.
+ * Implementation and runtime validation are never here: the runtime's own producers own them.
+ */
+export function performedGates(practices: readonly Practice[]): readonly GateKind[] {
+  const stated = new Set(
+    practices.filter((p) => p.subject.kind === PracticeSubjectKind.Gate).map((p) => p.subject.id),
+  );
+  return ORDERED_GATES.filter(
+    (g) =>
+      g !== GateKind.ImplementationReview &&
+      g !== GateKind.RuntimeValidation &&
+      (PRE_CODE_GATES.includes(g) || stated.has(String(g))),
+  );
+}
 
 /**
  * What the organization already knows ABOUT THIS ITEM, written where an author can read it.
@@ -1019,8 +1201,10 @@ export function answersFromOutbox(
   cascade?: Cascade,
 ): (node: CascadeNode) => readonly { readonly question: string; readonly answer: string }[] {
   if (blockersDir === undefined) return () => [];
-  const raised = readBlockers(blockersDir);
-  const actions = actionsDir === undefined ? [] : readActions(actionsDir);
+  // READ AT EACH ASK, not once at start. A run lasts hours with real agents, and an answer a person
+  // files mid-run must reach the next attempt of the step that asked — read once, it could only
+  // reach the next RUN, and the step would ask again or proceed on an assumption the person had
+  // already corrected.
   const lineage = (node: CascadeNode): ReadonlySet<string> => {
     const ids = new Set<string>([node.workId]);
     if (cascade === undefined) return ids;
@@ -1033,6 +1217,8 @@ export function answersFromOutbox(
     return ids;
   };
   return (node) => {
+    const raised = readBlockers(blockersDir);
+    const actions = actionsDir === undefined ? [] : readActions(actionsDir);
     const mine = lineage(node);
     return answeredBlockers(
       raised.filter((b) => mine.has(b.blocking)),
@@ -1089,6 +1275,22 @@ export function skillResolverFor(
 }
 
 /**
+ * Whether a person has paused the organization, read from the actions queue AT EACH CALL.
+ *
+ * `pause_run` was replayed into a flag and shown on the dashboard, and the drive loop never asked
+ * it — a person could say "stop" and nothing would. Read per call so a pause filed while the run
+ * is going stops it at the next cycle boundary.
+ */
+export function pausedFromActions(actionsDir: string): () => string | undefined {
+  return () => {
+    const queued = readActions(actionsDir);
+    if (!isPaused(queued)) return undefined;
+    const last = [...queued].reverse().find((a) => a.kind === HumanActionKind.PauseRun);
+    return `paused by ${last?.byHuman ?? "a person"}: ${last?.reason ?? "no reason given"}`;
+  };
+}
+
+/**
  * What a person said when they turned this work back.
  *
  * ── THE DEFECT THIS CLOSES ───────────────────────────────────────────────────
@@ -1107,9 +1309,10 @@ export function feedbackFromActions(
   actionsDir: string | undefined,
 ): (workId: string) => readonly { readonly gate: string; readonly said: string }[] {
   if (actionsDir === undefined) return () => [];
-  const actions = readActions(actionsDir);
+  // READ AT EACH CALL, for the same reason as `answersFromOutbox`: a reviewer's objection filed
+  // while the run is still going must reach the rework it is about.
   return (workId) =>
-    actions
+    readActions(actionsDir)
       .filter((a) => a.kind === HumanActionKind.RejectGate && a.subjectId === workId && a.reason.trim() !== "")
       .sort((x, y) => (x.atMs === y.atMs ? (x.actionId < y.actionId ? 1 : -1) : y.atMs - x.atMs))
       .map((a) => ({ gate: String(a.detail?.["gate"] ?? "unknown"), said: a.reason }));
@@ -1138,7 +1341,7 @@ export function artifactProducersFromArgs(
   const out = new Map<GateKind, ProducerPort>();
   if (args.artifactCmd === undefined) return out;
   const budget = args.portTimeoutMs === undefined ? {} : { timeoutMs: args.portTimeoutMs };
-  for (const gate of PRE_CODE_GATES) {
+  for (const gate of performedGates(args.practices)) {
     out.set(
       gate,
       commandArtifactProducer({
@@ -1151,7 +1354,12 @@ export function artifactProducersFromArgs(
           ...args.artifactArgs,
           String(g),
           node.workId,
-          ...PRE_CODE_GATES.flatMap((prior) => ctx.priorArtifacts.get(prior)?.refs ?? []),
+          // ONLY REFS THAT ARE READABLE FILES, deduped. A later gate's priors include the work
+          // executor's own argv and the test runner's evidence - MEASURED on AIAGENT-1660, the
+          // release-readiness author was launched with the ENTIRE captured test output as arguments,
+          // one Windows 32K command-line limit away from never starting. Anything that is not a
+          // document reaches the agent through `observe`, not argv.
+          ...[...new Set(ORDERED_GATES.flatMap((prior) => ctx.priorArtifacts.get(prior)?.refs ?? []))].filter(isReadableFile),
         ],
         ...(contextFor === undefined ? {} : { contextFor }),
         // The other half of `ask:` — what a person said last time reaches the agent that asked.
@@ -1173,6 +1381,36 @@ export function artifactProducersFromArgs(
   return out;
 }
 
+/**
+ * What the agent that WRITES THE CHANGE is told — the same things every document author already was.
+ *
+ * The practice and directives for `implementation_review` (the gate its work is judged at), what a
+ * person said when they turned this work back, and what they answered when it asked. Each variable
+ * is omitted rather than emptied when there is nothing, so an agent can tell silence from an empty
+ * statement — the convention `commandArtifactProducer` keeps.
+ */
+export function performerEnvFrom(
+  args: Args,
+  guidance: (gate: GateKind, node: CascadeNode) => { readonly practice?: string; readonly directives?: string; readonly repoSkills?: string },
+  cascade?: Cascade,
+): (node: CascadeNode) => Readonly<Record<string, string>> {
+  const feedback = feedbackFromActions(args.actions);
+  const answers = answersFromOutbox(args.blockers, args.actions, cascade);
+  return (node) => {
+    const g = guidance(GateKind.ImplementationReview, node);
+    const said = feedback(node.workId);
+    const told = answers(node);
+    return {
+      ORG_GATE: String(GateKind.ImplementationReview),
+      ...(g.practice === undefined || g.practice === "" ? {} : { ORG_PRACTICE: g.practice }),
+      ...(g.directives === undefined || g.directives === "" ? {} : { ORG_DIRECTIVES: g.directives }),
+      ...(g.repoSkills === undefined || g.repoSkills === "" ? {} : { ORG_REPO_SKILLS: g.repoSkills }),
+      ...(said.length === 0 ? {} : { ORG_FEEDBACK: JSON.stringify(said) }),
+      ...(told.length === 0 ? {} : { ORG_ANSWERS: JSON.stringify(told) }),
+    };
+  };
+}
+
 /** Same precedence as {@link gateAttemptsFor}: the narrow flag beats the posture `--churn` bundles. */
 export function churnThresholdFor(args: Args): number | undefined {
   return args.churnThreshold ?? (args.churn ? 2 : undefined);
@@ -1189,18 +1427,33 @@ export function churnThresholdFor(args: Args): number | undefined {
  * title, never anything a reporter typed. A work item arrives from intake, which with `--inbox` is a
  * directory somebody else can write to; its text is untrusted input to this process.
  */
-export function providersFromArgs(args: Args, events: readonly ExternalEvent[], qaFallback: RunOutcome): ProviderSet {
+export function providersFromArgs(
+  args: Args,
+  events: readonly ExternalEvent[],
+  qaFallback: RunOutcome,
+  /** What the code-writing agent is told about how this organization works. See `performerEnvFrom`. */
+  performerEnv?: (node: CascadeNode) => Readonly<Record<string, string>>,
+): ProviderSet {
   // Spread rather than assigned: `exactOptionalPropertyTypes` is on, so an explicit `undefined`
   // would not mean "absent" and would override each adapter's own default with nothing.
   const budget = args.portTimeoutMs === undefined ? {} : { timeoutMs: args.portTimeoutMs };
   return {
     intake:
-      args.tracker !== undefined
+      // THE WHOLE-TICKET READER when Jira is named. `--jira` used to alias the generic field-map
+      // tracker, which read four fields and no thread — so the org's own `read-the-whole-ticket`
+      // directive was unfollowable from the one path real tickets arrive by.
+      args.jiraAuthFile !== undefined && args.jiraJql !== undefined
+        ? jiraIntake({
+            credentialsPath: args.jiraAuthFile,
+            jql: args.jiraJql,
+            ...(args.jiraLimit === undefined ? {} : { maxResults: args.jiraLimit }),
+          })
+        : args.tracker !== undefined
         ? httpIntake({
             url: args.tracker,
             ...(args.trackerItems === undefined ? {} : { itemsAt: (body) => atPath(body, args.trackerItems ?? "") }),
             mapper: trackerMapper(args.trackerSource, args.trackerMap, args.trackerSeverity),
-            headers: headersFrom(args.trackerHeaders),
+            headers: headerSourceFrom(args.trackerHeaders),
           })
         : args.inbox === undefined
           ? simulatedIntake(events)
@@ -1231,6 +1484,7 @@ export function providersFromArgs(args: Args, events: readonly ExternalEvent[], 
               command: args.workAgent,
               argsFor: (node) => [...args.workAgentArgs, node.workId],
               cwd: args.git ?? process.cwd(),
+              ...(performerEnv === undefined ? {} : { envFor: performerEnv }),
               ...budget,
             }),
             // The verifier decides. A different command on purpose — the same one would be the
@@ -1286,7 +1540,13 @@ export function providersFromArgs(args: Args, events: readonly ExternalEvent[], 
         ? simulatedChangeControl()
         : args.worktrees === undefined
           ? gitChangeControl({ cwd: args.git, baseBranch: args.baseBranch })
-          : gitWorktreeChangeControl({ cwd: args.git, baseBranch: args.baseBranch, worktreeRoot: args.worktrees }),
+          : gitWorktreeChangeControl({
+              cwd: args.git,
+              baseBranch: args.baseBranch,
+              worktreeRoot: args.worktrees,
+              ...(args.worktreeSetup === undefined ? {} : { setup: { command: args.worktreeSetup, args: args.worktreeSetupArgs } }),
+              ...(args.handoffCmd === undefined ? {} : { handoff: { command: args.handoffCmd, args: args.handoffArgs } }),
+            }),
   };
 }
 
@@ -1317,6 +1577,33 @@ function priorObservationsFrom(storeDir: string | undefined): readonly Reputatio
     authorOf: authorIndexFrom(folded.phaseOutputs),
     wearerOf,
   });
+}
+
+/**
+ * The after-the-handoff dependencies, attached to a run's dependency object.
+ *
+ * WHAT IS HANDED OFF AND WHAT IS OPEN ARE GETTERS OVER THE LOG, not values read once: the autonomy
+ * loop re-spreads the dependencies every cycle, and a value read before cycle 1 would show cycle 2
+ * none of the items cycle 1 raised or settled - so it would raise them again and follow them up twice.
+ */
+export function attachAfterHandoff(deps: Record<string, unknown>, args: Args, feedback: readonly FeedbackDeliveryT[]): void {
+  const store = args.store;
+  if (store !== undefined) {
+    Object.defineProperty(deps, "handedOffChanges", { enumerable: true, configurable: true, get: () => foldHandedOffChanges(readEvents(store)) });
+    Object.defineProperty(deps, "actionItems", { enumerable: true, configurable: true, get: () => foldActionItems(readEvents(store)) });
+  }
+  const cwd = args.git ?? process.cwd();
+  const budget = args.portTimeoutMs === undefined ? {} : { timeoutMs: args.portTimeoutMs };
+  deps["defaultBase"] = args.baseBranch;
+  // HOW MANY CHANGES ARE FOLLOWED UP AT ONCE is the supply the RMO authorized, not a number invented
+  // here: a follow-up is a contributor's session like any other piece of work.
+  if (args.supplyTarget !== undefined && Number.isFinite(args.supplyTarget) && args.supplyTarget > 0) deps["maxFollowUps"] = args.supplyTarget;
+  if (feedback.length > 0) deps["feedback"] = feedback;
+  if (args.changeRequests !== undefined) deps["changeRequests"] = args.changeRequests;
+  if (args.describeCmd !== undefined) deps["describeChange"] = commandDescriber({ command: args.describeCmd, args: args.describeArgs, ...budget }, cwd);
+  if (args.followUpCmd !== undefined) deps["followUp"] = commandFollowUp({ command: args.followUpCmd, args: args.followUpArgs, ...budget }, cwd);
+  if (args.workVerify !== undefined) deps["verifyChange"] = commandVerifier({ command: args.workVerify, args: args.workVerifyArgs, ...budget }, cwd);
+  if (args.answerCmd !== undefined) deps["answer"] = commandAnswerer({ command: args.answerCmd, args: args.answerArgs, ...budget }, cwd);
 }
 
 /**
@@ -1379,6 +1666,19 @@ export function withOrgDefaults(args: Args, orgId: string, registryJson: string 
       // repeat it per run is how a configuration surface becomes decoration.
       practices: args.practices.length > 0 ? args.practices : (org.practices ?? []),
       directives: args.directives.length > 0 ? args.directives : (org.directives ?? []),
+      // LAYERED, not replaced: a setting stated for this run overrides the organization's value for
+      // the same setting and scope, and every other organization setting still applies.
+      settings: [
+        ...(org.settings ?? []).filter(
+          (o) => !args.settings.some((a) => a.setting === o.setting && (a.scope ?? "") === (o.scope ?? "")),
+        ),
+        ...args.settings,
+      ],
+      ...(args.changeRequests !== undefined
+        ? {}
+        : org.changeRequests === undefined
+          ? {}
+          : { changeRequests: org.changeRequests }),
       // GIT SOURCES ONLY: a tracker or a wiki has no skills directory to read.
       repoSources:
         args.repoSources.length > 0
@@ -1438,6 +1738,29 @@ export async function main(argv: readonly string[]): Promise<number> {
     for (const reason of refusals) console.error(`refused: ${reason}`);
     return 2;
   }
+
+  // ── EVERY AGENT THIS RUN SPAWNS IS TOLD WHERE ITS WORLDVIEW IS ─────────────
+  // Not what it contains — HOW TO ASK. An agent is handed who it is and this command, and reads the
+  // dashboard, its items, their attachments and their threads for itself (`observe-cli.ts`). Set on
+  // this process's environment so every child inherits it: work agents, document authors and
+  // reviewers alike, whichever adapter spawned them. Only with a store: without one there is no
+  // record to observe, and pointing an agent at an empty one would tell it nothing is going on.
+  if (args.store !== undefined) {
+    const fwd = (p: string): string => p.split(String.fromCharCode(92)).join("/");
+    process.env["ORG_STORE"] = fwd(resolve(args.store));
+    process.env["ORG_OBSERVE_CMD"] ??=
+      // `bun` by NAME when that is what is running: the children inherit this PATH, and a read-only
+      // agent can then be allowed exactly `Bash(bun:*)` rather than a quoted absolute path no
+      // permission pattern matches.
+      `${/bun(\.exe)?$/i.test(process.execPath) ? "bun" : `"${fwd(process.execPath)}"`} "${fwd(resolve(import.meta.dir, "observe-cli.ts"))}" --store "${fwd(resolve(args.store))}"` +
+      (args.actions === undefined ? "" : ` --actions "${fwd(resolve(args.actions))}"`) +
+      (args.blockers === undefined ? "" : ` --blockers "${fwd(resolve(args.blockers))}"`);
+    // Where authored documents go, so what an agent writes lands beside the record that lists it.
+    process.env["ORG_DOCS_DIR"] ??= fwd(join(resolve(args.store), "docs"));
+  }
+  // THE STEP'S BUDGET, so an agent's own limit is the organization's rather than a number of its
+  // own. MEASURED on AIAGENT-1662: the agent stopped itself at 25 minutes inside a 50-minute step.
+  if (args.portTimeoutMs !== undefined) process.env["ORG_PORT_TIMEOUT_MS"] ??= String(args.portTimeoutMs);
 
   // ── SOMEBODY IS WAITING IN A ROOM ─────────────────────────────────────────
   // Before the organization is even built. A person in a conversation is the most valuable thing
@@ -1543,11 +1866,25 @@ export async function main(argv: readonly string[]): Promise<number> {
     return 2;
   }
 
-  let n = 0;
+  // A RUN OVER A STORE APPENDS TO IT. Its clock starts after the log's last instant and its counter
+  // after the log's highest minted id; otherwise every process restarts at epoch 0 and `-001`, and
+  // its events interleave with the previous run's instead of following them. See `logHighWater`.
+  const history = args.store === undefined ? { atMs: undefined, counter: 0 } : logHighWater(readEvents(args.store));
+  let n = history.counter;
   const createId = (p: string): string => `${p}-${String(++n).padStart(3, "0")}`;
   // Epoch 0 unless the caller declares otherwise — see `--now`. Never `Date.now()`: an ambient
   // clock would make this run unreplayable and would leak wall time into the observe-act window.
-  const nowMs = args.now === undefined ? 0 : Date.parse(args.now);
+  // The store's own last instant is not ambient: it is an input, and the same store gives the same
+  // start.
+  const declaredNow = args.now === undefined ? undefined : Date.parse(args.now);
+  if (declaredNow !== undefined && history.atMs !== undefined && declaredNow <= history.atMs) {
+    console.error(
+      `[org] --now ${args.now} is not after the store's last event (atMs ${String(history.atMs)}); ` +
+        "this run's history would interleave with the one already there. Omit --now to continue after it.",
+    );
+    return 2;
+  }
+  const nowMs = declaredNow ?? (history.atMs === undefined ? 0 : history.atMs + 1);
 
   // ── A WEEK OF THE ORGANIZATION RUNNING ITSELF ─────────────────────────────
   // The drive as a SHIPPED path, not only a tested one. Everything below this line and above the
@@ -1820,7 +2157,49 @@ export async function main(argv: readonly string[]): Promise<number> {
 
   const intake = stated.length > 0 ? stated : REPORTS;
 
-  const providers = providersFromArgs(args, intake, args.qaFails ? RunOutcome.Failed : RunOutcome.Passed);
+  // ── HOW THE WORK IS DONE — built ONCE, for every agent that does it ───────
+  // It used to be built inline for the document authors only, so the agent writing the code was the
+  // one agent in the organization never told the practice it was held to.
+  const guidance = guidanceFrom({
+    practices: args.practices,
+    directives: args.directives,
+    defaultPractices: DEFAULT_PRACTICES,
+    defaultDirectives: DEFAULT_DIRECTIVES,
+    ...(args.store === undefined
+      ? {}
+      : { cascade: foldOrganization(readEvents(args.store)).cascade }),
+    // READ ONCE PER RUN. A repository's skill directory does not change mid-run, and reading
+    // it per phase would stat the same files for every gate of every item.
+    repoSkills: renderRepoSkills(args.repoSources),
+  });
+  const providers = providersFromArgs(
+    args,
+    intake,
+    args.qaFails ? RunOutcome.Failed : RunOutcome.Passed,
+    performerEnvFrom(args, guidance, args.store === undefined ? undefined : foldOrganization(readEvents(args.store)).cascade),
+  );
+  // ── A PERSON'S "NO" STANDS AT ANY STEP ─────────────────────────────────────
+  // Written into the log once, as the step's newest verdict, before anything reads the verdicts -
+  // see `human-verdicts.ts`. MEASURED on AIAGENT-1658: a reproduction approved over a replica of the
+  // component, rejected by the requester, and the approval still stood.
+  if (args.store !== undefined && args.actions !== undefined) {
+    const prior = readEvents(args.store);
+    const folded = foldOrganization(prior);
+    const hw = logHighWater(prior);
+    const toRecord = humanRejectionsToRecord({
+      actions: readActions(args.actions),
+      evaluations: folded.gateEvaluations,
+      known: new Set(folded.cascade.nodes.map((n) => n.workId)),
+      checkpointGates: new Set([...humanGatesFor(args.checkpoints)].map(String)),
+      atMs: (hw.atMs ?? 0) + 1,
+    });
+    let minted = hw.counter;
+    for (const e of humanRejectionEvents(toRecord, () => `evt-${String(++minted).padStart(3, "0")}`)) {
+      appendEvent(e, args.store);
+      console.log(`  ${e.decision}`);
+    }
+  }
+
   const runtimeDeps = {
     chart,
     externalEvents: intake,
@@ -1830,6 +2209,13 @@ export async function main(argv: readonly string[]): Promise<number> {
     // to the same agent out of eighty-five eligible. Derived from the store, so reputation
     // accumulates across runs instead of resetting every process.
     observations: priorObservationsFrom(args.store),
+    // WHAT THE PROCESS DOES at mechanical decisions — the branching disposition among them. Read
+    // from the register rather than derived: a stabilization epic and a feature epic are the same
+    // shape, and only an operator knows which is which.
+    //
+    // SUPPLIED TO BOTH dependency objects. A field on one only is exactly how `alreadyLanded`
+    // stayed undefined on the ordinary path for the whole life of that field.
+    ...(args.settings.length === 0 ? {} : { settings: args.settings }),
     // WHAT THIS ORGANIZATION WAS ALREADY DOING. Without it every run re-accepts the same intake
     // under fresh ids, so nothing a run learns - an answer, a verdict, a document - can reach the
     // next one, and no work can outlive the process that started it.
@@ -1852,6 +2238,15 @@ export async function main(argv: readonly string[]): Promise<number> {
     ...(args.store === undefined
       ? {}
       : { alreadyLanded: new Set(foldLandedChanges(readEvents(args.store)).keys()) }),
+    // WHAT IS ALREADY IN FRONT OF A REVIEWER, so a resume neither re-walks it nor proposes it twice.
+    ...(args.store === undefined
+      ? {}
+      : { alreadyHandedOff: new Set(foldHandedOffChanges(readEvents(args.store)).keys()) }),
+    ...(args.supplyTarget === undefined ? {} : { supplyTarget: args.supplyTarget }),
+    // WHAT ALREADY PASSED, so a resumed run does not re-walk approved steps.
+    ...(args.store === undefined
+      ? {}
+      : { priorGateEvaluations: foldOrganization(readEvents(args.store)).gateEvaluations }),
     acceptingHatId: "cto",
     resourceAuthorityHatId: "rmo_office",
     priorityDeciderHatId: "cto",
@@ -1915,18 +2310,7 @@ export async function main(argv: readonly string[]): Promise<number> {
       // ── HOW THE WORK IS DONE, reaching the agent that does it ──────────────
       // The last join, and the one the whole layer is for: a process nothing hands to an agent is
       // a configuration surface that reads as governance and governs nothing.
-      guidanceFrom({
-        practices: args.practices,
-        directives: args.directives,
-        defaultPractices: DEFAULT_PRACTICES,
-        defaultDirectives: DEFAULT_DIRECTIVES,
-        ...(args.store === undefined
-          ? {}
-          : { cascade: foldOrganization(readEvents(args.store)).cascade }),
-        // READ ONCE PER RUN. A repository's skill directory does not change mid-run, and reading
-        // it per phase would stat the same files for every gate of every item.
-        repoSkills: renderRepoSkills(args.repoSources),
-      }),
+      guidance,
     ),
     ...((n) => (n === undefined ? {} : { maxGateAttempts: n }))(gateAttemptsFor(args)),
     // ── THE TWO HALVES OF A CHECKPOINT, AND THEY TRAVEL TOGETHER ───────────
@@ -2068,6 +2452,32 @@ export async function main(argv: readonly string[]): Promise<number> {
         : `  blockers raised to a person land in ${args.blockers}`,
     );
   }
+  // WHAT A PERSON FILED AND THE RUN CANNOT READ, said out loud. MEASURED: three notes to two runs
+  // lacked `detail.message`, were dropped by the reader, and neither run said so - the person
+  // believed the organization had been told, and nobody had.
+  if (args.actions !== undefined) {
+    for (const p of queueProblems(args.actions)) {
+      console.log(`  !! NOT READ: ${p.file} in ${args.actions} - ${p.reason}`);
+    }
+  }
+
+  // ── AFTER THE HANDOFF: WHAT PEOPLE SAID ABOUT WHAT IS ALREADY IN FRONT OF THEM ──
+  // Webhook deliveries filed in the feedback directory, plus whatever a poller of the review system
+  // reports. Both only READ the review system. Each becomes an action item on its work, decided about
+  // by the organization - see `change-followup.ts`.
+  const feedbackDir = args.feedbackDir ?? (args.store === undefined ? undefined : join(args.store, "feedback"));
+  const filed = feedbackDir === undefined ? { deliveries: [], files: [], unreadable: [] } : readFeedbackDir(feedbackDir);
+  for (const name of filed.unreadable) console.log(`  feedback file '${name}' in ${String(feedbackDir)} is not a delivery this organization can read - left in place`);
+  const polled =
+    args.feedbackCmd === undefined || args.store === undefined
+      ? { deliveries: [] }
+      : pollFeedback(
+          { command: args.feedbackCmd, args: args.feedbackArgs, ...(args.portTimeoutMs === undefined ? {} : { timeoutMs: args.portTimeoutMs }) },
+          args.git ?? process.cwd(),
+          foldHandedOffChanges(readEvents(args.store)),
+        );
+  if (polled.refusal !== undefined) console.log(`  ${polled.refusal}`);
+  attachAfterHandoff(runtimeDeps as unknown as Record<string, unknown>, args, [...filed.deliveries, ...polled.deliveries]);
 
   // ── ONE CYCLE, OR UNTIL IT SETTLES ────────────────────────────────────────
   // Absent `--until`, this is the single cycle the CLI has always run. With it, the driver keeps
@@ -2083,11 +2493,22 @@ export async function main(argv: readonly string[]): Promise<number> {
             maxCycles: Number.parseInt(args.until, 10),
             // The clock advances between cycles: the runtime keys its ids on the instant, so a
             // frozen clock would mint colliding ids across cycles and fold two runs into one.
-            nextNowMs: (_c, prev) => prev + 1,
+            //
+            // PAST EVERYTHING THE CYCLE WROTE, not one tick past where it began. A cycle stamps its
+            // reviews ahead of its start (MEASURED: cycle 1 at 0 wrote at 60000), so `prev + 1`
+            // started cycle 2 at 1 — before cycle 1's own verdicts in the log.
+            nextNowMs: (_c, prev, cycleReport) =>
+              cycleReport.trace.reduce((hi, e) => Math.max(hi, e.atMs), prev) + 1,
+            // A PERSON'S `pause_run`, read from the queue at each cycle boundary so one filed while
+            // the run is going stops it at the next consistent point.
+            ...(args.actions === undefined ? {} : { pausedBecause: pausedFromActions(args.actions) }),
           },
           runOrgRuntime,
         );
   const report = settled?.last ?? (await runOrgRuntime(runtimeDeps));
+  // Read deliveries are moved aside only once the run that raised them has finished. Raising is
+  // idempotent, so a file read twice costs nothing; a file moved before it was raised would be lost.
+  if (feedbackDir !== undefined) consumeFeedback(feedbackDir, filed.files);
 
   if (args.json) {
     console.log(JSON.stringify(report, null, 2));
@@ -2144,7 +2565,25 @@ export async function main(argv: readonly string[]): Promise<number> {
     }
   }
 
-  console.log(`\n=== ${report.delivered ? "DELIVERED" : "NOT DELIVERED"} ===`);
+  // HANDED OFF IS NOT DELIVERED, and the banner must not blur them: the work is in front of people,
+  // nothing reached the trunk, and the next act is theirs. Asked of the RECORD, not of this run's
+  // own handoffs: a run that only followed up on earlier ones hands nothing off anew, and MEASURED
+  // 2026-09-11 it printed DELIVERED while three merge requests sat open and unmerged.
+  const awaitingReview = awaitingHumanReview({
+    changes: report.changes,
+    handedOffThisRun: report.changesHandedOff,
+    handedOffOnRecord: new Set(args.store === undefined ? [] : foldHandedOffChanges(readEvents(args.store)).keys()),
+    landed: report.changesLanded,
+  });
+  const banner = !report.delivered
+    ? "NOT DELIVERED"
+    : awaitingReview.length > 0
+      ? "HANDED OFF FOR HUMAN REVIEW - nothing was merged"
+      : "DELIVERED";
+  console.log(`\n=== ${banner} ===`);
+  for (const w of awaitingReview) {
+    console.log(`  awaiting human review: ${w}${report.changesHandedOff.includes(w) ? "" : " (handed off earlier)"}`);
+  }
   console.log(`levels engaged: ${report.levelsEngaged.join(" → ")}`);
 
   // Printed on EVERY run, not only the interesting ones. A run that reached a shell and did not
@@ -2208,6 +2647,13 @@ export async function main(argv: readonly string[]): Promise<number> {
     // to the same agent out of eighty-five eligible. Derived from the store, so reputation
     // accumulates across runs instead of resetting every process.
     observations: priorObservationsFrom(args.store),
+    // WHAT THE PROCESS DOES at mechanical decisions — the branching disposition among them. Read
+    // from the register rather than derived: a stabilization epic and a feature epic are the same
+    // shape, and only an operator knows which is which.
+    //
+    // SUPPLIED TO BOTH dependency objects. A field on one only is exactly how `alreadyLanded`
+    // stayed undefined on the ordinary path for the whole life of that field.
+    ...(args.settings.length === 0 ? {} : { settings: args.settings }),
     // WHAT THIS ORGANIZATION WAS ALREADY DOING. Without it every run re-accepts the same intake
     // under fresh ids, so nothing a run learns - an answer, a verdict, a document - can reach the
     // next one, and no work can outlive the process that started it.
@@ -2611,6 +3057,8 @@ export async function main(argv: readonly string[]): Promise<number> {
       // without one the honest answer is "not measured", and the runtime treats that as "do not
       // judge" rather than as "nothing has landed".
       ...(args.store === undefined ? {} : { alreadyLanded: new Set(foldLandedChanges(priorEvents).keys()) }),
+      ...(args.store === undefined ? {} : { alreadyHandedOff: new Set(foldHandedOffChanges(priorEvents).keys()) }),
+      ...(args.store === undefined ? {} : { priorGateEvaluations: foldOrganization(priorEvents).gateEvaluations }),
       ...(store === undefined ? {} : { store }),
       ...(study === undefined ? {} : { study }),
       // Rotates what each hat studies between runs, so it does not read one thing forever.
@@ -2868,8 +3316,12 @@ export async function main(argv: readonly string[]): Promise<number> {
   console.log(`
 --- change control ---`);
   for (const c of report.changes) {
-    console.log(`  ${c.workId}: ${c.projection.state.tag}` +
-      `   (${c.projection.applied.map((a) => a.tag).join(" → ")})`);
+    // The organization's model calls "every gate approved" Merged; a change handed to people instead
+    // is printed as what it is.
+    console.log(`  ${describeChangeLine(
+      { workId: c.workId, state: c.projection.state.tag, applied: c.projection.applied.map((a) => a.tag) },
+      awaitingReview,
+    )}`);
     for (const d of c.disagreements) console.log(`     !! ${d}`);
   }
 

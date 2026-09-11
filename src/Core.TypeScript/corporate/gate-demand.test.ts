@@ -421,3 +421,43 @@ describe("guards for a CLI taking a workId from argv", () => {
     expect(isLiveWork(canceled, "T-1")).toBe(false);
   });
 });
+
+describe("A NODE'S STATED CHAIN IS WHAT EVERY READER SEES", () => {
+  const { chainOf, acceptanceGateFor, missingGates, gatesComplete, gateDemand } = require("./gate-demand") as typeof import("./gate-demand");
+  const { foldCascade } = require("./org-fold") as typeof import("./org-fold");
+  const initiative = { workId: "i1", workType: WorkType.Initiative, title: "i", state: WorkState.Open, ownerHatId: "d", owes: [] as GateKind[] };
+
+  test("chainOf prefers the stated chain; a bare type still gets the register's", () => {
+    expect(chainOf(initiative)).toEqual([]);
+    expect(chainOf(WorkType.Initiative)).toEqual(chainFor(WorkType.Initiative));
+    expect(chainOf({ workType: WorkType.Initiative })).toEqual(chainFor(WorkType.Initiative));
+  });
+
+  test("owing nothing: no acceptance gate, nothing missing, complete — and no demand", () => {
+    expect(acceptanceGateFor(initiative)).toBeUndefined();
+    expect(missingGates(initiative, "i1", [])).toEqual([]);
+    expect(gatesComplete(initiative, "i1", [])).toBe(true);
+    const demand = gateDemand({ cascade: { nodes: [initiative as never] }, evaluations: [] });
+    expect(demand.ready.filter((s) => s.workId === "i1")).toEqual([]);
+  });
+
+  test("the stated chain SURVIVES THE LOG", () => {
+    const folded = foldCascade([
+      {
+        eventId: "e1", kind: "work_item_transition", subjectId: "i1", actorHatId: "d", decision: "x", atMs: 0,
+        fact: { kind: "work_created", workId: "i1", workType: WorkType.Initiative, title: "i", ownerHatId: "d", owes: [] },
+      } as never,
+    ]);
+    expect(folded.nodes[0]?.owes).toEqual([]);
+  });
+});
+
+describe("THE ACCEPTANCE GATE IS THE TYPE'S, and only while it is still owed", () => {
+  const { acceptanceGateFor } = require("./gate-demand") as typeof import("./gate-demand");
+  test("a goal trimmed to its understanding gates has NO acceptance gate — grooming is not held for the children", () => {
+    const trimmed = { workType: WorkType.Goal, owes: [GateKind.BusinessContextGrooming, GateKind.SystemContext] };
+    expect(acceptanceGateFor(trimmed)).toBeUndefined();
+    expect(acceptanceGateFor(WorkType.Goal)).toBe(GateKind.FinalBusinessValidation);
+    expect(acceptanceGateFor({ workType: WorkType.Goal })).toBe(GateKind.FinalBusinessValidation);
+  });
+});

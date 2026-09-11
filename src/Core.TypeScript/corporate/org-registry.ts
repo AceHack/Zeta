@@ -27,13 +27,16 @@ import { stringCompare } from "../collation/collation.ts";
 import { isVerificationApproach, validateOrgPolicy, type OrgPolicy } from "./org-policy";
 import type { CheckBinding } from "./check-roster";
 import type { Method as MethodBinding } from "../observe/observe";
-import { HumanCheckpoint } from "./quality-gate";
+import { CHECKPOINT_VALUES, isHumanCheckpoint, type HumanCheckpoint } from "./quality-gate";
 import { validateBindings, type SkillBinding } from "./skill-binding";
+import { validateChangeRequests, type ChangeRequestConfig } from "./change-request";
 import {
   validateDirective,
   validatePractices,
+  validateSettings,
   type Directive,
   type Practice,
+  type SettingBinding,
 } from "./practice";
 
 /** How work ENTERS an organization. Never affects which gates apply — see `gate-demand`. */
@@ -120,6 +123,22 @@ export interface WebhookConfig {
   readonly acceptTypes?: readonly string[];
   /** Where the delivery's type lives, e.g. `action`. Needed to use `acceptTypes`. */
   readonly typePath?: string;
+  /**
+   * What this endpoint is FOR — new work, or feedback on work already handed off.
+   *
+   * Absent means `intake`, which is the shape every webhook had before feedback
+   * existed, so a registry written earlier keeps meaning what it meant.
+   *
+   * THE SAME FIELD ALREADY EXISTS on `webhook-intake.ts`'s `WebhookConfig`, which
+   * is what `serve-hooks` builds and routes on (`purpose === "change_feedback"`
+   * decides whether a delivery becomes an action item and whether the endpoint is
+   * served at all). It was missing HERE, on the record that endpoint is read
+   * FROM — so the feature was wired through the server and not through its own
+   * input, and `w.purpose` did not typecheck at the one line that copies the
+   * configured value across. Adding it here is what makes the configuration
+   * reachable rather than merely representable.
+   */
+  readonly purpose?: "intake" | "change_feedback";
 }
 
 export interface OrgRecord {
@@ -195,6 +214,23 @@ export interface OrgRecord {
    * would then be missing from whichever one nobody remembered.
    */
   readonly directives?: readonly Directive[];
+  /**
+   * What the process DOES at decisions the runtime makes mechanically — see `ProcessSetting`.
+   *
+   * The third member of the SDLC surface, beside `practices` (what an agent reaches for and reads)
+   * and `directives` (what holds regardless). Scoped the same way, so one programme or one epic can
+   * work differently from the rest.
+   */
+  readonly settings?: readonly SettingBinding[];
+  /**
+   * HOW A FINISHED CHANGE IS PUT IN FRONT OF PEOPLE — what its merge request says, what it may never
+   * carry, and how it is kept current. See `change-request.ts`.
+   *
+   * Optional on the type so a registry written before it existed still parses, and REQUIRED to RUN
+   * an organization that hands work to people: `org configure` asks for it, and `run-org` refuses a
+   * real repository with `delivery=human_review` and no answer here.
+   */
+  readonly changeRequests?: ChangeRequestConfig;
   readonly createdAtMs: number;
 }
 
@@ -261,10 +297,10 @@ export function validateOrg(org: OrgRecord): OrgCheck {
   if (!policy.ok) return { ok: false, reason: policy.reason };
 
   for (const cp of org.humanCheckpoints ?? []) {
-    if (!Object.values(HumanCheckpoint).includes(cp)) {
+    if (!isHumanCheckpoint(cp)) {
       return {
         ok: false,
-        reason: `'${String(cp)}' is not a checkpoint — expected ${Object.values(HumanCheckpoint).join(" or ")}`,
+        reason: `'${String(cp)}' is neither a checkpoint nor a gate — expected one of ${CHECKPOINT_VALUES.join(", ")}`,
       };
     }
   }
@@ -275,6 +311,12 @@ export function validateOrg(org: OrgRecord): OrgCheck {
   // exactly like a process somebody is following.
   const practices = validatePractices(org.practices ?? []);
   if (!practices.ok) return { ok: false, reason: practices.reason };
+  const settings = validateSettings(org.settings ?? []);
+  if (!settings.ok) return { ok: false, reason: settings.reason };
+  if (org.changeRequests !== undefined) {
+    const cr = validateChangeRequests(org.changeRequests);
+    if (!cr.ok) return { ok: false, reason: `merge requests: ${cr.reason}` };
+  }
   for (const directive of org.directives ?? []) {
     const one = validateDirective(directive);
     if (!one.ok) return { ok: false, reason: one.reason };

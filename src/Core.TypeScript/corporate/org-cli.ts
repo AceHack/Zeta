@@ -17,7 +17,7 @@
  */
 
 import { readBlockers } from "./blocker-outbox";
-import { isSignatureScheme, type WebhookConfig } from "./webhook-intake";
+import { FEEDBACK_FIELDS, GITLAB_FEEDBACK_MAP, isSignatureScheme, type WebhookConfig } from "./webhook-intake";
 import { checksFromRoster, selectChecks, type CheckBinding } from "./check-roster";
 import { isDefaultMethod, methodsFor } from "./method-defaults";
 import {
@@ -29,11 +29,15 @@ import {
   renderPractice,
   resolvePractice,
   subjectRosterFor,
+  ProcessSetting,
+  SETTING_VALUES,
   validateDirective,
   validatePractice,
+  validateSetting,
   type Practice,
   type PracticeSkill,
   type PracticeSubject,
+  type SettingBinding,
 } from "./practice";
 import { DEFAULT_DIRECTIVES, DEFAULT_PRACTICES } from "./practice-defaults";
 import { repoSkillsIn } from "./repo-skills";
@@ -63,7 +67,7 @@ import {
 } from "./org-registry";
 import {
   CHAIN_BY_TYPE,
-  chainFor,
+  chainOf,
   demandFor,
   gateDemand,
   gatesComplete,
@@ -83,6 +87,7 @@ import { humanGatesFor, type GateKind, type HumanCheckpoint } from "./quality-ga
 import { bindingsOf, resolve, SkillSource, validateBinding, type SkillBinding }
   from "./skill-binding";
 import { planFor, planForNothing } from "./configure-plan";
+import { validateChangeRequests, type ChangeRequestConfig, type ChangeRequestSection, type ReplyPolicy, type SyncMethod } from "./change-request";
 import {
   Exit,
   flagValue,
@@ -450,7 +455,27 @@ export async function main(argv: readonly string[], deps: CliDeps): Promise<numb
       // which is the difference between a convenience and a hardcoded integration.
       const preset = flagValue(flags, "--preset");
       const given = flagValues(flags, "--map");
-      const map = given.length > 0 ? given : preset === "linear" ? [...LINEAR_WEBHOOK_MAP] : [];
+      // WHAT A DELIVERY IS: new work (the default), or feedback on a change already in front of
+      // people - which becomes an action item on its work, never new work.
+      const purposeRaw = (flagValue(flags, "--purpose") ?? (preset === "gitlab-feedback" ? "change_feedback" : "intake")).trim();
+      if (purposeRaw !== "intake" && purposeRaw !== "change_feedback") {
+        deps.err(`'${purposeRaw}' is not a purpose - intake or change_feedback`);
+        return Exit.Refused;
+      }
+      const map = given.length > 0
+        ? given
+        : preset === "linear"
+          ? [...LINEAR_WEBHOOK_MAP]
+          : preset === "gitlab-feedback"
+            ? [...GITLAB_FEEDBACK_MAP]
+            : [];
+      if (purposeRaw === "change_feedback") {
+        const unknown = map.map((p) => p.slice(0, Math.max(0, p.indexOf("=")))).filter((f) => !(FEEDBACK_FIELDS as readonly string[]).includes(f));
+        if (unknown.length > 0) {
+          deps.err(`a feedback hook maps ${FEEDBACK_FIELDS.join(", ")} - not ${unknown.join(", ")}`);
+          return Exit.Refused;
+        }
+      }
       if (map.length === 0) {
         deps.err("--map is required (or --preset): without it nothing knows which field is the title");
         return Exit.Refused;
@@ -470,6 +495,7 @@ export async function main(argv: readonly string[], deps: CliDeps): Promise<numb
         ...(severityMap.length === 0 ? {} : { severityMap }),
         ...(flagValues(flags, "--accept-type").length === 0 ? {} : { acceptTypes: flagValues(flags, "--accept-type") }),
         ...(typePath === undefined ? {} : { typePath }),
+        ...(purposeRaw === "change_feedback" ? { purpose: "change_feedback" as const } : {}),
       };
 
       // ONE HOOK PER SOURCE. Two would mean two secrets on one endpoint and no way to say which
@@ -608,6 +634,121 @@ export async function main(argv: readonly string[], deps: CliDeps): Promise<numb
           ? `${rows}  nothing was bound — these are the organization's defaults; 'org method bind' replaces one\n`
           : rows;
       });
+      return Exit.Ok;
+    }
+
+    case "org setting bind": {
+      const chosen = resolveOrg(registry, flagValue(flags, "--org"));
+      if ("reason" in chosen) { deps.err(chosen.reason); return Exit.NotFound; }
+      const name = (flagValue(flags, "--setting") ?? "").trim();
+      const value = (flagValue(flags, "--value") ?? "").trim();
+      const why = (flagValue(flags, "--why") ?? "").trim();
+      const scope = (flagValue(flags, "--for") ?? "").trim();
+      if (name === "") { deps.err(`--setting is required — known: ${Object.values(ProcessSetting).join(", ")}`); return Exit.Usage; }
+      if (value === "") { deps.err("--value is required"); return Exit.Usage; }
+
+      const binding: SettingBinding = {
+        setting: name as ProcessSetting,
+        value,
+        ...(scope === "" ? {} : { scope }),
+        why,
+      };
+      const valid = validateSetting(binding);
+      if (!valid.ok) { deps.err(valid.reason); return Exit.Refused; }
+
+      const existing = chosen.org.settings ?? [];
+      const sameKey = (b: SettingBinding) => b.setting === binding.setting && (b.scope ?? "") === scope;
+      const replaced = existing.some(sameKey);
+      const updated = updateOrg(registry, {
+        ...chosen.org,
+        settings: [...existing.filter((b) => !sameKey(b)), binding],
+      });
+      if (!updated.ok) { deps.err(updated.reason); return Exit.Refused; }
+      registry = updated.registry;
+      deps.writeFile(registryPath, serializeRegistry(registry));
+
+      emit(deps, json, { org: chosen.org.orgId, setting: binding, replaced }, () =>
+        `${replaced ? "changed" : "set"} '${name}' to '${value}'` +
+        `${scope === "" ? " organization-wide" : ` for '${scope}'`} on '${chosen.org.orgId}'\n` +
+        `  because ${why}\n`,
+      );
+      return Exit.Ok;
+    }
+
+    case "org setting unbind": {
+      const chosen = resolveOrg(registry, flagValue(flags, "--org"));
+      if ("reason" in chosen) { deps.err(chosen.reason); return Exit.NotFound; }
+      const name = (flagValue(flags, "--setting") ?? "").trim();
+      const scope = (flagValue(flags, "--for") ?? "").trim();
+      if (name === "") { deps.err("--setting is required"); return Exit.Usage; }
+
+      const existing = chosen.org.settings ?? [];
+      const sameKey = (b: SettingBinding) => b.setting === name && (b.scope ?? "") === scope;
+      if (!existing.some(sameKey)) {
+        deps.err(`'${name}' is not set${scope === "" ? " organization-wide" : ` for '${scope}'`} on '${chosen.org.orgId}'`);
+        return Exit.NotFound;
+      }
+      // DELETED, not suppressed. Unlike a practice there is no register default to come back: unset
+      // means the MECHANICAL default applies, which is what removing this returns the item to.
+      const updated = updateOrg(registry, { ...chosen.org, settings: existing.filter((b) => !sameKey(b)) });
+      if (!updated.ok) { deps.err(updated.reason); return Exit.Refused; }
+      registry = updated.registry;
+      deps.writeFile(registryPath, serializeRegistry(registry));
+      emit(deps, json, { org: chosen.org.orgId, setting: name, scope, removed: true }, () =>
+        `'${name}'${scope === "" ? "" : ` for '${scope}'`} is unset: the mechanical default applies again\n`,
+      );
+      return Exit.Ok;
+    }
+
+    case "org change-requests set": {
+      const chosen = resolveOrg(registry, flagValue(flags, "--org"));
+      if ("reason" in chosen) { deps.err(chosen.reason); return Exit.NotFound; }
+      const sections: ChangeRequestSection[] = [];
+      for (const raw of flagValues(flags, "--section")) {
+        const at = raw.indexOf("=");
+        if (at <= 0) { deps.err(`--section '${raw}' must be '<Heading>=<what it must state>'`); return Exit.Usage; }
+        sections.push({ heading: raw.slice(0, at).trim(), states: raw.slice(at + 1).trim() });
+      }
+      const config: ChangeRequestConfig = {
+        sections,
+        keepOut: flagValues(flags, "--keep-out").map((v) => v.trim()).filter((v) => v !== ""),
+        sync: (flagValue(flags, "--sync") ?? "").trim() as SyncMethod,
+        // Asked here, always: an absent answer is refused below rather than stored as "not stated".
+        replies: (flagValue(flags, "--replies") ?? "").trim() as ReplyPolicy,
+        why: (flagValue(flags, "--why") ?? "").trim(),
+      };
+      const valid = validateChangeRequests(config);
+      if (!valid.ok) { deps.err(valid.reason); return Exit.Refused; }
+      const replaced = chosen.org.changeRequests !== undefined;
+      const updated = updateOrg(registry, { ...chosen.org, changeRequests: config });
+      if (!updated.ok) { deps.err(updated.reason); return Exit.Refused; }
+      registry = updated.registry;
+      deps.writeFile(registryPath, serializeRegistry(registry));
+      emit(deps, json, { org: chosen.org.orgId, changeRequests: config, replaced }, () =>
+        `${replaced ? "changed" : "stated"} how '${chosen.org.orgId}' writes merge requests: ` +
+        `${sections.map((x) => x.heading).join(" / ")}; kept current by ${config.sync}; reviewers answered: ${config.replies}` +
+        `${config.keepOut.length === 0 ? "" : `; never adds ${config.keepOut.join(", ")}`}\n  because ${config.why}\n`,
+      );
+      return Exit.Ok;
+    }
+
+    case "org change-requests show": {
+      const chosen = resolveOrg(registry, flagValue(flags, "--org"));
+      if ("reason" in chosen) { deps.err(chosen.reason); return Exit.NotFound; }
+      const cr = chosen.org.changeRequests;
+      emit(deps, json, { org: chosen.org.orgId, changeRequests: cr ?? null }, () =>
+        cr === undefined
+          ? `'${chosen.org.orgId}' has not said how its merge requests are written - 'org configure' names the step\n`
+          : [
+              `merge requests on '${chosen.org.orgId}' carry, in order:`,
+              ...cr.sections.map((x) => `  ## ${x.heading}\n     ${x.states}`),
+              cr.keepOut.length === 0 ? "  a change may add anything" : `  a change may never add: ${cr.keepOut.join(", ")}`,
+              `  kept current by: ${cr.sync}`,
+              `  reviewers' comments: ${cr.replies ?? "NOT STATED - run 'org change-requests set' with --replies"}`,
+              `  because ${cr.why}`,
+              "",
+            ].join("\n"),
+      );
       return Exit.Ok;
     }
 
@@ -763,6 +904,12 @@ export async function main(argv: readonly string[], deps: CliDeps): Promise<numb
           ...(row.practice.scopeWorkId === undefined ? {} : { scopeWorkId: row.practice.scopeWorkId }),
         })),
         directives: directives.map((row) => ({ ...row.directive, byDefault: row.byDefault })),
+        // LISTED HERE rather than in a command of their own: a setting is the same configuration
+        // answering the same question, and a second listing is a second place to forget to look.
+        settings: (chosen.org.settings ?? []).map((b) => ({
+          ...b,
+          legalValues: SETTING_VALUES[b.setting],
+        })),
         repoSkills: repos,
         resolvedFor: ancestry,
       };
@@ -777,6 +924,16 @@ export async function main(argv: readonly string[], deps: CliDeps): Promise<numb
             resolvePractice([row.practice], row.practice.subject, ancestry, DEFAULT_PRACTICES),
           );
           if (rendered !== "") out.push(rendered);
+        }
+        const settings = chosen.org.settings ?? [];
+        out.push(
+          settings.length === 0
+            ? `no process settings — every mechanical decision takes its default`
+            : `${String(settings.length)} process setting(s)`,
+        );
+        for (const b of settings) {
+          out.push(`  ${String(b.setting)} = ${b.value}${b.scope === undefined ? "  (organization-wide)" : `  for ${b.scope}`}`);
+          out.push(`    because ${b.why}`);
         }
         out.push(`${String(directives.length)} standing directive(s)`);
         for (const row of directives) {
@@ -1020,7 +1177,7 @@ export async function main(argv: readonly string[], deps: CliDeps): Promise<numb
         deps.err(`no work item '${workId}' in '${chosen.org.orgId}'`);
         return Exit.NotFound;
       }
-      const chain = chainFor(node.workType);
+      const chain = chainOf(node);
       const evaluations = folded.gateEvaluations.filter((e) => e.workId === workId);
       const all = gateDemand({ cascade: folded.cascade, evaluations: folded.gateEvaluations });
       const view = {
@@ -1031,7 +1188,7 @@ export async function main(argv: readonly string[], deps: CliDeps): Promise<numb
         ownerHatId: node.ownerHatId,
         assigneeHatId: node.assigneeHatId,
         chain,
-        gatesComplete: gatesComplete(node.workType, workId, folded.gateEvaluations),
+        gatesComplete: gatesComplete(node, workId, folded.gateEvaluations),
         ran: evaluations.map((e) => ({
           gate: e.gate,
           outcome: e.outcome,

@@ -111,6 +111,23 @@ export interface JiraIssue {
   readonly url: string;
   /** The description, flattened from Atlassian Document Format. Empty when there is none. */
   readonly description: string;
+  /**
+   * The issue's parent — for a story or bug, its EPIC.
+   *
+   * Never fetched before this field existed, which meant every setting keyed on an epic —
+   * `integration_branch=direct for AIAGENT-796` — could never match an issue that arrived
+   * through this reader.
+   */
+  readonly parentKey?: string;
+  readonly parentSummary?: string;
+  /**
+   * Every comment, oldest first.
+   *
+   * THE DESIGN-OF-RECORD OFTEN LIVES HERE. The organization this reader feeds carries a standing
+   * directive to read the whole ticket for exactly that reason, and its own intake was not
+   * reading them.
+   */
+  readonly comments: readonly { readonly author: string; readonly createdMs: number; readonly body: string }[];
 }
 
 /**
@@ -166,10 +183,57 @@ function toIssue(baseUrl: string, raw: RawIssue): JiraIssue | undefined {
     updatedMs: Number.isFinite(updated) ? updated : 0,
     url: `${baseUrl}/browse/${key}`,
     description: flattenAdf(f["description"]).trim(),
+    ...parentOf(f["parent"]),
+    comments: commentsOf(f["comment"]),
   };
 }
 
-const FIELDS = "summary,status,issuetype,priority,updated,assignee,description";
+/** The parent's key and summary, or nothing. A malformed parent is absent, never guessed. */
+function parentOf(raw: unknown): { readonly parentKey?: string; readonly parentSummary?: string } {
+  if (raw === null || typeof raw !== "object") return {};
+  const r = raw as Record<string, unknown>;
+  const key = typeof r["key"] === "string" ? r["key"] : undefined;
+  if (key === undefined) return {};
+  const fields = r["fields"] as Record<string, unknown> | undefined;
+  const summary = typeof fields?.["summary"] === "string" ? (fields["summary"] as string) : undefined;
+  return { parentKey: key, ...(summary === undefined ? {} : { parentSummary: summary }) };
+}
+
+/**
+ * Every comment, oldest first. An unreadable comment is SKIPPED rather than failing the issue:
+ * one malformed comment must not cost the organization the ticket it is attached to.
+ */
+function commentsOf(raw: unknown): readonly { readonly author: string; readonly createdMs: number; readonly body: string }[] {
+  if (raw === null || typeof raw !== "object") return [];
+  const list = (raw as Record<string, unknown>)["comments"];
+  if (!Array.isArray(list)) return [];
+  const out: { author: string; createdMs: number; body: string }[] = [];
+  for (const c of list) {
+    if (c === null || typeof c !== "object") continue;
+    const it = c as Record<string, unknown>;
+    const body = flattenAdf(it["body"]).trim();
+    if (body === "") continue;
+    const author = it["author"] as Record<string, unknown> | undefined;
+    const created = typeof it["created"] === "string" ? Date.parse(it["created"]) : Number.NaN;
+    out.push({
+      author: typeof author?.["displayName"] === "string" ? (author["displayName"] as string) : "someone",
+      createdMs: Number.isFinite(created) ? created : 0,
+      body,
+    });
+  }
+  // OLDEST FIRST, so a decision that superseded an earlier one reads after it — which is the order
+  // a person reading the thread would meet them in.
+  return out.sort((a, b) => a.createdMs - b.createdMs);
+}
+
+/**
+ * What is fetched for every issue.
+ *
+ * `parent` and `comment` were missing, and both were measured missing on the organization's first
+ * real run: the epic every branching setting keys on was never seen, and neither was the comment
+ * thread where the design-of-record usually lives.
+ */
+const FIELDS = "summary,status,issuetype,priority,updated,assignee,description,parent,comment";
 
 export type JiraResult<T> = { readonly ok: true; readonly value: T } | { readonly ok: false; readonly reason: string };
 
@@ -258,17 +322,43 @@ export function severityOf(priority: string | undefined): Severity {
  */
 export function issueToEvent(issue: JiraIssue): ExternalEvent {
   const isDefect = /bug|defect/i.test(issue.issueType);
-  const reproduction = reproductionFrom(issue.description);
+  const body = wholeTicket(issue);
+  // SEARCHED ACROSS THE WHOLE TICKET, comments included. Reproduction steps are routinely added
+  // in a comment after the ticket is filed, and a search of the description alone refuses a
+  // ticket that carries its reproduction three messages down.
+  const reproduction = reproductionFrom(body);
   return {
     source: "jira",
     externalId: issue.key,
     ...(isDefect ? { kind: "defect" as const } : {}),
     title: issue.summary,
-    body: issue.description,
+    body,
     severity: severityOf(issue.priority),
     evidenceRefs: [issue.url],
     ...(reproduction === undefined ? {} : { reproduction }),
+    ...(issue.parentKey === undefined ? {} : { parentExternalId: issue.parentKey }),
+    ...(issue.parentSummary === undefined ? {} : { parentTitle: issue.parentSummary }),
   };
+}
+
+/**
+ * The whole ticket as one document — description, then every comment in order, each attributed.
+ *
+ * Attributed and dated because the thread is a conversation, and a later comment that reverses an
+ * earlier decision only reads as a reversal if the reader can see which came first and who said it.
+ */
+export function wholeTicket(issue: JiraIssue): string {
+  const parts: string[] = [];
+  if (issue.description !== "") parts.push(issue.description);
+  if (issue.comments.length > 0) {
+    parts.push(
+      "## Comments\n\n" +
+        issue.comments
+          .map((c) => `[${c.createdMs === 0 ? "undated" : new Date(c.createdMs).toISOString().slice(0, 10)}] ${c.author}:\n${c.body}`)
+          .join("\n\n"),
+    );
+  }
+  return parts.join("\n\n");
 }
 
 /**

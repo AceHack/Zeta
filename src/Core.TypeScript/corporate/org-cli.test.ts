@@ -679,3 +679,69 @@ describe("the guided walkthrough is a resumable conversation", () => {
     expect(p.complete).toBe(false);
   });
 });
+
+describe("A CHECKPOINT IS A NAME OR A GATE, and anything else is refused", () => {
+  // The two names stop at brd_approval and architecture_approval, which a defect owes neither of,
+  // and the parsers dropped every other value - so asking for a defect sign-off asked for nothing.
+  const org = (humanCheckpoints: readonly string[]): OrgRecord =>
+    ({
+      orgId: "x", name: "X", storeDir: "/s",
+      intake: Intake.SourceSynced, autonomy: Autonomy.Directed,
+      policy: basePolicy("x", "existing_harness"),
+      sources: [], humanCheckpoints, skills: [], createdAtMs: 1,
+    }) as unknown as OrgRecord;
+
+  test("a gate is accepted as a checkpoint, alongside the names", () => {
+    expect(validateOrg(org(["approach", "release_readiness"])).ok).toBe(true);
+  });
+
+  test("a value that is neither is refused, naming what would be accepted", () => {
+    const r = validateOrg(org(["release-readiness"]));
+    expect(r.ok).toBe(false);
+    if (!r.ok) {
+      expect(r.reason).toContain("release-readiness");
+      expect(r.reason).toContain("release_readiness");
+    }
+  });
+});
+
+describe("HOW A MERGE REQUEST IS WRITTEN IS STATED, AND ONLY WHAT CAN MEAN SOMETHING IS STORED", () => {
+  const set = (h: Harness, extra: readonly string[]) =>
+    main(["org", "change-requests", "set", "--org", "elera", ...extra], h.deps);
+
+  test("sections, keep-out patterns and a sync method are stored in order and shown back", async () => {
+    const h = harness();
+    await main(CREATE, h.deps);
+    const code = await set(h, [
+      "--section", "Problem statement=what the reporter saw",
+      "--section", "Root cause=why it happened",
+      "--keep-out", "*.png",
+      "--sync", "merge_target",
+      "--replies", "reply_and_resolve",
+      "--why", "reviewers read the problem first",
+    ]);
+    expect(code).toBe(Exit.Ok);
+    const saved = JSON.parse(h.files.get(REG) ?? "{}") as { orgs: { changeRequests?: { sections: { heading: string }[]; sync: string; replies?: string } }[] };
+    expect(saved.orgs[0]?.changeRequests?.sections.map((s) => s.heading)).toEqual(["Problem statement", "Root cause"]);
+    expect(saved.orgs[0]?.changeRequests?.sync).toBe("merge_target");
+    expect(saved.orgs[0]?.changeRequests?.replies).toBe("reply_and_resolve");
+    h.stdout.length = 0;
+    expect(await main(["org", "change-requests", "show", "--org", "elera"], h.deps)).toBe(Exit.Ok);
+    expect(h.stdout.join("")).toContain("## Root cause");
+    expect(h.stdout.join("")).toContain("reviewers' comments: reply_and_resolve");
+  });
+
+  test("a section with no statement, an unknown sync method, rebasing, or no answer about replies is refused and nothing is written", async () => {
+    const h = harness();
+    await main(CREATE, h.deps);
+    const before = h.files.get(REG);
+    const replies = ["--replies", "reply"];
+    expect(await set(h, ["--section", "Root cause", "--sync", "merge_target", ...replies, "--why", "w"])).toBe(Exit.Usage);
+    expect(await set(h, ["--section", "Root cause=why", "--sync", "rebase", ...replies, "--why", "w"])).toBe(Exit.Usage);
+    expect(await set(h, ["--section", "Root cause= ", "--sync", "merge_target", ...replies, "--why", "w"])).toBe(Exit.Refused);
+    // Whether a reviewer is answered is asked, never defaulted - and only a known answer is kept.
+    expect(await set(h, ["--section", "Root cause=why", "--sync", "merge_target", "--why", "w"])).toBe(Exit.Usage);
+    expect(await set(h, ["--section", "Root cause=why", "--sync", "merge_target", "--replies", "sometimes", "--why", "w"])).toBe(Exit.Usage);
+    expect(h.files.get(REG)).toBe(before);
+  });
+});

@@ -10,8 +10,10 @@ import { describe, expect, test } from "bun:test";
 
 import { Severity } from "./intake";
 import {
+  fetchJiraIssue,
   flattenAdf,
   issueToEvent,
+  wholeTicket,
   queryFor,
   readJiraCredentials,
   reproductionFrom,
@@ -32,6 +34,9 @@ function issue(over: Partial<JiraIssue> = {}): JiraIssue {
     updatedMs: 1_700_000_000_000,
     url: "https://example.atlassian.net/browse/AIAGENT-1639",
     description: "",
+    // An issue with no thread is the common case, and the field is required so a reader can never
+    // mistake "not fetched" for "nobody commented".
+    comments: [],
     ...over,
   };
 }
@@ -243,5 +248,91 @@ describe("A REPRODUCTION IN PROSE IS STILL A REPRODUCTION", () => {
   test("an empty description is refused, as before", () => {
     expect(reproductionFrom("")).toBeUndefined();
     expect(reproductionFrom("   \n\n  ")).toBeUndefined();
+  });
+});
+
+describe("THE WHOLE TICKET — comments and parent, as the org's own directive requires", () => {
+  // Measured on the first real run: FIELDS never asked for `parent` or `comment`, so the epic every
+  // branching setting keys on was never seen, and neither was the thread where decisions live.
+
+  test("comments are part of the ticket, attributed and in order", () => {
+    const text = wholeTicket(
+      issue({
+        description: "It resets.",
+        comments: [
+          { author: "Ann", createdMs: Date.parse("2026-09-01T00:00:00Z"), body: "first" },
+          { author: "Bo", createdMs: Date.parse("2026-09-02T00:00:00Z"), body: "second" },
+        ],
+      }),
+    );
+    expect(text).toContain("It resets.");
+    expect(text).toContain("Ann:\nfirst");
+    expect(text.indexOf("first")).toBeLessThan(text.indexOf("second"));
+    expect(text).toContain("2026-09-02");
+  });
+
+  test("a REPRODUCTION WRITTEN IN A COMMENT is found — the description alone would refuse it", () => {
+    const withCommentSteps = issue({
+      issueType: "Bug",
+      description: "no steps here",
+      comments: [{ author: "QA", createdMs: 1, body: "Repro\n1. open the page\n2. click archive" }],
+    });
+    expect(issueToEvent(withCommentSteps).reproduction).toBeDefined();
+    expect(issueToEvent(issue({ issueType: "Bug", description: "no steps here" })).reproduction).toBeUndefined();
+  });
+
+  test("the event carries the body and the parent", () => {
+    const e = issueToEvent(
+      issue({ description: "desc", parentKey: "AIAGENT-796", parentSummary: "catch-all", comments: [{ author: "a", createdMs: 1, body: "note" }] }),
+    );
+    expect(e.body).toContain("note");
+    expect(e.parentExternalId).toBe("AIAGENT-796");
+    expect(e.parentTitle).toBe("catch-all");
+    expect(issueToEvent(issue()).parentExternalId).toBeUndefined();
+  });
+
+  test("the READER asks for, and parses, parent and comments off the wire", async () => {
+    // Through the real parse path with `fetch` replaced — the only way to prove FIELDS and the
+    // parser agree, since the fixture above is built already-parsed.
+    const real = globalThis.fetch;
+    let asked = "";
+    globalThis.fetch = (async (url: string | URL) => {
+      asked = String(url);
+      return new Response(
+        JSON.stringify({
+          key: "AIAGENT-1659",
+          fields: {
+            summary: "order resets",
+            issuetype: { name: "Bug" },
+            status: { name: "To Do", statusCategory: { key: "new" } },
+            updated: "2026-09-01T00:00:00.000+0000",
+            description: null,
+            parent: { key: "AIAGENT-791", fields: { summary: "Sentinel: MVP Gaps" } },
+            comment: {
+              comments: [
+                { author: { displayName: "Late" }, created: "2026-09-03T00:00:00.000+0000", body: "later" },
+                { author: { displayName: "Early" }, created: "2026-09-02T00:00:00.000+0000", body: "earlier" },
+                { author: { displayName: "Blank" }, created: "2026-09-02T00:00:00.000+0000", body: "" },
+                "not a comment",
+              ],
+            },
+          },
+        }),
+        { status: 200, headers: { "content-type": "application/json" } },
+      );
+    }) as typeof fetch;
+    try {
+      const got = await fetchJiraIssue({ baseUrl: "https://example.atlassian.net", email: "e", token: "t" }, "AIAGENT-1659");
+      expect(asked).toContain("parent");
+      expect(asked).toContain("comment");
+      expect(got.ok).toBe(true);
+      if (!got.ok) return;
+      expect(got.value.parentKey).toBe("AIAGENT-791");
+      expect(got.value.parentSummary).toBe("Sentinel: MVP Gaps");
+      // Oldest first; the blank and the malformed are skipped, not fatal.
+      expect(got.value.comments.map((c) => c.author)).toEqual(["Early", "Late"]);
+    } finally {
+      globalThis.fetch = real;
+    }
   });
 });

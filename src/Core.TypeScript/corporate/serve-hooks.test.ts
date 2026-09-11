@@ -18,12 +18,12 @@
 import { describe, expect, test } from "bun:test";
 import { createHmac } from "node:crypto";
 import { connect } from "node:net";
-import { mkdtempSync, readdirSync, writeFileSync } from "node:fs";
+import { mkdtempSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import type { AddressInfo } from "node:net";
 import { handleDelivery, hooksOf, startHookServer, type HookServerDeps } from "./serve-hooks";
-import { SignatureScheme, type WebhookConfig } from "./webhook-intake";
+import { GITLAB_FEEDBACK_MAP, SignatureScheme, type WebhookConfig } from "./webhook-intake";
 import { Autonomy, Intake, type OrgRecord } from "./org-registry";
 import { basePolicy } from "./org-policy";
 
@@ -295,5 +295,58 @@ describe("THE BODY IS REASSEMBLED FROM BYTES — a split character must still ve
     } finally {
       server.close();
     }
+  });
+});
+
+describe("FEEDBACK ON A CHANGE ALREADY IN FRONT OF PEOPLE IS FILED AS FEEDBACK, NEVER AS NEW WORK", () => {
+  const gitlabHook = (over: Partial<WebhookConfig> = {}): WebhookConfig => ({
+    sourceId: "gitlab",
+    scheme: SignatureScheme.SharedToken,
+    signatureHeader: "x-gitlab-token",
+    secretFile: "/secret",
+    purpose: "change_feedback",
+    map: [...GITLAB_FEEDBACK_MAP],
+    ...over,
+  });
+  const note = JSON.stringify({
+    object_kind: "note",
+    user: { username: "reviewer" },
+    object_attributes: { id: 99, note: "Please explain the race.", url: "https://git.example/p/-/merge_requests/162#note_99" },
+    merge_request: { source_branch: "defect/AIAGENT-1660", url: "https://git.example/p/-/merge_requests/162" },
+  });
+
+  test("a GitLab note with the right token is filed in the feedback directory with the fields the organization matches on - and nothing reaches the intake inbox", () => {
+    const d = deps({ hooks: [gitlabHook()], feedbackDir: tmp() });
+    const out = handleDelivery(d, { path: "/hooks/gitlab", rawBody: note, headers: { "x-gitlab-token": SECRET, "x-gitlab-event-uuid": "uuid-1" } });
+    expect(out.status).toBe(202);
+    expect(readdirSync(d.inbox)).toEqual([]);
+    const files = readdirSync(d.feedbackDir as string);
+    expect(files).toEqual(["gitlab-uuid-1.json"]);
+    const filed = JSON.parse(readFileSync(join(d.feedbackDir as string, files[0] as string), "utf-8")) as Record<string, string>;
+    expect(filed).toMatchObject({ source: "gitlab", deliveryId: "uuid-1", itemKind: "note", summary: "Please explain the race.", author: "reviewer", branch: "defect/AIAGENT-1660" });
+    expect(filed["target"]).toBeUndefined();
+  });
+
+  test("a push to the target is filed as a target that moved, carrying where it moved to", () => {
+    const d = deps({ hooks: [gitlabHook()], feedbackDir: tmp() });
+    const push = JSON.stringify({ object_kind: "push", ref: "refs/heads/master", after: "abc123", user_username: "someone" });
+    expect(handleDelivery(d, { path: "/hooks/gitlab", rawBody: push, headers: { "x-gitlab-token": SECRET, "x-gitlab-event-uuid": "uuid-2" } }).status).toBe(202);
+    const filed = JSON.parse(readFileSync(join(d.feedbackDir as string, "gitlab-uuid-2.json"), "utf-8")) as Record<string, string>;
+    expect(filed).toMatchObject({ itemKind: "push", target: "refs/heads/master", targetCommit: "abc123" });
+  });
+
+  test("a wrong or missing token is refused and nothing is filed; a shorter token is not a timing oracle - it is simply wrong", () => {
+    const d = deps({ hooks: [gitlabHook()], feedbackDir: tmp() });
+    for (const token of ["nope", "", SECRET.slice(0, 3)]) {
+      const out = handleDelivery(d, { path: "/hooks/gitlab", rawBody: note, headers: token === "" ? {} : { "x-gitlab-token": token } });
+      expect(out.status).toBe(401);
+    }
+    expect(readdirSync(d.feedbackDir as string)).toEqual([]);
+  });
+
+  test("a feedback hook with nowhere to file answers 503 rather than dropping the delivery or filing it as work", () => {
+    const d = deps({ hooks: [gitlabHook()] });
+    expect(handleDelivery(d, { path: "/hooks/gitlab", rawBody: note, headers: { "x-gitlab-token": SECRET } }).status).toBe(503);
+    expect(readdirSync(d.inbox)).toEqual([]);
   });
 });

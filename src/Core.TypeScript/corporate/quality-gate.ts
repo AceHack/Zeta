@@ -46,6 +46,19 @@ export const GateKind = {
    * cannot: was the context READ from somewhere a second party could read too?
    */
   BusinessContextGrooming: "business_context_grooming",
+  /**
+   * The EXISTING system around the affected site, understood and written down — before anybody
+   * writes a requirement or a design for changing it.
+   *
+   * Not a design. A description: what the components in and around the affected site are for,
+   * what they are trying to accomplish, how they fit together, and the business they serve. For a
+   * feature it is what the BRD and the architecture are drafted against; for a defect it is what
+   * "supposed to" means, which a reproduction and a fix are both judged by.
+   *
+   * Second, after grooming: grooming reads what the organization has WRITTEN about the business;
+   * this reads the system itself. A BRD drafted without it describes a system nobody looked at.
+   */
+  SystemContext: "system_context",
   CustomerRfpReview: "customer_rfp_review",
   BrdApproval: "brd_approval",
   /**
@@ -81,6 +94,21 @@ export const GateKind = {
    * the documents, not inside any one of them.
    */
   AdversarialReview: "adversarial_review",
+  /**
+   * The defect is REPRODUCED before anybody fixes it — as steps AND as something that fails.
+   *
+   * A fix for a defect nobody observed is a belief about the defect. This gate asks whether the
+   * failure was actually made to happen: by reading the code when the cause is plain, and by
+   * running the program when it is not. Its artifact is the reproduction a person can follow and
+   * a test that fails on the unfixed code — which the implementation after it must turn green.
+   *
+   * It is also the organization's cheapest "is this even a bug?": a reproduction attempt that
+   * finds the behaviour is as designed stops the work here, before a fix exists to defend.
+   *
+   * Immediately before implementation, because that is where the branch already exists and a
+   * failing test committed now is the first commit the fix builds on.
+   */
+  Reproduction: "reproduction",
   ImplementationReview: "implementation_review",
   /** User-acceptance: does it do what the BRD said, judged by someone who did not build it. */
   QaUat: "qa_uat",
@@ -106,6 +134,7 @@ export type GateKind = (typeof GateKind)[keyof typeof GateKind];
  */
 export const ORDERED_GATES: readonly GateKind[] = [
   GateKind.BusinessContextGrooming,
+  GateKind.SystemContext,
   GateKind.CustomerRfpReview,
   GateKind.BrdApproval,
   GateKind.PeerReview,
@@ -113,6 +142,7 @@ export const ORDERED_GATES: readonly GateKind[] = [
   GateKind.ArchitectureApproval,
   GateKind.CostApproval,
   GateKind.AdversarialReview,
+  GateKind.Reproduction,
   GateKind.ImplementationReview,
   GateKind.QaUat,
   GateKind.RuntimeValidation,
@@ -270,11 +300,18 @@ export type RecoveryPath = (typeof RecoveryPath)[keyof typeof RecoveryPath];
 export function recoveryPathFor(gate: GateKind): RecoveryPath {
   switch (gate) {
     case GateKind.BusinessContextGrooming:
+    // A system description that does not hold is a misreading of what exists — discovery's to redo.
+    case GateKind.SystemContext:
     case GateKind.CustomerRfpReview:
     case GateKind.BrdApproval:
     case GateKind.PeerReview:
       // A peer rejecting the groomed context sends it back to grooming, not to engineering: the
       // defect is in what was understood, and building on it faster does not fix it.
+      return RecoveryPath.ReopenDiscoveryOrBrd;
+    case GateKind.Reproduction:
+      // A defect that could not be reproduced is a defect NOT YET UNDERSTOOD — the report is missing
+      // something, or the behaviour is as designed. Both are discovery's to resolve with whoever
+      // filed it; sending it to engineering would be asking for a fix to something nobody has seen.
       return RecoveryPath.ReopenDiscoveryOrBrd;
     case GateKind.ArchitectureDesign:
     case GateKind.ArchitectureApproval:
@@ -550,23 +587,51 @@ export const HumanCheckpoint = {
   /** The approach itself, approved before it is built. */
   Approach: "approach",
 } as const;
-export type HumanCheckpoint = (typeof HumanCheckpoint)[keyof typeof HumanCheckpoint];
+/** A checkpoint by one of the two names above. */
+export type NamedCheckpoint = (typeof HumanCheckpoint)[keyof typeof HumanCheckpoint];
+/**
+ * A checkpoint: one of the NAMES, or ANY GATE stated directly.
+ *
+ * ── WHY A GATE MAY BE NAMED ─────────────────────────────────────────────────
+ * The two names stop at `brd_approval` and `architecture_approval`, and a defect owes neither. So an
+ * organization that worked defects had NO moment at which a person could sign anything off - and a
+ * parser that dropped every other value meant asking for one silently asked for nothing. MEASURED on
+ * the Agentic Team's first real run: an agent reviewer passed an API-only UAT for a defect whose
+ * symptom is on screen, and the person delegated to approve had no seat at which to say no.
+ *
+ * Which gate a person signs is the operator's choice, as data; the grammar names every gate and
+ * prefers none.
+ */
+export type HumanCheckpoint = NamedCheckpoint | GateKind;
 
 /**
- * The gate each checkpoint stops at.
+ * The gate each named checkpoint stops at.
  *
  * `brd_approval` is the end of grooming: the business rules are written and reviewed, and nothing
  * has been built. `architecture_approval` is the end of the approach: the design is assessed and
  * still nothing has been built. Both are the last moment where a person's "no" is cheap.
  */
-export const CHECKPOINT_GATE: Readonly<Record<HumanCheckpoint, GateKind>> = {
+export const CHECKPOINT_GATE: Readonly<Record<NamedCheckpoint, GateKind>> = {
   grooming: "brd_approval",
   approach: "architecture_approval",
 };
 
+/** Every value a checkpoint may take: the names, then every gate. */
+export const CHECKPOINT_VALUES: readonly HumanCheckpoint[] = [
+  ...Object.values(HumanCheckpoint),
+  ...(Object.values(GateKind) as GateKind[]),
+];
+
+/** Is this a checkpoint — a name or a gate? Anything else is refused by the caller, never dropped. */
+export function isHumanCheckpoint(value: unknown): value is HumanCheckpoint {
+  return typeof value === "string" && (CHECKPOINT_VALUES as readonly string[]).includes(value);
+}
+
 /** The gates that need a person, for the checkpoints an operator turned on. Empty means agentic. */
 export function humanGatesFor(checkpoints: readonly HumanCheckpoint[]): ReadonlySet<GateKind> {
-  return new Set(checkpoints.map((c) => CHECKPOINT_GATE[c]));
+  return new Set(
+    checkpoints.map((c) => (Object.prototype.hasOwnProperty.call(CHECKPOINT_GATE, c) ? CHECKPOINT_GATE[c as NamedCheckpoint] : (c as GateKind))),
+  );
 }
 
 export interface GateRunResult {

@@ -12,7 +12,7 @@
  * make look right.
  */
 
-import { chainFor } from "./gate-demand";
+import { chainFor, chainOf } from "./gate-demand";
 import { describe, expect, test } from "bun:test";
 import { agentsFromChart, gateStaffing, runOrgRuntime, staffingReadout, type OrgRuntimeDeps } from "./org-runtime";
 import { buildOrgChart, reportsUpTo } from "./org-chart";
@@ -25,11 +25,14 @@ import { GateKind, GateOutcome, ORDERED_GATES, mayEvaluate } from "./quality-gat
 import { RunOutcome } from "./qa";
 import { ShardState } from "./work-market";
 import { Fidelity, Port } from "./providers";
+import { ProcessSetting, type SettingBinding } from "./practice";
+import { defaultProviderSet } from "./org-runtime";
 import type { ProducerPort } from "./pipeline";
 import { PriorityClass } from "./prioritization";
 import { AnchorState } from "./discussion-anchor";
 import { SignalTool } from "./supervisor-signal";
-import type { OrgEvent } from "./org-event";
+import { OrgEventKind, type OrgEvent } from "./org-event";
+import { foldOrganization } from "./org-fold";
 
 const chart = (() => {
   const r = buildOrgChart(SEED_HATS);
@@ -653,6 +656,19 @@ describe("STOPPING FOR A PERSON IS A PAUSE, NEVER A ROLLBACK", () => {
     expect(report.delivered).toBe(true);
   });
 
+  test("A CHECKPOINT MAY NAME A GATE: a defect stops for a person at release_readiness, its QA already done", async () => {
+    // The two NAMED checkpoints stop at brd_approval and architecture_approval, and a defect owes
+    // neither — so no person could ever sign a defect off. MEASURED on the Agentic Team's first run.
+    const report = await runOrgRuntime(deps({ checkpoints: ["release_readiness"] }));
+    const waits = report.awaitingHuman.filter((w) => String(w.gate) === "release_readiness");
+    expect(waits.length).toBeGreaterThan(0);
+    // It stops AFTER the evidence a person would sign on, not before it.
+    const leaf = waits[0]?.taskId;
+    expect(report.gateEvaluations.some((e) => e.workId === leaf && e.gate === "qa_uat")).toBe(true);
+    expect(report.gateEvaluations.some((e) => e.workId === leaf && e.gate === "release_readiness")).toBe(false);
+    expect(report.delivered).toBe(false);
+  });
+
   test("WITH NO CHECKPOINTS NOTHING WAITS — the default is unchanged", async () => {
     const report = await runOrgRuntime(deps());
     expect(report.awaitingHuman).toEqual([]);
@@ -849,4 +865,563 @@ describe("EVERY RUNG RECALLS, NOT ONLY THE LEAVES", () => {
       expect(forNode.some((a) => a.hatId === node.ownerHatId)).toBe(true);
     }
   });
+});
+
+describe("THE PROCESS DECIDES WHERE WORK BRANCHES — through the runtime, not beside it", () => {
+  // -- WHY THIS TEST EXISTS ---------------------------------------------------
+  // `branch-topology.test.ts` proves the derivation and `practice.test.ts` proves the settings
+  // resolve. Neither proves the RUNTIME hands one to the other, and two mutations deleting exactly
+  // that pass-through survived the whole suite. That is the shape `Method` shipped in — a resolver
+  // with full coverage and nothing calling it — so the assertion here is on what the change-control
+  // port was actually asked for.
+
+  /** A change port that records the (branch, base) it was asked to open, and refuses nothing. */
+  function recordingChange(): {
+    readonly port: OrgRuntimeDeps["providers"] extends undefined ? never : unknown;
+    readonly opened: { branch: string; base?: string }[];
+  } {
+    const opened: { branch: string; base?: string }[] = [];
+    const port = {
+      meta: { port: Port.ChangeControl, name: "recording", fidelity: Fidelity.Simulated, describes: "records what it is asked to open" },
+      open: async (_node: unknown, ctx: { readonly branch: string; readonly base?: string }) => {
+        opened.push({ branch: ctx.branch, ...(ctx.base === undefined ? {} : { base: ctx.base }) });
+        return {
+          ok: true as const,
+          value: { changeId: `${ctx.branch}@c`, branch: ctx.branch, ...(ctx.base === undefined ? {} : { base: ctx.base }) },
+          evidence: [],
+        };
+      },
+      merge: async (handle: { readonly branch: string }) => ({ ok: true as const, value: { changeId: "m", branch: handle.branch }, evidence: [] }),
+    };
+    return { port: port as never, opened };
+  }
+
+  /** Run the pipeline with a recording change port and the given settings. */
+  async function basesFor(settings: readonly SettingBinding[]): Promise<{ branch: string; base?: string }[]> {
+    const rec = recordingChange();
+    const base = deps();
+    // THE DEFAULT SET, with only `change` replaced. `deps()` supplies no providers at all — the
+    // runtime builds them — so spreading `base.providers` gave an object with one member and the
+    // recorder wrapper threw on the missing intake port.
+    await runOrgRuntime({
+      ...base,
+      providers: { ...defaultProviderSet(base), change: rec.port },
+      ...(settings.length === 0 ? {} : { settings }),
+    } as OrgRuntimeDeps);
+    return rec.opened;
+  }
+
+  test("with nothing set, the shape decides and the runtime asks for no base", async () => {
+    // The fixture decomposes one request into ONE code item, so nothing collects and every change is
+    // cut from the adapter's own trunk — which the runtime expresses by saying nothing.
+    const opened = await basesFor([]);
+    expect(opened.length).toBeGreaterThan(0);
+    expect(opened.every((o) => o.base === undefined)).toBe(true);
+  }, 60_000);
+
+  test("A `collect` SETTING REACHES THE PORT as a base", async () => {
+    // `collect` on the fixture's project forces a branch the shape rule would not give — so a base
+    // appears in what the port was asked for, and it could only have come through the runtime.
+    const opened = await basesFor([
+      {
+        setting: ProcessSetting.IntegrationBranch,
+        value: "collect",
+        scope: "T-1",
+        why: "this epic will grow and we want one MR for it from the start",
+        // SCOPED BY TICKET, which also proves ticket-matching survives the trip: the fixture mints
+        // its own work ids and an operator has never seen them.
+      },
+    ]);
+    expect(opened.length).toBeGreaterThan(0);
+    const withBase = opened.filter((o) => o.base !== undefined);
+    expect(withBase.length).toBeGreaterThan(0);
+    // Named after the collection, not after an internal id.
+    expect(withBase[0]?.base).toContain("feature/");
+  }, 60_000);
+
+  test("...and a `direct` SETTING takes it away again — with its own control", async () => {
+    // THE CONTROL IS IN THE TEST, because "no base appeared" is also what an unconfigured run
+    // produces. Without the first half this would pass on a runtime that ignored settings entirely.
+    const everything: SettingBinding[] = [
+      { setting: ProcessSetting.IntegrationBranch, value: "collect", why: "this team works on feature branches" },
+    ];
+    const withBranches = await basesFor(everything);
+    expect(withBranches.some((o) => o.base !== undefined)).toBe(true);
+
+    // …and one ticket pulled back out of it.
+    const pulledOut = await basesFor([
+      ...everything,
+      { setting: ProcessSetting.IntegrationBranch, value: "direct", scope: "T-1", why: "this one ships on its own" },
+    ]);
+    expect(pulledOut.every((o) => o.base === undefined)).toBe(true);
+  }, 60_000);
+
+  // -- WHAT THIS BLOCK DOES NOT PROVE, stated rather than implied --------------
+  // Mutation-checked: 16 of 17 mutations go red. The survivor is deleting the `settings` pass-through
+  // on the COLLECTION-LANDING call, one line below the branching one proven above.
+  //
+  // It is unreachable from this harness. Landing a collection needs the collection itself Done with
+  // every code item under it Done, and a change port of REAL fidelity; this fixture's project is
+  // still `open` after a cycle, and seeding a fully-Done `priorCascade` did not reach it either. The
+  // rule itself is covered in `branch-topology.test.ts` — `collectionsReadyToLand` with and without a
+  // `direct` setting — so what is unproven is narrowly that the RUNTIME hands its settings to it.
+  //
+  // Recorded because an unfalsifiable line is worth knowing about, and because the honest place to
+  // close it is an end-to-end run over real git where a feature branch actually lands.
+});
+
+
+describe("THE ORGANIZATION'S OWN ANSWER TO AN UNREPRODUCED DEFECT reaches the work", () => {
+  // Intake can admit a defect with its reproduction OWED — but that is worth nothing unless the
+  // runtime passes the setting to triage AND the agent is told the reproduction is its first job.
+  const unreproduced: ExternalEvent = {
+    source: "jira",
+    externalId: "AIAGENT-1658",
+    kind: IntakeKind.Defect,
+    title: "archiving a non-latest session closes the latest instead",
+    body: "When you have multiple sessions and you archive one that isn't the most recent, it closes the last one.",
+    parentExternalId: "AIAGENT-796",
+    parentTitle: "Dev Portal catch-all",
+    severity: Severity.Medium,
+    evidenceRefs: ["https://example.atlassian.net/browse/AIAGENT-1658"],
+  };
+  const reproduceFirst: SettingBinding = {
+    setting: ProcessSetting.UnreproducedDefects,
+    value: "reproduce_first",
+    why: "our defect practice starts by reproducing — we do not bounce the ticket back",
+  };
+
+  test("unset, it is refused — and the refusal is a fact", async () => {
+    const events: OrgEvent[] = [];
+    const report = await runOrgRuntime(deps({ externalEvents: [unreproduced], onEvent: (e) => events.push(e) }));
+    expect(report.cascade.nodes.length).toBe(0);
+    expect(events.some((e) => e.fact?.kind === "intake_refused")).toBe(true);
+  }, 60_000);
+
+  test("with `reproduce_first`, it is admitted, and EVERY RUNG is told what the requester wrote", async () => {
+    const report = await runOrgRuntime(deps({ externalEvents: [unreproduced], settings: [reproduceFirst] }));
+    expect(report.cascade.nodes.length).toBeGreaterThan(0);
+    for (const n of report.cascade.nodes) {
+      expect(n.brief).toContain("closes the last one");
+      // The parent the ticket was filed under — what branching settings key on.
+      expect(n.brief).toContain("AIAGENT-796");
+      // The FACT that no steps came with it — but not an instruction to reproduce. That obligation is
+      // the defect's own `reproduction` step; copied onto every rung it made a reviewer reject the
+      // goal's grooming for not reproducing the bug (measured on the rehearsal run).
+      expect(n.brief).toContain("No reproduction steps were supplied");
+      expect(n.brief).not.toContain("is the first step");
+    }
+    const defect = report.cascade.nodes.find((n) => n.workType === WorkType.Defect);
+    expect(chainOf(defect ?? WorkType.Defect)[0]).toBe(GateKind.Reproduction);
+  }, 60_000);
+
+  test("a defect that CAME with a reproduction is not told it owes one", async () => {
+    const withSteps: ExternalEvent = { ...unreproduced, externalId: "AIAGENT-1", reproduction: "1. archive session 2 of 3" };
+    const report = await runOrgRuntime(deps({ externalEvents: [withSteps], settings: [reproduceFirst] }));
+    expect(report.cascade.nodes.length).toBeGreaterThan(0);
+    expect(report.cascade.nodes.every((n) => !(n.brief ?? "").includes("No reproduction steps were supplied"))).toBe(true);
+  }, 60_000);
+});
+
+describe("A DEFECT IS REPRODUCED BEFORE IT IS FIXED — as a gate, not a sentence", () => {
+  // User direction 2026-09-10: a defect with no steps is reproduced by QA (read the code; if the
+  // cause is not plain, run the program) and the steps and a failing test exist BEFORE the fix.
+  // Before this the only trace of that obligation was a line in the brief.
+
+  /** Records every step, in order, and what the fixer was handed. */
+  function recorder() {
+    const order: string[] = [];
+    const handed: (readonly { gate: string; refs: readonly string[] }[] | undefined)[] = [];
+    const reproduce: ProducerPort = {
+      meta: { port: Port.WorkExecution, name: "qa-repro", fidelity: Fidelity.Real, describes: "reproduces" },
+      produce: async (node) => {
+        order.push(`reproduce:${node.workId}`);
+        return { ok: true, value: { refs: ["tests/repro.test.ts"], summary: "fails on the unfixed code" }, evidence: [] };
+      },
+    };
+    const work = {
+      meta: { port: Port.WorkExecution, name: "fixer", fidelity: Fidelity.Real, describes: "fixes" },
+      execute: async (node: { workId: string }, ctx: { readonly priorPhases?: readonly { gate: string; refs: readonly string[] }[] }) => {
+        order.push(`fix:${node.workId}`);
+        handed.push(ctx.priorPhases);
+        return { ok: true as const, value: { workId: node.workId, succeeded: true, artifacts: ["src/fix.ts"], summary: "fixed" }, evidence: [] };
+      },
+    };
+    return { order, handed, reproduce, work };
+  }
+
+  test("the defect's chain owes reproduction, first, and a task's does not", () => {
+    expect(chainFor(WorkType.Defect)[0]).toBe(GateKind.Reproduction);
+    expect(chainFor(WorkType.Defect).indexOf(GateKind.Reproduction)).toBeLessThan(
+      chainFor(WorkType.Defect).indexOf(GateKind.ImplementationReview),
+    );
+    expect(chainFor(WorkType.Task)).not.toContain(GateKind.Reproduction);
+    // An incident may not repeat on demand — the register already says so at intake.
+    expect(chainFor(WorkType.Incident)).not.toContain(GateKind.Reproduction);
+  });
+
+  test("QA may evaluate it; somebody owns it, so it cannot block delivery by being orphaned", () => {
+    expect(mayEvaluate(chart, "qa_engineer", GateKind.Reproduction)).toBe(true);
+    expect(mayEvaluate(chart, "reproducibility_analyst", GateKind.Reproduction)).toBe(true);
+  });
+
+  test("REPRODUCTION RUNS BEFORE THE FIX, and the fixer is HANDED the reproduction", async () => {
+    const rec = recorder();
+    const base = deps();
+    const report = await runOrgRuntime({
+      ...base,
+      providers: { ...defaultProviderSet(base), work: rec.work as never },
+      artifactProducers: new Map([[GateKind.Reproduction, rec.reproduce]]),
+    } as OrgRuntimeDeps);
+    const r = rec.order.findIndex((s) => s.startsWith("reproduce:"));
+    const f = rec.order.findIndex((s) => s.startsWith("fix:"));
+    expect(r).toBeGreaterThanOrEqual(0);
+    expect(f).toBeGreaterThan(r);
+    // What the reproduction wrote reaches the agent that writes the fix.
+    const first = rec.handed[0] ?? [];
+    expect(first.some((p) => p.gate === GateKind.Reproduction && p.refs.includes("tests/repro.test.ts"))).toBe(true);
+    // …and it is the gate's own evidence, so a reviewer of the reproduction sees the test.
+    expect(
+      report.gateEvaluations.some((e) => e.gate === GateKind.Reproduction && e.evidenceRefs.includes("tests/repro.test.ts")),
+    ).toBe(true);
+  }, 60_000);
+
+  test("A REPRODUCTION THAT DOES NOT HOLD STOPS THE WORK — nothing is fixed", async () => {
+    const rec = recorder();
+    const base = deps();
+    const rejectsReproduction = {
+      meta: { port: Port.Review, name: "strict", fidelity: Fidelity.Real, describes: "rejects reproduction" },
+      review: async (req: { gate: GateKind }) => ({
+        ok: true as const,
+        value:
+          req.gate === GateKind.Reproduction
+            ? { outcome: GateOutcome.Rejected, reason: "could not make it happen: behaviour matches the spec" }
+            : { outcome: GateOutcome.Approved, reason: "ok" },
+        evidence: [],
+      }),
+    };
+    const report = await runOrgRuntime({
+      ...base,
+      providers: { ...defaultProviderSet(base), work: rec.work as never, review: rejectsReproduction as never },
+      artifactProducers: new Map([[GateKind.Reproduction, rec.reproduce]]),
+    } as OrgRuntimeDeps);
+    expect(rec.order.some((s) => s.startsWith("reproduce:"))).toBe(true);
+    expect(rec.order.some((s) => s.startsWith("fix:"))).toBe(false);
+    expect(report.delivered).toBe(false);
+    // …and NOTHING VERIFIES the change that was never implemented (measured on the rehearsal: a
+    // verify leaf reviewed a branch with no commits).
+    const verify = report.cascade.nodes.find((n) => n.workType === WorkType.Review);
+    expect(report.gateEvaluations.some((e) => e.workId === verify?.workId)).toBe(false);
+    expect(report.refusals.some((r) => r.includes("nothing in it yet to verify"))).toBe(true);
+  }, 60_000);
+});
+
+describe("A DEFECT'S RUNGS MAY OWE ONLY THE WORK'S OWN GATES — a setting, recorded on the node", () => {
+  // MEASURED: one defect cost 18 gate evaluations under the full ladder — a BRD, a cost ruling and
+  // four architecture gates to fix one bug. `defect_governance=leaf_only` keeps the rungs (somebody
+  // is accountable) and drops their document gates; the decision is made once and RECORDED.
+  const { upperRungChainFor } = require("./org-runtime") as typeof import("./org-runtime");
+  const leafOnly: SettingBinding = { setting: ProcessSetting.DefectRungGates, value: "none", why: "defects follow the defect practice" };
+  const item = (over: Record<string, unknown> = {}) =>
+    ({ externalRef: externalRefOf("jira", "AIAGENT-1659"), workType: WorkType.Defect, parentExternalId: "AIAGENT-791", ...over }) as never;
+
+  test("it applies to a defect, only when set, and a nearer scope wins", () => {
+    expect(upperRungChainFor(item(), [leafOnly])?.owesAt(WorkType.Initiative)).toEqual([]);
+    expect(upperRungChainFor(item(), [])).toBeUndefined();
+    expect(upperRungChainFor(item({ workType: WorkType.Task }), [leafOnly])).toBeUndefined();
+    // A programme keeps the full ladder for its defects — scoped by the EPIC the ticket was filed under.
+    const keepFor791: SettingBinding = { setting: ProcessSetting.DefectRungGates, value: "full", scope: "AIAGENT-791", why: "regulated programme" };
+    expect(upperRungChainFor(item(), [leafOnly, keepFor791])).toBeUndefined();
+  });
+
+  test("under leaf_only the rungs EXIST and are owned, but owe and cross nothing; the defect still does", async () => {
+    const events: OrgEvent[] = [];
+    const report = await runOrgRuntime(deps({ settings: [leafOnly], onEvent: (e) => events.push(e) }));
+    const upper = report.cascade.nodes.filter((n) => !isLeafType(n.workType));
+    expect(upper.map((n) => n.workType).sort()).toEqual([WorkType.Goal, WorkType.Initiative, WorkType.Project].sort());
+    for (const n of upper) {
+      expect(n.owes).toEqual([]);
+      expect(report.gateEvaluations.some((e) => e.workId === n.workId)).toBe(false);
+    }
+    const defect = report.cascade.nodes.find((n) => n.workType === WorkType.Defect);
+    expect(report.gateEvaluations.some((e) => e.workId === defect?.workId && e.gate === GateKind.Reproduction)).toBe(true);
+    expect(report.delivered).toBe(true);
+    // SAID, with the reason, on the record.
+    expect(events.some((e) => e.decision.includes("defect_rung_gates=none") && e.decision.includes("defects follow the defect practice"))).toBe(true);
+    // …and on the FACT, so the fold agrees with the run.
+    const created = events.filter((e) => e.fact?.kind === "work_created" && e.fact.workType !== WorkType.Defect && e.fact.workType !== WorkType.Review);
+    expect(created.length).toBe(3);
+    expect(created.every((e) => e.fact?.kind === "work_created" && Array.isArray(e.fact.owes) && e.fact.owes.length === 0)).toBe(true);
+  }, 60_000);
+
+  test("unset, the full ladder is unchanged — the control", async () => {
+    const report = await runOrgRuntime(deps());
+    const initiative = report.cascade.nodes.find((n) => n.workType === WorkType.Initiative);
+    expect(initiative?.owes).toBeUndefined();
+    expect(report.gateEvaluations.some((e) => e.workId === initiative?.workId && e.gate === GateKind.BrdApproval)).toBe(true);
+  }, 60_000);
+});
+
+describe("THE EXISTING SYSTEM IS UNDERSTOOD BEFORE ANYTHING IS REQUIRED OF IT", () => {
+  // User direction 2026-09-10: for any work — feature or defect — the design and business around the
+  // affected site are understood first; that is what a BRD and a design are drafted against, and for
+  // a defect it is where the upper rungs stop.
+  const understandOnly: SettingBinding = {
+    setting: ProcessSetting.DefectRungGates,
+    value: "business_context_grooming,system_context",
+    why: "understand the system around the defect; no BRD or new design for a bug",
+  };
+
+  test("every goal owes system_context, right after grooming and before any requirement", () => {
+    const goal = chainFor(WorkType.Goal);
+    expect(goal.indexOf(GateKind.SystemContext)).toBe(goal.indexOf(GateKind.BusinessContextGrooming) + 1);
+    expect(ORDERED_GATES.indexOf(GateKind.SystemContext)).toBeLessThan(ORDERED_GATES.indexOf(GateKind.BrdApproval));
+    expect(mayEvaluate(chart, "solution_architect", GateKind.SystemContext)).toBe(true);
+  });
+
+  test("a defect under a gate LIST owes exactly those — on the rung that carries each — and still delivers", async () => {
+    const report = await runOrgRuntime(deps({ settings: [understandOnly] }));
+    const goal = report.cascade.nodes.find((n) => n.workType === WorkType.Goal);
+    const initiative = report.cascade.nodes.find((n) => n.workType === WorkType.Initiative);
+    const project = report.cascade.nodes.find((n) => n.workType === WorkType.Project);
+    expect(goal?.owes).toEqual([GateKind.BusinessContextGrooming, GateKind.SystemContext]);
+    expect(initiative?.owes).toEqual([]);
+    expect(project?.owes).toEqual([]);
+    const onGoal = report.gateEvaluations.filter((e) => e.workId === goal?.workId).map((e) => e.gate);
+    expect(new Set(onGoal)).toEqual(new Set([GateKind.BusinessContextGrooming, GateKind.SystemContext]));
+    expect(report.gateEvaluations.some((e) => e.gate === GateKind.BrdApproval || e.gate === GateKind.ArchitectureDesign)).toBe(false);
+    expect(report.delivered).toBe(true);
+  }, 60_000);
+});
+
+describe("WHAT A PHASE MADE IS ON THE RECORD BEFORE ANYBODY IS ASKED TO JUDGE IT", () => {
+  // MEASURED on the rehearsal run: a reviewer judging from `observe` found "0 attachments — no work
+  // has been produced" and rejected the goal twice. Outputs reached the log only after the whole walk,
+  // and a governance rung's documents never at all.
+  test("at the moment each reviewer is asked, the log already holds the phase output and its document", async () => {
+    const events: OrgEvent[] = [];
+    const sawAtReview: { gate: string; output: boolean; document: boolean }[] = [];
+    const base = deps();
+    const watching = {
+      meta: { port: Port.Review, name: "watching", fidelity: Fidelity.Real, describes: "checks the record when asked" },
+      review: async (req: { gate: GateKind; workId: string }) => {
+        const has = (kind: string) =>
+          events.some((e) => e.fact?.kind === kind && (e.fact as { workId?: string; gate?: string }).workId === req.workId && (e.fact as { gate?: string }).gate === String(req.gate));
+        if (req.gate === GateKind.BusinessContextGrooming || req.gate === GateKind.Reproduction) {
+          sawAtReview.push({ gate: String(req.gate), output: has("phase_output"), document: has("document_written") });
+        }
+        return { ok: true as const, value: { outcome: GateOutcome.Approved, reason: "ok" }, evidence: [] };
+      },
+    };
+    await runOrgRuntime({
+      ...base,
+      onEvent: (e: OrgEvent) => events.push(e),
+      providers: { ...defaultProviderSet(base), review: watching as never },
+      artifactProducers: new Map([
+        [GateKind.BusinessContextGrooming, stubProducer("docs/grooming.md")],
+        [GateKind.Reproduction, stubProducer("docs/repro.md")],
+      ]),
+      documentAt: (ref: string) => (ref.startsWith("docs/") ? { path: ref, bytes: 10 } : undefined),
+    } as OrgRuntimeDeps);
+    expect(sawAtReview.map((s) => s.gate).sort()).toEqual([GateKind.BusinessContextGrooming, GateKind.Reproduction].sort());
+    for (const s of sawAtReview) {
+      expect(s.output).toBe(true);
+      expect(s.document).toBe(true);
+    }
+    // …and recorded ONCE, not again after the walk.
+    const outputs = events.filter((e) => e.fact?.kind === "phase_output" && (e.fact as { gate: string }).gate === GateKind.Reproduction);
+    expect(outputs.length).toBe(1);
+  }, 60_000);
+});
+
+describe("A STEP THAT PASSED IS NOT WALKED AGAIN — verdicts carry across cycles", () => {
+  // MEASURED on AIAGENT-1659 overnight: grooming approved, system_context rejected, and the next cycle
+  // produced and reviewed grooming AGAIN — whose second reviewer rejected it.
+  test("with system_context turned back once, grooming is produced and reviewed exactly ONCE", async () => {
+    const { runUntilSettled } = require("./autonomy") as typeof import("./autonomy");
+    const understandOnly: SettingBinding = {
+      setting: ProcessSetting.DefectRungGates,
+      value: "business_context_grooming,system_context",
+      why: "understand, then fix",
+    };
+    let systemContextAsks = 0;
+    let groomingProduced = 0;
+    const review = {
+      meta: { port: Port.Review, name: "once-strict", fidelity: Fidelity.Real, describes: "turns system_context back once" },
+      review: async (req: { gate: GateKind }) => ({
+        ok: true as const,
+        value:
+          req.gate === GateKind.SystemContext && ++systemContextAsks === 1
+            ? { outcome: GateOutcome.Rejected, reason: "a cited line does not say what the document claims" }
+            : { outcome: GateOutcome.Approved, reason: "ok" },
+        evidence: [],
+      }),
+    };
+    const grooming: ProducerPort = {
+      meta: { port: Port.WorkExecution, name: "groomer", fidelity: Fidelity.Real, describes: "grooms" },
+      produce: async () => {
+        groomingProduced += 1;
+        return { ok: true, value: { refs: ["docs/grooming.md"], summary: "groomed" }, evidence: [] };
+      },
+    };
+    const base = deps({ settings: [understandOnly] });
+    const result = await runUntilSettled(
+      {
+        ...base,
+        providers: { ...defaultProviderSet(base), review: review as never },
+        artifactProducers: new Map([[GateKind.BusinessContextGrooming, grooming]]),
+      } as OrgRuntimeDeps,
+      { maxCycles: 4, nextNowMs: (_c: number, prev: number) => prev + 1 },
+      runOrgRuntime,
+    );
+    const all = result.reports.flatMap((r) => r.gateEvaluations);
+    const groomingVerdicts = all.filter((e) => e.gate === GateKind.BusinessContextGrooming);
+    expect(systemContextAsks).toBeGreaterThanOrEqual(2); // it WAS turned back and re-walked
+    expect(groomingVerdicts.length).toBe(1);
+    expect(groomingProduced).toBe(1);
+    // …and the work still finishes — prior verdicts count toward "done".
+    expect(result.last.delivered).toBe(true);
+  }, 120_000);
+});
+
+describe("A LEAF'S RETRY RESUMES AT THE STEP THAT WAS TURNED BACK", () => {
+  test("implementation turned back once: the reproduction is produced and reviewed exactly ONCE", async () => {
+    let reproductions = 0;
+    let implAsks = 0;
+    const reproduce: ProducerPort = {
+      meta: { port: Port.WorkExecution, name: "qa", fidelity: Fidelity.Real, describes: "reproduces" },
+      produce: async () => {
+        reproductions += 1;
+        return { ok: true, value: { refs: ["tests/repro.test.ts"], summary: "fails on the unfixed code" }, evidence: [] };
+      },
+    };
+    const review = {
+      meta: { port: Port.Review, name: "impl-once", fidelity: Fidelity.Real, describes: "turns implementation back once" },
+      review: async (req: { gate: GateKind }) => ({
+        ok: true as const,
+        value:
+          req.gate === GateKind.ImplementationReview && ++implAsks === 1
+            ? { outcome: GateOutcome.Rejected, reason: "the test passes without the fix" }
+            : { outcome: GateOutcome.Approved, reason: "ok" },
+        evidence: [],
+      }),
+    };
+    const base = deps();
+    const report = await runOrgRuntime({
+      ...base,
+      providers: { ...defaultProviderSet(base), review: review as never },
+      artifactProducers: new Map([[GateKind.Reproduction, reproduce]]),
+    } as OrgRuntimeDeps);
+    expect(implAsks).toBe(2);
+    expect(reproductions).toBe(1);
+    expect(report.gateEvaluations.filter((e) => e.gate === GateKind.Reproduction).length).toBe(1);
+    expect(report.delivered).toBe(true);
+  }, 60_000);
+});
+
+describe("A CHANGE IS JUDGED ON EVERY VERDICT ITS WORK HAS, NOT THIS CYCLE'S", () => {
+  // MEASURED on AIAGENT-1661: reproduction and implementation review passed in one run, QA and
+  // release in the next - and the change, projected from the second run's verdicts alone, stopped
+  // at InReview. Done in the cascade, every step approved, never merged.
+  test("a leaf whose early steps passed before still reaches Merged when the rest pass now", async () => {
+    const first = await runOrgRuntime(deps());
+    const leaf = first.changes[0]?.workId;
+    expect(leaf).toBeDefined();
+    const carried = first.gateEvaluations.filter(
+      (e) => e.workId === leaf && (e.gate === GateKind.Reproduction || e.gate === GateKind.ImplementationReview),
+    );
+    expect(carried.length).toBeGreaterThanOrEqual(2);
+
+    const resumed = await runOrgRuntime(deps({ priorGateEvaluations: carried }));
+    // The early steps were not walked again...
+    expect(resumed.gateEvaluations.some((e) => e.workId === leaf && e.gate === GateKind.ImplementationReview)).toBe(false);
+    // ...and the change still reached Merged, because it was judged on all of them.
+    expect(resumed.changes.find((c) => c.workId === leaf)?.projection.state.tag).toBe("Merged");
+  }, 60_000);
+
+  test("work that already landed is neither walked nor merged again", async () => {
+    const first = await runOrgRuntime(deps());
+    const leaf = first.changes[0]?.workId ?? "";
+    const again = await runOrgRuntime(deps({ alreadyLanded: new Set([leaf]) }));
+    expect(again.gateEvaluations.some((e) => e.workId === leaf)).toBe(false);
+    expect(again.changesLanded).not.toContain(leaf);
+  }, 60_000);
+});
+
+describe("A VERDICT IS IN THE RECORD THE MOMENT IT IS MADE", () => {
+  // MEASURED on AIAGENT-1661: verdicts reached the log only when the whole walk returned, so the
+  // release-readiness author, opening the item through observe mid-walk, was shown QA "rejected"
+  // from the attempt before - the approval that let it start was not in the record yet.
+  test("when a later step's author runs, the earlier step's verdict is already in the log", async () => {
+    const events: OrgEvent[] = [];
+    let seenAtAuthoring: string[] | undefined;
+    const release: ProducerPort = {
+      meta: { port: Port.WorkExecution, name: "rr", fidelity: Fidelity.Real, describes: "release readiness" },
+      produce: async (node) => {
+        seenAtAuthoring = events
+          .filter((e) => e.fact?.kind === "gates_evaluated")
+          .flatMap((e) => (e.fact?.kind === "gates_evaluated" ? e.fact.evaluations : []))
+          .filter((v) => v.workId === node.workId)
+          .map((v) => String(v.gate));
+        return { ok: true, value: { refs: ["docs/rr.md"], summary: "ready" }, evidence: [] };
+      },
+    };
+    const base = deps();
+    await runOrgRuntime({
+      ...base,
+      artifactProducers: new Map([[GateKind.ReleaseReadiness, release]]),
+      onEvent: (e: OrgEvent) => events.push(e),
+    } as OrgRuntimeDeps);
+    expect(seenAtAuthoring).toBeDefined();
+    expect(seenAtAuthoring).toContain("qa_uat");
+    expect(seenAtAuthoring).toContain("runtime_validation");
+  }, 60_000);
+});
+
+describe("A STEP THAT STOPS WITHOUT A VERDICT SAYS WHY, ON THE ITEM", () => {
+  // MEASURED on AIAGENT-1662: the implementation step was turned back with no verdict. The reason
+  // lived in the process's `refusals` until it exited, so the log, observe, and the next attempt's
+  // author all saw "turned back" and nothing else.
+  test("an author that fails leaves its reason in the log against the item it was working", async () => {
+    const reproduce: ProducerPort = {
+      meta: { port: Port.WorkExecution, name: "qa", fidelity: Fidelity.Real, describes: "reproduces" },
+      produce: async () => ({ ok: false, reason: "the agent ran out of turns before writing a test" }),
+    };
+    const events: OrgEvent[] = [];
+    const base = deps();
+    await runOrgRuntime({
+      ...base,
+      artifactProducers: new Map([[GateKind.Reproduction, reproduce]]),
+      onEvent: (e: OrgEvent) => events.push(e),
+    } as OrgRuntimeDeps);
+    const said = events.filter((e) => e.kind === OrgEventKind.Refusal && e.decision.includes("ran out of turns"));
+    expect(said.length).toBeGreaterThan(0);
+    // Against the leaf, so observe can show it as that item's comment.
+    const leafIds = new Set(foldOrganization(events).cascade.nodes.filter((n) => isLeafType(n.workType)).map((n) => n.workId));
+    expect(said.every((e) => leafIds.has(e.subjectId))).toBe(true);
+    expect(said[0]?.decision).toContain("stopped at reproduction");
+  }, 60_000);
+});
+
+describe("A HAT CARRIES AS MANY OPEN TASKS AS WEARERS ARE AUTHORIZED FOR IT", () => {
+  // MEASURED on the first real run: three tickets, two contributor hats under the lead who owns every
+  // leaf — one ticket took both, waited on a person, and the other two were never started.
+  const two: ExternalEvent[] = [
+    { ...GOOD, externalId: "T-1", title: "checkout double-charges" },
+    { ...GOOD, externalId: "T-2", title: "refund posts twice" },
+  ];
+  const unstaffed = (r: { refusals: readonly string[] }) => r.refusals.filter((x) => x.includes("no free individual-contributor hat")).length;
+
+  test("at the default supply of 1, two requests cannot both be staffed — the control", async () => {
+    const report = await runOrgRuntime(deps({ externalEvents: two }));
+    expect(unstaffed(report)).toBeGreaterThan(0);
+  }, 60_000);
+
+  test("with supply 2, both requests' work is staffed", async () => {
+    const report = await runOrgRuntime(deps({ externalEvents: two, supplyTarget: 2 }));
+    expect(unstaffed(report)).toBe(0);
+    const leaves = report.cascade.nodes.filter((n) => isLeafType(n.workType));
+    expect(leaves.length).toBe(4);
+    expect(leaves.every((n) => n.assigneeHatId !== undefined)).toBe(true);
+  }, 60_000);
 });

@@ -371,3 +371,20 @@ describe("isInCooldown — the staffing rule, out where it can be falsified", ()
     expect(isInCooldown([], "tech_lead", "a1", 500)).toBe(false);
   });
 });
+
+describe("A HAT IS A ROLE: it takes as many wearers as the RMO authorized, and never one agent twice", () => {
+  const { mayTakeHat, BindingPhase } = require("./hat-binding") as typeof import("./hat-binding");
+  const live = (agent: string) => ({ bindingId: `b-${agent}`, hatId: "backend_implementer", wearerAgentId: agent, phase: BindingPhase.Warmup, boundAtMs: 0, warmupEndsMs: 10, expiresMs: 1000 });
+  test("default supply 1: a second agent is refused — one wearer at a time, as before", () => {
+    expect(mayTakeHat([live("a")] as never, "b", "backend_implementer", 5).ok).toBe(false);
+  });
+  test("supply 2: a second agent may wear it; a third may not", () => {
+    expect(mayTakeHat([live("a")] as never, "b", "backend_implementer", 5, 2).ok).toBe(true);
+    expect(mayTakeHat([live("a"), live("b")] as never, "c", "backend_implementer", 5, 2).ok).toBe(false);
+  });
+  test("the SAME agent is refused a hat it already holds, whatever the supply", () => {
+    const r = mayTakeHat([live("a")] as never, "a", "backend_implementer", 5, 5);
+    expect(r.ok).toBe(false);
+    if (!r.ok) expect(r.reason).toContain("already held by 'a'");
+  });
+});

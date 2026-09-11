@@ -46,5 +46,11 @@
     "callee": "setTimeout",
     "count": 1,
     "reason": "THE DELAY IS THE CONDITION UNDER TEST, not a stand-in for an event. The subject is a multi-byte UTF-8 character cut in half across two TCP writes -- something a network does on its own at unpredictable offsets. Doing it deliberately is what makes the failure REPRODUCIBLE; a same-tick second write would not fragment and the test would silently stop testing anything. 15ms is a packet boundary, not a settling period, and the assertion is on the reassembled string rather than on elapsed time. Kept under the count pin so a SECOND timer in this file still has to be argued for."
+  },
+  {
+    "path": "src/Core.TypeScript/corporate/claude-agent.test.ts",
+    "callee": "setInterval",
+    "count": 3,
+    "reason": "NOT THE HARNESS'S CLOCK -- THE SUBJECT UNDER TEST, the same distinction the subprocess-sandbox row below draws. All three matches are inside STRING LITERALS that are the source of spawned stub processes: two in `['-e', 'setInterval(()=>{},1000)']` handed to a detached grandchild, and one in the stub body. Their job is to keep a process ALIVE so that the session's tree-kill has something to kill; deleting them would delete the experiment rather than an ambient dependency. The tests' own verdicts come from `waitUntil(() => !isAlive(pid))` -- the death is OBSERVED, never timed -- which is what the two real 250ms poll-sleeps in this file were replaced with in the same change, and those two were the file's only failures on a developer laptop. Count pinned at 3 so a FOURTH timer here still has to be argued for; the exemption is for these stub fixtures, not for the file."
   }
 ]

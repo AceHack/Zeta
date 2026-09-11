@@ -21,6 +21,19 @@
  */
 
 /** Exit codes. An agent reads these before it reads stdout. */
+import { ProcessSetting } from "./practice";
+import { CHECKPOINT_VALUES } from "./quality-gate";
+
+/**
+ * The setting names and every legal value, DERIVED from the roster rather than restated.
+ *
+ * Both were literals while there was one setting, and adding a second would have left the CLI
+ * refusing its name — a surface listing fewer knobs than exist is the same defect as one listing
+ * more. Per-setting validity is still `validateSetting`'s; this only stops the parser refusing a
+ * value that some OTHER setting accepts.
+ */
+const SETTING_NAMES: readonly string[] = Object.values(ProcessSetting);
+
 export const Exit = {
   Ok: 0,
   /** The command ran and the organization declined. Not a failure of the CLI. */
@@ -129,7 +142,7 @@ export const COMMANDS: readonly CommandSpec[] = [
         name: "--checkpoint",
         what: "A gate where this org stops for you. Repeatable; omit for a fully agentic org.",
         takesValue: true,
-        oneOf: ["grooming", "approach"],
+        oneOf: CHECKPOINT_VALUES,
       },
       {
         name: "--verification",
@@ -186,6 +199,54 @@ export const COMMANDS: readonly CommandSpec[] = [
     name: "org method list",
     what: "Which verbs carry a method, and why each one was attached.",
     then: "A verb with no method is not unmanaged — it is taken the way it always was. That is the normal case and is reported as such.",
+    flags: [ORG_FLAG, JSON_FLAG],
+    writes: false,
+  },
+  {
+    name: "org setting bind",
+    what: "Set what the process DOES at a decision the runtime makes mechanically — e.g. whether an epic carries a feature branch.",
+    then: "Scope it with --for, which takes a work id OR a ticket key. `integration_branch=direct` on a stabilization epic sends its children straight to the trunk; unset, the shape decides. Shown by `org practice list` with the rest of the process.",
+    flags: [
+      ORG_FLAG,
+      { name: "--setting", what: "Which knob. Refused if it is not one this register knows.", required: true, takesValue: true, oneOf: SETTING_NAMES },
+      { name: "--value", what: "Its value — one this setting accepts, or for a list setting a comma list of what it may name. Checked against the setting itself; refused, never defaulted.", required: true, takesValue: true },
+      { name: "--why", what: "Why the process works this way here. A knob with no reason is indistinguishable from a typo.", required: true, takesValue: true },
+      { name: "--for", what: "A work id or ticket key this applies to, and everything under it. Omit for organization-wide.", takesValue: true },
+      JSON_FLAG,
+    ],
+    writes: true,
+  },
+  {
+    name: "org setting unbind",
+    what: "Unset a process setting. The mechanical default applies again.",
+    then: "Removed rather than suppressed: unset means the default decides, which is what removing this returns the item to.",
+    flags: [
+      ORG_FLAG,
+      { name: "--setting", what: "Which knob to unset.", required: true, takesValue: true, oneOf: SETTING_NAMES },
+      { name: "--for", what: "The scope to unset it at. Omit for organization-wide.", takesValue: true },
+      JSON_FLAG,
+    ],
+    writes: true,
+  },
+  {
+    name: "org change-requests set",
+    what: "State how a finished change is put in front of people: the sections every merge request must carry, what a change may never add, and how an open request is kept current.",
+    then: "Required before an organization that hands work to people can run against a real repository. Replaces the whole statement - repeat every --section you want kept. Feedback on an open request (comments, updates, the target moving) arrives as action items on its work, and the organization decides what to do about each.",
+    flags: [
+      ORG_FLAG,
+      { name: "--section", what: "`<Heading>=<what it must state>`, repeatable, in order. Every description the organization writes must carry each heading.", required: true, takesValue: true },
+      { name: "--keep-out", what: "A path pattern a change may never add (`*.png`, `docs/task-*/**`). Repeatable. The handoff refuses a change that adds one.", takesValue: true },
+      { name: "--sync", what: "When the target moves on: merge it into the request (`merge_target`), or only record that the request is behind (`flag_only`).", required: true, takesValue: true, oneOf: ["merge_target", "flag_only"] },
+      { name: "--replies", what: "Once the team has decided about a reviewer's comment: reply on the thread with what was changed (or why not) and resolve it (`reply_and_resolve`), reply only (`reply`), or say nothing on the thread (`none`).", required: true, takesValue: true, oneOf: ["reply_and_resolve", "reply", "none"] },
+      { name: "--why", what: "Why merge requests are written this way here.", required: true, takesValue: true },
+      JSON_FLAG,
+    ],
+    writes: true,
+  },
+  {
+    name: "org change-requests show",
+    what: "How this organization's merge requests are written and kept current.",
+    then: "Nothing stated, on an organization that hands work to people, means it cannot run against a real repository yet: `org configure` names the step.",
     flags: [ORG_FLAG, JSON_FLAG],
     writes: false,
   },
@@ -403,10 +464,10 @@ export const COMMANDS: readonly CommandSpec[] = [
       { name: "--source", what: "Which configured source this feeds, by its id. One hook per source, one secret per hook.", required: true, takesValue: true },
       {
         name: "--scheme",
-        what: "How the provider signs. hmac_sha256_hex: a bare hex digest (Linear). hmac_sha256_prefixed: 'sha256=<hex>' (GitHub). none: UNVERIFIED - anyone who can reach the endpoint can add work.",
+        what: "How the provider signs. hmac_sha256_hex: a bare hex digest (Linear). hmac_sha256_prefixed: 'sha256=<hex>' (GitHub). shared_token: the header carries the secret itself (GitLab's X-Gitlab-Token) - use over TLS. none: UNVERIFIED - anyone who can reach the endpoint can add work.",
         required: true,
         takesValue: true,
-        oneOf: ["hmac_sha256_hex", "hmac_sha256_prefixed", "none"],
+        oneOf: ["hmac_sha256_hex", "hmac_sha256_prefixed", "shared_token", "none"],
       },
       { name: "--signature-header", what: "Header carrying the signature, e.g. linear-signature or x-hub-signature-256.", takesValue: true },
       { name: "--secret-file", what: "PATH to the shared secret. Never the secret itself - argv is world-readable and a value that looks like one is refused.", takesValue: true },
@@ -415,7 +476,8 @@ export const COMMANDS: readonly CommandSpec[] = [
       { name: "--severity-map", what: "raw=critical|high|medium|low, repeatable. Trackers do not share a severity vocabulary.", takesValue: true },
       { name: "--accept-type", what: "A delivery type to accept, repeatable. OMIT TO ACCEPT ALL - naming them is how 'only assignments start work' is said without code.", takesValue: true },
       { name: "--type-path", what: "Where the delivery's type lives, e.g. 'action'. Needed to use --accept-type.", takesValue: true },
-      { name: "--preset", what: "Fill --map and --severity-map with a known provider's field names, which you can then override.", takesValue: true, oneOf: ["linear"] },
+      { name: "--preset", what: "Fill --map and --severity-map with a known provider's field names, which you can then override. gitlab-feedback is GitLab merge-request events as feedback (implies --purpose change_feedback).", takesValue: true, oneOf: ["linear", "gitlab-feedback"] },
+      { name: "--purpose", what: "What a delivery is: intake (new work, the default) or change_feedback (something that happened to a change already in front of people - it becomes an action item on that work, never new work).", takesValue: true, oneOf: ["intake", "change_feedback"] },
       JSON_FLAG,
     ],
     writes: true,

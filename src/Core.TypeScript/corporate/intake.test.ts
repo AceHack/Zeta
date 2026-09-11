@@ -212,6 +212,84 @@ describe("TRIAGE ACTUALLY CHECKS, rather than asserting", () => {
   });
 });
 
+describe("AN ORGANIZATION MAY OWE THE REPRODUCTION rather than demand it", () => {
+  // Measured on the Agentic Team's first real run: the refusal above bounced four of five live
+  // Jira tickets — one whose summary IS its reproduction, three that are investigations. The
+  // refusal stays the default; `reproduce_first` is the organization choosing to do that step.
+  const noRepro = raw({ kind: IntakeKind.Defect, evidenceRefs: ["log/1"] });
+
+  test("with the policy, a defect with no reproduction is ADMITTED and marked owed", () => {
+    const r = receive(noRepro, { ...at, unreproduced: "reproduce_first" });
+    expect(r.ok).toBe(true);
+    if (!r.ok) return;
+    expect(r.value.state).toBe(IntakeState.Ready);
+    expect(r.value.reproductionOwed).toBe(true);
+  });
+
+  test("the default is unchanged — unset still refuses", () => {
+    const r = receive(noRepro, at);
+    expect(r.ok).toBe(false);
+    if (!r.ok) expect(r.refusal.reason).toBe("missing_reproduction");
+    const stated = receive(noRepro, { ...at, unreproduced: "refuse" });
+    expect(stated.ok).toBe(false);
+  });
+
+  test("OWED IS NOT WAIVED — evidence is still required", () => {
+    // The policy moves ONE obligation from reporter to organization. A defect with neither
+    // reproduction nor evidence is still refused, for the evidence.
+    const r = receive(raw({ kind: IntakeKind.Defect }), { ...at, unreproduced: "reproduce_first" });
+    expect(r.ok).toBe(false);
+    if (!r.ok) expect(r.refusal.reason).toBe("missing_evidence");
+  });
+
+  test("a defect that ARRIVED with a reproduction is not marked owed", () => {
+    const r = receive(raw({ kind: IntakeKind.Defect, reproduction: "click twice", evidenceRefs: ["log/1"] }), {
+      ...at,
+      unreproduced: "reproduce_first",
+    });
+    expect(r.ok).toBe(true);
+    if (r.ok) expect(r.value.reproductionOwed).toBeUndefined();
+  });
+
+  test("a non-defect is never marked owed — it never needed one", () => {
+    const r = receive(raw({ kind: IntakeKind.Feature }), { ...at, unreproduced: "reproduce_first" });
+    expect(r.ok).toBe(true);
+    if (r.ok) expect(r.value.reproductionOwed).toBeUndefined();
+  });
+});
+
+describe("THE WHOLE TICKET TRAVELS through the door", () => {
+  // `normalize` dropped the body, so everything downstream that claimed to carry "what the
+  // requester wrote" carried the reproduction and nothing else.
+  test("body and parent survive normalize, ingest and triage", () => {
+    const r = receive(
+      raw({
+        kind: IntakeKind.Defect,
+        reproduction: "click twice",
+        evidenceRefs: ["log/1"],
+        body: "Steps: click twice.\n\nSuspected cause: a background sync.",
+        parentExternalId: "EPIC-7",
+        parentTitle: "MVP gaps",
+      }),
+      at,
+    );
+    expect(r.ok).toBe(true);
+    if (!r.ok) return;
+    expect(r.value.body).toContain("Suspected cause");
+    expect(r.value.parentExternalId).toBe("EPIC-7");
+    expect(r.value.parentTitle).toBe("MVP gaps");
+  });
+
+  test("blank body and parent are absent, not present-and-empty", () => {
+    const n = normalize(raw({ body: "   ", parentExternalId: " ", parentTitle: "" }));
+    expect(n.ok).toBe(true);
+    if (!n.ok) return;
+    expect(n.value.body).toBeUndefined();
+    expect(n.value.parentExternalId).toBeUndefined();
+    expect(n.value.parentTitle).toBeUndefined();
+  });
+});
+
 describe("the whole door", () => {
   test("it returns the FIRST refusal, the one the caller can act on", () => {
     // Telling a reporter its untitled duplicate also lacks reproduction steps is three problems

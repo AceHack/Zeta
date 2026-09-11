@@ -43,6 +43,7 @@ import { mkdirSync, readFileSync, rmSync } from "node:fs";
 import { join } from "node:path";
 import { shardFiles } from "../shard-store/shard-store";
 import type { OrgEvent } from "./org-event";
+import { compareEvents } from "./org-store";
 
 /**
  * Bump when the SHAPE of what is stored changes.
@@ -239,7 +240,9 @@ function query(root: string, sql: string, params: readonly unknown[]): readonly 
   syncIndex(root);
   const db = openDb(root);
   const rows = db.query(sql).all(...(params as never[])) as { payload: string }[];
-  return rows.map((r) => JSON.parse(r.payload) as OrgEvent);
+  // RE-SORTED IN THE STORE'S OWN ORDER. SQL orders `eventId` as a string, and `evt-1000` sorts
+  // before `evt-999` that way — so the index and `readEvents` would fold one log two ways.
+  return rows.map((r) => JSON.parse(r.payload) as OrgEvent).sort(compareEvents);
 }
 
 /** What happened to one work item, across runs. The indexed form of `eventsFor`. */

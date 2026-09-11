@@ -31,6 +31,7 @@ const report = (over: Partial<OrgRuntimeReport> = {}): OrgRuntimeReport =>
     halted: [],
     gateEvaluations: [],
     changesLanded: [],
+    changesHandedOff: [],
     cascade: { nodes: [] },
     ...over,
   }) as unknown as OrgRuntimeReport;
@@ -215,6 +216,23 @@ describe("the loop is observable and advances its own clock", () => {
     expect(clocks).toEqual([1_000, 1_500, 2_000]);
   });
 
+  test("a person's pause stops the loop BETWEEN cycles, and says so", async () => {
+    // `pause_run` was replayed into a flag and shown on the dashboard, and the loop never asked it.
+    let asked = 0;
+    const r = await runUntilSettled(
+      deps,
+      { maxCycles: 5, pausedBecause: () => (++asked >= 2 ? "paused by max: restarting on new code" : undefined) },
+      scripted([
+        report({ gateEvaluations: [1] as never }),
+        report({ gateEvaluations: [1, 2] as never }),
+        report({ gateEvaluations: [1, 2, 3] as never }),
+      ]),
+    );
+    expect(r.cycles).toBe(2);
+    expect(r.stoppedBecause).toBe(StopReason.Paused);
+    expect(r.summary).toContain("restarting on new code");
+  });
+
   test("every cycle's report is kept, not just the last", async () => {
     const r: AutonomyResult = await runUntilSettled(deps, { maxCycles: 3 }, scripted([
       report({ gateEvaluations: [1] as never }),
@@ -246,5 +264,16 @@ describe("progressOf reduces a cycle to what must move", () => {
     expect(sameProgress(base, { ...base, workItemsDone: 2 })).toBe(false);
     expect(sameProgress(base, { ...base, changesLanded: 2 })).toBe(false);
     expect(sameProgress(base, { ...base, delivered: true })).toBe(false);
+  });
+});
+
+describe("HANDED OFF IS NOT DELIVERED", () => {
+  // The Agentic Team's first handoff printed "DELIVERED: delivered after 1 cycle(s)" for a run that
+  // merged nothing and opened three merge requests for people to review.
+  test("a cycle whose finished work went to people for review stops as handed_off, and says so", async () => {
+    const r = await runUntilSettled(deps, { maxCycles: 3 }, scripted([report({ delivered: true, changesHandedOff: ["task-1", "task-2"] })]));
+    expect(r.stoppedBecause).toBe(StopReason.HandedOff);
+    expect(r.summary).toContain("handed 2 change(s) to people for review");
+    expect(r.summary).toContain("nothing was merged");
   });
 });

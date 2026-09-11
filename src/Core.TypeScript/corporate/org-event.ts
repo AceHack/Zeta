@@ -27,7 +27,7 @@ import { supervisorChainOf, type OrgChart } from "./org-chart";
 import type { WorkState, WorkType } from "./goal-cascade";
 import type { ScheduleBlockState, ScheduleBlockType } from "./work-schedule";
 import type { PriorityClass } from "./prioritization";
-import type { GateEvaluation } from "./quality-gate";
+import type { GateEvaluation, GateKind } from "./quality-gate";
 import type { PortfolioKind } from "./portfolio";
 import type { WorkQueue } from "./work-market";
 import type { QaCycleReport } from "./qa";
@@ -106,6 +106,8 @@ export type OrgFact =
       readonly dependsOn?: readonly string[];
       /** What the requester wrote — see `CascadeNode.brief`. */
       readonly brief?: string;
+      /** The gates the organization stated this item owes — see `CascadeNode.owes`. */
+      readonly owes?: readonly GateKind[];
     }
   | { readonly kind: "work_assigned"; readonly workId: string; readonly assigneeHatId: string }
   | { readonly kind: "work_state"; readonly workId: string; readonly state: WorkState }
@@ -374,6 +376,106 @@ export type OrgFact =
       readonly detail: string;
       readonly durationMs: number;
       readonly falsifierPassed?: boolean;
+    }
+  | {
+      /**
+       * The change was HANDED TO PEOPLE: pushed and proposed for review, and left open. The
+       * organization's last act on it. Distinct from `change_merged`, which it never implies.
+       */
+      readonly kind: "change_handed_off";
+      readonly workId: string;
+      readonly changeId: string;
+      readonly branch: string;
+      /** Where it can be reviewed — the merge request's address, when the review system gave one. */
+      readonly url?: string;
+      readonly commit?: string;
+      /** What it was proposed against, so feedback about that target moving can find it. */
+      readonly base?: string;
+    }
+  | {
+      /**
+       * Something happened to a handed-off change that somebody may need to act on - a reviewer's
+       * comment, the request being updated or closed, its target moving ahead of it. Recorded as an
+       * ACTION ITEM on the work, never as an instruction: the organization decides what, if
+       * anything, to do about it, and when.
+       */
+      readonly kind: "action_item_raised";
+      readonly workId: string;
+      /** Stable across re-deliveries of the same event, so raising is idempotent. */
+      readonly actionItemId: string;
+      /** Where it came from - the configured source or the review system. */
+      readonly source: string;
+      /** What kind of thing happened, in the source's own words (`comment`, `behind_target`, `closed`, ...). */
+      readonly itemKind: string;
+      readonly summary: string;
+      readonly detail?: string;
+      readonly url?: string;
+      readonly author?: string;
+    }
+  | {
+      /** An action item was dealt with - addressed, declined with a reason, or overtaken by events. */
+      readonly kind: "action_item_settled";
+      readonly workId: string;
+      readonly actionItemId: string;
+      readonly outcome: "addressed" | "declined" | "superseded";
+      readonly how: string;
+      readonly byHatId?: string;
+      /** Whether the person who raised it is answered where they raised it. Absent on items settled before answering existed. */
+      readonly respond?: boolean;
+      /** The commit that carries the change, when addressing it changed the branch. */
+      readonly commit?: string;
+    }
+  | {
+      /**
+       * A settled action item is OPEN AGAIN: its settlement did not stand. MEASURED on MR !162: a
+       * blocking finding was "addressed" by a rollout runbook that existed only in the organization's
+       * own evidence directory - the answer could not be posted, and nothing the reviewer could see
+       * had settled it. The settlement and any answer are cleared; the item goes back to be decided.
+       */
+      readonly kind: "action_item_reopened";
+      readonly workId: string;
+      readonly actionItemId: string;
+      /** Why, in words the next session acts on. */
+      readonly why: string;
+    }
+  | {
+      /**
+       * An action item was ANSWERED where it was raised - a reply on the reviewer's own thread, and the
+       * thread resolved when the organization resolves them. MEASURED on MRs !162-!164: 26 comments
+       * decided and acted on, and not one reviewer was told, because the decision lived only here.
+       * `skipped` records an item there was nothing to answer on (not a thread), so it is not retried.
+       */
+      readonly kind: "action_item_answered";
+      readonly workId: string;
+      readonly actionItemId: string;
+      /** The reply's own id in its source, so the next read of that source does not raise it as feedback. */
+      readonly replyId?: string;
+      readonly resolved: boolean;
+      readonly skipped?: string;
+    }
+  | {
+      /**
+       * An action item was weighed and LEFT OPEN, with the reason. Not a settlement: the item stays
+       * open. Recorded because "left open" and "never looked at" read the same without it - MEASURED
+       * on the first follow-up of MR !162, where a blocking review finding stayed open and nothing
+       * anywhere said why.
+       */
+      readonly kind: "action_item_deferred";
+      readonly workId: string;
+      readonly actionItemId: string;
+      readonly why: string;
+      readonly byHatId?: string;
+    }
+  | {
+      /**
+       * A merge the organization made was UNDONE by a person - reset off the trunk it should never
+       * have reached. Recorded beside `change_merged`, never instead of it: both happened. The
+       * work is no longer landed, so a resumed run treats it as finished-but-not-integrated.
+       */
+      readonly kind: "change_merge_reverted";
+      readonly workId: string;
+      readonly branch: string;
+      readonly reason: string;
     }
   | {
       readonly kind: "change_merged";

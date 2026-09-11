@@ -23,6 +23,7 @@
  * either side, aware it did.
  */
 
+import { readFileSync } from "node:fs";
 import { WorkType } from "./goal-cascade";
 
 export const IntakeKind = {
@@ -54,8 +55,18 @@ export interface ExternalEvent {
   readonly severity?: Severity;
   /** Evidence the reporter attached — a trace, a screenshot, a log. */
   readonly evidenceRefs?: readonly string[];
-  /** Steps to reproduce. Required for a defect (see `triage`). */
+  /** Steps to reproduce. Required for a defect unless the organization says otherwise (see `triage`). */
   readonly reproduction?: string;
+  /**
+   * The TRACKER'S OWN PARENT — the epic, the feature, the programme this item was filed under.
+   *
+   * Generic rather than Jira-shaped: every tracker has a hierarchy, and the parent is what the
+   * branching settings and repository routing key on. Before this field existed the parent was
+   * never fetched at all, so `integration_branch=direct for AIAGENT-796` could not match
+   * anything the organization had ever been told about.
+   */
+  readonly parentExternalId?: string;
+  readonly parentTitle?: string;
 }
 
 export type RefusalReason =
@@ -81,6 +92,10 @@ export interface NormalizedIntake {
   readonly severity: Severity;
   readonly evidenceRefs: readonly string[];
   readonly reproduction?: string;
+  /** The WHOLE ticket, as the requester wrote it — description and every comment. */
+  readonly body?: string;
+  readonly parentExternalId?: string;
+  readonly parentTitle?: string;
 }
 
 export type IntakeResult<T> =
@@ -156,6 +171,15 @@ export function normalize(raw: ExternalEvent): IntakeResult<NormalizedIntake> {
       ...(raw.reproduction === undefined || raw.reproduction.trim() === ""
         ? {}
         : { reproduction: raw.reproduction.trim() }),
+      // THE BODY TRAVELS. It was dropped here, and everything downstream that claimed to carry
+      // "what the requester wrote" was carrying the reproduction and nothing else.
+      ...(raw.body === undefined || raw.body.trim() === "" ? {} : { body: raw.body.trim() }),
+      ...(raw.parentExternalId === undefined || raw.parentExternalId.trim() === ""
+        ? {}
+        : { parentExternalId: raw.parentExternalId.trim() }),
+      ...(raw.parentTitle === undefined || raw.parentTitle.trim() === ""
+        ? {}
+        : { parentTitle: raw.parentTitle.trim() }),
     },
   };
 }
@@ -186,6 +210,18 @@ export interface IntakeItem {
   readonly state: IntakeState;
   readonly evidenceRefs: readonly string[];
   readonly reproduction?: string;
+  /** The whole ticket. See `NormalizedIntake.body`. */
+  readonly body?: string;
+  readonly parentExternalId?: string;
+  readonly parentTitle?: string;
+  /**
+   * ADMITTED WITHOUT A REPRODUCTION, so establishing one is the first obligation.
+   *
+   * Set only when the organization's `unreproduced_defects` setting is `reproduce_first`. It is
+   * a statement about what work is OWED, not a relaxed standard: the reproduction is still
+   * required, it is just the organization's to produce rather than the reporter's to supply.
+   */
+  readonly reproductionOwed?: boolean;
   readonly receivedAtMs: number;
 }
 
@@ -218,6 +254,9 @@ export function ingest(
       state: IntakeState.Created,
       evidenceRefs: normalized.evidenceRefs,
       ...(normalized.reproduction === undefined ? {} : { reproduction: normalized.reproduction }),
+      ...(normalized.body === undefined ? {} : { body: normalized.body }),
+      ...(normalized.parentExternalId === undefined ? {} : { parentExternalId: normalized.parentExternalId }),
+      ...(normalized.parentTitle === undefined ? {} : { parentTitle: normalized.parentTitle }),
       receivedAtMs: input.nowMs,
     },
   };
@@ -256,14 +295,30 @@ function assertNeverKind(x: never): never {
 }
 
 /**
+ * How an organization treats a defect that arrives without a reproduction.
+ *
+ *   `refuse`          — the default, and the register's original, considered position: a defect
+ *                       nobody can reproduce is not yet workable, and is declined visibly.
+ *   `reproduce_first` — admit it, and make the reproduction the FIRST obligation. The standard
+ *                       is not lowered; the work of meeting it moves from the reporter to the org.
+ *
+ * MEASURED on the first real run: `refuse` bounced four of five live tickets, including one whose
+ * one-line summary IS its reproduction and three that are explicitly investigations. An
+ * organization whose own defect practice says "reproduce it first" was refusing to start the
+ * step its practice names.
+ */
+export type UnreproducedPolicy = "refuse" | "reproduce_first";
+
+/**
  * Advance an ingested item to `Ready`, or REFUSE with what is missing.
  *
  * The refusal is the point. A defect that reaches the backlog without reproduction steps costs a
  * developer a day and comes back unresolved; refusing it at the door costs the reporter one reply.
  */
-export function triage(item: IntakeItem): IntakeResult<IntakeItem> {
+export function triage(item: IntakeItem, policy: UnreproducedPolicy = "refuse"): IntakeResult<IntakeItem> {
   const needs = requirementsFor(item.kind);
-  if (needs.needsReproduction && (item.reproduction === undefined || item.reproduction === "")) {
+  const missing = needs.needsReproduction && (item.reproduction === undefined || item.reproduction === "");
+  if (missing && policy !== "reproduce_first") {
     return {
       ok: false,
       refusal: {
@@ -272,7 +327,10 @@ export function triage(item: IntakeItem): IntakeResult<IntakeItem> {
       },
     };
   }
-  if (needs.needsEvidence && item.evidenceRefs.length === 0) {
+  // OWED, NOT WAIVED. Marked on the item so every agent that touches it is told the reproduction
+  // is its first job — an admission that forgot this would be the lowered standard it is not.
+  const owing = missing ? { ...item, reproductionOwed: true } : item;
+  if (needs.needsEvidence && owing.evidenceRefs.length === 0) {
     return {
       ok: false,
       refusal: { reason: "missing_evidence", message: `a ${item.kind} needs at least one piece of evidence` },
@@ -295,7 +353,7 @@ export function triage(item: IntakeItem): IntakeResult<IntakeItem> {
       },
     };
   }
-  return { ok: true, value: { ...item, state: IntakeState.Ready } };
+  return { ok: true, value: { ...owing, state: IntakeState.Ready } };
 }
 
 /**
@@ -306,13 +364,19 @@ export function triage(item: IntakeItem): IntakeResult<IntakeItem> {
  */
 export function receive(
   raw: ExternalEvent,
-  input: { readonly itemId: string; readonly nowMs: number; readonly seen: ReadonlySet<string> },
+  input: {
+    readonly itemId: string;
+    readonly nowMs: number;
+    readonly seen: ReadonlySet<string>;
+    /** How a defect with no reproduction is treated. See `UnreproducedPolicy`. */
+    readonly unreproduced?: UnreproducedPolicy;
+  },
 ): IntakeResult<IntakeItem> {
   const normalized = normalize(raw);
   if (!normalized.ok) return normalized;
   const ingested = ingest(normalized.value, input);
   if (!ingested.ok) return ingested;
-  return triage(ingested.value);
+  return triage(ingested.value, input.unreproduced ?? "refuse");
 }
 
 /** `a.b.c` into a nested object. Returns undefined at the first missing hop rather than throwing. */
@@ -334,6 +398,63 @@ export function headersFrom(pairs: readonly string[]): Record<string, string> {
     out[pair.slice(0, at).trim()] = pair.slice(at + 1).trim();
   }
   return out;
+}
+
+/**
+ * A header whose value is a CREDENTIAL. Named by what such headers are called, not by a list of
+ * vendors: `authorization`, `cookie`, and anything whose name says token, secret, key, password or
+ * auth. Over-matching costs the operator one `@file`; under-matching puts a secret in argv.
+ */
+export function isCredentialHeader(name: string): boolean {
+  const n = name.trim().toLowerCase();
+  return n === "authorization" || n === "proxy-authorization" || n === "cookie" || /token|secret|api-?key|password|auth/.test(n);
+}
+
+/**
+ * `k:v` pairs whose credential-bearing values would sit in argv. Each is refused by the CLI.
+ *
+ * ARGV IS WORLD-READABLE: any process on the machine can list it. A credential header must be
+ * given as `name:@<path>`, and the file is read when the request is made — see `headerSourceFrom`.
+ */
+export function inlineCredentialHeaders(pairs: readonly string[]): readonly string[] {
+  const out: string[] = [];
+  for (const pair of pairs) {
+    const at = pair.indexOf(":");
+    if (at <= 0) continue;
+    const name = pair.slice(0, at).trim();
+    if (isCredentialHeader(name) && !pair.slice(at + 1).trim().startsWith("@")) out.push(name);
+  }
+  return out;
+}
+
+/**
+ * Headers for a request, READ AT CALL TIME. A value written `@<path>` is the trimmed contents of
+ * that file, so a rotated token takes effect on the next poll and never enters argv.
+ *
+ * An unreadable file THROWS rather than sending the header empty: an unauthenticated request
+ * comes back as a 401 that reads like a wrong password, forty lines from the real cause.
+ */
+export function headerSourceFrom(
+  pairs: readonly string[],
+  read: (path: string) => string = (p) => readFileSync(p, "utf-8"),
+): () => Record<string, string> {
+  const literal = headersFrom(pairs);
+  return () => {
+    const out: Record<string, string> = {};
+    for (const [k, v] of Object.entries(literal)) {
+      if (!v.startsWith("@")) { out[k] = v; continue; }
+      const path = v.slice(1).trim();
+      let value: string;
+      try {
+        value = read(path).trim();
+      } catch (err) {
+        throw new Error(`header ${k}: cannot read ${path}: ${err instanceof Error ? err.message : String(err)}`);
+      }
+      if (value === "") throw new Error(`header ${k}: ${path} is empty`);
+      out[k] = value;
+    }
+    return out;
+  };
 }
 
 /**

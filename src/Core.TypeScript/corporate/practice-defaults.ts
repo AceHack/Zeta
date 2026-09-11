@@ -82,7 +82,12 @@ export const DEFAULT_PRACTICES: readonly Practice[] = [
       "A defect is not solved until something fails without the fix. Reproduce it first, keep the " +
       "reproduction as a test, then fix it — and confirm the test goes red when the fix is removed. " +
       "A green test that would pass either way is not evidence, and a fix with no falsifier is a " +
-      "belief about the defect rather than a repair of it.",
+      "belief about the defect rather than a repair of it. Reproduce against the CODE as well as " +
+      "the report: read every path the report implicates. If the code looks suspicious and the " +
+      "defect will not happen, the environment is not the one it happened in - a mock where " +
+      "production runs a real provider, one replica where it runs several, different configuration " +
+      "- so make the environment match and chase the suspicion. Ask the reporter only for what no " +
+      "reading or running of the code can settle.",
     why:
       "a test that cannot fail proves nothing about the fix beside it, and that is the one thing a " +
       "defect's delivery has to establish",

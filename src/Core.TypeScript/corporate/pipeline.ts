@@ -230,6 +230,8 @@ export interface PipelineRunInput {
     produced: Artifact | undefined,
     /** Everything produced so far, so a late reviewer can see the whole trail rather than one step. */
     soFar: ReadonlyMap<GateKind, Artifact>,
+    /** What the producer printed and what it cost, so the caller can record the phase whole. */
+    transcript?: PhaseTranscript,
   ) => Promise<void>;
   /**
    * Gates that may not pass without a PERSON. Absent or empty = fully agentic, the default.
@@ -240,6 +242,15 @@ export interface PipelineRunInput {
    * it, because somebody would rely on it.
    */
   readonly humanRequiredAt?: ReadonlySet<GateKind>;
+  /**
+   * Called with each verdict THE MOMENT IT IS MADE.
+   *
+   * Verdicts reached the log only when the whole walk returned, so an agent working a later step
+   * of the same walk read the EARLIER verdict through observe. MEASURED on AIAGENT-1661: QA passed
+   * on its second attempt, and the release-readiness author, opening the item mid-walk, was shown
+   * QA "rejected". An agent's worldview is the record, so the record has to be current.
+   */
+  readonly onEvaluated?: (evaluation: GateEvaluation) => void;
   /** The person's answer for a gate, and the reference to the action that carried it. */
   readonly humanDecisionFor?: (
     gate: GateKind,
@@ -398,7 +409,7 @@ export async function runPipeline(chart: OrgChart, input: PipelineRunInput): Pro
     }
 
     // The thing exists now, so whoever judges it can be asked about it.
-    if (input.prepare !== undefined) await input.prepare(gate, produced, artifacts);
+    if (input.prepare !== undefined) await input.prepare(gate, produced, artifacts, transcripts.get(gate));
 
     // The proposer is excluded before an evaluator is picked, so a chart where the author is the
     // only scope-holder BLOCKS rather than self-approving.
@@ -438,6 +449,7 @@ export async function runPipeline(chart: OrgChart, input: PipelineRunInput): Pro
       return { evaluations, passed, artifacts, transcripts, complete: false, blockedAt: gate, refusals, recovery: undefined, questions: [] };
     }
     evaluations.push(result.evaluation);
+    input.onEvaluated?.(result.evaluation);
     passed = result.passed;
     if (!passed.has(gate)) {
       // The gate was evaluated and did not pass. The pipeline stops here; the recovery path on the

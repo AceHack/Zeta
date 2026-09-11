@@ -173,3 +173,16 @@ describe("modelProposal — honest about its own reach", () => {
     if (!r.ok) expect(r.reason).toContain("returned nothing");
   });
 });
+
+describe("A VERIFIER THAT SAYS NO SAYS WHY", () => {
+  // MEASURED on AIAGENT-1662: the verifier named 23 newly failing tests and the record kept
+  // "verifier exited 1", so the next attempt knew it was refused and not what it had broken.
+  test("the verifier's last lines travel with a failed attempt; a passing one adds nothing", async () => {
+    const named = "process.stderr.write('[verify] NEW FAILURE introduced by this change: AzureBlob > uploads\n');process.exit(1)";
+    const failed = await exec(["-e", named]).execute(node(), { branch: "b" });
+    expect(failed.ok && failed.value.succeeded).toBe(false);
+    if (failed.ok) expect(failed.value.summary).toContain("NEW FAILURE introduced by this change: AzureBlob > uploads");
+    const passed = await exec(["-e", "process.stderr.write('noise');process.exit(0)"]).execute(node(), { branch: "b" });
+    if (passed.ok) expect(passed.value.summary).not.toContain("the verifier said");
+  });
+});

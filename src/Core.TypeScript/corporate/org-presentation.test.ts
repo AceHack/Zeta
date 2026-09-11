@@ -67,7 +67,7 @@ describe("ACRONYMS ARE NOT WORDS, and title-casing them is worse than not trying
 });
 
 describe("EVERY GATE HAS A NAME AND A QUESTION", () => {
-  test("all fourteen are named — no gate falls through to its key", () => {
+  test("every gate is named — no gate falls through to its key", () => {
     // A gate that reached a person as `final_business_validation` would be the one place the raw key
     // shows up, and it would be on the card asking them to approve it.
     for (const gate of ORDERED_GATES) {

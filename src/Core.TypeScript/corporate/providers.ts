@@ -195,6 +195,13 @@ export interface WorkContext {
   readonly branch: string;
   /** The change's own checkout, when change control opened one. See `ChangeHandle.workdir`. */
   readonly workdir?: string;
+  /**
+   * What the phases before this one produced — the reproduction, the design — keyed by gate.
+   *
+   * The pipeline held these in `PhaseContext.priorArtifacts` and dropped them at the work
+   * executor, so the agent that fixes a defect was never told where its reproduction was.
+   */
+  readonly priorPhases?: readonly { readonly gate: string; readonly refs: readonly string[]; readonly summary?: string }[];
 }
 
 export interface WorkExecutor {
@@ -226,6 +233,15 @@ export interface ReviewRequest {
    * would be forcing one.
    */
   readonly evidence: readonly EvidenceRef[];
+  /**
+   * The work's own checkout, when it has one. A reviewer runs there, not in the shared clone.
+   *
+   * MEASURED on AIAGENT-1662: a QA reviewer ran the change's Playwright spec from the shared base
+   * checkout, the spec wrote its screenshot there, and that untracked file sat at the very path the
+   * branch commits - so change control's merge into that checkout would have been refused. What a
+   * reviewer's checks leave behind belongs with the work under review, never on the trunk.
+   */
+  readonly workdir?: string;
 }
 
 export interface ReviewVerdict {
@@ -331,6 +347,64 @@ export interface ChangeControlPort {
    * about the repository right now, not a field frozen at the wrong moment.
    */
   revision?(handle: ChangeHandle): Promise<PortResult<ChangeRevision>>;
+  /**
+   * HAND THE CHANGE TO PEOPLE: make it visible where they review changes (push the branch, open a
+   * merge request against `proposal.base`) and leave it OPEN. It never integrates anything.
+   *
+   * Optional, because not every adapter can reach a review system. A run whose delivery is
+   * `human_review` refuses to start on an adapter without it, rather than falling back to a merge:
+   * falling back is exactly the act the setting exists to rule out.
+   *
+   * Idempotent by contract: handing off a change that is already open for review answers with the
+   * review that exists, never a second one.
+   */
+  handoff?(handle: ChangeHandle, proposal: ChangeProposal): Promise<PortResult<ChangeHandoff>>;
+  /**
+   * HOW FAR THE CHANGE IS BEHIND WHAT IT TARGETS — and, with `apply`, bring it level by MERGING the
+   * target in. Never a rebase: a handed-off branch is under review, and rewriting it needs a
+   * force-push nobody here is authorized to make.
+   *
+   * With `apply`, a merge that conflicts is LEFT IN PROGRESS in the change's checkout and its
+   * conflicted paths returned, so an agent can resolve them and commit; `abortSync` backs it out
+   * when nobody does. Optional: an adapter that cannot measure the distance must not pretend to.
+   */
+  syncWithTarget?(handle: ChangeHandle, opts: { readonly apply: boolean }): Promise<PortResult<ChangeSync>>;
+  /** Back out a sync left in progress. Idempotent: nothing in progress is success. */
+  abortSync?(handle: ChangeHandle): Promise<PortResult<true>>;
+}
+
+/** Where a change stands against its target, and what a sync did about it. */
+export interface ChangeSync {
+  /** The target as the review system knows it, e.g. `origin/master`. */
+  readonly target: string;
+  /** Commits on the target the change does not have. Zero means current. */
+  readonly behindBy: number;
+  /** A merge of the target was made and committed. */
+  readonly applied: boolean;
+  /** Paths left conflicted by an applied merge, which is then IN PROGRESS. Empty otherwise. */
+  readonly conflicts: readonly string[];
+}
+
+/** What a change is proposed AS: the words a reviewer reads first, and where it should go. */
+export interface ChangeProposal {
+  readonly title: string;
+  readonly description: string;
+  /** The branch it is proposed against. Absent: the adapter's own trunk. */
+  readonly base?: string;
+  /**
+   * Path patterns the change may never ADD — the organization's evidence stays with the
+   * organization. An adapter that can diff refuses a handoff that adds one. See `change-request.ts`.
+   */
+  readonly keepOut?: readonly string[];
+}
+
+/** Where a handed-off change can be reviewed. */
+export interface ChangeHandoff {
+  readonly branch: string;
+  /** The review's address (a merge request URL), when the review system gave one. */
+  readonly url?: string;
+  /** The commit that was handed off, when the adapter can read it. */
+  readonly commit?: string;
 }
 
 /** A change's position in the repository. Both are full hex object names, never abbreviated. */
@@ -573,6 +647,25 @@ export function fidelityLine(f: RunFidelity): string {
 }
 
 /**
+ * Every method a change-control port carries beyond `open` and `merge`, wrapped so each call is
+ * recorded. Generic on purpose: a wrapper rebuilt field by field silently amputates whatever optional
+ * method its author did not list, and every caller guards with `port.x !== undefined`, so the feature
+ * does not fail - it never happens. MEASURED three times before this existed.
+ */
+function optionalChangeMethods(port: ChangeControlPort, mark: () => void): Partial<ChangeControlPort> {
+  const out: Record<string, unknown> = {};
+  for (const [key, value] of Object.entries(port)) {
+    if (key === "meta" || key === "open" || key === "merge" || typeof value !== "function") continue;
+    const fn = value as (...a: unknown[]) => unknown;
+    out[key] = (...a: unknown[]) => {
+      mark();
+      return fn.apply(port, a);
+    };
+  }
+  return out as Partial<ChangeControlPort>;
+}
+
+/**
  * The same set, plus a record of which ports were actually called.
  *
  * A wrapper rather than a flag inside each adapter: an adapter that counted its own calls would be
@@ -663,22 +756,10 @@ export function recordingProviders(set: ProviderSet): {
         // `exactOptionalPropertyTypes` an explicit `revision: undefined` is not the same as an
         // absent one, and a present-but-undefined method is exactly the shape those guards read as
         // "this adapter cannot do it".
-        ...(set.change.changed === undefined
-          ? {}
-          : {
-              changed: async (handle: ChangeHandle) => {
-                mark(Port.ChangeControl);
-                return set.change.changed!(handle);
-              },
-            }),
-        ...(set.change.revision === undefined
-          ? {}
-          : {
-              revision: async (handle: ChangeHandle) => {
-                mark(Port.ChangeControl);
-                return set.change.revision!(handle);
-              },
-            }),
+        // FOUR TIMES NOW (changed, revision, handoff, and the sync pair), so the trap is closed by
+        // construction rather than by remembering: every OTHER method the wrapped port carries is
+        // passed through, marked, whatever it is called. A new optional method cannot be dropped.
+        ...optionalChangeMethods(set.change, () => mark(Port.ChangeControl)),
       },
     },
   };

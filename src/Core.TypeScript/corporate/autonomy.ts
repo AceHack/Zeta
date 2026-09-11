@@ -31,13 +31,22 @@
  */
 
 import type { Cascade } from "./goal-cascade";
+import type { GateEvaluation } from "./quality-gate";
 import type { OrgRuntimeDeps, OrgRuntimeReport } from "./org-runtime";
 
 export const StopReason = {
   Delivered: "delivered",
+  /**
+   * Every change the run finished is IN FRONT OF PEOPLE for review, and nothing was merged. The
+   * organization's part is done; the next act is a person's. Not "delivered", which says the work
+   * reached its destination.
+   */
+  HandedOff: "handed_off",
   Halted: "halted",
   NoProgress: "no_progress",
   BoundReached: "bound_reached",
+  /** A person asked the loop to stop, and it did — between cycles, never inside one. */
+  Paused: "paused",
 } as const;
 
 export type StopReason = (typeof StopReason)[keyof typeof StopReason];
@@ -82,10 +91,23 @@ export interface AutonomyOptions {
    * autonomous loop and an unbounded one — so the caller states it.
    */
   readonly maxCycles: number;
-  /** Advances the clock between cycles, so a run is not frozen at one instant. */
-  readonly nextNowMs?: (cycle: number, prev: number) => number;
+  /**
+   * Advances the clock between cycles, so a run is not frozen at one instant. Handed the cycle's
+   * report, because a cycle stamps some of its events AHEAD of the instant it started at, and a
+   * next cycle that starts before them interleaves with the one before it.
+   */
+  readonly nextNowMs?: (cycle: number, prev: number, report: OrgRuntimeReport) => number;
   /** Called after each cycle, for a caller that wants to watch. Never decides anything. */
   readonly onCycle?: (cycle: number, report: OrgRuntimeReport) => void;
+  /**
+   * Whether a person has asked the loop to stop, asked BETWEEN cycles. Returns why, or undefined.
+   *
+   * `pause_run` existed as an action, was replayed into a `paused` flag, and was shown on the
+   * dashboard — and the loop never asked it. A person could say "stop" and watch nothing happen.
+   * Checked between cycles only: a cycle is where the organization's state is consistent, and
+   * stopping inside one would leave a step walked halfway.
+   */
+  readonly pausedBecause?: () => string | undefined;
 }
 
 export interface AutonomyResult {
@@ -152,14 +174,22 @@ export async function runUntilSettled(
   let landed: Set<string> | undefined =
     deps.alreadyLanded === undefined ? undefined : new Set(deps.alreadyLanded);
 
+  /**
+   * Every verdict so far, carried forward like the cascade. See `OrgRuntimeDeps.priorGateEvaluations`:
+   * without it each cycle re-walked every step, re-producing and re-reviewing work that had passed.
+   */
+  let verdicts: readonly GateEvaluation[] = deps.priorGateEvaluations ?? [];
+
   for (let cycle = 1; cycle <= options.maxCycles; cycle += 1) {
     const report = await run({
       ...deps,
       nowMs,
       ...(carried === undefined ? {} : { priorCascade: carried }),
       ...(landed === undefined ? {} : { alreadyLanded: landed }),
+      priorGateEvaluations: verdicts,
     });
     carried = report.cascade;
+    verdicts = [...verdicts, ...report.gateEvaluations];
     if (landed !== undefined) for (const id of report.changesLanded) landed.add(id);
     reports.push(report);
     options.onCycle?.(cycle, report);
@@ -167,7 +197,14 @@ export async function runUntilSettled(
     const progress = progressOf(report);
 
     if (report.delivered) {
-      return settled(cycle, StopReason.Delivered, reports, `delivered after ${String(cycle)} cycle(s)`);
+      return report.changesHandedOff.length > 0
+        ? settled(
+            cycle,
+            StopReason.HandedOff,
+            reports,
+            `handed ${String(report.changesHandedOff.length)} change(s) to people for review after ${String(cycle)} cycle(s) - nothing was merged`,
+          )
+        : settled(cycle, StopReason.Delivered, reports, `delivered after ${String(cycle)} cycle(s)`);
     }
     if (report.halted.length > 0) {
       const first = report.halted[0];
@@ -191,7 +228,11 @@ export async function runUntilSettled(
     }
 
     previous = progress;
-    nowMs = options.nextNowMs?.(cycle, nowMs) ?? nowMs;
+    const paused = options.pausedBecause?.();
+    if (paused !== undefined && cycle < options.maxCycles) {
+      return settled(cycle, StopReason.Paused, reports, `stopped after ${String(cycle)} cycle(s): ${paused}`);
+    }
+    nowMs = options.nextNowMs?.(cycle, nowMs, report) ?? nowMs;
   }
 
   return settled(

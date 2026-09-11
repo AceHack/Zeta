@@ -185,10 +185,82 @@ export function appendRun(
  */
 export function readEvents(root: string, window?: ShardWindow): readonly OrgEvent[] {
   const events = readShards<OrgEvent>(`${root}/${EVENTS}`, identifyEvent, window);
-  return [...events].sort((a, b) => {
-    if (a.atMs !== b.atMs) return a.atMs - b.atMs;
-    return a.id === b.id ? 0 : a.id < b.id ? -1 : 1;
-  });
+  return [...events].sort(compareEvents);
+}
+
+/**
+ * The log's order: by instant, then by id AS MINTED.
+ *
+ * ── THE TIE-BREAK WAS A STRING COMPARE, AND IDS ARE COUNTERS ─────────────────
+ * `createId` pads to three digits, so `evt-999` < `evt-1000` as numbers and `evt-1000` < `evt-999`
+ * as strings. Every instant with more than 999 minted ids behind it folded its events out of order
+ * — a transition before the item it moves. Digit runs compare as numbers here, everything else
+ * ordinally, so the tie-break is the order the counter produced.
+ */
+export function compareEvents(a: OrgEvent, b: OrgEvent): number {
+  if (a.atMs !== b.atMs) return a.atMs - b.atMs;
+  return compareMintedIds(a.id, b.id);
+}
+
+/** Two ids in minting order: digit runs numerically, the rest ordinally. Culture-invariant. */
+export function compareMintedIds(a: string, b: string): number {
+  if (a === b) return 0;
+  const chunks = (s: string): readonly string[] => s.match(/\d+|\D+/g) ?? [];
+  const ca = chunks(a);
+  const cb = chunks(b);
+  for (let i = 0; i < Math.min(ca.length, cb.length); i += 1) {
+    const x = ca[i] ?? "";
+    const y = cb[i] ?? "";
+    if (x === y) continue;
+    const digits = /^\d/;
+    if (digits.test(x) && digits.test(y)) {
+      // By magnitude without parsing, so an id longer than a double's precision still orders.
+      const nx = x.replace(/^0+(?=\d)/, "");
+      const ny = y.replace(/^0+(?=\d)/, "");
+      if (nx.length !== ny.length) return nx.length - ny.length;
+      if (nx !== ny) return nx < ny ? -1 : 1;
+      // Same number, different padding: fall through to the ordinal compare so the order is total.
+    }
+    return x < y ? -1 : 1;
+  }
+  return ca.length - cb.length;
+}
+
+/**
+ * Where the log ends: its latest instant, and the highest counter any id in it was minted with.
+ *
+ * ── WHY A RESUMED RUN NEEDS THIS ─────────────────────────────────────────────
+ * `run-org` starts its clock at epoch 0 and its id counter at 1 in every process. Against a store
+ * that already holds a run, the second run's events then land at the SAME instants as the first's
+ * and are ordered against them by an id that means nothing across processes. MEASURED on the Agentic
+ * Team's first real run: a resumed run assigned three tickets' leaves, the fold sorted each
+ * `work_assigned` (the new run's `evt-021`) before the `work_created` it applies to (the old run's
+ * `evt-033`), dropped it for naming an item that did not exist yet — and the next resume saw those
+ * leaves unstaffed again.
+ *
+ * A writer that starts after this point appends to the history instead of interleaving with it.
+ * The counter is read off every string in the log shaped like a minted id, so it needs no list of
+ * prefixes; reading one that was not minted can only make the next id larger, never collide.
+ */
+export function logHighWater(events: readonly OrgEvent[]): { readonly atMs: number | undefined; readonly counter: number } {
+  let atMs: number | undefined;
+  let counter = 0;
+  const minted = /^[a-z][a-z0-9_]*(?:-[a-z][a-z0-9_]*)*-(\d+)$/;
+  const visit = (v: unknown): void => {
+    if (typeof v === "string") {
+      const m = minted.exec(v);
+      if (m?.[1] !== undefined) counter = Math.max(counter, Number.parseInt(m[1], 10));
+    } else if (Array.isArray(v)) {
+      for (const x of v) visit(x);
+    } else if (v !== null && typeof v === "object") {
+      for (const x of Object.values(v)) visit(x);
+    }
+  };
+  for (const e of events) {
+    atMs = atMs === undefined ? e.atMs : Math.max(atMs, e.atMs);
+    visit(e);
+  }
+  return { atMs, counter };
 }
 
 /**
