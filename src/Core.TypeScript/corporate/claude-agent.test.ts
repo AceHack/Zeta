@@ -279,7 +279,29 @@ describe("AUTHENTICATION", () => {
     writeFileSync(f, "sk-test-token\n");
     const r = run(["work", "task-9"], ok({ summary: "s", commit: "", testsRun: [], blocked: "" }), { ORG_CLAUDE_TOKEN_FILE: f });
     expect(r.seen?.token).toBe("sk-test-token");
-    expect((r.seen?.argv ?? []).join(" ")).not.toContain("sk-test-token");
+    // THE CLAIM RIDES ON A DIFFERENTIAL, NOT AN ABSENCE.
+    //
+    // `argv.join(" ").not.toContain(token)` witnesses ONE RENDERING of a leak and
+    // never its absence (R5, `audit-check-arity-nonequality`): a token split across
+    // two argv elements joins to "sk-test -token", which does not contain the secret
+    // and passes a test whose entire subject is that the secret is not on argv.
+    //
+    // The property actually being claimed is NONINTERFERENCE (§13): the secret must
+    // not influence argv AT ALL. So run the same command with and without the token
+    // file and assert argv is IDENTICAL. That is a positive, exact check which fails
+    // on any leak — whole, split, encoded, or merely a length difference — and it
+    // fails for the right reason, because the thing it compares is the thing the
+    // claim is about.
+    //
+    // NO per-element `not.toContain` accompanies it, deliberately. Those would be
+    // exactly the absence assertions R5 refuses, and they would add nothing: the
+    // equality diff already prints the offending element, so the failure names the
+    // leak without a weaker check standing beside the stronger one.
+    const withToken = r.seen?.argv ?? [];
+    const without = run(["work", "task-9"], ok({ summary: "s", commit: "", testsRun: [], blocked: "" }));
+    expect(withToken.length).toBeGreaterThan(0);
+    expect(withToken).toEqual(without.seen?.argv ?? []);
+    without.cleanup();
     r.cleanup();
     rmSync(dir, { recursive: true, force: true });
   });
