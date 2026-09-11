@@ -31,7 +31,8 @@ import type { ProducerPort } from "./pipeline";
 import { PriorityClass } from "./prioritization";
 import { AnchorState } from "./discussion-anchor";
 import { SignalTool } from "./supervisor-signal";
-import type { OrgEvent } from "./org-event";
+import { OrgEventKind, type OrgEvent } from "./org-event";
+import { foldOrganization } from "./org-fold";
 
 const chart = (() => {
   const r = buildOrgChart(SEED_HATS);
@@ -1302,6 +1303,31 @@ describe("A LEAF'S RETRY RESUMES AT THE STEP THAT WAS TURNED BACK", () => {
     expect(reproductions).toBe(1);
     expect(report.gateEvaluations.filter((e) => e.gate === GateKind.Reproduction).length).toBe(1);
     expect(report.delivered).toBe(true);
+  }, 60_000);
+});
+
+describe("A STEP THAT STOPS WITHOUT A VERDICT SAYS WHY, ON THE ITEM", () => {
+  // MEASURED on AIAGENT-1662: the implementation step was turned back with no verdict. The reason
+  // lived in the process's `refusals` until it exited, so the log, observe, and the next attempt's
+  // author all saw "turned back" and nothing else.
+  test("an author that fails leaves its reason in the log against the item it was working", async () => {
+    const reproduce: ProducerPort = {
+      meta: { port: Port.WorkExecution, name: "qa", fidelity: Fidelity.Real, describes: "reproduces" },
+      produce: async () => ({ ok: false, reason: "the agent ran out of turns before writing a test" }),
+    };
+    const events: OrgEvent[] = [];
+    const base = deps();
+    await runOrgRuntime({
+      ...base,
+      artifactProducers: new Map([[GateKind.Reproduction, reproduce]]),
+      onEvent: (e: OrgEvent) => events.push(e),
+    } as OrgRuntimeDeps);
+    const said = events.filter((e) => e.kind === OrgEventKind.Refusal && e.decision.includes("ran out of turns"));
+    expect(said.length).toBeGreaterThan(0);
+    // Against the leaf, so observe can show it as that item's comment.
+    const leafIds = new Set(foldOrganization(events).cascade.nodes.filter((n) => isLeafType(n.workType)).map((n) => n.workId));
+    expect(said.every((e) => leafIds.has(e.subjectId))).toBe(true);
+    expect(said[0]?.decision).toContain("stopped at reproduction");
   }, 60_000);
 });
 

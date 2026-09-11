@@ -1594,6 +1594,9 @@ export async function main(argv: readonly string[]): Promise<number> {
     // Where authored documents go, so what an agent writes lands beside the record that lists it.
     process.env["ORG_DOCS_DIR"] ??= fwd(join(resolve(args.store), "docs"));
   }
+  // THE STEP'S BUDGET, so an agent's own limit is the organization's rather than a number of its
+  // own. MEASURED on AIAGENT-1662: the agent stopped itself at 25 minutes inside a 50-minute step.
+  if (args.portTimeoutMs !== undefined) process.env["ORG_PORT_TIMEOUT_MS"] ??= String(args.portTimeoutMs);
 
   // ── SOMEBODY IS WAITING IN A ROOM ─────────────────────────────────────────
   // Before the organization is even built. A person in a conversation is the most valuable thing

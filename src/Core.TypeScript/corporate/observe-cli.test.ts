@@ -75,6 +75,23 @@ describe("THE RECORD OF A WORK ITEM, as an agent opens it", () => {
     }
   }, 60_000);
 
+  test("why a step stopped is a comment on the item it stopped — never on another", async () => {
+    const events = await recordedRun();
+    const leaf = worldFor({ events, hatId: "qa_engineer", actions: [] }).items?.find((i) => i.kind === WorkType.Defect);
+    expect(leaf).toBeDefined();
+    const stopped = {
+      id: "evt-refusal-x", kind: "refusal", subjectId: leaf?.id ?? "", actorHatId: "backend_implementer",
+      decision: "stopped at implementation_review (attempt 1): producer 'agent' refused: out of turns",
+      atMs: 99, evidenceRefs: [], supervisorChain: [],
+    } as unknown as OrgEvent;
+    const items = worldFor({ events: [...events, stopped], hatId: "qa_engineer", actions: [] }).items ?? [];
+    const mine = items.find((i) => i.id === leaf?.id);
+    expect(mine?.comments.some((c) => c.text.includes("out of turns") && c.about === "refused")).toBe(true);
+    for (const other of items.filter((i) => i.id !== leaf?.id)) {
+      expect(other.comments.some((c) => c.text.includes("out of turns"))).toBe(false);
+    }
+  }, 60_000);
+
   test("what a hat holds is what is assigned to it or owned by it while open", () => {
     const nodes = [
       { workId: "a", workType: WorkType.Defect, title: "a", state: "in_progress", ownerHatId: "lead", assigneeHatId: "dev" },

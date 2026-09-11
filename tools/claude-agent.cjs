@@ -118,12 +118,78 @@ const WRITE = ["Read", "Glob", "Grep", "Edit", "Write", "TodoWrite", "Bash"];
 const JUDGE = [...READ, "Bash(npm test:*)", "Bash(npm run:*)", "Bash(npx:*)", "Bash(node:*)", "Bash(bun:*)"];
 
 /**
+ * How long one Claude Code session may run.
+ *
+ * The ORGANIZATION'S step budget, less a minute to report in. MEASURED on AIAGENT-1662: this was a
+ * fixed 25 minutes while run-org gave the step 50, so a three-part fix was killed halfway with its
+ * tests written and no code - and the step was turned back for a limit nobody had set for it.
+ * `ORG_CLAUDE_TIMEOUT_MS` still wins when stated.
+ */
+function claudeBudgetMs() {
+  const stated = Number(env.ORG_CLAUDE_TIMEOUT_MS);
+  if (Number.isFinite(stated) && stated > 0) return stated;
+  const port = Number(env.ORG_PORT_TIMEOUT_MS);
+  if (Number.isFinite(port) && port > 120_000) return port - 60_000;
+  return 1_500_000;
+}
+
+/**
+ * Run a process to completion or to its budget, and on the budget stop IT AND EVERYTHING IT STARTED.
+ *
+ * `spawnSync`'s timeout kills only the direct child. MEASURED on AIAGENT-1662: the timed-out agent's
+ * shells and a jest run - with its own mongod - kept running after the agent was gone, competing
+ * with the next step's test runs for the machine.
+ */
+function runBounded(command, args, { cwd, env: childEnvironment, input, budgetMs }) {
+  const { spawn } = require("node:child_process");
+  return new Promise((done) => {
+    const win = process.platform === "win32";
+    const child = spawn(command, args, { cwd, env: childEnvironment, shell: false, windowsHide: true, detached: !win });
+    const out = [];
+    const err = [];
+    let timedOut = false;
+    let error;
+    child.stdout.on("data", (b) => out.push(b));
+    child.stderr.on("data", (b) => err.push(b));
+    child.on("error", (e) => {
+      error = e;
+    });
+    const timer = setTimeout(() => {
+      timedOut = true;
+      if (win) spawnSync("taskkill", ["/T", "/F", "/PID", String(child.pid)], { shell: false, windowsHide: true });
+      else {
+        try {
+          process.kill(-child.pid, "SIGKILL");
+        } catch {
+          child.kill("SIGKILL");
+        }
+      }
+    }, budgetMs);
+    child.on("close", (status) => {
+      clearTimeout(timer);
+      done({ status, stdout: Buffer.concat(out).toString("utf-8"), stderr: Buffer.concat(err).toString("utf-8"), timedOut, error });
+    });
+    // THE PROMPT ON STDIN — never argv, which every process on the machine can read and which
+    // Windows caps at 32k characters.
+    child.stdin.on("error", () => {});
+    child.stdin.end(input, "utf-8");
+  });
+}
+
+/** What a stopped session left uncommitted, so the next attempt is told rather than surprised. */
+function leftBehind(cwd) {
+  const r = spawnSync("git", ["status", "--porcelain"], { cwd, encoding: "utf-8", shell: false, windowsHide: true });
+  const lines = String(r.stdout || "").split(NL).map((l) => l.trim()).filter((l) => l !== "");
+  return lines.length === 0 ? "" : "; left uncommitted in the checkout: " + lines.slice(0, 20).join(", ") + (lines.length > 20 ? " ..." : "");
+}
+
+/**
  * Run one Claude Code session and return its structured answer.
  *
  * `is_error` DECIDES, not `subtype`: measured, a logged-out CLI answers `subtype: "success"` with
  * `is_error: true` and a result of "Not logged in". Reading `subtype` would file that as work done.
  */
-function runClaude(prompt, schema, allowed, cwd) {
+async function runClaude(prompt, schema, allowed, cwd) {
   const args = [
     "-p", "--output-format", "json", "--permission-mode", "dontAsk",
     "--json-schema", JSON.stringify(schema),
@@ -140,17 +206,11 @@ function runClaude(prompt, schema, allowed, cwd) {
       fail(2, "ORG_CLAUDE_BIN_ARGS is not a JSON array");
     }
   }
-  const run = spawnSync(claudeBin(), [...pre, ...args], {
-    cwd,
-    env: childEnv(),
-    // THE PROMPT ON STDIN — never argv, which every process on the machine can read and which
-    // Windows caps at 32k characters.
-    input: prompt,
-    encoding: "utf-8",
-    timeout: Number(env.ORG_CLAUDE_TIMEOUT_MS || 1_500_000),
-    maxBuffer: 64 * 1024 * 1024,
-    shell: false,
-  });
+  const budgetMs = claudeBudgetMs();
+  const run = await runBounded(claudeBin(), [...pre, ...args], { cwd, env: childEnv(), input: prompt, budgetMs });
+  if (run.timedOut) {
+    fail(4, "Claude Code did not finish within " + String(Math.round(budgetMs / 60_000)) + " min; it and everything it started were stopped" + leftBehind(cwd));
+  }
   if (run.error) fail(4, "Claude Code could not run: " + run.error.message);
   let out;
   try {
@@ -209,6 +269,8 @@ function preamble(hat, workId) {
 
 const ticket = env.ORG_TICKET || "";
 
+// The modes run inside one async body, because a session is awaited: see `runBounded`.
+(async () => {
 // ═════════════════════════════════════════════════════════════════════════════
 // work — make the change
 // ═════════════════════════════════════════════════════════════════════════════
@@ -241,7 +303,7 @@ if (mode === "work") {
     },
     required: ["summary", "commit", "testsRun", "blocked"],
   };
-  const r = runClaude(prompt, schema, WRITE, process.cwd());
+  const r = await runClaude(prompt, schema, WRITE, process.cwd());
   const a = r.answer;
   if (String(a.blocked || "").trim() !== "") fail(3, "blocked: " + a.blocked);
   process.stdout.write(String(a.summary).trim() + NL);
@@ -302,13 +364,24 @@ if (mode === "gate") {
     },
     required: ["questions", "title", "document", "files", "plan", "learned"],
   };
-  const r = runClaude(prompt, schema, own ? WRITE : READ, process.cwd());
+  const r = await runClaude(prompt, schema, own ? WRITE : READ, process.cwd());
   const a = r.answer;
   const asks = (a.questions || []).map((q) => String(q).trim()).filter((q) => q !== "");
   const lessons = (a.learned || []).map((l) => "learned: " + String(l.key).trim() + " :: " + String(l.lesson).trim());
   for (const d of r.denied) process.stderr.write("[claude-agent] denied " + d + NL);
   if (asks.length > 0) {
-    for (const q of asks) process.stdout.write("ask: " + q.split(NL).join(" ") + NL);
+    // THE DRAFT IS KEPT, NOT SUBMITTED. A question still refuses the step - a document next to an
+    // open question is a guess with the uncertainty stripped off - but throwing the draft away made
+    // the retry redo it and left the person answering blind to what was already done. MEASURED on
+    // AIAGENT-1661: a 17 KB QA record was discarded because it came with one question.
+    let draftNote = "";
+    if (String(a.document || "").trim() !== "") {
+      mkdirSync(join(docsDir, workId), { recursive: true });
+      const draft = join(docsDir, workId, gate + ".draft.md");
+      writeFileSync(draft, "# DRAFT (not submitted - it came with questions) - " + (String(a.title).trim() || gate) + NL + NL + String(a.document).trim() + NL, "utf-8");
+      draftNote = " [draft so far: " + draft + "]";
+    }
+    for (const q of asks) process.stdout.write("ask: " + q.split(NL).join(" ") + draftNote + NL);
     for (const l of lessons) process.stdout.write(l + NL);
     process.stdout.write(r.usage + NL);
     process.exit(0);
@@ -359,8 +432,9 @@ if (mode === "review") {
     },
     required: ["verdict", "reason", "lookedAt"],
   };
-  const r = runClaude(prompt, schema, JUDGE, process.cwd());
+  const r = await runClaude(prompt, schema, JUDGE, process.cwd());
   const a = r.answer;
   process.stdout.write(String(a.reason).trim() + (a.lookedAt && a.lookedAt.length ? " [looked at: " + a.lookedAt.join(", ") + "]" : "") + NL);
   process.exit(a.verdict === "approve" ? 0 : 1);
 }
+})().catch((e) => fail(4, "claude-agent failed: " + String((e && e.message) || e)));

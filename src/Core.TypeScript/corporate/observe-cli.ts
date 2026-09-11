@@ -43,7 +43,7 @@ import { chainOf } from "./gate-demand";
 import { childrenOf, isLeafType, nodeById, WorkState, type CascadeNode } from "./goal-cascade";
 import type { HumanAction } from "./human-action";
 import { buildOrgChart, type OrgChart } from "./org-chart";
-import type { OrgEvent } from "./org-event";
+import { OrgEventKind, type OrgEvent } from "./org-event";
 import { foldBoard, foldOrganization, foldSupervisorSignals, type FoldedOrganization } from "./org-fold";
 import { orgSurfaceFor } from "./org-observe-bridge";
 import { SEED_HATS } from "./org-seed";
@@ -73,6 +73,11 @@ export function itemContextsFrom(
 ): readonly ItemContext[] {
   const board = foldBoard(events);
   const views = new Map(work.map((w) => [w.workId, w] as const));
+  const refusedOn = new Map<string, OrgEvent[]>();
+  for (const e of events) {
+    if (e.kind !== OrgEventKind.Refusal) continue;
+    refusedOn.set(e.subjectId, [...(refusedOn.get(e.subjectId) ?? []), e]);
+  }
   const docs = [...folded.documents.values()];
   return folded.cascade.nodes.map((node) => {
     const w = views.get(node.workId);
@@ -130,6 +135,11 @@ export function itemContextsFrom(
       comments.push({ by: b.byHatId, text: `asked a person: ${b.about}`, atMs: b.atMs, about: "question" });
     }
     for (const r of w?.refusals ?? []) comments.push({ by: "organization", text: r, about: "refused" });
+    // What the organization declined to do FOR THIS ITEM, as the runtime recorded it — a step whose
+    // author failed, a gate nobody could judge. The next attempt reads why here, not a bare verdict.
+    for (const e of refusedOn.get(node.workId) ?? []) {
+      comments.push({ by: e.actorHatId ?? "organization", text: e.decision, atMs: e.atMs, about: "refused" });
+    }
     comments.sort((a, b) => (a.atMs ?? 0) - (b.atMs ?? 0));
 
     const ticket = node.requestRef === undefined ? undefined : parseRequestRef(node.requestRef);

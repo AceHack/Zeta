@@ -116,6 +116,20 @@ describe("EACH SEAM'S PROTOCOL", () => {
     r.cleanup();
   });
 
+  test("gate: a draft that came WITH a question is kept and named in the question, never submitted", () => {
+    // MEASURED on AIAGENT-1661: a 17 KB QA record was discarded because it came with one question.
+    const r = run(["gate", "qa_uat", "task-3"], ok({ questions: ["Real-stack Playwright or the API steps?"], title: "QA", document: "## what I verified\nall green", files: [], plan: [], learned: [] }));
+    expect(r.status).toBe(0);
+    const draft = join(r.dir, "docs", "task-3", "qa_uat.draft.md");
+    expect(existsSync(draft)).toBe(true);
+    expect(readFileSync(draft, "utf-8")).toContain("all green");
+    expect(r.stdout).toContain("ask: Real-stack Playwright or the API steps? [draft so far: ");
+    // Still a question, not an artifact: the submitted document does not exist and no path line is emitted alone.
+    expect(existsSync(join(r.dir, "docs", "task-3", "qa_uat.md"))).toBe(false);
+    expect(r.stdout.split("\n").filter((l) => l.trim() !== "" && !l.startsWith("ask: ") && !l.startsWith("usage:") && !l.startsWith("learned: "))).toEqual([]);
+    r.cleanup();
+  });
+
   test("gate: WITHOUT its own checkout the author may only read", () => {
     const r = run(["gate", "system_context", "goal-1"], ok({ questions: ["q"], title: "", document: "", files: [], plan: [], learned: [] }));
     const allowed = r.seen?.argv ?? [];
@@ -153,4 +167,45 @@ describe("AUTHENTICATION", () => {
     r.cleanup();
     rmSync(dir, { recursive: true, force: true });
   });
+});
+
+describe("A SESSION THAT RUNS OUT OF TIME IS STOPPED WITH EVERYTHING IT STARTED", () => {
+  // MEASURED on AIAGENT-1662: the agent was killed at a fixed 25 minutes, and its shells and a jest
+  // run with its own mongod kept running afterwards, competing with the next step's tests.
+  test("the budget stops the session AND its children, and says so", async () => {
+    const dir = mkdtempSync(join(tmpdir(), "claude-agent-slow-"));
+    const stub = join(dir, "slow.cjs");
+    const pidFile = join(dir, "grandchild.pid");
+    writeFileSync(
+      stub,
+      `const {spawn}=require("child_process");const fs=require("fs");` +
+        // DETACHED, like Claude Code's own shells: Node would otherwise put the child in a job object
+        // that dies with its parent, and the test would pass without any tree kill at all.
+        `const g=spawn(process.execPath,["-e","setInterval(()=>{},1000)"],{stdio:"ignore",detached:true});g.unref();` +
+        `fs.writeFileSync(${JSON.stringify(pidFile)},String(g.pid));setInterval(()=>{},1000);`,
+    );
+    const r = spawnSync("node", [AGENT, "work", "task-9"], {
+      cwd: dir,
+      encoding: "utf-8",
+      env: { ...process.env, ORG_CLAUDE_BIN: "node", ORG_CLAUDE_BIN_ARGS: JSON.stringify([stub]), ORG_CLAUDE_TIMEOUT_MS: "2500" },
+      timeout: 60_000,
+    });
+    try {
+      expect(r.status).not.toBe(0);
+      expect(r.stderr).toContain("did not finish within");
+      const pid = Number(readFileSync(pidFile, "utf-8"));
+      let alive = true;
+      for (let i = 0; i < 20 && alive; i += 1) {
+        try {
+          process.kill(pid, 0);
+          await new Promise((ok) => setTimeout(ok, 250));
+        } catch {
+          alive = false;
+        }
+      }
+      expect(alive).toBe(false);
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  }, 60_000);
 });

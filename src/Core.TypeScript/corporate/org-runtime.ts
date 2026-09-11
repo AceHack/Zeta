@@ -3215,6 +3215,20 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
         toState: "rejected",
         atMs: warmedAt,
       });
+      // WHY IT STOPPED, ON THE ITEM. A step that stops with a verdict carries the reviewer's words
+      // on the evaluation; one that stops WITHOUT a verdict — its author failed, nobody could judge
+      // it — carried its reason only in this process's `refusals`, printed when the process exits.
+      // MEASURED on AIAGENT-1662: the implementation step was turned back with no verdict, and the
+      // log, observe and the next attempt's author all saw "turned back" and nothing about why.
+      for (const r of run.refusals) {
+        note({
+          kind: OrgEventKind.Refusal,
+          subjectId: task.workId,
+          ...(task.assigneeHatId === undefined ? {} : { actorHatId: task.assigneeHatId }),
+          decision: `stopped at ${run.blockedAt ?? "?"} (attempt ${attempt}): ${r}`,
+          atMs: warmedAt,
+        });
+      }
       if (run.refusals.length > 0) break;
       if (!detectChurn(task.workId, gateEvaluations, threshold)) continue;
 

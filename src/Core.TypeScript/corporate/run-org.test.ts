@@ -533,6 +533,21 @@ describe("A RUN OVER A STORE APPENDS TO ITS HISTORY", () => {
   }, 180_000);
 });
 
+describe("AN AGENT'S TIME LIMIT IS THE ORGANIZATION'S", () => {
+  // MEASURED on AIAGENT-1662: the agent stopped itself at a fixed 25 minutes inside a 50-minute step.
+  test("--port-timeout-ms reaches every child as ORG_PORT_TIMEOUT_MS", async () => {
+    const before = process.env["ORG_PORT_TIMEOUT_MS"];
+    delete process.env["ORG_PORT_TIMEOUT_MS"];
+    try {
+      await capture(["--port-timeout-ms", "3000000"]);
+      expect(process.env["ORG_PORT_TIMEOUT_MS"]).toBe("3000000");
+    } finally {
+      if (before === undefined) delete process.env["ORG_PORT_TIMEOUT_MS"];
+      else process.env["ORG_PORT_TIMEOUT_MS"] = before;
+    }
+  }, 120_000);
+});
+
 describe("the failure modes exit non-zero", () => {
   test("--qa-fails does not deliver", async () => {
     const { code, out } = await capture(["--qa-fails"]);
