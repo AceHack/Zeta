@@ -160,19 +160,40 @@ export type AnswerResult =
   | { readonly actionItemId: string; readonly error: string };
 
 /**
+ * A place on the machine the organization runs on, named in text meant for a reviewer: an absolute
+ * local path, or the organization's own store. MEASURED on MR !162: an account written for the
+ * organization's record pointed at `C:\Users\...\.agent-org\stores\...\evidence\...` - a reviewer can
+ * open none of it, and posting it publishes the operator's filesystem. What the prompt forbids, this
+ * refuses mechanically.
+ */
+export function placeOnThisMachine(text: string): string | undefined {
+  const m = /(?:^|[\s(`'"])((?:[A-Za-z]:[\\/]|\/(?:Users|home|tmp|var\/folders)\/)[^\s`'")]*)|(\.agent-org[\\/][^\s`'")]*)/.exec(text);
+  if (m === null) return undefined;
+  return (m[1] ?? m[2] ?? "").slice(0, 60);
+}
+
+/**
  * The settled items on one change still owed an answer, and those the organization decided to leave
  * unanswered (recorded as such without asking anyone, so they are not owed forever).
  *
  * ORDER IS THE POINT: only a SETTLED item is answered, and an item is settled only once what settles
  * it is in front of people - so a reply saying "fixed in abc123" is never posted before abc123 is.
  */
-export function answersOwed(items: readonly ActionItem[]): { readonly owed: readonly AnswerItem[]; readonly unanswered: readonly string[] } {
+export function answersOwed(items: readonly ActionItem[]): {
+  readonly owed: readonly AnswerItem[];
+  readonly unanswered: readonly { readonly actionItemId: string; readonly why: string }[];
+} {
   const owed: AnswerItem[] = [];
-  const unanswered: string[] = [];
+  const unanswered: { actionItemId: string; why: string }[] = [];
   for (const i of items) {
     if (i.settled === undefined || i.answered !== undefined) continue;
     if (i.settled.respond === false) {
-      unanswered.push(i.actionItemId);
+      unanswered.push({ actionItemId: i.actionItemId, why: "the organization decided it asked nothing of the change" });
+      continue;
+    }
+    const leak = placeOnThisMachine(i.settled.how);
+    if (leak !== undefined) {
+      unanswered.push({ actionItemId: i.actionItemId, why: `its account names a place the reviewer cannot open (${leak}) - not posted` });
       continue;
     }
     owed.push({

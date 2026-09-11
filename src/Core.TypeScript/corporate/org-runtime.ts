@@ -4225,7 +4225,7 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
           });
           actionItemsAnswered.push(actionItemId);
         };
-        for (const id of unanswered) answered(id, { resolved: false, skipped: "the organization decided it asked nothing of the change" });
+        for (const u of unanswered) answered(u.actionItemId, { resolved: false, skipped: u.why });
         if (owed.length === 0) continue;
         if (deps.answer === undefined) {
           refusals.push(`settled items on ${workId} are owed an answer (replies: ${replies}) and nothing is configured to give it`);

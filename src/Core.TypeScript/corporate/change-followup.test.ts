@@ -108,7 +108,28 @@ describe("A SETTLED ITEM IS OWED AN ANSWER WHERE IT WAS RAISED", () => {
   test("an item the organization decided needed no answer is recorded as unanswered, never posted", () => {
     const { owed, unanswered } = answersOwed([settled("trigger", { respond: false, outcome: "declined", how: "the review trigger keyword" })]);
     expect(owed).toEqual([]);
-    expect(unanswered).toEqual(["trigger"]);
+    expect(unanswered.map((u) => u.actionItemId)).toEqual(["trigger"]);
+  });
+
+  test("MEASURED on MR !162: an account naming a place on this machine is never posted to a reviewer", () => {
+    const leaky = [
+      "Rollout drafted at C:\\Users\\Max.Chadaev\\.agent-org\\stores\\agentic-team\\runs\\x\\evidence\\review.md for the reviewer",
+      "see C:/Users/someone/AppData/Local/Temp/verify.log",
+      "written to /home/ci/.agent-org/stores/x",
+      "copied to /Users/max/work/evidence.png",
+    ];
+    for (const how of leaky) {
+      const { owed, unanswered } = answersOwed([settled("x", { respond: true, how })]);
+      expect(owed).toEqual([]);
+      expect(unanswered[0]?.why).toContain("names a place the reviewer cannot open");
+    }
+    // Repository paths, URLs and code are what a reviewer can open - those are posted.
+    for (const how of [
+      "server/src/routes/oversight.ts:176 caps the limit; test in server/src/__tests__/routes/x.test.ts",
+      "see https://tgcsgitlab.example/p/-/merge_requests/164 and `readCap = limit * 4`",
+    ]) {
+      expect(answersOwed([settled("y", { respond: true, how })]).owed).toHaveLength(1);
+    }
   });
 
   test("an item settled BEFORE answering existed is answered only if it is a thread - nobody decided, so the answerer checks", () => {
