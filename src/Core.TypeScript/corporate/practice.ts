@@ -347,6 +347,19 @@ export const ProcessSetting = {
    * under, so an organization can keep the full ladder for one programme's defects.
    */
   DefectRungGates: "defect_rung_gates",
+  /**
+   * What the organization's LAST act on a change is.
+   *
+   *   `human_review` — the change is handed to people: pushed, proposed (a merge request), and left
+   *                    open. The organization never integrates it; a person does.
+   *   `merge`        — the organization merges it itself.
+   *
+   * REQUIRED for a real repository, with no default: whether software reaches a trunk without a
+   * person is not the organization's to assume. MEASURED on the Agentic Team's first real run: with
+   * no such setting the runtime merged two defects into its clone's master, which the operator had
+   * never asked for and would never allow on the real repository.
+   */
+  Delivery: "delivery",
 } as const;
 export type ProcessSetting = (typeof ProcessSetting)[keyof typeof ProcessSetting];
 
@@ -361,6 +374,7 @@ export const SETTING_VALUES: Readonly<Record<ProcessSetting, readonly string[]>>
   [ProcessSetting.IntegrationBranch]: ["collect", "direct"],
   [ProcessSetting.UnreproducedDefects]: ["refuse", "reproduce_first"],
   [ProcessSetting.DefectRungGates]: ["full", "none"],
+  [ProcessSetting.Delivery]: ["human_review", "merge"],
 };
 
 export interface SettingBinding {

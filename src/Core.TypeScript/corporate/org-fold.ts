@@ -797,6 +797,38 @@ export function foldLandedChanges(events: readonly OrgEvent[]): ReadonlyMap<stri
   return out;
 }
 
+/** A change handed to people for review, as the log recorded it. */
+export interface HandedOffChange {
+  readonly workId: string;
+  readonly changeId: string;
+  readonly branch: string;
+  readonly url?: string;
+  readonly commit?: string;
+}
+
+/**
+ * Every change the organization handed to people, by work id - the latest handoff wins.
+ *
+ * The companion of `foldLandedChanges` for an organization that never merges: it is how a resumed
+ * run knows a change is already in front of a reviewer, so it neither walks it again nor opens a
+ * second review of it.
+ */
+export function foldHandedOffChanges(events: readonly OrgEvent[]): ReadonlyMap<string, HandedOffChange> {
+  const out = new Map<string, HandedOffChange>();
+  for (const event of events) {
+    if (event.fact?.kind !== "change_handed_off") continue;
+    const x = event.fact;
+    out.set(x.workId, {
+      workId: x.workId,
+      changeId: x.changeId,
+      branch: x.branch,
+      ...(x.url === undefined ? {} : { url: x.url }),
+      ...(x.commit === undefined ? {} : { commit: x.commit }),
+    });
+  }
+  return out;
+}
+
 /**
  * Rooms, rebuilt turn by turn.
  *

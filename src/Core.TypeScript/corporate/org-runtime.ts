@@ -114,7 +114,7 @@ import {
   type Pipeline,
   type ProducerPort,
 } from "./pipeline";
-import { Fidelity, fidelityLine, recordingProviders, runFidelityOf, type ChangeHandle, type DataSourcePort, type ProviderSet, type ReviewVerdict, type RunFidelity,
+import { Fidelity, fidelityLine, recordingProviders, runFidelityOf, type ChangeHandle, type ChangeProposal, type DataSourcePort, type ProviderSet, type ReviewVerdict, type RunFidelity,
   fidelityOf,} from "./providers";
 import { autoApproveReview, simulatedChangeControl, simulatedIntake, simulatedTestRunner, simulatedWorkExecutor } from "./adapters";
 import { associateGoal, EMPTY_BOOK, openPortfolio, type PortfolioKind } from "./portfolio";
@@ -330,6 +330,12 @@ export interface OrgRuntimeDeps extends HumanCheckpointDeps {
    * the reading that turns every resumed run into a false failure.
    */
   readonly alreadyLanded?: ReadonlySet<string>;
+  /**
+   * Work ids whose change an earlier run already HANDED TO PEOPLE (pushed and proposed for review).
+   * Folded from the log by the caller (`foldHandedOffChanges`). Such work is finished as far as the
+   * organization is concerned: it is neither walked again nor proposed a second time.
+   */
+  readonly alreadyHandedOff?: ReadonlySet<string>;
   /**
    * Verdicts from earlier cycles and earlier runs, so a step that PASSED is not walked again.
    *
@@ -629,6 +635,8 @@ export interface OrgRuntimeReport {
   readonly changesLanded: readonly string[];
   /** Done in the cascade with no commit anywhere. Empty when the caller supplied no history. */
   readonly changesDoneUnmerged: readonly string[];
+  /** The work ids whose change was handed to people for review in this run - pushed and proposed, never merged. */
+  readonly changesHandedOff: readonly string[];
   readonly delivered: boolean;
   /**
    * What happened, as TYPED events — queryable by subject, by actor, and by LINE OF AUTHORITY.
@@ -1119,6 +1127,7 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
     changes: [],
     changesLanded: [],
     changesDoneUnmerged: [],
+    changesHandedOff: [],
     delivered: false,
     trace,
     events: trace.map(render),
@@ -2535,6 +2544,8 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
     // found its old checkout directory still on disk, and refused - and the refusal was the first
     // thing in a run that then made no progress at all.
     if (deps.alreadyLanded?.has(task.workId) === true) continue;
+    // ...or already IN FRONT OF A REVIEWER: handed off by an earlier run, and the next act is a person's.
+    if (deps.alreadyHandedOff?.has(task.workId) === true) continue;
     const heldBy = heldByAncestor(task);
     if (heldBy !== undefined) {
       const why = governanceBlocked.get(heldBy);
@@ -3576,6 +3587,88 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
   const changesUnlanded: string[] = [];
   /** Done in the cascade, and no commit exists for it in this run OR in any earlier one. */
   const changesDoneUnmerged: string[] = [];
+  /** Handed to people for review in this run. */
+  const changesHandedOff: string[] = [];
+  /** Due to be handed off, and the handoff failed or could not be attempted. */
+  const changesUnhandedOff: string[] = [];
+  // -- WHO INTEGRATES: the organization, or a person ------------------------------
+  // A REAL repository is merged into only when the operator said `delivery=merge`. Anything else -
+  // `human_review`, or nothing said at all - means the organization hands the change to people and
+  // stops. Unset is NOT treated as permission: MEASURED on the Agentic Team's first real run, the
+  // runtime merged two defects into its clone's master because nothing said it should not, and
+  // that is the one act the operator would never allow on the real repository.
+  //
+  // A simulated change control touches nothing, so it keeps merging in memory as it always has.
+  const realChangeControl = providers.change.meta.fidelity === Fidelity.Real;
+  const deliveryRule = resolveSetting(deps.settings ?? [], ProcessSetting.Delivery, []);
+  const handOffInstead = realChangeControl && deliveryRule.value !== "merge";
+  /**
+   * What a reviewer reads first: the request it answers and what the organization checked, step by
+   * step, with each reviewer's own words. Built from the record, never from an agent's summary.
+   */
+  const proposalFor = (workId: string, handle: ChangeHandle): ChangeProposal => {
+    const node = nodeById(cascade, workId);
+    const ref = node?.requestRef === undefined ? undefined : parseRequestRef(node.requestRef);
+    const goal = startedGoals
+      .map((g) => nodeById(cascade, g.goalId))
+      .find((g) => g !== undefined && g.requestRef !== undefined && g.requestRef === node?.requestRef);
+    const subject = goal?.title ?? node?.title ?? workId;
+    const title = ref === undefined ? subject : `${ref.externalId}: ${subject}`;
+    const related = (e: GateEvaluation): boolean =>
+      e.workId === workId || nodeById(cascade, e.workId)?.dependsOn?.includes(workId) === true;
+    const latest = new Map<string, GateEvaluation>();
+    for (const e of uniqueVerdicts([...(deps.priorGateEvaluations ?? []), ...gateEvaluations])) {
+      if (related(e)) latest.set(`${e.workId}|${String(e.gate)}`, e);
+    }
+    const oneLine = (t: string): string => t.split(/\s+/).join(" ").trim().slice(0, 400);
+    const tick = String.fromCharCode(96);
+    const lines = [
+      ref === undefined ? `Work item ${workId}.` : `Answers ${ref.source} ${ref.externalId}.`,
+      "",
+      "Opened by the organization for HUMAN REVIEW. Nothing has been merged; integrating this change is a person's decision.",
+      "",
+      "## What was checked before this was proposed",
+      "",
+      ...[...latest.values()].map(
+        (e) => `- **${String(e.gate)}** (${e.workId}) - ${String(e.outcome)} by ${e.byHatId}: ${oneLine(e.reason)}`,
+      ),
+      "",
+      `Branch ${tick}${handle.branch}${tick}${handle.base === undefined ? "" : ` against ${tick}${handle.base}${tick}`}.`,
+    ];
+    return { title, description: lines.join(String.fromCharCode(10)), ...(handle.base === undefined ? {} : { base: handle.base }) };
+  };
+  const handOff = async (workId: string, handle: ChangeHandle): Promise<void> => {
+    if (providers.change.handoff === undefined) {
+      refusals.push(
+        `change control '${providers.change.meta.name}' cannot hand ${handle.branch} to people for review, ` +
+          `and delivery is '${deliveryRule.value ?? "unset"}': the organization does not merge it instead`,
+      );
+      changesUnhandedOff.push(workId);
+      return;
+    }
+    const handed = await providers.change.handoff(handle, proposalFor(workId, handle));
+    if (!handed.ok) {
+      refusals.push(`change control '${providers.change.meta.name}' could not hand ${handle.branch} to people: ${handed.reason}`);
+      changesUnhandedOff.push(workId);
+      return;
+    }
+    changesHandedOff.push(workId);
+    note({
+      kind: OrgEventKind.ChangeProjected,
+      subjectId: workId,
+      decision: `handed to people for review: ${handed.value.url ?? handed.value.branch} - nothing was merged`,
+      toState: "awaiting_human_review",
+      atMs: warmedAt,
+      fact: {
+        kind: "change_handed_off",
+        workId,
+        changeId: handle.changeId,
+        branch: handed.value.branch,
+        ...(handed.value.url === undefined ? {} : { url: handed.value.url }),
+        ...(handed.value.commit === undefined ? {} : { commit: handed.value.commit }),
+      },
+    });
+  };
   const changes = projectAll({
     cascade,
     queue,
@@ -3626,6 +3719,7 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
       providers.change.meta.fidelity === Fidelity.Real &&
       deps.alreadyLanded !== undefined &&
       !deps.alreadyLanded.has(c.workId) &&
+      deps.alreadyHandedOff?.has(c.workId) !== true &&
       !changesLanded.includes(c.workId) &&
       doneWithNothingMerged(c.projection, { cascade, workId: c.workId })
     ) {
@@ -3638,6 +3732,8 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
     if (c.projection.state.tag !== "Merged") continue;
     // Landed by an earlier run: merging it again is an empty merge or a refusal, never progress.
     if (deps.alreadyLanded?.has(c.workId) === true) continue;
+    // Already in front of a reviewer: proposing it again would open a second review of one change.
+    if (deps.alreadyHandedOff?.has(c.workId) === true) continue;
     // The handle from when the work STARTED, not a fresh one. Re-opening here would branch off
     // whatever the repository looks like now and merge something that never held the work.
     const handle = openedChanges.get(c.workId);
@@ -3668,6 +3764,11 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
       } else {
         refusals.push(`change control could not diff ${handle.branch}: ${diff.reason}`);
       }
+    }
+    // HANDED TO PEOPLE, NOT MERGED, unless the operator said the organization merges.
+    if (handOffInstead) {
+      await handOff(c.workId, handle);
+      continue;
     }
     const landed = await providers.change.merge(handle);
     if (!landed.ok) {
@@ -3726,7 +3827,13 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
       // merge of a landed collection is either a refusal that reads as a defect or an empty merge
       // commit nobody asked for.
       if (deps.alreadyLanded?.has(ready.workId) === true) continue;
+      if (deps.alreadyHandedOff?.has(ready.workId) === true) continue;
       if (collectionsLanded.includes(ready.workId)) continue;
+      // A COLLECTION IS HANDED OFF THE SAME WAY: its branch goes to review as one change.
+      if (handOffInstead) {
+        await handOff(ready.workId, { changeId: `${ready.branch}@${ready.workId}`, branch: ready.branch });
+        continue;
+      }
 
       const landed = await providers.change.merge({
         changeId: `${ready.branch}@${ready.workId}`,
@@ -3782,12 +3889,18 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
     collectionsUnlanded.length === 0 &&
     // ...AND NOTHING IS DONE WITH NO COMMIT BEHIND IT. A merge the port refused and a merge nobody
     // ever offered are both "the repository does not have this"; only the first was being counted.
-    changesDoneUnmerged.length === 0;
+    changesDoneUnmerged.length === 0 &&
+    // ...AND EVERYTHING DUE TO BE HANDED TO PEOPLE WAS. A handoff that failed is work nobody can review.
+    changesUnhandedOff.length === 0;
   note({
     kind: OrgEventKind.WorkItemTransition,
     subjectId: goalId,
     actorHatId: deps.acceptingHatId,
-    decision: delivered ? "goal DELIVERED" : "goal not delivered",
+    decision: !delivered
+      ? "goal not delivered"
+      : handOffInstead
+        ? "goal HANDED OFF for human review - the organization merged nothing"
+        : "goal DELIVERED",
     toState: delivered ? "delivered" : "open",
     atMs: warmedAt,
   });
@@ -3968,6 +4081,7 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
     changes,
     changesLanded,
     changesDoneUnmerged,
+    changesHandedOff,
     delivered,
     trace,
     events: trace.map(render),

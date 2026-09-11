@@ -378,6 +378,19 @@ export type OrgFact =
       readonly falsifierPassed?: boolean;
     }
   | {
+      /**
+       * The change was HANDED TO PEOPLE: pushed and proposed for review, and left open. The
+       * organization's last act on it. Distinct from `change_merged`, which it never implies.
+       */
+      readonly kind: "change_handed_off";
+      readonly workId: string;
+      readonly changeId: string;
+      readonly branch: string;
+      /** Where it can be reviewed — the merge request's address, when the review system gave one. */
+      readonly url?: string;
+      readonly commit?: string;
+    }
+  | {
       readonly kind: "change_merged";
       readonly workId: string;
       readonly changeId: string;

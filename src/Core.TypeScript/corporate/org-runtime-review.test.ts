@@ -332,7 +332,11 @@ describe("A REFUSED MERGE CONTRADICTS THE CLAIM, rather than being logged beside
     // Measured on the first real end-to-end agent run — both merges refused, `delivered: true`,
     // and `deliveryRate.deliveredForReal` counted the run as shipped.
     const report = await runOrgRuntime(
-      deps({ providers: { ...providersWith(autoApproveReview()), change: refusingChange() } }),
+      deps({
+        providers: { ...providersWith(autoApproveReview()), change: refusingChange() },
+        // The organization's OWN merge is what is refused here, so it has to be the one asked for.
+        settings: [{ setting: "delivery", value: "merge", why: "this test exercises a refused merge" }],
+      } as never),
     );
     expect(report.delivered).toBe(false);
     expect(report.refusals.some((r) => r.includes("could not merge"))).toBe(true);

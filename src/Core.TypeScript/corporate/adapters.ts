@@ -30,7 +30,8 @@
  */
 
 import { spawnSync } from "node:child_process";
-import { existsSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
+import { existsSync, mkdtempSync, readdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
 import { join } from "node:path";
 
 import {
@@ -38,6 +39,9 @@ import {
   type ChangeRevision,
   Port,
   type ChangeControlPort,
+  type ChangeHandle,
+  type ChangeHandoff,
+  type ChangeProposal,
   type IntakeSource,
   type PortResult,
   type ReviewPort,
@@ -1548,16 +1552,78 @@ export function gitWorktreeChangeControl(input: {
    * into a checkout that cannot run would be judged by tests that never ran.
    */
   readonly setup?: { readonly command: string; readonly args: readonly string[]; readonly timeoutMs?: number };
+  /**
+   * HOW A CHANGE IS HANDED TO PEOPLE — the command that pushes it and opens its review.
+   *
+   * The review system is the project's knowledge, so it is a COMMAND the operator supplies, run in
+   * the change's checkout with `ORG_BRANCH` / `ORG_BASE` / `ORG_TITLE` / `ORG_DESCRIPTION_FILE` /
+   * `ORG_COMMIT` set; the last line it prints that is a URL is the review's address. Absent, this
+   * adapter cannot hand off, and a run that must hand off refuses to use it.
+   */
+  readonly handoff?: { readonly command: string; readonly args: readonly string[]; readonly timeoutMs?: number };
 }): ChangeControlPort {
   const git = (args: readonly string[], at = input.cwd) =>
     spawnSync("git", [...args], { cwd: at, encoding: "utf-8", shell: false, maxBuffer: MAX_COMMAND_OUTPUT_BYTES });
+  const handoffCmd = input.handoff;
   return {
     meta: {
       port: Port.ChangeControl,
       name: input.name ?? "git-worktree",
       fidelity: Fidelity.Real,
-      describes: `one worktree per change under ${input.worktreeRoot}, branched from ${input.baseBranch}`,
+      describes:
+        `one worktree per change under ${input.worktreeRoot}, branched from ${input.baseBranch}` +
+        (handoffCmd === undefined ? "" : `; handed to people by '${handoffCmd.command}'`),
     },
+    ...(handoffCmd === undefined
+      ? {}
+      : {
+          handoff: async (handle: ChangeHandle, proposal: ChangeProposal): Promise<PortResult<ChangeHandoff>> => {
+            const into = (proposal.base ?? handle.base ?? "").trim() || input.baseBranch;
+            // NOTHING TO REVIEW IS A REFUSAL, not an empty merge request a person has to discover.
+            const ahead = commitsAhead(git, handle.branch, into);
+            if (ahead === undefined) return { ok: false, reason: `could not tell whether ${handle.branch} has anything to review` };
+            if (ahead === 0) return { ok: false, reason: `${handle.branch} has no commits ahead of ${into}: there is nothing to hand to a reviewer` };
+            const head = git(["rev-parse", handle.branch]);
+            const commit = head.status === 0 ? String(head.stdout ?? "").trim() : undefined;
+            // The description travels as a FILE: it is long, it is markdown, and argv is world-readable.
+            const dir = mkdtempSync(join(tmpdir(), "org-handoff-"));
+            const descriptionFile = join(dir, "description.md");
+            writeFileSync(descriptionFile, proposal.description, { encoding: "utf-8", mode: 0o600 });
+            const ran = spawnSync(handoffCmd.command, [...handoffCmd.args], {
+              cwd: handle.workdir ?? input.cwd,
+              env: {
+                ...process.env,
+                ORG_BRANCH: handle.branch,
+                ORG_BASE: into,
+                ORG_TITLE: proposal.title,
+                ORG_DESCRIPTION_FILE: descriptionFile,
+                ...(commit === undefined ? {} : { ORG_COMMIT: commit }),
+              },
+              encoding: "utf-8",
+              shell: false,
+              timeout: handoffCmd.timeoutMs ?? 300_000,
+              maxBuffer: MAX_COMMAND_OUTPUT_BYTES,
+            });
+            rmSync(dir, { recursive: true, force: true });
+            if (ran.error !== undefined) return { ok: false, reason: `'${handoffCmd.command}' could not run: ${ran.error.message}` };
+            if (ran.status !== 0) {
+              return {
+                ok: false,
+                reason: `handing off ${handle.branch} failed (exit ${String(ran.status)}): ${(ran.stderr ?? "").trim().slice(0, 600)}`,
+              };
+            }
+            const url = String(ran.stdout ?? "")
+              .split(/\r?\n/)
+              .map((l) => l.trim())
+              .filter((l) => /^https?:\/\//.test(l))
+              .pop();
+            return {
+              ok: true,
+              value: { branch: handle.branch, ...(url === undefined ? {} : { url }), ...(commit === undefined ? {} : { commit }) },
+              evidence: [{ kind: "trace", ref: url === undefined ? `handed-off:${handle.branch}` : `review:${url}` }],
+            };
+          },
+        }),
     open: async (node, ctx) => {
       const workdir = join(input.worktreeRoot, worktreeDirName(ctx.branch));
       const base = (ctx.base ?? "").trim() === "" ? input.baseBranch : (ctx.base as string);

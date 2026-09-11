@@ -20,7 +20,7 @@
 
 import { describe, expect, test } from "bun:test";
 import { execFileSync } from "node:child_process";
-import { mkdtempSync, mkdirSync, rmSync, writeFileSync } from "node:fs";
+import { mkdtempSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { basename, join } from "node:path";
 import { agentsFromChart, runOrgRuntime, type OrgRuntimeDeps } from "./org-runtime";
@@ -88,7 +88,7 @@ function realInbox(): string {
 async function runAgainst(
   repo: string,
   inbox: string,
-  over: { readonly work?: unknown } = {},
+  over: { readonly work?: unknown; readonly change?: unknown } = {},
   runtime: Record<string, unknown> = {},
   worktreeRoot?: string,
 ) {
@@ -105,6 +105,9 @@ async function runAgainst(
     nowMs: 0,
     workBlockMs: 3_600_000,
     leaseMs: 300_000,
+    // The ORGANIZATION'S OWN MERGE is what this suite exercises, so it is stated - a real
+    // repository is otherwise never merged into (see `ProcessSetting.Delivery`).
+    settings: [{ setting: "delivery", value: "merge", why: "this suite exercises the organization's own merge" }],
     ...runtime,
     dataSource: gitDataSource({ repoDir: repo, ref: "main", extensions: [".md"] }),
     providers: {
@@ -657,6 +660,7 @@ describe("NO SIMULATED PORT AT ALL", () => {
         nowMs: 0,
         workBlockMs: 3_600_000,
         leaseMs: 300_000,
+        settings: [{ setting: "delivery", value: "merge", why: "this test exercises the organization's own merge" }],
         dataSource: gitDataSource({ repoDir: repo, ref: "main", extensions: [".md"] }),
         providers: {
           intake: directoryIntake(inbox),
@@ -725,4 +729,89 @@ describe("A REVIEWER RUNS IN THE WORK'S OWN CHECKOUT", () => {
     rmSync(shared, { recursive: true, force: true });
     rmSync(own, { recursive: true, force: true });
   });
+});
+
+describe("A REAL REPOSITORY IS HANDED TO PEOPLE, NEVER MERGED INTO, UNLESS SOMEONE SAID MERGE", () => {
+  // MEASURED on the Agentic Team's first real run: with nothing said about delivery, the runtime
+  // merged two defects into its clone's master - the one act the operator would never allow.
+  function handoffStub(dir: string): { command: string; args: string[]; seen: string } {
+    const seen = join(dir, "handoff-seen.json");
+    const stub = join(dir, "handoff.cjs");
+    writeFileSync(
+      stub,
+      `const fs=require("fs");fs.writeFileSync(${JSON.stringify(seen)},JSON.stringify({branch:process.env.ORG_BRANCH,base:process.env.ORG_BASE,title:process.env.ORG_TITLE,description:fs.readFileSync(process.env.ORG_DESCRIPTION_FILE,"utf-8")}));` +
+        `console.log("opened");console.log("https://review.example/mr/1");`,
+    );
+    return { command: process.execPath, args: [stub], seen };
+  }
+  const merges = (repo: string): string[] =>
+    execFileSync("git", ["log", "--merges", "--oneline", "main"], { cwd: repo, encoding: "utf-8" })
+      .split("\n")
+      .filter((l) => l.trim() !== "");
+
+  test("with no delivery setting the finished change is handed off: main gets no merge, the review is recorded", async () => {
+    const repo = realRepo();
+    const inbox = realInbox();
+    const wt = mkdtempSync(join(tmpdir(), "zeta-handoff-wt-"));
+    const scratch = mkdtempSync(join(tmpdir(), "zeta-handoff-"));
+    const h = handoffStub(scratch);
+    try {
+      const events: { kind: string; decision: string; fact?: { kind?: string; url?: string } }[] = [];
+      const report = await runAgainst(
+        repo,
+        inbox,
+        { change: gitWorktreeChangeControl({ cwd: repo, baseBranch: "main", worktreeRoot: wt, handoff: { command: h.command, args: h.args } }) },
+        { settings: [], onEvent: (e: never) => events.push(e) },
+      );
+      expect(merges(repo)).toEqual([]);
+      expect(report.changesLanded).toEqual([]);
+      expect(report.changesHandedOff.length).toBeGreaterThan(0);
+      const fact = events.find((e) => e.fact?.kind === "change_handed_off")?.fact;
+      expect(fact?.url).toBe("https://review.example/mr/1");
+      expect(events.some((e) => e.decision.includes("HANDED OFF for human review"))).toBe(true);
+      const seen = JSON.parse(readFileSync(h.seen, "utf-8")) as { base: string; title: string; description: string };
+      expect(seen.base).toBe("main");
+      expect(seen.title.startsWith("PROJ-9:")).toBe(true);
+      expect(seen.description).toContain("Nothing has been merged");
+    } finally {
+      for (const d of [repo, inbox, wt, scratch]) rmSync(d, { recursive: true, force: true });
+    }
+  }, 120_000);
+
+  test("an adapter that cannot hand off is REFUSED, never merged instead", async () => {
+    const repo = realRepo();
+    const inbox = realInbox();
+    const wt = mkdtempSync(join(tmpdir(), "zeta-nohandoff-wt-"));
+    try {
+      const report = await runAgainst(repo, inbox, {}, { settings: [] }, wt);
+      expect(merges(repo)).toEqual([]);
+      expect(report.delivered).toBe(false);
+      expect(report.refusals.some((r) => r.includes("cannot hand") && r.includes("does not merge it instead"))).toBe(true);
+    } finally {
+      for (const d of [repo, inbox, wt]) rmSync(d, { recursive: true, force: true });
+    }
+  }, 120_000);
+
+  test("work already in front of a reviewer is neither walked again nor proposed a second time", async () => {
+    const repo = realRepo();
+    const inbox = realInbox();
+    const wt = mkdtempSync(join(tmpdir(), "zeta-resume-wt-"));
+    const scratch = mkdtempSync(join(tmpdir(), "zeta-resume-"));
+    const h = handoffStub(scratch);
+    try {
+      const change = () => gitWorktreeChangeControl({ cwd: repo, baseBranch: "main", worktreeRoot: wt, handoff: { command: h.command, args: h.args } });
+      const first = await runAgainst(repo, inbox, { change: change() }, { settings: [] });
+      const handed = new Set(first.changesHandedOff);
+      expect(handed.size).toBeGreaterThan(0);
+      const again = await runAgainst(repo, mkdtempSync(join(tmpdir(), "zeta-empty-inbox-")), { change: change() }, {
+        settings: [],
+        alreadyHandedOff: handed,
+        priorCascade: first.cascade,
+      });
+      expect(again.changesHandedOff).toEqual([]);
+      expect(again.gateEvaluations.some((e) => handed.has(e.workId))).toBe(false);
+    } finally {
+      for (const d of [repo, inbox, wt, scratch]) rmSync(d, { recursive: true, force: true });
+    }
+  }, 180_000);
 });

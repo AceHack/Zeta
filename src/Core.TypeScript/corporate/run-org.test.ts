@@ -13,11 +13,12 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { Fidelity, fidelityOf, Port } from "./providers";
 import { WorkState, WorkType as WorkTypeValue, type CascadeNode } from "./goal-cascade";
-import { pausedFromActions, argRefusals, artifactProducersFromArgs, churnThresholdFor, gateAttemptsFor, hasSource, main, parseArgs, PRE_CODE_GATES, providersFromArgs, trackerMapper, KNOWN_FLAGS, unknownFlags} from "./run-org";
+import { pausedFromActions, argRefusals, withOrgDefaults, artifactProducersFromArgs, churnThresholdFor, gateAttemptsFor, hasSource, main, parseArgs, PRE_CODE_GATES, providersFromArgs, trackerMapper, KNOWN_FLAGS, unknownFlags} from "./run-org";
 import { RunOutcome } from "./qa";
 import { GateKind, ORDERED_GATES } from "./quality-gate";
 import { Severity } from "./intake";
 import { readEvents } from "./org-store";
+import { basePolicy } from "./org-policy";
 
 /** Run `main`, capturing what it printed. */
 async function capture(argv: readonly string[]): Promise<{ code: number; out: string }> {
@@ -138,7 +139,7 @@ describe("argument parsing", () => {
       // Every gate unreviewed means AUTO-APPROVE — the register's own long-standing behaviour,
       // which is now an adapter that says so rather than a constant nobody could see.
       reviewQueue: undefined, reviewCmd: undefined, reviewArgs: [],
-      worktrees: undefined, worktreeSetup: undefined, worktreeSetupArgs: [], supplyTarget: undefined,
+      worktrees: undefined, worktreeSetup: undefined, worktreeSetupArgs: [], handoffCmd: undefined, handoffArgs: [], supplyTarget: undefined,
       // The three ports that had no command-line path until now. Absent still means simulated, and
       // the fidelity block still says so — reaching a tracker, an agent or a model is opt-in.
       reviewModel: undefined, tracker: undefined, trackerItems: undefined,
@@ -411,7 +412,7 @@ describe("THE CLI SUPPLIES THE HISTORY THE DELIVERY GUARD NEEDS", () => {
       // exactly where it started. Whether that combination is USEFUL is beside the point; what
       // matters is that the two records disagree, which is the only condition this rule reads.
       const code = await main([
-        "--git", repo, "--base", "main", "--worktrees", wt, "--store", store, "--until", "2",
+        "--git", repo, "--base", "main", "--worktrees", wt, "--store", store, "--until", "2", "--delivery", "merge",
       ]);
 
       const out = lines.join("\n");
@@ -453,7 +454,7 @@ describe("THE CLI SUPPLIES THE HISTORY THE DELIVERY GUARD NEEDS", () => {
       // Work that genuinely commits, onto the change's own branch in its own worktree. `-m` takes
       // the workId, which `argsFor` appends last.
       const argv = [
-        "--git", repo, "--base", "main", "--worktrees", wt, "--store", store, "--until", "3",
+        "--git", repo, "--base", "main", "--worktrees", wt, "--store", store, "--until", "3", "--delivery", "merge",
         "--work-cmd", "git",
         "--work-arg", "commit", "--work-arg", "--allow-empty", "--work-arg", "-m",
       ];
@@ -579,6 +580,41 @@ describe("--checkpoint TAKES A NAME OR A GATE, AND REFUSES ANYTHING ELSE", () =>
     const typo = parseArgs(["--checkpoint", "release-readiness"]);
     expect(typo.checkpoints).toEqual([]);
     expect(argRefusals(typo).some((r) => r.includes("'release-readiness' is neither a checkpoint nor a gate"))).toBe(true);
+  });
+});
+
+describe("A REAL REPOSITORY IS HANDED TO PEOPLE UNLESS SOMEONE SAID MERGE", () => {
+  test("a --git run that will hand changes off must say how, before it starts", () => {
+    const bare = argRefusals(parseArgs(["--git", "/r"]));
+    expect(bare.some((r) => r.includes("hands finished changes to people") && r.includes("--handoff-cmd"))).toBe(true);
+    const merging = argRefusals(parseArgs(["--git", "/r", "--delivery", "merge"]));
+    expect(merging.some((r) => r.includes("hands finished changes to people"))).toBe(false);
+    const handing = argRefusals(parseArgs(["--git", "/r", "--worktrees", "/w", "--handoff-cmd", "node", "--handoff-arg", "mr.cjs"]));
+    expect(handing.some((r) => r.includes("hands finished changes to people"))).toBe(false);
+  });
+
+  test("a --delivery that is not a value is refused, never read as unset", () => {
+    expect(argRefusals(parseArgs(["--delivery", "merged"])).some((r) => r.includes("'merged' is not a value for 'delivery'"))).toBe(true);
+  });
+
+  test("--delivery is LAYERED over the organization's settings, never instead of them", () => {
+    const registry = JSON.stringify({
+      version: 1,
+      orgs: [{
+        orgId: "o", name: "O", storeDir: "/s", intake: "greenfield", autonomy: "directed",
+        policy: basePolicy("o", "existing_harness"), sources: [], humanCheckpoints: [], skills: [], createdAtMs: 1,
+        settings: [
+          { setting: "unreproduced_defects", value: "reproduce_first", why: "org says so" },
+          { setting: "delivery", value: "human_review", why: "org says so" },
+        ],
+      }],
+    });
+    const r = withOrgDefaults(parseArgs(["--delivery", "merge"]), "o", registry);
+    if ("reason" in r) throw new Error(r.reason);
+    const bySetting = new Map(r.args.settings.map((b) => [b.setting, b.value] as const));
+    expect(bySetting.get("unreproduced_defects" as never)).toBe("reproduce_first");
+    expect(bySetting.get("delivery" as never)).toBe("merge");
+    expect(r.args.settings.filter((b) => b.setting === "delivery")).toHaveLength(1);
   });
 });
 

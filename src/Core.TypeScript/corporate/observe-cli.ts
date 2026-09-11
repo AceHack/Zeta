@@ -44,7 +44,7 @@ import { childrenOf, isLeafType, nodeById, WorkState, type CascadeNode } from ".
 import type { HumanAction } from "./human-action";
 import { buildOrgChart, type OrgChart } from "./org-chart";
 import { OrgEventKind, type OrgEvent } from "./org-event";
-import { foldBoard, foldOrganization, foldSupervisorSignals, type FoldedOrganization } from "./org-fold";
+import { foldBoard, foldHandedOffChanges, foldOrganization, foldSupervisorSignals, type FoldedOrganization } from "./org-fold";
 import { orgSurfaceFor } from "./org-observe-bridge";
 import { SEED_HATS } from "./org-seed";
 import { readEvents, readRuns } from "./org-store";
@@ -73,6 +73,7 @@ export function itemContextsFrom(
 ): readonly ItemContext[] {
   const board = foldBoard(events);
   const views = new Map(work.map((w) => [w.workId, w] as const));
+  const handedOff = foldHandedOffChanges(events);
   const refusedOn = new Map<string, OrgEvent[]>();
   for (const e of events) {
     if (e.kind !== OrgEventKind.Refusal) continue;
@@ -149,6 +150,10 @@ export function itemContextsFrom(
       ...(change === undefined ? [] : [`branch ${change.branch}`]),
       ...(change?.workdir === undefined ? [] : [`checkout ${change.workdir}`]),
       ...(change?.url === undefined ? [] : [`change ${change.url}`]),
+      // IN FRONT OF PEOPLE: handed off for review, and the next act is theirs, not the organization's.
+      ...((h) => (h === undefined ? [] : [`awaiting human review at ${h.url ?? `branch ${h.branch}`} - nothing was merged`]))(
+        handedOff.get(node.workId),
+      ),
     ];
     const kids = childrenOf(folded.cascade, node.workId).map((c: CascadeNode) => c.workId);
     return {

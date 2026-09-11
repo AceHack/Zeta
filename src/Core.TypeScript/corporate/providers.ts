@@ -347,6 +347,35 @@ export interface ChangeControlPort {
    * about the repository right now, not a field frozen at the wrong moment.
    */
   revision?(handle: ChangeHandle): Promise<PortResult<ChangeRevision>>;
+  /**
+   * HAND THE CHANGE TO PEOPLE: make it visible where they review changes (push the branch, open a
+   * merge request against `proposal.base`) and leave it OPEN. It never integrates anything.
+   *
+   * Optional, because not every adapter can reach a review system. A run whose delivery is
+   * `human_review` refuses to start on an adapter without it, rather than falling back to a merge:
+   * falling back is exactly the act the setting exists to rule out.
+   *
+   * Idempotent by contract: handing off a change that is already open for review answers with the
+   * review that exists, never a second one.
+   */
+  handoff?(handle: ChangeHandle, proposal: ChangeProposal): Promise<PortResult<ChangeHandoff>>;
+}
+
+/** What a change is proposed AS: the words a reviewer reads first, and where it should go. */
+export interface ChangeProposal {
+  readonly title: string;
+  readonly description: string;
+  /** The branch it is proposed against. Absent: the adapter's own trunk. */
+  readonly base?: string;
+}
+
+/** Where a handed-off change can be reviewed. */
+export interface ChangeHandoff {
+  readonly branch: string;
+  /** The review's address (a merge request URL), when the review system gave one. */
+  readonly url?: string;
+  /** The commit that was handed off, when the adapter can read it. */
+  readonly commit?: string;
 }
 
 /** A change's position in the repository. Both are full hex object names, never abbreviated. */
@@ -693,6 +722,17 @@ export function recordingProviders(set: ProviderSet): {
               revision: async (handle: ChangeHandle) => {
                 mark(Port.ChangeControl);
                 return set.change.revision!(handle);
+              },
+            }),
+        // THE SAME TRAP, a third time: without this a run configured to hand changes to people
+        // found no `handoff` on the wrapped port and refused - correctly, since it never merges
+        // instead - for every change it finished.
+        ...(set.change.handoff === undefined
+          ? {}
+          : {
+              handoff: async (handle: ChangeHandle, proposal: ChangeProposal) => {
+                mark(Port.ChangeControl);
+                return set.change.handoff!(handle, proposal);
               },
             }),
       },

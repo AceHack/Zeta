@@ -155,7 +155,7 @@ import { foldCalendar, foldOrganization } from "./org-fold";
 import { authorIndexFrom, observationsFrom } from "./reputation-from-log";
 import type { ReputationObservation } from "./reputation";
 import { foldHatsWorn,
-  foldLandedChanges, foldObserveActTicks, foldPresence } from "./org-fold";
+  foldHandedOffChanges, foldLandedChanges, foldObserveActTicks, foldPresence } from "./org-fold";
 import { emit } from "./org-event";
 import type { AgentState } from "../workflow-engine/agent-loop/state-machine";
 import { CHECKPOINT_VALUES, GateKind, GateOutcome, NO_PROPOSER, ORDERED_GATES, isHumanCheckpoint, type HumanCheckpoint } from "./quality-gate";
@@ -172,7 +172,7 @@ import type { ProducerPort } from "./pipeline";
 import type { OrgChart } from "./org-chart";
 import type { OrgRuntimeDeps, OrgRuntimeReport } from "./org-runtime";
 import type { NextAction } from "../observe/observe";
-import { guidanceFrom, PracticeSubjectKind, type Directive, type Practice, type SettingBinding } from "./practice";
+import { guidanceFrom, PracticeSubjectKind, ProcessSetting, resolveSetting, validateSetting, type Directive, type Practice, type SettingBinding } from "./practice";
 import { DEFAULT_DIRECTIVES, DEFAULT_PRACTICES } from "./practice-defaults";
 import { renderRepoSkills } from "./repo-skills";
 import { branchNameIn } from "./branch-topology";
@@ -329,6 +329,7 @@ export const KNOWN_FLAGS: ReadonlySet<string> = new Set([
   "--tracker-source", "--until", "--week", "--window-start", "--window-target", "--work-agent",
   "--work-agent-arg", "--work-arg", "--work-cmd", "--work-model", "--work-verify",
   "--work-verify-arg", "--worktrees", "--worktree-setup", "--worktree-setup-arg", "--supply-target", "--resume", "--help", "-h",
+  "--handoff-cmd", "--handoff-arg", "--delivery",
 ]);
 
 /**
@@ -347,7 +348,7 @@ export const KNOWN_FLAGS: ReadonlySet<string> = new Set([
  */
 export const OPAQUE_VALUE_FLAGS: ReadonlySet<string> = new Set([
   "--artifact-arg", "--meeting-arg", "--review-arg", "--room-arg", "--study-arg", "--test-arg",
-  "--work-agent-arg", "--work-arg", "--work-verify-arg", "--worktree-setup-arg",
+  "--work-agent-arg", "--work-arg", "--work-verify-arg", "--worktree-setup-arg", "--handoff-arg",
   // A header is `Key: value`, which cannot begin with a dash — but it is passed through untouched
   // to a remote service, so the same rule applies: this CLI does not get an opinion about its shape.
   "--tracker-header",
@@ -598,6 +599,9 @@ export interface Args {
   /** What makes a new worktree runnable, run once inside it. See `gitWorktreeChangeControl`. */
   readonly worktreeSetup: string | undefined;
   readonly worktreeSetupArgs: readonly string[];
+  /** The command that hands a finished change to people - pushes it and opens its review. */
+  readonly handoffCmd: string | undefined;
+  readonly handoffArgs: readonly string[];
   /** Wearers per hat the RMO authorizes — how many open tasks one contributor hat may carry. */
   readonly supplyTarget: number | undefined;
   /**
@@ -774,7 +778,15 @@ export function parseArgs(argv: readonly string[]): Args {
     practices: [],
     directives: [],
     repoSources: [],
-    settings: [],
+    // `--delivery` is the one setting a run may state on its own command line: who integrates a
+    // finished change is a person's statement, and a one-off run must be able to make it without
+    // editing the organization. Layered over the organization's settings, never instead of them.
+    settings: ((v) =>
+      v === undefined
+        ? []
+        : [{ setting: ProcessSetting.Delivery, value: v, why: "stated on the command line for this run (--delivery)" }])(
+      valueAfter(argv, "--delivery"),
+    ),
     confluenceAuthFile: valueAfter(argv, "--confluence-auth-file"),
     jiraAuthFile: valueAfter(argv, "--jira-auth-file"),
     jiraJql: valueAfter(argv, "--jira-jql"),
@@ -815,6 +827,8 @@ export function parseArgs(argv: readonly string[]): Args {
     worktrees: valueAfter(argv, "--worktrees"),
     worktreeSetup: valueAfter(argv, "--worktree-setup"),
     worktreeSetupArgs: valuesAfter(argv, "--worktree-setup-arg"),
+    handoffCmd: valueAfter(argv, "--handoff-cmd"),
+    handoffArgs: valuesAfter(argv, "--handoff-arg"),
     supplyTarget: ((v) => (v === undefined ? undefined : Number.parseInt(v, 10)))(valueAfter(argv, "--supply-target")),
     qaFails: argv.includes("--qa-fails") || argv.includes("--churn"),
     churn: argv.includes("--churn"),
@@ -859,6 +873,25 @@ export function parseArgs(argv: readonly string[]): Args {
  */
 export function argRefusals(args: Args): readonly string[] {
   const out: string[] = [];
+  // A REAL REPOSITORY IS NEVER MERGED INTO UNLESS THE OPERATOR SAID SO (`delivery=merge`); every
+  // other run hands a finished change to people. Such a run must say HOW, and is told so before it
+  // spends hours reaching the point where it needs to. MEASURED on the Agentic Team's first real
+  // run: with nothing said, the runtime merged two defects into its clone's master.
+  if (args.git !== undefined) {
+    const delivery = resolveSetting(args.settings, ProcessSetting.Delivery, []).value;
+    if (delivery !== "merge" && (args.worktrees === undefined || args.handoffCmd === undefined)) {
+      out.push(
+        `this run reaches a real repository (--git) and hands finished changes to people (delivery: ${delivery ?? "unset"}), ` +
+          "but nothing says how: give --worktrees and a --handoff-cmd (with --handoff-arg) that pushes a branch and opens " +
+          "its review - or state --delivery merge if this organization integrates its own changes",
+      );
+    }
+  }
+  // A stated setting must be a real one: `--delivery merged` is refused, never read as unset.
+  for (const b of args.settings) {
+    const ok = validateSetting(b);
+    if (!ok.ok) out.push(ok.reason);
+  }
   for (const v of args.unknownCheckpoints) {
     out.push(`--checkpoint '${v}' is neither a checkpoint nor a gate — expected one of ${CHECKPOINT_VALUES.join(", ")}`);
   }
@@ -1445,6 +1478,7 @@ export function providersFromArgs(
               baseBranch: args.baseBranch,
               worktreeRoot: args.worktrees,
               ...(args.worktreeSetup === undefined ? {} : { setup: { command: args.worktreeSetup, args: args.worktreeSetupArgs } }),
+              ...(args.handoffCmd === undefined ? {} : { handoff: { command: args.handoffCmd, args: args.handoffArgs } }),
             }),
   };
 }
@@ -1538,7 +1572,14 @@ export function withOrgDefaults(args: Args, orgId: string, registryJson: string 
       // repeat it per run is how a configuration surface becomes decoration.
       practices: args.practices.length > 0 ? args.practices : (org.practices ?? []),
       directives: args.directives.length > 0 ? args.directives : (org.directives ?? []),
-      settings: args.settings.length > 0 ? args.settings : (org.settings ?? []),
+      // LAYERED, not replaced: a setting stated for this run overrides the organization's value for
+      // the same setting and scope, and every other organization setting still applies.
+      settings: [
+        ...(org.settings ?? []).filter(
+          (o) => !args.settings.some((a) => a.setting === o.setting && (a.scope ?? "") === (o.scope ?? "")),
+        ),
+        ...args.settings,
+      ],
       // GIT SOURCES ONLY: a tracker or a wiki has no skills directory to read.
       repoSources:
         args.repoSources.length > 0
@@ -2075,6 +2116,10 @@ export async function main(argv: readonly string[]): Promise<number> {
     ...(args.store === undefined
       ? {}
       : { alreadyLanded: new Set(foldLandedChanges(readEvents(args.store)).keys()) }),
+    // WHAT IS ALREADY IN FRONT OF A REVIEWER, so a resume neither re-walks it nor proposes it twice.
+    ...(args.store === undefined
+      ? {}
+      : { alreadyHandedOff: new Set(foldHandedOffChanges(readEvents(args.store)).keys()) }),
     ...(args.supplyTarget === undefined ? {} : { supplyTarget: args.supplyTarget }),
     // WHAT ALREADY PASSED, so a resumed run does not re-walk approved steps.
     ...(args.store === undefined
@@ -2369,7 +2414,15 @@ export async function main(argv: readonly string[]): Promise<number> {
     }
   }
 
-  console.log(`\n=== ${report.delivered ? "DELIVERED" : "NOT DELIVERED"} ===`);
+  // HANDED OFF IS NOT DELIVERED, and the banner must not blur them: the work is in front of people,
+  // nothing reached the trunk, and the next act is theirs.
+  const banner = !report.delivered
+    ? "NOT DELIVERED"
+    : report.changesHandedOff.length > 0
+      ? "HANDED OFF FOR HUMAN REVIEW - nothing was merged"
+      : "DELIVERED";
+  console.log(`\n=== ${banner} ===`);
+  for (const w of report.changesHandedOff) console.log(`  awaiting human review: ${w}`);
   console.log(`levels engaged: ${report.levelsEngaged.join(" → ")}`);
 
   // Printed on EVERY run, not only the interesting ones. A run that reached a shell and did not
@@ -2843,6 +2896,7 @@ export async function main(argv: readonly string[]): Promise<number> {
       // without one the honest answer is "not measured", and the runtime treats that as "do not
       // judge" rather than as "nothing has landed".
       ...(args.store === undefined ? {} : { alreadyLanded: new Set(foldLandedChanges(priorEvents).keys()) }),
+      ...(args.store === undefined ? {} : { alreadyHandedOff: new Set(foldHandedOffChanges(priorEvents).keys()) }),
       ...(args.store === undefined ? {} : { priorGateEvaluations: foldOrganization(priorEvents).gateEvaluations }),
       ...(store === undefined ? {} : { store }),
       ...(study === undefined ? {} : { study }),
