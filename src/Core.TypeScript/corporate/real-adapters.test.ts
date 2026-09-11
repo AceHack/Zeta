@@ -22,7 +22,7 @@ import { describe, expect, test } from "bun:test";
 import { execFileSync } from "node:child_process";
 import { mkdtempSync, mkdirSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
-import { join } from "node:path";
+import { basename, join } from "node:path";
 import { agentsFromChart, runOrgRuntime, type OrgRuntimeDeps } from "./org-runtime";
 import { buildOrgChart } from "./org-chart";
 import { SEED_HATS } from "./org-seed";
@@ -705,4 +705,24 @@ describe("NO SIMULATED PORT AT ALL", () => {
       rmSync(inbox, { recursive: true, force: true });
     }
   }, 180_000);
+});
+
+describe("A REVIEWER RUNS IN THE WORK'S OWN CHECKOUT", () => {
+  // MEASURED on AIAGENT-1662: a QA reviewer ran the change's Playwright spec from the shared base
+  // checkout and the screenshot it wrote sat, untracked, at the path the branch commits - a merge
+  // into that checkout would have been refused.
+  test("a request that names a workdir is run there; one that does not, in the configured directory", async () => {
+    const shared = mkdtempSync(join(tmpdir(), "review-shared-"));
+    const own = mkdtempSync(join(tmpdir(), "review-own-"));
+    const port = commandReview({ command: process.execPath, argsFor: () => ["-e", "console.log(process.cwd())"], cwd: shared });
+    const inOwn = await port.review({ gate: "qa_uat" as never, workId: "task-1", evidence: [], workdir: own });
+    const inShared = await port.review({ gate: "qa_uat" as never, workId: "task-1", evidence: [] });
+    const said = (r: typeof inOwn): string => (r.ok ? r.value.reason.toLowerCase() : "");
+    // By the directory's own name: the temp root may print in its 8.3 short form.
+    expect(said(inOwn)).toContain(basename(own).toLowerCase());
+    expect(said(inOwn)).not.toContain(basename(shared).toLowerCase());
+    expect(said(inShared)).toContain(basename(shared).toLowerCase());
+    rmSync(shared, { recursive: true, force: true });
+    rmSync(own, { recursive: true, force: true });
+  });
 });

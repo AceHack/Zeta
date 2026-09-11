@@ -232,7 +232,8 @@ export function commandReview(input: {
     },
     review: async (request) => {
       const run = spawnSync(input.command, [...input.argsFor(request)], {
-        cwd: input.cwd,
+        // The work's own checkout when the request names one; the configured directory otherwise.
+        cwd: request.workdir ?? input.cwd,
         encoding: "utf-8",
         timeout: input.timeoutMs ?? 120_000,
         shell: false,

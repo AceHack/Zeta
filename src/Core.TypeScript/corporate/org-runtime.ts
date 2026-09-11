@@ -2910,10 +2910,13 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
         }
       }
 
+      // IN THE WORK'S OWN CHECKOUT when it has one - its own change, or the change it verifies.
+      const reviewIn = handle?.workdir ?? subjectWorkdir;
       const verdict = await providers.review.review({
         gate,
         workId: task.workId,
         evidence: shown.map((ref) => ({ kind: "document" as const, ref })),
+        ...(reviewIn === undefined ? {} : { workdir: reviewIn }),
       });
       if (!verdict.ok) {
         // A REVIEW THAT COULD NOT BE OBTAINED IS NOT AN APPROVAL. "Nobody was available to review

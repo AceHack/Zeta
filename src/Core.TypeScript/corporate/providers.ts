@@ -233,6 +233,15 @@ export interface ReviewRequest {
    * would be forcing one.
    */
   readonly evidence: readonly EvidenceRef[];
+  /**
+   * The work's own checkout, when it has one. A reviewer runs there, not in the shared clone.
+   *
+   * MEASURED on AIAGENT-1662: a QA reviewer ran the change's Playwright spec from the shared base
+   * checkout, the spec wrote its screenshot there, and that untracked file sat at the very path the
+   * branch commits - so change control's merge into that checkout would have been refused. What a
+   * reviewer's checks leave behind belongs with the work under review, never on the trunk.
+   */
+  readonly workdir?: string;
 }
 
 export interface ReviewVerdict {
