@@ -31,6 +31,7 @@
  */
 
 import type { Cascade } from "./goal-cascade";
+import type { GateEvaluation } from "./quality-gate";
 import type { OrgRuntimeDeps, OrgRuntimeReport } from "./org-runtime";
 
 export const StopReason = {
@@ -152,14 +153,22 @@ export async function runUntilSettled(
   let landed: Set<string> | undefined =
     deps.alreadyLanded === undefined ? undefined : new Set(deps.alreadyLanded);
 
+  /**
+   * Every verdict so far, carried forward like the cascade. See `OrgRuntimeDeps.priorGateEvaluations`:
+   * without it each cycle re-walked every step, re-producing and re-reviewing work that had passed.
+   */
+  let verdicts: readonly GateEvaluation[] = deps.priorGateEvaluations ?? [];
+
   for (let cycle = 1; cycle <= options.maxCycles; cycle += 1) {
     const report = await run({
       ...deps,
       nowMs,
       ...(carried === undefined ? {} : { priorCascade: carried }),
       ...(landed === undefined ? {} : { alreadyLanded: landed }),
+      priorGateEvaluations: verdicts,
     });
     carried = report.cascade;
+    verdicts = [...verdicts, ...report.gateEvaluations];
     if (landed !== undefined) for (const id of report.changesLanded) landed.add(id);
     reports.push(report);
     options.onCycle?.(cycle, report);

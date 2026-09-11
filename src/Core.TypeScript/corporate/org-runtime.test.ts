@@ -1219,3 +1219,88 @@ describe("WHAT A PHASE MADE IS ON THE RECORD BEFORE ANYBODY IS ASKED TO JUDGE IT
     expect(outputs.length).toBe(1);
   }, 60_000);
 });
+
+describe("A STEP THAT PASSED IS NOT WALKED AGAIN — verdicts carry across cycles", () => {
+  // MEASURED on AIAGENT-1659 overnight: grooming approved, system_context rejected, and the next cycle
+  // produced and reviewed grooming AGAIN — whose second reviewer rejected it.
+  test("with system_context turned back once, grooming is produced and reviewed exactly ONCE", async () => {
+    const { runUntilSettled } = require("./autonomy") as typeof import("./autonomy");
+    const understandOnly: SettingBinding = {
+      setting: ProcessSetting.DefectRungGates,
+      value: "business_context_grooming,system_context",
+      why: "understand, then fix",
+    };
+    let systemContextAsks = 0;
+    let groomingProduced = 0;
+    const review = {
+      meta: { port: Port.Review, name: "once-strict", fidelity: Fidelity.Real, describes: "turns system_context back once" },
+      review: async (req: { gate: GateKind }) => ({
+        ok: true as const,
+        value:
+          req.gate === GateKind.SystemContext && ++systemContextAsks === 1
+            ? { outcome: GateOutcome.Rejected, reason: "a cited line does not say what the document claims" }
+            : { outcome: GateOutcome.Approved, reason: "ok" },
+        evidence: [],
+      }),
+    };
+    const grooming: ProducerPort = {
+      meta: { port: Port.WorkExecution, name: "groomer", fidelity: Fidelity.Real, describes: "grooms" },
+      produce: async () => {
+        groomingProduced += 1;
+        return { ok: true, value: { refs: ["docs/grooming.md"], summary: "groomed" }, evidence: [] };
+      },
+    };
+    const base = deps({ settings: [understandOnly] });
+    const result = await runUntilSettled(
+      {
+        ...base,
+        providers: { ...defaultProviderSet(base), review: review as never },
+        artifactProducers: new Map([[GateKind.BusinessContextGrooming, grooming]]),
+      } as OrgRuntimeDeps,
+      { maxCycles: 4, nextNowMs: (_c: number, prev: number) => prev + 1 },
+      runOrgRuntime,
+    );
+    const all = result.reports.flatMap((r) => r.gateEvaluations);
+    const groomingVerdicts = all.filter((e) => e.gate === GateKind.BusinessContextGrooming);
+    expect(systemContextAsks).toBeGreaterThanOrEqual(2); // it WAS turned back and re-walked
+    expect(groomingVerdicts.length).toBe(1);
+    expect(groomingProduced).toBe(1);
+    // …and the work still finishes — prior verdicts count toward "done".
+    expect(result.last.delivered).toBe(true);
+  }, 120_000);
+});
+
+describe("A LEAF'S RETRY RESUMES AT THE STEP THAT WAS TURNED BACK", () => {
+  test("implementation turned back once: the reproduction is produced and reviewed exactly ONCE", async () => {
+    let reproductions = 0;
+    let implAsks = 0;
+    const reproduce: ProducerPort = {
+      meta: { port: Port.WorkExecution, name: "qa", fidelity: Fidelity.Real, describes: "reproduces" },
+      produce: async () => {
+        reproductions += 1;
+        return { ok: true, value: { refs: ["tests/repro.test.ts"], summary: "fails on the unfixed code" }, evidence: [] };
+      },
+    };
+    const review = {
+      meta: { port: Port.Review, name: "impl-once", fidelity: Fidelity.Real, describes: "turns implementation back once" },
+      review: async (req: { gate: GateKind }) => ({
+        ok: true as const,
+        value:
+          req.gate === GateKind.ImplementationReview && ++implAsks === 1
+            ? { outcome: GateOutcome.Rejected, reason: "the test passes without the fix" }
+            : { outcome: GateOutcome.Approved, reason: "ok" },
+        evidence: [],
+      }),
+    };
+    const base = deps();
+    const report = await runOrgRuntime({
+      ...base,
+      providers: { ...defaultProviderSet(base), review: review as never },
+      artifactProducers: new Map([[GateKind.Reproduction, reproduce]]),
+    } as OrgRuntimeDeps);
+    expect(implAsks).toBe(2);
+    expect(reproductions).toBe(1);
+    expect(report.gateEvaluations.filter((e) => e.gate === GateKind.Reproduction).length).toBe(1);
+    expect(report.delivered).toBe(true);
+  }, 60_000);
+});

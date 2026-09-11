@@ -331,6 +331,16 @@ export interface OrgRuntimeDeps extends HumanCheckpointDeps {
    */
   readonly alreadyLanded?: ReadonlySet<string>;
   /**
+   * Verdicts from earlier cycles and earlier runs, so a step that PASSED is not walked again.
+   *
+   * MEASURED on AIAGENT-1659: the goal's grooming was approved, a later step was rejected, and the
+   * next cycle produced and reviewed grooming AGAIN — and that second reviewer rejected it. Real
+   * agents make every re-walk a full author-and-review cycle, and an approval that can flip on a
+   * re-roll is not an approval. The LATEST verdict per (item, gate) decides: passing, the step is
+   * skipped; turned back, it is owed again. Folded from the log by the caller; the runtime reads none.
+   */
+  readonly priorGateEvaluations?: readonly GateEvaluation[];
+  /**
    * The organization's SDLC settings — what the process DOES at mechanical decisions.
    *
    * Absent means every such decision takes its default, which is what every caller meant before
@@ -1997,6 +2007,19 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
   // written only after the whole walk, and a governance rung's documents never at all. A record
   // that lags the work is a record a reviewer cannot use, whoever the reviewer is.
   const recordedEarly = new Set<string>();
+
+  // ── WHAT ALREADY PASSED, from earlier cycles and runs ─────────────────────
+  // The LATEST prior verdict per (item, gate). See `OrgRuntimeDeps.priorGateEvaluations`.
+  const latestPrior = new Map<string, GateEvaluation>();
+  for (const e of deps.priorGateEvaluations ?? []) {
+    const key = `${e.workId}::${String(e.gate)}`;
+    const had = latestPrior.get(key);
+    if (had === undefined || had.atMs <= e.atMs) latestPrior.set(key, e);
+  }
+  const passedBefore = (workId: string, gate: GateKind): boolean => {
+    const e = latestPrior.get(`${workId}::${String(gate)}`);
+    return e !== undefined && isPassing(e.outcome);
+  };
   const recordProduced = (
     workId: string,
     gate: GateKind,
@@ -2277,7 +2300,9 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
     const acceptance = acceptanceGateFor(node);
     const kids = childrenOf(cascade, node.workId).filter((c: CascadeNode) => c.state !== WorkState.Canceled);
     const childrenDone = kids.length > 0 && kids.every((c: CascadeNode) => delivered.has(c.workId));
-    const walkable = owed.filter((g) => g !== acceptance || childrenDone);
+    const walkable = owed.filter(
+      (g) => (g !== acceptance || childrenDone) && !passedBefore(node.workId, g),
+    );
     if (walkable.length === 0) continue;
 
     // PRODUCERS TOO, or the upper rungs judge nothing. `business_context_grooming` belongs to the
@@ -2717,7 +2742,10 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
     };
 
     // The item's OWN chain, not the run's whole pipeline. See `chainForTask`.
-    const owedGates = new Set(chainForTask(task, deps.pipeline ?? DEFAULT_PIPELINE));
+    // A STEP THAT ALREADY PASSED is not owed again — see `passedBefore`.
+    const owedGates = new Set(
+      chainForTask(task, deps.pipeline ?? DEFAULT_PIPELINE).filter((g) => !passedBefore(task.workId, g)),
+    );
     const pipeline = withProducers(
       (deps.pipeline ?? DEFAULT_PIPELINE).filter((phase) => owedGates.has(phase.gate)),
       new Map<GateKind, ProducerPort>([
@@ -2874,6 +2902,12 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
     const chooser: OrgChooser<GateOutcome> = (legal, ctx) => gateChooserFrom(reviewed, qaVerdict)(legal, ctx);
 
     let merged = false;
+    // ── A STEP THAT PASSED IN AN EARLIER ATTEMPT IS NOT WALKED AGAIN ──────────
+    // A rejection stops the walk AT the rejected step, so everything that passed lies before it and
+    // nothing the rework changes can un-pass it. MEASURED: each attempt used to walk the whole chain
+    // again, so an implementation turned back re-ran the reproduction — author and reviewer both —
+    // before anyone looked at the new code. Earlier steps' documents stay on the item, in `observe`.
+    const passedThisCycle = new Set<GateKind>();
     for (let attempt = 1; attempt <= maxAttempts && !merged; attempt += 1) {
       // ── WHAT THIS HAT ALREADY KNOWS, BEFORE IT DOES ANYTHING ─────────────
       // Injected per work item rather than per gate: the recall scope is the hat and the work, and
@@ -2889,7 +2923,7 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
       const walked = await runPipeline(deps.chart, {
         workId: task.workId,
         node: task,
-        pipeline,
+        pipeline: pipeline.filter((phase) => !passedThisCycle.has(phase.gate)),
         chooser,
         // ── EACH ATTEMPT IS ITS OWN MOMENT ──────────────────────────────────
         // All attempts used to be stamped `warmedAt`, so three retries of the same gate produced
@@ -2931,6 +2965,8 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
           ? {}
           : { humanDecisionFor: (gate: GateKind) => deps.humanDecisionFor?.(task.workId, gate) }),
       });
+      // What passed in this attempt is not walked in the next — see `passedThisCycle`.
+      for (const e of walked.evaluations) if (isPassing(e.outcome)) passedThisCycle.add(e.gate);
       // Shaped as the old `GateRunResult` so the churn/escalation handling below is untouched by
       // the reordering — that logic is about what a rejection MEANS, which did not change.
       // THE PHASES' OUTPUT AS AN ARTIFACT the organization can deliberate over. In the pipeline's
@@ -3289,7 +3325,9 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
     // process's belief that its own walk finished. A verdict that never reached the log is a
     // verdict no second reader can see, and marking work done on it would let the cascade and the
     // record disagree about whether anything was ever approved.
-    const owedButUnproven = missingGates(task, task.workId, gateEvaluations);
+    // PRIOR VERDICTS COUNT: a step passed in an earlier cycle is not walked again, so an item whose
+    // steps passed across cycles would otherwise never read as done.
+    const owedButUnproven = missingGates(task, task.workId, [...(deps.priorGateEvaluations ?? []), ...gateEvaluations]);
     if (owedButUnproven.length > 0) {
       refusals.push(
         `${task.workId} is not done: no passing verdict on the record for ` +
@@ -3387,7 +3425,7 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
     const acceptance = acceptanceGateFor(node);
     if (acceptance === undefined) continue;
     // Already crossed? Nothing to do. Asked of the RECORD, not of this run's memory.
-    if (missingGates(node, node.workId, gateEvaluations).length === 0) continue;
+    if (missingGates(node, node.workId, [...(deps.priorGateEvaluations ?? []), ...gateEvaluations]).length === 0) continue;
 
     const deliveredNow = deliveredSet(cascade);
     const kids = childrenOf(cascade, node.workId).filter((c: CascadeNode) => c.state !== WorkState.Canceled);
@@ -3395,7 +3433,7 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
 
     // EVERY OTHER GATE FIRST. Accepting a rung whose earlier gates never passed would let a final
     // validation stand in for the architecture review it was supposed to follow.
-    const stillOwed = missingGates(node, node.workId, gateEvaluations);
+    const stillOwed = missingGates(node, node.workId, [...(deps.priorGateEvaluations ?? []), ...gateEvaluations]);
     if (stillOwed.length > 1 || stillOwed[0] !== acceptance) {
       refusals.push(
         `${node.workId} cannot be accepted yet: still owes ${stillOwed.filter((g) => g !== acceptance).join(", ")}`,

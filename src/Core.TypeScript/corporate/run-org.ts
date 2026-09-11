@@ -2014,6 +2014,10 @@ export async function main(argv: readonly string[]): Promise<number> {
     ...(args.store === undefined
       ? {}
       : { alreadyLanded: new Set(foldLandedChanges(readEvents(args.store)).keys()) }),
+    // WHAT ALREADY PASSED, so a resumed run does not re-walk approved steps.
+    ...(args.store === undefined
+      ? {}
+      : { priorGateEvaluations: foldOrganization(readEvents(args.store)).gateEvaluations }),
     acceptingHatId: "cto",
     resourceAuthorityHatId: "rmo_office",
     priorityDeciderHatId: "cto",
@@ -2769,6 +2773,7 @@ export async function main(argv: readonly string[]): Promise<number> {
       // without one the honest answer is "not measured", and the runtime treats that as "do not
       // judge" rather than as "nothing has landed".
       ...(args.store === undefined ? {} : { alreadyLanded: new Set(foldLandedChanges(priorEvents).keys()) }),
+      ...(args.store === undefined ? {} : { priorGateEvaluations: foldOrganization(priorEvents).gateEvaluations }),
       ...(store === undefined ? {} : { store }),
       ...(study === undefined ? {} : { study }),
       // Rotates what each hat studies between runs, so it does not read one thing forever.
