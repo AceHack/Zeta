@@ -129,6 +129,50 @@ export function verifyChecksum(
 }
 
 /**
+ * An `https://` URL, and nothing else -- no scheme but https, no credentials in
+ * the authority, no whitespace.
+ *
+ * WHY A SHAPE TEST AND NOT `new URL(...)`. This value comes out of a tracked
+ * manifest and becomes an outbound request (CodeQL alert 934,
+ * `js/file-access-to-http`). `new URL` ACCEPTS `file:`, `data:` and a userinfo
+ * component; `safe-io`'s `checkUrl` refuses the first two but runs one layer
+ * further in, after the manifest has already decided where this process will
+ * connect. A manifest field that names a network location should be checked
+ * where the manifest is read, in the vocabulary the manifest promises.
+ */
+// ALLOW-LIST EVERY CHARACTER, never `[^\s]`. The tail was `[^\s]*` first, which
+// says "anything that is not whitespace" and so admits control characters, a
+// backslash, and every non-ASCII codepoint -- a negated class is a wildcard
+// wearing a restriction's clothes. The set below is RFC 3986's own: unreserved,
+// gen-delims, sub-delims, and `%` for percent-encoding.
+//
+// It is also the difference between a check CodeQL can SEE and one it cannot:
+// `isGenericRegExpSanitizer` wants a fully anchored pattern with no wildcard-like
+// term anywhere in it, and an inverted character class is wildcard-like. Measured
+// 2026-09-11 -- with `[^\s]*` the taint path walked straight through the `if`
+// below and alert 934 stood; with the explicit set it does not.
+const HTTPS_URL = /^https:\/\/[A-Za-z0-9][A-Za-z0-9.-]*(?::[0-9]{1,5})?(?:\/[A-Za-z0-9\-._~:/?#[\]@!$&'()*+,;=%]*)?$/;
+
+/**
+ * The pin's download URL, or a refusal.
+ *
+ * Separate from `fetchBlockReason` on purpose: that function answers "may this
+ * be fetched at all" and returns PROSE, while this one returns the VALUE that
+ * continues. Handing the caller a validated string is what makes the guard
+ * load-bearing -- a check whose result the caller can ignore by re-reading
+ * `pin.downloadUrl` protects nothing.
+ */
+export function checkedDownloadUrl(pin: DatfilePin): string {
+  const raw = pin.downloadUrl;
+  if (!HTTPS_URL.test(raw)) {
+    throw new Error(
+      `downloadUrl for "${pin.platform}" is not an https URL: ${JSON.stringify(raw)}`,
+    );
+  }
+  return raw;
+}
+
+/**
  * Reasons a pin cannot be fetched. null => the pin is fetchable.
  * Pure: surfaces the fail-closed decision without performing IO.
  */
@@ -306,7 +350,9 @@ export async function main(argv: readonly string[]): Promise<number> {
     rmSync(stagingDir, { recursive: true, force: true });
   };
 
-  const download = await fetchToFile(pin.downloadUrl, stagingPath, {
+  // The validated URL is what continues; `pin.downloadUrl` is not read again.
+  const downloadUrl = checkedDownloadUrl(pin);
+  const download = await fetchToFile(downloadUrl, stagingPath, {
     maxBytes: DATFILE_MAX_BYTES,
     timeoutMs: DOWNLOAD_TIMEOUT_MS,
     exclusive: true,

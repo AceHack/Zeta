@@ -8,6 +8,7 @@ import {
   sha256Hex,
   verifyChecksum,
   fetchBlockReason,
+  checkedDownloadUrl,
   loadManifest,
   main,
   DEFAULT_MANIFEST,
@@ -124,6 +125,46 @@ describe("fetchBlockReason (fail-closed gate)", () => {
 
   test("allows a fully verified pin", () => {
     expect(fetchBlockReason(VERIFIED_PIN)).toBeNull();
+  });
+});
+
+describe("checkedDownloadUrl — the manifest decides where this process connects", () => {
+  const withUrl = (downloadUrl: string): DatfilePin => ({ ...VERIFIED_PIN, downloadUrl });
+
+  test("returns the URL it validated, so the caller cannot use the unchecked one", () => {
+    const url = "https://example.org:8443/tosec/pack.zip?v=1&x=2#frag";
+    expect(checkedDownloadUrl(withUrl(url))).toBe(url);
+  });
+
+  test("refuses every scheme but https — including the two that turn a download into a local read", () => {
+    for (const bad of [
+      "file:///etc/passwd",
+      "data:text/plain,x",
+      "http://example.org/a.zip",
+      "ftp://example.org/a.zip",
+      "//example.org/a.zip",
+    ]) {
+      expect(() => checkedDownloadUrl(withUrl(bad))).toThrow(/not an https URL/);
+    }
+  });
+
+  test("refuses userinfo, whitespace, control characters and non-ASCII", () => {
+    // `[^\s]*` accepted every one of these; the explicit RFC 3986 set does not.
+    for (const bad of [
+      "https://user:pass@example.org/a.zip",
+      "https://example.org/a b.zip",
+      "https://example.org/a\u0000.zip",
+      "https://example.org/\u202Ezip.exe",
+      "https://exa\u0000mple.org/a.zip",
+    ]) {
+      expect(() => checkedDownloadUrl(withUrl(bad))).toThrow(/not an https URL/);
+    }
+  });
+
+  test("a placeholder never reaches the network, from either guard", () => {
+    const pin = withUrl("<DIRECT-DAT-URL-VERIFY-ON-FETCH>");
+    expect(fetchBlockReason(pin)).toMatch(/downloadUrl.*placeholder/); // the fail-closed gate, first
+    expect(() => checkedDownloadUrl(pin)).toThrow(/not an https URL/); // and again at the value boundary
   });
 });
 

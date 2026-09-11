@@ -1,5 +1,7 @@
 import { describe, expect, test } from "bun:test";
-import { readFileSync } from "node:fs";
+import { mkdtempSync, readFileSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 
 import {
   ACTUATOR_WORKFLOW,
@@ -10,6 +12,7 @@ import {
   isolateBreak,
   isSha,
   missingScopes,
+  readEpisodes,
   redRunSubjectPaths,
   reportIncapacity,
   touchesVectors,
@@ -177,5 +180,48 @@ describe("capability preflight — incapacity must be LOUD on every run", () => 
     const src = readFileSync(new URL("./retraction-actuator.ts", import.meta.url), "utf8");
     expect(src).toContain("::error title=Retraction actuator failed to push::");
     expect(src).not.toContain("`actuator: push failed → ${machine.kind}");
+  });
+});
+
+describe("readEpisodes — the ledger is untrusted input the moment it is parsed", () => {
+  const ledgerWith = (pushedSha: unknown): string => {
+    const dir = mkdtempSync(join(tmpdir(), "retraction-episodes-"));
+    const path = join(dir, "retraction-episodes.json");
+    writeFileSync(path, JSON.stringify({ "ep-1": { machine: { kind: "landed" }, updatedTick: 7, pushedSha } }));
+    return path;
+  };
+
+  test("a well-formed sha survives unchanged", () => {
+    const sha = "0123456789abcdef0123456789abcdef01234567";
+    expect(readEpisodes(ledgerWith(sha))["ep-1"]?.pushedSha).toBe(sha);
+  });
+
+  test("a record with no pushedSha is kept, and the field stays absent", () => {
+    const dir = mkdtempSync(join(tmpdir(), "retraction-episodes-"));
+    const path = join(dir, "e.json");
+    writeFileSync(path, JSON.stringify({ "ep-1": { machine: { kind: "idle" }, updatedTick: 3 } }));
+    const out = readEpisodes(path);
+    expect(out["ep-1"]?.updatedTick).toBe(3);
+    expect("pushedSha" in out["ep-1"]!).toBe(false);
+  });
+
+  test("a pushedSha that is not a commit sha is REFUSED, never repaired", () => {
+    // Each of these reaches `/commits/${pushedSha}/check-runs` as a URL PATH, and
+    // that request's answer decides whether a commit is reverted. `..` leaves the
+    // segment; `?` and `#` end the path entirely and re-aim the call.
+    for (const bad of [
+      "../../../users/someone",
+      "0123456789abcdef0123456789abcdef01234567?x=1",
+      "0123456789abcdef0123456789abcdef01234567#f",
+      "0123456789ABCDEF0123456789abcdef01234567", // wrong case is a different object name
+      "0123456",                                   // abbreviated
+      "",
+    ]) {
+      expect(() => readEpisodes(ledgerWith(bad))).toThrow(/not a 40-character lowercase-hex commit sha/);
+    }
+  });
+
+  test("a missing ledger file is an empty ledger, not a throw", () => {
+    expect(readEpisodes(join(mkdtempSync(join(tmpdir(), "retraction-episodes-")), "absent.json"))).toEqual({});
   });
 });

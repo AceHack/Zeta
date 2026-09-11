@@ -58,7 +58,7 @@
 // bookkeeping commit (Riven-2: recipe verbatim).
 
 import { execFileSync } from "node:child_process";
-import { existsSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { readFileSync, rmSync, writeFileSync } from "node:fs";
 
 import { openMergePR } from "../agent-heartbeats/merge-heartbeats-to-main.ts";
 import { isValidLane, stagingRef } from "../forge-host/github/flush-via-staging.ts";
@@ -245,9 +245,70 @@ type EpisodeFile = Record<string, EpisodeRecord>;
 
 const EPISODES_PATH = "docs/drift-events/retraction-episodes.json";
 
-function readEpisodes(): EpisodeFile {
-  if (!existsSync(EPISODES_PATH)) return {};
-  return JSON.parse(readFileSync(EPISODES_PATH, "utf8")) as EpisodeFile;
+/**
+ * Read the episode ledger, NORMALISING what comes back.
+ *
+ * `retraction-episodes.json` is a tracked file in this repository. This tool
+ * writes it, but nothing stops a pull request from editing it, and its
+ * `pushedSha` went straight into `/commits/${pushedSha}/check-runs` on
+ * `api.github.com` -- a URL PATH, where a `?`, a `#` or a `../` does not stay
+ * inside the segment it was written in. The answer that request returns decides
+ * whether a commit gets REVERTED, so aiming it at a different commit is a wrong
+ * VERDICT, not merely a wrong request. CodeQL alert 933
+ * (`js/file-access-to-http`) is exactly that flow: file data reaching an
+ * outbound URL.
+ *
+ * `normalizeFullCommitSha` rather than a fourth regex, and its own docstring
+ * says why it is the right shape: it returns the safe value as a DIFFERENT
+ * BINDING, so a future line that reaches for the parsed property instead of the
+ * normalised one is a visible mistake in review rather than an invisible one.
+ * It also breaks the taint by construction -- the returned string is assembled
+ * from `HEX_DIGITS` constants, so not one character of it came from the file.
+ *
+ * At the READ boundary, not at the three use sites: a persisted record is
+ * untrusted the moment it is parsed, and one guard at one door beats three that
+ * have to be remembered.
+ *
+ * REFUSE, never repair: a truncated sha names a different commit, and the ledger
+ * being unreadable is a louder and safer outcome than acting on half of it.
+ *
+ * EXPORTED, AND THE PATH IS A PARAMETER, SO THE GUARD ABOVE CAN BE FALSIFIED.
+ * With a fixed path and no export, "readEpisodes normalises `pushedSha`" is a
+ * claim only the comment makes; the guard could be deleted and no test would go
+ * red. The default keeps every existing caller unchanged.
+ */
+export function readEpisodes(episodesPath: string = EPISODES_PATH): EpisodeFile {
+  // READ, THEN INTERPRET ENOENT -- never `existsSync` then read. The pair was
+  // grandfathered here (a module constant, unparameterised); making the path a
+  // parameter re-presented it to `lint-check-then-use-file-races`, which is
+  // right to refuse it: between the check and the read the path can be created,
+  // deleted or replaced, so the boolean is stale before it is used. One syscall
+  // gives one answer, and the answer is more precise -- ENOENT distinguishes
+  // "no ledger yet" from a permission failure, which the boolean folded together.
+  let text: string;
+  try {
+    text = readFileSync(episodesPath, "utf8");
+  } catch (e) {
+    if ((e as NodeJS.ErrnoException).code === "ENOENT") return {}; // no ledger yet is an empty ledger
+    throw e; // a permission or I/O failure is NOT an empty ledger
+  }
+  const parsed = JSON.parse(text) as EpisodeFile;
+  const checked: Record<string, EpisodeRecord> = {};
+  for (const [episodeId, rec] of Object.entries(parsed)) {
+    if (rec.pushedSha === undefined) {
+      checked[episodeId] = { machine: rec.machine, updatedTick: rec.updatedTick };
+      continue;
+    }
+    const safeSha = normalizeFullCommitSha(rec.pushedSha);
+    if (safeSha === null) {
+      throw new Error(
+        `${episodesPath}: episode ${JSON.stringify(episodeId)} has pushedSha ` +
+          `${JSON.stringify(rec.pushedSha)}, which is not a 40-character lowercase-hex commit sha`,
+      );
+    }
+    checked[episodeId] = { machine: rec.machine, updatedTick: rec.updatedTick, pushedSha: safeSha };
+  }
+  return checked;
 }
 
 function writeEpisodes(e: EpisodeFile): void {
