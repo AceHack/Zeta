@@ -718,6 +718,7 @@ describe("HOW A MERGE REQUEST IS WRITTEN IS STATED, AND ONLY WHAT CAN MEAN SOMET
       "--keep-out", "*.png",
       "--sync", "merge_target",
       "--replies", "reply_and_resolve",
+      "--after-open", "comment=aireview",
       "--why", "reviewers read the problem first",
     ]);
     expect(code).toBe(Exit.Ok);
@@ -735,7 +736,7 @@ describe("HOW A MERGE REQUEST IS WRITTEN IS STATED, AND ONLY WHAT CAN MEAN SOMET
     const h = harness();
     await main(CREATE, h.deps);
     const before = h.files.get(REG);
-    const replies = ["--replies", "reply"];
+    const replies = ["--replies", "reply", "--after-open", "none"];
     expect(await set(h, ["--section", "Root cause", "--sync", "merge_target", ...replies, "--why", "w"])).toBe(Exit.Usage);
     expect(await set(h, ["--section", "Root cause=why", "--sync", "rebase", ...replies, "--why", "w"])).toBe(Exit.Usage);
     expect(await set(h, ["--section", "Root cause= ", "--sync", "merge_target", ...replies, "--why", "w"])).toBe(Exit.Refused);

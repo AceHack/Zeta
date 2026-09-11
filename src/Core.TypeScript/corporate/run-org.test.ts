@@ -603,7 +603,7 @@ describe("A REAL REPOSITORY IS HANDED TO PEOPLE UNLESS SOMEONE SAID MERGE", () =
     expect(missing.some((r) => r.includes("--follow-up-cmd"))).toBe(true);
     // WHETHER A REVIEWER IS ANSWERED is part of the statement: unstated is refused, never read as "none".
     expect(missing.some((r) => r.includes("reviewer's comment is answered") && r.includes("--replies"))).toBe(true);
-    const answering = { ...stated.changeRequests, replies: "reply_and_resolve" as const };
+    const answering = { ...stated.changeRequests, replies: "reply_and_resolve" as const, afterOpen: [] as const };
     const noAnswerer = argRefusals({ ...parseArgs([...handing, "--describe-cmd", "node", "--follow-up-cmd", "node"]), changeRequests: answering });
     expect(noAnswerer.some((r) => r.includes("--answer-cmd") && r.includes("reply_and_resolve"))).toBe(true);
     const complete = argRefusals({ ...parseArgs([...handing, "--describe-cmd", "node", "--follow-up-cmd", "node", "--answer-cmd", "node", "--answer-arg", "a.cjs"]), changeRequests: answering });

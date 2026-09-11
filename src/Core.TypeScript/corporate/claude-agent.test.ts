@@ -148,6 +148,26 @@ describe("AFTER THE HANDOFF: THE DESCRIPTION AND THE FOLLOW-UP", () => {
     r.cleanup();
   });
 
+  test("a FOLLOW-UP review is told the commits and their claims, and must prove each fix's test fails without it", () => {
+    // MEASURED on MR !164: a follow-up commit's claimed fix had half no test would miss; it was never reviewed.
+    const r = run(["review", "implementation_review", "task-9"], ok({ verdict: "reject", reason: "no test fails without the loadingStates guard", lookedAt: ["diff"] }), {
+      ORG_REVIEW_AS: "code_reviewer",
+      ORG_FOLLOWUP_REVIEW: JSON.stringify({ from: "452fcafab1a2", to: "e9f5b769b246", items: [{ summary: "stale abort clobbers loadingStates", outcome: "addressed", how: "guarded the finally blocks" }] }),
+    });
+    expect(r.status).toBe(1);
+    const input = r.seen?.input ?? "";
+    expect(input).toContain("THIS IS A FOLLOW-UP REVIEW");
+    expect(input).toContain("git diff 452fcafab1a2..e9f5b769b246");
+    expect(input).toContain("guarded the finally blocks");
+    expect(input).toContain("confirm it FAILS");
+    expect(input).toContain("Never change");
+    r.cleanup();
+    // An ordinary gate review is not told any of this.
+    const plain = run(["review", "implementation_review", "task-9"], ok({ verdict: "approve", reason: "ok", lookedAt: [] }));
+    expect(plain.seen?.input).not.toContain("FOLLOW-UP REVIEW");
+    plain.cleanup();
+  });
+
   test("describe on a re-handoff is told what reviewers were answered, and that the description must carry it", () => {
     // MEASURED on MR !162: a reply said the rollout note was in the description; the rewrite had none.
     const r = run(["describe", "task-9"], ok({ description: "## Root cause\nA race." }), {

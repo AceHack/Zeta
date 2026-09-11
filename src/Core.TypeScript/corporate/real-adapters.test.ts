@@ -37,9 +37,9 @@ import {
   revisionOf,
 } from "./adapters";
 import { gitDataSource } from "./git-data-source";
-import { foldActionItems, foldHandedOffChanges, foldLandedChanges } from "./org-fold";
+import { foldActionItems, foldAfterOpen, foldHandedOffChanges, foldLandedChanges } from "./org-fold";
 import type { OrgEvent } from "./org-event";
-import type { AnswerItem, AnswerRequest } from "./change-followup";
+import type { AnswerItem, AnswerRequest, FollowUpReviewRequest } from "./change-followup";
 import type { DescribeRequest } from "./change-request";
 import { Fidelity, Port } from "./providers";
 
@@ -927,7 +927,14 @@ describe("AFTER THE HANDOFF: THE REQUEST SAYS WHAT THE ORGANIZATION CONFIGURED, 
     { heading: "Problem statement", states: "what the reporter saw" },
     { heading: "Root cause", states: "why, with file:line" },
   ];
-  const changeRequests = { sections, keepOut: ["*.png"], sync: "merge_target" as const, replies: "reply_and_resolve" as const, why: "reviewers read the problem first" };
+  const changeRequests = {
+    sections,
+    keepOut: ["*.png"],
+    sync: "merge_target" as const,
+    replies: "reply_and_resolve" as const,
+    afterOpen: [{ kind: "comment" as const, body: "aireview" }],
+    why: "reviewers read the problem first",
+  };
   const fullDescription = async () => ({ ok: true as const, value: "## Problem statement\nIt broke.\n\n## Root cause\nA race.", evidence: [] });
 
   function stubCounting(dir: string): { command: string; args: string[]; seen: string; count: () => number } {
@@ -989,13 +996,20 @@ describe("AFTER THE HANDOFF: THE REQUEST SAYS WHAT THE ORGANIZATION CONFIGURED, 
     const events: OrgEvent[] = [];
     try {
       const change = () => gitWorktreeChangeControl({ cwd: repo, baseBranch: "main", worktreeRoot: wt, handoff: { command: h.command, args: h.args } });
+      const commented: Record<string, unknown>[] = [];
       const first = await runAgainst(repo, inbox, { change: change() }, {
         settings: [],
         changeRequests,
         describeChange: fullDescription,
+        postComment: async (r: Record<string, unknown>) => {
+          commented.push(r);
+          return { ok: true as const, value: { replyId: "note-900" }, evidence: [] };
+        },
         onEvent: (e: OrgEvent) => events.push(e),
       });
       expect(first.changesHandedOff.length).toBe(1);
+      // AFTER THE REQUEST OPENED, the organization's configured step ran - once, on that request.
+      expect(commented).toEqual([{ workId: first.changesHandedOff[0], changeUrl: "https://review.example/p/-/merge_requests/7", branch: expect.any(String), body: "aireview" }]);
       const workId = first.changesHandedOff[0] as string;
       const seen = JSON.parse(readFileSync(h.seen, "utf-8")) as { description: string };
       expect(seen.description).toContain("## Root cause");
@@ -1009,6 +1023,8 @@ describe("AFTER THE HANDOFF: THE REQUEST SAYS WHAT THE ORGANIZATION CONFIGURED, 
       git(others, "commit", "-q", "-m", "main moves");
       git(others, "push", "-q", "origin", "main");
       const feedback = [
+        // The organization's own `aireview` comment, read back from the review system: NOT an action item.
+        { deliveryId: "note-900", source: "gitlab", itemKind: "comment", summary: "aireview", author: "operator", changeUrl: "https://review.example/p/-/merge_requests/7#note_900" },
         { deliveryId: "note-1", source: "gitlab", itemKind: "comment", summary: "please add a comment explaining the race", author: "reviewer", changeUrl: "https://review.example/p/-/merge_requests/7#note_1" },
         { deliveryId: "target-main-1", source: "gitlab", itemKind: "target_moved", summary: "main moved", target: "refs/heads/main" },
       ];
@@ -1027,6 +1043,8 @@ describe("AFTER THE HANDOFF: THE REQUEST SAYS WHAT THE ORGANIZATION CONFIGURED, 
         };
       };
       const described: DescribeRequest[] = [];
+      const reviewed: FollowUpReviewRequest[] = [];
+      const firstShown = handed.get(workId)?.commit;
       const second = await runAgainst(repo, realInbox(), { change: change() }, {
         settings: [],
         changeRequests,
@@ -1038,6 +1056,11 @@ describe("AFTER THE HANDOFF: THE REQUEST SAYS WHAT THE ORGANIZATION CONFIGURED, 
         alreadyHandedOff: new Set(handed.keys()),
         handedOffChanges: handed,
         actionItems: foldActionItems(events),
+        afterOpenDone: foldAfterOpen(events),
+        // Already done on this request: asking again would post a second `aireview`.
+        postComment: async () => {
+          throw new Error("the after-open step already ran on this request");
+        },
         feedback,
         defaultBase: "main",
         verifyChange: async () => ({ ok: true as const, value: "green", evidence: [] }),
@@ -1058,6 +1081,10 @@ describe("AFTER THE HANDOFF: THE REQUEST SAYS WHAT THE ORGANIZATION CONFIGURED, 
         },
         // The moved-target item's answer fails this time; it must be tried again, never lost.
         answer: answer(`gitlab:target-main-1@${workId}`),
+        reviewFollowUp: async (r: FollowUpReviewRequest) => {
+          reviewed.push(r);
+          return { ok: true as const, value: { approved: true, reason: "each claimed fix has a test that fails without it" }, evidence: [] };
+        },
         onEvent: (e: OrgEvent) => events.push(e),
       });
       expect(second.actionItemsRaised?.length).toBe(2);
@@ -1066,6 +1093,13 @@ describe("AFTER THE HANDOFF: THE REQUEST SAYS WHAT THE ORGANIZATION CONFIGURED, 
       expect(fu?.refused).toEqual([]);
       expect(fu?.synced?.applied).toBe(true);
       expect(fu?.handedOffAgain).toBe(true);
+      // THE FOLLOW-UP WAS REVIEWED LIKE THE ORIGINAL, before the push: the item's own post-work gates,
+      // each by someone other than the hat that made it, over everything since what people last saw.
+      expect(reviewed.map((r) => r.gate)).toEqual(["implementation_review", "qa_uat"]);
+      expect(firstShown).toBeDefined();
+      expect(reviewed.every((r) => r.from === firstShown && r.to === git(repo, "rev-parse", branch).trim())).toBe(true);
+      expect(new Set(reviewed.map((r) => r.reviewerHatId)).size).toBe(2);
+      expect(reviewed[0]?.items.some((i) => i.how === "explained the race; merged main in")).toBe(true);
       expect(h.count()).toBe(2);
       // Merged in, never rebased: main's commit is now an ancestor of the branch.
       expect(() => git(repo, "merge-base", "--is-ancestor", "origin/main", branch)).not.toThrow();
@@ -1101,6 +1135,7 @@ describe("AFTER THE HANDOFF: THE REQUEST SAYS WHAT THE ORGANIZATION CONFIGURED, 
         alreadyHandedOff: new Set(handed.keys()),
         handedOffChanges: foldHandedOffChanges(events),
         actionItems: foldActionItems(events),
+        afterOpenDone: foldAfterOpen(events),
         feedback: [...feedback, ownReply],
         defaultBase: "main",
         followUp: async () => {
@@ -1117,6 +1152,79 @@ describe("AFTER THE HANDOFF: THE REQUEST SAYS WHAT THE ORGANIZATION CONFIGURED, 
       expect(third.actionItemsAnswered).toEqual([`gitlab:target-main-1@${workId}`]);
     } finally {
       for (const d of [repo, origin, others, inbox, wt, scratch]) rmSync(d, { recursive: true, force: true });
+    }
+  }, 240_000);
+  test("A FOLLOW-UP THE REVIEW TURNS BACK IS NOT PUSHED, its items stay open with the reason - and its unpushed commit is reviewed again next time, never treated as seen", async () => {
+    const repo = realRepo();
+    const git = (at: string, ...a: string[]) => execFileSync("git", a, { cwd: at, encoding: "utf-8" });
+    const inbox = realInbox();
+    const wt = mkdtempSync(join(tmpdir(), "zeta-fr-wt-"));
+    const scratch = mkdtempSync(join(tmpdir(), "zeta-fr-"));
+    const h = stubCounting(scratch);
+    const events: OrgEvent[] = [];
+    const noComment = { postComment: async () => ({ ok: true as const, value: {}, evidence: [] }) };
+    try {
+      const change = () => gitWorktreeChangeControl({ cwd: repo, baseBranch: "main", worktreeRoot: wt, handoff: { command: h.command, args: h.args } });
+      const first = await runAgainst(repo, inbox, { change: change() }, { settings: [], changeRequests, describeChange: fullDescription, ...noComment, onEvent: (e: OrgEvent) => events.push(e) });
+      const workId = first.changesHandedOff[0] as string;
+      const handed = foldHandedOffChanges(events);
+      const shown = handed.get(workId)?.commit as string;
+      const feedback = [{ deliveryId: "note-7", source: "gitlab", itemKind: "diff_comment", summary: "the cap drops rows", author: "reviewer", changeUrl: "https://review.example/p/-/merge_requests/7#note_7" }];
+      const later = (over: Record<string, unknown>) =>
+        runAgainst(repo, realInbox(), { change: change() }, {
+          settings: [],
+          changeRequests,
+          describeChange: fullDescription,
+          ...noComment,
+          alreadyHandedOff: new Set(handed.keys()),
+          handedOffChanges: foldHandedOffChanges(events),
+          actionItems: foldActionItems(events),
+          afterOpenDone: foldAfterOpen(events),
+          feedback,
+          defaultBase: "main",
+          verifyChange: async () => ({ ok: true as const, value: "green", evidence: [] }),
+          answer: async (r: AnswerRequest) => ({ ok: true as const, value: r.items.map((i) => ({ actionItemId: i.actionItemId, resolved: true })), evidence: [] }),
+          onEvent: (e: OrgEvent) => events.push(e),
+          ...over,
+        });
+
+      // The follow-up commits a fix; the review turns it back.
+      const second = await later({
+        followUp: async (req: { items: readonly { actionItemId: string }[]; workdir?: string }) => {
+          writeFileSync(join(req.workdir as string, "cap.md"), "cap\n");
+          git(req.workdir as string, "add", "-A");
+          git(req.workdir as string, "commit", "-q", "-m", "cap the limit");
+          return { ok: true as const, value: { decisions: req.items.map((i) => ({ actionItemId: i.actionItemId, outcome: "addressed" as const, how: "capped it; test added" })), syncWithTarget: false, summary: "s" }, evidence: [] };
+        },
+        reviewFollowUp: async () => ({ ok: true as const, value: { approved: false, reason: "the new test passes with the cap removed" }, evidence: [] }),
+      });
+      expect(second.followUps?.[0]?.handedOffAgain).toBe(false);
+      expect(h.count()).toBe(1); // NOT pushed again
+      const open = foldActionItems(events).get(workId)?.find((i) => i.actionItemId === "gitlab:note-7");
+      expect(open?.settled).toBeUndefined();
+      expect(open?.deferred?.why).toContain("the new test passes with the cap removed");
+
+      // Next time the session adds NOTHING - but the unpushed commit is still unreviewed, so it is
+      // reviewed from what people last saw, and only then pushed.
+      const reviewed: FollowUpReviewRequest[] = [];
+      const third = await later({
+        followUp: async (req: { items: readonly { actionItemId: string }[] }) => ({
+          ok: true as const,
+          value: { decisions: req.items.map((i) => ({ actionItemId: i.actionItemId, outcome: "addressed" as const, how: "the test now fails without the cap" })), syncWithTarget: false, summary: "s" },
+          evidence: [],
+        }),
+        reviewFollowUp: async (r: FollowUpReviewRequest) => {
+          reviewed.push(r);
+          return { ok: true as const, value: { approved: true, reason: "fails without the cap" }, evidence: [] };
+        },
+      });
+      expect(reviewed.length).toBeGreaterThan(0);
+      expect(reviewed.every((r) => r.from === shown)).toBe(true);
+      expect(third.followUps?.[0]?.handedOffAgain).toBe(true);
+      expect(h.count()).toBe(2);
+      expect(foldActionItems(events).get(workId)?.find((i) => i.actionItemId === "gitlab:note-7")?.settled?.outcome).toBe("addressed");
+    } finally {
+      for (const d of [repo, inbox, wt, scratch]) rmSync(d, { recursive: true, force: true });
     }
   }, 240_000);
 });

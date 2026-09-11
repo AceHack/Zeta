@@ -352,7 +352,7 @@ describe("A FINISHED CHANGE'S ROUTE TO PEOPLE IS ASKED, NEVER ASSUMED", () => {
     expect(stepOf(unanswered, ConfigureStep.HandOffChanges).current).toContain("nobody has said whether reviewers' comments are answered");
     expect(unanswered.next?.command).toContain("--replies reply_and_resolve|reply|none");
     const done = planFor(
-      withRepo({ settings: deliveryIs("human_review"), changeRequests: { ...statement, replies: "reply_and_resolve" } }),
+      withRepo({ settings: deliveryIs("human_review"), changeRequests: { ...statement, replies: "reply_and_resolve", afterOpen: [{ kind: "comment" as const, body: "aireview" }] } }),
       true,
     );
     expect(done.complete).toBe(true);

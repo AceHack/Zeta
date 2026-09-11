@@ -89,8 +89,25 @@ try {
 } catch {
   fail(2, "stdin is not JSON");
 }
-const items = Array.isArray(input && input.items) ? input.items : [];
 const m = /\/merge_requests\/(\d+)/.exec(String((input && input.changeUrl) || ""));
+
+// ── A COMMENT OF THE ORGANIZATION'S OWN, on the request ─────────────────────
+// `{"op":"comment","changeUrl","body"}` - a configured after-open step (e.g. the `aireview` trigger).
+// Prints {"replyId"} so the organization recognises its own comment when it reads the request back.
+if (input && input.op === "comment") {
+  if (!m) fail(2, "the change has no merge request to comment on");
+  const body = String(input.body || "");
+  if (body.trim() === "") fail(2, "a comment needs a body");
+  try {
+    const posted = api(["-X", "POST", "projects/:id/merge_requests/" + m[1] + "/notes", "-H", "Content-Type: application/json", "--input", "-"], JSON.stringify({ body }));
+    emit({ replyId: posted && posted.id !== undefined ? "note-" + String(posted.id) : undefined });
+    process.exit(0);
+  } catch (e) {
+    fail(3, String((e && e.message) || e));
+  }
+}
+
+const items = Array.isArray(input && input.items) ? input.items : [];
 if (!m) {
   for (const it of items) emit({ actionItemId: it.actionItemId, skipped: "the change has no merge request to answer on", resolved: false });
   process.exit(0);

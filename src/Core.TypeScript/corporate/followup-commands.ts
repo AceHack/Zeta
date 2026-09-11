@@ -24,7 +24,16 @@ import { spawnSync } from "node:child_process";
 import { mkdirSync, readdirSync, readFileSync, renameSync } from "node:fs";
 import { join } from "node:path";
 import type { ActionItem, HandedOffChange } from "./org-fold";
-import type { AnswerRequest, AnswerResult, FeedbackDelivery, FollowUpOutcome, FollowUpRequest, ItemDecision } from "./change-followup";
+import type {
+  AnswerRequest,
+  AnswerResult,
+  FeedbackDelivery,
+  FollowUpOutcome,
+  FollowUpRequest,
+  FollowUpReviewRequest,
+  FollowUpReviewVerdict,
+  ItemDecision,
+} from "./change-followup";
 import { sectionsBrief, type DescribeRequest } from "./change-request";
 import type { ChangeHandle, PortResult } from "./providers";
 
@@ -187,6 +196,40 @@ export function commandAnswerer(spec: CommandSpec, fallbackCwd: string): (r: Ans
     // A non-zero exit with no results is a failure; with results, the results are what happened.
     if (ran.status !== 0 && results.length === 0) return { ok: false, reason: `the answerer exited ${String(ran.status)}: ${tail(ran.stderr)}` };
     return { ok: true, value: results, evidence: [] };
+  };
+}
+
+/**
+ * A follow-up's commits reviewed through the run's own review command (`<cmd> ... <gate> <workId>`
+ * in the change's checkout), told what it is reviewing in ORG_FOLLOWUP_REVIEW. Exit 0 approves.
+ */
+export function commandFollowUpReview(spec: CommandSpec, fallbackCwd: string) {
+  return async (r: FollowUpReviewRequest): Promise<PortResult<FollowUpReviewVerdict>> => {
+    const ran = run(spec, [r.gate, r.workId], r.workdir ?? fallbackCwd, {
+      ORG_REVIEW_AS: r.reviewerHatId,
+      ORG_BRANCH: r.branch,
+      ORG_FOLLOWUP_REVIEW: JSON.stringify({ from: r.from, to: r.to, items: r.items }),
+      ...(r.workdir === undefined ? {} : { ORG_WORKDIR: r.workdir }),
+    });
+    if (ran.error !== undefined) return { ok: false, reason: `the reviewer '${spec.command}' could not run: ${ran.error.message}` };
+    const said = String(ran.stdout ?? "").trim().split(/\r?\n/).filter((l) => !l.startsWith("usage:")).join(" ").slice(0, 2000);
+    if (ran.status !== 0 && ran.status !== 1) return { ok: false, reason: `the reviewer exited ${String(ran.status)}: ${tail(ran.stderr) || said}` };
+    return { ok: true, value: { approved: ran.status === 0, reason: said === "" ? `exit ${String(ran.status)}` : said }, evidence: [] };
+  };
+}
+
+/**
+ * The organization's own comment on a request, through the answerer command (`op: "comment"`) - how
+ * configured after-open steps are performed. Prints `{"replyId"}` so the comment is recognised later.
+ */
+export function commandCommenter(spec: CommandSpec, fallbackCwd: string) {
+  return async (r: { readonly workId: string; readonly changeUrl?: string; readonly branch: string; readonly body: string }): Promise<PortResult<{ readonly replyId?: string }>> => {
+    const ran = run(spec, [], fallbackCwd, { ORG_BRANCH: r.branch }, JSON.stringify({ op: "comment", changeUrl: r.changeUrl ?? "", body: r.body }));
+    if (ran.error !== undefined) return { ok: false, reason: `the commenter '${spec.command}' could not run: ${ran.error.message}` };
+    if (ran.status !== 0) return { ok: false, reason: `the commenter exited ${String(ran.status)}: ${tail(ran.stderr)}` };
+    const out = lastJson(ran.stdout);
+    const replyId = typeof out?.["replyId"] === "string" && out["replyId"] !== "" ? out["replyId"] : undefined;
+    return { ok: true, value: replyId === undefined ? {} : { replyId }, evidence: [] };
   };
 }
 

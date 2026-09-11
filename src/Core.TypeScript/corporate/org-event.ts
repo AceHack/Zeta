@@ -427,6 +427,17 @@ export type OrgFact =
     }
   | {
       /**
+       * A configured after-open step was performed on a handed-off change - once per request, keyed by
+       * the step (`afterOpenKey`). `replyId` is the posted comment's id in its source, so the next read
+       * of the request does not raise the organization's own comment as feedback.
+       */
+      readonly kind: "change_after_open";
+      readonly workId: string;
+      readonly stepKey: string;
+      readonly replyId?: string;
+    }
+  | {
+      /**
        * A settled action item is OPEN AGAIN: its settlement did not stand. MEASURED on MR !162: a
        * blocking finding was "addressed" by a rollout runbook that existed only in the organization's
        * own evidence directory - the answer could not be posted, and nothing the reviewer could see

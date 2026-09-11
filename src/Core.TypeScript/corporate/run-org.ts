@@ -144,8 +144,10 @@ import type { ChangeRequestConfig } from "./change-request";
 import type { FeedbackDelivery as FeedbackDeliveryT } from "./change-followup";
 import {
   commandAnswerer,
+  commandCommenter,
   commandDescriber,
   commandFollowUp,
+  commandFollowUpReview,
   commandVerifier,
   consumeFeedback,
   pollFeedback,
@@ -167,7 +169,7 @@ import { foldCalendar, foldOrganization } from "./org-fold";
 import { authorIndexFrom, observationsFrom } from "./reputation-from-log";
 import type { ReputationObservation } from "./reputation";
 import { foldHatsWorn,
-  foldActionItems, foldHandedOffChanges, foldLandedChanges, foldObserveActTicks, foldPresence } from "./org-fold";
+  foldActionItems, foldAfterOpen, foldHandedOffChanges, foldLandedChanges, foldObserveActTicks, foldPresence } from "./org-fold";
 import { emit } from "./org-event";
 import { awaitingHumanReview, describeChangeLine } from "./handoff-report";
 import type { AgentState } from "../workflow-engine/agent-loop/state-machine";
@@ -946,7 +948,18 @@ export function argRefusals(args: Args): readonly string[] {
             "this organization has not said whether a reviewer's comment is answered on its thread once the team has decided about it: " +
               "run 'org change-requests set' with --replies reply_and_resolve|reply|none",
           );
-        } else if (args.changeRequests.replies !== "none" && args.answerCmd === undefined) {
+        }
+        if (args.changeRequests.afterOpen === undefined) {
+          out.push(
+            "this organization has not said what happens once a merge request is open (for example: comment 'aireview'): " +
+              "run 'org change-requests set' with --after-open 'comment=<text>' (repeatable) or --after-open none",
+          );
+        } else if (args.changeRequests.afterOpen.length > 0 && args.answerCmd === undefined) {
+          out.push(
+            `once a request is open this organization does ${args.changeRequests.afterOpen.map((s) => `${s.kind} '${s.body}'`).join(", ")}: give --answer-cmd (with --answer-arg) to do it`,
+          );
+        }
+        if (args.changeRequests.replies !== undefined && args.changeRequests.replies !== "none" && args.answerCmd === undefined) {
           out.push(
             `reviewers here are answered on their threads (replies: ${args.changeRequests.replies}): give --answer-cmd (with --answer-arg) to post the answers`,
           );
@@ -1603,7 +1616,17 @@ export function attachAfterHandoff(deps: Record<string, unknown>, args: Args, fe
   if (args.describeCmd !== undefined) deps["describeChange"] = commandDescriber({ command: args.describeCmd, args: args.describeArgs, ...budget }, cwd);
   if (args.followUpCmd !== undefined) deps["followUp"] = commandFollowUp({ command: args.followUpCmd, args: args.followUpArgs, ...budget }, cwd);
   if (args.workVerify !== undefined) deps["verifyChange"] = commandVerifier({ command: args.workVerify, args: args.workVerifyArgs, ...budget }, cwd);
-  if (args.answerCmd !== undefined) deps["answer"] = commandAnswerer({ command: args.answerCmd, args: args.answerArgs, ...budget }, cwd);
+  if (args.answerCmd !== undefined) {
+    deps["answer"] = commandAnswerer({ command: args.answerCmd, args: args.answerArgs, ...budget }, cwd);
+    deps["postComment"] = commandCommenter({ command: args.answerCmd, args: args.answerArgs, ...budget }, cwd);
+  }
+  // A follow-up's commits go through the same review command the original work's gates used.
+  if (args.reviewCmd !== undefined) {
+    deps["reviewFollowUp"] = commandFollowUpReview({ command: args.reviewCmd, args: args.reviewArgs, ...budget }, cwd);
+  }
+  if (store !== undefined) {
+    Object.defineProperty(deps, "afterOpenDone", { enumerable: true, configurable: true, get: () => foldAfterOpen(readEvents(store)) });
+  }
 }
 
 /**
