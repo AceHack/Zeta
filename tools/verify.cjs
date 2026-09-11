@@ -166,8 +166,37 @@ if (process.env.VERIFY_STEPS) {
       process.stderr.write("[verify] step " + String(i + 1) + " failed " + String(r.failing.size) + " test(s) and no trunk baseline is configured (VERIFY_BASELINE_CWD) to tell which are the change's\n");
       process.exit(1);
     }
-    const added = [...r.failing].filter((t) => !base.has(t));
+    let added = [...r.failing].filter((t) => !base.has(t));
     const tolerated = [...r.failing].filter((t) => base.has(t));
+    // ── ONE SAMPLE IS NOT AN ATTRIBUTION ──────────────────────────────────────
+    // MEASURED on AIAGENT-1658: a client-only change was refused four times for "new" failures in a
+    // server script test it never touched - a different test each time, on a machine running three
+    // organizations at once. One run of the change against one cached run of trunk blames the change
+    // for every intermittent test. So a NEW failure is measured again before it is believed: the
+    // failing files are re-run on the change AND on trunk, now, under the same load.
+    //   fails again on the change, passes on trunk  -> the change's (refused)
+    //   fails on trunk too                          -> pre-existing (tolerated, printed)
+    //   passes when the change is re-run            -> did not reproduce (tolerated, printed as FLAKY)
+    // Anything the re-run cannot measure stays the change's: an unmeasured retry never acquits.
+    if (added.length > 0) {
+      const esc = (f) => (step.report === "jest" ? f.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") : f);
+      const files = [...new Set(added.map((t) => t.split(" :: ")[0]))].map(esc);
+      const narrowed = { ...step, argv: [...step.argv, ...files] };
+      process.stderr.write("[verify] re-running " + String(added.length) + " new failure(s) on the change and on trunk before attributing them\n");
+      const again = runStep(narrowed, cwd);
+      const onTrunk = runStep(narrowed, baselineCwd);
+      const reproduced = added.filter((t) => (again.failing === undefined ? true : again.failing.has(t)));
+      const trunkToo = new Set(added.filter((t) => onTrunk.failing !== undefined && onTrunk.failing.has(t)));
+      for (const t of trunkToo) {
+        process.stderr.write("[verify] FAILS ON TRUNK TOO when re-run (pre-existing, intermittent there): " + t + "\n");
+        record("  fails on trunk too: " + t);
+      }
+      for (const t of added.filter((x) => !reproduced.includes(x) && !trunkToo.has(x))) {
+        process.stderr.write("[verify] DID NOT REPRODUCE when re-run (FLAKY - not attributed to this change): " + t + "\n");
+        record("  flaky, did not reproduce: " + t);
+      }
+      added = reproduced.filter((t) => !trunkToo.has(t));
+    }
     for (const t of tolerated) process.stderr.write("[verify] PRE-EXISTING on trunk (tolerated): " + t + "\n");
     if (added.length > 0 || r.failing.size === 0) {
       for (const t of added) process.stderr.write("[verify] NEW FAILURE introduced by this change: " + t + "\n");
