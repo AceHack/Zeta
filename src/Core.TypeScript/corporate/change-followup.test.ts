@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import { acceptedDecisions, correlateFeedback, followUpOrder, type FeedbackDelivery } from "./change-followup";
+import { acceptedDecisions, answersOwed, correlateFeedback, followUpOrder, type FeedbackDelivery } from "./change-followup";
 import { foldActionItems, openActionItems, type ActionItem, type HandedOffChange } from "./org-fold";
 import type { OrgEvent } from "./org-event";
 
@@ -77,4 +77,56 @@ test("the work whose oldest open item has waited longest is followed up first", 
   const item = (workId: string, raisedAtMs: number) => ({ workId, actionItemId: `${workId}-${String(raisedAtMs)}`, raisedAtMs }) as unknown as ActionItem;
   const open = new Map([["task-32", [item("task-32", 50)]], ["task-24", [item("task-24", 90), item("task-24", 10)]]]);
   expect(followUpOrder(open)).toEqual(["task-24", "task-32"]);
+});
+
+describe("A SETTLED ITEM IS OWED AN ANSWER WHERE IT WAS RAISED", () => {
+  const base = { workId: "task-40", source: "gitlab", itemKind: "diff_comment", summary: "s", url: "https://git.example/p/-/merge_requests/164#note_1", raisedAtMs: 1 };
+  const settled = (actionItemId: string, s: Partial<NonNullable<ActionItem["settled"]>>, answered?: ActionItem["answered"]): ActionItem => ({
+    ...base,
+    actionItemId,
+    settled: { outcome: "addressed", how: "capped it", atMs: 2, ...s },
+    ...(answered === undefined ? {} : { answered }),
+  });
+
+  test("addressed and declined are both owed, with the account and the pushed commit; open, deferred and answered items are not", () => {
+    const items: ActionItem[] = [
+      settled("fixed", { respond: true, commit: "abc123" }),
+      settled("refused", { respond: true, outcome: "declined", how: "the problem cannot happen: the filter runs first" }),
+      { ...base, actionItemId: "open" },
+      { ...base, actionItemId: "later", deferred: { why: "not now", atMs: 3 } },
+      settled("done", { respond: true }, { replyId: "note-9", resolved: true, atMs: 4 }),
+    ];
+    const { owed, unanswered } = answersOwed(items);
+    expect(owed.map((o) => [o.actionItemId, o.outcome, o.commit, o.when])).toEqual([
+      ["fixed", "addressed", "abc123", "always"],
+      ["refused", "declined", undefined, "always"],
+    ]);
+    expect(owed[1]?.how).toBe("the problem cannot happen: the filter runs first");
+    expect(unanswered).toEqual([]);
+  });
+
+  test("an item the organization decided needed no answer is recorded as unanswered, never posted", () => {
+    const { owed, unanswered } = answersOwed([settled("trigger", { respond: false, outcome: "declined", how: "the review trigger keyword" })]);
+    expect(owed).toEqual([]);
+    expect(unanswered).toEqual(["trigger"]);
+  });
+
+  test("an item settled BEFORE answering existed is answered only if it is a thread - nobody decided, so the answerer checks", () => {
+    const { owed } = answersOwed([settled("legacy", {})]);
+    expect(owed[0]?.when).toBe("if_thread");
+  });
+});
+
+describe("THE ANSWER IS FOLDED ONTO ITS ITEM, SO IT IS NEVER GIVEN TWICE", () => {
+  test("answered records the reply id and whether it was resolved; a skip is recorded too", () => {
+    const ev = (atMs: number, fact: unknown) => ({ id: `e${String(atMs)}`, kind: "change_projected", subjectId: "task-40", decision: "", atMs, evidenceRefs: [], supervisorChain: [], fact }) as unknown as OrgEvent;
+    const folded = foldActionItems([
+      ev(1, { kind: "action_item_raised", workId: "task-40", actionItemId: "gitlab:note-1", source: "gitlab", itemKind: "comment", summary: "s" }),
+      ev(2, { kind: "action_item_settled", workId: "task-40", actionItemId: "gitlab:note-1", outcome: "addressed", how: "h", respond: true, commit: "abc" }),
+      ev(3, { kind: "action_item_answered", workId: "task-40", actionItemId: "gitlab:note-1", replyId: "note-7", resolved: true }),
+    ]).get("task-40")?.[0];
+    expect(folded?.settled).toMatchObject({ respond: true, commit: "abc" });
+    expect(folded?.answered).toMatchObject({ replyId: "note-7", resolved: true });
+    expect(answersOwed(folded === undefined ? [] : [folded]).owed).toEqual([]);
+  });
 });

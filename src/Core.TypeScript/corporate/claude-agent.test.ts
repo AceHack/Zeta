@@ -159,6 +159,10 @@ describe("AFTER THE HANDOFF: THE DESCRIPTION AND THE FOLLOW-UP", () => {
     expect(flagOnly.status).toBe(0);
     expect(flagOnly.seen?.input).toContain("rename x");
     expect(flagOnly.seen?.input).toContain("bringing the change level is not available here");
+    // A suggestion is CHECKED before it is applied, and `how` is written for the reviewer who will read it.
+    expect(flagOnly.seen?.input).toContain("A SUGGESTED FIX IS A CLAIM - CHECK IT BEFORE YOU ACT ON IT");
+    expect(flagOnly.seen?.input).toContain("`how` IS POSTED AS YOUR REPLY ON THE REVIEWER'S THREAD");
+    expect(flagOnly.seen?.argv.join(" ")).toContain('"respond"');
     const last = JSON.parse(flagOnly.stdout.trim().split(/\r?\n/).pop() as string) as { decisions: { id: string }[]; syncWithTarget: boolean };
     expect(last.decisions.map((d) => d.id)).toEqual(["gitlab:n1"]);
     expect(last.syncWithTarget).toBe(false);

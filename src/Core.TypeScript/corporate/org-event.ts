@@ -420,6 +420,25 @@ export type OrgFact =
       readonly outcome: "addressed" | "declined" | "superseded";
       readonly how: string;
       readonly byHatId?: string;
+      /** Whether the person who raised it is answered where they raised it. Absent on items settled before answering existed. */
+      readonly respond?: boolean;
+      /** The commit that carries the change, when addressing it changed the branch. */
+      readonly commit?: string;
+    }
+  | {
+      /**
+       * An action item was ANSWERED where it was raised - a reply on the reviewer's own thread, and the
+       * thread resolved when the organization resolves them. MEASURED on MRs !162-!164: 26 comments
+       * decided and acted on, and not one reviewer was told, because the decision lived only here.
+       * `skipped` records an item there was nothing to answer on (not a thread), so it is not retried.
+       */
+      readonly kind: "action_item_answered";
+      readonly workId: string;
+      readonly actionItemId: string;
+      /** The reply's own id in its source, so the next read of that source does not raise it as feedback. */
+      readonly replyId?: string;
+      readonly resolved: boolean;
+      readonly skipped?: string;
     }
   | {
       /**

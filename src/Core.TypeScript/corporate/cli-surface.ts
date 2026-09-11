@@ -237,6 +237,7 @@ export const COMMANDS: readonly CommandSpec[] = [
       { name: "--section", what: "`<Heading>=<what it must state>`, repeatable, in order. Every description the organization writes must carry each heading.", required: true, takesValue: true },
       { name: "--keep-out", what: "A path pattern a change may never add (`*.png`, `docs/task-*/**`). Repeatable. The handoff refuses a change that adds one.", takesValue: true },
       { name: "--sync", what: "When the target moves on: merge it into the request (`merge_target`), or only record that the request is behind (`flag_only`).", required: true, takesValue: true, oneOf: ["merge_target", "flag_only"] },
+      { name: "--replies", what: "Once the team has decided about a reviewer's comment: reply on the thread with what was changed (or why not) and resolve it (`reply_and_resolve`), reply only (`reply`), or say nothing on the thread (`none`).", required: true, takesValue: true, oneOf: ["reply_and_resolve", "reply", "none"] },
       { name: "--why", what: "Why merge requests are written this way here.", required: true, takesValue: true },
       JSON_FLAG,
     ],

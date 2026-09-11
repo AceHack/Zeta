@@ -167,7 +167,12 @@ export function itemContextsFrom(
         text:
           `[${i.actionItemId}] ${i.itemKind}: ${i.summary}` +
           (i.settled !== undefined
-            ? ` - ${i.settled.outcome}: ${i.settled.how}`
+            ? ` - ${i.settled.outcome}: ${i.settled.how}` +
+              (i.answered === undefined
+                ? ""
+                : i.answered.skipped !== undefined
+                  ? ` [not answered on the thread: ${i.answered.skipped}]`
+                  : ` [answered on the thread${i.answered.resolved ? ", resolved" : ""}]`)
             : i.deferred !== undefined
               ? ` - OPEN, left open by ${i.deferred.byHatId ?? "the organization"}: ${i.deferred.why}`
               : " - OPEN") +

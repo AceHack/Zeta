@@ -345,15 +345,19 @@ describe("A FINISHED CHANGE'S ROUTE TO PEOPLE IS ASKED, NEVER ASSUMED", () => {
     const halfway = planFor(withRepo({ settings: deliveryIs("human_review") }), true);
     expect(halfway.complete).toBe(false);
     expect(stepOf(halfway, ConfigureStep.HandOffChanges).current).toContain("nobody has said what a merge request says");
+    const statement = { sections: [{ heading: "Root cause", states: "why" }], keepOut: ["*.png"], sync: "merge_target" as const, why: "reviewers" };
+    // A statement made before the reply question existed: readable, and the step is NOT done.
+    const unanswered = planFor(withRepo({ settings: deliveryIs("human_review"), changeRequests: statement }), true);
+    expect(unanswered.complete).toBe(false);
+    expect(stepOf(unanswered, ConfigureStep.HandOffChanges).current).toContain("nobody has said whether reviewers' comments are answered");
+    expect(unanswered.next?.command).toContain("--replies reply_and_resolve|reply|none");
     const done = planFor(
-      withRepo({
-        settings: deliveryIs("human_review"),
-        changeRequests: { sections: [{ heading: "Root cause", states: "why" }], keepOut: ["*.png"], sync: "merge_target", why: "reviewers" },
-      }),
+      withRepo({ settings: deliveryIs("human_review"), changeRequests: { ...statement, replies: "reply_and_resolve" } }),
       true,
     );
     expect(done.complete).toBe(true);
     expect(stepOf(done, ConfigureStep.HandOffChanges).current).toContain("kept current by merge_target");
+    expect(stepOf(done, ConfigureStep.HandOffChanges).current).toContain("reviewers' comments: reply_and_resolve");
   });
 
   test("an organization that merges its own changes owes no merge-request format", () => {

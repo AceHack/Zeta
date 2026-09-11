@@ -119,8 +119,11 @@ import { Fidelity, fidelityLine, recordingProviders, runFidelityOf, type ChangeH
 import type { ActionItem, HandedOffChange } from "./org-fold";
 import {
   acceptedDecisions,
+  answersOwed,
   correlateFeedback,
   followUpOrder,
+  type AnswerRequest,
+  type AnswerResult,
   type FeedbackDelivery,
   type FollowUpOutcome,
   type FollowUpReport,
@@ -381,6 +384,12 @@ export interface OrgRuntimeDeps extends HumanCheckpointDeps {
   readonly verifyChange?: (handle: ChangeHandle) => Promise<PortResult<string>>;
   /** At most this many handed-off changes are followed up in one cycle. Default 2. */
   readonly maxFollowUps?: number;
+  /**
+   * Who ANSWERS a settled item where it was raised - a reply on the reviewer's thread, and resolving
+   * it when `changeRequests.replies` says so. Called only for SETTLED items, and an item is settled
+   * only once what settles it is in front of people. See `answersOwed`.
+   */
+  readonly answer?: (request: AnswerRequest) => Promise<PortResult<readonly AnswerResult[]>>;
   /**
    * Verdicts from earlier cycles and earlier runs, so a step that PASSED is not walked again.
    *
@@ -686,6 +695,8 @@ export interface OrgRuntimeReport {
   readonly actionItemsRaised?: readonly string[];
   /** Handed-off changes the organization followed up this cycle, and what came of it. */
   readonly followUps?: readonly FollowUpReport[];
+  /** Action items answered where they were raised this cycle. */
+  readonly actionItemsAnswered?: readonly string[];
   readonly delivered: boolean;
   /**
    * What happened, as TYPED events — queryable by subject, by actor, and by LINE OF AUTHORITY.
@@ -3966,18 +3977,24 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
   // only carries the items to it, checks the answer, and does the mechanical halves it asks for
   // (bringing the change level with its target, verifying, pushing it again). See `change-followup.ts`.
   const actionItemsRaised: string[] = [];
+  const actionItemsAnswered: string[] = [];
   const followUps: FollowUpReport[] = [];
   if (providers.change.meta.fidelity === Fidelity.Real) {
     const handedMap = new Map<string, HandedOffChange>(deps.handedOffChanges ?? []);
     const allItems = new Map<string, ActionItem[]>([...(deps.actionItems ?? new Map<string, readonly ActionItem[]>())].map(([w, v]) => [w, [...v]]));
     const known = new Set([...allItems.values()].flat().map((i) => i.actionItemId));
+    // THE ORGANIZATION'S OWN ANSWERS COME BACK ON THE NEXT READ - a reply is a comment like any other.
+    // Raised as feedback, every answer would become an item to answer: a conversation with itself.
+    const ownReplies = new Set(
+      [...allItems.values()].flat().flatMap((i) => (i.answered?.replyId === undefined ? [] : [`${i.source}:${i.answered.replyId}`])),
+    );
     const raise = (
       workId: string,
       actionItemId: string,
       d: { readonly source: string; readonly itemKind: string; readonly summary: string; readonly detail?: string; readonly url?: string; readonly author?: string },
     ): void => {
       // IDEMPOTENT: a webhook retry, or a poll that sees the same comment again, raises nothing new.
-      if (known.has(actionItemId)) return;
+      if (known.has(actionItemId) || ownReplies.has(actionItemId)) return;
       known.add(actionItemId);
       note({
         kind: OrgEventKind.ChangeProjected,
@@ -4127,14 +4144,34 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
           continue;
         }
         if (!settleable) continue;
+        // The commit a reply can cite: only when addressing it moved the branch and that was pushed.
+        const commit = d.outcome === "addressed" && moved && handedOffAgain && afterRev?.ok === true ? afterRev.value.commit : undefined;
+        const respond = d.respond !== false;
         note({
           kind: OrgEventKind.ChangeProjected,
           subjectId: workId,
           actorHatId: hatId,
           decision: `action item ${d.actionItemId} ${d.outcome}: ${d.how.split(/\s+/).join(" ").slice(0, 200)}`,
           atMs: warmedAt,
-          fact: { kind: "action_item_settled", workId, actionItemId: d.actionItemId, outcome: d.outcome, how: d.how, byHatId: hatId },
+          fact: {
+            kind: "action_item_settled",
+            workId,
+            actionItemId: d.actionItemId,
+            outcome: d.outcome,
+            how: d.how,
+            byHatId: hatId,
+            respond,
+            ...(commit === undefined ? {} : { commit }),
+          },
         });
+        allItems.set(
+          workId,
+          (allItems.get(workId) ?? []).map((i) =>
+            i.actionItemId === d.actionItemId
+              ? { ...i, settled: { outcome: d.outcome, how: d.how, byHatId: hatId, atMs: warmedAt, respond, ...(commit === undefined ? {} : { commit }) } }
+              : i,
+          ),
+        );
       }
       note({
         kind: OrgEventKind.ChangeProjected,
@@ -4162,6 +4199,54 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
     } else if ([...allItems.values()].some((items) => items.some((i) => i.settled === undefined))) {
       // SAID, not silently kept: open items nobody is configured to look at are work waiting on nobody.
       refusals.push("handed-off changes have open action items and nothing is configured to follow them up");
+    }
+
+    // ── A REVIEWER IS ANSWERED WHERE THEY ASKED ────────────────────────────
+    // MEASURED on MRs !162-!164: 26 comments decided and acted on, and not one reviewer was told -
+    // the decision lived only in this log. Every SETTLED item still owed an answer is answered now:
+    // the ones settled above (after their push) and any settled earlier that never were, including
+    // those whose answer failed last time. An answer that errors is not recorded, so it is tried again.
+    const replies = deps.changeRequests?.replies;
+    if (replies !== undefined && replies !== "none") {
+      for (const [workId, items] of allItems) {
+        const change = handedMap.get(workId);
+        if (change === undefined) continue;
+        const { owed, unanswered } = answersOwed(items);
+        const answered = (actionItemId: string, r: { readonly replyId?: string; readonly resolved: boolean; readonly skipped?: string }): void => {
+          note({
+            kind: OrgEventKind.ChangeProjected,
+            subjectId: workId,
+            decision:
+              r.skipped !== undefined
+                ? `action item ${actionItemId} not answered: ${r.skipped}`
+                : `action item ${actionItemId} answered where it was raised${r.resolved ? " and resolved" : ""}`,
+            atMs: warmedAt,
+            fact: { kind: "action_item_answered", workId, actionItemId, resolved: r.resolved, ...(r.replyId === undefined ? {} : { replyId: r.replyId }), ...(r.skipped === undefined ? {} : { skipped: r.skipped }) },
+          });
+          actionItemsAnswered.push(actionItemId);
+        };
+        for (const id of unanswered) answered(id, { resolved: false, skipped: "the organization decided it asked nothing of the change" });
+        if (owed.length === 0) continue;
+        if (deps.answer === undefined) {
+          refusals.push(`settled items on ${workId} are owed an answer (replies: ${replies}) and nothing is configured to give it`);
+          continue;
+        }
+        const r = await deps.answer({
+          workId,
+          ...(change.url === undefined ? {} : { changeUrl: change.url }),
+          branch: change.branch,
+          resolve: replies === "reply_and_resolve",
+          items: owed,
+        });
+        if (!r.ok) {
+          refusals.push(`could not answer the items on ${workId}: ${r.reason}`);
+          continue;
+        }
+        for (const x of r.value) {
+          if ("error" in x) refusals.push(`could not answer ${x.actionItemId}: ${x.error}`);
+          else answered(x.actionItemId, x);
+        }
+      }
     }
   }
 
@@ -4381,6 +4466,7 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
     changesDoneUnmerged,
     changesHandedOff,
     actionItemsRaised,
+    actionItemsAnswered,
     followUps,
     delivered,
     trace,

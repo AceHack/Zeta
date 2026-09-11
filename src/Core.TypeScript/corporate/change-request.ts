@@ -15,6 +15,9 @@
  *   - HOW IT STAYS CURRENT. A request that falls behind its target is work waiting on somebody.
  *     Whether the organization brings it up to date, and how, rewrites a branch people are reviewing —
  *     so it is chosen, never assumed.
+ *   - HOW IT ANSWERS. A reviewer who comments is owed an answer where they asked: what was changed
+ *     and in which commit, or why nothing was. Whether the organization replies, and whether it also
+ *     resolves the thread, speaks in the operator's name on somebody else's conversation — chosen.
  *
  * Required for exactly the organizations that hand work to people: `org configure` asks it, and a run
  * that would open a request without it is refused before it starts, rather than hours later when the
@@ -47,6 +50,26 @@ export function isSyncMethod(value: string): value is SyncMethod {
   return (Object.values(SyncMethod) as readonly string[]).includes(value);
 }
 
+/**
+ * What the organization does on a reviewer's comment once it has decided about it.
+ *
+ * A CLOSED SET. Answering speaks on a reviewer's thread in the operator's name, and resolving closes
+ * a conversation a person opened - both are the operator's call, never the register's default.
+ */
+export const ReplyPolicy = {
+  /** Reply on the thread with what was done (or why not), then resolve it. */
+  ReplyAndResolve: "reply_and_resolve",
+  /** Reply on the thread; leave resolving to the people reviewing. */
+  Reply: "reply",
+  /** Say nothing on the thread: the decision stays in the organization's record only. */
+  None: "none",
+} as const;
+export type ReplyPolicy = (typeof ReplyPolicy)[keyof typeof ReplyPolicy];
+
+export function isReplyPolicy(value: string): value is ReplyPolicy {
+  return (Object.values(ReplyPolicy) as readonly string[]).includes(value);
+}
+
 /** One section a merge request's description must carry. */
 export interface ChangeRequestSection {
   /** The heading as a reviewer sees it — `## <heading>` in the description. */
@@ -64,6 +87,13 @@ export interface ChangeRequestConfig {
    */
   readonly keepOut: readonly string[];
   readonly sync: SyncMethod;
+  /**
+   * Whether a reviewer's comment is answered on its thread once decided, and whether the thread is
+   * resolved. REQUIRED where it is asked (`org change-requests set`, `org configure`, `run-org`);
+   * absent only on a statement made before it was asked, which reads as NOT YET STATED - never as
+   * `none`, and never as a reason to refuse the whole registry.
+   */
+  readonly replies?: ReplyPolicy;
   /** Why merge requests are written this way here. A convention with no reason is followed until it is wrong. */
   readonly why: string;
 }
@@ -96,6 +126,12 @@ export function validateChangeRequests(c: ChangeRequestConfig): PracticeCheck {
   }
   if (!isSyncMethod(c.sync)) {
     return { ok: false, reason: `'${String(c.sync)}' is not a way to keep a request current — known: ${Object.values(SyncMethod).join(", ")}` };
+  }
+  if (c.replies !== undefined && !isReplyPolicy(String(c.replies))) {
+    return {
+      ok: false,
+      reason: `'${String(c.replies)}' is not a way to answer a reviewer's comment — known: ${Object.values(ReplyPolicy).join(", ")}`,
+    };
   }
   if (c.why.trim() === "") {
     return { ok: false, reason: "merge requests were configured with no reason: say why they are written this way here" };
