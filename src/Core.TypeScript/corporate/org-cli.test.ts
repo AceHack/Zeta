@@ -704,3 +704,37 @@ describe("A CHECKPOINT IS A NAME OR A GATE, and anything else is refused", () =>
     }
   });
 });
+
+describe("HOW A MERGE REQUEST IS WRITTEN IS STATED, AND ONLY WHAT CAN MEAN SOMETHING IS STORED", () => {
+  const set = (h: Harness, extra: readonly string[]) =>
+    main(["org", "change-requests", "set", "--org", "elera", ...extra], h.deps);
+
+  test("sections, keep-out patterns and a sync method are stored in order and shown back", async () => {
+    const h = harness();
+    await main(CREATE, h.deps);
+    const code = await set(h, [
+      "--section", "Problem statement=what the reporter saw",
+      "--section", "Root cause=why it happened",
+      "--keep-out", "*.png",
+      "--sync", "merge_target",
+      "--why", "reviewers read the problem first",
+    ]);
+    expect(code).toBe(Exit.Ok);
+    const saved = JSON.parse(h.files.get(REG) ?? "{}") as { orgs: { changeRequests?: { sections: { heading: string }[]; sync: string } }[] };
+    expect(saved.orgs[0]?.changeRequests?.sections.map((s) => s.heading)).toEqual(["Problem statement", "Root cause"]);
+    expect(saved.orgs[0]?.changeRequests?.sync).toBe("merge_target");
+    h.stdout.length = 0;
+    expect(await main(["org", "change-requests", "show", "--org", "elera"], h.deps)).toBe(Exit.Ok);
+    expect(h.stdout.join("")).toContain("## Root cause");
+  });
+
+  test("a section with no statement, an unknown sync method, or rebasing is refused and nothing is written", async () => {
+    const h = harness();
+    await main(CREATE, h.deps);
+    const before = h.files.get(REG);
+    expect(await set(h, ["--section", "Root cause", "--sync", "merge_target", "--why", "w"])).toBe(Exit.Usage);
+    expect(await set(h, ["--section", "Root cause=why", "--sync", "rebase", "--why", "w"])).toBe(Exit.Usage);
+    expect(await set(h, ["--section", "Root cause= ", "--sync", "merge_target", "--why", "w"])).toBe(Exit.Refused);
+    expect(h.files.get(REG)).toBe(before);
+  });
+});

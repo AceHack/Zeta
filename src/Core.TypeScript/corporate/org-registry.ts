@@ -29,6 +29,7 @@ import type { CheckBinding } from "./check-roster";
 import type { Method as MethodBinding } from "../observe/observe";
 import { CHECKPOINT_VALUES, isHumanCheckpoint, type HumanCheckpoint } from "./quality-gate";
 import { validateBindings, type SkillBinding } from "./skill-binding";
+import { validateChangeRequests, type ChangeRequestConfig } from "./change-request";
 import {
   validateDirective,
   validatePractices,
@@ -205,6 +206,15 @@ export interface OrgRecord {
    * work differently from the rest.
    */
   readonly settings?: readonly SettingBinding[];
+  /**
+   * HOW A FINISHED CHANGE IS PUT IN FRONT OF PEOPLE — what its merge request says, what it may never
+   * carry, and how it is kept current. See `change-request.ts`.
+   *
+   * Optional on the type so a registry written before it existed still parses, and REQUIRED to RUN
+   * an organization that hands work to people: `org configure` asks for it, and `run-org` refuses a
+   * real repository with `delivery=human_review` and no answer here.
+   */
+  readonly changeRequests?: ChangeRequestConfig;
   readonly createdAtMs: number;
 }
 
@@ -287,6 +297,10 @@ export function validateOrg(org: OrgRecord): OrgCheck {
   if (!practices.ok) return { ok: false, reason: practices.reason };
   const settings = validateSettings(org.settings ?? []);
   if (!settings.ok) return { ok: false, reason: settings.reason };
+  if (org.changeRequests !== undefined) {
+    const cr = validateChangeRequests(org.changeRequests);
+    if (!cr.ok) return { ok: false, reason: `merge requests: ${cr.reason}` };
+  }
   for (const directive of org.directives ?? []) {
     const one = validateDirective(directive);
     if (!one.ok) return { ok: false, reason: one.reason };

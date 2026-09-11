@@ -32,6 +32,7 @@
 import { Intake, type OrgRecord } from "./org-registry";
 import { CHAIN_BY_TYPE } from "./gate-demand";
 import { resolve } from "./skill-binding";
+import { ProcessSetting, resolveSetting } from "./practice";
 
 export const ConfigureStep = {
   /** The organization exists at all: it has an id, a store, an intake mode and a verification approach. */
@@ -52,6 +53,12 @@ export const ConfigureStep = {
   StateProcess: "state_process",
   /** Which skill performs which gate. Optional; the repo's own skills are the default. */
   BindSkills: "bind_skills",
+  /**
+   * How a finished change reaches people: who integrates it, what its merge request says, what it
+   * may never carry, and how it is kept current. REQUIRED for an organization that changes a real
+   * repository — see `change-request.ts` for why none of it can be a default.
+   */
+  HandOffChanges: "hand_off_changes",
   /** Something for the organization to actually do. */
   FirstWork: "first_work",
 } as const;
@@ -276,6 +283,47 @@ export function planFor(org: OrgRecord, hasWork: boolean): ConfigurePlan {
         : `${String(boundGates.length)} of ${String(gates.length)} steps bound`,
   };
 
+  // ── HOW A FINISHED CHANGE REACHES PEOPLE ───────────────────────────────────
+  // Required for an organization that changes a real repository, because every answer here is the
+  // operator's: whether software reaches a trunk without a person, what a reviewer reads first, what
+  // evidence stays with the organization, and whether a branch under review may be updated.
+  const changesRepos = org.sources.some((src) => String(src.kind) === "git");
+  const delivery = resolveSetting(org.settings ?? [], ProcessSetting.Delivery, []).value;
+  const cr = org.changeRequests;
+  const handoff: PlanStep = {
+    step: ConfigureStep.HandOffChanges,
+    ask:
+      "When a change is finished, does the team merge it itself or open a merge request for people to " +
+      "review? If merge requests: what must each one say (for example: problem statement, whether it was " +
+      "reproduced and if not what gave it away, root cause, resolution steps, how the fix was confirmed), " +
+      "what must never be committed into your repositories (screenshots, the team's own notes), and when " +
+      "the target branch moves on, should the team merge it into the request or only flag that it is behind?",
+    why:
+      "A merge request is what your reviewers read, so its sections are your convention, not ours. The " +
+      "team produces evidence - screenshots, step documents - that belongs with the team, and a pattern " +
+      "list keeps it out of your repositories. Bringing a request up to date changes a branch people are " +
+      "reviewing, so it is your call; rebasing is not offered because it needs a force-push. Feedback on " +
+      "a request - comments, updates, the target moving - reaches the team as action items on the work, " +
+      "and the team decides what to do about them.",
+    command:
+      "org setting bind --setting delivery --value human_review|merge --why <why>  and then  " +
+      "org change-requests set --section \"<Heading>=<what it must state>\" ... [--keep-out <glob> ...] " +
+      "--sync merge_target|flag_only --why <why>",
+    satisfied: !changesRepos || (delivery !== undefined && (delivery === "merge" || cr !== undefined)),
+    required: changesRepos,
+    current: !changesRepos
+      ? "not needed - this organization changes no repository"
+      : delivery === undefined
+        ? "nobody has said whether the team merges its own changes or hands them to people"
+        : delivery === "merge"
+          ? "the team merges its own changes"
+          : cr === undefined
+            ? "changes go to people for review, but nobody has said what a merge request says or how it is kept current"
+            : `merge requests carry ${cr.sections.map((x) => x.heading).join(" / ")}; ` +
+              `${cr.keepOut.length === 0 ? "nothing kept out" : `keeping out ${cr.keepOut.join(", ")}`}; ` +
+              `kept current by ${cr.sync}`,
+  };
+
   const work: PlanStep = {
     step: ConfigureStep.FirstWork,
     ask: sourceSynced
@@ -292,7 +340,7 @@ export function planFor(org: OrgRecord, hasWork: boolean): ConfigurePlan {
     current: hasWork ? "the organization has work in hand" : "nothing to do yet",
   };
 
-  const steps = [create, sources, events, checkpoints, process, skills, work];
+  const steps = [create, sources, events, checkpoints, process, skills, handoff, work];
   const required = steps.filter((s) => s.required);
   const complete = required.every((s) => s.satisfied);
   const next = required.find((s) => !s.satisfied);

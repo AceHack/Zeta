@@ -60,6 +60,7 @@ import { RunOutcome, type TestCase } from "./qa";
 import type { ExternalEvent } from "./intake";
 import type { CascadeNode } from "./goal-cascade";
 import { parseRequestRef } from "./request";
+import { keptOutPaths } from "./change-request";
 
 // ─── Simulated: what the register already did, now labelled ─────────────────
 
@@ -1561,10 +1562,25 @@ export function gitWorktreeChangeControl(input: {
    * adapter cannot hand off, and a run that must hand off refuses to use it.
    */
   readonly handoff?: { readonly command: string; readonly args: readonly string[]; readonly timeoutMs?: number };
+  /**
+   * The remote a handed-off change is reviewed on — where its target is read from when measuring how
+   * far behind it is. Default `origin`, which is what the handoff pushes to.
+   */
+  readonly remote?: string;
 }): ChangeControlPort {
   const git = (args: readonly string[], at = input.cwd) =>
     spawnSync("git", [...args], { cwd: at, encoding: "utf-8", shell: false, maxBuffer: MAX_COMMAND_OUTPUT_BYTES });
   const handoffCmd = input.handoff;
+  const remote = (input.remote ?? "").trim() || "origin";
+  /**
+   * The target as the REVIEW SYSTEM sees it when this clone knows it, else the local branch. A change
+   * that has had the remote target merged in, diffed against a stale local one, would be blamed for
+   * every file the target itself added since.
+   */
+  const targetRef = (into: string, at = input.cwd): string =>
+    git(["rev-parse", "--verify", "--quiet", `refs/remotes/${remote}/${into}`], at).status === 0 ? `${remote}/${into}` : into;
+  const lines = (text: string | null | undefined): readonly string[] =>
+    String(text ?? "").split(/\r?\n/).map((l) => l.trim()).filter((l) => l !== "");
   return {
     meta: {
       port: Port.ChangeControl,
@@ -1583,6 +1599,26 @@ export function gitWorktreeChangeControl(input: {
             const ahead = commitsAhead(git, handle.branch, into);
             if (ahead === undefined) return { ok: false, reason: `could not tell whether ${handle.branch} has anything to review` };
             if (ahead === 0) return { ok: false, reason: `${handle.branch} has no commits ahead of ${into}: there is nothing to hand to a reviewer` };
+            // WHAT THE ORGANIZATION KEEPS OUT, refused before anything is pushed. MEASURED on the
+            // first merge requests: a UAT screenshot committed into the repository. ADDED paths only
+            // (added, or renamed into place): a change that edits a file the product already has is
+            // the product's business.
+            const keepOut = proposal.keepOut ?? [];
+            if (keepOut.length > 0) {
+              const added = git(["diff", "--name-only", "--diff-filter=AR", `${targetRef(into)}...${handle.branch}`]);
+              if (added.status !== 0) {
+                return { ok: false, reason: `could not list what ${handle.branch} adds, so could not check it against what the organization keeps out: ${(added.stderr ?? "").trim()}` };
+              }
+              const bad = keptOutPaths(lines(added.stdout), keepOut);
+              if (bad.length > 0) {
+                return {
+                  ok: false,
+                  reason:
+                    `${handle.branch} adds what this organization keeps out of its merge requests: ${bad.join(", ")} - ` +
+                    "evidence belongs in the organization's record, not the repository; remove it from the branch",
+                };
+              }
+            }
             const head = git(["rev-parse", handle.branch]);
             const commit = head.status === 0 ? String(head.stdout ?? "").trim() : undefined;
             // The description travels as a FILE: it is long, it is markdown, and argv is world-readable.
@@ -1848,6 +1884,48 @@ export function gitWorktreeChangeControl(input: {
       return at.ok
         ? { ok: true, value: at.revision, evidence: [{ kind: "trace", ref: `rev:${at.revision.commit}` }] }
         : { ok: false, reason: at.reason };
+    },
+    syncWithTarget: async (handle, opts) => {
+      const into = (handle.base ?? "").trim() || input.baseBranch;
+      const at = handle.workdir ?? input.cwd;
+      // THE TARGET AS REVIEWERS SEE IT: fetched, never the clone's local branch, which moves only
+      // when somebody moves it and would report every handed-off change as current forever.
+      const fetched = git(["fetch", "--quiet", remote, into], at);
+      if (fetched.error !== undefined) return { ok: false, reason: `git could not run: ${fetched.error.message}` };
+      if (fetched.status !== 0) return { ok: false, reason: `could not fetch ${remote}/${into}: ${(fetched.stderr ?? "").trim().slice(0, 400)}` };
+      const target = `${remote}/${into}`;
+      const behind = commitsAhead((a) => git(a, at), target, handle.branch);
+      if (behind === undefined) return { ok: false, reason: `could not tell how far ${handle.branch} is behind ${target}` };
+      const unchanged = { target, behindBy: behind, applied: false, conflicts: [] as readonly string[] };
+      if (!opts.apply || behind === 0) return { ok: true, value: unchanged, evidence: [{ kind: "trace", ref: `behind:${String(behind)}:${target}` }] };
+      // A DIRTY CHECKOUT IS NOT MERGED INTO: the merge would mix somebody's uncommitted work into a
+      // commit nobody wrote, which is the same refusal `merge` makes for the same reason.
+      const dirty = git(["status", "--porcelain", "--untracked-files=no"], at);
+      if (dirty.status !== 0 || lines(dirty.stdout).length > 0) {
+        return { ok: false, reason: `${handle.branch} has uncommitted changes in ${at}: commit or discard them before it is brought up to date` };
+      }
+      const merged = git(["merge", "--no-ff", "--no-edit", "-m", `Merge ${target} into ${handle.branch}`, target], at);
+      if (merged.error !== undefined) return { ok: false, reason: `git could not run: ${merged.error.message}` };
+      if (merged.status === 0) {
+        return { ok: true, value: { ...unchanged, applied: true }, evidence: [{ kind: "trace", ref: `synced:${target}` }] };
+      }
+      const conflicts = lines(git(["diff", "--name-only", "--diff-filter=U"], at).stdout);
+      if (conflicts.length === 0) {
+        // Refused for a reason that is not a conflict: nothing is left half-done.
+        git(["merge", "--abort"], at);
+        return { ok: false, reason: `merging ${target} into ${handle.branch} refused: ${(merged.stderr ?? merged.stdout ?? "").trim().slice(0, 400)}` };
+      }
+      // LEFT IN PROGRESS, on purpose: resolving a conflict is judgement, and the checkout is where
+      // the agent that resolves it works. `abortSync` is the way back out.
+      return { ok: true, value: { ...unchanged, conflicts }, evidence: [{ kind: "trace", ref: `sync-conflicted:${target}` }] };
+    },
+    abortSync: async (handle) => {
+      const at = handle.workdir ?? input.cwd;
+      if (git(["rev-parse", "-q", "--verify", "MERGE_HEAD"], at).status !== 0) return { ok: true, value: true, evidence: [] };
+      const aborted = git(["merge", "--abort"], at);
+      return aborted.status === 0
+        ? { ok: true, value: true, evidence: [{ kind: "trace", ref: `sync-aborted:${handle.branch}` }] }
+        : { ok: false, reason: `could not back out the merge in ${at}: ${(aborted.stderr ?? "").trim()}` };
     },
   };
 }

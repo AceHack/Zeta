@@ -229,6 +229,27 @@ export const COMMANDS: readonly CommandSpec[] = [
     writes: true,
   },
   {
+    name: "org change-requests set",
+    what: "State how a finished change is put in front of people: the sections every merge request must carry, what a change may never add, and how an open request is kept current.",
+    then: "Required before an organization that hands work to people can run against a real repository. Replaces the whole statement - repeat every --section you want kept. Feedback on an open request (comments, updates, the target moving) arrives as action items on its work, and the organization decides what to do about each.",
+    flags: [
+      ORG_FLAG,
+      { name: "--section", what: "`<Heading>=<what it must state>`, repeatable, in order. Every description the organization writes must carry each heading.", required: true, takesValue: true },
+      { name: "--keep-out", what: "A path pattern a change may never add (`*.png`, `docs/task-*/**`). Repeatable. The handoff refuses a change that adds one.", takesValue: true },
+      { name: "--sync", what: "When the target moves on: merge it into the request (`merge_target`), or only record that the request is behind (`flag_only`).", required: true, takesValue: true, oneOf: ["merge_target", "flag_only"] },
+      { name: "--why", what: "Why merge requests are written this way here.", required: true, takesValue: true },
+      JSON_FLAG,
+    ],
+    writes: true,
+  },
+  {
+    name: "org change-requests show",
+    what: "How this organization's merge requests are written and kept current.",
+    then: "Nothing stated, on an organization that hands work to people, means it cannot run against a real repository yet: `org configure` names the step.",
+    flags: [ORG_FLAG, JSON_FLAG],
+    writes: false,
+  },
+  {
     name: "org practice bind",
     what: "State HOW this organization does something — an ordered chain of skills and the process in your own words. Optional; unstated subjects are done however the repository and the agent see fit.",
     then: "Scope it with --for to give one program, or one STAGE of a program, its own process. Order is precedence: the first skill is what to reach for, the rest are what to reach for when it does not apply. `org practice list` shows what is in force.",

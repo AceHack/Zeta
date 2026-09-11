@@ -815,3 +815,106 @@ describe("A REAL REPOSITORY IS HANDED TO PEOPLE, NEVER MERGED INTO, UNLESS SOMEO
     }
   }, 180_000);
 });
+
+describe("A HANDED-OFF CHANGE: WHAT IT MAY CARRY, AND KEEPING IT CURRENT WITHOUT REWRITING IT", () => {
+  /** A bare `origin`, a clone the organization works in, and a second clone standing in for other people. */
+  function withRemote(): { origin: string; repo: string; others: string; wt: string; git: (at: string, ...a: string[]) => string; cleanup: () => void } {
+    const origin = mkdtempSync(join(tmpdir(), "zeta-origin-"));
+    const git = (at: string, ...a: string[]) => execFileSync("git", a, { cwd: at, encoding: "utf-8" });
+    git(origin, "init", "-q", "--bare", "-b", "main");
+    const repo = realRepo();
+    git(repo, "remote", "add", "origin", origin);
+    git(repo, "push", "-q", "origin", "main");
+    const others = mkdtempSync(join(tmpdir(), "zeta-others-"));
+    git(others, "clone", "-q", origin, ".");
+    git(others, "config", "user.email", "o@example.com");
+    git(others, "config", "user.name", "O");
+    const wt = mkdtempSync(join(tmpdir(), "zeta-sync-wt-"));
+    return { origin, repo, others, wt, git, cleanup: () => { for (const d of [origin, repo, others, wt]) rmSync(d, { recursive: true, force: true }); } };
+  }
+  const node = { workId: "task-1" } as never;
+
+  test("a change that ADDS a kept-out path is refused before anything is pushed; editing an existing one is not", async () => {
+    const r = withRemote();
+    const scratch = mkdtempSync(join(tmpdir(), "zeta-keepout-"));
+    const seen = join(scratch, "ran");
+    const stub = join(scratch, "handoff.cjs");
+    writeFileSync(stub, `require("fs").writeFileSync(${JSON.stringify(seen)},"1");console.log("https://review.example/mr/2");`);
+    try {
+      const port = gitWorktreeChangeControl({ cwd: r.repo, baseBranch: "main", worktreeRoot: r.wt, handoff: { command: process.execPath, args: [stub] } });
+      const opened = await port.open(node, { branch: "defect/X-1" });
+      if (!opened.ok) throw new Error(opened.reason);
+      const at = opened.value.workdir as string;
+      mkdirSync(join(at, "shots"), { recursive: true });
+      writeFileSync(join(at, "shots", "after.png"), "png");
+      writeFileSync(join(at, "fix.ts"), "export const x = 1;\n");
+      r.git(at, "add", "-A");
+      r.git(at, "commit", "-q", "-m", "X-1: fix");
+      const refused = await port.handoff!(opened.value, { title: "X-1", description: "d", keepOut: ["*.png"] });
+      expect(refused.ok).toBe(false);
+      expect(refused.ok ? "" : refused.reason).toContain("shots/after.png");
+      expect(() => readFileSync(seen)).toThrow();
+      r.git(at, "rm", "-q", "shots/after.png");
+      r.git(at, "commit", "-q", "-m", "X-1: keep evidence out");
+      const handed = await port.handoff!(opened.value, { title: "X-1", description: "d", keepOut: ["*.png"] });
+      expect(handed.ok).toBe(true);
+    } finally {
+      r.cleanup();
+      rmSync(scratch, { recursive: true, force: true });
+    }
+  }, 60_000);
+
+  test("behind the target is MEASURED against the remote, and bringing it level MERGES the target in - history is not rewritten", async () => {
+    const r = withRemote();
+    try {
+      const port = gitWorktreeChangeControl({ cwd: r.repo, baseBranch: "main", worktreeRoot: r.wt });
+      const opened = await port.open(node, { branch: "defect/X-2" });
+      if (!opened.ok) throw new Error(opened.reason);
+      const at = opened.value.workdir as string;
+      writeFileSync(join(at, "fix.ts"), "export const x = 1;\n");
+      r.git(at, "add", "-A");
+      r.git(at, "commit", "-q", "-m", "X-2: fix");
+      const before = r.git(at, "rev-parse", "HEAD").trim();
+      // Somebody else moves main on the review system.
+      writeFileSync(join(r.others, "other.md"), "moved\n");
+      r.git(r.others, "add", "-A");
+      r.git(r.others, "commit", "-q", "-m", "main moves");
+      r.git(r.others, "push", "-q", "origin", "main");
+
+      const measured = await port.syncWithTarget!(opened.value, { apply: false });
+      expect(measured.ok && measured.value).toMatchObject({ target: "origin/main", behindBy: 1, applied: false });
+      const synced = await port.syncWithTarget!(opened.value, { apply: true });
+      expect(synced.ok && synced.value.applied).toBe(true);
+      // The change's own commit is still an ancestor: merged in, not rebased over.
+      expect(() => r.git(at, "merge-base", "--is-ancestor", before, "HEAD")).not.toThrow();
+      const after = await port.syncWithTarget!(opened.value, { apply: false });
+      expect(after.ok && after.value.behindBy).toBe(0);
+    } finally {
+      r.cleanup();
+    }
+  }, 60_000);
+
+  test("a conflicting target is left MID-MERGE with its conflicts named, and abortSync backs it out", async () => {
+    const r = withRemote();
+    try {
+      const port = gitWorktreeChangeControl({ cwd: r.repo, baseBranch: "main", worktreeRoot: r.wt });
+      const opened = await port.open(node, { branch: "defect/X-3" });
+      if (!opened.ok) throw new Error(opened.reason);
+      const at = opened.value.workdir as string;
+      writeFileSync(join(at, "README.md"), "# ours\n");
+      r.git(at, "commit", "-q", "-am", "X-3: ours");
+      writeFileSync(join(r.others, "README.md"), "# theirs\n");
+      r.git(r.others, "commit", "-q", "-am", "theirs");
+      r.git(r.others, "push", "-q", "origin", "main");
+
+      const synced = await port.syncWithTarget!(opened.value, { apply: true });
+      expect(synced.ok && synced.value).toMatchObject({ applied: false, conflicts: ["README.md"] });
+      expect(() => r.git(at, "rev-parse", "-q", "--verify", "MERGE_HEAD")).not.toThrow();
+      const aborted = await port.abortSync!(opened.value);
+      expect(aborted.ok).toBe(true);
+      expect(() => r.git(at, "rev-parse", "-q", "--verify", "MERGE_HEAD")).toThrow();
+    } finally {
+      r.cleanup();
+    }
+  }, 60_000);
+});

@@ -87,6 +87,7 @@ import { humanGatesFor, type GateKind, type HumanCheckpoint } from "./quality-ga
 import { bindingsOf, resolve, SkillSource, validateBinding, type SkillBinding }
   from "./skill-binding";
 import { planFor, planForNothing } from "./configure-plan";
+import { validateChangeRequests, type ChangeRequestConfig, type ChangeRequestSection, type SyncMethod } from "./change-request";
 import {
   Exit,
   flagValue,
@@ -674,6 +675,55 @@ export async function main(argv: readonly string[], deps: CliDeps): Promise<numb
       deps.writeFile(registryPath, serializeRegistry(registry));
       emit(deps, json, { org: chosen.org.orgId, setting: name, scope, removed: true }, () =>
         `'${name}'${scope === "" ? "" : ` for '${scope}'`} is unset: the mechanical default applies again\n`,
+      );
+      return Exit.Ok;
+    }
+
+    case "org change-requests set": {
+      const chosen = resolveOrg(registry, flagValue(flags, "--org"));
+      if ("reason" in chosen) { deps.err(chosen.reason); return Exit.NotFound; }
+      const sections: ChangeRequestSection[] = [];
+      for (const raw of flagValues(flags, "--section")) {
+        const at = raw.indexOf("=");
+        if (at <= 0) { deps.err(`--section '${raw}' must be '<Heading>=<what it must state>'`); return Exit.Usage; }
+        sections.push({ heading: raw.slice(0, at).trim(), states: raw.slice(at + 1).trim() });
+      }
+      const config: ChangeRequestConfig = {
+        sections,
+        keepOut: flagValues(flags, "--keep-out").map((v) => v.trim()).filter((v) => v !== ""),
+        sync: (flagValue(flags, "--sync") ?? "").trim() as SyncMethod,
+        why: (flagValue(flags, "--why") ?? "").trim(),
+      };
+      const valid = validateChangeRequests(config);
+      if (!valid.ok) { deps.err(valid.reason); return Exit.Refused; }
+      const replaced = chosen.org.changeRequests !== undefined;
+      const updated = updateOrg(registry, { ...chosen.org, changeRequests: config });
+      if (!updated.ok) { deps.err(updated.reason); return Exit.Refused; }
+      registry = updated.registry;
+      deps.writeFile(registryPath, serializeRegistry(registry));
+      emit(deps, json, { org: chosen.org.orgId, changeRequests: config, replaced }, () =>
+        `${replaced ? "changed" : "stated"} how '${chosen.org.orgId}' writes merge requests: ` +
+        `${sections.map((x) => x.heading).join(" / ")}; kept current by ${config.sync}` +
+        `${config.keepOut.length === 0 ? "" : `; never adds ${config.keepOut.join(", ")}`}\n  because ${config.why}\n`,
+      );
+      return Exit.Ok;
+    }
+
+    case "org change-requests show": {
+      const chosen = resolveOrg(registry, flagValue(flags, "--org"));
+      if ("reason" in chosen) { deps.err(chosen.reason); return Exit.NotFound; }
+      const cr = chosen.org.changeRequests;
+      emit(deps, json, { org: chosen.org.orgId, changeRequests: cr ?? null }, () =>
+        cr === undefined
+          ? `'${chosen.org.orgId}' has not said how its merge requests are written - 'org configure' names the step\n`
+          : [
+              `merge requests on '${chosen.org.orgId}' carry, in order:`,
+              ...cr.sections.map((x) => `  ## ${x.heading}\n     ${x.states}`),
+              cr.keepOut.length === 0 ? "  a change may add anything" : `  a change may never add: ${cr.keepOut.join(", ")}`,
+              `  kept current by: ${cr.sync}`,
+              `  because ${cr.why}`,
+              "",
+            ].join("\n"),
       );
       return Exit.Ok;
     }

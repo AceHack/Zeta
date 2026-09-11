@@ -359,6 +359,30 @@ export interface ChangeControlPort {
    * review that exists, never a second one.
    */
   handoff?(handle: ChangeHandle, proposal: ChangeProposal): Promise<PortResult<ChangeHandoff>>;
+  /**
+   * HOW FAR THE CHANGE IS BEHIND WHAT IT TARGETS — and, with `apply`, bring it level by MERGING the
+   * target in. Never a rebase: a handed-off branch is under review, and rewriting it needs a
+   * force-push nobody here is authorized to make.
+   *
+   * With `apply`, a merge that conflicts is LEFT IN PROGRESS in the change's checkout and its
+   * conflicted paths returned, so an agent can resolve them and commit; `abortSync` backs it out
+   * when nobody does. Optional: an adapter that cannot measure the distance must not pretend to.
+   */
+  syncWithTarget?(handle: ChangeHandle, opts: { readonly apply: boolean }): Promise<PortResult<ChangeSync>>;
+  /** Back out a sync left in progress. Idempotent: nothing in progress is success. */
+  abortSync?(handle: ChangeHandle): Promise<PortResult<true>>;
+}
+
+/** Where a change stands against its target, and what a sync did about it. */
+export interface ChangeSync {
+  /** The target as the review system knows it, e.g. `origin/master`. */
+  readonly target: string;
+  /** Commits on the target the change does not have. Zero means current. */
+  readonly behindBy: number;
+  /** A merge of the target was made and committed. */
+  readonly applied: boolean;
+  /** Paths left conflicted by an applied merge, which is then IN PROGRESS. Empty otherwise. */
+  readonly conflicts: readonly string[];
 }
 
 /** What a change is proposed AS: the words a reviewer reads first, and where it should go. */
@@ -367,6 +391,11 @@ export interface ChangeProposal {
   readonly description: string;
   /** The branch it is proposed against. Absent: the adapter's own trunk. */
   readonly base?: string;
+  /**
+   * Path patterns the change may never ADD — the organization's evidence stays with the
+   * organization. An adapter that can diff refuses a handoff that adds one. See `change-request.ts`.
+   */
+  readonly keepOut?: readonly string[];
 }
 
 /** Where a handed-off change can be reviewed. */
@@ -625,6 +654,25 @@ export function fidelityLine(f: RunFidelity): string {
  * quietly not have it. Here there is one place to be right about, and `invoked()` is the only way
  * to learn the answer — so it cannot drift from what actually ran.
  */
+/**
+ * Every method a change-control port carries beyond `open` and `merge`, wrapped so each call is
+ * recorded. Generic on purpose: a wrapper rebuilt field by field silently amputates whatever optional
+ * method its author did not list, and every caller guards with `port.x !== undefined`, so the feature
+ * does not fail - it never happens. MEASURED three times before this existed.
+ */
+function optionalChangeMethods(port: ChangeControlPort, mark: () => void): Partial<ChangeControlPort> {
+  const out: Record<string, unknown> = {};
+  for (const [key, value] of Object.entries(port)) {
+    if (key === "meta" || key === "open" || key === "merge" || typeof value !== "function") continue;
+    const fn = value as (...a: unknown[]) => unknown;
+    out[key] = (...a: unknown[]) => {
+      mark();
+      return fn.apply(port, a);
+    };
+  }
+  return out as Partial<ChangeControlPort>;
+}
+
 export function recordingProviders(set: ProviderSet): {
   readonly providers: ProviderSet;
   invoked(): readonly Port[];
@@ -708,33 +756,10 @@ export function recordingProviders(set: ProviderSet): {
         // `exactOptionalPropertyTypes` an explicit `revision: undefined` is not the same as an
         // absent one, and a present-but-undefined method is exactly the shape those guards read as
         // "this adapter cannot do it".
-        ...(set.change.changed === undefined
-          ? {}
-          : {
-              changed: async (handle: ChangeHandle) => {
-                mark(Port.ChangeControl);
-                return set.change.changed!(handle);
-              },
-            }),
-        ...(set.change.revision === undefined
-          ? {}
-          : {
-              revision: async (handle: ChangeHandle) => {
-                mark(Port.ChangeControl);
-                return set.change.revision!(handle);
-              },
-            }),
-        // THE SAME TRAP, a third time: without this a run configured to hand changes to people
-        // found no `handoff` on the wrapped port and refused - correctly, since it never merges
-        // instead - for every change it finished.
-        ...(set.change.handoff === undefined
-          ? {}
-          : {
-              handoff: async (handle: ChangeHandle, proposal: ChangeProposal) => {
-                mark(Port.ChangeControl);
-                return set.change.handoff!(handle, proposal);
-              },
-            }),
+        // FOUR TIMES NOW (changed, revision, handoff, and the sync pair), so the trap is closed by
+        // construction rather than by remembering: every OTHER method the wrapped port carries is
+        // passed through, marked, whatever it is called. A new optional method cannot be dropped.
+        ...optionalChangeMethods(set.change, () => mark(Port.ChangeControl)),
       },
     },
   };
