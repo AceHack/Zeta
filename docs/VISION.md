@@ -56,6 +56,52 @@ accountability that stops working at speed — the habituation case is the proof
 keep a human in a loop faster than they can evaluate, and approval becomes
 reflexive, which is the *form* of trust with none of the substance.
 
+### The default criterion — what to apply when it is unclear which criterion applies
+
+**Aaron, 2026-09-11**, after correcting two register calls of mine in one day — a ring on the tech
+radar, and where an unmeasured claim belonged:
+
+> *"our default criterion is: does it move forward our objective of unattended AI with their own
+> freedom."*
+
+The question above says what Zeta is **for**. This says what to do at the moment of a judgement
+call, when more than one reasonable criterion is available and nothing settles which one governs.
+It is a **direction, not a threshold** — it breaks ties without inventing a bar, which is what
+makes it usable on the small decisions that never reach a human.
+
+**Both halves are load-bearing, and each rules out a different failure:**
+
+| half | what it forbids |
+|---|---|
+| **unattended** | discretion that still needs a person present to act. An agent that must be watched is attended however capable it is |
+| **their own freedom** | automation without discretion. An agent that runs unsupervised but decides nothing is a **script** — and this repo already has the word for it: a frozen pattern is an **actor**, not an agent |
+
+Together they exclude both a faster leash and a clever thing on a short one.
+
+**The worked instance that produced it.** Asked what ring Playwright belongs at, I applied a
+build-hygiene criterion — *does a CI lane run it?* — and answered Trial. The criterion that
+governs is *can the fleet drive it without being taught?*, and under it Adopt is immediate,
+because first-class Playwright support across AI harnesses is precisely **unattended** capability
+that is **the agents' own**. I had a defensible criterion; it was not the one the decision was
+about.
+
+**And the direction it does NOT license, which matters more than the ones it does.** "Move
+forward unattended freedom" is not "remove the checks". The relationship runs the other way:
+
+> A guard an agent can run **itself** increases unattended freedom, because it lets the agent
+> certify its own work with nobody watching. A guard **removed** makes the agent faster and less
+> trustworthy — and trust is what buys autonomy in the first place, so it spends the objective to
+> look like it is serving it.
+
+That is why a local check runner, a falsifier that fires, and a refusal that names its reason all
+score *well* under this criterion, and why a suppressed alert or a deleted assertion scores
+badly however much friction it removes. The criterion is about who can act without supervision,
+never about how little is checked.
+
+**Register:** Aaron's, quoted. It is a statement of what this project is optimising, not a
+measured claim, and it lives here rather than in `docs/ALIGNMENT.md` for exactly the reason that
+file's every clause carries a measurement obligation.
+
 ## The definition — Zeta = bounded good
 
 **Zeta = bounded good.** Two words the rest of this document unpacks.
