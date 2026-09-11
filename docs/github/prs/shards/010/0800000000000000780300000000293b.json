@@ -1,6 +1,6 @@
 {
   "pr_number": 10555,
-  "archive_path": "docs/history/pr-reviews/PR-10555-fix-transport-the-delivered-once-guard-now-outlives-the-block-it-belongs-to-112-.md",
+  "archive_path": "docs/history/pr-reviews/2026/08/14/PR-10555-fix-transport-the-delivered-once-guard-now-outlives-the-block-it-belongs-to-112-.md",
   "source_ids": [],
   "fetched_at": "2026-08-14T12:33:08.678Z",
   "schema_version": "v1",

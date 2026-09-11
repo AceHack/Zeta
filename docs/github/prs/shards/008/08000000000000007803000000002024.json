@@ -1,6 +1,6 @@
 {
   "pr_number": 8228,
-  "archive_path": "docs/history/pr-reviews/PR-8228-fix-cilium-enable-l2announcements-so-loadbalancer-ips-are-reachable.md",
+  "archive_path": "docs/history/pr-reviews/2026/06/15/PR-8228-fix-cilium-enable-l2announcements-so-loadbalancer-ips-are-reachable.md",
   "source_ids": [],
   "fetched_at": "2026-06-15T01:08:05.876Z",
   "schema_version": "v1",

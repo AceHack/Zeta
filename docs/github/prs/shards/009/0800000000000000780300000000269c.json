@@ -1,6 +1,6 @@
 {
   "pr_number": 9884,
-  "archive_path": "docs/history/pr-reviews/PR-9884-fix-hygiene-drift-slo-workitem-write-is-atomic-create-exclusive-codeql-race-find.md",
+  "archive_path": "docs/history/pr-reviews/2026/08/01/PR-9884-fix-hygiene-drift-slo-workitem-write-is-atomic-create-exclusive-codeql-race-find.md",
   "source_ids": [],
   "fetched_at": "2026-08-01T14:42:51.948Z",
   "schema_version": "v1",

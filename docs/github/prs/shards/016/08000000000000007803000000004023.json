@@ -1,6 +1,6 @@
 {
   "pr_number": 16419,
-  "archive_path": "docs/history/pr-reviews/PR-16419-fix-cluster-fail-fast-on-catalog-dns-assert-weaviate-on-kind-cilium.md",
+  "archive_path": "docs/history/pr-reviews/2026/09/03/PR-16419-fix-cluster-fail-fast-on-catalog-dns-assert-weaviate-on-kind-cilium.md",
   "source_ids": [
     "comment:PRRC_kwDOSF9kNM7ppmFX",
     "thread:PRRT_kwDOSF9kNM6eu8oY"

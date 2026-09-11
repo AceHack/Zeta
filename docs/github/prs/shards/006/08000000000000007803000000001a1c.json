@@ -1,6 +1,6 @@
 {
   "pr_number": 6684,
-  "archive_path": "docs/history/pr-reviews/PR-6684-fix-k3s-drop-tokenfile-on-cluster-init-server-to-break-first-boot-token-deadlock.md",
+  "archive_path": "docs/history/pr-reviews/2026/06/07/PR-6684-fix-k3s-drop-tokenfile-on-cluster-init-server-to-break-first-boot-token-deadlock.md",
   "source_ids": [],
   "fetched_at": "2026-06-07T01:54:28.788Z",
   "schema_version": "v1",

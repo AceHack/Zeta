@@ -1,6 +1,6 @@
 {
   "pr_number": 17008,
-  "archive_path": "docs/history/pr-reviews/PR-17008-fix-hygiene-close-k3s-preflight-spawn-env-against-ambient-process-env.md",
+  "archive_path": "docs/history/pr-reviews/2026/09/08/PR-17008-fix-hygiene-close-k3s-preflight-spawn-env-against-ambient-process-env.md",
   "source_ids": [],
   "fetched_at": "2026-09-08T05:07:20.247Z",
   "schema_version": "v1",

@@ -1,6 +1,6 @@
 {
   "pr_number": 10569,
-  "archive_path": "docs/history/pr-reviews/PR-10569-fix-heartbeat-merge-duty-was-a-lifo-stack-with-a-cap-so-the-tail-never-merged.md",
+  "archive_path": "docs/history/pr-reviews/2026/08/14/PR-10569-fix-heartbeat-merge-duty-was-a-lifo-stack-with-a-cap-so-the-tail-never-merged.md",
   "source_ids": [],
   "fetched_at": "2026-08-14T13:25:09.842Z",
   "schema_version": "v1",

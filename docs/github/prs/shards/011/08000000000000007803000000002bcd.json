@@ -1,6 +1,6 @@
 {
   "pr_number": 11213,
-  "archive_path": "docs/history/pr-reviews/PR-11213-fix-hooks-use-os-tmpdir-the-hardcoded-tmp-denied-every-edit-on-windows.md",
+  "archive_path": "docs/history/pr-reviews/2026/08/17/PR-11213-fix-hooks-use-os-tmpdir-the-hardcoded-tmp-denied-every-edit-on-windows.md",
   "source_ids": [],
   "fetched_at": "2026-08-17T00:39:37.459Z",
   "schema_version": "v1",

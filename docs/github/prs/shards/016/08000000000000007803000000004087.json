@@ -1,6 +1,6 @@
 {
   "pr_number": 16519,
-  "archive_path": "docs/history/pr-reviews/PR-16519-fix-cluster-probe-tcp-clusterip-from-k3d-hostnetwork-netns.md",
+  "archive_path": "docs/history/pr-reviews/2026/09/03/PR-16519-fix-cluster-probe-tcp-clusterip-from-k3d-hostnetwork-netns.md",
   "source_ids": [],
   "fetched_at": "2026-09-03T18:26:10.342Z",
   "schema_version": "v1",

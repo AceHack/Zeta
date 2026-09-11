@@ -1,6 +1,6 @@
 {
   "pr_number": 10054,
-  "archive_path": "docs/history/pr-reviews/PR-10054-fix-heartbeat-gate-flush-on-elapsed-time-not-an-unsatisfiable-cron-string.md",
+  "archive_path": "docs/history/pr-reviews/2026/08/06/PR-10054-fix-heartbeat-gate-flush-on-elapsed-time-not-an-unsatisfiable-cron-string.md",
   "source_ids": [],
   "fetched_at": "2026-08-18T09:16:51.852Z",
   "schema_version": "v1",

@@ -1,6 +1,6 @@
 {
   "pr_number": 10718,
-  "archive_path": "docs/history/pr-reviews/PR-10718-fix-secrets-close-the-ambient-credential-hoist-an-env-var-crosses-exec-regardles.md",
+  "archive_path": "docs/history/pr-reviews/2026/08/14/PR-10718-fix-secrets-close-the-ambient-credential-hoist-an-env-var-crosses-exec-regardles.md",
   "source_ids": [],
   "fetched_at": "2026-08-14T21:02:48.432Z",
   "schema_version": "v1",

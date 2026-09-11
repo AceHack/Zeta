@@ -1,6 +1,6 @@
 {
   "pr_number": 6517,
-  "archive_path": "docs/history/pr-reviews/PR-6517-fix-dynamicvalue-ts-fromcanonicalcbor-honors-never-throws-for-non-byte-number-co.md",
+  "archive_path": "docs/history/pr-reviews/2026/06/02/PR-6517-fix-dynamicvalue-ts-fromcanonicalcbor-honors-never-throws-for-non-byte-number-co.md",
   "source_ids": [],
   "fetched_at": "2026-06-02T01:22:02.310Z",
   "schema_version": "v1",

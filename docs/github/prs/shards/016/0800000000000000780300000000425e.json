@@ -1,6 +1,6 @@
 {
   "pr_number": 16990,
-  "archive_path": "docs/history/pr-reviews/PR-16990-fix-cluster-live-kind-was-blocked-by-kubelet-maxpods-not-by-capacity.md",
+  "archive_path": "docs/history/pr-reviews/2026/09/08/PR-16990-fix-cluster-live-kind-was-blocked-by-kubelet-maxpods-not-by-capacity.md",
   "source_ids": [],
   "fetched_at": "2026-09-08T00:14:34.829Z",
   "schema_version": "v1",

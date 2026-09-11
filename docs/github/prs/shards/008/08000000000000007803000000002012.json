@@ -1,6 +1,6 @@
 {
   "pr_number": 8210,
-  "archive_path": "docs/history/pr-reviews/PR-8210-fix-ci-upload-the-built-iso-even-when-the-flaky-qemu-full-install-gate-fails.md",
+  "archive_path": "docs/history/pr-reviews/2026/06/14/PR-8210-fix-ci-upload-the-built-iso-even-when-the-flaky-qemu-full-install-gate-fails.md",
   "source_ids": [],
   "fetched_at": "2026-06-14T19:38:36.950Z",
   "schema_version": "v1",

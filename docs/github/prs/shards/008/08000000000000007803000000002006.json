@@ -1,6 +1,6 @@
 {
   "pr_number": 8198,
-  "archive_path": "docs/history/pr-reviews/PR-8198-fix-flash-inject-ssh-key-into-iso-file-before-write-kills-ebadf-write-protect.md",
+  "archive_path": "docs/history/pr-reviews/2026/06/14/PR-8198-fix-flash-inject-ssh-key-into-iso-file-before-write-kills-ebadf-write-protect.md",
   "source_ids": [],
   "fetched_at": "2026-06-14T16:30:07.714Z",
   "schema_version": "v1",
