@@ -169,6 +169,19 @@ describe("AUTHENTICATION", () => {
   });
 });
 
+describe("A REVIEW JUDGES WHETHER THE WORK MAY MOVE, NOT WHETHER THE DOCUMENT IS ACCURATE", () => {
+  // MEASURED on AIAGENT-1661: a release-readiness document concluding "NOT READY" was APPROVED
+  // because it "answered the question with an evidence-anchored punch list" - a gate that passes
+  // whatever the answer is is not a gate.
+  test("the reviewer is told an accurate 'not ready' is a rejection", () => {
+    const r = run(["review", "release_readiness", "task-9"], ok({ verdict: "reject", reason: "two blockers left", lookedAt: [] }));
+    expect(r.seen?.input).toContain("approving it moves the work forward");
+    expect(r.seen?.input).toContain("is a REJECTION");
+    expect(r.status).toBe(1);
+    r.cleanup();
+  });
+});
+
 describe("A SESSION THAT RUNS OUT OF TIME IS STOPPED WITH EVERYTHING IT STARTED", () => {
   // MEASURED on AIAGENT-1662: the agent was killed at a fixed 25 minutes, and its shells and a jest
   // run with its own mongod kept running afterwards, competing with the next step's tests.

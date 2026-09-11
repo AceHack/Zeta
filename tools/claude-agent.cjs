@@ -422,6 +422,11 @@ if (mode === "review") {
     "document that invents what it did not read, a reproduction that does not fail for the reason the",
     "ticket describes, a fix whose test would pass without it, or anything vacuous. Say exactly why,",
     "specifically enough that the author can act on it.",
+    "",
+    "A step is a gate: approving it moves the work forward. So approve only when the ANSWER lets the",
+    "work move - an accurate document whose own conclusion is that the work is NOT ready, not fixed, or",
+    "still blocked is a REJECTION, with what is left as your reason. Before relying on anything an",
+    "author reports as still open, check it against the item's current record: it may have closed since.",
   ].join(NL);
   const schema = {
     type: "object",
