@@ -184,6 +184,7 @@ import { resolve as resolveSkill, type Resolution, type SkillBinding } from "./s
 import { orgById, parseRegistry, runReadinessOf } from "./org-registry";
 import { HumanActionKind, isPaused, type HumanAction } from "./human-action";
 import { mkdirSync, readdirSync, readFileSync, writeFileSync, statSync } from "node:fs";
+import { releaseOnExit, takeStoreLock } from "./store-lock";
 import { join, resolve } from "node:path";
 import type { ProducerPort } from "./pipeline";
 import type { OrgChart } from "./org-chart";
@@ -1767,6 +1768,19 @@ export async function main(argv: readonly string[]): Promise<number> {
   if (refusals.length > 0) {
     for (const reason of refusals) console.error(`refused: ${reason}`);
     return 2;
+  }
+
+  // ── ONE RUN AT A TIME ON A STORE ──────────────────────────────────────────
+  // A watcher starts runs by itself now, and two over one store would raise, follow up and push the
+  // same things twice. Taken before anything is read or written; given back however this exits.
+  if (args.store !== undefined) {
+    mkdirSync(args.store, { recursive: true });
+    const lock = takeStoreLock(args.store);
+    if (!lock.ok) {
+      console.error(`refused: another run is using ${args.store} (pid ${String(lock.heldBy.pid)}, since ${lock.heldBy.startedAt}) - one run at a time on a store`);
+      return 2;
+    }
+    releaseOnExit(lock.release);
   }
 
   // ── EVERY AGENT THIS RUN SPAWNS IS TOLD WHERE ITS WORLDVIEW IS ─────────────

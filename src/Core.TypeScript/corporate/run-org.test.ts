@@ -988,3 +988,22 @@ describe("A LATER GATE'S AUTHOR IS HANDED DOCUMENTS, never argv or captured outp
     }
   });
 });
+
+describe("ONE RUN AT A TIME ON A STORE", () => {
+  test("a run over a store another living run holds is refused before it touches anything", async () => {
+    const { spawn } = await import("node:child_process");
+    const store = mkdtempSync(join(tmpdir(), "run-org-lock-"));
+    const other = spawn(process.execPath, ["-e", "setTimeout(() => {}, 60000)"], { stdio: "ignore" });
+    try {
+      writeFileSync(join(store, "run.lock"), JSON.stringify({ pid: other.pid, startedAt: "earlier" }));
+      const r = await capture(["--store", store]);
+      expect(r.code).toBe(2);
+      expect(r.out).toContain("another run is using");
+      // It wrote nothing to the record it was refused.
+      expect(readEvents(store)).toEqual([]);
+    } finally {
+      other.kill();
+      rmSync(store, { recursive: true, force: true });
+    }
+  });
+});

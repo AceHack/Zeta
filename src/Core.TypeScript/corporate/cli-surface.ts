@@ -252,6 +252,26 @@ export const COMMANDS: readonly CommandSpec[] = [
     writes: false,
   },
   {
+    name: "org run-profile set",
+    what: "State how one of this organization's runs is started, so the watcher (`watch-org.ts --org <id>`) can start it whenever something new happens on its merge requests.",
+    then: "Replaces a profile of the same name. The file holds run-org's arguments (`args`, which must include --org and --store), non-secret environment (`env`), and `everyMinutes` / `maxRunMinutes`. A credential never goes in `env`: give a *_FILE path.",
+    flags: [
+      ORG_FLAG,
+      { name: "--name", what: "The profile's name - one per body of work, e.g. the repository.", required: true, takesValue: true },
+      { name: "--from", what: "A JSON file: { \"args\": [...], \"env\": {...}, \"everyMinutes\": 5, \"maxRunMinutes\": 720 }.", required: true, takesValue: true },
+      { name: "--why", what: "Why the organization runs this way.", required: true, takesValue: true },
+      JSON_FLAG,
+    ],
+    writes: true,
+  },
+  {
+    name: "org run-profile list",
+    what: "How this organization's runs are started, one line per profile.",
+    then: "An organization with none is started only by hand - nothing follows its merge requests up by itself.",
+    flags: [ORG_FLAG, JSON_FLAG],
+    writes: false,
+  },
+  {
     name: "org practice bind",
     what: "State HOW this organization does something — an ordered chain of skills and the process in your own words. Optional; unstated subjects are done however the repository and the agent see fit.",
     then: "Scope it with --for to give one program, or one STAGE of a program, its own process. Order is precedence: the first skill is what to reach for, the rest are what to reach for when it does not apply. `org practice list` shows what is in force.",

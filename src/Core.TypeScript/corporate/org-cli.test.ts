@@ -746,3 +746,33 @@ describe("HOW A MERGE REQUEST IS WRITTEN IS STATED, AND ONLY WHAT CAN MEAN SOMET
     expect(h.files.get(REG)).toBe(before);
   });
 });
+
+describe("HOW A RUN STARTS IS STATED WITH THE ORGANIZATION, NEVER A CREDENTIAL", () => {
+  const profileFile = "/cfg/tpm.json";
+  const setProfile = (h: Harness, body: unknown, why = "comments should not wait for a person") => {
+    h.files.set(profileFile, JSON.stringify(body));
+    return main(["org", "run-profile", "set", "--org", "elera", "--name", "agentic-tpm", "--from", profileFile, "--why", why], h.deps);
+  };
+  const args = ["--org", "elera", "--store", "/s/tpm", "--git", "/r/tpm"];
+
+  test("a profile is stored and listed back, its environment by key only", async () => {
+    const h = harness();
+    await main(CREATE, h.deps);
+    expect(await setProfile(h, { args, env: { VERIFY_STEPS: "[]" }, everyMinutes: 5, maxRunMinutes: 720 })).toBe(Exit.Ok);
+    const saved = JSON.parse(h.files.get(REG) ?? "{}") as { orgs: { runProfiles?: { name: string; everyMinutes: number }[] }[] };
+    expect(saved.orgs[0]?.runProfiles?.map((p) => [p.name, p.everyMinutes])).toEqual([["agentic-tpm", 5]]);
+    h.stdout.length = 0;
+    expect(await main(["org", "run-profile", "list", "--org", "elera"], h.deps)).toBe(Exit.Ok);
+    expect(h.stdout.join("")).toContain("agentic-tpm: every 5 min");
+  });
+
+  test("a secret in the environment, a missing store, or another organization is refused and nothing is written", async () => {
+    const h = harness();
+    await main(CREATE, h.deps);
+    const before = h.files.get(REG);
+    expect(await setProfile(h, { args, env: { GITLAB_TOKEN: "glpat-secret" }, everyMinutes: 5, maxRunMinutes: 60 })).toBe(Exit.Refused);
+    expect(await setProfile(h, { args: ["--org", "elera"], env: {}, everyMinutes: 5, maxRunMinutes: 60 })).toBe(Exit.Refused);
+    expect(await setProfile(h, { args: ["--org", "other", "--store", "/s"], env: {}, everyMinutes: 5, maxRunMinutes: 60 })).toBe(Exit.Refused);
+    expect(h.files.get(REG)).toBe(before);
+  });
+});

@@ -88,6 +88,7 @@ import { bindingsOf, resolve, SkillSource, validateBinding, type SkillBinding }
   from "./skill-binding";
 import { planFor, planForNothing } from "./configure-plan";
 import { validateChangeRequests, type AfterOpenStep, type ChangeRequestConfig, type ChangeRequestSection, type ReplyPolicy, type SyncMethod } from "./change-request";
+import { profileArg, validateRunProfiles, type RunProfile } from "./run-profile";
 import {
   Exit,
   flagValue,
@@ -740,6 +741,57 @@ export async function main(argv: readonly string[], deps: CliDeps): Promise<numb
         `${sections.map((x) => x.heading).join(" / ")}; kept current by ${config.sync}; reviewers answered: ${config.replies}` +
         `; once open: ${afterOpen.length === 0 ? "nothing" : afterOpen.map((s) => `${s.kind} '${s.body}'`).join(", ")}` +
         `${config.keepOut.length === 0 ? "" : `; never adds ${config.keepOut.join(", ")}`}\n  because ${config.why}\n`,
+      );
+      return Exit.Ok;
+    }
+
+    case "org run-profile set": {
+      const chosen = resolveOrg(registry, flagValue(flags, "--org"));
+      if ("reason" in chosen) { deps.err(chosen.reason); return Exit.NotFound; }
+      const from = flagValue(flags, "--from") ?? "";
+      // READ, THEN INTERPRET: an unreadable or malformed file is refused with what was wrong.
+      const text = deps.readFile(from);
+      if (text === undefined) { deps.err(`--from '${from}' could not be read`); return Exit.Usage; }
+      let body: Record<string, unknown>;
+      try {
+        body = JSON.parse(text) as Record<string, unknown>;
+      } catch {
+        deps.err(`--from '${from}' is not JSON`);
+        return Exit.Usage;
+      }
+      const profile: RunProfile = {
+        name: (flagValue(flags, "--name") ?? "").trim(),
+        args: Array.isArray(body["args"]) ? (body["args"] as unknown[]).map(String) : [],
+        env: typeof body["env"] === "object" && body["env"] !== null ? (body["env"] as Record<string, string>) : {},
+        everyMinutes: Number(body["everyMinutes"] ?? 5),
+        maxRunMinutes: Number(body["maxRunMinutes"] ?? 720),
+        why: (flagValue(flags, "--why") ?? "").trim(),
+      };
+      const others = (chosen.org.runProfiles ?? []).filter((p) => p.name !== profile.name);
+      const valid = validateRunProfiles([...others, profile], chosen.org.orgId);
+      if (!valid.ok) { deps.err(valid.reason); return Exit.Refused; }
+      const replaced = others.length !== (chosen.org.runProfiles ?? []).length;
+      const updated = updateOrg(registry, { ...chosen.org, runProfiles: [...others, profile] });
+      if (!updated.ok) { deps.err(updated.reason); return Exit.Refused; }
+      registry = updated.registry;
+      deps.writeFile(registryPath, serializeRegistry(registry));
+      emit(deps, json, { org: chosen.org.orgId, profile: { ...profile, env: Object.keys(profile.env) }, replaced }, () =>
+        `${replaced ? "changed" : "stated"} run profile '${profile.name}' on '${chosen.org.orgId}': looked at every ${String(profile.everyMinutes)} min, ` +
+        `a run stopped after ${String(profile.maxRunMinutes)} min, store ${profileArg(profile, "--store") ?? "?"}\n  because ${profile.why}\n`,
+      );
+      return Exit.Ok;
+    }
+
+    case "org run-profile list": {
+      const chosen = resolveOrg(registry, flagValue(flags, "--org"));
+      if ("reason" in chosen) { deps.err(chosen.reason); return Exit.NotFound; }
+      const profiles = chosen.org.runProfiles ?? [];
+      emit(deps, json, { org: chosen.org.orgId, profiles: profiles.map((p) => ({ ...p, env: Object.keys(p.env) })) }, () =>
+        profiles.length === 0
+          ? `'${chosen.org.orgId}' has no run profiles - its runs start only by hand, and nothing follows its merge requests up by itself\n`
+          : profiles
+              .map((p) => `${p.name}: every ${String(p.everyMinutes)} min, stop after ${String(p.maxRunMinutes)} min, store ${profileArg(p, "--store") ?? "?"}\n  because ${p.why}`)
+              .join("\n") + "\n",
       );
       return Exit.Ok;
     }
