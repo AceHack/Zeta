@@ -1,0 +1,16 @@
+{
+  "pr_number": 17278,
+  "archive_path": "docs/history/pr-reviews/2026/09/11/PR-17278-fix-081m28h6q3m087g0r003wn6f8h-a-github-502-is-an-unmeasured-lookup-not-a-drift-.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7t3bBd",
+    "comment:PRRC_kwDOSF9kNM7t9WmL",
+    "thread:PRRT_kwDOSF9kNM6hh_lZ"
+  ],
+  "fetched_at": "2026-09-11T18:34:32.601Z",
+  "schema_version": "v1",
+  "commit_sha": "1dfec39fa62d9ccdfea5ec48937738acd9c46cde",
+  "title": "fix(081M28H6Q3M087G0R003WN6F8H): a GitHub 502 is an unmeasured lookup, not a drift finding",
+  "state": "MERGED",
+  "merged_at": "2026-09-11T18:33:46Z",
+  "head_ref": "fix-drift-loud-transient"
+}
