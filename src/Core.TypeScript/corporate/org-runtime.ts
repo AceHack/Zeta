@@ -760,13 +760,6 @@ export function defaultProviderSet(deps: {
 }
 
 /**
- * Run the whole organization once.
- *
- * Long and linear on purpose: the value of this function is that the entire pipeline is readable in
- * the order it happens. Splitting it into ten helpers would hide the one thing it exists to show —
- * that these modules compose.
- */
-/**
  * What an agent working this item is told the requester wrote — the whole ticket.
  *
  * The body when there is one (description and every comment), the reproduction when it is all
@@ -832,6 +825,13 @@ export function unreproducedPolicyOf(settings: readonly SettingBinding[] | undef
   return v === "reproduce_first" ? "reproduce_first" : "refuse";
 }
 
+/**
+ * Run the whole organization once.
+ *
+ * Long and linear on purpose: the value of this function is that the entire pipeline is readable in
+ * the order it happens. Splitting it into ten helpers would hide the one thing it exists to show —
+ * that these modules compose.
+ */
 export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeReport> {
   // The ports, resolved ONCE. Defaulting here rather than at each call site means one place decides
   // what this run is touching, and one place reports it.

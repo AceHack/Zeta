@@ -295,12 +295,6 @@ function assertNeverKind(x: never): never {
 }
 
 /**
- * Advance an ingested item to `Ready`, or REFUSE with what is missing.
- *
- * The refusal is the point. A defect that reaches the backlog without reproduction steps costs a
- * developer a day and comes back unresolved; refusing it at the door costs the reporter one reply.
- */
-/**
  * How an organization treats a defect that arrives without a reproduction.
  *
  *   `refuse`          — the default, and the register's original, considered position: a defect
@@ -315,6 +309,12 @@ function assertNeverKind(x: never): never {
  */
 export type UnreproducedPolicy = "refuse" | "reproduce_first";
 
+/**
+ * Advance an ingested item to `Ready`, or REFUSE with what is missing.
+ *
+ * The refusal is the point. A defect that reaches the backlog without reproduction steps costs a
+ * developer a day and comes back unresolved; refusing it at the door costs the reporter one reply.
+ */
 export function triage(item: IntakeItem, policy: UnreproducedPolicy = "refuse"): IntakeResult<IntakeItem> {
   const needs = requirementsFor(item.kind);
   const missing = needs.needsReproduction && (item.reproduction === undefined || item.reproduction === "");
