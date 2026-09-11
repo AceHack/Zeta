@@ -656,6 +656,19 @@ describe("STOPPING FOR A PERSON IS A PAUSE, NEVER A ROLLBACK", () => {
     expect(report.delivered).toBe(true);
   });
 
+  test("A CHECKPOINT MAY NAME A GATE: a defect stops for a person at release_readiness, its QA already done", async () => {
+    // The two NAMED checkpoints stop at brd_approval and architecture_approval, and a defect owes
+    // neither — so no person could ever sign a defect off. MEASURED on the Agentic Team's first run.
+    const report = await runOrgRuntime(deps({ checkpoints: ["release_readiness"] }));
+    const waits = report.awaitingHuman.filter((w) => String(w.gate) === "release_readiness");
+    expect(waits.length).toBeGreaterThan(0);
+    // It stops AFTER the evidence a person would sign on, not before it.
+    const leaf = waits[0]?.taskId;
+    expect(report.gateEvaluations.some((e) => e.workId === leaf && e.gate === "qa_uat")).toBe(true);
+    expect(report.gateEvaluations.some((e) => e.workId === leaf && e.gate === "release_readiness")).toBe(false);
+    expect(report.delivered).toBe(false);
+  });
+
   test("WITH NO CHECKPOINTS NOTHING WAITS — the default is unchanged", async () => {
     const report = await runOrgRuntime(deps());
     expect(report.awaitingHuman).toEqual([]);

@@ -22,6 +22,7 @@
 
 /** Exit codes. An agent reads these before it reads stdout. */
 import { ProcessSetting } from "./practice";
+import { CHECKPOINT_VALUES } from "./quality-gate";
 
 /**
  * The setting names and every legal value, DERIVED from the roster rather than restated.
@@ -141,7 +142,7 @@ export const COMMANDS: readonly CommandSpec[] = [
         name: "--checkpoint",
         what: "A gate where this org stops for you. Repeatable; omit for a fully agentic org.",
         takesValue: true,
-        oneOf: ["grooming", "approach"],
+        oneOf: CHECKPOINT_VALUES,
       },
       {
         name: "--verification",

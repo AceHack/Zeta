@@ -46,7 +46,7 @@ import type { AgentRoster } from "./agent-roster";
 import { outboxProblems, readBlockers } from "./blocker-outbox";
 import { advance, formatCursor, parseCursor, seedPosition, sseFrame, type StreamPosition } from "./event-stream";
 import type { OrgEvent } from "./org-event";
-import type { HumanCheckpoint } from "./quality-gate";
+import { isHumanCheckpoint, type HumanCheckpoint } from "./quality-gate";
 
 const json = (value: unknown, status = 200): Response =>
   new Response(JSON.stringify(value), {
@@ -1289,7 +1289,7 @@ export async function main(argv: readonly string[]): Promise<number> {
   // Repeatable, and empty by default: no checkpoint exists unless an operator names one.
   const checkpoints = argv
     .map((a, i) => (a === "--checkpoint" ? argv[i + 1] : undefined))
-    .filter((v): v is string => v === "grooming" || v === "approach") as readonly HumanCheckpoint[];
+    .filter(isHumanCheckpoint);
 
   Bun.serve({
     port,

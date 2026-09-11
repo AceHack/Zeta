@@ -158,7 +158,7 @@ import { foldHatsWorn,
   foldLandedChanges, foldObserveActTicks, foldPresence } from "./org-fold";
 import { emit } from "./org-event";
 import type { AgentState } from "../workflow-engine/agent-loop/state-machine";
-import { GateKind, GateOutcome, NO_PROPOSER, ORDERED_GATES, type HumanCheckpoint } from "./quality-gate";
+import { CHECKPOINT_VALUES, GateKind, GateOutcome, NO_PROPOSER, ORDERED_GATES, isHumanCheckpoint, type HumanCheckpoint } from "./quality-gate";
 import { readActions } from "./action-queue";
 import { groom } from "./grooming";
 import { confluenceSource } from "./confluence-source";
@@ -462,6 +462,8 @@ export interface Args {
    * like one that crashed.
    */
   readonly checkpoints: readonly HumanCheckpoint[];
+  /** `--checkpoint` values that are neither a checkpoint name nor a gate. Refused, never dropped. */
+  readonly unknownCheckpoints: readonly string[];
   /**
    * Which adapter answers each port. Absent means the SIMULATED one — explicitly, and the run says
    * so in its own output. Reaching reality is opt-in and visible at the command line.
@@ -824,12 +826,14 @@ export function parseArgs(argv: readonly string[]): Args {
     // rather than reporting outcomes it did not have.
     meetingCmd: valueAfter(argv, "--meeting-cmd"),
     meetingArgs: valuesAfter(argv, "--meeting-arg"),
-    // REPEATABLE, and anything that is not one of the two names is dropped rather than guessed at.
-    // A typo silently enabling a checkpoint would stop a run for a reason its operator never asked
-    // for; a typo silently enabling nothing is visible in the banner printed at startup.
+    // REPEATABLE: a checkpoint name or any gate. An unknown value is REFUSED in `argRefusals`, not
+    // dropped here - dropping it silently asked for no checkpoint at all.
     checkpoints: argv
       .map((a, i) => (a === "--checkpoint" ? argv[i + 1] : undefined))
-      .filter((v): v is HumanCheckpoint => v === "grooming" || v === "approach"),
+      .filter(isHumanCheckpoint),
+    unknownCheckpoints: argv
+      .map((a, i) => (a === "--checkpoint" ? argv[i + 1] : undefined))
+      .filter((v): v is string => v !== undefined && !isHumanCheckpoint(v)),
     cycleOnly: argv.includes("--cycle"),
     week: argv.includes("--week"),
     // Spread rather than assigned, because `exactOptionalPropertyTypes` is on and an explicit
@@ -855,6 +859,9 @@ export function parseArgs(argv: readonly string[]): Args {
  */
 export function argRefusals(args: Args): readonly string[] {
   const out: string[] = [];
+  for (const v of args.unknownCheckpoints) {
+    out.push(`--checkpoint '${v}' is neither a checkpoint nor a gate — expected one of ${CHECKPOINT_VALUES.join(", ")}`);
+  }
   if (args.workAgent !== undefined && args.workVerify !== undefined && args.workModel !== undefined) {
     out.push("--work-agent and --work-model both name a performer; supply one, because the run can only have done the work one way");
   }

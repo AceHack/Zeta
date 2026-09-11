@@ -679,3 +679,28 @@ describe("the guided walkthrough is a resumable conversation", () => {
     expect(p.complete).toBe(false);
   });
 });
+
+describe("A CHECKPOINT IS A NAME OR A GATE, and anything else is refused", () => {
+  // The two names stop at brd_approval and architecture_approval, which a defect owes neither of,
+  // and the parsers dropped every other value - so asking for a defect sign-off asked for nothing.
+  const org = (humanCheckpoints: readonly string[]): OrgRecord =>
+    ({
+      orgId: "x", name: "X", storeDir: "/s",
+      intake: Intake.SourceSynced, autonomy: Autonomy.Directed,
+      policy: basePolicy("x", "existing_harness"),
+      sources: [], humanCheckpoints, skills: [], createdAtMs: 1,
+    }) as unknown as OrgRecord;
+
+  test("a gate is accepted as a checkpoint, alongside the names", () => {
+    expect(validateOrg(org(["approach", "release_readiness"])).ok).toBe(true);
+  });
+
+  test("a value that is neither is refused, naming what would be accepted", () => {
+    const r = validateOrg(org(["release-readiness"]));
+    expect(r.ok).toBe(false);
+    if (!r.ok) {
+      expect(r.reason).toContain("release-readiness");
+      expect(r.reason).toContain("release_readiness");
+    }
+  });
+});

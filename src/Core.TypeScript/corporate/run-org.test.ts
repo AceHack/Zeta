@@ -13,7 +13,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { Fidelity, fidelityOf, Port } from "./providers";
 import { WorkState, WorkType as WorkTypeValue, type CascadeNode } from "./goal-cascade";
-import { pausedFromActions, artifactProducersFromArgs, churnThresholdFor, gateAttemptsFor, hasSource, main, parseArgs, PRE_CODE_GATES, providersFromArgs, trackerMapper, KNOWN_FLAGS, unknownFlags} from "./run-org";
+import { pausedFromActions, argRefusals, artifactProducersFromArgs, churnThresholdFor, gateAttemptsFor, hasSource, main, parseArgs, PRE_CODE_GATES, providersFromArgs, trackerMapper, KNOWN_FLAGS, unknownFlags} from "./run-org";
 import { RunOutcome } from "./qa";
 import { GateKind, ORDERED_GATES } from "./quality-gate";
 import { Severity } from "./intake";
@@ -119,7 +119,7 @@ describe("argument parsing", () => {
       // NO CHECKPOINTS BY DEFAULT, and this is the assertion that keeps it that way. A default that
       // drifted to "both" would stop every unattended run at its first gate, and the run would look
       // like it had crashed rather than like it was waiting.
-      actions: undefined, blockers: undefined, checkpoints: [],
+      actions: undefined, blockers: undefined, checkpoints: [], unknownCheckpoints: [],
       // NO PRICE TABLE BY DEFAULT. Every crossing is still measured; the cost is reported absent
       // rather than as a number nobody configured — see `meter.ts`.
       pricing: {},
@@ -568,6 +568,17 @@ describe("A PERSON CAN STOP THE ORGANIZATION BETWEEN CYCLES", () => {
     } finally {
       rmSync(actions, { recursive: true, force: true });
     }
+  });
+});
+
+describe("--checkpoint TAKES A NAME OR A GATE, AND REFUSES ANYTHING ELSE", () => {
+  test("a gate is a checkpoint; a typo is refused, not silently dropped", () => {
+    const ok = parseArgs(["--checkpoint", "approach", "--checkpoint", "release_readiness"]);
+    expect(ok.checkpoints).toEqual(["approach", "release_readiness"]);
+    expect(argRefusals(ok).some((r) => r.includes("--checkpoint"))).toBe(false);
+    const typo = parseArgs(["--checkpoint", "release-readiness"]);
+    expect(typo.checkpoints).toEqual([]);
+    expect(argRefusals(typo).some((r) => r.includes("'release-readiness' is neither a checkpoint nor a gate"))).toBe(true);
   });
 });
 

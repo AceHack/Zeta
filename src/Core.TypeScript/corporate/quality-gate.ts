@@ -587,23 +587,51 @@ export const HumanCheckpoint = {
   /** The approach itself, approved before it is built. */
   Approach: "approach",
 } as const;
-export type HumanCheckpoint = (typeof HumanCheckpoint)[keyof typeof HumanCheckpoint];
+/** A checkpoint by one of the two names above. */
+export type NamedCheckpoint = (typeof HumanCheckpoint)[keyof typeof HumanCheckpoint];
+/**
+ * A checkpoint: one of the NAMES, or ANY GATE stated directly.
+ *
+ * ── WHY A GATE MAY BE NAMED ─────────────────────────────────────────────────
+ * The two names stop at `brd_approval` and `architecture_approval`, and a defect owes neither. So an
+ * organization that worked defects had NO moment at which a person could sign anything off - and a
+ * parser that dropped every other value meant asking for one silently asked for nothing. MEASURED on
+ * the Agentic Team's first real run: an agent reviewer passed an API-only UAT for a defect whose
+ * symptom is on screen, and the person delegated to approve had no seat at which to say no.
+ *
+ * Which gate a person signs is the operator's choice, as data; the grammar names every gate and
+ * prefers none.
+ */
+export type HumanCheckpoint = NamedCheckpoint | GateKind;
 
 /**
- * The gate each checkpoint stops at.
+ * The gate each named checkpoint stops at.
  *
  * `brd_approval` is the end of grooming: the business rules are written and reviewed, and nothing
  * has been built. `architecture_approval` is the end of the approach: the design is assessed and
  * still nothing has been built. Both are the last moment where a person's "no" is cheap.
  */
-export const CHECKPOINT_GATE: Readonly<Record<HumanCheckpoint, GateKind>> = {
+export const CHECKPOINT_GATE: Readonly<Record<NamedCheckpoint, GateKind>> = {
   grooming: "brd_approval",
   approach: "architecture_approval",
 };
 
+/** Every value a checkpoint may take: the names, then every gate. */
+export const CHECKPOINT_VALUES: readonly HumanCheckpoint[] = [
+  ...Object.values(HumanCheckpoint),
+  ...(Object.values(GateKind) as GateKind[]),
+];
+
+/** Is this a checkpoint — a name or a gate? Anything else is refused by the caller, never dropped. */
+export function isHumanCheckpoint(value: unknown): value is HumanCheckpoint {
+  return typeof value === "string" && (CHECKPOINT_VALUES as readonly string[]).includes(value);
+}
+
 /** The gates that need a person, for the checkpoints an operator turned on. Empty means agentic. */
 export function humanGatesFor(checkpoints: readonly HumanCheckpoint[]): ReadonlySet<GateKind> {
-  return new Set(checkpoints.map((c) => CHECKPOINT_GATE[c]));
+  return new Set(
+    checkpoints.map((c) => (Object.prototype.hasOwnProperty.call(CHECKPOINT_GATE, c) ? CHECKPOINT_GATE[c as NamedCheckpoint] : (c as GateKind))),
+  );
 }
 
 export interface GateRunResult {

@@ -27,7 +27,7 @@ import { stringCompare } from "../collation/collation.ts";
 import { isVerificationApproach, validateOrgPolicy, type OrgPolicy } from "./org-policy";
 import type { CheckBinding } from "./check-roster";
 import type { Method as MethodBinding } from "../observe/observe";
-import { HumanCheckpoint } from "./quality-gate";
+import { CHECKPOINT_VALUES, isHumanCheckpoint, type HumanCheckpoint } from "./quality-gate";
 import { validateBindings, type SkillBinding } from "./skill-binding";
 import {
   validateDirective,
@@ -271,10 +271,10 @@ export function validateOrg(org: OrgRecord): OrgCheck {
   if (!policy.ok) return { ok: false, reason: policy.reason };
 
   for (const cp of org.humanCheckpoints ?? []) {
-    if (!Object.values(HumanCheckpoint).includes(cp)) {
+    if (!isHumanCheckpoint(cp)) {
       return {
         ok: false,
-        reason: `'${String(cp)}' is not a checkpoint — expected ${Object.values(HumanCheckpoint).join(" or ")}`,
+        reason: `'${String(cp)}' is neither a checkpoint nor a gate — expected one of ${CHECKPOINT_VALUES.join(", ")}`,
       };
     }
   }
