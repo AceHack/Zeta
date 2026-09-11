@@ -342,37 +342,38 @@ function tryExclusiveWrite(absPath: string, content: string): boolean {
     // descriptor form (rather than writeFileSync's options-object flag) is the
     // shape CodeQL's insecure-temporary-file query models as a secure create.
     //
-    // THIS COMMENT USED TO SAY the change "clears the finding substantively,
-    // not by suppression". THAT WAS FALSE, and it read as settled. Alert 224
-    // (js/insecure-temporary-file) was `state=open` against THIS LINE. A
-    // comment asserting a finding is cleared, sitting on the line the finding
-    // names, is worse than no comment -- it retires the question for the next
-    // reader. The correction then said the query "is following a caller that
-    // has not been identified" and asked for a measurement instead of a guess.
+    // THE SOURCE IS A STRING LITERAL IN A TEST, MEASURED 2026-09-11 -- and the
+    // two previous identifications in this comment were both wrong, which is
+    // why it is being replaced rather than appended to.
     //
-    // THE CALLER IS NOW IDENTIFIED, 2026-09-09. It is the TEST:
+    // First it said the change "clears the finding substantively". False: alert
+    // 224 (js/insecure-temporary-file) stayed `state=open` against this line.
+    // Then it said the caller was `mkdtempSync(join(tmpdir(), "diverge-test-"))`
+    // at divergence-shard.test.ts:39. Also false, and that one MATTERED: it
+    // concluded FALSE POSITIVE from the security property of `mkdtempSync`
+    // (0700, unpredictable suffix), which would have been a fair argument about
+    // a flow the query was not following.
     //
-    //   divergence-shard.test.ts:39
-    //     const root = mkdtempSync(join(tmpdir(), "diverge-test-"));
+    // The local CLI's SARIF `codeFlows` name the real source in one line:
     //
-    // `withTempRoot` hands that `root` to `writeShardAtPath(join(root, ...))`
-    // and to `writeDivergenceShard(root, INPUT)`, which reaches this line. That
-    // is the ONLY flow: this file never calls `tmpdir()`, and the production
-    // entry point takes `--repo-root`, defaulting to `"."`
-    // (review-thread-observations.ts:548) -- a checkout, never a temp dir.
+    //   divergence-shard.test.ts:377   "/tmp/unused"
     //
-    // WHAT IS STILL NOT CLAIMED: that the alert is closed. It is not, and this
-    // comment does not close it. What the identification buys is that the flow
-    // can now be argued about instead of guessed at, and on the merits it is
-    // benign twice over: `mkdtempSync` yields a 0700 directory with an
-    // unpredictable suffix (the secure idiom, not the predictable name the
-    // query is about), and the create below is O_CREAT|O_EXCL, which neither
-    // follows a pre-planted symlink nor races a competing writer.
+    // CodeQL models a `/tmp/...` LITERAL as the OS temp directory, so the
+    // "temp-dir call" being followed was a constant in the test that proves a
+    // byte-identical pair is REFUSED -- a path that never reaches this line,
+    // because the refusal throws first. `withTempRoot`'s `mkdtempSync` roots
+    // were never on the reported path at all.
     //
-    // So the disposition is FALSE POSITIVE WITH A NAMED FLOW -- a judgement for
-    // the architect + maintainer to accept or reject, not one to enact here.
-    // Do not re-close this in a comment; close it with a re-query that returns
-    // `state=fixed` or with a dismissal somebody with the authority signed.
+    // That test now passes a `mkdtempSync` root and asserts the directory is
+    // still empty after the throw, which proves the property the literal's name
+    // ("unused") only asked the reader to assume. The alert goes away because
+    // its source is gone, not because anything here was suppressed; this file
+    // still never calls `tmpdir()`, and the production entry point takes
+    // `--repo-root`, defaulting to `"."` -- a checkout, never a temp dir.
+    //
+    // THE LESSON, since it cost three passes: read the taint path, do not infer
+    // it. Two plausible reconstructions of this flow were wrong, and both read
+    // as settled.
     fd = openSync(absPath, "wx");
   } catch (err) {
     if ((err as NodeJS.ErrnoException).code === "EEXIST") {

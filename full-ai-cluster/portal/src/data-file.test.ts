@@ -5,7 +5,7 @@
 // final line (crash mid-append) is tolerated without losing the rest.
 
 import { afterEach, beforeEach, describe, expect, test } from "bun:test";
-import { appendFileSync, existsSync, mkdtempSync, readFileSync, rmSync } from "node:fs";
+import { appendFileSync, existsSync, mkdtempSync, readdirSync, readFileSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { FileRoomStore } from "./data-file.ts";
@@ -46,6 +46,50 @@ describe("FileRoomStore durability", () => {
     const grant = room!.events[1]!;
     expect(grant.body).toMatchObject({ type: "authorization-grant", requestId: "evt-0", granted: true });
     expect(grant.authorizedBy).toEqual({ id: "aaron", kind: "human" }); // human-authored
+  });
+
+  test("a resource that escapes the volume is REFUSED, and writes nothing", async () => {
+    // The reachable form: `GET/POST /api/rooms/<seg>/events` runs
+    // `decodeURIComponent` on `<seg>`, so `%2F` arrives here as a real `/`.
+    // `replace("/", "~")` replaced the FIRST slash only, leaving the rest of the
+    // path live, and `join(dir, ...)` resolved back out of the mounted volume.
+    const s = new FileRoomStore(dir);
+    const escape = "../../../../../../tmp/zeta-portal-traversal-probe";
+    await expect(s.append(escape, { id: "otto" }, { type: "message", text: "x" })).rejects.toThrow(
+      /refusing room resource/,
+    );
+    expect(existsSync("/tmp/zeta-portal-traversal-probe.jsonl")).toBe(false);
+  });
+
+  test("every non-label resource shape is refused, not normalised", async () => {
+    const s = new FileRoomStore(dir);
+    for (const bad of ["a/b/c", "acme/../etc", "acme/CLAN", "acme/cl an", "-acme/clan", "", "acme/", "ac~me/clan"]) {
+      await expect(s.append(bad, { id: "otto" }, { type: "message", text: "x" })).rejects.toThrow(
+        /refusing room resource/,
+      );
+    }
+  });
+
+  test("an actor id that is not an identifier is refused before it reaches the log", async () => {
+    // `spec.ai.admin` from a Deployable CR reaches `proposedBy.id` through the
+    // chat route with no check of its own (CodeQL alert 182). An identity in the
+    // append-only log is quoted back as who proposed or authorized an event.
+    const s = new FileRoomStore(dir);
+    await expect(s.append("acme/clan", { id: "ot\nto" }, { type: "message", text: "x" })).rejects.toThrow(
+      /refusing actor id/,
+    );
+    await expect(s.append("acme/clan", { id: "" }, { type: "message", text: "x" })).rejects.toThrow(/refusing actor id/);
+    // `readdirSync(dir)`, not `existsSync(file)`: the directory listing says
+    // "no file was created under ANY name", which is the stronger claim, and it
+    // does not pair an existence CHECK with the read below on the same path
+    // (the repo's own check-then-use lint, and the CWE-367 class it enforces).
+    expect(readdirSync(dir)).toEqual([]); // nothing was written by either refusal
+
+    // grant() reaches the log through a second door, so it gets its own guard.
+    await s.append("acme/clan", { id: "otto" }, { type: "authorization-request", gated: "budget", action: { summary: "x" } });
+    await expect(s.grant("acme/clan", "evt-0", "a/b", true)).rejects.toThrow(/refusing actor id/);
+    const lines = readFileSync(join(dir, "acme~clan.jsonl"), "utf8").trim().split("\n");
+    expect(lines).toHaveLength(1); // the request only — the refused grant appended nothing
   });
 
   test("each room is its own file; listRooms returns all", async () => {

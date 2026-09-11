@@ -1,0 +1,14 @@
+{
+  "id": "080d048980700810a0130008090fa592",
+  "at": "2026-09-11T15:57:20.769Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M28K03G0087G0R00026PN5K",
+    "type": "bug",
+    "title": "Close open CodeQL code-scanning alerts by fixing the flows: log-injection, prototype pollution, portal path traversal, SHA-1 id derivation, temp-file literal",
+    "slug": "close-open-codeql-code-scanning-alerts-by-fixing-the-flows-l",
+    "priority": "P2",
+    "filename": "081M28K03G0087G0R00026PN5K-close-open-codeql-code-scanning-alerts-by-fixing-the-flows-l.md"
+  }
+}

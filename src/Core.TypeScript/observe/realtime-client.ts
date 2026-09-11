@@ -29,42 +29,43 @@ const LOG_FIELD_MAX_CHARS = 200;
 /**
  * Make an untrusted string safe to print on one log line.
  *
- * Replaces every C0 control (U+0000-U+001F), DEL (U+007F) and C1 control
- * (U+0080-U+009F) with a space, then bounds the result. Newlines are in that
- * range, so forged log lines are still stopped; so is ESC, which a CR/LF-only
- * filter let through.
- *
- * The replacement is LENGTH-PRESERVING -- one character in, one space out -- so
- * the `slice` can never split a half-stripped sequence and the order of the two
- * operations is immaterial. Said out loud because it is the kind of property
- * that invites an assertion no mutant can kill.
+ * Bounds the value at `LOG_FIELD_MAX_CHARS`, strips DEL and the C1 range, then
+ * returns it JSON-ESCAPED. Every C0 control -- CR, LF, ESC included -- comes back
+ * as a visible `\n` / `\u001b` escape rather than as a space, so a forged log
+ * line is impossible AND the operator can still see what the peer actually sent.
+ * The result is a quoted JSON string: the quotes delimit the untrusted region.
  *
  * Exported so it can be falsified without a WebSocket.
  */
 export function sanitizeForLog(value: string): string {
-  // TWO REPLACES, AND THE FIRST IS REDUNDANT BY BEHAVIOUR ON PURPOSE.
+  // ESCAPE, DO NOT DELETE -- and the choice is not a concession to the analyser.
   //
-  // The range already contains the newline characters, so the second replace alone is
-  // behaviourally complete. But CodeQL's `js/log-injection` recognises sanitizers by
-  // SHAPE, and a RANGE that merely CONTAINS them is not the shape it matches -- so it
-  // kept reporting an already-sanitized value as tainted. Measured: alert #653 sat open
-  // on this file at line 81 since 2026-08-09, and widening the strip only moved it to
-  // #932 at line 117. Same rule, same file, new line: the pattern relocating, not closing.
+  // The previous form mapped every control character to a space. That stops a forged
+  // log LINE, but it also DESTROYS the evidence: an operator reading `before [2Kafter`
+  // cannot tell whether the peer sent an ESC or a space, so the one string worth
+  // investigating renders as the one string that is boring. `JSON.stringify` escapes
+  // the same characters instead -- `\n`, `\r`, `\u001b` -- which is lossless, keeps
+  // the payload on one line, and surrounds the untrusted region with quotes so its
+  // extent is visible. A terminal never sees a control character either way.
   //
-  // Naming the two explicitly first gives the analyser the form it understands, while the
-  // range keeps the real guarantee -- ESC and the whole C0/DEL/C1 class, which is what a
-  // WebSocket peer would use to rewrite an operator's terminal. Both map to a space and
-  // both are length-preserving, so no input can observe a difference.
+  // It is also the shape CodeQL's `js/log-injection` recognises as a barrier
+  // (`JsonStringifySanitizer`), which the space-replacement was not: the shipped model
+  // matches `.replace(x, "")` -- replacement with the EMPTY string -- and a replacement
+  // with " " is not that shape. Measured 2026-09-11 with the pinned CLI (2.27.0):
+  // alert #653 at line 81, then #932 at line 138, both surviving two widenings of the
+  // character class. The class was never the problem; the replacement value was.
   //
-  // IF THE ALERT SURVIVES THIS, THE SHAPE HYPOTHESIS IS WRONG and the honest next step is
-  // a CodeQL model pack -- the `packs:` slot in .github/codeql/codeql-config.yml is
-  // reserved for exactly that -- never a dismissal.
-  return value
+  // C1 and DEL are stripped FIRST because `JSON.stringify` does not escape them
+  // (it escapes C0, quote and backslash only). Fail-closed on a range modern
+  // terminals mostly ignore in UTF-8 mode, rather than reason about terminal modes.
+  //
+  // The cap is applied to the PAYLOAD, before escaping, so it still means "200
+  // characters of what the peer said" -- the escaped result is legitimately longer.
+  const bounded = value
     // eslint-disable-next-line no-control-regex -- the control characters ARE the subject
-    .replace(/[\r\n]/gu, " ")
-    // eslint-disable-next-line no-control-regex -- the control characters ARE the subject
-    .replace(/[\u0000-\u001F\u007F-\u009F]/gu, " ")
+    .replace(/[\u007F-\u009F]/gu, " ")
     .slice(0, LOG_FIELD_MAX_CHARS);
+  return JSON.stringify(bounded);
 }
 
 

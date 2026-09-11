@@ -296,7 +296,26 @@ export function setNestedProperty(obj: any, path: string, value: any): void {
   // of creating the intermediate object the path asks for.
   while (depth < parts.length - 1 && Object.prototype.hasOwnProperty.call(current, parts[depth]!)) {
     const part = parts[depth]!;
-    const next = current[part];
+    // DESCRIPTOR READ, NOT `current[part]` -- the exact mirror of why `defineOwn` uses
+    // `defineProperty` instead of assignment. Assignment RUNS the `__proto__` setter;
+    // a bracket READ runs a GETTER, and an own property is allowed to be an accessor:
+    //
+    //   Object.defineProperty(o, "a", { get() { return Object.prototype; } });
+    //
+    // `hasOwnProperty` is true for that, so the walk descends -- and `current[part]`
+    // executes caller-influenced code inside a pass whose comments call it "read-only",
+    // and may hand back a DIFFERENT object on each call, so the guards below judge one
+    // object and PASS 3 writes through another. `getOwnPropertyDescriptor` reads the own
+    // data slot without invoking anything, and yields `undefined` for an accessor, which
+    // falls straight into the "not a container" refusal below. The pass is now read-only
+    // in fact and not only in the comment.
+    //
+    // It is also what closes CodeQL alert 929 (`js/prototype-pollution-utility`), and the
+    // two are the same fact rather than a coincidence: the query's whole path begins at a
+    // DYNAMIC PROPERTY READ keyed by a `split(".")` segment (`isPotentiallyObjectPrototype`),
+    // because that read is how a reference to a built-in prototype is obtained. Removing
+    // the dynamic read removes the mechanism, not just the report.
+    const next = Object.getOwnPropertyDescriptor(current, part)?.value;
     if (next === null || typeof next !== "object") {
       throw new Error(`nested path segment ${JSON.stringify(part)} already holds a ${next === null ? "null" : typeof next}, which is not a container: ${path}`);
     }

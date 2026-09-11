@@ -101,35 +101,43 @@ describe("realtime client ↔ server integration", () => {
   });
 });
 
-describe("sanitizeForLog — the whole control-character class, not two members of it", () => {
-  test("strips CR and LF, so a forged log LINE is impossible", () => {
-    expect(sanitizeForLog("real\nINFO: forged line\rmore")).toBe("real INFO: forged line more");
+describe("sanitizeForLog — escapes the whole control-character class, never deletes it", () => {
+  test("escapes CR and LF, so a forged log LINE is impossible", () => {
+    expect(sanitizeForLog("real\nINFO: forged line\rmore")).toBe(String.raw`"real\nINFO: forged line\rmore"`);
   });
 
-  test("strips ESC — the one a CR/LF-only filter let through", () => {
+  test("escapes ESC — the one a CR/LF-only filter let through", () => {
     // `\u001b[2K` clears the operator's current terminal line; an OSC sequence
-    // can rewrite the window title. Both arrive from a WebSocket peer. Narrow
-    // the character class back to [\n\r] and this test dies.
-    expect(sanitizeForLog("before\u001b[2Kafter")).toBe("before [2Kafter");
-    expect(sanitizeForLog("t\u001b]0;pwned\u0007x")).toBe("t ]0;pwned x");
+    // can rewrite the window title. Both arrive from a WebSocket peer. Drop the
+    // JSON escaping and these die.
+    expect(sanitizeForLog("before\u001b[2Kafter")).toBe(String.raw`"before\u001b[2Kafter"`);
+    expect(sanitizeForLog("t\u001b]0;pwned\u0007x")).toBe(String.raw`"t\u001b]0;pwned\u0007x"`);
   });
 
-  test("strips DEL and the C1 range", () => {
-    expect(sanitizeForLog("a\u007Fb\u0085c\u009Bd")).toBe("a b c d");
+  test("the escape is LOSSLESS — the original string round-trips", () => {
+    // This is what the space-replacement could not do, and the reason for the
+    // change. An operator investigating a suspicious line can recover exactly
+    // what the peer sent; `JSON.parse` of the logged field is the original.
+    const attack = "x\u001b]0;pwned\u0007\ny";
+    expect(JSON.parse(sanitizeForLog(attack))).toBe(attack);
+  });
+
+  test("strips DEL and the C1 range, which JSON.stringify does not escape", () => {
+    expect(sanitizeForLog("a\u007Fb\u0085c\u009Bd")).toBe('"a b c d"');
   });
 
   test("leaves ordinary text, including non-ASCII, alone", () => {
-    expect(sanitizeForLog("héllo — ok")).toBe("héllo — ok");
+    expect(sanitizeForLog("héllo — ok")).toBe('"héllo — ok"');
   });
 
-  test("bounds the result at 200 characters", () => {
-    expect(sanitizeForLog("x".repeat(500))).toHaveLength(200);
+  test("bounds the PAYLOAD at 200 characters — the quotes are not payload", () => {
+    expect(sanitizeForLog("x".repeat(500))).toBe(`"${"x".repeat(200)}"`);
   });
 
-  // NOT TESTED, because the property does not exist: whether the strip runs
-  // before or after the 200-character cut. The replacement maps one character
-  // to one space, so it is length-preserving and the two orders are provably
-  // equal on every input. An earlier draft of this file asserted the order and
-  // the swapped-order mutant SURVIVED -- a check that could not fail, dressed
-  // as a falsifier. Recorded here instead of deleted silently.
+  test("escaping happens after the cut, so the cap is a payload cap", () => {
+    // 200 escape-expanding characters would be 1200 characters of output if the
+    // cap were applied to the escaped form. It is not: the cap means "200
+    // characters of what the peer said".
+    expect(JSON.parse(sanitizeForLog("\u001b".repeat(500)))).toHaveLength(200);
+  });
 });

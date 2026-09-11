@@ -66,6 +66,21 @@ test("content-addressed changeSetId is deterministic + revision-keyed", () => {
   const a = contentAddressedChangeSetId("org-lfg", "work-1", "feat/x", 1);
   equal(a, contentAddressedChangeSetId("org-lfg", "work-1", "feat/x", 1));
   ok(a !== contentAddressedChangeSetId("org-lfg", "work-1", "feat/x", 2)); // new revision → new id
+  // every field is keyed, not only the revision
+  ok(a !== contentAddressedChangeSetId("org-other", "work-1", "feat/x", 1));
+  ok(a !== contentAddressedChangeSetId("org-lfg", "work-2", "feat/x", 1));
+  ok(a !== contentAddressedChangeSetId("org-lfg", "work-1", "feat/y", 1));
+});
+
+test("changeSetId is a well-formed UUID version 8 — never version 5", () => {
+  // Version 5 is DEFINED as SHA-1 (RFC 4122 §4.3), so the version nibble is the
+  // machine-checkable half of "this id does not stand on a broken hash". RFC 9562
+  // §5.8 version 8 is the one that permits a vendor-chosen derivation. Put SHA-1
+  // back and the nibble has to lie for this to pass.
+  const id = contentAddressedChangeSetId("org-lfg", "work-1", "feat/x", 1);
+  ok(/^[0-9a-f]{8}-[0-9a-f]{4}-8[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/.test(id), id);
+  // 32 hex digits of SHA-256 is a 128-bit id; a SHA-1 digest would also fit, so
+  // the length proves nothing on its own and is not asserted as if it did.
 });
 
 test("openChangeSet: drafted → in_review at stage 0, emits ChangeSetOpened", () => {

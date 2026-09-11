@@ -559,6 +559,35 @@ describe("setNestedProperty: the cursor may not LAND on a prototype object", () 
     expect((new Widget() as any).polluted).toBeUndefined();
   });
 
+  test("an own ACCESSOR property is never invoked, and never walked through", () => {
+    // The walk descends when `hasOwnProperty` is true -- and an own property is
+    // allowed to be a getter. Under a bracket read (`current[part]`) this getter
+    // RUNS, inside a pass the code calls read-only, and hands the walk
+    // `Object.prototype`. Under a descriptor read it is never called at all and
+    // `.value` is `undefined`, which is not a container.
+    let calls = 0;
+    const obj: any = {};
+    Object.defineProperty(obj, "a", {
+      get() { calls += 1; return Object.prototype; },
+      enumerable: true,
+      configurable: true,
+    });
+    expect(() => setNestedProperty(obj, "a.polluted", "yes")).toThrow(/already holds a undefined/);
+    expect(calls).toBe(0);                       // swap back to `current[part]` and this is 1
+    expect(({} as any).polluted).toBeUndefined();
+  });
+
+  test("a getter that returns a DIFFERENT object each call cannot split judge from write", () => {
+    // The time-of-check/time-of-use shape, in an object rather than a filesystem:
+    // guard the first return value, write through the second. One descriptor read
+    // means there is only ever one value.
+    let n = 0;
+    const obj: any = {};
+    Object.defineProperty(obj, "a", { get() { n += 1; return n === 1 ? {} : Object.prototype; }, configurable: true });
+    expect(() => setNestedProperty(obj, "a.b", 1)).toThrow(/already holds a undefined/);
+    expect(n).toBe(0);
+  });
+
   test("a plain object and a null-prototype object are NOT refused (no false positive)", () => {
     const plain: any = { a: {} };
     setNestedProperty(plain, "a.b", 1);

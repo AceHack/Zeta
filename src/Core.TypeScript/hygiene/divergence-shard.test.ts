@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import { existsSync, mkdtempSync, readFileSync, writeFileSync, mkdirSync, rmSync } from "node:fs";
+import { existsSync, mkdtempSync, readdirSync, readFileSync, writeFileSync, mkdirSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 
@@ -372,14 +372,30 @@ describe("writeDivergenceShard", () => {
   });
 
   test("refuses to file when loop bodies are byte-identical (no divergence)", () => {
-    const sameBody = "identical conclusion";
-    expect(() =>
-      writeDivergenceShard("/tmp/unused", {
-        ...INPUT,
-        loopA: { ...INPUT.loopA, body: sameBody },
-        loopB: { ...INPUT.loopB, body: sameBody },
-      }),
-    ).toThrow(/no divergence to preserve/);
+    // THE ROOT IS A REAL DIRECTORY, AND THE EMPTINESS IS THE ASSERTION.
+    //
+    // This used to pass the literal `"/tmp/unused"`, whose name asked the reader
+    // to take on trust that nothing was written there. Two things were wrong with
+    // that. The reader's trust is not a check -- the refusal could have moved
+    // below the first `openSync` and no assertion here would have noticed. And a
+    // `/tmp/...` literal IS the OS temp directory to CodeQL, which is why alert
+    // 224 (`js/insecure-temporary-file`) pointed at `tryExclusiveWrite` in
+    // divergence-shard.ts and named a caller nobody could find: the caller was
+    // this line, and the temp-dir "call" was a string constant in a test.
+    //
+    // A `mkdtempSync` root (0700, unpredictable) plus `readdirSync` proves the
+    // property the old name only claimed.
+    withTempRoot((root) => {
+      const sameBody = "identical conclusion";
+      expect(() =>
+        writeDivergenceShard(root, {
+          ...INPUT,
+          loopA: { ...INPUT.loopA, body: sameBody },
+          loopB: { ...INPUT.loopB, body: sameBody },
+        }),
+      ).toThrow(/no divergence to preserve/);
+      expect(readdirSync(root)).toEqual([]); // the refusal happened BEFORE any I/O
+    });
   });
 });
 
