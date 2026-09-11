@@ -165,7 +165,7 @@ import { confluenceSource } from "./confluence-source";
 import { jiraIntake } from "./jira-source";
 import { resolve as resolveSkill, type Resolution, type SkillBinding } from "./skill-binding";
 import { orgById, parseRegistry, runReadinessOf } from "./org-registry";
-import { HumanActionKind, type HumanAction } from "./human-action";
+import { HumanActionKind, isPaused, type HumanAction } from "./human-action";
 import { mkdirSync, readdirSync, readFileSync, writeFileSync, statSync } from "node:fs";
 import { join, resolve } from "node:path";
 import type { ProducerPort } from "./pipeline";
@@ -1165,6 +1165,22 @@ export function skillResolverFor(
     return out;
   };
   return (gate, node) => resolveSkill(bindings, gate, ancestryOf(node));
+}
+
+/**
+ * Whether a person has paused the organization, read from the actions queue AT EACH CALL.
+ *
+ * `pause_run` was replayed into a flag and shown on the dashboard, and the drive loop never asked
+ * it — a person could say "stop" and nothing would. Read per call so a pause filed while the run
+ * is going stops it at the next cycle boundary.
+ */
+export function pausedFromActions(actionsDir: string): () => string | undefined {
+  return () => {
+    const queued = readActions(actionsDir);
+    if (!isPaused(queued)) return undefined;
+    const last = [...queued].reverse().find((a) => a.kind === HumanActionKind.PauseRun);
+    return `paused by ${last?.byHuman ?? "a person"}: ${last?.reason ?? "no reason given"}`;
+  };
 }
 
 /**
@@ -2283,6 +2299,9 @@ export async function main(argv: readonly string[]): Promise<number> {
             // started cycle 2 at 1 — before cycle 1's own verdicts in the log.
             nextNowMs: (_c, prev, cycleReport) =>
               cycleReport.trace.reduce((hi, e) => Math.max(hi, e.atMs), prev) + 1,
+            // A PERSON'S `pause_run`, read from the queue at each cycle boundary so one filed while
+            // the run is going stops it at the next consistent point.
+            ...(args.actions === undefined ? {} : { pausedBecause: pausedFromActions(args.actions) }),
           },
           runOrgRuntime,
         );

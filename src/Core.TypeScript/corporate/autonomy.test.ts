@@ -215,6 +215,23 @@ describe("the loop is observable and advances its own clock", () => {
     expect(clocks).toEqual([1_000, 1_500, 2_000]);
   });
 
+  test("a person's pause stops the loop BETWEEN cycles, and says so", async () => {
+    // `pause_run` was replayed into a flag and shown on the dashboard, and the loop never asked it.
+    let asked = 0;
+    const r = await runUntilSettled(
+      deps,
+      { maxCycles: 5, pausedBecause: () => (++asked >= 2 ? "paused by max: restarting on new code" : undefined) },
+      scripted([
+        report({ gateEvaluations: [1] as never }),
+        report({ gateEvaluations: [1, 2] as never }),
+        report({ gateEvaluations: [1, 2, 3] as never }),
+      ]),
+    );
+    expect(r.cycles).toBe(2);
+    expect(r.stoppedBecause).toBe(StopReason.Paused);
+    expect(r.summary).toContain("restarting on new code");
+  });
+
   test("every cycle's report is kept, not just the last", async () => {
     const r: AutonomyResult = await runUntilSettled(deps, { maxCycles: 3 }, scripted([
       report({ gateEvaluations: [1] as never }),

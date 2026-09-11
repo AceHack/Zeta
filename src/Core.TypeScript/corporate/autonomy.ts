@@ -39,6 +39,8 @@ export const StopReason = {
   Halted: "halted",
   NoProgress: "no_progress",
   BoundReached: "bound_reached",
+  /** A person asked the loop to stop, and it did — between cycles, never inside one. */
+  Paused: "paused",
 } as const;
 
 export type StopReason = (typeof StopReason)[keyof typeof StopReason];
@@ -91,6 +93,15 @@ export interface AutonomyOptions {
   readonly nextNowMs?: (cycle: number, prev: number, report: OrgRuntimeReport) => number;
   /** Called after each cycle, for a caller that wants to watch. Never decides anything. */
   readonly onCycle?: (cycle: number, report: OrgRuntimeReport) => void;
+  /**
+   * Whether a person has asked the loop to stop, asked BETWEEN cycles. Returns why, or undefined.
+   *
+   * `pause_run` existed as an action, was replayed into a `paused` flag, and was shown on the
+   * dashboard — and the loop never asked it. A person could say "stop" and watch nothing happen.
+   * Checked between cycles only: a cycle is where the organization's state is consistent, and
+   * stopping inside one would leave a step walked halfway.
+   */
+  readonly pausedBecause?: () => string | undefined;
 }
 
 export interface AutonomyResult {
@@ -204,6 +215,10 @@ export async function runUntilSettled(
     }
 
     previous = progress;
+    const paused = options.pausedBecause?.();
+    if (paused !== undefined && cycle < options.maxCycles) {
+      return settled(cycle, StopReason.Paused, reports, `stopped after ${String(cycle)} cycle(s): ${paused}`);
+    }
     nowMs = options.nextNowMs?.(cycle, nowMs, report) ?? nowMs;
   }
 

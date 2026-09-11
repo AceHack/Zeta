@@ -13,7 +13,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { Fidelity, fidelityOf, Port } from "./providers";
 import { WorkState, WorkType as WorkTypeValue, type CascadeNode } from "./goal-cascade";
-import { artifactProducersFromArgs, churnThresholdFor, gateAttemptsFor, hasSource, main, parseArgs, PRE_CODE_GATES, providersFromArgs, trackerMapper, KNOWN_FLAGS, unknownFlags} from "./run-org";
+import { pausedFromActions, artifactProducersFromArgs, churnThresholdFor, gateAttemptsFor, hasSource, main, parseArgs, PRE_CODE_GATES, providersFromArgs, trackerMapper, KNOWN_FLAGS, unknownFlags} from "./run-org";
 import { RunOutcome } from "./qa";
 import { GateKind, ORDERED_GATES } from "./quality-gate";
 import { Severity } from "./intake";
@@ -546,6 +546,29 @@ describe("AN AGENT'S TIME LIMIT IS THE ORGANIZATION'S", () => {
       else process.env["ORG_PORT_TIMEOUT_MS"] = before;
     }
   }, 120_000);
+});
+
+describe("A PERSON CAN STOP THE ORGANIZATION BETWEEN CYCLES", () => {
+  test("a queued pause_run reads as paused, with who and why; a later resume_run clears it", () => {
+    const actions = mkdtempSync(join(tmpdir(), "zeta-cli-pause-"));
+    try {
+      const paused = pausedFromActions(actions);
+      expect(paused()).toBeUndefined();
+      writeFileSync(
+        join(actions, "pause-1.json"),
+        JSON.stringify({ actionId: "pause-1", kind: "pause_run", byHuman: "max", atMs: 1, subjectId: "run", reason: "restarting on new code" }),
+      );
+      // Read at each call, so a pause filed mid-run is seen at the next boundary.
+      expect(paused()).toBe("paused by max: restarting on new code");
+      writeFileSync(
+        join(actions, "resume-1.json"),
+        JSON.stringify({ actionId: "resume-1", kind: "resume_run", byHuman: "max", atMs: 2, subjectId: "run", reason: "new code is in" }),
+      );
+      expect(paused()).toBeUndefined();
+    } finally {
+      rmSync(actions, { recursive: true, force: true });
+    }
+  });
 });
 
 describe("the failure modes exit non-zero", () => {
