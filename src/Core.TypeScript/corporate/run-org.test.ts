@@ -780,3 +780,23 @@ describe("A LATER GATE IS PERFORMED WHEN THE ORGANIZATION SAYS HOW", () => {
     expect(withUat.has(GateKind.FinalBusinessValidation)).toBe(false);
   });
 });
+
+describe("WHAT A PERSON FILES MID-RUN REACHES THE NEXT ATTEMPT", () => {
+  // With real agents a run lasts hours. Read once at start, a reviewer's objection or a person's
+  // answer filed while it ran could only reach the NEXT run.
+  const { feedbackFromActions } = require("./run-org") as typeof import("./run-org");
+  test("a rejection written AFTER the reader was built is still read", () => {
+    const dir = mkdtempSync(join(tmpdir(), "late-"));
+    try {
+      const feedback = feedbackFromActions(dir);
+      expect(feedback("task-9")).toEqual([]);
+      writeFileSync(
+        join(dir, "late.json"),
+        JSON.stringify({ actionId: "a1", kind: "reject_gate", subjectId: "task-9", atMs: 5, reason: "the fix edits the handler; the writer is elsewhere", detail: { gate: "implementation_review" }, byHuman: "max" }),
+      );
+      expect(feedback("task-9").map((f) => f.said)).toEqual(["the fix edits the handler; the writer is elsewhere"]);
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+});

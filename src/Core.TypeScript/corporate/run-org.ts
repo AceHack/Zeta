@@ -1078,8 +1078,10 @@ export function answersFromOutbox(
   cascade?: Cascade,
 ): (node: CascadeNode) => readonly { readonly question: string; readonly answer: string }[] {
   if (blockersDir === undefined) return () => [];
-  const raised = readBlockers(blockersDir);
-  const actions = actionsDir === undefined ? [] : readActions(actionsDir);
+  // READ AT EACH ASK, not once at start. A run lasts hours with real agents, and an answer a person
+  // files mid-run must reach the next attempt of the step that asked — read once, it could only
+  // reach the next RUN, and the step would ask again or proceed on an assumption the person had
+  // already corrected.
   const lineage = (node: CascadeNode): ReadonlySet<string> => {
     const ids = new Set<string>([node.workId]);
     if (cascade === undefined) return ids;
@@ -1092,6 +1094,8 @@ export function answersFromOutbox(
     return ids;
   };
   return (node) => {
+    const raised = readBlockers(blockersDir);
+    const actions = actionsDir === undefined ? [] : readActions(actionsDir);
     const mine = lineage(node);
     return answeredBlockers(
       raised.filter((b) => mine.has(b.blocking)),
@@ -1166,9 +1170,10 @@ export function feedbackFromActions(
   actionsDir: string | undefined,
 ): (workId: string) => readonly { readonly gate: string; readonly said: string }[] {
   if (actionsDir === undefined) return () => [];
-  const actions = readActions(actionsDir);
+  // READ AT EACH CALL, for the same reason as `answersFromOutbox`: a reviewer's objection filed
+  // while the run is still going must reach the rework it is about.
   return (workId) =>
-    actions
+    readActions(actionsDir)
       .filter((a) => a.kind === HumanActionKind.RejectGate && a.subjectId === workId && a.reason.trim() !== "")
       .sort((x, y) => (x.atMs === y.atMs ? (x.actionId < y.actionId ? 1 : -1) : y.atMs - x.atMs))
       .map((a) => ({ gate: String(a.detail?.["gate"] ?? "unknown"), said: a.reason }));
