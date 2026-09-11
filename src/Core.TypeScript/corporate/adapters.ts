@@ -1925,6 +1925,9 @@ export function gitWorktreeChangeControl(input: {
       // `npm audit fix` commit landed on the request's branch after the handoff, and the follow-up's
       // push was refused as behind - so a reviewed, verified fix never reached the reviewer, and the
       // comment it answered stayed open. Merged in, never rebased: the branch is under review.
+      // A checkout with no such remote has nobody else's commits on it - nothing to bring in.
+      const none = { ok: true as const, value: { target: `${remote}/${handle.branch}`, behindBy: 0, applied: false, conflicts: [] as readonly string[] }, evidence: [] };
+      if (git(["remote", "get-url", remote], at).status !== 0) return none;
       const fetched = git(["fetch", "--quiet", remote, handle.branch], at);
       if (fetched.error !== undefined) return { ok: false, reason: `git could not run: ${fetched.error.message}` };
       if (fetched.status !== 0) {
