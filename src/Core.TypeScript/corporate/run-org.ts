@@ -946,6 +946,16 @@ export const PRE_CODE_GATES: readonly GateKind[] = ORDERED_GATES.slice(
   ORDERED_GATES.indexOf(GateKind.ImplementationReview),
 );
 
+/** Is this ref a file an author could open? Refs also carry plan lines, argv and captured output. */
+export function isReadableFile(ref: string): boolean {
+  if (ref.length > 1024 || ref.includes(String.fromCharCode(10))) return false;
+  try {
+    return statSync(ref).isFile();
+  } catch {
+    return false;
+  }
+}
+
 /**
  * The gates an agent PERFORMS: every pre-code gate, plus any later gate the organization has said HOW
  * it is performed — a practice bound to that gate.
@@ -1221,7 +1231,12 @@ export function artifactProducersFromArgs(
           ...args.artifactArgs,
           String(g),
           node.workId,
-          ...ORDERED_GATES.flatMap((prior) => ctx.priorArtifacts.get(prior)?.refs ?? []),
+          // ONLY REFS THAT ARE READABLE FILES, deduped. A later gate's priors include the work
+          // executor's own argv and the test runner's evidence - MEASURED on AIAGENT-1660, the
+          // release-readiness author was launched with the ENTIRE captured test output as arguments,
+          // one Windows 32K command-line limit away from never starting. Anything that is not a
+          // document reaches the agent through `observe`, not argv.
+          ...[...new Set(ORDERED_GATES.flatMap((prior) => ctx.priorArtifacts.get(prior)?.refs ?? []))].filter(isReadableFile),
         ],
         ...(contextFor === undefined ? {} : { contextFor }),
         // The other half of `ask:` — what a person said last time reaches the agent that asked.

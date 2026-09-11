@@ -800,3 +800,23 @@ describe("WHAT A PERSON FILES MID-RUN REACHES THE NEXT ATTEMPT", () => {
     }
   });
 });
+
+describe("A LATER GATE'S AUTHOR IS HANDED DOCUMENTS, never argv or captured output", () => {
+  // MEASURED on AIAGENT-1660: the release-readiness author was launched with the work executor's argv
+  // and the ENTIRE captured test output as arguments — a 32K command-line limit from never starting.
+  const { isReadableFile } = require("./run-org") as typeof import("./run-org");
+  test("a real file is a document; argv, captured output and plan lines are not", () => {
+    const dir = mkdtempSync(join(tmpdir(), "refs-"));
+    try {
+      const doc = join(dir, "qa_uat.md");
+      writeFileSync(doc, "# uat");
+      expect(isReadableFile(doc)).toBe(true);
+      expect(isReadableFile("stdout:✓ mongod 7.0.14 binary cached\n ❯ src/x.test.ts")).toBe(false);
+      expect(isReadableFile("exit:0")).toBe(false);
+      expect(isReadableFile("claude-agent.cjs")).toBe(false);
+      expect(isReadableFile(dir)).toBe(false);
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+});
