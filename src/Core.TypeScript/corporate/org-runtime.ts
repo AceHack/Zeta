@@ -4113,7 +4113,20 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
       // change that was then not pushed has been addressed nowhere a reviewer can see.
       const settleable = moved ? handedOffAgain : !attempted || handedOffAgain;
       for (const d of accepted) {
-        if (d.outcome === "deferred" || !settleable) continue;
+        // A DEFERRAL IS RECORDED WITH ITS REASON, whatever happened to the change: "weighed and left
+        // open" must never read like "never looked at".
+        if (d.outcome === "deferred") {
+          note({
+            kind: OrgEventKind.ChangeProjected,
+            subjectId: workId,
+            actorHatId: hatId,
+            decision: `action item ${d.actionItemId} left open: ${d.how.split(/\s+/).join(" ").slice(0, 200)}`,
+            atMs: warmedAt,
+            fact: { kind: "action_item_deferred", workId, actionItemId: d.actionItemId, why: d.how, byHatId: hatId },
+          });
+          continue;
+        }
+        if (!settleable) continue;
         note({
           kind: OrgEventKind.ChangeProjected,
           subjectId: workId,
@@ -4130,7 +4143,8 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
         decision:
           `followed up ${workId}: ${String(accepted.filter((d) => d.outcome !== "deferred").length)} of ${String(items.length)} item(s) decided` +
           `${synced === undefined ? "" : synced.applied ? `, brought level with ${synced.target}` : ", not brought level"}` +
-          `${handedOffAgain ? ", request updated" : ""}${refused.length === 0 ? "" : ` - ${refused.join("; ")}`}`,
+          `${handedOffAgain ? ", request updated" : ""}${refused.length === 0 ? "" : ` - ${refused.join("; ")}`}` +
+          `${triage.value.summary.trim() === "" ? "" : ` | ${triage.value.summary.split(/\s+/).join(" ").slice(0, 300)}`}`,
         atMs: warmedAt,
       });
       return { workId, decided: accepted, ...(synced === undefined ? {} : { synced }), handedOffAgain, refused };

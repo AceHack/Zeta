@@ -423,6 +423,19 @@ export type OrgFact =
     }
   | {
       /**
+       * An action item was weighed and LEFT OPEN, with the reason. Not a settlement: the item stays
+       * open. Recorded because "left open" and "never looked at" read the same without it - MEASURED
+       * on the first follow-up of MR !162, where a blocking review finding stayed open and nothing
+       * anywhere said why.
+       */
+      readonly kind: "action_item_deferred";
+      readonly workId: string;
+      readonly actionItemId: string;
+      readonly why: string;
+      readonly byHatId?: string;
+    }
+  | {
+      /**
        * A merge the organization made was UNDONE by a person - reset off the trunk it should never
        * have reached. Recorded beside `change_merged`, never instead of it: both happened. The
        * work is no longer landed, so a resumed run treats it as finished-but-not-integrated.

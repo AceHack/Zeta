@@ -151,7 +151,11 @@ export function itemContextsFrom(
         by: i.author ?? i.source,
         text:
           `[${i.actionItemId}] ${i.itemKind}: ${i.summary}` +
-          (i.settled === undefined ? " - OPEN" : ` - ${i.settled.outcome}: ${i.settled.how}`) +
+          (i.settled !== undefined
+            ? ` - ${i.settled.outcome}: ${i.settled.how}`
+            : i.deferred !== undefined
+              ? ` - OPEN, left open by ${i.deferred.byHatId ?? "the organization"}: ${i.deferred.why}`
+              : " - OPEN") +
           (i.url === undefined ? "" : ` (${i.url})`),
         atMs: i.raisedAtMs,
         about: "action item",

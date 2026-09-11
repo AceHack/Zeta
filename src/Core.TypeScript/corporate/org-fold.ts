@@ -850,6 +850,8 @@ export interface ActionItem {
   readonly raisedAtMs: number;
   /** Absent while OPEN. */
   readonly settled?: { readonly outcome: string; readonly how: string; readonly byHatId?: string; readonly atMs: number };
+  /** The latest time it was weighed and left open, and why. The item is still open. */
+  readonly deferred?: { readonly why: string; readonly byHatId?: string; readonly atMs: number };
 }
 
 /**
@@ -876,6 +878,10 @@ export function foldActionItems(events: readonly OrgEvent[]): ReadonlyMap<string
         ...(f.author === undefined ? {} : { author: f.author }),
         raisedAtMs: event.atMs,
       });
+    } else if (f?.kind === "action_item_deferred") {
+      const item = byId.get(f.actionItemId);
+      if (item === undefined || item.settled !== undefined) continue;
+      byId.set(f.actionItemId, { ...item, deferred: { why: f.why, ...(f.byHatId === undefined ? {} : { byHatId: f.byHatId }), atMs: event.atMs } });
     } else if (f?.kind === "action_item_settled") {
       const item = byId.get(f.actionItemId);
       if (item === undefined) continue;

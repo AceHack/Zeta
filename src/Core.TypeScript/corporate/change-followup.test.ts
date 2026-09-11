@@ -41,6 +41,16 @@ describe("ACTION ITEMS FOLD IDEMPOTENTLY FROM THE LOG", () => {
   const settled = (id: string): OrgEvent =>
     ({ id: `s-${id}`, kind: "change_projected", subjectId: "task-24", decision: "", atMs: 50, supervisorChain: [], fact: { kind: "action_item_settled", workId: "task-24", actionItemId: id, outcome: "addressed", how: "renamed" } }) as unknown as OrgEvent;
 
+  test("A DEFERRAL KEEPS THE ITEM OPEN AND KEEPS ITS REASON - 'left open' never reads like 'never looked at'", () => {
+    const deferred = { id: "d-1", kind: "change_projected", subjectId: "task-24", decision: "", atMs: 40, supervisorChain: [], fact: { kind: "action_item_deferred", workId: "task-24", actionItemId: "gitlab:n2", why: "a backfill is a product decision", byHatId: "tech_lead" } } as unknown as OrgEvent;
+    const open = openActionItems([raised("gitlab:n2", 30), deferred]).get("task-24") ?? [];
+    expect(open.map((i) => i.actionItemId)).toEqual(["gitlab:n2"]);
+    expect(open[0]?.deferred).toMatchObject({ why: "a backfill is a product decision", byHatId: "tech_lead" });
+    // A deferral arriving after a settlement does not reopen or relabel it.
+    const late = { ...deferred, id: "d-2", atMs: 60, fact: { ...(deferred as unknown as { fact: object }).fact, actionItemId: "gitlab:n1" } } as unknown as OrgEvent;
+    expect(openActionItems([raised("gitlab:n1", 10), settled("gitlab:n1"), late]).get("task-24")).toBeUndefined();
+  });
+
   test("the same event delivered twice is one item; a settle closes it; a settle for an unknown id invents nothing", () => {
     const events = [raised("gitlab:n1", 10), raised("gitlab:n1", 20), raised("gitlab:n2", 30), settled("gitlab:n1"), settled("gitlab:nope")];
     expect(foldActionItems(events).get("task-24")?.length).toBe(2);
