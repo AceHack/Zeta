@@ -647,14 +647,6 @@ export function fidelityLine(f: RunFidelity): string {
 }
 
 /**
- * The same set, plus a record of which ports were actually called.
- *
- * A wrapper rather than a flag inside each adapter: an adapter that counted its own calls would be
- * a fact each of the fourteen adapters could get wrong independently, and three of them would
- * quietly not have it. Here there is one place to be right about, and `invoked()` is the only way
- * to learn the answer — so it cannot drift from what actually ran.
- */
-/**
  * Every method a change-control port carries beyond `open` and `merge`, wrapped so each call is
  * recorded. Generic on purpose: a wrapper rebuilt field by field silently amputates whatever optional
  * method its author did not list, and every caller guards with `port.x !== undefined`, so the feature
@@ -673,6 +665,14 @@ function optionalChangeMethods(port: ChangeControlPort, mark: () => void): Parti
   return out as Partial<ChangeControlPort>;
 }
 
+/**
+ * The same set, plus a record of which ports were actually called.
+ *
+ * A wrapper rather than a flag inside each adapter: an adapter that counted its own calls would be
+ * a fact each of the fourteen adapters could get wrong independently, and three of them would
+ * quietly not have it. Here there is one place to be right about, and `invoked()` is the only way
+ * to learn the answer — so it cannot drift from what actually ran.
+ */
 export function recordingProviders(set: ProviderSet): {
   readonly providers: ProviderSet;
   invoked(): readonly Port[];

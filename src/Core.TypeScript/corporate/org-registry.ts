@@ -123,6 +123,22 @@ export interface WebhookConfig {
   readonly acceptTypes?: readonly string[];
   /** Where the delivery's type lives, e.g. `action`. Needed to use `acceptTypes`. */
   readonly typePath?: string;
+  /**
+   * What this endpoint is FOR — new work, or feedback on work already handed off.
+   *
+   * Absent means `intake`, which is the shape every webhook had before feedback
+   * existed, so a registry written earlier keeps meaning what it meant.
+   *
+   * THE SAME FIELD ALREADY EXISTS on `webhook-intake.ts`'s `WebhookConfig`, which
+   * is what `serve-hooks` builds and routes on (`purpose === "change_feedback"`
+   * decides whether a delivery becomes an action item and whether the endpoint is
+   * served at all). It was missing HERE, on the record that endpoint is read
+   * FROM — so the feature was wired through the server and not through its own
+   * input, and `w.purpose` did not typecheck at the one line that copies the
+   * configured value across. Adding it here is what makes the configuration
+   * reachable rather than merely representable.
+   */
+  readonly purpose?: "intake" | "change_feedback";
 }
 
 export interface OrgRecord {

@@ -1561,29 +1561,6 @@ function priorObservationsFrom(storeDir: string | undefined): readonly Reputatio
 }
 
 /**
- * Settings the operator already configured, applied to this run.
- *
- * ── THE DEFECT THIS CLOSES ───────────────────────────────────────────────────
- * `org create` records an organization's store, its intake mode, its AUTONOMY, its human
- * checkpoints and its skill bindings — and `run-org` read NONE of it. There was no `--org` flag at
- * all: every setting had to be retyped as a flag on every run, and any that was not retyped simply
- * did not apply. An organization created `--autonomy autonomous --checkpoint cost_approval` ran
- * fully agentic, in whatever store the command line happened to name, because nothing connected the
- * configuration surface to the runtime. Configuration that the thing being configured never reads
- * is not configuration; it is a note to nobody.
- *
- * ── AUTONOMY DECIDES WHETHER THE RUN CONVERGES ───────────────────────────────
- * The autonomy loop existed (`runUntilSettled`, with the right stop reasons) but was opt-in behind
- * `--until N`, so the default was a SINGLE cycle. That is the wrong default for an organization: an
- * org that stops after one pass with work still open has not finished, and a person watching it
- * cannot tell "it is done" from "it stopped". An organization runs until the work is delivered,
- * until it is genuinely blocked, or until it stops making progress — and then says which.
- *
- * So a resolved org CONVERGES by default, and `--until` becomes the bound rather than the switch.
- * An explicit flag always wins: this fills in what the command line left unsaid, and overrides
- * nothing.
- */
-/**
  * The after-the-handoff dependencies, attached to a run's dependency object.
  *
  * WHAT IS HANDED OFF AND WHAT IS OPEN ARE GETTERS OVER THE LOG, not values read once: the autonomy
@@ -1609,6 +1586,29 @@ export function attachAfterHandoff(deps: Record<string, unknown>, args: Args, fe
   if (args.workVerify !== undefined) deps["verifyChange"] = commandVerifier({ command: args.workVerify, args: args.workVerifyArgs, ...budget }, cwd);
 }
 
+/**
+ * Settings the operator already configured, applied to this run.
+ *
+ * ── THE DEFECT THIS CLOSES ───────────────────────────────────────────────────
+ * `org create` records an organization's store, its intake mode, its AUTONOMY, its human
+ * checkpoints and its skill bindings — and `run-org` read NONE of it. There was no `--org` flag at
+ * all: every setting had to be retyped as a flag on every run, and any that was not retyped simply
+ * did not apply. An organization created `--autonomy autonomous --checkpoint cost_approval` ran
+ * fully agentic, in whatever store the command line happened to name, because nothing connected the
+ * configuration surface to the runtime. Configuration that the thing being configured never reads
+ * is not configuration; it is a note to nobody.
+ *
+ * ── AUTONOMY DECIDES WHETHER THE RUN CONVERGES ───────────────────────────────
+ * The autonomy loop existed (`runUntilSettled`, with the right stop reasons) but was opt-in behind
+ * `--until N`, so the default was a SINGLE cycle. That is the wrong default for an organization: an
+ * org that stops after one pass with work still open has not finished, and a person watching it
+ * cannot tell "it is done" from "it stopped". An organization runs until the work is delivered,
+ * until it is genuinely blocked, or until it stops making progress — and then says which.
+ *
+ * So a resolved org CONVERGES by default, and `--until` becomes the bound rather than the switch.
+ * An explicit flag always wins: this fills in what the command line left unsaid, and overrides
+ * nothing.
+ */
 export function withOrgDefaults(args: Args, orgId: string, registryJson: string | undefined): { readonly args: Args } | { readonly reason: string } {
   if (registryJson === undefined) return { reason: `no organization registry found — create one with 'org create --id ${orgId} ...'` };
   const parsed = parseRegistry(registryJson);
