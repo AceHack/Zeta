@@ -784,6 +784,12 @@ export interface LandedChange {
 export function foldLandedChanges(events: readonly OrgEvent[]): ReadonlyMap<string, LandedChange> {
   const out = new Map<string, LandedChange>();
   for (const event of events) {
+    // A MERGE A PERSON UNDID is not landed any more. Both facts stay in the log; the fold reads
+    // them in order, so a later merge of the same work would count again.
+    if (event.fact?.kind === "change_merge_reverted") {
+      out.delete(event.fact.workId);
+      continue;
+    }
     if (event.fact?.kind !== "change_merged") continue;
     const x = event.fact;
     out.set(x.workId, {

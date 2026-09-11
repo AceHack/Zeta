@@ -391,6 +391,17 @@ export type OrgFact =
       readonly commit?: string;
     }
   | {
+      /**
+       * A merge the organization made was UNDONE by a person - reset off the trunk it should never
+       * have reached. Recorded beside `change_merged`, never instead of it: both happened. The
+       * work is no longer landed, so a resumed run treats it as finished-but-not-integrated.
+       */
+      readonly kind: "change_merge_reverted";
+      readonly workId: string;
+      readonly branch: string;
+      readonly reason: string;
+    }
+  | {
       readonly kind: "change_merged";
       readonly workId: string;
       readonly changeId: string;
