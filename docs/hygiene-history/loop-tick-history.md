@@ -1,5 +1,30 @@
 # Loop-tick history
 
+> **FROZEN — closed 2026-04-30, and NOT redundant.** This file is a
+> single Markdown table that was rewritten on every tick close. Per-tick
+> shard files under [`ticks/`](ticks/) replaced it as the write surface on
+> 2026-04-29; the last row here is `2026-04-30T08:08:00Z` and nothing has
+> appended since. **Do not append to it, and do not delete it.**
+>
+> Containment was measured before anyone proposed deleting it (2026-09-11),
+> because the shard README says historical content was *not* migrated and
+> that claim had never been checked:
+>
+> | | |
+> |---|---:|
+> | rows in this table | 212 |
+> | rows with a shard at the same UTC minute | **0** |
+> | rows with any shard on the same day | 21 |
+> | rows with **no shard at all** | **191** |
+>
+> The cutover is clean rather than overlapping: shards begin at
+> `2026-04-29T02:30Z`, and this table's rows for that day stop at
+> `01:55Z`. So 2026-04-21 through 2026-04-27 exists **only here**. The
+> file stays because its history answers a question nothing else can —
+> which is the same test that says a lock file's versions are worth
+> keeping and a `*-latest` pointer's are not. Its *churn*, not its
+> content, was the defect, and the churn ended in April.
+
 Durable fire-log for the autonomous-loop tick. Appended to by
 every Claude instance running the loop, immediately before the
 end-of-tick `CronList` call (per `docs/AUTONOMOUS-LOOP.md`

@@ -1,0 +1,14 @@
+{
+  "id": "080d0489cedaf010a0130008447438e6",
+  "at": "2026-09-11T16:08:03.166Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M28KKPTX087G0R002ZACT29",
+    "type": "task",
+    "title": "Prove containment before retiring loop-tick-history.md and BACKLOG.md — both stay, and the documented path back to churn is closed",
+    "slug": "prove-containment-before-retiring-loop-tick-history-md-and-b",
+    "priority": "P2",
+    "filename": "081M28KKPTX087G0R002ZACT29-prove-containment-before-retiring-loop-tick-history-md-and-b.md"
+  }
+}

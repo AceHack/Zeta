@@ -103,10 +103,10 @@ H1-first-only shards, the
 tool prepends a placeholder pipe-row above the existing body,
 preserving substantive content while satisfying the validator.
 
-A generator script (follow-up work) collates shards into the
-legacy table on cadence; until that lands, the legacy table is
-the authoritative read surface and shards are the authoritative
-write surface — both are canonical.
+Shards are the authoritative write surface; the legacy table is
+the authoritative read surface for pre-2026-04-29 ticks only, and
+is frozen. No generator writes it — see "Composition with the
+legacy table" below for why a cadenced collator was ruled out.
 
 ### Optional body metadata (081KR2E4K0008QG0R002S3FDXN and related)
 
@@ -230,37 +230,63 @@ Density depends on whether material state changes happened.
 
 ## Composition with the legacy table
 
-For the gap before the generator script lands, the legacy table
-at `docs/hygiene-history/loop-tick-history.md` remains the
-canonical READ surface for past history, and new shards in this
-directory become the canonical WRITE surface for new ticks.
+The legacy table at `docs/hygiene-history/loop-tick-history.md`
+is **FROZEN**. Its last row is `2026-04-30T08:08:00Z`; shards took
+over the write surface on 2026-04-29 and nothing has appended to
+it since. It remains the READ surface for pre-shard ticks, and
+measurement (2026-09-11) confirms it has to: **191 of its 212 rows
+have no shard at all**, and **zero** rows have a shard at the same
+UTC minute. It is not a projection of this directory. It is the
+only copy of 2026-04-21 .. 2026-04-27.
 
-Future generator behavior:
+**A collator must never write it — and that reverses what this
+section used to say.** Earlier text here specified a generator
+whose step 4 was *"Append to docs/hygiene-history/loop-tick-history.md"*
+on a post-merge or daily cadence. That is a single file rewritten
+on a cadence in a repository where history is forever, which is
+the exact shape this directory was created to escape; the table
+already carries 696 committed versions of itself. Running that
+generator would have re-created the hotspot at the projection
+layer with a cron attached, and the old text's own mitigation —
+*"run it on a separate cadence, not on every tick PR"* — only
+changes how often the rewrite happens, never that it happens.
+
+Aaron 2026-09-11 states the general rule:
+
+> *"any time a single file is getting written over and over and
+> over on some cadence that's a huge smell on github where history
+> is forever"*, and the shape to prefer is *"one per event ... in
+> dated folders so we don't end up with too many files in one
+> folder."*
+
+Which is precisely `ticks/YYYY/MM/DD/HHMMZ.md`. This directory is
+already the answer; a cadenced projection back into one file would
+be the question returning.
+
+**If a collated view is ever wanted**, the sanctioned shapes are
+the ones that leave no rewritten file behind:
 
 ```text
-Generator (cadence: post-merge or daily):
+Collator (on demand, NOT on a cadence):
   1. Read all shards under docs/hygiene-history/ticks/**/*.md
-  2. Sort by parsed timestamp prefix (HHMMZ or HHMMSSZ-...).
-     Raw filename sort is incorrect when both forms coexist
-     in a single day (HHMMSSZ-... sorts before same-minute
-     HHMMZ.md lexicographically, despite being later).
-  3. Format as legacy-table rows
-  4. Append to docs/hygiene-history/loop-tick-history.md
-  5. Optionally retire shards older than N days to a compressed archive
+  2. Sort by PARSED timestamp prefix, never raw filename sort
+     (HHMMSSZ-... sorts before same-minute HHMMZ.md
+     lexicographically, despite being later in real time).
+  3. Emit to STDOUT, or to a gitignored path, or to a per-run
+     dated artifact -- one file per run, never one file rewritten.
+  4. Do NOT touch docs/hygiene-history/loop-tick-history.md.
 ```
 
-The generator is follow-up work tracked under task #276.
-
-**Generator cadence rule** (the danger to avoid): if the
-generator regenerates the legacy table on EVERY shard PR, the
-EOF append-hotspot returns as generated-output contention. The
-generator MUST run on a separate cadence (post-merge cron OR
-single scheduled PR daily/weekly), NOT on every tick PR.
+The distinction that decides it: **does this file's history answer
+a question nothing else can?** The shards answer it; a table
+regenerated from them answers nothing its inputs do not already
+record, so every version of that table is noise that a clone pays
+for forever.
 
 ```text
-Shard files are the canonical WRITE surface (per-tick).
-Generated table is a READ surface (cadenced).
-The hotspot returns iff the read surface tries to be a write surface.
+Shard files are the canonical WRITE surface (per-tick, one per event).
+A collated table is a VIEW -- regenerate it, never commit versions of it.
+The hotspot returns iff a derived view is given a cadence and a file.
 ```
 
 ## Why per-tick rather than per-day or per-PR
@@ -302,6 +328,9 @@ schema and reconciliation protocol (081KQJZR90008QG0R002GJAJ19 AC #4, 2026-05-10
 
 The legacy table at `docs/hygiene-history/loop-tick-history.md`
 is NOT migrated to shard files. Pre-2026-04-29-shard ticks stay
-in the legacy table. Post-shard ticks go in shards. The
-generator (follow-up) collates shards into the legacy table to
-preserve the single-table read experience.
+in the legacy table. Post-shard ticks go in shards. **Measured
+2026-09-11: 191 of the table's 212 rows have no shard at all, so
+"not migrated" is literal — the table is the sole copy of that
+content and deleting it would lose it.** No generator writes the
+table back; the single-table read experience is not worth a file
+rewritten on a cadence.
