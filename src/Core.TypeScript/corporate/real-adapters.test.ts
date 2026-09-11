@@ -40,6 +40,7 @@ import { gitDataSource } from "./git-data-source";
 import { foldActionItems, foldHandedOffChanges, foldLandedChanges } from "./org-fold";
 import type { OrgEvent } from "./org-event";
 import type { AnswerItem, AnswerRequest } from "./change-followup";
+import type { DescribeRequest } from "./change-request";
 import { Fidelity, Port } from "./providers";
 
 const chart = (() => {
@@ -1025,10 +1026,14 @@ describe("AFTER THE HANDOFF: THE REQUEST SAYS WHAT THE ORGANIZATION CONFIGURED, 
           evidence: [],
         };
       };
+      const described: DescribeRequest[] = [];
       const second = await runAgainst(repo, realInbox(), { change: change() }, {
         settings: [],
         changeRequests,
-        describeChange: fullDescription,
+        describeChange: async (req: DescribeRequest) => {
+          described.push(req);
+          return fullDescription();
+        },
         priorCascade: first.cascade,
         alreadyHandedOff: new Set(handed.keys()),
         handedOffChanges: handed,
@@ -1067,6 +1072,10 @@ describe("AFTER THE HANDOFF: THE REQUEST SAYS WHAT THE ORGANIZATION CONFIGURED, 
       const items = foldActionItems(events).get(workId) ?? [];
       expect(items.length).toBe(2);
       expect(items.every((i) => i.settled?.outcome === "addressed")).toBe(true);
+
+      // THE REWRITTEN DESCRIPTION IS TOLD WHAT REVIEWERS WERE ANSWERED - MEASURED on MR !162, a reply
+      // pointed at a rollout note the re-written description never carried.
+      expect(described.at(-1)?.settled).toContainEqual({ summary: "please add a comment explaining the race", outcome: "addressed", how: "explained the race; merged main in" });
 
       // ANSWERED ONLY AFTER THE PUSH, citing the commit that was pushed, and resolved as configured.
       const branchHead = git(repo, "rev-parse", branch).trim();

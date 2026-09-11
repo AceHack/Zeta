@@ -594,6 +594,16 @@ if (mode === "describe") {
     "what is asked of it:",
     "",
     env.ORG_MR_SECTIONS,
+    ...(env.ORG_MR_SETTLED
+      ? [
+          "",
+          "REVIEWERS HAVE BEEN ANSWERED ON THIS REQUEST, and those answers may point at this description. Each settled",
+          "review item and what the organization told the reviewer is below. Whatever an answer says the request now",
+          "states (a rollout note, a caveat, a limit of the fix, a follow-up that is needed) MUST be in the section it",
+          "belongs to - a reviewer who is told \"see the description\" and finds nothing there has been told something false.",
+          env.ORG_MR_SETTLED,
+        ]
+      : []),
   ].join(NL);
   const schema = {
     type: "object",
@@ -681,6 +691,9 @@ if (mode === "follow-up") {
           ? "An item of kind behind_target means the target moved ahead of this change. You cannot merge it yourself; if the change should be brought level, set `syncWithTarget` and the organization will merge the target in (conflicts come back to you)."
           : "An item of kind behind_target means the target moved ahead. This organization only records that; bringing the change level is not available here, so decide whether anything else needs doing.",
         "Do not push - the organization re-verifies the checkout and updates the request itself.",
+        "You cannot edit the request's description. It is rewritten after you, by an author who is given every decision",
+        "you record here - so if something belongs in the description (a rollout note, a caveat), put it in `how`, and",
+        "never claim the description already says anything.",
       ].join(NL);
   const schema = {
     type: "object",

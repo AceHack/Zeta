@@ -143,6 +143,20 @@ describe("AFTER THE HANDOFF: THE DESCRIPTION AND THE FOLLOW-UP", () => {
     const path = r.stdout.split(/\r?\n/)[0] as string;
     expect(path.endsWith(join("task-9", "change_request.md"))).toBe(true);
     expect(readFileSync(path, "utf-8")).toContain("A race.");
+    // No review answers yet: the description is not told about any.
+    expect(input).not.toContain("REVIEWERS HAVE BEEN ANSWERED");
+    r.cleanup();
+  });
+
+  test("describe on a re-handoff is told what reviewers were answered, and that the description must carry it", () => {
+    // MEASURED on MR !162: a reply said the rollout note was in the description; the rewrite had none.
+    const r = run(["describe", "task-9"], ok({ description: "## Root cause\nA race." }), {
+      ORG_MR_SECTIONS: "## Root cause\nwhy",
+      ORG_MR_SETTLED: "- [addressed] no backfill of old rows\n  told the reviewer: option (b), a rollout note in the description",
+    });
+    const input = r.seen?.input ?? "";
+    expect(input).toContain("REVIEWERS HAVE BEEN ANSWERED ON THIS REQUEST");
+    expect(input).toContain("told the reviewer: option (b), a rollout note in the description");
     r.cleanup();
   });
 

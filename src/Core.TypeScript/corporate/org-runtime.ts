@@ -3701,7 +3701,12 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
    * Hand a change to people. `again` is a follow-up re-pushing work already in front of them: it is
    * reported with the follow-up, never counted as this run's delivery.
    */
-  const handOff = async (workId: string, handle: ChangeHandle, again = false): Promise<boolean> => {
+  const handOff = async (
+    workId: string,
+    handle: ChangeHandle,
+    again = false,
+    settled?: DescribeRequest["settled"],
+  ): Promise<boolean> => {
     const failed = (reason: string): false => {
       refusals.push(reason);
       if (!again) changesUnhandedOff.push(workId);
@@ -3734,6 +3739,7 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
         ...(handle.base === undefined ? {} : { base: handle.base }),
         ...(handle.workdir === undefined ? {} : { workdir: handle.workdir }),
         sections: cr.sections,
+        ...(settled === undefined || settled.length === 0 ? {} : { settled }),
       });
       if (!written.ok) return failed(`the merge request for ${workId} could not be written: ${written.reason}`);
       const missing = missingSections(written.value, cr.sections);
@@ -4105,6 +4111,17 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
       }
 
       const afterRev = providers.change.revision === undefined ? undefined : await providers.change.revision(handle);
+      // WHAT THE DESCRIPTION MUST NOW REFLECT: every review item settled on this change - earlier ones
+      // and this session's - so an answer that points a reviewer at the description is never false.
+      const summaryOf = new Map((allItems.get(workId) ?? []).map((i) => [i.actionItemId, i.summary]));
+      const settledForDescription = [
+        ...(allItems.get(workId) ?? []).flatMap((i) =>
+          i.settled === undefined || accepted.some((d) => d.actionItemId === i.actionItemId)
+            ? []
+            : [{ summary: i.summary, outcome: i.settled.outcome, how: i.settled.how }],
+        ),
+        ...accepted.filter((d) => d.outcome !== "deferred").map((d) => ({ summary: summaryOf.get(d.actionItemId) ?? d.actionItemId, outcome: d.outcome, how: d.how })),
+      ];
       // UNKNOWN IS TREATED AS MOVED: re-verifying a change that did not move costs a run; skipping the
       // verification of one that did would hand people something nobody checked.
       const moved = before?.ok === true && afterRev?.ok === true ? before.value.commit !== afterRev.value.commit : true;
@@ -4117,14 +4134,14 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
         if (!verified.ok) refused.push(`the followed-up change was not handed off again - it does not pass verification: ${verified.reason}`);
         else {
           attempted = true;
-          handedOffAgain = await handOff(workId, handle, true);
+          handedOffAgain = await handOff(workId, handle, true, settledForDescription);
         }
       } else if (accepted.some((d) => d.outcome === "addressed")) {
         // NOTHING MOVED, AND SOMETHING WAS STILL ADDRESSED - an answered question, a description
         // asked to be rewritten. The request is re-described so what people read matches what the
         // organization now says about it; no code changed, so nothing needs verifying again.
         attempted = true;
-        handedOffAgain = await handOff(workId, handle, true);
+        handedOffAgain = await handOff(workId, handle, true, settledForDescription);
       }
       // AN ITEM IS SETTLED ONLY WHEN WHAT SETTLES IT IS IN FRONT OF PEOPLE: an "addressed" comment on a
       // change that was then not pushed has been addressed nowhere a reviewer can see.

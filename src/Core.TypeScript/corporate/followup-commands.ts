@@ -55,6 +55,9 @@ export function commandDescriber(spec: CommandSpec, fallbackCwd: string): (r: De
   return async (r) => {
     const ran = run(spec, ["describe", r.workId], r.workdir ?? fallbackCwd, {
       ORG_MR_SECTIONS: sectionsBrief(r.sections),
+      ...(r.settled === undefined || r.settled.length === 0
+        ? {}
+        : { ORG_MR_SETTLED: r.settled.map((s) => `- [${s.outcome}] ${s.summary.split(/\s+/).join(" ").slice(0, 200)}\n  told the reviewer: ${s.how.split(/\s+/).join(" ")}`).join("\n") }),
       ORG_MR_TITLE: r.title,
       ORG_BRANCH: r.branch,
       ...(r.base === undefined ? {} : { ORG_BASE: r.base }),

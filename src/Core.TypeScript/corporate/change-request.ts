@@ -210,4 +210,10 @@ export interface DescribeRequest {
   /** The change's own checkout, where its diff can be read. */
   readonly workdir?: string;
   readonly sections: readonly ChangeRequestSection[];
+  /**
+   * Review items already settled on this change, and what the reviewer was (or will be) told. MEASURED
+   * on MR !162: a reply said "the rollout note is now appended to the description", and the description
+   * - rewritten from scratch on the re-handoff by an author who never saw that decision - had none.
+   */
+  readonly settled?: readonly { readonly summary: string; readonly outcome: string; readonly how: string }[];
 }
