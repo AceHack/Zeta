@@ -1,0 +1,14 @@
+{
+  "id": "080d048e8dc67010a0130008707af1a7",
+  "at": "2026-09-11T18:53:55.790Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M28X3E6E087G0R001Q58WVJ",
+    "type": "task",
+    "title": "Gate jobs on graph-derived affected legs instead of hand-written path filters",
+    "slug": "gate-jobs-on-graph-derived-affected-legs-instead-of-hand-wri",
+    "priority": "P2",
+    "filename": "081M28X3E6E087G0R001Q58WVJ-gate-jobs-on-graph-derived-affected-legs-instead-of-hand-wri.md"
+  }
+}

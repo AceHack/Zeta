@@ -974,7 +974,12 @@ export function parseMatrixAudits(yamlText: string): string[] | null {
   let listAt = -1;
   for (let i = jobAt + 1; i < lines.length; i++) {
     const l = lines[i]!;
-    if (/^  \S/.test(l)) break; // next job at two-space indent
+    // A COMMENT IS NOT THE NEXT JOB. `/^  \S/` matches `  # ...` too, so a comment
+    // written at job indent inside this job ended the walk early and `parseMatrixAudits`
+    // returned null — which reads as "gate.yml has no matrix" and failed seven tests at
+    // once. Tripped for real on 2026-09-11 by a note added above this job's `name:`.
+    if (/^ {2}#/.test(l)) continue;
+    if (/^ {2}\S/.test(l)) break; // next job at two-space indent
     if (/^\s+audit:\s*$/.test(l)) {
       listAt = i;
       break;

@@ -1,0 +1,14 @@
+{
+  "id": "080d048e8dc5b010a013000892cad226",
+  "at": "2026-09-11T18:53:55.766Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M28X3E5P087G0R0004S8JJY",
+    "type": "bug",
+    "title": "A verification leg cannot be derived from which targets produce the artifact",
+    "slug": "a-verification-leg-cannot-be-derived-from-which-targets-prod",
+    "priority": "P2",
+    "filename": "081M28X3E5P087G0R0004S8JJY-a-verification-leg-cannot-be-derived-from-which-targets-prod.md"
+  }
+}

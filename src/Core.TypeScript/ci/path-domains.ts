@@ -1,5 +1,20 @@
 // src/Core.TypeScript/ci/path-domains.ts
 //
+// NO LONGER THE CI SELECTOR — this is the LOCAL classifier now (2026-09-11).
+//
+// `gate.yml` gated its five language lints on this file's per-domain vector. It now
+// selects every job from `ace/build-graph.json` instead (path-filter's `legs` output),
+// because the graph states the same thing and is the authority `lint (build-graph
+// completeness)` already checks — so this map was a second copy, and a second copy of a
+// change->job map drifts by construction.
+//
+// It is KEPT because `ci/local-checks.ts` has no graph query available to it: the local
+// runner answers "which checks apply to my working tree" without spawning the affected-set
+// query. That leaves two classifiers that can disagree, which is a real cost and is named
+// here rather than left for someone to find: converging `local-checks.ts` onto the graph is
+// follow-on work under 081M28X3E6E087G0R001Q58WVJ. Until then CI's answer is authoritative
+// and this one is an approximation for local convenience.
+//
 // WHICH CHECKS CAN A DIFF POSSIBLY AFFECT?
 //
 // ═══════════════════════════════════════════════════════════════════════════

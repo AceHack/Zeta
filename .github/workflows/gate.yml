@@ -228,21 +228,33 @@ jobs:
     timeout-minutes: 15
     outputs:
       code: ${{ steps.detect.outputs.code || steps.nonpr.outputs.code }}
-      # PER-DOMAIN vector. `code` is one scalar for "does the F# matrix need to
-      # run"; these say WHICH language lints a diff can possibly affect.
+      # THE AFFECTED-SET VERDICT, as one JSON object keyed by job slug:
+      #   {"gate_lint_fsharp":true,"gate_build_and_test":false,...}
       #
-      # FAIL CLOSED, and the `|| 'true'` tail is the mechanism: if `detect` did
-      # not run, could not run, or emitted nothing, every consumer sees `true`
-      # and runs. Absence of a verdict is never absence of a check.
-      # (`'false'` is a non-empty string and therefore truthy to `||`, so a
-      # genuine false verdict is passed through and only emptiness falls back.)
-      csharp: ${{ steps.detect.outputs.csharp || steps.nonpr.outputs.csharp || 'true' }}
-      fsharp: ${{ steps.detect.outputs.fsharp || steps.nonpr.outputs.fsharp || 'true' }}
-      go: ${{ steps.detect.outputs.go || steps.nonpr.outputs.go || 'true' }}
-      markdown: ${{ steps.detect.outputs.markdown || steps.nonpr.outputs.markdown || 'true' }}
-      python: ${{ steps.detect.outputs.python || steps.nonpr.outputs.python || 'true' }}
-      rust: ${{ steps.detect.outputs.rust || steps.nonpr.outputs.rust || 'true' }}
-      workflows: ${{ steps.detect.outputs.workflows || steps.nonpr.outputs.workflows || 'true' }}
+      # The KEYS come from `ace/build-graph.json` at run time, so this file never
+      # carries a roster of them -- a hand-written list here would be a second copy
+      # of the graph and would drift the moment a target is added. Consumers read
+      # ONE key each:
+      #
+      #   if: fromJSON(needs.path-filter.outputs.legs).gate_lint_fsharp != false
+      #
+      # FAIL CLOSED, twice over, and neither guard is a convention a reader has to
+      # remember:
+      #   * `|| '{}'` here -- a `detect` that did not run, could not run, or emitted
+      #     nothing yields an empty object.
+      #   * `!= false` there -- a leg that is absent from the object reads as `null`,
+      #     and `null != false` is TRUE, so the job RUNS. A new job, a typo, a graph
+      #     that lost a target: every one of them does the work rather than skipping
+      #     it. Absence of a verdict is never absence of a check.
+      #
+      # This REPLACED the per-domain vector (`csharp`/`fsharp`/`go`/...) that gated
+      # the five language lints. That vector was a hand-maintained path->domain map
+      # in `ci/path-domains.ts`; the graph states the same thing and is already the
+      # authority `lint (build-graph completeness)` checks. `path-domains.ts` is kept
+      # for `ci/local-checks.ts`, the LOCAL working-tree runner, which has no graph
+      # query available to it; converging those two is follow-on work and is named in
+      # that file's header rather than left implied.
+      legs: ${{ steps.detect.outputs.legs || steps.nonpr.outputs.legs || '{}' }}
     steps:
       # Fast-path for non-PR events: emit code=true without cloning
       # the repo. Push-to-main / merge_group / workflow_dispatch all
@@ -261,11 +273,13 @@ jobs:
           # from main-tip CI -- the same invariant `code=true` holds.
           # One block redirect rather than eight: shellcheck SC2129, and it is
           # also the honest shape, since these lines are one emission.
+          # `legs={}` is the RUN-EVERYTHING value, not a missing one: every
+          # `fromJSON(...).<leg>` lookup against it is null, and `null != false`
+          # is true, so no consumer skips. Same invariant as `code=true` above --
+          # path-filter is never the mechanism that hides a change from main-tip CI.
           {
             echo "code=true"
-            for d in csharp fsharp go markdown python rust workflows; do
-              echo "${d}=true"
-            done
+            echo "legs={}"
           } >> "$GITHUB_OUTPUT"
 
       - name: Checkout
@@ -460,21 +474,44 @@ jobs:
           # The classifier runs from the BASE checkout (`ref: base.sha` above),
           # so it is main's code, not the contributor's. If it is absent -- a PR
           # whose base predates it -- every domain is forced ON.
-          CLASSIFIER="src/Core.TypeScript/ci/path-domains.ts"
-          if [ ! -f "${CLASSIFIER}" ]; then
-            echo "No ${CLASSIFIER} in the base tree — forcing every domain ON (fail closed)."
-            for d in csharp fsharp go markdown python rust workflows; do
-              echo "${d}=true" >> "$GITHUB_OUTPUT"
-            done
-          elif ! printf '%s\n' "${CHANGED}" | bun "${CLASSIFIER}" > /tmp/domains.txt; then
-            echo "Classifier failed — forcing every domain ON (fail closed)."
-            for d in csharp fsharp go markdown python rust workflows; do
-              echo "${d}=true" >> "$GITHUB_OUTPUT"
-            done
+          # WHICH JOBS THIS DIFF CAN AFFECT, derived from `ace/build-graph.json`
+          # at run time. Nothing here is a hand-written path->job map; this step
+          # asks the graph and publishes the answer as the `legs` output above.
+          #
+          # `affected-legs.ts` already fails SAFE on its own errors -- it catches,
+          # emits `mode=full`, and turns every leg on. The two branches below cover
+          # the cases it cannot catch from inside itself: it is not in the base
+          # tree at all (a PR whose base predates it), or the process did not run.
+          # Both emit `legs={}`, which is the run-everything value.
+          SELECTOR="src/Core.TypeScript/ci/affected-legs.ts"
+          printf '%s\n' "${CHANGED}" > /tmp/changed-paths.txt
+          if [ ! -f "${SELECTOR}" ]; then
+            echo "No ${SELECTOR} in the base tree — emitting legs={} (fail closed: every job runs)."
+            echo "legs={}" >> "$GITHUB_OUTPUT"
+          elif ! bun "${SELECTOR}" --changed /tmp/changed-paths.txt --github-output > /tmp/legs.txt 2>&1; then
+            echo "Selector failed — emitting legs={} (fail closed: every job runs). Its output:"
+            sed 's/^/  /' /tmp/legs.txt || true
+            echo "legs={}" >> "$GITHUB_OUTPUT"
           else
-            echo "Domain vector:"
-            sed 's/^/  /' /tmp/domains.txt
-            cat /tmp/domains.txt >> "$GITHUB_OUTPUT"
+            echo "Affected legs for this change:"
+            sed 's/^/  /' /tmp/legs.txt
+            # TWO PREDICATES DECIDE build-and-test, SO THE IMPLICATION IS CHECKED HERE.
+            # Its JOB runs when `leg_gate_build_and_test` is on; its STEPS run when
+            # `code` is true. If the leg were ever on while `code` was false, the job
+            # would start, skip every step, and report success -- a vacuous green on the
+            # largest job in the uncompensatable floor.
+            #
+            # `leg => code` holds today because everything the graph routes to
+            # build-and-test falls through `HAS_CODE`'s deny-list above. That is an
+            # argument, and arguments rot. Both values exist right here, in this step,
+            # so the implication is a CHECK rather than a comment -- and it costs one
+            # grep. Failing closed: path-filter going red makes every downstream skip
+            # BLOCKING under gate-skip-verdict.ts, which is the correct response to
+            # "the selector and the filter disagree about the same diff".
+            if grep -qx 'leg_gate_build_and_test=true' /tmp/legs.txt && [ "${HAS_CODE}" != "true" ]; then
+              echo "::error::build-and-test's leg is ON but code=false. The job would run and skip every step, reporting a green that checked nothing. Either the graph routes a path here that HAS_CODE calls docs-only, or HAS_CODE's allow-list grew. Fix whichever is wrong; do not relax this."
+              exit 1
+            fi
           fi
 
   build-and-test:
@@ -564,6 +601,13 @@ jobs:
     name: build-and-test (${{ matrix.os }})
     timeout-minutes: 45
     needs: [matrix-setup, path-filter]
+    # The job-level gate. Its steps ALSO check `outputs.code`, so two predicates
+    # decide this job -- and if the leg were ever true while `code` was false, the
+    # job would run, skip every step, and report success: a vacuous green on the
+    # largest floor job. The implication `leg => code` holds today (everything the
+    # graph routes here falls through `HAS_CODE`'s deny-list), and `detect` now
+    # REFUSES when it does not, rather than leaving it as an argument in a comment.
+    if: fromJSON(needs.path-filter.outputs.legs).gate_build_and_test != false
     # ── THIS FLAG IS A CLASSIFICATION, NOT AN ACCOMMODATION. DO NOT "FIX" IT. ───────
     #
     # Settled 2026-08-19 by the maintainer (Aaron), verbatim:
@@ -926,6 +970,12 @@ jobs:
     # PinnedDependenciesID #17 + #18 (pip install --upgrade pip + pip
     # install semgrep) by removing the unpinned pip-bootstrap surface
     # entirely.
+    needs: [path-filter]
+    # SELECTED FROM THE GRAPH, not from a hand-written path list. `legs` is
+    # `ace/build-graph.json`'s answer for this diff; `!= false` is the fail-closed
+    # half -- a leg the selector never emitted reads as `null`, and `null != false`
+    # is true, so an unknown job RUNS. See path-filter's `legs` output.
+    if: fromJSON(needs.path-filter.outputs.legs).gate_lint != false
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -1013,6 +1063,12 @@ jobs:
     timeout-minutes: 20
     runs-on: ubuntu-24.04
 
+    needs: [path-filter]
+    # SELECTED FROM THE GRAPH, not from a hand-written path list. `legs` is
+    # `ace/build-graph.json`'s answer for this diff; `!= false` is the fail-closed
+    # half -- a leg the selector never emitted reads as `null`, and `null != false`
+    # is true, so an unknown job RUNS. See path-filter's `legs` output.
+    if: fromJSON(needs.path-filter.outputs.legs).gate_lint_semgrep_drift != false
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -1080,6 +1136,12 @@ jobs:
     runs-on: ubuntu-24.04
     # No continue-on-error: this job now blocks the gate (see the note above).
 
+    needs: [path-filter]
+    # SELECTED FROM THE GRAPH, not from a hand-written path list. `legs` is
+    # `ace/build-graph.json`'s answer for this diff; `!= false` is the fail-closed
+    # half -- a leg the selector never emitted reads as `null`, and `null != false`
+    # is true, so an unknown job RUNS. See path-filter's `legs` output.
+    if: fromJSON(needs.path-filter.outputs.legs).gate_lint_yaml_k8s != false
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -1290,6 +1352,12 @@ jobs:
     timeout-minutes: 12
     runs-on: ubuntu-24.04
 
+    needs: [path-filter]
+    # SELECTED FROM THE GRAPH, not from a hand-written path list. `legs` is
+    # `ace/build-graph.json`'s answer for this diff; `!= false` is the fail-closed
+    # half -- a leg the selector never emitted reads as `null`, and `null != false`
+    # is true, so an unknown job RUNS. See path-filter's `legs` output.
+    if: fromJSON(needs.path-filter.outputs.legs).gate_lint_shell != false
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -1446,6 +1514,12 @@ jobs:
     timeout-minutes: 15
     runs-on: ubuntu-24.04
 
+    needs: [path-filter]
+    # SELECTED FROM THE GRAPH, not from a hand-written path list. `legs` is
+    # `ace/build-graph.json`'s answer for this diff; `!= false` is the fail-closed
+    # half -- a leg the selector never emitted reads as `null`, and `null != false`
+    # is true, so an unknown job RUNS. See path-filter's `legs` output.
+    if: fromJSON(needs.path-filter.outputs.legs).gate_lint_bash_retirement_inventory != false
     steps:
       - name: Checkout
         id: checkout
@@ -2089,6 +2163,12 @@ jobs:
     timeout-minutes: 15
     runs-on: ubuntu-24.04
 
+    needs: [path-filter]
+    # SELECTED FROM THE GRAPH, not from a hand-written path list. `legs` is
+    # `ace/build-graph.json`'s answer for this diff; `!= false` is the fail-closed
+    # half -- a leg the selector never emitted reads as `null`, and `null != false`
+    # is true, so an unknown job RUNS. See path-filter's `legs` output.
+    if: fromJSON(needs.path-filter.outputs.legs).gate_lint_workflows != false
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -2130,6 +2210,12 @@ jobs:
     timeout-minutes: 12
     runs-on: ubuntu-24.04
 
+    needs: [path-filter]
+    # SELECTED FROM THE GRAPH, not from a hand-written path list. `legs` is
+    # `ace/build-graph.json`'s answer for this diff; `!= false` is the fail-closed
+    # half -- a leg the selector never emitted reads as `null`, and `null != false`
+    # is true, so an unknown job RUNS. See path-filter's `legs` output.
+    if: fromJSON(needs.path-filter.outputs.legs).gate_lint_tick_history_order != false
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -2244,6 +2330,12 @@ jobs:
     timeout-minutes: 15
     runs-on: ubuntu-24.04
 
+    needs: [path-filter]
+    # SELECTED FROM THE GRAPH, not from a hand-written path list. `legs` is
+    # `ace/build-graph.json`'s answer for this diff; `!= false` is the fail-closed
+    # half -- a leg the selector never emitted reads as `null`, and `null != false`
+    # is true, so an unknown job RUNS. See path-filter's `legs` output.
+    if: fromJSON(needs.path-filter.outputs.legs).gate_lint_no_conflict_markers != false
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -2315,6 +2407,12 @@ jobs:
     timeout-minutes: 12
     runs-on: ubuntu-24.04
 
+    needs: [path-filter]
+    # SELECTED FROM THE GRAPH, not from a hand-written path list. `legs` is
+    # `ace/build-graph.json`'s answer for this diff; `!= false` is the fail-closed
+    # half -- a leg the selector never emitted reads as `null`, and `null != false`
+    # is true, so an unknown job RUNS. See path-filter's `legs` output.
+    if: fromJSON(needs.path-filter.outputs.legs).gate_lint_archive_header_section33 != false
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -2383,6 +2481,12 @@ jobs:
     timeout-minutes: 12
     runs-on: ubuntu-24.04
 
+    needs: [path-filter]
+    # SELECTED FROM THE GRAPH, not from a hand-written path list. `legs` is
+    # `ace/build-graph.json`'s answer for this diff; `!= false` is the fail-closed
+    # half -- a leg the selector never emitted reads as `null`, and `null != false`
+    # is true, so an unknown job RUNS. See path-filter's `legs` output.
+    if: fromJSON(needs.path-filter.outputs.legs).gate_lint_section_33_migration_xrefs != false
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -2463,6 +2567,12 @@ jobs:
     # drive-by change.
     runs-on: ubuntu-24.04
 
+    needs: [path-filter]
+    # SELECTED FROM THE GRAPH, not from a hand-written path list. `legs` is
+    # `ace/build-graph.json`'s answer for this diff; `!= false` is the fail-closed
+    # half -- a leg the selector never emitted reads as `null`, and `null != false`
+    # is true, so an unknown job RUNS. See path-filter's `legs` output.
+    if: fromJSON(needs.path-filter.outputs.legs).gate_lint_tick_shard_relative_paths != false
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -2518,6 +2628,12 @@ jobs:
     timeout-minutes: 5
     runs-on: ubuntu-24.04
 
+    needs: [path-filter]
+    # SELECTED FROM THE GRAPH, not from a hand-written path list. `legs` is
+    # `ace/build-graph.json`'s answer for this diff; `!= false` is the fail-closed
+    # half -- a leg the selector never emitted reads as `null`, and `null != false`
+    # is true, so an unknown job RUNS. See path-filter's `legs` output.
+    if: fromJSON(needs.path-filter.outputs.legs).gate_build_graph_completeness != false
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -2527,6 +2643,14 @@ jobs:
 
       - name: Graph is complete over the CI domain (fails closed)
         run: bun src/Core.TypeScript/hygiene/audit-build-graph-completeness.ts
+      # The audit above proves the GRAPH is complete. This one proves gate.yml's job
+      # selectors agree with it: every `fromJSON(...).<slug>` names a leg that exists,
+      # every job the graph can select is either gated or on a reasoned roster, and no
+      # job is gated on another job's slug. All three failures are silent otherwise --
+      # the first two leave a job running forever with nobody noticing the selection is
+      # gone, and the third skips a job whose own leg said run.
+      - name: gate.yml's job selectors agree with the graph (081M28X3E6E087G0R001Q58WVJ)
+        run: bun src/Core.TypeScript/ci/gate-leg-wiring.ts
 
       # Manifesto §1 for repo topology: `ace` may be the good resolution path and
       # may never be the only one. Guarded here rather than later because the guard
@@ -2629,6 +2753,12 @@ jobs:
     timeout-minutes: 5
     runs-on: ubuntu-24.04
 
+    needs: [path-filter]
+    # SELECTED FROM THE GRAPH, not from a hand-written path list. `legs` is
+    # `ace/build-graph.json`'s answer for this diff; `!= false` is the fail-closed
+    # half -- a leg the selector never emitted reads as `null`, and `null != false`
+    # is true, so an unknown job RUNS. See path-filter's `legs` output.
+    if: fromJSON(needs.path-filter.outputs.legs).gate_lint_structural_hygiene != false
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -2838,6 +2968,12 @@ jobs:
     timeout-minutes: 5
     runs-on: ubuntu-24.04
 
+    needs: [path-filter]
+    # SELECTED FROM THE GRAPH, not from a hand-written path list. `legs` is
+    # `ace/build-graph.json`'s answer for this diff; `!= false` is the fail-closed
+    # half -- a leg the selector never emitted reads as `null`, and `null != false`
+    # is true, so an unknown job RUNS. See path-filter's `legs` output.
+    if: fromJSON(needs.path-filter.outputs.legs).gate_lint_no_empty_dirs != false
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -2913,6 +3049,12 @@ jobs:
     timeout-minutes: 12
     runs-on: ubuntu-24.04
 
+    needs: [path-filter]
+    # SELECTED FROM THE GRAPH, not from a hand-written path list. `legs` is
+    # `ace/build-graph.json`'s answer for this diff; `!= false` is the fail-closed
+    # half -- a leg the selector never emitted reads as `null`, and `null != false`
+    # is true, so an unknown job RUNS. See path-filter's `legs` output.
+    if: fromJSON(needs.path-filter.outputs.legs).gate_lint_markdown != false
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -2975,6 +3117,12 @@ jobs:
     timeout-minutes: 12
     runs-on: ubuntu-24.04
 
+    needs: [path-filter]
+    # SELECTED FROM THE GRAPH, not from a hand-written path list. `legs` is
+    # `ace/build-graph.json`'s answer for this diff; `!= false` is the fail-closed
+    # half -- a leg the selector never emitted reads as `null`, and `null != false`
+    # is true, so an unknown job RUNS. See path-filter's `legs` output.
+    if: fromJSON(needs.path-filter.outputs.legs).gate_lint_typescript != false
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -3053,6 +3201,12 @@ jobs:
     name: lint (twitch-ai app)
     timeout-minutes: 12
     runs-on: ubuntu-24.04
+    needs: [path-filter]
+    # SELECTED FROM THE GRAPH, not from a hand-written path list. `legs` is
+    # `ace/build-graph.json`'s answer for this diff; `!= false` is the fail-closed
+    # half -- a leg the selector never emitted reads as `null`, and `null != false`
+    # is true, so an unknown job RUNS. See path-filter's `legs` output.
+    if: fromJSON(needs.path-filter.outputs.legs).gate_lint_twitch_ai != false
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -3101,6 +3255,12 @@ jobs:
     name: lint (identity-dla site)
     timeout-minutes: 12
     runs-on: ubuntu-24.04
+    needs: [path-filter]
+    # SELECTED FROM THE GRAPH, not from a hand-written path list. `legs` is
+    # `ace/build-graph.json`'s answer for this diff; `!= false` is the fail-closed
+    # half -- a leg the selector never emitted reads as `null`, and `null != false`
+    # is true, so an unknown job RUNS. See path-filter's `legs` output.
+    if: fromJSON(needs.path-filter.outputs.legs).gate_lint_identity_dla != false
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -3163,6 +3323,12 @@ jobs:
     name: lint (Renderers/website)
     timeout-minutes: 12
     runs-on: ubuntu-24.04
+    needs: [path-filter]
+    # SELECTED FROM THE GRAPH, not from a hand-written path list. `legs` is
+    # `ace/build-graph.json`'s answer for this diff; `!= false` is the fail-closed
+    # half -- a leg the selector never emitted reads as `null`, and `null != false`
+    # is true, so an unknown job RUNS. See path-filter's `legs` output.
+    if: fromJSON(needs.path-filter.outputs.legs).gate_lint_website != false
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -3221,7 +3387,12 @@ jobs:
     # that would have run immediately. The trade is worth it because the
     # skip is total -- setup included -- and most PRs touch no fsharp at all.
     needs: path-filter
-    if: needs.path-filter.outputs.fsharp == 'true'
+    # WAS `outputs.fsharp == 'true'`, a hand-maintained path->domain map in
+    # `ci/path-domains.ts`. The graph states the same thing and is the authority
+    # `lint (build-graph completeness)` already checks, so the map was a second copy.
+    # Note the polarity flip: `== 'true'` failed OPEN on an unknown value (skip),
+    # `!= false` fails CLOSED (run).
+    if: fromJSON(needs.path-filter.outputs.legs).gate_lint_fsharp != false
     runs-on: ubuntu-24.04
     steps:
       - name: Checkout
@@ -3305,7 +3476,12 @@ jobs:
     # that would have run immediately. The trade is worth it because the
     # skip is total -- setup included -- and most PRs touch no csharp at all.
     needs: path-filter
-    if: needs.path-filter.outputs.csharp == 'true'
+    # WAS `outputs.csharp == 'true'`, a hand-maintained path->domain map in
+    # `ci/path-domains.ts`. The graph states the same thing and is the authority
+    # `lint (build-graph completeness)` already checks, so the map was a second copy.
+    # Note the polarity flip: `== 'true'` failed OPEN on an unknown value (skip),
+    # `!= false` fails CLOSED (run).
+    if: fromJSON(needs.path-filter.outputs.legs).gate_lint_csharp != false
     runs-on: ubuntu-24.04
     steps:
       - name: Checkout
@@ -3388,7 +3564,12 @@ jobs:
     # that would have run immediately. The trade is worth it because the
     # skip is total -- setup included -- and most PRs touch no go at all.
     needs: path-filter
-    if: needs.path-filter.outputs.go == 'true'
+    # WAS `outputs.go == 'true'`, a hand-maintained path->domain map in
+    # `ci/path-domains.ts`. The graph states the same thing and is the authority
+    # `lint (build-graph completeness)` already checks, so the map was a second copy.
+    # Note the polarity flip: `== 'true'` failed OPEN on an unknown value (skip),
+    # `!= false` fails CLOSED (run).
+    if: fromJSON(needs.path-filter.outputs.legs).gate_lint_go != false
     runs-on: ubuntu-24.04
     steps:
       - name: Checkout
@@ -3471,7 +3652,12 @@ jobs:
     # that would have run immediately. The trade is worth it because the
     # skip is total -- setup included -- and most PRs touch no python at all.
     needs: path-filter
-    if: needs.path-filter.outputs.python == 'true'
+    # WAS `outputs.python == 'true'`, a hand-maintained path->domain map in
+    # `ci/path-domains.ts`. The graph states the same thing and is the authority
+    # `lint (build-graph completeness)` already checks, so the map was a second copy.
+    # Note the polarity flip: `== 'true'` failed OPEN on an unknown value (skip),
+    # `!= false` fails CLOSED (run).
+    if: fromJSON(needs.path-filter.outputs.legs).gate_lint_python != false
     runs-on: ubuntu-24.04
     steps:
       - name: Checkout
@@ -3555,7 +3741,12 @@ jobs:
     # that would have run immediately. The trade is worth it because the
     # skip is total -- setup included -- and most PRs touch no rust at all.
     needs: path-filter
-    if: needs.path-filter.outputs.rust == 'true'
+    # WAS `outputs.rust == 'true'`, a hand-maintained path->domain map in
+    # `ci/path-domains.ts`. The graph states the same thing and is the authority
+    # `lint (build-graph completeness)` already checks, so the map was a second copy.
+    # Note the polarity flip: `== 'true'` failed OPEN on an unknown value (skip),
+    # `!= false` fails CLOSED (run).
+    if: fromJSON(needs.path-filter.outputs.legs).gate_lint_rust != false
     runs-on: ubuntu-24.04
     steps:
       - name: Checkout
@@ -3672,6 +3863,22 @@ jobs:
   # No name here is promoted into `required_status_checks` — that is a ruleset edit and
   # Aaron's call, and the exact strings are listed in `docs/ci/CROSS-VERIFY-CHECK-NAMES.md`
   # for whoever makes it.
+  # NOT GATED ON ITS LEG, deliberately, and this is the measured reason.
+  # `gate/cross-verify` is claimed by THREE targets (`ts:ace`, `ts:cross-verification`,
+  # `unit:qsharp`). This job is the cross-oracle treaty byte-lock; an F#-only change that
+  # BREAKS the byte-lock touches none of those three, so gating on the leg would skip the
+  # one check that exists to catch it. That is the vacuity class -- a check that did not
+  # run looking like one that passed -- and it is worse here than anywhere else, because
+  # the floor is what other lanes build on this tick.
+  #
+  # The general form, worth stating because it is a graph-modelling rule and not a
+  # one-off: A VERIFICATION LEG CANNOT BE DERIVED FROM "WHICH TARGETS PRODUCE THIS
+  # ARTIFACT". It must be claimed by everything it VERIFIES. A verifier's whole job is
+  # catching changes that do not declare themselves, so deriving its trigger from
+  # declarations is circular.
+  #
+  # LIFTS WHEN: the targets this job verifies claim `gate/cross-verify` -- i.e. every
+  # oracle in the byte-lock, not only the TypeScript side. Tracked as 081M28X3E5P087G0R0004S8JJY.
   cross-verify:
     # The check-run name is exactly `cross-verify (<id>)` — a stable string a required-
     # check rule can reference, and the string `gate-scope-summary.ts` prefix-matches to
@@ -3910,6 +4117,12 @@ jobs:
     timeout-minutes: 30
     runs-on: ubuntu-24.04
 
+    needs: [path-filter]
+    # SELECTED FROM THE GRAPH, not from a hand-written path list. `legs` is
+    # `ace/build-graph.json`'s answer for this diff; `!= false` is the fail-closed
+    # half -- a leg the selector never emitted reads as `null`, and `null != false`
+    # is true, so an unknown job RUNS. See path-filter's `legs` output.
+    if: fromJSON(needs.path-filter.outputs.legs).gate_test_typescript_hermetic != false
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -4009,6 +4222,12 @@ jobs:
     timeout-minutes: 20
     runs-on: ubuntu-24.04
 
+    needs: [path-filter]
+    # SELECTED FROM THE GRAPH, not from a hand-written path list. `legs` is
+    # `ace/build-graph.json`'s answer for this diff; `!= false` is the fail-closed
+    # half -- a leg the selector never emitted reads as `null`, and `null != false`
+    # is true, so an unknown job RUNS. See path-filter's `legs` output.
+    if: fromJSON(needs.path-filter.outputs.legs).gate_test_typescript_environment != false
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -4110,6 +4329,11 @@ jobs:
   # algebraic law gate, cost analysis, and Rust/Go compilation.
   # Requires the FULL toolchain (all 7 runtimes + E-prover).
   # Fails if ANY tool is missing — no partial verification.
+  # NOT GATED ON ITS LEG, same reason as cross-verify above, same work-item.
+  # `gate/full-verify` is claimed by FOUR targets (`rust:src/Core.Rust.Observe`,
+  # `ts:cross-verification`, `unit:go`, `unit:python`) while the job runs all seven
+  # toolchains and the cross-language tests. An F#- or C#-only change would skip it.
+  # It keeps its existing `code` gate, which is coarse but not under-claiming.
   full-verify:
     name: full-verify (7-lang oracle + cost + proofs)
     timeout-minutes: 30

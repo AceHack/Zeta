@@ -51,11 +51,20 @@ describe("the parse is against the real gate.yml, and it is not empty", () => {
     // Job-level, real, and load-bearing for this whole file:
     expect(ifs.get("full-verify")).toBe("needs.path-filter.outputs.code == 'true'");
     expect(ifs.get(ROLLUP_JOB_ID)).toBe("always()");
-    // Not job-level: `build-and-test` and `path-filter` have step-level `if:` in
-    // abundance and no job-level one. Reading a step's would hand them a licence to
-    // skip that gate.yml never gave them, which is the permissive direction.
-    expect(ifs.has("build-and-test")).toBe(false);
+    // `build-and-test` NOW CARRIES A JOB-LEVEL `if:` and did not before. That is a
+    // real relaxation of this file's central safety property -- its skip used to be
+    // unconditionally blocking, and can now classify as legitimate -- so it is
+    // asserted here rather than quietly absorbed by deleting the old expectation.
+    // What makes it safe is not this file: it is that the condition is the graph's
+    // own verdict, and that `detect` refuses when the leg and `code` disagree.
+    expect(ifs.get("build-and-test")).toBe(
+      "fromJSON(needs.path-filter.outputs.legs).gate_build_and_test != false",
+    );
+    // Not job-level: `path-filter` has step-level `if:` in abundance and no job-level
+    // one, and `cross-verify` has neither. Reading a step's would hand a job a licence
+    // to skip that gate.yml never gave it, which is the permissive direction.
     expect(ifs.has("path-filter")).toBe(false);
+    expect(ifs.has("cross-verify")).toBe(false);
     expect(GATE_YML).toContain("        if: github.event_name != 'pull_request'");
   });
 
@@ -85,10 +94,12 @@ describe("the parse is against the real gate.yml, and it is not empty", () => {
 
 describe("a docs-only PR stays GREEN", () => {
   // The shape a real docs-only PR produces, verified against gate.yml's declarations:
-  // `path-filter` succeeds and emits code=false; `full-verify` alone carries
-  // `if: needs.path-filter.outputs.code == 'true'` so it alone skips. `build-and-test`
-  // has NO job-level `if:` — it runs and skips its heavy STEPS internally, which is why
-  // its rollup result is `success` and not `skipped`.
+  // `path-filter` succeeds and emits code=false; `full-verify` carries
+  // `if: needs.path-filter.outputs.code == 'true'` so it skips. `build-and-test` now
+  // also carries a job-level `if:` (its graph leg), so on a real docs-only PR it
+  // SKIPS rather than running-and-skipping-its-steps. This fixture keeps it at
+  // `success` on purpose: it is the shape from before the leg wiring, and a rollup
+  // that stopped passing it would mean the relaxation changed an unrelated verdict.
   const docsOnly = ctx({
     "matrix-setup": "success",
     "path-filter": "success",
@@ -202,7 +213,8 @@ describe("a dead prerequisite turns the gate RED where it used to be green", () 
     "build-and-test": "skipped", // GitHub skips a job whose `needs:` did not succeed
     lint: "success",
     "lint-typescript": "success",
-    "cross-verify": "success",
+    "cross-verify": "skipped", // no job-level `if:` at all — the other refusal class
+
     "full-verify": "skipped",
     "test-typescript-hermetic": "success",
   });
@@ -224,11 +236,21 @@ describe("a dead prerequisite turns the gate RED where it used to be green", () 
   test("and it blocks for all three separate reasons, each named", () => {
     const gate = decideGate(pathFilterDead, decls);
     const byNeed = new Map(gate.blocked.map((v) => [v.need, v.reason]));
-    expect([...byNeed.keys()].sort()).toEqual(["build-and-test", "full-verify", "path-filter"]);
+    expect([...byNeed.keys()].sort()).toEqual([
+      "build-and-test",
+      "cross-verify",
+      "full-verify",
+      "path-filter",
+    ]);
     expect(byNeed.get("path-filter")).toContain("failed");
-    // `build-and-test` declares no `if:` at all, so its skip has only one explanation.
-    expect(byNeed.get("build-and-test")).toContain("declares no job-level `if:`");
-    // `full-verify` DOES declare one — it is refused on the upstream, and says which.
+    // `cross-verify` declares no `if:` at all, so its skip has only one explanation.
+    // It took this role from `build-and-test`, which acquired a job-level `if:` with
+    // the leg wiring; the reason class still has to be covered by SOMETHING or the
+    // "no licence to skip" branch would go untested.
+    expect(byNeed.get("cross-verify")).toContain("declares no job-level `if:`");
+    // `build-and-test` and `full-verify` DO declare one — both are refused on the
+    // upstream instead, and each says which prerequisite convicted it.
+    expect(byNeed.get("build-and-test")).toContain("`path-filter` reported `failure`");
     expect(byNeed.get("full-verify")).toContain("`path-filter` reported `failure`");
   });
 
@@ -360,12 +382,17 @@ describe("MUTANTS — each one is killed, and by which assertion", () => {
   });
 
   test("MUTANT 3 — drop the `if:` requirement, check only prerequisites. Killed by `build-and-test`.", () => {
-    // A job with no `if:` and no `needs:` would then be freely skippable. `lint` is
-    // exactly that job, and gate.yml gives it no licence to skip at all.
-    const mutantDecls: WorkflowDecls = { ...decls, ifOf: new Map([...decls.ifOf, ["lint", "always()"]]) };
-    const lintSkipped = ctx({ ...Object.fromEntries(docsOnly), lint: "skipped" });
-    expect(classifyFloorResult("lint", lintSkipped, mutantDecls).kind).toBe("legitimate-skip");
-    expect(classifyFloorResult("lint", lintSkipped, decls).kind).toBe("block");
+    // A job with no `if:` and no `needs:` would then be freely skippable. `cross-verify`
+    // is exactly that job, and gate.yml gives it no licence to skip at all. (This was
+    // `lint` until the leg wiring gave `lint` a job-level `if:`; the mutant needs a job
+    // that genuinely declares nothing, or it stops being killed for the stated reason.)
+    const mutantDecls: WorkflowDecls = {
+      ...decls,
+      ifOf: new Map([...decls.ifOf, ["cross-verify", "always()"]]),
+    };
+    const cvSkipped = ctx({ ...Object.fromEntries(docsOnly), "cross-verify": "skipped" });
+    expect(classifyFloorResult("cross-verify", cvSkipped, mutantDecls).kind).toBe("legitimate-skip");
+    expect(classifyFloorResult("cross-verify", cvSkipped, decls).kind).toBe("block");
   });
 
   test("MUTANT 4 — drop the prerequisite check, keep only `if:`. Killed by full-verify + dead path-filter.", () => {
@@ -376,19 +403,21 @@ describe("MUTANTS — each one is killed, and by which assertion", () => {
     expect(classifyFloorResult("full-verify", dead, decls).kind).toBe("block");
   });
 
-  test("MUTANT 5 — read STEP-level `if:` as the job's. Killed by build-and-test's skip staying refused.", () => {
-    // `build-and-test` is full of step-level `if:` (the docs-only step guards); a scanner
-    // that accepted any indent would hand the JOB a licence to skip it never declared.
-    expect(gateYmlJobIfs(GATE_YML).has("build-and-test")).toBe(false);
+  test("MUTANT 5 — read STEP-level `if:` as the job's. Killed by path-filter's skip staying refused.", () => {
+    // `path-filter` is full of step-level `if:` (the non-PR fast path, the checkout); a
+    // scanner that accepted any indent would hand the JOB a licence to skip it never
+    // declared. (This was `build-and-test` until the leg wiring gave it a job-level
+    // `if:` — the mutant needs a job whose ONLY `if:` lines are step-level.)
+    expect(gateYmlJobIfs(GATE_YML).has("path-filter")).toBe(false);
     // Isolated deliberately from the prerequisite rule: both prerequisites are green here,
     // so the ONLY thing that can refuse this skip is the missing job-level `if:`. GitHub
     // cannot actually produce this state, which is exactly the point — with no `if:` and
     // green prerequisites there is no legal way to skip, so a skip is evidence of something
     // the roll-up does not understand, and it must not be waved through.
-    const isolated = ctx({ ...Object.fromEntries(docsOnly), "build-and-test": "skipped" });
-    const loose = new Map<string, string>([...decls.ifOf, ["build-and-test", "some step condition"]]);
-    expect(classifyFloorResult("build-and-test", isolated, { ...decls, ifOf: loose }).kind).toBe("legitimate-skip");
-    expect(classifyFloorResult("build-and-test", isolated, decls).kind).toBe("block");
+    const isolated = ctx({ ...Object.fromEntries(docsOnly), "path-filter": "skipped" });
+    const loose = new Map<string, string>([...decls.ifOf, ["path-filter", "some step condition"]]);
+    expect(classifyFloorResult("path-filter", isolated, { ...decls, ifOf: loose }).kind).toBe("legitimate-skip");
+    expect(classifyFloorResult("path-filter", isolated, decls).kind).toBe("block");
     expect(decideGate(isolated, decls).passed).toBe(false);
   });
 

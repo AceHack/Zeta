@@ -67,6 +67,35 @@ export function renderOutputs(verdict: Verdict, allLegs: readonly string[]): rea
   return lines;
 }
 
+/**
+ * The whole verdict as ONE `$GITHUB_OUTPUT` line: `legs={"gate_lint_fsharp":true,...}`.
+ *
+ * WHY ONE JSON OUTPUT AND NOT 33 DECLARED ONES. A GitHub Actions job's `outputs:`
+ * block must be written out statically, so one output per leg means a hand-written
+ * roster in `gate.yml` that drifts from the graph the moment a target is added —
+ * the second copy this file's header refuses. One JSON value has no roster: the
+ * KEYS come from the graph at run time, and `gate.yml` only ever names the single
+ * key `legs`.
+ *
+ * AND IT IS FAIL-CLOSED WITHOUT A GUARD, which the per-leg form is not. A consumer
+ * writes `fromJSON(needs.path-filter.outputs.legs).gate_lint_fsharp != false`.
+ * A leg this file never emitted — a new job, a typo, a graph that lost a target —
+ * reads as `null`, and `null != false` is TRUE, so the job RUNS. The failure mode
+ * of not knowing is doing the work, never skipping it. Pair that with the `|| '{}'`
+ * default on the output itself and a path-filter that did not run turns every
+ * consumer on.
+ */
+export function renderLegsJson(verdict: Verdict, allLegs: readonly string[]): string {
+  const on = new Set(verdict.legs);
+  const obj: Record<string, boolean> = {};
+  // Sorted: the line is compared across runs and lands in logs, so key order is
+  // part of the artifact (DST -- same input, same bytes).
+  for (const leg of [...allLegs].sort()) {
+    obj[legSlug(leg)] = on.has(leg) || verdict.mode === "full";
+  }
+  return `legs=${JSON.stringify(obj)}`;
+}
+
 /** Every leg any target claims — the roster `renderOutputs` must cover. */
 export function allLegsOf(graphText: string): readonly string[] {
   const g = JSON.parse(graphText) as { targets: { legs?: string[] }[] };
@@ -125,7 +154,10 @@ function main(argv: readonly string[]): number {
   for (const l of lines) console.log(l);
   const out = process.env.GITHUB_OUTPUT;
   if (argv.includes("--github-output") && out !== undefined && out !== "") {
-    appendFileSync(out, `${lines.join("\n")}\n`);
+    // Both shapes: the per-leg lines stay (they are the readable form, and an
+    // undeclared output is simply ignored by Actions), and `legs=` is the one a
+    // job selector actually consumes. See `renderLegsJson` for why.
+    appendFileSync(out, `${[...lines, renderLegsJson(verdict, allLegs)].join("\n")}\n`);
   }
   return 0;
 }
