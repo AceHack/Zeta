@@ -1,0 +1,258 @@
+# Cross-platform NuGet lock stability — A MEASUREMENT LANE, NOT A GATE.
+#
+# ---------------------------------------------------------------------------
+# THIS LANE CANNOT BLOCK `main`, AND THAT IS ITS POINT.
+# ---------------------------------------------------------------------------
+# The `CI Gate` ruleset requires exactly ONE status context, `gate (required)`.
+# This workflow does not produce that context and must never be added to it. It
+# is allowed — expected, even — to go red: a red run here is the measurement
+# reporting a real per-platform difference, which is information, not a broken
+# build. Nothing merges or fails to merge on its output.
+#
+# WHY IT EXISTS
+# -------------
+# PR #17305 landed 63 `packages.lock.json` files and `--locked-mode` at three
+# call sites, and deliberately did NOT widen it to the solution-wide gate job
+# (`dotnet build Zeta.sln -c Release`, which restores implicitly and unlocked).
+# The reason it gave, in `docs/NUGET-LOCK-FILES.md`:
+#
+#   "the gate runs on ubuntu, windows and macos, and a lock file that
+#    legitimately differs per-OS would turn a supply-chain check into a
+#    cross-platform flake. Widening locked mode to the full solution wants a
+#    measurement of cross-OS lock stability first, on a lane that can fail
+#    loudly without blocking `main`."
+#
+# This is that lane. Its output is what decides whether `--locked-mode` may be
+# added to the gate's build step — and until it has RUN, that question is
+# `unknown`, not `probably fine`.
+#
+# WHAT IT MEASURES, AND WHY EACH CHOICE
+# -------------------------------------
+#   `--force-evaluate`   A plain `dotnet restore` is a NO-OP against a lock whose
+#                        project-input hash still matches: it would rewrite
+#                        nothing and the lane would compare 63 files to
+#                        themselves — the purest form of a check that cannot
+#                        fail. `--force-evaluate` re-resolves unconditionally,
+#                        so each leg reports what THAT PLATFORM resolves.
+#   the same 5 legs      as `gate.yml`'s `build-and-test` matrix, including both
+#                        ARM legs. Measuring three OSes when the gate runs five
+#                        platforms would answer a question nobody asked.
+#   the same installer   `tools/setup/install.sh` / `install.ps1`, the same
+#                        three-way-parity path the gate uses (GOVERNANCE §24).
+#                        A different SDK acquisition would measure a different
+#                        toolchain than the one whose behaviour is in question.
+#   all 63 locks         53 in `Zeta.sln` plus the 10 projects outside it. The
+#                        out-of-solution projects are restored explicitly
+#                        because nothing in CI builds them, so nothing else
+#                        would notice if their locks were platform-dependent.
+#   `--expect-platforms` a leg whose restore dies uploads no manifest, and a
+#                        comparison over only the legs that reported would call
+#                        that agreement. The expected roster is passed in so a
+#                        missing leg FAILS instead of silently shrinking the
+#                        measurement.
+#
+# HOW TO READ A RED RUN
+# ---------------------
+# `differs-unexplained` is the finding. `differs-for-a-declared-reason` is a
+# footnote (the project asked for a per-platform graph and got one).
+# `uniform-drift-from-committed` means every platform agreed with every other
+# and disagreed with what is checked in — a stale committed lock, not a
+# cross-platform problem. See the verdict table in
+# `src/Core.TypeScript/hygiene/lock-cross-os-stability.ts`.
+
+name: lock-cross-os-stability
+
+on:
+  workflow_dispatch:
+  # PR trigger is scoped to the things that could change the answer: this lane
+  # itself, its comparator, the lock files, and the two files that decide what
+  # gets resolved. Also the only way to exercise the lane before it is on the
+  # default branch, where `workflow_dispatch` first becomes available.
+  pull_request:
+    paths:
+      - ".github/workflows/lock-cross-os-stability.yml"
+      - "src/Core.TypeScript/hygiene/lock-cross-os-stability.ts"
+      - "src/Core.TypeScript/hygiene/lock-cross-os-stability.test.ts"
+      - "**/packages.lock.json"
+      - "Directory.Packages.props"
+      - "Directory.Build.props"
+      - "global.json"
+  # Weekly, because a measurement nobody re-runs decays into a dated claim. The
+  # answer can change without any file here changing — a new SDK patch on the
+  # runner images is enough.
+  schedule:
+    - cron: "17 6 * * 1"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.sha }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+env:
+  # One roster, read by the matrix and by the compare job's expectation. Kept as
+  # a literal in both places would be two rosters and eventually one of them
+  # would drift; this is the single spelling.
+  EXPECTED_PLATFORMS: "ubuntu-24.04,ubuntu-24.04-arm,macos-26,windows-2025,windows-11-arm"
+
+jobs:
+  restore:
+    name: restore (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 45
+    strategy:
+      # Every leg runs even when one dies — a dead leg is a data point, and
+      # cancelling the others would throw away the comparison entirely.
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, ubuntu-24.04-arm, macos-26, windows-2025, windows-11-arm]
+    steps:
+      # Windows MAX_PATH guard — must precede checkout, same as gate.yml.
+      - name: Enable git long paths (Windows; pre-checkout)
+        if: startsWith(matrix.os, 'windows-')
+        run: git config --system core.longpaths true
+
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Cache .NET SDK
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ~/.dotnet
+          key: dotnet-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('global.json') }}
+
+      - name: Cache mise runtimes
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: |
+            ~/.local/share/mise
+            ~/.cache/mise
+          key: mise-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', '.mise.full.toml') }}
+
+      # Deliberately NOT caching ~/.nuget/packages. A warm package cache is
+      # exactly the condition under which a platform-dependent resolution could
+      # be masked by bytes that are already on disk. This lane wants the cold
+      # answer.
+
+      - name: Install toolchain via three-way-parity script (Unix; GOVERNANCE §24)
+        if: startsWith(matrix.os, 'windows-') == false
+        run: ./tools/setup/install.sh
+
+      - name: Install toolchain via three-way-parity script (Windows; GOVERNANCE §24)
+        if: startsWith(matrix.os, 'windows-')
+        shell: pwsh
+        run: ./tools/setup/install.ps1 -SkipLoopRegister
+
+      - name: Record the SDK this leg actually got
+        id: sdk
+        shell: bash
+        run: |
+          set -euo pipefail
+          VER="$(dotnet --version)"
+          echo "version=${VER}" >> "$GITHUB_OUTPUT"
+          echo "dotnet --version on ${{ matrix.os }}: ${VER}"
+          dotnet --info | sed -n '1,12p'
+
+      - name: Re-resolve every lock in Zeta.sln (force-evaluate)
+        shell: bash
+        run: dotnet restore Zeta.sln --force-evaluate
+
+      - name: Re-resolve the 10 projects outside Zeta.sln
+        # Nothing in CI builds these, so nothing else would ever notice if their
+        # locks were platform-dependent. They are restored one at a time so a
+        # single failure names the project rather than the batch.
+        shell: bash
+        run: |
+          set -euo pipefail
+          for proj in \
+            experiments/zetafs-webdav/ZetaFsWebDav.fsproj \
+            full-ai-cluster/orleans-silo/Zeta.Orleans.Silo.csproj \
+            genesis/_src/auth-backend/GenesisAuth.csproj \
+            src/Core.CSharp.SchemaEvolution/Core.CSharp.SchemaEvolution.csproj \
+            src/Core.FSharp.Cli/Zeta.Cli.fsproj \
+            src/Core.FSharp.Mcp/Zeta.Mcp.fsproj \
+            src/Core.FSharp.Z3Verify/Z3Verify.fsproj \
+            src/Research.FSharp.Cli/MetadataProbe/HiddenSwitchMetadata.fsproj \
+            src/SwarmRunner/SwarmRunner.fsproj \
+            vocab/Zeta.Vocab.fsproj
+          do
+            echo "=== restore ${proj}"
+            dotnet restore "${proj}" --force-evaluate
+          done
+
+      - name: Capture every packages.lock.json this platform produced
+        # `always()` so a leg that died partway still reports what it managed to
+        # resolve. A partial capture surfaces as `missing-on-some-platforms` in
+        # the comparison, which is a finding; uploading nothing would surface as
+        # silence, which is not.
+        if: always()
+        shell: bash
+        run: >
+          bun src/Core.TypeScript/hygiene/lock-cross-os-stability.ts capture
+          --platform "${{ matrix.os }}"
+          --sdk "${{ steps.sdk.outputs.version }}"
+          --out "lock-manifest-${{ matrix.os }}.json"
+
+      - name: Upload this platform's manifest
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: lock-manifest-${{ matrix.os }}
+          path: lock-manifest-${{ matrix.os }}.json
+          if-no-files-found: warn
+          retention-days: 14
+
+  compare:
+    name: compare every platform against every other
+    needs: restore
+    # `always()` because the comparison is MORE interesting when a leg failed,
+    # not less — and because `needs: restore` would otherwise skip this job and
+    # report nothing at all, which is the silence this lane exists to avoid.
+    if: always()
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        # This checkout is never restored into, so the `packages.lock.json`
+        # files on disk here ARE the committed baseline, by construction.
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Install bun
+        uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
+
+      - name: Download every platform manifest
+        uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 # v6.0.0
+        with:
+          path: manifests
+          pattern: lock-manifest-*
+          merge-multiple: true
+
+      - name: What arrived
+        run: ls -la manifests || echo "no manifests downloaded at all"
+
+      - name: Compare
+        run: |
+          set -euo pipefail
+          ARGS=()
+          for f in manifests/lock-manifest-*.json; do
+            [ -e "$f" ] || continue
+            ARGS+=(--manifest "$f")
+          done
+          if [ ${#ARGS[@]} -eq 0 ]; then
+            echo "::error::no platform manifests were produced — every restore leg failed"
+            exit 1
+          fi
+          bun src/Core.TypeScript/hygiene/lock-cross-os-stability.ts compare \
+            "${ARGS[@]}" \
+            --expect-platforms "${EXPECTED_PLATFORMS}" \
+            --json lock-cross-os-report.json
+
+      - name: Upload the report
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: lock-cross-os-report
+          path: lock-cross-os-report.json
+          if-no-files-found: warn
+          retention-days: 90
