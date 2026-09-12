@@ -12,6 +12,16 @@
 // ordering that depends on filesystem enumeration. Building twice at the same
 // rev must produce byte-identical files, and `idempotency.test.ts` fails if it
 // does not.
+//
+// THE OUTPUT IS A CACHE, NOT A COMMITTED ARTIFACT (2026-09-11). The default
+// `--out` is `TOY_GIT_NATIVE_INDEX_DIR`, and the `TOY_` is load-bearing: the
+// git-native STORAGE design is a toy that had a meter and failed it (280 blobs,
+// 409.67 MB raw / 25.03 MB on disk, over 8 commits in 16 days; deleted in
+// PR #16919, path now `.gitignore`d). The builder's own correctness — corpus
+// policy, byte-identical rebuild, the measured accounting against `git grep` —
+// is METERED and unaffected. The full statement of the split, what is not
+// established, and what would earn a promotion is the header of `format.ts`.
+// Prefer an explicit scratch `--out`; regenerating is ~30 s.
 
 import { mkdirSync, writeFileSync, readdirSync, rmSync } from "node:fs";
 import { join, resolve } from "node:path";
@@ -20,7 +30,7 @@ import { createHash } from "node:crypto";
 import { tokenize, TOKENIZER_VERSION, MIN_TOKEN_LENGTH, MAX_TOKEN_LENGTH, STOP_WORDS } from "./tokenize.ts";
 import {
   INDEX_SCHEMA,
-  INDEX_DIR,
+  TOY_GIT_NATIVE_INDEX_DIR,
   MANIFEST_FILE,
   FILES_FILE,
   HIGH_DF_FILE,
@@ -303,7 +313,7 @@ export function main(argv: readonly string[]): number {
     return 2;
   }
   const repoRoot = resolve(import.meta.dir, "../../../..");
-  const outDir = args.out ? resolve(args.out) : join(repoRoot, INDEX_DIR);
+  const outDir = args.out ? resolve(args.out) : join(repoRoot, TOY_GIT_NATIVE_INDEX_DIR);
   const r = buildIndex({ repoRoot, rev: args.rev, outDir, quiet: args.quiet, maxDf: args.maxDf });
   const m = r.manifest;
   process.stdout.write(

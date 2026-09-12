@@ -37,15 +37,71 @@
 //     what a full rebuild can carry, tiered merge is the known answer and the
 //     shard layout here is deliberately compatible with adding it.
 
+// ─────────────────────────────────────────────────────────────────────────────
+// WHICH HALF IS THE TOY (2026-09-11). Read this before citing anything here.
+//
+// This directory holds TWO claims and they have different registers. Labelling
+// the whole thing one way would be false in one direction or the other, so the
+// split is stated rather than averaged:
+//
+//   RETRIEVAL CORRECTNESS — metered, and stays metered. The tokenizer, the
+//   corpus policy, the freshness classification and the 1-vs-3 exit-code
+//   distinction have falsifiers that bite: 81 tests, byte-identical rebuild at
+//   a rev, and a measured accounting against `git grep -il landauer` at rev
+//   6426eacf (447 vs 421 files, every one of the 26 attributed to a declared
+//   corpus rule, 0 unexplained). Four defects were found by checking OUTPUT,
+//   which is what a meter is for. Do not downgrade this half.
+//
+//   GIT-NATIVE STORAGE — a TOY, and it is a toy the hard way: it had a meter
+//   and failed it. The design was "commit the index into git, rebuild on a ~6h
+//   cadence". Measured 2026-09-11 over the 8 commits that ever touched the
+//   tree: 280 distinct blobs, 409.67 MB raw / 25.03 MB on disk (16.4x), landed
+//   in 16 days. A derived artifact in a full-history repo costs
+//   `size x recalculations` FOREVER, and the history is not recoverable without
+//   a rewrite. The cadence workflow is disabled, the committed tree was deleted
+//   (PR #16919), and `db/search-index/` is now `.gitignore`d.
+//
+// WHAT IS NOT ESTABLISHED about the storage half, stated plainly:
+//   - that git is a viable store for an artifact that is a pure function of the
+//     tree it lives in. The one measurement we have says the opposite.
+//   - that any retention bound exists. There is none. Nothing prunes, nothing
+//     caps, and `git gc` cannot reclaim what a commit still reaches.
+//   - that the ~6h cadence is right, or that any cadence is. It was never
+//     falsified; it was switched off.
+//   - that the in-RAM full rebuild (~2 GB heap at the 2026-08-23 corpus) holds
+//     past ~4x this corpus. Named in `build.ts`, never tested at that size.
+//
+// WHAT WOULD EARN THE PROMOTION back out of `toy`:
+//   a store with a BOUND — a history-not-preserved repo (`zeta-index` in the
+//   repo-split draft), a retention/prune rule, or an artifact host — plus a
+//   measurement over at least one cadence period showing total cost stays
+//   bounded as rebuild count grows. That is the falsifier the design never had:
+//   nothing in it could ever have reported "this is too expensive".
+//   Until then: build to a scratch `--out`, and treat the index as a cache.
+// ─────────────────────────────────────────────────────────────────────────────
+
 import { stringCompare } from "../../collation/collation";
 
 /** Schema id. Bump on any change that alters how a reader must parse the files. */
 export const INDEX_SCHEMA = "zeta.search.inverted/v1";
 
-/** Local/CI cache only — gitignored. Durable reverse indexes are
- *  GroupCommitDiskDeltaLog + IncrementalJoin (`src/Core/ReverseIndex.fs`).
- *  Never flush this directory onto main (#16919, 081M29ESZCQ087G0R001SM29DQ). */
-export const INDEX_DIR = "db/search-index/inverted";
+/**
+ * Default output directory of the **toy** git-native storage design. NOT a
+ * committed artifact: `db/search-index/` is `.gitignore`d, and a build here is
+ * local scratch that regenerates from a rev in ~30 s.
+ *
+ * The `TOY_` prefix is the guard (`.claude/rules/toy-is-free-metered-must-be-earned.md`).
+ * It is on the *storage* constant and on nothing else, because the storage
+ * design is the only part of this directory that lost its meter — see the
+ * "WHICH HALF IS THE TOY" block at the top of this file.
+ *
+ * AND THE DURABLE ANSWER ALREADY EXISTS, which is why this one may stay a toy:
+ * durable reverse indexes are `GroupCommitDiskDeltaLog` + `IncrementalJoin` in
+ * `src/Core/ReverseIndex.fs` (#17302, 081M29ESZCQ087G0R001SM29DQ). This constant
+ * names a local cache with a replacement, not a gap. Never flush this directory
+ * onto main (#16919).
+ */
+export const TOY_GIT_NATIVE_INDEX_DIR = "db/search-index/inverted";
 
 export const MANIFEST_FILE = "manifest.json";
 export const FILES_FILE = "files.txt";

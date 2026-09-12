@@ -1,19 +1,60 @@
 # `search/inverted/` — a local git-rev inverted index (toy cache, not the store)
 
-> **Where the data lives (Aaron 2026-09-11).** Do not commit shards to `main`
-> (#16919 deleted 59.7 MB). Durable reverse indexes are IncrementalJoin
-> views on a host `GroupCommitDiskDeltaLog` (`src/Core/ReverseIndex.fs`,
-> `081M29ESZCQ087G0R001SM29DQ`). This directory is a **local/CI cache**
-> that refuses stale answers. Cadence builds and queries; it does not flush.
+> **Where the data lives (Aaron, 2026-09-11).** Do not commit shards to `main`
+> (#16919 deleted 59.7 MB). **Durable reverse indexes are `IncrementalJoin` views
+> on a host `GroupCommitDiskDeltaLog`** — `src/Core/ReverseIndex.fs`,
+> `081M29ESZCQ087G0R001SM29DQ`. This directory is a **local/CI cache** that refuses
+> stale answers; the cadence builds and queries, it does not flush.
+>
+> That successor is why the storage half below may stay a toy without being a gap:
+> the measurement condemned a *design*, and the replacement for that design already
+> shipped. The retrieval half is a different claim and stays metered.
 
+## Register: the storage half is a **toy model**; the retrieval half is metered
+
+Two claims live here and they are in different registers
+(`.claude/rules/toy-is-free-metered-must-be-earned.md`). Stating one label for
+both would be false in one direction, so they are split:
+
+| claim | register | why |
+| --- | --- | --- |
+| **retrieval correctness** — tokenizer, corpus policy, freshness classification, `1` vs `3` | **metered** | 81 tests; byte-identical rebuild at a rev; a measured accounting against `git grep -il landauer` at rev `6426eacf` (447 vs 421, all 26 attributed to a declared corpus rule, **0 unexplained**); four defects found by checking output |
+| **git-native storage** — commit the index, rebuild on a ~6h cadence | **toy** | it had a meter and **failed** it |
+
+**The storage measurement, 2026-09-11.** Over the 8 commits that ever touched
+`db/search-index/`: **280 distinct blobs, 409.67 MB raw / 25.03 MB on disk
+(16.4x)**, landed in **16 days**. A derived artifact in a full-history repo
+costs `size x recalculations` forever and `git gc` reclaims none of it while a
+commit still reaches it. The committed tree was deleted in **PR #16919**, the
+cadence workflow is disabled, and `db/search-index/` is now **`.gitignore`d**.
+The output is a **cache**: build it to a scratch `--out`, regenerate in ~30 s.
+
+**Not established** about the storage half: that git is a viable store for a
+pure function of the tree it lives in (the one measurement says otherwise);
+that any retention bound exists (there is none — nothing prunes or caps); that
+the ~6h cadence is right, or that any cadence is (it was never falsified, it was
+switched off); that the in-RAM full rebuild (~2 GB heap at the 2026-08-23
+corpus) holds past ~4x this corpus.
+
+**What would earn the promotion:** a store with a **bound** — a
+history-not-preserved repo (`zeta-index` in the repo-split draft), a retention
+rule, or an artifact host — plus a measurement over at least one cadence period
+showing total cost stays bounded as rebuild count grows. That is the falsifier
+the design never had: nothing in it could ever have reported *"this is too
+expensive."*
+
+**On a fresh clone there is no index**, so `query.ts` exits **3 (REFUSED)** until
+one is built. That is designed, not broken — an absent index must never read as
+an empty corpus.
 ```bash
 # Query. Default target rev is origin/main; the index is repaired against it.
 bun src/Core.TypeScript/search/inverted/query.ts landauer
 bun src/Core.TypeScript/search/inverted/query.ts landauer bennett   # AND
 bun src/Core.TypeScript/search/inverted/query.ts landauer --files --limit 0
 
-# Rebuild (also runs on a ~6h cadence — .github/workflows/search-index-cadence.yml)
+# Build the local cache. NOT committed, NOT on a cadence — regenerate it (~30 s).
 bun src/Core.TypeScript/search/inverted/build.ts --rev origin/main
+# ...or to an explicit scratch dir:  --out .zeta/search-index   (also gitignored)
 ```
 
 Exit codes, deliberately the same four as the sibling `../search.ts`:
@@ -29,9 +70,9 @@ On **2026-08-22** an agent searched for `landauer` and reported **0 files**. The
 true answer was **447** files at `origin/main`, one of them a rule mentioning it
 **32 times**. Aaron:
 
-> _"i know it's in here over and over lol… not sure why your greps are missing
+> *"i know it's in here over and over lol… not sure why your greps are missing
 > the information, this is why we need our own tools to close over the OS, the
-> built-in ones are unreliable"_
+> built-in ones are unreliable"*
 
 The tool was not unreliable. `grep -r` searched the **working tree** of a shared
 checkout that was **336 commits behind `origin/main`**, and answered correctly
@@ -57,8 +98,8 @@ by construction between rebuilds. So:
 | rev absent from the object store                | **REFUSED (3)**                                                                                                                                                              |
 | `--no-verify` and the result would be **empty** | **REFUSED (3)** — see below                                                                                                                                                  |
 
-That last row is the whole point. With `--no-verify` a _non-empty_ stale answer
-is returned (incomplete, and you can see what you got), but an _empty_ one is
+That last row is the whole point. With `--no-verify` a *non-empty* stale answer
+is returned (incomplete, and you can see what you got), but an *empty* one is
 refused, because an empty result is a **confident claim of absence** about files
 this run never read. That is the 2026-08-22 failure exactly.
 
@@ -87,12 +128,12 @@ the two tokenizer defects below were found; the totals alone looked fine.
 
 Recorded together because the method is the point. Two were caught before merge by **diffing the index's coverage against `git grep` and accounting for every missing file**; two were caught after merge by **reading the first query on `main`**. None was visible in the totals, and none would have been found by re-reading the source.
 
-The first two were the _same failure this index exists to remove_ — a clean, confident, wrong "not here" — reproduced inside the fix for it.
+The first two were the *same failure this index exists to remove* — a clean, confident, wrong "not here" — reproduced inside the fix for it.
 
-1. **`verifyLandauer`** — the tokenizer emitted maximal runs of `[A-Za-z0-9_]`, so a camelCase identifier and an underscore-joined memory filename were each one token. **20 files went missing.** Fixed by decomposing compounds and emitting the parts _alongside_ the original — Lucene's `WordDelimiterGraphFilter` with `preserveOriginal`.
+1. **`verifyLandauer`** — the tokenizer emitted maximal runs of `[A-Za-z0-9_]`, so a camelCase identifier and an underscore-joined memory filename were each one token. **20 files went missing.** Fixed by decomposing compounds and emitting the parts *alongside* the original — Lucene's `WordDelimiterGraphFilter` with `preserveOriginal`.
 2. **`Landauer–Bennett`** — with a **U+2013 EN DASH**. The tokenizer treated every codepoint ≥ U+0080 as a word character, welding the two names into one token. Fixed with a pinned table of non-ASCII separator ranges.
-3. **The index indexed itself.** Seven of the artifact's own files sit _under_ the 512 KiB blob cap (`high-df.jsonl` 57,366 B, `manifest.json` 10,165 B, `terms-{j,q,x,y,z}.jsonl` 173–339 KB), so the next rebuild would have indexed the previous one — every term in the index becoming a term _in_ the index, every path in `files.txt` a hit for itself. The large shards were excluded only by the size cap, which is **luck, not design**. `db/search-index/` is now an excluded tree.
-4. **A repaired stale index could disagree with a fresh one** — the worst of the four. `isIndexablePath` answers from the **path** alone; the builder _also_ applies a **blob-size cap**. So the changed set admitted files the index would never contain, the verifier grepped them, and a stale query returned a hit a fresh query does not: the same question with two answers, decided by how stale the index happened to be. Now split in two — `changed` (wider, what to **withdraw**, since a fresh index would not list a deleted or newly-oversize file either) and `verifiable` (what to **read**, matching the builder's corpus exactly). A test asserts the two paths agree.
+3. **The index indexed itself.** Seven of the artifact's own files sit *under* the 512 KiB blob cap (`high-df.jsonl` 57,366 B, `manifest.json` 10,165 B, `terms-{j,q,x,y,z}.jsonl` 173–339 KB), so the next rebuild would have indexed the previous one — every term in the index becoming a term *in* the index, every path in `files.txt` a hit for itself. The large shards were excluded only by the size cap, which is **luck, not design**. `db/search-index/` is now an excluded tree.
+4. **A repaired stale index could disagree with a fresh one** — the worst of the four. `isIndexablePath` answers from the **path** alone; the builder *also* applies a **blob-size cap**. So the changed set admitted files the index would never contain, the verifier grepped them, and a stale query returned a hit a fresh query does not: the same question with two answers, decided by how stale the index happened to be. Now split in two — `changed` (wider, what to **withdraw**, since a fresh index would not list a deleted or newly-oversize file either) and `verifiable` (what to **read**, matching the builder's corpus exactly). A test asserts the two paths agree.
 
 And one design error caught by measurement rather than by output: a **df cap of 100**, picked off the size table, **refused `landauer`** (447 files) — the very query this exists to answer. A cap tuned only against the size column has no opinion about what anyone searches for.
 
@@ -100,11 +141,11 @@ And one design error caught by measurement rather than by output: a **df cap of 
 
 **No phrase or proximity queries.** Aaron, filing this:
 
-> _"for this index we will ignore stop words, **stop words need a completely
-> different kind of indexing**."_
+> *"for this index we will ignore stop words, **stop words need a completely
+> different kind of indexing**."*
 
 He is right, and the reason is the design: a term index stores **term → files**
-with **no positions**. The phrase _"the end of error"_ is almost entirely stop
+with **no positions**. The phrase *"the end of error"* is almost entirely stop
 words and its meaning lives in their **order**, so this structure could not
 answer it even if the stop words were kept. Phrase search needs a **positional
 or n-gram index** — a different artifact, deliberately **not built** and filed
@@ -121,7 +162,7 @@ Other honest limits:
 
 - **Non-ASCII case is not folded.** `Über` indexes as `Über`. The fold is ASCII
   arithmetic on purpose — `toLowerCase()` is locale-independent but
-  _Unicode-version_ dependent, so a runtime upgrade could re-fold a codepoint
+  *Unicode-version* dependent, so a runtime upgrade could re-fold a codepoint
   and change the artifact for a rev that never moved. Pinned by a test.
 - **CJK indexes as one token per run.** That needs a segmenter.
 - **Terms in more than 2% of files have no postings**, only a count. See below.
@@ -131,7 +172,7 @@ Other honest limits:
 Postings are not stored for a term appearing in more than **2% of indexed
 files** (659 at this corpus, floor 250). Their **document frequency is kept** in
 `high-df.jsonl`, and a query for one is **REFUSED with the count and the exact
-`git grep` that answers it** — the term is _everywhere_, not _nowhere_, and
+`git grep` that answers it** — the term is *everywhere*, not *nowhere*, and
 those must not look alike.
 
 The first version used a flat cap of **100**, picked off the size table. It was
@@ -163,8 +204,8 @@ A **43% bigger artifact for a 8.7x cheaper tick and a 20x smaller diff** —
 and the diff is the thing being paid for. A text index whose every line churns
 every 6 hours has forfeited the only reason it is not binary.
 
-_(Both rows measured at the flat-100 cap, so they compare like with like; the
-shipped 2% cap raises both artifact and tick proportionally.)_
+*(Both rows measured at the flat-100 cap, so they compare like with like; the
+shipped 2% cap raises both artifact and tick proportionally.)*
 
 ## Against Lucene — what we take and where we diverge
 
@@ -179,11 +220,11 @@ at scale, because it has had to solve them for real.
 | immutable segments, stable placement   | **same** — a term's shard is a pure function of the term | a doc change perturbs only the shards of its terms, which keeps a 6-hourly diff reviewable                                                                                                                                                                                                                                                                                                       |
 | tombstones instead of in-place delete  | **not needed**                                           | git already is that: a rebuild is a new commit and the previous index is its parent. The Z-set retraction Lucene implements internally is the substrate we already stand on                                                                                                                                                                                                                      |
 | `WordDelimiterGraphFilter`             | **adopted**                                              | it is what fixed `verifyLandauer`                                                                                                                                                                                                                                                                                                                                                                |
-| **binary segments + tiered merge**     | **diverged**                                             | Lucene optimises update latency and disk footprint on a continuously-changing corpus. We optimise **reviewability**, **byte-identical rebuild**, and **no daemon**, on a 6-hour cadence. A full rebuild is 30 s and is the only thing that makes idempotency _checkable_. If the corpus outgrows that, tiered merge is the known answer and this shard layout is deliberately compatible with it |
+| **binary segments + tiered merge**     | **diverged**                                             | Lucene optimises update latency and disk footprint on a continuously-changing corpus. We optimise **reviewability**, **byte-identical rebuild**, and **no daemon**, on a 6-hour cadence. A full rebuild is 30 s and is the only thing that makes idempotency *checkable*. If the corpus outgrows that, tiered merge is the known answer and this shard layout is deliberately compatible with it |
 
 ## Discipline compliance
 
-- **Text, not binary.** `no-binary-in-proof-lineage.md` governs _verification_
+- **Text, not binary.** `no-binary-in-proof-lineage.md` governs *verification*
   artifacts and this is derived data, so it does not strictly bind — but its
   reasons do, and they are why this is JSONL. Recorded as a decision with the
   measurements above, not taken as a default.
@@ -220,17 +261,17 @@ discriminate by breaking it, watching the suite go red, and restoring it:
 Three layers, three jobs — this is the middle one, and none replaces another:
 
 - `../concept-index.ts` + `../lookup.ts` — **curated** regex standing queries
-  over a hand-picked corpus. Answers _"what touches Otto-357?"_. Gitignored
+  over a hand-picked corpus. Answers *"what touches Otto-357?"*. Gitignored
   host cache, built from the **working tree**.
 - **this** — **corpus-wide** term → files, built from a **git rev**, committed.
-  Answers _"which files mention landauer?"_.
+  Answers *"which files mention landauer?"*.
 - `../search.ts` — a scope-budgeted literal **scan** with no index. Answers
   anything, including phrases and stop words, at scan cost.
 
 ## Where this is going — the signature redesign
 
 Aaron 2026-08-23 specified a **deliberate divergence from Lucene**: the key
-becomes a **vowel-free word signature**, a **phrase** is the _set_ of its word
+becomes a **vowel-free word signature**, a **phrase** is the *set* of its word
 signatures (word order discarded, kept only for ranking), and the index becomes
 a **two-tier cascade** whose tier 1 **over-includes and never under-includes** —
 so it cannot produce a false zero, which is the defect this whole directory
@@ -246,10 +287,10 @@ Full design, with every measurement:
 ## Prior art (Beacon)
 
 - **Gerard Salton**, SMART (1960s–70s) — the analysis → postings pipeline.
-- **Zobel & Moffat**, _Inverted Files for Text Search Engines_, ACM Computing
+- **Zobel & Moffat**, *Inverted Files for Text Search Engines*, ACM Computing
   Surveys 38(2), 2006 — the canonical survey of exactly the postings and
   compression tradeoffs measured above.
-- **Manning, Raghavan & Schütze**, _Introduction to Information Retrieval_, CUP
+- **Manning, Raghavan & Schütze**, *Introduction to Information Retrieval*, CUP
   2008 — §2.2 tokenisation and stop lists; §2.4 positional indexes, which is
   the structure this one deliberately is **not**.
 - **Apache Lucene** — Doug Cutting, 1999–; Apache project since 2001; the engine

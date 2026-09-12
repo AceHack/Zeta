@@ -16,6 +16,17 @@
 # not depend on that pipeline (hence an orphan ref, not a PR flush). What it
 # lacked was a retention bound.
 #
+# AND AS OF 2026-09-11 THE PUBLISH PATH IS GONE, NOT MERELY PAUSED. The
+# committed tree was deleted (PR #16919) and `db/search-index/` is now
+# `.gitignore`d, so the flush step below has nothing to stage: re-enabling this
+# file would produce an empty flush, not a restored index. The git-native
+# STORAGE design is marked `toy` in
+# `src/Core.TypeScript/search/inverted/format.ts` — 280 blobs, 409.67 MB raw /
+# 25.03 MB on disk over 8 commits in 16 days, measured 2026-09-11 — and what
+# would earn it back is a store with a RETENTION BOUND, which this workflow
+# never had. Building and querying the index are untouched; only publishing it
+# into git is retired.
+#
 # Absence of runs here is the pause, NEVER evidence that work stopped — read
 # liveness from the work itself: commits on `main`, merged PRs, open
 # work-items. A lane's run-state is a question for the Actions API.
