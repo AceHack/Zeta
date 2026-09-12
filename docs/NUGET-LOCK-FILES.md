@@ -82,10 +82,10 @@ First run, 2026-09-11 (workflow run `34664278420`). **Zero of 63 projects came b
 | verdict | count | what it is |
 |---|---|---|
 | `identical` | **0** | — |
-| `differs-unexplained` | **30** | one package, `FSharp.Core`. The blocking finding |
+| `differs-unexplained` | **30** | one package, `FSharp.Core`, resolving differently per leg. **The blocking finding** |
 | `differs-formatting-only` | **33** | Windows writes CRLF; Unix writes LF |
 
-### Finding 1 — `FSharp.Core` resolves to a different `contentHash` per platform (30 locks)
+### Finding 1 — `FSharp.Core` resolves to a different `contentHash` per leg (30 locks)
 
 The 30 affected locks are **exactly** the 30 that reference `FSharp.Core`, and
 `net10.0/FSharp.Core` is the **only** differing entry in any of them. Same requested range,
@@ -101,15 +101,49 @@ So the committed locks are the **macOS/Windows** answer, and both Linux legs dis
 the committed files and with each other. `dotnet restore --locked-mode` on the gate would
 therefore fail `NU1403` on every Linux leg, which is most of the gate.
 
-**Hypothesis for the mechanism, labelled as one.** `FSharp.Core` 10.1.400 *is* published on
-nuget.org, but the sha512 of the nuget.org `.nupkg` (`aM8GRu3juiHLoQqcV7+nnynXrw1G…`) matches
-**none** of the three values above, so the lock's `contentHash` is not a digest of that file.
-The .NET SDK also ships its own copy at `sdk/<version>/FSharp/library-packs/FSharp.Core.<v>.nupkg`,
-and that file's bytes differ from the nuget.org one (measured locally: `T9R1BJRK32NxCH9vneBi…`).
-An SDK-bundled package acting as an implicit local source, with per-platform SDK build bytes,
-fits every observation — but the exact resolution path has **not** been traced, so this is a
-hypothesis to test, not a finding. What is *measured* is the divergence itself, and the
-divergence alone settles the widening question.
+#### The mechanism, traced to the SDK line that causes it
+
+This started as a hypothesis and was then found in the shipped SDK targets.
+`sdk/<version>/FSharp/Microsoft.FSharp.NetSdk.targets` adds the SDK's **own bundled copy of
+`FSharp.Core`** as an additional restore source for every F# project:
+
+```xml
+<PropertyGroup Condition=" '$(DisableImplicitLibraryPacksFolder)' != 'true' ">
+  <RestoreAdditionalProjectSources Condition="Exists('$(_FSharpCoreLibraryPacksFolder)')">
+    $(RestoreAdditionalProjectSources);$(_FSharpCoreLibraryPacksFolder)
+  </RestoreAdditionalProjectSources>
+</PropertyGroup>
+```
+
+`_FSharpCoreLibraryPacksFolder` is `sdk/<version>/FSharp/library-packs/`, which holds exactly
+one file: `FSharp.Core.10.1.400.nupkg`. **That file is built per SDK platform, so its bytes —
+and therefore the `contentHash` NuGet records when it resolves from there — differ per
+platform.** The nuget.org `.nupkg` sha512 (`aM8GRu3juiHLoQqcV7+nnynXrw1G…`) matches none of the
+three lock values, and the locally bundled copy hashes differently again
+(`T9R1BJRK32NxCH9vneBi…`), which is the same story from the other side.
+
+**And it is worse than per-platform: it is per-MACHINE-STATE.** Whether a leg records the
+nuget.org hash or its SDK's bundled hash depends on which source populated
+`~/.nuget/packages` first, which is a property of the runner image and the cache, not of the
+operating system. That is consistent with what was measured — `macos-26` (arm64) and
+`windows-2025` (x64) agree while `ubuntu-24.04` (x64) and `ubuntu-24.04-arm` (arm64) each
+differ, so the split follows **neither** OS nor architecture. It also means a leg that agrees
+today can disagree tomorrow with no change to this repository.
+
+#### Why a per-RID lock is the WRONG remedy here
+
+`packages.<rid>.lock.json` exists for projects whose graph genuinely varies by
+`RuntimeIdentifier`. This one does not: nothing in the tree declares a RID, and the observed
+grouping does not follow RID lines — two *different* architectures agree with each other while
+two builds of the *same* OS disagree. Per-RID locks would encode the machine-state accident as
+if it were a platform fact.
+
+**The lever the SDK already provides** is the condition in the snippet above:
+`<DisableImplicitLibraryPacksFolder>true</DisableImplicitLibraryPacksFolder>` removes the
+bundled folder as a restore source, so `FSharp.Core` resolves from nuget.org on every leg and
+one version means one `contentHash`. That is a real change to how restore behaves and to all 30
+affected lock files, so it belongs in its own change — and this lane is exactly what would
+verify it. It is **not** applied here: this PR measures.
 
 ### Finding 2 — every lock differs at byte level on Windows (33 locks, and really all 63)
 

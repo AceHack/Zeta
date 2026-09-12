@@ -51,6 +51,18 @@
 #                        missing leg FAILS instead of silently shrinking the
 #                        measurement.
 #
+# THIS LANE IS RED RIGHT NOW, ON PURPOSE
+# --------------------------------------
+# Its first run (34664278420) found the answer and the answer is NO: 30 of 63
+# locks resolve `FSharp.Core` to a different contentHash per leg, because the
+# SDK adds its own bundled copy as a restore source
+# (`Microsoft.FSharp.NetSdk.targets`, gated by `DisableImplicitLibraryPacksFolder`)
+# and that .nupkg is built per platform. So this lane fails until that is FIXED,
+# not waived. A red run here is the standing finding, not a flake, and it should
+# not be muted, retried, or baselined away -- the day it goes green is the day
+# `--locked-mode` may be widened. Full write-up, including why a per-RID lock is
+# the wrong remedy: `docs/NUGET-LOCK-FILES.md`.
+#
 # HOW TO READ A RED RUN
 # ---------------------
 # `differs-unexplained` is the finding. `differs-for-a-declared-reason` is a
