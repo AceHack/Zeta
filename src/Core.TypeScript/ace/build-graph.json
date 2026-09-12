@@ -47,7 +47,7 @@
         "dotnet:src/Core.FSharp.E8Render",
         "dotnet:src/Core.FSharp.Git"
       ],
-      "legs": ["gate/build-and-test", "gate/lint-csharp", "gate/lint-fsharp"],
+      "legs": ["gate/build-and-test", "gate/full-verify", "gate/lint-csharp", "gate/lint-fsharp"],
       "origin": "derived",
       "requiredQuorum": {
         "tier": "T1",
@@ -64,7 +64,7 @@
       "kind": "dotnet",
       "sources": ["bench/Feldera.Bench/**"],
       "dependsOn": ["dotnet:src/Core"],
-      "legs": ["gate/build-and-test", "gate/lint-csharp", "gate/lint-fsharp"],
+      "legs": ["gate/build-and-test", "gate/full-verify", "gate/lint-csharp", "gate/lint-fsharp"],
       "origin": "derived",
       "requiredQuorum": {
         "tier": "T1",
@@ -81,7 +81,7 @@
       "kind": "dotnet",
       "sources": ["clis/**"],
       "dependsOn": [],
-      "legs": ["gate/build-and-test", "gate/lint-csharp", "gate/lint-fsharp"],
+      "legs": ["gate/build-and-test", "gate/full-verify", "gate/lint-csharp", "gate/lint-fsharp"],
       "origin": "derived",
       "requiredQuorum": {
         "tier": "T3",
@@ -113,7 +113,7 @@
       "kind": "dotnet",
       "sources": ["samples/CrmSample/**"],
       "dependsOn": ["dotnet:src/Core"],
-      "legs": ["gate/build-and-test", "gate/lint-csharp", "gate/lint-fsharp"],
+      "legs": ["gate/build-and-test", "gate/full-verify", "gate/lint-csharp", "gate/lint-fsharp"],
       "origin": "derived",
       "requiredQuorum": {
         "tier": "T1",
@@ -130,7 +130,7 @@
       "kind": "dotnet",
       "sources": ["samples/Demo/**"],
       "dependsOn": ["dotnet:src/Core"],
-      "legs": ["gate/build-and-test", "gate/lint-csharp", "gate/lint-fsharp"],
+      "legs": ["gate/build-and-test", "gate/full-verify", "gate/lint-csharp", "gate/lint-fsharp"],
       "origin": "derived",
       "requiredQuorum": {
         "tier": "T1",
@@ -147,7 +147,7 @@
       "kind": "dotnet",
       "sources": ["samples/FactoryDemo.Api.CSharp/**"],
       "dependsOn": [],
-      "legs": ["gate/build-and-test", "gate/lint-csharp", "gate/lint-fsharp"],
+      "legs": ["gate/build-and-test", "gate/full-verify", "gate/lint-csharp", "gate/lint-fsharp"],
       "origin": "derived",
       "requiredQuorum": {
         "tier": "T1",
@@ -164,7 +164,7 @@
       "kind": "dotnet",
       "sources": ["samples/FactoryDemo.Api.FSharp/**"],
       "dependsOn": [],
-      "legs": ["gate/build-and-test", "gate/lint-csharp", "gate/lint-fsharp"],
+      "legs": ["gate/build-and-test", "gate/full-verify", "gate/lint-csharp", "gate/lint-fsharp"],
       "origin": "derived",
       "requiredQuorum": {
         "tier": "T1",
@@ -181,7 +181,7 @@
       "kind": "dotnet",
       "sources": ["samples/QuickStart/**"],
       "dependsOn": ["dotnet:src/Core.CSharp"],
-      "legs": ["gate/build-and-test", "gate/lint-csharp", "gate/lint-fsharp"],
+      "legs": ["gate/build-and-test", "gate/full-verify", "gate/lint-csharp", "gate/lint-fsharp"],
       "origin": "derived",
       "requiredQuorum": {
         "tier": "T1",
@@ -198,7 +198,7 @@
       "kind": "dotnet",
       "sources": ["src/Bayesian/**"],
       "dependsOn": ["dotnet:src/Core"],
-      "legs": ["gate/build-and-test", "gate/lint-csharp", "gate/lint-fsharp"],
+      "legs": ["gate/build-and-test", "gate/full-verify", "gate/lint-csharp", "gate/lint-fsharp"],
       "origin": "derived",
       "requiredQuorum": {
         "tier": "T3",
@@ -230,7 +230,7 @@
       "kind": "dotnet",
       "sources": ["src/Core/**"],
       "dependsOn": ["dotnet:src/Core.Abstractions", "dotnet:src/Core.FSharp.Yaml", "dotnet:src/Core.FSharp.ZetaId"],
-      "legs": ["gate/build-and-test", "gate/lint-csharp", "gate/lint-fsharp"],
+      "legs": ["gate/build-and-test", "gate/full-verify", "gate/lint-csharp", "gate/lint-fsharp"],
       "origin": "derived",
       "requiredQuorum": {
         "tier": "T3",
@@ -269,7 +269,7 @@
       "kind": "dotnet",
       "sources": ["src/Core.Abstractions/**"],
       "dependsOn": [],
-      "legs": ["gate/build-and-test", "gate/lint-csharp", "gate/lint-fsharp"],
+      "legs": ["gate/build-and-test", "gate/full-verify", "gate/lint-csharp", "gate/lint-fsharp"],
       "origin": "derived",
       "requiredQuorum": {
         "tier": "T3",
@@ -308,7 +308,7 @@
       "kind": "dotnet",
       "sources": ["src/Core.CSharp/**"],
       "dependsOn": ["dotnet:src/Core", "dotnet:src/Core.CSharp.DynamicValue"],
-      "legs": ["gate/build-and-test", "gate/lint-csharp", "gate/lint-fsharp"],
+      "legs": ["gate/build-and-test", "gate/full-verify", "gate/lint-csharp", "gate/lint-fsharp"],
       "origin": "derived",
       "requiredQuorum": {
         "tier": "T3",
@@ -340,7 +340,7 @@
       "kind": "dotnet",
       "sources": ["src/Core.CSharp.AceCanonical/**"],
       "dependsOn": [],
-      "legs": ["gate/build-and-test", "gate/lint-csharp", "gate/lint-fsharp"],
+      "legs": ["gate/build-and-test", "gate/full-verify", "gate/lint-csharp", "gate/lint-fsharp"],
       "origin": "derived",
       "requiredQuorum": {
         "tier": "T3",
@@ -365,7 +365,7 @@
       "kind": "dotnet",
       "sources": ["src/Core.CSharp.Blake3/**"],
       "dependsOn": ["dotnet:src/Core"],
-      "legs": ["gate/build-and-test", "gate/lint-csharp", "gate/lint-fsharp"],
+      "legs": ["gate/build-and-test", "gate/full-verify", "gate/lint-csharp", "gate/lint-fsharp"],
       "origin": "derived",
       "requiredQuorum": {
         "tier": "T3",
@@ -390,7 +390,7 @@
       "kind": "dotnet",
       "sources": ["src/Core.CSharp.Bonsai/**"],
       "dependsOn": [],
-      "legs": ["gate/build-and-test", "gate/lint-csharp", "gate/lint-fsharp"],
+      "legs": ["gate/build-and-test", "gate/full-verify", "gate/lint-csharp", "gate/lint-fsharp"],
       "origin": "derived",
       "requiredQuorum": {
         "tier": "T3",
@@ -415,7 +415,7 @@
       "kind": "dotnet",
       "sources": ["src/Core.CSharp.ByteCost/**"],
       "dependsOn": [],
-      "legs": ["gate/build-and-test", "gate/lint-csharp", "gate/lint-fsharp"],
+      "legs": ["gate/build-and-test", "gate/full-verify", "gate/lint-csharp", "gate/lint-fsharp"],
       "origin": "derived",
       "requiredQuorum": {
         "tier": "T3",
@@ -440,7 +440,7 @@
       "kind": "dotnet",
       "sources": ["src/Core.CSharp.Clock/**"],
       "dependsOn": [],
-      "legs": ["gate/build-and-test", "gate/lint-csharp", "gate/lint-fsharp"],
+      "legs": ["gate/build-and-test", "gate/full-verify", "gate/lint-csharp", "gate/lint-fsharp"],
       "origin": "derived",
       "requiredQuorum": {
         "tier": "T3",
@@ -465,7 +465,7 @@
       "kind": "dotnet",
       "sources": ["src/Core.CSharp.DynamicValue/**"],
       "dependsOn": ["dotnet:src/Core.CSharp.Yaml"],
-      "legs": ["gate/build-and-test", "gate/lint-csharp", "gate/lint-fsharp"],
+      "legs": ["gate/build-and-test", "gate/full-verify", "gate/lint-csharp", "gate/lint-fsharp"],
       "origin": "derived",
       "requiredQuorum": {
         "tier": "T3",
@@ -497,7 +497,7 @@
       "kind": "dotnet",
       "sources": ["src/Core.CSharp.Mediator/**"],
       "dependsOn": [],
-      "legs": ["gate/build-and-test", "gate/lint-csharp", "gate/lint-fsharp"],
+      "legs": ["gate/build-and-test", "gate/full-verify", "gate/lint-csharp", "gate/lint-fsharp"],
       "origin": "derived",
       "requiredQuorum": {
         "tier": "T3",
@@ -535,7 +535,7 @@
         "dotnet:src/Core.CSharp.Mediator",
         "dotnet:src/Core.CSharp.Merkle"
       ],
-      "legs": ["gate/build-and-test", "gate/lint-csharp", "gate/lint-fsharp"],
+      "legs": ["gate/build-and-test", "gate/full-verify", "gate/lint-csharp", "gate/lint-fsharp"],
       "origin": "derived",
       "requiredQuorum": {
         "tier": "T1",
@@ -552,7 +552,7 @@
       "kind": "dotnet",
       "sources": ["src/Core.CSharp.Merkle/**"],
       "dependsOn": [],
-      "legs": ["gate/build-and-test", "gate/lint-csharp", "gate/lint-fsharp"],
+      "legs": ["gate/build-and-test", "gate/full-verify", "gate/lint-csharp", "gate/lint-fsharp"],
       "origin": "derived",
       "requiredQuorum": {
         "tier": "T3",
@@ -584,7 +584,7 @@
       "kind": "dotnet",
       "sources": ["src/Core.CSharp.Metric/**"],
       "dependsOn": [],
-      "legs": ["gate/build-and-test", "gate/lint-csharp", "gate/lint-fsharp"],
+      "legs": ["gate/build-and-test", "gate/full-verify", "gate/lint-csharp", "gate/lint-fsharp"],
       "origin": "derived",
       "requiredQuorum": {
         "tier": "T3",
@@ -616,7 +616,7 @@
       "kind": "dotnet",
       "sources": ["src/Core.CSharp.Observe/**"],
       "dependsOn": [],
-      "legs": ["gate/build-and-test", "gate/lint-csharp", "gate/lint-fsharp"],
+      "legs": ["gate/build-and-test", "gate/full-verify", "gate/lint-csharp", "gate/lint-fsharp"],
       "origin": "derived",
       "requiredQuorum": {
         "tier": "T3",
@@ -641,7 +641,7 @@
       "kind": "dotnet",
       "sources": ["src/Core.CSharp.RangeSet/**"],
       "dependsOn": [],
-      "legs": ["gate/build-and-test", "gate/lint-csharp", "gate/lint-fsharp"],
+      "legs": ["gate/build-and-test", "gate/full-verify", "gate/lint-csharp", "gate/lint-fsharp"],
       "origin": "derived",
       "requiredQuorum": {
         "tier": "T3",
@@ -666,7 +666,7 @@
       "kind": "dotnet",
       "sources": ["src/Core.CSharp.Resume/**"],
       "dependsOn": ["dotnet:src/Core.CSharp.Bonsai"],
-      "legs": ["gate/build-and-test", "gate/lint-csharp", "gate/lint-fsharp"],
+      "legs": ["gate/build-and-test", "gate/full-verify", "gate/lint-csharp", "gate/lint-fsharp"],
       "origin": "derived",
       "requiredQuorum": {
         "tier": "T3",
@@ -691,7 +691,7 @@
       "kind": "dotnet",
       "sources": ["src/Core.CSharp.SchemaEvolution/**"],
       "dependsOn": [],
-      "legs": ["gate/build-and-test", "gate/lint-csharp", "gate/lint-fsharp"],
+      "legs": ["gate/build-and-test", "gate/full-verify", "gate/lint-csharp", "gate/lint-fsharp"],
       "origin": "derived",
       "requiredQuorum": {
         "tier": "T1",
@@ -708,7 +708,7 @@
       "kind": "dotnet",
       "sources": ["src/Core.CSharp.Sha256/**"],
       "dependsOn": [],
-      "legs": ["gate/build-and-test", "gate/lint-csharp", "gate/lint-fsharp"],
+      "legs": ["gate/build-and-test", "gate/full-verify", "gate/lint-csharp", "gate/lint-fsharp"],
       "origin": "derived",
       "requiredQuorum": {
         "tier": "T3",
@@ -733,7 +733,7 @@
       "kind": "dotnet",
       "sources": ["src/Core.CSharp.TriBoolean/**"],
       "dependsOn": [],
-      "legs": ["gate/build-and-test", "gate/lint-csharp", "gate/lint-fsharp"],
+      "legs": ["gate/build-and-test", "gate/full-verify", "gate/lint-csharp", "gate/lint-fsharp"],
       "origin": "derived",
       "requiredQuorum": {
         "tier": "T3",
@@ -758,7 +758,7 @@
       "kind": "dotnet",
       "sources": ["src/Core.CSharp.TypeProvider/**"],
       "dependsOn": [],
-      "legs": ["gate/build-and-test", "gate/lint-csharp", "gate/lint-fsharp"],
+      "legs": ["gate/build-and-test", "gate/full-verify", "gate/lint-csharp", "gate/lint-fsharp"],
       "origin": "derived",
       "requiredQuorum": {
         "tier": "T1",
@@ -775,7 +775,7 @@
       "kind": "dotnet",
       "sources": ["src/Core.CSharp.Yaml/**"],
       "dependsOn": [],
-      "legs": ["gate/build-and-test", "gate/lint-csharp", "gate/lint-fsharp"],
+      "legs": ["gate/build-and-test", "gate/full-verify", "gate/lint-csharp", "gate/lint-fsharp"],
       "origin": "derived",
       "requiredQuorum": {
         "tier": "T3",
@@ -807,7 +807,7 @@
       "kind": "dotnet",
       "sources": ["src/Core.CSharp.ZetaId/**"],
       "dependsOn": [],
-      "legs": ["gate/build-and-test", "gate/lint-csharp", "gate/lint-fsharp"],
+      "legs": ["gate/build-and-test", "gate/full-verify", "gate/lint-csharp", "gate/lint-fsharp"],
       "origin": "derived",
       "requiredQuorum": {
         "tier": "T3",
@@ -832,7 +832,7 @@
       "kind": "dotnet",
       "sources": ["src/Core.FSharp.AceCanonical/**"],
       "dependsOn": [],
-      "legs": ["gate/build-and-test", "gate/lint-csharp", "gate/lint-fsharp"],
+      "legs": ["gate/build-and-test", "gate/full-verify", "gate/lint-csharp", "gate/lint-fsharp"],
       "origin": "derived",
       "requiredQuorum": {
         "tier": "T3",
@@ -864,7 +864,7 @@
       "kind": "dotnet",
       "sources": ["src/Core.FSharp.Blake3/**"],
       "dependsOn": ["dotnet:src/Core"],
-      "legs": ["gate/build-and-test", "gate/lint-csharp", "gate/lint-fsharp"],
+      "legs": ["gate/build-and-test", "gate/full-verify", "gate/lint-csharp", "gate/lint-fsharp"],
       "origin": "derived",
       "requiredQuorum": {
         "tier": "T3",
@@ -896,7 +896,7 @@
       "kind": "dotnet",
       "sources": ["src/Core.FSharp.Cli/**"],
       "dependsOn": ["dotnet:src/Core", "dotnet:src/Core.FSharp.Blake3", "dotnet:src/Core.FSharp.Git"],
-      "legs": ["gate/build-and-test", "gate/lint-csharp", "gate/lint-fsharp"],
+      "legs": ["gate/build-and-test", "gate/full-verify", "gate/lint-csharp", "gate/lint-fsharp"],
       "origin": "derived",
       "requiredQuorum": {
         "tier": "T3",
@@ -928,7 +928,7 @@
       "kind": "dotnet",
       "sources": ["src/Core.FSharp.E8Render/**"],
       "dependsOn": [],
-      "legs": ["gate/build-and-test", "gate/lint-csharp", "gate/lint-fsharp"],
+      "legs": ["gate/build-and-test", "gate/full-verify", "gate/lint-csharp", "gate/lint-fsharp"],
       "origin": "derived",
       "requiredQuorum": {
         "tier": "T3",
@@ -960,7 +960,7 @@
       "kind": "dotnet",
       "sources": ["src/Core.FSharp.Git/**"],
       "dependsOn": ["dotnet:src/Core"],
-      "legs": ["gate/build-and-test", "gate/lint-csharp", "gate/lint-fsharp"],
+      "legs": ["gate/build-and-test", "gate/full-verify", "gate/lint-csharp", "gate/lint-fsharp"],
       "origin": "derived",
       "requiredQuorum": {
         "tier": "T3",
@@ -992,7 +992,7 @@
       "kind": "dotnet",
       "sources": ["src/Core.FSharp.Mcp/**"],
       "dependsOn": ["dotnet:src/Core.FSharp.Git"],
-      "legs": ["gate/build-and-test", "gate/lint-csharp", "gate/lint-fsharp"],
+      "legs": ["gate/build-and-test", "gate/full-verify", "gate/lint-csharp", "gate/lint-fsharp"],
       "origin": "derived",
       "requiredQuorum": {
         "tier": "T1",
@@ -1009,7 +1009,7 @@
       "kind": "dotnet",
       "sources": ["src/Core.FSharp.Mediator/**"],
       "dependsOn": ["dotnet:src/Core.CSharp.Mediator"],
-      "legs": ["gate/build-and-test", "gate/lint-csharp", "gate/lint-fsharp"],
+      "legs": ["gate/build-and-test", "gate/full-verify", "gate/lint-csharp", "gate/lint-fsharp"],
       "origin": "derived",
       "requiredQuorum": {
         "tier": "T3",
@@ -1041,7 +1041,7 @@
       "kind": "dotnet",
       "sources": ["src/Core.FSharp.Observe/**"],
       "dependsOn": [],
-      "legs": ["gate/build-and-test", "gate/lint-csharp", "gate/lint-fsharp"],
+      "legs": ["gate/build-and-test", "gate/full-verify", "gate/lint-csharp", "gate/lint-fsharp"],
       "origin": "derived",
       "requiredQuorum": {
         "tier": "T3",
@@ -1073,7 +1073,7 @@
       "kind": "dotnet",
       "sources": ["src/Core.FSharp.ObserveBridge/**"],
       "dependsOn": ["dotnet:src/Core", "dotnet:src/Core.FSharp.Observe"],
-      "legs": ["gate/build-and-test", "gate/lint-csharp", "gate/lint-fsharp"],
+      "legs": ["gate/build-and-test", "gate/full-verify", "gate/lint-csharp", "gate/lint-fsharp"],
       "origin": "derived",
       "requiredQuorum": {
         "tier": "T3",
@@ -1105,7 +1105,7 @@
       "kind": "dotnet",
       "sources": ["src/Core.FSharp.Sha256/**"],
       "dependsOn": [],
-      "legs": ["gate/build-and-test", "gate/lint-csharp", "gate/lint-fsharp"],
+      "legs": ["gate/build-and-test", "gate/full-verify", "gate/lint-csharp", "gate/lint-fsharp"],
       "origin": "derived",
       "requiredQuorum": {
         "tier": "T3",
@@ -1137,7 +1137,7 @@
       "kind": "dotnet",
       "sources": ["src/Core.FSharp.SubstrateDiscovery/**"],
       "dependsOn": ["dotnet:src/Core"],
-      "legs": ["gate/build-and-test", "gate/lint-csharp", "gate/lint-fsharp"],
+      "legs": ["gate/build-and-test", "gate/full-verify", "gate/lint-csharp", "gate/lint-fsharp"],
       "origin": "derived",
       "requiredQuorum": {
         "tier": "T1",
@@ -1154,7 +1154,7 @@
       "kind": "dotnet",
       "sources": ["src/Core.FSharp.TriBoolean/**"],
       "dependsOn": ["dotnet:src/Core"],
-      "legs": ["gate/build-and-test", "gate/lint-csharp", "gate/lint-fsharp"],
+      "legs": ["gate/build-and-test", "gate/full-verify", "gate/lint-csharp", "gate/lint-fsharp"],
       "origin": "derived",
       "requiredQuorum": {
         "tier": "T3",
@@ -1186,7 +1186,7 @@
       "kind": "dotnet",
       "sources": ["src/Core.FSharp.Yaml/**"],
       "dependsOn": [],
-      "legs": ["gate/build-and-test", "gate/lint-csharp", "gate/lint-fsharp"],
+      "legs": ["gate/build-and-test", "gate/full-verify", "gate/lint-csharp", "gate/lint-fsharp"],
       "origin": "derived",
       "requiredQuorum": {
         "tier": "T3",
@@ -1225,7 +1225,7 @@
       "kind": "dotnet",
       "sources": ["src/Core.FSharp.Z3Verify/**"],
       "dependsOn": [],
-      "legs": ["gate/build-and-test", "gate/lint-csharp", "gate/lint-fsharp"],
+      "legs": ["gate/build-and-test", "gate/full-verify", "gate/lint-csharp", "gate/lint-fsharp"],
       "origin": "derived",
       "requiredQuorum": {
         "tier": "T1",
@@ -1242,7 +1242,7 @@
       "kind": "dotnet",
       "sources": ["src/Core.FSharp.ZetaId/**"],
       "dependsOn": [],
-      "legs": ["gate/build-and-test", "gate/lint-csharp", "gate/lint-fsharp"],
+      "legs": ["gate/build-and-test", "gate/full-verify", "gate/lint-csharp", "gate/lint-fsharp"],
       "origin": "derived",
       "requiredQuorum": {
         "tier": "T3",
@@ -1281,7 +1281,7 @@
       "kind": "dotnet",
       "sources": ["src/Core.Telemetry/**"],
       "dependsOn": ["dotnet:src/Core"],
-      "legs": ["gate/build-and-test", "gate/lint-csharp", "gate/lint-fsharp"],
+      "legs": ["gate/build-and-test", "gate/full-verify", "gate/lint-csharp", "gate/lint-fsharp"],
       "origin": "derived",
       "requiredQuorum": {
         "tier": "T3",
@@ -1313,7 +1313,7 @@
       "kind": "dotnet",
       "sources": ["src/Research.FSharp.Cli/**"],
       "dependsOn": ["dotnet:src/Core"],
-      "legs": ["gate/build-and-test", "gate/lint-csharp", "gate/lint-fsharp"],
+      "legs": ["gate/build-and-test", "gate/full-verify", "gate/lint-csharp", "gate/lint-fsharp"],
       "origin": "derived",
       "requiredQuorum": {
         "tier": "T1",
@@ -1330,7 +1330,7 @@
       "kind": "dotnet",
       "sources": ["src/SwarmRunner/**"],
       "dependsOn": [],
-      "legs": ["gate/build-and-test", "gate/lint-csharp", "gate/lint-fsharp"],
+      "legs": ["gate/build-and-test", "gate/full-verify", "gate/lint-csharp", "gate/lint-fsharp"],
       "origin": "derived",
       "requiredQuorum": {
         "tier": "T1",
@@ -1347,7 +1347,7 @@
       "kind": "dotnet",
       "sources": ["src/Zeta.Generators/**"],
       "dependsOn": [],
-      "legs": ["gate/build-and-test", "gate/lint-csharp", "gate/lint-fsharp"],
+      "legs": ["gate/build-and-test", "gate/full-verify", "gate/lint-csharp", "gate/lint-fsharp"],
       "origin": "derived",
       "requiredQuorum": {
         "tier": "T3",
@@ -1372,7 +1372,7 @@
       "kind": "dotnet",
       "sources": ["tests/Bayesian.Tests/**"],
       "dependsOn": ["dotnet:src/Bayesian", "dotnet:src/Core"],
-      "legs": ["gate/build-and-test", "gate/lint-csharp", "gate/lint-fsharp"],
+      "legs": ["gate/build-and-test", "gate/full-verify", "gate/lint-csharp", "gate/lint-fsharp"],
       "origin": "derived",
       "requiredQuorum": {
         "tier": "T1",
@@ -1393,7 +1393,7 @@
         "dotnet:src/Core.CSharp.Mediator.Handlers",
         "dotnet:tests/Core.FSharp.Mediator.Fixtures"
       ],
-      "legs": ["gate/build-and-test", "gate/lint-csharp", "gate/lint-fsharp"],
+      "legs": ["gate/build-and-test", "gate/full-verify", "gate/lint-csharp", "gate/lint-fsharp"],
       "origin": "derived",
       "requiredQuorum": {
         "tier": "T1",
@@ -1410,7 +1410,7 @@
       "kind": "dotnet",
       "sources": ["tests/Core.CSharp.Tests/**"],
       "dependsOn": ["dotnet:src/Core", "dotnet:src/Core.CSharp", "dotnet:src/Core.CSharp.DynamicValue"],
-      "legs": ["gate/build-and-test", "gate/lint-csharp", "gate/lint-fsharp"],
+      "legs": ["gate/build-and-test", "gate/full-verify", "gate/lint-csharp", "gate/lint-fsharp"],
       "origin": "derived",
       "requiredQuorum": {
         "tier": "T1",
@@ -1427,7 +1427,7 @@
       "kind": "dotnet",
       "sources": ["tests/Core.FSharp.Mediator.Fixtures/**"],
       "dependsOn": ["dotnet:src/Core.CSharp.Mediator"],
-      "legs": ["gate/build-and-test", "gate/lint-csharp", "gate/lint-fsharp"],
+      "legs": ["gate/build-and-test", "gate/full-verify", "gate/lint-csharp", "gate/lint-fsharp"],
       "origin": "derived",
       "requiredQuorum": {
         "tier": "T1",
@@ -1463,7 +1463,7 @@
         "dotnet:src/Core.CSharp.ZetaId",
         "dotnet:src/Zeta.Generators"
       ],
-      "legs": ["gate/build-and-test", "gate/lint-csharp", "gate/lint-fsharp"],
+      "legs": ["gate/build-and-test", "gate/full-verify", "gate/lint-csharp", "gate/lint-fsharp"],
       "origin": "derived",
       "requiredQuorum": {
         "tier": "T3",
@@ -1488,7 +1488,7 @@
       "kind": "dotnet",
       "sources": ["tests/Tests.CSharp.TypeProvider/**"],
       "dependsOn": ["dotnet:src/Core.CSharp.TypeProvider"],
-      "legs": ["gate/build-and-test", "gate/lint-csharp", "gate/lint-fsharp"],
+      "legs": ["gate/build-and-test", "gate/full-verify", "gate/lint-csharp", "gate/lint-fsharp"],
       "origin": "derived",
       "requiredQuorum": {
         "tier": "T1",
@@ -1524,7 +1524,7 @@
         "dotnet:src/Core.FSharp.ZetaId",
         "dotnet:src/Core.Telemetry"
       ],
-      "legs": ["gate/build-and-test", "gate/lint-csharp", "gate/lint-fsharp"],
+      "legs": ["gate/build-and-test", "gate/full-verify", "gate/lint-csharp", "gate/lint-fsharp"],
       "origin": "derived",
       "requiredQuorum": {
         "tier": "T3",
@@ -1561,7 +1561,7 @@
         "dotnet:src/Core.FSharp.Observe",
         "dotnet:src/Core.FSharp.ObserveBridge"
       ],
-      "legs": ["gate/build-and-test", "gate/lint-csharp", "gate/lint-fsharp"],
+      "legs": ["gate/build-and-test", "gate/full-verify", "gate/lint-csharp", "gate/lint-fsharp"],
       "origin": "derived",
       "requiredQuorum": {
         "tier": "T1",
@@ -1578,7 +1578,7 @@
       "kind": "dotnet",
       "sources": ["vocab/**"],
       "dependsOn": [],
-      "legs": ["gate/build-and-test", "gate/lint-csharp", "gate/lint-fsharp"],
+      "legs": ["gate/build-and-test", "gate/full-verify", "gate/lint-csharp", "gate/lint-fsharp"],
       "origin": "derived",
       "requiredQuorum": {
         "tier": "T1",
@@ -1840,7 +1840,7 @@
       "kind": "rust",
       "sources": ["src/Core.Rust.AceCanonical/**"],
       "dependsOn": ["rust:src/Core.Rust.DynamicValue"],
-      "legs": ["gate/lint-rust"],
+      "legs": ["gate/full-verify", "gate/lint-rust"],
       "origin": "derived",
       "requiredQuorum": {
         "tier": "T3",
@@ -1865,7 +1865,7 @@
       "kind": "rust",
       "sources": ["src/Core.Rust.Algebra/**"],
       "dependsOn": ["rust:src/Core.Rust.Merkle", "rust:src/Core.Rust.Sha256", "rust:src/Core.Rust.Yaml"],
-      "legs": ["gate/lint-rust"],
+      "legs": ["gate/full-verify", "gate/lint-rust"],
       "origin": "derived",
       "requiredQuorum": {
         "tier": "T3",
@@ -1890,7 +1890,7 @@
       "kind": "rust",
       "sources": ["src/Core.Rust.Blake3/**"],
       "dependsOn": ["rust:src/Core.Rust.Merkle", "rust:src/Core.Rust.Yaml"],
-      "legs": ["gate/lint-rust"],
+      "legs": ["gate/full-verify", "gate/lint-rust"],
       "origin": "derived",
       "requiredQuorum": {
         "tier": "T3",
@@ -1915,7 +1915,7 @@
       "kind": "rust",
       "sources": ["src/Core.Rust.Bonsai/**"],
       "dependsOn": [],
-      "legs": ["gate/lint-rust"],
+      "legs": ["gate/full-verify", "gate/lint-rust"],
       "origin": "derived",
       "requiredQuorum": {
         "tier": "T3",
@@ -1940,7 +1940,7 @@
       "kind": "rust",
       "sources": ["src/Core.Rust.Braid/**"],
       "dependsOn": [],
-      "legs": ["gate/lint-rust"],
+      "legs": ["gate/full-verify", "gate/lint-rust"],
       "origin": "derived",
       "requiredQuorum": {
         "tier": "T2",
@@ -1965,7 +1965,7 @@
       "kind": "rust",
       "sources": ["src/Core.Rust.ByteCost/**"],
       "dependsOn": [],
-      "legs": ["gate/lint-rust"],
+      "legs": ["gate/full-verify", "gate/lint-rust"],
       "origin": "derived",
       "requiredQuorum": {
         "tier": "T2",
@@ -1990,7 +1990,7 @@
       "kind": "rust",
       "sources": ["src/Core.Rust.Chip9/**"],
       "dependsOn": [],
-      "legs": ["gate/lint-rust"],
+      "legs": ["gate/full-verify", "gate/lint-rust"],
       "origin": "derived",
       "requiredQuorum": {
         "tier": "T2",
@@ -2015,7 +2015,7 @@
       "kind": "rust",
       "sources": ["src/Core.Rust.Clock/**"],
       "dependsOn": [],
-      "legs": ["gate/lint-rust"],
+      "legs": ["gate/full-verify", "gate/lint-rust"],
       "origin": "derived",
       "requiredQuorum": {
         "tier": "T2",
@@ -2040,7 +2040,7 @@
       "kind": "rust",
       "sources": ["src/Core.Rust.Consensus/**"],
       "dependsOn": [],
-      "legs": ["gate/lint-rust"],
+      "legs": ["gate/full-verify", "gate/lint-rust"],
       "origin": "derived",
       "requiredQuorum": {
         "tier": "T2",
@@ -2065,7 +2065,7 @@
       "kind": "rust",
       "sources": ["src/Core.Rust.ConsistentHash/**"],
       "dependsOn": [],
-      "legs": ["gate/lint-rust"],
+      "legs": ["gate/full-verify", "gate/lint-rust"],
       "origin": "derived",
       "requiredQuorum": {
         "tier": "T2",
@@ -2090,7 +2090,7 @@
       "kind": "rust",
       "sources": ["src/Core.Rust.Crc32c/**"],
       "dependsOn": [],
-      "legs": ["gate/lint-rust"],
+      "legs": ["gate/full-verify", "gate/lint-rust"],
       "origin": "derived",
       "requiredQuorum": {
         "tier": "T2",
@@ -2115,7 +2115,7 @@
       "kind": "rust",
       "sources": ["src/Core.Rust.Curve/**"],
       "dependsOn": [],
-      "legs": ["gate/lint-rust"],
+      "legs": ["gate/full-verify", "gate/lint-rust"],
       "origin": "derived",
       "requiredQuorum": {
         "tier": "T2",
@@ -2140,7 +2140,7 @@
       "kind": "rust",
       "sources": ["src/Core.Rust.Durability/**"],
       "dependsOn": ["rust:src/Core.Rust.Algebra", "rust:src/Core.Rust.DynamicValue"],
-      "legs": ["gate/lint-rust"],
+      "legs": ["gate/full-verify", "gate/lint-rust"],
       "origin": "derived",
       "requiredQuorum": {
         "tier": "T3",
@@ -2165,7 +2165,7 @@
       "kind": "rust",
       "sources": ["src/Core.Rust.DynamicValue/**"],
       "dependsOn": ["rust:src/Core.Rust.Yaml"],
-      "legs": ["gate/lint-rust"],
+      "legs": ["gate/full-verify", "gate/lint-rust"],
       "origin": "derived",
       "requiredQuorum": {
         "tier": "T3",
@@ -2190,7 +2190,7 @@
       "kind": "rust",
       "sources": ["src/Core.Rust.FastCdc/**"],
       "dependsOn": [],
-      "legs": ["gate/lint-rust"],
+      "legs": ["gate/full-verify", "gate/lint-rust"],
       "origin": "derived",
       "requiredQuorum": {
         "tier": "T2",
@@ -2215,7 +2215,7 @@
       "kind": "rust",
       "sources": ["src/Core.Rust.FourCorner/**"],
       "dependsOn": [],
-      "legs": ["gate/lint-rust"],
+      "legs": ["gate/full-verify", "gate/lint-rust"],
       "origin": "derived",
       "requiredQuorum": {
         "tier": "T2",
@@ -2240,7 +2240,7 @@
       "kind": "rust",
       "sources": ["src/Core.Rust.FrameDelta/**"],
       "dependsOn": [],
-      "legs": ["gate/lint-rust"],
+      "legs": ["gate/full-verify", "gate/lint-rust"],
       "origin": "derived",
       "requiredQuorum": {
         "tier": "T2",
@@ -2265,7 +2265,7 @@
       "kind": "rust",
       "sources": ["src/Core.Rust.MembraneLog/**"],
       "dependsOn": [],
-      "legs": ["gate/lint-rust"],
+      "legs": ["gate/full-verify", "gate/lint-rust"],
       "origin": "derived",
       "requiredQuorum": {
         "tier": "T2",
@@ -2290,7 +2290,7 @@
       "kind": "rust",
       "sources": ["src/Core.Rust.Merkle/**"],
       "dependsOn": [],
-      "legs": ["gate/lint-rust"],
+      "legs": ["gate/full-verify", "gate/lint-rust"],
       "origin": "derived",
       "requiredQuorum": {
         "tier": "T3",
@@ -2322,7 +2322,7 @@
       "kind": "rust",
       "sources": ["src/Core.Rust.MeshPong/**"],
       "dependsOn": [],
-      "legs": ["gate/lint-rust"],
+      "legs": ["gate/full-verify", "gate/lint-rust"],
       "origin": "derived",
       "requiredQuorum": {
         "tier": "T2",
@@ -2347,7 +2347,7 @@
       "kind": "rust",
       "sources": ["src/Core.Rust.Metric/**"],
       "dependsOn": [],
-      "legs": ["gate/lint-rust"],
+      "legs": ["gate/full-verify", "gate/lint-rust"],
       "origin": "derived",
       "requiredQuorum": {
         "tier": "T2",
@@ -2372,7 +2372,7 @@
       "kind": "rust",
       "sources": ["src/Core.Rust.Mixin/**"],
       "dependsOn": [],
-      "legs": ["gate/lint-rust"],
+      "legs": ["gate/full-verify", "gate/lint-rust"],
       "origin": "derived",
       "requiredQuorum": {
         "tier": "T1",
@@ -2414,7 +2414,7 @@
       "kind": "rust",
       "sources": ["src/Core.Rust.ProbabilitySemiring/**"],
       "dependsOn": [],
-      "legs": ["gate/lint-rust"],
+      "legs": ["gate/full-verify", "gate/lint-rust"],
       "origin": "derived",
       "requiredQuorum": {
         "tier": "T2",
@@ -2439,7 +2439,7 @@
       "kind": "rust",
       "sources": ["src/Core.Rust.RangeSet/**"],
       "dependsOn": [],
-      "legs": ["gate/lint-rust"],
+      "legs": ["gate/full-verify", "gate/lint-rust"],
       "origin": "derived",
       "requiredQuorum": {
         "tier": "T3",
@@ -2464,7 +2464,7 @@
       "kind": "rust",
       "sources": ["src/Core.Rust.Resume/**"],
       "dependsOn": ["rust:src/Core.Rust.Bonsai"],
-      "legs": ["gate/lint-rust"],
+      "legs": ["gate/full-verify", "gate/lint-rust"],
       "origin": "derived",
       "requiredQuorum": {
         "tier": "T3",
@@ -2489,7 +2489,7 @@
       "kind": "rust",
       "sources": ["src/Core.Rust.SchemaEvolution/**"],
       "dependsOn": [],
-      "legs": ["gate/lint-rust"],
+      "legs": ["gate/full-verify", "gate/lint-rust"],
       "origin": "derived",
       "requiredQuorum": {
         "tier": "T1",
@@ -2506,7 +2506,7 @@
       "kind": "rust",
       "sources": ["src/Core.Rust.Sha256/**"],
       "dependsOn": ["rust:src/Core.Rust.Yaml"],
-      "legs": ["gate/lint-rust"],
+      "legs": ["gate/full-verify", "gate/lint-rust"],
       "origin": "derived",
       "requiredQuorum": {
         "tier": "T3",
@@ -2531,7 +2531,7 @@
       "kind": "rust",
       "sources": ["src/Core.Rust.SoftValue/**"],
       "dependsOn": [],
-      "legs": ["gate/lint-rust"],
+      "legs": ["gate/full-verify", "gate/lint-rust"],
       "origin": "derived",
       "requiredQuorum": {
         "tier": "T2",
@@ -2556,7 +2556,7 @@
       "kind": "rust",
       "sources": ["src/Core.Rust.SplitMix64/**"],
       "dependsOn": [],
-      "legs": ["gate/lint-rust"],
+      "legs": ["gate/full-verify", "gate/lint-rust"],
       "origin": "derived",
       "requiredQuorum": {
         "tier": "T2",
@@ -2581,7 +2581,7 @@
       "kind": "rust",
       "sources": ["src/Core.Rust.TravelerFrame/**"],
       "dependsOn": [],
-      "legs": ["gate/lint-rust"],
+      "legs": ["gate/full-verify", "gate/lint-rust"],
       "origin": "derived",
       "requiredQuorum": {
         "tier": "T2",
@@ -2606,7 +2606,7 @@
       "kind": "rust",
       "sources": ["src/Core.Rust.TriBoolean/**"],
       "dependsOn": ["rust:src/Core.Rust.Yaml"],
-      "legs": ["gate/lint-rust"],
+      "legs": ["gate/full-verify", "gate/lint-rust"],
       "origin": "derived",
       "requiredQuorum": {
         "tier": "T3",
@@ -2631,7 +2631,7 @@
       "kind": "rust",
       "sources": ["src/Core.Rust.UncertainClock/**"],
       "dependsOn": [],
-      "legs": ["gate/lint-rust"],
+      "legs": ["gate/full-verify", "gate/lint-rust"],
       "origin": "derived",
       "requiredQuorum": {
         "tier": "T2",
@@ -2656,7 +2656,7 @@
       "kind": "rust",
       "sources": ["src/Core.Rust.Watermark/**"],
       "dependsOn": [],
-      "legs": ["gate/lint-rust"],
+      "legs": ["gate/full-verify", "gate/lint-rust"],
       "origin": "derived",
       "requiredQuorum": {
         "tier": "T2",
@@ -2681,7 +2681,7 @@
       "kind": "rust",
       "sources": ["src/Core.Rust.Yaml/**"],
       "dependsOn": [],
-      "legs": ["gate/lint-rust"],
+      "legs": ["gate/full-verify", "gate/lint-rust"],
       "origin": "derived",
       "requiredQuorum": {
         "tier": "T3",
@@ -2706,7 +2706,7 @@
       "kind": "rust",
       "sources": ["src/Core.Rust.ZetaId/**"],
       "dependsOn": [],
-      "legs": ["gate/lint-rust"],
+      "legs": ["gate/full-verify", "gate/lint-rust"],
       "origin": "derived",
       "requiredQuorum": {
         "tier": "T3",
@@ -2765,7 +2765,7 @@
       "kind": "assemblyscript",
       "sources": ["src/wasm-dla/**"],
       "dependsOn": [],
-      "legs": ["bytelock/bytelock", "bytelock/cross-processor"],
+      "legs": ["bytelock/bytelock", "bytelock/cross-processor", "gate/full-verify"],
       "origin": "declared",
       "requiredQuorum": {
         "tier": "T1",
@@ -2782,7 +2782,7 @@
       "kind": "typescript",
       "sources": ["src/Core.TypeScript/ace/**"],
       "dependsOn": [],
-      "legs": ["gate/cross-verify", "gate/lint-typescript"],
+      "legs": ["gate/cross-verify", "gate/full-verify", "gate/lint-typescript"],
       "origin": "declared",
       "requiredQuorum": {
         "tier": "T1",
@@ -2799,7 +2799,7 @@
       "kind": "typescript",
       "sources": ["src/apps/twitch-ai/**"],
       "dependsOn": [],
-      "legs": ["gate/lint-twitch-ai"],
+      "legs": ["gate/full-verify", "gate/lint-twitch-ai"],
       "origin": "declared",
       "requiredQuorum": {
         "tier": "T1",
@@ -2856,7 +2856,7 @@
       "kind": "typescript",
       "sources": ["demo/identity-dla-site/**"],
       "dependsOn": [],
-      "legs": ["gate/lint-identity-dla"],
+      "legs": ["gate/full-verify", "gate/lint-identity-dla"],
       "origin": "declared",
       "requiredQuorum": {
         "tier": "T1",
@@ -2873,7 +2873,7 @@
       "kind": "typescript",
       "sources": ["src/Core.TypeScript/hygiene/**"],
       "dependsOn": [],
-      "legs": ["gate/lint-bash-retirement-inventory", "gate/lint-typescript"],
+      "legs": ["gate/full-verify", "gate/lint-bash-retirement-inventory", "gate/lint-typescript"],
       "origin": "declared",
       "requiredQuorum": {
         "tier": "T2",
@@ -2898,7 +2898,12 @@
       "kind": "typescript",
       "sources": ["**/*.ts", "**/*.tsx"],
       "dependsOn": [],
-      "legs": ["gate/lint-typescript", "gate/test-typescript-environment", "gate/test-typescript-hermetic"],
+      "legs": [
+        "gate/full-verify",
+        "gate/lint-typescript",
+        "gate/test-typescript-environment",
+        "gate/test-typescript-hermetic"
+      ],
       "origin": "declared",
       "requiredQuorum": {
         "tier": "T3",
@@ -2937,7 +2942,7 @@
       "kind": "typescript",
       "sources": ["src/Renderers/website/**"],
       "dependsOn": [],
-      "legs": ["gate/lint-website"],
+      "legs": ["gate/full-verify", "gate/lint-website"],
       "origin": "declared",
       "requiredQuorum": {
         "tier": "T1",
@@ -3035,7 +3040,7 @@
       "kind": "qsharp",
       "sources": ["src/Core.QSharp.ReferenceOracle/**"],
       "dependsOn": [],
-      "legs": ["gate/cross-verify"],
+      "legs": ["gate/cross-verify", "gate/full-verify"],
       "origin": "declared",
       "requiredQuorum": {
         "tier": "T3",

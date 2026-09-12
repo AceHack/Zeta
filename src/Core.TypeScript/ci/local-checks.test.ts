@@ -1,6 +1,6 @@
 import { describe, expect, test } from "bun:test";
 import { readFileSync } from "node:fs";
-import { auditRoster, deriveFromGate, gateJobNames, relevant, runCheck, NO_LOCAL, ROSTER } from "./local-checks.ts";
+import { auditRoster, deriveFromGate, gateJobNames, relevant, runCheck, NO_LOCAL, ROSTER, resolveChecks, type CheckSpec } from "./local-checks.ts";
 import { ALL_DOMAINS, type Domain } from "./path-domains.ts";
 
 const NONE = Object.fromEntries(ALL_DOMAINS.map((d) => [d, false])) as Record<Domain, boolean>;
@@ -91,6 +91,63 @@ describe("the roster is checked against gate.yml, not trusted", () => {
     const names = new Set(gateJobNames(yaml));
     for (const r of ROSTER) expect(names.has(r.gateJob)).toBe(true);
     for (const n of NO_LOCAL) expect(names.has(n.gateJob)).toBe(true);
+  });
+});
+
+describe("--only resolves a check by NAME, and a bad name is not a finding", () => {
+  // THE DEFECT THIS CLOSES, measured 2026-09-11. `src/Core.TypeScript/hygiene/` holds 225
+  // scripts across 60+ prefixes, and three of them mean the same thing: `audit-` (102),
+  // `lint-` (35), `check-` (12). Reaching for one by hand is a coin flip, and the coin came
+  // up wrong twice in one session.
+  //
+  // The cost is not the typo. `bun <missing-file>` exits **1** — byte-identical to a check
+  // that ran and found a violation — so the wrong guess arrives wearing the costume of a
+  // finding, and WAS reported as one before anyone noticed the file did not exist. A check
+  // that did not run, looking like one that FAILED. Exit 2 is the repo's existing word for
+  // "never ran", and these tests are what keep the two apart.
+  const spec = (gateJob: string, argv: readonly string[]): CheckSpec => ({
+    gateJob,
+    domains: [],
+    argv: [...argv],
+    requires: "bun",
+  });
+  const roster: readonly CheckSpec[] = [
+    spec("lint (no conflict markers)", ["bun", "src/Core.TypeScript/hygiene/check-no-conflict-markers.ts"]),
+    spec("lint (build-graph completeness)", ["bun", "src/Core.TypeScript/ci/gate-leg-wiring.ts"]),
+    spec("lint (TS)", ["bun", "run", "lint:typescript"]),
+  ];
+
+  test("a fragment of the gate job name resolves", () => {
+    const r = resolveChecks(roster, "conflict markers");
+    expect(r.matched.map((c) => c.gateJob)).toEqual(["lint (no conflict markers)"]);
+  });
+
+  test("the SCRIPT name resolves too — that is the form people actually type", () => {
+    const r = resolveChecks(roster, "gate-leg-wiring");
+    expect(r.matched.map((c) => c.gateJob)).toEqual(["lint (build-graph completeness)"]);
+  });
+
+  test("the exact wrong guess that started this resolves to nothing, and offers the right one", () => {
+    const r = resolveChecks(roster, "lint-no-conflict-markers");
+    expect(r.matched).toEqual([]);
+    expect(r.candidates).toContain("lint (no conflict markers)");
+  });
+
+  test("an unmatched query still offers candidates — a refusal that names nothing is useless", () => {
+    const r = resolveChecks(roster, "zzzz-no-such-thing");
+    expect(r.matched).toEqual([]);
+    expect(r.candidates.length).toBeGreaterThan(0);
+  });
+
+  test("matching is case-insensitive", () => {
+    expect(resolveChecks(roster, "CONFLICT MARKERS").matched).toHaveLength(1);
+  });
+
+  test("THE CONTROL: a real name is NOT refused — a resolver that rejects everything is the vacuity", () => {
+    // Without this, a resolver hardcoded to return `{matched: []}` passes every test above.
+    for (const c of roster) {
+      expect(resolveChecks(roster, c.gateJob).matched.length).toBeGreaterThan(0);
+    }
   });
 });
 

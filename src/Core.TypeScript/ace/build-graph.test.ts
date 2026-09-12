@@ -16,6 +16,7 @@ import {
   normalizePath,
   parseChangedFiles,
   classifyPath,
+  attachTreeWideVerifiers,
   reverseClosure,
   affectedTargets,
   allTargetIds,
@@ -168,6 +169,99 @@ describe("classification", () => {
 
   test("anything else is unknown — never silently ignored", () => {
     expect(classifyPath(TOY, "somewhere/new/file.rs").kind).toBe("unknown");
+  });
+});
+
+describe("a tree-wide VERIFIER is claimed by everything it verifies", () => {
+  // THE RULE: a verification leg cannot be derived from "which targets produce this
+  // artifact" — it must be claimed by everything it VERIFIES. A verifier exists to
+  // catch changes that do not declare themselves, so deriving its trigger from
+  // declarations is circular.
+  //
+  // MEASURED 2026-09-11, before `attachTreeWideVerifiers`: `gate/full-verify` was
+  // claimed by FOUR targets while the job installs and smoke-checks seven toolchains
+  // and runs the 7-language IR byte-lock. All 59 dotnet targets, 35 of 36 Rust crates
+  // and the Q# oracle claimed nothing — so an F#-only change that BROKE the byte-lock
+  // would not have turned the leg on, and gating the job on it would have skipped the
+  // check whose whole purpose is catching that change.
+  const graph = () =>
+    JSON.parse(readFileSync(join(REPO_ROOT, GRAPH_PATH), "utf-8")) as BuildGraph;
+
+  // Kinds full-verify demonstrably does not run — each has its own workflow or none,
+  // and `audit-build-graph-completeness.ts` holds the roster that measured it. Named
+  // here rather than inlined so a widening of the exclusion has to edit a test.
+  const UNREACHED = new Set(["agda", "alloy", "tla", "lean"]);
+
+  test("every real build target claims `gate/full-verify`", () => {
+    const missing = graph()
+      .targets.filter((t) => !t.id.startsWith("leg:") && !UNREACHED.has(t.kind))
+      .filter((t) => !t.legs.includes("gate/full-verify"))
+      .map((t) => t.id);
+    expect(missing).toEqual([]);
+    // And it is a LOT of targets — the whole point is that it stopped being four.
+    expect(graph().targets.filter((t) => t.legs.includes("gate/full-verify")).length)
+      .toBeGreaterThan(100);
+  });
+
+  test("the measured-uncovered kinds do NOT claim it — over-claiming against evidence is not caution", () => {
+    const wrong = graph()
+      .targets.filter((t) => UNREACHED.has(t.kind) && t.legs.includes("gate/full-verify"))
+      .map((t) => t.id);
+    expect(wrong).toEqual([]);
+  });
+
+  test("the pass is AUTHORITATIVE, not additive — applying it twice is applying it once", () => {
+    // An add-only pass is not idempotent against its own output: `deriveGraph` keeps
+    // declared rows verbatim, so a leg written once becomes an input and cannot be
+    // taken back. That happened — `derive` said "already current" while the
+    // completeness audit still refused three rows. Pinned so it cannot happen again.
+    const once = attachTreeWideVerifiers(graph().targets);
+    const twice = attachTreeWideVerifiers(once);
+    expect(twice).toEqual(once);
+    // The direction that add-only gets wrong: a stale leg on an excluded target is REMOVED.
+    const stale = graph().targets.map((t) =>
+      UNREACHED.has(t.kind) ? { ...t, legs: [...t.legs, "gate/full-verify"].sort() } : t,
+    );
+    const fixed = attachTreeWideVerifiers(stale);
+    expect(fixed.filter((t) => UNREACHED.has(t.kind) && t.legs.includes("gate/full-verify"))).toEqual([]);
+  });
+
+  test("and NO synthetic `leg:` target does — or a docs change would run the 7-toolchain build", () => {
+    const wrong = graph()
+      .targets.filter((t) => t.id.startsWith("leg:") && t.legs.includes("gate/full-verify"))
+      .map((t) => t.id);
+    expect(wrong).toEqual([]);
+  });
+
+  test("the pass is what puts it there — remove it and the F#/Rust trees go unclaimed", () => {
+    // The mutant: the pre-fix shape, i.e. no post-pass at all. Stated as a count so
+    // the test says what was actually wrong rather than merely that something changed.
+    const before = graph().targets.map((t) => ({
+      ...t,
+      legs: t.legs.filter((l) => l !== "gate/full-verify"),
+    }));
+    const claimed = before.filter((t) => t.legs.includes("gate/full-verify"));
+    expect(claimed).toEqual([]);
+    const restored = attachTreeWideVerifiers(before);
+    const real = restored.filter((t) => !t.id.startsWith("leg:") && !UNREACHED.has(t.kind));
+    expect(real.every((t) => t.legs.includes("gate/full-verify"))).toBe(true);
+    expect(real.length).toBeGreaterThan(100);
+  });
+
+  test("BEHAVIOUR: an F#-only change turns it on, and a docs-only change does not", () => {
+    const g = graph();
+    expect(affectedTargets(g, ["src/Core/ZSet.fs"]).legs).toContain("gate/full-verify");
+    expect(affectedTargets(g, ["docs/FOO.md"]).legs).not.toContain("gate/full-verify");
+    // The archive case is the one the whole selection exists for.
+    expect(affectedTargets(g, ["docs/history/pr-reviews/2026/09/11/x.md"]).legs).not.toContain(
+      "gate/full-verify",
+    );
+  });
+
+  test("legs stay ordinal-sorted — this graph is byte-compared by the drift gate", () => {
+    for (const t of graph().targets) {
+      expect([...t.legs]).toEqual([...t.legs].sort((a, b) => (a < b ? -1 : a > b ? 1 : 0)));
+    }
   });
 });
 

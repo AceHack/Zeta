@@ -1434,13 +1434,119 @@ export function applyQuorums(root: string, graph: BuildGraph): BuildGraph {
 }
 
 /**
+ * Jobs that VERIFY the tree rather than BUILD one target.
+ *
+ * THE RULE, and it is the whole reason this pass exists:
+ *
+ *   A VERIFICATION LEG CANNOT BE DERIVED FROM "WHICH TARGETS PRODUCE THIS
+ *   ARTIFACT". It must be claimed by everything it VERIFIES.
+ *
+ * A verifier exists to catch changes that do not declare themselves, so deriving
+ * its trigger from declarations is circular: the change that most needs the
+ * verifier is exactly the one that will not turn it on.
+ *
+ * MEASURED 2026-09-11, before this pass: `gate/full-verify` was claimed by FOUR
+ * targets — `rust:src/Core.Rust.Observe`, `ts:cross-verification`, `unit:go`,
+ * `unit:python`. All 59 dotnet targets, 35 of 36 rust crates and the Q# oracle
+ * claimed nothing. Yet the job installs and smoke-checks SEVEN toolchains
+ * (`tools/setup/common/smoke-7-toolchains.sh`: bun, python3, go, rustc, cargo,
+ * dotnet, java) and runs the 7-language IR byte-lock over `src/`. An F#-only
+ * change that broke that byte-lock would not have turned the leg on — so gating
+ * the job on it would have skipped the check whose entire job is catching it.
+ *
+ * OVER-CLAIM WHEN UNCERTAIN, NEVER UNDER-CLAIM. Over-claiming costs one run;
+ * under-claiming loses a check. Same asymmetry as the unclaimed-path fail-safe,
+ * applied to legs instead of paths.
+ *
+ * But UNCERTAIN is the operative word, and the first draft of this pass got that
+ * wrong: it attached the verifier to `unit:agda`, `tool:alloy` and the Lean
+ * targets on the grounds that the job installs `java` and nobody had measured
+ * otherwise. `audit-build-graph-completeness.ts` refused it — those three are
+ * ROSTERED as having no CI leg at all, with measured reasons on file (Alloy
+ * "appears only in codeql.yml, which does not run Alloy"; Cslib is opt-in and off
+ * the main gate because the lake cache is multi-GB). Over-claiming against
+ * measured evidence is not caution, it is contradicting a finding — and it would
+ * have pinned the selector in full mode for changes that provably need nothing.
+ *
+ * So the exclusion below is a MEASUREMENT, not a guess: full-verify's nineteen
+ * steps run Python, Rust, Go and the bun cross-verification suite, and its smoke
+ * check verifies bun/python3/go/rustc/cargo/dotnet/java. It neither builds nor
+ * runs Agda, Alloy, TLA+ or Lean — each of those has its own workflow, or none.
+ *
+ * THE ONE EXCLUSION is the `leg:` synthetic targets — `leg:tree-structure`
+ * (`**`), `leg:markdown` (`**` + `*.md`), `leg:shell`, `leg:semgrep` and the
+ * rest. Those exist to carry properties of the TREE or of a FILE TYPE, not of a
+ * build; attaching a tree-wide verifier to `leg:markdown` would make every
+ * docs-only change run the full seven-toolchain build, which is the cost this
+ * whole mechanism exists to avoid.
+ *
+ * WHY `gate/cross-verify` IS NOT HERE. Measured the same day: it is 45 audits
+ * under one check name, spanning source, `.github/workflows/**`, dependency
+ * manifests, `workitems/**`, commit metadata and the archive tree. Several of
+ * those paths are DECLARED INERT, so no leg can express its scope — a leg is
+ * attached to targets, and inert paths produce none. It therefore stays ungated
+ * and always runs, which is correct rather than a concession. 081M28X3E5P087G0R0004S8JJY.
+ */
+const TREE_WIDE_VERIFIERS: readonly string[] = ["gate/full-verify"];
+
+/** A synthetic `leg:` target carries a tree/file-type property, not a build. */
+function isSyntheticLegTarget(t: BuildTarget): boolean {
+  return t.id.startsWith("leg:");
+}
+
+/**
+ * Kinds a tree-wide verifier demonstrably does not touch — see the measurement in
+ * `TREE_WIDE_VERIFIERS`. Each has its own workflow (`lean-proof`, `tlaps-proof`) or
+ * no CI at all, and `audit-build-graph-completeness.ts` holds the roster that says so.
+ */
+const VERIFIER_UNREACHED_KINDS: ReadonlySet<string> = new Set(["agda", "alloy", "tla", "lean"]);
+
+/**
+ * Attach every tree-wide verifier to every real build target.
+ *
+ * A post-pass rather than N edits across the derivation functions and the
+ * declared rows: the previous shape put leg lists in five places, and the graph
+ * has already been wrong three separate ways for exactly that reason (2026-08-19
+ * — `gate/lint-fsharp`/`gate/lint-csharp` claimed by no target, 35 Rust crates
+ * invisible, and a Lean leg naming a job that does not exist).
+ */
+export function attachTreeWideVerifiers(targets: readonly BuildTarget[]): readonly BuildTarget[] {
+  const wide = new Set(TREE_WIDE_VERIFIERS);
+  return targets.map((t) => {
+    // AUTHORITATIVE IN BOTH DIRECTIONS: strip every tree-wide verifier first, then
+    // re-add where it belongs. An add-only pass is NOT idempotent against its own
+    // output -- declared rows are preserved verbatim by `deriveGraph`, so a leg this
+    // pass wrote once becomes an input the next time and cannot be taken back.
+    //
+    // That is not hypothetical: the first version of this function was add-only, and
+    // after narrowing the scope to exclude Agda/Alloy/TLA+/Lean the graph kept the
+    // legs it had already been given. `derive` reported "already current" while
+    // `audit-build-graph-completeness.ts` still refused three rows -- a deriver
+    // disagreeing with itself, which is the one thing a deriver may not do.
+    const base = t.legs.filter((l) => !wide.has(l));
+    const excluded = isSyntheticLegTarget(t) || VERIFIER_UNREACHED_KINDS.has(t.kind);
+    const legs = excluded ? base : [...new Set([...base, ...TREE_WIDE_VERIFIERS])];
+    legs.sort(ordinalCompare);
+    return { ...t, legs };
+  });
+}
+
+/**
  * Regenerate the graph: declared rows preserved verbatim EXCEPT their
  * `requiredQuorum`, which is derived for every row so a hand-edited quorum
  * contradicts the derivation and fails the drift gate — exactly as a
  * hand-edited edge does.
  */
 export function deriveGraph(root: string, base: BuildGraph): BuildGraph {
-  const merged = [...base.targets.filter((t) => t.origin === "declared"), ...deriveTargets(root)];
+  // Spread back to a mutable array: `attachTreeWideVerifiers` returns a readonly
+  // one, and this graph is byte-compared by the drift gate, so the sort has to
+  // land on the array that is actually returned.
+  const merged = [
+    ...attachTreeWideVerifiers([
+      ...base.targets.filter((t) => t.origin === "declared"),
+      ...deriveTargets(root),
+    ]),
+  ];
   merged.sort(byTargetId);
   return applyQuorums(root, { version: base.version, always: base.always, inert: base.inert, targets: merged });
 }

@@ -52,26 +52,28 @@ export const BROKEN_BOOLEAN_SELECTOR = "!= false";
 /**
  * Jobs the graph CAN select that gate.yml deliberately does not gate, each with why.
  *
- * Both entries are the same finding, measured 2026-09-11, and it is a graph-modelling
- * rule rather than a one-off:
+ * THE RULE that put two entries here originally, and removed one of them:
  *
- *   A VERIFICATION LEG CANNOT BE DERIVED FROM "WHICH TARGETS PRODUCE THIS ARTIFACT".
- *   It must be claimed by everything it VERIFIES.
+ *   A VERIFICATION LEG CANNOT BE DERIVED FROM "WHICH TARGETS PRODUCE THIS
+ *   ARTIFACT". It must be claimed by everything it VERIFIES.
  *
- * A verifier exists to catch changes that do not declare themselves, so deriving its
- * trigger from declarations is circular. `gate/cross-verify` is claimed by three
- * targets and `gate/full-verify` by four, while both run the cross-oracle treaty
- * byte-lock over F#/C#/TS/Rust — so an F#-only change that BREAKS the byte-lock turns
- * neither leg on. Gating on them would skip the check that exists to catch it.
+ * `gate/full-verify` used to sit here because its leg was claimed by four targets
+ * while the job smoke-checks seven toolchains — an F#-only change that broke the
+ * byte-lock would not have turned it on. That was fixed where it belonged, in the
+ * GRAPH (`attachTreeWideVerifiers` in `ace/build-graph.ts`), so the job is now
+ * gated and the entry is gone. The audit below would have refused it as a
+ * `stale-exemption` had it been left.
+ *
+ * `gate/cross-verify` stays for a DIFFERENT reason, and the difference is the
+ * point: its scope is not merely wide, it includes paths that are declared inert
+ * and therefore produce no target at all. A leg is attached to targets, so there
+ * is nothing for a leg to be attached to. Widening the graph would not fix it;
+ * splitting the matrix would.
  */
 export const NOT_GATED: readonly { readonly job: string; readonly why: string }[] = [
   {
     job: "cross-verify",
-    why: "treaty byte-lock; leg claimed by 3 targets (ts:ace, ts:cross-verification, unit:qsharp) while the job verifies every oracle. LIFTS WHEN those targets claim it — 081M28X3E5P087G0R0004S8JJY",
-  },
-  {
-    job: "full-verify",
-    why: "runs all 7 toolchains; leg claimed by 4 targets (rust:Core.Rust.Observe, ts:cross-verification, unit:go, unit:python). Keeps its coarser `code` gate, which is not under-claiming — 081M28X3E5P087G0R0004S8JJY",
+    why: "45 audits under one check name, spanning source, .github/workflows/**, dependency manifests, workitems/**, commit metadata and the archive tree. Several of those paths are DECLARED INERT, and an inert path produces no target — so no leg can express this job's scope. It runs always, which is correct rather than a concession. Measured 2026-09-11 under 081M28X3E5P087G0R0004S8JJY; LIFTS WHEN the matrix is selected per-audit rather than per-job, since each of the 45 has its own scope.",
   },
 ];
 

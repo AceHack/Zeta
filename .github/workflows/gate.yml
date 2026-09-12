@@ -4361,17 +4361,25 @@ jobs:
   # algebraic law gate, cost analysis, and Rust/Go compilation.
   # Requires the FULL toolchain (all 7 runtimes + E-prover).
   # Fails if ANY tool is missing — no partial verification.
-  # NOT GATED ON ITS LEG, same reason as cross-verify above, same work-item.
-  # `gate/full-verify` is claimed by FOUR targets (`rust:src/Core.Rust.Observe`,
-  # `ts:cross-verification`, `unit:go`, `unit:python`) while the job runs all seven
-  # toolchains and the cross-language tests. An F#- or C#-only change would skip it.
-  # It keeps its existing `code` gate, which is coarse but not under-claiming.
+  # GATED ON ITS LEG as of 081M28X3E5P087G0R0004S8JJY, replacing `code == 'true'`.
+  #
+  # It was NOT, and the reason was that the leg under-claimed: four targets carried
+  # `gate/full-verify` while the job installs and smoke-checks seven toolchains and
+  # runs the 7-language IR byte-lock. All 59 dotnet targets and 35 of 36 Rust crates
+  # claimed nothing, so an F#-only change that broke the byte-lock would not have
+  # turned it on.
+  #
+  # Fixed in the GRAPH rather than here: `attachTreeWideVerifiers` in
+  # `ace/build-graph.ts` attaches this leg to every real build target (111 of 121;
+  # the 10 exclusions are the synthetic `leg:` rows, which carry tree/file-type
+  # properties rather than builds). So the condition below is now strictly more
+  # precise than the `code` regex it replaces, and derived rather than hand-written.
   full-verify:
     name: full-verify (7-lang oracle + cost + proofs)
     timeout-minutes: 30
     runs-on: ubuntu-24.04
     needs: [path-filter]
-    if: needs.path-filter.outputs.code == 'true'
+    if: fromJSON(needs.path-filter.outputs.legs).gate_full_verify != 'false'
 
     steps:
       - name: Checkout

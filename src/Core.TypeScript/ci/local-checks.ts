@@ -71,6 +71,15 @@
 //   bun src/Core.TypeScript/ci/local-checks.ts --all      # ignore the diff, run everything
 //   bun src/Core.TypeScript/ci/local-checks.ts --list     # what would run, and why
 //   bun src/Core.TypeScript/ci/local-checks.ts --audit    # roster vs gate.yml
+//   bun src/Core.TypeScript/ci/local-checks.ts --only 'conflict markers'
+//                                                        # run ONE check, asked for by name
+//
+// `--only` takes a fragment of the gate job name OR of the command, because those are
+// the two things somebody actually knows. It exists so nobody has to guess whether a
+// hygiene script is spelled `audit-`, `lint-` or `check-` — there are 225 of them and
+// all three prefixes are in use. A fragment that matches nothing exits **2** and prints
+// what it could have meant: nothing ran, so it is not a finding, and `bun <missing-file>`
+// exiting 1 is precisely the confusion this avoids.
 
 import { spawnSync } from "node:child_process";
 import { readFileSync } from "node:fs";
@@ -352,6 +361,59 @@ const SYMBOL: Readonly<Record<Outcome, string>> = {
   "not-attempted": " skip ",
 };
 
+/**
+ * Resolve a check the way a person ASKS for one — by a fragment of its name.
+ *
+ * WHY THIS EXISTS, and the failure is exact. `src/Core.TypeScript/hygiene/` holds 225
+ * scripts across more than sixty prefixes, and THREE of them mean the same thing:
+ * `audit-` (102), `lint-` (35), `check-` (12). There is no rule that says which a given
+ * check uses, so reaching for one by hand is a coin flip — and the coin was flipped
+ * wrong on 2026-09-11, twice in one session, for `lint-no-conflict-markers.ts` (it is
+ * `check-`) and `lint-structural-hygiene.ts` (there is no such file; that gate job is
+ * eight separate audits).
+ *
+ * THE COST IS NOT THE TYPO, IT IS THE EXIT CODE. `bun <missing-file>` exits **1** —
+ * byte-identical to a check that ran and found a violation. The wrong guess therefore
+ * arrives wearing the costume of a finding, and it was reported as one before anybody
+ * noticed the file did not exist. That is the repo's own worst class, inverted: not a
+ * check that did not run looking like one that passed, but a check that did not run
+ * looking like one that FAILED. Both lie about whether anything was measured.
+ *
+ * So a name that does not resolve exits **2**, never 1 — `exit 2 = the check never ran`
+ * is already the convention here — and it prints what it could have meant.
+ */
+/**
+ * One result, one line (plus the detail lines when it failed).
+ *
+ * Extracted rather than duplicated for `--only`: the second copy tripped
+ * `sonarjs/no-nested-template-literals`, which was the lint noticing the duplication
+ * rather than the nesting. One writer means one format, and a change to the shape
+ * cannot drift between the two call sites.
+ */
+function printResult(r: CheckResult): void {
+  const head = r.detail.length > 0 ? ` — ${r.detail.split("\n")[0] ?? ""}` : "";
+  process.stdout.write(`[${SYMBOL[r.outcome]}] ${r.label}${head}\n`);
+  if (r.outcome === "failed" && r.detail.includes("\n")) {
+    for (const l of r.detail.split("\n").slice(1)) process.stdout.write(`          ${l}\n`);
+  }
+}
+
+export function resolveChecks(
+  roster: readonly CheckSpec[],
+  query: string,
+): { readonly matched: readonly CheckSpec[]; readonly candidates: readonly string[] } {
+  const q = query.toLowerCase();
+  const hay = (c: CheckSpec): string => `${c.gateJob} ${c.argv.join(" ")}`.toLowerCase();
+  const matched = roster.filter((c) => hay(c).includes(q));
+  if (matched.length > 0) return { matched, candidates: [] };
+  // Nothing matched: offer the names that share a word with the query, so the refusal
+  // is useful rather than merely correct.
+  const words = q.split(/[^a-z0-9]+/u).filter((w) => w.length >= 3);
+  const near = roster.filter((c) => words.some((w) => hay(c).includes(w)));
+  const pool = near.length > 0 ? near : roster;
+  return { matched: [], candidates: pool.map((c) => c.gateJob) };
+}
+
 export async function main(argv: readonly string[]): Promise<number> {
   const all = argv.includes("--all");
 
@@ -368,6 +430,14 @@ export async function main(argv: readonly string[]): Promise<number> {
     for (const m of missing) process.stdout.write(`  ${m}\n`);
     process.stdout.write("\nAdd each to ROSTER (with its local argv) or to NO_LOCAL (with the reason there is none).\n");
     return 1;
+  }
+
+  // `--only <fragment>`: run the check somebody ASKED for, by name.
+  const onlyAt = argv.indexOf("--only");
+  const only = onlyAt >= 0 ? argv[onlyAt + 1] : undefined;
+  if (onlyAt >= 0 && (only === undefined || only.startsWith("--"))) {
+    process.stderr.write("local-checks: --only needs a name fragment, e.g. --only 'conflict markers'\n");
+    return 2;
   }
 
   const files = all ? [] : changedFiles();
@@ -399,15 +469,40 @@ export async function main(argv: readonly string[]): Promise<number> {
   }
   const specs = [...ROSTER, ...derived.filter((d) => !ROSTER.some((r) => r.argv.join(" ") === d.argv.join(" ")))];
   const runSlow = argv.includes("--slow");
+
+  if (only !== undefined) {
+    // Resolved against `specs`, NOT `ROSTER` — most checks are DERIVED from gate.yml,
+    // including `check-no-conflict-markers`, the one whose name started this. Resolving
+    // against the hand-written roster alone would have missed it and reported "no such
+    // check" for a check that plainly exists, which is a worse lie than the typo.
+    const { matched, candidates } = resolveChecks(specs, only);
+    if (matched.length === 0) {
+      // EXIT 2, NOT 1. A name that resolves to nothing means NOTHING WAS MEASURED, and
+      // that must never be confusable with a check that ran and found something.
+      process.stderr.write(`local-checks: no check matches '${only}' — nothing ran, so this is NOT a finding.\n`);
+      process.stderr.write("Did you mean:\n");
+      for (const c of [...new Set(candidates)].sort()) process.stderr.write(`  ${c}\n`);
+      process.stderr.write("\nFull roster: bun src/Core.TypeScript/ci/local-checks.ts --list\n");
+      return 2;
+    }
+    let worst = 0;
+    for (const spec of matched) {
+      // `all = true`: an explicit ask overrides diff relevance. Somebody naming a check
+      // wants it RUN, not told it is not applicable to their diff.
+      const r = runCheck(spec, touched, true, true);
+      printResult(r);
+      if (r.outcome === "failed") worst = Math.max(worst, 1);
+      if (r.outcome === "could-not-run") worst = Math.max(worst, 2);
+    }
+    return worst;
+  }
+
   const results = specs.map((s) => runCheck(s, touched, all, runSlow));
   for (const u of unrunnable) {
     results.push({ gateJob: u.gateJob, label: u.gateJob, outcome: "could-not-run", detail: u.reason });
   }
   for (const r of results) {
-    process.stdout.write(`[${SYMBOL[r.outcome]}] ${r.label}${r.detail.length > 0 ? ` — ${r.detail.split("\n")[0] ?? ""}` : ""}\n`);
-    if (r.outcome === "failed" && r.detail.includes("\n")) {
-      for (const l of r.detail.split("\n").slice(1)) process.stdout.write(`          ${l}\n`);
-    }
+    printResult(r);
   }
   const failed = results.filter((r) => r.outcome === "failed").length;
   const unknown = results.filter((r) => r.outcome === "could-not-run").length;
