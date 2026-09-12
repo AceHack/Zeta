@@ -20,6 +20,7 @@
 // are rewritten.
 
 import { join } from "node:path";
+import { aceErr } from "./stderr.ts";
 
 const ASSET = "ollama-linux-amd64.tar.zst";
 const RELEASES = "https://api.github.com/repos/ollama/ollama/releases";
@@ -73,12 +74,12 @@ async function main(argv: readonly string[]): Promise<number> {
     if (argv[i] === "--tag") {
       const v = argv[++i];
       if (v === undefined) {
-        console.error("refresh-ollama-pin: --tag needs a value");
+        aceErr("refresh-ollama-pin: --tag needs a value");
         return 1;
       }
       tag = v;
     } else {
-      console.error(`refresh-ollama-pin: unknown arg: ${String(argv[i])}`);
+      aceErr(`refresh-ollama-pin: unknown arg: ${String(argv[i])}`);
       return 1;
     }
   }
@@ -86,13 +87,13 @@ async function main(argv: readonly string[]): Promise<number> {
   const relUrl = tag === null ? `${RELEASES}/latest` : `${RELEASES}/tags/${tag}`;
   const relRes = await fetch(relUrl, { headers: { accept: "application/vnd.github+json" } });
   if (!relRes.ok) {
-    console.error(`refresh-ollama-pin: ${relUrl} -> HTTP ${relRes.status}`);
+    aceErr(`refresh-ollama-pin: ${relUrl} -> HTTP ${relRes.status}`);
     return 1;
   }
   const rel = (await relRes.json()) as Release;
   const asset = rel.assets.find((a) => a.name === ASSET);
   if (asset === undefined) {
-    console.error(`refresh-ollama-pin: release ${rel.tag_name} has no asset ${ASSET}`);
+    aceErr(`refresh-ollama-pin: release ${rel.tag_name} has no asset ${ASSET}`);
     return 1;
   }
 
@@ -105,7 +106,7 @@ async function main(argv: readonly string[]): Promise<number> {
     (asset.digest ?? "").replace(/^sha256:/, "") || null,
   );
   if (!check.ok || check.digest === undefined) {
-    console.error(`refresh-ollama-pin: ${check.reason ?? "cross-check failed"}`);
+    aceErr(`refresh-ollama-pin: ${check.reason ?? "cross-check failed"}`);
     return 1;
   }
 
@@ -115,7 +116,7 @@ async function main(argv: readonly string[]): Promise<number> {
   const entry = pin["entry"];
   const artifact = pin["artifact"];
   if (entry === undefined || artifact === undefined) {
-    console.error(`refresh-ollama-pin: ${pinPath} is missing entry/artifact`);
+    aceErr(`refresh-ollama-pin: ${pinPath} is missing entry/artifact`);
     return 1;
   }
 

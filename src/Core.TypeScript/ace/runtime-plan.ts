@@ -12,6 +12,7 @@
 import { CANDIDATES } from "./runtime-candidates.ts";
 import { choose, report, sensitivity, type HostProfile } from "./runtime-cost.ts";
 import { probeHost } from "./runtime-probe.ts";
+import { aceErr } from "./stderr.ts";
 
 const EXAMPLES: Readonly<Record<string, HostProfile>> = {
   rich: { bun: "present", node: "present", dotnet: "present", rust: "present", "wasm-runtime": "present" },
@@ -41,7 +42,7 @@ function main(argv: readonly string[]): number {
   }
   const host: HostProfile = hostName === "live" ? probeHost() : (EXAMPLES[hostName] ?? {});
   if (hostName !== "live" && !EXAMPLES[hostName]) {
-    console.error(`unknown host profile '${hostName}' (live|${Object.keys(EXAMPLES).join("|")})`);
+    aceErr(`unknown host profile '${hostName}' (live|${Object.keys(EXAMPLES).join("|")})`);
     return 2;
   }
 

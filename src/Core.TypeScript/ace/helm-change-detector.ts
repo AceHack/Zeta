@@ -1,5 +1,6 @@
 import { parseYaml } from "./deps";
 import semver from "semver";
+import { aceErr } from "./stderr.ts";
 
 function extractChartSection(yamlText: string, chartName: string): string {
   const lines = yamlText.split(/\r?\n/);
@@ -113,7 +114,7 @@ async function main() {
         }),
       );
     } else {
-      console.error(
+      aceErr(
         "Usage: bun src/Core.TypeScript/ace/helm-change-detector.ts <repoUrl> <chartName> [currentVersion] [--json]",
       );
     }
@@ -160,7 +161,7 @@ async function main() {
     if (jsonFlag) {
       console.log(JSON.stringify({ error: error.message }));
     } else {
-      console.error(`Error: ${error.message}`);
+      aceErr(`Error: ${error.message}`);
     }
     process.exit(1);
   }

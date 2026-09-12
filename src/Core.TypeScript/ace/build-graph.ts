@@ -69,6 +69,7 @@ import { readFileSync, readdirSync, existsSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { trackedFiles as sharedTrackedFiles } from "../git/tracked-files";
 import { changedFiles } from "../git/changed-files";
+import { aceErr } from "./stderr.ts";
 
 // ── Schema ────────────────────────────────────────────────────────────────
 
@@ -1695,7 +1696,7 @@ function runDerive(root: string, write: boolean): number {
     console.log(`${GRAPH_PATH} is in sync with the repo's declared manifests. ✓`);
     return 0;
   }
-  console.error(
+  aceErr(
     `::error::${GRAPH_PATH} has drifted from the repo's declared build manifests.\n` +
       `Run: ${DERIVE_FIX_COMMAND}`,
   );
@@ -1747,7 +1748,7 @@ async function runDriftCheck(root: string, argv: readonly string[]): Promise<num
     console.log(`build-graph drift-check: ${GRAPH_PATH} is in sync. ✓`);
     return 0;
   }
-  console.error(
+  aceErr(
     `::error::${GRAPH_PATH} has drifted from the repo's declared build manifests.\n` +
       `This change adds or removes a file the graph derives from, so the checked-in\n` +
       `artifact no longer reproduces. CI's cross-verify gate fails on exactly this.\n` +
@@ -1800,7 +1801,7 @@ async function runAffected(graph: BuildGraph, argv: readonly string[]): Promise<
   if (argv.includes("--json")) console.log(JSON.stringify({ ...decision, coverageProblems: problems }, null, 2));
   else printDecision(decision);
   if (problems.length > 0) {
-    console.error(`::error::coverage declaration incomplete: ${JSON.stringify(problems)}`);
+    aceErr(`::error::coverage declaration incomplete: ${JSON.stringify(problems)}`);
     return 1;
   }
   return 0;
@@ -1819,7 +1820,7 @@ export async function main(argv: readonly string[], root: string): Promise<numbe
   if (cmd === "explain") {
     const p = argv[1];
     if (p === undefined) {
-      console.error("explain needs a path");
+      aceErr("explain needs a path");
       return 1;
     }
     const c = classifyPath(graph, p);
@@ -1831,7 +1832,7 @@ export async function main(argv: readonly string[], root: string): Promise<numbe
   if (cmd === "affected") return runAffected(graph, argv);
   if (cmd === "quorum") return runQuorum(graph, argv);
 
-  console.error(usage());
+  aceErr(usage());
   return 1;
 }
 

@@ -147,16 +147,17 @@ export function auditRepo(): readonly RawNulSite[] {
 if (import.meta.main) {
   const sites = auditRepo();
   if (sites.length === 0) {
-    console.log("audit-no-raw-nul-in-source: clean — no tracked code file contains a raw NUL byte.");
+    console.log("audit-no-raw-nul-in-source: clean — no tracked code file contains a raw control byte.");
     process.exit(0);
   }
   console.error(
-    `audit-no-raw-nul-in-source: ${String(sites.length)} raw NUL site(s). These read as BINARY to\n` +
-      "grep/rg, so every text audit silently skips them. Replace the byte with the escape\n" +
-      "\\u0000 — identical runtime value, and the file stays searchable.\n",
+    `audit-no-raw-nul-in-source: ${String(sites.length)} raw control-byte site(s). These read as BINARY to\n` +
+      "grep/rg, so every text audit silently skips them. Replace the byte with its escape\n" +
+      "(\\u0000 for NUL, \\u001b for ESC, \\u001f for the unit separator, and so on) — identical\n" +
+      "runtime value, and the file stays searchable.\n",
   );
   for (const s of sites) {
-    console.error(`  ${s.path}:${String(s.line)}  ${String(s.count)} raw NUL byte(s)`);
+    console.error(`  ${s.path}:${String(s.line)}  ${String(s.count)} raw control byte(s)`);
   }
   process.exit(1);
 }

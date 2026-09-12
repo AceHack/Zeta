@@ -101,6 +101,7 @@
 import { createHash } from "node:crypto";
 import { readFileSync, writeFileSync } from "node:fs";
 import { spawnSync } from "node:child_process";
+import { aceErr } from "./stderr.ts";
 
 export const REGISTRY = "tools/setup/manifests/pinned-refs";
 export const RECEIPTS = "tools/setup/manifests/pinned-refs-receipts";
@@ -564,12 +565,12 @@ async function main(argv: readonly string[]): Promise<number> {
   try {
     text = fx.readFile(REGISTRY);
   } catch (e) {
-    console.error(`refresh-pins: cannot read ${REGISTRY}: ${e instanceof Error ? e.message : String(e)}`);
+    aceErr(`refresh-pins: cannot read ${REGISTRY}: ${e instanceof Error ? e.message : String(e)}`);
     return 2;
   }
   const parsed = parseRegistry(text);
   if (!parsed.ok) {
-    console.error(`refresh-pins: ${parsed.reason}`);
+    aceErr(`refresh-pins: ${parsed.reason}`);
     return 2;
   }
   const rows = parsed.rows;
@@ -583,9 +584,9 @@ async function main(argv: readonly string[]): Promise<number> {
       );
       return 0;
     }
-    console.error(`refresh-pins --verify: ${String(findings.length)} row(s) drifted from their point of use:`);
-    for (const f of findings) console.error(`  ${f.file}  ${f.ref}\n    ${f.reason}`);
-    console.error(
+    aceErr(`refresh-pins --verify: ${String(findings.length)} row(s) drifted from their point of use:`);
+    for (const f of findings) aceErr(`  ${f.file}  ${f.ref}\n    ${f.reason}`);
+    aceErr(
       "\nThe registry is a MIRROR of the pins written where they are used, never a source.\n" +
         "Fix the row to match the file (or re-pin with --refresh); never make a build read this file.",
     );
@@ -610,12 +611,12 @@ async function main(argv: readonly string[]): Promise<number> {
   if (mode === "--resolve" || mode === "--refresh") {
     const ref = argv[1];
     if (ref === undefined) {
-      console.error(`refresh-pins: ${mode} needs a <ref>`);
+      aceErr(`refresh-pins: ${mode} needs a <ref>`);
       return 2;
     }
     const row = rows.find((r) => r.ref === ref);
     if (row === undefined) {
-      console.error(`refresh-pins: no row for '${ref}'. Known refs:\n${rows.map((r) => `  ${r.ref}`).join("\n")}`);
+      aceErr(`refresh-pins: no row for '${ref}'. Known refs:\n${rows.map((r) => `  ${r.ref}`).join("\n")}`);
       return 2;
     }
     if (mode === "--resolve") {
@@ -628,7 +629,7 @@ async function main(argv: readonly string[]): Promise<number> {
     return out.ok ? 0 : 1;
   }
 
-  console.error(`refresh-pins: unknown mode '${mode}' (--verify | --report | --resolve <ref> | --refresh <ref>)`);
+  aceErr(`refresh-pins: unknown mode '${mode}' (--verify | --report | --resolve <ref> | --refresh <ref>)`);
   return 2;
 }
 

@@ -19,6 +19,7 @@ import { homedir, tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { installPinnedArtifact, type InstallEffects } from "./pinned-artifact.ts";
 import { resolveElevatorPathOrThrow } from "../privilege/elevator.ts";
+import { aceErr } from "./stderr.ts";
 
 interface Args {
   readonly pin: string;
@@ -73,7 +74,7 @@ export function parseArgs(argv: readonly string[]): Args {
 
 /** `::error::` so a refusal renders in the run UI, not only in scrollback. */
 function annotate(message: string): void {
-  console.error(`::error title=pinned artifact::${message}`);
+  aceErr(`::error title=pinned artifact::${message}`);
 }
 
 function realEffects(): InstallEffects {
