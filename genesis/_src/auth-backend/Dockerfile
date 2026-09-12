@@ -1,8 +1,12 @@
 # Project Genesis OAuth broker — multi-stage build.
 FROM mcr.microsoft.com/dotnet/sdk:10.0-noble@sha256:4ea6fe75dd36706bb6d8c3c293d4c4315840f5d76ea28ac97def77e3ec487fa5 AS build
 WORKDIR /src
-COPY GenesisAuth.csproj Directory.Build.props ./
-RUN dotnet restore GenesisAuth.csproj
+COPY GenesisAuth.csproj Directory.Build.props packages.lock.json ./
+# --locked-mode: restore is refused unless the resolved graph matches packages.lock.json.
+# This project currently declares no PackageReference, so the committed lock is an empty
+# net10.0 graph -- what it enforces is that it STAYS empty: add a package without
+# regenerating the lock and the image build fails instead of silently pulling bytes.
+RUN dotnet restore GenesisAuth.csproj --locked-mode
 COPY . .
 RUN dotnet publish GenesisAuth.csproj -c Release -o /app --no-restore
 

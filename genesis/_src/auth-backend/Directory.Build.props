@@ -1,8 +1,17 @@
 <Project>
-  <!-- Intentionally empty. This file stops MSBuild from walking UP into the
+  <!-- Near-empty, on purpose. This file stops MSBuild from walking UP into the
        Zeta monorepo's root Directory.Build.props (which sets
        TreatWarningsAsErrors + the full C# analyzer pack). This auth backend
        is a standalone, self-hosted service — NOT part of Zeta.sln and NOT
        built by Zeta CI — so it should not inherit the monorepo's strict
        build profile. Build it on its own:  dotnet build / dotnet run. -->
+
+  <!-- One property is restated rather than inherited. The root props is where
+       lock files are turned on for Zeta.sln, and stopping inheritance would
+       otherwise leave this the one .NET build in the repo whose package BYTES
+       go unverified. The Dockerfile COPYs packages.lock.json before restoring,
+       and restores in locked mode. -->
+  <PropertyGroup>
+    <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
+  </PropertyGroup>
 </Project>

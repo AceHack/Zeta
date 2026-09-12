@@ -249,9 +249,16 @@ jobs:
         run: ./tools/setup/install.sh
 
       - name: Restore low-memory Core smoke graph
+        # --locked-mode: restore is refused unless every resolved package matches the
+        # sha512 contentHash recorded in packages.lock.json. Versions were already
+        # pinned by Directory.Packages.props; this is what pins the bytes, so a
+        # package republished under an unchanged version number fails here instead of
+        # entering the build. Remedy on a legitimate version change is in
+        # docs/NUGET-LOCK-FILES.md: re-restore locally and commit the regenerated locks.
         run: >
           dotnet restore
           tests/Core.CSharp.Tests/Core.CSharp.Tests.csproj
+          --locked-mode
 
       - name: Build low-memory Core smoke graph
         run: >

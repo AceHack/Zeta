@@ -15,8 +15,8 @@
 ## Counts
 
 - **Declared unhashed:** 7 — each one names its own reason on its own row.
-- **Undeclared unhashed:** 169 — visible and countable, but not yet declarable. This number must only fall.
-- **Digest-covered:** 1942.
+- **Undeclared unhashed:** 131 — visible and countable, but not yet declarable. This number must only fall.
+- **Digest-covered:** 1981.
 
 ## Declared — an unhashed dependency that says why
 
@@ -52,7 +52,6 @@ work of removing one is nameable rather than vague.
 | `from-uv-venv` | 4 | `azure-quantum==3.10.0, qdk[azure]==1.29.1, qsharp==1.29.1, quantum-circuit==0.9.247` | pip specs pin a version; hashes need a --require-hashes requirements file this mechanism does not use | `tools/setup/manifests/from-uv-venv` |
 | `mise` | 7 | `github:yannh/kubeconform, helm, k3d, kind, kubectl, rust, zig` | mise pins a VERSION; a per-tool digest needs a committed mise.lock, which this tree does not have yet. `MISE_PYTHON_GITHUB_ATTESTATIONS=0` in tools/setup/common/mise.sh also disables the one upstream attestation check that exists | `.mise.full.toml` |
 | `mise` | 18 | `1password-cli, actionlint, bun, dotnet, go, golangci-lint, java, node, npm:markdownlint-cli2, pipx:mypy, pipx:ruff, pipx:semgrep, pipx:yamllint, python, rust, shellcheck, uv, zig` | mise pins a VERSION; a per-tool digest needs a committed mise.lock, which this tree does not have yet. `MISE_PYTHON_GITHUB_ATTESTATIONS=0` in tools/setup/common/mise.sh also disables the one upstream attestation check that exists | `.mise.toml` |
-| `nuget` | 38 | `38 centrally-versioned package(s)` | no packages.lock.json anywhere in the tree, so no contentHash exists and `dotnet restore --locked-mode` has nothing to check. Versions are pinned; bytes are not | `Directory.Packages.props` |
 | `windows` | 14 | `git, gnupg, lua, nodejs, ollama, opensc, pandoc, podman, qemu, r, tailscale, tectonic, yubico-piv-tool, yubikey-manager-cli` | scoop/winget/choco manifests carry the hash upstream; we pin the package id only | `tools/setup/manifests/windows` |
 
 ## Digest-covered — the denominator
@@ -80,7 +79,7 @@ Listed so the numbers above are a ratio rather than a scare.
 | `from-opam-git` | `tlapm` | `tools/setup/manifests/from-opam-git` |
 | `from-url` | `src/Core.Alloy/alloy.jar` | `tools/setup/manifests/from-url` |
 | `from-zip` | `~/.zeta/codeql-cli` | `tools/setup/manifests/from-zip` |
-| `github-actions` | `324 SHA-pinned reference(s)` | `.github/workflows` |
+| `github-actions` | `325 SHA-pinned reference(s)` | `.github/workflows` |
 | `npm` | `40 integrity-covered package(s)` | `agentic-organization/package-lock.json` |
 | `npm` | `433 integrity-covered package(s)` | `bun.lock` |
 | `npm` | `5 integrity-covered package(s)` | `full-ai-cluster/platform-controller/bun.lock` |
@@ -89,6 +88,7 @@ Listed so the numbers above are a ratio rather than a scare.
 | `npm` | `870 integrity-covered package(s)` | `package-lock.json` |
 | `npm` | `43 integrity-covered package(s)` | `src/apps/twitch-ai/bun.lock` |
 | `npm` | `92 integrity-covered package(s)` | `src/apps/twitch-ai/package-lock.json` |
+| `nuget` | `38 centrally-versioned package(s)` | `Directory.Packages.props` |
 | `yamllint-requirements.txt` | `PyYAML` | `tools/setup/manifests/yamllint-requirements.txt` |
 | `yamllint-requirements.txt` | `pathspec` | `tools/setup/manifests/yamllint-requirements.txt` |
 | `yamllint-requirements.txt` | `yamllint` | `tools/setup/manifests/yamllint-requirements.txt` |

@@ -24,6 +24,13 @@
     <AnalysisLevel>latest-recommended</AnalysisLevel>
     <InvariantGlobalization>true</InvariantGlobalization>
     <ManagePackageVersionsCentrally>false</ManagePackageVersionsCentrally>
+
+    <!-- Lock file, restated here for the same reason as everything else in this
+         file: the repo root's Directory.Build.props is not in this build context.
+         packages.lock.json sits beside the csproj and is COPYed in the Dockerfile
+         before restore, so the image build verifies the same contentHashes the
+         local build does. -->
+    <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
   </PropertyGroup>
 
 </Project>
