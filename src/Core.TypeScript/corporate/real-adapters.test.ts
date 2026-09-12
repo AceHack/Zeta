@@ -979,6 +979,104 @@ describe("AFTER THE HANDOFF: THE REQUEST SAYS WHAT THE ORGANIZATION CONFIGURED, 
     }
   }, 120_000);
 
+  test("A REVIEWER IS ANSWERED AS SOON AS THEIR REQUEST IS PUSHED - not after every other request's follow-up", async () => {
+    // MEASURED on agentic-tpm, 2026-09-12: !163's seven answers were written and its fix pushed at
+    // 00:21, and nothing appeared on the merge request, because the answering ran after EVERY
+    // follow-up in the run - and the next one took another forty-five minutes. To a reviewer that is
+    // indistinguishable from being ignored. Two requests, so the difference is visible: the second
+    // request's follow-up must not be able to delay the first request's replies.
+    const repo = realRepo();
+    const inbox = mkdtempSync(join(tmpdir(), "zeta-two-inbox-"));
+    for (const [id, title] of [["PROJ-1", "coupon applies twice"], ["PROJ-2", "totals round the wrong way"]]) {
+      writeFileSync(
+        join(inbox, id + ".json"),
+        JSON.stringify({ source: "jira", externalId: id, title, body: title, kind: "defect", severity: "high", reproduction: title, evidenceRefs: ["log:" + id] }),
+      );
+    }
+    const wt = mkdtempSync(join(tmpdir(), "zeta-two-wt-"));
+    const scratch = mkdtempSync(join(tmpdir(), "zeta-two-"));
+    const h = stubCounting(scratch);
+    const events: OrgEvent[] = [];
+    try {
+      const change = () => gitWorktreeChangeControl({ cwd: repo, baseBranch: "main", worktreeRoot: wt, handoff: { command: h.command, args: h.args } });
+      const noComment = { postComment: async () => ({ ok: true as const, value: {}, evidence: [] }) };
+      const first = await runAgainst(repo, inbox, { change: change() }, {
+        settings: [],
+        changeRequests,
+        describeChange: fullDescription,
+        ...noComment,
+        onEvent: (e: OrgEvent) => events.push(e),
+      });
+      // One request per cycle is what this organization's supply allows, so the second cycle opens
+      // the second request. Both are then open, which is the situation being tested.
+      const afterFirst = foldHandedOffChanges(events);
+      await runAgainst(repo, inbox, { change: change() }, {
+        settings: [],
+        changeRequests,
+        describeChange: fullDescription,
+        ...noComment,
+        priorCascade: first.cascade,
+        alreadyHandedOff: new Set(afterFirst.keys()),
+        handedOffChanges: afterFirst,
+        actionItems: foldActionItems(events),
+        afterOpenDone: foldAfterOpen(events),
+        onEvent: (e: OrgEvent) => events.push(e),
+      });
+      const handed = foldHandedOffChanges(events);
+      expect(handed.size).toBe(2);
+      const ids = [...handed.keys()];
+
+      // One comment on each request, and a log of WHEN each session and each answer happened.
+      const order: string[] = [];
+      const feedback = ids.map((w, i) => ({
+        deliveryId: `note-${String(i + 1)}`,
+        source: "gitlab",
+        itemKind: "comment",
+        summary: "please explain the race",
+        author: "reviewer",
+        branch: handed.get(w)?.branch as string,
+      }));
+      const byWork = new Map(ids.map((w) => [w, (handed.get(w)?.branch ?? w) as string]));
+      const second = await runAgainst(repo, inbox, { change: change() }, {
+        settings: [],
+        changeRequests,
+        describeChange: fullDescription,
+        ...noComment,
+        priorCascade: first.cascade,
+        alreadyHandedOff: new Set(handed.keys()),
+        handedOffChanges: handed,
+        actionItems: foldActionItems(events),
+        afterOpenDone: foldAfterOpen(events),
+        feedback,
+        defaultBase: "main",
+        verifyChange: async () => ({ ok: true as const, value: "green", evidence: [] }),
+        followUp: async (req: { workId: string; items: readonly { actionItemId: string }[] }) => {
+          order.push("followUp:" + String(byWork.get(req.workId) ?? req.workId));
+          return {
+            ok: true as const,
+            value: { decisions: req.items.map((i) => ({ actionItemId: i.actionItemId, outcome: "addressed" as const, how: "explained the race in the description" })), syncWithTarget: false, summary: "s" },
+            evidence: [],
+          };
+        },
+        answer: async (r: AnswerRequest) => {
+          order.push("answer:" + String(byWork.get(r.workId) ?? r.workId));
+          return { ok: true as const, value: r.items.map((i) => ({ actionItemId: i.actionItemId, replyId: "note-9", resolved: true })), evidence: [] };
+        },
+        onEvent: (e: OrgEvent) => events.push(e),
+      });
+      expect(second.followUps?.length).toBe(2);
+      // THE POINT: each request's answer lands before the NEXT request's session even starts.
+      expect(order.length).toBe(4);
+      expect(order[0]?.startsWith("followUp:")).toBe(true);
+      expect(order[1]).toBe(order[0]?.replace("followUp:", "answer:"));
+      expect(order[2]?.startsWith("followUp:")).toBe(true);
+      expect(order[3]).toBe(order[2]?.replace("followUp:", "answer:"));
+      expect(new Set(order).size).toBe(4);
+    } finally {
+      for (const d of [repo, inbox, wt, scratch]) rmSync(d, { recursive: true, force: true });
+    }
+  }, 240_000);
+
   test("a comment and a moved target become action items; the organization decides, brings the change level, re-verifies and updates the request - and only then are the items settled", async () => {
     const repo = realRepo();
     const git = (at: string, ...a: string[]) => execFileSync("git", a, { cwd: at, encoding: "utf-8" });

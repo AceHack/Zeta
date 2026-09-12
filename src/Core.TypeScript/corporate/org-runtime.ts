@@ -4390,30 +4390,23 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
       return { workId, decided: accepted, ...(synced === undefined ? {} : { synced }), handedOffAgain, refused };
     };
 
-    if (deps.followUp !== undefined) {
-      const open = new Map<string, readonly ActionItem[]>();
-      for (const [w, items] of allItems) {
-        const o = items.filter((i) => i.settled === undefined);
-        if (o.length > 0 && handedMap.has(w)) open.set(w, o);
-      }
-      for (const workId of followUpOrder(open).slice(0, Math.max(0, deps.maxFollowUps ?? 2))) {
-        followUps.push(await followUpOne(workId, open.get(workId) ?? []));
-      }
-    } else if ([...allItems.values()].some((items) => items.some((i) => i.settled === undefined))) {
-      // SAID, not silently kept: open items nobody is configured to look at are work waiting on nobody.
-      refusals.push("handed-off changes have open action items and nothing is configured to follow them up");
-    }
-
     // ── A REVIEWER IS ANSWERED WHERE THEY ASKED ────────────────────────────
     // MEASURED on MRs !162-!164: 26 comments decided and acted on, and not one reviewer was told -
     // the decision lived only in this log. Every SETTLED item still owed an answer is answered now:
     // the ones settled above (after their push) and any settled earlier that never were, including
     // those whose answer failed last time. An answer that errors is not recorded, so it is tried again.
-    const replies = deps.changeRequests?.replies;
-    if (replies !== undefined && replies !== "none") {
-      for (const [workId, items] of allItems) {
-        const change = handedMap.get(workId);
-        if (change === undefined) continue;
+    //
+    // PER REQUEST, as soon as ITS OWN fix is pushed - not after every follow-up in the run. Called
+    // again in a sweep below for anything settled earlier that was never answered; `answersOwed`
+    // excludes what is already answered, so calling it twice costs nothing and misses nothing.
+    /** Requests this run has already answered on - the sweep below is for the ones it has not. */
+    const answeredRequests = new Set<string>();
+    const answerOn = async (workId: string, items: readonly ActionItem[]): Promise<void> => {
+      answeredRequests.add(workId);
+      const replies = deps.changeRequests?.replies;
+      if (replies === undefined || replies === "none") return;
+      const change = handedMap.get(workId);
+      if (change === undefined) return;
         const { owed, unanswered, withheld } = answersOwed(items);
         for (const w of withheld) {
           note({
@@ -4438,10 +4431,10 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
           actionItemsAnswered.push(actionItemId);
         };
         for (const u of unanswered) answered(u.actionItemId, { resolved: false, skipped: u.why });
-        if (owed.length === 0) continue;
+        if (owed.length === 0) return;
         if (deps.answer === undefined) {
           refusals.push(`settled items on ${workId} are owed an answer (replies: ${replies}) and nothing is configured to give it`);
-          continue;
+          return;
         }
         // ── EVERY ANSWER IS CHECKED BEFORE A REVIEWER READS IT ──────────────
         // MEASURED on MR !162: a reply told the reviewer the description carried a rollout note it did
@@ -4469,7 +4462,7 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
           });
           if (!checked.ok) {
             refusals.push(`the answers owed on ${workId} could not be checked, so none was posted: ${checked.reason}`);
-            continue;
+            return;
           }
           const failed = checked.value.filter((c) => !c.confirmed);
           for (const c of failed) {
@@ -4485,7 +4478,7 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
             });
           }
           toPost = owed.filter((o) => checked.value.some((c) => c.actionItemId === o.actionItemId && c.confirmed));
-          if (toPost.length === 0) continue;
+          if (toPost.length === 0) return;
         }
         const r = await deps.answer({
           workId,
@@ -4496,13 +4489,39 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
         });
         if (!r.ok) {
           refusals.push(`could not answer the items on ${workId}: ${r.reason}`);
-          continue;
+          return;
         }
         for (const x of r.value) {
           if ("error" in x) refusals.push(`could not answer ${x.actionItemId}: ${x.error}`);
           else answered(x.actionItemId, x);
         }
+    };
+
+    if (deps.followUp !== undefined) {
+      const open = new Map<string, readonly ActionItem[]>();
+      for (const [w, items] of allItems) {
+        const o = items.filter((i) => i.settled === undefined);
+        if (o.length > 0 && handedMap.has(w)) open.set(w, o);
       }
+      for (const workId of followUpOrder(open).slice(0, Math.max(0, deps.maxFollowUps ?? 2))) {
+        followUps.push(await followUpOne(workId, open.get(workId) ?? []));
+        // MEASURED on agentic-tpm, 2026-09-12: !163's seven answers were written and its fix pushed at
+        // 00:21, and the reviewer would not have seen a word of it until the other two requests'
+        // follow-ups finished - another forty-five minutes of a merge request that looked ignored.
+        // A request is answered as soon as what settles its items is in front of people.
+        await answerOn(workId, allItems.get(workId) ?? []);
+      }
+    } else if ([...allItems.values()].some((items) => items.some((i) => i.settled === undefined))) {
+      // SAID, not silently kept: open items nobody is configured to look at are work waiting on nobody.
+      refusals.push("handed-off changes have open action items and nothing is configured to follow them up");
+    }
+
+    // The sweep: requests this run did not follow up, still owed answers from an earlier one. A
+    // request already answered on is NOT retried here - an answer that failed a minute ago (the
+    // review system returned 502) is owed, and waits for the next run rather than hammering it.
+    for (const [workId, items] of allItems) {
+      if (answeredRequests.has(workId)) continue;
+      await answerOn(workId, items);
     }
 
     // ── REVIEW IS A BACK-AND-FORTH UNTIL IT COMES BACK CLEAN ──────────────
