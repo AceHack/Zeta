@@ -1,0 +1,12 @@
+{
+  "pr_number": 17332,
+  "archive_path": "docs/history/pr-reviews/2026/09/12/PR-17332-docs-081m29xc42f087g0r000x3dpmy-file-the-single-file-ledger-conflict-pattern.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-12T04:26:15.070Z",
+  "schema_version": "v1",
+  "commit_sha": "51c1cd8ca928a1abfa79571c2d88a136053a98fd",
+  "title": "docs(081M29XC42F087G0R000X3DPMY): file the single-file-ledger conflict pattern",
+  "state": "MERGED",
+  "merged_at": "2026-09-12T04:25:31Z",
+  "head_ref": "shadow/single-file-ledgers-conflict"
+}
