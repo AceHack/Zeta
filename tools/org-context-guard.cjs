@@ -26,7 +26,7 @@
 
 const { appendFileSync, mkdirSync, readFileSync, statSync, writeFileSync } = require("node:fs");
 const { join, resolve } = require("node:path");
-const { tmpdir } = require("node:os");
+const { homedir, tmpdir } = require("node:os");
 
 const NL = String.fromCharCode(10);
 const env = process.env;
@@ -36,10 +36,37 @@ const PICTURES = [".png", ".jpg", ".jpeg", ".gif", ".webp", ".bmp", ".ico", ".pd
 /** Past this many bytes, a whole-file read must say which part it wants. */
 const WHOLE_FILE_LIMIT = Number(env.ORG_GUARD_WHOLE_FILE_BYTES || 100_000);
 
+/**
+ * The guard's own private directory, under the user's home rather than the shared temp dir.
+ *
+ * CodeQL js/insecure-temporary-file, and it is a real class rather than a style note: a
+ * FIXED name under the world-writable os temp dir can be pre-created by any other user on
+ * the machine, as a directory they own or as a symlink pointing somewhere else. The guard
+ * would then either write this session's read-history where a stranger can read it, or
+ * append through the symlink to a file it never meant to touch. Neither needs an attacker
+ * to win a race: the name is predictable, so the file can simply be waiting.
+ *
+ * `~/.zeta/` is the repository's existing convention for per-user state that is not in the
+ * repo, and it is not world-writable, which removes the class rather than narrowing it. The
+ * directory is created 0o700 so the mode is stated rather than inherited from the umask.
+ *
+ * ORG_GUARD_DIR still overrides, because tests need a scratch path and the operator may
+ * want state somewhere specific. An explicit path the caller chose is not the same risk as
+ * a guessable one the caller never named.
+ */
+function guardDir() {
+  if (env.ORG_GUARD_DIR) return env.ORG_GUARD_DIR;
+  const home = homedir();
+  // No home directory is the one case with no private place to write. Fall back to the temp
+  // dir but say so, rather than silently keeping the insecure path as if it were the plan.
+  if (!home) return join(tmpdir(), "org-context-guard");
+  return join(home, ".zeta", "org-context-guard");
+}
+
 /** Where this session's "already in context" list lives. Per session, so nothing leaks between runs. */
 function stateFile(sessionId) {
-  const dir = env.ORG_GUARD_DIR || join(tmpdir(), "org-context-guard");
-  mkdirSync(dir, { recursive: true });
+  const dir = guardDir();
+  mkdirSync(dir, { recursive: true, mode: 0o700 });
   return join(dir, String(sessionId || "unknown").replace(/[^A-Za-z0-9_-]/g, "_") + ".json");
 }
 
@@ -132,7 +159,7 @@ process.stdin.on("end", () => {
   } catch (err) {
     // FAILS OPEN. Never let the guard be the reason the organization stops.
     try {
-      appendFileSync(join(tmpdir(), "org-context-guard.error.log"), new Date().toISOString() + " " + String((err && err.message) || err) + NL);
+      appendFileSync(join(guardDir(), "error.log"), new Date().toISOString() + " " + String((err && err.message) || err) + NL);
     } catch {
       // nothing to do
     }

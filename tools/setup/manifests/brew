@@ -110,6 +110,33 @@ eprover
 # ~1.5 GB; slim hosts skip, and agda-cubical.sh skips gracefully without it).
 agda tier=standard
 
+# FriCAS -- the Axiom-lineage computer algebra system, and the reason it is a
+# DEPENDENCY rather than a curiosity: it is the one shipped implementation of the
+# two-level CATEGORY/DOMAIN design (categories carry laws, domains implement them,
+# domain CONSTRUCTORS build domains from domains) that work-item
+# 081M29N1AX9087G0R001GSJD6G needs as prior art -- `IRing<Sedenion>` compiles and is
+# not a ring, because 168/343 octonion triples refute associativity. Axiom itself is
+# NOT the package to reach for: `axiom` exists in Ubuntu universe (20170501, nine
+# years stale) and in no brew formula; FriCAS is the maintained fork and the one with
+# current releases on every OS we target.
+#
+# MEASURED on this machine 2026-09-11, not estimated: `brew install fricas` took
+# 54 s wall and added 200 MB of Cellar -- fricas 119 MB + sbcl 75 MB + libice/libsm/
+# libxpm/libxt 6 MB (gmp, libx11, libxau, libxdmcp, zstd were already present as
+# other formulae's deps). Bottled, so nothing compiles. Smoke: `(2^64)::Integer`
+# returns 18446744073709551616 with `Type: Integer` under FriCAS 1.3.13 / sbcl 2.6.8.
+#
+# BOTTLE COVERAGE IS ARM-AND-LINUX, NOT INTEL-MAC. formulae.brew.sh lists bottles for
+# arm64_tahoe / arm64_sequoia / arm64_sonoma / arm64_linux / x86_64_linux and NO
+# x86_64 macOS. An Intel Mac therefore source-builds this formula; nothing in the
+# fleet is an Intel Mac today, and this comment is here so that a future one is a
+# measured slow install rather than a mystery.
+#
+# tier=standard, matching agda/eprover/tectonic: 200 MB and an SBCL runtime are not
+# something a slim host that only runs `dotnet build` has any use for. Untagged would
+# mean tier=slim, i.e. installed everywhere.
+fricas tier=standard
+
 
 # ── WASM toolchain (Oracle 10 / DLA multi-compiler substrate) ─────────────────
 # Mirrors the apt manifest additions. All four WASM compilers must be present

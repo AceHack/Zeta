@@ -260,6 +260,7 @@ describe("the gate is wired to the things that depend on it", () => {
       emscripten: ["emscripten"],
       llvm: ["llvm"],
       pandoc: ["pandoc"],
+      fricas: ["fricas"],
       tectonic: null, // not packaged in Ubuntu apt — see the NOTE in manifests/apt
     };
     const brewStandard = tieredIn(BREW_MANIFEST);

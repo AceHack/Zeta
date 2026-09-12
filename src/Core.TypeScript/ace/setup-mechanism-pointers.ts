@@ -180,10 +180,10 @@ export function buildSetupMechanismPointers(): ReadonlyArray<PackageManagerPoint
       mechanism: "from-zip",
       text: readManifest("from-zip"),
       purpose:
-        "Pinned per-platform release ZIP → extracted directory + PATH shim (CodeQL CLI)",
+        "Pinned per-platform release ZIP → extracted directory + PATH shim (CodeQL CLI, FriCAS on Windows)",
       realizer: bunMechanismRealizer("from-zip"),
       manifest: "tools/setup/manifests/from-zip",
-      optIn: ["ZETA_INSTALL_CODEQL=1"],
+      optIn: ["ZETA_INSTALL_CODEQL=1", "ZETA_INSTALL_FRICAS=1"],
       defaultUpdate: "pinned-url",
     }),
     pointerFromMechanismManifest({

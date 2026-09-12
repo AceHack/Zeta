@@ -93,3 +93,59 @@ describe("the roster is checked against gate.yml, not trusted", () => {
     for (const n of NO_LOCAL) expect(names.has(n.gateJob)).toBe(true);
   });
 });
+
+describe("derivation sees every invocation form gate.yml uses", () => {
+  const yaml = readFileSync(".github/workflows/gate.yml", "utf-8");
+
+  // The regression this guards: derivation recognised only `bun <path>.ts`, so
+  // 44 of 90 real check invocations were invisible while --audit stayed green.
+  // Each case below FAILS if that narrowing comes back.
+  const FIXTURE = [
+    "jobs:",
+    "  j:",
+    "    name: lint (fixture)",
+    "    steps:",
+    "      - name: a path invocation",
+    "        run: bun src/Core.TypeScript/hygiene/a.ts",
+    "      - name: a package script",
+    "        run: bun run hygiene:check-something",
+    "      - name: a test path",
+    "        run: bun test src/Core.TypeScript/hygiene/b.test.ts",
+    "      - name: setup, NOT a check",
+    "        run: bun install --frozen-lockfile",
+  ].join("\n");
+
+  test("all three check forms derive; `bun install` does NOT", () => {
+    const { specs } = deriveFromGate(FIXTURE);
+    const argvs = specs.map((s) => s.argv.join(" "));
+    expect(argvs).toContain("bun src/Core.TypeScript/hygiene/a.ts");
+    expect(argvs).toContain("bun run hygiene:check-something");
+    expect(argvs).toContain("bun test src/Core.TypeScript/hygiene/b.test.ts");
+    expect(argvs.some((a) => a.includes("install"))).toBe(false);
+    expect(specs.length).toBe(3);
+  });
+
+  test("the REAL gate.yml derives all three forms — not just the path one", () => {
+    const { specs } = deriveFromGate(yaml);
+    const argvs = specs.map((s) => s.argv.join(" "));
+    const byForm = {
+      path: argvs.filter((a) => /^bun (?:src|tools|tests)\//u.test(a)).length,
+      run: argvs.filter((a) => a.startsWith("bun run ")).length,
+      test: argvs.filter((a) => a.startsWith("bun test ")).length,
+    };
+    // Measured 2026-09-11: 46 / 26 / 18 before dedup. Asserted as "several",
+    // because pinning the exact count would make every new gate step a test
+    // failure — the number that matters is that NO form is zero.
+    expect(byForm.path).toBeGreaterThan(10);
+    expect(byForm.run).toBeGreaterThan(10);
+    expect(byForm.test).toBeGreaterThan(5);
+  });
+
+  test("the busiest job is no longer represented by 2 of its 29 checks", () => {
+    const job = "lint (bash retirement inventory + hygiene unit tests)";
+    const { specs } = deriveFromGate(yaml);
+    const mine = specs.filter((s) => s.gateJob === job);
+    expect(gateJobNames(yaml)).toContain(job);
+    expect(mine.length).toBeGreaterThan(20);
+  });
+});

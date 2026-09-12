@@ -1,0 +1,181 @@
+{
+  "ecosystem": "npm",
+  "observedAt": "2026-09-12",
+  "packages": {
+    "@eslint/js": {
+      "latest": "10.0.1",
+      "observedAt": "2026-09-12",
+      "source": "https://registry.npmjs.org/%40eslint/js/latest"
+    },
+    "@nats-io/jetstream": {
+      "latest": "3.4.0",
+      "observedAt": "2026-09-12",
+      "source": "https://registry.npmjs.org/%40nats-io/jetstream/latest"
+    },
+    "@nats-io/transport-node": {
+      "latest": "3.4.0",
+      "observedAt": "2026-09-12",
+      "source": "https://registry.npmjs.org/%40nats-io/transport-node/latest"
+    },
+    "@noble/ciphers": {
+      "latest": "2.4.0",
+      "observedAt": "2026-09-12",
+      "source": "https://registry.npmjs.org/%40noble/ciphers/latest"
+    },
+    "@noble/curves": {
+      "latest": "2.4.0",
+      "observedAt": "2026-09-12",
+      "source": "https://registry.npmjs.org/%40noble/curves/latest"
+    },
+    "@noble/hashes": {
+      "latest": "2.4.0",
+      "observedAt": "2026-09-12",
+      "source": "https://registry.npmjs.org/%40noble/hashes/latest"
+    },
+    "@noble/post-quantum": {
+      "latest": "0.7.1",
+      "observedAt": "2026-09-12",
+      "source": "https://registry.npmjs.org/%40noble/post-quantum/latest"
+    },
+    "@scure/base": {
+      "latest": "2.4.0",
+      "observedAt": "2026-09-12",
+      "source": "https://registry.npmjs.org/%40scure/base/latest"
+    },
+    "@scure/bip32": {
+      "latest": "2.4.0",
+      "observedAt": "2026-09-12",
+      "source": "https://registry.npmjs.org/%40scure/bip32/latest"
+    },
+    "@scure/bip39": {
+      "latest": "2.4.0",
+      "observedAt": "2026-09-12",
+      "source": "https://registry.npmjs.org/%40scure/bip39/latest"
+    },
+    "@types/bun": {
+      "latest": "1.4.2",
+      "observedAt": "2026-09-12",
+      "source": "https://registry.npmjs.org/%40types/bun/latest"
+    },
+    "@types/semver": {
+      "latest": "7.8.0",
+      "observedAt": "2026-09-12",
+      "source": "https://registry.npmjs.org/%40types/semver/latest"
+    },
+    "assemblyscript": {
+      "latest": "0.28.20",
+      "observedAt": "2026-09-12",
+      "source": "https://registry.npmjs.org/assemblyscript/latest"
+    },
+    "cborg": {
+      "latest": "6.1.2",
+      "observedAt": "2026-09-12",
+      "source": "https://registry.npmjs.org/cborg/latest"
+    },
+    "epub-gen-memory": {
+      "latest": "1.1.2",
+      "observedAt": "2026-09-12",
+      "source": "https://registry.npmjs.org/epub-gen-memory/latest"
+    },
+    "eslint": {
+      "latest": "10.10.0",
+      "observedAt": "2026-09-12",
+      "source": "https://registry.npmjs.org/eslint/latest"
+    },
+    "eslint-plugin-sonarjs": {
+      "latest": "4.2.0",
+      "observedAt": "2026-09-12",
+      "source": "https://registry.npmjs.org/eslint-plugin-sonarjs/latest"
+    },
+    "fast-check": {
+      "latest": "4.10.0",
+      "observedAt": "2026-09-12",
+      "source": "https://registry.npmjs.org/fast-check/latest"
+    },
+    "globals": {
+      "latest": "17.12.0",
+      "observedAt": "2026-09-12",
+      "source": "https://registry.npmjs.org/globals/latest"
+    },
+    "jiti": {
+      "latest": "2.7.0",
+      "observedAt": "2026-09-12",
+      "source": "https://registry.npmjs.org/jiti/latest"
+    },
+    "markdownlint-cli2": {
+      "latest": "0.23.2",
+      "observedAt": "2026-09-12",
+      "source": "https://registry.npmjs.org/markdownlint-cli2/latest"
+    },
+    "micro-key-producer": {
+      "latest": "0.10.2",
+      "observedAt": "2026-09-12",
+      "source": "https://registry.npmjs.org/micro-key-producer/latest"
+    },
+    "pg": {
+      "latest": "8.23.0",
+      "observedAt": "2026-09-12",
+      "source": "https://registry.npmjs.org/pg/latest"
+    },
+    "playwright": {
+      "latest": "1.63.0",
+      "observedAt": "2026-09-12",
+      "source": "https://registry.npmjs.org/playwright/latest"
+    },
+    "prettier": {
+      "latest": "3.9.6",
+      "observedAt": "2026-09-12",
+      "source": "https://registry.npmjs.org/prettier/latest"
+    },
+    "prettier-plugin-toml": {
+      "latest": "2.0.6",
+      "observedAt": "2026-09-12",
+      "source": "https://registry.npmjs.org/prettier-plugin-toml/latest"
+    },
+    "quantum-circuit": {
+      "latest": "0.9.250",
+      "observedAt": "2026-09-12",
+      "source": "https://registry.npmjs.org/quantum-circuit/latest"
+    },
+    "semver": {
+      "latest": "7.8.5",
+      "observedAt": "2026-09-12",
+      "source": "https://registry.npmjs.org/semver/latest"
+    },
+    "stylelint": {
+      "latest": "17.15.0",
+      "observedAt": "2026-09-12",
+      "source": "https://registry.npmjs.org/stylelint/latest"
+    },
+    "stylelint-config-standard": {
+      "latest": "40.0.0",
+      "observedAt": "2026-09-12",
+      "source": "https://registry.npmjs.org/stylelint-config-standard/latest"
+    },
+    "typescript": {
+      "latest": "7.0.2",
+      "observedAt": "2026-09-12",
+      "source": "https://registry.npmjs.org/typescript/latest"
+    },
+    "typescript-eslint": {
+      "latest": "8.70.0",
+      "observedAt": "2026-09-12",
+      "source": "https://registry.npmjs.org/typescript-eslint/latest"
+    },
+    "vite": {
+      "latest": "8.3.0",
+      "observedAt": "2026-09-12",
+      "source": "https://registry.npmjs.org/vite/latest"
+    },
+    "yaml": {
+      "latest": "2.9.1",
+      "observedAt": "2026-09-12",
+      "source": "https://registry.npmjs.org/yaml/latest"
+    },
+    "z3-solver": {
+      "latest": "5.2.0",
+      "observedAt": "2026-09-12",
+      "source": "https://registry.npmjs.org/z3-solver/latest"
+    }
+  }
+}

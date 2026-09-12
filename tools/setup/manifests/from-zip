@@ -82,3 +82,43 @@
 ~/.zeta/codeql-cli  https://github.com/github/codeql-cli-binaries/releases/download/v2.27.0/codeql-linux64.zip      sha256=9ce76544eff4cb7f5b6d3c3ae14598686dd63dbb7dbc61ffd9b52a7e73151bd2  bin=codeql/codeql      shim=codeql  opt-in=ZETA_INSTALL_CODEQL  when=linux,amd64   tier=standard
 ~/.zeta/codeql-cli  https://github.com/github/codeql-cli-binaries/releases/download/v2.27.0/codeql-linux-arm64.zip  sha256=219310fb0b2c2fb616b34afc1efefcf2dcd41debf2dfb05f6b2c7f3de8aa38ca  bin=codeql/codeql      shim=codeql  opt-in=ZETA_INSTALL_CODEQL  when=linux,arm64   tier=standard
 ~/.zeta/codeql-cli  https://github.com/github/codeql-cli-binaries/releases/download/v2.27.0/codeql-win64.zip        sha256=0320fd9070c3582b09805d9ac82211816a580edec695c5b2baf52fcc51d658d5  bin=codeql/codeql.exe               opt-in=ZETA_INSTALL_CODEQL  when=windows       tier=standard
+
+# ── FriCAS on Windows (081M29N1AX9087G0R001GSJD6G) ─────────────────────────────────────────
+#
+# WHAT THIS ROW BUYS: a NATIVE Windows FriCAS. The brief that produced it assumed Windows
+# would need WSL or Cygwin, as it historically did. Measured 2026-09-11, that is no longer
+# true -- upstream publishes a self-contained Windows build, and since 1.3.13 it publishes one
+# for arm64 too. So of the two computer-algebra systems asked for, only SageMath needs WSL;
+# FriCAS does not, and saying which is which is the point of measuring rather than assuming.
+#
+# WHY from-zip AND NOT manifests/windows. scoop DOES carry fricas 1.3.13 -- but only in the
+# Extras bucket, and `tools/setup/install.ps1` deliberately bootstraps Main alone (the same
+# reason `wabt` is a WINDOWS_EXCEPTIONS entry rather than a scoop row). Adding a third-party
+# bucket to reach a package whose bytes we would then pin by package-id only is strictly worse
+# than naming the vendor's own asset and pinning its digest: a scoop row lands in the
+# UNDECLARED half of docs/UNHASHED-DEPENDENCIES.md, these rows land in the digest-covered
+# denominator.
+#
+# PINS IT: the two sha256 values below, each cross-checked against THREE independent
+# publications, measured 2026-09-11:
+#   x86-64  (1) upstream's own sha256sum-1.3.13.txt release asset,
+#           (2) the GitHub release API's assets[].digest field,
+#           (3) the ScoopInstaller/Extras bucket manifest's `hash`,
+#           (4) and a fourth, weaker check: the bytes were downloaded and hashed here.
+#   arm64   (2) and (4) only, stated rather than glossed -- the windows-arm64 asset was
+#           uploaded 2026-07-09, four months AFTER the 1.3.13 sha256sum file was cut, so that
+#           file does not cover it, and scoop's manifest carries no arm64 architecture block.
+#
+# NO `shim=`: the shim is a POSIX symlink, which is why the CodeQL win64 row above has none
+# either. Windows callers use the path under <dest> or add it to PATH themselves.
+#
+# SIZE, STATED BECAUSE IT IS WHAT THE OPT-IN BUYS BACK: 35.7 MB (x86-64) / 37.4 MB (arm64)
+# compressed. That is small for this mechanism -- and `opt-in=` is nonetheless MANDATORY here,
+# by the realizer's own refusal, not by preference. NAMED PARITY DRIFT, GOVERNANCE §24: macOS
+# and Linux get FriCAS automatically from brew/apt at tier=standard, Windows gets it only when
+# ZETA_INSTALL_FRICAS=1. The mechanism that can unpack an archive is the mechanism that
+# requires an opt-in, and `from-url` + `from-shim` -- the manifest's own advice for a small
+# artifact -- cannot unpack. This is DEBT, not a design: closing it needs either a
+# non-opt-in unpack mechanism or a Main-bucket scoop package, and both are separate decisions.
+~/.zeta/fricas  https://github.com/fricas/fricas/releases/download/1.3.13/fricas-1.3.13-windows-x86-64.zip  sha256=ad3deae8a403f03e8378e1a44324e65d61418bcbe669ac9652759ec0ae77156f  bin=FriCAS-windows-x86-64/bin/FRICASsys.exe  opt-in=ZETA_INSTALL_FRICAS  when=windows,amd64  tier=standard
+~/.zeta/fricas  https://github.com/fricas/fricas/releases/download/1.3.13/fricas-1.3.13-windows-arm64.zip   sha256=c742e05862fa90b2813bb67e75edb35bd8204f2f97449476173de9a86b4aacc8  bin=FriCAS-windows-arm64/bin/FRICASsys.exe   opt-in=ZETA_INSTALL_FRICAS  when=windows,arm64  tier=standard
