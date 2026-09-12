@@ -1,0 +1,26 @@
+{
+  "ecosystem": "go",
+  "observedAt": "2026-09-12",
+  "packages": {
+    "github.com/klauspost/cpuid/v2": {
+      "latest": "v2.4.0",
+      "observedAt": "2026-09-12",
+      "source": "https://proxy.golang.org/github.com/klauspost/cpuid/v2/@latest"
+    },
+    "github.com/zeebo/xxh3": {
+      "latest": "v1.1.0",
+      "observedAt": "2026-09-12",
+      "source": "https://proxy.golang.org/github.com/zeebo/xxh3/@latest"
+    },
+    "golang.org/x/sys": {
+      "latest": "v0.48.0",
+      "observedAt": "2026-09-12",
+      "source": "https://proxy.golang.org/golang.org/x/sys/@latest"
+    },
+    "gopkg.in/yaml.v3": {
+      "latest": "v3.0.1",
+      "observedAt": "2026-09-12",
+      "source": "https://proxy.golang.org/gopkg.in/yaml.v3/@latest"
+    }
+  }
+}

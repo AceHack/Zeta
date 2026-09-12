@@ -1,0 +1,191 @@
+{
+  "ecosystem": "nuget",
+  "observedAt": "2026-09-12",
+  "packages": {
+    "Apache.Arrow": {
+      "latest": "23.0.0",
+      "observedAt": "2026-09-12",
+      "source": "https://api.nuget.org/v3-flatcontainer/apache.arrow/index.json"
+    },
+    "Apache.Arrow.Compression": {
+      "latest": "23.0.0",
+      "observedAt": "2026-09-12",
+      "source": "https://api.nuget.org/v3-flatcontainer/apache.arrow.compression/index.json"
+    },
+    "BenchmarkDotNet": {
+      "latest": "0.15.8",
+      "observedAt": "2026-09-12",
+      "source": "https://api.nuget.org/v3-flatcontainer/benchmarkdotnet/index.json"
+    },
+    "Blake3": {
+      "latest": "3.0.2",
+      "observedAt": "2026-09-12",
+      "source": "https://api.nuget.org/v3-flatcontainer/blake3/index.json"
+    },
+    "FSharp.Analyzers.Build": {
+      "latest": "0.5.0",
+      "observedAt": "2026-09-12",
+      "source": "https://api.nuget.org/v3-flatcontainer/fsharp.analyzers.build/index.json"
+    },
+    "FSharp.Core": {
+      "latest": "11.0.100",
+      "observedAt": "2026-09-12",
+      "source": "https://api.nuget.org/v3-flatcontainer/fsharp.core/index.json"
+    },
+    "FsCheck": {
+      "latest": "3.4.0",
+      "observedAt": "2026-09-12",
+      "source": "https://api.nuget.org/v3-flatcontainer/fscheck/index.json"
+    },
+    "FsCheck.Xunit.v3": {
+      "latest": "3.4.0",
+      "observedAt": "2026-09-12",
+      "source": "https://api.nuget.org/v3-flatcontainer/fscheck.xunit.v3/index.json"
+    },
+    "FsPickler": {
+      "latest": "5.3.2",
+      "observedAt": "2026-09-12",
+      "source": "https://api.nuget.org/v3-flatcontainer/fspickler/index.json"
+    },
+    "FsUnit.Xunit": {
+      "latest": "7.1.1",
+      "observedAt": "2026-09-12",
+      "source": "https://api.nuget.org/v3-flatcontainer/fsunit.xunit/index.json"
+    },
+    "G-Research.FSharp.Analyzers": {
+      "latest": "0.25.0",
+      "observedAt": "2026-09-12",
+      "source": "https://api.nuget.org/v3-flatcontainer/g-research.fsharp.analyzers/index.json"
+    },
+    "Google.Protobuf": {
+      "latest": "3.36.1",
+      "observedAt": "2026-09-12",
+      "source": "https://api.nuget.org/v3-flatcontainer/google.protobuf/index.json"
+    },
+    "Ionide.Analyzers": {
+      "latest": "0.19.0",
+      "observedAt": "2026-09-12",
+      "source": "https://api.nuget.org/v3-flatcontainer/ionide.analyzers/index.json"
+    },
+    "LibGit2Sharp": {
+      "latest": "0.32.0",
+      "observedAt": "2026-09-12",
+      "source": "https://api.nuget.org/v3-flatcontainer/libgit2sharp/index.json"
+    },
+    "Mediator.Abstractions": {
+      "latest": "3.0.2",
+      "observedAt": "2026-09-12",
+      "source": "https://api.nuget.org/v3-flatcontainer/mediator.abstractions/index.json"
+    },
+    "Mediator.SourceGenerator": {
+      "latest": "3.0.2",
+      "observedAt": "2026-09-12",
+      "source": "https://api.nuget.org/v3-flatcontainer/mediator.sourcegenerator/index.json"
+    },
+    "MessagePack": {
+      "latest": "3.1.8",
+      "observedAt": "2026-09-12",
+      "source": "https://api.nuget.org/v3-flatcontainer/messagepack/index.json"
+    },
+    "Meziantou.Analyzer": {
+      "latest": "3.0.239",
+      "observedAt": "2026-09-12",
+      "source": "https://api.nuget.org/v3-flatcontainer/meziantou.analyzer/index.json"
+    },
+    "Microsoft.CodeAnalysis.Analyzers": {
+      "latest": "5.9.0",
+      "observedAt": "2026-09-12",
+      "source": "https://api.nuget.org/v3-flatcontainer/microsoft.codeanalysis.analyzers/index.json"
+    },
+    "Microsoft.CodeAnalysis.CSharp": {
+      "latest": "5.9.0",
+      "observedAt": "2026-09-12",
+      "source": "https://api.nuget.org/v3-flatcontainer/microsoft.codeanalysis.csharp/index.json"
+    },
+    "Microsoft.Extensions.DependencyInjection": {
+      "latest": "10.0.12",
+      "observedAt": "2026-09-12",
+      "source": "https://api.nuget.org/v3-flatcontainer/microsoft.extensions.dependencyinjection/index.json"
+    },
+    "Microsoft.Extensions.DependencyInjection.Abstractions": {
+      "latest": "10.0.12",
+      "observedAt": "2026-09-12",
+      "source": "https://api.nuget.org/v3-flatcontainer/microsoft.extensions.dependencyinjection.abstractions/index.json"
+    },
+    "Microsoft.NET.Test.Sdk": {
+      "latest": "18.10.0",
+      "observedAt": "2026-09-12",
+      "source": "https://api.nuget.org/v3-flatcontainer/microsoft.net.test.sdk/index.json"
+    },
+    "Microsoft.Z3": {
+      "latest": "4.12.2",
+      "observedAt": "2026-09-12",
+      "source": "https://api.nuget.org/v3-flatcontainer/microsoft.z3/index.json"
+    },
+    "OpenTelemetry": {
+      "latest": "1.18.0",
+      "observedAt": "2026-09-12",
+      "source": "https://api.nuget.org/v3-flatcontainer/opentelemetry/index.json"
+    },
+    "OpenTelemetry.Exporter.InMemory": {
+      "latest": "1.18.0",
+      "observedAt": "2026-09-12",
+      "source": "https://api.nuget.org/v3-flatcontainer/opentelemetry.exporter.inmemory/index.json"
+    },
+    "OpenTelemetry.Exporter.OpenTelemetryProtocol": {
+      "latest": "1.18.0",
+      "observedAt": "2026-09-12",
+      "source": "https://api.nuget.org/v3-flatcontainer/opentelemetry.exporter.opentelemetryprotocol/index.json"
+    },
+    "SonarAnalyzer.CSharp": {
+      "latest": "1.21.0",
+      "observedAt": "2026-09-12",
+      "source": "https://api.nuget.org/v3-flatcontainer/sonaranalyzer.csharp/index.json"
+    },
+    "System.IO.Hashing": {
+      "latest": "10.0.12",
+      "observedAt": "2026-09-12",
+      "source": "https://api.nuget.org/v3-flatcontainer/system.io.hashing/index.json"
+    },
+    "System.Numerics.Tensors": {
+      "latest": "10.0.12",
+      "observedAt": "2026-09-12",
+      "source": "https://api.nuget.org/v3-flatcontainer/system.numerics.tensors/index.json"
+    },
+    "System.Reactive": {
+      "latest": "7.0.0",
+      "observedAt": "2026-09-12",
+      "source": "https://api.nuget.org/v3-flatcontainer/system.reactive/index.json"
+    },
+    "Unquote": {
+      "latest": "7.0.1",
+      "observedAt": "2026-09-12",
+      "source": "https://api.nuget.org/v3-flatcontainer/unquote/index.json"
+    },
+    "YamlDotNet": {
+      "latest": "18.1.0",
+      "observedAt": "2026-09-12",
+      "source": "https://api.nuget.org/v3-flatcontainer/yamldotnet/index.json"
+    },
+    "coverlet.collector": {
+      "latest": "10.0.1",
+      "observedAt": "2026-09-12",
+      "source": "https://api.nuget.org/v3-flatcontainer/coverlet.collector/index.json"
+    },
+    "coverlet.msbuild": {
+      "latest": "10.0.1",
+      "observedAt": "2026-09-12",
+      "source": "https://api.nuget.org/v3-flatcontainer/coverlet.msbuild/index.json"
+    },
+    "xunit.runner.visualstudio": {
+      "latest": "4.0.0",
+      "observedAt": "2026-09-12",
+      "source": "https://api.nuget.org/v3-flatcontainer/xunit.runner.visualstudio/index.json"
+    },
+    "xunit.v3": {
+      "latest": "4.0.0",
+      "observedAt": "2026-09-12",
+      "source": "https://api.nuget.org/v3-flatcontainer/xunit.v3/index.json"
+    }
+  }
+}

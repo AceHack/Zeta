@@ -17,7 +17,7 @@
 //
 // Future commands (not yet implemented): remove, inspect.
 
-import { chmodSync, existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
+import { chmodSync, existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync, writeSync } from "node:fs";
 import { fetchBounded, readFileBounded, writeFileOwned } from "../io/safe-io.ts";
 import { createPublicKey, createPrivateKey } from "node:crypto";
 import {
@@ -50,6 +50,20 @@ import {
   buildLeafLockfile,
 } from "./lockfile.ts";
 import { solve } from "./solver.ts";
+import {
+  buildReport,
+  collectRepoPins,
+  defaultStalenessPolicy,
+  exitCodeFor,
+  loadSnapshots,
+  NETWORK_RESOLVERS,
+  refreshEcosystem,
+  renderJson,
+  renderReport,
+  summaryLine,
+  type ExitPolicy,
+} from "./outdated.ts";
+import { ECOSYSTEMS, type Ecosystem } from "./outdated-inventory.ts";
 
 function isValidDepEdge(e: unknown): boolean {
   if (typeof e !== "object" || e === null) return false;
@@ -235,6 +249,18 @@ interface DepsArgs {
   readonly schedulePath?: string;
 }
 
+interface OutdatedArgs {
+  readonly command: "outdated";
+  readonly json: boolean;
+  readonly showAll: boolean;
+  /** The explicit, separate network act. Never taken by the read path. */
+  readonly refresh: boolean;
+  /** Restrict both reading and refreshing to these ecosystems. Empty means all. */
+  readonly only: readonly Ecosystem[];
+  readonly failOnUnknown: boolean;
+  readonly maxSnapshotAgeDays: number | null;
+}
+
 type ParsedArgs =
   | ListArgs
   | HelpArgs
@@ -245,6 +271,7 @@ type ParsedArgs =
   | TrustArgs
   | RegistryArgs
   | UpdateArgs
+  | OutdatedArgs
   | DepsArgs;
 
 interface ArgError {
@@ -586,6 +613,35 @@ export function parseArgs(argv: readonly string[]): ParsedArgs | ArgError {
     return { command: "list", storePath, json };
   }
 
+  if (command === "outdated") {
+    let json = false;
+    let showAll = false;
+    let refresh = false;
+    let failOnUnknown = false;
+    let maxSnapshotAgeDays: number | null = null;
+    const only: Ecosystem[] = [];
+    for (let i = 1; i < argv.length; i++) {
+      const a = argv[i];
+      if (a === "--json") json = true;
+      else if (a === "--all") showAll = true;
+      else if (a === "--refresh") refresh = true;
+      else if (a === "--fail-on-unknown") failOnUnknown = true;
+      else if (a === "--max-snapshot-age-days") {
+        const v = argv[++i];
+        const n = v === undefined ? Number.NaN : Number.parseInt(v, 10);
+        if (!Number.isInteger(n) || n < 0) return { error: "--max-snapshot-age-days requires a non-negative integer" };
+        maxSnapshotAgeDays = n;
+      } else if (a === "--ecosystem") {
+        const v = argv[++i];
+        if (v === undefined) return { error: `--ecosystem requires one of: ${ECOSYSTEMS.join(", ")}` };
+        const match = ECOSYSTEMS.find((e) => e === v);
+        if (match === undefined) return { error: `unknown ecosystem '${v}' -- known: ${ECOSYSTEMS.join(", ")}` };
+        only.push(match);
+      } else return { error: `Unknown option for outdated: ${String(a)}` };
+    }
+    return { command: "outdated", json, showAll, refresh, only, failOnUnknown, maxSnapshotAgeDays };
+  }
+
   if (command === "deps") {
     const sub = argv[1];
     if (sub !== "validate" && sub !== "resolve" && sub !== "query" && sub !== "evaluate-schedule") {
@@ -723,6 +779,12 @@ Usage:
                                                    Query temporal graph state and run rollback safety audits
   ace deps evaluate-schedule --graph <path> --schedule <path> --out-dir <dir> [--as-of <date>]
                                                    Evaluate scheduled upgrades and generate migration runbooks
+  ace outdated [--json] [--all] [--ecosystem <e>] [--fail-on-unknown] [--max-snapshot-age-days <n>]
+                                                   Report pinned vs known-latest versions from the COMMITTED snapshot. No network.
+                                                   exit 0 = ran, nothing behind; 1 = ran, something behind; 2 = could not run
+                                                   A dependency with no known latest reports 'unknown', never 'up to date'
+  ace outdated --refresh [--ecosystem <e>]       Re-observe known-latest from the registries and rewrite registry/latest-known/<e>.json
+                                                   THE ONLY networked path. Never run implicitly by the report above.
   ace help                                       Show this help
 
 Future commands (not yet implemented):
@@ -1929,6 +1991,71 @@ export async function main(argv: readonly string[]): Promise<number> {
     // Say the gap out loud on every success, so no operator reads this as a runtime guarantee.
     console.error(`ace: NOTE: ${INSTALL_TIME_VS_RUNTIME}.`);
     return 0;
+  }
+
+  // ── outdated ─────────────────────────────────────────────────────────────────────────────
+  // The READ path touches no network at all -- that is the `clone-at-tag-stays-sufficient`
+  // requirement, not a performance choice. `--refresh` is the separate, explicit act.
+  if (parsed.command === "outdated") {
+    const root = process.env["REPO_ROOT"] ?? process.cwd();
+    const ecosystems = parsed.only.length > 0 ? parsed.only : ECOSYSTEMS;
+    const all = collectRepoPins(root);
+    // `--ecosystem` narrows BOTH halves. Narrowing only the snapshot half would report every
+    // dependency outside the selection as "no snapshot" -- an absence the caller created by
+    // asking a narrower question, dressed up as a gap in our knowledge.
+    const inventory =
+      parsed.only.length === 0
+        ? all
+        : { ...all, deps: all.deps.filter((d) => ecosystems.includes(d.ecosystem)) };
+
+    if (parsed.refresh) {
+      let anyResolved = 0;
+      let anyAttempted = 0;
+      const today = new Date().toISOString().slice(0, 10);
+      for (const eco of ecosystems) {
+        const resolver = NETWORK_RESOLVERS[eco];
+        if (resolver === undefined) {
+          // NOT SILENT. An ecosystem with no resolver keeps whatever snapshot it has and says so;
+          // writing an empty snapshot for it would turn "nobody asked" into "nothing found".
+          console.error(`ace outdated --refresh: ${eco} has no registry resolver -- skipped, snapshot left untouched`);
+          continue;
+        }
+        anyAttempted += 1;
+        const names = inventory.deps.filter((d) => d.ecosystem === eco).map((d) => d.name);
+        if (names.length === 0) {
+          console.error(`ace outdated --refresh: ${eco} -- no pinned dependencies found; nothing to observe`);
+          continue;
+        }
+        const outcome = await refreshEcosystem(root, eco, names, today, resolver);
+        anyResolved += outcome.resolved;
+        console.log(
+          `ace outdated --refresh: ${eco} ${String(outcome.resolved)}/${String(new Set(names).size)} resolved` +
+            `${outcome.failed.length > 0 ? `, ${String(outcome.failed.length)} unresolved` : ""} -> ${outcome.path}` +
+            `${outcome.written ? "" : " (unchanged)"}`,
+        );
+        for (const f of outcome.failed) console.error(`    unresolved: ${f.name} -- ${f.reason}`);
+      }
+      if (anyAttempted === 0 || anyResolved === 0) {
+        console.error("ace outdated --refresh: nothing was observed -- the refresh did not run");
+        return 2;
+      }
+    }
+
+    const snapshots = loadSnapshots(root, ecosystems);
+    const report = buildReport(inventory, snapshots, new Date(), defaultStalenessPolicy);
+    const exitPolicy: ExitPolicy = {
+      failOnUnknown: parsed.failOnUnknown,
+      maxSnapshotAgeDays: parsed.maxSnapshotAgeDays,
+    };
+    // writeSync, not console.log: `main()` is followed by `process.exit(code)`, and a piped
+    // stdout in Node is ASYNCHRONOUS -- a large report loses everything past the first 64 KB
+    // when the process exits before the pipe drains. Measured here: the `--json` output was
+    // cut mid-string at exactly 65536 bytes. A report that silently truncates is worse than one
+    // that refuses.
+    writeSync(1, parsed.json ? renderJson(report) : `${renderReport(report, { showAll: parsed.showAll })}\n`);
+    const code = exitCodeFor(report, exitPolicy);
+    if (code === 2) console.error(`ace outdated: COULD NOT RUN -- ${summaryLine(report)}`);
+    return code;
   }
 
   if (parsed.command === "deps") {
