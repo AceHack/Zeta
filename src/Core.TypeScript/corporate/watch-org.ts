@@ -28,7 +28,7 @@
 import { spawn, spawnSync, type ChildProcess } from "node:child_process";
 import { closeSync, mkdirSync, openSync, readFileSync, renameSync, writeFileSync } from "node:fs";
 import { join, resolve } from "node:path";
-import { answersOwed, correlateFeedback, type FeedbackDelivery } from "./change-followup";
+import { answersOwed, correlateFeedback, followUpFailures, type FeedbackDelivery } from "./change-followup";
 import type { ChangeRequestConfig } from "./change-request";
 import { afterOpenKey, DEFAULT_PIPELINE_ATTEMPTS, DEFAULT_REVIEW_ROUNDS } from "./change-request";
 import { foldActionItems, foldAfterOpen, foldAfterUpdate, foldHandedOffChanges } from "./org-fold";
@@ -46,6 +46,15 @@ export const RETRY_EVERY = 6;
 export const FAST_FAILURE_MS = 60_000;
 /** How many of those in a row are retried at once before the backoff applies anyway. */
 export const FAST_FAILURES = 3;
+
+/**
+ * Follow-ups that could not complete, in a row, before the request is a person's rather than a retry.
+ *
+ * MEASURED on dev-portal, 2026-09-12: three runs, then three more, each starting a session that died
+ * on the repository's own startup context and left nothing decided. The reasons never changed, so
+ * nothing in the backoff could tell the difference between "not yet" and "not ever".
+ */
+export const FOLLOW_UP_FAILURES = 3;
 
 export interface WatchInput {
   readonly events: readonly OrgEvent[];
@@ -96,8 +105,18 @@ export function watchReasons(input: WatchInput): WatchVerdict {
   const isPipeline = (kind: string): boolean => kind === "pipeline_failed";
   const atLimit: string[] = [];
   const redPipelines: string[] = [];
+  // A REQUEST WHOSE FOLLOW-UP KEEPS DYING IS NOT ASKED AGAIN. Its items stay open and are still the
+  // organization's to do - what stops is spending another session to find out it cannot start.
+  const hopeless = new Set<string>();
+  for (const [workId] of handed) {
+    const failed = followUpFailures(input.events, workId);
+    if (failed.inARow < FOLLOW_UP_FAILURES) continue;
+    hopeless.add(workId);
+    atLimit.push(`${workId}: ${String(failed.inARow)} follow-ups in a row could not complete - ${(failed.lastReason ?? "").slice(0, 200)}`);
+  }
   const decidedOn = new Map([...items.values()].flat().map((i) => [i.actionItemId, i] as const));
   for (const m of corr.aboutChange) {
+    if (hopeless.has(m.workId)) continue;
     if (untilGreen && isPipeline(m.delivery.itemKind)) {
       // ── A DEFERRAL NAMES ITS OWN TRIGGER ────────────────────────────────────────────────────
       // MEASURED on agentic-tpm !164, 2026-09-12: pipeline 189289 is an EXTERNAL status with no jobs
@@ -134,7 +153,7 @@ export function watchReasons(input: WatchInput): WatchVerdict {
   }
 
   for (const [workId, list] of items) {
-    if (!handed.has(workId)) continue;
+    if (!handed.has(workId) || hopeless.has(workId)) continue;
     const replies = input.changeRequests?.replies;
     if (replies !== undefined && replies !== "none") {
       const { owed, withheld } = answersOwed(list);
@@ -160,6 +179,7 @@ export function watchReasons(input: WatchInput): WatchVerdict {
   const afterUpdate = foldAfterUpdate(input.events);
   const limit = input.changeRequests?.reviewRounds ?? DEFAULT_REVIEW_ROUNDS;
   for (const [workId, change] of handed) {
+    if (hopeless.has(workId)) continue;
     const steps = input.changeRequests?.afterUpdate ?? [];
     if (steps.length === 0 || change.commit === undefined || change.firstCommit === undefined || change.commit === change.firstCommit) continue;
     const rec = afterUpdate.get(workId);
@@ -171,6 +191,7 @@ export function watchReasons(input: WatchInput): WatchVerdict {
   }
 
   for (const [workId] of handed) {
+    if (hopeless.has(workId)) continue;
     const done = afterOpen.get(workId)?.done ?? new Set<string>();
     for (const step of input.changeRequests?.afterOpen ?? []) {
       if (done.has(afterOpenKey(step))) continue;

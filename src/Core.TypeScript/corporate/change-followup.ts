@@ -23,6 +23,7 @@
 
 import type { ActionItem, HandedOffChange } from "./org-fold";
 import type { PipelinePolicy } from "./change-request";
+import type { OrgEvent } from "./org-event";
 
 /** One thing that happened, normalized, before it is known which work it concerns. */
 export interface FeedbackDelivery {
@@ -262,6 +263,40 @@ export function placeOnThisMachine(text: string): string | undefined {
   const m = /(?:^|[\s(`'"])((?:[A-Za-z]:[\\/]|\/(?:Users|home|tmp|var\/folders)\/)[^\s`'")]*)|(\.agent-org[\\/][^\s`'")]*)/.exec(text);
   if (m === null) return undefined;
   return (m[1] ?? m[2] ?? "").slice(0, 60);
+}
+
+/**
+ * How many times IN A ROW a request's follow-up could not complete, and what it said last.
+ *
+ * MEASURED on dev-portal, 2026-09-12: every session in that repository dies the same way. Its own
+ * `CLAUDE.md` transitively imports 499KB of documentation - `docs/RESILIENCE.md` alone is 359KB - so
+ * a session starts with about 196,000 tokens of context already written and no room to work in; it
+ * manages four tool calls, reports "autocompact is thrashing", and exits. Six minutes and about six
+ * dollars, every thirty minutes, for nothing. The organization cannot fix a repository's own context
+ * budget, and it must not keep paying to discover that.
+ *
+ * Counted from the record the runtime writes when a follow-up does not complete, and reset by one
+ * that does: a request that starts working again is not carrying a history.
+ */
+export function followUpFailures(events: readonly OrgEvent[], workId: string): { readonly inARow: number; readonly lastReason?: string } {
+  let inARow = 0;
+  let lastReason: string | undefined;
+  for (const e of events) {
+    // The work id is IN the sentence, so no second test on the subject is needed - and a guard that
+    // cannot change an answer is one nobody can check.
+    const said = e.decision ?? "";
+    if (said.startsWith(`the follow-up of ${workId} did not complete`)) {
+      inARow += 1;
+      lastReason = said;
+      continue;
+    }
+    // Anything that shows the follow-up DID run clears the count.
+    if (said.startsWith(`followed up ${workId}`)) {
+      inARow = 0;
+      lastReason = undefined;
+    }
+  }
+  return { inARow, ...(lastReason === undefined ? {} : { lastReason }) };
 }
 
 /**

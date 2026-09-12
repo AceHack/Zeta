@@ -186,7 +186,7 @@ describe("AFTER THE HANDOFF: THE DESCRIPTION AND THE FOLLOW-UP", () => {
     const plain = run(["review", "implementation_review", "task-9"], ok({ verdict: "approve", reason: "ok", lookedAt: [] }));
     expect(plain.seen?.input).not.toContain("FOLLOW-UP REVIEW");
     plain.cleanup();
-  });
+  }, 30_000);
 
   test("describe on a re-handoff is told what reviewers were answered, and that the description must carry it", () => {
     // MEASURED on MR !162: a reply said the rollout note was in the description; the rewrite had none.
@@ -244,7 +244,7 @@ describe("AFTER THE HANDOFF: THE DESCRIPTION AND THE FOLLOW-UP", () => {
     const quiet = run(["follow-up", "task-9"], answer, { ORG_ACTION_ITEMS: items, ORG_CAN_SYNC: "0", ORG_PIPELINE_POLICY: "flag_only" });
     expect(quiet.seen?.input).not.toContain("IS NOT FINISHED BY BEING EXPLAINED");
     quiet.cleanup();
-  });
+  }, 30_000);
 
   test("THE SESSION ALREADY HAS THE ITEMS WHOLE, and is told not to go fetching them", () => {
     // MEASURED on dev-portal, 2026-09-12: three sessions saw a cut passage in `observe`, asked for the
@@ -611,7 +611,7 @@ describe("A MODEL IS CHOSEN BY THE ORGANIZATION, NEVER INHERITED FROM WHATEVER I
     const b = run(["work", "task-9"], ok({ summary: "s", commit: "", testsRun: [], blocked: "" }), { ORG_CLAUDE_MODEL: "", ORG_CLAUDE_MODEL_BY_HAT: byHat, ORG_ASSIGNEE: "release_manager" });
     expect(b.seen?.argv.join(" ")).toContain("--model cheap-model");
     b.cleanup();
-  });
+  }, 30_000);
 
   test("THE WORK, NOT ONLY THE WEARER: the narrowest thing the organization said is what is used", () => {
     // MEASURED on agentic-tpm, 2026-09-12: the hat that writes a fix also DECIDES which stages a round

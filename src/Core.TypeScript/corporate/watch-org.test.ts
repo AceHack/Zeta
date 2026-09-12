@@ -373,3 +373,47 @@ describe("THE WATCHER KEEPS THE REVIEW LOOP MOVING", () => {
     expect(shouldLaunch(after, { seen: [], lastSignature: before.signature, lastLaunchMs: 0 }, 60_000, 5).launch).toBe(true);
   });
 });
+
+describe("A REQUEST WHOSE FOLLOW-UP KEEPS DYING IS A PERSON'S, NOT ANOTHER ATTEMPT", () => {
+  // MEASURED on dev-portal, 2026-09-12: every session in that repository died the same way - its own
+  // CLAUDE.md transitively imports 499KB of docs, so a session starts with ~196,000 tokens already
+  // written, manages four tool calls, reports "autocompact is thrashing", and exits. Six minutes and
+  // about six dollars, every thirty minutes, for nothing.
+  const died = (n: number) =>
+    Array.from({ length: n }, () =>
+      ({ id: "e", kind: "change_projected", subjectId: "task-40", decision: "the follow-up of task-40 did not complete: the follow-up session exited 4: Autocompact is thrashing", atMs: 1, evidenceRefs: [], supervisorChain: [] }) as unknown as OrgEvent,
+    );
+  const ranFine = { id: "e", kind: "change_projected", subjectId: "task-40", decision: "followed up task-40: 2 of 2 item(s) decided", atMs: 1, evidenceRefs: [], supervisorChain: [] } as unknown as OrgEvent;
+  const raised = ev({ kind: "action_item_raised", workId: "task-40", actionItemId: "gitlab:note-9", source: "gitlab", itemKind: "comment", summary: "s" });
+
+  // A SECOND request, healthy, on its own branch: silencing one must silence exactly one.
+  const otherHandedOff = ev({ kind: "change_handed_off", workId: "task-41", changeId: "c2", branch: "defect/y", url: "https://git.example/p/-/merge_requests/165", base: "master", commit: "def" });
+  const otherComment = { deliveryId: "note-77", source: "gitlab", itemKind: "diff_comment", summary: "and this one", author: "reviewer", branch: "defect/y" };
+
+  test("after three failures in a row it stops asking about THAT request, and says what it kept failing on", () => {
+    const v = watchReasons(input({
+      events: [handedOff, aireviewDone, otherHandedOff, raised, ...died(3)],
+      // An UNRAISED comment on the failing request: even fresh news about it is not asked again.
+      deliveries: [comment("note-fresh"), otherComment],
+    }));
+    expect(v.reasons.some((r) => r.includes("note-fresh"))).toBe(false);
+    expect(v.reasons.some((r) => r.includes("task-40"))).toBe(false);
+    expect(v.atLimit.length).toBe(1);
+    expect(v.atLimit[0]).toContain("3 follow-ups in a row could not complete");
+    expect(v.atLimit[0]).toContain("Autocompact is thrashing");
+    // ...and the OTHER request is untouched: one request's history is its own.
+    expect(v.reasons.some((r) => r.includes("task-41"))).toBe(true);
+  });
+
+  test("two failures is not a pattern - it is still the organization's to try", () => {
+    const v = watchReasons(input({ events: [handedOff, aireviewDone, raised, ...died(2)], deliveries: [comment("note-9")] }));
+    expect(v.reasons.length).toBeGreaterThan(0);
+    expect(v.atLimit).toEqual([]);
+  });
+
+  test("a follow-up that DID run clears the history: a request that works again is not carrying one", () => {
+    const v = watchReasons(input({ events: [handedOff, aireviewDone, raised, ...died(3), ranFine, ...died(1)], deliveries: [comment("note-9")] }));
+    expect(v.reasons.length).toBeGreaterThan(0);
+    expect(v.atLimit).toEqual([]);
+  });
+});
