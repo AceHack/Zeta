@@ -245,6 +245,29 @@ describe("AFTER THE HANDOFF: THE DESCRIPTION AND THE FOLLOW-UP", () => {
     quiet.cleanup();
   });
 
+  test("A REPEAT FAILURE IS DECIDED DIFFERENTLY: the session is told the count, and that declining is a complete answer", () => {
+    // MEASURED on agentic-tpm !164: the same finding claimed fixed and turned back three rounds running.
+    const items = JSON.stringify([{ id: "gitlab:note-1", kind: "comment", summary: "add the index", reopenedBecause: "the test passes with the fix removed", turnedBackTimes: 3 }]);
+    const answer = ok({ decisions: [{ id: "gitlab:note-1", outcome: "declined", how: "the premise does not hold: the query is covered by the existing index" }], syncWithTarget: false, summary: "s" });
+    const r = run(["follow-up", "task-9"], answer, { ORG_ACTION_ITEMS: items, ORG_CAN_SYNC: "0" });
+    expect(r.status).toBe(0);
+    expect(r.seen?.input).toContain("turnedBackTimes");
+    expect(r.seen?.input).toContain("Doing the same thing again is the one");
+    expect(r.seen?.input).toContain("A finding is a");
+    expect(r.seen?.input).toContain("DECLINED with the");
+    r.cleanup();
+  });
+
+  test("A REVIEWER JUDGES A DECLINE ON ITS REASON, not on a test that cannot exist", () => {
+    const r = run(["review", "implementation_review", "task-9"], ok({ verdict: "approve", reason: "the decline holds", lookedAt: ["the query planner output"] }), {
+      ORG_FOLLOWUP_REVIEW: JSON.stringify({ from: "aaaaaaa", to: "bbbbbbb", items: [{ summary: "add the index", outcome: "declined", how: "the premise does not hold" }] }),
+    });
+    expect(r.seen?.input).toContain("JUDGED ON ITS REASON, NOT ON A TEST");
+    expect(r.seen?.input).toContain("not every claim is right");
+    expect(r.seen?.input).toContain("the author may decline it next round and that ends it");
+    r.cleanup();
+  });
+
   test("follow-up in resolve mode is told the conflicted paths and decides nothing about items", () => {
     const r = run(["follow-up", "task-9"], ok({ decisions: [{ id: "x", outcome: "addressed", how: "h" }], syncWithTarget: true, summary: "resolved" }), {
       ORG_FOLLOWUP_MODE: "resolve",
@@ -526,6 +549,31 @@ describe("A MODEL IS CHOSEN BY THE ORGANIZATION, NEVER INHERITED FROM WHATEVER I
     const b = run(["work", "task-9"], ok({ summary: "s", commit: "", testsRun: [], blocked: "" }), { ORG_CLAUDE_MODEL: "", ORG_CLAUDE_MODEL_BY_HAT: byHat, ORG_ASSIGNEE: "release_manager" });
     expect(b.seen?.argv.join(" ")).toContain("--model cheap-model");
     b.cleanup();
+  });
+
+  test("THE WORK, NOT ONLY THE WEARER: the narrowest thing the organization said is what is used", () => {
+    // MEASURED on agentic-tpm, 2026-09-12: the hat that writes a fix also DECIDES which stages a round
+    // owes, and naming only hats put that decision on the same model as the implementing.
+    const round = JSON.stringify({ workId: "task-9", available: ["qa_uat"], usual: ["qa_uat"], because: [], roundsSoFar: 1 });
+    const plan = ok({ gates: [], why: "nothing changed" });
+    const byHat = JSON.stringify({
+      default: "cheap-model",
+      backend_implementer: "expensive-model",
+      "mode:plan-round": "deciding-model",
+      "backend_implementer/plan-round": "this-hats-deciding-model",
+    });
+    const env = { ORG_CLAUDE_MODEL: "", ORG_CLAUDE_MODEL_BY_HAT: byHat, ORG_ROUND: round };
+    // hat/mode beats mode beats hat.
+    const a = run(["plan-round", "task-9"], plan, { ...env, ORG_PLAN_AS: "backend_implementer" });
+    expect(a.seen?.argv.join(" ")).toContain("--model this-hats-deciding-model");
+    a.cleanup();
+    const b = run(["plan-round", "task-9"], plan, { ...env, ORG_PLAN_AS: "qa_director" });
+    expect(b.seen?.argv.join(" ")).toContain("--model deciding-model");
+    b.cleanup();
+    // ...and the hat still decides its own implementing work.
+    const c = run(["work", "task-9"], ok({ summary: "s", commit: "", testsRun: [], blocked: "" }), { ...env, ORG_ASSIGNEE: "backend_implementer" });
+    expect(c.seen?.argv.join(" ")).toContain("--model expensive-model");
+    c.cleanup();
   });
 
   test("a hat with no entry and no default is refused rather than quietly given the other hat's model", () => {

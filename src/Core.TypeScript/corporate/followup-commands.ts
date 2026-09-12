@@ -119,6 +119,7 @@ export function commandFollowUp(spec: CommandSpec, fallbackCwd: string): (r: Fol
       ...(i.url === undefined ? {} : { url: i.url }),
       // Decided once already, and that did not stand: the session is told why, so it does not repeat it.
       ...(i.reopened === undefined ? {} : { reopenedBecause: i.reopened.why }),
+      ...(i.reopenedTimes === undefined || i.reopenedTimes < 2 ? {} : { turnedBackTimes: i.reopenedTimes }),
       ...(i.deferred === undefined ? {} : { deferredBefore: i.deferred.why }),
     }));
     const ran = run(spec, ["follow-up", r.workId], r.workdir ?? fallbackCwd, {

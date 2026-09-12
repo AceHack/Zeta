@@ -901,6 +901,15 @@ export interface ActionItem {
   readonly answered?: { readonly replyId?: string; readonly resolved: boolean; readonly skipped?: string; readonly atMs: number };
   /** Settled once, and that settlement did not stand - why. The item is OPEN; the next session is told this. */
   readonly reopened?: { readonly why: string; readonly atMs: number };
+  /**
+   * How many times a settlement of THIS item has not stood.
+   *
+   * MEASURED on agentic-tpm !164, 2026-09-12: one finding was claimed fixed and turned back three
+   * rounds running, each round costing a session and a review. Only the latest reason was kept, so
+   * every session saw "this was turned back" and none saw "this has been turned back three times" -
+   * which is the fact that should change what a session does about it.
+   */
+  readonly reopenedTimes?: number;
 }
 
 /**
@@ -950,7 +959,7 @@ export function foldActionItems(events: readonly OrgEvent[]): ReadonlyMap<string
       if (item === undefined) continue;
       // OPEN AGAIN: the settlement and its answer are dropped, the reason kept for whoever decides next.
       const { settled: _s, answered: _a, ...rest } = item;
-      byId.set(f.actionItemId, { ...rest, reopened: { why: f.why, atMs: event.atMs } });
+      byId.set(f.actionItemId, { ...rest, reopened: { why: f.why, atMs: event.atMs }, reopenedTimes: (item.reopenedTimes ?? 0) + 1 });
     } else if (f?.kind === "action_item_answered") {
       const item = byId.get(f.actionItemId);
       if (item === undefined) continue;

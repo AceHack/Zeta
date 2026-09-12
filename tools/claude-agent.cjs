@@ -319,7 +319,7 @@ const GUARD = guardSettings();
  * with an optional "default" key, ORG_CLAUDE_MODEL is the one-model form, and neither set is a
  * refusal rather than a guess. Nothing here names a hat or a model: the map is the operator's.
  */
-function modelFor(hat) {
+function modelFor(hat, mode) {
   let byHat;
   if (env.ORG_CLAUDE_MODEL_BY_HAT) {
     try {
@@ -331,10 +331,16 @@ function modelFor(hat) {
       fail(2, "ORG_CLAUDE_MODEL_BY_HAT is not an object of hat -> model");
     }
   }
-  const picked = (byHat && (byHat[hat] || byHat.default)) || env.ORG_CLAUDE_MODEL;
+  // MOST SPECIFIC FIRST. A hat can be worn for very different work: the hat that writes a fix also
+  // decides which stages a round owes, and a decision is not a rewrite. MEASURED on agentic-tpm,
+  // 2026-09-12: naming only hats put every planning call on the same model as the implementing that
+  // hat does. So an organization may say "<hat>/<mode>", or "mode:<mode>" for all wearers of that
+  // work, or "<hat>", or "default" - and the narrowest statement it made is the one that is used.
+  const keys = [String(hat) + "/" + String(mode), "mode:" + String(mode), String(hat), "default"];
+  const picked = (byHat && keys.map((k) => byHat[k]).find((v) => typeof v === "string" && v !== "")) || env.ORG_CLAUDE_MODEL;
   if (!picked) {
-    fail(2, "no model is configured for the hat '" + String(hat) + "': set ORG_CLAUDE_MODEL_BY_HAT" +
-      " (a JSON object of hat -> model, optionally with a \"default\") or ORG_CLAUDE_MODEL." +
+    fail(2, "no model is configured for the hat '" + String(hat) + "' doing '" + String(mode) + "': set ORG_CLAUDE_MODEL_BY_HAT" +
+      " (a JSON object of hat -> model, or \"<hat>/<mode>\" or \"mode:<mode>\", optionally with a \"default\") or ORG_CLAUDE_MODEL." +
       " The organization does not inherit whichever model the installed CLI happens to default to.");
   }
   return String(picked);
@@ -397,7 +403,7 @@ async function runClaude(prompt, schema, allowed, cwd, meta) {
     "--allowedTools", ...allowed,
     "--disallowedTools", ...NEVER,
   ];
-  const model = modelFor((meta && meta.hat) || env.ORG_ASSIGNEE || "default");
+  const model = modelFor((meta && meta.hat) || env.ORG_ASSIGNEE || "default", mode);
   args.push("--model", model);
   if (GUARD !== undefined) args.push("--settings", GUARD);
   // A stand-in for the binary, for tests: `ORG_CLAUDE_BIN=node ORG_CLAUDE_BIN_ARGS=["stub.cjs"]`.
@@ -676,6 +682,14 @@ if (mode === "review") {
         "and confirm it FAILS, then remove the copy (`git -C <checkout> worktree remove --force <tmp>`). Never change",
         "the author's checkout. A claimed fix with no test that fails without it, or an account that says more",
         "than the diff does, is a REJECTION - name the item and what is missing.",
+        "AN ITEM CLAIMED AS DECLINED IS JUDGED ON ITS REASON, NOT ON A TEST. Nothing was changed, so there is",
+        "nothing to prove non-vacuous. A reviewer's finding is a CLAIM, and not every claim is right: judge",
+        "whether this one holds against the code. A decline whose reason is true of the code - the premise is",
+        "wrong, the thing it asks for is already there, the cost is real and the benefit is not, no test this",
+        "repository can run could ever show it - is CORRECT, and you approve it. Reject a decline only when the",
+        "finding does hold and the reason misstates the code or dodges it; say which sentence is untrue.",
+        "An item the author keeps failing to fix is not automatically a rejection: if what it asks for is not",
+        "worth doing, say so in your reason - the author may decline it next round and that ends it.",
       ];
     })(),
   ].join(NL);
@@ -808,6 +822,14 @@ if (mode === "follow-up") {
         "  have) is DECLINED for this change: say why and name where it belongs - that answer is posted and the",
         "  thread resolved. An item marked `deferredBefore` was already left open once; decide it now.",
         "- An item marked `reopenedBecause` was settled before and that did not stand - read why and do not repeat it.",
+        "- AN ITEM MARKED `turnedBackTimes` HAS FAILED THAT MANY TIMES. Doing the same thing again is the one",
+        "  answer that is certainly wrong. Read what the reviewer actually proved, and decide it DIFFERENTLY:",
+        "  either change the approach so it survives the check they ran - not a variation of what they refuted -",
+        "  or DECLINE IT, which is a complete and final answer when the finding does not hold up. A finding is a",
+        "  claim by a reviewer, not an instruction: a suggestion whose premise is wrong, whose cost is not worth",
+        "  its benefit here, or that cannot be proved by any test this repository can run, is DECLINED with the",
+        "  evidence that settles it - and that answer goes to the reviewer and ends the matter. Declining for a",
+        "  good reason is not giving up; claiming a fix you cannot prove is what wastes everyone's round.",
         "  What settles a comment has to be where the reviewer can see it: the change, the request's description, or",
         "  your reply. Nothing that lives only in the organization's evidence directory settles anything for them.",
         "A reviewer's comment is a person who read your work: take it seriously, and do not decline one without a reason",

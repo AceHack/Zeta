@@ -1,4 +1,8 @@
 import { describe, expect, test } from "bun:test";
+import { mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
+import { commandFollowUp } from "./followup-commands";
 import { acceptedDecisions, answersOwed, correlateFeedback, followUpOrder, gatesForRound, keepRedPipelinesOpen, redPipelinesToReopen, turnedBackItems, type FeedbackDelivery } from "./change-followup";
 import { foldActionItems, openActionItems, type ActionItem, type HandedOffChange } from "./org-fold";
 import type { OrgEvent } from "./org-event";
@@ -325,6 +329,69 @@ describe("ONLY WHAT THE REVIEWER TURNED BACK IS DONE AGAIN", () => {
     for (const r of [undefined, ["the oversight severity index"], ["split the module"]]) {
       const out = turnedBackItems(decided, summaries, r);
       expect([...out.again, ...out.kept]).not.toContain("gitlab:note-4");
+    }
+  });
+});
+
+describe("AN ITEM THAT KEEPS COMING BACK SAYS SO", () => {
+  // MEASURED on agentic-tpm !164, 2026-09-12: one finding was claimed fixed and turned back three
+  // rounds running. Only the latest reason was kept, so every session saw "this was turned back" and
+  // none saw "this has been turned back three times" - the fact that should change what it does.
+  const ev = (fact: unknown, atMs: number): OrgEvent =>
+    ({ id: "e" + String(atMs), kind: "change_projected", subjectId: "task-1", decision: "", atMs, evidenceRefs: [], supervisorChain: [], fact }) as unknown as OrgEvent;
+  const raised = ev({ kind: "action_item_raised", workId: "task-1", actionItemId: "gitlab:note-1", source: "gitlab", itemKind: "comment", summary: "add the index" }, 1);
+  const settled = (at: number) => ev({ kind: "action_item_settled", workId: "task-1", actionItemId: "gitlab:note-1", outcome: "addressed", how: "added it", respond: true }, at);
+  const reopened = (at: number, why: string) => ev({ kind: "action_item_reopened", workId: "task-1", actionItemId: "gitlab:note-1", why }, at);
+
+  test("each settlement that does not stand is counted, and the latest reason is kept", () => {
+    const item = (foldActionItems([
+      raised,
+      settled(2), reopened(3, "the test passes with the fix removed"),
+      settled(4), reopened(5, "same item, same missing proof"),
+      settled(6), reopened(7, "still not proved - the test fails for another reason"),
+    ]).get("task-1") ?? [])[0];
+    expect(item?.reopenedTimes).toBe(3);
+    expect(item?.reopened?.why).toContain("fails for another reason");
+    expect(item?.settled).toBeUndefined();
+  });
+
+  test("an item that was never turned back counts nothing", () => {
+    const item = (foldActionItems([raised, settled(2)]).get("task-1") ?? [])[0];
+    expect(item?.reopenedTimes).toBeUndefined();
+  });
+});
+
+describe("WHAT THE SESSION IS HANDED ABOUT AN ITEM INCLUDES HOW OFTEN IT HAS FAILED", () => {
+  // The count is folded from the log, but it only changes anything if it reaches the session that
+  // decides. A stand-in for the command records what it was told.
+  test("an item turned back twice or more is handed on with the count; once is just the reason", async () => {
+    const dir = mkdtempSync(join(tmpdir(), "followup-seam-"));
+    const seen = join(dir, "seen.json");
+    const stub = join(dir, "stub.cjs");
+    writeFileSync(
+      stub,
+      'require("fs").writeFileSync(' + JSON.stringify(seen) + ', process.env.ORG_ACTION_ITEMS || "");' +
+        'process.stdout.write(JSON.stringify({ decisions: [], syncWithTarget: false, summary: "s" }));',
+    );
+    try {
+      const followUp = commandFollowUp({ command: "node", args: [stub] }, dir);
+      const base = { workId: "task-1", source: "gitlab", itemKind: "comment", summary: "add the index", raisedAtMs: 1 };
+      await followUp({
+        workId: "task-1",
+        hatId: "backend_implementer",
+        branch: "defect/x",
+        mode: "triage",
+        canSync: false,
+        items: [
+          { ...base, actionItemId: "gitlab:once", reopened: { why: "turned back", atMs: 2 }, reopenedTimes: 1 },
+          { ...base, actionItemId: "gitlab:again", reopened: { why: "turned back again", atMs: 3 }, reopenedTimes: 3 },
+        ] as unknown as readonly ActionItem[],
+      });
+      const told = JSON.parse(readFileSync(seen, "utf-8")) as { id: string; turnedBackTimes?: number }[];
+      expect(told.find((t) => t.id === "gitlab:again")?.turnedBackTimes).toBe(3);
+      expect(told.find((t) => t.id === "gitlab:once")?.turnedBackTimes).toBeUndefined();
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
     }
   });
 });
