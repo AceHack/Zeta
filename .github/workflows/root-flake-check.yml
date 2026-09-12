@@ -83,7 +83,7 @@ jobs:
         # Same pinned action and the same `determinate: false` as
         # build-ai-cluster-iso.yml. Upstream Nix only — no FlakeHub login, which
         # flaked with "Transient authentication mechanism error" on PR #8095.
-        uses: DeterminateSystems/nix-installer-action@ef8a148080ab6020fd15196c2084a2eea5ff2d25 # v22
+        uses: DeterminateSystems/nix-installer-action@3138316df39ed29be04236d7ffc686fa525866aa # v23
         with:
           determinate: false
 
