@@ -116,6 +116,49 @@ cvc5
 # deliberately NOT required: the cubical library is independent of it.
 agda tier=standard
 
+# FriCAS -- the Axiom-lineage computer algebra system; the shipped two-level
+# CATEGORY/DOMAIN system (categories carry laws, domains implement them, domain
+# CONSTRUCTORS build domains from domains) that work-item 081M29N1AX9087G0R001GSJD6G
+# needs as prior art. macOS: manifests/brew (bottled 1.3.13). Windows: NATIVE, via the
+# two digest-pinned rows in manifests/from-zip -- no WSL needed for this tool.
+#
+# MEASURED 2026-09-11 in ubuntu:24.04, both architectures, not estimated:
+#   amd64  apt-get install --no-install-recommends fricas -> 29 s wall (emulated
+#          x86-64 on Apple Silicon, so an upper bound for a native runner),
+#          68.9 MB downloaded, 366 MB of disk, 16 packages. WORKS: `(2^64)::Integer`
+#          returns 18446744073709551616 under FriCAS 1.3.10 / gcl 2.6.14.
+#   arm64  4 s wall, 410 MB of disk. INSTALLS AND DOES NOT RUN -- see below.
+#
+# THE arm64 DEFECT IS UPSTREAM, MEASURED, AND NOT WORKED AROUND HERE. Ubuntu noble
+# ships `fricas-databases` as Architecture: all, and that arch-independent package
+# hard-codes its payload under
+#   /usr/lib/fricas/target/x86_64-pc-linux-gnu/algebra/
+# while the arm64 `fricas` package's own wrapper sets
+#   FRICAS=/usr/lib/fricas/target/aarch64-unknown-linux-gnu
+# so every start dies with `INTERNAL-SIMPLE-FILE-ERROR ... compress.daase: Cannot
+# open`. Reproduced on a clean ubuntu:24.04 arm64 container. NOTHING IN THIS TREE
+# INVOKES FriCAS YET, so an arm64 runner installing an unusable 410 MB is wasted bytes
+# and not a red lane -- but the first lane that does invoke it must be pinned to
+# amd64 (or to macOS, whose brew 1.3.13 is arm64-native and works) until this is fixed
+# upstream. apt rows carry no `when=` clause, so the gap is documented rather than
+# gated; gating it needs an arch filter in linux.sh, which is a separate decision.
+#
+# A SOURCE BUILD WAS MEASURED AND REJECTED FOR THE DEFAULT PATH, and the measurement
+# inverted the intuition rather than confirming it. manifests/from-autotools-tarball
+# gives a digest-pinned 1.3.13 on BOTH architectures -- which would make the arm64
+# defect above disappear -- in 455 s (emulated amd64, -j12) for 161 MB, i.e. less than
+# half apt's disk. But it needs sbcl + libgmp-dev + libx11-dev from apt to build, which
+# is THREE new undeclared-unhashed rows against this row's one, on top of an order of
+# magnitude more wall time on every Linux host. The route that looks supply-chain-
+# cleaner adds more unhashed dependencies, because the compiler has to come from
+# somewhere. The tarball pin is recorded in docs/research/2026-09-11-fricas-and-
+# sagemath-toolchain-acquisition-measured.md; it is the right answer the moment a lane
+# needs FriCAS on arm64 Linux.
+#
+# tier=standard, matching agda/opam/r-base: 366 MB and a Lisp runtime are no use to a
+# slim host whose only job is `dotnet build`. Untagged would mean tier=slim.
+fricas tier=standard
+
 # ── WASM toolchain (Oracle 10 / DLA multi-compiler substrate) ─────────────────
 # Three compilers proved substrate-independence of D_f ≈ 1.322 (Oracle 10):
 #   WAT (bare metal), AssemblyScript (TypeScript→WASM), Go (GOOS=js GOARCH=wasm).
