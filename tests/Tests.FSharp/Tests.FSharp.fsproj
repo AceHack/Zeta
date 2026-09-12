@@ -23,6 +23,7 @@
     <Compile Include="Algebra/Weight.Tests.fs" />
     <Compile Include="Algebra/CayleyDickson.Tests.fs" />
     <Compile Include="Algebra/Octonion.Laws.Tests.fs" />
+    <Compile Include="Algebra/LawWitness.Tests.fs" />
     <Compile Include="Algebra/HexCore.Tests.fs" />
     <Compile Include="Algebra/Units.Tests.fs" />
     <Compile Include="Algebra/GSet.Tests.fs" />
@@ -638,6 +639,7 @@
     <!-- Circuit/ -->
     <Compile Include="Circuit/Circuit.Tests.fs" />
     <Compile Include="Circuit/Incremental.Tests.fs" />
+    <Compile Include="Circuit/ReverseIndex.Tests.fs" />
     <Compile Include="Circuit/NestedCircuit.Tests.fs" />
     <Compile Include="Circuit/Plan.Tests.fs" />
     <Compile Include="Circuit/Plan.Branches.Tests.fs" />

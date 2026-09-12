@@ -145,20 +145,75 @@ function claudeBudgetMs() {
  * shells and a jest run - with its own mongod - kept running after the agent was gone, competing
  * with the next step's test runs for the machine.
  */
-/** Every process on the machine as { pid, ppid, created } - Windows only; empty when unreadable. */
+/** Every process on the machine as { pid, ppid, created }.
+ *
+ * Windows carries a creation stamp so a recycled pid is never killed.
+ * Unix `ps` has no FILETIME; pid reuse in the session window is the residual
+ * risk, named rather than papered over. Empty when unreadable.
+ */
 function processTable() {
-  const r = spawnSync(
-    "powershell",
-    ["-NoProfile", "-NonInteractive", "-Command",
-      "Get-CimInstance Win32_Process | ForEach-Object { '' + $_.ProcessId + ',' + $_.ParentProcessId + ',' + $_.CreationDate.ToFileTimeUtc() }"],
-    { encoding: "utf-8", shell: false, windowsHide: true, timeout: 30_000, maxBuffer: 16 * 1024 * 1024 },
-  );
+  if (process.platform === "win32") {
+    const r = spawnSync(
+      "powershell",
+      ["-NoProfile", "-NonInteractive", "-Command",
+        "Get-CimInstance Win32_Process | ForEach-Object { '' + $_.ProcessId + ',' + $_.ParentProcessId + ',' + $_.CreationDate.ToFileTimeUtc() }"],
+      { encoding: "utf-8", shell: false, windowsHide: true, timeout: 30_000, maxBuffer: 16 * 1024 * 1024 },
+    );
+    if (r.status !== 0) return [];
+    return String(r.stdout || "")
+      .split(/\r?\n/)
+      .map((l) => l.trim().split(","))
+      .filter((p) => p.length === 3 && p[0] !== "")
+      .map(([pid, ppid, created]) => ({ pid: Number(pid), ppid: Number(ppid), created: String(created) }));
+  }
+  const fs = require("node:fs");
+  // Prefer /proc: GitHub's Linux runners always have it, and it does not
+  // depend on `ps` being on PATH. `stat` field after the comm's closing
+  // paren is state, then ppid (proc(5)).
+  try {
+    if (fs.existsSync("/proc/self/stat")) {
+      const out = [];
+      for (const name of fs.readdirSync("/proc")) {
+        if (!/^[0-9]+$/.test(name)) continue;
+        try {
+          const stat = fs.readFileSync("/proc/" + name + "/stat", "utf8");
+          const rparen = stat.lastIndexOf(")");
+          if (rparen < 0) continue;
+          const rest = stat.slice(rparen + 2).split(" ");
+          const ppid = Number(rest[1]);
+          const pid = Number(name);
+          if (!Number.isFinite(pid) || !Number.isFinite(ppid)) continue;
+          out.push({ pid, ppid, created: "" });
+        } catch {
+          // exited between readdir and read
+        }
+      }
+      return out;
+    }
+  } catch {
+    // fall through to ps
+  }
+  const r = spawnSync("ps", ["-Ao", "pid=,ppid="], { encoding: "utf-8", timeout: 10_000, maxBuffer: 16 * 1024 * 1024 });
   if (r.status !== 0) return [];
   return String(r.stdout || "")
-    .split(/\r?\n/)
-    .map((l) => l.trim().split(","))
-    .filter((p) => p.length === 3 && p[0] !== "")
-    .map(([pid, ppid, created]) => ({ pid: Number(pid), ppid: Number(ppid), created: String(created) }));
+    .split(/\n/)
+    .map((l) => l.trim().split(/\s+/))
+    .filter((p) => p.length >= 2 && p[0] !== "")
+    .map(([pid, ppid]) => ({ pid: Number(pid), ppid: Number(ppid), created: "" }));
+}
+
+function killUnix(pid) {
+  if (pid === process.pid || pid === undefined) return;
+  try {
+    process.kill(-pid, "SIGKILL");
+  } catch {
+    // not a group leader, or already gone
+  }
+  try {
+    process.kill(pid, "SIGKILL");
+  } catch {
+    // already gone
+  }
 }
 
 /** The live descendants of `rootPid`, including children of ones already seen whose parent has died. */
@@ -190,11 +245,13 @@ function descendantsOf(rootPid, seen) {
 function sweepLeftovers(win, rootPid, seen, startedAt) {
   if (rootPid === undefined) return;
   if (!win) {
-    try {
-      process.kill(-rootPid, "SIGKILL");
-    } catch {
-      // the group is gone - nothing was left behind
-    }
+    killUnix(-rootPid);
+    killUnix(rootPid);
+    // Detached grandchildren are their OWN process group (Node `detached:true`,
+    // Claude Code's shells). kill(-rootPid) never reaches them. The pids were
+    // sampled while the session still lived; after reparent-to-init a ppid
+    // walk cannot find them. AIAGENT-1662 on Linux CI: waitUntil 20s, still alive.
+    for (const pid of seen.keys()) killUnix(pid);
     return;
   }
   const table = processTable();
@@ -231,8 +288,14 @@ function runBounded(command, args, { cwd, env: childEnvironment, input, budgetMs
     const err = [];
     let timedOut = false;
     let error;
-    child.stdout.on("data", (b) => out.push(b));
-    child.stderr.on("data", (b) => err.push(b));
+    child.stdout.on("data", (b) => {
+      out.push(b);
+      sample();
+    });
+    child.stderr.on("data", (b) => {
+      err.push(b);
+      sample();
+    });
     child.on("error", (e) => {
       error = e;
     });
@@ -244,19 +307,34 @@ function runBounded(command, args, { cwd, env: childEnvironment, input, budgetMs
     const startedAt = Date.now();
     const seen = new Map(); // pid -> creation stamp
     const sample = () => {
-      if (!win || child.pid === undefined) return;
+      if (child.pid === undefined) return;
       for (const p of descendantsOf(child.pid, seen)) seen.set(p.pid, p.created);
     };
-    const sampler = win ? setInterval(sample, 20_000) : undefined;
+    // Windows CIM is expensive so 20s; Unix `ps` is cheap and the 2.5s budget
+    // tests would miss a 20s sampler entirely. Also sample on spawn so a
+    // session shorter than the interval still records its tree.
+    const sampler = setInterval(sample, win ? 20_000 : 10);
+    let pumping = !win;
+    const pump = () => {
+      if (!pumping) return;
+      sample();
+      setImmediate(pump);
+    };
+    child.on("spawn", () => {
+      sample();
+      if (!win) pump();
+    });
+    // pid is assigned synchronously on Unix; do not wait for `spawn`.
+    sample();
+    if (!win) pump();
     const stopTree = () => {
       if (win) {
         if (child.pid !== undefined) spawnSync("taskkill", ["/T", "/F", "/PID", String(child.pid)], { shell: false, windowsHide: true });
       } else {
-        try {
-          process.kill(-child.pid, "SIGKILL");
-        } catch {
-          child.kill("SIGKILL");
-        }
+        sample();
+        killUnix(-child.pid);
+        killUnix(child.pid);
+        for (const pid of seen.keys()) killUnix(pid);
       }
     };
     const timer = setTimeout(() => {
@@ -265,6 +343,7 @@ function runBounded(command, args, { cwd, env: childEnvironment, input, budgetMs
       stopTree();
     }, budgetMs);
     child.on("close", (status) => {
+      pumping = false;
       clearTimeout(timer);
       if (sampler !== undefined) clearInterval(sampler);
       sweepLeftovers(win, child.pid, seen, startedAt);

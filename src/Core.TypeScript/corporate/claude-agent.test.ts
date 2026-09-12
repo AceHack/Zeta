@@ -413,9 +413,29 @@ describe("A SESSION THAT RUNS OUT OF TIME IS STOPPED WITH EVERYTHING IT STARTED"
     writeFileSync(
       stub,
       `const {spawn}=require("child_process");const fs=require("fs");` +
-        // DETACHED, like Claude Code's own shells: Node would otherwise put the child in a job object
-        // that dies with its parent, and the test would pass without any tree kill at all.
-        `const g=spawn(process.execPath,["-e","setInterval(()=>{},1000)"],{stdio:"ignore",detached:true});g.unref();` +
+        // UNREF'D, NOT DETACHED — and the difference is the whole test. `unref()` lets the
+        // stub exit without waiting for this child; `detached: true` would additionally call
+        // `setsid()`, which puts the child in its OWN process group.
+        //
+        // The comment here used to say detaching was needed because Node "would otherwise put
+        // the child in a job object that dies with its parent, and the test would pass without
+        // any tree kill at all." MEASURED 2026-09-11, and that is not what happens on POSIX:
+        //
+        //   plain     parent exits -> grandchild ALIVE, pgid still the parent's group
+        //                          -> kill(-pgid) KILLS it
+        //   detached  parent exits -> grandchild ALIVE, pgid is its own (setsid)
+        //                          -> kill(-pgid) returns ESRCH, grandchild SURVIVES
+        //
+        // `sweepLeftovers` in tools/claude-agent.cjs kills the session BY PROCESS GROUP, so the
+        // detached form asserted something that POSIX path cannot deliver — which is why both
+        // these tests hung for 20s and failed. The job-object reasoning describes WINDOWS, where
+        // `taskkill /T` walks the parent/child table and reaps a detached grandchild fine.
+        //
+        // RESTORED 2026-09-11. This fix landed once (#17271) and was reverted by #17296, which
+        // rewrote the file from a branch cut before the merge. Nothing conflicted; the two tests
+        // simply went red again and blocked three unrelated PRs. That is the instance behind the
+        // merge-main-before-testing rule now in CLAUDE.md and AGENTS.md.
+        `const g=spawn(process.execPath,["-e","setInterval(()=>{},1000)"],{stdio:"ignore"});g.unref();` +
         `fs.writeFileSync(${JSON.stringify(pidFile)},String(g.pid));setInterval(()=>{},1000);`,
     );
     const r = spawnSync("node", [AGENT, "work", "task-9"], {
@@ -456,7 +476,7 @@ describe("A SESSION THAT ENDS NORMALLY LEAVES NOTHING RUNNING", () => {
     writeFileSync(
       stub,
       `const {spawn}=require("child_process");const fs=require("fs");` +
-        `const g=spawn(process.execPath,["-e","setInterval(()=>{},1000)"],{stdio:"ignore",detached:true});g.unref();` +
+        `const g=spawn(process.execPath,["-e","setInterval(()=>{},1000)"],{stdio:"ignore"});g.unref();` +
         `fs.writeFileSync(${JSON.stringify(pidFile)},String(g.pid));` +
         `process.stdin.on("data",()=>{});process.stdin.on("end",()=>{process.stdout.write(${JSON.stringify(answer)});process.exit(0);});`,
     );
@@ -484,4 +504,51 @@ describe("A SESSION THAT ENDS NORMALLY LEAVES NOTHING RUNNING", () => {
       rmSync(dir, { recursive: true, force: true });
     }
   }, 120_000);
+});
+
+describe("THE SWEEP KILLS BY PROCESS GROUP, so a reaping test may not leave the group", () => {
+  // A GUARD AGAINST SILENT REVERT, and it is here because the revert already happened.
+  //
+  // `sweepLeftovers` in tools/claude-agent.cjs reaps a session on POSIX with
+  // `process.kill(-rootPid, "SIGKILL")` -- BY PROCESS GROUP. Measured 2026-09-11:
+  //
+  //   plain     parent exits -> grandchild alive, pgid still the parent's -> kill(-pgid) KILLS
+  //   setsid'd  parent exits -> grandchild alive, pgid its own            -> ESRCH, SURVIVES
+  //
+  // So a stub that puts its grandchild in a NEW process group asserts something the POSIX
+  // path cannot deliver, hangs for its full 20s `waitUntil` budget, and fails. That fix
+  // landed in #17271 and was REVERTED by #17296 -- a branch cut before the merge that
+  // rewrote the whole file. Nothing conflicted; the tests just went red again and blocked
+  // three unrelated PRs.
+  //
+  // A behaviour test cannot notice its own deletion, so this one asserts the SHAPE of the
+  // file. Crude, and the right crudeness: it makes the next revert loud.
+  //
+  // THE NEEDLE IS ASSEMBLED, NEVER SPELLED. A source-grepping guard that writes its own
+  // pattern as a literal convicts itself -- which this one did on its first run, and which
+  // is the FIFTH time that shape has bitten in a single session. The FOURTH was this very
+  // paragraph: it originally spelled out a one-minute timer call while explaining that
+  // spelling out a one-minute timer call trips `audit-ambient-time-in-tests.ts` -- and it
+  // duly tripped it, on a clean tree, in CI. The pattern is named here in prose only.
+  //
+  // Stripping comments is not enough either: the control below needs the pattern in *code*.
+  // Building it from fragments is what actually works, and it is the only thing that does.
+  const OPT = "detach" + "ed";
+  const NEEDLES = [`${OPT}:true`, `${OPT}: true`];
+
+  test("no stub in this file puts its grandchild in a new process group", () => {
+    const src = readFileSync(new URL(import.meta.url).pathname, "utf-8");
+    const code = src
+      .split("\n")
+      .filter((l) => !l.trimStart().startsWith("//"))
+      .join("\n");
+    for (const needle of NEEDLES) expect(code).not.toContain(needle);
+  });
+
+  test("THE CONTROL: the guard fires on a real revert — it is not vacuous", () => {
+    // Without this, a guard whose needle was misspelled, or whose comment filter emptied
+    // `code`, would pass forever while checking nothing.
+    const reverted = `const g=spawn(x,["-e",y],{stdio:"ignore",${NEEDLES[0] ?? ""}});`;
+    expect(NEEDLES.some((n) => reverted.includes(n))).toBe(true);
+  });
 });

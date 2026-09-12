@@ -525,3 +525,259 @@ let ``occupancy-keyed runToHorizon is stale; cornersKey matches step n`` () =
     let honest = SchedulerZeta.runToHorizon FC.cornersKey step dataFilled 1
     honest = naive 1 |> should equal true
     honest = fbFilled |> should equal true
+
+
+// ═══════════════════════════════════════════════════════════════════
+// (B) THE SECOND FOUR-ELEMENT TRAP — Belnap's FOUR is NOT C₄.
+//
+// A `(trueChance, falseChance)` pair with independently floating legs is
+// the interlaced bilattice `[0,1] ⊙ [0,1]` (Ginsberg 1988; Fitting 1991;
+// Avron 1996); its four extreme points are Belnap's FOUR (Belnap 1977).
+// C₄ also has four elements. The COUNT is shared and therefore decides
+// nothing — `.claude/rules/numerology-vs-number-theory.md`.
+//
+// What is proved here, by invariant rather than by count:
+//   (B1) orders differ: the compass generator has order 4, the bilattice
+//        negation has order 2.
+//   (B2) THE GUARD — exhaustively, no bijection Phase → Belnap carries
+//        `rotateI` to `¬`. With a POSITIVE CONTROL so the empty search is
+//        known to be a real search.
+//   (B3) the half-turn reading fails too, on fixed points (0 vs 2).
+//   (B4) CONTROL — the count test, which passes for both and proves
+//        nothing. Present on purpose.
+//   (B5) FOUR really is an interlaced bilattice: two partial orders, both
+//        lattices, interlaced, with a `≤_t`-antitone / `≤_k`-monotone
+//        involutive negation. Exhaustive over 4 and 4×4 and 4×4×4.
+//   (B6) the corner embedding into `[0,1] ⊙ [0,1]` is a homomorphism for
+//        all five operations — which is what "FOUR is the extreme points
+//        of the belief pair" means as a checkable statement.
+//   (B7) SECOND STRUCTURE CHECKED — `SoftValue`. It is NOT a bilattice:
+//        normalisation pins Boole's residual at 0, so the knowledge order
+//        collapses and `Neither`/`Both` are unrepresentable.
+//   (B8) THIRD STRUCTURE CHECKED — `IntervalWeight`. Its CARRIER carries
+//        the bilattice structure under lattice operations; the operations
+//        `IntervalRing` actually SHIPS are Moore arithmetic and are not
+//        those. The identification does not transfer to the algebra.
+//
+// Satellite: docs/research/2026-09-11-the-belief-pair-as-a-weight-for-the-
+// universal-tensor-bilattice-boole-slack-and-the-typed-regulariser-lumen.md §4
+// ═══════════════════════════════════════════════════════════════════
+
+let private belnaps = FC.allBelnap
+let private beliefClose (a: FC.BeliefPair) (b: FC.BeliefPair) =
+    abs (a.TrueChance - b.TrueChance) < 1e-12
+    && abs (a.FalseChance - b.FalseChance) < 1e-12
+
+
+[<Fact>]
+let ``B1 compass generator has order 4; the bilattice negation has order 2`` () =
+    FC.compassRotationOrder |> should equal 4
+    FC.belnapNegationOrder |> should equal 2
+    // Stated as the non-isomorphism it is: the order of a distinguished
+    // unary map is preserved by any isomorphism of unary algebras.
+    FC.compassRotationOrder = FC.belnapNegationOrder |> should equal false
+
+
+[<Fact>]
+let ``B2 THE GUARD - no bijection carries the C4 quarter-turn to the bilattice negation`` () =
+    // The search is live: it FINDS an intertwiner when one exists.
+    FC.intertwinerExists FC.phaseCarrier FC.phaseCarrier FC.rotateI FC.rotateI
+    |> should equal true
+
+    FC.intertwinerExists belnaps belnaps FC.belnapNegate FC.belnapNegate
+    |> should equal true
+
+    // And it finds none here, over all 4! = 24 candidates.
+    FC.compassNegationIntertwinerExists |> should equal false
+
+
+[<Fact>]
+let ``B3 the half-turn reading fails too - fixed-point counts 0 vs 2`` () =
+    FC.compassHalfTurnFixedPoints |> should equal 0
+    FC.belnapNegationFixedPoints |> should equal 2
+    FC.compassHalfTurnNegationIntertwinerExists |> should equal false
+
+    // Both maps ARE involutions, so order alone does not separate them
+    // here — the fixed points do. That is why B1 is not sufficient.
+    FC.unaryOrder 8 FC.phaseCarrier (FC.mul FC.MinusOne) |> should equal 2
+    FC.belnapNegationOrder |> should equal 2
+
+
+[<Fact>]
+let ``B4 CONTROL - the count test passes for both and therefore proves nothing`` () =
+    FC.carrierSizes |> should equal (4, 4)
+    List.length FC.phaseCarrier |> should equal (List.length belnaps)
+    // Both distinguished maps are bijections on their carrier. Also shared.
+    // Nothing in this test distinguishes the two objects, by design.
+    FC.phaseCarrier |> List.map FC.rotateI |> List.sort |> should equal (List.sort FC.phaseCarrier)
+    belnaps |> List.map FC.belnapNegate |> List.sort |> should equal (List.sort belnaps)
+
+
+[<Fact>]
+let ``B5 FOUR is an interlaced bilattice - two orders, lattices, interlaced`` () =
+    let pairs = [ for a in belnaps do for b in belnaps -> a, b ]
+    let triples = [ for a in belnaps do for b in belnaps do for c in belnaps -> a, b, c ]
+
+    // Both relations are partial orders.
+    for leq in [ FC.belnapLeqT; FC.belnapLeqK ] do
+        belnaps |> List.forall (fun a -> leq a a) |> should equal true
+        pairs |> List.forall (fun (a, b) -> not (leq a b && leq b a) || a = b) |> should equal true
+        triples
+        |> List.forall (fun (a, b, c) -> not (leq a b && leq b c) || leq a c)
+        |> should equal true
+
+    // The two orders are genuinely different relations.
+    pairs |> List.exists (fun (a, b) -> FC.belnapLeqT a b <> FC.belnapLeqK a b) |> should equal true
+
+    // Join/meet are least upper / greatest lower bounds in their OWN order.
+    let lub leq join =
+        pairs |> List.forall (fun (a, b) ->
+            let j = join a b
+            leq a j && leq b j
+            && belnaps |> List.forall (fun u -> not (leq a u && leq b u) || leq j u))
+    let glb leq meet =
+        pairs |> List.forall (fun (a, b) ->
+            let m = meet a b
+            leq m a && leq m b
+            && belnaps |> List.forall (fun u -> not (leq u a && leq u b) || leq u m))
+
+    lub FC.belnapLeqT FC.belnapJoinT |> should equal true
+    glb FC.belnapLeqT FC.belnapMeetT |> should equal true
+    lub FC.belnapLeqK FC.belnapJoinK |> should equal true
+    glb FC.belnapLeqK FC.belnapMeetK |> should equal true
+
+    // INTERLACING (Ginsberg 1988): each order's operations are monotone
+    // with respect to the OTHER order.
+    let monotoneUnder leq op =
+        triples |> List.forall (fun (a, b, c) -> not (leq a b) || leq (op a c) (op b c))
+
+    for op in [ FC.belnapJoinT; FC.belnapMeetT ] do
+        monotoneUnder FC.belnapLeqK op |> should equal true
+    for op in [ FC.belnapJoinK; FC.belnapMeetK ] do
+        monotoneUnder FC.belnapLeqT op |> should equal true
+
+    // NEGATION: ≤_t-antitone, ≤_k-MONOTONE, involution (Fitting 1991).
+    pairs
+    |> List.forall (fun (a, b) -> not (FC.belnapLeqT a b) || FC.belnapLeqT (FC.belnapNegate b) (FC.belnapNegate a))
+    |> should equal true
+
+    pairs
+    |> List.forall (fun (a, b) -> not (FC.belnapLeqK a b) || FC.belnapLeqK (FC.belnapNegate a) (FC.belnapNegate b))
+    |> should equal true
+
+    belnaps |> List.forall (fun a -> FC.belnapNegate (FC.belnapNegate a) = a) |> should equal true
+
+    // The knowledge order's top is the GLUT — the corner every
+    // consistency-constrained structure is missing (see B7).
+    FC.belnapJoinK FC.Belnap.True FC.Belnap.False |> should equal FC.Belnap.Both
+    FC.belnapMeetK FC.Belnap.True FC.Belnap.False |> should equal FC.Belnap.Neither
+
+
+[<Fact>]
+let ``B6 the corner embedding into [0,1] (x) [0,1] is a bilattice homomorphism`` () =
+    let pairs = [ for a in belnaps do for b in belnaps -> a, b ]
+
+    belnaps
+    |> List.forall (fun a -> beliefClose (FC.belnapToPair (FC.belnapNegate a)) (FC.beliefNegate (FC.belnapToPair a)))
+    |> should equal true
+
+    for (corner, continuous) in
+        [ FC.belnapJoinT, FC.beliefJoinT
+          FC.belnapMeetT, FC.beliefMeetT
+          FC.belnapJoinK, FC.beliefJoinK
+          FC.belnapMeetK, FC.beliefMeetK ] do
+        pairs
+        |> List.forall (fun (a, b) ->
+            beliefClose (FC.belnapToPair (corner a b)) (continuous (FC.belnapToPair a) (FC.belnapToPair b)))
+        |> should equal true
+
+    // Boole's slack r = 1 − t − f separates the four corners into the
+    // three regimes: ignorance (+1), classical (0), incoherence (−1).
+    FC.beliefResidual (FC.belnapToPair FC.Belnap.Neither) |> should (equalWithin 1e-12) 1.0
+    FC.beliefResidual (FC.belnapToPair FC.Belnap.True) |> should (equalWithin 1e-12) 0.0
+    FC.beliefResidual (FC.belnapToPair FC.Belnap.False) |> should (equalWithin 1e-12) 0.0
+    FC.beliefResidual (FC.belnapToPair FC.Belnap.Both) |> should (equalWithin 1e-12) (-1.0)
+
+
+[<Fact>]
+let ``B7 SECOND STRUCTURE - SoftValue is NOT a bilattice, normalisation kills the knowledge order`` () =
+    // A two-candidate SoftValue is the obvious in-repo candidate for a
+    // (trueChance, falseChance) pair. It does not qualify, and the reason
+    // is its own stated invariant: "weights sum to 1".
+    let tv = DynamicValue.Bool true
+    let fv = DynamicValue.Bool false
+
+    let chances (sv: SoftValue.SoftValue) =
+        let get v = sv.Candidates |> List.tryFind (fun (d, _) -> d = v) |> Option.map snd |> Option.defaultValue 0.0
+        FC.beliefPair (get tv) (get fv)
+
+    let samples =
+        [ 1.0, 0.0; 0.0, 1.0; 0.5, 0.5; 0.9, 0.1; 0.2, 0.7; 3.0, 1.0 ]
+        |> List.choose (fun (t, f) -> SoftValue.ofWeighted [ tv, t; fv, f ])
+
+    samples |> List.isEmpty |> should equal false
+
+    // Boole's residual is pinned at 0 for EVERY reachable value, so the
+    // knowledge axis — the one carrying the signal — has no extent at all.
+    samples
+    |> List.forall (fun sv -> abs (FC.beliefResidual (chances sv)) < 1e-9)
+    |> should equal true
+
+    // Consequence: the two gluts/gaps of FOUR are unreachable. `Neither`
+    // needs r = 1 and `Both` needs r = −1; a normalised distribution can
+    // produce neither, at any input weights.
+    samples
+    |> List.exists (fun sv ->
+        let p = chances sv
+        beliefClose p (FC.belnapToPair FC.Belnap.Neither) || beliefClose p (FC.belnapToPair FC.Belnap.Both))
+    |> should equal false
+
+    // The unnormalised back door reaches them — which is exactly why
+    // `SoftValue.unnormalized` is named "the invariant-violating route".
+    // So the missing corners are a property of the INVARIANT, not of the
+    // representation. (Control for the claim above: the carrier can hold
+    // the glut; the normalised constructor cannot produce it.)
+    let glut = SoftValue.unnormalized [ tv, 1.0; fv, 1.0 ]
+    beliefClose (chances glut) (FC.belnapToPair FC.Belnap.Both) |> should equal true
+
+
+[<Fact>]
+let ``B8 THIRD STRUCTURE - IntervalWeight carries the bilattice, IntervalRing does not ship it`` () =
+    // `IntervalWeight` is `[Lo, Hi]`, which is the `(u,v) = (t, 1−f)`
+    // reparameterisation of a belief pair. Under LATTICE operations the
+    // carrier does carry the bilattice structure — including the
+    // negation its own docstring names, `−[a,b] = [−b,−a]`.
+    let iv (lo: float) (hi: float) = IntervalWeight(lo, hi)
+    let grid = [ for lo in [ -1.0; 0.0; 1.0 ] do for hi in [ -1.0; 0.0; 1.0 ] -> iv lo hi ]
+    let pairs = [ for a in grid do for b in grid -> a, b ]
+
+    let leqT (a: IntervalWeight) (b: IntervalWeight) = a.Lo <= b.Lo && a.Hi <= b.Hi
+    let leqK (a: IntervalWeight) (b: IntervalWeight) = a.Lo <= b.Lo && a.Hi >= b.Hi
+    let negI (a: IntervalWeight) = iv (-a.Hi) (-a.Lo)
+
+    // Involution, ≤_t-antitone, ≤_k-monotone — the three bilattice-negation
+    // conditions, on the in-repo type.
+    grid |> List.forall (fun a -> negI (negI a) = a) |> should equal true
+    pairs |> List.forall (fun (a, b) -> not (leqT a b) || leqT (negI b) (negI a)) |> should equal true
+    pairs |> List.forall (fun (a, b) -> not (leqK a b) || leqK (negI a) (negI b)) |> should equal true
+
+    // THE FINDING, and it is the numerology trap one level down: the
+    // operations `IntervalRing` actually ships are Moore arithmetic, and
+    // they are NOT the lattice operations above. Witness: the truth-join
+    // of [0,1] with itself is [0,1]; Moore Add gives [0,2].
+    let ring = IntervalRing.Instance
+    let truthJoin (a: IntervalWeight) (b: IntervalWeight) = iv (max a.Lo b.Lo) (max a.Hi b.Hi)
+    let unit = iv 0.0 1.0
+    truthJoin unit unit |> should equal unit
+    ring.Add(unit, unit) |> should equal (iv 0.0 2.0)
+    ring.Add(unit, unit) = truthJoin unit unit |> should equal false
+
+    // And the carrier is UNBOUNDED: for every interval there is a strictly
+    // ≤_k-greater one, so ℝ⊙ℝ has no ⊤_k, hence no extreme points, hence no
+    // Belnap corners and no FOUR. Avron's representation theorem is about
+    // BOUNDED interlaced bilattices; that clause does work, not decoration.
+    grid
+    |> List.forall (fun a ->
+        let up = iv (a.Lo + 1.0) (a.Hi - 1.0)
+        leqK a up && up <> a)
+    |> should equal true

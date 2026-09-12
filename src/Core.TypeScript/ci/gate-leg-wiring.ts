@@ -34,8 +34,20 @@ const GRAPH = "src/Core.TypeScript/ace/build-graph.json";
 
 /** The selector expression a job must carry to be considered gated on `slug`. */
 export function selectorFor(slug: string): string {
-  return `fromJSON(needs.path-filter.outputs.legs).${slug} != false`;
+  return `fromJSON(needs.path-filter.outputs.legs).${slug} != 'false'`;
 }
+
+/**
+ * The comparison that SHIPPED BROKEN, kept as a value so the audit can refuse it.
+ *
+ * `!= false` reads correctly in English and is wrong in GitHub Actions: a loose
+ * comparison between different types casts both to number, `null` and `false` both
+ * cast to 0, so an ABSENT leg evaluated `0 != 0` -> false and the job SKIPPED.
+ * Measured on main pushes 2026-09-11, where `legs` is `{}` by design: three floor
+ * jobs reported `skipped`. The string form (`!= 'false'`, against string values)
+ * makes the cast work for us instead of against us.
+ */
+export const BROKEN_BOOLEAN_SELECTOR = "!= false";
 
 /**
  * Jobs the graph CAN select that gate.yml deliberately does not gate, each with why.
@@ -79,6 +91,27 @@ export function gateYmlJobIds(yml: string): readonly string[] {
   return out;
 }
 
+/** Every selector LINE, so the comparison operator itself can be checked. */
+export function selectorLines(yml: string): readonly { readonly job: string; readonly line: string }[] {
+  const out: { job: string; line: string }[] = [];
+  let job = "";
+  let inJobs = false;
+  for (const line of yml.split("\n")) {
+    if (/^jobs:\s*$/u.test(line)) {
+      inJobs = true;
+      continue;
+    }
+    const m = /^ {2}([A-Za-z][A-Za-z0-9_-]*):\s*$/u.exec(line);
+    if (inJobs && m?.[1] !== undefined) job = m[1];
+    // The `if:` LINE only — a comment mentioning the broken form is documentation,
+    // not a selector, and refusing prose would make the audit unwritable.
+    if (/^\s+if:/u.test(line) && line.includes("outputs.legs)") && job !== "") {
+      out.push({ job, line: line.trim() });
+    }
+  }
+  return out;
+}
+
 /** Every `fromJSON(needs.path-filter.outputs.legs).<slug>` slug, with the job it sits in. */
 export function selectorsIn(yml: string): ReadonlyMap<string, readonly string[]> {
   const out = new Map<string, string[]>();
@@ -102,7 +135,13 @@ export function selectorsIn(yml: string): ReadonlyMap<string, readonly string[]>
 }
 
 export interface Finding {
-  readonly kind: "unknown-slug" | "ungated" | "wrong-slug" | "stale-exemption" | "legless-exemption";
+  readonly kind:
+    | "unknown-slug"
+    | "ungated"
+    | "wrong-slug"
+    | "stale-exemption"
+    | "legless-exemption"
+    | "boolean-comparison";
   readonly job: string;
   readonly detail: string;
 }
@@ -181,10 +220,37 @@ function auditJobs(
   return findings;
 }
 
+/**
+ * Direction C: the COMPARISON is the string form, not the boolean one.
+ *
+ * `!= false` reads correctly and is wrong. GitHub Actions compares different types by
+ * casting both to number; `null` and `false` both cast to 0, so an ABSENT leg evaluates
+ * `0 != 0` -> false and the job SKIPS -- the exact inverse of fail-closed. It shipped,
+ * and on main pushes (`legs` is `{}` there by design) three FLOOR jobs reported
+ * `skipped`. Nothing failed, nothing was loud; the gate just stopped covering the tree.
+ */
+function auditComparisons(yml: string): readonly Finding[] {
+  const findings: Finding[] = [];
+  for (const { job, line } of selectorLines(yml)) {
+    if (line.includes(BROKEN_BOOLEAN_SELECTOR)) {
+      findings.push({
+        kind: "boolean-comparison",
+        job,
+        detail: `compares with \`${BROKEN_BOOLEAN_SELECTOR}\`. GitHub casts \`null\` and \`false\` both to 0, so an ABSENT leg evaluates \`0 != 0\` and the job SKIPS instead of running. Use \`!= 'false'\` against the string values \`affected-legs.ts\` emits.`,
+      });
+    }
+  }
+  return findings;
+}
+
 export function audit(yml: string, graphText: string): readonly Finding[] {
   const legs = new Set(allLegsOf(graphText).map(legSlug));
   const selectors = selectorsIn(yml);
-  return [...auditSelectors(selectors, legs), ...auditJobs(gateYmlJobIds(yml), selectors, legs)];
+  return [
+    ...auditComparisons(yml),
+    ...auditSelectors(selectors, legs),
+    ...auditJobs(gateYmlJobIds(yml), selectors, legs),
+  ];
 }
 
 function main(): number {

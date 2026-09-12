@@ -10,7 +10,12 @@ namespace Zeta.Core
 /// directed) ⇒ a compass **N S E W = {1, i, −1, −i} = C₄ = `i`-rotation** (the harmonic four-corner phase;
 /// why Cayley-Dickson is everywhere). That C₄ is a **labeling** of this record, not an identification
 /// with Cl(p,q) — generator squares ±1 are signature, and C₄ sits in Cl(3,0)'s even subalgebra as
-/// `e₁₂² = −1`, not as a vector. Checked in `FourCornerC4`. `TInFeedback` is **co-owned — both sides contribute** — which is
+/// `e₁₂² = −1`, not as a vector. Checked in `FourCornerC4`. **Nor is it Belnap's FOUR** — a
+/// `(trueChance, falseChance)` belief pair is the interlaced bilattice `[0,1] ⊙ [0,1]` (Ginsberg
+/// 1988; Fitting 1991; Avron 1996), whose negation is an *involution* where the compass generator
+/// has order 4; `FourCornerC4.compassNegationIntertwinerExists` refutes the identification over all
+/// 24 relabellings. Two four-element traps in one neighbourhood, both guarded by invariant rather
+/// than by count. `TInFeedback` is **co-owned — both sides contribute** — which is
 /// "each is backpressure from the other's perspective" (frame-relative, no absolute backpressure). The
 /// fusion target (081KTQD8A0008QG0R0005EFYPV): the `ISR` arrow's feedback channel becomes this object. Pure record, no classes.
 [<RequireQualifiedAccess>]

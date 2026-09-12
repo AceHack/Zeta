@@ -2661,3 +2661,141 @@ status per row: **page** = theorem read from the full text; **abstract** = abstr
 `compileJointPrecision`, `tryQueryExactDenseGaussian` from #16482) and
 `tests/Bayesian.Tests/MultilayerBnn.Tests.fs` MLBNN-33/42/46 — the measured gap
 (`0.227` variance L¹ at `4e-14` mean error) these anchors explain and the spec closes.
+
+## Four-valued logic and bilattices — the anchors for `FOUR ≇ C₄` (added 2026-09-11, shadow)
+
+Anchors for the **second four-element trap** in the four-corner neighbourhood. A belief pair
+`(trueChance, falseChance)` whose legs float independently is an **interlaced bilattice**, and its
+four extreme points are Belnap's FOUR. `src/Core/FourCornerC4.fs` also carries a **`C₄`** compass
+`{1, i, −1, −i}` on `FourCorner`'s 2×2. Both have four elements and **they are not the same
+object** — the count is shared, the invariants are not. Derived in
+`docs/research/2026-09-11-the-belief-pair-as-a-weight-for-the-universal-tensor-bilattice-boole-slack-and-the-typed-regulariser-lumen.md`
+§4 (Lumen; PR #17309); guarded, executably, in `FourCornerC4` (`compassNegationIntertwinerExists`)
+and `tests/Tests.FSharp/Formal/FourCornerC4.Laws.Tests.fs` §B.
+
+**Register note:** these four are cited from standing knowledge of the literature, not page-checked
+against the volumes. The _structural_ claims they are used for — two interlaced orders, an
+involutive negation, the product representation — are **independently verified in-repo** by the
+exhaustive tests above, so the code does not rest on the citations. The citations place the work in
+its lineage (`anchor-to-human-prior-art`); the falsifiers are what make it checked.
+
+- **Nuel D. Belnap Jr. (1977) — "A Useful Four-Valued Logic"**, in J. M. Dunn & G. Epstein (eds.),
+  _Modern Uses of Multiple-Valued Logic_ (Reidel), pp. 5–37; and "How a Computer Should Think", in
+  G. Ryle (ed.), _Contemporary Aspects of Philosophy_ (Oriel Press, 1977) ⭐ — **FOUR**:
+  `{none, true, false, both}`, read as _what a reasoner has been told_. The `both` corner (a
+  **glut**) is the one every consistency-constrained structure is missing, and it is exactly the
+  raw-vault stance in logical clothing — _a single version of the facts, never a single version of
+  the truth_ (`dv2-data-split-discipline-activated`). **Why it is the anchor rather than Kleene:**
+  Kleene's K3 adds only the gap; Belnap adds the glut, and the glut is what makes the second order
+  a lattice.
+- **Matthew L. Ginsberg (1988) — "Multivalued Logics: A Uniform Approach to Reasoning in Artificial
+  Intelligence"** (_Computational Intelligence_ 4(3), pp. 265–316) ⭐ — **bilattices**: one carrier,
+  **two** lattice orders (truth `≤_t`, knowledge/information `≤_k`), and the **interlacing**
+  condition that each order's join and meet are monotone with respect to the other. The interlacing
+  condition is the load-bearing one here: it is what a bare product of two lattices does _not_
+  automatically give you, and it is checked exhaustively in the tests rather than assumed.
+- **Melvin Fitting (1991) — "Bilattices and the Semantics of Logic Programming"** (_Journal of Logic
+  Programming_ 11(2), pp. 91–116); see also "Bilattices are nice things" (2006) — the **negation**
+  conditions: `≤_t`-antitone, `≤_k`-**monotone** (negating tells you nothing new), and an
+  **involution**. That last word is the whole guard: `¬` has order 2, a `C₄` generator has order 4,
+  and no relabelling reconciles them.
+- **Arnon Avron (1996) — "The Structure of Interlaced Bilattices"** (_Mathematical Structures in
+  Computer Science_ 6(3), pp. 287–299) ⭐ — the **representation theorem**: every bounded interlaced
+  bilattice is isomorphic to a product `L₁ ⊙ L₂` of two bounded lattices. This is what turns
+  "the belief pair resembles a bilattice" into an **identification**, and the word **bounded** does
+  real work — `IntervalWeight`'s carrier `ℝ ⊙ ℝ` is interlaced and unbounded, so it has no extreme
+  points and therefore no Belnap corners at all (checked in the same test file).
+- **George Boole (1854) — _An Investigation of the Laws of Thought_**, and **Bruno de Finetti (1937)
+  — "La prévision: ses lois logiques, ses sources subjectives"** (_Annales de l'Institut Henri
+  Poincaré_ 7, pp. 1–68) — the residual `r = 1 − t − f` as slack in the _conditions of possible
+  experience_, and `r < 0` as a **Dutch-book** loss per unit stake. The reason the "probabilities
+  that don't sum to one" axis is a classical, units-bearing quantity and **not** a quantum
+  pathology. Pairs with the standing warning in `FourCornerC4` that a numeric coincidence with
+  `2√2` is not a measurement of Tsirelson.
+
+## Computer algebra systems — the category/domain lineage and how a tower that LOSES laws is typed (added 2026-09-11, shadow, per work item `081M29N1AX9087G0R001GSJD6G`)
+
+Zeta's hypercomplex tower **gains capability going up the interface chain** (`ISemiring ⊂ IRing
+⊂ IStarRing`) while **losing laws going up the algebra chain** (ℝ → ℂ → ℍ → 𝕆 → 𝕊 sheds
+commutativity, then associativity, then alternativity, then zero-divisor-freeness). Research
+CAS has carried exactly this since 1990 and the answer is **the lattice branches** — the
+associative algebra is a _descendant_ of the non-associative one, so losing a law is moving
+toward the root, which subtyping expresses natively. The gap this entry closes: the repo cited
+Budiu (DBSP), Linstedt (DV2.0) and Codd for its data algebra, and **nothing at all** for the
+prior art on typing algebraic structures — the one tradition purpose-built for it. Full
+treatment, with every identifier read from primary source and register-marked:
+[`2026-09-11-computer-algebra-systems-already-solved-the-law-losing-tower-fricas-branches-sage-withholds-an-axiom.md`](research/2026-09-11-computer-algebra-systems-already-solved-the-law-losing-tower-fricas-branches-sage-withholds-an-axiom.md).
+
+- **Richard D. Jenks & Robert S. Sutor — _Axiom: The Scientific Computation System_
+  (Springer-Verlag, 1992)** — the canonical statement of the **category / domain** two-level
+  design: categories are specifications (what operations and laws), domains are implementations,
+  and domain _constructors_ build domains from domains. Zeta's "interface as specification,
+  per-tower instance as implementation" is this design independently rebuilt. Predecessor:
+  **Scratchpad II**, IBM T. J. Watson from 1977 under Jenks; design also credited to **James H.
+  Davenport**, **Barry M. Trager**, **David Y. Y. Yun**, **Victor S. Miller**. (book)
+- **Johannes Grabmeier & Robert Wisbauer — the FriCAS/Axiom non-associative category tower**
+  (`src/algebra/naalgc.spad`, 01 March 1991; `src/algebra/oct.spad`, 05 September 1990) —
+  `Magma`, `MagmaWithUnit`, `NonAssociativeRng`, `NonAssociativeRing`, `NonAssociativeAlgebra`,
+  `FiniteRankNonAssociativeAlgebra`, `OctonionCategory`. **These are the humans who solved this
+  problem.** The branch point, verbatim from `catdef.spad`:
+  `Algebra(R) : Category == Join(Ring, NonAssociativeAlgebra(R))` — the _associative_ algebra is
+  the descendant. `QuaternionCategory` joins `Algebra R`; `OctonionCategory` joins
+  `FramedNonAssociativeAlgebra(R), NonAssociativeRing` — ℍ and 𝕆 are on different branches, not
+  different rungs. Also the honest half: `SemiGroup() : Category == Magma` **identically**, with
+  associativity carried only in a `++` comment — the same disclosure `IStarRing.cs` makes. Paid
+  for with a shipped falsifier: `associative?()` enumerates basis triples and checks the
+  associator, which is the measurement `081M29N1AX9087G0R001GSJD6G` independently reproduced.
+  (primary source)
+- **Waldek Hebisch — the FriCAS semiring layer** (`NonAssociativeSemiRng`,
+  `NonAssociativeSemiRing`, `SemiRng`, `SemiRing` in `naalgc.spad` / `catdef.spad`) — the rung
+  Zeta's `ISemiring` occupies, with the non-associative variant Zeta lacks. (primary source)
+- **Richard D. Schafer — _An Introduction to Nonassociative Algebras_ (Academic Press, New York,
+  1966)** — the mathematical anchor **FriCAS itself declares** in the `++ Reference:` headers of
+  its non-associative categories. The checked anchor for the whole branch. (book)
+- **Nathan Jacobson — _Structure and Representations of Jordan Algebras_ (AMS, Providence,
+  1968)** — cited in FriCAS's `Magma` and `MagmaWithUnit` headers; why `Magma` is the root of the
+  multiplicative spine rather than `SemiGroup`. (book)
+- **I. L. Kantor & A. S. Solodovnikov — _Hypercomplex Numbers_ (Springer-Verlag Heidelberg,
+  1989, ISBN 0-387-96980-2)** — the Cayley–Dickson anchor `OctonionCategory` names in its own
+  `++ References:` header. Pairs with the doubling construction Zeta already runs. (book)
+- **Nicolas M. Thiéry et al. — SageMath's category-with-axiom framework**
+  (`src/sage/categories/category_with_axiom.py`) — **axioms as composable, commuting operators
+  on categories**: `Magmas().Associative()` is the category of semigroups. The cleanest existing
+  answer to Zeta's problem is one line from `src/sage/algebras/octonion_algebra.pyx`:
+  `MagmaticAlgebras(R.category()).Unital().WithBasis().FiniteDimensional()` — capabilities added,
+  `.Associative()` **deliberately withheld**, in the same expression. Laws are an orthogonal set,
+  not rungs on a chain. Two honest limits, both verified: axiom semantics are _"specified in the
+  documentation"_ (Sage's own words — asserted, not checked, then falsified by a sampled
+  `_test_associativity`); and **there is no `Alternative` axiom** in `all_axioms`, so 𝕆's positive
+  law is inexpressible there, while `NoZeroDivisors` **is** present, so the 𝕊 step has a name and
+  the 𝕆 step does not. (primary source)
+- **The GAP Group — categories vs. properties** (reference manual ch. 13 "Types of Objects",
+  ch. 35 "Magmas"; `lib/magma.gd`, `lib/magma.gi`, `lib/grp.gd`) — the capability/law split made
+  literal: `DeclareSynonym( "IsGroup", IsMagmaWithInverses and IsAssociative );`. A **category**
+  is fixed at creation and not computable (what it is made of); a **property** is computed and
+  discovered (what laws it satisfies). `IsAssociative` is a `DeclareProperty` whose installed
+  method enumerates all triples — the second independent system to compute associativity rather
+  than type it. (primary source)
+- **Wieb Bosma & John Cannon — "Programming with Algebraic Structures: Design of the Magma
+  Language" (ISSAC '94)**; **Bosma, Cannon & Playoust — "The Magma Algebra System I: The User
+  Language" (_J. Symbolic Computation_ 24, 1997, 235–265)** — design grounded in universal
+  algebra and category theory, with algebraic structure ("magma") as _the_ strong-typing
+  mechanism. How Magma represents laws is **UNKNOWN** here: the source is closed. (papers)
+- **Michael Monagan — Maple's `Domains` package** (early 1990s) — parametrized domains as tables
+  of operations, with an inclusion hierarchy (field ⊂ Euclidean domain ⊂ UFD ⊂ integral domain ⊂
+  ring). Named because it is the same lineage; the published hierarchy is the _commutative_ tower,
+  which never loses a law, so it offers no answer to this problem. (docs)
+
+**The contrast case, and the answer to the literal question.** Mathematica has no algebraic type
+hierarchy at all — term rewriting over expressions, where laws are rules that fire rather than
+properties a structure carries; the problem does not arise because there is nothing to attach the
+law to. And **pocket calculator CAS is genuinely too simple**: TI-89 / Voyage 200 and HP-50g do
+serious work (symbolic integration by Risch, Gröbner bases, Laplace transforms) but all of it over
+**polynomials and expressions over a field**, with no user-facing notion of an algebraic structure
+and therefore nothing that can lose a law. That is the honest finding, not a failed search — it is
+the reason to look one tier up, where the answer had been sitting since 1990.
+
+**Cross-reference:** `src/Core.Abstractions/IStarRing.cs` (_"law profile carried as documentation,
+not types"_ — the disclosure two mature CAS independently also make) and
+`src/Core.Abstractions/IRing.cs` (capability earned via subinterface so misuse is a compile error
+— the precedent the marker-interface proposal extends).

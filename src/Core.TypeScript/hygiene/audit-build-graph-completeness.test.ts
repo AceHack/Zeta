@@ -217,6 +217,13 @@ describe("the REAL repo graph is complete over the CI domain", () => {
     // Direction B, dangling job ids: the jobs are `type-check` and `prove`.
     expect(byId.get("lean:src/Core.Lean4")?.legs).toContain("lean-proof/type-check");
     expect(byId.get("tool:tla")?.legs).toContain("tlaps-proof/prove");
+    // The CSLib tower came OFF the UNCOVERED roster on 2026-09-11 and onto its own
+    // lane. Asserted both ways on purpose: the leg must be there, and the roster row
+    // must be gone. Either half alone can pass while the other is wrong -- a leg with
+    // a live roster row keeps the selector in full mode for no reason, and a removed
+    // row with no leg is a target nothing can ever select.
+    expect(byId.get("lean:src/Core.Lean4.Cslib")?.legs).toEqual(["lean-cslib/type-check"]);
+    expect(UNCOVERED_TARGETS.has("lean:src/Core.Lean4.Cslib")).toBe(false);
     // Direction A, under-reported coverage: lint-rust walks every Cargo.toml.
     const rust = graph.targets.filter((t) => t.id.startsWith("rust:"));
     expect(rust.length).toBeGreaterThan(30);

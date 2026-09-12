@@ -42,6 +42,13 @@
 // deliberate: a non-empty answer from a stale index is at worst incomplete and
 // you can see what you got; an EMPTY one is a confident claim of absence, which
 // is the exact shape of the original bug.
+//
+// THE INDEX IS NO LONGER COMMITTED (2026-09-11), so on a fresh clone the
+// default index dir is ABSENT and this CLI refuses with 3 until someone builds
+// one. That is the designed behaviour, not a regression: an absent index must
+// not read as an empty corpus. The git-native storage design is marked `toy`
+// (`TOY_GIT_NATIVE_INDEX_DIR`); the query semantics below are metered and
+// unchanged. See the header of `format.ts` for the split.
 
 import { readFileSync } from "node:fs";
 import { join, resolve } from "node:path";
@@ -49,7 +56,7 @@ import { spawnSync } from "node:child_process";
 
 import { analyzeQueryTerm } from "./tokenize.ts";
 import {
-  INDEX_DIR,
+  TOY_GIT_NATIVE_INDEX_DIR,
   MANIFEST_FILE,
   FILES_FILE,
   HIGH_DF_FILE,
@@ -435,7 +442,7 @@ export const USAGE = `usage: bun src/Core.TypeScript/search/inverted/query.ts <t
                  REFUSES on an empty result rather than claiming absence)
   --files        print paths only
   --limit <n>    max hits to print (default 50; 0 = all)
-  --index-dir <d>  read the index from <d> instead of ${INDEX_DIR}
+  --index-dir <d>  read the index from <d> instead of ${TOY_GIT_NATIVE_INDEX_DIR}
 
 exit: 0 matches | 1 no matches | 2 usage | 3 REFUSED (cannot answer)`;
 
@@ -459,7 +466,7 @@ export function main(argv: readonly string[]): number {
     return 2;
   }
   const repoRoot = resolve(import.meta.dir, "../../../..");
-  const indexDir = args.indexDir ? resolve(args.indexDir) : join(repoRoot, INDEX_DIR);
+  const indexDir = args.indexDir ? resolve(args.indexDir) : join(repoRoot, TOY_GIT_NATIVE_INDEX_DIR);
   if (readIfPresent(join(indexDir, MANIFEST_FILE)) === null) {
     process.stderr.write(
       `REFUSED: no index at ${indexDir}\n` +

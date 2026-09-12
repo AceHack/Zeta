@@ -174,6 +174,16 @@ export function collectJobs(
  *
  * Each entry is checked for rot by `auditUncoveredRoster`: a rostered target that
  * has since gained a leg, or that no longer exists, is a finding.
+ *
+ * THE ROSTER SHRANK ONCE, and that is what the rot check is for. `lean:src/Core.Lean4.Cslib`
+ * sat here from 2026-08-19 with the reason "Opt-in Mathlib-dependent library, deliberately
+ * off the main gate because the lake cache is multi-GB; lean-proof.yml builds
+ * src/Core.Lean4 only." The size claim was true of `.lake` (7.2 GB measured 2026-09-11)
+ * and false of the thing that actually has to be cached: `~/.cache/mathlib`, the
+ * compressed archive `lake exe cache get` regenerates it from, is 839 MB. So the library
+ * got `.github/workflows/lean-cslib.yml` and a real leg on 2026-09-11, and the row was
+ * removed HERE in the same change — `auditUncoveredRoster` would have failed the build
+ * otherwise, which is the mechanism reporting that the gap is closed.
  */
 export const UNCOVERED_TARGETS: ReadonlyMap<string, string> = new Map([
   [
@@ -185,11 +195,6 @@ export const UNCOVERED_TARGETS: ReadonlyMap<string, string> = new Map([
     "tool:alloy",
     "src/Core.Alloy appears only in codeql.yml, which does not run Alloy. No " +
       "analyzer leg exists (CHECKED 2026-08-19).",
-  ],
-  [
-    "lean:src/Core.Lean4.Cslib",
-    "Opt-in Mathlib-dependent library, deliberately off the main gate because the " +
-      "lake cache is multi-GB; lean-proof.yml builds src/Core.Lean4 only.",
   ],
 ]);
 

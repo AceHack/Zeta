@@ -236,16 +236,25 @@ jobs:
       # of the graph and would drift the moment a target is added. Consumers read
       # ONE key each:
       #
-      #   if: fromJSON(needs.path-filter.outputs.legs).gate_lint_fsharp != false
+      #   if: fromJSON(needs.path-filter.outputs.legs).gate_lint_fsharp != 'false'
       #
       # FAIL CLOSED, twice over, and neither guard is a convention a reader has to
       # remember:
       #   * `|| '{}'` here -- a `detect` that did not run, could not run, or emitted
       #     nothing yields an empty object.
-      #   * `!= false` there -- a leg that is absent from the object reads as `null`,
-      #     and `null != false` is TRUE, so the job RUNS. A new job, a typo, a graph
+      #   * `!= 'false'` there -- a leg that is absent from the object reads as `null`,
+      #     and `null != 'false'` is TRUE, so the job RUNS. A new job, a typo, a graph
       #     that lost a target: every one of them does the work rather than skipping
       #     it. Absence of a verdict is never absence of a check.
+      #
+      # THE STRING QUOTES ARE LOAD-BEARING AND THIS SHIPPED WRONG ONCE. The values in
+      # `legs` are the STRINGS "true"/"false", and the comparison is against `'false'`,
+      # because GitHub Actions compares different types by casting BOTH TO NUMBER --
+      # `null` and `false` both cast to 0, so the boolean form `!= false` evaluated
+      # `0 != 0` and SKIPPED the job. Measured on main pushes 2026-09-11, where `legs`
+      # is `{}` by design: `build-and-test`, `lint (semgrep)` and `test (TS hermetic)`
+      # -- three floor jobs -- all reported `skipped`. `ci/gate-leg-wiring.ts` now
+      # refuses the boolean form outright.
       #
       # This REPLACED the per-domain vector (`csharp`/`fsharp`/`go`/...) that gated
       # the five language lints. That vector was a hand-maintained path->domain map
@@ -274,8 +283,10 @@ jobs:
           # One block redirect rather than eight: shellcheck SC2129, and it is
           # also the honest shape, since these lines are one emission.
           # `legs={}` is the RUN-EVERYTHING value, not a missing one: every
-          # `fromJSON(...).<leg>` lookup against it is null, and `null != false`
-          # is true, so no consumer skips. Same invariant as `code=true` above --
+          # `fromJSON(...).<leg>` lookup against it is null, and `null != 'false'`
+          # is true, so no consumer skips. THIS IS THE PATH THAT BROKE: with the
+          # boolean form it was `null != false` -> `0 != 0` -> false, and every
+          # leg-gated job skipped on every push to main. Same invariant as `code=true`
           # path-filter is never the mechanism that hides a change from main-tip CI.
           {
             echo "code=true"
@@ -607,7 +618,7 @@ jobs:
     # largest floor job. The implication `leg => code` holds today (everything the
     # graph routes here falls through `HAS_CODE`'s deny-list), and `detect` now
     # REFUSES when it does not, rather than leaving it as an argument in a comment.
-    if: fromJSON(needs.path-filter.outputs.legs).gate_build_and_test != false
+    if: fromJSON(needs.path-filter.outputs.legs).gate_build_and_test != 'false'
     # ── THIS FLAG IS A CLASSIFICATION, NOT AN ACCOMMODATION. DO NOT "FIX" IT. ───────
     #
     # Settled 2026-08-19 by the maintainer (Aaron), verbatim:
@@ -972,10 +983,11 @@ jobs:
     # entirely.
     needs: [path-filter]
     # SELECTED FROM THE GRAPH, not from a hand-written path list. `legs` is
-    # `ace/build-graph.json`'s answer for this diff; `!= false` is the fail-closed
-    # half -- a leg the selector never emitted reads as `null`, and `null != false`
-    # is true, so an unknown job RUNS. See path-filter's `legs` output.
-    if: fromJSON(needs.path-filter.outputs.legs).gate_lint != false
+    # `ace/build-graph.json`'s answer for this diff, as STRINGS; `!= 'false'` is the
+    # fail-closed half -- a leg the selector never emitted reads as `null`, and
+    # `null != 'false'` is true, so an unknown job RUNS. The string form is load-bearing:
+    # `!= false` against booleans SKIPPED instead (see path-filter's `legs` output).
+    if: fromJSON(needs.path-filter.outputs.legs).gate_lint != 'false'
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -1065,10 +1077,11 @@ jobs:
 
     needs: [path-filter]
     # SELECTED FROM THE GRAPH, not from a hand-written path list. `legs` is
-    # `ace/build-graph.json`'s answer for this diff; `!= false` is the fail-closed
-    # half -- a leg the selector never emitted reads as `null`, and `null != false`
-    # is true, so an unknown job RUNS. See path-filter's `legs` output.
-    if: fromJSON(needs.path-filter.outputs.legs).gate_lint_semgrep_drift != false
+    # `ace/build-graph.json`'s answer for this diff, as STRINGS; `!= 'false'` is the
+    # fail-closed half -- a leg the selector never emitted reads as `null`, and
+    # `null != 'false'` is true, so an unknown job RUNS. The string form is load-bearing:
+    # `!= false` against booleans SKIPPED instead (see path-filter's `legs` output).
+    if: fromJSON(needs.path-filter.outputs.legs).gate_lint_semgrep_drift != 'false'
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -1138,10 +1151,11 @@ jobs:
 
     needs: [path-filter]
     # SELECTED FROM THE GRAPH, not from a hand-written path list. `legs` is
-    # `ace/build-graph.json`'s answer for this diff; `!= false` is the fail-closed
-    # half -- a leg the selector never emitted reads as `null`, and `null != false`
-    # is true, so an unknown job RUNS. See path-filter's `legs` output.
-    if: fromJSON(needs.path-filter.outputs.legs).gate_lint_yaml_k8s != false
+    # `ace/build-graph.json`'s answer for this diff, as STRINGS; `!= 'false'` is the
+    # fail-closed half -- a leg the selector never emitted reads as `null`, and
+    # `null != 'false'` is true, so an unknown job RUNS. The string form is load-bearing:
+    # `!= false` against booleans SKIPPED instead (see path-filter's `legs` output).
+    if: fromJSON(needs.path-filter.outputs.legs).gate_lint_yaml_k8s != 'false'
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -1354,10 +1368,11 @@ jobs:
 
     needs: [path-filter]
     # SELECTED FROM THE GRAPH, not from a hand-written path list. `legs` is
-    # `ace/build-graph.json`'s answer for this diff; `!= false` is the fail-closed
-    # half -- a leg the selector never emitted reads as `null`, and `null != false`
-    # is true, so an unknown job RUNS. See path-filter's `legs` output.
-    if: fromJSON(needs.path-filter.outputs.legs).gate_lint_shell != false
+    # `ace/build-graph.json`'s answer for this diff, as STRINGS; `!= 'false'` is the
+    # fail-closed half -- a leg the selector never emitted reads as `null`, and
+    # `null != 'false'` is true, so an unknown job RUNS. The string form is load-bearing:
+    # `!= false` against booleans SKIPPED instead (see path-filter's `legs` output).
+    if: fromJSON(needs.path-filter.outputs.legs).gate_lint_shell != 'false'
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -1516,10 +1531,11 @@ jobs:
 
     needs: [path-filter]
     # SELECTED FROM THE GRAPH, not from a hand-written path list. `legs` is
-    # `ace/build-graph.json`'s answer for this diff; `!= false` is the fail-closed
-    # half -- a leg the selector never emitted reads as `null`, and `null != false`
-    # is true, so an unknown job RUNS. See path-filter's `legs` output.
-    if: fromJSON(needs.path-filter.outputs.legs).gate_lint_bash_retirement_inventory != false
+    # `ace/build-graph.json`'s answer for this diff, as STRINGS; `!= 'false'` is the
+    # fail-closed half -- a leg the selector never emitted reads as `null`, and
+    # `null != 'false'` is true, so an unknown job RUNS. The string form is load-bearing:
+    # `!= false` against booleans SKIPPED instead (see path-filter's `legs` output).
+    if: fromJSON(needs.path-filter.outputs.legs).gate_lint_bash_retirement_inventory != 'false'
     steps:
       - name: Checkout
         id: checkout
@@ -2165,10 +2181,11 @@ jobs:
 
     needs: [path-filter]
     # SELECTED FROM THE GRAPH, not from a hand-written path list. `legs` is
-    # `ace/build-graph.json`'s answer for this diff; `!= false` is the fail-closed
-    # half -- a leg the selector never emitted reads as `null`, and `null != false`
-    # is true, so an unknown job RUNS. See path-filter's `legs` output.
-    if: fromJSON(needs.path-filter.outputs.legs).gate_lint_workflows != false
+    # `ace/build-graph.json`'s answer for this diff, as STRINGS; `!= 'false'` is the
+    # fail-closed half -- a leg the selector never emitted reads as `null`, and
+    # `null != 'false'` is true, so an unknown job RUNS. The string form is load-bearing:
+    # `!= false` against booleans SKIPPED instead (see path-filter's `legs` output).
+    if: fromJSON(needs.path-filter.outputs.legs).gate_lint_workflows != 'false'
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -2212,10 +2229,11 @@ jobs:
 
     needs: [path-filter]
     # SELECTED FROM THE GRAPH, not from a hand-written path list. `legs` is
-    # `ace/build-graph.json`'s answer for this diff; `!= false` is the fail-closed
-    # half -- a leg the selector never emitted reads as `null`, and `null != false`
-    # is true, so an unknown job RUNS. See path-filter's `legs` output.
-    if: fromJSON(needs.path-filter.outputs.legs).gate_lint_tick_history_order != false
+    # `ace/build-graph.json`'s answer for this diff, as STRINGS; `!= 'false'` is the
+    # fail-closed half -- a leg the selector never emitted reads as `null`, and
+    # `null != 'false'` is true, so an unknown job RUNS. The string form is load-bearing:
+    # `!= false` against booleans SKIPPED instead (see path-filter's `legs` output).
+    if: fromJSON(needs.path-filter.outputs.legs).gate_lint_tick_history_order != 'false'
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -2332,10 +2350,11 @@ jobs:
 
     needs: [path-filter]
     # SELECTED FROM THE GRAPH, not from a hand-written path list. `legs` is
-    # `ace/build-graph.json`'s answer for this diff; `!= false` is the fail-closed
-    # half -- a leg the selector never emitted reads as `null`, and `null != false`
-    # is true, so an unknown job RUNS. See path-filter's `legs` output.
-    if: fromJSON(needs.path-filter.outputs.legs).gate_lint_no_conflict_markers != false
+    # `ace/build-graph.json`'s answer for this diff, as STRINGS; `!= 'false'` is the
+    # fail-closed half -- a leg the selector never emitted reads as `null`, and
+    # `null != 'false'` is true, so an unknown job RUNS. The string form is load-bearing:
+    # `!= false` against booleans SKIPPED instead (see path-filter's `legs` output).
+    if: fromJSON(needs.path-filter.outputs.legs).gate_lint_no_conflict_markers != 'false'
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -2409,10 +2428,11 @@ jobs:
 
     needs: [path-filter]
     # SELECTED FROM THE GRAPH, not from a hand-written path list. `legs` is
-    # `ace/build-graph.json`'s answer for this diff; `!= false` is the fail-closed
-    # half -- a leg the selector never emitted reads as `null`, and `null != false`
-    # is true, so an unknown job RUNS. See path-filter's `legs` output.
-    if: fromJSON(needs.path-filter.outputs.legs).gate_lint_archive_header_section33 != false
+    # `ace/build-graph.json`'s answer for this diff, as STRINGS; `!= 'false'` is the
+    # fail-closed half -- a leg the selector never emitted reads as `null`, and
+    # `null != 'false'` is true, so an unknown job RUNS. The string form is load-bearing:
+    # `!= false` against booleans SKIPPED instead (see path-filter's `legs` output).
+    if: fromJSON(needs.path-filter.outputs.legs).gate_lint_archive_header_section33 != 'false'
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -2483,10 +2503,11 @@ jobs:
 
     needs: [path-filter]
     # SELECTED FROM THE GRAPH, not from a hand-written path list. `legs` is
-    # `ace/build-graph.json`'s answer for this diff; `!= false` is the fail-closed
-    # half -- a leg the selector never emitted reads as `null`, and `null != false`
-    # is true, so an unknown job RUNS. See path-filter's `legs` output.
-    if: fromJSON(needs.path-filter.outputs.legs).gate_lint_section_33_migration_xrefs != false
+    # `ace/build-graph.json`'s answer for this diff, as STRINGS; `!= 'false'` is the
+    # fail-closed half -- a leg the selector never emitted reads as `null`, and
+    # `null != 'false'` is true, so an unknown job RUNS. The string form is load-bearing:
+    # `!= false` against booleans SKIPPED instead (see path-filter's `legs` output).
+    if: fromJSON(needs.path-filter.outputs.legs).gate_lint_section_33_migration_xrefs != 'false'
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -2569,10 +2590,11 @@ jobs:
 
     needs: [path-filter]
     # SELECTED FROM THE GRAPH, not from a hand-written path list. `legs` is
-    # `ace/build-graph.json`'s answer for this diff; `!= false` is the fail-closed
-    # half -- a leg the selector never emitted reads as `null`, and `null != false`
-    # is true, so an unknown job RUNS. See path-filter's `legs` output.
-    if: fromJSON(needs.path-filter.outputs.legs).gate_lint_tick_shard_relative_paths != false
+    # `ace/build-graph.json`'s answer for this diff, as STRINGS; `!= 'false'` is the
+    # fail-closed half -- a leg the selector never emitted reads as `null`, and
+    # `null != 'false'` is true, so an unknown job RUNS. The string form is load-bearing:
+    # `!= false` against booleans SKIPPED instead (see path-filter's `legs` output).
+    if: fromJSON(needs.path-filter.outputs.legs).gate_lint_tick_shard_relative_paths != 'false'
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -2630,10 +2652,11 @@ jobs:
 
     needs: [path-filter]
     # SELECTED FROM THE GRAPH, not from a hand-written path list. `legs` is
-    # `ace/build-graph.json`'s answer for this diff; `!= false` is the fail-closed
-    # half -- a leg the selector never emitted reads as `null`, and `null != false`
-    # is true, so an unknown job RUNS. See path-filter's `legs` output.
-    if: fromJSON(needs.path-filter.outputs.legs).gate_build_graph_completeness != false
+    # `ace/build-graph.json`'s answer for this diff, as STRINGS; `!= 'false'` is the
+    # fail-closed half -- a leg the selector never emitted reads as `null`, and
+    # `null != 'false'` is true, so an unknown job RUNS. The string form is load-bearing:
+    # `!= false` against booleans SKIPPED instead (see path-filter's `legs` output).
+    if: fromJSON(needs.path-filter.outputs.legs).gate_build_graph_completeness != 'false'
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -2755,10 +2778,11 @@ jobs:
 
     needs: [path-filter]
     # SELECTED FROM THE GRAPH, not from a hand-written path list. `legs` is
-    # `ace/build-graph.json`'s answer for this diff; `!= false` is the fail-closed
-    # half -- a leg the selector never emitted reads as `null`, and `null != false`
-    # is true, so an unknown job RUNS. See path-filter's `legs` output.
-    if: fromJSON(needs.path-filter.outputs.legs).gate_lint_structural_hygiene != false
+    # `ace/build-graph.json`'s answer for this diff, as STRINGS; `!= 'false'` is the
+    # fail-closed half -- a leg the selector never emitted reads as `null`, and
+    # `null != 'false'` is true, so an unknown job RUNS. The string form is load-bearing:
+    # `!= false` against booleans SKIPPED instead (see path-filter's `legs` output).
+    if: fromJSON(needs.path-filter.outputs.legs).gate_lint_structural_hygiene != 'false'
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -2970,10 +2994,11 @@ jobs:
 
     needs: [path-filter]
     # SELECTED FROM THE GRAPH, not from a hand-written path list. `legs` is
-    # `ace/build-graph.json`'s answer for this diff; `!= false` is the fail-closed
-    # half -- a leg the selector never emitted reads as `null`, and `null != false`
-    # is true, so an unknown job RUNS. See path-filter's `legs` output.
-    if: fromJSON(needs.path-filter.outputs.legs).gate_lint_no_empty_dirs != false
+    # `ace/build-graph.json`'s answer for this diff, as STRINGS; `!= 'false'` is the
+    # fail-closed half -- a leg the selector never emitted reads as `null`, and
+    # `null != 'false'` is true, so an unknown job RUNS. The string form is load-bearing:
+    # `!= false` against booleans SKIPPED instead (see path-filter's `legs` output).
+    if: fromJSON(needs.path-filter.outputs.legs).gate_lint_no_empty_dirs != 'false'
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -3051,10 +3076,11 @@ jobs:
 
     needs: [path-filter]
     # SELECTED FROM THE GRAPH, not from a hand-written path list. `legs` is
-    # `ace/build-graph.json`'s answer for this diff; `!= false` is the fail-closed
-    # half -- a leg the selector never emitted reads as `null`, and `null != false`
-    # is true, so an unknown job RUNS. See path-filter's `legs` output.
-    if: fromJSON(needs.path-filter.outputs.legs).gate_lint_markdown != false
+    # `ace/build-graph.json`'s answer for this diff, as STRINGS; `!= 'false'` is the
+    # fail-closed half -- a leg the selector never emitted reads as `null`, and
+    # `null != 'false'` is true, so an unknown job RUNS. The string form is load-bearing:
+    # `!= false` against booleans SKIPPED instead (see path-filter's `legs` output).
+    if: fromJSON(needs.path-filter.outputs.legs).gate_lint_markdown != 'false'
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -3119,10 +3145,11 @@ jobs:
 
     needs: [path-filter]
     # SELECTED FROM THE GRAPH, not from a hand-written path list. `legs` is
-    # `ace/build-graph.json`'s answer for this diff; `!= false` is the fail-closed
-    # half -- a leg the selector never emitted reads as `null`, and `null != false`
-    # is true, so an unknown job RUNS. See path-filter's `legs` output.
-    if: fromJSON(needs.path-filter.outputs.legs).gate_lint_typescript != false
+    # `ace/build-graph.json`'s answer for this diff, as STRINGS; `!= 'false'` is the
+    # fail-closed half -- a leg the selector never emitted reads as `null`, and
+    # `null != 'false'` is true, so an unknown job RUNS. The string form is load-bearing:
+    # `!= false` against booleans SKIPPED instead (see path-filter's `legs` output).
+    if: fromJSON(needs.path-filter.outputs.legs).gate_lint_typescript != 'false'
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -3203,10 +3230,11 @@ jobs:
     runs-on: ubuntu-24.04
     needs: [path-filter]
     # SELECTED FROM THE GRAPH, not from a hand-written path list. `legs` is
-    # `ace/build-graph.json`'s answer for this diff; `!= false` is the fail-closed
-    # half -- a leg the selector never emitted reads as `null`, and `null != false`
-    # is true, so an unknown job RUNS. See path-filter's `legs` output.
-    if: fromJSON(needs.path-filter.outputs.legs).gate_lint_twitch_ai != false
+    # `ace/build-graph.json`'s answer for this diff, as STRINGS; `!= 'false'` is the
+    # fail-closed half -- a leg the selector never emitted reads as `null`, and
+    # `null != 'false'` is true, so an unknown job RUNS. The string form is load-bearing:
+    # `!= false` against booleans SKIPPED instead (see path-filter's `legs` output).
+    if: fromJSON(needs.path-filter.outputs.legs).gate_lint_twitch_ai != 'false'
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -3257,10 +3285,11 @@ jobs:
     runs-on: ubuntu-24.04
     needs: [path-filter]
     # SELECTED FROM THE GRAPH, not from a hand-written path list. `legs` is
-    # `ace/build-graph.json`'s answer for this diff; `!= false` is the fail-closed
-    # half -- a leg the selector never emitted reads as `null`, and `null != false`
-    # is true, so an unknown job RUNS. See path-filter's `legs` output.
-    if: fromJSON(needs.path-filter.outputs.legs).gate_lint_identity_dla != false
+    # `ace/build-graph.json`'s answer for this diff, as STRINGS; `!= 'false'` is the
+    # fail-closed half -- a leg the selector never emitted reads as `null`, and
+    # `null != 'false'` is true, so an unknown job RUNS. The string form is load-bearing:
+    # `!= false` against booleans SKIPPED instead (see path-filter's `legs` output).
+    if: fromJSON(needs.path-filter.outputs.legs).gate_lint_identity_dla != 'false'
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -3325,10 +3354,11 @@ jobs:
     runs-on: ubuntu-24.04
     needs: [path-filter]
     # SELECTED FROM THE GRAPH, not from a hand-written path list. `legs` is
-    # `ace/build-graph.json`'s answer for this diff; `!= false` is the fail-closed
-    # half -- a leg the selector never emitted reads as `null`, and `null != false`
-    # is true, so an unknown job RUNS. See path-filter's `legs` output.
-    if: fromJSON(needs.path-filter.outputs.legs).gate_lint_website != false
+    # `ace/build-graph.json`'s answer for this diff, as STRINGS; `!= 'false'` is the
+    # fail-closed half -- a leg the selector never emitted reads as `null`, and
+    # `null != 'false'` is true, so an unknown job RUNS. The string form is load-bearing:
+    # `!= false` against booleans SKIPPED instead (see path-filter's `legs` output).
+    if: fromJSON(needs.path-filter.outputs.legs).gate_lint_website != 'false'
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -3391,8 +3421,8 @@ jobs:
     # `ci/path-domains.ts`. The graph states the same thing and is the authority
     # `lint (build-graph completeness)` already checks, so the map was a second copy.
     # Note the polarity flip: `== 'true'` failed OPEN on an unknown value (skip),
-    # `!= false` fails CLOSED (run).
-    if: fromJSON(needs.path-filter.outputs.legs).gate_lint_fsharp != false
+    # `!= 'false'` fails CLOSED (run).
+    if: fromJSON(needs.path-filter.outputs.legs).gate_lint_fsharp != 'false'
     runs-on: ubuntu-24.04
     steps:
       - name: Checkout
@@ -3480,8 +3510,8 @@ jobs:
     # `ci/path-domains.ts`. The graph states the same thing and is the authority
     # `lint (build-graph completeness)` already checks, so the map was a second copy.
     # Note the polarity flip: `== 'true'` failed OPEN on an unknown value (skip),
-    # `!= false` fails CLOSED (run).
-    if: fromJSON(needs.path-filter.outputs.legs).gate_lint_csharp != false
+    # `!= 'false'` fails CLOSED (run).
+    if: fromJSON(needs.path-filter.outputs.legs).gate_lint_csharp != 'false'
     runs-on: ubuntu-24.04
     steps:
       - name: Checkout
@@ -3568,8 +3598,8 @@ jobs:
     # `ci/path-domains.ts`. The graph states the same thing and is the authority
     # `lint (build-graph completeness)` already checks, so the map was a second copy.
     # Note the polarity flip: `== 'true'` failed OPEN on an unknown value (skip),
-    # `!= false` fails CLOSED (run).
-    if: fromJSON(needs.path-filter.outputs.legs).gate_lint_go != false
+    # `!= 'false'` fails CLOSED (run).
+    if: fromJSON(needs.path-filter.outputs.legs).gate_lint_go != 'false'
     runs-on: ubuntu-24.04
     steps:
       - name: Checkout
@@ -3656,8 +3686,8 @@ jobs:
     # `ci/path-domains.ts`. The graph states the same thing and is the authority
     # `lint (build-graph completeness)` already checks, so the map was a second copy.
     # Note the polarity flip: `== 'true'` failed OPEN on an unknown value (skip),
-    # `!= false` fails CLOSED (run).
-    if: fromJSON(needs.path-filter.outputs.legs).gate_lint_python != false
+    # `!= 'false'` fails CLOSED (run).
+    if: fromJSON(needs.path-filter.outputs.legs).gate_lint_python != 'false'
     runs-on: ubuntu-24.04
     steps:
       - name: Checkout
@@ -3745,8 +3775,8 @@ jobs:
     # `ci/path-domains.ts`. The graph states the same thing and is the authority
     # `lint (build-graph completeness)` already checks, so the map was a second copy.
     # Note the polarity flip: `== 'true'` failed OPEN on an unknown value (skip),
-    # `!= false` fails CLOSED (run).
-    if: fromJSON(needs.path-filter.outputs.legs).gate_lint_rust != false
+    # `!= 'false'` fails CLOSED (run).
+    if: fromJSON(needs.path-filter.outputs.legs).gate_lint_rust != 'false'
     runs-on: ubuntu-24.04
     steps:
       - name: Checkout
@@ -4119,10 +4149,11 @@ jobs:
 
     needs: [path-filter]
     # SELECTED FROM THE GRAPH, not from a hand-written path list. `legs` is
-    # `ace/build-graph.json`'s answer for this diff; `!= false` is the fail-closed
-    # half -- a leg the selector never emitted reads as `null`, and `null != false`
-    # is true, so an unknown job RUNS. See path-filter's `legs` output.
-    if: fromJSON(needs.path-filter.outputs.legs).gate_test_typescript_hermetic != false
+    # `ace/build-graph.json`'s answer for this diff, as STRINGS; `!= 'false'` is the
+    # fail-closed half -- a leg the selector never emitted reads as `null`, and
+    # `null != 'false'` is true, so an unknown job RUNS. The string form is load-bearing:
+    # `!= false` against booleans SKIPPED instead (see path-filter's `legs` output).
+    if: fromJSON(needs.path-filter.outputs.legs).gate_test_typescript_hermetic != 'false'
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -4224,10 +4255,11 @@ jobs:
 
     needs: [path-filter]
     # SELECTED FROM THE GRAPH, not from a hand-written path list. `legs` is
-    # `ace/build-graph.json`'s answer for this diff; `!= false` is the fail-closed
-    # half -- a leg the selector never emitted reads as `null`, and `null != false`
-    # is true, so an unknown job RUNS. See path-filter's `legs` output.
-    if: fromJSON(needs.path-filter.outputs.legs).gate_test_typescript_environment != false
+    # `ace/build-graph.json`'s answer for this diff, as STRINGS; `!= 'false'` is the
+    # fail-closed half -- a leg the selector never emitted reads as `null`, and
+    # `null != 'false'` is true, so an unknown job RUNS. The string form is load-bearing:
+    # `!= false` against booleans SKIPPED instead (see path-filter's `legs` output).
+    if: fromJSON(needs.path-filter.outputs.legs).gate_test_typescript_environment != 'false'
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1

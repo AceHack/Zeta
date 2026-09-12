@@ -1,0 +1,12 @@
+{
+  "pr_number": 17316,
+  "archive_path": "docs/history/pr-reviews/2026/09/12/PR-17316-research-the-belief-algebra-is-relative-grounded-in-disjoint-histories-a-travele.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-12T03:18:37.290Z",
+  "schema_version": "v1",
+  "commit_sha": "7e9d7535065ca9f5235e93ea351b6749ec23c79b",
+  "title": "research: the belief algebra is RELATIVE — grounded in disjoint histories a traveler chooses to trust",
+  "state": "MERGED",
+  "merged_at": "2026-09-12T03:17:50Z",
+  "head_ref": "shadow/algebra-is-relative-to-trusted-histories"
+}

@@ -214,6 +214,11 @@ node_modules
 drop/
 !db/drop/
 db/drop/*
+
+# Reverse-index jsonl. Local/CI cache only — never commit.
+# Durable form is GroupCommitDiskDeltaLog (src/Core/ReverseIndex.fs).
+# #16919 deleted 59.7 MB from main; do not put it back.
+db/search-index/
 !db/drop/.gitignore
 !db/drop/README.md
 
@@ -416,3 +421,15 @@ test-results/
 /docs/research/*character*/**/*.mp4
 /docs/research/*character*/**/*.mov
 /docs/research/*character*/**/*.zip
+
+# Git-native inverted search index — DERIVED, a pure function of a git rev, and
+# the one artifact here that must never be committed again. Deleted in PR #16919
+# after 8 commits deposited 280 distinct blobs — 409.67 MB raw, 25.03 MB on disk
+# (measured 2026-09-11) — in 16 days. A derived artifact in a full-history repo
+# costs size x recalculations FOREVER, and `git gc` reclaims none of it while a
+# commit still reaches it. It stopped growing only because the cadence workflow
+# was disabled; `build.ts` still defaults here, so without this line one
+# `git add -A` re-lands the whole tree. Regenerate instead (~30 s):
+#   bun src/Core.TypeScript/search/inverted/build.ts --rev origin/main --out <dir>
+# The storage design is marked `toy` — see src/Core.TypeScript/search/inverted/format.ts.
+db/search-index/

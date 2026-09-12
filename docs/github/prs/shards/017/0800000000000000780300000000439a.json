@@ -1,0 +1,12 @@
+{
+  "pr_number": 17306,
+  "archive_path": "docs/history/pr-reviews/2026/09/12/PR-17306-chore-search-gitignore-the-derived-index-and-mark-git-native-storage-a-toy.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-12T03:38:08.648Z",
+  "schema_version": "v1",
+  "commit_sha": "d3defdc484fa71e7243accf9e8dafd83253cd121",
+  "title": "chore(search): gitignore the derived index and mark git-native storage a toy",
+  "state": "MERGED",
+  "merged_at": "2026-09-12T03:37:13Z",
+  "head_ref": "shadow/reverse-index-out-of-git"
+}
