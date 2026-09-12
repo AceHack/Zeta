@@ -1,0 +1,12 @@
+{
+  "pr_number": 17321,
+  "archive_path": "docs/history/pr-reviews/2026/09/12/PR-17321-feat-ci-build-the-cslib-tower-in-ci-and-pin-its-floating-cslib-rev.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-12T03:29:30.479Z",
+  "schema_version": "v1",
+  "commit_sha": "a4547dcf8a38fbf94125108914c95af02f581022",
+  "title": "feat(ci): build the CSLib tower in CI and pin its floating cslib rev",
+  "state": "MERGED",
+  "merged_at": "2026-09-12T03:28:45Z",
+  "head_ref": "shadow/cslib-covered-not-opt-in"
+}

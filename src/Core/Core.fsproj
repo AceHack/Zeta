@@ -25,6 +25,8 @@
     <Compile Include="PolicyKind.fs" />
     <Compile Include="RetryPolicy.fs" />
     <Compile Include="CayleyDickson.fs" />
+    <Compile Include="LawWitness.fs" />
+    <Compile Include="LawRung.fs" />
     <Compile Include="AlgebraInterfaces.fs" />
     <Compile Include="SpecializationCache.fs" />
     <Compile Include="Cl3.fs" />
@@ -299,6 +301,7 @@
     <Compile Include="CatalogStatistics.fs" />
     <Compile Include="Plan.fs" />
     <Compile Include="Incremental.fs" />
+    <Compile Include="ReverseIndex.fs" />
     <Compile Include="Dsl.fs" />
     <Compile Include="Vision.fs" />
     <Compile Include="PredictionInference.fs" />

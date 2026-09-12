@@ -1,0 +1,14 @@
+{
+  "at": "2026-09-11T14:05:00.000Z",
+  "by": "shadow",
+  "claim": "0fa528918532d313036cf3c76bfdd891",
+  "hypothesis": "Calling process.stdin.resume() in a spawned child keeps that child alive after the parent exits.",
+  "id": "0890b371998ee7b3774b9412d5d8ec57",
+  "refutedBy": "The child is spawned with stdio: \"ignore\", so its stdin IS /dev/null. resume() starts a read, the read returns EOF immediately, the stream ends, and the ref it was supposed to hold is released in the same tick. The handle exists, so the call succeeds -- it just holds nothing.",
+  "score": {
+    "falseChance": 0.97,
+    "trueChance": 0
+  },
+  "surface": "src/Core.TypeScript/child-floor -- detached child lifetime",
+  "witness": "A child spawned with stdio: \"ignore\" and process.stdin.resume() as its only work exits immediately; the same child with an unref'd interval or an open pipe does not."
+}

@@ -1077,16 +1077,29 @@ function deriveLeanTargets(root: string): readonly BuildTarget[] {
       kind: "lean",
       sources: [`${rel}/**`],
       dependsOn: [],
-      // Core.Lean4.Cslib is explicitly opt-in and not on the main gate; it is
-      // rostered as UNCOVERED in `hygiene/audit-build-graph-completeness.ts`.
+      // ONE LANE PER TOWER, because the two towers share no olean cache at all:
+      // src/Core.Lean4 is leanprover/lean4:v4.30.0-rc1 (Mathlib 0c154d67) and
+      // src/Core.Lean4.Cslib is v4.32.0-rc1 (Mathlib 360da6fa). Folding them into
+      // one workflow would make each pay for a restore it cannot use.
+      //
+      // Core.Lean4.Cslib carried `legs: []` and an UNCOVERED roster row until
+      // 2026-09-11 — nothing selected it and nothing built it. `lean-cslib.yml`
+      // now does, so the leg is real and the roster row is gone; the roster is
+      // checked in both directions, so a stale entry here would have failed.
       //
       // The job id was WRONG until 2026-08-19: `lean-proof.yml` declares its job
       // as `type-check`, not `build`, so `lean-proof/build` named nothing. A
       // dangling leg can never be selected, which means a wired graph would have
       // skipped the Lean proof on every Lean change while direction A counted
       // the target as covered. Found by
-      // `hygiene/audit-build-graph-completeness.ts` direction B.
-      legs: rel === "src/Core.Lean4" ? ["lean-proof/type-check"] : [],
+      // `hygiene/audit-build-graph-completeness.ts` direction B. Both ids below
+      // are the workflows' own job ids, and direction B re-checks that on every run.
+      legs:
+        rel === "src/Core.Lean4"
+          ? ["lean-proof/type-check"]
+          : rel === "src/Core.Lean4.Cslib"
+            ? ["lean-cslib/type-check"]
+            : [],
       origin: "derived",
       requiredQuorum: PLACEHOLDER_QUORUM,
     });

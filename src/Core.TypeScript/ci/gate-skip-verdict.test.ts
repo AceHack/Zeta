@@ -58,7 +58,10 @@ describe("the parse is against the real gate.yml, and it is not empty", () => {
     // What makes it safe is not this file: it is that the condition is the graph's
     // own verdict, and that `detect` refuses when the leg and `code` disagree.
     expect(ifs.get("build-and-test")).toBe(
-      "fromJSON(needs.path-filter.outputs.legs).gate_build_and_test != false",
+      // STRING form, not boolean: `!= false` compared `null` and `false` as numbers
+      // (both cast to 0), so an ABSENT leg evaluated `0 != 0` and the job SKIPPED --
+      // measured on main, where three floor jobs reported `skipped` on every push.
+      "fromJSON(needs.path-filter.outputs.legs).gate_build_and_test != 'false'",
     );
     // Not job-level: `path-filter` has step-level `if:` in abundance and no job-level
     // one, and `cross-verify` has neither. Reading a step's would hand a job a licence

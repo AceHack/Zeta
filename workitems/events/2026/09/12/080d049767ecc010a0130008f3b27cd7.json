@@ -1,0 +1,14 @@
+{
+  "id": "080d049767ecc010a0130008f3b27cd7",
+  "at": "2026-09-12T00:03:20.088Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M29ESZCQ087G0R001SM29DQ",
+    "type": "task",
+    "title": "Reverse indexes are IncrementalJoin views on the host log, not git blobs",
+    "slug": "reverse-indexes-are-incrementaljoin-views-on-the-host-log-no",
+    "priority": "P1",
+    "filename": "081M29ESZCQ087G0R001SM29DQ-reverse-indexes-are-incrementaljoin-views-on-the-host-log-no.md"
+  }
+}

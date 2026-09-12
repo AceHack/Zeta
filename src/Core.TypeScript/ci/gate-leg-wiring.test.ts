@@ -8,7 +8,8 @@
 import { expect, test, describe } from "bun:test";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
-import { audit, gateYmlJobIds, selectorsIn, selectorFor, NOT_GATED } from "./gate-leg-wiring.ts";
+import { audit, gateYmlJobIds, selectorsIn, selectorFor, selectorLines, NOT_GATED } from "./gate-leg-wiring.ts";
+import { renderLegsJson } from "./affected-legs.ts";
 
 const REPO_ROOT = join(import.meta.dir, "..", "..", "..");
 const YML = readFileSync(join(REPO_ROOT, ".github/workflows/gate.yml"), "utf-8");
@@ -97,5 +98,59 @@ describe("the exemption roster", () => {
 
   test("it is SMALL — the roster is the only place this audit can be weakened", () => {
     expect(NOT_GATED.length).toBeLessThanOrEqual(4);
+  });
+});
+
+describe("the COMPARISON is the string form — the boolean one silently skips", () => {
+  // THE DEFECT THIS CLOSES, and it shipped to main.
+  //
+  // `fromJSON(...).some_leg != false` reads correctly in English. GitHub Actions
+  // compares different types by casting BOTH TO NUMBER: `null` -> 0 and `false` -> 0,
+  // so an ABSENT leg evaluates `0 != 0` -> false and the job SKIPS. That is the exact
+  // inverse of the fail-closed behaviour the expression was written to express.
+  //
+  // Measured on main pushes 2026-09-11, where `legs` is `{}` BY DESIGN (the non-PR
+  // fast path's run-everything value): `build-and-test`, `lint (semgrep)` and
+  // `test (TS hermetic)` -- three jobs in the uncompensatable floor -- all reported
+  // `skipped`. Nothing failed. Nothing was loud. The gate simply stopped covering the
+  // tree while continuing to report success, which is this repo's worst class.
+  test("no selector in gate.yml uses the boolean comparison", () => {
+    expect(audit(YML, GRAPH).filter((f) => f.kind === "boolean-comparison")).toEqual([]);
+  });
+
+  test("every selector uses `!= 'false'` against the string values", () => {
+    const lines = selectorLines(YML);
+    expect(lines.length).toBeGreaterThan(20);
+    for (const { line } of lines) expect(line).toContain("!= 'false'");
+  });
+
+  test("MUTANT: reintroducing `!= false` is refused, and the finding names the job", () => {
+    const mutant = YML.replace(selectorFor("gate_lint_markdown"), `${"fromJSON(needs.path-filter.outputs.legs).gate_lint_markdown"} != false`);
+    expect(mutant).not.toBe(YML);
+    const f = audit(mutant, GRAPH).find((x) => x.kind === "boolean-comparison");
+    expect(f?.job).toBe("lint-markdown");
+  });
+
+  test("a COMMENT mentioning the broken form is documentation, not a selector", () => {
+    // gate.yml deliberately explains the bug in prose, in several places. An audit that
+    // refused prose would be unwritable alongside its own explanation — and the file
+    // currently carries 23 such mentions.
+    expect(YML).toContain("!= false");
+    expect(audit(YML, GRAPH).filter((f) => f.kind === "boolean-comparison")).toEqual([]);
+  });
+
+  test("THE EMITTED VALUES ARE STRINGS — the comparison is only safe against those", () => {
+    // The two halves have to agree or the fix is half-applied: string comparison against
+    // boolean values would make a `false` leg read as `false != 'false'` -> 0 != NaN ->
+    // TRUE, and every skipped job would start running. Safe, but the selection is gone.
+    const legs = JSON.parse(
+      renderLegsJson({ mode: "selective", legs: ["gate/lint-markdown"] }, [
+        "gate/lint-markdown",
+        "gate/lint-typescript",
+      ]).slice("legs=".length),
+    ) as Record<string, unknown>;
+    expect(legs["gate_lint_markdown"]).toBe("true");
+    expect(legs["gate_lint_typescript"]).toBe("false");
+    for (const v of Object.values(legs)) expect(typeof v).toBe("string");
   });
 });

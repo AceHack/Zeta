@@ -47,11 +47,39 @@ open Zeta.Core.Abstractions
 ///      representation). E8: roots and algebra metered; split
 ///      Chevalley root groups have multiply (`E8ChevalleyGroup`);
 ///      compact real Lie group is still a Killing-form substitute.
+///   5. **Not Belnap's FOUR** — the SECOND four-element trap in this
+///      neighbourhood, and the reason this file gained a bilattice
+///      section. A `(trueChance, falseChance)` pair whose legs float
+///      independently is the interlaced bilattice `[0,1] ⊙ [0,1]`
+///      (Ginsberg 1988; Fitting 1991; Avron 1996), whose four extreme
+///      points are Belnap's FOUR `{neither, true, false, both}`.
+///      **FOUR ≇ C₄.** Both carriers have four elements — which is the
+///      count test, and the count test decides nothing. The invariant
+///      that separates them: the compass generator `rotateI` has
+///      **order 4** and is fixed-point-free; FOUR's negation (coordinate
+///      swap `¬(t,f) = (f,t)`) is an **involution** — order 2, with two
+///      fixed points (`neither`, `both`) — and FOUR carries **two**
+///      interlaced orders (truth `≤_t`, knowledge `≤_k`) where C₄
+///      carries a group law and no order at all. Exhaustively checked
+///      here: no bijection `Phase → Belnap` intertwines `rotateI` with
+///      the bilattice negation (`compassNegationIntertwinerExists`,
+///      24 candidates, all refuted). So a belief pair is **not** the
+///      four-corner compass, and the compass is **not** a truth value.
 ///
 /// Anchors (Beacon): W. K. Clifford 1878; Lounesto 2001 §3 (signature vs
 /// involutions); Cayley–Dickson doubling (`CayleyDickson.fs`);
 /// Atiyah–Bott–Shapiro periodicity (`CliffordPeriodicity.fs`);
-/// Joyal–Street–Verity 1996 (the trace that consumes Negate).
+/// Joyal–Street–Verity 1996 (the trace that consumes Negate);
+/// N. D. Belnap 1977 (*A Useful Four-Valued Logic*); M. L. Ginsberg 1988
+/// (bilattices); M. Fitting 1991 (bilattices and the semantics of logic
+/// programming); A. Avron 1996 (every bounded interlaced bilattice is
+/// `L₁ ⊙ L₂` — the representation theorem that makes §5 an
+/// identification rather than a resemblance).
+///
+/// Satellite: `docs/research/2026-09-11-the-belief-pair-as-a-weight-for-the-
+/// universal-tensor-bilattice-boole-slack-and-the-typed-regulariser-lumen.md`
+/// §4 (Lumen; PR #17309) — where the identification is derived and where
+/// the guard above was first written down.
 [<RequireQualifiedAccess>]
 module FourCornerC4 =
 
@@ -407,6 +435,218 @@ module FourCornerC4 =
         match r with
         | Error _ -> true
         | Ok _ -> false
+
+    // ── The SECOND four-element trap: Belnap's FOUR is NOT C₄ ─────────
+    // A belief pair `(trueChance, falseChance)` with independently
+    // floating legs is the interlaced bilattice `[0,1] ⊙ [0,1]`; its four
+    // extreme points are Belnap's FOUR. Four elements is a COUNT, and the
+    // count is shared with C₄, the Klein group, `{0,1}²` and M₂ — so the
+    // count identifies nothing (`numerology-vs-number-theory`). The
+    // structures below exist so the separating invariants are executable:
+    // a unary map's ORDER, its FIXED POINTS, and the exhaustive absence of
+    // an intertwining bijection. This file already carried one standing
+    // numerology warning (2 × occupancy-√2 vs 2√2, above); this is the
+    // second, and it is a different trap in the same neighbourhood.
+    //
+    // Nothing here claims FourCorner IS a bilattice. FourCorner is an I/O
+    // record; FOUR is a truth-value lattice. The section is a guard, not
+    // an identification — the same register as `toCl3Vector` above, which
+    // exists to be WRONG in a checkable way.
+
+    /// Belnap's FOUR — the four extreme points of `[0,1] ⊙ [0,1]`, read as
+    /// `(trueChance, falseChance)` ∈ {0,1}². `Neither` = told nothing
+    /// (gap); `Both` = told both (glut). Belnap 1977.
+    [<RequireQualifiedAccess>]
+    type Belnap =
+        /// ⊥_k — `(0,0)`. No evidence either way.
+        | Neither
+        /// `(1,0)`. Told true only.
+        | True
+        /// `(0,1)`. Told false only.
+        | False
+        /// ⊤_k — `(1,1)`. Told both: a glut, retained rather than resolved.
+        | Both
+
+    /// The four corners, in knowledge-ascending presentation order.
+    let allBelnap = [ Belnap.Neither; Belnap.True; Belnap.False; Belnap.Both ]
+
+    /// `(trueChance, falseChance)` coordinates. The whole identification
+    /// lives in these two independently-floating legs.
+    let belnapPair =
+        function
+        | Belnap.Neither -> 0, 0
+        | Belnap.True -> 1, 0
+        | Belnap.False -> 0, 1
+        | Belnap.Both -> 1, 1
+
+    let private ofPair (t: int, f: int) =
+        match t, f with
+        | 0, 0 -> Belnap.Neither
+        | 1, 0 -> Belnap.True
+        | 0, 1 -> Belnap.False
+        | _ -> Belnap.Both
+
+    /// **Bilattice negation — coordinate swap.** `≤_t`-antitone,
+    /// `≤_k`-MONOTONE (it moves no information), and an **involution**:
+    /// `¬∘¬ = id`. That order-2 fact is the invariant that refutes C₄.
+    let belnapNegate (b: Belnap) : Belnap =
+        let t, f = belnapPair b
+        ofPair (f, t)
+
+    /// Truth order `≤_t`: more support, less refutation.
+    let belnapLeqT (a: Belnap) (b: Belnap) : bool =
+        let ta, fa = belnapPair a
+        let tb, fb = belnapPair b
+        ta <= tb && fa >= fb
+
+    /// Knowledge order `≤_k`: more of BOTH legs — the "when they don't add
+    /// to 1" axis. `Neither` is its bottom, `Both` its top.
+    let belnapLeqK (a: Belnap) (b: Belnap) : bool =
+        let ta, fa = belnapPair a
+        let tb, fb = belnapPair b
+        ta <= tb && fa <= fb
+
+    /// `≤_t`-join `∨` — decide: strongest support, weakest refutation.
+    let belnapJoinT (a: Belnap) (b: Belnap) : Belnap =
+        let ta, fa = belnapPair a
+        let tb, fb = belnapPair b
+        ofPair (max ta tb, min fa fb)
+
+    /// `≤_t`-meet `∧`.
+    let belnapMeetT (a: Belnap) (b: Belnap) : Belnap =
+        let ta, fa = belnapPair a
+        let tb, fb = belnapPair b
+        ofPair (min ta tb, max fa fb)
+
+    /// `≤_k`-join `⊕` — accumulate everything told, gluts retained. This
+    /// is the raw-vault operation: it never picks a winner.
+    let belnapJoinK (a: Belnap) (b: Belnap) : Belnap =
+        let ta, fa = belnapPair a
+        let tb, fb = belnapPair b
+        ofPair (max ta tb, max fa fb)
+
+    /// `≤_k`-meet `⊗` — consensus: only what both sources carry.
+    let belnapMeetK (a: Belnap) (b: Belnap) : Belnap =
+        let ta, fa = belnapPair a
+        let tb, fb = belnapPair b
+        ofPair (min ta tb, min fa fb)
+
+    /// Least `n ≥ 1` with `fⁿ = id` on a finite carrier; `0` if none within
+    /// `bound`. The order of a unary map is the invariant this section
+    /// turns on, so it is computed rather than asserted.
+    let unaryOrder (bound: int) (carrier: 'a list) (f: 'a -> 'a) : int =
+        let rec go n (g: 'a -> 'a) =
+            if n > bound then 0
+            elif carrier |> List.forall (fun x -> g x = x) then n
+            else go (n + 1) (g >> f)
+
+        go 1 f
+
+    let private fixedPointCount (carrier: 'a list) (f: 'a -> 'a) : int =
+        carrier |> List.filter (fun x -> f x = x) |> List.length
+
+    /// The C₄ carrier, as a list. Public so a test can run the POSITIVE
+    /// control on `intertwinerExists` and show the refutations below are a
+    /// live search rather than a vacuously empty one.
+    let phaseCarrier = [ One; I; MinusOne; MinusI ]
+
+    /// **4.** The compass generator is a quarter-turn: `rotateI⁴ = id` and
+    /// no smaller power is.
+    let compassRotationOrder = unaryOrder 8 phaseCarrier rotateI
+
+    /// **2.** The bilattice negation is an involution. `2 ≠ 4` is the whole
+    /// refutation, stated as two computed integers.
+    let belnapNegationOrder = unaryOrder 8 allBelnap belnapNegate
+
+    /// **0.** A non-identity power of a C₄ generator moves every element.
+    let compassHalfTurnFixedPoints = fixedPointCount phaseCarrier (mul MinusOne)
+
+    /// **2.** Negation fixes the gap and the glut. A fixed-point count is
+    /// an isomorphism invariant of `(carrier, unary map)`, so `0 ≠ 2`
+    /// refutes the half-turn reading too — not just the quarter-turn one.
+    let belnapNegationFixedPoints = fixedPointCount allBelnap belnapNegate
+
+    let rec private permutations (xs: 'a list) : 'a list list =
+        match xs with
+        | [] -> [ [] ]
+        | _ ->
+            xs
+            |> List.collect (fun x ->
+                permutations (xs |> List.filter (fun y -> y <> x))
+                |> List.map (fun rest -> x :: rest))
+
+    /// Is there a bijection `φ : carrierA → carrierB` intertwining the two
+    /// unary maps — `φ (f x) = g (φ x)` for every `x`? Exhaustive over all
+    /// `n!` bijections; `false` when the carriers differ in size. This is
+    /// isomorphism of unary algebras `(X, f)`, which is the level at which
+    /// the compass and the bilattice are being compared.
+    let intertwinerExists (carrierA: 'a list) (carrierB: 'b list) (f: 'a -> 'a) (g: 'b -> 'b) : bool =
+        if List.length carrierA <> List.length carrierB then
+            false
+        else
+            permutations carrierB
+            |> List.exists (fun perm ->
+                let table = List.zip carrierA perm |> Map.ofList
+                carrierA |> List.forall (fun x -> table.[f x] = g table.[x]))
+
+    /// **THE GUARD, exhaustively.** Is there a bijection `φ : Phase →
+    /// Belnap` with `φ (rotateI p) = ¬ (φ p)` for every `p` — i.e. does the
+    /// compass quarter-turn become the bilattice negation under ANY
+    /// relabelling? All `4! = 24` candidates are tried. **`false`.**
+    /// The two four-element objects are not the same object, and no choice
+    /// of names makes them one.
+    let compassNegationIntertwinerExists : bool =
+        intertwinerExists phaseCarrier allBelnap rotateI belnapNegate
+
+    /// The same refutation against the HALF-turn, so the guard does not
+    /// rest on the order-4 fact alone: `mul MinusOne` is an involution too,
+    /// and it still fails — it is fixed-point-free where negation fixes two
+    /// corners. **`false`.**
+    let compassHalfTurnNegationIntertwinerExists : bool =
+        intertwinerExists phaseCarrier allBelnap (mul MinusOne) belnapNegate
+
+    /// **CONTROL — passes for BOTH structures and therefore proves
+    /// NOTHING.** Four elements each, both unary maps bijective. Kept
+    /// visible so the discriminating values above are seen to do work the
+    /// count cannot do (`numerology-vs-number-theory`: name the
+    /// competitors, then exclude them by invariant).
+    let carrierSizes = List.length phaseCarrier, List.length allBelnap
+
+    /// The continuous bilattice `[0,1] ⊙ [0,1]`. `Belnap` is its set of
+    /// extreme points; `belnapToPair` below is the corner embedding, and
+    /// the tests check it is a homomorphism for all five operations —
+    /// which is what "FOUR is the four corners of the belief pair" means
+    /// as a checkable statement rather than a count.
+    type BeliefPair =
+        { TrueChance: float
+          FalseChance: float }
+
+    let beliefPair (t: float) (f: float) : BeliefPair = { TrueChance = t; FalseChance = f }
+
+    let belnapToPair (b: Belnap) : BeliefPair =
+        let t, f = belnapPair b
+        beliefPair (float t) (float f)
+
+    let beliefNegate (p: BeliefPair) : BeliefPair = beliefPair p.FalseChance p.TrueChance
+
+    let beliefJoinT (a: BeliefPair) (b: BeliefPair) : BeliefPair =
+        beliefPair (max a.TrueChance b.TrueChance) (min a.FalseChance b.FalseChance)
+
+    let beliefMeetT (a: BeliefPair) (b: BeliefPair) : BeliefPair =
+        beliefPair (min a.TrueChance b.TrueChance) (max a.FalseChance b.FalseChance)
+
+    let beliefJoinK (a: BeliefPair) (b: BeliefPair) : BeliefPair =
+        beliefPair (max a.TrueChance b.TrueChance) (max a.FalseChance b.FalseChance)
+
+    let beliefMeetK (a: BeliefPair) (b: BeliefPair) : BeliefPair =
+        beliefPair (min a.TrueChance b.TrueChance) (min a.FalseChance b.FalseChance)
+
+    /// Boole's slack `r = 1 − t − f` (Boole 1854, *conditions of possible
+    /// experience*; de Finetti 1937). `r > 0` is ignorance, `r < 0` is
+    /// incoherence, `r = 0` is the classical line. A structure that pins
+    /// `r ≡ 0` has collapsed the knowledge order to a point and is NOT a
+    /// bilattice — see the `SoftValue` check in the laws tests.
+    let beliefResidual (p: BeliefPair) : float = 1.0 - p.TrueChance - p.FalseChance
 
     // ── E8 three objects: roots, algebra, group ───────────────────────
     // Aaron 2026-08-24/26: at least 2 of 3, try for all 3. Workitem

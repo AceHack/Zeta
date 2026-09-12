@@ -1,0 +1,12 @@
+{
+  "pr_number": 17304,
+  "archive_path": "docs/history/pr-reviews/2026/09/12/PR-17304-docs-merge-main-before-testing-and-pushing-every-time-the-overwrite-was-silent.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-12T01:59:48.874Z",
+  "schema_version": "v1",
+  "commit_sha": "1d63e1ff698f82618c80a8f4b2abb5907efddf4d",
+  "title": "docs: merge main BEFORE testing and pushing, every time — the overwrite was silent",
+  "state": "MERGED",
+  "merged_at": "2026-09-12T01:58:55Z",
+  "head_ref": "shadow/merge-main-before-test-and-push"
+}

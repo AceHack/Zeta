@@ -107,13 +107,23 @@ exists to prevent.
   no scope budget and no streaming output, so on this tree it is itself the
   runaway it was written to prevent.
 - `concept-index.ts` / `lookup.ts` — a curated semantic index, a different job.
-- `inverted/` — the **git-native inverted index** (081M0QTXTR3087G0R002R439FH): corpus-wide
-  term -> files, built from an **explicit git rev**, committed to
-  `db/search-index/inverted/`, rebuilt on a ~6h cadence. Answers _"which files
+- `inverted/` — the **inverted index** (081M0QTXTR3087G0R002R439FH): corpus-wide
+  term -> files, built from an **explicit git rev** into a **local, gitignored
+  cache** (`db/search-index/inverted/` by default, or an explicit `--out`). It is
+  **no longer committed and no longer on a cadence** — that git-native _storage_
+  design is marked `toy` after 8 commits deposited 280 blobs / 409.67 MB raw /
+  25.03 MB on disk in 16 days (deleted in PR #16919; measured 2026-09-11).
+  **The durable replacement already exists and is not this:** reverse indexes on
+  a host `GroupCommitDiskDeltaLog` with `IncrementalJoin`, in
+  `src/Core/ReverseIndex.fs` (#17302, 081M29ESZCQ087G0R001SM29DQ). So this
+  directory is a local cache _with_ a successor, which is why leaving its storage
+  half a toy is a decision rather than a gap.
+  On a fresh clone there is no index and `query.ts` exits **3 (REFUSED)** until one
+  is built — ~30 s. The retrieval half stays **metered**: it answers _"which files
   mention landauer?"_ in ~20 ms where `git grep` takes ~800 ms — and **refuses**
   rather than answering when its rev is not the rev you asked about. It exists
-  because of the 2026-08-22 failure this directory's own README describes from
-  the other side: a `grep -r` over a checkout **336 commits behind** origin/main
+  because of the 2026-08-22 failure this directory's own README describes from the
+  other side: a `grep -r` over a checkout **336 commits behind** origin/main
   reported **0 files** for `landauer` when the true answer was **447**. See
   `inverted/README.md`. It has no positions, so it cannot answer phrases —
   that is a different index type, filed as 081M0QWDDDV087G0R003HM0KYX.

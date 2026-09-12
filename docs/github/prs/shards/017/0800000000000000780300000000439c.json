@@ -1,0 +1,12 @@
+{
+  "pr_number": 17308,
+  "archive_path": "docs/history/pr-reviews/2026/09/12/PR-17308-feat-belief-dual-score-belief-primitive-and-a-partitioned-refutation-ledger.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-12T03:33:44.997Z",
+  "schema_version": "v1",
+  "commit_sha": "81856d220da8f083fe57ebfd0eca1c4324a30418",
+  "title": "feat(belief): dual-score belief primitive and a partitioned refutation ledger",
+  "state": "MERGED",
+  "merged_at": "2026-09-12T03:33:01Z",
+  "head_ref": "shadow/dual-score-belief-and-refutation-ledger"
+}

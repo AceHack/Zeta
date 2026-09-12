@@ -1,0 +1,12 @@
+{
+  "pr_number": 17313,
+  "archive_path": "docs/history/pr-reviews/2026/09/12/PR-17313-research-api-n-degree-tuples-need-no-n-ary-type-and-iring-over-sedenion-asserts-.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-12T03:09:05.142Z",
+  "schema_version": "v1",
+  "commit_sha": "21a43aec982ce43331953642bdde9dca75b79cc2",
+  "title": "research(api): n-degree tuples need no n-ary type — and IRing over Sedenion asserts a false contract",
+  "state": "MERGED",
+  "merged_at": "2026-09-12T03:08:24Z",
+  "head_ref": "shadow/n-ary-arity-and-the-law-rung"
+}

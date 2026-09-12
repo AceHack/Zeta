@@ -1,0 +1,12 @@
+{
+  "pr_number": 17314,
+  "archive_path": "docs/history/pr-reviews/2026/09/12/PR-17314-feat-four-corner-guard-four-against-c-the-bilattice-identification-with-a-falsif.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-12T03:41:20.133Z",
+  "schema_version": "v1",
+  "commit_sha": "55db010abba63fa99bc202ba05fd37de216ac11b",
+  "title": "feat(four-corner): guard FOUR against C₄ — the bilattice identification, with a falsifier",
+  "state": "MERGED",
+  "merged_at": "2026-09-12T03:40:36Z",
+  "head_ref": "shadow/four-corner-bilattice-guard"
+}

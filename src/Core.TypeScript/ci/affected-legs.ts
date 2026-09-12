@@ -87,11 +87,32 @@ export function renderOutputs(verdict: Verdict, allLegs: readonly string[]): rea
  */
 export function renderLegsJson(verdict: Verdict, allLegs: readonly string[]): string {
   const on = new Set(verdict.legs);
-  const obj: Record<string, boolean> = {};
+  // STRING VALUES, NOT BOOLEANS -- and this is a correctness requirement, not style.
+  //
+  // GitHub Actions expressions do LOOSE comparison: when the two sides are different
+  // types it casts BOTH TO NUMBER. `null` casts to 0 and `false` casts to 0, so an
+  // expression of the form
+  //
+  //     fromJSON(needs.path-filter.outputs.legs).some_absent_leg != false
+  //
+  // evaluates `0 != 0` -> FALSE, and the job SKIPS. That is the exact inverse of the
+  // fail-closed behaviour it was written to express, and it shipped: measured on main
+  // pushes 2026-09-11, where `legs` is `{}` by design (run everything) and instead
+  // `build-and-test`, `lint (semgrep)` and `test (TS hermetic)` -- three floor jobs --
+  // all reported `skipped`.
+  //
+  // With STRING values the consumer compares `!= 'false'`, and the cast works FOR us:
+  //   absent  -> null vs 'false'  -> 0 vs NaN -> not equal -> TRUE  -> job RUNS
+  //   "false" -> same type, string compare    -> equal     -> FALSE -> job skips
+  //   "true"  -> same type, string compare    -> not equal -> TRUE  -> job RUNS
+  //
+  // So "I have no verdict for this job" means RUN IT, which is what fail-closed has to
+  // mean for a selector that may only ever ADD work relative to a full run.
+  const obj: Record<string, string> = {};
   // Sorted: the line is compared across runs and lands in logs, so key order is
   // part of the artifact (DST -- same input, same bytes).
   for (const leg of [...allLegs].sort()) {
-    obj[legSlug(leg)] = on.has(leg) || verdict.mode === "full";
+    obj[legSlug(leg)] = on.has(leg) || verdict.mode === "full" ? "true" : "false";
   }
   return `legs=${JSON.stringify(obj)}`;
 }
