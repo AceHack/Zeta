@@ -217,6 +217,38 @@ export function dualScore(trueChance: number, falseChance: number): DualScoreRes
  */
 export const VACUOUS: DualScore = { trueChance: UNIT_MIN, falseChance: UNIT_MIN };
 
+// ============================================================================================
+// THE OTHER THREE CORNERS, NAMED -- ADDED BY THE CROSS-LANGUAGE TREATY
+// ============================================================================================
+// `src/Core/DualScore.fs` named all four of Belnap's corners from its first commit; this file
+// named only `VACUOUS`, and the F# header recorded that as "declared divergence 3". A treaty is
+// where a declared divergence gets paid off rather than re-documented: a corner that cannot be
+// NAMED cannot be quantified over, and all four being reachable is the entire claim of the type.
+//
+// Falsifiers: `dual-score-treaty-transcript.test.ts` and `tests/Tests.FSharp/DualScoreTreaty.Tests.fs`
+// both replay the `Corner` vectors POSITIONALLY out of `dual-score-treaty-transcript.json`, so a
+// reordering or a re-valuing of any corner goes red in both runtimes.
+
+/** Belnap `True` -- full support, no refutation. Residual 0, the classical point. */
+export const ONLY_TRUE: DualScore = { trueChance: UNIT_MAX, falseChance: UNIT_MIN };
+
+/** Belnap `False` -- full refutation, no support. Residual 0, the other classical point. */
+export const ONLY_FALSE: DualScore = { trueChance: UNIT_MIN, falseChance: UNIT_MAX };
+
+/**
+ * Belnap `Both` -- the glut. Two sources both landed, pointing opposite ways. Residual -1, the
+ * maximal Dutch book. Reported, never resolved.
+ */
+export const BOTH: DualScore = { trueChance: UNIT_MAX, falseChance: UNIT_MAX };
+
+/**
+ * The four corners in knowledge (`<=_k`) order: least informative first, then the two classical
+ * points, then the glut. A roster, so callers and treaties quantify over the corners rather than
+ * listing them. The ORDER is part of the contract -- `DualScore.corners` in F# is the same
+ * sequence and the transcript pins it by position.
+ */
+export const CORNERS: readonly DualScore[] = [VACUOUS, ONLY_TRUE, ONLY_FALSE, BOTH];
+
 /** Total mass on the two legs, in [0,2]. 1 is the classical-probability slice, not the norm. */
 export function mass(s: DualScore): number {
   return s.trueChance + s.falseChance;
@@ -247,6 +279,35 @@ export function contradiction(s: DualScore): number {
   return excess > 0 ? excess : 0;
 }
 
+/**
+ * `1 - (tc + fc)`, SIGNED -- the quantity `ignorance` and `contradiction` are the two clamped
+ * halves of. Added by the cross-language treaty, which recorded it as F#'s declared divergence 2.
+ *
+ * The SIGN is the meaning, and both signs are priced:
+ *
+ *   r > 0  IGNORANCE     slack in Boole's conditions of possible experience (Boole 1854): a
+ *                        polytope of classical joints fits, so the pair is imprecise, not wrong.
+ *   r = 0  CLASSICAL     a classical assignment with P(A)=tc, P(!A)=fc exists exactly here.
+ *   r < 0  CONTRADICTION de Finetti (1937) incoherence: a Dutch book exists, and `-r` is the
+ *                        guaranteed loss per unit stake.
+ *
+ * `ignorance` and `contradiction` above are deliberately NOT rewritten in terms of this function.
+ * They compute `1 - mass` and `mass - 1` independently, which is a second derivation of the same
+ * quantity, and the treaty's `Facts` vectors check the two derivations against each other by BITS
+ * rather than by value.
+ *
+ * >> THAT CHECK FOUND SOMETHING ON ITS FIRST RUN, WHICH IS WHY IT IS WORDED CAREFULLY HERE.
+ * >> IEEE-754 round-to-nearest is symmetric under negation, so `-(1 - m)` and `m - 1` are the same
+ * >> double AWAY FROM ZERO -- but at `r = 0` exactly they are `-0.0` and `+0.0`, which are not the
+ * >> same bits. It does not escape: both clamps route the zero through their `> 0` branch and
+ * >> return a literal positive zero, so `ignorance` and `contradiction` agree everywhere. A
+ * >> refactor that returned the negated intermediate directly would break that, and the vectors
+ * >> are what would say so.
+ */
+export function residual(s: DualScore): number {
+  return 1 - mass(s);
+}
+
 /** The three-valued readout, structural and threshold-free: it depends only on `mass` vs 1. */
 export type MassShape = "ignorant" | "coherent" | "contradictory";
 
@@ -254,6 +315,46 @@ export function massShape(s: DualScore): MassShape {
   const m = mass(s);
   if (m < 1) return "ignorant";
   if (m > 1) return "contradictory";
+  return "coherent";
+}
+
+/**
+ * The shape with a CALLER-SUPPLIED tolerance: a residual within +/-`tolerance` of zero reads
+ * `coherent`. Added by the cross-language treaty, mirroring `DualScore.massShapeWithin`.
+ *
+ * >> WHY IT EXISTS: `massShape` IS THE WRONG READING FOR LEGS THAT CAME OUT OF FLOAT ARITHMETIC,
+ * >> AND THAT WAS MEASURED RATHER THAN GUESSED. Projecting a normalised `SoftValue` through the
+ * >> F# side's `SoftValueBelief.beliefOf` does not land on `coherent`: a 7/2/1 distribution sums
+ * >> to 1.000000000000000222 (residual -2.220446049250313e-16, reading "contradictory") and a
+ * >> `combine` posterior to 0.99999999999999988898 (residual +1.1102230246251565e-16, reading
+ * >> "ignorant"). Those two signs are one ULP of float noise on either side of 1 and carry no
+ * >> evidence whatever. Both masses are in the transcript, as bit patterns, for exactly that
+ * >> reason -- neither is expressible as a short decimal literal.
+ *
+ * THERE IS NO DEFAULT TOLERANCE AND THERE WILL NOT BE ONE. The honest value depends on how the
+ * legs were produced: a directly-stated pair wants 0, a sum of n floats wants something near
+ * n ULP, a calibrated lane wants whatever its calibration says. Inventing one here would be an
+ * unearned constant asserted as a measurement.
+ *
+ * Two implementation notes, both pinned by the treaty because both are places the two runtimes
+ * could silently part company:
+ *
+ *   1. The comparison is on the RESIDUAL, never on a shifted mass. `mass < 1 - tol` rounds twice
+ *      (once forming `1 - tol`, once in the sum) and disagrees with `residual > tol` at the ULP
+ *      scale -- which is the only scale this function exists to serve.
+ *   2. A negative tolerance folds to 0 and is NOT refused: it is a degenerate input to a total
+ *      arithmetic function, not a belief that could mislead anyone downstream. `tolerance > 0 ?
+ *      tolerance : 0` rather than `Math.max` is deliberate -- it sends NaN to 0, where
+ *      `Math.max(0, NaN)` returns NaN, under which EVERY score would read `coherent`. F#'s `max`
+ *      propagates NaN the same way (measured: `max 0.0 nan = NaN`), and its side was FIXED by
+ *      this treaty to fold the same way. The transcript carries a NaN-tolerance vector, so this
+ *      paragraph is a check rather than a claim.
+ */
+export function massShapeWithin(tolerance: number, s: DualScore): MassShape {
+  const tol = tolerance > 0 ? tolerance : 0;
+  const r = residual(s);
+  if (r > tol) return "ignorant";
+  if (r < -tol) return "contradictory";
   return "coherent";
 }
 

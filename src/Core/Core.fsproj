@@ -80,6 +80,7 @@
     <Compile Include="IndexedZSet.fs" />
     <Compile Include="DynamicValue.fs" />
     <Compile Include="CandidateKey.fs" />
+    <Compile Include="DualScore.fs" />
     <Compile Include="WireWeight.fs" />
     <Compile Include="ValueTreeEnvelope.fs" />
     <Compile Include="Asn1Der.fs" />
@@ -217,6 +218,7 @@
     <Compile Include="DynamicValueNumeric.fs" />
     <Compile Include="SoftValueNumeric.fs" />
     <Compile Include="SoftValueInfo.fs" />
+    <Compile Include="SoftValueBelief.fs" />
     <Compile Include="ComputeReceipt.fs" />
     <Compile Include="DvKey.fs" />
     <Compile Include="DebeziumCdc.fs" />

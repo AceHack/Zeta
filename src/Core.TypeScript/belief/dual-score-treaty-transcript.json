@@ -1,0 +1,1972 @@
+{
+  "description": "Cross-language treaty for the DualScore belief primitive. Replayed by BOTH oracles: src/Core.TypeScript/belief/dual-score-treaty-transcript.test.ts and tests/Tests.FSharp/DualScoreTreaty.Tests.fs. TEXT ONLY per .claude/rules/no-binary-in-proof-lineage.md — every double travels as its exact IEEE-754 big-endian bit pattern in hex, with a decimal rendering beside it for human audit. THE HEX IS AUTHORITATIVE; the decimal is commentary, and the replays check the two agree so a hand-edited annotation cannot drift away from the value it annotates.",
+  "fsharp": "src/Core/DualScore.fs",
+  "typescript": "src/Core.TypeScript/belief/dual-score.ts",
+  "generator": "src/Core.TypeScript/belief/generate-dual-score-treaty-transcript.ts",
+  "comparison": "EXACT bit equality on every double. mass/residual/ignorance/contradiction/swapLegs/toyJoin use only addition, subtraction, negation and comparison — IEEE-754 mandates the first three be correctly rounded, so bit equality is a guarantee the arithmetic already provides and a tolerance here would be strictly weaker than what can be asserted. A treaty that disagreed only in the last ULP would still be a disagreement, and this comparison makes it visible rather than rounding it away.",
+  "fieldNamesAreNotPinned": "F# carries T/F behind TrueChance/FalseChance accessors; TypeScript carries trueChance/falseChance. The transcript pins VALUES. Refusal PROSE is not pinned either — only the reason code and the leg.",
+  "vectors": [
+    {
+      "vectorType": "Corner",
+      "name": "vacuous",
+      "index": 0,
+      "t": {
+        "hex": "0000000000000000",
+        "dec": "0"
+      },
+      "f": {
+        "hex": "0000000000000000",
+        "dec": "0"
+      },
+      "mass": {
+        "hex": "0000000000000000",
+        "dec": "0"
+      },
+      "residual": {
+        "hex": "3FF0000000000000",
+        "dec": "1"
+      },
+      "ignorance": {
+        "hex": "3FF0000000000000",
+        "dec": "1"
+      },
+      "contradiction": {
+        "hex": "0000000000000000",
+        "dec": "0"
+      },
+      "massShape": "ignorant",
+      "note": "maximal ignorance, r = 1. NOT {0.5,0.5}: a single p cannot tell 'nobody looked' from 'perfectly balanced'."
+    },
+    {
+      "vectorType": "Corner",
+      "name": "onlyTrue",
+      "index": 1,
+      "t": {
+        "hex": "3FF0000000000000",
+        "dec": "1"
+      },
+      "f": {
+        "hex": "0000000000000000",
+        "dec": "0"
+      },
+      "mass": {
+        "hex": "3FF0000000000000",
+        "dec": "1"
+      },
+      "residual": {
+        "hex": "0000000000000000",
+        "dec": "0"
+      },
+      "ignorance": {
+        "hex": "0000000000000000",
+        "dec": "0"
+      },
+      "contradiction": {
+        "hex": "0000000000000000",
+        "dec": "0"
+      },
+      "massShape": "coherent",
+      "note": "classical: r = 0 exactly."
+    },
+    {
+      "vectorType": "Corner",
+      "name": "onlyFalse",
+      "index": 2,
+      "t": {
+        "hex": "0000000000000000",
+        "dec": "0"
+      },
+      "f": {
+        "hex": "3FF0000000000000",
+        "dec": "1"
+      },
+      "mass": {
+        "hex": "3FF0000000000000",
+        "dec": "1"
+      },
+      "residual": {
+        "hex": "0000000000000000",
+        "dec": "0"
+      },
+      "ignorance": {
+        "hex": "0000000000000000",
+        "dec": "0"
+      },
+      "contradiction": {
+        "hex": "0000000000000000",
+        "dec": "0"
+      },
+      "massShape": "coherent",
+      "note": "classical: r = 0 exactly."
+    },
+    {
+      "vectorType": "Corner",
+      "name": "both",
+      "index": 3,
+      "t": {
+        "hex": "3FF0000000000000",
+        "dec": "1"
+      },
+      "f": {
+        "hex": "3FF0000000000000",
+        "dec": "1"
+      },
+      "mass": {
+        "hex": "4000000000000000",
+        "dec": "2"
+      },
+      "residual": {
+        "hex": "BFF0000000000000",
+        "dec": "-1"
+      },
+      "ignorance": {
+        "hex": "0000000000000000",
+        "dec": "0"
+      },
+      "contradiction": {
+        "hex": "3FF0000000000000",
+        "dec": "1"
+      },
+      "massShape": "contradictory",
+      "note": "the glut, r = -1. Reported, never resolved."
+    },
+    {
+      "vectorType": "Construct",
+      "name": "interior-pair",
+      "t": {
+        "hex": "3FE6666666666666",
+        "dec": "0.7"
+      },
+      "f": {
+        "hex": "3FC999999999999A",
+        "dec": "0.2"
+      },
+      "expected": {
+        "ok": true,
+        "t": {
+          "hex": "3FE6666666666666",
+          "dec": "0.7"
+        },
+        "f": {
+          "hex": "3FC999999999999A",
+          "dec": "0.2"
+        }
+      },
+      "note": "CONTROL: a legal interior pair is ACCEPTED"
+    },
+    {
+      "vectorType": "Construct",
+      "name": "both-ends-low",
+      "t": {
+        "hex": "0000000000000000",
+        "dec": "0"
+      },
+      "f": {
+        "hex": "0000000000000000",
+        "dec": "0"
+      },
+      "expected": {
+        "ok": true,
+        "t": {
+          "hex": "0000000000000000",
+          "dec": "0"
+        },
+        "f": {
+          "hex": "0000000000000000",
+          "dec": "0"
+        }
+      },
+      "note": "CONTROL: both closed ends are legal"
+    },
+    {
+      "vectorType": "Construct",
+      "name": "both-ends-high",
+      "t": {
+        "hex": "3FF0000000000000",
+        "dec": "1"
+      },
+      "f": {
+        "hex": "3FF0000000000000",
+        "dec": "1"
+      },
+      "expected": {
+        "ok": true,
+        "t": {
+          "hex": "3FF0000000000000",
+          "dec": "1"
+        },
+        "f": {
+          "hex": "3FF0000000000000",
+          "dec": "1"
+        }
+      },
+      "note": "CONTROL: the glut is legal and must BUILD"
+    },
+    {
+      "vectorType": "Construct",
+      "name": "sum-above-one",
+      "t": {
+        "hex": "3FECCCCCCCCCCCCD",
+        "dec": "0.9"
+      },
+      "f": {
+        "hex": "3FE6666666666666",
+        "dec": "0.7"
+      },
+      "expected": {
+        "ok": true,
+        "t": {
+          "hex": "3FECCCCCCCCCCCCD",
+          "dec": "0.9"
+        },
+        "f": {
+          "hex": "3FE6666666666666",
+          "dec": "0.7"
+        }
+      },
+      "note": "the SUM is unconstrained: 1.6 is contradiction, which is the signal"
+    },
+    {
+      "vectorType": "Construct",
+      "name": "sum-below-one",
+      "t": {
+        "hex": "3FB999999999999A",
+        "dec": "0.1"
+      },
+      "f": {
+        "hex": "3FC999999999999A",
+        "dec": "0.2"
+      },
+      "expected": {
+        "ok": true,
+        "t": {
+          "hex": "3FB999999999999A",
+          "dec": "0.1"
+        },
+        "f": {
+          "hex": "3FC999999999999A",
+          "dec": "0.2"
+        }
+      },
+      "note": "under-fill is ignorance, not an incomplete input"
+    },
+    {
+      "vectorType": "Construct",
+      "name": "true-above-one",
+      "t": {
+        "hex": "3FF6666666666666",
+        "dec": "1.4"
+      },
+      "f": {
+        "hex": "0000000000000000",
+        "dec": "0"
+      },
+      "expected": {
+        "ok": false,
+        "reason": "outside-unit-interval",
+        "leg": "trueChance"
+      },
+      "note": "REFUSED, not clamped to 1"
+    },
+    {
+      "vectorType": "Construct",
+      "name": "false-negative",
+      "t": {
+        "hex": "0000000000000000",
+        "dec": "0"
+      },
+      "f": {
+        "hex": "BFD0000000000000",
+        "dec": "-0.25"
+      },
+      "expected": {
+        "ok": false,
+        "reason": "outside-unit-interval",
+        "leg": "falseChance"
+      },
+      "note": "REFUSED, not clamped to 0"
+    },
+    {
+      "vectorType": "Construct",
+      "name": "true-nan",
+      "t": {
+        "hex": "7FF8000000000000",
+        "dec": "NaN"
+      },
+      "f": {
+        "hex": "0000000000000000",
+        "dec": "0"
+      },
+      "expected": {
+        "ok": false,
+        "reason": "not-finite",
+        "leg": "trueChance"
+      },
+      "note": "NaN is not-finite, and not-finite is checked BEFORE range"
+    },
+    {
+      "vectorType": "Construct",
+      "name": "false-nan",
+      "t": {
+        "hex": "0000000000000000",
+        "dec": "0"
+      },
+      "f": {
+        "hex": "7FF8000000000000",
+        "dec": "NaN"
+      },
+      "expected": {
+        "ok": false,
+        "reason": "not-finite",
+        "leg": "falseChance"
+      },
+      "note": "the second leg is checked too"
+    },
+    {
+      "vectorType": "Construct",
+      "name": "true-positive-infinity",
+      "t": {
+        "hex": "7FF0000000000000",
+        "dec": "Infinity"
+      },
+      "f": {
+        "hex": "0000000000000000",
+        "dec": "0"
+      },
+      "expected": {
+        "ok": false,
+        "reason": "not-finite",
+        "leg": "trueChance"
+      },
+      "note": "+Inf reads not-finite, never outside-unit-interval"
+    },
+    {
+      "vectorType": "Construct",
+      "name": "false-negative-infinity",
+      "t": {
+        "hex": "0000000000000000",
+        "dec": "0"
+      },
+      "f": {
+        "hex": "FFF0000000000000",
+        "dec": "-Infinity"
+      },
+      "expected": {
+        "ok": false,
+        "reason": "not-finite",
+        "leg": "falseChance"
+      },
+      "note": "-Inf likewise"
+    },
+    {
+      "vectorType": "Construct",
+      "name": "both-legs-out-of-range",
+      "t": {
+        "hex": "3FF6666666666666",
+        "dec": "1.4"
+      },
+      "f": {
+        "hex": "BFD0000000000000",
+        "dec": "-0.25"
+      },
+      "expected": {
+        "ok": false,
+        "reason": "outside-unit-interval",
+        "leg": "trueChance"
+      },
+      "note": "ORDERING: trueChance is reported first when both are bad — a stable contract, not an accident"
+    },
+    {
+      "vectorType": "Facts",
+      "name": "ignorant-ordinary",
+      "t": {
+        "hex": "3FB999999999999A",
+        "dec": "0.1"
+      },
+      "f": {
+        "hex": "3FC999999999999A",
+        "dec": "0.2"
+      },
+      "mass": {
+        "hex": "3FD3333333333334",
+        "dec": "0.30000000000000004"
+      },
+      "residual": {
+        "hex": "3FE6666666666666",
+        "dec": "0.7"
+      },
+      "ignorance": {
+        "hex": "3FE6666666666666",
+        "dec": "0.7"
+      },
+      "contradiction": {
+        "hex": "0000000000000000",
+        "dec": "0"
+      },
+      "massShape": "ignorant",
+      "negatedResidual": {
+        "hex": "BFE6666666666666",
+        "dec": "-0.7"
+      },
+      "massMinusOne": {
+        "hex": "BFE6666666666666",
+        "dec": "-0.7"
+      },
+      "note": "r > 0: Boole slack"
+    },
+    {
+      "vectorType": "Facts",
+      "name": "coherent-exact",
+      "t": {
+        "hex": "3FE6666666666666",
+        "dec": "0.7"
+      },
+      "f": {
+        "hex": "3FD3333333333333",
+        "dec": "0.3"
+      },
+      "mass": {
+        "hex": "3FF0000000000000",
+        "dec": "1"
+      },
+      "residual": {
+        "hex": "0000000000000000",
+        "dec": "0"
+      },
+      "ignorance": {
+        "hex": "0000000000000000",
+        "dec": "0"
+      },
+      "contradiction": {
+        "hex": "0000000000000000",
+        "dec": "0"
+      },
+      "massShape": "coherent",
+      "negatedResidual": {
+        "hex": "8000000000000000",
+        "dec": "0"
+      },
+      "massMinusOne": {
+        "hex": "0000000000000000",
+        "dec": "0"
+      },
+      "note": "r = 0 exactly: 0.7 + 0.3 is 1.0 on the nose in double"
+    },
+    {
+      "vectorType": "Facts",
+      "name": "contradictory-ordinary",
+      "t": {
+        "hex": "3FECCCCCCCCCCCCD",
+        "dec": "0.9"
+      },
+      "f": {
+        "hex": "3FE6666666666666",
+        "dec": "0.7"
+      },
+      "mass": {
+        "hex": "3FF999999999999A",
+        "dec": "1.6"
+      },
+      "residual": {
+        "hex": "BFE3333333333334",
+        "dec": "-0.6000000000000001"
+      },
+      "ignorance": {
+        "hex": "0000000000000000",
+        "dec": "0"
+      },
+      "contradiction": {
+        "hex": "3FE3333333333334",
+        "dec": "0.6000000000000001"
+      },
+      "massShape": "contradictory",
+      "negatedResidual": {
+        "hex": "3FE3333333333334",
+        "dec": "0.6000000000000001"
+      },
+      "massMinusOne": {
+        "hex": "3FE3333333333334",
+        "dec": "0.6000000000000001"
+      },
+      "note": "r < 0: a Dutch book, -r the loss per unit stake"
+    },
+    {
+      "vectorType": "Facts",
+      "name": "asymmetric-ignorant",
+      "t": {
+        "hex": "3FE999999999999A",
+        "dec": "0.8"
+      },
+      "f": {
+        "hex": "3FB999999999999A",
+        "dec": "0.1"
+      },
+      "mass": {
+        "hex": "3FECCCCCCCCCCCCD",
+        "dec": "0.9"
+      },
+      "residual": {
+        "hex": "3FB9999999999998",
+        "dec": "0.09999999999999998"
+      },
+      "ignorance": {
+        "hex": "3FB9999999999998",
+        "dec": "0.09999999999999998"
+      },
+      "contradiction": {
+        "hex": "0000000000000000",
+        "dec": "0"
+      },
+      "massShape": "ignorant",
+      "negatedResidual": {
+        "hex": "BFB9999999999998",
+        "dec": "-0.09999999999999998"
+      },
+      "massMinusOne": {
+        "hex": "BFB9999999999998",
+        "dec": "-0.09999999999999998"
+      },
+      "note": "legs float independently: falseChance is not 1 - trueChance"
+    },
+    {
+      "vectorType": "Facts",
+      "name": "float-one-ulp-above-one",
+      "t": {
+        "hex": "3FE0000000000001",
+        "dec": "0.5000000000000001"
+      },
+      "f": {
+        "hex": "3FE0000000000001",
+        "dec": "0.5000000000000001"
+      },
+      "mass": {
+        "hex": "3FF0000000000001",
+        "dec": "1.0000000000000002"
+      },
+      "residual": {
+        "hex": "BCB0000000000000",
+        "dec": "-2.220446049250313e-16"
+      },
+      "ignorance": {
+        "hex": "0000000000000000",
+        "dec": "0"
+      },
+      "contradiction": {
+        "hex": "3CB0000000000000",
+        "dec": "2.220446049250313e-16"
+      },
+      "massShape": "contradictory",
+      "negatedResidual": {
+        "hex": "3CB0000000000000",
+        "dec": "2.220446049250313e-16"
+      },
+      "massMinusOne": {
+        "hex": "3CB0000000000000",
+        "dec": "2.220446049250313e-16"
+      },
+      "note": "THE MEASURED HAZARD. mass = 1.0000000000000002, r = -2.220446049250313e-16 -> 'contradictory'. Same mass the F# side measured projecting a normalised 7/2/1 SoftValue. The sign is float noise."
+    },
+    {
+      "vectorType": "Facts",
+      "name": "float-one-ulp-below-one",
+      "t": {
+        "hex": "3FE0000000000000",
+        "dec": "0.5"
+      },
+      "f": {
+        "hex": "3FDFFFFFFFFFFFFE",
+        "dec": "0.4999999999999999"
+      },
+      "mass": {
+        "hex": "3FEFFFFFFFFFFFFF",
+        "dec": "0.9999999999999999"
+      },
+      "residual": {
+        "hex": "3CA0000000000000",
+        "dec": "1.1102230246251565e-16"
+      },
+      "ignorance": {
+        "hex": "3CA0000000000000",
+        "dec": "1.1102230246251565e-16"
+      },
+      "contradiction": {
+        "hex": "0000000000000000",
+        "dec": "0"
+      },
+      "massShape": "ignorant",
+      "negatedResidual": {
+        "hex": "BCA0000000000000",
+        "dec": "-1.1102230246251565e-16"
+      },
+      "massMinusOne": {
+        "hex": "BCA0000000000000",
+        "dec": "-1.1102230246251565e-16"
+      },
+      "note": "THE MEASURED HAZARD, other side. mass = 0.9999999999999999, r = +1.1102230246251565e-16 -> 'ignorant'. Same mass as a combine posterior. Two intended-classical values reading as opposite epistemic states."
+    },
+    {
+      "vectorType": "Tolerance",
+      "name": "zero-tolerance-is-massShape",
+      "t": {
+        "hex": "3FE0000000000001",
+        "dec": "0.5000000000000001"
+      },
+      "f": {
+        "hex": "3FE0000000000001",
+        "dec": "0.5000000000000001"
+      },
+      "residual": {
+        "hex": "BCB0000000000000",
+        "dec": "-2.220446049250313e-16"
+      },
+      "tolerance": {
+        "hex": "0000000000000000",
+        "dec": "0"
+      },
+      "expectedShape": "contradictory",
+      "exactShape": "contradictory",
+      "note": "tolerance 0 must agree with the exact reading, whatever that is"
+    },
+    {
+      "vectorType": "Tolerance",
+      "name": "ulp-above-one-inside-1e-12",
+      "t": {
+        "hex": "3FE0000000000001",
+        "dec": "0.5000000000000001"
+      },
+      "f": {
+        "hex": "3FE0000000000001",
+        "dec": "0.5000000000000001"
+      },
+      "residual": {
+        "hex": "BCB0000000000000",
+        "dec": "-2.220446049250313e-16"
+      },
+      "tolerance": {
+        "hex": "3D719799812DEA11",
+        "dec": "1e-12"
+      },
+      "expectedShape": "coherent",
+      "exactShape": "contradictory",
+      "note": "the hazard, absorbed: a tolerance the caller owns turns ULP noise back into 'coherent'"
+    },
+    {
+      "vectorType": "Tolerance",
+      "name": "ulp-below-one-inside-1e-12",
+      "t": {
+        "hex": "3FE0000000000000",
+        "dec": "0.5"
+      },
+      "f": {
+        "hex": "3FDFFFFFFFFFFFFE",
+        "dec": "0.4999999999999999"
+      },
+      "residual": {
+        "hex": "3CA0000000000000",
+        "dec": "1.1102230246251565e-16"
+      },
+      "tolerance": {
+        "hex": "3D719799812DEA11",
+        "dec": "1e-12"
+      },
+      "expectedShape": "coherent",
+      "exactShape": "ignorant",
+      "note": "same, other side"
+    },
+    {
+      "vectorType": "Tolerance",
+      "name": "boundary-exactly-at-tolerance-negative-r",
+      "t": {
+        "hex": "3FE0000000000001",
+        "dec": "0.5000000000000001"
+      },
+      "f": {
+        "hex": "3FE0000000000001",
+        "dec": "0.5000000000000001"
+      },
+      "residual": {
+        "hex": "BCB0000000000000",
+        "dec": "-2.220446049250313e-16"
+      },
+      "tolerance": {
+        "hex": "3CB0000000000000",
+        "dec": "2.220446049250313e-16"
+      },
+      "expectedShape": "coherent",
+      "exactShape": "contradictory",
+      "note": "r == -tol EXACTLY: the comparison is strict, so this reads coherent. ON the boundary."
+    },
+    {
+      "vectorType": "Tolerance",
+      "name": "boundary-one-ulp-inside-tolerance-negative-r",
+      "t": {
+        "hex": "3FE0000000000001",
+        "dec": "0.5000000000000001"
+      },
+      "f": {
+        "hex": "3FE0000000000001",
+        "dec": "0.5000000000000001"
+      },
+      "residual": {
+        "hex": "BCB0000000000000",
+        "dec": "-2.220446049250313e-16"
+      },
+      "tolerance": {
+        "hex": "3CAFFFFFFFFFFFFF",
+        "dec": "2.2204460492503128e-16"
+      },
+      "expectedShape": "contradictory",
+      "exactShape": "contradictory",
+      "note": "tolerance one ULP smaller: now r < -tol and it reads contradictory. THE OTHER SIDE of the boundary."
+    },
+    {
+      "vectorType": "Tolerance",
+      "name": "boundary-exactly-at-tolerance-positive-r",
+      "t": {
+        "hex": "3FE0000000000000",
+        "dec": "0.5"
+      },
+      "f": {
+        "hex": "3FDFFFFFFFFFFFFE",
+        "dec": "0.4999999999999999"
+      },
+      "residual": {
+        "hex": "3CA0000000000000",
+        "dec": "1.1102230246251565e-16"
+      },
+      "tolerance": {
+        "hex": "3CA0000000000000",
+        "dec": "1.1102230246251565e-16"
+      },
+      "expectedShape": "coherent",
+      "exactShape": "ignorant",
+      "note": "r == +tol EXACTLY: coherent"
+    },
+    {
+      "vectorType": "Tolerance",
+      "name": "boundary-one-ulp-inside-tolerance-positive-r",
+      "t": {
+        "hex": "3FE0000000000000",
+        "dec": "0.5"
+      },
+      "f": {
+        "hex": "3FDFFFFFFFFFFFFE",
+        "dec": "0.4999999999999999"
+      },
+      "residual": {
+        "hex": "3CA0000000000000",
+        "dec": "1.1102230246251565e-16"
+      },
+      "tolerance": {
+        "hex": "3C9FFFFFFFFFFFFF",
+        "dec": "1.1102230246251564e-16"
+      },
+      "expectedShape": "ignorant",
+      "exactShape": "ignorant",
+      "note": "tolerance one ULP smaller: ignorant"
+    },
+    {
+      "vectorType": "Tolerance",
+      "name": "wide-tolerance-does-not-absorb-a-real-disagreement",
+      "t": {
+        "hex": "3FECCCCCCCCCCCCD",
+        "dec": "0.9"
+      },
+      "f": {
+        "hex": "3FE6666666666666",
+        "dec": "0.7"
+      },
+      "residual": {
+        "hex": "BFE3333333333334",
+        "dec": "-0.6000000000000001"
+      },
+      "tolerance": {
+        "hex": "3D719799812DEA11",
+        "dec": "1e-12"
+      },
+      "expectedShape": "contradictory",
+      "exactShape": "contradictory",
+      "note": "a genuine glut (r = -0.6) stays contradictory: the tolerance absorbs noise, never evidence"
+    },
+    {
+      "vectorType": "Tolerance",
+      "name": "negative-tolerance-folds-to-zero",
+      "t": {
+        "hex": "3FE0000000000001",
+        "dec": "0.5000000000000001"
+      },
+      "f": {
+        "hex": "3FE0000000000001",
+        "dec": "0.5000000000000001"
+      },
+      "residual": {
+        "hex": "BCB0000000000000",
+        "dec": "-2.220446049250313e-16"
+      },
+      "tolerance": {
+        "hex": "BFD0000000000000",
+        "dec": "-0.25"
+      },
+      "expectedShape": "contradictory",
+      "exactShape": "contradictory",
+      "note": "degenerate input to a total function: folded to 0, NOT refused — and the exact reading returns"
+    },
+    {
+      "vectorType": "Tolerance",
+      "name": "nan-tolerance-folds-to-zero",
+      "t": {
+        "hex": "3FE0000000000001",
+        "dec": "0.5000000000000001"
+      },
+      "f": {
+        "hex": "3FE0000000000001",
+        "dec": "0.5000000000000001"
+      },
+      "residual": {
+        "hex": "BCB0000000000000",
+        "dec": "-2.220446049250313e-16"
+      },
+      "tolerance": {
+        "hex": "7FF8000000000000",
+        "dec": "NaN"
+      },
+      "expectedShape": "contradictory",
+      "exactShape": "contradictory",
+      "note": "RISK 7. F#'s `max 0.0 nan` is 0.0; JavaScript's `Math.max(0, NaN)` is NaN, which would make EVERY reading coherent. Both sides must fold NaN to 0 and return the exact reading."
+    },
+    {
+      "vectorType": "Swap",
+      "name": "asymmetric",
+      "t": {
+        "hex": "3FC999999999999A",
+        "dec": "0.2"
+      },
+      "f": {
+        "hex": "3FE6666666666666",
+        "dec": "0.7"
+      },
+      "swappedT": {
+        "hex": "3FE6666666666666",
+        "dec": "0.7"
+      },
+      "swappedF": {
+        "hex": "3FC999999999999A",
+        "dec": "0.2"
+      },
+      "twiceT": {
+        "hex": "3FC999999999999A",
+        "dec": "0.2"
+      },
+      "twiceF": {
+        "hex": "3FE6666666666666",
+        "dec": "0.7"
+      },
+      "swappedMass": {
+        "hex": "3FECCCCCCCCCCCCC",
+        "dec": "0.8999999999999999"
+      },
+      "swappedResidual": {
+        "hex": "3FB99999999999A0",
+        "dec": "0.10000000000000009"
+      },
+      "swappedIgnorance": {
+        "hex": "3FB99999999999A0",
+        "dec": "0.10000000000000009"
+      },
+      "swappedContradiction": {
+        "hex": "0000000000000000",
+        "dec": "0"
+      },
+      "swappedMassShape": "ignorant",
+      "note": "swapping {0.2,0.7} gives {0.7,0.2}, NOT the complement {0.8,0.3}"
+    },
+    {
+      "vectorType": "Swap",
+      "name": "onlyTrue-becomes-onlyFalse",
+      "t": {
+        "hex": "3FF0000000000000",
+        "dec": "1"
+      },
+      "f": {
+        "hex": "0000000000000000",
+        "dec": "0"
+      },
+      "swappedT": {
+        "hex": "0000000000000000",
+        "dec": "0"
+      },
+      "swappedF": {
+        "hex": "3FF0000000000000",
+        "dec": "1"
+      },
+      "twiceT": {
+        "hex": "3FF0000000000000",
+        "dec": "1"
+      },
+      "twiceF": {
+        "hex": "0000000000000000",
+        "dec": "0"
+      },
+      "swappedMass": {
+        "hex": "3FF0000000000000",
+        "dec": "1"
+      },
+      "swappedResidual": {
+        "hex": "0000000000000000",
+        "dec": "0"
+      },
+      "swappedIgnorance": {
+        "hex": "0000000000000000",
+        "dec": "0"
+      },
+      "swappedContradiction": {
+        "hex": "0000000000000000",
+        "dec": "0"
+      },
+      "swappedMassShape": "coherent",
+      "note": "negation moves between the two classical corners"
+    },
+    {
+      "vectorType": "Swap",
+      "name": "glut-is-fixed",
+      "t": {
+        "hex": "3FF0000000000000",
+        "dec": "1"
+      },
+      "f": {
+        "hex": "3FF0000000000000",
+        "dec": "1"
+      },
+      "swappedT": {
+        "hex": "3FF0000000000000",
+        "dec": "1"
+      },
+      "swappedF": {
+        "hex": "3FF0000000000000",
+        "dec": "1"
+      },
+      "twiceT": {
+        "hex": "3FF0000000000000",
+        "dec": "1"
+      },
+      "twiceF": {
+        "hex": "3FF0000000000000",
+        "dec": "1"
+      },
+      "swappedMass": {
+        "hex": "4000000000000000",
+        "dec": "2"
+      },
+      "swappedResidual": {
+        "hex": "BFF0000000000000",
+        "dec": "-1"
+      },
+      "swappedIgnorance": {
+        "hex": "0000000000000000",
+        "dec": "0"
+      },
+      "swappedContradiction": {
+        "hex": "3FF0000000000000",
+        "dec": "1"
+      },
+      "swappedMassShape": "contradictory",
+      "note": "`both` is a fixed point of negation"
+    },
+    {
+      "vectorType": "Swap",
+      "name": "vacuous-is-fixed",
+      "t": {
+        "hex": "0000000000000000",
+        "dec": "0"
+      },
+      "f": {
+        "hex": "0000000000000000",
+        "dec": "0"
+      },
+      "swappedT": {
+        "hex": "0000000000000000",
+        "dec": "0"
+      },
+      "swappedF": {
+        "hex": "0000000000000000",
+        "dec": "0"
+      },
+      "twiceT": {
+        "hex": "0000000000000000",
+        "dec": "0"
+      },
+      "twiceF": {
+        "hex": "0000000000000000",
+        "dec": "0"
+      },
+      "swappedMass": {
+        "hex": "0000000000000000",
+        "dec": "0"
+      },
+      "swappedResidual": {
+        "hex": "3FF0000000000000",
+        "dec": "1"
+      },
+      "swappedIgnorance": {
+        "hex": "3FF0000000000000",
+        "dec": "1"
+      },
+      "swappedContradiction": {
+        "hex": "0000000000000000",
+        "dec": "0"
+      },
+      "swappedMassShape": "ignorant",
+      "note": "so is `vacuous` — the two <=_k extremes are self-negating"
+    },
+    {
+      "vectorType": "Swap",
+      "name": "float-ulp-case",
+      "t": {
+        "hex": "3FE0000000000000",
+        "dec": "0.5"
+      },
+      "f": {
+        "hex": "3FDFFFFFFFFFFFFE",
+        "dec": "0.4999999999999999"
+      },
+      "swappedT": {
+        "hex": "3FDFFFFFFFFFFFFE",
+        "dec": "0.4999999999999999"
+      },
+      "swappedF": {
+        "hex": "3FE0000000000000",
+        "dec": "0.5"
+      },
+      "twiceT": {
+        "hex": "3FE0000000000000",
+        "dec": "0.5"
+      },
+      "twiceF": {
+        "hex": "3FDFFFFFFFFFFFFE",
+        "dec": "0.4999999999999999"
+      },
+      "swappedMass": {
+        "hex": "3FEFFFFFFFFFFFFF",
+        "dec": "0.9999999999999999"
+      },
+      "swappedResidual": {
+        "hex": "3CA0000000000000",
+        "dec": "1.1102230246251565e-16"
+      },
+      "swappedIgnorance": {
+        "hex": "3CA0000000000000",
+        "dec": "1.1102230246251565e-16"
+      },
+      "swappedContradiction": {
+        "hex": "0000000000000000",
+        "dec": "0"
+      },
+      "swappedMassShape": "ignorant",
+      "note": "invariance must hold at the ULP scale too"
+    },
+    {
+      "vectorType": "Join",
+      "name": "two-witnesses-who-disagree",
+      "aT": {
+        "hex": "3FF0000000000000",
+        "dec": "1"
+      },
+      "aF": {
+        "hex": "0000000000000000",
+        "dec": "0"
+      },
+      "bT": {
+        "hex": "0000000000000000",
+        "dec": "0"
+      },
+      "bF": {
+        "hex": "3FF0000000000000",
+        "dec": "1"
+      },
+      "joinT": {
+        "hex": "3FF0000000000000",
+        "dec": "1"
+      },
+      "joinF": {
+        "hex": "3FF0000000000000",
+        "dec": "1"
+      },
+      "commutedT": {
+        "hex": "3FF0000000000000",
+        "dec": "1"
+      },
+      "commutedF": {
+        "hex": "3FF0000000000000",
+        "dec": "1"
+      },
+      "joinResidual": {
+        "hex": "BFF0000000000000",
+        "dec": "-1"
+      },
+      "joinContradiction": {
+        "hex": "3FF0000000000000",
+        "dec": "1"
+      },
+      "joinMassShape": "contradictory",
+      "note": "RISK 6. onlyTrue join onlyFalse must be `both`, contradiction 1. The TRUTH-order join would give {1,0} — a confident `true` manufactured out of a standoff, which is the collapse this type prevents."
+    },
+    {
+      "vectorType": "Join",
+      "name": "componentwise-max",
+      "aT": {
+        "hex": "3FC999999999999A",
+        "dec": "0.2"
+      },
+      "aF": {
+        "hex": "3FECCCCCCCCCCCCD",
+        "dec": "0.9"
+      },
+      "bT": {
+        "hex": "3FE6666666666666",
+        "dec": "0.7"
+      },
+      "bF": {
+        "hex": "3FD3333333333333",
+        "dec": "0.3"
+      },
+      "joinT": {
+        "hex": "3FE6666666666666",
+        "dec": "0.7"
+      },
+      "joinF": {
+        "hex": "3FECCCCCCCCCCCCD",
+        "dec": "0.9"
+      },
+      "commutedT": {
+        "hex": "3FE6666666666666",
+        "dec": "0.7"
+      },
+      "commutedF": {
+        "hex": "3FECCCCCCCCCCCCD",
+        "dec": "0.9"
+      },
+      "joinResidual": {
+        "hex": "BFE3333333333334",
+        "dec": "-0.6000000000000001"
+      },
+      "joinContradiction": {
+        "hex": "3FE3333333333334",
+        "dec": "0.6000000000000001"
+      },
+      "joinMassShape": "contradictory",
+      "note": "each leg takes its own max, independently"
+    },
+    {
+      "vectorType": "Join",
+      "name": "vacuous-is-the-identity",
+      "aT": {
+        "hex": "0000000000000000",
+        "dec": "0"
+      },
+      "aF": {
+        "hex": "0000000000000000",
+        "dec": "0"
+      },
+      "bT": {
+        "hex": "3FE6666666666666",
+        "dec": "0.7"
+      },
+      "bF": {
+        "hex": "3FC999999999999A",
+        "dec": "0.2"
+      },
+      "joinT": {
+        "hex": "3FE6666666666666",
+        "dec": "0.7"
+      },
+      "joinF": {
+        "hex": "3FC999999999999A",
+        "dec": "0.2"
+      },
+      "commutedT": {
+        "hex": "3FE6666666666666",
+        "dec": "0.7"
+      },
+      "commutedF": {
+        "hex": "3FC999999999999A",
+        "dec": "0.2"
+      },
+      "joinResidual": {
+        "hex": "3FB99999999999A0",
+        "dec": "0.10000000000000009"
+      },
+      "joinContradiction": {
+        "hex": "0000000000000000",
+        "dec": "0"
+      },
+      "joinMassShape": "ignorant",
+      "note": "the <=_k least element is the unit"
+    },
+    {
+      "vectorType": "Join",
+      "name": "idempotent",
+      "aT": {
+        "hex": "3FE6666666666666",
+        "dec": "0.7"
+      },
+      "aF": {
+        "hex": "3FC999999999999A",
+        "dec": "0.2"
+      },
+      "bT": {
+        "hex": "3FE6666666666666",
+        "dec": "0.7"
+      },
+      "bF": {
+        "hex": "3FC999999999999A",
+        "dec": "0.2"
+      },
+      "joinT": {
+        "hex": "3FE6666666666666",
+        "dec": "0.7"
+      },
+      "joinF": {
+        "hex": "3FC999999999999A",
+        "dec": "0.2"
+      },
+      "commutedT": {
+        "hex": "3FE6666666666666",
+        "dec": "0.7"
+      },
+      "commutedF": {
+        "hex": "3FC999999999999A",
+        "dec": "0.2"
+      },
+      "joinResidual": {
+        "hex": "3FB99999999999A0",
+        "dec": "0.10000000000000009"
+      },
+      "joinContradiction": {
+        "hex": "0000000000000000",
+        "dec": "0"
+      },
+      "joinMassShape": "ignorant",
+      "note": "G-set join: a join a = a. Safe under replay (DST #4, #6)"
+    },
+    {
+      "vectorType": "Join",
+      "name": "does-not-accumulate-evidence",
+      "aT": {
+        "hex": "3FD3333333333333",
+        "dec": "0.3"
+      },
+      "aF": {
+        "hex": "3FB999999999999A",
+        "dec": "0.1"
+      },
+      "bT": {
+        "hex": "3FD3333333333333",
+        "dec": "0.3"
+      },
+      "bF": {
+        "hex": "3FB999999999999A",
+        "dec": "0.1"
+      },
+      "joinT": {
+        "hex": "3FD3333333333333",
+        "dec": "0.3"
+      },
+      "joinF": {
+        "hex": "3FB999999999999A",
+        "dec": "0.1"
+      },
+      "commutedT": {
+        "hex": "3FD3333333333333",
+        "dec": "0.3"
+      },
+      "commutedF": {
+        "hex": "3FB999999999999A",
+        "dec": "0.1"
+      },
+      "joinResidual": {
+        "hex": "3FE3333333333333",
+        "dec": "0.6"
+      },
+      "joinContradiction": {
+        "hex": "0000000000000000",
+        "dec": "0"
+      },
+      "joinMassShape": "ignorant",
+      "note": "two weak witnesses stay weak — proof by value that max is NOT a fusion rule"
+    },
+    {
+      "vectorType": "Join",
+      "name": "float-ulp-legs",
+      "aT": {
+        "hex": "3FE0000000000000",
+        "dec": "0.5"
+      },
+      "aF": {
+        "hex": "3FDFFFFFFFFFFFFE",
+        "dec": "0.4999999999999999"
+      },
+      "bT": {
+        "hex": "3FE0000000000001",
+        "dec": "0.5000000000000001"
+      },
+      "bF": {
+        "hex": "3FE0000000000000",
+        "dec": "0.5"
+      },
+      "joinT": {
+        "hex": "3FE0000000000001",
+        "dec": "0.5000000000000001"
+      },
+      "joinF": {
+        "hex": "3FE0000000000000",
+        "dec": "0.5"
+      },
+      "commutedT": {
+        "hex": "3FE0000000000001",
+        "dec": "0.5000000000000001"
+      },
+      "commutedF": {
+        "hex": "3FE0000000000000",
+        "dec": "0.5"
+      },
+      "joinResidual": {
+        "hex": "0000000000000000",
+        "dec": "0"
+      },
+      "joinContradiction": {
+        "hex": "0000000000000000",
+        "dec": "0"
+      },
+      "joinMassShape": "coherent",
+      "note": "max at the ULP scale"
+    },
+    {
+      "vectorType": "Classify",
+      "name": "leans-true-at-half",
+      "t": {
+        "hex": "3FE999999999999A",
+        "dec": "0.8"
+      },
+      "f": {
+        "hex": "3FB999999999999A",
+        "dec": "0.1"
+      },
+      "margin": {
+        "hex": "3FE0000000000000",
+        "dec": "0.5"
+      },
+      "expected": {
+        "ok": true,
+        "reading": "leans-true"
+      },
+      "note": "support over the margin, refutation under it"
+    },
+    {
+      "vectorType": "Classify",
+      "name": "leans-false-at-half",
+      "t": {
+        "hex": "3FB999999999999A",
+        "dec": "0.1"
+      },
+      "f": {
+        "hex": "3FE999999999999A",
+        "dec": "0.8"
+      },
+      "margin": {
+        "hex": "3FE0000000000000",
+        "dec": "0.5"
+      },
+      "expected": {
+        "ok": true,
+        "reading": "leans-false"
+      },
+      "note": "the mirror case"
+    },
+    {
+      "vectorType": "Classify",
+      "name": "unknown-both-under",
+      "t": {
+        "hex": "3FB999999999999A",
+        "dec": "0.1"
+      },
+      "f": {
+        "hex": "3FC999999999999A",
+        "dec": "0.2"
+      },
+      "margin": {
+        "hex": "3FE0000000000000",
+        "dec": "0.5"
+      },
+      "expected": {
+        "ok": true,
+        "reading": "unknown"
+      },
+      "note": "neither leg reaches the margin"
+    },
+    {
+      "vectorType": "Classify",
+      "name": "contradiction-is-checked-first",
+      "t": {
+        "hex": "3FECCCCCCCCCCCCD",
+        "dec": "0.9"
+      },
+      "f": {
+        "hex": "3FE6666666666666",
+        "dec": "0.7"
+      },
+      "margin": {
+        "hex": "3FE0000000000000",
+        "dec": "0.5"
+      },
+      "expected": {
+        "ok": true,
+        "reading": "contradicted"
+      },
+      "note": "both legs clear 0.5, so a naive order would say leans-true. A glut is NOT a weak lean."
+    },
+    {
+      "vectorType": "Classify",
+      "name": "same-score-different-margin-low",
+      "t": {
+        "hex": "3FE3333333333333",
+        "dec": "0.6"
+      },
+      "f": {
+        "hex": "3FD3333333333333",
+        "dec": "0.3"
+      },
+      "margin": {
+        "hex": "3FD999999999999A",
+        "dec": "0.4"
+      },
+      "expected": {
+        "ok": true,
+        "reading": "leans-true"
+      },
+      "note": "THE JUDGEMENT IS THE CALLER'S: at margin 0.4 this pair reads one way…"
+    },
+    {
+      "vectorType": "Classify",
+      "name": "same-score-different-margin-high",
+      "t": {
+        "hex": "3FE3333333333333",
+        "dec": "0.6"
+      },
+      "f": {
+        "hex": "3FD3333333333333",
+        "dec": "0.3"
+      },
+      "margin": {
+        "hex": "3FE999999999999A",
+        "dec": "0.8"
+      },
+      "expected": {
+        "ok": true,
+        "reading": "unknown"
+      },
+      "note": "…and at margin 0.8 it reads another"
+    },
+    {
+      "vectorType": "Classify",
+      "name": "margin-zero-is-legal",
+      "t": {
+        "hex": "0000000000000000",
+        "dec": "0"
+      },
+      "f": {
+        "hex": "0000000000000000",
+        "dec": "0"
+      },
+      "margin": {
+        "hex": "0000000000000000",
+        "dec": "0"
+      },
+      "expected": {
+        "ok": true,
+        "reading": "unknown"
+      },
+      "note": "0 is in the unit interval and is accepted"
+    },
+    {
+      "vectorType": "Classify",
+      "name": "margin-above-one-refused",
+      "t": {
+        "hex": "3FE6666666666666",
+        "dec": "0.7"
+      },
+      "f": {
+        "hex": "3FC999999999999A",
+        "dec": "0.2"
+      },
+      "margin": {
+        "hex": "3FF6666666666666",
+        "dec": "1.4"
+      },
+      "expected": {
+        "ok": false,
+        "reason": "outside-unit-interval",
+        "leg": "margin"
+      },
+      "note": "the margin is refused by the SAME rule as a leg"
+    },
+    {
+      "vectorType": "Classify",
+      "name": "margin-negative-refused",
+      "t": {
+        "hex": "3FE6666666666666",
+        "dec": "0.7"
+      },
+      "f": {
+        "hex": "3FC999999999999A",
+        "dec": "0.2"
+      },
+      "margin": {
+        "hex": "BFD0000000000000",
+        "dec": "-0.25"
+      },
+      "expected": {
+        "ok": false,
+        "reason": "outside-unit-interval",
+        "leg": "margin"
+      },
+      "note": "…and so is a negative one"
+    },
+    {
+      "vectorType": "Classify",
+      "name": "margin-nan-refused",
+      "t": {
+        "hex": "3FE6666666666666",
+        "dec": "0.7"
+      },
+      "f": {
+        "hex": "3FC999999999999A",
+        "dec": "0.2"
+      },
+      "margin": {
+        "hex": "7FF8000000000000",
+        "dec": "NaN"
+      },
+      "expected": {
+        "ok": false,
+        "reason": "not-finite",
+        "leg": "margin"
+      },
+      "note": "not-finite, reported against the `margin` leg"
+    },
+    {
+      "vectorType": "Parse",
+      "name": "well-formed",
+      "input": {
+        "shape": "object",
+        "fields": [
+          {
+            "key": "trueChance",
+            "value": {
+              "kind": "float",
+              "hex": "3FE6666666666666"
+            }
+          },
+          {
+            "key": "falseChance",
+            "value": {
+              "kind": "float",
+              "hex": "3FC999999999999A"
+            }
+          }
+        ]
+      },
+      "expected": {
+        "ok": true,
+        "t": {
+          "hex": "3FE6666666666666",
+          "dec": "0.7"
+        },
+        "f": {
+          "hex": "3FC999999999999A",
+          "dec": "0.2"
+        }
+      },
+      "note": "CONTROL: a parser that refused everything would pass every refusal vector below"
+    },
+    {
+      "vectorType": "Parse",
+      "name": "key-order-does-not-matter",
+      "input": {
+        "shape": "object",
+        "fields": [
+          {
+            "key": "falseChance",
+            "value": {
+              "kind": "float",
+              "hex": "3FC999999999999A"
+            }
+          },
+          {
+            "key": "trueChance",
+            "value": {
+              "kind": "float",
+              "hex": "3FE6666666666666"
+            }
+          }
+        ]
+      },
+      "expected": {
+        "ok": true,
+        "t": {
+          "hex": "3FE6666666666666",
+          "dec": "0.7"
+        },
+        "f": {
+          "hex": "3FC999999999999A",
+          "dec": "0.2"
+        }
+      },
+      "note": "lookup is by ordinal key, not by position"
+    },
+    {
+      "vectorType": "Parse",
+      "name": "extra-keys-are-ignored",
+      "input": {
+        "shape": "object",
+        "fields": [
+          {
+            "key": "trueChance",
+            "value": {
+              "kind": "float",
+              "hex": "3FE6666666666666"
+            }
+          },
+          {
+            "key": "falseChance",
+            "value": {
+              "kind": "float",
+              "hex": "3FC999999999999A"
+            }
+          },
+          {
+            "key": "provenance",
+            "value": {
+              "kind": "string",
+              "value": "witness-3"
+            }
+          }
+        ]
+      },
+      "expected": {
+        "ok": true,
+        "t": {
+          "hex": "3FE6666666666666",
+          "dec": "0.7"
+        },
+        "f": {
+          "hex": "3FC999999999999A",
+          "dec": "0.2"
+        }
+      },
+      "note": "a row carrying more than the two legs still parses"
+    },
+    {
+      "vectorType": "Parse",
+      "name": "integer-legs-accepted",
+      "input": {
+        "shape": "object",
+        "fields": [
+          {
+            "key": "trueChance",
+            "value": {
+              "kind": "int",
+              "value": "1"
+            }
+          },
+          {
+            "key": "falseChance",
+            "value": {
+              "kind": "int",
+              "value": "0"
+            }
+          }
+        ]
+      },
+      "expected": {
+        "ok": true,
+        "t": {
+          "hex": "3FF0000000000000",
+          "dec": "1"
+        },
+        "f": {
+          "hex": "0000000000000000",
+          "dec": "0"
+        }
+      },
+      "note": "an encoder that emitted `1` rather than `1.0` is READ, not rejected"
+    },
+    {
+      "vectorType": "Parse",
+      "name": "missing-false-leg",
+      "input": {
+        "shape": "object",
+        "fields": [
+          {
+            "key": "trueChance",
+            "value": {
+              "kind": "float",
+              "hex": "3FE6666666666666"
+            }
+          }
+        ]
+      },
+      "expected": {
+        "ok": false,
+        "reason": "not-a-dual-score",
+        "leg": null
+      },
+      "note": "RISK 8: a missing leg is REFUSED, never defaulted to 0 — 0 is a measurement, absence is not"
+    },
+    {
+      "vectorType": "Parse",
+      "name": "missing-true-leg",
+      "input": {
+        "shape": "object",
+        "fields": [
+          {
+            "key": "falseChance",
+            "value": {
+              "kind": "float",
+              "hex": "3FC999999999999A"
+            }
+          }
+        ]
+      },
+      "expected": {
+        "ok": false,
+        "reason": "not-a-dual-score",
+        "leg": null
+      },
+      "note": "…and the other leg likewise"
+    },
+    {
+      "vectorType": "Parse",
+      "name": "empty-object",
+      "input": {
+        "shape": "object",
+        "fields": []
+      },
+      "expected": {
+        "ok": false,
+        "reason": "not-a-dual-score",
+        "leg": null
+      },
+      "note": "neither leg present"
+    },
+    {
+      "vectorType": "Parse",
+      "name": "string-leg",
+      "input": {
+        "shape": "object",
+        "fields": [
+          {
+            "key": "trueChance",
+            "value": {
+              "kind": "string",
+              "value": "0.7"
+            }
+          },
+          {
+            "key": "falseChance",
+            "value": {
+              "kind": "float",
+              "hex": "3FC999999999999A"
+            }
+          }
+        ]
+      },
+      "expected": {
+        "ok": false,
+        "reason": "not-a-dual-score",
+        "leg": null
+      },
+      "note": "a numeric-LOOKING string is still not a number"
+    },
+    {
+      "vectorType": "Parse",
+      "name": "bool-leg",
+      "input": {
+        "shape": "object",
+        "fields": [
+          {
+            "key": "trueChance",
+            "value": {
+              "kind": "bool",
+              "value": true
+            }
+          },
+          {
+            "key": "falseChance",
+            "value": {
+              "kind": "float",
+              "hex": "3FC999999999999A"
+            }
+          }
+        ]
+      },
+      "expected": {
+        "ok": false,
+        "reason": "not-a-dual-score",
+        "leg": null
+      },
+      "note": "`true` is not 1"
+    },
+    {
+      "vectorType": "Parse",
+      "name": "null-leg",
+      "input": {
+        "shape": "object",
+        "fields": [
+          {
+            "key": "trueChance",
+            "value": {
+              "kind": "null"
+            }
+          },
+          {
+            "key": "falseChance",
+            "value": {
+              "kind": "float",
+              "hex": "3FC999999999999A"
+            }
+          }
+        ]
+      },
+      "expected": {
+        "ok": false,
+        "reason": "not-a-dual-score",
+        "leg": null
+      },
+      "note": "an explicit null is a present-but-wrong field, and is refused like any other"
+    },
+    {
+      "vectorType": "Parse",
+      "name": "out-of-range-leg-reaches-the-constructor",
+      "input": {
+        "shape": "object",
+        "fields": [
+          {
+            "key": "trueChance",
+            "value": {
+              "kind": "float",
+              "hex": "3FF6666666666666"
+            }
+          },
+          {
+            "key": "falseChance",
+            "value": {
+              "kind": "float",
+              "hex": "3FC999999999999A"
+            }
+          }
+        ]
+      },
+      "expected": {
+        "ok": false,
+        "reason": "outside-unit-interval",
+        "leg": "trueChance"
+      },
+      "note": "a well-SHAPED row still passes through the refusing constructor: reason outside-unit-interval"
+    },
+    {
+      "vectorType": "Parse",
+      "name": "nan-leg-reaches-the-constructor",
+      "input": {
+        "shape": "object",
+        "fields": [
+          {
+            "key": "trueChance",
+            "value": {
+              "kind": "float",
+              "hex": "7FF8000000000000"
+            }
+          },
+          {
+            "key": "falseChance",
+            "value": {
+              "kind": "float",
+              "hex": "3FC999999999999A"
+            }
+          }
+        ]
+      },
+      "expected": {
+        "ok": false,
+        "reason": "not-finite",
+        "leg": "trueChance"
+      },
+      "note": "THE VECTOR JSON CANNOT EXPRESS — reason not-finite, reachable only because legs travel as bits"
+    },
+    {
+      "vectorType": "Parse",
+      "name": "bare-number",
+      "input": {
+        "shape": "number",
+        "hex": "3FE6666666666666"
+      },
+      "expected": {
+        "ok": false,
+        "reason": "not-a-dual-score",
+        "leg": null
+      },
+      "note": "not an object at all"
+    },
+    {
+      "vectorType": "Parse",
+      "name": "bare-string",
+      "input": {
+        "shape": "string"
+      },
+      "expected": {
+        "ok": false,
+        "reason": "not-a-dual-score",
+        "leg": null
+      },
+      "note": "…nor is a string"
+    },
+    {
+      "vectorType": "Parse",
+      "name": "null-value",
+      "input": {
+        "shape": "null"
+      },
+      "expected": {
+        "ok": false,
+        "reason": "not-a-dual-score",
+        "leg": null
+      },
+      "note": "…nor null"
+    },
+    {
+      "vectorType": "Parse",
+      "name": "array-value",
+      "input": {
+        "shape": "array"
+      },
+      "expected": {
+        "ok": false,
+        "reason": "not-a-dual-score",
+        "leg": null
+      },
+      "note": "…nor an array, which IS an object to `typeof`"
+    },
+    {
+      "vectorType": "Parse",
+      "name": "bool-value",
+      "input": {
+        "shape": "bool"
+      },
+      "expected": {
+        "ok": false,
+        "reason": "not-a-dual-score",
+        "leg": null
+      },
+      "note": "…nor a bare boolean"
+    }
+  ]
+}
