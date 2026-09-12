@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import { acceptedDecisions, answersOwed, correlateFeedback, followUpOrder, keepRedPipelinesOpen, type FeedbackDelivery } from "./change-followup";
+import { acceptedDecisions, answersOwed, correlateFeedback, followUpOrder, keepRedPipelinesOpen, redPipelinesToReopen, type FeedbackDelivery } from "./change-followup";
 import { foldActionItems, openActionItems, type ActionItem, type HandedOffChange } from "./org-fold";
 import type { OrgEvent } from "./org-event";
 
@@ -213,5 +213,37 @@ describe("UNDER until_green A RED PIPELINE IS NOT FINISHED BY BEING EXPLAINED", 
     expect(keepRedPipelinesOpen(items, [asFlake], "flag_only").decisions).toEqual([asFlake]);
     expect(keepRedPipelinesOpen(items, [asFlake], "none").decisions).toEqual([asFlake]);
     expect(keepRedPipelinesOpen(items, [asFlake], undefined).decisions).toEqual([asFlake]);
+  });
+});
+
+describe("A PIPELINE STILL REPORTED RED COMES BACK OPEN", () => {
+  const base = { workId: "task-40", source: "gitlab", itemKind: "pipeline_failed", summary: "s", raisedAtMs: 1 };
+  const red: FeedbackDelivery = { deliveryId: "pipeline-189289-failed", source: "gitlab", itemKind: "pipeline_failed", summary: "the request's pipeline 189289 failed at bcc152b4" };
+  const match = { workId: "task-40", actionItemId: "gitlab:pipeline-189289-failed", delivery: red };
+  // MEASURED on agentic-tpm !164: raised 21:31, declined 21:31, and the pipeline still red at 00:17.
+  const declined: ActionItem = {
+    ...base,
+    actionItemId: "gitlab:pipeline-189289-failed",
+    settled: { outcome: "declined", how: "Same signal as pipeline 189179 - infrastructure", atMs: 2, respond: false },
+  };
+  const items = (list: readonly ActionItem[]): ReadonlyMap<string, readonly ActionItem[]> => new Map([["task-40", list]]);
+
+  test("a settled item whose pipeline is still failing is reopened, saying what was decided and that it did not make it pass", () => {
+    const out = redPipelinesToReopen([match], items([declined]), "until_green");
+    expect(out.map((o) => o.actionItemId)).toEqual(["gitlab:pipeline-189289-failed"]);
+    expect(out[0]?.why).toContain("still not green");
+    expect(out[0]?.why).toContain("Same signal as pipeline 189179");
+  });
+
+  test("an item still open is left alone - it is already somebody's to do", () => {
+    expect(redPipelinesToReopen([match], items([{ ...base, actionItemId: "gitlab:pipeline-189289-failed" }]), "until_green")).toEqual([]);
+  });
+
+  test("a comment is never reopened this way, and nothing is reopened unless the organization asked for until_green", () => {
+    const comment = { workId: "task-40", actionItemId: "gitlab:note-7", delivery: { ...red, deliveryId: "note-7", itemKind: "diff_comment" } };
+    const settledComment: ActionItem = { ...declined, actionItemId: "gitlab:note-7", itemKind: "diff_comment" };
+    expect(redPipelinesToReopen([comment], items([settledComment]), "until_green")).toEqual([]);
+    expect(redPipelinesToReopen([match], items([declined]), "flag_only")).toEqual([]);
+    expect(redPipelinesToReopen([match], items([declined]), undefined)).toEqual([]);
   });
 });

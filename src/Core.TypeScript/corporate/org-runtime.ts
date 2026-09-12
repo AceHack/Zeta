@@ -123,6 +123,7 @@ import {
   correlateFeedback,
   followUpOrder,
   keepRedPipelinesOpen,
+  redPipelinesToReopen,
   type AnswerCheck,
   type AnswerCheckRequest,
   type AnswerRequest,
@@ -4105,6 +4106,18 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
 
     const corr = correlateFeedback(deps.feedback ?? [], handedMap, deps.defaultBase ?? "master");
     for (const m of corr.aboutChange) raise(m.workId, m.actionItemId, fromDelivery(m.delivery));
+    // A pipeline the poller STILL reports red, whose item was already closed, comes back open - see
+    // `redPipelinesToReopen`. Without this the watcher starts runs for a red pipeline and the run
+    // has no open item to hand anyone.
+    for (const r of redPipelinesToReopen(corr.aboutChange, allItems, deps.changeRequests?.pipelines)) {
+      note({
+        kind: OrgEventKind.ChangeProjected,
+        subjectId: r.workId,
+        decision: `action item ${r.actionItemId} reopened: the pipeline is still red`,
+        atMs: warmedAt,
+        fact: { kind: "action_item_reopened", workId: r.workId, actionItemId: r.actionItemId, why: r.why },
+      });
+    }
     for (const d of corr.unmatched) {
       note({
         kind: OrgEventKind.ChangeProjected,

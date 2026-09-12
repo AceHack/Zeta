@@ -224,6 +224,42 @@ export function placeOnThisMachine(text: string): string | undefined {
 }
 
 /**
+ * A PIPELINE THE POLLER STILL REPORTS RED, WHOSE ITEM THE ORGANIZATION ALREADY CLOSED.
+ *
+ * MEASURED on agentic-tpm !164, and it is the hole in this rule's own first half. The pipeline item
+ * was raised at 21:31 and settled `declined` in the same minute. `keepRedPipelinesOpen` narrows a
+ * DECISION a follow-up is making now; it cannot touch one already made. And `raise` is idempotent by
+ * design, so a later poll reporting the same pipeline still failing raises nothing. So the watcher
+ * dutifully started runs saying "the request of task-040 is red (try 1 of 3)" and the run had no
+ * OPEN item to give a session - a writer with no reader, one layer further in.
+ *
+ * So: while the poller still reports it failing, a settled pipeline item is REOPENED. That is the
+ * mechanism the organization already has for "this was decided and the decision did not stand"
+ * (a follow-up's review turning work back), pointed at the one fact that outranks the decision -
+ * the pipeline is still red. An item still open, or one nothing reports as red any more, is left
+ * alone: this reopens what was closed while the reason it was raised for is still true.
+ */
+export function redPipelinesToReopen(
+  matches: readonly { readonly workId: string; readonly actionItemId: string; readonly delivery: FeedbackDelivery }[],
+  items: ReadonlyMap<string, readonly ActionItem[]>,
+  policy: PipelinePolicy | undefined,
+): readonly { readonly workId: string; readonly actionItemId: string; readonly why: string }[] {
+  if (policy !== "until_green") return [];
+  const out: { workId: string; actionItemId: string; why: string }[] = [];
+  for (const m of matches) {
+    if (m.delivery.itemKind !== "pipeline_failed") continue;
+    const item = (items.get(m.workId) ?? []).find((i) => i.actionItemId === m.actionItemId);
+    if (item === undefined || item.settled === undefined) continue;
+    out.push({
+      workId: m.workId,
+      actionItemId: m.actionItemId,
+      why: `the pipeline is still not green (${m.delivery.summary}), and this organization's work is not done until it passes - what was decided (${item.settled.outcome}: ${item.settled.how.split(/\s+/).join(" ").slice(0, 300)}) did not make it pass`,
+    });
+  }
+  return out;
+}
+
+/**
  * UNDER `until_green`, A RED PIPELINE CANNOT BE DECLINED.
  *
  * MEASURED on agentic-tpm !164: pipelines 189179 and 189289 were raised as action items, diagnosed
