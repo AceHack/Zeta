@@ -4268,12 +4268,28 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
             : true;
       let handedOffAgain = false;
       let attempted = false;
+      // ── RED CODE IS NOT REVIEWED ──────────────────────────────────────────────────────────────
+      // MEASURED on agentic-tpm !164, 2026-09-12: implementation_review (18 min) and qa_uat (17 min)
+      // both approved 8c2767c4, and then the verifier found new failures in workflowStage.test.ts and
+      // refused the push. Thirty-five minutes of the most expensive model spent reading a commit that
+      // a nine-minute test run rejects. The suite is also the one judge that cannot be talked round,
+      // so it goes FIRST, and the reviewers are only asked about code that already passes.
+      let reviewRejected: string | undefined;
+      let verifyFailed: string | undefined;
+      if (moved) {
+        const verified = deps.verifyChange === undefined
+          ? ({ ok: false, reason: "nothing is configured to verify a followed-up change" } as const)
+          : await verifyOneAtATime(() => (deps.verifyChange as (h: ChangeHandle) => Promise<PortResult<string>>)(handle));
+        if (!verified.ok) {
+          verifyFailed = verified.reason;
+          refused.push(`the followed-up change was not handed off again - it does not pass verification: ${verified.reason}`);
+        }
+      }
       // ── THE FOLLOW-UP'S CODE IS REVIEWED LIKE THE ORIGINAL WAS, BEFORE IT IS PUSHED ──────────
       // The item's own post-work review gates (implementation_review, qa_uat - whichever its chain
       // owes), each by an owner who is not the hat that made the change. A rejection stops the push,
       // and its reason goes back to the next session on the items it claimed to settle.
-      let reviewRejected: string | undefined;
-      if (moved && deps.reviewFollowUp !== undefined && afterRev?.ok === true) {
+      if (moved && verifyFailed === undefined && deps.reviewFollowUp !== undefined && afterRev?.ok === true) {
         const chain = node === undefined ? [] : chainOf(node);
         const from = lastShown ?? (before?.ok === true ? before.value.commit : undefined);
         for (const gate of [GateKind.ImplementationReview, GateKind.QaUat].filter((g) => chain.includes(g))) {
@@ -4309,29 +4325,29 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
           }
         }
       }
-      if (moved && reviewRejected !== undefined) {
-        // Turned back: nothing is pushed, and each item this session claimed is REOPENED with the
-        // reviewer's reason - open and due, not deferred - so the watcher starts the next round at
-        // once and the next session fixes what was found. Review is a back-and-forth until it passes.
+      if (moved && (verifyFailed !== undefined || reviewRejected !== undefined)) {
+        // Turned back by whichever judge stopped it, and SAID: nothing is pushed, and each item this
+        // session claimed is REOPENED with that reason - open and due, not deferred - so the watcher
+        // starts the next round at once and the next session fixes what was found. A failing suite is
+        // told to the next session the same way a reviewer's objection is; before this, a change that
+        // did not verify was simply left open with nothing recorded about why.
+        const why =
+          verifyFailed === undefined
+            ? `your change for this was reviewed and turned back - ${reviewRejected as string}`
+            : `your change for this did not pass the repository's own tests, so nobody reviewed it and nothing was pushed - ${verifyFailed}`;
         for (const d of accepted.filter((x) => x.outcome !== "deferred")) {
           note({
             kind: OrgEventKind.ChangeProjected,
             subjectId: workId,
             actorHatId: hatId,
-            decision: `action item ${d.actionItemId} reopened: the follow-up's review turned it back`,
+            decision: `action item ${d.actionItemId} reopened: ${verifyFailed === undefined ? "the follow-up's review turned it back" : "the follow-up did not pass verification"}`,
             atMs: warmedAt,
-            fact: { kind: "action_item_reopened", workId, actionItemId: d.actionItemId, why: `your change for this was reviewed and turned back - ${reviewRejected}` },
+            fact: { kind: "action_item_reopened", workId, actionItemId: d.actionItemId, why },
           });
         }
       } else if (moved) {
-        const verified = deps.verifyChange === undefined
-          ? ({ ok: false, reason: "nothing is configured to verify a followed-up change" } as const)
-          : await verifyOneAtATime(() => (deps.verifyChange as (h: ChangeHandle) => Promise<PortResult<string>>)(handle));
-        if (!verified.ok) refused.push(`the followed-up change was not handed off again - it does not pass verification: ${verified.reason}`);
-        else {
-          attempted = true;
-          handedOffAgain = await handOff(workId, handle, true, settledForDescription);
-        }
+        attempted = true;
+        handedOffAgain = await handOff(workId, handle, true, settledForDescription);
       } else if (accepted.some((d) => d.outcome === "addressed")) {
         // NOTHING MOVED, AND SOMETHING WAS STILL ADDRESSED - an answered question, a description
         // asked to be rewritten. The request is re-described so what people read matches what the

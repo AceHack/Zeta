@@ -979,6 +979,65 @@ describe("AFTER THE HANDOFF: THE REQUEST SAYS WHAT THE ORGANIZATION CONFIGURED, 
     }
   }, 120_000);
 
+  test("RED CODE IS NOT REVIEWED: the suite runs first, and a failing one costs no reviewer at all", async () => {
+    // MEASURED on agentic-tpm !164, 2026-09-12: two reviewers spent 35 minutes approving 8c2767c4,
+    // and the verifier then found new failures in workflowStage.test.ts and refused the push. The
+    // cheap judge that cannot be talked round goes first.
+    const repo = realRepo();
+    const git = (at: string, ...a: string[]) => execFileSync("git", a, { cwd: at, encoding: "utf-8" });
+    const inbox = realInbox();
+    const wt = mkdtempSync(join(tmpdir(), "zeta-red-wt-"));
+    const scratch = mkdtempSync(join(tmpdir(), "zeta-red-"));
+    const h = stubCounting(scratch);
+    const events: OrgEvent[] = [];
+    try {
+      const change = () => gitWorktreeChangeControl({ cwd: repo, baseBranch: "main", worktreeRoot: wt, handoff: { command: h.command, args: h.args } });
+      const noComment = { postComment: async () => ({ ok: true as const, value: {}, evidence: [] }) };
+      const base = { settings: [], changeRequests, describeChange: fullDescription, ...noComment, onEvent: (e: OrgEvent) => events.push(e) };
+      const first = await runAgainst(repo, inbox, { change: change() }, base);
+      const workId = first.changesHandedOff[0] as string;
+      const handed = foldHandedOffChanges(events);
+      const order: string[] = [];
+      const second = await runAgainst(repo, inbox, { change: change() }, {
+        ...base,
+        priorCascade: first.cascade,
+        alreadyHandedOff: new Set(handed.keys()),
+        handedOffChanges: handed,
+        actionItems: foldActionItems(events),
+        afterOpenDone: foldAfterOpen(events),
+        feedback: [{ deliveryId: "note-1", source: "gitlab", itemKind: "comment", summary: "please explain the race", author: "reviewer", branch: handed.get(workId)?.branch as string }],
+        defaultBase: "main",
+        verifyChange: async () => {
+          order.push("verify");
+          return { ok: false as const, reason: "NEW FAILURE introduced by this change: workflowStage.test.ts :: an unmapped status is REPORTED", evidence: [] };
+        },
+        reviewFollowUp: async () => {
+          order.push("review");
+          return { ok: true as const, value: { approved: true, reason: "looks fine to me" }, evidence: [] };
+        },
+        answer: async (r: AnswerRequest) => ({ ok: true as const, value: r.items.map((i) => ({ actionItemId: i.actionItemId, replyId: "note-9", resolved: true })), evidence: [] }),
+        followUp: async (req: { items: readonly { actionItemId: string }[]; workdir?: string }) => {
+          writeFileSync(join(req.workdir as string, "note.md"), "explained" + String.fromCharCode(10));
+          git(req.workdir as string, "add", "-A");
+          git(req.workdir as string, "commit", "-q", "-m", "explain the race");
+          return { ok: true as const, value: { decisions: req.items.map((i) => ({ actionItemId: i.actionItemId, outcome: "addressed" as const, how: "explained the race" })), syncWithTarget: false, summary: "s" }, evidence: [] };
+        },
+      });
+      // THE SUITE RAN, AND NO REVIEWER WAS EVER ASKED.
+      expect(order).toEqual(["verify"]);
+      expect(second.followUps?.[0]?.handedOffAgain).toBe(false);
+      expect(h.count()).toBe(1); // not pushed again
+      // And the next session is TOLD why, in the failure's own words - not left to rediscover it.
+      const item = foldActionItems(events).get(workId)?.find((i) => i.actionItemId === "gitlab:note-1");
+      expect(item?.settled).toBeUndefined();
+      expect(item?.reopened?.why).toContain("did not pass the repository's own tests");
+      expect(item?.reopened?.why).toContain("workflowStage.test.ts");
+      expect(second.followUps?.[0]?.refused.some((r) => r.includes("does not pass verification"))).toBe(true);
+    } finally {
+      for (const d of [repo, inbox, wt, scratch]) rmSync(d, { recursive: true, force: true });
+    }
+  }, 240_000);
+
   test("AT maxParallel 2 THE SESSIONS OVERLAP AND THE TEST SUITES STILL DO NOT", async () => {
     // MEASURED on agentic-tpm, 2026-09-12: three requests took 2h04m end to end, one thing at a time.
     // Nothing required that - so the follow-ups ferry. What may NOT overlap is the repository's own
