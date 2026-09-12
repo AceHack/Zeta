@@ -1028,6 +1028,7 @@ describe("AFTER THE HANDOFF: THE REQUEST SAYS WHAT THE ORGANIZATION CONFIGURED, 
 
       // One comment on each request, and a log of WHEN each session and each answer happened.
       const order: string[] = [];
+      const answers: AnswerRequest[] = [];
       const feedback = ids.map((w, i) => ({
         deliveryId: `note-${String(i + 1)}`,
         source: "gitlab",
@@ -1045,7 +1046,19 @@ describe("AFTER THE HANDOFF: THE REQUEST SAYS WHAT THE ORGANIZATION CONFIGURED, 
         priorCascade: first.cascade,
         alreadyHandedOff: new Set(handed.keys()),
         handedOffChanges: handed,
-        actionItems: foldActionItems(events),
+        // An item the LAST round settled and never got to answer - the situation on !163 at 00:51:
+        // six replies written, checked, and unposted. It is owed, and its request also has a new
+        // comment to work, so it lands in BOTH answering passes.
+        actionItems: new Map([
+          ...foldActionItems(events),
+          [
+            ids[0] as string,
+            [
+              ...(foldActionItems(events).get(ids[0] as string) ?? []),
+              { workId: ids[0] as string, actionItemId: "gitlab:note-owed", source: "gitlab", itemKind: "comment", summary: "from the round before", raisedAtMs: 1, settled: { outcome: "addressed" as const, how: "fixed it last round", atMs: 2, respond: true } },
+            ],
+          ],
+        ]),
         afterOpenDone: foldAfterOpen(events),
         feedback,
         defaultBase: "main",
@@ -1060,18 +1073,28 @@ describe("AFTER THE HANDOFF: THE REQUEST SAYS WHAT THE ORGANIZATION CONFIGURED, 
         },
         answer: async (r: AnswerRequest) => {
           order.push("answer:" + String(byWork.get(r.workId) ?? r.workId));
+          answers.push(r);
           return { ok: true as const, value: r.items.map((i) => ({ actionItemId: i.actionItemId, replyId: "note-9", resolved: true })), evidence: [] };
         },
         onEvent: (e: OrgEvent) => events.push(e),
       });
       expect(second.followUps?.length).toBe(2);
-      // THE POINT: each request's answer lands before the NEXT request's session even starts.
-      expect(order.length).toBe(4);
-      expect(order[0]?.startsWith("followUp:")).toBe(true);
-      expect(order[1]).toBe(order[0]?.replace("followUp:", "answer:"));
-      expect(order[2]?.startsWith("followUp:")).toBe(true);
-      expect(order[3]).toBe(order[2]?.replace("followUp:", "answer:"));
-      expect(new Set(order).size).toBe(4);
+      // Every item was answered EXACTLY once - answering runs twice over (what was already owed, then
+      // each request as its fix lands), and an item in both passes must not reach the reviewer twice.
+      const posted = answers.flatMap((a) => a.items.map((i) => i.actionItemId));
+      expect(new Set(posted).size).toBe(posted.length);
+      // The one owed from before was posted, and posted once.
+      expect(posted.filter((p) => p === "gitlab:note-owed")).toEqual(["gitlab:note-owed"]);
+      // ...and it went out BEFORE any session ran, not after the last one.
+      expect(order[0]).toBe("answer:" + String(byWork.get(ids[0] as string)));
+      // THE POINT, in order: what was already owed goes out first, and then each request's answer
+      // lands before the NEXT request's session even starts.
+      expect(order.length).toBe(5);
+      expect(order[1]?.startsWith("followUp:")).toBe(true);
+      expect(order[2]).toBe(order[1]?.replace("followUp:", "answer:"));
+      expect(order[3]?.startsWith("followUp:")).toBe(true);
+      expect(order[4]).toBe(order[3]?.replace("followUp:", "answer:"));
+      expect(order[1]).not.toBe(order[3]);
     } finally {
       for (const d of [repo, inbox, wt, scratch]) rmSync(d, { recursive: true, force: true });
     }

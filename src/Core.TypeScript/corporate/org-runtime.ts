@@ -4399,10 +4399,16 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
     // PER REQUEST, as soon as ITS OWN fix is pushed - not after every follow-up in the run. Called
     // again in a sweep below for anything settled earlier that was never answered; `answersOwed`
     // excludes what is already answered, so calling it twice costs nothing and misses nothing.
-    /** Requests this run has already answered on - the sweep below is for the ones it has not. */
-    const answeredRequests = new Set<string>();
+    /**
+     * Items the answer port was ASKED about this run, posted or failed.
+     *
+     * Answering happens twice over: once up front for what was already owed, once per request as its
+     * own fix is pushed. Without this an item in both passes is answered TWICE - the same reviewer
+     * gets the same reply on the same thread. And an item the port FAILED on stays in here too: a
+     * failure is still owed, and it waits for the next run rather than being retried a second later.
+     */
+    const triedThisRun = new Set<string>();
     const answerOn = async (workId: string, items: readonly ActionItem[]): Promise<void> => {
-      answeredRequests.add(workId);
       const replies = deps.changeRequests?.replies;
       if (replies === undefined || replies === "none") return;
       const change = handedMap.get(workId);
@@ -4431,7 +4437,8 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
           actionItemsAnswered.push(actionItemId);
         };
         for (const u of unanswered) answered(u.actionItemId, { resolved: false, skipped: u.why });
-        if (owed.length === 0) return;
+        const owedNow = owed.filter((o) => !triedThisRun.has(o.actionItemId));
+        if (owedNow.length === 0) return;
         if (deps.answer === undefined) {
           refusals.push(`settled items on ${workId} are owed an answer (replies: ${replies}) and nothing is configured to give it`);
           return;
@@ -4442,7 +4449,7 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
         // description; an answer with a claim that does not hold is not posted, and its item goes back
         // to be decided with what failed. A check that could not run posts nothing: unchecked is not
         // confirmed.
-        let toPost = owed;
+        let toPost = owedNow;
         if (deps.checkAnswers !== undefined) {
           const at = await reopen(workId);
           const read = change.url !== undefined && deps.readChange !== undefined ? await deps.readChange(change.url) : undefined;
@@ -4452,7 +4459,7 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
             branch: change.branch,
             ...(at?.workdir === undefined ? {} : { workdir: at.workdir }),
             ...(read?.ok === true ? { description: read.value.description } : {}),
-            items: owed.map((o) => ({
+            items: owedNow.map((o) => ({
               actionItemId: o.actionItemId,
               summary: summaryOfItem.get(o.actionItemId) ?? o.actionItemId,
               outcome: o.outcome,
@@ -4477,9 +4484,10 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
               fact: { kind: "action_item_reopened", workId, actionItemId: c.actionItemId, why },
             });
           }
-          toPost = owed.filter((o) => checked.value.some((c) => c.actionItemId === o.actionItemId && c.confirmed));
+          toPost = owedNow.filter((o) => checked.value.some((c) => c.actionItemId === o.actionItemId && c.confirmed));
           if (toPost.length === 0) return;
         }
+        for (const t of toPost) triedThisRun.add(t.actionItemId);
         const r = await deps.answer({
           workId,
           ...(change.url === undefined ? {} : { changeUrl: change.url }),
@@ -4496,6 +4504,14 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
           else answered(x.actionItemId, x);
         }
     };
+
+    // ── WHAT IS ALREADY OWED GOES OUT FIRST ───────────────────────────────
+    // MEASURED on agentic-tpm, 2026-09-12 00:51: six answers on !163 and one on !162 were written,
+    // checked and ready, and sat unposted while a third request's session ran - the reviewers saw
+    // nothing for an hour. An answer owed from an earlier round needs nothing from this run's work,
+    // so it is posted BEFORE any session starts. The follow-up loop below then answers each request
+    // it works as soon as that request's own fix is pushed.
+    for (const [workId, items] of allItems) await answerOn(workId, items);
 
     if (deps.followUp !== undefined) {
       const open = new Map<string, readonly ActionItem[]>();
@@ -4516,13 +4532,6 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
       refusals.push("handed-off changes have open action items and nothing is configured to follow them up");
     }
 
-    // The sweep: requests this run did not follow up, still owed answers from an earlier one. A
-    // request already answered on is NOT retried here - an answer that failed a minute ago (the
-    // review system returned 502) is owed, and waits for the next run rather than hammering it.
-    for (const [workId, items] of allItems) {
-      if (answeredRequests.has(workId)) continue;
-      await answerOn(workId, items);
-    }
 
     // ── REVIEW IS A BACK-AND-FORTH UNTIL IT COMES BACK CLEAN ──────────────
     // After a follow-up PUSHED a fix and its answers are posted, the organization asks for review
