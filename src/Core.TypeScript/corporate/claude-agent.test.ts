@@ -246,15 +246,16 @@ describe("AFTER THE HANDOFF: THE DESCRIPTION AND THE FOLLOW-UP", () => {
     quiet.cleanup();
   }, 30_000);
 
-  test("THE SESSION ALREADY HAS THE ITEMS WHOLE, and is told not to go fetching them", () => {
-    // MEASURED on dev-portal, 2026-09-12: three sessions saw a cut passage in `observe`, asked for the
-    // item whole to "recover the truncated action-item text", and thrashed their context to nothing.
-    // The text was already in front of them.
+  test("THE PROMPT CARRIES WHAT MUST BE DECIDED, and sends the session to its worldview for the rest", () => {
+    // MEASURED on dev-portal, 2026-09-12: sessions died reading whole items to recover text that had
+    // been cut, in a repository whose own documents already fill most of the context window. The fix
+    // is not more pasting: an item's full text lives in `observe`, one passage at a time.
     const items = JSON.stringify([{ id: "gitlab:note-1", kind: "comment", summary: "a very long review comment" }]);
     const r = run(["follow-up", "task-9"], ok({ decisions: [], syncWithTarget: false, summary: "s" }), { ORG_ACTION_ITEMS: items, ORG_CAN_SYNC: "0" });
-    expect(r.seen?.input).toContain("WHAT IS PRINTED ABOVE IS THE WHOLE OF EACH ITEM");
-    expect(r.seen?.input).toContain("loses its");
+    expect(r.seen?.input).toContain("WHAT IS PRINTED ABOVE IS WHAT YOU MUST DECIDE");
+    expect(r.seen?.input).toContain("is your worldview");
     expect(r.seen?.input).toContain("--passage <n>");
+    expect(r.seen?.input).toContain("fills its context and answers nothing");
     r.cleanup();
   }, 30_000);
 

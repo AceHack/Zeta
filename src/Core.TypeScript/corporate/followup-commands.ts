@@ -106,6 +106,16 @@ function lastJson(stdout: string | null | undefined): Record<string, unknown> | 
   return undefined;
 }
 
+/** How much of an item's detail travels in the prompt before the session is sent to `observe`. */
+export const DETAIL_IN_PROMPT = 600;
+
+/** The detail, cut, saying where the whole of it is - which is the worldview, not another message. */
+function detailForPrompt(detail: string, workId: string): string {
+  const t = detail.trim();
+  if (t.length <= DETAIL_IN_PROMPT) return t;
+  return `${t.slice(0, DETAIL_IN_PROMPT)}… (+${String(t.length - DETAIL_IN_PROMPT)} more — open \`observe item ${workId}\` and read its passage)`;
+}
+
 /** A follow-up session behind a command. See the module header for its protocol. */
 export function commandFollowUp(spec: CommandSpec, fallbackCwd: string): (r: FollowUpRequest) => Promise<PortResult<FollowUpOutcome>> {
   return async (r) => {
@@ -114,7 +124,10 @@ export function commandFollowUp(spec: CommandSpec, fallbackCwd: string): (r: Fol
       kind: i.itemKind,
       source: i.source,
       summary: i.summary,
-      ...(i.detail === undefined ? {} : { detail: i.detail }),
+      // BOUNDED, and the whole of it is in `observe`. An item's detail is a reviewer's entire
+      // comment or a pipeline's job logs; pasting it here put ~16KB of world into a prompt whose
+      // repository already spends most of the context window on its own documents.
+      ...(i.detail === undefined ? {} : { detail: detailForPrompt(i.detail, r.workId) }),
       ...(i.author === undefined ? {} : { author: i.author }),
       ...(i.url === undefined ? {} : { url: i.url }),
       // Decided once already, and that did not stand: the session is told why, so it does not repeat it.

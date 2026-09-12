@@ -61,6 +61,33 @@ describe("THE RECORD OF A WORK ITEM, as an agent opens it", () => {
     expect(parent?.childIds).toContain(defect?.id);
   }, 60_000);
 
+  test("AN ITEM'S FULL TEXT IS IN THE WORLDVIEW, where the prompt's pointer sends the session", async () => {
+    // MEASURED on dev-portal, 2026-09-12: the prompt pasted an item's whole detail and `observe` did
+    // not carry it at all, so bounding the prompt would have pointed the session at nothing.
+    const recorded = await recordedRun();
+    const workId = worldFor({ events: recorded, hatId: "qa_engineer", actions: [] }).items[0]?.id as string;
+    expect(workId).toBeDefined();
+    const detail = "the runner said: " + "d".repeat(3000);
+    const events = [
+      ...recorded,
+      {
+        id: "injected-item",
+        kind: "change_projected",
+        subjectId: workId,
+        decision: "action item raised",
+        atMs: Number.MAX_SAFE_INTEGER - 2,
+        evidenceRefs: [],
+        supervisorChain: [],
+        fact: { kind: "action_item_raised", workId, actionItemId: "gitlab:pipeline-9", source: "gitlab", itemKind: "pipeline_failed", summary: "the pipeline failed", detail },
+      },
+    ] as unknown as typeof recorded;
+    const { items } = worldFor({ events, hatId: "qa_engineer", actions: [] });
+    const it = items.find((i) => i.id === workId);
+    const said = (it?.comments ?? []).find((c) => c.text.includes("gitlab:pipeline-9"));
+    expect(said).toBeDefined();
+    expect(said?.text).toContain("the runner said:");
+  }, 60_000);
+
   test("AN ATTACHMENT IS SOMETHING THAT CAN BE OPENED: a step's inline log is not offered as one", async () => {
     // MEASURED on agentic-tpm task-032, 2026-09-12: a listed attachment was 4,031 characters of a test
     // run's stdout - a `log:` evidence ref, which carries its text INSIDE the ref. It was offered as

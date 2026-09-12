@@ -395,3 +395,43 @@ describe("WHAT THE SESSION IS HANDED ABOUT AN ITEM INCLUDES HOW OFTEN IT HAS FAI
     }
   });
 });
+
+describe("THE PROMPT CARRIES WHAT MUST BE DECIDED - THE WORLDVIEW CARRIES THE REST", () => {
+  // MEASURED on dev-portal, 2026-09-12: an item's `detail` went into the prompt unbounded - for a
+  // pipeline item that is up to three CI jobs' logs - putting ~16KB of world into a session whose
+  // repository already spent most of the context window on its own documents. The session died.
+  test("a long detail is cut in the prompt and says where the whole of it is", async () => {
+    const dir = mkdtempSync(join(tmpdir(), "followup-detail-"));
+    const seen = join(dir, "seen.json");
+    const stub = join(dir, "stub.cjs");
+    writeFileSync(
+      stub,
+      'require("fs").writeFileSync(' + JSON.stringify(seen) + ', process.env.ORG_ACTION_ITEMS || "");' +
+        'process.stdout.write(JSON.stringify({ decisions: [], syncWithTarget: false, summary: "s" }));',
+    );
+    try {
+      const followUp = commandFollowUp({ command: "node", args: [stub] }, dir);
+      const long = "x".repeat(9000);
+      await followUp({
+        workId: "task-12",
+        hatId: "backend_implementer",
+        branch: "defect/x",
+        mode: "triage",
+        canSync: false,
+        items: [
+          { workId: "task-12", actionItemId: "gitlab:pipeline-1", source: "gitlab", itemKind: "pipeline_failed", summary: "the pipeline failed", detail: long, raisedAtMs: 1 },
+          { workId: "task-12", actionItemId: "gitlab:note-1", source: "gitlab", itemKind: "comment", summary: "short one", detail: "still short", raisedAtMs: 1 },
+        ] as unknown as readonly ActionItem[],
+      });
+      const told = JSON.parse(readFileSync(seen, "utf-8")) as { id: string; detail?: string }[];
+      const big = told.find((t) => t.id === "gitlab:pipeline-1");
+      expect(big?.detail?.length).toBeLessThan(800);
+      expect(big?.detail).toContain("+8400 more");
+      expect(big?.detail).toContain("observe item task-12");
+      // A short one is untouched: this bounds what is large, it does not hide what is small.
+      expect(told.find((t) => t.id === "gitlab:note-1")?.detail).toBe("still short");
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+});

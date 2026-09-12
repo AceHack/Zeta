@@ -173,6 +173,11 @@ export function itemContextsFrom(
         by: i.author ?? i.source,
         text:
           `[${i.actionItemId}] ${i.itemKind}: ${i.summary}` +
+          // WHAT IT SAID IN FULL. MEASURED on dev-portal, 2026-09-12: this text was pasted into the
+          // session's prompt instead - unbounded, up to three CI jobs' logs for one item - while the
+          // worldview that is supposed to hold it did not carry it at all. It lives here now, cut like
+          // any other passage and readable whole with `--passage`.
+          (i.detail === undefined || i.detail.trim() === "" ? "" : ` — ${i.detail.trim()}`) +
           (i.settled !== undefined
             ? ` - ${i.settled.outcome}: ${i.settled.how}` +
               (i.answered === undefined
