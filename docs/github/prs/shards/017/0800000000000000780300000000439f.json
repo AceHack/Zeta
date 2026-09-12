@@ -1,0 +1,15 @@
+{
+  "pr_number": 17311,
+  "archive_path": "docs/history/pr-reviews/2026/09/12/PR-17311-feat-ace-ace-outdated-offline-dependency-freshness-unknown-is-never-current.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7uGHrz",
+    "thread:PRRT_kwDOSF9kNM6hrz67"
+  ],
+  "fetched_at": "2026-09-12T04:38:33.450Z",
+  "schema_version": "v1",
+  "commit_sha": "867659025357e0c20fa98cc5224a2d651e882fd8",
+  "title": "feat(ace): ace outdated -- offline dependency freshness, unknown is never current",
+  "state": "MERGED",
+  "merged_at": "2026-09-12T04:37:50Z",
+  "head_ref": "shadow/ace-out-of-date-dependencies"
+}
