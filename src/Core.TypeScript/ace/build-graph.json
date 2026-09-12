@@ -1612,7 +1612,7 @@
       "kind": "lean",
       "sources": ["src/Core.Lean4.Cslib/**"],
       "dependsOn": [],
-      "legs": [],
+      "legs": ["lean-cslib/type-check"],
       "origin": "derived",
       "requiredQuorum": {
         "tier": "T1",

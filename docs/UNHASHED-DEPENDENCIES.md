@@ -16,7 +16,7 @@
 
 - **Declared unhashed:** 7 — each one names its own reason on its own row.
 - **Undeclared unhashed:** 169 — visible and countable, but not yet declarable. This number must only fall.
-- **Digest-covered:** 1942.
+- **Digest-covered:** 1947.
 
 ## Declared — an unhashed dependency that says why
 
@@ -80,7 +80,7 @@ Listed so the numbers above are a ratio rather than a scare.
 | `from-opam-git` | `tlapm` | `tools/setup/manifests/from-opam-git` |
 | `from-url` | `src/Core.Alloy/alloy.jar` | `tools/setup/manifests/from-url` |
 | `from-zip` | `~/.zeta/codeql-cli` | `tools/setup/manifests/from-zip` |
-| `github-actions` | `324 SHA-pinned reference(s)` | `.github/workflows` |
+| `github-actions` | `329 SHA-pinned reference(s)` | `.github/workflows` |
 | `npm` | `40 integrity-covered package(s)` | `agentic-organization/package-lock.json` |
 | `npm` | `433 integrity-covered package(s)` | `bun.lock` |
 | `npm` | `5 integrity-covered package(s)` | `full-ai-cluster/platform-controller/bun.lock` |
