@@ -207,6 +207,7 @@ describe("a lock missing on one platform is a finding, never a skip", () => {
       platform: p,
       sdk: "10.0.400",
       arch: p.includes("arm") ? "arm64" : "x64",
+      restored: true,
       locks: p === "windows-2025" ? {} : { "p/packages.lock.json": BASE },
     }));
     const report = compareManifests(manifests, { "p/packages.lock.json": BASE }, () => NO_SIGNALS);
@@ -223,6 +224,7 @@ describe("a leg that never reported is a failure, not agreement", () => {
     platform: p,
     sdk: "10.0.400",
     arch: "x64",
+    restored: true,
     locks: { "a/packages.lock.json": BASE },
   }));
   const committed = { "a/packages.lock.json": BASE };
@@ -247,12 +249,79 @@ describe("a leg that never reported is a failure, not agreement", () => {
   });
 });
 
+describe("a leg that ran but did NOT restore must not vote", () => {
+  // The defect this lane shipped with, caught by its own first CI run. On run
+  // 34664278420 the windows-11-arm leg crashed in `dotnet --version`, skipped both
+  // restore steps, and still uploaded a full 63-file manifest -- the files as checked
+  // out. The comparison counted it as a fifth opinion, and because a Windows checkout
+  // is CRLF it turned 33 genuinely-identical projects into `differs-formatting-only`.
+  const good = (platform: string): LockManifest => ({
+    platform,
+    sdk: "10.0.400",
+    arch: "x64",
+    restored: true,
+    locks: { "a/packages.lock.json": BASE },
+  });
+  // Same content, CRLF, and its restore never ran -- exactly the bad leg's shape.
+  const neverRestored: LockManifest = {
+    platform: "windows-11-arm",
+    sdk: "",
+    arch: "arm64",
+    restored: false,
+    locks: { "a/packages.lock.json": BASE.replace(/\n/g, "\r\n") },
+  };
+  const committed = { "a/packages.lock.json": BASE };
+
+  test("its manifest is dropped rather than compared", () => {
+    const report = compareManifests(
+      [good("ubuntu-24.04"), good("macos-26"), neverRestored],
+      committed,
+      () => NO_SIGNALS,
+    );
+    expect(report.unrestoredPlatforms).toEqual(["windows-11-arm"]);
+    expect(report.platforms).toEqual(["macos-26", "ubuntu-24.04"]);
+    // and critically: the good legs are still `identical`, not polluted to
+    // `differs-formatting-only` by the CRLF of a leg that did no work.
+    expect(report.counts.identical).toBe(1);
+    expect(report.counts["differs-formatting-only"]).toBe(0);
+  });
+
+  test("but the run is NOT stable — a silent no-op leg is a failure", () => {
+    const report = compareManifests(
+      [good("ubuntu-24.04"), good("macos-26"), neverRestored],
+      committed,
+      () => NO_SIGNALS,
+    );
+    expect(report.stable).toBe(false);
+  });
+
+  test("it is NOT double-counted as a missing platform", () => {
+    // "never reported" and "reported without doing the work" are different faults.
+    const report = compareManifests(
+      [good("ubuntu-24.04"), neverRestored],
+      committed,
+      () => NO_SIGNALS,
+      ["ubuntu-24.04", "windows-11-arm"],
+    );
+    expect(report.unrestoredPlatforms).toEqual(["windows-11-arm"]);
+    expect(report.missingPlatforms).toEqual([]);
+    expect(report.stable).toBe(false);
+  });
+
+  test("capture is fail-closed: restored defaults to false, not true", () => {
+    // A manifest written without the flag must not be trusted as restored.
+    const untagged = { ...neverRestored, restored: false };
+    expect(untagged.restored).toBe(false);
+  });
+});
+
 describe("compareManifests folds the whole matrix", () => {
   test("a clean matrix is stable and every project is identical", () => {
     const manifests: LockManifest[] = PLATFORMS.map((p) => ({
       platform: p,
       sdk: "10.0.400",
       arch: p.includes("arm") ? "arm64" : "x64",
+      restored: true,
       locks: { "a/packages.lock.json": BASE, "b/packages.lock.json": BASE },
     }));
     const report = compareManifests(
@@ -270,6 +339,7 @@ describe("compareManifests folds the whole matrix", () => {
       platform: p,
       sdk: "10.0.400",
       arch: "x64",
+      restored: true,
       locks: {
         "a/packages.lock.json": BASE,
         "b/packages.lock.json": p === "macos-26" ? BASE.replace("23.0.0", "23.0.9") : BASE,

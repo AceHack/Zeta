@@ -74,19 +74,78 @@ two `.NETStandard,Version=v2.0`), and zero `Condition=`-guarded `PackageReferenc
 `$(MSBuildProjectExtension)` — none on an OS or an architecture. A regression test pins this
 premise, so adding a RID to the root props fails loudly rather than being inherited in silence.
 
-**Local result, one leg of five.** On macOS arm64 (darwin-arm64, SDK 10.0.400), a
-`--force-evaluate` restore of `Zeta.sln` plus all ten out-of-solution projects reproduced all
-63 committed locks **byte-identically** — `git status` reported zero modified files. That is
-one platform; the other four are what the lane is for, and until it has run on them the answer
-for those is `unknown`, not `probably the same`.
+## THE ANSWER — the locks are NOT cross-platform stable, so do not widen `--locked-mode`
 
-**What widening would change, exactly.** If the lane reports every project `identical` across
-all five legs, the supported edit is one flag on one step: `gate.yml`'s
-`build-and-test` → `Build (0 Warning(s) / 0 Error(s) required)`, from
-`dotnet build Zeta.sln -c Release` to `dotnet restore Zeta.sln --locked-mode` followed by
-`dotnet build Zeta.sln -c Release --no-restore`. Nothing else in the gate changes. If instead
-it reports `differs-unexplained` anywhere, that project is the finding and the remedy is a
-per-project decision — an exclusion, or per-RID locks — not a blanket widening.
+First run, 2026-09-11 (workflow run `34664278420`). **Zero of 63 projects came back
+`identical`.** The measurement says no, and it says it for two independent reasons.
+
+| verdict | count | what it is |
+|---|---|---|
+| `identical` | **0** | — |
+| `differs-unexplained` | **30** | one package, `FSharp.Core`. The blocking finding |
+| `differs-formatting-only` | **33** | Windows writes CRLF; Unix writes LF |
+
+### Finding 1 — `FSharp.Core` resolves to a different `contentHash` per platform (30 locks)
+
+The 30 affected locks are **exactly** the 30 that reference `FSharp.Core`, and
+`net10.0/FSharp.Core` is the **only** differing entry in any of them. Same requested range,
+same resolved version `10.1.400`, three different hashes:
+
+| leg | `contentHash` (truncated) |
+|---|---|
+| `macos-26`, `windows-2025`, **and the committed files** | `H9wlZ/tWgNp+Q4WQ5aUSi3XO…` |
+| `ubuntu-24.04` | `mxCkXuBt4wyRMmHf4boZXm30…` |
+| `ubuntu-24.04-arm` | `90c8OKU41fCkzphlHq8nQiOJ…` |
+
+So the committed locks are the **macOS/Windows** answer, and both Linux legs disagree — with
+the committed files and with each other. `dotnet restore --locked-mode` on the gate would
+therefore fail `NU1403` on every Linux leg, which is most of the gate.
+
+**Hypothesis for the mechanism, labelled as one.** `FSharp.Core` 10.1.400 *is* published on
+nuget.org, but the sha512 of the nuget.org `.nupkg` (`aM8GRu3juiHLoQqcV7+nnynXrw1G…`) matches
+**none** of the three values above, so the lock's `contentHash` is not a digest of that file.
+The .NET SDK also ships its own copy at `sdk/<version>/FSharp/library-packs/FSharp.Core.<v>.nupkg`,
+and that file's bytes differ from the nuget.org one (measured locally: `T9R1BJRK32NxCH9vneBi…`).
+An SDK-bundled package acting as an implicit local source, with per-platform SDK build bytes,
+fits every observation — but the exact resolution path has **not** been traced, so this is a
+hypothesis to test, not a finding. What is *measured* is the divergence itself, and the
+divergence alone settles the widening question.
+
+### Finding 2 — every lock differs at byte level on Windows (33 locks, and really all 63)
+
+`windows-2025` writes `packages.lock.json` with **CRLF**; `ubuntu-*` and `macos-26` write
+**LF** (measured directly on the captured bytes). The 33 that are not already in Finding 1
+report `differs-formatting-only` for that reason alone; the other 30 carry it too, underneath
+the semantic difference.
+
+This one does **not** block `--locked-mode` — NuGet parses the JSON and compares the resolved
+graph, not the bytes — but it does mean a "restore leaves the tree clean" check would be red on
+every Windows leg. The two failure modes are separate and want separate remedies, which is why
+the lane reports them as separate verdicts instead of one "differs".
+
+### What would have to be true before widening
+
+Finding 1 has to be **fixed**, not waived: one resolved version must mean one `contentHash` on
+every leg. Until then the supported edit named below stays unapplied.
+
+**The edit, when it is ever supported:** one step in `gate.yml`'s `build-and-test` —
+`Build (0 Warning(s) / 0 Error(s) required)`, from `dotnet build Zeta.sln -c Release` to
+`dotnet restore Zeta.sln --locked-mode` followed by
+`dotnet build Zeta.sln -c Release --no-restore`. Nothing else in the gate changes.
+
+### A note on the lane's own first run, because it caught itself
+
+The `windows-11-arm` leg crashed in `dotnet --version` (exit `-2147483644`), **skipped both
+restore steps, and still uploaded a full 63-file manifest** — the files exactly as checked
+out. The first version of the comparison counted that as a fifth platform's opinion, and
+because a Windows checkout is CRLF it turned 33 genuinely-identical projects into
+`differs-formatting-only`. A leg that did no work was voting.
+
+The capture now records `--restored`, computed from whether the restore steps actually
+succeeded, and `compare` refuses such a manifest as data and fails the run for it. The default
+is **false**, so a manifest that does not vouch for its own restore is not trusted. This is the
+"a check that did not run looking like one that passed" class, found by the lane in itself on
+its first execution.
 
 ## The three things that go wrong
 
@@ -123,3 +182,6 @@ for keeping them.
   which is the threat this closes.
 - `.claude/rules/toy-is-free-metered-must-be-earned.md` — why `--locked-mode` was proven to
   **fail** on a changed graph before it was claimed as a check.
+- `.github/workflows/lock-cross-os-stability.yml` + `src/Core.TypeScript/hygiene/lock-cross-os-stability.ts`
+  — the cross-platform measurement lane and its comparator; the findings above are its output.
+  A measurement lane, not a gate: it emits no `gate (required)` context and cannot block `main`.

@@ -64,6 +64,18 @@ export interface LockManifest {
   readonly sdk: string;
   /** Node's view of the CPU, e.g. `x64`, `arm64`. The gate matrix has two ARM legs. */
   readonly arch: string;
+  /**
+   * Did this leg's restore steps actually complete? FAIL-CLOSED: capture writes `false`
+   * unless told otherwise, and `compare` refuses such a manifest as data.
+   *
+   * This field exists because the lane shipped without it and was immediately bitten.
+   * On run 34664278420 the `windows-11-arm` leg crashed in `dotnet --version`
+   * (exit -2147483644), skipped both restore steps, and STILL uploaded a full 63-file
+   * manifest -- the files as checked out, never re-resolved. The comparison read it as a
+   * fifth opinion and its CRLF checkout turned 33 genuinely-identical projects into
+   * `differs-formatting-only`. A leg that did no work must not be able to vote.
+   */
+  readonly restored: boolean;
   /** Repo-relative POSIX path -> raw file text, exactly as restore wrote it. */
   readonly locks: Readonly<Record<string, string>>;
 }
@@ -98,6 +110,12 @@ export interface Report {
    * the expected roster is an input and its shortfall is a failure.
    */
   readonly missingPlatforms: readonly string[];
+  /**
+   * Legs that uploaded a manifest whose restore did not complete. Reported separately
+   * from `missingPlatforms` because "it ran and did nothing" and "it never reported" are
+   * different operational faults, and collapsing them would hide which one happened.
+   */
+  readonly unrestoredPlatforms: readonly string[];
   readonly findings: readonly ProjectFinding[];
   readonly counts: Readonly<Record<Verdict, number>>;
   /** True only when every expected leg reported AND nothing is unexplained or missing. */
@@ -391,15 +409,25 @@ export function compareManifests(
   signalsFor: (path: string) => PerOsSignals,
   expectedPlatforms: readonly string[] = [],
 ): Report {
-  const platforms = manifests.map((m) => m.platform).sort();
-  const missingPlatforms = expectedPlatforms.filter((p) => !platforms.includes(p)).sort();
+  // A manifest whose restore did not complete is NOT data. It is dropped before any
+  // comparison, and its platform is reported as unrestored.
+  const unrestoredPlatforms = manifests
+    .filter((m) => m.restored === false)
+    .map((m) => m.platform)
+    .sort();
+  const usable = manifests.filter((m) => m.restored !== false);
+
+  const platforms = usable.map((m) => m.platform).sort();
+  const missingPlatforms = expectedPlatforms
+    .filter((p) => !platforms.includes(p) && !unrestoredPlatforms.includes(p))
+    .sort();
   const paths = new Set<string>(Object.keys(committed));
-  for (const m of manifests) for (const p of Object.keys(m.locks)) paths.add(p);
+  for (const m of usable) for (const p of Object.keys(m.locks)) paths.add(p);
 
   const findings: ProjectFinding[] = [];
   for (const path of [...paths].sort()) {
     const byPlatform = new Map<string, string>();
-    for (const m of manifests) {
+    for (const m of usable) {
       const text = m.locks[path];
       if (text !== undefined) byPlatform.set(m.platform, text);
     }
@@ -421,8 +449,10 @@ export function compareManifests(
     missingPlatforms,
     findings,
     counts,
+    unrestoredPlatforms,
     stable:
       missingPlatforms.length === 0 &&
+      unrestoredPlatforms.length === 0 &&
       counts["differs-unexplained"] === 0 &&
       counts["missing-on-some-platforms"] === 0,
   };
@@ -495,12 +525,14 @@ function main(): void {
       platform,
       sdk: flag(argv, "sdk") ?? "unknown",
       arch: process.arch,
+      // FAIL-CLOSED: anything but a literal `true` means the restore is not vouched for.
+      restored: flag(argv, "restored") === "true",
       locks: collectLocks(root),
     };
     writeFileSync(out, JSON.stringify(manifest, null, 2));
     console.log(
       `[lock-cross-os] captured ${String(Object.keys(manifest.locks).length)} lock file(s) on ` +
-        `${platform} (arch=${manifest.arch}, sdk=${manifest.sdk}) -> ${out}`,
+        `${platform} (arch=${manifest.arch}, sdk=${manifest.sdk}, restored=${String(manifest.restored)}) -> ${out}`,
     );
     return;
   }
@@ -539,7 +571,14 @@ function main(): void {
       console.error(`[lock-cross-os] \u2717 expected leg reported NOTHING: ${p} (its restore or upload did not complete)`);
     }
     for (const m of manifests) {
-      console.log(`[lock-cross-os]   ${m.platform}: arch=${m.arch} sdk=${m.sdk} locks=${String(Object.keys(m.locks).length)}`);
+      const note = m.restored === false ? "  <-- RESTORE DID NOT COMPLETE; NOT COUNTED AS DATA" : "";
+      console.log(
+        `[lock-cross-os]   ${m.platform}: arch=${m.arch} sdk=${m.sdk} ` +
+          `locks=${String(Object.keys(m.locks).length)} restored=${String(m.restored)}${note}`,
+      );
+    }
+    for (const p of report.unrestoredPlatforms) {
+      console.error(`[lock-cross-os] \u2717 leg did NOT restore, so its manifest is not data: ${p}`);
     }
     console.log(`[lock-cross-os] projects compared: ${String(report.findings.length)}`);
     for (const [verdict, n] of Object.entries(report.counts)) {

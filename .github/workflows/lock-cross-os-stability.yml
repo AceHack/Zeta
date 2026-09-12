@@ -135,6 +135,17 @@ jobs:
       # be masked by bytes that are already on disk. This lane wants the cold
       # answer.
 
+      # The same root fix gate.yml applies: install.sh fetches ~561 MB of .deb on
+      # every ubuntu job, and against a slow mirror that alone exhausted the
+      # installer's 420s apt budget (exit 124 across six job names, 2026-08-25).
+      # Restoring the archives does not warm the NuGet cache, so it does not
+      # compromise the cold-resolution property this lane depends on.
+      - name: Restore apt archives (root fix for the exit-124 install-step class)
+        if: startsWith(matrix.os, 'windows-') == false
+        uses: ./.github/actions/apt-archive-cache
+        with:
+          tier: full
+
       - name: Install toolchain via three-way-parity script (Unix; GOVERNANCE §24)
         if: startsWith(matrix.os, 'windows-') == false
         run: ./tools/setup/install.sh
@@ -155,10 +166,12 @@ jobs:
           dotnet --info | sed -n '1,12p'
 
       - name: Re-resolve every lock in Zeta.sln (force-evaluate)
+        id: restore_sln
         shell: bash
         run: dotnet restore Zeta.sln --force-evaluate
 
       - name: Re-resolve the 10 projects outside Zeta.sln
+        id: restore_outside
         # Nothing in CI builds these, so nothing else would ever notice if their
         # locks were platform-dependent. They are restored one at a time so a
         # single failure names the project rather than the batch.
@@ -182,16 +195,24 @@ jobs:
           done
 
       - name: Capture every packages.lock.json this platform produced
-        # `always()` so a leg that died partway still reports what it managed to
-        # resolve. A partial capture surfaces as `missing-on-some-platforms` in
-        # the comparison, which is a finding; uploading nothing would surface as
-        # silence, which is not.
+        # `always()` so a leg that died partway still reports, rather than going
+        # silent -- but `--restored` says whether the restore steps ACTUALLY ran,
+        # and `compare` refuses a manifest that says false.
+        #
+        # This is not hypothetical. On this lane's first run (34664278420) the
+        # windows-11-arm leg crashed in `dotnet --version` (exit -2147483644),
+        # skipped both restores, and uploaded the files exactly as checked out.
+        # Without this flag the comparison read those as a fifth platform's
+        # opinion, and because a Windows checkout is CRLF it reported 33
+        # genuinely-identical projects as `differs-formatting-only`. A leg that
+        # did no work must not be able to vote.
         if: always()
         shell: bash
         run: >
           bun src/Core.TypeScript/hygiene/lock-cross-os-stability.ts capture
           --platform "${{ matrix.os }}"
           --sdk "${{ steps.sdk.outputs.version }}"
+          --restored "${{ steps.restore_sln.outcome == 'success' && steps.restore_outside.outcome == 'success' }}"
           --out "lock-manifest-${{ matrix.os }}.json"
 
       - name: Upload this platform's manifest
