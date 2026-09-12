@@ -266,9 +266,21 @@ export function commandFollowUpReview(spec: CommandSpec, fallbackCwd: string) {
       ...(r.workdir === undefined ? {} : { ORG_WORKDIR: r.workdir }),
     });
     if (ran.error !== undefined) return { ok: false, reason: `the reviewer '${spec.command}' could not run: ${ran.error.message}` };
-    const said = String(ran.stdout ?? "").trim().split(/\r?\n/).filter((l) => !l.startsWith("usage:")).join(" ").slice(0, 2000);
+    const lines = String(ran.stdout ?? "").trim().split(/\r?\n/).filter((l) => !l.startsWith("usage:"));
+    const said = lines.filter((l) => !l.trim().startsWith("{")).join(" ").slice(0, 2000);
     if (ran.status !== 0 && ran.status !== 1) return { ok: false, reason: `the reviewer exited ${String(ran.status)}: ${tail(ran.stderr) || said}` };
-    return { ok: true, value: { approved: ran.status === 0, reason: said === "" ? `exit ${String(ran.status)}` : said }, evidence: [] };
+    // WHAT IT TURNED BACK, when it said. A reviewer that names nothing turns the whole round back.
+    const structured = lastJson(ran.stdout);
+    const rejected = Array.isArray(structured?.["rejected"]) ? (structured["rejected"] as unknown[]).map((x) => String(x)) : undefined;
+    return {
+      ok: true,
+      value: {
+        approved: ran.status === 0,
+        reason: said === "" ? `exit ${String(ran.status)}` : said,
+        ...(rejected === undefined || rejected.length === 0 ? {} : { rejected }),
+      },
+      evidence: [],
+    };
   };
 }
 

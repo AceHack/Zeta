@@ -685,12 +685,22 @@ if (mode === "review") {
       verdict: { type: "string", enum: ["approve", "reject"] },
       reason: { type: "string", description: "Why, specific and actionable. Cite what you looked at." },
       lookedAt: { type: "array", items: { type: "string" } },
+      rejected: {
+        type: "array",
+        items: { type: "string" },
+        description:
+          "On a rejection: the exact summary of EVERY item you are turning back, and only those. Items you " +
+          "do not name are left alone - they stay in the branch with what you proved about them, and the next " +
+          "session works only what you named. Name every item you object to; naming none turns the whole round back.",
+      },
     },
     required: ["verdict", "reason", "lookedAt"],
   };
   const r = await runClaude(prompt, schema, JUDGE, process.cwd(), { hat, workId });
   const a = r.answer;
   process.stdout.write(String(a.reason).trim() + (a.lookedAt && a.lookedAt.length ? " [looked at: " + a.lookedAt.join(", ") + "]" : "") + NL);
+  // The items turned back, as a line the organization parses - the prose above is for a person.
+  if (a.verdict !== "approve") process.stdout.write(JSON.stringify({ rejected: Array.isArray(a.rejected) ? a.rejected : [] }) + NL);
   process.exit(a.verdict === "approve" ? 0 : 1);
 }
 

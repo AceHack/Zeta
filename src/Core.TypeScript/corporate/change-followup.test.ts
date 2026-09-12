@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import { acceptedDecisions, answersOwed, correlateFeedback, followUpOrder, gatesForRound, keepRedPipelinesOpen, redPipelinesToReopen, type FeedbackDelivery } from "./change-followup";
+import { acceptedDecisions, answersOwed, correlateFeedback, followUpOrder, gatesForRound, keepRedPipelinesOpen, redPipelinesToReopen, turnedBackItems, type FeedbackDelivery } from "./change-followup";
 import { foldActionItems, openActionItems, type ActionItem, type HandedOffChange } from "./org-fold";
 import type { OrgEvent } from "./org-event";
 
@@ -280,5 +280,51 @@ describe("WHAT A ROUND OWES IS DECIDED, AND ONLY WITHIN WHAT THE CHAIN OWES", ()
     expect(invented.gates).toEqual(request.usual);
     expect(invented.why).toContain("security_review");
     expect(invented.why).toContain("does not owe");
+  });
+});
+
+describe("ONLY WHAT THE REVIEWER TURNED BACK IS DONE AGAIN", () => {
+  // MEASURED on agentic-tpm !164, 2026-09-12: a review rejected 2 of 12 items - "ten of the twelve
+  // check out under mutation, but two do not" - and all twelve were reopened. The next session spent
+  // 41 minutes and 140 turns reworking ten items the reviewer had already proved good, to fix two.
+  const decided = [
+    { actionItemId: "gitlab:note-1", outcome: "addressed" },
+    { actionItemId: "gitlab:note-2", outcome: "addressed" },
+    { actionItemId: "gitlab:note-3", outcome: "declined" },
+    { actionItemId: "gitlab:note-4", outcome: "deferred" },
+  ];
+  const summaries = new Map([
+    ["gitlab:note-1", "the oversight severity index"],
+    ["gitlab:note-2", "cap the batch size"],
+    ["gitlab:note-3", "rename the flag"],
+    ["gitlab:note-4", "split the module"],
+  ]);
+
+  test("named by summary: those come back, the rest are left alone", () => {
+    const out = turnedBackItems(decided, summaries, ["the oversight severity index"]);
+    expect(out.again).toEqual(["gitlab:note-1"]);
+    expect(out.kept).toEqual(["gitlab:note-2", "gitlab:note-3"]);
+  });
+
+  test("named by id works too - a reviewer is shown both", () => {
+    expect(turnedBackItems(decided, summaries, ["gitlab:note-2"]).again).toEqual(["gitlab:note-2"]);
+  });
+
+  test("a reviewer that names nothing turns the whole round back", () => {
+    expect(turnedBackItems(decided, summaries, undefined).again).toEqual(["gitlab:note-1", "gitlab:note-2", "gitlab:note-3"]);
+    expect(turnedBackItems(decided, summaries, []).kept).toEqual([]);
+  });
+
+  test("a rejection naming nothing THIS round decided turns it back whole - never quietly keeps everything", () => {
+    const out = turnedBackItems(decided, summaries, ["something from another change entirely"]);
+    expect(out.again).toEqual(["gitlab:note-1", "gitlab:note-2", "gitlab:note-3"]);
+    expect(out.kept).toEqual([]);
+  });
+
+  test("a deferred item is nobody's to turn back: it was never claimed", () => {
+    for (const r of [undefined, ["the oversight severity index"], ["split the module"]]) {
+      const out = turnedBackItems(decided, summaries, r);
+      expect([...out.again, ...out.kept]).not.toContain("gitlab:note-4");
+    }
   });
 });

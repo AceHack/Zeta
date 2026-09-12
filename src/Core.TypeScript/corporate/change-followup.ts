@@ -151,6 +151,47 @@ export interface FollowUpReviewRequest {
 export interface FollowUpReviewVerdict {
   readonly approved: boolean;
   readonly reason: string;
+  /**
+   * The items this verdict is about, by the summary it was shown. Empty or absent on a rejection
+   * means the reviewer did not say - and then the whole round is turned back, as it always was.
+   *
+   * MEASURED on agentic-tpm !164, 2026-09-12: a review rejected 2 of 12 claimed items - "ten of the
+   * twelve check out under mutation, but two do not" - and all twelve were reopened. The next session
+   * spent 41 minutes and 140 turns reworking ten items the reviewer had already proved good, to fix
+   * two. Three rounds of that pushed nothing.
+   */
+  readonly rejected?: readonly string[];
+}
+
+/**
+ * Which of a round's decisions a rejection actually turns back.
+ *
+ * A reviewer that names nothing turns back everything: a verdict that cannot say what is wrong is not
+ * a verdict anyone can act on selectively. A reviewer that names items turns back THOSE, and the rest
+ * are left alone with what the reviewer found - they are in the branch, they were proven, and redoing
+ * them is how a round costs an hour to fix one thing.
+ */
+export function turnedBackItems(
+  decided: readonly { readonly actionItemId: string; readonly outcome: string }[],
+  summaryOf: ReadonlyMap<string, string>,
+  rejected: readonly string[] | undefined,
+): { readonly again: readonly string[]; readonly kept: readonly string[] } {
+  const mine = decided.filter((d) => d.outcome !== "deferred").map((d) => d.actionItemId);
+  if (rejected === undefined || rejected.length === 0) return { again: mine, kept: [] };
+  const named = (id: string): boolean => {
+    const summary = (summaryOf.get(id) ?? "").trim();
+    return rejected.some((r) => {
+      const said = r.trim();
+      if (said === "") return false;
+      // Named by id, or by the summary the reviewer was shown - it is given both and may use either.
+      return said === id || said.includes(id) || (summary !== "" && (said.includes(summary) || summary.includes(said)));
+    });
+  };
+  const again = mine.filter(named);
+  // A rejection that names nothing this round decided is a reviewer talking about something else:
+  // turn the round back whole rather than quietly settling everything it objected to.
+  if (again.length === 0) return { again: mine, kept: [] };
+  return { again, kept: mine.filter((id) => !again.includes(id)) };
 }
 
 /**

@@ -126,6 +126,7 @@ import {
   gatesForRound,
   keepRedPipelinesOpen,
   redPipelinesToReopen,
+  turnedBackItems,
   type AnswerCheck,
   type FollowUpPlan,
   type FollowUpPlanRequest,
@@ -4285,6 +4286,8 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
       // so it goes FIRST, and the reviewers are only asked about code that already passes.
       let reviewRejected: string | undefined;
       let verifyFailed: string | undefined;
+      /** What the reviewer named, when it named anything - see `turnedBackItems`. */
+      let rejectedItems: readonly string[] | undefined;
       if (moved) {
         const verified = deps.verifyChange === undefined
           ? ({ ok: false, reason: "nothing is configured to verify a followed-up change" } as const)
@@ -4358,6 +4361,7 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
           });
           if (!v.ok || !v.value.approved) {
             reviewRejected = `${String(gate)} by ${reviewer.id}: ${v.ok ? v.value.reason : v.reason}`;
+            rejectedItems = v.ok ? v.value.rejected : undefined;
             refused.push(`the follow-up on ${workId} was not pushed - ${reviewRejected.slice(0, 300)}`);
             break;
           }
@@ -4373,14 +4377,38 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
           verifyFailed === undefined
             ? `your change for this was reviewed and turned back - ${reviewRejected as string}`
             : `your change for this did not pass the repository's own tests, so nobody reviewed it and nothing was pushed - ${verifyFailed}`;
-        for (const d of accepted.filter((x) => x.outcome !== "deferred")) {
+        // ── ONLY WHAT THE REVIEWER TURNED BACK IS DONE AGAIN ──────────────────────────────────
+        // A failing suite turns the whole round back: it says nothing about which item is at fault.
+        // A reviewer that NAMED items turns back those, and the rest are told they are already in the
+        // branch and proven - redoing them is how a round costs an hour to fix one thing.
+        const { again, kept } = verifyFailed === undefined
+          ? turnedBackItems(accepted, summaryOf, rejectedItems)
+          : { again: accepted.filter((x) => x.outcome !== "deferred").map((d) => d.actionItemId), kept: [] as readonly string[] };
+        for (const id of again) {
           note({
             kind: OrgEventKind.ChangeProjected,
             subjectId: workId,
             actorHatId: hatId,
-            decision: `action item ${d.actionItemId} reopened: ${verifyFailed === undefined ? "the follow-up's review turned it back" : "the follow-up did not pass verification"}`,
+            decision: `action item ${id} reopened: ${verifyFailed === undefined ? "the follow-up's review turned it back" : "the follow-up did not pass verification"}`,
             atMs: warmedAt,
-            fact: { kind: "action_item_reopened", workId, actionItemId: d.actionItemId, why },
+            fact: { kind: "action_item_reopened", workId, actionItemId: id, why },
+          });
+        }
+        for (const id of kept) {
+          note({
+            kind: OrgEventKind.ChangeProjected,
+            subjectId: workId,
+            actorHatId: hatId,
+            decision: `action item ${id} is still open because the round was turned back on other items - this one was not`,
+            atMs: warmedAt,
+            fact: {
+              kind: "action_item_reopened",
+              workId,
+              actionItemId: id,
+              why:
+                `your change for this is in the branch and the reviewer proved it - it is NOT what turned the round back. ` +
+                `Leave it alone and fix only what was named: ${reviewRejected as string}`,
+            },
           });
         }
       } else if (moved) {
