@@ -1,0 +1,12 @@
+{
+  "pr_number": 17301,
+  "archive_path": "docs/history/pr-reviews/2026/09/12/PR-17301-deps-clear-11-of-13-scorecard-vulnerabilities-by-bumping-pinned-versions.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-12T03:43:41.169Z",
+  "schema_version": "v1",
+  "commit_sha": "b40fc1dc2757ec4b1b97c4e9ba094ce40cc3ea6c",
+  "title": "deps: clear 11 of 13 Scorecard vulnerabilities by bumping pinned versions",
+  "state": "MERGED",
+  "merged_at": "2026-09-12T03:42:38Z",
+  "head_ref": "shadow/dependency-vulnerability-bumps"
+}
