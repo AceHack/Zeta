@@ -1,0 +1,12 @@
+{
+  "pr_number": 17300,
+  "archive_path": "docs/history/pr-reviews/2026/09/12/PR-17300-fix-081m28x3e5p087g0r0004s8jjy-a-verification-leg-is-claimed-by-everything-it-ve.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-12T05:00:59.998Z",
+  "schema_version": "v1",
+  "commit_sha": "b2adceb634c08880f8b42628f02051260a070758",
+  "title": "fix(081M28X3E5P087G0R0004S8JJY): a verification leg is claimed by everything it verifies",
+  "state": "MERGED",
+  "merged_at": "2026-09-12T05:00:19Z",
+  "head_ref": "shadow/verification-legs-claim-what-they-verify"
+}
