@@ -1,0 +1,14 @@
+{
+  "at": "2026-09-11T14:15:00.000Z",
+  "by": "shadow",
+  "claim": "0b5313b416a5bb7250c90dc462814873",
+  "hypothesis": "if: fromJSON(steps.x.outputs.plan).leg != false runs the step whenever the leg is not explicitly false.",
+  "id": "0a2ed79193fa6a72b4661d3a352744f9",
+  "refutedBy": "GitHub's expression language coerces BOTH null and false to 0 before comparing, so an ABSENT leg compares equal to false and the condition is false. The step is skipped in exactly the case the author meant it to run -- an absent leg reads as a disabled one.",
+  "score": {
+    "falseChance": 1,
+    "trueChance": 0
+  },
+  "surface": "GitHub Actions workflow conditionals over fromJSON output",
+  "witness": "A workflow whose plan JSON omits the leg entirely reports the step as skipped; adding the leg with value true runs it. Comparing against the string 'false', or testing for the leg's presence, behaves as intended."
+}

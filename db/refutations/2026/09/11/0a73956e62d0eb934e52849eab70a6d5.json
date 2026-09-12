@@ -1,0 +1,14 @@
+{
+  "at": "2026-09-11T14:10:00.000Z",
+  "by": "shadow",
+  "claim": "0aeb5649b68d6e52f9d1e99a959ad689",
+  "hypothesis": "Reading a file through an already-open file handle (fs.promises.FileHandle) closes the js/file-system-race window that CodeQL reports on the lock's contended path.",
+  "id": "0a73956e62d0eb934e52849eab70a6d5",
+  "refutedBy": "The alert is about the check-then-use pair, not about which API performs the read. Routing the read through a handle obtained AFTER the existence check leaves the same TOCTOU window -- the handle is opened by path at the same moment the plain read would have been. The alert survives the change because the defect survives it.",
+  "score": {
+    "falseChance": 0.9,
+    "trueChance": 0.05
+  },
+  "surface": "CodeQL js/file-system-race on the lock acquire path",
+  "witness": "The js/file-system-race alert is still reported on the rewritten path; it clears only when the check is dropped and the open's own ENOENT is interpreted instead."
+}
