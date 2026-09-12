@@ -4168,7 +4168,11 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
     const followUpOne = async (workId: string, items: readonly ActionItem[]): Promise<FollowUpReport> => {
       const refused: string[] = [];
       const handle = await reopen(workId);
-      if (handle === undefined) return { workId, decided: [], handedOffAgain: false, refused: [`could not reopen the change for ${workId}`] };
+      if (handle === undefined) {
+        const why = `could not reopen the change for ${workId}, so nothing was followed up on it`;
+        note({ kind: OrgEventKind.ChangeProjected, subjectId: workId, decision: why, atMs: warmedAt });
+        return { workId, decided: [], handedOffAgain: false, refused: [why] };
+      }
       const node = nodeById(cascade, workId);
       const hatId = node?.assigneeHatId ?? node?.ownerHatId ?? "implementer";
       const canSync = deps.changeRequests?.sync === "merge_target" && providers.change.syncWithTarget !== undefined;
@@ -4217,7 +4221,11 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
       }
       const before = providers.change.revision === undefined ? undefined : await providers.change.revision(handle);
       const triage = await deps.followUp!({ ...where, mode: "triage" });
-      if (!triage.ok) return { workId, decided: [], handedOffAgain: false, refused: [`the follow-up of ${workId} did not complete: ${triage.reason}`] };
+      if (!triage.ok) {
+        const why = `the follow-up of ${workId} did not complete: ${triage.reason}`;
+        note({ kind: OrgEventKind.ChangeProjected, subjectId: workId, actorHatId: hatId, decision: why.split(/\s+/).join(" ").slice(0, 400), atMs: warmedAt });
+        return { workId, decided: [], handedOffAgain: false, refused: [why] };
+      }
       const { accepted: decided, refused: bad } = acceptedDecisions(items, triage.value.decisions);
       refused.push(...bad);
       // A red pipeline is not finished by being explained - see `keepRedPipelinesOpen`.
@@ -4320,7 +4328,7 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
           roundsSoFar: deps.afterUpdateDone?.get(workId)?.rounds ?? 0,
           ...((): { lastTurnedBackBy?: string } => {
             const back = items.find((i) => i.reopened !== undefined)?.reopened?.why;
-            return back === undefined ? {} : { lastTurnedBackBy: back.split(/s+/).join(" ").slice(0, 300) };
+            return back === undefined ? {} : { lastTurnedBackBy: back.split(/\s+/).join(" ").slice(0, 300) };
           })(),
         };
         const planned = deps.planFollowUp === undefined ? undefined : await deps.planFollowUp(planRequest);

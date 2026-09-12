@@ -262,16 +262,38 @@ describe("AN OPENED ITEM IS BOUNDED, AND SAYS WHERE THE REST IS", () => {
   test("long passages are cut, each says its own size, and the way to read it whole is said ONCE", () => {
     const out = renderItem(big, bounded);
     expect(out.length).toBeLessThan(6000);
-    expect(out).toContain("characters were cut from the passages above");
+    expect(out).toContain("passage(s) above were cut");
     expect(out.split("obs item task-1 --full").length - 1).toBe(1);
-    expect(out).toContain("(+1600)");
+    expect(out).toContain("(+1600, passage 3)");
+  });
+
+  test("A CUT PASSAGE CAN BE READ ON ITS OWN: numbered, and fetched without the rest of the item", () => {
+    // MEASURED on dev-portal, 2026-09-12: three runs died because the view offered exactly one escape
+    // from a cut passage - the whole item - so the session asked for the whole item and thrashed its
+    // context to nothing. Four tool calls, seven minutes, no answer, three times.
+    const out = renderItem(big, bounded);
+    expect(out).toContain("passage 1)");
+    expect(out).toContain("passage(s) above were cut");
+    // The cheap read is offered FIRST, and the expensive one carries its price.
+    expect(out.indexOf("read one:")).toBeLessThan(out.indexOf("read all:"));
+    expect(out).toContain("--passage <n>");
+    expect(out).toContain("cost a session its context");
+
+    // And one passage really is readable alone - the comment, not the item.
+    const one = renderItem(big, bounded, { passage: 3 });
+    expect(one).toContain("passage 3 of 3");
+    expect(one).toContain("cccccccccc");
+    expect(one).not.toContain("STEPS");
+    expect(one.length).toBeLessThan(out.length);
+    // A passage that does not exist says so rather than printing something else.
+    expect(renderItem(big, bounded, { passage: 9 })).toContain("there is no passage 9");
   });
 
   test("--full prints every passage whole", () => {
     const out = renderItem(big, bounded, { full: true });
     expect(out).toContain(long(2000, "c"));
     expect(out).toContain(long(3000, "d"));
-    expect(out).not.toContain("characters were cut");
+    expect(out).not.toContain("passage(s) above were cut");
   });
 
   test("a step does not reprint the files ATTACHMENTS lists, and their shared root is said once", () => {

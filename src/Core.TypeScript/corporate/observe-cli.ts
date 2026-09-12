@@ -385,7 +385,15 @@ export async function main(argv: readonly string[], print: (s: string) => void =
         print(`no work item '${id ?? ""}'. Items: ${items.map((i) => i.id).join(", ") || "none"}`);
         return 1;
       }
-      print(json ? JSON.stringify(item, null, 2) : renderItem(item, nav, { full: argv.includes("--full") }));
+      const wants = ((v) => (v === undefined ? undefined : Number.parseInt(v, 10)))(argv[argv.indexOf("--passage") + 1]);
+      print(
+        json
+          ? JSON.stringify(item, null, 2)
+          : renderItem(item, nav, {
+              full: argv.includes("--full"),
+              ...(argv.includes("--passage") && wants !== undefined && Number.isFinite(wants) ? { passage: wants } : {}),
+            }),
+      );
       return 0;
     }
     case "attachment": {

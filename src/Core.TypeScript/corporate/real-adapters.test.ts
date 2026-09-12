@@ -1056,6 +1056,43 @@ describe("AFTER THE HANDOFF: THE REQUEST SAYS WHAT THE ORGANIZATION CONFIGURED, 
     }
   }, 240_000);
 
+  test("A FOLLOW-UP THAT COULD NOT RUN LEAVES A MARK: the run says so instead of ending quietly", async () => {
+    // MEASURED on dev-portal, 2026-09-12: runs at 03:53, 04:55 and 05:30 each took a request, ran a
+    // session for about six minutes, decided nothing, and left NOTHING in the record - no event, no
+    // cost line, no reason. Three rounds of silence read exactly like an organization with no work.
+    const repo = realRepo();
+    const inbox = realInbox();
+    const wt = mkdtempSync(join(tmpdir(), "zeta-fufail-wt-"));
+    const scratch = mkdtempSync(join(tmpdir(), "zeta-fufail-"));
+    const h = stubCounting(scratch);
+    const events: OrgEvent[] = [];
+    try {
+      const change = () => gitWorktreeChangeControl({ cwd: repo, baseBranch: "main", worktreeRoot: wt, handoff: { command: h.command, args: h.args } });
+      const noComment = { postComment: async () => ({ ok: true as const, value: {}, evidence: [] }) };
+      const base = { settings: [], changeRequests, describeChange: fullDescription, ...noComment, onEvent: (e: OrgEvent) => events.push(e) };
+      const first = await runAgainst(repo, inbox, { change: change() }, base);
+      const workId = first.changesHandedOff[0] as string;
+      const handed = foldHandedOffChanges(events);
+      const second = await runAgainst(repo, inbox, { change: change() }, {
+        ...base,
+        priorCascade: first.cascade,
+        alreadyHandedOff: new Set(handed.keys()),
+        handedOffChanges: handed,
+        actionItems: foldActionItems(events),
+        afterOpenDone: foldAfterOpen(events),
+        feedback: [{ deliveryId: "note-1", source: "gitlab", itemKind: "comment", summary: "please explain the race", author: "reviewer", branch: handed.get(workId)?.branch as string }],
+        defaultBase: "main",
+        // The shape a dying session really has: it ran, and answered nothing.
+        followUp: async () => ({ ok: false as const, reason: "the follow-up session exited 4: Claude Code returned no structured answer" }),
+      });
+      expect(second.followUps?.[0]?.refused.some((r) => r.includes("did not complete"))).toBe(true);
+      // AND IT IS IN THE RECORD, not only in a report nobody keeps.
+      expect(events.some((e) => (e.decision ?? "").includes("did not complete") && (e.decision ?? "").includes("no structured answer"))).toBe(true);
+    } finally {
+      for (const d of [repo, inbox, wt, scratch]) rmSync(d, { recursive: true, force: true });
+    }
+  }, 240_000);
+
   test("RED CODE IS NOT REVIEWED: the suite runs first, and a failing one costs no reviewer at all", async () => {
     // MEASURED on agentic-tpm !164, 2026-09-12: two reviewers spent 35 minutes approving 8c2767c4,
     // and the verifier then found new failures in workflowStage.test.ts and refused the push. The

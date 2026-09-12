@@ -1164,21 +1164,28 @@ function commonRoot(refs: readonly string[]): string {
 }
 
 /**
- * A long passage, cut where it stops being free, saying only HOW MUCH was cut.
+ * A long passage, cut where it stops being free, saying how much was cut AND WHICH PASSAGE IT IS.
  *
- * Not where to read it: that command is four hundred characters of absolute paths, and repeating it
- * on every cut passage cost more than the text it was replacing.
+ * MEASURED on dev-portal, 2026-09-12: three runs in a row died here. The view said a passage was cut
+ * and offered one way to see it - the whole item - so the session asked for the whole item, twice,
+ * and then said so itself: "autocompact is thrashing: the context refilled to the limit within 3
+ * turns of the previous compact, 3 times in a row". Four tool calls, seven minutes, no answer. A
+ * bounded view that only offers an unbounded escape is worse than no bound at all. Each cut passage
+ * is numbered, and one can be read on its own.
  */
-function passage(text: string, full: boolean, limit = PASSAGE_CHARS): string {
+function passage(text: string, full: boolean, cut: { n: number }, limit = PASSAGE_CHARS): string {
   const t = text.trim();
   if (full || t.length <= limit) return t;
-  return `${t.slice(0, limit)}… (+${String(t.length - limit)})`;
+  cut.n += 1;
+  return `${t.slice(0, limit)}… (+${String(t.length - limit)}, passage ${String(cut.n)})`;
 }
 
 /** One item, opened: the ticket, its steps, its attachments, its thread, its links. */
-export function renderItem(item: ItemContext, nav: Navigation, opts: { readonly full?: boolean } = {}): string {
+export function renderItem(item: ItemContext, nav: Navigation, opts: { readonly full?: boolean; readonly passage?: number } = {}): string {
   const full = opts.full === true;
+  const only = opts.passage;
   const whole = `${nav.item(item.id)} --full`;
+  const cut = { n: 0 };
   const cutSoFar = (): number =>
     (item.description === undefined ? 0 : Math.max(0, item.description.trim().length - 2000)) +
     item.steps.reduce((n, st) => n + Math.max(0, (st.note ?? "").trim().length - PASSAGE_CHARS), 0) +
@@ -1196,7 +1203,7 @@ export function renderItem(item: ItemContext, nav: Navigation, opts: { readonly 
   out.push(
     item.description === undefined || item.description.trim() === ""
       ? "  (none written)"
-      : passage(item.description, full, 2000).split("\n").map((l) => "  " + l).join("\n"),
+      : passage(item.description, full, cut, 2000).split("\n").map((l) => "  " + l).join("\n"),
   );
   out.push("");
   out.push(`STEPS (${String(item.steps.filter((st) => st.done).length)}/${String(item.steps.length)} done)`);
@@ -1204,7 +1211,7 @@ export function renderItem(item: ItemContext, nav: Navigation, opts: { readonly 
   for (const st of item.steps) {
     out.push(`  ${st.done ? "✔" : "·"} ${st.name.padEnd(28)} ${st.state}${st.by === undefined ? "" : `  by ${st.by}`}`);
     if (st.asks !== undefined) out.push(`      asks: ${st.asks}`);
-    if (st.note !== undefined && st.note.trim() !== "") out.push(`      said: ${passage(st.note, full)}`);
+    if (st.note !== undefined && st.note.trim() !== "") out.push(`      said: ${passage(st.note, full, cut)}`);
     if ((st.attachments ?? []).length > 0) out.push(`      left: ${String((st.attachments as readonly string[]).length)} file(s), listed under ATTACHMENTS`);
   }
   out.push("");
@@ -1219,15 +1226,30 @@ export function renderItem(item: ItemContext, nav: Navigation, opts: { readonly 
     out.push(`  ${root === "" ? a.ref : a.ref.slice(root.length)}${a.from === undefined ? "" : `   (from ${a.from}${a.by === undefined ? "" : `, ${a.by}`})`}`);
   }
   out.push("");
+  // ONE PASSAGE, WHOLE. Asked for by the number the cut view gave it: nothing else is printed, so
+  // recovering a comment costs its own length and not the item's.
+  if (only !== undefined) {
+    const passages: { readonly what: string; readonly text: string }[] = [
+      ...(item.description === undefined || item.description.trim().length <= 2000 ? [] : [{ what: "DESCRIPTION", text: item.description }]),
+      ...item.steps.flatMap((st) => ((st.note ?? "").trim().length <= PASSAGE_CHARS ? [] : [{ what: `STEP ${st.name}`, text: st.note as string }])),
+      ...item.comments.flatMap((c) => (c.text.trim().length <= PASSAGE_CHARS ? [] : [{ what: `COMMENT by ${c.by}${c.about === undefined ? "" : ` on ${c.about}`}`, text: c.text }])),
+    ];
+    const one = passages[only - 1];
+    return one === undefined
+      ? `${item.id} has ${String(passages.length)} cut passage(s); there is no passage ${String(only)}`
+      : `${item.id}  passage ${String(only)} of ${String(passages.length)}: ${one.what}\n\n${one.text.trim()}`;
+  }
   out.push(`COMMENTS (${String(item.comments.length)})`);
   if (item.comments.length === 0) out.push("  none");
-  for (const c of item.comments) out.push(`  ${c.by}${c.about === undefined ? "" : ` on ${c.about}`}: ${passage(c.text, full)}`);
-  // SAID ONCE, at the end, for the whole item: how much was cut anywhere above, and the one command
-  // that shows all of it. A `(+N)` above is that passage's share of this number.
-  if (!full && cutSoFar() > 0) {
+  for (const c of item.comments) out.push(`  ${c.by}${c.about === undefined ? "" : ` on ${c.about}`}: ${passage(c.text, full, cut)}`);
+  // SAID ONCE, at the end: the cheap read first. Reading the item whole is offered with its SIZE,
+  // because that number is the difference between a bounded view and a session that cannot recover.
+  if (!full && cut.n > 0) {
+    const more = cutSoFar();
     out.push("");
-    out.push(`${String(cutSoFar())} characters were cut from the passages above. Read this item whole:`);
-    out.push(`  ${whole}`);
+    out.push(`${String(cut.n)} passage(s) above were cut, ${String(more)} characters in all.`);
+    out.push(`  read one:  ${nav.item(item.id)} --passage <n>`);
+    out.push(`  read all:  ${whole}   (about ${String(Math.round((out.join("\n").length + more) / 1000))}k characters - large enough to cost a session its context)`);
   }
   return out.join("\n");
 }

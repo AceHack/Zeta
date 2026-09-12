@@ -108,7 +108,7 @@ describe("THE WORLDVIEW IS ASKED FOR — the prompt carries the observe command,
       expect(input).toContain("Never mention the organization's internal ids");
       r.cleanup();
     }
-  });
+  }, 30_000);
 
   test("A FAILED REPRODUCTION IS NOT A QUESTION: the author is told to chase the code before asking a person", () => {
     // MEASURED on AIAGENT-1659: the reproduction passed on the mock provider, production runs SQL,
@@ -245,6 +245,18 @@ describe("AFTER THE HANDOFF: THE DESCRIPTION AND THE FOLLOW-UP", () => {
     expect(quiet.seen?.input).not.toContain("IS NOT FINISHED BY BEING EXPLAINED");
     quiet.cleanup();
   });
+
+  test("THE SESSION ALREADY HAS THE ITEMS WHOLE, and is told not to go fetching them", () => {
+    // MEASURED on dev-portal, 2026-09-12: three sessions saw a cut passage in `observe`, asked for the
+    // item whole to "recover the truncated action-item text", and thrashed their context to nothing.
+    // The text was already in front of them.
+    const items = JSON.stringify([{ id: "gitlab:note-1", kind: "comment", summary: "a very long review comment" }]);
+    const r = run(["follow-up", "task-9"], ok({ decisions: [], syncWithTarget: false, summary: "s" }), { ORG_ACTION_ITEMS: items, ORG_CAN_SYNC: "0" });
+    expect(r.seen?.input).toContain("WHAT IS PRINTED ABOVE IS THE WHOLE OF EACH ITEM");
+    expect(r.seen?.input).toContain("loses its");
+    expect(r.seen?.input).toContain("--passage <n>");
+    r.cleanup();
+  }, 30_000);
 
   test("A REPEAT FAILURE IS DECIDED DIFFERENTLY: the session is told the count, and that declining is a complete answer", () => {
     // MEASURED on agentic-tpm !164: the same finding claimed fixed and turned back three rounds running.
@@ -548,6 +560,35 @@ describe("A SESSION THAT ENDS NORMALLY LEAVES NOTHING RUNNING", () => {
       rmSync(dir, { recursive: true, force: true });
     }
   }, 120_000);
+});
+
+describe("A CALL THAT FAILED STILL SPENT THE MONEY AND THE MINUTES", () => {
+  // MEASURED on dev-portal, 2026-09-12: three runs in a row each ran a session for about six minutes
+  // and left nothing behind - no cost line, no reason - because the ledger was written only after a
+  // call succeeded. Three failures read exactly like an organization with nothing to do, and free.
+  test("a session that answers nothing is recorded, with what went wrong and what it cost", () => {
+    const dir = mkdtempSync(join(tmpdir(), "claude-agent-cost-"));
+    const stub = join(dir, "stub.cjs");
+    // The CLI's own envelope, with a cost and a session - and no structured answer at all.
+    writeFileSync(
+      stub,
+      'let i="";process.stdin.on("data",d=>i+=d);process.stdin.on("end",()=>{process.stdout.write(JSON.stringify(' +
+        '{ type: "result", session_id: "s-1", total_cost_usd: 3.5, num_turns: 42, usage: { output_tokens: 10 }, result: "I could not comply" }' +
+        '));});',
+    );
+    const r = spawnSync("node", [AGENT, "work", "task-9"], {
+      cwd: dir,
+      encoding: "utf-8",
+      env: { ...process.env, ORG_CLAUDE_BIN: "node", ORG_CLAUDE_BIN_ARGS: JSON.stringify([stub]), ORG_CLAUDE_MODEL: "stub-model", ORG_ASSIGNEE: "backend_implementer", ORG_COST_DIR: join(dir, "cost") },
+    });
+    expect(r.status).toBe(4);
+    const day = new Date().toISOString().slice(0, 10);
+    const line = JSON.parse(readFileSync(join(dir, "cost", day + ".jsonl"), "utf-8").trim().split(String.fromCharCode(10))[0] as string) as Record<string, unknown>;
+    expect(line["costUsd"]).toBe(3.5);
+    expect(line["agentTurns"]).toBe(42);
+    expect(String(line["failed"])).toContain("no structured answer");
+    rmSync(dir, { recursive: true, force: true });
+  }, 30_000);
 });
 
 describe("A MODEL IS CHOSEN BY THE ORGANIZATION, NEVER INHERITED FROM WHATEVER IS INSTALLED", () => {
