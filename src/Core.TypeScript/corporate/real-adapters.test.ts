@@ -979,6 +979,94 @@ describe("AFTER THE HANDOFF: THE REQUEST SAYS WHAT THE ORGANIZATION CONFIGURED, 
     }
   }, 120_000);
 
+  test("AT maxParallel 2 THE SESSIONS OVERLAP AND THE TEST SUITES STILL DO NOT", async () => {
+    // MEASURED on agentic-tpm, 2026-09-12: three requests took 2h04m end to end, one thing at a time.
+    // Nothing required that - so the follow-ups ferry. What may NOT overlap is the repository's own
+    // suite: two of agentic-tpm's at once fight over the MongoMemoryServer port, which is already the
+    // commonest red in its pipeline. No clock in this test: overlap is measured by what is in flight.
+    const repo = realRepo();
+    const git = (at: string, ...a: string[]) => execFileSync("git", a, { cwd: at, encoding: "utf-8" });
+    const inbox = mkdtempSync(join(tmpdir(), "zeta-par-inbox-"));
+    for (const [id, title] of [["PROJ-1", "coupon applies twice"], ["PROJ-2", "totals round the wrong way"]]) {
+      writeFileSync(join(inbox, id + ".json"), JSON.stringify({ source: "jira", externalId: id, title, body: title, kind: "defect", severity: "high", reproduction: title, evidenceRefs: ["log:" + id] }));
+    }
+    const wt = mkdtempSync(join(tmpdir(), "zeta-par-wt-"));
+    const scratch = mkdtempSync(join(tmpdir(), "zeta-par-"));
+    const h = stubCounting(scratch);
+    const events: OrgEvent[] = [];
+    try {
+      const change = () => gitWorktreeChangeControl({ cwd: repo, baseBranch: "main", worktreeRoot: wt, handoff: { command: h.command, args: h.args } });
+      const noComment = { postComment: async () => ({ ok: true as const, value: {}, evidence: [] }) };
+      const base = { settings: [], changeRequests, describeChange: fullDescription, ...noComment, onEvent: (e: OrgEvent) => events.push(e) };
+      const first = await runAgainst(repo, inbox, { change: change() }, base);
+      const afterFirst = foldHandedOffChanges(events);
+      await runAgainst(repo, inbox, { change: change() }, {
+        ...base,
+        priorCascade: first.cascade,
+        alreadyHandedOff: new Set(afterFirst.keys()),
+        handedOffChanges: afterFirst,
+        actionItems: foldActionItems(events),
+        afterOpenDone: foldAfterOpen(events),
+      });
+      const handed = foldHandedOffChanges(events);
+      expect(handed.size).toBe(2);
+      const ids = [...handed.keys()];
+
+      const flight: string[] = [];
+      let sessionsInFlight = 0;
+      let sessionsAtOnce = 0;
+      let suitesInFlight = 0;
+      let suitesAtOnce = 0;
+      const yieldOnce = () => new Promise<void>((r) => setImmediate(r));
+      const third = await runAgainst(repo, inbox, { change: change() }, {
+        ...base,
+        priorCascade: first.cascade,
+        alreadyHandedOff: new Set(handed.keys()),
+        handedOffChanges: handed,
+        actionItems: foldActionItems(events),
+        afterOpenDone: foldAfterOpen(events),
+        feedback: ids.map((w, i) => ({ deliveryId: `note-${String(i + 1)}`, source: "gitlab", itemKind: "comment", summary: "please explain the race", author: "reviewer", branch: handed.get(w)?.branch as string })),
+        defaultBase: "main",
+        maxParallel: 2,
+        verifyChange: async () => {
+          suitesInFlight++;
+          suitesAtOnce = Math.max(suitesAtOnce, suitesInFlight);
+          await yieldOnce();
+          suitesInFlight--;
+          return { ok: true as const, value: "green", evidence: [] };
+        },
+        answer: async (r: AnswerRequest) => ({ ok: true as const, value: r.items.map((i) => ({ actionItemId: i.actionItemId, replyId: "note-9", resolved: true })), evidence: [] }),
+        followUp: async (req: { workId: string; items: readonly { actionItemId: string }[]; workdir?: string }) => {
+          sessionsInFlight++;
+          sessionsAtOnce = Math.max(sessionsAtOnce, sessionsInFlight);
+          flight.push("enter:" + req.workId);
+          // A yield, never a sleep: it lets the other ferry run if there IS another ferry.
+          await yieldOnce();
+          writeFileSync(join(req.workdir as string, "note.md"), "explained\n");
+          git(req.workdir as string, "add", "-A");
+          git(req.workdir as string, "commit", "-q", "-m", "explain the race");
+          flight.push("exit:" + req.workId);
+          sessionsInFlight--;
+          return {
+            ok: true as const,
+            value: { decisions: req.items.map((i) => ({ actionItemId: i.actionItemId, outcome: "addressed" as const, how: "explained the race" })), syncWithTarget: false, summary: "s" },
+            evidence: [],
+          };
+        },
+      });
+      expect(third.followUps?.length).toBe(2);
+      // BOTH SESSIONS WERE IN FLIGHT AT ONCE - the second one started before the first came back.
+      expect(sessionsAtOnce).toBe(2);
+      expect(flight.slice(0, 2)).toEqual(["enter:" + String(ids[0]), "enter:" + String(ids[1])]);
+      // AND THE SUITES DID NOT: each change was verified, one at a time.
+      expect(suitesAtOnce).toBe(1);
+      // Both requests were still followed up and reported, in the order they were queued.
+      expect(third.followUps?.map((f) => f.workId)).toEqual(ids);
+    } finally {
+      for (const d of [repo, inbox, wt, scratch]) rmSync(d, { recursive: true, force: true });
+    }
+  }, 240_000);
+
   test("A REVIEWER IS ANSWERED AS SOON AS THEIR REQUEST IS PUSHED - not after every other request's follow-up", async () => {
     // MEASURED on agentic-tpm, 2026-09-12: !163's seven answers were written and its fix pushed at
     // 00:21, and nothing appeared on the merge request, because the answering ran after EVERY

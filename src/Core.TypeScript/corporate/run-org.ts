@@ -346,7 +346,7 @@ export const KNOWN_FLAGS: ReadonlySet<string> = new Set([
   "--tracker", "--tracker-header", "--tracker-items", "--tracker-map", "--tracker-severity",
   "--tracker-source", "--until", "--week", "--window-start", "--window-target", "--work-agent",
   "--work-agent-arg", "--work-arg", "--work-cmd", "--work-model", "--work-verify",
-  "--work-verify-arg", "--worktrees", "--worktree-setup", "--worktree-setup-arg", "--supply-target", "--resume", "--help", "-h",
+  "--work-verify-arg", "--worktrees", "--worktree-setup", "--worktree-setup-arg", "--supply-target", "--parallel", "--resume", "--help", "-h",
   "--handoff-cmd", "--handoff-arg", "--delivery",
   "--describe-cmd", "--describe-arg", "--follow-up-cmd", "--follow-up-arg", "--feedback-dir", "--feedback-cmd", "--feedback-arg",
   "--answer-cmd", "--answer-arg",
@@ -640,6 +640,8 @@ export interface Args {
   readonly changeRequests?: ChangeRequestConfig;
   /** Wearers per hat the RMO authorizes — how many open tasks one contributor hat may carry. */
   readonly supplyTarget: number | undefined;
+  /** How many requests are followed up at once. Absent is one - the deterministic, replayable path. */
+  readonly parallel: number | undefined;
   /**
    * The window the goal is supposed to land inside, as two ISO instants.
    *
@@ -875,6 +877,7 @@ export function parseArgs(argv: readonly string[]): Args {
     answerCmd: valueAfter(argv, "--answer-cmd"),
     answerArgs: valuesAfter(argv, "--answer-arg"),
     supplyTarget: ((v) => (v === undefined ? undefined : Number.parseInt(v, 10)))(valueAfter(argv, "--supply-target")),
+    parallel: ((v) => (v === undefined ? undefined : Number.parseInt(v, 10)))(valueAfter(argv, "--parallel")),
     qaFails: argv.includes("--qa-fails") || argv.includes("--churn"),
     churn: argv.includes("--churn"),
     json: argv.includes("--json"),
@@ -1051,6 +1054,9 @@ export function argRefusals(args: Args): readonly string[] {
   }
   if (args.supplyTarget !== undefined && (Number.isNaN(args.supplyTarget) || args.supplyTarget < 1)) {
     out.push("--supply-target takes a positive count of wearers per hat");
+  }
+  if (args.parallel !== undefined && (Number.isNaN(args.parallel) || args.parallel < 1)) {
+    out.push("--parallel takes a positive count of requests to follow up at once - 1 is one at a time");
   }
   if (args.jiraLimit !== undefined && (Number.isNaN(args.jiraLimit) || args.jiraLimit < 1)) {
     out.push("--jira-limit takes a positive count");
@@ -1628,6 +1634,7 @@ export function attachAfterHandoff(deps: Record<string, unknown>, args: Args, fe
   // HOW MANY CHANGES ARE FOLLOWED UP AT ONCE is the supply the RMO authorized, not a number invented
   // here: a follow-up is a contributor's session like any other piece of work.
   if (args.supplyTarget !== undefined && Number.isFinite(args.supplyTarget) && args.supplyTarget > 0) deps["maxFollowUps"] = args.supplyTarget;
+  if (args.parallel !== undefined && Number.isFinite(args.parallel) && args.parallel > 0) deps["maxParallel"] = args.parallel;
   if (feedback.length > 0) deps["feedback"] = feedback;
   if (args.changeRequests !== undefined) deps["changeRequests"] = args.changeRequests;
   if (args.describeCmd !== undefined) deps["describeChange"] = commandDescriber({ command: args.describeCmd, args: args.describeArgs, ...budget }, cwd);

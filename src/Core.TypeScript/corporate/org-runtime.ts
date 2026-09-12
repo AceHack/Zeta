@@ -117,6 +117,7 @@ import {
 import { Fidelity, fidelityLine, recordingProviders, runFidelityOf, type ChangeHandle, type ChangeProposal, type DataSourcePort, type PortResult, type ProviderSet, type ReviewVerdict, type RunFidelity,
   fidelityOf,} from "./providers";
 import type { ActionItem, HandedOffChange } from "./org-fold";
+import { ferry, oneAtATime, SEQUENTIAL } from "./ferry";
 import {
   acceptedDecisions,
   answersOwed,
@@ -400,6 +401,12 @@ export interface OrgRuntimeDeps extends HumanCheckpointDeps {
   readonly verifyChange?: (handle: ChangeHandle) => Promise<PortResult<string>>;
   /** At most this many handed-off changes are followed up in one cycle. Default 2. */
   readonly maxFollowUps?: number;
+  /**
+   * How many requests the organization follows up AT ONCE. Default 1 - every run before this was one
+   * at a time, and one stays the deterministic, replayable path (see `ferry.ts`). Above 1 the agent
+   * sessions overlap; the repository's own test suite still never does (see `oneAtATime`).
+   */
+  readonly maxParallel?: number;
   /**
    * Reviews a follow-up's commits at one of the item's post-work gates before they are pushed - the
    * same review the original work passed. Absent: follow-up code is verified but not reviewed.
@@ -4020,6 +4027,9 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
   const actionItemsRaised: string[] = [];
   const actionItemsAnswered: string[] = [];
   const followUps: FollowUpReport[] = [];
+  // Sessions may overlap; the repository's own test suite may not - two of agentic-tpm's at once
+  // fight over the MongoMemoryServer port, already the commonest red in its own pipeline.
+  const verifyOneAtATime = oneAtATime();
   if (providers.change.meta.fidelity === Fidelity.Real) {
     const handedMap = new Map<string, HandedOffChange>([...(deps.handedOffChanges ?? []), ...handedThisRun]);
     const allItems = new Map<string, ActionItem[]>([...(deps.actionItems ?? new Map<string, readonly ActionItem[]>())].map(([w, v]) => [w, [...v]]));
@@ -4316,7 +4326,7 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
       } else if (moved) {
         const verified = deps.verifyChange === undefined
           ? ({ ok: false, reason: "nothing is configured to verify a followed-up change" } as const)
-          : await deps.verifyChange(handle);
+          : await verifyOneAtATime(() => (deps.verifyChange as (h: ChangeHandle) => Promise<PortResult<string>>)(handle));
         if (!verified.ok) refused.push(`the followed-up change was not handed off again - it does not pass verification: ${verified.reason}`);
         else {
           attempted = true;
@@ -4519,14 +4529,21 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
         const o = items.filter((i) => i.settled === undefined);
         if (o.length > 0 && handedMap.has(w)) open.set(w, o);
       }
-      for (const workId of followUpOrder(open).slice(0, Math.max(0, deps.maxFollowUps ?? 2))) {
-        followUps.push(await followUpOne(workId, open.get(workId) ?? []));
-        // MEASURED on agentic-tpm, 2026-09-12: !163's seven answers were written and its fix pushed at
-        // 00:21, and the reviewer would not have seen a word of it until the other two requests'
-        // follow-ups finished - another forty-five minutes of a merge request that looked ignored.
-        // A request is answered as soon as what settles its items is in front of people.
-        await answerOn(workId, allItems.get(workId) ?? []);
-      }
+      // MEASURED on agentic-tpm, 2026-09-12: three requests took 2h04m, every second of it one thing
+      // at a time, with nothing in the organization requiring that - there is an agent per hat, and
+      // the assignment engine will bind a hat for a second piece of work. `maxParallel` ferries
+      // drain this queue; at 1 it is the loop it replaces, in the same order.
+      const queue = followUpOrder(open).slice(0, Math.max(0, deps.maxFollowUps ?? 2));
+      followUps.push(
+        ...(await ferry(queue, deps.maxParallel ?? SEQUENTIAL, async (workId) => {
+          const report = await followUpOne(workId, open.get(workId) ?? []);
+          // MEASURED the same night: !163's seven answers were written and its fix pushed at 00:21,
+          // and the reviewer would have seen nothing until the other requests' sessions finished.
+          // A request is answered as soon as what settles ITS items is in front of people.
+          await answerOn(workId, allItems.get(workId) ?? []);
+          return report;
+        })),
+      );
     } else if ([...allItems.values()].some((items) => items.some((i) => i.settled === undefined))) {
       // SAID, not silently kept: open items nobody is configured to look at are work waiting on nobody.
       refusals.push("handed-off changes have open action items and nothing is configured to follow them up");
