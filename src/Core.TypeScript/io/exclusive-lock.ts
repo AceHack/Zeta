@@ -148,15 +148,19 @@ export interface ExclusiveLockOptions {
 const GENERATION_FILE = /^(\d+)\.lock$/;
 
 /** Ordinal, invariant parse of a generation file name. `-1` when the name is not one. */
-function generationOf(name: string): number {
+export function generationOf(name: string): number {
   const m = GENERATION_FILE.exec(name);
-  if (m === null) return -1;
-  const n = Number.parseInt(m[1]!, 10);
+  // NARROWED, NOT ASSERTED. `m[1]` is `string | undefined` to the type system even though the
+  // pattern has one group, and `m[1]!` would be the same unchecked claim in shorter syntax. The
+  // `undefined` branch is unreachable for this regex and costs one line to say so honestly.
+  const digits = m === null ? undefined : m[1];
+  if (digits === undefined) return -1;
+  const n = Number.parseInt(digits, 10);
   return Number.isSafeInteger(n) && n >= 0 ? n : -1;
 }
 
 /** Every generation present, highest first. Missing directory reads as none. */
-function generations(lockRoot: string): number[] {
+export function generations(lockRoot: string): number[] {
   let names: string[];
   try {
     names = readdirSync(lockRoot);
@@ -172,10 +176,28 @@ function generations(lockRoot: string): number[] {
   return gens;
 }
 
+/** The one place a generation number becomes a path. `String(n)`, never locale formatting. */
+export function generationPath(lockRoot: string, generation: number): string {
+  return join(lockRoot, `${String(generation)}.lock`);
+}
+
+/**
+ * The highest generation in a scan, or `-1` for none.
+ *
+ * A fold rather than `gens[0]!`: indexing a possibly-empty array and then asserting the result
+ * away is an unchecked claim, and the empty case is REAL here -- a lock directory that nobody has
+ * ever taken is exactly the fresh-acquisition path. `-1` makes the first generation `0`.
+ */
+export function topGenerationOf(gens: readonly number[]): number {
+  let top = -1;
+  for (const g of gens) if (g > top) top = g;
+  return top;
+}
+
 /** The owner recorded in one generation, or undefined when it is absent or unreadable. */
 function ownerOf(lockRoot: string, generation: number): LockOwner | undefined {
   try {
-    const raw: unknown = JSON.parse(readFileSync(join(lockRoot, `${generation}.lock`), "utf-8"));
+    const raw: unknown = JSON.parse(readFileSync(generationPath(lockRoot, generation), "utf-8"));
     if (typeof raw !== "object" || raw === null) return undefined;
     const rec = raw as { pid?: unknown; startedAt?: unknown };
     if (typeof rec.pid !== "number" || !Number.isInteger(rec.pid)) return undefined;
@@ -200,83 +222,127 @@ export function currentHolder(lockRoot: string, isHeld: (owner: LockOwner) => bo
   return undefined;
 }
 
+/** What one attempt at claiming a generation did. `retry` means another process got there first. */
+export type ClaimOutcome = "claimed" | "retry";
+
+/**
+ * Claim ONE generation, atomically, or say to rescan.
+ *
+ * The single mutation that makes the protocol exclusive, kept alone in a function so it can be
+ * read and tested without the surrounding loop. `wx` is `O_CREAT|O_EXCL`, so exactly one process
+ * in any race creates this name; everyone else is told to rescan and will find the winner.
+ *
+ * EEXIST means another process won this generation. ENOENT means a releaser removed the lock
+ * directory between our `mkdir` and now. Both are ordinary race outcomes and both say `retry`;
+ * every other errno is a real failure and is rethrown.
+ */
+export function claimGeneration(lockRoot: string, generation: number, owner: LockOwner): ClaimOutcome {
+  const path = generationPath(lockRoot, generation);
+  let fd: number;
+  try {
+    fd = openSync(path, "wx", 0o600);
+  } catch (err) {
+    const code = (err as NodeJS.ErrnoException).code;
+    if (code === "EEXIST" || code === "ENOENT") return "retry";
+    throw err;
+  }
+  try {
+    writeSync(fd, JSON.stringify(owner));
+  } catch (err) {
+    closeSync(fd);
+    // Our own generation, created by us, removed by us. No other process can be here.
+    rmSync(path, { force: true });
+    throw err;
+  }
+  closeSync(fd);
+  return "claimed";
+}
+
+/**
+ * Remove generations strictly below the one we hold.
+ *
+ * UNCONDITIONAL AND WITHOUT CORRECTNESS ROLE, which is why it is safe and why it introduces no
+ * check-then-act: while our generation exists every concurrent scanner computes a maximum at
+ * least as high, so removing anything below it cannot change an exclusion decision. Skipping it
+ * entirely is also correct; it only reclaims files left by crashes.
+ */
+export function collectSuperseded(lockRoot: string, seen: readonly number[], mine: number): void {
+  for (const g of seen) {
+    if (g >= mine) continue;
+    try {
+      rmSync(generationPath(lockRoot, g), { force: true });
+    } catch {
+      /* leftovers are harmless; GC has no correctness role */
+    }
+  }
+}
+
+/**
+ * The release for one held generation: idempotent, and it can reach nothing else.
+ *
+ * `wx` proved no other process created this name, so this unlink cannot touch a successor's lock
+ * however long this run outlived its own takeover -- which is the defect the old single-file
+ * release had.
+ */
+export function releaseGeneration(lockRoot: string, generation: number): () => void {
+  const path = generationPath(lockRoot, generation);
+  let released = false;
+  return (): void => {
+    if (released) return;
+    released = true;
+    rmSync(path, { force: true });
+    try {
+      rmdirSync(lockRoot);
+    } catch {
+      /* another holder's generation is in there, or it is already gone */
+    }
+  };
+}
+
+/** What one scan of the lock directory found. */
+interface Scan {
+  readonly seen: readonly number[];
+  readonly top: number;
+  readonly incumbent: LockOwner | undefined;
+}
+
+/** Read the directory once and report the top generation and whoever it names. */
+function scan(lockRoot: string): Scan {
+  // A regular file sitting at the lock's own name is a caller error, not a race — it throws.
+  mkdirSync(lockRoot, { recursive: true });
+  const seen = generations(lockRoot);
+  const top = topGenerationOf(seen);
+  return { seen, top, incumbent: top >= 0 ? ownerOf(lockRoot, top) : undefined };
+}
+
 /**
  * Take the lock, or say who has it.
  *
  * The whole protocol is in the module header. The shape to hold on to while reading: the only
- * mutations are `open(..., "wx")` of a generation nobody else can create and `unlink` of a
- * generation only this process created.
+ * mutations are `open(..., "wx")` of a generation nobody else can create (`claimGeneration`) and
+ * `unlink` of a generation only this process created (`releaseGeneration`, `collectSuperseded`).
  */
 export function takeExclusiveLock(lockRoot: string, options: ExclusiveLockOptions = {}): LockHold {
-  const pid = options.pid ?? process.pid;
-  const startedAt = options.nowIso ?? new Date().toISOString();
   const isHeld = options.isHeld ?? ((): boolean => false);
   const attempts = options.attempts ?? 8;
-  const me: LockOwner = { pid, startedAt };
+  const me: LockOwner = { pid: options.pid ?? process.pid, startedAt: options.nowIso ?? new Date().toISOString() };
 
   let lastSeen: LockOwner | undefined;
 
   for (let attempt = 0; attempt < attempts; attempt++) {
-    // A regular file sitting at the lock's own name is a caller error, not a race — it throws.
-    mkdirSync(lockRoot, { recursive: true });
-
-    const gens = generations(lockRoot);
-    const top = gens.length > 0 ? gens[0]! : -1;
-    const incumbent = top >= 0 ? ownerOf(lockRoot, top) : undefined;
-    if (incumbent !== undefined) lastSeen = incumbent;
-    if (incumbent !== undefined && isHeld(incumbent)) {
+    const { seen, top, incumbent } = scan(lockRoot);
+    if (incumbent !== undefined) {
+      lastSeen = incumbent;
       // Busy is reported WITHOUT touching the incumbent's file. That is the whole fix:
       // the losing path has no write in it at all.
-      return { ok: false, heldBy: incumbent };
+      if (isHeld(incumbent)) return { ok: false, heldBy: incumbent };
     }
 
     const mine = top + 1;
-    const minePath = join(lockRoot, `${mine}.lock`);
-    let fd: number;
-    try {
-      fd = openSync(minePath, "wx", 0o600);
-    } catch (err) {
-      const code = (err as NodeJS.ErrnoException).code;
-      // EEXIST: another process won this generation — rescan and see who it is.
-      // ENOENT: a releaser removed the directory between our mkdir and now — rescan.
-      if (code === "EEXIST" || code === "ENOENT") continue;
-      throw err;
-    }
-    try {
-      writeSync(fd, JSON.stringify(me));
-    } catch (err) {
-      closeSync(fd);
-      // Our own generation, created by us, removed by us. No other process can be here.
-      rmSync(minePath, { force: true });
-      throw err;
-    }
-    closeSync(fd);
+    if (claimGeneration(lockRoot, mine, me) === "retry") continue;
+    collectSuperseded(lockRoot, seen, mine);
 
-    // GC, deliberately unconditional and deliberately after the acquisition. See the header:
-    // while `mine` exists every scanner computes a maximum >= `mine`, so removing anything
-    // below it cannot change any exclusion decision. Skipping it entirely is also correct.
-    for (const g of gens) {
-      if (g >= mine) continue;
-      try {
-        rmSync(join(lockRoot, `${g}.lock`), { force: true });
-      } catch {
-        /* leftovers are harmless; GC has no correctness role */
-      }
-    }
-
-    let released = false;
-    const release = (): void => {
-      if (released) return;
-      released = true;
-      // ONLY OUR OWN GENERATION. `wx` proved no other process created this name, so this
-      // unlink cannot reach a successor's lock however long this run outlived its takeover.
-      rmSync(minePath, { force: true });
-      try {
-        rmdirSync(lockRoot);
-      } catch {
-        /* another holder's generation is in there, or it is already gone */
-      }
-    };
+    const release = releaseGeneration(lockRoot, mine);
     return incumbent !== undefined
       ? { ok: true, release, generation: mine, tookOverFrom: incumbent }
       : { ok: true, release, generation: mine };

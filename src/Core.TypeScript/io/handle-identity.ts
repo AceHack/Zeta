@@ -41,9 +41,7 @@ export type IdentityVerdict = "same" | "different" | "unknown";
  */
 export function handleIdentity(fd: number): HandleIdentity {
   try {
-    const st = fstatSync(fd);
-    const dev = Number(st.dev);
-    const ino = Number(st.ino);
+    const { dev, ino } = fstatSync(fd);
     return { dev, ino, known: !(dev === 0 && ino === 0) };
   } catch {
     return { dev: 0, ino: 0, known: false };

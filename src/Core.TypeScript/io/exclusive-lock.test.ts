@@ -14,7 +14,17 @@ import { spawn } from "node:child_process";
 import { mkdirSync, mkdtempSync, readdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { currentHolder, takeExclusiveLock } from "./exclusive-lock.ts";
+import {
+  claimGeneration,
+  collectSuperseded,
+  currentHolder,
+  generationOf,
+  generationPath,
+  generations,
+  releaseGeneration,
+  takeExclusiveLock,
+  topGenerationOf,
+} from "./exclusive-lock.ts";
 
 const MODULE = join(import.meta.dir, "exclusive-lock.ts");
 
@@ -33,12 +43,26 @@ function scratch(name: string): string {
  */
 function plant(lockRoot: string, generation: number, owner: { pid: number; startedAt: string }): void {
   mkdirSync(lockRoot, { recursive: true });
-  writeFileSync(join(lockRoot, `${generation}.lock`), JSON.stringify(owner));
+  writeFileSync(join(lockRoot, `${String(generation)}.lock`), JSON.stringify(owner));
+}
+
+/** Ordinal comparison — no locale collation anywhere near a lock's identity. */
+function ordinal(a: string, b: string): number {
+  if (a < b) return -1;
+  if (a > b) return 1;
+  return 0;
 }
 
 function generationNames(lockRoot: string): string[] {
-  // Ordinal sort — no locale collation anywhere near a lock's identity.
-  return readdirSync(lockRoot).sort((a, b) => (a < b ? -1 : a > b ? 1 : 0));
+  return readdirSync(lockRoot).sort(ordinal);
+}
+
+/** The owner recorded in one generation, typed rather than read off an `any`. */
+function ownerIn(lockRoot: string, generation: number): { pid: number; startedAt: string } {
+  return JSON.parse(readFileSync(generationPath(lockRoot, generation), "utf-8")) as {
+    pid: number;
+    startedAt: string;
+  };
 }
 
 /**
@@ -91,11 +115,113 @@ async function raceForLock(lockRoot: string, count: number, plantedStale: boolea
       const child = spawn(process.execPath, [racer, lockRoot, String(startAt)], { stdio: ["ignore", "pipe", "pipe"] });
       let out = "";
       child.stdout.on("data", (b: Buffer) => { out += b.toString("utf-8"); });
-      child.on("close", () => resolve(out.trim()));
+      child.on("close", () => { resolve(out.trim()); });
     }));
   const results = await Promise.all(runs);
   return results.filter((r) => r.startsWith("WON"));
 }
+
+describe("exclusive-lock — the pieces the protocol is decomposed into", () => {
+  // `takeExclusiveLock` was one function carrying the whole protocol and tripped the cognitive
+  // complexity ceiling. The decomposition is only worth anything if the parts are reachable on
+  // their own, so each one is pinned here rather than exercised solely through the loop.
+
+  test("generationOf parses a generation name ordinally and rejects everything else", () => {
+    // MUTANT: drop the `Number.isSafeInteger` guard. "99999999999999999999.lock" then parses to
+    // a non-integer double and `topGenerationOf` starts handing out generations that collide.
+    expect(generationOf("0.lock")).toBe(0);
+    expect(generationOf("10.lock")).toBe(10);
+    expect(generationOf("README")).toBe(-1);
+    expect(generationOf("1.lock.bak")).toBe(-1);
+    expect(generationOf("-1.lock")).toBe(-1);
+    expect(generationOf("1e3.lock")).toBe(-1);
+    expect(generationOf("99999999999999999999.lock")).toBe(-1);
+  });
+
+  test("topGenerationOf folds instead of indexing — an empty scan is -1, so the first claim is 0", () => {
+    // The empty case is the fresh-acquisition path, not an impossible one. A `gens[0]!` here
+    // would be an unchecked claim about the exact input this lock sees most often.
+    expect(topGenerationOf([])).toBe(-1);
+    expect(topGenerationOf([0])).toBe(0);
+    expect(topGenerationOf([9, 10, 2])).toBe(10);
+  });
+
+  test("generationPath renders the number with String(), never locale formatting", () => {
+    expect(generationPath("/lock", 10)).toBe(join("/lock", "10.lock"));
+    expect(generationPath("/lock", 1_000_000)).toBe(join("/lock", "1000000.lock"));
+  });
+
+  test("generations ignores non-generation names and reads a missing directory as none", () => {
+    const root = scratch("lock-scan");
+    const lockRoot = join(root, "run.lock.d");
+    try {
+      expect(generations(lockRoot)).toEqual([]);
+      plant(lockRoot, 2, { pid: 1, startedAt: "2026-09-12T00:00:00.000Z" });
+      plant(lockRoot, 10, { pid: 1, startedAt: "2026-09-12T00:00:00.000Z" });
+      writeFileSync(join(lockRoot, "README"), "not a generation");
+      expect(generations(lockRoot)).toEqual([10, 2]);
+    } finally {
+      rmSync(root, { recursive: true, force: true });
+    }
+  });
+
+  test("claimGeneration claims once and says retry to everyone after — never twice", () => {
+    // MUTANT: `openSync(path, "wx")` -> `"w"`. The second call then also reports "claimed" and
+    // this assertion goes red, which is the single mutation the whole protocol rests on.
+    const root = scratch("lock-claim");
+    const lockRoot = join(root, "run.lock.d");
+    try {
+      mkdirSync(lockRoot, { recursive: true });
+      const me = { pid: 4711, startedAt: "2026-09-12T00:00:00.000Z" };
+      expect(claimGeneration(lockRoot, 0, me)).toBe("claimed");
+      expect(claimGeneration(lockRoot, 0, { pid: 5813, startedAt: "2026-09-12T00:00:01.000Z" })).toBe("retry");
+      // The loser wrote nothing: the claim still names the winner.
+      expect(ownerIn(lockRoot, 0).pid).toBe(4711);
+    } finally {
+      rmSync(root, { recursive: true, force: true });
+    }
+  });
+
+  test("claimGeneration says retry when the lock directory is gone, and does not create it", () => {
+    const root = scratch("lock-enoent");
+    try {
+      const lockRoot = join(root, "never-made.d");
+      expect(claimGeneration(lockRoot, 0, { pid: 4711, startedAt: "2026-09-12T00:00:00.000Z" })).toBe("retry");
+      expect(generations(lockRoot)).toEqual([]);
+    } finally {
+      rmSync(root, { recursive: true, force: true });
+    }
+  });
+
+  test("collectSuperseded removes strictly-lower generations and never our own or above", () => {
+    const root = scratch("lock-gc");
+    const lockRoot = join(root, "run.lock.d");
+    try {
+      for (const g of [0, 1, 2, 3]) plant(lockRoot, g, { pid: 1, startedAt: "2026-09-12T00:00:00.000Z" });
+      collectSuperseded(lockRoot, [0, 1, 2, 3], 2);
+      expect(generationNames(lockRoot)).toEqual(["2.lock", "3.lock"]);
+    } finally {
+      rmSync(root, { recursive: true, force: true });
+    }
+  });
+
+  test("releaseGeneration is idempotent, removes only its own generation, and rmdirs only when empty", () => {
+    const root = scratch("lock-rel");
+    const lockRoot = join(root, "run.lock.d");
+    try {
+      plant(lockRoot, 0, { pid: 4711, startedAt: "2026-09-12T00:00:00.000Z" });
+      plant(lockRoot, 1, { pid: 5813, startedAt: "2026-09-12T00:00:01.000Z" });
+      const release = releaseGeneration(lockRoot, 0);
+      release();
+      release(); // second call must be a no-op, not a theft
+      expect(generationNames(lockRoot)).toEqual(["1.lock"]);
+      releaseGeneration(lockRoot, 1)();
+      expect(generations(lockRoot)).toEqual([]);
+    } finally {
+      rmSync(root, { recursive: true, force: true });
+    }
+  });
+});
 
 describe("exclusive-lock — mutual exclusion under a real race", () => {
   test("EIGHT concurrent processes on a fresh lock: exactly one wins", async () => {
@@ -169,7 +295,7 @@ describe("exclusive-lock — nobody deletes a lock they did not create", () => {
       plant(lockRoot, 1, { pid: 5813, startedAt: "2026-09-12T00:00:05.000Z" });
       mine.release();
       expect(generationNames(lockRoot)).toEqual(["1.lock"]);
-      expect(JSON.parse(readFileSync(join(lockRoot, "1.lock"), "utf-8")).pid).toBe(5813);
+      expect(ownerIn(lockRoot, 1).pid).toBe(5813);
     } finally {
       rmSync(root, { recursive: true, force: true });
     }
