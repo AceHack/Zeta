@@ -1,4 +1,10 @@
-# `search/inverted/` — a git-native inverted index that refuses to answer from a stale corpus
+# `search/inverted/` — a local git-rev inverted index (toy cache, not the store)
+
+> **Where the data lives (Aaron 2026-09-11).** Do not commit shards to `main`
+> (#16919 deleted 59.7 MB). Durable reverse indexes are IncrementalJoin
+> views on a host `GroupCommitDiskDeltaLog` (`src/Core/ReverseIndex.fs`,
+> `081M29ESZCQ087G0R001SM29DQ`). This directory is a **local/CI cache**
+> that refuses stale answers. Cadence builds and queries; it does not flush.
 
 ```bash
 # Query. Default target rev is origin/main; the index is repaired against it.

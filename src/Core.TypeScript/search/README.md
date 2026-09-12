@@ -107,16 +107,11 @@ exists to prevent.
   no scope budget and no streaming output, so on this tree it is itself the
   runaway it was written to prevent.
 - `concept-index.ts` / `lookup.ts` — a curated semantic index, a different job.
-- `inverted/` — the **git-native inverted index** (081M0QTXTR3087G0R002R439FH): corpus-wide
-  term -> files, built from an **explicit git rev**, committed to
-  `db/search-index/inverted/`, rebuilt on a ~6h cadence. Answers _"which files
-  mention landauer?"_ in ~20 ms where `git grep` takes ~800 ms — and **refuses**
-  rather than answering when its rev is not the rev you asked about. It exists
-  because of the 2026-08-22 failure this directory's own README describes from
-  the other side: a `grep -r` over a checkout **336 commits behind** origin/main
-  reported **0 files** for `landauer` when the true answer was **447**. See
-  `inverted/README.md`. It has no positions, so it cannot answer phrases —
-  that is a different index type, filed as 081M0QWDDDV087G0R003HM0KYX.
+- `inverted/` — local git-rev term index (081M0QTXTR3087G0R002R439FH). **Not
+  committed.** Durable reverse indexes are `src/Core/ReverseIndex.fs` on a
+  host `GroupCommitDiskDeltaLog` (`081M29ESZCQ087G0R001SM29DQ`). This cache
+  still refuses a stale rev (the 2026-08-22 landauer miss). No positions, so
+  no phrases (081M0QWDDDV087G0R003HM0KYX).
 
 ## What this still does not prevent
 

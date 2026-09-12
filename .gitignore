@@ -214,6 +214,11 @@ node_modules
 drop/
 !db/drop/
 db/drop/*
+
+# Reverse-index jsonl. Local/CI cache only — never commit.
+# Durable form is GroupCommitDiskDeltaLog (src/Core/ReverseIndex.fs).
+# #16919 deleted 59.7 MB from main; do not put it back.
+db/search-index/
 !db/drop/.gitignore
 !db/drop/README.md
 

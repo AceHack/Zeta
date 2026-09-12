@@ -638,6 +638,7 @@
     <!-- Circuit/ -->
     <Compile Include="Circuit/Circuit.Tests.fs" />
     <Compile Include="Circuit/Incremental.Tests.fs" />
+    <Compile Include="Circuit/ReverseIndex.Tests.fs" />
     <Compile Include="Circuit/NestedCircuit.Tests.fs" />
     <Compile Include="Circuit/Plan.Tests.fs" />
     <Compile Include="Circuit/Plan.Branches.Tests.fs" />

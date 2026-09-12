@@ -42,7 +42,9 @@ import { stringCompare } from "../../collation/collation";
 /** Schema id. Bump on any change that alters how a reader must parse the files. */
 export const INDEX_SCHEMA = "zeta.search.inverted/v1";
 
-/** Where the committed index lives. DV2.0: the corpus is the hub, this is a satellite. */
+/** Local/CI cache only — gitignored. Durable reverse indexes are
+ *  GroupCommitDiskDeltaLog + IncrementalJoin (`src/Core/ReverseIndex.fs`).
+ *  Never flush this directory onto main (#16919, 081M29ESZCQ087G0R001SM29DQ). */
 export const INDEX_DIR = "db/search-index/inverted";
 
 export const MANIFEST_FILE = "manifest.json";

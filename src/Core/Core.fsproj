@@ -299,6 +299,7 @@
     <Compile Include="CatalogStatistics.fs" />
     <Compile Include="Plan.fs" />
     <Compile Include="Incremental.fs" />
+    <Compile Include="ReverseIndex.fs" />
     <Compile Include="Dsl.fs" />
     <Compile Include="Vision.fs" />
     <Compile Include="PredictionInference.fs" />
