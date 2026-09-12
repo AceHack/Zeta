@@ -2661,3 +2661,90 @@ status per row: **page** = theorem read from the full text; **abstract** = abstr
 `compileJointPrecision`, `tryQueryExactDenseGaussian` from #16482) and
 `tests/Bayesian.Tests/MultilayerBnn.Tests.fs` MLBNN-33/42/46 — the measured gap
 (`0.227` variance L¹ at `4e-14` mean error) these anchors explain and the spec closes.
+
+## Computer algebra systems — the category/domain lineage and how a tower that LOSES laws is typed (added 2026-09-11, shadow, per work item `081M29N1AX9087G0R001GSJD6G`)
+
+Zeta's hypercomplex tower **gains capability going up the interface chain** (`ISemiring ⊂ IRing
+⊂ IStarRing`) while **losing laws going up the algebra chain** (ℝ → ℂ → ℍ → 𝕆 → 𝕊 sheds
+commutativity, then associativity, then alternativity, then zero-divisor-freeness). Research
+CAS has carried exactly this since 1990 and the answer is **the lattice branches** — the
+associative algebra is a _descendant_ of the non-associative one, so losing a law is moving
+toward the root, which subtyping expresses natively. The gap this entry closes: the repo cited
+Budiu (DBSP), Linstedt (DV2.0) and Codd for its data algebra, and **nothing at all** for the
+prior art on typing algebraic structures — the one tradition purpose-built for it. Full
+treatment, with every identifier read from primary source and register-marked:
+[`2026-09-11-computer-algebra-systems-already-solved-the-law-losing-tower-fricas-branches-sage-withholds-an-axiom.md`](research/2026-09-11-computer-algebra-systems-already-solved-the-law-losing-tower-fricas-branches-sage-withholds-an-axiom.md).
+
+- **Richard D. Jenks & Robert S. Sutor — _Axiom: The Scientific Computation System_
+  (Springer-Verlag, 1992)** — the canonical statement of the **category / domain** two-level
+  design: categories are specifications (what operations and laws), domains are implementations,
+  and domain _constructors_ build domains from domains. Zeta's "interface as specification,
+  per-tower instance as implementation" is this design independently rebuilt. Predecessor:
+  **Scratchpad II**, IBM T. J. Watson from 1977 under Jenks; design also credited to **James H.
+  Davenport**, **Barry M. Trager**, **David Y. Y. Yun**, **Victor S. Miller**. (book)
+- **Johannes Grabmeier & Robert Wisbauer — the FriCAS/Axiom non-associative category tower**
+  (`src/algebra/naalgc.spad`, 01 March 1991; `src/algebra/oct.spad`, 05 September 1990) —
+  `Magma`, `MagmaWithUnit`, `NonAssociativeRng`, `NonAssociativeRing`, `NonAssociativeAlgebra`,
+  `FiniteRankNonAssociativeAlgebra`, `OctonionCategory`. **These are the humans who solved this
+  problem.** The branch point, verbatim from `catdef.spad`:
+  `Algebra(R) : Category == Join(Ring, NonAssociativeAlgebra(R))` — the _associative_ algebra is
+  the descendant. `QuaternionCategory` joins `Algebra R`; `OctonionCategory` joins
+  `FramedNonAssociativeAlgebra(R), NonAssociativeRing` — ℍ and 𝕆 are on different branches, not
+  different rungs. Also the honest half: `SemiGroup() : Category == Magma` **identically**, with
+  associativity carried only in a `++` comment — the same disclosure `IStarRing.cs` makes. Paid
+  for with a shipped falsifier: `associative?()` enumerates basis triples and checks the
+  associator, which is the measurement `081M29N1AX9087G0R001GSJD6G` independently reproduced.
+  (primary source)
+- **Waldek Hebisch — the FriCAS semiring layer** (`NonAssociativeSemiRng`,
+  `NonAssociativeSemiRing`, `SemiRng`, `SemiRing` in `naalgc.spad` / `catdef.spad`) — the rung
+  Zeta's `ISemiring` occupies, with the non-associative variant Zeta lacks. (primary source)
+- **Richard D. Schafer — _An Introduction to Nonassociative Algebras_ (Academic Press, New York,
+  1966)** — the mathematical anchor **FriCAS itself declares** in the `++ Reference:` headers of
+  its non-associative categories. The checked anchor for the whole branch. (book)
+- **Nathan Jacobson — _Structure and Representations of Jordan Algebras_ (AMS, Providence,
+  1968)** — cited in FriCAS's `Magma` and `MagmaWithUnit` headers; why `Magma` is the root of the
+  multiplicative spine rather than `SemiGroup`. (book)
+- **I. L. Kantor & A. S. Solodovnikov — _Hypercomplex Numbers_ (Springer-Verlag Heidelberg,
+  1989, ISBN 0-387-96980-2)** — the Cayley–Dickson anchor `OctonionCategory` names in its own
+  `++ References:` header. Pairs with the doubling construction Zeta already runs. (book)
+- **Nicolas M. Thiéry et al. — SageMath's category-with-axiom framework**
+  (`src/sage/categories/category_with_axiom.py`) — **axioms as composable, commuting operators
+  on categories**: `Magmas().Associative()` is the category of semigroups. The cleanest existing
+  answer to Zeta's problem is one line from `src/sage/algebras/octonion_algebra.pyx`:
+  `MagmaticAlgebras(R.category()).Unital().WithBasis().FiniteDimensional()` — capabilities added,
+  `.Associative()` **deliberately withheld**, in the same expression. Laws are an orthogonal set,
+  not rungs on a chain. Two honest limits, both verified: axiom semantics are _"specified in the
+  documentation"_ (Sage's own words — asserted, not checked, then falsified by a sampled
+  `_test_associativity`); and **there is no `Alternative` axiom** in `all_axioms`, so 𝕆's positive
+  law is inexpressible there, while `NoZeroDivisors` **is** present, so the 𝕊 step has a name and
+  the 𝕆 step does not. (primary source)
+- **The GAP Group — categories vs. properties** (reference manual ch. 13 "Types of Objects",
+  ch. 35 "Magmas"; `lib/magma.gd`, `lib/magma.gi`, `lib/grp.gd`) — the capability/law split made
+  literal: `DeclareSynonym( "IsGroup", IsMagmaWithInverses and IsAssociative );`. A **category**
+  is fixed at creation and not computable (what it is made of); a **property** is computed and
+  discovered (what laws it satisfies). `IsAssociative` is a `DeclareProperty` whose installed
+  method enumerates all triples — the second independent system to compute associativity rather
+  than type it. (primary source)
+- **Wieb Bosma & John Cannon — "Programming with Algebraic Structures: Design of the Magma
+  Language" (ISSAC '94)**; **Bosma, Cannon & Playoust — "The Magma Algebra System I: The User
+  Language" (_J. Symbolic Computation_ 24, 1997, 235–265)** — design grounded in universal
+  algebra and category theory, with algebraic structure ("magma") as _the_ strong-typing
+  mechanism. How Magma represents laws is **UNKNOWN** here: the source is closed. (papers)
+- **Michael Monagan — Maple's `Domains` package** (early 1990s) — parametrized domains as tables
+  of operations, with an inclusion hierarchy (field ⊂ Euclidean domain ⊂ UFD ⊂ integral domain ⊂
+  ring). Named because it is the same lineage; the published hierarchy is the _commutative_ tower,
+  which never loses a law, so it offers no answer to this problem. (docs)
+
+**The contrast case, and the answer to the literal question.** Mathematica has no algebraic type
+hierarchy at all — term rewriting over expressions, where laws are rules that fire rather than
+properties a structure carries; the problem does not arise because there is nothing to attach the
+law to. And **pocket calculator CAS is genuinely too simple**: TI-89 / Voyage 200 and HP-50g do
+serious work (symbolic integration by Risch, Gröbner bases, Laplace transforms) but all of it over
+**polynomials and expressions over a field**, with no user-facing notion of an algebraic structure
+and therefore nothing that can lose a law. That is the honest finding, not a failed search — it is
+the reason to look one tier up, where the answer had been sitting since 1990.
+
+**Cross-reference:** `src/Core.Abstractions/IStarRing.cs` (_"law profile carried as documentation,
+not types"_ — the disclosure two mature CAS independently also make) and
+`src/Core.Abstractions/IRing.cs` (capability earned via subinterface so misuse is a compile error
+— the precedent the marker-interface proposal extends).
