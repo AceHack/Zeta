@@ -1,0 +1,12 @@
+{
+  "pr_number": 17305,
+  "archive_path": "docs/history/pr-reviews/2026/09/12/PR-17305-feat-deps-hash-verify-nuget-package-content-with-lock-files-and-locked-mode-rest.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-12T05:31:41.723Z",
+  "schema_version": "v1",
+  "commit_sha": "2062e06e985e4d32ca9ec899e8dbb1cb52d759d1",
+  "title": "feat(deps): hash-verify NuGet package content with lock files and locked-mode restore",
+  "state": "MERGED",
+  "merged_at": "2026-09-12T05:30:31Z",
+  "head_ref": "shadow/nuget-locked-mode"
+}
