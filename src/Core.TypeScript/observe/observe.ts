@@ -1137,8 +1137,52 @@ export function renderDashboard(world: World, who: string, nav: Navigation): str
   return out.join("\n");
 }
 
+/**
+ * How much of one long passage an opened item shows before pointing at the rest.
+ *
+ * MEASURED on agentic-tpm task-032, 2026-09-12: `observe item` printed 71,565 characters - 28
+ * comments carrying whole AI-review bodies, and every gate's full verdict. About 18,000 tokens into
+ * a session that then spent four turns piping it through `head`, grepping it, and re-reading its own
+ * truncated output off disk - and carried the payload in every later turn's context. The bodies were
+ * DUPLICATED besides: a follow-up session is handed the same comments in full in its own prompt.
+ * So an opened item shows the shape of everything and the substance of what fits, and says exactly
+ * how to read any of it whole.
+ */
+export const PASSAGE_CHARS = 400;
+
+/** The directory every one of these paths starts with, or "" when they do not share a useful one. */
+function commonRoot(refs: readonly string[]): string {
+  if (refs.length < 2) return "";
+  let root = refs[0] as string;
+  for (const r of refs) {
+    while (root !== "" && !r.startsWith(root)) {
+      const cut = Math.max(root.lastIndexOf("\\", root.length - 2) + 1, root.lastIndexOf("/", root.length - 2) + 1);
+      root = root.slice(0, Math.max(0, cut));
+    }
+  }
+  return root.length > 20 ? root : "";
+}
+
+/**
+ * A long passage, cut where it stops being free, saying only HOW MUCH was cut.
+ *
+ * Not where to read it: that command is four hundred characters of absolute paths, and repeating it
+ * on every cut passage cost more than the text it was replacing.
+ */
+function passage(text: string, full: boolean, limit = PASSAGE_CHARS): string {
+  const t = text.trim();
+  if (full || t.length <= limit) return t;
+  return `${t.slice(0, limit)}… (+${String(t.length - limit)})`;
+}
+
 /** One item, opened: the ticket, its steps, its attachments, its thread, its links. */
-export function renderItem(item: ItemContext, nav: Navigation): string {
+export function renderItem(item: ItemContext, nav: Navigation, opts: { readonly full?: boolean } = {}): string {
+  const full = opts.full === true;
+  const whole = `${nav.item(item.id)} --full`;
+  const cutSoFar = (): number =>
+    (item.description === undefined ? 0 : Math.max(0, item.description.trim().length - 2000)) +
+    item.steps.reduce((n, st) => n + Math.max(0, (st.note ?? "").trim().length - PASSAGE_CHARS), 0) +
+    item.comments.reduce((n, c) => n + Math.max(0, c.text.trim().length - PASSAGE_CHARS), 0);
   const out: string[] = [];
   out.push(`${item.id}  [${item.status}]  ${item.title}`);
   if (item.kind !== undefined) out.push(`  kind      ${item.kind}`);
@@ -1149,27 +1193,42 @@ export function renderItem(item: ItemContext, nav: Navigation): string {
   for (const d of item.dependsOn ?? []) out.push(`  waits on  ${d}   → ${nav.item(d)}`);
   out.push("");
   out.push("DESCRIPTION");
-  out.push(item.description === undefined || item.description.trim() === "" ? "  (none written)" : item.description.split("\n").map((l) => "  " + l).join("\n"));
+  out.push(
+    item.description === undefined || item.description.trim() === ""
+      ? "  (none written)"
+      : passage(item.description, full, 2000).split("\n").map((l) => "  " + l).join("\n"),
+  );
   out.push("");
   out.push(`STEPS (${String(item.steps.filter((st) => st.done).length)}/${String(item.steps.length)} done)`);
   if (item.steps.length === 0) out.push("  none owed");
   for (const st of item.steps) {
     out.push(`  ${st.done ? "✔" : "·"} ${st.name.padEnd(28)} ${st.state}${st.by === undefined ? "" : `  by ${st.by}`}`);
     if (st.asks !== undefined) out.push(`      asks: ${st.asks}`);
-    if (st.note !== undefined && st.note.trim() !== "") out.push(`      said: ${st.note}`);
-    for (const a of st.attachments ?? []) out.push(`      left: ${a}`);
+    if (st.note !== undefined && st.note.trim() !== "") out.push(`      said: ${passage(st.note, full)}`);
+    if ((st.attachments ?? []).length > 0) out.push(`      left: ${String((st.attachments as readonly string[]).length)} file(s), listed under ATTACHMENTS`);
   }
   out.push("");
-  out.push(`ATTACHMENTS (${String(item.attachments.length)})`);
+  // THE COMMAND IS SAID ONCE, not per attachment: MEASURED at ~800 characters each, 18 of them on
+  // one item - fourteen kilobytes of the same sentence, in a context somebody pays for every turn.
+  const root = commonRoot(item.attachments.map((a) => a.ref));
+  out.push(`ATTACHMENTS (${String(item.attachments.length)})${item.attachments.length === 0 ? "" : `   open one with: ${nav.attachment(item.id, "<ref>")}`}`);
   if (item.attachments.length === 0) out.push("  none");
+  // A shortened name is shown ONLY under the root that completes it - never a name that names nothing.
+  if (root !== "") out.push(`  all under ${root}`);
   for (const a of item.attachments) {
-    out.push(`  ${a.ref}${a.from === undefined ? "" : `   (from ${a.from}${a.by === undefined ? "" : `, ${a.by}`})`}`);
-    out.push(`      open: ${nav.attachment(item.id, a.ref)}`);
+    out.push(`  ${root === "" ? a.ref : a.ref.slice(root.length)}${a.from === undefined ? "" : `   (from ${a.from}${a.by === undefined ? "" : `, ${a.by}`})`}`);
   }
   out.push("");
   out.push(`COMMENTS (${String(item.comments.length)})`);
   if (item.comments.length === 0) out.push("  none");
-  for (const c of item.comments) out.push(`  ${c.by}${c.about === undefined ? "" : ` on ${c.about}`}: ${c.text}`);
+  for (const c of item.comments) out.push(`  ${c.by}${c.about === undefined ? "" : ` on ${c.about}`}: ${passage(c.text, full)}`);
+  // SAID ONCE, at the end, for the whole item: how much was cut anywhere above, and the one command
+  // that shows all of it. A `(+N)` above is that passage's share of this number.
+  if (!full && cutSoFar() > 0) {
+    out.push("");
+    out.push(`${String(cutSoFar())} characters were cut from the passages above. Read this item whole:`);
+    out.push(`  ${whole}`);
+  }
   return out.join("\n");
 }
 

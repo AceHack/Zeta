@@ -115,8 +115,15 @@ export function itemContextsFrom(
     // ref, first writer kept, so a document is listed once with the step that wrote it.
     const attachments: ItemAttachment[] = [];
     const seen = new Set<string>();
+    // ── AN ATTACHMENT IS SOMETHING THAT CAN BE OPENED ─────────────────────────────────────────
+    // MEASURED on agentic-tpm task-032, 2026-09-12: one listed attachment was 4,031 characters of a
+    // test run's stdout - a step's `log:` evidence, which carries its text INSIDE the ref. It was
+    // offered as openable, and opening it resolved the blob as a path and reported it missing. It was
+    // also printed in full, twice, in a view every session reads. A ref that spans lines or is longer
+    // than any path is evidence, not a document: the step that produced it already says what it says.
+    const openable = (ref: string): boolean => !ref.includes(String.fromCharCode(10)) && ref.length <= 400;
     const attach = (a: ItemAttachment): void => {
-      if (seen.has(a.ref)) return;
+      if (seen.has(a.ref) || !openable(a.ref)) return;
       seen.add(a.ref);
       attachments.push(a);
     };
@@ -298,9 +305,15 @@ export function navigationFor(prefix: string, hatId: string): Navigation {
 export function readAttachment(items: readonly ItemContext[], workId: string, ref: string): { readonly ok: true; readonly text: string } | { readonly ok: false; readonly reason: string } {
   const item = items.find((i) => i.id === workId);
   if (item === undefined) return { ok: false, reason: `no work item '${workId}'` };
-  const listed = item.attachments.find((a) => a.ref === ref);
+  // THE NAME AS SHOWN, OR AS SHORTENED. An opened item lists its attachments under a common root,
+  // said once, so what an agent copies back is the tail - and a lookup that only accepts the whole
+  // path would refuse the name it was just shown. An ambiguous tail is refused, never guessed.
+  const exact = item.attachments.find((a) => a.ref === ref);
+  const tails = exact !== undefined ? [exact] : item.attachments.filter((a) => a.ref.endsWith(ref));
+  const listed = tails.length === 1 ? tails[0] : undefined;
   if (listed === undefined) {
-    return { ok: false, reason: `'${ref}' is not attached to ${workId} — it has: ${item.attachments.map((a) => a.ref).join(", ") || "nothing"}` };
+    const why = tails.length > 1 ? `names ${String(tails.length)} of ${workId}'s attachments` : `is not attached to ${workId}`;
+    return { ok: false, reason: `'${ref}' ${why} — it has: ${item.attachments.map((a) => a.ref).join(", ") || "nothing"}` };
   }
   const at = resolve(listed.ref);
   // READ, THEN INTERPRET — never `existsSync`/`statSync` and then read
@@ -372,7 +385,7 @@ export async function main(argv: readonly string[], print: (s: string) => void =
         print(`no work item '${id ?? ""}'. Items: ${items.map((i) => i.id).join(", ") || "none"}`);
         return 1;
       }
-      print(json ? JSON.stringify(item, null, 2) : renderItem(item, nav));
+      print(json ? JSON.stringify(item, null, 2) : renderItem(item, nav, { full: argv.includes("--full") }));
       return 0;
     }
     case "attachment": {
