@@ -2662,6 +2662,57 @@ status per row: **page** = theorem read from the full text; **abstract** = abstr
 `tests/Bayesian.Tests/MultilayerBnn.Tests.fs` MLBNN-33/42/46 — the measured gap
 (`0.227` variance L¹ at `4e-14` mean error) these anchors explain and the spec closes.
 
+## Four-valued logic and bilattices — the anchors for `FOUR ≇ C₄` (added 2026-09-11, shadow)
+
+Anchors for the **second four-element trap** in the four-corner neighbourhood. A belief pair
+`(trueChance, falseChance)` whose legs float independently is an **interlaced bilattice**, and its
+four extreme points are Belnap's FOUR. `src/Core/FourCornerC4.fs` also carries a **`C₄`** compass
+`{1, i, −1, −i}` on `FourCorner`'s 2×2. Both have four elements and **they are not the same
+object** — the count is shared, the invariants are not. Derived in
+`docs/research/2026-09-11-the-belief-pair-as-a-weight-for-the-universal-tensor-bilattice-boole-slack-and-the-typed-regulariser-lumen.md`
+§4 (Lumen; PR #17309); guarded, executably, in `FourCornerC4` (`compassNegationIntertwinerExists`)
+and `tests/Tests.FSharp/Formal/FourCornerC4.Laws.Tests.fs` §B.
+
+**Register note:** these four are cited from standing knowledge of the literature, not page-checked
+against the volumes. The _structural_ claims they are used for — two interlaced orders, an
+involutive negation, the product representation — are **independently verified in-repo** by the
+exhaustive tests above, so the code does not rest on the citations. The citations place the work in
+its lineage (`anchor-to-human-prior-art`); the falsifiers are what make it checked.
+
+- **Nuel D. Belnap Jr. (1977) — "A Useful Four-Valued Logic"**, in J. M. Dunn & G. Epstein (eds.),
+  _Modern Uses of Multiple-Valued Logic_ (Reidel), pp. 5–37; and "How a Computer Should Think", in
+  G. Ryle (ed.), _Contemporary Aspects of Philosophy_ (Oriel Press, 1977) ⭐ — **FOUR**:
+  `{none, true, false, both}`, read as _what a reasoner has been told_. The `both` corner (a
+  **glut**) is the one every consistency-constrained structure is missing, and it is exactly the
+  raw-vault stance in logical clothing — _a single version of the facts, never a single version of
+  the truth_ (`dv2-data-split-discipline-activated`). **Why it is the anchor rather than Kleene:**
+  Kleene's K3 adds only the gap; Belnap adds the glut, and the glut is what makes the second order
+  a lattice.
+- **Matthew L. Ginsberg (1988) — "Multivalued Logics: A Uniform Approach to Reasoning in Artificial
+  Intelligence"** (_Computational Intelligence_ 4(3), pp. 265–316) ⭐ — **bilattices**: one carrier,
+  **two** lattice orders (truth `≤_t`, knowledge/information `≤_k`), and the **interlacing**
+  condition that each order's join and meet are monotone with respect to the other. The interlacing
+  condition is the load-bearing one here: it is what a bare product of two lattices does _not_
+  automatically give you, and it is checked exhaustively in the tests rather than assumed.
+- **Melvin Fitting (1991) — "Bilattices and the Semantics of Logic Programming"** (_Journal of Logic
+  Programming_ 11(2), pp. 91–116); see also "Bilattices are nice things" (2006) — the **negation**
+  conditions: `≤_t`-antitone, `≤_k`-**monotone** (negating tells you nothing new), and an
+  **involution**. That last word is the whole guard: `¬` has order 2, a `C₄` generator has order 4,
+  and no relabelling reconciles them.
+- **Arnon Avron (1996) — "The Structure of Interlaced Bilattices"** (_Mathematical Structures in
+  Computer Science_ 6(3), pp. 287–299) ⭐ — the **representation theorem**: every bounded interlaced
+  bilattice is isomorphic to a product `L₁ ⊙ L₂` of two bounded lattices. This is what turns
+  "the belief pair resembles a bilattice" into an **identification**, and the word **bounded** does
+  real work — `IntervalWeight`'s carrier `ℝ ⊙ ℝ` is interlaced and unbounded, so it has no extreme
+  points and therefore no Belnap corners at all (checked in the same test file).
+- **George Boole (1854) — _An Investigation of the Laws of Thought_**, and **Bruno de Finetti (1937)
+  — "La prévision: ses lois logiques, ses sources subjectives"** (_Annales de l'Institut Henri
+  Poincaré_ 7, pp. 1–68) — the residual `r = 1 − t − f` as slack in the _conditions of possible
+  experience_, and `r < 0` as a **Dutch-book** loss per unit stake. The reason the "probabilities
+  that don't sum to one" axis is a classical, units-bearing quantity and **not** a quantum
+  pathology. Pairs with the standing warning in `FourCornerC4` that a numeric coincidence with
+  `2√2` is not a measurement of Tsirelson.
+
 ## Computer algebra systems — the category/domain lineage and how a tower that LOSES laws is typed (added 2026-09-11, shadow, per work item `081M29N1AX9087G0R001GSJD6G`)
 
 Zeta's hypercomplex tower **gains capability going up the interface chain** (`ISemiring ⊂ IRing
