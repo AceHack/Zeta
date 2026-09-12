@@ -329,3 +329,168 @@ mathematically load-bearing sense (a colimit? a fibration? merely a naming conve
   NIPS 2006 — the per-domain ranking `TravelerRankLedger.fs` implements.
 - **Budiu, M., McSherry, F., Ryzhyk, L. & Tannen, V. (2023).** *DBSP: Automatic Incremental View
   Maintenance for Rich Query Languages.* VLDB — the "materialized view" half of §5.
+
+---
+
+# Second pass — what grounds the algebra, and three corrections
+
+Aaron, reading the above. Four of these change the document; one is a confirmation worth
+keeping for its example.
+
+## 7. The algebra is RELATIVE — grounded in disjoint histories a traveler chooses to trust
+
+> *"**statistics based on visible disjoint histories each traveler chooses to trust** is
+> what makes this algebra. it's **relative, based on pairwise memories**."*
+
+This answers a question the first pass left open and Lumen left open too: *where do the
+numbers come from?* Lumen's §7.5 said the conflict discount "must come from data" and
+pointed at `TravelerRankLedger`. Aaron's answer is more specific and more radical:
+
+> **There is no view-independent `(t, f)`.** The pair is a statistic over the histories
+> **this traveler can see** and **has chosen to trust** — so two travelers looking at the
+> same proposition legitimately hold different pairs, and neither is wrong.
+
+Three consequences, and the third is the sharp one.
+
+**It makes the residual a property of the OBSERVER, not only of the evidence.** `r > 0`
+(ignorance) can mean *the histories I trust do not settle this*, which is a fact about my
+vantage rather than about the world. Two travelers can differ on `r` with identical
+evidence and different trust sets.
+
+**It is the `≤_k` order given a mechanism.** Lumen identified the knowledge order as the
+axis carrying the signal but did not say what moves a claim along it. This does: **you
+move up the knowledge order by admitting more trusted history.** The order is not
+abstract; it is indexed by a trust set.
+
+**And it makes "pairwise" load-bearing rather than descriptive.** If the statistic is over
+*pairwise* memories, the belief pair is not a global quantity at all — it is an edge
+property. That is the same shape as the naming eigenvector and the privacy budget
+(`privacy-budget-is-hard-money-earned-by-others.md`: recognition flows from the
+already-recognised; the edge is *value added to you*), and it is why the society-scale
+view can stay smooth while pair-scale views tangle (§3 above). **A global belief would
+need a global observer, and manifesto §1 forbids one.**
+
+> **REGISTER: this is the strongest single grounding statement in either document, and it
+> is UNBUILT.** Nothing today computes a belief pair from a trust set. Its falsifier is
+> cheap and real: two travelers with deliberately different trust sets should derive
+> *different* pairs from the same evidence, and if they cannot the implementation has
+> smuggled in a global view.
+
+## 8. ASSUME actors are NOT independent — and make the detector first-class
+
+The first pass said *"independence must still be earned"* and treated correlated actors as
+the failure mode to guard against. Aaron inverts the default:
+
+> *"**we assume they are not** [independent], and have a **dual-use oracle around cartel
+> detection and forgery of identity** that tries to make this **first class** and **let the
+> society decide the dual-use outcome over time**."*
+
+**Assume dependence; detect it; do not judge it.** That is a better default than "earn
+independence" for the reason `never-assume-malice-where-mistake-is-possible.md` gives:
+correlation between two actors has an enormous space of innocent explanations — shared
+training, shared context, reading the same document, simply being right together — and a
+mechanism that treats correlation as *evidence of collusion* has attached a verdict its
+measurement cannot support.
+
+So the mechanism reports the **fact** and the oracle attaches the **meaning**, exactly as
+`dual-use-detection-is-neutral-oracle-decides.md` requires:
+
+| the detector may say | the detector may NOT say |
+|---|---|
+| `Correlated(a, b, degree)` | `CartelDetected` |
+| `SameSourceAsKnown` | `ForgerCaught` |
+
+And the dual use is real in both directions, which is what makes it a §11 case rather than
+a security feature: **high correlation between two travelers is a cartel under one reading
+and a genuine consensus under another** — and the second is what you *want* when the two
+are independently right. A detector that hardcoded "cartel" would price agreement as
+suspicion.
+
+**This closes the §1 caution properly.** The first pass said dilution is only honest if the
+actors are independent, and left "earn it" as the remedy. The real remedy is: assume they
+are not, **measure the correlation**, publish it as a neutral fact, and let each traveler's
+oracle decide what to do with it — which composes with §7, because whose correlation you
+can see depends on whose history you trust.
+
+> **REGISTER: DIRECTION, and partly built.** `AntiSybil.fs` and `CoordinationSpectrum.fs`
+> already report `SameSourceAsKnown` as a neutral fact with reunion/sybil left to caller
+> policy — the exact shape this asks for. What does not exist is the *cartel* half
+> (correlation between distinct, non-forged identities) or its use as the conflict
+> discount.
+
+## 9. Hats are switchable mid-conversation — and strongman/weakman is a hat swap
+
+Confirming §1's name/hat distinction, Aaron supplies the example that makes it concrete:
+
+> *"this is one of the sharpest things you said. my most competent colleagues and I can
+> **wear multiple hats at once and switch them mid-conversation if asked** — it's like
+> asking the other person to **strongman** your argument while they ask you to
+> **weakman** it."*
+
+Two things follow, and both are testable claims about the substrate rather than pleasantries.
+
+**A hat is switchable on request, at conversational granularity.** Not per-session, not
+per-role-assignment — *mid-sentence, by asking*. So a hat cannot be a heavyweight identity
+object; it has to be cheap enough to put on and take off inside one exchange. That is a
+real constraint on any implementation.
+
+**Simultaneity is normal, not exceptional.** "Multiple hats at once" is named as a mark of
+*competence*, which inverts the usual worry. The thing that would be pathological is a
+person unable to hold more than one.
+
+**And the strongman/weakman example is the mechanism in miniature.** Asking someone to
+strongman your argument while you weakman it is an explicit, consensual, temporary
+**exchange of hats** — each party adopts the other's evidential stance on request. It is
+also, precisely, **manufactured decorrelation**: two parties who would otherwise converge
+deliberately take opposed stances to keep the pair from collapsing to `ρ → 1`. Which lands
+it on §8 — the correlation detector would see two travelers *becoming* less correlated on
+request, and that is a signal about method, not about collusion.
+
+> **REGISTER: OBSERVATION with a design consequence.** The switchability constraint is
+> checkable against any hat implementation. Whether strongman/weakman is *usefully* modelled
+> as a hat swap in the substrate is unmeasured.
+
+## 10. Whether the towers genuinely join may itself need many towers
+
+The first pass left open whether the many towers join in a mathematically load-bearing
+sense (colimit? fibration? naming convention?). Aaron:
+
+> *"in a perfect world yes — but this will likely take **many disagreements to settle** on
+> if it's true, or **this also needs multi towers**."*
+
+The second clause is the interesting one and it is self-referential in a way that is not a
+joke: **the question "do these towers join?" may itself be a question with many towers** —
+several inequivalent formalisations, settled (if ever) by persistent disagreement rather
+than by one proof. That is `anti-babel-preserve-reconcilability.md`'s monodromy clause
+applied to the meta-question: *two paths around a pole yield genuinely different results,
+and that difference is information, not error.*
+
+Which sets the honest expectation: **do not wait for the join question to be settled before
+building.** The towers exist and are useful unjoined; a formal account of their joining is a
+research thread that may legitimately never converge to one answer.
+
+## 11. On mint-based addressing, and on Mac Lane
+
+Two short confirmations, recorded because each carries a caveat worth keeping.
+
+> *"[addressing must be mint-based] yes i think so — **unless we come up with some universal
+> theory of everything**, which i'm **not actively trying to do**, but if it pops out so be
+> it."*
+
+The conditional is exact: a single root would restore positional addressing, and a universal
+theory is what a single root would be. Recorded as the stated *exception* to mint-based
+addressing rather than pretending no exception exists — and recorded with its likelihood
+honestly flagged by its author.
+
+> *"[Mac Lane coherence covers every n] yes — but **if this theorem holds here it might
+> strengthen it**."*
+
+Worth stating plainly because it inverts the usual direction of borrowing. The repo normally
+*consumes* anchors; this is a case where an instance might *contribute*. Mac Lane's theorem
+is about monoidal categories; if Zeta's join satisfies the pentagon in a setting the original
+did not consider — many weight rings, joined by homomorphism, addressed by mint — that is a
+new instance rather than a new theorem, but a new instance of a coherence theorem in an
+unanticipated setting is a real, publishable observation. **Register: SPECULATIVE.** Nobody
+has checked whether Zeta's setting is genuinely outside the theorem's known instances, and
+`anchor-to-human-prior-art.md` requires an anchor be *checked*, not merely cited — which
+means the claim to novelty needs the same check as the claim to lineage.
