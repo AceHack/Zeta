@@ -14,13 +14,15 @@
 //   acquire: 0 = claim published, 1 = already claimed (no publish)
 //   release: 0 = release published, 1 = error
 
-import { closeSync, fstatSync, openSync, readFileSync, statSync, unlinkSync, writeSync } from "node:fs";
+import { statSync } from "node:fs";
 import { join } from "node:path";
 import { publish, list, BUS_DIR, ensureDir } from "./bus.ts";
 import { SENDER_IDS } from "./types.ts";
 import type { AgentId, SenderAgentId, MessageEnvelope } from "./types.ts";
 import { parse as parseActorRef } from "../identity/actor-ref.ts";
 import type { ActorRef } from "../identity/actor-ref.ts";
+import { takeExclusiveLock } from "../io/exclusive-lock.ts";
+import type { LockOwner } from "../io/exclusive-lock.ts";
 
 // Stale lock threshold — age floor before a lock is a candidate for reclamation.
 // Used together with a PID liveness check: only reclaim if the holder process is
@@ -36,87 +38,46 @@ function isProcessRunning(pid: number): boolean {
   catch (e) { return (e as NodeJS.ErrnoException).code === "EPERM"; }
 }
 
-// Per-item advisory file lock — guards acquire's check+publish against concurrent processes.
+// Per-item advisory lock — guards acquire's check+publish against concurrent processes.
 // encodeURIComponent produces a collision-free mapping: distinct item IDs always produce
 // distinct lock paths (e.g. "A/B" → "A%2FB", "A_B" → "A_B").
-function lockFilePath(itemId: string): string {
-  return join(BUS_DIR, `acquire-${encodeURIComponent(itemId)}.lock`);
+//
+// A DIRECTORY, not a file, and the reason is alert #811. The previous implementation
+// acquired correctly — `openSync(lp, "wx")` is an atomic O_CREAT|O_EXCL test-and-set —
+// and then broke its own mutual exclusion in RECOVERY: on EEXIST it read the holder,
+// judged it stale, and `unlinkSync(lp)`-ed the PATH. A path resolves afresh on every
+// call, so two processes racing one stale lock could both read the same dead holder and
+// the second unlink could delete the first's brand-new LIVE lock, leaving two agents
+// each believing they had claimed the item.
+//
+// This file already carried the honest diagnosis of why the narrowings do not close it:
+// reading pid and mtime through one descriptor fixes a real bug and leaves the unlink
+// racing, and a dev+ino comparison before the unlink narrows the window without closing
+// it, because there is no `funlinkat`. The conclusion the comment stopped one step short
+// of is the fix: stop unlinking objects you did not create. `io/exclusive-lock.ts`
+// supersedes a stale generation with a single O_EXCL create instead.
+function lockRootPath(itemId: string): string {
+  return join(BUS_DIR, `acquire-${encodeURIComponent(itemId)}.lock.d`);
+}
+
+// A lock is still held while its owner is alive, OR while it is younger than the age
+// floor — the floor is what stops a lock created microseconds ago from being judged on a
+// pid that has not been written yet. An unparseable `startedAt` falls through to liveness
+// alone rather than reading as "young forever".
+function stillHeld(owner: LockOwner): boolean {
+  const startedMs = Date.parse(owner.startedAt);
+  const withinAgeFloor = Number.isFinite(startedMs) && Date.now() - startedMs <= LOCK_STALE_MS;
+  return withinAgeFloor || isProcessRunning(owner.pid);
 }
 
 function withAcquireLock<T>(itemId: string, fn: () => T): T {
   ensureDir();
-  const lp = lockFilePath(itemId);
-  let fd: number | undefined;
-  // O_CREAT|O_EXCL ("wx"): atomic exclusive create — exactly one winner per race.
-  // Write our PID so stale-lock detection can verify the holder is still alive before
-  // reclaiming: age threshold guards against reading a newly-created empty file.
-  for (let i = 0; i < 3; i++) {
-    try {
-      fd = openSync(lp, "wx");
-      writeSync(fd, String(process.pid));
-      break;
-    } catch (e) {
-      // Only do stale-lock recovery on EEXIST; other errors (permissions, I/O) bubble up.
-      if ((e as NodeJS.ErrnoException).code !== "EEXIST") throw e;
-      try {
-        // BOTH FACTS FROM ONE HANDLE. `readFileSync(lp)` then `statSync(lp)` resolves the path
-        // twice, so the holder PID and the mtime can describe two different locks: if the holder
-        // releases and someone else acquires between the calls, this reads the OLD pid against the
-        // NEW mtime — or the reverse — and can reclaim a lock that is very much alive. That is a
-        // correctness bug in lock recovery, not only a scanner finding (CodeQL
-        // `js/file-system-race`). One `open`, one inode, both answers.
-        //
-        // CodeQL still reports THIS line (alert #811), and the report is about
-        // a different pair: the `openSync(lp, "wx")` above that raised EEXIST,
-        // read as a "check" preceding this "use". That pairing has no fix. The
-        // EEXIST *is* the discovery that a lock file exists, and the only way to
-        // learn who holds it is to open the file it named. There is no syscall
-        // that both fails on collision and hands back the colliding object, so
-        // any correct lock-recovery path opens twice. What the fix above did
-        // remove is the race that mattered: the PID and the mtime now come from
-        // ONE descriptor, so recovery can no longer mix an old holder with a new
-        // clock. A lock that is replaced between the two opens is handled by the
-        // retry loop, which is what the loop is for.
-        const rfd = openSync(lp, "r");
-        let content: string;
-        let st: ReturnType<typeof fstatSync>;
-        try {
-          st = fstatSync(rfd);
-          content = readFileSync(rfd, "utf8").trim();
-        } finally {
-          closeSync(rfd);
-        }
-        const holderPid = parseInt(content, 10);
-        // Reclaim only if the lock is old enough AND its holder process is dead.
-        if (Date.now() - st.mtimeMs > LOCK_STALE_MS && !isProcessRunning(holderPid)) {
-          // IDENTITY CHECK BEFORE UNLINK, because `unlinkSync(lp)` resolves the path AGAIN. The
-          // inode we judged stale is the one held by `rfd`; if the holder released and someone else
-          // acquired in between, the path now names a DIFFERENT, LIVE lock and deleting it breaks
-          // mutual exclusion for a process that did nothing wrong. Comparing dev+ino makes that
-          // replacement detectable instead of silent.
-          //
-          // HONEST LIMIT, stated because narrowing a window is not closing it: a path-based unlink
-          // cannot be made race-free with the filesystem APIs Node exposes — there is no
-          // `funlinkat`. The residual window is between this stat and the unlink below. Closing it
-          // properly needs a different protocol (advisory `flock`/`fcntl`, or reclaim performed
-          // atomically by the next acquirer), which is a change to how mutual exclusion works here
-          // and not something a scanner finding should decide.
-          let sameInode = false;
-          try {
-            const onPath = statSync(lp);
-            sameInode = onPath.dev === st.dev && onPath.ino === st.ino;
-          } catch { /* vanished between the read and here — nothing of ours to reclaim */ }
-          if (sameInode) unlinkSync(lp); // reclaim stale lock left by a crashed process
-        }
-      } catch { /* lock disappeared between reads — harmless */ }
-    }
-  }
-  if (fd === undefined) throw new Error(`${itemId}: acquire lock busy — retry`);
+  const held = takeExclusiveLock(lockRootPath(itemId), { isHeld: stillHeld, attempts: 3 });
+  if (!held.ok) throw new Error(`${itemId}: acquire lock busy — retry`);
   try {
     return fn();
   } finally {
-    closeSync(fd);
-    try { unlinkSync(lp); } catch { /* best-effort */ }
+    held.release();
   }
 }
 

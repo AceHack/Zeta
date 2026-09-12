@@ -1,5 +1,5 @@
 import { describe, test, expect, beforeEach, afterEach } from "bun:test";
-import { existsSync, mkdtempSync, readdirSync, rmSync, utimesSync, writeFileSync, unlinkSync } from "node:fs";
+import { existsSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, rmSync, utimesSync, writeFileSync, unlinkSync } from "node:fs";
 import { join } from "node:path";
 import { tmpdir } from "node:os";
 import { spawnSync } from "node:child_process";
@@ -519,20 +519,45 @@ describe("claim.ts — acquire lock cleanup (P1)", () => {
     expect(lockFiles).toHaveLength(0);
   });
 
-  test("stale lock (age > 5s) is reclaimed so acquire succeeds", () => {
-    // Simulate a lock file left by a crashed process: backdate its mtime AND write a
-    // dead PID (0 is never a valid running process so isProcessRunning(0) = false).
-    // 081KSE6WT0008QG0R000JSJ3SR → encodeURIComponent("081KSE6WT0008QG0R000JSJ3SR") = "081KSE6WT0008QG0R000JSJ3SR", so lock file is acquire-081KSE6WT0008QG0R000JSJ3SR.lock.
-    const lockPath = join(TEST_DIR, "acquire-081KSE6WT0008QG0R000JSJ3SR.lock");
-    const staleDate = new Date(Date.now() - 10_000); // 10s ago — beyond the 5s threshold
-    writeFileSync(lockPath, "0");
-    utimesSync(lockPath, staleDate, staleDate);
+  test("stale lock (age > 5s, dead holder) is TAKEN OVER, never deleted-then-recreated", () => {
+    // Simulate a lock left by a crashed process: a generation file naming a dead PID (0 is
+    // never a valid running process, so isProcessRunning(0) = false) with a `startedAt`
+    // beyond the 5s age floor.
+    //
+    // THE LAYOUT IS THE FIX. This used to be a single file `acquire-<item>.lock` that
+    // recovery `unlinkSync`-ed after reading it — a path-based delete of an object another
+    // process may have replaced (CodeQL `js/file-system-race`, alert #811). Recovery now
+    // SUPERSEDES: it creates generation 1 with O_EXCL and never touches generation 0. The
+    // assertions below pin both halves — the takeover succeeds, and the released lock leaves
+    // nothing behind.
+    const lockRoot = join(TEST_DIR, "acquire-081KSE6WT0008QG0R000JSJ3SR.lock.d");
+    mkdirSync(lockRoot, { recursive: true });
+    writeFileSync(
+      join(lockRoot, "0.lock"),
+      JSON.stringify({ pid: 0, startedAt: new Date(Date.now() - 10_000).toISOString() }),
+    );
 
     const r = run("acquire", "--from", "otto", "--item", "081KSE6WT0008QG0R000JSJ3SR");
     expect(r.exitCode).toBe(0);
     // Lock must be cleaned up after successful acquire.
     const lockFiles = readdirSync(TEST_DIR).filter((f) => f.startsWith("acquire-"));
     expect(lockFiles).toHaveLength(0);
+  });
+
+  test("a lock whose holder is ALIVE is refused, and the holder's file is left untouched", () => {
+    // The other half of the same guard: a live holder must block, and blocking must not
+    // write anything. A busy acquirer that "tidied up" the incumbent would be the double-run
+    // defect wearing a cleanup's clothes.
+    const lockRoot = join(TEST_DIR, "acquire-081KSE6WT0008QG0R000JSJ3SS.lock.d");
+    mkdirSync(lockRoot, { recursive: true });
+    const owner = JSON.stringify({ pid: process.pid, startedAt: new Date(Date.now() - 60_000).toISOString() });
+    writeFileSync(join(lockRoot, "0.lock"), owner);
+
+    const r = run("acquire", "--from", "otto", "--item", "081KSE6WT0008QG0R000JSJ3SS");
+    expect(r.exitCode).toBe(1);
+    expect(r.stderr).toContain("acquire lock busy");
+    expect(readFileSync(join(lockRoot, "0.lock"), "utf-8")).toBe(owner);
+    expect(readdirSync(lockRoot)).toEqual(["0.lock"]);
   });
 });
 

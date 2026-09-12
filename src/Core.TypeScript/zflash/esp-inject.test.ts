@@ -8,7 +8,7 @@
 // declared in registry/environment-dependent-test-files.json. It still runs on
 // every PR, in `test (TS environment-dependent)`.
 import { describe, expect, test } from "bun:test";
-import { closeSync, copyFileSync, existsSync, mkdtempSync, openSync, readdirSync, rmSync, statSync } from "node:fs";
+import { closeSync, copyFileSync, existsSync, fstatSync, mkdtempSync, openSync, readdirSync, rmSync, statSync } from "node:fs";
 import { homedir, tmpdir } from "node:os";
 import { join } from "node:path";
 import { injectKeyIntoEsp, verifyKeyInEsp } from "./esp-inject.ts";
@@ -72,22 +72,38 @@ describe("injectKeyIntoEsp on a real ISO copy", () => {
     copyFileSync(iso!, tmp);
     try {
       const body = Buffer.from("ssh-ed25519 AAAAC3NzaC1lZDI1NTE5TESTKEY esp-inject-test\n", "utf8");
+      let wroteTo: { dev: number; ino: number };
       const fd = openSync(tmp, "r+");
       try {
+        // The identity of the object we are about to write, taken from the DESCRIPTOR rather
+        // than from the path, so nothing between here and the read-back can change what it
+        // names. Compared below.
+        const st = fstatSync(fd);
+        wroteTo = { dev: st.dev, ino: st.ino };
         injectKeyIntoEsp(fd, body);          // writes + self-verifies (throws on mismatch)
         expect(verifyKeyInEsp(fd, body)).toBe(true);
       } finally {
         closeSync(fd);
       }
-      // THE RE-OPEN IS THE ASSERTION. CodeQL reports this as
-      // `js/file-system-race` (alert #256) because `tmp` was opened "r+" seven
-      // lines up. Reusing that handle would assert only that the bytes this
-      // test wrote are the bytes this test wrote -- exactly the vacuous check
-      // this line exists to avoid. `tmp` lives inside a 0700 `mkdtempSync`
-      // directory created for this test alone, so there is no second writer to
-      // race with.
+      // THE RE-OPEN IS THE ASSERTION, and it is now CHECKED rather than trusted.
+      //
+      // CodeQL reports this as `js/file-system-race` (alert #256) because `tmp` was opened
+      // "r+" above and is opened again here. The report is right about the shape: `tmp` is a
+      // path, a path resolves afresh on every call, and a read-back that resolved to a
+      // DIFFERENT object would be a verification of the wrong file reported as a pass -- the
+      // worst outcome available to a check.
+      //
+      // The re-open itself is not the defect and must not be removed: reusing the write
+      // handle would assert only that the bytes this test wrote are the bytes this test
+      // wrote, which is the vacuous check this line exists to avoid. What was missing is the
+      // one thing that makes a re-resolution safe -- proof that the two descriptors name the
+      // SAME inode. Node exposes no `openat`, so the re-resolution cannot be eliminated; it
+      // CAN be made unable to pass on the wrong object, which is what the dev+ino comparison
+      // below does. A swap is now a failure rather than a silent success.
       const fd2 = openSync(tmp, "r"); // re-open fresh: prove it persisted to the file
       try {
+        const st2 = fstatSync(fd2);
+        expect({ dev: st2.dev, ino: st2.ino }).toEqual(wroteTo);
         expect(verifyKeyInEsp(fd2, body)).toBe(true);
       } finally {
         closeSync(fd2);
