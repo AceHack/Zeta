@@ -1,0 +1,12 @@
+{
+  "pr_number": 17338,
+  "archive_path": "docs/history/pr-reviews/2026/09/12/PR-17338-fix-ace-route-ace-s-stderr-through-one-unstyled-helper-so-bun-and-node-emit-the-.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-12T05:46:26.992Z",
+  "schema_version": "v1",
+  "commit_sha": "a6d778301b08f3902f12d52c1e6a8eaa10bd84bb",
+  "title": "fix(ace): route ace's stderr through one unstyled helper so bun and node emit the same bytes",
+  "state": "MERGED",
+  "merged_at": "2026-09-12T05:45:45Z",
+  "head_ref": "shadow/ace-stderr-runtime-parity"
+}
