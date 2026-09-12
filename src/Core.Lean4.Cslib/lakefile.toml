@@ -1,15 +1,34 @@
-# Parallel CSLib tower (v4.31.0) — stands BESIDE the v4.30.0-rc1 §A tower (src/Core.Lean4),
-# which is left untouched ("multiple towers, not changes", Aaron 2026-06-19). This is the lane
-# where the Aurora (b) BFT-Sybil lift onto CSLib's FLP/Consensus (G1) is built; the proven §A
-# identity lineage stays green on the old tower. Built OPT-IN (not on the main gate) — a mathlib+cslib
-# build is heavy; see the opt-in workflow, mirroring the quantum-toolchain opt-in.
+# Parallel CSLib tower (leanprover/lean4:v4.32.0-rc1, per lean-toolchain beside this file)
+# — stands BESIDE the v4.30.0-rc1 SSA tower (src/Core.Lean4), which is left untouched
+# ("multiple towers, not changes", Aaron 2026-06-19). This is the lane where the Aurora (b)
+# BFT-Sybil lift onto CSLib's FLP/Consensus (G1) is built; the proven SSA identity lineage
+# stays green on the old tower.
+#
+# BUILT IN CI since 2026-09-11: .github/workflows/lean-cslib.yml, path-filtered to
+# src/Core.Lean4.Cslib/** and off `gate (required)`. Its own lane rather than a second job
+# in lean-proof.yml because the two towers are on DIFFERENT toolchains (v4.30.0-rc1 vs
+# v4.32.0-rc1) and therefore share no olean cache at all — one workflow would make every
+# Core.Lean4 change pay for a Mathlib+cslib restore it cannot use.
+#
+# The header used to say "v4.31.0 ... Built OPT-IN ... see the opt-in workflow". All three
+# were wrong: the toolchain is v4.32.0-rc1, there was no opt-in workflow, and nothing built
+# this at all (rostered UNCOVERED in hygiene/audit-build-graph-completeness.ts, legs: [] in
+# ace/build-graph.json). A pointer to a workflow that does not exist reads as coverage.
 name = "cslibtower"
 defaultTargets = ["CslibTower"]
 
 [[require]]
 name = "cslib"
 scope = "leanprover"
-rev = "main"
+# PINNED to a commit SHA, never a branch. `rev = "main"` was a FLOATING ref:
+# lake-manifest.json had already resolved it to e0573fbc (2026-06-19, the commit
+# that bumped cslib to v4.32.0-rc1, matching lean-toolchain here), but upstream
+# `main` has since moved to a different toolchain — so any `lake update`, or any
+# resolve with no manifest present, silently built different code. A tag must
+# build the same bytes on any day (.claude/rules/clone-at-tag-stays-sufficient.md,
+# manifesto SS7 DST), and an unpinned third-party dep is an undeclared-unhashed
+# dependency whose count may only fall (docs/UNHASHED-DEPENDENCIES.md).
+rev = "e0573fbc08dbad14cd492736d5fe83fde0d83cf2"
 
 [[lean_lib]]
 name = "CslibTower"

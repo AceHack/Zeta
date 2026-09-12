@@ -16,6 +16,17 @@
 # not depend on that pipeline (hence an orphan ref, not a PR flush). What it
 # lacked was a retention bound.
 #
+# AND AS OF 2026-09-11 THE PUBLISH PATH IS GONE, NOT MERELY PAUSED. The
+# committed tree was deleted (PR #16919) and `db/search-index/` is now
+# `.gitignore`d, so the flush step below has nothing to stage: re-enabling this
+# file would produce an empty flush, not a restored index. The git-native
+# STORAGE design is marked `toy` in
+# `src/Core.TypeScript/search/inverted/format.ts` — 280 blobs, 409.67 MB raw /
+# 25.03 MB on disk over 8 commits in 16 days, measured 2026-09-11 — and what
+# would earn it back is a store with a RETENTION BOUND, which this workflow
+# never had. Building and querying the index are untouched; only publishing it
+# into git is retired.
+#
 # Absence of runs here is the pause, NEVER evidence that work stopped — read
 # liveness from the work itself: commits on `main`, merged PRs, open
 # work-items. A lane's run-state is a question for the Actions API.
@@ -222,44 +233,22 @@ jobs:
       - name: Query the index end-to-end
         run: |
           set -euo pipefail
-          # The motivating case, run against the artifact about to be published.
+          # The motivating case, run against the runner-local artifact.
           # Exit 0 is required: 1 (no matches) and 3 (refused) both mean the
           # published index cannot answer the query it was built for.
           bun src/Core.TypeScript/search/inverted/query.ts landauer --rev "$BUILT_REV" --files --limit 5
           echo "end-to-end query returned matches"
 
-      - name: Flush to main via staging branch + PR
+      # Do NOT flush jsonl onto main. #16919 deleted 59.7 MB of derived shards;
+      # flushing them back is the same cost. Durable reverse indexes live on a
+      # host GroupCommitDiskDeltaLog as IncrementalJoin views (ReverseIndex.fs,
+      # 081M29ESZCQ087G0R001SM29DQ). This tick still builds+queries so the TS
+      # tokenizer cannot rot; the artifact dies with the runner.
+      - name: Do not flush derived index shards onto main
         if: github.event_name != 'pull_request'
-        env:
-          # ROLE: PR-CREATE. One role, one secret.
-          #
-          # The enterprise forbids the Actions identity from creating pull requests, so the
-          # `gh` calls in this step authenticate as ZETA_PR_ARCHIVE_TOKEN — the credential the
-          # role table in
-          # docs/security/2026-08-17-society-heartbeat-token-boundary-and-gate-start-failure.md
-          # assigns to `gh pr create`. The BRANCH PUSH is a different role and is already
-          # authenticated by the persisted checkout credential (ZETA_TELEMETRY_FLUSH_TOKEN);
-          # the `||` chain that stood here collapsed both roles plus GITHUB_TOKEN into one
-          # variable and silently substituted whichever happened to be set.
-          #
-          # ABSENCE IS A NAMED REFUSAL, NOT A SUBSTITUTION. `openMergePR` refuses an empty
-          # GH_TOKEN and names the secret and the exact scope
-          # (src/Core.TypeScript/agent-heartbeats/merge-heartbeats-to-main.ts). The payload
-          # still parks safely on the staging branch — nothing is lost — and the step goes
-          # red rather than landing under the wrong authority.
-
-          # ARM AUTO-MERGE ON THE FLUSH PR. Opt-in flag read by `armingEnabled`
-          # (src/Core.TypeScript/agent-heartbeats/merge-heartbeats-to-main.ts). Turned on
-          # 2026-08-26 after Aaron rotated ZETA_PR_ARCHIVE_TOKEN at 19:54Z to carry
-          # `enablePullRequestAutoMerge`; the docstring there records the decision. Scoped to
-          # THIS step so it cannot reach an unrelated one.
-          ZETA_FLUSH_ARM_AUTOMERGE: "1"
-          GH_TOKEN: ${{ secrets.ZETA_PR_ARCHIVE_TOKEN }}
         run: |
-          bun src/Core.TypeScript/forge-host/github/flush-via-staging.ts flush \
-            --lane search-index \
-            --paths db/search-index/inverted \
-            --message "ops(081M0QTXTR3087G0R002R439FH): rebuild git-native inverted index"
+          echo "skipping search-index flush to main (081M29ESZCQ087G0R001SM29DQ)"
+          echo "store: GroupCommitDiskDeltaLog + IncrementalJoin, not git"
 
       # A tick that produced nothing to publish is a legitimate no-op (the tree
       # did not change), and `flush` returns 0 for it. What is NOT legitimate is

@@ -1,0 +1,14 @@
+{
+  "id": "080d049a855d5010a013000838e752d6",
+  "at": "2026-09-12T01:52:12.714Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M29N1AX9087G0R001GSJD6G",
+    "type": "bug",
+    "title": "IRing over Sedenion asserts a contract 168 of 343 octonion triples refute",
+    "slug": "iring-over-sedenion-asserts-a-contract-168-of-343-octonion-t",
+    "priority": "P2",
+    "filename": "081M29N1AX9087G0R001GSJD6G-iring-over-sedenion-asserts-a-contract-168-of-343-octonion-t.md"
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 17323,
+  "archive_path": "docs/history/pr-reviews/2026/09/12/PR-17323-feat-081m29n1ax9087g0r001gsjd6g-laws-as-an-independent-axis-a-lattice-not-a-chai.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-12T03:19:17.173Z",
+  "schema_version": "v1",
+  "commit_sha": "9d85130f70278cac52a002777807fd7871e64871",
+  "title": "feat(081M29N1AX9087G0R001GSJD6G): laws as an independent axis — a lattice, not a chain",
+  "state": "MERGED",
+  "merged_at": "2026-09-12T03:18:31Z",
+  "head_ref": "shadow/law-witnesses-independent-axis"
+}

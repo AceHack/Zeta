@@ -38,6 +38,30 @@ identity.** Canonical numbered rule: `GOVERNANCE.md §35`. Full model:
 (clone-per-writer). Claude-specific surface of the same rule:
 `.claude/rules/shared-checkout-is-view-only.md`.
 
+### Merge `main` before you test, every push (ALL harnesses)
+
+```bash
+git fetch origin main && git merge origin/main    # BEFORE testing, not after
+bun src/Core.TypeScript/ci/local-checks.ts        # what THIS diff faces in CI
+```
+
+Not "when the branch looks stale" — **every time, before testing.** Two failures this
+ordering prevents, both measured 2026-09-11:
+
+- **Work silently overwritten.** A fix to `src/Core.TypeScript/corporate/claude-agent.test.ts`
+  merged; a later PR from the same author, cut before that merge, rewrote the whole file and
+  restored the defect. Nothing conflicted and nothing was loud — the two tests it fixed simply
+  went red again, on `main` and on every branch cut from it. Merging first turns that silent
+  revert into a **conflict you have to look at**.
+- **Testing the wrong tree.** CI builds the merge ref. A local green on a stale base predicts
+  nothing about it, so `local-checks.ts` run *before* the merge is a check that did not run.
+
+`local-checks.ts` is the local form of the gate: `--list` shows what would run and why,
+`--only '<name>'` runs one by name (a fragment of the gate job name or of the command), and an
+unresolvable name exits **2** — nothing ran, so it is not a finding — rather than 1. That
+matters because `bun <missing-file>` exits 1, which is indistinguishable from a check that ran
+and found something.
+
 ### Self-check pre-push hook for clones
 
 Every writer's own clone should configure the self-check pre-push hooks to verify code hygiene before pushing to `origin/main`. Configure this in your clone via:

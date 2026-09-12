@@ -1,0 +1,12 @@
+{
+  "pr_number": 17318,
+  "archive_path": "docs/history/pr-reviews/2026/09/12/PR-17318-research-math-the-seam-is-the-breakdown-measured-as-a-set-identity-not-an-analog.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-12T03:18:07.093Z",
+  "schema_version": "v1",
+  "commit_sha": "7042af2eebdd05ab5a3fcc0d81b770b9577498b0",
+  "title": "research(math): the seam IS the breakdown — measured as a set identity, not an analogy",
+  "state": "MERGED",
+  "merged_at": "2026-09-12T03:17:20Z",
+  "head_ref": "shadow/the-seam-is-the-breakdown"
+}

@@ -26,10 +26,28 @@ Open `docs/BACKLOG.md`. Before starting any row, complete the backlog-item start
 
 ## 4. Build gate
 
+**Merge `main` FIRST, then test, then push — every time, not just when it looks stale.**
+
 ```bash
+git fetch origin main && git merge origin/main    # BEFORE testing, every push
+bun src/Core.TypeScript/ci/local-checks.ts        # what THIS diff will face in CI
 dotnet build -c Release   # 0 warnings, 0 errors — TreatWarningsAsErrors is on
 dotnet test Zeta.sln -c Release
 ```
+
+Two failures this ordering prevents, both measured 2026-09-11:
+
+- **Work silently overwritten.** A fix to `claude-agent.test.ts` merged, and a later PR from
+  the same author — cut before that merge — rewrote the file and restored the defect. Nothing
+  conflicted, nothing was loud, and the two tests it fixed went red again on every branch.
+  A branch cut hours ago is not current, and `git merge` is what makes the overwrite a
+  CONFLICT you see instead of a silent revert.
+- **Testing the wrong tree.** A local green on a stale base predicts nothing about the merge
+  ref CI actually builds. `local-checks.ts` run before the merge is a check that did not run.
+
+`local-checks.ts` is the local form of the gate: `--list` shows what would run and why,
+`--only '<name>'` runs one by name, and an unresolvable name exits **2** (nothing ran — not
+a finding) rather than 1.
 
 ## 5. Ship
 

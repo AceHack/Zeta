@@ -1,0 +1,12 @@
+{
+  "pr_number": 17307,
+  "archive_path": "docs/history/pr-reviews/2026/09/12/PR-17307-fix-corporate-restore-the-grandchild-process-group-fix-and-make-the-next-revert-.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-12T01:59:28.034Z",
+  "schema_version": "v1",
+  "commit_sha": "ca418de33f8acd53c1fb757ef6532b7de3e76e45",
+  "title": "fix(corporate): restore the grandchild process-group fix, and make the next revert loud",
+  "state": "MERGED",
+  "merged_at": "2026-09-12T01:58:46Z",
+  "head_ref": "shadow/restore-grandchild-pgid-fix"
+}
