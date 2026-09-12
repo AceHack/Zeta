@@ -96,8 +96,17 @@ export function watchReasons(input: WatchInput): WatchVerdict {
   const isPipeline = (kind: string): boolean => kind === "pipeline_failed";
   const atLimit: string[] = [];
   const redPipelines: string[] = [];
+  const decidedOn = new Map([...items.values()].flat().map((i) => [i.actionItemId, i] as const));
   for (const m of corr.aboutChange) {
     if (untilGreen && isPipeline(m.delivery.itemKind)) {
+      // ── A DEFERRAL NAMES ITS OWN TRIGGER ────────────────────────────────────────────────────
+      // MEASURED on agentic-tpm !164, 2026-09-12: pipeline 189289 is an EXTERNAL status with no jobs
+      // to read, failing on the build agent's own MongoMemoryServer while the organization's
+      // verification of that same commit passed. The organization deferred it - correctly - and this
+      // asked again twice more about the same pipeline, which had not changed, before giving up and
+      // calling for a person. A deferred item waits for news, and a NEW pipeline is the news: it
+      // arrives with its own delivery id and is raised fresh.
+      if (decidedOn.get(m.actionItemId)?.deferred !== undefined) continue;
       const tried = input.pipelineTries?.[m.actionItemId] ?? 0;
       if (tried >= attempts) {
         atLimit.push(`${m.actionItemId} on ${m.workId}`);

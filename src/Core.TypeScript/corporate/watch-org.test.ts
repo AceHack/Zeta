@@ -124,6 +124,23 @@ describe("A RED PIPELINE IS NOT SETTLED BY BEING EXPLAINED", () => {
     expect(v.reasons).toEqual([]);
   });
 
+  test("A DEFERRAL NAMES ITS OWN TRIGGER: a pipeline the organization decided to wait on is not asked about again until a NEW one fails", () => {
+    // MEASURED on agentic-tpm !164, 2026-09-12: an EXTERNAL pipeline with no jobs to read, failing on
+    // the build agent's own MongoMemoryServer while the organization's verification of that same
+    // commit passed. It deferred - correctly - and was asked twice more about the same pipeline.
+    const waited = [
+      ev({ kind: "action_item_raised", workId: "task-40", actionItemId: "gitlab:pipeline-55-failed", source: "gitlab", itemKind: "pipeline_failed", summary: "s" }),
+      ev({ kind: "action_item_deferred", workId: "task-40", actionItemId: "gitlab:pipeline-55-failed", why: "not reproducible here: our own verification of this commit passes; the next pipeline is the trigger" }),
+    ];
+    const v = watchReasons(input({ events: [handedOff, aireviewDone, ...waited], deliveries: [red], changeRequests: untilGreen }));
+    expect(v.reasons).toEqual([]);
+    expect(v.redPipelines).toEqual([]);
+    // ...and a NEW pipeline failing IS news, raised fresh.
+    const next = { ...red, deliveryId: "pipeline-56-failed", summary: "the request's pipeline 56 failed at 9aa1b2c3" };
+    const after = watchReasons(input({ events: [handedOff, aireviewDone, ...waited], deliveries: [next], changeRequests: untilGreen }));
+    expect(after.reasons).toEqual(["the request of task-40 is red: the request's pipeline 56 failed at 9aa1b2c3 (try 1 of 3)"]);
+  });
+
   test("a pipeline that went green stops being a reason, and the tries do not carry to the next one", () => {
     const v = watchReasons(input({ events: [handedOff, aireviewDone, ...declined], deliveries: [], changeRequests: untilGreen, pipelineTries: { "gitlab:pipeline-55-failed": 3 } }));
     expect(v.reasons).toEqual([]);
