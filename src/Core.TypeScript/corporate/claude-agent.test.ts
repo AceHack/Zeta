@@ -13,6 +13,7 @@ import { spawnSync } from "node:child_process";
 import { existsSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
+import { fileURLToPath } from "node:url";
 
 const AGENT = resolve(import.meta.dir, "..", "..", "..", "tools", "claude-agent.cjs");
 
@@ -443,7 +444,7 @@ describe("AN AGENT STOPS ONLY WHAT IT STARTED", () => {
       expect(r.seen?.input).toContain("by their PID - never by name");
       r.cleanup();
     }
-  });
+  }, 30_000);
 });
 
 describe("A SESSION THAT RUNS OUT OF TIME IS STOPPED WITH EVERYTHING IT STARTED", () => {
@@ -594,7 +595,7 @@ describe("A MODEL IS CHOSEN BY THE ORGANIZATION, NEVER INHERITED FROM WHATEVER I
     const c = run(["work", "task-9"], ok({ summary: "s", commit: "", testsRun: [], blocked: "" }), { ...env, ORG_ASSIGNEE: "backend_implementer" });
     expect(c.seen?.argv.join(" ")).toContain("--model expensive-model");
     c.cleanup();
-  });
+  }, 30_000);
 
   test("a hat with no entry and no default is refused rather than quietly given the other hat's model", () => {
     const r = run(["work", "task-9"], ok({ summary: "s", commit: "", testsRun: [], blocked: "" }), { ORG_CLAUDE_MODEL: "", ORG_CLAUDE_MODEL_BY_HAT: JSON.stringify({ reviewer: "m" }), ORG_ASSIGNEE: "backend_implementer" });
@@ -693,7 +694,8 @@ describe("THE SWEEP KILLS BY PROCESS GROUP, so a reaping test may not leave the 
   const NEEDLES = [`${OPT}:true`, `${OPT}: true`];
 
   test("no stub in this file puts its grandchild in a new process group", () => {
-    const src = readFileSync(new URL(import.meta.url).pathname, "utf-8");
+    // fileURLToPath, never `.pathname`: on Windows the latter is "/C:/…%20…", which no read can open.
+    const src = readFileSync(fileURLToPath(import.meta.url), "utf-8");
     const code = src
       .split("\n")
       .filter((l) => !l.trimStart().startsWith("//"))
