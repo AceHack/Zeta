@@ -102,7 +102,7 @@ jobs:
           path: |
             ~/.nuget/packages
             ~/.local/share/NuGet
-          key: nuget-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('Directory.Packages.props') }}
+          key: nuget-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('Directory.Packages.props', '**/packages.lock.json') }}
 
       - name: Cache install.sh rustup toolchain
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0

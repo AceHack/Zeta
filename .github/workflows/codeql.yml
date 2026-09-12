@@ -708,7 +708,7 @@ jobs:
           # would drift the CodeQL database from what we ship.
           # (An EXACT-key hit is by construction the same lock, so joining
           # gate.yml's namespace does not weaken that guarantee.)
-          key: nuget-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('Directory.Packages.props') }}
+          key: nuget-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('Directory.Packages.props', '**/packages.lock.json') }}
 
       - name: Restore apt archives (root fix for the exit-124 install-step class)
         # 561 MB of .deb per ubuntu job against a mirror measured at ~1.1 MB/s is

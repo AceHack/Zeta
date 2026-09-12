@@ -7,8 +7,12 @@ FROM mcr.microsoft.com/dotnet/sdk:10.0-noble@sha256:4ea6fe75dd36706bb6d8c3c293d4
 WORKDIR /src
 
 # Restore first so the layer caches on the project file alone.
-COPY Directory.Build.props Directory.Packages.props Zeta.Orleans.Silo.csproj ./
-RUN dotnet restore Zeta.Orleans.Silo.csproj
+COPY Directory.Build.props Directory.Packages.props Zeta.Orleans.Silo.csproj packages.lock.json ./
+# --locked-mode refuses the restore unless every package matches the sha512
+# contentHash committed in packages.lock.json, so the image is built from the same
+# bytes the local build resolved. Regenerate with a plain `dotnet restore` in this
+# directory after any version change and commit the lock; see docs/NUGET-LOCK-FILES.md.
+RUN dotnet restore Zeta.Orleans.Silo.csproj --locked-mode
 
 COPY . .
 RUN dotnet publish Zeta.Orleans.Silo.csproj -c Release -o /app --no-restore

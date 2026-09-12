@@ -26,6 +26,39 @@
     <UseSystemResourceKeys>true</UseSystemResourceKeys>
     <!-- Keep compilation deterministic and avoid exit code 139/134 daemon segfaults on macOS -->
     <UseSharedCompilation>false</UseSharedCompilation>
+    <!-- NuGet lock files: every restore writes/verifies a per-project packages.lock.json
+         carrying a sha512 contentHash for each resolved package, direct and transitive.
+         Central Package Management already pins VERSIONS; the lock file is what pins the
+         BYTES, so a republished package under an unchanged version number fails restore
+         instead of silently entering the build. Regenerate after any version change with
+         `dotnet restore` with the force-evaluate flag; see docs/NUGET-LOCK-FILES.md. -->
+    <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
+    <!-- FSharp.Core MUST come from nuget.org, never from the SDK's own copy.
+         The .NET SDK ships FSharp.Core inside FSharp/library-packs and adds that folder as a
+         restore source (Microsoft.FSharp.NetSdk.targets), where it wins over nuget.org. The
+         two are DIFFERENT FILES, and so is each platform's. Measured 2026-09-12:
+
+           nuget.org (signed, carries .signature.p7s)   3,065,316 bytes
+           macOS SDK 10.0.400 library-packs             3,050,245 bytes
+           linux SDK 10.0.400 library-packs             3,049,932 bytes
+
+         A lock file records ONE contentHash, so with the SDK folder in play no single
+         packages.lock.json can satisfy the gate's platform legs. That is exactly the NU1403
+         seen here: every Linux leg, naming FSharp.Core and no other package.
+
+         Forcing nuget.org makes the bytes identical on every platform AND keeps the SIGNED
+         package, which is the one with a provenance chain. Pinning the SDK's unsigned copy
+         would buy determinism by giving up the signature, inside a change whose whole
+         purpose is supply-chain integrity.
+
+         The lever is the SDK's own Exists() guard on this folder. It is an SDK-internal
+         (underscore) property and therefore fragile across SDK versions, which is why
+         audit-fsharp-core-comes-from-nuget-org.ts fails if a regenerated lock ever carries
+         an SDK hash instead. A silently renamed property produces exactly that.
+
+         RestoreAdditionalProjectSources does NOT work for this: the targets file appends to
+         it after the project body, so anything a PropertyGroup sets is overwritten. -->
+    <_FSharpCoreLibraryPacksFolder>$(MSBuildThisFileDirectory)build/no-sdk-fsharp-core-source/</_FSharpCoreLibraryPacksFolder>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)' == 'Release'">
     <Optimize>true</Optimize>

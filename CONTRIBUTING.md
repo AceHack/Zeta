@@ -145,6 +145,12 @@ squash-merge is the default.
   the doc says "approximate" or "measured under X".
 - Any CI change goes through Aaron review (round-29
   discipline).
+- **Changed a package version?** `Directory.Packages.props`
+  pins versions; `packages.lock.json` pins the bytes. After
+  any version change run `dotnet restore Zeta.sln` and commit
+  the regenerated lock files, or CI fails with `NU1004`. Full
+  workflow, including what to do on a hash *mismatch* (do not
+  regenerate): [`docs/NUGET-LOCK-FILES.md`](docs/NUGET-LOCK-FILES.md).
 
 ## Pull requests
 
@@ -159,6 +165,8 @@ full branch model.
 - [ ] `bun run preflight` — all gate dimensions green (covers the two below + every language lint).
 - [ ] `dotnet build -c Release` — 0 W / 0 E.
 - [ ] `dotnet test -c Release` — all green.
+- [ ] Touched `Directory.Packages.props`? Regenerated
+      `packages.lock.json` committed alongside it.
 - [ ] Any new claim has a test.
 - [ ] Behavioural specs updated if observable behaviour
       changed.

@@ -1,0 +1,174 @@
+{
+  "version": 2,
+  "dependencies": {
+    "net10.0": {
+      "Apache.Arrow.Scalars": {
+        "type": "Transitive",
+        "resolved": "23.0.0",
+        "contentHash": "i53VmQ505ASXsStf7y29Z5qvhN6PGgFGNb6UUU7z1WmbzEgSjKQuIJkKKVbh+K5rtXRiKyr1Ah3Rmvbeb2BEHQ=="
+      },
+      "K4os.Compression.LZ4": {
+        "type": "Transitive",
+        "resolved": "1.3.8",
+        "contentHash": "LhwlPa7c1zs1OV2XadMtAWdImjLIsqFJPoRcIWAadSRn0Ri1DepK65UbWLPmt4riLqx2d40xjXRk0ogpqNtK7g=="
+      },
+      "K4os.Compression.LZ4.Streams": {
+        "type": "Transitive",
+        "resolved": "1.3.8",
+        "contentHash": "P15qr8dZAeo9GvYbUIPEYFQ0MEJ0i5iqr37wsYeRC3la2uCldOoeCa6to0CZ1taiwxIV+Mk8NGuZi+4iWivK9w==",
+        "dependencies": {
+          "K4os.Compression.LZ4": "1.3.8",
+          "K4os.Hash.xxHash": "1.0.8"
+        }
+      },
+      "K4os.Hash.xxHash": {
+        "type": "Transitive",
+        "resolved": "1.0.8",
+        "contentHash": "Wp2F7BamQ2Q/7Hk834nV9vRQapgcr8kgv9Jvfm8J3D0IhDqZMMl+a2yxUq5ltJitvXvQfB8W6K4F4fCbw/P6YQ=="
+      },
+      "LibGit2Sharp.NativeBinaries": {
+        "type": "Transitive",
+        "resolved": "2.0.324",
+        "contentHash": "5YZVGNuO9nYFQfzRQGPGY9fdpSsABwlF2jSaZ7ydxCfjvt5Krbj/eHbXkvvgAQzp4lkjvgDrlAuuI4KTmqhDlA=="
+      },
+      "MessagePack.Annotations": {
+        "type": "Transitive",
+        "resolved": "3.1.8",
+        "contentHash": "SitOtZ4tOlAZZPF7p52M7143F+Cuz7o/aU0MrtAXX0+ZkPXzDNroOFhzzE2ogMFThsoEW/E6akXVVcBFM9ZKaw=="
+      },
+      "MessagePackAnalyzer": {
+        "type": "Transitive",
+        "resolved": "3.1.8",
+        "contentHash": "Vm4g0cR4YRKRchEOmMJ0uVFU6yxdg7cJa2KHv3SUAHEsdYKvMpHMF5A1hZfsix89ymD5cmuzRnw9a6dKMcvq+Q=="
+      },
+      "Microsoft.NET.StringTools": {
+        "type": "Transitive",
+        "resolved": "17.11.4",
+        "contentHash": "mudqUHhNpeqIdJoUx2YDWZO/I9uEDYVowan89R6wsomfnUJQk6HteoQTlNjZDixhT2B4IXMkMtgZtoceIjLRmA=="
+      },
+      "ZstdSharp.Port": {
+        "type": "Transitive",
+        "resolved": "0.8.8",
+        "contentHash": "UIDFkA5DC3en3tOJ3Mof11yBx9kUQLsaeo/oFdvN6Bbkr9E9+VCqfIadHci8cu+I51K2Sl7XYWVl2R/mA75NBQ=="
+      },
+      "Zeta.Core": {
+        "type": "Project",
+        "dependencies": {
+          "Apache.Arrow": "[23.0.0, )",
+          "Apache.Arrow.Compression": "[23.0.0, )",
+          "FSharp.Core": "[10.1.400, )",
+          "FsPickler": "[5.3.2, )",
+          "MessagePack": "[3.1.8, )",
+          "System.IO.Hashing": "[10.0.11, )",
+          "System.Numerics.Tensors": "[10.0.11, )",
+          "System.Reactive": "[7.0.0, )",
+          "Zeta.Core.Abstractions": "[2.0.0, )",
+          "Zeta.Core.FSharp.Yaml": "[1.0.0, )",
+          "Zeta.Core.FSharp.ZetaId": "[1.0.0, )"
+        }
+      },
+      "zeta.core.abstractions": {
+        "type": "Project"
+      },
+      "zeta.core.fsharp.blake3": {
+        "type": "Project",
+        "dependencies": {
+          "Blake3": "[3.0.2, )",
+          "Zeta.Core": "[1.0.0, )"
+        }
+      },
+      "zeta.core.fsharp.git": {
+        "type": "Project",
+        "dependencies": {
+          "LibGit2Sharp": "[0.32.0, )",
+          "Zeta.Core": "[1.0.0, )"
+        }
+      },
+      "zeta.core.fsharp.yaml": {
+        "type": "Project"
+      },
+      "zeta.core.fsharp.zetaid": {
+        "type": "Project"
+      },
+      "Apache.Arrow": {
+        "type": "CentralTransitive",
+        "requested": "[23.0.0, )",
+        "resolved": "23.0.0",
+        "contentHash": "cU4Zm7byFwnb82Ea9ZRvVnq2nJNf/TF9j+rj/MHlvu9RBYMqYtu4sJaR1JmMh3MmSIuwMafVg7PfJxPAMv9dGw==",
+        "dependencies": {
+          "Apache.Arrow.Scalars": "23.0.0"
+        }
+      },
+      "Apache.Arrow.Compression": {
+        "type": "CentralTransitive",
+        "requested": "[23.0.0, )",
+        "resolved": "23.0.0",
+        "contentHash": "7G1bATXWk0b6NAQDAxefzPwaz9zDi7ca88KzFtPUW5skqCn+K/pOxFmINh9wdCOt/u7Uq71b8pDksX+ct3GOLg==",
+        "dependencies": {
+          "Apache.Arrow": "23.0.0",
+          "K4os.Compression.LZ4.Streams": "1.3.8",
+          "ZstdSharp.Port": "0.8.8"
+        }
+      },
+      "Blake3": {
+        "type": "CentralTransitive",
+        "requested": "[3.0.2, )",
+        "resolved": "3.0.2",
+        "contentHash": "THvWhdj8ErSdrGamTqjshCU1ImANfr7ieKY6eFqeMsRenvXEKut9qGm5/MA4SUk8IYvAahf67jSh0yVj9jTPzg=="
+      },
+      "FSharp.Core": {
+        "type": "CentralTransitive",
+        "requested": "[10.1.400, )",
+        "resolved": "10.1.400",
+        "contentHash": "H9wlZ/tWgNp+Q4WQ5aUSi3XOBXrL6z+UkR0PNeyDFyoZR3c3PbtA21B9FqlthrhEwQ6f5AtQV0JLhBBDqjjscw=="
+      },
+      "FsPickler": {
+        "type": "CentralTransitive",
+        "requested": "[5.3.2, )",
+        "resolved": "5.3.2",
+        "contentHash": "LFtxXpQNor8az1ez3rN9oz2cqf/06i9yTrPyJ9R83qLEpFAU7Of0WL2hoSXzLHer4lh+6mO1NV4VQFiBzNRtjw==",
+        "dependencies": {
+          "FSharp.Core": "4.3.2"
+        }
+      },
+      "LibGit2Sharp": {
+        "type": "CentralTransitive",
+        "requested": "[0.32.0, )",
+        "resolved": "0.32.0",
+        "contentHash": "BL3eMVRnkWWS9zbz6n0H+iDVJ9ZK7hDeiuASnHlsFvwZYTJtDuBFRRVIaH//s4VlF0baOGvCeenXbobE1JLLiQ==",
+        "dependencies": {
+          "LibGit2Sharp.NativeBinaries": "[2.0.324]"
+        }
+      },
+      "MessagePack": {
+        "type": "CentralTransitive",
+        "requested": "[3.1.8, )",
+        "resolved": "3.1.8",
+        "contentHash": "Qk2q+9FVxnMSp+NQ9y3SLz3HqWe7Rg3KRMHhBX28FkKUoOeP9YIU86mA4pFOxDDjUIRA9e7Ssbxs/LwWUcAzPw==",
+        "dependencies": {
+          "MessagePack.Annotations": "3.1.8",
+          "MessagePackAnalyzer": "3.1.8",
+          "Microsoft.NET.StringTools": "17.11.4"
+        }
+      },
+      "System.IO.Hashing": {
+        "type": "CentralTransitive",
+        "requested": "[10.0.11, )",
+        "resolved": "10.0.11",
+        "contentHash": "OzKDcIRkeNJeC8qAsbn8yJXnfTLP1dtkWILe+T56Gf/z+IkAASi7sMqLqJQat08j5z/mRN5xVtoAwbkMNMoBUQ=="
+      },
+      "System.Numerics.Tensors": {
+        "type": "CentralTransitive",
+        "requested": "[10.0.11, )",
+        "resolved": "10.0.11",
+        "contentHash": "4jNNt67NhCqf3bf2FN0mrsC+EH60L7Sny6poqVeiviB27Kw7TQzMmgn8HIaPc8E9EcuGusUyfeu21gLfzcBpDA=="
+      },
+      "System.Reactive": {
+        "type": "CentralTransitive",
+        "requested": "[7.0.0, )",
+        "resolved": "7.0.0",
+        "contentHash": "VYaSP2Kt+45GFnr3q7c/b4awT48VvueOJV4jPjdUXi5MxC9mSUy+HkJYtm8rGZ6fC3tNHG9gBu/YwNAR/FYqhg=="
+      }
+    }
+  }
+}

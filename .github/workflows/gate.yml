@@ -775,13 +775,18 @@ jobs:
           path: |
             ~/.nuget/packages
             ~/.local/share/NuGet
-          # Keys on `Directory.Packages.props`. The `packages.lock.json`
-          # ideal is round-33 Track B. No `restore-keys` — partial hit
-          # would restore against different resolved versions.
+          # Keys on `Directory.Packages.props` AND every `packages.lock.json`.
+          # The lock files are no longer the future ideal this comment once
+          # described — they are restored under `--locked-mode`, so a cache
+          # populated before they changed is exactly what NU1403 reports as
+          # "the package is different than the last restore". Keying on the
+          # lock files is what makes the cache and the constraint agree.
+          # No `restore-keys` — a partial hit would restore against different
+          # resolved versions, which is the same defect one step quieter.
           # `runner.arch` is included because some NuGet packages ship
           # native RID-specific assets (for example, runtime.linux-
           # x64.*).
-          key: nuget-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('Directory.Packages.props') }}
+          key: nuget-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('Directory.Packages.props', '**/packages.lock.json') }}
 
       - name: Restore apt archives (root fix for the exit-124 install-step class)
         # 561 MB of .deb per ubuntu job against a mirror measured at ~1.1 MB/s is
