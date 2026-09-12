@@ -1,0 +1,12 @@
+{
+  "pr_number": 17302,
+  "archive_path": "docs/history/pr-reviews/2026/09/12/PR-17302-feat-081m29eszcq087g0r001sm29dq-reverse-indexes-on-the-host-log.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-12T02:09:07.116Z",
+  "schema_version": "v1",
+  "commit_sha": "78b236d9985775973e701d155df7c61f3ae58ee2",
+  "title": "feat(081M29ESZCQ087G0R001SM29DQ): reverse indexes on the host log",
+  "state": "MERGED",
+  "merged_at": "2026-09-12T02:08:23Z",
+  "head_ref": "feat/zetadb-reverse-index-views"
+}

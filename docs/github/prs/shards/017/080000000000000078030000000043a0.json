@@ -1,0 +1,12 @@
+{
+  "pr_number": 17312,
+  "archive_path": "docs/history/pr-reviews/2026/09/12/PR-17312-research-why-hats-earn-independence-expanding-the-actor-set-is-the-answer-to-zad.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-12T02:00:02.058Z",
+  "schema_version": "v1",
+  "commit_sha": "5a995960e5ecdb2ff914ab42094654d116573bdf",
+  "title": "research: why hats earn independence — expanding the actor set is the answer to Zadeh",
+  "state": "MERGED",
+  "merged_at": "2026-09-12T01:59:04Z",
+  "head_ref": "shadow/why-hats-earn-independence"
+}
