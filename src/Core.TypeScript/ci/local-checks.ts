@@ -165,6 +165,34 @@ export const NO_LOCAL: readonly NoLocal[] = [
  * `could-not-run` with the reason, NEVER skipped silently and never counted as
  * passing. An honest "I could not run this" is the whole point.
  */
+/**
+ * The three ways gate.yml actually invokes a check, all three runnable verbatim
+ * from the repo root.
+ *
+ * This used to recognise only `bun <path>.ts`, which measured (2026-09-11) as
+ * **46 of 90** real check invocations — the other 44 (`bun run <script>` x26,
+ * `bun test <path>` x18) were invisible to the roster. The audit still passed,
+ * because it asks whether a JOB is classified, never whether that job's STEPS
+ * are reachable: `lint (bash retirement inventory + hygiene unit tests)` runs 29
+ * checks and contributed 2. A coverage tool that cannot see two thirds of the
+ * checks it claims to mirror is the vacuity class pointed at itself.
+ *
+ * `bun install` is deliberately NOT a check — it is setup, and counting it would
+ * inflate the same number this comment exists to keep honest.
+ */
+function matchInvocation(raw: string): string | undefined {
+  const forms: readonly RegExp[] = [
+    /(bun\s+(?:src\/|tools\/|tests\/)\S+\.ts[^\n|&]*)/u,
+    /(bun\s+run\s+(?!install\b)[A-Za-z][\w:.-]*[^\n|&]*)/u,
+    /(bun\s+test\s+(?:src\/|tools\/|tests\/)\S+[^\n|&]*)/u,
+  ];
+  for (const re of forms) {
+    const m = re.exec(raw);
+    if (m?.[1] !== undefined) return m[1].trim();
+  }
+  return undefined;
+}
+
 export function deriveFromGate(gateYaml: string): { specs: CheckSpec[]; unrunnable: NoLocal[] } {
   const specs: CheckSpec[] = [];
   const unrunnable: NoLocal[] = [];
@@ -174,9 +202,8 @@ export function deriveFromGate(gateYaml: string): { specs: CheckSpec[]; unrunnab
     const n = /^\s{4}name:\s*(.+?)\s*$/u.exec(raw);
     if (n?.[1] !== undefined) { job = n[1].replace(/^["']|["']$/gu, ""); continue; }
     if (job.length === 0 || raw.trim().startsWith("#")) continue;
-    const c = /(bun\s+(?:src\/|tools\/|tests\/)\S+\.ts[^\n|&]*)/u.exec(raw);
-    if (c?.[1] === undefined) continue;
-    const cmd = c[1].trim();
+    const cmd = matchInvocation(raw);
+    if (cmd === undefined) continue;
     const key = `${job}::${cmd}`;
     if (seen.has(key)) continue;
     seen.add(key);

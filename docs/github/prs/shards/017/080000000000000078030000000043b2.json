@@ -1,0 +1,12 @@
+{
+  "pr_number": 17330,
+  "archive_path": "docs/history/pr-reviews/2026/09/12/PR-17330-fix-081m29vpavg087g0r002598pev-local-checks-saw-46-of-90-gate-invocations.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-12T04:26:00.413Z",
+  "schema_version": "v1",
+  "commit_sha": "10b1ff25aa06f8bb42fcaaea71b66adb067fb83a",
+  "title": "fix(081M29VPAVG087G0R002598PEV): local-checks saw 46 of 90 gate invocations",
+  "state": "MERGED",
+  "merged_at": "2026-09-12T04:25:14Z",
+  "head_ref": "shadow/local-checks-coverage-gaps"
+}

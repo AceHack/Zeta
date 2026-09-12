@@ -1,0 +1,14 @@
+{
+  "id": "080d049eb0828010a013000883045b85",
+  "at": "2026-09-12T04:17:54.768Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M29XC42F087G0R000X3DPMY",
+    "type": "task",
+    "title": "single-file registry ledgers conflict on every concurrent PR",
+    "slug": "single-file-registry-ledgers-conflict-on-every-concurrent-pr",
+    "priority": "P2",
+    "filename": "081M29XC42F087G0R000X3DPMY-single-file-registry-ledgers-conflict-on-every-concurrent-pr.md"
+  }
+}

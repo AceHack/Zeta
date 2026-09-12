@@ -319,7 +319,7 @@
   },
   {
     "schema": "zeta.ace.package-manager-pointers.v1",
-    "purpose": "Pinned per-platform release ZIP → extracted directory + PATH shim (CodeQL CLI)",
+    "purpose": "Pinned per-platform release ZIP → extracted directory + PATH shim (CodeQL CLI, FriCAS on Windows)",
     "realizer": "src/Core.TypeScript/ace/setup-realizers/from-zip.ts",
     "manifest": "tools/setup/manifests/from-zip",
     "dependencies": [
@@ -346,10 +346,23 @@
         "spec": "~/.zeta/codeql-cli https://github.com/github/codeql-cli-binaries/releases/download/v2.27.0/codeql-win64.zip",
         "update": "pinned-url",
         "when": "windows"
+      },
+      {
+        "ecosystem": "from-zip",
+        "spec": "~/.zeta/fricas https://github.com/fricas/fricas/releases/download/1.3.13/fricas-1.3.13-windows-x86-64.zip",
+        "update": "pinned-url",
+        "when": "windows,amd64"
+      },
+      {
+        "ecosystem": "from-zip",
+        "spec": "~/.zeta/fricas https://github.com/fricas/fricas/releases/download/1.3.13/fricas-1.3.13-windows-arm64.zip",
+        "update": "pinned-url",
+        "when": "windows,arm64"
       }
     ],
     "opt_in": [
-      "ZETA_INSTALL_CODEQL=1"
+      "ZETA_INSTALL_CODEQL=1",
+      "ZETA_INSTALL_FRICAS=1"
     ]
   },
   {

@@ -1,0 +1,14 @@
+{
+  "id": "080d049dd8fd7010a013000829a93563",
+  "at": "2026-09-12T03:48:29.230Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M29VP7XD087G0R002QEZQPP",
+    "type": "bug",
+    "title": "local-checks derivation saw 46 of 90 gate invocations",
+    "slug": "local-checks-derivation-saw-46-of-90-gate-invocations",
+    "priority": "P2",
+    "filename": "081M29VP7XD087G0R002QEZQPP-local-checks-derivation-saw-46-of-90-gate-invocations.md"
+  }
+}

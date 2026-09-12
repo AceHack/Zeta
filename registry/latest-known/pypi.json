@@ -1,0 +1,671 @@
+{
+  "ecosystem": "pypi",
+  "observedAt": "2026-09-12",
+  "packages": {
+    "accelerate": {
+      "latest": "1.15.0",
+      "observedAt": "2026-09-12",
+      "source": "https://pypi.org/pypi/accelerate/json"
+    },
+    "aiohappyeyeballs": {
+      "latest": "2.7.1",
+      "observedAt": "2026-09-12",
+      "source": "https://pypi.org/pypi/aiohappyeyeballs/json"
+    },
+    "aiohttp": {
+      "latest": "3.14.3",
+      "observedAt": "2026-09-12",
+      "source": "https://pypi.org/pypi/aiohttp/json"
+    },
+    "aiosignal": {
+      "latest": "1.4.0",
+      "observedAt": "2026-09-12",
+      "source": "https://pypi.org/pypi/aiosignal/json"
+    },
+    "annotated-doc": {
+      "latest": "0.0.5",
+      "observedAt": "2026-09-12",
+      "source": "https://pypi.org/pypi/annotated-doc/json"
+    },
+    "annotated-types": {
+      "latest": "0.8.0",
+      "observedAt": "2026-09-12",
+      "source": "https://pypi.org/pypi/annotated-types/json"
+    },
+    "anyio": {
+      "latest": "4.15.1",
+      "observedAt": "2026-09-12",
+      "source": "https://pypi.org/pypi/anyio/json"
+    },
+    "arc-agi": {
+      "latest": "0.9.9",
+      "observedAt": "2026-09-12",
+      "source": "https://pypi.org/pypi/arc-agi/json"
+    },
+    "arcengine": {
+      "latest": "0.9.3",
+      "observedAt": "2026-09-12",
+      "source": "https://pypi.org/pypi/arcengine/json"
+    },
+    "ast-serialize": {
+      "latest": "0.11.1",
+      "observedAt": "2026-09-12",
+      "source": "https://pypi.org/pypi/ast-serialize/json"
+    },
+    "astor": {
+      "latest": "0.8.1",
+      "observedAt": "2026-09-12",
+      "source": "https://pypi.org/pypi/astor/json"
+    },
+    "asttokens": {
+      "latest": "3.0.2",
+      "observedAt": "2026-09-12",
+      "source": "https://pypi.org/pypi/asttokens/json"
+    },
+    "attrs": {
+      "latest": "26.1.0",
+      "observedAt": "2026-09-12",
+      "source": "https://pypi.org/pypi/attrs/json"
+    },
+    "beartype": {
+      "latest": "0.22.9",
+      "observedAt": "2026-09-12",
+      "source": "https://pypi.org/pypi/beartype/json"
+    },
+    "better-abc": {
+      "latest": "0.0.3",
+      "observedAt": "2026-09-12",
+      "source": "https://pypi.org/pypi/better-abc/json"
+    },
+    "bidict": {
+      "latest": "0.24.1",
+      "observedAt": "2026-09-12",
+      "source": "https://pypi.org/pypi/bidict/json"
+    },
+    "blinker": {
+      "latest": "1.9.0",
+      "observedAt": "2026-09-12",
+      "source": "https://pypi.org/pypi/blinker/json"
+    },
+    "certifi": {
+      "latest": "2026.7.22",
+      "observedAt": "2026-09-12",
+      "source": "https://pypi.org/pypi/certifi/json"
+    },
+    "charset-normalizer": {
+      "latest": "3.5.1",
+      "observedAt": "2026-09-12",
+      "source": "https://pypi.org/pypi/charset-normalizer/json"
+    },
+    "click": {
+      "latest": "8.5.0",
+      "observedAt": "2026-09-12",
+      "source": "https://pypi.org/pypi/click/json"
+    },
+    "cloudpickle": {
+      "latest": "3.1.2",
+      "observedAt": "2026-09-12",
+      "source": "https://pypi.org/pypi/cloudpickle/json"
+    },
+    "colorama": {
+      "latest": "0.4.6",
+      "observedAt": "2026-09-12",
+      "source": "https://pypi.org/pypi/colorama/json"
+    },
+    "contourpy": {
+      "latest": "1.4.0",
+      "observedAt": "2026-09-12",
+      "source": "https://pypi.org/pypi/contourpy/json"
+    },
+    "cycler": {
+      "latest": "0.12.1",
+      "observedAt": "2026-09-12",
+      "source": "https://pypi.org/pypi/cycler/json"
+    },
+    "datasets": {
+      "latest": "5.0.1",
+      "observedAt": "2026-09-12",
+      "source": "https://pypi.org/pypi/datasets/json"
+    },
+    "dill": {
+      "latest": "0.4.1",
+      "observedAt": "2026-09-12",
+      "source": "https://pypi.org/pypi/dill/json"
+    },
+    "einops": {
+      "latest": "0.8.2",
+      "observedAt": "2026-09-12",
+      "source": "https://pypi.org/pypi/einops/json"
+    },
+    "executing": {
+      "latest": "2.2.1",
+      "observedAt": "2026-09-12",
+      "source": "https://pypi.org/pypi/executing/json"
+    },
+    "fancy-einsum": {
+      "latest": "0.0.3",
+      "observedAt": "2026-09-12",
+      "source": "https://pypi.org/pypi/fancy-einsum/json"
+    },
+    "farama-notifications": {
+      "latest": "0.0.6",
+      "observedAt": "2026-09-12",
+      "source": "https://pypi.org/pypi/farama-notifications/json"
+    },
+    "filelock": {
+      "latest": "3.32.6",
+      "observedAt": "2026-09-12",
+      "source": "https://pypi.org/pypi/filelock/json"
+    },
+    "flask": {
+      "latest": "3.1.3",
+      "observedAt": "2026-09-12",
+      "source": "https://pypi.org/pypi/flask/json"
+    },
+    "fonttools": {
+      "latest": "4.65.0",
+      "observedAt": "2026-09-12",
+      "source": "https://pypi.org/pypi/fonttools/json"
+    },
+    "frozenlist": {
+      "latest": "1.8.0",
+      "observedAt": "2026-09-12",
+      "source": "https://pypi.org/pypi/frozenlist/json"
+    },
+    "fsspec": {
+      "latest": "2026.7.0",
+      "observedAt": "2026-09-12",
+      "source": "https://pypi.org/pypi/fsspec/json"
+    },
+    "gymnasium": {
+      "latest": "1.3.0",
+      "observedAt": "2026-09-12",
+      "source": "https://pypi.org/pypi/gymnasium/json"
+    },
+    "h11": {
+      "latest": "0.16.0",
+      "observedAt": "2026-09-12",
+      "source": "https://pypi.org/pypi/h11/json"
+    },
+    "hf-xet": {
+      "latest": "1.6.0",
+      "observedAt": "2026-09-12",
+      "source": "https://pypi.org/pypi/hf-xet/json"
+    },
+    "httpcore": {
+      "latest": "1.0.9",
+      "observedAt": "2026-09-12",
+      "source": "https://pypi.org/pypi/httpcore/json"
+    },
+    "httpx": {
+      "latest": "0.28.1",
+      "observedAt": "2026-09-12",
+      "source": "https://pypi.org/pypi/httpx/json"
+    },
+    "huggingface-hub": {
+      "latest": "1.31.0",
+      "observedAt": "2026-09-12",
+      "source": "https://pypi.org/pypi/huggingface-hub/json"
+    },
+    "idna": {
+      "latest": "3.19",
+      "observedAt": "2026-09-12",
+      "source": "https://pypi.org/pypi/idna/json"
+    },
+    "ijson": {
+      "latest": "3.5.1",
+      "observedAt": "2026-09-12",
+      "source": "https://pypi.org/pypi/ijson/json"
+    },
+    "iniconfig": {
+      "latest": "2.3.0",
+      "observedAt": "2026-09-12",
+      "source": "https://pypi.org/pypi/iniconfig/json"
+    },
+    "ipython": {
+      "latest": "9.17.1",
+      "observedAt": "2026-09-12",
+      "source": "https://pypi.org/pypi/ipython/json"
+    },
+    "ipython-pygments-lexers": {
+      "latest": "1.1.1",
+      "observedAt": "2026-09-12",
+      "source": "https://pypi.org/pypi/ipython-pygments-lexers/json"
+    },
+    "itsdangerous": {
+      "latest": "2.2.0",
+      "observedAt": "2026-09-12",
+      "source": "https://pypi.org/pypi/itsdangerous/json"
+    },
+    "jaxtyping": {
+      "latest": "0.3.11",
+      "observedAt": "2026-09-12",
+      "source": "https://pypi.org/pypi/jaxtyping/json"
+    },
+    "jedi": {
+      "latest": "0.20.0",
+      "observedAt": "2026-09-12",
+      "source": "https://pypi.org/pypi/jedi/json"
+    },
+    "jinja2": {
+      "latest": "3.1.6",
+      "observedAt": "2026-09-12",
+      "source": "https://pypi.org/pypi/jinja2/json"
+    },
+    "kiwisolver": {
+      "latest": "1.5.1",
+      "observedAt": "2026-09-12",
+      "source": "https://pypi.org/pypi/kiwisolver/json"
+    },
+    "librt": {
+      "latest": "0.15.0",
+      "observedAt": "2026-09-12",
+      "source": "https://pypi.org/pypi/librt/json"
+    },
+    "markdown-it-py": {
+      "latest": "4.2.0",
+      "observedAt": "2026-09-12",
+      "source": "https://pypi.org/pypi/markdown-it-py/json"
+    },
+    "markupsafe": {
+      "latest": "3.0.3",
+      "observedAt": "2026-09-12",
+      "source": "https://pypi.org/pypi/markupsafe/json"
+    },
+    "matplotlib": {
+      "latest": "3.11.2",
+      "observedAt": "2026-09-12",
+      "source": "https://pypi.org/pypi/matplotlib/json"
+    },
+    "matplotlib-inline": {
+      "latest": "0.2.2",
+      "observedAt": "2026-09-12",
+      "source": "https://pypi.org/pypi/matplotlib-inline/json"
+    },
+    "mdurl": {
+      "latest": "0.1.2",
+      "observedAt": "2026-09-12",
+      "source": "https://pypi.org/pypi/mdurl/json"
+    },
+    "minigrid": {
+      "latest": "3.1.0",
+      "observedAt": "2026-09-12",
+      "source": "https://pypi.org/pypi/minigrid/json"
+    },
+    "mpmath": {
+      "latest": "1.4.1",
+      "observedAt": "2026-09-12",
+      "source": "https://pypi.org/pypi/mpmath/json"
+    },
+    "multidict": {
+      "latest": "6.8.0",
+      "observedAt": "2026-09-12",
+      "source": "https://pypi.org/pypi/multidict/json"
+    },
+    "multiprocess": {
+      "latest": "0.70.19",
+      "observedAt": "2026-09-12",
+      "source": "https://pypi.org/pypi/multiprocess/json"
+    },
+    "mypy": {
+      "latest": "2.3.1",
+      "observedAt": "2026-09-12",
+      "source": "https://pypi.org/pypi/mypy/json"
+    },
+    "mypy-extensions": {
+      "latest": "1.1.0",
+      "observedAt": "2026-09-12",
+      "source": "https://pypi.org/pypi/mypy-extensions/json"
+    },
+    "networkx": {
+      "latest": "3.6.1",
+      "observedAt": "2026-09-12",
+      "source": "https://pypi.org/pypi/networkx/json"
+    },
+    "nnsight": {
+      "latest": "0.7.0",
+      "observedAt": "2026-09-12",
+      "source": "https://pypi.org/pypi/nnsight/json"
+    },
+    "numpy": {
+      "latest": "2.5.3",
+      "observedAt": "2026-09-12",
+      "source": "https://pypi.org/pypi/numpy/json"
+    },
+    "opentelemetry-api": {
+      "latest": "1.44.0",
+      "observedAt": "2026-09-12",
+      "source": "https://pypi.org/pypi/opentelemetry-api/json"
+    },
+    "packaging": {
+      "latest": "26.3",
+      "observedAt": "2026-09-12",
+      "source": "https://pypi.org/pypi/packaging/json"
+    },
+    "pandas": {
+      "latest": "3.0.5",
+      "observedAt": "2026-09-12",
+      "source": "https://pypi.org/pypi/pandas/json"
+    },
+    "parso": {
+      "latest": "0.8.7",
+      "observedAt": "2026-09-12",
+      "source": "https://pypi.org/pypi/parso/json"
+    },
+    "pathspec": {
+      "latest": "1.1.1",
+      "observedAt": "2026-09-12",
+      "source": "https://pypi.org/pypi/pathspec/json"
+    },
+    "pexpect": {
+      "latest": "4.9.0",
+      "observedAt": "2026-09-12",
+      "source": "https://pypi.org/pypi/pexpect/json"
+    },
+    "pillow": {
+      "latest": "12.3.0",
+      "observedAt": "2026-09-12",
+      "source": "https://pypi.org/pypi/pillow/json"
+    },
+    "platformdirs": {
+      "latest": "4.11.8",
+      "observedAt": "2026-09-12",
+      "source": "https://pypi.org/pypi/platformdirs/json"
+    },
+    "pluggy": {
+      "latest": "1.6.0",
+      "observedAt": "2026-09-12",
+      "source": "https://pypi.org/pypi/pluggy/json"
+    },
+    "prompt-toolkit": {
+      "latest": "3.0.53",
+      "observedAt": "2026-09-12",
+      "source": "https://pypi.org/pypi/prompt-toolkit/json"
+    },
+    "propcache": {
+      "latest": "0.5.2",
+      "observedAt": "2026-09-12",
+      "source": "https://pypi.org/pypi/propcache/json"
+    },
+    "protobuf": {
+      "latest": "7.36.1",
+      "observedAt": "2026-09-12",
+      "source": "https://pypi.org/pypi/protobuf/json"
+    },
+    "psutil": {
+      "latest": "7.2.2",
+      "observedAt": "2026-09-12",
+      "source": "https://pypi.org/pypi/psutil/json"
+    },
+    "ptyprocess": {
+      "latest": "0.7.0",
+      "observedAt": "2026-09-12",
+      "source": "https://pypi.org/pypi/ptyprocess/json"
+    },
+    "pure-eval": {
+      "latest": "0.2.4",
+      "observedAt": "2026-09-12",
+      "source": "https://pypi.org/pypi/pure-eval/json"
+    },
+    "pyarrow": {
+      "latest": "25.0.1",
+      "observedAt": "2026-09-12",
+      "source": "https://pypi.org/pypi/pyarrow/json"
+    },
+    "pydantic": {
+      "latest": "2.13.5",
+      "observedAt": "2026-09-12",
+      "source": "https://pypi.org/pypi/pydantic/json"
+    },
+    "pydantic-core": {
+      "latest": "2.49.0",
+      "observedAt": "2026-09-12",
+      "source": "https://pypi.org/pypi/pydantic-core/json"
+    },
+    "pygame-ce": {
+      "latest": "2.5.8",
+      "observedAt": "2026-09-12",
+      "source": "https://pypi.org/pypi/pygame-ce/json"
+    },
+    "pygments": {
+      "latest": "2.21.0",
+      "observedAt": "2026-09-12",
+      "source": "https://pypi.org/pypi/pygments/json"
+    },
+    "pyparsing": {
+      "latest": "3.3.2",
+      "observedAt": "2026-09-12",
+      "source": "https://pypi.org/pypi/pyparsing/json"
+    },
+    "pyqir": {
+      "latest": "0.12.5",
+      "observedAt": "2026-09-12",
+      "source": "https://pypi.org/pypi/pyqir/json"
+    },
+    "pytest": {
+      "latest": "9.1.1",
+      "observedAt": "2026-09-12",
+      "source": "https://pypi.org/pypi/pytest/json"
+    },
+    "python-dateutil": {
+      "latest": "2.9.0.post0",
+      "observedAt": "2026-09-12",
+      "source": "https://pypi.org/pypi/python-dateutil/json"
+    },
+    "python-dotenv": {
+      "latest": "1.2.3",
+      "observedAt": "2026-09-12",
+      "source": "https://pypi.org/pypi/python-dotenv/json"
+    },
+    "python-engineio": {
+      "latest": "4.14.0",
+      "observedAt": "2026-09-12",
+      "source": "https://pypi.org/pypi/python-engineio/json"
+    },
+    "python-socketio": {
+      "latest": "5.16.4",
+      "observedAt": "2026-09-12",
+      "source": "https://pypi.org/pypi/python-socketio/json"
+    },
+    "pyyaml": {
+      "latest": "6.0.3",
+      "observedAt": "2026-09-12",
+      "source": "https://pypi.org/pypi/pyyaml/json"
+    },
+    "qdk": {
+      "latest": "1.32.3",
+      "observedAt": "2026-09-12",
+      "source": "https://pypi.org/pypi/qdk/json"
+    },
+    "qsharp": {
+      "latest": "1.31.0",
+      "observedAt": "2026-09-12",
+      "source": "https://pypi.org/pypi/qsharp/json"
+    },
+    "regex": {
+      "latest": "2026.9.10",
+      "observedAt": "2026-09-12",
+      "source": "https://pypi.org/pypi/regex/json"
+    },
+    "requests": {
+      "latest": "2.34.2",
+      "observedAt": "2026-09-12",
+      "source": "https://pypi.org/pypi/requests/json"
+    },
+    "rich": {
+      "latest": "15.0.0",
+      "observedAt": "2026-09-12",
+      "source": "https://pypi.org/pypi/rich/json"
+    },
+    "ruff": {
+      "latest": "0.16.7",
+      "observedAt": "2026-09-12",
+      "source": "https://pypi.org/pypi/ruff/json"
+    },
+    "safetensors": {
+      "latest": "0.8.0",
+      "observedAt": "2026-09-12",
+      "source": "https://pypi.org/pypi/safetensors/json"
+    },
+    "sentencepiece": {
+      "latest": "0.2.2",
+      "observedAt": "2026-09-12",
+      "source": "https://pypi.org/pypi/sentencepiece/json"
+    },
+    "sentry-sdk": {
+      "latest": "2.69.1",
+      "observedAt": "2026-09-12",
+      "source": "https://pypi.org/pypi/sentry-sdk/json"
+    },
+    "setuptools": {
+      "latest": "84.0.0",
+      "observedAt": "2026-09-12",
+      "source": "https://pypi.org/pypi/setuptools/json"
+    },
+    "shellingham": {
+      "latest": "1.5.4",
+      "observedAt": "2026-09-12",
+      "source": "https://pypi.org/pypi/shellingham/json"
+    },
+    "simple-websocket": {
+      "latest": "1.1.0",
+      "observedAt": "2026-09-12",
+      "source": "https://pypi.org/pypi/simple-websocket/json"
+    },
+    "six": {
+      "latest": "1.17.0",
+      "observedAt": "2026-09-12",
+      "source": "https://pypi.org/pypi/six/json"
+    },
+    "stack-data": {
+      "latest": "0.6.3",
+      "observedAt": "2026-09-12",
+      "source": "https://pypi.org/pypi/stack-data/json"
+    },
+    "sympy": {
+      "latest": "1.14.0",
+      "observedAt": "2026-09-12",
+      "source": "https://pypi.org/pypi/sympy/json"
+    },
+    "tokenizers": {
+      "latest": "0.23.2",
+      "observedAt": "2026-09-12",
+      "source": "https://pypi.org/pypi/tokenizers/json"
+    },
+    "toml": {
+      "latest": "0.10.2",
+      "observedAt": "2026-09-12",
+      "source": "https://pypi.org/pypi/toml/json"
+    },
+    "torch": {
+      "latest": "2.14.0",
+      "observedAt": "2026-09-12",
+      "source": "https://pypi.org/pypi/torch/json"
+    },
+    "tqdm": {
+      "latest": "4.70.1",
+      "observedAt": "2026-09-12",
+      "source": "https://pypi.org/pypi/tqdm/json"
+    },
+    "traitlets": {
+      "latest": "5.16.1",
+      "observedAt": "2026-09-12",
+      "source": "https://pypi.org/pypi/traitlets/json"
+    },
+    "transformer-lens": {
+      "latest": "3.8.1",
+      "observedAt": "2026-09-12",
+      "source": "https://pypi.org/pypi/transformer-lens/json"
+    },
+    "transformers": {
+      "latest": "5.17.0",
+      "observedAt": "2026-09-12",
+      "source": "https://pypi.org/pypi/transformers/json"
+    },
+    "transformers-stream-generator": {
+      "latest": "0.0.5",
+      "observedAt": "2026-09-12",
+      "source": "https://pypi.org/pypi/transformers-stream-generator/json"
+    },
+    "typeguard": {
+      "latest": "4.6.0",
+      "observedAt": "2026-09-12",
+      "source": "https://pypi.org/pypi/typeguard/json"
+    },
+    "typer": {
+      "latest": "0.27.2",
+      "observedAt": "2026-09-12",
+      "source": "https://pypi.org/pypi/typer/json"
+    },
+    "types-pyyaml": {
+      "latest": "6.0.12.20260906",
+      "observedAt": "2026-09-12",
+      "source": "https://pypi.org/pypi/types-pyyaml/json"
+    },
+    "typing-extensions": {
+      "latest": "4.16.0",
+      "observedAt": "2026-09-12",
+      "source": "https://pypi.org/pypi/typing-extensions/json"
+    },
+    "typing-inspection": {
+      "latest": "0.4.4",
+      "observedAt": "2026-09-12",
+      "source": "https://pypi.org/pypi/typing-inspection/json"
+    },
+    "tzdata": {
+      "latest": "2026.3",
+      "observedAt": "2026-09-12",
+      "source": "https://pypi.org/pypi/tzdata/json"
+    },
+    "urllib3": {
+      "latest": "2.7.0",
+      "observedAt": "2026-09-12",
+      "source": "https://pypi.org/pypi/urllib3/json"
+    },
+    "wadler-lindig": {
+      "latest": "0.1.7",
+      "observedAt": "2026-09-12",
+      "source": "https://pypi.org/pypi/wadler-lindig/json"
+    },
+    "wandb": {
+      "latest": "0.30.0",
+      "observedAt": "2026-09-12",
+      "source": "https://pypi.org/pypi/wandb/json"
+    },
+    "wcwidth": {
+      "latest": "0.8.3",
+      "observedAt": "2026-09-12",
+      "source": "https://pypi.org/pypi/wcwidth/json"
+    },
+    "websocket-client": {
+      "latest": "1.9.2",
+      "observedAt": "2026-09-12",
+      "source": "https://pypi.org/pypi/websocket-client/json"
+    },
+    "werkzeug": {
+      "latest": "3.1.8",
+      "observedAt": "2026-09-12",
+      "source": "https://pypi.org/pypi/werkzeug/json"
+    },
+    "wsproto": {
+      "latest": "1.3.2",
+      "observedAt": "2026-09-12",
+      "source": "https://pypi.org/pypi/wsproto/json"
+    },
+    "xxhash": {
+      "latest": "4.0.1",
+      "observedAt": "2026-09-12",
+      "source": "https://pypi.org/pypi/xxhash/json"
+    },
+    "yarl": {
+      "latest": "1.24.5",
+      "observedAt": "2026-09-12",
+      "source": "https://pypi.org/pypi/yarl/json"
+    },
+    "zstandard": {
+      "latest": "0.25.0",
+      "observedAt": "2026-09-12",
+      "source": "https://pypi.org/pypi/zstandard/json"
+    }
+  }
+}

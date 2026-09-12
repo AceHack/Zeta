@@ -105,6 +105,15 @@ const WINDOWS_EXCEPTIONS: Record<string, string> = {
   llvm: "LLVM is a large full compiler-lane dependency; defer Windows installation until manifests/windows supports host tiers instead of forcing it onto every base host.",
   zig: "Zig is already installed cross-platform by mise from .mise.toml; it does not belong in the Windows system-package manifest.",
 
+  // FriCAS IS carried on Windows -- natively, and by a mechanism this matcher does not read.
+  // `manifests/windows` is scoop/winget/choco only; the Windows FriCAS is two digest-pinned
+  // vendor ZIPs in `manifests/from-zip` (when=windows,amd64 and when=windows,arm64), driven by
+  // install.ps1's from-zip realizer step. So this is NOT a deferred Windows disposition of the
+  // wabt/agda kind -- it is a disposition expressed in a different manifest, and the assertion
+  // below is what stops that claim from rotting into an excuse.
+  fricas:
+    "carried on Windows by manifests/from-zip -- the vendor's own fricas-1.3.13-windows-{x86-64,arm64}.zip, sha256-pinned, opt-in=ZETA_INSTALL_FRICAS. Not a scoop package: fricas is in the Extras bucket and install.ps1 bootstraps Main alone (same constraint as wabt).",
+
   // ── YubiKey / YubiHSM (2026-08-20) ──────────────────────────────────────────
   // The three tool entries that stood here -- yubikey-manager, ykman, yubico-piv-tool --
   // were removed once the check they deferred was actually run. Their stated reason was
@@ -345,6 +354,29 @@ test("NixOS and USB installer surfaces delegate agent/runtime drift to install g
     expect(nixText).not.toContain("@openai/codex");
     expect(nixText).not.toContain("@google/gemini-cli");
   }
+});
+
+test("the fricas Windows exception names a from-zip row that actually exists", () => {
+  // The exception above asserts a fact about ANOTHER manifest. Left as prose it would be the
+  // exact failure class this repo names worst -- a check that cannot fail, reading as one that
+  // passed -- so the claim is made against the file it is a claim about.
+  expect(parseManifest("apt")).toContain("fricas");
+  expect(parseManifest("brew")).toContain("fricas");
+  expect(parseManifest("windows")).not.toContain("fricas");
+  expect(WINDOWS_EXCEPTIONS.fricas).toMatch(/from-zip/);
+
+  const fromZip = readFileSync(join(setupDir, "manifests", "from-zip"), "utf8");
+  const rows = fromZip
+    .split(/\r?\n/)
+    .filter((l) => !l.trimStart().startsWith("#"))
+    .filter((l) => l.includes("fricas/fricas/releases"));
+  expect(rows.length).toBe(2);
+  for (const row of rows) {
+    expect(row).toMatch(/sha256=[0-9a-f]{64}/u);
+    expect(row).toContain("opt-in=ZETA_INSTALL_FRICAS");
+  }
+  expect(rows.some((r) => r.includes("when=windows,amd64"))).toBe(true);
+  expect(rows.some((r) => r.includes("when=windows,arm64"))).toBe(true);
 });
 
 test("no stale WINDOWS_EXCEPTIONS (each must still be a real apt/brew tool)", () => {

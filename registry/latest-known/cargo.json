@@ -1,0 +1,26 @@
+{
+  "ecosystem": "cargo",
+  "observedAt": "2026-09-12",
+  "packages": {
+    "blake3": {
+      "latest": "1.8.7",
+      "observedAt": "2026-09-12",
+      "source": "https://crates.io/api/v1/crates/blake3"
+    },
+    "serde": {
+      "latest": "1.0.229",
+      "observedAt": "2026-09-12",
+      "source": "https://crates.io/api/v1/crates/serde"
+    },
+    "serde_json": {
+      "latest": "1.0.151",
+      "observedAt": "2026-09-12",
+      "source": "https://crates.io/api/v1/crates/serde_json"
+    },
+    "xxhash-rust": {
+      "latest": "0.8.18",
+      "observedAt": "2026-09-12",
+      "source": "https://crates.io/api/v1/crates/xxhash-rust"
+    }
+  }
+}

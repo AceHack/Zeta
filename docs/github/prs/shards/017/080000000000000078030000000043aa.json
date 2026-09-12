@@ -1,0 +1,12 @@
+{
+  "pr_number": 17322,
+  "archive_path": "docs/history/pr-reviews/2026/09/12/PR-17322-feat-setup-acquire-fricas-on-all-three-oses-measure-sagemath-and-do-not-land-it.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-12T04:20:54.070Z",
+  "schema_version": "v1",
+  "commit_sha": "1370227bbf6a43547e7ada2e64c706b40d437829",
+  "title": "feat(setup): acquire FriCAS on all three OSes; measure SageMath and do not land it",
+  "state": "MERGED",
+  "merged_at": "2026-09-12T04:20:10Z",
+  "head_ref": "shadow/fricas-and-sage-toolchain"
+}
