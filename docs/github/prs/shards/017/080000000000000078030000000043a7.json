@@ -1,0 +1,12 @@
+{
+  "pr_number": 17319,
+  "archive_path": "docs/history/pr-reviews/2026/09/12/PR-17319-docs-research-cas-prior-art-for-the-law-losing-tower-fricas-branches-sage-withho.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-12T03:18:14.341Z",
+  "schema_version": "v1",
+  "commit_sha": "c80515b31db3705943c1d2eb39cffedc2dcc8f00",
+  "title": "docs(research): CAS prior art for the law-losing tower — FriCAS branches, Sage withholds an axiom",
+  "state": "MERGED",
+  "merged_at": "2026-09-12T03:17:30Z",
+  "head_ref": "shadow/cas-category-systems-prior-art"
+}
