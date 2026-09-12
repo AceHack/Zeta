@@ -53,7 +53,7 @@
 // Run:  bun src/Core.TypeScript/hygiene/lock-cross-os-stability.ts capture --platform <label> --sdk <ver> --out <file>
 //       bun src/Core.TypeScript/hygiene/lock-cross-os-stability.ts compare --manifest <file> [--manifest <file> ...] [--json <out>]
 
-import { readdirSync, readFileSync, statSync, writeFileSync } from "node:fs";
+import { type Dirent, readdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join, relative, sep } from "node:path";
 
 /** One platform leg's capture: every lock file it produced, verbatim. */
@@ -165,16 +165,18 @@ export function declaredPerOsSignals(texts: readonly string[]): PerOsSignals {
 export function msbuildTextChain(root: string, lockPath: string): string[] {
   const texts: string[] = [];
   const projDir = join(root, dirname(lockPath));
-  let entries: string[] = [];
+  let entries: Dirent[] = [];
   try {
-    entries = readdirSync(projDir);
+    entries = readdirSync(projDir, { withFileTypes: true });
   } catch {
     return texts;
   }
   for (const entry of entries) {
-    if (entry.endsWith(".csproj") || entry.endsWith(".fsproj")) {
+    // The Dirent already knows the kind, so there is no second syscall to race.
+    if (!entry.isFile()) continue;
+    if (entry.name.endsWith(".csproj") || entry.name.endsWith(".fsproj")) {
       try {
-        texts.push(readFileSync(join(projDir, entry), "utf8"));
+        texts.push(readFileSync(join(projDir, entry.name), "utf8"));
       } catch {
         /* unreadable project file contributes no signal; absence is handled by the caller */
       }
@@ -182,11 +184,13 @@ export function msbuildTextChain(root: string, lockPath: string): string[] {
   }
   let dir = projDir;
   for (;;) {
+    // Read first and interpret the failure, rather than asking whether the file exists and
+    // then reading it — the answer to the question would already be stale by the read.
     try {
-      const props = join(dir, "Directory.Build.props");
-      if (statSync(props).isFile()) texts.push(readFileSync(props, "utf8"));
-    } catch {
-      /* no props at this level */
+      texts.push(readFileSync(join(dir, "Directory.Build.props"), "utf8"));
+    } catch (e) {
+      const code = (e as NodeJS.ErrnoException).code;
+      if (code !== "ENOENT" && code !== "ENOTDIR" && code !== "EISDIR") throw e;
     }
     if (dir === root || !dir.startsWith(root)) break;
     const parent = dirname(dir);
@@ -468,24 +472,27 @@ const SKIP_DIRS = new Set([".git", "node_modules", "bin", "obj", "references", "
 export function collectLocks(root: string): Record<string, string> {
   const out: Record<string, string> = {};
   const walk = (dir: string): void => {
-    let entries: string[];
+    let entries: Dirent[];
     try {
-      entries = readdirSync(dir);
+      entries = readdirSync(dir, { withFileTypes: true });
     } catch {
       return;
     }
     for (const entry of entries) {
-      if (SKIP_DIRS.has(entry)) continue;
-      const full = join(dir, entry);
-      let st;
-      try {
-        st = statSync(full);
-      } catch {
-        continue;
-      }
-      if (st.isDirectory()) walk(full);
-      else if (entry === "packages.lock.json") {
-        out[relative(root, full).split(sep).join("/")] = readFileSync(full, "utf8");
+      if (SKIP_DIRS.has(entry.name)) continue;
+      const full = join(dir, entry.name);
+      // The kind arrives with the listing; asking the filesystem again would be a second
+      // answer to a question that could have changed in between.
+      if (entry.isDirectory()) walk(full);
+      else if (entry.isFile() && entry.name === "packages.lock.json") {
+        try {
+          out[relative(root, full).split(sep).join("/")] = readFileSync(full, "utf8");
+        } catch (e) {
+          // A lock that vanished between listing and read is not silently dropped — that
+          // would be a leg reporting fewer files with no trace. Anything but ENOENT is a
+          // real fault and is raised.
+          if ((e as NodeJS.ErrnoException).code !== "ENOENT") throw e;
+        }
       }
     }
   };
