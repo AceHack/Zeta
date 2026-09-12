@@ -1191,6 +1191,8 @@ describe("AFTER THE HANDOFF: THE REQUEST SAYS WHAT THE ORGANIZATION CONFIGURED, 
         },
       });
       expect(third.followUps?.length).toBe(2);
+      // And the run SAYS how wide it went, so "why was it not parallel" is answerable from the record.
+      expect(events.some((e) => (e.decision ?? "").includes("2 request(s) owe follow-up, this run takes 2") && (e.decision ?? "").includes("2 at a time"))).toBe(true);
       // BOTH SESSIONS WERE IN FLIGHT AT ONCE - the second one started before the first came back.
       expect(sessionsAtOnce).toBe(2);
       expect(flight.slice(0, 2)).toEqual(["enter:" + String(ids[0]), "enter:" + String(ids[1])]);

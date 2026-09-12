@@ -4616,6 +4616,16 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
       // the assignment engine will bind a hat for a second piece of work. `maxParallel` ferries
       // drain this queue; at 1 it is the loop it replaces, in the same order.
       const queue = followUpOrder(open).slice(0, Math.max(0, deps.maxFollowUps ?? 2));
+      // SAID, so "why was it not parallel" is answerable from the record instead of from a process
+      // list. How many requests were owed follow-up, how many this run may take, and how many at once.
+      note({
+        kind: OrgEventKind.ChangeProjected,
+        subjectId: goalId,
+        decision:
+          `${String(open.size)} request(s) owe follow-up, this run takes ${String(queue.length)} (${queue.join(", ")})` +
+          `, ${String(Math.max(1, deps.maxParallel ?? SEQUENTIAL))} at a time`,
+        atMs: warmedAt,
+      });
       followUps.push(
         ...(await ferry(queue, deps.maxParallel ?? SEQUENTIAL, async (workId) => {
           const report = await followUpOne(workId, open.get(workId) ?? []);
