@@ -53,12 +53,16 @@
 #
 # THIS LANE IS RED RIGHT NOW, ON PURPOSE
 # --------------------------------------
-# Its first run (34664278420) found the answer and the answer is NO: 30 of 63
-# locks resolve `FSharp.Core` to a different contentHash per leg, because the
-# SDK adds its own bundled copy as a restore source
+# Its first two runs (34664278420, 34664982677) found the answer and the answer
+# is NO: 30 of 63 locks resolve `FSharp.Core` to a different contentHash per leg,
+# because the SDK adds its own bundled copy as a restore source
 # (`Microsoft.FSharp.NetSdk.targets`, gated by `DisableImplicitLibraryPacksFolder`)
-# and that .nupkg is built per platform. So this lane fails until that is FIXED,
-# not waived. A red run here is the standing finding, not a flake, and it should
+# and that .nupkg is built per platform.
+#
+# And it is not even stable per platform: macos-26 produced a FOURTH value in the
+# second run, same SDK and same commit, ~30 minutes later. Four distinct hashes
+# for one resolved version, and one leg not self-consistent across runs. So this
+# lane fails until that is FIXED, not waived. A red run here is the standing finding, not a flake, and it should
 # not be muted, retried, or baselined away -- the day it goes green is the day
 # `--locked-mode` may be widened. Full write-up, including why a per-RID lock is
 # the wrong remedy: `docs/NUGET-LOCK-FILES.md`.

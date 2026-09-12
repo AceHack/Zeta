@@ -122,13 +122,33 @@ platform.** The nuget.org `.nupkg` sha512 (`aM8GRu3juiHLoQqcV7+nnynXrw1G…`) ma
 three lock values, and the locally bundled copy hashes differently again
 (`T9R1BJRK32NxCH9vneBi…`), which is the same story from the other side.
 
-**And it is worse than per-platform: it is per-MACHINE-STATE.** Whether a leg records the
-nuget.org hash or its SDK's bundled hash depends on which source populated
-`~/.nuget/packages` first, which is a property of the runner image and the cache, not of the
-operating system. That is consistent with what was measured — `macos-26` (arm64) and
-`windows-2025` (x64) agree while `ubuntu-24.04` (x64) and `ubuntu-24.04-arm` (arm64) each
-differ, so the split follows **neither** OS nor architecture. It also means a leg that agrees
-today can disagree tomorrow with no change to this repository.
+#### It is not per-platform at all. It is NONDETERMINISTIC — measured, not inferred
+
+The second run (`34664982677`, ~30 minutes after the first, same commit, all five legs
+restoring) settles this. **`macos-26` produced a fourth value it had not produced before:**
+
+| leg | run `34664278420` | run `34664982677` | |
+|---|---|---|---|
+| `macos-26` | `H9wlZ/tWgNp+Q4WQ5aUSi3XO…` | `C8Myl8/HMoTWw0K/xJ+Q6JHl…` | **changed between runs** |
+| `ubuntu-24.04` | `mxCkXuBt4wyRMmHf4boZXm30…` | `mxCkXuBt4wyRMmHf4boZXm30…` | stable |
+| `ubuntu-24.04-arm` | `90c8OKU41fCkzphlHq8nQiOJ…` | `90c8OKU41fCkzphlHq8nQiOJ…` | stable |
+| `windows-2025` | `H9wlZ/tWgNp+Q4WQ5aUSi3XO…` | `H9wlZ/tWgNp+Q4WQ5aUSi3XO…` | stable |
+| `windows-11-arm` | *(leg crashed)* | `H9wlZ/tWgNp+Q4WQ5aUSi3XO…` | — |
+
+Same platform, same SDK `10.0.400`, same commit, **different answer**. So **four** distinct
+`contentHash` values have now been observed for one resolved version, and a single leg is not
+even self-consistent across runs.
+
+The cause follows from the mechanism: whether a leg records the nuget.org hash or its SDK's
+bundled hash depends on which source populated `~/.nuget/packages` first — a property of the
+runner image and its cache at that moment, not of the operating system. The grouping accordingly
+follows **neither** OS nor architecture (`windows-2025` x64 and `windows-11-arm` arm64 agree;
+`ubuntu-24.04` x64 and `ubuntu-24.04-arm` arm64 do not).
+
+**This is the strongest form of the answer.** A per-platform difference could at least be
+encoded. A nondeterministic one cannot: widening `--locked-mode` would produce a gate that
+fails *intermittently*, on a schedule nobody controls — which is worse than one that fails
+predictably, and is exactly the "cross-platform flake" #17305 refused to create.
 
 #### Why a per-RID lock is the WRONG remedy here
 
