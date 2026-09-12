@@ -50,8 +50,8 @@ function fail(code, message) {
   process.exit(code);
 }
 
-if (mode !== "work" && mode !== "gate" && mode !== "review" && mode !== "describe" && mode !== "follow-up" && mode !== "check-answers") {
-  fail(2, "usage: claude-agent.cjs work <workId> | gate <gate> <workId> [refs...] | review <gate> <workId> | describe <workId> | follow-up <workId> | check-answers <workId>");
+if (mode !== "work" && mode !== "gate" && mode !== "review" && mode !== "describe" && mode !== "follow-up" && mode !== "check-answers" && mode !== "plan-round") {
+  fail(2, "usage: claude-agent.cjs work <workId> | gate <gate> <workId> [refs...] | review <gate> <workId> | describe <workId> | follow-up <workId> | check-answers <workId> | plan-round <workId>");
 }
 
 /** The Claude Code binary: stated, else the npm-installed native one, else `claude` on PATH. */
@@ -871,6 +871,62 @@ if (mode === "follow-up") {
 }
 
 // ═════════════════════════════════════════════════════════════════════════════
+// ═════════════════════════════════════════════════════════════════════════════
+// plan-round — what this round of follow-up owes, decided rather than assumed
+// ═════════════════════════════════════════════════════════════════════════════
+if (mode === "plan-round") {
+  const workId = rest[0];
+  if (!workId) fail(2, "plan-round needs <workId>");
+  if (!env.ORG_ROUND) fail(2, "plan-round needs ORG_ROUND: what this round is about");
+  let round;
+  try {
+    round = JSON.parse(env.ORG_ROUND);
+  } catch (err) {
+    fail(2, "ORG_ROUND is not JSON: " + String(err && err.message));
+  }
+  const prompt = [
+    preamble(env.ORG_PLAN_AS || "planner", workId),
+    "",
+    "YOUR TASK NOW: decide what THIS ROUND of work on " + workId + " owes before anyone pays for it.",
+    "",
+    "The item's chain of stages exists for the ORIGINAL work. A round that answers one review comment, or",
+    "chases a pipeline that went red on somebody else's flake, is not the original work - and running every",
+    "stage on it costs two independent agent reviews, tens of minutes, on a change that may be three lines.",
+    "Running too few is the opposite mistake and lands unreviewed code in front of people.",
+    "",
+    "WHAT THIS ROUND IS ABOUT:",
+    JSON.stringify(round, null, 2),
+    "",
+    "Open the item (`observe item " + workId + "`) and read what changed since people last saw it (`git diff`,",
+    "`git log`) before you decide. Weigh what is actually in front of you:",
+    "- WHAT BROUGHT THE ROUND ABOUT. A comment asking a question, answered in the description, changes no code",
+    "  and can owe nothing beyond the tests. A comment that changes behaviour owes the stages that judge",
+    "  behaviour. A red pipeline owes whatever tells you the pipeline will now pass.",
+    "- HOW BIG AND HOW RISKY the change is - a rename is not a rewrite, and a change to the thing the defect",
+    "  was about is not a change to its test's wording.",
+    "- WHETHER THIS ROUND KEEPS COMING BACK. `roundsSoFar` and `lastTurnedBackBy` say so. A round that has been",
+    "  turned back before owes MORE, not less: add the stage that would have caught it. That is the one case",
+    "  where the right answer is a longer list than usual.",
+    "",
+    "Name stages ONLY from `available` - they are the ones this item's chain owes and the only ones anybody",
+    "here holds. An empty list is a real answer: the repository's own tests still run either way, and they run",
+    "BEFORE any stage you name. `why` is read by the next round and by a person: say what you weighed, in one",
+    "or two sentences, naming the specific thing about THIS round that made the difference.",
+  ].join(NL);
+  const schema = {
+    type: "object",
+    properties: {
+      gates: { type: "array", items: { type: "string" } },
+      why: { type: "string" },
+    },
+    required: ["gates", "why"],
+  };
+  const r = await runClaude(prompt, schema, READ, process.cwd(), { hat: env.ORG_PLAN_AS || "planner", workId });
+  process.stdout.write(r.usage + NL);
+  process.stdout.write(JSON.stringify({ gates: r.answer.gates || [], why: String(r.answer.why || "") }) + NL);
+  process.exit(0);
+}
+
 // check-answers — confirm every claim in an answer before a reviewer reads it
 // ═════════════════════════════════════════════════════════════════════════════
 if (mode === "check-answers") {

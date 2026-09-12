@@ -149,6 +149,7 @@ import {
   commandCommenter,
   commandDescriber,
   commandFollowUp,
+  commandFollowUpPlanner,
   commandFollowUpReview,
   commandVerifier,
   consumeFeedback,
@@ -346,7 +347,7 @@ export const KNOWN_FLAGS: ReadonlySet<string> = new Set([
   "--tracker", "--tracker-header", "--tracker-items", "--tracker-map", "--tracker-severity",
   "--tracker-source", "--until", "--week", "--window-start", "--window-target", "--work-agent",
   "--work-agent-arg", "--work-arg", "--work-cmd", "--work-model", "--work-verify",
-  "--work-verify-arg", "--worktrees", "--worktree-setup", "--worktree-setup-arg", "--supply-target", "--parallel", "--resume", "--help", "-h",
+  "--work-verify-arg", "--worktrees", "--worktree-setup", "--worktree-setup-arg", "--supply-target", "--parallel", "--plan-round-cmd", "--plan-round-arg", "--resume", "--help", "-h",
   "--handoff-cmd", "--handoff-arg", "--delivery",
   "--describe-cmd", "--describe-arg", "--follow-up-cmd", "--follow-up-arg", "--feedback-dir", "--feedback-cmd", "--feedback-arg",
   "--answer-cmd", "--answer-arg",
@@ -642,6 +643,9 @@ export interface Args {
   readonly supplyTarget: number | undefined;
   /** How many requests are followed up at once. Absent is one - the deterministic, replayable path. */
   readonly parallel: number | undefined;
+  /** Decides which review stages each follow-up ROUND owes. Absent: every round owes the usual ones. */
+  readonly planRoundCmd: string | undefined;
+  readonly planRoundArgs: readonly string[];
   /**
    * The window the goal is supposed to land inside, as two ISO instants.
    *
@@ -878,6 +882,8 @@ export function parseArgs(argv: readonly string[]): Args {
     answerArgs: valuesAfter(argv, "--answer-arg"),
     supplyTarget: ((v) => (v === undefined ? undefined : Number.parseInt(v, 10)))(valueAfter(argv, "--supply-target")),
     parallel: ((v) => (v === undefined ? undefined : Number.parseInt(v, 10)))(valueAfter(argv, "--parallel")),
+    planRoundCmd: valueAfter(argv, "--plan-round-cmd"),
+    planRoundArgs: valuesAfter(argv, "--plan-round-arg"),
     qaFails: argv.includes("--qa-fails") || argv.includes("--churn"),
     churn: argv.includes("--churn"),
     json: argv.includes("--json"),
@@ -1648,6 +1654,10 @@ export function attachAfterHandoff(deps: Record<string, unknown>, args: Args, fe
     if (args.followUpCmd !== undefined) {
       deps["checkAnswers"] = commandAnswerChecker({ command: args.followUpCmd, args: args.followUpArgs, ...budget }, cwd);
     }
+  }
+  // WHAT EACH ROUND OWES is decided by the organization, when it has said how to ask.
+  if (args.planRoundCmd !== undefined) {
+    deps["planFollowUp"] = commandFollowUpPlanner({ command: args.planRoundCmd, args: args.planRoundArgs, ...budget }, cwd);
   }
   // A follow-up's commits go through the same review command the original work's gates used.
   if (args.reviewCmd !== undefined) {

@@ -33,6 +33,8 @@ import type {
   FeedbackDelivery,
   FollowUpOutcome,
   FollowUpRequest,
+  FollowUpPlan,
+  FollowUpPlanRequest,
   FollowUpReviewRequest,
   FollowUpReviewVerdict,
   ItemDecision,
@@ -267,6 +269,37 @@ export function commandFollowUpReview(spec: CommandSpec, fallbackCwd: string) {
     const said = String(ran.stdout ?? "").trim().split(/\r?\n/).filter((l) => !l.startsWith("usage:")).join(" ").slice(0, 2000);
     if (ran.status !== 0 && ran.status !== 1) return { ok: false, reason: `the reviewer exited ${String(ran.status)}: ${tail(ran.stderr) || said}` };
     return { ok: true, value: { approved: ran.status === 0, reason: said === "" ? `exit ${String(ran.status)}` : said }, evidence: [] };
+  };
+}
+
+/**
+ * WHICH STAGES A ROUND OWES, decided by the organization through a command.
+ *
+ * Invoked as `plan-round <workId>`, told what the round is about in ORG_ROUND. Prints one JSON
+ * object: `{"gates":[...],"why":"..."}`. Anything else - a crash, no JSON, a stage the item's chain
+ * does not owe - leaves the round owing its usual stages, which is what every round owed before
+ * anyone was asked. Deciding to review LESS has to be a decision, never a parse failure.
+ */
+export function commandFollowUpPlanner(spec: CommandSpec, fallbackCwd: string) {
+  return async (r: FollowUpPlanRequest): Promise<PortResult<FollowUpPlan>> => {
+    const ran = run(spec, ["plan-round", r.workId], fallbackCwd, {
+      ORG_ROUND: JSON.stringify({
+        workId: r.workId,
+        available: r.available,
+        usual: r.usual,
+        because: r.because,
+        roundsSoFar: r.roundsSoFar,
+        ...(r.lastTurnedBackBy === undefined ? {} : { lastTurnedBackBy: r.lastTurnedBackBy }),
+      }),
+      ORG_PLAN_AS: r.plannerHatId,
+    });
+    if (ran.error !== undefined) return { ok: false, reason: `the planner '${spec.command}' could not run: ${ran.error.message}` };
+    if (ran.status !== 0) return { ok: false, reason: `the planner exited ${String(ran.status)}: ${tail(ran.stderr)}` };
+    const out = lastJson(ran.stdout);
+    if (out === undefined) return { ok: false, reason: "the planner printed no plan" };
+    const gates = Array.isArray(out["gates"]) ? (out["gates"] as unknown[]).map((g) => String(g)) : undefined;
+    if (gates === undefined) return { ok: false, reason: "the plan named no stages - not even none, which would be a list" };
+    return { ok: true, value: { gates, why: String(out["why"] ?? "") }, evidence: [] };
   };
 }
 

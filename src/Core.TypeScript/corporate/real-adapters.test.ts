@@ -979,6 +979,83 @@ describe("AFTER THE HANDOFF: THE REQUEST SAYS WHAT THE ORGANIZATION CONFIGURED, 
     }
   }, 120_000);
 
+  test("A ROUND RUNS THE STAGES THE ORGANIZATION DECIDED IT OWES - and the usual ones when it decides nothing", async () => {
+    // MEASURED on agentic-tpm, 2026-09-12: a round answering one review comment ran the same two
+    // agent reviews as the original work - about thirty minutes of the most expensive model.
+    const repo = realRepo();
+    const git = (at: string, ...a: string[]) => execFileSync("git", a, { cwd: at, encoding: "utf-8" });
+    const inbox = realInbox();
+    const wt = mkdtempSync(join(tmpdir(), "zeta-plan-wt-"));
+    const scratch = mkdtempSync(join(tmpdir(), "zeta-plan-"));
+    const h = stubCounting(scratch);
+    const events: OrgEvent[] = [];
+    try {
+      const change = () => gitWorktreeChangeControl({ cwd: repo, baseBranch: "main", worktreeRoot: wt, handoff: { command: h.command, args: h.args } });
+      const noComment = { postComment: async () => ({ ok: true as const, value: {}, evidence: [] }) };
+      const base = { settings: [], changeRequests, describeChange: fullDescription, ...noComment, onEvent: (e: OrgEvent) => events.push(e) };
+      const first = await runAgainst(repo, inbox, { change: change() }, base);
+      const workId = first.changesHandedOff[0] as string;
+      const handed = foldHandedOffChanges(events);
+      const reviewed: string[] = [];
+      let asked: Record<string, unknown> | undefined;
+      // Each round brings a NEW comment: the same delivery twice is not news, and would raise nothing.
+      let note = 0;
+      const round = (over: Record<string, unknown>) => {
+        note += 1;
+        return runAgainst(repo, inbox, { change: change() }, {
+          ...base,
+          priorCascade: first.cascade,
+          alreadyHandedOff: new Set(handed.keys()),
+          handedOffChanges: handed,
+          actionItems: foldActionItems(events),
+          afterOpenDone: foldAfterOpen(events),
+          feedback: [{ deliveryId: "note-" + String(note), source: "gitlab", itemKind: "comment", summary: "rename the flag", author: "reviewer", branch: handed.get(workId)?.branch as string }],
+          defaultBase: "main",
+          verifyChange: async () => ({ ok: true as const, value: "green", evidence: [] }),
+          answer: async (r: AnswerRequest) => ({ ok: true as const, value: r.items.map((i) => ({ actionItemId: i.actionItemId, replyId: "note-9", resolved: true })), evidence: [] }),
+          reviewFollowUp: async (r: FollowUpReviewRequest) => {
+            reviewed.push(r.gate);
+            return { ok: true as const, value: { approved: true, reason: "fine" }, evidence: [] };
+          },
+          followUp: async (req: { items: readonly { actionItemId: string }[]; workdir?: string }) => {
+            writeFileSync(join(req.workdir as string, "note-" + String(note) + ".md"), "renamed" + String.fromCharCode(10));
+            git(req.workdir as string, "add", "-A");
+            git(req.workdir as string, "commit", "-q", "-m", "rename the flag");
+            return { ok: true as const, value: { decisions: req.items.map((i) => ({ actionItemId: i.actionItemId, outcome: "addressed" as const, how: "renamed it" })), syncWithTarget: false, summary: "s" }, evidence: [] };
+          },
+          ...over,
+        });
+      };
+
+      // DECIDED: one stage, and only that stage's reviewer is asked.
+      await round({
+        planFollowUp: async (r: Record<string, unknown>) => {
+          asked = r;
+          return { ok: true as const, value: { gates: ["implementation_review"], why: "a rename in one file; qa_uat judges behaviour and none changed" }, evidence: [] };
+        },
+      });
+      expect(reviewed).toEqual(["implementation_review"]);
+      // The decision was made from what the round is actually about.
+      expect((asked?.["because"] as { kind: string }[])[0]?.kind).toBe("comment");
+      expect(asked?.["usual"]).toEqual(["implementation_review", "qa_uat"]);
+      expect((asked?.["available"] as string[]).length).toBeGreaterThan(2);
+      // And it is on the record, with its reason, for the next round and for a person.
+      expect(events.some((e) => (e.decision ?? "").includes("this round owes implementation_review") && (e.decision ?? "").includes("qa_uat judges behaviour"))).toBe(true);
+
+      // NOT DECIDED: the round owes what it always did.
+      reviewed.length = 0;
+      await round({});
+      expect(reviewed).toEqual(["implementation_review", "qa_uat"]);
+
+      // REFUSED: likewise - reviewing less is a decision, never a failure to answer.
+      reviewed.length = 0;
+      await round({ planFollowUp: async () => ({ ok: false as const, reason: "the planner exited 2" }) });
+      expect(reviewed).toEqual(["implementation_review", "qa_uat"]);
+    } finally {
+      for (const d of [repo, inbox, wt, scratch]) rmSync(d, { recursive: true, force: true });
+    }
+  }, 240_000);
+
   test("RED CODE IS NOT REVIEWED: the suite runs first, and a failing one costs no reviewer at all", async () => {
     // MEASURED on agentic-tpm !164, 2026-09-12: two reviewers spent 35 minutes approving 8c2767c4,
     // and the verifier then found new failures in workflowStage.test.ts and refused the push. The

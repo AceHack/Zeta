@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import { acceptedDecisions, answersOwed, correlateFeedback, followUpOrder, keepRedPipelinesOpen, redPipelinesToReopen, type FeedbackDelivery } from "./change-followup";
+import { acceptedDecisions, answersOwed, correlateFeedback, followUpOrder, gatesForRound, keepRedPipelinesOpen, redPipelinesToReopen, type FeedbackDelivery } from "./change-followup";
 import { foldActionItems, openActionItems, type ActionItem, type HandedOffChange } from "./org-fold";
 import type { OrgEvent } from "./org-event";
 
@@ -245,5 +245,40 @@ describe("A PIPELINE STILL REPORTED RED COMES BACK OPEN", () => {
     expect(redPipelinesToReopen([comment], items([settledComment]), "until_green")).toEqual([]);
     expect(redPipelinesToReopen([match], items([declined]), "flag_only")).toEqual([]);
     expect(redPipelinesToReopen([match], items([declined]), undefined)).toEqual([]);
+  });
+});
+
+describe("WHAT A ROUND OWES IS DECIDED, AND ONLY WITHIN WHAT THE CHAIN OWES", () => {
+  const request = {
+    workId: "task-40",
+    plannerHatId: "planner",
+    available: ["reproduction", "implementation_review", "qa_uat", "release_readiness"],
+    usual: ["implementation_review", "qa_uat"],
+    because: [{ kind: "comment", summary: "rename the flag" }],
+    roundsSoFar: 1,
+  };
+
+  test("a plan naming stages the chain owes is what the round owes, with its reason", () => {
+    const out = gatesForRound({ gates: ["implementation_review"], why: "a rename in one file; qa_uat judges behaviour and none changed" }, request);
+    expect(out.gates).toEqual(["implementation_review"]);
+    expect(out.why).toContain("a rename in one file");
+  });
+
+  test("NOTHING is a real answer - the repository's own tests still run either way", () => {
+    expect(gatesForRound({ gates: [], why: "the answer is in the description; no code changed" }, request).gates).toEqual([]);
+  });
+
+  test("a round that keeps coming back may owe MORE than usual", () => {
+    const out = gatesForRound({ gates: ["reproduction", "implementation_review", "qa_uat"], why: "turned back twice on the same test; reproduce it first" }, { ...request, roundsSoFar: 3, lastTurnedBackBy: "qa_uat: the test passes with the fix removed" });
+    expect(out.gates).toEqual(["reproduction", "implementation_review", "qa_uat"]);
+  });
+
+  test("REVIEWING LESS IS A DECISION, NEVER A PARSE FAILURE: no plan, or one naming a stage nobody holds, owes the usual stages", () => {
+    expect(gatesForRound(undefined, request).gates).toEqual(request.usual);
+    expect(gatesForRound(undefined, request).why).toContain("nobody decided");
+    const invented = gatesForRound({ gates: ["security_review"], why: "sounds important" }, request);
+    expect(invented.gates).toEqual(request.usual);
+    expect(invented.why).toContain("security_review");
+    expect(invented.why).toContain("does not owe");
   });
 });

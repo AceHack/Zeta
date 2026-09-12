@@ -123,9 +123,12 @@ import {
   answersOwed,
   correlateFeedback,
   followUpOrder,
+  gatesForRound,
   keepRedPipelinesOpen,
   redPipelinesToReopen,
   type AnswerCheck,
+  type FollowUpPlan,
+  type FollowUpPlanRequest,
   type AnswerCheckRequest,
   type AnswerRequest,
   type AnswerResult,
@@ -407,6 +410,12 @@ export interface OrgRuntimeDeps extends HumanCheckpointDeps {
    * sessions overlap; the repository's own test suite still never does (see `oneAtATime`).
    */
   readonly maxParallel?: number;
+  /**
+   * Decides which review stages a FOLLOW-UP ROUND owes - see `FollowUpPlanRequest`. Absent: every
+   * round owes the same post-work stages the original work did, which is what every round did before
+   * anyone was asked.
+   */
+  readonly planFollowUp?: (r: FollowUpPlanRequest) => Promise<PortResult<FollowUpPlan>>;
   /**
    * Reviews a follow-up's commits at one of the item's post-work gates before they are pushed - the
    * same review the original work passed. Absent: follow-up code is verified but not reviewed.
@@ -4292,9 +4301,38 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
       if (moved && verifyFailed === undefined && deps.reviewFollowUp !== undefined && afterRev?.ok === true) {
         const chain = node === undefined ? [] : chainOf(node);
         const from = lastShown ?? (before?.ok === true ? before.value.commit : undefined);
-        for (const gate of [GateKind.ImplementationReview, GateKind.QaUat].filter((g) => chain.includes(g))) {
+        // ── WHAT THIS ROUND OWES IS DECIDED, NOT ASSUMED ────────────────────────────────────────
+        // A round that answers one review comment used to owe the same two agent reviews as the
+        // original work - about thirty minutes of the most expensive model, on a three-line change.
+        // The organization is asked which stages this round needs, and may add one when a round
+        // keeps coming back. Refused or absent, it owes the usual ones: reviewing LESS must be a
+        // decision somebody made, never a parse failure.
+        const usual = [GateKind.ImplementationReview, GateKind.QaUat].filter((g) => chain.includes(g)).map(String);
+        const planRequest: FollowUpPlanRequest = {
+          workId,
+          plannerHatId: node?.ownerHatId ?? hatId,
+          available: chain.map(String),
+          usual,
+          because: items.map((i) => ({ kind: i.itemKind, summary: i.summary.split(/\s+/).join(" ").slice(0, 200) })),
+          roundsSoFar: deps.afterUpdateDone?.get(workId)?.rounds ?? 0,
+          ...((): { lastTurnedBackBy?: string } => {
+            const back = items.find((i) => i.reopened !== undefined)?.reopened?.why;
+            return back === undefined ? {} : { lastTurnedBackBy: back.split(/s+/).join(" ").slice(0, 300) };
+          })(),
+        };
+        const planned = deps.planFollowUp === undefined ? undefined : await deps.planFollowUp(planRequest);
+        if (planned !== undefined && !planned.ok) refused.push(`the stages for this round could not be decided (${planned.reason}), so it owes the usual ones`);
+        const decided = gatesForRound(planned?.ok === true ? planned.value : undefined, planRequest);
+        note({
+          kind: OrgEventKind.ChangeProjected,
+          subjectId: workId,
+          actorHatId: planRequest.plannerHatId,
+          decision: `this round owes ${decided.gates.length === 0 ? "no review stage beyond the tests" : decided.gates.join(", ")}: ${decided.why.split(/\s+/).join(" ").slice(0, 300)}`,
+          atMs: warmedAt,
+        });
+        for (const gate of decided.gates) {
           if (from === undefined) break;
-          const reviewer = gateOwners(deps.chart, gate).find((h) => h.id !== hatId);
+          const reviewer = gateOwners(deps.chart, gate as GateKind).find((h) => h.id !== hatId);
           if (reviewer === undefined) {
             refused.push(`nobody but ${hatId} may review ${String(gate)} on ${workId}'s follow-up, so it was not pushed`);
             reviewRejected = `no independent reviewer for ${String(gate)}`;

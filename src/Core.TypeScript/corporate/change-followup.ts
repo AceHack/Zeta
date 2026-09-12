@@ -368,6 +368,63 @@ export interface FollowUpRequest {
   readonly pipelines?: PipelinePolicy;
 }
 
+/**
+ * WHAT THIS ROUND OWES, decided per round rather than fixed.
+ *
+ * MEASURED on agentic-tpm, 2026-09-12: every follow-up round - including one that answered a single
+ * review comment - ran the item's whole post-work review chain. Two independent agent reviews, ~30
+ * minutes of the most expensive model, on a round whose change was three lines. The chain is right
+ * for the ORIGINAL work; a round that answers a comment, or one that chases a red pipeline, is not
+ * the original work.
+ *
+ * So the organization is asked, per round, which of the stages the chain owes this round actually
+ * needs - and may ADD one it did not run before when a round keeps coming back. It is asked; it is
+ * never told by this register, which knows nothing about what any particular change is worth.
+ */
+export interface FollowUpPlanRequest {
+  readonly workId: string;
+  /** The hat deciding - the one that holds the work item's plan. */
+  readonly plannerHatId: string;
+  /** Every stage this item's chain owes. The plan may name any of these and nothing else. */
+  readonly available: readonly string[];
+  /** What this round would run if nobody decided: the post-work review stages. */
+  readonly usual: readonly string[];
+  /** What brought this round about, by kind - comment, pipeline_failed, target_moved, and so on. */
+  readonly because: readonly { readonly kind: string; readonly summary: string }[];
+  /** Rounds already spent on this request, and what turned the last one back (nothing: it was not). */
+  readonly roundsSoFar: number;
+  readonly lastTurnedBackBy?: string;
+  /** How much the branch has changed since people last saw it, when it can be measured. */
+  readonly changedFiles?: number;
+  readonly changedLines?: number;
+}
+
+export interface FollowUpPlan {
+  /** The stages this round must pass. Empty is a real answer: nothing beyond the tests. */
+  readonly gates: readonly string[];
+  /** Why these and not the others - recorded, and read by the next round. */
+  readonly why: string;
+}
+
+/**
+ * The plan, held to what the item's chain actually owes.
+ *
+ * A planner that names a stage the chain does not owe is naming a stage nobody here holds - and one
+ * that says nothing is answering a different question than the one asked. Both fall back to the
+ * usual stages, saying so, because a round that reviews LESS than the organization normally would
+ * must be a decision somebody made, never a parse failure.
+ */
+export function gatesForRound(plan: FollowUpPlan | undefined, request: FollowUpPlanRequest): { readonly gates: readonly string[]; readonly why: string } {
+  if (plan === undefined) return { gates: request.usual, why: "nobody decided which stages this round owes, so it owes the usual ones" };
+  const allowed = new Set(request.available);
+  const named = plan.gates.filter((g) => allowed.has(g));
+  const refused = plan.gates.filter((g) => !allowed.has(g));
+  if (refused.length > 0) {
+    return { gates: request.usual, why: `the plan named ${refused.join(", ")}, which this item's chain does not owe - so this round owes the usual stages` };
+  }
+  return { gates: named, why: plan.why.trim() === "" ? "decided, with no reason given" : plan.why };
+}
+
 export interface FollowUpOutcome {
   readonly decisions: readonly ItemDecision[];
   /** The organization wants the change brought level with its target. Honoured only where syncing is configured. */
