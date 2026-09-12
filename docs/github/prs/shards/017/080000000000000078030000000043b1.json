@@ -1,0 +1,12 @@
+{
+  "pr_number": 17329,
+  "archive_path": "docs/history/pr-reviews/2026/09/12/PR-17329-feat-core-dualscore-belief-pair-the-four-corners-softvalue-s-sum-to-1-cannot-hol.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-12T05:32:03.220Z",
+  "schema_version": "v1",
+  "commit_sha": "177409bc6e28cc53e498de93366b374f851c83e3",
+  "title": "feat(core): DualScore belief pair — the four corners SoftValue's sum-to-1 cannot hold",
+  "state": "MERGED",
+  "merged_at": "2026-09-12T05:31:18Z",
+  "head_ref": "shadow/softvalue-preserves-four-corners"
+}
