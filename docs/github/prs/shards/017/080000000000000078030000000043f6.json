@@ -1,0 +1,12 @@
+{
+  "pr_number": 17398,
+  "archive_path": "docs/history/pr-reviews/2026/09/13/PR-17398-docs-ferry-topological-necessities-arxiv-2609-11014-read-the-paper-open-the-traj.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-13T19:23:16.558Z",
+  "schema_version": "v1",
+  "commit_sha": "2417e0165acfc61bf5c5ff2071eb1d5bdebbf7c9",
+  "title": "docs: ferry topological-necessities (arXiv:2609.11014), read the paper, open the trajectory",
+  "state": "MERGED",
+  "merged_at": "2026-09-13T19:22:25Z",
+  "head_ref": "ferry/topological-intelligence"
+}

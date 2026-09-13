@@ -1,0 +1,12 @@
+{
+  "pr_number": 17399,
+  "archive_path": "docs/history/pr-reviews/2026/09/13/PR-17399-fix-core-macwilliams-invariance-divided-by-n-so-the-check-could-never-pass.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-13T19:38:00.264Z",
+  "schema_version": "v1",
+  "commit_sha": "8844f9dc2dd551921147eebab4ba45c108e978aa",
+  "title": "fix(core): MacWilliams invariance divided by n, so the check could never pass",
+  "state": "MERGED",
+  "merged_at": "2026-09-13T19:37:14Z",
+  "head_ref": "fix/macwilliams-invariance-normalization"
+}
