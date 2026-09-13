@@ -1,0 +1,14 @@
+{
+  "id": "080d04cce8527010a0130008fb06d1dd",
+  "at": "2026-09-13T07:13:20.974Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M2CST2JD087G0R003ZRNYNP",
+    "type": "bug",
+    "title": "54 of 55 bun-version keys disagreed with mise.lock and gate.yml itself ran bun-version latest",
+    "slug": "54-of-55-bun-version-keys-disagreed-with-mise-lock-and-gate",
+    "priority": "P2",
+    "filename": "081M2CST2JD087G0R003ZRNYNP-54-of-55-bun-version-keys-disagreed-with-mise-lock-and-gate.md"
+  }
+}

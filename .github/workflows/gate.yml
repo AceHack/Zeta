@@ -347,7 +347,7 @@ jobs:
         if: github.event_name == 'pull_request'
         uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
         with:
-          bun-version: latest
+          bun-version: "1.3.14"
 
       - id: detect
         if: github.event_name == 'pull_request'
@@ -1554,7 +1554,7 @@ jobs:
         id: setup_bun
         uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
         with:
-          bun-version: "1.3.13"
+          bun-version: "1.3.14"
 
       - name: Install JavaScript dependencies from the locked graph
         id: install_deps
@@ -2250,7 +2250,7 @@ jobs:
       - name: Setup pinned Bun
         uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
         with:
-          bun-version: "1.3.13"
+          bun-version: "1.3.14"
 
       - name: Install JavaScript dependencies from the locked graph
         run: bun install --frozen-lockfile
@@ -2302,7 +2302,7 @@ jobs:
       - name: Setup pinned Bun
         uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
         with:
-          bun-version: "1.3.13"
+          bun-version: "1.3.14"
 
       # A probe that fails is UNKNOWN, never a negative result. If the base commit
       # cannot be fetched, this says so and the composition is still reported without a
@@ -3114,7 +3114,7 @@ jobs:
       - name: Setup pinned Bun
         uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
         with:
-          bun-version: "1.3.13"
+          bun-version: "1.3.14"
 
       - name: Install JavaScript dependencies from the locked graph
         run: bun install --frozen-lockfile
@@ -3176,7 +3176,7 @@ jobs:
       - name: Setup pinned Bun
         uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
         with:
-          bun-version: "1.3.13"
+          bun-version: "1.3.14"
 
       - name: Install npm devDependencies (typescript@6.0.3 + eslint stack)
         # tsc lives in node_modules/.bin via the typescript devDep
@@ -3258,7 +3258,7 @@ jobs:
       - name: Setup pinned Bun
         uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
         with:
-          bun-version: "1.3.13"
+          bun-version: "1.3.14"
 
       - name: Install root devDependencies (the eslint stack)
         run: bun install --frozen-lockfile
@@ -3313,7 +3313,7 @@ jobs:
       - name: Setup pinned Bun
         uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
         with:
-          bun-version: "1.3.13"
+          bun-version: "1.3.14"
 
       - name: Install root dependencies (the builder's imports)
         run: bun install --frozen-lockfile
@@ -3382,7 +3382,7 @@ jobs:
       - name: Setup pinned Bun
         uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
         with:
-          bun-version: "1.3.13"
+          bun-version: "1.3.14"
 
       - name: Install, typecheck and build under the site's own packageManager pin
         working-directory: src/Renderers/website
@@ -3989,6 +3989,7 @@ jobs:
           - push-without-rebase
           - skip-token-cannot-land
           - dotnet-pin-parity
+          - bun-pin-parity
           - dotnet-band-unity
           - argocd-pin-parity
           - committed-chart-credentials
@@ -4030,7 +4031,7 @@ jobs:
       - name: Setup pinned Bun
         uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
         with:
-          bun-version: "1.3.13"
+          bun-version: "1.3.14"
 
       - name: Restore apt archives (byte-lock-oracles only -- it is the one leg that installs)
         # Paired with the install.sh step below and gated identically. 561 MB of .deb against a
@@ -4213,7 +4214,7 @@ jobs:
       - name: Setup pinned Bun
         uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
         with:
-          bun-version: "1.3.13"
+          bun-version: "1.3.14"
 
       - name: Install JavaScript dependencies from the locked graph
         run: bun install --frozen-lockfile
