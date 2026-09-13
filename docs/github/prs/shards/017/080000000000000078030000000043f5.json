@@ -1,0 +1,12 @@
+{
+  "pr_number": 17397,
+  "archive_path": "docs/history/pr-reviews/2026/09/13/PR-17397-fix-security-enforce-the-premise-under-scorecard-alert-24-sast-coverage-of-main.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-13T19:22:55.388Z",
+  "schema_version": "v1",
+  "commit_sha": "c1eb14a661b15bdb21054fa071a7b86527515446",
+  "title": "fix(security): enforce the premise under Scorecard alert #24 (SAST coverage of main)",
+  "state": "MERGED",
+  "merged_at": "2026-09-13T19:22:13Z",
+  "head_ref": "fix/sast-coverage-premise"
+}
