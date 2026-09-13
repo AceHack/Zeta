@@ -41,6 +41,30 @@ describe("lock parsing", () => {
   });
 });
 
+describe(".mise.toml range parsing", () => {
+  // The code-quality review found `parseMiseBunRange` imported and never called. The
+  // defect that hides behind an unused import is an UNTESTED EXPORT in a security check
+  // -- deleting the import would have silenced the reviewer and kept the gap. These are
+  // the tests it was missing.
+  test("reads the bun pin", () => {
+    expect(parseMiseBunRange('node = "22"\nbun = "1.3"\n')).toBe("1.3");
+  });
+
+  // Forcing case: an unanchored match would return the FIRST quoted value on any line
+  // mentioning bun, including a commented-out or differently-named pin.
+  test("does not read a commented-out pin", () => {
+    expect(parseMiseBunRange('# bun = "9.9.9"\nbun = "1.3"\n')).toBe("1.3");
+  });
+
+  test("does not match a different tool whose name ends in bun", () => {
+    expect(parseMiseBunRange('sunbun = "0.1"\n')).toBeNull();
+  });
+
+  test("absent pin is null, not an empty string", () => {
+    expect(parseMiseBunRange('node = "22"\n')).toBeNull();
+  });
+});
+
 describe("range satisfaction", () => {
   test('"1.3" is satisfied by 1.3.14', () => expect(satisfies("1.3", "1.3.14")).toBe(true));
   test('"1.4" is NOT satisfied by 1.3.14', () => expect(satisfies("1.4", "1.3.14")).toBe(false));
