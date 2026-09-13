@@ -1,0 +1,14 @@
+{
+  "id": "080d04cb1f9c2010a0130008d17a76d2",
+  "at": "2026-09-13T06:10:59.588Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M2CP7WW2087G0R0004Q1TN2",
+    "type": "task",
+    "title": "Scorecard alert 254 named three vulnerabilities and only one had an enforced dismissal premise",
+    "slug": "scorecard-alert-254-named-three-vulnerabilities-and-only-one",
+    "priority": "P2",
+    "filename": "081M2CP7WW2087G0R0004Q1TN2-scorecard-alert-254-named-three-vulnerabilities-and-only-one.md"
+  }
+}

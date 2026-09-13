@@ -2704,6 +2704,16 @@ jobs:
       - name: mathjs dismissal premise still holds (alert #15)
         run: bun src/Core.TypeScript/hygiene/lint-mathjs-dismissal-premise.ts
 
+      # The other TWO items in Scorecard alert #254 ("3 existing vulnerabilities"). Neither
+      # had a check, and both are dismissible for reasons that are one bump from becoming
+      # false: `accelerate` is pinned ABOVE PYSEC-2026-3804's own last_affected (1.14.0), and
+      # GO-2026-5932 is scoped to the `openpgp` SUBPACKAGE of an indirect x/crypto requirement
+      # that nothing in this tree imports. Both are true today and neither would announce it
+      # stopping. mathjs, the third item, is checked by the step above -- one premise, one
+      # checker.
+      - name: Scorecard #254 vulnerability premises still hold (accelerate, x/crypto/openpgp)
+        run: bun src/Core.TypeScript/hygiene/lint-scorecard-vulnerability-premises.ts
+
       # An `overrides` entry is a SECURITY CONTROL written as a version string --
       # it is how this tree carries a transitive dependency past a CVE its own
       # parent will not release. Nothing checked that it took effect. Measured
@@ -2752,6 +2762,7 @@ jobs:
             src/Core.TypeScript/hygiene/lint-clone-at-tag-is-sufficient.test.ts \
             src/Core.TypeScript/hygiene/lint-nixos-rebuild-needs-impure.test.ts \
             src/Core.TypeScript/hygiene/lint-mathjs-dismissal-premise.test.ts \
+            src/Core.TypeScript/hygiene/lint-scorecard-vulnerability-premises.test.ts \
             src/Core.TypeScript/hygiene/lint-rolling-exceptions.test.ts \
             src/Core.TypeScript/hygiene/lint-overrides-take-effect.test.ts \
             src/Core.TypeScript/ace/setup-realizers/rolling-exception.test.ts \
