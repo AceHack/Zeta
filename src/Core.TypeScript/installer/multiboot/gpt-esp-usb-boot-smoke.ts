@@ -57,7 +57,7 @@ import {
 } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
-import { executeAssembleFatImage, planAssembleFatImage, planQemuUeFiBootArgs } from "./assemble.ts";
+import { executeAssembleFatImage, planAssembleFatImage, resolvedArtifactsFromPlan, planQemuUeFiBootArgs } from "./assemble.ts";
 import { planMultibootUsb } from "./plan.ts";
 import {
   ESP_TYPE_GUID,
@@ -303,16 +303,16 @@ function buildEspBytes(input: {
     return { ok: false, error: planned.error };
   }
 
+  // DERIVED FROM THE PLAN, NEVER RESTATED. `ResolvedArtifact.imagePath` is documented
+  // as "On-image POSIX path FROM THE PLAN", and `planAssembleFatImage` refuses an
+  // artifact whose path disagrees with its plan item. Writing that path out here made it
+  // a SECOND declaration of a derived value, and #17228 renamed the two halves
+  // differently -- leaving this lane red on `main` since 2026-09-10, failing in 0.5s at
+  // plan validation without ever reaching QEMU. Taking the plan's own value cannot
+  // disagree with the plan.
   const assembled = planAssembleFatImage({
     plan: planned.plan,
-    artifacts: [
-      {
-        name: "placeholder-not-the-installer",
-        imagePath: "/boot/iso/not-an-installer-placeholder.bin",
-        localPath: input.isoPath,
-        sizeBytes: 64,
-      },
-    ],
+    artifacts: resolvedArtifactsFromPlan(planned.plan.items, () => input.isoPath, 64),
     outputImagePath: outImg,
     imageSizeBytes: ESP_SIZE_BYTES,
     stagingDir,

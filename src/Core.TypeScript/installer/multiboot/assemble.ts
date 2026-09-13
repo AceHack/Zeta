@@ -47,6 +47,36 @@ export type ResolvedArtifact = {
   readonly sizeBytes: number;
 };
 
+/**
+ * Build `ResolvedArtifact`s by TAKING each item's `imagePath` from the plan, never by
+ * restating it.
+ *
+ * `ResolvedArtifact.imagePath` is documented above as "On-image POSIX path FROM THE PLAN",
+ * and `planAssembleFatImage` refuses any artifact whose path disagrees with the plan item
+ * of the same name. Both halves were already right; what was missing is a way to CONSTRUCT
+ * an artifact that cannot disagree. Callers wrote the path out by hand, which turned a
+ * derived value into a second declaration -- and #17228 then renamed the two halves
+ * differently ("placeholder-not-the-installer" vs "not-an-installer-placeholder.bin"),
+ * leaving `multiboot-qemu-uefi-smoke` red on `main` from 2026-09-10. It failed in 0.5s at
+ * plan validation, never reaching QEMU, while every unit test stayed green -- the mismatch
+ * lived only in a runner that needs OVMF to execute.
+ *
+ * `localPathFor` receives the plan item so a caller can place bytes wherever it likes; the
+ * name and on-image path are not the caller's to choose.
+ */
+export function resolvedArtifactsFromPlan(
+  items: readonly { readonly name: string; readonly imagePath: string }[],
+  localPathFor: (item: { readonly name: string; readonly imagePath: string }) => string,
+  sizeBytes: number,
+): readonly ResolvedArtifact[] {
+  return items.map((item) => ({
+    name: item.name,
+    imagePath: item.imagePath,
+    localPath: localPathFor(item),
+    sizeBytes,
+  }));
+}
+
 export type PlanAssembleFatImageInput = {
   readonly plan: MultibootPlan;
   readonly artifacts: readonly ResolvedArtifact[];

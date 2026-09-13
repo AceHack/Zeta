@@ -1,6 +1,8 @@
 import { describe, expect, it, test } from "bun:test";
 import { readFileSync } from "node:fs";
-import { planQemuUeFiBootArgs } from "./assemble.ts";
+import type { ResolvedArtifact } from "./assemble.ts";
+import { planAssembleFatImage, planQemuUeFiBootArgs, resolvedArtifactsFromPlan } from "./assemble.ts";
+import { planMultibootUsb } from "./plan.ts";
 import { QEMU_USB_TEST_SERIAL } from "../qemu-usb-storage.ts";
 import {
   UEFI_MENU_MARKER,
@@ -183,5 +185,88 @@ describe("the placeholder must not borrow the real installer's name", () => {
   test("the menu entry says placeholder", () => {
     expect(smokeGrubCfg()).toContain('menuentry "placeholder-not-the-installer"');
     expect(smokeGrubCfg()).not.toContain("zeta-installer");
+  });
+});
+
+// ─────────────────────────────────────────────────────────────────────────────
+// THE LANE WAS RED ON `main` FOR THREE DAYS AND EVERY TEST IN THIS FILE WAS GREEN.
+//
+// #17228 renamed one coupled value into two different names -- the plan entry to
+// "placeholder-not-the-installer" and the artifact's on-image path to
+// "/boot/iso/not-an-installer-placeholder.bin" -- while `plan.ts` derives that path from
+// the entry NAME as `/boot/iso/${name}.iso`. `planAssembleFatImage` refused the
+// disagreement correctly, in 0.5s, before QEMU was ever started:
+//
+//   artifact "placeholder-not-the-installer" imagePath mismatch:
+//     plan /boot/iso/placeholder-not-the-installer.iso
+//      vs  /boot/iso/not-an-installer-placeholder.bin
+//
+// Nothing here caught it because the mismatch lived in `runUefiMenuSmoke`, which needs
+// OVMF and grub-mkimage to execute and so is only ever exercised by the CI lane itself.
+// These tests reach the same plan/artifact seam WITHOUT any tooling, so the next rename
+// fails here in milliseconds instead of on `main` for three days.
+describe("FALSIFIER: the smoke's artifacts agree with the smoke's plan", () => {
+  const SMOKE_ENTRY = "placeholder-not-the-installer";
+
+  const smokePlan = () =>
+    planMultibootUsb({
+      entries: [{ name: SMOKE_ENTRY, kind: "grub-iso-local", flakeAttr: "nix:.#installer-iso" }],
+    });
+
+  const assembleWith = (artifacts: readonly ResolvedArtifact[]) => {
+    const planned = smokePlan();
+    if (!planned.ok) throw new Error(`plan failed: ${planned.error}`);
+    return planAssembleFatImage({
+      plan: planned.plan,
+      artifacts,
+      outputImagePath: "/tmp/zeta-smoke-out.img",
+      imageSizeBytes: 8 * 1024 * 1024,
+      stagingDir: "/tmp/zeta-smoke-stage",
+      grubCfgContent: smokeGrubCfg(),
+    });
+  };
+
+  test("artifacts built from the plan assemble cleanly", () => {
+    const planned = smokePlan();
+    expect(planned.ok).toBe(true);
+    if (!planned.ok) return;
+    const result = assembleWith(
+      resolvedArtifactsFromPlan(planned.plan.items, () => "/tmp/zeta-smoke-payload.bin", 64),
+    );
+    expect(result.ok).toBe(true);
+  });
+
+  // The exact regression, pinned. Without the derived construction this is what the lane
+  // did, and it is what `main` has been doing since 2026-09-10.
+  test("a hand-written imagePath that disagrees with the plan is REFUSED", () => {
+    const result = assembleWith([
+      {
+        name: SMOKE_ENTRY,
+        imagePath: "/boot/iso/not-an-installer-placeholder.bin",
+        localPath: "/tmp/zeta-smoke-payload.bin",
+        sizeBytes: 64,
+      },
+    ]);
+    expect(result.ok).toBe(false);
+    if (result.ok) return;
+    expect(result.error).toContain("imagePath mismatch");
+  });
+
+  // Guards the constructor itself: it must COPY the plan's path, not recompute one.
+  test("resolvedArtifactsFromPlan takes name and imagePath from the plan", () => {
+    const items = [{ name: "alpha", imagePath: "/boot/iso/alpha.iso" }];
+    const [a] = resolvedArtifactsFromPlan(items, () => "/host/alpha.bin", 64);
+    expect(a?.name).toBe("alpha");
+    expect(a?.imagePath).toBe("/boot/iso/alpha.iso");
+    expect(a?.localPath).toBe("/host/alpha.bin");
+  });
+
+  test("resolvedArtifactsFromPlan carries every plan item, not just the first", () => {
+    const items = [
+      { name: "alpha", imagePath: "/boot/iso/alpha.iso" },
+      { name: "beta", imagePath: "/boot/iso/beta.iso" },
+    ];
+    const out = resolvedArtifactsFromPlan(items, (i) => `/host/${i.name}.bin`, 64);
+    expect(out.map((a) => a.imagePath)).toEqual(["/boot/iso/alpha.iso", "/boot/iso/beta.iso"]);
   });
 });
