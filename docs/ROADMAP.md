@@ -18,6 +18,39 @@ resource units, component ablations and current external benchmark candidates.
 Work item `081M1Z63YMC087G0R003N5FH9X`. This is control-plane research; the
 existing compiled-controller registration remains frozen and separately gated.
 
+## Exploratory lane: topological task invariants (opened 2026-09-13, unstarted)
+
+Aaron on a talk about **arXiv:2609.11014** (*Topological Necessities: Mechanism-Invariant
+Strategic Subgoals for Cross-Embodiment Goal-Conditioned Control*): *"this is very similar to what
+we are trying to do."* The overlap is structural, not thematic — the paper computes a **winding
+number** to record which side of a hole a trajectory took, and
+`.claude/rules/anti-babel-preserve-reconcilability.md` already carries that object as a
+discipline: *both branches held, each with its path recorded* (monodromy). **We state it; they
+compute it.**
+
+**The paper is read** (Hao Shi, Xi Li, arXiv:2609.11014v1, 60pp incl. proofs); what stays `toy`
+is every claim about what it implies for Zeta. Two findings worth the roadmap's attention: its
+Theorem T1 converts the Eikonal constraint *from a regression target into an identity* by
+computing the geodesic instead of fitting it — the same **derive-don't-restate** move behind three
+CI fixes landed 2026-09-13 — and its winding-number route lock, the computed form of our monodromy
+clause, delivers **zero route switches and no measured success-rate gain**, so we should not
+expect a performance win from formalising ours. Trajectory:
+[`docs/trajectories/topological-task-invariants/RESUME.md`](trajectories/topological-task-invariants/RESUME.md).
+Ferry: `docs/ip-questionable/2026-09-13-topological-intelligence-persistent-homology-ai-planning-transcript.md`.
+**The biggest difference is the objective, not the method** (Aaron): their goal is
+*individual* — one goal set, one deploying executor — while ours is *across most society
+members*: mutual empowerment, and dependency injection from higher- to lower-intelligence
+models. Their transfer axis is LATERAL (same task, different embodiment); ours is VERTICAL
+(down a capability gradient), which is the superagent definition. What transfers is their
+**construction** — a carrier built from many members' traces, an invariant "belonging to none
+of them", frozen and injected into a consumer that did not produce it, measurably lifting it
+(96.1 vs 85.3). What does **not** transfer is the objective: eikonal shells measure distance to
+one goal, and mutual empowerment has no such target. Whether that objective admits a progress
+coordinate at all may have to be answered before any of this applies.
+
+Work item `081M2DYZQQN087G0R000K24MTE`. Closes on a measured invariant or a written
+does-not-transfer finding — not on "interesting".
+
 ## North Star — the git-native database
 
 A relativistic git-native database: a **reliable data plane** (storage + read/write over git), a

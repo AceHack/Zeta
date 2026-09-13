@@ -1,0 +1,14 @@
+{
+  "id": "080d04df7ef7b010a01300088fbdedba",
+  "at": "2026-09-13T18:03:03.798Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M2DYZQQN087G0R000K24MTE",
+    "type": "task",
+    "title": "Topological task invariants: read arXiv 2609.11014 and test whether homotopy-class route memory is computable over our own trajectories",
+    "slug": "topological-task-invariants-read-arxiv-2609-11014-and-test-w",
+    "priority": "P2",
+    "filename": "081M2DYZQQN087G0R000K24MTE-topological-task-invariants-read-arxiv-2609-11014-and-test-w.md"
+  }
+}
