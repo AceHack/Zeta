@@ -478,6 +478,22 @@ export const CROSS_VERIFY_AUDITS: readonly CrossVerifyAudit[] = [
     command: "bun src/Core.TypeScript/hygiene/audit-dotnet-pin-parity.ts",
   },
 
+  // THE SAME SHAPE FOR BUN, which had no checker at all. MEASURED 2026-09-13: of 55
+  // `bun-version:` keys under `.github/`, exactly ONE matched `mise.lock`'s resolved
+  // 1.3.14. The other 54 were `latest` (32), a stale exact `1.3.13` (13), or the range
+  // `1.3` (9) -- so CI ran at least three different bun versions depending on which
+  // workflow you landed in, and `gate.yml` itself carried a `latest`. `latest` is the
+  // sharp one: it is not a loose pin but an UNDECLARED ENTROPY CHANNEL (manifesto §13),
+  // since the toolchain moves with no commit and a green run cannot be attributed to the
+  // source it claims to test. The lock is the referent rather than `.mise.toml` because
+  // `.mise.toml` says `bun = "1.3"`, a range -- the same reason the dotnet audit above
+  // refuses a range as a canonical source.
+  {
+    id: "bun-pin-parity",
+    title: "bun pin declared once (mise.lock canonical, every workflow restates)",
+    command: "bun src/Core.TypeScript/hygiene/audit-bun-pin-parity.ts",
+  },
+
   // THE PIN'S CONSUMERS, which the entry above does not reach. `audit-dotnet-pin-parity`
   // holds `.mise.toml` and `global.json` equal and is correct about those two files. It
   // says nothing about the places that SPEND the pin. MEASURED 2026-09-09: 42 projects on
