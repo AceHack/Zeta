@@ -4945,6 +4945,7 @@ jobs:
             src/Core.TypeScript/ci/drift-loud.ts
             src/Core.TypeScript/ci/verdict-drought.ts
             src/Core.TypeScript/ci/workflow-enablement.ts
+            src/Core.TypeScript/hygiene/audit-sast-covers-main.ts
             src/Core.TypeScript/io/safe-io.ts
             registry/workflow-enablement.json
             data/platform-drift.json
@@ -5045,3 +5046,20 @@ jobs:
           REPO: ${{ github.repository }}
         run: |
           bun src/Core.TypeScript/ci/workflow-enablement.ts --repo "$REPO"
+
+      # THE PREMISE UNDER SCORECARD ALERT #24, checked rather than argued. The alert is
+      # TRUE -- CodeQL runs per PUSH, not per COMMIT, so intermediate commits inside a
+      # multi-commit PR are never scanned (measured 2026-09-13: PR #17341, 10 commits,
+      # 4 scanned). It is not a hole in `main`, because this repo squash-merges and those
+      # commits are discarded at merge. That reasoning is only worth anything while
+      # "every commit that LANDS is scanned" stays true, which nothing checked. This does.
+      #
+      # Drift tier on purpose: it reads the forge over the network, so it cannot be a floor
+      # check, and a network failure must not read as a coverage failure.
+      - name: SAST covers every commit that landed on main (Scorecard #24 premise)
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+        run: |
+          bun src/Core.TypeScript/hygiene/audit-sast-covers-main.ts --window 30

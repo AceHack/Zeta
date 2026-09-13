@@ -1,0 +1,14 @@
+{
+  "id": "080d04df17d8c810a013000854684ca8",
+  "at": "2026-09-13T17:48:59.033Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M2DY5YRR087G0R000PA5EDN",
+    "type": "task",
+    "title": "Scorecard 24 is true and not a hole in main: CodeQL runs per push so intermediate PR commits are unscanned",
+    "slug": "scorecard-24-is-true-and-not-a-hole-in-main-codeql-runs-per",
+    "priority": "P2",
+    "filename": "081M2DY5YRR087G0R000PA5EDN-scorecard-24-is-true-and-not-a-hole-in-main-codeql-runs-per.md"
+  }
+}
