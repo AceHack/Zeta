@@ -1,0 +1,14 @@
+{
+  "id": "080d04ce4b44e810a0130008fe7deec6",
+  "at": "2026-09-13T08:01:48.701Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M2CWJT4T087G0R001X16PW8",
+    "type": "bug",
+    "title": "multiboot UEFI smoke red on main since 2026-09-10: a rename split one coupled value into two names",
+    "slug": "multiboot-uefi-smoke-red-on-main-since-2026-09-10-a-rename-s",
+    "priority": "P2",
+    "filename": "081M2CWJT4T087G0R001X16PW8-multiboot-uefi-smoke-red-on-main-since-2026-09-10-a-rename-s.md"
+  }
+}
