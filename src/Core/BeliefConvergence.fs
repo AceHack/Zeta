@@ -85,8 +85,11 @@ module BeliefConvergence =
     // Therefore:
     //   combine(a, b) in primal  ←→  Ĥ(a) * Ĥ(b) in dual  (Hadamard convolution theorem)
     //
-    // The self-dual fixed point (W_C = MacWilliams(W_C)) is the reason the NCI accumulation
-    // converges without bias: the code's self-duality guarantees Ĥ(W_C) = W_C, so
+    // REGISTER, corrected 2026-09-13: `AdinkraCode.fs` labels this link a **§B OPEN CONJECTURE**
+    // ("formal proof of this connection remains §B"); this file stated it declaratively, which is
+    // `toy` asserted as `metered` — and the unhedged copy was the one living in the fold's own
+    // file. Stated as the conjecture it is: the self-dual fixed point (W_C = MacWilliams(W_C)) is
+    // CONJECTURED to be why the NCI accumulation converges without bias, via Ĥ(W_C) = W_C, so
     // the fixed point of the primal accumulation is the MacWilliams-invariant distribution.
     //
     // This module provides the numerical bridge: given a float belief over the 16 Adinkra
@@ -113,7 +116,14 @@ module BeliefConvergence =
             step <- step * 2
         result
 
-    /// **Normalize** a Hadamard-transformed vector by 1/n (to get the standard unitary transform).
+    /// **Inverse** Hadamard transform: divide by `n`. Because the unnormalized `H` satisfies
+    /// `H² = nI`, `H(H v)/n = v` exactly — verified numerically at n = 4 and 8.
+    ///
+    /// **This is NOT the unitary normalization**, and the docstring said it was until 2026-09-13.
+    /// The unitary form divides by `√n` (eigenvalues ±1); dividing by `n` gives the inverse
+    /// (eigenvalues of `H/n` are ±1/√n). The distinction is not cosmetic — it is exactly the
+    /// defect that made `isMacWilliamsInvariantBelief` below unsatisfiable, so the wrong word
+    /// here propagated into a predicate that could never fire.
     let hadamardNorm (v: float[]) : float[] =
         let n = float v.Length
         hadamard v |> Array.map (fun x -> x / n)
@@ -166,7 +176,28 @@ module BeliefConvergence =
     /// Note: the full MacWilliams transform acts on the *weight distribution*, not the per-codeword
     /// distribution. This function checks the per-codeword Hadamard invariance, which implies
     /// MacWilliams-invariance of the weight distribution for uniform-over-weight distributions.
+    /// **NORMALIZATION CORRECTED 2026-09-13 — this predicate was VACUOUS as shipped.**
+    /// It divided by `n`, which asks `H p = n·p`. Since `H² = nI` the eigenvalues of `H` are
+    /// `±√n`, so `n` is not in the spectrum for `n > 1` and **only `p ≈ 0` could ever satisfy it**.
+    /// Measured before the fix: **0 of 200,000 random beliefs passed** at n = 2, 4, 8; uniform,
+    /// normalized-uniform and delta beliefs all failed. A self-duality check that could only
+    /// return false, uncalled and untested, sitting in the proof lineage — the vacuity class.
+    ///
+    /// The fixed-point question requires the **unitary** transform `H/√n`, whose eigenvalues are
+    /// `±1`; its `+1` eigenspace is exactly the invariant beliefs, and it is non-trivial (half the
+    /// space). `satisfiableWitness` below constructs a member, and the test asserts it — a
+    /// predicate nothing can satisfy must never ship again.
     let isMacWilliamsInvariantBelief (belief: float[]) (eps: float) : bool =
         let n = float belief.Length
-        let transformed = hadamard belief |> Array.map (fun x -> x / n)
+        let s = sqrt n
+        let transformed = hadamard belief |> Array.map (fun x -> x / s)
         Array.forall2 (fun orig trans -> abs (orig - trans) < eps) belief transformed
+
+    /// A nonzero belief satisfying `isMacWilliamsInvariantBelief` — the projector onto the `+1`
+    /// eigenspace of `H/√n`, i.e. `(I + H/√n)/2` applied to `v`. Exists so the predicate above has
+    /// a witness that a test can assert: **the falsifier for "this check can never pass."**
+    let satisfiableWitness (v: float[]) : float[] =
+        let n = float v.Length
+        let s = sqrt n
+        let hv = hadamard v
+        Array.mapi (fun i x -> (x + hv.[i] / s) / 2.0) v

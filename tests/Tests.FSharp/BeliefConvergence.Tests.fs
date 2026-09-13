@@ -711,6 +711,38 @@ let ``BRIDGE-21: the bridge is falsifiable — non-orbit-symmetric distributions
     Assert.True(gapSym < 1e-9,
         sprintf "Orbit-symmetric distribution should have zero gap (got %.2e)" gapSym)
 
+
+// ── THE FALSIFIER FOR A CHECK THAT COULD NEVER PASS (2026-09-13) ───────────────────────────────
+//
+// `isMacWilliamsInvariantBelief` shipped dividing by `n`, asking `H p = n·p`. Since `H² = nI` the
+// eigenvalues of `H` are `±√n`, so `n` is not in the spectrum for `n > 1` and only `p ≈ 0` could
+// satisfy it. Measured before the fix: 0 of 200,000 random beliefs passed at n = 2, 4, 8.
+// Uncalled, untested, and in the proof lineage — a self-duality check that could only return false.
+//
+// These two tests are the pair that makes the predicate honest. The first alone would be satisfied
+// by a predicate that is always true; the second alone by one that is always false. Together they
+// pin that it DISCRIMINATES, which is the property that was missing.
+
+[<Fact>]
+let ``isMacWilliamsInvariantBelief is SATISFIABLE by a nonzero belief`` () =
+    for n in [ 2; 4; 8; 16 ] do
+        let v = Array.init n (fun i -> 0.3 + 0.7 * float ((i * 7 + 3) % 5))
+        let w = BeliefConvergence.satisfiableWitness v
+        Assert.True(w |> Array.exists (fun x -> abs x > 1e-9), $"witness is the zero vector at n={n}")
+        Assert.True(
+            BeliefConvergence.isMacWilliamsInvariantBelief w 1e-9,
+            $"the +1 eigenvector of H/sqrt(n) must satisfy the predicate at n={n}")
+
+[<Fact>]
+let ``isMacWilliamsInvariantBelief REJECTS a belief outside the invariant subspace`` () =
+    // A delta is not in the +1 eigenspace for n > 1 — if this passes, the predicate is vacuous
+    // in the other direction (always true), which is the mirror of the shipped defect.
+    for n in [ 2; 4; 8; 16 ] do
+        let delta = Array.init n (fun i -> if i = 0 then 1.0 else 0.0)
+        Assert.False(
+            BeliefConvergence.isMacWilliamsInvariantBelief delta 1e-9,
+            $"a delta must not satisfy the invariance predicate at n={n}")
+
 [<Fact>]
 let ``BRIDGE-22: the bridge connects to the Condorcet boundary — W_C is the decorrelated fixed point`` () =
     // The Condorcet boundary ρ*(N) = (N-3)/(3(N-1)) → 1/3 as N → ∞.

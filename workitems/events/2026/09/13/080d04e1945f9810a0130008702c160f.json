@@ -1,0 +1,14 @@
+{
+  "id": "080d04e1945f9810a0130008702c160f",
+  "at": "2026-09-13T19:15:53.459Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M2E352ZJ087G0R0022RXPW5",
+    "type": "bug",
+    "title": "isMacWilliamsInvariantBelief divided by n not sqrt n so the self-duality check could never pass",
+    "slug": "ismacwilliamsinvariantbelief-divided-by-n-not-sqrt-n-so-the",
+    "priority": "P2",
+    "filename": "081M2E352ZJ087G0R0022RXPW5-ismacwilliamsinvariantbelief-divided-by-n-not-sqrt-n-so-the.md"
+  }
+}
