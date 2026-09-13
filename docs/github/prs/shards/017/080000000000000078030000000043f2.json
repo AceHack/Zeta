@@ -1,0 +1,12 @@
+{
+  "pr_number": 17394,
+  "archive_path": "docs/history/pr-reviews/2026/09/13/PR-17394-fix-security-the-bun-version-is-declared-once-54-of-55-restatements-disagreed.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-13T17:28:05.172Z",
+  "schema_version": "v1",
+  "commit_sha": "bd75bcd38f127f532aea31dc2b860440ef3d837f",
+  "title": "fix(security): the bun version is declared once — 54 of 55 restatements disagreed",
+  "state": "MERGED",
+  "merged_at": "2026-09-13T17:27:21Z",
+  "head_ref": "fix/bun-pin-parity-v2"
+}
