@@ -1,0 +1,12 @@
+{
+  "pr_number": 17391,
+  "archive_path": "docs/history/pr-reviews/2026/09/13/PR-17391-fix-security-enforce-the-two-unchecked-premises-under-scorecard-alert-254.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-13T07:09:06.601Z",
+  "schema_version": "v1",
+  "commit_sha": "5c5c0432ec3e86fb84b752cc09a46c7b9b581841",
+  "title": "fix(security): enforce the two unchecked premises under Scorecard alert #254",
+  "state": "MERGED",
+  "merged_at": "2026-09-13T07:08:25Z",
+  "head_ref": "fix/esp-inject-toctou"
+}
