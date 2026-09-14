@@ -1,0 +1,12 @@
+{
+  "pr_number": 17406,
+  "archive_path": "docs/history/pr-reviews/2026/09/14/PR-17406-feat-hygiene-per-pr-mutation-coverage-at-drift-tier.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-14T07:52:08.326Z",
+  "schema_version": "v1",
+  "commit_sha": "b717753e1c63af2aeacd2d75497cc1c0da966baf",
+  "title": "feat(hygiene): per-PR mutation coverage at drift tier",
+  "state": "MERGED",
+  "merged_at": "2026-09-14T07:51:26Z",
+  "head_ref": "feat/pr-mutation-coverage-drift"
+}
