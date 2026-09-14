@@ -1,0 +1,12 @@
+{
+  "pr_number": 17412,
+  "archive_path": "docs/history/pr-reviews/2026/09/14/PR-17412-fix-tests-stop-three-fixtures-from-carrying-contiguous-secret-literals.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-14T17:45:57.832Z",
+  "schema_version": "v1",
+  "commit_sha": "2217811c7750722798edbbfe2c95172225244482",
+  "title": "fix(tests): stop three fixtures from carrying contiguous secret literals",
+  "state": "MERGED",
+  "merged_at": "2026-09-14T17:45:14Z",
+  "head_ref": "fix/secret-scan-fixture-literals"
+}
