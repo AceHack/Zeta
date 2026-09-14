@@ -1,0 +1,14 @@
+{
+  "id": "080d0505e5838010a0130008258db687",
+  "at": "2026-09-14T16:25:15.632Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M2GBSC3G087G0R00284FSKA",
+    "type": "task",
+    "title": "secret-scanning fixtures carry contiguous key and credential literals that the scanner matches",
+    "slug": "secret-scanning-fixtures-carry-contiguous-key-and-credential",
+    "priority": "P2",
+    "filename": "081M2GBSC3G087G0R00284FSKA-secret-scanning-fixtures-carry-contiguous-key-and-credential.md"
+  }
+}

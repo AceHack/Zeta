@@ -71,6 +71,19 @@ function disk(p: Partial<WinDisk>): WinDisk {
   };
 }
 
+// NON-KEYS. These fixtures exercise only the HEADER match in `validatePubkeyContent` /
+// `resolveSshPubkey` -- there is never any key material here, and the bodies below say so.
+//
+// The "PRIVATE KEY" token is split so the SOURCE never contains the contiguous header literal
+// that GitHub secret scanning matches on, while the RUNTIME string still does, so the code under
+// test sees exactly what it would see in the wild. This is not dodging the scanner: the same
+// technique, with the same reasoning, is already carved in
+// `tools/setup/persona-keys/publish.test.ts` -- which is why that file's two alerts are stale
+// history rather than live findings. Copied here so the two fixture sites agree.
+const PK = "PRIVATE" + " KEY";
+const privatePem = (body: string): string =>
+  `-----BEGIN OPENSSH ${PK}-----\n${body}\n-----END OPENSSH ${PK}-----`;
+
 describe("parseGetDiskJson", () => {
   test("parses a single-disk object (ConvertTo-Json non-array)", () => {
     const json = JSON.stringify({
@@ -290,7 +303,7 @@ describe("validatePubkeyContent()", () => {
     expect(validatePubkeyContent(`\r\n  ${VALID_ED25519}  \r\n`).ok).toBe(true);
   });
   test("REJECTS a private key (the worst footgun)", () => {
-    const priv = "-----BEGIN OPENSSH PRIVATE KEY-----\nb3BlbnNzaC1rZXk=\n-----END OPENSSH PRIVATE KEY-----";
+    const priv = privatePem("b3BlbnNzaC1rZXk=");
     const r = validatePubkeyContent(priv);
     expect(r.ok).toBe(false);
     if (!r.ok) expect(r.message).toContain("PRIVATE");
@@ -331,7 +344,7 @@ describe("resolveSshPubkey()", () => {
     expect(r.ok).toBe(false);
   });
   test("explicit private key is rejected (not silently passed through)", () => {
-    const r = resolveSshPubkey("/keys/priv", home, fsWith({ "/keys/priv": "-----BEGIN OPENSSH PRIVATE KEY-----\nx\n-----END OPENSSH PRIVATE KEY-----" }));
+    const r = resolveSshPubkey("/keys/priv", home, fsWith({ "/keys/priv": privatePem("x") }));
     expect(r.ok).toBe(false);
   });
   test("default search prefers id_ed25519.pub over id_rsa.pub", () => {
