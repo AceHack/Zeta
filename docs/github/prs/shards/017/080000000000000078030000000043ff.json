@@ -1,0 +1,12 @@
+{
+  "pr_number": 17407,
+  "archive_path": "docs/history/pr-reviews/2026/09/14/PR-17407-fix-081m2f7f8cq087g0r000hwr80k-put-readevents-docstring-back-on-readevents.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-14T06:18:35.714Z",
+  "schema_version": "v1",
+  "commit_sha": "3d1da110beeb3e75aae35a5d9379e4699075ea42",
+  "title": "fix(081M2F7F8CQ087G0R000HWR80K): put readEvents' docstring back on readEvents",
+  "state": "MERGED",
+  "merged_at": "2026-09-14T06:17:51Z",
+  "head_ref": "cursor/org-store-orphaned-doc-27c5"
+}
