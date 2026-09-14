@@ -277,12 +277,6 @@ function rememberAppended(event: OrgEvent, root: string): void {
   events.splice(lo, 0, event);
 }
 
-/**
- * Every event ever stored, in the order they happened.
- *
- * Ordered by the event's own `atMs`, with its id as the tie-break — never by filename, which is an
- * artefact of the store rather than of the organization.
- */
 /** Where a store keeps the one file that saves it from opening thirty thousand. */
 const SNAPSHOT = "events-snapshot.json";
 
@@ -390,6 +384,12 @@ function loadSnapshot(root: string): EventsSnapshot | undefined {
   }
 }
 
+/**
+ * Every event ever stored, in the order they happened.
+ *
+ * Ordered by the event's own `atMs`, with its id as the tie-break — never by filename, which is an
+ * artefact of the store rather than of the organization.
+ */
 export function readEvents(root: string, window?: ShardWindow): readonly OrgEvent[] {
   // A window asks a narrower question; caching it under the same key would answer the wide one.
   if (window !== undefined) {

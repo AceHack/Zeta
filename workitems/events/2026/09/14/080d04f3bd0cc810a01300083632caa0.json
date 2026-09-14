@@ -1,0 +1,14 @@
+{
+  "id": "080d04f3bd0cc810a01300083632caa0",
+  "at": "2026-09-14T05:50:35.417Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M2F7F8CQ087G0R000HWR80K",
+    "type": "bug",
+    "title": "org-store: stacked doc comments left readEvents undocumented",
+    "slug": "org-store-stacked-doc-comments-left-readevents-undocumented",
+    "priority": "P2",
+    "filename": "081M2F7F8CQ087G0R000HWR80K-org-store-stacked-doc-comments-left-readevents-undocumented.md"
+  }
+}
