@@ -1,0 +1,12 @@
+{
+  "pr_number": 17402,
+  "archive_path": "docs/history/pr-reviews/2026/09/14/PR-17402-fix-security-give-the-last-two-dismissible-alerts-a-checked-premise-clearing-sec.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-14T03:12:07.507Z",
+  "schema_version": "v1",
+  "commit_sha": "cf0d74f065f1a2f7fe0d32ff91832c66dccf85a4",
+  "title": "fix(security): give the last two dismissible alerts a checked premise, clearing /security to 0",
+  "state": "MERGED",
+  "merged_at": "2026-09-14T03:11:18Z",
+  "head_ref": "fix/security-alert-premises-have-checkers"
+}
