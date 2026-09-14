@@ -1,0 +1,14 @@
+{
+  "id": "080d04f423ae5010a01300082ca2d617",
+  "at": "2026-09-14T06:04:36.170Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M2F88XEA087G0R00056SE0V",
+    "type": "bug",
+    "title": "a job's selecting target need not cover the paths the job scans so a lint skipped its own subject",
+    "slug": "a-job-s-selecting-target-need-not-cover-the-paths-the-job-sc",
+    "priority": "P2",
+    "filename": "081M2F88XEA087G0R00056SE0V-a-job-s-selecting-target-need-not-cover-the-paths-the-job-sc.md"
+  }
+}

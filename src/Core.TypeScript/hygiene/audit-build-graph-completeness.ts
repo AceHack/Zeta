@@ -104,6 +104,14 @@ export const INFRASTRUCTURE_JOBS: ReadonlyMap<string, string> = new Map([
       "dead detector. Unconditional by design.",
   ],
   [
+    "gate/pr-mutation-coverage",
+    "Mutates a line the PR changed and asks whether the PR's own tests notice. Owns no " +
+      "sources, and its subject IS the diff — so a target claiming it would make it " +
+      "selectable by the very changes it exists to measure, and the PRs that most need " +
+      "the question asked (ones touching files no target claims) are exactly the ones " +
+      "that would silently skip it. Drift tier; not in gate-required's needs.",
+  ],
+  [
     "gate/drift-loud",
     "Reports which non-blocking failures were absorbed across this run and a window of " +
       "recent main runs. Owns no sources, and its subject is every other job — so a " +

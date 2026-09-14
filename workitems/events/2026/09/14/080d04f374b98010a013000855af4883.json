@@ -1,0 +1,14 @@
+{
+  "id": "080d04f374b98010a013000855af4883",
+  "at": "2026-09-14T05:40:42.928Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M2F6X5SF087G0R003E943RT",
+    "type": "task",
+    "title": "per-PR mutation coverage as a drift-tier check so a green suite stops standing in for review",
+    "slug": "per-pr-mutation-coverage-as-a-drift-tier-check-so-a-green-su",
+    "priority": "P2",
+    "filename": "081M2F6X5SF087G0R003E943RT-per-pr-mutation-coverage-as-a-drift-tier-check-so-a-green-su.md"
+  }
+}

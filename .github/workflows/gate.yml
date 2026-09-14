@@ -4927,6 +4927,68 @@ jobs:
           echo "This job's conclusion is SUCCESS and a step inside it FAILED."
           echo "That is not a bug here; it is the measurement."
 
+  # ── PER-PR MUTATION COVERAGE ── drift tier, never a gate ─────────────────────────────
+  #
+  # Asks the one question a human reviewer was still answering: do THIS PR's tests
+  # constrain THIS PR's changes? Measured 2026-09-13, two PRs reached CI looking
+  # identical -- green, with new tests -- and were not equivalent: one had 32 tests that
+  # killed every mutant, the other 4 tests that ALL survive the defect being restored.
+  # Nothing mechanical could tell them apart.
+  #
+  # DELIBERATELY NOT IN `gate-required`'s `needs:`. It reports a number nobody has yet;
+  # turning it into a blocker is a separate decision with a threshold that has not been
+  # calibrated, and shipping it as a gate first would be the tail wagging the dog.
+  # `continue-on-error` AND an unconditional `exit 0` -- belt and braces, because a drift
+  # check that can fail a PR is not a drift check.
+  pr-mutation-coverage:
+    name: pr mutation coverage (drift)
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-24.04
+    # Each target costs two suite runs. The tool caps targets and REPORTS the cap; this
+    # is the outer bound so a pathological PR cannot hold a runner open.
+    timeout-minutes: 20
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout with history
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          # merge-base needs real history on BOTH sides. A shallow clone resolves no
+          # merge-base, which this tool reports as NO-MERGE-BASE ("cannot see") rather
+          # than as a clean run -- correct, but it would measure nothing on every PR.
+          fetch-depth: 0
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
+        with:
+          bun-version: "1.3.14"
+
+      # The audit itself imports only `node:` builtins, but it RUNS the repo's own test
+      # files, and those import packages. Without this every suite fails to load and the
+      # tool reports `unresolved` for every target -- honest, and useless.
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Do this PR's tests constrain this PR's changes?
+        continue-on-error: true
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        run: |
+          set -uo pipefail
+          bun src/Core.TypeScript/hygiene/audit-pr-mutation-coverage.ts \
+            --base "${BASE_SHA}" --json pr-mutation-coverage.json
+          echo "Drift tier: this step reports and never blocks. A SURVIVED mutant is the"
+          echo "NEUTRAL FACT that the suite could not separate the variant from the original"
+          echo "-- gap or declared freedom is the reader's call, not this job's."
+
+      - name: Upload the measurement
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: pr-mutation-coverage
+          path: pr-mutation-coverage.json
+          if-no-files-found: warn
+
   # The reporter. Reads the current run plus a BOUNDED window of recent completed `gate`
   # runs on main, classifies every absorbed failure, and is loud in proportion to how
   # persistent the drift is.

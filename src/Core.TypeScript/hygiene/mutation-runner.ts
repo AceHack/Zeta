@@ -220,12 +220,33 @@ export function isIndistinguishable(f: Finding): boolean {
  * shipped an unused import the same day; assume the same class of accident here.
  */
 export function runMutant(root: string, target: Target, m: Mutation): Finding {
+  return runVariant(root, target, m.name, (source) => applyMutation(source, m));
+}
+
+/**
+ * The baseline-first, always-restore protocol, with the CHOICE OF VARIANT left to the caller.
+ *
+ * Extracted from `runMutant` so a second selector can reuse it instead of copying it.
+ * `audit-pr-mutation-coverage.ts` mutates only lines a PR actually changed, which is a different
+ * question from "is this file covered" and needs a different `mutate` — but exactly the same
+ * three-valued honesty about baselines, early exits and restoration. Two copies of this protocol
+ * would drift, and the half that drifted would report a verdict it had not earned.
+ *
+ * `mutate` MUST return the source unchanged when it has no site to change; the caller is then told
+ * `unresolved` rather than being credited with a mutant that never existed.
+ */
+export function runVariant(
+  root: string,
+  target: Target,
+  mutationName: string,
+  mutate: (source: string) => string,
+): Finding {
   const srcPath = join(root, target.source);
   const original = readFileSync(srcPath, "utf8");
   const fact = (distinguishability: Distinguishability): Finding => ({
     source: target.source,
     test: target.test,
-    mutation: m.name,
+    mutation: mutationName,
     distinguishability,
   });
 
@@ -251,8 +272,15 @@ export function runMutant(root: string, target: Target, m: Mutation): Finding {
     });
   }
 
+  const mutated = mutate(original);
+  // A "mutant" identical to the original cannot be distinguished by ANY suite, so reporting
+  // indistinguishable here would blame the tests for a change that was never made.
+  if (mutated === original) {
+    return fact({ kind: "unresolved", why: "the selected mutation had no behavioural site to change" });
+  }
+
   try {
-    writeFileSync(srcPath, applyMutation(original, m));
+    writeFileSync(srcPath, mutated);
     const mut = runSuite();
     if (mut.status !== 0) return fact({ kind: "distinguished-by-suite" });
     // Exit 0 is necessary but NOT sufficient: it must also be the case that the tests actually ran.

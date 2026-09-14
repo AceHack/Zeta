@@ -1,0 +1,14 @@
+{
+  "id": "080d04f6274ff010a0130008dcea6942",
+  "at": "2026-09-14T07:15:00.222Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M2FC9TFX087G0R0003FK5J0",
+    "type": "bug",
+    "title": "k3s join-intent preflight test loses its stdout tail intermittently in CI third occurrence",
+    "slug": "k3s-join-intent-preflight-test-loses-its-stdout-tail-intermi",
+    "priority": "P2",
+    "filename": "081M2FC9TFX087G0R0003FK5J0-k3s-join-intent-preflight-test-loses-its-stdout-tail-intermi.md"
+  }
+}
