@@ -115,7 +115,7 @@
 // What this protocol removes is the FILESYSTEM race; it does not turn pid
 // liveness into a perfect failure detector, and nothing can.
 
-import { closeSync, mkdirSync, openSync, readdirSync, readFileSync, rmSync, rmdirSync, writeSync } from "node:fs";
+import { closeSync, linkSync, mkdirSync, openSync, readdirSync, readFileSync, rmSync, rmdirSync, writeSync } from "node:fs";
 import { join } from "node:path";
 
 /** Who holds a lock. `startedAt` is an ISO-8601 instant recorded by the holder. */
@@ -229,32 +229,68 @@ export type ClaimOutcome = "claimed" | "retry";
  * Claim ONE generation, atomically, or say to rescan.
  *
  * The single mutation that makes the protocol exclusive, kept alone in a function so it can be
- * read and tested without the surrounding loop. `wx` is `O_CREAT|O_EXCL`, so exactly one process
- * in any race creates this name; everyone else is told to rescan and will find the winner.
+ * read and tested without the surrounding loop.
+ *
+ * STAGE-THEN-LINK, NOT CREATE-THEN-WRITE. `open(path,"wx")` is atomic about the NAME and says
+ * nothing about the CONTENT: it leaves a zero-byte file that becomes valid only on the
+ * following `write`. In that window a concurrent scanner reads the generation, fails to parse
+ * it, and -- by this module's own documented rule that an unparseable generation is treated as
+ * not-held and SUPERSEDED -- claims the generation above it. Every claim created that window,
+ * so the protocol manufactured the very corruption it was designed to tolerate.
+ *
+ * MEASURED 2026-09-13 (081M2E7ZHYC087G0R000NDNQ2F): `test (TS hermetic)` on Linux CI reported
+ * `Expected length: 1 / Received length: 3` -- three of eight processes each holding what is
+ * meant to be an exclusive lock. Reproduced with no concurrency at all by planting a zero-byte
+ * generation owned by a LIVE process: a second caller took the lock and collected the live
+ * holder's generation away.
+ *
+ * The file is therefore built COMPLETE under a private staging name and published with
+ * `link()`, which is atomic and fails EEXIST exactly as `O_EXCL` did -- so exclusion is
+ * unchanged and no observer can ever see a half-written generation. The staging name is not
+ * generation-shaped, so `generations()` ignores it even if a crash strands one.
  *
  * EEXIST means another process won this generation. ENOENT means a releaser removed the lock
  * directory between our `mkdir` and now. Both are ordinary race outcomes and both say `retry`;
  * every other errno is a real failure and is rethrown.
  */
+let stagingCounter = 0;
+
 export function claimGeneration(lockRoot: string, generation: number, owner: LockOwner): ClaimOutcome {
   const path = generationPath(lockRoot, generation);
+  // Not generation-shaped (`^\d+\.lock$`), so a stranded staging file is invisible to
+  // `generations()` and can never be mistaken for a holder.
+  stagingCounter += 1;
+  const staging = join(
+    lockRoot,
+    `staging-${String(process.pid)}-${String(generation)}-${String(stagingCounter)}.tmp`,
+  );
+
   let fd: number;
   try {
-    fd = openSync(path, "wx", 0o600);
+    fd = openSync(staging, "wx", 0o600);
   } catch (err) {
     const code = (err as NodeJS.ErrnoException).code;
-    if (code === "EEXIST" || code === "ENOENT") return "retry";
+    if (code === "ENOENT") return "retry"; // the lock directory went away under us
     throw err;
   }
   try {
     writeSync(fd, JSON.stringify(owner));
-  } catch (err) {
+  } finally {
     closeSync(fd);
-    // Our own generation, created by us, removed by us. No other process can be here.
-    rmSync(path, { force: true });
+  }
+
+  try {
+    // Atomic publish. The content is already complete, so no scanner can observe a
+    // half-written generation -- which is the whole point of staging first.
+    linkSync(staging, path);
+  } catch (err) {
+    rmSync(staging, { force: true });
+    const code = (err as NodeJS.ErrnoException).code;
+    if (code === "EEXIST" || code === "ENOENT") return "retry";
     throw err;
   }
-  closeSync(fd);
+  // Our own staging name, created by us, removed by us. The generation now stands on its own link.
+  rmSync(staging, { force: true });
   return "claimed";
 }
 

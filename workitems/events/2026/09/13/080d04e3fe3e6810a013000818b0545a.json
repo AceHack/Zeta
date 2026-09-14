@@ -1,0 +1,14 @@
+{
+  "id": "080d04e3fe3e6810a013000818b0545a",
+  "at": "2026-09-13T20:40:15.053Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M2E7ZHYC087G0R000NDNQ2F",
+    "type": "bug",
+    "title": "exclusive-lock stale-takeover admitted 3 of 8 concurrent winners on Linux CI",
+    "slug": "exclusive-lock-stale-takeover-admitted-3-of-8-concurrent-win",
+    "priority": "P2",
+    "filename": "081M2E7ZHYC087G0R000NDNQ2F-exclusive-lock-stale-takeover-admitted-3-of-8-concurrent-win.md"
+  }
+}

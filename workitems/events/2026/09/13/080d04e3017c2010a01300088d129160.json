@@ -1,0 +1,14 @@
+{
+  "id": "080d04e3017c2010a01300088d129160",
+  "at": "2026-09-13T20:05:44.452Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M2E60BW4087G0R001GWC324",
+    "type": "task",
+    "title": "every dismissed Scorecard and CodeQL alert carries a mechanically checked premise",
+    "slug": "every-dismissed-scorecard-and-codeql-alert-carries-a-mechani",
+    "priority": "P2",
+    "filename": "081M2E60BW4087G0R001GWC324-every-dismissed-scorecard-and-codeql-alert-carries-a-mechani.md"
+  }
+}

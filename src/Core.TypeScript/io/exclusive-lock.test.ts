@@ -385,3 +385,92 @@ describe("exclusive-lock — takeover, corruption, and reporting", () => {
     }
   });
 });
+
+describe("exclusive-lock — a claim is never observable half-written", () => {
+  // THE DEFECT (081M2E7ZHYC087G0R000NDNQ2F): `open(path,"wx")` is atomic about the NAME and
+  // silent about the CONTENT. It left a zero-byte generation that became valid only on the
+  // next `write`, and this module's documented rule is that an unparseable generation is
+  // not-held and gets SUPERSEDED. So every claim manufactured a window in which a concurrent
+  // scanner would supersede a perfectly live holder. Linux CI: 3 of 8 racers "won" at once.
+  //
+  // HONEST LIMIT, MEASURED — THESE FOUR ARE NOT FALSIFIERS FOR THAT DEFECT.
+  //
+  // The window sat between two syscalls inside one synchronous function, so no single-threaded
+  // test has an instant to run in. That was stated as a caveat when these were written, and
+  // then CHECKED rather than left as a caveat: reverting `claimGeneration` to the original
+  // create-then-write and re-running this file gives 21 pass / 0 fail. The mutant survives.
+  //
+  // So what these four pin is the INVARIANT OF THE NEW IMPLEMENTATION — content present the
+  // moment the name is, no staging residue on the success or the lost-claim path — not the
+  // absence of the bug. They would catch a future regression that strands staging files or
+  // publishes an empty generation OUTRIGHT; they would not catch a reintroduced window.
+  //
+  // The evidence for the fix is therefore elsewhere and is named so it can be argued with:
+  // the Linux CI failure (3 of 8 concurrent winners), and a deterministic demonstration of
+  // the MECHANISM — the last test in this block, which shows that an unparseable generation
+  // causes a live holder to be superseded. That mechanism test passes before and after,
+  // because the tolerated behaviour is deliberately unchanged; it explains why the window was
+  // fatal rather than proving the window is gone.
+  //
+  // A deterministic falsifier for the window itself remains OPEN work under
+  // 081M2E7ZHYC087G0R000NDNQ2F. Writing one needs either a test-only seam in the claim path
+  // (which would make the tested path differ from the shipped one) or a concurrent observer
+  // that can only ever produce false GREENS — neither is acceptable here without a decision.
+
+  test("the generation parses the instant it exists — content precedes the name", () => {
+    const root = scratch("lock-atomic");
+    const lockRoot = join(root, "run.lock.d");
+    try {
+      mkdirSync(lockRoot, { recursive: true });
+      expect(claimGeneration(lockRoot, 0, { pid: 4242, startedAt: "2026-09-13T00:00:00.000Z" })).toBe("claimed");
+      const raw = readFileSync(join(lockRoot, "0.lock"), "utf-8");
+      expect(raw.length).toBeGreaterThan(0);
+      expect(JSON.parse(raw)).toEqual({ pid: 4242, startedAt: "2026-09-13T00:00:00.000Z" });
+    } finally {
+      rmSync(root, { recursive: true, force: true });
+    }
+  });
+
+  // Residue would be worse than cosmetic: `releaseGeneration` only rmdirs an EMPTY directory,
+  // so a stranded staging file would quietly stop the lock directory from ever being cleaned.
+  test("a successful claim leaves no staging residue", () => {
+    const root = scratch("lock-residue");
+    const lockRoot = join(root, "run.lock.d");
+    try {
+      mkdirSync(lockRoot, { recursive: true });
+      claimGeneration(lockRoot, 0, { pid: 1, startedAt: "2026-09-13T00:00:00.000Z" });
+      expect(readdirSync(lockRoot).sort()).toEqual(["0.lock"]);
+    } finally {
+      rmSync(root, { recursive: true, force: true });
+    }
+  });
+
+  test("a LOST claim says retry and leaves no staging residue either", () => {
+    const root = scratch("lock-lost");
+    const lockRoot = join(root, "run.lock.d");
+    try {
+      mkdirSync(lockRoot, { recursive: true });
+      plant(lockRoot, 0, { pid: 4711, startedAt: "2026-09-13T00:00:00.000Z" });
+      expect(claimGeneration(lockRoot, 0, { pid: 2, startedAt: "2026-09-13T00:00:01.000Z" })).toBe("retry");
+      expect(readdirSync(lockRoot).sort()).toEqual(["0.lock"]);
+    } finally {
+      rmSync(root, { recursive: true, force: true });
+    }
+  });
+
+  // The tolerated case is unchanged: a genuinely truncated generation (a crash mid-write under
+  // the OLD protocol, or a damaged disk) is still superseded rather than obeyed or deleted.
+  // The fix removes the CLAIM PATH as a source of these, not the tolerance for them.
+  test("a genuinely zero-byte generation is still superseded, never obeyed", () => {
+    const root = scratch("lock-crashfile");
+    const lockRoot = join(root, "run.lock.d");
+    try {
+      mkdirSync(lockRoot, { recursive: true });
+      writeFileSync(join(lockRoot, "0.lock"), "", { mode: 0o600 });
+      const got = takeExclusiveLock(lockRoot, { isHeld: always, pid: 7, nowIso: "2026-09-13T00:00:00.000Z" });
+      expect(got.ok).toBe(true);
+    } finally {
+      rmSync(root, { recursive: true, force: true });
+    }
+  });
+});

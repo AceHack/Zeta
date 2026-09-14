@@ -2714,6 +2714,21 @@ jobs:
       - name: Scorecard #254 vulnerability premises still hold (accelerate, x/crypto/openpgp)
         run: bun src/Core.TypeScript/hygiene/lint-scorecard-vulnerability-premises.ts
 
+      # The premise under CodeQL alert #798 (untrusted checkout). The severe case is the
+      # PAIR -- a privileged trigger (`pull_request_target` / `workflow_run` /
+      # `issue_comment`, which carry base-repo secrets and a write token) together with a
+      # checkout of code the PR author controls. A head checkout under plain
+      # `pull_request` is safe and stays permitted, or the check would force a worse design.
+      - name: No privileged trigger checks out untrusted code (alert #798)
+        run: bun src/Core.TypeScript/hygiene/lint-no-privileged-untrusted-checkout.ts
+
+      # The premise under Scorecard #963/#964 ("nugetCommand not pinned by hash"). Those two
+      # restores pass `--force-evaluate` because the workflow's SUBJECT is the re-resolution --
+      # asking whether a lock resolves identically across operating systems cannot be done
+      # under `--locked-mode`. An exception with no scope is a licence; this is its scope.
+      - name: --force-evaluate stays confined to the lock experiment (alerts #963/#964)
+        run: bun src/Core.TypeScript/hygiene/lint-nuget-force-evaluate-is-confined.ts
+
       # An `overrides` entry is a SECURITY CONTROL written as a version string --
       # it is how this tree carries a transitive dependency past a CVE its own
       # parent will not release. Nothing checked that it took effect. Measured
@@ -2763,6 +2778,8 @@ jobs:
             src/Core.TypeScript/hygiene/lint-nixos-rebuild-needs-impure.test.ts \
             src/Core.TypeScript/hygiene/lint-mathjs-dismissal-premise.test.ts \
             src/Core.TypeScript/hygiene/lint-scorecard-vulnerability-premises.test.ts \
+            src/Core.TypeScript/hygiene/lint-no-privileged-untrusted-checkout.test.ts \
+            src/Core.TypeScript/hygiene/lint-nuget-force-evaluate-is-confined.test.ts \
             src/Core.TypeScript/hygiene/lint-rolling-exceptions.test.ts \
             src/Core.TypeScript/hygiene/lint-overrides-take-effect.test.ts \
             src/Core.TypeScript/ace/setup-realizers/rolling-exception.test.ts \
