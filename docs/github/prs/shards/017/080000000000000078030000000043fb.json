@@ -1,0 +1,17 @@
+{
+  "pr_number": 17403,
+  "archive_path": "docs/history/pr-reviews/2026/09/14/PR-17403-perf-corporate-cut-the-organization-s-review-spend-and-unblock-its-throughput.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7ueZIV",
+    "comment:PRRC_kwDOSF9kNM7ueZIh",
+    "thread:PRRT_kwDOSF9kNM6h8JpE",
+    "thread:PRRT_kwDOSF9kNM6h8JpL"
+  ],
+  "fetched_at": "2026-09-14T05:23:05.093Z",
+  "schema_version": "v1",
+  "commit_sha": "e1f9da952acb0eadaae3b0b97e133c2974da9adb",
+  "title": "perf(corporate): cut the organization's review spend and unblock its throughput",
+  "state": "MERGED",
+  "merged_at": "2026-09-14T05:22:15Z",
+  "head_ref": "perf/org-review-spend-and-throughput"
+}
