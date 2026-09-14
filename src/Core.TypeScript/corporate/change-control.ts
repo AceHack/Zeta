@@ -79,6 +79,16 @@ export function factsFor(
     readonly queue: WorkQueue;
     readonly gateEvaluations: readonly GateEvaluation[];
     readonly pickedBy?: ReadonlyMap<string, string>;
+    /**
+     * Work items the CALLER already knows were staffed and actually executed outside the
+     * agent-loop's own queue - the legacy path, where the cascade assigns a hat and that hat's
+     * REAL producer runs directly, never touching a work-market claim. An explicit set from the
+     * caller, not inferred here from gate evaluations existing: a SIMULATED work port can pass a
+     * gate (an auto-approving reviewer needs no real diff to say yes) with nothing actually built,
+     * and crediting that as "picked up" would let `StartWork`, and eventually `Merge`, fire for
+     * work nobody did. Absent means none - the original, safe default.
+     */
+    readonly legacyStaffed?: ReadonlySet<string>;
     readonly nowMs: number;
   },
 ): OrgFacts | undefined {
@@ -92,9 +102,22 @@ export function factsFor(
   return {
     workId,
     ...(node.assigneeHatId === undefined ? {} : { assigneeHatId: node.assigneeHatId }),
+    // WHO PICKED IT UP, with a THIRD fallback below the two the agent-loop's own queue supplies.
+    //
+    // `pickedBy` is this run's calendar/schedule blocks (empty for a task already done - nothing
+    // gets freshly scheduled for finished work) and `claim` is the work-market's own claim record
+    // (populated only once the newer agent-loop dispatch actually claims a shard there). Legacy
+    // staffing never touches either: it schedules and calls the real work/review commands
+    // directly. MEASURED: task-036 passed every gate (implementation_review through
+    // release_readiness, real commits on its branch) and STILL projected `Claimed` forever,
+    // because `StartWork` needs `pickedByAgentId` and neither of the first two ever had one to
+    // give it - an org running the legacy path exclusively (the agent loop still in its
+    // observe-only shadow soak) could never merge a single thing it finished.
     ...(input.pickedBy?.get(workId) === undefined
       ? claim === undefined
-        ? {}
+        ? node.assigneeHatId === undefined || input.legacyStaffed?.has(workId) !== true
+          ? {}
+          : { pickedByAgentId: node.assigneeHatId }
         : { pickedByAgentId: claim.ownerAgentId }
       : { pickedByAgentId: input.pickedBy.get(workId)! }),
     ...(claim === undefined ? {} : { claimAtMs: claim.claimedAtMs }),
@@ -187,7 +210,23 @@ export function project(input: ProjectionInput): Projection {
   // `Approved`, so emitting it per rework made every later revision request illegal and produced a
   // change that read as approved while its gates were still failing. Found by running the projection
   // against a failing pipeline and reading what the canonical machine refused.
-  for (const evaluation of facts.gateEvaluations) {
+  // ── ONLY IF THERE IS A PULL REQUEST TO REVISE ─────────────────────────────
+  // The cycle above is a loop AROUND `InReview`, so it presupposes `OpenPr` applied. When it did
+  // not — `StartWork` needs a `pickedByAgentId` the legacy staffing path never supplied, so the
+  // change stuck at `Claimed` — marching the loop anyway asks the machine for three impossible
+  // transitions PER FAILING GATE, and `project` is a pure fold recomputed every cycle, so it asks
+  // again every cycle forever.
+  //
+  // MEASURED in the FlowDent store: 452 of 688 refusals across 20 runs (66%) were this one
+  // derivative shape, climbing 12 → 54 per run as more changes fell in and never recovering. The
+  // two refusals that name the ACTUAL fault — `OpenPr` and `RequestReview` refused from `Claimed`
+  // — were buried under ~47 consequences of themselves.
+  //
+  // Asked of what was APPLIED, the same way the cancellation branch below asks it: a refused
+  // transition leaves `state` untouched, so "was a pull request opened" is a question about the
+  // transition log, not about the current tag. A projection where `OpenPr` applied is unchanged.
+  const prOpen = applied.some((a) => a.tag === "OpenPr");
+  for (const evaluation of prOpen ? facts.gateEvaluations : []) {
     if (isPassing(evaluation.outcome)) continue;
     step({ tag: "ReceiveRevisionRequest", threadIds: [`${evaluation.gate}:${evaluation.byHatId}`] });
     step({ tag: "PushRevision", sha: `${facts.workId}:${evaluation.gate}` });
@@ -204,12 +243,10 @@ export function project(input: ProjectionInput): Projection {
   // request out there either way, and the two need different cleanup. `Abandon` is only legal from
   // Backlog, Claimed and InProgress.
   if (facts.cancelled) {
-    // Asked of what was APPLIED rather than of the current tag: `state` is assigned inside the
-    // `step` closure, so narrowing cannot see it — and "was a pull request opened" is the question
-    // being asked anyway, which the transition log answers directly.
-    const beforePr = !applied.some((a) => a.tag === "OpenPr");
+    // `prOpen`, computed above, is the same question and nothing since could have opened one — the
+    // review cycle emits no `OpenPr`. Answered once so the two readers cannot drift.
     step(
-      beforePr
+      !prOpen
         ? { tag: "Abandon", reason: "cancelled by the organization" }
         : { tag: "Close", closedAt: iso(input.nowMs), reason: "cancelled by the organization" },
     );
@@ -324,6 +361,7 @@ export function projectAll(input: {
   readonly queue: WorkQueue;
   readonly gateEvaluations: readonly GateEvaluation[];
   readonly pickedBy?: ReadonlyMap<string, string>;
+  readonly legacyStaffed?: ReadonlySet<string>;
   readonly nowMs: number;
   readonly branchPrefix?: string;
 }): readonly { readonly workId: string; readonly projection: Projection; readonly disagreements: readonly string[] }[] {

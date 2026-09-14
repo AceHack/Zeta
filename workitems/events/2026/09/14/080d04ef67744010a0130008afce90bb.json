@@ -1,0 +1,14 @@
+{
+  "id": "080d04ef67744010a0130008afce90bb",
+  "at": "2026-09-14T03:19:05.608Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M2EYSVM7087G0R003JZQJAP",
+    "type": "bug",
+    "title": "org review context wrote to a predictable shared temp path and a concurrency test timed instead of counting",
+    "slug": "org-review-context-wrote-to-a-predictable-shared-temp-path-a",
+    "priority": "P2",
+    "filename": "081M2EYSVM7087G0R003JZQJAP-org-review-context-wrote-to-a-predictable-shared-temp-path-a.md"
+  }
+}

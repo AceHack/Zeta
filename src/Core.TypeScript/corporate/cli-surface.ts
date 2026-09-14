@@ -433,6 +433,16 @@ export const COMMANDS: readonly CommandSpec[] = [
     writes: false,
   },
   {
+    name: "meetings",
+    what: "What a meeting produced for one work item — an agreed acceptance criterion or a named escalation, when repeated rejection or a stalled hold triggered one. `task`'s own gate history never carries this: a meeting is recorded under its own id, not the work item's.",
+    flags: [
+      ORG_FLAG,
+      { name: "--work", what: "Work item id, e.g. ELERA-149570, as listed by `demand`.", required: true, takesValue: true },
+      JSON_FLAG,
+    ],
+    writes: false,
+  },
+  {
     name: "inbox",
     what: "The two things that actually need a person: blockers the org raised, and gates you configured as checkpoints.",
     then: "Empty is a real answer — an org with no checkpoints and nothing raised is not waiting on you. Answer with `approve`, `reject` or `comment`.",

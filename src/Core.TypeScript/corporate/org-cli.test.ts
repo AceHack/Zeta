@@ -17,6 +17,8 @@ import { buildOrgChart } from "./org-chart";
 import { Autonomy, Intake, runReadinessOf, SourceKind, validateOrg, type OrgRecord } from "./org-registry";
 import { basePolicy } from "./org-policy";
 import { SEED_HATS } from "./org-seed";
+import { appendEvent } from "./org-store";
+import { OrgEventKind } from "./org-event";
 
 const built = buildOrgChart(SEED_HATS);
 if (!built.ok) throw new Error(built.reason);
@@ -407,6 +409,75 @@ describe("reading an organization that has no store yet", () => {
     const h = harness();
     await main(CREATE, h.deps);
     expect(await main(["task", "--work", "NOPE-1"], h.deps)).toBe(Exit.NotFound);
+  });
+
+  test("meetings requires --work", async () => {
+    const h = harness();
+    await main(CREATE, h.deps);
+    expect(await main(["meetings"], h.deps)).toBe(Exit.Usage);
+  });
+
+  test("meetings on a work item nothing met over is empty, not an error", async () => {
+    const h = harness();
+    await main(CREATE, h.deps);
+    h.stdout.length = 0;
+    const code = await main(["meetings", "--work", "task-9", "--json"], h.deps);
+    expect(code).toBe(Exit.Ok);
+    expect(JSON.parse(h.stdout.join(""))).toEqual([]);
+  });
+
+  test("a held meeting reaches its work item — and NOT a numeric near-collision", async () => {
+    const h = harness();
+    await main(CREATE, h.deps);
+    const store = join(STORE_ROOT, "elera");
+    appendEvent(
+      {
+        id: "evt-life-1-1",
+        kind: OrgEventKind.DecisionRecorded,
+        subjectId: "meet-reject-task-9-reproduction",
+        decision: "backend_implementer + qa_director met and produced: agreed criterion",
+        atMs: 1,
+        supervisorChain: [],
+        evidenceRefs: [],
+        fact: {
+          kind: "meeting_held",
+          meetingId: "meet-reject-task-9-reproduction",
+          attendeeHatIds: ["backend_implementer", "qa_director"],
+          atMs: 1,
+          mustProduce: "an agreed acceptance criterion, or an escalation naming who decides",
+          produced: "a real production log excerpt citing file:line is sufficient; no automated test required",
+        },
+      },
+      store,
+    );
+    // A near-collision (`task-90`) must not leak into `task-9`'s meetings.
+    appendEvent(
+      {
+        id: "evt-life-2-1",
+        kind: OrgEventKind.DecisionRecorded,
+        subjectId: "meet-reject-task-90-reproduction",
+        decision: "unrelated meeting over task-90",
+        atMs: 2,
+        supervisorChain: [],
+        evidenceRefs: [],
+        fact: {
+          kind: "meeting_held",
+          meetingId: "meet-reject-task-90-reproduction",
+          attendeeHatIds: ["backend_implementer", "qa_director"],
+          atMs: 2,
+          mustProduce: "an agreed acceptance criterion, or an escalation naming who decides",
+          produced: "unrelated",
+        },
+      },
+      store,
+    );
+    h.stdout.length = 0;
+    const code = await main(["meetings", "--work", "task-9", "--json"], h.deps);
+    expect(code).toBe(Exit.Ok);
+    const held = JSON.parse(h.stdout.join("")) as readonly { meetingId: string; produced: string }[];
+    expect(held).toHaveLength(1);
+    expect(held[0]?.meetingId).toBe("meet-reject-task-9-reproduction");
+    expect(held[0]?.produced).toContain("no automated test required");
   });
 
   test("a command needing an org says so when none is configured", async () => {

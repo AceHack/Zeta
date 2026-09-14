@@ -227,6 +227,23 @@ export function commandReview(input: {
   readonly cwd: string;
   readonly timeoutMs?: number;
   readonly name?: string;
+  /**
+   * Context handed to the reviewer, so it does not have to go and re-derive what this process
+   * already holds.
+   *
+   * ── THE DEFECT THIS CLOSES, MEASURED ───────────────────────────────────────
+   * A review command gets a gate and a work id and nothing else, so FlowDent's reviewer shelled
+   * back out to `ocli task --json` and `ocli meetings --json` to learn what it was judging. Each of
+   * those is a FRESH PROCESS with an empty cache, and each re-opens, re-parses and re-sorts every
+   * shard in the store: 112 SECONDS on a 31,963-event store, twice, per gate reviewed — before the
+   * model was invoked at all. The runtime asking for the review already has that fold in memory.
+   *
+   * Values are paths, never documents: a folded task record is far past a Windows command line's
+   * limit, and `.claude/rules` has bitten this file for exactly that before (see the work
+   * executor's own note). The reviewer reads the file, or falls back to deriving it itself when
+   * nothing is handed over — so an adapter that supplies nothing behaves exactly as it always did.
+   */
+  readonly envFor?: (request: ReviewRequest) => Readonly<Record<string, string>>;
 }): ReviewPort {
   return {
     meta: {
@@ -236,6 +253,7 @@ export function commandReview(input: {
       describes: `runs '${input.command}' per gate in ${input.cwd}; its exit code is the verdict`,
     },
     review: async (request) => {
+      const handed = input.envFor?.(request) ?? {};
       const run = spawnSync(input.command, [...input.argsFor(request)], {
         // The work's own checkout when the request names one; the configured directory otherwise.
         cwd: request.workdir ?? input.cwd,
@@ -243,6 +261,9 @@ export function commandReview(input: {
         timeout: input.timeoutMs ?? 120_000,
         shell: false,
         maxBuffer: MAX_COMMAND_OUTPUT_BYTES,
+        // Spread over the inherited environment rather than replacing it: the command is `bun`/
+        // `claude` and needs PATH, HOME and the rest to run at all.
+        ...(Object.keys(handed).length === 0 ? {} : { env: { ...process.env, ...handed } }),
       });
       if (run.error !== undefined) {
         return { ok: false, reason: `'${input.command}' could not run: ${run.error.message}` };
@@ -932,6 +953,17 @@ export function commandWorkExecutor(input: {
   readonly cwd: string;
   readonly timeoutMs?: number;
   readonly name?: string;
+  /**
+   * Anything beyond the brief this executor should be told — a reviewer's standing objection above
+   * all.
+   *
+   * `commandProposal` already carries this, under a note saying "the document authors were told all
+   * of it; the one agent that writes CODE was told a title and an id". That was written about the
+   * OTHER code path. This one — `--work-cmd`, the path FlowDent actually runs — still had no channel
+   * at all, so an implementation turned back by `implementation_review` was re-run from a prompt
+   * byte-identical to the one that produced the rejected work, and produced it again.
+   */
+  readonly envFor?: (node: CascadeNode) => Readonly<Record<string, string>>;
 }): WorkExecutor {
   return {
     meta: {
@@ -946,8 +978,9 @@ export function commandWorkExecutor(input: {
         // The change's own checkout when it has one, else the configured directory. This is what
         // lets a worktree-per-change adapter actually isolate the work rather than merely name it.
         cwd: ctx.workdir ?? input.cwd,
-        // WHAT to build, not just which id. See `workBriefEnv`.
-        env: workBriefEnv(node, ctx),
+        // WHAT to build, not just which id. See `workBriefEnv` — and `envFor` for what a reviewer
+        // already said about the last attempt at building it.
+        env: { ...workBriefEnv(node, ctx), ...(input.envFor?.(node) ?? {}) },
         encoding: "utf-8",
         timeout: input.timeoutMs ?? 120_000,
         // No shell. The whole safety argument above depends on this line.

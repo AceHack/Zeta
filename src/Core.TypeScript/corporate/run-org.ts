@@ -168,7 +168,7 @@ import { directoryDataSource, gitDataSource, unionOf } from "./git-data-source";
 import type { DataSourcePort } from "./providers";
 import type { CascadeNode } from "./goal-cascade";
 import { OrgEventKind, type OrgEvent, type OrgFact } from "./org-event";
-import { DEFAULT_PIPELINE } from "./pipeline";
+import { DEFAULT_PIPELINE, type Pipeline } from "./pipeline";
 import { foldCalendar, foldOrganization } from "./org-fold";
 import { authorIndexFrom, observationsFrom } from "./reputation-from-log";
 import type { ReputationObservation } from "./reputation";
@@ -177,7 +177,7 @@ import { foldHatsWorn,
 import { emit } from "./org-event";
 import { awaitingHumanReview, describeChangeLine } from "./handoff-report";
 import type { AgentState } from "../workflow-engine/agent-loop/state-machine";
-import { CHECKPOINT_VALUES, GateKind, GateOutcome, NO_PROPOSER, ORDERED_GATES, humanGatesFor, isHumanCheckpoint, type HumanCheckpoint } from "./quality-gate";
+import { CHECKPOINT_VALUES, GateKind, GateOutcome, NO_PROPOSER, ORDERED_GATES, humanGatesFor, isHumanCheckpoint, isPassing, type GateEvaluation, type HumanCheckpoint } from "./quality-gate";
 import { queueProblems, readActions } from "./action-queue";
 import { groom } from "./grooming";
 import { confluenceSource } from "./confluence-source";
@@ -185,9 +185,13 @@ import { jiraIntake } from "./jira-source";
 import { resolve as resolveSkill, type Resolution, type SkillBinding } from "./skill-binding";
 import { orgById, parseRegistry, runReadinessOf } from "./org-registry";
 import { HumanActionKind, isPaused, type HumanAction } from "./human-action";
-import { mkdirSync, readdirSync, readFileSync, writeFileSync, statSync } from "node:fs";
+import { mkdirSync, mkdtempSync, readdirSync, readFileSync, writeFileSync, statSync } from "node:fs";
 import { releaseOnExit, takeStoreLock } from "./store-lock";
 import { join, resolve } from "node:path";
+import { tmpdir } from "node:os";
+// The CLI's own view builders, so what a reviewer is HANDED is byte-for-byte what it would have
+// derived by shelling out to `ocli task`/`ocli meetings` — one implementation, no drift.
+import { meetingsView, taskView } from "./org-cli";
 import type { ProducerPort } from "./pipeline";
 import type { OrgChart } from "./org-chart";
 import type { OrgRuntimeDeps, OrgRuntimeReport } from "./org-runtime";
@@ -338,9 +342,9 @@ function describeLifeFact(fact: OrgFact): string {
 export const KNOWN_FLAGS: ReadonlySet<string> = new Set([
   "--actions", "--admin", "--agent-delivers", "--artifact-arg", "--artifact-cmd", "--base",
   "--blockers", "--checkpoint", "--churn", "--org", "--churn-threshold", "--context-limit", "--context-out",
-  "--cycle", "--days", "--git", "--inbox", "--json", "--max-gate-attempts", "--meeting-arg",
+  "--cycle", "--days", "--git", "--inbox", "--json", "--max-gate-attempts", "--max-gate-rejections", "--meeting-arg",
   "--meeting-cmd", "--memory", "--now",
-  "--org-docs", "--port-timeout-ms", "--price", "--qa-fails", "--review-arg", "--review-cmd",
+  "--org-docs", "--pipeline", "--port-timeout-ms", "--test-timeout-ms", "--price", "--qa-fails", "--review-arg", "--review-cmd",
   "--review-model", "--review-queue", "--room-arg", "--room-cmd", "--rooms", "--source-repo",
   "--source-subdir", "--store", "--study-arg", "--study-cmd", "--test-arg", "--test-cmd",
   "--confluence-auth-file", "--confluence-space", "--confluence-cql", "--confluence-limit",
@@ -466,6 +470,16 @@ export interface Args {
   /** Where to persist the run's history. Absent means the run leaves no trace on disk. */
   readonly store: string | undefined;
   /**
+   * Which gate chain this run walks. Absent means every gate `DEFAULT_PIPELINE` has — the full
+   * business-then-architecture-then-code chain, for work nobody has looked at yet.
+   *
+   * See `NAMED_PIPELINES` for what a name means and why it's a narrow, explicit allowlist rather
+   * than an arbitrary gate list on the command line: a chain is a governance decision (which
+   * reviews a change is entitled to skip), not a knob to twist per run without a name attached to
+   * defend it.
+   */
+  readonly pipeline: string | undefined;
+  /**
    * Where a person's requests and answers arrive. Absent = nobody can reach this run.
    *
    * The SAME directory `serve-org --actions` writes to. One inbound door: a second channel for
@@ -544,6 +558,22 @@ export interface Args {
    */
   readonly portTimeoutMs: number | undefined;
   /**
+   * The test port's own budget, when it may not share the others'.
+   *
+   * ── ITS OWN FLAG BECAUSE ONE KNOB WAS DRIVING UNLIKE THINGS ───────────────
+   * `--port-timeout-ms` is a single number applied to every port, so the SLOWEST port sets the
+   * budget for the FASTEST. That is tolerable while the ports are of a kind, and the test port is
+   * not: a review is one model call and should fail fast, while a real `dotnet test` on this
+   * repository is a build plus a suite. Raising the shared number to fit the suite hands every
+   * review the same half hour to hang in — which is exactly the shape that made a timed-out review
+   * (recorded as a REFUSAL) cost 4.44 h of a 15.3 h run.
+   *
+   * Same remedy `--supply-target` already needed when it was found driving two unrelated knobs.
+   * Absent, the test port keeps using `--port-timeout-ms`, so nothing changes for a run that does
+   * not state it.
+   */
+  readonly testTimeoutMs: number | undefined;
+  /**
    * How many times work may be re-presented to the gates before the churn is called.
    *
    * Three is the right default and stays the default: the bound exists so that repeated rejection
@@ -556,6 +586,15 @@ export interface Args {
    * the operator's, because only the operator knows which of those two they are watching.
    */
   readonly maxGateAttempts: number | undefined;
+  /**
+   * How many times a gate may reject one item, since a person last decided it, before the item
+   * waits for a person instead. Absent is `DEFAULT_GATE_REJECTION_CEILING`.
+   *
+   * The only bound that spans CYCLES: `--max-gate-attempts` bounds one cycle's retries and
+   * `--churn-threshold` only decides when to escalate. Without this, a gate the organization
+   * cannot settle is retried for as long as it runs - MEASURED at 162 rejections on one.
+   */
+  readonly maxGateRejections: number | undefined;
   /**
    * How many turn-backs count as CHURN, at which point the organization stops re-presenting.
    *
@@ -786,6 +825,142 @@ export function humanDecisionsFrom(
   };
 }
 
+/**
+ * A decision that is spent the moment it has decided one attempt.
+ *
+ * `humanDecisionsFrom` (above) always hands back the LATEST matching action — right the first
+ * time it is asked, because nothing has used it yet. But asked again on a LATER attempt, with no
+ * newer action on file, it hands back the exact same decision — and a `reject` a person filed once
+ * becomes a permanent veto on the gate rather than a turn-back for the attempt it was given for.
+ * The walk never again shows `awaitingHuman`, so nobody is ever asked to look at the REVISED
+ * design and decide fresh.
+ *
+ * MEASURED on proj-034 (EGR-275): one `reject_gate` action was still being read off the queue and
+ * applied verbatim on the 7th `architecture_approval` attempt, across several separate `run-org`
+ * invocations — `evidenceRefs` on every one of the seven evaluations names the same
+ * `human-action/<id>`. Contrast proj-042, which had no decision on file and correctly stopped
+ * `awaitingHuman` on its first arrival — the queue-read path itself was never broken, only its
+ * lack of an expiry.
+ *
+ * Fixed the way `humanRejectionsToRecord` already treats the non-checkpoint path (human-verdicts.ts):
+ * an action already named in some evaluation's `evidenceRefs` decided one attempt and is spent —
+ * treated as no decision at all, so the walk goes back to `awaitingHuman` instead of replaying it.
+ *
+ * `priorEvaluations` is a THUNK, called fresh on every decision — not a snapshot taken once. A
+ * snapshot taken once (the original version of this fix) closed the CROSS-RUN case but reopened
+ * the exact same bug for a long-lived single process: `--until 10` runs many cycles inside one
+ * `bun run-org` invocation, and a snapshot read before cycle 1 has no way to know cycle 3 already
+ * spent an action — so a single reject_gate action re-decided the SAME gate on TWO separate
+ * attempts within the SAME process (MEASURED live on proj-042/EGR-276: the identical
+ * `human-action/<id>` named in both attempts' `evidenceRefs`, ~4700s apart, same run). Re-reading
+ * the store on every call is more I/O, but a gate decision is a rare event next to a review call
+ * that already shells out to `claude`, so the cost is immaterial next to correctness.
+ */
+export function humanDecisionOnce(
+  decisionFor: (workId: string, gate: GateKind) => { readonly outcome: GateOutcome; readonly actionRef: string } | undefined,
+  priorEvaluations: () => readonly GateEvaluation[],
+): (workId: string, gate: GateKind) => { readonly outcome: GateOutcome; readonly actionRef: string } | undefined {
+  return (workId, gate) => {
+    const decision = decisionFor(workId, gate);
+    if (decision === undefined) return undefined;
+    // Read fresh on every call — see the function's own comment for why a one-time snapshot
+    // reopens the bug this exists to close, for any process that walks more than one attempt.
+    const consumed = new Set(priorEvaluations().flatMap((e) => e.evidenceRefs));
+    return consumed.has(decision.actionRef) ? undefined : decision;
+  };
+}
+
+/**
+ * The work item's own record and its meetings, written to files for the reviewer to read.
+ *
+ * ── THE DEFECT THIS CLOSES, MEASURED ─────────────────────────────────────────
+ * A review command is handed a gate and a work id, so FlowDent's reviewer went and got the rest
+ * itself: `ocli task --json`, then `ocli meetings --json`. Each is a FRESH PROCESS whose event
+ * cache is empty, and a cold read of that store — 31,963 shards, 30MB spread over 31,963 files —
+ * takes 112 SECONDS. Twice. Per gate reviewed. Before the model is invoked at all.
+ *
+ * That is not merely slow, it is what made the run DEGRADE: a review that spent four minutes
+ * reading before it started could blow a 30-minute port timeout, and a timed-out review is
+ * recorded as a REJECTION, which sends the work round again and appends more events, which makes
+ * the next read slower still. 146 gaps over a minute, 10 of the run's 15 hours inside gaps over
+ * five minutes, several of them exactly 30.0 minutes — the timeout ceiling, hit repeatedly.
+ *
+ * FILES, NOT ENVIRONMENT VALUES: a folded task record runs to tens of kilobytes and Windows caps a
+ * command line (and an environment block) well below what that needs — the same limit that has
+ * already bitten the work executor and the reviewer's own prompt. The path is the handover.
+ *
+ * Written per review rather than once per run because the record CHANGES as the run proceeds: the
+ * verdict a reviewer most needs is usually the one recorded minutes ago. In-process that fold is
+ * cached (`org-store.ts`'s `rememberAppended`), so producing it again costs well under a
+ * millisecond — it is the SUBPROCESS doing it that was expensive, never the fold itself.
+ */
+export function reviewContextEnv(
+  storeDir: string,
+): (request: {
+  readonly workId: string;
+  readonly title?: string;
+  readonly brief?: string;
+  readonly evidence?: readonly { readonly ref: string }[];
+}) => Readonly<Record<string, string>> {
+  // A PRIVATE directory, not a fixed name in the shared temp dir.
+  //
+  // `join(tmpdir(), "org-review-context")` is world-predictable: any local user can pre-create
+  // that path -- or a symlink standing in for it -- before this process does, and the
+  // `writeFileSync` calls below follow symlinks. That is an arbitrary-file-write primitive
+  // handed to anyone with a shell on the box, which is why CodeQL flags it
+  // (`js/insecure-temporary-file`, CWE-377/378). `mkdtempSync` creates a fresh 0700 directory
+  // with an unguessable suffix and fails rather than adopting an existing one.
+  //
+  // Created ONCE per `reviewContextEnv`, exactly as the fixed path was, so the per-request
+  // behaviour and the env-var contract below are unchanged -- the paths simply stop being
+  // guessable by anyone who is not this process.
+  const dir = mkdtempSync(join(tmpdir(), "org-review-context-"));
+  return (request) => {
+    // ── WHAT THE WORK IS, BEFORE ANYTHING THAT CAN FAIL ──────────────────────
+    // Outside the `try` on purpose. These two come from the request itself — no file is read and
+    // nothing can throw — so a store that cannot be folded must not also cost the reviewer the
+    // problem statement. See `ReviewRequest.title` for the 81 rejections this closes.
+    const out: Record<string, string> = {
+      ...(request.title === undefined ? {} : { ORG_WORK_TITLE: request.title }),
+      ...(request.brief === undefined ? {} : { ORG_WORK_BRIEF: request.brief }),
+    };
+    try {
+      mkdirSync(dir, { recursive: true });
+      const built = taskView(storeDir, request.workId);
+      if (built !== undefined) {
+        const taskPath = join(dir, `${request.workId}.task.json`);
+        writeFileSync(taskPath, JSON.stringify(built.view), "utf-8");
+        out["ORG_TASK_JSON_PATH"] = taskPath;
+      }
+      const meetingsPath = join(dir, `${request.workId}.meetings.json`);
+      writeFileSync(meetingsPath, JSON.stringify(meetingsView(storeDir, request.workId)), "utf-8");
+      out["ORG_MEETINGS_JSON_PATH"] = meetingsPath;
+      // ── WHAT THIS GATE'S OWN PHASE JUST PRODUCED ─────────────────────────
+      // THE DEFECT THIS CLOSES, and it is the expensive one. `ReviewRequest` carries `evidence` —
+      // the documents the phase wrote, which is the entire thing the gate exists to judge — and
+      // `argsFor` passed only the gate and the work id, so it was dropped on the floor. The
+      // reviewer, handed a gate name and nothing else, went looking, failed to find the artifact,
+      // and rejected for its ABSENCE. MEASURED on this store: `architecture_design` rejected
+      // proj-050 51 times and proj-042 21 times, the reasons reading "no design artifact exists
+      // anywhere" — while `docgen-cmd` had written one each round and committed it. 290 of 349
+      // recorded verdicts were rejections; this is the mechanism behind the largest share of them.
+      // (Counts are `foldGateEvaluations`', which dedupes; the raw event stream carries every
+      // verdict twice — once as its own event, once inside the governance roll-up.)
+      //
+      // Only refs that resolve to a readable FILE are passed: `evidence` also carries `exit:1`,
+      // captured stdout and plan lines, and a reviewer handed those as "documents" learns nothing.
+      const docs = (request.evidence ?? []).map((e) => e.ref).filter(isReadableFile);
+      if (docs.length > 0) out["ORG_EVIDENCE_PATHS"] = [...new Set(docs)].join("\n");
+      return out;
+    } catch {
+      // A reviewer that is handed nothing derives it the old way — slower, never wrong. This is a
+      // shortcut, and a shortcut that cannot be taken must not stop the review. The title and
+      // brief above are kept: they cost nothing and are the one thing no reviewer can re-derive.
+      return out;
+    }
+  };
+}
+
 /** The value after a flag, or undefined. A flag with nothing after it is the same as absent. */
 function valueAfter(argv: readonly string[], flag: string): string | undefined {
   const i = argv.indexOf(flag);
@@ -865,8 +1040,14 @@ export function parseArgs(argv: readonly string[]): Args {
     portTimeoutMs: ((v) => (v === undefined ? undefined : Number.parseInt(v, 10)))(
       valueAfter(argv, "--port-timeout-ms"),
     ),
+    testTimeoutMs: ((v) => (v === undefined ? undefined : Number.parseInt(v, 10)))(
+      valueAfter(argv, "--test-timeout-ms"),
+    ),
     maxGateAttempts: ((v) => (v === undefined ? undefined : Number.parseInt(v, 10)))(
       valueAfter(argv, "--max-gate-attempts"),
+    ),
+    maxGateRejections: ((v) => (v === undefined ? undefined : Number.parseInt(v, 10)))(
+      valueAfter(argv, "--max-gate-rejections"),
     ),
     churnThreshold: ((v) => (v === undefined ? undefined : Number.parseInt(v, 10)))(
       valueAfter(argv, "--churn-threshold"),
@@ -911,6 +1092,7 @@ export function parseArgs(argv: readonly string[]): Args {
     churn: argv.includes("--churn"),
     json: argv.includes("--json"),
     store: ((i) => (i >= 0 ? argv[i + 1] : undefined))(argv.indexOf("--store")),
+    pipeline: valueAfter(argv, "--pipeline"),
     actions: valueAfter(argv, "--actions"),
     blockers: valueAfter(argv, "--blockers"),
     // WHO RUNS THE MEETINGS. Absent, meetings are booked and held by nobody, and the run says so
@@ -1096,6 +1278,39 @@ export function argRefusals(args: Args): readonly string[] {
   if (args.jiraLimit !== undefined && (Number.isNaN(args.jiraLimit) || args.jiraLimit < 1)) {
     out.push("--jira-limit takes a positive count");
   }
+  if (args.testTimeoutMs !== undefined && (Number.isNaN(args.testTimeoutMs) || args.testTimeoutMs < 1)) {
+    out.push("--test-timeout-ms takes a positive number of milliseconds");
+  }
+  // A budget for a port nobody configured governs nothing, and reads as if it does.
+  if (args.testTimeoutMs !== undefined && args.testCmd === undefined) {
+    out.push("--test-timeout-ms only budgets --test-cmd, and no test command was given");
+  }
+  const pipelineChoice = pipelineFrom(args);
+  if ("reason" in pipelineChoice) out.push(pipelineChoice.reason);
+  // ── A CHECKPOINT ON A GATE NOBODY WALKS IS NOT A CHECKPOINT ────────────────
+  // `--pipeline` chooses which gates run; `--checkpoint` chooses which of them stop for a person.
+  // Nothing connected the two, so naming a checkpoint on a gate the pipeline drops was accepted in
+  // full and did nothing — the run reported the checkpoint as configured and never once stopped.
+  // That is the worst shape a governance control can have: it fails OPEN, and it looks identical
+  // to working. Concretely, `--pipeline diagnosed --checkpoint approach` is a request for a human
+  // to approve the architecture of a chain containing no architecture gate.
+  //
+  // Refused rather than warned: the operator asked for two things that contradict, and picking one
+  // for them is how a run ships code past a review somebody believed they had.
+  //
+  // Only the FLAG-supplied checkpoints are visible here — an organization record's own
+  // `humanCheckpoints` are merged later (see `--org`), so this catches the command line, which is
+  // where the contradiction is actually typed.
+  if (!("reason" in pipelineChoice) && args.checkpoints.length > 0) {
+    const walked = new Set<string>(pipelineChoice.pipeline.map((p) => String(p.gate)));
+    for (const gate of humanGatesFor(args.checkpoints)) {
+      if (walked.has(String(gate))) continue;
+      out.push(
+        `--checkpoint stops at '${String(gate)}', which --pipeline '${args.pipeline ?? "full"}' never walks — ` +
+          `that checkpoint could never fire, so the run would report a human gate it does not have`,
+      );
+    }
+  }
   return out;
 }
 
@@ -1123,6 +1338,121 @@ export const PRE_CODE_GATES: readonly GateKind[] = ORDERED_GATES.slice(
   0,
   ORDERED_GATES.indexOf(GateKind.ImplementationReview),
 );
+
+/**
+ * The gate chains an operator may name with `--pipeline`, and what each one means.
+ *
+ * ── WHY A NAMED ALLOWLIST, NOT AN ARBITRARY GATE LIST ────────────────────────
+ * Skipping a gate is a governance decision — it says a category of review is not owed for this
+ * work — and an operator typing gate names on a command line each run is a decision made silently,
+ * once, by whoever happened to type the flag, with nothing that names it as a decision at all. A
+ * name on this list is the opposite: chosen once, defended by the comment beside it, and every run
+ * that uses it makes the SAME considered choice rather than an ad hoc one.
+ *
+ * ── WHAT `diagnosed` IS FOR ───────────────────────────────────────────────────
+ * `DEFAULT_PIPELINE` walks a defect through the same business-then-architecture-then-code chain a
+ * genuinely unknown problem needs. MEASURED: EGR-275 was filed with its root cause already read
+ * from the actual logs, DB and code — file:line citations, a named fix, evidence a human had
+ * already done the diagnostic work — and still walked `peer_review` (does this problem exist?),
+ * `architecture_design`/`architecture_approval`/`adversarial_review` (propose and approve a
+ * design), because nothing in the pipeline knew the answer to all four was already `yes, and here
+ * it is` before the first gate ran. Across proj-034/042/050 alone this session, that chain's
+ * PRE-CODE gates alone burned 60+ real Sonnet-5 calls re-deriving conclusions a human had already
+ * reached in the ticket body.
+ *
+ * `diagnosed` skips every gate whose job is "decide whether this is worth doing and how" — that
+ * decision already happened, outside the pipeline, before intake. What it does NOT skip is
+ * anything that checks the ACTUAL DELIVERED CODE: `reproduction` (the defect is real),
+ * `implementation_review`/`qa_uat`/`runtime_validation` (the fix works and nothing broke),
+ * `final_architecture_review` (a human still looks at the real diff before it ships — the one
+ * checkpoint this session's own final_architecture_review reviews proved is load-bearing:
+ * EGR-275's design was approved without incident, and the delivered code still needed real
+ * scrutiny — three follow-up commits fixed issues a design approval never could have caught).
+ * Being pre-diagnosed is a claim about the PROBLEM, never a reason to skip verifying the FIX.
+ *
+ * A ticket earns this pipeline by carrying real evidence in its own filing (root cause, file:line
+ * references, a reproduction) — that is a fact about how the ticket was written, not something
+ * this file can detect, so which pipeline applies is an operator choice per invocation, same as
+ * `--checkpoint` is.
+ */
+export const NAMED_PIPELINES: Readonly<Record<string, readonly GateKind[]>> = {
+  full: ORDERED_GATES,
+  diagnosed: [
+    GateKind.Reproduction,
+    GateKind.ImplementationReview,
+    GateKind.QaUat,
+    GateKind.RuntimeValidation,
+    GateKind.FinalArchitectureReview,
+    GateKind.ReleaseReadiness,
+  ],
+  // ── `diagnosed`, BUT A PERSON STILL APPROVES THE APPROACH ──────────────────
+  // `diagnosed` drops the architecture gates along with the business ones, which is right when the
+  // ticket names the fix as well as the cause. It is WRONG whenever the operator is running
+  // `--checkpoint approach`: that checkpoint stops at `architecture_approval`, so a chain without
+  // it is a chain where the checkpoint can never fire — the run reports a human design approval it
+  // does not have. (`validate` now refuses that combination outright rather than letting it pass.)
+  //
+  // So this chain says the narrower thing: the PROBLEM is diagnosed — root cause, file:line, a
+  // reproduction, all in the ticket — but the FIX still gets designed and a person still signs off
+  // on that design before code is written. Everything dropped is discovery of a problem already
+  // understood: grooming, system context, RFP review, BRD approval, peer review ("does this
+  // problem exist?"), cost approval, adversarial review, final business validation.
+  //
+  // MEASURED against the FlowDent run, counted as `foldGateEvaluations` counts:
+  //
+  //   full        349 review calls   (157 with the rejection ceiling)
+  //   diagnosed    21 review calls   (15)  — but silently voids `--checkpoint approach`
+  //   this chain  153 review calls   (68)  — 81% fewer than the run that happened, checkpoint intact
+  //
+  // The 196 calls this drops are almost entirely two gates re-deriving what the ticket already
+  // said: `business_context_grooming` (135 calls, 81 of them rejecting one goal that never passed)
+  // and the discovery half of `architecture_design` (106).
+  //
+  // ORDERED AS `ORDERED_GATES` ORDERS THEM. A pipeline is a sequence, and architecture precedes
+  // reproduction in the canonical chain — reversing it here would have a person approve a design
+  // for a defect the organization has not yet confirmed is real.
+  //
+  // ── REACH FOR `defect_rung_gates` FIRST, IF THE WORK IS A DEFECT ───────────
+  // `upperRungChainFor` reads the `defect_rung_gates` process setting, which says what the rungs
+  // ABOVE a defect owe and takes a comma list. It is the better instrument for the same problem and
+  // it already existed: MEASURED on the FlowDent store, 328 of 349 verdicts (94%) were spent on
+  // goal/initiative/project rungs and only 21 on the task that does the work, so
+  // `defect_rung_gates = architecture_design,architecture_approval` reaches the SAME 81% reduction
+  // this pipeline does — while leaving the defect's own leaf chain (reproduction,
+  // implementation_review, qa_uat, runtime_validation, release_readiness) completely untouched,
+  // and scoping per ticket. A pipeline cannot do either: it applies uniformly to every rung.
+  //
+  // This chain stays because `upperRungChainFor` returns `undefined` for anything that is not a
+  // `WorkType.Defect` — a feature or a spike gets no relief from that setting, and needs this.
+  //   bind it:  ocli org setting bind --org <name> --setting defect_rung_gates \
+  //               --value architecture_design,architecture_approval --why '<reason>'
+  diagnosed_design: [
+    GateKind.ArchitectureDesign,
+    GateKind.ArchitectureApproval,
+    GateKind.Reproduction,
+    GateKind.ImplementationReview,
+    GateKind.QaUat,
+    GateKind.RuntimeValidation,
+    GateKind.FinalArchitectureReview,
+    GateKind.ReleaseReadiness,
+  ],
+};
+
+/**
+ * The pipeline `--pipeline` named, or a refusal — never a silent fallback to the full chain. A
+ * typo that quietly ran the expensive default would look identical to "I chose `full`" in every
+ * way that matters until someone notices the token bill.
+ */
+export function pipelineFrom(args: Args): { readonly pipeline: Pipeline } | { readonly reason: string } {
+  if (args.pipeline === undefined) return { pipeline: DEFAULT_PIPELINE };
+  const gates = NAMED_PIPELINES[args.pipeline];
+  if (gates === undefined) {
+    return {
+      reason: `--pipeline '${args.pipeline}' is not one of: ${Object.keys(NAMED_PIPELINES).join(", ")}`,
+    };
+  }
+  return { pipeline: gates.map((gate) => ({ gate })) };
+}
 
 /** Is this ref a file an author could open? Refs also carry plan lines, argv and captured output. */
 export function isReadableFile(ref: string): boolean {
@@ -1390,6 +1720,51 @@ export function feedbackFromActions(
 }
 
 /**
+ * The most recent rejection standing against a work item at one gate, whoever wrote it.
+ *
+ * ── THE LOOP THIS BREAKS ─────────────────────────────────────────────────────
+ * `feedbackFromActions` carries a PERSON's objection back to the author, under a comment that
+ * states the principle exactly: "an author that cannot see the objection can only guess, and the
+ * same document comes back twice." It was wired to human actions only — and on the FlowDent store
+ * humans wrote a handful of the objections while the AI reviewer wrote 290 of them.
+ *
+ * So the loop ran open. The reviewer rejected `architecture_design` on proj-050 with a specific
+ * reason; the producer never heard it; `docgen-cmd` short-circuits on `feedback.length === 0` and
+ * handed back the byte-identical file it wrote the first time; the reviewer read the same document
+ * and rejected it again, 51 times. Neither side was wrong — they were never connected.
+ *
+ * ONLY THE LATEST, and only at the gate being produced. The full history is what the reviewer
+ * already reads out of the task record; what an author needs is the objection standing NOW. Handing
+ * over all fifty-one would be a prompt that grows with the failure it is trying to end.
+ *
+ * A rejection already superseded by an approval is not returned — that gate is settled, and
+ * reviving its last complaint would have an author revise against an objection nobody holds.
+ */
+export function latestGateRejections(
+  storeDir: string | undefined,
+): (workId: string, gate: GateKind) => readonly { readonly gate: string; readonly said: string }[] {
+  if (storeDir === undefined) return () => [];
+  // READ AT EACH CALL, exactly as `feedbackFromActions` does and for the same reason: a verdict
+  // reached earlier in this very run must reach the rework it is about. The store's own read cache
+  // makes this cheap; before that cache existed this would have been unaffordable.
+  return (workId, gate) => {
+    let verdicts: readonly GateEvaluation[];
+    try {
+      verdicts = foldOrganization(readEvents(storeDir)).gateEvaluations;
+    } catch {
+      // An unreadable store must not stop an author from writing. It only means no feedback.
+      return [];
+    }
+    const atGate = verdicts
+      .filter((e) => e.workId === workId && String(e.gate) === String(gate))
+      .sort((a, b) => a.atMs - b.atMs);
+    const last = atGate[atGate.length - 1];
+    if (last === undefined || isPassing(last.outcome) || last.reason.trim() === "") return [];
+    return [{ gate: String(gate), said: last.reason }];
+  };
+}
+
+/**
  * A producer per pre-code gate, or none at all.
  *
  * DERIVED from the chain rather than listed, so a gate inserted before implementation gets a
@@ -1438,9 +1813,16 @@ export function artifactProducersFromArgs(
         ...(skillFor === undefined ? {} : { skillFor: (node: CascadeNode) => skillFor(gate, node) }),
         // AND HOW IT IS DONE. Passed through unchanged: this function routes, it does not render.
         ...(guidanceFor === undefined ? {} : { guidanceFor }),
-        // WHY A PERSON TURNED THIS BACK. The other half of a review: an author that cannot see the
+        // WHY THIS WAS TURNED BACK. The other half of a review: an author that cannot see the
         // objection can only guess, and the same document comes back twice.
-        feedbackFor: ((by) => (node: CascadeNode) => by(node.workId))(feedbackFromActions(args.actions)),
+        //
+        // BOTH VOICES. A person's rejection first — it is a mandate, not an opinion, and the author
+        // should read it before anything else — then the verdict standing at THIS gate right now,
+        // whoever wrote it. See `latestGateRejections` for the 51-round loop the second half ends.
+        feedbackFor: ((byPerson, byGate) => (node: CascadeNode) => [
+          ...byPerson(node.workId),
+          ...byGate(node.workId, gate),
+        ])(feedbackFromActions(args.actions), latestGateRejections(args.store)),
         // AND THE BOUND ON ASKING. Counted from what this work has already been told, so a step
         // that has been answered twice is on its last round wherever it runs.
         askRoundsLeft: (node) =>
@@ -1573,6 +1955,13 @@ export function providersFromArgs(
             command: args.workCmd,
             argsFor: (node) => [...args.workArgs, node.workId],
             cwd: args.git ?? process.cwd(),
+            // WHAT THE LAST ATTEMPT WAS TOLD IT GOT WRONG. Same two voices the artifact producers
+            // get — a person's mandate, then the verdict standing at `implementation_review` — in
+            // the same `ORG_FEEDBACK` shape, so one script reads it one way.
+            envFor: ((byPerson, byGate) => (node: CascadeNode) => {
+              const said = [...byPerson(node.workId), ...byGate(node.workId, GateKind.ImplementationReview)];
+              return said.length === 0 ? {} : { ORG_FEEDBACK: JSON.stringify(said) };
+            })(feedbackFromActions(args.actions), latestGateRejections(args.store)),
             ...budget,
           }),
     tests:
@@ -1582,7 +1971,9 @@ export function providersFromArgs(
             command: args.testCmd,
             argsFor: (tc) => [...args.testArgs, tc.testCaseId],
             cwd: args.git ?? process.cwd(),
-            ...budget,
+            // ITS OWN BUDGET WHEN STATED, the shared one otherwise. See `Args.testTimeoutMs`:
+            // a suite is not a model call and must not force every review to wait like one.
+            ...(args.testTimeoutMs === undefined ? budget : { timeoutMs: args.testTimeoutMs }),
           }),
     review:
       args.reviewModel !== undefined
@@ -1603,6 +1994,12 @@ export function providersFromArgs(
               // The gate and the work id, in that order, after any fixed arguments. Never a title.
               argsFor: (request) => [...args.reviewArgs, request.gate, request.workId],
               cwd: args.git ?? process.cwd(),
+              // WHAT THIS PROCESS ALREADY KNOWS, handed over instead of re-derived. See
+              // `commandReview`'s `envFor` and `taskView`: the reviewer used to shell back out to
+              // `ocli task --json` and `ocli meetings --json`, two fresh processes each re-reading
+              // every shard in the store — 112s apiece on a 31,963-event store, per gate reviewed.
+              // In here the fold is cached, so the same answer costs well under a millisecond.
+              ...(args.store === undefined ? {} : { envFor: reviewContextEnv(args.store) }),
               ...budget,
             })
           : autoApproveReview(),
@@ -2326,6 +2723,9 @@ export async function main(argv: readonly string[]): Promise<number> {
     chart,
     externalEvents: intake,
     agents,
+    // WHICH GATES THIS RUN ACTUALLY WALKS. `pipelineFrom` never returns a refusal here —
+    // `argRefusals` (above) already exited the process on one — so the pipeline is always present.
+    ...(args.pipeline === undefined ? {} : { pipeline: (pipelineFrom(args) as { readonly pipeline: Pipeline }).pipeline }),
     // THE RMO NEEDS A HISTORY TO RANK ON. Empty here meant every candidate scored the same
     // uniform prior, so two assignments in one run both came back `score 0.400` and both went
     // to the same agent out of eighty-five eligible. Derived from the store, so reputation
@@ -2435,6 +2835,7 @@ export async function main(argv: readonly string[]): Promise<number> {
       guidance,
     ),
     ...((n) => (n === undefined ? {} : { maxGateAttempts: n }))(gateAttemptsFor(args)),
+    ...(args.maxGateRejections === undefined ? {} : { maxGateRejections: args.maxGateRejections }),
     // ── THE TWO HALVES OF A CHECKPOINT, AND THEY TRAVEL TOGETHER ───────────
     // Checkpoints with no queue to answer them is an organization that stops and cannot be
     // restarted. So the answer path is wired whenever `--actions` is given, and the checkpoints are
@@ -2446,10 +2847,14 @@ export async function main(argv: readonly string[]): Promise<number> {
     // iterating on the document). A room's approval names the revision it was given for, so it is
     // the stronger of the two — and it wins when both exist, because somebody who sat in the room
     // has read more than somebody who pressed a button.
+    //
+    // Wrapped in `humanDecisionOnce`: without it, a single filed decision answers every future
+    // attempt at the gate forever, never letting the walk pause again for a revised attempt — see
+    // `humanDecisionOnce`'s own comment for what this closed (proj-034 / EGR-275).
     ...(args.actions === undefined && args.rooms === undefined
       ? {}
       : {
-          humanDecisionFor: (workId: string, gate: GateKind) => {
+          humanDecisionFor: humanDecisionOnce((workId: string, gate: GateKind) => {
             if (args.rooms !== undefined) {
               const fromRoom = gateAnswersFromRooms(args.rooms).find(
                 (r) => r.workId === workId && r.gate === String(gate),
@@ -2463,7 +2868,7 @@ export async function main(argv: readonly string[]): Promise<number> {
               }
             }
             return args.actions === undefined ? undefined : humanDecisionsFrom(args.actions)(workId, gate);
-          },
+          }, () => (args.store === undefined ? [] : foldOrganization(readEvents(args.store)).gateEvaluations)),
         }),
     // ── WHICH REFS ARE DOCUMENTS ──────────────────────────────────────────
     // The runtime asks; this answers by looking. A ref that does not resolve to a readable file
@@ -2558,6 +2963,34 @@ export async function main(argv: readonly string[]): Promise<number> {
   // caught: the test that reads the report back failed on the first word of this message. The
   // machine-readable half is already in the report, as `awaitingHuman`.
   if (!args.json) {
+    console.log(`\npipeline: ${args.pipeline ?? "full"}${args.pipeline === undefined ? " (every gate)" : ""}`);
+    // ── A GATE WHOSE EVIDENCE IS SIMULATED CANNOT FAIL ──────────────────────
+    // `qa_uat` and `runtime_validation` are decided from test runs. With no `--test-cmd` the test
+    // port is `simulatedTestRunner`, which answers `passed` without running anything — so both
+    // gates approve every time, structurally, and the chain completes having verified nothing.
+    // That is this file's own named failure: "approval by having nothing to satisfy, which is the
+    // vacuity class wearing a completed chain" (see `NAMED_PIPELINES`).
+    //
+    // MEASURED on the FlowDent store: run fidelity records `test_execution` as "0 planned
+    // outcome(s), falling back to 'passed'" and NEVER INVOKED, while `qa_uat` and
+    // `runtime_validation` both recorded approvals — on work that went out as real pull requests.
+    //
+    // SAID AT THE START, not left to the fidelity table at the end: that table is accurate but is
+    // read after a ten-hour run, and it names the PORT rather than the gates the port makes
+    // vacuous. WARNED, never refused — a simulated QA port is a legitimate dry run (`--qa-fails`
+    // drives exactly that), and refusing it would break the rehearsal this register supports.
+    if (args.testCmd === undefined) {
+      const choice = pipelineFrom(args);
+      const vacuous = ("reason" in choice ? [] : choice.pipeline)
+        .map((entry) => String(entry.gate))
+        .filter((g) => g === String(GateKind.QaUat) || g === String(GateKind.RuntimeValidation));
+      if (vacuous.length > 0) {
+        console.log(
+          `  !! no --test-cmd: the test port is simulated and answers 'passed' without running ` +
+            `anything, so ${vacuous.join(" and ")} cannot fail — they are decoration in this run`,
+        );
+      }
+    }
     if (args.checkpoints.length === 0) {
       console.log("\nhuman checkpoints: none — the organization runs the whole chain agentically");
     } else {
@@ -3129,11 +3562,23 @@ export async function main(argv: readonly string[]): Promise<number> {
       args.meetingCmd === undefined
         ? undefined
         : (proposal) => {
+            // SAME HANDOVER THE REVIEWER GETS, for the same measured reason: a facilitator that
+            // shells out to `ocli task --json` pays a 112-second cold read of every shard in the
+            // store, and a meeting only fires after an item has already accumulated the long
+            // history that makes that read slowest. See `reviewContextEnv`.
+            const handed =
+              args.store === undefined ? {} : reviewContextEnv(args.store)({ workId: proposal.subjectId });
             const run = spawnSync(args.meetingCmd as string, [...args.meetingArgs], {
               cwd: process.cwd(),
               encoding: "utf-8",
               input: JSON.stringify(proposal),
-              timeout: 60_000,
+              ...(Object.keys(handed).length === 0 ? {} : { env: { ...process.env, ...handed } }),
+              // WAS hardcoded to 60s, unlike every other real command in this file — a real
+              // facilitation call (a `claude -p` reading a long-disputed item's full history and
+              // deciding an acceptance criterion) routinely runs longer than that. MEASURED:
+              // `meet-reject-*` entries recording "spawnSync bun ETIMEDOUT" for meetings that
+              // never got a chance to actually decide anything.
+              timeout: args.portTimeoutMs ?? 120_000,
               shell: false,
             });
             if (run.error !== undefined) return { ok: false, reason: run.error.message };

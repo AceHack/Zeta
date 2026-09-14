@@ -13,9 +13,9 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { Fidelity, fidelityOf, Port } from "./providers";
 import { WorkState, WorkType as WorkTypeValue, type CascadeNode } from "./goal-cascade";
-import { pausedFromActions, argRefusals, withOrgDefaults, artifactProducersFromArgs, churnThresholdFor, gateAttemptsFor, hasSource, main, parseArgs, PRE_CODE_GATES, providersFromArgs, trackerMapper, KNOWN_FLAGS, unknownFlags} from "./run-org";
+import { pausedFromActions, argRefusals, withOrgDefaults, artifactProducersFromArgs, churnThresholdFor, gateAttemptsFor, hasSource, humanDecisionOnce, main, NAMED_PIPELINES, parseArgs, pipelineFrom, PRE_CODE_GATES, providersFromArgs, trackerMapper, KNOWN_FLAGS, unknownFlags} from "./run-org";
 import { RunOutcome } from "./qa";
-import { GateKind, ORDERED_GATES } from "./quality-gate";
+import { GateKind, GateOutcome, ORDERED_GATES } from "./quality-gate";
 import { Severity } from "./intake";
 import { readEvents } from "./org-store";
 import { basePolicy } from "./org-policy";
@@ -132,6 +132,11 @@ describe("argument parsing", () => {
     // not have one unless told to.
     expect(parseArgs([])).toEqual({
       qaFails: false, churn: false, json: false, cycleOnly: false, admin: false, store: undefined,
+      // NO NAMED PIPELINE BY DEFAULT: `pipelineFrom` reads this as "full", the every-gate chain.
+      pipeline: undefined,
+      // Absent means `DEFAULT_GATE_REJECTION_CEILING` — the cross-cycle bound that turns a gate
+      // nobody can settle into a question for a person instead of an endless retry.
+      maxGateRejections: undefined,
       // Absent by default: with no facilitator wired, meetings are booked and held by nobody, and
       // the run SAYS that rather than reporting an outcome it did not have.
       meetingCmd: undefined, meetingArgs: [],
@@ -174,6 +179,7 @@ describe("argument parsing", () => {
       // Absent means each adapter keeps its own default. Two minutes is right for a build command
       // and wrong for an agent, so the choice belongs to whoever knows which one they wired up.
       portTimeoutMs: undefined,
+      testTimeoutMs: undefined,
       // Three, decided in org-cycle. An operator watching a CONVERGING revision may raise it;
       // absent means the register keeps its own judgement about when churn is churn.
       maxGateAttempts: undefined,
@@ -201,6 +207,10 @@ describe("argument parsing", () => {
     // parsed and then dropped on the floor would satisfy any test that only re-reads `parseArgs`.
     expect(parseArgs([]).portTimeoutMs).toBeUndefined();
     expect(parseArgs(["--port-timeout-ms", "5400000"]).portTimeoutMs).toBe(5_400_000);
+    // The test port's own budget, so a suite does not set every review's patience. See
+    // `Args.testTimeoutMs`.
+    expect(parseArgs([]).testTimeoutMs).toBeUndefined();
+    expect(parseArgs(["--test-timeout-ms", "1800000"]).testTimeoutMs).toBe(1_800_000);
     expect(parseArgs(["--max-gate-attempts", "6"]).maxGateAttempts).toBe(6);
 
     // Asserted through the DECISION, not the parsed field. Reading `parseArgs(...).x` back only
@@ -292,6 +302,37 @@ describe("argument parsing", () => {
     expect(churnThresholdFor(parseArgs(["--churn"]))).toBe(2);
     expect(churnThresholdFor(parseArgs(["--churn-threshold", "8"]))).toBe(8);
     expect(churnThresholdFor(parseArgs(["--churn", "--churn-threshold", "8"]))).toBe(8);
+
+    // --- --pipeline: a named, defended shortcut, never a silent fallback on a typo ---
+    const noFlag = pipelineFrom(parseArgs([]));
+    expect("pipeline" in noFlag && noFlag.pipeline.map((p) => p.gate)).toEqual([...ORDERED_GATES]);
+    const named = pipelineFrom(parseArgs(["--pipeline", "full"]));
+    expect("pipeline" in named && named.pipeline.map((p) => p.gate)).toEqual([...ORDERED_GATES]);
+    // `diagnosed` keeps only what checks the DELIVERED code — never the gates that decide whether
+    // and how to build something, since a diagnosed ticket already answered those outside the
+    // pipeline. `final_architecture_review` stays: a human still looks at the real diff.
+    const diagnosed = pipelineFrom(parseArgs(["--pipeline", "diagnosed"]));
+    expect("pipeline" in diagnosed).toBe(true);
+    if ("pipeline" in diagnosed) {
+      const gates = diagnosed.pipeline.map((p) => p.gate);
+      expect(gates).toEqual([
+        GateKind.Reproduction, GateKind.ImplementationReview, GateKind.QaUat,
+        GateKind.RuntimeValidation, GateKind.FinalArchitectureReview, GateKind.ReleaseReadiness,
+      ]);
+      expect(gates).not.toContain(GateKind.ArchitectureDesign);
+      expect(gates).not.toContain(GateKind.ArchitectureApproval);
+      expect(gates).not.toContain(GateKind.PeerReview);
+      expect(gates).not.toContain(GateKind.BusinessContextGrooming);
+      expect(gates).not.toContain(GateKind.CostApproval);
+    }
+    expect(NAMED_PIPELINES["full"]).toEqual(ORDERED_GATES);
+    // An unknown name is a refusal, not a quiet fallback to `full` — a typo that ran the expensive
+    // default would look identical to "chose full on purpose" until someone notices the token bill.
+    const typo = pipelineFrom(parseArgs(["--pipeline", "diagnosd"]));
+    expect("reason" in typo).toBe(true);
+    if ("reason" in typo) expect(typo.reason).toContain("diagnosd");
+    expect(argRefusals(parseArgs(["--pipeline", "diagnosd"])).some((r) => r.includes("--pipeline"))).toBe(true);
+    expect(argRefusals(parseArgs(["--pipeline", "diagnosed"])).some((r) => r.includes("--pipeline"))).toBe(false);
 
     const slow = ["--git", ".", "--work-cmd", process.execPath, "--work-arg", "-e", "--work-arg", "setTimeout(() => {}, 4000)"];
     const item: CascadeNode = {
@@ -599,6 +640,36 @@ describe("--checkpoint TAKES A NAME OR A GATE, AND REFUSES ANYTHING ELSE", () =>
     const typo = parseArgs(["--checkpoint", "release-readiness"]);
     expect(typo.checkpoints).toEqual([]);
     expect(argRefusals(typo).some((r) => r.includes("'release-readiness' is neither a checkpoint nor a gate"))).toBe(true);
+  });
+});
+
+describe("THE TEST PORT MAY HAVE ITS OWN PATIENCE", () => {
+  test("a suite's budget does not become every review's budget", () => {
+    // The defect: one `--port-timeout-ms` governed every port, so making room for a real
+    // `dotnet test` also handed each review the same half hour to hang in — and a timed-out
+    // review is recorded as a REFUSAL. They are separate numbers now.
+    const both = parseArgs(["--test-cmd", "dotnet", "--port-timeout-ms", "600000", "--test-timeout-ms", "1800000"]);
+    expect(both.portTimeoutMs).toBe(600_000);
+    expect(both.testTimeoutMs).toBe(1_800_000);
+    expect(argRefusals(both)).toEqual([]);
+  });
+
+  test("unstated, the test port keeps using the shared budget", () => {
+    const shared = parseArgs(["--test-cmd", "dotnet", "--port-timeout-ms", "600000"]);
+    expect(shared.testTimeoutMs).toBeUndefined();
+    expect(argRefusals(shared)).toEqual([]);
+  });
+
+  test("a budget for a port nobody configured is refused, not quietly ignored", () => {
+    // It would read as governing something and govern nothing — the decorative-configuration
+    // failure this file guards against everywhere else.
+    const orphan = argRefusals(parseArgs(["--test-timeout-ms", "1800000"]));
+    expect(orphan.some((r) => r.includes("--test-timeout-ms only budgets --test-cmd"))).toBe(true);
+  });
+
+  test("it takes a positive count of milliseconds", () => {
+    const bad = argRefusals(parseArgs(["--test-cmd", "dotnet", "--test-timeout-ms", "0"]));
+    expect(bad.some((r) => r.includes("--test-timeout-ms takes a positive number of milliseconds"))).toBe(true);
   });
 });
 
@@ -984,6 +1055,78 @@ describe("WHAT A PERSON FILES MID-RUN REACHES THE NEXT ATTEMPT", () => {
     } finally {
       rmSync(dir, { recursive: true, force: true });
     }
+  });
+});
+
+describe("A HUMAN CHECKPOINT DECISION DECIDES ONE ATTEMPT, NOT EVERY FUTURE ONE", () => {
+  // MEASURED on proj-034 (EGR-275): one `reject_gate` action, filed once, was still being handed
+  // back and applied on the 7th `architecture_approval` attempt, across several separate `run-org`
+  // invocations — every one of those seven evaluations carried the SAME `human-action/<id>` in its
+  // `evidenceRefs`. A single "no" had become a permanent veto, and the walk never again paused
+  // `awaitingHuman` for someone to look at the revised design and decide fresh.
+  const reject = { outcome: GateOutcome.Rejected, actionRef: "human-action/act-1" };
+
+  test("unconsumed: the first ask gets the decision", () => {
+    const once = humanDecisionOnce(() => reject, () => []);
+    expect(once("proj-034", GateKind.ArchitectureApproval)).toEqual(reject);
+  });
+
+  test("already applied once (its ref is on a recorded evaluation): the next ask gets nothing — awaitingHuman again, not the same verdict replayed", () => {
+    const alreadyRecorded = [
+      {
+        workId: "proj-034",
+        gate: GateKind.ArchitectureApproval,
+        outcome: GateOutcome.Rejected,
+        byHatId: "chief_architect",
+        reason: "no design artifact to evaluate",
+        atMs: 1,
+        evidenceRefs: ["human-action/act-1"],
+      },
+    ];
+    const once = humanDecisionOnce(() => reject, () => alreadyRecorded);
+    expect(once("proj-034", GateKind.ArchitectureApproval)).toBeUndefined();
+  });
+
+  test("a NEWER action (a fresh reject or an approve) is not spent by an older one's consumption", () => {
+    const newer = { outcome: GateOutcome.Approved, actionRef: "human-action/act-2" };
+    const alreadyRecorded = [
+      {
+        workId: "proj-034",
+        gate: GateKind.ArchitectureApproval,
+        outcome: GateOutcome.Rejected,
+        byHatId: "chief_architect",
+        reason: "prior reason",
+        atMs: 1,
+        evidenceRefs: ["human-action/act-1"],
+      },
+    ];
+    const once = humanDecisionOnce(() => newer, () => alreadyRecorded);
+    expect(once("proj-034", GateKind.ArchitectureApproval)).toEqual(newer);
+  });
+
+  test("MEASURED LIVE on proj-042/EGR-276: consumed WITHIN one long-lived process, not only across separate ones", () => {
+    // A snapshot read once (the original version of this fix) closed the cross-run case and
+    // reopened the same bug for any process that walks more than one attempt at the gate — exactly
+    // what `--until 10` does. The evaluation this decision produces must become visible to the
+    // NEXT call, with no new process in between — that is the whole point of a thunk over a value.
+    let evaluations: readonly import("./quality-gate").GateEvaluation[] = [];
+    const once = humanDecisionOnce(() => reject, () => evaluations);
+    const first = once("proj-042", GateKind.ArchitectureApproval);
+    expect(first).toEqual(reject); // attempt 1, same process: unconsumed, applies.
+    // The run records the evaluation this decision produced, same-process, before attempt 2.
+    evaluations = [
+      {
+        workId: "proj-042",
+        gate: GateKind.ArchitectureApproval,
+        outcome: GateOutcome.Rejected,
+        byHatId: "chief_architect",
+        reason: "sent back to architecture_design",
+        atMs: 2,
+        evidenceRefs: [first?.actionRef ?? ""],
+      },
+    ];
+    const second = once("proj-042", GateKind.ArchitectureApproval);
+    expect(second).toBeUndefined(); // attempt 2, SAME process: spent — must pause, not replay.
   });
 });
 

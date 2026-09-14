@@ -399,16 +399,22 @@ describe("ONE PROCESS DOES NOT READ THE WHOLE LOG TWENTY-TWO TIMES", () => {
     try {
       appendEvent(anEvent("evt-001", 1), root);
       const first = readEvents(root);
-      const second = readEvents(root);
       expect(first.length).toBe(1);
-      // The same array, not merely an equal one: nothing went back to disk.
-      expect(second).toBe(first);
+      // SERVED FROM MEMORY, proven by taking the disk away. This used to assert `second === first`
+      // — identity as a proxy for "nothing went back to disk" — but the cached array is now
+      // mutated in place by `rememberAppended`, so handing the same array out would let an append
+      // change a result a caller was already holding. Each read gets its own copy, and the real
+      // claim is asserted directly: with the shards deleted, only a cache can still answer.
+      rmSync(join(root, "events"), { recursive: true, force: true });
+      const second = readEvents(root);
+      expect(second).toEqual(first);
+      expect(second).not.toBe(first);
     } finally {
       rmSync(root, { recursive: true, force: true });
     }
   });
 
-  test("a run sees its OWN writes - appending drops the cache", () => {
+  test("a run sees its OWN writes - an append keeps the cache current", () => {
     const root = mkdtempSync(join(tmpdir(), "store-cache-"));
     try {
       appendEvent(anEvent("evt-001", 1), root);
@@ -416,7 +422,28 @@ describe("ONE PROCESS DOES NOT READ THE WHOLE LOG TWENTY-TWO TIMES", () => {
       appendEvent(anEvent("evt-002", 2), root);
       // The falsifier for the whole idea: if this were still 1, the accessors that re-read during a
       // run would be serving a stale log, which is worse than the cost the cache saves.
+      //
+      // The append used to satisfy this by DROPPING the cache, which cost a full re-read of every
+      // shard in the store — 112 seconds on a 31,963-event store, after every single event written.
+      // It now adds the event it just wrote to the cached array instead, so this still holds and
+      // the next read costs nothing. `rememberAppended` carries the measurement.
       expect(readEvents(root).length).toBe(2);
+      expect(readEvents(root).map((e) => e.id)).toEqual(["evt-001", "evt-002"]);
+    } finally {
+      rmSync(root, { recursive: true, force: true });
+    }
+  });
+
+  test("an append is not re-read from disk to be seen - the cache answers with the shards gone", () => {
+    const root = mkdtempSync(join(tmpdir(), "store-cache-"));
+    try {
+      appendEvent(anEvent("evt-001", 1), root);
+      readEvents(root);
+      // Take the disk away, THEN append: nothing can re-read, so a correct answer here can only
+      // come from the cache having been kept current by the append itself.
+      rmSync(join(root, "events"), { recursive: true, force: true });
+      appendEvent(anEvent("evt-002", 2), root);
+      expect(readEvents(root).map((e) => e.id)).toEqual(["evt-001", "evt-002"]);
     } finally {
       rmSync(root, { recursive: true, force: true });
     }

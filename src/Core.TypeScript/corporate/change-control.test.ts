@@ -204,6 +204,85 @@ describe("the projection is DERIVED — it cannot be advanced on its own", () =>
   });
 });
 
+describe("LEGACY STAFFING STILL MERGES — no agent-loop claim needed", () => {
+  // MEASURED in a real flowdent run: a task staffed and executed entirely through the legacy path
+  // (the cascade assigns a hat, that hat's real work/review commands run directly — the agent-loop
+  // dispatch that would otherwise populate a work-market claim was still in its observe-only shadow
+  // soak) passed every gate on its own chain, had real commits on its branch, and STILL projected
+  // `Claimed` forever: `StartWork` needs `pickedByAgentId`, and neither this run's calendar map nor
+  // the work-market's claim record ever had one to give it.
+  test("a claimed task the caller KNOWS was legacy-staffed still starts and merges", async () => {
+    const { report } = await projectRun();
+    const taskId = report.cascade.nodes.find((n) => n.assigneeHatId !== undefined)!.workId;
+    const node = report.cascade.nodes.find((n) => n.workId === taskId)!;
+    // Strip the work-market's OWN claim tracking, as if the agent-loop dispatch that populates it
+    // never ran — the shard stays (Merge's own gate needs `shardId`), only `claimedByClaimId` goes.
+    const legacyQueue = {
+      ...report.queue,
+      shards: report.queue.shards.map((s) => {
+        if (s.workId !== taskId) return s;
+        const { claimedByClaimId: _drop, ...rest } = s;
+        return rest;
+      }),
+    };
+    const facts = factsFor(taskId, {
+      cascade: report.cascade,
+      queue: legacyQueue,
+      gateEvaluations: report.gateEvaluations,
+      // No `pickedBy` either — this run's own calendar never scheduled it (it is already done).
+      legacyStaffed: new Set([taskId]),
+      nowMs: 0,
+    })!;
+    expect(facts.pickedByAgentId).toBe(node.assigneeHatId);
+    const projection = project({
+      facts: { ...facts, owedGates: chainFor(node.workType) },
+      row: { id: taskId, title: "t", priority: "P2", filePath: "x", trajectory: "y" },
+      prNumber: 1,
+      nowMs: 0,
+    });
+    expect(projection.state.tag).toBe("Merged");
+    expect(projection.refused).toEqual([]);
+  });
+
+  test("the SAME task, without the caller vouching for it, is NOT credited — gate evaluations alone are not enough", async () => {
+    // MEASURED as a real regression: crediting `pickedByAgentId` off "gate evaluations exist"
+    // alone breaks the moment review is simulated and auto-approves everything — exactly what a
+    // task with no real work behind it still has plenty of. `legacyStaffed` is what tells the two
+    // apart; its absence must be the same as before this fallback existed.
+    const { report } = await projectRun();
+    const taskId = report.cascade.nodes.find((n) => n.assigneeHatId !== undefined)!.workId;
+    const legacyQueue = {
+      ...report.queue,
+      shards: report.queue.shards.map((s) => {
+        if (s.workId !== taskId) return s;
+        const { claimedByClaimId: _drop, ...rest } = s;
+        return rest;
+      }),
+    };
+    const facts = factsFor(taskId, {
+      cascade: report.cascade,
+      queue: legacyQueue,
+      gateEvaluations: report.gateEvaluations,
+      nowMs: 0,
+    })!;
+    expect(facts.pickedByAgentId).toBeUndefined();
+  });
+
+  test("an ASSIGNED task the caller does NOT vouch for is not credited as picked up", () => {
+    const facts = factsFor("task-x", {
+      cascade: {
+        nodes: [{ workId: "task-x", title: "t", workType: WorkType.Defect, state: WorkState.Open, assigneeHatId: "backend_implementer" }],
+      } as never,
+      queue: { shards: [], claims: [] } as never,
+      gateEvaluations: [],
+      // No `legacyStaffed` entry for it — the default, safe reading: an assignment alone proves
+      // nothing happened yet.
+      nowMs: 0,
+    })!;
+    expect(facts.pickedByAgentId).toBeUndefined();
+  });
+});
+
 describe("DISAGREEMENT IS DETECTABLE — the point of a derived projection", () => {
   test("a task marked done whose change never merged is reported", async () => {
     const { report } = await projectRun({ qaFallback: RunOutcome.Failed });

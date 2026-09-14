@@ -60,6 +60,25 @@ function managerOf(chart: OrgChart, hatId: string): string | undefined {
 }
 
 /**
+ * When each (work, gate) disagreement was last SETTLED by a meeting that actually decided something.
+ *
+ * Keyed exactly as `proposeMeetings` mints the id, so the two cannot disagree about which meeting
+ * belongs to which disagreement. A meeting that produced nothing is not a settlement and is not
+ * recorded here — that is the case where meeting again is the right answer.
+ */
+function settledByMeetingAtMs(events: readonly OrgEvent[]): ReadonlyMap<string, number> {
+  const out = new Map<string, number>();
+  for (const e of events) {
+    const fact = e.fact;
+    if (fact?.kind !== "meeting_held") continue;
+    if (fact.produced.trim() === "") continue;
+    const at = out.get(fact.meetingId);
+    if (at === undefined || fact.atMs > at) out.set(fact.meetingId, fact.atMs);
+  }
+  return out;
+}
+
+/**
  * How many times a gate turned the same work away, and who was on each side.
  *
  * `ChangesRequested` counts alongside `Rejected` because the disagreement is the same one: the
@@ -69,7 +88,10 @@ function managerOf(chart: OrgChart, hatId: string): string | undefined {
 function repeatedRejections(
   input: MeetingDemandInput,
 ): NonNullable<MeetingInput["repeatedRejections"]> {
-  const byKey = new Map<string, { workId: string; gate: string; reviewerHatId: string; attempts: number }>();
+  const byKey = new Map<
+    string,
+    { workId: string; gate: string; reviewerHatId: string; attempts: number; lastRejectedAtMs: number }
+  >();
   for (const e of foldGateEvaluations(input.events)) {
     if (e.outcome !== GateOutcome.Rejected && e.outcome !== GateOutcome.ChangesRequested) continue;
     const key = `${e.workId}|${String(e.gate)}`;
@@ -81,7 +103,23 @@ function repeatedRejections(
       // who has to be in the room.
       reviewerHatId: e.byHatId,
       attempts: (seen?.attempts ?? 0) + 1,
+      lastRejectedAtMs: Math.max(seen?.lastRejectedAtMs ?? 0, e.atMs),
     });
+  }
+
+  // ── A DISAGREEMENT ALREADY SETTLED IS NOT MET OVER AGAIN ───────────────────
+  // `attempts` only ever grows, so the moment an item had two rejections it proposed the same
+  // meeting, between the same two hats, about the same gate, EVERY cycle for the rest of the run.
+  // MEASURED on the FlowDent store: 238 meetings held over roughly fifteen real disagreements —
+  // every one of them a `claude` call that re-decided what a previous meeting had already decided,
+  // and the acceptance criteria they produced were near-identical restatements.
+  //
+  // A meeting is owed again only if the disagreement CONTINUED past the last one that settled
+  // anything: a rejection recorded after that meeting is new information, and nothing before it is.
+  const settled = settledByMeetingAtMs(input.events);
+  for (const [key, r] of [...byKey]) {
+    const at = settled.get(`meet-reject-${r.workId}-${r.gate}`);
+    if (at !== undefined && r.lastRejectedAtMs <= at) byKey.delete(key);
   }
 
   const out: { workId: string; gate: string; authorHatId: string; reviewerHatId: string; attempts: number }[] = [];
@@ -116,8 +154,17 @@ function heldForPeople(input: MeetingDemandInput): NonNullable<MeetingInput["hel
     if (at === undefined || event.atMs < at) earliest.set(event.subjectId, event.atMs);
   }
 
+  // Same settlement rule the repeated-rejection path uses, for the same measured reason: a hold
+  // that has already been met over does not become a different question by being held one cycle
+  // longer. The stall is the SAME stall, and the answer a second meeting reaches is the answer the
+  // first one already recorded — `meet-stalled-*` entries repeated across cycles on this store.
+  // If the person acts, the hold ends and the meeting is moot; if they do not, asking the same two
+  // hats again changes nothing.
+  const settled = settledByMeetingAtMs(input.events);
+
   const out: NonNullable<MeetingInput["heldForPeople"]>[number][] = [];
   for (const h of held) {
+    if (settled.has(`meet-stalled-${h.workId}-${String(h.gate)}`)) continue;
     const heldSinceMs = earliest.get(h.workId);
     // No recorded stop ⇒ no age ⇒ no meeting. Defaulting to `nowMs` would make every hold look
     // fresh; defaulting to zero would make every hold look ancient. Both are inventions.

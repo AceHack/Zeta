@@ -77,6 +77,7 @@ import {
 import { basePolicy, type VerificationApproach } from "./org-policy";
 import { foldOrganization } from "./org-fold";
 import { appendEvent, readEvents } from "./org-store";
+import { OrgEventKind, ofKind, type OrgFact } from "./org-event";
 import { nodeById } from "./goal-cascade";
 import type { OrgChart } from "./org-chart";
 import { acceptAction, actionEvent, HumanActionKind, type HumanAction } from "./human-action";
@@ -196,6 +197,73 @@ function resolveOrg(
 function stepLine(s: GateStep): string {
   const mark = s.rework ? `rework x${String(s.attempt)}` : "new";
   return `  ${s.workId}  ${s.gate}  (${mark})  ${s.title}`;
+}
+
+/**
+ * Everything `task --json` reports about one work item, as data.
+ *
+ * EXPORTED so the RUNTIME can hand this to a reviewer instead of making it shell back out for it.
+ * MEASURED on the FlowDent store: `ocli task --json` is a fresh process with a cold cache, and a
+ * cold read of 31,963 event shards takes 112 SECONDS — paid twice (task, then meetings) inside
+ * EVERY gate review, before the model was even invoked. In-process the same fold is already cached
+ * (see `org-store.ts`'s `rememberAppended`), so the runtime can produce this in well under a
+ * millisecond and write it to a file the reviewer just reads.
+ *
+ * The CLI handler and the runtime call the SAME builder on purpose: a second implementation of
+ * this shape would drift, and the whole point is that what a reviewer is handed is exactly what it
+ * would have derived for itself.
+ */
+export function taskView(storeDir: string, workId: string) {
+  const folded = foldOrganization(readEvents(storeDir));
+  const node = nodeById(folded.cascade, workId);
+  if (node === undefined) return undefined;
+  const chain = chainOf(node);
+  const evaluations = folded.gateEvaluations.filter((e) => e.workId === workId);
+  const all = gateDemand({ cascade: folded.cascade, evaluations: folded.gateEvaluations });
+  return {
+    node,
+    chain,
+    view: {
+      workId,
+      title: node.title,
+      workType: node.workType,
+      state: node.state,
+      ownerHatId: node.ownerHatId,
+      assigneeHatId: node.assigneeHatId,
+      chain,
+      gatesComplete: gatesComplete(node, workId, folded.gateEvaluations),
+      ran: evaluations.map((e) => ({
+        gate: e.gate,
+        outcome: e.outcome,
+        byHatId: e.byHatId,
+        reason: e.reason,
+        atMs: e.atMs,
+        evidenceRefs: e.evidenceRefs,
+      })),
+      owes: demandFor(all, workId),
+      blocked: all.blocked.filter((b) => b.workId === workId),
+    },
+  };
+}
+
+/** Every meeting held over one work item, oldest first — the same list `meetings --json` prints. */
+export function meetingsView(storeDir: string, workId: string) {
+  return ofKind(readEvents(storeDir), OrgEventKind.DecisionRecorded)
+    .map((e) => e.fact)
+    .filter((f): f is Extract<OrgFact, { readonly kind: "meeting_held" }> =>
+      // Bounded on both sides: `meetingId` is `meet-<reason>-<workId>-<gate>`, and an
+      // unbounded substring match would let `task-9` match a meeting held over `task-90`.
+      f?.kind === "meeting_held" && f.meetingId.includes(`-${workId}-`),
+    )
+    .sort((a, b) => a.atMs - b.atMs)
+    .map((f) => ({
+      meetingId: f.meetingId,
+      attendeeHatIds: f.attendeeHatIds,
+      atMs: f.atMs,
+      mustProduce: f.mustProduce,
+      produced: f.produced,
+      ...(f.reason === undefined ? {} : { reason: f.reason }),
+    }));
 }
 
 export async function main(argv: readonly string[], deps: CliDeps): Promise<number> {
@@ -1302,41 +1370,44 @@ export async function main(argv: readonly string[], deps: CliDeps): Promise<numb
         return Exit.NotFound;
       }
       const workId = flagValue(flags, "--work") ?? "";
-      const folded = foldOrganization(readEvents(chosen.org.storeDir));
-      const node = nodeById(folded.cascade, workId);
-      if (node === undefined) {
+      const built = taskView(chosen.org.storeDir, workId);
+      if (built === undefined) {
         deps.err(`no work item '${workId}' in '${chosen.org.orgId}'`);
         return Exit.NotFound;
       }
-      const chain = chainOf(node);
-      const evaluations = folded.gateEvaluations.filter((e) => e.workId === workId);
-      const all = gateDemand({ cascade: folded.cascade, evaluations: folded.gateEvaluations });
-      const view = {
-        workId,
-        title: node.title,
-        workType: node.workType,
-        state: node.state,
-        ownerHatId: node.ownerHatId,
-        assigneeHatId: node.assigneeHatId,
-        chain,
-        gatesComplete: gatesComplete(node, workId, folded.gateEvaluations),
-        ran: evaluations.map((e) => ({
-          gate: e.gate,
-          outcome: e.outcome,
-          byHatId: e.byHatId,
-          reason: e.reason,
-          atMs: e.atMs,
-          evidenceRefs: e.evidenceRefs,
-        })),
-        owes: demandFor(all, workId),
-        blocked: all.blocked.filter((b) => b.workId === workId),
-      };
+      const { node, chain, view } = built;
       emit(deps, json, view, () =>
         `${workId}  ${node.title}\n` +
         `  type ${node.workType} · state ${node.state} · owner ${node.ownerHatId}\n` +
         `  gates: ${chain.join(" -> ")}\n` +
         `  ran: ${view.ran.length === 0 ? "nothing yet" : view.ran.map((r) => `${r.gate}=${r.outcome}`).join(", ")}\n` +
         `  owes: ${view.owes.map((s) => s.gate).join(", ") || "nothing"}\n`,
+      );
+      return Exit.Ok;
+    }
+
+    // WHAT A MEETING PRODUCED, for a work item — the other half of `task`. `task`'s own `ran`
+    // array is quality-gate evaluations only; a `meeting_held` fact is recorded under the
+    // MEETING's own id (`meet-reject-<workId>-<gate>`, `meet-stalled-<workId>-<gate>`, ...), never
+    // under the work item's, so nothing that reads `task` ever sees a meeting that happened over
+    // it. Without this, a real facilitator (a `--meeting-cmd`) could agree a genuine acceptance
+    // criterion after a repeated rejection, and the next gate attempt would still have no way to
+    // learn what was agreed — it would keep re-deriving the same verdict from scratch, which is
+    // the whole reason a rejection racked up a dozen attempts before anyone noticed.
+    case "meetings": {
+      const chosen = resolveOrg(registry, flagValue(flags, "--org"));
+      if ("reason" in chosen) { deps.err(chosen.reason); return Exit.NotFound; }
+      // `--work` is declared `required` in cli-surface.ts's spec, so a missing flag never reaches
+      // here — the generic parser has already refused it with `Exit.Usage`, the same as every
+      // other command whose required flags this table declares.
+      const workId = flagValue(flags, "--work") ?? "";
+      const held = meetingsView(chosen.org.storeDir, workId);
+      emit(deps, json, held, () =>
+        held.length === 0
+          ? `no meetings recorded for '${workId}'\n`
+          : held
+              .map((m) => `${m.meetingId}: ${m.produced === "" ? `produced nothing (${m.reason ?? "no reason given"})` : m.produced}`)
+              .join("\n") + "\n",
       );
       return Exit.Ok;
     }

@@ -226,6 +226,30 @@ export interface ReviewRequest {
   readonly gate: GateKind;
   readonly workId: string;
   /**
+   * WHAT THE WORK IS, in the requester's own words — the same two strings `workBriefEnv` hands the
+   * agent that PRODUCES the artifact.
+   *
+   * ── THE DEFECT THIS CLOSES, MEASURED ───────────────────────────────────────
+   * A review request was a gate name, a work id and a list of evidence paths. It carried no title
+   * and no brief, so a gate whose whole job is to judge the PROBLEM STATEMENT had nothing to judge
+   * it from, and could never pass anything. On the FlowDent store `business_context_grooming`
+   * rejected goal-024 EIGHTY-ONE times and approved it zero, and the reviewer's own last words say
+   * exactly why:
+   *
+   *   "The work item record still exposes only `title`, with no `description` field at all …
+   *    Nothing has changed in the record since the prior rejections — same bare title, still no
+   *    description — so this resubmission fails the same way."
+   *
+   * It was right every single time. Eighty-one correct rejections of a question nobody could
+   * answer, each one a real model call. The producer side already had `node.brief`; only the
+   * reviewer was blind, which is why writing the document never helped.
+   *
+   * OPTIONAL, so a caller that has no node still composes — an absent brief is a real state (nobody
+   * wrote one) and must stay distinguishable from an empty one.
+   */
+  readonly title?: string;
+  readonly brief?: string;
+  /**
    * What the organization already knows about this work — QA runs, traces, documents.
    *
    * Supplied so a reviewer can judge from evidence rather than from a title. A reviewer that

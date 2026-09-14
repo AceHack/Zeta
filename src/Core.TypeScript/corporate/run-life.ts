@@ -210,6 +210,16 @@ export async function lifeTick(input: LifeTickInput): Promise<LifeTickReport> {
   }
 
   // ── 3. Self-directed time ─────────────────────────────────────────────────
+  // A first pass here skipped proposing ANY self-directed time when no studier was wired — 1,200
+  // `self_directed` events on the FlowDent store recorded hours in which "0/60 study block(s)
+  // produced a memory", which reads like pure waste. It is not, and two tests in this file say so
+  // exactly: self-directed time is not only STUDY, it is the hat's own hour, and the fact is how
+  // that hour reaches the folded calendar the next run reasons from. Drop it and a meeting gets
+  // booked straight over an hour the organization had already given away.
+  //
+  // The volume was never the real cost anyway: it was that reading the log meant opening one file
+  // per event. `org-store.ts`'s snapshot made a cold read of all 31,963 of them 295ms, so these
+  // rows are now cheap to keep and still load-bearing. Left alone deliberately.
   const proposals = proposeSelfDirected({
     idle,
     nowMs: input.nowMs,

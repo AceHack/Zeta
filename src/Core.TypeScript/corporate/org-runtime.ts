@@ -241,6 +241,17 @@ const NO_QA_VERDICT = {
 } as const;
 
 /**
+ * How many rejections at one gate, since a person last decided it, end the retrying.
+ *
+ * Six, because the bound has to sit above the honest back-and-forth and below the futile kind.
+ * MEASURED on the FlowDent store: every (item, gate) pair that ever converged did so within a
+ * handful of attempts, while the pairs that did not converge ran to 162, 103, 48, 46 and 43 — they
+ * were never going to, and each attempt past the first few was a model call spent re-deriving the
+ * same "no". Six leaves real disagreement room to resolve itself and cuts the tail off.
+ */
+export const DEFAULT_GATE_REJECTION_CEILING = 6;
+
+/**
  * The gates ONE work item owes — its own type's chain, intersected with the run's pipeline.
  *
  * ── WHY THIS IS PER ITEM AND NOT PER RUN ─────────────────────────────────────
@@ -590,6 +601,17 @@ export interface OrgRuntimeDeps extends HumanCheckpointDeps {
   readonly maxGateAttempts?: number;
   readonly churnThreshold?: number;
   /**
+   * How many times a gate may reject one item, since a person last decided it, before the item
+   * WAITS FOR A PERSON instead of being asked again. Default {@link DEFAULT_GATE_REJECTION_CEILING}.
+   *
+   * Separate from `maxGateAttempts` (which bounds retries inside ONE cycle) and from
+   * `churnThreshold` (which decides when to ESCALATE, and escalating does not stop anything): this
+   * is the only bound that spans cycles, and without it a disagreement the organization cannot
+   * settle is retried for as long as the organization runs. See the check's own comment.
+   */
+  readonly maxGateRejections?: number;
+
+  /**
    * Which staffed work this run delivers ITSELF. Absent means all of it — the behaviour this
    * runtime has always had.
    *
@@ -877,15 +899,37 @@ export function defaultProviderSet(deps: {
 /**
  * What an agent working this item is told the requester wrote — the whole ticket.
  *
- * The body when there is one (description and every comment), the reproduction when it is all
- * there is, the tracker parent it was filed under, and — when the reproduction is OWED — a line
- * saying so, because an agent not told the reproduction is its first job will start on a fix for
- * a defect nobody has observed.
+ * The body when there is one (description and every comment), the reproduction steps, the tracker
+ * parent it was filed under, and — when the reproduction is OWED — a line saying so, because an
+ * agent not told the reproduction is its first job will start on a fix for a defect nobody has
+ * observed.
+ *
+ * ── BOTH, NOT EITHER ─────────────────────────────────────────────────────────
+ * This read "the reproduction when it is all there is" and was written `else if`, so a ticket
+ * carrying BOTH a description and reproduction steps silently lost the steps. That treats the
+ * reproduction as a stand-in for a missing body, and it is not one — it is a separately judged
+ * artifact with a gate of its own (`reproduction`, on the defect leaf), so discarding it removes
+ * the only evidence the gate exists to weigh.
+ *
+ * MEASURED on the FlowDent inbox: FOUR of six tickets carry both fields, so four had their steps
+ * dropped — and `reproduction` rejected task-036 TWELVE times before passing, judging a field it
+ * was never shown.
+ *
+ * LABELLED, because two unlabelled blocks of prose read as one. A reviewer asked whether the
+ * reproduction is adequate must be able to tell which half is the reproduction.
  */
 export function briefOf(item: IntakeItem): string | undefined {
   const parts: string[] = [];
   if (item.body !== undefined && item.body !== "") parts.push(item.body);
-  else if (item.reproduction !== undefined && item.reproduction !== "") parts.push(item.reproduction);
+  if (item.reproduction !== undefined && item.reproduction !== "") {
+    // Unlabelled when it is the only thing here — with no body to distinguish it from, a heading
+    // is noise, and this is exactly what the item said.
+    parts.push(
+      item.body === undefined || item.body === ""
+        ? item.reproduction
+        : `Reproduction steps supplied with this ticket:\n${item.reproduction}`,
+    );
+  }
   // WHAT KIND OF REQUEST this is, and where it was filed. An agent describing the system around a
   // DEFECT is documenting what exists; around a feature it is the ground a design is drawn on — and
   // a project-rung agent could otherwise only see that its own node is a `project`.
@@ -1565,6 +1609,55 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
     }
   }
 
+  // ── WHAT ALREADY PASSED, from earlier cycles and runs ─────────────────────
+  // The LATEST prior verdict per (item, gate). See `OrgRuntimeDeps.priorGateEvaluations`.
+  //
+  // HOISTED ABOVE SCHEDULING, which is the whole point of it being here rather than beside its
+  // first reader. Both ceremonies that book and request reviews run BELOW this and above the walk
+  // that used to own this predicate, and neither could ask "has this already passed" from where
+  // they sat — so both booked the entire chain every cycle. Depends on nothing but a dep, so there
+  // is no ordering to get wrong by moving it.
+  const latestPrior = new Map<string, GateEvaluation>();
+  for (const e of deps.priorGateEvaluations ?? []) {
+    const key = `${e.workId}::${String(e.gate)}`;
+    const had = latestPrior.get(key);
+    if (had === undefined || had.atMs <= e.atMs) latestPrior.set(key, e);
+  }
+  const passedBefore = (workId: string, gate: GateKind): boolean => {
+    const e = latestPrior.get(`${workId}::${String(gate)}`);
+    return e !== undefined && isPassing(e.outcome);
+  };
+
+  // ── WORK THAT IS WAITING FOR A PERSON IS NOT WORK SOMEBODY IS DOING ───────
+  // A contributor seat means "this hat is busy building something". A node stopped at a human
+  // checkpoint is not being built by anyone — it is waiting on a mailbox — and `WorkState` has no
+  // way to say so: its four values are open, in_progress, done, canceled, with no blocked state.
+  // So a parked node stayed `open` with its `assigneeHatId` set, and `openCarried` below counted it
+  // as occupying a seat for as long as the person was asleep.
+  //
+  // MEASURED, and this is the mechanism behind the starvation refusals: proj-042 was parked at
+  // `architecture_approval` 44 TIMES, re-parked every cycle, holding `backend_implementer` the
+  // whole while. There are exactly two implementation seats in this chart, so two parked tickets
+  // hold the entire organization — 184 `no free individual-contributor hat` refusals across 20
+  // runs, climbing as more work reached a checkpoint and never falling.
+  //
+  // AT THE CHECKPOINT, not merely owing one: `nextOwed` is the first gate not yet passed, so this
+  // is true only once everything before it is done and the person is genuinely the next actor.
+  //
+  // AND A PERSON'S OWN REJECTION DOES NOT PARK IT. If the latest verdict at that gate came from a
+  // `person:`, they have answered — with rework to do — and the item needs a contributor again.
+  // Only an absent verdict, or one from an AI hat, means the mailbox is still what it is waiting on.
+  const checkpointGates = humanGatesFor(deps.checkpoints ?? []);
+  const parkedOnPerson = (node: CascadeNode): boolean => {
+    if (checkpointGates.size === 0) return false;
+    const nextOwed = chainForTask(node, deps.pipeline ?? DEFAULT_PIPELINE).find(
+      (g) => !passedBefore(node.workId, g),
+    );
+    if (nextOwed === undefined || !checkpointGates.has(nextOwed)) return false;
+    const latest = latestPrior.get(`${node.workId}::${String(nextOwed)}`);
+    return latest === undefined || !latest.byHatId.startsWith("person:");
+  };
+
   // ── 4. STAFF — ranked assignment producing real, expiring bindings ────────
   let bindings: readonly HatBinding[] = [];
   const board0 = EMPTY_BOARD;
@@ -1576,6 +1669,69 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
   const staffedThisCycle = new Set<string>();
 
   for (const task of unstaffedTasks(cascade)) {
+    // ── ASKED BEFORE ANYONE IS ASKED FOR ─────────────────────────────────────
+    // This block used to sit seventy lines BELOW the supervisor signal, so a task no hat could
+    // possibly take still sent a `RequestResource` signal to the RMO, opened a discussion anchor
+    // nobody would ever post to, engaged two hats, and wrote two events — and only then refused.
+    // MEASURED on the FlowDent store: 184 `no free individual-contributor hat` refusals across 20
+    // runs, each having first manufactured a request for staffing that could not be met.
+    //
+    // It answers the same two questions in the same way; only the order changed. Nothing between
+    // here and the old position reads the board, the signal or the anchor, and nothing there
+    // modified `cascade` — which is what the answer is computed from.
+    //
+    // TWO SEPARATE QUESTIONS, and conflating them is what made the first run of this pipeline
+    // starve. `goal-cascade.assign` assigns a HAT to the task; `assignment-engine.assignHat` picks
+    // an AGENT to wear a hat. So:
+    //
+    //   (a) which IC hat should carry this task — a chart question, answered by the reporting line;
+    //   (b) which agent wears it — a ranking question, answered by reputation and availability.
+    //
+    // (a) An IC hat inside the task owner's line, not already carrying another task in this
+    // cascade. Without the second condition both tasks land on one hat and the second is refused
+    // at the supply cap, which reads as a capacity problem and is really a selection bug.
+    // FINISHED WORK DOES NOT HOLD A PERSON. This counted every hat that had EVER been assigned
+    // anything, with no state filter, so a contributor who completed a task was marked busy for the
+    // rest of the organization's life. MEASURED: the seeded chart puts 2 individual contributors
+    // under `tech_lead`, which owns every leaf; after those two finished their first items the line
+    // was permanently full, three stated goals produced five `no free individual-contributor hat`
+    // refusals, and the autonomy loop stopped with NO_PROGRESS while 83 people sat idle.
+    //
+    // An organization whose workforce only ever shrinks does not converge on anything.
+    //
+    // …AND A HAT CARRIES AS MANY OPEN TASKS AS WEARERS ARE AUTHORIZED FOR IT, not one. A hat is a
+    // ROLE; `supplyTarget` is how many agents may wear it at once. Counting it as a single seat
+    // MEASURED on the Agentic Team's first real run: three tickets, two contributor hats under the
+    // lead who owns every leaf — one ticket's items took both, one of those waited on a person, and
+    // the other two tickets were never started. At the default supply of 1 this is exactly the old
+    // rule; the same agent still never takes two tasks at once (below).
+    //
+    // THIS IS THE ORGANIZATION'S CONCURRENCY CEILING, and it is worth stating plainly because it is
+    // not obvious from any one line: the seeded chart has 85 individual contributors but only TWO
+    // of them (`backend_implementer`, `frontend_implementer`) report up to `tech_lead`, which owns
+    // every implementation leaf. At the default `supplyTarget` of 1 that is TWO concurrent
+    // implementation tasks for the whole organization, no matter how many agents are idle. Raising
+    // `--supply-target` is what widens it; `--parallel` is what lets the widened set run at once.
+    const openCarried = new Map<string, number>();
+    for (const n of cascade.nodes) {
+      if (n.state === WorkState.Done || n.state === WorkState.Canceled || n.assigneeHatId === undefined) continue;
+      // Waiting on a person is not carrying work — see `parkedOnPerson`.
+      if (parkedOnPerson(n)) continue;
+      openCarried.set(n.assigneeHatId, (openCarried.get(n.assigneeHatId) ?? 0) + 1);
+    }
+    const targetHat = deps.chart.hats.find(
+      (h) =>
+        h.level === "individual_contributor" &&
+        (openCarried.get(h.id) ?? 0) < supplyTarget &&
+        reportsUpTo(deps.chart, h.id, task.ownerHatId),
+    );
+    if (targetHat === undefined) {
+      refusals.push(
+        `no free individual-contributor hat reports up to '${task.ownerHatId}' for ${task.workId}`,
+      );
+      continue;
+    }
+
     // The lead asks the RMO — routed, evidenced, and anchored.
     const sent = sendSupervisorSignal(
       deps.chart,
@@ -1629,50 +1785,8 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
       });
     }
 
-    // TWO SEPARATE QUESTIONS, and conflating them is what made the first run of this pipeline
-    // starve. `goal-cascade.assign` assigns a HAT to the task; `assignment-engine.assignHat` picks
-    // an AGENT to wear a hat. So:
-    //
-    //   (a) which IC hat should carry this task — a chart question, answered by the reporting line;
-    //   (b) which agent wears it — a ranking question, answered by reputation and availability.
-    //
-    // (a) An IC hat inside the task owner's line, not already carrying another task in this
-    // cascade. Without the second condition both tasks land on one hat and the second is refused
-    // at the supply cap, which reads as a capacity problem and is really a selection bug.
-    // FINISHED WORK DOES NOT HOLD A PERSON. This counted every hat that had EVER been assigned
-    // anything, with no state filter, so a contributor who completed a task was marked busy for the
-    // rest of the organization's life. MEASURED: the seeded chart puts 2 individual contributors
-    // under `tech_lead`, which owns every leaf; after those two finished their first items the line
-    // was permanently full, three stated goals produced five `no free individual-contributor hat`
-    // refusals, and the autonomy loop stopped with NO_PROGRESS while 83 people sat idle.
-    //
-    // An organization whose workforce only ever shrinks does not converge on anything.
-    //
-    // …AND A HAT CARRIES AS MANY OPEN TASKS AS WEARERS ARE AUTHORIZED FOR IT, not one. A hat is a
-    // ROLE; `supplyTarget` is how many agents may wear it at once. Counting it as a single seat
-    // MEASURED on the Agentic Team's first real run: three tickets, two contributor hats under the
-    // lead who owns every leaf — one ticket's items took both, one of those waited on a person, and
-    // the other two tickets were never started. At the default supply of 1 this is exactly the old
-    // rule; the same agent still never takes two tasks at once (below).
-    const openCarried = new Map<string, number>();
-    for (const n of cascade.nodes) {
-      if (n.state === WorkState.Done || n.state === WorkState.Canceled || n.assigneeHatId === undefined) continue;
-      openCarried.set(n.assigneeHatId, (openCarried.get(n.assigneeHatId) ?? 0) + 1);
-    }
-    const targetHat = deps.chart.hats.find(
-      (h) =>
-        h.level === "individual_contributor" &&
-        (openCarried.get(h.id) ?? 0) < supplyTarget &&
-        reportsUpTo(deps.chart, h.id, task.ownerHatId),
-    );
-    if (targetHat === undefined) {
-      refusals.push(
-        `no free individual-contributor hat reports up to '${task.ownerHatId}' for ${task.workId}`,
-      );
-      continue;
-    }
-
-    // (b) The agents who could wear it. Ranked on the (agent, hat) pairing.
+    // (b) The agents who could wear it. Ranked on the (agent, hat) pairing. (a) is answered at the
+    // top of this loop, before the staffing signal — see the note there.
     //
     // ── ONE CONCURRENT TASK PER AGENT ───────────────────────────────────────
     // Every agent used to be a candidate for every task, so one agent took BOTH items in a run and
@@ -1928,7 +2042,12 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
     // narrows a hat's menu by what it is booked to be doing, so a review with no block is one the
     // reviewing hat's tick cannot see it is supposed to do. Work was authorised by the schedule
     // and reviews were not, which is why the review lane could never drive itself.
-    const chain = chainForTask(task, deps.pipeline ?? DEFAULT_PIPELINE);
+    // A GATE THIS ITEM ALREADY PASSED GETS NO BLOCK. Same question the walk asks before re-running
+    // one, asked one step earlier so the calendar never fills with appointments for finished work.
+    // See the note on `latestPrior` above section 4 for what this was costing.
+    const chain = chainForTask(task, deps.pipeline ?? DEFAULT_PIPELINE).filter(
+      (g) => !passedBefore(task.workId, g),
+    );
     const reviews = bookReviewBlocks({
       chart: deps.chart,
       calendar,
@@ -2155,18 +2274,8 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
   // that lags the work is a record a reviewer cannot use, whoever the reviewer is.
   const recordedEarly = new Set<string>();
 
-  // ── WHAT ALREADY PASSED, from earlier cycles and runs ─────────────────────
-  // The LATEST prior verdict per (item, gate). See `OrgRuntimeDeps.priorGateEvaluations`.
-  const latestPrior = new Map<string, GateEvaluation>();
-  for (const e of deps.priorGateEvaluations ?? []) {
-    const key = `${e.workId}::${String(e.gate)}`;
-    const had = latestPrior.get(key);
-    if (had === undefined || had.atMs <= e.atMs) latestPrior.set(key, e);
-  }
-  const passedBefore = (workId: string, gate: GateKind): boolean => {
-    const e = latestPrior.get(`${workId}::${String(gate)}`);
-    return e !== undefined && isPassing(e.outcome);
-  };
+  // `latestPrior` and `passedBefore` are defined above section 4 — the scheduling ceremonies need
+  // them before this point. See the note there.
   const recordProduced = (
     workId: string,
     gate: GateKind,
@@ -2337,6 +2446,8 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
       const verdict = await providers.review.review({
         gate,
         workId: node.workId,
+        title: node.title,
+        ...(node.brief === undefined ? {} : { brief: node.brief }),
         evidence: shown.map((ref) => ({ kind: "document" as const, ref })),
       });
       if (!verdict.ok) {
@@ -2355,7 +2466,26 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
     // reviewed silently: no calendar block, so the reviewing hat's own tick could not see the work;
     // no review request, so no anchor; no anchor, so no deliberation record. Measured as the board
     // dropping to a single speaking hat.
-    const govChain = chainForTask(node, deps.pipeline ?? DEFAULT_PIPELINE);
+    // ── AND A STEP THAT ALREADY PASSED IS NOT BOOKED AGAIN ──────────────────
+    // The walk below already refuses to re-run a passed gate (`.filter((g) => !passedBefore(...))`,
+    // under "A STEP THAT ALREADY PASSED is not owed again"). The CEREMONY around the walk did not:
+    // the full chain was booked, anchored and requested every cycle, and only then did the walk
+    // decline to review most of it.
+    //
+    // MEASURED on the FlowDent store, and it is the single largest thing in there. Per gate, per
+    // cycle, for every item: one calendar block, one discussion anchor, one supervisor signal —
+    // ~487 of each per gate across the run, against 349 verdicts ACTUALLY reached in total. Those
+    // three ceremonies are 8,010 `schedule_block_planned` + 8,930 `decision_recorded` + 7,269
+    // `supervisor_signal_sent` = 24,209 of 31,977 events, 76% of the organization's entire log,
+    // for reviews that had already happened and would not happen again.
+    //
+    // The cost is not only the log. `bookReviewBlocks` puts real time on the reviewing hats'
+    // calendars, so booking a gate nobody will review CONSUMES the slot a gate that IS owed needs —
+    // and `firstCommonFreeSlot` then reports "no common slot", which reads as a busy organization
+    // and is really a calendar full of appointments for finished work.
+    const govChain = chainForTask(node, deps.pipeline ?? DEFAULT_PIPELINE).filter(
+      (g) => !passedBefore(node.workId, g),
+    );
     if (govChain.length > 0 && deps.workBlockMs > 0) {
       const govBooked = bookReviewBlocks({
         chart: deps.chart,
@@ -2653,7 +2783,28 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
       .map((id) => nodeById(cascade, id))
       .filter((n): n is CascadeNode => n !== undefined && n.state !== WorkState.Canceled);
 
-  for (const task of staffedTasks) {
+  // ── EVERY STAFFED TASK'S GATE WALK, UP TO `maxParallel` AT ONCE ────────────────
+  // MEASURED this session: six unrelated FlowDent tickets' tasks ran one at a time, each real gate
+  // a multi-minute Claude call, for 10+ hours of wall clock with zero dependency between most of
+  // them — proj-050's `architecture_design` churn and proj-058's `implementation_review` share no
+  // state and never did. `ferry` at its default dop (`SEQUENTIAL`) is BYTE-IDENTICAL to the loop it
+  // replaces (ferry.ts's own doc comment); the body below is UNCHANGED, wrapped in a single-element
+  // inner loop purely so every `continue` inside keeps meaning exactly what it always meant — "skip
+  // this task, go to the next" — with no line of the walk itself touched. (Indentation of the body
+  // is deliberately left as it was under the old `for`, rather than reflowed two spaces deeper, to
+  // keep this diff reviewable as "wrap, don't rewrite.")
+  //
+  // SAFE TO INTERLEAVE ACROSS TICKETS: the only place this body reads another task's outcome
+  // (`dependenciesOf`, `openedChanges`, `gateEvaluations.some(...)`) is resolving a dependency
+  // edge, and every edge `dependenciesOf` can produce comes from `node.dependsOn`, set at
+  // decomposition time WITHIN one ticket's own cascade (see `dependenciesOf`'s own comment above) —
+  // never across tickets. A same-ticket dependent racing ahead of its own dependency mid-cycle sees
+  // exactly what it already sees today when ordering happens to put it first: "not ready yet,"
+  // deferred to the next cycle via the `waitingOn` refusal below. Interleaving across TICKETS can
+  // only ever make that same, already-tolerated deferral marginally more likely for a same-ticket
+  // pair — it can never make two tickets that never depended on each other suddenly need to.
+  await ferry(staffedTasks, deps.maxParallel ?? SEQUENTIAL, async (outerTask) => {
+  for (const task of [outerTask]) {
     // ALREADY ON THE TRUNK, from an earlier run: nothing to walk and no change to open. MEASURED on
     // the Agentic Team's run: a resumed run re-opened a change for a defect merged hours earlier,
     // found its old checkout directory still on disk, and refused - and the refusal was the first
@@ -2726,6 +2877,56 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
     if (deps.deliverSelf !== undefined && !deps.deliverSelf.includes(task.workId)) {
       refusals.push(`${task.workId} was left for the agent lane to deliver; this run did not deliver it`);
       continue;
+    }
+    // ── A GATE THE MACHINE HAS ALREADY FAILED TO SETTLE IS A PERSON'S ─────────
+    // `maxGateAttempts` bounds retries WITHIN a cycle and churn detection escalates — but neither
+    // stops anything: the next cycle staffs the item again and walks the same gate from scratch,
+    // for as long as the organization runs. MEASURED on the FlowDent store, counted the way
+    // `foldGateEvaluations` counts (deduped on its own key — the raw event stream carries each
+    // verdict twice, once as the gate's own event and again inside the governance roll-up that
+    // summarises it, so reading the events directly doubles every figure here):
+    //
+    //   349 verdicts, 290 of them rejections (83%) against 59 approvals
+    //   `business_context_grooming` rejected goal-024 81 times and NEVER passed it
+    //   `architecture_design` rejected proj-050 51 times
+    //   churn was detected 346 times while this happened
+    //
+    // Every one of those rejections was a real model call that produced nothing but another "no".
+    // Replayed against this ceiling, 192 of the 349 calls — 55% — never happen.
+    //
+    // Infinite retries are not persistence, they are a loop with no exit. Past this ceiling the
+    // item stops being retried and starts WAITING FOR A PERSON — the mechanism this runtime
+    // already has for "the organization cannot settle this itself" — which is strictly more
+    // progress than another identical rejection.
+    //
+    // Counted SINCE THE LAST HUMAN VERDICT at that gate, not over all time: a person's own
+    // rejection is what the ceiling asks for, so counting it would park the item again the instant
+    // they answered, which is the same loop with a longer period.
+    const nextOwed = chainForTask(task, deps.pipeline ?? DEFAULT_PIPELINE).find((g) => !passedBefore(task.workId, g));
+    if (nextOwed !== undefined) {
+      const ceiling = Math.max(1, deps.maxGateRejections ?? DEFAULT_GATE_REJECTION_CEILING);
+      const atGate = [...(deps.priorGateEvaluations ?? []), ...gateEvaluations].filter(
+        (e) => e.workId === task.workId && e.gate === nextOwed,
+      );
+      const lastHuman = atGate.map((e) => e.byHatId.startsWith("person:")).lastIndexOf(true);
+      const sinceHuman = atGate.slice(lastHuman + 1).filter((e) => !isPassing(e.outcome)).length;
+      if (sinceHuman >= ceiling) {
+        awaitingHuman.push({ taskId: task.workId, gate: nextOwed });
+        note({
+          kind: OrgEventKind.DecisionRecorded,
+          subjectId: task.workId,
+          decision:
+            `'${String(nextOwed)}' has rejected ${task.workId} ${String(sinceHuman)} times with nobody deciding it — ` +
+            `stopping here for a person rather than asking again`,
+          toState: "awaiting_human",
+          atMs: warmedAt,
+        });
+        refusals.push(
+          `${task.workId} is waiting on a person at '${String(nextOwed)}': ${String(sinceHuman)} rejections ` +
+            `since anyone last decided it (ceiling ${String(ceiling)})`,
+        );
+        continue;
+      }
     }
     // QA derives its cases from the task's own criterion — the BRD stands in for the spec.
     const cases = deriveTestCases(
@@ -3041,6 +3242,8 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
       const verdict = await providers.review.review({
         gate,
         workId: task.workId,
+        title: task.title,
+        ...(task.brief === undefined ? {} : { brief: task.brief }),
         evidence: shown.map((ref) => ({ kind: "document" as const, ref })),
         ...(reviewIn === undefined ? {} : { workdir: reviewIn }),
       });
@@ -3531,6 +3734,8 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
       });
     }
   }
+  return undefined;
+  });
 
   // ── SUCCESSION — what happens to the hats when the bindings end ───────────
   const succession: SuccessionPlan[] = [];
@@ -3627,6 +3832,8 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
       const verdict = await providers.review.review({
         gate,
         workId: node.workId,
+        title: node.title,
+        ...(node.brief === undefined ? {} : { brief: node.brief }),
         evidence: shown.map((ref) => ({ kind: "document" as const, ref })),
       });
       if (!verdict.ok) {
@@ -3840,6 +4047,13 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
     });
     return true;
   };
+  // WHICH ITEMS THE LEGACY PATH ACTUALLY STAFFED FOR REAL, vouched for by this runtime itself -
+  // never inferred by `factsFor` from gate evaluations existing, since a SIMULATED work port can
+  // pass every gate (an auto-approving reviewer needs no real diff to say yes) with nothing
+  // actually built. Gated on `work` being a REAL port: only then does "a change was opened for
+  // this workId" mean a real branch with a real producer behind it, not a no-op simulation.
+  const legacyStaffed =
+    providers.work.meta.fidelity === Fidelity.Real ? new Set(openedChanges.keys()) : new Set<string>();
   const changes = projectAll({
     cascade,
     queue,
@@ -3850,6 +4064,7 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
     // the cascade, every step approved, and never merged.
     gateEvaluations: uniqueVerdicts([...(deps.priorGateEvaluations ?? []), ...gateEvaluations]),
     pickedBy,
+    legacyStaffed,
     nowMs: warmedAt,
   });
   for (const c of changes) {

@@ -30,6 +30,7 @@
  * would have built a second fold beside the working one.
  */
 
+import { readFileSync, writeFileSync } from "node:fs";
 import { Category } from "../zeta-id/types";
 import { readShards, shardZetaId, writeShard, type ShardWindow } from "../shard-store/shard-store";
 import { toHex } from "../zeta-id/encoding";
@@ -129,8 +130,9 @@ export function mintRunId(input: {
  * FOLD OVER THE LOG rather than a second copy of the state that can drift.
  */
 export function appendEvent(event: OrgEvent, root: string): string {
-  // The log just changed: whatever was read before this is no longer all of it.
-  forgetEvents();
+  // The log just changed — and this process knows EXACTLY how, so it keeps the read it already has
+  // instead of throwing it away. See `rememberAppended`.
+  rememberAppended(event, root);
   return writeShard(
     { value: event, atMs: event.atMs, category: Category.Workflow, prefix: [EVENTS] },
     root,
@@ -156,10 +158,10 @@ export function appendRun(
   },
   root: string,
 ): { readonly runPath: string; readonly eventPaths: readonly string[] } {
-  forgetEvents();
-  const eventPaths = input.trace.map((event) =>
-    writeShard({ value: event, atMs: event.atMs, category: Category.Workflow, prefix: [EVENTS] }, root),
-  );
+  const eventPaths = input.trace.map((event) => {
+    rememberAppended(event, root);
+    return writeShard({ value: event, atMs: event.atMs, category: Category.Workflow, prefix: [EVENTS] }, root);
+  });
   const summary = {
     atMs: input.atMs,
     delivered: input.delivered,
@@ -177,6 +179,10 @@ export function appendRun(
     { value: run, atMs: input.atMs, category: Category.Workflow, prefix: [RUNS] },
     root,
   );
+  // THE RUN IS OVER, SO COLLAPSE WHAT IT LEAVES BEHIND. Built from this process's own cached read,
+  // so it costs a serialize rather than the 112-176s cold read it saves every process that comes
+  // after. See `writeEventsSnapshot`.
+  writeEventsSnapshot(root);
   return { runPath, eventPaths };
 }
 
@@ -195,7 +201,7 @@ export function appendRun(
  * writes. Those readers call `forgetEvents` when they start a tick, and that is the whole contract.
  * A windowed read is never cached - it is a different question with a different answer.
  */
-let lastRead: { readonly root: string; readonly events: readonly OrgEvent[] } | undefined;
+let lastRead: { readonly root: string; events: OrgEvent[]; readonly ids: Set<string> } | undefined;
 
 /**
  * Forget the cached read. A long-lived reader calls this whenever ANOTHER process may have written
@@ -206,19 +212,199 @@ export function forgetEvents(): void {
 }
 
 /**
+ * Keep the cached read CURRENT across this process's own append, instead of dropping it.
+ *
+ * ── THE DEFECT THIS CLOSES, MEASURED ─────────────────────────────────────────
+ * `appendEvent` used to call `forgetEvents()`: the log changed, so the read was stale. True, and
+ * ruinous — because the very next read re-opened, re-parsed and re-sorted EVERY shard in the store
+ * to learn one thing this process already knew. MEASURED on the FlowDent store, 31,963 events:
+ * a cold full read takes 112 SECONDS, and a warm one (OS cache hot, cache dropped) still takes 4.
+ *
+ * And a run interleaves them constantly: `run-org` holds ~22 `readEvents` call sites, four behind
+ * getters that re-read on every property access, and the runtime appends an event for every gate
+ * verdict, schedule block, supervisor signal and anchor it records — 85% of that store's 32k events
+ * are exactly that bookkeeping. Write, drop, read 4s, write, drop, read 4s. The cost grows with the
+ * store, so the same organization gets slower every hour it runs: hours of a ten-hour FlowDent run
+ * went to re-reading what was already in memory.
+ *
+ * ── WHY THIS IS SAFE ─────────────────────────────────────────────────────────
+ * An append is the one change whose exact content the writer holds. Adding it to the cached array
+ * yields precisely what re-reading would have produced, with two cases handled explicitly:
+ *
+ *   IDEMPOTENCE. `appendRun` is documented as an upsert — the same event re-appended writes the
+ *   same bytes to the same path, so the STORE dedupes by path and a naive `push` would leave the
+ *   cache holding a duplicate the store does not have. Ids are tracked in a Set and a re-append is
+ *   ignored, which is what re-reading the store would show.
+ *
+ *   ORDER. `readEvents` sorts by `compareEvents` (instant, then minted id). Events almost always
+ *   arrive in that order, so the common path is a push after one comparison; anything out of order
+ *   is binary-searched into place. Either way the array holds what a re-read would.
+ *
+ * What this does NOT cover is unchanged: ANOTHER process appending. That was never visible to a
+ * cached read and still is not — `forgetEvents` remains the contract for readers who need to see
+ * writes they did not make (see its own comment).
+ */
+function rememberAppended(event: OrgEvent, root: string): void {
+  // A cache for a DIFFERENT store tells us nothing about this one — and this write cannot have
+  // invalidated it, so dropping is the conservative, correct move rather than merging into it.
+  if (lastRead === undefined) return;
+  if (lastRead.root !== root) {
+    lastRead = undefined;
+    return;
+  }
+  // IDENTITY IS THE CONTENT ADDRESS, not `event.id` — the same rule `identifyEvent` states and
+  // `readShards` de-duplicates by. Two DIFFERENT events may share an id (a re-run mints the same
+  // counter), they land at different paths, and both are genuinely in the log; keying this cache on
+  // `event.id` dropped the second one and made the cache disagree with the disk. Caught by
+  // "what the reader returns matches what is ON DISK".
+  const address = identifyEvent(event);
+  if (lastRead.ids.has(address)) return;
+  lastRead.ids.add(address);
+  const events = lastRead.events;
+  const last = events[events.length - 1];
+  if (last === undefined || compareEvents(last, event) <= 0) {
+    events.push(event);
+    return;
+  }
+  // Out of order (a backdated verdict, say): find where a re-read would have put it.
+  let lo = 0;
+  let hi = events.length;
+  while (lo < hi) {
+    const mid = (lo + hi) >> 1;
+    if (compareEvents(events[mid] as OrgEvent, event) <= 0) lo = mid + 1;
+    else hi = mid;
+  }
+  events.splice(lo, 0, event);
+}
+
+/**
  * Every event ever stored, in the order they happened.
  *
  * Ordered by the event's own `atMs`, with its id as the tie-break — never by filename, which is an
  * artefact of the store rather than of the organization.
  */
+/** Where a store keeps the one file that saves it from opening thirty thousand. */
+const SNAPSHOT = "events-snapshot.json";
+
+/**
+ * How far back a snapshot re-reads shards it already contains.
+ *
+ * The window prunes whole `YYYY/MM/DD` directories, and the log's instants are the organization's
+ * LOGICAL clock — which is monotonic in practice but nothing enforces it, and an event backdated
+ * before the boundary would sit in a pruned directory and vanish from every read. A week of
+ * overlap costs a few extra directories and makes that class of loss require the clock to jump
+ * backwards by more than a week. Anything the overlap re-reads is deduplicated by id, so the
+ * margin can only cost time, never correctness.
+ */
+const SNAPSHOT_OVERLAP_MS = 7 * 86_400_000;
+
+interface EventsSnapshot {
+  readonly version: 1;
+  readonly throughAtMs: number;
+  readonly throughId: string;
+  readonly events: readonly OrgEvent[];
+}
+
+/**
+ * Collapse every shard read so far into ONE file, so the next cold read opens one instead of tens
+ * of thousands.
+ *
+ * ── THE DEFECT THIS CLOSES, MEASURED ─────────────────────────────────────────
+ * The store keeps one file per event. On the FlowDent store that is 30 MB spread across 31,977
+ * files, and a cold read takes 112-176 SECONDS — essentially all of it per-file open and parse
+ * overhead, not data. 30 MB read as a single file is milliseconds. Every fresh process paid it:
+ * each `ocli` invocation, each `run-org` start, each watcher tick that forgot its cache.
+ *
+ * Written at the end of a run, from the read this process already has cached, so producing it
+ * costs a serialize rather than a re-read. NOTHING about writing events changes — the shards are
+ * still the log, still append-only, still one file per event, and still the thing a snapshot is
+ * rebuilt FROM. This is a cache with a boundary, not a new storage format: delete the file and the
+ * store reads exactly as it did before, just slowly.
+ */
+export function writeEventsSnapshot(root: string): void {
+  try {
+    const events = readEvents(root);
+    const last = events[events.length - 1];
+    if (last === undefined) return;
+    const snapshot: EventsSnapshot = {
+      version: 1,
+      throughAtMs: last.atMs,
+      throughId: last.id,
+      events,
+    };
+    // Written beside the shards, never inside `events/` — `readShards` walks that tree and would
+    // try to parse this as one more event.
+    writeFileSync(`${root}/${SNAPSHOT}`, JSON.stringify(snapshot), "utf-8");
+  } catch {
+    // A snapshot that cannot be written is a slow next read, never a wrong one. The shards are
+    // still the truth and still complete.
+  }
+}
+
+/**
+ * Every event in the log: the snapshot plus whatever has been appended since, or all the shards
+ * when there is no snapshot.
+ *
+ * The tail is read with a WINDOW, which is the whole point — `readShards` prunes by `YYYY/MM/DD`
+ * directory, so a snapshot taken at the tip means the next cold read opens the snapshot and the
+ * last week of directories instead of every directory there has ever been.
+ *
+ * Deduplicated by id, because the overlap window deliberately re-reads shards the snapshot already
+ * holds. A shard and its snapshot copy are the same record written twice, so either may win.
+ */
+function readWholeLog(root: string): OrgEvent[] {
+  const snapshot = loadSnapshot(root);
+  if (snapshot === undefined) {
+    return [...readShards<OrgEvent>(`${root}/${EVENTS}`, identifyEvent)].sort(compareEvents);
+  }
+  const boundary = { atMs: snapshot.throughAtMs, id: snapshot.throughId } as OrgEvent;
+  const tail = readShards<OrgEvent>(`${root}/${EVENTS}`, identifyEvent, {
+    fromMs: snapshot.throughAtMs - SNAPSHOT_OVERLAP_MS,
+  });
+  // Keyed by CONTENT ADDRESS, the store's own identity — see `identifyEvent`. Two different
+  // events may share an `id`, and de-duplicating on that would drop one that is really on disk.
+  const ids = new Set(snapshot.events.map(identifyEvent));
+  const out = [...snapshot.events];
+  for (const e of tail) {
+    // Strictly after the boundary, in the log's own order — an event at the exact boundary IS the
+    // boundary, and the address check below catches it anyway.
+    if (compareEvents(e, boundary) <= 0) continue;
+    const address = identifyEvent(e);
+    if (ids.has(address)) continue;
+    ids.add(address);
+    out.push(e);
+  }
+  return out.sort(compareEvents);
+}
+
+/** The snapshot, if there is a usable one. Anything doubtful reads as "no snapshot". */
+function loadSnapshot(root: string): EventsSnapshot | undefined {
+  try {
+    const raw = readFileSync(`${root}/${SNAPSHOT}`, "utf-8");
+    const parsed = JSON.parse(raw) as EventsSnapshot;
+    if (parsed.version !== 1 || !Array.isArray(parsed.events)) return undefined;
+    if (typeof parsed.throughAtMs !== "number" || typeof parsed.throughId !== "string") return undefined;
+    return parsed;
+  } catch {
+    return undefined;
+  }
+}
+
 export function readEvents(root: string, window?: ShardWindow): readonly OrgEvent[] {
   // A window asks a narrower question; caching it under the same key would answer the wide one.
   if (window !== undefined) {
     return [...readShards<OrgEvent>(`${root}/${EVENTS}`, identifyEvent, window)].sort(compareEvents);
   }
-  if (lastRead !== undefined && lastRead.root === root) return lastRead.events;
-  const events = [...readShards<OrgEvent>(`${root}/${EVENTS}`, identifyEvent, window)].sort(compareEvents);
-  lastRead = { root, events };
+  // A COPY, never the cached array itself: `rememberAppended` now mutates that array in place, and
+  // a caller holding the live one could see it grow underneath — worst case, appending while
+  // iterating what it just read. The copy is ~0.1ms against the 4,000ms re-read it replaces.
+  if (lastRead !== undefined && lastRead.root === root) return [...lastRead.events];
+  const events = readWholeLog(root);
+  // The id index is what lets `rememberAppended` keep this array current without a re-read, and it
+  // is built ONCE here rather than per append — see that function for why an append must dedupe.
+  // The cache keeps its OWN array for the same reason the hit path copies: what an append mutates
+  // must never be an array a caller is already holding.
+  lastRead = { root, events: [...events], ids: new Set(events.map(identifyEvent)) };
   return events;
 }
 

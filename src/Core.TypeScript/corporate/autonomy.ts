@@ -67,6 +67,20 @@ export interface Progress {
 
 export function progressOf(report: OrgRuntimeReport): Progress {
   return {
+    // ── `gatesPassed` COUNTS EVERY VERDICT, REJECTIONS INCLUDED ──────────────
+    // The name says passed; the expression says evaluated. That is deliberate and it is also the
+    // reason an organization can spin: a cycle that produced four rejections and approved nothing
+    // registers as progress, and `sameProgress` only stops the loop when the COUNT repeats exactly.
+    // MEASURED on the FlowDent store: `business_context_grooming` rejected goal-024 81 times across
+    // 78 cycles and the autonomy loop never once declared NO_PROGRESS, because the per-cycle
+    // verdict count wobbled between 3 and 5 the whole way.
+    //
+    // NOT CHANGED TO COUNT ONLY PASSING VERDICTS, deliberately. A legitimate rework round is a
+    // cycle that rejects and approves nothing — counting passes alone would call the first such
+    // cycle "no progress" and stop the run before the author ever got to revise, which trades a
+    // spin for a premature halt. The spin is bounded where it actually belongs: the per-gate
+    // rejection ceiling (`DEFAULT_GATE_REJECTION_CEILING`) parks an item for a person, verdicts
+    // stop being produced, the count flattens, and THIS check then fires correctly.
     gatesPassed: report.gateEvaluations.length,
     workItemsDone: report.cascade.nodes.filter((n) => n.state === "done").length,
     changesLanded: report.changesLanded.length,

@@ -160,6 +160,8 @@ export async function deliverWorkItem(input: DeliveryInput): Promise<DeliveryOut
     const verdict = await input.providers.review.review({
       gate,
       workId,
+      title: input.node.title,
+      ...(input.node.brief === undefined ? {} : { brief: input.node.brief }),
       evidence: shown.map((ref) => ({ kind: "document" as const, ref })),
     });
     if (!verdict.ok) {

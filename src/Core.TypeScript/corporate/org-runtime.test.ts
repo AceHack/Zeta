@@ -1425,3 +1425,77 @@ describe("A HAT CARRIES AS MANY OPEN TASKS AS WEARERS ARE AUTHORIZED FOR IT", ()
     expect(leaves.every((n) => n.assigneeHatId !== undefined)).toBe(true);
   }, 60_000);
 });
+
+describe("TWO UNRELATED TICKETS' GATE WALKS OVERLAP WHEN `maxParallel` SAYS SO", () => {
+  // MEASURED this session: six FlowDent tickets with no dependency between them ran their entire
+  // gate chains one at a time, real multi-minute Claude calls included, because the runtime's own
+  // staffed-task loop `await`ed each task's walk before starting the next — regardless of whether
+  // anything actually required that order. `ferry` at its default dop is byte-identical to that
+  // loop; this proves the OTHER half — that raising it genuinely lets independent tickets' calls
+  // run at the same time, not just that the flag is accepted and silently ignored.
+  //
+  // A review port that RECORDS ITS OWN START AND END, not one that returns instantly, because a
+  // sequential and a concurrent run look identical if nothing in the fake port takes measurable
+  // time — the exact way a bug here could hide behind a test that finishes either way.
+  const two: ExternalEvent[] = [
+    { ...GOOD, externalId: "T-1", title: "checkout double-charges" },
+    { ...GOOD, externalId: "T-2", title: "refund posts twice" },
+  ];
+
+  // OCCUPANCY, NOT ELAPSED TIME. The property under test is "were two reviews inside at the
+  // same time", and the first version of this reached for it through an 80ms `setTimeout` plus
+  // `performance.now()` timestamps. That made a wall clock the arbiter of a verdict about
+  // CONCURRENCY -- a stand-in for the observable rather than the observable itself, which is
+  // what `audit-ambient-time-in-tests` refuses (it failed here on the unallowlisted timer).
+  //
+  // Counting occupancy answers the question DIRECTLY and deterministically: a reviewer bumps a
+  // counter on entry, yields a fixed number of event-loop TURNS, and drops it on exit. If the
+  // ferry runs them sequentially the counter can never exceed 1, however slow or fast the
+  // machine is; if it runs them together the peak rises. The yield is a LITERAL-zero
+  // `setTimeout`, which is deterministic in turns and is the one form the detector permits.
+  //
+  // This is also strictly stronger than the timestamp version: it cannot pass by accident on a
+  // loaded runner where two sequential calls happen to straddle the same millisecond, and it
+  // cannot fail on one where a concurrent pair is scheduled too far apart to overlap.
+  const YIELD_TURNS = 8;
+
+  function occupancyReviewer() {
+    const calls: { readonly gate: string; readonly workId: string }[] = [];
+    let inside = 0;
+    let peak = 0;
+    const review = {
+      meta: { port: Port.Review, name: "occupancy", fidelity: Fidelity.Real, describes: "records overlap" },
+      review: async (req: { readonly gate: GateKind; readonly workId: string }) => {
+        inside += 1;
+        peak = Math.max(peak, inside);
+        // Hold the call open across several turns so a genuinely concurrent sibling has somewhere
+        // to interleave. A reviewer that returned instantly would make sequential and concurrent
+        // runs indistinguishable -- the same trap the 80ms sleep was there to avoid.
+        for (let turn = 0; turn < YIELD_TURNS; turn++) {
+          await new Promise<void>((resolve) => setTimeout(resolve, 0));
+        }
+        inside -= 1;
+        calls.push({ gate: String(req.gate), workId: req.workId });
+        return { ok: true as const, value: { outcome: GateOutcome.Approved, reason: "ok" }, evidence: [] };
+      },
+    };
+    return { calls, review, peak: () => peak };
+  }
+
+  test("at the default (sequential), two tickets' reviews are never inside at once — the control", async () => {
+    const rec = occupancyReviewer();
+    const base = deps({ externalEvents: two, supplyTarget: 2 });
+    await runOrgRuntime({ ...base, providers: { ...defaultProviderSet(base), review: rec.review as never } } as OrgRuntimeDeps);
+    // Peak occupancy of 1 means no two review calls anywhere in the run were ever open together.
+    expect(rec.peak()).toBe(1);
+    // Without this the control passes vacuously when no review ever runs.
+    expect(rec.calls.length).toBeGreaterThan(0);
+  }, 60_000);
+
+  test("with maxParallel 2, two reviews are genuinely inside at the same time", async () => {
+    const rec = occupancyReviewer();
+    const base = deps({ externalEvents: two, supplyTarget: 2, maxParallel: 2 });
+    await runOrgRuntime({ ...base, providers: { ...defaultProviderSet(base), review: rec.review as never } } as OrgRuntimeDeps);
+    expect(rec.peak()).toBeGreaterThanOrEqual(2);
+  }, 60_000);
+});
