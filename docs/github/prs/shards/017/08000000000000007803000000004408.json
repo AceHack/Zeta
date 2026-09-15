@@ -1,0 +1,12 @@
+{
+  "pr_number": 17416,
+  "archive_path": "docs/history/pr-reviews/2026/09/15/PR-17416-feat-081m2k1pf0k087g0r001jaf8v4-ingest-docs-as-reverse-index-postings.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-15T17:54:04.838Z",
+  "schema_version": "v1",
+  "commit_sha": "5819c71b47af25556c3293bf194a5eccc6f40242",
+  "title": "feat(081M2K1PF0K087G0R001JAF8V4): ingest docs as reverse-index postings",
+  "state": "MERGED",
+  "merged_at": "2026-09-15T17:53:22Z",
+  "head_ref": "feat/zetadb-reverse-index-ingest"
+}
