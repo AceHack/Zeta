@@ -1,0 +1,12 @@
+{
+  "pr_number": 17415,
+  "archive_path": "docs/history/pr-reviews/2026/09/15/PR-17415-docs-memory-unique-confirm-leftover-unique-leftover-17414-17416-17418.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-15T20:45:59.711Z",
+  "schema_version": "v1",
+  "commit_sha": "8d368ef852e07048846858819f512a5b729daa1b",
+  "title": "docs(memory): unique-confirm leftover UNIQUE leftover #17414 + #17416 + #17418",
+  "state": "MERGED",
+  "merged_at": "2026-09-15T20:45:15Z",
+  "head_ref": "cursor/vera-notebook-unique-17414-d9f5"
+}
