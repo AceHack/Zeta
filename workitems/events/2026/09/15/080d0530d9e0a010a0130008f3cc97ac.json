@@ -1,0 +1,14 @@
+{
+  "id": "080d0530d9e0a010a0130008f3cc97ac",
+  "at": "2026-09-15T17:26:37.844Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M2K1PF0K087G0R001JAF8V4",
+    "type": "task",
+    "title": "Ingest factory documents as reverse-index postings on the host WAL",
+    "slug": "ingest-factory-documents-as-reverse-index-postings-on-the-ho",
+    "priority": "P1",
+    "filename": "081M2K1PF0K087G0R001JAF8V4-ingest-factory-documents-as-reverse-index-postings-on-the-ho.md"
+  }
+}

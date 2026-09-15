@@ -146,3 +146,117 @@ let ``fresh log instance recovers reverse-index facts from the host directory`` 
         finally
             try Directory.Delete(dir, true) with _ -> ()
     }
+
+
+let private writeRel (root: string) (rel: string) (content: string) =
+    let path = Path.Combine(root, rel.Replace('/', Path.DirectorySeparatorChar))
+    let dir = Path.GetDirectoryName path
+    if not (String.IsNullOrEmpty dir) then
+        Directory.CreateDirectory dir |> ignore
+    File.WriteAllText(path, content)
+    path
+
+let private writeRelBytes (root: string) (rel: string) (bytes: byte[]) =
+    let path = Path.Combine(root, rel.Replace('/', Path.DirectorySeparatorChar))
+    let dir = Path.GetDirectoryName path
+    if not (String.IsNullOrEmpty dir) then
+        Directory.CreateDirectory dir |> ignore
+    File.WriteAllBytes(path, bytes)
+    path
+
+let private landauerWeight (search: SearchIndex) (doc: string) =
+    ZSet.lookup { Term = "landauer"; Doc = doc } search.Current
+
+
+[<Fact>]
+let ``corpus predicate is an allowlist and exclusions beat it`` () =
+    ReverseIndexCorpus.isIndexablePath "docs/x.md" |> should equal true
+    ReverseIndexCorpus.isIndexablePath "src/a/b.ts" |> should equal true
+    ReverseIndexCorpus.isIndexablePath "img/logo.png" |> should equal false
+    ReverseIndexCorpus.isIndexablePath "docs/github/prs/shards/002/x.json" |> should equal false
+    ReverseIndexCorpus.isIndexablePath "db/search-index/inverted/files.txt" |> should equal false
+    ReverseIndexCorpus.isIndexablePath "README" |> should equal true
+    ReverseIndexCorpus.isIndexablePath "Makefile" |> should equal true
+    ReverseIndexCorpus.isIndexablePath ".git/objects/pack/foo.md" |> should equal false
+    ReverseIndexCorpus.isIndexablePath "Note.MD" |> should equal false
+
+
+[<Fact>]
+let ``every excluded tree carries a dated measurement`` () =
+    ReverseIndexCorpus.excludedTrees.Length |> should be (greaterThan 0)
+    for t in ReverseIndexCorpus.excludedTrees do
+        t.Prefix.EndsWith("/", StringComparison.Ordinal) |> should equal true
+        t.Measurement.Length |> should be (greaterThan 40)
+        t.Measurement |> Seq.exists Char.IsDigit |> should equal true
+
+
+[<Fact>]
+let ``host ingest hits landauer in fixture docs and skips excluded oversized binary`` () : Task =
+    let corpus = DeterministicTestPath.nextDir "revidx-ingest-corpus"
+    let wal = DeterministicTestPath.nextDir "revidx-ingest-wal"
+    task {
+        try
+            writeRel corpus "docs/note.md" "Landauer bound and entropy" |> ignore
+            writeRel corpus "src/code.ts" "export const landauer = 1" |> ignore
+            writeRel corpus "README" "landauer mentioned in the readme" |> ignore
+            writeRel corpus "docs/github/prs/shards/002/x.json" "landauer in a PR shard" |> ignore
+            writeRelBytes corpus "img/logo.png" [| 0x89uy; 0x50uy; 0uy |] |> ignore
+            let huge = Array.create (ReverseIndexCorpus.MaxBlobBytes + 1) (byte 'x')
+            let prefix = Text.Encoding.UTF8.GetBytes "landauer "
+            Array.Copy(prefix, huge, prefix.Length)
+            writeRelBytes corpus "docs/huge.md" huge |> ignore
+            let nulBytes =
+                Array.append [| byte 'l'; byte 'a'; 0uy |] (Text.Encoding.UTF8.GetBytes "landauer")
+            writeRelBytes corpus "docs/nul.md" nulBytes |> ignore
+
+            use log = new GroupCommitDiskDeltaLog<IndexFact>(wal, ReverseIndex.codec)
+            let dlog = log :> IDeltaLog<IndexFact>
+            let! report = ReverseIndexIngest.ingestHostDirectory corpus dlog ct
+            report.FilesIndexed |> should equal 3
+            report.SkippedNotIndexable |> should be (greaterThan 0)
+            report.SkippedOversize |> should equal 1
+            report.SkippedBinary |> should equal 1
+            report.PostingsAppended |> should be (greaterThan 0)
+
+            let search = SearchIndex()
+            let cited = CitedByIndex()
+            search.SendQuery(ZSet.singleton "landauer" 1L)
+            do! search.StepAsync()
+            do! ReverseIndexLog.replayInto dlog cited search ct
+            landauerWeight search "docs/note.md" |> should equal 1L
+            landauerWeight search "src/code.ts" |> should equal 1L
+            landauerWeight search "README" |> should equal 1L
+            landauerWeight search "docs/huge.md" |> should equal 0L
+            landauerWeight search "docs/nul.md" |> should equal 0L
+            landauerWeight search "docs/github/prs/shards/002/x.json" |> should equal 0L
+            landauerWeight search "img/logo.png" |> should equal 0L
+        finally
+            try Directory.Delete(corpus, true) with _ -> ()
+            try Directory.Delete(wal, true) with _ -> ()
+    }
+
+
+[<Fact>]
+let ``explicit file list does not walk sibling documents`` () : Task =
+    let corpus = DeterministicTestPath.nextDir "revidx-ingest-listed"
+    let wal = DeterministicTestPath.nextDir "revidx-ingest-listed-wal"
+    task {
+        try
+            let keep = writeRel corpus "docs/keep.md" "Landauer bound"
+            writeRel corpus "docs/sibling.md" "landauer in a sibling that must not be walked" |> ignore
+            use log = new GroupCommitDiskDeltaLog<IndexFact>(wal, ReverseIndex.codec)
+            let dlog = log :> IDeltaLog<IndexFact>
+            let fs = PhysicalFileSystem() :> IFileSystem
+            let! report = ReverseIndexIngest.ingestPaths fs corpus [| keep |] dlog ct
+            report.FilesIndexed |> should equal 1
+            let search = SearchIndex()
+            let cited = CitedByIndex()
+            search.SendQuery(ZSet.singleton "landauer" 1L)
+            do! search.StepAsync()
+            do! ReverseIndexLog.replayInto dlog cited search ct
+            landauerWeight search "docs/keep.md" |> should equal 1L
+            landauerWeight search "docs/sibling.md" |> should equal 0L
+        finally
+            try Directory.Delete(corpus, true) with _ -> ()
+            try Directory.Delete(wal, true) with _ -> ()
+    }

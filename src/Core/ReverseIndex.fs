@@ -2,6 +2,7 @@ namespace Zeta.Core
 
 open System
 open System.Collections.Generic
+open System.IO
 open System.Text
 open System.Threading
 open System.Threading.Tasks
@@ -235,3 +236,229 @@ module ReverseIndexLog =
                 do! citedBy.StepAsync()
                 do! search.StepAsync()
         }
+
+/// Corpus policy ported from `src/Core.TypeScript/search/inverted/format.ts`.
+/// Allowlist, not denylist. Each excluded tree carries a measurement — an
+/// exclusion without a number is folklore (the prior-art-mirror miss).
+[<Struct>]
+type ExcludedTree =
+    { Prefix: string
+      Measurement: string }
+
+[<Struct>]
+type IngestReport =
+    { FilesIndexed: int
+      PostingsAppended: int
+      SkippedNotIndexable: int
+      SkippedOversize: int
+      SkippedBinary: int
+      SkippedMissing: int }
+
+[<RequireQualifiedAccess>]
+module ReverseIndexCorpus =
+
+    /// Blobs larger than this are skipped. Same cap as the TS builder.
+    [<Literal>]
+    let MaxBlobBytes = 512 * 1024
+
+    let indexedExtensions: string[] =
+        [| "bicep"; "c"; "cfg"; "cjs"; "conf"; "cpp"; "cs"; "css"; "csproj"
+           "csx"; "editorconfig"; "env"; "fs"; "fsi"; "fsproj"; "fsx"; "go"
+           "gradle"; "graphql"; "h"; "hpp"; "hs"; "html"; "ini"; "java"; "js"
+           "json"; "jsonc"; "jsonl"; "kt"; "lean"; "lock"; "md"; "mjs"; "nix"
+           "php"; "props"; "proto"; "ps1"; "py"; "rb"; "rs"; "scala"; "sh"
+           "sql"; "svg"; "swift"; "targets"; "tf"; "tla"; "toml"; "ts"; "tsx"
+           "txt"; "vue"; "wat"; "xml"; "yaml"; "yml"; "zig" |]
+
+    /// Extensionless (or odd) names worth indexing, matched on basename.
+    let indexedBasenames: string[] =
+        [| "AGENTS.md"; "CLAUDE.md"; "Dockerfile"; "GOVERNANCE.md"; "Makefile"; "README" |]
+
+    let excludedTrees: ExcludedTree[] =
+        [| { Prefix = "docs/github/prs/"
+             Measurement =
+               "9,652 files / 10.53 MiB at 6426eacf (2026-08-23) — machine-generated PR-mirror JSON shards. Indexing them roughly doubles the postings for content nobody searches by term; the PR mirror has its own manifest.jsonl lookup." }
+           { Prefix = "references/"
+             Measurement =
+               "13 tracked files / 1.84 MiB at 6426eacf, but the directory is the mount point for the gitignored multi-gigabyte prior-art mirror (CLAUDE.md: 'a naive grep -r . is a 2-hour runaway'). Excluded so a checkout that HAS the mirror indexes the same corpus as one that does not — otherwise the artifact stops being a function of the rev." }
+           { Prefix = "db/search-index/"
+             Measurement =
+               "the index's OWN OUTPUT — 54.96 MiB / 40 files at 01050c8b. Caught 2026-08-23: 7 of its own files sit UNDER the 512 KiB blob cap, so the next rebuild would have indexed the previous rebuild. A feedback loop, not a corpus." }
+           { Prefix = "node_modules/"
+             Measurement =
+               "not tracked in git at 6426eacf, so this excludes nothing today. Kept because a vendored dependency tree is the classic way an index silently triples, and the cost of the guard is one string comparison." }
+           { Prefix = ".git/"
+             Measurement =
+               "host walk is not git ls-files; a checkout .git/objects pack is hundreds of MB (often > 200 MB) and is not a document. The TS builder never sees it because it lists git-tracked blobs only." } |]
+
+    let private extSet =
+        HashSet<string>(indexedExtensions, StringComparer.Ordinal)
+
+    let private basenameSet =
+        HashSet<string>(indexedBasenames, StringComparer.Ordinal)
+
+    let slashNormalize (path: string) : string =
+        if isNull path then
+            ""
+        else
+            path.Replace('\\', '/')
+
+    let basenameOf (path: string) : string =
+        let p = slashNormalize path
+        let slash = p.LastIndexOf '/'
+        if slash < 0 then p else p.Substring(slash + 1)
+
+    /// TS `extensionOf`: last dot in the basename, empty when the dot is at 0.
+    /// Not lowercased — the allowlist is lowercase, so `Note.MD` is not indexed.
+    let extensionOf (path: string) : string =
+        let baseName = basenameOf path
+        let dot = baseName.LastIndexOf '.'
+        if dot <= 0 then "" else baseName.Substring(dot + 1)
+
+    let isExcluded (path: string) : bool =
+        let p = slashNormalize path
+        let rec loop i =
+            if i >= excludedTrees.Length then
+                false
+            else
+                let prefix = excludedTrees.[i].Prefix
+                if p.StartsWith(prefix, StringComparison.Ordinal) then
+                    true
+                elif p.IndexOf("/" + prefix, StringComparison.Ordinal) >= 0 then
+                    true
+                else
+                    loop (i + 1)
+        loop 0
+
+    /// Path-only predicate. Size and NUL are checked at ingest.
+    let isIndexablePath (path: string) : bool =
+        if isExcluded path then
+            false
+        elif basenameSet.Contains(basenameOf path) then
+            true
+        else
+            extSet.Contains(extensionOf path)
+
+    let toDocId (root: string) (path: string) : string =
+        let r = (slashNormalize root).TrimEnd '/'
+        let p = slashNormalize path
+        if
+            p.Length > r.Length
+            && p.StartsWith(r, StringComparison.Ordinal)
+            && p.[r.Length] = '/'
+        then
+            p.Substring(r.Length + 1)
+        elif String.Equals(p, r, StringComparison.Ordinal) then
+            String.Empty
+        else
+            p.TrimStart '/'
+
+    let isUnderRoot (root: string) (path: string) : bool =
+        let r = (slashNormalize root).TrimEnd '/'
+        let p = slashNormalize path
+        String.Equals(p, r, StringComparison.Ordinal)
+        || p.StartsWith(r + "/", StringComparison.Ordinal)
+
+[<RequireQualifiedAccess>]
+module ReverseIndexIngest =
+
+    let private hasNul (bytes: byte[]) : bool =
+        Array.IndexOf(bytes, 0uy) >= 0
+
+    /// Host-tree listing. Not `git ls-files`. Skips descending into excluded
+    /// prefixes. Sort is by slash-normalized relative doc id (ordinal).
+    let listHostFiles (root: string) : string[] =
+        let rootFull = Path.GetFullPath root
+        if not (Directory.Exists rootFull) then
+            Array.empty
+        else
+            let acc = ResizeArray<string>()
+            let rec walk (dir: string) =
+                let rel = ReverseIndexCorpus.toDocId rootFull dir
+                let asPrefix =
+                    if String.IsNullOrEmpty rel then
+                        ""
+                    else
+                        rel.TrimEnd('/') + "/"
+                if asPrefix <> "" && ReverseIndexCorpus.isExcluded asPrefix then
+                    ()
+                else
+                    for f in Directory.GetFiles dir do
+                        acc.Add f
+                    for d in Directory.GetDirectories dir do
+                        walk d
+            walk rootFull
+            acc.ToArray()
+            |> Array.sortWith (fun a b ->
+                StringComparer.Ordinal.Compare(
+                    ReverseIndexCorpus.toDocId rootFull a,
+                    ReverseIndexCorpus.toDocId rootFull b))
+
+    let ingestPaths
+        (fs: IFileSystem)
+        (root: string)
+        (paths: string[])
+        (log: IDeltaLog<IndexFact>)
+        (ct: CancellationToken)
+        : Task<IngestReport> =
+        task {
+            let mutable indexed = 0
+            let mutable postings = 0
+            let mutable skipNot = 0
+            let mutable skipOver = 0
+            let mutable skipBin = 0
+            let mutable skipMiss = 0
+            let ordered =
+                paths
+                |> Array.sortWith (fun a b ->
+                    StringComparer.Ordinal.Compare(
+                        ReverseIndexCorpus.slashNormalize a,
+                        ReverseIndexCorpus.slashNormalize b))
+            for path in ordered do
+                ct.ThrowIfCancellationRequested()
+                if not (ReverseIndexCorpus.isUnderRoot root path) then
+                    skipNot <- skipNot + 1
+                else
+                    let docId = ReverseIndexCorpus.toDocId root path
+                    if
+                        String.IsNullOrEmpty docId
+                        || not (ReverseIndexCorpus.isIndexablePath docId)
+                    then
+                        skipNot <- skipNot + 1
+                    elif not (fs.Exists path) then
+                        skipMiss <- skipMiss + 1
+                    else
+                        match FileSystemIo.tryReadBytesCapped fs (int64 ReverseIndexCorpus.MaxBlobBytes) path with
+                        | None -> skipOver <- skipOver + 1
+                        | Some bytes when hasNul bytes -> skipBin <- skipBin + 1
+                        | Some bytes ->
+                            let text = Encoding.UTF8.GetString bytes
+                            let posts = ReverseIndex.postings docId text
+                            let n = ZSet.count posts
+                            if n > 0 then
+                                let facts = ZSet.map IndexFact.Posting posts
+                                let! _ = ReverseIndexLog.append log facts ct
+                                postings <- postings + n
+                            indexed <- indexed + 1
+            return
+                { FilesIndexed = indexed
+                  PostingsAppended = postings
+                  SkippedNotIndexable = skipNot
+                  SkippedOversize = skipOver
+                  SkippedBinary = skipBin
+                  SkippedMissing = skipMiss }
+        }
+
+    /// Walk a host directory and append postings. Does not take
+    /// `FileSystem.Current` for the walk — listing is `System.IO` so it
+    /// recurses (Physical `GetFiles` is one-level). Reads go through
+    /// `PhysicalFileSystem`.
+    let ingestHostDirectory
+        (root: string)
+        (log: IDeltaLog<IndexFact>)
+        (ct: CancellationToken)
+        : Task<IngestReport> =
+        let rootFull = Path.GetFullPath root
+        let fs = PhysicalFileSystem() :> IFileSystem
+        ingestPaths fs rootFull (listHostFiles rootFull) log ct
+
