@@ -415,6 +415,31 @@ function escapeRegExp(string: string): string {
 }
 
 // Main logic: Scan all files and auto-vivify dangling pointers
+/**
+ * Where a stub's CONTENT actually goes, given the resolved target's type.
+ *
+ * A `db-dir` STUB IS A README.md INSIDE THE DIRECTORY, NOT A FILE AT THE DIRECTORY'S PATH.
+ * `getStubContent` has always said so -- its last branch is commented `// db-dir (README.md)`
+ * and emits an H1 with a TRAILING SLASH (`# name/`), the directory form. The write did not
+ * honour it and put that content at `path` itself. Combined with the type rule -- anything not
+ * ending `.md` is `db-dir` -- a reference to `dora-metrics.ts` produced a MARKDOWN FILE NAMED
+ * `.ts`.
+ *
+ * MEASURED on this tree, 11 files: 3 `.ts`, 2 `.sh`, 2 `.yaml`, 2 `.fs`, 2 extensionless.
+ * CodeQL parses the `.ts` ones as JavaScript and raises `js/syntax-error` -- 41 of the
+ * repository's open alerts came from those three files alone. It also RECURS: PR #8814
+ * (2026-06-21) fixed the same shape once, and Vera's record of #16336 names the cause exactly
+ * ("Type bug instantiated: db-dir stub on file paths ... Bug lives in parent auto-vivify.ts").
+ * Repairing the output without repairing this would let it happen a third time.
+ *
+ * Extracted as a pure function BECAUSE `processAll` writes into the real repository root, so
+ * the decision could not otherwise be tested without creating files under `db/`. Reverting it
+ * to `path` left the whole suite green, which is how this gap was found.
+ */
+export function stubTargetPath(resolvedPath: string, type: ResolvedTarget["type"]): string {
+  return type === "db-dir" ? join(resolvedPath, "README.md") : resolvedPath;
+}
+
 export function processAll(
   checkOnly = false,
   customFiles?: string[],
@@ -481,7 +506,9 @@ export function processAll(
   // Execute writes
   for (const [path, info] of pendingWrites) {
     const resolved = info.resolved;
-    const dir = dirname(path);
+
+    const target = stubTargetPath(path, resolved.type);
+    const dir = dirname(target);
     try {
       // 1. Create directories as needed
       mkdirSync(dir, { recursive: true });
@@ -499,14 +526,14 @@ export function processAll(
       const content = getStubContent(resolved);
       let created = true;
       try {
-        writeFileSync(path, content, { encoding: "utf8", flag: "wx" });
+        writeFileSync(target, content, { encoding: "utf8", flag: "wx" });
       } catch (e) {
         if ((e as NodeJS.ErrnoException).code !== "EEXIST") throw e;
         created = false;
       }
       if (created) {
         processedCount++;
-        console.log(`Auto-vivified: ${relative(REPO_ROOT, path)} (${resolved.type})`);
+        console.log(`Auto-vivified: ${relative(REPO_ROOT, target)} (${resolved.type})`);
       }
 
       // 3. Rewrite citing files if there is a minted ID/rewrite URL

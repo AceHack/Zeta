@@ -1,0 +1,14 @@
+{
+  "id": "080d0530bf2a9010a013000813c26092",
+  "at": "2026-09-15T17:22:59.026Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M2K1FSAH087G0R001XH2F50",
+    "type": "bug",
+    "title": "auto-vivify wrote db-dir README content at the directory path producing markdown in ts yaml fs and sh files",
+    "slug": "auto-vivify-wrote-db-dir-readme-content-at-the-directory-pat",
+    "priority": "P2",
+    "filename": "081M2K1FSAH087G0R001XH2F50-auto-vivify-wrote-db-dir-readme-content-at-the-directory-pat.md"
+  }
+}

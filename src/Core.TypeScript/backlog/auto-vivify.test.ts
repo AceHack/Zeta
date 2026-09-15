@@ -1,5 +1,5 @@
 import { test, expect } from "bun:test";
-import { extractPointers, extractZetaId, resolvePointer } from "./auto-vivify";
+import { extractPointers, extractZetaId, resolvePointer, stubTargetPath } from "./auto-vivify";
 
 test("extractPointers finds wikilinks, markdown links, and backticks correctly", () => {
   const text = `
@@ -95,4 +95,38 @@ test("resolvePointer accepts legacy docs/backlog ZetaId rows as existing referen
   expect(res).not.toBeNull();
   expect(res!.exists).toBe(true);
   expect(res!.resolvedPath).toContain("docs/backlog/P1/081KSGS9H0008QG0R003A37Z65-");
+});
+
+// ─────────────────────────────────────────────────────────────────────────────
+// A `db-dir` STUB GOES INSIDE THE DIRECTORY. The bug this pins produced ELEVEN markdown files
+// wearing source extensions -- `db/backlog/dora-metrics.ts`, `db/redis/Application.yaml`,
+// `db/src/Core.Git/GitDeltaLog.fs` and eight more -- because the write put `getStubContent`'s
+// directory-form output (`# name/`, trailing slash) at the directory's own path.
+//
+// CodeQL read the three `.ts` ones as JavaScript: 41 open `js/syntax-error` alerts from three
+// 3-line files. And it is a REPEAT -- PR #8814 fixed the same shape on 2026-06-21.
+//
+// These tests exist because reverting the fix left all 8 prior tests green. A fix whose
+// mutation survives its own suite is not a fixed defect, it is an unwitnessed claim.
+
+test("a db-dir stub is written to <dir>/README.md, never to the directory's own path", () => {
+  expect(stubTargetPath("/repo/db/backlog/dora-metrics.ts", "db-dir")).toBe(
+    "/repo/db/backlog/dora-metrics.ts/README.md",
+  );
+  // Extensionless targets are the ordinary db-dir case and take the same path.
+  expect(stubTargetPath("/repo/db/name", "db-dir")).toBe("/repo/db/name/README.md");
+});
+
+test("a db-file stub is written AT its path — .md targets must not grow a README", () => {
+  expect(stubTargetPath("/repo/db/routing/README.md", "db-file")).toBe("/repo/db/routing/README.md");
+  expect(stubTargetPath("/repo/db/shapes/grey.md", "db-file")).toBe("/repo/db/shapes/grey.md");
+});
+
+// The failure mode in one assertion: every extension that actually occurred in the 11.
+test("no source extension can receive markdown content directly", () => {
+  for (const ext of [".ts", ".sh", ".yaml", ".fs"]) {
+    const p = `/repo/db/thing${ext}`;
+    expect(stubTargetPath(p, "db-dir")).toBe(`${p}/README.md`);
+    expect(stubTargetPath(p, "db-dir")).not.toBe(p);
+  }
 });
