@@ -1,0 +1,12 @@
+{
+  "pr_number": 17418,
+  "archive_path": "docs/history/pr-reviews/2026/09/15/PR-17418-fix-ci-a-stale-listing-and-a-dead-trigger-have-the-same-signature-ask-a-differen.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-15T20:25:01.039Z",
+  "schema_version": "v1",
+  "commit_sha": "b8e4717b530c00437f462274d66ef20f8006d81d",
+  "title": "fix(ci): a stale listing and a dead trigger have the same signature — ask a different index",
+  "state": "MERGED",
+  "merged_at": "2026-09-15T20:24:09Z",
+  "head_ref": "fix/verdict-drought-stale-window-witness"
+}
