@@ -1,0 +1,12 @@
+{
+  "pr_number": 17414,
+  "archive_path": "docs/history/pr-reviews/2026/09/15/PR-17414-fix-backlog-a-db-dir-stub-is-a-readme-md-inside-the-directory-not-a-file-at-its-.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-15T19:35:10.447Z",
+  "schema_version": "v1",
+  "commit_sha": "064f5c5d683302912d612d5b0a60ffd58b108aa9",
+  "title": "fix(backlog): a db-dir stub is a README.md INSIDE the directory, not a file at its path",
+  "state": "MERGED",
+  "merged_at": "2026-09-15T19:33:09Z",
+  "head_ref": "fix/auto-vivify-db-dir-writes-readme"
+}
