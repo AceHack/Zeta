@@ -1,0 +1,14 @@
+{
+  "id": "080d0531aeaac010a0130008fa3e573a",
+  "at": "2026-09-15T17:55:41.016Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M2K3BNAQ087G0R003FGFB6K",
+    "type": "bug",
+    "title": "verdict-drought staleness guard is inert on pull_request so a stale listing reports a false drought",
+    "slug": "verdict-drought-staleness-guard-is-inert-on-pull-request-so",
+    "priority": "P2",
+    "filename": "081M2K3BNAQ087G0R003FGFB6K-verdict-drought-staleness-guard-is-inert-on-pull-request-so.md"
+  }
+}

@@ -508,6 +508,79 @@ export function median(xs: readonly number[]): number | null {
  * `compare` call) and `null` means it could not be measured. `nowIso` is injected --
  * §13 noninterference -- so this is a pure function and replays deterministically.
  */
+/**
+ * The gate run for main's NEWEST commit, looked up BY HEAD SHA.
+ *
+ * A different index than `?branch=main&event=push`, which is the entire point — see
+ * `windowIsStaleNotDeadTrigger`. Returns `null` when no gate run exists for that commit,
+ * which is the signature of a genuinely dead trigger and must NOT be confused with a
+ * failure to ask: any error here returns `undefined` so the caller reports unmeasured
+ * rather than silently treating "I could not look" as "nothing is there".
+ */
+export async function witnessRunForNewestMainCommit(
+  repo: string,
+  token: string,
+): Promise<number | null | undefined> {
+  try {
+    const head = await ghJson<{ readonly sha?: string }>(
+      `https://api.github.com/repos/${repo}/commits/main`,
+      token,
+    );
+    const sha = head.sha ?? "";
+    if (sha.length === 0) return undefined;
+    const runs = await ghJson<{ readonly workflow_runs?: readonly { readonly id: number; readonly name?: string }[] }>(
+      `https://api.github.com/repos/${repo}/actions/runs?head_sha=${sha}&per_page=20`,
+      token,
+    );
+    const gate = (runs.workflow_runs ?? []).find((r) => r.name === "gate");
+    return gate === undefined ? null : gate.id;
+  } catch {
+    return undefined;
+  }
+}
+
+/**
+ * Is a `triggerLooksBroken` signature actually a STALE LISTING rather than a dead trigger?
+ *
+ * THE TWO HAVE THE SAME SIGNATURE and that is the whole problem: "commits landed and zero
+ * runs fired" is produced BOTH by a workflow that stopped triggering AND by a
+ * `?branch=main&event=push` page whose newest entry is days old. The fold cannot tell them
+ * apart from the window alone, because the window is the thing in doubt.
+ *
+ * MEASURED, 2026-09-15, PR #17414. `drift (loud)` reported `drought`: last verdict
+ * 2026-09-05, 678 unverified commits, ZERO runs since, "TRIGGER MAY BE BROKEN". Nine minutes
+ * later the identical query by hand returned a completed verdict from 2026-09-14T18:18, and
+ * `gate.yml` on main was in fact 37 success / 3 failure across its last 40 runs. The listing
+ * was ~10 days stale and the fold turned it into a confident, specific, false claim.
+ *
+ * `detectStaleWindow` exists for exactly this and could not fire: it is gated on
+ * `selfIsInsideWindow`, which requires the caller to be a push-on-main run of `gate.yml`,
+ * and `drift (loud)` runs on `pull_request`. Its reasoning is right — absence only proves
+ * staleness if the caller SHOULD be listed — so the gap is not in that guard but in the
+ * absence of a witness for every OTHER event.
+ *
+ * THE WITNESS MUST BE A DIFFERENT QUERY SHAPE, not a second read of the same one: two reads
+ * of `?branch=main&event=push` can be stale together, which was tried and observed
+ * (`per_page=1` and `per_page=60` returned the same newest run). Looking a run up BY HEAD SHA
+ * is a different index, so it is a real second opinion:
+ *
+ *   a gate run exists for main's newest commit, and the window did not list it
+ *     -> the WINDOW is stale. Report `unknown`/unmeasured, never `drought`.
+ *   no gate run exists for main's newest commit
+ *     -> the trigger really did not fire. `drought` is the honest answer.
+ *
+ * Pure so it can be tested without a forge; the caller supplies both facts.
+ */
+export function windowIsStaleNotDeadTrigger(
+  triggerLooksBroken: boolean,
+  witnessRunIdForNewestMainCommit: number | null,
+  windowRunIds: readonly number[],
+): boolean {
+  if (!triggerLooksBroken) return false;
+  if (witnessRunIdForNewestMainCommit === null) return false; // genuinely no run fired
+  return !windowRunIds.includes(witnessRunIdForNewestMainCommit);
+}
+
 export function foldDrought(
   observations: readonly GateRunObservation[],
   unverifiedCommits: number | null,
@@ -519,6 +592,10 @@ export function foldDrought(
    * from the verdict instead (loud, never silently permissive).
    */
   oldestUnverifiedIso: string | null = null,
+  /** Run id of the gate run for main's NEWEST commit, from a `head_sha` lookup — a
+   *  DIFFERENT query shape than the window, so it is an independent witness. `null` means no
+   *  such run exists, which is what a genuinely dead trigger looks like. */
+  witnessRunIdForNewestMainCommit: number | null = null,
 ): DroughtReport {
   const window = orderNewestFirst(observations).slice(0, thresholds.windowRuns);
 
@@ -548,12 +625,34 @@ export function foldDrought(
   const cancelRate = window.length === 0 ? 0 : cancelledRuns / window.length;
 
   // A trigger problem, not a slow gate: commits landed and NO run fired for any of them.
-  const triggerLooksBroken = unverifiedCommits !== null && unverifiedCommits > 0 && runsSinceVerdict === 0;
+  const triggerLooksBrokenRaw = unverifiedCommits !== null && unverifiedCommits > 0 && runsSinceVerdict === 0;
+  // A stale listing and a dead trigger produce the SAME signature. Ask a different index
+  // before believing the alarming one.
+  const windowStale = windowIsStaleNotDeadTrigger(
+    triggerLooksBrokenRaw,
+    witnessRunIdForNewestMainCommit,
+    window.map((r) => r.id),
+  );
+  const triggerLooksBroken = triggerLooksBrokenRaw && !windowStale;
 
   const reasons: string[] = [];
   let register: VerdictRegister;
 
-  if (window.length === 0) {
+  if (windowStale) {
+    // NOT `drought`. The window claimed zero runs since the last verdict while a run for
+    // main's newest commit demonstrably exists — so the listing, not the trigger, is what
+    // failed. Reporting `drought` here is the false alarm this discriminator was added for,
+    // and a false alarm in the detector that exists to tell real silence from apparent
+    // silence is the worst thing this file can emit. UNKNOWN never aggregates into green.
+    register = "unknown";
+    reasons.push(
+      "STALE LISTING, NOT A DEAD TRIGGER. The `?branch=main&event=push` window reported zero " +
+        "gate runs since the last verdict, but a `head_sha` lookup for main's newest commit " +
+        `returns run ${String(witnessRunIdForNewestMainCommit)}, which this window did not list. ` +
+        "Two reads of the same listing can be stale together, so the witness is a different " +
+        "index on purpose. The drought is NOT measured; main is not being claimed stale.",
+    );
+  } else if (window.length === 0) {
     register = "unknown";
     reasons.push(
       "NO GATE RUNS OBSERVED on main at all. The window is empty, so the drought cannot even be measured. " +
@@ -1089,6 +1188,8 @@ async function main(): Promise<number> {
 
   let observations: GateRunObservation[] = [];
   let unverified: number | null = null;
+  // `undefined` = could not ask (unmeasured); `null` = asked, no run exists (dead trigger).
+  let witnessRunId: number | null | undefined = null;
   let oldestUnverifiedIso: string | null = null;
 
   if (observationsPath.length > 0) {
@@ -1123,6 +1224,10 @@ async function main(): Promise<number> {
       unverified = since.count;
       oldestUnverifiedIso = since.oldestUnverifiedIso;
     }
+    // Only needed when the window is about to claim a dead trigger; cheap enough to always
+    // fetch, and fetching unconditionally keeps the code path the same on every run rather
+    // than only on the rare alarming one — which is the path least likely to be exercised.
+    witnessRunId = await witnessRunForNewestMainCommit(repo, token);
   }
 
   // Before folding: did the listing contain the caller? A window that cannot see the run
@@ -1141,7 +1246,15 @@ async function main(): Promise<number> {
     return 1;
   }
 
-  const report = foldDrought(observations, unverified, nowIso, thresholds, oldestUnverifiedIso);
+  if (witnessRunId === undefined && observations.length > 0) {
+    // COULD NOT ASK is not the same as NOTHING THERE. Without the witness a
+    // `triggerLooksBroken` signature is undecidable, so the honest output is unmeasured.
+    console.log("## main gate-verdict drought -- NOT MEASURED\n");
+    console.log("The stale-window witness (`head_sha` lookup for main's newest commit) could not be read.");
+    console.log("::error title=verdict-drought could not reach its witness::witness lookup failed; drought undecidable");
+    return 1;
+  }
+  const report = foldDrought(observations, unverified, nowIso, thresholds, oldestUnverifiedIso, witnessRunId ?? null);
   const liveness = assertDroughtDetectorLive(report);
   const markdown = renderDroughtMarkdown(report, liveness);
   console.log(markdown);

@@ -1,0 +1,14 @@
+{
+  "id": "080d053477461810a013000889f892b8",
+  "at": "2026-09-15T19:32:58.691Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M2K8XT63087G0R000GSXC0P",
+    "type": "bug",
+    "title": "DiskDeltaLog live replay hits IO SharingViolation on macOS during concurrent append",
+    "slug": "diskdeltalog-live-replay-hits-io-sharingviolation-on-macos-d",
+    "priority": "P2",
+    "filename": "081M2K8XT63087G0R000GSXC0P-diskdeltalog-live-replay-hits-io-sharingviolation-on-macos-d.md"
+  }
+}

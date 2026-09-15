@@ -20,33 +20,7 @@
 
 import { describe, expect, test } from "bun:test";
 
-import {
-  assertDroughtDetectorLive,
-  constrainCount,
-  constrainId,
-  constrainSha,
-  DEFAULT_DROUGHT_THRESHOLDS,
-  detectStaleWindow,
-  droughtAnnotations,
-  foldDrought,
-  isVerdict,
-  median,
-  minutesBetween,
-  orderNewestFirst,
-  renderDroughtMarkdown,
-  RUNNING,
-  selfIsInsideWindow,
-  selfWitnessFromEnv,
-  severityOfRegister,
-  shortSha,
-  toObservation,
-  UNRECOGNISED_CONCLUSION,
-  UNRECOGNISED_ID,
-  UNRECOGNISED_INSTANT,
-  UNRECOGNISED_SHA,
-  type DroughtThresholds,
-  type GateRunObservation,
-} from "./verdict-drought.ts";
+import { assertDroughtDetectorLive, constrainCount, constrainId, constrainSha, DEFAULT_DROUGHT_THRESHOLDS, detectStaleWindow, droughtAnnotations, foldDrought, isVerdict, median, minutesBetween, orderNewestFirst, renderDroughtMarkdown, RUNNING, selfIsInsideWindow, selfWitnessFromEnv, severityOfRegister, shortSha, toObservation, UNRECOGNISED_CONCLUSION, UNRECOGNISED_ID, UNRECOGNISED_INSTANT, UNRECOGNISED_SHA, type DroughtThresholds, type GateRunObservation, windowIsStaleNotDeadTrigger } from "./verdict-drought.ts";
 
 const NOW = "2026-08-23T17:35:00Z";
 
@@ -840,4 +814,48 @@ describe("main() is WIRED to the guard", () => {
     const landedLongAgo = new Date(Date.parse(now) - 90 * 60_000).toISOString();
     expect(foldDrought(window, 0, now, DEFAULT_DROUGHT_THRESHOLDS, landedLongAgo).register).toBe("ok");
   });
+});
+
+// ─────────────────────────────────────────────────────────────────────────────
+// A STALE LISTING AND A DEAD TRIGGER HAVE THE SAME SIGNATURE.
+//
+// MEASURED 2026-09-15, PR #17414: `drift (loud)` reported `drought` — last verdict
+// 2026-09-05, 678 unverified commits, ZERO runs since, "TRIGGER MAY BE BROKEN". Nine minutes
+// later the identical query returned a completed verdict from 2026-09-14T18:18, and gate.yml
+// on main was 37 success / 3 failure over its last 40 runs. The listing was ~10 days stale
+// and the fold turned it into a confident, specific, false claim — a false alarm in the one
+// detector whose job is telling real silence from apparent silence.
+//
+// `detectStaleWindow` could not fire: it is gated on the caller being a push-on-main gate
+// run, and `drift (loud)` runs on `pull_request`. Its reasoning is right; what was missing
+// was a witness for every other event.
+
+test("a run exists for main's newest commit that the window never listed => STALE, not a dead trigger", () => {
+  expect(windowIsStaleNotDeadTrigger(true, 35004628158, [33998492679, 33998000000])).toBe(true);
+});
+
+test("no run exists for main's newest commit => the trigger really is dead, and drought stands", () => {
+  expect(windowIsStaleNotDeadTrigger(true, null, [33998492679])).toBe(false);
+});
+
+// The witness must not reclassify a window that never claimed a dead trigger.
+test("without the triggerLooksBroken signature the witness changes nothing", () => {
+  expect(windowIsStaleNotDeadTrigger(false, 35004628158, [33998492679])).toBe(false);
+});
+
+// THE CASE THAT KEEPS IT HONEST: if the window DID list the witness run, the window is
+// current and a zero-runs-since reading is a real finding, not a stale page.
+test("a window that already lists the witness run is NOT stale", () => {
+  expect(windowIsStaleNotDeadTrigger(true, 35004628158, [35004628158, 33998492679])).toBe(false);
+});
+
+test("foldDrought reports `unknown`, never `drought`, when the window is stale", () => {
+  const nowIso = "2026-09-15T18:00:00.000Z";
+  const window = [
+    { id: 100, conclusion: "success", status: "completed", sha: "aaaaaaa", startedAt: "2026-09-05T23:20:00.000Z", endedAt: "2026-09-05T23:40:00.000Z" },
+  ];
+  const stale = foldDrought(window as never, 678, nowIso, undefined, "2026-09-09T17:21:41.000Z", 999);
+  expect(stale.register).toBe("unknown");
+  const dead = foldDrought(window as never, 678, nowIso, undefined, "2026-09-09T17:21:41.000Z", null);
+  expect(dead.register).toBe("drought");
 });
