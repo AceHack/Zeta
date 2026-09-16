@@ -1,0 +1,153 @@
+{
+  "archive": "tiktok-character-quality-v16.zip",
+  "bytes": 78393565,
+  "sha256": "3fb733021ce6434b7ad1fd21283575450b9728e72b24e6742411bc12584eee04",
+  "files": [
+    {
+      "path": "README.txt",
+      "bytes": 1265,
+      "sha256": "5706b824e68dc502c144cdc84df9a2173ce13f68ccd456a45da4e17f56d5a19e"
+    },
+    {
+      "path": "evidence/combined.png",
+      "bytes": 2402669,
+      "sha256": "5cb31536518e4d4dfc110203110d2cb31fc7cba2e90d0bd55ab1ce65f0050377"
+    },
+    {
+      "path": "evidence/elbows.png",
+      "bytes": 2378174,
+      "sha256": "61627a7f4de0b5c0e201a79bcd7e7170a23bf2e18f173af2339b5be0ab809959"
+    },
+    {
+      "path": "evidence/left-arm.png",
+      "bytes": 2402785,
+      "sha256": "5c1f083709fe723bd1c91ed30ecbc37a1293e0e7e191419bb1d6a3b840541845"
+    },
+    {
+      "path": "evidence/left-knee.png",
+      "bytes": 2397515,
+      "sha256": "191cfd94be5ef0f27359f0da52111617cd83c1b91f6c4666c0103acce577525b"
+    },
+    {
+      "path": "evidence/neutral.png",
+      "bytes": 2401894,
+      "sha256": "f541693a7b785ca4f0a24f7d336d1f71f7326664119b559fcfc6061d5865a0df"
+    },
+    {
+      "path": "evidence/probe-xenaa-without-panel.png",
+      "bytes": 1657926,
+      "sha256": "64b1e0d044e22fa93246864b750c07d6fb7f2dfe866f0ab471ccb6be83a4ecf7"
+    },
+    {
+      "path": "evidence/right-arm.png",
+      "bytes": 2399960,
+      "sha256": "87ffb2d5644569081ce9ec2c228c169a4d9396ddddefd508c7aef23cab762fe1"
+    },
+    {
+      "path": "evidence/side-head-turn.png",
+      "bytes": 2169031,
+      "sha256": "f9a4da02308ae010d2ae920e4bf6821ca4bc6f47e372fad7237d7883fef23a56"
+    },
+    {
+      "path": "evidence/side-neutral.png",
+      "bytes": 2180036,
+      "sha256": "2b2f083cd8522c6cdcc5cff5329e50c54f25fdbcf62143973eb208a4c5efbac7"
+    },
+    {
+      "path": "evidence/v15-acehack-shoulders75.png",
+      "bytes": 1804988,
+      "sha256": "d62bbc79dcefcf86ef93e241f42a0806b71b2d69120a4d15b9b26df1e009d5fe"
+    },
+    {
+      "path": "evidence/v15-xenaa-back-head-turn.png",
+      "bytes": 1526207,
+      "sha256": "93f4dcff98f59d7d861c0265d97f0c3a67495da3d696b12f391786ed22f411ba"
+    },
+    {
+      "path": "evidence/v15-xenaa-shoulders75.png",
+      "bytes": 1659653,
+      "sha256": "bf0add585f9479c1463d89ed22d42d7ae34c32a7e9d2cc3b0e23178af3b32721"
+    },
+    {
+      "path": "evidence/v16-acehack-shoulders75.png",
+      "bytes": 1806245,
+      "sha256": "4830edcc4767ae828c19f03082506d038e0fff9ee33058694b09af85da7d750d"
+    },
+    {
+      "path": "evidence/v16-xenaa-back-head-turn.png",
+      "bytes": 1542504,
+      "sha256": "bc0a48b9c7c01c061cfdebb235395aa71cf4b53bfb8dd0d1313b5c98bd7bd6c8"
+    },
+    {
+      "path": "evidence/v16-xenaa-lining-fitted.png",
+      "bytes": 1658211,
+      "sha256": "d87ef1d68d742474a58e15570da0b6a922be7c73fdb598b6581a737129d4fb5c"
+    },
+    {
+      "path": "evidence/v16-xenaa-shoulders75.png",
+      "bytes": 1658796,
+      "sha256": "7c0b2ae4840f21626b2964eddc9c2d9f6c2811a0634fdb7b4e771155bec31eb4"
+    },
+    {
+      "path": "receipts/comparison.json",
+      "bytes": 60580,
+      "sha256": "c4c9f3ab1b907df018bd1b9b9a8956a854eb114221450e5a6543ab1d33294d3a"
+    },
+    {
+      "path": "receipts/lining-fit.json",
+      "bytes": 12993,
+      "sha256": "e30164f558beab6c15d127718f1789768d1bfce90b210940446a1e94c78fc296"
+    },
+    {
+      "path": "receipts/validation.json",
+      "bytes": 2660,
+      "sha256": "29716377d0849ddf6b7e4b417109c012ca1c2b368a2418cbe0cc19a029cfd188"
+    },
+    {
+      "path": "review/Blender-Quality-Review-v16.blend",
+      "bytes": 46937051,
+      "sha256": "899cf39959455af43942c2163691775582bafdf0f1a971d1d8322cd79fb3d35f"
+    },
+    {
+      "path": "sources/back_baseline_v16.py",
+      "bytes": 981,
+      "sha256": "eb374516f33c6310baf45c64915a7145b6d56b46f749eddef6d6032e52367e59"
+    },
+    {
+      "path": "sources/fit_lining_v16.py",
+      "bytes": 2091,
+      "sha256": "f67f65877d10d606cbce41401be82ab47bed7849d499e6d5adcd8c64629690b4"
+    },
+    {
+      "path": "sources/package_v16.py",
+      "bytes": 3464,
+      "sha256": "84587b985e497e44e5bdaeefc64bb5f1eef6a6f045feb22103be9ddf9ac1e4df"
+    },
+    {
+      "path": "sources/panel_probe_v16.py",
+      "bytes": 941,
+      "sha256": "35cc4db810b53922be13a3a73063ff03bd4cedb8df513a004230f019d4e7db11"
+    },
+    {
+      "path": "sources/refine_weights_v16.py",
+      "bytes": 6759,
+      "sha256": "bbea84a6bf46d84a5c6357d87ffe5708e506d290698388e947a9a3b676b64278"
+    },
+    {
+      "path": "sources/render_final_v16.py",
+      "bytes": 485,
+      "sha256": "e23d39cadfa04770e47c12bad56cd08477adab1de4e6eb464ef99b760a8d65d8"
+    },
+    {
+      "path": "sources/shoulder_closeups_v16.py",
+      "bytes": 1771,
+      "sha256": "562204d599112871f79ddd02a7864ff547fbf31370df7f36120cda46975f26de"
+    },
+    {
+      "path": "sources/validate_v16.py",
+      "bytes": 4879,
+      "sha256": "1db9e59ecb5d4d1a014f97b38f1cc1cebdada83f9432ca5575fea576a4358609"
+    }
+  ],
+  "read_back_verified": 29
+}

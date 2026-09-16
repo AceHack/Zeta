@@ -1,0 +1,22 @@
+"""Fit the supplemental jacket lining inside the source torso's visible silhouette."""
+import bpy,math,json
+from pathlib import Path
+from mathutils import Vector
+R=Path(__file__).resolve().parent;O=R/'review';P=O/'Blender-Quality-Review-v16.blend'
+bpy.ops.wm.open_mainfile(filepath=str(P));sc=bpy.context.scene;sc.frame_set(1)
+panel=bpy.data.objects['Xenaa | Jacket back lining'];assert len(panel.data.vertices)==68
+before=[list(v.co) for v in panel.data.vertices]
+rings=[(1.32,.105,.07),(1.38,.13,.08),(1.44,.14,.065),(1.51,.095,.015)]
+for k,(z,width,depth) in enumerate(rings):
+ for j in range(17):
+  theta=math.pi*j/16;panel.data.vertices[k*17+j].co=(width*math.cos(theta),depth*math.sin(theta)-.11,z)
+panel.data.update();bpy.context.view_layer.update()
+(R/'lining-fit.json').write_text(json.dumps({'mesh':panel.name,'before':before,'after':[list(v.co) for v in panel.data.vertices],'reason':'The v15 supplemental lining produced rectangular dark underarm silhouettes. Shorten and taper it; do not edit original source body faces.','scope':'Heuristic fitted lining, not cloth simulation or sealed torso anatomy'},indent=2)+'\n')
+bpy.ops.wm.save_as_mainfile(filepath=str(P))
+# The selected artifact stays in neutral. Render diagnostic closeups without saving UI changes.
+rig=bpy.data.objects['AceHack | Motion rig']
+for o in sc.objects:
+ if o==rig or o.parent==rig or 'acehack' in o.name.lower():o.hide_render=True
+cam=sc.camera;target=Vector((bpy.data.objects['Xenaa | Motion rig'].location.x,-.1,1.45));cam.location=target+Vector((0,-5,.20));cam.rotation_euler=(target-cam.location).to_track_quat('-Z','Y').to_euler();cam.data.ortho_scale=2.15
+sc.render.resolution_x=1600;sc.render.resolution_y=850;sc.cycles.samples=32;sc.frame_set(169);sc.render.filepath=str(O/'v16-xenaa-lining-fitted.png');bpy.ops.render.render(write_still=True)
+sc.frame_set(145);cam.location=target+Vector((2,3,.3));cam.rotation_euler=(target-cam.location).to_track_quat('-Z','Y').to_euler();cam.data.ortho_scale=1.0;sc.render.filepath=str(O/'v16-xenaa-back-head-turn.png');bpy.ops.render.render(write_still=True)

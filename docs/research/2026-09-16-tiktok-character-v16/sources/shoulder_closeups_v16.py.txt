@@ -1,0 +1,27 @@
+"""Matched single-character shoulder stress views avoid overlap and cropped hands."""
+import bpy
+from pathlib import Path
+from mathutils import Vector
+R=Path(__file__).resolve().parent;O=R/'review'
+for version in ['v15','v16']:
+ path=R.parent/'TikTok-Character-Quality-v15/review/Blender-Quality-Review-v15.blend' if version=='v15' else O/'Blender-Quality-Review-v16.blend'
+ bpy.ops.wm.open_mainfile(filepath=str(path));sc=bpy.context.scene
+ if version=='v15':
+  import math
+  from mathutils import Matrix
+  sc.frame_set(1)
+  for rig in [o for o in sc.objects if o.type=='ARMATURE']:
+   rig.animation_data_clear()
+   for b in rig.pose.bones:b.matrix_basis=Matrix.Identity(4)
+   bpy.context.view_layer.update()
+   for side,angle in [('Left',-75),('Right',75)]:
+    b=rig.pose.bones[side+'UpperArm'];m=b.matrix.copy();p=m.translation.copy();b.matrix=Matrix.Translation(p)@Matrix.Rotation(math.radians(angle),4,'Y')@Matrix.Translation(-p)@m;bpy.context.view_layer.update()
+ else:sc.frame_set(169)
+ original={o.name:o.hide_render for o in sc.objects}
+ for name in ['AceHack','Xenaa']:
+  other='Xenaa' if name=='AceHack' else 'AceHack'
+  other_rig=bpy.data.objects[other+' | Motion rig']
+  for o in sc.objects:o.hide_render=original[o.name] or o==other_rig or o.parent==other_rig or other.lower() in o.name.lower()
+  target=Vector((bpy.data.objects[name+' | Motion rig'].location.x,-.1,1.45));cam=sc.camera;cam.location=target+Vector((0,-5,.20));cam.rotation_euler=(target-cam.location).to_track_quat('-Z','Y').to_euler();cam.data.ortho_scale=2.15
+  sc.render.resolution_x=1600;sc.render.resolution_y=850;sc.render.resolution_percentage=100;sc.cycles.samples=32
+  sc.render.filepath=str(O/(version+'-'+name.lower()+'-shoulders75.png'));bpy.ops.render.render(write_still=True)

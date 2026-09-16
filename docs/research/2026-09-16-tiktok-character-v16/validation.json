@@ -1,0 +1,85 @@
+{
+  "blender_version": "5.2.1 LTS",
+  "neutral_evaluated_max_delta_m": {
+    "AceHack | Body generator": 1.2377833513710357e-07,
+    "AceHack | Independent head generator": 1.5359765015432458e-08,
+    "AceHack | Collar join": 0.0,
+    "Xenaa | Body generator": 1.341104507446289e-07,
+    "Xenaa | Independent head generator": 1.1922384146600962e-07,
+    "Xenaa | Collar join": 0.0,
+    "AceHack | Source left leg": 0.0,
+    "AceHack | Source right leg": 0.0,
+    "Xenaa | Source left leg": 0.0,
+    "Xenaa | Source right leg": 0.0,
+    "Xenaa | Recovered source hair": 0.0,
+    "Xenaa | Jacket back lining": 0.1676306277513504
+  },
+  "source_geometry_uv_projection_material_indices_unchanged_except_supplemental_lining": true,
+  "packed_image_hashes_unchanged": {
+    "AceHack-square-alpha.png": "b42368947b395e377ae5bbf15a1313601d99cdee3e312dc7243a0b2aa28a8254",
+    "alpha.png": "d13018204bfd4984e00986f28ee1e7503b39b88705ffc11e9589d36a7a1ab1ae",
+    "alpha.png.001": "fb0c8051ea25c2b846ee745958d0fb6b212f3af8513976adc79e9ac016033419",
+    "Xenaa-square-alpha.png": "2d935284039fcaebdf77714af6998bf2c67cec9e048552b3b3797e0f9519f65a"
+  },
+  "characters": [
+    {
+      "character": "AceHack",
+      "max_influences_over_1e_minus_7": 4,
+      "weight_sum_max_error": 1.1707015801221132e-07,
+      "weighted_bones": [
+        "Head",
+        "LeftFoot",
+        "LeftForeArm",
+        "LeftHand",
+        "LeftShin",
+        "LeftThigh",
+        "LeftUpperArm",
+        "Pelvis",
+        "RightFoot",
+        "RightForeArm",
+        "RightHand",
+        "RightShin",
+        "RightThigh",
+        "RightUpperArm",
+        "Spine1",
+        "Spine2",
+        "Spine3"
+      ],
+      "marked_scalp_vertices": 0,
+      "min_marked_head_weight": null,
+      "recovered_hair_head_error_m": null
+    },
+    {
+      "character": "Xenaa",
+      "max_influences_over_1e_minus_7": 4,
+      "weight_sum_max_error": 1.2226882972754538e-07,
+      "weighted_bones": [
+        "Head",
+        "LeftFoot",
+        "LeftForeArm",
+        "LeftHand",
+        "LeftShin",
+        "LeftThigh",
+        "LeftUpperArm",
+        "Pelvis",
+        "RightFoot",
+        "RightForeArm",
+        "RightHand",
+        "RightShin",
+        "RightThigh",
+        "RightUpperArm",
+        "Spine1",
+        "Spine2",
+        "Spine3"
+      ],
+      "marked_scalp_vertices": 101211,
+      "min_marked_head_weight": 1.0,
+      "recovered_hair_head_error_m": 4.2146848510894035e-08
+    }
+  ],
+  "limitations": [
+    "No face morphs or individual finger weights authored",
+    "Not a mobile budget or real tracking test",
+    "Neck/shoulder compression and hair silhouette still need work"
+  ]
+}

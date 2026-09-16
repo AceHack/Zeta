@@ -1,0 +1,57 @@
+"""Independent saved-scene checks and profile renders for the v16 weight study."""
+import bpy,json,hashlib,numpy as np
+from pathlib import Path
+from mathutils import Vector
+R=Path(__file__).resolve().parent;O=R/'review'
+def array(collection,property,width,dtype=np.float32):
+ a=np.empty(len(collection)*width,dtype=dtype);collection.foreach_get(property,a);return a.reshape(-1,width)
+def snapshot(path):
+ bpy.ops.wm.open_mainfile(filepath=str(path));bpy.context.scene.frame_set(1);bpy.context.view_layer.update();dg=bpy.context.evaluated_depsgraph_get();data={}
+ for ob in bpy.context.scene.objects:
+  if ob.type!='MESH' or not any(m.type=='ARMATURE' for m in ob.modifiers):continue
+  ev=ob.evaluated_get(dg);me=ev.to_mesh();evaluated=array(me.vertices,'co',3);ev.to_mesh_clear()
+  hashes={}
+  for key,items,prop,width,dtype in [('vertices',ob.data.vertices,'co',3,np.float32),('loops',ob.data.loops,'vertex_index',1,np.int32),('face_materials',ob.data.polygons,'material_index',1,np.int32)]:hashes[key]=hashlib.sha256(array(items,prop,width,dtype).tobytes()).hexdigest()
+  for uv in ob.data.uv_layers:hashes['uv:'+uv.name]=hashlib.sha256(array(uv.data,'uv',2).tobytes()).hexdigest()
+  for name in ['sourceRestNormal','sourceRestPosition']:
+   attr=ob.data.attributes.get(name)
+   if attr:hashes[name]=hashlib.sha256(array(attr.data,'vector',3).tobytes()).hexdigest()
+  data[ob.name]={'hashes':hashes,'evaluated':evaluated}
+ images={im.name:hashlib.sha256(im.packed_file.data).hexdigest() for im in bpy.data.images if im.source=='FILE' and im.users and im.packed_file}
+ return data,images
+before,old_images=snapshot(R.parent/'TikTok-Character-Quality-v15/review/Blender-Quality-Review-v15.blend')
+after,new_images=snapshot(O/'Blender-Quality-Review-v16.blend')
+assert before.keys()==after.keys() and old_images==new_images
+neutral={}
+for name,old in before.items():
+ new=after[name];assert old['hashes']==new['hashes'] or name=='Xenaa | Jacket back lining',name
+ delta=float(np.linalg.norm(old['evaluated']-new['evaluated'],axis=1).max());assert delta<1e-5 or name=='Xenaa | Jacket back lining',(name,delta);neutral[name]=delta
+lining=json.loads((R/'lining-fit.json').read_text())
+assert np.array_equal(array(bpy.data.objects[lining['mesh']].data.vertices,'co',3),np.array(lining['after'],dtype=np.float32))
+sc=bpy.context.scene;results=[]
+for name in ['AceHack','Xenaa']:
+ rig=bpy.data.objects[name+' | Motion rig'];counts=[];weight_error=0;active=set()
+ for ob in rig.children:
+  if ob.type!='MESH' or not any(m.type=='ARMATURE' for m in ob.modifiers):continue
+  for v in ob.data.vertices:
+   ws=[g for g in v.groups if g.weight>1e-7];assert ws
+   counts.append(len(ws));weight_error=max(weight_error,abs(sum(g.weight for g in ws)-1));active.update(ob.vertex_groups[g.group].name for g in ws)
+ assert weight_error<1e-5
+ head=bpy.data.objects[name+' | Independent head generator'];marker=head.data.attributes.get('reviewScalpHair');head_index=head.vertex_groups['Head'].index
+ marked=[v.index for v in head.data.vertices if marker and marker.data[v.index].value]
+ minimum=min((next((g.weight for g in head.data.vertices[i].groups if g.group==head_index),0) for i in marked),default=None)
+ if name=='Xenaa':assert marked and minimum>1-1e-6
+ hair=bpy.data.objects.get(name+' | Recovered source hair');error=None
+ if hair:
+  errors=[]
+  for frame in [121,145,217]:
+   sc.frame_set(frame);bpy.context.view_layer.update();b=rig.pose.bones['Head'];m=b.matrix@b.bone.matrix_local.inverted();ev=hair.evaluated_get(bpy.context.evaluated_depsgraph_get());mesh=ev.to_mesh();errors.append(max((v.co-(m@hair.data.vertices[v.index].co)).length for v in mesh.vertices));ev.to_mesh_clear()
+  error=max(errors);assert error<1e-5
+ results.append({'character':name,'max_influences_over_1e_minus_7':max(counts),'weight_sum_max_error':weight_error,'weighted_bones':sorted(active),'marked_scalp_vertices':len(marked),'min_marked_head_weight':minimum,'recovered_hair_head_error_m':error})
+sc.frame_set(1)
+result={'blender_version':bpy.app.version_string,'neutral_evaluated_max_delta_m':neutral,'source_geometry_uv_projection_material_indices_unchanged_except_supplemental_lining':True,'packed_image_hashes_unchanged':new_images,'characters':results,'limitations':['No face morphs or individual finger weights authored','Not a mobile budget or real tracking test','Neck/shoulder compression and hair silhouette still need work']}
+(R/'validation.json').write_text(json.dumps(result,indent=2)+'\n')
+cam=sc.camera;target=Vector((0,-.1,1.03));cam.location=(4,-2.8,2.0);cam.rotation_euler=(target-cam.location).to_track_quat('-Z','Y').to_euler();cam.data.ortho_scale=3.1
+for frame,label in [(1,'side-neutral'),(145,'side-head-turn')]:
+ sc.frame_set(frame);sc.render.filepath=str(O/(label+'.png'));bpy.ops.render.render(write_still=True)
+print('SAVED-SCENE VALIDATION PASSED',json.dumps(results),flush=True)

@@ -1,0 +1,7 @@
+"""Render selected poses from the final saved scene after the lining correction."""
+import bpy
+from pathlib import Path
+R=Path(__file__).resolve().parent;O=R/'review'
+bpy.ops.wm.open_mainfile(filepath=str(O/'Blender-Quality-Review-v16.blend'));sc=bpy.context.scene
+for frame,label in [(1,'neutral'),(25,'left-arm'),(49,'right-arm'),(73,'left-knee'),(193,'elbows'),(217,'combined')]:
+ sc.frame_set(frame);sc.render.filepath=str(O/(label+'.png'));bpy.ops.render.render(write_still=True)

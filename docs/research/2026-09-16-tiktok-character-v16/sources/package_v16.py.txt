@@ -1,0 +1,28 @@
+"""One-version release ZIP, explicit media allowlist and complete read-back checks."""
+from pathlib import Path
+import argparse,hashlib,json,zipfile
+R=Path(__file__).resolve().parent
+parser=argparse.ArgumentParser();parser.add_argument('--record-dir',type=Path,required=True);args=parser.parse_args();D=args.record_dir;D.mkdir(parents=True,exist_ok=True)
+images=['neutral','left-arm','right-arm','left-knee','elbows','combined','side-neutral','side-head-turn','v15-acehack-shoulders75','v15-xenaa-shoulders75','v16-acehack-shoulders75','v16-xenaa-shoulders75','probe-xenaa-without-panel','v16-xenaa-lining-fitted','v15-xenaa-back-head-turn','v16-xenaa-back-head-turn']
+scripts=['refine_weights_v16','panel_probe_v16','shoulder_closeups_v16','fit_lining_v16','back_baseline_v16','validate_v16','render_final_v16','package_v16']
+files={'review/Blender-Quality-Review-v16.blend':R/'review/Blender-Quality-Review-v16.blend'}
+files.update({'evidence/'+n+'.png':R/'review'/ (n+'.png') for n in images})
+files.update({'sources/'+n+'.py':R/(n+'.py') for n in scripts})
+files.update({'receipts/'+n:R/n for n in ['comparison.json','validation.json','lining-fit.json']})
+readme=R/'README.txt';readme.write_text('Vera, OpenAI Codex (GPT-6). Character v16, 2026-09-16.\n\nOpen review/Blender-Quality-Review-v16.blend.\nFrames: 1 neutral; 25/49 arms; 73/97 knees; 121/145 head; 169 wider arms; 193 elbows; 217 combined. Synthetic pose tests, not tracking.\n\nThis is an unfinished high-detail Blender reference. Shoulder/neck weights are smoother. The supplemental lining is fitted to remove rectangular front underarm patches. Rear reconstruction, hair boundaries, shoulder volume, knees, face and fingers need further work. Not a TikTok package.\n\nEvidence v15-* is freshly rendered baseline comparison, not an older model bundled for rollback. v16-*-shoulders75 is the weight-stage comparison before lining fit; v16-xenaa-lining-fitted is after fit. probe-xenaa-without-panel is the visibility ablation. Neutral/individual/combined/side renders show the final saved scene. Cropped bilateral overview is excluded.\n\nThe input v15 model is preserved in research-tiktok-character-quality-v15-20260909. Restore its review/Blender-Quality-Review-v15.blend under the sibling TikTok-Character-Quality-v15 directory. See the repository research record for ordered recipes and limitations.\nhttps://github.com/Lucent-Financial-Group/Zeta/tree/main/docs/research/2026-09-16-tiktok-character-v16\n')
+files['README.txt']=readme
+entries=[]
+for n,p in sorted(files.items()):
+ data=p.read_bytes();entries.append({'path':n,'bytes':len(data),'sha256':hashlib.sha256(data).hexdigest()})
+archive=R/'tiktok-character-quality-v16.zip'
+with zipfile.ZipFile(archive,'w',compression=zipfile.ZIP_DEFLATED,compresslevel=6) as z:
+ for n,p in sorted(files.items()):z.write(p,n)
+ z.writestr('manifest.json',json.dumps({'files':entries},indent=2)+'\n')
+with zipfile.ZipFile(archive) as z:
+ assert z.testzip() is None
+ assert set(z.namelist())==set(files)|{'manifest.json'}
+ for e in entries:
+  b=z.read(e['path']);assert len(b)==e['bytes'] and hashlib.sha256(b).hexdigest()==e['sha256']
+manifest={'archive':archive.name,'bytes':archive.stat().st_size,'sha256':hashlib.sha256(archive.read_bytes()).hexdigest(),'files':entries,'read_back_verified':len(entries)}
+(D/'artifact-manifest.json').write_text(json.dumps(manifest,indent=2)+'\n')
+print(json.dumps({k:v for k,v in manifest.items() if k!='files'}))

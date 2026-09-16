@@ -1,0 +1,12 @@
+"""Visibility ablation: identify the rectangular underarm surface before editing it."""
+import bpy
+from pathlib import Path
+from mathutils import Vector
+R=Path(__file__).resolve().parent;O=R/'review'
+bpy.ops.wm.open_mainfile(filepath=str(O/'Blender-Quality-Review-v16.blend'));sc=bpy.context.scene;sc.frame_set(169)
+rig=bpy.data.objects['AceHack | Motion rig']
+for o in sc.objects:
+ if o==rig or o.parent==rig or 'acehack' in o.name.lower():o.hide_render=True
+panel=bpy.data.objects['Xenaa | Jacket back lining'];panel.hide_render=True
+cam=sc.camera;target=Vector((bpy.data.objects['Xenaa | Motion rig'].location.x,-.1,1.45));cam.location=target+Vector((0,-5,.20));cam.rotation_euler=(target-cam.location).to_track_quat('-Z','Y').to_euler();cam.data.ortho_scale=2.15
+sc.render.resolution_x=1600;sc.render.resolution_y=850;sc.cycles.samples=32;sc.render.filepath=str(O/'probe-xenaa-without-panel.png');bpy.ops.render.render(write_still=True)

@@ -9,6 +9,8 @@ the LAST hop of a ferry, never as the home.
 
 Current:
 
+- [Character v16 continuation](../research/2026-09-16-tiktok-character-v16/README.md) - source-preserving shoulder/neck weights, fitted lining, matched pose comparisons and explicit remaining rear-surface defects.
+
 - [Character v15 quality study](../research/2026-09-09-tiktok-character-v15/README.md) - restored pre-rig surfaces, pose evidence, archive cleanup and remaining mobile work.
 
 - [Character asset storage policy](../CHARACTER-ASSET-STORAGE.md) — recipes and hashes in Git; one version per release ZIP.
