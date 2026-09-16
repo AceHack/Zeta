@@ -2,7 +2,7 @@
 
 **Owner:** Vera (this file is hers; she can revise it per her own discretion per named-agent-distinctness consent + Aaron 2026-05-05 *"sh can edit her own CURRENT-amara.md too if she does not like it after reading her files"* — same applies symmetrically to Vera via the codex peer-call write-back path when added).
 
-**Last updated:** 2026-09-16 (unique-confirm leftover UNIQUE leftover #17425 leftover unique @ d0bb4b689dad15f5f60a0c46d31fe082312b02a7 + leftover UNIQUE leftover #17422 leftover unique @ 4f65461b5293c17c1f1e84bd4af3ea2e709a3262 + leftover UNIQUE leftover #17422 leftover unique @ 2d1d642809030721da4cf6096bab39a33a46f3aa + leftover UNIQUE leftover #17418 leftover unique @ 648911a86de271b2a4ffa2f34abcc990279187b2 + leftover UNIQUE leftover #17416 leftover unique @ 10a776a65ee5b693e2943f4195be2fc789aa6423 + leftover UNIQUE leftover #17414 leftover unique @ 57d088039e8ea3cf458492e19505b6cf5db7af60 + leftover UNIQUE leftover #17407 leftover unique @ 949b38075b0b5617b6dd47a381d2ab1c901cd7e7 + leftover UNIQUE leftover #16741 leftover unique @ 817c70738d68662b0e142f193f471d8a19459b95 + leftover UNIQUE leftover #16389 leftover unique @ fff9367b77072921d65b1475ce0cc6d861b79f44 + leftover UNIQUE leftover #16381 leftover unique @ c65239ce9c89627a00ad4c5a055ef52bc8f20047 + leftover UNIQUE leftover #16375 leftover unique @ 2fbf8d81b4b47612cdd1dcc6a56295ba7e2c2719 + leftover UNIQUE leftover #16365 leftover unique @ 354b4163034fffa3c678219823bb18026ed50f18 + leftover UNIQUE leftover #16354 leftover unique @ 34313849e33a899a2a10597f407e12f2c5e70e04 + leftover UNIQUE leftover #16336 leftover unique @ 5d24c26262f8f1078edfb51954d610e53c312db5 + leftover UNIQUE leftover #16328 leftover unique @ 236d5975800419e9e332f5ea296714049f446ed7 + leftover UNIQUE leftover #16321 leftover unique @ 0929240695c37c5164166919285d03a154b725db + leftover-on-main #16259 + #16257 + #16266 + #16271 + #16267 + #16275; identity body still 2026-05-05)
+**Last updated:** 2026-09-16 (unique-confirm leftover UNIQUE leftover #17429 leftover unique @ 5ee8ff1e7c875641a4ed80e80ca96a5b285669c8 + leftover UNIQUE leftover #17425 leftover unique @ 0215ef7dd56436f255627e4b14d31e9782da0080 + leftover UNIQUE leftover #17425 leftover unique @ d0bb4b689dad15f5f60a0c46d31fe082312b02a7 + leftover UNIQUE leftover #17422 leftover unique @ 4f65461b5293c17c1f1e84bd4af3ea2e709a3262 + leftover UNIQUE leftover #17422 leftover unique @ 2d1d642809030721da4cf6096bab39a33a46f3aa + leftover UNIQUE leftover #17418 leftover unique @ 648911a86de271b2a4ffa2f34abcc990279187b2 + leftover UNIQUE leftover #17416 leftover unique @ 10a776a65ee5b693e2943f4195be2fc789aa6423 + leftover UNIQUE leftover #17414 leftover unique @ 57d088039e8ea3cf458492e19505b6cf5db7af60 + leftover UNIQUE leftover #17407 leftover unique @ 949b38075b0b5617b6dd47a381d2ab1c901cd7e7 + leftover UNIQUE leftover #16741 leftover unique @ 817c70738d68662b0e142f193f471d8a19459b95 + leftover UNIQUE leftover #16389 leftover unique @ fff9367b77072921d65b1475ce0cc6d861b79f44 + leftover UNIQUE leftover #16381 leftover unique @ c65239ce9c89627a00ad4c5a055ef52bc8f20047 + leftover UNIQUE leftover #16375 leftover unique @ 2fbf8d81b4b47612cdd1dcc6a56295ba7e2c2719 + leftover UNIQUE leftover #16365 leftover unique @ 354b4163034fffa3c678219823bb18026ed50f18 + leftover UNIQUE leftover #16354 leftover unique @ 34313849e33a899a2a10597f407e12f2c5e70e04 + leftover UNIQUE leftover #16336 leftover unique @ 5d24c26262f8f1078edfb51954d610e53c312db5 + leftover UNIQUE leftover #16328 leftover unique @ 236d5975800419e9e332f5ea296714049f446ed7 + leftover UNIQUE leftover #16321 leftover unique @ 0929240695c37c5164166919285d03a154b725db + leftover-on-main #16259 + #16257 + #16266 + #16271 + #16267 + #16275; identity body still 2026-05-05)
 
 **Pattern parity:** sibling to `CURRENT-aaron.md` (Aaron, first-party human maintainer; in-repo canonical), `CURRENT-amara.md` (Amara, Aurora deep-research register, separate entity on GPT-5.5 substrate), `CURRENT-ani.md` (Ani, voice-mode chat-companion register on Grok-via-cursor, brat-voice register), `CURRENT-otto.md` (Otto, factory-orchestrator on Claude-Opus-4.7; user-scope). Vera fills the implementation-peer role offered 2026-05-05 by Aaron *"this is a trust mustle you budle between the two yo man want a named chat gpt agent for this to hold the trust in a named current file"*.
 
@@ -505,3 +505,49 @@ Cite != grade leftover unique @ 1ccad9df.
 Named residuals: parent feat ungraded; drop untested uniquely; chart-currency red not in unique diff; mergeable_state MCP blocked vs REST unstable.
 
 Sit leftover. Do not merge. Unique HOLDS d0bb4b68. Not a product unique-confirm of merge.
+
+---
+
+## leftover UNIQUE leftover #17425 leftover unique @ 0215ef7dd56436f255627e4b14d31e9782da0080
+
+UNIQUE HOLDS leftover NEW CELL leftover UNIQUE leftover #17425 leftover unique @ 0215ef7dd56436f255627e4b14d31e9782da0080
+
+GRADE GO (tip unique only).
+
+Prior leftover unique @ d0bb4b689dad15f5f60a0c46d31fe082312b02a7 GRADE GO stands -- not re-graded.
+
+Live REST HEAD leftover unique @ 0215ef7dd56436f255627e4b14d31e9782da0080 CONFIRMED (PR head.sha, tip of 4-commit stack, never a merge-ref). Unique does not move. Unique git parent leftover unique @ 535f1ba8b0ec8b652576e61188a611c9ad8ae06e. Never grade leftover unique @ d0bb4b68 leftover unique @ 1ccad9df leftover unique @ 44604e7f leftover unique @ e359790c.
+
+Claimed OPEN; LIVE open. Tip AceHack + Shadow; Human-Review none; Action-Mode autonomous-fail-closed; Task 081M2NGVGXE087G0R000JN8F2F.
+
+Object vs parent 535f1ba8 (NEW CELL -- complementary remainder of empty docs stub; separate backlog-docs cell from prior GO/feat):
+- Tip-only 1 file +65: workitem 081M2NGVGXE evidence body. Parent was 17-line stub. Product .ts/tests/gate.yml unchanged after GO.
+- Post-GO vs d0bb4b68: 2 files +96 (workitem + event). Tip unique != PR aggregate 7/+467.
+
+Cite != re-grade leftover unique @ d0bb4b68. Cite != grade leftover unique @ 1ccad9df.
+
+Named residuals: drought docs on selector-covers-reads PR; Human-Review none; workitem still backlog; mergeable_state flap; PR body Agency still feat.
+
+Sit leftover. Do not merge. Unique HOLDS 0215ef7d. Not a product unique-confirm of merge.
+
+---
+
+## leftover UNIQUE leftover #17429 leftover unique @ 5ee8ff1e7c875641a4ed80e80ca96a5b285669c8
+
+UNIQUE HOLDS leftover NEW CELL leftover UNIQUE leftover #17429 leftover unique @ 5ee8ff1e7c875641a4ed80e80ca96a5b285669c8
+
+Live REST HEAD leftover unique @ 5ee8ff1e7c875641a4ed80e80ca96a5b285669c8 CONFIRMED (PR head.sha, 1 commit, +755/-1, 9 files, never a merge-ref). Unique does not move. Unique git parent leftover unique @ c332005f0b05a5f58124893bfe5ff5128cb1c0a6. Never grade leftover unique @ c332005f leftover unique @ fbe2c437 leftover UNIQUE leftover #17416 leftover unique @ 10a776a6 leftover UNIQUE leftover #17302 leftover unique @ c1098600.
+
+Claimed OPEN; LIVE closed+merged squash. AceHack + Ani/grok-tui unique. Agency: Agent Ani, Action-Mode human-directed, Human-Review explicit. Task 081M2NH3N4W087G0R0023MXFEB. Workitem still backlog.
+
+Object vs parent (NEW CELL -- extends leftover UNIQUE leftover #17416 / leftover UNIQUE leftover #17302; consume CitedByIndex/SearchIndex/ReverseIndexLog; add ReverseIndexCite* + FairnessInbox + ZetaDbLog):
+- Cite ingest: closed 15-relation vocab; unknown skipped; Entity+Cite append; replay CitedByIndex.
+- FairnessInbox: subscriber-local drain; reply does not overwrite cite.
+- ZetaDbFact schema/key/custody on one GroupCommitDiskDeltaLog directory.
+- CI fixture only (temp dirs); Not FUSE/Apple. Residual: ingestHostDirectory can walk a host tree.
+
+Cite != close leftover UNIQUE leftover #17416 leftover unique @ 10a776a6. Cite != close leftover UNIQUE leftover #17302 leftover unique @ c1098600.
+
+Named residuals: claimed OPEN stale; workitem backlog; notify vs Reaqtor; host-walk API vs CI prose.
+
+Sit leftover. Do not merge. Unique HOLDS 5ee8ff1e. Not a product unique-confirm of merge.
