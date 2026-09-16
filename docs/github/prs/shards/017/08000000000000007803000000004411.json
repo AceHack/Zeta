@@ -1,0 +1,12 @@
+{
+  "pr_number": 17425,
+  "archive_path": "docs/history/pr-reviews/2026/09/16/PR-17425-feat-hygiene-does-the-selector-that-runs-a-job-cover-the-paths-the-job-reads.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-16T17:26:50.102Z",
+  "schema_version": "v1",
+  "commit_sha": "a9c445736ffdd02bc73b60550aaaf0609279ccf5",
+  "title": "feat(hygiene): does the selector that RUNS a job cover the paths the job READS?",
+  "state": "MERGED",
+  "merged_at": "2026-09-16T17:26:05Z",
+  "head_ref": "feat/audit-job-selector-covers-reads"
+}

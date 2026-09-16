@@ -1,0 +1,12 @@
+{
+  "pr_number": 17431,
+  "archive_path": "docs/history/pr-reviews/2026/09/16/PR-17431-improve-character-shoulder-weights-and-remove-exposed-lining-patches.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-16T17:07:57.502Z",
+  "schema_version": "v1",
+  "commit_sha": "7e2f7a43160a1813e452eb25f64e5da25dabd917",
+  "title": "Improve character shoulder weights and remove exposed lining patches",
+  "state": "MERGED",
+  "merged_at": "2026-09-16T17:06:29Z",
+  "head_ref": "codex/character-v16-shoulder-review"
+}
