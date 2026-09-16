@@ -1,0 +1,12 @@
+{
+  "pr_number": 17422,
+  "archive_path": "docs/history/pr-reviews/2026/09/16/PR-17422-feat-corporate-the-ticket-hears-when-a-milestone-is-behind-us.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-16T15:10:46.984Z",
+  "schema_version": "v1",
+  "commit_sha": "44604e7fcc6584b58bc726dfd2b5e70fdfeb38ff",
+  "title": "feat(corporate): the ticket hears when a milestone is behind us",
+  "state": "MERGED",
+  "merged_at": "2026-09-16T15:09:58Z",
+  "head_ref": "org-ticket-reports"
+}
