@@ -1,0 +1,12 @@
+{
+  "pr_number": 17429,
+  "archive_path": "docs/history/pr-reviews/2026/09/16/PR-17429-feat-081m2nh3n4w087g0r0023mxfeb-cites-inbox-schema-key-on-host-wal.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-16T17:03:12.987Z",
+  "schema_version": "v1",
+  "commit_sha": "fbe2c437c1fb31fca3ecbfe6a5928e2cee70103d",
+  "title": "feat(081M2NH3N4W087G0R0023MXFEB): cites, inbox, schema/key on host WAL",
+  "state": "MERGED",
+  "merged_at": "2026-09-16T17:02:24Z",
+  "head_ref": "feat/zetadb-cite-notify-schema"
+}
