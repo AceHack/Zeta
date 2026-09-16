@@ -1,0 +1,14 @@
+{
+  "id": "080d05586e1d7810a0130008ceaeedd0",
+  "at": "2026-09-16T16:30:01.135Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M2NGVGXE087G0R000JN8F2F",
+    "type": "bug",
+    "title": "no Actions API index is a reliable witness so a stale listing still yields a false drought",
+    "slug": "no-actions-api-index-is-a-reliable-witness-so-a-stale-listin",
+    "priority": "P2",
+    "filename": "081M2NGVGXE087G0R000JN8F2F-no-actions-api-index-is-a-reliable-witness-so-a-stale-listin.md"
+  }
+}

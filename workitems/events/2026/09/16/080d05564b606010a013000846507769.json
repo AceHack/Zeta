@@ -1,0 +1,14 @@
+{
+  "id": "080d05564b606010a013000846507769",
+  "at": "2026-09-16T15:15:22.252Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M2NCJV0C087G0R002RZP0QF",
+    "type": "task",
+    "title": "drift-tier audit that a jobs selector covers the paths the job actually reads",
+    "slug": "drift-tier-audit-that-a-jobs-selector-covers-the-paths-the-j",
+    "priority": "P2",
+    "filename": "081M2NCJV0C087G0R002RZP0QF-drift-tier-audit-that-a-jobs-selector-covers-the-paths-the-j.md"
+  }
+}

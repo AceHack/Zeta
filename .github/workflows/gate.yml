@@ -4969,6 +4969,15 @@ jobs:
       - name: Install dependencies
         run: bun install --frozen-lockfile
 
+      # DRIFT TIER. Does the selector that RUNS each job cover the paths the job READS?
+      # `audit-build-graph-completeness` checks every job is CLAIMED by some target; nothing
+      # checked that the claiming target's SOURCES cover what the job's commands actually read.
+      # A job can be fully claimed and still be invisible to its own subject -- which is how
+      # #17403 stranded a docstring on main while the lint that catches it SKIPPED.
+      - name: Does each job's selector cover the paths it scans? (drift)
+        continue-on-error: true
+        run: bun src/Core.TypeScript/hygiene/audit-job-selector-covers-reads.ts
+
       - name: Do this PR's tests constrain this PR's changes?
         continue-on-error: true
         env:
