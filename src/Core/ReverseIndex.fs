@@ -462,3 +462,265 @@ module ReverseIndexIngest =
         let fs = PhysicalFileSystem() :> IFileSystem
         ingestPaths fs rootFull (listHostFiles rootFull) log ct
 
+/// Closed relation vocabulary (citations-as-first-class, 2026-04-20).
+/// Unknown tokens are skipped, never coerced into see-also.
+[<Struct>]
+type CiteIngestReport =
+    { FilesScanned: int
+      CitesAppended: int
+      EntitiesAppended: int
+      SkippedUnknownRelation: int
+      SkippedNotIndexable: int
+      SkippedOversize: int
+      SkippedBinary: int
+      SkippedMissing: int }
+
+[<RequireQualifiedAccess>]
+module ReverseIndexCite =
+
+    let relations: string[] =
+        [| "borrowed-pattern"
+           "contradicts"
+           "criticizes"
+           "derived-from"
+           "distinguishes"
+           "follows"
+           "follows-convention-of"
+           "implements"
+           "inherits-from"
+           "replies"
+           "reviewed-by"
+           "reviews"
+           "see-also"
+           "supersedes"
+           "tests" |]
+
+    let private relationSet =
+        HashSet<string>(relations, StringComparer.Ordinal)
+
+    let isRelation (rel: string) : bool =
+        relationSet.Contains rel
+
+    let private isCrockford (c: char) : bool =
+        (c >= '0' && c <= '9')
+        || (c >= 'A' && c <= 'H')
+        || c = 'J'
+        || c = 'K'
+        || c = 'M'
+        || c = 'N'
+        || (c >= 'P' && c <= 'T')
+        || (c >= 'V' && c <= 'Z')
+
+    /// Crockford ZetaId, 26 chars, `081` prefix. Case-sensitive as written.
+    let tryZetaIdAt (text: string) (i: int) : string option =
+        if i < 0 || i + 26 > text.Length then
+            None
+        elif text.[i] <> '0' || text.[i + 1] <> '8' || text.[i + 2] <> '1' then
+            None
+        else
+            let rec ok k =
+                if k >= 26 then true
+                elif isCrockford text.[i + k] then ok (k + 1)
+                else false
+            if not (ok 3) then
+                None
+            else
+                let prevOk = i = 0 || not (isCrockford text.[i - 1])
+                let nextOk = i + 26 = text.Length || not (isCrockford text.[i + 26])
+                if prevOk && nextOk then Some(text.Substring(i, 26)) else None
+
+    let private addCite (acc: ResizeArray<Reference>) (fromId: string) (target: string) (rel: string) =
+        if
+            not (String.IsNullOrEmpty fromId)
+            && not (String.IsNullOrEmpty target)
+            && not (String.Equals(fromId, target, StringComparison.Ordinal))
+            && relationSet.Contains rel
+        then
+            acc.Add
+                { From = fromId
+                  Target = target
+                  Relation = rel }
+
+    let private splitWs (line: string) : string[] =
+        let parts = ResizeArray<string>()
+        let buf = StringBuilder()
+        let flush () =
+            if buf.Length > 0 then
+                parts.Add(buf.ToString())
+                buf.Clear() |> ignore
+        for i in 0 .. line.Length - 1 do
+            let c = line.[i]
+            if c = ' ' || c = '\t' || c = '\r' then
+                flush ()
+            else
+                buf.Append c |> ignore
+        flush ()
+        parts.ToArray()
+
+    /// Extract typed edges from one document. Declared doors:
+    /// `cite <from> <target> <relation>` lines; markdown `[label](target)`
+    /// as see-also; bare ZetaIds as see-also. HTTP(S) links are skipped.
+    let extract (docId: string) (text: string) : struct (Reference[] * int) =
+        if String.IsNullOrEmpty text then
+            struct (Array.empty, 0)
+        else
+            let acc = ResizeArray<Reference>()
+            let mutable unknown = 0
+            let lines = text.Split('\n')
+            for line in lines do
+                let fields = splitWs line
+                if fields.Length = 4 && String.Equals(fields.[0], "cite", StringComparison.Ordinal) then
+                    if relationSet.Contains fields.[3] then
+                        addCite acc fields.[1] fields.[2] fields.[3]
+                    else
+                        unknown <- unknown + 1
+            let mutable i = 0
+            while i < text.Length do
+                if text.[i] = '[' then
+                    let close = text.IndexOf(']', i + 1)
+                    if close > i && close + 1 < text.Length && text.[close + 1] = '(' then
+                        let endParen = text.IndexOf(')', close + 2)
+                        if endParen > close + 2 then
+                            let target = text.Substring(close + 2, endParen - close - 2)
+                            let http =
+                                target.StartsWith("http://", StringComparison.Ordinal)
+                                || target.StartsWith("https://", StringComparison.Ordinal)
+                            if not http && target.Length > 0 then
+                                addCite acc docId target "see-also"
+                            i <- endParen + 1
+                        else
+                            i <- i + 1
+                    else
+                        i <- i + 1
+                else
+                    match tryZetaIdAt text i with
+                    | Some id ->
+                        addCite acc docId id "see-also"
+                        i <- i + 26
+                    | None -> i <- i + 1
+            let arr = acc.ToArray()
+            Array.Sort(
+                arr,
+                Comparison<Reference>(fun a b ->
+                    let c1 = StringComparer.Ordinal.Compare(a.From, b.From)
+                    if c1 <> 0 then c1
+                    else
+                        let c2 = StringComparer.Ordinal.Compare(a.Target, b.Target)
+                        if c2 <> 0 then c2
+                        else StringComparer.Ordinal.Compare(a.Relation, b.Relation)))
+            struct (arr, unknown)
+
+    let facts (refs: Reference[]) : ZSet<IndexFact> =
+        let ids = HashSet<string>(StringComparer.Ordinal)
+        let rows = ResizeArray<IndexFact * int64>()
+        for r in refs do
+            if ids.Add r.From then
+                rows.Add(IndexFact.Entity r.From, 1L)
+            if ids.Add r.Target then
+                rows.Add(IndexFact.Entity r.Target, 1L)
+            rows.Add(IndexFact.Cite r, 1L)
+        ZSet.ofSeq rows
+
+[<RequireQualifiedAccess>]
+module ReverseIndexCiteIngest =
+
+    let private hasNul (bytes: byte[]) : bool =
+        Array.IndexOf(bytes, 0uy) >= 0
+
+    let ingestPaths
+        (fs: IFileSystem)
+        (root: string)
+        (paths: string[])
+        (log: IDeltaLog<IndexFact>)
+        (ct: CancellationToken)
+        : Task<CiteIngestReport> =
+        task {
+            let mutable scanned = 0
+            let mutable cites = 0
+            let mutable entities = 0
+            let mutable unknown = 0
+            let mutable skipNot = 0
+            let mutable skipOver = 0
+            let mutable skipBin = 0
+            let mutable skipMiss = 0
+            let ordered =
+                paths
+                |> Array.sortWith (fun a b ->
+                    StringComparer.Ordinal.Compare(
+                        ReverseIndexCorpus.slashNormalize a,
+                        ReverseIndexCorpus.slashNormalize b))
+            for path in ordered do
+                ct.ThrowIfCancellationRequested()
+                if not (ReverseIndexCorpus.isUnderRoot root path) then
+                    skipNot <- skipNot + 1
+                else
+                    let docId = ReverseIndexCorpus.toDocId root path
+                    if
+                        String.IsNullOrEmpty docId
+                        || not (ReverseIndexCorpus.isIndexablePath docId)
+                    then
+                        skipNot <- skipNot + 1
+                    elif not (fs.Exists path) then
+                        skipMiss <- skipMiss + 1
+                    else
+                        match FileSystemIo.tryReadBytesCapped fs (int64 ReverseIndexCorpus.MaxBlobBytes) path with
+                        | None -> skipOver <- skipOver + 1
+                        | Some bytes when hasNul bytes -> skipBin <- skipBin + 1
+                        | Some bytes ->
+                            scanned <- scanned + 1
+                            let text = Encoding.UTF8.GetString bytes
+                            let struct (refs, unk) = ReverseIndexCite.extract docId text
+                            unknown <- unknown + unk
+                            if refs.Length > 0 then
+                                let delta = ReverseIndexCite.facts refs
+                                let! _ = ReverseIndexLog.append log delta ct
+                                for row in delta do
+                                    match row.Key with
+                                    | IndexFact.Cite _ -> cites <- cites + int row.Weight
+                                    | IndexFact.Entity _ -> entities <- entities + int row.Weight
+                                    | IndexFact.Posting _ -> ()
+            return
+                { FilesScanned = scanned
+                  CitesAppended = cites
+                  EntitiesAppended = entities
+                  SkippedUnknownRelation = unknown
+                  SkippedNotIndexable = skipNot
+                  SkippedOversize = skipOver
+                  SkippedBinary = skipBin
+                  SkippedMissing = skipMiss }
+        }
+
+    let ingestHostDirectory
+        (root: string)
+        (log: IDeltaLog<IndexFact>)
+        (ct: CancellationToken)
+        : Task<CiteIngestReport> =
+        let rootFull = Path.GetFullPath root
+        let fs = PhysicalFileSystem() :> IFileSystem
+        ingestPaths fs rootFull (ReverseIndexIngest.listHostFiles rootFull) log ct
+
+/// Subscriber-local inbound cites. Query terms stay off the log; so does
+/// this inbox. Drain does not filter the shared fold.
+[<Sealed>]
+type FairnessInbox(entityId: string) =
+    let index = CitedByIndex()
+    let seen = HashSet<CitedBy>()
+    do index.SendEntities(ZSet.singleton entityId 1L)
+
+    member _.EntityId = entityId
+    member _.Index = index
+    member _.SendReferences(delta: ZSet<Reference>) : unit = index.SendReferences delta
+    member _.StepAsync() : Task = index.StepAsync()
+    member _.Current: ZSet<CitedBy> = index.Current
+
+    /// New inbound cites since the last drain. Local cursor only.
+    member _.Drain() : CitedBy[] =
+        let fresh = ResizeArray<CitedBy>()
+        let span = index.Current.AsSpan()
+        for i in 0 .. span.Length - 1 do
+            let e = span.[i]
+            if e.Weight > 0L && seen.Add e.Key then
+                fresh.Add e.Key
+        fresh.ToArray()
+
+

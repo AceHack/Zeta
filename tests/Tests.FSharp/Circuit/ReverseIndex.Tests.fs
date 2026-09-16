@@ -260,3 +260,76 @@ let ``explicit file list does not walk sibling documents`` () : Task =
             try Directory.Delete(corpus, true) with _ -> ()
             try Directory.Delete(wal, true) with _ -> ()
     }
+
+
+[<Fact>]
+let ``cite extract keeps closed relations, skips unknown, skips http`` () =
+    let text =
+        "cite A B reviews\n"
+        + "cite A B not-a-rel\n"
+        + "See [note](docs/b.md) and 081M26HWSZ6087G0R00373BN0Q plus [x](https://example.com/x)\n"
+    let struct (refs, unknown) = ReverseIndexCite.extract "docs/a.md" text
+    unknown |> should equal 1
+    ReverseIndexCite.isRelation "reviews" |> should equal true
+    ReverseIndexCite.isRelation "not-a-rel" |> should equal false
+    refs
+    |> Array.exists (fun r -> r.From = "A" && r.Target = "B" && r.Relation = "reviews")
+    |> should equal true
+    refs
+    |> Array.exists (fun r -> r.From = "docs/a.md" && r.Target = "docs/b.md" && r.Relation = "see-also")
+    |> should equal true
+    refs
+    |> Array.exists (fun r -> r.Target = "081M26HWSZ6087G0R00373BN0Q" && r.Relation = "see-also")
+    |> should equal true
+    refs |> Array.exists (fun r -> r.Target.StartsWith("https://", StringComparison.Ordinal)) |> should equal false
+
+
+[<Fact>]
+let ``host cite ingest materializes inbound cited-by for B`` () : Task =
+    let corpus = DeterministicTestPath.nextDir "revidx-cite-corpus"
+    let wal = DeterministicTestPath.nextDir "revidx-cite-wal"
+    task {
+        try
+            writeRel corpus "docs/a.md" "cite A B reviews\nSee [b](docs/b.md)\n" |> ignore
+            writeRel corpus "docs/b.md" "B is the target entity.\n" |> ignore
+            use log = new GroupCommitDiskDeltaLog<IndexFact>(wal, ReverseIndex.codec)
+            let dlog = log :> IDeltaLog<IndexFact>
+            let! report = ReverseIndexCiteIngest.ingestHostDirectory corpus dlog ct
+            report.CitesAppended |> should be (greaterThan 0)
+            report.EntitiesAppended |> should be (greaterThan 0)
+            let cited = CitedByIndex()
+            let search = SearchIndex()
+            do! ReverseIndexLog.replayInto dlog cited search ct
+            ZSet.lookup { Target = "B"; From = "A"; Relation = "reviews" } cited.Current
+            |> should equal 1L
+            ZSet.lookup { Target = "docs/b.md"; From = "docs/a.md"; Relation = "see-also" } cited.Current
+            |> should equal 1L
+        finally
+            try Directory.Delete(corpus, true) with _ -> ()
+            try Directory.Delete(wal, true) with _ -> ()
+    }
+
+
+[<Fact>]
+let ``fairness inbox drain is local and a reply does not overwrite the cite`` () : Task =
+    task {
+        let inboxB = FairnessInbox("B")
+        do! inboxB.StepAsync()
+        inboxB.SendReferences(ZSet.singleton (cite "A" "B" "reviews") 1L)
+        do! inboxB.StepAsync()
+        let first = inboxB.Drain()
+        first.Length |> should equal 1
+        first.[0] |> should equal { Target = "B"; From = "A"; Relation = "reviews" }
+        inboxB.Drain().Length |> should equal 0
+        inboxB.SendReferences(ZSet.singleton (cite "B" "A" "replies") 1L)
+        do! inboxB.StepAsync()
+        ZSet.lookup { Target = "B"; From = "A"; Relation = "reviews" } inboxB.Current
+        |> should equal 1L
+        inboxB.Drain().Length |> should equal 0
+        let inboxA = FairnessInbox("A")
+        do! inboxA.StepAsync()
+        inboxA.SendReferences(ZSet.singleton (cite "B" "A" "replies") 1L)
+        do! inboxA.StepAsync()
+        inboxA.Drain()
+        |> should equal [| { Target = "A"; From = "B"; Relation = "replies" } |]
+    }

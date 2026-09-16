@@ -1,0 +1,14 @@
+{
+  "id": "080d05588ea4e810a013000834cf0549",
+  "at": "2026-09-16T16:34:27.613Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M2NH3N4W087G0R0023MXFEB",
+    "type": "task",
+    "title": "Cite ingest, fairness inbox, and schema/key windows on the host WAL",
+    "slug": "cite-ingest-fairness-inbox-and-schema-key-windows-on-the-hos",
+    "priority": "P1",
+    "filename": "081M2NH3N4W087G0R0023MXFEB-cite-ingest-fairness-inbox-and-schema-key-windows-on-the-hos.md"
+  }
+}
