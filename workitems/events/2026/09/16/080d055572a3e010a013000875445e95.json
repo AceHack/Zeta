@@ -1,0 +1,14 @@
+{
+  "id": "080d055572a3e010a013000875445e95",
+  "at": "2026-09-16T14:45:46.748Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M2NAWN3W087G0R0014WPTDH",
+    "type": "bug",
+    "title": "inserting a function above an existing one strands its docstring and localeCompare tie-break is locale dependent",
+    "slug": "inserting-a-function-above-an-existing-one-strands-its-docst",
+    "priority": "P2",
+    "filename": "081M2NAWN3W087G0R0014WPTDH-inserting-a-function-above-an-existing-one-strands-its-docst.md"
+  }
+}

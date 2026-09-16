@@ -55,8 +55,8 @@ function fail(code, message) {
   process.exit(code);
 }
 
-if (mode !== "work" && mode !== "gate" && mode !== "review" && mode !== "describe" && mode !== "follow-up" && mode !== "check-answers" && mode !== "plan-round") {
-  fail(2, "usage: claude-agent.cjs work <workId> | gate <gate> <workId> [refs...] | review <gate> <workId> | describe <workId> | follow-up <workId> | check-answers <workId> | plan-round <workId>");
+if (mode !== "work" && mode !== "gate" && mode !== "review" && mode !== "describe" && mode !== "follow-up" && mode !== "check-answers" && mode !== "plan-round" && mode !== "ticket-update") {
+  fail(2, "usage: claude-agent.cjs work <workId> | gate <gate> <workId> [refs...] | review <gate> <workId> | describe <workId> | follow-up <workId> | check-answers <workId> | plan-round <workId> | ticket-update <workId>");
 }
 
 /** The Claude Code binary: stated, else the npm-installed native one, else `claude` on PATH. */
@@ -874,6 +874,57 @@ if (mode === "review") {
   process.exit(a.verdict === "approve" ? 0 : 1);
 }
 
+// ═════════════════════════════════════════════════════════════════════════════
+// ticket-update — tell the tracker ticket that a milestone is behind us
+// ═════════════════════════════════════════════════════════════════════════════
+if (mode === "ticket-update") {
+  const workId = rest[0];
+  if (!workId) fail(2, "ticket-update needs <workId>");
+  if (!env.ORG_TICKET) fail(2, "ticket-update needs ORG_TICKET: the ticket this work came from");
+  if (!env.ORG_MILESTONE) fail(2, "ticket-update needs ORG_MILESTONE: the gate that just passed");
+  const hat = env.ORG_ASSIGNEE || "release_manager";
+  const prompt = [
+    preamble(hat, workId),
+    "",
+    "YOUR TASK NOW: the gate '" + env.ORG_MILESTONE + "' has just PASSED on " + workId + ". Write the short update that",
+    "goes on the tracker ticket " + env.ORG_TICKET + ", where the people who asked for this work are watching.",
+    ...(env.ORG_MILESTONE_REASON ? ["", "The gate's own words when it passed: " + env.ORG_MILESTONE_REASON] : []),
+    "",
+    "Read the item and its parent chain through observe - what was asked for, what was decided, what was built or",
+    "tested at this step, and what the organization does next. Then say it in bullets a person can scan in ten",
+    "seconds:",
+    "  done    - what the organization actually did to get past this gate. Concrete: the decision it made, the",
+    "            files or components it changed, the tests it ran and what they showed. Two to five bullets.",
+    "  willDo  - what happens NEXT, so the reader knows what to expect. Empty if this milestone ends the work.",
+    "  status  - ONE line: where the work stands right now.",
+    "",
+    "WRITE FOR SOMEBODY OUTSIDE THE ORGANIZATION. They cannot see its record: never cite its internal ids",
+    "(task-..., goal-...), its hats, its gate names, or its documents. Cite what they can look at - the ticket,",
+    "the repository, a file, a test, a merge request.",
+    "",
+    "SAY WHAT IS TRUE, INCLUDING WHEN IT IS THIN. If something was not established - no reproduction, a check that",
+    "could not run, a fix that is narrower than the ticket asks - the update says so. An update that reads better",
+    "than the work went is the one failure this cannot recover from: the reader stops believing the next one.",
+    "Do not announce a merge request, a link or a status you were not given - the organization appends the request",
+    "itself, and a link you invent is a link that does not exist.",
+  ].join(NL);
+  const schema = {
+    type: "object",
+    properties: {
+      done: { type: "array", items: { type: "string" }, description: "What was actually done to get past this gate. One line each." },
+      willDo: { type: "array", items: { type: "string" }, description: "What happens next. Empty if the work ends here." },
+      status: { type: "string", description: "One line: where the work stands." },
+    },
+    required: ["done", "willDo", "status"],
+  };
+  const r = await runClaude(prompt, schema, READ, process.cwd(), { hat, workId });
+  const clean = (list) => (Array.isArray(list) ? list : []).map((x) => String(x).split(/\s+/).join(" ").trim()).filter((x) => x !== "");
+  const update = { done: clean(r.answer.done), willDo: clean(r.answer.willDo), status: String(r.answer.status || "").split(/\s+/).join(" ").trim() };
+  if (update.done.length === 0 && update.willDo.length === 0 && update.status === "") fail(3, "the update came back empty");
+  process.stdout.write(JSON.stringify(update) + NL);
+  process.stderr.write(r.usage + NL);
+  process.exit(0);
+}
 // ═════════════════════════════════════════════════════════════════════════════
 // describe — write the merge request's description, in the organization's sections
 // ═════════════════════════════════════════════════════════════════════════════

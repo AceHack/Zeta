@@ -19,6 +19,7 @@ import { buildOrgChart, reportsUpTo } from "./org-chart";
 import { SEED_HATS } from "./org-seed";
 import { IntakeKind, Severity, externalRefOf, type ExternalEvent } from "./intake";
 import { parseRequestRef } from "./request";
+import { foldTicketReports } from "./org-fold";
 import { childrenOf, isDelivered, nodeById, WorkState, WorkType, isLeafType } from "./goal-cascade";
 import { isAuthorizing, BindingPhase } from "./hat-binding";
 import { GateKind, GateOutcome, ORDERED_GATES, mayEvaluate } from "./quality-gate";
@@ -1497,5 +1498,110 @@ describe("TWO UNRELATED TICKETS' GATE WALKS OVERLAP WHEN `maxParallel` SAYS SO",
     const base = deps({ externalEvents: two, supplyTarget: 2, maxParallel: 2 });
     await runOrgRuntime({ ...base, providers: { ...defaultProviderSet(base), review: rec.review as never } } as OrgRuntimeDeps);
     expect(rec.peak()).toBeGreaterThanOrEqual(2);
+  }, 60_000);
+});
+
+describe("A MILESTONE THE ORGANIZATION PASSED IS TOLD TO ITS TICKET, ONCE", () => {
+  const reports = { milestones: [GateKind.ImplementationReview], why: "people watch the ticket" };
+
+  /** A run, then the work item it created that carries a ticket - the only kind that can be reported. */
+  async function withTicket(): Promise<{ readonly workId: string; readonly ticket: string; readonly source: string; readonly cascade: unknown }> {
+    const first = await runOrgRuntime(deps());
+    const node = first.cascade.nodes.find((n) => n.requestRef !== undefined);
+    if (node === undefined) throw new Error("the run produced no work carrying a request");
+    const ref = parseRequestRef(node.requestRef as string);
+    if (ref === undefined) throw new Error("the request ref did not parse");
+    return { workId: node.workId, ticket: ref.externalId, source: ref.source, cascade: first.cascade };
+  }
+
+  test("it composes, posts, and records - and the SECOND run says nothing, because it is not news twice", async () => {
+    const { workId, ticket, source, cascade } = await withTicket();
+    const posted: { ticket: string; tracker: string; body: string; gate: string }[] = [];
+    const events: OrgEvent[] = [];
+    const wiring = {
+      priorCascade: cascade as never,
+
+      ticketReports: reports,
+      gateVerdicts: [{ workId, gate: GateKind.ImplementationReview, outcome: GateOutcome.Approved, atMs: 10, byHatId: "reviewer", reason: "the fix is the narrow one" }],
+      composeTicketUpdate: async () => ({ ok: true as const, value: { done: ["wrote the fix"], willDo: ["run QA"], status: "in review" }, evidence: [] }),
+      postTicketComment: async (r: { ticket: string; tracker: string; body: string; gate: string }) => {
+        posted.push(r);
+        return { ok: true as const, value: { commentId: "c-1" }, evidence: [] };
+      },
+      onEvent: (e: OrgEvent) => events.push(e),
+    };
+    await runOrgRuntime(deps({ ...wiring, ticketsReported: new Map() } as never));
+    expect(posted.length).toBe(1);
+    expect(posted[0]?.ticket).toBe(ticket);
+    // The tracker comes from where the work CAME FROM, with nothing configured - and this harness
+    // intakes from a source that is not Jira, so a hardcoded tracker would fail here.
+    expect(posted[0]?.tracker).toBe(source);
+    expect(posted[0]?.body).toContain("- wrote the fix");
+    expect(posted[0]?.body).toContain("Status: in review");
+    const told = events.filter((e) => e.fact?.kind === "ticket_reported");
+    expect(told.length).toBe(1);
+
+    // Told once. A later run reading that fact says nothing more.
+    posted.length = 0;
+    await runOrgRuntime(deps({ ...wiring, ticketsReported: foldTicketReports(events) } as never));
+    expect(posted.length).toBe(0);
+  }, 60_000);
+
+  test("an organization that says where to report overrides the source it read from", async () => {
+    const { workId, cascade } = await withTicket();
+    const posted: { tracker: string }[] = [];
+    await runOrgRuntime(deps({
+      priorCascade: cascade as never,
+      ticketReports: { ...reports, tracker: "linear" },
+      ticketsReported: new Map(),
+      gateVerdicts: [{ workId, gate: GateKind.ImplementationReview, outcome: GateOutcome.Approved, atMs: 10 }],
+      composeTicketUpdate: async () => ({ ok: true as const, value: { done: ["d"], willDo: [], status: "s" }, evidence: [] }),
+      postTicketComment: async (r: { tracker: string }) => { posted.push(r); return { ok: true as const, value: {}, evidence: [] }; },
+    } as never));
+    expect(posted[0]?.tracker).toBe("linear");
+  }, 60_000);
+
+  test("a tracker that would not take it is a REFUSAL, and nothing is recorded - so the next run tries again", async () => {
+    const { workId, cascade } = await withTicket();
+    const events: OrgEvent[] = [];
+    const report = await runOrgRuntime(deps({
+      priorCascade: cascade as never,
+
+      ticketReports: reports,
+      ticketsReported: new Map(),
+      gateVerdicts: [{ workId, gate: GateKind.ImplementationReview, outcome: GateOutcome.Approved, atMs: 10 }],
+      composeTicketUpdate: async () => ({ ok: true as const, value: { done: ["d"], willDo: [], status: "s" }, evidence: [] }),
+      postTicketComment: async () => ({ ok: false as const, reason: "jira said 403" }),
+      onEvent: (e: OrgEvent) => events.push(e),
+    } as never));
+    expect(report.refusals.some((r) => r.includes("403"))).toBe(true);
+    expect(events.filter((e) => e.fact?.kind === "ticket_reported").length).toBe(0);
+  }, 60_000);
+
+  test("a gate that was TURNED BACK reaches no ticket - the loop iterates, and only the clean result is news", async () => {
+    const { workId, cascade } = await withTicket();
+    const posted: unknown[] = [];
+    await runOrgRuntime(deps({
+      priorCascade: cascade as never,
+
+      ticketReports: reports,
+      ticketsReported: new Map(),
+      gateVerdicts: [{ workId, gate: GateKind.ImplementationReview, outcome: GateOutcome.ChangesRequested, atMs: 10 }],
+      composeTicketUpdate: async () => ({ ok: true as const, value: { done: ["d"], willDo: [], status: "s" }, evidence: [] }),
+      postTicketComment: async (r: unknown) => { posted.push(r); return { ok: true as const, value: {}, evidence: [] }; },
+    } as never));
+    expect(posted.length).toBe(0);
+  }, 60_000);
+
+  test("configured milestones with nothing to write or post them is a REFUSAL, never a quiet skip", async () => {
+    const { workId, cascade } = await withTicket();
+    const report = await runOrgRuntime(deps({
+      priorCascade: cascade as never,
+
+      ticketReports: reports,
+      ticketsReported: new Map(),
+      gateVerdicts: [{ workId, gate: GateKind.ImplementationReview, outcome: GateOutcome.Approved, atMs: 10 }],
+    } as never));
+    expect(report.refusals.some((r) => r.includes("nothing is configured to write or post"))).toBe(true);
   }, 60_000);
 });

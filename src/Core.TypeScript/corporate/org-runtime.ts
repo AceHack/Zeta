@@ -144,6 +144,15 @@ import {
   PROVEN_IN_BRANCH,
 } from "./change-followup";
 import { afterOpenKey, DEFAULT_REVIEW_ROUNDS, missingSections, type ChangeRequestConfig, type DescribeRequest } from "./change-request";
+import {
+  milestonesOwed,
+  renderTicketComment,
+  type MilestoneVerdict,
+  type TicketCommentRequest,
+  type TicketReportConfig,
+  type TicketUpdate,
+  type TicketUpdateRequest,
+} from "./ticket-report";
 import { autoApproveReview, simulatedChangeControl, simulatedIntake, simulatedTestRunner, simulatedWorkExecutor } from "./adapters";
 import { associateGoal, EMPTY_BOOK, openPortfolio, type PortfolioKind } from "./portfolio";
 import {
@@ -382,6 +391,16 @@ export interface OrgRuntimeDeps extends HumanCheckpointDeps {
   readonly handedOffChanges?: ReadonlyMap<string, HandedOffChange>;
   /** Every action item raised so far, open and settled, by work id. Folded by the caller (`foldActionItems`). */
   readonly actionItems?: ReadonlyMap<string, readonly ActionItem[]>;
+  /** Which gates passing this organization tells its tickets about (`ticket-report.ts`). */
+  readonly ticketReports?: TicketReportConfig;
+  /** What each ticket has already been told, by work id (`foldTicketReports`). */
+  readonly ticketsReported?: ReadonlyMap<string, ReadonlySet<string>>;
+  /** Every gate verdict recorded so far (`foldGateEvaluations`), so a report survives the run that earned it. */
+  readonly gateVerdicts?: readonly MilestoneVerdict[];
+  /** Writes the update a milestone owes its ticket. */
+  readonly composeTicketUpdate?: (r: TicketUpdateRequest) => Promise<PortResult<TicketUpdate>>;
+  /** Posts it. Separate from composing: a tracker outage must not make the organization re-think. */
+  readonly postTicketComment?: (r: TicketCommentRequest) => Promise<PortResult<{ readonly commentId?: string }>>;
   /** The after-open steps already performed, by work id (`foldAfterOpen`). */
   readonly afterOpenDone?: ReadonlyMap<string, { readonly done: ReadonlySet<string>; readonly replyIds: readonly string[] }>;
   /** The review rounds requested after follow-up pushes, by work id (`foldAfterUpdate`). */
@@ -4271,6 +4290,75 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
   // when they widen it each concurrent run is handed a slot to allocate ports from. At the default
   // width of one this is exactly the critical section it replaces.
   const verifyInASlot = slots(deps.maxVerifyAtOnce ?? SEQUENTIAL);
+  {
+    const handedMap = new Map<string, HandedOffChange>([...(deps.handedOffChanges ?? []), ...handedThisRun]);
+  // ── A MILESTONE IS BEHIND US: THE TICKET HEARS ABOUT IT, ONCE ──────────
+  // MEASURED on the Agentic Team: an organization decided an architecture, built a fix, ran QA and
+  // opened a merge request while its Jira ticket said nothing for hours. People watch the tracker.
+  // Configured per organization (`ticketReports.milestones`) - the gates whose passing is progress
+  // worth telling somebody outside about. Written by an agent, posted by a command, recorded as a
+  // fact so a re-run cannot say it twice; a post that fails is tried again next run.
+  const reports = deps.ticketReports;
+  if (reports !== undefined) {
+    const owed = milestonesOwed({
+      verdicts: deps.gateVerdicts ?? [],
+      reported: deps.ticketsReported ?? new Map<string, ReadonlySet<string>>(),
+      milestones: reports.milestones,
+      passing: [GateOutcome.Approved, GateOutcome.Waived],
+    });
+    for (const milestone of owed) {
+      const node = cascade.nodes.find((n) => n.workId === milestone.workId);
+      // A MILESTONE WHOSE WORK IS GONE is a defect in this pass's inputs, not a quiet nothing.
+      if (node === undefined) {
+        refusals.push(`'${milestone.gate}' passed on ${milestone.workId}, which this run cannot find - its ticket was told nothing`);
+          continue;
+        }
+      // NO TICKET, NOTHING TO TELL. Work that came from nobody's request is not a failure at all.
+      const ref = node.requestRef === undefined ? undefined : parseRequestRef(node.requestRef);
+      if (ref === undefined) continue;
+      if (deps.composeTicketUpdate === undefined || deps.postTicketComment === undefined) {
+        refusals.push(`'${milestone.gate}' passed on ${milestone.workId} and this organization tells ${ref.externalId} about it, but nothing is configured to write or post that`);
+        break;
+      }
+      const change = handedMap.get(milestone.workId);
+      const written = await deps.composeTicketUpdate({
+        workId: milestone.workId,
+        ticket: ref.externalId,
+        gate: milestone.gate,
+        ...(milestone.reason === undefined ? {} : { gateReason: milestone.reason }),
+        ...(node?.title === undefined ? {} : { title: node.title }),
+        ...(change?.url === undefined ? {} : { changeUrl: change.url }),
+        ...(change?.branch === undefined ? {} : { branch: change.branch }),
+      });
+      if (!written.ok) {
+        refusals.push(`could not write ${ref.externalId}'s update for '${milestone.gate}': ${written.reason}`);
+        continue;
+      }
+      const body = renderTicketComment(milestone.gate, written.value, change === undefined ? undefined : { ...(change.url === undefined ? {} : { url: change.url }), branch: change.branch });
+      const tracker = reports.tracker ?? ref.source;
+      const posted = await deps.postTicketComment({ workId: milestone.workId, ticket: ref.externalId, tracker, gate: milestone.gate, body });
+      if (!posted.ok) {
+        refusals.push(`could not tell ${ref.externalId} that '${milestone.gate}' passed: ${posted.reason}`);
+        continue;
+      }
+      note({
+        kind: OrgEventKind.DecisionRecorded,
+        subjectId: milestone.workId,
+        decision: `told ${ref.externalId} that '${milestone.gate}' passed`,
+        atMs: warmedAt,
+        fact: {
+          kind: "ticket_reported",
+          workId: milestone.workId,
+          gate: milestone.gate,
+          ticket: ref.externalId,
+          tracker,
+          ...(posted.value.commentId === undefined ? {} : { commentId: posted.value.commentId }),
+        },
+      });
+    }
+  }
+  }
+
   if (providers.change.meta.fidelity === Fidelity.Real) {
     const handedMap = new Map<string, HandedOffChange>([...(deps.handedOffChanges ?? []), ...handedThisRun]);
     const allItems = new Map<string, ActionItem[]>([...(deps.actionItems ?? new Map<string, readonly ActionItem[]>())].map(([w, v]) => [w, [...v]]));

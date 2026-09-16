@@ -59,6 +59,11 @@ export const ConfigureStep = {
    * repository — see `change-request.ts` for why none of it can be a default.
    */
   HandOffChanges: "hand_off_changes",
+  /**
+   * What the people who asked for the work hear, and when. REQUIRED for an organization that reads
+   * its work from a tracker: those people watch the ticket, not this organization's own record.
+   */
+  TellTheTicket: "tell_the_ticket",
   /** Something for the organization to actually do. */
   FirstWork: "first_work",
 } as const;
@@ -360,7 +365,39 @@ export function planFor(org: OrgRecord, hasWork: boolean): ConfigurePlan {
     current: hasWork ? "the organization has work in hand" : "nothing to do yet",
   };
 
-  const steps = [create, sources, events, checkpoints, process, skills, handoff, work];
+  // ── WHAT THE TICKET HEARS ────────────────────────────────────────────────
+  // Asked of any organization whose work comes from a tracker, because that is where the people who
+  // asked for it are looking. Not required of one that reads from a repository or a wiki: there is no
+  // ticket to tell.
+  const fromTracker = org.sources.filter((src) => String(src.kind) !== "git" && String(src.kind) !== "confluence");
+  const tr = org.ticketReports;
+  const tellTheTicket: PlanStep = {
+    step: ConfigureStep.TellTheTicket,
+    ask:
+      "While the team works a ticket, what should the ticket itself say? Which points in the work are " +
+      "worth telling the people who asked - for example when the architecture is decided, when the " +
+      "implementation is reviewed, when QA passes? At each of those the team posts one short comment: " +
+      "what it did, what happens next, where the work stands, and the merge request if one is open.",
+    why:
+      "The people who asked for the work watch the ticket, not this organization's record. Left to " +
+      "itself the team can decide an architecture, write a fix, run QA and open a merge request while " +
+      "the ticket says nothing - indistinguishable, to them, from work nobody started. Which moments " +
+      "count is yours to say: a comment per verdict would bury the ticket in the team's own " +
+      "deliberation, which is what its review loop is for.",
+    command: "org ticket-reports set --milestone <gate> ... [--tracker-kind <tracker>] --why <why>",
+    satisfied: fromTracker.length === 0 || tr !== undefined,
+    required: fromTracker.length > 0,
+    current:
+      fromTracker.length === 0
+        ? "not needed - this organization reads its work from no tracker"
+        : tr === undefined
+          ? "nobody has said what the ticket hears, so it hears nothing while the work happens"
+          : `the ticket is told when ${tr.milestones.join(", ")} passes` +
+            `${tr.tracker === undefined ? "" : `, on ${tr.tracker}`}` +
+            `\n     because ${tr.why}`,
+  };
+
+  const steps = [create, sources, events, checkpoints, process, skills, handoff, tellTheTicket, work];
   const required = steps.filter((s) => s.required);
   const complete = required.every((s) => s.satisfied);
   const next = required.find((s) => !s.satisfied);

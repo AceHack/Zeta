@@ -42,6 +42,7 @@
  * Exit codes: 0 delivered · 1 not delivered · 2 the organization could not be built.
  */
 
+import type { TicketReportConfig } from "./ticket-report";
 import { MemoryTier } from "./memory";
 import { syncedFolderWarnings } from "./synced-folder";
 import { lifeSummary, lifeTick, writeMemory, type HoldMeeting, type Study } from "./run-life";
@@ -149,6 +150,8 @@ import {
   commandChangeReader,
   commandCommenter,
   commandDescriber,
+  commandTicketComposer,
+  commandTicketPoster,
   commandFollowUp,
   commandFollowUpPlanner,
   commandFollowUpReview,
@@ -173,7 +176,7 @@ import { foldCalendar, foldOrganization } from "./org-fold";
 import { authorIndexFrom, observationsFrom } from "./reputation-from-log";
 import type { ReputationObservation } from "./reputation";
 import { foldHatsWorn,
-  foldActionItems, foldAfterOpen, foldAfterUpdate, foldHandedOffChanges, foldLandedChanges, foldObserveActTicks, foldPresence } from "./org-fold";
+  foldActionItems, foldAfterOpen, foldAfterUpdate, foldGateEvaluations, foldHandedOffChanges, foldLandedChanges, foldObserveActTicks, foldPresence, foldTicketReports } from "./org-fold";
 import { emit } from "./org-event";
 import { awaitingHumanReview, describeChangeLine } from "./handoff-report";
 import type { AgentState } from "../workflow-engine/agent-loop/state-machine";
@@ -356,6 +359,7 @@ export const KNOWN_FLAGS: ReadonlySet<string> = new Set([
   "--handoff-cmd", "--handoff-arg", "--delivery",
   "--describe-cmd", "--describe-arg", "--follow-up-cmd", "--follow-up-arg", "--feedback-dir", "--feedback-cmd", "--feedback-arg",
   "--answer-cmd", "--answer-arg",
+  "--ticket-compose-cmd", "--ticket-compose-arg", "--ticket-post-cmd", "--ticket-post-arg",
 ]);
 
 /**
@@ -666,6 +670,11 @@ export interface Args {
   /** Who writes a merge request's description in the organization's configured sections. See `followup-commands.ts`. */
   readonly describeCmd: string | undefined;
   readonly describeArgs: readonly string[];
+  /** Writes the milestone update; posts it to the tracker. Two commands: an agent, then a protocol. */
+  readonly ticketComposeCmd: string | undefined;
+  readonly ticketComposeArgs: readonly string[];
+  readonly ticketPostCmd: string | undefined;
+  readonly ticketPostArgs: readonly string[];
   /** The session that decides about a handed-off change's open action items. */
   readonly followUpCmd: string | undefined;
   readonly followUpArgs: readonly string[];
@@ -679,6 +688,7 @@ export interface Args {
   readonly answerArgs: readonly string[];
   /** How this organization's merge requests are written and kept current. Read from the registry. */
   readonly changeRequests?: ChangeRequestConfig;
+  readonly ticketReports?: TicketReportConfig;
   /** Wearers per hat the RMO authorizes — how many open tasks one contributor hat may carry. */
   readonly supplyTarget: number | undefined;
   /**
@@ -1075,6 +1085,10 @@ export function parseArgs(argv: readonly string[]): Args {
     handoffArgs: valuesAfter(argv, "--handoff-arg"),
     describeCmd: valueAfter(argv, "--describe-cmd"),
     describeArgs: valuesAfter(argv, "--describe-arg"),
+    ticketComposeCmd: valueAfter(argv, "--ticket-compose-cmd"),
+    ticketComposeArgs: valuesAfter(argv, "--ticket-compose-arg"),
+    ticketPostCmd: valueAfter(argv, "--ticket-post-cmd"),
+    ticketPostArgs: valuesAfter(argv, "--ticket-post-arg"),
     followUpCmd: valueAfter(argv, "--follow-up-cmd"),
     followUpArgs: valuesAfter(argv, "--follow-up-arg"),
     feedbackDir: valueAfter(argv, "--feedback-dir"),
@@ -1156,6 +1170,17 @@ export function argRefusals(args: Args): readonly string[] {
       } else {
         if (args.describeCmd === undefined) {
           out.push(`merge requests here must carry ${args.changeRequests.sections.map((x) => x.heading).join(" / ")}: give --describe-cmd (with --describe-arg) to write them`);
+        }
+        if (args.ticketReports !== undefined) {
+          if (args.ticketComposeCmd === undefined) {
+            out.push(
+              `this organization tells its tickets when ${args.ticketReports.milestones.join(", ")} passes: ` +
+                "give --ticket-compose-cmd (with --ticket-compose-arg) to write the update",
+            );
+          }
+          if (args.ticketPostCmd === undefined) {
+            out.push("an update nothing can post is an update nobody receives: give --ticket-post-cmd (with --ticket-post-arg)");
+          }
         }
         if (args.followUpCmd === undefined) {
           out.push("feedback on this organization's merge requests becomes action items: give --follow-up-cmd (with --follow-up-arg) so somebody decides about them");
@@ -2072,7 +2097,10 @@ export function attachAfterHandoff(deps: Record<string, unknown>, args: Args, fe
   if (args.verifyAtOnce !== undefined && Number.isFinite(args.verifyAtOnce) && args.verifyAtOnce > 0) deps["maxVerifyAtOnce"] = args.verifyAtOnce;
   if (feedback.length > 0) deps["feedback"] = feedback;
   if (args.changeRequests !== undefined) deps["changeRequests"] = args.changeRequests;
+  if (args.ticketReports !== undefined) deps["ticketReports"] = args.ticketReports;
   if (args.describeCmd !== undefined) deps["describeChange"] = commandDescriber({ command: args.describeCmd, args: args.describeArgs, ...budget }, cwd);
+  if (args.ticketComposeCmd !== undefined) deps["composeTicketUpdate"] = commandTicketComposer({ command: args.ticketComposeCmd, args: args.ticketComposeArgs, ...budget }, cwd);
+  if (args.ticketPostCmd !== undefined) deps["postTicketComment"] = commandTicketPoster({ command: args.ticketPostCmd, args: args.ticketPostArgs, ...budget }, cwd);
   if (args.followUpCmd !== undefined) deps["followUp"] = commandFollowUp({ command: args.followUpCmd, args: args.followUpArgs, ...budget }, cwd);
   if (args.workVerify !== undefined) deps["verifyChange"] = commandVerifier({ command: args.workVerify, args: args.workVerifyArgs, ...budget }, cwd);
   if (args.answerCmd !== undefined) {
@@ -2095,6 +2123,8 @@ export function attachAfterHandoff(deps: Record<string, unknown>, args: Args, fe
   if (store !== undefined) {
     Object.defineProperty(deps, "afterOpenDone", { enumerable: true, configurable: true, get: () => foldAfterOpen(readEvents(store)) });
     Object.defineProperty(deps, "afterUpdateDone", { enumerable: true, configurable: true, get: () => foldAfterUpdate(readEvents(store)) });
+    Object.defineProperty(deps, "ticketsReported", { enumerable: true, configurable: true, get: () => foldTicketReports(readEvents(store)) });
+    Object.defineProperty(deps, "gateVerdicts", { enumerable: true, configurable: true, get: () => foldGateEvaluations(readEvents(store)) });
   }
 }
 
@@ -2171,6 +2201,7 @@ export function withOrgDefaults(args: Args, orgId: string, registryJson: string 
         : org.changeRequests === undefined
           ? {}
           : { changeRequests: org.changeRequests }),
+      ...(args.ticketReports !== undefined ? {} : org.ticketReports === undefined ? {} : { ticketReports: org.ticketReports }),
       // GIT SOURCES ONLY: a tracker or a wiki has no skills directory to read.
       repoSources:
         args.repoSources.length > 0

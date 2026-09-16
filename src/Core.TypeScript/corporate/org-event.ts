@@ -436,6 +436,19 @@ export type OrgFact =
       readonly stepKey: string;
       readonly replyId?: string;
     }
+  /**
+   * A MILESTONE WAS TOLD TO THE TICKET. One per (work item, gate): a passing milestone is news once,
+   * and a run that is started again must not say it twice. `commentId` is what the tracker called the
+   * comment, when it said - absent means it was posted and the tracker named nothing.
+   */
+  | {
+      readonly kind: "ticket_reported";
+      readonly workId: string;
+      readonly gate: string;
+      readonly ticket: string;
+      readonly tracker: string;
+      readonly commentId?: string;
+    }
   | {
       /**
        * A configured after-update step (e.g. `aireview` again) was performed after a follow-up pushed

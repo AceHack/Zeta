@@ -30,6 +30,8 @@ import type { Method as MethodBinding } from "../observe/observe";
 import { CHECKPOINT_VALUES, isHumanCheckpoint, type HumanCheckpoint } from "./quality-gate";
 import { validateBindings, type SkillBinding } from "./skill-binding";
 import { validateChangeRequests, type ChangeRequestConfig } from "./change-request";
+import { GateKind } from "./quality-gate";
+import { validateTicketReports, type TicketReportConfig } from "./ticket-report";
 import { validateRunProfiles, type RunProfile } from "./run-profile";
 import {
   validateDirective,
@@ -232,6 +234,8 @@ export interface OrgRecord {
    * real repository with `delivery=human_review` and no answer here.
    */
   readonly changeRequests?: ChangeRequestConfig;
+  /** Which gates passing is progress the tracker ticket hears about (`ticket-report.ts`). */
+  readonly ticketReports?: TicketReportConfig;
   /**
    * How this organization's runs are started - one profile per body of work - so a watcher can start
    * them when something happens rather than when a person remembers. See `run-profile.ts`.
@@ -326,6 +330,12 @@ export function validateOrg(org: OrgRecord): OrgCheck {
   if (org.changeRequests !== undefined) {
     const cr = validateChangeRequests(org.changeRequests);
     if (!cr.ok) return { ok: false, reason: `merge requests: ${cr.reason}` };
+  }
+  if (org.ticketReports !== undefined) {
+    // Checked against the REAL gate roster, so a milestone naming a gate this organization does
+    // not have is refused at load rather than reporting nothing for the rest of its life.
+    const tr = validateTicketReports(org.ticketReports, Object.values(GateKind));
+    if (!tr.ok) return { ok: false, reason: `ticket reports: ${tr.reason}` };
   }
   for (const directive of org.directives ?? []) {
     const one = validateDirective(directive);

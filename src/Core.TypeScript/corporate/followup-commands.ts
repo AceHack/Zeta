@@ -41,6 +41,7 @@ import type {
   ItemDecision,
 } from "./change-followup";
 import { sectionsBrief, type DescribeRequest } from "./change-request";
+import { updateIsEmpty, type TicketCommentRequest, type TicketUpdate, type TicketUpdateRequest } from "./ticket-report";
 import type { ChangeHandle, PortResult } from "./providers";
 
 export interface CommandSpec {
@@ -130,6 +131,54 @@ function run(spec: CommandSpec, extra: readonly string[], cwd: string, env: Reco
 }
 
 const tail = (t: string | null | undefined): string => String(t ?? "").trim().split(/\r?\n/).slice(-6).join(" | ").slice(0, 600);
+
+/**
+ * THE TWO HALVES OF TELLING A TICKET SOMETHING: compose it, then post it.
+ *
+ * Separate on purpose. The composer is an agent and can be wrong about the work; the poster is a
+ * protocol and can only be wrong about the wire. Keeping them apart means a tracker outage cannot
+ * make the organization re-think, and a bad update cannot be blamed on the network.
+ */
+export function commandTicketComposer(spec: CommandSpec, fallbackCwd: string): (r: TicketUpdateRequest) => Promise<PortResult<TicketUpdate>> {
+  return async (r) => {
+    const ran = await runAsync(spec, ["ticket-update", r.workId], r.workdir ?? fallbackCwd, {
+      ORG_TICKET: r.ticket,
+      ORG_MILESTONE: r.gate,
+      ...(r.gateReason === undefined ? {} : { ORG_MILESTONE_REASON: r.gateReason.split(/\s+/).join(" ").slice(0, 400) }),
+      ...(r.title === undefined ? {} : { ORG_MR_TITLE: r.title }),
+      ...(r.branch === undefined ? {} : { ORG_BRANCH: r.branch }),
+      ...(r.workdir === undefined ? {} : { ORG_WORKDIR: r.workdir }),
+    });
+    if (ran.error !== undefined) return { ok: false, reason: `'${spec.command}' could not run: ${ran.error.message}` };
+    if (ran.status !== 0) return { ok: false, reason: `the update's author exited ${String(ran.status)}: ${tail(ran.stderr)}` };
+    const line = String(ran.stdout ?? "").split(/\r?\n/).find((l) => l.trim().startsWith("{")) ?? "";
+    let parsed: unknown;
+    try {
+      parsed = JSON.parse(line);
+    } catch {
+      return { ok: false, reason: `the update's author answered with no JSON object (got '${line.slice(0, 200)}')` };
+    }
+    const it = parsed as { done?: unknown; willDo?: unknown; status?: unknown };
+    const lines = (v: unknown): readonly string[] => (Array.isArray(v) ? v.map((x) => String(x)).filter((x) => x.trim() !== "") : []);
+    const update: TicketUpdate = { done: lines(it.done), willDo: lines(it.willDo), status: String(it.status ?? "").trim() };
+    if (updateIsEmpty(update)) return { ok: false, reason: "the update's author said nothing - an empty update is not posted" };
+    return { ok: true, value: update, evidence: [{ kind: "trace", ref: `ticket-update:${r.ticket}:${r.gate}` }] };
+  };
+}
+
+/**
+ * Posts the comment. The tracker is passed IN, so this file knows nothing about Jira or Linear -
+ * the command does, and a third tracker is that command's business rather than this one's.
+ */
+export function commandTicketPoster(spec: CommandSpec, fallbackCwd: string): (r: TicketCommentRequest) => Promise<PortResult<{ readonly commentId?: string }>> {
+  return async (r) => {
+    const ran = await runAsync(spec, [r.ticket], fallbackCwd, { ORG_TRACKER: r.tracker, ORG_TICKET: r.ticket }, r.body);
+    if (ran.error !== undefined) return { ok: false, reason: `'${spec.command}' could not run: ${ran.error.message}` };
+    if (ran.status !== 0) return { ok: false, reason: `${r.tracker} did not take the comment (exit ${String(ran.status)}): ${tail(ran.stderr)}` };
+    const id = String(ran.stdout ?? "").split(/\r?\n/)[0]?.trim() ?? "";
+    return { ok: true, value: id === "" ? {} : { commentId: id }, evidence: id === "" ? [] : [{ kind: "trace", ref: `ticket-comment:${r.tracker}:${id}` }] };
+  };
+}
 
 /** A description author behind a command. See the module header for its protocol. */
 export function commandDescriber(spec: CommandSpec, fallbackCwd: string): (r: DescribeRequest) => Promise<PortResult<string>> {

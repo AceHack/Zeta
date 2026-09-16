@@ -271,6 +271,26 @@ export const COMMANDS: readonly CommandSpec[] = [
     writes: false,
   },
   {
+    name: "org ticket-reports set",
+    what: "State which gates passing this organization tells its tracker tickets about - the milestones a person watching the ticket should hear.",
+    then: "One comment per milestone per work item, written by the organization and posted to whichever tracker the work came from (or --tracker-kind). A turn-back is not a milestone: the review loop iterates until the work is clean, and only the clean result is news outside.",
+    flags: [
+      ORG_FLAG,
+      { name: "--milestone", what: "A gate whose passing is progress worth reporting, e.g. architecture_approval. Repeatable; a name no gate has is refused.", required: true, takesValue: true },
+      { name: "--tracker-kind", what: "Report to this tracker instead of the one the work came from - e.g. linear.", required: false, takesValue: true },
+      { name: "--why", what: "Why this organization tells its tickets these things.", required: true, takesValue: true },
+      JSON_FLAG,
+    ],
+    writes: true,
+  },
+  {
+    name: "org ticket-reports show",
+    what: "What this organization tells its tickets, and when.",
+    then: "An organization with none stated tells its tickets nothing - its work is visible only to itself.",
+    flags: [ORG_FLAG, JSON_FLAG],
+    writes: false,
+  },
+  {
     name: "org run-profile set",
     what: "State how one of this organization's runs is started, so the watcher (`watch-org.ts --org <id>`) can start it whenever something new happens on its merge requests.",
     then: "Replaces a profile of the same name. The file holds run-org's arguments (`args`, which must include --org and --store), non-secret environment (`env`), and `everyMinutes` / `maxRunMinutes`. A credential never goes in `env`: give a *_FILE path.",

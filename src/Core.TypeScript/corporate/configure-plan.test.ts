@@ -172,11 +172,27 @@ describe("an organization with nothing to do is not finished", () => {
 });
 
 describe("the plan is DERIVED, so it is resumable and cannot go stale", () => {
+  test("an organization whose work comes from a TRACKER owes an answer about what that ticket hears", () => {
+    // The people who asked for the work watch the ticket. Left unstated, the ticket hears nothing
+    // while an architecture is decided, a fix is written and QA runs.
+    const fromJira = org({ intake: Intake.SourceSynced, sources: [{ kind: "jira", id: "j", location: "https://jira.example" }] });
+    const plan = planFor(fromJira, true);
+    expect(stepOf(plan, ConfigureStep.TellTheTicket).required).toBe(true);
+    expect(plan.complete).toBe(false);
+    expect(stepOf(plan, ConfigureStep.TellTheTicket).current).toContain("it hears nothing");
+    expect(stepOf(plan, ConfigureStep.TellTheTicket).command).toContain("org ticket-reports set");
+
+    // ...and an organization reading from a repository has no ticket to tell.
+    const fromGit = org({ intake: Intake.SourceSynced, sources: [{ kind: "git", id: "g", location: "https://git.example/r.git" }] });
+    expect(stepOf(planFor(fromGit, true), ConfigureStep.TellTheTicket).required).toBe(false);
+  });
+
   test("removing configuration makes its step pending again", () => {
     // A stored "step 3 of 5" would insist the step was done after somebody undid it.
     const withSource = org({
       intake: Intake.SourceSynced,
       sources: [{ kind: "jira", id: "j", location: "https://jira.example" }],
+      ticketReports: { milestones: ["qa_uat"], why: "the people who asked watch the ticket" },
     });
     expect(planFor(withSource, true).complete).toBe(true);
     const undone = { ...withSource, sources: [] };
@@ -264,7 +280,7 @@ describe("THE ORGANIZATION CAN BE TOLD, RATHER THAN ONLY ASKING", () => {
   test("receiving is OPTIONAL — polling is a complete answer, even source-synced", () => {
     // A plan that treated pushing as outstanding work would make guided setup something you have to
     // decline, and every polled organization would report itself unconfigured forever.
-    const synced = org({ intake: Intake.SourceSynced, sources: [source()] });
+    const synced = org({ intake: Intake.SourceSynced, sources: [source()], ticketReports: { milestones: ["qa_uat"], why: "the people who asked watch the ticket" } });
     const plan = planFor(synced, true);
     expect(stepOf(plan, ConfigureStep.ReceiveEvents).required).toBe(false);
     expect(plan.complete).toBe(true);

@@ -849,6 +849,24 @@ export function foldHandedOffChanges(events: readonly OrgEvent[]): ReadonlyMap<s
   return out;
 }
 
+/**
+ * WHAT EACH TICKET HAS ALREADY BEEN TOLD - work id to the gates reported on it.
+ *
+ * The guard against telling a ticket the same milestone twice, which is what a re-run would otherwise
+ * do every cycle for the rest of the work.
+ */
+export function foldTicketReports(events: readonly OrgEvent[]): ReadonlyMap<string, ReadonlySet<string>> {
+  const out = new Map<string, Set<string>>();
+  for (const event of events) {
+    const f = event.fact;
+    if (f?.kind !== "ticket_reported") continue;
+    const gates = out.get(f.workId) ?? new Set<string>();
+    gates.add(f.gate);
+    out.set(f.workId, gates);
+  }
+  return out;
+}
+
 /** The after-open steps already performed, by work id: step keys, and the ids of what they posted. */
 export function foldAfterOpen(events: readonly OrgEvent[]): ReadonlyMap<string, { readonly done: ReadonlySet<string>; readonly replyIds: readonly string[] }> {
   const out = new Map<string, { done: Set<string>; replyIds: string[] }>();

@@ -84,7 +84,7 @@ import { acceptAction, actionEvent, HumanActionKind, type HumanAction } from "./
 import { appendAction, readActions } from "./action-queue";
 import { checkpointStops, unstaffableRaises } from "./unstaffable-gate";
 import { openBlockers } from "./human-blocker";
-import { humanGatesFor, type GateKind, type HumanCheckpoint } from "./quality-gate";
+import { GateKind, humanGatesFor, type HumanCheckpoint } from "./quality-gate";
 import { bindingsOf, resolve, SkillSource, validateBinding, type SkillBinding }
   from "./skill-binding";
 import { planFor, planForNothing } from "./configure-plan";
@@ -92,6 +92,7 @@ import { validateChangeRequests, type AfterOpenStep, type ChangeRequestConfig, t
 import { profileArg, validateRunProfiles, type RunProfile } from "./run-profile";
 import { join } from "node:path";
 import { foldCost, readCostDir, renderCost, type CostLine } from "./cost-ledger";
+import { validateTicketReports, type TicketReportConfig } from "./ticket-report";
 import {
   Exit,
   flagValue,
@@ -767,6 +768,52 @@ export async function main(argv: readonly string[], deps: CliDeps): Promise<numb
       deps.writeFile(registryPath, serializeRegistry(registry));
       emit(deps, json, { org: chosen.org.orgId, setting: name, scope, removed: true }, () =>
         `'${name}'${scope === "" ? "" : ` for '${scope}'`} is unset: the mechanical default applies again\n`,
+      );
+      return Exit.Ok;
+    }
+
+    case "org ticket-reports set": {
+      const chosen = resolveOrg(registry, flagValue(flags, "--org"));
+      if ("reason" in chosen) { deps.err(chosen.reason); return Exit.NotFound; }
+      const milestones = flagValues(flags, "--milestone").map((v) => v.trim()).filter((v) => v !== "");
+      const tracker = flagValue(flags, "--tracker-kind")?.trim();
+      const config: TicketReportConfig = {
+        milestones,
+        ...(tracker === undefined ? {} : { tracker }),
+        why: (flagValue(flags, "--why") ?? "").trim(),
+      };
+      // CHECKED AGAINST THE REAL GATES: a milestone naming a gate that does not exist is a
+      // configuration that reports nothing forever, and reads as configured the whole time.
+      const valid = validateTicketReports(config, Object.values(GateKind));
+      if (!valid.ok) { deps.err(valid.reason); return Exit.Refused; }
+      const replaced = chosen.org.ticketReports !== undefined;
+      const updated = updateOrg(registry, { ...chosen.org, ticketReports: config });
+      if (!updated.ok) { deps.err(updated.reason); return Exit.Refused; }
+      registry = updated.registry;
+      deps.writeFile(registryPath, serializeRegistry(registry));
+      emit(deps, json, { org: chosen.org.orgId, ticketReports: config, replaced }, () =>
+        `${replaced ? "changed" : "stated"} what '${chosen.org.orgId}' tells its tickets: when ` +
+        `${milestones.join(", ")} passes` +
+        `${tracker === undefined ? " (to whichever tracker the work came from)" : `, on ${tracker}`}` +
+        `\n  because ${config.why}\n`,
+      );
+      return Exit.Ok;
+    }
+
+    case "org ticket-reports show": {
+      const chosen = resolveOrg(registry, flagValue(flags, "--org"));
+      if ("reason" in chosen) { deps.err(chosen.reason); return Exit.NotFound; }
+      const tr = chosen.org.ticketReports;
+      emit(deps, json, { org: chosen.org.orgId, ticketReports: tr ?? null }, () =>
+        tr === undefined
+          ? `'${chosen.org.orgId}' tells its tickets nothing - its work happens where only it can see. 'org ticket-reports set' states which gates passing is news\n`
+          : [
+              `${chosen.org.orgId}' tells its tickets when these pass:`,
+              ...tr.milestones.map((m) => `  ${m}`),
+              `  posted to: ${tr.tracker ?? "whichever tracker the work came from"}`,
+              `  because ${tr.why}`,
+              "",
+            ].join("\n"),
       );
       return Exit.Ok;
     }
