@@ -1295,8 +1295,17 @@ function renderVerb(a: NextAction): string {
     case "retract_time":
       return `[retract]   ${a.reason}`;
     case "replay_time":
-    case "replay_time":
       return `[replay]    ${a.reason}`;
+    // `read_memory_sector` / `write_memory_sector` were MISSING here, so the two
+    // CheatEngine lensography actions -- which `applyAction` fully executes --
+    // rendered as "(unrecognized action)" in the transcript. The engine did the
+    // work and the log denied it happened. Found because the slot they should
+    // have occupied held a duplicate `case "replay_time":` instead, which is
+    // what a copy-paste looks like when the second half never got edited.
+    case "read_memory_sector":
+      return `[read]      sector ${String(a.sectorIndex)} (${String(a.length)}B) — ${a.reason}`;
+    case "write_memory_sector":
+      return `[write]     sector ${String(a.sectorIndex)}+${String(a.offset)} := ${String(a.value)} — ${a.reason}`;
     default:
       return `[unknown]   (unrecognized action)`;
   }
@@ -1335,6 +1344,11 @@ export function actionLabel(a: NextAction): string {
       return `retract / undo back in time (${a.reason})`;
     case "replay_time":
       return `replay time forward (${a.reason})`;
+    // Missing here for the same reason as in `renderVerb` above.
+    case "read_memory_sector":
+      return `read memory sector ${String(a.sectorIndex)} (${a.reason})`;
+    case "write_memory_sector":
+      return `write memory sector ${String(a.sectorIndex)} (${a.reason})`;
     default:
       return `take an unrecognized action`;
   }

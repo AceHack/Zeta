@@ -42,6 +42,24 @@ paths-ignore:
   - "docs/design/root-site-iris/_ds/**"
   - "docs/design/root-site-iris/support.js"
 
+  # RECOVERED-BRANCH QUARANTINE. Its own README opens: "Files recovered from 5
+  # of my orphan branches during the 2026-06-30 post-reboot branch-prune triage
+  # ... quarantine for later triage". It is preserved material awaiting a
+  # decision, not an authored production surface, and findings there ask us to
+  # fix code nobody has adopted yet. Same class as genesis/** above.
+  # Measured 2026-09-17: 6 of 243 JS/TS quality results.
+  - "docs/recovered-orphan-branches-2026-05/**"
+
+  # OUR OWN CUSTOM-QUERY TEST FIXTURES. `zeta-security/test/log-injection/
+  # variants.ts` exists to CONTAIN log injection so our custom query can be
+  # proven to catch it -- CodeQL then dutifully catches it, and reports the
+  # fixture as a defect. That is the artifact-under-test distinction
+  # `.claude/rules/no-binary-in-proof-lineage.md` already draws: the thing being
+  # measured is not the thing being trusted. Excluding the QUERIES themselves
+  # would be wrong; excluding their deliberate bad-input corpus is not.
+  # Measured 2026-09-17: 12 of 243, including both js/log-injection errors.
+  - ".github/codeql/custom-queries/**/test/**"
+
   # Benchmark harness. Perf-critical by definition; uses
   # patterns (unsafe pointers, pinned spans, unchecked
   # arithmetic) that are intentional there. Keep CodeQL
