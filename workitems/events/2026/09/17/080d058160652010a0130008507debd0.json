@@ -1,0 +1,14 @@
+{
+  "id": "080d058160652010a0130008507debd0",
+  "at": "2026-09-17T16:21:11.972Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M2R2R353087G0R001K87BGW",
+    "type": "task",
+    "title": "run codeql quality on every build then burn the backlog down then make it required",
+    "slug": "run-codeql-quality-on-every-build-then-burn-the-backlog-down",
+    "priority": "P2",
+    "filename": "081M2R2R353087G0R001K87BGW-run-codeql-quality-on-every-build-then-burn-the-backlog-down.md"
+  }
+}

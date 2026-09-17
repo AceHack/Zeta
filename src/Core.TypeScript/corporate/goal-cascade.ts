@@ -662,10 +662,18 @@ export function decompose(
       // which stopped being true the moment the ladder bent: the search descends past lead and past
       // the parent, so a reader chasing "we need a lead" was chasing a hat that would not have
       // helped. What is actually missing is somebody to DO the work.
-      reason:
-        mustSupport === undefined
-          ? `nobody in '${parent.ownerHatId}'s line can own this ${rung.workType}, so it cannot be staffed`
-          : `no ${mustSupport} reports up to '${parent.ownerHatId}', so this ${rung.workType} cannot be staffed`,
+      // The `mustSupport === undefined` arm this used to carry was UNREACHABLE.
+      // `supportRequirementFor` is declared `(_workType: WorkType): HatLevel` --
+      // total, and today a stub returning the constant "individual_contributor" --
+      // so the comparison is always false and the first message could never
+      // render. It read as a handled case and handled nothing.
+      //
+      // Removed rather than repaired, because making it reachable means deciding
+      // that some work type has NO support requirement, and that is a question
+      // about the cascade rather than about this message. When
+      // `supportRequirementFor` grows a real body and an optional return, the
+      // branch comes back with the type change that makes it meaningful.
+      reason: `no ${mustSupport} reports up to '${parent.ownerHatId}', so this ${rung.workType} cannot be staffed`,
     };
   }
 
