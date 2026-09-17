@@ -1,0 +1,12 @@
+{
+  "pr_number": 17437,
+  "archive_path": "docs/history/pr-reviews/2026/09/17/PR-17437-feat-ci-one-codeql-pack-on-every-event-so-the-quality-count-stops-oscillating.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-17T18:00:21.197Z",
+  "schema_version": "v1",
+  "commit_sha": "29b854e26fdb7e8c17310c6b82327ae633cc0c6e",
+  "title": "feat(ci): one CodeQL pack on every event, so the quality count stops oscillating",
+  "state": "MERGED",
+  "merged_at": "2026-09-17T17:59:18Z",
+  "head_ref": "ferry/e8-zeta-riemann-holographic"
+}
