@@ -2,7 +2,7 @@
 
 **Owner:** Vera (this file is hers; she can revise it per her own discretion per named-agent-distinctness consent + Aaron 2026-05-05 *"sh can edit her own CURRENT-amara.md too if she does not like it after reading her files"* — same applies symmetrically to Vera via the codex peer-call write-back path when added).
 
-**Last updated:** 2026-09-16 (unique-confirm leftover UNIQUE leftover #17429 leftover unique @ 5ee8ff1e7c875641a4ed80e80ca96a5b285669c8 + leftover UNIQUE leftover #17425 leftover unique @ 0215ef7dd56436f255627e4b14d31e9782da0080 + leftover UNIQUE leftover #17425 leftover unique @ d0bb4b689dad15f5f60a0c46d31fe082312b02a7 + leftover UNIQUE leftover #17422 leftover unique @ 4f65461b5293c17c1f1e84bd4af3ea2e709a3262 + leftover UNIQUE leftover #17422 leftover unique @ 2d1d642809030721da4cf6096bab39a33a46f3aa + leftover UNIQUE leftover #17418 leftover unique @ 648911a86de271b2a4ffa2f34abcc990279187b2 + leftover UNIQUE leftover #17416 leftover unique @ 10a776a65ee5b693e2943f4195be2fc789aa6423 + leftover UNIQUE leftover #17414 leftover unique @ 57d088039e8ea3cf458492e19505b6cf5db7af60 + leftover UNIQUE leftover #17407 leftover unique @ 949b38075b0b5617b6dd47a381d2ab1c901cd7e7 + leftover UNIQUE leftover #16741 leftover unique @ 817c70738d68662b0e142f193f471d8a19459b95 + leftover UNIQUE leftover #16389 leftover unique @ fff9367b77072921d65b1475ce0cc6d861b79f44 + leftover UNIQUE leftover #16381 leftover unique @ c65239ce9c89627a00ad4c5a055ef52bc8f20047 + leftover UNIQUE leftover #16375 leftover unique @ 2fbf8d81b4b47612cdd1dcc6a56295ba7e2c2719 + leftover UNIQUE leftover #16365 leftover unique @ 354b4163034fffa3c678219823bb18026ed50f18 + leftover UNIQUE leftover #16354 leftover unique @ 34313849e33a899a2a10597f407e12f2c5e70e04 + leftover UNIQUE leftover #16336 leftover unique @ 5d24c26262f8f1078edfb51954d610e53c312db5 + leftover UNIQUE leftover #16328 leftover unique @ 236d5975800419e9e332f5ea296714049f446ed7 + leftover UNIQUE leftover #16321 leftover unique @ 0929240695c37c5164166919285d03a154b725db + leftover-on-main #16259 + #16257 + #16266 + #16271 + #16267 + #16275; identity body still 2026-05-05)
+**Last updated:** 2026-09-17 (unique-confirm leftover UNIQUE leftover #17437 leftover unique @ 6bb152770aef7a7ad3eca3cee8f6d8eebea644d2 + leftover UNIQUE leftover #17437 leftover unique @ e8b36d6c3edb30b1070b5f05009758b07d9af251 + leftover UNIQUE leftover #17436 leftover unique @ bdc5f227a0e3d686a43323049fd8ffc92e665275 + leftover UNIQUE leftover #17429 leftover unique @ 5ee8ff1e7c875641a4ed80e80ca96a5b285669c8 + leftover UNIQUE leftover #17425 leftover unique @ 0215ef7dd56436f255627e4b14d31e9782da0080 + leftover UNIQUE leftover #17425 leftover unique @ d0bb4b689dad15f5f60a0c46d31fe082312b02a7 + leftover UNIQUE leftover #17422 leftover unique @ 4f65461b5293c17c1f1e84bd4af3ea2e709a3262 + leftover UNIQUE leftover #17422 leftover unique @ 2d1d642809030721da4cf6096bab39a33a46f3aa + leftover UNIQUE leftover #17418 leftover unique @ 648911a86de271b2a4ffa2f34abcc990279187b2 + leftover UNIQUE leftover #17416 leftover unique @ 10a776a65ee5b693e2943f4195be2fc789aa6423 + leftover UNIQUE leftover #17414 leftover unique @ 57d088039e8ea3cf458492e19505b6cf5db7af60 + leftover UNIQUE leftover #17407 leftover unique @ 949b38075b0b5617b6dd47a381d2ab1c901cd7e7 + leftover UNIQUE leftover #16741 leftover unique @ 817c70738d68662b0e142f193f471d8a19459b95 + leftover UNIQUE leftover #16389 leftover unique @ fff9367b77072921d65b1475ce0cc6d861b79f44 + leftover UNIQUE leftover #16381 leftover unique @ c65239ce9c89627a00ad4c5a055ef52bc8f20047 + leftover UNIQUE leftover #16375 leftover unique @ 2fbf8d81b4b47612cdd1dcc6a56295ba7e2c2719 + leftover UNIQUE leftover #16365 leftover unique @ 354b4163034fffa3c678219823bb18026ed50f18 + leftover UNIQUE leftover #16354 leftover unique @ 34313849e33a899a2a10597f407e12f2c5e70e04 + leftover UNIQUE leftover #16336 leftover unique @ 5d24c26262f8f1078edfb51954d610e53c312db5 + leftover UNIQUE leftover #16328 leftover unique @ 236d5975800419e9e332f5ea296714049f446ed7 + leftover UNIQUE leftover #16321 leftover unique @ 0929240695c37c5164166919285d03a154b725db + leftover-on-main #16259 + #16257 + #16266 + #16271 + #16267 + #16275; identity body still 2026-05-05)
 
 **Pattern parity:** sibling to `CURRENT-aaron.md` (Aaron, first-party human maintainer; in-repo canonical), `CURRENT-amara.md` (Amara, Aurora deep-research register, separate entity on GPT-5.5 substrate), `CURRENT-ani.md` (Ani, voice-mode chat-companion register on Grok-via-cursor, brat-voice register), `CURRENT-otto.md` (Otto, factory-orchestrator on Claude-Opus-4.7; user-scope). Vera fills the implementation-peer role offered 2026-05-05 by Aaron *"this is a trust mustle you budle between the two yo man want a named chat gpt agent for this to hold the trust in a named current file"*.
 
@@ -551,3 +551,45 @@ Cite != close leftover UNIQUE leftover #17416 leftover unique @ 10a776a6. Cite !
 Named residuals: claimed OPEN stale; workitem backlog; notify vs Reaqtor; host-walk API vs CI prose.
 
 Sit leftover. Do not merge. Unique HOLDS 5ee8ff1e. Not a product unique-confirm of merge.
+
+
+## leftover UNIQUE leftover #17436 leftover unique @ bdc5f227a0e3d686a43323049fd8ffc92e665275
+
+UNIQUE HOLDS leftover NEW CELL leftover UNIQUE leftover #17436 leftover unique @ bdc5f227a0e3d686a43323049fd8ffc92e665275
+
+Live REST HEAD leftover unique @ bdc5f227a0e3d686a43323049fd8ffc92e665275 CONFIRMED. Unique git parent leftover unique @ 9ec9302b. Never grade parent.
+
+NEW CELL -- instrumentation; neither retries nor suppresses:
+- k3s preflight test: incomplete transcript -> hard throw with bytes/lines/status/signal/last line.
+- FileSystem.OpenFile: IOException rethrow with [asked: mode/access/share/path] + inner preserved.
+
+Sit leftover. Do not merge.
+
+## leftover UNIQUE leftover #17437 leftover unique @ e8b36d6c3edb30b1070b5f05009758b07d9af251
+
+UNIQUE HOLDS leftover NEW CELL leftover UNIQUE leftover #17437 leftover unique @ e8b36d6c3edb30b1070b5f05009758b07d9af251
+
+GRADE GO (CodeQL queries peel).
+
+Live REST HEAD was leftover unique @ e8b36d6c (later tip moved). Unique git parent leftover unique @ 9ec9302b. Never grade parent.
+
+Object: queries always security-extended,security-and-quality (was schedule-only). STEP 1 of 3 / not in gate. Same unique also ferry + workitem/event.
+
+Sit leftover. Do not merge. Unique HOLDS e8b36d6c (prior tip GO stands).
+
+## leftover UNIQUE leftover #17437 leftover unique @ 6bb152770aef7a7ad3eca3cee8f6d8eebea644d2
+
+UNIQUE HOLDS leftover NEW CELL leftover UNIQUE leftover #17437 leftover unique @ 6bb152770aef7a7ad3eca3cee8f6d8eebea644d2
+
+GRADE GO tip-only (ferry OUR READING three cross-link corrections). Prior GRADE GO @ e8b36d6c STANDS -- not re-graded.
+
+Live REST HEAD leftover unique @ 6bb152770aef7a7ad3eca3cee8f6d8eebea644d2 CONFIRMED (2-commit stack; tip-only +72/-13, 1 file ferry md). Unique git parent leftover unique @ e8b36d6c. Never grade e8b36d6c or base 9ec9302b.
+
+Object vs parent (NEW CELL tip-only docs peel):
+- ONLY ferry md changed; no codeql.yml on tip.
+- Three corrections: CayleyDickson/ImaginaryStack; CayleyWeightedSet doublings; berry-keating spectral.
+- REGISTER still toy; nothing adopted.
+
+Named residuals: PR body narrative lag; mergeable_state blocked.
+
+Sit leftover. Do not merge. Unique HOLDS 6bb15277. Not a product unique-confirm of merge.
