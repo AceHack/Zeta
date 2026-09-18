@@ -1,7 +1,7 @@
 ---
 id: 081M2E7ZHYC087G0R000NDNQ2F
 type: bug
-state: in-progress
+state: closed
 priority: P2
 slug: exclusive-lock-stale-takeover-admitted-3-of-8-concurrent-win
 title: "exclusive-lock stale-takeover admitted 3 of 8 concurrent winners on Linux CI"
@@ -118,3 +118,36 @@ path differ from the shipped one) or a concurrent observer that can only produce
 GREENS. Neither is acceptable without a decision, so this stays open rather than being
 quietly marked done. The end-to-end evidence remains the Linux CI failure plus the
 deterministic mechanism demonstration.
+
+## CLOSED 2026-09-17 — the deterministic falsifier exists after all
+
+`exclusive-lock-window.test.ts` fails without the fix and passes with it:
+
+```
+create-then-write (defective)   empty=2293   FAIL
+stage-then-link   (fixed)       empty=0      PASS   (5/5 consecutive runs)
+```
+
+A second process spins on ONE FIXED PATH — no readdir — while this process claims the same
+generation 20,000 times. `empty` counts the generation existing with no content, which is the
+defect observed directly rather than inferred.
+
+**Three approaches failed first, recorded so nobody re-walks them:**
+
+| attempt | why it failed |
+|---|---|
+| `fs.watch` on the lock directory | macOS coalesces: 10/10 trials reported only `0.lock`, never the staging file |
+| spin-reader doing `readdir` each pass | scanning a growing directory is microseconds, the window is nanoseconds — **0 hits in 28,018 claims against the DEFECTIVE build**, a clean false green |
+| planting a zero-byte generation | tests the tolerated case (corrupt ⇒ supersede), which the fix does not change; passes either way |
+
+**The `full > 0` control is load-bearing.** A reader that never opened the file reports
+`empty = 0` and the test passes having observed nothing — which is exactly how the readdir
+attempt looked like a working detector for one run. It is asserted separately.
+
+**Bounded by a claim count, not a clock.** The reader stops on a sentinel file dropped by the
+test, so nothing asserts on elapsed time; `audit-ambient-time-in-tests` has nothing to
+allowlist and reports 1756 files clean.
+
+My earlier claim that a deterministic falsifier needed "a test-only seam or a concurrent
+observer that can only produce false greens" was wrong on the second half: a concurrent
+observer CAN produce a true red, provided it watches one path instead of a directory.

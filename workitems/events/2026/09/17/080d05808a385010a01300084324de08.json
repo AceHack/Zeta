@@ -1,0 +1,10 @@
+{
+  "id": "080d05808a385010a01300084324de08",
+  "at": "2026-09-17T15:51:57.450Z",
+  "by": "otto-cli",
+  "kind": "closed",
+  "payload": {
+    "workItemId": "081M2E7ZHYC087G0R000NDNQ2F",
+    "reason": "deterministic falsifier landed: exclusive-lock-window.test.ts, mutant empty=2293 vs 0"
+  }
+}
