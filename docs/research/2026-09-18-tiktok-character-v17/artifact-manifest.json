@@ -1,0 +1,100 @@
+{
+  "status": "experimental comparison; v16 remains baseline",
+  "files": [
+    {
+      "path": "review/Blender-Hair-Study-v17.blend",
+      "bytes": 67554020,
+      "sha256": "e9961315f7d793623c0e8e595d969eb62a83de2e2afb2e32174b072d33b5ed95"
+    },
+    {
+      "path": "README.txt",
+      "bytes": 8194,
+      "sha256": "96f4e20a32611c2ba583587d1ac2b56f70e2bc88204c03283a39ceee9dc98822"
+    },
+    {
+      "path": "audit.json",
+      "bytes": 56104,
+      "sha256": "e176ced9c43da9f63a5c36a0144fc9442938c0e02d90e54a9d2d62edbce21146"
+    },
+    {
+      "path": "groom-recipe.json",
+      "bytes": 81084,
+      "sha256": "ce6721bf0bff20787d06999b0e0b08d31c96a1b14013938f0b55692d6189d58c"
+    },
+    {
+      "path": "validation.json",
+      "bytes": 4880,
+      "sha256": "da603c58d381d06b54ceb4b8937803994c9e61fac5f49949dffab0702b6555d0"
+    },
+    {
+      "path": "audit_v17.py",
+      "bytes": 1724,
+      "sha256": "f01620755bc18df36461ba1d77a03758176de743957ee5f0e42ef6ca81f5ba0f"
+    },
+    {
+      "path": "groom_v17.py",
+      "bytes": 6052,
+      "sha256": "2594e3a0cc73b835d198d14522d477ddfbad96c42985a04033fc0f5ef926d171"
+    },
+    {
+      "path": "baseline_v17.py",
+      "bytes": 858,
+      "sha256": "49173bb0b4fc302e7630f02ef591ac0a2f40eadc52959273a01f2c3f9bd54c80"
+    },
+    {
+      "path": "validate_v17.py",
+      "bytes": 2510,
+      "sha256": "5eabc740b20cf32efd6b1d3eda6f73186e266a54bb8b543768239af6446d9a13"
+    },
+    {
+      "path": "package_v17.py",
+      "bytes": 1403,
+      "sha256": "2a657f2de75544d60ae2c57d64124d17f76147c5dfa66cf9e1417208edc5d000"
+    },
+    {
+      "path": "review/front.png",
+      "bytes": 1557727,
+      "sha256": "90c53576722d68f0e4745d3f9e302a4d919a6fec6a4efb49e3a3eec760841c1d"
+    },
+    {
+      "path": "review/back.png",
+      "bytes": 1239712,
+      "sha256": "b9e967f2c65ca453f41d9644752f35ee8f2f81f877cef1393ea21e4c0eb5c477"
+    },
+    {
+      "path": "review/side.png",
+      "bytes": 1355357,
+      "sha256": "0a8eb438ecd2a9af2192db17014b726f3c6d1b27168d186f4effb63ebf228f95"
+    },
+    {
+      "path": "review/head-turn.png",
+      "bytes": 1565470,
+      "sha256": "016c8c0a31064e6c6df1ce52ed40b95db89dac1e7ed081a9f51013397dc0e689"
+    },
+    {
+      "path": "review/v16-front.png",
+      "bytes": 1532555,
+      "sha256": "e034a90d651787113d63c53b4fee2940e99d57a3f09516865af07245a85a4cd4"
+    },
+    {
+      "path": "review/v16-back.png",
+      "bytes": 1216601,
+      "sha256": "5d921dcb87c48911fe5812be4112768b343b3943f9b9f0c9777b8352e4006117"
+    },
+    {
+      "path": "review/rejected-mask-front.png",
+      "bytes": 1498664,
+      "sha256": "389b5c6664c06cee484fccf9348b6d8c02d9c6c61ebe311fa5128404cad5acaa"
+    },
+    {
+      "path": "review/rejected-mask-back.png",
+      "bytes": 1187547,
+      "sha256": "76abaa2b610e93ea07c10d3c8f1817839e4b764518a4f3a4f78320fdc97001e3"
+    }
+  ],
+  "archive": {
+    "name": "tiktok-character-hair-study-v17.zip",
+    "bytes": 78126175,
+    "sha256": "9aada939380f1cde2f348225478c1fd9c59b9e97c651e39b0024a0f96cee620a"
+  }
+}

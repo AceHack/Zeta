@@ -1,0 +1,23 @@
+import bpy,json,bmesh
+from pathlib import Path
+from mathutils import Vector
+R=Path(__file__).resolve().parent
+bpy.ops.wm.open_mainfile(filepath=str(R.parent/'TikTok-Character-Quality-v16/review/Blender-Quality-Review-v16.blend'))
+bpy.context.scene.frame_set(1)
+rows=[]
+for o in bpy.context.scene.objects:
+ if o.type=='MESH' and ('Xenaa' in o.name or 'AceHack' in o.name):
+  row={'name':o.name,'verts':len(o.data.vertices),'faces':len(o.data.polygons),'materials':[m.name if m else None for m in o.data.materials],'bounds':[list(o.matrix_world@Vector(c)) for c in o.bound_box],'attributes':[a.name for a in o.data.attributes],'morphs':list(o.data.shape_keys.key_blocks.keys()) if o.data.shape_keys else [],'modifiers':[(m.name,m.type) for m in o.modifiers]}
+  bm=bmesh.new();bm.from_mesh(o.data)
+  row['boundary_edges']=sum(e.is_boundary for e in bm.edges);row['non_manifold_edges']=sum(not e.is_manifold for e in bm.edges);row['triangles']=sum(len(p.vertices)-2 for p in o.data.polygons);bm.free()
+  row['weighted_groups']=sorted({o.vertex_groups[g.group].name for v in o.data.vertices for g in v.groups if g.weight>1e-7})
+  marker=o.data.attributes.get('reviewScalpHair')
+  if marker:
+   pts=[v.co for v in o.data.vertices if marker.data[v.index].value]
+   if pts:row['hair_bounds']=[[min(v[k] for v in pts),max(v[k] for v in pts)] for k in range(3)]
+  rows.append(row)
+rigs=[]
+for o in bpy.context.scene.objects:
+ if o.type=='ARMATURE':rigs.append({'name':o.name,'bones':[{'name':b.name,'parent':b.parent.name if b.parent else None,'head':list(b.head_local),'tail':list(b.tail_local)} for b in o.data.bones]})
+(R/'audit.json').write_text(json.dumps({'objects':rows,'rigs':rigs},indent=2))
+print(json.dumps(rows,indent=2))

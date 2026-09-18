@@ -1,5 +1,7 @@
 # docs/handoffs — hand-off packages live IN THE REPO, never only on a desktop
 
+- [Character v17: full review and independent hair study](../research/2026-09-18-tiktok-character-v17/README.md) - master quality before mobile reduction.
+
 Aaron 2026-06-14: "stuff on my desktop/clipboard is DARK for Addison and Max." Correct — a
 hand-off that lives on one person's desktop is invisible to every other traveler (the red-light
 law applied to hand-offs: who can see this, and is that visible?). Packages assembled for

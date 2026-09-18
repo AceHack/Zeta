@@ -1,0 +1,20 @@
+"""One-version archive with an explicit allowlist and read-back verification."""
+from pathlib import Path
+import hashlib,json,zipfile
+R=Path(__file__).resolve().parent
+names=['review/Blender-Hair-Study-v17.blend','README.txt','audit.json','groom-recipe.json','validation.json','audit_v17.py','groom_v17.py','baseline_v17.py','validate_v17.py','package_v17.py']
+names += ['review/'+n+'.png' for n in ['front','back','side','head-turn','v16-front','v16-back','rejected-mask-front','rejected-mask-back']]
+hashof=lambda p:hashlib.sha256(p.read_bytes()).hexdigest()
+validation=json.loads((R/'validation.json').read_text())
+assert validation['candidate_sha256']==hashof(R/names[0])
+manifest={'status':'experimental comparison; v16 remains baseline','files':[{'path':n,'bytes':(R/n).stat().st_size,'sha256':hashof(R/n)} for n in names]}
+out=R/'tiktok-character-hair-study-v17.zip'
+with zipfile.ZipFile(out,'w',zipfile.ZIP_DEFLATED,compresslevel=6) as z:
+ for n in names:z.write(R/n,n)
+ z.writestr('manifest.json',json.dumps(manifest,indent=2)+'\n')
+with zipfile.ZipFile(out) as z:
+ assert z.testzip() is None
+ for row in manifest['files']:assert hashlib.sha256(z.read(row['path'])).hexdigest()==row['sha256']
+manifest['archive']={'name':out.name,'bytes':out.stat().st_size,'sha256':hashof(out)}
+(R/'artifact-manifest.json').write_text(json.dumps(manifest,indent=2)+'\n')
+print(json.dumps(manifest['archive']))

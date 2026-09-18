@@ -1,0 +1,32 @@
+"""Reopen the saved candidate and measure attachment; do not equate this with visual quality."""
+import bpy,json,math,hashlib
+import numpy as np
+from pathlib import Path
+from mathutils import Vector
+R=Path(__file__).resolve().parent
+def fingerprint(o):
+ h=hashlib.sha256()
+ for collection,prop,width,dtype in [(o.data.vertices,'co',3,np.float32),(o.data.loops,'vertex_index',1,np.int32),(o.data.polygons,'material_index',1,np.int32)]:
+  a=np.empty(len(collection)*width,dtype=dtype);collection.foreach_get(prop,a);h.update(a.tobytes())
+ for uv in o.data.uv_layers:
+  a=np.empty(len(uv.data)*2,dtype=np.float32);uv.data.foreach_get('uv',a);h.update(a.tobytes())
+ return h.hexdigest()
+bpy.ops.wm.open_mainfile(filepath=str(R.parent/'TikTok-Character-Quality-v16/review/Blender-Quality-Review-v16.blend'))
+original={o.name:fingerprint(o) for o in bpy.context.scene.objects if o.type=='MESH'}
+bpy.ops.wm.open_mainfile(filepath=str(R/'review/Blender-Hair-Study-v17.blend'))
+for name,value in original.items():assert fingerprint(bpy.data.objects[name])==value,name
+
+sc=bpy.context.scene;rig=bpy.data.objects['Xenaa | Motion rig'];hair=bpy.data.objects['Xenaa | Independent long strand groom'];cap=bpy.data.objects['Xenaa | Groom scalp shell']
+sc.frame_set(1);bpy.context.view_layer.update();h0=rig.matrix_world@rig.pose.bones['Head'].matrix
+bind={o.name:o.matrix_world.copy() for o in [hair,cap]};rows=[]
+for frame in [1,25,49,73,97,121,145,169,193,217]:
+ sc.frame_set(frame);bpy.context.view_layer.update();h=rig.matrix_world@rig.pose.bones['Head'].matrix
+ for o in [hair,cap]:
+  expected=h@h0.inverted()@bind[o.name];error=max(abs(o.matrix_world[r][c]-expected[r][c]) for r in range(4) for c in range(4))
+  assert error<2e-6,(frame,o.name,error)
+  rows.append({'frame':frame,'object':o.name,'head_transform_max_error':error})
+coords=np.empty(len(hair.data.points)*3);hair.data.attributes['position'].data.foreach_get('vector',coords)
+assert np.isfinite(coords).all()
+report={'candidate_sha256':hashlib.sha256((R/'review/Blender-Hair-Study-v17.blend').read_bytes()).hexdigest(),'original_mesh_fingerprints':original,'original_surfaces_preserved':True,'curves':len(hair.data.curves),'points':len(hair.data.points),'attachment':rows,'finite_coordinates':True,'facial_shapes':0,'hair_dynamics':False,'collision_validation':False,'visual_acceptance':'requires separate image review; numerical tests do not establish quality'}
+(R/'validation.json').write_text(json.dumps(report,indent=2)+'\n')
+print(json.dumps(report))

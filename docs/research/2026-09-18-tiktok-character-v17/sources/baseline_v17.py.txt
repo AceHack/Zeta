@@ -1,0 +1,12 @@
+import bpy
+from pathlib import Path
+from mathutils import Vector
+R=Path(__file__).resolve().parent
+bpy.ops.wm.open_mainfile(filepath=str(R.parent/'TikTok-Character-Quality-v16/review/Blender-Quality-Review-v16.blend'))
+sc=bpy.context.scene;sc.frame_set(1)
+for o in sc.objects:
+ if 'acehack' in o.name.lower():o.hide_render=True
+rig=bpy.data.objects['Xenaa | Motion rig'];cam=sc.camera;target=Vector((rig.location.x,-.12,1.53));cam.data.type='ORTHO';cam.data.ortho_scale=.92
+sc.render.resolution_x=1000;sc.render.resolution_y=1100;sc.render.resolution_percentage=100;sc.cycles.samples=48
+for label,offset in [('front',(0,-4,.10)),('back',(0,4,.1))]:
+ cam.location=target+Vector(offset);cam.rotation_euler=(target-cam.location).to_track_quat('-Z','Y').to_euler();sc.render.filepath=str(R/'review'/('v16-'+label+'.png'));bpy.ops.render.render(write_still=True)

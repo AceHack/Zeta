@@ -1,0 +1,84 @@
+"""Deterministic independent strand groom study. Not a completed production character."""
+import bpy,bmesh,math,json,random,hashlib
+import numpy as np
+from pathlib import Path
+from mathutils import Vector,Matrix
+R=Path(__file__).resolve().parent;O=R/'review';O.mkdir(exist_ok=True)
+source=R.parent/'TikTok-Character-Quality-v16/review/Blender-Quality-Review-v16.blend'
+bpy.ops.wm.open_mainfile(filepath=str(source));sc=bpy.context.scene;sc.frame_set(1)
+rig=bpy.data.objects['Xenaa | Motion rig'];head=bpy.data.objects['Xenaa | Independent head generator']
+marker=head.data.attributes['reviewScalpHair'];removed=[v.index for v in head.data.vertices if marker.data[v.index].value]
+# Edit only a new saved candidate. The released v16 input is never overwritten.
+# The mask-only removal failed visual review: preserve the detailed head until retopology.
+removed=[]
+old=bpy.data.objects['Xenaa | Recovered source hair'];old.hide_render=False;old.hide_set(False)
+mat=bpy.data.materials.new('Xenaa | Strand black warm highlights');mat.use_nodes=True
+nodes=mat.node_tree.nodes;nodes.clear();out=nodes.new('ShaderNodeOutputMaterial');hair=nodes.new('ShaderNodeBsdfHairPrincipled');hair.parametrization='COLOR'
+hair.inputs['Color'].default_value=(.006,.003,.004,1);hair.inputs['Roughness'].default_value=.48
+mat.node_tree.links.new(hair.outputs[0],out.inputs['Surface'])
+rng=random.Random(170918);pts=[];radii=[];sizes=[];guides=[]
+def catmull(p,t):
+ x=t*(len(p)-1);i=min(int(x),len(p)-2);u=x-i
+ a,b,c,d=p[max(0,i-1)],p[i],p[i+1],p[min(len(p)-1,i+2)]
+ return .5*((2*b)+(-a+c)*u+(2*a-5*b+4*c-d)*u*u+(-a+3*b-3*c+d)*u*u*u)
+# Anatomically separate left/right part flow. Back paths clear the skull and collar.
+def add_guide(g,count=170):
+ guides.append(g.tolist())
+ clump_phase=rng.uniform(0,6.28)
+ for k in range(count):
+  off=np.array([rng.gauss(0,.008),rng.gauss(0,.008),rng.gauss(0,.002)])
+  phase=rng.uniform(0,6.28);length=rng.uniform(.95,1);width=rng.uniform(.00011,.00022)
+  for n in range(56):
+   t=n/55;v=catmull(g,t*length);v+=off*(.20+.80*math.sin(math.pi*t/2));v[0]+=.020*math.sin(t*12+clump_phase)*t;v[1]+=.014*math.sin(t*10+clump_phase)*t
+   v[0]+=.020*math.sin(t*11+phase)*t*t;v[1]+=.016*math.sin(t*13+phase)*t*t
+   pts.append(v);radii.append(width*(1-.96*t)**.65)
+  sizes.append(56)
+for side in [-1,1]:
+ for j in range(40):
+  q=j/39;y=-.225+.15*q;z=1.838-.030*((q-.45)/.7)**2
+  lower_y=(-.27 if q<.25 and side==-1 else .055)+.04*q
+  sweep=-.045 if side==-1 else .015
+  g=np.array([[.025,y,z],[side*.075,y-.008,1.825-.025*q],[side*.131,y+.01,1.755],[side*.147,-.12+.11*q,1.64],[side*.184+sweep,lower_y,1.49],[side*.21+sweep,lower_y+.015,1.34],[side*.18+sweep,lower_y+.03,1.13+.13*rng.random()]],float)
+  add_guide(g)
+# Broad rear curtain includes central occipital coverage, rather than two side locks.
+for j in range(65):
+ x=-.13+.26*j/64
+ g=np.array([[x*.3,-.09,1.83],[x*.75,-.012,1.785],[x,.034,1.70],[x*1.2,.055,1.60],[x*1.45-.04,.09,1.46],[x*1.65-.045,.11,1.30],[x*1.45-.055,.10,1.12+.10*rng.random()]])
+ add_guide(g,180)
+# Explicit dark scalp shell closes the missing occipital volume. It is not a face replacement.
+verts=[];faces=[]
+for i in range(33):
+ theta=.025+(math.pi-.05)*i/32
+ for j in range(65):
+  phi=2*math.pi*j/64
+  verts.append((.13*math.sin(theta)*math.cos(phi),-.126+.126*math.sin(theta)*math.sin(phi),1.708+.135*math.cos(theta)))
+for i in range(32):
+ for j in range(64):
+  ids=[i*65+j,i*65+j+1,(i+1)*65+j+1,(i+1)*65+j]
+  c=np.mean([verts[k] for k in ids],axis=0)
+  if c[1]>-.10 or c[2]>1.807 or (abs(c[0])>.106 and c[2]>1.64):faces.append(ids)
+mesh=bpy.data.meshes.new('Groom scalp shell');mesh.from_pydata(verts,[],faces);mesh.update()
+cap=bpy.data.objects.new('Xenaa | Groom scalp shell',mesh);sc.collection.objects.link(cap)
+capmat=bpy.data.materials.new('Xenaa | Matte scalp hair');capmat.diffuse_color=(.009,.006,.009,1);capmat.use_nodes=True
+bs=capmat.node_tree.nodes.get('Principled BSDF');bs.inputs['Base Color'].default_value=(.009,.006,.009,1);bs.inputs['Roughness'].default_value=.62
+mesh.materials.append(capmat)
+for f in mesh.polygons:f.use_smooth=True
+cap.hide_render=True;cap.hide_set(True)
+cap.parent=rig;cap.parent_type='BONE';cap.parent_bone='Head';bpy.context.view_layer.update();cap.matrix_world=rig.matrix_world.copy()
+curves=bpy.data.hair_curves.new('Xenaa | Groom strands');curves.add_curves(sizes)
+curves.attributes['position'].data.foreach_set('vector',np.array(pts,dtype=np.float32).ravel())
+a=curves.attributes.new('radius','FLOAT','POINT');a.data.foreach_set('value',radii)
+curves.materials.append(mat);ob=bpy.data.objects.new('Xenaa | Independent long strand groom',curves);sc.collection.objects.link(ob)
+# Bone parent with inverse rest pose: coordinates authored in armature rest space.
+ob.parent=rig;ob.parent_type='BONE';ob.parent_bone='Head'
+bpy.context.view_layer.update();ob.matrix_world=rig.matrix_world.copy();bpy.context.view_layer.update()
+ob['study']='v17 authored strands; rigid Head attachment, no dynamics or collisions'
+(R/'groom-recipe.json').write_text(json.dumps({'seed':170918,'guides':guides,'strands':len(sizes),'points_per_strand':56,'removed_scalp_vertices':len(removed),'source_sha256':hashlib.sha256(source.read_bytes()).hexdigest(),'limitations':['No dynamics','No hair-body collision solver','Fused garment remnants remain','Not game-ready']},indent=2)+'\n')
+sc.frame_set(1);sc.cycles.samples=48;sc.render.resolution_percentage=100
+bpy.ops.wm.save_as_mainfile(filepath=str(O/'Blender-Hair-Study-v17.blend'))
+for o in sc.objects:
+ if 'acehack' in o.name.lower():o.hide_render=True
+cam=sc.camera;target=Vector((rig.location.x,-.12,1.53));cam.data.type='ORTHO';cam.data.ortho_scale=.92
+sc.render.resolution_x=1000;sc.render.resolution_y=1100
+for label,offset,frame in [('front',(0,-4,.10),1),('back',(0,4,.1),1),('side',(4,0,.1),1),('head-turn',(0,-4,.1),145)]:
+ sc.frame_set(frame);cam.location=target+Vector(offset);cam.rotation_euler=(target-cam.location).to_track_quat('-Z','Y').to_euler();sc.render.filepath=str(O/(label+'.png'));bpy.ops.render.render(write_still=True)

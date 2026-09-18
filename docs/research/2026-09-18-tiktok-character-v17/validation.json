@@ -1,0 +1,132 @@
+{
+  "candidate_sha256": "e9961315f7d793623c0e8e595d969eb62a83de2e2afb2e32174b072d33b5ed95",
+  "original_mesh_fingerprints": {
+    "AceHack | Body generator": "c00cc70ebea2822d40374b8de4d38452bab7f016bf7f36d43b18fb2e898b180a",
+    "AceHack | Independent head generator": "d0911adf58c07bd2a5ef4d7ff2c9bbc712993483afa32e9527e5bc54835043d2",
+    "AceHack | Collar join": "dc249104f1401dad91a2adbd28ffa4e9c37353f586b7dd2a7905730310d386bb",
+    "Xenaa | Body generator": "16113947b2ce4fac0ac91590e479f95af2ab395f5d7db0fdf51f9280261fcbcf",
+    "Xenaa | Independent head generator": "ddec243f945be74b627296f6d061c7e525946cd1673f9d746e59b4ed0785244a",
+    "Xenaa | Collar join": "7eae235fa6bf47532cf77739f324d929f1ca013ecfd56e06c64132d22621905c",
+    "Plane": "f8b27579f149df74e16cda02c0cc5d9da36ec94a0f038e196ea3964b1a343ab1",
+    "ACEHACK | Plinth": "46037bd4c91b36c323527cb07195730e052b49edb50561c01e4f287c59192b0e",
+    "Torus": "0f42004392675be516dc6dbc3328782eb474f82630dee0df53710fb5c0e972c4",
+    "XENAA | Plinth": "46037bd4c91b36c323527cb07195730e052b49edb50561c01e4f287c59192b0e",
+    "Torus.001": "0f42004392675be516dc6dbc3328782eb474f82630dee0df53710fb5c0e972c4",
+    "AceHack | Source left leg": "a7fab8fa1ac5394d3bfdde0b5df51c62b86239904768f03887c17feca87ca771",
+    "AceHack | Source right leg": "325bc61ee8278ceba37542180c19802cf663d88043abe24afb331375ff64be44",
+    "Xenaa | Source left leg": "f6979c01819d3f48f152d33e2dba9e117ed1849eb4ee176a43b5f69a18e70e90",
+    "Xenaa | Source right leg": "24b5c32151d8efb634af1b7f9074aa3035b91e79282e1eb242aad9c12e487c49",
+    "Xenaa | Recovered source hair": "d79c30a00bca9b70464872804e44838e09e6c429a46024f0db7641da4530b8d3",
+    "Xenaa | Jacket back lining": "7b64cc3c6a0b31afdb80c2e25c82453b4ffc2bc13af1fb074e374f558f524293"
+  },
+  "original_surfaces_preserved": true,
+  "curves": 25300,
+  "points": 1416800,
+  "attachment": [
+    {
+      "frame": 1,
+      "object": "Xenaa | Independent long strand groom",
+      "head_transform_max_error": 9.658940314238862e-15
+    },
+    {
+      "frame": 1,
+      "object": "Xenaa | Groom scalp shell",
+      "head_transform_max_error": 9.658940314238862e-15
+    },
+    {
+      "frame": 25,
+      "object": "Xenaa | Independent long strand groom",
+      "head_transform_max_error": 9.658940314238862e-15
+    },
+    {
+      "frame": 25,
+      "object": "Xenaa | Groom scalp shell",
+      "head_transform_max_error": 9.658940314238862e-15
+    },
+    {
+      "frame": 49,
+      "object": "Xenaa | Independent long strand groom",
+      "head_transform_max_error": 9.658940314238862e-15
+    },
+    {
+      "frame": 49,
+      "object": "Xenaa | Groom scalp shell",
+      "head_transform_max_error": 9.658940314238862e-15
+    },
+    {
+      "frame": 73,
+      "object": "Xenaa | Independent long strand groom",
+      "head_transform_max_error": 9.658940314238862e-15
+    },
+    {
+      "frame": 73,
+      "object": "Xenaa | Groom scalp shell",
+      "head_transform_max_error": 9.658940314238862e-15
+    },
+    {
+      "frame": 97,
+      "object": "Xenaa | Independent long strand groom",
+      "head_transform_max_error": 9.658940314238862e-15
+    },
+    {
+      "frame": 97,
+      "object": "Xenaa | Groom scalp shell",
+      "head_transform_max_error": 9.658940314238862e-15
+    },
+    {
+      "frame": 121,
+      "object": "Xenaa | Independent long strand groom",
+      "head_transform_max_error": 4.681746764085334e-15
+    },
+    {
+      "frame": 121,
+      "object": "Xenaa | Groom scalp shell",
+      "head_transform_max_error": 4.681746764085334e-15
+    },
+    {
+      "frame": 145,
+      "object": "Xenaa | Independent long strand groom",
+      "head_transform_max_error": 7.105427357601002e-15
+    },
+    {
+      "frame": 145,
+      "object": "Xenaa | Groom scalp shell",
+      "head_transform_max_error": 7.105427357601002e-15
+    },
+    {
+      "frame": 169,
+      "object": "Xenaa | Independent long strand groom",
+      "head_transform_max_error": 9.658940314238862e-15
+    },
+    {
+      "frame": 169,
+      "object": "Xenaa | Groom scalp shell",
+      "head_transform_max_error": 9.658940314238862e-15
+    },
+    {
+      "frame": 193,
+      "object": "Xenaa | Independent long strand groom",
+      "head_transform_max_error": 9.658940314238862e-15
+    },
+    {
+      "frame": 193,
+      "object": "Xenaa | Groom scalp shell",
+      "head_transform_max_error": 9.658940314238862e-15
+    },
+    {
+      "frame": 217,
+      "object": "Xenaa | Independent long strand groom",
+      "head_transform_max_error": 4.681746764085334e-15
+    },
+    {
+      "frame": 217,
+      "object": "Xenaa | Groom scalp shell",
+      "head_transform_max_error": 4.681746764085334e-15
+    }
+  ],
+  "finite_coordinates": true,
+  "facial_shapes": 0,
+  "hair_dynamics": false,
+  "collision_validation": false,
+  "visual_acceptance": "requires separate image review; numerical tests do not establish quality"
+}
