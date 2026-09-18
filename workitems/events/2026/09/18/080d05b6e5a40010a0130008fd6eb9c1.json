@@ -1,0 +1,14 @@
+{
+  "id": "080d05b6e5a40010a0130008fd6eb9c1",
+  "at": "2026-09-18T23:31:52.576Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M2VDSD40087G0R00058B2ND",
+    "type": "task",
+    "title": "Same overlap rotator for schema expand-into and key Previous",
+    "slug": "same-overlap-rotator-for-schema-expand-into-and-key-previous",
+    "priority": "P1",
+    "filename": "081M2VDSD40087G0R00058B2ND-same-overlap-rotator-for-schema-expand-into-and-key-previous.md"
+  }
+}

@@ -20,6 +20,8 @@ type ZetaDbFact =
     | ReaderJoin of version: int
     | ReaderLeave of version: int
     | Custody of KeyCustody.CustodyEvent
+    | OverlapOpen of id: string * line: string * start: int64 * span: int64
+    | OverlapClose of id: string
 
 [<RequireQualifiedAccess>]
 module ZetaDbLog =
@@ -190,6 +192,16 @@ module ZetaDbLog =
         | ZetaDbFact.ReaderLeave v ->
             DynamicValue.Array [ DynamicValue.String "rl"; DynamicValue.Int(int64 v) ]
         | ZetaDbFact.Custody ev -> encodeCustody ev
+        | ZetaDbFact.OverlapOpen (id, line, start, span) ->
+            DynamicValue.Array
+                [ DynamicValue.String "o"
+                  DynamicValue.String "open"
+                  DynamicValue.String id
+                  DynamicValue.String line
+                  DynamicValue.Int start
+                  DynamicValue.Int span ]
+        | ZetaDbFact.OverlapClose id ->
+            DynamicValue.Array [ DynamicValue.String "o"; DynamicValue.String "close"; DynamicValue.String id ]
 
     let decodeFact (dv: DynamicValue) : ZetaDbFact =
         match dv with
@@ -205,6 +217,10 @@ module ZetaDbLog =
             ZetaDbFact.ReaderLeave(int v)
         | DynamicValue.Array (DynamicValue.String "k" :: _) ->
             ZetaDbFact.Custody(decodeCustody dv)
+        | DynamicValue.Array [ DynamicValue.String "o"; DynamicValue.String "open"; DynamicValue.String id; DynamicValue.String line; DynamicValue.Int start; DynamicValue.Int span ] ->
+            ZetaDbFact.OverlapOpen(id, line, start, span)
+        | DynamicValue.Array [ DynamicValue.String "o"; DynamicValue.String "close"; DynamicValue.String id ] ->
+            ZetaDbFact.OverlapClose id
         | _ -> invalidArg (nameof dv) "ZetaDbLog.decodeFact: unknown ZetaDbFact encoding."
 
     let codec: IEntryCodec<ZetaDbFact> =
@@ -218,11 +234,12 @@ module ZetaDbLog =
         (citedBy: CitedByIndex)
         (search: SearchIndex)
         (ct: CancellationToken)
-        : Task<struct (SchemaZ * EvolutionWindow.Window * KeyCustody.Custody)> =
+        : Task<struct (SchemaZ * EvolutionWindow.Window * KeyCustody.Custody * OverlapRotator.State)> =
         task {
             let mutable schema = SchemaZ.empty
             let mutable readers = EvolutionWindow.empty
             let mutable custody = KeyCustody.emptyCustody
+            let mutable overlap = OverlapRotator.empty
             let! entries = log.ReplayAsync(0L, ct).AsTask()
             for e in entries do
                 for row in e.Delta do
@@ -241,7 +258,17 @@ module ZetaDbLog =
                         readers <- EvolutionWindow.readerLeaves v readers
                     | ZetaDbFact.Custody ev ->
                         custody <- KeyCustody.applyEvent custody ev
+                    | ZetaDbFact.OverlapOpen (id, line, start, span) ->
+                        if row.Weight < 0L then
+                            overlap <- OverlapRotator.close id overlap
+                        else
+                            match OverlapRotator.tryOpen id line (Versionstamp.ofInt64 start) span overlap with
+                            | Ok s -> overlap <- s
+                            | Error err ->
+                                invalidArg (nameof log) (sprintf "ZetaDbLog.replayInto: overlap open refused (%A)." err)
+                    | ZetaDbFact.OverlapClose id ->
+                        overlap <- OverlapRotator.close id overlap
                 do! citedBy.StepAsync()
                 do! search.StepAsync()
-            return struct (schema, readers, custody)
+            return struct (schema, readers, custody, overlap)
         }

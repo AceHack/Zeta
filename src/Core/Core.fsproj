@@ -483,6 +483,7 @@
     <Compile Include="SolidGround.fs" />
     <Compile Include="Hat.fs" />
     <Compile Include="KeyCustody.fs" />
+    <Compile Include="OverlapRotator.fs" />
     <Compile Include="ZetaDbLog.fs" />
     <Compile Include="DerivationProtocol.fs" />
     <Compile Include="MultiSignatureVerification.fs" />
