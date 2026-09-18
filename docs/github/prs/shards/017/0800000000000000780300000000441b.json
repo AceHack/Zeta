@@ -1,0 +1,12 @@
+{
+  "pr_number": 17435,
+  "archive_path": "docs/history/pr-reviews/2026/09/18/PR-17435-test-io-the-deterministic-falsifier-for-stage-then-link-which-shipped-without-on.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-18T23:38:28.621Z",
+  "schema_version": "v1",
+  "commit_sha": "4ad5d300ed12840a1ecd0d812e585baa085badf6",
+  "title": "test(io): the deterministic falsifier for stage-then-link, which shipped without one",
+  "state": "MERGED",
+  "merged_at": "2026-09-18T23:37:46Z",
+  "head_ref": "fix/exclusive-lock-falsifier"
+}

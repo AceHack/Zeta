@@ -1,0 +1,12 @@
+{
+  "pr_number": 17436,
+  "archive_path": "docs/history/pr-reviews/2026/09/18/PR-17436-fix-ci-make-two-intermittent-failures-name-themselves-instead-of-blaming-the-cod.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-18T23:14:48.485Z",
+  "schema_version": "v1",
+  "commit_sha": "e882145f17aae0095d921f8eab94e0bbb7ceb20a",
+  "title": "fix(ci): make two intermittent failures name themselves instead of blaming the code",
+  "state": "MERGED",
+  "merged_at": "2026-09-18T23:14:06Z",
+  "head_ref": "fix/instrument-two-intermittents"
+}
