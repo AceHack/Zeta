@@ -1,0 +1,12 @@
+{
+  "pr_number": 17442,
+  "archive_path": "docs/history/pr-reviews/2026/09/18/PR-17442-feat-081m2vdsd40087g0r00058b2nd-one-overlap-rotator-two-callers.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-18T23:51:45.653Z",
+  "schema_version": "v1",
+  "commit_sha": "f3a63acf8215381e292a95330cfd8b0ddd381dba",
+  "title": "feat(081M2VDSD40087G0R00058B2ND): one overlap rotator, two callers",
+  "state": "MERGED",
+  "merged_at": "2026-09-18T23:51:03Z",
+  "head_ref": "feat/zetadb-overlap-rotator"
+}
