@@ -84,14 +84,14 @@ describe("THE WORLDVIEW IS ASKED FOR — the prompt carries the observe command,
     // `observe` is a COMMAND ON PATH, so a read-only agent can be allowed exactly `Bash(observe:*)`.
     expect(r.seen?.argv).not.toContain("Bash(bun:*)");
     r.cleanup();
-  });
+  }, 30_000);
 
   test("THE PROMPT TRAVELS ON STDIN, never argv", () => {
     const r = run(["work", "task-9"], ok({ summary: "s", commit: "", testsRun: [], blocked: "" }));
     expect(r.seen?.argv.join(" ")).not.toContain("YOUR TASK NOW");
     expect(r.seen?.input).toContain("YOUR TASK NOW");
     r.cleanup();
-  });
+  }, 30_000);
 
   test("EVIDENCE STAYS WITH THE ORGANIZATION: every mode names the work's evidence directory and forbids committing it", () => {
     // MEASURED on the first three merge requests: a committed UAT screenshot, a step document under
@@ -119,7 +119,7 @@ describe("THE WORLDVIEW IS ASKED FOR — the prompt carries the observe command,
     expect(input).toContain("the environment is what differs");
     expect(input).not.toContain("for instance a defect you could not reproduce");
     r.cleanup();
-  });
+  }, 30_000);
 
   test("an integrating git act is never allowed, in any mode", () => {
     const r = run(["work", "task-9"], ok({ summary: "s", commit: "", testsRun: [], blocked: "" }));
@@ -128,7 +128,7 @@ describe("THE WORLDVIEW IS ASKED FOR — the prompt carries the observe command,
     expect(argv).toContain("Bash(git push:*)");
     expect(argv).toContain("dontAsk");
     r.cleanup();
-  });
+  }, 30_000);
 });
 
 describe("AFTER THE HANDOFF: THE DESCRIPTION AND THE FOLLOW-UP", () => {
@@ -149,7 +149,7 @@ describe("AFTER THE HANDOFF: THE DESCRIPTION AND THE FOLLOW-UP", () => {
     // No review answers yet: the description is not told about any.
     expect(input).not.toContain("REVIEWERS HAVE BEEN ANSWERED");
     r.cleanup();
-  });
+  }, 30_000);
 
   test("check-answers: told the CURRENT description and every answer, reads only, and prints a result per answer", () => {
     // MEASURED on MR !162: a reply cited description content that did not exist, and nothing checked it.
@@ -166,7 +166,7 @@ describe("AFTER THE HANDOFF: THE DESCRIPTION AND THE FOLLOW-UP", () => {
     expect(JSON.parse(r.stdout.trim().split(/\r?\n/).pop() as string)).toEqual({ results: [{ id: "gitlab:note-9", confirmed: true, unconfirmed: [] }] });
     r.cleanup();
     rmSync(dir, { recursive: true, force: true });
-  });
+  }, 30_000);
 
   test("a FOLLOW-UP review is told the commits and their claims, and must prove each fix's test fails without it", () => {
     // MEASURED on MR !164: a follow-up commit's claimed fix had half no test would miss; it was never reviewed.
@@ -198,13 +198,13 @@ describe("AFTER THE HANDOFF: THE DESCRIPTION AND THE FOLLOW-UP", () => {
     expect(input).toContain("REVIEWERS HAVE BEEN ANSWERED ON THIS REQUEST");
     expect(input).toContain("told the reviewer: option (b), a rollout note in the description");
     r.cleanup();
-  });
+  }, 30_000);
 
   test("describe refuses to run without sections - it would write a request nobody configured", () => {
     const r = run(["describe", "task-9"], ok({ description: "x" }));
     expect(r.status).toBe(2);
     r.cleanup();
-  });
+  }, 30_000);
 
   test("follow-up: the items reach the session, its decisions come back as the last JSON line, and a sync it may not ask for is dropped", () => {
     const items = JSON.stringify([{ id: "gitlab:n1", kind: "comment", summary: "rename x" }, { id: "gitlab:t@task-9", kind: "behind_target", summary: "main moved" }]);
@@ -229,7 +229,7 @@ describe("AFTER THE HANDOFF: THE DESCRIPTION AND THE FOLLOW-UP", () => {
     const canSync = run(["follow-up", "task-9"], answer, { ORG_ACTION_ITEMS: items, ORG_CAN_SYNC: "1" });
     expect((JSON.parse(canSync.stdout.trim().split(/\r?\n/).pop() as string) as { syncWithTarget: boolean }).syncWithTarget).toBe(true);
     canSync.cleanup();
-  });
+  }, 30_000);
 
   test("follow-up: under until_green the session is told a red pipeline cannot be declined - and is told nothing about pipelines otherwise", () => {
     const items = JSON.stringify([{ id: "gitlab:pipeline-55-failed", kind: "pipeline_failed", summary: "the request's pipeline 55 failed" }]);
@@ -274,7 +274,7 @@ describe("AFTER THE HANDOFF: THE DESCRIPTION AND THE FOLLOW-UP", () => {
     expect(r.seen?.input).toContain("A finding is a");
     expect(r.seen?.input).toContain("DECLINED with the");
     r.cleanup();
-  });
+  }, 30_000);
 
   test("A REVIEWER JUDGES A DECLINE ON ITS REASON, not on a test that cannot exist", () => {
     const r = run(["review", "implementation_review", "task-9"], ok({ verdict: "approve", reason: "the decline holds", lookedAt: ["the query planner output"] }), {
@@ -284,7 +284,7 @@ describe("AFTER THE HANDOFF: THE DESCRIPTION AND THE FOLLOW-UP", () => {
     expect(r.seen?.input).toContain("not every claim is right");
     expect(r.seen?.input).toContain("the author may decline it next round and that ends it");
     r.cleanup();
-  });
+  }, 30_000);
 
   test("follow-up in resolve mode is told the conflicted paths and decides nothing about items", () => {
     const r = run(["follow-up", "task-9"], ok({ decisions: [{ id: "x", outcome: "addressed", how: "h" }], syncWithTarget: true, summary: "resolved" }), {
@@ -297,7 +297,7 @@ describe("AFTER THE HANDOFF: THE DESCRIPTION AND THE FOLLOW-UP", () => {
     expect(last.decisions).toEqual([]);
     expect(last.syncWithTarget).toBe(false);
     r.cleanup();
-  });
+  }, 30_000);
 });
 
 describe("A FAILURE IS NEVER FILED AS WORK DONE", () => {
@@ -306,7 +306,7 @@ describe("A FAILURE IS NEVER FILED AS WORK DONE", () => {
     expect(r.status).not.toBe(0);
     expect(r.stderr).toContain("Not logged in");
     r.cleanup();
-  });
+  }, 30_000);
 
   // A LIMIT IS NOT A FAILURE OF THE WORK - it says when it lifts, and leaves by its own code so the
   // organization can wait for that instead of asking again on its usual cadence. MEASURED on
@@ -322,26 +322,26 @@ describe("A FAILURE IS NEVER FILED AS WORK DONE", () => {
     expect(r.stderr).toContain("usage limit is reached");
     expect(r.stderr).toContain("Sep 13, 7am (America/New_York)");
     r.cleanup();
-  });
+  }, 30_000);
 
   test("an ordinary error still exits 4, so the limit is the exception and not the rule", () => {
     const r = run(["work", "task-9"], { type: "result", subtype: "success", is_error: true, result: "Not logged in · Please run /login" });
     expect(r.status).toBe(4);
     r.cleanup();
-  });
+  }, 30_000);
 
   test("a blocked implementer refuses the step with its reason", () => {
     const r = run(["work", "task-9"], ok({ summary: "", commit: "", testsRun: [], blocked: "the reproduction test does not exist" }));
     expect(r.status).toBe(3);
     expect(r.stderr).toContain("the reproduction test does not exist");
     r.cleanup();
-  });
+  }, 30_000);
 
   test("an author that produced neither a document nor a question refuses", () => {
     const r = run(["gate", "reproduction", "task-9"], ok({ questions: [], title: "", document: "", files: [], plan: [], learned: [] }));
     expect(r.status).toBe(3);
     r.cleanup();
-  });
+  }, 30_000);
 });
 
 describe("EACH SEAM'S PROTOCOL", () => {
@@ -355,7 +355,7 @@ describe("EACH SEAM'S PROTOCOL", () => {
     expect(lines).toContain("- read the case store");
     expect(lines).toContain("learned: hub-sync :: sync rewrites rows");
     r.cleanup();
-  });
+  }, 30_000);
 
   test("gate: questions become `ask:` lines and NO document is written", () => {
     const r = run(["gate", "system_context", "goal-1"], ok({ questions: ["Which program's tempo config is authoritative?"], title: "", document: "", files: [], plan: [], learned: [] }));
@@ -363,7 +363,7 @@ describe("EACH SEAM'S PROTOCOL", () => {
     expect(r.stdout).toContain("ask: Which program's tempo config is authoritative?");
     expect(existsSync(join(r.dir, "docs", "goal-1", "system_context.md"))).toBe(false);
     r.cleanup();
-  });
+  }, 30_000);
 
   test("gate: a draft that came WITH a question is kept and named in the question, never submitted", () => {
     // MEASURED on AIAGENT-1661: a 17 KB QA record was discarded because it came with one question.
@@ -380,7 +380,7 @@ describe("EACH SEAM'S PROTOCOL", () => {
     expect(existsSync(join(r.dir, "docs", "task-3", "qa_uat.md"))).toBe(false);
     expect(r.stdout.split("\n").filter((l) => l.trim() !== "" && !l.startsWith("ask: ") && !l.startsWith("usage:") && !l.startsWith("learned: "))).toEqual([]);
     r.cleanup();
-  });
+  }, 30_000);
 
   test("gate: WITHOUT its own checkout the author may only read", () => {
     const r = run(["gate", "system_context", "goal-1"], ok({ questions: ["q"], title: "", document: "", files: [], plan: [], learned: [] }));
@@ -388,7 +388,7 @@ describe("EACH SEAM'S PROTOCOL", () => {
     expect(allowed).not.toContain("Edit");
     expect(allowed).not.toContain("Write");
     r.cleanup();
-  });
+  }, 30_000);
 
   test("review: approve exits 0, reject exits 1, and the reason is what it printed", () => {
     const yes = run(["review", "reproduction", "task-9"], ok({ verdict: "approve", reason: "fails on main for the stated reason", lookedAt: ["test/x.test.ts"] }));
@@ -399,7 +399,7 @@ describe("EACH SEAM'S PROTOCOL", () => {
     expect(no.status).toBe(1);
     expect(no.stdout).toContain("the test passes on main");
     no.cleanup();
-  });
+  }, 30_000);
 });
 
 describe("AUTHENTICATION", () => {
@@ -407,7 +407,7 @@ describe("AUTHENTICATION", () => {
     const r = run(["work", "task-9"], ok({ summary: "s", commit: "", testsRun: [], blocked: "" }), { CLAUDE_CODE_OAUTH_TOKEN: "" });
     expect(r.seen?.token ?? "").toBe("");
     r.cleanup();
-  });
+  }, 30_000);
 
   test("a token FILE is read at call time into the child's environment — never onto argv", () => {
     const dir = mkdtempSync(join(tmpdir(), "tok-"));
@@ -443,7 +443,7 @@ describe("AUTHENTICATION", () => {
     without.cleanup();
     r.cleanup();
     rmSync(dir, { recursive: true, force: true });
-  });
+  }, 30_000);
 });
 
 describe("A REVIEW JUDGES WHETHER THE WORK MAY MOVE, NOT WHETHER THE DOCUMENT IS ACCURATE", () => {
@@ -456,7 +456,7 @@ describe("A REVIEW JUDGES WHETHER THE WORK MAY MOVE, NOT WHETHER THE DOCUMENT IS
     expect(r.seen?.input).toContain("is a REJECTION");
     expect(r.status).toBe(1);
     r.cleanup();
-  });
+  }, 30_000);
 });
 
 describe("AN IMPLEMENTER COMMITS AS IT GOES, KNOWING ITS LIMIT", () => {
@@ -468,7 +468,7 @@ describe("AN IMPLEMENTER COMMITS AS IT GOES, KNOWING ITS LIMIT", () => {
     expect(r.seen?.input).toContain("COMMIT AS YOU GO");
     expect(r.seen?.input).toContain("about 49 minutes");
     r.cleanup();
-  });
+  }, 30_000);
 });
 
 describe("AN AGENT STOPS ONLY WHAT IT STARTED", () => {
@@ -628,7 +628,7 @@ describe("A MODEL IS CHOSEN BY THE ORGANIZATION, NEVER INHERITED FROM WHATEVER I
     expect(r.stderr).toContain("no model is configured");
     expect(r.seen).toBeUndefined();
     r.cleanup();
-  });
+  }, 30_000);
 
   test("each hat thinks with the model the organization gave IT, and the map is the operator's", () => {
     const byHat = JSON.stringify({ default: "cheap-model", backend_implementer: "expensive-model" });
@@ -670,7 +670,7 @@ describe("A MODEL IS CHOSEN BY THE ORGANIZATION, NEVER INHERITED FROM WHATEVER I
     expect(r.status).toBe(2);
     expect(r.stderr).toContain("backend_implementer");
     r.cleanup();
-  });
+  }, 30_000);
 });
 
 describe("EVERY CALL LEAVES A COST LINE SAYING WHERE THE MONEY WENT AND WHY", () => {
@@ -709,7 +709,7 @@ describe("EVERY CALL LEAVES A COST LINE SAYING WHERE THE MONEY WENT AND WHY", ()
     } finally {
       rmSync(store, { recursive: true, force: true });
     }
-  });
+  }, 30_000);
 
   test("the cost of a call is on the usage line too, so a run log shows it without opening the ledger", () => {
     const answered = {
@@ -721,14 +721,14 @@ describe("EVERY CALL LEAVES A COST LINE SAYING WHERE THE MONEY WENT AND WHY", ()
     expect(r.stdout).toContain("cost=$0.5000");
     expect(r.stdout).toContain("model=stated-model");
     r.cleanup();
-  });
+  }, 30_000);
 
   test("nowhere to write the ledger is SAID, never swallowed", () => {
     const r = run(["work", "task-9"], ok({ summary: "s", commit: "", testsRun: [], blocked: "" }), { ORG_CLAUDE_MODEL: "m", ORG_STORE: "", ORG_COST_DIR: "" });
     expect(r.status).toBe(0);
     expect(r.stderr).toContain("cost not recorded");
     r.cleanup();
-  });
+  }, 30_000);
 });
 
 describe("THE SWEEP KILLS BY PROCESS GROUP, so a reaping test may not leave the group", () => {

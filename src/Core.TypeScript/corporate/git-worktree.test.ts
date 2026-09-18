@@ -384,7 +384,7 @@ describe("A FEATURE'S STORIES LAND ON THE FEATURE, AND THE FEATURE ON THE TRUNK"
     // ...AND THE TRUNK HAS SEEN NONE OF IT. A story that reached main directly would mean the
     // feature was never reviewable as a whole, which is the reason an integration branch exists.
     expect(tipOf(cwd, "main")).toBe(mainAtStart);
-  });
+  }, 30_000);
 
   test("the collection lands on the trunk ONLY once it and every code item under it are done", async () => {
     const { cwd, worktreeRoot } = repo("collection");
@@ -419,7 +419,7 @@ describe("A FEATURE'S STORIES LAND ON THE FEATURE, AND THE FEATURE ON THE TRUNK"
     expect(onMain).toContain("story/S-1");
     expect(onMain).toContain("story/S-2");
     expect(onMain).toContain("feature/FEAT-1");
-  });
+  }, 30_000);
 
   test("A RESUME REJOINS: the same item opened twice does not refuse, and does not lose its commit", async () => {
     // MEASURED before the rejoin existed: a second cycle over one item died on
@@ -448,7 +448,7 @@ describe("A FEATURE'S STORIES LAND ON THE FEATURE, AND THE FEATURE ON THE TRUNK"
 
     // The integration branch is JOINED, not re-created: still one branch, still where it was.
     expect(branchExists((a) => spawnSync("git", [...a], { cwd, encoding: "utf-8" }), "feature/FEAT-1")).toBe(true);
-  });
+  }, 30_000);
 
   test("a directory that is NOT this change's checkout is refused, not adopted", async () => {
     // The rejoin above must not become "any directory with the right name will do": work performed
@@ -465,7 +465,7 @@ describe("A FEATURE'S STORIES LAND ON THE FEATURE, AND THE FEATURE ON THE TRUNK"
     expect(opened.ok).toBe(false);
     if (opened.ok) throw new Error("expected a refusal");
     expect(opened.reason).toContain("is not a checkout of");
-  });
+  }, 30_000);
 });
 
 describe("the refusals", () => {

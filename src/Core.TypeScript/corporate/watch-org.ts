@@ -48,6 +48,21 @@ export const FAST_FAILURE_MS = 60_000;
 export const FAST_FAILURES = 3;
 
 /**
+ * What a tick that starts nothing says about itself.
+ *
+ * A poll that could not read the review system and a poll that read it and found nothing are
+ * different facts, and only one of them means the requests are quiet. MEASURED on agentic-tpm,
+ * 2026-09-12 from late evening: `tgcsgitlab.rtptgcs.com` stopped resolving, the poller read no
+ * merge request at all, and the watcher logged "nothing new" on every tick with the failure in
+ * brackets after it - a reader skimming the log saw a quiet organization, not a blind one.
+ */
+export function idleReport(why: string, refusal: string | undefined, polledCount: number): string {
+  if (refusal === undefined) return why;
+  if (polledCount === 0 && why === "nothing new") return `could not look - the review system could not be read, so "nothing new" is unknown: ${refusal}`;
+  return `${why} (the poll said: ${refusal})`;
+}
+
+/**
  * Follow-ups that could not complete, in a row, before the request is a person's rather than a retry.
  *
  * MEASURED on dev-portal, 2026-09-12: three runs, then three more, each starting a session that died
@@ -152,6 +167,12 @@ export function watchReasons(input: WatchInput): WatchVerdict {
     keys.push(`d:${m.actionItemId}`);
   }
   for (const m of corr.targetMoved) {
+    // A REQUEST HANDED TO A PERSON STAYS WITH THEM WHEN THE TARGET MOVES. Every other reason above
+    // skips `hopeless`; this one did not. MEASURED on dev-portal task-012, 2026-09-14: the watcher
+    // said "STILL RED after 3 tries, and a person is needed" and then started another run because
+    // "master moved under task-012" - which died on the same thrashing context, 562s later, and made
+    // it four. The target moving is exactly the thing that keeps happening while a person is away.
+    if (hopeless.has(m.workId)) continue;
     if (!fresh(m.actionItemId, m.delivery.deliveryId)) continue;
     newDeliveries.push(m.actionItemId);
     reasons.push(`${m.delivery.target ?? "the target"} moved under ${m.workId}`);
@@ -335,8 +356,7 @@ export async function watchProfile(
   // to look at. Said once per look, in the log a person reads - never swallowed, never retried on.
   for (const stuck of verdict.atLimit) log(store, `STILL RED after ${String(org.changeRequests?.pipelineAttempts ?? DEFAULT_PIPELINE_ATTEMPTS)} tries, and a person is needed: ${stuck}`);
   const decision = shouldLaunch(verdict, state, deps.nowMs(), profile.everyMinutes);
-  const polledNote = "refusal" in polled && polled.refusal !== undefined ? ` (the poll said: ${polled.refusal})` : "";
-  if (!decision.launch) return decision.why + polledNote;
+  if (!decision.launch) return idleReport(decision.why, "refusal" in polled ? polled.refusal : undefined, polled.deliveries.length);
 
   const startedMs = deps.nowMs();
   const child = deps.start(profile, join(store, "run.log"), decision.why);
@@ -401,7 +421,8 @@ export async function watchProfile(
     const after = readState(store);
     if ((after.fastFailures ?? 0) > 0) writeState(store, { ...after, fastFailures: 0 });
   });
-  return `started: ${decision.why}${polledNote}`;
+  const polledRefusal = "refusal" in polled ? polled.refusal : undefined;
+  return `started: ${decision.why}${polledRefusal === undefined ? "" : ` (the poll said: ${polledRefusal})`}`;
 }
 
 function registryOrg(orgId: string): OrgRecord | { readonly reason: string } {

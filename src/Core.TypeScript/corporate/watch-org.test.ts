@@ -10,7 +10,7 @@ import { existsSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, rmSync, 
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { EventEmitter } from "node:events";
-import { FOLLOW_UP_FAILURES, RETRY_EVERY, followUpAttemptsOf, shouldLaunch, type WatchInput, watchProfile, watchReasons } from "./watch-org";
+import { FOLLOW_UP_FAILURES, RETRY_EVERY, followUpAttemptsOf, idleReport, shouldLaunch, type WatchInput, watchProfile, watchReasons } from "./watch-org";
 import { isRunning, lockHolder, takeStoreLock } from "./store-lock";
 import { validateRunProfile, validateRunProfiles, type RunProfile } from "./run-profile";
 import type { OrgEvent } from "./org-event";
@@ -457,6 +457,17 @@ describe("A REQUEST WHOSE FOLLOW-UP KEEPS DYING IS A PERSON'S, NOT ANOTHER ATTEM
     expect(v.reasons.some((r) => r.includes("task-41"))).toBe(true);
   });
 
+  test("the target moving does not restart a request that was handed to a person", () => {
+    // MEASURED on dev-portal task-012, 2026-09-14: "a person is needed" was logged, and the very
+    // next tick started a run anyway because master had moved - the one reason loop that did not
+    // check. It died the same way and the count went to four.
+    const moved = { deliveryId: "target-master-abc", source: "gitlab", itemKind: "target_moved", summary: "master moved", target: "master", branch: "defect/x" };
+    const v = watchReasons(input({ events: [handedOff, aireviewDone, raised, ...died(3)], deliveries: [moved] }));
+    expect(v.reasons.some((r) => r.includes("moved under task-40"))).toBe(false);
+    expect(v.newDeliveries).toEqual([]);
+    expect(v.atLimit.length).toBe(1);
+  });
+
   test("two failures is not a pattern - it is still the organization's to try", () => {
     const v = watchReasons(input({ events: [handedOff, aireviewDone, raised, ...died(2)], deliveries: [comment("note-9")] }));
     expect(v.reasons.length).toBeGreaterThan(0);
@@ -492,5 +503,25 @@ describe("HOW MANY FAILED FOLLOW-UPS BEFORE A PERSON IS ASKED IS A DECISION", ()
     expect(followUpAttemptsOf({ followUpAttempts: 0 } as never)).toBe(FOLLOW_UP_FAILURES);
     expect(followUpAttemptsOf({ followUpAttempts: -2 } as never)).toBe(FOLLOW_UP_FAILURES);
     expect(followUpAttemptsOf({ followUpAttempts: 2.5 } as never)).toBe(FOLLOW_UP_FAILURES);
+  });
+});
+
+describe("A WATCHER THAT COULD NOT LOOK DOES NOT SAY IT SAW NOTHING", () => {
+  // MEASURED 2026-09-12: the GitLab host stopped resolving and every tick logged "nothing new".
+  const dns = "the feedback poller exited 3: lookup tgcsgitlab.rtptgcs.com: no such host";
+  test("a poll that read nothing and failed is reported as blind, not quiet", () => {
+    const said = idleReport("nothing new", dns, 0);
+    expect(said.startsWith("nothing new")).toBe(false);
+    expect(said).toContain("could not look");
+    expect(said).toContain("no such host");
+  });
+  test("a poll that failed partly but still read something keeps its verdict, with the failure beside it", () => {
+    expect(idleReport("nothing new", dns, 3)).toBe(`nothing new (the poll said: ${dns})`);
+  });
+  test("any other reason for not starting keeps its own words", () => {
+    expect(idleReport("its run is still going", dns, 0)).toBe(`its run is still going (the poll said: ${dns})`);
+  });
+  test("no failure, no note", () => {
+    expect(idleReport("nothing new", undefined, 0)).toBe("nothing new");
   });
 });
