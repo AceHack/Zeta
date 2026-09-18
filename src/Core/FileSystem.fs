@@ -123,7 +123,35 @@ type PhysicalFileSystem() =
         member _.ReadAllBytesAsync(path, ct) =
             PhysicalFileSystemLimits.readAllBytesAsync path ct
         member _.OpenFile(path, mode, access, share) =
-            new FileStream(path, mode, access, share, 4096, true) :> Stream
+            // AN IOException HERE MUST NAME THE TRIPLE IT WAS OPENED WITH.
+            //
+            // `IO_SharingViolation_File` says only WHICH path lost, never under what mode the
+            // loser asked or what the holder already had -- and the mismatch IS the defect.
+            // Measured 2026-09-15 on `build-and-test (macos-26)`: 1 failure in 6898 tests,
+            // `DiskDeltaLogTests` live replay, and the message carried the path alone. The
+            // reconstruction had to go read the call chain to learn what was even being asked
+            // for (081M2K8XT63087G0R000GSXC0P).
+            //
+            // Rethrown, never swallowed: same exception type, same failure, strictly more said.
+            // Intermittent and platform-specific means the next occurrence may be the only
+            // sample anyone gets, so it has to arrive already legible.
+            try
+                new FileStream(path, mode, access, share, 4096, true) :> Stream
+            with :? IOException as ex ->
+                raise (
+                    IOException(
+                        System.String.Format(
+                            System.Globalization.CultureInfo.InvariantCulture,
+                            "{0} [asked: mode={1} access={2} share={3} path={4}]",
+                            ex.Message,
+                            mode,
+                            access,
+                            share,
+                            path
+                        ),
+                        ex
+                    )
+                )
         member _.OpenWrite(path, fsync) =
             let opts = if fsync then FileOptions.WriteThrough else FileOptions.None
             new FileStream(path, FileMode.Create, FileAccess.Write, FileShare.None, 4096, opts) :> Stream

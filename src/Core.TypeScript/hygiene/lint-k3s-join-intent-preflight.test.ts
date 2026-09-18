@@ -148,7 +148,49 @@ function run(endpoint: string | null, resolved: Resolved): { code: number; out: 
   // script that deleted something on the refusal path only would slip past a
   // single dedicated case.
   expect(inventory(f.root)).toEqual(before);
-  return { code: r.status ?? -1, out: `${r.stdout}${r.stderr}`, root: f.root };
+
+  const out = `${r.stdout}${r.stderr}`;
+
+  // A TRUNCATED TRANSCRIPT MUST NAME ITSELF TOO.
+  //
+  // The guard above catches a spawn that FAILED. It does not catch a spawn that SUCCEEDED and
+  // returned a partial transcript, and that is the failure this test actually keeps having:
+  // 2026-09-08 on `main`, 2026-09-10 in CI, 2026-09-14 on PR #17406 -- every time on the
+  // `nixos-rebuild switch --impure` assertion, and every time reported as though the SCRIPT
+  // had omitted a line.
+  //
+  // MEASURED on the 2026-09-14 occurrence: the transcript was ~450 bytes and stopped
+  // mid-stream on a bare prefix line, while the script's refusal path prints 1,999 -- and
+  // `r.error` was undefined, so the existing guard had nothing to say. Three explanations were
+  // then refuted one by one (maxBuffer: 32x headroom unused; spawn failure: guard did not fire;
+  // the ZETA_SERIAL_DEVICE second sink: pointed at a nonexistent path by this very function).
+  // The reconstruction cost more than the defect.
+  //
+  // EVERY EXIT PATH OF THE SCRIPT ENDS ON A KNOWN LINE, so completeness is checkable rather
+  // than guessed. If the last line is not one of them the transcript is short, and THAT is what
+  // gets reported -- with the byte count, the status and the tail -- instead of a downstream
+  // assertion blaming the script for a line the harness never received.
+  const terminals = [
+    MARKER_CLEAR, // both exit-0 paths end on it, with a parenthetical
+    "remove the file to found deliberately.", // exit 1, half-provisioned endpoint
+    "evaluation flag went missing.", // exit 1, reverted join intent
+  ];
+  const lines = out.split(/\r?\n/).filter((l) => l.trim().length > 0);
+  const last = lines.at(-1) ?? "";
+  if (!terminals.some((t) => last.includes(t))) {
+    throw new Error(
+      `k3s preflight transcript is INCOMPLETE -- the harness did not receive the whole script's output.\n` +
+        `  bytes:      ${String(Buffer.byteLength(out, "utf8"))} (a complete refusal is ~1999)\n` +
+        `  lines:      ${String(lines.length)}\n` +
+        `  status:     ${String(r.status)}   signal: ${String(r.signal)}\n` +
+        `  last line:  ${JSON.stringify(last.slice(0, 120))}\n` +
+        `  expected the last line to contain one of: ${terminals.map((t) => JSON.stringify(t)).join(", ")}\n` +
+        `  Every assertion below this point would be reading a PARTIAL transcript, so they are\n` +
+        `  not run. This is a harness/environment fact, not a defect in the script.`,
+    );
+  }
+
+  return { code: r.status ?? -1, out, root: f.root };
 }
 
 describe("the reversion is caught — provisioned to JOIN, resolved to FOUND", () => {
