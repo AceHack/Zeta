@@ -1,0 +1,12 @@
+{
+  "pr_number": 17439,
+  "archive_path": "docs/history/pr-reviews/2026/09/18/PR-17439-fix-corporate-a-parked-request-stays-parked-when-the-target-moves-and-a-blind-po.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-18T23:14:43.573Z",
+  "schema_version": "v1",
+  "commit_sha": "f769d3e42cfb196eef05ac5d8d4ed6c370acd34b",
+  "title": "fix(corporate): a parked request stays parked when the target moves, and a blind poll says so",
+  "state": "MERGED",
+  "merged_at": "2026-09-18T23:14:02Z",
+  "head_ref": "claude/watcher-give-up-and-blind-poll"
+}
