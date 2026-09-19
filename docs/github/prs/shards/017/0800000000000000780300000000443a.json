@@ -1,0 +1,12 @@
+{
+  "pr_number": 17466,
+  "archive_path": "docs/history/pr-reviews/2026/09/19/PR-17466-docs-research-reconstruct-character-necks-hair-and-anatomical-upper-body.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-19T12:46:24.649Z",
+  "schema_version": "v1",
+  "commit_sha": "22028779c56221f68e2897cb6be186360ab767f3",
+  "title": "docs(research): reconstruct character necks, hair and anatomical upper body",
+  "state": "MERGED",
+  "merged_at": "2026-09-19T12:45:42Z",
+  "head_ref": "codex/character-v18-reconstruction"
+}
