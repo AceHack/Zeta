@@ -1,0 +1,12 @@
+{
+  "pr_number": 17443,
+  "archive_path": "docs/history/pr-reviews/2026/09/18/PR-17443-research-review-character-master-and-preserve-experimental-hair-groom.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-18T23:58:12.205Z",
+  "schema_version": "v1",
+  "commit_sha": "3c2dd4ab22dd9bdf765e20e99fc7d829d8fad6db",
+  "title": "research: review character master and preserve experimental hair groom",
+  "state": "MERGED",
+  "merged_at": "2026-09-18T23:57:25Z",
+  "head_ref": "codex/character-v17-master-hair"
+}
