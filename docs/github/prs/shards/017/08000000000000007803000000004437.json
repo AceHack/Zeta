@@ -1,0 +1,12 @@
+{
+  "pr_number": 17463,
+  "archive_path": "docs/history/pr-reviews/2026/09/19/PR-17463-fix-hat-system-conflict-of-interest-was-decided-by-binding-order-not-by-the-pair.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-19T12:17:33.091Z",
+  "schema_version": "v1",
+  "commit_sha": "0cc2dbd76146a978ab76920915103346554a91d6",
+  "title": "fix(hat-system): conflict-of-interest was decided by binding order, not by the pair",
+  "state": "MERGED",
+  "merged_at": "2026-09-19T12:16:52Z",
+  "head_ref": "fix/conflict-of-interest-is-order-dependent"
+}
