@@ -1,0 +1,17 @@
+"""Run the selected authoring recipe in isolated Blender processes, stopping on errors."""
+import json,os,subprocess,time,sys
+from pathlib import Path
+R=Path(__file__).resolve().parent
+binary=os.environ.get('BLENDER_BINARY','/Applications/Blender.app/Contents/MacOS/Blender')
+stages=[('reconstruct_v18.py',False),('tailor_groom_v18.py',False),('rebuild_upper_body.py',False),('polish_v18.py',True),('validate_v18.py',True),('baseline_v18.py',False),('compare_upper_skinning.py',False),('render_skinning_modes.py',False)]
+receipt=[]
+for name,render in stages:
+ start=time.monotonic();command=[binary,'-b','-t','6','--python-exit-code','1','--python',str(R/name)]
+ if render:command+=['--','--render-diagnostics']
+ print('RUN',name,flush=True)
+ with (R/(name.removesuffix('.py')+'.log')).open('w') as log:result=subprocess.run(command,stdout=log,stderr=subprocess.STDOUT,check=False)
+ receipt.append({'script':name,'exit_code':result.returncode,'seconds':round(time.monotonic()-start,3)})
+ (R/'build-receipt.json').write_text(json.dumps(receipt,indent=2)+'\n')
+ if result.returncode:print('FAILED',name,flush=True);sys.exit(result.returncode)
+ print('OK',name,flush=True)
+else:print('BUILD AND VALIDATION COMPLETE',flush=True)

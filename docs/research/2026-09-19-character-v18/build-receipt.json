@@ -1,0 +1,42 @@
+[
+  {
+    "script": "reconstruct_v18.py",
+    "exit_code": 0,
+    "seconds": 3.307
+  },
+  {
+    "script": "tailor_groom_v18.py",
+    "exit_code": 0,
+    "seconds": 2.418
+  },
+  {
+    "script": "rebuild_upper_body.py",
+    "exit_code": 0,
+    "seconds": 12.595
+  },
+  {
+    "script": "polish_v18.py",
+    "exit_code": 0,
+    "seconds": 223.134
+  },
+  {
+    "script": "validate_v18.py",
+    "exit_code": 0,
+    "seconds": 235.285
+  },
+  {
+    "script": "baseline_v18.py",
+    "exit_code": 0,
+    "seconds": 38.304
+  },
+  {
+    "script": "compare_upper_skinning.py",
+    "exit_code": 0,
+    "seconds": 3.23
+  },
+  {
+    "script": "render_skinning_modes.py",
+    "exit_code": 0,
+    "seconds": 15.044
+  }
+]

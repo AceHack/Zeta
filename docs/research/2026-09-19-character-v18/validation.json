@@ -1,0 +1,536 @@
+{
+  "source_sha256": "7f82397d28b20b2b1452a1d203dd3031fcf9e9b40cad2eb186ccb19308630658",
+  "meshes": {
+    "AceHack | Independent head generator": {
+      "vertices": 111965,
+      "boundary_edges": 600,
+      "nonmanifold_edges": 600,
+      "weight_sum_error": 2.9802322387695312e-08,
+      "influenced_vertices_per_bone": {
+        "Head": 110115,
+        "Neck": 5391,
+        "Spine3": 2220
+      },
+      "poses": [
+        {
+          "frame": 1,
+          "head_rigid_anchor_error_m": 1.2289223971371862e-07,
+          "edge_stretch_max": 1.0000001825307696,
+          "edge_compression_min": 0.9999773916904008,
+          "edges_over_3x": 0
+        },
+        {
+          "frame": 25,
+          "head_rigid_anchor_error_m": 1.2289223971371862e-07,
+          "edge_stretch_max": 1.0000001825307696,
+          "edge_compression_min": 0.9999773916904008,
+          "edges_over_3x": 0
+        },
+        {
+          "frame": 49,
+          "head_rigid_anchor_error_m": 1.2289223971371862e-07,
+          "edge_stretch_max": 1.0000001825307696,
+          "edge_compression_min": 0.9999773916904008,
+          "edges_over_3x": 0
+        },
+        {
+          "frame": 73,
+          "head_rigid_anchor_error_m": 1.2289223971371862e-07,
+          "edge_stretch_max": 1.0000001825307696,
+          "edge_compression_min": 0.9999773916904008,
+          "edges_over_3x": 0
+        },
+        {
+          "frame": 97,
+          "head_rigid_anchor_error_m": 1.2289223971371862e-07,
+          "edge_stretch_max": 1.0000001825307696,
+          "edge_compression_min": 0.9999773916904008,
+          "edges_over_3x": 0
+        },
+        {
+          "frame": 121,
+          "head_rigid_anchor_error_m": 1.3391628465070346e-07,
+          "edge_stretch_max": 1.3046750213147726,
+          "edge_compression_min": 0.8248152220995782,
+          "edges_over_3x": 0
+        },
+        {
+          "frame": 145,
+          "head_rigid_anchor_error_m": 1.2818463544611077e-07,
+          "edge_stretch_max": 1.2967415843059522,
+          "edge_compression_min": 0.8283711450514587,
+          "edges_over_3x": 0
+        },
+        {
+          "frame": 169,
+          "head_rigid_anchor_error_m": 1.2289223971371862e-07,
+          "edge_stretch_max": 1.0000001825307696,
+          "edge_compression_min": 0.9999773916904008,
+          "edges_over_3x": 0
+        },
+        {
+          "frame": 193,
+          "head_rigid_anchor_error_m": 1.2289223971371862e-07,
+          "edge_stretch_max": 1.0000001825307696,
+          "edge_compression_min": 0.9999773916904008,
+          "edges_over_3x": 0
+        },
+        {
+          "frame": 217,
+          "head_rigid_anchor_error_m": 1.3391628465070346e-07,
+          "edge_stretch_max": 1.3046750213147726,
+          "edge_compression_min": 0.8248152220995782,
+          "edges_over_3x": 0
+        },
+        {
+          "frame": 241,
+          "head_rigid_anchor_error_m": 1.3391628465070346e-07,
+          "edge_stretch_max": 1.3046750213147726,
+          "edge_compression_min": 0.8248152220995782,
+          "edges_over_3x": 0
+        },
+        {
+          "frame": 265,
+          "head_rigid_anchor_error_m": 1.3391628465070346e-07,
+          "edge_stretch_max": 1.3046750213147726,
+          "edge_compression_min": 0.8248152220995782,
+          "edges_over_3x": 0
+        },
+        {
+          "frame": 289,
+          "head_rigid_anchor_error_m": 1.3391628465070346e-07,
+          "edge_stretch_max": 1.3046750213147726,
+          "edge_compression_min": 0.8248152220995782,
+          "edges_over_3x": 0
+        }
+      ]
+    },
+    "Xenaa | Reconstructed head and neck": {
+      "vertices": 61440,
+      "boundary_edges": 0,
+      "nonmanifold_edges": 0,
+      "weight_sum_error": 3.725290298461914e-08,
+      "influenced_vertices_per_bone": {
+        "Spine3": 13056,
+        "Neck": 18432,
+        "Head": 52480
+      },
+      "poses": [
+        {
+          "frame": 1,
+          "head_rigid_anchor_error_m": 0.0,
+          "edge_stretch_max": 1.0000699959477406,
+          "edge_compression_min": 0.9999305697221851,
+          "edges_over_3x": 0
+        },
+        {
+          "frame": 25,
+          "head_rigid_anchor_error_m": 0.0,
+          "edge_stretch_max": 1.0000699959477406,
+          "edge_compression_min": 0.9999305697221851,
+          "edges_over_3x": 0
+        },
+        {
+          "frame": 49,
+          "head_rigid_anchor_error_m": 0.0,
+          "edge_stretch_max": 1.0000699959477406,
+          "edge_compression_min": 0.9999305697221851,
+          "edges_over_3x": 0
+        },
+        {
+          "frame": 73,
+          "head_rigid_anchor_error_m": 0.0,
+          "edge_stretch_max": 1.0000699959477406,
+          "edge_compression_min": 0.9999305697221851,
+          "edges_over_3x": 0
+        },
+        {
+          "frame": 97,
+          "head_rigid_anchor_error_m": 0.0,
+          "edge_stretch_max": 1.0000699959477406,
+          "edge_compression_min": 0.9999305697221851,
+          "edges_over_3x": 0
+        },
+        {
+          "frame": 121,
+          "head_rigid_anchor_error_m": 3.0719530773294423e-08,
+          "edge_stretch_max": 1.3261525315215197,
+          "edge_compression_min": 0.921179450487103,
+          "edges_over_3x": 0
+        },
+        {
+          "frame": 145,
+          "head_rigid_anchor_error_m": 3.0719530773294423e-08,
+          "edge_stretch_max": 1.3261525315215197,
+          "edge_compression_min": 0.921179450487103,
+          "edges_over_3x": 0
+        },
+        {
+          "frame": 169,
+          "head_rigid_anchor_error_m": 0.0,
+          "edge_stretch_max": 1.0000699959477406,
+          "edge_compression_min": 0.9999305697221851,
+          "edges_over_3x": 0
+        },
+        {
+          "frame": 193,
+          "head_rigid_anchor_error_m": 0.0,
+          "edge_stretch_max": 1.0000699959477406,
+          "edge_compression_min": 0.9999305697221851,
+          "edges_over_3x": 0
+        },
+        {
+          "frame": 217,
+          "head_rigid_anchor_error_m": 3.0719530773294423e-08,
+          "edge_stretch_max": 1.3261525315215197,
+          "edge_compression_min": 0.921179450487103,
+          "edges_over_3x": 0
+        },
+        {
+          "frame": 241,
+          "head_rigid_anchor_error_m": 0.0,
+          "edge_stretch_max": 1.0000699959477406,
+          "edge_compression_min": 0.9999305697221851,
+          "edges_over_3x": 0
+        },
+        {
+          "frame": 265,
+          "head_rigid_anchor_error_m": 0.0,
+          "edge_stretch_max": 1.0000699959477406,
+          "edge_compression_min": 0.9999305697221851,
+          "edges_over_3x": 0
+        },
+        {
+          "frame": 289,
+          "head_rigid_anchor_error_m": 0.0,
+          "edge_stretch_max": 1.0000699959477406,
+          "edge_compression_min": 0.9999305697221851,
+          "edges_over_3x": 0
+        }
+      ]
+    },
+    "Xenaa | Continuous anatomical upper body": {
+      "vertices": 83402,
+      "boundary_edges": 434,
+      "nonmanifold_edges": 434,
+      "weight_sum_error": 4.95638232678175e-08,
+      "influenced_vertices_per_bone": {
+        "Neck": 4036,
+        "Spine3": 18533,
+        "RightShoulder": 7172,
+        "RightUpperArm": 10184,
+        "Head": 2251,
+        "Spine2": 13443,
+        "LeftShoulder": 7172,
+        "Spine1": 8912,
+        "LeftUpperArm": 10044,
+        "Pelvis": 3460,
+        "RightForeArm": 6942,
+        "RightHandIndex2": 3576,
+        "RightHandIndex3": 2593,
+        "RightHandIndex1": 3613,
+        "RightHand": 8871,
+        "RightHandMiddle1": 4249,
+        "RightHandMiddle2": 3508,
+        "RightHandMiddle3": 2597,
+        "RightHandRing1": 4332,
+        "RightHandRing3": 2574,
+        "RightHandRing2": 3204,
+        "RightHandPinky1": 4312,
+        "RightHandPinky2": 3420,
+        "RightHandPinky3": 3437,
+        "RightHandThumb2": 3248,
+        "RightHandThumb3": 2245,
+        "RightHandThumb1": 1964,
+        "LeftForeArm": 6748,
+        "LeftHandIndex2": 3576,
+        "LeftHandIndex3": 2593,
+        "LeftHandIndex1": 3613,
+        "LeftHand": 8745,
+        "LeftHandMiddle1": 4308,
+        "LeftHandMiddle2": 3508,
+        "LeftHandMiddle3": 2597,
+        "LeftHandRing1": 4332,
+        "LeftHandRing3": 2574,
+        "LeftHandRing2": 3204,
+        "LeftHandPinky1": 4312,
+        "LeftHandPinky2": 3420,
+        "LeftHandPinky3": 3437,
+        "LeftHandThumb2": 3248,
+        "LeftHandThumb3": 2245,
+        "LeftHandThumb1": 1964
+      },
+      "poses": [
+        {
+          "frame": 1,
+          "head_rigid_anchor_error_m": null,
+          "edge_stretch_max": 1.000197443253586,
+          "edge_compression_min": 0.9998039865807334,
+          "edges_over_3x": 0
+        },
+        {
+          "frame": 25,
+          "head_rigid_anchor_error_m": null,
+          "edge_stretch_max": 1.5771174566747588,
+          "edge_compression_min": 0.24233210669407865,
+          "edges_over_3x": 0
+        },
+        {
+          "frame": 49,
+          "head_rigid_anchor_error_m": null,
+          "edge_stretch_max": 1.5771174325211825,
+          "edge_compression_min": 0.2420398556975997,
+          "edges_over_3x": 0
+        },
+        {
+          "frame": 73,
+          "head_rigid_anchor_error_m": null,
+          "edge_stretch_max": 1.000197443253586,
+          "edge_compression_min": 0.9998039865807334,
+          "edges_over_3x": 0
+        },
+        {
+          "frame": 97,
+          "head_rigid_anchor_error_m": null,
+          "edge_stretch_max": 1.000197443253586,
+          "edge_compression_min": 0.9998039865807334,
+          "edges_over_3x": 0
+        },
+        {
+          "frame": 121,
+          "head_rigid_anchor_error_m": null,
+          "edge_stretch_max": 1.015876744338301,
+          "edge_compression_min": 0.9841393533726083,
+          "edges_over_3x": 0
+        },
+        {
+          "frame": 145,
+          "head_rigid_anchor_error_m": null,
+          "edge_stretch_max": 1.0158524313561725,
+          "edge_compression_min": 0.9841394579407158,
+          "edges_over_3x": 0
+        },
+        {
+          "frame": 169,
+          "head_rigid_anchor_error_m": null,
+          "edge_stretch_max": 1.894741055444841,
+          "edge_compression_min": 0.10669419075669824,
+          "edges_over_3x": 0
+        },
+        {
+          "frame": 193,
+          "head_rigid_anchor_error_m": null,
+          "edge_stretch_max": 2.978036996674687,
+          "edge_compression_min": 0.28932128710985394,
+          "edges_over_3x": 0
+        },
+        {
+          "frame": 217,
+          "head_rigid_anchor_error_m": null,
+          "edge_stretch_max": 1.5771174566747588,
+          "edge_compression_min": 0.24283515470794065,
+          "edges_over_3x": 0
+        },
+        {
+          "frame": 241,
+          "head_rigid_anchor_error_m": null,
+          "edge_stretch_max": 2.293545400942903,
+          "edge_compression_min": 0.042549416988024225,
+          "edges_over_3x": 0
+        },
+        {
+          "frame": 265,
+          "head_rigid_anchor_error_m": null,
+          "edge_stretch_max": 2.2932446024652635,
+          "edge_compression_min": 0.042897231210430035,
+          "edges_over_3x": 0
+        },
+        {
+          "frame": 289,
+          "head_rigid_anchor_error_m": null,
+          "edge_stretch_max": 1.000197443253586,
+          "edge_compression_min": 0.9998039865807334,
+          "edges_over_3x": 0
+        }
+      ]
+    }
+  },
+  "hair_binding": [
+    {
+      "frame": 1,
+      "matrix_error": 4.440892098500626e-16
+    },
+    {
+      "frame": 25,
+      "matrix_error": 4.440892098500626e-16
+    },
+    {
+      "frame": 49,
+      "matrix_error": 4.440892098500626e-16
+    },
+    {
+      "frame": 73,
+      "matrix_error": 4.440892098500626e-16
+    },
+    {
+      "frame": 97,
+      "matrix_error": 4.440892098500626e-16
+    },
+    {
+      "frame": 121,
+      "matrix_error": 2.220446049250313e-16
+    },
+    {
+      "frame": 145,
+      "matrix_error": 7.105427357601002e-15
+    },
+    {
+      "frame": 169,
+      "matrix_error": 4.440892098500626e-16
+    },
+    {
+      "frame": 193,
+      "matrix_error": 4.440892098500626e-16
+    },
+    {
+      "frame": 217,
+      "matrix_error": 2.220446049250313e-16
+    },
+    {
+      "frame": 241,
+      "matrix_error": 4.440892098500626e-16
+    },
+    {
+      "frame": 265,
+      "matrix_error": 4.440892098500626e-16
+    },
+    {
+      "frame": 289,
+      "matrix_error": 4.440892098500626e-16
+    }
+  ],
+  "finger_isolation": [
+    {
+      "frame": 241,
+      "target_hand": "Left",
+      "max_vertex_displacement_m": {
+        "Left": 0.05904539042766107,
+        "Right": 0.0
+      }
+    },
+    {
+      "frame": 265,
+      "target_hand": "Right",
+      "max_vertex_displacement_m": {
+        "Right": 0.059045479406011896,
+        "Left": 0.0
+      }
+    }
+  ],
+  "upper_neck_overlap": [
+    {
+      "frame": 1,
+      "sampled_ring_vertices": 210,
+      "maximum_nearest_surface_distance_m": 0.0013040888588875532,
+      "maximum_signed_outward_distance_m": -0.0010796675051096827,
+      "outward_tolerance_m": 0.004
+    },
+    {
+      "frame": 25,
+      "sampled_ring_vertices": 210,
+      "maximum_nearest_surface_distance_m": 0.0013040888588875532,
+      "maximum_signed_outward_distance_m": -0.0010796675051096827,
+      "outward_tolerance_m": 0.004
+    },
+    {
+      "frame": 49,
+      "sampled_ring_vertices": 210,
+      "maximum_nearest_surface_distance_m": 0.0013040888588875532,
+      "maximum_signed_outward_distance_m": -0.0010796675051096827,
+      "outward_tolerance_m": 0.004
+    },
+    {
+      "frame": 73,
+      "sampled_ring_vertices": 210,
+      "maximum_nearest_surface_distance_m": 0.0013040888588875532,
+      "maximum_signed_outward_distance_m": -0.0010796675051096827,
+      "outward_tolerance_m": 0.004
+    },
+    {
+      "frame": 97,
+      "sampled_ring_vertices": 210,
+      "maximum_nearest_surface_distance_m": 0.0013040888588875532,
+      "maximum_signed_outward_distance_m": -0.0010796675051096827,
+      "outward_tolerance_m": 0.004
+    },
+    {
+      "frame": 121,
+      "sampled_ring_vertices": 210,
+      "maximum_nearest_surface_distance_m": 0.0013040888588875532,
+      "maximum_signed_outward_distance_m": -0.0010796675051096827,
+      "outward_tolerance_m": 0.004
+    },
+    {
+      "frame": 145,
+      "sampled_ring_vertices": 210,
+      "maximum_nearest_surface_distance_m": 0.0013040888588875532,
+      "maximum_signed_outward_distance_m": -0.0010796675051096827,
+      "outward_tolerance_m": 0.004
+    },
+    {
+      "frame": 169,
+      "sampled_ring_vertices": 210,
+      "maximum_nearest_surface_distance_m": 0.0013040888588875532,
+      "maximum_signed_outward_distance_m": -0.0010796675051096827,
+      "outward_tolerance_m": 0.004
+    },
+    {
+      "frame": 193,
+      "sampled_ring_vertices": 210,
+      "maximum_nearest_surface_distance_m": 0.0013040888588875532,
+      "maximum_signed_outward_distance_m": -0.0010796675051096827,
+      "outward_tolerance_m": 0.004
+    },
+    {
+      "frame": 217,
+      "sampled_ring_vertices": 210,
+      "maximum_nearest_surface_distance_m": 0.0013040888588875532,
+      "maximum_signed_outward_distance_m": -0.0010796675051096827,
+      "outward_tolerance_m": 0.004
+    },
+    {
+      "frame": 241,
+      "sampled_ring_vertices": 210,
+      "maximum_nearest_surface_distance_m": 0.0013040888588875532,
+      "maximum_signed_outward_distance_m": -0.0010796675051096827,
+      "outward_tolerance_m": 0.004
+    },
+    {
+      "frame": 265,
+      "sampled_ring_vertices": 210,
+      "maximum_nearest_surface_distance_m": 0.0013040888588875532,
+      "maximum_signed_outward_distance_m": -0.0010796675051096827,
+      "outward_tolerance_m": 0.004
+    },
+    {
+      "frame": 289,
+      "sampled_ring_vertices": 210,
+      "maximum_nearest_surface_distance_m": 0.0013040888588875532,
+      "maximum_signed_outward_distance_m": -0.0010796675051096827,
+      "outward_tolerance_m": 0.004
+    }
+  ],
+  "limitations": [
+    "No facial blendshapes",
+    "No secondary hair dynamics or collision solver",
+    "Material and garment joins remain under visual review",
+    "Not an Effect House export or performance test"
+  ],
+  "hair": {
+    "strands": 22000,
+    "points": 1320000,
+    "old_fused_hair_objects_removed": true,
+    "binding": "rigid Head bone; not a dynamics or collision test"
+  },
+  "finger_neutral_reference_frame": 289
+}

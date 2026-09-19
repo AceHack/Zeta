@@ -1,0 +1,65 @@
+{
+  "scripts": [
+    {
+      "script": "reconstruct_v18.py",
+      "sha256": "040e0cd422f6af066a2eb71426c801bf73607d52bc7f84a8dea3524de3e9be6b",
+      "syntax": "pass"
+    },
+    {
+      "script": "tailor_groom_v18.py",
+      "sha256": "56922ec2d88e9e50f4e058c24f3cece41a87d5b41f0322a9ac8dfbba67c501c3",
+      "syntax": "pass"
+    },
+    {
+      "script": "rebuild_upper_body.py",
+      "sha256": "24223ea9489bdd497c04b9898d5de4986d7d8982b4e58ee946e42588df585c71",
+      "syntax": "pass"
+    },
+    {
+      "script": "polish_v18.py",
+      "sha256": "d258d7d873eb4b61e779939afa4a259bbba7d7596f94882bec7a1abfbd94b53c",
+      "syntax": "pass"
+    },
+    {
+      "script": "validate_v18.py",
+      "sha256": "2bdfd78f880d62370241bf51faf81960409ce9c8cdb6f548541e4043f0cacfaa",
+      "syntax": "pass"
+    },
+    {
+      "script": "baseline_v18.py",
+      "sha256": "dbdc23d1c9f38d40e28105dbd19293879e4cdf8454003db601c6a2dd7906eb6c",
+      "syntax": "pass"
+    },
+    {
+      "script": "build_v18.py",
+      "sha256": "f9acf4d39bb726d190e3b926351243d7bbbd7b3f81cd035d47fdfc3dc7e34f12",
+      "syntax": "pass"
+    },
+    {
+      "script": "compare_upper_skinning.py",
+      "sha256": "ccf8d3fb9fe5cbfd8a1fe00b92d85e8db449d33d3269f59f506fd1dea6f13bc8",
+      "syntax": "pass"
+    },
+    {
+      "script": "render_skinning_modes.py",
+      "sha256": "a88931f417c2dded6c21bba92df1a95f222cdcfe55574ae914278ec7223adc32",
+      "syntax": "pass"
+    },
+    {
+      "script": "package_v18.py",
+      "sha256": "0968472f4e7533ab0654ff3dd6da88959bc96e7f5f6196280da12153605ca53d",
+      "syntax": "pass"
+    },
+    {
+      "script": "check_recipes.py",
+      "sha256": "6414f6fab329543b6998be01406906c57cdd1cac6cd4bbd96650dce94746279c",
+      "syntax": "pass"
+    }
+  ],
+  "fail_fast_probe": {
+    "stub_exit": 7,
+    "runner_exit": 7,
+    "stages_attempted": 1,
+    "status": "pass"
+  }
+}

@@ -1,0 +1,84 @@
+"""Continuous head-neck surface study. Source likeness is projected, not facially rigged."""
+import bpy,math,json
+import numpy as np
+from pathlib import Path
+from mathutils import Vector
+from mathutils.bvhtree import BVHTree
+R=Path(__file__).resolve().parent
+bpy.ops.wm.open_mainfile(filepath=str(R.parent/'TikTok-Character-Quality-v16/review/Blender-Quality-Review-v16.blend'))
+sc=bpy.context.scene;sc.frame_set(1)
+def smooth(v):
+ v=max(0,min(1,v));return v*v*(3-2*v)
+def interp(rows,z):
+ i=max(0,min(len(rows)-2,int(np.searchsorted([r[0] for r in rows],z))-1));a=np.array(rows[i][1:]);b=np.array(rows[i+1][1:]);dz=rows[i+1][0]-rows[i][0];t=max(0,min(1,(z-rows[i][0])/dz))
+ prev=max(0,i-1);nxt=min(len(rows)-1,i+2)
+ da=(b-np.array(rows[prev][1:]))/(rows[i+1][0]-rows[prev][0]);db=(np.array(rows[nxt][1:])-a)/(rows[nxt][0]-rows[i][0])
+ return (2*t**3-3*t*t+1)*a+(t**3-2*t*t+t)*da*dz+(-2*t**3+3*t*t)*b+(t**3-t*t)*db*dz
+def bary(p,a,b,c):
+ v0=b-a;v1=c-a;v2=p-a;d00=v0.dot(v0);d01=v0.dot(v1);d11=v1.dot(v1);d20=v2.dot(v0);d21=v2.dot(v1);den=d00*d11-d01*d01
+ if abs(den)<1e-20:return (1,0,0)
+ v=(d11*d20-d01*d21)/den;w=(d00*d21-d01*d20)/den;return(1-v-w,v,w)
+receipts=[]
+for name in ['AceHack','Xenaa']:
+ old=bpy.data.objects[name+' | Independent head generator'];rig=bpy.data.objects[name+' | Motion rig'];m=old.data;m.calc_loop_triangles()
+ tris=[tuple(t.vertices) for t in m.loop_triangles];tree=BVHTree.FromPolygons([v.co for v in m.vertices],tris,all_triangles=True)
+ uvdata=m.uv_layers.active.data
+ if name=='Xenaa':
+  profiles=[(1.445,.09,.065,-.12),(1.485,.074,.063,-.135),(1.53,.047,.058,-.15),(1.57,.044,.064,-.161),(1.60,.066,.103,-.147),(1.64,.082,.12,-.145),(1.68,.088,.118,-.145),(1.72,.086,.117,-.143),(1.76,.08,.111,-.14),(1.79,.062,.091,-.135),(1.815,.029,.044,-.13),(1.823,.0003,.0003,-.13)]
+  mask=[(1.54,0,0),(1.568,.013,.036),(1.59,.009,.058),(1.64,.009,.070),(1.68,.01,.073),(1.713,.018,.064),(1.741,.022,.044),(1.762,.024,.022),(1.775,.024,0)]
+  skin=(.57,.335,.225,1)
+ else:
+  profiles=[(1.505,.105,.074,-.117),(1.555,.082,.068,-.13),(1.60,.052,.056,-.14),(1.625,.058,.071,-.13),(1.66,.08,.093,-.137),(1.71,.094,.108,-.13),(1.76,.099,.112,-.128),(1.81,.093,.109,-.126),(1.85,.075,.099,-.123),(1.885,.033,.045,-.12),(1.897,.0003,.0003,-.12)]
+  mask=[(1.565,0,0),(1.60,0,.045),(1.64,0,.072),(1.69,0,.084),(1.75,0,.091),(1.79,0,.085),(1.824,0,.068),(1.842,0,0)]
+  skin=(.37,.215,.145,1)
+ verts=[];uvs=[];alphas=[];N=256;H=240
+ for row in range(H):
+  z=profiles[0][0]+(profiles[-1][0]-profiles[0][0])*row/(H-1);rx,ry,cy=interp(profiles,z)
+  cx,width=interp(mask,z)
+  for col in range(N):
+   theta=2*math.pi*col/N;x=rx*math.sin(theta);y=cy-ry*math.cos(theta)
+   face=smooth((width-abs(x-cx))/.012)*smooth((math.cos(theta)-.2)/.3)
+   if z<mask[0][0] or z>mask[-1][0]:face=0
+   hit,n,idx,dist=tree.ray_cast(Vector((x,-.6,z)),Vector((0,1,0)),1)
+   uv=(.5,.5)
+   if hit is not None:
+    t=m.loop_triangles[idx];ws=bary(hit,*[m.vertices[i].co for i in t.vertices]);uv=sum((uvdata[l].uv*w for l,w in zip(t.loops,ws)),Vector((0,0)))
+    y=y*(1-face)+hit.y*face
+   else:face=0
+   verts.append((x,y,z));uvs.append(tuple(uv));alphas.append(face*smooth((math.cos(theta)-.30)/.45))
+ faces=[]
+ for row in range(H-1):
+  for col in range(N):
+   a=row*N+col;b=row*N+(col+1)%N;faces.append((a,b,b+N,a+N))
+ faces.append(tuple(reversed(range(N))));faces.append(tuple((H-1)*N+i for i in range(N)))
+ mesh=bpy.data.meshes.new(name+' continuous head neck');mesh.from_pydata(verts,[],faces);mesh.update()
+ obj=bpy.data.objects.new(name+' | Reconstructed head and neck',mesh);sc.collection.objects.link(obj);obj.matrix_world=old.matrix_world.copy()
+ uv=mesh.uv_layers.new(name='Facial likeness projection')
+ for loop in mesh.loops:uv.data[loop.index].uv=uvs[loop.vertex_index]
+ a=mesh.attributes.new('faceLikeness','FLOAT','POINT');a.data.foreach_set('value',alphas)
+ mat=bpy.data.materials.new(name+' | Unified skin and likeness');mat.use_nodes=True;nodes=mat.node_tree.nodes;bs=nodes.get('Principled BSDF');bs.inputs['Roughness'].default_value=.53;bs.inputs['Specular IOR Level'].default_value=.28;bs.inputs['Subsurface Weight'].default_value=.055
+ tex=nodes.new('ShaderNodeTexImage');tex.image=next(n.image for n in old.data.materials[0].node_tree.nodes if n.type=='TEX_IMAGE')
+ mix=nodes.new('ShaderNodeMixRGB');mix.inputs[1].default_value=skin;attr=nodes.new('ShaderNodeAttribute');attr.attribute_name='faceLikeness'
+ mat.node_tree.links.new(attr.outputs['Fac'],mix.inputs[0]);mat.node_tree.links.new(tex.outputs['Color'],mix.inputs[2]);mat.node_tree.links.new(mix.outputs[0],bs.inputs['Base Color']);mesh.materials.append(mat)
+ for f in mesh.polygons:f.use_smooth=True
+ for group in ['Spine3','Neck','Head']:obj.vertex_groups.new(name=group)
+ for v in mesh.vertices:
+  z=v.co.z;head=smooth((z-(1.50 if name=='Xenaa' else 1.55))/(.06 if name=='Xenaa' else .065));chest=1-smooth((z-profiles[0][0])/.08);neck=(1-head)*(1-chest);chest*=1-head
+  for key,w in [('Head',head),('Neck',neck),('Spine3',chest)]:
+   if w>0:obj.vertex_groups[key].add([v.index],w,'REPLACE')
+ mod=obj.modifiers.new('Continuous neck deformation','ARMATURE');mod.object=rig
+ old.hide_render=True;old.hide_set(True)
+ for ob in sc.objects:
+  if ob.name.startswith(name+' |') and ('Collar join' in ob.name or 'Recovered source hair' in ob.name):ob.hide_render=True;ob.hide_set(True)
+ receipts.append({'character':name,'vertices':len(verts),'faces':len(faces),'source_head_hidden':True,'topology':'closed loft head and neck with source facial depth and UV transfer','face_rig':False})
+sc.cycles.samples=32;sc.render.resolution_percentage=100
+bpy.ops.wm.save_as_mainfile(filepath=str(R/'Reconstruction-v18.blend'))
+(R/'reconstruction.json').write_text(json.dumps(receipts,indent=2)+'\n')
+import sys
+if '--render-diagnostics' in sys.argv:
+ for name,z in [('AceHack',1.71),('Xenaa',1.65)]:
+  for ob in sc.objects:
+   if ob.type not in ['CAMERA','LIGHT']:ob.hide_render=not (ob.name==name+' | Reconstructed head and neck' or ob.name.startswith(name+' | Body') or ob.name.startswith(name+' | Source'))
+  cam=sc.camera;target=Vector((bpy.data.objects[name+' | Motion rig'].matrix_world.translation.x,-.1,z));cam.data.type='ORTHO';cam.data.ortho_scale=.56;sc.render.resolution_x=900;sc.render.resolution_y=1000
+  for label,off in [('front',(0,-4,0)),('side',(4,0,0))]:
+   cam.location=target+Vector(off);cam.rotation_euler=(target-cam.location).to_track_quat('-Z','Y').to_euler();sc.render.filepath=str(R/(name+'-bald-'+label+'.png'));bpy.ops.render.render(write_still=True)

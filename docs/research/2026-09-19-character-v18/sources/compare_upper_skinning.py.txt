@@ -1,0 +1,10 @@
+"""Compare linear and volume-preserving skinning only on the new anatomical upper body."""
+import bpy,numpy as np,json,hashlib
+from pathlib import Path
+R=Path(__file__).resolve().parent;source=R/'Character-Master-Study-v18.blend';bpy.ops.wm.open_mainfile(filepath=str(source));sc=bpy.context.scene;o=bpy.data.objects['Xenaa | Continuous anatomical upper body'];mod=next(m for m in o.modifiers if m.type=='ARMATURE');base=np.array([v.co[:] for v in o.data.vertices]);edges=np.array([e.vertices[:] for e in o.data.edges]);lengths=np.linalg.norm(base[edges[:,1]]-base[edges[:,0]],axis=1);keep=lengths>.001;result={'source_sha256':hashlib.sha256(source.read_bytes()).hexdigest(),'edge_floor_m':.001,'modes':{}}
+for flag in [False,True]:
+ mod.use_deform_preserve_volume=flag;rows=[]
+ for frame in [1,25,49,73,97,121,145,169,193,217,241,265,289]:
+  sc.frame_set(frame);bpy.context.view_layer.update();ev=o.evaluated_get(bpy.context.evaluated_depsgraph_get());m=ev.to_mesh();vs=np.array([v.co[:] for v in m.vertices]);rat=np.linalg.norm(vs[edges[:,1]]-vs[edges[:,0]],axis=1)[keep]/lengths[keep];rows.append({'frame':frame,'stretched_over_3x':int(np.sum(rat>3)),'compressed_below_one_third':int(np.sum(rat<1/3)),'min':float(rat.min()),'max':float(rat.max())});ev.to_mesh_clear()
+ result['modes']['dual_quaternion' if flag else 'linear']=rows
+(R/'upper-skinning-comparison.json').write_text(json.dumps(result,indent=2)+'\n');print(json.dumps(result),flush=True)

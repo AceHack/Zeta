@@ -1,0 +1,14 @@
+"""Matched-camera source comparisons, not alternative deliverable model versions."""
+import bpy
+from pathlib import Path
+from mathutils import Vector
+R=Path(__file__).resolve().parent
+bpy.ops.wm.open_mainfile(filepath=str(R.parent/'TikTok-Character-Quality-v16/review/Blender-Quality-Review-v16.blend'));sc=bpy.context.scene;sc.frame_set(1)
+for o in sc.objects:
+ if o.name.startswith('AceHack |'):o.hide_render=True
+cam=sc.camera;target=Vector((.68000000715,-.1,1.49));cam.data.type='ORTHO';cam.data.ortho_scale=.96;sc.render.resolution_x=1100;sc.render.resolution_y=1200;sc.render.resolution_percentage=100;sc.cycles.samples=64;cam.location=target+Vector((3,-5,.1));cam.rotation_euler=(target-cam.location).to_track_quat('-Z','Y').to_euler();sc.render.filepath=str(R/'baseline-v16-Xenaa-quarter.png');bpy.ops.render.render(write_still=True)
+for o in sc.objects:
+ if o.type not in ['LIGHT','CAMERA']:o.hide_render=True
+with bpy.data.libraries.load(str(R.parent/'Character-Evolution-20260909/delivery-v5/AceHack-Xenaa-Evolution-20260909.blend'),link=False) as (a,b):b.objects=['Xenaa | Body generator','Xenaa | Independent head generator']
+for o in b.objects:sc.collection.objects.link(o);o.hide_render=False;o.hide_set(False)
+bpy.context.view_layer.update();sc.render.filepath=str(R/'baseline-v5-Xenaa-quarter.png');bpy.ops.render.render(write_still=True)

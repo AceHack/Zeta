@@ -1,0 +1,238 @@
+{
+  "archive": "character-master-study-v18.zip",
+  "bytes": 93080404,
+  "sha256": "16ac9abfb2839d7e661182bd27c7b39bbebe9d95e877bc6ff96240bd63598705",
+  "files": [
+    {
+      "name": "Character-Master-Study-v18.blend",
+      "bytes": 59772742,
+      "sha256": "7f82397d28b20b2b1452a1d203dd3031fcf9e9b40cad2eb186ccb19308630658"
+    },
+    {
+      "name": "README.md",
+      "bytes": 8864,
+      "sha256": "45818be470e75dcec742ea88fdb27dc825ef9a6ae7bffdf46f609ab0e9fcefc3"
+    },
+    {
+      "name": "review-results.md",
+      "bytes": 2953,
+      "sha256": "2c777571b407e991cc3b9f6b7f8dbc668982827d8698a4c2b765242397d9a67c"
+    },
+    {
+      "name": "inputs.json",
+      "bytes": 716,
+      "sha256": "d33cbd3eb034e9893b81a21ba201999b130bb3375a84e72e4a3274844aa3dafe"
+    },
+    {
+      "name": "repository-checks.md",
+      "bytes": 1424,
+      "sha256": "7637a0fbf18085012ccbcdea7f9f601d5556095f4811ab08b4ffc2fbd7245876"
+    },
+    {
+      "name": "reconstruction.json",
+      "bytes": 441,
+      "sha256": "e41a96110d39ab8a74f2eb5c26aefc8b29f8ff796c294d63d131e85430349c9f"
+    },
+    {
+      "name": "tailor-groom.json",
+      "bytes": 169,
+      "sha256": "3c5df5d6a59be0ccf7f1449626a17777bf83339bf6d3da0d008fa488d3201990"
+    },
+    {
+      "name": "upper-body.json",
+      "bytes": 1261,
+      "sha256": "75c08094254d455916b5ea4e98bf040072b96463d3409f4dc876823d788c0eb9"
+    },
+    {
+      "name": "polish.json",
+      "bytes": 521,
+      "sha256": "5d63a20981c16362abc2b61c85ac552ca03f1a98e20ea659cc632715d9c6c057"
+    },
+    {
+      "name": "validation.json",
+      "bytes": 16268,
+      "sha256": "3fbe80a604eee1aaba8e0ec403d40360082f743f636809edd4c5ceeee5c5642e"
+    },
+    {
+      "name": "build-receipt.json",
+      "bytes": 703,
+      "sha256": "46f4effd15d67e45358d302dbefde2ba470a077761305dd87d38447a3e88c924"
+    },
+    {
+      "name": "upper-skinning-comparison.json",
+      "bytes": 4881,
+      "sha256": "eea1336f6864dc067e169938715c4a5fc153655a9d9b866f40234afefb2bc401"
+    },
+    {
+      "name": "recipe-checks.json",
+      "bytes": 1872,
+      "sha256": "0a636ff0993ecb1be4d647827876a61251cf72c2864161b5422c12ca5bfedc18"
+    },
+    {
+      "name": "reconstruct_v18.py",
+      "bytes": 6528,
+      "sha256": "040e0cd422f6af066a2eb71426c801bf73607d52bc7f84a8dea3524de3e9be6b"
+    },
+    {
+      "name": "tailor_groom_v18.py",
+      "bytes": 4880,
+      "sha256": "56922ec2d88e9e50f4e058c24f3cece41a87d5b41f0322a9ac8dfbba67c501c3"
+    },
+    {
+      "name": "rebuild_upper_body.py",
+      "bytes": 15084,
+      "sha256": "24223ea9489bdd497c04b9898d5de4986d7d8982b4e58ee946e42588df585c71"
+    },
+    {
+      "name": "polish_v18.py",
+      "bytes": 7848,
+      "sha256": "d258d7d873eb4b61e779939afa4a259bbba7d7596f94882bec7a1abfbd94b53c"
+    },
+    {
+      "name": "validate_v18.py",
+      "bytes": 8435,
+      "sha256": "2bdfd78f880d62370241bf51faf81960409ce9c8cdb6f548541e4043f0cacfaa"
+    },
+    {
+      "name": "baseline_v18.py",
+      "bytes": 1356,
+      "sha256": "dbdc23d1c9f38d40e28105dbd19293879e4cdf8454003db601c6a2dd7906eb6c"
+    },
+    {
+      "name": "build_v18.py",
+      "bytes": 1225,
+      "sha256": "f9acf4d39bb726d190e3b926351243d7bbbd7b3f81cd035d47fdfc3dc7e34f12"
+    },
+    {
+      "name": "compare_upper_skinning.py",
+      "bytes": 1453,
+      "sha256": "ccf8d3fb9fe5cbfd8a1fe00b92d85e8db449d33d3269f59f506fd1dea6f13bc8"
+    },
+    {
+      "name": "render_skinning_modes.py",
+      "bytes": 1192,
+      "sha256": "a88931f417c2dded6c21bba92df1a95f222cdcfe55574ae914278ec7223adc32"
+    },
+    {
+      "name": "package_v18.py",
+      "bytes": 2374,
+      "sha256": "0968472f4e7533ab0654ff3dd6da88959bc96e7f5f6196280da12153605ca53d"
+    },
+    {
+      "name": "check_recipes.py",
+      "bytes": 1335,
+      "sha256": "6414f6fab329543b6998be01406906c57cdd1cac6cd4bbd96650dce94746279c"
+    },
+    {
+      "name": "AceHack-final-front.png",
+      "bytes": 2011470,
+      "sha256": "76399e0781411d3d09defc851a2c40a572f7562631ceec2271aa5aaef602f887"
+    },
+    {
+      "name": "AceHack-final-quarter.png",
+      "bytes": 1967495,
+      "sha256": "3ae854eb073a406d67ca70fe2089e1e869e2beab546cdf02c31de463ba5e4376"
+    },
+    {
+      "name": "AceHack-final-back.png",
+      "bytes": 1474630,
+      "sha256": "3d2fbcac52cbd9ed68944f05242fb15c078c583bc9687f01c41fa57f45fc0cb9"
+    },
+    {
+      "name": "Xenaa-final-front.png",
+      "bytes": 1676141,
+      "sha256": "5dcf5f2357f3381f6451d0d63f3f5ddc398d563ea7d7d615ffcdcd6a43588834"
+    },
+    {
+      "name": "Xenaa-final-quarter.png",
+      "bytes": 1649007,
+      "sha256": "c29ea82e686ec04b3326e5462c312e1d2b187a62ae70d5fe000b1240a921c451"
+    },
+    {
+      "name": "Xenaa-final-back.png",
+      "bytes": 1485714,
+      "sha256": "f391bcb8bddac58fe1c9cf94819eee64b73d61eabaa94beb40a51db9a996350d"
+    },
+    {
+      "name": "Xenaa-head-turn.png",
+      "bytes": 1416622,
+      "sha256": "33bebdcb5ff2df988eabc923d1092f8051add61540826ffc9d6e8add72541dff"
+    },
+    {
+      "name": "Xenaa-wide-arms.png",
+      "bytes": 1391452,
+      "sha256": "0a764335361000cf7e3bb1632f80536336b7a14e928b416a34c687a821d60da9"
+    },
+    {
+      "name": "Xenaa-hair-hidden-back.png",
+      "bytes": 1167149,
+      "sha256": "81fc82d5d89d3017c494ff0b0f4b3c3f692455d965b51b11ab4d9fd6bd9f2c6c"
+    },
+    {
+      "name": "AceHack-head-turn.png",
+      "bytes": 1668430,
+      "sha256": "565371ef064d7a34b233b8d35eaf64334fd7034ee79c1cc1bc3898d7de6fa9ec"
+    },
+    {
+      "name": "AceHack-wide-arms.png",
+      "bytes": 1629762,
+      "sha256": "f955541fcd5fbe6463f969e8687292213b8944e549e7931e57a682195735acca"
+    },
+    {
+      "name": "AceHack-neck-back.png",
+      "bytes": 1228228,
+      "sha256": "9f35b20caa908dc4d0fa14606938ff2c6c1ed4f36d64bc39bacc5220bbfc28bb"
+    },
+    {
+      "name": "pair-neutral.png",
+      "bytes": 3029971,
+      "sha256": "f50b26006221148a83ffb91de1c2bac7bef86c4e25b03273b6543477de5157c3"
+    },
+    {
+      "name": "pair-combined-pose.png",
+      "bytes": 3036886,
+      "sha256": "f06dfd2f501ee1d0370b6ea9d635f09e00719f56c0afe4f034e5c32fac581cac"
+    },
+    {
+      "name": "Left-finger-curl.png",
+      "bytes": 1092763,
+      "sha256": "57a5b843482c4df911a4e875a137b4e80b6d9e5c5eb618d4bcadf473d417a24d"
+    },
+    {
+      "name": "Right-finger-curl.png",
+      "bytes": 1040360,
+      "sha256": "a9357c8c3dad6cbb7c092df35f836d44692c5460b971bc518f433f2f093d32fd"
+    },
+    {
+      "name": "baseline-v16-Xenaa-quarter.png",
+      "bytes": 1775189,
+      "sha256": "61eb1a58bfc9e637a2280e449c55692f2f849731b099fdacc6e0b9b249e2d1b4"
+    },
+    {
+      "name": "baseline-v5-Xenaa-quarter.png",
+      "bytes": 1790476,
+      "sha256": "32d5533d28d190301a0608222c31e8ec7aa27928fe67e21af8bf95e47713a54f"
+    },
+    {
+      "name": "linear-fingers.png",
+      "bytes": 822586,
+      "sha256": "2e96f9177da0decc412b207446b02be15df827e1bf01f26c49db6004aefcc29c"
+    },
+    {
+      "name": "dual-fingers.png",
+      "bytes": 822857,
+      "sha256": "e287ee065e3027dfdb46159a65131151462a866cc427f6a8764b7ea107563042"
+    },
+    {
+      "name": "linear-elbow.png",
+      "bytes": 923428,
+      "sha256": "9d8027d319cc2b339d2b377f3be52f6f778a2bb7bdfa38e8b0e3e4b194cead39"
+    },
+    {
+      "name": "dual-elbow.png",
+      "bytes": 924773,
+      "sha256": "8272b42aceddb72e14a81da399b0ebdb402121de42af68c98514bb1b8c5f33f8"
+    }
+  ],
+  "policy": "one selected blend; raw full-resolution review images inside ZIP only; no new personal reference photographs"
+}

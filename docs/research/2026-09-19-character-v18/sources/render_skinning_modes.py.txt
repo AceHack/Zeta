@@ -1,0 +1,12 @@
+"""Matched elbow and finger closeups for the new upper-body skinning decision."""
+import bpy
+from pathlib import Path
+from mathutils import Vector
+R=Path(__file__).resolve().parent;bpy.ops.wm.open_mainfile(filepath=str(R/'Character-Master-Study-v18.blend'));sc=bpy.context.scene;rig=bpy.data.objects['Xenaa | Motion rig'];body=bpy.data.objects['Xenaa | Continuous anatomical upper body'];mod=next(m for m in body.modifiers if m.type=='ARMATURE');cam=sc.camera
+for o in sc.objects:
+ if o.type not in ['LIGHT','CAMERA']:o.hide_render=(o!=body)
+sc.render.resolution_x=900;sc.render.resolution_y=900;sc.render.resolution_percentage=100;sc.cycles.samples=32;cam.data.type='ORTHO'
+for flag in [False,True]:
+ mod.use_deform_preserve_volume=flag;label='dual' if flag else 'linear'
+ for part,frame,bone,scale in [('fingers',265,'RightHand',.23),('elbow',193,'LeftForeArm',.39)]:
+  sc.frame_set(frame);b=rig.pose.bones[bone];target=rig.matrix_world@((b.head+b.tail)*.5);cam.data.ortho_scale=scale;cam.location=target+Vector((.4,-1,.2));cam.rotation_euler=(target-cam.location).to_track_quat('-Z','Y').to_euler();sc.render.filepath=str(R/(label+'-'+part+'.png'));bpy.ops.render.render(write_still=True)

@@ -1,0 +1,24 @@
+"""Package exactly one selected scene and its review evidence; never include personal references."""
+import hashlib,json,zipfile
+from pathlib import Path
+R=Path(__file__).resolve().parent
+sha=lambda p:hashlib.sha256(p.read_bytes()).hexdigest()
+scene=R/'Character-Master-Study-v18.blend'
+for report in ['validation.json','upper-skinning-comparison.json']:
+ assert json.loads((R/report).read_text())['source_sha256']==sha(scene),f'Stale {report}'
+assert all(row['exit_code']==0 for row in json.loads((R/'build-receipt.json').read_text()))
+names=['Character-Master-Study-v18.blend','README.md','review-results.md','inputs.json','repository-checks.md','reconstruction.json','tailor-groom.json','upper-body.json','polish.json','validation.json','build-receipt.json','upper-skinning-comparison.json','recipe-checks.json']
+names += ['reconstruct_v18.py','tailor_groom_v18.py','rebuild_upper_body.py','polish_v18.py','validate_v18.py','baseline_v18.py','build_v18.py','compare_upper_skinning.py','render_skinning_modes.py','package_v18.py','check_recipes.py']
+names += [f'{name}-final-{view}.png' for name in ['AceHack','Xenaa'] for view in ['front','quarter','back']]
+names += ['Xenaa-head-turn.png','Xenaa-wide-arms.png','Xenaa-hair-hidden-back.png','AceHack-head-turn.png','AceHack-wide-arms.png','AceHack-neck-back.png','pair-neutral.png','pair-combined-pose.png','Left-finger-curl.png','Right-finger-curl.png','baseline-v16-Xenaa-quarter.png','baseline-v5-Xenaa-quarter.png','linear-fingers.png','dual-fingers.png','linear-elbow.png','dual-elbow.png']
+files=[{'name':n,'bytes':(R/n).stat().st_size,'sha256':sha(R/n)} for n in names]
+archive=R/'character-master-study-v18.zip'
+with zipfile.ZipFile(archive,'w',compression=zipfile.ZIP_DEFLATED,compresslevel=6) as z:
+ for n in names:z.write(R/n,n)
+ z.writestr('contents.json',json.dumps(files,indent=2)+'\n')
+with zipfile.ZipFile(archive) as z:
+ assert z.testzip() is None
+ for f in files:assert hashlib.sha256(z.read(f['name'])).hexdigest()==f['sha256'],f['name']
+manifest={'archive':archive.name,'bytes':archive.stat().st_size,'sha256':sha(archive),'files':files,'policy':'one selected blend; raw full-resolution review images inside ZIP only; no new personal reference photographs'}
+(R/'artifact-manifest.json').write_text(json.dumps(manifest,indent=2)+'\n')
+print(json.dumps({k:v for k,v in manifest.items() if k!='files'}))

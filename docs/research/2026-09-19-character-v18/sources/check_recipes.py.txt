@@ -1,0 +1,14 @@
+"""Check recipe syntax and exercise the build runner's stop-on-failure contract."""
+import ast,hashlib,json,os,shutil,subprocess,sys,tempfile
+from pathlib import Path
+R=Path(__file__).resolve().parent
+scripts=['reconstruct_v18.py','tailor_groom_v18.py','rebuild_upper_body.py','polish_v18.py','validate_v18.py','baseline_v18.py','build_v18.py','compare_upper_skinning.py','render_skinning_modes.py','package_v18.py','check_recipes.py']
+rows=[]
+for n in scripts:
+ p=R/n;ast.parse(p.read_text(),filename=n);rows.append({'script':n,'sha256':hashlib.sha256(p.read_bytes()).hexdigest(),'syntax':'pass'})
+with tempfile.TemporaryDirectory(prefix='v18-build-failure-') as t:
+ p=Path(t);shutil.copy(R/'build_v18.py',p/'build_v18.py');stub=p/'blender-stub';stub.write_text('#!/bin/sh\nexit 7\n');stub.chmod(0o755)
+ env=dict(os.environ,BLENDER_BINARY=str(stub));result=subprocess.run([sys.executable,str(p/'build_v18.py')],env=env,capture_output=True,text=True);assert result.returncode==7
+ receipt=json.loads((p/'build-receipt.json').read_text());assert len(receipt)==1 and receipt[0]['exit_code']==7
+(R/'recipe-checks.json').write_text(json.dumps({'scripts':rows,'fail_fast_probe':{'stub_exit':7,'runner_exit':result.returncode,'stages_attempted':len(receipt),'status':'pass'}},indent=2)+'\n')
+print('Recipe syntax and fail-fast probe passed')

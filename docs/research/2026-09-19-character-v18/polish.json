@@ -1,0 +1,16 @@
+{
+  "removed_hidden_candidates": [
+    "AceHack | Collar join",
+    "Xenaa | Independent head generator",
+    "Xenaa | Collar join",
+    "Xenaa | Recovered source hair",
+    "Xenaa | Jacket back lining",
+    "AceHack | Reconstructed head and neck"
+  ],
+  "seed": 180920,
+  "Xenaa_strands": 22000,
+  "points_per_strand": 60,
+  "AceHack_neck_bridge_initial_edges": 369,
+  "AceHack_hair": "retained single original head surface; strand replacement rejected",
+  "status": "master reconstruction study; not a mobile export"
+}

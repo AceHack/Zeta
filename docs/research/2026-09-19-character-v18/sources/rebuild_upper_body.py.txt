@@ -1,0 +1,156 @@
+"""Anatomical upper-body replacement: target rest-space retargeting, source costume projection."""
+import bpy,bmesh,json,math
+import numpy as np
+from pathlib import Path
+from mathutils import Vector,Matrix
+from mathutils.bvhtree import BVHTree
+R=Path(__file__).resolve().parent
+bpy.ops.wm.open_mainfile(filepath=str(R/'Character-Reconstruction-v18.blend'));sc=bpy.context.scene;sc.frame_set(1)
+rig=bpy.data.objects['Xenaa | Motion rig'];old=bpy.data.objects['Xenaa | Body generator'];m=old.data;m.calc_loop_triangles();tree=BVHTree.FromPolygons([v.co for v in m.vertices],[tuple(t.vertices) for t in m.loop_triangles],all_triangles=True);uvsrc=m.uv_layers.active.data
+image=next(n.image for n in m.materials[0].node_tree.nodes if n.type=='TEX_IMAGE');pixels=np.array(image.pixels[:],dtype=np.float32).reshape(image.size[1],image.size[0],4)
+with bpy.data.libraries.load(str(R.parent/'AceHack-Xenaa-Realistic/realistic-anatomy.blend'),link=False) as (a,b):b.objects=['Xenaa | Human']
+src=b.objects[0];sc.collection.objects.link(src);srcrig=next(mod.object for mod in src.modifiers if mod.type=='ARMATURE');bpy.context.view_layer.update();dg=bpy.context.evaluated_depsgraph_get();ev=src.evaluated_get(dg);mesh=bpy.data.meshes.new_from_object(ev,preserve_all_data_layers=True,depsgraph=dg)
+maps={}
+def mapping(names,sa,sb,target):
+ a=srcrig.data.bones[sa].head_local.copy();b=srcrig.data.bones[sb].tail_local.copy();tb=rig.data.bones[target];c=tb.head_local.copy();d=tb.tail_local.copy();q=(b-a).rotation_difference(d-c);axis=(b-a).normalized();factor=(d-c).length/(b-a).length
+ for n in names:maps[n]=(a,c,q,axis,factor,target)
+mapping(['root','pelvis.L','pelvis.R','spine05'],'spine05','spine05','Pelvis')
+mapping(['spine04','spine03'],'spine04','spine03','Spine1')
+mapping(['spine02','breast.L','breast.R'],'spine02','spine02','Spine2')
+mapping(['spine01'],'spine01','spine01','Spine3')
+mapping(['neck01','neck02','neck03'],'neck01','neck03','Neck')
+mapping(['head'],'head','head','Head')
+for side,letter in [('Left','L'),('Right','R')]:
+ mapping(['clavicle.'+letter,'shoulder01.'+letter],'clavicle.'+letter,'shoulder01.'+letter,side+'Shoulder')
+ mapping(['upperarm01.'+letter,'upperarm02.'+letter],'upperarm01.'+letter,'upperarm02.'+letter,side+'UpperArm')
+ mapping(['lowerarm01.'+letter,'lowerarm02.'+letter],'lowerarm01.'+letter,'lowerarm02.'+letter,side+'ForeArm')
+ names=[g.name for g in src.vertex_groups if (g.name.startswith(('finger','metacarpal','wrist')) and g.name.endswith('.'+letter))]
+ mapping(names,'wrist.'+letter,'finger3-3.'+letter,side+'Hand')
+# Reuse the whole-hand rest transform, but preserve the anatomical finger weight groups.
+finger_layout={}
+for side,letter in [('Left','L'),('Right','R')]:
+ handmap=maps['wrist.'+letter]
+ a,c,q,axis,factor,_=handmap
+ for number,label in [(1,'Thumb'),(2,'Index'),(3,'Middle'),(4,'Ring'),(5,'Pinky')]:
+  for joint in range(1,4):
+   source_name=f'finger{number}-{joint}.{letter}';target=side+'Hand'+label+str(joint);maps[source_name]=(*handmap[:-1],target)
+   def transform(p):
+    off=p-a;along=axis*off.dot(axis);return c+q@(along*factor+(off-along)*.80)
+   bone=srcrig.data.bones[source_name];finger_layout[target]=(transform(bone.head_local),transform(bone.tail_local),q@bone.matrix_local.to_3x3().col[2])
+bpy.ops.object.select_all(action='DESELECT');rig.hide_set(False);rig.select_set(True);bpy.context.view_layer.objects.active=rig;bpy.ops.object.mode_set(mode='EDIT')
+for name,(head,tail,roll_axis) in finger_layout.items():
+ b=rig.data.edit_bones[name];b.use_connect=False;b.head=head;b.tail=tail;b.align_roll(roll_axis)
+bpy.ops.object.mode_set(mode='OBJECT')
+weights=[];arms=[];cross_side_removed=[]
+for v in mesh.vertices:
+ p=v.co.copy();sumpos=Vector((0,0,0));total=0;ws={}
+ for g in v.groups:
+  name=src.vertex_groups[g.group].name
+  if name not in maps:continue
+  a,c,q,axis,factor,target=maps[name]
+  if any(part in target for part in ['Hand','UpperArm','ForeArm']) and ((target.startswith('Left') and p.x<-.05) or (target.startswith('Right') and p.x>.05)):
+   cross_side_removed.append(g.weight);continue
+  offset=p-a;along=axis*offset.dot(axis);trans=c+q@(along*factor+(offset-along)*(.80 if 'Hand' in target else 1.08));sumpos+=trans*g.weight;total+=g.weight;ws[target]=ws.get(target,0)+g.weight
+ if total>1e-8:v.co=sumpos/total;ws={k:w/total for k,w in ws.items()}
+ else:v.co.z-=10
+ weights.append(ws);arms.append(sum(w for k,w in ws.items() if any(s in k for s in ['UpperArm','ForeArm','Hand'])))
+# Fit cross-section centers at the lower seam; never project neighboring vertices to unrelated faces.
+oldxyz=np.array([v.co[:] for v in m.vertices]);newxyz=np.array([v.co[:] for v in mesh.vertices]);oldarm=np.array([sum(g.weight for g in v.groups if any(t in old.vertex_groups[g.group].name for t in ['UpperArm','ForeArm','Hand'])) for v in m.vertices]);newarm=np.array(arms)
+for region in [0]:
+ def select(xyz,aw,z):
+  base=abs(xyz[:,2]-z)<.025
+  if region==0:return base&(aw<.15)&(abs(xyz[:,0])<.20)
+  return base&(aw>.35)&(xyz[:,0]*region>.13)
+ rows=[]
+ for z in np.arange(1.19,1.341,.025):
+  oldpts=oldxyz[select(oldxyz,oldarm,z),:2];newpts=newxyz[select(newxyz,newarm,z),:2]
+  if min(len(oldpts),len(newpts))<8:continue
+  ca=np.median(newpts,axis=0);cb=np.median(oldpts,axis=0);delta=np.clip(cb-ca,-.065,.065);rows.append((z,*delta))
+ if not rows:continue
+ for v,arm in zip(mesh.vertices,arms):
+  z=v.co.z
+  if not 1.18<z<1.34:continue
+  group=0 if arm<.35 else (1 if v.co.x>0 else -1)
+  if group!=region:continue
+  t=max(0,min(1,(1.34-z)/.125));t=t*t*(3-2*t)
+  v.co.x+=t*float(np.interp(z,[r[0] for r in rows],[r[1] for r in rows]));v.co.y+=t*float(np.interp(z,[r[0] for r in rows],[r[2] for r in rows]))
+# Fit the top neck rings just inside the rebuilt head's measured circular loft.
+# Known row/azimuth correspondence avoids nearest-face snapping across unrelated surfaces.
+head=bpy.data.objects['Xenaa | Reconstructed head and neck'];hv=np.array([v.co[:] for v in head.data.vertices]).reshape(240,256,3);zs=hv[:,0,2]
+def smooth(t):t=max(0,min(1,t));return t*t*(3-2*t)
+neck_fitted=0
+for v in mesh.vertices:
+ z=v.co.z
+ if z<=1.45 or z>1.51 or abs(v.co.x)>.115:continue
+ t=smooth((z-1.45)/.04)*(1-smooth((abs(v.co.x)-.075)/.04));phase=(math.atan2(v.co.x,-(v.co.y+.17))%(2*math.pi))*256/(2*math.pi);ci=int(phase);cf=phase-ci;row=max(0,min(238,int(np.searchsorted(zs,z))-1));rf=max(0,min(1,(z-zs[row])/(zs[row+1]-zs[row])));ring=hv[row]*(1-rf)+hv[row+1]*rf;target=ring[ci]*(1-cf)+ring[(ci+1)%256]*cf;center=np.mean(ring,axis=0);target=center+(target-center)*.98
+ v.co.x=v.co.x*(1-t)+target[0]*t;v.co.y=v.co.y*(1-t)+target[1]*t
+ chest=1-smooth((z-1.445)/.08);hw=smooth((z-1.50)/.06);nw={'Spine3':(1-hw)*chest,'Neck':(1-hw)*(1-chest),'Head':hw};weights[v.index]={n:weights[v.index].get(n,0)*(1-t)+nw.get(n,0)*t for n in set(weights[v.index])|set(nw)};neck_fitted+=1
+mesh.update();bm=bmesh.new();bm.from_mesh(mesh);layer=bm.verts.layers.deform.active
+if layer:
+ for v in bm.verts:v[layer].clear()
+bm.to_mesh(mesh);bm.free()
+o=bpy.data.objects.new('Xenaa | Continuous anatomical upper body',mesh);sc.collection.objects.link(o);o.matrix_world=rig.matrix_world.copy()
+for n in rig.data.bones:o.vertex_groups.new(name=n.name)
+for v,ws in zip(mesh.vertices,weights):
+ for n,w in ws.items():o.vertex_groups[n].add([v.index],w,'REPLACE')
+uv=mesh.uv_layers.new(name='Costume projection');coord=[];fac=[];skin=[]
+for v in mesh.vertices:
+ p=v.co;hit,n,idx,dist=tree.ray_cast(Vector((p.x,-.8,p.z)),Vector((0,1,0)),1.4);u=Vector((.5,.5));valid=0
+ if hit is not None:
+  t=m.loop_triangles[idx];a,b,c=[m.vertices[i].co for i in t.vertices];v0=b-a;v1=c-a;v2=hit-a;d00=v0.dot(v0);d01=v0.dot(v1);d11=v1.dot(v1);den=d00*d11-d01*d01
+  if abs(den)>1e-20:
+   w1=(d11*v2.dot(v0)-d01*v2.dot(v1))/den;w2=(d00*v2.dot(v1)-d01*v2.dot(v0))/den;u=sum((uvsrc[l].uv*w for l,w in zip(t.loops,[1-w1-w2,w1,w2])),Vector((0,0)));valid=max(0,min(1,(-v.normal.y-.1)/.7))
+ rgb=pixels[min(image.size[1]-1,max(0,int(u.y*image.size[1]))),min(image.size[0]-1,max(0,int(u.x*image.size[0])))][:3]
+ warm=float(rgb[0]>.20 and rgb[0]>rgb[2]*1.35 and rgb[0]>rgb[1]*1.08)
+ coord.append(u);fac.append(valid);skin.append(valid*warm)
+for l in mesh.loops:uv.data[l.index].uv=coord[l.vertex_index]
+edges=np.array([e.vertices[:] for e in mesh.edges]);srcids=np.r_[edges[:,0],edges[:,1]];dstids=np.r_[edges[:,1],edges[:,0]];degree=np.maximum(1,np.bincount(srcids,minlength=len(mesh.vertices)));values=np.array(skin)
+for _ in range(12):values=.5*values+.5*np.bincount(srcids,weights=values[dstids],minlength=len(values))/degree
+skin=values.tolist()
+for name,values in [('costumeMix',fac),('skinMix',skin)]:at=mesh.attributes.new(name,'FLOAT','POINT');at.data.foreach_set('value',values)
+mesh.materials.clear()
+region=mesh.attributes.new('garmentRegion','FLOAT','POINT');region.data.foreach_set('value',[float(a) for a in arms])
+nz=mesh.attributes.new('neckZone','FLOAT','POINT');nz.data.foreach_set('value',[1-smooth((abs(v.co.x)-.05)/.02) for v in mesh.vertices])
+height=mesh.attributes.new('restHeight','FLOAT','POINT');height.data.foreach_set('value',[v.co.z for v in mesh.vertices])
+for label,color,attribute in [('Jacket',(.018,.006,.032,1),'costumeMix'),('Arms',(.57,.335,.225,1),'skinMix')]:
+ mat=bpy.data.materials.new('Xenaa | Clean '+label);mat.use_nodes=True;nd=mat.node_tree.nodes;bs=nd.get('Principled BSDF');bs.inputs['Roughness'].default_value=.56;tex=nd.new('ShaderNodeTexImage');tex.image=image;texuv=nd.new('ShaderNodeUVMap');texuv.uv_map=uv.name;mix=nd.new('ShaderNodeMixRGB');mix.inputs[1].default_value=color;at=nd.new('ShaderNodeAttribute');at.attribute_name=attribute
+ for a,b in [(texuv.outputs['UV'],tex.inputs['Vector']),(tex.outputs['Color'],mix.inputs[2]),(at.outputs['Fac'],mix.inputs[0]),(mix.outputs[0],bs.inputs['Base Color'])]:mat.node_tree.links.new(a,b)
+ mesh.materials.append(mat)
+# Evaluate clothing boundaries per shading point, not per polygon: no stair-step sleeve edges.
+mat=mesh.materials[0];nd=mat.node_tree.nodes;links=mat.node_tree.links;out=nd.get('Material Output');jacket=nd.get('Principled BSDF');arm=nd.new('ShaderNodeBsdfPrincipled');arm.inputs['Roughness'].default_value=.53;arm.inputs['Specular IOR Level'].default_value=.28;arm.inputs['Subsurface Weight'].default_value=.055
+tex=next(n for n in nd if n.type=='TEX_IMAGE');skinattr=nd.new('ShaderNodeAttribute');skinattr.attribute_name='skinMix';skincolor=nd.new('ShaderNodeMixRGB');skincolor.inputs[1].default_value=(.57,.335,.225,1);links.new(skinattr.outputs['Fac'],skincolor.inputs[0]);links.new(tex.outputs['Color'],skincolor.inputs[2]);links.new(skincolor.outputs[0],arm.inputs['Base Color'])
+def ramp(attribute,low,high):
+ a=nd.new('ShaderNodeAttribute');a.attribute_name=attribute;r=nd.new('ShaderNodeMapRange');r.inputs['From Min'].default_value=low;r.inputs['From Max'].default_value=high;r.clamp=True;links.new(a.outputs['Fac'],r.inputs['Value']);return r.outputs['Result']
+def mathnode(op,a,b):
+ n=nd.new('ShaderNodeMath');n.operation=op;links.new(a,n.inputs[0]);links.new(b,n.inputs[1]);return n.outputs[0]
+armmask=ramp('garmentRegion',.345,.355);cuff=ramp('restHeight',1.243,1.247);neckmask=mathnode('MULTIPLY',ramp('restHeight',1.452,1.456),ramp('neckZone',.4,.6));mask=mathnode('MAXIMUM',mathnode('MULTIPLY',armmask,cuff),neckmask)
+inv=nd.new('ShaderNodeMath');inv.operation='SUBTRACT';inv.inputs[0].default_value=1;links.new(neckmask,inv.inputs[1]);links.new(mathnode('MULTIPLY',skinattr.outputs['Fac'],inv.outputs[0]),skincolor.inputs[0])
+mix=nd.new('ShaderNodeMixShader');links.new(mask,mix.inputs[0]);links.new(jacket.outputs[0],mix.inputs[1]);links.new(arm.outputs[0],mix.inputs[2]);links.new(mix.outputs[0],out.inputs['Surface'])
+for f in mesh.polygons:f.material_index=0;f.use_smooth=True
+bm=bmesh.new();bm.from_mesh(mesh);bm.verts.ensure_lookup_table();kill=[f for f in bm.faces if (f.calc_center_median().z<1.205 and sum(arms[v.index] for v in f.verts)/len(f.verts)<.25) or f.calc_center_median().z>1.495 or f.calc_center_median().z<.72];bmesh.ops.delete(bm,geom=kill,context='FACES');bmesh.ops.delete(bm,geom=[v for v in bm.verts if not v.link_faces],context='VERTS');bm.to_mesh(mesh);bm.free();mesh.update();mod=o.modifiers.new('Retargeted anatomy weights','ARMATURE');mod.object=rig;mod.use_deform_preserve_volume=True
+# Remove the corrupted old upper torso and upper arms, retaining detailed lower coat and gauntlets.
+bm=bmesh.new();bm.from_mesh(old.data);bm.verts.ensure_lookup_table();kill=[f for f in bm.faces if f.calc_center_median().z>1.23 or (f.calc_center_median().z>.70 and sum(oldarm[v.index] for v in f.verts)/len(f.verts)>.20)];bmesh.ops.delete(bm,geom=kill,context='FACES');bmesh.ops.delete(bm,geom=[v for v in bm.verts if not v.link_faces],context='VERTS');bm.to_mesh(old.data);bm.free()
+for name in ['Xenaa | Reconstructed shoulder garment','Xenaa | Rebuilt jacket upper back','Xenaa | Jacket back lining']:
+ ob=bpy.data.objects.get(name)
+ if ob:ob.hide_render=True;ob.hide_set(True)
+for ob in sc.objects:
+ if ob.name.startswith('Xenaa | Back princess seam'):ob.hide_render=True;ob.hide_set(True)
+bpy.data.objects.remove(src,do_unlink=True)
+for frame,side in [(217,None),(241,'Left'),(265,'Right'),(289,None)]:
+ sc.frame_set(frame)
+ if frame>217:
+  for b in rig.pose.bones:
+   if b.name not in finger_layout:
+    b.matrix_basis=Matrix.Identity(4);b.keyframe_insert('rotation_quaternion' if b.rotation_mode=='QUATERNION' else 'rotation_euler',frame=frame)
+ for name in finger_layout:
+  b=rig.pose.bones[name];b.rotation_mode='XYZ';angle=(.50 if name.endswith('1') else .65 if name.endswith('2') else .30) if side and name.startswith(side) else 0;b.rotation_euler=(angle,0,0);b.keyframe_insert('rotation_euler',frame=frame)
+(R/'upper-body.json').write_text(json.dumps({'neck_vertices_fitted':neck_fitted,'neck_fit':'row and azimuth correspondence to rebuilt head loft; 2 percent inward overlap; matching Neck and Spine3 weights','skinning':'dual quaternion on reconstructed upper body only; other meshes unchanged','garment_boundary':'interpolated point attributes in shader, not per-face assignment','finger_bones':sorted(finger_layout),'cross_side_influences_removed':len(cross_side_removed),'maximum_removed_weight':max(cross_side_removed,default=0),'policy':'arm and hand weights cannot cross the body midline outside the central 0.10 m band; remaining weights normalized'},indent=2)+'\n')
+sc.frame_end=289
+sc.frame_set(1);bpy.ops.wm.save_as_mainfile(filepath=str(R/'Anatomical-Reconstruction-v18.blend'))
+import sys
+if '--render-diagnostics' in sys.argv:
+ for ob in sc.objects:
+  if ob.name.startswith('AceHack |'):ob.hide_render=True
+ cam=sc.camera;target=Vector((rig.location.x,-.13,1.43));cam.data.type='ORTHO';cam.data.ortho_scale=1.03;sc.render.resolution_x=1000;sc.render.resolution_y=1100;sc.cycles.samples=40
+ for label,offset in [('anatomy-front',(0,-4,.12)),('anatomy-back',(0,4,.1)),('anatomy-side',(4,0,.1))]:
+  cam.location=target+Vector(offset);cam.rotation_euler=(target-cam.location).to_track_quat('-Z','Y').to_euler();sc.render.filepath=str(R/(label+'.png'));bpy.ops.render.render(write_still=True)

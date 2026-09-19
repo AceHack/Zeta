@@ -1,0 +1,18 @@
+[
+  {
+    "character": "AceHack",
+    "vertices": 61440,
+    "faces": 61186,
+    "source_head_hidden": true,
+    "topology": "closed loft head and neck with source facial depth and UV transfer",
+    "face_rig": false
+  },
+  {
+    "character": "Xenaa",
+    "vertices": 61440,
+    "faces": 61186,
+    "source_head_hidden": true,
+    "topology": "closed loft head and neck with source facial depth and UV transfer",
+    "face_rig": false
+  }
+]

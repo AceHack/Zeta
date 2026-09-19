@@ -1,0 +1,80 @@
+"""Verify selected geometry, deform groups, head attachment and isolated finger poses."""
+import bpy,bmesh,json,hashlib
+import numpy as np
+from pathlib import Path
+from mathutils import Vector
+from mathutils.bvhtree import BVHTree
+R=Path(__file__).resolve().parent;src=R/'Character-Master-Study-v18.blend';bpy.ops.wm.open_mainfile(filepath=str(src));sc=bpy.context.scene;sc.frame_set(1)
+frames=[1,25,49,73,97,121,145,169,193,217,241,265,289];report={'source_sha256':hashlib.sha256(src.read_bytes()).hexdigest(),'meshes':{},'hair_binding':[],'finger_isolation':[],'upper_neck_overlap':[],'limitations':['No facial blendshapes','No secondary hair dynamics or collision solver','Material and garment joins remain under visual review','Not an Effect House export or performance test']}
+objects=[bpy.data.objects['AceHack | Independent head generator'],bpy.data.objects['Xenaa | Reconstructed head and neck'],bpy.data.objects['Xenaa | Continuous anatomical upper body']]
+rigids={};restmeshes={};seam_ids=[];neutral={o.name:o.hide_render for o in sc.objects}
+for o in objects:
+ name=o.name.split(' | ')[0];rig=bpy.data.objects[name+' | Motion rig'];bm=bmesh.new();bm.from_mesh(o.data);boundary=sum(e.is_boundary for e in bm.edges);nonmanifold=sum(not e.is_manifold for e in bm.edges)
+ if 'upper body' in o.name:seam_ids=sorted({v.index for e in bm.edges if e.is_boundary for v in e.verts if v.co.z>1.485})
+ bm.free();sums=[];bad=[];influence={}
+ for v in o.data.vertices:
+  sums.append(sum(g.weight for g in v.groups))
+  for g in v.groups:
+   if g.group>=len(o.vertex_groups) or o.vertex_groups[g.group].name not in rig.data.bones:bad.append(g.group)
+   elif g.weight>1e-6:
+    key=o.vertex_groups[g.group].name;influence[key]=influence.get(key,0)+1
+ assert not bad and max(abs(s-1) for s in sums)<1e-5,(o.name,bad[:10],max(abs(s-1) for s in sums))
+ if o.name=='Xenaa | Reconstructed head and neck':
+  assert boundary==0 and nonmanifold==0
+  hg=o.vertex_groups.find('Head');fm=o.data.attributes['faceLikeness']
+  for v in o.data.vertices:
+   if v.co.z>1.565 and fm.data[v.index].value>.5:assert sum(g.weight for g in v.groups if g.group==hg)>.999999,('facial vertex must follow Head rigidly',v.index)
+
+ base=np.array([v.co[:] for v in o.data.vertices]);edges=np.array([e.vertices[:] for e in o.data.edges]);lengths=np.linalg.norm(base[edges[:,1]]-base[edges[:,0]],axis=1);mask=lengths>.0003
+ head_idx=o.vertex_groups.find('Head');anchors=np.array([v.index for v in o.data.vertices if any(g.group==head_idx and g.weight>.999999 for g in v.groups)],dtype=np.int32)
+ restmeshes[o.name]=(base,edges,lengths,mask,anchors);rigids[name]=rig.data.bones['Head'].matrix_local.copy()
+ report['meshes'][o.name]={'vertices':len(base),'boundary_edges':boundary,'nonmanifold_edges':nonmanifold,'weight_sum_error':max(abs(s-1) for s in sums),'influenced_vertices_per_bone':influence,'poses':[]}
+hair=bpy.data.objects['Xenaa | Scalp rooted strand groom'];rig=bpy.data.objects['Xenaa | Motion rig'];hair_rest=hair.matrix_world.copy();a=np.empty(len(hair.data.attributes['position'].data)*3);hair.data.attributes['position'].data.foreach_get('vector',a);assert np.isfinite(a).all();assert hair.parent==rig and hair.parent_type=='BONE' and hair.parent_bone=='Head'
+assert bpy.data.objects.get('Xenaa | Independent head generator') is None
+assert bpy.data.objects.get('Xenaa | Recovered source hair') is None
+report['hair']={'strands':len(hair.data.curves),'points':len(a)//3,'old_fused_hair_objects_removed':True,'binding':'rigid Head bone; not a dynamics or collision test'}
+sc.frame_set(289);bpy.context.view_layer.update();ev=objects[-1].evaluated_get(bpy.context.evaluated_depsgraph_get());nm=ev.to_mesh();neutralbody=np.array([v.co[:] for v in nm.vertices]);ev.to_mesh_clear()
+report['finger_neutral_reference_frame']=289
+for frame in frames:
+ sc.frame_set(frame);bpy.context.view_layer.update();dg=bpy.context.evaluated_depsgraph_get()
+ for o in objects:
+  name=o.name.split(' | ')[0];r=bpy.data.objects[name+' | Motion rig'];base,edges,lengths,mask,anchors=restmeshes[o.name];ev=o.evaluated_get(dg);m=ev.to_mesh();vs=np.array([v.co[:] for v in m.vertices]);assert np.isfinite(vs).all();rat=np.linalg.norm(vs[edges[:,1]]-vs[edges[:,0]],axis=1)[mask]/lengths[mask]
+  delta=r.pose.bones['Head'].matrix@rigids[name].inverted();expected=np.array([delta@Vector(base[i]) for i in anchors]);err=float(np.max(np.linalg.norm(vs[anchors]-expected,axis=1))) if len(anchors) else None
+  if err is not None:assert err<1e-5,(o.name,frame,err)
+  report['meshes'][o.name]['poses'].append({'frame':frame,'head_rigid_anchor_error_m':err,'edge_stretch_max':float(rat.max()),'edge_compression_min':float(rat.min()),'edges_over_3x':int(np.sum(rat>3))})
+  if 'upper body' in o.name:
+   if frame in [241,265]:
+    target='Left' if frame==241 else 'Right';other='Right' if target=='Left' else 'Left';ids={s:[] for s in [target,other]}
+    for v in o.data.vertices:
+     for s in ids:
+      if sum(g.weight for g in v.groups if o.vertex_groups[g.group].name.startswith(s+'Hand'))>.99:ids[s].append(v.index)
+    move={s:float(np.max(np.linalg.norm(vs[idx]-neutralbody[idx],axis=1))) for s,idx in ids.items()};assert move[target]>.005 and move[other]<1e-5,(frame,move)
+    report['finger_isolation'].append({'frame':frame,'target_hand':target,'max_vertex_displacement_m':move})
+  ev.to_mesh_clear()
+ # Measure only the known upper neck ring against the evaluated head surface.
+ he=objects[1].evaluated_get(dg);hm=he.to_mesh();tree=BVHTree.FromPolygons([v.co for v in hm.vertices],[tuple(f.vertices) for f in hm.polygons]);distances=[];signed=[]
+ for i in seam_ids:
+  p=Vector(vs[i]);hit,normal,_,dist=tree.find_nearest(p);distances.append(float(dist));signed.append(float((p-hit).dot(normal)))
+ assert len(seam_ids)>0 and max(signed)<.004,(frame,'neck protrusion',max(signed))
+ report['upper_neck_overlap'].append({'frame':frame,'sampled_ring_vertices':len(seam_ids),'maximum_nearest_surface_distance_m':max(distances),'maximum_signed_outward_distance_m':max(signed),'outward_tolerance_m':.004});he.to_mesh_clear()
+ expected=rig.matrix_world@rig.pose.bones['Head'].matrix@rigids['Xenaa'].inverted()@rig.matrix_world.inverted()@hair_rest;err=max(abs(a-b) for ar,br in zip(expected,hair.matrix_world) for a,b in zip(ar,br));assert err<1e-5;report['hair_binding'].append({'frame':frame,'matrix_error':err})
+(R/'validation.json').write_text(json.dumps(report,indent=2)+'\n');print('STRUCTURAL CHECKS PASSED',flush=True)
+import sys
+if '--render-diagnostics' in sys.argv:
+ sc.cycles.samples=48;sc.render.resolution_percentage=100
+ for name in ['Xenaa','AceHack']:
+  for o in sc.objects:o.hide_render=neutral[o.name]
+  for o in sc.objects:
+   if o.name.startswith(('AceHack |','Xenaa |')) and not o.name.startswith(name+' |'):o.hide_render=True
+  target=Vector((bpy.data.objects[name+' | Motion rig'].location.x,-.1,1.53 if name=='Xenaa' else 1.62));cam=sc.camera;cam.data.type='ORTHO';cam.data.ortho_scale=.89;sc.render.resolution_x=1000;sc.render.resolution_y=1100
+  for label,frame,off,bald in [('head-turn',145,(0,-4,.1),False),('wide-arms',169,(0,-4,.2),False),('hair-hidden-back',1,(0,4,.1),True)]:
+   sc.frame_set(frame)
+   if name=='Xenaa':hair.hide_render=bald
+   cam.location=target+Vector(off);cam.rotation_euler=(target-cam.location).to_track_quat('-Z','Y').to_euler();sc.render.filepath=str(R/(name+'-'+('neck-back' if name=='AceHack' and bald else label)+'.png'));bpy.ops.render.render(write_still=True)
+ for o in sc.objects:o.hide_render=neutral[o.name]
+ for label,frame in [('pair-neutral',1),('pair-combined-pose',217)]:
+  sc.frame_set(frame);target=Vector((0,-.06,1.08));cam.data.ortho_scale=2.75;cam.location=target+Vector((2,-8,1.2));cam.rotation_euler=(target-cam.location).to_track_quat('-Z','Y').to_euler();sc.render.resolution_x=1600;sc.render.resolution_y=1400;sc.render.filepath=str(R/(label+'.png'));bpy.ops.render.render(write_still=True)
+ for o in sc.objects:
+  if o.name.startswith('AceHack |'):o.hide_render=True
+ for side,frame in [('Left',241),('Right',265)]:
+  sc.frame_set(frame);hand=rig.pose.bones[side+'Hand'];target=rig.matrix_world@((hand.head+hand.tail)*.5);cam.data.ortho_scale=.27;cam.location=target+Vector((.35,-1,.10));cam.rotation_euler=(target-cam.location).to_track_quat('-Z','Y').to_euler();sc.render.resolution_x=1000;sc.render.resolution_y=1000;sc.render.filepath=str(R/(side+'-finger-curl.png'));bpy.ops.render.render(write_still=True)

@@ -1,0 +1,67 @@
+"""Replace fused upper-back remnants and author scalp-rooted native curve hair."""
+import bpy,bmesh,math,random,json
+import numpy as np
+from pathlib import Path
+from mathutils import Vector
+R=Path(__file__).resolve().parent
+bpy.ops.wm.open_mainfile(filepath=str(R/'Reconstruction-v18.blend'));sc=bpy.context.scene;sc.frame_set(1)
+def material(name,color,rough=.55,metal=0):
+ m=bpy.data.materials.new(name);m.use_nodes=True;p=m.node_tree.nodes.get('Principled BSDF');p.inputs['Base Color'].default_value=(*color,1);p.inputs['Roughness'].default_value=rough;p.inputs['Metallic'].default_value=metal;return m
+def meshob(name,vs,fs,mat,rig,weight='Spine3'):
+ m=bpy.data.meshes.new(name);m.from_pydata(vs,[],fs);m.update();o=bpy.data.objects.new(name,m);sc.collection.objects.link(o);o.matrix_world=rig.matrix_world.copy();m.materials.append(mat)
+ for p in m.polygons:p.use_smooth=True
+ g=o.vertex_groups.new(name=weight);g.add(list(range(len(vs))),1,'REPLACE');a=o.modifiers.new('Garment deformation','ARMATURE');a.object=rig;return o
+def catmull(p,t):
+ x=t*(len(p)-1);i=min(int(x),len(p)-2);u=x-i;a,b,c,d=p[max(i-1,0)],p[i],p[i+1],p[min(i+2,len(p)-1)];return .5*((2*b)+(-a+c)*u+(2*a-5*b+4*c-d)*u*u+(-a+3*b-3*c+d)*u*u*u)
+def tube(name,points,mat,rig,r=.002,weight='Spine3'):
+ cu=bpy.data.curves.new(name,'CURVE');cu.dimensions='3D';cu.resolution_u=16;cu.bevel_depth=r;cu.bevel_resolution=3;sp=cu.splines.new('BEZIER');sp.bezier_points.add(len(points)-1)
+ for p,co in zip(sp.bezier_points,points):p.co=co;p.handle_left_type='AUTO';p.handle_right_type='AUTO'
+ o=bpy.data.objects.new(name,cu);sc.collection.objects.link(o);cu.materials.append(mat);o.parent=rig;o.parent_type='BONE';o.parent_bone=weight;bpy.context.view_layer.update();o.matrix_world=rig.matrix_world.copy();return o
+removed={}
+for name in ['AceHack','Xenaa']:
+ rig=bpy.data.objects[name+' | Motion rig'];body=bpy.data.objects[name+' | Body generator'];m=body.data
+ bm=bmesh.new();bm.from_mesh(m)
+ selected=[]
+ for f in bm.faces:
+  p=f.calc_center_median();x,y,z=p
+  if name=='Xenaa':
+   kill=(z>1.55 and abs(x)<.115)
+  else:kill=(z>1.655 and abs(x)<.095)
+  if kill:selected.append(f)
+ removed[name]=len(selected);bmesh.ops.delete(bm,geom=selected,context='FACES');bmesh.ops.delete(bm,geom=[v for v in bm.verts if not v.link_faces],context='VERTS');bm.to_mesh(m);bm.free()
+ cloth=material(name+' | Tailored collar cloth',(.022,.009,.04) if name=='Xenaa' else (.012,.022,.015),.68)
+
+ trim=material(name+' | Collar edging',(.12,.026,.22) if name=='Xenaa' else (.50,.29,.07),.32,.65)
+ base,top=(1.47,1.57) if name=='Xenaa' else (1.55,1.65);vs=[];fs=[];N=96
+ # Open at the throat; regular curved fabric band rather than jagged source fragments.
+ for row in range(9):
+  t=row/8
+  for j in range(N+1):
+   a=.55+(2*math.pi-1.10)*j/N
+   rx=(.081-.009*t) if name=='Xenaa' else(.10-.021*t);ry=(.073-.003*t) if name=='Xenaa' else(.083-.01*t)
+   vs.append((rx*math.sin(a),-.135-ry*math.cos(a),base+(top-base)*t-.018*math.cos(a)))
+ for i in range(8):
+  for j in range(N):a=i*(N+1)+j;fs.append((a,a+1,a+N+2,a+N+1))
+ o=meshob(name+' | Tailored standing collar',vs,fs,cloth,rig);sol=o.modifiers.new('Cloth thickness','SOLIDIFY');sol.thickness=.003;bev=o.modifiers.new('Soft cloth edge','BEVEL');bev.width=.001;bev.segments=3
+ tube(name+' | Collar top piping',vs[-N-1:],trim,rig,.0015)
+# Extract anatomical ear regions from the local reusable base. No private reference image is packed.
+with bpy.data.libraries.load(str(R.parent/'AceHack-Xenaa-Realistic/realistic-anatomy.blend'),link=False) as (a,b):b.objects=['Xenaa | Human']
+for src in b.objects:
+ sc.collection.objects.link(src)
+bpy.context.view_layer.update()
+for src in b.objects:
+ name=src.name.split(' | ')[0];rig=bpy.data.objects[name+' | Motion rig'];dg=bpy.context.evaluated_depsgraph_get();ev=src.evaluated_get(dg);m=ev.to_mesh();vs=[];fs=[];mapping={}
+ for f in m.polygons:
+  p=f.center
+  lo,hi,cut=(1.49,1.59,.065) if name=='Xenaa' else (1.635,1.735,.073)
+  if lo<p.z<hi and abs(p.x)>cut and any(any(g.group==src.vertex_groups['ears'].index and g.weight>.25 for g in m.vertices[i].groups) for i in f.vertices):
+   ids=[]
+   for idx in f.vertices:
+    if idx not in mapping:
+     v=m.vertices[idx].co.copy();v.x*=1.25 if name=='Xenaa' else 1.16;v.y-=.10 if name=='Xenaa' else .094;v.z+=.143 if name=='Xenaa' else .083;mapping[idx]=len(vs);vs.append(tuple(v))
+    ids.append(mapping[idx])
+   fs.append(ids)
+ if vs:meshob(name+' | Anatomical ear detail',vs,fs,bpy.data.materials[name+' | Unified skin and likeness'],rig,'Head')
+ ev.to_mesh_clear();bpy.data.objects.remove(src,do_unlink=True)
+sc.frame_set(1);bpy.ops.wm.save_as_mainfile(filepath=str(R/'Character-Reconstruction-v18.blend'))
+(R/'tailor-groom.json').write_text(json.dumps({'body_faces_removed':removed,'ear_source':'local MakeHuman anatomy ears vertex group','groom':'authored in polish_v18.py'},indent=2)+'\n')

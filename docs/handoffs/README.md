@@ -1,5 +1,7 @@
 # docs/handoffs — hand-off packages live IN THE REPO, never only on a desktop
 
+- [Character v18 reconstruction](../research/2026-09-19-character-v18/README.md) - continuous head/neck, independent hair and anatomical upper-body study.
+
 - [Character v17: full review and independent hair study](../research/2026-09-18-tiktok-character-v17/README.md) - master quality before mobile reduction.
 
 Aaron 2026-06-14: "stuff on my desktop/clipboard is DARK for Addison and Max." Correct — a

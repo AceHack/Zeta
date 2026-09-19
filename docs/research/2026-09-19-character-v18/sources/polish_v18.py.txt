@@ -1,0 +1,78 @@
+"""Select anatomical Xenaa upper body and replace groom; preserve AceHack's better source likeness."""
+import bpy,bmesh,math,random,json
+import numpy as np
+from pathlib import Path
+from mathutils import Vector
+R=Path(__file__).resolve().parent
+bpy.ops.wm.open_mainfile(filepath=str(R/'Anatomical-Reconstruction-v18.blend'));sc=bpy.context.scene;sc.frame_set(1)
+def smooth(t):t=max(0,min(1,t));return t*t*(3-2*t)
+def catmull(p,t):
+ x=t*(len(p)-1);i=min(int(x),len(p)-2);u=x-i;a,b,c,d=p[max(0,i-1)],p[i],p[i+1],p[min(len(p)-1,i+2)];return .5*((2*b)+(-a+c)*u+(2*a-5*b+4*c-d)*u*u+(-a+3*b-3*c+d)*u*u*u)
+# AceHack: retain his better existing head/hair, replacing only the bottom neck transition.
+for suffix in ['Reconstructed head and neck','Anatomical ear detail','Clean scalp base','Scalp rooted strand groom']:
+ o=bpy.data.objects.get('AceHack | '+suffix)
+ if o:o.hide_render=True;o.hide_set(True)
+ace=bpy.data.objects['AceHack | Independent head generator'];ace.hide_render=False;ace.hide_set(False);bm=bmesh.new();bm.from_mesh(ace.data)
+bmesh.ops.bisect_plane(bm,geom=list(bm.verts)+list(bm.edges)+list(bm.faces),dist=1e-7,plane_co=(0,0,1.60),plane_no=(0,0,1),clear_inner=True)
+edges=[e for e in bm.edges if e.is_boundary and all(abs(v.co.z-1.60)<1e-5 for v in e.verts)];base_count=len(edges)
+mat=bpy.data.materials.new('AceHack | Neck transition skin');mat.use_nodes=True;bs=mat.node_tree.nodes.get('Principled BSDF');bs.inputs['Base Color'].default_value=(.37,.215,.145,1);bs.inputs['Roughness'].default_value=.6;ace.data.materials.append(mat);slot=len(ace.data.materials)-1
+for i in range(8):
+ extr=bmesh.ops.extrude_edge_only(bm,edges=edges);vs=[v for v in extr['geom'] if isinstance(v,bmesh.types.BMVert)];oldz=1.60-i*.0125;newz=oldz-.0125
+ for v in vs:
+  t=(i+1)/8;v.co.z=newz;v.co.x*=1.07;v.co.y+=(-.135-v.co.y)*.11
+ edges=[e for e in extr['geom'] if isinstance(e,bmesh.types.BMEdge) and all(abs(v.co.z-newz)<1e-6 for v in e.verts)]
+ for f in extr['geom']:
+  if isinstance(f,bmesh.types.BMFace):f.material_index=slot;f.smooth=True
+bm.to_mesh(ace.data);bm.free();ace.data.update();ace.vertex_groups.clear();gs={n:ace.vertex_groups.new(name=n) for n in ['Spine3','Neck','Head']}
+for v in ace.data.vertices:
+ t=smooth((v.co.z-1.55)/.065);b=1-smooth((v.co.z-1.50)/.07)
+ for n,w in [('Head',t),('Neck',(1-t)*(1-b)),('Spine3',(1-t)*b)]:
+  if w:gs[n].add([v.index],w,'REPLACE')
+# Xenaa: replace all previous groom curves with one asymmetric, wavy, scalp-distributed groom.
+for suffix in ['Scalp rooted strand groom','Clean scalp base']:
+ o=bpy.data.objects.get('Xenaa | '+suffix)
+ if o:bpy.data.objects.remove(o,do_unlink=True)
+mat=bpy.data.materials.new('Xenaa | Groom fibre');mat.use_nodes=True;nodes=mat.node_tree.nodes;nodes.clear();out=nodes.new('ShaderNodeOutputMaterial');fiber=nodes.new('ShaderNodeBsdfHairPrincipled');fiber.parametrization='COLOR';fiber.inputs['Roughness'].default_value=.38;info=nodes.new('ShaderNodeHairInfo');mix=nodes.new('ShaderNodeMixRGB');mix.inputs[1].default_value=(.002,.001,.002,1);mix.inputs[2].default_value=(.012,.007,.01,1)
+for a,b in [(info.outputs['Random'],mix.inputs[0]),(mix.outputs[0],fiber.inputs['Color']),(fiber.outputs[0],out.inputs[0])]:mat.node_tree.links.new(a,b)
+rig=bpy.data.objects['Xenaa | Motion rig'];rng=random.Random(180920);pts=[];radii=[];sizes=[];N=22000;K=60
+center=np.array([0,-.136,1.692]);rad=np.array([.096,.132,.137])
+for k in range(N):
+ phi=rng.uniform(-math.pi,math.pi);front=max(0,math.cos(phi));theta=math.acos(rng.uniform(math.cos(2.04-.91*front**3),.999));side=1 if math.sin(phi)>=0 else -1
+ # Stable clump phases create separate locks; smaller per-strand variation softens their silhouettes.
+ phase=round(phi*11)*.79;offset=rng.uniform(-.0008,.0008)
+ def scalp(th,ph,lift=0):
+  rr=rad+lift+.0025*math.sin(ph*24+th*3);v=center+rr*np.array([math.sin(th)*math.sin(ph),-math.sin(th)*math.cos(ph),math.cos(th)]);v[0]+=.020*max(0,math.cos(th))**2;return v
+ endphi=phi+side*(math.pi/2-abs(phi))*.75*front
+ g=[scalp(theta,phi,.001),scalp(theta+(1.62-theta)*.42,phi+(endphi-phi)*.43,.007),scalp(max(theta+.08,1.62),endphi,.014)]
+ x=g[-1][0];y=g[-1][1];frontlock=(-1.25<phi<-.1);endy=-.268 if frontlock else .069+.029*max(0,-math.cos(phi));ex=x*1.75-.018;ez=1.14+.09*(.5+.5*math.sin(phi*9))
+ g.extend([np.array([x*1.36,y*.35+endy*.65,1.54]),np.array([ex,endy,1.40]),np.array([ex-.02,endy+.013,1.27]),np.array([ex+.01,endy+.020,ez])]);g=np.array(g);strandphase=rng.uniform(0,6.283);width=rng.uniform(.000070,.000120);length=rng.uniform(.95,1)
+ for j in range(K):
+  t=j/(K-1);v=catmull(g,t*length);wave=smooth((t-.20)/.8);v[0]+=.025*math.sin(t*15+phase)*wave+offset;v[1]+=.023*math.sin(t*12+phase)*wave;v[0]+=.0018*math.sin(t*28+strandphase)*wave
+  if k%31==0:v[1]+=.007*math.sin(t*8+strandphase)*t
+  pts.append(v);radii.append(width*(1-.991*t)**.7)
+ sizes.append(K)
+curves=bpy.data.hair_curves.new('Xenaa | Asymmetric wavy groom');curves.add_curves(sizes);curves.attributes['position'].data.foreach_set('vector',np.array(pts,dtype=np.float32).ravel());a=curves.attributes.new('radius','FLOAT','POINT');a.data.foreach_set('value',radii);curves.materials.append(bpy.data.materials['Xenaa | Groom fibre']);hair=bpy.data.objects.new('Xenaa | Scalp rooted strand groom',curves);sc.collection.objects.link(hair);hair.parent=rig;hair.parent_type='BONE';hair.parent_bone='Head';bpy.context.view_layer.update();hair.matrix_world=rig.matrix_world.copy()
+# The selected scene contains only its active assets, not hidden rejected versions.
+removed_hidden=[]
+for ob in list(sc.objects):
+ if ob.name.startswith(('AceHack |','Xenaa |')) and ob.type in ['MESH','CURVES','CURVE'] and ob.hide_get():
+  removed_hidden.append(ob.name);bpy.data.objects.remove(ob,do_unlink=True)
+bpy.data.orphans_purge(do_local_ids=True,do_linked_ids=False,do_recursive=True)
+bpy.ops.file.pack_all()
+# Final scene opens in a close three-quarter review framing, with both characters neutral.
+for o in sc.objects:
+ if o.name.startswith(('AceHack |','Xenaa |')):o.hide_render=o.hide_get()
+sc.frame_set(1);sc.cycles.preview_samples=24;sc.cycles.use_preview_denoising=True;sc.cycles.samples=64;sc.render.resolution_x=1600;sc.render.resolution_y=1400;sc.render.resolution_percentage=100;cam=sc.camera;target=Vector((0,-.06,1.08));cam.data.type='ORTHO';cam.data.ortho_scale=2.70;cam.location=target+Vector((3,-8,1.6));cam.rotation_euler=(target-cam.location).to_track_quat('-Z','Y').to_euler()
+for area in bpy.context.screen.areas if bpy.context.screen else []:
+ if area.type=='VIEW_3D':area.spaces.active.region_3d.view_perspective='CAMERA';area.spaces.active.shading.type='RENDERED'
+bpy.ops.wm.save_as_mainfile(filepath=str(R/'Character-Master-Study-v18.blend'));(R/'polish.json').write_text(json.dumps({'removed_hidden_candidates':removed_hidden,'seed':180920,'Xenaa_strands':N,'points_per_strand':K,'AceHack_neck_bridge_initial_edges':base_count,'AceHack_hair':'retained single original head surface; strand replacement rejected','status':'master reconstruction study; not a mobile export'},indent=2)+'\n')
+import sys
+if '--render-diagnostics' in sys.argv:
+ neutral={o.name:o.hide_render for o in sc.objects}
+ for name,z in [('Xenaa',1.49),('AceHack',1.66)]:
+  for o in sc.objects:o.hide_render=neutral[o.name]
+  for o in sc.objects:
+   if o.name.startswith(('AceHack |','Xenaa |')) and not o.name.startswith(name+' |'):o.hide_render=True
+  target=Vector((bpy.data.objects[name+' | Motion rig'].location.x,-.1,z));cam.data.ortho_scale=.96 if name=='Xenaa' else .70;sc.render.resolution_x=1100;sc.render.resolution_y=1200
+  for label,off in [('final-front',(0,-4,.05)),('final-quarter',(3,-5,.1)),('final-back',(0,4,.1))]:
+   cam.location=target+Vector(off);cam.rotation_euler=(target-cam.location).to_track_quat('-Z','Y').to_euler();sc.render.filepath=str(R/(name+'-'+label+'.png'));bpy.ops.render.render(write_still=True)

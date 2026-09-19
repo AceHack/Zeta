@@ -1,0 +1,18 @@
+[
+  {
+    "path_relative_to_blender_workspace": "TikTok-Character-Quality-v16/review/Blender-Quality-Review-v16.blend",
+    "bytes": 46937051,
+    "sha256": "899cf39959455af43942c2163691775582bafdf0f1a971d1d8322cd79fb3d35f"
+  },
+  {
+    "path_relative_to_blender_workspace": "AceHack-Xenaa-Realistic/realistic-anatomy.blend",
+    "bytes": 5811267,
+    "sha256": "338f616cc8dc935901920a4747a1a4e27acda5187cc3a50dff576f56293476f3"
+  },
+  {
+    "path_relative_to_blender_workspace": "Character-Evolution-20260909/delivery-v5/AceHack-Xenaa-Evolution-20260909.blend",
+    "bytes": 34655735,
+    "sha256": "72fa1032298c0e205695a0c84f4c780fd393a2267fed1da809b299ee247920ae",
+    "use": "matched baseline render only"
+  }
+]
