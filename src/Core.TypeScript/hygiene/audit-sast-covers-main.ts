@@ -56,6 +56,15 @@ export interface CommitScan {
   readonly successfulAnalyze: number;
   /** Analyze runs that exist but did not succeed -- cancelled counts here, never as coverage. */
   readonly unsuccessfulAnalyze: number;
+  /**
+   * Analyze runs that have not FINISHED yet (`status !== "completed"`).
+   *
+   * Distinct from `unsuccessfulAnalyze` because "still running" and "ran and did not
+   * succeed" are different facts, and collapsing them is what made this audit report a
+   * violation for a condition no commit could have satisfied. Optional so the documented
+   * `--json` fixture interface keeps parsing without it.
+   */
+  readonly pendingAnalyze?: number;
 }
 
 export interface Verdict {
@@ -63,6 +72,8 @@ export interface Verdict {
   readonly scanned: number;
   readonly unscanned: readonly string[];
   readonly degraded: readonly string[];
+  /** Commits whose Analyze runs are still in flight -- undecided, not uncovered. */
+  readonly pending: readonly string[];
   readonly message: string;
 }
 
@@ -79,18 +90,40 @@ export function judge(commits: readonly CommitScan[]): Verdict {
       scanned: 0,
       unscanned: [],
       degraded: [],
+      pending: [],
       message: "sampled zero commits — the premise was not evaluated, and not-evaluated is not satisfied",
     };
   }
-  const unscanned = commits.filter((c) => c.successfulAnalyze === 0).map((c) => c.sha);
+  // STILL RUNNING IS NOT UNCOVERED. This audit reads main's LIVE newest-N commits, so it
+  // routinely samples commits that landed while the very run executing it was in flight --
+  // and those cannot possibly have a finished Analyze yet. Counting them as uncovered makes
+  // the check fail for a condition no commit could satisfy, which is the false-alarm half of
+  // the class this repository cares most about: a check that has not finished must not look
+  // like one that failed. Measured 2026-09-18 on run 35404883426 -- `4ad5d300e` landed at
+  // 23:37:49, inside the drift job's own 23:34:25-23:38:33 window, and was reported as a
+  // premise violation for having no successful Analyze 12 seconds after being pushed.
+  //
+  // This does NOT weaken the audit, and the reason is worth stating because "treat pending
+  // as fine" is exactly how a guard goes vacuous. A commit whose Analyze never RAN has ZERO
+  // Analyze check runs -- nothing pending, nothing successful -- so it still lands in
+  // `unscanned` and still fails. Only an actively-running analysis is excused, and that
+  // excuse expires by itself: once the run concludes it is either a success (covered) or a
+  // non-success (uncovered). Pending can never be a permanent state that hides a hole.
+  const pending = commits
+    .filter((c) => c.successfulAnalyze === 0 && (c.pendingAnalyze ?? 0) > 0)
+    .map((c) => c.sha);
+  const unscanned = commits
+    .filter((c) => c.successfulAnalyze === 0 && (c.pendingAnalyze ?? 0) === 0)
+    .map((c) => c.sha);
   const degraded = commits.filter((c) => c.successfulAnalyze > 0 && c.unsuccessfulAnalyze > 0).map((c) => c.sha);
-  const scanned = commits.length - unscanned.length;
+  const scanned = commits.length - unscanned.length - pending.length;
   if (unscanned.length > 0) {
     return {
       ok: false,
       scanned,
       unscanned,
       degraded,
+      pending,
       message:
         `${String(unscanned.length)} of ${String(commits.length)} commits on main carry NO successful Analyze run: ` +
         `${unscanned.map((s) => s.slice(0, 9)).join(", ")}. The premise under the dismissal of Scorecard #24 — ` +
@@ -102,12 +135,36 @@ export function judge(commits: readonly CommitScan[]): Verdict {
     scanned,
     unscanned: [],
     degraded,
+    pending,
     message:
-      `all ${String(commits.length)} sampled commits on main carry a successful Analyze run` +
+      `${String(scanned)} of ${String(commits.length)} sampled commits on main carry a successful Analyze run` +
+      (pending.length > 0
+        ? ` (${String(pending.length)} still have Analyze in flight and are UNDECIDED, not counted either way: ` +
+          `${pending.map((s2) => s2.slice(0, 9)).join(", ")})`
+        : "") +
       (degraded.length > 0
         ? ` (${String(degraded.length)} also had a non-successful Analyze run alongside it, which is noted, not counted as coverage)`
         : ""),
   };
+}
+
+/**
+ * How one `Analyze (*)` check run counts. Pure, and exported, for the same reason `judge`
+ * is: the network half cannot be tested without a token, so anything that is a RULE is
+ * lifted out of it. This one decides whether a run is coverage, still in flight, or a
+ * finished non-success.
+ */
+export function classifyAnalyzeRun(run: {
+  readonly conclusion: string | null;
+  readonly status?: string;
+}): "success" | "pending" | "unsuccessful" {
+  if (run.conclusion === "success") return "success";
+  // `status`, never a null conclusion. A COMPLETED run can also carry a null conclusion, and
+  // reading the conclusion here would silently excuse those as in-flight -- turning the fix
+  // for one false alarm into a hole that hides real ones. An absent `status` (old fixtures)
+  // reads as completed, which fails closed.
+  if (run.status !== undefined && run.status !== "completed") return "pending";
+  return "unsuccessful";
 }
 
 // ── the network half, kept apart from `judge` so the rule is testable without a token ──
@@ -140,7 +197,12 @@ const MAX_WINDOW = 100; // one page; a larger window would reintroduce commit-li
 
 interface CheckRunsPage {
   readonly total_count: number;
-  readonly check_runs: readonly { readonly name: string; readonly conclusion: string | null }[];
+  readonly check_runs: readonly {
+    readonly name: string;
+    readonly conclusion: string | null;
+    /** `queued` | `in_progress` | `completed`. Absent on old fixtures -> treated as completed. */
+    readonly status?: string;
+  }[];
 }
 
 async function ghJson(path: string): Promise<unknown> {
@@ -154,6 +216,7 @@ async function ghJson(path: string): Promise<unknown> {
 export async function scanCommit(repo: string, sha: string): Promise<CommitScan> {
   let ok = 0;
   let bad = 0;
+  let pendingRuns = 0;
   let seen = 0;
   for (let page = 1; page <= 10; page += 1) {
     const body = (await ghJson(
@@ -162,7 +225,9 @@ export async function scanCommit(repo: string, sha: string): Promise<CommitScan>
     seen += body.check_runs.length;
     for (const r of body.check_runs) {
       if (!r.name.startsWith("Analyze")) continue;
-      if (r.conclusion === "success") ok += 1;
+      const cls = classifyAnalyzeRun(r);
+      if (cls === "success") ok += 1;
+      else if (cls === "pending") pendingRuns += 1;
       else bad += 1;
     }
     // Decided: a success is all the verdict needs. Stop paying for pages.
@@ -170,7 +235,7 @@ export async function scanCommit(repo: string, sha: string): Promise<CommitScan>
     // Undecided and the page was short of what the forge says exists -> keep going.
     if (seen >= body.total_count || body.check_runs.length === 0) break;
   }
-  return { sha, successfulAnalyze: ok, unsuccessfulAnalyze: bad };
+  return { sha, successfulAnalyze: ok, unsuccessfulAnalyze: bad, pendingAnalyze: pendingRuns };
 }
 
 async function main(argv: readonly string[]): Promise<number> {

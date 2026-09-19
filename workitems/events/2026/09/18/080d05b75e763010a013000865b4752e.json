@@ -1,0 +1,14 @@
+{
+  "id": "080d05b75e763010a013000865b4752e",
+  "at": "2026-09-18T23:48:22.342Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M2VEQKP5087G0R001VANDD0",
+    "type": "bug",
+    "title": "SAST coverage audit counts an in-flight Analyze as uncovered, so a commit landing mid-run is a false premise violation",
+    "slug": "sast-coverage-audit-counts-an-in-flight-analyze-as-uncovered",
+    "priority": "P2",
+    "filename": "081M2VEQKP5087G0R001VANDD0-sast-coverage-audit-counts-an-in-flight-analyze-as-uncovered.md"
+  }
+}
