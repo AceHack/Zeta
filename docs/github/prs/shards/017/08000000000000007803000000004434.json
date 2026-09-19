@@ -1,0 +1,12 @@
+{
+  "pr_number": 17460,
+  "archive_path": "docs/history/pr-reviews/2026/09/19/PR-17460-docs-research-answer-the-lane-audit-s-open-question-1-arm64-is-wanted-so-the-leg.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-19T11:33:39.499Z",
+  "schema_version": "v1",
+  "commit_sha": "cdffee621dc11c66bfc28e6b9d7b5b909f2d7469",
+  "title": "docs(research): answer the lane audit's open question 1 — arm64 is wanted, so the leg is KEEP",
+  "state": "MERGED",
+  "merged_at": "2026-09-19T11:33:00Z",
+  "head_ref": "docs/lane-audit-arm64-signoff"
+}
