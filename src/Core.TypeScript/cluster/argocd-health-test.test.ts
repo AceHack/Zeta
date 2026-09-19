@@ -58,6 +58,8 @@ import {
   preflightFailure,
   rootDevCatalogExcludedDirs,
   runHarness,
+  renderedClaimsRequestReadWriteMany,
+  appsTheRenderIsSilentAbout,
 } from "./argocd-health-test.ts";
 
 const SMOKE_APPLICATION_LIST = JSON.stringify({
@@ -2262,5 +2264,86 @@ describe("081M23BCR90087G0R002GYP7TE a failed sync is never reconciled", () => {
     const verdicts = classifyApplications([autoSync], snapshots);
     expect(verdicts.map((verdict) => verdict.ok)).toEqual([false]);
     expect(verdicts[0]?.reason).toContain("retried 10 times");
+  });
+});
+
+// --------------------------- RWX read from the RENDER, not just the tree ---
+// The checked-in scan reads files that, for most Applications, structurally
+// cannot hold the answer: they are `spec.source.chart` against an external
+// repoURL, so the PVC lives upstream. The render closes that from the other
+// side. Measured 2026-09-19: the render covers 23 apps / 38 claims with ZERO
+// RWX, while `arc-runner-set` -- absent from the render -- declares
+// `accessModes: [ ReadWriteMany ]` in its own committed manifest. Each
+// detector catches what the other cannot, which is why the guard asks both.
+
+function snapshotFixture(rendered: unknown): string {
+  const root = mkdtempSync(join(tmpdir(), "rwx-render-"));
+  mkdirSync(join(root, "src/Core.TypeScript/cluster"), { recursive: true });
+  writeFileSync(
+    join(root, "src/Core.TypeScript/cluster/rendered-storage-claims.snapshot.json"),
+    JSON.stringify({ rendered }),
+    "utf8",
+  );
+  return root;
+}
+
+describe("RWX detected from the rendered snapshot", () => {
+  test("an upstream chart rendering ReadWriteMany is caught", () => {
+    const root = snapshotFixture([
+      { appId: "full-ai-cluster/someapp", accessModes: ["ReadWriteMany"] },
+    ]);
+    expect(renderedClaimsRequestReadWriteMany("someapp", root)).toBe(true);
+  });
+
+  test("a chart rendering only ReadWriteOnce is not caught", () => {
+    const root = snapshotFixture([
+      { appId: "full-ai-cluster/someapp", accessModes: ["ReadWriteOnce"] },
+    ]);
+    expect(renderedClaimsRequestReadWriteMany("someapp", root)).toBe(false);
+  });
+
+  test("one RWX claim among several is enough", () => {
+    const root = snapshotFixture([
+      { appId: "full-ai-cluster/someapp", accessModes: ["ReadWriteOnce"] },
+      { appId: "full-ai-cluster/someapp", accessModes: ["ReadWriteMany"] },
+    ]);
+    expect(renderedClaimsRequestReadWriteMany("someapp", root)).toBe(true);
+  });
+
+  test("another app's RWX claim does not implicate this one", () => {
+    const root = snapshotFixture([
+      { appId: "full-ai-cluster/other", accessModes: ["ReadWriteMany"] },
+    ]);
+    expect(renderedClaimsRequestReadWriteMany("someapp", root)).toBe(false);
+  });
+
+  // The snapshot is a committed measurement and can be absent or corrupt. It
+  // must not flip verdicts in EITHER direction: not "everything is RWX" (which
+  // would empty the proof roster) and not a claim of safety (the checked-in
+  // scan still applies, and the gap is reported instead).
+  test("a missing snapshot answers false rather than throwing or excluding", () => {
+    const empty = mkdtempSync(join(tmpdir(), "rwx-none-"));
+    expect(renderedClaimsRequestReadWriteMany("someapp", empty)).toBe(false);
+  });
+
+  test("a corrupt snapshot answers false rather than throwing", () => {
+    const root = mkdtempSync(join(tmpdir(), "rwx-bad-"));
+    mkdirSync(join(root, "src/Core.TypeScript/cluster"), { recursive: true });
+    writeFileSync(join(root, "src/Core.TypeScript/cluster/rendered-storage-claims.snapshot.json"), "{not json", "utf8");
+    expect(renderedClaimsRequestReadWriteMany("someapp", root)).toBe(false);
+  });
+
+  // The cache is keyed by repoRoot. A single cached value would make the first
+  // caller's tree the answer for every later one.
+  test("two fixture roots give two different answers", () => {
+    const yes = snapshotFixture([{ appId: "full-ai-cluster/app", accessModes: ["ReadWriteMany"] }]);
+    const no = snapshotFixture([{ appId: "full-ai-cluster/app", accessModes: ["ReadWriteOnce"] }]);
+    expect(renderedClaimsRequestReadWriteMany("app", yes)).toBe(true);
+    expect(renderedClaimsRequestReadWriteMany("app", no)).toBe(false);
+  });
+
+  test("silence is reported, not read as clearance", () => {
+    const root = snapshotFixture([{ appId: "full-ai-cluster/covered", accessModes: ["ReadWriteOnce"] }]);
+    expect(appsTheRenderIsSilentAbout(["covered", "uncovered"], root)).toEqual(["uncovered"]);
   });
 });

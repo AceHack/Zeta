@@ -1,5 +1,5 @@
 {
-  "measuredOn": "2026-09-06",
+  "measuredOn": "2026-09-19",
   "clusterDefaultStorageClass": "zeta-local-path",
   "rendered": [
     {
@@ -8,6 +8,9 @@
       "name": "memory/agent-memory",
       "workload": "StatefulSet/agent-memory",
       "storageClassName": "longhorn",
+      "accessModes": [
+        "ReadWriteOnce"
+      ],
       "size": "8Gi",
       "gibibytes": 8,
       "count": 1
@@ -18,6 +21,9 @@
       "name": "datadir/cockroachdb",
       "workload": "StatefulSet/cockroachdb",
       "storageClassName": "longhorn",
+      "accessModes": [
+        "ReadWriteOnce"
+      ],
       "size": "48Gi",
       "gibibytes": 48,
       "count": 3
@@ -28,6 +34,9 @@
       "name": "dapr-scheduler-data-dir/dapr-scheduler-server",
       "workload": "StatefulSet/dapr-scheduler-server",
       "storageClassName": "",
+      "accessModes": [
+        "ReadWriteOnce"
+      ],
       "size": "16Gi",
       "gibibytes": 16,
       "count": 3
@@ -38,6 +47,9 @@
       "name": "gitea-shared-storage",
       "workload": "",
       "storageClassName": "zeta-local-path",
+      "accessModes": [
+        "ReadWriteOnce"
+      ],
       "size": "20Gi",
       "gibibytes": 20,
       "count": 1
@@ -48,6 +60,9 @@
       "name": "data/gmod",
       "workload": "StatefulSet/gmod",
       "storageClassName": "longhorn",
+      "accessModes": [
+        "ReadWriteOnce"
+      ],
       "size": "10Gi",
       "gibibytes": 10,
       "count": 1
@@ -58,6 +73,9 @@
       "name": "data/gitlab-postgresql",
       "workload": "StatefulSet/gitlab-postgresql",
       "storageClassName": "",
+      "accessModes": [
+        "ReadWriteOnce"
+      ],
       "size": "8Gi",
       "gibibytes": 8,
       "count": 1
@@ -68,6 +86,9 @@
       "name": "gitlab-minio",
       "workload": "",
       "storageClassName": "",
+      "accessModes": [
+        "ReadWriteOnce"
+      ],
       "size": "10Gi",
       "gibibytes": 10,
       "count": 1
@@ -78,6 +99,9 @@
       "name": "redis-data/gitlab-redis-master",
       "workload": "StatefulSet/gitlab-redis-master",
       "storageClassName": "",
+      "accessModes": [
+        "ReadWriteOnce"
+      ],
       "size": "8Gi",
       "gibibytes": 8,
       "count": 1
@@ -88,6 +112,9 @@
       "name": "repo-data/gitlab-gitaly",
       "workload": "StatefulSet/gitlab-gitaly",
       "storageClassName": "",
+      "accessModes": [
+        "ReadWriteOnce"
+      ],
       "size": "50Gi",
       "gibibytes": 50,
       "count": 1
@@ -98,6 +125,9 @@
       "name": "data/headscale",
       "workload": "StatefulSet/headscale",
       "storageClassName": "longhorn",
+      "accessModes": [
+        "ReadWriteOnce"
+      ],
       "size": "3Gi",
       "gibibytes": 3,
       "count": 1
@@ -108,6 +138,9 @@
       "name": "data/hindsight-postgresql",
       "workload": "StatefulSet/hindsight-postgresql",
       "storageClassName": "longhorn",
+      "accessModes": [
+        "ReadWriteOnce"
+      ],
       "size": "10Gi",
       "gibibytes": 10,
       "count": 1
@@ -118,6 +151,9 @@
       "name": "kube-prometheus-stack-grafana",
       "workload": "",
       "storageClassName": "longhorn",
+      "accessModes": [
+        "ReadWriteOnce"
+      ],
       "size": "5Gi",
       "gibibytes": 5,
       "count": 1
@@ -128,6 +164,9 @@
       "name": "storage/kube-prometheus-stack-alertmanager",
       "workload": "Alertmanager/kube-prometheus-stack-alertmanager",
       "storageClassName": "longhorn",
+      "accessModes": [
+        "ReadWriteOnce"
+      ],
       "size": "5Gi",
       "gibibytes": 5,
       "count": 1
@@ -138,6 +177,9 @@
       "name": "storage/kube-prometheus-stack-prometheus",
       "workload": "Prometheus/kube-prometheus-stack-prometheus",
       "storageClassName": "longhorn",
+      "accessModes": [
+        "ReadWriteOnce"
+      ],
       "size": "32Gi",
       "gibibytes": 32,
       "count": 1
@@ -148,6 +190,9 @@
       "name": "data/loki-backend",
       "workload": "StatefulSet/loki-backend",
       "storageClassName": "",
+      "accessModes": [
+        "ReadWriteOnce"
+      ],
       "size": "10Gi",
       "gibibytes": 10,
       "count": 1
@@ -158,6 +203,9 @@
       "name": "data/loki-write",
       "workload": "StatefulSet/loki-write",
       "storageClassName": "",
+      "accessModes": [
+        "ReadWriteOnce"
+      ],
       "size": "10Gi",
       "gibibytes": 10,
       "count": 1
@@ -168,6 +216,9 @@
       "name": "kafka-data/mimir-kafka",
       "workload": "StatefulSet/mimir-kafka",
       "storageClassName": "",
+      "accessModes": [
+        "ReadWriteOnce"
+      ],
       "size": "5Gi",
       "gibibytes": 5,
       "count": 1
@@ -178,6 +229,9 @@
       "name": "storage/mimir-alertmanager",
       "workload": "StatefulSet/mimir-alertmanager",
       "storageClassName": "",
+      "accessModes": [
+        "ReadWriteOnce"
+      ],
       "size": "1Gi",
       "gibibytes": 1,
       "count": 1
@@ -188,6 +242,9 @@
       "name": "storage/mimir-compactor",
       "workload": "StatefulSet/mimir-compactor",
       "storageClassName": "longhorn",
+      "accessModes": [
+        "ReadWriteOnce"
+      ],
       "size": "16Gi",
       "gibibytes": 16,
       "count": 1
@@ -198,6 +255,9 @@
       "name": "storage/mimir-ingester-zone-a",
       "workload": "StatefulSet/mimir-ingester-zone-a",
       "storageClassName": "longhorn",
+      "accessModes": [
+        "ReadWriteOnce"
+      ],
       "size": "16Gi",
       "gibibytes": 16,
       "count": 1
@@ -208,6 +268,9 @@
       "name": "storage/mimir-ingester-zone-b",
       "workload": "StatefulSet/mimir-ingester-zone-b",
       "storageClassName": "longhorn",
+      "accessModes": [
+        "ReadWriteOnce"
+      ],
       "size": "16Gi",
       "gibibytes": 16,
       "count": 1
@@ -218,6 +281,9 @@
       "name": "storage/mimir-ingester-zone-c",
       "workload": "StatefulSet/mimir-ingester-zone-c",
       "storageClassName": "longhorn",
+      "accessModes": [
+        "ReadWriteOnce"
+      ],
       "size": "16Gi",
       "gibibytes": 16,
       "count": 1
@@ -228,6 +294,9 @@
       "name": "storage/mimir-store-gateway-zone-a",
       "workload": "StatefulSet/mimir-store-gateway-zone-a",
       "storageClassName": "longhorn",
+      "accessModes": [
+        "ReadWriteOnce"
+      ],
       "size": "16Gi",
       "gibibytes": 16,
       "count": 1
@@ -238,6 +307,9 @@
       "name": "storage/mimir-store-gateway-zone-b",
       "workload": "StatefulSet/mimir-store-gateway-zone-b",
       "storageClassName": "longhorn",
+      "accessModes": [
+        "ReadWriteOnce"
+      ],
       "size": "16Gi",
       "gibibytes": 16,
       "count": 1
@@ -248,6 +320,9 @@
       "name": "storage/mimir-store-gateway-zone-c",
       "workload": "StatefulSet/mimir-store-gateway-zone-c",
       "storageClassName": "longhorn",
+      "accessModes": [
+        "ReadWriteOnce"
+      ],
       "size": "16Gi",
       "gibibytes": 16,
       "count": 1
@@ -258,6 +333,9 @@
       "name": "nats-js/nats",
       "workload": "StatefulSet/nats",
       "storageClassName": "longhorn",
+      "accessModes": [
+        "ReadWriteOnce"
+      ],
       "size": "10Gi",
       "gibibytes": 10,
       "count": 3
@@ -268,6 +346,9 @@
       "name": "ollama",
       "workload": "",
       "storageClassName": "longhorn",
+      "accessModes": [
+        "ReadWriteOnce"
+      ],
       "size": "200Gi",
       "gibibytes": 200,
       "count": 1
@@ -278,6 +359,9 @@
       "name": "audit/openbao",
       "workload": "StatefulSet/openbao",
       "storageClassName": "zeta-local-path",
+      "accessModes": [
+        "ReadWriteOnce"
+      ],
       "size": "5Gi",
       "gibibytes": 5,
       "count": 1
@@ -288,6 +372,9 @@
       "name": "data/openbao",
       "workload": "StatefulSet/openbao",
       "storageClassName": "zeta-local-path",
+      "accessModes": [
+        "ReadWriteOnce"
+      ],
       "size": "10Gi",
       "gibibytes": 10,
       "count": 1
@@ -298,6 +385,9 @@
       "name": "opensearch-cluster-master/opensearch-cluster-master",
       "workload": "StatefulSet/opensearch-cluster-master",
       "storageClassName": "zeta-local-path",
+      "accessModes": [
+        "ReadWriteOnce"
+      ],
       "size": "20Gi",
       "gibibytes": 20,
       "count": 1
@@ -308,6 +398,9 @@
       "name": "ziti-controller",
       "workload": "",
       "storageClassName": "longhorn",
+      "accessModes": [
+        "ReadWriteOnce"
+      ],
       "size": "3Gi",
       "gibibytes": 3,
       "count": 1
@@ -318,6 +411,9 @@
       "name": "rooms/portal",
       "workload": "StatefulSet/portal",
       "storageClassName": "longhorn",
+      "accessModes": [
+        "ReadWriteOnce"
+      ],
       "size": "5Gi",
       "gibibytes": 5,
       "count": 1
@@ -328,6 +424,9 @@
       "name": "valkey-data/redis-valkey",
       "workload": "StatefulSet/redis-valkey",
       "storageClassName": "longhorn",
+      "accessModes": [
+        "ReadWriteOnce"
+      ],
       "size": "8Gi",
       "gibibytes": 8,
       "count": 3
@@ -338,6 +437,9 @@
       "name": "blob-store-seaweedfs-all-in-one-data",
       "workload": "",
       "storageClassName": "zeta-local-path",
+      "accessModes": [
+        "ReadWriteOnce"
+      ],
       "size": "20Gi",
       "gibibytes": 20,
       "count": 1
@@ -348,6 +450,9 @@
       "name": "spire-data/spire-server",
       "workload": "StatefulSet/spire-server",
       "storageClassName": "zeta-local-path",
+      "accessModes": [
+        "ReadWriteOnce"
+      ],
       "size": "5Gi",
       "gibibytes": 5,
       "count": 1
@@ -358,6 +463,9 @@
       "name": "storage/tempo",
       "workload": "StatefulSet/tempo",
       "storageClassName": "longhorn",
+      "accessModes": [
+        "ReadWriteOnce"
+      ],
       "size": "20Gi",
       "gibibytes": 20,
       "count": 1
@@ -368,6 +476,9 @@
       "name": "vllm-cache",
       "workload": "",
       "storageClassName": "longhorn",
+      "accessModes": [
+        "ReadWriteOnce"
+      ],
       "size": "200Gi",
       "gibibytes": 200,
       "count": 1
@@ -378,6 +489,9 @@
       "name": "weaviate-data/weaviate",
       "workload": "StatefulSet/weaviate",
       "storageClassName": "longhorn",
+      "accessModes": [
+        "ReadWriteOnce"
+      ],
       "size": "32Gi",
       "gibibytes": 32,
       "count": 1

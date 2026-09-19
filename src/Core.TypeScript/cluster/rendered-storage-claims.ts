@@ -630,19 +630,71 @@ export interface RenderedPvc {
   readonly gibibytes: number | null;
   /** How many PVC objects this entry provisions: 1 standalone, `replicas` for a template. */
   readonly count: number;
+  /**
+   * The claim's `accessModes`, exactly as rendered. `[]` means the manifest
+   * DECLARED NONE, which is an unknown and not a denial.
+   *
+   * This field is the whole reason the render is worth reading for access
+   * mode. The prior guard scanned the CHECKED-IN tree for the string
+   * `ReadWriteMany`, and every Application it protects is a
+   * `spec.source.chart` against an external `repoURL` -- the repo holds a
+   * `valuesObject` and the PVC's access mode lives in the upstream chart. So
+   * for exactly the charts it existed to protect, it scanned files that cannot
+   * contain the answer. Here the answer is in the rendered output.
+   */
+  readonly accessModes: readonly string[];
 }
 
 function asRecord(value: unknown): Record<string, unknown> {
   return value !== null && typeof value === "object" && !Array.isArray(value) ? (value as Record<string, unknown>) : {};
 }
 
-function claimShape(spec: Record<string, unknown>): { storageClassName: string; size: string } {
+function claimShape(spec: Record<string, unknown>): {
+  storageClassName: string;
+  size: string;
+  accessModes: readonly string[];
+} {
   const resources = asRecord(spec["resources"]);
   const requests = asRecord(resources["requests"]);
+  // Only string entries survive. A non-string in `accessModes` is a shape this
+  // cannot read, and dropping it keeps the array honest -- the consumer then
+  // sees fewer modes than were declared, which reads as MORE unknown rather
+  // than as a mode that is not there.
+  const raw = spec["accessModes"];
+  const accessModes = Array.isArray(raw) ? raw.filter((m): m is string => typeof m === "string") : [];
   return {
     storageClassName: typeof spec["storageClassName"] === "string" ? spec["storageClassName"] : "",
     size: typeof requests["storage"] === "string" ? requests["storage"] : String(requests["storage"] ?? ""),
+    accessModes,
   };
+}
+
+/** Does a rendered claim ask for `ReadWriteMany`? */
+export function claimIsReadWriteMany(pvc: RenderedPvc): boolean {
+  return pvc.accessModes.includes("ReadWriteMany");
+}
+
+/**
+ * What the render can say about an Application's RWX need.
+ *
+ * THREE ANSWERS, NOT TWO, and the third is the point. A dev cluster serves
+ * every class from `rancher.io/local-path`, which is node-local and RWO-only,
+ * so an RWX claim never binds: the pod stays `Pending` and ArgoCD reports a
+ * pending PVC as Progressing rather than Degraded -- the Application does not
+ * fail, it never finishes. Guessing wrong in the permissive direction buys a
+ * hang, so `unknown` is a real verdict here and never collapses into `no`.
+ */
+export type RwxVerdict = "yes" | "no" | "unknown";
+
+export function rwxVerdictForApp(claims: readonly RenderedPvc[], appId: string): RwxVerdict {
+  const mine = claims.filter((c) => c.appId === appId);
+  // Nothing rendered for this app: the render is silent, not reassuring.
+  if (mine.length === 0) return "unknown";
+  if (mine.some(claimIsReadWriteMany)) return "yes";
+  // A claim that declared no modes at all cannot clear the app -- one silent
+  // claim is enough to make the whole answer unknown.
+  if (mine.some((c) => c.accessModes.length === 0)) return "unknown";
+  return "no";
 }
 
 /**
@@ -670,6 +722,7 @@ export function extractRenderedPvcs(
         name,
         workload: "",
         storageClassName: shape.storageClassName,
+        accessModes: shape.accessModes,
         size: shape.size,
         gibibytes: shape.size === "" ? null : quantityToGib(shape.size),
         count: 1,
@@ -698,6 +751,7 @@ export function extractRenderedPvcs(
         name: `storage/${name}`,
         workload: `${kind}/${name}`,
         storageClassName: shape.storageClassName,
+        accessModes: shape.accessModes,
         size: shape.size,
         gibibytes: shape.size === "" ? null : quantityToGib(shape.size),
         count: replicas,
@@ -717,6 +771,7 @@ export function extractRenderedPvcs(
         name: `${templateName}/${name}`,
         workload: `${kind}/${name}`,
         storageClassName: shape.storageClassName,
+        accessModes: shape.accessModes,
         size: shape.size,
         gibibytes: shape.size === "" ? null : quantityToGib(shape.size),
         count: replicas,

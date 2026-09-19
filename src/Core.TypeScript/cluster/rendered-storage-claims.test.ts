@@ -43,6 +43,7 @@ const pvc = (over: Partial<RenderedPvc> = {}): RenderedPvc => ({
   name: "data/app",
   workload: "StatefulSet/app",
   storageClassName: "longhorn",
+  accessModes: ["ReadWriteOnce"],
   size: "10Gi",
   gibibytes: 10,
   count: 1,

@@ -1,0 +1,14 @@
+{
+  "id": "080d05cbe2973810a013000850ec3a6d",
+  "at": "2026-09-19T11:45:27.783Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M2WQRMQ6087G0R002RXQJTJ",
+    "type": "task",
+    "title": "read ReadWriteMany out of the helm render, not only the checked-in tree",
+    "slug": "read-readwritemany-out-of-the-helm-render-not-only-the-check",
+    "priority": "P2",
+    "filename": "081M2WQRMQ6087G0R002RXQJTJ-read-readwritemany-out-of-the-helm-render-not-only-the-check.md"
+  }
+}
