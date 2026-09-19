@@ -63,6 +63,21 @@ recommendation and not a diff.
    only lane proving the image set resolves on arm64 and it must be kept —
    ideally moved to k3d. If no, it is testing an architecture nothing will run.
    *Expected shape: yes/no plus the node inventory.*
+
+   > **ANSWERED 2026-09-19 (Aaron): YES — arm64 is wanted.** *"we do want to
+   > support arm64"*. So the arm64 leg is real coverage, not rig-testing, and
+   > the **HOLD** verdict in the table above resolves to **KEEP**.
+   >
+   > Recorded at exactly the strength it was given, and no further. The answer
+   > settles the keep/retire decision; it is a statement of INTENT TO SUPPORT,
+   > not the node inventory this question also asked for. Two things therefore
+   > remain open rather than being quietly treated as decided: whether metal
+   > today *has* arm64 nodes (the intent is satisfiable by nodes that do not
+   > exist yet), and whether the leg moves from kind to k3d, which is the
+   > "ideally" half and still rides on open question 2's budget answer.
+   >
+   > Reading it as "yes, and here is the inventory" would convert a supplied
+   > answer into two unsupplied ones.
 2. **Will k3d host the `included` roster inside the budget?** The kind
    `included` run finished in **513 s against a 2400 s cap** (4.7× headroom), so
    there is room; k3d's own per-node overhead against that headroom is not
