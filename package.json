@@ -89,8 +89,8 @@
     "@types/semver": "7.8.0",
     "assemblyscript": "0.28.20",
     "eslint": "10.10.0",
-    "eslint-plugin-sonarjs": "4.2.0",
-    "fast-check": "4.9.0",
+    "eslint-plugin-sonarjs": "4.2.1",
+    "fast-check": "4.10.1",
     "globals": "17.12.0",
     "jiti": "2.7.0",
     "markdownlint-cli2": "0.23.2",
@@ -103,7 +103,7 @@
     "stylelint-config-standard": "40.0.0",
     "typescript": "6.0.3",
     "typescript-eslint": "8.70.0",
-    "vite": "8.2.2",
+    "vite": "8.3.0",
     "z3-solver": "5.2.0"
   },
   "overrides": {
@@ -124,6 +124,6 @@
     "epub-gen-memory": "^1.1.2",
     "micro-key-producer": "0.10.2",
     "pg": "8.23.0",
-    "yaml": "^2.9.0"
+    "yaml": "^2.9.1"
   }
 }
