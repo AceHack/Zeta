@@ -522,6 +522,76 @@ export function isFullyPriced(f: Footprint): boolean {
   return f.unmeasurableImages.length === 0 && f.unpricedApps.length === 0;
 }
 
+/**
+ * Price a lane under the TWO-TIER rule: the charts under test at the HA rung,
+ * everything they drag in at the cheap one.
+ *
+ * WHY THIS EXISTS. `priceSet` charges one rung to the whole set, and that makes
+ * the interesting question unanswerable. Measured 2026-09-18 over 49 charts:
+ * everything at `dev` is 4650m and tests nothing at HA; everything at `metal`
+ * is 12365m, needs 4 lanes, and still loses 3 charts that no longer fit alone.
+ * Neither says whether a chart WORKS with replicas and redundancy on, which is
+ * the only thing a deploy lane is for.
+ *
+ * The asymmetry is the point and it is not a trick: a lane exists to test its
+ * SUBJECTS. Their dependencies only have to be present and serving, so paying
+ * HA prices for a dependency buys nothing and costs the budget that would have
+ * bought HA for a subject. Aaron 2026-09-18: *"charts that can be fully tested
+ * with HA and everything turned on if possible and redundance ... where the
+ * deps could be not HA"*.
+ *
+ * Disk and image count are deliberately NOT re-derived per tier. Images are a
+ * property of the chart, not of its replica count -- `buildModel` loads
+ * `footprints` independently of `rung`, and only `catalogue` is rung-scoped --
+ * so the image set for a lane is the same either way. Re-deriving it would
+ * invent a difference the data does not have.
+ */
+export function priceTwoTier(
+  model: PartitionModel,
+  haCatalogue: Catalogue,
+  subjects: ReadonlySet<string>,
+  all: Iterable<string>,
+): Footprint {
+  const names = [...all];
+  // `priceSet` supplies images, disk and the unmeasurable-image roster, all of
+  // which are rung-free. Only cpu/memory are re-charged below.
+  const base = priceSet(model, names);
+  let cpuMillis = 0;
+  let memoryMib = 0;
+  const unpricedApps: string[] = [];
+  for (const name of names) {
+    const entry = model.byName.get(name);
+    if (entry === undefined) throw new Error(`priceTwoTier: "${name}" is not in the roster`);
+    // A SUBJECT not present in the HA catalogue is UNPRICED, never quietly
+    // charged at the dev rung. Falling back would report a lane as affordable
+    // on the strength of a number that describes the wrong configuration --
+    // which is the whole failure this function exists to stop.
+    const rows = subjects.has(name) ? haCatalogue.rows : model.catalogue.rows;
+    const row = rows.get(entry.catalogueKey);
+    if (row === undefined) unpricedApps.push(name);
+    else {
+      cpuMillis += row.cpuMillis;
+      memoryMib += row.memoryMib;
+    }
+  }
+  return {
+    ...base,
+    cpuMillis,
+    memoryMib,
+    unpricedApps: unpricedApps.toSorted(stringCompare),
+  };
+}
+
+/**
+ * How full a lane is, as a fraction of budget on its WORST axis.
+ *
+ * The worst axis and not the mean: a lane at 30% cpu and 99% memory has no
+ * headroom, and averaging to 65% would claim otherwise. Headroom is `1 - this`.
+ */
+export function utilizationOf(f: Footprint, budget: Budget): number {
+  return Math.max(f.cpuMillis / budget.cpuMillis, f.memoryMib / budget.memoryMib, f.diskGib / budget.diskGib);
+}
+
 /** Strictly inside the budget on all three axes. */
 export function fitsBudget(f: Footprint, budget: Budget): boolean {
   return f.cpuMillis <= budget.cpuMillis && f.memoryMib <= budget.memoryMib && f.diskGib <= budget.diskGib;
@@ -661,6 +731,195 @@ export function packLanes(model: PartitionModel, options: PackOptions = {}): Par
  * that job fills the disk and says so, which is the only way this whole
  * exercise stops resting on x2.67.
  */
+/** Where metal's first-boot installs live. The base below is derived from it. */
+export const FIRST_BOOT_DIR = "full-ai-cluster/k8s/bootstrap";
+
+/**
+ * The charts EVERY lane stands up, whatever it is testing.
+ *
+ * NOT a hand-picked convenience set. These are exactly the `*-install.yaml`
+ * entries metal applies at first boot, so a lane without them is testing a
+ * cluster shape that never exists on hardware -- ArgoCD is what syncs anything
+ * at all, cert-manager and trust-manager issue the certs everything else
+ * assumes, cilium is metal's CNI, external-secrets resolves the references
+ * charts declare, and spire is the identity root.
+ *
+ * Aaron 2026-09-18: *"where some common things are always needed in each lane"*.
+ *
+ * Kept honest by a falsifier rather than by this comment: the test derives the
+ * list from `FIRST_BOOT_DIR` and fails when the two disagree, so adding an
+ * install to metal's first boot without adding it here is a red test rather
+ * than a lane quietly missing a dependency hardware will have.
+ */
+export const METAL_FIRST_BOOT_BASE: readonly string[] = [
+  "argocd",
+  "cert-manager",
+  "cilium",
+  "external-secrets",
+  "spire",
+  "trust-manager",
+];
+
+export interface BalancedLane {
+  readonly id: string;
+  /** Charts this lane tests, priced at the HA rung. */
+  readonly subjects: readonly string[];
+  /** Everything the lane stands up: subjects, their closures, and the base. */
+  readonly members: readonly string[];
+  readonly footprint: Footprint;
+  /** Fraction of budget consumed on the worst axis. Headroom is `1 - this`. */
+  readonly utilization: number;
+}
+
+export interface BalancedPartition {
+  readonly targetLanes: number;
+  readonly budget: Budget;
+  readonly base: readonly string[];
+  readonly baseClosure: readonly string[];
+  readonly lanes: readonly BalancedLane[];
+  /** Subjects that could not be placed, each with the reason, never silently dropped. */
+  readonly infeasible: readonly Quarantined[];
+  /** The worst lane's utilization -- the number that says whether there is room to grow. */
+  readonly maxUtilization: number;
+  readonly totalSubjects: number;
+  readonly coveredSubjects: number;
+}
+
+export interface BalancedPackOptions {
+  readonly targetLanes?: number;
+  readonly margin?: number;
+  /** Charts every lane must stand up regardless of what it tests. */
+  readonly base?: readonly string[];
+}
+
+/**
+ * Pack subjects into a FIXED number of lanes, minimising the fullest lane.
+ *
+ * DIFFERENT OBJECTIVE FROM `packLanes`, on purpose. `packLanes` answers "what is
+ * the fewest lanes this fits in", and first-fit-decreasing answers it by filling
+ * each lane to the cap before opening the next -- which is correct for that
+ * question and wrong for this one. Measured 2026-09-18 at the two-tier rule: FFD
+ * returned 4 lanes holding 30 / 2 / 5 / 9 subjects, with lane-1 pinned exactly at
+ * the 2125m budget. Every one of those 30 charts was one replica away from not
+ * fitting, and a chart is a thing that grows.
+ *
+ * So this minimises the MAXIMUM utilisation instead. Aaron 2026-09-18:
+ * *"for balance not absolute greedy cause charts will change over time and we
+ * want headroom to redesign"*. Headroom is not slack left over by accident; it
+ * is the property being optimised for, and `maxUtilization` is what reports it.
+ *
+ * Least-loaded-first (LPT). Each subject goes to the lane whose utilisation is
+ * LOWEST AFTER taking it -- not the lane that is emptiest now. That difference
+ * matters because lane cost is the size of a UNION: a subject sharing a closure
+ * with a lane may cost that lane almost nothing while costing an empty lane its
+ * whole closure, so "emptiest now" would scatter related charts and pay for the
+ * same dependency several times.
+ *
+ * LPT is a heuristic with a known 4/3 bound on makespan, so the balance is good
+ * and not optimal. It is chosen for the same reason FFD was: deterministic and
+ * legible. Ordering is by descending solo utilisation, ties by name, so the
+ * result never depends on `Map` iteration order -- the DST property a CI matrix
+ * source has to have.
+ */
+export function packBalanced(
+  model: PartitionModel,
+  haCatalogue: Catalogue,
+  options: BalancedPackOptions = {},
+): BalancedPartition {
+  const targetLanes = options.targetLanes ?? 6;
+  if (targetLanes < 1) throw new Error(`targetLanes must be >= 1, got ${String(targetLanes)}`);
+  const margin = options.margin ?? 0.85;
+  const budget = budgetOf(model.catalogue.envelope, margin);
+  const base = [...(options.base ?? [])].toSorted(stringCompare);
+
+  const baseClosure = new Set<string>();
+  for (const b of base) {
+    if (!model.byName.has(b)) throw new Error(`packBalanced: base chart "${b}" is not in the roster`);
+    for (const n of closureOf(model, b)) baseClosure.add(n);
+  }
+
+  // Solo feasibility first. A subject that cannot be tested ALONE in a lane can
+  // never be tested in a shared one, and saying so by name is the difference
+  // between a known gap and a chart that quietly vanished from every lane.
+  const candidates: { name: string; members: ReadonlySet<string>; solo: number }[] = [];
+  const infeasible: Quarantined[] = [];
+  for (const entry of model.roster) {
+    const members = new Set([...closureOf(model, entry.name), ...baseClosure]);
+    const f = priceTwoTier(model, haCatalogue, new Set([entry.name]), members);
+    if (!isFullyPriced(f)) {
+      infeasible.push({ name: entry.name, reason: unpricedReason(f), footprint: f });
+      continue;
+    }
+    if (!fitsBudget(f, budget)) {
+      infeasible.push({ name: entry.name, reason: overBudgetReason(f, budget), footprint: f });
+      continue;
+    }
+    candidates.push({ name: entry.name, members, solo: utilizationOf(f, budget) });
+  }
+
+  const order = candidates.toSorted((a, b) => (b.solo - a.solo) || stringCompare(a.name, b.name));
+  const lanes: { subjects: Set<string>; members: Set<string> }[] = Array.from(
+    { length: targetLanes },
+    () => ({ subjects: new Set<string>(), members: new Set(baseClosure) }),
+  );
+
+  for (const c of order) {
+    let bestIndex = -1;
+    let bestUtil = Number.POSITIVE_INFINITY;
+    for (let i = 0; i < lanes.length; i += 1) {
+      const lane = lanes[i];
+      if (lane === undefined) continue;
+      const subjects = new Set([...lane.subjects, c.name]);
+      const members = new Set([...lane.members, ...c.members]);
+      const f = priceTwoTier(model, haCatalogue, subjects, members);
+      if (!fitsBudget(f, budget)) continue;
+      const util = utilizationOf(f, budget);
+      // Strictly-less keeps the earliest lane on a tie, so the assignment is
+      // stable rather than dependent on iteration order.
+      if (util < bestUtil) {
+        bestUtil = util;
+        bestIndex = i;
+      }
+    }
+    if (bestIndex < 0) {
+      const f = priceTwoTier(model, haCatalogue, new Set([c.name]), c.members);
+      infeasible.push({
+        name: c.name,
+        reason: `fits alone but no lane of ${String(targetLanes)} had room; raise targetLanes or the runner`,
+        footprint: f,
+      });
+      continue;
+    }
+    const chosen = lanes[bestIndex];
+    if (chosen === undefined) continue;
+    chosen.subjects.add(c.name);
+    for (const m of c.members) chosen.members.add(m);
+  }
+
+  const built: BalancedLane[] = lanes.map((lane, i) => {
+    const f = priceTwoTier(model, haCatalogue, lane.subjects, lane.members);
+    return {
+      id: `lane-${String(i + 1)}`,
+      subjects: [...lane.subjects].toSorted(stringCompare),
+      members: [...lane.members].toSorted(stringCompare),
+      footprint: f,
+      utilization: utilizationOf(f, budget),
+    };
+  });
+
+  return {
+    targetLanes,
+    budget,
+    base,
+    baseClosure: [...baseClosure].toSorted(stringCompare),
+    lanes: built,
+    infeasible: infeasible.toSorted((a, b) => stringCompare(a.name, b.name)),
+    maxUtilization: built.reduce((m, l) => Math.max(m, l.utilization), 0),
+    totalSubjects: model.roster.length,
+    coveredSubjects: built.reduce((n, l) => n + l.subjects.length, 0),
+  };
+}
+
 export function laneImages(model: PartitionModel, lane: Lane): readonly string[] {
   const out = new Set<string>();
   for (const member of lane.members) {

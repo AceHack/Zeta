@@ -7,7 +7,7 @@
 // which mutation each one catches.
 
 import { describe, expect, test } from "bun:test";
-import { readFileSync } from "node:fs";
+import { readFileSync, readdirSync } from "node:fs";
 import { resolve } from "node:path";
 import {
   budgetOf,
@@ -28,6 +28,11 @@ import {
   type DeclaredGraph,
   type PartitionModel,
   type RosterEntry,
+  priceTwoTier,
+  utilizationOf,
+  packBalanced,
+  METAL_FIRST_BOOT_BASE,
+  FIRST_BOOT_DIR,
 } from "./lane-partition.ts";
 import { discoverExpectedApplications } from "./argocd-health-test.ts";
 import { envelopeOverstatements, loadRecordedEnvelope } from "./assert-runner-envelope.ts";
@@ -814,5 +819,210 @@ describe("081M23BCR90087G0R002GYP7TE lane coverage of the asserted roster", () =
       expect(entry.reason.length).toBeGreaterThan(0);
       expect(entry.reason).toMatch(/unmeasurable image|no CPU\/memory row|cpu |memory |disk /);
     }
+  });
+});
+
+// --------------------------------------------------- two-tier HA pricing ---
+// Aaron 2026-09-18: charts under test at HA with everything on; their deps need
+// only be present, so they stay cheap. The fixture's HA rung is 3x dev, which
+// makes every number below checkable by hand.
+
+/** The toy model with images small enough that several charts fit a lane alone. */
+function cheapImagesModel(): PartitionModel {
+  const base = toyModel();
+  const small = 64 * 1024 ** 2; // 64 MiB compressed
+  return {
+    ...base,
+    footprints: {
+      ...base.footprints,
+      imageSizes: {
+        "core:1": { compressedBytes: small },
+        "a:1": { compressedBytes: small },
+        "b:1": { compressedBytes: small },
+        "huge:1": { compressedBytes: small },
+        "ghost:1": { compressedBytes: null, unmeasurableReason: "manifest HTTP 401" },
+      },
+    },
+  };
+}
+
+function haCatalogue(rows?: Map<string, { cpuMillis: number; memoryMib: number }>): Catalogue {
+  return {
+    envelope: toyModel().catalogue.envelope,
+    rows:
+      rows ??
+      new Map([
+        ["core", { cpuMillis: 300, memoryMib: 300 }],
+        ["a", { cpuMillis: 300, memoryMib: 300 }],
+        ["b", { cpuMillis: 300, memoryMib: 300 }],
+        ["huge", { cpuMillis: 300, memoryMib: 300 }],
+        ["murky", { cpuMillis: 300, memoryMib: 300 }],
+      ]),
+    rungs: ["metal"],
+  };
+}
+
+describe("priceTwoTier", () => {
+  test("the SUBJECT pays the HA rung and its dependency does not", () => {
+    const m = toyModel();
+    const f = priceTwoTier(m, haCatalogue(), new Set(["a"]), ["a", "core"]);
+    // a at HA (300) + core at dev (100). Neither 200 (all dev) nor 600 (all HA).
+    expect(f.cpuMillis).toBe(400);
+    expect(f.memoryMib).toBe(400);
+  });
+
+  test("swapping which chart is the subject swaps which one pays", () => {
+    const m = toyModel();
+    const subjectA = priceTwoTier(m, haCatalogue(), new Set(["a"]), ["a", "core"]);
+    const subjectCore = priceTwoTier(m, haCatalogue(), new Set(["core"]), ["a", "core"]);
+    expect(subjectA.cpuMillis).toBe(400);
+    expect(subjectCore.cpuMillis).toBe(400);
+    // Same total here only because the fixture is symmetric; the point is that
+    // BOTH differ from the single-rung answers.
+    expect(priceSet(m, ["a", "core"]).cpuMillis).toBe(200);
+  });
+
+  // THE GUARD. Falling back to the dev row for a subject the HA catalogue does
+  // not describe would report a lane affordable on a number that describes the
+  // wrong configuration -- the exact failure two-tier pricing exists to stop.
+  test("a subject absent from the HA catalogue is UNPRICED, never charged at dev", () => {
+    const m = toyModel();
+    const partial = haCatalogue(new Map([["core", { cpuMillis: 300, memoryMib: 300 }]]));
+    const f = priceTwoTier(m, partial, new Set(["a"]), ["a", "core"]);
+    expect(f.unpricedApps).toEqual(["a"]);
+    expect(isFullyPriced(f)).toBe(false);
+    // Only `core` is priced, at DEV (100) because it is not a subject. The
+    // subject's 100 was NOT silently borrowed from the dev catalogue to make
+    // the lane look affordable -- that borrowing is the whole failure mode.
+    expect(f.cpuMillis).toBe(100);
+  });
+
+  test("disk and images are rung-free -- identical to priceSet", () => {
+    const m = toyModel();
+    const one = priceSet(m, ["a", "core"]);
+    const two = priceTwoTier(m, haCatalogue(), new Set(["a"]), ["a", "core"]);
+    expect(two.diskGib).toBe(one.diskGib);
+    expect(two.distinctImages).toBe(one.distinctImages);
+    expect(two.unmeasurableImages).toEqual(one.unmeasurableImages);
+  });
+
+  test("an unmeasurable image still disqualifies the lane", () => {
+    const m = toyModel();
+    const f = priceTwoTier(m, haCatalogue(), new Set(["murky"]), ["murky"]);
+    expect(isFullyPriced(f)).toBe(false);
+    expect(f.unmeasurableImages).toEqual(["ghost:1"]);
+  });
+
+  test("a name outside the roster throws rather than pricing as zero", () => {
+    const m = toyModel();
+    expect(() => priceTwoTier(m, haCatalogue(), new Set(["nope"]), ["nope"])).toThrow(/not in the roster/);
+  });
+});
+
+describe("utilizationOf", () => {
+  test("reports the WORST axis, not the mean", () => {
+    const m = toyModel();
+    const budget = budgetOf(m.catalogue.envelope, 0.85);
+    const f = { ...priceSet(m, ["core"]), cpuMillis: 0, memoryMib: budget.memoryMib, diskGib: 0 };
+    // cpu 0% and memory 100% must read as full, not as 50%.
+    expect(utilizationOf(f, budget)).toBe(1);
+  });
+});
+
+describe("packBalanced", () => {
+  const BASE = ["core"];
+
+  test("every lane stands up the base, whatever it tests", () => {
+    const m = toyModel();
+    const p = packBalanced(m, haCatalogue(), { targetLanes: 2, base: BASE });
+    for (const lane of p.lanes) expect(lane.members).toContain("core");
+    expect(p.baseClosure).toContain("core");
+  });
+
+  // The reason this function exists instead of reusing `packLanes`: FFD fills
+  // lane 1 to the cap, which leaves the charts in it one replica from not
+  // fitting. Balance is the property being bought.
+  // THE DISCRIMINATING TEST. The first version of this asserted only that lanes
+  // were "within 25 points", and a mutation replacing the balance objective with
+  // plain first-fit SURVIVED it -- the assertion was true of both algorithms, so
+  // it witnessed nothing. Given as many lanes as there are feasible subjects,
+  // balancing puts one in each; first-fit crams lane-1 to the cap and leaves the
+  // rest empty. That difference is what this now measures.
+  test("given a lane per subject, balancing uses them all instead of cramming the first", () => {
+    const m = cheapImagesModel();
+    const p = packBalanced(m, haCatalogue(), { targetLanes: 4, base: BASE });
+    const feasible = p.totalSubjects - p.infeasible.length;
+    expect(feasible).toBe(4);
+    const nonEmpty = p.lanes.filter((l) => l.subjects.length > 0);
+    expect(nonEmpty.length).toBe(4);
+    for (const lane of nonEmpty) expect(lane.subjects.length).toBe(1);
+    // First-fit would pack two subjects into lane-1 and drive it past 70%.
+    expect(p.maxUtilization).toBeLessThan(0.6);
+  });
+
+  test("maxUtilization is the reported headroom and is below 1 when it fits", () => {
+    const m = toyModel();
+    const p = packBalanced(m, haCatalogue(), { targetLanes: 3, base: BASE });
+    expect(p.maxUtilization).toBeLessThanOrEqual(1);
+    expect(p.maxUtilization).toBe(Math.max(...p.lanes.map((l) => l.utilization)));
+  });
+
+  test("more lanes never means less headroom", () => {
+    const m = cheapImagesModel();
+    const two = packBalanced(m, haCatalogue(), { targetLanes: 2, base: BASE });
+    const four = packBalanced(m, haCatalogue(), { targetLanes: 4, base: BASE });
+    expect(four.maxUtilization).toBeLessThanOrEqual(two.maxUtilization);
+  });
+
+  // Nothing may vanish. A chart that is neither in a lane nor in `infeasible`
+  // is capacity nobody pays for and coverage nobody has -- the defect this
+  // module already names for dropped roster joins.
+  test("every chart is either covered or named infeasible, never dropped", () => {
+    const m = toyModel();
+    const p = packBalanced(m, haCatalogue(), { targetLanes: 3, base: BASE });
+    expect(p.coveredSubjects + p.infeasible.length).toBe(p.totalSubjects);
+    for (const q of p.infeasible) expect(q.reason.length).toBeGreaterThan(0);
+  });
+
+  test("an unpriceable chart is named with its reason", () => {
+    const m = toyModel();
+    const p = packBalanced(m, haCatalogue(), { targetLanes: 3, base: BASE });
+    const murky = p.infeasible.find((q) => q.name === "murky");
+    expect(murky?.reason).toContain("unmeasurable image ghost:1");
+  });
+
+  test("deterministic -- same inputs, same lanes (the DST property a matrix source needs)", () => {
+    const m = toyModel();
+    const a = packBalanced(m, haCatalogue(), { targetLanes: 3, base: BASE });
+    const b = packBalanced(m, haCatalogue(), { targetLanes: 3, base: BASE });
+    expect(a.lanes.map((l) => l.subjects)).toEqual(b.lanes.map((l) => l.subjects));
+  });
+
+  test("refuses a nonsensical width instead of coercing it", () => {
+    const m = toyModel();
+    expect(() => packBalanced(m, haCatalogue(), { targetLanes: 0 })).toThrow(/targetLanes/);
+  });
+
+  test("a base chart outside the roster throws rather than being skipped", () => {
+    const m = toyModel();
+    expect(() => packBalanced(m, haCatalogue(), { targetLanes: 2, base: ["ghost"] })).toThrow(/not in the roster/);
+  });
+});
+
+describe("the always-present base is metal's own first boot", () => {
+  // The base is the one part of every lane that is not derived from the graph,
+  // so it is the part most able to drift from what hardware actually does.
+  test("every *-install.yaml metal applies at first boot is in the base", () => {
+    const dir = resolve(REPO_ROOT, FIRST_BOOT_DIR);
+    const derived = readdirSync(dir)
+      .filter((f) => f.endsWith("-install.yaml"))
+      .map((f) => f.slice(0, -"-install.yaml".length))
+      .toSorted();
+    expect([...METAL_FIRST_BOOT_BASE].toSorted()).toEqual(derived);
+  });
+
+  test("every base chart exists in the real roster", () => {
+    const m = buildModel({ repoRoot: REPO_ROOT, rung: "dev" });
+    for (const b of METAL_FIRST_BOOT_BASE) expect(m.byName.has(b)).toBe(true);
   });
 });

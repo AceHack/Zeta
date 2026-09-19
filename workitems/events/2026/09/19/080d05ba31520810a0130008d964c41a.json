@@ -1,0 +1,14 @@
+{
+  "id": "080d05ba31520810a0130008d964c41a",
+  "at": "2026-09-19T01:27:04.001Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M2VMCAJ1087G0R003075RV0",
+    "type": "task",
+    "title": "resplit the chart lanes by two-tier HA pricing and balance for headroom rather than fewest lanes",
+    "slug": "resplit-the-chart-lanes-by-two-tier-ha-pricing-and-balance-f",
+    "priority": "P2",
+    "filename": "081M2VMCAJ1087G0R003075RV0-resplit-the-chart-lanes-by-two-tier-ha-pricing-and-balance-f.md"
+  }
+}
