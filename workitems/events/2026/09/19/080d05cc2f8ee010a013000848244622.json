@@ -1,0 +1,14 @@
+{
+  "id": "080d05cc2f8ee010a013000848244622",
+  "at": "2026-09-19T11:55:58.300Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M2WRBWEW087G0R0009JAV2R",
+    "type": "bug",
+    "title": "conflict-of-interest admission is decided by binding order, so a one-sided declaration is bypassable",
+    "slug": "conflict-of-interest-admission-is-decided-by-binding-order-s",
+    "priority": "P2",
+    "filename": "081M2WRBWEW087G0R0009JAV2R-conflict-of-interest-admission-is-decided-by-binding-order-s.md"
+  }
+}

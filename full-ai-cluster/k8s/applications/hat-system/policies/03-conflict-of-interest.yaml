@@ -42,6 +42,47 @@ spec:
             [wearer, target_name, conflict_name],
           )
         }
+
+        # THE REVERSE DIRECTION. The rule above reads only the INCOMING hat's
+        # `conflictsWith`, so a one-sided declaration was enforced in one
+        # binding order and not the other -- and this file's own header has
+        # claimed "(or vice-versa)" since it was written.
+        #
+        # MEASURED 2026-09-19 on the committed seed hats. `policy-admin`
+        # declares `conflictsWith: [executor, hat-designer]`; neither names it
+        # back. So:
+        #   bind executor, then policy-admin  -> policy-admin's list holds
+        #                                        executor            -> DENIED
+        #   bind policy-admin, then executor  -> executor's list is
+        #                                        [hat-designer]      -> ALLOWED
+        # Same pair, opposite outcome, decided by arrival order. An
+        # anti-collusion control a wearer can defeat by choosing which hat to
+        # take first is not a control.
+        #
+        # This rule asks the EXISTING hat's declaration instead, so the pair is
+        # refused whichever arrives second. Both rules are kept: Rego violations
+        # are a union, a symmetric pair is simply caught twice, and deleting
+        # either one silently restores half the hole.
+        violation[{"msg": msg}] {
+          input.review.kind.kind == "HatBinding"
+          input.review.operation == "CREATE"
+          wearer := input.review.object.spec.wearer.spiffeID
+          target_name := input.review.object.spec.hat
+
+          some ns
+          some name
+          existing := data.inventory.namespace[ns]["society.zeta.io/v1alpha1"]["HatBinding"][name]
+          existing.spec.wearer.spiffeID == wearer
+          existing.status.phase != "Revoked"
+
+          existing_hat := data.inventory.cluster["society.zeta.io/v1alpha1"]["Hat"][existing.spec.hat]
+          existing_hat.spec.throttles.conflictsWith[_] == target_name
+
+          msg := sprintf(
+            "wearer %v cannot bind hat %v while holding %v, which declares it conflicting",
+            [wearer, target_name, existing.spec.hat],
+          )
+        }
 ---
 apiVersion: constraints.gatekeeper.sh/v1beta1
 kind: HatConflict
