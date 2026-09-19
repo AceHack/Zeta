@@ -1,0 +1,12 @@
+{
+  "pr_number": 17445,
+  "archive_path": "docs/history/pr-reviews/2026/09/19/PR-17445-fix-hygiene-an-analyze-still-running-is-undecided-not-uncovered.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-19T00:10:58.828Z",
+  "schema_version": "v1",
+  "commit_sha": "8d5e340185532d8ae04ae140c3966fbd4379761e",
+  "title": "fix(hygiene): an Analyze still running is undecided, not uncovered",
+  "state": "MERGED",
+  "merged_at": "2026-09-19T00:10:14Z",
+  "head_ref": "fix/sast-audit-pending-is-not-uncovered"
+}
