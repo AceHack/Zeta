@@ -2060,3 +2060,125 @@ describe("CANCELLED WORK IS NOT WALKED", () => {
     expect(run2.cascade.nodes.find((n) => n.workId === leaf.workId)?.state).toBe(WorkState.Canceled);
   }, 60_000);
 });
+
+describe("WORK UNDER A COLLECTION IS JUDGED IN THE COLLECTION'S BRANCH UNTIL THAT BRANCH LANDS", () => {
+  // MEASURED on the Waypoint run, 2026-09-20. Three follow-up leaves (task-7657, task-8094,
+  // task-10459) each merged into their project's `feature/…` branch, which lands on the trunk only
+  // once the project's acceptance gate passes. Then: the verify leaf of each ran its suite on the
+  // TRUNK (the dependency was `alreadyLanded`, so no checkout was rejoined and the runner fell to
+  // its base directory) and failed for a defect the branch had already fixed; and the project's
+  // `final_architecture_review` itself was judged on the trunk, where it found the same defect,
+  // rejected, and minted a fourth follow-up. A branch nobody looks at cannot pass the gate that
+  // would land it. The checkout for anything judged under a collection is that collection's
+  // branch while it is unlanded; once landed, the trunk — and work minted after that goes to the
+  // trunk directly, because a landed collection's branch is never merged again.
+  const { branchNameIn } = require("./branch-topology") as typeof import("./branch-topology");
+  function recordingPorts() {
+    const opened: { workId: string; branch: string; base?: string }[] = [];
+    const testedIn: (string | undefined)[] = [];
+    const reviewedIn: { gate: GateKind; workId: string; workdir?: string }[] = [];
+    const change = {
+      meta: { port: Port.ChangeControl, name: "recording", fidelity: Fidelity.Real, describes: "records opens" },
+      open: async (node: { readonly workId: string }, ctx: { readonly branch: string; readonly base?: string }) => {
+        opened.push({ workId: node.workId, branch: ctx.branch, ...(ctx.base === undefined ? {} : { base: ctx.base }) });
+        return { ok: true as const, value: { changeId: `${ctx.branch}@${node.workId}`, branch: ctx.branch, ...(ctx.base === undefined ? {} : { base: ctx.base }), workdir: `/checkouts/${ctx.branch}` }, evidence: [] };
+      },
+      merge: async (handle: { readonly branch: string }) => ({ ok: true as const, value: { changeId: "m", branch: handle.branch }, evidence: [] }),
+    };
+    const tests = {
+      meta: { port: Port.TestExecution, name: "recording", fidelity: Fidelity.Real, describes: "records where it ran" },
+      run: async (_tc: unknown, ctx: { readonly workdir?: string }) => {
+        testedIn.push(ctx.workdir);
+        return { ok: true as const, value: { outcome: RunOutcome.Passed }, evidence: [] };
+      },
+    };
+    const review = (verdictFor: (req: { gate: GateKind; workId: string }) => { outcome: GateOutcome; reason: string }) => ({
+      meta: { port: Port.Review, name: "recording", fidelity: Fidelity.Real, describes: "records where it judged" },
+      review: async (req: { gate: GateKind; workId: string; workdir?: string }) => {
+        reviewedIn.push({ gate: req.gate, workId: req.workId, ...(req.workdir === undefined ? {} : { workdir: req.workdir }) });
+        return { ok: true as const, value: verdictFor(req), evidence: [] };
+      },
+    });
+    return { change, tests, review, opened, testedIn, reviewedIn };
+  }
+  const settings = [{ setting: ProcessSetting.Delivery, value: "merge", why: "the organization integrates its own changes" }];
+  // The fixture's one code leaf goes to the trunk by shape; stated org-wide, the project collects it.
+  const collecting = [...settings, { setting: ProcessSetting.IntegrationBranch, value: "collect", why: "every rung integrates on a branch" }];
+
+  test("a verify leaf whose dependency landed in an unlanded collection's branch tests THAT branch, not the trunk", async () => {
+    const first = recordingPorts();
+    const base = deps();
+    const run1 = await runOrgRuntime({ ...base, providers: { ...defaultProviderSet(base), change: first.change as never, tests: first.tests as never }, settings: collecting } as OrgRuntimeDeps);
+    const verify = run1.cascade.nodes.find((n) => n.workType === WorkType.Review);
+    const code = run1.cascade.nodes.find((n) => n.workId === (verify?.dependsOn ?? [])[0]);
+    if (verify === undefined || code === undefined) throw new Error("fixture has no verify leaf with a dependency");
+    const under = first.opened.find((o) => o.workId === code.workId)?.base;
+    if (under === undefined) throw new Error("fixture's code leaf does not integrate under a collection");
+    const collection = run1.cascade.nodes.find((n) => !isLeafType(n.workType) && branchNameIn(run1.cascade, n) === under);
+    if (collection === undefined) throw new Error(`no collection owns ${under}`);
+
+    // RESUME: the code leaf has landed — into the collection's branch — the collection has not, and
+    // the verify leaf is owed again.
+    const prior = { ...run1.cascade, nodes: run1.cascade.nodes.map((n) => (n.workId === verify.workId ? { ...n, state: WorkState.Open } : n.workId === code.workId ? { ...n, assigneeHatId: undefined } : n)) };
+    const second = recordingPorts();
+    const run2 = await runOrgRuntime({
+      ...base,
+      providers: { ...defaultProviderSet(base), change: second.change as never, tests: second.tests as never },
+      settings: collecting,
+      priorCascade: prior as never,
+      priorGateEvaluations: run1.gateEvaluations.filter((e) => e.workId !== verify.workId),
+      alreadyLanded: new Set([code.workId]),
+      maxParallel: 3,
+    } as OrgRuntimeDeps);
+    expect(run2.gateEvaluations.some((e) => e.workId === verify.workId)).toBe(true);
+    expect(second.testedIn.length).toBeGreaterThan(0);
+    // The COLLECTION's checkout was rejoined, and every run of the verify leaf happened in it.
+    expect(second.opened.some((o) => o.workId === collection.workId && o.branch === under)).toBe(true);
+    expect(second.testedIn.every((w) => w === `/checkouts/${under}`)).toBe(true);
+  }, 60_000);
+
+  test("a collection's acceptance gate is judged in the collection's checkout while its branch is unlanded", async () => {
+    const ports = recordingPorts();
+    const base = deps();
+    const run0 = await runOrgRuntime({ ...base, providers: { ...defaultProviderSet(base), change: ports.change as never, tests: ports.tests as never, review: ports.review(() => ({ outcome: GateOutcome.Approved, reason: "ok" })) as never }, settings: collecting } as OrgRuntimeDeps);
+    const project = run0.cascade.nodes.find((n) => n.workType === WorkType.Project);
+    if (project === undefined) throw new Error("fixture has no project");
+    const branch = branchNameIn(run0.cascade, project);
+    // The cycle after the leaves landed asks the acceptance gate. The project itself has NOT landed.
+    const leaves = new Set(childrenOf(run0.cascade, project.workId).filter((n) => isLeafType(n.workType)).map((n) => n.workId));
+    const again = recordingPorts();
+    await runOrgRuntime({ ...base, providers: { ...defaultProviderSet(base), change: again.change as never, tests: again.tests as never, review: again.review(() => ({ outcome: GateOutcome.Approved, reason: "ok" })) as never }, settings: collecting, priorCascade: run0.cascade as never, priorGateEvaluations: run0.gateEvaluations, alreadyLanded: leaves } as OrgRuntimeDeps);
+    const asked = again.reviewedIn.filter((r) => r.workId === project.workId && r.gate === GateKind.FinalArchitectureReview);
+    expect(asked.length).toBeGreaterThan(0);
+    expect(asked.every((r) => r.workdir === `/checkouts/${branch}`)).toBe(true);
+    expect(again.opened.some((o) => o.workId === project.workId && o.branch === branch)).toBe(true);
+  }, 90_000);
+
+  test("a follow-up minted under a LANDED collection is cut from the trunk, and its acceptance is judged there", async () => {
+    let finalAsked = 0;
+    const strict = (req: { gate: GateKind }) =>
+      req.gate === GateKind.FinalArchitectureReview && ++finalAsked === 1
+        ? { outcome: GateOutcome.Rejected, reason: "console.read.ts:65 casts an unvalidated string to timestamptz" }
+        : { outcome: GateOutcome.Approved, reason: "ok" };
+    const base = deps();
+    const ports = recordingPorts();
+    const run0 = await runOrgRuntime({ ...base, providers: { ...defaultProviderSet(base), change: ports.change as never, tests: ports.tests as never, review: ports.review(strict) as never }, settings } as OrgRuntimeDeps);
+    const project = run0.cascade.nodes.find((n) => n.workType === WorkType.Project);
+    if (project === undefined) throw new Error("fixture has no project");
+    // Everything under the project AND the project's own branch have landed on the trunk.
+    const landed = new Set([project.workId, ...childrenOf(run0.cascade, project.workId).filter((n) => isLeafType(n.workType)).map((n) => n.workId)]);
+    const again = recordingPorts();
+    const run1 = await runOrgRuntime({ ...base, providers: { ...defaultProviderSet(base), change: again.change as never, tests: again.tests as never, review: again.review(strict) as never }, settings, priorCascade: run0.cascade as never, priorGateEvaluations: run0.gateEvaluations, alreadyLanded: landed } as OrgRuntimeDeps);
+    expect(finalAsked).toBe(1);
+    // Judged on the trunk: a landed collection's branch is history.
+    expect(again.reviewedIn.filter((r) => r.workId === project.workId && r.gate === GateKind.FinalArchitectureReview).every((r) => r.workdir === undefined)).toBe(true);
+    const followUp = childrenOf(run1.cascade, project.workId).find((c) => isLeafType(c.workType) && (c.brief ?? "").includes("timestamptz") && c.workType !== WorkType.Review);
+    if (followUp === undefined) throw new Error("no follow-up was minted");
+    // The follow-up's change is cut from the TRUNK — no base — because the collection's branch will never be merged again.
+    const third = recordingPorts();
+    await runOrgRuntime({ ...base, providers: { ...defaultProviderSet(base), change: third.change as never, tests: third.tests as never, review: third.review(strict) as never }, settings, priorCascade: run1.cascade as never, priorGateEvaluations: run1.gateEvaluations, alreadyLanded: landed } as OrgRuntimeDeps);
+    const opened = third.opened.find((o) => o.workId === followUp.workId);
+    expect(opened).toBeDefined();
+    expect(opened?.base).toBeUndefined();
+  }, 90_000);
+});

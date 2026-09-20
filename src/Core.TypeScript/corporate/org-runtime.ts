@@ -78,6 +78,7 @@ import {
 import {
   branchNameIn,
   collectionsReadyToLand,
+  descendantsOf,
   integrationFor,
 } from "./branch-topology";
 import { ProcessSetting, resolveSetting, settingList, type SettingBinding } from "./practice";
@@ -2427,6 +2428,39 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
    * agrees with the record about nothing except the names.
    */
   const openedChanges = new Map<string, ChangeHandle>();
+  /** Collections whose branch reached the trunk THIS run; read wherever `alreadyLanded` is. */
+  const collectionsLanded: string[] = [];
+  /**
+   * The collection whose branch `workId`'s change integrates into — or undefined when it goes to the
+   * trunk: nothing above it takes a branch, or the rung that does has ALREADY LANDED, and a landed
+   * collection's branch is never merged again (`collectionsReadyToLand` skips it, rightly: a second
+   * landing is an empty merge or a refusal). MEASURED on the Waypoint run, 2026-09-20: the topology
+   * alone answered `feature/…` for every follow-up under a delivered project, so each follow-up
+   * merged into a branch that had already been merged, and none of them reached the trunk.
+   */
+  const unlandedCollectionOf = (workId: string): { readonly workId: string; readonly branch: string } | undefined => {
+    const under = integrationFor({ cascade, workId, ...(deps.settings === undefined ? {} : { settings: deps.settings }) });
+    if (under === undefined) return undefined;
+    if (deps.alreadyLanded?.has(under.workId) === true || collectionsLanded.includes(under.workId)) return undefined;
+    return under;
+  };
+  /**
+   * The checkout of a collection's own branch, for judging what has landed INTO it and not yet
+   * out of it. Rejoined, never cut: change control's `open` returns the existing checkout of an
+   * existing branch, and the collection node is its owner. Undefined when the port refuses, and the
+   * caller then judges where it always did.
+   */
+  /** Whether `workId` is a collection some code descendant integrates into, and its branch has not reached the trunk. */
+  const ownsUnlandedBranch = (workId: string): boolean =>
+    deps.alreadyLanded?.has(workId) !== true &&
+    !collectionsLanded.includes(workId) &&
+    descendantsOf(cascade, workId).some((d) => producesCode(d.workType) && unlandedCollectionOf(d.workId)?.workId === workId);
+  const collectionCheckout = async (collection: { readonly workId: string; readonly branch: string }): Promise<ChangeHandle | undefined> => {
+    const node = nodeById(cascade, collection.workId);
+    if (node === undefined) return undefined;
+    const opened = await providers.change.open(node, { branch: collection.branch });
+    return opened.ok ? opened.value : undefined;
+  };
   const allCases: TestCase[] = [];
   const gateRuns: { taskId: string; run: GateRunResult }[] = [];
   const gateEvaluations: GateEvaluation[] = [];
@@ -2531,6 +2565,7 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
         workId: node.workId,
         title: node.title,
         ...(node.brief === undefined ? {} : { brief: node.brief }),
+        ...(gate === acceptance && judgedIn?.workdir !== undefined ? { workdir: judgedIn.workdir } : {}),
         evidence: shown.map((ref) => ({ kind: "document" as const, ref })),
       });
       if (!verdict.ok) {
@@ -2664,6 +2699,12 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
       (g) => (g !== acceptance || childrenDone) && !passedBefore(node.workId, g),
     );
     if (walkable.length === 0) continue;
+    // WHERE THE DELIVERED THING IS, when the acceptance gate is among what is walked: the rung's own
+    // branch while it is unlanded. See the acceptance pass below for the measurement.
+    const judgedIn =
+      acceptance !== undefined && walkable.includes(acceptance) && ownsUnlandedBranch(node.workId)
+        ? await collectionCheckout({ workId: node.workId, branch: branchNameIn(cascade, node) })
+        : undefined;
 
     // PRODUCERS TOO, or the upper rungs judge nothing. `business_context_grooming` belongs to the
     // GOAL now, and the grooming producer — the one that actually reads the configured data source
@@ -2886,9 +2927,21 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
    */
   const rejoinedChangeOf = async (blocking: readonly CascadeNode[]): Promise<ChangeHandle | undefined> => {
     for (const d of blocking) {
-      if (!producesCode(d.workType) || deps.alreadyLanded?.has(d.workId) === true) continue;
+      if (!producesCode(d.workType)) continue;
+      const under = unlandedCollectionOf(d.workId);
+      // LANDED — but where? Into its collection's branch, if one is still unlanded: that branch is
+      // the tree holding the work, and the trunk is the tree that does not. MEASURED on the Waypoint
+      // run, 2026-09-20, task-10461: its dependency had merged into `feature/…`, the verify leaf ran
+      // on the trunk, and the reviewer rejected a run that "never touched the code under verification".
+      if (deps.alreadyLanded?.has(d.workId) === true) {
+        if (under === undefined) continue;
+        // NOT recorded in `openedChanges`: that map is the run's list of changes to LAND, and a
+        // collection lands by its own path. Change control's open rejoins, so asking twice is cheap.
+        const at = await collectionCheckout(under);
+        if (at === undefined) continue;
+        return at;
+      }
       const branch = branchNameIn(cascade, d);
-      const under = integrationFor({ cascade, workId: d.workId, ...(deps.settings === undefined ? {} : { settings: deps.settings }) });
       const rejoined = await providers.change.open(d, under === undefined ? { branch } : { branch, base: under.branch });
       if (!rejoined.ok) continue;
       openedChanges.set(d.workId, rejoined.value);
@@ -3078,11 +3131,7 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
       // a caller asks for the adapter's own trunk — the runtime does not know the trunk and must
       // not learn it, or the same fact lives in two places and drifts.
       const branch = branchNameIn(cascade, task);
-      const under = integrationFor({
-        cascade,
-        workId: task.workId,
-        ...(deps.settings === undefined ? {} : { settings: deps.settings }),
-      });
+      const under = unlandedCollectionOf(task.workId);
       const openedResult = await providers.change.open(
         task,
         under === undefined ? { branch } : { branch, base: under.branch },
@@ -4019,6 +4068,15 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
 
     const acceptReviewed = new Map<GateKind, ReviewVerdict>();
     const acceptEvidence = new Map<GateKind, readonly string[]>();
+    // WHERE THE DELIVERED THING IS. A collection's children land into ITS branch, and that branch
+    // reaches the trunk only after this gate passes — so judged on the trunk, the gate sees the tree
+    // WITHOUT the work it is accepting. MEASURED on the Waypoint run, 2026-09-20, proj-5525: three
+    // follow-ups merged into `feature/…`, `final_architecture_review` ran on the trunk, found the
+    // defect the branch had fixed, rejected, and minted a fourth. Once the collection has landed the
+    // trunk IS the delivered tree, and no checkout is opened.
+    const judgedIn = ownsUnlandedBranch(node.workId)
+      ? await collectionCheckout({ workId: node.workId, branch: branchNameIn(cascade, node) })
+      : undefined;
     const askAcceptanceReviewer = async (
       gate: GateKind,
       produced: Artifact | undefined,
@@ -4031,6 +4089,7 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
         workId: node.workId,
         title: node.title,
         ...(node.brief === undefined ? {} : { brief: node.brief }),
+        ...(judgedIn?.workdir === undefined ? {} : { workdir: judgedIn.workdir }),
         evidence: shown.map((ref) => ({ kind: "document" as const, ref })),
       });
       if (!verdict.ok) {
@@ -4436,7 +4495,6 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
   //
   // NO `base` ON THE HANDLE, deliberately: a collection goes to the adapter's own trunk. That is
   // the same silence the open path uses, and it keeps the trunk in one place.
-  const collectionsLanded: string[] = [];
   const collectionsUnlanded: string[] = [];
   // REAL CHANGE CONTROL ONLY. A simulated port would accept a merge of a branch that never existed
   // and emit a `change_merged` fact for it, which is a landing nobody can check — the vacuity class
