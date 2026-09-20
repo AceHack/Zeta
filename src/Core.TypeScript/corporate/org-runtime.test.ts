@@ -95,7 +95,8 @@ describe("THE WHOLE PIPELINE, end to end", () => {
     // "nothing else went wrong" half of it survives.
     const offDiscipline = report.refusals.filter((r) => r.includes("outside its discipline"));
     expect(report.refusals.filter((r) => !r.includes("outside its discipline"))).toEqual([]);
-    expect(offDiscipline.every((r) => r.includes("runtime_validation"))).toBe(true);
+    // …and, since a verify leaf runs the suite at qa_uat too (see the QaUat producer), at that gate as well.
+    expect(offDiscipline.every((r) => r.includes("runtime_validation") || r.includes("qa_uat"))).toBe(true);
     expect(report.delivered).toBe(true);
   });
 
@@ -219,7 +220,8 @@ describe("THE WHOLE PIPELINE, end to end", () => {
 
   test("8. QA — real cases derived from the criteria, and they ran", async () => {
     report = await runOrgRuntime(deps());
-    expect(report.qa).toHaveLength(2);
+    // Two leaves, each running at qa_uat AND runtime_validation.
+    expect(report.qa).toHaveLength(4);
     expect(report.testCases.length).toBeGreaterThan(0);
     for (const q of report.qa) {
       expect(q.runs.length).toBeGreaterThan(0);
@@ -1603,5 +1605,153 @@ describe("A MILESTONE THE ORGANIZATION PASSED IS TOLD TO ITS TICKET, ONCE", () =
       gateVerdicts: [{ workId, gate: GateKind.ImplementationReview, outcome: GateOutcome.Approved, atMs: 10 }],
     } as never));
     expect(report.refusals.some((r) => r.includes("nothing is configured to write or post"))).toBe(true);
+  }, 60_000);
+});
+
+describe("A MERGE CONFLICT IS REWORK, NOT A STALL", () => {
+  // MEASURED on the Waypoint run, 2026-09-20: a story conflicted with `main` on one line, the
+  // landing was refused, the refusal went into the run's `refusals` list and nowhere else — and
+  // the next cycle tried the same merge again, and the next. Nobody was told, because the item
+  // was DONE: every gate had passed, so no performer was ever sent back to it. An organization
+  // that integrates its own changes has to hand a conflict to somebody, and the somebody is the
+  // implementer, at the gate whose phase writes code.
+  const { MERGE_CONFLICT } = require("./adapters") as typeof import("./adapters");
+
+  test("a landing refused for a conflict turns the change's leaf back at implementation_review, naming the files", async () => {
+    const opened: string[] = [];
+    const conflicting = {
+      meta: { port: Port.ChangeControl, name: "conflicting", fidelity: Fidelity.Real, describes: "every merge conflicts" },
+      open: async (node: { readonly workId: string }, ctx: { readonly branch: string; readonly base?: string }) => {
+        opened.push(node.workId);
+        return { ok: true as const, value: { changeId: `${ctx.branch}@${node.workId}`, branch: ctx.branch, ...(ctx.base === undefined ? {} : { base: ctx.base }), workdir: "/nowhere" }, evidence: [] };
+      },
+      merge: async () => ({
+        ok: false as const,
+        reason: `${MERGE_CONFLICT} main in: package.json, CLAUDE.md — the merge is left in progress in /nowhere; resolve, git add, git commit`,
+      }),
+    };
+    const base = deps();
+    const report = await runOrgRuntime({ ...base, providers: { ...defaultProviderSet(base), change: conflicting as never }, settings: [{ setting: ProcessSetting.Delivery, value: "merge", why: "the organization integrates its own changes" }] } as OrgRuntimeDeps);
+    expect(opened.length).toBeGreaterThan(0);
+    const turnedBack = report.gateEvaluations.filter(
+      (e) => String(e.gate) === String(GateKind.ImplementationReview) && e.outcome === GateOutcome.Rejected && e.reason.includes("package.json"),
+    );
+    expect(turnedBack.length).toBeGreaterThan(0);
+    // By the hat whose job it is, on an item that opened a change — not by a person, not by nobody.
+    expect(turnedBack.every((e) => e.byHatId === "merge_steward")).toBe(true);
+    expect(turnedBack.every((e) => opened.includes(e.workId))).toBe(true);
+    // And it is written where `latestGateRejections` reads: the trace carries it as a verdict.
+    expect(report.trace.some((ev) => ev.kind === OrgEventKind.QualityGateEvaluation && ev.actorHatId === "merge_steward")).toBe(true);
+  }, 60_000);
+});
+
+describe("A VERIFY LEAF'S qa_uat HAS SOMETHING TO JUDGE", () => {
+  // MEASURED on the Waypoint run, 2026-09-20, task-031 ("verify <goal>"): the leaf produces no
+  // code, so nothing is attached to its `qa_uat`; the reviewer opened the item, found "ATTACHMENTS
+  // (0) none, COMMENTS (0) none", refused to approve an empty gate — correctly — and did so again
+  // every attempt, thirty seconds and thirty cents each, while the story it verifies could never
+  // land because the collection waits for it. "Does it work, judged by somebody who did not build
+  // it" is answered by RUNNING it: the test producer, which already runs for `runtime_validation`
+  // in the dependency's checkout, runs for `qa_uat` too — on the leaves that write no code.
+  test("the test producer runs at qa_uat for a review leaf, so the gate carries a real run", async () => {
+    const base = deps();
+    const report = await runOrgRuntime({ ...base, providers: defaultProviderSet(base) } as OrgRuntimeDeps);
+    const verify = report.cascade.nodes.find((n) => n.workType === WorkType.Review);
+    expect(verify).toBeDefined();
+    const qa = report.gateEvaluations.filter((e) => e.workId === verify?.workId && e.gate === GateKind.QaUat);
+    expect(qa.length).toBeGreaterThan(0);
+    // A test run was RECORDED for the verify leaf at qa_uat, over and above the one runtime_validation owes.
+    const runs = report.trace.filter((ev) => ev.kind === OrgEventKind.TestRunRecorded && ev.subjectId === verify?.workId);
+    expect(runs.length).toBe(2);
+    // And a code leaf runs it at qa_uat too: MEASURED on Waypoint task-021, the same empty-gate refusal
+    // arrived at a code leaf whose reviewer would not approve a step nothing was attached to.
+    const code = report.cascade.nodes.find((n) => n.workType === WorkType.Task || n.workType === WorkType.Defect);
+    const codeQa = report.trace.filter((ev) => ev.kind === OrgEventKind.TestRunRecorded && ev.subjectId === code?.workId);
+    expect(codeQa.length).toBe(2);
+  }, 60_000);
+});
+
+describe("A VERIFY LEAF ON A RESUMED RUN STILL TESTS THE CHANGE IT VERIFIES", () => {
+  // MEASURED on the Waypoint run, 2026-09-20, task-031: its dependency task-029 was done in an
+  // earlier run, so no change was opened for it THIS run, `openedChanges` had nothing for it, and
+  // the verify leaf's suite ran in the BASE tree — where a stale test on the trunk fails. The gate
+  // then carried `exit:1` plus a log that never mentioned the feature, and the reviewer rejected,
+  // correctly, a run of the wrong tree. The dependency's checkout still exists; change control
+  // can rejoin it. It has to be asked.
+  function recordingPorts() {
+    const opened: string[] = [];
+    const testedIn: (string | undefined)[] = [];
+    const change = {
+      meta: { port: Port.ChangeControl, name: "recording", fidelity: Fidelity.Real, describes: "records opens" },
+      open: async (node: { readonly workId: string }, ctx: { readonly branch: string; readonly base?: string }) => {
+        opened.push(node.workId);
+        return { ok: true as const, value: { changeId: `${ctx.branch}@${node.workId}`, branch: ctx.branch, ...(ctx.base === undefined ? {} : { base: ctx.base }), workdir: `/checkouts/${ctx.branch}` }, evidence: [] };
+      },
+      merge: async (handle: { readonly branch: string }) => ({ ok: true as const, value: { changeId: "m", branch: handle.branch }, evidence: [] }),
+    };
+    const tests = {
+      meta: { port: Port.TestExecution, name: "recording", fidelity: Fidelity.Real, describes: "records where it ran" },
+      run: async (_tc: unknown, ctx: { readonly workdir?: string }) => {
+        testedIn.push(ctx.workdir);
+        return { ok: true as const, value: { outcome: RunOutcome.Passed }, evidence: [{ kind: "trace" as const, ref: `ran-in:${ctx.workdir ?? "<base>"}` }] };
+      },
+    };
+    return { change, tests, opened, testedIn };
+  }
+
+  test("the dependency's change is rejoined for its checkout, and the verify leaf's tests run there", async () => {
+    const first = recordingPorts();
+    const base = deps();
+    const settings = [{ setting: ProcessSetting.Delivery, value: "merge", why: "the organization integrates its own changes" }];
+    const run1 = await runOrgRuntime({ ...base, providers: { ...defaultProviderSet(base), change: first.change as never, tests: first.tests as never }, settings } as OrgRuntimeDeps);
+    const verify = run1.cascade.nodes.find((n) => n.workType === WorkType.Review);
+    const code = run1.cascade.nodes.find((n) => n.workId === (verify?.dependsOn ?? [])[0]);
+    if (verify === undefined || code === undefined) throw new Error("fixture has no verify leaf with a dependency");
+    expect(code.state).toBe(WorkState.Done);
+
+    // RESUME with the code leaf done and the verify leaf still owed: its verdicts are forgotten and
+    // it is reopened, exactly as a run that stopped between the two would leave it.
+    // A DONE LEAF HOLDS NO SEAT (its assignee was released), so nothing walks it and nothing opens its change.
+    const prior = { ...run1.cascade, nodes: run1.cascade.nodes.map((n) => (n.workId === verify.workId ? { ...n, state: WorkState.Open } : n.workId === code.workId ? { ...n, assigneeHatId: undefined } : n)) };
+    const second = recordingPorts();
+    const run2 = await runOrgRuntime({
+      ...base,
+      providers: { ...defaultProviderSet(base), change: second.change as never, tests: second.tests as never },
+      settings,
+      priorCascade: prior as never,
+      priorGateEvaluations: run1.gateEvaluations.filter((e) => e.workId !== verify.workId),
+      alreadyLanded: new Set<string>(),
+      // WALKED IN PARALLEL, as the real run is: the verify leaf may start before its dependency's open lands.
+      maxParallel: 3,
+    } as OrgRuntimeDeps);
+    // The verify leaf was walked and tested…
+    expect(run2.gateEvaluations.some((e) => e.workId === verify.workId)).toBe(true);
+    expect(second.testedIn.length).toBeGreaterThan(0);
+    // …IN THE DEPENDENCY'S CHECKOUT, obtained by rejoining its change — never the base tree.
+    expect(second.opened).toContain(code.workId);
+    expect(second.testedIn.every((w) => w !== undefined && w.startsWith("/checkouts/"))).toBe(true);
+  }, 60_000);
+});
+
+describe("DONE IS JUDGED AGAINST THE GATES THIS RUN WALKS — the chain under the pipeline", () => {
+  // MEASURED on the Waypoint run, 2026-09-20, under `--pipeline diagnosed_design`: every gate the
+  // pipeline owes was approved on all six leaves, two stories were merged to main, and the run
+  // stopped NO_PROGRESS: the three verify leaves were "not done: no passing verdict on the record
+  // for peer_review". `diagnosed_design` never walks `peer_review`, so no verdict could ever exist —
+  // the walk asked one question (chain ∩ pipeline) and the done-check asked another (the whole
+  // chain). An item that has passed everything it was ever going to be asked is done.
+  const { NAMED_PIPELINES } = require("./run-org") as typeof import("./run-org");
+  test("a review leaf whose pipeline never walks peer_review is done once qa_uat and runtime_validation pass", async () => {
+    const base = deps();
+    const pipeline = (NAMED_PIPELINES["diagnosed_design"] as readonly GateKind[]).map((gate) => ({ gate }));
+    const report = await runOrgRuntime({ ...base, providers: defaultProviderSet(base), pipeline, settings: [{ setting: ProcessSetting.Delivery, value: "merge", why: "autonomous" }] } as OrgRuntimeDeps);
+    const verify = report.cascade.nodes.find((n) => n.workType === WorkType.Review);
+    expect(verify).toBeDefined();
+    // The gates the pipeline owes it were judged…
+    expect(report.gateEvaluations.some((e) => e.workId === verify?.workId && e.gate === GateKind.QaUat && e.outcome === GateOutcome.Approved)).toBe(true);
+    expect(report.gateEvaluations.some((e) => e.workId === verify?.workId && e.gate === GateKind.RuntimeValidation && e.outcome === GateOutcome.Approved)).toBe(true);
+    // …and it is DONE, not held for a gate nothing will ever walk.
+    expect(verify?.state).toBe(WorkState.Done);
+    expect(report.refusals.some((r) => r.includes("no passing verdict on the record for peer_review"))).toBe(false);
   }, 60_000);
 });

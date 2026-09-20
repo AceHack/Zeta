@@ -273,3 +273,17 @@ describe("the flags reach the ports", () => {
     expect(set.intake.meta.name).toBe("http");
   });
 });
+
+describe("commandProposal — its own argv is not an artifact", () => {
+  // MEASURED on the Waypoint run, 2026-09-20: every code item listed three attachments —
+  // `agent.cjs`, `work`, `task-021` — the command line the performer was invoked with, recorded
+  // as what it produced. A reviewer opened them, found a script and two words, and rejected the
+  // gate for want of a deliverable. What an agent produced is in its checkout and its testimony;
+  // the way it was called is nobody's evidence.
+  test("a proposal carries the agent's testimony and no argv", () => {
+    const perform = commandProposal({ command: process.execPath, argsFor: () => ["-e", "process.stdout.write('done')"], cwd: process.cwd() });
+    const a = perform({ workId: "task-1", workType: "task", title: "t", state: "open", ownerHatId: "lead" } as never, { branch: "b" });
+    expect(a.summary).toContain("done");
+    expect(a.artifacts).toEqual([]);
+  });
+});

@@ -975,6 +975,28 @@ describe("THE AGENT THAT WRITES THE CODE IS TOLD WHAT EVERY DOCUMENT AUTHOR WAS"
     }
   });
 
+  test("a verifier's refusal of the last attempt reaches the performer, exactly as a reviewer's rejection does", () => {
+    // MEASURED on the Waypoint run, 2026-09-20: the verifier failed after every work call (a root
+    // `npm test` that exited 1 on the trunk itself), the phase was refused, and the refusal was
+    // recorded on the item — "stopped at implementation_review (attempt 1): … the verifier said:
+    // …" — precisely so the next attempt could read it. The next attempt was handed no feedback at
+    // all: `performerEnvFrom` read human rejections only. Four blind re-implementations, ~$18.
+    const store = mkdtempSync(join(tmpdir(), "perf-store-"));
+    try {
+      const { appendEvent } = require("./org-store") as typeof import("./org-store");
+      appendEvent({
+        id: "evt-refusal-1", kind: "refusal", subjectId: "task-9", actorHatId: "backend_implementer",
+        decision: "stopped at implementation_review (attempt 1): producer 'agent' for 'implementation_review' on task-9: the work did not succeed: agent: done — verifier exited 1\nthe verifier said:\nnpm error Missing script: \"test\"",
+        atMs: 7, evidenceRefs: [], supervisorChain: [],
+      } as unknown as import("./org-event").OrgEvent, store);
+      const env = performerEnvFrom(parseArgs(["--store", store]), () => ({}))(node);
+      const said = JSON.parse(env["ORG_FEEDBACK"] ?? "[]") as { gate: string; said: string }[];
+      expect(said.some((f) => f.gate === "implementation_review" && f.said.includes("Missing script"))).toBe(true);
+    } finally {
+      rmSync(store, { recursive: true, force: true });
+    }
+  });
+
   test("...and they reach the CHILD PROCESS, not just a function's return value", () => {
     const perform = commandProposal({
       command: process.execPath,
@@ -1167,5 +1189,57 @@ describe("ONE RUN AT A TIME ON A STORE", () => {
       other.kill();
       rmSync(store, { recursive: true, force: true });
     }
+  });
+});
+
+describe("THE REVIEWER IS TOLD HOW THIS ORGANIZATION DOES THE STEP", () => {
+  // MEASURED on the Waypoint run, 2026-09-20: `qa_uat` on three items was rejected by three
+  // reviewers with three different ideas of what the gate wanted — a human OAuth walkthrough, an
+  // evidence directory, a traced mock path — while the organization had a practice mechanism for
+  // exactly this and handed it to every PRODUCER and never to the judge. A gate judged against an
+  // unstated standard cannot converge: the author satisfies one reviewer and meets the next.
+  const { providersFromArgs, reviewerEnvFrom } = require("./run-org") as typeof import("./run-org");
+
+  test("ORG_PRACTICE and ORG_DIRECTIVES reach the review command, resolved for the gate and the item", async () => {
+    const guidance = (gate: string, node: { readonly workId: string }) => ({
+      practice: `at ${gate} on ${node.workId}: the test command's green run in the change's checkout is the acceptance test`,
+      directives: "prefer the repository's own skills",
+    });
+    const cascade = { nodes: [{ workId: "task-9", workType: WorkTypeValue.Task, title: "t", state: WorkState.Open, ownerHatId: "tech_lead" }] };
+    const p = providersFromArgs(
+      parseArgs([
+        "--review-cmd", process.execPath,
+        "--review-arg", "-e",
+        "--review-arg", "process.stdout.write(String(process.env.ORG_PRACTICE) + ' | ' + String(process.env.ORG_DIRECTIVES))",
+      ]),
+      [],
+      RunOutcome.Passed,
+      undefined,
+      reviewerEnvFrom(guidance as never, cascade as never),
+    );
+    const r = await p.review.review({ gate: GateKind.QaUat, workId: "task-9", title: "t" } as never);
+    expect(r.ok).toBe(true);
+    if (r.ok) {
+      expect(r.value.reason).toContain("at qa_uat on task-9: the test command's green run");
+      expect(r.value.reason).toContain("prefer the repository's own skills");
+    }
+  });
+});
+
+describe("A DECLINED GATE PRACTICE DOES NOT MAKE THE GATE PERFORMED", () => {
+  // MEASURED on the Waypoint run, 2026-09-20: a `qa_uat` practice was stated and then unbound —
+  // the registry keeps the decline on the record, as it should — and the next run still handed
+  // `qa_uat` to the document producer, which displaced the runtime's own test run at that gate.
+  // "Declined" is the organization saying NO; a reader that treats it as a statement of HOW has
+  // inverted the answer.
+  const { performedGates, PRE_CODE_GATES } = require("./run-org") as typeof import("./run-org");
+  const { PracticeSubjectKind } = require("./practice") as typeof import("./practice");
+  test("declined is not stated", () => {
+    const declined = { subject: { kind: PracticeSubjectKind.Gate, id: String(GateKind.QaUat) }, declined: true, skills: [], why: "no" } as never;
+    const stated = { subject: { kind: PracticeSubjectKind.Gate, id: String(GateKind.QaUat) }, skills: [], directive: "run it", why: "yes" } as never;
+    expect(performedGates([declined])).toEqual(performedGates([]));
+    expect(performedGates([declined])).not.toContain(GateKind.QaUat);
+    expect(performedGates([stated])).toContain(GateKind.QaUat);
+    expect(PRE_CODE_GATES).not.toContain(GateKind.QaUat);
   });
 });

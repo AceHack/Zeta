@@ -153,7 +153,7 @@ import {
   type TicketUpdate,
   type TicketUpdateRequest,
 } from "./ticket-report";
-import { autoApproveReview, simulatedChangeControl, simulatedIntake, simulatedTestRunner, simulatedWorkExecutor } from "./adapters";
+import { autoApproveReview, conflictedFiles, simulatedChangeControl, simulatedIntake, simulatedTestRunner, simulatedWorkExecutor } from "./adapters";
 import { associateGoal, EMPTY_BOOK, openPortfolio, type PortfolioKind } from "./portfolio";
 import {
   batchesFromCascade,
@@ -2802,6 +2802,36 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
       .map((id) => nodeById(cascade, id))
       .filter((n): n is CascadeNode => n !== undefined && n.state !== WorkState.Canceled);
 
+  /**
+   * The checkout of a dependency whose change is NOT in hand this cycle — rejoined, never guessed.
+   *
+   * ── THE DEFECT THIS CLOSES ───────────────────────────────────────────────
+   * `openedChanges` holds what THIS cycle opened. A dependency that was done in an earlier run —
+   * or, with `maxParallel`, one whose open has simply not landed yet when its verifier starts —
+   * is not in it, and the verifier then fell through to the runner's configured directory: the
+   * BASE tree. MEASURED on the Waypoint run, 2026-09-20, task-031: its suite ran on the trunk,
+   * where a stale test fails, the gate carried `exit:1` and a log that never mentioned the
+   * feature, and the reviewer rejected — correctly — a run of the wrong tree.
+   *
+   * Change control's `open` REJOINS an existing checkout (same branch, same owner) rather than
+   * cutting a new one, so asking it is idempotent: a second open of the same change is the same
+   * handle. Only a code-writing dependency that is not already on the trunk is asked for; a
+   * dependency with no change of its own has no checkout to borrow, and the caller's held/refused
+   * paths then apply exactly as before.
+   */
+  const rejoinedChangeOf = async (blocking: readonly CascadeNode[]): Promise<ChangeHandle | undefined> => {
+    for (const d of blocking) {
+      if (!producesCode(d.workType) || deps.alreadyLanded?.has(d.workId) === true) continue;
+      const branch = branchNameIn(cascade, d);
+      const under = integrationFor({ cascade, workId: d.workId, ...(deps.settings === undefined ? {} : { settings: deps.settings }) });
+      const rejoined = await providers.change.open(d, under === undefined ? { branch } : { branch, base: under.branch });
+      if (!rejoined.ok) continue;
+      openedChanges.set(d.workId, rejoined.value);
+      return rejoined.value;
+    }
+    return undefined;
+  };
+
   // ── EVERY STAFFED TASK'S GATE WALK, UP TO `maxParallel` AT ONCE ────────────────
   // MEASURED this session: six unrelated FlowDent tickets' tasks ran one at a time, each real gate
   // a multi-minute Claude call, for 10+ hours of wall clock with zero dependency between most of
@@ -2847,7 +2877,9 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
     // opened a change is the tree to judge in; an item that genuinely spans several changes is a
     // decomposition problem, not something to paper over by picking one silently — so the refusal
     // below names every dependency that is not ready.
-    const subjectChange = blocking.map((d) => openedChanges.get(d.workId)).find((c) => c !== undefined);
+    const subjectChange =
+      blocking.map((d) => openedChanges.get(d.workId)).find((c) => c !== undefined) ??
+      (await rejoinedChangeOf(blocking));
     // A CHECKOUT ONLY IF THE CHANGE HAS ONE. In-memory change control opens real changes with no
     // directory at all, so `workdir` is absent there and the runner's configured directory is
     // right — treating that absence as "nothing to verify" held every review leaf under every
@@ -3137,6 +3169,14 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
           : ([[GateKind.BusinessContextGrooming, groomingProducer(providers.dataSource)]] as const)),
         [GateKind.ImplementationReview, workProducer],
         [GateKind.RuntimeValidation, testProducer],
+        // qa_uat IS ANSWERED BY RUNNING IT. MEASURED on Waypoint, 2026-09-20, first on task-031 ("verify
+        // <goal>", which writes no code) and then on task-021 (which does): the reviewer opened the item,
+        // found nothing attached to the step, refused to approve an empty gate — correctly — and did so
+        // again on every attempt while the story waited. "Does it work, judged by somebody who did not
+        // build it" is a test run in the change's checkout (a verify leaf borrows its dependency's), which
+        // is what the test producer already does one gate later; now it does it here as well, so the
+        // judgement has a run to weigh instead of an opinion to form.
+        [GateKind.QaUat, testProducer],
         // Caller-supplied producers LAST, so a run that wires a real document producer for a phase
         // gets it — but never at the cost of unhooking work or test execution above, which are the
         // runtime's own and not a caller's to remove.
@@ -3723,7 +3763,16 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
     // record disagree about whether anything was ever approved.
     // PRIOR VERDICTS COUNT: a step passed in an earlier cycle is not walked again, so an item whose
     // steps passed across cycles would otherwise never read as done.
-    const owedButUnproven = missingGates(task, task.workId, [...(deps.priorGateEvaluations ?? []), ...gateEvaluations]);
+    // THE GATES THIS RUN WALKS, not the type's whole chain. The walk asks `chainForTask` — the chain
+    // under the pipeline — and the done-check asked `chainOf`, the whole chain. MEASURED on Waypoint,
+    // 2026-09-20, under `diagnosed_design`: every walked gate approved on six leaves, two stories
+    // merged, and the run stopped NO_PROGRESS because three verify leaves were "not done: no passing
+    // verdict for peer_review" — a gate that pipeline never walks, so no verdict could ever exist.
+    const owedButUnproven = missingGates(
+      { ...task, owes: chainForTask(task, deps.pipeline ?? DEFAULT_PIPELINE) },
+      task.workId,
+      [...(deps.priorGateEvaluations ?? []), ...gateEvaluations],
+    );
     if (owedButUnproven.length > 0) {
       refusals.push(
         `${task.workId} is not done: no passing verdict on the record for ` +
@@ -4073,6 +4122,35 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
   // this workId" mean a real branch with a real producer behind it, not a no-op simulation.
   const legacyStaffed =
     providers.work.meta.fidelity === Fidelity.Real ? new Set(openedChanges.keys()) : new Set<string>();
+  // ── A CONFLICT IS REWORK, NOT A STALL ───────────────────────────────────────
+  // A change whose every gate passed and whose merge is refused for a CONFLICT is not done and
+  // is not waiting on anybody — unless somebody is told. MEASURED on the Waypoint run,
+  // 2026-09-20: the refusal went into `refusals`, the item stayed done, the next cycle retried
+  // the same merge, and so on. The merge steward turns the change's leaf back at the gate whose
+  // phase writes code, naming the files, so the implementer's next attempt (which finds the merge
+  // left in progress in its own checkout — see `surfaceConflict`) resolves, adds and commits.
+  // Recorded as a verdict, which is what `latestGateRejections` hands the performer as feedback.
+  // IDEMPOTENT: the same conflict on the same leaf in the same cycle is one verdict.
+  const turnedBackForConflict = new Set<string>();
+  const turnBackForConflict = (leafIds: readonly string[], reason: string): void => {
+    if (conflictedFiles(reason).length === 0) return;
+    for (const leafId of leafIds) {
+      if (turnedBackForConflict.has(leafId)) continue;
+      turnedBackForConflict.add(leafId);
+      const verdict: GateEvaluation = {
+        workId: leafId,
+        gate: GateKind.ImplementationReview,
+        outcome: GateOutcome.Rejected,
+        byHatId: "merge_steward",
+        reason: `the change cannot land: ${reason}`,
+        atMs: warmedAt,
+        evidenceRefs: [`merge-conflict:${leafId}`],
+      };
+      gateEvaluations.push(verdict);
+      verdictNow(leafId)(verdict);
+    }
+  };
+
   const changes = projectAll({
     cascade,
     queue,
@@ -4179,6 +4257,7 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
     if (!landed.ok) {
       refusals.push(`change control '${providers.change.meta.name}' could not merge ${handle.branch}: ${landed.reason}`);
       changesUnlanded.push(c.workId);
+      turnBackForConflict([c.workId], landed.reason);
       continue;
     }
     changesLanded.push(c.workId);
@@ -4250,6 +4329,11 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
             `'${ready.workId}' from ${ready.branch}: ${landed.reason}`,
         );
         collectionsUnlanded.push(ready.workId);
+        // THE LEAVES THAT BUILT THIS BRANCH are the ones that can reconcile it.
+        turnBackForConflict(
+          [...openedChanges.entries()].filter(([, h]) => h.branch === ready.branch || h.base === ready.branch).map(([id]) => id),
+          landed.reason,
+        );
         continue;
       }
       collectionsLanded.push(ready.workId);

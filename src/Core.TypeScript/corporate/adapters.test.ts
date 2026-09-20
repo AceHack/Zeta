@@ -21,6 +21,7 @@ import { spawnSync } from "node:child_process";
 import {
   commandArtifactProducer,
   commandTestRunner,
+  commandReview,
   commandWorkExecutor,
   directoryIntake,
   inboxOrder,
@@ -436,5 +437,55 @@ describe("A PRE-CODE GATE MUST HAVE SOMETHING TO JUDGE", () => {
     const hostile = node("w1", "; echo pwned > owned.txt");
     const out = await produce("console.log('docs/brd.md')").produce(hostile, phaseCtx());
     expect(out.ok).toBe(true);
+  });
+});
+
+describe("A TEST RUN'S EVIDENCE KEEPS ITS SUMMARY AND NAMES ITS COMMAND", () => {
+  // MEASURED on the Waypoint run, 2026-09-20: a three-suite verifier printed ~24 kB; the captured
+  // evidence kept the first 4 kB — one workspace's case names, cut mid-line — and the trailing
+  // pass/fail summary of every suite was gone. Beside it sat `exit:0`, naming no command. Three
+  // reviewers read that and said, correctly, that it did not establish what ran or whether it
+  // finished. A capture that must cut keeps BOTH ends: what started, and how it ended.
+  test("a long capture keeps its head AND its tail, and says how much it cut", async () => {
+    const r = await commandWorkExecutor({
+      command: SELF,
+      argsFor: () => ["-e", `console.log('HEAD-MARK ' + 'x'.repeat(${String(MAX_CAPTURED_OUTPUT * 3)}) + ' TAIL-MARK 184 tests, 0 failures')`],
+      cwd: scratch("work-headtail"),
+    }).execute(node("w1"), { branch: "b" });
+    if (!r.ok) throw new Error(r.reason);
+    const stdout = r.evidence.find((e) => e.ref.startsWith("stdout:"))?.ref ?? "";
+    expect(stdout).toContain("HEAD-MARK");
+    expect(stdout).toContain("184 tests, 0 failures");
+    expect(stdout).toContain("truncated");
+    expect(stdout.length).toBeLessThan(MAX_CAPTURED_OUTPUT + 200);
+  });
+
+  test("the test runner's trace names the command and where it ran, beside the exit code", async () => {
+    const dir = scratch("tests-named");
+    const runner = commandTestRunner({ command: SELF, argsFor: () => ["-e", "process.exit(0)"], cwd: dir });
+    const r = await runner.run({ id: "tc-1", criterion: "c" } as never, { branch: "b" });
+    if (!r.ok) throw new Error(r.reason);
+    const trace = r.evidence.map((e) => e.ref);
+    expect(trace).toContain("exit:0");
+    expect(trace.some((t) => t.startsWith("ran:") && t.includes(SELF) && t.includes(dir))).toBe(true);
+  });
+});
+
+describe("A REVIEWER'S VERDICT IS KEPT WHOLE — it is the author's next brief", () => {
+  // MEASURED on the Waypoint run, 2026-09-20, task-037: a 6 kB rejection — a page of what was
+  // sound, then the one objection, then a "looked at" list — went through the 4 kB log capture and
+  // came out as the praise and the list with the objection cut from the middle. The author's next
+  // attempt was briefed with everything except the reason it was turned back.
+  test("a long verdict survives far past the log capture limit", async () => {
+    const SELF = process.execPath;
+    const review = commandReview({
+      command: SELF,
+      argsFor: () => ["-e", `process.stdout.write('GOOD '.repeat(1200) + ' THE-ONE-OBJECTION ' + 'looked-at '.repeat(400)); process.exit(1)`],
+      cwd: process.cwd(),
+    });
+    const r = await review.review({ gate: GateKind.ImplementationReview, workId: "task-1" } as never);
+    if (!r.ok) throw new Error(r.reason);
+    expect(r.value.reason).toContain("THE-ONE-OBJECTION");
+    expect(r.value.reason.length).toBeGreaterThan(MAX_CAPTURED_OUTPUT * 2);
   });
 });

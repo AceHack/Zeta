@@ -274,7 +274,8 @@ export function commandReview(input: {
         ok: true,
         value: {
           outcome: approved ? GateOutcome.Approved : GateOutcome.Rejected,
-          reason: said === "" ? `${input.command} exited ${String(run.status)}` : capture("said", said),
+          // WHOLE, not log-sized: this text is what the author is briefed with next. See MAX_VERDICT_CHARS.
+          reason: said === "" ? `${input.command} exited ${String(run.status)}` : capture("said", said, MAX_VERDICT_CHARS),
         },
         evidence: [
           { kind: "trace", ref: `exit:${String(run.status)}` },
@@ -530,10 +531,23 @@ export function httpIntake(input: {
 /** How much of a command's output is kept as evidence before it is truncated. */
 export const MAX_CAPTURED_OUTPUT = 4_000;
 
-function capture(label: string, text: string): string {
-  if (text.length <= MAX_CAPTURED_OUTPUT) return `${label}:${text}`;
+/**
+ * A VERDICT IS THE AUTHOR'S NEXT BRIEF, so it is kept far past the log limit. MEASURED on Waypoint
+ * task-037, 2026-09-20: a 6 kB rejection — what was sound, then the one objection, then a "looked
+ * at" list — lost the objection to the middle cut. Sixteen thousand characters is past any verdict seen.
+ */
+export const MAX_VERDICT_CHARS = 16_000;
+
+function capture(label: string, text: string, limit: number = MAX_CAPTURED_OUTPUT): string {
+  if (text.length <= limit) return `${label}:${text}`;
   // Truncation is VISIBLE. Silently clipping evidence makes a long failure look like a short one.
-  return `${label}:${text.slice(0, MAX_CAPTURED_OUTPUT)}…[truncated ${String(text.length - MAX_CAPTURED_OUTPUT)} chars]`;
+  // AND IT KEEPS BOTH ENDS. A test runner prints its summary LAST; keeping only the head handed a
+  // reviewer one suite's case names cut mid-line and no verdict for any suite. MEASURED on the
+  // Waypoint run, 2026-09-20: three reviewers, correctly, said the capture did not establish what
+  // ran or whether it finished. The head says what started; the tail says how it ended.
+  const head = Math.floor(limit * 0.4);
+  const tail = limit - head;
+  return `${label}:${text.slice(0, head)}…[truncated ${String(text.length - limit)} chars]…${text.slice(-tail)}`;
 }
 
 /** The last `n` non-empty lines of a command's output, each capped — where a verdict's reasons are. */
@@ -1182,7 +1196,10 @@ export function commandProposal(input: {
     }
     const said = (run.stdout ?? "").trim();
     if (said === "") throw new Error(`'${input.command}' produced no proposal for ${node.workId}`);
-    return { summary: capture("said", said), artifacts: [...input.argsFor(node)] };
+    // NO ARGV AS ARTIFACTS. MEASURED on Waypoint, 2026-09-20: every code item listed the command line it
+    // was invoked with as three attachments, and a reviewer rejected the gate for want of a deliverable
+    // after opening them. What the agent produced is in its checkout and its testimony.
+    return { summary: capture("said", said), artifacts: [] };
   };
 }
 
@@ -1276,12 +1293,17 @@ export function commandTestRunner(input: {
         // would blame the code for a missing binary.
         return { ok: false, reason: `'${input.command}' could not run: ${run.error.message}` };
       }
+      const args = [...input.argsFor(testCase)];
       return {
         ok: true,
         value: { outcome: run.status === 0 ? RunOutcome.Passed : RunOutcome.Failed },
         evidence: [
+          // WHAT RAN, AND WHERE. A bare exit code beside a log named no command; a reviewer could
+          // not tell which run had exited 0, and said so. The trace now names both.
+          { kind: "trace", ref: `ran:${[input.command, ...args].join(" ")} in ${ctx.workdir ?? input.cwd}` },
           { kind: "trace", ref: `exit:${String(run.status)}` },
           { kind: "log", ref: capture("stdout", run.stdout ?? "") },
+          ...((run.stderr ?? "").trim() === "" ? [] : [{ kind: "log" as const, ref: capture("stderr", run.stderr ?? "") }]),
         ],
       };
     },
@@ -1542,6 +1564,41 @@ export function worktreeDirName(branch: string): string {
   return branch.replace(/[^A-Za-z0-9._-]/g, "-");
 }
 
+/** How a refused merge says it was a CONFLICT and not something else. The runtime keys on it. */
+export const MERGE_CONFLICT = "conflicts with";
+
+/** The files a refusal named, when the refusal was a conflict; none otherwise. */
+export function conflictedFiles(reason: string): readonly string[] {
+  const at = reason.indexOf(`${MERGE_CONFLICT} `);
+  if (at < 0) return [];
+  const list = reason.slice(at).replace(/^[^:]*: /, "").split(" — ")[0] ?? "";
+  return list.split(",").map((f) => f.trim()).filter((f) => f !== "");
+}
+
+/**
+ * Open the base's merge INTO the branch, in the branch's own checkout, and leave it there when
+ * it conflicts. Returns the conflicted files; an empty list means the merge went through (or
+ * could not be attempted), in which case nothing is left in progress.
+ *
+ * IDEMPOTENT: a checkout already mid-merge is reported, not merged again.
+ */
+function surfaceConflict(
+  git: (args: readonly string[], cwd?: string) => { readonly status: number | null; readonly stdout: string | null; readonly stderr: string | null; readonly error?: Error },
+  at: string,
+  base: string,
+): readonly string[] {
+  const unmerged = (): readonly string[] =>
+    String(git(["diff", "--name-only", "--diff-filter=U"], at).stdout ?? "").split(/\r?\n/).map((l) => l.trim()).filter((l) => l !== "");
+  const already = unmerged();
+  if (already.length > 0) return already;
+  const merged = git(["merge", "--no-ff", "--no-edit", "-m", `Merge ${base} into the change`, base], at);
+  if (merged.error !== undefined || merged.status === 0) return [];
+  const conflicts = unmerged();
+  // Refused for a reason that is not a conflict: nothing is left half-done.
+  if (conflicts.length === 0) git(["merge", "--abort"], at);
+  return conflicts;
+}
+
 /**
  * Changes as real git branches, each in ITS OWN WORKTREE.
  *
@@ -1784,6 +1841,14 @@ export function gitWorktreeChangeControl(input: {
           maxBuffer: MAX_COMMAND_OUTPUT_BYTES,
         });
         if (ready.error !== undefined || ready.status !== 0) {
+          // A REFUSED OPEN LEAVES NO CHECKOUT BEHIND. The owner marker is written only after setup,
+          // so a worktree abandoned here has the right branch and no owner — and the rejoin above
+          // refuses exactly that shape, forever. MEASURED on the Waypoint run, 2026-09-20: one
+          // `npm install` failure in a pnpm workspace wedged the change for three cycles until
+          // `no_progress` stopped the run. Removing the checkout returns the change to "branch
+          // exists, no directory", which the next open already knows how to take. The branch is
+          // kept: it carries nothing yet, and re-cutting it is the same as keeping it.
+          git(["worktree", "remove", "--force", workdir]);
           return {
             ok: false,
             reason:
@@ -1882,8 +1947,26 @@ export function gitWorktreeChangeControl(input: {
         return { ok: false, reason: `git could not run: ${merged.error.message}` };
       }
       if (merged.status !== 0) {
+        // THE BASE IS NEVER LEFT MID-MERGE. When the shared checkout IS the base, the refused merge
+        // just happened in the operator's own tree, and `release()` removes only borrowed ones.
+        // MEASURED on the Waypoint run, 2026-09-20: one conflicted line in package.json left `main`
+        // with MERGE_HEAD and conflict markers, so every later merge was refused for "unmerged files".
+        if (onBase) git(["merge", "--abort"], mergeAt);
         release();
-        return { ok: false, reason: `merge of ${handle.branch} refused: ${(merged.stderr ?? "").trim()}` };
+        // A CONFLICT IS HANDED TO THE PERFORMER, IN THE CHECKOUT IT WORKS IN. Resolving one is
+        // judgement, and the performer may not run `git merge` itself (an integrating act); so the
+        // same merge is opened the other way round — base into branch — inside the branch's own
+        // worktree, and LEFT THERE for the next attempt to resolve, add and commit. The refusal names
+        // the files, which is what the next attempt is told. See `conflictedFiles`.
+        const at = handle.workdir ?? join(input.worktreeRoot, worktreeDirName(handle.branch));
+        const conflicts = existsSync(at) ? surfaceConflict(git, at, into) : [];
+        return {
+          ok: false,
+          reason:
+            conflicts.length === 0
+              ? `merge of ${handle.branch} refused: ${(merged.stderr ?? merged.stdout ?? "").trim()}`
+              : `${MERGE_CONFLICT} ${into} in: ${conflicts.join(", ")} — the merge is left in progress in ${at}; resolve, git add, git commit`,
+        };
       }
       release();
       // Only after the merge SUCCEEDED. Removing it first would destroy the work if the merge then

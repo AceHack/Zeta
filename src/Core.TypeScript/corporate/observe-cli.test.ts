@@ -331,3 +331,47 @@ describe("AN OPENED ITEM IS BOUNDED, AND SAYS WHERE THE REST IS", () => {
     expect(out.split("C:/Users/max/Work/AIAGENT-1595/org-work/wt-agentic-tpm/defect-AIAGENT-1661/docs/").length - 1).toBe(1);
   });
 });
+
+describe("EVIDENCE CARRIED INLINE IS OPENABLE, NOT MISTAKEN FOR A FILE", () => {
+  // MEASURED on the Waypoint run, 2026-09-20, task-029: `runtime_validation` left `exit:0` and a
+  // 4 kB `stdout:` blob. The item listed `exit:0` as an attachment (it is short), and opening it
+  // resolved the ref as a path — "recorded but no longer on disk". The blob was not listed at all
+  // (too long to be a path). So the reviewer at `release_readiness` could find no evidence that the
+  // suite had run, said so, and rejected — three times, correctly, on a record that had the evidence
+  // and could not show it.
+  const { attachmentsFrom } = require("./observe-cli") as typeof import("./observe-cli");
+  const blob = "stdout:" + Array.from({ length: 60 }, (_, i) => `✔ case ${String(i)} passed`).join("\n") + "\n15 tests, 0 failures";
+
+  test("inline refs become numbered evidence with their size, and open to their own text", () => {
+    const attachments = attachmentsFrom([
+      { ref: "/docs/task-029/architecture_design.md", from: "architecture_design" },
+      { ref: "exit:0", from: "runtime_validation" },
+      { ref: blob, from: "runtime_validation" },
+    ]);
+    expect(attachments.map((a) => a.ref)).toEqual(["/docs/task-029/architecture_design.md", "evidence#1", "evidence#2"]);
+    expect(attachments[2]?.note).toContain("stdout");
+    expect(attachments[2]?.note).toContain(String(blob.length - "stdout:".length));
+    const item: ItemContext = { id: "task-029", title: "t", status: "open", steps: [], attachments, comments: [] };
+    const opened = readAttachment([item], "task-029", "evidence#2");
+    expect(opened.ok).toBe(true);
+    if (opened.ok) expect(opened.text).toContain("15 tests, 0 failures");
+    const exit = readAttachment([item], "task-029", "evidence#1");
+    if (exit.ok) expect(exit.text).toBe("0");
+    else throw new Error(exit.reason);
+  });
+
+  test("a path is still a path: unchanged, opened from disk", () => {
+    const dir = mkdtempSync(join(tmpdir(), "observe-att-"));
+    try {
+      const at = join(dir, "design.md");
+      writeFileSync(at, "# design\n");
+      const attachments = attachmentsFrom([{ ref: at, from: "architecture_design" }]);
+      expect(attachments[0]?.ref).toBe(at);
+      const item: ItemContext = { id: "w", title: "t", status: "open", steps: [], attachments, comments: [] };
+      const opened = readAttachment([item], "w", at);
+      expect(opened.ok && opened.text).toBe("# design\n");
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+});
