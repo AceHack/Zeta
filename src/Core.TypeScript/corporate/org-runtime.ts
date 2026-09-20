@@ -2989,6 +2989,29 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
       );
       continue;
     }
+    // A CHECK WHOSE SUBJECT IS GONE HAS NO SUBJECT. `dependenciesOf` drops cancelled dependencies, so
+    // a verify leaf whose every dependency was cancelled read as free-standing and was walked against
+    // the trunk. MEASURED on the Waypoint run, 2026-09-20, task-12592. It takes its subject's state.
+    const stated = (task.dependsOn ?? []).map((id) => nodeById(cascade, id)).filter((n): n is CascadeNode => n !== undefined);
+    if (stated.length > 0 && stated.every((n) => n.state === WorkState.Canceled)) {
+      const cancelled = setState(cascade, task.workId, WorkState.Canceled);
+      if (!cancelled.ok) {
+        refusals.push(`cancel ${task.workId}: ${cancelled.reason}`);
+        continue;
+      }
+      cascade = cancelled.cascade;
+      note({
+        kind: OrgEventKind.WorkItemTransition,
+        subjectId: task.workId,
+        actorHatId: task.ownerHatId,
+        decision: `cancelled: it verified ${stated.map((n) => n.workId).join(", ")}, and every one of them was cancelled — there is nothing left to verify`,
+        toState: WorkState.Canceled,
+        atMs: warmedAt,
+        evidenceRefs: [],
+        fact: { kind: "work_state", workId: task.workId, state: WorkState.Canceled },
+      });
+      continue;
+    }
     // WHAT THIS ITEM WAITS FOR, and the checkout to judge it in. See `dependenciesOf`.
     const blocking = dependenciesOf(task);
     // The checkout of whatever this item depends on. With more than one dependency the first that

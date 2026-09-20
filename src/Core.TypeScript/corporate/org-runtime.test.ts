@@ -2182,3 +2182,46 @@ describe("WORK UNDER A COLLECTION IS JUDGED IN THE COLLECTION'S BRANCH UNTIL THA
     expect(opened?.base).toBeUndefined();
   }, 90_000);
 });
+
+describe("A VERIFY LEAF WHOSE EVERY DEPENDENCY WAS CANCELLED VERIFIES NOTHING — it is cancelled, not walked", () => {
+  // MEASURED on the Waypoint run, 2026-09-20, task-12592: the follow-up it verified (task-12590)
+  // was cancelled by the operator as a duplicate. `dependenciesOf` drops cancelled dependencies, so
+  // the verify leaf read as having none, was walked as a free-standing item, ran the organization's
+  // suite on the TRUNK, and its reviewer rejected a run of a tree that held none of the work — at
+  // $0.90 a cycle, forever. A check whose subject is gone has no subject; the honest record is the
+  // same state its subject reached.
+  test("the leaf is cancelled with a recorded reason, and no test run happens", async () => {
+    const testedIn: (string | undefined)[] = [];
+    const tests = {
+      meta: { port: Port.TestExecution, name: "recording", fidelity: Fidelity.Real, describes: "records where it ran" },
+      run: async (_tc: unknown, ctx: { readonly workdir?: string }) => {
+        testedIn.push(ctx.workdir);
+        return { ok: true as const, value: { outcome: RunOutcome.Passed }, evidence: [] };
+      },
+    };
+    const base = deps();
+    const settings = [{ setting: ProcessSetting.Delivery, value: "merge", why: "autonomous" }];
+    const run1 = await runOrgRuntime({ ...base, providers: { ...defaultProviderSet(base), tests: tests as never }, settings } as OrgRuntimeDeps);
+    const verify = run1.cascade.nodes.find((n) => n.workType === WorkType.Review);
+    const code = run1.cascade.nodes.find((n) => n.workId === (verify?.dependsOn ?? [])[0]);
+    if (verify === undefined || code === undefined) throw new Error("fixture has no verify leaf with a dependency");
+    // RESUME: the code leaf was cancelled, the verify leaf is owed again.
+    testedIn.length = 0;
+    const prior = { ...run1.cascade, nodes: run1.cascade.nodes.map((n) => (n.workId === verify.workId ? { ...n, state: WorkState.Open } : n.workId === code.workId ? { ...n, state: WorkState.Canceled, assigneeHatId: undefined } : n)) };
+    const run2 = await runOrgRuntime({
+      ...base,
+      providers: { ...defaultProviderSet(base), tests: tests as never },
+      settings,
+      priorCascade: prior as never,
+      priorGateEvaluations: run1.gateEvaluations.filter((e) => e.workId !== verify.workId),
+      alreadyLanded: new Set<string>(),
+    } as OrgRuntimeDeps);
+    expect(testedIn.length).toBe(0);
+    expect(run2.gateEvaluations.some((e) => e.workId === verify.workId)).toBe(false);
+    expect(nodeById(run2.cascade, verify.workId)?.state).toBe(WorkState.Canceled);
+    // On the record, with the reason, so the next run and a reader both know why.
+    const recorded = run2.trace.find((ev) => ev.subjectId === verify.workId && ev.kind === OrgEventKind.WorkItemTransition && (ev.fact as { state?: string } | undefined)?.state === WorkState.Canceled);
+    expect(recorded).toBeDefined();
+    expect(String(recorded?.decision)).toContain(code.workId);
+  }, 60_000);
+});
