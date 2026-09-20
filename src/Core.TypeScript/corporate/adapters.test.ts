@@ -516,3 +516,21 @@ describe("PORTS RUN THEIR COMMANDS WITHOUT BLOCKING THE ORGANIZATION", () => {
     if (!r.ok) expect(r.reason).toMatch(/could not run|TIMEDOUT/);
   });
 });
+
+describe("A REVIEWER IS HANDED THE CHECKOUT IT JUDGES IN, BY NAME", () => {
+  // MEASURED on the Waypoint run, 2026-09-20, proj-5525: the review ran WITH its cwd set to the
+  // feature branch's checkout, and the architect still judged the trunk — nothing said which tree
+  // was the one under judgment. `cwd` is where a process starts; it is not a statement about anything.
+  test("the request's checkout and branch reach the command as ORG_REVIEW_CHECKOUT / ORG_REVIEW_BRANCH", async () => {
+    const SELF = process.execPath;
+    const review = commandReview({
+      command: SELF,
+      argsFor: () => ["-e", `process.stdout.write(JSON.stringify({ at: process.env.ORG_REVIEW_CHECKOUT || null, branch: process.env.ORG_REVIEW_BRANCH || null })); process.exit(0)`],
+      cwd: process.cwd(),
+    });
+    const r = await review.review({ gate: GateKind.FinalArchitectureReview, workId: "proj-1", workdir: process.cwd(), branch: "feature/act-1" } as never);
+    if (!r.ok) throw new Error(r.reason);
+    expect(r.value.reason).toContain(`"at":${JSON.stringify(process.cwd())}`);
+    expect(r.value.reason).toContain(`"branch":"feature/act-1"`);
+  });
+});

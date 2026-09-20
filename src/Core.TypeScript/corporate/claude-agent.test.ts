@@ -801,3 +801,26 @@ describe("THE SWEEP KILLS BY PROCESS GROUP, so a reaping test may not leave the 
     expect(NEEDLES.some((n) => reverted.includes(n))).toBe(true);
   });
 });
+
+describe("A REVIEWER IS TOLD WHICH TREE HOLDS THE WORK", () => {
+  // MEASURED on the Waypoint run, 2026-09-20, proj-5525: the runtime placed the architect in the
+  // checkout of the project's feature branch — the tree holding three follow-ups that land on the
+  // trunk only when this very gate passes — and the architect declared "authoritative state: main",
+  // found the trunk without the fixes, and rejected. Twice. The checkout is a fact the organization
+  // knows and the reviewer cannot infer; unsaid, the reviewer reaches for the trunk.
+  test("the review prompt names the checkout as the tree under judgment and says the trunk lacks it by design", () => {
+    const r = run(["review", "final_architecture_review", "proj-9"], ok({ verdict: "approve", reason: "sound", lookedAt: [] }), {
+      ORG_REVIEW_CHECKOUT: "/checkouts/feature-act-1",
+      ORG_REVIEW_BRANCH: "feature/act-1",
+    });
+    expect(r.seen?.input).toContain("/checkouts/feature-act-1");
+    expect(r.seen?.input).toContain("feature/act-1");
+    expect(r.seen?.input).toContain("not on the trunk");
+    r.cleanup();
+  }, 30_000);
+  test("without a checkout nothing is claimed about one", () => {
+    const r = run(["review", "final_architecture_review", "proj-9"], ok({ verdict: "approve", reason: "sound", lookedAt: [] }));
+    expect(r.seen?.input).not.toContain("not on the trunk");
+    r.cleanup();
+  }, 30_000);
+});

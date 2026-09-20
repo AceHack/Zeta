@@ -325,7 +325,13 @@ export function commandReview(input: {
       describes: `runs '${input.command}' per gate in ${input.cwd}; its exit code is the verdict`,
     },
     review: async (request) => {
-      const handed = input.envFor?.(request) ?? {};
+      // THE TREE UNDER JUDGMENT, BY NAME. `cwd` alone said nothing, and a reviewer left to infer it
+      // reached for the trunk. See ReviewRequest.branch.
+      const handed = {
+        ...(request.workdir === undefined ? {} : { ORG_REVIEW_CHECKOUT: request.workdir }),
+        ...(request.branch === undefined ? {} : { ORG_REVIEW_BRANCH: request.branch }),
+        ...(input.envFor?.(request) ?? {}),
+      };
       const run = await runCommand(input.command, [...input.argsFor(request)], { cwd: request.workdir ?? input.cwd, ...(Object.keys(handed).length === 0 ? {} : { env: { ...process.env, ...handed } }), timeoutMs: input.timeoutMs ?? 120_000, maxBuffer: MAX_COMMAND_OUTPUT_BYTES });
       if (run.error !== undefined) {
         return { ok: false, reason: `'${input.command}' could not run: ${run.error.message}` };

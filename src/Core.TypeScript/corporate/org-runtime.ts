@@ -2565,7 +2565,7 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
         workId: node.workId,
         title: node.title,
         ...(node.brief === undefined ? {} : { brief: node.brief }),
-        ...(gate === acceptance && judgedIn?.workdir !== undefined ? { workdir: judgedIn.workdir } : {}),
+        ...(gate === acceptance && judgedIn?.workdir !== undefined ? { workdir: judgedIn.workdir, branch: judgedIn.branch } : {}),
         evidence: shown.map((ref) => ({ kind: "document" as const, ref })),
       });
       if (!verdict.ok) {
@@ -3438,14 +3438,14 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
       }
 
       // IN THE WORK'S OWN CHECKOUT when it has one - its own change, or the change it verifies.
-      const reviewIn = handle?.workdir ?? subjectWorkdir;
+      const reviewedChange = handle ?? subjectChange;
       const verdict = await providers.review.review({
         gate,
         workId: task.workId,
         title: task.title,
         ...(task.brief === undefined ? {} : { brief: task.brief }),
         evidence: shown.map((ref) => ({ kind: "document" as const, ref })),
-        ...(reviewIn === undefined ? {} : { workdir: reviewIn }),
+        ...(reviewedChange?.workdir === undefined ? {} : { workdir: reviewedChange.workdir, branch: reviewedChange.branch }),
       });
       if (!verdict.ok) {
         // A REVIEW THAT COULD NOT BE OBTAINED IS NOT AN APPROVAL. "Nobody was available to review
@@ -4112,7 +4112,7 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
         workId: node.workId,
         title: node.title,
         ...(node.brief === undefined ? {} : { brief: node.brief }),
-        ...(judgedIn?.workdir === undefined ? {} : { workdir: judgedIn.workdir }),
+        ...(judgedIn?.workdir === undefined ? {} : { workdir: judgedIn.workdir, branch: judgedIn.branch }),
         evidence: shown.map((ref) => ({ kind: "document" as const, ref })),
       });
       if (!verdict.ok) {

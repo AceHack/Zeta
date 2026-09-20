@@ -266,6 +266,12 @@ export interface ReviewRequest {
    * reviewer's checks leave behind belongs with the work under review, never on the trunk.
    */
   readonly workdir?: string;
+  /**
+   * The branch that checkout holds, when the requester knows it. MEASURED on the Waypoint run,
+   * 2026-09-20, proj-5525: the architect was placed in the feature branch's checkout and judged the
+   * trunk anyway — a cwd is where a process starts, not a statement of which tree is under judgment.
+   */
+  readonly branch?: string;
 }
 
 export interface ReviewVerdict {

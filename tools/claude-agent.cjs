@@ -804,6 +804,16 @@ if (mode === "review") {
     "work move - an accurate document whose own conclusion is that the work is NOT ready, not fixed, or",
     "still blocked is a REJECTION, with what is left as your reason. Before relying on anything an",
     "author reports as still open, check it against the item's current record: it may have closed since.",
+    ...(env.ORG_REVIEW_CHECKOUT
+      ? [
+          "",
+          "THE TREE UNDER JUDGMENT is your working directory, " + env.ORG_REVIEW_CHECKOUT +
+            (env.ORG_REVIEW_BRANCH ? " (branch " + env.ORG_REVIEW_BRANCH + ")" : "") + ".",
+          "It holds the work this step judges. That work is not on the trunk yet BY DESIGN: passing this step is",
+          "what lands it there. Judge this tree - read it, run its tests here - and never reject because the trunk",
+          "or some other checkout lacks what this one has.",
+        ]
+      : []),
     ...(() => {
       if (!env.ORG_FOLLOWUP_REVIEW) return [];
       let fu;
