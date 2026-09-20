@@ -997,14 +997,14 @@ describe("THE AGENT THAT WRITES THE CODE IS TOLD WHAT EVERY DOCUMENT AUTHOR WAS"
     }
   });
 
-  test("...and they reach the CHILD PROCESS, not just a function's return value", () => {
+  test("...and they reach the CHILD PROCESS, not just a function's return value", async () => {
     const perform = commandProposal({
       command: process.execPath,
       argsFor: () => ["-e", "process.stdout.write(String(process.env.ORG_PRACTICE) + '|' + String(process.env.ORG_TICKET))"],
       cwd: process.cwd(),
       envFor: () => ({ ORG_PRACTICE: "tdd" }),
     });
-    expect(perform(node, { branch: "b" }).summary).toContain("tdd|AIAGENT-1658");
+    expect((await perform(node, { branch: "b" })).summary).toContain("tdd|AIAGENT-1658");
   });
 
   test("THE JOIN: providersFromArgs hands that env to the real work executor", async () => {
@@ -1241,5 +1241,29 @@ describe("A DECLINED GATE PRACTICE DOES NOT MAKE THE GATE PERFORMED", () => {
     expect(performedGates([declined])).not.toContain(GateKind.QaUat);
     expect(performedGates([stated])).toContain(GateKind.QaUat);
     expect(PRE_CODE_GATES).not.toContain(GateKind.QaUat);
+  });
+});
+
+describe("THE PERFORMER HEARS A REJECTION FROM ANY GATE AFTER ITS OWN", () => {
+  // MEASURED on Waypoint task-6560, 2026-09-20: qa_uat's objection ("three defect tests skip without
+  // DATABASE_URL") never reached the implementer — `performerEnvFrom` read the standing rejection at
+  // implementation_review only. Sent back to write code without the reason, it would write the same code.
+  const { performerEnvFrom } = require("./run-org") as typeof import("./run-org");
+  const node = { workId: "task-9", title: "fix archive", workType: WorkTypeValue.Defect, state: WorkState.InProgress, ownerHatId: "lead" } as unknown as CascadeNode;
+  test("the latest standing rejection at qa_uat reaches ORG_FEEDBACK", () => {
+    const store = mkdtempSync(join(tmpdir(), "perf-qa-"));
+    try {
+      const { appendEvent } = require("./org-store") as typeof import("./org-store");
+      appendEvent({
+        id: "evt-qa-1", kind: "quality_gate_evaluation", subjectId: "task-9", actorHatId: "qa_director",
+        decision: "'qa_uat' rejected", atMs: 9, evidenceRefs: [], supervisorChain: [],
+        fact: { kind: "gates_evaluated", evaluations: [{ workId: "task-9", gate: "qa_uat", outcome: "rejected", byHatId: "qa_director", reason: "three of four defect tests skip without DATABASE_URL", atMs: 9, evidenceRefs: [] }] },
+      } as unknown as import("./org-event").OrgEvent, store);
+      const env = performerEnvFrom(parseArgs(["--store", store]), () => ({}))(node);
+      const said = JSON.parse(env["ORG_FEEDBACK"] ?? "[]") as { gate: string; said: string }[];
+      expect(said.some((f) => f.gate === "qa_uat" && f.said.includes("DATABASE_URL"))).toBe(true);
+    } finally {
+      rmSync(store, { recursive: true, force: true });
+    }
   });
 });

@@ -489,3 +489,30 @@ describe("A REVIEWER'S VERDICT IS KEPT WHOLE — it is the author's next brief",
     expect(r.value.reason.length).toBeGreaterThan(MAX_CAPTURED_OUTPUT * 2);
   });
 });
+
+describe("PORTS RUN THEIR COMMANDS WITHOUT BLOCKING THE ORGANIZATION", () => {
+  // MEASURED on the Waypoint run, 2026-09-20: `--parallel 3` walks, and a 25-minute stretch in
+  // which one verifier after another ran while every other walk stood still. Every port spawned
+  // with `spawnSync`, which parks the whole process — so three walks were three queues for one
+  // lane. Two one-second commands must take about one second, not two.
+  const SELF = process.execPath;
+  const SLEEP = ["-e", "setTimeout(() => process.exit(0), 1000)"];
+  test("two test runs overlap", async () => {
+    const runner = commandTestRunner({ command: SELF, argsFor: () => SLEEP, cwd: process.cwd() });
+    const t0 = Date.now();
+    await Promise.all([runner.run({ id: "a" } as never, { branch: "b" }), runner.run({ id: "b" } as never, { branch: "b" })]);
+    expect(Date.now() - t0).toBeLessThan(1800);
+  });
+  test("two reviews overlap", async () => {
+    const review = commandReview({ command: SELF, argsFor: () => SLEEP, cwd: process.cwd() });
+    const t0 = Date.now();
+    await Promise.all([review.review({ gate: GateKind.QaUat, workId: "a" } as never), review.review({ gate: GateKind.QaUat, workId: "b" } as never)]);
+    expect(Date.now() - t0).toBeLessThan(1800);
+  });
+  test("a timed-out command is a refusal that names the timeout, as before", async () => {
+    const runner = commandTestRunner({ command: SELF, argsFor: () => SLEEP, cwd: process.cwd(), timeoutMs: 200 });
+    const r = await runner.run({ id: "a" } as never, { branch: "b" });
+    expect(r.ok).toBe(false);
+    if (!r.ok) expect(r.reason).toMatch(/could not run|TIMEDOUT/);
+  });
+});

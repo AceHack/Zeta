@@ -29,7 +29,79 @@
  * success it did not have. Both are refusals here, with the reason carried out.
  */
 
-import { spawnSync } from "node:child_process";
+import { spawn, spawnSync } from "node:child_process";
+
+/** What a finished command looks like — `spawnSync`'s contract, kept so every caller reads it the same way. */
+interface CommandRun {
+  readonly status: number | null;
+  readonly stdout: string;
+  readonly stderr: string;
+  readonly error?: Error & { readonly code?: string };
+}
+
+/**
+ * Run a command WITHOUT parking the process.
+ *
+ * ── WHY NOT `spawnSync` ─────────────────────────────────────────────────────
+ * Every port here spawned synchronously, which blocks the event loop for the command's whole life.
+ * MEASURED on the Waypoint run, 2026-09-20, under `--parallel 3`: a 25-minute stretch in which one
+ * verifier after another ran while every other walk stood still — three walks were three queues
+ * for one lane, and an agent's ten-minute session held the reviewer of an unrelated item.
+ *
+ * The CONTRACT IS `spawnSync`'s, on purpose: `status`, `stdout`, `stderr`, and `error` with the
+ * same codes — `ETIMEDOUT` when `timeoutMs` passes (the child is killed), `ENOBUFS` when output
+ * passes `maxBuffer` (killed), the spawn error when it could not start. Callers that read
+ * `run.error` then `run.status` keep reading them unchanged.
+ */
+function runCommand(
+  command: string,
+  args: readonly string[],
+  opts: { readonly cwd?: string; readonly env?: NodeJS.ProcessEnv; readonly timeoutMs?: number; readonly maxBuffer?: number; readonly input?: string },
+): Promise<CommandRun> {
+  return new Promise((resolve) => {
+    const limit = opts.maxBuffer ?? MAX_COMMAND_OUTPUT_BYTES;
+    let out = "";
+    let err = "";
+    let failed: CommandRun["error"] | undefined;
+    let settled = false;
+    let child: ReturnType<typeof spawn>;
+    try {
+      child = spawn(command, [...args], { cwd: opts.cwd, env: opts.env, shell: false, stdio: ["pipe", "pipe", "pipe"] });
+    } catch (e) {
+      resolve({ status: null, stdout: "", stderr: "", error: e as NonNullable<CommandRun["error"]> });
+      return;
+    }
+    const fail = (code: string, message: string): void => {
+      if (failed !== undefined) return;
+      failed = Object.assign(new Error(message), { code });
+      child.kill("SIGKILL");
+    };
+    const timer = opts.timeoutMs === undefined ? undefined : setTimeout(() => fail("ETIMEDOUT", `spawnSync ${command} ETIMEDOUT`), opts.timeoutMs);
+    const collect = (chunk: Buffer, which: "out" | "err"): void => {
+      if (which === "out") out += chunk.toString("utf-8");
+      else err += chunk.toString("utf-8");
+      if (out.length + err.length > limit) fail("ENOBUFS", `spawnSync ${command} ENOBUFS`);
+    };
+    child.stdout?.on("data", (c: Buffer) => collect(c, "out"));
+    child.stderr?.on("data", (c: Buffer) => collect(c, "err"));
+    child.on("error", (e) => {
+      if (failed === undefined) failed = e as CommandRun["error"];
+      if (!settled) {
+        settled = true;
+        if (timer !== undefined) clearTimeout(timer);
+        resolve(failed === undefined ? { status: null, stdout: out, stderr: err } : { status: null, stdout: out, stderr: err, error: failed });
+      }
+    });
+    child.on("close", (status) => {
+      if (settled) return;
+      settled = true;
+      if (timer !== undefined) clearTimeout(timer);
+      resolve(failed === undefined ? { status, stdout: out, stderr: err } : { status: null, stdout: out, stderr: err, error: failed });
+    });
+    if (opts.input !== undefined) child.stdin?.end(opts.input);
+    else child.stdin?.end();
+  });
+}
 import { existsSync, mkdtempSync, readdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
@@ -254,17 +326,7 @@ export function commandReview(input: {
     },
     review: async (request) => {
       const handed = input.envFor?.(request) ?? {};
-      const run = spawnSync(input.command, [...input.argsFor(request)], {
-        // The work's own checkout when the request names one; the configured directory otherwise.
-        cwd: request.workdir ?? input.cwd,
-        encoding: "utf-8",
-        timeout: input.timeoutMs ?? 120_000,
-        shell: false,
-        maxBuffer: MAX_COMMAND_OUTPUT_BYTES,
-        // Spread over the inherited environment rather than replacing it: the command is `bun`/
-        // `claude` and needs PATH, HOME and the rest to run at all.
-        ...(Object.keys(handed).length === 0 ? {} : { env: { ...process.env, ...handed } }),
-      });
+      const run = await runCommand(input.command, [...input.argsFor(request)], { cwd: request.workdir ?? input.cwd, ...(Object.keys(handed).length === 0 ? {} : { env: { ...process.env, ...handed } }), timeoutMs: input.timeoutMs ?? 120_000, maxBuffer: MAX_COMMAND_OUTPUT_BYTES });
       if (run.error !== undefined) {
         return { ok: false, reason: `'${input.command}' could not run: ${run.error.message}` };
       }
@@ -749,7 +811,7 @@ export function commandArtifactProducer(input: {
       const roundsLeft = input.askRoundsLeft?.(node);
       const skill = input.skillFor?.(node);
       const feedback = input.feedbackFor?.(node) ?? [];
-      const run = spawnSync(input.command, [...input.argsFor(input.gate, node, ctx), ...context], {
+      const run = await runCommand(input.command, [...input.argsFor(input.gate, node, ctx), ...context], {
         cwd: ctx.workdir ?? input.cwd,
         // THE BRIEF, and anything a person has already told this work. An author invoked with a
         // gate name and a work id knows neither what the work is nor what it was told last time —
@@ -774,9 +836,7 @@ export function commandArtifactProducer(input: {
             ...(g?.repoSkills === undefined || g.repoSkills === "" ? {} : { ORG_REPO_SKILLS: g.repoSkills }),
           }))(input.guidanceFor?.(input.gate, node)),
         },
-        encoding: "utf-8",
-        timeout: input.timeoutMs ?? 120_000,
-        shell: false,
+        timeoutMs: input.timeoutMs ?? 120_000,
         maxBuffer: MAX_COMMAND_OUTPUT_BYTES,
       });
       if (run.error !== undefined) {
@@ -988,19 +1048,7 @@ export function commandWorkExecutor(input: {
     },
     execute: async (node, ctx): Promise<PortResult<WorkOutcome>> => {
       const args = [...input.argsFor(node)];
-      const run = spawnSync(input.command, args, {
-        // The change's own checkout when it has one, else the configured directory. This is what
-        // lets a worktree-per-change adapter actually isolate the work rather than merely name it.
-        cwd: ctx.workdir ?? input.cwd,
-        // WHAT to build, not just which id. See `workBriefEnv` — and `envFor` for what a reviewer
-        // already said about the last attempt at building it.
-        env: { ...workBriefEnv(node, ctx), ...(input.envFor?.(node) ?? {}) },
-        encoding: "utf-8",
-        timeout: input.timeoutMs ?? 120_000,
-        // No shell. The whole safety argument above depends on this line.
-        shell: false,
-        maxBuffer: MAX_COMMAND_OUTPUT_BYTES,
-      });
+      const run = await runCommand(input.command, args, { cwd: ctx.workdir ?? input.cwd, env: { ...workBriefEnv(node, ctx), ...(input.envFor?.(node) ?? {}) }, timeoutMs: input.timeoutMs ?? 120_000, maxBuffer: MAX_COMMAND_OUTPUT_BYTES });
       if (run.error !== undefined) {
         return { ok: false, reason: `'${input.command}' could not run: ${run.error.message}` };
       }
@@ -1091,13 +1139,7 @@ export function agentWorkExecutor(input: {
         return { ok: false, reason: `the agent failed on ${node.workId}: ${err instanceof Error ? err.message : String(err)}` };
       }
 
-      const run = spawnSync(input.verify.command, [...input.verify.argsFor(node)], {
-        cwd: ctx.workdir ?? input.verify.cwd,
-        encoding: "utf-8",
-        timeout: input.verify.timeoutMs ?? 120_000,
-        shell: false,
-        maxBuffer: MAX_COMMAND_OUTPUT_BYTES,
-      });
+      const run = await runCommand(input.verify.command, [...input.verify.argsFor(node)], { cwd: ctx.workdir ?? input.verify.cwd, timeoutMs: input.verify.timeoutMs ?? 120_000, maxBuffer: MAX_COMMAND_OUTPUT_BYTES });
       if (run.error !== undefined) {
         return { ok: false, reason: `the verifier '${input.verify.command}' could not run: ${run.error.message}` };
       }
@@ -1180,16 +1222,9 @@ export function commandProposal(input: {
    * all of it; the one agent that writes CODE was told a title and an id.
    */
   readonly envFor?: (node: CascadeNode) => Readonly<Record<string, string>>;
-}): (node: CascadeNode, ctx: WorkContext) => AgentAttempt {
-  return (node, ctx) => {
-    const run = spawnSync(input.command, [...input.argsFor(node)], {
-      cwd: ctx.workdir ?? input.cwd,
-      env: { ...workBriefEnv(node, ctx), ...(input.envFor?.(node) ?? {}) },
-      encoding: "utf-8",
-      timeout: input.timeoutMs ?? 120_000,
-      shell: false,
-      maxBuffer: MAX_COMMAND_OUTPUT_BYTES,
-    });
+}): (node: CascadeNode, ctx: WorkContext) => Promise<AgentAttempt> {
+  return async (node, ctx) => {
+    const run = await runCommand(input.command, [...input.argsFor(node)], { cwd: ctx.workdir ?? input.cwd, env: { ...workBriefEnv(node, ctx), ...(input.envFor?.(node) ?? {}) }, timeoutMs: input.timeoutMs ?? 120_000, maxBuffer: MAX_COMMAND_OUTPUT_BYTES });
     if (run.error !== undefined) throw new Error(`'${input.command}' could not run: ${run.error.message}`);
     if (run.status !== 0) {
       throw new Error(`'${input.command}' exited ${String(run.status)}: ${(run.stderr ?? "").trim()}`);
@@ -1275,19 +1310,7 @@ export function commandTestRunner(input: {
       describes: `runs '${input.command}' per test case in ${input.cwd}`,
     },
     run: async (testCase, ctx) => {
-      const run = spawnSync(input.command, [...input.argsFor(testCase)], {
-        // THE CHANGE'S OWN CHECKOUT WHEN IT HAS ONE. This adapter used `input.cwd` unconditionally,
-        // so with `--worktrees` every test ran against the BASE tree instead of the branch under
-        // test. MEASURED: a task whose worker had just committed a working app and its suite was
-        // failed by `runtime_validation` three times, because the tests ran where the app was not.
-        // The opposite case is worse and silent — a base that already passes hands every change a
-        // green gate that proves nothing about it.
-        cwd: ctx.workdir ?? input.cwd,
-        encoding: "utf-8",
-        timeout: input.timeoutMs ?? 120_000,
-        shell: false,
-        maxBuffer: MAX_COMMAND_OUTPUT_BYTES,
-      });
+      const run = await runCommand(input.command, [...input.argsFor(testCase)], { cwd: ctx.workdir ?? input.cwd, timeoutMs: input.timeoutMs ?? 120_000, maxBuffer: MAX_COMMAND_OUTPUT_BYTES });
       if (run.error !== undefined) {
         // The RUNNER broke, which is not the same as the test failing. Reporting this as `Failed`
         // would blame the code for a missing binary.
@@ -1832,14 +1855,7 @@ export function gitWorktreeChangeControl(input: {
         return { ok: false, reason: `could not open a worktree for ${ctx.branch}: ${(made.stderr ?? "").trim()}` };
       }
       if (input.setup !== undefined) {
-        const ready = spawnSync(input.setup.command, [...input.setup.args], {
-          cwd: workdir,
-          env: { ...process.env, ORG_BASE_CHECKOUT: input.cwd, ORG_WORKTREE: workdir, ORG_BRANCH: ctx.branch },
-          encoding: "utf-8",
-          shell: false,
-          timeout: input.setup.timeoutMs ?? 900_000,
-          maxBuffer: MAX_COMMAND_OUTPUT_BYTES,
-        });
+        const ready = await runCommand(input.setup.command, [...input.setup.args], { cwd: workdir, env: { ...process.env, ORG_BASE_CHECKOUT: input.cwd, ORG_WORKTREE: workdir, ORG_BRANCH: ctx.branch }, timeoutMs: input.setup.timeoutMs ?? 900_000, maxBuffer: MAX_COMMAND_OUTPUT_BYTES });
         if (ready.error !== undefined || ready.status !== 0) {
           // A REFUSED OPEN LEAVES NO CHECKOUT BEHIND. The owner marker is written only after setup,
           // so a worktree abandoned here has the right branch and no owner — and the rejoin above

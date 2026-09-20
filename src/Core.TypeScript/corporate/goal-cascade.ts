@@ -994,3 +994,19 @@ export function unstaffedTasks(cascade: Cascade): readonly CascadeNode[] {
     (n) => isLeafType(n.workType) && n.assigneeHatId === undefined && n.state !== WorkState.Canceled,
   );
 }
+
+/**
+ * Make `workId` wait on `dependencyId` as well — an edge added after decomposition.
+ *
+ * Decomposition states the edges it knows at birth; a verify leaf turned back AFTER its subject
+ * landed learns a new one: the fix minted for its objection. Idempotent: an edge already present
+ * is not added twice, and a node that is its own dependency is refused.
+ */
+export function addDependency(cascade: Cascade, workId: string, dependencyId: string): CascadeResult {
+  const node = nodeById(cascade, workId);
+  if (node === undefined) return { ok: false, reason: `no work item '${workId}'` };
+  if (nodeById(cascade, dependencyId) === undefined) return { ok: false, reason: `no work item '${dependencyId}'` };
+  if (workId === dependencyId) return { ok: false, reason: `'${workId}' cannot depend on itself` };
+  const dependsOn = [...new Set([...(node.dependsOn ?? []), dependencyId])];
+  return { ok: true, cascade: { nodes: cascade.nodes.map((n) => (n.workId === workId ? { ...n, dependsOn } : n)) } };
+}

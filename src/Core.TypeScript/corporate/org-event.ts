@@ -111,6 +111,8 @@ export type OrgFact =
     }
   | { readonly kind: "work_assigned"; readonly workId: string; readonly assigneeHatId: string }
   | { readonly kind: "work_state"; readonly workId: string; readonly state: WorkState }
+  /** An edge learned AFTER decomposition — the full list, so folding it is a replacement, not a merge. */
+  | { readonly kind: "work_depends_on"; readonly workId: string; readonly dependsOn: readonly string[] }
   | {
       readonly kind: "block_planned";
       readonly blockId: string;

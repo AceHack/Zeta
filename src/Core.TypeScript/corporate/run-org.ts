@@ -1921,9 +1921,14 @@ export function performerEnvFrom(
     const g = guidance(GateKind.ImplementationReview, node);
     // ALL THREE VOICES, in the order the document authors already hear them: a person's mandate,
     // the reviewer's standing objection, then why the last attempt stopped before anyone judged it.
+    // …AND FROM EVERY GATE AFTER ITS OWN. A rejection at qa_uat, runtime_validation or
+    // release_readiness sends a code leaf back to its performer (see the attempt loop in
+    // org-runtime); the performer that is not told why writes the same code. MEASURED on Waypoint
+    // task-6560, 2026-09-20: five identical qa_uat rejections, none of them heard.
+    const after = ORDERED_GATES.slice(ORDERED_GATES.indexOf(GateKind.ImplementationReview));
     const said = [
       ...byPerson(node.workId),
-      ...byGate(node.workId, GateKind.ImplementationReview),
+      ...after.flatMap((gate) => byGate(node.workId, gate)),
       ...byStop(node.workId, GateKind.ImplementationReview),
     ];
     const told = answers(node);

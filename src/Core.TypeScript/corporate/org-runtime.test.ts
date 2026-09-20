@@ -1630,8 +1630,22 @@ describe("A MERGE CONFLICT IS REWORK, NOT A STALL", () => {
         reason: `${MERGE_CONFLICT} main in: package.json, CLAUDE.md — the merge is left in progress in /nowhere; resolve, git add, git commit`,
       }),
     };
+    // A FIRST REJECTION, so the eventual approval sits at `warmedAt + 1` — the ordering that hid the
+    // steward's verdict on task-5535.
+    const rejectedOnce = new Set<string>();
+    const strictThenKind = {
+      meta: { port: Port.Review, name: "strict-then-kind", fidelity: Fidelity.Real, describes: "rejects each implementation once" },
+      review: async (req: { gate: GateKind; workId: string }) => {
+        const key = `${req.workId}:${String(req.gate)}`;
+        if (req.gate === GateKind.ImplementationReview && !rejectedOnce.has(key)) {
+          rejectedOnce.add(key);
+          return { ok: true as const, value: { outcome: GateOutcome.Rejected, reason: "first pass: missing a test" }, evidence: [] };
+        }
+        return { ok: true as const, value: { outcome: GateOutcome.Approved, reason: "ok" }, evidence: [] };
+      },
+    };
     const base = deps();
-    const report = await runOrgRuntime({ ...base, providers: { ...defaultProviderSet(base), change: conflicting as never }, settings: [{ setting: ProcessSetting.Delivery, value: "merge", why: "the organization integrates its own changes" }] } as OrgRuntimeDeps);
+    const report = await runOrgRuntime({ ...base, providers: { ...defaultProviderSet(base), change: conflicting as never, review: strictThenKind as never }, settings: [{ setting: ProcessSetting.Delivery, value: "merge", why: "the organization integrates its own changes" }] } as OrgRuntimeDeps);
     expect(opened.length).toBeGreaterThan(0);
     const turnedBack = report.gateEvaluations.filter(
       (e) => String(e.gate) === String(GateKind.ImplementationReview) && e.outcome === GateOutcome.Rejected && e.reason.includes("package.json"),
@@ -1642,6 +1656,16 @@ describe("A MERGE CONFLICT IS REWORK, NOT A STALL", () => {
     expect(turnedBack.every((e) => opened.includes(e.workId))).toBe(true);
     // And it is written where `latestGateRejections` reads: the trace carries it as a verdict.
     expect(report.trace.some((ev) => ev.kind === OrgEventKind.QualityGateEvaluation && ev.actorHatId === "merge_steward")).toBe(true);
+    // AND IT IS THE LATEST WORD. MEASURED on Waypoint task-5535, 2026-09-20: the walk's approvals
+    // carried `warmedAt + attempt - 1`, the steward's rejection carried `warmedAt`, so "latest verdict
+    // at implementation_review" stayed approved, the item read done, and every landing re-conflicted
+    // with nobody sent back. A verdict that must turn work back must be later than what it overturns.
+    const { missingGates } = require("./gate-demand") as typeof import("./gate-demand");
+    for (const leafId of new Set(turnedBack.map((e) => e.workId))) {
+      const leaf = report.cascade.nodes.find((n) => n.workId === leafId);
+      if (leaf === undefined) throw new Error("leaf missing");
+      expect(missingGates(leaf, leafId, report.gateEvaluations)).toContain(GateKind.ImplementationReview);
+    }
   }, 60_000);
 });
 
@@ -1753,5 +1777,286 @@ describe("DONE IS JUDGED AGAINST THE GATES THIS RUN WALKS — the chain under th
     // …and it is DONE, not held for a gate nothing will ever walk.
     expect(verify?.state).toBe(WorkState.Done);
     expect(report.refusals.some((r) => r.includes("no passing verdict on the record for peer_review"))).toBe(false);
+  }, 60_000);
+});
+
+describe("A REJECTED ACCEPTANCE GATE BECOMES WORK, NOT A WEEKLY RE-REVIEW", () => {
+  // MEASURED on the Waypoint run, 2026-09-20, proj-027: every leaf merged, and the Opus architect
+  // rejected `final_architecture_review` with three real findings (SQL casts no test reaches). The
+  // next cycle walked the same gate against the same tree — "nothing has moved since this step was
+  // last rejected" — and would have, every cycle, at architect prices, forever: the leaves were done,
+  // so nobody was ever sent back to the code. An objection at the gate that asks "was the built
+  // thing right?" is a defect against the built thing, and the organization's answer to a defect is
+  // a leaf that fixes it. The gate then waits for that leaf, as it waits for every other child.
+  test("the rung gets a follow-up leaf carrying the objection, and the gate is not re-asked until it delivers", async () => {
+    let finalAsked = 0;
+    const strictArchitect = {
+      meta: { port: Port.Review, name: "strict-architect", fidelity: Fidelity.Real, describes: "rejects the final architecture review once" },
+      review: async (req: { gate: GateKind; workId: string }) => {
+        if (req.gate === GateKind.FinalArchitectureReview) finalAsked += 1;
+        return {
+          ok: true as const,
+          value:
+            req.gate === GateKind.FinalArchitectureReview && finalAsked === 1
+              ? { outcome: GateOutcome.Rejected, reason: "console.read.ts:65 casts an unvalidated string to timestamptz; one bad row 500s the whole overview" }
+              : { outcome: GateOutcome.Approved, reason: "ok" },
+          evidence: [],
+        };
+      },
+    };
+    const base = deps();
+    const settings = [{ setting: ProcessSetting.Delivery, value: "merge", why: "autonomous" }];
+    const run0 = await runOrgRuntime({ ...base, providers: { ...defaultProviderSet(base), review: strictArchitect as never }, settings } as OrgRuntimeDeps);
+    const project = run0.cascade.nodes.find((n) => n.workType === WorkType.Project);
+    if (project === undefined) throw new Error("fixture has no project");
+    // The acceptance gate waits for the trunk: nothing landed within the cycle, so it is not asked yet.
+    expect(finalAsked).toBe(0);
+    // The cycle after the landing asks it — and it is rejected.
+    const landed = new Set(childrenOf(run0.cascade, project.workId).filter((n) => isLeafType(n.workType)).map((n) => n.workId));
+    const run1 = await runOrgRuntime({ ...base, providers: { ...defaultProviderSet(base), review: strictArchitect as never }, settings, priorCascade: run0.cascade as never, priorGateEvaluations: run0.gateEvaluations, alreadyLanded: landed } as OrgRuntimeDeps);
+    expect(finalAsked).toBe(1);
+    // A NEW LEAF under the project, open, briefed with the objection.
+    const followUps = childrenOf(run1.cascade, project.workId).filter((c) => isLeafType(c.workType) && c.state !== WorkState.Done && (c.brief ?? "").includes("timestamptz"));
+    expect(followUps.length).toBeGreaterThan(0);
+    // IDEMPOTENT across cycles: resumed with the follow-up still open, the gate is NOT asked again
+    // and no second follow-up is minted.
+    const run2 = await runOrgRuntime({
+      ...base,
+      providers: { ...defaultProviderSet(base), review: strictArchitect as never },
+      settings,
+      priorCascade: run1.cascade as never,
+      priorGateEvaluations: run1.gateEvaluations,
+      alreadyLanded: landed,
+    } as OrgRuntimeDeps);
+    const again = childrenOf(run2.cascade, project.workId).filter((c) => isLeafType(c.workType) && (c.brief ?? "").includes("timestamptz"));
+    expect(again.length).toBe(followUps.length);
+  }, 90_000);
+});
+
+describe("A VERIFY LEAF TURNED BACK AFTER ITS SUBJECT LANDED MINTS THE FIX IT NEEDS", () => {
+  // MEASURED on the Waypoint run, 2026-09-20, task-5529: the chart-structure story landed on main
+  // and its verify leaf's qa_uat found 7 real failures there — a test computed its fixture path with
+  // `new URL(".", import.meta.url).pathname`, fine in a worktree with no space in its path, `%20` on
+  // the trunk. Correct rejection; nobody to send back. The subject leaf was done and merged, so the
+  // verify leaf would have been re-asked the same question every cycle. An objection from the check
+  // of a landed change is a defect against that change: mint the fix under the same rung, briefed
+  // with the verdict, and make the verify leaf wait on it — exactly as it waited on the original.
+  test("the rung gets a defect leaf carrying the verdict, and the verify leaf depends on it", async () => {
+    let qaAsked = 0;
+    const strictQa = {
+      meta: { port: Port.Review, name: "strict-qa", fidelity: Fidelity.Real, describes: "rejects a verify leaf's qa_uat once" },
+      review: async () => ({ ok: true as const, value: { outcome: GateOutcome.Approved, reason: "ok" }, evidence: [] }),
+    };
+    const base = deps();
+    const settings = [{ setting: ProcessSetting.Delivery, value: "merge", why: "autonomous" }];
+    // Run 1: everything lands.
+    const run1 = await runOrgRuntime({ ...base, providers: { ...defaultProviderSet(base), review: strictQa as never }, settings } as OrgRuntimeDeps);
+    const verify = run1.cascade.nodes.find((n) => n.workType === WorkType.Review);
+    const code = run1.cascade.nodes.find((n) => n.workId === (verify?.dependsOn ?? [])[0]);
+    if (verify === undefined || code === undefined) throw new Error("fixture has no verify leaf with a dependency");
+    // Run 2: resumed with the code leaf landed and the verify leaf owed again; QA now finds a defect on the trunk.
+    const rejectingQa = {
+      ...strictQa,
+      review: async (req: { gate: GateKind; workId: string }) => {
+        if (req.workId === verify.workId && req.gate === GateKind.QaUat && qaAsked++ === 0) {
+          return { ok: true as const, value: { outcome: GateOutcome.Rejected, reason: "label-fixtures.test.ts:60 builds the fixture path from a URL pathname; `%20` in the trunk's path → 7 failures" }, evidence: [] };
+        }
+        return { ok: true as const, value: { outcome: GateOutcome.Approved, reason: "ok" }, evidence: [] };
+      },
+    };
+    const prior = { ...run1.cascade, nodes: run1.cascade.nodes.map((n) => (n.workId === verify.workId ? { ...n, state: WorkState.Open } : n)) };
+    const run2 = await runOrgRuntime({
+      ...base,
+      providers: { ...defaultProviderSet(base), review: rejectingQa as never },
+      settings,
+      priorCascade: prior as never,
+      priorGateEvaluations: run1.gateEvaluations.filter((e) => e.workId !== verify.workId),
+      alreadyLanded: new Set([code.workId]),
+    } as OrgRuntimeDeps);
+    const parentId = verify.parentWorkId as string;
+    const fix = childrenOf(run2.cascade, parentId).find((c) => c.workType === WorkType.Defect && (c.brief ?? "").includes("%20"));
+    expect(fix).toBeDefined();
+    // The verify leaf now waits on the fix, so it is not re-asked until the fix delivers.
+    const verifyNow = run2.cascade.nodes.find((n) => n.workId === verify.workId);
+    expect((verifyNow?.dependsOn ?? []).includes(fix?.workId ?? "")).toBe(true);
+    // IDEMPOTENT: a third run with the fix still open mints nothing more.
+    const run3 = await runOrgRuntime({
+      ...base,
+      providers: { ...defaultProviderSet(base), review: rejectingQa as never },
+      settings,
+      priorCascade: run2.cascade as never,
+      priorGateEvaluations: run2.gateEvaluations,
+      alreadyLanded: new Set([code.workId]),
+    } as OrgRuntimeDeps);
+    expect(childrenOf(run3.cascade, parentId).filter((c) => c.workType === WorkType.Defect && (c.brief ?? "").includes("%20")).length).toBe(1);
+  }, 90_000);
+});
+
+describe("DECOMPOSITION COUNTS SEATS THE WAY STAFFING DOES — wearers per hat, not one", () => {
+  // MEASURED on the Waypoint run, 2026-09-20: `--supply-target 3` let three tasks run at once on
+  // two contributor hats, and then a fix leaf minted mid-run for a landed defect was refused by
+  // `decompose`: "no individual_contributor reports up to 'tech_lead', so this task cannot be
+  // staffed". Staffing counted seats × supply; decomposition counted hats with nothing on them.
+  // Two answers to "is anyone free" is one answer too many.
+  const { freeSeatsUnder } = require("./org-runtime") as typeof import("./org-runtime");
+  test("a hat carrying one open task still has seats while supply allows it", () => {
+    const built = buildOrgChart(SEED_HATS);
+    if (!built.ok) throw new Error("chart");
+    const chart = built.chart;
+    const carried = (n: number): import("./goal-cascade").Cascade => ({
+      nodes: Array.from({ length: n }, (_, i) => ({
+        workId: `t-${String(i)}`, workType: WorkType.Task, title: "t", state: WorkState.InProgress, ownerHatId: "tech_lead",
+        assigneeHatId: i % 2 === 0 ? "backend_implementer" : "frontend_implementer",
+      })) as never,
+    });
+    // Two hats, nothing carried: two seats at supply 1, six at supply 3.
+    expect(freeSeatsUnder(chart, carried(0), "tech_lead", 1)).toBe(2);
+    expect(freeSeatsUnder(chart, carried(0), "tech_lead", 3)).toBe(6);
+    // Each hat carrying one task: none free at supply 1 — and FOUR at supply 3.
+    expect(freeSeatsUnder(chart, carried(2), "tech_lead", 1)).toBe(0);
+    expect(freeSeatsUnder(chart, carried(2), "tech_lead", 3)).toBe(4);
+    // Finished work holds no seat.
+    const done: import("./goal-cascade").Cascade = { nodes: carried(2).nodes.map((n) => ({ ...n, state: WorkState.Done })) };
+    expect(freeSeatsUnder(chart, done, "tech_lead", 1)).toBe(2);
+  });
+});
+
+describe("A REJECTION AFTER THE CODE WAS WRITTEN SENDS THE CODE LEAF BACK TO ITS PERFORMER", () => {
+  // MEASURED on the Waypoint run, 2026-09-20, task-6560: qa_uat rejected five times with one reason
+  // (three of four defect tests skip without DATABASE_URL, so the recorded run proves nothing for
+  // them). Each attempt re-walked only the gates not yet passed this cycle — qa_uat — so the test
+  // producer ran, the reviewer read the same run, and said the same thing; the performer, who is
+  // the only actor that can change what the run proves, was never asked again and never told. The
+  // named recovery path for qa_uat is "validation process improvement"; in an organization whose
+  // validation process is the checkout's own tests, that improvement IS engineering.
+  test("qa_uat rejected once → the work runs again → the walk passes", async () => {
+    let qaAsked = 0;
+    let performed = 0;
+    const work = {
+      meta: { port: Port.WorkExecution, name: "counting", fidelity: Fidelity.Real, describes: "counts performances" },
+      execute: async (node: { workId: string }) => {
+        performed += 1;
+        return { ok: true as const, value: { workId: node.workId, succeeded: true, artifacts: [], summary: `pass ${String(performed)}` }, evidence: [] };
+      },
+    };
+    const review = {
+      meta: { port: Port.Review, name: "qa-once", fidelity: Fidelity.Real, describes: "rejects the first qa_uat on a code leaf" },
+      review: async (req: { gate: GateKind; workId: string }) => ({
+        ok: true as const,
+        value:
+          req.gate === GateKind.QaUat && qaAsked++ === 0
+            ? { outcome: GateOutcome.Rejected, reason: "three of four defect tests skip without DATABASE_URL; the run proves nothing for them" }
+            : { outcome: GateOutcome.Approved, reason: "ok" },
+        evidence: [],
+      }),
+    };
+    const base = deps();
+    const report = await runOrgRuntime({ ...base, providers: { ...defaultProviderSet(base), work: work as never, review: review as never }, settings: [{ setting: ProcessSetting.Delivery, value: "merge", why: "autonomous" }] } as OrgRuntimeDeps);
+    const code = report.cascade.nodes.find((n) => n.workType === WorkType.Task || n.workType === WorkType.Defect);
+    expect(code?.state).toBe(WorkState.Done);
+    // The performer ran AGAIN after the rejection — not merely the test producer.
+    expect(performed).toBeGreaterThanOrEqual(2);
+    // And the record shows implementation_review re-judged after qa_uat's objection.
+    const impl = report.gateEvaluations.filter((e) => e.workId === code?.workId && e.gate === GateKind.ImplementationReview);
+    expect(impl.length).toBeGreaterThanOrEqual(2);
+  }, 60_000);
+
+  test("…and on a RESUMED item whose implementation passed in an earlier run", async () => {
+    // The real case: task-6560's implementation_review had passed the run before; the resumed walk
+    // owed only qa_uat onward and, filtered by "passed before", could never reach the performer.
+    let performed = 0;
+    const work = {
+      meta: { port: Port.WorkExecution, name: "counting", fidelity: Fidelity.Real, describes: "counts performances" },
+      execute: async (node: { workId: string }) => {
+        performed += 1;
+        return { ok: true as const, value: { workId: node.workId, succeeded: true, artifacts: [], summary: `pass ${String(performed)}` }, evidence: [] };
+      },
+    };
+    const approve = { meta: { port: Port.Review, name: "ok", fidelity: Fidelity.Real, describes: "approves" }, review: async () => ({ ok: true as const, value: { outcome: GateOutcome.Approved, reason: "ok" }, evidence: [] }) };
+    const base = deps();
+    const settings = [{ setting: ProcessSetting.Delivery, value: "merge", why: "autonomous" }];
+    const run1 = await runOrgRuntime({ ...base, providers: { ...defaultProviderSet(base), work: work as never, review: approve as never }, settings } as OrgRuntimeDeps);
+    const code = run1.cascade.nodes.find((n) => n.workType === WorkType.Task || n.workType === WorkType.Defect);
+    if (code === undefined) throw new Error("no code leaf");
+    const performedInRun1 = performed;
+    // Resume: the code leaf is open again and owes qa_uat onward (implementation_review passed before).
+    let qaAsked = 0;
+    const qaOnce = { ...approve, review: async (req: { gate: GateKind; workId: string }) => (req.workId === code.workId && req.gate === GateKind.QaUat && qaAsked++ === 0 ? { ok: true as const, value: { outcome: GateOutcome.Rejected, reason: "the run proves nothing: the tests skip" }, evidence: [] } : { ok: true as const, value: { outcome: GateOutcome.Approved, reason: "ok" }, evidence: [] }) };
+    const prior = { ...run1.cascade, nodes: run1.cascade.nodes.map((n) => (n.workId === code.workId ? { ...n, state: WorkState.Open } : n)) };
+    const run2 = await runOrgRuntime({
+      ...base,
+      providers: { ...defaultProviderSet(base), work: work as never, review: qaOnce as never },
+      settings,
+      priorCascade: prior as never,
+      priorGateEvaluations: run1.gateEvaluations.filter((e) => !(e.workId === code.workId && e.gate !== GateKind.ImplementationReview)),
+    } as OrgRuntimeDeps);
+    expect(run2.cascade.nodes.find((n) => n.workId === code.workId)?.state).toBe(WorkState.Done);
+    // The performer ran in run 2 — after qa_uat's objection — although implementation had passed before.
+    expect(performed).toBeGreaterThan(performedInRun1);
+  }, 60_000);
+});
+
+describe("DONE IS NOT LANDED — the acceptance gate waits for the trunk, and one objection mints one follow-up", () => {
+  // MEASURED on Waypoint proj-027, 2026-09-20: its follow-up defect passed every gate at 20:16 and
+  // the acceptance gate was re-asked at 20:40 — before the cycle's landing loop had merged the fix —
+  // so the architect re-read an unchanged main, rejected again with a rephrased verdict, and a
+  // SECOND follow-up was minted beside the first. Two rules close it: the acceptance gate of a rung
+  // is asked only once every code child has LANDED, not merely finished its walk; and an open
+  // follow-up for the same gate is the same follow-up, whatever the verdict's wording this time.
+  test("no re-review and no second follow-up while the first fix is done but unlanded", async () => {
+    let finalAsked = 0;
+    const architect = {
+      meta: { port: Port.Review, name: "architect", fidelity: Fidelity.Real, describes: "rejects final review, rephrased each time" },
+      review: async (req: { gate: GateKind }) => {
+        if (req.gate !== GateKind.FinalArchitectureReview) return { ok: true as const, value: { outcome: GateOutcome.Approved, reason: "ok" }, evidence: [] };
+        finalAsked += 1;
+        return { ok: true as const, value: { outcome: GateOutcome.Rejected, reason: `objection, phrasing #${String(finalAsked)}: console.read.ts casts` }, evidence: [] };
+      },
+    };
+    // Change control that opens and merges nothing — every change stays unlanded, as within a cycle.
+    const unlanding = {
+      meta: { port: Port.ChangeControl, name: "unlanding", fidelity: Fidelity.Real, describes: "never lands" },
+      open: async (node: { workId: string }, ctx: { branch: string; base?: string }) => ({ ok: true as const, value: { changeId: `${ctx.branch}@${node.workId}`, branch: ctx.branch, ...(ctx.base === undefined ? {} : { base: ctx.base }), workdir: "/nowhere" }, evidence: [] }),
+      merge: async () => ({ ok: false as const, reason: "not now" }),
+    };
+    const base = deps();
+    const settings = [{ setting: ProcessSetting.Delivery, value: "merge", why: "autonomous" }];
+    const run1 = await runOrgRuntime({ ...base, providers: { ...defaultProviderSet(base), review: architect as never, change: unlanding as never }, settings } as OrgRuntimeDeps);
+    const project = run1.cascade.nodes.find((n) => n.workType === WorkType.Project);
+    if (project === undefined) throw new Error("no project");
+    const followUps = (c: import("./goal-cascade").Cascade) => childrenOf(c, project.workId).filter((n) => isLeafType(n.workType) && n.title.startsWith("address final_architecture_review"));
+    // Leaves finished their walks but nothing landed: the gate must NOT have been asked at all.
+    expect(finalAsked).toBe(0);
+    expect(followUps(run1.cascade).length).toBe(0);
+    // Resume with the leaves LANDED: now the gate is asked, rejected, and ONE follow-up is minted.
+    const leaves = childrenOf(run1.cascade, project.workId).filter((n) => isLeafType(n.workType)).map((n) => n.workId);
+    const run2 = await runOrgRuntime({ ...base, providers: { ...defaultProviderSet(base), review: architect as never, change: unlanding as never }, settings, priorCascade: run1.cascade as never, priorGateEvaluations: run1.gateEvaluations, alreadyLanded: new Set(leaves) } as OrgRuntimeDeps);
+    expect(finalAsked).toBe(1);
+    expect(followUps(run2.cascade).length).toBe(1);
+    // Resume again: the follow-up is done-but-unlanded, the gate is not re-asked, nothing is re-minted.
+    const run3 = await runOrgRuntime({ ...base, providers: { ...defaultProviderSet(base), review: architect as never, change: unlanding as never }, settings, priorCascade: run2.cascade as never, priorGateEvaluations: run2.gateEvaluations, alreadyLanded: new Set(leaves) } as OrgRuntimeDeps);
+    expect(finalAsked).toBe(1);
+    expect(followUps(run3.cascade).length).toBe(1);
+  }, 120_000);
+});
+
+describe("CANCELLED WORK IS NOT WALKED", () => {
+  // MEASURED on Waypoint, 2026-09-20: five duplicate fix leaves were cancelled by the operator
+  // (`work_state: canceled`), and the next run reviewed and re-performed them anyway — the walk
+  // took every node with an assignee. A cancelled item is one the organization has decided not to
+  // do; spending a reviewer and an implementer on it is the decision made and then ignored.
+  test("a cancelled, staffed leaf gets no review, no work, no verdict", async () => {
+    const seen: string[] = [];
+    const review = { meta: { port: Port.Review, name: "seen", fidelity: Fidelity.Real, describes: "records" }, review: async (req: { workId: string }) => { seen.push(req.workId); return { ok: true as const, value: { outcome: GateOutcome.Approved, reason: "ok" }, evidence: [] }; } };
+    const base = deps();
+    const run1 = await runOrgRuntime({ ...base, providers: { ...defaultProviderSet(base), review: review as never } } as OrgRuntimeDeps);
+    const leaf = run1.cascade.nodes.find((n) => isLeafType(n.workType) && n.assigneeHatId !== undefined);
+    if (leaf === undefined) throw new Error("no staffed leaf");
+    seen.length = 0;
+    const prior = { ...run1.cascade, nodes: run1.cascade.nodes.map((n) => (n.workId === leaf.workId ? { ...n, state: WorkState.Canceled } : n)) };
+    const run2 = await runOrgRuntime({ ...base, providers: { ...defaultProviderSet(base), review: review as never }, priorCascade: prior as never, priorGateEvaluations: run1.gateEvaluations.filter((e) => e.workId !== leaf.workId) } as OrgRuntimeDeps);
+    expect(seen).not.toContain(leaf.workId);
+    expect(run2.gateEvaluations.some((e) => e.workId === leaf.workId)).toBe(false);
+    expect(run2.cascade.nodes.find((n) => n.workId === leaf.workId)?.state).toBe(WorkState.Canceled);
   }, 60_000);
 });

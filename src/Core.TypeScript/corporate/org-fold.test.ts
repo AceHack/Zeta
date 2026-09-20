@@ -583,3 +583,27 @@ describe("A MERGE A PERSON UNDID IS NOT LANDED ANY MORE", () => {
     expect(foldLandedChanges([merged(1), reverted(2), merged(3)]).has("task-1")).toBe(true);
   });
 });
+
+describe("A DEPENDENCY ADDED AFTER DECOMPOSITION SURVIVES A RESUME", () => {
+  // MEASURED on the Waypoint run, 2026-09-20: a verify leaf turned back after its subject landed was
+  // made to wait on the fix minted for it — in memory. The run was restarted; the fold rebuilt the
+  // cascade from `work_created` facts, which carry the edges known at birth and nothing after; the
+  // verify leaf came back with no such dependency and was walked again while the fix was still open.
+  // An edge that only the process knows is an edge the organization does not have.
+  const { foldOrganization } = require("./org-fold") as typeof import("./org-fold");
+  test("work_depends_on is folded onto the node", () => {
+    const events = [
+      { id: "e1", kind: "work_item_transition", subjectId: "task-1", decision: "owns", atMs: 1, evidenceRefs: [], supervisorChain: [],
+        fact: { kind: "work_created", workId: "task-1", workType: "task", title: "implement", ownerHatId: "tech_lead" } },
+      { id: "e2", kind: "work_item_transition", subjectId: "task-2", decision: "owns", atMs: 2, evidenceRefs: [], supervisorChain: [],
+        fact: { kind: "work_created", workId: "task-2", workType: "review", title: "verify", ownerHatId: "tech_lead", dependsOn: ["task-1"] } },
+      { id: "e3", kind: "work_item_transition", subjectId: "task-3", decision: "owns", atMs: 3, evidenceRefs: [], supervisorChain: [],
+        fact: { kind: "work_created", workId: "task-3", workType: "defect", title: "fix", ownerHatId: "tech_lead" } },
+      { id: "e4", kind: "work_item_transition", subjectId: "task-2", decision: "waits on task-3", atMs: 4, evidenceRefs: [], supervisorChain: [],
+        fact: { kind: "work_depends_on", workId: "task-2", dependsOn: ["task-1", "task-3"] } },
+    ] as never;
+    const folded = foldOrganization(events);
+    const verify = folded.cascade.nodes.find((n) => n.workId === "task-2");
+    expect(verify?.dependsOn).toEqual(["task-1", "task-3"]);
+  });
+});
