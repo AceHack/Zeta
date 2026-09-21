@@ -1377,6 +1377,28 @@ export function branchExists(
 }
 
 /**
+ * Where `branch` is checked out, if anywhere: the path of the worktree holding it.
+ *
+ * Read from `git worktree list --porcelain`, which pairs each `worktree <path>` with the
+ * `branch refs/heads/<name>` it has out. A branch is checked out in at most one worktree — git
+ * enforces that — so the first match is the only one. EXPORTED for the same reason `branchExists`
+ * is: it takes its runner, so the not-checked-out path is reachable from a test.
+ */
+export function checkoutOfBranch(
+  run: (args: readonly string[]) => { readonly status: number | null; readonly stdout?: string | Buffer },
+  branch: string,
+): string | undefined {
+  const listed = run(["worktree", "list", "--porcelain"]);
+  if (listed.status !== 0) return undefined;
+  let at: string | undefined;
+  for (const line of String(listed.stdout ?? "").split("\n")) {
+    if (line.startsWith("worktree ")) at = line.slice("worktree ".length).trim();
+    else if (line === `branch refs/heads/${branch}`) return at;
+  }
+  return undefined;
+}
+
+/**
  * How many commits `branch` has that `HEAD` does not.
  *
  * THE DEFECT THIS EXISTS FOR. `git merge --no-ff <branch>` where the branch points at the same
@@ -1929,9 +1951,15 @@ export function gitWorktreeChangeControl(input: {
       // which is the one place this change must never go. When the shared checkout already sits on
       // the base, merging in place is both correct and cheapest; when it does not, the base is
       // borrowed into a worktree of its own so the operator's HEAD and files are not touched.
-      const head = git(["rev-parse", "--abbrev-ref", "HEAD"]);
-      if (head.status !== 0) return { ok: false, reason: `could not read the checked-out branch: ${(head.stderr ?? "").trim()}` };
-      const onBase = String(head.stdout ?? "").trim() === into;
+      // WHERE THE BASE ALREADY LIVES. The shared checkout when it is on the base; otherwise the
+      // worktree that has the base out — a collection's branch stays checked out while its verify
+      // leaves and its acceptance gate are judged there. MEASURED on the Waypoint run, 2026-09-21,
+      // task-16642: borrowing a branch that was already out was refused by git ("is already used by
+      // worktree at …") for six cycles, and nothing landed. A branch is out in at most one place;
+      // merging THERE is the same merge, and it leaves that checkout at the new tip, which is what a
+      // reviewer standing in it needs anyway.
+      const home = checkoutOfBranch(git, into);
+      const onBase = home !== undefined;
       const borrowed = join(input.worktreeRoot, worktreeDirName(`into-${into}`));
       if (!onBase) {
         const lent = git(["worktree", "add", borrowed, into]);
@@ -1948,14 +1976,14 @@ export function gitWorktreeChangeControl(input: {
           };
         }
       }
-      const mergeAt = onBase ? input.cwd : borrowed;
+      const mergeAt = home ?? borrowed;
       const merged = git(["merge", "--no-ff", "-m", `merge ${handle.changeId}`, handle.branch], mergeAt);
       // The borrowed checkout is released whichever way the merge went — it holds a lock on the
       // base branch, and leaving it behind would make the NEXT change unmergeable.
       const release = (): void => {
-        // Nothing was borrowed when the shared checkout was already on the base, so there is
-        // nothing holding it. Removing unconditionally would try to delete the operator's own
-        // checkout.
+        // Nothing was borrowed when the base was already checked out somewhere, so there is nothing
+        // holding it. Removing unconditionally would delete the operator's own checkout, or the
+        // collection's.
         if (onBase) return;
         // `--force` because the borrowed tree is not clean after a merge lands in it, and a
         // refused merge can leave conflict markers on disk. Nothing is lost either way: the

@@ -421,6 +421,42 @@ describe("A FEATURE'S STORIES LAND ON THE FEATURE, AND THE FEATURE ON THE TRUNK"
     expect(onMain).toContain("feature/FEAT-1");
   }, 30_000);
 
+  test("A STORY MERGES INTO A FEATURE WHOSE CHECKOUT IS OPEN — the merge happens where the branch already lives", async () => {
+    // MEASURED on the Waypoint run, 2026-09-21, task-16642: the runtime keeps the feature branch
+    // checked out (its verify leaves and the project's acceptance gate are judged there), and the
+    // story's landing then BORROWED the same branch into a scratch worktree — which git refuses:
+    // "feature/… is already used by worktree at …". Six cycles, nothing landed, NO_PROGRESS.
+    const { cwd, worktreeRoot } = repo("feature-open");
+    const change = gitWorktreeChangeControl({ cwd, worktreeRoot, baseBranch: "main" });
+    // Story one lands first, which is what creates the feature branch.
+    const open = collecting("open");
+    const first = await change.open(open.nodes.find((n) => n.workId === "leaf-1") as CascadeNode, changeContextFor({ cascade: open, workId: "leaf-1" }) as { branch: string });
+    if (!first.ok) throw new Error(first.reason);
+    commitIn(checkoutOf(first.value), "one.txt", "work\n");
+    const landedFirst = await change.merge(first.value);
+    if (!landedFirst.ok) throw new Error(landedFirst.reason);
+    // THE COLLECTION'S OWN CHECKOUT, opened as the runtime opens it: the project node, its branch, no base.
+    const feature = await change.open(open.nodes.find((n) => n.workId === "proj-1") as CascadeNode, { branch: "feature/FEAT-1" });
+    if (!feature.ok) throw new Error(feature.reason);
+    expect(existsSync(checkoutOf(feature.value))).toBe(true);
+    // Story two lands while that checkout is open.
+    const second = await change.open(open.nodes.find((n) => n.workId === "leaf-2") as CascadeNode, changeContextFor({ cascade: open, workId: "leaf-2" }) as { branch: string });
+    if (!second.ok) throw new Error(second.reason);
+    commitIn(checkoutOf(second.value), "two.txt", "work\n");
+    const landedSecond = await change.merge(second.value);
+    if (!landedSecond.ok) throw new Error(landedSecond.reason);
+    // The feature holds both, its checkout is still there and sits at the new tip, and the trunk has not moved.
+    const onFeature = spawnSync("git", ["log", "--oneline", "feature/FEAT-1"], { cwd, encoding: "utf-8" }).stdout;
+    expect(onFeature).toContain("story/S-1");
+    expect(onFeature).toContain("story/S-2");
+    expect(existsSync(checkoutOf(feature.value))).toBe(true);
+    expect(tipOf(checkoutOf(feature.value), "HEAD")).toBe(tipOf(cwd, "feature/FEAT-1"));
+    // …and the feature still lands on the trunk afterwards, checkout and all.
+    const landed = await change.merge({ changeId: "feature/FEAT-1@proj-1", branch: "feature/FEAT-1" });
+    if (!landed.ok) throw new Error(landed.reason);
+    expect(spawnSync("git", ["log", "--oneline", "main"], { cwd, encoding: "utf-8" }).stdout).toContain("story/S-2");
+  }, 30_000);
+
   test("A RESUME REJOINS: the same item opened twice does not refuse, and does not lose its commit", async () => {
     // MEASURED before the rejoin existed: a second cycle over one item died on
     // `fatal: a branch named 'work/task-015' already exists`, and the run then called the item done
