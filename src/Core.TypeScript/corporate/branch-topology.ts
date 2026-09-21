@@ -560,8 +560,11 @@ export function collectionsReadyToLand(input: {
     // Delivered (every child done, recursively) and accepted by whoever holds the gate record.
     if (node.state !== WorkState.Done && !isDelivered(input.cascade, node.workId)) continue;
     if (input.accepted?.(node.workId) === false) continue;
+    // CANCELLED IS NOT UNFINISHED. `isDelivered` skips cancelled children; counting them here held a
+    // rung by the very children it had written off. MEASURED on the Waypoint run, 2026-09-21,
+    // proj-5525: five cancelled duplicate follow-ups, and a feature branch that never landed.
     const unfinished = descendantsOf(input.cascade, node.workId).filter(
-      (d) => producesCode(d.workType) && d.state !== WorkState.Done,
+      (d) => producesCode(d.workType) && d.state !== WorkState.Done && d.state !== WorkState.Canceled,
     );
     if (unfinished.length > 0) continue;
     out.push({ workId: node.workId, branch: branchNameIn(input.cascade, node, prefixes), base: "" });

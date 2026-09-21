@@ -11,7 +11,7 @@
 import { describe, expect, test } from "bun:test";
 import { externalRefOf } from "./intake";
 import { ProcessSetting, type SettingBinding } from "./practice";
-import { WorkState, WorkType, type Cascade, type CascadeNode } from "./goal-cascade";
+import { isLeafType, WorkState, WorkType, type Cascade, type CascadeNode } from "./goal-cascade";
 import {
   ancestorsOf,
   branchNameFor,
@@ -495,6 +495,28 @@ describe("A COLLECTION THAT IS NOT A FEATURE — configured, because shape canno
     const cascade = done(epicWith("AIAGENT-796"));
     expect(collectionsReadyToLand({ cascade }).map((r) => r.workId)).toEqual(["epic-1"]);
     expect(collectionsReadyToLand({ cascade, settings: direct("AIAGENT-796") })).toEqual([]);
+  });
+
+  test("A CANCELLED LEAF DOES NOT HOLD THE COLLECTION BACK — cancelled is not unfinished", () => {
+    // MEASURED on the Waypoint run, 2026-09-21, proj-5525: accepted, delivered, every live leaf
+    // landed into feature/…, and never returned as ready — five duplicate follow-ups the operator
+    // had CANCELLED were counted as "not done", and a rung whose cancelled children are skipped by
+    // `isDelivered` was then held by the very children it had already written off.
+    const cascade: Cascade = {
+      nodes: epicWith("AIAGENT-796").nodes.map((n) => ({ ...n, state: n.workId === "leaf-2" ? WorkState.Canceled : WorkState.Done })),
+    };
+    expect(collectionsReadyToLand({ cascade }).map((r) => r.workId)).toEqual(["epic-1"]);
+  });
+
+  test("A DELIVERED RUNG IS READY WITHOUT A DONE STATE OF ITS OWN — the cascade never sets one", () => {
+    // `setState(Done)` refuses a node with children; a rung is delivered when they are. A check on the
+    // rung's own state alone therefore never landed a feature branch in a live run.
+    const cascade: Cascade = {
+      nodes: epicWith("AIAGENT-796").nodes.map((n) => (isLeafType(n.workType) ? { ...n, state: WorkState.Done } : n)),
+    };
+    expect(collectionsReadyToLand({ cascade }).map((r) => r.workId)).toEqual(["epic-1"]);
+    // …and a caller holding the gate record can still say no.
+    expect(collectionsReadyToLand({ cascade, accepted: () => false })).toEqual([]);
   });
 
   test("`collect` FORCES a branch the shape rule would not give", () => {
