@@ -111,26 +111,12 @@ export function itemContextsFrom(
       };
     });
 
-    // ATTACHMENTS: every document that resolved to bytes, then anything else a step left. Deduped by
-    // ref, first writer kept, so a document is listed once with the step that wrote it.
-    const attachments: ItemAttachment[] = [];
-    const seen = new Set<string>();
-    // ── AN ATTACHMENT IS SOMETHING THAT CAN BE OPENED ─────────────────────────────────────────
-    // MEASURED on agentic-tpm task-032, 2026-09-12: one listed attachment was 4,031 characters of a
-    // test run's stdout - a step's `log:` evidence, which carries its text INSIDE the ref. It was
-    // offered as openable, and opening it resolved the blob as a path and reported it missing. It was
-    // also printed in full, twice, in a view every session reads. A ref that spans lines or is longer
-    // than any path is evidence, not a document: the step that produced it already says what it says.
-    const openable = (ref: string): boolean => !ref.includes(String.fromCharCode(10)) && ref.length <= 400;
-    const attach = (a: ItemAttachment): void => {
-      if (seen.has(a.ref) || !openable(a.ref)) return;
-      seen.add(a.ref);
-      attachments.push(a);
-    };
-    for (const d of docs.filter((x) => x.workId === node.workId).sort((a, b) => a.atMs - b.atMs)) {
-      attach({ ref: d.path, from: d.gate, by: d.producedByHatId, atMs: d.atMs });
-    }
-    for (const st of steps) for (const ref of st.attachments ?? []) attach({ ref, from: st.name });
+    // ATTACHMENTS: every document that resolved to bytes, then anything else a step left. See
+    // `attachmentsFrom` for what becomes openable and how.
+    const attachments = attachmentsFrom([
+      ...docs.filter((x) => x.workId === node.workId).sort((a, b) => a.atMs - b.atMs).map((d) => ({ ref: d.path, from: d.gate, by: d.producedByHatId, atMs: d.atMs })),
+      ...steps.flatMap((st) => (st.attachments ?? []).map((ref) => ({ ref, from: st.name }))),
+    ]);
 
     // COMMENTS: what was said about the item — in rooms held on it, by people acting on it, and the
     // questions raised because of it. Verdict reasons are on the steps, not repeated here.
@@ -302,6 +288,54 @@ export function navigationFor(prefix: string, hatId: string): Navigation {
 }
 
 /**
+ * What a step left, as things that can be OPENED. Deduped by ref, first writer kept, so a document
+ * is listed once with the step that wrote it.
+ *
+ * ── TWO KINDS OF REF, AND BOTH ARE OPENABLE ─────────────────────────────────────────────────
+ * A path names a document on disk. Anything else a step leaves carries its evidence INSIDE the
+ * ref — `exit:0`, `stdout:<a whole test run>`, `said:<what an agent answered>` — and is not a path
+ * at all. The first cut of this view listed the short ones as if they were files (MEASURED on
+ * agentic-tpm task-032: `exit:0` opened as a path and reported missing) and dropped the long ones
+ * (a 4,031-character stdout printed in full, twice). The second cut listed neither, and MEASURED
+ * on Waypoint task-029, 2026-09-20: `runtime_validation`'s whole record became "1/1 passed", the
+ * reviewer at `release_readiness` could find no evidence the suite had run, and rejected — three
+ * times, correctly, on a record that HAD the evidence and could not show it.
+ *
+ * So inline evidence is listed under a short handle, `evidence#N`, with its kind and size beside
+ * it, and opening the handle returns the text. Nothing is printed in full unless asked for.
+ */
+export function attachmentsFrom(left: readonly ItemAttachment[]): readonly ItemAttachment[] {
+  const out: ItemAttachment[] = [];
+  const seen = new Set<string>();
+  let n = 0;
+  for (const a of left) {
+    if (seen.has(a.ref)) continue;
+    seen.add(a.ref);
+    const inline = inlineEvidence(a.ref);
+    if (inline === undefined) {
+      out.push(a);
+      continue;
+    }
+    n += 1;
+    out.push({ ...a, ref: `evidence#${String(n)}`, note: `${inline.label}, ${String(inline.text.length)} chars`, inline: inline.text });
+  }
+  return out;
+}
+
+/** A ref that carries its own text: `<label>:<text>`, where the label is one a port writes. */
+function inlineEvidence(ref: string): { readonly label: string; readonly text: string } | undefined {
+  const colon = ref.indexOf(":");
+  if (colon <= 0) return undefined;
+  const label = ref.slice(0, colon);
+  const isPathLike = !ref.includes(String.fromCharCode(10)) && ref.length <= 400 && !INLINE_LABELS.has(label);
+  if (isPathLike) return undefined;
+  return { label: INLINE_LABELS.has(label) ? label : "evidence", text: INLINE_LABELS.has(label) ? ref.slice(colon + 1) : ref };
+}
+
+/** The labels the ports write in front of inline evidence. See `capture` in adapters. */
+const INLINE_LABELS: ReadonlySet<string> = new Set(["stdout", "stderr", "log", "said", "exit", "ran", "verify-exit", "agent-said", "trace", "runner-refused"]);
+
+/**
  * Print one attachment — but ONLY one the record lists on that item.
  *
  * A path argument is untrusted input: without this check the command would read any file its caller
@@ -319,6 +353,11 @@ export function readAttachment(items: readonly ItemContext[], workId: string, re
   if (listed === undefined) {
     const why = tails.length > 1 ? `names ${String(tails.length)} of ${workId}'s attachments` : `is not attached to ${workId}`;
     return { ok: false, reason: `'${ref}' ${why} — it has: ${item.attachments.map((a) => a.ref).join(", ") || "nothing"}` };
+  }
+  // EVIDENCE CARRIED INLINE IS ITS OWN DOCUMENT. See `attachmentsFrom`.
+  if (listed.inline !== undefined) {
+    const text = listed.inline;
+    return { ok: true, text: text.length <= ATTACHMENT_LIMIT ? text : `${text.slice(0, ATTACHMENT_LIMIT)}\n\n… ${String(text.length - ATTACHMENT_LIMIT)} more characters` };
   }
   const at = resolve(listed.ref);
   // READ, THEN INTERPRET — never `existsSync`/`statSync` and then read

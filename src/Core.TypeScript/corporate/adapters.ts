@@ -29,7 +29,79 @@
  * success it did not have. Both are refusals here, with the reason carried out.
  */
 
-import { spawnSync } from "node:child_process";
+import { spawn, spawnSync } from "node:child_process";
+
+/** What a finished command looks like — `spawnSync`'s contract, kept so every caller reads it the same way. */
+interface CommandRun {
+  readonly status: number | null;
+  readonly stdout: string;
+  readonly stderr: string;
+  readonly error?: Error & { readonly code?: string };
+}
+
+/**
+ * Run a command WITHOUT parking the process.
+ *
+ * ── WHY NOT `spawnSync` ─────────────────────────────────────────────────────
+ * Every port here spawned synchronously, which blocks the event loop for the command's whole life.
+ * MEASURED on the Waypoint run, 2026-09-20, under `--parallel 3`: a 25-minute stretch in which one
+ * verifier after another ran while every other walk stood still — three walks were three queues
+ * for one lane, and an agent's ten-minute session held the reviewer of an unrelated item.
+ *
+ * The CONTRACT IS `spawnSync`'s, on purpose: `status`, `stdout`, `stderr`, and `error` with the
+ * same codes — `ETIMEDOUT` when `timeoutMs` passes (the child is killed), `ENOBUFS` when output
+ * passes `maxBuffer` (killed), the spawn error when it could not start. Callers that read
+ * `run.error` then `run.status` keep reading them unchanged.
+ */
+function runCommand(
+  command: string,
+  args: readonly string[],
+  opts: { readonly cwd?: string; readonly env?: NodeJS.ProcessEnv; readonly timeoutMs?: number; readonly maxBuffer?: number; readonly input?: string },
+): Promise<CommandRun> {
+  return new Promise((resolve) => {
+    const limit = opts.maxBuffer ?? MAX_COMMAND_OUTPUT_BYTES;
+    let out = "";
+    let err = "";
+    let failed: CommandRun["error"] | undefined;
+    let settled = false;
+    let child: ReturnType<typeof spawn>;
+    try {
+      child = spawn(command, [...args], { cwd: opts.cwd, env: opts.env, shell: false, stdio: ["pipe", "pipe", "pipe"] });
+    } catch (e) {
+      resolve({ status: null, stdout: "", stderr: "", error: e as NonNullable<CommandRun["error"]> });
+      return;
+    }
+    const fail = (code: string, message: string): void => {
+      if (failed !== undefined) return;
+      failed = Object.assign(new Error(message), { code });
+      child.kill("SIGKILL");
+    };
+    const timer = opts.timeoutMs === undefined ? undefined : setTimeout(() => fail("ETIMEDOUT", `spawnSync ${command} ETIMEDOUT`), opts.timeoutMs);
+    const collect = (chunk: Buffer, which: "out" | "err"): void => {
+      if (which === "out") out += chunk.toString("utf-8");
+      else err += chunk.toString("utf-8");
+      if (out.length + err.length > limit) fail("ENOBUFS", `spawnSync ${command} ENOBUFS`);
+    };
+    child.stdout?.on("data", (c: Buffer) => collect(c, "out"));
+    child.stderr?.on("data", (c: Buffer) => collect(c, "err"));
+    child.on("error", (e) => {
+      if (failed === undefined) failed = e as CommandRun["error"];
+      if (!settled) {
+        settled = true;
+        if (timer !== undefined) clearTimeout(timer);
+        resolve(failed === undefined ? { status: null, stdout: out, stderr: err } : { status: null, stdout: out, stderr: err, error: failed });
+      }
+    });
+    child.on("close", (status) => {
+      if (settled) return;
+      settled = true;
+      if (timer !== undefined) clearTimeout(timer);
+      resolve(failed === undefined ? { status, stdout: out, stderr: err } : { status: null, stdout: out, stderr: err, error: failed });
+    });
+    if (opts.input !== undefined) child.stdin?.end(opts.input);
+    else child.stdin?.end();
+  });
+}
 import { existsSync, mkdtempSync, readdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
@@ -253,18 +325,14 @@ export function commandReview(input: {
       describes: `runs '${input.command}' per gate in ${input.cwd}; its exit code is the verdict`,
     },
     review: async (request) => {
-      const handed = input.envFor?.(request) ?? {};
-      const run = spawnSync(input.command, [...input.argsFor(request)], {
-        // The work's own checkout when the request names one; the configured directory otherwise.
-        cwd: request.workdir ?? input.cwd,
-        encoding: "utf-8",
-        timeout: input.timeoutMs ?? 120_000,
-        shell: false,
-        maxBuffer: MAX_COMMAND_OUTPUT_BYTES,
-        // Spread over the inherited environment rather than replacing it: the command is `bun`/
-        // `claude` and needs PATH, HOME and the rest to run at all.
-        ...(Object.keys(handed).length === 0 ? {} : { env: { ...process.env, ...handed } }),
-      });
+      // THE TREE UNDER JUDGMENT, BY NAME. `cwd` alone said nothing, and a reviewer left to infer it
+      // reached for the trunk. See ReviewRequest.branch.
+      const handed = {
+        ...(request.workdir === undefined ? {} : { ORG_REVIEW_CHECKOUT: request.workdir }),
+        ...(request.branch === undefined ? {} : { ORG_REVIEW_BRANCH: request.branch }),
+        ...(input.envFor?.(request) ?? {}),
+      };
+      const run = await runCommand(input.command, [...input.argsFor(request)], { cwd: request.workdir ?? input.cwd, ...(Object.keys(handed).length === 0 ? {} : { env: { ...process.env, ...handed } }), timeoutMs: input.timeoutMs ?? 120_000, maxBuffer: MAX_COMMAND_OUTPUT_BYTES });
       if (run.error !== undefined) {
         return { ok: false, reason: `'${input.command}' could not run: ${run.error.message}` };
       }
@@ -274,7 +342,8 @@ export function commandReview(input: {
         ok: true,
         value: {
           outcome: approved ? GateOutcome.Approved : GateOutcome.Rejected,
-          reason: said === "" ? `${input.command} exited ${String(run.status)}` : capture("said", said),
+          // WHOLE, not log-sized: this text is what the author is briefed with next. See MAX_VERDICT_CHARS.
+          reason: said === "" ? `${input.command} exited ${String(run.status)}` : capture("said", said, MAX_VERDICT_CHARS),
         },
         evidence: [
           { kind: "trace", ref: `exit:${String(run.status)}` },
@@ -530,10 +599,23 @@ export function httpIntake(input: {
 /** How much of a command's output is kept as evidence before it is truncated. */
 export const MAX_CAPTURED_OUTPUT = 4_000;
 
-function capture(label: string, text: string): string {
-  if (text.length <= MAX_CAPTURED_OUTPUT) return `${label}:${text}`;
+/**
+ * A VERDICT IS THE AUTHOR'S NEXT BRIEF, so it is kept far past the log limit. MEASURED on Waypoint
+ * task-037, 2026-09-20: a 6 kB rejection — what was sound, then the one objection, then a "looked
+ * at" list — lost the objection to the middle cut. Sixteen thousand characters is past any verdict seen.
+ */
+export const MAX_VERDICT_CHARS = 16_000;
+
+function capture(label: string, text: string, limit: number = MAX_CAPTURED_OUTPUT): string {
+  if (text.length <= limit) return `${label}:${text}`;
   // Truncation is VISIBLE. Silently clipping evidence makes a long failure look like a short one.
-  return `${label}:${text.slice(0, MAX_CAPTURED_OUTPUT)}…[truncated ${String(text.length - MAX_CAPTURED_OUTPUT)} chars]`;
+  // AND IT KEEPS BOTH ENDS. A test runner prints its summary LAST; keeping only the head handed a
+  // reviewer one suite's case names cut mid-line and no verdict for any suite. MEASURED on the
+  // Waypoint run, 2026-09-20: three reviewers, correctly, said the capture did not establish what
+  // ran or whether it finished. The head says what started; the tail says how it ended.
+  const head = Math.floor(limit * 0.4);
+  const tail = limit - head;
+  return `${label}:${text.slice(0, head)}…[truncated ${String(text.length - limit)} chars]…${text.slice(-tail)}`;
 }
 
 /** The last `n` non-empty lines of a command's output, each capped — where a verdict's reasons are. */
@@ -735,7 +817,7 @@ export function commandArtifactProducer(input: {
       const roundsLeft = input.askRoundsLeft?.(node);
       const skill = input.skillFor?.(node);
       const feedback = input.feedbackFor?.(node) ?? [];
-      const run = spawnSync(input.command, [...input.argsFor(input.gate, node, ctx), ...context], {
+      const run = await runCommand(input.command, [...input.argsFor(input.gate, node, ctx), ...context], {
         cwd: ctx.workdir ?? input.cwd,
         // THE BRIEF, and anything a person has already told this work. An author invoked with a
         // gate name and a work id knows neither what the work is nor what it was told last time —
@@ -760,9 +842,7 @@ export function commandArtifactProducer(input: {
             ...(g?.repoSkills === undefined || g.repoSkills === "" ? {} : { ORG_REPO_SKILLS: g.repoSkills }),
           }))(input.guidanceFor?.(input.gate, node)),
         },
-        encoding: "utf-8",
-        timeout: input.timeoutMs ?? 120_000,
-        shell: false,
+        timeoutMs: input.timeoutMs ?? 120_000,
         maxBuffer: MAX_COMMAND_OUTPUT_BYTES,
       });
       if (run.error !== undefined) {
@@ -974,19 +1054,7 @@ export function commandWorkExecutor(input: {
     },
     execute: async (node, ctx): Promise<PortResult<WorkOutcome>> => {
       const args = [...input.argsFor(node)];
-      const run = spawnSync(input.command, args, {
-        // The change's own checkout when it has one, else the configured directory. This is what
-        // lets a worktree-per-change adapter actually isolate the work rather than merely name it.
-        cwd: ctx.workdir ?? input.cwd,
-        // WHAT to build, not just which id. See `workBriefEnv` — and `envFor` for what a reviewer
-        // already said about the last attempt at building it.
-        env: { ...workBriefEnv(node, ctx), ...(input.envFor?.(node) ?? {}) },
-        encoding: "utf-8",
-        timeout: input.timeoutMs ?? 120_000,
-        // No shell. The whole safety argument above depends on this line.
-        shell: false,
-        maxBuffer: MAX_COMMAND_OUTPUT_BYTES,
-      });
+      const run = await runCommand(input.command, args, { cwd: ctx.workdir ?? input.cwd, env: { ...workBriefEnv(node, ctx), ...(input.envFor?.(node) ?? {}) }, timeoutMs: input.timeoutMs ?? 120_000, maxBuffer: MAX_COMMAND_OUTPUT_BYTES });
       if (run.error !== undefined) {
         return { ok: false, reason: `'${input.command}' could not run: ${run.error.message}` };
       }
@@ -1077,13 +1145,7 @@ export function agentWorkExecutor(input: {
         return { ok: false, reason: `the agent failed on ${node.workId}: ${err instanceof Error ? err.message : String(err)}` };
       }
 
-      const run = spawnSync(input.verify.command, [...input.verify.argsFor(node)], {
-        cwd: ctx.workdir ?? input.verify.cwd,
-        encoding: "utf-8",
-        timeout: input.verify.timeoutMs ?? 120_000,
-        shell: false,
-        maxBuffer: MAX_COMMAND_OUTPUT_BYTES,
-      });
+      const run = await runCommand(input.verify.command, [...input.verify.argsFor(node)], { cwd: ctx.workdir ?? input.verify.cwd, timeoutMs: input.verify.timeoutMs ?? 120_000, maxBuffer: MAX_COMMAND_OUTPUT_BYTES });
       if (run.error !== undefined) {
         return { ok: false, reason: `the verifier '${input.verify.command}' could not run: ${run.error.message}` };
       }
@@ -1166,23 +1228,19 @@ export function commandProposal(input: {
    * all of it; the one agent that writes CODE was told a title and an id.
    */
   readonly envFor?: (node: CascadeNode) => Readonly<Record<string, string>>;
-}): (node: CascadeNode, ctx: WorkContext) => AgentAttempt {
-  return (node, ctx) => {
-    const run = spawnSync(input.command, [...input.argsFor(node)], {
-      cwd: ctx.workdir ?? input.cwd,
-      env: { ...workBriefEnv(node, ctx), ...(input.envFor?.(node) ?? {}) },
-      encoding: "utf-8",
-      timeout: input.timeoutMs ?? 120_000,
-      shell: false,
-      maxBuffer: MAX_COMMAND_OUTPUT_BYTES,
-    });
+}): (node: CascadeNode, ctx: WorkContext) => Promise<AgentAttempt> {
+  return async (node, ctx) => {
+    const run = await runCommand(input.command, [...input.argsFor(node)], { cwd: ctx.workdir ?? input.cwd, env: { ...workBriefEnv(node, ctx), ...(input.envFor?.(node) ?? {}) }, timeoutMs: input.timeoutMs ?? 120_000, maxBuffer: MAX_COMMAND_OUTPUT_BYTES });
     if (run.error !== undefined) throw new Error(`'${input.command}' could not run: ${run.error.message}`);
     if (run.status !== 0) {
       throw new Error(`'${input.command}' exited ${String(run.status)}: ${(run.stderr ?? "").trim()}`);
     }
     const said = (run.stdout ?? "").trim();
     if (said === "") throw new Error(`'${input.command}' produced no proposal for ${node.workId}`);
-    return { summary: capture("said", said), artifacts: [...input.argsFor(node)] };
+    // NO ARGV AS ARTIFACTS. MEASURED on Waypoint, 2026-09-20: every code item listed the command line it
+    // was invoked with as three attachments, and a reviewer rejected the gate for want of a deliverable
+    // after opening them. What the agent produced is in its checkout and its testimony.
+    return { summary: capture("said", said), artifacts: [] };
   };
 }
 
@@ -1258,30 +1316,23 @@ export function commandTestRunner(input: {
       describes: `runs '${input.command}' per test case in ${input.cwd}`,
     },
     run: async (testCase, ctx) => {
-      const run = spawnSync(input.command, [...input.argsFor(testCase)], {
-        // THE CHANGE'S OWN CHECKOUT WHEN IT HAS ONE. This adapter used `input.cwd` unconditionally,
-        // so with `--worktrees` every test ran against the BASE tree instead of the branch under
-        // test. MEASURED: a task whose worker had just committed a working app and its suite was
-        // failed by `runtime_validation` three times, because the tests ran where the app was not.
-        // The opposite case is worse and silent — a base that already passes hands every change a
-        // green gate that proves nothing about it.
-        cwd: ctx.workdir ?? input.cwd,
-        encoding: "utf-8",
-        timeout: input.timeoutMs ?? 120_000,
-        shell: false,
-        maxBuffer: MAX_COMMAND_OUTPUT_BYTES,
-      });
+      const run = await runCommand(input.command, [...input.argsFor(testCase)], { cwd: ctx.workdir ?? input.cwd, timeoutMs: input.timeoutMs ?? 120_000, maxBuffer: MAX_COMMAND_OUTPUT_BYTES });
       if (run.error !== undefined) {
         // The RUNNER broke, which is not the same as the test failing. Reporting this as `Failed`
         // would blame the code for a missing binary.
         return { ok: false, reason: `'${input.command}' could not run: ${run.error.message}` };
       }
+      const args = [...input.argsFor(testCase)];
       return {
         ok: true,
         value: { outcome: run.status === 0 ? RunOutcome.Passed : RunOutcome.Failed },
         evidence: [
+          // WHAT RAN, AND WHERE. A bare exit code beside a log named no command; a reviewer could
+          // not tell which run had exited 0, and said so. The trace now names both.
+          { kind: "trace", ref: `ran:${[input.command, ...args].join(" ")} in ${ctx.workdir ?? input.cwd}` },
           { kind: "trace", ref: `exit:${String(run.status)}` },
           { kind: "log", ref: capture("stdout", run.stdout ?? "") },
+          ...((run.stderr ?? "").trim() === "" ? [] : [{ kind: "log" as const, ref: capture("stderr", run.stderr ?? "") }]),
         ],
       };
     },
@@ -1323,6 +1374,28 @@ export function branchExists(
   branch: string,
 ): boolean {
   return run(["rev-parse", "--verify", "--quiet", `refs/heads/${branch}`]).status === 0;
+}
+
+/**
+ * Where `branch` is checked out, if anywhere: the path of the worktree holding it.
+ *
+ * Read from `git worktree list --porcelain`, which pairs each `worktree <path>` with the
+ * `branch refs/heads/<name>` it has out. A branch is checked out in at most one worktree — git
+ * enforces that — so the first match is the only one. EXPORTED for the same reason `branchExists`
+ * is: it takes its runner, so the not-checked-out path is reachable from a test.
+ */
+export function checkoutOfBranch(
+  run: (args: readonly string[]) => { readonly status: number | null; readonly stdout?: string | Buffer },
+  branch: string,
+): string | undefined {
+  const listed = run(["worktree", "list", "--porcelain"]);
+  if (listed.status !== 0) return undefined;
+  let at: string | undefined;
+  for (const line of String(listed.stdout ?? "").split("\n")) {
+    if (line.startsWith("worktree ")) at = line.slice("worktree ".length).trim();
+    else if (line === `branch refs/heads/${branch}`) return at;
+  }
+  return undefined;
 }
 
 /**
@@ -1540,6 +1613,63 @@ export function gitChangeControl(input: {
  */
 export function worktreeDirName(branch: string): string {
   return branch.replace(/[^A-Za-z0-9._-]/g, "-");
+}
+
+/** How a refused merge says it was a CONFLICT and not something else. The runtime keys on it. */
+export const MERGE_CONFLICT = "conflicts with";
+
+/**
+ * The refusal for a branch with nothing on it, and the marker that names what the checkout holds
+ * uncommitted. Two facts, because they mean opposite things to the runtime: nothing committed and a
+ * CLEAN tree is a leaf that concluded nothing needed to change; nothing committed and a DIRTY tree
+ * is a performer that forgot to commit. MEASURED on the Waypoint run, 2026-09-21: three leaves
+ * approved at every gate with empty branches held three projects off the trunk, refused every cycle.
+ */
+export const NOTHING_TO_MERGE = "has no commits: the work left nothing committed, and a merge that moves nothing is not a merge";
+export const UNCOMMITTED = "uncommitted in its checkout:";
+
+/** Whether a refusal says the branch carried no commits. */
+export function leftNothingCommitted(reason: string): boolean {
+  return reason.includes(NOTHING_TO_MERGE);
+}
+
+/** The files a no-commits refusal named as uncommitted; none when the checkout was clean. */
+export function uncommittedFiles(reason: string): readonly string[] {
+  const at = reason.indexOf(UNCOMMITTED);
+  if (at < 0) return [];
+  return reason.slice(at + UNCOMMITTED.length).split(" — ")[0]?.split(",").map((f) => f.trim()).filter((f) => f !== "") ?? [];
+}
+
+/** The files a refusal named, when the refusal was a conflict; none otherwise. */
+export function conflictedFiles(reason: string): readonly string[] {
+  const at = reason.indexOf(`${MERGE_CONFLICT} `);
+  if (at < 0) return [];
+  const list = reason.slice(at).replace(/^[^:]*: /, "").split(" — ")[0] ?? "";
+  return list.split(",").map((f) => f.trim()).filter((f) => f !== "");
+}
+
+/**
+ * Open the base's merge INTO the branch, in the branch's own checkout, and leave it there when
+ * it conflicts. Returns the conflicted files; an empty list means the merge went through (or
+ * could not be attempted), in which case nothing is left in progress.
+ *
+ * IDEMPOTENT: a checkout already mid-merge is reported, not merged again.
+ */
+function surfaceConflict(
+  git: (args: readonly string[], cwd?: string) => { readonly status: number | null; readonly stdout: string | null; readonly stderr: string | null; readonly error?: Error },
+  at: string,
+  base: string,
+): readonly string[] {
+  const unmerged = (): readonly string[] =>
+    String(git(["diff", "--name-only", "--diff-filter=U"], at).stdout ?? "").split(/\r?\n/).map((l) => l.trim()).filter((l) => l !== "");
+  const already = unmerged();
+  if (already.length > 0) return already;
+  const merged = git(["merge", "--no-ff", "--no-edit", "-m", `Merge ${base} into the change`, base], at);
+  if (merged.error !== undefined || merged.status === 0) return [];
+  const conflicts = unmerged();
+  // Refused for a reason that is not a conflict: nothing is left half-done.
+  if (conflicts.length === 0) git(["merge", "--abort"], at);
+  return conflicts;
 }
 
 /**
@@ -1775,15 +1905,16 @@ export function gitWorktreeChangeControl(input: {
         return { ok: false, reason: `could not open a worktree for ${ctx.branch}: ${(made.stderr ?? "").trim()}` };
       }
       if (input.setup !== undefined) {
-        const ready = spawnSync(input.setup.command, [...input.setup.args], {
-          cwd: workdir,
-          env: { ...process.env, ORG_BASE_CHECKOUT: input.cwd, ORG_WORKTREE: workdir, ORG_BRANCH: ctx.branch },
-          encoding: "utf-8",
-          shell: false,
-          timeout: input.setup.timeoutMs ?? 900_000,
-          maxBuffer: MAX_COMMAND_OUTPUT_BYTES,
-        });
+        const ready = await runCommand(input.setup.command, [...input.setup.args], { cwd: workdir, env: { ...process.env, ORG_BASE_CHECKOUT: input.cwd, ORG_WORKTREE: workdir, ORG_BRANCH: ctx.branch }, timeoutMs: input.setup.timeoutMs ?? 900_000, maxBuffer: MAX_COMMAND_OUTPUT_BYTES });
         if (ready.error !== undefined || ready.status !== 0) {
+          // A REFUSED OPEN LEAVES NO CHECKOUT BEHIND. The owner marker is written only after setup,
+          // so a worktree abandoned here has the right branch and no owner — and the rejoin above
+          // refuses exactly that shape, forever. MEASURED on the Waypoint run, 2026-09-20: one
+          // `npm install` failure in a pnpm workspace wedged the change for three cycles until
+          // `no_progress` stopped the run. Removing the checkout returns the change to "branch
+          // exists, no directory", which the next open already knows how to take. The branch is
+          // kept: it carries nothing yet, and re-cutting it is the same as keeping it.
+          git(["worktree", "remove", "--force", workdir]);
           return {
             ok: false,
             reason:
@@ -1833,8 +1964,15 @@ export function gitWorktreeChangeControl(input: {
       if (ahead === 0) {
         // The worktree may well hold files — the work ran. Uncommitted files are not a change, and
         // this adapter does not commit on the performer's behalf: doing so would put whatever else
-        // is lying in that tree into a commit nobody wrote.
-        return { ok: false, reason: `${handle.branch} has no commits: the work left nothing committed, and a merge that moves nothing is not a merge` };
+        // is lying in that tree into a commit nobody wrote. They ARE named, so the runtime can tell
+        // "forgot to commit" from "nothing to change". See NOTHING_TO_MERGE / UNCOMMITTED.
+        const at = handle.workdir ?? join(input.worktreeRoot, worktreeDirName(handle.branch));
+        const dirty = existsSync(at) ? git(["status", "--porcelain"], at) : undefined;
+        const files = dirty !== undefined && dirty.status === 0 ? String(dirty.stdout ?? "").split("\n").map((l) => l.slice(3).trim()).filter((f) => f !== "") : [];
+        return {
+          ok: false,
+          reason: `${handle.branch} ${NOTHING_TO_MERGE}${files.length === 0 ? "" : ` — ${UNCOMMITTED} ${files.join(", ")}`}`,
+        };
       }
 
       // ── WHERE THE MERGE LANDS, DECIDED RATHER THAN INHERITED ──────────────
@@ -1842,9 +1980,15 @@ export function gitWorktreeChangeControl(input: {
       // which is the one place this change must never go. When the shared checkout already sits on
       // the base, merging in place is both correct and cheapest; when it does not, the base is
       // borrowed into a worktree of its own so the operator's HEAD and files are not touched.
-      const head = git(["rev-parse", "--abbrev-ref", "HEAD"]);
-      if (head.status !== 0) return { ok: false, reason: `could not read the checked-out branch: ${(head.stderr ?? "").trim()}` };
-      const onBase = String(head.stdout ?? "").trim() === into;
+      // WHERE THE BASE ALREADY LIVES. The shared checkout when it is on the base; otherwise the
+      // worktree that has the base out — a collection's branch stays checked out while its verify
+      // leaves and its acceptance gate are judged there. MEASURED on the Waypoint run, 2026-09-21,
+      // task-16642: borrowing a branch that was already out was refused by git ("is already used by
+      // worktree at …") for six cycles, and nothing landed. A branch is out in at most one place;
+      // merging THERE is the same merge, and it leaves that checkout at the new tip, which is what a
+      // reviewer standing in it needs anyway.
+      const home = checkoutOfBranch(git, into);
+      const onBase = home !== undefined;
       const borrowed = join(input.worktreeRoot, worktreeDirName(`into-${into}`));
       if (!onBase) {
         const lent = git(["worktree", "add", borrowed, into]);
@@ -1861,14 +2005,14 @@ export function gitWorktreeChangeControl(input: {
           };
         }
       }
-      const mergeAt = onBase ? input.cwd : borrowed;
+      const mergeAt = home ?? borrowed;
       const merged = git(["merge", "--no-ff", "-m", `merge ${handle.changeId}`, handle.branch], mergeAt);
       // The borrowed checkout is released whichever way the merge went — it holds a lock on the
       // base branch, and leaving it behind would make the NEXT change unmergeable.
       const release = (): void => {
-        // Nothing was borrowed when the shared checkout was already on the base, so there is
-        // nothing holding it. Removing unconditionally would try to delete the operator's own
-        // checkout.
+        // Nothing was borrowed when the base was already checked out somewhere, so there is nothing
+        // holding it. Removing unconditionally would delete the operator's own checkout, or the
+        // collection's.
         if (onBase) return;
         // `--force` because the borrowed tree is not clean after a merge lands in it, and a
         // refused merge can leave conflict markers on disk. Nothing is lost either way: the
@@ -1882,8 +2026,35 @@ export function gitWorktreeChangeControl(input: {
         return { ok: false, reason: `git could not run: ${merged.error.message}` };
       }
       if (merged.status !== 0) {
+        // THE BASE IS NEVER LEFT MID-MERGE. When the shared checkout IS the base, the refused merge
+        // just happened in the operator's own tree, and `release()` removes only borrowed ones.
+        // MEASURED on the Waypoint run, 2026-09-20: one conflicted line in package.json left `main`
+        // with MERGE_HEAD and conflict markers, so every later merge was refused for "unmerged files".
+        if (onBase) git(["merge", "--abort"], mergeAt);
         release();
-        return { ok: false, reason: `merge of ${handle.branch} refused: ${(merged.stderr ?? "").trim()}` };
+        // A CONFLICT IS HANDED TO THE PERFORMER, IN THE CHECKOUT IT WORKS IN. Resolving one is
+        // judgement, and the performer may not run `git merge` itself (an integrating act); so the
+        // same merge is opened the other way round — base into branch — inside the branch's own
+        // worktree, and LEFT THERE for the next attempt to resolve, add and commit. The refusal names
+        // the files, which is what the next attempt is told. See `conflictedFiles`.
+        const at = handle.workdir ?? join(input.worktreeRoot, worktreeDirName(handle.branch));
+        const conflicts = existsSync(at) ? surfaceConflict(git, at, into) : [];
+        // A COLLECTION HAS NO PERFORMER IN ITS CHECKOUT. A handle without a workdir is a branch the
+        // runtime lands as a whole; its checkout, when one is open, is where its work is JUDGED, and
+        // a merge left there stops the next leaf from landing into it ("unmerged files"). MEASURED
+        // on the Waypoint run, 2026-09-21, proj-027. The conflict is named and the checkout is put
+        // back; the runtime mints the leaf that will resolve it, in a checkout of its own.
+        const ownedByAPerformer = handle.workdir !== undefined;
+        if (!ownedByAPerformer && conflicts.length > 0) git(["merge", "--abort"], at);
+        return {
+          ok: false,
+          reason:
+            conflicts.length === 0
+              ? `merge of ${handle.branch} refused: ${(merged.stderr ?? merged.stdout ?? "").trim()}`
+              : ownedByAPerformer
+                ? `${MERGE_CONFLICT} ${into} in: ${conflicts.join(", ")} — the merge is left in progress in ${at}; resolve, git add, git commit`
+                : `${MERGE_CONFLICT} ${into} in: ${conflicts.join(", ")} — resolve it in a change cut from ${handle.branch}: merge ${into} in, resolve, commit`,
+        };
       }
       release();
       // Only after the merge SUCCEEDED. Removing it first would destroy the work if the merge then

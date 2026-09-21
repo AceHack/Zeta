@@ -21,6 +21,7 @@ import { spawnSync } from "node:child_process";
 import {
   commandArtifactProducer,
   commandTestRunner,
+  commandReview,
   commandWorkExecutor,
   directoryIntake,
   inboxOrder,
@@ -436,5 +437,100 @@ describe("A PRE-CODE GATE MUST HAVE SOMETHING TO JUDGE", () => {
     const hostile = node("w1", "; echo pwned > owned.txt");
     const out = await produce("console.log('docs/brd.md')").produce(hostile, phaseCtx());
     expect(out.ok).toBe(true);
+  });
+});
+
+describe("A TEST RUN'S EVIDENCE KEEPS ITS SUMMARY AND NAMES ITS COMMAND", () => {
+  // MEASURED on the Waypoint run, 2026-09-20: a three-suite verifier printed ~24 kB; the captured
+  // evidence kept the first 4 kB — one workspace's case names, cut mid-line — and the trailing
+  // pass/fail summary of every suite was gone. Beside it sat `exit:0`, naming no command. Three
+  // reviewers read that and said, correctly, that it did not establish what ran or whether it
+  // finished. A capture that must cut keeps BOTH ends: what started, and how it ended.
+  test("a long capture keeps its head AND its tail, and says how much it cut", async () => {
+    const r = await commandWorkExecutor({
+      command: SELF,
+      argsFor: () => ["-e", `console.log('HEAD-MARK ' + 'x'.repeat(${String(MAX_CAPTURED_OUTPUT * 3)}) + ' TAIL-MARK 184 tests, 0 failures')`],
+      cwd: scratch("work-headtail"),
+    }).execute(node("w1"), { branch: "b" });
+    if (!r.ok) throw new Error(r.reason);
+    const stdout = r.evidence.find((e) => e.ref.startsWith("stdout:"))?.ref ?? "";
+    expect(stdout).toContain("HEAD-MARK");
+    expect(stdout).toContain("184 tests, 0 failures");
+    expect(stdout).toContain("truncated");
+    expect(stdout.length).toBeLessThan(MAX_CAPTURED_OUTPUT + 200);
+  });
+
+  test("the test runner's trace names the command and where it ran, beside the exit code", async () => {
+    const dir = scratch("tests-named");
+    const runner = commandTestRunner({ command: SELF, argsFor: () => ["-e", "process.exit(0)"], cwd: dir });
+    const r = await runner.run({ id: "tc-1", criterion: "c" } as never, { branch: "b" });
+    if (!r.ok) throw new Error(r.reason);
+    const trace = r.evidence.map((e) => e.ref);
+    expect(trace).toContain("exit:0");
+    expect(trace.some((t) => t.startsWith("ran:") && t.includes(SELF) && t.includes(dir))).toBe(true);
+  });
+});
+
+describe("A REVIEWER'S VERDICT IS KEPT WHOLE — it is the author's next brief", () => {
+  // MEASURED on the Waypoint run, 2026-09-20, task-037: a 6 kB rejection — a page of what was
+  // sound, then the one objection, then a "looked at" list — went through the 4 kB log capture and
+  // came out as the praise and the list with the objection cut from the middle. The author's next
+  // attempt was briefed with everything except the reason it was turned back.
+  test("a long verdict survives far past the log capture limit", async () => {
+    const SELF = process.execPath;
+    const review = commandReview({
+      command: SELF,
+      argsFor: () => ["-e", `process.stdout.write('GOOD '.repeat(1200) + ' THE-ONE-OBJECTION ' + 'looked-at '.repeat(400)); process.exit(1)`],
+      cwd: process.cwd(),
+    });
+    const r = await review.review({ gate: GateKind.ImplementationReview, workId: "task-1" } as never);
+    if (!r.ok) throw new Error(r.reason);
+    expect(r.value.reason).toContain("THE-ONE-OBJECTION");
+    expect(r.value.reason.length).toBeGreaterThan(MAX_CAPTURED_OUTPUT * 2);
+  });
+});
+
+describe("PORTS RUN THEIR COMMANDS WITHOUT BLOCKING THE ORGANIZATION", () => {
+  // MEASURED on the Waypoint run, 2026-09-20: `--parallel 3` walks, and a 25-minute stretch in
+  // which one verifier after another ran while every other walk stood still. Every port spawned
+  // with `spawnSync`, which parks the whole process — so three walks were three queues for one
+  // lane. Two one-second commands must take about one second, not two.
+  const SELF = process.execPath;
+  const SLEEP = ["-e", "setTimeout(() => process.exit(0), 1000)"];
+  test("two test runs overlap", async () => {
+    const runner = commandTestRunner({ command: SELF, argsFor: () => SLEEP, cwd: process.cwd() });
+    const t0 = Date.now();
+    await Promise.all([runner.run({ id: "a" } as never, { branch: "b" }), runner.run({ id: "b" } as never, { branch: "b" })]);
+    expect(Date.now() - t0).toBeLessThan(1800);
+  });
+  test("two reviews overlap", async () => {
+    const review = commandReview({ command: SELF, argsFor: () => SLEEP, cwd: process.cwd() });
+    const t0 = Date.now();
+    await Promise.all([review.review({ gate: GateKind.QaUat, workId: "a" } as never), review.review({ gate: GateKind.QaUat, workId: "b" } as never)]);
+    expect(Date.now() - t0).toBeLessThan(1800);
+  });
+  test("a timed-out command is a refusal that names the timeout, as before", async () => {
+    const runner = commandTestRunner({ command: SELF, argsFor: () => SLEEP, cwd: process.cwd(), timeoutMs: 200 });
+    const r = await runner.run({ id: "a" } as never, { branch: "b" });
+    expect(r.ok).toBe(false);
+    if (!r.ok) expect(r.reason).toMatch(/could not run|TIMEDOUT/);
+  });
+});
+
+describe("A REVIEWER IS HANDED THE CHECKOUT IT JUDGES IN, BY NAME", () => {
+  // MEASURED on the Waypoint run, 2026-09-20, proj-5525: the review ran WITH its cwd set to the
+  // feature branch's checkout, and the architect still judged the trunk — nothing said which tree
+  // was the one under judgment. `cwd` is where a process starts; it is not a statement about anything.
+  test("the request's checkout and branch reach the command as ORG_REVIEW_CHECKOUT / ORG_REVIEW_BRANCH", async () => {
+    const SELF = process.execPath;
+    const review = commandReview({
+      command: SELF,
+      argsFor: () => ["-e", `process.stdout.write(JSON.stringify({ at: process.env.ORG_REVIEW_CHECKOUT || null, branch: process.env.ORG_REVIEW_BRANCH || null })); process.exit(0)`],
+      cwd: process.cwd(),
+    });
+    const r = await review.review({ gate: GateKind.FinalArchitectureReview, workId: "proj-1", workdir: process.cwd(), branch: "feature/act-1" } as never);
+    if (!r.ok) throw new Error(r.reason);
+    expect(r.value.reason).toContain(`"at":${JSON.stringify(process.cwd())}`);
+    expect(r.value.reason).toContain(`"branch":"feature/act-1"`);
   });
 });

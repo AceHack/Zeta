@@ -48,6 +48,7 @@
 
 import {
   childrenOf,
+  isDelivered,
   isLeafType,
   nodeById,
   WorkState,
@@ -528,6 +529,12 @@ export function collectionsReadyToLand(input: {
   readonly collectsAt?: number;
   /** The organization's SDLC settings. See `ProcessSetting`. */
   readonly settings?: readonly SettingBinding[];
+  /**
+   * Whether the collection has passed the gates it owes — its acceptance among them. Supplied by
+   * a runtime that holds the gate record; absent, a collection is ready on its state alone, which
+   * is what a hand-built cascade states directly.
+   */
+  readonly accepted?: (workId: string) => boolean;
 }): readonly IntegrationBranch[] {
   const at = input.collectsAt ?? COLLECTS_AT;
   const prefixes = input.prefixes ?? DEFAULT_BRANCH_PREFIXES;
@@ -546,9 +553,18 @@ export function collectionsReadyToLand(input: {
       (d) => producesCode(d.workType) && integrationFor({ ...input, workId: d.workId })?.workId === node.workId,
     );
     if (!named) continue;
-    if (node.state !== WorkState.Done) continue;
+    // DONE IS DERIVED FOR A RUNG. The cascade refuses `setState(Done)` on anything with children —
+    // "it is delivered when they are" — so a collection's own state never reads Done in a live run,
+    // and a check on it alone never landed a feature branch. MEASURED on the Waypoint run,
+    // 2026-09-21, proj-5525: accepted, every leaf landed into feature/…, never merged to main.
+    // Delivered (every child done, recursively) and accepted by whoever holds the gate record.
+    if (node.state !== WorkState.Done && !isDelivered(input.cascade, node.workId)) continue;
+    if (input.accepted?.(node.workId) === false) continue;
+    // CANCELLED IS NOT UNFINISHED. `isDelivered` skips cancelled children; counting them here held a
+    // rung by the very children it had written off. MEASURED on the Waypoint run, 2026-09-21,
+    // proj-5525: five cancelled duplicate follow-ups, and a feature branch that never landed.
     const unfinished = descendantsOf(input.cascade, node.workId).filter(
-      (d) => producesCode(d.workType) && d.state !== WorkState.Done,
+      (d) => producesCode(d.workType) && d.state !== WorkState.Done && d.state !== WorkState.Canceled,
     );
     if (unfinished.length > 0) continue;
     out.push({ workId: node.workId, branch: branchNameIn(input.cascade, node, prefixes), base: "" });

@@ -124,8 +124,30 @@ const READ = [
 ];
 /** Changing a checkout: everything, minus the integrating acts above. */
 const WRITE = ["Read", "Glob", "Grep", "Edit", "Write", "TodoWrite", "Bash"];
-/** Judging: reading, plus running what the repository runs, so a reviewer can check a claim. */
-const JUDGE = [...READ, "Bash(npm test:*)", "Bash(npm run:*)", "Bash(npx:*)", "Bash(node:*)", "Bash(bun:*)"];
+/**
+ * Judging: reading, plus running what the repository runs, so a reviewer can check a claim.
+ *
+ * WHAT THE REPOSITORY RUNS IS THE REPOSITORY'S KNOWLEDGE. The defaults are the Node ecosystem this
+ * client was first measured on; `ORG_CLAUDE_JUDGE_TOOLS` (a JSON array of further allowances) is
+ * how an operator says what ELSE a reviewer may run here - the same principle `verify.cjs` states.
+ * MEASURED on the Waypoint run, 2026-09-20: the project's gate is npm + dotnet + flutter, and every
+ * reviewer reported "flutter/dart invocation is blocked outright", then refused the gate for lack
+ * of evidence it was forbidden to gather. ADDITIVE ONLY: nothing here can remove NEVER.
+ */
+const JUDGE = [...READ, "Bash(npm test:*)", "Bash(npm run:*)", "Bash(npx:*)", "Bash(node:*)", "Bash(bun:*)", ...judgeToolsFromEnv()];
+function judgeToolsFromEnv() {
+  if (!env.ORG_CLAUDE_JUDGE_TOOLS) return [];
+  let more;
+  try {
+    more = JSON.parse(env.ORG_CLAUDE_JUDGE_TOOLS);
+  } catch {
+    fail(2, "ORG_CLAUDE_JUDGE_TOOLS is not JSON: expected an array of tool allowances such as [\"Bash(flutter test:*)\"]");
+  }
+  if (!Array.isArray(more) || more.some((t) => typeof t !== "string" || t === "")) {
+    fail(2, "ORG_CLAUDE_JUDGE_TOOLS must be a JSON array of non-empty tool allowances");
+  }
+  return more;
+}
 
 /**
  * How long one Claude Code session may run.
@@ -782,6 +804,16 @@ if (mode === "review") {
     "work move - an accurate document whose own conclusion is that the work is NOT ready, not fixed, or",
     "still blocked is a REJECTION, with what is left as your reason. Before relying on anything an",
     "author reports as still open, check it against the item's current record: it may have closed since.",
+    ...(env.ORG_REVIEW_CHECKOUT
+      ? [
+          "",
+          "THE TREE UNDER JUDGMENT is your working directory, " + env.ORG_REVIEW_CHECKOUT +
+            (env.ORG_REVIEW_BRANCH ? " (branch " + env.ORG_REVIEW_BRANCH + ")" : "") + ".",
+          "It holds the work this step judges. That work is not on the trunk yet BY DESIGN: passing this step is",
+          "what lands it there. Judge this tree - read it, run its tests here - and never reject because the trunk",
+          "or some other checkout lacks what this one has.",
+        ]
+      : []),
     ...(() => {
       if (!env.ORG_FOLLOWUP_REVIEW) return [];
       let fu;

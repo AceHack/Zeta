@@ -487,7 +487,11 @@ describe("THE CLI SUPPLIES THE HISTORY THE DELIVERY GUARD NEEDS", () => {
       // ...so the run must not claim delivery, and must name the reason.
       expect(code).toBe(1);
       expect(out).toContain("NOT DELIVERED");
-      expect(out).toContain("no commit exists for it");
+      // Since 2026-09-21 a leaf whose change is clean and empty is CLOSED as cancelled with the reason
+      // on the record, rather than refused as "no commit exists for it" every cycle; either way the
+      // run says the work came to nothing.
+      // The report prints the last cycle: by then the leaf is closed and its change reads Abandoned.
+      expect(out).toMatch(/no commit exists for it|left nothing committed|: Abandoned/);
     } finally {
       console.log = log;
       rmSync(repo, { recursive: true, force: true });
@@ -975,14 +979,36 @@ describe("THE AGENT THAT WRITES THE CODE IS TOLD WHAT EVERY DOCUMENT AUTHOR WAS"
     }
   });
 
-  test("...and they reach the CHILD PROCESS, not just a function's return value", () => {
+  test("a verifier's refusal of the last attempt reaches the performer, exactly as a reviewer's rejection does", () => {
+    // MEASURED on the Waypoint run, 2026-09-20: the verifier failed after every work call (a root
+    // `npm test` that exited 1 on the trunk itself), the phase was refused, and the refusal was
+    // recorded on the item — "stopped at implementation_review (attempt 1): … the verifier said:
+    // …" — precisely so the next attempt could read it. The next attempt was handed no feedback at
+    // all: `performerEnvFrom` read human rejections only. Four blind re-implementations, ~$18.
+    const store = mkdtempSync(join(tmpdir(), "perf-store-"));
+    try {
+      const { appendEvent } = require("./org-store") as typeof import("./org-store");
+      appendEvent({
+        id: "evt-refusal-1", kind: "refusal", subjectId: "task-9", actorHatId: "backend_implementer",
+        decision: "stopped at implementation_review (attempt 1): producer 'agent' for 'implementation_review' on task-9: the work did not succeed: agent: done — verifier exited 1\nthe verifier said:\nnpm error Missing script: \"test\"",
+        atMs: 7, evidenceRefs: [], supervisorChain: [],
+      } as unknown as import("./org-event").OrgEvent, store);
+      const env = performerEnvFrom(parseArgs(["--store", store]), () => ({}))(node);
+      const said = JSON.parse(env["ORG_FEEDBACK"] ?? "[]") as { gate: string; said: string }[];
+      expect(said.some((f) => f.gate === "implementation_review" && f.said.includes("Missing script"))).toBe(true);
+    } finally {
+      rmSync(store, { recursive: true, force: true });
+    }
+  });
+
+  test("...and they reach the CHILD PROCESS, not just a function's return value", async () => {
     const perform = commandProposal({
       command: process.execPath,
       argsFor: () => ["-e", "process.stdout.write(String(process.env.ORG_PRACTICE) + '|' + String(process.env.ORG_TICKET))"],
       cwd: process.cwd(),
       envFor: () => ({ ORG_PRACTICE: "tdd" }),
     });
-    expect(perform(node, { branch: "b" }).summary).toContain("tdd|AIAGENT-1658");
+    expect((await perform(node, { branch: "b" })).summary).toContain("tdd|AIAGENT-1658");
   });
 
   test("THE JOIN: providersFromArgs hands that env to the real work executor", async () => {
@@ -1165,6 +1191,82 @@ describe("ONE RUN AT A TIME ON A STORE", () => {
       expect(readEvents(store)).toEqual([]);
     } finally {
       other.kill();
+      rmSync(store, { recursive: true, force: true });
+    }
+  });
+});
+
+describe("THE REVIEWER IS TOLD HOW THIS ORGANIZATION DOES THE STEP", () => {
+  // MEASURED on the Waypoint run, 2026-09-20: `qa_uat` on three items was rejected by three
+  // reviewers with three different ideas of what the gate wanted — a human OAuth walkthrough, an
+  // evidence directory, a traced mock path — while the organization had a practice mechanism for
+  // exactly this and handed it to every PRODUCER and never to the judge. A gate judged against an
+  // unstated standard cannot converge: the author satisfies one reviewer and meets the next.
+  const { providersFromArgs, reviewerEnvFrom } = require("./run-org") as typeof import("./run-org");
+
+  test("ORG_PRACTICE and ORG_DIRECTIVES reach the review command, resolved for the gate and the item", async () => {
+    const guidance = (gate: string, node: { readonly workId: string }) => ({
+      practice: `at ${gate} on ${node.workId}: the test command's green run in the change's checkout is the acceptance test`,
+      directives: "prefer the repository's own skills",
+    });
+    const cascade = { nodes: [{ workId: "task-9", workType: WorkTypeValue.Task, title: "t", state: WorkState.Open, ownerHatId: "tech_lead" }] };
+    const p = providersFromArgs(
+      parseArgs([
+        "--review-cmd", process.execPath,
+        "--review-arg", "-e",
+        "--review-arg", "process.stdout.write(String(process.env.ORG_PRACTICE) + ' | ' + String(process.env.ORG_DIRECTIVES))",
+      ]),
+      [],
+      RunOutcome.Passed,
+      undefined,
+      reviewerEnvFrom(guidance as never, cascade as never),
+    );
+    const r = await p.review.review({ gate: GateKind.QaUat, workId: "task-9", title: "t" } as never);
+    expect(r.ok).toBe(true);
+    if (r.ok) {
+      expect(r.value.reason).toContain("at qa_uat on task-9: the test command's green run");
+      expect(r.value.reason).toContain("prefer the repository's own skills");
+    }
+  });
+});
+
+describe("A DECLINED GATE PRACTICE DOES NOT MAKE THE GATE PERFORMED", () => {
+  // MEASURED on the Waypoint run, 2026-09-20: a `qa_uat` practice was stated and then unbound —
+  // the registry keeps the decline on the record, as it should — and the next run still handed
+  // `qa_uat` to the document producer, which displaced the runtime's own test run at that gate.
+  // "Declined" is the organization saying NO; a reader that treats it as a statement of HOW has
+  // inverted the answer.
+  const { performedGates, PRE_CODE_GATES } = require("./run-org") as typeof import("./run-org");
+  const { PracticeSubjectKind } = require("./practice") as typeof import("./practice");
+  test("declined is not stated", () => {
+    const declined = { subject: { kind: PracticeSubjectKind.Gate, id: String(GateKind.QaUat) }, declined: true, skills: [], why: "no" } as never;
+    const stated = { subject: { kind: PracticeSubjectKind.Gate, id: String(GateKind.QaUat) }, skills: [], directive: "run it", why: "yes" } as never;
+    expect(performedGates([declined])).toEqual(performedGates([]));
+    expect(performedGates([declined])).not.toContain(GateKind.QaUat);
+    expect(performedGates([stated])).toContain(GateKind.QaUat);
+    expect(PRE_CODE_GATES).not.toContain(GateKind.QaUat);
+  });
+});
+
+describe("THE PERFORMER HEARS A REJECTION FROM ANY GATE AFTER ITS OWN", () => {
+  // MEASURED on Waypoint task-6560, 2026-09-20: qa_uat's objection ("three defect tests skip without
+  // DATABASE_URL") never reached the implementer — `performerEnvFrom` read the standing rejection at
+  // implementation_review only. Sent back to write code without the reason, it would write the same code.
+  const { performerEnvFrom } = require("./run-org") as typeof import("./run-org");
+  const node = { workId: "task-9", title: "fix archive", workType: WorkTypeValue.Defect, state: WorkState.InProgress, ownerHatId: "lead" } as unknown as CascadeNode;
+  test("the latest standing rejection at qa_uat reaches ORG_FEEDBACK", () => {
+    const store = mkdtempSync(join(tmpdir(), "perf-qa-"));
+    try {
+      const { appendEvent } = require("./org-store") as typeof import("./org-store");
+      appendEvent({
+        id: "evt-qa-1", kind: "quality_gate_evaluation", subjectId: "task-9", actorHatId: "qa_director",
+        decision: "'qa_uat' rejected", atMs: 9, evidenceRefs: [], supervisorChain: [],
+        fact: { kind: "gates_evaluated", evaluations: [{ workId: "task-9", gate: "qa_uat", outcome: "rejected", byHatId: "qa_director", reason: "three of four defect tests skip without DATABASE_URL", atMs: 9, evidenceRefs: [] }] },
+      } as unknown as import("./org-event").OrgEvent, store);
+      const env = performerEnvFrom(parseArgs(["--store", store]), () => ({}))(node);
+      const said = JSON.parse(env["ORG_FEEDBACK"] ?? "[]") as { gate: string; said: string }[];
+      expect(said.some((f) => f.gate === "qa_uat" && f.said.includes("DATABASE_URL"))).toBe(true);
+    } finally {
       rmSync(store, { recursive: true, force: true });
     }
   });

@@ -91,7 +91,7 @@ import { atPath, externalRefOf, headerSourceFrom, inlineCredentialHeaders, Intak
 // concerns — somebody else's JSON becoming an `ExternalEvent` — and a webhook receiver needs
 // the same mapping without importing the whole runner.
 export { atPath, headersFrom, trackerMapper } from "./intake";
-import { fidelityLine, type ProviderSet } from "./providers";
+import { fidelityLine, type ProviderSet, type ReviewRequest } from "./providers";
 import {
   agentWorkExecutor,
   autoApproveReview,
@@ -1501,8 +1501,11 @@ export function isReadableFile(ref: string): boolean {
  * Implementation and runtime validation are never here: the runtime's own producers own them.
  */
 export function performedGates(practices: readonly Practice[]): readonly GateKind[] {
+  // STATED, NOT DECLINED. The registry keeps a decline on the record; reading it as a statement of
+  // HOW inverts the organization's answer. MEASURED on Waypoint, 2026-09-20: an unbound `qa_uat`
+  // practice still handed the gate to the document producer, displacing the runtime's own test run.
   const stated = new Set(
-    practices.filter((p) => p.subject.kind === PracticeSubjectKind.Gate).map((p) => p.subject.id),
+    practices.filter((p) => p.subject.kind === PracticeSubjectKind.Gate && p.declined !== true).map((p) => p.subject.id),
   );
   return ORDERED_GATES.filter(
     (g) =>
@@ -1790,6 +1793,42 @@ export function latestGateRejections(
 }
 
 /**
+ * Why a step last STOPPED WITHOUT A VERDICT — its producer failed, or the verifier said no.
+ *
+ * ── THE LOOP THIS BREAKS ─────────────────────────────────────────────────────
+ * `latestGateRejections` closed the loop for a REVIEWER's objection. A refused phase is the other
+ * way a step turns back, and the runtime records it on the item for exactly this reader:
+ * "stopped at <gate> (attempt N): … the verifier said: …" (see the `run.refusals` note in
+ * `org-runtime`, written after AIAGENT-1662 so "the next attempt's author" could see why).
+ * Nothing then read it. MEASURED on the Waypoint run, 2026-09-20: the verifier failed after every
+ * work call, the refusal was recorded every time, and every next attempt was handed no feedback —
+ * four blind re-implementations of the same three tasks before a person read the log.
+ *
+ * Same shape and same discipline as `latestGateRejections`: only the LATEST, only at THIS gate, and
+ * read at each call so a refusal reached earlier in the run reaches the rework it is about.
+ */
+export function latestPhaseRefusals(
+  storeDir: string | undefined,
+): (workId: string, gate: GateKind) => readonly { readonly gate: string; readonly said: string }[] {
+  if (storeDir === undefined) return () => [];
+  return (workId, gate) => {
+    let events: readonly OrgEvent[];
+    try {
+      events = readEvents(storeDir);
+    } catch {
+      return [];
+    }
+    const prefix = `stopped at ${String(gate)} `;
+    const stops = events
+      .filter((e) => e.kind === OrgEventKind.Refusal && e.subjectId === workId && e.decision.startsWith(prefix))
+      .sort((a, b) => a.atMs - b.atMs);
+    const last = stops[stops.length - 1];
+    if (last === undefined) return [];
+    return [{ gate: String(gate), said: last.decision.slice(prefix.length) }];
+  };
+}
+
+/**
  * A producer per pre-code gate, or none at all.
  *
  * DERIVED from the chain rather than listed, so a gate inserted before implementation gets a
@@ -1844,10 +1883,12 @@ export function artifactProducersFromArgs(
         // BOTH VOICES. A person's rejection first — it is a mandate, not an opinion, and the author
         // should read it before anything else — then the verdict standing at THIS gate right now,
         // whoever wrote it. See `latestGateRejections` for the 51-round loop the second half ends.
-        feedbackFor: ((byPerson, byGate) => (node: CascadeNode) => [
+        // …and why the last attempt STOPPED, when nobody got to judge it. See `latestPhaseRefusals`.
+        feedbackFor: ((byPerson, byGate, byStop) => (node: CascadeNode) => [
           ...byPerson(node.workId),
           ...byGate(node.workId, gate),
-        ])(feedbackFromActions(args.actions), latestGateRejections(args.store)),
+          ...byStop(node.workId, gate),
+        ])(feedbackFromActions(args.actions), latestGateRejections(args.store), latestPhaseRefusals(args.store)),
         // AND THE BOUND ON ASKING. Counted from what this work has already been told, so a step
         // that has been answered twice is on its last round wherever it runs.
         askRoundsLeft: (node) =>
@@ -1872,11 +1913,24 @@ export function performerEnvFrom(
   guidance: (gate: GateKind, node: CascadeNode) => { readonly practice?: string; readonly directives?: string; readonly repoSkills?: string },
   cascade?: Cascade,
 ): (node: CascadeNode) => Readonly<Record<string, string>> {
-  const feedback = feedbackFromActions(args.actions);
+  const byPerson = feedbackFromActions(args.actions);
+  const byGate = latestGateRejections(args.store);
+  const byStop = latestPhaseRefusals(args.store);
   const answers = answersFromOutbox(args.blockers, args.actions, cascade);
   return (node) => {
     const g = guidance(GateKind.ImplementationReview, node);
-    const said = feedback(node.workId);
+    // ALL THREE VOICES, in the order the document authors already hear them: a person's mandate,
+    // the reviewer's standing objection, then why the last attempt stopped before anyone judged it.
+    // …AND FROM EVERY GATE AFTER ITS OWN. A rejection at qa_uat, runtime_validation or
+    // release_readiness sends a code leaf back to its performer (see the attempt loop in
+    // org-runtime); the performer that is not told why writes the same code. MEASURED on Waypoint
+    // task-6560, 2026-09-20: five identical qa_uat rejections, none of them heard.
+    const after = ORDERED_GATES.slice(ORDERED_GATES.indexOf(GateKind.ImplementationReview));
+    const said = [
+      ...byPerson(node.workId),
+      ...after.flatMap((gate) => byGate(node.workId, gate)),
+      ...byStop(node.workId, GateKind.ImplementationReview),
+    ];
     const told = answers(node);
     return {
       ORG_GATE: String(GateKind.ImplementationReview),
@@ -1885,6 +1939,37 @@ export function performerEnvFrom(
       ...(g.repoSkills === undefined || g.repoSkills === "" ? {} : { ORG_REPO_SKILLS: g.repoSkills }),
       ...(said.length === 0 ? {} : { ORG_FEEDBACK: JSON.stringify(said) }),
       ...(told.length === 0 ? {} : { ORG_ANSWERS: JSON.stringify(told) }),
+    };
+  };
+}
+
+/**
+ * What the JUDGE is told about how this organization does the step it is judging.
+ *
+ * ── THE DEFECT THIS CLOSES ───────────────────────────────────────────────────
+ * `performerEnvFrom` and the artifact producers hand every AUTHOR the organization's practice and
+ * directives. The reviewer got a title, a brief and the record — and its own idea of the standard.
+ * MEASURED on the Waypoint run, 2026-09-20: `qa_uat` on three items was rejected by three reviewers
+ * with three different standards (a human OAuth walkthrough; an evidence directory; a traced mock
+ * path), one of which a fourth reviewer had accepted the day before. An author cannot converge on
+ * a standard that changes with the judge. The same guidance, resolved for the gate and the item,
+ * so the judge reads what the author was told to meet.
+ */
+export function reviewerEnvFrom(
+  guidance: (gate: string, node: CascadeNode) => { readonly practice?: string; readonly directives?: string; readonly repoSkills?: string },
+  cascade: Cascade | undefined,
+): (request: ReviewRequest) => Readonly<Record<string, string>> {
+  return (request) => {
+    // The item as the cascade knows it, for a practice scoped `--for` a work id or a ticket; an
+    // item the fold has not seen yet is judged under the organization-wide statement.
+    const node: CascadeNode =
+      cascade?.nodes.find((n) => n.workId === request.workId) ??
+      ({ workId: request.workId, workType: WorkTypeValue.Task, title: request.title ?? "", state: WorkState.Open, ownerHatId: "" } as CascadeNode);
+    const g = guidance(String(request.gate), node);
+    return {
+      ...(g.practice === undefined || g.practice === "" ? {} : { ORG_PRACTICE: g.practice }),
+      ...(g.directives === undefined || g.directives === "" ? {} : { ORG_DIRECTIVES: g.directives }),
+      ...(g.repoSkills === undefined || g.repoSkills === "" ? {} : { ORG_REPO_SKILLS: g.repoSkills }),
     };
   };
 }
@@ -1911,6 +1996,8 @@ export function providersFromArgs(
   qaFallback: RunOutcome,
   /** What the code-writing agent is told about how this organization works. See `performerEnvFrom`. */
   performerEnv?: (node: CascadeNode) => Readonly<Record<string, string>>,
+  /** What the JUDGE is told about how this organization does the step. See `reviewerEnvFrom`. */
+  reviewerEnv?: (request: ReviewRequest) => Readonly<Record<string, string>>,
 ): ProviderSet {
   // Spread rather than assigned: `exactOptionalPropertyTypes` is on, so an explicit `undefined`
   // would not mean "absent" and would override each adapter's own default with nothing.
@@ -2024,7 +2111,12 @@ export function providersFromArgs(
               // `ocli task --json` and `ocli meetings --json`, two fresh processes each re-reading
               // every shard in the store — 112s apiece on a 31,963-event store, per gate reviewed.
               // In here the fold is cached, so the same answer costs well under a millisecond.
-              ...(args.store === undefined ? {} : { envFor: reviewContextEnv(args.store) }),
+              // …AND HOW THIS ORGANIZATION DOES THE STEP. The producers were told; the judge was not,
+              // and a gate judged against an unstated standard cannot converge. See `reviewerEnvFrom`.
+              ...((ctx, how) => (ctx === undefined && how === undefined ? {} : { envFor: (request: ReviewRequest) => ({ ...(ctx?.(request) ?? {}), ...(how?.(request) ?? {}) }) }))(
+                args.store === undefined ? undefined : reviewContextEnv(args.store),
+                reviewerEnv,
+              ),
               ...budget,
             })
           : autoApproveReview(),
@@ -2722,11 +2814,13 @@ export async function main(argv: readonly string[]): Promise<number> {
     // it per phase would stat the same files for every gate of every item.
     repoSkills: renderRepoSkills(args.repoSources),
   });
+  const knownCascade = args.store === undefined ? undefined : foldOrganization(readEvents(args.store)).cascade;
   const providers = providersFromArgs(
     args,
     intake,
     args.qaFails ? RunOutcome.Failed : RunOutcome.Passed,
-    performerEnvFrom(args, guidance, args.store === undefined ? undefined : foldOrganization(readEvents(args.store)).cascade),
+    performerEnvFrom(args, guidance, knownCascade),
+    reviewerEnvFrom(guidance, knownCascade),
   );
   // ── A PERSON'S "NO" STANDS AT ANY STEP ─────────────────────────────────────
   // Written into the log once, as the step's newest verdict, before anything reads the verdicts -

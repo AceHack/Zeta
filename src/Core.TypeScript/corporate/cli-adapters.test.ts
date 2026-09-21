@@ -126,17 +126,17 @@ describe("trackerMapper — where a real tracker's schema meets this one", () =>
 });
 
 describe("commandProposal — an agent that is a command", () => {
-  test("whatever it prints becomes the proposal", () => {
+  test("whatever it prints becomes the proposal", async () => {
     const perform = commandProposal({
       command: SELF,
       argsFor: () => ["-e", "console.log('I added an idempotency key')"],
       cwd: scratch("prop"),
     });
-    const attempt = perform(node(), { branch: "b" });
+    const attempt = await perform(node(), { branch: "b" });
     expect(attempt.summary).toContain("I added an idempotency key");
   });
 
-  test("IT RUNS IN `ctx.workdir` — the agent and the verifier must judge the SAME tree", () => {
+  test("IT RUNS IN `ctx.workdir` — the agent and the verifier must judge the SAME tree", async () => {
     // Found by the first end-to-end run rather than by reading: the agent wrote into the shared
     // repository while the verifier looked in the change's worktree, so every item failed with the
     // agent confidently reporting success.
@@ -148,31 +148,31 @@ describe("commandProposal — an agent that is a command", () => {
       argsFor: () => ["-e", "console.log(require('node:fs').existsSync('marker.txt') ? 'in the worktree' : 'in the wrong place')"],
       cwd: home,
     });
-    expect(perform(node(), { branch: "b", workdir: work }).summary).toContain("in the worktree");
-    expect(perform(node(), { branch: "b" }).summary).toContain("in the wrong place");
+    expect((await perform(node(), { branch: "b", workdir: work })).summary).toContain("in the worktree");
+    expect((await perform(node(), { branch: "b" })).summary).toContain("in the wrong place");
   });
 
-  test("A NON-ZERO EXIT THROWS — an agent that failed to run did not produce an empty proposal", () => {
+  test("A NON-ZERO EXIT THROWS — an agent that failed to run did not produce an empty proposal", async () => {
     const perform = commandProposal({
       command: SELF,
       argsFor: () => ["-e", "console.error('model unavailable'); process.exit(2)"],
       cwd: scratch("prop-fail"),
     });
-    expect(() => perform(node(), { branch: "b" })).toThrow("exited 2");
+    await expect(perform(node(), { branch: "b" })).rejects.toThrow("exited 2");
   });
 
-  test("an EMPTY proposal throws too — silence beside a passing verifier reads as work done", () => {
+  test("an EMPTY proposal throws too — silence beside a passing verifier reads as work done", async () => {
     const perform = commandProposal({ command: SELF, argsFor: () => ["-e", "void 0"], cwd: scratch("prop-empty") });
-    expect(() => perform(node("task-9"), { branch: "b" })).toThrow("no proposal for task-9");
+    await expect(perform(node("task-9"), { branch: "b" })).rejects.toThrow("no proposal for task-9");
   });
 
-  test("a missing agent throws rather than returning nothing", () => {
+  test("a missing agent throws rather than returning nothing", async () => {
     const perform = commandProposal({
       command: join(scratch("prop-missing"), "nope"),
       argsFor: () => [],
       cwd: scratch("prop-missing-cwd"),
     });
-    expect(() => perform(node(), { branch: "b" })).toThrow("could not run");
+    await expect(perform(node(), { branch: "b" })).rejects.toThrow("could not run");
   });
 });
 
@@ -271,5 +271,19 @@ describe("the flags reach the ports", () => {
       RunOutcome.Passed,
     );
     expect(set.intake.meta.name).toBe("http");
+  });
+});
+
+describe("commandProposal — its own argv is not an artifact", () => {
+  // MEASURED on the Waypoint run, 2026-09-20: every code item listed three attachments —
+  // `agent.cjs`, `work`, `task-021` — the command line the performer was invoked with, recorded
+  // as what it produced. A reviewer opened them, found a script and two words, and rejected the
+  // gate for want of a deliverable. What an agent produced is in its checkout and its testimony;
+  // the way it was called is nobody's evidence.
+  test("a proposal carries the agent's testimony and no argv", async () => {
+    const perform = commandProposal({ command: process.execPath, argsFor: () => ["-e", "process.stdout.write('done')"], cwd: process.cwd() });
+    const a = await perform({ workId: "task-1", workType: "task", title: "t", state: "open", ownerHatId: "lead" } as never, { branch: "b" });
+    expect(a.summary).toContain("done");
+    expect(a.artifacts).toEqual([]);
   });
 });

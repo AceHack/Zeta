@@ -121,6 +121,29 @@ describe("THE WORLDVIEW IS ASKED FOR — the prompt carries the observe command,
     r.cleanup();
   }, 30_000);
 
+  test("a reviewer may run what the PROJECT runs: ORG_CLAUDE_JUDGE_TOOLS extends the judging allowlist", () => {
+    // MEASURED on the Waypoint run, 2026-09-20: the repository's own gate is npm + dotnet + flutter,
+    // and every reviewer reported "flutter/dart invocation is blocked outright" — the judging
+    // allowlist named npm/npx/node/bun and nothing else. How a project verifies itself is the
+    // project's knowledge (the same principle `verify.cjs` states), so the list is configuration.
+    const r = run(["review", "implementation_review", "task-9"], ok({ verdict: "approve", reason: "ok", lookedAt: [] }), {
+      ORG_CLAUDE_JUDGE_TOOLS: JSON.stringify(["Bash(flutter test:*)", "Bash(dotnet test:*)"]),
+    });
+    const argv = r.seen?.argv ?? [];
+    expect(argv).toContain("Bash(flutter test:*)");
+    expect(argv).toContain("Bash(dotnet test:*)");
+    // Additive: the defaults stay, and the integrating acts stay refused.
+    expect(argv).toContain("Bash(npm test:*)");
+    expect(argv).toContain("Bash(git push:*)");
+    // Unset, nothing changes.
+    const plain = run(["review", "implementation_review", "task-9"], ok({ verdict: "approve", reason: "ok", lookedAt: [] }));
+    expect(plain.seen?.argv ?? []).not.toContain("Bash(flutter test:*)");
+    // Malformed is refused, not ignored: a reviewer silently judging with fewer tools than stated is the vacuity this file refuses everywhere.
+    const bad = run(["review", "implementation_review", "task-9"], ok({ verdict: "approve", reason: "ok", lookedAt: [] }), { ORG_CLAUDE_JUDGE_TOOLS: "flutter" });
+    expect(bad.status).toBe(2);
+    r.cleanup(); plain.cleanup(); bad.cleanup();
+  }, 30_000);
+
   test("an integrating git act is never allowed, in any mode", () => {
     const r = run(["work", "task-9"], ok({ summary: "s", commit: "", testsRun: [], blocked: "" }));
     const argv = r.seen?.argv ?? [];
@@ -777,4 +800,27 @@ describe("THE SWEEP KILLS BY PROCESS GROUP, so a reaping test may not leave the 
     const reverted = `const g=spawn(x,["-e",y],{stdio:"ignore",${NEEDLES[0] ?? ""}});`;
     expect(NEEDLES.some((n) => reverted.includes(n))).toBe(true);
   });
+});
+
+describe("A REVIEWER IS TOLD WHICH TREE HOLDS THE WORK", () => {
+  // MEASURED on the Waypoint run, 2026-09-20, proj-5525: the runtime placed the architect in the
+  // checkout of the project's feature branch — the tree holding three follow-ups that land on the
+  // trunk only when this very gate passes — and the architect declared "authoritative state: main",
+  // found the trunk without the fixes, and rejected. Twice. The checkout is a fact the organization
+  // knows and the reviewer cannot infer; unsaid, the reviewer reaches for the trunk.
+  test("the review prompt names the checkout as the tree under judgment and says the trunk lacks it by design", () => {
+    const r = run(["review", "final_architecture_review", "proj-9"], ok({ verdict: "approve", reason: "sound", lookedAt: [] }), {
+      ORG_REVIEW_CHECKOUT: "/checkouts/feature-act-1",
+      ORG_REVIEW_BRANCH: "feature/act-1",
+    });
+    expect(r.seen?.input).toContain("/checkouts/feature-act-1");
+    expect(r.seen?.input).toContain("feature/act-1");
+    expect(r.seen?.input).toContain("not on the trunk");
+    r.cleanup();
+  }, 30_000);
+  test("without a checkout nothing is claimed about one", () => {
+    const r = run(["review", "final_architecture_review", "proj-9"], ok({ verdict: "approve", reason: "sound", lookedAt: [] }));
+    expect(r.seen?.input).not.toContain("not on the trunk");
+    r.cleanup();
+  }, 30_000);
 });

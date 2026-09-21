@@ -400,3 +400,29 @@ describe("shapes the pipeline does not produce, which a caller can", () => {
     expect(d.some((x) => x.includes("the lifecycle refused"))).toBe(true);
   });
 });
+
+describe("A CANCELLED LEAF'S REFUSED TRANSITIONS ARE NOT DISAGREEMENTS", () => {
+  // MEASURED on the Waypoint run, 2026-09-20/21: five leaves the operator had cancelled, and three
+  // the runtime closed for leaving nothing committed, each reported every cycle as "the lifecycle
+  // refused 'RequestReview': illegal transition: Claimed cannot accept RequestReview" — a leaf
+  // cancelled before it was ever walked has an assignee and a verdict and no shard, so the derived
+  // record cannot get past Claimed. A disagreement is a transition the organization BELIEVED it had
+  // made; a cancelled item's later transitions are the ones it decided not to make.
+  test("the same refused transition is a disagreement on a live leaf and silence on a cancelled one", async () => {
+    const { report } = await projectRun();
+    const code = report.cascade.nodes.find((n) => producesCode(n.workType) && childrenOf(report.cascade, n.workId).length === 0);
+    if (code === undefined) throw new Error("fixture has no code leaf");
+    const projection = {
+      state: { tag: "Claimed" as const, agent: "backend_implementer" as never, claimedAt: "2026-09-21T00:00:00Z" },
+      applied: [],
+      refused: [{ transition: { tag: "RequestReview" as const, reviewers: ["code_reviewer"] }, reason: "illegal transition: Claimed cannot accept RequestReview" }],
+      revisions: 0,
+      terminal: false,
+    } as never;
+    const live = disagreementsWith(projection, { cascade: report.cascade, workId: code.workId, queue: report.queue });
+    expect(live.some((d) => d.includes("the lifecycle refused"))).toBe(true);
+    const cancelled = { ...report.cascade, nodes: report.cascade.nodes.map((n) => (n.workId === code.workId ? { ...n, state: WorkState.Canceled } : n)) };
+    const quiet = disagreementsWith(projection, { cascade: cancelled, workId: code.workId, queue: report.queue });
+    expect(quiet.filter((d) => d.includes("the lifecycle refused"))).toEqual([]);
+  });
+});

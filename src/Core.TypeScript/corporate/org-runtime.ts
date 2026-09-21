@@ -66,6 +66,7 @@ import {
   isLeafType,
   nodeById,
   setState,
+  addDependency,
   unstaffedTasks,
   WorkState,
   WorkType,
@@ -77,6 +78,7 @@ import {
 import {
   branchNameIn,
   collectionsReadyToLand,
+  descendantsOf,
   integrationFor,
 } from "./branch-topology";
 import { ProcessSetting, resolveSetting, settingList, type SettingBinding } from "./practice";
@@ -153,7 +155,7 @@ import {
   type TicketUpdate,
   type TicketUpdateRequest,
 } from "./ticket-report";
-import { autoApproveReview, simulatedChangeControl, simulatedIntake, simulatedTestRunner, simulatedWorkExecutor } from "./adapters";
+import { autoApproveReview, conflictedFiles, leftNothingCommitted, uncommittedFiles, simulatedChangeControl, simulatedIntake, simulatedTestRunner, simulatedWorkExecutor } from "./adapters";
 import { associateGoal, EMPTY_BOOK, openPortfolio, type PortfolioKind } from "./portfolio";
 import {
   batchesFromCascade,
@@ -282,6 +284,27 @@ export const DEFAULT_GATE_REJECTION_CEILING = 6;
  * An EMPTY intersection means the run's pipeline covers none of this type's gates. It walks
  * nothing rather than falling back to the whole pipeline, because the fallback is the defect.
  */
+/**
+ * How many contributor SEATS a line has free: wearers per hat (`supplyTarget`) minus what each hat
+ * is already carrying, summed over the individual contributors that report up to `hatId`.
+ *
+ * ONE ANSWER TO "IS ANYONE FREE". Staffing counted seats × supply; decomposition counted hats with
+ * nothing on them. MEASURED on Waypoint, 2026-09-20, under `--supply-target 3`: three tasks ran at
+ * once on two hats, and a fix leaf minted mid-run for a landed defect was then refused by
+ * `decompose` — "no individual_contributor reports up to 'tech_lead', so this task cannot be
+ * staffed" — because both hats carried something. Finished and cancelled work holds no seat.
+ */
+export function freeSeatsUnder(chart: OrgChart, cascade: Cascade, hatId: string, supplyTarget: number): number {
+  const carried = new Map<string, number>();
+  for (const n of cascade.nodes) {
+    if (n.assigneeHatId === undefined || n.state === WorkState.Done || n.state === WorkState.Canceled) continue;
+    carried.set(n.assigneeHatId, (carried.get(n.assigneeHatId) ?? 0) + 1);
+  }
+  return chart.hats
+    .filter((h) => h.level === "individual_contributor" && reportsUpTo(chart, h.id, hatId))
+    .reduce((free, h) => free + Math.max(0, supplyTarget - (carried.get(h.id) ?? 0)), 0);
+}
+
 function chainForTask(node: CascadeNode, pipeline: Pipeline): readonly GateKind[] {
   const owed = new Set(chainOf(node));
   return gatesOf(pipeline).filter((g) => owed.has(g));
@@ -1531,6 +1554,8 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
     workType?: WorkType,
     dependsOn?: readonly string[],
     owes?: readonly GateKind[],
+    /** What this child is for, in the words of whoever asked for it; inherited from the parent when absent. */
+    brief?: string,
   ): readonly string[] => {
     const children = titles.map((title) => ({
       workId: deps.createId(prefix),
@@ -1538,31 +1563,16 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
       ...(workType === undefined ? {} : { workType }),
       ...(dependsOn === undefined || dependsOn.length === 0 ? {} : { dependsOn }),
       ...(owes === undefined ? {} : { owes }),
+      ...(brief === undefined ? {} : { brief }),
     }));
-    // HOW MANY PEOPLE THIS LINE HAS FREE, counted from the cascade as it stands. The chart cannot
-    // answer this and must not try — a chart that changed shape as work arrived would make two runs
-    // over one organization disagree about who reports to whom.
-    const carrying = new Set(
-      // Same rule as staffing uses: finished work frees the person who did it.
-      cascade.nodes
-        .filter((n) => n.state !== WorkState.Done && n.state !== WorkState.Canceled)
-        .map((n) => n.assigneeHatId)
-        .filter((h): h is string => h !== undefined),
-    );
-    //
-    // MEMOISED, because `best` calls this from inside a SORT COMPARATOR: every comparison would
-    // otherwise walk the supervisor chain of all 85 contributors twice, which turned a decomposition
-    // into thousands of chain walks and timed out a five-second test at seventy-five seconds.
+    // HOW MANY SEATS THIS LINE HAS FREE, counted from the cascade as it stands and by the same rule
+    // staffing uses. See `freeSeatsUnder`. The chart cannot answer this and must not try — a chart
+    // that changed shape as work arrived would make two runs over one organization disagree.
     const freeCount = new Map<string, number>();
     const freeUnder = (hatId: string): number => {
       const seen = freeCount.get(hatId);
       if (seen !== undefined) return seen;
-      const n = deps.chart.hats.filter(
-        (h) =>
-          h.level === "individual_contributor" &&
-          !carrying.has(h.id) &&
-          reportsUpTo(deps.chart, h.id, hatId),
-      ).length;
+      const n = freeSeatsUnder(deps.chart, cascade, hatId, deps.supplyTarget ?? 1);
       freeCount.set(hatId, n);
       return n;
     };
@@ -2018,7 +2028,9 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
   // ── 5. SCHEDULE ───────────────────────────────────────────────────────────
   let calendar: Calendar = EMPTY_CALENDAR;
   let cursor = warmedAt;
-  const staffedTasks = cascade.nodes.filter((n) => n.assigneeHatId !== undefined);
+  // NOT THE CANCELLED. A cancelled item is one the organization decided not to do; MEASURED on Waypoint,
+  // 2026-09-20: five cancelled duplicates were reviewed and re-performed by the next run regardless.
+  const staffedTasks = cascade.nodes.filter((n) => n.assigneeHatId !== undefined && n.state !== WorkState.Canceled);
   for (const task of staffedTasks) {
     // Hoisted so the event's FACT can name the block it planned. Minting it inside the call would
     // leave the log describing a block whose id it does not know.
@@ -2416,6 +2428,39 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
    * agrees with the record about nothing except the names.
    */
   const openedChanges = new Map<string, ChangeHandle>();
+  /** Collections whose branch reached the trunk THIS run; read wherever `alreadyLanded` is. */
+  const collectionsLanded: string[] = [];
+  /**
+   * The collection whose branch `workId`'s change integrates into — or undefined when it goes to the
+   * trunk: nothing above it takes a branch, or the rung that does has ALREADY LANDED, and a landed
+   * collection's branch is never merged again (`collectionsReadyToLand` skips it, rightly: a second
+   * landing is an empty merge or a refusal). MEASURED on the Waypoint run, 2026-09-20: the topology
+   * alone answered `feature/…` for every follow-up under a delivered project, so each follow-up
+   * merged into a branch that had already been merged, and none of them reached the trunk.
+   */
+  const unlandedCollectionOf = (workId: string): { readonly workId: string; readonly branch: string } | undefined => {
+    const under = integrationFor({ cascade, workId, ...(deps.settings === undefined ? {} : { settings: deps.settings }) });
+    if (under === undefined) return undefined;
+    if (deps.alreadyLanded?.has(under.workId) === true || collectionsLanded.includes(under.workId)) return undefined;
+    return under;
+  };
+  /**
+   * The checkout of a collection's own branch, for judging what has landed INTO it and not yet
+   * out of it. Rejoined, never cut: change control's `open` returns the existing checkout of an
+   * existing branch, and the collection node is its owner. Undefined when the port refuses, and the
+   * caller then judges where it always did.
+   */
+  /** Whether `workId` is a collection some code descendant integrates into, and its branch has not reached the trunk. */
+  const ownsUnlandedBranch = (workId: string): boolean =>
+    deps.alreadyLanded?.has(workId) !== true &&
+    !collectionsLanded.includes(workId) &&
+    descendantsOf(cascade, workId).some((d) => producesCode(d.workType) && unlandedCollectionOf(d.workId)?.workId === workId);
+  const collectionCheckout = async (collection: { readonly workId: string; readonly branch: string }): Promise<ChangeHandle | undefined> => {
+    const node = nodeById(cascade, collection.workId);
+    if (node === undefined) return undefined;
+    const opened = await providers.change.open(node, { branch: collection.branch });
+    return opened.ok ? opened.value : undefined;
+  };
   const allCases: TestCase[] = [];
   const gateRuns: { taskId: string; run: GateRunResult }[] = [];
   const gateEvaluations: GateEvaluation[] = [];
@@ -2433,6 +2478,77 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
 
   /** Rungs whose own chain stopped at a gate, and where. Their subtree is not authorized. */
   const governanceBlocked = new Map<string, GateKind>();
+  /**
+   * DONE IS NOT LANDED. A rung's acceptance gate asks "was what we built right?" — of the trunk.
+   * A code leaf that finished its walk this cycle has not reached the trunk yet: landing runs after
+   * every walk. MEASURED on Waypoint proj-027, 2026-09-20: the follow-up defect passed its gates at
+   * 20:16 and the acceptance gate was re-asked at 20:40 against an unchanged main, rejected with a
+   * rephrased verdict, and a second follow-up was minted beside the first. So the rung's children
+   * count as arrived only when every code leaf among them (recursively) is on the trunk — which a
+   * later cycle reads from the record. A leaf that writes no code has nothing to land.
+   */
+  const childrenLanded = (rungId: string): boolean => {
+    const kids = childrenOf(cascade, rungId).filter((c: CascadeNode) => c.state !== WorkState.Canceled);
+    if (kids.length === 0) return false;
+    return kids.every((c: CascadeNode) =>
+      isLeafType(c.workType)
+        ? c.state === WorkState.Done && (!producesCode(c.workType) || deps.alreadyLanded?.has(c.workId) === true)
+        : childrenLanded(c.workId),
+    );
+  };
+  /**
+   * An OBJECTION AT THE ACCEPTANCE GATE IS A DEFECT AGAINST THE BUILT THING.
+   *
+   * The acceptance gate asks "was what we built right?" once every child has delivered. A rejection
+   * there used to go nowhere: the children were done, so no performer was ever sent back, and the
+   * next cycle walked the same gate against the same tree. MEASURED on Waypoint proj-027,
+   * 2026-09-20: the architect found three real defects in merged code and was asked the same
+   * question every cycle — "nothing has moved since this step was last rejected" — at architect
+   * prices, with no way for anything to move. The organization's answer to a defect is a leaf that
+   * fixes it: the objection becomes a follow-up under the rung, briefed with the verdict, and
+   * `childrenDone` then holds the gate until that leaf delivers. IDEMPOTENT: one follow-up per
+   * standing objection — an open leaf briefed with it is not minted twice. Called from both
+   * governance passes, since either may be the one that asks the acceptance gate.
+   */
+  /** A defect leaf under a collection whose branch conflicts with the trunk, once per objection. */
+  const reconcilerFor = (collectionId: string, branch: string, reason: string): void => {
+    const files = conflictedFiles(reason);
+    if (files.length === 0) return;
+    const node = nodeById(cascade, collectionId);
+    if (node === undefined) return;
+    const title = `reconcile ${branch} with the trunk`;
+    const brief =
+      `${branch} cannot land: ${reason}. In your checkout (cut from ${branch}), merge the trunk in, resolve ` +
+      `${files.join(", ")} so the tree matches what the trunk now expects, commit, and leave nothing else changed.`;
+    const alreadyOpen = childrenOf(cascade, collectionId).some(
+      (c: CascadeNode) => isLeafType(c.workType) && c.state !== WorkState.Done && c.state !== WorkState.Canceled && (c.title === title || (c.brief ?? "") === brief),
+    );
+    if (alreadyOpen) return;
+    step(collectionId, [title], "task", WorkType.Defect, undefined, undefined, brief);
+    refusals.push(`${collectionId}: its branch conflicts with the trunk; a leaf now carries the reconciliation`);
+  };
+
+  const followUpForRejectedAcceptance = (
+    node: CascadeNode,
+    acceptance: GateKind | undefined,
+    childrenDone: boolean,
+    evaluations: readonly GateEvaluation[],
+  ): void => {
+    const verdict = evaluations.filter((e) => e.gate === acceptance).at(-1);
+    if (acceptance === undefined || !childrenDone || verdict === undefined || isPassing(verdict.outcome)) return;
+    const objection = verdict.reason.replace(/^said:/, "").trim();
+    if (objection === "") return;
+    // ONE OPEN FOLLOW-UP PER GATE, whatever this verdict's wording: a reviewer rephrases, the
+    // objection is the same. Keyed on the title the mint below writes, never on the prose.
+    const followUpTitle = `address ${String(acceptance)} on ${node.title}`;
+    const alreadyOpen = childrenOf(cascade, node.workId).some(
+      (c: CascadeNode) => isLeafType(c.workType) && c.state !== WorkState.Done && c.state !== WorkState.Canceled && (c.title === followUpTitle || (c.brief ?? "") === objection),
+    );
+    if (alreadyOpen) return;
+    const built = step(node.workId, [followUpTitle], "task", WorkType.Defect, undefined, undefined, objection);
+    if (built.length > 0) step(node.workId, [`verify ${String(acceptance)} follow-up on ${node.title}`], "task", WorkType.Review, built, undefined, objection);
+    refusals.push(`${node.workId}: '${String(acceptance)}' rejected after delivery; a follow-up leaf now carries the objection`);
+  };
 
   // ── THE UPPER RUNGS ARE GOVERNED TOO ──────────────────────────────────────
   // `staffedTasks` above is every node with an ASSIGNEE, and only leaves are ever assigned. A goal,
@@ -2467,6 +2583,7 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
         workId: node.workId,
         title: node.title,
         ...(node.brief === undefined ? {} : { brief: node.brief }),
+        ...(gate === acceptance && judgedIn?.workdir !== undefined ? { workdir: judgedIn.workdir, branch: judgedIn.branch } : {}),
         evidence: shown.map((ref) => ({ kind: "document" as const, ref })),
       });
       if (!verdict.ok) {
@@ -2595,11 +2712,17 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
     const delivered = deliveredSet(cascade);
     const acceptance = acceptanceGateFor(node);
     const kids = childrenOf(cascade, node.workId).filter((c: CascadeNode) => c.state !== WorkState.Canceled);
-    const childrenDone = kids.length > 0 && kids.every((c: CascadeNode) => delivered.has(c.workId));
+    const childrenDone = kids.length > 0 && kids.every((c: CascadeNode) => delivered.has(c.workId)) && childrenLanded(node.workId);
     const walkable = owed.filter(
       (g) => (g !== acceptance || childrenDone) && !passedBefore(node.workId, g),
     );
     if (walkable.length === 0) continue;
+    // WHERE THE DELIVERED THING IS, when the acceptance gate is among what is walked: the rung's own
+    // branch while it is unlanded. See the acceptance pass below for the measurement.
+    const judgedIn =
+      acceptance !== undefined && walkable.includes(acceptance) && ownsUnlandedBranch(node.workId)
+        ? await collectionCheckout({ workId: node.workId, branch: branchNameIn(cascade, node) })
+        : undefined;
 
     // PRODUCERS TOO, or the upper rungs judge nothing. `business_context_grooming` belongs to the
     // GOAL now, and the grooming producer — the one that actually reads the configured data source
@@ -2722,6 +2845,7 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
 
     gateEvaluations.push(...governed.evaluations);
     for (const e of governed.evaluations) engage(e.byHatId);
+    followUpForRejectedAcceptance(node, acceptance, childrenDone, governed.evaluations);
     for (const r of governed.refusals) refusals.push(`governance for ${node.workId}: ${r}`);
     if (governed.evaluations.length > 0) {
       note({
@@ -2802,6 +2926,48 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
       .map((id) => nodeById(cascade, id))
       .filter((n): n is CascadeNode => n !== undefined && n.state !== WorkState.Canceled);
 
+  /**
+   * The checkout of a dependency whose change is NOT in hand this cycle — rejoined, never guessed.
+   *
+   * ── THE DEFECT THIS CLOSES ───────────────────────────────────────────────
+   * `openedChanges` holds what THIS cycle opened. A dependency that was done in an earlier run —
+   * or, with `maxParallel`, one whose open has simply not landed yet when its verifier starts —
+   * is not in it, and the verifier then fell through to the runner's configured directory: the
+   * BASE tree. MEASURED on the Waypoint run, 2026-09-20, task-031: its suite ran on the trunk,
+   * where a stale test fails, the gate carried `exit:1` and a log that never mentioned the
+   * feature, and the reviewer rejected — correctly — a run of the wrong tree.
+   *
+   * Change control's `open` REJOINS an existing checkout (same branch, same owner) rather than
+   * cutting a new one, so asking it is idempotent: a second open of the same change is the same
+   * handle. Only a code-writing dependency that is not already on the trunk is asked for; a
+   * dependency with no change of its own has no checkout to borrow, and the caller's held/refused
+   * paths then apply exactly as before.
+   */
+  const rejoinedChangeOf = async (blocking: readonly CascadeNode[]): Promise<ChangeHandle | undefined> => {
+    for (const d of blocking) {
+      if (!producesCode(d.workType)) continue;
+      const under = unlandedCollectionOf(d.workId);
+      // LANDED — but where? Into its collection's branch, if one is still unlanded: that branch is
+      // the tree holding the work, and the trunk is the tree that does not. MEASURED on the Waypoint
+      // run, 2026-09-20, task-10461: its dependency had merged into `feature/…`, the verify leaf ran
+      // on the trunk, and the reviewer rejected a run that "never touched the code under verification".
+      if (deps.alreadyLanded?.has(d.workId) === true) {
+        if (under === undefined) continue;
+        // NOT recorded in `openedChanges`: that map is the run's list of changes to LAND, and a
+        // collection lands by its own path. Change control's open rejoins, so asking twice is cheap.
+        const at = await collectionCheckout(under);
+        if (at === undefined) continue;
+        return at;
+      }
+      const branch = branchNameIn(cascade, d);
+      const rejoined = await providers.change.open(d, under === undefined ? { branch } : { branch, base: under.branch });
+      if (!rejoined.ok) continue;
+      openedChanges.set(d.workId, rejoined.value);
+      return rejoined.value;
+    }
+    return undefined;
+  };
+
   // ── EVERY STAFFED TASK'S GATE WALK, UP TO `maxParallel` AT ONCE ────────────────
   // MEASURED this session: six unrelated FlowDent tickets' tasks ran one at a time, each real gate
   // a multi-minute Claude call, for 10+ hours of wall clock with zero dependency between most of
@@ -2841,13 +3007,38 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
       );
       continue;
     }
+    // A CHECK WHOSE SUBJECT IS GONE HAS NO SUBJECT. `dependenciesOf` drops cancelled dependencies, so
+    // a verify leaf whose every dependency was cancelled read as free-standing and was walked against
+    // the trunk. MEASURED on the Waypoint run, 2026-09-20, task-12592. It takes its subject's state.
+    const stated = (task.dependsOn ?? []).map((id) => nodeById(cascade, id)).filter((n): n is CascadeNode => n !== undefined);
+    if (stated.length > 0 && stated.every((n) => n.state === WorkState.Canceled)) {
+      const cancelled = setState(cascade, task.workId, WorkState.Canceled);
+      if (!cancelled.ok) {
+        refusals.push(`cancel ${task.workId}: ${cancelled.reason}`);
+        continue;
+      }
+      cascade = cancelled.cascade;
+      note({
+        kind: OrgEventKind.WorkItemTransition,
+        subjectId: task.workId,
+        actorHatId: task.ownerHatId,
+        decision: `cancelled: it verified ${stated.map((n) => n.workId).join(", ")}, and every one of them was cancelled — there is nothing left to verify`,
+        toState: WorkState.Canceled,
+        atMs: warmedAt,
+        evidenceRefs: [],
+        fact: { kind: "work_state", workId: task.workId, state: WorkState.Canceled },
+      });
+      continue;
+    }
     // WHAT THIS ITEM WAITS FOR, and the checkout to judge it in. See `dependenciesOf`.
     const blocking = dependenciesOf(task);
     // The checkout of whatever this item depends on. With more than one dependency the first that
     // opened a change is the tree to judge in; an item that genuinely spans several changes is a
     // decomposition problem, not something to paper over by picking one silently — so the refusal
     // below names every dependency that is not ready.
-    const subjectChange = blocking.map((d) => openedChanges.get(d.workId)).find((c) => c !== undefined);
+    const subjectChange =
+      blocking.map((d) => openedChanges.get(d.workId)).find((c) => c !== undefined) ??
+      (await rejoinedChangeOf(blocking));
     // A CHECKOUT ONLY IF THE CHANGE HAS ONE. In-memory change control opens real changes with no
     // directory at all, so `workdir` is absent there and the runner's configured directory is
     // right — treating that absence as "nothing to verify" held every review leaf under every
@@ -2981,11 +3172,7 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
       // a caller asks for the adapter's own trunk — the runtime does not know the trunk and must
       // not learn it, or the same fact lives in two places and drifts.
       const branch = branchNameIn(cascade, task);
-      const under = integrationFor({
-        cascade,
-        workId: task.workId,
-        ...(deps.settings === undefined ? {} : { settings: deps.settings }),
-      });
+      const under = unlandedCollectionOf(task.workId);
       const openedResult = await providers.change.open(
         task,
         under === undefined ? { branch } : { branch, base: under.branch },
@@ -3119,11 +3306,15 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
 
     // The item's OWN chain, not the run's whole pipeline. See `chainForTask`.
     // A STEP THAT ALREADY PASSED is not owed again — see `passedBefore`.
-    const owedGates = new Set(
-      chainForTask(task, deps.pipeline ?? DEFAULT_PIPELINE).filter((g) => !passedBefore(task.workId, g)),
-    );
+    // THE ITEM'S WHOLE CHAIN under the run's pipeline, with producers. Which steps are WALKED is decided
+    // per attempt by `passedThisCycle` (seeded below with what passed in earlier cycles), so a step that
+    // passed before can be put back on the path — a post-implementation rejection reopens the
+    // implementation — whichever cycle it passed in. Filtering the pipeline itself by "passed before"
+    // made that impossible for a resumed item: MEASURED on Waypoint task-6560, 2026-09-20, whose
+    // implementation had passed in an earlier run and could never be re-performed.
+    const ownedGates = new Set(chainForTask(task, deps.pipeline ?? DEFAULT_PIPELINE));
     const pipeline = withProducers(
-      (deps.pipeline ?? DEFAULT_PIPELINE).filter((phase) => owedGates.has(phase.gate)),
+      (deps.pipeline ?? DEFAULT_PIPELINE).filter((phase) => ownedGates.has(phase.gate)),
       new Map<GateKind, ProducerPort>([
         // Grooming reads a DATA SOURCE, when the run declared one. Without a source this phase
         // stays judgement-only, exactly as it was — an organization that named no repository has
@@ -3137,6 +3328,14 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
           : ([[GateKind.BusinessContextGrooming, groomingProducer(providers.dataSource)]] as const)),
         [GateKind.ImplementationReview, workProducer],
         [GateKind.RuntimeValidation, testProducer],
+        // qa_uat IS ANSWERED BY RUNNING IT. MEASURED on Waypoint, 2026-09-20, first on task-031 ("verify
+        // <goal>", which writes no code) and then on task-021 (which does): the reviewer opened the item,
+        // found nothing attached to the step, refused to approve an empty gate — correctly — and did so
+        // again on every attempt while the story waited. "Does it work, judged by somebody who did not
+        // build it" is a test run in the change's checkout (a verify leaf borrows its dependency's), which
+        // is what the test producer already does one gate later; now it does it here as well, so the
+        // judgement has a run to weigh instead of an opinion to form.
+        [GateKind.QaUat, testProducer],
         // Caller-supplied producers LAST, so a run that wires a real document producer for a phase
         // gets it — but never at the cost of unhooking work or test execution above, which are the
         // runtime's own and not a caller's to remove.
@@ -3257,14 +3456,14 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
       }
 
       // IN THE WORK'S OWN CHECKOUT when it has one - its own change, or the change it verifies.
-      const reviewIn = handle?.workdir ?? subjectWorkdir;
+      const reviewedChange = handle ?? subjectChange;
       const verdict = await providers.review.review({
         gate,
         workId: task.workId,
         title: task.title,
         ...(task.brief === undefined ? {} : { brief: task.brief }),
         evidence: shown.map((ref) => ({ kind: "document" as const, ref })),
-        ...(reviewIn === undefined ? {} : { workdir: reviewIn }),
+        ...(reviewedChange?.workdir === undefined ? {} : { workdir: reviewedChange.workdir, branch: reviewedChange.branch }),
       });
       if (!verdict.ok) {
         // A REVIEW THAT COULD NOT BE OBTAINED IS NOT AN APPROVAL. "Nobody was available to review
@@ -3288,7 +3487,7 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
     // nothing the rework changes can un-pass it. MEASURED: each attempt used to walk the whole chain
     // again, so an implementation turned back re-ran the reproduction — author and reviewer both —
     // before anyone looked at the new code. Earlier steps' documents stay on the item, in `observe`.
-    const passedThisCycle = new Set<GateKind>();
+    const passedThisCycle = new Set<GateKind>([...ownedGates].filter((g) => passedBefore(task.workId, g)));
     for (let attempt = 1; attempt <= maxAttempts && !merged; attempt += 1) {
       // ── WHAT THIS HAT ALREADY KNOWS, BEFORE IT DOES ANYTHING ─────────────
       // Injected per work item rather than per gate: the recall scope is the hat and the work, and
@@ -3349,6 +3548,25 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
       });
       // What passed in this attempt is not walked in the next — see `passedThisCycle`.
       for (const e of walked.evaluations) if (isPassing(e.outcome)) passedThisCycle.add(e.gate);
+      // ── A REJECTION AFTER THE CODE WAS WRITTEN REOPENS THE WRITING ────────────────────
+      // Each attempt walks only the gates not yet passed this cycle, so a rejection at qa_uat,
+      // runtime_validation or release_readiness re-asked THAT gate and nothing else: the test
+      // producer re-ran, the reviewer re-read the same run, the performer — the only actor that can
+      // change what the run proves — was never asked again. MEASURED on Waypoint task-6560,
+      // 2026-09-20: five identical qa_uat rejections (three defect tests skipped without a
+      // database, the run proved nothing for them). So a post-implementation rejection on a leaf
+      // that writes code puts implementation_review back on the next attempt's path; its producer
+      // runs again, and `latestGateRejections` hands it the objection as feedback. The named
+      // recovery path is recorded unchanged: in an organization whose validation process is the
+      // checkout's own tests, "validation process improvement" is done by engineering.
+      if (walked.blockedAt !== undefined && producesCode(task.workType)) {
+        const chain = chainForTask(task, deps.pipeline ?? DEFAULT_PIPELINE);
+        const at = chain.indexOf(walked.blockedAt);
+        const impl = chain.indexOf(GateKind.ImplementationReview);
+        if (impl >= 0 && at > impl) {
+          for (const g of chain.slice(impl, at)) passedThisCycle.delete(g);
+        }
+      }
       // Shaped as the old `GateRunResult` so the churn/escalation handling below is untouched by
       // the reordering — that logic is about what a rejection MEANS, which did not change.
       // THE PHASES' OUTPUT AS AN ARTIFACT the organization can deliberate over. In the pipeline's
@@ -3605,6 +3823,47 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
           atMs: warmedAt,
         });
       }
+      // ── A CHECK OF A LANDED CHANGE THAT FAILS IS A DEFECT AGAINST THAT CHANGE ────────────
+      // A verify leaf judges a change that has already landed (its subject is done, often merged). A
+      // rejection there names a defect in the trunk, and the subject leaf — done — will never be sent
+      // back for it. MEASURED on Waypoint task-5529, 2026-09-20: qa_uat found 7 real failures on
+      // main (a fixture path built from a URL pathname, `%20` for the space in the trunk's path); the
+      // verify leaf would have been re-asked every cycle with nothing able to move. So the objection
+      // is minted as a defect under the same rung, briefed with the verdict, and the verify leaf is
+      // made to WAIT ON IT — exactly as it waited on the original. IDEMPOTENT by brief.
+      if (!producesCode(task.workType) && run.blockedAt !== undefined) {
+        const subjectLanded = dependenciesOf(task).some(
+          (d) => producesCode(d.workType) && (d.state === WorkState.Done || deps.alreadyLanded?.has(d.workId) === true),
+        );
+        const verdict = run.evaluations.filter((e) => e.gate === run.blockedAt && !isPassing(e.outcome)).at(-1);
+        const objection = verdict === undefined ? "" : verdict.reason.replace(/^said:/, "").trim();
+        if (subjectLanded && objection !== "" && task.parentWorkId !== undefined) {
+          // ONE OPEN FIX PER VERIFY LEAF: the fix it already waits on, whatever this verdict's wording.
+          const waitingOn = new Set(task.dependsOn ?? []);
+          const existing = childrenOf(cascade, task.parentWorkId).find(
+            (c: CascadeNode) => c.workType === WorkType.Defect && c.state !== WorkState.Done && c.state !== WorkState.Canceled && (waitingOn.has(c.workId) || (c.brief ?? "") === objection),
+          );
+          const fixId = existing?.workId ?? step(task.parentWorkId, [`fix what '${String(run.blockedAt)}' found on ${task.title}`], "task", WorkType.Defect, undefined, undefined, objection)[0];
+          if (fixId !== undefined) {
+            const linked = addDependency(cascade, task.workId, fixId);
+            if (linked.ok) cascade = linked.cascade;
+            // RECORDED, or a resumed run forgets it and walks the verify leaf again while the fix is open.
+            if (linked.ok) {
+              const now = nodeById(cascade, task.workId);
+              note({
+                kind: OrgEventKind.WorkItemTransition,
+                subjectId: task.workId,
+                actorHatId: task.ownerHatId,
+                decision: `waits on ${fixId}: '${String(run.blockedAt)}' rejected the change it verifies`,
+                atMs: warmedAt,
+                fact: { kind: "work_depends_on", workId: task.workId, dependsOn: [...(now?.dependsOn ?? [fixId])] },
+              });
+            }
+            refusals.push(`${task.workId}: '${String(run.blockedAt)}' rejected a landed change; ${existing === undefined ? "minted" : "already waiting on"} fix ${fixId}`);
+            break;
+          }
+        }
+      }
       if (run.refusals.length > 0) break;
       if (!detectChurn(task.workId, gateEvaluations, threshold)) continue;
 
@@ -3723,7 +3982,16 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
     // record disagree about whether anything was ever approved.
     // PRIOR VERDICTS COUNT: a step passed in an earlier cycle is not walked again, so an item whose
     // steps passed across cycles would otherwise never read as done.
-    const owedButUnproven = missingGates(task, task.workId, [...(deps.priorGateEvaluations ?? []), ...gateEvaluations]);
+    // THE GATES THIS RUN WALKS, not the type's whole chain. The walk asks `chainForTask` — the chain
+    // under the pipeline — and the done-check asked `chainOf`, the whole chain. MEASURED on Waypoint,
+    // 2026-09-20, under `diagnosed_design`: every walked gate approved on six leaves, two stories
+    // merged, and the run stopped NO_PROGRESS because three verify leaves were "not done: no passing
+    // verdict for peer_review" — a gate that pipeline never walks, so no verdict could ever exist.
+    const owedButUnproven = missingGates(
+      { ...task, owes: chainForTask(task, deps.pipeline ?? DEFAULT_PIPELINE) },
+      task.workId,
+      [...(deps.priorGateEvaluations ?? []), ...gateEvaluations],
+    );
     if (owedButUnproven.length > 0) {
       refusals.push(
         `${task.workId} is not done: no passing verdict on the record for ` +
@@ -3822,16 +4090,20 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
 
     const acceptance = acceptanceGateFor(node);
     if (acceptance === undefined) continue;
-    // Already crossed? Nothing to do. Asked of the RECORD, not of this run's memory.
-    if (missingGates(node, node.workId, [...(deps.priorGateEvaluations ?? []), ...gateEvaluations]).length === 0) continue;
+    // Already crossed? Nothing to do. Asked of the RECORD, not of this run's memory — and of the
+    // chain UNDER THE PIPELINE, as the walk asks it. MEASURED on the Waypoint run, 2026-09-21,
+    // proj-5525 under `diagnosed_design`: accepted in its checkout, then "cannot be accepted yet:
+    // still owes peer_review, adversarial_review" — gates that pipeline never walks on a project.
+    const owedByRung = { ...node, owes: chainForTask(node, deps.pipeline ?? DEFAULT_PIPELINE) };
+    if (missingGates(owedByRung, node.workId, [...(deps.priorGateEvaluations ?? []), ...gateEvaluations]).length === 0) continue;
 
     const deliveredNow = deliveredSet(cascade);
     const kids = childrenOf(cascade, node.workId).filter((c: CascadeNode) => c.state !== WorkState.Canceled);
-    if (kids.length === 0 || !kids.every((c: CascadeNode) => deliveredNow.has(c.workId))) continue;
+    if (kids.length === 0 || !kids.every((c: CascadeNode) => deliveredNow.has(c.workId)) || !childrenLanded(node.workId)) continue;
 
     // EVERY OTHER GATE FIRST. Accepting a rung whose earlier gates never passed would let a final
     // validation stand in for the architecture review it was supposed to follow.
-    const stillOwed = missingGates(node, node.workId, [...(deps.priorGateEvaluations ?? []), ...gateEvaluations]);
+    const stillOwed = missingGates(owedByRung, node.workId, [...(deps.priorGateEvaluations ?? []), ...gateEvaluations]);
     if (stillOwed.length > 1 || stillOwed[0] !== acceptance) {
       refusals.push(
         `${node.workId} cannot be accepted yet: still owes ${stillOwed.filter((g) => g !== acceptance).join(", ")}`,
@@ -3841,6 +4113,15 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
 
     const acceptReviewed = new Map<GateKind, ReviewVerdict>();
     const acceptEvidence = new Map<GateKind, readonly string[]>();
+    // WHERE THE DELIVERED THING IS. A collection's children land into ITS branch, and that branch
+    // reaches the trunk only after this gate passes — so judged on the trunk, the gate sees the tree
+    // WITHOUT the work it is accepting. MEASURED on the Waypoint run, 2026-09-20, proj-5525: three
+    // follow-ups merged into `feature/…`, `final_architecture_review` ran on the trunk, found the
+    // defect the branch had fixed, rejected, and minted a fourth. Once the collection has landed the
+    // trunk IS the delivered tree, and no checkout is opened.
+    const judgedIn = ownsUnlandedBranch(node.workId)
+      ? await collectionCheckout({ workId: node.workId, branch: branchNameIn(cascade, node) })
+      : undefined;
     const askAcceptanceReviewer = async (
       gate: GateKind,
       produced: Artifact | undefined,
@@ -3853,6 +4134,7 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
         workId: node.workId,
         title: node.title,
         ...(node.brief === undefined ? {} : { brief: node.brief }),
+        ...(judgedIn?.workdir === undefined ? {} : { workdir: judgedIn.workdir, branch: judgedIn.branch }),
         evidence: shown.map((ref) => ({ kind: "document" as const, ref })),
       });
       if (!verdict.ok) {
@@ -3885,6 +4167,7 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
 
     gateEvaluations.push(...accepted.evaluations);
     for (const e of accepted.evaluations) engage(e.byHatId);
+    followUpForRejectedAcceptance(node, acceptance, true, accepted.evaluations);
     for (const r of accepted.refusals) refusals.push(`acceptance for ${node.workId}: ${r}`);
     if (accepted.awaitingHuman !== undefined) {
       awaitingHuman.push({ taskId: node.workId, gate: accepted.awaitingHuman });
@@ -4073,6 +4356,93 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
   // this workId" mean a real branch with a real producer behind it, not a no-op simulation.
   const legacyStaffed =
     providers.work.meta.fidelity === Fidelity.Real ? new Set(openedChanges.keys()) : new Set<string>();
+  // ── A CONFLICT IS REWORK, NOT A STALL ───────────────────────────────────────
+  // A change whose every gate passed and whose merge is refused for a CONFLICT is not done and
+  // is not waiting on anybody — unless somebody is told. MEASURED on the Waypoint run,
+  // 2026-09-20: the refusal went into `refusals`, the item stayed done, the next cycle retried
+  // the same merge, and so on. The merge steward turns the change's leaf back at the gate whose
+  // phase writes code, naming the files, so the implementer's next attempt (which finds the merge
+  // left in progress in its own checkout — see `surfaceConflict`) resolves, adds and commits.
+  // Recorded as a verdict, which is what `latestGateRejections` hands the performer as feedback.
+  // IDEMPOTENT: the same conflict on the same leaf in the same cycle is one verdict.
+  const turnedBackForConflict = new Set<string>();
+  const turnBackForConflict = (leafIds: readonly string[], reason: string): void => {
+    if (conflictedFiles(reason).length === 0) return;
+    for (const leafId of leafIds) {
+      if (turnedBackForConflict.has(leafId)) continue;
+      turnedBackForConflict.add(leafId);
+      // STRICTLY AFTER EVERY VERDICT THE LEAF ALREADY HAS. The walk stamps attempt N at
+      // `warmedAt + N - 1`; a rejection stamped `warmedAt` loses to an approval from attempt 2, and
+      // "latest verdict at implementation_review" then still says approved. MEASURED on Waypoint
+      // task-5535, 2026-09-20: four gates approved at 18:05-18:07, the steward's rejection at 18:07
+      // stamped earlier than all of them, the item read done, every landing re-conflicted, nobody
+      // sent back. A verdict that overturns must be later than what it overturns.
+      const latestOnLeaf = Math.max(
+        warmedAt,
+        ...[...(deps.priorGateEvaluations ?? []), ...gateEvaluations].filter((e) => e.workId === leafId).map((e) => e.atMs),
+      );
+      const verdict: GateEvaluation = {
+        workId: leafId,
+        gate: GateKind.ImplementationReview,
+        outcome: GateOutcome.Rejected,
+        byHatId: "merge_steward",
+        reason: `the change cannot land: ${reason}`,
+        atMs: latestOnLeaf + 1,
+        evidenceRefs: [`merge-conflict:${leafId}`],
+      };
+      gateEvaluations.push(verdict);
+      verdictNow(leafId)(verdict);
+    }
+  };
+
+  /**
+   * A landing refused because the branch carries NO COMMITS — two opposite cases, told apart by
+   * what the refusal names (see `NOTHING_TO_MERGE` / `UNCOMMITTED`):
+   * - the checkout is DIRTY: the performer forgot to commit. Sent back at implementation_review by
+   *   the merge steward, naming the files, exactly as a conflict is.
+   * - the checkout is CLEAN: the leaf concluded nothing needed to change, and every gate it owed
+   *   approved that. Nothing came of it, so it is CLOSED as cancelled, on the record with the reason.
+   *   MEASURED on the Waypoint run, 2026-09-21, task-6560 / 6572 / 12086: approved at every gate
+   *   with empty branches, refused every cycle, three projects held off the trunk with nobody to act.
+   */
+  const closeOrSendBackForNothingCommitted = (leafId: string, reason: string): void => {
+    if (!leftNothingCommitted(reason)) return;
+    const files = uncommittedFiles(reason);
+    if (files.length > 0) {
+      const latestOnLeaf = Math.max(warmedAt, ...[...(deps.priorGateEvaluations ?? []), ...gateEvaluations].filter((e) => e.workId === leafId).map((e) => e.atMs));
+      const verdict: GateEvaluation = {
+        workId: leafId,
+        gate: GateKind.ImplementationReview,
+        outcome: GateOutcome.Rejected,
+        byHatId: "merge_steward",
+        reason: `the change cannot land: nothing is committed, and the checkout holds uncommitted work — ${files.join(", ")}. Commit what belongs to this item.`,
+        atMs: latestOnLeaf + 1,
+        evidenceRefs: [`nothing-committed:${leafId}`],
+      };
+      gateEvaluations.push(verdict);
+      verdictNow(leafId)(verdict);
+      return;
+    }
+    const node = nodeById(cascade, leafId);
+    if (node === undefined || node.state === WorkState.Canceled) return;
+    const cancelled = setState(cascade, leafId, WorkState.Canceled);
+    if (!cancelled.ok) {
+      refusals.push(`cancel ${leafId}: ${cancelled.reason}`);
+      return;
+    }
+    cascade = cancelled.cascade;
+    note({
+      kind: OrgEventKind.WorkItemTransition,
+      subjectId: leafId,
+      actorHatId: node.ownerHatId,
+      decision: `closed as cancelled: the work left nothing committed and its checkout is clean — every gate it owed approved a change with no diff, so nothing came of it; what it was to fix is already in the tree or was never a defect`,
+      toState: WorkState.Canceled,
+      atMs: warmedAt,
+      evidenceRefs: [],
+      fact: { kind: "work_state", workId: leafId, state: WorkState.Canceled },
+    });
+  };
+
   const changes = projectAll({
     cascade,
     queue,
@@ -4179,6 +4549,8 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
     if (!landed.ok) {
       refusals.push(`change control '${providers.change.meta.name}' could not merge ${handle.branch}: ${landed.reason}`);
       changesUnlanded.push(c.workId);
+      turnBackForConflict([c.workId], landed.reason);
+      closeOrSendBackForNothingCommitted(c.workId, landed.reason);
       continue;
     }
     changesLanded.push(c.workId);
@@ -4217,7 +4589,6 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
   //
   // NO `base` ON THE HANDLE, deliberately: a collection goes to the adapter's own trunk. That is
   // the same silence the open path uses, and it keeps the trunk in one place.
-  const collectionsLanded: string[] = [];
   const collectionsUnlanded: string[] = [];
   // REAL CHANGE CONTROL ONLY. A simulated port would accept a merge of a branch that never existed
   // and emit a `change_merged` fact for it, which is a landing nobody can check — the vacuity class
@@ -4226,6 +4597,11 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
     for (const ready of collectionsReadyToLand({
       cascade,
       ...(deps.settings === undefined ? {} : { settings: deps.settings }),
+      // ACCEPTED means every gate the rung owes under the pipeline is on the record as passed.
+      accepted: (workId) => {
+        const rung = nodeById(cascade, workId);
+        return rung !== undefined && missingGates({ ...rung, owes: chainForTask(rung, deps.pipeline ?? DEFAULT_PIPELINE) }, workId, [...(deps.priorGateEvaluations ?? []), ...gateEvaluations]).length === 0;
+      },
     })) {
       // ALREADY ON THE TRUNK, from an earlier run. Asked of the LOG, for the same reason the
       // done-with-nothing-merged rule asks it: this run has no history of its own, and a second
@@ -4250,6 +4626,15 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
             `'${ready.workId}' from ${ready.branch}: ${landed.reason}`,
         );
         collectionsUnlanded.push(ready.workId);
+        // THE LEAVES THAT BUILT THIS BRANCH are the ones that can reconcile it…
+        const builders = [...openedChanges.entries()].filter(([, h]) => h.branch === ready.branch || h.base === ready.branch).map(([id]) => id);
+        turnBackForConflict(builders, landed.reason);
+        // …and when none is open — every leaf done, the branch refused at the trunk a cycle later —
+        // a conflict is judgement for a performer that does not yet exist. MEASURED on the Waypoint
+        // run, 2026-09-21, proj-027: accepted, refused for a modify/delete on two generated files,
+        // noted and left every cycle. The leaf is minted under the collection, cut from its branch
+        // by the same rule as every other leaf there, and told which files and against what.
+        if (builders.length === 0) reconcilerFor(ready.workId, ready.branch, landed.reason);
         continue;
       }
       collectionsLanded.push(ready.workId);

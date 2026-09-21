@@ -110,6 +110,12 @@ export function foldCascade(events: readonly OrgEvent[]): Cascade {
         byId.set(fact.workId, { ...node, state: fact.state });
         break;
       }
+      case "work_depends_on": {
+        const node = byId.get(fact.workId);
+        if (node === undefined) break;
+        byId.set(fact.workId, { ...node, dependsOn: [...fact.dependsOn] });
+        break;
+      }
       default:
         break;
     }

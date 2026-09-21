@@ -25,6 +25,7 @@ import {
   type World,
   type OperatorChannel,
   type NextAction,
+  commonRoot,
 } from "./observe";
 import { defaultNodeSession } from "./first-session";
 import { ollamaBackend, type ModelBackend } from "../accelerator/local-llm";
@@ -449,5 +450,26 @@ describe("fold — event-sourcing projection (state is a projection of the event
     expect(states[0]?.mode).toBe("play"); // projection after event 1
     expect(states[1]?.mode).toBe("free_time"); // projection after event 2
     expect(states[states.length - 1]).toEqual(fold(initial, events)); // last replay state == fold
+  });
+});
+
+describe("commonRoot — the shared directory of an item's attachments, or none", () => {
+  // MEASURED on the Waypoint run, 2026-09-20: `observe item task-037` spun at 100% CPU until
+  // killed, on every task that had been worked; its siblings returned in 70 ms. The worked tasks'
+  // evidence mixes an absolute path with refs that are not paths at all (`exit:1`, `stdout:…`).
+  // Shrinking the root to "/" and then asking `lastIndexOf("/", -1)` finds index 0 again, so the
+  // root never got shorter and the loop never ended. Every reviewer of a worked task gave up.
+  it("terminates, and returns nothing shared, when one ref is an absolute path and another is not a path", () => {
+    const refs = ["/Users/x/.agent-org/store/docs/proj-019/architecture_design.md", "exit:1", "stdout:REJECT — one claim is false"];
+    expect(commonRoot(refs)).toBe("");
+  });
+
+  it("still finds a real shared directory when there is one", () => {
+    expect(commonRoot(["/Users/x/.agent-org/store/docs/a.md", "/Users/x/.agent-org/store/docs/b.md"])).toBe("/Users/x/.agent-org/store/docs/");
+  });
+
+  it("returns nothing for fewer than two refs or a root too short to be useful", () => {
+    expect(commonRoot(["/only/one.md"])).toBe("");
+    expect(commonRoot(["/a/b.md", "/a/c.md"])).toBe("");
   });
 });

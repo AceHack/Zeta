@@ -12,7 +12,7 @@
  * make look right.
  */
 
-import { chainFor, chainOf } from "./gate-demand";
+import { chainFor, chainOf, producesCode } from "./gate-demand";
 import { describe, expect, test } from "bun:test";
 import { agentsFromChart, gateStaffing, runOrgRuntime, staffingReadout, type OrgRuntimeDeps } from "./org-runtime";
 import { buildOrgChart, reportsUpTo } from "./org-chart";
@@ -95,7 +95,8 @@ describe("THE WHOLE PIPELINE, end to end", () => {
     // "nothing else went wrong" half of it survives.
     const offDiscipline = report.refusals.filter((r) => r.includes("outside its discipline"));
     expect(report.refusals.filter((r) => !r.includes("outside its discipline"))).toEqual([]);
-    expect(offDiscipline.every((r) => r.includes("runtime_validation"))).toBe(true);
+    // …and, since a verify leaf runs the suite at qa_uat too (see the QaUat producer), at that gate as well.
+    expect(offDiscipline.every((r) => r.includes("runtime_validation") || r.includes("qa_uat"))).toBe(true);
     expect(report.delivered).toBe(true);
   });
 
@@ -219,7 +220,8 @@ describe("THE WHOLE PIPELINE, end to end", () => {
 
   test("8. QA — real cases derived from the criteria, and they ran", async () => {
     report = await runOrgRuntime(deps());
-    expect(report.qa).toHaveLength(2);
+    // Two leaves, each running at qa_uat AND runtime_validation.
+    expect(report.qa).toHaveLength(4);
     expect(report.testCases.length).toBeGreaterThan(0);
     for (const q of report.qa) {
       expect(q.runs.length).toBeGreaterThan(0);
@@ -1604,4 +1606,741 @@ describe("A MILESTONE THE ORGANIZATION PASSED IS TOLD TO ITS TICKET, ONCE", () =
     } as never));
     expect(report.refusals.some((r) => r.includes("nothing is configured to write or post"))).toBe(true);
   }, 60_000);
+});
+
+describe("A MERGE CONFLICT IS REWORK, NOT A STALL", () => {
+  // MEASURED on the Waypoint run, 2026-09-20: a story conflicted with `main` on one line, the
+  // landing was refused, the refusal went into the run's `refusals` list and nowhere else — and
+  // the next cycle tried the same merge again, and the next. Nobody was told, because the item
+  // was DONE: every gate had passed, so no performer was ever sent back to it. An organization
+  // that integrates its own changes has to hand a conflict to somebody, and the somebody is the
+  // implementer, at the gate whose phase writes code.
+  const { MERGE_CONFLICT } = require("./adapters") as typeof import("./adapters");
+
+  test("a landing refused for a conflict turns the change's leaf back at implementation_review, naming the files", async () => {
+    const opened: string[] = [];
+    const conflicting = {
+      meta: { port: Port.ChangeControl, name: "conflicting", fidelity: Fidelity.Real, describes: "every merge conflicts" },
+      open: async (node: { readonly workId: string }, ctx: { readonly branch: string; readonly base?: string }) => {
+        opened.push(node.workId);
+        return { ok: true as const, value: { changeId: `${ctx.branch}@${node.workId}`, branch: ctx.branch, ...(ctx.base === undefined ? {} : { base: ctx.base }), workdir: "/nowhere" }, evidence: [] };
+      },
+      merge: async () => ({
+        ok: false as const,
+        reason: `${MERGE_CONFLICT} main in: package.json, CLAUDE.md — the merge is left in progress in /nowhere; resolve, git add, git commit`,
+      }),
+    };
+    // A FIRST REJECTION, so the eventual approval sits at `warmedAt + 1` — the ordering that hid the
+    // steward's verdict on task-5535.
+    const rejectedOnce = new Set<string>();
+    const strictThenKind = {
+      meta: { port: Port.Review, name: "strict-then-kind", fidelity: Fidelity.Real, describes: "rejects each implementation once" },
+      review: async (req: { gate: GateKind; workId: string }) => {
+        const key = `${req.workId}:${String(req.gate)}`;
+        if (req.gate === GateKind.ImplementationReview && !rejectedOnce.has(key)) {
+          rejectedOnce.add(key);
+          return { ok: true as const, value: { outcome: GateOutcome.Rejected, reason: "first pass: missing a test" }, evidence: [] };
+        }
+        return { ok: true as const, value: { outcome: GateOutcome.Approved, reason: "ok" }, evidence: [] };
+      },
+    };
+    const base = deps();
+    const report = await runOrgRuntime({ ...base, providers: { ...defaultProviderSet(base), change: conflicting as never, review: strictThenKind as never }, settings: [{ setting: ProcessSetting.Delivery, value: "merge", why: "the organization integrates its own changes" }] } as OrgRuntimeDeps);
+    expect(opened.length).toBeGreaterThan(0);
+    const turnedBack = report.gateEvaluations.filter(
+      (e) => String(e.gate) === String(GateKind.ImplementationReview) && e.outcome === GateOutcome.Rejected && e.reason.includes("package.json"),
+    );
+    expect(turnedBack.length).toBeGreaterThan(0);
+    // By the hat whose job it is, on an item that opened a change — not by a person, not by nobody.
+    expect(turnedBack.every((e) => e.byHatId === "merge_steward")).toBe(true);
+    expect(turnedBack.every((e) => opened.includes(e.workId))).toBe(true);
+    // And it is written where `latestGateRejections` reads: the trace carries it as a verdict.
+    expect(report.trace.some((ev) => ev.kind === OrgEventKind.QualityGateEvaluation && ev.actorHatId === "merge_steward")).toBe(true);
+    // AND IT IS THE LATEST WORD. MEASURED on Waypoint task-5535, 2026-09-20: the walk's approvals
+    // carried `warmedAt + attempt - 1`, the steward's rejection carried `warmedAt`, so "latest verdict
+    // at implementation_review" stayed approved, the item read done, and every landing re-conflicted
+    // with nobody sent back. A verdict that must turn work back must be later than what it overturns.
+    const { missingGates } = require("./gate-demand") as typeof import("./gate-demand");
+    for (const leafId of new Set(turnedBack.map((e) => e.workId))) {
+      const leaf = report.cascade.nodes.find((n) => n.workId === leafId);
+      if (leaf === undefined) throw new Error("leaf missing");
+      expect(missingGates(leaf, leafId, report.gateEvaluations)).toContain(GateKind.ImplementationReview);
+    }
+  }, 60_000);
+});
+
+describe("A VERIFY LEAF'S qa_uat HAS SOMETHING TO JUDGE", () => {
+  // MEASURED on the Waypoint run, 2026-09-20, task-031 ("verify <goal>"): the leaf produces no
+  // code, so nothing is attached to its `qa_uat`; the reviewer opened the item, found "ATTACHMENTS
+  // (0) none, COMMENTS (0) none", refused to approve an empty gate — correctly — and did so again
+  // every attempt, thirty seconds and thirty cents each, while the story it verifies could never
+  // land because the collection waits for it. "Does it work, judged by somebody who did not build
+  // it" is answered by RUNNING it: the test producer, which already runs for `runtime_validation`
+  // in the dependency's checkout, runs for `qa_uat` too — on the leaves that write no code.
+  test("the test producer runs at qa_uat for a review leaf, so the gate carries a real run", async () => {
+    const base = deps();
+    const report = await runOrgRuntime({ ...base, providers: defaultProviderSet(base) } as OrgRuntimeDeps);
+    const verify = report.cascade.nodes.find((n) => n.workType === WorkType.Review);
+    expect(verify).toBeDefined();
+    const qa = report.gateEvaluations.filter((e) => e.workId === verify?.workId && e.gate === GateKind.QaUat);
+    expect(qa.length).toBeGreaterThan(0);
+    // A test run was RECORDED for the verify leaf at qa_uat, over and above the one runtime_validation owes.
+    const runs = report.trace.filter((ev) => ev.kind === OrgEventKind.TestRunRecorded && ev.subjectId === verify?.workId);
+    expect(runs.length).toBe(2);
+    // And a code leaf runs it at qa_uat too: MEASURED on Waypoint task-021, the same empty-gate refusal
+    // arrived at a code leaf whose reviewer would not approve a step nothing was attached to.
+    const code = report.cascade.nodes.find((n) => n.workType === WorkType.Task || n.workType === WorkType.Defect);
+    const codeQa = report.trace.filter((ev) => ev.kind === OrgEventKind.TestRunRecorded && ev.subjectId === code?.workId);
+    expect(codeQa.length).toBe(2);
+  }, 60_000);
+});
+
+describe("A VERIFY LEAF ON A RESUMED RUN STILL TESTS THE CHANGE IT VERIFIES", () => {
+  // MEASURED on the Waypoint run, 2026-09-20, task-031: its dependency task-029 was done in an
+  // earlier run, so no change was opened for it THIS run, `openedChanges` had nothing for it, and
+  // the verify leaf's suite ran in the BASE tree — where a stale test on the trunk fails. The gate
+  // then carried `exit:1` plus a log that never mentioned the feature, and the reviewer rejected,
+  // correctly, a run of the wrong tree. The dependency's checkout still exists; change control
+  // can rejoin it. It has to be asked.
+  function recordingPorts() {
+    const opened: string[] = [];
+    const testedIn: (string | undefined)[] = [];
+    const change = {
+      meta: { port: Port.ChangeControl, name: "recording", fidelity: Fidelity.Real, describes: "records opens" },
+      open: async (node: { readonly workId: string }, ctx: { readonly branch: string; readonly base?: string }) => {
+        opened.push(node.workId);
+        return { ok: true as const, value: { changeId: `${ctx.branch}@${node.workId}`, branch: ctx.branch, ...(ctx.base === undefined ? {} : { base: ctx.base }), workdir: `/checkouts/${ctx.branch}` }, evidence: [] };
+      },
+      merge: async (handle: { readonly branch: string }) => ({ ok: true as const, value: { changeId: "m", branch: handle.branch }, evidence: [] }),
+    };
+    const tests = {
+      meta: { port: Port.TestExecution, name: "recording", fidelity: Fidelity.Real, describes: "records where it ran" },
+      run: async (_tc: unknown, ctx: { readonly workdir?: string }) => {
+        testedIn.push(ctx.workdir);
+        return { ok: true as const, value: { outcome: RunOutcome.Passed }, evidence: [{ kind: "trace" as const, ref: `ran-in:${ctx.workdir ?? "<base>"}` }] };
+      },
+    };
+    return { change, tests, opened, testedIn };
+  }
+
+  test("the dependency's change is rejoined for its checkout, and the verify leaf's tests run there", async () => {
+    const first = recordingPorts();
+    const base = deps();
+    const settings = [{ setting: ProcessSetting.Delivery, value: "merge", why: "the organization integrates its own changes" }];
+    const run1 = await runOrgRuntime({ ...base, providers: { ...defaultProviderSet(base), change: first.change as never, tests: first.tests as never }, settings } as OrgRuntimeDeps);
+    const verify = run1.cascade.nodes.find((n) => n.workType === WorkType.Review);
+    const code = run1.cascade.nodes.find((n) => n.workId === (verify?.dependsOn ?? [])[0]);
+    if (verify === undefined || code === undefined) throw new Error("fixture has no verify leaf with a dependency");
+    expect(code.state).toBe(WorkState.Done);
+
+    // RESUME with the code leaf done and the verify leaf still owed: its verdicts are forgotten and
+    // it is reopened, exactly as a run that stopped between the two would leave it.
+    // A DONE LEAF HOLDS NO SEAT (its assignee was released), so nothing walks it and nothing opens its change.
+    const prior = { ...run1.cascade, nodes: run1.cascade.nodes.map((n) => (n.workId === verify.workId ? { ...n, state: WorkState.Open } : n.workId === code.workId ? { ...n, assigneeHatId: undefined } : n)) };
+    const second = recordingPorts();
+    const run2 = await runOrgRuntime({
+      ...base,
+      providers: { ...defaultProviderSet(base), change: second.change as never, tests: second.tests as never },
+      settings,
+      priorCascade: prior as never,
+      priorGateEvaluations: run1.gateEvaluations.filter((e) => e.workId !== verify.workId),
+      alreadyLanded: new Set<string>(),
+      // WALKED IN PARALLEL, as the real run is: the verify leaf may start before its dependency's open lands.
+      maxParallel: 3,
+    } as OrgRuntimeDeps);
+    // The verify leaf was walked and tested…
+    expect(run2.gateEvaluations.some((e) => e.workId === verify.workId)).toBe(true);
+    expect(second.testedIn.length).toBeGreaterThan(0);
+    // …IN THE DEPENDENCY'S CHECKOUT, obtained by rejoining its change — never the base tree.
+    expect(second.opened).toContain(code.workId);
+    expect(second.testedIn.every((w) => w !== undefined && w.startsWith("/checkouts/"))).toBe(true);
+  }, 60_000);
+});
+
+describe("DONE IS JUDGED AGAINST THE GATES THIS RUN WALKS — the chain under the pipeline", () => {
+  // MEASURED on the Waypoint run, 2026-09-20, under `--pipeline diagnosed_design`: every gate the
+  // pipeline owes was approved on all six leaves, two stories were merged to main, and the run
+  // stopped NO_PROGRESS: the three verify leaves were "not done: no passing verdict on the record
+  // for peer_review". `diagnosed_design` never walks `peer_review`, so no verdict could ever exist —
+  // the walk asked one question (chain ∩ pipeline) and the done-check asked another (the whole
+  // chain). An item that has passed everything it was ever going to be asked is done.
+  const { NAMED_PIPELINES } = require("./run-org") as typeof import("./run-org");
+  test("a review leaf whose pipeline never walks peer_review is done once qa_uat and runtime_validation pass", async () => {
+    const base = deps();
+    const pipeline = (NAMED_PIPELINES["diagnosed_design"] as readonly GateKind[]).map((gate) => ({ gate }));
+    const report = await runOrgRuntime({ ...base, providers: defaultProviderSet(base), pipeline, settings: [{ setting: ProcessSetting.Delivery, value: "merge", why: "autonomous" }] } as OrgRuntimeDeps);
+    const verify = report.cascade.nodes.find((n) => n.workType === WorkType.Review);
+    expect(verify).toBeDefined();
+    // The gates the pipeline owes it were judged…
+    expect(report.gateEvaluations.some((e) => e.workId === verify?.workId && e.gate === GateKind.QaUat && e.outcome === GateOutcome.Approved)).toBe(true);
+    expect(report.gateEvaluations.some((e) => e.workId === verify?.workId && e.gate === GateKind.RuntimeValidation && e.outcome === GateOutcome.Approved)).toBe(true);
+    // …and it is DONE, not held for a gate nothing will ever walk.
+    expect(verify?.state).toBe(WorkState.Done);
+    expect(report.refusals.some((r) => r.includes("no passing verdict on the record for peer_review"))).toBe(false);
+  }, 60_000);
+});
+
+describe("A REJECTED ACCEPTANCE GATE BECOMES WORK, NOT A WEEKLY RE-REVIEW", () => {
+  // MEASURED on the Waypoint run, 2026-09-20, proj-027: every leaf merged, and the Opus architect
+  // rejected `final_architecture_review` with three real findings (SQL casts no test reaches). The
+  // next cycle walked the same gate against the same tree — "nothing has moved since this step was
+  // last rejected" — and would have, every cycle, at architect prices, forever: the leaves were done,
+  // so nobody was ever sent back to the code. An objection at the gate that asks "was the built
+  // thing right?" is a defect against the built thing, and the organization's answer to a defect is
+  // a leaf that fixes it. The gate then waits for that leaf, as it waits for every other child.
+  test("the rung gets a follow-up leaf carrying the objection, and the gate is not re-asked until it delivers", async () => {
+    let finalAsked = 0;
+    const strictArchitect = {
+      meta: { port: Port.Review, name: "strict-architect", fidelity: Fidelity.Real, describes: "rejects the final architecture review once" },
+      review: async (req: { gate: GateKind; workId: string }) => {
+        if (req.gate === GateKind.FinalArchitectureReview) finalAsked += 1;
+        return {
+          ok: true as const,
+          value:
+            req.gate === GateKind.FinalArchitectureReview && finalAsked === 1
+              ? { outcome: GateOutcome.Rejected, reason: "console.read.ts:65 casts an unvalidated string to timestamptz; one bad row 500s the whole overview" }
+              : { outcome: GateOutcome.Approved, reason: "ok" },
+          evidence: [],
+        };
+      },
+    };
+    const base = deps();
+    const settings = [{ setting: ProcessSetting.Delivery, value: "merge", why: "autonomous" }];
+    const run0 = await runOrgRuntime({ ...base, providers: { ...defaultProviderSet(base), review: strictArchitect as never }, settings } as OrgRuntimeDeps);
+    const project = run0.cascade.nodes.find((n) => n.workType === WorkType.Project);
+    if (project === undefined) throw new Error("fixture has no project");
+    // The acceptance gate waits for the trunk: nothing landed within the cycle, so it is not asked yet.
+    expect(finalAsked).toBe(0);
+    // The cycle after the landing asks it — and it is rejected.
+    const landed = new Set(childrenOf(run0.cascade, project.workId).filter((n) => isLeafType(n.workType)).map((n) => n.workId));
+    const run1 = await runOrgRuntime({ ...base, providers: { ...defaultProviderSet(base), review: strictArchitect as never }, settings, priorCascade: run0.cascade as never, priorGateEvaluations: run0.gateEvaluations, alreadyLanded: landed } as OrgRuntimeDeps);
+    expect(finalAsked).toBe(1);
+    // A NEW LEAF under the project, open, briefed with the objection.
+    const followUps = childrenOf(run1.cascade, project.workId).filter((c) => isLeafType(c.workType) && c.state !== WorkState.Done && (c.brief ?? "").includes("timestamptz"));
+    expect(followUps.length).toBeGreaterThan(0);
+    // IDEMPOTENT across cycles: resumed with the follow-up still open, the gate is NOT asked again
+    // and no second follow-up is minted.
+    const run2 = await runOrgRuntime({
+      ...base,
+      providers: { ...defaultProviderSet(base), review: strictArchitect as never },
+      settings,
+      priorCascade: run1.cascade as never,
+      priorGateEvaluations: run1.gateEvaluations,
+      alreadyLanded: landed,
+    } as OrgRuntimeDeps);
+    const again = childrenOf(run2.cascade, project.workId).filter((c) => isLeafType(c.workType) && (c.brief ?? "").includes("timestamptz"));
+    expect(again.length).toBe(followUps.length);
+  }, 90_000);
+});
+
+describe("A VERIFY LEAF TURNED BACK AFTER ITS SUBJECT LANDED MINTS THE FIX IT NEEDS", () => {
+  // MEASURED on the Waypoint run, 2026-09-20, task-5529: the chart-structure story landed on main
+  // and its verify leaf's qa_uat found 7 real failures there — a test computed its fixture path with
+  // `new URL(".", import.meta.url).pathname`, fine in a worktree with no space in its path, `%20` on
+  // the trunk. Correct rejection; nobody to send back. The subject leaf was done and merged, so the
+  // verify leaf would have been re-asked the same question every cycle. An objection from the check
+  // of a landed change is a defect against that change: mint the fix under the same rung, briefed
+  // with the verdict, and make the verify leaf wait on it — exactly as it waited on the original.
+  test("the rung gets a defect leaf carrying the verdict, and the verify leaf depends on it", async () => {
+    let qaAsked = 0;
+    const strictQa = {
+      meta: { port: Port.Review, name: "strict-qa", fidelity: Fidelity.Real, describes: "rejects a verify leaf's qa_uat once" },
+      review: async () => ({ ok: true as const, value: { outcome: GateOutcome.Approved, reason: "ok" }, evidence: [] }),
+    };
+    const base = deps();
+    const settings = [{ setting: ProcessSetting.Delivery, value: "merge", why: "autonomous" }];
+    // Run 1: everything lands.
+    const run1 = await runOrgRuntime({ ...base, providers: { ...defaultProviderSet(base), review: strictQa as never }, settings } as OrgRuntimeDeps);
+    const verify = run1.cascade.nodes.find((n) => n.workType === WorkType.Review);
+    const code = run1.cascade.nodes.find((n) => n.workId === (verify?.dependsOn ?? [])[0]);
+    if (verify === undefined || code === undefined) throw new Error("fixture has no verify leaf with a dependency");
+    // Run 2: resumed with the code leaf landed and the verify leaf owed again; QA now finds a defect on the trunk.
+    const rejectingQa = {
+      ...strictQa,
+      review: async (req: { gate: GateKind; workId: string }) => {
+        if (req.workId === verify.workId && req.gate === GateKind.QaUat && qaAsked++ === 0) {
+          return { ok: true as const, value: { outcome: GateOutcome.Rejected, reason: "label-fixtures.test.ts:60 builds the fixture path from a URL pathname; `%20` in the trunk's path → 7 failures" }, evidence: [] };
+        }
+        return { ok: true as const, value: { outcome: GateOutcome.Approved, reason: "ok" }, evidence: [] };
+      },
+    };
+    const prior = { ...run1.cascade, nodes: run1.cascade.nodes.map((n) => (n.workId === verify.workId ? { ...n, state: WorkState.Open } : n)) };
+    const run2 = await runOrgRuntime({
+      ...base,
+      providers: { ...defaultProviderSet(base), review: rejectingQa as never },
+      settings,
+      priorCascade: prior as never,
+      priorGateEvaluations: run1.gateEvaluations.filter((e) => e.workId !== verify.workId),
+      alreadyLanded: new Set([code.workId]),
+    } as OrgRuntimeDeps);
+    const parentId = verify.parentWorkId as string;
+    const fix = childrenOf(run2.cascade, parentId).find((c) => c.workType === WorkType.Defect && (c.brief ?? "").includes("%20"));
+    expect(fix).toBeDefined();
+    // The verify leaf now waits on the fix, so it is not re-asked until the fix delivers.
+    const verifyNow = run2.cascade.nodes.find((n) => n.workId === verify.workId);
+    expect((verifyNow?.dependsOn ?? []).includes(fix?.workId ?? "")).toBe(true);
+    // IDEMPOTENT: a third run with the fix still open mints nothing more.
+    const run3 = await runOrgRuntime({
+      ...base,
+      providers: { ...defaultProviderSet(base), review: rejectingQa as never },
+      settings,
+      priorCascade: run2.cascade as never,
+      priorGateEvaluations: run2.gateEvaluations,
+      alreadyLanded: new Set([code.workId]),
+    } as OrgRuntimeDeps);
+    expect(childrenOf(run3.cascade, parentId).filter((c) => c.workType === WorkType.Defect && (c.brief ?? "").includes("%20")).length).toBe(1);
+  }, 90_000);
+});
+
+describe("DECOMPOSITION COUNTS SEATS THE WAY STAFFING DOES — wearers per hat, not one", () => {
+  // MEASURED on the Waypoint run, 2026-09-20: `--supply-target 3` let three tasks run at once on
+  // two contributor hats, and then a fix leaf minted mid-run for a landed defect was refused by
+  // `decompose`: "no individual_contributor reports up to 'tech_lead', so this task cannot be
+  // staffed". Staffing counted seats × supply; decomposition counted hats with nothing on them.
+  // Two answers to "is anyone free" is one answer too many.
+  const { freeSeatsUnder } = require("./org-runtime") as typeof import("./org-runtime");
+  test("a hat carrying one open task still has seats while supply allows it", () => {
+    const built = buildOrgChart(SEED_HATS);
+    if (!built.ok) throw new Error("chart");
+    const chart = built.chart;
+    const carried = (n: number): import("./goal-cascade").Cascade => ({
+      nodes: Array.from({ length: n }, (_, i) => ({
+        workId: `t-${String(i)}`, workType: WorkType.Task, title: "t", state: WorkState.InProgress, ownerHatId: "tech_lead",
+        assigneeHatId: i % 2 === 0 ? "backend_implementer" : "frontend_implementer",
+      })) as never,
+    });
+    // Two hats, nothing carried: two seats at supply 1, six at supply 3.
+    expect(freeSeatsUnder(chart, carried(0), "tech_lead", 1)).toBe(2);
+    expect(freeSeatsUnder(chart, carried(0), "tech_lead", 3)).toBe(6);
+    // Each hat carrying one task: none free at supply 1 — and FOUR at supply 3.
+    expect(freeSeatsUnder(chart, carried(2), "tech_lead", 1)).toBe(0);
+    expect(freeSeatsUnder(chart, carried(2), "tech_lead", 3)).toBe(4);
+    // Finished work holds no seat.
+    const done: import("./goal-cascade").Cascade = { nodes: carried(2).nodes.map((n) => ({ ...n, state: WorkState.Done })) };
+    expect(freeSeatsUnder(chart, done, "tech_lead", 1)).toBe(2);
+  });
+});
+
+describe("A REJECTION AFTER THE CODE WAS WRITTEN SENDS THE CODE LEAF BACK TO ITS PERFORMER", () => {
+  // MEASURED on the Waypoint run, 2026-09-20, task-6560: qa_uat rejected five times with one reason
+  // (three of four defect tests skip without DATABASE_URL, so the recorded run proves nothing for
+  // them). Each attempt re-walked only the gates not yet passed this cycle — qa_uat — so the test
+  // producer ran, the reviewer read the same run, and said the same thing; the performer, who is
+  // the only actor that can change what the run proves, was never asked again and never told. The
+  // named recovery path for qa_uat is "validation process improvement"; in an organization whose
+  // validation process is the checkout's own tests, that improvement IS engineering.
+  test("qa_uat rejected once → the work runs again → the walk passes", async () => {
+    let qaAsked = 0;
+    let performed = 0;
+    const work = {
+      meta: { port: Port.WorkExecution, name: "counting", fidelity: Fidelity.Real, describes: "counts performances" },
+      execute: async (node: { workId: string }) => {
+        performed += 1;
+        return { ok: true as const, value: { workId: node.workId, succeeded: true, artifacts: [], summary: `pass ${String(performed)}` }, evidence: [] };
+      },
+    };
+    const review = {
+      meta: { port: Port.Review, name: "qa-once", fidelity: Fidelity.Real, describes: "rejects the first qa_uat on a code leaf" },
+      review: async (req: { gate: GateKind; workId: string }) => ({
+        ok: true as const,
+        value:
+          req.gate === GateKind.QaUat && qaAsked++ === 0
+            ? { outcome: GateOutcome.Rejected, reason: "three of four defect tests skip without DATABASE_URL; the run proves nothing for them" }
+            : { outcome: GateOutcome.Approved, reason: "ok" },
+        evidence: [],
+      }),
+    };
+    const base = deps();
+    const report = await runOrgRuntime({ ...base, providers: { ...defaultProviderSet(base), work: work as never, review: review as never }, settings: [{ setting: ProcessSetting.Delivery, value: "merge", why: "autonomous" }] } as OrgRuntimeDeps);
+    const code = report.cascade.nodes.find((n) => n.workType === WorkType.Task || n.workType === WorkType.Defect);
+    expect(code?.state).toBe(WorkState.Done);
+    // The performer ran AGAIN after the rejection — not merely the test producer.
+    expect(performed).toBeGreaterThanOrEqual(2);
+    // And the record shows implementation_review re-judged after qa_uat's objection.
+    const impl = report.gateEvaluations.filter((e) => e.workId === code?.workId && e.gate === GateKind.ImplementationReview);
+    expect(impl.length).toBeGreaterThanOrEqual(2);
+  }, 60_000);
+
+  test("…and on a RESUMED item whose implementation passed in an earlier run", async () => {
+    // The real case: task-6560's implementation_review had passed the run before; the resumed walk
+    // owed only qa_uat onward and, filtered by "passed before", could never reach the performer.
+    let performed = 0;
+    const work = {
+      meta: { port: Port.WorkExecution, name: "counting", fidelity: Fidelity.Real, describes: "counts performances" },
+      execute: async (node: { workId: string }) => {
+        performed += 1;
+        return { ok: true as const, value: { workId: node.workId, succeeded: true, artifacts: [], summary: `pass ${String(performed)}` }, evidence: [] };
+      },
+    };
+    const approve = { meta: { port: Port.Review, name: "ok", fidelity: Fidelity.Real, describes: "approves" }, review: async () => ({ ok: true as const, value: { outcome: GateOutcome.Approved, reason: "ok" }, evidence: [] }) };
+    const base = deps();
+    const settings = [{ setting: ProcessSetting.Delivery, value: "merge", why: "autonomous" }];
+    const run1 = await runOrgRuntime({ ...base, providers: { ...defaultProviderSet(base), work: work as never, review: approve as never }, settings } as OrgRuntimeDeps);
+    const code = run1.cascade.nodes.find((n) => n.workType === WorkType.Task || n.workType === WorkType.Defect);
+    if (code === undefined) throw new Error("no code leaf");
+    const performedInRun1 = performed;
+    // Resume: the code leaf is open again and owes qa_uat onward (implementation_review passed before).
+    let qaAsked = 0;
+    const qaOnce = { ...approve, review: async (req: { gate: GateKind; workId: string }) => (req.workId === code.workId && req.gate === GateKind.QaUat && qaAsked++ === 0 ? { ok: true as const, value: { outcome: GateOutcome.Rejected, reason: "the run proves nothing: the tests skip" }, evidence: [] } : { ok: true as const, value: { outcome: GateOutcome.Approved, reason: "ok" }, evidence: [] }) };
+    const prior = { ...run1.cascade, nodes: run1.cascade.nodes.map((n) => (n.workId === code.workId ? { ...n, state: WorkState.Open } : n)) };
+    const run2 = await runOrgRuntime({
+      ...base,
+      providers: { ...defaultProviderSet(base), work: work as never, review: qaOnce as never },
+      settings,
+      priorCascade: prior as never,
+      priorGateEvaluations: run1.gateEvaluations.filter((e) => !(e.workId === code.workId && e.gate !== GateKind.ImplementationReview)),
+    } as OrgRuntimeDeps);
+    expect(run2.cascade.nodes.find((n) => n.workId === code.workId)?.state).toBe(WorkState.Done);
+    // The performer ran in run 2 — after qa_uat's objection — although implementation had passed before.
+    expect(performed).toBeGreaterThan(performedInRun1);
+  }, 60_000);
+});
+
+describe("DONE IS NOT LANDED — the acceptance gate waits for the trunk, and one objection mints one follow-up", () => {
+  // MEASURED on Waypoint proj-027, 2026-09-20: its follow-up defect passed every gate at 20:16 and
+  // the acceptance gate was re-asked at 20:40 — before the cycle's landing loop had merged the fix —
+  // so the architect re-read an unchanged main, rejected again with a rephrased verdict, and a
+  // SECOND follow-up was minted beside the first. Two rules close it: the acceptance gate of a rung
+  // is asked only once every code child has LANDED, not merely finished its walk; and an open
+  // follow-up for the same gate is the same follow-up, whatever the verdict's wording this time.
+  test("no re-review and no second follow-up while the first fix is done but unlanded", async () => {
+    let finalAsked = 0;
+    const architect = {
+      meta: { port: Port.Review, name: "architect", fidelity: Fidelity.Real, describes: "rejects final review, rephrased each time" },
+      review: async (req: { gate: GateKind }) => {
+        if (req.gate !== GateKind.FinalArchitectureReview) return { ok: true as const, value: { outcome: GateOutcome.Approved, reason: "ok" }, evidence: [] };
+        finalAsked += 1;
+        return { ok: true as const, value: { outcome: GateOutcome.Rejected, reason: `objection, phrasing #${String(finalAsked)}: console.read.ts casts` }, evidence: [] };
+      },
+    };
+    // Change control that opens and merges nothing — every change stays unlanded, as within a cycle.
+    const unlanding = {
+      meta: { port: Port.ChangeControl, name: "unlanding", fidelity: Fidelity.Real, describes: "never lands" },
+      open: async (node: { workId: string }, ctx: { branch: string; base?: string }) => ({ ok: true as const, value: { changeId: `${ctx.branch}@${node.workId}`, branch: ctx.branch, ...(ctx.base === undefined ? {} : { base: ctx.base }), workdir: "/nowhere" }, evidence: [] }),
+      merge: async () => ({ ok: false as const, reason: "not now" }),
+    };
+    const base = deps();
+    const settings = [{ setting: ProcessSetting.Delivery, value: "merge", why: "autonomous" }];
+    const run1 = await runOrgRuntime({ ...base, providers: { ...defaultProviderSet(base), review: architect as never, change: unlanding as never }, settings } as OrgRuntimeDeps);
+    const project = run1.cascade.nodes.find((n) => n.workType === WorkType.Project);
+    if (project === undefined) throw new Error("no project");
+    const followUps = (c: import("./goal-cascade").Cascade) => childrenOf(c, project.workId).filter((n) => isLeafType(n.workType) && n.title.startsWith("address final_architecture_review"));
+    // Leaves finished their walks but nothing landed: the gate must NOT have been asked at all.
+    expect(finalAsked).toBe(0);
+    expect(followUps(run1.cascade).length).toBe(0);
+    // Resume with the leaves LANDED: now the gate is asked, rejected, and ONE follow-up is minted.
+    const leaves = childrenOf(run1.cascade, project.workId).filter((n) => isLeafType(n.workType)).map((n) => n.workId);
+    const run2 = await runOrgRuntime({ ...base, providers: { ...defaultProviderSet(base), review: architect as never, change: unlanding as never }, settings, priorCascade: run1.cascade as never, priorGateEvaluations: run1.gateEvaluations, alreadyLanded: new Set(leaves) } as OrgRuntimeDeps);
+    expect(finalAsked).toBe(1);
+    expect(followUps(run2.cascade).length).toBe(1);
+    // Resume again: the follow-up is done-but-unlanded, the gate is not re-asked, nothing is re-minted.
+    const run3 = await runOrgRuntime({ ...base, providers: { ...defaultProviderSet(base), review: architect as never, change: unlanding as never }, settings, priorCascade: run2.cascade as never, priorGateEvaluations: run2.gateEvaluations, alreadyLanded: new Set(leaves) } as OrgRuntimeDeps);
+    expect(finalAsked).toBe(1);
+    expect(followUps(run3.cascade).length).toBe(1);
+  }, 120_000);
+});
+
+describe("CANCELLED WORK IS NOT WALKED", () => {
+  // MEASURED on Waypoint, 2026-09-20: five duplicate fix leaves were cancelled by the operator
+  // (`work_state: canceled`), and the next run reviewed and re-performed them anyway — the walk
+  // took every node with an assignee. A cancelled item is one the organization has decided not to
+  // do; spending a reviewer and an implementer on it is the decision made and then ignored.
+  test("a cancelled, staffed leaf gets no review, no work, no verdict", async () => {
+    const seen: string[] = [];
+    const review = { meta: { port: Port.Review, name: "seen", fidelity: Fidelity.Real, describes: "records" }, review: async (req: { workId: string }) => { seen.push(req.workId); return { ok: true as const, value: { outcome: GateOutcome.Approved, reason: "ok" }, evidence: [] }; } };
+    const base = deps();
+    const run1 = await runOrgRuntime({ ...base, providers: { ...defaultProviderSet(base), review: review as never } } as OrgRuntimeDeps);
+    const leaf = run1.cascade.nodes.find((n) => isLeafType(n.workType) && n.assigneeHatId !== undefined);
+    if (leaf === undefined) throw new Error("no staffed leaf");
+    seen.length = 0;
+    const prior = { ...run1.cascade, nodes: run1.cascade.nodes.map((n) => (n.workId === leaf.workId ? { ...n, state: WorkState.Canceled } : n)) };
+    const run2 = await runOrgRuntime({ ...base, providers: { ...defaultProviderSet(base), review: review as never }, priorCascade: prior as never, priorGateEvaluations: run1.gateEvaluations.filter((e) => e.workId !== leaf.workId) } as OrgRuntimeDeps);
+    expect(seen).not.toContain(leaf.workId);
+    expect(run2.gateEvaluations.some((e) => e.workId === leaf.workId)).toBe(false);
+    expect(run2.cascade.nodes.find((n) => n.workId === leaf.workId)?.state).toBe(WorkState.Canceled);
+  }, 60_000);
+});
+
+describe("WORK UNDER A COLLECTION IS JUDGED IN THE COLLECTION'S BRANCH UNTIL THAT BRANCH LANDS", () => {
+  // MEASURED on the Waypoint run, 2026-09-20. Three follow-up leaves (task-7657, task-8094,
+  // task-10459) each merged into their project's `feature/…` branch, which lands on the trunk only
+  // once the project's acceptance gate passes. Then: the verify leaf of each ran its suite on the
+  // TRUNK (the dependency was `alreadyLanded`, so no checkout was rejoined and the runner fell to
+  // its base directory) and failed for a defect the branch had already fixed; and the project's
+  // `final_architecture_review` itself was judged on the trunk, where it found the same defect,
+  // rejected, and minted a fourth follow-up. A branch nobody looks at cannot pass the gate that
+  // would land it. The checkout for anything judged under a collection is that collection's
+  // branch while it is unlanded; once landed, the trunk — and work minted after that goes to the
+  // trunk directly, because a landed collection's branch is never merged again.
+  const { branchNameIn } = require("./branch-topology") as typeof import("./branch-topology");
+  function recordingPorts() {
+    const opened: { workId: string; branch: string; base?: string }[] = [];
+    const testedIn: (string | undefined)[] = [];
+    const reviewedIn: { gate: GateKind; workId: string; workdir?: string }[] = [];
+    const change = {
+      meta: { port: Port.ChangeControl, name: "recording", fidelity: Fidelity.Real, describes: "records opens" },
+      open: async (node: { readonly workId: string }, ctx: { readonly branch: string; readonly base?: string }) => {
+        opened.push({ workId: node.workId, branch: ctx.branch, ...(ctx.base === undefined ? {} : { base: ctx.base }) });
+        return { ok: true as const, value: { changeId: `${ctx.branch}@${node.workId}`, branch: ctx.branch, ...(ctx.base === undefined ? {} : { base: ctx.base }), workdir: `/checkouts/${ctx.branch}` }, evidence: [] };
+      },
+      merge: async (handle: { readonly branch: string }) => ({ ok: true as const, value: { changeId: "m", branch: handle.branch }, evidence: [] }),
+    };
+    const tests = {
+      meta: { port: Port.TestExecution, name: "recording", fidelity: Fidelity.Real, describes: "records where it ran" },
+      run: async (_tc: unknown, ctx: { readonly workdir?: string }) => {
+        testedIn.push(ctx.workdir);
+        return { ok: true as const, value: { outcome: RunOutcome.Passed }, evidence: [] };
+      },
+    };
+    const review = (verdictFor: (req: { gate: GateKind; workId: string }) => { outcome: GateOutcome; reason: string }) => ({
+      meta: { port: Port.Review, name: "recording", fidelity: Fidelity.Real, describes: "records where it judged" },
+      review: async (req: { gate: GateKind; workId: string; workdir?: string }) => {
+        reviewedIn.push({ gate: req.gate, workId: req.workId, ...(req.workdir === undefined ? {} : { workdir: req.workdir }) });
+        return { ok: true as const, value: verdictFor(req), evidence: [] };
+      },
+    });
+    return { change, tests, review, opened, testedIn, reviewedIn };
+  }
+  const settings = [{ setting: ProcessSetting.Delivery, value: "merge", why: "the organization integrates its own changes" }];
+  // The fixture's one code leaf goes to the trunk by shape; stated org-wide, the project collects it.
+  const collecting = [...settings, { setting: ProcessSetting.IntegrationBranch, value: "collect", why: "every rung integrates on a branch" }];
+
+  test("a verify leaf whose dependency landed in an unlanded collection's branch tests THAT branch, not the trunk", async () => {
+    const first = recordingPorts();
+    const base = deps();
+    const run1 = await runOrgRuntime({ ...base, providers: { ...defaultProviderSet(base), change: first.change as never, tests: first.tests as never }, settings: collecting } as OrgRuntimeDeps);
+    const verify = run1.cascade.nodes.find((n) => n.workType === WorkType.Review);
+    const code = run1.cascade.nodes.find((n) => n.workId === (verify?.dependsOn ?? [])[0]);
+    if (verify === undefined || code === undefined) throw new Error("fixture has no verify leaf with a dependency");
+    const under = first.opened.find((o) => o.workId === code.workId)?.base;
+    if (under === undefined) throw new Error("fixture's code leaf does not integrate under a collection");
+    const collection = run1.cascade.nodes.find((n) => !isLeafType(n.workType) && branchNameIn(run1.cascade, n) === under);
+    if (collection === undefined) throw new Error(`no collection owns ${under}`);
+
+    // RESUME: the code leaf has landed — into the collection's branch — the collection has not, and
+    // the verify leaf is owed again.
+    const prior = { ...run1.cascade, nodes: run1.cascade.nodes.map((n) => (n.workId === verify.workId ? { ...n, state: WorkState.Open } : n.workId === code.workId ? { ...n, assigneeHatId: undefined } : n)) };
+    const second = recordingPorts();
+    const run2 = await runOrgRuntime({
+      ...base,
+      providers: { ...defaultProviderSet(base), change: second.change as never, tests: second.tests as never },
+      settings: collecting,
+      priorCascade: prior as never,
+      priorGateEvaluations: run1.gateEvaluations.filter((e) => e.workId !== verify.workId),
+      alreadyLanded: new Set([code.workId]),
+      maxParallel: 3,
+    } as OrgRuntimeDeps);
+    expect(run2.gateEvaluations.some((e) => e.workId === verify.workId)).toBe(true);
+    expect(second.testedIn.length).toBeGreaterThan(0);
+    // The COLLECTION's checkout was rejoined, and every run of the verify leaf happened in it.
+    expect(second.opened.some((o) => o.workId === collection.workId && o.branch === under)).toBe(true);
+    expect(second.testedIn.every((w) => w === `/checkouts/${under}`)).toBe(true);
+  }, 60_000);
+
+  test("a collection's acceptance gate is judged in the collection's checkout while its branch is unlanded", async () => {
+    const ports = recordingPorts();
+    const base = deps();
+    const run0 = await runOrgRuntime({ ...base, providers: { ...defaultProviderSet(base), change: ports.change as never, tests: ports.tests as never, review: ports.review(() => ({ outcome: GateOutcome.Approved, reason: "ok" })) as never }, settings: collecting } as OrgRuntimeDeps);
+    const project = run0.cascade.nodes.find((n) => n.workType === WorkType.Project);
+    if (project === undefined) throw new Error("fixture has no project");
+    const branch = branchNameIn(run0.cascade, project);
+    // The cycle after the leaves landed asks the acceptance gate. The project itself has NOT landed.
+    const leaves = new Set(childrenOf(run0.cascade, project.workId).filter((n) => isLeafType(n.workType)).map((n) => n.workId));
+    const again = recordingPorts();
+    await runOrgRuntime({ ...base, providers: { ...defaultProviderSet(base), change: again.change as never, tests: again.tests as never, review: again.review(() => ({ outcome: GateOutcome.Approved, reason: "ok" })) as never }, settings: collecting, priorCascade: run0.cascade as never, priorGateEvaluations: run0.gateEvaluations, alreadyLanded: leaves } as OrgRuntimeDeps);
+    const asked = again.reviewedIn.filter((r) => r.workId === project.workId && r.gate === GateKind.FinalArchitectureReview);
+    expect(asked.length).toBeGreaterThan(0);
+    expect(asked.every((r) => r.workdir === `/checkouts/${branch}`)).toBe(true);
+    expect(again.opened.some((o) => o.workId === project.workId && o.branch === branch)).toBe(true);
+  }, 90_000);
+
+  test("an ACCEPTED collection lands its branch on the trunk — judged by the chain under the pipeline, not by a state nobody sets", async () => {
+    // MEASURED on the Waypoint run, 2026-09-21, proj-5525 under `diagnosed_design`: every leaf landed
+    // into feature/…, the Opus architect approved final_architecture_review in that checkout, and the
+    // run then said "cannot be accepted yet: still owes peer_review, adversarial_review" — two gates
+    // that pipeline never walks on a project — and `collectionsReadyToLand` waited for a project
+    // state of Done that the cascade refuses to set on anything with children. The feature branch
+    // held three fixes and could never reach main. Three stalled runs, autopilot out.
+    const { NAMED_PIPELINES } = require("./run-org") as typeof import("./run-org");
+    const pipeline = (NAMED_PIPELINES["diagnosed_design"] as readonly GateKind[]).map((gate) => ({ gate }));
+    const merged: string[] = [];
+    const ports = recordingPorts();
+    const change = { ...ports.change, merge: async (handle: { readonly branch: string }) => { merged.push(handle.branch); return { ok: true as const, value: { changeId: "m", branch: handle.branch }, evidence: [] }; } };
+    const base = deps();
+    const approve = () => ({ outcome: GateOutcome.Approved, reason: "ok" });
+    const run0 = await runOrgRuntime({ ...base, providers: { ...defaultProviderSet(base), change: change as never, tests: ports.tests as never, review: ports.review(approve) as never }, settings: collecting, pipeline } as OrgRuntimeDeps);
+    const project = run0.cascade.nodes.find((n) => n.workType === WorkType.Project);
+    if (project === undefined) throw new Error("fixture has no project");
+    const branch = branchNameIn(run0.cascade, project);
+    const leaves = new Set(childrenOf(run0.cascade, project.workId).filter((n) => isLeafType(n.workType)).map((n) => n.workId));
+    expect(merged).not.toContain(branch);
+    // The cycle after the leaves landed: acceptance is asked in the feature checkout, approved, and the branch lands.
+    const run1 = await runOrgRuntime({ ...base, providers: { ...defaultProviderSet(base), change: change as never, tests: ports.tests as never, review: ports.review(approve) as never }, settings: collecting, pipeline, priorCascade: run0.cascade as never, priorGateEvaluations: run0.gateEvaluations, alreadyLanded: leaves } as OrgRuntimeDeps);
+    expect(run1.gateEvaluations.some((e) => e.workId === project.workId && e.gate === GateKind.FinalArchitectureReview && e.outcome === GateOutcome.Approved)).toBe(true);
+    expect(run1.refusals.some((r) => r.includes(project.workId) && r.includes("cannot be accepted yet"))).toBe(false);
+    expect(merged).toContain(branch);
+  }, 90_000);
+
+  test("a follow-up minted under a LANDED collection is cut from the trunk, and its acceptance is judged there", async () => {
+    let finalAsked = 0;
+    const strict = (req: { gate: GateKind }) =>
+      req.gate === GateKind.FinalArchitectureReview && ++finalAsked === 1
+        ? { outcome: GateOutcome.Rejected, reason: "console.read.ts:65 casts an unvalidated string to timestamptz" }
+        : { outcome: GateOutcome.Approved, reason: "ok" };
+    const base = deps();
+    const ports = recordingPorts();
+    const run0 = await runOrgRuntime({ ...base, providers: { ...defaultProviderSet(base), change: ports.change as never, tests: ports.tests as never, review: ports.review(strict) as never }, settings } as OrgRuntimeDeps);
+    const project = run0.cascade.nodes.find((n) => n.workType === WorkType.Project);
+    if (project === undefined) throw new Error("fixture has no project");
+    // Everything under the project AND the project's own branch have landed on the trunk.
+    const landed = new Set([project.workId, ...childrenOf(run0.cascade, project.workId).filter((n) => isLeafType(n.workType)).map((n) => n.workId)]);
+    const again = recordingPorts();
+    const run1 = await runOrgRuntime({ ...base, providers: { ...defaultProviderSet(base), change: again.change as never, tests: again.tests as never, review: again.review(strict) as never }, settings, priorCascade: run0.cascade as never, priorGateEvaluations: run0.gateEvaluations, alreadyLanded: landed } as OrgRuntimeDeps);
+    expect(finalAsked).toBe(1);
+    // Judged on the trunk: a landed collection's branch is history.
+    expect(again.reviewedIn.filter((r) => r.workId === project.workId && r.gate === GateKind.FinalArchitectureReview).every((r) => r.workdir === undefined)).toBe(true);
+    const followUp = childrenOf(run1.cascade, project.workId).find((c) => isLeafType(c.workType) && (c.brief ?? "").includes("timestamptz") && c.workType !== WorkType.Review);
+    if (followUp === undefined) throw new Error("no follow-up was minted");
+    // The follow-up's change is cut from the TRUNK — no base — because the collection's branch will never be merged again.
+    const third = recordingPorts();
+    await runOrgRuntime({ ...base, providers: { ...defaultProviderSet(base), change: third.change as never, tests: third.tests as never, review: third.review(strict) as never }, settings, priorCascade: run1.cascade as never, priorGateEvaluations: run1.gateEvaluations, alreadyLanded: landed } as OrgRuntimeDeps);
+    const opened = third.opened.find((o) => o.workId === followUp.workId);
+    expect(opened).toBeDefined();
+    expect(opened?.base).toBeUndefined();
+  }, 90_000);
+});
+
+describe("A VERIFY LEAF WHOSE EVERY DEPENDENCY WAS CANCELLED VERIFIES NOTHING — it is cancelled, not walked", () => {
+  // MEASURED on the Waypoint run, 2026-09-20, task-12592: the follow-up it verified (task-12590)
+  // was cancelled by the operator as a duplicate. `dependenciesOf` drops cancelled dependencies, so
+  // the verify leaf read as having none, was walked as a free-standing item, ran the organization's
+  // suite on the TRUNK, and its reviewer rejected a run of a tree that held none of the work — at
+  // $0.90 a cycle, forever. A check whose subject is gone has no subject; the honest record is the
+  // same state its subject reached.
+  test("the leaf is cancelled with a recorded reason, and no test run happens", async () => {
+    const testedIn: (string | undefined)[] = [];
+    const tests = {
+      meta: { port: Port.TestExecution, name: "recording", fidelity: Fidelity.Real, describes: "records where it ran" },
+      run: async (_tc: unknown, ctx: { readonly workdir?: string }) => {
+        testedIn.push(ctx.workdir);
+        return { ok: true as const, value: { outcome: RunOutcome.Passed }, evidence: [] };
+      },
+    };
+    const base = deps();
+    const settings = [{ setting: ProcessSetting.Delivery, value: "merge", why: "autonomous" }];
+    const run1 = await runOrgRuntime({ ...base, providers: { ...defaultProviderSet(base), tests: tests as never }, settings } as OrgRuntimeDeps);
+    const verify = run1.cascade.nodes.find((n) => n.workType === WorkType.Review);
+    const code = run1.cascade.nodes.find((n) => n.workId === (verify?.dependsOn ?? [])[0]);
+    if (verify === undefined || code === undefined) throw new Error("fixture has no verify leaf with a dependency");
+    // RESUME: the code leaf was cancelled, the verify leaf is owed again.
+    testedIn.length = 0;
+    const prior = { ...run1.cascade, nodes: run1.cascade.nodes.map((n) => (n.workId === verify.workId ? { ...n, state: WorkState.Open } : n.workId === code.workId ? { ...n, state: WorkState.Canceled, assigneeHatId: undefined } : n)) };
+    const run2 = await runOrgRuntime({
+      ...base,
+      providers: { ...defaultProviderSet(base), tests: tests as never },
+      settings,
+      priorCascade: prior as never,
+      priorGateEvaluations: run1.gateEvaluations.filter((e) => e.workId !== verify.workId),
+      alreadyLanded: new Set<string>(),
+    } as OrgRuntimeDeps);
+    expect(testedIn.length).toBe(0);
+    expect(run2.gateEvaluations.some((e) => e.workId === verify.workId)).toBe(false);
+    expect(nodeById(run2.cascade, verify.workId)?.state).toBe(WorkState.Canceled);
+    // On the record, with the reason, so the next run and a reader both know why.
+    const recorded = run2.trace.find((ev) => ev.subjectId === verify.workId && ev.kind === OrgEventKind.WorkItemTransition && (ev.fact as { state?: string } | undefined)?.state === WorkState.Canceled);
+    expect(recorded).toBeDefined();
+    expect(String(recorded?.decision)).toContain(code.workId);
+  }, 60_000);
+});
+
+describe("A LEAF THAT LEFT NOTHING COMMITTED IS CLOSED, NOT REFUSED FOREVER", () => {
+  // MEASURED on the Waypoint run, 2026-09-21, task-6560 / task-6572 / task-12086: three leaves
+  // walked every gate to approval having committed nothing — their objection was already fixed on
+  // the feature branch by a sibling — and "has no commits: … a merge that moves nothing is not a
+  // merge" then repeated every cycle, holding three projects off the trunk with nobody to act.
+  const { NOTHING_TO_MERGE, UNCOMMITTED } = require("./adapters") as typeof import("./adapters");
+  function refusingChange(reason: (branch: string) => string) {
+    return {
+      meta: { port: Port.ChangeControl, name: "refusing", fidelity: Fidelity.Real, describes: "refuses every merge" },
+      open: async (node: { readonly workId: string }, ctx: { readonly branch: string; readonly base?: string }) => ({ ok: true as const, value: { changeId: `${ctx.branch}@${node.workId}`, branch: ctx.branch, ...(ctx.base === undefined ? {} : { base: ctx.base }), workdir: `/checkouts/${ctx.branch}` }, evidence: [] }),
+      merge: async (handle: { readonly branch: string }) => ({ ok: false as const, reason: reason(handle.branch) }),
+    };
+  }
+  const settings = [{ setting: ProcessSetting.Delivery, value: "merge", why: "autonomous" }];
+
+  test("a CLEAN empty change closes its leaf as cancelled, on the record, and the verify leaf that depended on it follows", async () => {
+    const base = deps();
+    const run1 = await runOrgRuntime({ ...base, providers: { ...defaultProviderSet(base), change: refusingChange((b) => `${b} ${NOTHING_TO_MERGE}`) as never }, settings, alreadyLanded: new Set<string>() } as OrgRuntimeDeps);
+    const code = run1.cascade.nodes.find((n) => producesCode(n.workType) && isLeafType(n.workType));
+    const verify = run1.cascade.nodes.find((n) => n.workType === WorkType.Review);
+    if (code === undefined || verify === undefined) throw new Error("fixture has no code leaf / verify leaf");
+    expect(nodeById(run1.cascade, code.workId)?.state).toBe(WorkState.Canceled);
+    const recorded = run1.trace.find((ev) => ev.subjectId === code.workId && ev.kind === OrgEventKind.WorkItemTransition && (ev.fact as { state?: string } | undefined)?.state === WorkState.Canceled);
+    expect(recorded).toBeDefined();
+    expect(String(recorded?.decision)).toContain("nothing committed");
+    // The next run does not walk, project or refuse it again.
+    const run2 = await runOrgRuntime({ ...base, providers: { ...defaultProviderSet(base), change: refusingChange((b) => `${b} ${NOTHING_TO_MERGE}`) as never }, settings, priorCascade: run1.cascade as never, priorGateEvaluations: run1.gateEvaluations, alreadyLanded: new Set<string>() } as OrgRuntimeDeps);
+    expect(run2.refusals.some((r) => r.includes(code.workId))).toBe(false);
+    expect(nodeById(run2.cascade, verify.workId)?.state).toBe(WorkState.Canceled);
+  }, 60_000);
+
+  test("a DIRTY empty change is sent back to its performer, naming the uncommitted files", async () => {
+    const base = deps();
+    const run1 = await runOrgRuntime({ ...base, providers: { ...defaultProviderSet(base), change: refusingChange((b) => `${b} ${NOTHING_TO_MERGE} — ${UNCOMMITTED} src/forgot.ts, test/forgot.test.ts`) as never }, settings, alreadyLanded: new Set<string>() } as OrgRuntimeDeps);
+    const code = run1.cascade.nodes.find((n) => producesCode(n.workType) && isLeafType(n.workType));
+    if (code === undefined) throw new Error("fixture has no code leaf");
+    expect(nodeById(run1.cascade, code.workId)?.state).not.toBe(WorkState.Canceled);
+    const sentBack = run1.gateEvaluations.filter((e) => e.workId === code.workId && e.gate === GateKind.ImplementationReview && e.byHatId === "merge_steward");
+    expect(sentBack.length).toBe(1);
+    expect(sentBack[0]?.outcome).toBe(GateOutcome.Rejected);
+    expect(sentBack[0]?.reason).toContain("src/forgot.ts");
+  }, 60_000);
+});
+
+describe("A COLLECTION WHOSE LANDING CONFLICTS GETS A LEAF TO RECONCILE IT", () => {
+  // MEASURED on the Waypoint run, 2026-09-21, proj-027: accepted in its checkout, every leaf under
+  // it done, and its feature branch refused at the trunk for a modify/delete conflict on two
+  // generated files. The leaves that built the branch were all done — none was open to be turned
+  // back — so the refusal was noted and nothing else happened, every cycle. A conflict is judgement
+  // for a performer: mint the leaf that will do it, under the collection, cut from its branch,
+  // briefed with the files; the collection then lands once that leaf has.
+  const { MERGE_CONFLICT } = require("./adapters") as typeof import("./adapters");
+  const { branchNameIn } = require("./branch-topology") as typeof import("./branch-topology");
+  const settings = [
+    { setting: ProcessSetting.Delivery, value: "merge", why: "autonomous" },
+    { setting: ProcessSetting.IntegrationBranch, value: "collect", why: "every rung integrates on a branch" },
+  ];
+  function ports() {
+    const merged: string[] = [];
+    const change = {
+      meta: { port: Port.ChangeControl, name: "conflicting-trunk", fidelity: Fidelity.Real, describes: "refuses the collection at the trunk" },
+      open: async (node: { readonly workId: string }, ctx: { readonly branch: string; readonly base?: string }) => ({ ok: true as const, value: { changeId: `${ctx.branch}@${node.workId}`, branch: ctx.branch, ...(ctx.base === undefined ? {} : { base: ctx.base }), workdir: `/checkouts/${ctx.branch}` }, evidence: [] }),
+      merge: async (handle: { readonly branch: string; readonly base?: string }) => {
+        if (handle.base === undefined && handle.branch.startsWith("feature/")) {
+          return { ok: false as const, reason: `${MERGE_CONFLICT} main in: packages/contracts/dist/index.d.ts, packages/contracts/dist/index.js — the merge is left in progress in /checkouts/${handle.branch}; resolve, git add, git commit` };
+        }
+        merged.push(handle.branch);
+        return { ok: true as const, value: { changeId: "m", branch: handle.branch }, evidence: [] };
+      },
+    };
+    return { change, merged };
+  }
+  test("a defect leaf is minted under the collection, briefed with the files, once", async () => {
+    const base = deps();
+    const p = ports();
+    const run0 = await runOrgRuntime({ ...base, providers: { ...defaultProviderSet(base), change: p.change as never }, settings } as OrgRuntimeDeps);
+    const project = run0.cascade.nodes.find((n) => n.workType === WorkType.Project);
+    if (project === undefined) throw new Error("fixture has no project");
+    const branch = branchNameIn(run0.cascade, project);
+    const leaves = new Set(childrenOf(run0.cascade, project.workId).filter((n) => isLeafType(n.workType)).map((n) => n.workId));
+    // The cycle after the leaves landed: accepted, then refused at the trunk.
+    const run1 = await runOrgRuntime({ ...base, providers: { ...defaultProviderSet(base), change: p.change as never }, settings, priorCascade: run0.cascade as never, priorGateEvaluations: run0.gateEvaluations, alreadyLanded: leaves } as OrgRuntimeDeps);
+    expect(run1.refusals.some((r) => r.includes(branch) && r.includes(MERGE_CONFLICT))).toBe(true);
+    const minted = childrenOf(run1.cascade, project.workId).filter((c) => c.workType === WorkType.Defect && (c.brief ?? "").includes("packages/contracts/dist/index.d.ts"));
+    expect(minted.length).toBe(1);
+    expect(minted[0]?.state).not.toBe(WorkState.Done);
+    // Idempotent: the next cycle, with the leaf still open, mints no second one.
+    const run2 = await runOrgRuntime({ ...base, providers: { ...defaultProviderSet(base), change: p.change as never }, settings, priorCascade: run1.cascade as never, priorGateEvaluations: run1.gateEvaluations, alreadyLanded: leaves } as OrgRuntimeDeps);
+    expect(childrenOf(run2.cascade, project.workId).filter((c) => c.workType === WorkType.Defect && (c.brief ?? "").includes("packages/contracts/dist/index.d.ts")).length).toBe(1);
+  }, 90_000);
 });

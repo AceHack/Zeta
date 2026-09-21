@@ -345,8 +345,14 @@ export function disagreementsWith(
   if (doneWithNothingMerged(projection, input)) {
     out.push(`'${input.workId}' is done in the cascade but the change is ${projection.state.tag}`);
   }
-  for (const r of projection.refused) {
-    out.push(`the lifecycle refused '${r.transition.tag}': ${r.reason}`);
+  // A refused transition is a disagreement when the organization believed it had MADE it. A
+  // cancelled item's later transitions are the ones it decided not to make — a leaf cancelled
+  // before it was walked has an assignee, a verdict and no shard, and the derived record cannot get
+  // past Claimed; reporting that every cycle was noise about work already written off.
+  if (node?.state !== WorkState.Canceled) {
+    for (const r of projection.refused) {
+      out.push(`the lifecycle refused '${r.transition.tag}': ${r.reason}`);
+    }
   }
   const shard = input.queue.shards.find((s) => s.workId === input.workId);
   if (merged && shard !== undefined && shard.state !== ShardState.Merged) {

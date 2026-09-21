@@ -17,7 +17,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { spawnSync } from "node:child_process";
 
-import { agentWorkExecutor, branchExists, commandWorkExecutor, commitsAhead, gitChangeControl, gitWorktreeChangeControl, worktreeDirName } from "./adapters";
+import { agentWorkExecutor, branchExists, commandWorkExecutor, commitsAhead, gitChangeControl, gitWorktreeChangeControl, conflictedFiles, leftNothingCommitted, uncommittedFiles, worktreeDirName } from "./adapters";
 import { changeContextFor, collectionsReadyToLand } from "./branch-topology";
 import { externalRefOf } from "./intake";
 import type { Cascade } from "./goal-cascade";
@@ -421,6 +421,69 @@ describe("A FEATURE'S STORIES LAND ON THE FEATURE, AND THE FEATURE ON THE TRUNK"
     expect(onMain).toContain("feature/FEAT-1");
   }, 30_000);
 
+  test("A STORY MERGES INTO A FEATURE WHOSE CHECKOUT IS OPEN — the merge happens where the branch already lives", async () => {
+    // MEASURED on the Waypoint run, 2026-09-21, task-16642: the runtime keeps the feature branch
+    // checked out (its verify leaves and the project's acceptance gate are judged there), and the
+    // story's landing then BORROWED the same branch into a scratch worktree — which git refuses:
+    // "feature/… is already used by worktree at …". Six cycles, nothing landed, NO_PROGRESS.
+    const { cwd, worktreeRoot } = repo("feature-open");
+    const change = gitWorktreeChangeControl({ cwd, worktreeRoot, baseBranch: "main" });
+    // Story one lands first, which is what creates the feature branch.
+    const open = collecting("open");
+    const first = await change.open(open.nodes.find((n) => n.workId === "leaf-1") as CascadeNode, changeContextFor({ cascade: open, workId: "leaf-1" }) as { branch: string });
+    if (!first.ok) throw new Error(first.reason);
+    commitIn(checkoutOf(first.value), "one.txt", "work\n");
+    const landedFirst = await change.merge(first.value);
+    if (!landedFirst.ok) throw new Error(landedFirst.reason);
+    // THE COLLECTION'S OWN CHECKOUT, opened as the runtime opens it: the project node, its branch, no base.
+    const feature = await change.open(open.nodes.find((n) => n.workId === "proj-1") as CascadeNode, { branch: "feature/FEAT-1" });
+    if (!feature.ok) throw new Error(feature.reason);
+    expect(existsSync(checkoutOf(feature.value))).toBe(true);
+    // Story two lands while that checkout is open.
+    const second = await change.open(open.nodes.find((n) => n.workId === "leaf-2") as CascadeNode, changeContextFor({ cascade: open, workId: "leaf-2" }) as { branch: string });
+    if (!second.ok) throw new Error(second.reason);
+    commitIn(checkoutOf(second.value), "two.txt", "work\n");
+    const landedSecond = await change.merge(second.value);
+    if (!landedSecond.ok) throw new Error(landedSecond.reason);
+    // The feature holds both, its checkout is still there and sits at the new tip, and the trunk has not moved.
+    const onFeature = spawnSync("git", ["log", "--oneline", "feature/FEAT-1"], { cwd, encoding: "utf-8" }).stdout;
+    expect(onFeature).toContain("story/S-1");
+    expect(onFeature).toContain("story/S-2");
+    expect(existsSync(checkoutOf(feature.value))).toBe(true);
+    expect(tipOf(checkoutOf(feature.value), "HEAD")).toBe(tipOf(cwd, "feature/FEAT-1"));
+    // …and the feature still lands on the trunk afterwards, checkout and all.
+    const landed = await change.merge({ changeId: "feature/FEAT-1@proj-1", branch: "feature/FEAT-1" });
+    if (!landed.ok) throw new Error(landed.reason);
+    expect(spawnSync("git", ["log", "--oneline", "main"], { cwd, encoding: "utf-8" }).stdout).toContain("story/S-2");
+  }, 30_000);
+
+  test("A COLLECTION REFUSED AT THE TRUNK NAMES THE CONFLICT AND LEAVES ITS CHECKOUT CLEAN — nobody works there", async () => {
+    // MEASURED on the Waypoint run, 2026-09-21, proj-027: the feature branch was refused at main for
+    // a modify/delete conflict, and the refusal opened main's merge INTO the feature checkout and
+    // left it there "for the performer" — a leaf's remedy applied to a branch no performer owns.
+    // The next leaf to land into that branch then failed on "unmerged files".
+    const { cwd, worktreeRoot } = repo("collection-conflict");
+    const change = gitWorktreeChangeControl({ cwd, worktreeRoot, baseBranch: "main" });
+    const open = collecting("open");
+    const leaf = await change.open(open.nodes.find((n) => n.workId === "leaf-1") as CascadeNode, changeContextFor({ cascade: open, workId: "leaf-1" }) as { branch: string });
+    if (!leaf.ok) throw new Error(leaf.reason);
+    commitIn(checkoutOf(leaf.value), "README.md", "the feature's version\n");
+    const landedLeaf = await change.merge(leaf.value);
+    if (!landedLeaf.ok) throw new Error(landedLeaf.reason);
+    // The trunk moves the same file the other way, and the collection keeps its checkout open.
+    commitIn(cwd, "README.md", "the trunk's version\n");
+    const feature = await change.open(open.nodes.find((n) => n.workId === "proj-1") as CascadeNode, { branch: "feature/FEAT-1" });
+    if (!feature.ok) throw new Error(feature.reason);
+    const refused = await change.merge({ changeId: "feature/FEAT-1@proj-1", branch: "feature/FEAT-1" });
+    if (refused.ok) throw new Error("a conflicting collection landed");
+    expect(conflictedFiles(refused.reason)).toEqual(["README.md"]);
+    // The collection's checkout is not left mid-merge, and the trunk is clean.
+    expect(existsSync(join(checkoutOf(feature.value), ".git"))).toBe(true);
+    expect(spawnSync("git", ["rev-parse", "-q", "--verify", "MERGE_HEAD"], { cwd: checkoutOf(feature.value), encoding: "utf-8" }).status).not.toBe(0);
+    expect(spawnSync("git", ["status", "--porcelain"], { cwd: checkoutOf(feature.value), encoding: "utf-8" }).stdout.trim()).toBe("");
+    expect(spawnSync("git", ["rev-parse", "-q", "--verify", "MERGE_HEAD"], { cwd, encoding: "utf-8" }).status).not.toBe(0);
+  }, 30_000);
+
   test("A RESUME REJOINS: the same item opened twice does not refuse, and does not lose its commit", async () => {
     // MEASURED before the rejoin existed: a second cycle over one item died on
     // `fatal: a branch named 'work/task-015' already exists`, and the run then called the item done
@@ -621,6 +684,31 @@ describe("A MERGE THAT MOVES NOTHING IS NOT A MERGE", async () => {
     expect((log.stdout ?? "").trim().split("\n")).toHaveLength(1);
   });
 
+  test("AN EMPTY BRANCH SAYS WHETHER THE CHECKOUT IS CLEAN OR HOLDS UNCOMMITTED WORK — they mean opposite things", async () => {
+    // MEASURED on the Waypoint run, 2026-09-21, task-6560 / task-6572 / task-12086: three leaves
+    // walked every gate to approval with NOTHING committed — their objection had already been fixed
+    // on the feature branch by a sibling — and the refusal "has no commits" then repeated every
+    // cycle, holding three projects off the trunk with nobody to act. Nothing committed and a CLEAN
+    // tree is a leaf that concluded nothing needed to change; nothing committed and a DIRTY tree is
+    // a performer that forgot to commit. The runtime must tell them apart, so the refusal must.
+    const { cwd, worktreeRoot } = repo("empty-clean-or-dirty");
+    const port = gitWorktreeChangeControl({ cwd, baseBranch: "main", worktreeRoot });
+    const clean = await port.open(node("task-1"), { branch: "work/task-1" });
+    if (!clean.ok) throw new Error(clean.reason);
+    const refusedClean = await port.merge(clean.value);
+    if (refusedClean.ok) throw new Error("an empty branch merged");
+    expect(leftNothingCommitted(refusedClean.reason)).toBe(true);
+    expect(uncommittedFiles(refusedClean.reason)).toEqual([]);
+
+    const dirty = await port.open(node("task-2"), { branch: "work/task-2" });
+    if (!dirty.ok) throw new Error(dirty.reason);
+    writeFileSync(join(checkoutOf(dirty.value), "forgot.txt"), "not committed\n");
+    const refusedDirty = await port.merge(dirty.value);
+    if (refusedDirty.ok) throw new Error("an empty branch merged");
+    expect(leftNothingCommitted(refusedDirty.reason)).toBe(true);
+    expect(uncommittedFiles(refusedDirty.reason)).toEqual(["forgot.txt"]);
+  });
+
   test("A FILE IN THE WORKTREE IS NOT A COMMIT — uncommitted work is still refused", async () => {
     // The tempting fix is for change control to `git add -A` on the performer's behalf. It is not
     // taken: that would sweep whatever else is lying in the tree into a commit nobody wrote.
@@ -767,9 +855,83 @@ describe("A NEW WORKTREE IS MADE RUNNABLE BEFORE ANYTHING IS SENT INTO IT", () =
     if (!opened.ok) expect(opened.reason).toContain("could not be made runnable");
   });
 
+  test("a setup that FAILS leaves nothing behind: the same change opens cleanly once setup succeeds", async () => {
+    // MEASURED on the Waypoint run, 2026-09-20: `npm install` failed in a pnpm workspace, the open
+    // was refused — and the worktree it had already created stayed on disk WITHOUT an owner marker
+    // (the marker is written after setup). Every later cycle then hit the rejoin check, found a
+    // directory on the right branch with no owner, and refused it as "not a checkout of" its own
+    // branch. One transient setup failure became a permanent wedge: 3 cycles, 0 landed, no_progress.
+    const { cwd, worktreeRoot } = repo("setup-retry");
+    const ctx = { branch: "bug/SETUP-4" };
+    const failing = gitWorktreeChangeControl({ cwd, baseBranch: "main", worktreeRoot, setup: { command: "node", args: ["-e", "process.exit(7)"] } });
+    const first = await failing.open(node("w-4"), ctx);
+    expect(first.ok).toBe(false);
+    // Nothing left behind for the next attempt to trip over.
+    expect(existsSync(join(worktreeRoot, worktreeDirName(ctx.branch)))).toBe(false);
+
+    // The operator fixes the setup and the next cycle simply opens the change.
+    const fixed = gitWorktreeChangeControl({ cwd, baseBranch: "main", worktreeRoot, setup: { command: "node", args: ["-e", "process.exit(0)"] } });
+    const second = await fixed.open(node("w-4"), ctx);
+    if (!second.ok) throw new Error(second.reason);
+    const onIt = spawnSync("git", ["rev-parse", "--abbrev-ref", "HEAD"], { cwd: checkoutOf(second.value), encoding: "utf-8" });
+    expect(onIt.stdout.trim()).toBe(ctx.branch);
+  }, 30_000);
+
   test("with no setup the adapter behaves as it always did", async () => {
     const { cwd, worktreeRoot } = repo("no-setup");
     const port = gitWorktreeChangeControl({ cwd, baseBranch: "main", worktreeRoot });
     expect((await port.open(node("w-3"), { branch: "bug/SETUP-3" })).ok).toBe(true);
   });
+});
+
+describe("A BRANCH LANDS ON THE BASE AS IT IS NOW — and a conflict is handed to the performer, never left on the base", () => {
+  // MEASURED on the Waypoint run, 2026-09-20: the base moved (an operator commit on `main`) while a
+  // story was being built; the merge conflicted on one line of package.json; the adapter merged in
+  // the operator's checkout because it was on the base, and on refusal released only BORROWED
+  // worktrees — so `main` was left mid-merge with conflict markers, every later merge would have
+  // been refused with "unmerged files", and the run retried the same merge every cycle with no
+  // feedback to anyone.
+  const sh = (cwd: string, ...args: string[]) => spawnSync("git", args, { cwd, encoding: "utf-8" });
+
+  test("a base that merely moved on is merged into the branch first, and the change lands", async () => {
+    const { cwd, worktreeRoot } = repo("moved-base");
+    const change = gitWorktreeChangeControl({ cwd, worktreeRoot, baseBranch: "main" });
+    const opened = await change.open(node("t-1"), { branch: "work/t-1" });
+    if (!opened.ok) throw new Error(opened.reason);
+    commitIn(checkoutOf(opened.value), "feature.txt", "feature\n");
+    // The base moves on in a way that does not conflict.
+    writeFileSync(join(cwd, "other.txt"), "other\n");
+    expect(sh(cwd, "add", "other.txt").status).toBe(0);
+    expect(sh(cwd, "commit", "-m", "base moves").status).toBe(0);
+
+    const landed = await change.merge(opened.value);
+    if (!landed.ok) throw new Error(landed.reason);
+    expect(readFileSync(join(cwd, "feature.txt"), "utf-8")).toBe("feature\n");
+    expect(readFileSync(join(cwd, "other.txt"), "utf-8")).toBe("other\n");
+    expect(sh(cwd, "status", "--porcelain").stdout.trim()).toBe("");
+  }, 30_000);
+
+  test("a real conflict is left in the BRANCH's checkout for the performer, names the files, and the base stays clean", async () => {
+    const { cwd, worktreeRoot } = repo("conflict");
+    const change = gitWorktreeChangeControl({ cwd, worktreeRoot, baseBranch: "main" });
+    const opened = await change.open(node("t-2"), { branch: "work/t-2" });
+    if (!opened.ok) throw new Error(opened.reason);
+    const wd = checkoutOf(opened.value);
+    commitIn(wd, "README.md", "branch version\n");
+    writeFileSync(join(cwd, "README.md"), "base version\n");
+    expect(sh(cwd, "commit", "-am", "base edits the same line").status).toBe(0);
+
+    const landed = await change.merge(opened.value);
+    expect(landed.ok).toBe(false);
+    if (landed.ok) throw new Error("expected a refusal");
+    expect(landed.reason).toContain("README.md");
+    // THE BASE IS UNTOUCHED: no merge in progress, no markers, no dirt.
+    expect(existsSync(join(cwd, ".git", "MERGE_HEAD"))).toBe(false);
+    expect(sh(cwd, "status", "--porcelain").stdout.trim()).toBe("");
+    expect(readFileSync(join(cwd, "README.md"), "utf-8")).toBe("base version\n");
+    // THE BRANCH'S CHECKOUT HOLDS THE CONFLICT, where the performer works and may resolve it.
+    expect(sh(wd, "diff", "--name-only", "--diff-filter=U").stdout.trim()).toBe("README.md");
+    // And the branch is not consumed: the worktree and branch survive for the rework.
+    expect(existsSync(wd)).toBe(true);
+  }, 30_000);
 });

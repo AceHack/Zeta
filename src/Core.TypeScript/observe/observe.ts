@@ -1000,6 +1000,12 @@ export interface ItemAttachment {
   readonly by?: string;
   readonly note?: string;
   readonly atMs?: number;
+  /**
+   * The attachment's own text, when the evidence was carried INLINE rather than written to disk —
+   * a test run's stdout, an exit code, what an agent said. Opening such an attachment returns this;
+   * nothing is read from disk, because there is nothing there to read.
+   */
+  readonly inline?: string;
 }
 
 /** Something somebody said about an item. */
@@ -1151,13 +1157,20 @@ export function renderDashboard(world: World, who: string, nav: Navigation): str
 export const PASSAGE_CHARS = 400;
 
 /** The directory every one of these paths starts with, or "" when they do not share a useful one. */
-function commonRoot(refs: readonly string[]): string {
+export function commonRoot(refs: readonly string[]): string {
   if (refs.length < 2) return "";
   let root = refs[0] as string;
   for (const r of refs) {
     while (root !== "" && !r.startsWith(root)) {
-      const cut = Math.max(root.lastIndexOf("\\", root.length - 2) + 1, root.lastIndexOf("/", root.length - 2) + 1);
-      root = root.slice(0, Math.max(0, cut));
+      // STRICTLY SHORTER EVERY TURN. The separator is searched in the root MINUS its last character,
+      // so a root of "/" has nothing left to find and becomes "". The previous form searched from
+      // `root.length - 2`, which for "/" is -1 — and `lastIndexOf` treats a negative start as 0,
+      // found the "/" at 0, and cut the root back to "/" again, forever. MEASURED on the Waypoint
+      // run, 2026-09-20: every `observe item` on a worked task spun at 100% CPU until killed, because
+      // a worked task's evidence mixes an absolute path with refs that are not paths (`exit:1`).
+      const parent = root.slice(0, -1);
+      const cut = Math.max(parent.lastIndexOf("\\"), parent.lastIndexOf("/"));
+      root = cut < 0 ? "" : root.slice(0, cut + 1);
     }
   }
   return root.length > 20 ? root : "";
@@ -1223,7 +1236,8 @@ export function renderItem(item: ItemContext, nav: Navigation, opts: { readonly 
   // A shortened name is shown ONLY under the root that completes it - never a name that names nothing.
   if (root !== "") out.push(`  all under ${root}`);
   for (const a of item.attachments) {
-    out.push(`  ${root === "" ? a.ref : a.ref.slice(root.length)}${a.from === undefined ? "" : `   (from ${a.from}${a.by === undefined ? "" : `, ${a.by}`})`}`);
+    const shown = root === "" || !a.ref.startsWith(root) ? a.ref : a.ref.slice(root.length);
+    out.push(`  ${shown}${a.note === undefined ? "" : ` (${a.note})`}${a.from === undefined ? "" : `   (from ${a.from}${a.by === undefined ? "" : `, ${a.by}`})`}`);
   }
   out.push("");
   // ONE PASSAGE, WHOLE. Asked for by the number the cut view gave it: nothing else is printed, so
