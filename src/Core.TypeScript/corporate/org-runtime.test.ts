@@ -12,7 +12,7 @@
  * make look right.
  */
 
-import { chainFor, chainOf } from "./gate-demand";
+import { chainFor, chainOf, producesCode } from "./gate-demand";
 import { describe, expect, test } from "bun:test";
 import { agentsFromChart, gateStaffing, runOrgRuntime, staffingReadout, type OrgRuntimeDeps } from "./org-runtime";
 import { buildOrgChart, reportsUpTo } from "./org-chart";
@@ -2250,5 +2250,49 @@ describe("A VERIFY LEAF WHOSE EVERY DEPENDENCY WAS CANCELLED VERIFIES NOTHING �
     const recorded = run2.trace.find((ev) => ev.subjectId === verify.workId && ev.kind === OrgEventKind.WorkItemTransition && (ev.fact as { state?: string } | undefined)?.state === WorkState.Canceled);
     expect(recorded).toBeDefined();
     expect(String(recorded?.decision)).toContain(code.workId);
+  }, 60_000);
+});
+
+describe("A LEAF THAT LEFT NOTHING COMMITTED IS CLOSED, NOT REFUSED FOREVER", () => {
+  // MEASURED on the Waypoint run, 2026-09-21, task-6560 / task-6572 / task-12086: three leaves
+  // walked every gate to approval having committed nothing — their objection was already fixed on
+  // the feature branch by a sibling — and "has no commits: … a merge that moves nothing is not a
+  // merge" then repeated every cycle, holding three projects off the trunk with nobody to act.
+  const { NOTHING_TO_MERGE, UNCOMMITTED } = require("./adapters") as typeof import("./adapters");
+  function refusingChange(reason: (branch: string) => string) {
+    return {
+      meta: { port: Port.ChangeControl, name: "refusing", fidelity: Fidelity.Real, describes: "refuses every merge" },
+      open: async (node: { readonly workId: string }, ctx: { readonly branch: string; readonly base?: string }) => ({ ok: true as const, value: { changeId: `${ctx.branch}@${node.workId}`, branch: ctx.branch, ...(ctx.base === undefined ? {} : { base: ctx.base }), workdir: `/checkouts/${ctx.branch}` }, evidence: [] }),
+      merge: async (handle: { readonly branch: string }) => ({ ok: false as const, reason: reason(handle.branch) }),
+    };
+  }
+  const settings = [{ setting: ProcessSetting.Delivery, value: "merge", why: "autonomous" }];
+
+  test("a CLEAN empty change closes its leaf as cancelled, on the record, and the verify leaf that depended on it follows", async () => {
+    const base = deps();
+    const run1 = await runOrgRuntime({ ...base, providers: { ...defaultProviderSet(base), change: refusingChange((b) => `${b} ${NOTHING_TO_MERGE}`) as never }, settings, alreadyLanded: new Set<string>() } as OrgRuntimeDeps);
+    const code = run1.cascade.nodes.find((n) => producesCode(n.workType) && isLeafType(n.workType));
+    const verify = run1.cascade.nodes.find((n) => n.workType === WorkType.Review);
+    if (code === undefined || verify === undefined) throw new Error("fixture has no code leaf / verify leaf");
+    expect(nodeById(run1.cascade, code.workId)?.state).toBe(WorkState.Canceled);
+    const recorded = run1.trace.find((ev) => ev.subjectId === code.workId && ev.kind === OrgEventKind.WorkItemTransition && (ev.fact as { state?: string } | undefined)?.state === WorkState.Canceled);
+    expect(recorded).toBeDefined();
+    expect(String(recorded?.decision)).toContain("nothing committed");
+    // The next run does not walk, project or refuse it again.
+    const run2 = await runOrgRuntime({ ...base, providers: { ...defaultProviderSet(base), change: refusingChange((b) => `${b} ${NOTHING_TO_MERGE}`) as never }, settings, priorCascade: run1.cascade as never, priorGateEvaluations: run1.gateEvaluations, alreadyLanded: new Set<string>() } as OrgRuntimeDeps);
+    expect(run2.refusals.some((r) => r.includes(code.workId))).toBe(false);
+    expect(nodeById(run2.cascade, verify.workId)?.state).toBe(WorkState.Canceled);
+  }, 60_000);
+
+  test("a DIRTY empty change is sent back to its performer, naming the uncommitted files", async () => {
+    const base = deps();
+    const run1 = await runOrgRuntime({ ...base, providers: { ...defaultProviderSet(base), change: refusingChange((b) => `${b} ${NOTHING_TO_MERGE} — ${UNCOMMITTED} src/forgot.ts, test/forgot.test.ts`) as never }, settings, alreadyLanded: new Set<string>() } as OrgRuntimeDeps);
+    const code = run1.cascade.nodes.find((n) => producesCode(n.workType) && isLeafType(n.workType));
+    if (code === undefined) throw new Error("fixture has no code leaf");
+    expect(nodeById(run1.cascade, code.workId)?.state).not.toBe(WorkState.Canceled);
+    const sentBack = run1.gateEvaluations.filter((e) => e.workId === code.workId && e.gate === GateKind.ImplementationReview && e.byHatId === "merge_steward");
+    expect(sentBack.length).toBe(1);
+    expect(sentBack[0]?.outcome).toBe(GateOutcome.Rejected);
+    expect(sentBack[0]?.reason).toContain("src/forgot.ts");
   }, 60_000);
 });

@@ -487,7 +487,11 @@ describe("THE CLI SUPPLIES THE HISTORY THE DELIVERY GUARD NEEDS", () => {
       // ...so the run must not claim delivery, and must name the reason.
       expect(code).toBe(1);
       expect(out).toContain("NOT DELIVERED");
-      expect(out).toContain("no commit exists for it");
+      // Since 2026-09-21 a leaf whose change is clean and empty is CLOSED as cancelled with the reason
+      // on the record, rather than refused as "no commit exists for it" every cycle; either way the
+      // run says the work came to nothing.
+      // The report prints the last cycle: by then the leaf is closed and its change reads Abandoned.
+      expect(out).toMatch(/no commit exists for it|left nothing committed|: Abandoned/);
     } finally {
       console.log = log;
       rmSync(repo, { recursive: true, force: true });

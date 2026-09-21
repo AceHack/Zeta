@@ -1618,6 +1618,28 @@ export function worktreeDirName(branch: string): string {
 /** How a refused merge says it was a CONFLICT and not something else. The runtime keys on it. */
 export const MERGE_CONFLICT = "conflicts with";
 
+/**
+ * The refusal for a branch with nothing on it, and the marker that names what the checkout holds
+ * uncommitted. Two facts, because they mean opposite things to the runtime: nothing committed and a
+ * CLEAN tree is a leaf that concluded nothing needed to change; nothing committed and a DIRTY tree
+ * is a performer that forgot to commit. MEASURED on the Waypoint run, 2026-09-21: three leaves
+ * approved at every gate with empty branches held three projects off the trunk, refused every cycle.
+ */
+export const NOTHING_TO_MERGE = "has no commits: the work left nothing committed, and a merge that moves nothing is not a merge";
+export const UNCOMMITTED = "uncommitted in its checkout:";
+
+/** Whether a refusal says the branch carried no commits. */
+export function leftNothingCommitted(reason: string): boolean {
+  return reason.includes(NOTHING_TO_MERGE);
+}
+
+/** The files a no-commits refusal named as uncommitted; none when the checkout was clean. */
+export function uncommittedFiles(reason: string): readonly string[] {
+  const at = reason.indexOf(UNCOMMITTED);
+  if (at < 0) return [];
+  return reason.slice(at + UNCOMMITTED.length).split(" — ")[0]?.split(",").map((f) => f.trim()).filter((f) => f !== "") ?? [];
+}
+
 /** The files a refusal named, when the refusal was a conflict; none otherwise. */
 export function conflictedFiles(reason: string): readonly string[] {
   const at = reason.indexOf(`${MERGE_CONFLICT} `);
@@ -1942,8 +1964,15 @@ export function gitWorktreeChangeControl(input: {
       if (ahead === 0) {
         // The worktree may well hold files — the work ran. Uncommitted files are not a change, and
         // this adapter does not commit on the performer's behalf: doing so would put whatever else
-        // is lying in that tree into a commit nobody wrote.
-        return { ok: false, reason: `${handle.branch} has no commits: the work left nothing committed, and a merge that moves nothing is not a merge` };
+        // is lying in that tree into a commit nobody wrote. They ARE named, so the runtime can tell
+        // "forgot to commit" from "nothing to change". See NOTHING_TO_MERGE / UNCOMMITTED.
+        const at = handle.workdir ?? join(input.worktreeRoot, worktreeDirName(handle.branch));
+        const dirty = existsSync(at) ? git(["status", "--porcelain"], at) : undefined;
+        const files = dirty !== undefined && dirty.status === 0 ? String(dirty.stdout ?? "").split("\n").map((l) => l.slice(3).trim()).filter((f) => f !== "") : [];
+        return {
+          ok: false,
+          reason: `${handle.branch} ${NOTHING_TO_MERGE}${files.length === 0 ? "" : ` — ${UNCOMMITTED} ${files.join(", ")}`}`,
+        };
       }
 
       // ── WHERE THE MERGE LANDS, DECIDED RATHER THAN INHERITED ──────────────

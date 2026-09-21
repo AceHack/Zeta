@@ -155,7 +155,7 @@ import {
   type TicketUpdate,
   type TicketUpdateRequest,
 } from "./ticket-report";
-import { autoApproveReview, conflictedFiles, simulatedChangeControl, simulatedIntake, simulatedTestRunner, simulatedWorkExecutor } from "./adapters";
+import { autoApproveReview, conflictedFiles, leftNothingCommitted, uncommittedFiles, simulatedChangeControl, simulatedIntake, simulatedTestRunner, simulatedWorkExecutor } from "./adapters";
 import { associateGoal, EMPTY_BOOK, openPortfolio, type PortfolioKind } from "./portfolio";
 import {
   batchesFromCascade,
@@ -4377,6 +4377,54 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
     }
   };
 
+  /**
+   * A landing refused because the branch carries NO COMMITS — two opposite cases, told apart by
+   * what the refusal names (see `NOTHING_TO_MERGE` / `UNCOMMITTED`):
+   * - the checkout is DIRTY: the performer forgot to commit. Sent back at implementation_review by
+   *   the merge steward, naming the files, exactly as a conflict is.
+   * - the checkout is CLEAN: the leaf concluded nothing needed to change, and every gate it owed
+   *   approved that. Nothing came of it, so it is CLOSED as cancelled, on the record with the reason.
+   *   MEASURED on the Waypoint run, 2026-09-21, task-6560 / 6572 / 12086: approved at every gate
+   *   with empty branches, refused every cycle, three projects held off the trunk with nobody to act.
+   */
+  const closeOrSendBackForNothingCommitted = (leafId: string, reason: string): void => {
+    if (!leftNothingCommitted(reason)) return;
+    const files = uncommittedFiles(reason);
+    if (files.length > 0) {
+      const latestOnLeaf = Math.max(warmedAt, ...[...(deps.priorGateEvaluations ?? []), ...gateEvaluations].filter((e) => e.workId === leafId).map((e) => e.atMs));
+      const verdict: GateEvaluation = {
+        workId: leafId,
+        gate: GateKind.ImplementationReview,
+        outcome: GateOutcome.Rejected,
+        byHatId: "merge_steward",
+        reason: `the change cannot land: nothing is committed, and the checkout holds uncommitted work — ${files.join(", ")}. Commit what belongs to this item.`,
+        atMs: latestOnLeaf + 1,
+        evidenceRefs: [`nothing-committed:${leafId}`],
+      };
+      gateEvaluations.push(verdict);
+      verdictNow(leafId)(verdict);
+      return;
+    }
+    const node = nodeById(cascade, leafId);
+    if (node === undefined || node.state === WorkState.Canceled) return;
+    const cancelled = setState(cascade, leafId, WorkState.Canceled);
+    if (!cancelled.ok) {
+      refusals.push(`cancel ${leafId}: ${cancelled.reason}`);
+      return;
+    }
+    cascade = cancelled.cascade;
+    note({
+      kind: OrgEventKind.WorkItemTransition,
+      subjectId: leafId,
+      actorHatId: node.ownerHatId,
+      decision: `closed as cancelled: the work left nothing committed and its checkout is clean — every gate it owed approved a change with no diff, so nothing came of it; what it was to fix is already in the tree or was never a defect`,
+      toState: WorkState.Canceled,
+      atMs: warmedAt,
+      evidenceRefs: [],
+      fact: { kind: "work_state", workId: leafId, state: WorkState.Canceled },
+    });
+  };
+
   const changes = projectAll({
     cascade,
     queue,
@@ -4484,6 +4532,7 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
       refusals.push(`change control '${providers.change.meta.name}' could not merge ${handle.branch}: ${landed.reason}`);
       changesUnlanded.push(c.workId);
       turnBackForConflict([c.workId], landed.reason);
+      closeOrSendBackForNothingCommitted(c.workId, landed.reason);
       continue;
     }
     changesLanded.push(c.workId);

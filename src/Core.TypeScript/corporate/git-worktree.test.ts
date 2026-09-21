@@ -17,7 +17,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { spawnSync } from "node:child_process";
 
-import { agentWorkExecutor, branchExists, commandWorkExecutor, commitsAhead, gitChangeControl, gitWorktreeChangeControl, worktreeDirName } from "./adapters";
+import { agentWorkExecutor, branchExists, commandWorkExecutor, commitsAhead, gitChangeControl, gitWorktreeChangeControl, leftNothingCommitted, uncommittedFiles, worktreeDirName } from "./adapters";
 import { changeContextFor, collectionsReadyToLand } from "./branch-topology";
 import { externalRefOf } from "./intake";
 import type { Cascade } from "./goal-cascade";
@@ -655,6 +655,31 @@ describe("A MERGE THAT MOVES NOTHING IS NOT A MERGE", async () => {
     // ...and `main` is where it was, which is the fact the old `ok: true` was denying.
     const log = spawnSync("git", ["log", "--oneline"], { cwd, encoding: "utf-8" });
     expect((log.stdout ?? "").trim().split("\n")).toHaveLength(1);
+  });
+
+  test("AN EMPTY BRANCH SAYS WHETHER THE CHECKOUT IS CLEAN OR HOLDS UNCOMMITTED WORK — they mean opposite things", async () => {
+    // MEASURED on the Waypoint run, 2026-09-21, task-6560 / task-6572 / task-12086: three leaves
+    // walked every gate to approval with NOTHING committed — their objection had already been fixed
+    // on the feature branch by a sibling — and the refusal "has no commits" then repeated every
+    // cycle, holding three projects off the trunk with nobody to act. Nothing committed and a CLEAN
+    // tree is a leaf that concluded nothing needed to change; nothing committed and a DIRTY tree is
+    // a performer that forgot to commit. The runtime must tell them apart, so the refusal must.
+    const { cwd, worktreeRoot } = repo("empty-clean-or-dirty");
+    const port = gitWorktreeChangeControl({ cwd, baseBranch: "main", worktreeRoot });
+    const clean = await port.open(node("task-1"), { branch: "work/task-1" });
+    if (!clean.ok) throw new Error(clean.reason);
+    const refusedClean = await port.merge(clean.value);
+    if (refusedClean.ok) throw new Error("an empty branch merged");
+    expect(leftNothingCommitted(refusedClean.reason)).toBe(true);
+    expect(uncommittedFiles(refusedClean.reason)).toEqual([]);
+
+    const dirty = await port.open(node("task-2"), { branch: "work/task-2" });
+    if (!dirty.ok) throw new Error(dirty.reason);
+    writeFileSync(join(checkoutOf(dirty.value), "forgot.txt"), "not committed\n");
+    const refusedDirty = await port.merge(dirty.value);
+    if (refusedDirty.ok) throw new Error("an empty branch merged");
+    expect(leftNothingCommitted(refusedDirty.reason)).toBe(true);
+    expect(uncommittedFiles(refusedDirty.reason)).toEqual(["forgot.txt"]);
   });
 
   test("A FILE IN THE WORKTREE IS NOT A COMMIT — uncommitted work is still refused", async () => {
