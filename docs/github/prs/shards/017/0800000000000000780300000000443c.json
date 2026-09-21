@@ -1,0 +1,12 @@
+{
+  "pr_number": 17468,
+  "archive_path": "docs/history/pr-reviews/2026/09/21/PR-17468-fix-corporate-fourteen-defects-measured-on-the-first-fully-autonomous-merge-to-t.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-21T20:08:58.046Z",
+  "schema_version": "v1",
+  "commit_sha": "0a0ac2895a010c76a6bdc766547d79992dc0dedc",
+  "title": "fix(corporate): fourteen defects measured on the first fully autonomous merge-to-trunk run",
+  "state": "MERGED",
+  "merged_at": "2026-09-21T20:08:04Z",
+  "head_ref": "fix/corporate-waypoint-run-hardening"
+}
