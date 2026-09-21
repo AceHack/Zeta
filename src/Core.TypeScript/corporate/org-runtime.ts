@@ -2510,6 +2510,24 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
    * standing objection — an open leaf briefed with it is not minted twice. Called from both
    * governance passes, since either may be the one that asks the acceptance gate.
    */
+  /** A defect leaf under a collection whose branch conflicts with the trunk, once per objection. */
+  const reconcilerFor = (collectionId: string, branch: string, reason: string): void => {
+    const files = conflictedFiles(reason);
+    if (files.length === 0) return;
+    const node = nodeById(cascade, collectionId);
+    if (node === undefined) return;
+    const title = `reconcile ${branch} with the trunk`;
+    const brief =
+      `${branch} cannot land: ${reason}. In your checkout (cut from ${branch}), merge the trunk in, resolve ` +
+      `${files.join(", ")} so the tree matches what the trunk now expects, commit, and leave nothing else changed.`;
+    const alreadyOpen = childrenOf(cascade, collectionId).some(
+      (c: CascadeNode) => isLeafType(c.workType) && c.state !== WorkState.Done && c.state !== WorkState.Canceled && (c.title === title || (c.brief ?? "") === brief),
+    );
+    if (alreadyOpen) return;
+    step(collectionId, [title], "task", WorkType.Defect, undefined, undefined, brief);
+    refusals.push(`${collectionId}: its branch conflicts with the trunk; a leaf now carries the reconciliation`);
+  };
+
   const followUpForRejectedAcceptance = (
     node: CascadeNode,
     acceptance: GateKind | undefined,
@@ -4608,11 +4626,15 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
             `'${ready.workId}' from ${ready.branch}: ${landed.reason}`,
         );
         collectionsUnlanded.push(ready.workId);
-        // THE LEAVES THAT BUILT THIS BRANCH are the ones that can reconcile it.
-        turnBackForConflict(
-          [...openedChanges.entries()].filter(([, h]) => h.branch === ready.branch || h.base === ready.branch).map(([id]) => id),
-          landed.reason,
-        );
+        // THE LEAVES THAT BUILT THIS BRANCH are the ones that can reconcile it…
+        const builders = [...openedChanges.entries()].filter(([, h]) => h.branch === ready.branch || h.base === ready.branch).map(([id]) => id);
+        turnBackForConflict(builders, landed.reason);
+        // …and when none is open — every leaf done, the branch refused at the trunk a cycle later —
+        // a conflict is judgement for a performer that does not yet exist. MEASURED on the Waypoint
+        // run, 2026-09-21, proj-027: accepted, refused for a modify/delete on two generated files,
+        // noted and left every cycle. The leaf is minted under the collection, cut from its branch
+        // by the same rule as every other leaf there, and told which files and against what.
+        if (builders.length === 0) reconcilerFor(ready.workId, ready.branch, landed.reason);
         continue;
       }
       collectionsLanded.push(ready.workId);

@@ -2039,12 +2039,21 @@ export function gitWorktreeChangeControl(input: {
         // the files, which is what the next attempt is told. See `conflictedFiles`.
         const at = handle.workdir ?? join(input.worktreeRoot, worktreeDirName(handle.branch));
         const conflicts = existsSync(at) ? surfaceConflict(git, at, into) : [];
+        // A COLLECTION HAS NO PERFORMER IN ITS CHECKOUT. A handle without a workdir is a branch the
+        // runtime lands as a whole; its checkout, when one is open, is where its work is JUDGED, and
+        // a merge left there stops the next leaf from landing into it ("unmerged files"). MEASURED
+        // on the Waypoint run, 2026-09-21, proj-027. The conflict is named and the checkout is put
+        // back; the runtime mints the leaf that will resolve it, in a checkout of its own.
+        const ownedByAPerformer = handle.workdir !== undefined;
+        if (!ownedByAPerformer && conflicts.length > 0) git(["merge", "--abort"], at);
         return {
           ok: false,
           reason:
             conflicts.length === 0
               ? `merge of ${handle.branch} refused: ${(merged.stderr ?? merged.stdout ?? "").trim()}`
-              : `${MERGE_CONFLICT} ${into} in: ${conflicts.join(", ")} — the merge is left in progress in ${at}; resolve, git add, git commit`,
+              : ownedByAPerformer
+                ? `${MERGE_CONFLICT} ${into} in: ${conflicts.join(", ")} — the merge is left in progress in ${at}; resolve, git add, git commit`
+                : `${MERGE_CONFLICT} ${into} in: ${conflicts.join(", ")} — resolve it in a change cut from ${handle.branch}: merge ${into} in, resolve, commit`,
         };
       }
       release();

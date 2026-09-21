@@ -2296,3 +2296,51 @@ describe("A LEAF THAT LEFT NOTHING COMMITTED IS CLOSED, NOT REFUSED FOREVER", ()
     expect(sentBack[0]?.reason).toContain("src/forgot.ts");
   }, 60_000);
 });
+
+describe("A COLLECTION WHOSE LANDING CONFLICTS GETS A LEAF TO RECONCILE IT", () => {
+  // MEASURED on the Waypoint run, 2026-09-21, proj-027: accepted in its checkout, every leaf under
+  // it done, and its feature branch refused at the trunk for a modify/delete conflict on two
+  // generated files. The leaves that built the branch were all done — none was open to be turned
+  // back — so the refusal was noted and nothing else happened, every cycle. A conflict is judgement
+  // for a performer: mint the leaf that will do it, under the collection, cut from its branch,
+  // briefed with the files; the collection then lands once that leaf has.
+  const { MERGE_CONFLICT } = require("./adapters") as typeof import("./adapters");
+  const { branchNameIn } = require("./branch-topology") as typeof import("./branch-topology");
+  const settings = [
+    { setting: ProcessSetting.Delivery, value: "merge", why: "autonomous" },
+    { setting: ProcessSetting.IntegrationBranch, value: "collect", why: "every rung integrates on a branch" },
+  ];
+  function ports() {
+    const merged: string[] = [];
+    const change = {
+      meta: { port: Port.ChangeControl, name: "conflicting-trunk", fidelity: Fidelity.Real, describes: "refuses the collection at the trunk" },
+      open: async (node: { readonly workId: string }, ctx: { readonly branch: string; readonly base?: string }) => ({ ok: true as const, value: { changeId: `${ctx.branch}@${node.workId}`, branch: ctx.branch, ...(ctx.base === undefined ? {} : { base: ctx.base }), workdir: `/checkouts/${ctx.branch}` }, evidence: [] }),
+      merge: async (handle: { readonly branch: string; readonly base?: string }) => {
+        if (handle.base === undefined && handle.branch.startsWith("feature/")) {
+          return { ok: false as const, reason: `${MERGE_CONFLICT} main in: packages/contracts/dist/index.d.ts, packages/contracts/dist/index.js — the merge is left in progress in /checkouts/${handle.branch}; resolve, git add, git commit` };
+        }
+        merged.push(handle.branch);
+        return { ok: true as const, value: { changeId: "m", branch: handle.branch }, evidence: [] };
+      },
+    };
+    return { change, merged };
+  }
+  test("a defect leaf is minted under the collection, briefed with the files, once", async () => {
+    const base = deps();
+    const p = ports();
+    const run0 = await runOrgRuntime({ ...base, providers: { ...defaultProviderSet(base), change: p.change as never }, settings } as OrgRuntimeDeps);
+    const project = run0.cascade.nodes.find((n) => n.workType === WorkType.Project);
+    if (project === undefined) throw new Error("fixture has no project");
+    const branch = branchNameIn(run0.cascade, project);
+    const leaves = new Set(childrenOf(run0.cascade, project.workId).filter((n) => isLeafType(n.workType)).map((n) => n.workId));
+    // The cycle after the leaves landed: accepted, then refused at the trunk.
+    const run1 = await runOrgRuntime({ ...base, providers: { ...defaultProviderSet(base), change: p.change as never }, settings, priorCascade: run0.cascade as never, priorGateEvaluations: run0.gateEvaluations, alreadyLanded: leaves } as OrgRuntimeDeps);
+    expect(run1.refusals.some((r) => r.includes(branch) && r.includes(MERGE_CONFLICT))).toBe(true);
+    const minted = childrenOf(run1.cascade, project.workId).filter((c) => c.workType === WorkType.Defect && (c.brief ?? "").includes("packages/contracts/dist/index.d.ts"));
+    expect(minted.length).toBe(1);
+    expect(minted[0]?.state).not.toBe(WorkState.Done);
+    // Idempotent: the next cycle, with the leaf still open, mints no second one.
+    const run2 = await runOrgRuntime({ ...base, providers: { ...defaultProviderSet(base), change: p.change as never }, settings, priorCascade: run1.cascade as never, priorGateEvaluations: run1.gateEvaluations, alreadyLanded: leaves } as OrgRuntimeDeps);
+    expect(childrenOf(run2.cascade, project.workId).filter((c) => c.workType === WorkType.Defect && (c.brief ?? "").includes("packages/contracts/dist/index.d.ts")).length).toBe(1);
+  }, 90_000);
+});

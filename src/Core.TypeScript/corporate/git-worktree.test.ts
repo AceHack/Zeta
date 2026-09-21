@@ -17,7 +17,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { spawnSync } from "node:child_process";
 
-import { agentWorkExecutor, branchExists, commandWorkExecutor, commitsAhead, gitChangeControl, gitWorktreeChangeControl, leftNothingCommitted, uncommittedFiles, worktreeDirName } from "./adapters";
+import { agentWorkExecutor, branchExists, commandWorkExecutor, commitsAhead, gitChangeControl, gitWorktreeChangeControl, conflictedFiles, leftNothingCommitted, uncommittedFiles, worktreeDirName } from "./adapters";
 import { changeContextFor, collectionsReadyToLand } from "./branch-topology";
 import { externalRefOf } from "./intake";
 import type { Cascade } from "./goal-cascade";
@@ -455,6 +455,33 @@ describe("A FEATURE'S STORIES LAND ON THE FEATURE, AND THE FEATURE ON THE TRUNK"
     const landed = await change.merge({ changeId: "feature/FEAT-1@proj-1", branch: "feature/FEAT-1" });
     if (!landed.ok) throw new Error(landed.reason);
     expect(spawnSync("git", ["log", "--oneline", "main"], { cwd, encoding: "utf-8" }).stdout).toContain("story/S-2");
+  }, 30_000);
+
+  test("A COLLECTION REFUSED AT THE TRUNK NAMES THE CONFLICT AND LEAVES ITS CHECKOUT CLEAN — nobody works there", async () => {
+    // MEASURED on the Waypoint run, 2026-09-21, proj-027: the feature branch was refused at main for
+    // a modify/delete conflict, and the refusal opened main's merge INTO the feature checkout and
+    // left it there "for the performer" — a leaf's remedy applied to a branch no performer owns.
+    // The next leaf to land into that branch then failed on "unmerged files".
+    const { cwd, worktreeRoot } = repo("collection-conflict");
+    const change = gitWorktreeChangeControl({ cwd, worktreeRoot, baseBranch: "main" });
+    const open = collecting("open");
+    const leaf = await change.open(open.nodes.find((n) => n.workId === "leaf-1") as CascadeNode, changeContextFor({ cascade: open, workId: "leaf-1" }) as { branch: string });
+    if (!leaf.ok) throw new Error(leaf.reason);
+    commitIn(checkoutOf(leaf.value), "README.md", "the feature's version\n");
+    const landedLeaf = await change.merge(leaf.value);
+    if (!landedLeaf.ok) throw new Error(landedLeaf.reason);
+    // The trunk moves the same file the other way, and the collection keeps its checkout open.
+    commitIn(cwd, "README.md", "the trunk's version\n");
+    const feature = await change.open(open.nodes.find((n) => n.workId === "proj-1") as CascadeNode, { branch: "feature/FEAT-1" });
+    if (!feature.ok) throw new Error(feature.reason);
+    const refused = await change.merge({ changeId: "feature/FEAT-1@proj-1", branch: "feature/FEAT-1" });
+    if (refused.ok) throw new Error("a conflicting collection landed");
+    expect(conflictedFiles(refused.reason)).toEqual(["README.md"]);
+    // The collection's checkout is not left mid-merge, and the trunk is clean.
+    expect(existsSync(join(checkoutOf(feature.value), ".git"))).toBe(true);
+    expect(spawnSync("git", ["rev-parse", "-q", "--verify", "MERGE_HEAD"], { cwd: checkoutOf(feature.value), encoding: "utf-8" }).status).not.toBe(0);
+    expect(spawnSync("git", ["status", "--porcelain"], { cwd: checkoutOf(feature.value), encoding: "utf-8" }).stdout.trim()).toBe("");
+    expect(spawnSync("git", ["rev-parse", "-q", "--verify", "MERGE_HEAD"], { cwd, encoding: "utf-8" }).status).not.toBe(0);
   }, 30_000);
 
   test("A RESUME REJOINS: the same item opened twice does not refuse, and does not lose its commit", async () => {
