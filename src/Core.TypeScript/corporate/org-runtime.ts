@@ -4072,8 +4072,12 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
 
     const acceptance = acceptanceGateFor(node);
     if (acceptance === undefined) continue;
-    // Already crossed? Nothing to do. Asked of the RECORD, not of this run's memory.
-    if (missingGates(node, node.workId, [...(deps.priorGateEvaluations ?? []), ...gateEvaluations]).length === 0) continue;
+    // Already crossed? Nothing to do. Asked of the RECORD, not of this run's memory — and of the
+    // chain UNDER THE PIPELINE, as the walk asks it. MEASURED on the Waypoint run, 2026-09-21,
+    // proj-5525 under `diagnosed_design`: accepted in its checkout, then "cannot be accepted yet:
+    // still owes peer_review, adversarial_review" — gates that pipeline never walks on a project.
+    const owedByRung = { ...node, owes: chainForTask(node, deps.pipeline ?? DEFAULT_PIPELINE) };
+    if (missingGates(owedByRung, node.workId, [...(deps.priorGateEvaluations ?? []), ...gateEvaluations]).length === 0) continue;
 
     const deliveredNow = deliveredSet(cascade);
     const kids = childrenOf(cascade, node.workId).filter((c: CascadeNode) => c.state !== WorkState.Canceled);
@@ -4081,7 +4085,7 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
 
     // EVERY OTHER GATE FIRST. Accepting a rung whose earlier gates never passed would let a final
     // validation stand in for the architecture review it was supposed to follow.
-    const stillOwed = missingGates(node, node.workId, [...(deps.priorGateEvaluations ?? []), ...gateEvaluations]);
+    const stillOwed = missingGates(owedByRung, node.workId, [...(deps.priorGateEvaluations ?? []), ...gateEvaluations]);
     if (stillOwed.length > 1 || stillOwed[0] !== acceptance) {
       refusals.push(
         `${node.workId} cannot be accepted yet: still owes ${stillOwed.filter((g) => g !== acceptance).join(", ")}`,
@@ -4526,6 +4530,11 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
     for (const ready of collectionsReadyToLand({
       cascade,
       ...(deps.settings === undefined ? {} : { settings: deps.settings }),
+      // ACCEPTED means every gate the rung owes under the pipeline is on the record as passed.
+      accepted: (workId) => {
+        const rung = nodeById(cascade, workId);
+        return rung !== undefined && missingGates({ ...rung, owes: chainForTask(rung, deps.pipeline ?? DEFAULT_PIPELINE) }, workId, [...(deps.priorGateEvaluations ?? []), ...gateEvaluations]).length === 0;
+      },
     })) {
       // ALREADY ON THE TRUNK, from an earlier run. Asked of the LOG, for the same reason the
       // done-with-nothing-merged rule asks it: this run has no history of its own, and a second

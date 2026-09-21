@@ -2154,6 +2154,33 @@ describe("WORK UNDER A COLLECTION IS JUDGED IN THE COLLECTION'S BRANCH UNTIL THA
     expect(again.opened.some((o) => o.workId === project.workId && o.branch === branch)).toBe(true);
   }, 90_000);
 
+  test("an ACCEPTED collection lands its branch on the trunk — judged by the chain under the pipeline, not by a state nobody sets", async () => {
+    // MEASURED on the Waypoint run, 2026-09-21, proj-5525 under `diagnosed_design`: every leaf landed
+    // into feature/…, the Opus architect approved final_architecture_review in that checkout, and the
+    // run then said "cannot be accepted yet: still owes peer_review, adversarial_review" — two gates
+    // that pipeline never walks on a project — and `collectionsReadyToLand` waited for a project
+    // state of Done that the cascade refuses to set on anything with children. The feature branch
+    // held three fixes and could never reach main. Three stalled runs, autopilot out.
+    const { NAMED_PIPELINES } = require("./run-org") as typeof import("./run-org");
+    const pipeline = (NAMED_PIPELINES["diagnosed_design"] as readonly GateKind[]).map((gate) => ({ gate }));
+    const merged: string[] = [];
+    const ports = recordingPorts();
+    const change = { ...ports.change, merge: async (handle: { readonly branch: string }) => { merged.push(handle.branch); return { ok: true as const, value: { changeId: "m", branch: handle.branch }, evidence: [] }; } };
+    const base = deps();
+    const approve = () => ({ outcome: GateOutcome.Approved, reason: "ok" });
+    const run0 = await runOrgRuntime({ ...base, providers: { ...defaultProviderSet(base), change: change as never, tests: ports.tests as never, review: ports.review(approve) as never }, settings: collecting, pipeline } as OrgRuntimeDeps);
+    const project = run0.cascade.nodes.find((n) => n.workType === WorkType.Project);
+    if (project === undefined) throw new Error("fixture has no project");
+    const branch = branchNameIn(run0.cascade, project);
+    const leaves = new Set(childrenOf(run0.cascade, project.workId).filter((n) => isLeafType(n.workType)).map((n) => n.workId));
+    expect(merged).not.toContain(branch);
+    // The cycle after the leaves landed: acceptance is asked in the feature checkout, approved, and the branch lands.
+    const run1 = await runOrgRuntime({ ...base, providers: { ...defaultProviderSet(base), change: change as never, tests: ports.tests as never, review: ports.review(approve) as never }, settings: collecting, pipeline, priorCascade: run0.cascade as never, priorGateEvaluations: run0.gateEvaluations, alreadyLanded: leaves } as OrgRuntimeDeps);
+    expect(run1.gateEvaluations.some((e) => e.workId === project.workId && e.gate === GateKind.FinalArchitectureReview && e.outcome === GateOutcome.Approved)).toBe(true);
+    expect(run1.refusals.some((r) => r.includes(project.workId) && r.includes("cannot be accepted yet"))).toBe(false);
+    expect(merged).toContain(branch);
+  }, 90_000);
+
   test("a follow-up minted under a LANDED collection is cut from the trunk, and its acceptance is judged there", async () => {
     let finalAsked = 0;
     const strict = (req: { gate: GateKind }) =>
