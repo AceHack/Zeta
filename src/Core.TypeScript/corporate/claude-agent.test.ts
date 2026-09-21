@@ -824,3 +824,31 @@ describe("A REVIEWER IS TOLD WHICH TREE HOLDS THE WORK", () => {
     r.cleanup();
   }, 30_000);
 });
+
+describe("A REVIEWER READS THE STEP'S EVIDENCE FROM THE PROMPT, NOT FROM SIX OBSERVE CALLS", () => {
+  test("the review prompt carries the item and the inline evidence, and says the dashboard is not needed for a step", () => {
+    const r = run(["review", "qa_uat", "task-9"], ok({ verdict: "approve", reason: "ran", lookedAt: [] }), {
+      ORG_REVIEW_TITLE: "wire the thing",
+      ORG_REVIEW_BRIEF: "the thing must be wired",
+      ORG_REVIEW_EVIDENCE: JSON.stringify([
+        { label: "ran", text: "node verify.cjs in /checkouts/x" },
+        { label: "exit", text: "0" },
+        { label: "stdout", text: "146 passing" },
+        { ref: "/docs/task-9/reproduction.md" },
+      ]),
+    });
+    const p = String(r.seen?.input);
+    expect(p).toContain("wire the thing");
+    expect(p).toContain("the thing must be wired");
+    expect(p).toContain("node verify.cjs in /checkouts/x");
+    expect(p).toContain("146 passing");
+    expect(p).toContain("/docs/task-9/reproduction.md");
+    expect(p).toContain("dashboard is not needed");
+    r.cleanup();
+  }, 30_000);
+  test("without inline evidence the prompt is what it was", () => {
+    const r = run(["review", "qa_uat", "task-9"], ok({ verdict: "approve", reason: "ran", lookedAt: [] }));
+    expect(String(r.seen?.input)).not.toContain("dashboard is not needed");
+    r.cleanup();
+  }, 30_000);
+});

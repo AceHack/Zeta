@@ -804,6 +804,34 @@ if (mode === "review") {
     "work move - an accurate document whose own conclusion is that the work is NOT ready, not fixed, or",
     "still blocked is a REJECTION, with what is left as your reason. Before relying on anything an",
     "author reports as still open, check it against the item's current record: it may have closed since.",
+    ...(() => {
+      // WHAT THE STEP PRODUCED, IN THE PROMPT. The same text `observe attachment` would print, handed
+      // over so the review starts at the change instead of at six fetches. The worldview is still
+      // `observe`: the item's history, its parent chain and other steps' attachments live there.
+      if (!env.ORG_REVIEW_EVIDENCE) return [];
+      let ev;
+      try {
+        ev = JSON.parse(env.ORG_REVIEW_EVIDENCE);
+      } catch {
+        return [];
+      }
+      if (!Array.isArray(ev)) return [];
+      return [
+        "",
+        "THE ITEM: " + (env.ORG_REVIEW_TITLE || workId),
+        ...(env.ORG_REVIEW_BRIEF ? [env.ORG_REVIEW_BRIEF] : []),
+        "",
+        "WHAT THIS STEP PRODUCED (attached by the organization, verbatim - the same text `observe attachment` prints; the dashboard is not needed for a step review, and `observe item " + workId + "` remains the record of its steps and what reviewers said):",
+        ...ev.flatMap((e) =>
+          e && typeof e === "object" && typeof e.text === "string"
+            ? ["--- " + String(e.label) + " ---", e.text]
+            : e && typeof e === "object" && typeof e.ref === "string"
+              ? ["--- file: " + e.ref + " (open it with observe attachment, or read it) ---"]
+              : [],
+        ),
+        "--- end of what this step produced ---",
+      ];
+    })(),
     ...(env.ORG_REVIEW_CHECKOUT
       ? [
           "",
