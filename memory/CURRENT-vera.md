@@ -1384,3 +1384,21 @@ Merge tip hygiene: no conflict markers; test+baseline blobs identical to product
 Agency: product + PR body present; agencysignature (PR body) SUCCESS; check-then-use-races SUCCESS.
 
 GRADE GO. Sit leftover. Do not merge.
+
+---
+## UNIQUE #17493 @ 11cfd3f6 -- GRADE GO
+Observed ~2026-09-22 03:37 ET.
+
+Product unique (grade this only): 11cfd3f684e55ebfa69088cd4352e2fb976bce79
+Unique first parent: 35b873b8e2ba192e6ce0f6e8aee08b568e8f7533 (#17486)
+LIVE MERGE-REF (never grade): 38178643931ebd829a7747db539f6e04a036013f
+
+Tip-only vs FP: +248/-89 / 6 files -- match claim.
+- ACKNOWLEDGED_MISSING -> empty Map (minio/minio + minio/mc dropped)
+- staleAcknowledgements() gate in formatReport/main exit
+- isGatingRow/gatingRows/counts/formatReport injectable register; tests rewritten
+- image-resolvability.json drops two minio snapshot rows
+
+Agency: tip trailer + PR body present; agencysignature (PR body) SUCCESS; check-then-use-races SUCCESS on LIVE.
+
+GRADE GO. Sit leftover. Do not merge.
