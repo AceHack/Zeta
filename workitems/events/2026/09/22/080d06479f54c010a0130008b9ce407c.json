@@ -1,0 +1,14 @@
+{
+  "id": "080d06479f54c010a0130008b9ce407c",
+  "at": "2026-09-22T11:50:23.640Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M34F7TMG087G0R00297QG5A",
+    "type": "task",
+    "title": "Power-cycle recovery stage for first-boot-replica (WP19)",
+    "slug": "power-cycle-recovery-stage-for-first-boot-replica-wp19",
+    "priority": "P1",
+    "filename": "081M34F7TMG087G0R00297QG5A-power-cycle-recovery-stage-for-first-boot-replica-wp19.md"
+  }
+}

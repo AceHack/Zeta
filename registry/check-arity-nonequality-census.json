@@ -8,6 +8,7 @@
     "src/Core.TypeScript/browser-node/browser-delegated-device-proposal-relay.test.ts": 2,
     "src/Core.TypeScript/ci/qemu-full-install-test.test.ts": 4,
     "src/Core.TypeScript/cluster/argocd-health-test.test.ts": 1,
+    "src/Core.TypeScript/cluster/first-boot-replica.test.ts": 1,
     "src/Core.TypeScript/cluster/inert-valuesobject-keys.test.ts": 1,
     "src/Core.TypeScript/darkhall-ui/darkhall-browser-receipt-sync-control.test.ts": 2,
     "src/Core.TypeScript/discovery/llmtv-broadcast.test.ts": 3,

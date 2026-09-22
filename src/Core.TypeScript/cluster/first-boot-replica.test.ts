@@ -21,40 +21,54 @@ import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 import {
   allApplicationsSettled,
+  appsFailedToRecover,
   applyServeTreeOverride,
   buildDockerRunArgs,
   buildPlan,
   buildRoster,
   classifyPod,
   classifyPods,
+  classifySoakRegressions,
   computeAppVerdict,
   computeAppVerdicts,
+  computePowerCycleVerdict,
+  containerCrashLoopsAfterRecovery,
   dedentNixIndentedString,
+  evaluatePowerCycle,
   extractBracedBlock,
   extractHelmCharts,
+  hashSecretData,
   injectRootApplicationExclude,
+  isKnownSoakRegression,
   k3sVersionToDockerTag,
   manifestTargetFilename,
+  parseAppConvergenceSnapshots,
   parseExtraFlags,
   parseFailedSchedulingEvents,
-  classifySoakRegressions,
-  isKnownSoakRegression,
   parseInlineWriteTextManifest,
   parseManifestSourceRoster,
   parsePodSummaries,
+  parsePvcBindings,
   parseRestartSamples,
+  parseSecretSnapshots,
   patchRootApplicationRevision,
+  pvcsReboundAfterRecovery,
   readClusterIdentity,
   readKubernetesVersionPin,
   renderAppVerdictMarkdown,
+  renderPowerCycleVerdictMarkdown,
   REPO_ROOT,
   restartCountRegressions,
+  secretDataChangedAfterRecovery,
+  seededInternalSecretTargets,
   type AppConvergenceSnapshot,
   type FailedSchedulingEvent,
   type PodSummary,
   type PodVerdict,
+  type PvcBinding,
   type RestartSample,
   type RosterEntry,
+  type SecretSnapshot,
 } from "./first-boot-replica.ts";
 
 // ───────────────────────────── extractBracedBlock ────────────────────────
@@ -950,5 +964,277 @@ describe("renderAppVerdictMarkdown", () => {
       { name: "x", sync: "Unknown", health: "Degraded", verdict: "FAIL", reason: "a | b" },
     ]);
     expect(markdown).toContain("a \\| b");
+  });
+});
+
+// ═══════════════════ Stage 8 (WP19): power-cycle recovery ═════════════════
+
+describe("seededInternalSecretTargets", () => {
+  test("derives the six internal-secret-seeding.yaml targets from dev-cluster/lib.ts, excluding the external hindsight key", () => {
+    const targets = seededInternalSecretTargets();
+    expect(targets).toContainEqual({ namespace: "monitoring", name: "grafana-admin-credentials" });
+    expect(targets).toContainEqual({ namespace: "openziti", name: "ziti-admin-credentials" });
+    expect(targets).toContainEqual({ namespace: "opensearch", name: "opensearch-admin-credentials" });
+    expect(targets).toContainEqual({ namespace: "forgejo", name: "forgejo-initial-admin" });
+    // zeta-blob-store: 4 namespaces sharing ONE value.
+    for (const ns of ["object-store", "loki", "mimir", "gitlab"]) {
+      expect(targets).toContainEqual({ namespace: ns, name: "zeta-blob-store" });
+    }
+    // redis-auth: 2 namespaces sharing ONE value.
+    for (const ns of ["redis", "orleans"]) {
+      expect(targets).toContainEqual({ namespace: ns, name: "redis-auth" });
+    }
+    expect(targets.some((t) => t.name === "hindsight-llm-api-key")).toBe(false);
+    // 4 singular (grafana/ziti/opensearch/forgejo) + zeta-blob-store×4 namespaces + redis-auth×2 namespaces.
+    expect(targets).toHaveLength(10);
+  });
+});
+
+describe("hashSecretData", () => {
+  test("is stable across key order — the same data hashes the same regardless of insertion order", () => {
+    expect(hashSecretData({ a: "1", b: "2" })).toBe(hashSecretData({ b: "2", a: "1" }));
+  });
+
+  test("a changed value changes the hash", () => {
+    expect(hashSecretData({ a: "1" })).not.toBe(hashSecretData({ a: "2" }));
+  });
+
+  test("never contains the raw value — the hash is hex, not the input echoed back", () => {
+    const hash = hashSecretData({ password: "super-secret-value" });
+    expect(hash).not.toContain("super-secret-value");
+    expect(hash).toMatch(/^[0-9a-f]{64}$/);
+  });
+});
+
+describe("parseSecretSnapshots", () => {
+  const targets = [{ namespace: "monitoring", name: "grafana-admin-credentials" }];
+
+  test("fingerprints only the requested (namespace, name) targets", () => {
+    const stdout = JSON.stringify({
+      items: [
+        {
+          metadata: { name: "grafana-admin-credentials", namespace: "monitoring", resourceVersion: "123" },
+          data: { "admin-password": "c2VjcmV0" },
+        },
+        { metadata: { name: "other-secret", namespace: "monitoring", resourceVersion: "456" }, data: { k: "v" } },
+      ],
+    });
+    const snapshots = parseSecretSnapshots(stdout, targets);
+    expect(snapshots).toHaveLength(1);
+    expect(snapshots[0]?.name).toBe("grafana-admin-credentials");
+    expect(snapshots[0]?.resourceVersion).toBe("123");
+    expect(snapshots[0]?.dataHash).toBe(hashSecretData({ "admin-password": "c2VjcmV0" }));
+  });
+
+  test("malformed JSON yields [] rather than throwing", () => {
+    expect(parseSecretSnapshots("{{{", targets)).toEqual([]);
+  });
+});
+
+describe("parsePvcBindings", () => {
+  test("reports only Bound claims, with their volumeName", () => {
+    const stdout = JSON.stringify({
+      items: [
+        { metadata: { name: "data-pg-0", namespace: "gitlab" }, status: { phase: "Bound", volumeName: "pvc-abc" } },
+        { metadata: { name: "data-pg-1", namespace: "gitlab" }, status: { phase: "Pending" } },
+      ],
+    });
+    expect(parsePvcBindings(stdout)).toEqual([{ namespace: "gitlab", name: "data-pg-0", volumeName: "pvc-abc" }]);
+  });
+
+  test("malformed JSON yields [] rather than throwing", () => {
+    expect(parsePvcBindings("not json")).toEqual([]);
+  });
+});
+
+describe("parseAppConvergenceSnapshots", () => {
+  test("reads name/sync/health, defaulting missing fields to Unknown", () => {
+    const stdout = JSON.stringify({
+      items: [{ metadata: { name: "zeta-a" }, status: { sync: { status: "Synced" }, health: { status: "Healthy" } } }, { metadata: { name: "zeta-b" } }],
+    });
+    expect(parseAppConvergenceSnapshots(stdout)).toEqual([
+      { name: "zeta-a", sync: "Synced", health: "Healthy" },
+      { name: "zeta-b", sync: "Unknown", health: "Unknown" },
+    ]);
+  });
+
+  test("malformed JSON yields [] rather than throwing", () => {
+    expect(parseAppConvergenceSnapshots("nope")).toEqual([]);
+  });
+});
+
+// ── Rule 1: every previously-Healthy Application must be Healthy again ─────
+
+describe("appsFailedToRecover", () => {
+  const healthy = (name: string): AppConvergenceSnapshot => ({ name, sync: "Synced", health: "Healthy" });
+
+  test("flags an app that regressed from Healthy to Degraded", () => {
+    const issues = appsFailedToRecover([healthy("cilium")], [{ name: "cilium", sync: "Synced", health: "Degraded" }]);
+    expect(issues).toHaveLength(1);
+    expect(issues[0]?.category).toBe("APP_NOT_HEALTHY");
+  });
+
+  test("does NOT flag an app that stayed Healthy — this is the pass case", () => {
+    expect(appsFailedToRecover([healthy("cilium")], [healthy("cilium")])).toHaveLength(0);
+  });
+
+  test("flags an app that disappeared entirely after the power cycle", () => {
+    expect(appsFailedToRecover([healthy("cilium")], [])).toHaveLength(1);
+  });
+
+  test("does not flag an app that was never Healthy in the baseline — not this rule's concern", () => {
+    const baseline: AppConvergenceSnapshot[] = [{ name: "known-divergence", sync: "OutOfSync", health: "Progressing" }];
+    expect(appsFailedToRecover(baseline, [])).toHaveLength(0);
+  });
+});
+
+// ── Rule 2: no container may crash-loop AFTER the restart ──────────────────
+
+describe("containerCrashLoopsAfterRecovery", () => {
+  const container = (restartCount: number, overrides: Partial<RestartSample> = {}): RestartSample => ({
+    namespace: "cilium",
+    pod: "cilium-abc",
+    container: "cilium-agent",
+    restartCount,
+    ...overrides,
+  });
+
+  test("flags a container whose restartCount rose during the POST-RECOVERY soak", () => {
+    const issues = containerCrashLoopsAfterRecovery([container(0)], [container(1)]);
+    expect(issues).toHaveLength(1);
+    expect(issues[0]?.category).toBe("CONTAINER_CRASHLOOP");
+  });
+
+  test("does NOT flag a steady restartCount across the soak — this is the pass case", () => {
+    expect(containerCrashLoopsAfterRecovery([container(2)], [container(2)])).toHaveLength(0);
+  });
+
+  test("does not flag the ONE restart the power cut itself causes — soakBefore is sampled AFTER recovery, so that restart is already baked in", () => {
+    // The power cut bumps every container's restartCount by (at least) one BEFORE
+    // the soak window opens; soakBefore/soakAfter both already reflect that bump,
+    // so a steady count here is the expected, non-failing case even though the
+    // power cut itself caused a restart earlier in the run.
+    expect(containerCrashLoopsAfterRecovery([container(1)], [container(1)])).toHaveLength(0);
+  });
+
+  test("reuses stage 6's known-soak-regression allowlist — a confirmed-non-metal spire-agent restart does not fail stage 8 either", () => {
+    const before = [container(0, { namespace: "spire", container: "spire-agent" })];
+    const after = [container(1, { namespace: "spire", container: "spire-agent" })];
+    expect(containerCrashLoopsAfterRecovery(before, after)).toHaveLength(0);
+  });
+});
+
+// ── Rule 3: idempotency — a seeded Secret's data must be byte-identical ────
+
+describe("secretDataChangedAfterRecovery", () => {
+  const secret = (dataHash: string, overrides: Partial<SecretSnapshot> = {}): SecretSnapshot => ({
+    namespace: "monitoring",
+    name: "grafana-admin-credentials",
+    resourceVersion: "1",
+    dataHash,
+    ...overrides,
+  });
+
+  test("flags a Secret whose data hash changed — a create-only Job re-ran, or the datastore lost it", () => {
+    const issues = secretDataChangedAfterRecovery([secret("hash-a")], [secret("hash-b", { resourceVersion: "2" })]);
+    expect(issues).toHaveLength(1);
+    expect(issues[0]?.category).toBe("SECRET_DATA_CHANGED");
+  });
+
+  test("does NOT flag an unchanged hash, even if resourceVersion moved for an unrelated reason — this is the idempotency pass case", () => {
+    expect(secretDataChangedAfterRecovery([secret("hash-a")], [secret("hash-a", { resourceVersion: "9" })])).toHaveLength(0);
+  });
+
+  test("flags a Secret that disappeared after the power cycle", () => {
+    expect(secretDataChangedAfterRecovery([secret("hash-a")], [])).toHaveLength(1);
+  });
+});
+
+// ── Rule 4: no PVC may re-bind to a different volume ────────────────────────
+
+describe("pvcsReboundAfterRecovery", () => {
+  const pvc = (volumeName: string, overrides: Partial<PvcBinding> = {}): PvcBinding => ({
+    namespace: "gitlab",
+    name: "data-pg-0",
+    volumeName,
+    ...overrides,
+  });
+
+  test("flags a PVC that re-bound to a DIFFERENT volume — data loss", () => {
+    const issues = pvcsReboundAfterRecovery([pvc("pvc-abc")], [pvc("pvc-xyz")]);
+    expect(issues).toHaveLength(1);
+    expect(issues[0]?.category).toBe("PVC_REBOUND");
+  });
+
+  test("does NOT flag a PVC bound to the SAME volume — this is the pass case", () => {
+    expect(pvcsReboundAfterRecovery([pvc("pvc-abc")], [pvc("pvc-abc")])).toHaveLength(0);
+  });
+
+  test("flags a PVC that was Bound before and is missing/unbound after", () => {
+    expect(pvcsReboundAfterRecovery([pvc("pvc-abc")], [])).toHaveLength(1);
+  });
+});
+
+describe("computePowerCycleVerdict", () => {
+  test("RECOVERED when there are no issues", () => {
+    expect(computePowerCycleVerdict([]).verdict).toBe("RECOVERED");
+  });
+
+  test("NOT_RECOVERED when there is at least one issue, and carries it", () => {
+    const issue = { category: "APP_NOT_HEALTHY" as const, subject: "cilium", detail: "still Degraded" };
+    const verdict = computePowerCycleVerdict([issue]);
+    expect(verdict.verdict).toBe("NOT_RECOVERED");
+    expect(verdict.issues).toEqual([issue]);
+  });
+});
+
+describe("evaluatePowerCycle", () => {
+  const app = (name: string, health: string): AppConvergenceSnapshot => ({ name, sync: "Synced", health });
+
+  test("RECOVERED when every rule passes", () => {
+    const baseline = { apps: [app("cilium", "Healthy")], secrets: [], pvcBindings: [] };
+    const after = { apps: [app("cilium", "Healthy")], secrets: [], pvcBindings: [] };
+    const soak = { before: [], after: [] };
+    expect(evaluatePowerCycle(baseline, after, soak).verdict).toBe("RECOVERED");
+  });
+
+  test("NOT_RECOVERED aggregates issues from every rule that fired, not just the first", () => {
+    const baseline = {
+      apps: [app("cilium", "Healthy")],
+      secrets: [{ namespace: "monitoring", name: "grafana-admin-credentials", resourceVersion: "1", dataHash: "a" }],
+      pvcBindings: [{ namespace: "gitlab", name: "data-pg-0", volumeName: "pvc-abc" }],
+    };
+    const after = {
+      apps: [app("cilium", "Degraded")],
+      secrets: [{ namespace: "monitoring", name: "grafana-admin-credentials", resourceVersion: "2", dataHash: "b" }],
+      pvcBindings: [{ namespace: "gitlab", name: "data-pg-0", volumeName: "pvc-xyz" }],
+    };
+    const soak = { before: [{ namespace: "cilium", pod: "p", container: "c", restartCount: 0 }], after: [{ namespace: "cilium", pod: "p", container: "c", restartCount: 1 }] };
+    const verdict = evaluatePowerCycle(baseline, after, soak);
+    expect(verdict.verdict).toBe("NOT_RECOVERED");
+    const categories = verdict.issues.map((i) => i.category).sort();
+    expect(categories).toEqual(["APP_NOT_HEALTHY", "CONTAINER_CRASHLOOP", "PVC_REBOUND", "SECRET_DATA_CHANGED"]);
+  });
+});
+
+describe("renderPowerCycleVerdictMarkdown", () => {
+  test("reports plainly when stage 8 never ran", () => {
+    expect(renderPowerCycleVerdictMarkdown(undefined)).toContain("stage 8 did not run");
+  });
+
+  test("renders RECOVERED plainly, with no issue table", () => {
+    const markdown = renderPowerCycleVerdictMarkdown({ verdict: "RECOVERED", issues: [] });
+    expect(markdown).toContain("RECOVERED");
+    expect(markdown).not.toContain("| category |");
+  });
+
+  test("renders NOT_RECOVERED as an issue table", () => {
+    const markdown = renderPowerCycleVerdictMarkdown({
+      verdict: "NOT_RECOVERED",
+      issues: [{ category: "APP_NOT_HEALTHY", subject: "cilium", detail: "still Degraded" }],
+    });
+    expect(markdown).toContain("NOT_RECOVERED");
+    expect(markdown).toContain("APP_NOT_HEALTHY");
+    expect(markdown).toContain("cilium");
   });
 });

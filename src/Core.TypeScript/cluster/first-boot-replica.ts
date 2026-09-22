@@ -48,6 +48,7 @@
  */
 
 import { spawnSync } from "node:child_process";
+import { createHash } from "node:crypto";
 import { appendFileSync, existsSync, mkdtempSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, isAbsolute, join, resolve } from "node:path";
@@ -56,6 +57,18 @@ import { parseArgs } from "node:util";
 import { parseAllDocuments } from "yaml";
 import { deriveClusterNetwork } from "./cluster-cidr.ts";
 import { stringCompare } from "../collation/collation.ts";
+// Stage 8 (WP19, power-cycle) needs the exact (namespace, name) roster of
+// seeded INTERNAL Secrets to hash before/after the power cut — imported from
+// the SAME constants `internal-secret-seeding.test.ts` already cross-checks
+// the metal manifest against, never a second hand-maintained list (the drift
+// this harness's own docstring refuses throughout). `DEV_HINDSIGHT_LLM_SECRET`
+// is excluded in `seededInternalSecretTargets` below: it is EXTERNAL
+// (operator-supplied), not one of the six internal-secret-seeding.yaml mints.
+import {
+  DEV_BOOTSTRAP_SECRETS,
+  DEV_HINDSIGHT_LLM_SECRET,
+  DEV_SHARED_SECRETS,
+} from "./dev-cluster/lib.ts";
 // The stage-6 "serve the dev rung" override reuses the SAME override point
 // `argocd-health-test.ts`'s kind/k3d included lanes already built and proved —
 // imported, never re-derived. `buildLaneTreeForProfile` is the whole rung +
@@ -917,6 +930,312 @@ export function classifySoakRegressions(regressions: readonly RestartSample[]): 
   };
 }
 
+// ──────────────── Stage 8 (WP19): power-cycle recovery ──────────────────
+//
+// The USB installer targets home hardware, which loses power. Stages 1-7
+// above only ever prove a FIRST boot converges; nothing in this repo tests
+// that a converged cluster survives an unclean stop. Stage 8 is optional
+// (`--power-cycle`), runs AFTER stage 7, and answers a narrower, harder
+// question with a named verdict: given a cluster that already converged
+// once, does it converge again after `SIGKILL` + restart with its data
+// volume intact?
+//
+// Every rule below is a PURE function over a `before`/`after` pair so it can
+// be proven wrong by inverting it (same discipline as `classifyPod` and
+// `restartCountRegressions` above) — none of them touch Docker or kubectl.
+
+/** A PersistentVolumeClaim's binding, as `kubectl get pvc -A -o json` reports it. Only `Bound` claims carry a `volumeName`. */
+export interface PvcBinding {
+  readonly namespace: string;
+  readonly name: string;
+  readonly volumeName: string;
+}
+
+/**
+ * ONE seeded internal Secret's identity plus a content fingerprint — never
+ * the raw `data`/`stringData` values themselves (`.claude/rules/no-binary-in-proof-lineage.md`'s
+ * sibling discipline applied to credentials: this harness's own report and log
+ * lines must stay safe to paste into a PR).
+ */
+export interface SecretSnapshot {
+  readonly namespace: string;
+  readonly name: string;
+  readonly resourceVersion: string;
+  readonly dataHash: string;
+}
+
+/**
+ * The (namespace, name) roster of every seeded INTERNAL Secret
+ * `internal-secret-seeding.yaml` mints on metal — DERIVED from
+ * `dev-cluster/lib.ts`'s `DEV_BOOTSTRAP_SECRETS` / `DEV_SHARED_SECRETS`
+ * (the same constants `internal-secret-seeding.test.ts` cross-checks the
+ * metal manifest against), not a third hand-written copy.
+ * `DEV_HINDSIGHT_LLM_SECRET` is excluded: it is EXTERNAL (an operator-supplied
+ * LLM API key), never seeded by `internal-secret-seeding.yaml` — see that
+ * file's own header table.
+ */
+export function seededInternalSecretTargets(): readonly { readonly namespace: string; readonly name: string }[] {
+  const targets: { namespace: string; name: string }[] = [];
+  for (const spec of DEV_BOOTSTRAP_SECRETS) targets.push({ namespace: spec.namespace, name: spec.name });
+  for (const spec of DEV_SHARED_SECRETS) {
+    if (spec.name === DEV_HINDSIGHT_LLM_SECRET.name) continue;
+    for (const namespace of spec.namespaces) targets.push({ namespace, name: spec.name });
+  }
+  return targets.sort((a, b) => compareOrdinal(`${a.namespace}/${a.name}`, `${b.namespace}/${b.name}`));
+}
+
+/** SHA-256 over the Secret's `data` map, sorted by key — a fingerprint, never the values themselves. */
+export function hashSecretData(data: Readonly<Record<string, string>>): string {
+  const canonical = Object.keys(data)
+    .sort(compareOrdinal)
+    .map((k) => `${k}=${data[k]}`)
+    .join("\n");
+  return createHash("sha256").update(canonical, "utf8").digest("hex");
+}
+
+/** Parse `kubectl get secrets -A -o json` into fingerprints for exactly the `targets` roster. Never throws — an unparseable listing yields `[]`. */
+export function parseSecretSnapshots(
+  stdout: string,
+  targets: readonly { readonly namespace: string; readonly name: string }[],
+): readonly SecretSnapshot[] {
+  let parsed: unknown;
+  try {
+    parsed = JSON.parse(stdout);
+  } catch {
+    return [];
+  }
+  const items = (parsed as { items?: unknown } | null)?.items;
+  if (!Array.isArray(items)) return [];
+  const wanted = new Set(targets.map((t) => `${t.namespace}/${t.name}`));
+  const out: SecretSnapshot[] = [];
+  for (const item of items) {
+    const record = item as {
+      metadata?: { name?: unknown; namespace?: unknown; resourceVersion?: unknown };
+      data?: Record<string, unknown>;
+    };
+    const namespace = record.metadata?.namespace;
+    const name = record.metadata?.name;
+    if (typeof namespace !== "string" || typeof name !== "string") continue;
+    if (!wanted.has(`${namespace}/${name}`)) continue;
+    const resourceVersion = typeof record.metadata?.resourceVersion === "string" ? record.metadata.resourceVersion : "";
+    const stringData: Record<string, string> = {};
+    for (const [k, v] of Object.entries(record.data ?? {})) {
+      if (typeof v === "string") stringData[k] = v;
+    }
+    out.push({ namespace, name, resourceVersion, dataHash: hashSecretData(stringData) });
+  }
+  return out.sort((a, b) => compareOrdinal(`${a.namespace}/${a.name}`, `${b.namespace}/${b.name}`));
+}
+
+/** Parse `kubectl get pvc -A -o json` into bindings. Only `Bound` claims (with a `volumeName`) are reported — never throws. */
+export function parsePvcBindings(stdout: string): readonly PvcBinding[] {
+  let parsed: unknown;
+  try {
+    parsed = JSON.parse(stdout);
+  } catch {
+    return [];
+  }
+  const items = (parsed as { items?: unknown } | null)?.items;
+  if (!Array.isArray(items)) return [];
+  const out: PvcBinding[] = [];
+  for (const item of items) {
+    const record = item as {
+      metadata?: { name?: unknown; namespace?: unknown };
+      status?: { phase?: unknown; volumeName?: unknown };
+    };
+    const namespace = record.metadata?.namespace;
+    const name = record.metadata?.name;
+    const volumeName = record.status?.volumeName;
+    if (typeof namespace !== "string" || typeof name !== "string") continue;
+    if (record.status?.phase !== "Bound" || typeof volumeName !== "string") continue;
+    out.push({ namespace, name, volumeName });
+  }
+  return out.sort((a, b) => compareOrdinal(`${a.namespace}/${a.name}`, `${b.namespace}/${b.name}`));
+}
+
+/** Parse `kubectl get applications.argoproj.io -o json` into sync/health snapshots. Never throws — an unparseable listing yields `[]`. */
+export function parseAppConvergenceSnapshots(stdout: string): readonly AppConvergenceSnapshot[] {
+  let parsed: unknown;
+  try {
+    parsed = JSON.parse(stdout);
+  } catch {
+    return [];
+  }
+  const items = (parsed as { items?: unknown } | null)?.items;
+  if (!Array.isArray(items)) return [];
+  const out: AppConvergenceSnapshot[] = [];
+  for (const item of items) {
+    const record = item as {
+      metadata?: { name?: unknown };
+      status?: { sync?: { status?: unknown }; health?: { status?: unknown } };
+    };
+    const name = record.metadata?.name;
+    if (typeof name !== "string") continue;
+    out.push({
+      name,
+      sync: typeof record.status?.sync?.status === "string" ? record.status.sync.status : "Unknown",
+      health: typeof record.status?.health?.status === "string" ? record.status.health.status : "Unknown",
+    });
+  }
+  return out;
+}
+
+export type PowerCycleIssueCategory = "APP_NOT_HEALTHY" | "CONTAINER_CRASHLOOP" | "SECRET_DATA_CHANGED" | "PVC_REBOUND";
+
+export interface PowerCycleIssue {
+  readonly category: PowerCycleIssueCategory;
+  readonly subject: string;
+  readonly detail: string;
+}
+
+export type PowerCycleVerdictLabel = "RECOVERED" | "NOT_RECOVERED";
+
+export interface PowerCycleVerdict {
+  readonly verdict: PowerCycleVerdictLabel;
+  readonly issues: readonly PowerCycleIssue[];
+}
+
+/**
+ * Rule 1: every Application `Healthy` in the pre-power-cut baseline must be
+ * `Healthy` again after recovery. An app that was never Healthy to begin with
+ * (e.g. a known CI-only DIVERGENCE) is not this rule's concern — stage 6
+ * already reported it, and re-asserting it here would conflate "recovered
+ * from a power cut" with "converges in this replica at all".
+ */
+export function appsFailedToRecover(
+  baseline: readonly AppConvergenceSnapshot[],
+  after: readonly AppConvergenceSnapshot[],
+): readonly PowerCycleIssue[] {
+  const afterByName = new Map(after.map((a) => [a.name, a]));
+  const issues: PowerCycleIssue[] = [];
+  for (const b of baseline) {
+    if (b.health !== "Healthy") continue;
+    const post = afterByName.get(b.name);
+    if (post === undefined) {
+      issues.push({ category: "APP_NOT_HEALTHY", subject: b.name, detail: "Application no longer present after power cycle" });
+    } else if (post.health !== "Healthy") {
+      issues.push({
+        category: "APP_NOT_HEALTHY",
+        subject: b.name,
+        detail: `health=${post.health} sync=${post.sync} (was Healthy before the power cut)`,
+      });
+    }
+  }
+  return issues;
+}
+
+/**
+ * Rule 2: no container may crash-loop AFTER the restart. Reuses
+ * `restartCountRegressions` + `classifySoakRegressions` — the SAME pure
+ * soak classifiers stage 6 already uses and already has a named allowlist
+ * for (`isKnownSoakRegression`, the confirmed-non-metal spire-agent
+ * hostNetwork-DNS artifact) — over the POST-RECOVERY soak window, never a
+ * re-implementation. A single restart per container caused by the power cut
+ * itself is expected and is not part of this comparison at all: the soak
+ * window opens only once the API/node/Cilium/apps have already come back, so
+ * the one restart the kill itself causes is baked into `soakBefore`, not a
+ * regression from it.
+ */
+export function containerCrashLoopsAfterRecovery(
+  soakBefore: readonly RestartSample[],
+  soakAfter: readonly RestartSample[],
+): readonly PowerCycleIssue[] {
+  const { unexpected } = classifySoakRegressions(restartCountRegressions(soakBefore, soakAfter));
+  return unexpected.map((r) => ({
+    category: "CONTAINER_CRASHLOOP" as const,
+    subject: `${r.namespace}/${r.pod}[${r.container}]`,
+    detail: `restartCount rose to ${String(r.restartCount)} during the post-recovery soak`,
+  }));
+}
+
+/**
+ * Rule 3: idempotency. A seeded internal Secret's DATA must be byte-identical
+ * before and after the power cycle — `internal-secret-seeding.yaml`'s Jobs
+ * are `kubectl create` (never `apply`/`replace`), so the ONLY way this
+ * changes is a Job re-running against an already-seeded namespace (the
+ * create-only guarantee failing) or the datastore losing the original value
+ * across the unclean stop. Compared by hash only — raw Secret values are
+ * never read into this process's memory as anything but a hash input, and
+ * never printed (see `SecretSnapshot`'s own docstring).
+ */
+export function secretDataChangedAfterRecovery(
+  before: readonly SecretSnapshot[],
+  after: readonly SecretSnapshot[],
+): readonly PowerCycleIssue[] {
+  const key = (s: { readonly namespace: string; readonly name: string }) => `${s.namespace}/${s.name}`;
+  const afterByKey = new Map(after.map((s) => [key(s), s]));
+  const issues: PowerCycleIssue[] = [];
+  for (const b of before) {
+    const post = afterByKey.get(key(b));
+    if (post === undefined) {
+      issues.push({ category: "SECRET_DATA_CHANGED", subject: key(b), detail: "Secret no longer present after power cycle" });
+    } else if (post.dataHash !== b.dataHash) {
+      issues.push({
+        category: "SECRET_DATA_CHANGED",
+        subject: key(b),
+        detail: "data hash changed — a create-only seeding Job re-ran, or the datastore lost the original value",
+      });
+    }
+  }
+  return issues;
+}
+
+/**
+ * Rule 4: no PersistentVolumeClaim may re-bind to a DIFFERENT volume across
+ * the power cycle — that is data loss, not recovery, even if the pod using it
+ * comes back Running. A PVC that was Bound before and is missing/unbound
+ * after is the same failure by a different route.
+ */
+export function pvcsReboundAfterRecovery(
+  before: readonly PvcBinding[],
+  after: readonly PvcBinding[],
+): readonly PowerCycleIssue[] {
+  const key = (p: { readonly namespace: string; readonly name: string }) => `${p.namespace}/${p.name}`;
+  const afterByKey = new Map(after.map((p) => [key(p), p]));
+  const issues: PowerCycleIssue[] = [];
+  for (const b of before) {
+    const post = afterByKey.get(key(b));
+    if (post === undefined) {
+      issues.push({ category: "PVC_REBOUND", subject: key(b), detail: `no longer Bound after power cycle (was volume ${b.volumeName})` });
+    } else if (post.volumeName !== b.volumeName) {
+      issues.push({ category: "PVC_REBOUND", subject: key(b), detail: `rebound from volume ${b.volumeName} to ${post.volumeName}` });
+    }
+  }
+  return issues;
+}
+
+/** RECOVERED iff every rule above found nothing — NOT_RECOVERED(app, reason) is exactly `issues` otherwise. */
+export function computePowerCycleVerdict(issues: readonly PowerCycleIssue[]): PowerCycleVerdict {
+  return { verdict: issues.length === 0 ? "RECOVERED" : "NOT_RECOVERED", issues };
+}
+
+export interface PowerCycleBaseline {
+  readonly apps: readonly AppConvergenceSnapshot[];
+  readonly secrets: readonly SecretSnapshot[];
+  readonly pvcBindings: readonly PvcBinding[];
+}
+
+export interface PowerCycleAfter {
+  readonly apps: readonly AppConvergenceSnapshot[];
+  readonly secrets: readonly SecretSnapshot[];
+  readonly pvcBindings: readonly PvcBinding[];
+}
+
+export interface PowerCycleSoakSample {
+  readonly before: readonly RestartSample[];
+  readonly after: readonly RestartSample[];
+}
+
+/** Composes rules 1-4 into one verdict — the ONLY place all four run together, so stage 8 and its tests-by-inspection cannot silently drop one. */
+export function evaluatePowerCycle(baseline: PowerCycleBaseline, after: PowerCycleAfter, soak: PowerCycleSoakSample): PowerCycleVerdict {
+  return computePowerCycleVerdict([
+    ...appsFailedToRecover(baseline.apps, after.apps),
+    ...containerCrashLoopsAfterRecovery(soak.before, soak.after),
+    ...secretDataChangedAfterRecovery(baseline.secrets, after.secrets),
+    ...pvcsReboundAfterRecovery(baseline.pvcBindings, after.pvcBindings),
+  ]);
+}
+
 // ═══════════════════════ Everything below needs Docker ═══════════════════
 
 export interface CommandResult {
@@ -1162,6 +1481,16 @@ export interface RunOptions {
    * payload in the kind/k3d lanes. `undefined` when `--serve-tree` was not passed.
    */
   readonly laneTreeManifests?: string;
+  /**
+   * WP19: run stage 8 (power-cycle recovery) after stage 7. `false` (the
+   * default) reproduces the exact stage 1-7 behaviour this option did not
+   * exist to change — stage 8 is purely additive.
+   */
+  readonly powerCycle: boolean;
+  /** Recovery budget, seconds: how long stage 8 waits for API/node/Cilium/Applications to come back after the hard kill. */
+  readonly powerCycleTimeoutSec: number;
+  /** Post-recovery soak window, seconds, for `containerCrashLoopsAfterRecovery` — same shape as stage 6's `soakSec`, a separate knob because the two soaks answer different questions. */
+  readonly powerCycleSoakSec: number;
   readonly log: (line: string) => void;
 }
 
@@ -1180,7 +1509,34 @@ export interface RunReport {
   readonly stages: readonly StageVerdict[];
   /** Per-app verdict table (WP1b spec item 5) — `[]` when stage 6 never ran (an earlier stage failed first). */
   readonly appVerdicts: readonly AppVerdict[];
+  /** WP19 stage 8's RECOVERED/NOT_RECOVERED(app, reason) verdict. `undefined` when `--power-cycle` was not passed or an earlier stage failed first. */
+  readonly powerCycleVerdict?: PowerCycleVerdict;
   readonly ok: boolean;
+}
+
+/**
+ * Make the container's ENTIRE mount tree recursively SHARED, inside its OWN
+ * mount namespace (not the Docker host's — see `buildDockerRunArgs`' note on
+ * why a container-create-time `--mount` rshared bind fails on Docker Desktop
+ * and is not portable to a bare-Linux CI runner either). Waits for the
+ * container to be exec-able first (up to 10s), matching NixOS metal's
+ * systemd-managed shared root.
+ *
+ * Called TWICE: once after the initial `docker run` in `runReplica`, and
+ * again after stage 8's `docker start` following the hard power-cut — a
+ * container restart gets a FRESH mount namespace, so the property does not
+ * survive it and must be re-applied exactly the same way.
+ */
+async function makeContainerMountTreeShared(runner: Runner, containerName: string, log: (line: string) => void): Promise<void> {
+  for (let attempt = 0; attempt < 10; attempt++) {
+    const probe = runner.run("docker", ["exec", containerName, "true"], { timeoutMs: 5_000 });
+    if (probe.status === 0) break;
+    await new Promise((r) => setTimeout(r, 1_000));
+  }
+  const shareResult = runner.run("docker", ["exec", containerName, "mount", "--make-rshared", "/"], { timeoutMs: 10_000 });
+  if (shareResult.status !== 0) {
+    log(`WARNING: could not make / recursively shared (${shareResult.stderr || shareResult.stdout}) — Cilium will likely fail with CreateContainerError`);
+  }
 }
 
 /** docker exec into the container and read /etc/rancher/k3s/k3s.yaml, rewriting the server URL to the published host port. */
@@ -1244,32 +1600,17 @@ export async function runReplica(opts: RunOptions): Promise<RunReport> {
 
   const kubeconfigPath = join(opts.scratchDir, "kubeconfig.yaml");
 
-  // Make the replica's ENTIRE mount tree recursively SHARED, inside its OWN
-  // mount namespace (not the Docker host's — see buildDockerRunArgs' note on
-  // why a container-create-time --mount rshared bind fails on Docker Desktop
-  // and is not portable to a bare-Linux CI runner either).
-  //
-  // MEASURED (2026-09-22), in order, each only visible once the previous one
-  // was fixed: Cilium's agent bind-mounts (1) bpffs at /sys/fs/bpf and (2) a
+  // Make the replica's ENTIRE mount tree recursively SHARED — MEASURED
+  // (2026-09-22), in order, each only visible once the previous one was
+  // fixed: Cilium's agent bind-mounts (1) bpffs at /sys/fs/bpf and (2) a
   // cgroup2 view at /run/cilium/cgroupv2, EACH so its sibling envoy container
   // in the same pod can see it. Docker's default propagation is PRIVATE for
   // both --tmpfs (/run) and the image's own /sys, so every cilium/
   // cilium-envoy container failed with "is not a shared [or slave] mount" —
   // first on /sys/fs/bpf, then on /run/cilium/cgroupv2 the moment the first
-  // one was fixed. Rather than chase each bind mount Cilium creates
-  // one-by-one, `mount --make-rshared /` covers this one and any future one
-  // the same way NixOS metal's systemd-managed shared root does.
-  for (let attempt = 0; attempt < 10; attempt++) {
-    const probe = runner.run("docker", ["exec", opts.containerName, "true"], { timeoutMs: 5_000 });
-    if (probe.status === 0) break;
-    await new Promise((r) => setTimeout(r, 1_000));
-  }
-  const shareResult = runner.run("docker", ["exec", opts.containerName, "mount", "--make-rshared", "/"], {
-    timeoutMs: 10_000,
-  });
-  if (shareResult.status !== 0) {
-    log(`WARNING: could not make / recursively shared (${shareResult.stderr || shareResult.stdout}) — Cilium will likely fail with CreateContainerError`);
-  }
+  // one was fixed. See `makeContainerMountTreeShared`'s own docstring for why
+  // this is a named helper rather than inline code: stage 8 needs it again.
+  await makeContainerMountTreeShared(runner, opts.containerName, log);
 
   try {
     // ── Stage 1: k3s API up ───────────────────────────────────────────
@@ -1684,10 +2025,185 @@ export async function runReplica(opts: RunOptions): Promise<RunReport> {
       evidence: { helmSecretSamples, argoSyncSamples },
     });
 
+    // ── Stage 8 (WP19): power-cycle recovery ──────────────────────────
+    //
+    // Optional (`--power-cycle`). Everything above only ever proves a FIRST
+    // boot converges; home hardware loses power, and nothing in this harness
+    // tested that a CONVERGED cluster survives an unclean stop. Baseline is
+    // recorded here, after stage 7's own 180s sampling window, so it reflects
+    // the cluster in its final settled state rather than a still-converging
+    // snapshot from immediately after stage 6.
+    let powerCycleVerdict: PowerCycleVerdict | undefined;
+    if (opts.powerCycle) {
+      const s8Start = nowSeconds();
+      const secretTargets = seededInternalSecretTargets();
+
+      log("stage 8: recording pre-power-cut baseline (apps, container restarts, seeded Secret hashes, PVC bindings) ...");
+      const baselineApps = parseAppConvergenceSnapshots(
+        kubectl(runner, kubeconfigPath, ["-n", "argocd", "get", "applications.argoproj.io", "-o", "json"], 30_000).stdout,
+      );
+      // Recorded for the report (WP19 spec item 1); the CRASHLOOP rule itself
+      // compares the post-recovery soak window instead (see
+      // `containerCrashLoopsAfterRecovery`'s own docstring for why) — a
+      // single restart caused by the power cut itself is expected, and
+      // comparing against THIS pre-cut baseline would flag every container
+      // the cut ever touched, not just ones that keep restarting afterward.
+      const baselineRestarts = parseRestartSamples(kubectl(runner, kubeconfigPath, ["get", "pods", "-A", "-o", "json"], 30_000).stdout);
+      const baselineSecrets = parseSecretSnapshots(
+        kubectl(runner, kubeconfigPath, ["get", "secrets", "-A", "-o", "json"], 30_000).stdout,
+        secretTargets,
+      );
+      const baselinePvcBindings = parsePvcBindings(
+        kubectl(runner, kubeconfigPath, ["get", "pvc", "-A", "-o", "json"], 30_000).stdout,
+      );
+      log(
+        `stage 8: baseline — ${String(baselineApps.length)} Application(s), ` +
+          `${String(baselineRestarts.length)} container(s), ` +
+          `${String(baselineSecrets.length)}/${String(secretTargets.length)} seeded Secret(s) found, ` +
+          `${String(baselinePvcBindings.length)} Bound PVC(s)`,
+      );
+
+      // Hard power-cut: SIGKILL, not a graceful stop — the failure mode this
+      // stage exists to test is an unclean stop (a literal unplugged USB
+      // installer), not a supervised shutdown k3s got to react to. Volumes,
+      // including the k3s data volume `buildDockerRunArgs` mounts, are named
+      // (not --rm) and survive `docker kill` untouched; only the container's
+      // own writable layer and running processes are destroyed.
+      const cutAt = nowSeconds();
+      log(`stage 8: hard power-cut — docker kill -s KILL ${opts.containerName}`);
+      const kill = runner.run("docker", ["kill", "-s", "KILL", opts.containerName], { timeoutMs: 30_000 });
+      if (kill.status !== 0) {
+        stages.push({
+          stage: 8,
+          name: "power-cycle recovery",
+          ok: false,
+          elapsedSeconds: nowSeconds() - s8Start,
+          detail: `docker kill failed: ${kill.stderr || kill.stdout}`,
+        });
+        return { plan: planSummary(plan), stages, appVerdicts, ok: false };
+      }
+      const restarted = runner.run("docker", ["start", opts.containerName], { timeoutMs: 30_000 });
+      const downtimeSeconds = nowSeconds() - cutAt;
+      if (restarted.status !== 0) {
+        stages.push({
+          stage: 8,
+          name: "power-cycle recovery",
+          ok: false,
+          elapsedSeconds: nowSeconds() - s8Start,
+          detail: `docker start failed after power-cut (downtime ${downtimeSeconds.toFixed(1)}s): ${restarted.stderr || restarted.stdout}`,
+        });
+        return { plan: planSummary(plan), stages, appVerdicts, ok: false };
+      }
+      log(`stage 8: container restarted (downtime ${downtimeSeconds.toFixed(1)}s) — waiting for recovery`);
+
+      // A restart gets a FRESH mount namespace — the recursively-shared
+      // mount tree the initial `docker run` established does not survive it.
+      await makeContainerMountTreeShared(runner, opts.containerName, log);
+
+      const recoveryDeadline = nowSeconds() + opts.powerCycleTimeoutSec;
+      let apiRecovered = false;
+      await waitUntil(recoveryDeadline, opts.pollMs, () => {
+        apiRecovered = kubectl(runner, kubeconfigPath, ["get", "--raw=/readyz"], 10_000).status === 0;
+        return apiRecovered;
+      });
+      let nodeRecovered = false;
+      if (apiRecovered) {
+        await waitUntil(recoveryDeadline, opts.pollMs, () => {
+          nodeRecovered = kubectl(runner, kubeconfigPath, ["wait", "--for=condition=Ready", "node", "--all", "--timeout=5s"]).status === 0;
+          return nodeRecovered;
+        });
+      }
+      let ciliumRecovered = false;
+      if (nodeRecovered) {
+        await waitUntil(recoveryDeadline, opts.pollMs, () => {
+          const pods = kubectl(runner, kubeconfigPath, ["-n", "kube-system", "get", "pods", "-l", "k8s-app=cilium", "--no-headers"]);
+          ciliumRecovered = pods.status === 0 && / Running /.test(pods.stdout);
+          return ciliumRecovered;
+        });
+      }
+      // Wait for every PREVIOUSLY-Healthy Application to be Healthy again —
+      // WHICHEVER FIRST against the same budget, same "don't pay the full
+      // timeout on a fast recovery" shape stage 6 already uses.
+      let recoveredApps: readonly AppConvergenceSnapshot[] = [];
+      let appsRecovered = false;
+      if (ciliumRecovered) {
+        await waitUntil(recoveryDeadline, opts.pollMs, () => {
+          const appsJson = kubectl(runner, kubeconfigPath, ["-n", "argocd", "get", "applications.argoproj.io", "-o", "json"], 30_000);
+          if (appsJson.status !== 0) return false;
+          recoveredApps = parseAppConvergenceSnapshots(appsJson.stdout);
+          appsRecovered = recoveredApps.length > 0 && allApplicationsSettled(recoveredApps) && appsFailedToRecover(baselineApps, recoveredApps).length === 0;
+          return appsRecovered;
+        });
+      }
+      // Final snapshot regardless of whether the loop above converged before the deadline —
+      // a timed-out recovery still needs its own evidence, not the LAST successful poll's.
+      const finalAppsJson = kubectl(runner, kubeconfigPath, ["-n", "argocd", "get", "applications.argoproj.io", "-o", "json"], 30_000);
+      if (finalAppsJson.status === 0) recoveredApps = parseAppConvergenceSnapshots(finalAppsJson.stdout);
+
+      log(
+        `stage 8: recovery poll done — api=${String(apiRecovered)} node=${String(nodeRecovered)} ` +
+          `cilium=${String(ciliumRecovered)} apps-recovered=${String(appsRecovered)} ` +
+          `(elapsed ${(nowSeconds() - cutAt).toFixed(1)}s of ${String(opts.powerCycleTimeoutSec)}s budget)`,
+      );
+
+      // Post-recovery soak: WP19 spec item 3, same shape as stage 6's own
+      // soak (`restartCountRegressions` + `classifySoakRegressions`, reused
+      // by `containerCrashLoopsAfterRecovery` above), a SEPARATE window
+      // because it answers a different question — steady after THIS restart,
+      // not steady since the original convergence.
+      const soakBefore = parseRestartSamples(kubectl(runner, kubeconfigPath, ["get", "pods", "-A", "-o", "json"], 30_000).stdout);
+      let soakAfter: readonly RestartSample[] = soakBefore;
+      const soakDeadline = nowSeconds() + opts.powerCycleSoakSec;
+      while (nowSeconds() < soakDeadline) {
+        const remainingMs = Math.max(0, (soakDeadline - nowSeconds()) * 1000);
+        await new Promise((r) => setTimeout(r, Math.min(opts.pollMs, remainingMs) || 1));
+        if (nowSeconds() >= soakDeadline) break;
+        soakAfter = parseRestartSamples(kubectl(runner, kubeconfigPath, ["get", "pods", "-A", "-o", "json"], 30_000).stdout);
+      }
+
+      const afterSecrets = parseSecretSnapshots(
+        kubectl(runner, kubeconfigPath, ["get", "secrets", "-A", "-o", "json"], 30_000).stdout,
+        secretTargets,
+      );
+      const afterPvcBindings = parsePvcBindings(kubectl(runner, kubeconfigPath, ["get", "pvc", "-A", "-o", "json"], 30_000).stdout);
+
+      const verdict = evaluatePowerCycle(
+        { apps: baselineApps, secrets: baselineSecrets, pvcBindings: baselinePvcBindings },
+        { apps: recoveredApps, secrets: afterSecrets, pvcBindings: afterPvcBindings },
+        { before: soakBefore, after: soakAfter },
+      );
+      powerCycleVerdict = verdict;
+
+      log(`stage 8: verdict=${verdict.verdict} (${String(verdict.issues.length)} issue(s))`);
+      for (const issue of verdict.issues) log(`  [${issue.category}] ${issue.subject}: ${issue.detail}`);
+
+      stages.push({
+        stage: 8,
+        name: "power-cycle recovery (hard kill -> restart -> converge -> soak)",
+        ok: verdict.verdict === "RECOVERED",
+        elapsedSeconds: nowSeconds() - s8Start,
+        detail:
+          `downtime=${downtimeSeconds.toFixed(1)}s api=${String(apiRecovered)} node=${String(nodeRecovered)} ` +
+          `cilium=${String(ciliumRecovered)} verdict=${verdict.verdict}` +
+          (verdict.issues.length > 0 ? `: ${verdict.issues.map((i) => `${i.category}(${i.subject})`).join(", ")}` : ""),
+        evidence: {
+          baselineApps,
+          baselineRestarts,
+          baselineSecrets: baselineSecrets.map((s) => ({ namespace: s.namespace, name: s.name, resourceVersion: s.resourceVersion })),
+          baselinePvcBindings,
+          recoveredApps,
+          soakRegressions: restartCountRegressions(soakBefore, soakAfter),
+          afterPvcBindings,
+          issues: verdict.issues,
+        },
+      });
+    }
+
     return {
       plan: planSummary(plan),
       stages,
       appVerdicts,
+      ...(powerCycleVerdict === undefined ? {} : { powerCycleVerdict }),
       ok: stages.every((s) => s.ok !== false),
     };
   } catch (e) {
@@ -1763,6 +2279,24 @@ export function renderAppVerdictMarkdown(appVerdicts: readonly AppVerdict[]): st
   );
 }
 
+/** Render stage 8's RECOVERED/NOT_RECOVERED(app, reason) verdict (WP19) as GitHub-flavoured markdown, for `$GITHUB_STEP_SUMMARY`. */
+export function renderPowerCycleVerdictMarkdown(verdict: PowerCycleVerdict | undefined): string {
+  const heading = "## first-boot replica: power-cycle recovery (stage 8)\n\n";
+  if (verdict === undefined) {
+    return `${heading}_stage 8 did not run — either \`--power-cycle\` was not passed or an earlier stage failed first._\n`;
+  }
+  if (verdict.verdict === "RECOVERED") {
+    return `${heading}**RECOVERED** — every previously-Healthy Application, every seeded Secret, and every PVC binding survived the hard power-cut.\n`;
+  }
+  const rows = verdict.issues
+    .map((i) => `| ${i.category} | \`${i.subject}\` | ${i.detail.replaceAll("|", "\\|")} |`)
+    .join("\n");
+  return (
+    `${heading}**NOT_RECOVERED** — ${String(verdict.issues.length)} issue(s):\n\n` +
+    `| category | subject | detail |\n| --- | --- | --- |\n${rows}\n`
+  );
+}
+
 function currentGitBranch(runner: Runner, repoRoot: string): string | null {
   const result = runner.run("git", ["-C", repoRoot, "rev-parse", "--abbrev-ref", "HEAD"]);
   if (result.status !== 0) return null;
@@ -1795,6 +2329,13 @@ async function main(): Promise<void> {
       "stage3-timeout-sec": { type: "string", default: "2400" },
       "stage4-timeout-sec": { type: "string", default: "900" },
       "stage567-timeout-sec": { type: "string", default: "600" },
+      // WP19: stage 8, an optional power-cycle recovery check after stage 7 —
+      // SIGKILL the container, restart it, and verify the cluster converges
+      // again with its data intact. Off by default (purely additive to
+      // stages 1-7); CI's own workflow passes it.
+      "power-cycle": { type: "boolean", default: false },
+      "power-cycle-timeout-sec": { type: "string", default: "900" },
+      "power-cycle-soak-sec": { type: "string", default: "300" },
     },
     strict: true,
   });
@@ -1893,6 +2434,9 @@ async function main(): Promise<void> {
     stage567TimeoutSec: Number(args["stage567-timeout-sec"] ?? "600"),
     soakSec: Number(args["soak-sec"] ?? "300"),
     ...(laneTreeManifests === undefined ? {} : { laneTreeManifests }),
+    powerCycle: args["power-cycle"] ?? false,
+    powerCycleTimeoutSec: Number(args["power-cycle-timeout-sec"] ?? "900"),
+    powerCycleSoakSec: Number(args["power-cycle-soak-sec"] ?? "300"),
     pollMs: 10_000,
     log: (line) => console.log(line),
   });
@@ -1903,7 +2447,7 @@ async function main(): Promise<void> {
     console.log(`  [${label}] stage ${String(s.stage)} ${s.name} (${s.elapsedSeconds.toFixed(1)}s): ${s.detail}`);
   }
 
-  const verdictMarkdown = renderAppVerdictMarkdown(report.appVerdicts);
+  const verdictMarkdown = renderAppVerdictMarkdown(report.appVerdicts) + `\n${renderPowerCycleVerdictMarkdown(report.powerCycleVerdict)}`;
   console.log(`\n${verdictMarkdown}`);
   const summaryPath = process.env["GITHUB_STEP_SUMMARY"];
   if (summaryPath !== undefined && summaryPath !== "") {

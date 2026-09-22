@@ -4,6 +4,16 @@
 # reports named stage verdicts, including ROOT_LANDED / ROOT_NEVER_LANDED for
 # the open question in k3s-server.nix's comment block #5.
 #
+# STAGE 8 (WP19, --power-cycle): after the roster converges, hard-kills the
+# container (docker kill -s KILL — an unclean stop, the failure mode this USB
+# installer's target hardware — home machines that lose power — actually
+# hits) and restarts it with the same data volume, then verifies every
+# previously-Healthy Application recovers, no container crash-loops, every
+# seeded internal Secret's data is unchanged (create-only idempotency), and
+# no PersistentVolumeClaim re-bound to a different volume (data loss).
+# RECOVERED / NOT_RECOVERED(app, reason) — see `evaluatePowerCycle` in
+# first-boot-replica.ts.
+#
 # A SEPARATE workflow from k8s-argocd-health-test.yml on purpose: that file's
 # `pull_request.paths` filter is shared across every job it defines (dry-run,
 # live-kind, live-k3d, ...), and none of those jobs care about
@@ -75,12 +85,14 @@ jobs:
   first-boot-replica:
     name: first-boot replica (real k3s manifest roster)
     runs-on: ubuntu-24.04
-    # MEASURED worst case with --serve-tree dev (WP1b): stage1 300s + stage2 900s +
-    # stage3 2400s + stage4 900s + stage6 convergence-wait 1800s + soak 300s + stage7
-    # 180s = 6780s (~113min) of harness budget alone, on top of checkout/toolchain
-    # install/docker pull. 75min was sized for the pre-WP1b flat stage567 sleep (600s
-    # max); raised with margin rather than tuned to the edge.
-    timeout-minutes: 150
+    # MEASURED worst case with --serve-tree dev (WP1b) + --power-cycle (WP19):
+    # stage1 300s + stage2 900s + stage3 2400s + stage4 900s + stage6
+    # convergence-wait 1800s + soak 300s + stage7 180s + stage8 recovery-wait
+    # 900s + stage8 soak 300s = 7980s (~133min) of harness budget alone, on top
+    # of checkout/toolchain install/docker pull. 75min was sized for the
+    # pre-WP1b flat stage567 sleep (600s max); raised with margin rather than
+    # tuned to the edge, twice now.
+    timeout-minutes: 180
     env:
       ZETA_HOST_TIER: full
       MISE_ENV: full
@@ -132,7 +144,10 @@ jobs:
             --stage3-timeout-sec 2400 \
             --stage4-timeout-sec 900 \
             --stage567-timeout-sec 1800 \
-            --soak-sec 300
+            --soak-sec 300 \
+            --power-cycle \
+            --power-cycle-timeout-sec 900 \
+            --power-cycle-soak-sec 300
 
       # NOTE: there is no separate "fetch logs from the cluster" step here.
       # `runReplica`'s own `finally` tears the container down (docker rm -f)
