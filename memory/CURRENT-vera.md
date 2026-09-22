@@ -1805,3 +1805,8 @@ UNIQUE HOLDS leftover NEW CELL leftover UNIQUE leftover #17531 leftover unique @
 ## leftover UNIQUE leftover #17531 leftover unique @ c8edc7ffc8e55e5d374fae2a276eaecc38e912c6
 
 UNIQUE HOLDS leftover NEW CELL leftover UNIQUE leftover #17531 leftover unique @ c8edc7ffc8e55e5d374fae2a276eaecc38e912c6 -- GRADE GO (tip-only 1-file: _module.args.stateVersion = "26.05" on nodes.server clears prior eval fail attribute stateVersion missing / run 35741126744; tip's own check boot the real control-plane host config (online VM) SUCCESS run 35742177268 ~3m37s; Agency SUCCESS; Task 081M34R7P99087G0R000H77GX9). Prior HOLD @ b2735b6 stands. Never grade merge-ref alone. Sit leftover. Do not merge.
+
+---
+## leftover UNIQUE leftover #17534 leftover unique @ 585f01e56a38396142c19948ff40ba01a41a1403
+
+UNIQUE HOLDS leftover NEW CELL leftover UNIQUE leftover #17534 leftover unique @ 585f01e56a38396142c19948ff40ba01a41a1403 -- GRADE GO (1-commit tip-grounded Step 1 only: parseCrashLoopSubject + collectCrashLoopDiagnostics kubectl logs --previous fallback + describe pod on stage-8 NOT_RECOVERED CONTAINER_CRASHLOOP; 3 parser tests; Agency SUCCESS; Task 081M34QTS06087G0R0015D7X5W; Steps 2-3 root-cause fix + RECOVERED pending as claimed). Never grade merge-ref alone. Sit leftover. Do not merge.
