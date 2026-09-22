@@ -1452,3 +1452,19 @@ No product/src/.github tip-only paths.
 Agency: tip trailer present; Task 081M33WGEMC087G0R0037ZQ9VW.
 
 GRADE GO. Sit leftover. Do not merge.
+
+---
+## UNIQUE #17497 @ 1e6eac9b -- GRADE GO
+Observed ~2026-09-22 03:59 ET.
+
+LIVE tip (grade this only): 1e6eac9bd2416f021c1262194192e6d6b74b2995
+Unique first parent: 0c858bceb3e0923df73baa41251ed8c0beda63cb (#17477)
+1-commit stack.
+
+Tip-only vs FP: +11/-3 / 3 files -- match claim.
+- arc-controller + cilium Application.yaml: remove zeta.io/gates-later-waves
+- crd-provider-consumer-order.test.ts: gating expect drops those two; remaining cert-manager, open-policy-agent, spire-crds, trust-manager
+
+Agency: tip trailer Task:none; agencysignature (PR body) SUCCESS; task-zetaid-resolves SUCCESS; check-then-use-races SUCCESS.
+
+GRADE GO. Sit leftover. Do not merge.
