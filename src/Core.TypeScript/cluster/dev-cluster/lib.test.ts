@@ -170,10 +170,18 @@ describe("composeOpenSearchAdminPassword — WP22 (081M35DFB9B087G0R003WD5WJ6)",
 
   // The falsifier: a generic hex-only draw (the pre-WP22 defect class, and the exact
   // shape that made OpenSearch crash-loop on metal before WP19c) reliably FAILS the
-  // regex -- proving the test above is not vacuous.
+  // regex -- proving the 1000-draw test above is not vacuous.
+  //
+  // Equality on `.test()`, not `not.toMatch`: R5 counts an absence search whose
+  // matcher names PASSWORD as one rendering of a leak, never its absence
+  // (`audit-check-arity-nonequality.ts`). `toBe(false)` is the same claim with
+  // arity that can fail. The hex character-class pin proves the subject is the
+  // pre-fix shape, not an accidentally-policy-compliant string.
   test("a plain hex draw (the pre-fix shape) fails the regex — proves the test can fail", () => {
     const plainHex = seededHex(7, 32);
-    expect(plainHex).not.toMatch(OPENSEARCH_ADMIN_PASSWORD_REGEX);
+    expect(plainHex).toHaveLength(64);
+    expect(/^[0-9a-f]+$/u.test(plainHex)).toBe(true);
+    expect(OPENSEARCH_ADMIN_PASSWORD_REGEX.test(plainHex)).toBe(false);
   });
 
   test("throws on a non-hex input rather than silently mapping garbage", () => {

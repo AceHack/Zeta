@@ -110,6 +110,16 @@ describe("R5 -- absence assertions under a taint / 2-safety claim are RECOGNISED
     const s = scanNonEquality("t.test.ts", ts('expect(published).toContain("ssh-ed25519");'));
     expect(s.every((x) => !isAbsenceAssertion(x))).toBe(true);
   });
+
+  test("not.toMatch on a PASSWORD-named regex is the WP22 live shape (081M35K3ZYD087G0R001JN6544)", () => {
+    const src = ts("expect(plainHex).not.toMatch(OPENSEARCH_ADMIN_PASSWORD_REGEX);");
+    expect(sitesOf("t.test.ts", src)).toHaveLength(1);
+  });
+
+  test("boolean equality on RegExp.test is not absence, even when the identifier names PASSWORD", () => {
+    const src = ts("expect(OPENSEARCH_ADMIN_PASSWORD_REGEX.test(plainHex)).toBe(false);");
+    expect(sitesOf("t.test.ts", src)).toHaveLength(0);
+  });
 });
 
 describe("R5 ratchets in BOTH directions", () => {
