@@ -873,6 +873,21 @@ export function resolveViolations(
 //       SkipDryRunOnMissingResource=true (platform's fix), or the consumer
 //       itself retries automatically (`selfHeal: true`) so a transient
 //       SyncFailed self-heals on the next reconcile.
+//   (d) UNOBSERVED-GATE -- a gating-annotated app must be recorded in
+//       GATING_EVIDENCE as observedHealthy: true. Static safety (a)+(b) is
+//       necessary but NOT sufficient: cilium passed every static check
+//       (zero secrets, not manual-sync, bootstrap-installed, a real CRD
+//       provider) and was still wrong to gate on -- architect review, PR
+//       #17477, 2026-09-22: first-boot-replica.yml (the real k3s-in-Docker
+//       bootstrap lane) showed the cilium Application itself staying
+//       Synced/Progressing for 15+ minutes with every cilium POD Running
+//       (run 35696323545, ungated on main), because some child resource
+//       under gitops-engine's default Cilium health check never reaches
+//       Ready. No static analysis of this repo's own manifests can see that
+//       -- it is a fact about the upstream chart's runtime behavior, only
+//       observable by actually booting it. Hence: the bar for gating is
+//       OBSERVED Healthy on a real bootstrap, not merely "nothing in this
+//       repo's tree looks unsafe."
 // ---------------------------------------------------------------------------
 
 export type GatingViolationKind =
@@ -880,6 +895,7 @@ export type GatingViolationKind =
   | "UNSAFE-GATE-SECRET"
   | "UNSAFE-GATE-MANUAL-SYNC"
   | "UNSAFE-GATE-CEREMONY"
+  | "UNOBSERVED-GATE"
   | "UNPROTECTED-NON-GATING-PROVIDER";
 
 export interface GatingViolation {
@@ -915,13 +931,84 @@ export const CEREMONY_GATED_APPS: ReadonlyMap<string, string> = new Map([
   ],
 ]);
 
+export interface GatingEvidence {
+  /** True only once a first-boot-replica run has shown this Application reach real ArgoCD Healthy. */
+  readonly observedHealthy: boolean;
+  /** What was observed, and where -- a run id/link or the reasoned basis for a PENDING entry. */
+  readonly evidence: string;
+}
+
+/**
+ * The evidence ledger check (d) reads. An app absent from this map, or
+ * present with `observedHealthy: false`, fails UNOBSERVED-GATE if it also
+ * carries the annotation -- so adding the annotation and adding a TRUE
+ * entry here must happen together, and the entry must name real evidence,
+ * not a restatement of the static checks (a)/(b) already run.
+ *
+ * cilium is deliberately ABSENT: it is not gating-annotated (see its
+ * Application.yaml), so it raises no violation here, but it is also not
+ * merely unlisted-by-oversight -- see the file-level comment above (d).
+ */
+// PENDING, HONESTLY: none of the five entries below have a real
+// first-boot-replica run behind them yet as of this commit. cilium's own
+// static checks all passed and it was STILL wrong to gate on -- so asserting
+// `observedHealthy: true` here without having actually watched a run would
+// repeat exactly the mistake this check exists to catch, just for five more
+// apps. gatingInvariantViolations therefore currently flags all five as
+// UNOBSERVED-GATE; that is the honest state of the branch until
+// first-boot-replica.yml is run against it and each entry is updated with
+// the real run id and what was observed, same discipline as
+// every-bug-has-economic-value.md ("the price is ordinal + witnessed ...
+// unwitnessed or unsubstantiated is refused").
+export const GATING_EVIDENCE: ReadonlyMap<string, GatingEvidence> = new Map([
+  [
+    "cert-manager",
+    {
+      observedHealthy: false,
+      evidence: "PENDING -- awaiting a first-boot-replica.yml run on this branch; not yet observed.",
+    },
+  ],
+  [
+    "trust-manager",
+    {
+      observedHealthy: false,
+      evidence: "PENDING -- awaiting a first-boot-replica.yml run on this branch; not yet observed.",
+    },
+  ],
+  [
+    "open-policy-agent",
+    {
+      observedHealthy: false,
+      evidence: "PENDING -- awaiting a first-boot-replica.yml run on this branch; not yet observed.",
+    },
+  ],
+  [
+    "spire-crds",
+    {
+      observedHealthy: false,
+      evidence: "PENDING -- awaiting a first-boot-replica.yml run on this branch; not yet observed.",
+    },
+  ],
+  [
+    "arc-controller",
+    {
+      observedHealthy: false,
+      evidence: "PENDING -- awaiting a first-boot-replica.yml run on this branch; not yet observed.",
+    },
+  ],
+]);
+
 /** Every Secret an Application references (valuesObject + raw pod-spec), deduped by name. */
 function secretNamesFor(app: string, repoRoot: string): readonly string[] {
   const all = [...collectSecretReferences(repoRoot), ...collectRawSecretReferences(repoRoot)];
   return [...new Set(all.filter((r) => r.app === app).map((r) => r.secretName))];
 }
 
-export function gatingInvariantViolations(index: AppManifestIndex, repoRoot = REPO_ROOT): readonly GatingViolation[] {
+export function gatingInvariantViolations(
+  index: AppManifestIndex,
+  repoRoot = REPO_ROOT,
+  evidence: ReadonlyMap<string, GatingEvidence> = GATING_EVIDENCE,
+): readonly GatingViolation[] {
   const violations: GatingViolation[] = [];
   const treeMinted = collectTreeMintedSecretNames(repoRoot);
 
@@ -982,6 +1069,21 @@ export function gatingInvariantViolations(index: AppManifestIndex, repoRoot = RE
         kind: "UNSAFE-GATE-CEREMONY",
         app,
         detail: `${app} carries ${GATING_ANNOTATION}: "true" but is in CEREMONY_GATED_APPS: ${ceremony}`,
+      });
+    }
+
+    // (d) observed Healthy on a real bootstrap, not just statically safe.
+    const appEvidence = evidence.get(app);
+    if (appEvidence === undefined || !appEvidence.observedHealthy) {
+      violations.push({
+        kind: "UNOBSERVED-GATE",
+        app,
+        detail:
+          `${app} carries ${GATING_ANNOTATION}: "true" but GATING_EVIDENCE has ` +
+          `${appEvidence === undefined ? "no entry for it" : "observedHealthy: false"} -- static safety ((a)/(b)) is ` +
+          "necessary but not sufficient (cilium proved this: it passed every static check and still never reaches " +
+          "real Healthy on a first-boot-replica run). Record a first-boot-replica run id and what was observed " +
+          "before gating on this app.",
       });
     }
   }

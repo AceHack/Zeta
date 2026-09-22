@@ -8,18 +8,35 @@ kind: Application
 metadata:
   annotations:
     argocd.argoproj.io/sync-wave: "-80"
-    # OPT-IN HEALTH GATING (081M33T23ZQ087G0R002ZYRHDG). Cilium provides
-    # cilium.io CRDs cilium-lb-ipam consumes (CiliumLoadBalancerIPPool,
-    # CiliumL2AnnouncementPolicy) and IS the pod-networking precondition every
-    # later Application already assumes (the CNI-floor invariant in
-    # derive-sync-waves.ts). Verified metal-safe: zero Secret/existingSecret
-    # references anywhere in this Application (collectSecretReferences /
-    # collectRawSecretReferences both empty), not declared manual-sync, and
-    # bootstrap-installed (cilium-install.yaml applies it before ArgoCD
-    # exists at all, so it has the longest possible head start to be Ready).
-    # crd-provider-consumer-order.ts's gating invariants (a)/(b) check this
-    # annotation stays justified.
-    zeta.io/gates-later-waves: "true"
+    # OPT-IN HEALTH GATING (081M33T23ZQ087G0R002ZYRHDG) — NOT ANNOTATED HERE,
+    # AND THAT IS DELIBERATE, NOT AN OMISSION.
+    #
+    # Cilium IS a real CRD provider (cilium.io CRDs cilium-lb-ipam consumes:
+    # CiliumLoadBalancerIPPool, CiliumL2AnnouncementPolicy) and would otherwise
+    # be a strong gating candidate — it's the CNI-floor invariant every later
+    # Application already assumes (derive-sync-waves.ts), zero Secret refs,
+    # not manual-sync, bootstrap-installed.
+    #
+    # But static safety (no secrets, not manual-sync) is NOT the bar. The bar
+    # is OBSERVED Healthy on the real bootstrap path (architect review, PR
+    # #17477, 2026-09-22): the first-boot-replica.yml lane (real k3s in
+    # Docker, src/Core.TypeScript/cluster/first-boot-replica.ts) showed only
+    # 3 Applications after 480s on THIS branch while gating was on cilium —
+    # argocd Healthy, cilium stuck Synced/Progressing, zeta-root
+    # OutOfSync/Progressing — vs. ~50 on main ungated. Worse: even on main,
+    # UNGATED, run 35696323545 showed the cilium Application itself staying
+    # Synced/Progressing for 15+ minutes while every cilium pod was Running —
+    # some child resource under gitops-engine's default Cilium health check
+    # never reaches Ready even though the workload is up. Root cause not yet
+    # identified; a separate investigation is tracking which resource.
+    #
+    # So: no gating annotation on cilium until that resource is found AND a
+    # first-boot-replica run demonstrates cilium reaching real Healthy. See
+    # the evidence table in crd-provider-consumer-order.ts
+    # (GATING_EVIDENCE / requireObservedHealthyEvidence) — gating invariant
+    # (d) now refuses this annotation on any app without a recorded
+    # first-boot-replica PASS, so re-adding it here without that evidence
+    # fails CI, not just review.
   name: cilium
   namespace: argocd
   finalizers:

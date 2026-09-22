@@ -515,7 +515,12 @@ describe("gatingInvariantViolations", () => {
     try {
       const bootstrapApps = new Set<string>();
       const index = indexFixture(fx, bootstrapApps);
-      expect(gatingInvariantViolations(index, fx.root)).toEqual([]);
+      // Check (d) needs a witnessed evidence entry -- this fixture stands in
+      // for "a real first-boot-replica run observed `provider` Healthy",
+      // injected rather than added to the real GATING_EVIDENCE table so this
+      // synthetic fixture app can never be mistaken for a real one.
+      const evidence = new Map([["provider", { observedHealthy: true, evidence: "fixture: stands in for a witnessed run" }]]);
+      expect(gatingInvariantViolations(index, fx.root, evidence)).toEqual([]);
     } finally {
       fx.cleanup();
     }
@@ -575,6 +580,35 @@ describe("gatingInvariantViolations", () => {
       const index = indexFixture(fx);
       const violations = gatingInvariantViolations(index, fx.root);
       expect(violations.some((v) => v.kind === "UNSAFE-GATE-CEREMONY" && v.app === "openbao")).toBe(true);
+    } finally {
+      fx.cleanup();
+    }
+  });
+
+  test("UNOBSERVED-GATE: gating app with no GATING_EVIDENCE entry", () => {
+    const fx = gatingFixture([
+      { name: "provider", wave: -10, gating: true, workload: CRD_DOC("example.com", "Widget") },
+      { name: "consumer", wave: 0, selfHeal: true, workload: CR_DOC("example.com", "Widget") },
+    ]);
+    try {
+      const index = indexFixture(fx);
+      const violations = gatingInvariantViolations(index, fx.root); // default (real, empty-for-"provider") evidence map
+      expect(violations.some((v) => v.kind === "UNOBSERVED-GATE" && v.app === "provider")).toBe(true);
+    } finally {
+      fx.cleanup();
+    }
+  });
+
+  test("UNOBSERVED-GATE: gating app with an observedHealthy: false entry", () => {
+    const fx = gatingFixture([
+      { name: "provider", wave: -10, gating: true, workload: CRD_DOC("example.com", "Widget") },
+      { name: "consumer", wave: 0, selfHeal: true, workload: CR_DOC("example.com", "Widget") },
+    ]);
+    try {
+      const index = indexFixture(fx);
+      const evidence = new Map([["provider", { observedHealthy: false, evidence: "PENDING" }]]);
+      const violations = gatingInvariantViolations(index, fx.root, evidence);
+      expect(violations.some((v) => v.kind === "UNOBSERVED-GATE" && v.app === "provider")).toBe(true);
     } finally {
       fx.cleanup();
     }
@@ -649,7 +683,11 @@ describe("gatingInvariantViolations", () => {
       const apps = readShippedApplications(root);
       const audit = auditCrdOrder(apps, (p) => readFileSync(resolve(root, p), "utf8"), root);
       const gating = [...audit.index.sourceByApp.entries()].filter(([, s]) => s.gatingAnnotated).map(([n]) => n).sort();
-      expect(gating).toEqual(["arc-controller", "cert-manager", "cilium", "open-policy-agent", "spire-crds", "trust-manager"]);
+      // cilium REMOVED from the gating set (081M33T23ZQ087G0R002ZYRHDG, architect review
+      // 2026-09-22): it passed every static check ((a)/(b)) and STILL never reaches real
+      // Healthy on a first-boot-replica run -- see check (d) / GATING_EVIDENCE / the
+      // Application.yaml comment. This is the live tree's gating set as of that finding.
+      expect(gating).toEqual(["arc-controller", "cert-manager", "open-policy-agent", "spire-crds", "trust-manager"]);
       expect(audit.gatingViolations).toEqual([]);
     },
     180_000,
