@@ -8,6 +8,18 @@ kind: Application
 metadata:
   annotations:
     argocd.argoproj.io/sync-wave: "-80"
+    # OPT-IN HEALTH GATING (081M33T23ZQ087G0R002ZYRHDG). Cilium provides
+    # cilium.io CRDs cilium-lb-ipam consumes (CiliumLoadBalancerIPPool,
+    # CiliumL2AnnouncementPolicy) and IS the pod-networking precondition every
+    # later Application already assumes (the CNI-floor invariant in
+    # derive-sync-waves.ts). Verified metal-safe: zero Secret/existingSecret
+    # references anywhere in this Application (collectSecretReferences /
+    # collectRawSecretReferences both empty), not declared manual-sync, and
+    # bootstrap-installed (cilium-install.yaml applies it before ArgoCD
+    # exists at all, so it has the longest possible head start to be Ready).
+    # crd-provider-consumer-order.ts's gating invariants (a)/(b) check this
+    # annotation stays justified.
+    zeta.io/gates-later-waves: "true"
   name: cilium
   namespace: argocd
   finalizers:

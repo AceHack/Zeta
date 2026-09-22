@@ -78,6 +78,18 @@ on:
       - ".mise.full.toml"
       - "package.json"
       - "bun.lock"
+      # ADDED 081M1...WP3: the CRD provider/consumer ordering analyzer and the
+      # secret-reference audit it shares a workflow job with. Both changed the
+      # `full-ai-cluster/k8s/applications/**` tree AND the checkers themselves,
+      # so both paths matter -- a checker edit with no manifest edit must still
+      # re-run, the same reasoning as `full-ai-cluster/k8s/tests/**` above.
+      - "src/Core.TypeScript/cluster/crd-provider-consumer-order.ts"
+      - "src/Core.TypeScript/cluster/crd-provider-consumer-order.test.ts"
+      - "src/Core.TypeScript/cluster/audit-existing-secret-is-minted.ts"
+      - "src/Core.TypeScript/cluster/audit-existing-secret-is-minted.test.ts"
+      - "src/Core.TypeScript/cluster/existing-secret-is-minted.baseline.json"
+      - "src/Core.TypeScript/hygiene/audit-argocd-pin-parity.ts"
+      - "src/Core.TypeScript/hygiene/audit-argocd-pin-parity.test.ts"
   push:
     branches: [main]
     paths:
@@ -101,6 +113,14 @@ on:
       - ".mise.full.toml"
       - "package.json"
       - "bun.lock"
+      # See the note on the pull_request trigger above.
+      - "src/Core.TypeScript/cluster/crd-provider-consumer-order.ts"
+      - "src/Core.TypeScript/cluster/crd-provider-consumer-order.test.ts"
+      - "src/Core.TypeScript/cluster/audit-existing-secret-is-minted.ts"
+      - "src/Core.TypeScript/cluster/audit-existing-secret-is-minted.test.ts"
+      - "src/Core.TypeScript/cluster/existing-secret-is-minted.baseline.json"
+      - "src/Core.TypeScript/hygiene/audit-argocd-pin-parity.ts"
+      - "src/Core.TypeScript/hygiene/audit-argocd-pin-parity.test.ts"
   schedule:
     # DAILY (was "0 9 * * 1", weekly Monday) — Aaron 2026-08-13: "it should be
     # more often than weekly on the k8s testing". The k8s-argocd lane moved to
@@ -235,6 +255,42 @@ jobs:
         # Kustomization verbatim — if it ever goes green, the cluster can
         # silently stop bootstrapping again. 2.0 s measured locally.
         run: bun test full-ai-cluster/k8s/tests/validate-bootstrap.test.ts
+
+      - name: ArgoCD chart-pin + Application-CRD health-lua parity (offline, 5 sites)
+        # ADDED 081M1...WP3. Checks the SAME five install sites
+        # audit-argocd-pin-parity.ts already covers for chart VERSION, now also
+        # for `configs.cm["resource.customizations.health.argoproj.io_Application"]`
+        # -- the lua that restores Application-CRD health assessment (removed
+        # upstream in ArgoCD 1.8), without which sync-wave gating among the
+        # ~50 child Applications under zeta-root only orders the apply, never
+        # the convergence. Offline, no cluster, ~0.1 s.
+        run: bun src/Core.TypeScript/hygiene/audit-argocd-pin-parity.ts
+
+      - name: Prove the ArgoCD pin-parity checker can go red (mutation-style fixtures)
+        run: bun test src/Core.TypeScript/hygiene/audit-argocd-pin-parity.test.ts
+
+      - name: Sync-wave derivation, including the manual-sync-floor gating check
+        # ADDED 081M1...WP3. `derive-sync-waves.ts` is already wired into
+        # k8s-argocd-health-test.yml; run here too because THIS workflow is the
+        # one whose `paths:` trigger actually covers every
+        # `full-ai-cluster/k8s/applications/**` edit, and the manual-sync-floor
+        # finding (a declared manual-sync Application, e.g. cdi/kubevirt/
+        # ollama/vllm, sitting before an automated Application's wave) is
+        # exactly the class of defect this workflow exists to catch before it
+        # reaches a real cluster. Offline, no cluster.
+        run: bun test src/Core.TypeScript/cluster/derive-sync-waves.test.ts
+
+      - name: Secret references — valuesObject AND raw pod-spec (imagePullSecrets/envFrom/secretKeyRef/volumes)
+        # ADDED 081M1...WP3. Extends the existing valuesObject-only scan with a
+        # raw-manifest scan (`collectRawSecretReferences`) checked against what
+        # the TREE ITSELF mints (`collectTreeMintedSecretNames`) rather than the
+        # dev/CI bootstrap roster -- the metal-real minted set. Both scans and
+        # their shared baseline (existing-secret-is-minted.baseline.json) are
+        # offline, no cluster, ~0.2 s.
+        run: bun src/Core.TypeScript/cluster/audit-existing-secret-is-minted.ts
+
+      - name: Prove the secret-reference audit can go red (fixtures)
+        run: bun test src/Core.TypeScript/cluster/audit-existing-secret-is-minted.test.ts
 
   charts:
     # Network half: does the pinned chart:version actually exist, does it
@@ -451,6 +507,43 @@ jobs:
         # code as separate values, and refuses to report a count at all if no
         # 'Results:' line is present -- an empty run is not zero failures.
         run: bun full-ai-cluster/k8s/tests/ratchet-app-failures.ts
+
+      - name: CRD provider/consumer sync-wave ordering (helm template --include-crds over every Application)
+        # ADDED 081M1...WP3. Renders every Helm-sourced Application (reads
+        # directory-sourced ones straight off disk) and checks that every
+        # consumed non-core kind has a PROVIDER -- a CRD from another
+        # Application, a bootstrap-installed component (cilium/cert-manager/
+        # external-secrets/spire/trust-manager/gateway-api-crds, always
+        # available before ArgoCD exists), or a declared operator-runtime
+        # registration (kubevirt/cdi/cilium's own CRDs, Gatekeeper's per-
+        # ConstraintTemplate CRDs) -- that reconciles STRICTLY BEFORE the
+        # consumer, or that the consumer carries
+        # `SkipDryRunOnMissingResource=true`. This is the exact shape of the
+        # `platform -> kube-prometheus-stack` finding already registered in
+        # sync-wave-dependency-graph.yaml's ORDER_ADJUDICATION_PENDING, turned
+        # into a check that runs on every PR instead of a one-off manual scan.
+        #
+        # WHY THIS IS NO LONGER COSMETIC: with
+        # `resource.customizations.health.argoproj.io_Application` restored in
+        # argocd-cm (this same change), sync-wave gating across zeta-root's
+        # ~50 child Applications WAITS for each wave to be Healthy before the
+        # next one starts. A CRD-ordering violation that used to self-heal on
+        # the next reconcile can now leave an Application permanently
+        # SyncFailed/non-Healthy, wedging every later wave. This step is what
+        # makes that class of defect a PR-time failure instead of a metal-time
+        # deadlock.
+        #
+        # No `--allow-unrendered`: helm is confirmed on PATH above, so a render
+        # failure here is a real defect, never a missing-tool skip.
+        run: bun src/Core.TypeScript/cluster/crd-provider-consumer-order.ts
+
+      - name: Prove the CRD-order analyzer can go red (synthetic falsifiers + live-tree regression guard)
+        # Two halves (see the file's own header): synthetic cases drive each
+        # finding kind (NO-PROVIDER, ORDER, WEBHOOK-SAME-WAVE) with an injected
+        # render function, no helm needed; the live-tree half (helm IS on PATH
+        # in this job) re-derives the real audit and pins the
+        # platform/monitoring.yaml SkipDryRunOnMissingResource fix.
+        run: bun test src/Core.TypeScript/cluster/crd-provider-consumer-order.test.ts
 
       - name: Image resolvability (offline, snapshot-gated) — every image the first-boot roster + Applications pull
         # ADDED 2026-09-22. Renders the SAME first-boot roster + Applications this

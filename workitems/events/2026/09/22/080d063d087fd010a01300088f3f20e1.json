@@ -1,0 +1,14 @@
+{
+  "id": "080d063d087fd010a01300088f3f20e1",
+  "at": "2026-09-22T05:40:16.506Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M33T23ZQ087G0R002ZYRHDG",
+    "type": "task",
+    "title": "Argo CD sync-wave Application health gating + CRD provider/consumer ordering analyzer",
+    "slug": "argo-cd-sync-wave-application-health-gating-crd-provider-con",
+    "priority": "P2",
+    "filename": "081M33T23ZQ087G0R002ZYRHDG-argo-cd-sync-wave-application-health-gating-crd-provider-con.md"
+  }
+}

@@ -109,6 +109,39 @@ spec:
         # TLS terminates at ingress once ingress lands; until then the
         # port-forward above is loopback-only.
         server.insecure: true
+      cm:
+        # LOCKSTEP with full-ai-cluster/k8s/bootstrap/argocd-install.yaml and
+        # full-ai-cluster/k8s/applications/argocd/Application.yaml -- see the
+        # full explanation on the full-ai-cluster copy (the OPT-IN redesign,
+        # 081M33T23ZQ087G0R002ZYRHDG: gating on EVERY Application converts one
+        # never-Healthy app -- platform's unminted ghcr-pull, openbao's sealed
+        # state, any manual-sync app -- into a whole-cluster stall, so health
+        # is propagated to wave ordering only for a child annotated
+        # `zeta.io/gates-later-waves: "true"`). Restores Application-CRD
+        # health assessment (removed upstream in ArgoCD 1.8; argo-cd
+        # docs/operator-manual/upgrading/1.7-1.8.md, quoted verbatim inside
+        # the annotation guard below), which sync-wave gating for the
+        # annotated subset depends on.
+        # `audit-argocd-pin-parity.ts` checks this key for drift across all
+        # three sites the same way it already checks the chart version.
+        resource.customizations.health.argoproj.io_Application: |
+          hs = {}
+          hs.status = "Healthy"
+          hs.message = "non-gating: health not propagated to wave ordering (zeta.io/gates-later-waves not set)"
+          if obj.metadata ~= nil and obj.metadata.annotations ~= nil and obj.metadata.annotations["zeta.io/gates-later-waves"] == "true" then
+            -- Upstream lua, verbatim, from argo-cd docs/operator-manual/upgrading/1.7-1.8.md.
+            hs.status = "Progressing"
+            hs.message = ""
+            if obj.status ~= nil then
+              if obj.status.health ~= nil then
+                hs.status = obj.status.health.status
+                if obj.status.health.message ~= nil then
+                  hs.message = obj.status.health.message
+                end
+              end
+            end
+          end
+          return hs
     notifications:
       enabled: false
     dex:

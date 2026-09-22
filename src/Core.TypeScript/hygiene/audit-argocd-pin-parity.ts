@@ -97,6 +97,53 @@ export function parseApplicationTargetRevision(yamlText: string): string | null 
 }
 
 /**
+ * The `configs.cm` key that restores Application-CRD health assessment
+ * (removed upstream in ArgoCD 1.8; see the long comment beside both sites).
+ * Named as a constant because it is read from TWO different YAML shapes below
+ * and a typo in one copy of the literal would make this checker compare the
+ * wrong key against nothing rather than catch a real drift.
+ */
+export const APPLICATION_HEALTH_LUA_KEY = "resource.customizations.health.argoproj.io_Application";
+
+/**
+ * `configs.cm[APPLICATION_HEALTH_LUA_KEY]` out of a `helm.cattle.io/v1`
+ * HelmChart's `spec.valuesContent` -- a YAML DOCUMENT embedded as a STRING
+ * inside the outer YAML document, so it needs its own parse pass. Returns
+ * null when `valuesContent` is absent/not-a-string, or the key is absent/not-
+ * a-string; both are reported as "missing" by the caller rather than crashing
+ * the whole audit on one malformed site.
+ */
+export function parseHelmChartHealthLua(yamlText: string): string | null {
+  const valuesContent = get(parseYaml(yamlText), ["spec", "valuesContent"]);
+  if (typeof valuesContent !== "string") return null;
+  let inner: unknown;
+  try {
+    inner = parseYaml(valuesContent);
+  } catch {
+    return null;
+  }
+  const lua = get(inner, ["configs", "cm", APPLICATION_HEALTH_LUA_KEY]);
+  return typeof lua === "string" ? lua : null;
+}
+
+/**
+ * The same key out of an ArgoCD Application's `spec.source.helm.valuesObject`
+ * -- already a parsed YAML mapping, no nested parse needed.
+ */
+export function parseApplicationHealthLua(yamlText: string): string | null {
+  const lua = get(parseYaml(yamlText), [
+    "spec",
+    "source",
+    "helm",
+    "valuesObject",
+    "configs",
+    "cm",
+    APPLICATION_HEALTH_LUA_KEY,
+  ]);
+  return typeof lua === "string" ? lua : null;
+}
+
+/**
  * Every `version:` belonging to an `argo/argo-cd` install in the dev-cluster source.
  *
  * ANCHORED ON THE CHART NAME, not on a bare `version:` scan: that file installs several
@@ -179,6 +226,58 @@ export function checkPins(
     findings.push({
       ok: true,
       message: `all ${String(pins.length)} ArgoCD install sites pin argo-cd ${distinct[0] ?? ""}`,
+    });
+  }
+
+  // ── Application-CRD health-check lua parity ────────────────────────────
+  //
+  // SAME SHAPE AS THE VERSION CHECK ABOVE, same reason: this bootstrap installs
+  // ArgoCD first and the self-managed Application then adopts it, so a
+  // divergent `configs.cm` between the two would flip health-assessment
+  // semantics for `argoproj.io/Application` on ArgoCD's very first reconcile —
+  // either silently losing the sync-wave gating this key exists to restore, or
+  // (if the two disagreed in content rather than presence) making gating
+  // behave differently depending on which manifest last won a `selfHeal`.
+  const luaPins: Pin[] = [];
+  for (const site of HELMCHART_PIN_FILES) {
+    const text = helmChartTexts[site];
+    const lua = text === undefined ? null : parseHelmChartHealthLua(text);
+    if (lua === null || lua.trim() === "") {
+      findings.push({
+        ok: false,
+        message:
+          `${site}: no non-empty \`configs.cm["${APPLICATION_HEALTH_LUA_KEY}"]\` in valuesContent — ` +
+          "Application-CRD health assessment is not restored here, so sync-wave gating among child " +
+          "Applications only orders the apply, never the convergence",
+      });
+    } else {
+      luaPins.push({ site, version: lua });
+    }
+  }
+  const appLua = parseApplicationHealthLua(applicationText);
+  if (appLua === null || appLua.trim() === "") {
+    findings.push({
+      ok: false,
+      message:
+        `${APPLICATION_PIN_FILE}: no non-empty \`spec.source.helm.valuesObject.configs.cm["${APPLICATION_HEALTH_LUA_KEY}"]\` — ` +
+        "same gap as the HelmChart sites above",
+    });
+  } else {
+    luaPins.push({ site: APPLICATION_PIN_FILE, version: appLua });
+  }
+  const distinctLua = [...new Set(luaPins.map((pin) => pin.version))];
+  if (distinctLua.length > 1) {
+    findings.push({
+      ok: false,
+      message:
+        `Application-CRD health-check lua DISAGREES across ${String(luaPins.length)} sites: ` +
+        luaPins.map((pin) => pin.site).join(", ") +
+        " — a diverging copy makes wave-gating behave differently depending on which manifest last reconciled",
+    });
+  } else if (distinctLua.length === 1 && luaPins.length === HELMCHART_PIN_FILES.length + 1) {
+    findings.push({
+      ok: true,
+      message: `all ${String(luaPins.length)} sites carry an identical ${APPLICATION_HEALTH_LUA_KEY} lua`,
     });
   }
 

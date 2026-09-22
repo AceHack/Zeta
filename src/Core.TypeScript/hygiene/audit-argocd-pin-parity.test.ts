@@ -10,17 +10,27 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 
 import {
+  APPLICATION_HEALTH_LUA_KEY,
   APPLICATION_PIN_FILE,
   checkPins,
   DEV_CLUSTER_PIN_FILE,
   EXPECTED_DEV_CLUSTER_PINS,
   HELMCHART_PIN_FILES,
+  parseApplicationHealthLua,
   parseApplicationTargetRevision,
   parseDevClusterPins,
+  parseHelmChartHealthLua,
   parseHelmChartVersion,
 } from "./audit-argocd-pin-parity.ts";
 
-const HELM_CHART = (version: string): string => `apiVersion: helm.cattle.io/v1
+/** A well-formed, non-empty lua body -- content does not matter to the parity check, only equality. */
+const VALID_LUA = 'hs = {}\nhs.status = "Healthy"\nreturn hs';
+
+// Fixtures default to a VALID, AGREEING lua on every site so the pre-existing
+// version-parity cases (which say nothing about the lua) do not spuriously
+// fail the new health-lua check. `lua: null` opts a fixture OUT of the key
+// entirely, for the tests that exercise a missing key.
+const HELM_CHART = (version: string, lua: string | null = VALID_LUA): string => `apiVersion: helm.cattle.io/v1
 kind: HelmChart
 metadata:
   name: argocd
@@ -30,9 +40,20 @@ spec:
   repo: https://argoproj.github.io/argo-helm
   version: ${version}
   targetNamespace: argocd
+  valuesContent: |-
+    configs:
+      params:
+        server.insecure: true${
+          lua === null
+            ? ""
+            : `
+      cm:
+        ${APPLICATION_HEALTH_LUA_KEY}: |
+          ${lua.split("\n").join("\n          ")}`
+        }
 `;
 
-const APPLICATION = (version: string): string => `apiVersion: argoproj.io/v1alpha1
+const APPLICATION = (version: string, lua: string | null = VALID_LUA): string => `apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
   name: argocd
@@ -41,6 +62,18 @@ spec:
     repoURL: https://argoproj.github.io/argo-helm
     chart: argo-cd
     targetRevision: ${version}
+    helm:
+      valuesObject:
+        configs:
+          params:
+            server.insecure: true${
+              lua === null
+                ? ""
+                : `
+          cm:
+            ${APPLICATION_HEALTH_LUA_KEY}: |
+              ${lua.split("\n").join("\n              ")}`
+            }
 `;
 
 const DEV_CLUSTER = (...versions: readonly string[]): string =>
@@ -177,6 +210,60 @@ spec:
     // And it must NOT also claim the survivors agree -- a partial audit reporting success
     // is how a broken parser reads as a green tree.
     expect(findings.some((finding) => finding.ok)).toBe(false);
+  });
+
+  test("RED when a HelmChart site has no health-check lua at all", () => {
+    const findings = checkPins(
+      { [HELM_A]: HELM_CHART("10.8.0"), [HELM_B]: HELM_CHART("10.8.0", null) },
+      APPLICATION("10.8.0"),
+      DEV_CLUSTER("10.8.0", "10.8.0"),
+    );
+    const message = findings
+      .filter((finding) => !finding.ok)
+      .map((finding) => finding.message)
+      .join("\n");
+    expect(message).toContain(APPLICATION_HEALTH_LUA_KEY);
+    expect(message).toContain(HELM_B);
+  });
+
+  test("RED when the Application has no health-check lua", () => {
+    const findings = checkPins(helmTexts("10.8.0", "10.8.0"), APPLICATION("10.8.0", null), DEV_CLUSTER("10.8.0", "10.8.0"));
+    const message = findings
+      .filter((finding) => !finding.ok)
+      .map((finding) => finding.message)
+      .join("\n");
+    expect(message).toContain(APPLICATION_PIN_FILE);
+    expect(message).toContain(APPLICATION_HEALTH_LUA_KEY);
+  });
+
+  test("RED when the lua CONTENT disagrees across sites, even though all three are present", () => {
+    const findings = checkPins(
+      { [HELM_A]: HELM_CHART("10.8.0", VALID_LUA), [HELM_B]: HELM_CHART("10.8.0", "hs = {}\nreturn hs") },
+      APPLICATION("10.8.0", VALID_LUA),
+      DEV_CLUSTER("10.8.0", "10.8.0"),
+    );
+    const message = findings
+      .filter((finding) => !finding.ok)
+      .map((finding) => finding.message)
+      .join("\n");
+    expect(message).toContain("DISAGREES");
+  });
+
+  test("parseHelmChartHealthLua reads the nested valuesContent document, not the outer one", () => {
+    // YAML's `|` block scalar keeps a trailing newline; trimmed for comparison
+    // since the parity check only needs the two sides to agree with EACH
+    // OTHER, which a shared trailing newline does not disturb.
+    expect(parseHelmChartHealthLua(HELM_CHART("10.8.0", VALID_LUA))?.trim()).toBe(VALID_LUA);
+    expect(parseHelmChartHealthLua(HELM_CHART("10.8.0", null))).toBeNull();
+    // valuesContent absent entirely
+    expect(
+      parseHelmChartHealthLua("apiVersion: helm.cattle.io/v1\nkind: HelmChart\nspec:\n  chart: argo-cd\n"),
+    ).toBeNull();
+  });
+
+  test("parseApplicationHealthLua reads valuesObject directly, no nested parse", () => {
+    expect(parseApplicationHealthLua(APPLICATION("10.8.0", VALID_LUA))?.trim()).toBe(VALID_LUA);
+    expect(parseApplicationHealthLua(APPLICATION("10.8.0", null))).toBeNull();
   });
 
   test("THE REAL TREE agrees, and the parser reaches all five files on disk", () => {

@@ -52,13 +52,31 @@
 //
 // Exit codes: 0 clean, 1 an unminted Secret or a stale acknowledgement, 2 usage.
 
-import { readFileSync, readdirSync } from "node:fs";
-import { join, resolve } from "node:path";
+import { readFileSync, readdirSync, type Dirent } from "node:fs";
+import { join, relative, resolve, sep as pathSep } from "node:path";
 import { parseAllDocuments } from "yaml";
 
 const REPO_ROOT = resolve(import.meta.dir, "../../..");
 export const BASELINE_RELATIVE_PATH = "src/Core.TypeScript/cluster/existing-secret-is-minted.baseline.json";
 const APPLICATIONS_DIR = "full-ai-cluster/k8s/applications";
+
+/**
+ * `readdirSync(dir, { withFileTypes: true })`, or `[]` when `dir` does not
+ * exist. NOT `existsSync(dir) ? readdirSync(dir) : []` -- that shape is a
+ * check-then-use race (lint-check-then-use-file-races.ts): the path can be
+ * created, deleted or replaced between the check and the read, so the
+ * `existsSync` answer is already stale by the time `readdirSync` runs. One
+ * syscall, interpreted, is both faster and race-free: ENOENT means "was not
+ * there when we actually asked", not "was not there a moment ago".
+ */
+function readdirSyncOrEmpty(dir: string): readonly Dirent[] {
+  try {
+    return readdirSync(dir, { withFileTypes: true });
+  } catch (e) {
+    if ((e as NodeJS.ErrnoException).code === "ENOENT") return [];
+    throw e;
+  }
+}
 
 /**
  * A key whose VALUE is the name of a Secret this manifest does not create.
@@ -158,7 +176,11 @@ function* leaves(node: unknown, path = ""): Generator<readonly [string, unknown]
 export function collectSecretReferences(repoRoot = REPO_ROOT): readonly SecretReference[] {
   const root = resolve(repoRoot, APPLICATIONS_DIR);
   const out: SecretReference[] = [];
-  for (const entry of readdirSync(root, { withFileTypes: true })) {
+  // A repoRoot with no applications tree at all (a deliberately-broken test
+  // fixture, e.g. auditCrdOrder's "unanalyzable Application" case) is an
+  // empty scan, not a crash -- gatingInvariantViolations calls this against
+  // whatever repoRoot its caller was given, which is not always a real tree.
+  for (const entry of readdirSyncOrEmpty(root)) {
     if (!entry.isDirectory()) continue;
     const manifest = join(APPLICATIONS_DIR, entry.name, "Application.yaml");
     let text: string;
@@ -185,6 +207,209 @@ export function collectSecretReferences(repoRoot = REPO_ROOT): readonly SecretRe
   return out.sort((a, b) => (referenceKey(a.app, a.secretName) < referenceKey(b.app, b.secretName) ? -1 : 1));
 }
 
+// ---------------------------------------------------------------------------
+// RAW MANIFEST references -- WP3 extension.
+//
+// `collectSecretReferences` above only looks at an Application's OWN Helm
+// `valuesObject` -- a chart's declared credential fields. It never looks at
+// the PLAIN Kubernetes manifests an Application also ships (Deployments,
+// StatefulSets, CronJobs, ...), which is where a pod spec names a Secret
+// directly: `imagePullSecrets`, `envFrom[].secretRef`, `env[].valueFrom.
+// secretKeyRef`, `volumes[].secret.secretName`. `platform/{controller,
+// portal}.yaml` reference `imagePullSecrets: [{name: ghcr-pull}]` this way,
+// and nothing above would ever see it.
+//
+// THE MINTED SET IS DELIBERATELY DIFFERENT FROM THE VALUESOBJECT CHECK'S.
+// `collectSecretReferences` above accepts DEV_BOOTSTRAP_SECRETS/DEV_SHARED_SECRETS
+// as "minted" -- a CI/dev-lane runtime action. For a raw manifest that ships
+// verbatim to METAL, that action never runs: nothing about DEV_GHCR_PULL_SECRET
+// touches a real cluster. So this scan checks raw references against
+// `collectTreeMintedSecretNames` -- Secrets/SealedSecrets/ExternalSecrets
+// actually COMMITTED in the tree -- never the dev roster. `ghcr-pull` is
+// exactly the case this distinguishes: minted for CI (DEV_GHCR_PULL_SECRET),
+// not minted anywhere in the committed manifests, and referenced directly by
+// two pod specs. The valuesObject check would call it fine; this one must not.
+// ---------------------------------------------------------------------------
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null && !Array.isArray(value);
+}
+
+function asNonEmptyString(value: unknown): string | null {
+  return typeof value === "string" && value.trim() !== "" ? value : null;
+}
+
+/**
+ * Walk a parsed manifest document looking for the FOUR standard shapes a pod
+ * spec (of any workload kind -- Pod/Deployment/StatefulSet/DaemonSet/Job/
+ * CronJob) names a Secret by. Deliberately shape-matched rather than
+ * path-anchored to one workload kind's exact field nesting: the four key
+ * names below (`imagePullSecrets`, `envFrom`+`secretRef`, `secretKeyRef`,
+ * `volumes`+`secret`+`secretName`) are how every core/v1 API object spells
+ * "I need this Secret", regardless of which controller kind wraps the pod
+ * template.
+ */
+function* rawSecretNames(node: unknown, path = ""): Generator<readonly [string, string]> {
+  if (node === null || node === undefined) return;
+  if (Array.isArray(node)) {
+    for (const [index, item] of node.entries()) yield* rawSecretNames(item, `${path}[${String(index)}]`);
+    return;
+  }
+  if (!isRecord(node)) return;
+
+  const name = asNonEmptyString(node.name);
+  if (name !== null && /imagePullSecrets\[\d+\]$/.test(path)) yield [`${path}.name`, name];
+
+  if (/envFrom\[\d+\]$/.test(path) && isRecord(node.secretRef)) {
+    const n = asNonEmptyString(node.secretRef.name);
+    if (n !== null) yield [`${path}.secretRef.name`, n];
+  }
+  if (isRecord(node.secretKeyRef)) {
+    const n = asNonEmptyString(node.secretKeyRef.name);
+    if (n !== null) yield [`${path}.secretKeyRef.name`, n];
+  }
+  if (isRecord(node.secret)) {
+    const n = asNonEmptyString(node.secret.secretName);
+    if (n !== null) yield [`${path}.secret.secretName`, n];
+  }
+
+  for (const [key, value] of Object.entries(node)) {
+    yield* rawSecretNames(value, path === "" ? key : `${path}.${key}`);
+  }
+}
+
+function listYamlFilesRecursive(dir: string, base: string): string[] {
+  const out: string[] = [];
+  for (const entry of readdirSync(dir, { withFileTypes: true })) {
+    const abs = join(dir, entry.name);
+    if (entry.isDirectory()) {
+      out.push(...listYamlFilesRecursive(abs, base));
+    } else if (entry.name.endsWith(".yaml") || entry.name.endsWith(".yml")) {
+      out.push(relative(base, abs).split(pathSep).join("/"));
+    }
+  }
+  return out;
+}
+
+/**
+ * Every Secret name a RAW (non-Application, non-valuesObject) manifest names
+ * directly on a pod spec, across every Application's full manifest tree --
+ * not just `Application.yaml`.
+ */
+export function collectRawSecretReferences(repoRoot = REPO_ROOT): readonly SecretReference[] {
+  const appsRoot = resolve(repoRoot, APPLICATIONS_DIR);
+  const out: SecretReference[] = [];
+  for (const entry of readdirSyncOrEmpty(appsRoot)) {
+    if (!entry.isDirectory()) continue;
+    const appDir = join(appsRoot, entry.name);
+    // SCOPED TO THE APP-OF-APPS ROSTER: a directory with no Application.yaml is
+    // not reconciled by ArgoCD at all. `ddns/` is the measured instance -- its
+    // own header says so outright ("this dir has no Application.yaml on
+    // purpose... apply it directly so it stays opt-in for the single-machine
+    // bootstrap") and documents the exact `kubectl create secret` step a human
+    // runs by hand. Scanning it anyway would refuse a Secret this audit's own
+    // subject (the ArgoCD-managed tree) never actually depends on.
+    //
+    // The presence check is PERFORMED BY ATTEMPTING THE READ, not by
+    // `existsSync` first (lint-check-then-use-file-races.ts: a separate
+    // existence check is stale the moment it returns). The content is
+    // discarded -- this function only needs to know whether the file is
+    // there, and the one syscall that answers that honestly is the read.
+    try {
+      readFileSync(join(appDir, "Application.yaml"), "utf8");
+    } catch (e) {
+      if ((e as NodeJS.ErrnoException).code === "ENOENT") continue;
+      throw e;
+    }
+    for (const relFile of listYamlFilesRecursive(appDir, appDir)) {
+      if (relFile === "Application.yaml") continue; // that source is collectSecretReferences's job
+      const manifest = `${APPLICATIONS_DIR}/${entry.name}/${relFile}`;
+      let text: string;
+      try {
+        text = readFileSync(join(appDir, relFile), "utf8");
+      } catch {
+        continue;
+      }
+      let docs: ReturnType<typeof parseAllDocuments>;
+      try {
+        docs = parseAllDocuments(text);
+      } catch {
+        continue;
+      }
+      for (const doc of docs) {
+        let value: unknown;
+        try {
+          value = doc.toJS({ maxAliasCount: -1 });
+        } catch {
+          continue;
+        }
+        if (!isRecord(value)) continue;
+        // Skip the CREATING side entirely: a Secret/SealedSecret/ExternalSecret
+        // document names itself in `metadata.name`, which matches none of the
+        // four consuming shapes above, but skip explicitly so a future shape
+        // widening cannot accidentally treat a minter as a consumer.
+        if (value.kind === "Secret" || value.kind === "SealedSecret" || value.kind === "ExternalSecret") continue;
+        for (const [field, secretName] of rawSecretNames(value)) {
+          out.push({ app: entry.name, manifest, field, secretName });
+        }
+      }
+    }
+  }
+  return out.sort((a, b) => (referenceKey(a.app, a.secretName) < referenceKey(b.app, b.secretName) ? -1 : 1));
+}
+
+/**
+ * Every Secret NAME actually minted by a manifest committed in the tree --
+ * `kind: Secret` (metadata.name), `kind: SealedSecret` (unseals to a Secret of
+ * the SAME name -- bitnami's controller preserves it), `kind: ExternalSecret`
+ * (external-secrets.io; targets `spec.target.name`, defaulting to
+ * `metadata.name` when unset, exactly as the operator itself defaults it).
+ * This is the METAL-real minted set -- deliberately NOT the dev/CI bootstrap
+ * roster, which mints nothing a real cluster will ever see.
+ */
+export function collectTreeMintedSecretNames(repoRoot = REPO_ROOT): ReadonlySet<string> {
+  const appsRoot = resolve(repoRoot, APPLICATIONS_DIR);
+  const out = new Set<string>();
+  for (const entry of readdirSyncOrEmpty(appsRoot)) {
+    if (!entry.isDirectory()) continue;
+    const appDir = join(appsRoot, entry.name);
+    for (const relFile of listYamlFilesRecursive(appDir, appDir)) {
+      let text: string;
+      try {
+        text = readFileSync(join(appDir, relFile), "utf8");
+      } catch {
+        continue;
+      }
+      let docs: ReturnType<typeof parseAllDocuments>;
+      try {
+        docs = parseAllDocuments(text);
+      } catch {
+        continue;
+      }
+      for (const doc of docs) {
+        let value: unknown;
+        try {
+          value = doc.toJS({ maxAliasCount: -1 });
+        } catch {
+          continue;
+        }
+        if (!isRecord(value)) continue;
+        const metadata = isRecord(value.metadata) ? value.metadata : {};
+        const ownName = asNonEmptyString(metadata.name);
+        if (value.kind === "Secret" || value.kind === "SealedSecret") {
+          if (ownName !== null) out.add(ownName);
+        } else if (value.kind === "ExternalSecret") {
+          const spec = isRecord(value.spec) ? value.spec : {};
+          const target = isRecord(spec.target) ? spec.target : {};
+          const targetName = asNonEmptyString(target.name) ?? ownName;
+          if (targetName !== null) out.add(targetName);
+        }
+      }
+    }
+  }
+  return out;
+}
+
 export function readBaseline(path = BASELINE_RELATIVE_PATH, repoRoot = REPO_ROOT): readonly BaselineEntry[] {
   const raw = JSON.parse(readFileSync(resolve(repoRoot, path), "utf8")) as { entries?: unknown };
   if (!Array.isArray(raw.entries)) throw new Error(`${path}: "entries" must be an array`);
@@ -206,9 +431,17 @@ export function adjudicate(
   references: readonly SecretReference[],
   mintedNames: ReadonlySet<string>,
   baseline: readonly BaselineEntry[],
+  /**
+   * Keys already "used" by a SIBLING scan sharing this same baseline file --
+   * `audit-existing-secret-is-minted.ts`'s two scans (valuesObject references
+   * and raw-manifest references) share one baseline, and a key an entry
+   * matches only in the OTHER scan must not be reported STALE here. Optional
+   * and defaults to empty so every existing single-scan caller is unaffected.
+   */
+  alsoUsedKeys: ReadonlySet<string> = new Set(),
 ): Adjudicated {
   const byKey = new Map(baseline.map((e) => [e.key, e]));
-  const used = new Set<string>();
+  const used = new Set<string>(alsoUsedKeys);
   const minted: SecretReference[] = [];
   const refused: SecretReference[] = [];
   const acknowledged: SecretReference[] = [];
@@ -230,6 +463,27 @@ export function adjudicate(
     .map((e) => e.key)
     .sort();
   return { minted, refused, acknowledged, staleKeys };
+}
+
+/**
+ * Which baseline keys a reference LIST would match, ignoring minted status --
+ * used to tell one `adjudicate` scan about keys a SIBLING scan (sharing the
+ * same baseline) will independently mark used, so neither scan reports the
+ * other's acknowledgement as stale.
+ */
+export function matchedBaselineKeys(
+  references: readonly SecretReference[],
+  mintedNames: ReadonlySet<string>,
+  baseline: readonly BaselineEntry[],
+): ReadonlySet<string> {
+  const keys = new Set(baseline.map((e) => e.key));
+  const out = new Set<string>();
+  for (const r of references) {
+    if (mintedNames.has(r.secretName)) continue; // minted, not acknowledged -- would not mark the key used
+    const key = referenceKey(r.app, r.secretName);
+    if (keys.has(key)) out.add(key);
+  }
+  return out;
 }
 
 export function exitCode(a: Adjudicated): number {
@@ -266,6 +520,53 @@ export function auditExistingSecretIsMinted(mintedNames: ReadonlySet<string>, re
   return adjudicate(collectSecretReferences(repoRoot), mintedNames, readBaseline(BASELINE_RELATIVE_PATH, repoRoot));
 }
 
+/**
+ * Both scans TOGETHER, sharing one baseline file WITHOUT cross-reporting each
+ * other's acknowledgement as stale.
+ *
+ * `auditExistingSecretIsMinted` (valuesObject references) and the raw-manifest
+ * scan below match the SAME baseline shape (`${app}|${secretName}`), and a
+ * baseline entry may exist for a key only ONE of the two scans' reference
+ * lists ever contains -- `platform|ghcr-pull` is exactly this: found only by
+ * the raw scan, never by the valuesObject scan. Running each scan's
+ * `staleKeys` independently would report that entry stale in whichever scan
+ * did not happen to touch it. `matchedBaselineKeys` is computed for BOTH scans
+ * first, then each `adjudicate` call is told about the OTHER scan's matches.
+ */
+export function auditBothSecretScans(
+  repoRoot = REPO_ROOT,
+  devRosterMintedNames: ReadonlySet<string> = new Set(),
+): { readonly valuesObject: Adjudicated; readonly raw: Adjudicated } {
+  const baseline = readBaseline(BASELINE_RELATIVE_PATH, repoRoot);
+  const valuesObjectRefs = collectSecretReferences(repoRoot);
+  const rawRefs = collectRawSecretReferences(repoRoot);
+  const treeMinted = collectTreeMintedSecretNames(repoRoot);
+
+  const valuesObjectMatched = matchedBaselineKeys(valuesObjectRefs, devRosterMintedNames, baseline);
+  const rawMatched = matchedBaselineKeys(rawRefs, treeMinted, baseline);
+
+  return {
+    valuesObject: adjudicate(valuesObjectRefs, devRosterMintedNames, baseline, rawMatched),
+    raw: adjudicate(rawRefs, treeMinted, baseline, valuesObjectMatched),
+  };
+}
+
+/**
+ * The RAW-MANIFEST sibling of `auditExistingSecretIsMinted` -- pod specs
+ * naming a Secret directly, checked against what the TREE ITSELF mints
+ * (Secret/SealedSecret/ExternalSecret), never the dev/CI bootstrap roster.
+ *
+ * Standalone convenience (no cross-scan staleness suppression -- use
+ * `auditBothSecretScans` when running both together, which `main()` does).
+ */
+export function auditRawSecretReferences(repoRoot = REPO_ROOT): Adjudicated {
+  return adjudicate(
+    collectRawSecretReferences(repoRoot),
+    collectTreeMintedSecretNames(repoRoot),
+    readBaseline(BASELINE_RELATIVE_PATH, repoRoot),
+  );
+}
+
 async function main(): Promise<void> {
   // Imported lazily so the pure functions above stay testable without dragging
   // the dev-cluster port surface into every consumer.
@@ -278,11 +579,17 @@ async function main(): Promise<void> {
     DEV_BOOTSTRAP_SECRETS: readonly { readonly name: string }[];
     DEV_SHARED_SECRETS: readonly { readonly name: string }[];
   };
-  const result = auditExistingSecretIsMinted(
+  const { valuesObject: valuesObjectResult, raw: rawResult } = auditBothSecretScans(
+    REPO_ROOT,
     new Set([...DEV_BOOTSTRAP_SECRETS, ...DEV_SHARED_SECRETS].map((s) => s.name)),
   );
-  process.stdout.write(`${formatReport(result)}\n`);
-  process.exit(exitCode(result));
+  process.stdout.write("=== valuesObject-referenced Secrets (checked against the dev/CI roster) ===\n");
+  process.stdout.write(`${formatReport(valuesObjectResult)}\n\n`);
+
+  process.stdout.write("=== raw-manifest-referenced Secrets (checked against what the TREE itself mints) ===\n");
+  process.stdout.write(`${formatReport(rawResult)}\n`);
+
+  process.exit(exitCode(valuesObjectResult) !== 0 || exitCode(rawResult) !== 0 ? 1 : 0);
 }
 
 if (import.meta.main) await main();

@@ -12,6 +12,15 @@ kind: Application
 metadata:
   annotations:
     argocd.argoproj.io/sync-wave: "-45"
+    # OPT-IN HEALTH GATING (081M33T23ZQ087G0R002ZYRHDG). trust-manager
+    # provides trust.cert-manager.io/Bundle, genuinely consumed by
+    # openziti-controller (its ctrl-plane-cas Bundle, mounted by the
+    # controller Deployment -- an unresolved Bundle is a FailedMount,
+    # observed in run 32548563352). Verified metal-safe: zero
+    # Secret/existingSecret references anywhere in this Application, not
+    # declared manual-sync, and bootstrap-installed
+    # (trust-manager-install.yaml applies it before ArgoCD exists).
+    zeta.io/gates-later-waves: "true"
   name: trust-manager
   namespace: argocd
   finalizers: [ resources-finalizer.argocd.argoproj.io ]
