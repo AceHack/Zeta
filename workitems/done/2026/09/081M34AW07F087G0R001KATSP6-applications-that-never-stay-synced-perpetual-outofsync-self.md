@@ -1,11 +1,12 @@
 ---
 id: 081M34AW07F087G0R001KATSP6
 type: bug
-state: backlog
+state: done
 priority: P2
 slug: applications-that-never-stay-synced-perpetual-outofsync-self
 title: "Applications that never stay Synced: perpetual OutOfSync / self-heal churn on StatefulSet volumeClaimTemplates and argo-workflows CRDs"
 created: 2026-09-22T10:34:01.839Z
+completed: 2026-09-22T11:27:28.482Z
 depends_on: []
 composes_with: []
 ---
