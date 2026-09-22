@@ -308,7 +308,8 @@ export function concentration(
 // The registry client — used only by `--measure`
 // ---------------------------------------------------------------------------
 
-const MANIFEST_ACCEPT = [
+/** Exported so callers sharing {@link fetchManifest} send the same Accept header. */
+export const MANIFEST_ACCEPT = [
   "application/vnd.docker.distribution.manifest.list.v2+json",
   "application/vnd.oci.image.index.v1+json",
   "application/vnd.docker.distribution.manifest.v2+json",
@@ -324,7 +325,17 @@ const MANIFEST_ACCEPT = [
  * a hardcoded token endpoint would work for whichever one it was written against
  * and silently 401 the rest — which reads as "private image" and undercounts.
  */
-async function fetchManifest(url: string, repository: string, tokens: Map<string, string>): Promise<Response> {
+/**
+ * GET a manifest URL, transparently completing the WWW-Authenticate challenge
+ * (anonymous pull token) on a 401 and caching the token per repository.
+ *
+ * Exported for reuse — `image-resolvability.ts` needs the SAME generic
+ * challenge-response flow (it works unmodified against docker.io, ghcr.io,
+ * quay.io, registry.k8s.io, gcr.io and public.ecr.aws; only Docker Hub's
+ * `service`/`realm` are hardcoded elsewhere in this file's sibling
+ * `image-source-provenance.ts`, which is why THIS flow is the one to share).
+ */
+export async function fetchManifest(url: string, repository: string, tokens: Map<string, string>): Promise<Response> {
   const headers: Record<string, string> = { Accept: MANIFEST_ACCEPT, "User-Agent": "zeta-image-footprint/1" };
   const cached = tokens.get(repository);
   if (cached !== undefined) headers.Authorization = `Bearer ${cached}`;

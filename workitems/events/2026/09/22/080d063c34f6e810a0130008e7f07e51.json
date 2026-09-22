@@ -1,0 +1,14 @@
+{
+  "id": "080d063c34f6e810a0130008e7f07e51",
+  "at": "2026-09-22T05:11:23.613Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M33RD7PW087G0R0011EVZYQ",
+    "type": "task",
+    "title": "Image resolvability checker: verify first-boot roster images actually pull",
+    "slug": "image-resolvability-checker-verify-first-boot-roster-images",
+    "priority": "P2",
+    "filename": "081M33RD7PW087G0R0011EVZYQ-image-resolvability-checker-verify-first-boot-roster-images.md"
+  }
+}
