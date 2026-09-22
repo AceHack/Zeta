@@ -1825,3 +1825,8 @@ UNIQUE HOLDS leftover NEW CELL leftover UNIQUE leftover #17534 leftover unique @
 ## leftover UNIQUE leftover #17540 leftover unique @ 874e3689ffead8eef5269102ba1b68a43434d730
 
 UNIQUE HOLDS leftover NEW CELL leftover UNIQUE leftover #17540 leftover unique @ 874e3689ffead8eef5269102ba1b68a43434d730 -- GRADE GO (product unique tip-grounded: passwordPolicy opensearch-strength + composeOpenSearchAdminPassword hex-nibble maps match metal WP19c + mintDevAdminPassword dispatch; tests pin OPENSEARCH_ADMIN_PASSWORD_REGEX verbatim + 1000 seeded draws + plain-hex falsifier; Agency SUCCESS; Task 081M35DFB9B087G0R003WD5WJ6; plan+unit tests SUCCESS). Never grade merge-ref 46e10eaa alone. Sit leftover. Do not merge.
+
+---
+## leftover UNIQUE leftover #17541 leftover unique @ 2300a277a31919306fea509c70c3aa28b3c9e0ff
+
+UNIQUE HOLDS leftover NEW CELL leftover UNIQUE leftover #17541 leftover unique @ 2300a277a31919306fea509c70c3aa28b3c9e0ff -- GRADE HOLD (product unique tip-grounded WP21: self.rev->/etc/zeta-iso-provenance ZETA_ISO_COMMIT, ESP /zeta-repo-pin, fail-closed post-clone fetch+detach unless ZETA_ALLOW_REPO_DRIFT=1 exact, [repo-pin] outcome+ClusterNode annotations, QEMU WP11 pin+assertRepoPinHonouredSerial code present; tip not moved; never grade merge-ref 5230cf2f). HOLD axis: installer unit tests FAILURE on product-unique repo-pin-shell-parity.test.ts shell-metachar case Expected invalid-format / Received empty (bash expands $(...) under double-quoted harness -> empty); CI absent on product unique SHA (checks on merge-ref only); QEMU/ISO WP21 honour proof not yet observed complete (build-iso* in_progress; body checkbox unchecked). Sit leftover. Do not merge.
