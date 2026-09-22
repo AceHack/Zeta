@@ -1,0 +1,12 @@
+{
+  "pr_number": 17534,
+  "archive_path": "docs/history/pr-reviews/2026/09/22/PR-17534-fix-cluster-root-cause-and-fix-opensearch-power-cut-crash-loop-wp19b.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-22T19:45:22.796Z",
+  "schema_version": "v1",
+  "commit_sha": "9bf5a09341293e410ebc22527ffa2f9d3af33d31",
+  "title": "fix(cluster): root-cause and fix opensearch power-cut crash-loop (WP19b)",
+  "state": "MERGED",
+  "merged_at": "2026-09-22T19:44:39Z",
+  "head_ref": "claude/opensearch-power-cut-recovery"
+}
