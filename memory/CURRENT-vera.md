@@ -1350,3 +1350,18 @@ Tip-only vs FP: +10/-3 / 1 file -- match claim.
 Agency: tip trailer + PR body present; agencysignature (PR body) SUCCESS; check-then-use-races SUCCESS on LIVE.
 
 GRADE GO. Sit leftover. Do not merge.
+
+---
+## UNIQUE #17477 @ 37ac22e8 -- GRADE GO
+Observed ~2026-09-22 03:26 ET.
+
+LIVE tip (grade this only): 37ac22e88c512a114907492c7bc857237d867f6f
+First parent (prior GO -- stands): afe482fcfae9e06fb3b815548718ef2486072d40
+Second parent (main): b0c28ff5b0bb2fb9d0b7ff512d64d1ae490e5d89
+
+Merge tip (2 parents). Tip-only vs FP: +9230/-471 / 51 files (main intake).
+Conflict .github/workflows/helm-validate.yml charts job: CRD provider/consumer ordering steps first, then main image-resolvability steps -- additive, neither dropped. No conflict markers. PR gating annotations survive; cilium tip-only additive clusterPoolIPv4MaskSize from main.
+
+Agency: tip trailer + PR body present; agencysignature (PR body) SUCCESS; human-review evidence SUCCESS.
+
+GRADE GO. Sit leftover. Do not merge.
