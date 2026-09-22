@@ -540,13 +540,23 @@ mechanism `openziti-namespace.yaml` and the other `*-install.yaml` bootstrap
 files already use), applied BEFORE ArgoCD exists. It mints exactly these six
 credentials, per-namespace RBAC-scoped (`create` on `secrets` only, nothing
 else), `kubectl create` (never `apply`/`replace`, so an existing Secret is
-never overwritten), random values drawn from each seeding Job's own pod UID
-(Kubernetes Downward API — no shell, no new pinned image; reuses
+never overwritten). Key shapes are cross-checked against `dev-cluster/lib.ts`'s
+`DEV_BOOTSTRAP_SECRETS` / `DEV_SHARED_SECRETS` by
+`internal-secret-seeding.test.ts` so the two cannot silently drift apart.
+
+**Randomness (hardened WP16, 081M349QTRM087G0R001HM7ESM):** each Job's FIRST
+step is a `draw-entropy` initContainer (`busybox`, pinned by tag AND digest —
+the one container here with a shell) that reads `/dev/urandom` and writes the
+value ONLY to an in-memory (`emptyDir: {medium: Memory}`, tmpfs) volume shared
+with the rest of that pod. The `kubectl` containers (still
 `registry.k8s.io/kubectl:v1.32.3`, already vetted in this tree by
-`k8s/applications/hat-system/gatekeeper-crd-wait.yaml`). Key shapes are
-cross-checked against `dev-cluster/lib.ts`'s `DEV_BOOTSTRAP_SECRETS` /
-`DEV_SHARED_SECRETS` by `internal-secret-seeding.test.ts` so the two cannot
-silently drift apart.
+`k8s/applications/hat-system/gatekeeper-crd-wait.yaml`) read the secret value
+off that file with `--from-file`, never as an argv token or env var. WP14's
+original mechanism drew randomness from each Job's own pod UID via the
+Kubernetes Downward API, which was weak: a pod UID is readable by anyone with
+`get`/`list` on Pods in the namespace and appears in events/audit
+logs/`kubectl describe`, and a UUIDv4's ~122 bits come from the apiserver's ID
+generator, not a CSPRNG designated for secrets.
 
 ### `hindsight-llm-api-key` stays an EXTERNAL gap, on purpose
 

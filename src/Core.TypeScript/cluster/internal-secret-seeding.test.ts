@@ -11,11 +11,17 @@
 // either side goes red here instead of surfacing as a fresh
 // CreateContainerConfigError on the next real USB install.
 //
-// It also pins the two safety properties the manifest's own header argues
-// for in prose: every Secret-creating call uses `create` (never `apply` /
-// `replace`, which would overwrite a Secret already in the cluster), and
-// every RBAC Role grants `create` on `secrets` ONLY -- no `get`, `list`,
-// `update`, `delete`, or any other resource.
+// It also pins the safety properties the manifest's own header argues for in
+// prose: every Secret-creating call uses `create` (never `apply` /
+// `replace`, which would overwrite a Secret already in the cluster), every
+// RBAC Role grants `create` on `secrets` ONLY -- no `get`, `list`, `update`,
+// `delete`, or any other resource -- and (WP16, hardening PR #17505's pod-UID
+// entropy source) NO Job draws secret material from its own identity
+// (`metadata.uid`/`fieldRef`) or carries a secret value in an argv token or
+// env var: entropy is read from `/dev/urandom` inside a `draw-entropy`
+// initContainer and passed between containers ONLY via an in-memory
+// (`emptyDir: {medium: Memory}`) file that `kubectl create secret` reads
+// with `--from-file`.
 
 import { describe, expect, test } from "bun:test";
 import { readFileSync } from "node:fs";
@@ -65,6 +71,12 @@ interface ContainerDoc {
   readonly name?: string;
   readonly image?: string;
   readonly args?: readonly string[];
+  readonly command?: readonly string[];
+  readonly env?: readonly {
+    readonly name?: string;
+    readonly value?: string;
+    readonly valueFrom?: { readonly fieldRef?: { readonly fieldPath?: string } };
+  }[];
 }
 
 function parsedObjects(): readonly AnyDoc[] {
@@ -82,6 +94,16 @@ function allContainers(): readonly ContainerDoc[] {
     out.push(...(spec?.initContainers ?? []), ...(spec?.containers ?? []));
   }
   return out;
+}
+
+/** The ONE container per Job with a shell -- draws entropy, runs `kubectl` nowhere. */
+function entropyContainers(): readonly ContainerDoc[] {
+  return allContainers().filter((c) => c.name === "draw-entropy");
+}
+
+/** Every OTHER container -- these are the ones that run `kubectl create secret`. */
+function kubectlContainers(): readonly ContainerDoc[] {
+  return allContainers().filter((c) => c.name !== "draw-entropy");
 }
 
 describe("internal-secret-seeding.yaml — parses and is well-formed", () => {
@@ -121,7 +143,7 @@ describe("internal-secret-seeding.yaml — RBAC is create-only, secrets-only, pe
 });
 
 describe("internal-secret-seeding.yaml — every seed call uses `create`, never `apply`/`replace`", () => {
-  const containers = allContainers();
+  const containers = kubectlContainers();
 
   test("at least one seeding container exists", () => {
     expect(containers.length).toBeGreaterThan(0);
@@ -145,12 +167,103 @@ describe("internal-secret-seeding.yaml — image is the ALREADY-PINNED kubectl i
     expect(pinnedImageMatch).not.toBeNull();
   });
 
-  const containers = allContainers();
+  const containers = kubectlContainers();
   for (const c of containers) {
     test(`container ${c.name} uses the SAME pinned image as gatekeeper-crd-wait.yaml`, () => {
       expect(c.image).toBe(pinnedImageMatch?.[1]);
     });
   }
+});
+
+describe("internal-secret-seeding.yaml — WP16: entropy is drawn by ONE pinned-by-tag-AND-digest image, never kubectl", () => {
+  const draws = entropyContainers();
+
+  test("at least one draw-entropy container exists", () => {
+    expect(draws.length).toBeGreaterThan(0);
+  });
+
+  for (const c of draws) {
+    test(`draw-entropy in ${c.name} (image ${String(c.image)}) is pinned by BOTH tag and digest`, () => {
+      expect(c.image).toMatch(/^busybox:[\w.]+@sha256:[0-9a-f]{64}$/);
+    });
+
+    test(`draw-entropy in ${c.name} is the only kind of container running a shell`, () => {
+      expect(c.command).toEqual(["/bin/sh", "-c"]);
+    });
+  }
+
+  test("every draw-entropy container uses the SAME pinned image (single source of truth)", () => {
+    expect(new Set(draws.map((c) => c.image)).size).toBe(1);
+  });
+
+  test("no kubectl-running container is the busybox image (kubectl stays shell-less)", () => {
+    for (const c of kubectlContainers()) {
+      expect(c.image).not.toMatch(/busybox/);
+    }
+  });
+});
+
+describe("internal-secret-seeding.yaml — WP16: no Job draws secret material from its own pod identity", () => {
+  test("the manifest text never references metadata.uid or any fieldRef (the WP14 weakness this hardens)", () => {
+    expect(manifestText.includes("metadata.uid")).toBe(false);
+    expect(manifestText.includes("fieldRef")).toBe(false);
+  });
+
+  test("no container's env carries a fieldRef (Downward API) at all", () => {
+    for (const c of allContainers()) {
+      for (const e of c.env ?? []) {
+        expect(e.valueFrom?.fieldRef).toBeUndefined();
+      }
+    }
+  });
+
+  test("no container's args contain a Downward-API/env expansion token `$(...)` (secret never travels as an env var)", () => {
+    for (const c of allContainers()) {
+      for (const a of c.args ?? []) {
+        expect(a).not.toMatch(/\$\([A-Za-z_][A-Za-z0-9_]*\)/);
+      }
+    }
+  });
+
+  test("every kubectl container's secret-bearing args are `--from-file=...`, never `--from-literal=` with a drawn value", () => {
+    // The only `--from-literal=` args any kubectl container carries are the STATIC,
+    // non-secret usernames (admin-user=admin, username=gitea_admin, username=default) --
+    // every password/key/config value crosses via a file read off the shared tmpfs volume.
+    const allowedLiterals = new Set([
+      "--from-literal=admin-user=admin",
+      "--from-literal=username=gitea_admin",
+      "--from-literal=username=default",
+    ]);
+    for (const c of kubectlContainers()) {
+      for (const a of c.args ?? []) {
+        if (!a.startsWith("--from-literal=")) continue;
+        expect(allowedLiterals.has(a)).toBe(true);
+      }
+    }
+  });
+});
+
+describe("internal-secret-seeding.yaml — WP16: the entropy volume is in-memory (tmpfs), never disk", () => {
+  test("every Job declares an `entropy` volume backed by emptyDir medium Memory", () => {
+    const jobs = objects.filter((o) => o.kind === "Job") as readonly {
+      readonly spec?: {
+        readonly template?: {
+          readonly spec?: {
+            readonly volumes?: readonly {
+              readonly name?: string;
+              readonly emptyDir?: { readonly medium?: string };
+            }[];
+          };
+        };
+      };
+    }[];
+    for (const job of jobs) {
+      const volumes = job.spec?.template?.spec?.volumes ?? [];
+      const entropy = volumes.find((v) => v.name === "entropy");
+      expect(entropy).toBeDefined();
+      expect(entropy?.emptyDir?.medium).toBe("Memory");
+    }
+  });
 });
 
 // ── Cross-checks against dev-cluster/lib.ts, the single source of truth ────
@@ -164,9 +277,11 @@ function assertBootstrapSpecSeeded(spec: DevBootstrapSecretSpec): void {
   expect(
     (job?.spec?.template?.spec?.containers ?? []).some((c) => c.args?.includes(spec.name)),
   ).toBe(true);
-  const passwordArg = container?.args?.find((a) => a.startsWith(`--from-literal=${spec.passwordKey}=`));
+  const passwordArg = container?.args?.find((a) => a.startsWith(`--from-file=${spec.passwordKey}=`));
   expect(passwordArg).toBeDefined();
-  expect(passwordArg).toMatch(/\$\(\w+\)$/); // drawn from a Downward-API env var, never a literal
+  // Drawn by the pod's own `draw-entropy` initContainer onto the shared in-memory
+  // volume -- never a literal, never a Downward-API env-var expansion (WP16).
+  expect(passwordArg).toMatch(/^--from-file=\S+=\/work\/\S+$/);
 }
 
 describe("internal-secret-seeding.yaml — matches DEV_BOOTSTRAP_SECRETS (name/namespace/keys)", () => {
@@ -198,22 +313,25 @@ describe("internal-secret-seeding.yaml — matches DEV_BLOB_STORE_SECRET (shared
   });
 
   test("every container writes exactly the same key set `keys()` produces", () => {
-    const containers = allContainers().filter((c) => c.args?.includes("zeta-blob-store"));
+    const containers = kubectlContainers().filter((c) => c.args?.includes("zeta-blob-store"));
     for (const c of containers) {
       const writtenKeys = (c.args ?? [])
-        .filter((a) => a.startsWith("--from-literal="))
-        .map((a) => a.slice("--from-literal=".length).split("=")[0]);
+        .filter((a) => a.startsWith("--from-file="))
+        .map((a) => a.slice("--from-file=".length).split("=")[0]);
       expect(new Set(writtenKeys)).toEqual(new Set(placeholderKeys));
     }
   });
 
-  test("every container in the shared Job draws from the SAME env var (one shared value)", () => {
-    const containers = allContainers().filter((c) => c.args?.includes("zeta-blob-store"));
-    const drawVars = containers.map((c) => {
-      const m = /\$\((\w+)\)/.exec((c.args ?? []).join(" "));
-      return m?.[1];
-    });
-    expect(new Set(drawVars).size).toBe(1);
+  test("every container in the shared Job reads the SAME shared entropy file per key (one drawn value)", () => {
+    const containers = kubectlContainers().filter((c) => c.args?.includes("zeta-blob-store"));
+    const fromFileEntries = containers.map((c) =>
+      [...(c.args ?? [])].filter((a) => a.startsWith("--from-file=")).sort(),
+    );
+    const [first, ...rest] = fromFileEntries;
+    if (first === undefined) throw new Error("no zeta-blob-store containers found");
+    for (const entries of rest) {
+      expect(entries).toEqual(first);
+    }
   });
 });
 
@@ -230,13 +348,11 @@ describe("internal-secret-seeding.yaml — matches DEV_REDIS_AUTH_SECRET (shared
     expect(seededNamespaces.length).toBe(DEV_REDIS_AUTH_SECRET.namespaces.length);
   });
 
-  test("both containers draw from the SAME env var (one shared value across redis + orleans)", () => {
-    const containers = allContainers().filter((c) => c.args?.includes("redis-auth"));
-    const drawVars = containers.map((c) => {
-      const m = /\$\((\w+)\)/.exec((c.args ?? []).join(" "));
-      return m?.[1];
-    });
-    expect(new Set(drawVars).size).toBe(1);
+  test("both containers read password from the SAME shared entropy file (one drawn value)", () => {
+    const containers = kubectlContainers().filter((c) => c.args?.includes("redis-auth"));
+    const passwordArgs = containers.map((c) => (c.args ?? []).find((a) => a.startsWith("--from-file=password=")));
+    expect(passwordArgs.every((a) => a !== undefined)).toBe(true);
+    expect(new Set(passwordArgs).size).toBe(1);
   });
 });
 
