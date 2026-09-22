@@ -1504,3 +1504,18 @@ Tip-only vs FP: +1208/-4 / 8 files -- match claim.
 Agency: tip trailer Task 081M343EEP8087G0R000BAF6QF; Credential-Identity maximdolphin.
 
 GRADE GO. Sit leftover. Do not merge.
+
+---
+## UNIQUE #17505 @ 839387a1 -- GRADE HOLD
+Observed ~2026-09-22 05:18 ET.
+
+LIVE tip (grade this only): 839387a1f8cede5ae3cc4eb112aed197e8bed7d9
+Unique first parent (prior GO -- stands): 3fd9d22834f745010e44366da7a4f99f213854e9
+
+Tip-only vs FP: +6/0 / 1 file full-ai-cluster/k8s/bootstrap/internal-secret-seeding.yaml
+- runAsUser: 1001 inserted after runAsNonRoot: true on all six seed Jobs
+Product peel tip-grounded.
+
+Agency: tip trailer present (Task 081M343EEP8087G0R000BAF6QF); agencysignature (PR body) FAILURE on LIVE (run 35709351640); later PR-body job also queued.
+
+GRADE HOLD. Sit leftover. Do not merge.
