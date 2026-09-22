@@ -1587,3 +1587,22 @@ GRADE GO -- tip-grounded stage 6 soak allowlist follow-up to #17508:
 
 Sit leftover. Do not merge.
 
+---
+## UNIQUE #17516 @ 419987cb -- GRADE GO
+
+2026-09-22 ~6:17 AM ET
+Tip of 2-commit stack @ 419987cb65a60e5ad793bd4949282cb4f3a14c8f (live HEAD).
+Stack: 421dd524 (product bulk) -> 419987cb (ordinal sort fix). Stack parent 055343a28.
+PR: https://github.com/Lucent-Financial-Group/Zeta/pull/17516
+Branch: claude/liveness-must-not-kill-startup
+
+GRADE GO -- tip-grounded WP15 liveness-must-not-kill-startup (full stack, not tip-only):
+- hindsight Application.yaml: api failureThreshold 30 (kill budget 320s), controlPlane 15 (170s); was 50s
+- liveness-kill-budget.ts + tests: catalog audit, DEFAULT_KILL_BUDGET_THRESHOLD_SECONDS=120, CI gate in helm-validate.yml
+- KILL_BUDGET_ALLOWLIST: 44 grandfather entries (WP15 triage reason -> WI 081M348H97G087G0R0020EA0NY) by design
+- tip commit: compareOrdinal replaces localeCompare in formatTable sort only
+- Agency SUCCESS; Task 081M348VYZ1087G0R0002GQM11
+- Note at gather: lint (yaml/k8s) FAILURE; chart pins / new gate still in_progress
+
+Sit leftover. Do not merge.
+
