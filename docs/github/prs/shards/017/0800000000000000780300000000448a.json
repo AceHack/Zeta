@@ -1,0 +1,12 @@
+{
+  "pr_number": 17546,
+  "archive_path": "docs/history/pr-reviews/2026/09/22/PR-17546-fix-pages-do-not-treat-the-evidence-reader-as-the-route-chunk.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-22T23:49:58.662Z",
+  "schema_version": "v1",
+  "commit_sha": "9fc30a9f61430351ddcc2f225ec2a93d6637b115",
+  "title": "fix(pages): do not treat the evidence reader as the route chunk",
+  "state": "MERGED",
+  "merged_at": "2026-09-22T23:49:17Z",
+  "head_ref": "cursor/pages-evidence-route-readdir-27c5"
+}
