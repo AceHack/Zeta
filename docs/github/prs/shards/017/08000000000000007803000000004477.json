@@ -1,0 +1,12 @@
+{
+  "pr_number": 17527,
+  "archive_path": "docs/history/pr-reviews/2026/09/22/PR-17527-chore-workitems-complete-wp17-tracking-item-081m34aw07f087g0r001katsp6.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-22T11:33:31.935Z",
+  "schema_version": "v1",
+  "commit_sha": "0676c7fd02cbd32c3366a264f8d17eb5d58abc5d",
+  "title": "chore(workitems): complete WP17 tracking item (081M34AW07F087G0R001KATSP6)",
+  "state": "MERGED",
+  "merged_at": "2026-09-22T11:32:41Z",
+  "head_ref": "chore/complete-wp17-workitem"
+}
