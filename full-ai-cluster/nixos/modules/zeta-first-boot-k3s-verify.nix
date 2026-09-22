@@ -184,17 +184,59 @@ in
         BOOTED_ELAPSED=$(elapsed)
         log "[wp11-k3s-verify] verdict 1/6 bootedMultiUser=true elapsed=''${BOOTED_ELAPSED}s"
 
+        # Why k3s is NOT active, mirrored line by line to serial. MEASURED run
+        # 35717757526: k3sServiceActive=false after 4201s with nothing on serial
+        # to say why -- a verdict that cannot name its cause. This names it:
+        # the unit's state, the job queue (an ordering dependency that never
+        # completes shows up here as a waiting job), the network-online chain
+        # k3s is ordered after, and the unit's own journal.
+        k3s_diag() {
+          log "[wp11-k3s-verify] --- k3s diagnostics ($1, elapsed=$(elapsed)s) ---"
+          {
+            ${pkgs.systemd}/bin/systemctl show k3s.service -p ActiveState -p SubState -p Result -p ExecMainStatus -p NRestarts -p After --no-pager
+            ${pkgs.systemd}/bin/systemctl list-jobs --no-pager
+            ${pkgs.systemd}/bin/systemctl status network-online.target NetworkManager-wait-online.service systemd-networkd-wait-online.service --no-pager -n 5
+            ${pkgs.systemd}/bin/systemctl --failed --no-pager
+            ${pkgs.systemd}/bin/journalctl -u k3s.service -b --no-pager -n 60
+            # systemd breaks an ordering cycle by DELETING a start job, which
+            # leaves the unit inactive forever with nothing in its own journal.
+            ${pkgs.systemd}/bin/journalctl -b --no-pager | ${pkgs.gnugrep}/bin/grep -iE "ordering cycle|deleted to break|Job .* failed|dependency failed" | ${pkgs.coreutils}/bin/tail -n 40
+          } 2>&1 | while IFS= read -r _l; do log "[wp11-k3s-diag] $_l"; done
+        }
+
         # --- verdict 2: k3s.service active -----------------------------------
         K3S_ACTIVE=false
+        DIAG_EARLY_DONE=false
         while [ "$(now_ts)" -lt "$deadline_ts" ]; do
           if ${pkgs.systemd}/bin/systemctl is-active --quiet k3s.service; then
             K3S_ACTIVE=true
             break
           fi
+          if [ "$DIAG_EARLY_DONE" = false ] && [ "$(elapsed)" -ge 300 ]; then
+            k3s_diag "not active after 300s"
+            DIAG_EARLY_DONE=true
+          fi
+          # FAIL FAST on a unit that never even tried. Upstream k3s carries
+          # Restart=always/RestartSec=5s, so a k3s that is going to come up is
+          # active, activating, or visibly cycling within a couple of minutes.
+          # `inactive` with ZERO start attempts at 10 minutes means its start
+          # job never ran: an ordering dependency that never settles, or a job
+          # systemd deleted. The remaining 60 minutes of the 4200s budget add
+          # no information -- MEASURED run 35717757526 spent 4201s to print one
+          # `false` -- and an hour of wall clock is the scarce thing here.
+          if [ "$(elapsed)" -ge 600 ]; then
+            _state=$(${pkgs.systemd}/bin/systemctl show k3s.service -p ActiveState --value 2>/dev/null || echo unknown)
+            _tries=$(${pkgs.systemd}/bin/systemctl show k3s.service -p NRestarts --value 2>/dev/null || echo 0)
+            if [ "$_state" = "inactive" ] && [ "$_tries" = "0" ]; then
+              log "[wp11-k3s-verify] giving up early: k3s.service inactive with 0 start attempts after $(elapsed)s -- its start job never ran"
+              break
+            fi
+          fi
           "$SLEEP" 5
         done
         K3S_ACTIVE_ELAPSED=$(elapsed)
         log "[wp11-k3s-verify] verdict 2/6 k3sServiceActive=''${K3S_ACTIVE} elapsed=''${K3S_ACTIVE_ELAPSED}s"
+        if [ "$K3S_ACTIVE" = false ]; then k3s_diag "deadline"; fi
 
         # --- verdict 3: node Ready (Cilium up) --------------------------------
         NODE_READY=false
