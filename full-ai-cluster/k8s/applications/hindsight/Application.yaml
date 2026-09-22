@@ -137,6 +137,50 @@ spec:
             # here does not drop the other.
             HINDSIGHT_API_LLM_PROVIDER: groq
 
+            # WORKER ID -- READ FROM THE APP'S OWN SOURCE, not guessed. PR #17505's
+            # soak-phase log carried this warning verbatim
+            # (vectorize-io/hindsight `hindsight_api/utils.py::warn_if_container_default_worker_id`,
+            # fetched via `gh api search/code` 2026-09-22 since the wall in
+            # `.claude/rules/cleanroom-two-team-separation.md` governs OUR PRIOR ART, not a
+            # public upstream dependency's own log message we are configuring against):
+            #
+            #   WARNING: HINDSIGHT_API_WORKER_ID is not set and Hindsight appears to be
+            #   running inside kubernetes. The worker id is defaulting to the container
+            #   hostname, which CHANGES every time the container is recreated. When that
+            #   happens, tasks left in 'processing' under the old hostname are never
+            #   recovered -- consolidation and other async operations can get stuck
+            #   indefinitely. Set HINDSIGHT_API_WORKER_ID to a STABLE value (e.g. the
+            #   compose service name or StatefulSet pod name) to avoid this.
+            #
+            # `worker.enabled` is false (chart default, unset here), so there is no
+            # dedicated worker StatefulSet -- the chart's OWN fix (worker-statefulset.yaml
+            # sets HINDSIGHT_API_WORKER_ID from the StatefulSet pod name via the downward
+            # API) does not apply to us; the internal worker runs embedded in THIS `api`
+            # Deployment pod, which the chart never assigns an id at all.
+            #
+            # NOT the downward-API pod name suggested for a StatefulSet: `api` is a
+            # Deployment, and a Deployment's pod name is only stable ACROSS CONTAINER
+            # RESTARTS within one Pod object (kubelet restarts the container in place;
+            # `metadata.name` does not change) -- it is NOT stable across POD recreation
+            # (a rolling update, an eviction, a reschedule create a new Pod with a new
+            # random suffix), which is exactly the "container recreation" the warning
+            # names as the failure trigger. Wiring the downward API here would silently
+            # carry the same defect one layer down. A literal static value is what the
+            # warning's own suggested fix means by "stable": it survives Pod recreation,
+            # not merely container restart.
+            #
+            # Safe today because `api.replicaCount` above is 1 -- exactly one worker
+            # ever holds this id at once, so there is no multi-worker collision, only the
+            # single-worker recovery hazard the warning describes.
+            #
+            # REVISIT IF `api.replicaCount` (or `worker.enabled`) EVER CHANGES: a second
+            # `api` replica sharing this literal id WOULD be the multi-worker collision
+            # (two processes claiming tasks under one id), and at that point this needs
+            # either a dedicated `worker.enabled: true` StatefulSet (which gets its id
+            # for free) or a per-replica downward-API value the Deployment does not
+            # provide today (e.g. `POD_IP`, which the chart does not read as a worker id).
+            HINDSIGHT_API_WORKER_ID: hindsight-api-0
+
           # THE API KEY IS STILL NOT WIRED, and that is deliberate rather than
           # overlooked. The chart offers TWO ways in, MEASURED 2026-08-22 by
           # reading hindsight-0.3.0's own templates, and neither is one line:
@@ -236,6 +280,68 @@ spec:
           service:
             type: ClusterIP
             port: 80
+
+          # LIVENESS KILL BUDGET -- WIDENED, WP15 (2026-09-22).
+          #
+          # MEASURED on PR #17505's "live kind included" job
+          # (`gh api repos/.../actions/jobs/<id>/logs`): the post-Healthy soak phase
+          # caught `hindsight-api-... [api] restartCount 1 -> 2` with
+          # `Liveness probe failed: Get "http://...:8888/health/live": connect:
+          # connection refused` while the container was still starting -- it runs
+          # alembic migrations at boot, and the kubelet killed it before that
+          # finished. Not a flake: the chart's own liveness default
+          # (`initialDelaySeconds: 30, periodSeconds: 10, failureThreshold: 3`)
+          # gives a kill budget of `30 + (3-1)*10 = 50s` from container start to
+          # first restart, and migrations plus interpreter/model-cache warmup on a
+          # busy node routinely exceed that.
+          #
+          # NO `startupProbe` KEY EXISTS in this chart at 0.9.2 -- MEASURED by
+          # extracting it (`helm pull oci://ghcr.io/vectorize-io/charts/hindsight
+          # --version 0.9.2 --untar`) and grepping every template:
+          # `templates/api-deployment.yaml` renders exactly `livenessProbe` and
+          # `readinessProbe` from `.Values.api.livenessProbe` / `.readinessProbe`,
+          # nothing else. So the kubelet-holds-liveness-until-startup-succeeds
+          # mechanism this rule's own repo convention prefers is UNAVAILABLE here;
+          # the only lever the chart exposes is widening the liveness probe itself.
+          #
+          # `readinessProbe` is deliberately UNTOUCHED: it gates traffic, not the
+          # container's life, and the chart's own comment already gets this right
+          # (readiness hits `/health`, which checks the database; liveness hits
+          # `/health/live`, which does not). A slow-starting pod should stay OUT of
+          # the Service without being killed for it -- that is exactly what
+          # `readinessProbe.initialDelaySeconds: 10, failureThreshold: 3` already
+          # does, and it needs no change.
+          #
+          # Helm deep-merges maps (same note as `api.env` above), so naming only
+          # `failureThreshold` here keeps the chart's `httpGet`, `initialDelaySeconds`,
+          # `periodSeconds` and `timeoutSeconds` defaults. New kill budget:
+          # `30 + (30-1)*10 = 320s` (~5.3 min) -- generous enough to absorb a
+          # migration run plus warmup under load, while still killing a
+          # genuinely-wedged process inside the soak window's own longer horizon.
+          livenessProbe:
+            failureThreshold: 30
+
+        # CONTROL PLANE'S OWN LIVENESS -- WIDENED FOR THE SAME REASON, NARROWER
+        # MARGIN. Not part of PR #17505's measured failure (that log only showed
+        # `api` restarting) -- caught instead by `liveness-kill-budget.ts`'s
+        # catalog-wide audit run against this same chart while fixing `api`.
+        # `templates/controlplane-deployment.yaml` renders
+        # `{{- toYaml .Values.controlPlane.livenessProbe | nindent 10 }}` -- an
+        # ACTUAL values coordinate (unlike `postgresql`'s liveness below, which
+        # this chart hardcodes into its StatefulSet template with no `toYaml`
+        # in sight -- there is nothing to override there, so postgresql stays
+        # in the audit's leave-in-a-workitem set instead).
+        #
+        # Chart default: `tcpSocket: {port: 3000}, initialDelaySeconds: 30,
+        # periodSeconds: 10, failureThreshold: 3` -- kill budget
+        # `30 + (3-1)*10 = 50s`. control-plane is Node/Next.js, not a migration
+        # runner, so it does not need `api`'s 320s margin -- `failureThreshold:
+        # 15` gives `30 + 14*10 = 170s`, comfortably above the 120s floor
+        # `liveness-kill-budget.ts` gates on without matching a budget this
+        # container's own startup profile does not justify.
+        controlPlane:
+          livenessProbe:
+            failureThreshold: 15
 
   destination:
     server: https://kubernetes.default.svc

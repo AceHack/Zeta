@@ -1,0 +1,14 @@
+{
+  "id": "080d06446fdf1010a0130008c8be062e",
+  "at": "2026-09-22T09:59:03.394Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M348VYZ1087G0R0002GQM11",
+    "type": "task",
+    "title": "WP15: liveness probe must not kill startup (hindsight crash loop + catalog-wide audit)",
+    "slug": "wp15-liveness-probe-must-not-kill-startup-hindsight-crash-lo",
+    "priority": "P2",
+    "filename": "081M348VYZ1087G0R0002GQM11-wp15-liveness-probe-must-not-kill-startup-hindsight-crash-lo.md"
+  }
+}

@@ -545,6 +545,31 @@ jobs:
         # platform/monitoring.yaml SkipDryRunOnMissingResource fix.
         run: bun test src/Core.TypeScript/cluster/crd-provider-consumer-order.test.ts
 
+      - name: Liveness kill budget (helm template over every Application; a livenessProbe must not fire before the app can listen)
+        # ADDED WP15, 2026-09-22. Renders every Helm-sourced Application (reads
+        # directory-sourced ones straight off disk) and flags any container
+        # that carries a `livenessProbe`, no `startupProbe`, and a kill budget
+        # (`initialDelaySeconds + (failureThreshold-1)*periodSeconds`) under
+        # 120s -- the exact shape that crash-looped hindsight's `api` container
+        # on PR #17505 (killed mid-migration by its own liveness probe on a
+        # busy node before it could finish listening). `KILL_BUDGET_ALLOWLIST`
+        # in the script itself carries every currently-acknowledged exception
+        # with a reason; a NEW container in that shape fails here rather than
+        # reaching a live-kind soak phase to discover it the hard way.
+        #
+        # No `--allow-unrendered`: helm is confirmed on PATH above, so a render
+        # failure here is a real defect, never a missing-tool skip.
+        run: bun src/Core.TypeScript/cluster/liveness-kill-budget.ts
+
+      - name: Prove the liveness-kill-budget checker can go red (synthetic falsifiers + live-tree regression guard)
+        # Two halves (see the file's own header): synthetic cases drive the
+        # kill-budget arithmetic, the container walk, and the allowlist match
+        # with hand-built fixtures, no helm needed; the live-tree half (helm IS
+        # on PATH in this job) re-derives the real audit and asserts zero
+        # unacknowledged findings, same assertion the step above makes by exit
+        # code, restated as a structured `bun test` failure.
+        run: bun test src/Core.TypeScript/cluster/liveness-kill-budget.test.ts
+
       - name: Image resolvability (offline, snapshot-gated) — every image the first-boot roster + Applications pull
         # ADDED 2026-09-22. Renders the SAME first-boot roster + Applications this
         # job already rendered above (helm chart archives are warm in
