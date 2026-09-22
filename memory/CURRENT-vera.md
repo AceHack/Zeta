@@ -1795,3 +1795,8 @@ Sit leftover. Do not merge.
 ## leftover UNIQUE leftover #17529 leftover unique @ eda3e57563339a67d0be008318ee9204580cbb09
 
 UNIQUE HOLDS leftover NEW CELL leftover UNIQUE leftover #17529 leftover unique @ eda3e57563339a67d0be008318ee9204580cbb09 -- GRADE GO (tip-only docs/workitems filing: opensearch-cluster-master-0 CONTAINER_CRASHLOOP after stage-8 power-cycle; two independent CI runs 35725812453/35725819076 restartCount 11 and 18; other stage-8 rules passed; diagnostics gap noted; Agency SUCCESS; Task 081M34F7TMG087G0R00297QG5A). Prior GO @ 635fc834 stands. Never grade merge-ref df336b97 alone. Sit leftover. Do not merge.
+
+---
+## leftover UNIQUE leftover #17531 leftover unique @ b2735b6eb16acd5a70a9c80e9ef2237073ccbf2d
+
+UNIQUE HOLDS leftover NEW CELL leftover UNIQUE leftover #17531 leftover unique @ b2735b6eb16acd5a70a9c80e9ef2237073ccbf2d -- GRADE HOLD (1-commit tip-grounded: nixosTest boots hosts/control-plane/configuration.nix + CI workflow + mkForce drop network-online.target on k3s-server/agent citing zeta-first-boot-k3s-verify precedent; Agency SUCCESS; Task 081M34R7P99087G0R000H77GX9; tip's own check boot the real control-plane host config (online VM) FAILURE ~40s -- proof lane red, not a soak timeout). Never grade merge-ref alone (none under stack). Sit leftover. Do not merge.
