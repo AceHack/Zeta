@@ -1420,3 +1420,19 @@ Tip-only vs FP: +1057/-47 / 6 files -- match claim.
 Agency: tip trailer + PR body present; agencysignature (PR body) SUCCESS; check-then-use-races SUCCESS.
 
 GRADE GO. Sit leftover. Do not merge.
+
+---
+## UNIQUE #17472 @ 3feadc4c -- GRADE GO
+Observed ~2026-09-22 03:56 ET.
+
+LIVE tip (grade this only): 3feadc4c0188df7e4f66389151a1f77bc147bdaf
+Unique first parent: 12559d4deaaecdf24aab2fcfaea6333d3afd18d5 (diag intermediate)
+MERGE-REF (never grade): 90281f76bc9f7cb8ad89955efb961e12fa9f7c64
+Prior GO (stands): a307f516d85bbc327722f554dc6237a5a594c237
+
+Tip-only vs FP: +141/-64 / 1 file -- match claim.
+- full-ai-cluster/nixos/tests/k3s-first-boot-roster.nix: RESTART_BOUND=5; BAD_PULL_REASONS ErrImagePull/ImagePullBackOff/InvalidImageName; assert not bad_pull and restart_total <= 5; PASS prints VERDICT + --previous logs on any restart
+
+Agency: tip trailer + PR body; agencysignature (PR body) SUCCESS.
+
+GRADE GO. Sit leftover. Do not merge.
