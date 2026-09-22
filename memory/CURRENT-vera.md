@@ -1742,3 +1742,20 @@ GRADE GO -- tip-confirm observability roster refresh:
 - Note: subject says tempo; tip-only does not change tempo valuesHash
 
 Sit leftover. Do not merge.
+
+---
+## UNIQUE #17529 @ 635fc834 -- GRADE GO
+
+2026-09-22 ~8:15 AM ET
+Tip of 1-commit stack @ 635fc834378b1cee97d91b6feb8c99acf3b1bbed (parent 6c853b6f).
+PR: https://github.com/Lucent-Financial-Group/Zeta/pull/17529
+Branch: claude/first-boot-replica-power-cycle
+
+GRADE GO -- tip-grounded WP19 power-cycle recovery:
+- stage 8 --power-cycle after stage 7; docker kill -s KILL then start (named volume kept); wait + 300s soak
+- four rules: appsFailedToRecover, containerCrashLoopsAfterRecovery (classifySoakRegressions / spire-agent allowlist), secretDataChangedAfterRecovery (DEV_BOOTSTRAP/SHARED hashes only), pvcsReboundAfterRecovery
+- workflow timeout 150->180; GITHUB_STEP_SUMMARY; 31 new unit tests in tip
+- Agency trailers present; Task 081M34F7TMG087G0R00297QG5A
+- Note: live first-boot-replica --power-cycle in_progress at gather; 102/102 not CI-confirmed
+
+Sit leftover. Do not merge.
