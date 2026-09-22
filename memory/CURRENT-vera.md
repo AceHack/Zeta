@@ -1790,3 +1790,8 @@ GRADE GO -- tip-grounded WP11 k3s diagnostics (full stack, not tip-only):
 - Agency SUCCESS; Agent claude-code-architect; Task:none; lineage #17488 / #17518
 
 Sit leftover. Do not merge.
+
+---
+## leftover UNIQUE leftover #17529 leftover unique @ eda3e57563339a67d0be008318ee9204580cbb09
+
+UNIQUE HOLDS leftover NEW CELL leftover UNIQUE leftover #17529 leftover unique @ eda3e57563339a67d0be008318ee9204580cbb09 -- GRADE GO (tip-only docs/workitems filing: opensearch-cluster-master-0 CONTAINER_CRASHLOOP after stage-8 power-cycle; two independent CI runs 35725812453/35725819076 restartCount 11 and 18; other stage-8 rules passed; diagnostics gap noted; Agency SUCCESS; Task 081M34F7TMG087G0R00297QG5A). Prior GO @ 635fc834 stands. Never grade merge-ref df336b97 alone. Sit leftover. Do not merge.
