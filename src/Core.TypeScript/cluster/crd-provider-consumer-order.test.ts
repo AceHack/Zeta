@@ -649,7 +649,7 @@ describe("gatingInvariantViolations", () => {
       const apps = readShippedApplications(root);
       const audit = auditCrdOrder(apps, (p) => readFileSync(resolve(root, p), "utf8"), root);
       const gating = [...audit.index.sourceByApp.entries()].filter(([, s]) => s.gatingAnnotated).map(([n]) => n).sort();
-      expect(gating).toEqual(["arc-controller", "cert-manager", "cilium", "open-policy-agent", "spire-crds", "trust-manager"]);
+      expect(gating).toEqual(["cert-manager", "open-policy-agent", "spire-crds", "trust-manager"]);
       expect(audit.gatingViolations).toEqual([]);
     },
     180_000,

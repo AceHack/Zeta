@@ -31,7 +31,10 @@ metadata:
     # references -- the GitHub App credential gap documented elsewhere
     # belongs to arc-runner-set, the CONSUMER, not this provider. Not
     # declared manual-sync.
-    zeta.io/gates-later-waves: "true"
+    # UNGATED 2026-09-22 (architect): never observed reaching Healthy on the real
+    # bootstrap path, and a stuck gate at wave 3 would stall waves 4-50 (opensearch,
+    # hindsight, temporal, forgejo/gitlab...). Its one consumer, arc-runner-set, is a
+    # later wave with automated retry. Re-add with replica evidence.
   name: arc-controller
   namespace: argocd
   finalizers: [ resources-finalizer.argocd.argoproj.io ]

@@ -19,7 +19,12 @@ metadata:
     # exists at all, so it has the longest possible head start to be Ready).
     # crd-provider-consumer-order.ts's gating invariants (a)/(b) check this
     # annotation stays justified.
-    zeta.io/gates-later-waves: "true"
+    # UNGATED 2026-09-22 (architect): the first-boot replica (real k3s bootstrap path)
+    # observed this Application Synced/PROGRESSING for 15+ min with every cilium pod
+    # Running (run 35696323545), and with this gate on only 3 Applications synced in
+    # 480s (PR #17477's replica run). A provider that is not OBSERVED to reach Healthy
+    # must not gate every later wave. Re-add once the Progressing resource is found
+    # (investigation: branch claude/why-argo-apps-stay-progressing).
   name: cilium
   namespace: argocd
   finalizers:
