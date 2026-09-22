@@ -1,0 +1,14 @@
+{
+  "id": "080d065b5ea5f810a01300087e2de26f",
+  "at": "2026-09-22T23:20:36.799Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M35PQN5Y087G0R000YCPATJ",
+    "type": "bug",
+    "title": "identity-dla Pages verifier picks reader as route when readdir lists EvidenceRoomPage first",
+    "slug": "identity-dla-pages-verifier-picks-reader-as-route-when-readd",
+    "priority": "P1",
+    "filename": "081M35PQN5Y087G0R000YCPATJ-identity-dla-pages-verifier-picks-reader-as-route-when-readd.md"
+  }
+}
