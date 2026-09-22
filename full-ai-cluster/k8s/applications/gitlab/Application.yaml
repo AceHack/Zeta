@@ -39,6 +39,57 @@ spec:
           initialRootPassword:
             secret: gitlab-initial-root-password
             key: password
+          # BUNDLED MINIO IS OFF -- ITS TWO IMAGES ARE GONE FROM DOCKER HUB.
+          #
+          # `charts/minio` (this chart's own bundled subchart, gated ENTIRELY on
+          # `global.minio.enabled` -- every template under it, verified against every
+          # file in `charts/minio/templates/`, opens with `{{- if .Values.global.minio.enabled
+          # -}}`) defaults to `enabled: true` and pulls `minio/minio:RELEASE.2017-12-28T01-21-00Z`
+          # (the deployment) and `minio/mc:RELEASE.2018-07-13T00-53-22Z` (the create-buckets Job).
+          # MEASURED 2026-09-22, same finding as PR #17475 (image-resolvability) and PR #17479
+          # (registry-mirror-coverage): both tags -- and every OTHER tag in both repositories --
+          # 401 "authentication required" from `registry-1.docker.io` with a valid anonymous pull
+          # token (control test against `library/alpine:latest` with the same token flow
+          # succeeded, so this is the repository, not the token). Docker Hub confirms the removal
+          # dates to ~2026-09-11, coincident with MinIO's community-edition Docker Hub deprecation
+          # -- the SAME upstream event `object-store/BLOB-STORE-CONTRACT.md` already documents for
+          # the cluster's own former `minio/` Application (archived repo, no security patches,
+          # replaced by SeaweedFS 2026-09-01). A first-boot sync of this Application with the
+          # bundled subchart enabled ImagePullBackOffs on both, and the create-buckets Job that
+          # the Rails app's object storage depends on never completes.
+          #
+          # A verified alternative image was checked and rejected: GitLab's own upstream image
+          # mirror (`registry.gitlab.com/gitlab-org/cloud-native/mirror/images/...`) carries no
+          # `minio` project at all -- `GET .../groups/gitlab-org/projects?search=minio&include_subgroups=true`
+          # returns an empty list. `quay.io/minio/minio` and `quay.io/minio/mc` DO still resolve
+          # (both linux/amd64 + linux/arm64), but their newest tags are RELEASE.2025-09-07 and
+          # RELEASE.2025-08-13 respectively -- no release since, consistent with the same
+          # archival BLOB-STORE-CONTRACT.md records (Feb 2026, no further development, no security
+          # patches). Repointing the bundled subchart at quay.io would re-import the exact
+          # unpatched-object-store posture the cluster already paid down once for its shared
+          # store; it is not "maintained", only "still pullable".
+          #
+          # So GitLab is pointed at the SAME in-cluster SeaweedFS every other object-storage
+          # consumer here uses (loki/Application.yaml, mimir/Application.yaml,
+          # object-store/BLOB-STORE-CONTRACT.md) via the chart's own documented "consolidated
+          # object storage" form -- one connection, all types (lfs/artifacts/uploads/packages)
+          # unless overridden per type, none are here. `appConfig.objectStorage.configuration` in
+          # `charts/gitlab/templates/_objectStorage.tpl` renders the CONSOLIDATED
+          # `object_store.connection` block only when `.config.connection` is set (below) --
+          # `global.minio.enabled: false` above removes the automatic minio-connection fallback
+          # branch in that same template, which is why disabling minio and configuring the
+          # connection are one change, not two.
+          minio:
+            enabled: false
+          appConfig:
+            object_store:
+              enabled: true
+              connection:
+                # `key` defaults to "connection" (charts/gitlab/templates/_objectStorage.tpl
+                # `gitlab.appConfig.objectStorage.mountSecrets`) -- named anyway so the
+                # secret's shape is legible from this file without opening the chart.
+                secret: zeta-blob-store
+                key: connection
         # Disable bundled components — cluster has its own.
         certmanager:    { install: false }
         nginx-ingress:  { enabled: false }
@@ -46,6 +97,19 @@ spec:
         gitlab-runner:
           install: true
           runners: { privileged: false, tags: "kubernetes,zeta-cluster" }
+        # Container registry's object storage is a SEPARATE config surface from
+        # `global.appConfig.object_store` above -- `charts/registry` is a Go binary, not the
+        # Rails app, and reads its own `storage.secret`/`storage.key` (default "config"),
+        # mounted at `/config/storage/config` and spliced into the rendered `storage:` block by
+        # the chart's own entrypoint script (`charts/registry/templates/deployment.yaml` +
+        # `_helper_create_buckets.sh`-adjacent config template). Same SeaweedFS endpoint, same
+        # shared `zeta-blob-store` credential, different secret key holding the registry's own
+        # `storage.s3.*` YAML shape (`gitlab-registry` bucket, `secure: false` -- in-cluster,
+        # no TLS -- `v4auth: true`).
+        registry:
+          storage:
+            secret: zeta-blob-store
+            key: config
         # THE FOUR BUNDLED BITNAMI IMAGES, RE-POINTED AT `bitnamilegacy`.
         #
         # This Application was the largest entry in the partitioner's CANNOT BE

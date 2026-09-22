@@ -441,18 +441,25 @@ export const DEV_EXCLUDED_REASONS: ReadonlyMap<string, string> = new Map([
       "chart rendered, and that acknowledgement was DELETED from the baseline. The reason kept citing it. This " +
       "is the third instance of one defect in two days -- `platform` (#13472), `temporal` (#13483), and now " +
       "this -- and it is the instance that a check found rather than a person. " +
-      "WHAT IS MEASURED NOW: it renders, and what it renders is 76 GiB of PersistentVolumeClaims across four " +
-      "workloads -- gitaly 50Gi, minio 10Gi, postgresql 8Gi, redis 8Gi -- every one of them declaring NO " +
-      "storageClassName, so all four land on the cluster default (`zeta-local-path`: the node's own disk) and " +
-      "none of them is on a replicated class at all. " +
+      "WHAT WAS MEASURED 2026-08-22: it renders, and what it rendered then was 76 GiB of PersistentVolumeClaims " +
+      "across four workloads -- gitaly 50Gi, minio 10Gi, postgresql 8Gi, redis 8Gi -- every one of them " +
+      "declaring NO storageClassName, so all four land on the cluster default (`zeta-local-path`: the node's " +
+      "own disk) and none of them is on a replicated class at all. " +
+      "WHAT IS MEASURED NOW, 2026-09-22: 66 GiB across THREE workloads -- gitaly 50Gi, postgresql 8Gi, redis " +
+      "8Gi. `minio` dropped out: `global.minio.enabled: false` (gitlab/Application.yaml) disables the bundled " +
+      "minio subchart entirely -- both its images, `minio/minio` and `minio/mc`, were withdrawn from Docker " +
+      "Hub ~2026-09-11, so a first-boot sync with it enabled ImagePullBackOffs. GitLab's object storage now " +
+      "addresses the cluster's shared SeaweedFS instead (object-store/BLOB-STORE-CONTRACT.md), same as loki " +
+      "and mimir; the storageClassName conclusion is otherwise unchanged. " +
       "THE BLOCKER THAT REMAINS, and it is one blocker rather than the two claimed. NO SOURCE FOR THE " +
       "ROOT-PASSWORD SECRET: the manifest reads `initialRootPassword.secret: gitlab-initial-root-password`, and " +
       "nothing in this tree creates that Secret -- outside the two Application manifests that consume it, its " +
       "only occurrence is an instruction to a human at infra/README.md:165. Without it the webservice never " +
       "reaches Ready, and ArgoCD reports Progressing until the timeout. " +
-      "CAPACITY IS CARRIED OVER, NOT MEASURED, and that is said rather than implied: 76 GiB of node-local " +
-      "claims plus GitLab's multi-GB images on one kind node is the earlier reason's estimate, and no run in " +
-      "this lane has ever produced a verdict for this Application to check it against. It is a prediction. " +
+      "CAPACITY IS CARRIED OVER, NOT MEASURED, and that is said rather than implied: 66 GiB of node-local " +
+      "claims plus GitLab's multi-GB images on one kind node is the earlier reason's estimate, updated for the " +
+      "minio removal above, and no run in this lane has ever produced a verdict for this Application to check " +
+      "it against. It is a prediction. " +
       "LIFTS WHEN: `gitlab-initial-root-password` has a source in the tree -- a SealedSecret or an " +
       "ExternalSecret, the same shape the other credentialled apps use -- AND one included run reports this " +
       "Application's actual verdict, which is also what would settle the capacity prediction either way. " +
@@ -460,7 +467,7 @@ export const DEV_EXCLUDED_REASONS: ReadonlyMap<string, string> = new Map([
       "outlives its artifact goes red instead of reading on. " +
       "[cite: no-unrenderable full-ai-cluster/gitlab] " +
       "[cite: renders full-ai-cluster/gitlab] " +
-      "[cite: pvc-total full-ai-cluster/gitlab 76] " +
+      "[cite: pvc-total full-ai-cluster/gitlab 66] " +
       "[cite: chart-pin full-ai-cluster/gitlab gitlab 8.7.0] " +
       "[cite: published gitlab 8.7.0] " +
       "[cite: path infra/README.md:165] " +

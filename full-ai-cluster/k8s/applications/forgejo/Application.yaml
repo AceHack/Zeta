@@ -13,10 +13,14 @@
 # dev and metal rungs --
 #
 #   forgejo   100m /   128Mi /  1 pod
-#   gitlab   2525m /  5733Mi / 17 pods
+#   gitlab   2375m /  5605Mi / 15 pods
 #
 # -- so running Forgejo alongside GitLab costs 4% of GitLab's CPU and 2% of its
 # memory. The cheap half of an either/or pair is not worth an either/or.
+#
+# gitlab's totals moved 2525m/5733Mi/17 -> 2375m/5605Mi/15 on 2026-09-22 when its
+# bundled minio subchart was disabled (both minio/minio and minio/mc were withdrawn
+# from Docker Hub); the percentages above are unchanged to the nearest point.
 
 apiVersion: argoproj.io/v1alpha1
 kind: Application

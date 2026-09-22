@@ -1365,8 +1365,12 @@ describe("the checked-in resource ladder", () => {
     // denominator. Unchanged in the tree; simply no longer counted here.
     expect(lane.memoryMib).toBe(15548);
     const all = resourceTotal(catalogue, "metal", applicationDirs());
-    expect(all.cpuMillis).toBe(12365);
-    expect(all.memoryMib).toBe(25867);
+    // 12365 -> 12215m / 25867 -> 25739Mi on 2026-09-22: gitlab's bundled minio
+    // subchart disabled (`global.minio.enabled: false`), removing
+    // Deployment/gitlab-minio (100m/128Mi) and Job/gitlab-minio-create-buckets
+    // (50m/0Mi) -- both its images were withdrawn from Docker Hub.
+    expect(all.cpuMillis).toBe(12215);
+    expect(all.memoryMib).toBe(25739);
   });
 
   // Aaron 2026-08-20: "make things small enough to fit for disk and ram on the
