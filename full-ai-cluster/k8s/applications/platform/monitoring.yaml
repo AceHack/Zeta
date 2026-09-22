@@ -32,6 +32,25 @@ metadata:
   namespace: zeta-platform
   annotations:
     argocd.argoproj.io/sync-wave: "0"
+    # CRD PROVIDER/CONSUMER ORDER FIX (081M1...WP3, crd-provider-consumer-order.ts finding).
+    # `ServiceMonitor` is a monitoring.coreos.com/v1 CRD installed by the
+    # kube-prometheus-stack Application (sync-wave 0), while THIS Application
+    # (`platform`) syncs at wave -20 -- strictly before it. Without this
+    # sync-option, ArgoCD's dry-run rejects this object on every cold boot
+    # ("no matches for kind ServiceMonitor") and reports it SyncFailed, which
+    # -- once Application-level health assessment is restored
+    # (resource.customizations.health.argoproj.io_Application in
+    # argocd-install.yaml) -- would leave `platform` permanently non-Healthy
+    # and stall every later sync wave behind it. SkipDryRunOnMissingResource
+    # defers this one object to the next reconcile (selfHeal) once the CRD
+    # exists, instead of failing the whole Application's sync.
+    # Registered order finding: sync-wave-dependency-graph.yaml
+    # ORDER_ADJUDICATION_PENDING["platform -> kube-prometheus-stack"] --
+    # repair (3) in that entry. The wave INVERSION itself is intentionally
+    # NOT renumbered here (repair (2), splitting monitoring.yaml into its own
+    # later-wave Application, remains a maintainer call about ownership); this
+    # is the smallest change that removes the blocking symptom.
+    argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
   labels:
     app.kubernetes.io/name: portal
     release: kube-prometheus-stack
@@ -53,6 +72,10 @@ metadata:
   namespace: zeta-platform
   annotations:
     argocd.argoproj.io/sync-wave: "0"
+    # Same CRD provider/consumer order fix as the ServiceMonitor above --
+    # PrometheusRule is the same monitoring.coreos.com/v1 CRD, installed by
+    # kube-prometheus-stack at wave 0, consumed here at wave -20.
+    argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
   labels:
     app.kubernetes.io/name: portal
     release: kube-prometheus-stack

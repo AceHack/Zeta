@@ -54,6 +54,40 @@ spec:
     configs:
       params:
         server.insecure: true   # TLS terminated upstream once ingress lands
+      cm:
+        # RESTORES Application-CRD health assessment, removed upstream in ArgoCD
+        # 1.8 (argo-cd docs/operator-manual/upgrading/1.7-1.8.md, "Application CRD
+        # health check has been removed... You might need to restore it if you are
+        # using app-of-apps pattern and orchestrating synchronization using sync
+        # waves"). WITHOUT this key, gitops-engine has NO health check registered
+        # for argoproj.io/Application at all, so every child Application under
+        # zeta-root (root-application.yaml) is treated as immediately "Healthy"
+        # the moment it is APPLIED -- sync waves among the ~50 child Applications
+        # then only order the ArgoCD-side apply of the Application resource
+        # itself; they never wait for the workload underneath a wave to actually
+        # converge before the next wave starts. Lua verbatim from the upstream
+        # upgrade note above.
+        #
+        # MUST STAY IN LOCKSTEP with `configs.cm` in
+        # full-ai-cluster/k8s/applications/argocd/Application.yaml -- same
+        # reasoning as the version pin above: this bootstrap installs ArgoCD
+        # first, the Application then adopts it, and a divergent argocd-cm
+        # between the two would flip health semantics on ArgoCD's very first
+        # self-managed reconcile. `argocd-health-lua-lockstep.test.ts` fails if
+        # either file loses this key or the two disagree.
+        resource.customizations.health.argoproj.io_Application: |
+          hs = {}
+          hs.status = "Progressing"
+          hs.message = ""
+          if obj.status ~= nil then
+            if obj.status.health ~= nil then
+              hs.status = obj.status.health.status
+              if obj.status.health.message ~= nil then
+                hs.message = obj.status.health.message
+              end
+            end
+          end
+          return hs
     notifications:
       enabled: false
     dex:
