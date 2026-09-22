@@ -501,6 +501,32 @@ spec:
 `;
 }
 
+/**
+ * The only part of the served subtree ArgoCD ever reads: every root and child
+ * Application's `source.path` is `full-ai-cluster/k8s/applications[/...]`.
+ */
+export const SERVED_APPLICATIONS_DIR = `${SERVED_SUBTREE}/applications`;
+
+/**
+ * Drop everything in the staged subtree except `applications/`, AFTER the rung has
+ * been applied (the rung reads the staged ledgers) and BEFORE the commit.
+ *
+ * MEASURED 2026-09-22: the packed tree reached 1001072 B against the 716800 B
+ * budget and every served-tree lane died at bootstrap. Most of it was never served
+ * to ArgoCD at all: `bootstrap/gateway-api-crds.yaml` alone is 598 KB (k3s applies
+ * it, not ArgoCD), plus the JSON ledgers, `tests/` and docs. Tools that need
+ * `bootstrap/` read it from the repo checkout, never from this tree.
+ */
+export function pruneToServedApplications(stagingRoot: string): void {
+  const subtree = join(stagingRoot, SERVED_SUBTREE);
+  for (const entry of readdirSync(subtree)) {
+    if (entry !== "applications") rmSync(join(subtree, entry), { recursive: true, force: true });
+  }
+  if (countFiles(join(stagingRoot, SERVED_APPLICATIONS_DIR)) === 0) {
+    throw new Error(`lane-tree-source: ${SERVED_APPLICATIONS_DIR} is empty after pruning -- nothing for ArgoCD to sync`);
+  }
+}
+
 /** Convenience for callers that want the whole pipeline in one call. */
 export function buildLaneTreeBundle(options: {
   readonly repoRoot: string;
@@ -521,6 +547,7 @@ export function buildLaneTreeBundle(options: {
     );
   }
 
+  pruneToServedApplications(stagingRoot);
   const repo = buildBareRepo(stagingRoot, bareDir, options.gitRef);
   const packed = packBareRepo(bareDir);
   return {
