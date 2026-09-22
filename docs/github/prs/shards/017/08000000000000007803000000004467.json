@@ -1,0 +1,12 @@
+{
+  "pr_number": 17511,
+  "archive_path": "docs/history/pr-reviews/2026/09/22/PR-17511-docs-workitems-close-the-two-image-resolvability-work-items.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-22T09:50:21.788Z",
+  "schema_version": "v1",
+  "commit_sha": "2acf04df7e1af6b261f91fc0655ad143b08201bd",
+  "title": "docs(workitems): close the two image-resolvability work items",
+  "state": "MERGED",
+  "merged_at": "2026-09-22T09:49:34Z",
+  "head_ref": "claude/close-image-resolvability-workitems"
+}
