@@ -1800,3 +1800,8 @@ UNIQUE HOLDS leftover NEW CELL leftover UNIQUE leftover #17529 leftover unique @
 ## leftover UNIQUE leftover #17531 leftover unique @ b2735b6eb16acd5a70a9c80e9ef2237073ccbf2d
 
 UNIQUE HOLDS leftover NEW CELL leftover UNIQUE leftover #17531 leftover unique @ b2735b6eb16acd5a70a9c80e9ef2237073ccbf2d -- GRADE HOLD (1-commit tip-grounded: nixosTest boots hosts/control-plane/configuration.nix + CI workflow + mkForce drop network-online.target on k3s-server/agent citing zeta-first-boot-k3s-verify precedent; Agency SUCCESS; Task 081M34R7P99087G0R000H77GX9; tip's own check boot the real control-plane host config (online VM) FAILURE ~40s -- proof lane red, not a soak timeout). Never grade merge-ref alone (none under stack). Sit leftover. Do not merge.
+
+---
+## leftover UNIQUE leftover #17531 leftover unique @ c8edc7ffc8e55e5d374fae2a276eaecc38e912c6
+
+UNIQUE HOLDS leftover NEW CELL leftover UNIQUE leftover #17531 leftover unique @ c8edc7ffc8e55e5d374fae2a276eaecc38e912c6 -- GRADE GO (tip-only 1-file: _module.args.stateVersion = "26.05" on nodes.server clears prior eval fail attribute stateVersion missing / run 35741126744; tip's own check boot the real control-plane host config (online VM) SUCCESS run 35742177268 ~3m37s; Agency SUCCESS; Task 081M34R7P99087G0R000H77GX9). Prior HOLD @ b2735b6 stands. Never grade merge-ref alone. Sit leftover. Do not merge.
