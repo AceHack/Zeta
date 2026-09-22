@@ -1815,3 +1815,8 @@ UNIQUE HOLDS leftover NEW CELL leftover UNIQUE leftover #17534 leftover unique @
 ## leftover UNIQUE leftover #17531 leftover unique @ 603f7a22228f36ea560a02e1148bbb3d90c43211
 
 UNIQUE HOLDS leftover NEW CELL leftover UNIQUE leftover #17531 leftover unique @ 603f7a22228f36ea560a02e1148bbb3d90c43211 -- GRADE GO (tip-only +123/-63 / 3 files: shared k3s-wait-for-address.nix mkForce after/wants drop network-online keep firewall + ExecStartPre 120s global IPv4 poll then proceed; server/agent import shared module; Agency SUCCESS; Task 081M34R7P99087G0R000H77GX9; tip-own VM check in_progress not red; tip honestly defers validation to #17530 ISO re-run). Prior GO @ c8edc7ff stands. Never grade merge-ref alone. Sit leftover. Do not merge.
+
+---
+## leftover UNIQUE leftover #17534 leftover unique @ 0f1eb87c844f64afab861ad5e29073daea597e74
+
+UNIQUE HOLDS leftover NEW CELL leftover UNIQUE leftover #17534 leftover unique @ 0f1eb87c844f64afab861ad5e29073daea597e74 -- GRADE GO (tip-only +91/-1 / 2 files: seed-opensearch-admin bijective tr upper+special + 248-bit hex body; workitem root-cause cites run 35744676325 --previous hex failed demo-installer strength regex; Agency SUCCESS; Task 081M34QTS06087G0R0015D7X5W; Step 3 RECOVERED CI still in_progress). Prior GO @ 585f01e5 stands. Never grade merge-ref fab4e396 alone. Sit leftover. Do not merge.
