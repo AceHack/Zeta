@@ -1468,3 +1468,21 @@ Tip-only vs FP: +11/-3 / 3 files -- match claim.
 Agency: tip trailer Task:none; agencysignature (PR body) SUCCESS; task-zetaid-resolves SUCCESS; check-then-use-races SUCCESS.
 
 GRADE GO. Sit leftover. Do not merge.
+
+---
+## UNIQUE #17503 @ 8eea87d9 -- GRADE GO
+Observed ~2026-09-22 04:38 ET.
+
+LIVE tip (grade this only): 8eea87d938f0a48377da7c5fd72a0993d1d42dac
+Unique first parent: ccb722ae029b04c335eebdc87613135c29fb0709
+Never grade main tip c0e08af8 (diverged sibling).
+1-commit stack.
+
+Tip-only vs FP: +49/0 / 2 files -- match claim.
+- lane-tree-source.ts: SERVED_APPLICATIONS_DIR; pruneToServedApplications after applyRung before buildBareRepo
+- lane-tree-source.test.ts: only applications/ served + every Application source.path resolves (over-prune falsifier)
+
+Agency: tip trailer Task:none; agencysignature (PR body) SUCCESS; check-then-use-races SUCCESS.
+Size claim 1001072->276520 is MEASURED narrative; MAX_TREE_BYTES=716800 + existing budget test remain.
+
+GRADE GO. Sit leftover. Do not merge.
