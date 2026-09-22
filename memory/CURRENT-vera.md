@@ -1820,3 +1820,8 @@ UNIQUE HOLDS leftover NEW CELL leftover UNIQUE leftover #17531 leftover unique @
 ## leftover UNIQUE leftover #17534 leftover unique @ 0f1eb87c844f64afab861ad5e29073daea597e74
 
 UNIQUE HOLDS leftover NEW CELL leftover UNIQUE leftover #17534 leftover unique @ 0f1eb87c844f64afab861ad5e29073daea597e74 -- GRADE GO (tip-only +91/-1 / 2 files: seed-opensearch-admin bijective tr upper+special + 248-bit hex body; workitem root-cause cites run 35744676325 --previous hex failed demo-installer strength regex; Agency SUCCESS; Task 081M34QTS06087G0R0015D7X5W; Step 3 RECOVERED CI still in_progress). Prior GO @ 585f01e5 stands. Never grade merge-ref fab4e396 alone. Sit leftover. Do not merge.
+
+---
+## leftover UNIQUE leftover #17540 leftover unique @ 874e3689ffead8eef5269102ba1b68a43434d730
+
+UNIQUE HOLDS leftover NEW CELL leftover UNIQUE leftover #17540 leftover unique @ 874e3689ffead8eef5269102ba1b68a43434d730 -- GRADE GO (product unique tip-grounded: passwordPolicy opensearch-strength + composeOpenSearchAdminPassword hex-nibble maps match metal WP19c + mintDevAdminPassword dispatch; tests pin OPENSEARCH_ADMIN_PASSWORD_REGEX verbatim + 1000 seeded draws + plain-hex falsifier; Agency SUCCESS; Task 081M35DFB9B087G0R003WD5WJ6; plan+unit tests SUCCESS). Never grade merge-ref 46e10eaa alone. Sit leftover. Do not merge.
