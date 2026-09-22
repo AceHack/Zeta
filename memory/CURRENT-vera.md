@@ -1402,3 +1402,21 @@ Tip-only vs FP: +248/-89 / 6 files -- match claim.
 Agency: tip trailer + PR body present; agencysignature (PR body) SUCCESS; check-then-use-races SUCCESS on LIVE.
 
 GRADE GO. Sit leftover. Do not merge.
+
+---
+## UNIQUE #17495 @ ebc686d4 -- GRADE GO
+Observed ~2026-09-22 03:42 ET.
+
+Product unique (grade this only): ebc686d4826359fc686095c0134fdc56d9a76fce
+Unique first parent: e3426a097fdf2a13348d12532a2dbbac0cee6c6b
+LIVE MERGE-REF (never grade): d760b195285a96f988ce11608ca9a5425b7478d9
+
+Tip-only vs FP: +1057/-47 / 6 files -- match claim.
+- first-boot-replica.ts: --serve-tree via buildLaneTreeForProfile export; classifyPod FAIL (CrashLoop/IMAGE/SECRET/UNKNOWN) vs DIVERGENCE (CAPACITY/STORAGE); settle stage567TimeoutSec + soakSec restart regressions
+- first-boot-replica.test.ts: polarity/inversion coverage for isFailure both ways
+- first-boot-replica.yml: --serve-tree dev, timeout 1800, soak 300, job timeout 150
+- argocd-health-test.ts: export buildLaneTreeForProfile
+
+Agency: tip trailer + PR body present; agencysignature (PR body) SUCCESS; check-then-use-races SUCCESS.
+
+GRADE GO. Sit leftover. Do not merge.
