@@ -1318,3 +1318,20 @@ Agency: commit + PR body present; agencysignature (PR body) SUCCESS; human-revie
 Non-merge tip clears prior merge-hygiene HOLD axis.
 
 GRADE GO. Sit leftover. Do not merge.
+
+---
+## UNIQUE #17477 @ afe482fc -- GRADE GO
+Observed ~2026-09-22 03:15 ET.
+
+LIVE tip (grade this only): afe482fcfae9e06fb3b815548718ef2486072d40
+Unique first parent: 94902571bbd138b0ecffe127fbd8c987a87b012c (prior GO -- stands)
+MERGE-REFs (never grade as tip): 245e5a70, 06937c35
+
+Tip-only vs FP: +209/-3435 / 2 files -- match claim.
+- inert-valuesobject-keys.ts: fifth open form omit|pick wholesale; FP configs.cm.resource.customizations.health.argoproj.io_Application
+- inert-valuesobject-keys.schema.json: argo-cd configs.cm/params collapse to {}; gitlab/temporal open-node regen collateral (gitlab dominates -3434)
+
+Agency: tip trailer present (Task 081M33T23ZQ087G0R002ZYRHDG); PR body agency present (Human-Review explicit / human-directed).
+mergeable_state=dirty noted only (not grade axis).
+
+GRADE GO. Sit leftover. Do not merge.
