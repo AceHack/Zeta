@@ -1300,3 +1300,21 @@ Agency: commit + PR body present; agencysignature (PR body) SUCCESS; human-revie
 Gate-off: ConditionPathExists + env==1 + workflow if -- PR path stays OFF.
 
 GRADE GO. Sit leftover. Do not merge.
+
+---
+## UNIQUE #17477 @ 94902571 -- GRADE GO
+Observed ~2026-09-22 03:07 ET.
+
+LIVE tip (grade this only): 94902571bbd138b0ecffe127fbd8c987a87b012c
+Unique first parent: 06937c35bb48606f7775bce73b6867385f30617a (prior HOLD tip -- stands; never grade as current tip)
+MERGE-REF (never grade as tip): 245e5a70978ddaa8b3a1621b5baa88e4ac27be8f
+
+Tip-only vs FP: +72/-17 / 2 files -- match claim.
+- audit-existing-secret-is-minted.ts: readdirSyncOrEmpty; dropped existsSync
+- crd-provider-consumer-order.ts: try/catch ENOENT|ENOTDIR; dropped existsSync/statSync
+Peel covers all 7 HOLD check-then-use-races findings from 06937c35.
+
+Agency: commit + PR body present; agencysignature (PR body) SUCCESS; human-review evidence SUCCESS.
+Non-merge tip clears prior merge-hygiene HOLD axis.
+
+GRADE GO. Sit leftover. Do not merge.
