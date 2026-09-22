@@ -1,0 +1,12 @@
+{
+  "pr_number": 17540,
+  "archive_path": "docs/history/pr-reviews/2026/09/22/PR-17540-fix-cluster-mint-the-dev-ci-opensearch-admin-password-to-its-own-strength-rule-w.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-22T21:46:18.329Z",
+  "schema_version": "v1",
+  "commit_sha": "5f6b393f2631a8876677601b254b2c5ec29b8f7c",
+  "title": "fix(cluster): mint the dev/CI OpenSearch admin password to its own strength rule (WP22)",
+  "state": "MERGED",
+  "merged_at": "2026-09-22T21:45:35Z",
+  "head_ref": "claude/generated-passwords-meet-consumer-rules"
+}
