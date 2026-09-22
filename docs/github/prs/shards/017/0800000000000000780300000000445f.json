@@ -1,0 +1,12 @@
+{
+  "pr_number": 17503,
+  "archive_path": "docs/history/pr-reviews/2026/09/22/PR-17503-fix-cluster-serve-only-applications-in-the-lane-tree-1001072-b-276520-b.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-22T08:58:18.854Z",
+  "schema_version": "v1",
+  "commit_sha": "bbb52a596db38f4cad6ff6d1668e59010febcd35",
+  "title": "fix(cluster): serve only applications/ in the lane tree (1001072 B -> 276520 B)",
+  "state": "MERGED",
+  "merged_at": "2026-09-22T08:57:33Z",
+  "head_ref": "claude/lane-tree-fit-configmap"
+}
