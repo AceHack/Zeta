@@ -1,0 +1,14 @@
+{
+  "id": "080d0656bd69a010a0130008dba3f5ce",
+  "at": "2026-09-22T20:38:47.348Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M35DFB9B087G0R003WD5WJ6",
+    "type": "task",
+    "title": "generated credentials meet consumer complexity rules (WP22)",
+    "slug": "generated-credentials-meet-consumer-complexity-rules-wp22",
+    "priority": "P2",
+    "filename": "081M35DFB9B087G0R003WD5WJ6-generated-credentials-meet-consumer-complexity-rules-wp22.md"
+  }
+}
