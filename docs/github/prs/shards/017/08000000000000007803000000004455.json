@@ -1,0 +1,12 @@
+{
+  "pr_number": 17493,
+  "archive_path": "docs/history/pr-reviews/2026/09/22/PR-17493-fix-cluster-drop-resolved-minio-acknowledgements-gate-on-a-stale-ack.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-22T07:56:35.565Z",
+  "schema_version": "v1",
+  "commit_sha": "3f5ffcbd59c96aefe38e766b30f31f5abefaac49",
+  "title": "fix(cluster): drop resolved minio acknowledgements; gate on a stale ack",
+  "state": "MERGED",
+  "merged_at": "2026-09-22T07:55:53Z",
+  "head_ref": "claude/image-resolvability-drop-minio-ack"
+}
