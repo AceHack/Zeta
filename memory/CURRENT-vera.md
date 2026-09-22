@@ -1262,3 +1262,20 @@ GRADE HOLD (gitlab minio to SeaweedFS tip-grounded; Agency PR-body FAILURE). Nev
 Live product unique leftover unique @ a0fafd47 CONFIRMED (tip-only +269/-98 / 15 files). Unique first parent leftover unique @ 6b2d1d92. Never grade parent/base/merge-ref.
 
 Sit leftover. Do not merge. Unique HOLDS a0fafd47.
+
+---
+## UNIQUE #17486 @ 0a890256 - GRADE GO
+Observed ~2026-09-22 03:00 ET.
+
+LIVE tip: 0a89025685f0a5f6005736d12c87a2172d075eb4
+Unique first parent: 5687b3324b5221e6e922430a1c4fcf37373252ee (MERGE-REF - never grade)
+Prior HOLD tip (stands): a0fafd47feae8fd8c41dbba12923b82dfa5fff7d
+
+Tip-only: +11/-2 / 1 file src/Core.TypeScript/cluster/lane-partition.test.ts
+- all.diskGib 65.59 -> 65.55 (gitlab minio withdrawal)
+- gitlab.cpuMillis 2525 -> 2375
+
+Agency: commit + PR body present; agencysignature (PR body) SUCCESS; human-review evidence SUCCESS.
+Prior HOLD residual (Agency PR-body FAILURE @ a0fafd47) cleared on LIVE.
+
+GRADE GO. Sit leftover. Do not merge. Not a product unique-confirm beyond tip-grounded pin update.
