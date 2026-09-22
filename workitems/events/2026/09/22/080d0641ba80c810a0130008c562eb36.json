@@ -1,0 +1,14 @@
+{
+  "id": "080d0641ba80c810a0130008c562eb36",
+  "at": "2026-09-22T08:24:23.321Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M343EM0R087G0R003C8ZHJ7",
+    "type": "bug",
+    "title": "first-boot replica run 35700790207: spire-agent CrashLoopBackOff on ArgoCD-managed spire (not the bootstrap install hook)",
+    "slug": "first-boot-replica-run-35700790207-spire-agent-crashloopback",
+    "priority": "P2",
+    "filename": "081M343EM0R087G0R003C8ZHJ7-first-boot-replica-run-35700790207-spire-agent-crashloopback.md"
+  }
+}

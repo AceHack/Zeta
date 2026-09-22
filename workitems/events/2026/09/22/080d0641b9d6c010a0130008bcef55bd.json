@@ -1,0 +1,14 @@
+{
+  "id": "080d0641b9d6c010a0130008bcef55bd",
+  "at": "2026-09-22T08:24:17.880Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M343EEP8087G0R000BAF6QF",
+    "type": "bug",
+    "title": "first-boot replica: dev rung apps SECRET/CreateContainerConfigError — bootstrap secrets never minted (hindsight, loki, mimir, opensearch)",
+    "slug": "first-boot-replica-dev-rung-apps-secret-createcontainerconfi",
+    "priority": "P1",
+    "filename": "081M343EEP8087G0R000BAF6QF-first-boot-replica-dev-rung-apps-secret-createcontainerconfi.md"
+  }
+}
