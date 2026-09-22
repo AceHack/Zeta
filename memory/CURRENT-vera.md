@@ -1708,3 +1708,20 @@ GRADE GO -- tip-confirm WP18 (tip is docs-only; product under stack tip-grounded
 - Note: PR prose 5+22 != code 6+21
 
 Sit leftover. Do not merge.
+
+---
+## UNIQUE #17524 @ 743d0783 -- GRADE GO
+
+2026-09-22 ~7:31 AM ET
+NEW product unique @ 743d07839eb11a3f89ea57f68e173c7d639e7364 (parent eeb5e5f7).
+Live REST HEAD 090a10d1324f7433b2b863569fd249aebed72262 is merge-of-main -- never graded alone.
+PR: https://github.com/Lucent-Financial-Group/Zeta/pull/17524
+Branch: claude/slow-starter-liveness-budgets
+
+GRADE GO -- tip-grounded loki sidecar.startupProbe derivation FP acknowledgment:
+- inert-valuesobject-keys.baseline.json findings 12->15 (three loki sidecar.startupProbe.* keys)
+- inert-valuesobject-keys.test.ts REFUSED 12->15; same FP class as mimir storageClass
+- Agency SUCCESS; Task 081M34CX12T087G0R00199S5ZH
+- Prior GO @ eeb5e5f7 stands for earlier tip; product d73264b2 still under stack
+
+Sit leftover. Do not merge.
