@@ -1,11 +1,12 @@
 ---
 id: 081M340F8QD087G0R0037MPBB4
 type: task
-state: in-progress
+state: done
 priority: P2
 slug: drop-resolved-minio-acknowledgement-entries-gate-on-stale-ac
 title: "Drop resolved minio acknowledgement entries; gate on stale acks"
 created: 2026-09-22T07:32:18.797Z
+completed: 2026-09-22T09:45:23.421Z
 depends_on: []
 composes_with: []
 ---

@@ -1,11 +1,12 @@
 ---
 id: 081M33RD7PW087G0R0011EVZYQ
 type: task
-state: in-progress
+state: done
 priority: P2
 slug: image-resolvability-checker-verify-first-boot-roster-images
 title: "Image resolvability checker: verify first-boot roster images actually pull"
 created: 2026-09-22T05:11:23.612Z
+completed: 2026-09-22T09:45:23.084Z
 depends_on: []
 composes_with: []
 ---
