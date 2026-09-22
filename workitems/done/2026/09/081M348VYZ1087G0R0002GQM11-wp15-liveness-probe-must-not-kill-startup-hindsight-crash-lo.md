@@ -1,11 +1,12 @@
 ---
 id: 081M348VYZ1087G0R0002GQM11
 type: task
-state: in-progress
+state: done
 priority: P2
 slug: wp15-liveness-probe-must-not-kill-startup-hindsight-crash-lo
 title: "WP15: liveness probe must not kill startup (hindsight crash loop + catalog-wide audit)"
 created: 2026-09-22T09:59:03.393Z
+completed: 2026-09-22T10:37:19.768Z
 depends_on: []
 composes_with: []
 ---
