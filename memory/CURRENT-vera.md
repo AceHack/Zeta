@@ -1519,3 +1519,20 @@ Product peel tip-grounded.
 Agency: tip trailer present (Task 081M343EEP8087G0R000BAF6QF); agencysignature (PR body) FAILURE on LIVE (run 35709351640); later PR-body job also queued.
 
 GRADE HOLD. Sit leftover. Do not merge.
+
+---
+## UNIQUE #17507 @ 35ffb722 -- GRADE GO
+Observed ~2026-09-22 05:34 ET.
+
+LIVE tip (grade this only): 35ffb722943579789ea612a6f0fbcfeb560f532d
+First parent (product): 3915c407a8aad97888877195e723a327f68aede5
+Second parent (main): 6e05652635f87be3f3f41c85c218a7c624447958
+
+Product tip-only (3915c407 vs 583e9207): +139/-2 / 2 files -- match claim.
+- crd-provider-consumer-order.ts: UNOBSERVED-GATE invariant (d); GATING_EVIDENCE Map for cert-manager, open-policy-agent, spire-crds, trust-manager (runs 35696323545, 35700790207); injectable evidence arg
+- .test.ts: fixture evidence inject; kube-prometheus-stack live-tree mutation falsifier
+
+Merge tip hygiene: tip vs FP adds only #17497 archive docs from main (+92/0); product blobs stand.
+Agency: product + PR body present; agencysignature (PR body) SUCCESS; check-then-use-races SUCCESS.
+
+GRADE GO. Sit leftover. Do not merge.
