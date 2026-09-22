@@ -52,13 +52,31 @@
 //
 // Exit codes: 0 clean, 1 an unminted Secret or a stale acknowledgement, 2 usage.
 
-import { existsSync, readFileSync, readdirSync } from "node:fs";
+import { readFileSync, readdirSync, type Dirent } from "node:fs";
 import { join, relative, resolve, sep as pathSep } from "node:path";
 import { parseAllDocuments } from "yaml";
 
 const REPO_ROOT = resolve(import.meta.dir, "../../..");
 export const BASELINE_RELATIVE_PATH = "src/Core.TypeScript/cluster/existing-secret-is-minted.baseline.json";
 const APPLICATIONS_DIR = "full-ai-cluster/k8s/applications";
+
+/**
+ * `readdirSync(dir, { withFileTypes: true })`, or `[]` when `dir` does not
+ * exist. NOT `existsSync(dir) ? readdirSync(dir) : []` -- that shape is a
+ * check-then-use race (lint-check-then-use-file-races.ts): the path can be
+ * created, deleted or replaced between the check and the read, so the
+ * `existsSync` answer is already stale by the time `readdirSync` runs. One
+ * syscall, interpreted, is both faster and race-free: ENOENT means "was not
+ * there when we actually asked", not "was not there a moment ago".
+ */
+function readdirSyncOrEmpty(dir: string): readonly Dirent[] {
+  try {
+    return readdirSync(dir, { withFileTypes: true });
+  } catch (e) {
+    if ((e as NodeJS.ErrnoException).code === "ENOENT") return [];
+    throw e;
+  }
+}
 
 /**
  * A key whose VALUE is the name of a Secret this manifest does not create.
@@ -162,8 +180,7 @@ export function collectSecretReferences(repoRoot = REPO_ROOT): readonly SecretRe
   // fixture, e.g. auditCrdOrder's "unanalyzable Application" case) is an
   // empty scan, not a crash -- gatingInvariantViolations calls this against
   // whatever repoRoot its caller was given, which is not always a real tree.
-  if (!existsSync(root)) return out;
-  for (const entry of readdirSync(root, { withFileTypes: true })) {
+  for (const entry of readdirSyncOrEmpty(root)) {
     if (!entry.isDirectory()) continue;
     const manifest = join(APPLICATIONS_DIR, entry.name, "Application.yaml");
     let text: string;
@@ -282,8 +299,7 @@ function listYamlFilesRecursive(dir: string, base: string): string[] {
 export function collectRawSecretReferences(repoRoot = REPO_ROOT): readonly SecretReference[] {
   const appsRoot = resolve(repoRoot, APPLICATIONS_DIR);
   const out: SecretReference[] = [];
-  if (!existsSync(appsRoot)) return out; // no applications tree at all -- an empty scan, not a crash
-  for (const entry of readdirSync(appsRoot, { withFileTypes: true })) {
+  for (const entry of readdirSyncOrEmpty(appsRoot)) {
     if (!entry.isDirectory()) continue;
     const appDir = join(appsRoot, entry.name);
     // SCOPED TO THE APP-OF-APPS ROSTER: a directory with no Application.yaml is
@@ -293,7 +309,18 @@ export function collectRawSecretReferences(repoRoot = REPO_ROOT): readonly Secre
     // bootstrap") and documents the exact `kubectl create secret` step a human
     // runs by hand. Scanning it anyway would refuse a Secret this audit's own
     // subject (the ArgoCD-managed tree) never actually depends on.
-    if (!existsSync(join(appDir, "Application.yaml"))) continue;
+    //
+    // The presence check is PERFORMED BY ATTEMPTING THE READ, not by
+    // `existsSync` first (lint-check-then-use-file-races.ts: a separate
+    // existence check is stale the moment it returns). The content is
+    // discarded -- this function only needs to know whether the file is
+    // there, and the one syscall that answers that honestly is the read.
+    try {
+      readFileSync(join(appDir, "Application.yaml"), "utf8");
+    } catch (e) {
+      if ((e as NodeJS.ErrnoException).code === "ENOENT") continue;
+      throw e;
+    }
     for (const relFile of listYamlFilesRecursive(appDir, appDir)) {
       if (relFile === "Application.yaml") continue; // that source is collectSecretReferences's job
       const manifest = `${APPLICATIONS_DIR}/${entry.name}/${relFile}`;
@@ -343,8 +370,7 @@ export function collectRawSecretReferences(repoRoot = REPO_ROOT): readonly Secre
 export function collectTreeMintedSecretNames(repoRoot = REPO_ROOT): ReadonlySet<string> {
   const appsRoot = resolve(repoRoot, APPLICATIONS_DIR);
   const out = new Set<string>();
-  if (!existsSync(appsRoot)) return out; // no applications tree at all -- an empty scan, not a crash
-  for (const entry of readdirSync(appsRoot, { withFileTypes: true })) {
+  for (const entry of readdirSyncOrEmpty(appsRoot)) {
     if (!entry.isDirectory()) continue;
     const appDir = join(appsRoot, entry.name);
     for (const relFile of listYamlFilesRecursive(appDir, appDir)) {

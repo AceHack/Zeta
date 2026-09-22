@@ -81,7 +81,7 @@
  * (the default in CI) fails loudly rather than reporting a false clean).
  */
 
-import { existsSync, readdirSync, readFileSync, statSync, unlinkSync, writeFileSync } from "node:fs";
+import { readdirSync, readFileSync, unlinkSync, writeFileSync } from "node:fs";
 import { join, relative, resolve } from "node:path";
 import { parseAllDocuments, parse as parseYaml } from "yaml";
 import { readShippedApplications, type ShippedApplication } from "./derive-sync-waves.ts";
@@ -246,9 +246,15 @@ export const DECLARED_OPERATOR_CRDS: ReadonlyMap<string, readonly OperatorCrd[]>
  */
 export function bootstrapInstalledAppNames(repoRoot = REPO_ROOT): ReadonlySet<string> {
   const dir = resolve(repoRoot, BOOTSTRAP_DIR);
-  if (!existsSync(dir)) return new Set();
   const names = new Set<string>();
-  for (const entry of readdirSync(dir)) {
+  let entries: readonly string[];
+  try {
+    entries = readdirSync(dir);
+  } catch (e) {
+    if ((e as NodeJS.ErrnoException).code === "ENOENT") return names;
+    throw e;
+  }
+  for (const entry of entries) {
     const m = /^(.+)-install\.yaml$/.exec(entry);
     if (m?.[1] !== undefined) names.add(m[1]);
   }
@@ -547,15 +553,32 @@ export function renderHelmApp(source: AppSource): RenderResult {
   }
 }
 
-/** Read one directory-sourced Application straight off disk, honoring `directory.exclude`. */
+/**
+ * Read one directory-sourced Application straight off disk, honoring `directory.exclude`.
+ *
+ * The directory's existence/kind is checked by ATTEMPTING the listing, not by
+ * a separate `existsSync`+`statSync` pair first (lint-check-then-use-file-races.ts:
+ * that pair's answer is stale the instant it returns). ENOENT (missing) and
+ * ENOTDIR (exists but is a file) both mean the same thing to this function's
+ * caller -- "not a directory" -- so both collapse to the one error message the
+ * old two-syscall check also produced.
+ */
 export function readDirectoryApp(source: AppSource, repoRoot = REPO_ROOT): RenderResult {
   const path = source.path ?? "";
   if (path === "") return { ok: false, docs: [], error: "no spec.source.path" };
   const abs = resolve(repoRoot, path);
-  if (!existsSync(abs) || !statSync(abs).isDirectory()) {
-    return { ok: false, docs: [], error: `${path} is not a directory` };
+  let files: readonly string[];
+  try {
+    files = source.recurse
+      ? listYamlFilesRecursive(abs, abs)
+      : readdirSync(abs).filter((f) => f.endsWith(".yaml") || f.endsWith(".yml"));
+  } catch (e) {
+    const code = (e as NodeJS.ErrnoException).code;
+    if (code === "ENOENT" || code === "ENOTDIR") {
+      return { ok: false, docs: [], error: `${path} is not a directory` };
+    }
+    throw e;
   }
-  const files = source.recurse ? listYamlFilesRecursive(abs, abs) : readdirSync(abs).filter((f) => f.endsWith(".yaml") || f.endsWith(".yml"));
   const docs: RenderedDoc[] = [];
   for (const rel of files) {
     if (rel === "Application.yaml") continue;
@@ -674,8 +697,14 @@ export function indexAppManifests(
  */
 export function bootstrapRawCrdProviders(repoRoot = REPO_ROOT): readonly ProvidedCrd[] {
   const path = resolve(repoRoot, BOOTSTRAP_DIR, "gateway-api-crds.yaml");
-  if (!existsSync(path)) return [];
-  const docs = parseRenderedDocs(readFileSync(path, "utf8"));
+  let text: string;
+  try {
+    text = readFileSync(path, "utf8");
+  } catch (e) {
+    if ((e as NodeJS.ErrnoException).code === "ENOENT") return [];
+    throw e;
+  }
+  const docs = parseRenderedDocs(text);
   const out: ProvidedCrd[] = [];
   for (const doc of docs) {
     if (doc.kind !== "CustomResourceDefinition" || doc.crdProvides === null) continue;
