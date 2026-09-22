@@ -1,0 +1,153 @@
+# First-boot replica (WP1) — boots the REAL k3s control-plane manifest
+# roster (services.k3s.manifests in full-ai-cluster/nixos/modules/k3s-server.nix
+# + local-storage.nix) inside a plain rancher/k3s Docker container, and
+# reports named stage verdicts, including ROOT_LANDED / ROOT_NEVER_LANDED for
+# the open question in k3s-server.nix's comment block #5.
+#
+# A SEPARATE workflow from k8s-argocd-health-test.yml on purpose: that file's
+# `pull_request.paths` filter is shared across every job it defines (dry-run,
+# live-kind, live-k3d, ...), and none of those jobs care about
+# full-ai-cluster/k8s/bootstrap/** or k3s-server.nix/local-storage.nix —
+# widening that shared filter would make every one of those jobs trigger on a
+# bootstrap change it does not test. This harness also needs a DIFFERENT
+# toolchain shape: docker + kubectl only, no helm, no kind, no k3d — the
+# rancher/k3s Docker image's own helm-controller does every chart install.
+#
+# NOT IN THE REQUIRED GATE. This is the first CI lane to ever boot the real
+# roster; until it has run green a number of times on `main`, a flake here
+# must not block every PR. Add it to the required-checks ruleset only once
+# its false-positive rate is measured.
+#
+# SECURITY NOTE (same discipline as k8s-argocd-health-test.yml): the PR head
+# SHA / repo URL reach the run step only through env-block buffering
+# (ZETA_FBR_GIT_REF / ZETA_FBR_GIT_REPO_URL) and are read from a quoted shell
+# variable, never interpolated directly into a `run:` block.
+
+name: first-boot-replica
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize, ready_for_review]
+    paths:
+      - "full-ai-cluster/k8s/bootstrap/**"
+      - "full-ai-cluster/nixos/modules/k3s-server.nix"
+      - "full-ai-cluster/nixos/modules/local-storage.nix"
+      - "full-ai-cluster/k8s/kubernetes-version.json"
+      - "full-ai-cluster/cluster-identity.json"
+      - "src/Core.TypeScript/cluster/first-boot-replica.ts"
+      - "src/Core.TypeScript/cluster/first-boot-replica.test.ts"
+      - "src/Core.TypeScript/cluster/cluster-cidr.ts"
+      - ".github/workflows/first-boot-replica.yml"
+  schedule:
+    # Daily, at a minute distinct from every other cron in .github/workflows
+    # (thundering-herd avoidance — see k8s-argocd-health-test.yml's own note
+    # on why daily and not more/less often: this lane's substrate moves on
+    # the same order, a day, not an hour).
+    - cron: "24 7 * * *"
+  workflow_dispatch:
+    inputs:
+      target-revision:
+        description: "Git ref for root-application.yaml's targetRevision (default: the ref this workflow runs on)"
+        required: false
+        type: string
+
+# Least-privilege GITHUB_TOKEN — this job only checks out the repo and boots
+# a throwaway local Docker cluster; it never writes to this repo, never
+# pulls a private GHCR image (unlike k8s-argocd-health-test.yml's platform/
+# lane), and never opens an issue or PR. Flagged by CodeQL on PR #17481
+# ("Workflow does not contain permissions") before this line existed.
+permissions:
+  contents: read
+
+concurrency:
+  # MEASURED (2026-09-22): `github.head_ref || github.ref` collided across
+  # event types — a `workflow_dispatch` run on this branch cancelled the
+  # PR's own `pull_request`-triggered run ("Canceling since a higher priority
+  # waiting request for first-boot-replica-claude/first-boot-replica exists"),
+  # because `github.ref` for a branch-targeted dispatch and `github.head_ref`
+  # for the PR can normalize to the same group key. Event name is now part of
+  # the key: a manual test run and the PR's own run no longer fight over the
+  # one real k3s cluster this job needs.
+  group: first-boot-replica-${{ github.event_name }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  first-boot-replica:
+    name: first-boot replica (real k3s manifest roster)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 75
+    env:
+      ZETA_HOST_TIER: full
+      MISE_ENV: full
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Restore apt archives (root fix for the exit-124 install-step class)
+        uses: ./.github/actions/apt-archive-cache
+        with:
+          tier: full
+
+      - name: Install toolchain via three-way-parity script
+        env:
+          MISE_GITHUB_TOKEN: ${{ github.token }}
+        run: ./tools/setup/install.sh
+
+      - name: Install bun dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Unit-test the parsers (fixture + LIVE-against-real-files)
+        run: bun test src/Core.TypeScript/cluster/first-boot-replica.test.ts
+
+      - name: Show the plan (dry-run — flags, roster, HelmCharts, divergences)
+        run: bun src/Core.TypeScript/cluster/first-boot-replica.ts --dry-run
+
+      - name: Boot the real roster and report stage verdicts
+        # MEASURED (2026-09-22): src/Core.TypeScript/hygiene/workflow-step-env-vars-are-defined.test.ts
+        # requires a step's env vars to be defined in THAT STEP's own scope — the
+        # earlier two-step shape (a "Buffer the ref/repo" step writing to
+        # $GITHUB_ENV, consumed here) failed it even though GITHUB_ENV genuinely
+        # does persist the values. One step, one env: block, same security
+        # property (attacker-controlled PR head SHA / repo URL reach `run:` only
+        # via a quoted shell variable, never inlined) — the exact shape
+        # k8s-argocd-health-test.yml's "Run live kind ArgoCD health check" step
+        # already uses for the equivalent ZETA_ARGOCD_GIT_REF / _REPO_URL pair.
+        env:
+          ZETA_FBR_GIT_REF: ${{ inputs.target-revision || github.event.pull_request.head.sha || github.sha }}
+          ZETA_FBR_GIT_REPO_URL: ${{ github.event.pull_request.head.repo.clone_url || 'https://github.com/Lucent-Financial-Group/Zeta' }}
+        run: |
+          bun src/Core.TypeScript/cluster/first-boot-replica.ts \
+            --run \
+            --container-name zeta-first-boot-replica-ci \
+            --host-api-port 16443 \
+            --target-revision "$ZETA_FBR_GIT_REF" \
+            --repo-url "$ZETA_FBR_GIT_REPO_URL" \
+            --json-out first-boot-replica-report.json \
+            --stage3-timeout-sec 2400 \
+            --stage4-timeout-sec 900 \
+            --stage567-timeout-sec 480
+
+      # NOTE: there is no separate "fetch logs from the cluster" step here.
+      # `runReplica`'s own `finally` tears the container down (docker rm -f)
+      # unconditionally unless --keep is passed, which CI does not pass — so
+      # by the time any step AFTER "Boot the real roster" runs, the cluster is
+      # already gone and a kubectl call here would only ever report "no such
+      # container". The harness collects its own crash-loop diagnostics
+      # (not-running pods, warning events, helm-controller job logs) INSIDE
+      # the catch block, before that teardown, and they land in this job's
+      # own log output for the step above — that is the diagnostics step.
+
+      - name: Tear down (safety net — the harness already tears down unless killed by the job timeout)
+        if: always()
+        run: |
+          docker rm -f zeta-first-boot-replica-ci 2>/dev/null || true
+          docker volume rm -f zeta-first-boot-replica-ci-data 2>/dev/null || true
+
+      - name: Upload the stage-verdict report
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: first-boot-replica-report
+          path: first-boot-replica-report.json
+          if-no-files-found: warn
+          retention-days: 30

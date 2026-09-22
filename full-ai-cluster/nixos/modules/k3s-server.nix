@@ -223,6 +223,17 @@
     #      it, with three named verdicts instead of a timeout. UNRUN as of
     #      2026-08-21: it needs a KVM host, internet, and ~45-70 min.
     #
+    #      CORROBORATING MEASUREMENT (2026-09-22, WP1,
+    #      src/Core.TypeScript/cluster/first-boot-replica.ts): a Docker
+    #      container configured to match this file's extraFlags + roster
+    #      (not the NixOS VM test above, which is still unrun) measured
+    #      VERDICT A -- ROOT_LANDED. applications.argoproj.io/zeta-root
+    #      appeared once the ArgoCD chart's Job completed and the CRD existed;
+    #      the deploy controller retried the earlier unknown-kind apply and
+    #      self-healed. Recorded as corroborating evidence, not a replacement
+    #      for the VM test this comment names -- see workitem
+    #      081M33QTNVD087G0R002632YDV.
+    #
     # The DEPENDENCY INTENT below (per Aaron 2026-05-25) is retained because
     # it is the design, but note it is expressed in ArgoCD sync waves and in
     # helm-controller retry -- NOT in this roster's filenames:
