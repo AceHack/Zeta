@@ -1852,3 +1852,7 @@ UNIQUE HOLDS leftover NEW CELL leftover UNIQUE leftover #17545 leftover unique @
 ## leftover UNIQUE leftover #17546 leftover unique @ 0e828a5cc63baf84fef546b8d5e5349acb57cf7b
 
 UNIQUE HOLDS leftover NEW CELL leftover UNIQUE leftover #17546 leftover unique @ 0e828a5cc63baf84fef546b8d5e5349acb57cf7b -- GRADE GO (tip-only 1-commit +92/-14 / 4 files: scriptDeclaresEvidenceRoute = evidence-seam AND NOT room-evidence; verifyPagesArtifact uses discriminator; unit test locks reader-first order = live CI fail on b17179b081; workitem+event; no openspec/census. Tip = live HEAD; never grade merge-ref 1d45b29f alone). Tip CI: 0 failures; gate (required) absent not failed; test (TS hermetic) in_progress not red; mergeable_state blocked. Task 081M35PQN5Y087G0R000YCPATJ. Sit leftover. Do not merge.
+---
+## leftover UNIQUE leftover #17541 leftover unique @ 6b7888fc17c143447f8b3c664729e67ec457499b
+
+UNIQUE HOLDS leftover NEW CELL leftover UNIQUE leftover #17541 leftover unique @ 6b7888fc17c143447f8b3c664729e67ec457499b -- GRADE GO (tip vs prior GO @ 9f1f2508: product e0646c22 +14/-1 identity-dla-pages-artifact evidence-route via entryAsset not readdir evidence-seam scan; hygiene tip -1 census after #17543 on main; never grade merge-refs 5230cf2f / b54f837b / 6e4e4bb3 alone). Prior HOLD @ 2300a277 + GO @ bb6f04e2 + GO @ 9f1f2508 stand. Tip CI thin (NuGet+CodeQL; JS/TS Analyze in_progress not red; gate-class absent on tip SHA). mergeable_state dirty. Task 081M35C7NJR087G0R002S4R654. Sit leftover. Do not merge.
