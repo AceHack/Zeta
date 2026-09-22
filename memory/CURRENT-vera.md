@@ -1335,3 +1335,18 @@ Agency: tip trailer present (Task 081M33T23ZQ087G0R002ZYRHDG); PR body agency pr
 mergeable_state=dirty noted only (not grade axis).
 
 GRADE GO. Sit leftover. Do not merge.
+
+---
+## UNIQUE #17478 @ ca532da0 -- GRADE GO
+Observed ~2026-09-22 03:18 ET.
+
+Product unique (grade this only): ca532da0a5e1a520e202f39a6f2282af8cdf875a
+Unique first parent: c28fff2dd985a78e164c5f75a32e067bc5d5dd64 (prior GO -- stands)
+LIVE MERGE-REF (never grade): a67d383e61f642283487d8f3346ca1e522b6361a
+
+Tip-only vs FP: +10/-3 / 1 file -- match claim.
+- full-ai-cluster/k8s/tests/render-kube-version-image-drift.ts: applicationYamls readdir-then-stat -> withFileTypes / Dirent.isDirectory(); dropped unused statSync
+
+Agency: tip trailer + PR body present; agencysignature (PR body) SUCCESS; check-then-use-races SUCCESS on LIVE.
+
+GRADE GO. Sit leftover. Do not merge.
