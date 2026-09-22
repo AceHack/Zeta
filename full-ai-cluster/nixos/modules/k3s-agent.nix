@@ -65,6 +65,15 @@
       # rejects them on agents with a `flag not supported` error.
       # Cilium owns CNI on both sides; the server-side flags are
       # what disables flannel cluster-wide.
+
+      # `--kubelet-arg` is NOT one of those server-only flags — it configures
+      # THIS node's own kubelet, so it must be repeated here rather than
+      # inherited. Same value and same reasoning as k3s-server.nix's copy:
+      # the kubelet default `max-pods` (110) is a pod-COUNT ceiling a
+      # single-node metal install's measured steady state (~124 pods, see
+      # k3s-server.nix's comment) already exceeds, and 220 stays under the
+      # 254-address /24 Cilium's cluster-pool IPAM hands each node.
+      "--kubelet-arg=max-pods=220"
     ];
   };
 

@@ -66,6 +66,15 @@ spec:
       mode: cluster-pool
       operator:
         clusterPoolIPv4PodCIDRList: [ "10.143.0.0/17" ]
+        # EXPLICIT because the single-node pod-count budget now relies on it:
+        # 24 (the chart's own default at 1.20.1, confirmed against
+        # install/kubernetes/cilium/values.yaml) hands each node a /24 —
+        # 254 usable addresses — and k3s-server.nix / k3s-agent.nix pin
+        # `--kubelet-arg=max-pods=220` specifically to stay under that block.
+        # Stating the number rather than inheriting the default means a
+        # future chart bump cannot silently shrink the block the max-pods
+        # budget was sized against.
+        clusterPoolIPv4MaskSize: 24
     bpf:
       masquerade: true
     routingMode: native

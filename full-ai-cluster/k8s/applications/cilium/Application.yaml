@@ -47,6 +47,14 @@ spec:
           mode: cluster-pool
           operator:
             clusterPoolIPv4PodCIDRList: [ "10.143.0.0/17" ]
+            # EXPLICIT, in lockstep with the bootstrap HelmChart twin
+            # (k8s/bootstrap/cilium-install.yaml) — see its comment. The
+            # single-node --kubelet-arg=max-pods=220 budget in k3s-server.nix
+            # / k3s-agent.nix relies on this node getting a /24 (254 usable
+            # addresses) from cluster-pool IPAM, which is the chart default at
+            # 1.20.1 but is now stated rather than inherited so a future chart
+            # bump cannot shrink it out from under the pod-count budget.
+            clusterPoolIPv4MaskSize: 24
 
         # BPF MASQUERADE (required by the spec).
         bpf:
