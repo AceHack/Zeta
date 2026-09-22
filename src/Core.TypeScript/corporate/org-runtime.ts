@@ -263,6 +263,27 @@ const NO_QA_VERDICT = {
 export const DEFAULT_GATE_REJECTION_CEILING = 6;
 
 /**
+ * How many contributor SEATS a line has free: wearers per hat (`supplyTarget`) minus what each hat
+ * is already carrying, summed over the individual contributors that report up to `hatId`.
+ *
+ * ONE ANSWER TO "IS ANYONE FREE". Staffing counted seats × supply; decomposition counted hats with
+ * nothing on them. MEASURED on Waypoint, 2026-09-20, under `--supply-target 3`: three tasks ran at
+ * once on two hats, and a fix leaf minted mid-run for a landed defect was then refused by
+ * `decompose` — "no individual_contributor reports up to 'tech_lead', so this task cannot be
+ * staffed" — because both hats carried something. Finished and cancelled work holds no seat.
+ */
+export function freeSeatsUnder(chart: OrgChart, cascade: Cascade, hatId: string, supplyTarget: number): number {
+  const carried = new Map<string, number>();
+  for (const n of cascade.nodes) {
+    if (n.assigneeHatId === undefined || n.state === WorkState.Done || n.state === WorkState.Canceled) continue;
+    carried.set(n.assigneeHatId, (carried.get(n.assigneeHatId) ?? 0) + 1);
+  }
+  return chart.hats
+    .filter((h) => h.level === "individual_contributor" && reportsUpTo(chart, h.id, hatId))
+    .reduce((free, h) => free + Math.max(0, supplyTarget - (carried.get(h.id) ?? 0)), 0);
+}
+
+/**
  * The gates ONE work item owes — its own type's chain, intersected with the run's pipeline.
  *
  * ── WHY THIS IS PER ITEM AND NOT PER RUN ─────────────────────────────────────
@@ -284,27 +305,6 @@ export const DEFAULT_GATE_REJECTION_CEILING = 6;
  * An EMPTY intersection means the run's pipeline covers none of this type's gates. It walks
  * nothing rather than falling back to the whole pipeline, because the fallback is the defect.
  */
-/**
- * How many contributor SEATS a line has free: wearers per hat (`supplyTarget`) minus what each hat
- * is already carrying, summed over the individual contributors that report up to `hatId`.
- *
- * ONE ANSWER TO "IS ANYONE FREE". Staffing counted seats × supply; decomposition counted hats with
- * nothing on them. MEASURED on Waypoint, 2026-09-20, under `--supply-target 3`: three tasks ran at
- * once on two hats, and a fix leaf minted mid-run for a landed defect was then refused by
- * `decompose` — "no individual_contributor reports up to 'tech_lead', so this task cannot be
- * staffed" — because both hats carried something. Finished and cancelled work holds no seat.
- */
-export function freeSeatsUnder(chart: OrgChart, cascade: Cascade, hatId: string, supplyTarget: number): number {
-  const carried = new Map<string, number>();
-  for (const n of cascade.nodes) {
-    if (n.assigneeHatId === undefined || n.state === WorkState.Done || n.state === WorkState.Canceled) continue;
-    carried.set(n.assigneeHatId, (carried.get(n.assigneeHatId) ?? 0) + 1);
-  }
-  return chart.hats
-    .filter((h) => h.level === "individual_contributor" && reportsUpTo(chart, h.id, hatId))
-    .reduce((free, h) => free + Math.max(0, supplyTarget - (carried.get(h.id) ?? 0)), 0);
-}
-
 function chainForTask(node: CascadeNode, pipeline: Pipeline): readonly GateKind[] {
   const owed = new Set(chainOf(node));
   return gatesOf(pipeline).filter((g) => owed.has(g));
