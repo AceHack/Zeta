@@ -28,6 +28,7 @@ import {
   isKubeVersionDerived,
   mapWithConcurrency,
   resolveImage,
+  staleAcknowledgements,
   type Acknowledgement,
   type DiscoveredImage,
   type ResolvedImage,
@@ -549,13 +550,24 @@ describe("audit (offline, snapshot-gated)", () => {
     expect(report.rows[0]?.resolution?.status).toBe("ok");
   });
 
+  // Every case below injects its OWN fixture register rather than reading
+  // ACKNOWLEDGED_MISSING — the production register's CONTENTS churn (it is
+  // empty as of 2026-09-22, having carried and then shed the minio entries
+  // this rule was built for) and a behavioural test pinned to today's
+  // contents breaks the moment the register is edited for an unrelated
+  // reason. gatingRows/formatReport/counts all take an injectable `register`
+  // for exactly this reason.
+
   test("a `missing` image ACKNOWLEDGED and still within its window does not gate, but is still reported", () => {
-    writeSnapshot([resolvedFixture({ reference: "registry-1.docker.io/minio/minio:RELEASE.2017-12-28T01-21-00Z", status: "missing", httpStatus: 404 })]);
-    const report = audit(root, fakeDiscover([{ image: "minio/minio:RELEASE.2017-12-28T01-21-00Z", sources: ["app/gitlab"], kubeVersionDerived: false }]));
+    const fixtureRegister: ReadonlyMap<string, Acknowledgement> = new Map([
+      ["example.com/foo/bar:1.0", { tracking: "some-branch", recordedOn: "2026-09-22", expiresOn: "2026-10-06", reason: "fixture" }],
+    ]);
+    writeSnapshot([resolvedFixture({ reference: "example.com/foo/bar:1.0", status: "missing", httpStatus: 404 })]);
+    const report = audit(root, fakeDiscover([{ image: "example.com/foo/bar:1.0", sources: ["app/one"], kubeVersionDerived: false }]));
     expect(report.rows[0]?.resolution?.status).toBe("missing");
-    expect(gatingRows(report.rows).length).toBe(0);
+    expect(gatingRows(report.rows, "2026-09-22", fixtureRegister).length).toBe(0);
     // Still visible in the report — acknowledged is not hidden.
-    expect(formatReport(report)).toContain("ACKNOWLEDGED");
+    expect(formatReport(report, "2026-09-22", fixtureRegister)).toContain("ACKNOWLEDGED");
   });
 
   test("an acknowledged `missing` image with a PAST expiry date gates again — the allowlist self-expires", () => {
@@ -566,10 +578,54 @@ describe("audit (offline, snapshot-gated)", () => {
 
     writeSnapshot([resolvedFixture({ reference: "example.com/foo/bar:1.0", status: "missing", httpStatus: 404 })]);
     const report = audit(root, fakeDiscover([{ image: "example.com/foo/bar:1.0", sources: ["app/one"], kubeVersionDerived: false }]));
-    // This uses the REAL ACKNOWLEDGED_MISSING register (not expiredRegister),
-    // and this reference is not in it at all — asserting the production
-    // register does not accidentally cover an unrelated fixture reference.
-    expect(gatingRows(report.rows).length).toBe(1);
+    expect(gatingRows(report.rows, "2026-09-22", expiredRegister).length).toBe(1);
+  });
+
+  test("an image not covered by ANY entry in a fixture register gates normally", () => {
+    const unrelatedRegister: ReadonlyMap<string, Acknowledgement> = new Map([
+      ["ghcr.io/some/other-image:1.0", { tracking: "some-branch", recordedOn: "2026-09-22", expiresOn: "2026-10-06", reason: "fixture" }],
+    ]);
+    writeSnapshot([resolvedFixture({ reference: "example.com/foo/bar:1.0", status: "missing", httpStatus: 404 })]);
+    const report = audit(root, fakeDiscover([{ image: "example.com/foo/bar:1.0", sources: ["app/one"], kubeVersionDerived: false }]));
+    expect(gatingRows(report.rows, "2026-09-22", unrelatedRegister).length).toBe(1);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// staleAcknowledgements — the register's own honesty check
+// ---------------------------------------------------------------------------
+
+describe("staleAcknowledgements", () => {
+  const rows = [
+    { image: "a", sources: ["app/one"], kubeVersionDerived: false, resolution: resolvedFixture({ reference: "a-canonical", status: "missing" }) },
+    { image: "b", sources: ["app/two"], kubeVersionDerived: false, resolution: resolvedFixture({ reference: "b-canonical", status: "ok" }) },
+  ];
+
+  test("an entry matching a CURRENT missing/arch-missing row is not stale", () => {
+    const register: ReadonlyMap<string, Acknowledgement> = new Map([
+      ["a-canonical", { tracking: "t", recordedOn: "2026-09-22", expiresOn: "2026-10-06", reason: "r" }],
+    ]);
+    expect(staleAcknowledgements(rows, register)).toEqual([]);
+  });
+
+  test("an entry whose target resolved to `ok` (the fix landed) is stale", () => {
+    const register: ReadonlyMap<string, Acknowledgement> = new Map([
+      ["b-canonical", { tracking: "t", recordedOn: "2026-09-22", expiresOn: "2026-10-06", reason: "r" }],
+    ]);
+    const stale = staleAcknowledgements(rows, register);
+    expect(stale.map(([ref]) => ref)).toEqual(["b-canonical"]);
+  });
+
+  test("an entry naming a reference that never appeared at all is stale", () => {
+    const register: ReadonlyMap<string, Acknowledgement> = new Map([
+      ["never-referenced", { tracking: "t", recordedOn: "2026-09-22", expiresOn: "2026-10-06", reason: "r" }],
+    ]);
+    const stale = staleAcknowledgements(rows, register);
+    expect(stale.map(([ref]) => ref)).toEqual(["never-referenced"]);
+  });
+
+  test("an empty register has no stale entries, trivially and correctly", () => {
+    expect(staleAcknowledgements(rows, new Map())).toEqual([]);
   });
 });
 
@@ -578,6 +634,20 @@ describe("audit (offline, snapshot-gated)", () => {
 // ---------------------------------------------------------------------------
 
 describe("ACKNOWLEDGED_MISSING (the real, checked-in register)", () => {
+  // Deliberately NOT `if (ACKNOWLEDGED_MISSING.size === 0) return` and
+  // deliberately NOT deleted now that the register is empty — an empty
+  // register is itself a fact worth asserting (the minio incident this
+  // register was built for is closed, PR #17486), and a for-loop over zero
+  // entries would otherwise look identical to a passing check while
+  // asserting nothing. Both are stated explicitly below.
+
+  test("the register's current state is what it claims to be", () => {
+    // Update this alongside any change to ACKNOWLEDGED_MISSING itself — a
+    // mismatch here is exactly the signal that the register changed without
+    // its test being re-read.
+    expect([...ACKNOWLEDGED_MISSING.keys()]).toEqual([]);
+  });
+
   test("every entry names a tracking branch/PR/work-item and a reason — never a bare suppression", () => {
     for (const [reference, ack] of ACKNOWLEDGED_MISSING) {
       expect(ack.tracking.length, `${reference} has no tracking`).toBeGreaterThan(0);
@@ -590,6 +660,19 @@ describe("ACKNOWLEDGED_MISSING (the real, checked-in register)", () => {
   test("every entry's key is already in CANONICAL reference form", () => {
     for (const reference of ACKNOWLEDGED_MISSING.keys()) {
       expect(canonicalRef(reference)).toBe(reference);
+    }
+  });
+
+  // The two invariant tests above are vacuously true over zero entries —
+  // correct, but it means they currently prove nothing about the SHAPE
+  // check's own logic. This proves the shape check would actually catch a
+  // violation, independent of what production currently contains.
+  test("the shape invariants above WOULD catch a malformed entry (proven against a fixture, not production)", () => {
+    const malformed: readonly [string, Acknowledgement][] = [
+      ["bad/ref", { tracking: "", recordedOn: "2026-09-22", expiresOn: "2026-10-06", reason: "" }],
+    ];
+    for (const [, ack] of malformed) {
+      expect(ack.tracking.length > 0 && ack.reason.length > 0).toBe(false);
     }
   });
 });

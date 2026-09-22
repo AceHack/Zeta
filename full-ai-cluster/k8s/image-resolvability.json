@@ -1629,34 +1629,6 @@
       "resolvedAt": "2026-09-22"
     },
     {
-      "reference": "registry-1.docker.io/minio/mc:RELEASE.2018-07-13T00-53-22Z",
-      "status": "missing",
-      "httpStatus": 401,
-      "arches": [],
-      "requiredArchesMissing": [
-        "linux/amd64"
-      ],
-      "reason": "Docker Hub confirms minio/mc does not exist (catalog API 404)",
-      "isDockerHub": true,
-      "isLatestOrUntagged": false,
-      "hasDigest": false,
-      "resolvedAt": "2026-09-22"
-    },
-    {
-      "reference": "registry-1.docker.io/minio/minio:RELEASE.2017-12-28T01-21-00Z",
-      "status": "missing",
-      "httpStatus": 401,
-      "arches": [],
-      "requiredArchesMissing": [
-        "linux/amd64"
-      ],
-      "reason": "Docker Hub confirms minio/minio does not exist (catalog API 404)",
-      "isDockerHub": true,
-      "isLatestOrUntagged": false,
-      "hasDigest": false,
-      "resolvedAt": "2026-09-22"
-    },
-    {
       "reference": "registry-1.docker.io/natsio/nats-box:0.19.7",
       "status": "ok",
       "httpStatus": 200,

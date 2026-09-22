@@ -897,44 +897,20 @@ export interface Acknowledgement {
  * too. It means "this is tracked elsewhere; don't make an unrelated PR red
  * for it in the meantime."
  *
- * WHY AN ALLOWLIST HERE RATHER THAN JUST WAITING FOR THE OTHER PR: the fix
- * (disambiguating docker.io's 401 against Docker Hub's own catalog API, added
- * alongside this register) correctly promoted `minio/minio` and `minio/mc` —
+ * EMPTY AS OF 2026-09-22, AND THAT IS THE RECORD, NOT AN OMISSION. This
+ * register carried exactly two entries — `minio/minio` and `minio/mc`,
  * bundled by GitLab's chart at ancient default tags, DELETED from Docker Hub
- * around 2026-09-11 — from `unknown` to `missing`. That is the checker
- * working. But `claude/gitlab-minio-image-gone` (a separate change) owns
- * disabling/repointing GitLab's bundled minio subchart, and had not landed
- * when this register was written — an unrelated PR touching this tree would
- * otherwise inherit a red gate it cannot fix. Two entries, one per image,
- * because the fix might land for one tag and not the other.
+ * around 2026-09-11 — while `claude/gitlab-minio-image-gone` (a separate
+ * change) owned disabling/repointing GitLab's bundled minio subchart. Both
+ * lifted exactly as their own `LIFTS WHEN` clauses said: PR #17486 disabled
+ * the bundled subchart and repointed GitLab's object storage at seaweedfs, so
+ * neither image renders anywhere in this tree any more — `staleAcknowledgements`
+ * (below) would have refused a PR that removed the render without also
+ * removing the entries here, which is exactly the check that caught this one
+ * needing to be filed. An empty register is not a smaller version of a full
+ * one; it is what "the mechanism worked" looks like.
  */
-export const ACKNOWLEDGED_MISSING: ReadonlyMap<string, Acknowledgement> = new Map([
-  [
-    "registry-1.docker.io/minio/minio:RELEASE.2017-12-28T01-21-00Z",
-    {
-      tracking: "claude/gitlab-minio-image-gone",
-      recordedOn: "2026-09-22",
-      expiresOn: "2026-10-06",
-      reason:
-        "GitLab's bundled `minio` subchart (full-ai-cluster/k8s/applications/gitlab) defaults to this " +
-        "ancient tag; Docker Hub confirms the whole minio/minio repository is gone (catalog API 404), " +
-        "not merely this tag. LIFTS WHEN: claude/gitlab-minio-image-gone disables or repoints the " +
-        "bundled minio subchart and this reference stops rendering, OR its own --refresh confirms it " +
-        "resolves. Two weeks is deliberately short — renew explicitly rather than let this go stale.",
-    },
-  ],
-  [
-    "registry-1.docker.io/minio/mc:RELEASE.2018-07-13T00-53-22Z",
-    {
-      tracking: "claude/gitlab-minio-image-gone",
-      recordedOn: "2026-09-22",
-      expiresOn: "2026-10-06",
-      reason:
-        "Same incident, the paired mc (client) image the same subchart bundles. Docker Hub confirms " +
-        "minio/mc is gone the same way. LIFTS WHEN: see the minio/minio entry above.",
-    },
-  ],
-]);
+export const ACKNOWLEDGED_MISSING: ReadonlyMap<string, Acknowledgement> = new Map([]);
 
 /** Is `reference` acknowledged, and is the acknowledgement still within its stated window? */
 export function acknowledgedAndLive(
@@ -945,6 +921,32 @@ export function acknowledgedAndLive(
   const ack = register.get(reference);
   if (ack === undefined) return false;
   return today <= ack.expiresOn;
+}
+
+/**
+ * Acknowledgements whose target is no longer even a CURRENT finding
+ * (missing/arch-missing) at all — dead weight, and this GATES rather than
+ * merely reporting it. An entry matching nothing is either a fix that landed
+ * without its acknowledgement being removed (this register's own minio
+ * incident: PR #17486 disabled GitLab's bundled minio subchart and both
+ * entries here should have been deleted in the same change) or a
+ * reference that never matched what it claimed to. Either way the register
+ * is no longer an honest description of what it is carrying, and honesty is
+ * the entire reason it is allowed to suppress a gate at all — so a stale
+ * entry does not get to sit quietly; it is cheap to check and cheap to fix
+ * (delete the entry), so there is no reason to let it linger.
+ */
+export function staleAcknowledgements(
+  rows: readonly ReportRow[],
+  register: ReadonlyMap<string, Acknowledgement> = ACKNOWLEDGED_MISSING,
+): readonly (readonly [string, Acknowledgement])[] {
+  const liveMissingRefs = new Set(
+    rows
+      .filter((r) => r.resolution?.status === "missing" || r.resolution?.status === "arch-missing")
+      .map((r) => r.resolution?.reference)
+      .filter((r): r is string => r !== undefined),
+  );
+  return [...register.entries()].filter(([ref]) => !liveMissingRefs.has(ref));
 }
 
 // ---------------------------------------------------------------------------
@@ -966,22 +968,39 @@ export interface Report {
 }
 
 /** A row whose status is `missing`/`arch-missing` and is NOT acknowledged-and-live today. */
-export function isGatingRow(row: ReportRow, today: string = new Date().toISOString().slice(0, 10)): boolean {
+export function isGatingRow(
+  row: ReportRow,
+  today: string = new Date().toISOString().slice(0, 10),
+  register: ReadonlyMap<string, Acknowledgement> = ACKNOWLEDGED_MISSING,
+): boolean {
   const status = row.resolution?.status;
   if (status !== "missing" && status !== "arch-missing") return false;
-  return !acknowledgedAndLive(row.resolution?.reference ?? "", today);
+  return !acknowledgedAndLive(row.resolution?.reference ?? "", today, register);
 }
 
 /**
  * The rows that actually fail the gate — the ONE definition of "gating",
  * shared by `formatReport` and `main`'s exit code so the printed report and
  * the process exit status can never disagree about which rows counted.
+ * `register` is injectable (defaults to the production `ACKNOWLEDGED_MISSING`)
+ * so a test proving the ACKNOWLEDGED-DOES-NOT-GATE behaviour uses its own
+ * fixture entry rather than depending on whatever this file's register
+ * happens to contain today — the production register's CONTENTS are a
+ * separate concern, covered by its own describe block below.
  */
-export function gatingRows(rows: readonly ReportRow[], today: string = new Date().toISOString().slice(0, 10)): readonly ReportRow[] {
-  return rows.filter((r) => isGatingRow(r, today));
+export function gatingRows(
+  rows: readonly ReportRow[],
+  today: string = new Date().toISOString().slice(0, 10),
+  register: ReadonlyMap<string, Acknowledgement> = ACKNOWLEDGED_MISSING,
+): readonly ReportRow[] {
+  return rows.filter((r) => isGatingRow(r, today, register));
 }
 
-function counts(rows: readonly ReportRow[], today: string = new Date().toISOString().slice(0, 10)) {
+function counts(
+  rows: readonly ReportRow[],
+  today: string = new Date().toISOString().slice(0, 10),
+  register: ReadonlyMap<string, Acknowledgement> = ACKNOWLEDGED_MISSING,
+) {
   let ok = 0;
   let missing = 0;
   let archMissing = 0;
@@ -1005,7 +1024,7 @@ function counts(rows: readonly ReportRow[], today: string = new Date().toISOStri
     else if (r.status === "missing") missing += 1;
     else if (r.status === "arch-missing") archMissing += 1;
     else unknown += 1;
-    if ((r.status === "missing" || r.status === "arch-missing") && acknowledgedAndLive(r.reference, today)) acknowledged += 1;
+    if ((r.status === "missing" || r.status === "arch-missing") && acknowledgedAndLive(r.reference, today, register)) acknowledged += 1;
     if (r.isDockerHub) dockerHub += 1;
     if (r.isLatestOrUntagged) latestOrUntagged += 1;
     if (!r.hasDigest) noDigest += 1;
@@ -1013,8 +1032,12 @@ function counts(rows: readonly ReportRow[], today: string = new Date().toISOStri
   return { ok, missing, archMissing, unknown, notYetMeasured, dockerHub, latestOrUntagged, noDigest, kubeVersionDerived, acknowledged };
 }
 
-export function formatReport(report: Report, today: string = new Date().toISOString().slice(0, 10)): string {
-  const c = counts(report.rows, today);
+export function formatReport(
+  report: Report,
+  today: string = new Date().toISOString().slice(0, 10),
+  register: ReadonlyMap<string, Acknowledgement> = ACKNOWLEDGED_MISSING,
+): string {
+  const c = counts(report.rows, today, register);
   const lines: string[] = [];
   lines.push(
     `image resolvability (${report.mode}) — ${String(report.rows.length)} distinct image reference(s), ` +
@@ -1049,7 +1072,7 @@ export function formatReport(report: Report, today: string = new Date().toISOStr
   }
 
   const bad = report.rows.filter((r) => r.resolution?.status === "missing" || r.resolution?.status === "arch-missing");
-  const gating = gatingRows(report.rows, today);
+  const gating = gatingRows(report.rows, today, register);
   const acked = bad.filter((r) => !gating.includes(r));
   if (gating.length > 0) {
     lines.push(`  ${String(gating.length)} MISSING / ARCH-MISSING (GATING) — first boot WILL ImagePullBackOff on these:`);
@@ -1066,7 +1089,7 @@ export function formatReport(report: Report, today: string = new Date().toISOStr
     );
     for (const row of acked) {
       const r = row.resolution;
-      const ack = r === null || r === undefined ? undefined : ACKNOWLEDGED_MISSING.get(r.reference);
+      const ack = r === null || r === undefined ? undefined : register.get(r.reference);
       lines.push(
         `    [${r?.status ?? "?"}] ${row.image} (${row.sources.join(", ")}) — tracking ${ack?.tracking ?? "?"}, ` +
           `expires ${ack?.expiresOn ?? "?"}`,
@@ -1076,12 +1099,12 @@ export function formatReport(report: Report, today: string = new Date().toISOStr
   }
 
   // The OTHER direction of drift: an acknowledgement whose target is no
-  // longer a finding at all (fixed) is safe to delete but easy to forget —
-  // named here so it does not just quietly keep matching nothing forever.
-  const liveMissingRefs = new Set(bad.map((r) => r.resolution?.reference).filter((r): r is string => r !== undefined));
-  const staleAcks = [...ACKNOWLEDGED_MISSING.entries()].filter(([ref]) => !liveMissingRefs.has(ref));
+  // longer a finding at all (fixed) is dead weight and GATES — see
+  // staleAcknowledgements()'s own header for why this is cheap to check and
+  // cheap to fix, so there is no reason to let it linger as a mere report.
+  const staleAcks = staleAcknowledgements(report.rows, register);
   if (staleAcks.length > 0) {
-    lines.push(`  ${String(staleAcks.length)} ACKNOWLEDGEMENT(S) NO LONGER MATCH A FINDING — safe to delete:`);
+    lines.push(`  ${String(staleAcks.length)} STALE ACKNOWLEDGEMENT(S) (GATING) — matches no current finding, delete the entry:`);
     for (const [ref, ack] of staleAcks) lines.push(`    ${ref} (tracking ${ack.tracking}, recorded ${ack.recordedOn})`);
     lines.push("");
   }
@@ -1217,7 +1240,7 @@ export async function main(argv: readonly string[], repoRoot: string = REPO_ROOT
       process.stdout.write(changed ? `\nsnapshot REWRITTEN — commit ${SNAPSHOT_PATH}\n` : "\nsnapshot unchanged.\n");
     }
     if (report.renderFailures.length > 0) return 1;
-    return gatingRows(report.rows).length > 0 ? 1 : 0;
+    return gatingRows(report.rows).length > 0 || staleAcknowledgements(report.rows).length > 0 ? 1 : 0;
   }
 
   const report = audit(repoRoot);
@@ -1227,7 +1250,7 @@ export async function main(argv: readonly string[], repoRoot: string = REPO_ROOT
     process.stdout.write(formatReport(report));
   }
   if (report.renderFailures.length > 0) return 1;
-  return gatingRows(report.rows).length > 0 ? 1 : 0;
+  return gatingRows(report.rows).length > 0 || staleAcknowledgements(report.rows).length > 0 ? 1 : 0;
 }
 
 if (import.meta.main) {
