@@ -139,6 +139,21 @@ spec:
             type: pvc
             size: 5Gi
             storageClass: zeta-local-path
+          # PINNED 2026-09-22 -- mirrors k8s/bootstrap/spire-install.yaml (see the comment
+          # there for the full derivation and the live-VM evidence: run 35687536936,
+          # helm-install-spire's post-install-job ErrImagePull-looping on
+          # docker.io/rancher/kubectl:v1.35.7, which was never published).
+          # `spire-lib.kubectl-image` derives this hook image's tag from
+          # `.Capabilities.KubeVersion.Version` unless `tools.kubectl.image.tag` is set --
+          # pinned here to the newest tag that actually exists upstream (verified multi-arch
+          # via the Docker Hub tags API) rather than one derived from a cluster version the
+          # image publisher hasn't caught up to. Keep both twins equal --
+          # bootstrap-application-pin-parity is about chart VERSION, not this values key, so
+          # nothing else catches a drift here.
+          tools:
+            kubectl:
+              image:
+                tag: v1.35.6
           # Chain to Vault as the upstream CA. Uncomment + configure
           # after vault/Application.yaml is healthy:
           # upstreamAuthority:

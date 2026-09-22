@@ -32,7 +32,17 @@ metadata:
 servers: 1
 agents: 2
 
-image: rancher/k3s:v1.36.1-k3s1
+# ALIGNED 2026-09-22 (081M33RP3JV087G0R003JBGPKC) to k8s/kubernetes-version.json's
+# declared k3sVersion (1.36.1-k3s1 -> 1.35.7-k3s1). This file's own header says it
+# "mirrors the bare-metal prod cluster's substrate as closely as possible" -- a
+# minor-version-ahead k3s here means the Docker dev lane exercises a Kubernetes
+# minor/patch metal does not run, and cannot report a metal-only regression (or,
+# worse, pass here on an API surface removed by the time metal catches up). Verified
+# `rancher/k3s:v1.35.7-k3s1` is published (Docker Hub, linux/amd64 + linux/arm64).
+# Keep this equal to kubernetes-version.json's `k3sVersion` -- neither file
+# currently enforces the other, so this is a manual pairing until a linter exists
+# for it.
+image: rancher/k3s:v1.35.7-k3s1
 
 network: zeta-dev   # named docker network so cilium can reach pods
 

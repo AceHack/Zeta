@@ -14,7 +14,11 @@ metadata:
 servers: 1
 agents: 0
 
-image: rancher/k3s:v1.36.1-k3s1
+# ALIGNED 2026-09-22 (081M33RP3JV087G0R003JBGPKC) to k8s/kubernetes-version.json's
+# declared k3sVersion, same reasoning as the sibling dev-cluster/k3d-config.yaml:
+# this lane exists to exercise the same GitOps substrate as metal, and a
+# minor-version-ahead k3s here cannot report a metal-only regression.
+image: rancher/k3s:v1.35.7-k3s1
 
 network: zeta-ci
 

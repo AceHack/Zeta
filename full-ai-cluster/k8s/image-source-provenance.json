@@ -329,14 +329,15 @@
     {
       "repository": "registry-1.docker.io/rancher/k3s",
       "tags": {
-        "v1.36.1-k3s1": 200
+        "v1.36.1-k3s1": 200,
+        "v1.35.7-k3s1": 200
       },
       "artifact": "public",
       "sourceRepo": "k3s-io/k3s",
       "sourceEvidence": "oci-label",
       "sourceVisibility": "unknown",
       "packagePresence": "not-ghcr",
-      "resolvedAt": "2026-09-09"
+      "resolvedAt": "2026-09-22"
     },
     {
       "repository": "registry-1.docker.io/vllm/vllm-openai",

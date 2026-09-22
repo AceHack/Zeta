@@ -35,7 +35,17 @@
  * ones that need a VM.
  *
  * Run:  bun full-ai-cluster/k8s/tests/render-first-boot-charts.ts
- *       bun full-ai-cluster/k8s/tests/render-first-boot-charts.ts --kube-version 1.33.0
+ *       bun full-ai-cluster/k8s/tests/render-first-boot-charts.ts --kube-version <override>
+ *
+ * WITH NO --kube-version, this reads the ONE declared version from
+ * k8s/kubernetes-version.json (see `declaredKubeVersion` below) — it used to default to a
+ * hardcoded "1.33.0" literal that `lint-kubernetes-version-agrees.ts` cannot see (it is not
+ * spelled as a `--kube-version <v>` flag use, a `kubernetesVersion` field, or a `"kube-version":
+ * { default: ... }` shape — a plain `?? "1.33.0"` fallback), so this file's own default render
+ * lane validated the first-boot roster against a Kubernetes API surface the cluster does not
+ * have, silently, on every PR, until 081M33RP3JV087G0R003JBGPKC (2026-09-22) fixed it. Fixed the
+ * same day the declaration itself was found stale (run 35687536936) — same class of drift, one
+ * layer over.
  */
 
 import { mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSync } from "node:fs";
@@ -47,6 +57,20 @@ import { parseAllDocuments } from "yaml";
 
 /** Derived from the tree roster — see `declared-cluster-trees.ts` for why it is not a literal. */
 export const BOOTSTRAP_DIRS: readonly string[] = bootstrapDirs();
+
+/**
+ * The one declared Kubernetes version; see full-ai-cluster/k8s/kubernetes-version.json.
+ * Same shape as `validate-applications.ts`'s `declaredKubeVersion` — deliberately not shared
+ * across files (each renderer's default is a one-line read, and a premature shared module
+ * here would be more coupling than the duplication costs).
+ */
+function declaredKubeVersion(): string {
+  const path = "full-ai-cluster/k8s/kubernetes-version.json";
+  const parsed = JSON.parse(readFileSync(path, "utf8")) as { kubernetesVersion?: unknown };
+  const version = parsed.kubernetesVersion;
+  if (typeof version !== "string") throw new Error(`${path} declares no kubernetesVersion`);
+  return version;
+}
 
 /** The lowest number of HelmChart CRs a healthy scan finds. A scan below this REFUSES. */
 export const MIN_EXPECTED_CHARTS = 6;
@@ -123,7 +147,7 @@ function main(): void {
     options: { "kube-version": { type: "string" } },
     strict: true,
   });
-  const kubeVersion = flags["kube-version"] ?? "1.33.0";
+  const kubeVersion = flags["kube-version"] ?? declaredKubeVersion();
   const root = process.cwd();
 
   const charts: HelmChartCr[] = [];
