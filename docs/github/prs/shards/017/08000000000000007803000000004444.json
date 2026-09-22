@@ -1,0 +1,12 @@
+{
+  "pr_number": 17476,
+  "archive_path": "docs/history/pr-reviews/2026/09/22/PR-17476-fix-two-pre-existing-reds-on-main-orphaned-doc-comment-wall-clock-allowlist.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-22T06:13:17.032Z",
+  "schema_version": "v1",
+  "commit_sha": "6b2d1d92a29322abc95cbefa64d0517fade46b7b",
+  "title": "fix: two pre-existing reds on main (orphaned doc comment, wall-clock allowlist)",
+  "state": "MERGED",
+  "merged_at": "2026-09-22T06:11:59Z",
+  "head_ref": "claude/fix-orphaned-chainfortask-doc"
+}
