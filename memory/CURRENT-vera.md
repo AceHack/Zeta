@@ -1568,3 +1568,22 @@ GRADE GO -- tip-grounded restore after #17508 Gateway API v1.6.1 bump:
 - Agency SUCCESS (Task:none); lint (yaml/k8s) SUCCESS; first-boot-manifest-check SUCCESS; flake evaluates SUCCESS on build-iso jobs
 
 Sit leftover. Do not merge.
+
+---
+## UNIQUE #17515 @ 3028fa49 -- GRADE GO
+
+2026-09-22 ~6:11 AM ET
+Tip of 1-commit stack @ 3028fa498a5e3ab7bac7acbf1d0a24763de221c2 (live HEAD; parent 67d0390e = #17508 merge).
+PR: https://github.com/Lucent-Financial-Group/Zeta/pull/17515
+Branch: claude/spire-soak-regression-allowlist
+
+GRADE GO -- tip-grounded stage 6 soak allowlist follow-up to #17508:
+- isKnownSoakRegression: namespace===spire && container===spire-agent only
+- classifySoakRegressions splits expected/unexpected; stage 6 ok + soak early-stop use unexpected.length === 0
+- known regressions stay visible in log (KNOWN suffix + DIVERGENCE / VM run 35706939767 cite) and evidence (soakRegressionsExpected/Unexpected)
+- tests assert narrowness (wrong ns/container false; all-known leaves unexpected empty)
+- does not touch gateway-api-crds.yaml or apply-order eval (#17514)
+- Agency SUCCESS; Task 081M343EM0R087G0R003C8ZHJ7
+
+Sit leftover. Do not merge.
+
