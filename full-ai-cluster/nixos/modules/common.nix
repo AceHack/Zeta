@@ -174,6 +174,14 @@
     # pods can mount the GitHub / AI-login creds restore already wrote.
     # Control-plane only (enable flip below). Not a Helm chart.
     ./zeta-creds-to-k8s.nix
+    # 081M33PQ4MG087G0R002ZKDAVR: node-wide kernel tunables the ~150-pod Argo
+    # CD catalog needs (vm.max_map_count for OpenSearch, fs.inotify.* for
+    # kubelet + config-reloader sidecars + log-tailing agents). Imported here
+    # rather than per-role so control-plane AND every worker get the SAME
+    # values — a single-node crash-loop cause does not become a multi-node
+    # one just because a worker's role file forgot to import it. Values +
+    # citations: ../../k8s/node-tunables.json.
+    ./k8s-node-tunables.nix
   ];
 
   # B-0852.4 default-on flip (operator pain point closure 2026-05-27).

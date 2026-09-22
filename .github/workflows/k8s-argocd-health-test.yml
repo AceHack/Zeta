@@ -928,6 +928,11 @@ jobs:
       - name: Install bun dependencies
         run: bun install --frozen-lockfile
 
+      # Runner sysctls, set to match the real NixOS host (081M33PQ4MG087G0R002ZKDAVR)
+      # BEFORE the kind cluster below is created. See .github/actions/apply-node-tunables.
+      - name: Apply node kernel tunables (parity with the NixOS host)
+        uses: ./.github/actions/apply-node-tunables
+
       # WHAT DISK THIS RUNNER ACTUALLY HAS, measured rather than quoted.
       #
       # `storage-profiles.json`'s runnerEnvelope carried `freeDiskGib: 14` when
@@ -1155,6 +1160,11 @@ jobs:
 
       - name: Install bun dependencies
         run: bun install --frozen-lockfile
+
+      # Runner sysctls, set to match the real NixOS host (081M33PQ4MG087G0R002ZKDAVR)
+      # BEFORE the k3d cluster below is created. See .github/actions/apply-node-tunables.
+      - name: Apply node kernel tunables (parity with the NixOS host)
+        uses: ./.github/actions/apply-node-tunables
 
       - name: Confirm k3d is on PATH before anything depends on it
         # Fail HERE with the tool's name rather than inside a bootstrap that
@@ -1544,6 +1554,11 @@ jobs:
       - name: Install bun dependencies
         run: bun install --frozen-lockfile
 
+      # Runner sysctls, set to match the real NixOS host (081M33PQ4MG087G0R002ZKDAVR)
+      # BEFORE the kind cluster below is created. See .github/actions/apply-node-tunables.
+      - name: Apply node kernel tunables (parity with the NixOS host)
+        uses: ./.github/actions/apply-node-tunables
+
       # The same three things full-ai-cluster/nixos/modules/cilium-wireguard-node-preflight.nix
       # checks on a metal node, run here on the runner kernel the kind node
       # containers share. GATING, not advisory: the shipped values ask for
@@ -1698,6 +1713,11 @@ jobs:
 
       - name: Install bun dependencies
         run: bun install --frozen-lockfile
+
+      # Runner sysctls, set to match the real NixOS host (081M33PQ4MG087G0R002ZKDAVR)
+      # BEFORE the kind cluster below is created. See .github/actions/apply-node-tunables.
+      - name: Apply node kernel tunables (parity with the NixOS host)
+        uses: ./.github/actions/apply-node-tunables
 
       - name: Preflight the WireGuard kernel path on the runner
         run: |
@@ -1923,6 +1943,11 @@ jobs:
 
       - name: Install bun dependencies
         run: bun install --frozen-lockfile
+
+      # Runner sysctls, set to match the real NixOS host (081M33PQ4MG087G0R002ZKDAVR)
+      # BEFORE the kind cluster below is created. See .github/actions/apply-node-tunables.
+      - name: Apply node kernel tunables (parity with the NixOS host)
+        uses: ./.github/actions/apply-node-tunables
 
       # `--ephemeral-vault-init` (2026-08-21). The harness performs
       # vault/TOPOLOGY.md section 5's init+unseal procedure against THIS kind
@@ -2395,6 +2420,11 @@ jobs:
 
       - name: Install bun dependencies
         run: bun install --frozen-lockfile
+
+      # Runner sysctls, set to match the real NixOS host (081M33PQ4MG087G0R002ZKDAVR)
+      # BEFORE the kind cluster below is created. See .github/actions/apply-node-tunables.
+      - name: Apply node kernel tunables (parity with the NixOS host)
+        uses: ./.github/actions/apply-node-tunables
 
       # RECORD what the runner actually had, rather than asserting it. If a
       # runner image ever does ship /dev/kvm, KubeVirt uses hardware emulation
