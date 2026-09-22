@@ -1,11 +1,12 @@
 ---
 id: 081M343EEP8087G0R000BAF6QF
 type: bug
-state: in-progress
+state: done
 priority: P1
 slug: first-boot-replica-dev-rung-apps-secret-createcontainerconfi
 title: "first-boot replica: dev rung apps SECRET/CreateContainerConfigError — bootstrap secrets never minted (hindsight, loki, mimir, opensearch)"
 created: 2026-09-22T08:24:17.864Z
+completed: 2026-09-22T09:44:56.825Z
 depends_on: ["081M340NKP9087G0R000F8YHXQ"]
 composes_with: []
 ---
