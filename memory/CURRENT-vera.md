@@ -1436,3 +1436,19 @@ Tip-only vs FP: +141/-64 / 1 file -- match claim.
 Agency: tip trailer + PR body; agencysignature (PR body) SUCCESS.
 
 GRADE GO. Sit leftover. Do not merge.
+
+---
+## UNIQUE #17480 @ e32f3c77 -- GRADE GO
+Observed ~2026-09-22 03:57 ET.
+
+LIVE tip (grade this only): e32f3c77f74091d3606e9418ac2e65e1ee1712cf
+Unique first parent (prior GO -- stands): f2118b73fcd20ab2f5eb7e094b6d40e90c96526c
+
+Tip-only vs FP: +86/-39 / 3 files -- match claim.
+- workitems/081M33WGEMC... deleted; done/2026/09/ same basename added (state: done)
+- events JSON state-changed in-progress -> done
+No product/src/.github tip-only paths.
+
+Agency: tip trailer present; Task 081M33WGEMC087G0R0037ZQ9VW.
+
+GRADE GO. Sit leftover. Do not merge.
