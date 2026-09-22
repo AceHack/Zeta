@@ -1622,3 +1622,19 @@ GRADE GO -- tip-grounded WP16 CSPRNG entropy (follow-up to #17505 WP14):
 - Note: workitem mint + in-progress only (close claim unsupported); lint (TS) + lint (yaml/k8s) + first-boot drift FAILURE at gather
 
 Sit leftover. Do not merge. Prior #17505 GO @ 3fd9d228 / HOLD @ 839387a1 stand (different PR).
+
+---
+## UNIQUE #17518 @ 862dccf7 -- GRADE GO
+
+2026-09-22 ~6:36 AM ET
+Tip of 1-commit stack @ 862dccf7ec802470a05cbbd09fe9842bf4534667 (live HEAD; parent 1b1abc14 = main base).
+PR: https://github.com/Lucent-Financial-Group/Zeta/pull/17518
+Branch: claude/wp11-fix-network-online-hang
+
+GRADE GO -- tip-grounded WP11 follow-up to #17488:
+- zeta-first-boot-k3s-verify.nix: drop After=/Wants=network-online.target; after = [ local-fs.target ] only (matches zeta-first-session-ci / zeta-creds-restore)
+- StandardOutput/StandardError = journal+console
+- residual network-online only in comments; Agency SUCCESS; Task 081M33XMWME087G0R000825CCB
+- Note: no tip-grounded installed-disk re-dispatch proof yet; tip CI reds (gateway-api-crds trailing-spaces, apply-order P5 ISO flake-check) outside this 1-file change
+
+Sit leftover. Do not merge. Prior #17488 GO @ 3a0a1472 stands.
