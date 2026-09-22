@@ -196,6 +196,9 @@ let
     "rbac.authorization.k8s.io"
     "storage.k8s.io"
     "apiextensions.k8s.io"
+    # Built into the apiserver (ValidatingAdmissionPolicy GA since 1.30). The
+    # Gateway API v1.6.1 standard bundle ships a VAP + binding with the CRDs.
+    "admissionregistration.k8s.io"
     "batch"
     "networking.k8s.io"
     "policy"
