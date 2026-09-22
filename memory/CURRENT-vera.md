@@ -1606,3 +1606,19 @@ GRADE GO -- tip-grounded WP15 liveness-must-not-kill-startup (full stack, not ti
 
 Sit leftover. Do not merge.
 
+---
+## UNIQUE #17517 @ 206b8ccd -- GRADE GO
+
+2026-09-22 ~6:24 AM ET
+Tip of 1-commit stack @ 206b8ccd4256a49b3759ff8efb1f1e07b9e0344f (live HEAD; parent 1b1abc14 = main base).
+PR: https://github.com/Lucent-Financial-Group/Zeta/pull/17517
+Branch: claude/secret-seeding-csprng
+
+GRADE GO -- tip-grounded WP16 CSPRNG entropy (follow-up to #17505 WP14):
+- draw-entropy initContainer: head -c 32 /dev/urandom -> Memory emptyDir; busybox:1.36@sha256:73aaf090...
+- kubectl --from-file only for drawn secrets; fieldRef metadata.uid Downward entropy removed (0 residual in tip YAML)
+- ttlSecondsAfterFinished 86400 -> 300; tests assert absence of pod-UID paths; image-source-provenance busybox digest pin
+- Agency SUCCESS (prior #17505 HOLD @ 839387a1 was Agency PR-body FAILURE -- cleared here); Task 081M349QTRM087G0R001HM7ESM
+- Note: workitem mint + in-progress only (close claim unsupported); lint (TS) + lint (yaml/k8s) + first-boot drift FAILURE at gather
+
+Sit leftover. Do not merge. Prior #17505 GO @ 3fd9d228 / HOLD @ 839387a1 stand (different PR).
