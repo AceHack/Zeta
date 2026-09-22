@@ -1,0 +1,12 @@
+{
+  "pr_number": 17514,
+  "archive_path": "docs/history/pr-reviews/2026/09/22/PR-17514-fix-first-boot-restore-the-iso-build-and-first-boot-eval-after-the-gateway-api-v.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-22T10:44:33.523Z",
+  "schema_version": "v1",
+  "commit_sha": "b0d5caa4149911bfead284573ff940c586821b55",
+  "title": "fix(first-boot): restore the ISO build and first-boot eval after the Gateway API v1.6.1 bump",
+  "state": "MERGED",
+  "merged_at": "2026-09-22T10:43:51Z",
+  "head_ref": "claude/fix-first-boot-eval-after-17508"
+}

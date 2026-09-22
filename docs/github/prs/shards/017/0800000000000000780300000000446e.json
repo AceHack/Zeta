@@ -1,0 +1,12 @@
+{
+  "pr_number": 17518,
+  "archive_path": "docs/history/pr-reviews/2026/09/22/PR-17518-fix-installer-drop-the-network-online-target-ordering-that-silently-stranded-wp1.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-22T11:13:10.909Z",
+  "schema_version": "v1",
+  "commit_sha": "a96b1631bb63c1de45afbf89197a78d5e65e9811",
+  "title": "fix(installer): drop the network-online.target ordering that silently stranded WP11's k3s verify unit",
+  "state": "MERGED",
+  "merged_at": "2026-09-22T11:12:30Z",
+  "head_ref": "claude/wp11-fix-network-online-hang"
+}
