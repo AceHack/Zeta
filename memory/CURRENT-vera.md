@@ -1638,3 +1638,21 @@ GRADE GO -- tip-grounded WP11 follow-up to #17488:
 - Note: no tip-grounded installed-disk re-dispatch proof yet; tip CI reds (gateway-api-crds trailing-spaces, apply-order P5 ISO flake-check) outside this 1-file change
 
 Sit leftover. Do not merge. Prior #17488 GO @ 3a0a1472 stands.
+
+---
+## UNIQUE #17517 @ fb900cfd -- GRADE GO
+
+2026-09-22 ~6:46 AM ET
+Live REST HEAD @ fb900cfdf5a573b74df3416ba93666ae2bfcc084 (merge-of-main tip of 2-commit stack).
+First parent / product unique: 206b8ccd4256a49b3759ff8efb1f1e07b9e0344f (PRIOR GO stands).
+Second parent / main: b0d5caa4149911bfead284573ff940c586821b55.
+PR: https://github.com/Lucent-Financial-Group/Zeta/pull/17517
+Branch: claude/secret-seeding-csprng
+
+GRADE GO -- tip-confirm merge-of-main hygiene (not a re-grade of product unique):
+- clean 2-parent merge; tip-only delta vs 206b8ccd is main ingress only (no seeding product churn)
+- tip tree still has draw-entropy /dev/urandom + Memory emptyDir + busybox digest + --from-file; no live fieldRef metadata.uid
+- Agency SUCCESS on live HEAD; Task 081M349QTRM087G0R001HM7ESM
+- Never grade merge-ref alone as product. Prior GO @ 206b8ccd stands.
+
+Sit leftover. Do not merge.
