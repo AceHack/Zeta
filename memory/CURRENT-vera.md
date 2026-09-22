@@ -1725,3 +1725,20 @@ GRADE GO -- tip-grounded loki sidecar.startupProbe derivation FP acknowledgment:
 - Prior GO @ eeb5e5f7 stands for earlier tip; product d73264b2 still under stack
 
 Sit leftover. Do not merge.
+
+---
+## UNIQUE #17524 @ 1b228c3f -- GRADE GO
+
+2026-09-22 ~7:50 AM ET
+Live REST HEAD @ 1b228c3f8d787fb8664161d0029a57bc7516a30f (parent 090a10d1 merge-of-main).
+PR: https://github.com/Lucent-Financial-Group/Zeta/pull/17524
+Branch: claude/slow-starter-liveness-budgets
+
+GRADE GO -- tip-confirm observability roster refresh:
+- tip-only +3/-3 / 1 file: observability-service-roster.json (kubeVersion 1.35.6->1.35.7; loki + mimir valuesHash)
+- lint (yaml/k8s) SUCCESS; audit-observability-chain.ts PASS: 8 invariants hold
+- Agency SUCCESS; Agent claude-code-architect; Task:none
+- Never grade merge-refs 816992f2 / 090a10d1 alone; prior GO @ 743d0783 / product d73264b2 stand under stack
+- Note: subject says tempo; tip-only does not change tempo valuesHash
+
+Sit leftover. Do not merge.
