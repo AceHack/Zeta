@@ -346,10 +346,21 @@ spec:
   destination:
     server: https://kubernetes.default.svc
     namespace: hindsight
+  # ServerSideApply DELIBERATELY ABSENT -- same class as cockroachdb/headscale, the
+  # spire precedent (spire/Application.yaml). MEASURED 2026-09-22, chart 0.9.2 with
+  # this valuesObject: the `hindsight-postgresql` StatefulSet's
+  # `volumeClaimTemplates[0]` (JSON-encoded 1900 bytes) sets only
+  # name/accessModes/storageClassName/resources.requests.storage. Live run
+  # 35713533700 showed exactly this resource OutOfSync
+  # (`StatefulSet/hindsight-postgresql: sync=OutOfSync health=-`) while every other
+  # rendered resource (two Deployments, three Services) stayed Synced -- the
+  # StatefulSet-only signature of argo-cd#11143. Largest resource this chart
+  # renders is the hindsight-api Deployment at 1922 bytes, ~136x under the
+  # 262144-byte last-applied-configuration cap, so dropping ServerSideApply costs
+  # nothing here either.
   syncPolicy:
     automated:
       prune: false # never prune — memory store is precious
       selfHeal: true
     syncOptions:
       - CreateNamespace=true
-      - ServerSideApply=true

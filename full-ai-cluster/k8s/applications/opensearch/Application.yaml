@@ -210,6 +210,16 @@ spec:
   destination:
     server: https://kubernetes.default.svc
     namespace: opensearch
+  # ServerSideApply DELIBERATELY ABSENT -- same class as cockroachdb/headscale/
+  # hindsight/nats, the spire precedent (spire/Application.yaml). MEASURED
+  # 2026-09-22, chart 3.8.0 with this valuesObject: the
+  # `opensearch-cluster-master` StatefulSet's `volumeClaimTemplates[0]`
+  # (JSON-encoded 4343 bytes) sets only
+  # name/accessModes/storageClassName/resources.requests.storage. Live run
+  # 35713533700 showed exactly this resource OutOfSync while the ConfigMap,
+  # Services and PodDisruptionBudget stayed Synced. Largest resource this chart
+  # renders is this StatefulSet, ~60x under the 262144-byte
+  # last-applied-configuration cap.
   syncPolicy:
     automated: { prune: false, selfHeal: true }
-    syncOptions: [ CreateNamespace=true, ServerSideApply=true ]
+    syncOptions: [ CreateNamespace=true ]

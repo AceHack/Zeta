@@ -69,10 +69,21 @@ spec:
   destination:
     server: https://kubernetes.default.svc
     namespace: headscale
+  # ServerSideApply DELIBERATELY ABSENT -- same class as cockroachdb and the spire
+  # precedent (spire/Application.yaml). This is a git-directory Application, not a
+  # Helm one, so there is no chart to mis-render: the drift is the bare
+  # `statefulset.yaml` in this directory, whose `volumeClaimTemplates[0]` sets only
+  # name/accessModes/storageClassName/resources.requests.storage (36 lines total,
+  # JSON-encoded well under 1KB). The defaulted `apiVersion`/`kind`/`status`/
+  # `metadata.creationTimestamp` ArgoCD's ServerSideApply-emulated diff introduces
+  # are a property of the LIVE StatefulSet's embedded PersistentVolumeClaim
+  # template going through the API server's internal conversion (argo-cd#11143),
+  # not of Helm -- so a hand-written manifest hits it identically. With this
+  # Application's single StatefulSet 55x under the 262144-byte
+  # last-applied-configuration cap, dropping ServerSideApply is free.
   syncPolicy:
     automated:
       prune: true
       selfHeal: true
     syncOptions:
       - CreateNamespace=true
-      - ServerSideApply=true

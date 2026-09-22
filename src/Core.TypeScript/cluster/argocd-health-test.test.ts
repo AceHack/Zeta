@@ -2628,6 +2628,47 @@ describe("081KSXN940008QG0R000SCP2H1 soak phase -- does it crash-loop after the 
       expect(failure?.message).toContain("mimir");
       expect(failure?.message).toContain("left Healthy/Synced");
     });
+
+    // 081M34AW07F087G0R001KATSP6: run 35713533700's `##[error]` line named only
+    // "argo-workflows left Healthy/Synced (OutOfSync/Progressing)" -- the two
+    // drifting CRDs were legible only several thousand lines later, in a
+    // separate diagnostics dump. `outOfSyncResources` closes that gap in the
+    // primary failure message itself.
+    test("names the OutOfSync RESOURCE(S), not only the Application, when known", () => {
+      const failure = soakRegressionFailure(
+        [],
+        [
+          {
+            name: "argo-workflows",
+            ok: false,
+            syncStatus: "OutOfSync",
+            healthStatus: "Progressing",
+            outOfSyncResources: [
+              "CustomResourceDefinition/workfloweventbindings.argoproj.io",
+              "CustomResourceDefinition/workflowtasksets.argoproj.io",
+            ],
+          },
+        ],
+      );
+      expect(failure?.message).toContain(
+        "argo-workflows left Healthy/Synced (OutOfSync/Progressing) " +
+          "[CustomResourceDefinition/workfloweventbindings.argoproj.io, CustomResourceDefinition/workflowtasksets.argoproj.io]",
+      );
+    });
+
+    test("omits the bracketed resource list -- not '[]' -- when outOfSyncResources is absent", () => {
+      const failure = soakRegressionFailure([], [{ name: "mimir", ok: false, syncStatus: "OutOfSync", healthStatus: "Degraded" }]);
+      expect(failure?.message).not.toContain("[]");
+      expect(failure?.message).not.toContain("[");
+    });
+
+    test("omits the bracketed resource list when outOfSyncResources is present but empty", () => {
+      const failure = soakRegressionFailure(
+        [],
+        [{ name: "mimir", ok: false, syncStatus: "OutOfSync", healthStatus: "Degraded", outOfSyncResources: [] }],
+      );
+      expect(failure?.message).not.toContain("[");
+    });
   });
 
   describe("startupRestartEntries -- attributed to an app, sorted, excludes healthy containers", () => {
@@ -2937,6 +2978,67 @@ describe("081M23BCR90087G0R002GYP7TE a failed sync is never reconciled", () => {
     const verdicts = classifyApplications([autoSync], snapshots);
     expect(verdicts.map((verdict) => verdict.ok)).toEqual([false]);
     expect(verdicts[0]?.reason).toContain("retried 10 times");
+  });
+
+  // 081M34AW07F087G0R001KATSP6: `status.resources[]` is what
+  // `soakRegressionFailure` needs to name the drifting RESOURCE, not only the
+  // Application -- this is the parse+classify half; soakRegressionFailure's
+  // own tests cover the message it produces.
+  describe("status.resources[] -> outOfSyncResources, end to end through classifyApplications", () => {
+    test("OutOfSync resources survive parse and classify, formatted kind/name, ordinal-sorted", () => {
+      const snapshots = parseApplicationList(
+        JSON.stringify({
+          items: [
+            {
+              metadata: { name: "argo-workflows" },
+              status: {
+                sync: { status: "OutOfSync" },
+                health: { status: "Progressing" },
+                resources: [
+                  { kind: "CustomResourceDefinition", name: "workflowtasksets.argoproj.io", status: "OutOfSync" },
+                  { kind: "CustomResourceDefinition", name: "workfloweventbindings.argoproj.io", status: "OutOfSync" },
+                  { kind: "Deployment", name: "argo-workflows-workflow-controller", status: "Synced" },
+                ],
+              },
+            },
+          ],
+        }),
+      );
+      expect(snapshots[0]?.outOfSyncResources).toEqual([
+        "CustomResourceDefinition/workfloweventbindings.argoproj.io",
+        "CustomResourceDefinition/workflowtasksets.argoproj.io",
+      ]);
+      const verdicts = classifyApplications([{ ...autoSync, name: "argo-workflows", dir: "argo-workflows" }], snapshots);
+      expect(verdicts[0]?.outOfSyncResources).toEqual([
+        "CustomResourceDefinition/workfloweventbindings.argoproj.io",
+        "CustomResourceDefinition/workflowtasksets.argoproj.io",
+      ]);
+    });
+
+    test("a Synced-only resource list produces NO outOfSyncResources field, not an empty array", () => {
+      const snapshots = parseApplicationList(
+        JSON.stringify({
+          items: [
+            {
+              metadata: { name: "loki" },
+              status: {
+                sync: { status: "Synced" },
+                health: { status: "Healthy" },
+                resources: [{ kind: "StatefulSet", name: "loki-write", status: "Synced" }],
+              },
+            },
+          ],
+        }),
+      );
+      expect(snapshots[0]?.outOfSyncResources).toBeUndefined();
+    });
+
+    test("no status.resources at all -> no outOfSyncResources field (old fixtures, absent field, unchanged)", () => {
+      const snapshots = parseApplicationList(
+        JSON.stringify({ items: [{ metadata: { name: "argocd" }, status: { sync: { status: "Synced" }, health: { status: "Healthy" } } }] }),
+      );
+      expect(snapshots[0]?.outOfSyncResources).toBeUndefined();
+    });
   });
 });
 

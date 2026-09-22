@@ -197,6 +197,19 @@ export interface ArgoApplicationSnapshot {
    * treat both the same way, via `snapshot.namespace ?? ""`.
    */
   readonly namespace?: string;
+  /**
+   * `${kind}/${name}` for every entry in `status.resources[]` whose own
+   * `status` field is `"OutOfSync"` -- ArgoCD's per-resource diff verdict,
+   * distinct from the Application-level `syncStatus` above (an Application can
+   * be OutOfSync because of exactly one resource, or several; this is which
+   * ones). Ordinal-sorted (`.claude/rules/culture-invariant-by-default.md`) so
+   * the list a failure message prints is deterministic across runs and OSes.
+   * `[]` when the Application is Synced or `status.resources` is absent
+   * (081KSXN940008QG0R000SCP2H1 Task B -- see `soakRegressionFailure`, the
+   * consumer this was added for: naming the RESOURCE a soak-phase regression
+   * traces to, not only the Application).
+   */
+  readonly outOfSyncResources?: readonly string[];
 }
 
 export interface ApplicationVerdict {
@@ -205,6 +218,8 @@ export interface ApplicationVerdict {
   readonly syncStatus: string;
   readonly healthStatus: string;
   readonly reason?: string;
+  /** Carried straight from `ArgoApplicationSnapshot.outOfSyncResources` -- see its docstring. */
+  readonly outOfSyncResources?: readonly string[];
 }
 
 export interface HarnessPlan {
@@ -3145,7 +3160,25 @@ export function soakRegressionFailure(
       `${String(r.currentRestartCount)}${termination}`
     );
   });
-  const appLines = newlyUnstableApps.map((a) => `${a.name} left Healthy/Synced (${a.syncStatus}/${a.healthStatus})`);
+  // Names the RESOURCE, not only the Application (081M34AW07F087G0R001KATSP6):
+  // run 35713533700 named the app-level failure ("argo-workflows left
+  // Healthy/Synced (OutOfSync/Progressing)") with nothing to grep for in the
+  // `##[error]` line itself -- the resource that actually drifted
+  // (`CustomResourceDefinition/workfloweventbindings.argoproj.io`) only
+  // appeared several thousand log lines later, in a separate diagnostics dump
+  // this same line does not draw from. `outOfSyncResources` is absent (not
+  // `[]`) whenever the Application went unstable for a reason `status.resources`
+  // cannot carry -- health regressed with no OutOfSync resource, or the poll
+  // that produced this verdict never populated it -- so that case still reads
+  // exactly as it did before this field existed, rather than claiming a
+  // resource-level cause nothing measured.
+  const appLines = newlyUnstableApps.map((a) => {
+    const resources =
+      a.outOfSyncResources !== undefined && a.outOfSyncResources.length > 0
+        ? ` [${a.outOfSyncResources.join(", ")}]`
+        : "";
+    return `${a.name} left Healthy/Synced (${a.syncStatus}/${a.healthStatus})${resources}`;
+  });
   return {
     kind: "ApplicationUnhealthy",
     message: `soak phase detected instability after the all-Healthy verdict: ${[...restartLines, ...appLines].join("; ")}`,
@@ -3678,6 +3711,30 @@ function parseApplicationConditions(status: Record<string, unknown> | null): rea
   });
 }
 
+/**
+ * `${kind}/${name}` for every `status.resources[]` entry whose own `status`
+ * is `"OutOfSync"` -- see `ArgoApplicationSnapshot.outOfSyncResources`.
+ * Ordinal-sorted, per `.claude/rules/culture-invariant-by-default.md`, and NOT
+ * `localeCompare` for the same reason `stringCompare` is used elsewhere in
+ * this file: this ordering feeds a failure message that must read identically
+ * on every runner locale, not merely display consistently on one.
+ */
+function parseOutOfSyncResources(status: Record<string, unknown> | null): readonly string[] {
+  if (status === null) return [];
+  const raw = status.resources;
+  if (!Array.isArray(raw)) return [];
+  const names = raw.flatMap((item) => {
+    const record = asRecord(item);
+    if (record === null) return [];
+    if (stringAt(record, "status") !== "OutOfSync") return [];
+    const kind = stringAt(record, "kind");
+    const name = stringAt(record, "name");
+    if (kind.length === 0 && name.length === 0) return [];
+    return [`${kind}/${name}`];
+  });
+  return [...names].sort(stringCompare);
+}
+
 export function parseApplicationList(jsonText: string): readonly ArgoApplicationSnapshot[] {
   const root = asRecord(JSON.parse(jsonText));
   const items = Array.isArray(root?.items) ? root.items : [];
@@ -3695,6 +3752,7 @@ export function parseApplicationList(jsonText: string): readonly ArgoApplication
     const operationPhase = operationState ? stringAt(operationState, "phase") : "";
     const syncRevision = sync ? stringAt(sync, "revision") : "";
     const conditions = parseApplicationConditions(status);
+    const outOfSyncResources = parseOutOfSyncResources(status);
     const snapshot: ArgoApplicationSnapshot = {
       name,
       syncStatus: sync ? stringAt(sync, "status") : "",
@@ -3704,6 +3762,7 @@ export function parseApplicationList(jsonText: string): readonly ArgoApplication
       ...(operationPhase.length > 0 ? { operationPhase } : {}),
       ...(syncRevision.length > 0 ? { syncRevision } : {}),
       ...(conditions.length > 0 ? { conditions } : {}),
+      ...(outOfSyncResources.length > 0 ? { outOfSyncResources } : {}),
     };
     return [snapshot];
   });
@@ -3863,6 +3922,7 @@ export function classifyApplications(
         ok,
         syncStatus: snapshot.syncStatus || "Unknown",
         healthStatus: snapshot.healthStatus || "Unknown",
+        ...(snapshot.outOfSyncResources !== undefined ? { outOfSyncResources: snapshot.outOfSyncResources } : {}),
       };
       return ok ? base : { ...base, reason: outcome.reason };
     });
@@ -3890,6 +3950,7 @@ function verdictFromSnapshot(
     ok: snapshotOk,
     syncStatus: snapshot.syncStatus || "Unknown",
     healthStatus: snapshot.healthStatus || "Unknown",
+    ...(snapshot.outOfSyncResources !== undefined ? { outOfSyncResources: snapshot.outOfSyncResources } : {}),
   };
   return snapshotOk ? base : { ...base, reason: snapshot.message || unhealthyReason };
 }

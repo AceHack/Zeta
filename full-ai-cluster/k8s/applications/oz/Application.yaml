@@ -79,8 +79,26 @@ spec:
         # clustered Raft control plane is ever wanted; it additionally requires
         # cluster.trustDomain and cluster.nodeName for the SPIFFE ID. There is a
         # `cluster-migrate` mode, so this is not a one-way door.
+        #
+        # `trustDomain` ADDED 2026-09-22 -- closes the exposure the long note under
+        # `useCustomAdminSecret` below names and explicitly invites ("LIFTS WHEN: the
+        # operator names the trust domain -- which also makes the render deterministic
+        # and retires the exposure above outright"). MEASURED: rendering this
+        # Application's own valuesObject twice against chart 3.3.1 with NO
+        # `cluster.trustDomain` set produced two different
+        # `Secret/ziti-controller-trust-domain` values every time (matches the OutOfSync
+        # resource named by earlier live runs, e.g. 35628762464) -- confirming
+        # `_helpers.tpl:253 getTrustDomain` falls through to its
+        # `printf "spiffe://%s" (randAlphaNum 32)` arm on every render, exactly as the
+        # note below predicted. Setting it here supplies the fixed value that arm never
+        # reaches: re-rendered twice with `trustDomain: openziti.zeta.local` set, the
+        # Secret is now byte-identical across renders. This is a first-boot cluster with
+        # no identities issued yet, so there is nothing to invalidate by fixing it now --
+        # the rotation hazard the deferred note describes applies to an ALREADY-RUNNING
+        # controller, not to this one.
         cluster:
           mode: standalone
+          trustDomain: openziti.zeta.local
         ctrlPlane:
           service:
             type: ClusterIP
@@ -182,18 +200,19 @@ spec:
         # issued identities against the old one. Nothing observed says that has
         # happened; nothing observed says it cannot.
         #
-        # IT IS LEFT OPEN ON PURPOSE. The fix is one value -- `cluster:
-        # {trustDomain: spiffe://<name>}` -- but the value IS the fabric's
-        # identity namespace, every certificate chains to it, and rotating it on
-        # a controller that has already issued identities invalidates them. That
-        # is an operator decision of the same class as `advertisedHost` above,
-        # and unlike `advertisedHost` the chart does not force it, so nothing
-        # here needs to guess one. LIFTS WHEN: the operator names the trust
-        # domain -- which also makes the render deterministic and retires the
-        # exposure above outright. (An `ignoreDifferences` entry scoped to
-        # `data.trustDomain` would only hide a diff that has not been observed,
-        # so it is the weaker option and would be treating a symptom nobody has
-        # seen.)
+        # IT WAS LEFT OPEN ON PURPOSE, AND IS NOW CLOSED, 2026-09-22 -- the operator
+        # decision this paragraph deferred has been made: `cluster.trustDomain:
+        # openziti.zeta.local` is set above. The rotation hazard described here
+        # (a controller that has already issued identities losing them) does not
+        # apply on a first-boot cluster with no identities issued -- the exact
+        # condition this deferral was written for was "nobody has decided the
+        # value yet", not "nobody may ever decide it". The exposure this
+        # paragraph named -- render nondeterminism whenever a revision cache
+        # evicts -- was live: run 35628762464 showed
+        # `Secret/ziti-controller-trust-domain` OutOfSync, and it is what closing
+        # this LIFTS WHEN retires. (An `ignoreDifferences` entry scoped to
+        # `data.trustDomain` remains the weaker option this paragraph rejected --
+        # it would have hidden the observed diff instead of removing its cause.)
   destination:
     server: https://kubernetes.default.svc
     namespace: openziti
