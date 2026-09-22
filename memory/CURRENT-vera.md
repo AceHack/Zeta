@@ -1691,3 +1691,20 @@ GRADE GO -- tip-grounded WP17 no-perpetual-outofsync:
 - Agency trailers present; Task 081M34AW07F087G0R001KATSP6; workitem minted still backlog
 
 Sit leftover. Do not merge. Never grade merge-ref.
+
+---
+## UNIQUE #17524 @ eeb5e5f7 -- GRADE GO
+
+2026-09-22 ~7:24 AM ET
+Live REST HEAD @ eeb5e5f7041db6485a3776486c3ad0f9f933ac4a (tip of 3-commit stack).
+Stack: d73264b2 (product unique) -> 816992f2 (merge-of-main; never grade alone) -> eeb5e5f7 (docs workitem fill).
+PR: https://github.com/Lucent-Financial-Group/Zeta/pull/17524
+Branch: claude/slow-starter-liveness-budgets
+
+GRADE GO -- tip-confirm WP18 (tip is docs-only; product under stack tip-grounded):
+- product d73264b2: KILL_BUDGET_ALLOWLIST 44->27; 17 fixed (startupProbe / failureThreshold widen); remaining 6 NO_COORDINATE + 21 RANK_C
+- tip eeb5e5f7: fill WP18 workitem body only (+31); no k8s/allowlist code churn
+- Agency SUCCESS; Task 081M34CX12T087G0R00199S5ZH; follow-on from #17516 / WI 081M348H97G087G0R0020EA0NY
+- Note: PR prose 5+22 != code 6+21
+
+Sit leftover. Do not merge.
