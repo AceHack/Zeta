@@ -1,0 +1,12 @@
+{
+  "pr_number": 17488,
+  "archive_path": "docs/history/pr-reviews/2026/09/22/PR-17488-feat-installer-verify-k3s-first-boot-roster-on-the-installed-disk-s-own-first-bo.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-22T07:20:24.600Z",
+  "schema_version": "v1",
+  "commit_sha": "8cd067133b1d38739aaeaef70765cf3781bd2319",
+  "title": "feat(installer): verify k3s + first-boot roster on the installed disk's own first boot (WP11)",
+  "state": "MERGED",
+  "merged_at": "2026-09-22T07:19:42Z",
+  "head_ref": "claude/iso-installed-disk-first-boot"
+}
