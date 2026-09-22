@@ -97,8 +97,29 @@ in
   systemd.services.zeta-k3s-first-boot-verify = {
     description = "WP11 QEMU-only: verify k3s + first-boot roster on the INSTALLED disk";
     wantedBy = [ "multi-user.target" ];
-    after = [ "multi-user.target" "network-online.target" ];
-    wants = [ "network-online.target" ];
+    # 081M33XMWME087G0R000825CCB run 35697298781 (2026-09-22): this unit
+    # ORIGINALLY carried `after = [ "multi-user.target" "network-online.target"
+    # ]; wants = [ "network-online.target" ];` and never printed a single
+    # line on a real run -- not even its own unconditional first `log` call.
+    # Sibling units sharing the identical serial-mirroring pattern
+    # (zeta-first-session-ci, zeta-creds-restore) DID print on that same
+    # boot, which rules out "serial device not found" and rules out
+    # "multi-user.target never reached". The only thing unique to this unit
+    # was the `After=network-online.target` ordering dependency: systemd
+    # defers ExecStart until every `After=` target has SETTLED, and on this
+    # image's first boot (QEMU user-mode NIC + NetworkManager) that
+    # apparently never happens within the observed 75+ minute window --
+    # ExecStart is simply never invoked, which is indistinguishable from a
+    # hang on serial because nothing runs to report it.
+    #
+    # Fix: do not order on network state at all. This unit already polls
+    # internally, with its own bounded deadline, for everything that
+    # actually needs the network (k3s, kubectl, Helm charts) -- exactly the
+    # pattern k3s-join-observer.nix already uses (`after = [ "k3s.service" ]`
+    # only, no network-online.target). Ordering after local-fs.target alone
+    # (same as zeta-first-session-ci / zeta-creds-restore) is sufficient: the
+    # marker file and repo checkout just need the root filesystem mounted.
+    after = [ "local-fs.target" ];
     unitConfig = {
       ConditionPathExists = [ markerFile ];
     };
@@ -113,6 +134,13 @@ in
       # unit itself carries the real bound (DEADLINE_SECONDS below) and
       # systemd's own timeout is disabled.
       TimeoutStartSec = 0;
+      # Belt-and-suspenders on top of the explicit /dev/ttyS0 mirroring
+      # below: send the unit's own stdout/stderr to the console too (wired
+      # to ttyS0 by this image's `console=ttyS0,115200n8` kernel param), so
+      # a defect in the explicit mirroring would still surface on serial
+      # instead of silently vanishing into the journal only.
+      StandardOutput = "journal+console";
+      StandardError = "journal+console";
       ExecStart = pkgs.writeShellScript "zeta-k3s-first-boot-verify-start" ''
         set -uo pipefail
 
