@@ -1536,3 +1536,19 @@ Merge tip hygiene: tip vs FP adds only #17497 archive docs from main (+92/0); pr
 Agency: product + PR body present; agencysignature (PR body) SUCCESS; check-then-use-races SUCCESS.
 
 GRADE GO. Sit leftover. Do not merge.
+
+---
+## UNIQUE #17508 @ 546b5271 -- GRADE GO
+
+2026-09-22 ~5:42 AM ET
+Product unique ONLY @ 546b5271947c72793fb1e3c320df972398cebcf5 (tip of 4-commit WP12 product stack). Live REST HEAD f630764f8bda176ff83f7f464011f8528ef44bc1 is merge-of-main -- never graded.
+PR: https://github.com/Lucent-Financial-Group/Zeta/pull/17508
+Branch: claude/why-argo-apps-stay-progressing
+
+GRADE GO -- tip-grounded product stack:
+- Gateway API CRDs vendored v1.2.1 STANDARD -> v1.6.1 STANDARD (9245cd31); GATEWAY_API_CRD_GAP_REASONS emptied
+- metal-oracle hostNetwork ClusterIP DNS + spire-agent stability subtests in k3s-first-boot-roster.nix (646e0a5f / FQDN fix ad3c8f20); VM run 35706939767 SUCCESS on ad3c8f20
+- tip 546b5271: DIVERGENCE id spire-agent-hostnetwork-dns-in-nested-container (replica artifact CONFIRMED); both workitems -> done; research verdict CONFIRMED REPLICA ARTIFACT
+- Agency: agencysignature (PR body) SUCCESS; (human-review evidence) SUCCESS
+
+Sit leftover. Do not merge. Not a product unique-confirm of the merge-ref.
