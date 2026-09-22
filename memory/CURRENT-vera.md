@@ -1486,3 +1486,21 @@ Agency: tip trailer Task:none; agencysignature (PR body) SUCCESS; check-then-use
 Size claim 1001072->276520 is MEASURED narrative; MAX_TREE_BYTES=716800 + existing budget test remain.
 
 GRADE GO. Sit leftover. Do not merge.
+
+---
+## UNIQUE #17505 @ 3fd9d228 -- GRADE GO
+Observed ~2026-09-22 05:14 ET.
+
+LIVE tip (grade this only): 3fd9d22834f745010e44366da7a4f99f213854e9
+Unique first parent: 4e58f474a60ab01ea103a03b183ed4a423cb9a0a
+1-commit stack.
+
+Tip-only vs FP: +1208/-4 / 8 files -- match claim.
+- internal-secret-seeding.yaml: six INTERNAL Secrets (grafana/ziti/opensearch/forgejo/zeta-blob-store/redis-auth); create-if-absent Jobs; Roles verbs:[create] only; Downward API metadata.uid entropy; image registry.k8s.io/kubectl:v1.32.3 (existing pin)
+- INJECTION-POINTS.md: EXTERNAL gaps hindsight-llm-api-key + ghcr-pull
+- k3s-server.nix + apply-order/replica goldens insert seed between external-secrets-install and local-path-provisioner
+- internal-secret-seeding.test.ts: DEV_* key/ns cross-check + create-only + EXTERNAL absent
+
+Agency: tip trailer Task 081M343EEP8087G0R000BAF6QF; Credential-Identity maximdolphin.
+
+GRADE GO. Sit leftover. Do not merge.
