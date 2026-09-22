@@ -885,6 +885,38 @@ export function restartCountRegressions(
   });
 }
 
+/**
+ * A soak regression this harness KNOWS about and why — CONFIRMED (not
+ * inferred) via the metal oracle: `k3s-first-boot-roster-vm.yml` run
+ * 35706939767 ran spire-agent on a real NixOS VM with no container nesting
+ * and its restartCount held flat across a 180s window. See the
+ * `spire-agent-hostnetwork-dns-in-nested-container` DIVERGENCE above for the
+ * full derivation (hostNetwork sockets not reaching the ClusterIP under
+ * Cilium's socket-LB, specific to running k3s nested inside this replica's
+ * Docker container).
+ *
+ * NARROW ON PURPOSE. This allowlist exists to stop ONE confirmed-non-metal
+ * defect from failing the soak, never to blunt the soak's own job of
+ * catching a REAL regression anywhere else — a pod/container pair not
+ * listed here still fails the soak exactly as before.
+ */
+export function isKnownSoakRegression(sample: RestartSample): boolean {
+  return sample.namespace === "spire" && sample.container === "spire-agent";
+}
+
+export interface ClassifiedSoakRegressions {
+  readonly expected: readonly RestartSample[];
+  readonly unexpected: readonly RestartSample[];
+}
+
+/** Splits soak regressions into ones this harness already has a metal-verified explanation for, and everything else. */
+export function classifySoakRegressions(regressions: readonly RestartSample[]): ClassifiedSoakRegressions {
+  return {
+    expected: regressions.filter(isKnownSoakRegression),
+    unexpected: regressions.filter((r) => !isKnownSoakRegression(r)),
+  };
+}
+
 // ═══════════════════════ Everything below needs Docker ═══════════════════
 
 export interface CommandResult {
@@ -1518,35 +1550,49 @@ export async function runReplica(opts: RunOptions): Promise<RunReport> {
     for (const v of [...failingApps, ...divergentApps]) log(`  [${v.verdict}] ${v.name}: ${v.reason}`);
 
     let soakRegressions: readonly RestartSample[] = [];
+    let classifiedSoak: ClassifiedSoakRegressions = { expected: [], unexpected: [] };
     if (opts.soakSec > 0) {
       const before = parseRestartSamples(podsJsonAtSettle.stdout);
       const soakDeadline = nowSeconds() + opts.soakSec;
-      while (nowSeconds() < soakDeadline && soakRegressions.length === 0) {
+      // Only an UNEXPECTED regression stops the soak early — a known one
+      // (currently just spire-agent's confirmed-non-metal restart, see
+      // `isKnownSoakRegression`) does not get to shorten the window during
+      // which a genuinely new regression elsewhere would still be caught.
+      while (nowSeconds() < soakDeadline && classifiedSoak.unexpected.length === 0) {
         const remainingMs = Math.max(0, (soakDeadline - nowSeconds()) * 1000);
         await new Promise((r) => setTimeout(r, Math.min(opts.pollMs, remainingMs) || 1));
         if (nowSeconds() >= soakDeadline) break;
         const afterJson = kubectl(runner, kubeconfigPath, ["get", "pods", "-A", "-o", "json"], 30_000);
         soakRegressions = restartCountRegressions(before, parseRestartSamples(afterJson.stdout));
+        classifiedSoak = classifySoakRegressions(soakRegressions);
       }
       log(
         soakRegressions.length === 0
           ? `stage 6 soak: ${String(opts.soakSec)}s held with no restartCount regressions`
-          : `stage 6 soak: restartCount regression on ${soakRegressions.map((r) => `${r.namespace}/${r.pod}[${r.container}]`).join(", ")}`,
+          : `stage 6 soak: restartCount regression on ${soakRegressions.map((r) => `${r.namespace}/${r.pod}[${r.container}]`).join(", ")}` +
+              (classifiedSoak.expected.length > 0
+                ? ` (${String(classifiedSoak.expected.length)} KNOWN — see isKnownSoakRegression / ` +
+                  `spire-agent-hostnetwork-dns-in-nested-container DIVERGENCE, confirmed non-metal on VM run 35706939767)`
+                : ""),
       );
     }
 
     stages.push({
       stage: 6,
       name: "convergence report (per-Application verdict: Healthy/DIVERGENCE/FAIL) + soak",
-      ok: failingApps.length === 0 && soakRegressions.length === 0,
+      ok: failingApps.length === 0 && classifiedSoak.unexpected.length === 0,
       elapsedSeconds: nowSeconds() - s6Start,
       detail:
         `settled=${String(settled)}; ${String(appVerdicts.length)} Applications: ${String(healthyCount)} Healthy, ` +
         `${String(divergentApps.length)} DIVERGENCE, ${String(failingApps.length)} FAIL` +
         (opts.soakSec > 0
-          ? `; soak ${String(opts.soakSec)}s: ${soakRegressions.length === 0 ? "steady" : `${String(soakRegressions.length)} restartCount regression(s)`}`
+          ? `; soak ${String(opts.soakSec)}s: ${
+              soakRegressions.length === 0
+                ? "steady"
+                : `${String(classifiedSoak.unexpected.length)} unexpected + ${String(classifiedSoak.expected.length)} known restartCount regression(s)`
+            }`
           : "; soak skipped (soakSec=0)"),
-      evidence: { appVerdicts, podIssues, soakRegressions },
+      evidence: { appVerdicts, podIssues, soakRegressions, soakRegressionsExpected: classifiedSoak.expected, soakRegressionsUnexpected: classifiedSoak.unexpected },
     });
 
     // ── Stage 7: dual-owner churn check ───────────────────────────────

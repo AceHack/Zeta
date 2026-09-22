@@ -37,6 +37,8 @@ import {
   manifestTargetFilename,
   parseExtraFlags,
   parseFailedSchedulingEvents,
+  classifySoakRegressions,
+  isKnownSoakRegression,
   parseInlineWriteTextManifest,
   parseManifestSourceRoster,
   parsePodSummaries,
@@ -813,6 +815,40 @@ describe("restartCountRegressions", () => {
     const before = [container(0)];
     const after = [{ ...container(0), pod: "cilium-xyz" }];
     expect(restartCountRegressions(before, after)).toHaveLength(0);
+  });
+});
+
+// ─────────────────── isKnownSoakRegression / classifySoakRegressions ──────
+
+describe("isKnownSoakRegression / classifySoakRegressions", () => {
+  const spireAgent: RestartSample = { namespace: "spire", pod: "spire-agent-abc", container: "spire-agent", restartCount: 4 };
+  const cilium: RestartSample = { namespace: "kube-system", pod: "cilium-xyz", container: "cilium-agent", restartCount: 1 };
+
+  test("spire-agent's own container, in the spire namespace, is the only known regression", () => {
+    expect(isKnownSoakRegression(spireAgent)).toBe(true);
+  });
+
+  test("nothing else is known — narrow on purpose, this allowlist must not silently widen", () => {
+    expect(isKnownSoakRegression(cilium)).toBe(false);
+    // Same namespace, wrong container — a spire-server crash loop must still FAIL.
+    expect(isKnownSoakRegression({ ...spireAgent, container: "spire-server" })).toBe(false);
+    // Same container name, wrong namespace — must still FAIL.
+    expect(isKnownSoakRegression({ ...spireAgent, namespace: "kube-system" })).toBe(false);
+  });
+
+  test("classifySoakRegressions splits into expected/unexpected without dropping either", () => {
+    const { expected, unexpected } = classifySoakRegressions([spireAgent, cilium]);
+    expect(expected).toEqual([spireAgent]);
+    expect(unexpected).toEqual([cilium]);
+  });
+
+  test("an empty regression list classifies to two empty lists", () => {
+    expect(classifySoakRegressions([])).toEqual({ expected: [], unexpected: [] });
+  });
+
+  test("all-known regressions leave unexpected empty — this is what lets stage 6 still pass", () => {
+    const { unexpected } = classifySoakRegressions([spireAgent]);
+    expect(unexpected).toHaveLength(0);
   });
 });
 
