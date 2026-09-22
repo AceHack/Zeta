@@ -1,0 +1,14 @@
+{
+  "id": "080d06467422d810a0130008de074c09",
+  "at": "2026-09-22T11:09:32.635Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M34CX12T087G0R00199S5ZH",
+    "type": "task",
+    "title": "WP18: rank and fix slow-starter liveness kill-budget risks from the WP15 catalog audit",
+    "slug": "wp18-rank-and-fix-slow-starter-liveness-kill-budget-risks-fr",
+    "priority": "P2",
+    "filename": "081M34CX12T087G0R00199S5ZH-wp18-rank-and-fix-slow-starter-liveness-kill-budget-risks-fr.md"
+  }
+}

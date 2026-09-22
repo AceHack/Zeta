@@ -203,62 +203,92 @@ export interface AllowlistEntry {
  * is always red is one people learn to skim -- and tracked in one place so the
  * grandfathering itself stays visible and finite.
  */
-const WP15_TRIAGE_REASON =
-  "pre-existing at the WP15 catalog audit (2026-09-22), not individually vetted -- " +
-  "tracked in workitems/081M348H97G087G0R0020EA0NY-fix-remaining-livenessprobe-kill-budget-risks-flagged-by-liv.md; " +
-  "remove this entry in the same change that fixes the container";
+/**
+ * WP18 (this pass, 2026-09-22) ranked the 45-container WP15 set against CI evidence --
+ * per-container restart counts and "Liveness probe failed"/"Killing" events extracted
+ * from 5 recent kind-included-lane runs (35713533700, 35709838861, 35707656488,
+ * 35703810167, 35703051689) plus one first-boot-replica run (35700790207, real k3s
+ * roster). 17 containers with either a direct restart hit or a known-slow-starter
+ * classification (JVM/DB/migration-on-start) AND a values coordinate were fixed and
+ * dropped from this allowlist -- see the individual Application.yaml comments in
+ * cockroachdb/, keda/, loki/, mimir/, orleans/, argo-rollouts/, kube-prometheus-stack/
+ * and gitlab/ for the per-chart evidence and the coordinate each one used.
+ *
+ * The containers below are what remains, split two ways:
+ */
+const WP18_NO_COORDINATE_REASON =
+  "ranked (a)/(b) at WP18's 2026-09-22 pass but NOT fixed: the chart hardcodes this " +
+  "probe's timing with no values coordinate at all (verified by extracting the chart -- " +
+  "no toYaml/.Values reference on the relevant fields) -- same shape as hindsight's own " +
+  "postgresql row below. Upstream chart PR is the only route; " +
+  "tracked in workitems/081M348H97G087G0R0020EA0NY-fix-remaining-livenessprobe-kill-budget-risks-flagged-by-liv.md";
+
+const WP18_RANK_C_REASON =
+  "ranked (c) at WP18's 2026-09-22 pass -- fast controller/webhook/exporter/binary, " +
+  "not a JVM/DB/migration-on-start shape, and NOT observed restarting in the 5 " +
+  "kind-included-lane CI runs examined 2026-09-22 (35713533700, 35709838861, 35707656488, " +
+  "35703810167, 35703051689) despite that lane deploying its full catalog including this " +
+  "container. Still un-individually-vetted, so still allowlisted rather than assumed safe; " +
+  "tracked in workitems/081M348H97G087G0R0020EA0NY-fix-remaining-livenessprobe-kill-budget-risks-flagged-by-liv.md";
 
 export const KILL_BUDGET_ALLOWLIST: readonly AllowlistEntry[] = [
-  { app: "argo-rollouts", container: "argo-rollouts", reason: WP15_TRIAGE_REASON },
-  { app: "argocd", container: "repo-server", reason: WP15_TRIAGE_REASON },
-  { app: "argocd", container: "server", reason: WP15_TRIAGE_REASON },
-  { app: "cdi", container: "cdi-operator", reason: WP15_TRIAGE_REASON },
-  { app: "cert-manager", container: "cert-manager-controller", reason: WP15_TRIAGE_REASON },
-  { app: "cert-manager", container: "cert-manager-webhook", reason: WP15_TRIAGE_REASON },
-  { app: "cilium", container: "cilium-operator", reason: WP15_TRIAGE_REASON },
-  { app: "cilium", container: "frontend", reason: WP15_TRIAGE_REASON },
-  { app: "cockroachdb", container: "db", reason: WP15_TRIAGE_REASON },
-  { app: "gitlab", container: "gitlab-exporter", reason: WP15_TRIAGE_REASON },
-  { app: "gitlab", container: "gitlab-gitlab-runner", reason: WP15_TRIAGE_REASON },
-  { app: "gitlab", container: "gitlab-shell", reason: WP15_TRIAGE_REASON },
-  { app: "gitlab", container: "kas", reason: WP15_TRIAGE_REASON },
-  { app: "gitlab", container: "metrics", reason: WP15_TRIAGE_REASON },
-  { app: "gitlab", container: "postgresql", reason: WP15_TRIAGE_REASON },
-  { app: "gitlab", container: "redis", reason: WP15_TRIAGE_REASON },
-  { app: "gitlab", container: "registry", reason: WP15_TRIAGE_REASON },
-  { app: "hat-system", container: "operator", reason: WP15_TRIAGE_REASON },
-  { app: "headlamp", container: "headlamp", reason: WP15_TRIAGE_REASON },
-  { app: "headscale", container: "headscale", reason: WP15_TRIAGE_REASON },
+  { app: "argocd", container: "repo-server", reason: WP18_RANK_C_REASON },
+  { app: "argocd", container: "server", reason: WP18_RANK_C_REASON },
+  { app: "cdi", container: "cdi-operator", reason: WP18_RANK_C_REASON },
+  { app: "cert-manager", container: "cert-manager-controller", reason: WP18_RANK_C_REASON },
+  { app: "cert-manager", container: "cert-manager-webhook", reason: WP18_RANK_C_REASON },
+  { app: "cilium", container: "cilium-operator", reason: WP18_RANK_C_REASON },
+  { app: "cilium", container: "frontend", reason: WP18_RANK_C_REASON },
+  // gitlab-exporter: hardcoded `exec: [pgrep, -f, gitlab-exporter]` liveness in
+  // charts/gitlab-exporter/templates/deployment.yaml -- no toYaml, no .Values
+  // reference on initialDelaySeconds/periodSeconds/failureThreshold at all.
+  { app: "gitlab", container: "gitlab-exporter", reason: WP18_NO_COORDINATE_REASON },
+  // kas: charts/kas/templates/deployment.yaml hardcodes
+  // `initialDelaySeconds: 15, periodSeconds: 20` with no .Values reference on
+  // either field (only the httpGet path/port route through Values).
+  { app: "gitlab", container: "kas", reason: WP18_NO_COORDINATE_REASON },
+  { app: "hat-system", container: "operator", reason: WP18_RANK_C_REASON },
+  { app: "headlamp", container: "headlamp", reason: WP18_RANK_C_REASON },
+  { app: "headscale", container: "headscale", reason: WP18_RANK_C_REASON },
   // hindsight/postgresql: NOT a values-coordinate gap like the others in this
   // list -- the chart hardcodes this probe (see Application.yaml's own comment
   // on `controlPlane.livenessProbe`), so there is no valuesObject fix at all,
   // only an upstream chart PR. Left in the shared workitem rather than split out.
-  { app: "hindsight", container: "postgresql", reason: WP15_TRIAGE_REASON },
-  { app: "keda", container: "keda-admission-webhooks", reason: WP15_TRIAGE_REASON },
-  { app: "keda", container: "keda-operator", reason: WP15_TRIAGE_REASON },
-  { app: "keda", container: "keda-operator-metrics-apiserver", reason: WP15_TRIAGE_REASON },
-  { app: "kube-prometheus-stack", container: "kube-prometheus-stack", reason: WP15_TRIAGE_REASON },
-  { app: "kube-prometheus-stack", container: "kube-state-metrics", reason: WP15_TRIAGE_REASON },
-  { app: "kube-prometheus-stack", container: "node-exporter", reason: WP15_TRIAGE_REASON },
-  { app: "kubevirt", container: "virt-operator", reason: WP15_TRIAGE_REASON },
-  { app: "loki", container: "canary", reason: WP15_TRIAGE_REASON },
-  { app: "loki", container: "exporter", reason: WP15_TRIAGE_REASON },
-  { app: "loki", container: "loki-sc-rules", reason: WP15_TRIAGE_REASON },
-  { app: "mimir", container: "overrides-exporter", reason: WP15_TRIAGE_REASON },
-  { app: "node-feature-discovery", container: "gc", reason: WP15_TRIAGE_REASON },
-  { app: "node-feature-discovery", container: "worker", reason: WP15_TRIAGE_REASON },
-  { app: "ollama", container: "ollama", reason: WP15_TRIAGE_REASON },
+  { app: "hindsight", container: "postgresql", reason: WP18_NO_COORDINATE_REASON },
+  { app: "kube-prometheus-stack", container: "kube-prometheus-stack", reason: WP18_RANK_C_REASON },
+  { app: "kube-prometheus-stack", container: "node-exporter", reason: WP18_RANK_C_REASON },
+  { app: "kubevirt", container: "virt-operator", reason: WP18_RANK_C_REASON },
+  { app: "node-feature-discovery", container: "gc", reason: WP18_RANK_C_REASON },
+  { app: "node-feature-discovery", container: "worker", reason: WP18_RANK_C_REASON },
+  { app: "ollama", container: "ollama", reason: WP18_RANK_C_REASON },
   // Covers BOTH gatekeeper-audit and gatekeeper-controller-manager Deployments --
   // both containers are literally named "manager" and share the same shape.
-  { app: "open-policy-agent", container: "manager", reason: WP15_TRIAGE_REASON },
-  { app: "orleans", container: "silo", reason: WP15_TRIAGE_REASON },
-  { app: "sealed-secrets", container: "controller", reason: WP15_TRIAGE_REASON },
-  { app: "spire", container: "node-driver-registrar", reason: WP15_TRIAGE_REASON },
-  { app: "spire", container: "spire-controller-manager", reason: WP15_TRIAGE_REASON },
-  { app: "spire", container: "spire-server", reason: WP15_TRIAGE_REASON },
-  { app: "tempo", container: "tempo", reason: WP15_TRIAGE_REASON },
-  { app: "temporal", container: "admin-tools", reason: WP15_TRIAGE_REASON },
-  { app: "temporal", container: "temporal-web", reason: WP15_TRIAGE_REASON },
+  { app: "open-policy-agent", container: "manager", reason: WP18_RANK_C_REASON },
+  { app: "sealed-secrets", container: "controller", reason: WP18_RANK_C_REASON },
+  { app: "spire", container: "node-driver-registrar", reason: WP18_RANK_C_REASON },
+  // spire-controller-manager: DIRECTLY OBSERVED restarting (restartCount 2, pod
+  // spire-server-0) in CI run 35707656488 -- but charts/spire-server/templates/
+  // _controller-manager-container.tpl hardcodes this container's livenessProbe with
+  // NO .Values reference on any field (httpGet path/port are the only templated
+  // parts). Unlike its sibling spire-server container below (which DOES have a
+  // `.Values.livenessProbe` coordinate), there is nothing to widen here.
+  { app: "spire", container: "spire-controller-manager", reason: WP18_NO_COORDINATE_REASON },
+  // spire-server: has a values coordinate (`.Values.livenessProbe`) but was not
+  // itself observed restarting in the evidence sweep -- only its sidecar
+  // (spire-controller-manager, above) was. Left un-widened rather than
+  // speculatively fixed without a measured symptom.
+  { app: "spire", container: "spire-server", reason: WP18_RANK_C_REASON },
+  { app: "tempo", container: "tempo", reason: WP18_RANK_C_REASON },
+  // admin-tools: charts/temporal/templates/admintools-deployment.yaml hardcodes
+  // `exec: [ls, /], initialDelaySeconds: 5, periodSeconds: 5` -- no .Values
+  // reference anywhere on this probe.
+  { app: "temporal", container: "admin-tools", reason: WP18_NO_COORDINATE_REASON },
+  // temporal-web: charts/temporal/templates/web-deployment.yaml hardcodes
+  // `tcpSocket: {port: http}, initialDelaySeconds: 10` -- no .Values reference on
+  // this probe either (temporal-frontend/history/matching, already `ok` at 170s in
+  // the same chart, prove the chart CAN expose a coordinate elsewhere; it simply
+  // does not here).
+  { app: "temporal", container: "temporal-web", reason: WP18_NO_COORDINATE_REASON },
 ];
 
 function isAllowlisted(c: ContainerProbeSummary): AllowlistEntry | null {

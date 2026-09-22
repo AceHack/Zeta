@@ -24,6 +24,33 @@ spec:
       valuesObject:
         statefulset:
           replicas: 3
+          # STARTUP PROBE -- THE CHART EXPOSES THE COORDINATE DIRECTLY. MEASURED (helm
+          # pull cockroachdb 22.0.3 --untar): templates/statefulset.yaml renders
+          # `startupProbe` from `.Values.statefulset.customStartupProbe` when set, and
+          # only the chart's own hardcoded liveness (`initialDelaySeconds: 30,
+          # periodSeconds: 5`, failureThreshold default 3 -> 40s kill budget) otherwise.
+          # Not individually vetted at WP15's 2026-09-22 catalog audit; ranked here as a
+          # known slow starter (JVM/DB category per WP18) -- CockroachDB self-joins the
+          # Raft cluster and, on a first boot with 3 replicas starting alongside ~120
+          # other pods, that can outrun the 40s liveness window before the process is
+          # even listening.
+          #
+          # Kubelet holds `livenessProbe` off entirely until `startupProbe` first
+          # succeeds -- the correct primitive, not a widened liveness window.
+          # periodSeconds 10, failureThreshold 30 -> startup kill budget 0+29*10=290s;
+          # the chart's own 40s liveness resumes once startup succeeds, so a genuinely
+          # wedged node still dies in steady state.
+          customStartupProbe:
+            httpGet:
+              path: /health
+              port: http
+              # `tls.enabled: true` below -- the chart's own default liveness probe adds
+              # this scheme conditionally; customStartupProbe is a full replacement (no
+              # merge), so it must be named explicitly here too.
+              scheme: HTTPS
+            initialDelaySeconds: 0
+            periodSeconds: 10
+            failureThreshold: 30
         storage:
           persistentVolume:
             enabled: true

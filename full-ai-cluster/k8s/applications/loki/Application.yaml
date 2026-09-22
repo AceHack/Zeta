@@ -62,6 +62,41 @@ spec:
         backend: { replicas: 1 }
         chunksCache: { enabled: false }
         resultsCache: { enabled: false }
+        # STARTUP PROBES -- ALL THREE CONTAINERS BELOW HAVE THE COORDINATE. MEASURED
+        # (helm pull loki 18.12.1 --untar): none of the three had an override in this
+        # Application before, so each rendered its chart default liveness with no
+        # startupProbe:
+        #   - lokiCanary (DaemonSet/loki-canary, container canary): 35s
+        #   - gateway.metrics (Deployment/loki-gateway, container exporter -- the
+        #     nginx access-log exporter sidecar): 50s
+        #   - sidecar (StatefulSet/loki-backend, container loki-sc-rules -- the rules
+        #     ConfigMap/Secret watcher sidecar): 90s
+        # None individually vetted at WP15's 2026-09-22 catalog audit; loki is a known
+        # slow starter (WP18 category b) and all three are sidecars/daemons that can be
+        # scheduled and start probing before the object-store-backed main containers
+        # they watch are reachable, under first-boot pod/image pressure.
+        #
+        # Kubelet holds `livenessProbe` off entirely until `startupProbe` first
+        # succeeds. periodSeconds 10, failureThreshold 30 -> startup kill budget
+        # 0+29*10=290s for each; the chart's own (unchanged) liveness resumes once
+        # startup succeeds.
+        lokiCanary:
+          startupProbe:
+            httpGet: { path: /metrics, port: http-metrics }
+            periodSeconds: 10
+            failureThreshold: 30
+        gateway:
+          metrics:
+            startupProbe:
+              httpGet: { path: /metrics, port: http-metrics }
+              periodSeconds: 10
+              failureThreshold: 30
+        sidecar:
+          startupProbe:
+            enabled: true
+            httpGet: { path: /healthz, port: http-sidecar }
+            periodSeconds: 10
+            failureThreshold: 30
   destination:
     server: https://kubernetes.default.svc
     namespace: loki

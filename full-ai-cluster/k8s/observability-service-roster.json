@@ -17,14 +17,14 @@
     "",
     "Service names and ports only. No credential material."
   ],
-  "kubeVersion": "1.35.6",
+  "kubeVersion": "1.35.7",
   "apps": {
     "loki": {
       "namespace": "loki",
       "chart": "loki",
       "repoURL": "https://grafana-community.github.io/helm-charts",
       "version": "18.12.1",
-      "valuesHash": "sha256:2e4b9cad93d0b2bef87ea008f4e638a73363774d32f06167bb82536725a45326",
+      "valuesHash": "sha256:74edc3e447ede8a36fd11cbbf294ee74fad2f5c93f33a533215b690cf64991e3",
       "services": {
         "loki-query-scheduler-discovery": [
           3100,
@@ -79,7 +79,7 @@
       "chart": "mimir-distributed",
       "repoURL": "https://grafana.github.io/helm-charts",
       "version": "6.2.0",
-      "valuesHash": "sha256:3aa75772ba314dd0d4c44bf31db0ef6c2a88c4a8a4acda853e567b9eb39bf776",
+      "valuesHash": "sha256:8a2f20ed5553e515ab3a767584320fd399bcd771c772d352d3255ba51dee917e",
       "services": {
         "mimir-rollout-operator": [
           443

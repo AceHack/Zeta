@@ -138,6 +138,30 @@ spec:
             requests:
               cpu: 1
               memory: 1024Mi
+        # LIVENESS KILL BUDGET -- WIDENED, NOT A startupProbe. MEASURED (rendered this
+        # Application at 6.2.0): `overrides-exporter` has no `startupProbe` key in
+        # `templates/overrides-exporter/overrides-exporter-dep.yaml` -- only
+        # `{{ toYaml .Values.overrides_exporter.livenessProbe }}`, which without an
+        # override here renders the chart's own default (`initialDelaySeconds: 45`, no
+        # periodSeconds/failureThreshold -> kubelet defaults 10s/3 -> 65s kill budget).
+        # Not individually vetted at WP15's 2026-09-22 catalog audit; ranked here as a
+        # known slow starter (WP18 category b, ★ in the audit tool's own
+        # KNOWN_SLOW_STARTERS) -- mimir's other components (distributor/ingester/ruler)
+        # were observed restarting repeatedly across every CI run examined 2026-09-22,
+        # though the audit tool cannot currently price their kill budget (their
+        # rendered livenessProbe fields are non-numeric after Helm's own templating --
+        # a separate finding, out of this PR's scope) so overrides-exporter is the one
+        # mimir container this audit can actually act on.
+        #
+        # failureThreshold: 18 (chart's own initialDelaySeconds/httpGet unchanged,
+        # periodSeconds defaults to 10) -> kill budget 45+17*10=215s.
+        overrides_exporter:
+          livenessProbe:
+            httpGet:
+              path: /ready
+              port: http-metrics
+            initialDelaySeconds: 45
+            failureThreshold: 18
   destination:
     server: https://kubernetes.default.svc
     namespace: mimir

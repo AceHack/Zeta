@@ -48,6 +48,13 @@ metadata:
     # Before the workloads that would declare a ScaledObject, after the CRD-bearing
     # platform pieces. Same rung as `dapr`, which it composes with rather than competes.
     argocd.argoproj.io/sync-wave: "0"
+    # Perpetual OutOfSync on CustomResourceDefinition/scaledjobs.keda.sh: the
+    # soak on PR #17524's included-lane run caught keda leaving Synced after
+    # all-Healthy. This is the same CRD class argo-workflows hit (#17522):
+    # apiserver-defaulted CRD fields that the SSA-emulated client diff reports.
+    # The same upstream-documented remedy (argo-cd#11143), scoped to this one
+    # Application.
+    argocd.argoproj.io/compare-options: ServerSideDiff=true
   name: keda
   namespace: argocd
   finalizers: [ resources-finalizer.argocd.argoproj.io ]
@@ -74,6 +81,38 @@ spec:
             requests: { cpu: 100m, memory: 100Mi }
           webhooks:
             requests: { cpu: 100m, memory: 100Mi }
+        # LIVENESS KILL BUDGET -- WIDENED, NOT A startupProbe: MEASURED (helm pull
+        # keda/keda 2.20.2 --untar) that templates/manager/deployment.yaml,
+        # templates/webhooks/deployment.yaml and templates/metrics-server/deployment.yaml
+        # render `livenessProbe` only -- no `startupProbe` key exists anywhere in the
+        # chart's own control-plane Deployments (the only `startupProbe` hits in the whole
+        # chart are inside the ScaledJob CRD schema, which describes PODS USERS CREATE, not
+        # KEDA's own containers). So the kubelet-holds-liveness-until-ready mechanism this
+        # repo prefers is unavailable here; widening failureThreshold is the only lever.
+        #
+        # WHY: keda-operator restarted (restartCount 1-2, self-healed) in 4 of the 5 most
+        # recent kind-included-lane CI runs examined 2026-09-22 (35713533700, 35709838861,
+        # 35707656488, 35703810167) -- a first-boot-pressure symptom, not a genuinely slow
+        # starter (KEDA is a lightweight Go controller), but the chart's own default
+        # (`operator.livenessProbe.failureThreshold: 3`, kill budget 45s) leaves no margin
+        # for ~135 images pulling and ~120 pods starting at once. `webhooks` and
+        # `metrics-apiserver` share the same shape (45s/25s) and are widened alongside for
+        # consistency rather than left to reproduce the same symptom individually.
+        #
+        # failureThreshold: 20 keeps the chart's own periodSeconds/initialDelaySeconds
+        # (only the threshold moves): operator/webhooks 25+19*10=215s, metrics-apiserver
+        # 5+19*10=195s -- comfortably above the 120s floor with real first-boot margin, not
+        # the 320s migration-runner figure (hindsight/api) this container's own startup
+        # profile does not justify.
+        operator:
+          livenessProbe:
+            failureThreshold: 20
+        webhooks:
+          livenessProbe:
+            failureThreshold: 20
+        metricsServer:
+          livenessProbe:
+            failureThreshold: 20
   destination:
     server: https://kubernetes.default.svc
     namespace: keda
