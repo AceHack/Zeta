@@ -730,6 +730,23 @@
           k3s-first-boot-roster =
             import ./nixos/tests/k3s-first-boot-roster.nix { inherit pkgs; };
 
+          # WP20 (root-cause oracle for run 35717757526: k3s.service never
+          # reached active on the REAL installed disk in 4201s). Boots the
+          # WHOLE `nixosConfigurations.control-plane` host config -- not a
+          # hand-picked subset of modules like every other lane above -- so
+          # it is the only VM test that can see an ordering-graph defect
+          # spanning secure-boot/host-seal/tpm2/AI-agents/avahi/samba/docker/
+          # the k3s+longhorn+cilium-wireguard preflights/injected-*/creds-
+          # restore-and-register, none of which any smaller test imports at
+          # once. See nixos/tests/control-plane-host-boots-k3s.nix for the
+          # full rationale, the two deliberate deviations from the real host
+          # config (both cosmetic), and why REQUIRES INTERNET like the roster
+          # test above.
+          #
+          #   nix build .#checks.x86_64-linux.control-plane-host-boots-k3s -L --option sandbox false
+          control-plane-host-boots-k3s =
+            import ./nixos/tests/control-plane-host-boots-k3s.nix { inherit pkgs; };
+
           # EVAL-ONLY (no VM, no boot): asserts that the preflight-attestation
           # gate in nixos/modules/nvidia-open-guard.nix still REFUSES an
           # unattested `hardware.nvidia.open = true`. Runs under the existing

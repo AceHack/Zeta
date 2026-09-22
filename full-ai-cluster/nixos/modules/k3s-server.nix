@@ -42,6 +42,16 @@
     # fallback-safety argument (a mirror miss/outage can never make a pull
     # fail that would otherwise succeed).
     ./k3s-registry-mirrors.nix
+
+    # WP20 (081M34R7P99087G0R000H77GX9): drops k3s.service's After=/Wants=
+    # network-online.target (root-cause work for run 35717757526: k3s.service
+    # never reached active in 4201s on the real installed disk) and adds a
+    # bounded ExecStartPre wait for an address in its place. See that
+    # module's header for the full citation, the honest limit on what a VM
+    # negative control could and could not validate, and why the drop and the
+    # bounded wait are both needed. Imported here AND on k3s-agent.nix --
+    # nixpkgs names the unit "k3s" on both roles.
+    ./k3s-wait-for-address.nix
   ];
 
   services.k3s = {
@@ -453,4 +463,8 @@
   # `lib.mkDefault` so a host can switch it off.
   zeta.k3sJoinIntentPreflight.enable = lib.mkDefault true;
   zeta.k3sJoinIntentPreflight.role = lib.mkDefault "server";
+
+  # WP20 root-cause fix: see ./k3s-wait-for-address.nix (imported above) for
+  # the systemd.services.k3s.after/wants override, the ExecStartPre bounded
+  # address wait, and the full citation + honest limits on validation.
 }

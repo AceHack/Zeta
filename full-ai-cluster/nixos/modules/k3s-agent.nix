@@ -34,6 +34,11 @@
     # behind the same NAT" case that pushes first boot over Docker Hub's
     # 100-pull/6h anonymous quota. See k3s-registry-mirrors.nix's header.
     ./k3s-registry-mirrors.nix
+
+    # WP20 (081M34R7P99087G0R000H77GX9): see that module's header. Imported
+    # here AND on k3s-server.nix -- nixpkgs names the unit "k3s" on both
+    # roles, so the ordering risk and the node-ip risk are identical.
+    ./k3s-wait-for-address.nix
   ];
 
   # k3s's join is the join (Aaron 2026-08-13, closing PR #10493's open
@@ -106,4 +111,6 @@
   systemd.tmpfiles.rules = [
     "d /var/lib/rancher/k3s 0755 root root - -"
   ];
+
+  # WP20 root-cause fix: see ./k3s-wait-for-address.nix (imported above).
 }

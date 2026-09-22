@@ -1,0 +1,14 @@
+{
+  "id": "080d064c1ec9c810a0130008580658f2",
+  "at": "2026-09-22T14:27:36.377Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M34R7P99087G0R000H77GX9",
+    "type": "task",
+    "title": "VM-boot the real control-plane host config to root-cause k3s never starting",
+    "slug": "vm-boot-the-real-control-plane-host-config-to-root-cause-k3s",
+    "priority": "P2",
+    "filename": "081M34R7P99087G0R000H77GX9-vm-boot-the-real-control-plane-host-config-to-root-cause-k3s.md"
+  }
+}

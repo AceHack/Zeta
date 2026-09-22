@@ -1,0 +1,161 @@
+# control-plane-host-boots-k3s-vm.yml — BUILD (not just evaluate) the one check
+# that boots the WHOLE `nixosConfigurations.control-plane` host config, the same
+# way the USB installer does, and asks whether k3s.service ever becomes active.
+#
+# WHY THIS EXISTS (WP20). Run 35717757526 (build-ai-cluster-iso.yml, scenario
+# "WP11 installed-disk first-boot k3s verify") ran the REAL
+# `nixos-install --flake .../full-ai-cluster#control-plane`, booted the
+# installed disk with network, and k3s.service NEVER reached `active` in 4201s.
+# Every existing VM test in `full-ai-cluster/nixos/tests/` boots k3s-server.nix
+# (or a couple of sibling modules) DIRECTLY -- none of them imports
+# `hosts/control-plane/configuration.nix` whole, so none of them has ever
+# exercised the full import graph (secure-boot, host-seal, tpm2-seal-prereqs,
+# three AI-agent systemd services, avahi, samba, docker, the k3s/longhorn/
+# cilium-wireguard preflights, injected-*, creds-restore/self-register/
+# first-session) that the real installed disk actually boots.
+# `nixos/tests/control-plane-host-boots-k3s.nix` is that test; see its own
+# header for the full rationale and the two deliberate (cosmetic) deviations
+# from the real host config.
+#
+# WHY A SEPARATE WORKFLOW, NOT A STEP IN build-ai-cluster-iso.yml or
+# k3s-first-boot-roster-vm.yml. Same reasoning as k3s-first-boot-roster-vm.yml
+# gave for itself: this is a single, expensive derivation (heavier than the
+# roster test -- it additionally builds the full byte-lock toolchain closure,
+# three AI-agent services, avahi, samba and docker) that most PRs do not touch.
+# Folding it into either existing lane would tax every PR through those lanes
+# for a question specific to this host's full import graph.
+#
+# MIRRORS k3s-first-boot-roster-vm.yml's / build-ai-cluster-iso.yml's online-VM
+# steps exactly: same pinned actions/checkout, same pinned
+# DeterminateSystems/nix-installer-action with `determinate: false` (upstream
+# Nix only -- no FlakeHub OIDC login, which flaked with "Transient
+# authentication mechanism error" on PR #8095), same `--option sandbox false`
+# so the QEMU user-mode NIC can reach the internet for Cilium's image, same
+# ubuntu-24.04 runner (exposes /dev/kvm; the nixosTest driver falls back to TCG
+# if absent, just slower).
+
+name: control-plane-host-boots-k3s-vm
+
+on:
+  schedule:
+    # Daily, off-minute (see the cross-workflow collision discipline documented
+    # in k3s-first-boot-roster-vm.yml / pr-categorization.test.ts). Minute 58
+    # is unused by any other workflow's leading cron minute as of writing.
+    - cron: "58 5 * * *"
+  workflow_dispatch: {}
+  pull_request:
+    paths:
+      # The full control-plane import graph -- this test boots ALL of it, so
+      # its inputs are wide on purpose. Narrower than "all of nixos/", though:
+      # tests that boot a SUBSET of modules directly (k3s-cluster-init.nix,
+      # k3s-agent-join.nix, etc.) are out of scope here.
+      - "full-ai-cluster/nixos/modules/**"
+      - "full-ai-cluster/nixos/hosts/control-plane/**"
+      - "full-ai-cluster/nixos/lib/mk-host.nix"
+      - "full-ai-cluster/nixos/overlays/mise-pin.nix"
+      - "full-ai-cluster/nixos/tests/control-plane-host-boots-k3s.nix"
+      - "full-ai-cluster/flake.nix"
+      - "full-ai-cluster/cluster-identity.json"
+      - "full-ai-cluster/k8s/bootstrap/**"
+      - "full-ai-cluster/k8s/node-tunables.json"
+      - "full-ai-cluster/usb-nixos-installer/nixos/modules/foreign-binaries.nix"
+      - ".github/workflows/control-plane-host-boots-k3s-vm.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: control-plane-host-boots-k3s-vm-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  boot-real-control-plane-host:
+    name: boot the real control-plane host config (online VM)
+    runs-on: ubuntu-24.04
+    # Heavier than k3s-first-boot-roster-vm.yml's 90 min: this closure adds the
+    # full byte-lock toolchain (wabt/binaryen/emscripten/nodejs/zig/llvm/
+    # rustup/go/lua5) plus avahi/samba/docker/three AI-agent services on top of
+    # everything the roster test already builds and boots.
+    timeout-minutes: 120
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Install Nix
+        uses: DeterminateSystems/nix-installer-action@3138316df39ed29be04236d7ffc686fa525866aa # v23
+        with:
+          determinate: false
+
+      - name: Show flake metadata
+        working-directory: full-ai-cluster
+        run: nix flake metadata --json | jq '{description, lastModified, revision}'
+
+      # THE REAL BOOT. `--option sandbox false` lets the QEMU user-mode NIC
+      # reach the internet for Cilium's image -- the nix sandbox blocks network
+      # by default; the GitHub runner user is a trusted nix user so the flag is
+      # honored (same reasoning as build-ai-cluster-iso.yml's online steps and
+      # k3s-first-boot-roster-vm.yml).
+      #
+      # `continue-on-error: true` + reading `steps.host_test.outcome` in the
+      # later summary/fail steps: the log upload and summary must run whichever
+      # way this goes (`if: always()`), and the job's pass/fail is decided
+      # explicitly at the end rather than by whichever step happens to run
+      # last.
+      - name: NixOS test — the real control-plane host config boots k3s
+        id: host_test
+        continue-on-error: true
+        working-directory: full-ai-cluster
+        run: |
+          set -o pipefail
+          nix build .#checks.x86_64-linux.control-plane-host-boots-k3s \
+            -L --print-build-logs --fallback --option sandbox false \
+            2>&1 | tee /tmp/control-plane-host-boots-k3s.log
+
+      - name: Upload VM test log
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: control-plane-host-boots-k3s-log
+          path: /tmp/control-plane-host-boots-k3s.log
+          if-no-files-found: warn
+          retention-days: 14
+
+      - name: Print subtest summary to the job
+        if: always()
+        run: |
+          set -uo pipefail
+          log=/tmp/control-plane-host-boots-k3s.log
+          {
+            echo "## control-plane-host-boots-k3s — VM subtests"
+            echo ""
+            echo "Run: [$GITHUB_RUN_ID]($GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID)"
+            echo ""
+          } >> "$GITHUB_STEP_SUMMARY"
+
+          if [ ! -f "$log" ]; then
+            echo "**UNKNOWN** — the VM build produced no log at all (install/build step itself failed before the test ran)." >> "$GITHUB_STEP_SUMMARY"
+          else
+            {
+              echo "### Subtests reached in this run"
+              echo '```'
+            } >> "$GITHUB_STEP_SUMMARY"
+            grep -E '^(subtest:| {4}subtest:)' "$log" 2>/dev/null | sed -E 's/^[[:space:]]*//' >> "$GITHUB_STEP_SUMMARY" \
+              || echo "(no subtest markers found — see the full uploaded log)" >> "$GITHUB_STEP_SUMMARY"
+            echo '```' >> "$GITHUB_STEP_SUMMARY"
+
+            {
+              echo ""
+              echo "### Ordering-cycle evidence (subtest a)"
+              echo '```'
+            } >> "$GITHUB_STEP_SUMMARY"
+            grep -A5 "=== journalctl -b | grep -i 'ordering cycle' ===" "$log" 2>/dev/null >> "$GITHUB_STEP_SUMMARY" \
+              || echo "(subtest a not reached)" >> "$GITHUB_STEP_SUMMARY"
+            echo '```' >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+      - name: Fail the job if the host test did not pass
+        if: steps.host_test.outcome == 'failure'
+        run: |
+          echo "::error title=control-plane-host-boots-k3s did not pass::See the subtest summary in the job summary and the uploaded control-plane-host-boots-k3s-log artifact for the full nixosTest output (systemd-analyze verify, ordering-cycle journal grep, systemctl show k3s, NetworkManager-wait-online status)."
+          exit 1
