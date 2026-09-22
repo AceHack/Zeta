@@ -32,6 +32,16 @@
     # module that defines it, or it can only be evaluated inside an aggregate
     # that happens to supply it.
     ./cluster-network.nix
+
+    # WP9 (081M33STPKN087G0R0004B5CAK): the Docker Hub pull-through mirror.
+    # Writes /etc/rancher/k3s/registries.yaml so this node's containerd tries
+    # mirror.gcr.io before burning Docker Hub's 100-pull/6h anonymous quota on
+    # the ~50 docker.io images the bootstrap roster + catalog pull at first
+    # boot. Imported here AND on k3s-agent.nix — every node needs the mirror,
+    # not just the control plane. See the module's own header for the
+    # fallback-safety argument (a mirror miss/outage can never make a pull
+    # fail that would otherwise succeed).
+    ./k3s-registry-mirrors.nix
   ];
 
   services.k3s = {

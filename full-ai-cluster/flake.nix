@@ -430,6 +430,32 @@
               echo "$status" | tee "$out"
             '';
 
+          # Properties of the DOCKER HUB PULL-THROUGH MIRROR module (WP9,
+          # 081M33STPKN087G0R0004B5CAK) -- that it renders
+          # /etc/rancher/k3s/registries.yaml with docker.io pointed at
+          # mirror.gcr.io, that BOTH k3s-server.nix and k3s-agent.nix import
+          # it, and that neither disables the default-registry-endpoint
+          # fallback (the flag that would turn a mirror miss into a hard pull
+          # failure -- see the module's own header).
+          #
+          # NOT a VM test and NOT a boot test -- it says nothing about whether
+          # mirror.gcr.io actually serves these images
+          # (src/Core.TypeScript/cluster/registry-mirror-coverage.ts measures
+          # that, report-only, not gated).
+          #
+          # Costs no VM, runs on every system, and its assertions fire during
+          # EVALUATION -- so `nix flake check --no-build` already runs it.
+          k3s-registry-mirrors-model =
+            let
+              report = import ./nixos/tests/k3s-registry-mirrors-eval-test.nix {
+                inherit pkgs;
+                inherit (nixpkgs) lib;
+              };
+            in
+            pkgs.runCommand "k3s-registry-mirrors-model" { inherit (report) status; } ''
+              echo "$status" | tee "$out"
+            '';
+
           # Properties of the TPM-SEAL desired-state model — the module that
           # answers "what can the nix installer pre-stage for a hardware-backed
           # auto-unseal", and the gate that stops it from deciding seal-key

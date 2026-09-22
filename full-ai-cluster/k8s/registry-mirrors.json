@@ -1,0 +1,10 @@
+{
+  "$comment": "SINGLE SOURCE for containerd registry-mirror config, consumed on TWO sides that must never drift: `nixos/modules/k3s-registry-mirrors.nix` renders `mirrors` verbatim into /etc/rancher/k3s/registries.yaml on every server+agent node (k3s's own private-registry schema — see the module's header), and `src/Core.TypeScript/cluster/registry-mirror-coverage.ts` reads the same `mirrors[\"docker.io\"].endpoint` list to probe hit/miss against the image catalog. WP9 (081M33STPKN087G0R0004B5CAK): Docker Hub's anonymous-pull limit is 100 pulls / 6h / source IP (docs.docker.com/docker-hub/usage/pulls/) and first boot pulls 50+ distinct docker.io images (measured by image-resolvability.ts) from behind one NAT — a pull-through cache absorbs that burst. Every key under `mirrors` MUST be a bare registry hostname (`^[a-z0-9.-]+$`) and every `endpoint` an `https://` URL — the nix renderer asserts both and has no escaping, by design (see the module header for why).",
+  "mirrors": {
+    "docker.io": {
+      "endpoint": [
+        "https://mirror.gcr.io"
+      ]
+    }
+  }
+}
