@@ -136,6 +136,15 @@ export interface CliOptions {
    * is for our real hardware, dev is for testing on our github runners."
    */
   readonly serveTreeProfile: string | null;
+  /**
+   * Seconds to keep watching AFTER the all-Healthy verdict for a container
+   * restartCount increase or an Application leaving Healthy/Synced -- "does
+   * it crash-loop?", which the all-Healthy verdict alone cannot answer
+   * (Task B, 081KSXN940008QG0R000SCP2H1). `0` -- the default -- disables the
+   * soak phase entirely, so every caller that does not pass `--soak-sec` sees
+   * no behaviour change.
+   */
+  readonly soakSeconds: number;
 }
 
 export interface ToolCheck {
@@ -175,6 +184,19 @@ export interface ArgoApplicationSnapshot {
   readonly operationPhase?: string;
   readonly syncRevision?: string;
   readonly conditions?: readonly ArgoApplicationCondition[];
+  /**
+   * `spec.destination.namespace`. Used to attribute live pods to the
+   * Application that owns them (see `podsBelongingToApplication` /
+   * `081M...` evidence-based Degraded terminal logic below) -- ArgoCD
+   * declares this on every Application object, it is always present the
+   * moment the object exists (no comparison has to have run), and it does
+   * not depend on a chart's own label conventions the way
+   * `app.kubernetes.io/instance` does. `""` (or absent, for the many
+   * hand-written test fixtures that predate this field) means a
+   * cluster-scoped Application or simply "not measured here" -- callers
+   * treat both the same way, via `snapshot.namespace ?? ""`.
+   */
+  readonly namespace?: string;
 }
 
 export interface ApplicationVerdict {
@@ -207,6 +229,7 @@ export type HarnessResult =
       readonly applications?: readonly ApplicationVerdict[];
       readonly ephemeralVaultInit?: EphemeralVaultInitReport;
       readonly driftRepair?: "not-requested" | "passed";
+      readonly soak?: SoakReport;
     }
   | {
       readonly ok: false;
@@ -215,6 +238,7 @@ export type HarnessResult =
       readonly applications?: readonly ApplicationVerdict[];
       readonly ephemeralVaultInit?: EphemeralVaultInitReport;
       readonly driftRepair?: "not-requested" | "failed";
+      readonly soak?: SoakReport;
       readonly failure: Failure;
     };
 
@@ -235,6 +259,7 @@ interface MutableCliOptions {
   kindCni: KindCni;
   ephemeralVaultInit: boolean;
   serveTreeProfile: string | null;
+  soakSeconds: number;
 }
 
 interface ParseNumberSuccess {
@@ -288,16 +313,18 @@ const DEFAULT_KIND_CONFIG = "full-ai-cluster/dev-cluster/profiles/ci.kind-config
 const DEFAULT_KIND_CILIUM_CONFIG = "full-ai-cluster/dev-cluster/profiles/ci.cilium.kind-config.yaml";
 const DEFAULT_TIMEOUT_SECONDS = 900;
 const DEFAULT_POLL_SECONDS = 10;
+/** `0` disables the soak phase (Task B, 081KSXN940008QG0R000SCP2H1) -- see CliOptions.soakSeconds. */
+export const DEFAULT_SOAK_SECONDS = 0;
 const SPAWN_MAX_BUFFER = 64 * 1024 * 1024;
 const HELP_TEXT =
-  "usage: bun src/Core.TypeScript/cluster/argocd-health-test.ts [--dry-run|--preflight|--run] [--provider k3d|kind] [--cni kindnetd|cilium] [--scope smoke|included|full] [--runtime docker|podman] [--git-ref REF] [--cluster-name NAME] [--config PATH] [--serve-tree RUNG] [--existing] [--timeout-sec N] [--poll-sec N] [--drift-check] [--ephemeral-vault-init]";
+  "usage: bun src/Core.TypeScript/cluster/argocd-health-test.ts [--dry-run|--preflight|--run] [--provider k3d|kind] [--cni kindnetd|cilium] [--scope smoke|included|full] [--runtime docker|podman] [--git-ref REF] [--cluster-name NAME] [--config PATH] [--serve-tree RUNG] [--existing] [--timeout-sec N] [--poll-sec N] [--soak-sec N] [--drift-check] [--ephemeral-vault-init]";
 const MODE_FLAGS: Readonly<Record<string, Mode>> = {
   "--dry-run": "dry-run",
   "--preflight": "preflight",
   "--run": "run",
 };
 const STRING_FLAGS = new Set(["--git-ref", "--cluster-name", "--config", "--serve-tree"]);
-const INTEGER_FLAGS = new Set(["--timeout-sec", "--poll-sec"]);
+const INTEGER_FLAGS = new Set(["--timeout-sec", "--poll-sec", "--soak-sec"]);
 const K3D_CLUSTER_NAME_PATTERN = /^\s+name:\s*([A-Za-z\d-]+)\s*$/;
 const DNS_LABEL_PATTERN = /^[a-z\d]([-a-z\d]*[a-z\d])?$/;
 const SMOKE_MIN_APPLICATIONS = 20;
@@ -1506,6 +1533,7 @@ function defaultCliOptions(env: NodeJS.ProcessEnv): ParseOptionsResult {
       kindCni: "kindnetd",
       ephemeralVaultInit: false,
       serveTreeProfile: null,
+      soakSeconds: DEFAULT_SOAK_SECONDS,
     },
   };
 }
@@ -1531,6 +1559,7 @@ function assignStringFlag(options: MutableCliOptions, flag: string, value: strin
 function assignIntegerFlag(options: MutableCliOptions, flag: string, value: number): void {
   if (flag === "--timeout-sec") options.timeoutSeconds = value;
   if (flag === "--poll-sec") options.pollSeconds = value;
+  if (flag === "--soak-sec") options.soakSeconds = value;
 }
 
 function parseStringFlag(argv: readonly string[], index: number, options: MutableCliOptions): ParseArgResult {
@@ -2659,6 +2688,12 @@ export function degradedHealthTerminalFailure(verdicts: readonly ApplicationVerd
  *
  * Not a debounce over time, deliberately: consecutive POLLS, so the guarantee
  * does not silently change when `--poll-sec` moves.
+ *
+ * SUPERSEDED at the `waitForApplications` call site by
+ * `evidenceBasedDegradedTerminalFailure` below (081KSXN940008QG0R000SCP2H1,
+ * run 35628762464) -- kept, exported, and still under test rather than
+ * deleted, because it is the regression pin for the false positive it fixed
+ * (run 34369317553) and its own tests are the record of that measurement.
  */
 export function confirmedDegradedTerminalFailure(
   previous: readonly ApplicationVerdict[],
@@ -2670,6 +2705,623 @@ export function confirmedDegradedTerminalFailure(
   return degradedHealthTerminalFailure(confirmed);
 }
 
+/**
+ * EVIDENCE-BASED TERMINAL DEGRADED (081KSXN940008QG0R000SCP2H1, daily schedule red
+ * since 2026-09-19: runs 35456502519 / 35524259964 / 35628762464).
+ *
+ * `confirmedDegradedTerminalFailure` above narrowed the false-positive class from
+ * "one Degraded poll" to "two consecutive Degraded polls" (~15s in CI), which
+ * fixed the openziti-controller flake it was measured against. It is still a
+ * SAMPLE-COUNT rule, and sample count is the wrong axis: MEASURED run
+ * 35628762464 aborted at ~T+10min of a 2400s budget on
+ * `kube-prometheus-stack=Synced/Degraded` while every one of its pods was
+ * simply `PodInitializing` -- still pulling images / provisioning a Longhorn
+ * PVC. Two consecutive polls of an ordinary, still-in-progress first rollout
+ * satisfy the old rule exactly as well as two polls of a genuinely dead
+ * workload; the rule cannot tell them apart because it never looks past the
+ * Application's own `health.status` string. Argo's health for
+ * Prometheus/Alertmanager CRs (and any Deployment before its
+ * `progressDeadlineSeconds`) legitimately reports Degraded for MINUTES during
+ * a first rollout -- this is documented Argo behaviour, not a bug in Argo.
+ *
+ * So: terminal-ness is now a question about the WORKLOAD, not about how many
+ * times ArgoCD printed the word. An Application is terminally Degraded only
+ * when
+ *
+ *   (a) a pod it owns shows HARD evidence waiting cannot fix --
+ *       `podBlockingReason` below: CrashLoopBackOff at/above a restart
+ *       threshold, ImagePullBackOff/ErrImagePull, CreateContainerConfigError,
+ *       or FailedScheduling on insufficient resources -- fires on the FIRST
+ *       poll that sees it, which is MORE fail-fast than the two-poll rule for
+ *       a genuinely dead workload; or
+ *
+ *   (b) it has been continuously Synced/Degraded past a bounded ceiling
+ *       (`DEGRADED_CEILING_SECONDS`) with NO pod making progress -- i.e. none
+ *       of its pods are in an ordinary still-starting state
+ *       (`podStillProvisioning`).
+ *
+ * A pod that is Pending/ContainerCreating/PodInitializing/`Init:N/M`, or
+ * Running-but-not-Ready inside a short startup grace window, blocks BOTH
+ * paths: it is evidence of an ordinary rollout, not of a stuck one, so the
+ * wait keeps waiting.
+ */
+
+export interface PodContainerState {
+  readonly name: string;
+  readonly restartCount: number;
+  readonly ready: boolean;
+  readonly running: boolean;
+  readonly waitingReason: string;
+  readonly waitingMessage: string;
+  readonly terminatedReason: string;
+  readonly terminatedExitCode: number | null;
+}
+
+export interface PodSnapshot {
+  readonly namespace: string;
+  readonly name: string;
+  /** `status.phase`: Pending | Running | Succeeded | Failed | Unknown | "". */
+  readonly phase: string;
+  /** `metadata.labels["app.kubernetes.io/instance"]`, `""` if absent. */
+  readonly instanceLabel: string;
+  /** `metadata.creationTimestamp`, parsed; `null` if absent/unparseable. */
+  readonly startedAtMs: number | null;
+  /** `status.conditions[type=PodScheduled, status=False].reason`, `""` if scheduled or unknown. */
+  readonly scheduledFailureReason: string;
+  readonly scheduledFailureMessage: string;
+  readonly initContainers: readonly PodContainerState[];
+  readonly containers: readonly PodContainerState[];
+}
+
+function podContainerState(raw: unknown): PodContainerState | null {
+  const c = asRecord(raw);
+  if (c === null) return null;
+  const name = typeof c["name"] === "string" ? c["name"] : "";
+  if (name === "") return null;
+  const state = asRecord(c["state"]);
+  const waiting = state ? asRecord(state["waiting"]) : null;
+  const terminated = state ? asRecord(state["terminated"]) : null;
+  return {
+    name,
+    restartCount: typeof c["restartCount"] === "number" ? c["restartCount"] : 0,
+    ready: c["ready"] === true,
+    running: state !== null && asRecord(state["running"]) !== null,
+    waitingReason: waiting && typeof waiting["reason"] === "string" ? waiting["reason"] : "",
+    waitingMessage: waiting && typeof waiting["message"] === "string" ? waiting["message"] : "",
+    terminatedReason: terminated && typeof terminated["reason"] === "string" ? terminated["reason"] : "",
+    terminatedExitCode: terminated && typeof terminated["exitCode"] === "number" ? terminated["exitCode"] : null,
+  };
+}
+
+const POD_INSTANCE_LABEL = "app.kubernetes.io/instance";
+
+/** Exported for unit tests: parse `kubectl get pods -A -o json` into full pod snapshots. */
+export function podsFromPodsJson(stdout: string): readonly PodSnapshot[] {
+  let parsed: unknown;
+  try {
+    parsed = JSON.parse(stdout);
+  } catch {
+    return [];
+  }
+  const items = asRecord(parsed)?.["items"];
+  if (!Array.isArray(items)) return [];
+  const out: PodSnapshot[] = [];
+  for (const item of items) {
+    const pod = asRecord(item);
+    if (pod === null) continue;
+    const meta = asRecord(pod["metadata"]);
+    const status = asRecord(pod["status"]);
+    const namespace = meta && typeof meta["namespace"] === "string" ? meta["namespace"] : "";
+    const name = meta && typeof meta["name"] === "string" ? meta["name"] : "";
+    if (namespace === "" || name === "") continue;
+    const labels = meta ? asRecord(meta["labels"]) : null;
+    const instanceLabel = labels && typeof labels[POD_INSTANCE_LABEL] === "string" ? labels[POD_INSTANCE_LABEL] : "";
+    const creationTimestamp = meta && typeof meta["creationTimestamp"] === "string" ? meta["creationTimestamp"] : "";
+    const parsedStart = creationTimestamp === "" ? NaN : Date.parse(creationTimestamp);
+    const phase = status && typeof status["phase"] === "string" ? status["phase"] : "";
+    const conditions = status && Array.isArray(status["conditions"]) ? status["conditions"] : [];
+    let scheduledFailureReason = "";
+    let scheduledFailureMessage = "";
+    for (const cond of conditions) {
+      const c = asRecord(cond);
+      if (c !== null && c["type"] === "PodScheduled" && c["status"] === "False") {
+        scheduledFailureReason = typeof c["reason"] === "string" ? c["reason"] : "";
+        scheduledFailureMessage = typeof c["message"] === "string" ? c["message"] : "";
+      }
+    }
+    const initRaw = status && Array.isArray(status["initContainerStatuses"]) ? status["initContainerStatuses"] : [];
+    const containersRaw = status && Array.isArray(status["containerStatuses"]) ? status["containerStatuses"] : [];
+    out.push({
+      namespace,
+      name,
+      phase,
+      instanceLabel,
+      startedAtMs: Number.isNaN(parsedStart) ? null : parsedStart,
+      scheduledFailureReason,
+      scheduledFailureMessage,
+      initContainers: initRaw.flatMap((c) => {
+        const s = podContainerState(c);
+        return s === null ? [] : [s];
+      }),
+      containers: containersRaw.flatMap((c) => {
+        const s = podContainerState(c);
+        return s === null ? [] : [s];
+      }),
+    });
+  }
+  return out;
+}
+
+/**
+ * Which live pods belong to a given Application.
+ *
+ * ROBUSTNESS CHOICE, and why namespace rather than owner-reference chains or
+ * the instance label alone: ArgoCD's default resource-tracking method writes
+ * `app.kubernetes.io/instance: <app-name>` onto the TOP-LEVEL manifests it
+ * applies directly, but a Pod is normally created by a Deployment/StatefulSet
+ * CONTROLLER, not applied by ArgoCD itself -- so the label reaches a Pod only
+ * when the chart's own template also carries it, and that varies chart to
+ * chart. It does NOT hold for kube-prometheus-stack's
+ * prometheus-operator-generated Prometheus/Alertmanager StatefulSets (one of
+ * the two measured false positives this evidence pipeline exists to fix,
+ * alongside openziti-controller) -- prometheus-operator names and labels
+ * those pods itself. Walking owner references (Pod -> ReplicaSet ->
+ * Deployment) would be exact regardless of chart convention, but costs a
+ * second live `kubectl get replicasets -A` call plus chain-resolution on
+ * every poll.
+ *
+ * `spec.destination.namespace` is ArgoCD's own declaration of where an
+ * Application's resources land: always present the instant the Application
+ * object exists (no comparison has to have run first, unlike `status.resources`),
+ * one field already inside the Application list this poll loop already
+ * fetches, and true ground truth rather than a chart convention. Measured
+ * against this repo's own catalogue (every `full-ai-cluster/k8s/applications/<dir>/Application.yaml`),
+ * destination namespace is EXCLUSIVE to one Application for all but four
+ * namespaces (`cert-manager`: cert-manager+trust-manager; `kube-system`:
+ * cilium+cilium-lb-ipam+sealed-secrets; `models`: deepseek-coder+qwen-coder;
+ * `spire`: spire+spire-crds) -- for those, the instance label (present or
+ * not) disambiguates: a labelled pod is attributed to the Application it
+ * names, and an UNLABELLED pod in a shared namespace is attributed to NONE of
+ * the Applications sharing it, never guessed. That is the fail-closed
+ * direction for a function feeding a terminal-failure decision: an unmatched
+ * pod cannot manufacture false "terminal" evidence, it can only cost a missed
+ * one, which the bounded ceiling (case (b) above) still catches.
+ */
+export function podsBelongingToApplication(
+  app: { readonly name: string; readonly namespace?: string },
+  allApplications: readonly { readonly name: string; readonly namespace?: string }[],
+  pods: readonly PodSnapshot[],
+): readonly PodSnapshot[] {
+  const namespace = app.namespace ?? "";
+  if (namespace === "") return [];
+  const sharedNamespace = allApplications.some(
+    (other) => other.name !== app.name && (other.namespace ?? "") === namespace,
+  );
+  return pods.filter((pod) => {
+    if (pod.namespace !== namespace) return false;
+    return sharedNamespace ? pod.instanceLabel === app.name : true;
+  });
+}
+
+/**
+ * Restarts this low are ordinary during a first rollout (a dependency not up
+ * yet, a slow migration retried once). Kubernetes itself does not report the
+ * `CrashLoopBackOff` waiting reason until the kubelet's own backoff has
+ * already run a few cycles, so requiring the reason ALONE (no restart floor)
+ * already excludes the single-crash case; the floor is a second, explicit
+ * margin against flagging a pod still inside its first few attempts.
+ */
+export const CRASHLOOP_RESTART_TERMINAL_THRESHOLD = 3;
+
+const HARD_FAILURE_WAITING_REASONS: ReadonlySet<string> = new Set([
+  "ImagePullBackOff",
+  "ErrImagePull",
+  "CreateContainerConfigError",
+]);
+
+/**
+ * A single pod-level reason waiting CANNOT fix: CrashLoopBackOff at/above the
+ * restart threshold, ImagePullBackOff/ErrImagePull, CreateContainerConfigError
+ * (a referenced Secret/ConfigMap key is missing), or FailedScheduling on
+ * insufficient resources. `null` for everything else -- including a pod that
+ * is simply unhealthy for a reason not on this list, which is a "no opinion"
+ * result, not a "healthy" one; that distinction is what keeps the bounded
+ * ceiling in `degradedApplicationTerminalEvidence` load-bearing.
+ */
+export function podBlockingReason(pod: PodSnapshot): string | null {
+  if (pod.scheduledFailureReason === "Unschedulable" && /insufficient/i.test(pod.scheduledFailureMessage)) {
+    return `FailedScheduling (${pod.scheduledFailureMessage})`;
+  }
+  for (const container of [...pod.initContainers, ...pod.containers]) {
+    if (
+      container.waitingReason === "CrashLoopBackOff" &&
+      container.restartCount >= CRASHLOOP_RESTART_TERMINAL_THRESHOLD
+    ) {
+      return `container ${container.name} CrashLoopBackOff (restarts=${String(container.restartCount)})`;
+    }
+    if (HARD_FAILURE_WAITING_REASONS.has(container.waitingReason)) {
+      const detail = container.waitingMessage.length > 0 ? `: ${container.waitingMessage}` : "";
+      return `container ${container.name} ${container.waitingReason}${detail}`;
+    }
+  }
+  return null;
+}
+
+/**
+ * Grace window for "Running but not yet Ready". A heuristic, not a probe-spec
+ * reader: reading each container's `readinessProbe.initialDelaySeconds` would
+ * be exact, but this only needs to separate "just started" from "stuck", and
+ * 90s comfortably covers the measured false positive (kube-prometheus-stack's
+ * default probes) without stretching the ceiling rule's own 600s budget so
+ * far that a genuinely stuck Application waits nearly as long as before.
+ */
+export const STILL_STARTING_GRACE_SECONDS = 90;
+
+/**
+ * True when a pod's current state is ordinary rollout/startup -- the cases
+ * the task names as explicitly NOT terminal: Pending (awaiting scheduling or
+ * provisioning), an init container that has not yet terminated (`Init:N/M`),
+ * a main container waiting on `PodInitializing`/`ContainerCreating`, or
+ * Running-but-not-Ready inside the startup grace window. Hard evidence
+ * (`podBlockingReason`) always wins over "still provisioning" -- a
+ * CrashLoopBackOff init container is not a pod making progress.
+ */
+export function podStillProvisioning(pod: PodSnapshot, nowMs: number): boolean {
+  if (podBlockingReason(pod) !== null) return false;
+  if (pod.phase === "Pending" || pod.phase === "") return true;
+  if (pod.initContainers.some((c) => c.terminatedReason === "")) return true; // Init:N/M
+  if (pod.containers.some((c) => c.waitingReason === "PodInitializing" || c.waitingReason === "ContainerCreating")) {
+    return true;
+  }
+  const ageMs = pod.startedAtMs === null ? null : nowMs - pod.startedAtMs;
+  const stillYoung = ageMs === null || ageMs < STILL_STARTING_GRACE_SECONDS * 1000;
+  return pod.phase === "Running" && stillYoung && pod.containers.some((c) => !c.ready);
+}
+
+export const DEGRADED_CEILING_SECONDS = 600;
+
+export interface DegradedAppEvidence {
+  readonly name: string;
+  readonly syncStatus: string;
+  readonly healthStatus: string;
+  /** Seconds this Application has been CONTINUOUSLY Synced/Degraded, tracked across polls. */
+  readonly degradedForSec: number;
+  /** Live pods already filtered to this Application via `podsBelongingToApplication`. */
+  readonly pods: readonly PodSnapshot[];
+}
+
+/** Pure per-Application decision; `null` means "not (yet) terminal, keep waiting". */
+export function degradedApplicationTerminalEvidence(
+  evidence: DegradedAppEvidence,
+  nowMs: number,
+): { readonly reason: string; readonly detail: unknown } | null {
+  if (evidence.syncStatus !== "Synced" || evidence.healthStatus !== "Degraded") return null;
+  for (const pod of evidence.pods) {
+    const hard = podBlockingReason(pod);
+    if (hard !== null) {
+      return {
+        reason: `${evidence.name}: pod ${pod.namespace}/${pod.name} ${hard}`,
+        detail: { application: evidence.name, pod: `${pod.namespace}/${pod.name}`, evidence: hard },
+      };
+    }
+  }
+  if (evidence.degradedForSec < DEGRADED_CEILING_SECONDS) return null;
+  if (evidence.pods.some((pod) => podStillProvisioning(pod, nowMs))) return null;
+  return {
+    reason:
+      `${evidence.name}: Synced/Degraded for ${String(evidence.degradedForSec)}s ` +
+      `(ceiling ${String(DEGRADED_CEILING_SECONDS)}s) with no pod making progress`,
+    detail: {
+      application: evidence.name,
+      degradedForSec: evidence.degradedForSec,
+      pods: evidence.pods.map((p) => `${p.namespace}/${p.name}`),
+    },
+  };
+}
+
+/** Orchestrates `degradedApplicationTerminalEvidence` over every currently-Degraded Application. */
+export function evidenceBasedDegradedTerminalFailure(
+  evidences: readonly DegradedAppEvidence[],
+  nowMs: number,
+): Failure | null {
+  const hits = evidences.flatMap((evidence) => {
+    const hit = degradedApplicationTerminalEvidence(evidence, nowMs);
+    return hit === null ? [] : [hit];
+  });
+  if (hits.length === 0) return null;
+  return {
+    kind: "ApplicationUnhealthy",
+    message: `asserted Application is Degraded with terminal evidence: ${hits.map((hit) => hit.reason).join("; ")}`,
+    terminal: true,
+    detail: hits.map((hit) => hit.detail),
+  };
+}
+
+/**
+ * SOAK PHASE (Task B, 081KSXN940008QG0R000SCP2H1): "does it crash-loop?"
+ *
+ * The all-Healthy verdict `waitForApplications` returns says every asserted
+ * Application reached Synced/Healthy ONCE. It says nothing about what happens
+ * a minute later -- a container that starts, passes its readiness probe, and
+ * then crash-loops is indistinguishable from a genuinely stable one at the
+ * moment the wait stops polling. `runSoakPhase` (the impure driver, below the
+ * pure functions here) keeps watching for a bounded window after that verdict
+ * and turns "still Healthy after N seconds, never restarted" into part of the
+ * proof rather than an assumption.
+ *
+ * Two independent regressions, both pure and both fixture-testable:
+ *
+ *   (a) `soakRestartRegressions` -- ANY container's restartCount rising above
+ *       the baseline taken at the all-Healthy moment.
+ *   (b) `soakApplicationInstabilityStep` -- an Application that WAS ok at the
+ *       all-Healthy moment leaving Healthy/Synced for MORE THAN ONE poll (a
+ *       single blip is tolerated, for the same one-sample-is-not-a-verdict
+ *       reason `degradedApplicationTerminalEvidence` above does not trust one
+ *       poll either).
+ */
+
+/** `${namespace}/${pod}/${container}` -> restartCount, captured once at the soak baseline. */
+export function podRestartBaseline(pods: readonly PodSnapshot[]): ReadonlyMap<string, number> {
+  const map = new Map<string, number>();
+  for (const pod of pods) {
+    for (const container of [...pod.initContainers, ...pod.containers]) {
+      map.set(`${pod.namespace}/${pod.name}/${container.name}`, container.restartCount);
+    }
+  }
+  return map;
+}
+
+export interface SoakRestartRegression {
+  readonly namespace: string;
+  readonly pod: string;
+  readonly container: string;
+  readonly baselineRestartCount: number;
+  readonly currentRestartCount: number;
+  readonly terminatedReason: string;
+  readonly terminatedExitCode: number | null;
+}
+
+/** Pure: which containers' restartCount rose above the soak baseline. */
+export function soakRestartRegressions(
+  baseline: ReadonlyMap<string, number>,
+  currentPods: readonly PodSnapshot[],
+): readonly SoakRestartRegression[] {
+  const out: SoakRestartRegression[] = [];
+  for (const pod of currentPods) {
+    for (const container of [...pod.initContainers, ...pod.containers]) {
+      const before = baseline.get(`${pod.namespace}/${pod.name}/${container.name}`);
+      if (before !== undefined && container.restartCount > before) {
+        out.push({
+          namespace: pod.namespace,
+          pod: pod.name,
+          container: container.name,
+          baselineRestartCount: before,
+          currentRestartCount: container.restartCount,
+          terminatedReason: container.terminatedReason,
+          terminatedExitCode: container.terminatedExitCode,
+        });
+      }
+    }
+  }
+  return out;
+}
+
+/**
+ * Pure step: given the consecutive-not-ok streak per Application BEFORE this
+ * poll (only Applications that WERE ok at the soak baseline are tracked at
+ * all), and this poll's verdicts, returns the updated streak and exactly the
+ * Applications this poll pushed from 1 to 2 -- so a regression is reported
+ * once, on the poll that confirms it, not on every poll after.
+ */
+export function soakApplicationInstabilityStep(
+  previousStreak: ReadonlyMap<string, number>,
+  baselineOkNames: ReadonlySet<string>,
+  currentVerdicts: readonly ApplicationVerdict[],
+): { readonly streak: ReadonlyMap<string, number>; readonly newlyUnstable: readonly ApplicationVerdict[] } {
+  const streak = new Map<string, number>();
+  const newlyUnstable: ApplicationVerdict[] = [];
+  for (const verdict of currentVerdicts) {
+    if (!baselineOkNames.has(verdict.name) || verdict.ok) continue;
+    const count = (previousStreak.get(verdict.name) ?? 0) + 1;
+    streak.set(verdict.name, count);
+    if (count === 2) newlyUnstable.push(verdict);
+  }
+  return { streak, newlyUnstable };
+}
+
+/** Shapes a soak-phase regression (either kind, or both) into one Failure. `null` if neither fired. */
+export function soakRegressionFailure(
+  restartRegressions: readonly SoakRestartRegression[],
+  newlyUnstableApps: readonly ApplicationVerdict[],
+): Failure | null {
+  if (restartRegressions.length === 0 && newlyUnstableApps.length === 0) return null;
+  const restartLines = restartRegressions.map((r) => {
+    const termination =
+      r.terminatedReason.length === 0
+        ? ""
+        : ` (last termination: ${r.terminatedReason}${r.terminatedExitCode === null ? "" : ` exit ${String(r.terminatedExitCode)}`})`;
+    return (
+      `${r.namespace}/${r.pod} [${r.container}] restartCount ${String(r.baselineRestartCount)} -> ` +
+      `${String(r.currentRestartCount)}${termination}`
+    );
+  });
+  const appLines = newlyUnstableApps.map((a) => `${a.name} left Healthy/Synced (${a.syncStatus}/${a.healthStatus})`);
+  return {
+    kind: "ApplicationUnhealthy",
+    message: `soak phase detected instability after the all-Healthy verdict: ${[...restartLines, ...appLines].join("; ")}`,
+    detail: { restartRegressions, newlyUnstableApps },
+  };
+}
+
+/**
+ * STARTUP-RESTARTS report (Task B): every container with restartCount>0 AT
+ * THE all-Healthy MOMENT -- i.e. it already crash-looped and self-healed
+ * BEFORE the wait ever stopped polling. Not itself a soak-phase regression
+ * (see `soakRestartRegressions` above, which measures increases FROM this
+ * baseline); this is the ordering-smell report -- "mimir crash-looping on
+ * 'ring doesn't exist in KV store'" is the measured example.
+ */
+export interface StartupRestartEntry {
+  /** Owning Application name, or `""` if `podsBelongingToApplication` could not attribute it. */
+  readonly app: string;
+  readonly namespace: string;
+  readonly pod: string;
+  readonly container: string;
+  readonly restartCount: number;
+}
+
+export function startupRestartEntries(
+  pods: readonly PodSnapshot[],
+  applications: readonly { readonly name: string; readonly namespace?: string }[],
+): readonly StartupRestartEntry[] {
+  const owners = new Map<string, string>(); // `${namespace}/${pod}` -> app name
+  for (const app of applications) {
+    for (const pod of podsBelongingToApplication(app, applications, pods)) {
+      owners.set(`${pod.namespace}/${pod.name}`, app.name);
+    }
+  }
+  const out: StartupRestartEntry[] = [];
+  for (const pod of pods) {
+    const app = owners.get(`${pod.namespace}/${pod.name}`) ?? "";
+    for (const container of [...pod.initContainers, ...pod.containers]) {
+      if (container.restartCount > 0) {
+        out.push({ app, namespace: pod.namespace, pod: pod.name, container: container.name, restartCount: container.restartCount });
+      }
+    }
+  }
+  // Ordinal, per .claude/rules/culture-invariant-by-default.md -- this ordering
+  // is compared against a checked-in baseline file, not just displayed.
+  return [...out].sort((a, b) =>
+    stringCompare(`${a.app}/${a.namespace}/${a.pod}/${a.container}`, `${b.app}/${b.namespace}/${b.pod}/${b.container}`),
+  );
+}
+
+/**
+ * STARTUP-RESTART POLICY -- threshold-based, not a both-directions exact
+ * ratchet.
+ *
+ * MEASURED, 081KSXN940008QG0R000SCP2H1: run 35692573183 (the first live run
+ * with --soak-sec) named 8 (app, container) pairs, all restartCount 1-3. Run
+ * 35695291413 -- the SAME tree, one push later -- named two DIFFERENT pairs
+ * (argocd/repo-server, spire/spire-controller-manager) that had not restarted
+ * the first time. A both-directions exact-match ratchet (the original design
+ * here) treats a 1-2-restart dependency-ordering wait as equivalent in
+ * severity to a genuine crash loop, and BOTH directions of "the set changed"
+ * as a failure -- which cannot be right for a signal this run-to-run
+ * nondeterministic: it would flake red on an unrelated PR most nights.
+ *
+ * So the policy is a THRESHOLD, per (app, container), not a set-equality
+ * ratchet:
+ *
+ *   restartCount >= STARTUP_RESTART_HARD_FAIL_THRESHOLD (a real crash loop,
+ *   not a single dependency-ordering retry) -- FAIL, unless the baseline
+ *   names this (app, container) with a `maxRestarts` at or above the
+ *   observed count (a KNOWN, bounded startup race, already investigated).
+ *
+ *   restartCount below the threshold and not covered by the baseline -- a
+ *   WARNING (annotation + summary line), never a failure. This is the
+ *   ordinary, expected shape of a first-rollout dependency wait.
+ *
+ *   A baseline entry NOT measured this run -- a NOTICE, never a failure.
+ *   Absence is the expected case most runs (the dependency happened to come
+ *   up in the right order this time). Its `lastSeen` date is what stops a
+ *   baseline entry from silently documenting a container that no longer
+ *   exists: unseen for more than STARTUP_RESTART_STALE_DAYS is flagged
+ *   `stale`, a prompt to re-verify or retire the row, not a failure either.
+ */
+export interface StartupRestartBaselineEntry {
+  readonly app: string;
+  readonly container: string;
+  /** Tolerated restartCount for this (app, container): observed <= maxRestarts is covered, never fails or warns. */
+  readonly maxRestarts: number;
+  readonly reason: string;
+  /** ISO date (YYYY-MM-DD) this entry was last actually measured. */
+  readonly lastSeen: string;
+}
+
+/** A real crash loop, never a single dependency-ordering retry: kubelet does not usually report CrashLoopBackOff below this either. */
+export const STARTUP_RESTART_HARD_FAIL_THRESHOLD = 3;
+/** A baseline row unseen this long is a prompt to re-verify or retire it, not evidence it is still true. */
+export const STARTUP_RESTART_STALE_DAYS = 14;
+
+function startupRestartKey(app: string, container: string): string {
+  return `${app}::${container}`;
+}
+
+/** `null` when the baseline covers this entry (observed <= maxRestarts): no action. */
+export function classifyStartupRestartEntry(
+  entry: StartupRestartEntry,
+  baseline: ReadonlyMap<string, StartupRestartBaselineEntry>,
+): "ok" | "warn" | "fail" {
+  const known = baseline.get(startupRestartKey(entry.app, entry.container));
+  const covered = known !== undefined && known.maxRestarts >= entry.restartCount;
+  if (covered) return "ok";
+  return entry.restartCount >= STARTUP_RESTART_HARD_FAIL_THRESHOLD ? "fail" : "warn";
+}
+
+export interface StartupRestartFailureDetail {
+  readonly entry: StartupRestartEntry;
+  /** `null` when this (app, container) is not in the baseline at all. */
+  readonly baselineMaxRestarts: number | null;
+}
+
+export interface AbsentBaselineEntry {
+  readonly entry: StartupRestartBaselineEntry;
+  readonly daysSinceLastSeen: number;
+  readonly stale: boolean;
+}
+
+export interface StartupRestartClassification {
+  readonly failures: readonly StartupRestartFailureDetail[];
+  readonly warnings: readonly StartupRestartEntry[];
+  readonly absent: readonly AbsentBaselineEntry[];
+}
+
+/** Pure: the whole policy above, applied to one measurement against one baseline. */
+export function classifyStartupRestarts(
+  measured: readonly StartupRestartEntry[],
+  baseline: readonly StartupRestartBaselineEntry[],
+  nowMs: number,
+): StartupRestartClassification {
+  const byKey = new Map(baseline.map((entry) => [startupRestartKey(entry.app, entry.container), entry]));
+  const failures: StartupRestartFailureDetail[] = [];
+  const warnings: StartupRestartEntry[] = [];
+  for (const entry of measured) {
+    const verdict = classifyStartupRestartEntry(entry, byKey);
+    if (verdict === "ok") continue;
+    if (verdict === "fail") {
+      failures.push({ entry, baselineMaxRestarts: byKey.get(startupRestartKey(entry.app, entry.container))?.maxRestarts ?? null });
+    } else {
+      warnings.push(entry);
+    }
+  }
+  const measuredKeys = new Set(measured.map((entry) => startupRestartKey(entry.app, entry.container)));
+  const absent: AbsentBaselineEntry[] = baseline
+    .filter((entry) => !measuredKeys.has(startupRestartKey(entry.app, entry.container)))
+    .map((entry) => {
+      const lastSeenMs = Date.parse(entry.lastSeen);
+      const daysSinceLastSeen = Number.isNaN(lastSeenMs) ? Number.POSITIVE_INFINITY : (nowMs - lastSeenMs) / 86_400_000;
+      return { entry, daysSinceLastSeen, stale: daysSinceLastSeen > STARTUP_RESTART_STALE_DAYS };
+    });
+  return { failures, warnings, absent };
+}
+
+/** `null` when nothing crossed the hard-fail threshold -- warnings and absences never produce a Failure. */
+export function startupRestartFailure(classification: StartupRestartClassification): Failure | null {
+  if (classification.failures.length === 0) return null;
+  const lines = classification.failures.map((f) => {
+    const covered =
+      f.baselineMaxRestarts === null ? "not in the baseline" : `exceeds baseline maxRestarts=${String(f.baselineMaxRestarts)}`;
+    return `${f.entry.app === "" ? "(unmatched)" : f.entry.app}/${f.entry.container}: restartCount=${String(f.entry.restartCount)} (${covered})`;
+  });
+  return {
+    kind: "ApplicationUnhealthy",
+    message:
+      `startup restart(s) at or above the crash-loop threshold (${String(STARTUP_RESTART_HARD_FAIL_THRESHOLD)}): ` +
+      lines.join("; "),
+    detail: classification,
+  };
+}
 
 export const REPO_BACKED_CHILD_WAIT_DIAGNOSTIC_COMMANDS: readonly {
   readonly label: string;
@@ -3032,6 +3684,8 @@ export function parseApplicationList(jsonText: string): readonly ArgoApplication
   return items.flatMap((item) => {
     const itemRecord = asRecord(item);
     const metadata = itemRecord ? recordAt(itemRecord, "metadata") : null;
+    const spec = itemRecord ? recordAt(itemRecord, "spec") : null;
+    const destination = spec ? recordAt(spec, "destination") : null;
     const status = itemRecord ? recordAt(itemRecord, "status") : null;
     const sync = status ? recordAt(status, "sync") : null;
     const health = status ? recordAt(status, "health") : null;
@@ -3046,6 +3700,7 @@ export function parseApplicationList(jsonText: string): readonly ArgoApplication
       syncStatus: sync ? stringAt(sync, "status") : "",
       healthStatus: health ? stringAt(health, "status") : "",
       message: health ? stringAt(health, "message") : "",
+      namespace: destination ? stringAt(destination, "namespace") : "",
       ...(operationPhase.length > 0 ? { operationPhase } : {}),
       ...(syncRevision.length > 0 ? { syncRevision } : {}),
       ...(conditions.length > 0 ? { conditions } : {}),
@@ -3287,7 +3942,13 @@ async function waitForApplications(
   options: CliOptions,
 ): Promise<readonly ApplicationVerdict[] | Failure> {
   let lastVerdicts: readonly ApplicationVerdict[] = [];
-  let previousVerdicts: readonly ApplicationVerdict[] = [];
+  // How long (continuous polls) each Application has been Synced/Degraded.
+  // See evidenceBasedDegradedTerminalFailure's docstring: this REPLACES the
+  // two-consecutive-poll rule that used to live here, which could not tell a
+  // dead workload from an ordinary first-rollout Degraded blip (081KSXN940008QG0R000SCP2H1,
+  // run 35628762464: kube-prometheus-stack aborted while its pods were merely
+  // PodInitializing).
+  const degradedSinceMs = new Map<string, number>();
   const startedAt = Date.now();
   let lastProgressAt = startedAt;
   console.log(`Waiting: ArgoCD Applications Synced+Healthy (cap ${String(options.timeoutSeconds)}s)`);
@@ -3310,13 +3971,43 @@ async function waitForApplications(
           ? classifyApplications(plan.expectedApplications, snapshots)
           : classifyApplications(plan.expectedApplications, snapshots);
     if (lastVerdicts.every((verdict) => verdict.ok)) return null;
-    // TWO CONSECUTIVE POLLS, never one. See confirmedDegradedTerminalFailure:
-    // run 34369317553 aborted at T+123s of 2400s on a Degraded that the
-    // cluster's own events show had already gone back to Progressing.
-    const degraded = confirmedDegradedTerminalFailure(previousVerdicts, lastVerdicts);
-    previousVerdicts = lastVerdicts;
-    if (degraded !== null) return degraded;
     const now = Date.now();
+    // EVIDENCE-BASED, not sample-count-based -- see evidenceBasedDegradedTerminalFailure.
+    const currentlyDegraded = new Set(degradedApplicationNames(lastVerdicts));
+    for (const name of degradedSinceMs.keys()) {
+      if (!currentlyDegraded.has(name)) degradedSinceMs.delete(name);
+    }
+    for (const name of currentlyDegraded) {
+      if (!degradedSinceMs.has(name)) degradedSinceMs.set(name, now);
+    }
+    if (currentlyDegraded.size > 0) {
+      // Only fetches live pods (a second kubectl call) when there is a
+      // Degraded Application to explain -- the common all-healthy-eventually
+      // path pays nothing extra.
+      const podsResult = kubectl(["get", "pods", "-A", "-o", "json"], Math.max(options.pollSeconds, 10));
+      if (podsResult.status === 0) {
+        const pods = podsFromPodsJson(podsResult.stdout);
+        const appsByName = new Map(snapshots.map((snapshot) => [snapshot.name, snapshot]));
+        const allApplications = snapshots.map((snapshot) => ({ name: snapshot.name, namespace: snapshot.namespace ?? "" }));
+        const evidences: DegradedAppEvidence[] = [...currentlyDegraded].map((name) => {
+          const verdict = lastVerdicts.find((v) => v.name === name);
+          const app = appsByName.get(name);
+          const since = degradedSinceMs.get(name) ?? now;
+          return {
+            name,
+            syncStatus: verdict?.syncStatus ?? "",
+            healthStatus: verdict?.healthStatus ?? "",
+            degradedForSec: Math.floor((now - since) / 1000),
+            pods: app === undefined ? [] : podsBelongingToApplication(app, allApplications, pods),
+          };
+        });
+        const terminal = evidenceBasedDegradedTerminalFailure(evidences, now);
+        if (terminal !== null) return terminal;
+      }
+      // A failed pod-list fetch is not itself terminal: fall through to the
+      // ordinary "still waiting" verdict below rather than manufacturing a
+      // second failure mode on top of whatever ArgoCD already reported.
+    }
     if (now - lastProgressAt >= 60_000) {
       const elapsedSec = Math.floor((now - startedAt) / 1000);
       console.log(formatHealthWaitProgress(elapsedSec, lastVerdicts));
@@ -3342,6 +4033,158 @@ async function waitForApplications(
   // FailedScheduling event is one line and it replaces a paragraph of hypothesis.
   if (failure !== null) return attachClusterDiagnostics(failure, "ArgoCD health wait gave up");
   return lastVerdicts;
+}
+
+const STARTUP_RESTART_BASELINE_PATH = join(REPO_ROOT, "src/Core.TypeScript/cluster/startup-restart-baseline.json");
+
+interface StartupRestartBaselineFile {
+  readonly measured: string;
+  readonly allowed: readonly StartupRestartBaselineEntry[];
+}
+
+/**
+ * A missing or unparseable baseline reads as EMPTY, never as "skip the
+ * policy" -- an empty baseline covers nothing, so every currently-restarting
+ * container is classified fresh against the hard-fail threshold (see
+ * `classifyStartupRestarts`), which is the correct behaviour on a tree with
+ * no baseline committed yet, not a silently-passing gate.
+ */
+function readStartupRestartBaseline(): readonly StartupRestartBaselineEntry[] {
+  // READ, then interpret failure -- rather than existsSync() then read, which
+  // is a check-then-use race (the file can vanish, or be created, between the
+  // two calls; CWE-367). A missing file (ENOENT) and an unparseable one are
+  // both folded into the same "empty baseline" result on purpose: this is not
+  // a fatal-error path, it is what makes every currently-restarting container
+  // classify fresh (uncovered) rather than silently skip the policy.
+  try {
+    const parsed = JSON.parse(readFileSync(STARTUP_RESTART_BASELINE_PATH, "utf8")) as Partial<StartupRestartBaselineFile>;
+    return Array.isArray(parsed.allowed) ? parsed.allowed : [];
+  } catch {
+    return [];
+  }
+}
+
+export interface SoakReport {
+  readonly soakSeconds: number;
+  readonly startupRestarts: readonly StartupRestartEntry[];
+  readonly classification: StartupRestartClassification;
+}
+
+/**
+ * The soak phase's impure driver: fetches the baseline pod/Application
+ * snapshot, prints + classifies the STARTUP-RESTARTS report, then polls for
+ * `options.soakSeconds` watching for a restartCount regression or an
+ * Application leaving Healthy/Synced for more than one poll. All DECISIONS
+ * are the pure functions above (`soakRestartRegressions`,
+ * `soakApplicationInstabilityStep`, `soakRegressionFailure`,
+ * `classifyStartupRestarts`, `startupRestartFailure`); this function only
+ * fetches and loops.
+ *
+ * `options.soakSeconds <= 0` (the default -- see `DEFAULT_SOAK_SECONDS`) is a
+ * full no-op: no extra kubectl calls, no report, no ratchet. Every caller
+ * that does not pass `--soak-sec` sees zero behaviour change.
+ */
+async function runSoakPhase(
+  plan: HarnessPlan,
+  options: CliOptions,
+  applications: readonly ApplicationVerdict[],
+): Promise<{ readonly report: SoakReport | null; readonly failure: Failure | null }> {
+  if (options.soakSeconds <= 0) return { report: null, failure: null };
+
+  console.log(
+    `Soak: watching for restartCount regressions and Application instability for ${String(options.soakSeconds)}s`,
+  );
+  const podsCommand = ["get", "pods", "-A", "-o", "json"];
+  const appsCommand = ["-n", "argocd", "get", "applications.argoproj.io", "-o", "json"];
+
+  const baselinePodsResult = kubectl(podsCommand, Math.max(options.pollSeconds, 10));
+  if (baselinePodsResult.status !== 0) {
+    return { report: null, failure: kubectlFailure("could not list pods for the soak baseline", podsCommand, baselinePodsResult) };
+  }
+  const baselinePods = podsFromPodsJson(baselinePodsResult.stdout);
+  const restartBaseline = podRestartBaseline(baselinePods);
+
+  const appsResult = kubectl(appsCommand, Math.max(options.pollSeconds, 10));
+  if (appsResult.status !== 0) {
+    return { report: null, failure: kubectlFailure("could not list ArgoCD Applications for the soak baseline", appsCommand, appsResult) };
+  }
+  const baselineSnapshots = parseApplicationListOrFailure(appsResult.stdout, appsCommand);
+  // A malformed Application list here is not itself a soak-phase FINDING --
+  // report it as the JSON-shaped Failure it already is, rather than silently
+  // matching every pod to no Application, which would make the ratchet
+  // compare a real baseline against an artificially empty one.
+  if (isFailure(baselineSnapshots)) return { report: null, failure: baselineSnapshots };
+  const applicationsForMatch = baselineSnapshots;
+
+  // STARTUP-RESTARTS report + threshold policy. Measured ONCE, at the all-Healthy
+  // moment these pods were already retrieved for -- restarts the workload
+  // recovered from BEFORE the soak started, an ordering smell, not a
+  // soak-phase regression (that is `soakRestartRegressions` in the poll loop
+  // below, which measures increases FROM this same baseline).
+  const startupRestarts = startupRestartEntries(
+    baselinePods,
+    applicationsForMatch.map((snapshot) => ({ name: snapshot.name, namespace: snapshot.namespace ?? "" })),
+  );
+  console.log(
+    `STARTUP-RESTARTS (restartCount>0 at the all-Healthy moment -- self-healed before the wait stopped polling): ${String(startupRestarts.length)}`,
+  );
+  for (const entry of startupRestarts) {
+    console.log(`  ${entry.app === "" ? "(unmatched)" : entry.app} ${entry.namespace}/${entry.pod} [${entry.container}] restarts=${String(entry.restartCount)}`);
+  }
+  const baseline = readStartupRestartBaseline();
+  const classification = classifyStartupRestarts(startupRestarts, baseline, Date.now());
+  const report: SoakReport = { soakSeconds: options.soakSeconds, startupRestarts, classification };
+  // WARNINGS never fail the run -- a 1-2 restart dependency-ordering wait is
+  // the ordinary shape of a first rollout (081KSXN940008QG0R000SCP2H1: run
+  // 35695291413 named two such pairs the immediately preceding run had not,
+  // on the identical tree). Printed as GitHub Actions annotations (`::warning::`)
+  // so they surface in the Checks UI without failing the job.
+  for (const entry of classification.warnings) {
+    console.log(
+      `::warning::startup restart below the crash-loop threshold, not yet in the baseline: ` +
+        `${entry.app === "" ? "(unmatched)" : entry.app}/${entry.container} restartCount=${String(entry.restartCount)} ` +
+        `(namespace ${entry.namespace}, pod ${entry.pod})`,
+    );
+  }
+  // ABSENT baseline entries are a notice, not a failure -- absence is the
+  // expected case most runs. Only flagged when stale, as a prompt to
+  // re-verify or retire the row.
+  for (const absent of classification.absent) {
+    const staleNote = absent.stale ? ` -- STALE (unseen ${String(Math.floor(absent.daysSinceLastSeen))}d > ${String(STARTUP_RESTART_STALE_DAYS)}d)` : "";
+    console.log(`  baseline entry not measured this run: ${absent.entry.app}/${absent.entry.container}${staleNote}`);
+  }
+  const startupFailure = startupRestartFailure(classification);
+  if (startupFailure !== null) return { report, failure: startupFailure };
+
+  // The soak polling loop: does anything crash-loop, or leave Healthy/Synced,
+  // AFTER the all-Healthy verdict.
+  const baselineOkNames = new Set(applications.filter((app) => app.ok).map((app) => app.name));
+  let streak: ReadonlyMap<string, number> = new Map();
+  const deadline = Date.now() + options.soakSeconds * 1000;
+  while (Date.now() < deadline) {
+    await Bun.sleep(options.pollSeconds * 1000);
+
+    const podsPoll = kubectl(podsCommand, Math.max(options.pollSeconds, 10));
+    const currentPods = podsPoll.status === 0 ? podsFromPodsJson(podsPoll.stdout) : [];
+    const restartRegressions = soakRestartRegressions(restartBaseline, currentPods);
+
+    const appsPoll = kubectl(appsCommand, Math.max(options.pollSeconds, 10));
+    const currentSnapshots = appsPoll.status === 0 ? parseApplicationListOrFailure(appsPoll.stdout, appsCommand) : [];
+    const currentVerdicts = isFailure(currentSnapshots)
+      ? []
+      : plan.scope === "smoke"
+        ? classifySmokeApplications(currentSnapshots)
+        : classifyApplications(plan.expectedApplications, currentSnapshots);
+    const step = soakApplicationInstabilityStep(streak, baselineOkNames, currentVerdicts);
+    streak = step.streak;
+
+    const regressionFailure = soakRegressionFailure(restartRegressions, step.newlyUnstable);
+    if (regressionFailure !== null) {
+      return { report, failure: attachClusterDiagnostics(regressionFailure, "soak phase detected instability") };
+    }
+  }
+  console.log(`Soak: ${String(options.soakSeconds)}s elapsed with no restartCount regression and no Application instability.`);
+  return { report, failure: null };
 }
 
 async function runDriftRepairCheck(options: CliOptions): Promise<Failure | null> {
@@ -3494,6 +4337,11 @@ function vaultReportField(report: EphemeralVaultInitReport | null): {
   return report === null ? {} : { ephemeralVaultInit: report };
 }
 
+/** Same `exactOptionalPropertyTypes` discipline as `vaultReportField`: absent, not null, when the soak phase did not run. */
+function soakReportField(report: SoakReport | null): { readonly soak?: SoakReport } {
+  return report === null ? {} : { soak: report };
+}
+
 export async function runHarness(options: CliOptions): Promise<HarnessResult> {
   const arch = architectureFailure();
   const plan = buildPlan(options);
@@ -3553,6 +4401,22 @@ export async function runHarness(options: CliOptions): Promise<HarnessResult> {
     return { ok: false, plan, preflight, ...vaultReportField(vault.report), failure: apps };
   }
 
+  // SOAK PHASE (Task B, 081KSXN940008QG0R000SCP2H1): "does it crash-loop?",
+  // placed after the all-Healthy verdict and before the optional drift check
+  // -- a no-op unless `--soak-sec` was passed (see runSoakPhase).
+  const soak = await runSoakPhase(plan, options, apps);
+  if (soak.failure !== null) {
+    return {
+      ok: false,
+      plan,
+      preflight,
+      applications: apps,
+      ...vaultReportField(vault.report),
+      ...soakReportField(soak.report),
+      failure: soak.failure,
+    };
+  }
+
   if (options.driftCheck) {
     const driftFailure = await runDriftRepairCheck(options);
     if (driftFailure !== null) {
@@ -3562,6 +4426,7 @@ export async function runHarness(options: CliOptions): Promise<HarnessResult> {
         preflight,
         applications: apps,
         ...vaultReportField(vault.report),
+        ...soakReportField(soak.report),
         driftRepair: "failed",
         failure: driftFailure,
       };
@@ -3572,6 +4437,7 @@ export async function runHarness(options: CliOptions): Promise<HarnessResult> {
       preflight,
       applications: apps,
       ...vaultReportField(vault.report),
+      ...soakReportField(soak.report),
       driftRepair: "passed",
     };
   }
@@ -3582,6 +4448,7 @@ export async function runHarness(options: CliOptions): Promise<HarnessResult> {
     preflight,
     applications: apps,
     ...vaultReportField(vault.report),
+    ...soakReportField(soak.report),
     driftRepair: "not-requested",
   };
 }

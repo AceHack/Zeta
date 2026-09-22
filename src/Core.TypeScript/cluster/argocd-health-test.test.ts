@@ -43,6 +43,28 @@ import {
   confirmedDegradedTerminalFailure,
   degradedApplicationNames,
   degradedHealthTerminalFailure,
+  podsFromPodsJson,
+  podsBelongingToApplication,
+  podBlockingReason,
+  podStillProvisioning,
+  degradedApplicationTerminalEvidence,
+  evidenceBasedDegradedTerminalFailure,
+  CRASHLOOP_RESTART_TERMINAL_THRESHOLD,
+  DEGRADED_CEILING_SECONDS,
+  STILL_STARTING_GRACE_SECONDS,
+  type PodSnapshot,
+  type DegradedAppEvidence,
+  podRestartBaseline,
+  soakRestartRegressions,
+  soakApplicationInstabilityStep,
+  soakRegressionFailure,
+  startupRestartEntries,
+  classifyStartupRestartEntry,
+  classifyStartupRestarts,
+  startupRestartFailure,
+  STARTUP_RESTART_HARD_FAIL_THRESHOLD,
+  STARTUP_RESTART_STALE_DAYS,
+  type StartupRestartBaselineEntry,
   isGitHubHostUnresolvableText,
   isTerminalFailure,
   REPO_BACKED_CHILD_APPEAR_TIMEOUT_SECONDS,
@@ -831,6 +853,7 @@ describe("081KSXN940008QG0R000SCP2H1 argocd-health-test Application verdicts", (
         items: [
           {
             metadata: { name: "argocd" },
+            spec: { destination: { namespace: "argocd" } },
             status: {
               sync: { status: "Synced", revision: "7.7.10" },
               health: { status: "Healthy", message: "" },
@@ -846,6 +869,7 @@ describe("081KSXN940008QG0R000SCP2H1 argocd-health-test Application verdicts", (
         syncStatus: "Synced",
         healthStatus: "Healthy",
         message: "",
+        namespace: "argocd",
         operationPhase: "Succeeded",
         syncRevision: "7.7.10",
       },
@@ -1018,10 +1042,14 @@ describe("081KSXN940008QG0R000SCP2H1 argocd-health-test planning", () => {
     // second call site is removed, which is the whole job.
     const source = readFileSync(join(import.meta.dir, "argocd-health-test.ts"), "utf-8");
     const callSites = source.match(/attachClusterDiagnostics\(/g) ?? [];
-    // Two calls plus the declaration.
-    expect(callSites.length).toBe(3);
+    // Three calls plus the declaration -- the soak phase (Task B,
+    // 081KSXN940008QG0R000SCP2H1) added a third real call site, so a
+    // regression that detaches ANY of the three (including the new one)
+    // still goes red here rather than only on a live cluster.
+    expect(callSites.length).toBe(4);
     expect(source).toContain('attachClusterDiagnostics(childFailure, "repo-backed child wait timed out")');
     expect(source).toContain('attachClusterDiagnostics(failure, "ArgoCD health wait gave up")');
+    expect(source).toContain('attachClusterDiagnostics(regressionFailure, "soak phase detected instability")');
   });
 
   test("the roster can answer WHY a pod is not running, not just that ArgoCD is unhappy", () => {
@@ -1253,17 +1281,21 @@ describe("081KSXN940008QG0R000SCP2H1 argocd-health-test planning", () => {
     ).toBeNull();
   });
 
-  test("the health wait calls the Degraded abort, not only defines it", () => {
+  test("the health wait calls the evidence-based Degraded abort, not only defines it", () => {
     const source = readFileSync(new URL("./argocd-health-test.ts", import.meta.url), "utf8");
     const waitBody = source.slice(
       source.indexOf("async function waitForApplications"),
       source.indexOf("async function runDriftRepairCheck"),
     );
-    // The CALL, not the identifier. It now takes two polls, and a guard that
-    // still matched the one-poll spelling would pass over the regression it
-    // exists to catch (081M23CWG35087G0R003HXVV5Y).
-    expect(waitBody).toContain("confirmedDegradedTerminalFailure(previousVerdicts, lastVerdicts)");
-    expect(waitBody).toContain("previousVerdicts = lastVerdicts;");
+    // The CALL, not the identifier. `confirmedDegradedTerminalFailure`'s
+    // two-consecutive-poll rule aborted on an ordinary rollout Degraded blip
+    // (081KSXN940008QG0R000SCP2H1, run 35628762464: kube-prometheus-stack was
+    // merely PodInitializing) -- replaced by the evidence-based pipeline
+    // below. A guard that still matched the sample-count spelling would pass
+    // over that regression re-appearing.
+    expect(waitBody).toContain("evidenceBasedDegradedTerminalFailure(evidences, now)");
+    expect(waitBody).toContain("podsBelongingToApplication(app, allApplications, pods)");
+    expect(waitBody).not.toContain("confirmedDegradedTerminalFailure(previousVerdicts, lastVerdicts)");
     expect(waitBody).toContain("rootCatalogRefsFailure(snapshots)");
   });
 
@@ -2110,6 +2142,647 @@ describe("crash-loop containers are found, not guessed", () => {
     expect(restartingContainersFromPodsJson("not json")).toEqual([]);
     expect(restartingContainersFromPodsJson("{}")).toEqual([]);
     expect(restartingContainersFromPodsJson(JSON.stringify({ items: "nope" }))).toEqual([]);
+  });
+});
+
+describe("081KSXN940008QG0R000SCP2H1 evidence-based terminal Degraded (run 35628762464)", () => {
+  const podsJson = (items: unknown[]): string => JSON.stringify({ items });
+
+  // MEASURED shape from run 35628762464: kube-prometheus-stack's Prometheus
+  // StatefulSet pod, still pulling images / waiting on its Longhorn PVC. No
+  // hard failure reason anywhere -- this is what the two-poll rule could not
+  // tell apart from a dead workload.
+  const kubePrometheusStackPodInitializing = {
+    metadata: {
+      namespace: "monitoring",
+      name: "prometheus-kube-prometheus-stack-kube-prom-prometheus-0",
+      labels: { "app.kubernetes.io/instance": "kube-prometheus-stack" },
+      creationTimestamp: "2026-09-19T16:53:10Z",
+    },
+    status: {
+      phase: "Pending",
+      conditions: [{ type: "PodScheduled", status: "True" }],
+      initContainerStatuses: [
+        { name: "init-config-reloader", restartCount: 0, ready: false, state: { running: {} } },
+      ],
+      containerStatuses: [
+        { name: "prometheus", restartCount: 0, ready: false, state: { waiting: { reason: "PodInitializing" } } },
+      ],
+    },
+  };
+
+  // MEASURED shape from run 33830308187: openziti-controller's pod, one init
+  // container of one still running.
+  const ozitiInitZeroOfOne = {
+    metadata: {
+      namespace: "openziti",
+      name: "openziti-controller-0",
+      labels: { "app.kubernetes.io/instance": "openziti-controller" },
+      creationTimestamp: "2026-09-19T16:53:20Z",
+    },
+    status: {
+      phase: "Pending",
+      initContainerStatuses: [{ name: "init-pki", restartCount: 0, ready: false, state: { running: {} } }],
+      containerStatuses: [{ name: "ziti-controller", restartCount: 0, ready: false, state: { waiting: { reason: "PodInitializing" } } }],
+    },
+  };
+
+  const crashLoopingPod = {
+    metadata: { namespace: "mimir", name: "mimir-ingester-0", labels: { "app.kubernetes.io/instance": "mimir" } },
+    status: {
+      phase: "Running",
+      containerStatuses: [
+        { name: "ingester", restartCount: 6, ready: false, state: { waiting: { reason: "CrashLoopBackOff" } } },
+      ],
+    },
+  };
+
+  const imagePullBackOffPod = {
+    metadata: { namespace: "headscale", name: "headscale-0", labels: { "app.kubernetes.io/instance": "headscale" } },
+    status: {
+      phase: "Pending",
+      containerStatuses: [
+        {
+          name: "headscale",
+          restartCount: 0,
+          ready: false,
+          state: { waiting: { reason: "ImagePullBackOff", message: 'Back-off pulling image "ghcr.io/juanfont/headscale:bad-tag"' } },
+        },
+      ],
+    },
+  };
+
+  const createContainerConfigErrorPod = {
+    metadata: { namespace: "gitlab", name: "gitlab-webservice-0", labels: { "app.kubernetes.io/instance": "gitlab" } },
+    status: {
+      phase: "Pending",
+      containerStatuses: [
+        {
+          name: "webservice",
+          restartCount: 0,
+          ready: false,
+          state: {
+            waiting: {
+              reason: "CreateContainerConfigError",
+              message: 'secret "gitlab-initial-root-password" not found',
+            },
+          },
+        },
+      ],
+    },
+  };
+
+  const failedSchedulingInsufficientCpuPod = {
+    metadata: { namespace: "hindsight", name: "hindsight-postgresql-0" },
+    status: {
+      phase: "Pending",
+      conditions: [
+        { type: "PodScheduled", status: "False", reason: "Unschedulable", message: "0/1 nodes are available: 1 Insufficient cpu." },
+      ],
+      containerStatuses: [],
+    },
+  };
+
+  describe("podsFromPodsJson", () => {
+    test("parses phase, instance label, scheduling condition, init/main container state", () => {
+      const [pod] = podsFromPodsJson(podsJson([kubePrometheusStackPodInitializing]));
+      expect(pod?.namespace).toBe("monitoring");
+      expect(pod?.name).toBe("prometheus-kube-prometheus-stack-kube-prom-prometheus-0");
+      expect(pod?.instanceLabel).toBe("kube-prometheus-stack");
+      expect(pod?.phase).toBe("Pending");
+      expect(pod?.scheduledFailureReason).toBe("");
+      expect(pod?.initContainers[0]?.terminatedReason).toBe("");
+      expect(pod?.containers[0]?.waitingReason).toBe("PodInitializing");
+    });
+
+    test("captures a scheduling failure condition and a hard waiting reason with its message", () => {
+      const [scheduling] = podsFromPodsJson(podsJson([failedSchedulingInsufficientCpuPod]));
+      expect(scheduling?.scheduledFailureReason).toBe("Unschedulable");
+      expect(scheduling?.scheduledFailureMessage).toContain("Insufficient cpu");
+
+      const [configError] = podsFromPodsJson(podsJson([createContainerConfigErrorPod]));
+      expect(configError?.containers[0]?.waitingReason).toBe("CreateContainerConfigError");
+      expect(configError?.containers[0]?.waitingMessage).toContain("gitlab-initial-root-password");
+    });
+
+    test("returns empty rather than throwing on malformed kubectl output", () => {
+      expect(podsFromPodsJson("not json")).toEqual([]);
+      expect(podsFromPodsJson("{}")).toEqual([]);
+      expect(podsFromPodsJson(JSON.stringify({ items: "nope" }))).toEqual([]);
+    });
+  });
+
+  describe("podsBelongingToApplication (namespace primary, instance label disambiguates shared namespaces)", () => {
+    const pods = podsFromPodsJson(
+      podsJson([
+        kubePrometheusStackPodInitializing, // monitoring, exclusive to kube-prometheus-stack
+        { metadata: { namespace: "cert-manager", name: "cert-manager-0", labels: { "app.kubernetes.io/instance": "cert-manager" } }, status: {} },
+        { metadata: { namespace: "cert-manager", name: "trust-manager-0", labels: { "app.kubernetes.io/instance": "trust-manager" } }, status: {} },
+        { metadata: { namespace: "cert-manager", name: "unlabelled-0" }, status: {} },
+      ]),
+    );
+    const allApplications = [
+      { name: "kube-prometheus-stack", namespace: "monitoring" },
+      { name: "cert-manager", namespace: "cert-manager" },
+      { name: "trust-manager", namespace: "cert-manager" },
+    ];
+
+    test("an app with an exclusive namespace gets every pod in it, label or not", () => {
+      const owned = podsBelongingToApplication({ name: "kube-prometheus-stack", namespace: "monitoring" }, allApplications, pods);
+      expect(owned.map((p) => p.name)).toEqual(["prometheus-kube-prometheus-stack-kube-prom-prometheus-0"]);
+    });
+
+    test("a SHARED namespace is disambiguated by the instance label", () => {
+      const certManagerPods = podsBelongingToApplication({ name: "cert-manager", namespace: "cert-manager" }, allApplications, pods);
+      expect(certManagerPods.map((p) => p.name)).toEqual(["cert-manager-0"]);
+      const trustManagerPods = podsBelongingToApplication({ name: "trust-manager", namespace: "cert-manager" }, allApplications, pods);
+      expect(trustManagerPods.map((p) => p.name)).toEqual(["trust-manager-0"]);
+    });
+
+    test("an unlabelled pod in a shared namespace is attributed to NEITHER app -- never guessed", () => {
+      const certManagerPods = podsBelongingToApplication({ name: "cert-manager", namespace: "cert-manager" }, allApplications, pods);
+      const trustManagerPods = podsBelongingToApplication({ name: "trust-manager", namespace: "cert-manager" }, allApplications, pods);
+      expect(certManagerPods.some((p) => p.name === "unlabelled-0")).toBe(false);
+      expect(trustManagerPods.some((p) => p.name === "unlabelled-0")).toBe(false);
+    });
+
+    test("no destination namespace means no pods (fail closed, not a wildcard match)", () => {
+      expect(podsBelongingToApplication({ name: "cluster-scoped" }, allApplications, pods)).toEqual([]);
+    });
+  });
+
+  describe("podBlockingReason -- hard evidence waiting cannot fix", () => {
+    test("CrashLoopBackOff terminal at/above the restart threshold", () => {
+      const [pod] = podsFromPodsJson(podsJson([crashLoopingPod]));
+      expect(pod?.containers[0]?.restartCount).toBe(6);
+      expect(podBlockingReason(pod as PodSnapshot)).toContain("CrashLoopBackOff");
+      // MUTATION-SANITY: below the threshold, the same reason is NOT terminal.
+      const belowThreshold: PodSnapshot = {
+        ...(pod as PodSnapshot),
+        containers: [{ ...(pod as PodSnapshot).containers[0]!, restartCount: CRASHLOOP_RESTART_TERMINAL_THRESHOLD - 1 }],
+      };
+      expect(podBlockingReason(belowThreshold)).toBeNull();
+    });
+
+    test("ImagePullBackOff / ErrImagePull are terminal with no restart floor", () => {
+      const [pod] = podsFromPodsJson(podsJson([imagePullBackOffPod]));
+      expect(podBlockingReason(pod as PodSnapshot)).toContain("ImagePullBackOff");
+      const errImagePull: PodSnapshot = {
+        ...(pod as PodSnapshot),
+        containers: [{ ...(pod as PodSnapshot).containers[0]!, waitingReason: "ErrImagePull" }],
+      };
+      expect(podBlockingReason(errImagePull)).toContain("ErrImagePull");
+    });
+
+    test("CreateContainerConfigError (missing Secret) is terminal", () => {
+      const [pod] = podsFromPodsJson(podsJson([createContainerConfigErrorPod]));
+      const reason = podBlockingReason(pod as PodSnapshot);
+      expect(reason).toContain("CreateContainerConfigError");
+      expect(reason).toContain("gitlab-initial-root-password");
+    });
+
+    test("FailedScheduling on insufficient resources is terminal; other Unschedulable reasons are not", () => {
+      const [pod] = podsFromPodsJson(podsJson([failedSchedulingInsufficientCpuPod]));
+      expect(podBlockingReason(pod as PodSnapshot)).toContain("FailedScheduling");
+      // MUTATION-SANITY: a different Unschedulable reason (e.g. a taint on a
+      // still-joining node) must NOT be treated as terminal by this rule --
+      // only the insufficient-resources case is a dead end.
+      const taintNotYetTolerated: PodSnapshot = {
+        ...(pod as PodSnapshot),
+        scheduledFailureMessage: "0/1 nodes are available: 1 node(s) had untolerated taint.",
+      };
+      expect(podBlockingReason(taintNotYetTolerated)).toBeNull();
+    });
+
+    test("ordinary rollout states carry no hard evidence", () => {
+      const [initializing] = podsFromPodsJson(podsJson([kubePrometheusStackPodInitializing]));
+      const [ozitiInit] = podsFromPodsJson(podsJson([ozitiInitZeroOfOne]));
+      expect(podBlockingReason(initializing as PodSnapshot)).toBeNull();
+      expect(podBlockingReason(ozitiInit as PodSnapshot)).toBeNull();
+    });
+  });
+
+  describe("podStillProvisioning -- exactly the task's NOT-terminal roster", () => {
+    const now = Date.parse("2026-09-19T16:54:00Z");
+
+    test("kube-prometheus-stack PodInitializing is NOT terminal (the run 35628762464 false positive)", () => {
+      const [pod] = podsFromPodsJson(podsJson([kubePrometheusStackPodInitializing]));
+      expect(podStillProvisioning(pod as PodSnapshot, now)).toBe(true);
+    });
+
+    test("openziti Init:0/1 is NOT terminal (the run 33830308187 false positive)", () => {
+      const [pod] = podsFromPodsJson(podsJson([ozitiInitZeroOfOne]));
+      expect(podStillProvisioning(pod as PodSnapshot, now)).toBe(true);
+    });
+
+    test("Running but not yet Ready, still within the startup grace window, is NOT terminal", () => {
+      const youngPod = {
+        metadata: { namespace: "vllm", name: "vllm-0", creationTimestamp: "2026-09-19T16:53:50Z" },
+        status: { phase: "Running", containerStatuses: [{ name: "vllm", restartCount: 0, ready: false, state: { running: {} } }] },
+      };
+      const [pod] = podsFromPodsJson(podsJson([youngPod]));
+      expect(podStillProvisioning(pod as PodSnapshot, now)).toBe(true);
+      // MUTATION-SANITY: the SAME state, once it has aged past the grace
+      // window, is no longer "still provisioning".
+      const pastGrace = now + (STILL_STARTING_GRACE_SECONDS + 1) * 1000;
+      expect(podStillProvisioning(pod as PodSnapshot, pastGrace)).toBe(false);
+    });
+
+    test("hard evidence always wins over still-provisioning", () => {
+      const [pod] = podsFromPodsJson(podsJson([crashLoopingPod]));
+      expect(podStillProvisioning(pod as PodSnapshot, now)).toBe(false);
+    });
+  });
+
+  describe("degradedApplicationTerminalEvidence -- the pure per-Application decision", () => {
+    const now = Date.parse("2026-09-19T16:54:00Z");
+    function evidence(name: string, pods: readonly PodSnapshot[], degradedForSec = 30): DegradedAppEvidence {
+      return { name, syncStatus: "Synced", healthStatus: "Degraded", degradedForSec, pods };
+    }
+
+    test("kube-prometheus-stack Degraded while PodInitializing: NOT terminal, at any degradedForSec below the ceiling", () => {
+      const [pod] = podsFromPodsJson(podsJson([kubePrometheusStackPodInitializing]));
+      expect(degradedApplicationTerminalEvidence(evidence("kube-prometheus-stack", [pod as PodSnapshot], 30), now)).toBeNull();
+      expect(degradedApplicationTerminalEvidence(evidence("kube-prometheus-stack", [pod as PodSnapshot], 599), now)).toBeNull();
+    });
+
+    test("openziti-controller Degraded while Init:0/1: NOT terminal", () => {
+      const [pod] = podsFromPodsJson(podsJson([ozitiInitZeroOfOne]));
+      expect(degradedApplicationTerminalEvidence(evidence("openziti-controller", [pod as PodSnapshot], 30), now)).toBeNull();
+    });
+
+    test("CrashLoopBackOff restart=6 is terminal on the FIRST poll (more fail-fast than the old two-poll rule)", () => {
+      const [pod] = podsFromPodsJson(podsJson([crashLoopingPod]));
+      const hit = degradedApplicationTerminalEvidence(evidence("mimir", [pod as PodSnapshot], 15), now);
+      expect(hit).not.toBeNull();
+      expect(hit?.reason).toContain("CrashLoopBackOff");
+    });
+
+    test("ImagePullBackOff is terminal on the first poll", () => {
+      const [pod] = podsFromPodsJson(podsJson([imagePullBackOffPod]));
+      const hit = degradedApplicationTerminalEvidence(evidence("headscale", [pod as PodSnapshot], 15), now);
+      expect(hit).not.toBeNull();
+      expect(hit?.reason).toContain("ImagePullBackOff");
+    });
+
+    test("CreateContainerConfigError (missing Secret) is terminal on the first poll", () => {
+      const [pod] = podsFromPodsJson(podsJson([createContainerConfigErrorPod]));
+      const hit = degradedApplicationTerminalEvidence(evidence("gitlab", [pod as PodSnapshot], 15), now);
+      expect(hit).not.toBeNull();
+      expect(hit?.reason).toContain("CreateContainerConfigError");
+    });
+
+    test("no hard evidence, past the ceiling, with no pod making progress -> terminal", () => {
+      const stuckNoOpinion = {
+        metadata: { namespace: "loki", name: "loki-0", creationTimestamp: "2026-09-19T16:00:00Z" },
+        status: { phase: "Running", containerStatuses: [{ name: "loki", restartCount: 0, ready: false, state: { running: {} } }] },
+      };
+      const [pod] = podsFromPodsJson(podsJson([stuckNoOpinion]));
+      const farPast = now + (DEGRADED_CEILING_SECONDS + 3600) * 1000; // container is long past its startup grace too
+      const hit = degradedApplicationTerminalEvidence(evidence("loki", [pod as PodSnapshot], DEGRADED_CEILING_SECONDS), farPast);
+      expect(hit).not.toBeNull();
+      expect(hit?.reason).toContain("ceiling");
+      // MUTATION-SANITY: one second short of the ceiling, the same pod is NOT terminal.
+      expect(degradedApplicationTerminalEvidence(evidence("loki", [pod as PodSnapshot], DEGRADED_CEILING_SECONDS - 1), farPast)).toBeNull();
+    });
+
+    test("not Synced/Degraded at all -> null regardless of pods", () => {
+      expect(
+        degradedApplicationTerminalEvidence(
+          { name: "mimir", syncStatus: "OutOfSync", healthStatus: "Degraded", degradedForSec: 9999, pods: [] },
+          now,
+        ),
+      ).toBeNull();
+    });
+  });
+
+  describe("evidenceBasedDegradedTerminalFailure -- orchestrates across every currently-Degraded app", () => {
+    const now = Date.parse("2026-09-19T16:54:00Z");
+
+    test("one dead app among several benign-rollout ones still fails, terminally, naming only the dead one", () => {
+      const [initializingPod] = podsFromPodsJson(podsJson([kubePrometheusStackPodInitializing]));
+      const [crashPod] = podsFromPodsJson(podsJson([crashLoopingPod]));
+      const failure = evidenceBasedDegradedTerminalFailure(
+        [
+          { name: "kube-prometheus-stack", syncStatus: "Synced", healthStatus: "Degraded", degradedForSec: 30, pods: [initializingPod as PodSnapshot] },
+          { name: "mimir", syncStatus: "Synced", healthStatus: "Degraded", degradedForSec: 15, pods: [crashPod as PodSnapshot] },
+        ],
+        now,
+      );
+      expect(failure).not.toBeNull();
+      expect(failure?.terminal).toBe(true);
+      expect(failure?.message).toContain("mimir");
+      expect(failure?.message).not.toContain("kube-prometheus-stack:");
+    });
+
+    test("every Degraded app still merely rolling out -> null, the wait keeps waiting", () => {
+      const [initializingPod] = podsFromPodsJson(podsJson([kubePrometheusStackPodInitializing]));
+      const [ozitiPod] = podsFromPodsJson(podsJson([ozitiInitZeroOfOne]));
+      expect(
+        evidenceBasedDegradedTerminalFailure(
+          [
+            { name: "kube-prometheus-stack", syncStatus: "Synced", healthStatus: "Degraded", degradedForSec: 30, pods: [initializingPod as PodSnapshot] },
+            { name: "openziti-controller", syncStatus: "Synced", healthStatus: "Degraded", degradedForSec: 30, pods: [ozitiPod as PodSnapshot] },
+          ],
+          now,
+        ),
+      ).toBeNull();
+    });
+
+    test("no Degraded apps at all -> null", () => {
+      expect(evidenceBasedDegradedTerminalFailure([], now)).toBeNull();
+    });
+  });
+});
+
+describe("081KSXN940008QG0R000SCP2H1 soak phase -- does it crash-loop after the all-Healthy verdict", () => {
+  const podsJson = (items: unknown[]): string => JSON.stringify({ items });
+  const stablePod = {
+    metadata: { namespace: "mimir", name: "mimir-ingester-0", labels: { "app.kubernetes.io/instance": "mimir" } },
+    status: {
+      phase: "Running",
+      containerStatuses: [{ name: "ingester", restartCount: 2, ready: true, state: { running: {} } }],
+    },
+  };
+
+  describe("podRestartBaseline / soakRestartRegressions", () => {
+    test("no regression when nothing's restartCount moved", () => {
+      const pods = podsFromPodsJson(podsJson([stablePod]));
+      const baseline = podRestartBaseline(pods);
+      expect(baseline.get("mimir/mimir-ingester-0/ingester")).toBe(2);
+      expect(soakRestartRegressions(baseline, pods)).toEqual([]);
+    });
+
+    test("flags a container whose restartCount rose during the soak, with the last termination reason/exit code", () => {
+      const pods = podsFromPodsJson(podsJson([stablePod]));
+      const baseline = podRestartBaseline(pods);
+      const terminatedBetweenRestarts = {
+        ...stablePod,
+        status: {
+          phase: "Running",
+          containerStatuses: [
+            { name: "ingester", restartCount: 3, ready: false, state: { terminated: { reason: "Error", exitCode: 1 } } },
+          ],
+        },
+      };
+      const regressions = soakRestartRegressions(baseline, podsFromPodsJson(podsJson([terminatedBetweenRestarts])));
+      expect(regressions).toEqual([
+        {
+          namespace: "mimir",
+          pod: "mimir-ingester-0",
+          container: "ingester",
+          baselineRestartCount: 2,
+          currentRestartCount: 3,
+          terminatedReason: "Error",
+          terminatedExitCode: 1,
+        },
+      ]);
+
+      // Also detected while the container is currently mid-CrashLoopBackOff
+      // (waiting, no `terminated` block visible at this exact poll).
+      const stillWaiting = {
+        ...stablePod,
+        status: {
+          phase: "Running",
+          containerStatuses: [{ name: "ingester", restartCount: 3, ready: false, state: { waiting: { reason: "CrashLoopBackOff" } } }],
+        },
+      };
+      expect(soakRestartRegressions(baseline, podsFromPodsJson(podsJson([stillWaiting])))).toHaveLength(1);
+    });
+
+    test("MUTATION-SANITY: a restartCount that only matches the baseline is NOT a regression", () => {
+      const pods = podsFromPodsJson(podsJson([stablePod]));
+      const baseline = podRestartBaseline(pods);
+      expect(soakRestartRegressions(baseline, pods)).toEqual([]);
+    });
+
+    test("a pod absent from the baseline (never seen before) is ignored, not a false regression", () => {
+      const baseline = podRestartBaseline([]);
+      const pods = podsFromPodsJson(podsJson([stablePod]));
+      expect(soakRestartRegressions(baseline, pods)).toEqual([]);
+    });
+  });
+
+  describe("soakApplicationInstabilityStep -- a single blip is tolerated, TWO consecutive polls is not", () => {
+    const baselineOkNames = new Set(["mimir", "nats"]);
+
+    test("one not-ok poll does not report; the second consecutive one does, exactly once", () => {
+      const verdict = { name: "mimir", ok: false, syncStatus: "Synced", healthStatus: "Degraded" };
+      const first = soakApplicationInstabilityStep(new Map(), baselineOkNames, [verdict]);
+      expect(first.newlyUnstable).toEqual([]);
+      const second = soakApplicationInstabilityStep(first.streak, baselineOkNames, [verdict]);
+      expect(second.newlyUnstable).toEqual([verdict]);
+      // A third consecutive not-ok poll does NOT re-report -- already caught.
+      const third = soakApplicationInstabilityStep(second.streak, baselineOkNames, [verdict]);
+      expect(third.newlyUnstable).toEqual([]);
+    });
+
+    test("recovering resets the streak, so a later blip needs two polls again", () => {
+      const verdict = { name: "mimir", ok: false, syncStatus: "Synced", healthStatus: "Degraded" };
+      const healthy = { name: "mimir", ok: true, syncStatus: "Synced", healthStatus: "Healthy" };
+      const afterOnePoll = soakApplicationInstabilityStep(new Map(), baselineOkNames, [verdict]);
+      const recovered = soakApplicationInstabilityStep(afterOnePoll.streak, baselineOkNames, [healthy]);
+      expect(recovered.streak.has("mimir")).toBe(false);
+      const blipAgain = soakApplicationInstabilityStep(recovered.streak, baselineOkNames, [verdict]);
+      expect(blipAgain.newlyUnstable).toEqual([]); // needs a second poll again
+    });
+
+    test("an Application that was NOT ok at the soak baseline is never tracked", () => {
+      const wasAlreadyBad = { name: "gitlab", ok: false, syncStatus: "Synced", healthStatus: "Degraded" };
+      const first = soakApplicationInstabilityStep(new Map(), baselineOkNames, [wasAlreadyBad]);
+      const second = soakApplicationInstabilityStep(first.streak, baselineOkNames, [wasAlreadyBad]);
+      expect(second.newlyUnstable).toEqual([]);
+    });
+  });
+
+  describe("soakRegressionFailure -- names the pod, container, and last termination reason/exit code", () => {
+    test("null when neither kind of regression fired", () => {
+      expect(soakRegressionFailure([], [])).toBeNull();
+    });
+
+    test("names pod/container/restart-delta/termination for a restart regression", () => {
+      const failure = soakRegressionFailure(
+        [
+          {
+            namespace: "mimir",
+            pod: "mimir-ingester-0",
+            container: "ingester",
+            baselineRestartCount: 2,
+            currentRestartCount: 3,
+            terminatedReason: "OOMKilled",
+            terminatedExitCode: 137,
+          },
+        ],
+        [],
+      );
+      expect(failure).not.toBeNull();
+      expect(failure?.message).toContain("mimir/mimir-ingester-0");
+      expect(failure?.message).toContain("ingester");
+      expect(failure?.message).toContain("2 -> 3");
+      expect(failure?.message).toContain("OOMKilled");
+      expect(failure?.message).toContain("exit 137");
+    });
+
+    test("names an Application that left Healthy/Synced", () => {
+      const failure = soakRegressionFailure([], [{ name: "mimir", ok: false, syncStatus: "OutOfSync", healthStatus: "Degraded" }]);
+      expect(failure?.message).toContain("mimir");
+      expect(failure?.message).toContain("left Healthy/Synced");
+    });
+  });
+
+  describe("startupRestartEntries -- attributed to an app, sorted, excludes healthy containers", () => {
+    test("only restarted containers appear, attributed via podsBelongingToApplication", () => {
+      const restartedInMonitoring = {
+        metadata: { namespace: "monitoring", name: "prometheus-0", labels: { "app.kubernetes.io/instance": "kube-prometheus-stack" } },
+        status: { phase: "Running", containerStatuses: [{ name: "prometheus", restartCount: 1, ready: true, state: { running: {} } }] },
+      };
+      const healthyElsewhere = {
+        metadata: { namespace: "redis", name: "redis-0" },
+        status: { phase: "Running", containerStatuses: [{ name: "redis", restartCount: 0, ready: true, state: { running: {} } }] },
+      };
+      const pods = podsFromPodsJson(podsJson([restartedInMonitoring, healthyElsewhere]));
+      const entries = startupRestartEntries(pods, [{ name: "kube-prometheus-stack", namespace: "monitoring" }]);
+      expect(entries).toEqual([
+        { app: "kube-prometheus-stack", namespace: "monitoring", pod: "prometheus-0", container: "prometheus", restartCount: 1 },
+      ]);
+    });
+
+    test("an unattributed pod (no matching Application) still reports, with app=\"\"", () => {
+      const orphan = {
+        metadata: { namespace: "mystery", name: "mystery-0" },
+        status: { phase: "Running", containerStatuses: [{ name: "c", restartCount: 4, ready: true, state: { running: {} } }] },
+      };
+      const entries = startupRestartEntries(podsFromPodsJson(podsJson([orphan])), []);
+      expect(entries).toEqual([{ app: "", namespace: "mystery", pod: "mystery-0", container: "c", restartCount: 4 }]);
+    });
+  });
+
+  describe("classifyStartupRestarts -- threshold policy, not a both-directions ratchet (081KSXN940008QG0R000SCP2H1: run 35695291413 flaked the old exact-match ratchet on an unrelated pair the very next push)", () => {
+    const now = Date.parse("2026-09-22T12:00:00Z");
+    const mimirEntry = (restartCount: number) => ({
+      app: "mimir",
+      namespace: "mimir",
+      pod: "mimir-ingester-zone-a-0",
+      container: "ingester",
+      restartCount,
+    });
+    const baselineWithMimir = (maxRestarts: number): readonly StartupRestartBaselineEntry[] => [
+      { app: "mimir", container: "ingester", maxRestarts, reason: "mimir-kafka not ready yet at first boot", lastSeen: "2026-09-22" },
+    ];
+
+    describe("classifyStartupRestartEntry -- the per-(app,container) verdict", () => {
+      test("covered by the baseline (observed <= maxRestarts): ok, however high the count", () => {
+        const byKey = new Map(baselineWithMimir(4).map((e) => [`${e.app}::${e.container}`, e]));
+        expect(classifyStartupRestartEntry(mimirEntry(4), byKey)).toBe("ok");
+        expect(classifyStartupRestartEntry(mimirEntry(1), byKey)).toBe("ok");
+      });
+
+      test("NOT covered and below the hard-fail threshold: warn, never fail", () => {
+        const byKey = new Map<string, StartupRestartBaselineEntry>();
+        expect(classifyStartupRestartEntry(mimirEntry(1), byKey)).toBe("warn");
+        expect(classifyStartupRestartEntry(mimirEntry(STARTUP_RESTART_HARD_FAIL_THRESHOLD - 1), byKey)).toBe("warn");
+      });
+
+      test("NOT covered and AT/ABOVE the hard-fail threshold: fail", () => {
+        const byKey = new Map<string, StartupRestartBaselineEntry>();
+        expect(classifyStartupRestartEntry(mimirEntry(STARTUP_RESTART_HARD_FAIL_THRESHOLD), byKey)).toBe("fail");
+        expect(classifyStartupRestartEntry(mimirEntry(STARTUP_RESTART_HARD_FAIL_THRESHOLD + 5), byKey)).toBe("fail");
+      });
+
+      test("MUTATION-SANITY: one restart below the threshold does not fail; the baseline exactly at the observed count covers it", () => {
+        const byKey = new Map<string, StartupRestartBaselineEntry>();
+        expect(classifyStartupRestartEntry(mimirEntry(STARTUP_RESTART_HARD_FAIL_THRESHOLD - 1), byKey)).not.toBe("fail");
+        const covered = new Map(baselineWithMimir(STARTUP_RESTART_HARD_FAIL_THRESHOLD).map((e) => [`${e.app}::${e.container}`, e]));
+        expect(classifyStartupRestartEntry(mimirEntry(STARTUP_RESTART_HARD_FAIL_THRESHOLD), covered)).toBe("ok");
+        // one restart OVER the covered ceiling is fail again, not silently absorbed
+        expect(classifyStartupRestartEntry(mimirEntry(STARTUP_RESTART_HARD_FAIL_THRESHOLD + 1), covered)).toBe("fail");
+      });
+
+      test("in the baseline but EXCEEDING maxRestarts is not covered", () => {
+        const byKey = new Map(baselineWithMimir(1).map((e) => [`${e.app}::${e.container}`, e]));
+        expect(classifyStartupRestartEntry(mimirEntry(2), byKey)).toBe("warn"); // 2 < threshold 3
+        expect(classifyStartupRestartEntry(mimirEntry(3), byKey)).toBe("fail"); // 3 >= threshold
+      });
+    });
+
+    describe("classifyStartupRestarts -- the whole-measurement orchestration", () => {
+      test("a crash loop (restartCount>=3, uncovered) is a failure; a 1-2 wait is a warning, not a failure", () => {
+        const measured = [
+          mimirEntry(3),
+          { app: "dapr", namespace: "dapr-system", pod: "dapr-operator-0", container: "dapr-operator", restartCount: 1 },
+        ];
+        const result = classifyStartupRestarts(measured, [], now);
+        expect(result.failures.map((f) => f.entry.container)).toEqual(["ingester"]);
+        expect(result.warnings.map((w) => w.container)).toEqual(["dapr-operator"]);
+      });
+
+      test("startupRestartFailure is null unless something actually crossed the threshold uncovered", () => {
+        const warnOnly = classifyStartupRestarts(
+          [{ app: "dapr", namespace: "dapr-system", pod: "p", container: "dapr-operator", restartCount: 1 }],
+          [],
+          now,
+        );
+        expect(startupRestartFailure(warnOnly)).toBeNull();
+        const failing = classifyStartupRestarts([mimirEntry(3)], [], now);
+        const failure = startupRestartFailure(failing);
+        expect(failure).not.toBeNull();
+        expect(failure?.message).toContain("mimir/ingester");
+        expect(failure?.message).toContain("not in the baseline");
+      });
+
+      test("a baseline entry not measured this run is ABSENT, never a failure by itself", () => {
+        const result = classifyStartupRestarts([], baselineWithMimir(3), now);
+        expect(result.failures).toEqual([]);
+        expect(startupRestartFailure(result)).toBeNull();
+        expect(result.absent).toHaveLength(1);
+        expect(result.absent[0]?.entry.container).toBe("ingester");
+      });
+
+      test("an absent entry seen recently is not stale; one older than the window is", () => {
+        const recentBaseline: readonly StartupRestartBaselineEntry[] = [
+          { app: "mimir", container: "ingester", maxRestarts: 3, reason: "x", lastSeen: "2026-09-20" }, // 2 days before `now`
+        ];
+        const recent = classifyStartupRestarts([], recentBaseline, now);
+        expect(recent.absent[0]?.stale).toBe(false);
+
+        const staleBaseline: readonly StartupRestartBaselineEntry[] = [
+          { app: "mimir", container: "ingester", maxRestarts: 3, reason: "x", lastSeen: "2026-09-01" }, // 21 days before `now`
+        ];
+        const stale = classifyStartupRestarts([], staleBaseline, now);
+        expect(stale.absent[0]?.stale).toBe(true);
+        expect(stale.absent[0]?.daysSinceLastSeen).toBeGreaterThan(STARTUP_RESTART_STALE_DAYS);
+      });
+
+      test("MUTATION-SANITY: exactly STARTUP_RESTART_STALE_DAYS is NOT stale; one day more IS", () => {
+        const msPerDay = 86_400_000;
+        const exactly: readonly StartupRestartBaselineEntry[] = [
+          {
+            app: "mimir",
+            container: "ingester",
+            maxRestarts: 3,
+            reason: "x",
+            lastSeen: new Date(now - STARTUP_RESTART_STALE_DAYS * msPerDay).toISOString(),
+          },
+        ];
+        expect(classifyStartupRestarts([], exactly, now).absent[0]?.stale).toBe(false);
+        const oneDayOlder: readonly StartupRestartBaselineEntry[] = [
+          {
+            app: "mimir",
+            container: "ingester",
+            maxRestarts: 3,
+            reason: "x",
+            lastSeen: new Date(now - (STARTUP_RESTART_STALE_DAYS + 1) * msPerDay).toISOString(),
+          },
+        ];
+        expect(classifyStartupRestarts([], oneDayOlder, now).absent[0]?.stale).toBe(true);
+      });
+
+      test("empty measurement against empty baseline: no failures, no warnings, nothing absent", () => {
+        const result = classifyStartupRestarts([], [], now);
+        expect(result).toEqual({ failures: [], warnings: [], absent: [] });
+        expect(startupRestartFailure(result)).toBeNull();
+      });
+    });
   });
 });
 

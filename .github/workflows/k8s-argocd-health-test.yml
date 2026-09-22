@@ -163,6 +163,7 @@ on:
       - "src/Core.TypeScript/cluster/gatekeeper-ignore-label.test.ts"
       - "src/Core.TypeScript/cluster/lane-tree-source.ts"
       - "src/Core.TypeScript/cluster/lane-tree-source.test.ts"
+      - "src/Core.TypeScript/cluster/startup-restart-baseline.json"
       - "docs/backlog/P1/081KSXN940008QG0R000SCP2H1-kubernetes-argocd-kind-k3d-integration-health-tests-separate.md"
       - ".github/workflows/k8s-argocd-health-test.yml"
       - ".mise.toml"
@@ -284,6 +285,7 @@ on:
       - "src/Core.TypeScript/cluster/gatekeeper-ignore-label.test.ts"
       - "src/Core.TypeScript/cluster/lane-tree-source.ts"
       - "src/Core.TypeScript/cluster/lane-tree-source.test.ts"
+      - "src/Core.TypeScript/cluster/startup-restart-baseline.json"
       - "docs/backlog/P1/081KSXN940008QG0R000SCP2H1-kubernetes-argocd-kind-k3d-integration-health-tests-separate.md"
       - ".github/workflows/k8s-argocd-health-test.yml"
       - ".mise.toml"
@@ -2047,6 +2049,7 @@ jobs:
             --poll-sec 15 \
             --serve-tree dev \
             --ephemeral-vault-init \
+            --soak-sec 300 \
             | tee "$RUNNER_TEMP/included-proof.log"
 
       # The other half of making the failure loud. Runs even when the proof failed --
