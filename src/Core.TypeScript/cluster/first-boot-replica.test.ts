@@ -43,6 +43,7 @@ import {
   k3sVersionToDockerTag,
   manifestTargetFilename,
   parseAppConvergenceSnapshots,
+  parseCrashLoopSubject,
   parseExtraFlags,
   parseFailedSchedulingEvents,
   parseInlineWriteTextManifest,
@@ -1121,6 +1122,29 @@ describe("containerCrashLoopsAfterRecovery", () => {
     const before = [container(0, { namespace: "spire", container: "spire-agent" })];
     const after = [container(1, { namespace: "spire", container: "spire-agent" })];
     expect(containerCrashLoopsAfterRecovery(before, after)).toHaveLength(0);
+  });
+});
+
+describe("parseCrashLoopSubject", () => {
+  test("parses the exact `namespace/pod[container]` shape containerCrashLoopsAfterRecovery produces", () => {
+    expect(parseCrashLoopSubject("opensearch/opensearch-cluster-master-0[opensearch]")).toEqual({
+      namespace: "opensearch",
+      pod: "opensearch-cluster-master-0",
+      container: "opensearch",
+    });
+  });
+
+  test("round-trips containerCrashLoopsAfterRecovery's own output for every issue it produces", () => {
+    const before = [{ namespace: "cilium", pod: "cilium-abc", container: "cilium-agent", restartCount: 0 }];
+    const after = [{ namespace: "cilium", pod: "cilium-abc", container: "cilium-agent", restartCount: 1 }];
+    const [issue] = containerCrashLoopsAfterRecovery(before, after);
+    expect(parseCrashLoopSubject(issue?.subject ?? "")).toEqual({ namespace: "cilium", pod: "cilium-abc", container: "cilium-agent" });
+  });
+
+  test("returns null on a shape it cannot parse, rather than a best-effort partial match", () => {
+    expect(parseCrashLoopSubject("not-the-right-shape")).toBeNull();
+    expect(parseCrashLoopSubject("ns/pod-no-brackets")).toBeNull();
+    expect(parseCrashLoopSubject("ns-no-slash[container]")).toBeNull();
   });
 });
 

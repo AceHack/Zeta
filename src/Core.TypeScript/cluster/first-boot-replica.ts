@@ -1148,6 +1148,28 @@ export function containerCrashLoopsAfterRecovery(
   }));
 }
 
+export interface CrashLoopSubject {
+  readonly namespace: string;
+  readonly pod: string;
+  readonly container: string;
+}
+
+/**
+ * Inverse of `containerCrashLoopsAfterRecovery`'s `subject` format
+ * (`namespace/pod[container]`) — lets a CONTAINER_CRASHLOOP issue be routed
+ * back to a `kubectl logs`/`describe pod` call for root-cause evidence
+ * (081M34QTS06087G0R0015D7X5W). `null` on anything that doesn't match the
+ * exact shape this harness itself produces — never a partial/best-effort
+ * parse that could point diagnostics at the wrong pod.
+ */
+export function parseCrashLoopSubject(subject: string): CrashLoopSubject | null {
+  const m = /^([^/[\]]+)\/([^/[\]]+)\[([^/[\]]+)\]$/.exec(subject);
+  if (m === null) return null;
+  const [, namespace, pod, container] = m;
+  if (namespace === undefined || pod === undefined || container === undefined) return null;
+  return { namespace, pod, container };
+}
+
 /**
  * Rule 3: idempotency. A seeded internal Secret's DATA must be byte-identical
  * before and after the power cycle — `internal-secret-seeding.yaml`'s Jobs
@@ -2177,6 +2199,13 @@ export async function runReplica(opts: RunOptions): Promise<RunReport> {
       log(`stage 8: verdict=${verdict.verdict} (${String(verdict.issues.length)} issue(s))`);
       for (const issue of verdict.issues) log(`  [${issue.category}] ${issue.subject}: ${issue.detail}`);
 
+      // WP19b (081M34QTS06087G0R0015D7X5W): root-cause evidence for a
+      // CONTAINER_CRASHLOOP finding, captured BEFORE the `finally` block's
+      // teardown — narrowly scoped to that one category (see
+      // `collectCrashLoopDiagnostics`'s own docstring).
+      const crashLoopDiagnostics =
+        verdict.verdict === "NOT_RECOVERED" ? collectCrashLoopDiagnostics(runner, kubeconfigPath, verdict.issues, log) : [];
+
       stages.push({
         stage: 8,
         name: "power-cycle recovery (hard kill -> restart -> converge -> soak)",
@@ -2195,6 +2224,7 @@ export async function runReplica(opts: RunOptions): Promise<RunReport> {
           soakRegressions: restartCountRegressions(soakBefore, soakAfter),
           afterPvcBindings,
           issues: verdict.issues,
+          crashLoopDiagnostics,
         },
       });
     }
@@ -2241,6 +2271,64 @@ function collectFailureDiagnostics(runner: Runner, kubeconfigPath: string, conta
   log(helmInstallLogs.stdout);
   log("=== docker logs (tail) ===");
   log(runner.run("docker", ["logs", "--tail", "200", containerName]).stdout);
+}
+
+export interface CrashLoopDiagnostic {
+  readonly subject: string;
+  /** `kubectl logs --previous` (the crashed instance) when available, else the current instance's — flagged in `previousAvailable`. */
+  readonly logs: string;
+  readonly previousAvailable: boolean;
+  readonly describePod: string;
+}
+
+/**
+ * WP19b (081M34QTS06087G0R0015D7X5W): stage 8's own `collectFailureDiagnostics`
+ * equivalent — but that one only fires from a THROWN exception (stages 1-7);
+ * stage 8 returns a verdict rather than throwing, so a CONTAINER_CRASHLOOP
+ * finding had no root-cause evidence attached to it. Called ONLY when stage 8
+ * is NOT_RECOVERED with at least one CONTAINER_CRASHLOOP issue, BEFORE the
+ * `finally` block tears the container down — narrowly scoped to that one
+ * category on purpose (an APP_NOT_HEALTHY/SECRET_DATA_CHANGED/PVC_REBOUND
+ * issue names no crashing container to fetch logs for).
+ */
+function collectCrashLoopDiagnostics(
+  runner: Runner,
+  kubeconfigPath: string,
+  issues: readonly PowerCycleIssue[],
+  log: (line: string) => void,
+): readonly CrashLoopDiagnostic[] {
+  const diagnostics: CrashLoopDiagnostic[] = [];
+  for (const issue of issues) {
+    if (issue.category !== "CONTAINER_CRASHLOOP") continue;
+    const parsed = parseCrashLoopSubject(issue.subject);
+    if (parsed === null) {
+      log(`WARNING: could not parse CONTAINER_CRASHLOOP subject "${issue.subject}" — skipping its diagnostics`);
+      continue;
+    }
+    const { namespace, pod, container } = parsed;
+    const previous = kubectl(runner, kubeconfigPath, ["-n", namespace, "logs", pod, "-c", container, "--previous", "--tail=200"], 20_000);
+    // `--previous` fails (ExitCode!=0, "previous terminated container ... not found")
+    // when the container has not yet been restarted enough times to have a
+    // distinct previous instance, or that instance was already GC'd — fall back to
+    // the CURRENT instance's logs rather than reporting nothing.
+    const previousAvailable = previous.status === 0;
+    const logsResult = previousAvailable
+      ? previous
+      : kubectl(runner, kubeconfigPath, ["-n", namespace, "logs", pod, "-c", container, "--tail=200"], 20_000);
+    const describePod = kubectl(runner, kubeconfigPath, ["-n", namespace, "describe", "pod", pod], 20_000);
+    const diagnostic: CrashLoopDiagnostic = {
+      subject: issue.subject,
+      logs: logsResult.stdout || logsResult.stderr || "(no output)",
+      previousAvailable,
+      describePod: describePod.stdout || describePod.stderr || "(no output)",
+    };
+    diagnostics.push(diagnostic);
+    log(`=== stage 8 crash-loop diagnostics: ${issue.subject} (logs ${previousAvailable ? "--previous" : "current, --previous unavailable"}) ===`);
+    log(diagnostic.logs);
+    log(`=== stage 8 crash-loop diagnostics: ${issue.subject} describe pod ===`);
+    log(diagnostic.describePod);
+  }
+  return diagnostics;
 }
 
 function planSummary(plan: ReplicaPlan): RunReport["plan"] {

@@ -66,3 +66,54 @@ reproduce it.
 - PR: https://github.com/Lucent-Financial-Group/Zeta/pull/17529
 - Run 1: https://github.com/Lucent-Financial-Group/Zeta/actions/runs/35725812453
 - Run 2: https://github.com/Lucent-Financial-Group/Zeta/actions/runs/35725819076
+
+## Root cause (WP19c, 081M34QTS06087G0R0015D7X5W)
+
+The suggested `kubectl logs --previous` capture landed (`collectCrashLoopDiagnostics` in
+`first-boot-replica.ts`) and run 35744676325 (PR #17534) caught the crashing container's own
+log on its first try:
+
+```
+Password 50032e0a391aa2ba552cb1720559dcfa64885acb95d1edce6a6e96f0340ec431 failed validation:
+"Password does not match validation regex". Please re-try with a minimum 8 character password
+and must contain at least one uppercase letter, one lowercase letter, one digit, and one
+special character that is strong.
+```
+
+`opensearch-cluster-master-0`'s admin password is minted by
+`full-ai-cluster/k8s/bootstrap/internal-secret-seeding.yaml`'s `seed-opensearch-admin` Job:
+
+```
+head -c 32 /dev/urandom | od -An -tx1 | tr -d ' \n' > /work/admin-password
+```
+
+`od -An -tx1` hex-encodes — its output alphabet is exactly `0-9a-f`, so the drawn password
+can **never** contain an uppercase letter or a non-alphanumeric character. OpenSearch
+Security's `install_demo_configuration.sh` (`org.opensearch.security.tools.democonfig.Installer`)
+validates the admin password against
+`(?=.*[A-Z])(?=.*[^a-zA-Z\d])(?=.*[0-9])(?=.*[a-z]).{8,}` before it lets `opensearch` start
+(docs.opensearch.org/latest/security/configuration/demo-configuration/; this demo-installer
+check is separate from the runtime `plugins.security.restapi.password_validation_regex`
+setting — opensearch-project/security#4081). So validation fails **deterministically, on
+every boot** — first boot included, not only after the power cycle. `describe pod` on the
+same run shows the container already crash-looping (6 restarts) well before stage 8's hard
+kill; WP19's power-cycle soak window is simply the first check in this harness sensitive
+enough to catch it, since it compares the SOAK-window restart delta rather than relying on
+Argo Application health (which this StatefulSet apparently reports loosely).
+
+Ruled out by this evidence: stale `node.lock`, translog/cluster-state corruption, JVM heap
+OOM, and the stage-6/WP18 liveness-kill-budget probes (the chart ships NO liveness probe by
+default — only `startupProbe`/`readinessProbe` — so the restarts are the OpenSearch process
+itself exiting, not a probe killing it).
+
+**Fix:** `seed-opensearch-admin`'s `draw-entropy` script now draws two extra CSPRNG bytes,
+hex-maps each through a 16-symbol `tr` table into a guaranteed uppercase letter and a
+guaranteed special character (bijective, no entropy lost), and prepends them to the same
+248-bit hex body every other credential here uses — so the minted password satisfies
+OpenSearch's strength regex by construction on every draw, not by chance. Verified locally:
+1000s of real `/dev/urandom` draws through the exact shell pipeline, each checked against the
+literal regex in Python — 100% pass. `internal-secret-seeding.test.ts` (66 tests) and
+`first-boot-replica.test.ts` (105 tests) pass unchanged.
+
+Evidence: PR https://github.com/Lucent-Financial-Group/Zeta/pull/17534, run
+https://github.com/Lucent-Financial-Group/Zeta/actions/runs/35744676325.
