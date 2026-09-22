@@ -873,6 +873,20 @@ export function resolveViolations(
 //       SkipDryRunOnMissingResource=true (platform's fix), or the consumer
 //       itself retries automatically (`selfHeal: true`) so a transient
 //       SyncFailed self-heals on the next reconcile.
+//   (d) UNOBSERVED-GATE -- a gating-annotated app must be recorded in
+//       GATING_EVIDENCE as observedHealthy: true. Static safety (a)+(b) is
+//       necessary but NOT sufficient: both cilium and arc-controller passed
+//       every static check in #17477 (zero secrets, not manual-sync, real
+//       CRD providers) and were STILL wrong to gate on (#17497,
+//       081M33T23ZQ087G0R002ZYRHDG follow-on) -- cilium's own Application
+//       stayed Synced/Progressing for 15+ minutes on a real first-boot-replica
+//       run (35696323545) with every cilium pod Running, and arc-controller
+//       was never observed reaching Healthy on that path at all. No static
+//       analysis of this repo's manifests can see either fact -- both are
+//       runtime behavior of the rendered chart, observable only by actually
+//       booting it. Hence: the bar for gating is OBSERVED Healthy on a real
+//       first-boot-replica run, not "nothing in this repo's tree looks
+//       unsafe."
 // ---------------------------------------------------------------------------
 
 export type GatingViolationKind =
@@ -880,6 +894,7 @@ export type GatingViolationKind =
   | "UNSAFE-GATE-SECRET"
   | "UNSAFE-GATE-MANUAL-SYNC"
   | "UNSAFE-GATE-CEREMONY"
+  | "UNOBSERVED-GATE"
   | "UNPROTECTED-NON-GATING-PROVIDER";
 
 export interface GatingViolation {
@@ -915,13 +930,82 @@ export const CEREMONY_GATED_APPS: ReadonlyMap<string, string> = new Map([
   ],
 ]);
 
+export interface GatingEvidence {
+  /** True only once a first-boot-replica run has shown this Application reach real ArgoCD Healthy. */
+  readonly observedHealthy: boolean;
+  /** What was observed, and where -- a run id/link + date, or the reasoned basis for a PENDING entry. */
+  readonly evidence: string;
+}
+
+/**
+ * The evidence ledger check (d) reads. An app absent from this map, or
+ * present with `observedHealthy: false`, fails UNOBSERVED-GATE if it also
+ * carries the annotation -- so adding the annotation and adding a TRUE entry
+ * here must happen together, and the entry must name a real run, not a
+ * restatement of the static checks (a)/(b) already run.
+ *
+ * Each entry below was pulled directly from a downloaded
+ * `first-boot-replica-report.json` artifact, not asserted from memory --
+ * `gh run download <id> -n first-boot-replica-report` then read the
+ * per-Application verdict for the named app out of the JSON.
+ */
+export const GATING_EVIDENCE: ReadonlyMap<string, GatingEvidence> = new Map([
+  [
+    "cert-manager",
+    {
+      observedHealthy: true,
+      evidence:
+        "run 35696323545 (2026-09-22, main branch, ungated): " +
+        "stage 6 (\"convergence report\") appConvergence entry {sync: Synced, health: Healthy}, 50 Applications " +
+        "observed. Corroborated by run 35700790207 (2026-09-22, claude/first-boot-replica-catalog): appVerdicts " +
+        "entry {health: Healthy, sync: Synced}, 42 Applications observed.",
+    },
+  ],
+  [
+    "open-policy-agent",
+    {
+      observedHealthy: true,
+      evidence:
+        "run 35696323545 (2026-09-22, main branch, ungated): stage 6 appConvergence entry " +
+        "{sync: Synced, health: Healthy}. Corroborated by run 35700790207 (2026-09-22, " +
+        "claude/first-boot-replica-catalog): appVerdicts entry {health: Healthy, sync: Synced}.",
+    },
+  ],
+  [
+    "spire-crds",
+    {
+      observedHealthy: true,
+      evidence:
+        "run 35696323545 (2026-09-22, main branch, ungated): stage 6 appConvergence entry " +
+        "{sync: Synced, health: Healthy}. Corroborated by run 35700790207 (2026-09-22, " +
+        "claude/first-boot-replica-catalog): appVerdicts entry {health: Healthy, sync: Synced}. It installs three " +
+        "CRD definitions and nothing else (no Deployment/pod to wait on), unlike `spire` itself (the server/agent " +
+        "chart, NOT gating-annotated), which crash-loops on CoreDNS timeouts on this same path.",
+    },
+  ],
+  [
+    "trust-manager",
+    {
+      observedHealthy: true,
+      evidence:
+        "run 35696323545 (2026-09-22, main branch, ungated): stage 6 appConvergence entry " +
+        "{sync: Synced, health: Healthy}. Corroborated by run 35700790207 (2026-09-22, " +
+        "claude/first-boot-replica-catalog): appVerdicts entry {health: Healthy, sync: Synced}.",
+    },
+  ],
+]);
+
 /** Every Secret an Application references (valuesObject + raw pod-spec), deduped by name. */
 function secretNamesFor(app: string, repoRoot: string): readonly string[] {
   const all = [...collectSecretReferences(repoRoot), ...collectRawSecretReferences(repoRoot)];
   return [...new Set(all.filter((r) => r.app === app).map((r) => r.secretName))];
 }
 
-export function gatingInvariantViolations(index: AppManifestIndex, repoRoot = REPO_ROOT): readonly GatingViolation[] {
+export function gatingInvariantViolations(
+  index: AppManifestIndex,
+  repoRoot = REPO_ROOT,
+  evidence: ReadonlyMap<string, GatingEvidence> = GATING_EVIDENCE,
+): readonly GatingViolation[] {
   const violations: GatingViolation[] = [];
   const treeMinted = collectTreeMintedSecretNames(repoRoot);
 
@@ -982,6 +1066,21 @@ export function gatingInvariantViolations(index: AppManifestIndex, repoRoot = RE
         kind: "UNSAFE-GATE-CEREMONY",
         app,
         detail: `${app} carries ${GATING_ANNOTATION}: "true" but is in CEREMONY_GATED_APPS: ${ceremony}`,
+      });
+    }
+
+    // (d) observed Healthy on a real bootstrap, not just statically safe.
+    const appEvidence = evidence.get(app);
+    if (appEvidence === undefined || !appEvidence.observedHealthy) {
+      violations.push({
+        kind: "UNOBSERVED-GATE",
+        app,
+        detail:
+          `${app} carries ${GATING_ANNOTATION}: "true" but GATING_EVIDENCE has ` +
+          `${appEvidence === undefined ? "no entry for it" : "observedHealthy: false"} -- static safety ((a)/(b)) is ` +
+          "necessary but not sufficient (cilium and arc-controller both proved this in #17477/#17497: they passed " +
+          "every static check and still were never observed reaching real Healthy on a first-boot-replica run). " +
+          "Record a first-boot-replica run id, date, and what was observed before gating on this app.",
       });
     }
   }

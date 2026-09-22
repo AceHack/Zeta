@@ -515,7 +515,12 @@ describe("gatingInvariantViolations", () => {
     try {
       const bootstrapApps = new Set<string>();
       const index = indexFixture(fx, bootstrapApps);
-      expect(gatingInvariantViolations(index, fx.root)).toEqual([]);
+      // Check (d) needs a witnessed evidence entry -- this fixture stands in
+      // for "a real first-boot-replica run observed `provider` Healthy",
+      // injected rather than added to the real GATING_EVIDENCE table so this
+      // synthetic fixture app can never be mistaken for a real one.
+      const evidence = new Map([["provider", { observedHealthy: true, evidence: "fixture: stands in for a witnessed run" }]]);
+      expect(gatingInvariantViolations(index, fx.root, evidence)).toEqual([]);
     } finally {
       fx.cleanup();
     }
@@ -651,6 +656,39 @@ describe("gatingInvariantViolations", () => {
       const gating = [...audit.index.sourceByApp.entries()].filter(([, s]) => s.gatingAnnotated).map(([n]) => n).sort();
       expect(gating).toEqual(["cert-manager", "open-policy-agent", "spire-crds", "trust-manager"]);
       expect(audit.gatingViolations).toEqual([]);
+    },
+    180_000,
+  );
+
+  test(
+    "MUTATION: annotating a real, non-evidenced live-tree app as gating MUST go red",
+    () => {
+      // The falsifier for check (d) itself: if this ever passes green, the
+      // check has stopped checking anything -- exactly the "a check that
+      // cannot fail is not a check" failure class this repo's own hygiene
+      // tooling (mutation-runner.ts) hunts for. Mutate one real app's
+      // parsed source to carry the gating annotation -- kube-prometheus-stack
+      // is a genuine live-tree app DELIBERATELY not gating-annotated
+      // (081M33T23ZQ087G0R002ZYRHDG: unminted grafana-admin-credentials
+      // Secret) and has no GATING_EVIDENCE entry -- then confirm
+      // gatingInvariantViolations reports UNOBSERVED-GATE for it against
+      // the REAL GATING_EVIDENCE table (no override passed).
+      if (!helmOnPathForTest()) return;
+      const { readShippedApplications } = require("./derive-sync-waves.ts") as typeof import("./derive-sync-waves.ts");
+      const { readFileSync } = require("node:fs") as typeof import("node:fs");
+      const { resolve } = require("node:path") as typeof import("node:path");
+      const root = process.cwd();
+      const apps = readShippedApplications(root);
+      const audit = auditCrdOrder(apps, (p) => readFileSync(resolve(root, p), "utf8"), root);
+      const target = "kube-prometheus-stack";
+      const real = audit.index.sourceByApp.get(target);
+      expect(real).toBeDefined();
+      expect(real?.gatingAnnotated).toBe(false); // sanity: it really is non-gating today
+      const mutatedSourceByApp = new Map(audit.index.sourceByApp);
+      mutatedSourceByApp.set(target, { ...(real as AppSource), gatingAnnotated: true });
+      const mutatedIndex = { ...audit.index, sourceByApp: mutatedSourceByApp };
+      const violations = gatingInvariantViolations(mutatedIndex, root);
+      expect(violations.some((v) => v.kind === "UNOBSERVED-GATE" && v.app === target)).toBe(true);
     },
     180_000,
   );
