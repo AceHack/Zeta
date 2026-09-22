@@ -75,7 +75,12 @@ jobs:
   first-boot-replica:
     name: first-boot replica (real k3s manifest roster)
     runs-on: ubuntu-24.04
-    timeout-minutes: 75
+    # MEASURED worst case with --serve-tree dev (WP1b): stage1 300s + stage2 900s +
+    # stage3 2400s + stage4 900s + stage6 convergence-wait 1800s + soak 300s + stage7
+    # 180s = 6780s (~113min) of harness budget alone, on top of checkout/toolchain
+    # install/docker pull. 75min was sized for the pre-WP1b flat stage567 sleep (600s
+    # max); raised with margin rather than tuned to the edge.
+    timeout-minutes: 150
     env:
       ZETA_HOST_TIER: full
       MISE_ENV: full
@@ -122,10 +127,12 @@ jobs:
             --host-api-port 16443 \
             --target-revision "$ZETA_FBR_GIT_REF" \
             --repo-url "$ZETA_FBR_GIT_REPO_URL" \
+            --serve-tree dev \
             --json-out first-boot-replica-report.json \
             --stage3-timeout-sec 2400 \
             --stage4-timeout-sec 900 \
-            --stage567-timeout-sec 480
+            --stage567-timeout-sec 1800 \
+            --soak-sec 300
 
       # NOTE: there is no separate "fetch logs from the cluster" step here.
       # `runReplica`'s own `finally` tears the container down (docker rm -f)

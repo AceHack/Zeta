@@ -20,21 +20,38 @@ import { mkdtempSync, mkdirSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 import {
+  allApplicationsSettled,
+  applyServeTreeOverride,
   buildDockerRunArgs,
   buildPlan,
   buildRoster,
+  classifyPod,
+  classifyPods,
+  computeAppVerdict,
+  computeAppVerdicts,
   dedentNixIndentedString,
   extractBracedBlock,
   extractHelmCharts,
+  injectRootApplicationExclude,
   k3sVersionToDockerTag,
   manifestTargetFilename,
   parseExtraFlags,
+  parseFailedSchedulingEvents,
   parseInlineWriteTextManifest,
   parseManifestSourceRoster,
+  parsePodSummaries,
+  parseRestartSamples,
   patchRootApplicationRevision,
   readClusterIdentity,
   readKubernetesVersionPin,
+  renderAppVerdictMarkdown,
   REPO_ROOT,
+  restartCountRegressions,
+  type AppConvergenceSnapshot,
+  type FailedSchedulingEvent,
+  type PodSummary,
+  type PodVerdict,
+  type RestartSample,
   type RosterEntry,
 } from "./first-boot-replica.ts";
 
@@ -491,5 +508,410 @@ describe("buildPlan against the real repository files (LIVE, no Docker)", () => 
     expect(pin.k3sVersion).toMatch(/^\d+\.\d+\.\d+\+k3s\d+$/);
     const identity = readClusterIdentity(join(REPO_ROOT, "full-ai-cluster/cluster-identity.json"));
     expect(identity.clusterName).toBe("zeta");
+  });
+});
+
+// ─────────────────────── injectRootApplicationExclude ────────────────────
+
+describe("injectRootApplicationExclude", () => {
+  const fixture = [
+    "spec:",
+    "  source:",
+    "    directory:",
+    "      recurse: true",
+    "      include: '{*/Application.yaml,Application.yaml}'",
+    "  destination:",
+  ].join("\n");
+
+  test("inserts an exclude line right after include, at the same indentation", () => {
+    const patched = injectRootApplicationExclude(fixture, "{longhorn/**,gitlab/**}");
+    expect(patched).toContain("      include: '{*/Application.yaml,Application.yaml}'\n      exclude: '{longhorn/**,gitlab/**}'");
+    // Nothing else in the file moved.
+    expect(patched.replace(/\n\s*exclude:.*$/m, "")).toBe(fixture);
+  });
+
+  test("throws when there is no include line to anchor on", () => {
+    expect(() => injectRootApplicationExclude("spec:\n  source: {}\n", "{longhorn/**}")).toThrow(/could not find the `include:` line/);
+  });
+});
+
+// ────────────────────────── applyServeTreeOverride ────────────────────────
+
+describe("applyServeTreeOverride", () => {
+  test("re-patches root-application's repoURL/targetRevision and injects the exclude glob", () => {
+    const plan = buildPlan({ repoRoot: REPO_ROOT, targetRevision: "orig-ref" });
+    const before = plan.roster.find((e) => e.attr === "root-application");
+    expect(before?.content).toContain("targetRevision: orig-ref");
+
+    const overridden = applyServeTreeOverride(plan, {
+      manifests: "kind: Namespace\n",
+      repoUrl: "http://zeta-lane-tree.zeta-lane-tree.svc.cluster.local:8080/tree.git",
+      gitRef: "main",
+      excludeGlob: "{longhorn/**,gitlab/**}",
+    });
+
+    const after = overridden.roster.find((e) => e.attr === "root-application");
+    expect(after?.content).toContain("repoURL: http://zeta-lane-tree.zeta-lane-tree.svc.cluster.local:8080/tree.git");
+    expect(after?.content).toContain("targetRevision: main");
+    expect(after?.content).toContain("exclude: '{longhorn/**,gitlab/**}'");
+
+    // Every OTHER roster entry is untouched.
+    for (const entry of overridden.roster) {
+      if (entry.attr === "root-application") continue;
+      const original = plan.roster.find((e) => e.attr === entry.attr);
+      expect(original).toBeDefined();
+      expect(entry.content).toBe(original?.content ?? "");
+    }
+
+    // Both overrides are named, individually inspectable divergences (WP1b spec item 1).
+    const ids = overridden.divergences.map((d) => d.id);
+    expect(ids).toContain("serve-tree-dev-rung");
+    expect(ids).toContain("serve-tree-exclude-glob");
+    // Additive over the base plan's divergences, never a replacement.
+    for (const d of plan.divergences) expect(ids).toContain(d.id);
+  });
+
+  test("throws if the roster has no root-application entry", () => {
+    const plan = buildPlan({ repoRoot: REPO_ROOT, targetRevision: "orig-ref" });
+    const withoutRoot = { ...plan, roster: plan.roster.filter((e) => e.attr !== "root-application") };
+    expect(() =>
+      applyServeTreeOverride(withoutRoot, { manifests: "", repoUrl: "http://x", gitRef: "main", excludeGlob: "{}" }),
+    ).toThrow(/roster has no `root-application` entry/);
+  });
+});
+
+// ──────────────────────────────── classifyPod ─────────────────────────────
+//
+// Each test below is written to FAIL if its rule were inverted (WP1b spec: "each
+// must fail if its rule is inverted") — checking both `category` and `isFailure`
+// together, so swapping a category's isFailure polarity (e.g. reading CAPACITY as
+// a FAIL) breaks a test even though the category string alone would still match.
+
+function pod(overrides: Partial<PodSummary> = {}): PodSummary {
+  return {
+    namespace: "hindsight",
+    name: "hindsight-api-0",
+    phase: "Pending",
+    scheduled: false,
+    containerWaitingReasons: [],
+    restartCount: 0,
+    ...overrides,
+  };
+}
+
+describe("classifyPod", () => {
+  test("Succeeded (completed Job pod) is not classified as an issue — excluded from crash-loop counting", () => {
+    const v = classifyPod(pod({ phase: "Succeeded", restartCount: 3 }), []);
+    expect(v.category).toBeNull();
+    expect(v.isFailure).toBe(false);
+  });
+
+  test("Running with zero restarts is not classified as an issue", () => {
+    const v = classifyPod(pod({ phase: "Running", scheduled: true, restartCount: 0 }), []);
+    expect(v.category).toBeNull();
+    expect(v.isFailure).toBe(false);
+  });
+
+  test("CrashLoopBackOff -> CRASHLOOP, a FAIL", () => {
+    const v = classifyPod(pod({ phase: "Running", scheduled: true, containerWaitingReasons: ["CrashLoopBackOff"], restartCount: 5 }), []);
+    expect(v.category).toBe("CRASHLOOP");
+    expect(v.isFailure).toBe(true);
+  });
+
+  test("ImagePullBackOff -> IMAGE, a FAIL", () => {
+    const v = classifyPod(pod({ phase: "Pending", scheduled: true, containerWaitingReasons: ["ImagePullBackOff"] }), []);
+    expect(v.category).toBe("IMAGE");
+    expect(v.isFailure).toBe(true);
+  });
+
+  test("ErrImagePull -> IMAGE, a FAIL", () => {
+    const v = classifyPod(pod({ phase: "Pending", scheduled: true, containerWaitingReasons: ["ErrImagePull"] }), []);
+    expect(v.category).toBe("IMAGE");
+    expect(v.isFailure).toBe(true);
+  });
+
+  test("CreateContainerConfigError -> SECRET, a FAIL", () => {
+    const v = classifyPod(pod({ phase: "Pending", scheduled: true, containerWaitingReasons: ["CreateContainerConfigError"] }), []);
+    expect(v.category).toBe("SECRET");
+    expect(v.isFailure).toBe(true);
+  });
+
+  test("FailedScheduling Insufficient cpu -> CAPACITY, a DIVERGENCE (not a FAIL)", () => {
+    const events: FailedSchedulingEvent[] = [
+      { namespace: "hindsight", podName: "hindsight-api-0", message: "0/1 nodes are available: 1 Insufficient cpu." },
+    ];
+    const v = classifyPod(pod(), events);
+    expect(v.category).toBe("CAPACITY");
+    expect(v.isFailure).toBe(false);
+  });
+
+  test("FailedScheduling Insufficient memory -> CAPACITY, a DIVERGENCE", () => {
+    const events: FailedSchedulingEvent[] = [
+      { namespace: "hindsight", podName: "hindsight-api-0", message: "0/1 nodes are available: 1 Insufficient memory." },
+    ];
+    const v = classifyPod(pod(), events);
+    expect(v.category).toBe("CAPACITY");
+    expect(v.isFailure).toBe(false);
+  });
+
+  test("FailedScheduling unbound immediate PersistentVolumeClaims -> STORAGE, a DIVERGENCE", () => {
+    const events: FailedSchedulingEvent[] = [
+      {
+        namespace: "hindsight",
+        podName: "hindsight-api-0",
+        message: "pod has unbound immediate PersistentVolumeClaims",
+      },
+    ];
+    const v = classifyPod(pod(), events);
+    expect(v.category).toBe("STORAGE");
+    expect(v.isFailure).toBe(false);
+  });
+
+  test("FailedScheduling for an UNRELATED pod does not classify this one — falls through to UNKNOWN/FAIL", () => {
+    const events: FailedSchedulingEvent[] = [
+      { namespace: "hindsight", podName: "some-other-pod", message: "Insufficient cpu" },
+    ];
+    const v = classifyPod(pod(), events);
+    expect(v.category).toBe("UNKNOWN");
+    expect(v.isFailure).toBe(true);
+  });
+
+  test("an unscheduled pod with no matching event, and no other signal, is UNKNOWN — never a silent pass", () => {
+    const v = classifyPod(pod(), []);
+    expect(v.category).toBe("UNKNOWN");
+    expect(v.isFailure).toBe(true);
+  });
+
+  test("a live CrashLoopBackOff takes priority over a stale FailedScheduling event for the same pod", () => {
+    const events: FailedSchedulingEvent[] = [
+      { namespace: "hindsight", podName: "hindsight-api-0", message: "Insufficient cpu" },
+    ];
+    const v = classifyPod(pod({ scheduled: true, containerWaitingReasons: ["CrashLoopBackOff"] }), events);
+    expect(v.category).toBe("CRASHLOOP");
+    expect(v.isFailure).toBe(true);
+  });
+});
+
+describe("classifyPods", () => {
+  test("drops converged pods (category null) and keeps only the issues", () => {
+    const pods: PodSummary[] = [
+      pod({ name: "healthy", phase: "Running", scheduled: true }),
+      pod({ name: "succeeded", phase: "Succeeded", restartCount: 2 }),
+      pod({ name: "crashing", phase: "Running", scheduled: true, containerWaitingReasons: ["CrashLoopBackOff"] }),
+    ];
+    const issues = classifyPods(pods, []);
+    expect(issues.map((i) => i.name)).toEqual(["crashing"]);
+    expect(issues[0]?.category).toBe("CRASHLOOP");
+  });
+});
+
+// ───────────────────────── computeAppVerdict(s) ───────────────────────────
+
+describe("computeAppVerdict", () => {
+  const healthyApp: AppConvergenceSnapshot = { name: "cert-manager", sync: "Synced", health: "Healthy" };
+
+  test("Healthy ArgoCD health always verdicts Healthy, regardless of unrelated pod issues", () => {
+    const unrelated: PodVerdict[] = [{ namespace: "other-namespace", name: "x", category: "CRASHLOOP", isFailure: true, detail: "x" }];
+    const v = computeAppVerdict(healthyApp, unrelated);
+    expect(v.verdict).toBe("Healthy");
+  });
+
+  test("non-Healthy with only DIVERGENCE-class pod issues (CAPACITY/STORAGE) verdicts DIVERGENCE, not FAIL", () => {
+    const app: AppConvergenceSnapshot = { name: "hindsight", sync: "OutOfSync", health: "Progressing" };
+    const issues: PodVerdict[] = [
+      { namespace: "hindsight", name: "hindsight-postgresql-0", category: "CAPACITY", isFailure: false, detail: "Insufficient cpu" },
+    ];
+    const v = computeAppVerdict(app, issues);
+    expect(v.verdict).toBe("DIVERGENCE");
+    expect(v.reason).toContain("CAPACITY");
+  });
+
+  test("non-Healthy with at least one FAIL-class pod issue verdicts FAIL, even alongside a DIVERGENCE one", () => {
+    const app: AppConvergenceSnapshot = { name: "gitlab", sync: "OutOfSync", health: "Degraded" };
+    const issues: PodVerdict[] = [
+      { namespace: "gitlab", name: "gitlab-webservice-0", category: "IMAGE", isFailure: true, detail: "ImagePullBackOff" },
+      { namespace: "gitlab", name: "gitlab-postgresql-0", category: "CAPACITY", isFailure: false, detail: "Insufficient cpu" },
+    ];
+    const v = computeAppVerdict(app, issues);
+    expect(v.verdict).toBe("FAIL");
+    expect(v.reason).toContain("IMAGE");
+  });
+
+  test("non-Healthy with NO attributable pod issue in its namespace still FAILs — never reads as silently Healthy", () => {
+    const app: AppConvergenceSnapshot = { name: "orleans", sync: "OutOfSync", health: "Degraded" };
+    const v = computeAppVerdict(app, []);
+    expect(v.verdict).toBe("FAIL");
+    expect(v.reason).toContain("no classified pod issue");
+  });
+
+  test("pod issues in a DIFFERENT namespace are never attributed to this app", () => {
+    const app: AppConvergenceSnapshot = { name: "weaviate", sync: "OutOfSync", health: "Degraded" };
+    const issues: PodVerdict[] = [{ namespace: "gitlab", name: "x", category: "IMAGE", isFailure: true, detail: "x" }];
+    const v = computeAppVerdict(app, issues);
+    expect(v.verdict).toBe("FAIL");
+    expect(v.reason).toContain("no classified pod issue");
+  });
+});
+
+describe("computeAppVerdicts", () => {
+  test("maps each app independently", () => {
+    const apps: AppConvergenceSnapshot[] = [
+      { name: "cert-manager", sync: "Synced", health: "Healthy" },
+      { name: "hindsight", sync: "OutOfSync", health: "Progressing" },
+    ];
+    const issues: PodVerdict[] = [
+      { namespace: "hindsight", name: "hindsight-postgresql-0", category: "CAPACITY", isFailure: false, detail: "Insufficient cpu" },
+    ];
+    const verdicts = computeAppVerdicts(apps, issues);
+    expect(verdicts.map((v) => v.verdict)).toEqual(["Healthy", "DIVERGENCE"]);
+  });
+});
+
+// ──────────────────────────── allApplicationsSettled ──────────────────────
+
+describe("allApplicationsSettled", () => {
+  test("true when no app is Progressing", () => {
+    expect(allApplicationsSettled([{ health: "Healthy" }, { health: "Degraded" }, { health: "Missing" }])).toBe(true);
+  });
+
+  test("false when at least one app is still Progressing", () => {
+    expect(allApplicationsSettled([{ health: "Healthy" }, { health: "Progressing" }])).toBe(false);
+  });
+
+  test("true for an empty list (vacuously settled — callers gate on length separately)", () => {
+    expect(allApplicationsSettled([])).toBe(true);
+  });
+});
+
+// ───────────────────────────── restartCountRegressions ────────────────────
+
+describe("restartCountRegressions", () => {
+  const container = (restartCount: number): RestartSample => ({
+    namespace: "cilium",
+    pod: "cilium-abc",
+    container: "cilium-agent",
+    restartCount,
+  });
+
+  test("flags a container whose restartCount increased between before and after", () => {
+    const regressions = restartCountRegressions([container(0)], [container(1)]);
+    expect(regressions).toHaveLength(1);
+  });
+
+  test("does NOT flag a steady restartCount — this is the soak's pass case", () => {
+    const regressions = restartCountRegressions([container(2)], [container(2)]);
+    expect(regressions).toHaveLength(0);
+  });
+
+  test("does not flag a container present only in `after` (no baseline to regress from)", () => {
+    const regressions = restartCountRegressions([], [container(0)]);
+    expect(regressions).toHaveLength(0);
+  });
+
+  test("keys on namespace/pod/container — a same-named container in a different pod is independent", () => {
+    const before = [container(0)];
+    const after = [{ ...container(0), pod: "cilium-xyz" }];
+    expect(restartCountRegressions(before, after)).toHaveLength(0);
+  });
+});
+
+// ──────────────────── kubectl JSON parsers (pure, never throw) ────────────
+
+describe("parsePodSummaries", () => {
+  test("parses phase, scheduled, waiting reasons and max restartCount", () => {
+    const stdout = JSON.stringify({
+      items: [
+        {
+          metadata: { name: "p1", namespace: "ns1" },
+          status: {
+            phase: "Running",
+            conditions: [{ type: "PodScheduled", status: "True" }],
+            containerStatuses: [
+              { restartCount: 2, state: {} },
+              { restartCount: 5, state: { waiting: { reason: "CrashLoopBackOff" } } },
+            ],
+          },
+        },
+      ],
+    });
+    const [summary] = parsePodSummaries(stdout);
+    expect(summary).toEqual({
+      namespace: "ns1",
+      name: "p1",
+      phase: "Running",
+      scheduled: true,
+      containerWaitingReasons: ["CrashLoopBackOff"],
+      restartCount: 5,
+    });
+  });
+
+  test("an unscheduled pod (no containerStatuses, no PodScheduled condition) reports scheduled=false", () => {
+    const stdout = JSON.stringify({ items: [{ metadata: { name: "p2", namespace: "ns1" }, status: { phase: "Pending" } }] });
+    const [summary] = parsePodSummaries(stdout);
+    expect(summary?.scheduled).toBe(false);
+  });
+
+  test("malformed JSON yields [] rather than throwing", () => {
+    expect(parsePodSummaries("not json")).toEqual([]);
+  });
+});
+
+describe("parseFailedSchedulingEvents", () => {
+  test("keeps only FailedScheduling events against a Pod", () => {
+    const stdout = JSON.stringify({
+      items: [
+        { reason: "FailedScheduling", involvedObject: { kind: "Pod", name: "p1", namespace: "ns1" }, message: "Insufficient cpu" },
+        { reason: "Scheduled", involvedObject: { kind: "Pod", name: "p1", namespace: "ns1" }, message: "assigned" },
+        { reason: "FailedScheduling", involvedObject: { kind: "PersistentVolumeClaim", name: "pvc1", namespace: "ns1" }, message: "no storage" },
+      ],
+    });
+    expect(parseFailedSchedulingEvents(stdout)).toEqual([{ namespace: "ns1", podName: "p1", message: "Insufficient cpu" }]);
+  });
+
+  test("malformed JSON yields [] rather than throwing", () => {
+    expect(parseFailedSchedulingEvents("{{{")).toEqual([]);
+  });
+});
+
+describe("parseRestartSamples", () => {
+  test("emits one sample per container", () => {
+    const stdout = JSON.stringify({
+      items: [
+        {
+          metadata: { name: "p1", namespace: "ns1" },
+          status: { containerStatuses: [{ name: "c1", restartCount: 1 }, { name: "c2", restartCount: 0 }] },
+        },
+      ],
+    });
+    expect(parseRestartSamples(stdout)).toEqual([
+      { namespace: "ns1", pod: "p1", container: "c1", restartCount: 1 },
+      { namespace: "ns1", pod: "p1", container: "c2", restartCount: 0 },
+    ]);
+  });
+});
+
+// ───────────────────────────── renderAppVerdictMarkdown ───────────────────
+
+describe("renderAppVerdictMarkdown", () => {
+  test("reports the empty case plainly rather than an empty table", () => {
+    const markdown = renderAppVerdictMarkdown([]);
+    expect(markdown).toContain("no Application verdicts were produced");
+  });
+
+  test("summarises counts and renders one row per app, sorted", () => {
+    const markdown = renderAppVerdictMarkdown([
+      { name: "zeta-b", sync: "Synced", health: "Healthy", verdict: "Healthy", reason: "sync/health OK" },
+      { name: "zeta-a", sync: "OutOfSync", health: "Degraded", verdict: "FAIL", reason: "IMAGE: ImagePullBackOff" },
+    ]);
+    expect(markdown).toContain("1 Healthy");
+    expect(markdown).toContain("1 FAIL");
+    expect(markdown.indexOf("zeta-a")).toBeLessThan(markdown.indexOf("zeta-b"));
+  });
+
+  test("escapes a `|` in a reason so it cannot corrupt the markdown table", () => {
+    const markdown = renderAppVerdictMarkdown([
+      { name: "x", sync: "Unknown", health: "Degraded", verdict: "FAIL", reason: "a | b" },
+    ]);
+    expect(markdown).toContain("a \\| b");
   });
 });

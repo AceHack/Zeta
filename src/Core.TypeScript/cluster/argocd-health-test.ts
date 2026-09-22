@@ -2114,8 +2114,14 @@ function waitForKubectl(
  * the override had been skipped. `lane-tree-source` already refuses a zero-file
  * copy, a zero-edit rung apply, an un-rewritten repoURL and an over-budget pack;
  * this keeps those refusals fatal rather than absorbing them.
+ *
+ * EXPORTED (081KSXN940008QG0R000SCP2H1 WP1b) so `first-boot-replica.ts` can serve the
+ * same rung-overlaid tree its real k3s roster's `root-application.yaml` points at,
+ * rather than re-deriving the rung/override/bundle pipeline a second time. Both
+ * callers get the SAME staged tree, the SAME refusals (zero-file copy, zero-edit
+ * rung apply, un-rewritten repoURL, over-budget pack), and the same `LANE_TREE_IMAGE`.
  */
-function buildLaneTreeForProfile(
+export function buildLaneTreeForProfile(
   profile: string | null,
   gitRef: string,
 ): { readonly manifests: string; readonly repoUrl: string; readonly gitRef: string } | null {
