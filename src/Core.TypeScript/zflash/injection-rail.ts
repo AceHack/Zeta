@@ -164,6 +164,13 @@ export const ESP_DESTINATION_CONTENT_CLASS = Object.freeze({
   "/zeta-qemu-bake-test-cred": "public-identifier",
   /** SEE {@link PENDING_CLASSIFICATIONS}. Not classified; refused until reviewed. */
   "/zeta-qemu-creds-passphrase": "pending-security-review",
+  /**
+   * WP11. The literal bytes `"1\n"` — same shape as `/zeta-bind-uefi-keyfile`.
+   * Asks the installed disk's own first boot to run a bounded k3s bring-up
+   * check and print a JSON verdict to serial. Reading the marker discloses
+   * nothing and grants nothing.
+   */
+  "/zeta-qemu-k3s-first-boot-verify": "public-identifier",
 } satisfies Record<EspDestination, InjectionContentClass | PendingClassification>);
 
 /**

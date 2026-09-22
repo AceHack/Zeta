@@ -42,7 +42,7 @@
  */
 
 import { execFileSync, spawn } from "node:child_process";
-import { existsSync, mkdtempSync, readFileSync, statSync, unlinkSync, writeFileSync } from "node:fs";
+import { appendFileSync, existsSync, mkdtempSync, readFileSync, statSync, unlinkSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -132,6 +132,24 @@ const CPU_COUNT = 2;
 // install onto a real host, so any target disk near 20 GB fails the same way.
 const DISK_SIZE_GB = 40;
 const KVM_PATH = "/dev/kvm";
+
+// WP11 — opt-in phase 3: reboot the INSTALLED disk a second time, this time
+// with network, and let zeta-k3s-first-boot-verify.nix's oneshot unit watch
+// k3s + the first-boot roster converge. Dedicated constants so this phase's
+// heavier budget never changes phase 1/2's numbers for the required lane.
+/** Bigger disk: k3s + ~2-3 GB of Helm-chart images on top of the toolchain install phase 1 already does. */
+const K3S_VERIFY_DISK_SIZE_GB = 64;
+/** k3s-first-boot-roster.nix's own header: "deliberately oversized" to keep under-provisioning from reading as an ordering bug. */
+const K3S_VERIFY_MEMORY_MB = 12288;
+const K3S_VERIFY_CPU_COUNT = 4;
+/** k3s-first-boot-roster.nix budgets 45-70 min for the same bring-up on a comparable VM; the guest unit's own DEADLINE_SECONDS mirrors this. */
+const K3S_VERIFY_TIMEOUT_SECONDS = 4500;
+/** Byte-identical to zeta-first-boot-k3s-verify.nix's jsonBeginMarker/jsonEndMarker. */
+export const K3S_VERIFY_JSON_BEGIN_MARKER = "ZETA_K3S_FIRST_BOOT_VERIFY_JSON_BEGIN";
+export const K3S_VERIFY_JSON_END_MARKER = "ZETA_K3S_FIRST_BOOT_VERIFY_JSON_END";
+/** Separator between phase-2 and the WP11 phase-3 serial in the merged artifact. */
+export const PHASE3_K3S_VERIFY_SERIAL_SEPARATOR =
+  "\n\n=== PHASE 3 (WP11): reboot installed disk WITH network; verify k3s + first-boot roster ===\n\n";
 
 /** Separator between phase-1 installer serial and phase-2 disk-boot serial in artifacts. */
 export const PHASE2_SERIAL_SEPARATOR = "\n\n=== PHASE 2: boot installed disk (no ISO) ===\n\n";
@@ -248,6 +266,17 @@ export function uefiKeyfilePickerEnabled(): boolean {
  */
 export function uefiKeyfileRestoreEnabled(): boolean {
   return process.env.QEMU_UEFI_KEYFILE_RESTORE === "1";
+}
+
+/**
+ * WP11 — opt-in phase 3: after a successful install + phase-2 login check,
+ * reboot the INSTALLED disk again, this time with network, and wait for
+ * zeta-k3s-first-boot-verify.nix's JSON verdict on serial. Not on the
+ * required PR gate (see build-ai-cluster-iso.yml's separate dispatch+cron
+ * job) — dedicated flag so the required lane's runtime is unchanged when unset.
+ */
+export function k3sFirstBootVerifyPhaseEnabled(): boolean {
+  return process.env.QEMU_K3S_FIRST_BOOT_PHASE === "1";
 }
 
 /** QEMU fw_cfg name. Guest sysfs: /sys/firmware/qemu_fw_cfg/by_name/<name>/raw */
@@ -1034,9 +1063,9 @@ function kvmEnabled(): boolean {
   return existsSync(KVM_PATH);
 }
 
-function createVirtualDisk(diskPath: string): void {
-  console.log(`[qemu-full-install-test] Creating ${DISK_SIZE_GB}GB qcow2 disk at ${diskPath}`);
-  execFileSync("qemu-img", ["create", "-f", "qcow2", diskPath, `${DISK_SIZE_GB}G`], {
+function createVirtualDisk(diskPath: string, sizeGb: number = DISK_SIZE_GB): void {
+  console.log(`[qemu-full-install-test] Creating ${sizeGb}GB qcow2 disk at ${diskPath}`);
+  execFileSync("qemu-img", ["create", "-f", "qcow2", diskPath, `${sizeGb}G`], {
     stdio: "inherit",
   });
 }
@@ -1193,6 +1222,71 @@ export function buildQemuDiskBootArgsPure(
     // file= keeps the secret out of qemu argv; never use string=.
     args.push("-fw_cfg", `name=${QEMU_CREDS_PASSPHRASE_FWCFG_NAME},file=${fwCfgPassphraseFile}`);
   }
+  if (kvm) {
+    args.push("-enable-kvm", "-cpu", "host");
+  } else {
+    args.push("-cpu", "qemu64");
+  }
+  return args;
+}
+
+function buildQemuK3sVerifyBootArgs(diskPath: string, serialLogPath: string, tmpDir: string): string[] {
+  const ovmf = resolveOvmfFirmware();
+  if (!ovmf) {
+    throw new Error("OVMF firmware missing; cannot UEFI-boot installed systemd-boot disk");
+  }
+  // Own VARS filename — phase 2/2b share "OVMF_VARS.fd" and this phase
+  // reboots after them, so reusing that name would hand this boot whatever
+  // NVRAM state phase 2b's wrong-passphrase reboot left behind.
+  const varsPath = prepareWritableOvmfVars(tmpDir, ovmf.varsTemplate, "OVMF_VARS_k3sverify.fd");
+  return buildQemuK3sVerifyBootArgsPure(diskPath, serialLogPath, ovmf.code, varsPath, kvmEnabled());
+}
+
+/**
+ * Exported for unit tests. WP11 phase 3 — disk boot WITH a user-mode NIC
+ * (image pulls need internet). `buildQemuDiskBootArgsPure`'s own comment
+ * records why phase 2 stays NIC-less: a virtio-net PCI device exposes a UEFI
+ * "Misc Device" boot entry that can win a FRESH OVMF_VARS boot order and
+ * stall after initrd (081KSNY2Z0008QG0R0008PN7RQ run #27589613408). The fix
+ * here — carried over from that finding rather than repeating it — is an
+ * EXPLICIT bootindex on both devices: disk=1, NIC=2, so the boot manager has
+ * no ambiguity to resolve regardless of what NVRAM order a fresh VARS copy
+ * starts with.
+ */
+export function buildQemuK3sVerifyBootArgsPure(
+  diskPath: string,
+  serialLogPath: string,
+  ovmfCodePath: string,
+  ovmfVarsPath: string,
+  kvm: boolean,
+): string[] {
+  const args: string[] = [
+    "-machine",
+    "q35",
+    "-m",
+    String(K3S_VERIFY_MEMORY_MB),
+    "-smp",
+    String(K3S_VERIFY_CPU_COUNT),
+    "-drive",
+    `if=pflash,format=raw,unit=0,readonly=on,file=${ovmfCodePath}`,
+    "-drive",
+    `if=pflash,format=raw,unit=1,file=${ovmfVarsPath}`,
+    "-drive",
+    `file=${diskPath},if=none,format=qcow2,id=installdisk`,
+    "-device",
+    "virtio-blk-pci,drive=installdisk,bootindex=1",
+    "-netdev",
+    "user,id=net0",
+    "-device",
+    "virtio-net-pci,netdev=net0,bootindex=2",
+    "-serial",
+    `file:${serialLogPath}`,
+    "-display",
+    "none",
+    "-vga",
+    "none",
+    "-no-reboot",
+  ];
   if (kvm) {
     args.push("-enable-kvm", "-cpu", "host");
   } else {
@@ -1447,6 +1541,147 @@ async function waitForRestoreRefusal(serialLogPath: string): Promise<InstallResu
   };
 }
 
+// WP11 — the six named verdicts zeta-k3s-first-boot-verify.nix emits, JSON
+// on serial between K3S_VERIFY_JSON_BEGIN_MARKER/K3S_VERIFY_JSON_END_MARKER.
+// Shape must stay byte-identical to that module's `jq -n` assembly.
+export interface K3sFirstBootVerifyHelmJob {
+  readonly chart: string;
+  readonly exists: boolean;
+  readonly complete: boolean;
+  readonly failedAttempts: number;
+}
+
+export interface K3sFirstBootVerifyBadPod {
+  readonly namespace: string;
+  readonly name: string;
+  readonly status: string;
+  readonly restarts: string;
+}
+
+export interface K3sFirstBootVerifyVerdict {
+  readonly bootedMultiUser: { readonly ok: boolean; readonly elapsedSeconds: number };
+  readonly k3sServiceActive: { readonly ok: boolean; readonly elapsedSeconds: number };
+  readonly nodeReady: { readonly ok: boolean; readonly elapsedSeconds: number };
+  readonly helmJobs: { readonly jobs: readonly K3sFirstBootVerifyHelmJob[]; readonly elapsedSeconds: number };
+  readonly rootLanded: { readonly ok: boolean; readonly verdict: string; readonly elapsedSeconds: number };
+  readonly noBadPods: {
+    readonly ok: boolean;
+    readonly pods: readonly K3sFirstBootVerifyBadPod[];
+    readonly elapsedSeconds: number;
+  };
+}
+
+/**
+ * Exported for unit tests. Extracts + parses the JSON verdict block between
+ * the begin/end markers. `indexOf`, not regex — the payload is
+ * multi-line JSON and may itself contain the marker substrings nowhere
+ * (they are deliberately shouty and JSON-illegal as bare tokens) but a
+ * regex `.` would need `s` flag gymnastics for no benefit here.
+ */
+export function parseK3sFirstBootVerifyVerdict(
+  serialOutput: string,
+): { readonly ok: true; readonly value: K3sFirstBootVerifyVerdict } | { readonly ok: false; readonly reason: string } {
+  const beginIdx = serialOutput.indexOf(K3S_VERIFY_JSON_BEGIN_MARKER);
+  if (beginIdx === -1) {
+    return { ok: false, reason: `begin marker "${K3S_VERIFY_JSON_BEGIN_MARKER}" not found on serial` };
+  }
+  const endIdx = serialOutput.indexOf(K3S_VERIFY_JSON_END_MARKER, beginIdx);
+  if (endIdx === -1) {
+    return { ok: false, reason: `end marker "${K3S_VERIFY_JSON_END_MARKER}" not found after begin marker` };
+  }
+  const rawBlock = serialOutput.slice(beginIdx + K3S_VERIFY_JSON_BEGIN_MARKER.length, endIdx).trim();
+  try {
+    const value = JSON.parse(rawBlock) as K3sFirstBootVerifyVerdict;
+    return { ok: true, value };
+  } catch (err) {
+    return { ok: false, reason: `verdict block present but unparsable JSON: ${String(err)}` };
+  }
+}
+
+/**
+ * Exported for unit tests. The single pass/fail gate over all six verdicts,
+ * plus a human-readable line per verdict for console + $GITHUB_STEP_SUMMARY.
+ */
+export function summarizeK3sFirstBootVerifyVerdict(verdict: K3sFirstBootVerifyVerdict): {
+  readonly ok: boolean;
+  readonly lines: readonly string[];
+} {
+  const helmOk = verdict.helmJobs.jobs.every((j) => j.complete);
+  const ok =
+    verdict.bootedMultiUser.ok &&
+    verdict.k3sServiceActive.ok &&
+    verdict.nodeReady.ok &&
+    helmOk &&
+    verdict.rootLanded.ok &&
+    verdict.noBadPods.ok;
+
+  const lines: string[] = [
+    `1. bootedMultiUser: ${verdict.bootedMultiUser.ok ? "PASS" : "FAIL"} (elapsed ${verdict.bootedMultiUser.elapsedSeconds}s)`,
+    `2. k3sServiceActive: ${verdict.k3sServiceActive.ok ? "PASS" : "FAIL"} (elapsed ${verdict.k3sServiceActive.elapsedSeconds}s)`,
+    `3. nodeReady (Cilium up): ${verdict.nodeReady.ok ? "PASS" : "FAIL"} (elapsed ${verdict.nodeReady.elapsedSeconds}s)`,
+    `4. helmJobs: ${helmOk ? "PASS" : "FAIL"} (elapsed ${verdict.helmJobs.elapsedSeconds}s)`,
+    ...verdict.helmJobs.jobs.map(
+      (j) =>
+        `     - ${j.chart}: exists=${j.exists} complete=${j.complete} failedAttempts=${j.failedAttempts}`,
+    ),
+    `5. rootLanded (ROOT_LANDED): ${verdict.rootLanded.ok ? "PASS" : "FAIL"} verdict=${verdict.rootLanded.verdict} (elapsed ${verdict.rootLanded.elapsedSeconds}s)`,
+    `6. noBadPods: ${verdict.noBadPods.ok ? "PASS" : "FAIL"} (elapsed ${verdict.noBadPods.elapsedSeconds}s)`,
+    ...verdict.noBadPods.pods.map(
+      (p) => `     - ${p.namespace}/${p.name}: status=${p.status} restarts=${p.restarts}`,
+    ),
+  ];
+  return { ok, lines };
+}
+
+async function waitForK3sFirstBootVerifyVerdict(serialLogPath: string): Promise<InstallResult> {
+  const start = Date.now();
+  const deadline = start + K3S_VERIFY_TIMEOUT_SECONDS * 1000;
+  let lastReportedMinute = -1;
+
+  while (Date.now() < deadline) {
+    const elapsedSec = Math.floor((Date.now() - start) / 1000);
+    const elapsedMin = Math.floor(elapsedSec / 60);
+    if (elapsedMin > lastReportedMinute) {
+      console.log(
+        `[qemu-full-install-test] phase 3 (WP11): ${elapsedMin} min elapsed; waiting for k3s first-boot verdict`,
+      );
+      lastReportedMinute = elapsedMin;
+    }
+
+    const content = readSerial(serialLogPath);
+    const parsed = parseK3sFirstBootVerifyVerdict(content);
+    if (parsed.ok) {
+      const summary = summarizeK3sFirstBootVerifyVerdict(parsed.value);
+      return {
+        exitCode: summary.ok ? 0 : 1,
+        reason: summary.ok
+          ? "WP11 phase 3 — all six k3s first-boot verdicts passed"
+          : `WP11 phase 3 — one or more k3s first-boot verdicts failed:\n${summary.lines.join("\n")}`,
+        serialLogTail: content.slice(-3000),
+        elapsedSeconds: elapsedSec,
+      };
+    }
+    const failMarker = checkFailureMarkers(content);
+    if (failMarker) {
+      return {
+        exitCode: 1,
+        reason: `phase 3 (WP11) FAILURE — hard-fail marker "${failMarker}" before a verdict was emitted`,
+        serialLogTail: content.slice(-2000),
+        elapsedSeconds: elapsedSec,
+      };
+    }
+    await Bun.sleep(POLL_INTERVAL_MS);
+  }
+
+  const content = readSerial(serialLogPath);
+  return {
+    exitCode: 1,
+    reason: `phase 3 (WP11) timeout (${K3S_VERIFY_TIMEOUT_SECONDS}s) waiting for k3s first-boot verdict JSON`,
+    serialLogTail: content.slice(-4000),
+    elapsedSeconds: Math.floor((Date.now() - start) / 1000),
+  };
+}
+
 async function runQemuUntil(
   args: string[],
   serialLogPath: string,
@@ -1600,8 +1835,6 @@ async function main(): Promise<never> {
   console.log(`[qemu-full-install-test] Virtual disk: ${diskPath}`);
   console.log(`[qemu-full-install-test] Serial log artifact: ${artifactSerialLogPath}`);
 
-  createVirtualDisk(diskPath);
-
   const requireWifiEsp = wifiEspPhase1Enabled();
   const requireUefiKeyfileRestore = uefiKeyfileRestoreEnabled();
   const requireUefiKeyfilePicker = uefiKeyfilePickerEnabled();
@@ -1609,8 +1842,14 @@ async function main(): Promise<never> {
   // Keyfile opt-in writes persistOptInKeyfile; the iSerial contract treats that
   // as a silent-switch fail. Dedicated QEMU_UEFI_KEYFILE_PHASE1 / PICKER must not run it.
   const requireUsbISerial = usbISerialGuestEnabled() && !requireUefiKeyfile;
+  // WP11 — computed before createVirtualDisk so the extra k3s + Helm-chart
+  // image headroom is sized in from the start rather than resized mid-run.
+  const requireK3sFirstBootVerify = k3sFirstBootVerifyPhaseEnabled();
+
+  createVirtualDisk(diskPath, requireK3sFirstBootVerify ? K3S_VERIFY_DISK_SIZE_GB : DISK_SIZE_GB);
+
   let bootMedia: InstallBootMedia = { kind: "iso", path: isoPath };
-  if (requireWifiEsp || requireUsbISerial || requireUefiKeyfile) {
+  if (requireWifiEsp || requireUsbISerial || requireUefiKeyfile || requireK3sFirstBootVerify) {
     const usbImagePath = join(
       tmpDir,
       requireUefiKeyfileRestore
@@ -1621,7 +1860,9 @@ async function main(): Promise<never> {
             ? "zflash-uefi-keyfile-boot.img"
             : requireWifiEsp
               ? "zflash-wifi-esp-boot.img"
-              : "zflash-usb-iserial-boot.img",
+              : requireK3sFirstBootVerify
+                ? "zflash-k3s-first-boot-verify-boot.img"
+                : "zflash-usb-iserial-boot.img",
     );
     largeTempArtifacts.push(usbImagePath);
     console.log(
@@ -1633,7 +1874,9 @@ async function main(): Promise<never> {
             ? "[qemu-full-install-test] QEMU_UEFI_KEYFILE_PHASE1=1 — baking /zeta-bind-uefi-keyfile (install-time write; no restore-decrypt claim)"
             : requireWifiEsp
               ? `[qemu-full-install-test] QEMU_WIFI_ESP_PHASE1=1 — baking file-backed zflash image with wifi ESP JSON (ssid=${DEFAULT_QEMU_WIFI_SSID})`
-              : "[qemu-full-install-test] QEMU_USB_ISERIAL_PHASE1=1 — baking file-backed zflash USB image (serial=ZETA-QEMU-001; no wifi claim)",
+              : requireK3sFirstBootVerify
+                ? "[qemu-full-install-test] QEMU_K3S_FIRST_BOOT_PHASE=1 (WP11) — baking /zeta-qemu-k3s-first-boot-verify (installed-disk first-boot k3s verdict unit)"
+                : "[qemu-full-install-test] QEMU_USB_ISERIAL_PHASE1=1 — baking file-backed zflash USB image (serial=ZETA-QEMU-001; no wifi claim)",
     );
     const prepared = prepareBootImage({
       isoPath,
@@ -1648,7 +1891,9 @@ async function main(): Promise<never> {
             ? "node-qemu-keyfile"
             : requireWifiEsp
               ? "node-qemu-wifi"
-              : "node-qemu-iserial",
+              : requireK3sFirstBootVerify
+                ? "node-qemu-k3s-verify"
+                : "node-qemu-iserial",
       pubkeyPath: TEST_INFRA_PUBKEY,
       ...(requireWifiEsp
         ? {
@@ -1661,6 +1906,7 @@ async function main(): Promise<never> {
       ...(requireUefiKeyfile ? { bindUefiKeyfileMarker: true } : {}),
       ...(requireUefiKeyfilePicker ? { qemuCredsPassphrase: DEFAULT_QEMU_PASSPHRASE } : {}),
       ...(requireUefiKeyfileRestore ? { qemuBakeTestCredMarker: true } : {}),
+      ...(requireK3sFirstBootVerify ? { qemuK3sFirstBootVerifyMarker: true } : {}),
     });
     if ("error" in prepared) {
       console.error(`[qemu-full-install-test] USB boot-image bake failed: ${prepared.error}`);
@@ -1684,6 +1930,8 @@ async function main(): Promise<never> {
     phase1Label = "phase 1 (zflash USB install + wifi ESP)";
   } else if (requireUsbISerial) {
     phase1Label = "phase 1 (zflash USB install + iSerial guest probe)";
+  } else if (requireK3sFirstBootVerify) {
+    phase1Label = "phase 1 (zflash USB install + WP11 k3s-first-boot-verify marker)";
   }
 
   const phase1 = await runQemuUntil(
@@ -1931,6 +2179,72 @@ async function main(): Promise<never> {
       );
     }
     console.log(`[qemu-full-install-test] hostname uniqueness contract ok (${contract.hostname})`);
+  }
+
+  // WP11 — opt-in phase 3. Only meaningful once phase 2 proved the disk
+  // boots at all; a disk that never reached login has nothing further worth
+  // rebooting into.
+  if (requireK3sFirstBootVerify) {
+    if (phase2.exitCode !== 0) {
+      console.log("[qemu-full-install-test] WP11 phase 3 skipped — phase 2 (disk boot login) did not succeed");
+    } else {
+      const phase3SerialLogPath = join(tmpDir, "phase3-serial.log");
+      console.log(
+        "[qemu-full-install-test] phase 3 (WP11) — rebooting installed disk WITH network; verifying k3s + first-boot roster",
+      );
+      const phase3 = await runQemuUntil(
+        buildQemuK3sVerifyBootArgs(diskPath, phase3SerialLogPath, tmpDir),
+        phase3SerialLogPath,
+        () => waitForK3sFirstBootVerifyVerdict(phase3SerialLogPath),
+        "phase 3 (WP11 k3s first-boot verify)",
+      );
+      const phase3Serial = readSerial(phase3SerialLogPath);
+      writeFileSync(
+        artifactSerialLogPath,
+        mergeFullInstallSerialLogs(phase1Serial, phase2Serial) + PHASE3_K3S_VERIFY_SERIAL_SEPARATOR + phase3Serial,
+      );
+
+      const parsed = parseK3sFirstBootVerifyVerdict(phase3Serial);
+      if (parsed.ok) {
+        const summary = summarizeK3sFirstBootVerifyVerdict(parsed.value);
+        console.log(`[qemu-full-install-test] WP11 verdict (overall ${summary.ok ? "PASS" : "FAIL"}):`);
+        console.log(summary.lines.join("\n"));
+        const stepSummaryPath = process.env.GITHUB_STEP_SUMMARY;
+        if (stepSummaryPath !== undefined && stepSummaryPath.length > 0) {
+          const md =
+            "\n## WP11 — installed-disk first-boot k3s verdict\n\n" +
+            `Overall: **${summary.ok ? "PASS" : "FAIL"}**\n\n` +
+            "```\n" +
+            summary.lines.join("\n") +
+            "\n```\n\n<details><summary>raw JSON verdict</summary>\n\n```json\n" +
+            JSON.stringify(parsed.value, null, 2) +
+            "\n```\n\n</details>\n";
+          try {
+            appendFileSync(stepSummaryPath, md);
+          } catch (err) {
+            console.warn(`[qemu-full-install-test] could not write GITHUB_STEP_SUMMARY: ${String(err)}`);
+          }
+        }
+      } else {
+        console.warn(`[qemu-full-install-test] WP11 verdict JSON not found/parsable: ${parsed.reason}`);
+        const stepSummaryPath = process.env.GITHUB_STEP_SUMMARY;
+        if (stepSummaryPath !== undefined && stepSummaryPath.length > 0) {
+          try {
+            appendFileSync(
+              stepSummaryPath,
+              `\n## WP11 — installed-disk first-boot k3s verdict\n\nOverall: **FAIL** (no verdict JSON: ${parsed.reason})\n`,
+            );
+          } catch (err) {
+            console.warn(`[qemu-full-install-test] could not write GITHUB_STEP_SUMMARY: ${String(err)}`);
+          }
+        }
+      }
+
+      if (phase3.exitCode !== 0) {
+        reportResult(phase3, artifactSerialLogPath);
+      }
+      console.log("[qemu-full-install-test] WP11 phase 3 ok — all six k3s first-boot verdicts passed");
+    }
   }
 
   reportResult(phase2, artifactSerialLogPath);

@@ -2684,6 +2684,28 @@ if [ -n "$QEMU_BAKE_TEST_CRED_FILE" ]; then
 else
   echo "[uefi-keyfile] no zeta-qemu-bake-test-cred on boot USB ESP"
 fi
+# WP11: /zeta-qemu-k3s-first-boot-verify asks the INSTALLED disk's own first
+# multi-user boot to run a bounded k3s + first-boot-roster bring-up check and
+# print a JSON verdict to serial (zeta-k3s-first-boot-verify.nix). Nothing
+# else in the tree ever writes this marker, so it is staged straight onto the
+# install target -- OFF on every real install.
+QEMU_K3S_VERIFY_FILE=""
+if [ ${#SEARCH_DIRS[@]} -gt 0 ]; then
+  QEMU_K3S_VERIFY_FILE=$(sudo find "${SEARCH_DIRS[@]}" \
+    -maxdepth 5 -name "zeta-qemu-k3s-first-boot-verify" -type f 2>/dev/null | head -1 || true)
+fi
+if [ -z "$QEMU_K3S_VERIFY_FILE" ] && [ -f "$PROBE_MOUNT/zeta-qemu-k3s-first-boot-verify" ]; then
+  QEMU_K3S_VERIFY_FILE="$PROBE_MOUNT/zeta-qemu-k3s-first-boot-verify"
+fi
+if [ -n "$QEMU_K3S_VERIFY_FILE" ]; then
+  echo "[k3s-first-boot-verify] found zeta-qemu-k3s-first-boot-verify on boot USB ESP"
+  sudo mkdir -p /mnt/etc/zeta
+  echo "1" | sudo tee /mnt/etc/zeta/qemu-k3s-first-boot-verify >/dev/null
+  sudo chmod 0644 /mnt/etc/zeta/qemu-k3s-first-boot-verify
+  echo "[k3s-first-boot-verify]   wrote /mnt/etc/zeta/qemu-k3s-first-boot-verify (installed-disk first-boot verdict unit)"
+else
+  echo "[k3s-first-boot-verify] no zeta-qemu-k3s-first-boot-verify on boot USB ESP"
+fi
 # 081KZHJPJCF: unmount the boot USB ESP that was RE-mounted for the iter-5.2 hostname +
 # iter-5-wifi probes (see the re-mount before iter-5.2). Harmless no-op if it was never
 # re-mounted (no pubkey / empty BOOT_ESP_PART).

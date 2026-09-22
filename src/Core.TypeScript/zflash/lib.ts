@@ -196,7 +196,13 @@ export interface FileBackedEspWrite {
     // 081M12178AR: QEMU restore probe. Presence asks 6.95-picker to bake one
     // deterministic gh-cli test cred instead of --defer-all (empty bake).
     // Literal bytes "1\n" — public identifier, not a secret.
-    | "/zeta-qemu-bake-test-cred";
+    | "/zeta-qemu-bake-test-cred"
+    // WP11: QEMU-only. Presence asks the INSTALLED disk's first multi-user
+    // boot to run zeta-k3s-first-boot-verify (bounded k3s + roster bring-up
+    // check, JSON verdict to serial). Literal bytes "1\n" — public
+    // identifier, not a secret. See zeta-install.sh's probe for it and
+    // full-ai-cluster/nixos/modules/zeta-first-boot-k3s-verify.nix.
+    | "/zeta-qemu-k3s-first-boot-verify";
   readonly sourcePath?: string;
   readonly content?: string;
 }
@@ -241,6 +247,14 @@ export interface FileBackedZflashImagePlanInput {
    * only; not implied by the passphrase file or the keyfile bind marker.
    */
   readonly qemuBakeTestCredMarker?: boolean;
+  /**
+   * When true, writes `/zeta-qemu-k3s-first-boot-verify` (WP11). Asks the
+   * INSTALLED disk's own first multi-user boot to run a bounded k3s +
+   * first-boot-roster bring-up check and print a JSON verdict to serial.
+   * QEMU-only; nothing else ever writes this file, so it is OFF on every
+   * real install.
+   */
+  readonly qemuK3sFirstBootVerifyMarker?: boolean;
   /**
    * When set, writes `/zeta-firstboot.conf` so the booting node learns
    * whether it founds a cluster or joins one. Omitted → unchanged behaviour:
@@ -473,6 +487,12 @@ export function planFileBackedZflashImage(input: FileBackedZflashImagePlanInput)
     espWrites.push({
       content: "1\n",
       destination: "/zeta-qemu-bake-test-cred",
+    });
+  }
+  if (input.qemuK3sFirstBootVerifyMarker === true) {
+    espWrites.push({
+      content: "1\n",
+      destination: "/zeta-qemu-k3s-first-boot-verify",
     });
   }
   // 081KSNY2Z0008QG0R0008PN7RQ role provisioning. Ordered AFTER the existing

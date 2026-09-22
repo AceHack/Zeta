@@ -52,6 +52,8 @@ export interface FileBackedZflashCliOptions {
   readonly qemuCredsPassphrase?: string;
   /** QEMU restore only: write `/zeta-qemu-bake-test-cred` (public marker). */
   readonly qemuBakeTestCredMarker?: boolean;
+  /** WP11 QEMU only: write `/zeta-qemu-k3s-first-boot-verify` (public marker). */
+  readonly qemuK3sFirstBootVerifyMarker?: boolean;
 }
 
 export type FileBackedZflashCliParseResult =
@@ -107,7 +109,8 @@ const USAGE =
   "  --bao-path <path>            named bao binary; both names land on /zeta-firstboot.conf with --role\n" +
   "  --bind-uefi-keyfile-marker   write /zeta-bind-uefi-keyfile (guest persist-opt-in; not default)\n" +
   "  --qemu-creds-passphrase-file <path>  write /zeta-qemu-creds-passphrase from a file (QEMU; not argv)\n" +
-  "  --qemu-bake-test-cred-marker write /zeta-qemu-bake-test-cred (QEMU restore probe bake; not default)\n";
+  "  --qemu-bake-test-cred-marker write /zeta-qemu-bake-test-cred (QEMU restore probe bake; not default)\n" +
+  "  --qemu-k3s-first-boot-verify-marker  write /zeta-qemu-k3s-first-boot-verify (WP11 QEMU-only; not default)\n";
 
 function resolveTestInfraPubkeyPath(): string {
   return resolveZetaTestInfraPubkeyFromZflashModule(import.meta.url);
@@ -205,6 +208,7 @@ export function parseFileBackedZflashArgs(args: readonly string[]): FileBackedZf
   let testMode = false;
   let bindUefiKeyfileMarker = false;
   let qemuBakeTestCredMarker = false;
+  let qemuK3sFirstBootVerifyMarker = false;
   let qemuCredsPassphraseFile: string | undefined;
 
   for (let index = 0; index < args.length; index++) {
@@ -220,6 +224,10 @@ export function parseFileBackedZflashArgs(args: readonly string[]): FileBackedZf
     }
     if (arg === "--qemu-bake-test-cred-marker") {
       qemuBakeTestCredMarker = true;
+      continue;
+    }
+    if (arg === "--qemu-k3s-first-boot-verify-marker") {
+      qemuK3sFirstBootVerifyMarker = true;
       continue;
     }
 
@@ -332,6 +340,7 @@ export function parseFileBackedZflashArgs(args: readonly string[]): FileBackedZf
       ...(joinTokenSourcePath === undefined ? {} : { joinTokenSourcePath }),
       ...(bindUefiKeyfileMarker ? { bindUefiKeyfileMarker: true } : {}),
       ...(qemuBakeTestCredMarker ? { qemuBakeTestCredMarker: true } : {}),
+      ...(qemuK3sFirstBootVerifyMarker ? { qemuK3sFirstBootVerifyMarker: true } : {}),
       ...(qemuCredsPassphrase === undefined ? {} : { qemuCredsPassphrase }),
     },
   };
@@ -411,6 +420,7 @@ export function runFileBackedZflashCli(
     ...(options.joinTokenSourcePath === undefined ? {} : { joinTokenSourcePath: options.joinTokenSourcePath }),
     ...(options.bindUefiKeyfileMarker === true ? { bindUefiKeyfileMarker: true } : {}),
     ...(options.qemuBakeTestCredMarker === true ? { qemuBakeTestCredMarker: true } : {}),
+    ...(options.qemuK3sFirstBootVerifyMarker === true ? { qemuK3sFirstBootVerifyMarker: true } : {}),
     ...(options.qemuCredsPassphrase === undefined ? {} : { qemuCredsPassphrase: options.qemuCredsPassphrase }),
   };
   const planned = planFileBackedZflashImage(planInput);
