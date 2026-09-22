@@ -421,6 +421,113 @@ pkgs.testers.nixosTest {
                 "further to make this pass -- fix the underlying chart/image."
             )
 
+    # -- METAL ORACLE: hostNetwork + ClusterFirstWithHostNet DNS, and
+    # spire-agent stability, on REAL NixOS networking ---------------------
+    #
+    # WHY THIS PAIR EXISTS (081M3447Q7E087G0R001PJ6YNY follow-on,
+    # 081M343EM0R087G0R003C8ZHJ7). The Docker-container replica
+    # (first-boot-replica.ts) measured spire-agent CrashLoopBackOff with
+    # `lookup spire-server.spire ... i/o timeout`, and a control probe there
+    # showed an IDENTICAL hostNetwork+ClusterFirstWithHostNet busybox pod
+    # could not reach kube-dns's ClusterIP at all (`connection timed out; no
+    # servers could be reached`) while a pod-network probe reached the same
+    # DNS server fine. Whether that is a Docker/nested-container artifact
+    # (this repo's own first-boot-replica.ts already needs a `mount
+    # --make-rshared /` workaround for Cilium that NixOS metal's
+    # systemd-managed shared root gives it for free -- see that file's
+    # `mount-propagation-forced-shared-post-start` divergence) or a real
+    # defect that also hits a bare NixOS node is exactly what a Docker
+    # replica cannot answer and this VM can: k3s here runs directly under
+    # the VM's own init, with no container nesting between spire-agent's
+    # host network namespace and the one Cilium's agent attaches its
+    # socket-LB eBPF programs to. spire-agent is the roster's own
+    # hostNetwork+ClusterFirstWithHostNet workload (chart 0.24.2 hardcodes
+    # both), so it needs no synthetic double: its own stability answers the
+    # question directly, and the busybox probe isolates WHERE a failure
+    # would sit (DNS specifically, vs. some other spire-agent startup path)
+    # if it does fail.
+    with subtest("hostNetwork + ClusterFirstWithHostNet resolves a ClusterIP DNS name on real NixOS networking"):
+        overrides = (
+            '{"spec":{"hostNetwork":true,"dnsPolicy":"ClusterFirstWithHostNet",'
+            '"tolerations":[{"operator":"Exists"}]}}'
+        )
+        server.succeed(
+            f"{kc} -n kube-system delete pod dns-probe-hostnet "
+            f"--ignore-not-found --wait=true --timeout=30s || true"
+        )
+        # FULLY QUALIFIED name, not the short "kubernetes.default" form. MEASURED
+        # (run 35706223651): busybox's nslookup does not reliably chase resolv.conf
+        # search-domain expansion for a bare two-label name here -- the short form
+        # came back "can't find kubernetes.default: NXDOMAIN" even when the SERVER
+        # was reached fine (the same false-negative shape a pod-network control
+        # probe hit on the Docker replica with "spire-server.spire"). The FQDN
+        # sidesteps search-list behaviour entirely and answers the one question
+        # this subtest exists for: did the query REACH the DNS server at all.
+        server.succeed(
+            f"{kc} -n kube-system run dns-probe-hostnet --image=busybox:1.36.1 --restart=Never "
+            f"--overrides='{overrides}' "
+            f"--command -- sh -c \"nslookup kubernetes.default.svc.cluster.local 2>&1; echo RC=$?\""
+        )
+        server.wait_until_succeeds(
+            f"{kc} -n kube-system get pod dns-probe-hostnet -o jsonpath='{{.status.phase}}' "
+            f"| grep -qE 'Succeeded|Failed'",
+            timeout=60,
+        )
+        dns_log = server.succeed(f"{kc} -n kube-system logs dns-probe-hostnet || true")
+        print("=== dns-probe-hostnet (hostNetwork, ClusterFirstWithHostNet) log ===")
+        print(dns_log)
+        server.succeed(
+            f"{kc} -n kube-system delete pod dns-probe-hostnet --ignore-not-found --wait=false || true"
+        )
+        assert "RC=0" in dns_log and "can't find" not in dns_log and "timed out" not in dns_log, (
+            "a hostNetwork pod with dnsPolicy ClusterFirstWithHostNet could not resolve "
+            "kubernetes.default.svc.cluster.local via the ClusterIP DNS server on REAL "
+            "NixOS networking -- this is the metal oracle for 081M343EM0R087G0R003C8ZHJ7 "
+            "(the Docker replica's spire-agent CrashLoopBackOff showed the identical "
+            "i/o-timeout shape, and its own hostNetwork control probe there could not "
+            "even REACH the DNS server). If this "
+            f"fails HERE, the defect is real on metal, not a container-nesting artifact. log:\n{dns_log}"
+        )
+
+    with subtest("spire-agent (the roster's own hostNetwork DaemonSet) stays up for 3 minutes once Ready"):
+        import time as _time
+
+        server.wait_until_succeeds(
+            f"{kc} -n spire get daemonset spire-agent "
+            f"-o jsonpath='{{.status.numberReady}}' | grep -qx '1'",
+            timeout=600,
+        )
+        agent_pod = server.succeed(
+            f"{kc} -n spire get pods -l app.kubernetes.io/name=agent "
+            f"-o jsonpath='{{.items[0].metadata.name}}'"
+        ).strip()
+        assert agent_pod, "spire-agent DaemonSet reported numberReady=1 but no pod matched app.kubernetes.io/name=agent"
+
+        def restart_count():
+            raw = server.succeed(
+                f"{kc} -n spire get pod {agent_pod} "
+                f"-o jsonpath='{{.status.containerStatuses[0].restartCount}}' || echo -1"
+            ).strip()
+            return int(raw) if raw.lstrip("-").isdigit() else -1
+
+        samples = []
+        deadline = _time.monotonic() + 180
+        while _time.monotonic() < deadline:
+            samples.append(restart_count())
+            _time.sleep(15)
+        samples.append(restart_count())
+        print(f"=== {agent_pod} restartCount samples over ~180s: {samples} ===")
+
+        assert samples[0] != -1, f"could not read {agent_pod}'s restartCount at all"
+        assert samples[-1] == samples[0], (
+            f"spire-agent pod {agent_pod} restartCount regressed during a 180s stability "
+            f"window on REAL NixOS networking: {samples}. This is the metal oracle for "
+            "081M343EM0R087G0R003C8ZHJ7 -- CrashLoopBackOff here means the Docker replica's "
+            "finding is a METAL DEFECT, not a container-nesting artifact; leave this "
+            "assertion in place and fix spire-agent's networking/config rather than "
+            "loosening the bound."
+        )
+
     # -- LINK 4: ArgoCD itself -------------------------------------------
     # Its chart is submitted SECOND in filename order, which the ordering
     # comment used to deny. What matters is not where it sorts but that its

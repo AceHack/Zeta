@@ -1,11 +1,12 @@
 ---
 id: 081M343EM0R087G0R003C8ZHJ7
 type: bug
-state: backlog
+state: done
 priority: P2
 slug: first-boot-replica-run-35700790207-spire-agent-crashloopback
 title: "first-boot replica run 35700790207: spire-agent CrashLoopBackOff on ArgoCD-managed spire (not the bootstrap install hook)"
 created: 2026-09-22T08:24:23.320Z
+completed: 2026-09-22T08:59:36.118Z
 depends_on: ["081M340NKP9087G0R000F8YHXQ"]
 composes_with: []
 ---
@@ -48,3 +49,34 @@ bundle or workload-API socket assumption that does not hold on this replica's
 container-in-Docker topology, or a dependency on the dev longhorn alias / another
 Secret this replica does not mint (see 081M343EEP8087G0R000BAF6QF, the sibling
 finding on this same run).
+
+## RESOLVED 2026-09-22 (WP12, 081M3447Q7E087G0R001PJ6YNY follow-on)
+
+Root cause found: `could not open attestation stream to SPIRE server: ... dial
+udp <clusterIP>:53: i/o timeout`. A control probe (hostNetwork +
+`dnsPolicy: ClusterFirstWithHostNet` busybox, spire-agent's exact policy)
+could not reach kube-dns's ClusterIP AT ALL from inside the Docker replica
+container, while an otherwise-identical pod-network probe reached the same
+server fine. Cilium's ClusterIP socket-LB is not covering hostNetwork sockets
+when k3s runs nested inside a Docker container.
+
+**Classification: REPLICA ARTIFACT, not a metal defect — CONFIRMED, not
+inferred.** Rather than reason from Docker-only evidence, two subtests were
+added directly to `full-ai-cluster/nixos/tests/k3s-first-boot-roster.nix` (the
+real-NixOS-VM oracle, no container nesting between spire-agent's host network
+namespace and Cilium's socket-LB attachment point) and run on an actual VM:
+
+- hostNetwork+`ClusterFirstWithHostNet` resolves
+  `kubernetes.default.svc.cluster.local` via the ClusterIP DNS server: **PASS**
+  (run 35706939767; the first attempt, run 35706223651, false-negatived on a
+  search-domain-expansion quirk with the short name `kubernetes.default` —
+  fixed to the FQDN, which is the honest form of the same test).
+- `spire-agent` stays Ready with a stable restart count for a 180s window:
+  **PASS** — `restartCount samples over ~180s: [3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
+  3, 3, 3]` (3 restarts during ordinary startup churn while cluster networking
+  settled, then completely flat — no ongoing crash loop).
+
+Recorded as a named DIVERGENCE in `first-boot-replica.ts`
+(`spire-agent-hostnetwork-dns-in-nested-container`) so the harness reports a
+spire crash loop on this replica as expected rather than as an unexplained
+FAIL. No metal-side fix needed for this item.

@@ -579,6 +579,24 @@ export function buildPlan(options: BuildPlanOptions): ReplicaPlan {
         "This harness execs `mount --make-rshared /` INSIDE the replica right after it starts, achieving the " +
         "same node-level property metal's shared root gives Cilium for free, without touching the Docker host.",
     },
+    {
+      id: "spire-agent-hostnetwork-dns-in-nested-container",
+      reason:
+        "MEASURED (081M343EM0R087G0R003C8ZHJ7, 2026-09-22): spire-agent (hostNetwork, dnsPolicy: " +
+        "ClusterFirstWithHostNet -- chart 0.24.2 hardcodes both) can CrashLoopBackOff here with " +
+        "`could not open attestation stream to SPIRE server: ... dial udp <clusterIP>:53: i/o timeout`. A " +
+        "control probe (an identical hostNetwork+ClusterFirstWithHostNet busybox pod) could not reach " +
+        "kube-dns's ClusterIP at ALL from inside this container, while a pod-network control probe reached " +
+        "the same server fine -- Cilium's ClusterIP socket-LB not covering hostNetwork sockets when k3s runs " +
+        "nested inside a Docker container (see mount-propagation-forced-shared-post-start above for the " +
+        "sibling cgroup/mount-nesting class this replica already works around for Cilium). CONFIRMED as a " +
+        "replica-only artifact, not a metal defect: two subtests added directly to " +
+        "full-ai-cluster/nixos/tests/k3s-first-boot-roster.nix (the real-NixOS-VM oracle, no container " +
+        "nesting) both PASSED on run 35706939767 -- a hostNetwork+ClusterFirstWithHostNet probe resolved " +
+        "kubernetes.default.svc.cluster.local via the ClusterIP DNS server, and spire-agent's own restartCount " +
+        "held flat (3, settled during ordinary startup churn, then stable) across a 180s sampling window. " +
+        "A spire-agent crash loop on THIS replica is therefore expected and not evidence of a metal defect.",
+    },
   ];
 
   return {
