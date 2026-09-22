@@ -1,0 +1,12 @@
+{
+  "pr_number": 17473,
+  "archive_path": "docs/history/pr-reviews/2026/09/22/PR-17473-fix-cluster-budget-the-single-node-kubelet-pod-count-ceiling.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-22T06:35:19.603Z",
+  "schema_version": "v1",
+  "commit_sha": "c747d0414495f4420a202e32f36dd8d2c1e817a2",
+  "title": "fix(cluster): budget the single-node kubelet pod-count ceiling",
+  "state": "MERGED",
+  "merged_at": "2026-09-22T06:34:27Z",
+  "head_ref": "claude/single-node-max-pods"
+}

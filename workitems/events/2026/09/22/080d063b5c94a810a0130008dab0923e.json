@@ -1,0 +1,14 @@
+{
+  "id": "080d063b5c94a810a0130008dab0923e",
+  "at": "2026-09-22T04:41:50.997Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M33PQ4MG087G0R002ZKDAVR",
+    "type": "task",
+    "title": "NixOS node kernel tunables for the ~150-pod Argo CD catalog (inotify, vm.max_map_count) + CI sysctl parity",
+    "slug": "nixos-node-kernel-tunables-for-the-150-pod-argo-cd-catalog-i",
+    "priority": "P1",
+    "filename": "081M33PQ4MG087G0R002ZKDAVR-nixos-node-kernel-tunables-for-the-150-pod-argo-cd-catalog-i.md"
+  }
+}

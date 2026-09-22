@@ -106,6 +106,42 @@
       # node-09485d (2026-06-07). Keep exactly one default.
       "--disable=local-storage"
 
+      # Pod-count ceiling — kubelet's `--max-pods` default is 110, and it is a
+      # COUNT limit independent of the CPU/memory budget work in
+      # `full-ai-cluster/k8s/storage-profiles.json`: shrinking every request in
+      # the tree would not schedule one more pod once the count ceiling is hit.
+      #
+      # MEASURED, NOT GUESSED. `src/Core.TypeScript/cluster/rendered-resource-requests.snapshot.json`
+      # renders 147 pods across the 49 Applications the metal root
+      # (`bootstrap/root-application.yaml`) applies. The steady-state floor —
+      # what a fresh single-node sync actually leaves Running/Pending, not the
+      # render's raw total — is measured in
+      # `src/Core.TypeScript/cluster/single-node-readiness.ts`'s `findPodBudget`:
+      # subtract the four manual-sync Applications (cdi, kubevirt, ollama, vllm —
+      # `manual-sync-policy.ts`; never auto-applied) and every Job/CronJob pod
+      # (terminal — the kubelet's max-pods admission counts only non-terminal
+      # pods), add the k3s-bundled coredns + metrics-server + this file's own
+      # local-path-provisioner (none of which any Application renders). That
+      # floor is ~124 today, already inside the default 110 ceiling's failure
+      # zone, and it only grows as Applications are added.
+      #
+      # 220 clears the default 110 by 2x and the measured ~124 by ~77%, while
+      # staying under the 254 usable addresses Cilium's cluster-pool IPAM hands
+      # this single node at the chart's default `clusterPoolIPv4MaskSize: 24`
+      # (`k8s/applications/cilium/Application.yaml` / `k8s/bootstrap/cilium-install.yaml`,
+      # both now set that key explicitly since this budget relies on it) — a
+      # pod ceiling above the node's own address block would be a limit the
+      # network could never actually let a pod reach. Not 250: that would leave
+      # only 4 addresses of slack against the /24, which the node's own
+      # cilium_host router IP and any hostNetwork pod already eats into.
+      #
+      # SET ON BOTH SERVER AND AGENT (`k3s-agent.nix` carries the identical
+      # flag) — `--kubelet-arg` configures the LOCAL kubelet, so a control
+      # plane that also schedules pods and a worker both need it; it is not one
+      # of the networking flags k3s-agent.nix's own comment says are
+      # server-only.
+      "--kubelet-arg=max-pods=220"
+
       # Cluster CIDRs — DERIVED from the cluster's identity, not hardcoded.
       #
       # These used to read `10.42.0.0/16` / `10.43.0.0/16` as literals, which
@@ -186,6 +222,17 @@
     #      nixos/tests/k3s-first-boot-roster.nix is the VM test that decides
     #      it, with three named verdicts instead of a timeout. UNRUN as of
     #      2026-08-21: it needs a KVM host, internet, and ~45-70 min.
+    #
+    #      CORROBORATING MEASUREMENT (2026-09-22, WP1,
+    #      src/Core.TypeScript/cluster/first-boot-replica.ts): a Docker
+    #      container configured to match this file's extraFlags + roster
+    #      (not the NixOS VM test above, which is still unrun) measured
+    #      VERDICT A -- ROOT_LANDED. applications.argoproj.io/zeta-root
+    #      appeared once the ArgoCD chart's Job completed and the CRD existed;
+    #      the deploy controller retried the earlier unknown-kind apply and
+    #      self-healed. Recorded as corroborating evidence, not a replacement
+    #      for the VM test this comment names -- see workitem
+    #      081M33QTNVD087G0R002632YDV.
     #
     # The DEPENDENCY INTENT below (per Aaron 2026-05-25) is retained because
     # it is the design, but note it is expressed in ArgoCD sync waves and in

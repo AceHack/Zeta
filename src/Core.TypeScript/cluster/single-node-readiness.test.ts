@@ -70,6 +70,7 @@ const LEDGER: Ledger = {
   acknowledgedCapacityShortfall: [],
   acknowledgedComputeShortfall: [],
   acknowledgedRungBudgetGap: [],
+  acknowledgedPodBudgetShortfall: [],
 };
 
 function manifest(path: string, yaml: string): AppManifest {

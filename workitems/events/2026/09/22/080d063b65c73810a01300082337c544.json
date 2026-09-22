@@ -1,0 +1,14 @@
+{
+  "id": "080d063b65c73810a01300082337c544",
+  "at": "2026-09-22T04:43:06.343Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M33PSE76087G0R002Z7TCAY",
+    "type": "task",
+    "title": "Single-node kubelet max-pods budget for USB installer metal profile",
+    "slug": "single-node-kubelet-max-pods-budget-for-usb-installer-metal",
+    "priority": "P2",
+    "filename": "081M33PSE76087G0R002Z7TCAY-single-node-kubelet-max-pods-budget-for-usb-installer-metal.md"
+  }
+}

@@ -263,14 +263,15 @@ jobs:
           for c in zeta-creds-to-k8s-model tpm2-seal-prereqs-model host-seal-profile-model \
                    secure-boot-desired-state-model longhorn-node-preflight \
                    longhorn-disk-registration longhorn-common-default-disk-eval \
-                   cilium-wireguard-preflight gpu-node-label-preflight; do
+                   cilium-wireguard-preflight gpu-node-label-preflight \
+                   k8s-node-tunables-model; do
             grep -q "$c" /tmp/aic-flake-check.log || missing="$missing $c"
           done
           if [ -n "$missing" ]; then
             echo "::error title=Eval-only checks were not among the outputs evaluated::nix flake check never mentioned:$missing. These checks are named by no other step in any workflow, so this step is their only coverage. Either they were renamed or removed, or --all-systems omitted the system they live on. Either way this lane is green about something else."
             exit 1
           fi
-          echo "all nine eval-only checks were evaluated."
+          echo "all ten eval-only checks were evaluated."
 
       # Regression test for the k3s --cluster-init token deadlock
       # (k3s-server.nix). Boots the control-plane k3s module in a QEMU VM

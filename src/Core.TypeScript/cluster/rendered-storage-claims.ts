@@ -339,6 +339,21 @@ export interface RenderOptions {
    * `helm-remote`, which has a values surface of its own.
    */
   readonly manifestOverlays?: readonly ManifestOverlay[] | undefined;
+  /**
+   * `--kube-version` for `helm template`, i.e. what `.Capabilities.KubeVersion`
+   * reports to the chart. OMITTED when unset — helm's own compiled-in default —
+   * which is the PRE-EXISTING behaviour every current caller still gets.
+   *
+   * Added 2026-09-22: a real first-boot VM found `spire`'s bootstrap chart
+   * deriving a hook image's TAG from this capability
+   * (`docker.io/rancher/kubectl:v1.35.7`, absent upstream) — a class of failure
+   * this renderer could not previously reproduce because it never told the
+   * chart which Kubernetes it is templating against. Callers that care about
+   * matching the real cluster (`image-resolvability.ts`) pass the version
+   * declared in `full-ai-cluster/k8s/kubernetes-version.json`; nothing requires
+   * it, so existing callers (`image-footprint.ts`) are unaffected.
+   */
+  readonly kubeVersion?: string | undefined;
 }
 
 function defaultRunHelm(
@@ -587,6 +602,7 @@ export function renderApplication(source: ApplicationSource, options: RenderOpti
       "--values",
       valuesFile,
       "--include-crds",
+      ...(options.kubeVersion === undefined ? [] : ["--kube-version", options.kubeVersion]),
     ],
     cacheDir,
   );

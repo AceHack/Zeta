@@ -1,0 +1,38 @@
+name: apply node kernel tunables
+description: >-
+  Set the GitHub Actions runner's kernel sysctls to EXACTLY the values
+  full-ai-cluster/nixos/modules/k8s-node-tunables.nix applies on the real
+  NixOS host, before a kind/k3d cluster is created. Prints every value it
+  set.
+
+# WHY THIS EXISTS
+# ----------------
+# The live kind/k3d jobs in .github/workflows/k8s-argocd-health-test.yml run
+# a Docker-based cluster INSIDE containers on a stock `ubuntu-24.04[-arm]`
+# GitHub-hosted runner. Containers share the HOST kernel's sysctls -- kind
+# and k3d cannot set vm.max_map_count or fs.inotify.* from inside a pod any
+# more than the real cluster's OpenSearch/kubelet workloads can -- so a CI
+# lane that never touches these sysctls is testing under WHATEVER the runner
+# image happens to ship, which is not what production ships and drifts
+# independently of it.
+#
+# SINGLE SOURCE OF TRUTH is full-ai-cluster/k8s/node-tunables.json, read by
+# BOTH the NixOS module (via builtins.fromJSON) and this action (via
+# src/Core.TypeScript/cluster/node-tunables.ts, the same reader the NixOS
+# module's twin uses) -- so CI can never apply a value the real host does
+# not, or vice versa, without editing the one file both sides read.
+#
+# If production's declared floor turns out to be too low for CI's own
+# workload, THAT is exactly the drift this step exists to surface -- CI now
+# runs under production limits instead of the runner's stock, usually more
+# generous, defaults.
+
+runs:
+  using: composite
+  steps:
+    - name: Apply node kernel tunables from full-ai-cluster/k8s/node-tunables.json
+      shell: bash
+      run: |
+        set -euo pipefail
+        echo "Setting runner sysctls to match full-ai-cluster/nixos/modules/k8s-node-tunables.nix:"
+        bun src/Core.TypeScript/cluster/node-tunables.ts --apply

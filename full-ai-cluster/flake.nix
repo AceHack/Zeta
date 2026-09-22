@@ -745,6 +745,27 @@
             pkgs.runCommand "gpu-node-label-preflight" { inherit (report) status; } ''
               echo "$status" | tee "$out"
             '';
+
+          # EVAL-ONLY (no VM, no boot): properties of k8s-node-tunables.nix —
+          # the module that raises vm.max_map_count and the fs.inotify.*
+          # limits the ~150-pod Argo CD catalog needs. Reads the REAL
+          # nixosConfigurations.control-plane and .worker-gpu, so it proves
+          # both real hosts ship every value declared in
+          # k8s/node-tunables.json (the single source of truth this module
+          # AND src/Core.TypeScript/cluster/node-tunables.ts both read), not
+          # only that the module evaluates. 081M33PQ4MG087G0R002ZKDAVR.
+          # See nixos/tests/k8s-node-tunables-eval-test.nix.
+          k8s-node-tunables-model =
+            let
+              report = import ./nixos/tests/k8s-node-tunables-eval-test.nix {
+                inherit pkgs;
+                nixosConfig = self.nixosConfigurations.control-plane;
+                secondHostConfig = self.nixosConfigurations.worker-gpu;
+              };
+            in
+            pkgs.runCommand "k8s-node-tunables-model" { inherit (report) status; } ''
+              echo "$status" | tee "$out"
+            '';
         };
 
         devShells.default = pkgs.mkShell {

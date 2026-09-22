@@ -66,6 +66,13 @@ on:
       # themselves changing is a reason to re-run them.
       - "examples/helm-dependency-graph/**"
       - "full-ai-cluster/k8s/tests/**"
+      # ADDED 2026-09-22: image-resolvability.ts (+ the render helpers it
+      # reuses -- image-footprint.ts, rendered-storage-claims.ts,
+      # declared-cluster-trees.ts) live under src/Core.TypeScript/cluster/,
+      # which was not in this filter -- a PR touching only the checker itself
+      # would not have run it. Same reasoning as `full-ai-cluster/k8s/tests/**`
+      # two lines up: the tool changing is a reason to re-run it.
+      - "src/Core.TypeScript/cluster/**"
       - ".github/workflows/helm-validate.yml"
       - ".mise.toml"
       - ".mise.full.toml"
@@ -99,6 +106,8 @@ on:
       # themselves changing is a reason to re-run them.
       - "examples/helm-dependency-graph/**"
       - "full-ai-cluster/k8s/tests/**"
+      # See the note on the pull_request trigger above.
+      - "src/Core.TypeScript/cluster/**"
       - ".github/workflows/helm-validate.yml"
       - ".mise.toml"
       - ".mise.full.toml"
@@ -493,3 +502,47 @@ jobs:
         # in this job) re-derives the real audit and pins the
         # platform/monitoring.yaml SkipDryRunOnMissingResource fix.
         run: bun test src/Core.TypeScript/cluster/crd-provider-consumer-order.test.ts
+
+      - name: Image resolvability (offline, snapshot-gated) — every image the first-boot roster + Applications pull
+        # ADDED 2026-09-22. Renders the SAME first-boot roster + Applications this
+        # job already rendered above (helm chart archives are warm in
+        # .helm-render-cache), extracts every container image, and looks each one
+        # up in the checked-in snapshot (full-ai-cluster/k8s/image-resolvability.json)
+        # -- no registry socket opened here, same DV2.0 split
+        # image-source-provenance.ts already uses and for the identical reason: a
+        # gate that gets its "does this tag exist" answer from six third-party
+        # registries on every PR would fail on their bad afternoons, not ours.
+        #
+        # `missing` (registry 404 -- tag/digest genuinely absent) and
+        # `arch-missing` (resolves, but no linux/amd64 in the manifest) FAIL this
+        # step: either one is a guaranteed ImagePullBackOff at first boot on a box
+        # with nobody watching. `unknown` (auth-required, or the image was never
+        # measured) is printed with a count and does not fail -- a probe that
+        # could not be verified must never read as "verified missing".
+        run: bun src/Core.TypeScript/cluster/image-resolvability.ts
+
+      - name: Image resolvability network refresh (daily cron only; red here is the signal, does not block a PR)
+        # ADDED 2026-09-22. The NETWORK half of the check above, riding this
+        # workflow's EXISTING daily cron (see the file header: chart pins,
+        # repos and now individual TAGS can all be deleted or moved upstream,
+        # none of which produces a commit here) rather than a new one --
+        # chart-version-refresh.yml's own header names the identical reasoning
+        # for not giving image-source-provenance.ts a second schedule.
+        #
+        # Resolves every currently-rendered image LIVE against its registry,
+        # DoP-limited and retried, and rewrites the snapshot in the runner's
+        # working tree. It does NOT commit: same discipline as
+        # chart-version-refresh.yml (evidence is reviewed before it becomes
+        # the thing the blocking step above trusts), so the refreshed snapshot
+        # is uploaded as an artifact for a maintainer to review and commit.
+        if: github.event_name == 'schedule'
+        run: bun src/Core.TypeScript/cluster/image-resolvability.ts --refresh
+
+      - name: Upload the refreshed image-resolvability snapshot
+        if: github.event_name == 'schedule' && always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: image-resolvability-${{ github.run_id }}
+          path: full-ai-cluster/k8s/image-resolvability.json
+          if-no-files-found: error
+          retention-days: 90
