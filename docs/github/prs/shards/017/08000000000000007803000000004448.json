@@ -1,0 +1,12 @@
+{
+  "pr_number": 17480,
+  "archive_path": "docs/history/pr-reviews/2026/09/22/PR-17480-fix-cluster-evidence-based-terminal-degraded-a-soak-phase-for-the-argocd-health-.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-22T08:16:11.265Z",
+  "schema_version": "v1",
+  "commit_sha": "c89c3abeaf51a39b0cc839b479deaf1b40af8a68",
+  "title": "fix(cluster): evidence-based terminal Degraded + a soak phase for the ArgoCD health harness",
+  "state": "MERGED",
+  "merged_at": "2026-09-22T08:15:16Z",
+  "head_ref": "claude/health-harness-soak"
+}
