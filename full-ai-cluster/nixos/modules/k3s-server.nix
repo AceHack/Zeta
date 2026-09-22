@@ -194,9 +194,10 @@
     #
     #      aa-gateway-api-crds -> argocd-install -> argocd-namespace ->
     #      cert-manager-install -> cilium-install -> cilium-namespace ->
-    #      external-secrets-install -> local-path-provisioner (from
-    #      local-storage.nix) -> openziti-namespace -> root-application ->
-    #      spire-install -> trust-manager-install
+    #      external-secrets-install -> internal-secret-seeding ->
+    #      local-path-provisioner (from local-storage.nix) ->
+    #      openziti-namespace -> root-application -> spire-install ->
+    #      trust-manager-install
     #
     # 3. SUBMISSION ORDER IS NOT DEPENDENCY ORDER, and no renaming can make it
     #    one. The deploy controller submits all eleven files within seconds of
@@ -303,6 +304,17 @@
       trust-manager-install.source = ../../k8s/bootstrap/trust-manager-install.yaml;
       # External Secrets Operator (operator + CRDs; no store wired yet).
       external-secrets-install.source = ../../k8s/bootstrap/external-secrets-install.yaml;
+      # INTERNAL secret seeding (WP14, 081M343EEP8087G0R000BAF6QF) -- mints
+      # grafana-admin-credentials / ziti-admin-credentials /
+      # opensearch-admin-credentials / forgejo-initial-admin / zeta-blob-store /
+      # redis-auth ONLY IF ABSENT, so the catalog Applications that name these
+      # Secrets by reference never hit CreateContainerConfigError on a fresh
+      # metal/USB install. Self-contained (creates its own namespaces, including
+      # a redundant `openziti` -- this file sorts BEFORE openziti-namespace.yaml
+      # lexically, see internal-secret-seeding.yaml's own header). Sorts before
+      # ArgoCD exists, which is the point: every consuming Application finds its
+      # Secret already in place at sync time.
+      internal-secret-seeding.source = ../../k8s/bootstrap/internal-secret-seeding.yaml;
       # ArgoCD (reconciler for everything else).
       argocd-namespace.source = ../../k8s/bootstrap/argocd-namespace.yaml;
       argocd-install.source = ../../k8s/bootstrap/argocd-install.yaml;

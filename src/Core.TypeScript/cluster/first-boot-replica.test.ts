@@ -438,6 +438,7 @@ describe("buildPlan against the real repository files (LIVE, no Docker)", () => 
       "cilium-install.yaml",
       "cilium-namespace.yaml",
       "external-secrets-install.yaml",
+      "internal-secret-seeding.yaml",
       "local-path-provisioner.yaml",
       "openziti-namespace.yaml",
       "root-application.yaml",

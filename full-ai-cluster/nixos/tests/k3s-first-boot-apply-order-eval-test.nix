@@ -111,6 +111,13 @@ let
     "cilium-install.yaml"
     "cilium-namespace.yaml"
     "external-secrets-install.yaml"
+    # Added WP14 (081M343EEP8087G0R000BAF6QF): mints the internal Secrets the
+    # catalog's grafana/ziti/opensearch/forgejo/blob-store/redis-auth
+    # references need, ONLY IF ABSENT, before ArgoCD exists. Sorts here on the
+    # filename alone -- no ordering property depends on its position other
+    # than "before its own namespaces are used", and it declares those
+    # namespaces itself (see the file's own header).
+    "internal-secret-seeding.yaml"
     "local-path-provisioner.yaml"
     # Added 2026-08-22 with the trust-manager trust-namespace move. It sorts
     # here, which is BEFORE trust-manager-install.yaml — the one ordering
