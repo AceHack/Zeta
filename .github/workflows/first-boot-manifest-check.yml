@@ -27,9 +27,25 @@
 #
 # WHAT IT DOES NOT COVER, stated so the green is read correctly: `--no-build` realises
 # nothing, so `k3s-first-boot-roster` -- a full `nixosTest` whose own header says it
-# "REQUIRES INTERNET (five Helm charts and roughly 2-3 GB of images)" -- is EVALUATED here
-# and RUN only by the ISO lane. This says the roster and its order are still well-formed.
-# It does not say the cluster boots.
+# "REQUIRES INTERNET (five Helm charts and roughly 2-3 GB of images)" -- is only EVALUATED
+# here, never built or run.
+#
+# CORRECTED 2026-09-22 (081M33NZP3J087G0R003WS1BFH). This comment used to claim
+# `k3s-first-boot-roster` was "RUN only by the ISO lane" (`build-ai-cluster-iso.yml`). That
+# was false when written and stayed false for a month: `build-ai-cluster-iso.yml` never had
+# a step building `.#checks.x86_64-linux.k3s-first-boot-roster` -- `grep -n
+# k3s-first-boot-roster .github/workflows/build-ai-cluster-iso.yml` returns nothing. Nothing
+# in this repository ever booted the real roster; five other VM tests in
+# `nixos/tests/` all `mkForce` the manifest set down to a subset before booting (see the
+# header of `k3s-first-boot-roster.nix` for the roster of exceptions).
+#
+# The VM now has a real lane: `k3s-first-boot-roster-vm.yml`, a daily-cron +
+# workflow_dispatch + scoped-PR job that builds `.#checks.x86_64-linux.k3s-first-boot-roster`
+# with `--option sandbox false`, on ~90 min budget. It is not the ISO lane and does not run
+# per ordinary PR (45-70 min and ~10 GB of pulls is too expensive to gate every push); it is
+# the thing that actually answers whether `zeta-root` lands.
+# This lane says the roster and its order are still well-formed at EVAL time. It does not
+# say the cluster boots -- `k3s-first-boot-roster-vm.yml` is what says that.
 
 name: first-boot-manifest-check
 
