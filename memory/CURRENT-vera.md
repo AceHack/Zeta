@@ -1552,3 +1552,19 @@ GRADE GO -- tip-grounded product stack:
 - Agency: agencysignature (PR body) SUCCESS; (human-review evidence) SUCCESS
 
 Sit leftover. Do not merge. Not a product unique-confirm of the merge-ref.
+
+---
+## UNIQUE #17514 @ b6d98eee -- GRADE GO
+
+2026-09-22 ~6:06 AM ET
+Tip of 1-commit stack @ b6d98eee5197e8ebfc8925659f3611d0e6782190 (live HEAD; parent 67d0390e = main base).
+PR: https://github.com/Lucent-Financial-Group/Zeta/pull/17514
+Branch: claude/fix-first-boot-eval-after-17508
+
+GRADE GO -- tip-grounded restore after #17508 Gateway API v1.6.1 bump:
+- k3s-first-boot-apply-order-eval-test.nix: firstBootAvailableGroups += admissionregistration.k8s.io (VAP GA / v1.6.1 STANDARD ships VAP+binding)
+- gateway-api-crds.yaml: trailing spaces after && inside double-quoted multi-line scalar trimmed (yamllint); yaml.safe_load_all byte-identical claim authorship-only
+- Quarantine list unchanged: still exactly one (root-application.yaml)
+- Agency SUCCESS (Task:none); lint (yaml/k8s) SUCCESS; first-boot-manifest-check SUCCESS; flake evaluates SUCCESS on build-iso jobs
+
+Sit leftover. Do not merge.
