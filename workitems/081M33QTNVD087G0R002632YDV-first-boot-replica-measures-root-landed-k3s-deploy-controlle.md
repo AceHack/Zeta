@@ -122,15 +122,40 @@ single contiguous OutOfSync run) before trusting this signal at face value —
 noted rather than silently accepted, per the same discipline that fixed the
 targetNamespace bug this signal exists to guard against.
 
+## Fidelity finding: replica version tracks kubernetes-version.json, including its staleness
+
+The real NixOS VM boot (`k3s-first-boot-roster.nix`, runs 35687536936 and
+35688935223 — it HAS since been run, resolving the "Not yet closed" item
+below) measured a genuine defect: the SPIRE chart's post-install hook pulls
+`docker.io/rancher/kubectl:v1.35.7`, which does not exist (only
+`v1.35.6` and earlier tags are published), so `helm-install-spire`'s
+post-install Job loops on `ErrImagePull` forever. This replica did **not**
+reproduce that failure on any of its three runs — explained, not
+contradicted: `first-boot-replica.ts` derives its k3s image tag from
+`full-ai-cluster/k8s/kubernetes-version.json`, which currently declares
+`1.35.6+k3s1` (measured 2026-09-01). That file is itself stale — the NixOS
+flake lock the metal image actually builds from resolves to k3s `1.35.7` —
+so the replica ran the older, available tag and never hit the broken pull.
+
+This is a point in the harness's favour, not against it: there is exactly
+ONE place that needs to be correct (`kubernetes-version.json`), and the
+replica has no second, hand-copied version literal to drift from it.
+PR #17478 (`claude/pin-kube-version-derived-images`) fixes the JSON to
+`1.35.7` and pins the derived kubectl image; once it merges, this replica's
+NEXT run automatically follows metal's real version with no code change
+here, and should either reproduce the same `ErrImagePull` (if #17478 doesn't
+fully close the gap) or confirm it is fixed.
+
 ## Not yet closed
 
-- **NixOS metal itself was not booted** — this is a Docker replica configured
-  to match k3s-server.nix's declared flags/roster, not the NixOS VM test
-  (`nixos/tests/k3s-first-boot-roster.nix`, still unbuilt by any workflow —
-  needs a KVM host). The Docker replica is corroborating evidence, not a
-  substitute for that VM test ever running.
 - Whether `k3s-first-boot-roster.nix`'s own three-verdict logic (VERDICT A/B/C)
-  agrees is untested — nobody has run it.
+  agrees with this replica's ROOT_LANDED verdict — both have now run (the VM
+  test on 35687536936/35688935223, this replica on two local runs + one CI
+  run), but nobody has cross-checked the two verdicts against each other line
+  for line.
+- Whether PR #17478 fully resolves the SPIRE `ErrImagePull` (the tag may
+  simply not exist upstream yet, independent of what this repo pins) — worth
+  a follow-up VM-test run once it merges.
 
 ## Pointers
 
