@@ -1,0 +1,14 @@
+{
+  "id": "080d063cead3c010a0130008ded1cf8f",
+  "at": "2026-09-22T05:36:13.432Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M33STPKN087G0R0004B5CAK",
+    "type": "task",
+    "title": "Docker Hub pull-through mirror for k3s first-boot images (WP9)",
+    "slug": "docker-hub-pull-through-mirror-for-k3s-first-boot-images-wp9",
+    "priority": "P2",
+    "filename": "081M33STPKN087G0R0004B5CAK-docker-hub-pull-through-mirror-for-k3s-first-boot-images-wp9.md"
+  }
+}

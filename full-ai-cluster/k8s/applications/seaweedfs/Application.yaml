@@ -96,6 +96,19 @@ spec:
               - name: mimir-tsdb
               - name: mimir-ruler
               - name: zeta-backups
+              # GitLab's bundled minio subchart is disabled (gitlab/Application.yaml,
+              # 2026-09-22 -- both its images are gone from Docker Hub); GitLab's consolidated
+              # object storage and the container registry now address this store instead.
+              # Bucket names match the gitlab chart's own defaults
+              # (`charts/gitlab/values.yaml` lfs/artifacts/uploads/packages `bucket:` keys) so
+              # nothing in gitlab/Application.yaml needs an override to match them; the
+              # registry has no chart default, so `gitlab-registry` follows the `gitlab-*`
+              # naming already used by the other three.
+              - name: git-lfs
+              - name: gitlab-artifacts
+              - name: gitlab-uploads
+              - name: gitlab-packages
+              - name: gitlab-registry
   destination:
     server: https://kubernetes.default.svc
     namespace: object-store

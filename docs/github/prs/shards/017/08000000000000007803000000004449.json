@@ -1,0 +1,17 @@
+{
+  "pr_number": 17481,
+  "archive_path": "docs/history/pr-reviews/2026/09/22/PR-17481-feat-cluster-first-boot-replica-boot-the-real-k3s-manifest-roster-in-docker.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7yhhaR",
+    "comment:PRRC_kwDOSF9kNM7yhngY",
+    "thread:PRRT_kwDOSF9kNM6knan7",
+    "thread:PRRT_kwDOSF9kNM6knepT"
+  ],
+  "fetched_at": "2026-09-22T07:11:06.962Z",
+  "schema_version": "v1",
+  "commit_sha": "61a1e72b4e3a2e8f78a9b620c33701ab5ba7ee3b",
+  "title": "feat(cluster): first-boot replica — boot the real k3s manifest roster in Docker",
+  "state": "MERGED",
+  "merged_at": "2026-09-22T07:10:17Z",
+  "head_ref": "claude/first-boot-replica"
+}

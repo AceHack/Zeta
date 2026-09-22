@@ -18,15 +18,21 @@ import {
   assertWifiEspPhase1Contract,
   buildQemuDiskBootArgsPure,
   buildQemuInstallArgsPure,
+  buildQemuK3sVerifyBootArgsPure,
   detectInstalledLoginPrompt,
   detectPhase2Success,
   detectUnexpectedControlPlaneLogin,
   extractGeneratedHostname,
+  K3S_VERIFY_JSON_BEGIN_MARKER,
+  K3S_VERIFY_JSON_END_MARKER,
+  k3sFirstBootVerifyPhaseEnabled,
   mergeFullInstallSerialLogs,
   NODE_HEX_HOSTNAME_RE,
   OVMF_FIRMWARE_CANDIDATES,
+  parseK3sFirstBootVerifyVerdict,
   PHASE2_SERIAL_SEPARATOR,
   PHASE2B_SERIAL_SEPARATOR,
+  PHASE3_K3S_VERIFY_SERIAL_SEPARATOR,
   QEMU_CREDS_PASSPHRASE_FWCFG_NAME,
   missingRestorePreconditions,
   reclaimLargeTempArtifacts,
@@ -34,6 +40,8 @@ import {
   restoreServiceNeverRan,
   restoreWroteCount,
   restoreExercisedWritePath,
+  summarizeK3sFirstBootVerifyVerdict,
+  type K3sFirstBootVerifyVerdict,
   UEFI_KEYFILE_RESTORE_SERIAL,
   WRONG_QEMU_PASSPHRASE,
 } from "./qemu-full-install-test.ts";
@@ -909,10 +917,14 @@ describe("ISO workflow: restore decrypt runs with budget left", () => {
 
   it("job timeout is an integer via fromJSON (expression results are strings)", () => {
     // GitHub casts expression results to strings. `timeout-minutes` wants a
-    // number; without fromJSON the job can ignore 240/180 and die at the old
-    // 90-minute bound (measured: run 32647553460, restore still in_progress).
+    // number; without fromJSON the job can ignore the dispatch/schedule
+    // budget and die at the old 90-minute bound (measured: run 32647553460,
+    // restore still in_progress). WP11 (2026-09-22) widened the dispatch
+    // condition to also cover `schedule` and bumped 240 -> 330 for the new
+    // installed-disk first-boot k3s verify step; the pattern below tracks
+    // that, not the original 240/workflow_dispatch-only literal.
     expect(workflow).toMatch(
-      /timeout-minutes:\s*\$\{\{\s*fromJSON\(github\.event_name == 'workflow_dispatch' && '240' \|\| '180'\)\s*\}\}/,
+      /timeout-minutes:\s*\$\{\{\s*fromJSON\(\(github\.event_name == 'workflow_dispatch' \|\| github\.event_name == 'schedule'\) && '330' \|\| '180'\)\s*\}\}/,
     );
   });
 
@@ -1028,7 +1040,7 @@ describe("reclaimLargeTempArtifacts", () => {
     expect(source).toContain('process.on("exit"');
     expect(source).toContain("reclaimLargeTempArtifacts(largeTempArtifacts)");
     // The disk is registered before it is created, so an early exit reclaims.
-    expect(source.indexOf("const largeTempArtifacts")).toBeLessThan(source.indexOf("createVirtualDisk(diskPath)"));
+    expect(source.indexOf("const largeTempArtifacts")).toBeLessThan(source.indexOf("createVirtualDisk(diskPath,"));
     // The boot image is the second multi-GB artifact; it must be registered too.
     expect(source).toContain("largeTempArtifacts.push(usbImagePath)");
   });
@@ -1152,5 +1164,151 @@ describe("restoreServiceNeverRan / restore contract diagnosis", () => {
     // (systemd-as-root resolved the shim differently — run 32970963143).
     expect(nix).toContain("installs/bun/");
     expect(nix).toContain('"$BUN_BIN"');
+  });
+});
+
+describe("WP11 — installed-disk first-boot k3s verify", () => {
+  it("is opt-in via QEMU_K3S_FIRST_BOOT_PHASE and off by default", () => {
+    const original = process.env.QEMU_K3S_FIRST_BOOT_PHASE;
+    try {
+      delete process.env.QEMU_K3S_FIRST_BOOT_PHASE;
+      expect(k3sFirstBootVerifyPhaseEnabled()).toBe(false);
+      process.env.QEMU_K3S_FIRST_BOOT_PHASE = "1";
+      expect(k3sFirstBootVerifyPhaseEnabled()).toBe(true);
+    } finally {
+      if (original === undefined) delete process.env.QEMU_K3S_FIRST_BOOT_PHASE;
+      else process.env.QEMU_K3S_FIRST_BOOT_PHASE = original;
+    }
+  });
+
+  it("pins explicit bootindex on BOTH disk and NIC (081KSNY2Z0008QG0R0008PN7RQ run #27589613408 regression)", () => {
+    const args = buildQemuK3sVerifyBootArgsPure(
+      "/tmp/disk.qcow2",
+      "/tmp/serial.log",
+      "/usr/share/OVMF/OVMF_CODE_4M.fd",
+      "/tmp/OVMF_VARS_k3sverify.fd",
+      true,
+    );
+    const joined = args.join(" ");
+    expect(joined).toContain("virtio-blk-pci,drive=installdisk,bootindex=1");
+    expect(joined).toContain("virtio-net-pci,netdev=net0,bootindex=2");
+    expect(joined).toContain("-netdev");
+    expect(joined).toContain("user,id=net0");
+    expect(args).toContain("-no-reboot");
+  });
+
+  it("parses the JSON verdict block between the begin/end markers", () => {
+    const verdict: K3sFirstBootVerifyVerdict = {
+      bootedMultiUser: { ok: true, elapsedSeconds: 1 },
+      k3sServiceActive: { ok: true, elapsedSeconds: 30 },
+      nodeReady: { ok: true, elapsedSeconds: 90 },
+      helmJobs: {
+        jobs: [{ chart: "cilium", exists: true, complete: true, failedAttempts: 0 }],
+        elapsedSeconds: 120,
+      },
+      rootLanded: { ok: true, verdict: "landed", elapsedSeconds: 600 },
+      noBadPods: { ok: true, pods: [], elapsedSeconds: 900 },
+    };
+    const serial = `some boot noise\n${K3S_VERIFY_JSON_BEGIN_MARKER}\n${JSON.stringify(verdict)}\n${K3S_VERIFY_JSON_END_MARKER}\nmore noise`;
+    const parsed = parseK3sFirstBootVerifyVerdict(serial);
+    expect(parsed.ok).toBe(true);
+    if (!parsed.ok) return;
+    expect(parsed.value).toEqual(verdict);
+  });
+
+  it("reports a clear reason when the begin marker is missing", () => {
+    const parsed = parseK3sFirstBootVerifyVerdict("no markers here");
+    expect(parsed.ok).toBe(false);
+    if (parsed.ok) return;
+    expect(parsed.reason).toContain(K3S_VERIFY_JSON_BEGIN_MARKER);
+  });
+
+  it("reports a clear reason when the JSON is truncated/unparsable", () => {
+    const serial = `${K3S_VERIFY_JSON_BEGIN_MARKER}\n{ "bootedMultiUser": \n${K3S_VERIFY_JSON_END_MARKER}`;
+    const parsed = parseK3sFirstBootVerifyVerdict(serial);
+    expect(parsed.ok).toBe(false);
+    if (parsed.ok) return;
+    expect(parsed.reason).toContain("unparsable");
+  });
+
+  it("summarize: overall PASS only when all six verdicts pass, including every helm chart", () => {
+    const passing: K3sFirstBootVerifyVerdict = {
+      bootedMultiUser: { ok: true, elapsedSeconds: 1 },
+      k3sServiceActive: { ok: true, elapsedSeconds: 30 },
+      nodeReady: { ok: true, elapsedSeconds: 90 },
+      helmJobs: {
+        jobs: [
+          { chart: "cilium", exists: true, complete: true, failedAttempts: 0 },
+          { chart: "argocd", exists: true, complete: true, failedAttempts: 1 },
+        ],
+        elapsedSeconds: 120,
+      },
+      rootLanded: { ok: true, verdict: "landed", elapsedSeconds: 600 },
+      noBadPods: { ok: true, pods: [], elapsedSeconds: 900 },
+    };
+    expect(summarizeK3sFirstBootVerifyVerdict(passing).ok).toBe(true);
+
+    const oneChartIncomplete: K3sFirstBootVerifyVerdict = {
+      ...passing,
+      helmJobs: {
+        jobs: [
+          { chart: "cilium", exists: true, complete: true, failedAttempts: 0 },
+          { chart: "argocd", exists: true, complete: false, failedAttempts: 3 },
+        ],
+        elapsedSeconds: 120,
+      },
+    };
+    const summary = summarizeK3sFirstBootVerifyVerdict(oneChartIncomplete);
+    expect(summary.ok).toBe(false);
+    expect(summary.lines.join("\n")).toContain("argocd");
+
+    const badPodPresent: K3sFirstBootVerifyVerdict = {
+      ...passing,
+      noBadPods: {
+        ok: false,
+        pods: [{ namespace: "kube-system", name: "cilium-xyz", status: "CrashLoopBackOff", restarts: "5" }],
+        elapsedSeconds: 900,
+      },
+    };
+    const badPodSummary = summarizeK3sFirstBootVerifyVerdict(badPodPresent);
+    expect(badPodSummary.ok).toBe(false);
+    expect(badPodSummary.lines.join("\n")).toContain("CrashLoopBackOff");
+  });
+
+  it("has its own serial separator, distinct from phase 2/2b", () => {
+    expect(PHASE3_K3S_VERIFY_SERIAL_SEPARATOR).not.toBe(PHASE2_SERIAL_SEPARATOR);
+    expect(PHASE3_K3S_VERIFY_SERIAL_SEPARATOR).not.toBe(PHASE2B_SERIAL_SEPARATOR);
+    expect(PHASE3_K3S_VERIFY_SERIAL_SEPARATOR).toContain("WP11");
+  });
+
+  it("zeta-install.sh probes for the ESP marker and writes it to /mnt/etc/zeta", () => {
+    const sh = readFileSync(
+      resolve(import.meta.dir, "../../../full-ai-cluster/usb-nixos-installer/zeta-install.sh"),
+      "utf8",
+    );
+    expect(sh).toContain("zeta-qemu-k3s-first-boot-verify");
+    expect(sh).toContain("/mnt/etc/zeta/qemu-k3s-first-boot-verify");
+  });
+
+  it("the NixOS unit is gated OFF by default via ConditionPathExists on the QEMU-only marker", () => {
+    const nix = readFileSync(
+      resolve(import.meta.dir, "../../../full-ai-cluster/nixos/modules/zeta-first-boot-k3s-verify.nix"),
+      "utf8",
+    );
+    expect(nix).toContain("ConditionPathExists");
+    expect(nix).toContain("/etc/zeta/qemu-k3s-first-boot-verify");
+    // Never killed mid-poll by systemd's 90s default.
+    expect(nix).toContain("TimeoutStartSec = 0");
+    // Byte-identical markers to the TS parser above.
+    expect(nix).toContain(K3S_VERIFY_JSON_BEGIN_MARKER);
+    expect(nix).toContain(K3S_VERIFY_JSON_END_MARKER);
+  });
+
+  it("common.nix imports the new module", () => {
+    const common = readFileSync(
+      resolve(import.meta.dir, "../../../full-ai-cluster/nixos/modules/common.nix"),
+      "utf8",
+    );
+    expect(common).toContain("./zeta-first-boot-k3s-verify.nix");
   });
 });

@@ -414,7 +414,11 @@ describe("the real tree", () => {
     // ADDED rather than an image going missing -- the distinction the notes above
     // exist to keep, and it is checked here rather than assumed.
     // 65.96 -> 65.59 on 2026-09-05: vault removed, openbao added -- the images differ.
-    expect(all.diskGib).toBeCloseTo(65.59, 2);
+    // 65.59 -> 65.55 on 2026-09-22: gitlab's bundled minio subchart disabled
+    // (`global.minio.enabled: false`, gitlab/Application.yaml) -- both minio/minio
+    // and minio/mc were withdrawn from Docker Hub. -17,513,355 compressed bytes
+    // x2.67 = -0.0435 GiB, measured (65.59 - 0.04193... = 65.54806927766651).
+    expect(all.diskGib).toBeCloseTo(65.55, 2);
     expect(all.cpuMillis).toBeGreaterThan(budget.cpuMillis);
     // THE DISK AXIS STOPPED BINDING ON 2026-09-02, and this line used to assert the
     // opposite. `all.diskGib` is 61.83 against a 66 GiB budget, so for the first time
@@ -497,9 +501,14 @@ describe("the real tree", () => {
     // is strictly better than "cannot be priced". Its SIZE is pinned here because
     // that is a measurement; its VERDICT is left to the biconditional below,
     // because that is a fact about whatever bound is declared today.
+    // cpuMillis 2525 -> 2375 on 2026-09-22: gitlab's bundled minio subchart
+    // disabled (both its images gone from Docker Hub) removed
+    // Deployment/gitlab-minio (100m) and Job/gitlab-minio-create-buckets (50m).
+    // diskGib is UNCHANGED at this precision (1): the same minio removal costs
+    // only ~0.04 GiB, inside the 0.05 tolerance toBeCloseTo(_, 1) allows.
     const gitlab = priceSet(model, ["gitlab"]);
     expect(gitlab.diskGib).toBeCloseTo(11.53, 1);
-    expect(gitlab.cpuMillis).toBe(2525);
+    expect(gitlab.cpuMillis).toBe(2375);
     const assigned = new Set(p.lanes.flatMap((l) => l.assigned));
     const oversize = new Set(p.oversize.map((q) => q.name));
     const unpriced = new Set(p.unpriced.map((q) => q.name));

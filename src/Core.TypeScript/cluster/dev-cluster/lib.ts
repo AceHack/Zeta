@@ -385,6 +385,16 @@ export const BLOB_STORE_ENV_KEY = "BLOB_STORE_SECRET_KEY";
 export const SEAWEEDFS_S3_CONFIG_KEY = "seaweedfs_s3_config";
 
 /**
+ * In-cluster S3 endpoint of the shared SeaweedFS store, host:port form (no scheme).
+ *
+ * Repeated as a literal in `loki/Application.yaml` and `mimir/Application.yaml`
+ * (`s3.endpoint`) rather than sourced from one constant there, because those values render
+ * through Helm, not TypeScript. Named here because the two builders below DO run in
+ * TypeScript and would otherwise be a third, independently-drifting copy.
+ */
+export const SEAWEEDFS_S3_ENDPOINT = "blob-store-seaweedfs-all-in-one.object-store.svc:8333";
+
+/**
  * The identities document seaweedfs's S3 gateway authenticates against.
  *
  * ONE IDENTITY, not the chart's default two. The chart's own template also mints an
@@ -404,19 +414,83 @@ export function seaweedfsS3Config(secretKey: string): string {
   });
 }
 
+/**
+ * The key GitLab's Rails app reads out of `global.appConfig.object_store.connection.secret`
+ * (default key name "connection" -- `charts/gitlab/templates/_objectStorage.tpl`
+ * `gitlab.appConfig.objectStorage.mountSecrets`, mounted and `YAML.load_file`'d by the
+ * chart's own init container).
+ */
+export const GITLAB_OBJECT_STORE_CONNECTION_KEY = "connection";
+
+/**
+ * The key the container registry reads out of `registry.storage.secret` (default key name
+ * "config" -- `charts/registry/templates/deployment.yaml`, spliced into the rendered
+ * `storage:` block by the chart's entrypoint script at `/config/storage/config`).
+ */
+export const GITLAB_REGISTRY_STORAGE_KEY = "config";
+
+/**
+ * GitLab's "consolidated object storage" connection block -- one connection shared by
+ * lfs/artifacts/uploads/packages (none of them carry a per-type override in
+ * `gitlab/Application.yaml`, so all four fall back to this at runtime; that fallback is
+ * GitLab's own Rails-side `ObjectStoreSettings`, not something this chart renders).
+ * Shape verified against `charts/gitlab/templates/_objectStorage.tpl`
+ * `gitlab.appConfig.objectStorage.connection.minio` -- the same five keys, `provider`
+ * through `aws_secret_access_key`, with SeaweedFS's endpoint standing in for minio's.
+ */
+export function gitlabObjectStoreConnection(secretKey: string): string {
+  return [
+    "provider: AWS",
+    "region: us-east-1",
+    `host: ${SEAWEEDFS_S3_ENDPOINT}`,
+    `endpoint: http://${SEAWEEDFS_S3_ENDPOINT}`,
+    "path_style: true",
+    `aws_access_key_id: ${BLOB_STORE_ACCESS_KEY}`,
+    `aws_secret_access_key: ${secretKey}`,
+    "",
+  ].join("\n");
+}
+
+/**
+ * The container registry's own `storage.s3.*` config fragment -- a DIFFERENT shape from
+ * `gitlabObjectStoreConnection` above because the registry is the upstream Docker
+ * distribution binary, not GitLab's Rails app, and reads its storage driver config directly
+ * (`charts/registry/values.yaml` documents the `s3:` driver keys: `accesskey` / `secretkey`
+ * / `region` / `regionendpoint` / `bucket` / `secure` / `v4auth`).
+ */
+export function gitlabRegistryStorageConfig(secretKey: string): string {
+  return [
+    "s3:",
+    `  accesskey: ${BLOB_STORE_ACCESS_KEY}`,
+    `  secretkey: ${secretKey}`,
+    "  region: us-east-1",
+    `  regionendpoint: http://${SEAWEEDFS_S3_ENDPOINT}`,
+    "  bucket: gitlab-registry",
+    "  secure: false",
+    "  v4auth: true",
+    "",
+  ].join("\n");
+}
+
 export const DEV_BLOB_STORE_SECRET: DevSharedSecretSpec = {
   name: "zeta-blob-store",
   // The producer and every consumer. `applyDevSharedSecrets` draws once and applies to all
-  // three, which is the entire reason this shape exists.
-  namespaces: ["object-store", "loki", "mimir"],
+  // four, which is the entire reason this shape exists. `gitlab` added 2026-09-22 alongside
+  // the bundled-minio removal (gitlab/Application.yaml) -- same shared value, two more key
+  // shapes (Rails consolidated object storage + the registry's own storage driver config).
+  namespaces: ["object-store", "loki", "mimir", "gitlab"],
   keys: (value) => ({
     [SEAWEEDFS_S3_CONFIG_KEY]: seaweedfsS3Config(value),
     [BLOB_STORE_ENV_KEY]: value,
+    [GITLAB_OBJECT_STORE_CONNECTION_KEY]: gitlabObjectStoreConnection(value),
+    [GITLAB_REGISTRY_STORAGE_KEY]: gitlabRegistryStorageConfig(value),
   }),
   reason:
     "Minted per dev/CI cluster at bring-up. seaweedfs authenticates its S3 gateway against " +
     "seaweedfs_s3_config; loki and mimir expand BLOB_STORE_SECRET_KEY into their " +
-    "secret_access_key with -config.expand-env=true. All four must agree on one value.",
+    "secret_access_key with -config.expand-env=true; gitlab reads `connection` for its " +
+    "consolidated Rails object storage and `config` for the container registry's storage " +
+    "driver. All five must agree on one value.",
 } as const;
 
 export const DEV_HINDSIGHT_LLM_SECRET: DevSharedSecretSpec = {

@@ -1,0 +1,14 @@
+{
+  "id": "080d063ed3948010a0130008722136ba",
+  "at": "2026-09-22T06:42:57.296Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M33XMWME087G0R000825CCB",
+    "type": "task",
+    "title": "WP11: verify k3s + first-boot roster on the installed disk's own first boot (QEMU)",
+    "slug": "wp11-verify-k3s-first-boot-roster-on-the-installed-disk-s-ow",
+    "priority": "P1",
+    "filename": "081M33XMWME087G0R000825CCB-wp11-verify-k3s-first-boot-roster-on-the-installed-disk-s-ow.md"
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "id": "080d063ee9524810a0130008720de8b4",
+  "at": "2026-09-22T06:45:55.401Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M33XTAJ7087G0R000QCMYC4",
+    "type": "task",
+    "title": "gitlab bundled minio images gone from Docker Hub - repoint at in-cluster seaweedfs",
+    "slug": "gitlab-bundled-minio-images-gone-from-docker-hub-repoint-at",
+    "priority": "P2",
+    "filename": "081M33XTAJ7087G0R000QCMYC4-gitlab-bundled-minio-images-gone-from-docker-hub-repoint-at.md"
+  }
+}

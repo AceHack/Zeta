@@ -1,0 +1,15 @@
+{
+  "pr_number": 17479,
+  "archive_path": "docs/history/pr-reviews/2026/09/22/PR-17479-feat-cluster-docker-hub-pull-through-mirror-for-k3s-first-boot-images-wp9.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7yhZ2V",
+    "thread:PRRT_kwDOSF9kNM6knVjU"
+  ],
+  "fetched_at": "2026-09-22T07:27:52.400Z",
+  "schema_version": "v1",
+  "commit_sha": "00766282ba13e565f097bfc2fde3e0cf0314abfa",
+  "title": "feat(cluster): Docker Hub pull-through mirror for k3s first-boot images (WP9)",
+  "state": "MERGED",
+  "merged_at": "2026-09-22T07:27:08Z",
+  "head_ref": "claude/dockerhub-pull-through-mirror"
+}

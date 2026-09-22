@@ -84,6 +84,8 @@ export interface PrepareBootImageInput {
   readonly qemuCredsPassphrase?: string;
   /** QEMU restore only: bake `/zeta-qemu-bake-test-cred` so picker writes ≥1 cred. */
   readonly qemuBakeTestCredMarker?: boolean;
+  /** WP11 QEMU-only: bake `/zeta-qemu-k3s-first-boot-verify` so the installed disk's first boot runs the k3s bring-up verdict unit. */
+  readonly qemuK3sFirstBootVerifyMarker?: boolean;
 }
 
 export interface PrepareBootImageResult {
@@ -178,6 +180,7 @@ export function prepareBootImage(input: PrepareBootImageInput): PrepareBootImage
     ...(input.joinTokenSourcePath === undefined ? {} : { joinTokenSourcePath: input.joinTokenSourcePath }),
     ...(input.bindUefiKeyfileMarker === true ? { bindUefiKeyfileMarker: true } : {}),
     ...(input.qemuBakeTestCredMarker === true ? { qemuBakeTestCredMarker: true } : {}),
+    ...(input.qemuK3sFirstBootVerifyMarker === true ? { qemuK3sFirstBootVerifyMarker: true } : {}),
     ...(input.qemuCredsPassphrase === undefined ? {} : { qemuCredsPassphrase: input.qemuCredsPassphrase }),
   });
 

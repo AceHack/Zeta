@@ -1,0 +1,12 @@
+{
+  "pr_number": 17478,
+  "archive_path": "docs/history/pr-reviews/2026/09/22/PR-17478-fix-full-ai-cluster-pin-kubeversion-derived-spire-kubectl-image-fix-kubernetes-v.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-22T07:37:27.439Z",
+  "schema_version": "v1",
+  "commit_sha": "479f776621f60348ec0b8e9b1c41c0f058f988c8",
+  "title": "fix(full-ai-cluster): pin KubeVersion-derived SPIRE kubectl image, fix kubernetes-version.json drift",
+  "state": "MERGED",
+  "merged_at": "2026-09-22T07:36:37Z",
+  "head_ref": "claude/pin-kube-version-derived-images"
+}

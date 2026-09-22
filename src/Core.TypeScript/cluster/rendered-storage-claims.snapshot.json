@@ -82,19 +82,6 @@
     },
     {
       "appId": "full-ai-cluster/gitlab",
-      "origin": "PersistentVolumeClaim",
-      "name": "gitlab-minio",
-      "workload": "",
-      "storageClassName": "",
-      "accessModes": [
-        "ReadWriteOnce"
-      ],
-      "size": "10Gi",
-      "gibibytes": 10,
-      "count": 1
-    },
-    {
-      "appId": "full-ai-cluster/gitlab",
       "origin": "volumeClaimTemplate",
       "name": "redis-data/gitlab-redis-master",
       "workload": "StatefulSet/gitlab-redis-master",
