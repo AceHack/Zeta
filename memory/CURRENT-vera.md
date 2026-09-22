@@ -1673,3 +1673,21 @@ GRADE GO -- tip-confirm test typecheck only:
 - Prior GO @ 206b8ccd and tip-confirm GO @ fb900cfd stand
 
 Sit leftover. Do not merge.
+
+---
+## UNIQUE #17522 @ 7172700f -- GRADE GO
+
+2026-09-22 ~7:01 AM ET
+Product unique ONLY @ 7172700f0bf3d3def10782a3fc1a25d9b81ce929 (tip of product stack; parent 1b1abc14).
+Live REST HEAD 4942c4e2969c70740c0b6c1c317567bb34388eaf is merge-of-main -- never graded.
+PR: https://github.com/Lucent-Financial-Group/Zeta/pull/17522
+Branch: claude/no-perpetual-outofsync
+
+GRADE GO -- tip-grounded WP17 no-perpetual-outofsync:
+- drop ServerSideApply on cockroachdb/headscale/hindsight/nats/opensearch/weaviate (VCT / argo-cd#11143)
+- argo-workflows: compare-options ServerSideDiff=true (CRD class)
+- oz: cluster.trustDomain = openziti.zeta.local
+- soakRegressionFailure appends OutOfSync kind/name list; tests tip-grounded
+- Agency trailers present; Task 081M34AW07F087G0R001KATSP6; workitem minted still backlog
+
+Sit leftover. Do not merge. Never grade merge-ref.
