@@ -1,11 +1,12 @@
 ---
 id: 081M34QTS06087G0R0015D7X5W
 type: bug
-state: backlog
+state: done
 priority: P2
 slug: opensearch-cluster-master-0-crash-loops-after-first-boot-rep
 title: "opensearch-cluster-master-0 crash-loops after first-boot-replica power-cycle (stage 8)"
 created: 2026-09-22T14:20:33.158Z
+completed: 2026-09-22T19:52:28.421Z
 depends_on: []
 composes_with: []
 ---
