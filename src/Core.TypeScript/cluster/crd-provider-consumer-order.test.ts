@@ -14,17 +14,24 @@
  */
 
 import { describe, expect, test } from "bun:test";
+import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 import {
   ACKNOWLEDGED_FINDINGS,
   BUILTIN_API_GROUPS,
+  CEREMONY_GATED_APPS,
+  GATING_ANNOTATION,
   acknowledgementKey,
   auditCrdOrder,
   auditIsClean,
   formatAudit,
+  gatingInvariantViolations,
   indexAppManifests,
   matchesExcludeGlob,
   parseRenderedDocs,
   readAppSource,
+  readDirectoryApp,
   resolveViolations,
   type AppSource,
   type RenderResult,
@@ -399,6 +406,254 @@ describe("auditCrdOrder: acknowledgement mechanism", () => {
       expect(entry.reason.trim().length, `${key} has no reason`).toBeGreaterThan(40);
     }
   });
+});
+
+// ---------------------------------------------------------------------------
+// Gating invariants (081M33T23ZQ087G0R002ZYRHDG) -- REAL temp-dir fixtures,
+// not fakeRender: `gatingInvariantViolations` reads Secret references and
+// tree-minted names straight off disk (collectSecretReferences /
+// collectTreeMintedSecretNames), so a directory-sourced Application actually
+// written to a temp root is the only way to drive it without helm.
+// ---------------------------------------------------------------------------
+
+interface GatingApp {
+  readonly name: string;
+  readonly wave: number;
+  readonly gating?: boolean;
+  readonly selfHeal?: boolean;
+  readonly manualSync?: boolean;
+  /** Raw workload YAML this app's directory ships, beyond Application.yaml. */
+  readonly workload?: string;
+}
+
+function gatingFixture(apps: readonly GatingApp[]): { root: string; cleanup: () => void; apps: ShippedApplication[] } {
+  const root = mkdtempSync(join(tmpdir(), "zeta-gating-"));
+  const shipped: ShippedApplication[] = [];
+  for (const a of apps) {
+    const dir = join(root, "full-ai-cluster/k8s/applications", a.name);
+    mkdirSync(dir, { recursive: true });
+    const annotations = [`    argocd.argoproj.io/sync-wave: "${String(a.wave)}"`];
+    if (a.gating) annotations.push(`    ${GATING_ANNOTATION}: "true"`);
+    if (a.manualSync) {
+      annotations.push('    zeta.io/sync-policy: manual');
+      annotations.push('    zeta.io/sync-policy-reason: "synthetic fixture reason, non-empty"');
+    }
+    const syncPolicy = a.manualSync
+      ? "  syncPolicy:\n    syncOptions: []\n"
+      : `  syncPolicy:\n    automated: { prune: false, selfHeal: ${a.selfHeal === true ? "true" : "false"} }\n    syncOptions: []\n`;
+    writeFileSync(
+      join(dir, "Application.yaml"),
+      [
+        "apiVersion: argoproj.io/v1alpha1",
+        "kind: Application",
+        "metadata:",
+        "  annotations:",
+        ...annotations,
+        `  name: ${a.name}`,
+        "spec:",
+        "  source:",
+        `    path: full-ai-cluster/k8s/applications/${a.name}`,
+        "    directory:",
+        "      recurse: true",
+        syncPolicy,
+      ].join("\n"),
+      "utf8",
+    );
+    if (a.workload !== undefined) writeFileSync(join(dir, "workload.yaml"), a.workload, "utf8");
+    shipped.push({ name: a.name, path: `full-ai-cluster/k8s/applications/${a.name}/Application.yaml`, wave: a.wave, manualSync: a.manualSync === true });
+  }
+  return { root, cleanup: () => rmSync(root, { recursive: true, force: true }), apps: shipped };
+}
+
+const CRD_DOC = (group: string, kind: string): string => `apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: ${kind.toLowerCase()}s.${group}
+spec:
+  group: ${group}
+  names:
+    kind: ${kind}
+`;
+
+const CR_DOC = (group: string, kind: string, annotations = ""): string => `apiVersion: ${group}/v1
+kind: ${kind}
+metadata:
+  name: x
+${annotations === "" ? "" : `  annotations:\n${annotations}\n`}`;
+
+const SECRET_REF_DOC = (secretName: string): string => `apiVersion: apps/v1
+kind: Deployment
+metadata: { name: x }
+spec:
+  template:
+    spec:
+      containers:
+        - name: c
+          envFrom:
+            - secretRef: { name: ${secretName} }
+`;
+
+describe("gatingInvariantViolations", () => {
+  const readYaml = (root: string) => (p: string) => {
+    const fs = require("node:fs") as typeof import("node:fs");
+    return fs.readFileSync(join(root, p), "utf8");
+  };
+
+  // `indexAppManifests`'s DEFAULT render function calls `readDirectoryApp(source)`
+  // with no `repoRoot` argument -- it resolves against the REAL repo root by
+  // default, which is exactly right for `main()` but wrong for a temp-dir
+  // fixture. Bind the fixture's root explicitly so directory-sourced synthetic
+  // Applications actually resolve against the fixture, not the real tree.
+  const indexFixture = (fx: { root: string; apps: ShippedApplication[] }, bootstrapApps: ReadonlySet<string> = new Set()) =>
+    indexAppManifests(fx.apps, readYaml(fx.root), bootstrapApps, (s) => readDirectoryApp(s, fx.root));
+
+  test("GREEN: a gating provider consumed by another app, with no secret/manual-sync/ceremony issue, is clean", () => {
+    const fx = gatingFixture([
+      { name: "provider", wave: -10, gating: true, workload: CRD_DOC("example.com", "Widget") },
+      { name: "consumer", wave: 0, selfHeal: true, workload: CR_DOC("example.com", "Widget") },
+    ]);
+    try {
+      const bootstrapApps = new Set<string>();
+      const index = indexFixture(fx, bootstrapApps);
+      expect(gatingInvariantViolations(index, fx.root)).toEqual([]);
+    } finally {
+      fx.cleanup();
+    }
+  });
+
+  test("NEEDLESS-GATE: gating annotation with no cross-app consumer", () => {
+    const fx = gatingFixture([{ name: "lonely", wave: -10, gating: true, workload: CRD_DOC("example.com", "Widget") }]);
+    try {
+      const index = indexFixture(fx);
+      const violations = gatingInvariantViolations(index, fx.root);
+      expect(violations.map((v) => v.kind)).toContain("NEEDLESS-GATE");
+    } finally {
+      fx.cleanup();
+    }
+  });
+
+  test("UNSAFE-GATE-SECRET: gating app referencing an unminted Secret", () => {
+    const fx = gatingFixture([
+      {
+        name: "provider",
+        wave: -10,
+        gating: true,
+        workload: CRD_DOC("example.com", "Widget") + "---\n" + SECRET_REF_DOC("nowhere-minted"),
+      },
+      { name: "consumer", wave: 0, selfHeal: true, workload: CR_DOC("example.com", "Widget") },
+    ]);
+    try {
+      const index = indexFixture(fx);
+      const violations = gatingInvariantViolations(index, fx.root);
+      expect(violations.some((v) => v.kind === "UNSAFE-GATE-SECRET" && v.app === "provider")).toBe(true);
+    } finally {
+      fx.cleanup();
+    }
+  });
+
+  test("UNSAFE-GATE-MANUAL-SYNC: gating app declared manual-sync", () => {
+    const fx = gatingFixture([
+      { name: "provider", wave: 50, gating: true, manualSync: true, workload: CRD_DOC("example.com", "Widget") },
+      { name: "consumer", wave: 0, selfHeal: true, workload: CR_DOC("example.com", "Widget") },
+    ]);
+    try {
+      const index = indexFixture(fx);
+      const violations = gatingInvariantViolations(index, fx.root);
+      expect(violations.some((v) => v.kind === "UNSAFE-GATE-MANUAL-SYNC" && v.app === "provider")).toBe(true);
+    } finally {
+      fx.cleanup();
+    }
+  });
+
+  test("UNSAFE-GATE-CEREMONY: gating app in the declared ceremony table", () => {
+    expect(CEREMONY_GATED_APPS.has("openbao")).toBe(true);
+    const fx = gatingFixture([
+      { name: "openbao", wave: -60, gating: true, workload: CRD_DOC("example.com", "Widget") },
+      { name: "consumer", wave: 0, selfHeal: true, workload: CR_DOC("example.com", "Widget") },
+    ]);
+    try {
+      const index = indexFixture(fx);
+      const violations = gatingInvariantViolations(index, fx.root);
+      expect(violations.some((v) => v.kind === "UNSAFE-GATE-CEREMONY" && v.app === "openbao")).toBe(true);
+    } finally {
+      fx.cleanup();
+    }
+  });
+
+  test("UNPROTECTED-NON-GATING-PROVIDER: consumer of a non-gating provider with no Skip and no selfHeal", () => {
+    const fx = gatingFixture([
+      { name: "provider", wave: -10, workload: CRD_DOC("example.com", "Widget") }, // NOT gating
+      { name: "consumer", wave: 0, selfHeal: false, workload: CR_DOC("example.com", "Widget") },
+    ]);
+    try {
+      const index = indexFixture(fx);
+      const violations = gatingInvariantViolations(index, fx.root);
+      expect(violations.some((v) => v.kind === "UNPROTECTED-NON-GATING-PROVIDER" && v.app === "consumer")).toBe(true);
+    } finally {
+      fx.cleanup();
+    }
+  });
+
+  test("PROTECTED: consumer of a non-gating provider is clean with selfHeal: true even with no Skip", () => {
+    const fx = gatingFixture([
+      { name: "provider", wave: -10, workload: CRD_DOC("example.com", "Widget") },
+      { name: "consumer", wave: 0, selfHeal: true, workload: CR_DOC("example.com", "Widget") },
+    ]);
+    try {
+      const index = indexFixture(fx);
+      expect(gatingInvariantViolations(index, fx.root)).toEqual([]);
+    } finally {
+      fx.cleanup();
+    }
+  });
+
+  test("PROTECTED: consumer of a non-gating provider is clean with SkipDryRunOnMissingResource even with selfHeal: false", () => {
+    const fx = gatingFixture([
+      { name: "provider", wave: -10, workload: CRD_DOC("example.com", "Widget") },
+      {
+        name: "consumer",
+        wave: 0,
+        selfHeal: false,
+        workload: CR_DOC("example.com", "Widget", "    argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true"),
+      },
+    ]);
+    try {
+      const index = indexFixture(fx);
+      expect(gatingInvariantViolations(index, fx.root)).toEqual([]);
+    } finally {
+      fx.cleanup();
+    }
+  });
+
+  test("a bootstrap-installed provider never needs UNPROTECTED-NON-GATING-PROVIDER protection on its consumer", () => {
+    const fx = gatingFixture([
+      { name: "provider", wave: -80, workload: CRD_DOC("example.com", "Widget") }, // NOT gating, but bootstrap
+      { name: "consumer", wave: 0, selfHeal: false, workload: CR_DOC("example.com", "Widget") },
+    ]);
+    try {
+      const index = indexFixture(fx, new Set(["provider"]));
+      expect(gatingInvariantViolations(index, fx.root)).toEqual([]);
+    } finally {
+      fx.cleanup();
+    }
+  });
+
+  test(
+    "THE LIVE TREE: exactly the reviewed gating set, zero gating-invariant violations",
+    () => {
+      if (!helmOnPathForTest()) return; // covered by the live-tree describe block's skip below
+      const { readShippedApplications } = require("./derive-sync-waves.ts") as typeof import("./derive-sync-waves.ts");
+      const { readFileSync } = require("node:fs") as typeof import("node:fs");
+      const { resolve } = require("node:path") as typeof import("node:path");
+      const root = process.cwd();
+      const apps = readShippedApplications(root);
+      const audit = auditCrdOrder(apps, (p) => readFileSync(resolve(root, p), "utf8"), root);
+      const gating = [...audit.index.sourceByApp.entries()].filter(([, s]) => s.gatingAnnotated).map(([n]) => n).sort();
+      expect(gating).toEqual(["arc-controller", "cert-manager", "cilium", "open-policy-agent", "spire-crds", "trust-manager"]);
+      expect(audit.gatingViolations).toEqual([]);
+    },
+    180_000,
+  );
 });
 
 describe("formatAudit", () => {

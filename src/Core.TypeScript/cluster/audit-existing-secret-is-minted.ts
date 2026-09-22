@@ -158,6 +158,11 @@ function* leaves(node: unknown, path = ""): Generator<readonly [string, unknown]
 export function collectSecretReferences(repoRoot = REPO_ROOT): readonly SecretReference[] {
   const root = resolve(repoRoot, APPLICATIONS_DIR);
   const out: SecretReference[] = [];
+  // A repoRoot with no applications tree at all (a deliberately-broken test
+  // fixture, e.g. auditCrdOrder's "unanalyzable Application" case) is an
+  // empty scan, not a crash -- gatingInvariantViolations calls this against
+  // whatever repoRoot its caller was given, which is not always a real tree.
+  if (!existsSync(root)) return out;
   for (const entry of readdirSync(root, { withFileTypes: true })) {
     if (!entry.isDirectory()) continue;
     const manifest = join(APPLICATIONS_DIR, entry.name, "Application.yaml");
@@ -277,6 +282,7 @@ function listYamlFilesRecursive(dir: string, base: string): string[] {
 export function collectRawSecretReferences(repoRoot = REPO_ROOT): readonly SecretReference[] {
   const appsRoot = resolve(repoRoot, APPLICATIONS_DIR);
   const out: SecretReference[] = [];
+  if (!existsSync(appsRoot)) return out; // no applications tree at all -- an empty scan, not a crash
   for (const entry of readdirSync(appsRoot, { withFileTypes: true })) {
     if (!entry.isDirectory()) continue;
     const appDir = join(appsRoot, entry.name);
@@ -337,6 +343,7 @@ export function collectRawSecretReferences(repoRoot = REPO_ROOT): readonly Secre
 export function collectTreeMintedSecretNames(repoRoot = REPO_ROOT): ReadonlySet<string> {
   const appsRoot = resolve(repoRoot, APPLICATIONS_DIR);
   const out = new Set<string>();
+  if (!existsSync(appsRoot)) return out; // no applications tree at all -- an empty scan, not a crash
   for (const entry of readdirSync(appsRoot, { withFileTypes: true })) {
     if (!entry.isDirectory()) continue;
     const appDir = join(appsRoot, entry.name);

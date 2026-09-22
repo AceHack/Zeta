@@ -5,6 +5,20 @@ kind: Application
 metadata:
   annotations:
     argocd.argoproj.io/sync-wave: "0"
+    # DELIBERATELY NOT `zeta.io/gates-later-waves` (081M33T23ZQ087G0R002ZYRHDG).
+    # This Application DOES provide a genuinely-consumed CRD group
+    # (monitoring.coreos.com -- platform's ServiceMonitor/PrometheusRule
+    # depend on it) and would otherwise be a strong gating candidate. It is
+    # EXCLUDED because it depends on an unminted secret: `admin.existingSecret:
+    # grafana-admin-credentials` below is a NAMED reference (not the chart's
+    # empty-string "generate one for me" idiom), and
+    # collectTreeMintedSecretNames() confirms nothing in the committed tree
+    # mints it -- only the dev/CI harness does. Without it Grafana's pod
+    # cannot start, so this Application itself would never reach Healthy on a
+    # fresh metal install, and gating on it would propagate that stall to
+    # everything after wave 0. platform's consumption is protected instead by
+    # `SkipDryRunOnMissingResource=true` on the two CRD-gated resources
+    # (platform/monitoring.yaml).
   name: kube-prometheus-stack
   namespace: argocd
   finalizers: [ resources-finalizer.argocd.argoproj.io ]

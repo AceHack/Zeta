@@ -5,6 +5,17 @@ kind: Application
 metadata:
   annotations:
     argocd.argoproj.io/sync-wave: "-25"
+    # OPT-IN HEALTH GATING (081M33T23ZQ087G0R002ZYRHDG). Gatekeeper provides
+    # templates.gatekeeper.sh/ConstraintTemplate, genuinely consumed by
+    # hat-system's OPA policies (sync-wave-dependency-graph.yaml's own
+    # citation: "OPA constraints applied to a resource that landed BEFORE the
+    # constraint do nothing"). Verified metal-safe: zero Secret/existingSecret
+    # references anywhere in this Application, not declared manual-sync, and
+    # the webhook fail-open cold-boot risk this file's own header documents
+    # is already mitigated (validatingWebhookCheckIgnoreFailurePolicy:
+    # Ignore) -- a transient window ArgoCD's selfHeal retries through, not a
+    # permanent block.
+    zeta.io/gates-later-waves: "true"
   name: open-policy-agent
   namespace: argocd
   finalizers: [ resources-finalizer.argocd.argoproj.io ]

@@ -1,0 +1,14 @@
+{
+  "id": "080d063d54899010a013000820c67158",
+  "at": "2026-09-22T05:50:39.410Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M33TN49G087G0R000X5ZJ75",
+    "type": "bug",
+    "title": "Metal image-pull secret gap: zeta-platform/ghcr-pull is not minted outside dev/CI",
+    "slug": "metal-image-pull-secret-gap-zeta-platform-ghcr-pull-is-not-m",
+    "priority": "P2",
+    "filename": "081M33TN49G087G0R000X5ZJ75-metal-image-pull-secret-gap-zeta-platform-ghcr-pull-is-not-m.md"
+  }
+}

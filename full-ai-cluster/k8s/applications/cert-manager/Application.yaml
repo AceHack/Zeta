@@ -7,6 +7,15 @@ kind: Application
 metadata:
   annotations:
     argocd.argoproj.io/sync-wave: "-70"
+    # OPT-IN HEALTH GATING (081M33T23ZQ087G0R002ZYRHDG). cert-manager provides
+    # cert-manager.io/acme.cert-manager.io CRDs genuinely consumed by later
+    # waves (openziti-controller's Certificates/Issuers, platform's
+    # ClusterIssuer, trust-manager's Bundle sourcing). Verified metal-safe:
+    # zero Secret/existingSecret references anywhere in this Application, not
+    # declared manual-sync, self-issues its own webhook CA (no external
+    # credential), and bootstrap-installed (cert-manager-install.yaml applies
+    # it before ArgoCD exists, so it has a long head start to be Ready).
+    zeta.io/gates-later-waves: "true"
   name: cert-manager
   namespace: argocd
   finalizers: [ resources-finalizer.argocd.argoproj.io ]

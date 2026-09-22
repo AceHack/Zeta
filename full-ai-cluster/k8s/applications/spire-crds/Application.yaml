@@ -56,6 +56,17 @@ kind: Application
 metadata:
   annotations:
     argocd.argoproj.io/sync-wave: "-55"
+    # OPT-IN HEALTH GATING (081M33T23ZQ087G0R002ZYRHDG). spire-crds provides
+    # spire.spiffe.io CRDs, genuinely consumed by spire's own
+    # ClusterSPIFFEIDs (the declared spire -> spire-crds edge in
+    # sync-wave-dependency-graph.yaml, MEASURED consequence of the missing
+    # edge cited there: spire sat OutOfSync/Missing with zero pods without
+    # it). Verified metal-safe: this Application is CRDs only -- no
+    # Deployment, no Secret reference anywhere, not declared manual-sync --
+    # and gitops-engine's built-in CustomResourceDefinition health check
+    # (the Established condition) settles near-instantly with no operator
+    # action.
+    zeta.io/gates-later-waves: "true"
   name: spire-crds
   namespace: argocd
   finalizers: [ resources-finalizer.argocd.argoproj.io ]

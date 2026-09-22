@@ -85,6 +85,18 @@ import { existsSync, readdirSync, readFileSync, statSync, unlinkSync, writeFileS
 import { join, relative, resolve } from "node:path";
 import { parseAllDocuments, parse as parseYaml } from "yaml";
 import { readShippedApplications, type ShippedApplication } from "./derive-sync-waves.ts";
+// THE ONE DEFINITION OF "deliberately manual-sync" -- reused, not re-derived,
+// same reasoning as derive-sync-waves.ts's manual-sync-floor check.
+import { classifySyncPolicy } from "./manual-sync-policy.ts";
+// Reused for the gating-safety check (b): a gating app may not depend on a
+// Secret nothing on METAL mints. `collectTreeMintedSecretNames` (not the
+// dev/CI roster) is the correct standard here -- see that module's own
+// header on why the two scans use different minted sets.
+import {
+  collectRawSecretReferences,
+  collectSecretReferences,
+  collectTreeMintedSecretNames,
+} from "./audit-existing-secret-is-minted.ts";
 
 const REPO_ROOT = resolve(import.meta.dir, "../../..");
 const BOOTSTRAP_DIR = "full-ai-cluster/k8s/bootstrap";
@@ -351,6 +363,9 @@ function listYamlFilesRecursive(dir: string, base: string): string[] {
   return out;
 }
 
+/** `metadata.annotations["zeta.io/gates-later-waves"]` -- see the opt-in gating header below. */
+export const GATING_ANNOTATION = "zeta.io/gates-later-waves";
+
 export interface AppSource {
   readonly kind: "helm" | "directory" | "unknown";
   readonly chart?: string;
@@ -364,6 +379,12 @@ export interface AppSource {
   readonly exclude?: string;
   /** The Application's OWN `spec.syncPolicy.syncOptions` list. */
   readonly syncOptions: readonly string[];
+  /** `metadata.annotations[GATING_ANNOTATION] === "true"` -- exactly what the lua reads. */
+  readonly gatingAnnotated: boolean;
+  /** `spec.syncPolicy.automated.selfHeal === true` -- ArgoCD retries this Application's sync on its own reconcile loop. */
+  readonly selfHeal: boolean;
+  /** `classifySyncPolicy(...).kind === "manual"` -- manual-sync-policy.ts's well-formed declared posture. */
+  readonly manualSync: boolean;
 }
 
 function get(value: unknown, path: readonly string[]): unknown {
@@ -380,10 +401,13 @@ export function readAppSource(applicationYamlText: string): AppSource {
   try {
     value = parseYaml(applicationYamlText);
   } catch {
-    return { kind: "unknown", syncOptions: [] };
+    return { kind: "unknown", syncOptions: [], gatingAnnotated: false, selfHeal: false, manualSync: false };
   }
   const syncOptionsRaw = get(value, ["spec", "syncPolicy", "syncOptions"]);
   const syncOptions = Array.isArray(syncOptionsRaw) ? syncOptionsRaw.filter((s): s is string => typeof s === "string") : [];
+  const gatingAnnotated = get(value, ["metadata", "annotations", GATING_ANNOTATION]) === "true";
+  const selfHeal = get(value, ["spec", "syncPolicy", "automated", "selfHeal"]) === true;
+  const manualSync = classifySyncPolicy(applicationYamlText).kind === "manual";
 
   const chart = get(value, ["spec", "source", "chart"]);
   if (typeof chart === "string") {
@@ -400,6 +424,9 @@ export function readAppSource(applicationYamlText: string): AppSource {
       namespace: typeof namespace === "string" ? namespace : "default",
       valuesObject: get(value, ["spec", "source", "helm", "valuesObject"]) ?? {},
       syncOptions,
+      gatingAnnotated,
+      selfHeal,
+      manualSync,
     };
   }
 
@@ -413,9 +440,12 @@ export function readAppSource(applicationYamlText: string): AppSource {
       recurse: recurse === true,
       exclude: typeof exclude === "string" ? exclude : "",
       syncOptions,
+      gatingAnnotated,
+      selfHeal,
+      manualSync,
     };
   }
-  return { kind: "unknown", syncOptions };
+  return { kind: "unknown", syncOptions, gatingAnnotated, selfHeal, manualSync };
 }
 
 /** `oci://host/path/chart` for an OCI Helm source. Mirrors validate-applications.ts. */
@@ -579,6 +609,8 @@ export interface AppManifestIndex {
   readonly consumed: readonly ConsumedKind[];
   /** Apps whose source could not be rendered/read at all, with why. */
   readonly unanalyzable: ReadonlyMap<string, string>;
+  /** Every successfully-PARSED Application's source, keyed by name -- even ones whose render later failed. */
+  readonly sourceByApp: ReadonlyMap<string, AppSource>;
 }
 
 export function indexAppManifests(
@@ -590,6 +622,7 @@ export function indexAppManifests(
   const provided: ProvidedCrd[] = [];
   const consumed: ConsumedKind[] = [];
   const unanalyzable = new Map<string, string>();
+  const sourceByApp = new Map<string, AppSource>();
 
   for (const app of apps) {
     const source = readAppSource(readApplicationYaml(app.path));
@@ -597,6 +630,7 @@ export function indexAppManifests(
       unanalyzable.set(app.name, "Application declares neither spec.source.chart nor spec.source.path");
       continue;
     }
+    sourceByApp.set(app.name, source);
     const result = render(source);
     if (!result.ok) {
       unanalyzable.set(app.name, result.error ?? "render failed");
@@ -628,7 +662,7 @@ export function indexAppManifests(
     for (const crd of crds) provided.push({ app, group: crd.group, kind: crd.kind, bootstrap: isBootstrap });
   }
 
-  return { provided, consumed, unanalyzable };
+  return { provided, consumed, unanalyzable, sourceByApp };
 }
 
 /**
@@ -782,6 +816,172 @@ export function resolveViolations(
 }
 
 // ---------------------------------------------------------------------------
+// GATING INVARIANTS -- the opt-in health-gating annotation, checked.
+//
+// `resource.customizations.health.argoproj.io_Application` (argocd-cm, all
+// three sites) does NOT propagate a child Application's real health to
+// sync-wave progression by default any more. It does so ONLY for a child
+// carrying `zeta.io/gates-later-waves: "true"` (081M33T23ZQ087G0R002ZYRHDG --
+// architect review). Gating every Application uniformly (the upstream default)
+// converts one never-Healthy app anywhere in the ~50-Application roster into a
+// whole-cluster stall; gating NOTHING lets a genuine CRD consumer race its
+// provider with no ordering guarantee stronger than the wave NUMBER. Opt-in
+// providers is the middle: only apps a later wave actually depends on, and
+// only when they are VERIFIED safe to wait on.
+//
+// This section is what makes "verified safe" a checked claim rather than a
+// one-time review:
+//   (a) NEEDLESS-GATE   -- a gating-annotated app provides nothing another
+//       app consumes. Gating it waits on a promise nobody made.
+//   (b) UNSAFE-GATE-*   -- a gating-annotated app depends on something that
+//       can permanently prevent it from reaching Healthy on a fresh metal
+//       install: an unminted Secret, a declared manual-sync posture (never
+//       auto-synced, so real health is "Missing" forever), or a named
+//       operator ceremony (CEREMONY_GATED_APPS).
+//   (c) UNPROTECTED-NON-GATING-PROVIDER -- a consumer of a NON-gating
+//       provider must be able to converge WITHOUT ever observing that
+//       provider's health: either the consumed resource carries
+//       SkipDryRunOnMissingResource=true (platform's fix), or the consumer
+//       itself retries automatically (`selfHeal: true`) so a transient
+//       SyncFailed self-heals on the next reconcile.
+// ---------------------------------------------------------------------------
+
+export type GatingViolationKind =
+  | "NEEDLESS-GATE"
+  | "UNSAFE-GATE-SECRET"
+  | "UNSAFE-GATE-MANUAL-SYNC"
+  | "UNSAFE-GATE-CEREMONY"
+  | "UNPROTECTED-NON-GATING-PROVIDER";
+
+export interface GatingViolation {
+  readonly kind: GatingViolationKind;
+  readonly app: string;
+  readonly detail: string;
+}
+
+/**
+ * Apps that can NEVER be safely gating, regardless of what the mechanical
+ * secret/manual-sync/CRD checks would otherwise conclude -- a named,
+ * reasoned exception list for the class of blocker those checks cannot see:
+ * an OPERATOR CEREMONY a human must perform, which leaves no trace in a
+ * Secret reference or a sync-policy annotation.
+ *
+ * `openbao` is the one measured instance. It is not a CRD provider today
+ * (so it would never be a gating CANDIDATE under the CRD-derivation above),
+ * but the table exists so a FUTURE edit cannot annotate it as gating without
+ * this check firing -- the same defense-in-depth shape as
+ * derive-sync-waves.ts's manual-sync-floor invariant.
+ */
+export const CEREMONY_GATED_APPS: ReadonlyMap<string, string> = new Map([
+  [
+    "openbao",
+    "Comes up SEALED by design (openbao/Application.yaml: 'NO PKCS#11 SEAL " +
+      "HERE YET, AND THAT IS THE HONEST PART'). openbao-unseal-sidecar.ts's " +
+      "own header: 'HONEST SCOPE -- SHAMIR / KIND ONLY. Metal auto-unseal is " +
+      "PKCS#11 ... which replaces this loop rather than calling it, and is " +
+      "blocked on a same-libc OpenBao image.' No mechanism unseals it on a " +
+      "fresh metal install without a human running the gated init/unseal " +
+      "ceremony, so its readiness probe -- and therefore its health -- never " +
+      "clears on its own.",
+  ],
+]);
+
+/** Every Secret an Application references (valuesObject + raw pod-spec), deduped by name. */
+function secretNamesFor(app: string, repoRoot: string): readonly string[] {
+  const all = [...collectSecretReferences(repoRoot), ...collectRawSecretReferences(repoRoot)];
+  return [...new Set(all.filter((r) => r.app === app).map((r) => r.secretName))];
+}
+
+export function gatingInvariantViolations(index: AppManifestIndex, repoRoot = REPO_ROOT): readonly GatingViolation[] {
+  const violations: GatingViolation[] = [];
+  const treeMinted = collectTreeMintedSecretNames(repoRoot);
+
+  const providersByGroup = new Map<string, ProvidedCrd[]>();
+  for (const p of index.provided) {
+    const list = providersByGroup.get(p.group) ?? [];
+    list.push(p);
+    providersByGroup.set(p.group, list);
+  }
+
+  for (const [app, source] of index.sourceByApp) {
+    if (!source.gatingAnnotated) continue;
+
+    // (a) no needless gates.
+    const providesForAnotherApp = index.provided.some(
+      (p) => p.app === app && index.consumed.some((c) => c.group === p.group && c.app !== app),
+    );
+    if (!providesForAnotherApp) {
+      violations.push({
+        kind: "NEEDLESS-GATE",
+        app,
+        detail:
+          `${app} carries ${GATING_ANNOTATION}: "true" but provides no CRD group any OTHER Application consumes -- ` +
+          "gating it makes wave progression wait on a promise nobody depends on. Remove the annotation, or add the " +
+          "consumer that justifies it.",
+      });
+    }
+
+    // (b) no unminted secret.
+    const unminted = secretNamesFor(app, repoRoot).filter((name) => !treeMinted.has(name));
+    if (unminted.length > 0) {
+      violations.push({
+        kind: "UNSAFE-GATE-SECRET",
+        app,
+        detail:
+          `${app} carries ${GATING_ANNOTATION}: "true" but references Secret(s) nothing in the committed tree mints: ` +
+          `${unminted.join(", ")}. An Application that cannot start without an unminted Secret can never reach ` +
+          "Healthy on a fresh metal install, so gating it stalls every later wave forever.",
+      });
+    }
+
+    // (b) not a declared manual-sync app.
+    if (source.manualSync) {
+      violations.push({
+        kind: "UNSAFE-GATE-MANUAL-SYNC",
+        app,
+        detail:
+          `${app} carries ${GATING_ANNOTATION}: "true" but is declared manual-sync (manual-sync-policy.ts) -- it is ` +
+          "never auto-synced, so its honest health is \"Missing\" forever on a fresh install. Gating a manual-sync " +
+          "app stalls every later wave until a human runs `argocd app sync` by hand.",
+      });
+    }
+
+    // (b) not a named operator ceremony.
+    const ceremony = CEREMONY_GATED_APPS.get(app);
+    if (ceremony !== undefined) {
+      violations.push({
+        kind: "UNSAFE-GATE-CEREMONY",
+        app,
+        detail: `${app} carries ${GATING_ANNOTATION}: "true" but is in CEREMONY_GATED_APPS: ${ceremony}`,
+      });
+    }
+  }
+
+  // (c) every consumer of a NON-gating provider must be protected.
+  for (const c of index.consumed) {
+    const providers = providersByGroup.get(c.group) ?? [];
+    if (providers.length === 0) continue; // NO-PROVIDER is resolveViolations's job
+    if (providers.some((p) => p.app === c.app)) continue; // self-provided
+    if (providers.some((p) => p.bootstrap)) continue; // always satisfied before ArgoCD exists
+    const allProvidersGating = providers.every((p) => index.sourceByApp.get(p.app)?.gatingAnnotated === true);
+    if (allProvidersGating) continue; // consumer can safely wait on wave-order + real health
+    if (c.skipDryRun) continue;
+    const consumerSource = index.sourceByApp.get(c.app);
+    if (consumerSource?.selfHeal === true) continue; // ArgoCD retries this Application's sync on its own
+    violations.push({
+      kind: "UNPROTECTED-NON-GATING-PROVIDER",
+      app: c.app,
+      detail:
+        `${c.app} consumes ${c.group} ${c.kind} from a provider that is NOT gating-annotated, but ${c.app} carries ` +
+        "neither SkipDryRunOnMissingResource=true nor spec.syncPolicy.automated.selfHeal=true -- a transient " +
+        "ordering miss here has no self-healing path and stays SyncFailed.",
+    });
+  }
+
+  return violations;
+}
+
+// ---------------------------------------------------------------------------
 // Acknowledged findings -- same shape as every other adjudicated registry in
 // this tree (derive-sync-waves.ts's ORDER_ADJUDICATION_PENDING,
 // audit-existing-secret-is-minted.ts's baseline): a finding this analyzer
@@ -826,6 +1026,15 @@ export interface CrdOrderAudit {
   readonly violations: readonly Violation[];
   readonly unregistered: readonly Violation[];
   readonly staleAcknowledgements: readonly string[];
+  /**
+   * Gating-invariant findings (NEEDLESS-GATE / UNSAFE-GATE-* /
+   * UNPROTECTED-NON-GATING-PROVIDER). Deliberately NOT acknowledgeable: the
+   * whole point of the opt-in design is that the SELECTED gating set is
+   * verified safe, so any finding here means the set (or a consumer's
+   * protection) needs to change, not that the finding needs a documented
+   * exception.
+   */
+  readonly gatingViolations: readonly GatingViolation[];
 }
 
 export function auditCrdOrder(
@@ -838,16 +1047,17 @@ export function auditCrdOrder(
   const index = indexAppManifests(apps, readApplicationYaml, bootstrapApps, render);
   const waves = new Map<string, number | null>(apps.map((a) => [a.name, a.wave]));
   const violations = resolveViolations(index, waves, bootstrapApps, bootstrapRawCrdProviders(repoRoot));
+  const gatingViolations = gatingInvariantViolations(index, repoRoot);
 
   const seen = new Set(violations.map(acknowledgementKey));
   const unregistered = violations.filter((v) => !ACKNOWLEDGED_FINDINGS.has(acknowledgementKey(v)));
   const staleAcknowledgements = [...ACKNOWLEDGED_FINDINGS.keys()].filter((k) => !seen.has(k)).sort();
 
-  return { index, violations, unregistered, staleAcknowledgements };
+  return { index, violations, unregistered, staleAcknowledgements, gatingViolations };
 }
 
 export function auditIsClean(audit: CrdOrderAudit): boolean {
-  return audit.unregistered.length === 0 && audit.staleAcknowledgements.length === 0;
+  return audit.unregistered.length === 0 && audit.staleAcknowledgements.length === 0 && audit.gatingViolations.length === 0;
 }
 
 export function formatAudit(audit: CrdOrderAudit): string {
@@ -877,6 +1087,21 @@ export function formatAudit(audit: CrdOrderAudit): string {
   if (audit.staleAcknowledgements.length > 0) {
     lines.push("STALE ACKNOWLEDGEMENTS -- match no current finding, delete them:");
     for (const k of audit.staleAcknowledgements) lines.push(`  ${k}`);
+    lines.push("");
+  }
+  const gatingApps = [...audit.index.sourceByApp.entries()]
+    .filter(([, s]) => s.gatingAnnotated)
+    .map(([app]) => app)
+    .sort();
+  lines.push(
+    `GATING SET -- ${String(gatingApps.length)} Application(s) carry ${GATING_ANNOTATION}: "true" ` +
+      "(their real health propagates to wave ordering; every other Application reports synthetic Healthy):",
+    ...gatingApps.map((a) => `  ${a}`),
+    "",
+  );
+  if (audit.gatingViolations.length > 0) {
+    lines.push(`GATING INVARIANT VIOLATIONS -- ${String(audit.gatingViolations.length)} finding(s), NOT acknowledgeable:`);
+    for (const v of audit.gatingViolations) lines.push(`  [${v.kind}] ${v.detail}`);
     lines.push("");
   }
   lines.push(

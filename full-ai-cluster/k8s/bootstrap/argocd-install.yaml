@@ -65,25 +65,70 @@ spec:
         # the moment it is APPLIED -- sync waves among the ~50 child Applications
         # then only order the ArgoCD-side apply of the Application resource
         # itself; they never wait for the workload underneath a wave to actually
-        # converge before the next wave starts. Lua verbatim from the upstream
-        # upgrade note above.
+        # converge before the next wave starts.
+        #
+        # OPT-IN, NOT GLOBAL -- A DELIBERATE MODIFICATION OF THE UPSTREAM LUA,
+        # AND THE REASON IS AN ARCHITECT REVIEW (081M33T23ZQ087G0R002ZYRHDG),
+        # not upstream's own text. The upstream snippet above (the lines inside
+        # the `if obj.metadata...` guard below, byte-identical to the upgrade
+        # note) makes health assessment ATTACH TO EVERY Application uniformly.
+        # Turning that on for the whole ~50-Application roster converts it into
+        # a GLOBAL wave gate: sync-wave progression waits for EVERY earlier
+        # wave's Application to be Healthy before starting the next wave, no
+        # matter whether anything downstream actually depends on it. Measured
+        # against the real tree, that is not a safe default:
+        #   - `platform` (wave -20) pulls a PRIVATE image via `ghcr-pull`,
+        #     which nothing mints outside the dev/CI harness (metal gap,
+        #     workitem 081M33TN49G087G0R000X5ZJ75) -- ImagePullBackOff forever.
+        #   - `openbao` (wave -60) comes up SEALED by design; PKCS#11
+        #     auto-unseal is not wired for metal (openbao/Application.yaml,
+        #     openbao-unseal-sidecar.ts: "HONEST SCOPE -- SHAMIR / KIND ONLY.
+        #     Metal auto-unseal is PKCS#11 ... blocked on a same-libc OpenBao
+        #     image") -- sealed forever without a human-run unseal ceremony.
+        #   - `cdi`/`kubevirt`/`ollama`/`vllm` are declared manual-sync
+        #     (manual-sync-policy.ts) -- never auto-synced, so honest health is
+        #     "Missing" forever.
+        # ANY ONE of those, gated globally, freezes every wave after it --
+        # cluster-wide, on every fresh install. So health is propagated to
+        # wave ordering ONLY for a child Application explicitly annotated
+        # `zeta.io/gates-later-waves: "true"` -- a SMALL, machine-checked set
+        # of CRD/webhook PROVIDERS that (a) a later wave genuinely depends on
+        # and (b) are verified to reach Healthy on a fresh metal boot with no
+        # operator ceremony and no unminted secret
+        # (crd-provider-consumer-order.ts: `GATING_PROVIDER_APPS`, `deriveGatingFindings`).
+        # Every OTHER Application reports synthetic Healthy here -- wave
+        # ordering never waits on it -- while its REAL health is UNCHANGED and
+        # fully visible everywhere a human or `argocd app get` actually looks
+        # (the ArgoCD UI, `kubectl get application`, this lua's input `obj`
+        # itself): this only changes what feeds wave PROGRESSION, never what
+        # is reported about the Application.
         #
         # MUST STAY IN LOCKSTEP with `configs.cm` in
-        # full-ai-cluster/k8s/applications/argocd/Application.yaml -- same
-        # reasoning as the version pin above: this bootstrap installs ArgoCD
-        # first, the Application then adopts it, and a divergent argocd-cm
-        # between the two would flip health semantics on ArgoCD's very first
-        # self-managed reconcile. `argocd-health-lua-lockstep.test.ts` fails if
-        # either file loses this key or the two disagree.
+        # full-ai-cluster/k8s/applications/argocd/Application.yaml AND THE
+        # OTHER DECLARED CLUSTER TREE'S mirrored bootstrap file
+        # (audit-argocd-pin-parity.ts's own HELMCHART_PIN_FILES roster --
+        # not spelled out by path here: that second tree is the stale one
+        # 081M00QCHWA087G0R000GKKRXD is retiring, and cluster-tree-consumers.json
+        # refuses a new literal reference to it from a full-ai-cluster manifest)
+        # -- same reasoning as the version pin above: this bootstrap installs ArgoCD first, the
+        # Application then adopts it, and a divergent argocd-cm between the
+        # two would flip health semantics on ArgoCD's very first self-managed
+        # reconcile. `audit-argocd-pin-parity.ts`'s health-lua parity check
+        # fails if any of the three loses this key or they disagree.
         resource.customizations.health.argoproj.io_Application: |
           hs = {}
-          hs.status = "Progressing"
-          hs.message = ""
-          if obj.status ~= nil then
-            if obj.status.health ~= nil then
-              hs.status = obj.status.health.status
-              if obj.status.health.message ~= nil then
-                hs.message = obj.status.health.message
+          hs.status = "Healthy"
+          hs.message = "non-gating: health not propagated to wave ordering (zeta.io/gates-later-waves not set)"
+          if obj.metadata ~= nil and obj.metadata.annotations ~= nil and obj.metadata.annotations["zeta.io/gates-later-waves"] == "true" then
+            -- Upstream lua, verbatim, from argo-cd docs/operator-manual/upgrading/1.7-1.8.md.
+            hs.status = "Progressing"
+            hs.message = ""
+            if obj.status ~= nil then
+              if obj.status.health ~= nil then
+                hs.status = obj.status.health.status
+                if obj.status.health.message ~= nil then
+                  hs.message = obj.status.health.message
+                end
               end
             end
           end
