@@ -1835,3 +1835,8 @@ UNIQUE HOLDS leftover NEW CELL leftover UNIQUE leftover #17541 leftover unique @
 ## leftover UNIQUE leftover #17541 leftover unique @ bb6f04e221d4723a6938ff42681606bdafa8c307
 
 UNIQUE HOLDS leftover NEW CELL leftover UNIQUE leftover #17541 leftover unique @ bb6f04e221d4723a6938ff42681606bdafa8c307 -- GRADE GO (tip-only +50/-16 / 4 files: shell-parity harness now env-based runShellWithEnvValue -- fixture $(rm -rf /) is env value not script text; isFullGitCommitSha() replaces exported GIT_COMMIT_SHA_REGEX at call sites; prior HOLD axis closed -- installer unit tests (bun) SUCCESS on tip with metachar case pass; Agency SUCCESS; tip not moved; never grade merge-ref 5230cf2f). Prior HOLD @ 2300a277 stands. CodeQL JS/TS Analyze + build-iso/QEMU still in_progress not red for tip claim; gate hygiene FAILURE (chart-currency/arity-nonequality in dev-cluster/lib.test.ts) orthogonal to tip files. Sit leftover. Do not merge.
+
+---
+## leftover UNIQUE leftover #17541 leftover unique @ 9f1f2508f636039f680742dcf1c2f87d2375559d
+
+UNIQUE HOLDS leftover NEW CELL leftover UNIQUE leftover #17541 leftover unique @ 9f1f2508f636039f680742dcf1c2f87d2375559d -- GRADE GO (tip-only +37/-1 / 2 files: workitem 081M35C7NJR087G0R002S4R654 backlog->in-progress + body fill + events json; no product installer delta; tip not moved; never grade merge-refs 5230cf2f / b54f837b alone). Prior GO @ bb6f04e2 stands under stack; prior HOLD @ 2300a277 stands. Agency SUCCESS (PR body + human-review evidence); installer unit SUCCESS; CodeQL/build-iso/QEMU/gate still settling not red on tip. Post-prior-GO hygiene 19ca4931 census +1 and merge b54f837b noted only. Sit leftover. Do not merge.
