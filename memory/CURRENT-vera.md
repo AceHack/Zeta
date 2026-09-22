@@ -1365,3 +1365,22 @@ Conflict .github/workflows/helm-validate.yml charts job: CRD provider/consumer o
 Agency: tip trailer + PR body present; agencysignature (PR body) SUCCESS; human-review evidence SUCCESS.
 
 GRADE GO. Sit leftover. Do not merge.
+
+---
+## UNIQUE #17480 @ f2118b73 -- GRADE GO
+Observed ~2026-09-22 03:32 ET.
+
+LIVE tip (grade this only): f2118b73fcd20ab2f5eb7e094b6d40e90c96526c
+First parent (product): f3758b39b4c4808959cb94d22a7d2973c2caff4e
+Second parent (main): 00766282ba13e565f097bfc2fde3e0cf0314abfa
+Prior GO (stands): 00b9b847337f74df86dd264171041ccf5ce91853
+
+Product since prior GO (f3758b39 vs 00b9b847): +312/-101 / 3 files -- match claim.
+- STARTUP_RESTART_HARD_FAIL_THRESHOLD=3; uncovered 1-2 warn-only; stale 14d notice
+- classifyStartupRestartEntry / classifyStartupRestarts; baseline union 10 pairs
+- 11 unit tests for classify*/startupRestartFailure boundaries
+
+Merge tip hygiene: no conflict markers; test+baseline blobs identical to product; argocd-health-test.ts tip-only delta is gitlab DEV_EXCLUDED comment from main only.
+Agency: product + PR body present; agencysignature (PR body) SUCCESS; check-then-use-races SUCCESS.
+
+GRADE GO. Sit leftover. Do not merge.
