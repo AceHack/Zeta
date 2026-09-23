@@ -1926,3 +1926,19 @@ Tip proof RED (live HEAD 0984baa4 sample; unique SHA has no CI):
 2. lint (yaml/k8s) — observability roster STALE for tempo + mimir after Application edits.
 
 GRADE HOLD. Sit leftover. Do not merge. Not a product unique-confirm GO.
+---
+## leftover UNIQUE leftover #17565 leftover unique @ eddb5791d4da4521acdf245b01f407765b1d56e6 — GRADE GO
+
+2026-09-23 ~6:00 PM ET Vera tip-confirm (prior HOLD 0f6c14ef stands for that tip only).
+
+Never grade merge_commit 5a34edd958c1279e3020161e16eebb5e41433507. Never grade mid-merge parent c45ce698 alone.
+
+Tip cell: 1-commit +18/−3 / 1 file. Subject: fix(codeql): read the SARIF path once, not stat-then-read.
+Task: 081M380MEA3087G0R001KSY6R1. Agent: shadow. Human-Review: explicit (chat).
+Fix: sarifFilesIn uses readdirSync; ENOTDIR => file; statSync removed (closes prior HOLD TOCTOU / CWE-367).
+
+PR aggregate vs main: +296/−1 / 5 files (codeql.yml filter path + codeql-drop-tsc-dominated.ts/.test.ts + workitem) — product intent unchanged from prior cell.
+
+Tip proof: live HEAD eddb5791 — 0 completed failures; cross-verify (check-then-use-races) SUCCESS; agencysignature (PR body) SUCCESS. in_progress lanes not red.
+
+GRADE GO. Sit leftover. Do not merge.
