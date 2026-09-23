@@ -2031,3 +2031,7 @@ Tip cell: 1-commit +21/−11 / 1 file. Task: none (CI dispatch knob). only_wp11 
 Tip proof on tip: 0 completed failures; agency PR body SUCCESS.
 
 GRADE GO. Sit leftover. Do not merge.
+---
+## leftover UNIQUE leftover #17579 leftover unique @ 60f3b128642152497a8c51e3bafbdbc58b83c879
+
+UNIQUE HOLDS leftover NEW CELL leftover UNIQUE leftover #17579 leftover unique @ 60f3b128642152497a8c51e3bafbdbc58b83c879 -- GRADE NO-GO (tip 1-commit +869/-43 / 7 files: first-boot-replica attribution + manual-sync-policy + tests). HOLD: (1) EXTERNAL SECRET reclass by destinationNamespace only -- any SECRET in an EXTERNAL catalog NS -> DIVERGENCE without matching secret name (false-green for INTERNAL secrets). (2) Deployment/CronJob podBelongsToResource uses startsWith(`${name}-`) without hyphen-boundary/hash guard; test claims hyphen boundary it does not implement. Soft: namespace-exclusive fast path; manual-sync short-circuit drops attributed pod fails. Never grade MERGE-REF 5f84e794 / merge_commit 2290ef37. Tip proof unique SHA 0 check runs; live HEAD tip-proof only. Task 081M35ETM11087G0R0002Y62F5. Sit leftover. Do not merge.
