@@ -2071,3 +2071,7 @@ UNIQUE HOLDS leftover NEW CELL leftover UNIQUE leftover #17589 leftover unique @
 ## leftover UNIQUE leftover #17591 leftover unique @ b9626dc5fb22e24e7e3f270b5004b90c5c17aa4d
 
 UNIQUE HOLDS leftover NEW CELL leftover UNIQUE leftover #17591 leftover unique @ b9626dc5fb22e24e7e3f270b5004b90c5c17aa4d -- GRADE GO (tip 1-commit +405/-9 / 9 files). gpuVendor dimension + AMD ollama/vllm forms; empty selection keeps committed NVIDIA; lane-memory citation. Never grade MERGE-REF alone (merge_commit_sha null). Tip proof 0 completed failures sampled. Task 081M385PR15087G0R0024N0JTS. Sit leftover. Do not merge.
+---
+## leftover UNIQUE leftover #17591 leftover unique @ 1d823731531d73c592edd112e2b54eebbb26ac33
+
+UNIQUE HOLDS leftover NEW CELL leftover UNIQUE leftover #17591 leftover unique @ 1d823731531d73c592edd112e2b54eebbb26ac33 -- GRADE GO (tip 1-commit +1/-1 / 1 file). Harness plan note: longhorn alias -> capability-named storage. Prior GO @ b9626dc5 stands. Never grade merge tip 793192d4 / merge_commit_sha f8d80414. Tip proof 0 completed failures sampled. Task 081M385PR15087G0R0024N0JTS. Sit leftover. Do not merge.
