@@ -1864,3 +1864,7 @@ UNIQUE HOLDS leftover NEW CELL leftover UNIQUE leftover #17541 leftover unique @
 ## leftover UNIQUE leftover #17549 leftover unique @ 5ae805a0e29c1a242d46cc1ebfc9204c7b6bde06
 
 UNIQUE HOLDS leftover NEW CELL leftover UNIQUE leftover #17549 leftover unique @ 5ae805a0e29c1a242d46cc1ebfc9204c7b6bde06 -- GRADE GO (tip-only 1-commit +22/-1 / 1 file zeta-first-boot-k3s-verify.nix: fail-path replaces journalctl -u k3s -n 60 with journal HEAD + fatal/error grep + short TAIL + TLS ls + df/free; cites run 35780287818; no openspec/census/workitem. Tip = live HEAD; never grade merge-ref 5b9a9242 alone). Tip CI: 0 failures observed; gate/ISO/hermetic/etc in_progress not red; mergeable_state blocked. Sit leftover. Do not merge.
+---
+## leftover UNIQUE leftover #17541 leftover unique @ f3bf0f0b88990720f36d5932126cd9788f9d5e87
+
+UNIQUE HOLDS leftover NEW CELL leftover UNIQUE leftover #17541 leftover unique @ f3bf0f0b88990720f36d5932126cd9788f9d5e87 -- GRADE GO (tip = signed merge-of-main vs prior GO @ e1ec4e66: +22/-1 / 1 file zeta-first-boot-k3s-verify.nix fail-path journal HEAD+fatal/error grep+TAIL+TLS+df/free cites run 35780287818 -- absorbs already-GO #17549 @ 5ae805a0 via ea6a3ed8; no new branch product authorship; never grade merge-refs 5b9a9242 / ea6a3ed8 alone). Prior HOLD @ 2300a277 + GO @ bb6f04e2 / 9f1f2508 / 6b7888fc / e1ec4e66 stand. Tip CI: 0 failures in sample; hermetic/ISO/Analyze in_progress not red; mergeable_state blocked. Task 081M35C7NJR087G0R002S4R654. Sit leftover. Do not merge.
