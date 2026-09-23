@@ -168,14 +168,30 @@ describe("discovery drift audit", () => {
     });
   });
 
-  /** RED CASE B: a second nested Application, applied and unregistered. */
-  test("a newly nested Application the roster cannot see is reported as UNASSERTED", () => {
+  /**
+   * RED CASE B, moved one level deeper. Discovery now walks depth 2
+   * (`application-dirs.ts`), so a depth-2 Application is asserted like any
+   * other -- see the next test. But ArgoCD's `*` is not segment-bounded, so a
+   * DEPTH-3 Application is still applied while discovery stops at 2. That is the
+   * live form of "applied but unasserted", and the audit must still say so.
+   */
+  test("a depth-3 Application ArgoCD applies but discovery cannot reach is UNASSERTED", () => {
+    withTempRepo((repoRoot) => {
+      writeRoot(repoRoot, ROOT_INCLUDE, "");
+      writeApplication(repoRoot, "game-hosting/fps/quake/Application.yaml", "quake");
+      const drift = auditAppOfAppsDiscovery(repoRoot);
+      expect(drift.unexplained).toContain("game-hosting/fps/quake/Application.yaml");
+      expect(formatDiscoveryDrift(drift)).toContain("UNASSERTED");
+    });
+  });
+
+  /** A depth-2 Application is now in the roster, so it must NOT be reported. */
+  test("a newly nested depth-2 Application is asserted and stays out of the gap", () => {
     withTempRepo((repoRoot) => {
       writeRoot(repoRoot, ROOT_INCLUDE, "");
       writeApplication(repoRoot, "game-hosting/quake/Application.yaml", "quake");
       const drift = auditAppOfAppsDiscovery(repoRoot);
-      expect(drift.unexplained).toContain("game-hosting/quake/Application.yaml");
-      expect(formatDiscoveryDrift(drift)).toContain("UNASSERTED");
+      expect(drift.unexplained).not.toContain("game-hosting/quake/Application.yaml");
     });
   });
 

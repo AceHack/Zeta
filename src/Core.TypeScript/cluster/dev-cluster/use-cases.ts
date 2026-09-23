@@ -501,6 +501,11 @@ export function applyDevRegistryPullSecret(
 }
 
 export interface KindCiBringUpOptions {
+  /**
+   * One lane's Application directories; absent is the whole roster. Scopes the
+   * root catalogue's exclude glob via `laneScopedExcludeGlob`.
+   */
+  readonly laneDirs?: readonly string[];
   readonly configPath: string;
   readonly clusterName: string;
   readonly gitRef: string;
@@ -550,6 +555,11 @@ export interface KindCiBringUpOptions {
 }
 
 export interface K3dDevBringUpOptions {
+  /**
+   * One lane's Application directories; absent is the whole roster. Scopes the
+   * root catalogue's exclude glob via `laneScopedExcludeGlob`.
+   */
+  readonly laneDirs?: readonly string[];
   readonly configPath: string;
   readonly clusterName: string;
   readonly agentCount: number;
@@ -674,7 +684,7 @@ export function bringUpKindCiCluster(ports: DevClusterPorts, options: KindCiBrin
   // readiness wait removes entirely.
   const rootRepoUrl = applyLaneTreeSource(ports, options.laneTree) ?? options.gitRepoUrl;
   const catalogRef = laneTreeCatalogRef(options.laneTree, options.gitRef);
-  appCatalog.applyRootDevCatalog(catalogRef, rootRepoUrl, "kind", cni);
+  appCatalog.applyRootDevCatalog(catalogRef, rootRepoUrl, "kind", cni, options.laneDirs ?? null);
 }
 
 /**
@@ -1059,7 +1069,7 @@ export function bringUpK3dDevCluster(ports: DevClusterPorts, options: K3dDevBrin
   // PROVIDER PASSED. Without it the catalogue keeps the static exclude glob
   // while the harness asserts the k3d-lifted roster -- asserted-but-unapplied,
   // which hangs for the full timeout and blames the Application.
-  appCatalog.applyRootDevCatalog(catalogRef, rootRepoUrl, "k3d");
+  appCatalog.applyRootDevCatalog(catalogRef, rootRepoUrl, "k3d", "kindnetd", options.laneDirs ?? null);
 }
 
 export function tearDownK3dDevCluster(ports: DevClusterPorts, clusterName: string): void {

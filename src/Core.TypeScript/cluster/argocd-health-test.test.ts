@@ -728,7 +728,12 @@ describe("081KSXN940008QG0R000SCP2H1 argocd-health-test manifest parsing", () =>
    * This test stays as the cheap structural pin; the reach-vs-roster
    * comparison and its registry live in `app-of-apps-discovery.ts`.
    */
-  test("the depth-1 discovery gap stays exactly one known Application", () => {
+  // WAS "the depth-1 discovery gap stays exactly one known Application", which
+  // pinned gmod as INVISIBLE to the harness. Discovery walks depth 2 now
+  // (`application-dirs.ts`), so the pin flips: gmod is visible, and it is held
+  // out of the proof by its written DEV_EXCLUDED_REASONS entry rather than by
+  // the harness never looking.
+  test("the one depth-2 Application is visible to the harness and held out by its reason", () => {
     const appsDir = resolve(import.meta.dir, "../../../full-ai-cluster/k8s/applications");
     const nested = readdirSync(appsDir, { withFileTypes: true })
       .filter((entry) => entry.isDirectory())
@@ -742,8 +747,9 @@ describe("081KSXN940008QG0R000SCP2H1 argocd-health-test manifest parsing", () =>
       .sort();
 
     expect(nested).toEqual(["game-hosting/gmod"]);
-    // And it is genuinely invisible to the harness today.
-    expect(discoverExpectedApplications().some((app) => app.name === "gmod")).toBe(false);
+    const gmod = discoverExpectedApplications().find((app) => app.name === "gmod");
+    expect(gmod?.dir).toBe("game-hosting/gmod");
+    expect(gmod?.excludedFromDev).toBe(true);
   });
 
   test("metadata.name is read by a YAML parser, not by first-name-wins line scanning", () => {

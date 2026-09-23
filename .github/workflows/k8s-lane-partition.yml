@@ -53,12 +53,15 @@
 #
 # WHAT IT DOES NOT YET PROVE, said plainly rather than implied
 # ------------------------------------------------------------
-# It does not yet BRING UP the lane. `--root-exclude` emits the ArgoCD
-# `directory.exclude` glob that would scope a root Application to one lane, and
-# `app-of-apps-discovery.ts` already reads that field — so the wiring is one
-# step, not a redesign. It is not taken here because a bring-up that has never
-# run is not something to assert in a workflow comment. The pull step is real
-# work in the meantime: it is the binding constraint, measured.
+# UPDATE 2026-09-23: it now BRINGS UP the lane. The one step named here was
+# taken: each lane job creates a k3d cluster (k3s + Cilium, metal's own pair)
+# and runs the ArgoCD health harness with `--lane-dirs`, which scopes BOTH what
+# the root catalogue applies and what the harness asserts from one list
+# (`application-dirs.ts`; `application-dirs.test.ts` pins that the two agree for
+# every lane on both substrates). The lanes are the balanced partition
+# (`--balanced`: subjects priced at the HA rung, the metal first-boot set in
+# every lane, six lanes balanced for headroom). What a green lane proves is
+# stated on the bring-up step below; what it does NOT yet prove is also there.
 
 name: k8s-lane-partition
 
@@ -85,6 +88,8 @@ on:
       # `discoverExpectedApplications`, so a change to what dev excludes moves
       # the set being covered without touching anything else listed here.
       - "src/Core.TypeScript/cluster/argocd-health-test.ts"
+      - "src/Core.TypeScript/cluster/application-dirs.ts"
+      - "src/Core.TypeScript/cluster/adapters/gitops-app-catalog.ts"
       - ".github/workflows/k8s-lane-partition.yml"
   push:
     branches: [main]
@@ -105,6 +110,8 @@ on:
       # `discoverExpectedApplications`, so a change to what dev excludes moves
       # the set being covered without touching anything else listed here.
       - "src/Core.TypeScript/cluster/argocd-health-test.ts"
+      - "src/Core.TypeScript/cluster/application-dirs.ts"
+      - "src/Core.TypeScript/cluster/adapters/gitops-app-catalog.ts"
       - ".github/workflows/k8s-lane-partition.yml"
   workflow_dispatch:
 
@@ -183,7 +190,7 @@ jobs:
         id: derive
         run: |
           set -euo pipefail
-          MATRIX="$(bun src/Core.TypeScript/cluster/lane-partition.ts --matrix)"
+          MATRIX="$(bun src/Core.TypeScript/cluster/lane-partition.ts --balanced --matrix)"
           COUNT="$(printf '%s' "$MATRIX" | bun -e 'console.log(JSON.parse(await Bun.stdin.text()).length)')"
           # A zero-lane matrix would make every downstream job vanish and the
           # workflow report green having tested nothing — the vacuity class in
@@ -200,9 +207,9 @@ jobs:
       - name: Report
         run: |
           {
-            echo '## Lane partition'
+            echo '## Lane partition (balanced -- the lanes this run deploys)'
             echo '```'
-            bun src/Core.TypeScript/cluster/lane-partition.ts --rung dev
+            bun src/Core.TypeScript/cluster/lane-partition.ts --rung dev --balanced
             echo '```'
             echo '### Connected components (the zero-duplication baseline this does NOT use)'
             echo '```'
@@ -217,7 +224,9 @@ jobs:
       ZETA_HOST_TIER: full
       MISE_ENV: full
     runs-on: ubuntu-24.04
-    timeout-minutes: 30
+    # Install (~5) + pull/measure (~5) + k3d bring-up and ArgoCD sync (<=20
+    # harness timeout) + diagnostics. The old 30 covered only the first two.
+    timeout-minutes: 60
     strategy:
       fail-fast: false
       matrix:
@@ -283,7 +292,7 @@ jobs:
         run: |
           set -euo pipefail
           echo "lane members: $LANE_MEMBERS"
-          bun src/Core.TypeScript/cluster/lane-partition.ts --lane "${{ matrix.lane }}" --images
+          bun src/Core.TypeScript/cluster/lane-partition.ts --balanced --lane "${{ matrix.lane }}" --images
 
       # THE MEASUREMENT. Pull exactly this lane's images and read the real
       # on-disk delta. This is what converts `compressed x 2.67` from an
@@ -293,7 +302,7 @@ jobs:
           LANE: ${{ matrix.lane }}
         run: |
           set -euo pipefail
-          BUDGET_GIB="$(bun src/Core.TypeScript/cluster/lane-partition.ts --lane "$LANE" --budget-gib)"
+          BUDGET_GIB="$(bun src/Core.TypeScript/cluster/lane-partition.ts --balanced --lane "$LANE" --budget-gib)"
           BEFORE_MIB=$(df -BM --output=used /var/lib/docker 2>/dev/null | tail -1 | tr -dc '0-9' || df -BM --output=used / | tail -1 | tr -dc '0-9')
           FAILED=0
           while IFS= read -r image; do
@@ -319,7 +328,7 @@ jobs:
               FAILED=$((FAILED + 1))
             fi
             echo "::endgroup::"
-          done < <(bun src/Core.TypeScript/cluster/lane-partition.ts --lane "$LANE" --images)
+          done < <(bun src/Core.TypeScript/cluster/lane-partition.ts --balanced --lane "$LANE" --images)
           AFTER_MIB=$(df -BM --output=used /var/lib/docker 2>/dev/null | tail -1 | tr -dc '0-9' || df -BM --output=used / | tail -1 | tr -dc '0-9')
           DELTA_MIB=$(( AFTER_MIB - BEFORE_MIB ))
           echo "MEASURED on-disk for $LANE: ${DELTA_MIB} MiB against a budget of ${BUDGET_GIB} GiB"
@@ -345,3 +354,59 @@ jobs:
             echo "$LANE fits on disk, but ${FAILED} image(s) could not be pulled — the measurement is a FLOOR." >&2
             exit 1
           fi
+
+      # FREE THE MEASURED COPIES. k3d nodes run their own containerd, so every
+      # image pulled above for measurement would be pulled AGAIN into the
+      # cluster. Keeping both doubles the lane's disk on a budget-tight runner;
+      # the measurement is already recorded, so Docker's copies go.
+      - name: Free the measurement pulls before bring-up
+        run: docker image prune -af >/dev/null && df -h / | tail -1
+
+      - name: Apply node kernel tunables (parity with the NixOS host)
+        uses: ./.github/actions/apply-node-tunables
+
+      - name: Confirm k3d is on PATH before anything depends on it
+        run: command -v k3d && k3d version
+
+      # THE LANE, DEPLOYED AND ASSERTED.
+      #
+      # PROVES: every Application in this lane's `dirs` that the dev proof does
+      # not exclude by a written reason reaches Synced+Healthy on k3s + Cilium,
+      # with the lane's dependency closure and the metal first-boot base present,
+      # and nothing outside the lane applied. `--lane-dirs` drives the root
+      # catalogue's exclude glob AND the harness's expected set from one list.
+      #
+      # DOES NOT YET PROVE: HA. The tree is served at the `dev` rung
+      # (`--serve-tree dev`), so subjects run at dev replicas; the partition
+      # PRICES subjects at `metal` to reserve the headroom, and serving subjects
+      # at `metal` while their dependencies stay at `dev` is the next step, not
+      # this one. Charts the proof excludes by reason stay excluded here too.
+      - name: Bring up the lane on k3d and assert Synced+Healthy
+        env:
+          ZETA_ARGOCD_GIT_REF: ${{ github.event.pull_request.head.sha || github.sha }}
+          LANE_DIRS: ${{ matrix.dirs }}
+        run: |
+          set -euo pipefail
+          if [ -z "$LANE_DIRS" ]; then
+            echo "matrix entry carries no dirs; refusing to run a lane that would assert nothing" >&2
+            exit 1
+          fi
+          bun src/Core.TypeScript/cluster/argocd-health-test.ts \
+            --run \
+            --provider k3d \
+            --scope included \
+            --runtime docker \
+            --config full-ai-cluster/dev-cluster/profiles/ci.k3d-config.yaml \
+            --cluster-name zeta-ci \
+            --git-ref "$ZETA_ARGOCD_GIT_REF" \
+            --timeout-sec 1200 \
+            --poll-sec 10 \
+            --serve-tree dev \
+            --lane-dirs "$LANE_DIRS"
+
+      - name: What ArgoCD saw (on failure)
+        if: failure()
+        run: |
+          kubectl -n argocd get applications -o wide || true
+          kubectl -n argocd get applications -o jsonpath='{range .items[*]}{.metadata.name}{"\t"}{.status.sync.status}{"\t"}{.status.health.status}{"\t"}{.status.conditions[*].message}{"\n"}{end}' || true
+          kubectl get pods -A --field-selector=status.phase!=Running,status.phase!=Succeeded -o wide || true
