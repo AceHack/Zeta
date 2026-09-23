@@ -1,0 +1,12 @@
+{
+  "pr_number": 17587,
+  "archive_path": "docs/history/pr-reviews/2026/09/23/PR-17587-fix-cluster-a-soak-phase-flip-now-names-the-resource-that-went-unhealthy.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-23T23:03:52.795Z",
+  "schema_version": "v1",
+  "commit_sha": "5ce99927e78ab3bc59dc16a8f8fb18a6ffd9ad2a",
+  "title": "fix(cluster): a soak-phase flip now names the resource that went unhealthy",
+  "state": "MERGED",
+  "merged_at": "2026-09-23T23:03:06Z",
+  "head_ref": "fix/soak-names-the-unhealthy-resource-v2"
+}
