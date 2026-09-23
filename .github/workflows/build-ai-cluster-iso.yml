@@ -109,6 +109,16 @@ on:
       - "src/Core.TypeScript/observe/**"
       - ".github/workflows/build-ai-cluster-iso.yml"
   workflow_dispatch:
+    inputs:
+      # Run ONLY the three-VM HA cluster job (081M10ZG61D087G0R001A70F0P follow-up).
+      # A full dispatch also runs every dispatch-only step of `build` (scenario
+      # 3/4, wifi ESP, keyfile, WP11 — several 90-100 min steps), which is the
+      # wrong price for re-running one cluster test. Default false: a plain
+      # dispatch is unchanged.
+      only_cluster_ha:
+        description: "Run only the 3-node HA cluster + replicated Longhorn job"
+        type: boolean
+        default: false
   # WP11 — the installed-disk first-boot k3s verify step below (gated to
   # workflow_dispatch + schedule; see that step's own comment for why it is
   # not on the PR path) needs a way to run unattended. Daily, off the hour,
@@ -130,6 +140,9 @@ concurrency:
 jobs:
   build:
     name: build-iso
+    # Skipped only by an explicit `only_cluster_ha` dispatch; `inputs` is empty
+    # on every other event, so PR/push/schedule/plain dispatch are unchanged.
+    if: ${{ !inputs.only_cluster_ha }}
     runs-on: ubuntu-24.04
     # Cold-cache PR runs can exceed the old 90-minute budget while still
     # actively compiling Nix dependencies in `Build installer ISO` (run
@@ -282,19 +295,22 @@ jobs:
           # `k3s-registry-mirrors-model` (WP9, 081M33STPKN087G0R0004B5CAK) and
           # `k8s-node-tunables-model` both added 2026-09-22, same pattern as the
           # other nine: no VM, no build, assertions fire at evaluation.
+          # `k3s-etcd-peers-model` added 2026-09-23 (081M10ZG61D087G0R001A70F0P):
+          # the opt-in etcd peer admission and the joining-server refusal.
           missing=""
           for c in zeta-creds-to-k8s-model tpm2-seal-prereqs-model host-seal-profile-model \
                    secure-boot-desired-state-model longhorn-node-preflight \
                    longhorn-disk-registration longhorn-common-default-disk-eval \
                    cilium-wireguard-preflight gpu-node-label-preflight \
-                   k3s-registry-mirrors-model k8s-node-tunables-model; do
+                   k3s-registry-mirrors-model k8s-node-tunables-model \
+                   k3s-etcd-peers-model; do
             grep -q "$c" /tmp/aic-flake-check.log || missing="$missing $c"
           done
           if [ -n "$missing" ]; then
             echo "::error title=Eval-only checks were not among the outputs evaluated::nix flake check never mentioned:$missing. These checks are named by no other step in any workflow, so this step is their only coverage. Either they were renamed or removed, or --all-systems omitted the system they live on. Either way this lane is green about something else."
             exit 1
           fi
-          echo "all eleven eval-only checks were evaluated."
+          echo "all twelve eval-only checks were evaluated."
 
       # Regression test for the k3s --cluster-init token deadlock
       # (k3s-server.nix). Boots the control-plane k3s module in a QEMU VM
@@ -1092,6 +1108,7 @@ jobs:
   # Skips the k3s nixosTest checks (x86_64-gated in the flake).
   build-aarch64:
     name: build-iso-aarch64 + qemu-boot
+    if: ${{ !inputs.only_cluster_ha }}
     runs-on: ubuntu-24.04-arm
     timeout-minutes: 120
     permissions:
@@ -1311,3 +1328,107 @@ jobs:
           path: ${{ steps.iso.outputs.sha256_path }}
           retention-days: 14
           if-no-files-found: error
+
+  # THREE CONTROL PLANES, REPLICATED STORAGE, LOSE ONE — the first CLUSTER test.
+  #
+  # Every other nixosTest here boots one node, or two with no CNI. This job boots
+  # three role=server members (embedded-etcd HA: one founds, two join through the
+  # shipped injected-server-join.nix), brings them all Ready on the real Cilium,
+  # installs Longhorn at the prod chart version with ONE test-only override
+  # (3 replicas), proves the three replicas sit on three DISTINCT nodes, then
+  # hard power-cuts the node holding a replica and the original write and
+  # asserts: /readyz on both survivors, a quorum WRITE commits, and the data's
+  # sha256 verifies from a pod on a surviving node with the volume `degraded`.
+  # See full-ai-cluster/nixos/tests/k3s-ha-longhorn-cluster.nix.
+  #
+  # The etcd 2379/2380 admission it relies on is the PRODUCT's
+  # (`zeta.k3sServer.etcdPeers`, modules/k3s-etcd-peers.nix) — the harness opens
+  # no port of its own (081M10ZG61D087G0R001A70F0P was a harness that did).
+  #
+  # ITS OWN JOB, not a step in `build`, for two measured reasons: `build` already
+  # spends its 180-min PR/push budget on the ISO and the single-node lanes, and
+  # three 4 GiB guests need the whole 16 GiB of a fresh hosted runner rather
+  # than one shared with a cold ISO build's nix store. It runs in parallel, so it
+  # adds runner-minutes, not wall-clock.
+  #
+  # SAME TIER AS longhorn-volume-binds: push + workflow_dispatch (+ schedule),
+  # not PRs — it needs internet and pulls Cilium + Longhorn images onto three
+  # guests. Advisory like every job in this workflow: `gate (required)` is the
+  # only required check on main. `only_cluster_ha` on a dispatch runs this job
+  # alone.
+  #
+  # BUDGET: guests are 3 x 4096 MiB on a 16 GiB / 4 vCPU runner (public repo).
+  # The sampler below records host memory every 10 s and the summary step
+  # prints the peak, so the budget is read off the run, not asserted here.
+  cluster-ha:
+    name: k3s HA cluster + replicated Longhorn (3 VMs)
+    if: ${{ github.event_name == 'push' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 120
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      # Three guests x 12 GiB qcow2 (sparse, but each fills with its own copy of
+      # the Cilium + Longhorn images) plus the test closure. The hosted image's
+      # preinstalled SDKs are dead weight for a nix-only job.
+      - name: Free runner disk
+        run: |
+          df -h /
+          sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc /opt/hostedtoolcache/CodeQL /usr/local/share/boost
+          df -h /
+
+      - name: Install Nix
+        # Same pinned installer and settings as the `build` job.
+        uses: DeterminateSystems/nix-installer-action@3138316df39ed29be04236d7ffc686fa525866aa # v23
+        with:
+          determinate: false
+
+      - name: Start host memory sampler
+        run: |
+          nproc
+          free -m
+          ls -l /dev/kvm || echo "no /dev/kvm: the nixosTest driver will fall back to TCG"
+          sample_host_memory() {
+            while true; do
+              echo "$(date +%s) $(free -m | awk '/Mem:/{print $3}')" >> "$RUNNER_TEMP/host-mem.log"
+              sleep 10
+            done
+          }
+          sample_host_memory >/dev/null 2>&1 &
+          disown
+
+      - name: NixOS test — 3-node HA cluster survives losing a replica-holding node
+        timeout-minutes: 100
+        working-directory: full-ai-cluster
+        run: |
+          start=$(date +%s)
+          rc=0
+          nix build .#checks.x86_64-linux.k3s-ha-longhorn-cluster -L --print-build-logs --fallback --option sandbox false || rc=$?
+          echo "k3s-ha-longhorn-cluster: rc=$rc after $(( $(date +%s) - start )) s"
+          exit "$rc"
+
+      - name: Host resource budget (measured)
+        if: always()
+        run: |
+          log="$RUNNER_TEMP/host-mem.log"
+          if [ ! -s "$log" ]; then
+            echo "::warning::host memory sampler recorded nothing; no budget measurement for this run"
+            exit 0
+          fi
+          total=$(free -m | awk '/Mem:/{print $2}')
+          peak=$(sort -k2 -n "$log" | tail -n1 | awk '{print $2}')
+          samples=$(wc -l < "$log")
+          {
+            echo "### k3s-ha-longhorn-cluster host budget"
+            echo ""
+            echo "| metric | value |"
+            echo "|---|---|"
+            echo "| host RAM total | ${total} MiB |"
+            echo "| host RAM used, peak | ${peak} MiB |"
+            echo "| samples (10 s) | ${samples} |"
+          } >> "$GITHUB_STEP_SUMMARY"
+          echo "peak used ${peak} MiB of ${total} MiB over ${samples} samples"
+          df -h /

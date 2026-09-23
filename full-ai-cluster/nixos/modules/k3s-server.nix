@@ -52,6 +52,14 @@
     # bounded wait are both needed. Imported here AND on k3s-agent.nix --
     # nixpkgs names the unit "k3s" on both roles.
     ./k3s-wait-for-address.nix
+
+    # Defines `zeta.k3sServer.etcdPeers` — the OPT-IN, source-scoped admission
+    # of etcd 2379/2380 that multi-server HA needs and that the firewall comment
+    # below has prescribed since it was written. Default empty: this host's
+    # firewall is unchanged unless a host names its peers. Also refuses, at
+    # evaluation, a JOINING server that nothing admits etcd traffic to
+    # (081M10ZG61D087G0R001A70F0P). See the module header for the decision.
+    ./k3s-etcd-peers.nix
   ];
 
   services.k3s = {
@@ -406,13 +414,15 @@
       4244    # Hubble server
       4245    # Hubble Relay
       8472    # legacy flannel/VXLAN (kept for safety)
-      # etcd ports 2379/2380 intentionally NOT in this list.
-      # K3S embedded etcd binds 127.0.0.1 by default. Opening
-      # those ports at the host firewall would risk exposing etcd
-      # to the LAN if the bind address ever drifts. For multi-
-      # server HA, add 2379/2380 to a host-specific override that
-      # ALSO scopes them with `interfacesIn`/source-IP filtering to
-      # the other control-plane nodes only.
+      # etcd ports 2379/2380 intentionally NOT in this list: a flat
+      # allowedTCPPorts entry would admit them from every address that
+      # can reach the NIC. (Correction: embedded etcd does NOT bind only
+      # 127.0.0.1 — once it has a node IP it listens on <node-ip>:2379
+      # and :2380 too, which is how run 33035015161 saw the refusal
+      # land in THIS firewall. The firewall is the guard, not the bind.)
+      # For multi-server HA set `zeta.k3sServer.etcdPeers` (see
+      # ./k3s-etcd-peers.nix): it admits both ports from the named
+      # control-plane peers ONLY. Default empty = closed, as before.
     ];
     allowedUDPPorts = [
       8472    # VXLAN (Cilium can also run native-routing)

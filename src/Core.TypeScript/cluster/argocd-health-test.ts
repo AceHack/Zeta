@@ -2224,7 +2224,7 @@ export function buildLaneTreeForProfile(
     // could only be excluded from CI entirely. Twelve were.
     //
     // `applyRungOverrides` is the second point: arbitrary dotted-path set/remove,
-    // declared in `rung-overrides.json`, each entry carrying a substrate reason
+    // declared in `rung-overrides.yaml`, each entry carrying a substrate reason
     // and a lift condition, and each REFUSED if it produces no edits. It runs
     // AFTER the rung so a resource claim and an override can address the same
     // manifest without the override being silently reverted.

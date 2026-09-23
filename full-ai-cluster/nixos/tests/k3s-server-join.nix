@@ -131,30 +131,31 @@ let
 
   runtimeTokenPath = "/etc/zeta/k3s-join-token";
 
-  # ETCD MEMBERSHIP PORTS — HARNESS ONLY.
+  # ETCD PEER ADMISSION — THE PRODUCT'S SETTING, NOT THE HARNESS'S.
   #
-  # `k3s-server.nix` allows 6443/9345/10250 and INTENTIONALLY omits 2379/2380
-  # ("embedded etcd binds 127.0.0.1 by default"). A role=server JOIN is etcd
-  # membership, not kubelet-only. After #15746 @ c1f0aff9 pinned `--node-ip`
-  # to the vlan, etcd advertises distinct peer URLs — and the joiner must then
-  # reach founder:2379 (MemberAdd client API) and founder:2380 (peer). The
-  # product firewall still rejects that. Measured, run 33035015161 step 13,
-  # not inferred:
+  # A role=server JOIN is etcd membership, not kubelet-only: the joiner must
+  # reach founder:2379 (MemberAdd) and every member must reach every other's
+  # :2380. `k3s-server.nix` keeps both ports out of its flat allowedTCPPorts.
+  # Measured with them closed, run 33035015161 step 13:
   #
   #   Adding member joiner-6aba2ae3=https://192.168.1.2:2380
   #          to etcd cluster [founder-dce5ce45=https://192.168.1.1:2380]
   #   refused connection: IN=eth1 SRC=192.168.1.2 DST=192.168.1.1 DPT=2379
   #   Retrying etcd cluster join: MemberAdd request timed out
   #
-  # Same shape on 33020639794 after the SLIRP collision, and the reason
-  # #15746 @ c1f0aff9 did not green the lane.
-  # Agent-join stays green because an agent never joins etcd.
+  # THIS USED TO BE A FALSE GREEN (081M10ZG61D087G0R001A70F0P). #15792 opened
+  # 2379/2380 HERE, in the harness, with `networking.firewall.allowedTCPPorts =
+  # lib.mkAfter [ 2379 2380 ]` — so this test passed on a firewall posture no
+  # shipped control plane had, and a real second control plane would have hit
+  # the refusal above while CI stayed green. A harness may not grant the system
+  # under test reachability the product does not grant.
   #
-  # Opened here with mkAfter so the shipped module's list stays the source
-  # of the API/supervisor/kubelet ports. Do NOT silently add 2379/2380 to
-  # the product firewall: that comment refuses a LAN-wide open, and the
-  # multi-homed `--node-ip` question stays with injected-cluster-address.nix.
-  etcdMembershipPorts = [ 2379 2380 ];
+  # The product now has the knob: `zeta.k3sServer.etcdPeers`
+  # (`modules/k3s-etcd-peers.nix`, imported by `k3s-server.nix`), which admits
+  # both ports FROM THE NAMED PEERS ONLY. Each node below names the other by its
+  # vlan address, /32 — the narrowest scope that still forms the cluster. The
+  # reachability probes in the test script now exercise the product's rule.
+  peerCidr = node: "${node.networking.primaryIPAddress}/32";
 in
 
 pkgs.testers.nixosTest {
@@ -185,9 +186,10 @@ pkgs.testers.nixosTest {
         "--node-ip=${nodes.founder.networking.primaryIPAddress}"
       ];
 
-      # See `etcdMembershipPorts` in the let-block. Founder must accept
-      # MemberAdd on :2379 and peer traffic on :2380 from the joiner.
-      networking.firewall.allowedTCPPorts = lib.mkAfter etcdMembershipPorts;
+      # The PRODUCT's etcd peer admission (see `peerCidr` in the let-block).
+      # The founder must accept MemberAdd on :2379 and peer traffic on :2380
+      # from the joiner — and from nobody else.
+      zeta.k3sServer.etcdPeers = [ (peerCidr nodes.joiner) ];
 
       # A PRE-SHARED cluster secret, so the joiner can present a token that is
       # known at evaluation time. This is k3s's documented HA setup (`--token`
@@ -272,9 +274,10 @@ pkgs.testers.nixosTest {
         "--node-ip=${nodes.joiner.networking.primaryIPAddress}"
       ];
 
-      # Joiner must accept the founder's etcd peer/client replies on the
-      # same two ports. Same harness-only mkAfter as the founder.
-      networking.firewall.allowedTCPPorts = lib.mkAfter etcdMembershipPorts;
+      # The founder dials the joiner's :2380 once it is a member. Same product
+      # option as the founder. Remove it and evaluation REFUSES this node
+      # (k3s-etcd-peers.nix: a joining server that admits no etcd peers).
+      zeta.k3sServer.etcdPeers = [ (peerCidr nodes.founder) ];
 
       # Drive the shipped module over committed fixtures. `builtins.pathExists`
       # must be true for BOTH at evaluation time or the module's all-or-none
@@ -400,10 +403,28 @@ pkgs.testers.nixosTest {
 
     # ── ETCD MEMBERSHIP PORTS ARE REACHABLE, NOT MERELY DECLARED ──────────
     # `ss` alone would pass with a closed firewall (listen + REJECT). The
-    # joiner probing founder:2379 / :2380 is the check that fails if someone
-    # re-closes the harness ports — the exact failure of run 33035015161
-    # (`refused connection … DPT=2379` then `MemberAdd request timed out`).
-    # A closed product firewall must not be able to look like a passing join.
+    # joiner probing founder:2379 / :2380 is the check that fails if the
+    # PRODUCT's peer admission (`zeta.k3sServer.etcdPeers`) stops admitting —
+    # the exact failure of run 33035015161 (`refused connection … DPT=2379`
+    # then `MemberAdd request timed out`). The harness no longer opens these
+    # ports itself, so this now measures the product's rule.
+    #
+    # And the rule is SOURCE-SCOPED, not a flat open: the founder's firewall
+    # must carry the joiner's /32 on an ACCEPT for 2379,2380 and must NOT have
+    # them in the flat allowed list, which would admit any address on the NIC.
+    fw_rules = founder.succeed("iptables -w -S nixos-fw")
+    scoped = [
+        l for l in fw_rules.splitlines()
+        if f"-s {JOINER_IP}/32" in l and "2379,2380" in l and "nixos-fw-accept" in l
+    ]
+    assert scoped, (
+        "the founder's firewall has no source-scoped etcd ACCEPT for the "
+        f"joiner ({JOINER_IP}/32); got:\n{fw_rules}"
+    )
+    assert "--dport 2379 " not in fw_rules and "--dport 2380 " not in fw_rules, (
+        "etcd 2379/2380 are open as FLAT ports on the founder (any source): "
+        f"{fw_rules}"
+    )
     founder.succeed("ss -lnt 'sport = :2380' | grep -q LISTEN")
     joiner.succeed(
         f"timeout 5 bash -c 'echo >/dev/tcp/{FOUNDER_IP}/2379'"
