@@ -2001,3 +2001,33 @@ Product: ci storage rung + storageProfileForResourceRung {dev:ci}; applyServeTre
 Tip proof (live HEAD dc71e3ed): 0 completed failures; check-then-use SUCCESS; agency SUCCESS; #17576 TOCTOU fixed on merge tip; mimir/tempo roster hashes refreshed.
 
 GRADE GO. Sit leftover. Do not merge.
+---
+## leftover UNIQUE leftover #17576 leftover unique @ d0d6fe5f2c53815e6f97f6467191c74d419d2bd6 — GRADE GO
+
+2026-09-23 ~6:22 PM ET Vera tip-confirm after HOLD fix.
+Prior HOLD @ da03a6c2 stands for that tip only.
+Never grade MERGE-REF 4050fae1 or merge_commit 5b1a39aa.
+
+Tip cell: 1-commit +29/−11 / 2 files. Task: 081M3817FFY087G0R002VRJS9C.
+Product: readIfPresent / readdir ENOENT replaces existsSync→readFileSync TOCTOU; mimir+tempo roster valuesHash refresh.
+Tip proof (live HEAD 4050fae1 labeled): 0 completed failures; check-then-use SUCCESS.
+
+GRADE GO. Sit leftover. Do not merge.
+---
+## leftover UNIQUE leftover #17580 leftover unique @ 5662199ca6f5368d5437edcfcf88dd23aa56c236 — GRADE GO (tip-confirm reaffirm)
+
+2026-09-23 ~6:22 PM ET Vera tip-confirm reaffirm (CoS named product unique directly).
+Never grade MERGE-REF dc71e3ed or merge_commit 9b80e0e1.
+Prior GO on this SHA stands; reaffirm unchanged.
+Tip cell: 1-commit +812/−16 / 11 files. Task: 081M3841EX9087G0R0014NQ7HY.
+
+GRADE GO. Sit leftover. Do not merge.
+---
+## leftover UNIQUE leftover #17581 leftover unique @ 5cb39cb5f614d18827619d8257e06d0b02d41e74 — GRADE GO
+
+2026-09-23 ~6:22 PM ET Vera unique-confirm.
+Never grade merge_commit 269c8e4e.
+Tip cell: 1-commit +21/−11 / 1 file. Task: none (CI dispatch knob). only_wp11 twin of only_cluster_ha for serial dispatch-only QEMU steps; WP11 step unchanged on dispatch|schedule.
+Tip proof on tip: 0 completed failures; agency PR body SUCCESS.
+
+GRADE GO. Sit leftover. Do not merge.
