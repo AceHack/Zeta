@@ -2051,3 +2051,7 @@ UNIQUE HOLDS leftover NEW CELL leftover UNIQUE leftover #17579 leftover unique @
 ## leftover UNIQUE leftover #17577 leftover unique @ 7d38b575abba26ab8b4139c806f0f537d62b3d87
 
 UNIQUE HOLDS leftover NEW CELL leftover UNIQUE leftover #17577 leftover unique @ 7d38b575abba26ab8b4139c806f0f537d62b3d87 -- GRADE GO (tip 1-commit +2/-2 / 1 file wait-run.ts). HOLD fix: pastDeadline >= ; failed probe at deadline -> unknown (was timed-out). Prior HOLD @ e27b817d stands for that tip only. Never grade MERGE-REF 9690e1c7 / merge_commit 34edefc7. Tip proof unique SHA 0 checks; live HEAD tip-proof only. Task 081M384M21W087G0R00202Q5Y2. Sit leftover. Do not merge.
+---
+## leftover UNIQUE leftover #17583 leftover unique @ c7fd0297459d1aa9f8a18db6d09fd8205eaf2ceb
+
+UNIQUE HOLDS leftover NEW CELL leftover UNIQUE leftover #17583 leftover unique @ c7fd0297459d1aa9f8a18db6d09fd8205eaf2ceb -- GRADE GO (tip 1-commit +4/-4 / 1 file unbounded-growth-register.json). Re-measure Tests.FSharp packages.lock ceiling 4->9 at first crossing; rate 0.34/day on file; ~1.3 KB packed later versions. Prior GO @ 6a081f3d stands for that tip only. Never grade MERGE-REF 5257ac25. Tip proof unique SHA 0 checks; live HEAD tip-proof only. Task 081M380V4M4087G0R003R4FM8X. Sit leftover. Do not merge.
