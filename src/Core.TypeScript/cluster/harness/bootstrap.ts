@@ -28,6 +28,11 @@ export interface KindBootstrapOptions {
    * See `KindCiBringUpOptions.laneTree`; absent leaves the committed tree in use.
    */
   readonly laneTree?: { readonly manifests: string; readonly repoUrl: string; readonly gitRef?: string };
+  /**
+   * One lane's Application directories; absent is the whole roster. Scopes the
+   * root catalogue's exclude glob via `laneScopedExcludeGlob`.
+   */
+  readonly laneDirs?: readonly string[];
 }
 
 export function bootstrapKindClusterInProcess(options: KindBootstrapOptions): void {
@@ -56,6 +61,7 @@ export function bootstrapKindClusterInProcess(options: KindBootstrapOptions): vo
     gitRepoUrl,
     ...(options.cni === undefined ? {} : { cni: options.cni }),
     ...(options.laneTree === undefined ? {} : { laneTree: options.laneTree }),
+    ...(options.laneDirs === undefined ? {} : { laneDirs: options.laneDirs }),
   });
 }
 
@@ -69,6 +75,11 @@ export interface K3dBootstrapOptions {
    * tree in use.
    */
   readonly laneTree?: { readonly manifests: string; readonly repoUrl: string; readonly gitRef?: string };
+  /**
+   * One lane's Application directories; absent is the whole roster. Scopes the
+   * root catalogue's exclude glob via `laneScopedExcludeGlob`.
+   */
+  readonly laneDirs?: readonly string[];
 }
 
 export function bootstrapK3dClusterInProcess(options: K3dBootstrapOptions): void {
@@ -91,6 +102,7 @@ export function bootstrapK3dClusterInProcess(options: K3dBootstrapOptions): void
     gitRef: options.gitRef,
     gitRepoUrl,
     ...(options.laneTree === undefined ? {} : { laneTree: options.laneTree }),
+    ...(options.laneDirs === undefined ? {} : { laneDirs: options.laneDirs }),
   });
 }
 

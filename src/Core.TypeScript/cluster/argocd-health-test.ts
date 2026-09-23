@@ -30,6 +30,7 @@ import { tmpdir } from "node:os";
 import { basename, join, resolve } from "node:path";
 import { parse as parseYaml } from "yaml";
 import { bootstrapKindClusterInProcess, bootstrapK3dClusterInProcess } from "./harness/bootstrap.ts";
+import { listApplicationDirs, parseLaneDirs } from "./application-dirs.ts";
 import {
   DEV_BOOTSTRAP_SECRETS,
   DEV_SHARED_SECRETS,
@@ -136,6 +137,13 @@ export interface CliOptions {
    * is for our real hardware, dev is for testing on our github runners."
    */
   readonly serveTreeProfile: string | null;
+  /**
+   * Scope the run to ONE lane: these Application directories are applied AND
+   * asserted, every other directory is excluded from the root catalogue. `null`
+   * -- the default -- is the whole roster, exactly as before this flag existed.
+   * Apply and assert both derive from this one list (`application-dirs.ts`).
+   */
+  readonly laneDirs: readonly string[] | null;
   /**
    * Seconds to keep watching AFTER the all-Healthy verdict for a container
    * restartCount increase or an Application leaving Healthy/Synced -- "does
@@ -274,6 +282,7 @@ interface MutableCliOptions {
   kindCni: KindCni;
   ephemeralVaultInit: boolean;
   serveTreeProfile: string | null;
+  laneDirs: readonly string[] | null;
   soakSeconds: number;
 }
 
@@ -332,13 +341,13 @@ const DEFAULT_POLL_SECONDS = 10;
 export const DEFAULT_SOAK_SECONDS = 0;
 const SPAWN_MAX_BUFFER = 64 * 1024 * 1024;
 const HELP_TEXT =
-  "usage: bun src/Core.TypeScript/cluster/argocd-health-test.ts [--dry-run|--preflight|--run] [--provider k3d|kind] [--cni kindnetd|cilium] [--scope smoke|included|full] [--runtime docker|podman] [--git-ref REF] [--cluster-name NAME] [--config PATH] [--serve-tree RUNG] [--existing] [--timeout-sec N] [--poll-sec N] [--soak-sec N] [--drift-check] [--ephemeral-vault-init]";
+  "usage: bun src/Core.TypeScript/cluster/argocd-health-test.ts [--dry-run|--preflight|--run] [--provider k3d|kind] [--cni kindnetd|cilium] [--scope smoke|included|full] [--runtime docker|podman] [--git-ref REF] [--cluster-name NAME] [--config PATH] [--serve-tree RUNG] [--lane-dirs D1,D2] [--existing] [--timeout-sec N] [--poll-sec N] [--soak-sec N] [--drift-check] [--ephemeral-vault-init]";
 const MODE_FLAGS: Readonly<Record<string, Mode>> = {
   "--dry-run": "dry-run",
   "--preflight": "preflight",
   "--run": "run",
 };
-const STRING_FLAGS = new Set(["--git-ref", "--cluster-name", "--config", "--serve-tree"]);
+const STRING_FLAGS = new Set(["--git-ref", "--cluster-name", "--config", "--serve-tree", "--lane-dirs"]);
 const INTEGER_FLAGS = new Set(["--timeout-sec", "--poll-sec", "--soak-sec"]);
 const K3D_CLUSTER_NAME_PATTERN = /^\s+name:\s*([A-Za-z\d-]+)\s*$/;
 const DNS_LABEL_PATTERN = /^[a-z\d]([-a-z\d]*[a-z\d])?$/;
@@ -1561,6 +1570,7 @@ function defaultCliOptions(env: NodeJS.ProcessEnv): ParseOptionsResult {
       kindCni: "kindnetd",
       ephemeralVaultInit: false,
       serveTreeProfile: null,
+      laneDirs: null,
       soakSeconds: DEFAULT_SOAK_SECONDS,
     },
   };
@@ -1576,6 +1586,7 @@ function readFlagValue(argv: readonly string[], index: number, flag: string, des
 
 function assignStringFlag(options: MutableCliOptions, flag: string, value: string): void {
   if (flag === "--serve-tree") options.serveTreeProfile = value;
+  if (flag === "--lane-dirs") options.laneDirs = parseLaneDirs(value);
   if (flag === "--git-ref") options.gitRef = value;
   if (flag === "--cluster-name") options.clusterName = value;
   if (flag === "--config") {
@@ -1809,6 +1820,12 @@ export function discoverExpectedApplications(
   /** See `isExcludedFromIncludedProof`'s `provider` note: optional, `null` lifts nothing. */
   provider: Provider | null = null,
   kindCni: KindCni = "kindnetd",
+  /**
+   * One lane's Application directories, or `null` for the whole roster. The
+   * SAME list scopes what the root catalogue applies (`laneScopedExcludeGlob`),
+   * so apply and assert cannot disagree about which charts a lane owns.
+   */
+  laneDirs: readonly string[] | null = null,
 ): readonly ExpectedApplication[] {
   // Read the substrate condition ONCE for the whole roster: it is a property of
   // the repo, not of any one Application, and re-reading it per directory would
@@ -1816,10 +1833,12 @@ export function discoverExpectedApplications(
   // `longhorn` StorageClass.
   const aliasDeclared = devLonghornStorageClassAliasDeclared(repoRoot);
   const appsDir = resolve(repoRoot, "full-ai-cluster/k8s/applications");
-  const dirs = readdirSync(appsDir, { withFileTypes: true })
-    .filter((entry) => entry.isDirectory())
-    .map((entry) => entry.name)
-    .sort(stringCompare);
+  // DEPTH 2, via the module the root catalogue also uses. Depth 1 missed
+  // `game-hosting/gmod`, which ArgoCD's non-segment-bounded glob does apply --
+  // see `application-dirs.ts`.
+  const all = listApplicationDirs(repoRoot);
+  const lane = laneDirs === null ? null : new Set(laneDirs);
+  const dirs = lane === null ? all : all.filter((d) => lane.has(d));
 
   return dirs.flatMap((dir) => {
     const appPath = join(appsDir, dir, "Application.yaml");
@@ -1875,7 +1894,7 @@ export function buildPlan(options: CliOptions, repoRoot = REPO_ROOT): HarnessPla
     // which is the same defect (a lift condition nothing can evaluate) one
     // layer up. `buildPlan` is the only caller that knows which substrate the
     // proof is about; the repo-level callers keep the `null` default.
-    expectedApplications = discoverExpectedApplications(repoRoot, options.provider, options.kindCni);
+    expectedApplications = discoverExpectedApplications(repoRoot, options.provider, options.kindCni, options.laneDirs);
   } catch (error) {
     return {
       kind: "ApplicationManifestInvalid",
@@ -2243,6 +2262,7 @@ function bootstrapCluster(plan: HarnessPlan, options: CliOptions): Failure | nul
         containerRuntime: options.runtime,
         cni: options.kindCni,
         ...(laneTree === null ? {} : { laneTree }),
+        ...(options.laneDirs === null ? {} : { laneDirs: options.laneDirs }),
       });
       return null;
     } catch (e) {
@@ -2263,6 +2283,7 @@ function bootstrapCluster(plan: HarnessPlan, options: CliOptions): Failure | nul
       configPath: options.configPath,
       gitRef: options.gitRef,
       ...(laneTree === null ? {} : { laneTree }),
+      ...(options.laneDirs === null ? {} : { laneDirs: options.laneDirs }),
     });
     return null;
   } catch (e) {

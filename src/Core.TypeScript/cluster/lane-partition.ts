@@ -981,11 +981,63 @@ export function laneRootExclude(model: PartitionModel, lane: Lane): string {
  * the workflow, and an Application that cannot be priced does not silently
  * acquire a lane: it appears in `unpriced` and in no lane at all.
  */
-export function toMatrix(partition: Partition): { lane: string; apps: string; members: string }[] {
+/**
+ * The balanced partition in the `Partition` shape every existing consumer reads.
+ *
+ * `--balanced` must change the ANSWER to every CLI question at once -- the
+ * matrix, `--lane X --images`, `--budget-gib`, `--lane-dirs` -- because a lane id
+ * is only meaningful relative to the partition that minted it. If the matrix
+ * came from `packBalanced` while `--lane lane-2 --images` still read `packLanes`,
+ * "lane-2" would name two different sets of charts and a job would pull one
+ * lane's images and deploy another's.
+ *
+ * Infeasible subjects split by cause, preserving the existing quarantine
+ * vocabulary: an unpriceable closure is `unpriced`; anything priced that did not
+ * fit is `oversize`.
+ */
+export function balancedAsPartition(model: PartitionModel, bp: BalancedPartition): Partition {
+  const unpriced = bp.infeasible.filter((q) => !isFullyPriced(q.footprint));
+  const oversize = bp.infeasible.filter((q) => isFullyPriced(q.footprint));
+  const lanes = bp.lanes
+    .filter((l) => l.subjects.length > 0)
+    .map((l) => ({ id: l.id, assigned: l.subjects, members: l.members, footprint: l.footprint }));
+  return {
+    rung: model.rung,
+    margin: bp.budget.cpuMillis / Math.max(1, model.catalogue.envelope.cpuMillis - model.catalogue.envelope.reservedCpuMillis),
+    budget: bp.budget,
+    lanes,
+    oversize,
+    unpriced,
+    totalApplications: bp.totalSubjects,
+    coveredApplications: bp.coveredSubjects,
+  };
+}
+
+/**
+ * A lane's MEMBERS as Application directories -- what the harness's
+ * `--lane-dirs` takes. Names and directories differ (`openziti-controller`
+ * lives in `oz`, `gmod` in `game-hosting/gmod`), and joining on the wrong key
+ * silently drops the Application, so the roster table does the mapping.
+ */
+export function laneDirs(model: PartitionModel, lane: Lane): readonly string[] {
+  return lane.members
+    .map((name) => {
+      const entry = model.byName.get(name);
+      if (entry === undefined) throw new Error(`laneDirs: "${name}" is not in the roster`);
+      return entry.dir;
+    })
+    .toSorted(stringCompare);
+}
+
+export function toMatrix(
+  partition: Partition,
+  model?: PartitionModel,
+): { lane: string; apps: string; members: string; dirs?: string }[] {
   return partition.lanes.map((l) => ({
     lane: l.id,
     apps: l.assigned.join(","),
     members: l.members.join(","),
+    ...(model === undefined ? {} : { dirs: laneDirs(model, l).join(",") }),
   }));
 }
 
@@ -1009,9 +1061,20 @@ if (import.meta.main) {
     process.exit(0);
   }
 
-  const partition = packLanes(model, { margin });
+  // `--balanced`: the lanes the maintainer designed on 2026-09-18 -- subjects
+  // priced at the HA rung, dependencies at the cheap one, the metal first-boot
+  // set in every lane, balanced for headroom across a fixed width. Default off
+  // so every existing caller keeps `packLanes` until it opts in.
+  const balanced = process.argv.includes("--balanced");
+  const targetLanes = Number(argValue("--target-lanes", "6"));
+  const partition = balanced
+    ? balancedAsPartition(
+        model,
+        packBalanced(model, loadCatalogue("metal"), { targetLanes, margin, base: METAL_FIRST_BOOT_BASE }),
+      )
+    : packLanes(model, { margin });
   if (process.argv.includes("--matrix")) {
-    console.log(JSON.stringify(toMatrix(partition)));
+    console.log(JSON.stringify(toMatrix(partition, model)));
     process.exit(0);
   }
 
@@ -1032,11 +1095,15 @@ if (import.meta.main) {
       console.log(laneRootExclude(model, lane));
       process.exit(0);
     }
+    if (process.argv.includes("--lane-dirs")) {
+      console.log(laneDirs(model, lane).join(","));
+      process.exit(0);
+    }
     if (process.argv.includes("--budget-gib")) {
       console.log(partition.budget.diskGib.toFixed(3));
       process.exit(0);
     }
-    console.error("--lane needs one of --images / --root-exclude / --budget-gib");
+    console.error("--lane needs one of --images / --root-exclude / --lane-dirs / --budget-gib");
     process.exit(2);
   }
 

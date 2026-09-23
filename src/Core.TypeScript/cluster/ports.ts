@@ -190,6 +190,8 @@ export interface AppCatalogApplicator {
     gitRepoUrl: string,
     provider?: "kind" | "k3d" | null,
     kindCni?: KindCni,
+    /** One lane's Application directories; `null`/absent applies the whole roster. */
+    laneDirs?: readonly string[] | null,
   ): void;
 }
 
