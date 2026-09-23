@@ -1908,3 +1908,21 @@ UNIQUE HOLDS leftover NEW CELL leftover UNIQUE leftover #17568 leftover unique @
 ## leftover UNIQUE leftover #17575 leftover unique @ 1509587a01d653c0417803d20c2d7a5eaaf0a7ee
 
 UNIQUE HOLDS leftover NEW CELL leftover UNIQUE leftover #17575 leftover unique @ 1509587a01d653c0417803d20c2d7a5eaaf0a7ee -- GRADE GO (tip=product unique=live HEAD 1-commit +516/-35 / 13 files: application-dirs shared module + tests; discovery depth 2; lane-partition/harness/catalog/bootstrap/ports wiring; k8s-lane-partition.yml k3d bring-up with --lane-dirs + --ephemeral-vault-init + 2400s/75m + per-resource/cilium stall diagnostics; workitem+event). Clean rebuild from main a76c60e9 after closed #17568 empty-Task reject -- Task 081M3816T0M087G0R003RRP8G2 present on tip. Prior GO @ eb384873 and HOLD @ 5251200d stand for those tips only. Never grade MERGE-REF 01b9835562fe6f9c30079a7414321bfa50a3aa54. Tip proof: completed failures 0; agencysignature (PR body) SUCCESS; Path gate / mise-lock / argocd-pin SUCCESS; derive the lane matrix in_progress not red. AceHack/shadow; Human-Review explicit. Sit leftover. Do not merge.
+---
+## leftover UNIQUE leftover #17576 leftover unique @ da03a6c251e24fd9ddd91e5df943d6a929bd3722 — GRADE HOLD
+
+2026-09-23 ~5:55 PM ET Vera tip-confirm (product unique; CoS named tip 0984baa4 was merge-of-main).
+
+Never grade live merge-of-main 0984baa45290fe2bd8ca2217a9f75eaf013322b7 alone. Never grade MERGE-REF ea88b62c2125ecf5829f6334b592b2eeae22671e.
+
+Tip cell: 1-commit +1404/−477 / 64 files. Task: 081M3817FFY087G0R002VRJS9C. Agent: shadow. Human-Review: explicit (chat).
+Subject: feat(cluster): charts name a storage CAPABILITY, never a provider -- zeta-block-replicated / zeta-block-local / zeta-shared.
+Parents: single parent 67408ea2. Inventory matches CoS tip-only claim.
+
+Product skim: storage-capabilities.ts allowlist + bindings; Applications migrate longhorn → zeta-block-replicated, zeta-local-path → zeta-block-local, RWX → zeta-shared; metal/dev StorageClass bindings; first-boot-replica rebind; vault topology provisioner fix; 14 named tests in storage-capabilities.test.ts. Leftover `longhorn` on added lines only in falsifier fixtures.
+
+Tip proof RED (live HEAD 0984baa4 sample; unique SHA has no CI):
+1. cross-verify (check-then-use-races) — storage-capabilities.ts existsSync→readFileSync ~L201 render snapshot + ~L256 metal bindings path (TOCTOU / CWE-367).
+2. lint (yaml/k8s) — observability roster STALE for tempo + mimir after Application edits.
+
+GRADE HOLD. Sit leftover. Do not merge. Not a product unique-confirm GO.
