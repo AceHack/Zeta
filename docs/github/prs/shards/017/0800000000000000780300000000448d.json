@@ -1,0 +1,12 @@
+{
+  "pr_number": 17549,
+  "archive_path": "docs/history/pr-reviews/2026/09/23/PR-17549-fix-installer-test-capture-the-k3s-server-s-startup-not-60-agent-retries.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-23T00:54:26.919Z",
+  "schema_version": "v1",
+  "commit_sha": "ea6a3ed8301ffa6919513b7a5d948d104ba9e352",
+  "title": "fix(installer-test): capture the k3s SERVER's startup, not 60 agent retries",
+  "state": "MERGED",
+  "merged_at": "2026-09-23T00:53:37Z",
+  "head_ref": "claude/k3s-server-startup-diagnostics"
+}
