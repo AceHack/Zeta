@@ -1,0 +1,14 @@
+{
+  "id": "080d068088c54810a0130008a923b72f",
+  "at": "2026-09-23T20:59:36.489Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M3812659087G0R001NP3WR6",
+    "type": "task",
+    "title": "QEMU 3-node HA cluster test: embedded-etcd servers, replicated Longhorn, survive losing a replica-holding node; product etcd peer admission replaces harness-only ports",
+    "slug": "qemu-3-node-ha-cluster-test-embedded-etcd-servers-replicated",
+    "priority": "P2",
+    "filename": "081M3812659087G0R001NP3WR6-qemu-3-node-ha-cluster-test-embedded-etcd-servers-replicated.md"
+  }
+}
