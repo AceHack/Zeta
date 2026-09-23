@@ -2047,3 +2047,7 @@ UNIQUE HOLDS leftover NEW CELL leftover UNIQUE leftover #17583 leftover unique @
 ## leftover UNIQUE leftover #17579 leftover unique @ bbc6b7426961480d49a8dead9c0d09728977debf
 
 UNIQUE HOLDS leftover NEW CELL leftover UNIQUE leftover #17579 leftover unique @ bbc6b7426961480d49a8dead9c0d09728977debf -- GRADE NO-GO (tip 1-commit +6/-3 / 1 file LIVE EXTERNAL pin adds arc-github-app). Tip does not fix product. Prior NO-GO @ 922d88f5 and @ 60f3b128 stand for those tips only. Product blockers still PRESENT: EXTERNAL SECRET namespace-wide false-green; startsWith prefix collision; soft exclusive-NS / manual-sync. Never grade merge-ref 4bad1e6d / merge_commit 5f59fe8c. Tip proof 0 completed failures sampled. Task 081M35ETM11087G0R0002Y62F5. Sit leftover. Do not merge.
+---
+## leftover UNIQUE leftover #17577 leftover unique @ 7d38b575abba26ab8b4139c806f0f537d62b3d87
+
+UNIQUE HOLDS leftover NEW CELL leftover UNIQUE leftover #17577 leftover unique @ 7d38b575abba26ab8b4139c806f0f537d62b3d87 -- GRADE GO (tip 1-commit +2/-2 / 1 file wait-run.ts). HOLD fix: pastDeadline >= ; failed probe at deadline -> unknown (was timed-out). Prior HOLD @ e27b817d stands for that tip only. Never grade MERGE-REF 9690e1c7 / merge_commit 34edefc7. Tip proof unique SHA 0 checks; live HEAD tip-proof only. Task 081M384M21W087G0R00202Q5Y2. Sit leftover. Do not merge.
