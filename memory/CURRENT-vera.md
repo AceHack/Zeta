@@ -2043,3 +2043,7 @@ UNIQUE HOLDS leftover NEW CELL leftover UNIQUE leftover #17579 leftover unique @
 ## leftover UNIQUE leftover #17583 leftover unique @ 6a081f3d8048a2d7f57e66714efed9cdf5fd3f51
 
 UNIQUE HOLDS leftover NEW CELL leftover UNIQUE leftover #17583 leftover unique @ 6a081f3d8048a2d7f57e66714efed9cdf5fd3f51 -- GRADE GO (tip 1-commit +398/-378 / 9 files: dependabot + Directory.Packages.props + 7 test locks). Couples xunit.v3 4.0.1 + FsCheck 3.4.0 + FsCheck.Xunit.v3 3.4.0; lifts FsCheck* ignore; locks pin mtp-v2 4.0.1. Never grade MERGE-REF ba03761c / merge_commit 30e56ac4. Tip proof unique SHA 0 checks; live HEAD tip-proof only. Task 081M380V4M4087G0R003R4FM8X. Sit leftover. Do not merge.
+---
+## leftover UNIQUE leftover #17579 leftover unique @ bbc6b7426961480d49a8dead9c0d09728977debf
+
+UNIQUE HOLDS leftover NEW CELL leftover UNIQUE leftover #17579 leftover unique @ bbc6b7426961480d49a8dead9c0d09728977debf -- GRADE NO-GO (tip 1-commit +6/-3 / 1 file LIVE EXTERNAL pin adds arc-github-app). Tip does not fix product. Prior NO-GO @ 922d88f5 and @ 60f3b128 stand for those tips only. Product blockers still PRESENT: EXTERNAL SECRET namespace-wide false-green; startsWith prefix collision; soft exclusive-NS / manual-sync. Never grade merge-ref 4bad1e6d / merge_commit 5f59fe8c. Tip proof 0 completed failures sampled. Task 081M35ETM11087G0R0002Y62F5. Sit leftover. Do not merge.
