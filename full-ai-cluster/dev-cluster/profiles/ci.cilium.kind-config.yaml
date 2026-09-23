@@ -93,8 +93,18 @@ nodes:
       # that name to 127.0.0.1 on this node (applyKindControlPlaneHostsAlias);
       # this SAN is what lets the agent's TLS verification accept it -- the
       # same pair metal gets from k3s-server.nix (/etc/hosts + --tls-san).
+      #
+      # THE LIST IS COMPLETE, NOT APPENDED, AND THAT IS LOAD-BEARING. kind
+      # applies these as MERGE patches, and a merge patch REPLACES a list: the
+      # first version of this patch listed only `control-plane`, which deleted
+      # kind's own `localhost` / `127.0.0.1` SANs, so the host's kubeconfig
+      # (https://127.0.0.1:<port>) failed TLS and the lane died at bring-up
+      # (live kind Cilium CNI, PR #17595). kind's defaults are restated here;
+      # the node's own hostname is added by kubeadm itself and needs no entry.
       - |
         kind: ClusterConfiguration
         apiServer:
           certSANs:
+            - localhost
+            - "127.0.0.1"
             - control-plane

@@ -352,7 +352,13 @@ describe("kind CI use case", () => {
     const docs = (parseYaml(profile) as { nodes?: { role?: string; kubeadmConfigPatches?: string[] }[] }).nodes ?? [];
     const patches = docs.find((node) => node.role === "control-plane")?.kubeadmConfigPatches ?? [];
     const cluster = patches.map((patch) => parseYaml(patch) as { kind?: string; apiServer?: { certSANs?: string[] } });
-    expect(cluster.find((patch) => patch.kind === "ClusterConfiguration")?.apiServer?.certSANs).toContain("control-plane");
+    const sans = cluster.find((patch) => patch.kind === "ClusterConfiguration")?.apiServer?.certSANs ?? [];
+    expect(sans).toContain("control-plane");
+    // A kind merge patch REPLACES the list, so kind's own SANs must be restated or
+    // the host's kubeconfig (https://127.0.0.1:<port>) fails TLS -- the regression
+    // the first version of this patch shipped (live kind Cilium CNI, #17595).
+    expect(sans).toContain("localhost");
+    expect(sans).toContain("127.0.0.1");
   });
 
   test("kind --cni cilium applies the LB-IPAM alias after Cilium helm and CRDs, before the catalogue", () => {
