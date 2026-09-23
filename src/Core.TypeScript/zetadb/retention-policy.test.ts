@@ -121,27 +121,32 @@ describe("ZetaDB retention policy port", () => {
   });
 
   test("canonical retained IDs are invariant under candidate permutation", () => {
-    fc.assert(
-      fc.property(
-        fc.uniqueArray(fc.string({ minLength: 1, maxLength: 12 }), { minLength: 1, maxLength: 24 }),
-        fc.integer({ min: 1, max: 24 }),
-        (eventIds, requestedLimit) => {
-          const limit = Math.min(requestedLimit, eventIds.length);
-          const forward = evaluateZetaDbRetentionPolicy(canonicalEventIdRetentionPolicy, {
-            currentEventIds: [],
-            candidateEventIds: eventIds,
-            limit,
-          });
-          const reverse = evaluateZetaDbRetentionPolicy(canonicalEventIdRetentionPolicy, {
-            currentEventIds: [],
-            candidateEventIds: [...eventIds].reverse(),
-            limit,
-          });
-          return forward.ok && reverse.ok && JSON.stringify(forward.value) === JSON.stringify(reverse.value);
-        },
-      ),
-      { numRuns: 300 },
-    );
+    // `fc.assert` IS the assertion: it throws with a shrunk counterexample when the
+    // property fails over 300 runs. Wrapped in `expect` only because
+    // eslint-plugin-sonarjs 4.2.1 no longer recognises it and S2699 takes no options.
+    expect(() => {
+      fc.assert(
+        fc.property(
+          fc.uniqueArray(fc.string({ minLength: 1, maxLength: 12 }), { minLength: 1, maxLength: 24 }),
+          fc.integer({ min: 1, max: 24 }),
+          (eventIds, requestedLimit) => {
+            const limit = Math.min(requestedLimit, eventIds.length);
+            const forward = evaluateZetaDbRetentionPolicy(canonicalEventIdRetentionPolicy, {
+              currentEventIds: [],
+              candidateEventIds: eventIds,
+              limit,
+            });
+            const reverse = evaluateZetaDbRetentionPolicy(canonicalEventIdRetentionPolicy, {
+              currentEventIds: [],
+              candidateEventIds: [...eventIds].reverse(),
+              limit,
+            });
+            return forward.ok && reverse.ok && JSON.stringify(forward.value) === JSON.stringify(reverse.value);
+          },
+        ),
+        { numRuns: 300 },
+      );
+    }).not.toThrow();
   });
 
   test("canonical byte retention skips oversized IDs using the kernel measurement capability", () => {
@@ -180,33 +185,38 @@ describe("ZetaDB retention policy port", () => {
   });
 
   test("canonical byte retention is invariant under candidate permutation", () => {
-    fc.assert(
-      fc.property(
-        fc.uniqueArray(fc.string({ minLength: 1, maxLength: 12 }), { minLength: 1, maxLength: 24 }),
-        fc.integer({ min: 1, max: 24 }),
-        fc.integer({ min: 1, max: 160 }),
-        (eventIds, requestedLimit, maxCheckpointBytes) => {
-          const limit = Math.min(requestedLimit, eventIds.length);
-          const checkpointContext = {
-            maxCheckpointBytes,
-            measureCheckpointBytes: (retainedEventIds: readonly string[]): number =>
-              retainedEventIds.reduce((total, eventId) => total + new TextEncoder().encode(eventId).byteLength, 0),
-          };
-          const forward = evaluateZetaDbRetentionPolicy(
-            canonicalCheckpointByteRetentionPolicy,
-            { currentEventIds: [], candidateEventIds: eventIds, limit },
-            checkpointContext,
-          );
-          const reverse = evaluateZetaDbRetentionPolicy(
-            canonicalCheckpointByteRetentionPolicy,
-            { currentEventIds: [], candidateEventIds: [...eventIds].reverse(), limit },
-            checkpointContext,
-          );
-          return forward.ok && reverse.ok && JSON.stringify(forward.value) === JSON.stringify(reverse.value);
-        },
-      ),
-      { numRuns: 300 },
-    );
+    // `fc.assert` IS the assertion: it throws with a shrunk counterexample when the
+    // property fails over 300 runs. Wrapped in `expect` only because
+    // eslint-plugin-sonarjs 4.2.1 no longer recognises it and S2699 takes no options.
+    expect(() => {
+      fc.assert(
+        fc.property(
+          fc.uniqueArray(fc.string({ minLength: 1, maxLength: 12 }), { minLength: 1, maxLength: 24 }),
+          fc.integer({ min: 1, max: 24 }),
+          fc.integer({ min: 1, max: 160 }),
+          (eventIds, requestedLimit, maxCheckpointBytes) => {
+            const limit = Math.min(requestedLimit, eventIds.length);
+            const checkpointContext = {
+              maxCheckpointBytes,
+              measureCheckpointBytes: (retainedEventIds: readonly string[]): number =>
+                retainedEventIds.reduce((total, eventId) => total + new TextEncoder().encode(eventId).byteLength, 0),
+            };
+            const forward = evaluateZetaDbRetentionPolicy(
+              canonicalCheckpointByteRetentionPolicy,
+              { currentEventIds: [], candidateEventIds: eventIds, limit },
+              checkpointContext,
+            );
+            const reverse = evaluateZetaDbRetentionPolicy(
+              canonicalCheckpointByteRetentionPolicy,
+              { currentEventIds: [], candidateEventIds: [...eventIds].reverse(), limit },
+              checkpointContext,
+            );
+            return forward.ok && reverse.ok && JSON.stringify(forward.value) === JSON.stringify(reverse.value);
+          },
+        ),
+        { numRuns: 300 },
+      );
+    }).not.toThrow();
   });
 
   test("returns typed feedback for invalid proposals and hostile policies", () => {
