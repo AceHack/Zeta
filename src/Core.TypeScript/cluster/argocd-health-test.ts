@@ -45,7 +45,13 @@ import {
 } from "./dev-cluster/lib.ts";
 import { DEFAULT_ROOT_DEV_CATALOG, ciliumOwnsCniSlot, type KindCni } from "./ports.ts";
 import { buildLaneTreeBundle, laneTreeRepoUrl, SERVED_GIT_REF } from "./lane-tree-source.ts";
-import { applyResourceProfile, loadResourceCatalogue } from "./storage-profiles.ts";
+import {
+  applyProfile,
+  applyResourceProfile,
+  loadCatalogue,
+  loadResourceCatalogue,
+  storageProfileForResourceRung,
+} from "./storage-profiles.ts";
 import { storageClassValues } from "./storage-capabilities.ts";
 // Ordinal (code-point) ordering, per .claude/rules/culture-invariant-by-default.md.
 // NOT localeCompare: it is culture-SENSITIVE, so the same directory names sort
@@ -2230,6 +2236,25 @@ function waitForKubectl(
  * callers get the SAME staged tree, the SAME refusals (zero-file copy, zero-edit
  * rung apply, un-rewritten repoURL, over-budget pack), and the same `LANE_TREE_IMAGE`.
  */
+/**
+ * Everything `--serve-tree <rung>` does to the STAGED copy, in order, as one
+ * function the unit tests can drive against a staged tree without building the
+ * bare repository: the resource rung, then the storage profile the catalogue maps
+ * the rung to, then the rung overrides. Never touches the committed tree.
+ */
+export function applyServeTreeRung(
+  profile: string,
+  stagedRoot: string,
+): { readonly rungEdits: number; readonly storageEdits: number; readonly overrideEdits: number; readonly storageProfile: string | null } {
+  const catalogue = loadResourceCatalogue(undefined, stagedRoot);
+  const rungEdits = applyResourceProfile(catalogue, profile, stagedRoot).length;
+  const storageProfile = storageProfileForResourceRung(profile, undefined, stagedRoot);
+  const storageEdits =
+    storageProfile === null ? 0 : applyProfile(loadCatalogue(undefined, stagedRoot), storageProfile, stagedRoot).length;
+  const overrideEdits = applyRungOverrides(loadRungOverrides(catalogue.profiles, stagedRoot), profile, stagedRoot).length;
+  return { rungEdits, storageEdits, overrideEdits, storageProfile };
+}
+
 export function buildLaneTreeForProfile(
   profile: string | null,
   gitRef: string,
@@ -2261,15 +2286,19 @@ export function buildLaneTreeForProfile(
     // and a lift condition, and each REFUSED if it produces no edits. It runs
     // AFTER the rung so a resource claim and an override can address the same
     // manifest without the override being silently reverted.
+    //
+    // A THIRD, BETWEEN THEM (2026-09-23): the STORAGE profile the catalogue maps
+    // this rung to (`storageProfileForResourceRung`, today `dev -> ci`). The
+    // committed tree carries the metal box's disk sizes; the staged dev tree
+    // carries sizes a hosted runner can actually hold. Same `applyProfile` the
+    // `--apply` path uses, so the numbers are the ones `--verify` checks.
     applyRung: (stagedRoot: string) => {
-      const rungEdits = applyResourceProfile(catalogue, profile, stagedRoot).length;
-      const overrideEdits = applyRungOverrides(
-        loadRungOverrides(catalogue.profiles, stagedRoot),
-        profile,
-        stagedRoot,
-      ).length;
-      console.log(`[serve-tree] rung edits=${String(rungEdits)} override edits=${String(overrideEdits)}`);
-      return rungEdits + overrideEdits;
+      const applied = applyServeTreeRung(profile, stagedRoot);
+      console.log(
+        `[serve-tree] rung edits=${String(applied.rungEdits)} storage edits=${String(applied.storageEdits)} ` +
+          `(profile ${applied.storageProfile ?? "unchanged"}) override edits=${String(applied.overrideEdits)}`,
+      );
+      return applied.rungEdits + applied.storageEdits + applied.overrideEdits;
     },
   });
   console.log(

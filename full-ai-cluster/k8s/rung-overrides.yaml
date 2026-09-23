@@ -71,3 +71,158 @@ overrides:
         memory: 2Gi
     remove:
       - spec.source.helm.valuesObject.nodeSelector
+
+  # ── DEV DISK SIZES (2026-09-23) ─────────────────────────────────────────────
+  # The storage-profile ladder resizes the Longhorn-pool claims it governs (the
+  # `ci` rung, via storageProfileForResourceRung). These are the claims it does
+  # NOT govern -- every one on `zeta-block-local` or on a chart default with no
+  # class -- priced one Application each, so each carries its own exit.
+  #
+  # THE SUBSTRATE FACT, the same for all of them: a hosted runner has 70 GiB free
+  # (storage-profiles.json runnerEnvelope, measured, maintainer-authorised), and
+  # the dev lane's images take ~34 GiB of it (image-footprint.ts, applied
+  # cohort). local-path is thin -- a directory, no quota -- so a metal-sized
+  # declaration is not bytes on the runner, but it IS a capacity the runner
+  # cannot honour, and dev-lane-storage.ts refuses a lane whose declared claims
+  # do not fit beside its images. Metal keeps every committed size.
+  - id: dapr/scheduler-disk-dev
+    path: full-ai-cluster/k8s/applications/dapr/Application.yaml
+    docIndex: 0
+    rung: dev
+    reason: >-
+      The dapr scheduler's etcd claim is a CHART DEFAULT (16Gi x 3 replicas, no
+      class, so the cluster default zeta-block-local) -- 48 GiB of declaration on
+      a runner with 70 GiB free and ~34 GiB of images, for a scheduler holding no
+      jobs in a smoke test. 1Gi per replica is ample for an idle etcd.
+    liftsWhen: >-
+      the dev lane runs on a substrate whose free disk holds the committed
+      declaration beside its images; then this entry is deleted.
+    set:
+      "spec.source.helm.valuesObject.dapr_scheduler.cluster.storageSize": 1Gi
+    resizes:
+      - claim: full-ai-cluster/dapr dapr-scheduler-data-dir/dapr-scheduler-server
+        size: 1Gi
+  - id: forgejo/disk-dev
+    path: full-ai-cluster/k8s/applications/forgejo/Application.yaml
+    docIndex: 0
+    rung: dev
+    reason: >-
+      20Gi of git storage declared on zeta-block-local, on a runner with 70 GiB
+      free and ~34 GiB of images; the smoke test creates no repositories, so the
+      volume holds forgejo's own bootstrap data and nothing else.
+    liftsWhen: >-
+      the dev lane runs on a substrate whose free disk holds the committed
+      declaration beside its images; then this entry is deleted.
+    set:
+      "spec.source.helm.valuesObject.persistence.size": 1Gi
+    resizes:
+      - claim: full-ai-cluster/forgejo gitea-shared-storage
+        size: 1Gi
+  - id: loki/disk-dev
+    path: full-ai-cluster/k8s/applications/loki/Application.yaml
+    docIndex: 0
+    rung: dev
+    reason: >-
+      Two CHART-DEFAULT claims (backend and write, 10Gi each, no class) on a
+      runner with 70 GiB free and ~34 GiB of images. Loki ships chunks to the
+      SeaweedFS object store; these volumes hold the WAL and index cache, which a
+      smoke test fills with minutes of cluster logs.
+    liftsWhen: >-
+      the dev lane runs on a substrate whose free disk holds the committed
+      declaration beside its images; then this entry is deleted.
+    set:
+      "spec.source.helm.valuesObject.backend.persistence.size": 1Gi
+      "spec.source.helm.valuesObject.write.persistence.size": 1Gi
+    resizes:
+      - claim: full-ai-cluster/loki data/loki-backend
+        size: 1Gi
+      - claim: full-ai-cluster/loki data/loki-write
+        size: 1Gi
+  - id: mimir/kafka-and-alertmanager-disk-dev
+    path: full-ai-cluster/k8s/applications/mimir/Application.yaml
+    docIndex: 0
+    rung: dev
+    reason: >-
+      The bundled Kafka (5Gi) and the alertmanager (1Gi) are CHART DEFAULTS with
+      no class, outside the storage ladder, on a runner with 70 GiB free and ~34
+      GiB of images. The ingest topic of an idle smoke test is a few MiB.
+    liftsWhen: >-
+      the dev lane runs on a substrate whose free disk holds the committed
+      declaration beside its images; then this entry is deleted.
+    set:
+      "spec.source.helm.valuesObject.kafka.persistence.size": 1Gi
+      "spec.source.helm.valuesObject.alertmanager.persistentVolume.size": 256Mi
+    resizes:
+      - claim: full-ai-cluster/mimir kafka-data/mimir-kafka
+        size: 1Gi
+      - claim: full-ai-cluster/mimir storage/mimir-alertmanager
+        size: 256Mi
+  - id: openbao/disk-dev
+    path: full-ai-cluster/k8s/applications/openbao/Application.yaml
+    docIndex: 0
+    rung: dev
+    reason: >-
+      10Gi raft data plus 5Gi audit on zeta-block-local, on a runner with 70 GiB
+      free and ~34 GiB of images; the ephemeral dev ceremony writes a handful of
+      keys and an audit trail of minutes.
+    liftsWhen: >-
+      the dev lane runs on a substrate whose free disk holds the committed
+      declaration beside its images; then this entry is deleted.
+    set:
+      "spec.source.helm.valuesObject.server.dataStorage.size": 1Gi
+      "spec.source.helm.valuesObject.server.auditStorage.size": 512Mi
+    resizes:
+      - claim: full-ai-cluster/openbao data/openbao
+        size: 1Gi
+      - claim: full-ai-cluster/openbao audit/openbao
+        size: 512Mi
+  - id: opensearch/disk-dev
+    path: full-ai-cluster/k8s/applications/opensearch/Application.yaml
+    docIndex: 0
+    rung: dev
+    reason: >-
+      20Gi on zeta-block-local on a runner with 70 GiB free and ~34 GiB of
+      images; a single-node smoke-test cluster holds OpenSearch's own system
+      indices and nothing else. Disk watermarks are percentages of the node
+      filesystem, which local-path does not partition, so the size changes no
+      watermark behaviour.
+    liftsWhen: >-
+      the dev lane runs on a substrate whose free disk holds the committed
+      declaration beside its images; then this entry is deleted.
+    set:
+      "spec.source.helm.valuesObject.persistence.size": 1Gi
+    resizes:
+      - claim: full-ai-cluster/opensearch opensearch-cluster-master/opensearch-cluster-master
+        size: 1Gi
+  - id: seaweedfs/disk-dev
+    path: full-ai-cluster/k8s/applications/seaweedfs/Application.yaml
+    docIndex: 0
+    rung: dev
+    reason: >-
+      The cluster blob store (loki, mimir, tempo buckets) declares 20Gi on
+      zeta-block-local, on a runner with 70 GiB free and ~34 GiB of images.
+      2Gi holds the buckets' contents for a smoke run's duration.
+    liftsWhen: >-
+      the dev lane runs on a substrate whose free disk holds the committed
+      declaration beside its images; then this entry is deleted.
+    set:
+      "spec.source.helm.valuesObject.allInOne.data.size": 2Gi
+    resizes:
+      - claim: full-ai-cluster/seaweedfs blob-store-seaweedfs-all-in-one-data
+        size: 2Gi
+  - id: spire/disk-dev
+    path: full-ai-cluster/k8s/applications/spire/Application.yaml
+    docIndex: 0
+    rung: dev
+    reason: >-
+      The spire-server datastore declares 5Gi on zeta-block-local, on a runner
+      with 70 GiB free and ~34 GiB of images; a smoke-test trust domain holds a
+      handful of registration entries in SQLite.
+    liftsWhen: >-
+      the dev lane runs on a substrate whose free disk holds the committed
+      declaration beside its images; then this entry is deleted.
+    set:
+      "spec.source.helm.valuesObject.spire-server.persistence.size": 512Mi
+    resizes:
+      - claim: full-ai-cluster/spire spire-data/spire-server
+        size: 512Mi

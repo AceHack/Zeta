@@ -168,6 +168,8 @@ on:
       - "src/Core.TypeScript/cluster/lane-tree-source.test.ts"
       - "src/Core.TypeScript/cluster/rung-overrides.ts"
       - "src/Core.TypeScript/cluster/rung-overrides.test.ts"
+      - "src/Core.TypeScript/cluster/rung-override-audit.ts"
+      - "src/Core.TypeScript/cluster/rung-override-audit.test.ts"
       - "full-ai-cluster/k8s/rung-overrides.yaml"
       - "src/Core.TypeScript/cluster/startup-restart-baseline.json"
       - "docs/backlog/P1/081KSXN940008QG0R000SCP2H1-kubernetes-argocd-kind-k3d-integration-health-tests-separate.md"
@@ -296,6 +298,8 @@ on:
       - "src/Core.TypeScript/cluster/lane-tree-source.test.ts"
       - "src/Core.TypeScript/cluster/rung-overrides.ts"
       - "src/Core.TypeScript/cluster/rung-overrides.test.ts"
+      - "src/Core.TypeScript/cluster/rung-override-audit.ts"
+      - "src/Core.TypeScript/cluster/rung-override-audit.test.ts"
       - "full-ai-cluster/k8s/rung-overrides.yaml"
       - "src/Core.TypeScript/cluster/startup-restart-baseline.json"
       - "docs/backlog/P1/081KSXN940008QG0R000SCP2H1-kubernetes-argocd-kind-k3d-integration-health-tests-separate.md"
@@ -555,6 +559,18 @@ jobs:
         # the same override point, and until then it was named by no workflow and no
         # path filter -- so editing an override triggered none of the lanes it shapes.
         run: bun test src/Core.TypeScript/cluster/lane-tree-source.test.ts src/Core.TypeScript/cluster/rung-overrides.test.ts
+
+      # WHAT THE SERVED DEV TREE DECLARES, CHECKED OFFLINE (2026-09-23). Two checks:
+      # every rung-override path under `valuesObject` is one the pinned chart reads
+      # (an inert override edits the staged tree and changes nothing rendered), and
+      # the dev lane's declared PVC capacity -- ladder `ci` sizes + dev resize
+      # overrides, with any unpriced claim at its metal size -- fits in the runner
+      # envelope's free disk after reservation and the lane's images. <2s.
+      - name: Run rung-override audit falsifiers
+        run: bun test src/Core.TypeScript/cluster/rung-override-audit.test.ts
+
+      - name: Audit override paths and the dev lane's declared disk
+        run: bun src/Core.TypeScript/cluster/rung-override-audit.ts
 
       # SYNC-WAVE DERIVATION. The App-of-Apps bring-up order is DERIVED from
       # full-ai-cluster/k8s/sync-wave-dependency-graph.yaml by ace's own engine
@@ -1217,10 +1233,12 @@ jobs:
         # tree is `metal` (6390m on a 4000m GitHub node). `--serve-tree dev` is
         # 1165m / 9164Mi and fits the runner budget (2500m / 9216Mi). Metal stays
         # in git for USB/hardware. Disk is a different ladder: this job already
-        # runs `--check-envelope` (70 GiB). PVC sizes stay at the metal storage
-        # profile because CI `zeta-block-local` is thin and shrinking PVCs would
-        # not be a USB rehearsal. Do not invent a fourth budget. Do not shrink
-        # metal.
+        # runs `--check-envelope` (70 GiB). CHANGED 2026-09-23 (maintainer: "make
+        # dev capacity actually fit"): PVC sizes in the SERVED dev tree are the
+        # storage ladder's `ci` rung plus per-claim dev overrides, priced against
+        # this same 70 GiB envelope by rung-override-audit.ts -- the existing
+        # budget, not a fourth one. Metal keeps every committed size. local-path
+        # is thin, so this is a declared-capacity fit, not a bytes-on-disk saving.
         run: |
           bun src/Core.TypeScript/cluster/argocd-health-test.ts \
             --run \

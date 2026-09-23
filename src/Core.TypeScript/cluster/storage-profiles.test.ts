@@ -659,8 +659,10 @@ describe("governors move with the size they bound", () => {
 describe("the checked-in catalogue", () => {
   const catalogue = loadCatalogue();
 
-  test("loads, and its ladder is minimal < standard < measured < large", () => {
-    expect(catalogue.profiles).toEqual(["minimal", "standard", "measured", "large"]);
+  // `ci` joined the bottom of the ladder 2026-09-23: the dev lane's staged tree
+  // only (storageProfileForResourceRung), never the tree's active profile.
+  test("loads, and its ladder is ci < minimal < standard < measured < large", () => {
+    expect(catalogue.profiles).toEqual(["ci", "minimal", "standard", "measured", "large"]);
     const totals = catalogue.profiles.map((name) => profileTotalGib(catalogue, name));
     for (let index = 1; index < totals.length; index += 1) {
       expect(totals[index - 1]).toBeLessThan(totals[index] ?? 0);

@@ -70,6 +70,20 @@ export interface RungOverride {
   readonly set: Readonly<Record<string, unknown>>;
   /** Dotted field paths to remove entirely. */
   readonly remove: readonly string[];
+  /**
+   * The RENDERED PersistentVolumeClaims this override resizes, as
+   * `"<appId> <rendered PVC name>"` (the keys rendered-storage-claims.snapshot.json
+   * uses) with the size it sets. Optional; present on disk-size overrides so the
+   * dev-lane storage audit can price the claim at its dev size. The loader
+   * REFUSES a `size` that no `set` value carries -- a resize the override does
+   * not actually write would let the audit count disk the lane never gets.
+   */
+  readonly resizes: readonly RungOverrideResize[];
+}
+
+export interface RungOverrideResize {
+  readonly claim: string;
+  readonly size: string;
 }
 
 export interface OverrideEdit {
@@ -85,6 +99,27 @@ function requireString(value: unknown, label: string): string {
     throw new Error(`${label}: expected a non-empty string`);
   }
   return value;
+}
+
+function parseResizes(raw: unknown, set: Readonly<Record<string, unknown>>, label: string): readonly RungOverrideResize[] {
+  if (raw === undefined) return [];
+  if (!Array.isArray(raw)) throw new Error(`${label}.resizes must be a list`);
+  const written = new Set(Object.values(set).filter((value): value is string => typeof value === "string"));
+  return raw.map((entry, index) => {
+    const record = (entry ?? {}) as Record<string, unknown>;
+    const claim = requireString(record.claim, `${label}.resizes[${String(index)}].claim`);
+    const size = requireString(record.size, `${label}.resizes[${String(index)}].size`);
+    if (claim.split(" ").length !== 2) {
+      throw new Error(`${label}.resizes[${String(index)}].claim must be "<appId> <rendered PVC name>", got "${claim}"`);
+    }
+    if (!written.has(size)) {
+      throw new Error(
+        `${label}.resizes[${String(index)}] declares size ${size}, which no \`set\` value writes -- the audit ` +
+          "would price a disk the lane never gets",
+      );
+    }
+    return { claim, size };
+  });
 }
 
 export function loadRungOverrides(
@@ -132,8 +167,10 @@ export function loadRungOverrides(
     if (Object.keys(set).length === 0 && remove.length === 0) {
       throw new Error(`${path}: ${id} sets nothing and removes nothing`);
     }
+    const resizes = parseResizes(o.resizes, set, `${path}: ${id}`);
     return {
       id,
+      resizes,
       path: requireString(o.path, `${path}: ${id}.path`),
       docIndex: typeof o.docIndex === "number" ? o.docIndex : 0,
       rung,

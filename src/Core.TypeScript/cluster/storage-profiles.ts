@@ -388,6 +388,49 @@ export function loadCatalogue(path = DEFAULT_CATALOGUE_PATH, repoRoot = REPO_ROO
 // Arithmetic
 // ---------------------------------------------------------------------------
 
+/**
+ * The STORAGE profile a RESOURCE rung's staged tree gets, or `null` when the rung
+ * keeps the committed sizes.
+ *
+ * Two ladders, one mapping. The resource rung (`dev` / `metal`) is what
+ * `--serve-tree` stages; the storage ladder (`ci` .. `large`) is how big the
+ * governed PVCs are. `storageProfileForResourceRung` in the catalogue joins them
+ * -- today only `dev -> ci` -- so the dev lane's staged tree carries dev-sized
+ * disks while the committed tree, which metal syncs, keeps its active profile.
+ *
+ * REFUSES a mapping that names a rung the resource catalogue lacks or a storage
+ * profile the ladder lacks: either would be a mapping that can never fire, which
+ * reads as coverage and is none.
+ */
+export function storageProfileForResourceRung(
+  rung: string,
+  path = DEFAULT_CATALOGUE_PATH,
+  repoRoot = REPO_ROOT,
+): string | null {
+  const parsed = JSON.parse(readFileSync(resolve(repoRoot, path), "utf8")) as {
+    storageProfileForResourceRung?: unknown;
+    resourceProfiles?: unknown;
+    profiles?: unknown;
+  };
+  const mapping = parsed.storageProfileForResourceRung;
+  if (mapping === undefined) return null;
+  if (typeof mapping !== "object" || mapping === null || Array.isArray(mapping)) {
+    throw new Error(`${path}: storageProfileForResourceRung must be an object of resource rung -> storage profile`);
+  }
+  const rungs = Array.isArray(parsed.resourceProfiles) ? (parsed.resourceProfiles as unknown[]) : [];
+  const storage = Array.isArray(parsed.profiles) ? (parsed.profiles as unknown[]) : [];
+  for (const [key, value] of Object.entries(mapping as Record<string, unknown>)) {
+    if (!rungs.includes(key)) {
+      throw new Error(`${path}: storageProfileForResourceRung names resource rung "${key}", which resourceProfiles lacks`);
+    }
+    if (typeof value !== "string" || !storage.includes(value)) {
+      throw new Error(`${path}: storageProfileForResourceRung.${key} = ${String(value)} is not a storage profile`);
+    }
+  }
+  const chosen = (mapping as Record<string, unknown>)[rung];
+  return typeof chosen === "string" ? chosen : null;
+}
+
 /** GiB a claim costs under `profile`: declared size x pod count. */
 export function claimGib(claim: ProfileClaim, profile: string): number {
   const size = claim.sizes[profile];

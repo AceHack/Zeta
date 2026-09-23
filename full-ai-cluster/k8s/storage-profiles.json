@@ -1462,9 +1462,25 @@
     "have taken ollama and vllm from 200Gi to 48Gi and the arc model cache from",
     "100Gi to 32Gi as a side effect of fitting a disk they never touch. That is a",
     "product decision wearing an arithmetic costume, and it is not this rung's to",
-    "make."
+    "make.",
+    "",
+    "`ci` (added 2026-09-23) is the SMALLEST rung and is never the tree's active",
+    "profile: it is applied only to the STAGED copy `--serve-tree dev` builds, via",
+    "`storageProfileForResourceRung` below, so the committed tree -- and the metal",
+    "box -- keep `measured`. Sizes are what one idle smoke-test replica needs, and",
+    "pods EQUAL `measured`'s on every row, so the dev lane changes DISK and not the",
+    "replica topology it asserts. Why it exists: the dev lane declared ~582 GiB of",
+    "PVC on a runner with 70 GiB free. local-path is thin (a directory, no quota),",
+    "so the declaration was never bytes on the runner -- but a declared capacity",
+    "the substrate cannot honour is a claim the lane does not keep, and the",
+    "maintainer asked for dev capacity that actually fits. `dev-lane-storage.ts`",
+    "is the check that it does."
   ],
+  "storageProfileForResourceRung": {
+    "dev": "ci"
+  },
   "profiles": [
+    "ci",
     "minimal",
     "standard",
     "measured",
@@ -1538,12 +1554,14 @@
       "renderedApp": "full-ai-cluster/agent-memory",
       "renderedPvcPattern": "^memory/agent-memory$",
       "sizes": {
+        "ci": "512Mi",
         "minimal": "4Gi",
         "standard": "8Gi",
         "measured": "8Gi",
         "large": "10Gi"
       },
       "pods": {
+        "ci": 1,
         "minimal": 1,
         "standard": 1,
         "measured": 1,
@@ -1565,12 +1583,14 @@
       "renderedApp": "full-ai-cluster/arc-runner-set",
       "renderedPvcPattern": "^arc-model-cache$",
       "sizes": {
+        "ci": "512Mi",
         "minimal": "8Gi",
         "standard": "32Gi",
         "measured": "100Gi",
         "large": "100Gi"
       },
       "pods": {
+        "ci": 1,
         "minimal": 1,
         "standard": 1,
         "measured": 1,
@@ -1592,12 +1612,14 @@
       "renderedApp": "full-ai-cluster/cockroachdb",
       "renderedPvcPattern": "^datadir/cockroachdb$",
       "sizes": {
+        "ci": "1Gi",
         "minimal": "32Gi",
         "standard": "48Gi",
         "measured": "48Gi",
         "large": "100Gi"
       },
       "pods": {
+        "ci": 3,
         "minimal": 1,
         "standard": 3,
         "measured": 3,
@@ -1619,12 +1641,14 @@
       "renderedApp": "full-ai-cluster/game-hosting/gmod",
       "renderedPvcPattern": "^data/gmod$",
       "sizes": {
+        "ci": "1Gi",
         "minimal": "4Gi",
         "standard": "10Gi",
         "measured": "10Gi",
         "large": "20Gi"
       },
       "pods": {
+        "ci": 1,
         "minimal": 1,
         "standard": 1,
         "measured": 1,
@@ -1646,12 +1670,14 @@
       "renderedApp": "full-ai-cluster/headscale",
       "renderedPvcPattern": "^data/headscale$",
       "sizes": {
+        "ci": "256Mi",
         "minimal": "2Gi",
         "standard": "3Gi",
         "measured": "3Gi",
         "large": "5Gi"
       },
       "pods": {
+        "ci": 1,
         "minimal": 1,
         "standard": 1,
         "measured": 1,
@@ -1673,12 +1699,14 @@
       "renderedApp": "full-ai-cluster/hindsight",
       "renderedPvcPattern": "^data/hindsight-postgresql$",
       "sizes": {
+        "ci": "1Gi",
         "minimal": "8Gi",
         "standard": "10Gi",
         "measured": "10Gi",
         "large": "20Gi"
       },
       "pods": {
+        "ci": 1,
         "minimal": 1,
         "standard": 1,
         "measured": 1,
@@ -1700,12 +1728,14 @@
       "renderedApp": "full-ai-cluster/kube-prometheus-stack",
       "renderedPvcPattern": "^storage/kube-prometheus-stack-alertmanager$",
       "sizes": {
+        "ci": "256Mi",
         "minimal": "2Gi",
         "standard": "5Gi",
         "measured": "5Gi",
         "large": "10Gi"
       },
       "pods": {
+        "ci": 1,
         "minimal": 1,
         "standard": 1,
         "measured": 1,
@@ -1727,12 +1757,14 @@
       "renderedApp": "full-ai-cluster/kube-prometheus-stack",
       "renderedPvcPattern": "^kube-prometheus-stack-grafana$",
       "sizes": {
+        "ci": "256Mi",
         "minimal": "2Gi",
         "standard": "5Gi",
         "measured": "5Gi",
         "large": "10Gi"
       },
       "pods": {
+        "ci": 1,
         "minimal": 1,
         "standard": 1,
         "measured": 1,
@@ -1753,6 +1785,7 @@
       "consequence": "RETENTION CUT, AND IT IS NOW AUTOMATIC — this row is where the `governors` mechanism came from. The Application sets `retention: 15d` beside this volume, which is a TIME bound that cannot see the disk, and kube-prometheus-stack 65.5.0 leaves `retentionSize` unset, so Prometheus applied no size bound at all: it fills the volume and the WAL wedges. This row used to say that anyone selecting a smaller rung \"must also cut retention\" and that the field was NOT rewritten by --apply. An instruction to remember is not a mechanism; the governor below is. `retentionSize` now moves in the same --apply pass as the size it bounds, so the two cannot land apart, and verifyProfileApplied goes red if the manifest drifts from either. What the cut still costs is real: at 32Gi you get 15 days OR ~24 GiB of blocks, whichever comes first, and nobody here has measured this cluster's ingest rate to say which binds.",
       "governors": {
         "spec.source.helm.valuesObject.prometheus.prometheusSpec.retentionSize": {
+          "ci": "1GiB",
           "minimal": "12GiB",
           "standard": "24GiB",
           "measured": "24GiB",
@@ -1763,12 +1796,14 @@
       "renderedApp": "full-ai-cluster/kube-prometheus-stack",
       "renderedPvcPattern": "^storage/kube-prometheus-stack-prometheus$",
       "sizes": {
+        "ci": "2Gi",
         "minimal": "16Gi",
         "standard": "32Gi",
         "measured": "32Gi",
         "large": "100Gi"
       },
       "pods": {
+        "ci": 1,
         "minimal": 1,
         "standard": 1,
         "measured": 1,
@@ -1790,12 +1825,14 @@
       "renderedApp": "full-ai-cluster/mimir",
       "renderedPvcPattern": "^storage/mimir-compactor$",
       "sizes": {
+        "ci": "1Gi",
         "minimal": "8Gi",
         "standard": "16Gi",
         "measured": "16Gi",
         "large": "50Gi"
       },
       "pods": {
+        "ci": 1,
         "minimal": 1,
         "standard": 1,
         "measured": 1,
@@ -1817,12 +1854,14 @@
       "renderedApp": "full-ai-cluster/mimir",
       "renderedPvcPattern": "^storage/mimir-ingester-zone-[a-c]$",
       "sizes": {
+        "ci": "1Gi",
         "minimal": "8Gi",
         "standard": "16Gi",
         "measured": "16Gi",
         "large": "50Gi"
       },
       "pods": {
+        "ci": 3,
         "minimal": 3,
         "standard": 3,
         "measured": 3,
@@ -1844,12 +1883,14 @@
       "renderedApp": "full-ai-cluster/mimir",
       "renderedPvcPattern": "^storage/mimir-store-gateway-zone-[a-c]$",
       "sizes": {
+        "ci": "512Mi",
         "minimal": "8Gi",
         "standard": "16Gi",
         "measured": "16Gi",
         "large": "50Gi"
       },
       "pods": {
+        "ci": 3,
         "minimal": 3,
         "standard": 3,
         "measured": 3,
@@ -1871,12 +1912,14 @@
       "renderedApp": "full-ai-cluster/nats",
       "renderedPvcPattern": "^nats-js/nats$",
       "sizes": {
+        "ci": "1Gi",
         "minimal": "4Gi",
         "standard": "10Gi",
         "measured": "10Gi",
         "large": "20Gi"
       },
       "pods": {
+        "ci": 3,
         "minimal": 1,
         "standard": 3,
         "measured": 3,
@@ -1898,12 +1941,14 @@
       "renderedApp": "full-ai-cluster/ollama",
       "renderedPvcPattern": "^ollama$",
       "sizes": {
+        "ci": "1Gi",
         "minimal": "10Gi",
         "standard": "48Gi",
         "measured": "200Gi",
         "large": "200Gi"
       },
       "pods": {
+        "ci": 1,
         "minimal": 1,
         "standard": 1,
         "measured": 1,
@@ -1925,12 +1970,14 @@
       "renderedApp": "full-ai-cluster/oz",
       "renderedPvcPattern": "^ziti-controller$",
       "sizes": {
+        "ci": "256Mi",
         "minimal": "2Gi",
         "standard": "3Gi",
         "measured": "3Gi",
         "large": "5Gi"
       },
       "pods": {
+        "ci": 1,
         "minimal": 1,
         "standard": 1,
         "measured": 1,
@@ -1952,12 +1999,14 @@
       "renderedApp": "full-ai-cluster/platform",
       "renderedPvcPattern": "^rooms/portal$",
       "sizes": {
+        "ci": "512Mi",
         "minimal": "4Gi",
         "standard": "5Gi",
         "measured": "5Gi",
         "large": "5Gi"
       },
       "pods": {
+        "ci": 1,
         "minimal": 1,
         "standard": 1,
         "measured": 1,
@@ -1980,12 +2029,14 @@
       "renderedApp": "full-ai-cluster/redis",
       "renderedPvcPattern": "^valkey-data/redis-valkey$",
       "sizes": {
+        "ci": "512Mi",
         "minimal": "4Gi",
         "standard": "8Gi",
         "measured": "8Gi",
         "large": "10Gi"
       },
       "pods": {
+        "ci": 3,
         "minimal": 2,
         "standard": 3,
         "measured": 3,
@@ -2007,12 +2058,14 @@
       "renderedApp": "full-ai-cluster/tempo",
       "renderedPvcPattern": "^storage/tempo$",
       "sizes": {
+        "ci": "1Gi",
         "minimal": "8Gi",
         "standard": "20Gi",
         "measured": "20Gi",
         "large": "50Gi"
       },
       "pods": {
+        "ci": 1,
         "minimal": 1,
         "standard": 1,
         "measured": 1,
@@ -2034,12 +2087,14 @@
       "renderedApp": "full-ai-cluster/vllm",
       "renderedPvcPattern": "^vllm-cache$",
       "sizes": {
+        "ci": "1Gi",
         "minimal": "10Gi",
         "standard": "48Gi",
         "measured": "200Gi",
         "large": "200Gi"
       },
       "pods": {
+        "ci": 1,
         "minimal": 1,
         "standard": 1,
         "measured": 1,
@@ -2061,12 +2116,14 @@
       "renderedApp": "full-ai-cluster/weaviate",
       "renderedPvcPattern": "^weaviate-data/weaviate$",
       "sizes": {
+        "ci": "1Gi",
         "minimal": "12Gi",
         "standard": "32Gi",
         "measured": "32Gi",
         "large": "100Gi"
       },
       "pods": {
+        "ci": 1,
         "minimal": 1,
         "standard": 1,
         "measured": 1,
