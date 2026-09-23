@@ -1942,3 +1942,17 @@ PR aggregate vs main: +296/−1 / 5 files (codeql.yml filter path + codeql-drop-
 Tip proof: live HEAD eddb5791 — 0 completed failures; cross-verify (check-then-use-races) SUCCESS; agencysignature (PR body) SUCCESS. in_progress lanes not red.
 
 GRADE GO. Sit leftover. Do not merge.
+---
+## leftover UNIQUE leftover #17572 leftover unique @ b914b335ffcec598fea425cd40cb42d367e8cd06 — GRADE GO
+
+2026-09-23 ~6:03 PM ET Vera tip-confirm (prior GO 7967a9d3 stands for that tip only).
+
+Never grade live MERGE-REF / merge-of-main c29d456f6e2ef565f0e1b575f40c79b5982619ba (parents b914b335 + a76c60e9). Never grade merge_commit 9941b97f. Never grade mid-merge parent 81684a4a alone.
+
+Tip cell: 1-commit +36/−36 / 3 files. Subject: test(ci): retarget guard 7 now that the VSTest blame printer is gone.
+Task: 081M380V4M4087G0R003R4FM8X. Agent: shadow. Human-Review: explicit (chat).
+Files: toolchain-install-stall.test.ts guard 7 retarget (print-blame-sequences gone); fsharp-mutation-probe formatting; profile.ts coverage exitCode+break.
+
+Tip proof: unique SHA no CI; live HEAD sample 0 completed failures; check-then-use SUCCESS; agencysignature (PR body) SUCCESS; build-and-test in_progress not red.
+
+GRADE GO. Sit leftover. Do not merge.
