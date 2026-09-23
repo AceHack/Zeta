@@ -1956,3 +1956,17 @@ Files: toolchain-install-stall.test.ts guard 7 retarget (print-blame-sequences g
 Tip proof: unique SHA no CI; live HEAD sample 0 completed failures; check-then-use SUCCESS; agencysignature (PR body) SUCCESS; build-and-test in_progress not red.
 
 GRADE GO. Sit leftover. Do not merge.
+---
+## leftover UNIQUE leftover #17471 leftover unique @ 00cf089506ae9910e59268045272ae699cdec298 — GRADE GO
+
+2026-09-23 ~6:04 PM ET Vera tip-confirm (prior GO b353be7e stands for that tip only).
+
+Never grade merge_commit / MERGE-REF 7dcf755423c8f0367f8b4ab2d266b5373d3ad4fb.
+
+Tip cell: 1-commit +124/−36 / 4 files. Subject: test(corporate): prove the ports overlap with a barrier, not a stopwatch.
+Task: 081M384PB0F087G0R000Z6P4RE. Agent: shadow. Human-Review: explicit (chat).
+Files: adapters.test.ts STARTED barrier (pid markers; both Passed/Approved); wall-clock-test-allowlist.json adapters.setTimeout row deleted; workitem + event.
+
+Tip proof: live HEAD 00cf0895 — 0 completed failures; check-then-use SUCCESS; agencysignature (PR body) SUCCESS; hermetic in_progress not red.
+
+GRADE GO. Sit leftover. Do not merge.
