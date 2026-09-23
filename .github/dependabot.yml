@@ -101,39 +101,17 @@ updates:
         update-types:
           - "version-update:semver-major"
           - "version-update:semver-minor"
-      # FsCheck.Xunit.v3's own version number understates what it requires.
-      # Measured 2026-08-22 from the published nuspecs:
+      # The `FsCheck*` minor/major ignore that stood here (#13676, 2026-08-22) is
+      # LIFTED, on the condition it named: xunit.v3 moved to the 4.x line in the
+      # same change that took FsCheck + FsCheck.Xunit.v3 to 3.4.0, so the coupling
+      # (FsCheck.Xunit.v3 3.4.0 -> xunit.v3.extensibility.core [4.0.0, 5.0.0), and
+      # FsCheck.Xunit.v3 -> FsCheck EXACT) was satisfied in one commit.
       #
-      #   3.3.4 (held) -> xunit.v3.extensibility.core  3.0.1
-      #   3.4.0        -> xunit.v3.extensibility.core  [4.0.0, 5.0.0)
-      #
-      # We pin xunit.v3 at 3.2.2, so a MINOR bump of FsCheck.Xunit.v3 demands a
-      # MAJOR migration of xunit v3 -> v4. Dependabot grades it minor because its
-      # own version is minor; the transitive requirement is not, and NU1608 fires
-      # as an error under Warning-As-Error -- taking eight unrelated bumps in the
-      # same group down with it (PR #13653, red on every platform).
-      #
-      # Adopting xunit v4 is a test-framework migration across every test project,
-      # not a dependency chore.
-      #
-      # LIFTS WHEN: xunit.v3 is deliberately moved to the 4.x line. That bump and
-      # this one belong in the same change, so the constraint can never be half
-      # satisfied -- which is exactly what a bot on a weekly schedule cannot know.
-      #
-      # CORRECTION 2026-08-22: this was first written as `FsCheck.Xunit.v3`
-      # alone and it did NOT work. #13676 landed at 11:52:06Z; Dependabot opened
-      # #13696 at 12:13:18Z -- 21 minutes later, with the ignore live -- still
-      # carrying FsCheck.Xunit.v3 3.4.0.
-      #
-      # The ignore was on the wrong end of the coupling. FsCheck.Xunit.v3 3.4.0
-      # requires `FsCheck [3.4.0]` EXACTLY, so the two move as a locked pair:
-      # #13696 bumps FsCheck 3.3.4 -> 3.4.0, and FsCheck.Xunit.v3 cannot stay
-      # behind. Ignoring the follower cannot stop the leader dragging it.
-      # Hence the family pattern.
-      - dependency-name: "FsCheck*"
-        update-types:
-          - "version-update:semver-major"
-          - "version-update:semver-minor"
+      # The coupling now points the other way: the NEXT xunit.v3 major (5.x) will
+      # need an FsCheck.Xunit.v3 that accepts it. Measured cost of getting it wrong:
+      # xunit 4.0.1 against FsCheck.Xunit.v3 3.3.4 built clean and failed 721 tests
+      # at DISCOVERY (MissingMethodException in PropertyDiscoverer) with the
+      # discovered count unchanged, so a count check alone does not catch it.
 
   - package-ecosystem: "github-actions"
     directory: "/"
