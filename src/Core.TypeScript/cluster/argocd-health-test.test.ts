@@ -39,6 +39,7 @@ import {
   mergeArgoCdTimeoutDiagnostics,
   restartingContainersFromPodsJson,
   parseApplicationList,
+  parseUnhealthyResources,
   formatHealthWaitProgress,
   confirmedDegradedTerminalFailure,
   degradedApplicationNames,
@@ -2687,6 +2688,35 @@ describe("081KSXN940008QG0R000SCP2H1 soak phase -- does it crash-loop after the 
       );
       expect(failure?.message).not.toContain("[");
     });
+
+    // 2026-09-23: 12 of 18 `included` failures since the soak phase landed were
+    // Applications flipping during the soak, and the `Synced/Progressing` ones --
+    // argo-rollouts, the most frequent -- named NO resource, because nothing was
+    // out of sync. `status.resources[].health` carries the answer; this reads it.
+    test("names the UNHEALTHY resource for a Synced/Progressing flip that has nothing out of sync", () => {
+      const failure = soakRegressionFailure(
+        [],
+        [
+          {
+            name: "argo-rollouts",
+            ok: false,
+            syncStatus: "Synced",
+            healthStatus: "Progressing",
+            unhealthyResources: ["Deployment/argo-rollouts Progressing: Waiting for rollout to finish"],
+          },
+        ],
+      );
+      expect(failure?.message).toContain(
+        "argo-rollouts left Healthy/Synced (Synced/Progressing) {unhealthy: Deployment/argo-rollouts Progressing: Waiting for rollout to finish}",
+      );
+    });
+
+    test("omits the unhealthy block when unhealthyResources is absent or empty", () => {
+      for (const extra of [{}, { unhealthyResources: [] }]) {
+        const failure = soakRegressionFailure([], [{ name: "keda", ok: false, syncStatus: "Synced", healthStatus: "Progressing", ...extra }]);
+        expect(failure?.message).not.toContain("{unhealthy");
+      }
+    });
   });
 
   describe("startupRestartEntries -- attributed to an app, sorted, excludes healthy containers", () => {
@@ -3033,6 +3063,30 @@ describe("081M23BCR90087G0R002GYP7TE a failed sync is never reconciled", () => {
       ]);
     });
 
+    // The carry step, pinned. Without this, classifyApplications could drop the
+    // field and every parser test would stay green while the soak message went
+    // back to naming no resource -- the very gap unhealthyResources closes.
+    test("unhealthyResources survives from the snapshot into the verdict", () => {
+      const snapshots = parseApplicationList(
+        JSON.stringify({
+          items: [
+            {
+              metadata: { name: "argo-rollouts" },
+              status: {
+                sync: { status: "Synced" },
+                health: { status: "Progressing" },
+                resources: [
+                  { kind: "Deployment", name: "argo-rollouts", health: { status: "Progressing", message: "rolling" } },
+                ],
+              },
+            },
+          ],
+        }),
+      );
+      const verdicts = classifyApplications([{ ...autoSync, name: "argo-rollouts", dir: "argo-rollouts" }], snapshots);
+      expect(verdicts[0]?.unhealthyResources).toEqual(["Deployment/argo-rollouts Progressing: rolling"]);
+    });
+
     test("a Synced-only resource list produces NO outOfSyncResources field, not an empty array", () => {
       const snapshots = parseApplicationList(
         JSON.stringify({
@@ -3138,5 +3192,63 @@ describe("RWX detected from the rendered snapshot", () => {
   test("silence is reported, not read as clearance", () => {
     const root = snapshotFixture([{ appId: "full-ai-cluster/covered", accessModes: ["ReadWriteOnce"] }]);
     expect(appsTheRenderIsSilentAbout(["covered", "uncovered"], root)).toEqual(["uncovered"]);
+  });
+});
+
+describe("parseUnhealthyResources -- which resources are not Healthy, read from status.resources[].health", () => {
+  const status = (resources: unknown[]): Record<string, unknown> => ({ resources });
+
+  test("names a non-Healthy resource with its health message", () => {
+    expect(
+      parseUnhealthyResources(
+        status([{ kind: "Deployment", name: "argo-rollouts", health: { status: "Progressing", message: "Waiting for rollout to finish" } }]),
+      ),
+    ).toEqual(["Deployment/argo-rollouts Progressing: Waiting for rollout to finish"]);
+  });
+
+  test("Healthy resources, and resources ArgoCD assigns no health (CRDs), are not reported", () => {
+    expect(
+      parseUnhealthyResources(
+        status([
+          { kind: "Deployment", name: "ok", health: { status: "Healthy" } },
+          { kind: "CustomResourceDefinition", name: "rollouts.argoproj.io", status: "OutOfSync" },
+        ]),
+      ),
+    ).toEqual([]);
+  });
+
+  test("a health status with no message still names the resource", () => {
+    expect(parseUnhealthyResources(status([{ kind: "StatefulSet", name: "s", health: { status: "Degraded" } }]))).toEqual([
+      "StatefulSet/s Degraded",
+    ]);
+  });
+
+  test("ordinal-sorted and deterministic", () => {
+    expect(
+      parseUnhealthyResources(
+        status([
+          { kind: "Deployment", name: "b", health: { status: "Progressing" } },
+          { kind: "Deployment", name: "a", health: { status: "Progressing" } },
+        ]),
+      ),
+    ).toEqual(["Deployment/a Progressing", "Deployment/b Progressing"]);
+  });
+
+  test("parseApplicationList carries it onto the snapshot", () => {
+    const [snap] = parseApplicationList(
+      JSON.stringify({
+        items: [
+          {
+            metadata: { name: "argo-rollouts" },
+            status: {
+              sync: { status: "Synced" },
+              health: { status: "Progressing" },
+              resources: [{ kind: "Deployment", name: "argo-rollouts", health: { status: "Progressing", message: "rolling" } }],
+            },
+          },
+        ],
+      }),
+    );
+    expect(snap?.unhealthyResources).toEqual(["Deployment/argo-rollouts Progressing: rolling"]);
   });
 });

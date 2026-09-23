@@ -1,0 +1,14 @@
+{
+  "id": "080d0683705f5810a0130008fca89acd",
+  "at": "2026-09-23T22:41:08.075Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M386W2ZA087G0R002834BSW",
+    "type": "bug",
+    "title": "kind included proof fails 1 in 3 on soak-phase flips of CRD-owning charts, and the verdict names no resource for Synced/Progressing",
+    "slug": "kind-included-proof-fails-1-in-3-on-soak-phase-flips-of-crd",
+    "priority": "P2",
+    "filename": "081M386W2ZA087G0R002834BSW-kind-included-proof-fails-1-in-3-on-soak-phase-flips-of-crd.md"
+  }
+}
