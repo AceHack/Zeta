@@ -1,0 +1,12 @@
+{
+  "pr_number": 17581,
+  "archive_path": "docs/history/pr-reviews/2026/09/23/PR-17581-ci-iso-add-only-wp11-so-one-scenario-costs-one-scenario.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-23T22:46:12.446Z",
+  "schema_version": "v1",
+  "commit_sha": "e82105b0cd5e08a2672e24a89b1057f27e8074d0",
+  "title": "ci(iso): add only_wp11 so one scenario costs one scenario",
+  "state": "MERGED",
+  "merged_at": "2026-09-23T22:45:29Z",
+  "head_ref": "claude/iso-dispatch-only-wp11"
+}
