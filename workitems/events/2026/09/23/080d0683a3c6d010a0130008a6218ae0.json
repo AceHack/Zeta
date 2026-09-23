@@ -1,0 +1,14 @@
+{
+  "id": "080d0683a3c6d010a0130008a6218ae0",
+  "at": "2026-09-23T22:48:09.178Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M3878Y6S087G0R00248VJH6",
+    "type": "bug",
+    "title": "lanes stall on cilium and spire under k3d: no LB pool, and hostNetwork cannot reach ClusterIP; move lanes to kind+Cilium",
+    "slug": "lanes-stall-on-cilium-and-spire-under-k3d-no-lb-pool-and-hos",
+    "priority": "P2",
+    "filename": "081M3878Y6S087G0R00248VJH6-lanes-stall-on-cilium-and-spire-under-k3d-no-lb-pool-and-hos.md"
+  }
+}

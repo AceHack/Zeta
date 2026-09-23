@@ -54,7 +54,8 @@
 # WHAT IT DOES NOT YET PROVE, said plainly rather than implied
 # ------------------------------------------------------------
 # UPDATE 2026-09-23: it now BRINGS UP the lane. The one step named here was
-# taken: each lane job creates a k3d cluster (k3s + Cilium, metal's own pair)
+# taken: each lane job creates a kind cluster with the shipped Cilium (metal's CNI
+# and kube-proxy replacement; see the bring-up step for why kind and not k3d)
 # and runs the ArgoCD health harness with `--lane-dirs`, which scopes BOTH what
 # the root catalogue applies and what the harness asserts from one list
 # (`application-dirs.ts`; `application-dirs.test.ts` pins that the two agree for
@@ -224,7 +225,7 @@ jobs:
       ZETA_HOST_TIER: full
       MISE_ENV: full
     runs-on: ubuntu-24.04
-    # Install (~5) + pull/measure (~5) + k3d bring-up and ArgoCD sync (<=40,
+    # Install (~5) + pull/measure (~5) + kind+Cilium bring-up and ArgoCD sync (<=40,
     # the harness's 2400s, matching the passing included jobs) + vault init +
     # diagnostics. The old 30 covered only the first two.
     timeout-minutes: 75
@@ -356,7 +357,7 @@ jobs:
             exit 1
           fi
 
-      # FREE THE MEASURED COPIES. k3d nodes run their own containerd, so every
+      # FREE THE MEASURED COPIES. kind nodes run their own containerd, so every
       # image pulled above for measurement would be pulled AGAIN into the
       # cluster. Keeping both doubles the lane's disk on a budget-tight runner;
       # the measurement is already recorded, so Docker's copies go.
@@ -366,8 +367,19 @@ jobs:
       - name: Apply node kernel tunables (parity with the NixOS host)
         uses: ./.github/actions/apply-node-tunables
 
-      - name: Confirm k3d is on PATH before anything depends on it
-        run: command -v k3d && k3d version
+      - name: Confirm kind is on PATH before anything depends on it
+        run: command -v kind && kind version
+
+      # Same probe live-kind-cilium-included runs: the shipped Cilium values
+      # encrypt with WireGuard, so the runner kernel must be able to make a
+      # WireGuard device before the cluster is created.
+      - name: Preflight the WireGuard kernel path on the runner
+        run: |
+          set -euo pipefail
+          iface="$(bun src/Core.TypeScript/cluster/cilium-kind-lane.ts --print-wg-probe-iface)"
+          sudo modprobe wireguard
+          sudo ip link add dev "$iface" type wireguard
+          sudo ip link del dev "$iface"
 
       # THE LANE, DEPLOYED AND ASSERTED.
       #
@@ -392,7 +404,28 @@ jobs:
       # on kind it is excluded (kindnetd), so no `included` run has ever proven
       # the ArgoCD cilium Application Healthy. The diagnostics step below prints
       # per-resource health so the next stall names its resource.
-      - name: Bring up the lane on k3d and assert Synced+Healthy
+      # WHY kind + Cilium AND NOT k3d, measured rather than preferred. The first
+      # two live runs of these lanes were on k3d. With vault init added, every
+      # lane-specific chart went Healthy in all six lanes, and the SAME two base
+      # charts stalled in all six (run 35924216557):
+      #   - cilium: every workload healthy (agent DS 1/1, operator 1/1), but the
+      #     `cilium-ingress` LoadBalancer sat at EXTERNAL-IP <pending> for 42 min
+      #     with `cilium-lb-pool: No resources found`. k3d bring-up applies no LB
+      #     pool; the kind+Cilium bring-up applies `applyDevCiliumLbKindAlias`.
+      #   - spire: spire-agent CrashLoopBackOff (11 restarts), "lookup
+      #     spire-server.spire on 10.43.0.10:53: i/o timeout" -- the hostNetwork
+      #     agent cannot reach a ClusterIP. That path was already MEASURED broken
+      #     on k3d (live-k3d 33800779819: "hostNetwork ClusterIP TCP FAIL") while
+      #     kind+Cilium runs spire Healthy on the SAME Cilium values. The leading
+      #     explanation is Cilium's socket-LB not attaching inside k3d's nested
+      #     node containers -- a substrate artifact, not something bare metal
+      #     has. A CIDR-mismatch hypothesis was checked and REFUTED first: the
+      #     passing kind profile does not use metal's CIDRs either.
+      # The maintainer: "the tool used to test it matters much less as long as
+      # all the charts are tested." kind + Cilium keeps what the lanes need from
+      # metal -- the shipped Cilium values and kube-proxy replacement -- and
+      # gives up the k3s distribution, which is the trade stated here.
+      - name: Bring up the lane on kind+Cilium and assert Synced+Healthy
         env:
           ZETA_ARGOCD_GIT_REF: ${{ github.event.pull_request.head.sha || github.sha }}
           LANE_DIRS: ${{ matrix.dirs }}
@@ -404,11 +437,12 @@ jobs:
           fi
           bun src/Core.TypeScript/cluster/argocd-health-test.ts \
             --run \
-            --provider k3d \
+            --provider kind \
+            --cni cilium \
             --scope included \
             --runtime docker \
-            --config full-ai-cluster/dev-cluster/profiles/ci.k3d-config.yaml \
-            --cluster-name zeta-ci \
+            --config full-ai-cluster/dev-cluster/profiles/ci.cilium.kind-config.yaml \
+            --cluster-name zeta-ci-lane \
             --git-ref "$ZETA_ARGOCD_GIT_REF" \
             --timeout-sec 2400 \
             --poll-sec 15 \

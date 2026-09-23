@@ -71,18 +71,20 @@ describe("apply and assert are one list, for every real lane", () => {
     expect(partition.lanes.length).toBeGreaterThan(0);
   });
 
-  for (const provider of ["kind", "k3d"] as const) {
-    test(`${provider}: applied set == expected set, per lane`, () => {
+  // Every substrate a lane can run on -- including kind + Cilium, which the lanes
+  // use, and which LIFTS `cilium` out of the exclude glob.
+  for (const [provider, cni] of [["kind", "kindnetd"], ["kind", "cilium"], ["k3d", "kindnetd"]] as const) {
+    test(`${provider}/${cni}: applied set == expected set, per lane`, () => {
       for (const lane of partition.lanes) {
         const dirs = laneDirs(model, lane);
-        const glob = laneScopedExcludeGlob(rootDevCatalogExcludeGlobFor(provider, "kindnetd"), dirs, all);
+        const glob = laneScopedExcludeGlob(rootDevCatalogExcludeGlobFor(provider, cni), dirs, all);
         const excluded = rootDevCatalogExcludedDirs(glob);
         const applied = all.filter((d) => !excluded.has(d)).toSorted();
-        const expected = discoverExpectedApplications(REPO_ROOT, provider, "kindnetd", dirs)
+        const expected = discoverExpectedApplications(REPO_ROOT, provider, cni, dirs)
           .map((a) => a.dir)
           .filter((d) => !excluded.has(d))
           .toSorted();
-        const expectedAll = discoverExpectedApplications(REPO_ROOT, provider, "kindnetd", dirs).map((a) => a.dir);
+        const expectedAll = discoverExpectedApplications(REPO_ROOT, provider, cni, dirs).map((a) => a.dir);
         // nothing outside the lane is expected at all
         for (const d of expectedAll) expect(dirs).toContain(d);
         expect(expected).toEqual(applied);
