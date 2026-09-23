@@ -40,12 +40,21 @@
 
 import { readFileSync, writeFileSync } from "node:fs";
 import { join, resolve } from "node:path";
-import { parseAllDocuments } from "yaml";
+import { parse as parseYaml, parseAllDocuments } from "yaml";
 
 import { parseFieldPath } from "./storage-profiles.ts";
 
 const REPO_ROOT = resolve(import.meta.dir, "../../..");
-export const DEFAULT_OVERRIDES_PATH = "full-ai-cluster/k8s/rung-overrides.json";
+export const DEFAULT_OVERRIDES_PATH = "full-ai-cluster/k8s/rung-overrides.yaml";
+
+/**
+ * The roster's own `apiVersion`/`kind`. The file lives under a manifest root
+ * kubeconform walks, so it carries a kind (an unknown one is skipped; a missing
+ * one is an error) -- and the loader REFUSES any other pair, so a stray
+ * Kubernetes manifest at this path cannot be read as an override roster.
+ */
+export const OVERRIDES_API_VERSION = "cluster.zeta.io/v1";
+export const OVERRIDES_KIND = "RungOverrides";
 
 export interface RungOverride {
   readonly id: string;
@@ -83,7 +92,18 @@ export function loadRungOverrides(
   repoRoot = REPO_ROOT,
   path = DEFAULT_OVERRIDES_PATH,
 ): readonly RungOverride[] {
-  const raw: unknown = JSON.parse(readFileSync(join(repoRoot, path), "utf8"));
+  // YAML since 2026-09-23 (was JSON): the file is hand-edited and its reasons
+  // are long prose. `parse` THROWS on a multi-document file rather than quietly
+  // reading the first document, which is the fail-closed direction.
+  const raw: unknown = parseYaml(readFileSync(join(repoRoot, path), "utf8"));
+  if (typeof raw !== "object" || raw === null) throw new Error(`${path}: expected a mapping`);
+  const header = raw as { apiVersion?: unknown; kind?: unknown };
+  if (header.apiVersion !== OVERRIDES_API_VERSION || header.kind !== OVERRIDES_KIND) {
+    throw new Error(
+      `${path}: expected apiVersion ${OVERRIDES_API_VERSION} / kind ${OVERRIDES_KIND}, ` +
+        `found ${String(header.apiVersion)} / ${String(header.kind)}`,
+    );
+  }
   const list = (raw as { overrides?: unknown }).overrides;
   if (!Array.isArray(list)) throw new Error(`${path}: "overrides" must be an array`);
 
