@@ -116,8 +116,31 @@ function readdirSyncOrEmpty(dir: string): readonly Dirent[] {
  *
  * The widening is bounded on both sides -- it still requires the name to END in `Secret` and
  * to contain `existing` -- so it does not start matching `secretsDir` or `secretEngine`.
+ *
+ * WIDENED A THIRD TIME, WP24 (081M35K4PV6087G0R001Z3E0P8's sweep): TWO MORE SHAPES, both found
+ * by the same method as the two above -- an Application whose credential turned out to have
+ * ZERO references in this audit's own output, checked directly with `collectSecretReferences`.
+ *
+ * (1) A BARE `secret` LEAF. `gitlab/Application.yaml` sets
+ * `global.initialRootPassword.secret: gitlab-initial-root-password` (and, identically,
+ * `appConfig.object_store.connection.secret` / `registry.storage.secret`, both `zeta-blob-store`)
+ * -- three references, ALL invisible, because the leaf is spelled `secret`, not `...Secret` or
+ * `secretName`. This is the chart's own convention (paired with a sibling `key:` naming which
+ * field inside that Secret to read -- `key` is deliberately NOT matched here, it names a field,
+ * not an object) and it is the actual mechanism behind "gitlab-initial-root-password is a known,
+ * separately-tracked gap -- never minted at all": the gap was not that nothing minted it, it was
+ * that nothing could SEE the reference to check. Matched narrowly -- the leaf must be exactly
+ * `secret` (lowercase, no prefix/suffix letters) -- because a broader `[A-Za-z]*[Ss]ecret$` would
+ * also match fields that hold a secret VALUE inline (`clientSecret`, `apiSecret`, ...), and
+ * flagging those would report a literal as an unminted Secret NAME. Checked against every
+ * `Application.yaml` in the tree before landing: `gitlab` is the only source of this shape.
+ *
+ * (2) `...ConfigSecret`, one word short of `existingConfigSecret` above. `arc-runner-set` names
+ * `githubConfigSecret: arc-github-app` -- a NAME reference per its own header comment
+ * ("Name reference only. Materialised by external-secrets from Vault."), not prefixed with
+ * `existing`, so the second widening above did not reach it either.
  */
-const SECRET_NAME_KEY = /(^|\.)[A-Za-z]*([Ee]xisting[A-Za-z]*Secret|[Ss]ecretName)$/;
+const SECRET_NAME_KEY = /(^|\.)([A-Za-z]*([Ee]xisting[A-Za-z]*Secret|[Ss]ecretName|ConfigSecret)|secret)$/;
 
 /** `...secretKeyRef.name` / `...secretRef.name` — the standard env-var forms. */
 const SECRET_REF_NAME_KEY = /(^|\.)(secretKeyRef|secretRef)(\.[0-9]+)?\.name$/;

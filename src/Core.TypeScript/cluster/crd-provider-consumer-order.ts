@@ -1138,8 +1138,10 @@ export const ACKNOWLEDGED_FINDINGS: ReadonlyMap<string, Acknowledged> = new Map(
         "deprecated), so these four objects would be REJECTED by the API server on any current cluster, " +
         "independent of any sync-wave ordering. `extensions` is deliberately NOT added to BUILTIN_API_GROUPS: " +
         "doing so would hide this finding behind 'this group always exists', which is false. gitlab is already " +
-        "excluded from every CI lane (argocd-health-test.ts's DEV_EXCLUDED_REASONS: 'HALF OF THIS REASON WAS " +
-        "SPENT ... gitlab-initial-root-password Secret CI has no source for'), so nothing today applies this " +
+        "excluded from every CI lane (argocd-health-test.ts's DEV_EXCLUDED_REASONS: chart-size deferral -- " +
+        "~40 subcharts and a Postgres/Redis/Gitaly/MinIO stack a kind runner cannot schedule inside the lane's " +
+        "assertion budget; the SEPARATE root-password gap that entry also once named was closed by WP24, " +
+        "081M35K4PV6087G0R001Z3E0P8), so nothing today applies this " +
         "chart and this defect has not yet reached a real cluster. Root cause is almost certainly a chart-version " +
         "or values gap (a newer chart major, or an `ingress.apiVersion`/class override this Application's " +
         "valuesObject does not set) rather than anything this PR's scope (CRD provider/consumer ordering) covers. " +

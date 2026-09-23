@@ -505,6 +505,14 @@ export const DEV_EXCLUDED_REASONS: ReadonlyMap<string, string> = new Map([
       "LIFTS WHEN: `gitlab-initial-root-password` has a source in the tree -- a SealedSecret or an " +
       "ExternalSecret, the same shape the other credentialled apps use -- AND one included run reports this " +
       "Application's actual verdict, which is also what would settle the capacity prediction either way. " +
+      "UPDATE 2026-09-22 (WP24, 081M35K4PV6087G0R001Z3E0P8): THE ROOT-PASSWORD HALF OF THIS BLOCKER IS " +
+      "CLOSED -- `k8s/bootstrap/internal-secret-seeding.yaml` now mints `gitlab-initial-root-password` on a " +
+      "real metal first boot (a create-only Job, same shape as every sibling credential in that file), and " +
+      "`DEV_GITLAB_ROOT_SECRET` mints it in dev/CI. The reference itself was found to be invisible to " +
+      "`audit-existing-secret-is-minted.ts` (a bare `secret:` leaf, not `existingSecret`/`secretName`), which " +
+      "is why it read as unsourced above -- that detection gap is also fixed. This Application STAYS " +
+      "glob-deferred: the capacity reason below (chart size, multi-GB images, a kind runner's assertion " +
+      "budget) is untouched and is the reason that remains. " +
       "ANCHORS, CHECKED BY `reason-truth.ts`: each names an artifact this tree holds, so a claim that " +
       "outlives its artifact goes red instead of reading on. " +
       "[cite: no-unrenderable full-ai-cluster/gitlab] " +
@@ -829,10 +837,15 @@ const DEV_INCLUDED_PROOF_DEFERRED_DIRS = new Set([
   // reach Synced/Healthy, which is the point -- "both up" that nothing checks is the
   // same claim the standby posture was making. gitlab STAYS deferred below, for
   // reasons that are about chart size rather than about the pair.
-  // charts.gitlab.io/gitlab 8.7.0: ~40 subcharts, a `gitlab-initial-root-password`
-  // Secret CI has no source for, and a Postgres/Redis/Gitaly/MinIO stack wanting
-  // several PVCs plus multi-GB images. A kind runner cannot schedule that inside
-  // the lane's assertion budget.
+  // charts.gitlab.io/gitlab 8.7.0: ~40 subcharts, and a Postgres/Redis/Gitaly/MinIO
+  // stack wanting several PVCs plus multi-GB images. A kind runner cannot schedule
+  // that inside the lane's assertion budget.
+  //
+  // WP24 (081M35K4PV6087G0R001Z3E0P8), 2026-09-22: `gitlab-initial-root-password`
+  // is NO LONGER a reason gitlab is deferred -- `k8s/bootstrap/internal-secret-
+  // seeding.yaml` mints it on metal and `DEV_GITLAB_ROOT_SECRET` mints it in
+  // dev/CI (see argocd-health-test.ts's `gitlab` entry in `DEV_EXCLUDED_REASONS`
+  // for the full trace). Chart size alone is what keeps this entry.
   "gitlab",
   // `headscale` is NOT here. It LEFT this set on 2026-08-22 after ONE cycle, and
   // the entry is recorded as closed rather than the lines silently deleted.

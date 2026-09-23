@@ -971,12 +971,14 @@ describe("renderAppVerdictMarkdown", () => {
 // ═══════════════════ Stage 8 (WP19): power-cycle recovery ═════════════════
 
 describe("seededInternalSecretTargets", () => {
-  test("derives the six internal-secret-seeding.yaml targets from dev-cluster/lib.ts, excluding the external hindsight key", () => {
+  test("derives the seven internal-secret-seeding.yaml targets from dev-cluster/lib.ts, excluding the external hindsight key", () => {
     const targets = seededInternalSecretTargets();
     expect(targets).toContainEqual({ namespace: "monitoring", name: "grafana-admin-credentials" });
     expect(targets).toContainEqual({ namespace: "openziti", name: "ziti-admin-credentials" });
     expect(targets).toContainEqual({ namespace: "opensearch", name: "opensearch-admin-credentials" });
     expect(targets).toContainEqual({ namespace: "forgejo", name: "forgejo-initial-admin" });
+    // WP24 (081M35K4PV6087G0R001Z3E0P8): gitlab-initial-root-password, minted single, like the four above.
+    expect(targets).toContainEqual({ namespace: "gitlab", name: "gitlab-initial-root-password" });
     // zeta-blob-store: 4 namespaces sharing ONE value.
     for (const ns of ["object-store", "loki", "mimir", "gitlab"]) {
       expect(targets).toContainEqual({ namespace: ns, name: "zeta-blob-store" });
@@ -986,8 +988,9 @@ describe("seededInternalSecretTargets", () => {
       expect(targets).toContainEqual({ namespace: ns, name: "redis-auth" });
     }
     expect(targets.some((t) => t.name === "hindsight-llm-api-key")).toBe(false);
-    // 4 singular (grafana/ziti/opensearch/forgejo) + zeta-blob-store×4 namespaces + redis-auth×2 namespaces.
-    expect(targets).toHaveLength(10);
+    // 5 singular (grafana/ziti/opensearch/forgejo/gitlab-root) + zeta-blob-store×4 namespaces +
+    // redis-auth×2 namespaces.
+    expect(targets).toHaveLength(11);
   });
 });
 

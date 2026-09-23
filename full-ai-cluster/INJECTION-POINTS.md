@@ -520,24 +520,33 @@ a bug, and MUST NOT be papered over with a randomly-generated value.
 | `ziti-admin-credentials`        | `openziti`                                | INTERNAL     | `k8s/bootstrap/internal-secret-seeding.yaml`                                                      | `DEV_ZITI_ADMIN_SECRET`                                      |
 | `opensearch-admin-credentials`  | `opensearch`                              | INTERNAL     | `k8s/bootstrap/internal-secret-seeding.yaml`                                                      | `DEV_OPENSEARCH_ADMIN_SECRET`                                |
 | `forgejo-initial-admin`         | `forgejo`                                 | INTERNAL     | `k8s/bootstrap/internal-secret-seeding.yaml`                                                      | `DEV_FORGEJO_ADMIN_SECRET`                                   |
+| `gitlab-initial-root-password`  | `gitlab`                                  | INTERNAL     | `k8s/bootstrap/internal-secret-seeding.yaml` (WP24, 081M35K4PV6087G0R001Z3E0P8)                    | `DEV_GITLAB_ROOT_SECRET`                                     |
 | `zeta-blob-store`               | `object-store`, `loki`, `mimir`, `gitlab` | INTERNAL     | `k8s/bootstrap/internal-secret-seeding.yaml` (ONE value, four namespaces, one pod)                 | `DEV_BLOB_STORE_SECRET`                                      |
 | `redis-auth`                    | `redis`, `orleans`                        | INTERNAL     | `k8s/bootstrap/internal-secret-seeding.yaml` (ONE value, two namespaces, one pod)                  | `DEV_REDIS_AUTH_SECRET`                                      |
 | `hindsight-llm-api-key`         | `hindsight`                               | **EXTERNAL** | **NOBODY — see below.** A real Groq API key; this cluster cannot draw one for itself.              | `DEV_HINDSIGHT_LLM_SECRET` (placeholder value; boot-check only, no LLM call succeeds) |
 | `ghcr-pull` (`imagePullSecrets`) | `zeta-platform`                           | **EXTERNAL** | **NOBODY — already tracked above** ("GHCR pull token" row, 081M33TN49G087G0R000X5ZJ75)             | `DEV_GHCR_PULL_SECRET` (from a CI-held token)                |
+| `arc-github-app` (`githubConfigSecret`) | `arc-runners`                     | **EXTERNAL** | **NOBODY.** A real GitHub App id/installation id/private key; `arc-runner-set/Application.yaml`'s own header says so ("Materialised by external-secrets from Vault"). Acknowledged in `existing-secret-is-minted.baseline.json` (`arc-runner-set\|arc-github-app`) — `arc-runner-set` is also in `DEV_EXCLUDED_REASONS`, so no pod in the dev lane ever resolves the name. | none — operator/Vault-provisioned on metal, never minted in dev/CI |
 
-### The five INTERNAL rows above were the first-boot defect; fixed by WP14
+### The six INTERNAL rows above were the first-boot defect; five fixed by WP14, `gitlab-initial-root-password` by WP24
 
-Before this change nothing on a real USB/metal install minted any of the six
+Before WP14, nothing on a real USB/metal install minted any of the first five
 INTERNAL credentials — matching this repo's own `existing-secret-is-minted.baseline.json`
 `orleans|redis-auth` entry ("redis's OWN Application.yaml has the identical
 unminted reference … metal: Sealed Secret / Vault") and the `redis` chart
 comment ("create via Sealed Secret / Vault") that named the intent without
-ever shipping the mechanism.
+ever shipping the mechanism. `gitlab-initial-root-password` was a SIXTH such
+gap that WP14/WP16's own accounting missed for a mechanical reason: the
+reference (`global.initialRootPassword.secret`, a bare `secret:` leaf) was
+INVISIBLE to `audit-existing-secret-is-minted.ts` until WP24 widened that
+script's detection — see the workitem for the full trace, including why this
+tree seeds the Secret itself rather than relying on the GitLab chart's own
+`shared-secrets` pre-install hook (broader `get`/`list`/`create`/`patch` RBAC
+than every sibling credential in this class uses).
 
 `k8s/bootstrap/internal-secret-seeding.yaml` is a k3s first-boot manifest
 (`nixos/modules/k3s-server.nix`'s `services.k3s.manifests` roster — the SAME
 mechanism `openziti-namespace.yaml` and the other `*-install.yaml` bootstrap
-files already use), applied BEFORE ArgoCD exists. It mints exactly these six
+files already use), applied BEFORE ArgoCD exists. It mints exactly these seven
 credentials, per-namespace RBAC-scoped (`create` on `secrets` only, nothing
 else), `kubectl create` (never `apply`/`replace`, so an existing Secret is
 never overwritten). Key shapes are cross-checked against `dev-cluster/lib.ts`'s

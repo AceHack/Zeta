@@ -621,11 +621,69 @@ export function buildDevSharedSecretManifest(spec: DevSharedSecretSpec, namespac
   ].join("\n");
 }
 
+/**
+ * The GitLab initial-root-password credential the chart's own migrations Job mounts, and that
+ * NOTHING in this tree minted until WP24 (081M35K4PV6087G0R001Z3E0P8) -- confirmed by
+ * `audit-existing-secret-is-minted.ts` returning ZERO references for `gitlab` before that
+ * script's own detection gap (a bare `secret:` leaf, GitLab's chart convention, not the
+ * `existingSecret`/`secretName` shapes the audit recognised) was widened alongside this entry.
+ *
+ * THE NAME AND KEY ARE MEASURED, NOT GUESSED. `gitlab/Application.yaml` sets
+ * `global.initialRootPassword.secret: gitlab-initial-root-password` and
+ * `global.initialRootPassword.key: password` explicitly (overriding the chart's own default
+ * `<release>-gitlab-initial-root-password`). `helm pull gitlab --repo https://charts.gitlab.io/
+ * --version 8.7.0 --untar` confirms both template helpers
+ * (`templates/_migrations.tpl` `gitlab.migrations.initialRootPassword.{secret,key}`) resolve to
+ * exactly those two values, and the migrations Job mounts the key at
+ * `migrations/initial_root_password` (`charts/gitlab/charts/migrations/templates/_jobspec.yaml`).
+ *
+ * WHY THIS TREE MINTS IT RATHER THAN LEANING ON THE CHART'S OWN GENERATOR. The chart ships a
+ * `shared-secrets` pre-install/pre-upgrade hook Job (`templates/shared-secrets/_generate_secrets.sh.tpl`,
+ * enabled by default) that calls `generate_secret_if_needed` for this exact name if it is
+ * absent -- so, on a plain `helm install`, this credential is not actually a gap. It is
+ * deliberately not relied on here because its own RBAC (`templates/shared-secrets/rbac-config.yaml`)
+ * grants `get`/`list`/`create`/`patch` on `secrets` and its script GETs-then-PATCHes an existing
+ * object -- exactly the broader, mutate-in-place shape `internal-secret-seeding.yaml`'s own header
+ * replaced with create-only least-privilege RBAC for every OTHER credential in this class (WP14/
+ * WP16). Pre-seeding this one Secret before ArgoCD's sync-wave 30 keeps GitLab on the same
+ * create-only, single-purpose-RBAC posture as every sibling credential, and it means the
+ * password's strength (see below) is asserted here rather than trusted to the chart's
+ * `gen_random 'a-zA-Z0-9' 64` implementation.
+ *
+ * PASSWORD RULE, CHECKED AGAINST GITLAB'S OWN DOCUMENTATION (docs.gitlab.com/user/profile/
+ * user_passwords/, chart appVersion v17.7.0): minimum 8 characters, maximum 128, must not match
+ * a list of 4,500+ known breached passwords, must not contain the account's name/username/email,
+ * must not contain a predictable word such as "gitlab". NO uppercase/special-character class
+ * requirement (unlike OpenSearch below). `randomBytes(24).toString("base64url")` (this file's
+ * generic mint) is 32 characters, comfortably inside [8, 128], and a CSPRNG draw has no
+ * meaningful chance of colliding with a breach list or embedding "gitlab" -- satisfied by
+ * construction, no `passwordPolicy` needed.
+ *
+ * `userKey`/`user` are UNUSED BY THE CHART (only `password` is ever read) and kept anyway for
+ * shape parity with every other `DevBootstrapSecretSpec` -- the same choice already made for
+ * `REDIS_AUTH_USER_KEY` above ("username is unused by the chart ... present so this object
+ * stays on the same DevBootstrapSecretSpec as the other two"). `root` is GitLab's own fixed
+ * administrator username, not a value this Secret's `username` key actually configures.
+ */
+export const DEV_GITLAB_ROOT_SECRET: DevBootstrapSecretSpec = {
+  namespace: "gitlab",
+  name: "gitlab-initial-root-password",
+  userKey: "username",
+  passwordKey: "password",
+  user: "root",
+  reason:
+    "Minted per dev/CI cluster at bring-up because gitlab/Application.yaml sets " +
+    "global.initialRootPassword.secret: gitlab-initial-root-password (key `password`), and the " +
+    "chart's migrations Job mounts that key at migrations/initial_root_password with no fallback " +
+    "-- the webservice never reaches Ready without it.",
+} as const;
+
 export const DEV_BOOTSTRAP_SECRETS: readonly DevBootstrapSecretSpec[] = [
   DEV_GRAFANA_ADMIN_SECRET,
   DEV_ZITI_ADMIN_SECRET,
   DEV_OPENSEARCH_ADMIN_SECRET,
   DEV_FORGEJO_ADMIN_SECRET,
+  DEV_GITLAB_ROOT_SECRET,
 ] as const;
 
 /**

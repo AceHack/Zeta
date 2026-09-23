@@ -11,6 +11,7 @@ import {
   DEV_GHCR_PULL_SECRET,
   DEV_GRAFANA_ADMIN_SECRET,
   DEV_FORGEJO_ADMIN_SECRET,
+  DEV_GITLAB_ROOT_SECRET,
   DEV_OPENSEARCH_ADMIN_SECRET,
   DEV_REDIS_AUTH_SECRET,
   DEV_ZITI_ADMIN_SECRET,
@@ -530,6 +531,7 @@ describe("dev/CI bootstrap credentials", () => {
       DEV_ZITI_ADMIN_SECRET,
       DEV_OPENSEARCH_ADMIN_SECRET,
       DEV_FORGEJO_ADMIN_SECRET,
+      DEV_GITLAB_ROOT_SECRET,
     ]);
     // 3 -> 4 on 2026-09-05: `DEV_OPENSEARCH_ADMIN_SECRET`. OpenSearch >= 2.12
     // refuses to boot without OPENSEARCH_INITIAL_ADMIN_PASSWORD while the
@@ -545,7 +547,13 @@ describe("dev/CI bootstrap credentials", () => {
     expect(DEV_BOOTSTRAP_SECRETS).toContain(DEV_FORGEJO_ADMIN_SECRET);
     // 5 -> 4 on 2026-09-09: `redis-auth` moved to DEV_SHARED_SECRETS when the
     // Orleans silo became a second consumer in a second namespace.
-    expect(DEV_BOOTSTRAP_SECRETS.length).toBe(4);
+    // 4 -> 5 on WP24 (081M35K4PV6087G0R001Z3E0P8): `DEV_GITLAB_ROOT_SECRET`. The
+    // audit-existing-secret-is-minted.ts sweep found gitlab's `global.initialRootPassword.secret`
+    // reference was INVISIBLE to that check (a bare `secret:` leaf, not `existingSecret`/
+    // `secretName`), not that nothing minted it -- widening the audit's regex surfaced the real
+    // gap and this entry closes it.
+    expect(DEV_BOOTSTRAP_SECRETS).toContain(DEV_GITLAB_ROOT_SECRET);
+    expect(DEV_BOOTSTRAP_SECRETS.length).toBe(5);
     const refs = DEV_BOOTSTRAP_SECRETS.map((spec) => `${spec.namespace}/${spec.name}`);
     expect(new Set(refs).size).toBe(refs.length);
   });

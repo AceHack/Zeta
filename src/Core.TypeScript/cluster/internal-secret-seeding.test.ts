@@ -32,6 +32,7 @@ import {
   DEV_ZITI_ADMIN_SECRET,
   DEV_OPENSEARCH_ADMIN_SECRET,
   DEV_FORGEJO_ADMIN_SECRET,
+  DEV_GITLAB_ROOT_SECRET,
   DEV_BLOB_STORE_SECRET,
   DEV_REDIS_AUTH_SECRET,
   DEV_HINDSIGHT_LLM_SECRET,
@@ -227,11 +228,13 @@ describe("internal-secret-seeding.yaml — WP16: no Job draws secret material fr
 
   test("every kubectl container's secret-bearing args are `--from-file=...`, never `--from-literal=` with a drawn value", () => {
     // The only `--from-literal=` args any kubectl container carries are the STATIC,
-    // non-secret usernames (admin-user=admin, username=gitea_admin, username=default) --
-    // every password/key/config value crosses via a file read off the shared tmpfs volume.
+    // non-secret usernames (admin-user=admin, username=gitea_admin, username=root,
+    // username=default) -- every password/key/config value crosses via a file read off the
+    // shared tmpfs volume.
     const allowedLiterals = new Set([
       "--from-literal=admin-user=admin",
       "--from-literal=username=gitea_admin",
+      "--from-literal=username=root",
       "--from-literal=username=default",
     ]);
     for (const c of kubectlContainers()) {
@@ -290,6 +293,7 @@ describe("internal-secret-seeding.yaml — matches DEV_BOOTSTRAP_SECRETS (name/n
     DEV_ZITI_ADMIN_SECRET,
     DEV_OPENSEARCH_ADMIN_SECRET,
     DEV_FORGEJO_ADMIN_SECRET,
+    DEV_GITLAB_ROOT_SECRET,
   ]) {
     test(`${spec.namespace}/${spec.name} is seeded with the same keys dev/CI mints`, () => {
       assertBootstrapSpecSeeded(spec);
