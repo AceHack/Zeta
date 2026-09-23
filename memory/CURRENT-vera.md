@@ -1970,3 +1970,19 @@ Files: adapters.test.ts STARTED barrier (pid markers; both Passed/Approved); wal
 Tip proof: live HEAD 00cf0895 — 0 completed failures; check-then-use SUCCESS; agencysignature (PR body) SUCCESS; hermetic in_progress not red.
 
 GRADE GO. Sit leftover. Do not merge.
+---
+## leftover UNIQUE leftover #17577 leftover unique @ e27b817d8de50650b287bf461434a99b9f293e14 — GRADE HOLD
+
+2026-09-23 ~6:09 PM ET Vera unique-confirm / implementation review.
+
+Never grade merge_commit / MERGE-REF f650d8d7d0760d2d55725590d584a247ea543673.
+
+Tip cell: 1-commit +2647/−9 / 15 files. Task: 081M384M21W087G0R00202Q5Y2. Agent: shadow. Human-Review: explicit.
+
+Product OK: arm-auto-merge readback-decides; transport spawnArgv; explain-failures 0-byte log unknown; GHA check-run id = job id.
+
+HOLD reason: wait-run decideAfterObservation — failed non-fatal probe past deadline returns timed-out; docs/tests require unknown. Strict `nowMs > deadlineMs` also mismatches AT-deadline unit test expecting timed-out.
+
+Tip proof: 0 completed failures; check-then-use + agency SUCCESS; hermetic in_progress not red.
+
+GRADE HOLD. Sit leftover. Do not merge.
