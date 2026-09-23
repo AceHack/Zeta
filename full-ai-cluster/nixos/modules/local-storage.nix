@@ -1,11 +1,37 @@
 # full-ai-cluster/nixos/modules/local-storage.nix
 #
-# Local-path storage class for K8s. Provisions hostPath PVs out of
+# Local-path provisioner for K8s, AND this cluster's binding of every
+# storage CAPABILITY name. Provisions hostPath PVs out of
 # /var/lib/zeta-local-storage/ on whichever node a pod lands on.
 #
-# Good for stateless workloads, scratch, cache. NOT for anything
-# that needs to survive node failure — Longhorn (via ArgoCD) handles
-# distributed storage for stateful workloads.
+# CHARTS NEVER NAME A STORAGE PROVIDER (2026-09-23). They name one of three
+# capabilities, and THIS FILE is where metal says what each one is:
+#
+#   zeta-block-local       rancher.io/local-path  -- node-local, unreplicated.
+#                          THE DEFAULT. Scratch, cache, and the early-wave
+#                          workloads that must bind before Longhorn exists.
+#                          (Was `zeta-local-path`: same binding, renamed from
+#                          what implements it to what it guarantees.)
+#   zeta-block-replicated  driver.longhorn.io     -- durable, replicated as far
+#                          as the node count allows (1 replica on one box,
+#                          matching longhorn/Application.yaml's
+#                          defaultReplicaCount; raise it as nodes join).
+#   zeta-shared            driver.longhorn.io     -- RWX, served by Longhorn's
+#                          NFSv4 share-manager (longhorn-prereqs.nix installs
+#                          nfs-utils for exactly this).
+#
+# The Longhorn-backed classes are declared HERE rather than by the Longhorn
+# chart so that every binding lives in one per-cluster file (dev's twin is
+# full-ai-cluster/dev-cluster/manifests/). A StorageClass is a core object and
+# can exist before its provisioner does; a claim on it pends until Longhorn
+# (ArgoCD wave -15) is running, exactly as a claim on the chart's own class did.
+# The chart's own `longhorn` class still exists and nothing names it.
+#
+# Every capability class is WaitForFirstConsumer, on metal and dev alike -- the
+# reasoning, and why the default is the LOCAL class and not the replicated one
+# (disk budget + first-boot ordering), is in
+# src/Core.TypeScript/cluster/storage-capabilities.ts, whose audit reads this
+# file and refuses a binding that drifts from it.
 #
 # Installed as a K3S auto-applied manifest so it's available before
 # ArgoCD comes up.
@@ -31,12 +57,42 @@
       apiVersion: storage.k8s.io/v1
       kind: StorageClass
       metadata:
-        name: zeta-local-path
+        name: zeta-block-local
         annotations:
           storageclass.kubernetes.io/is-default-class: "true"
+          zeta.io/storage-capability: block-local
       provisioner: rancher.io/local-path
       reclaimPolicy: Delete
       volumeBindingMode: WaitForFirstConsumer
+      ---
+      apiVersion: storage.k8s.io/v1
+      kind: StorageClass
+      metadata:
+        name: zeta-block-replicated
+        annotations:
+          zeta.io/storage-capability: block-replicated
+      provisioner: driver.longhorn.io
+      allowVolumeExpansion: true
+      reclaimPolicy: Delete
+      volumeBindingMode: WaitForFirstConsumer
+      parameters:
+        numberOfReplicas: "1"
+        staleReplicaTimeout: "30"
+        dataLocality: "disabled"
+      ---
+      apiVersion: storage.k8s.io/v1
+      kind: StorageClass
+      metadata:
+        name: zeta-shared
+        annotations:
+          zeta.io/storage-capability: shared
+      provisioner: driver.longhorn.io
+      allowVolumeExpansion: true
+      reclaimPolicy: Delete
+      volumeBindingMode: WaitForFirstConsumer
+      parameters:
+        numberOfReplicas: "1"
+        staleReplicaTimeout: "30"
       ---
       apiVersion: v1
       kind: ConfigMap

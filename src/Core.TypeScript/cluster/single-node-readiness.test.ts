@@ -928,7 +928,7 @@ describe("the checked-in ledger keeps main green", () => {
     const claims = readiness
       .loadManifests(readiness.DEFAULT_ROOTS)
       .flatMap((manifest) => readiness.extractStorageClaims(manifest));
-    const derived = new Map(readiness.storageTotals(claims)).get("longhorn") ?? 0;
+    const derived = new Map(readiness.storageTotals(claims)).get("zeta-block-replicated") ?? 0;
 
     // The extractor cannot see mimir's zone-aware chart-default pod counts, so
     // it reads LOW. If these ever converge the override has stopped doing
@@ -947,7 +947,7 @@ describe("the checked-in ledger keeps main green", () => {
       totalGib: midpoint,
       ...NO_COMPUTE,
     };
-    const withOverride = findCapacityProvenance(claims, ledger, [between], new Map([["longhorn", checked]]));
+    const withOverride = findCapacityProvenance(claims, ledger, [between], new Map([["zeta-block-replicated", checked]]));
     const withoutOverride = findCapacityProvenance(claims, ledger, [between], null);
     expect(withOverride.map((finding) => finding.check)).toEqual(["capacity-provenance"]);
     expect(withoutOverride).toEqual([]);
@@ -1346,7 +1346,7 @@ describe("findLedgerFigureDrift — the ledger's PROSE numbers are checked too",
     const manifests = readiness.loadManifests(readiness.DEFAULT_ROOTS);
     const claims = manifests.flatMap((entry) =>
       readiness.extractStorageClaims(entry, {
-        clusterDefault: "zeta-local-path",
+        clusterDefault: "zeta-block-local",
         instantiated: readiness.instantiatedBlueprints(manifests),
         // Built by the SAME helper auditAll uses. Constructed by hand here, this
         // check read redis one pod short and reported a drift that was its own.
@@ -1355,7 +1355,7 @@ describe("findLedgerFigureDrift — the ledger's PROSE numbers are checked too",
     );
     expect(findLedgerFigureDrift(ledger, claims, loadCatalogue(), readiness.DEFAULT_LEDGER_PATH)).toEqual([]);
     // And the check is NOT vacuous on the real file: it found figures to check.
-    const known = new Set([...ledger.budgetedStorageClasses, "zeta-local-path"]);
+    const known = new Set([...ledger.budgetedStorageClasses, "zeta-block-local"]);
     // 6 -> 5 on 2026-09-06. TWO of the six quoted storage rows were "(the RENDER,
     // infra tree)" readings, and that tree's seven duplicate Applications were
     // removed when argocd/zeta-root stopped being declared twice. The floor is
@@ -1387,7 +1387,7 @@ describe("the hindsight manifest renders what it declares", () => {
     expect((api["service"] as Record<string, unknown>)["port"]).toBe(80);
     expect(
       ((obj["postgresql"] as Record<string, unknown>)["persistence"] as Record<string, unknown>)["storageClass"],
-    ).toBe("longhorn");
+    ).toBe("zeta-block-replicated");
   });
 
   test("the LLM API key is wired BY REFERENCE, and something actually mints it", async () => {

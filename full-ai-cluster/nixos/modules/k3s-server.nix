@@ -126,7 +126,8 @@
       "--disable=traefik"
 
       # Disable the bundled local-path-provisioner. local-storage.nix
-      # re-declares it as `zeta-local-path` (the single default class) with
+      # re-declares it as `zeta-block-local` (the single default class; was
+      # `zeta-local-path` until 2026-09-23) with
       # a fixed path; leaving k3s' built-in enabled creates a SECOND
       # StorageClass *also* marked default (`local-path (default)` AND
       # `zeta-local-path (default)`), which is an invalid/ambiguous config —

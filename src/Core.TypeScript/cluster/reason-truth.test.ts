@@ -266,7 +266,11 @@ describe("citation kinds", () => {
   });
 
   test("pvc-class and pvc-total read the measured render", () => {
-    expect(checkCitation(only("[cite: pvc-class full-ai-cluster/ollama longhorn]"), EVIDENCE, anywhere)).toBeNull();
+    expect(checkCitation(only("[cite: pvc-class full-ai-cluster/ollama zeta-block-replicated]"), EVIDENCE, anywhere)).toBeNull();
+    // A PROVIDER name is refuted against the render since 2026-09-23 -- charts name capabilities.
+    expect(checkCitation(only("[cite: pvc-class full-ai-cluster/ollama longhorn]"), EVIDENCE, anywhere)?.rule).toBe(
+      "cited-storage-class-absent",
+    );
     expect(checkCitation(only("[cite: pvc-total full-ai-cluster/ollama 200]"), EVIDENCE, anywhere)).toBeNull();
     expect(checkCitation(only("[cite: pvc-class full-ai-cluster/ollama gp3]"), EVIDENCE, anywhere)?.rule).toBe(
       "cited-storage-class-absent",

@@ -9,36 +9,59 @@ export const REPO_ROOT = resolve(import.meta.dir, "../../../..");
 export const DEV_CLUSTER_SUBSTRATE_DIR = join(REPO_ROOT, "full-ai-cluster/dev-cluster");
 
 /**
- * Repo-relative paths of the dev/CI alias StorageClass manifests.
+ * Repo-relative paths of the dev/CI storage-CAPABILITY bindings.
+ *
+ * Charts name a capability, never a provider
+ * (`src/Core.TypeScript/cluster/storage-capabilities.ts`); these two files are
+ * where dev says what each RWO capability is. `zeta-shared` (RWX) is
+ * deliberately absent -- no dev provisioner can serve it.
  *
  * ONE constant, TWO consumers, and that is the whole point. `use-cases.ts`
- * APPLIES these at bring-up; `argocd-health-test.ts` reads the longhorn one to
- * decide whether an Application that requests `storageClass: longhorn` may be
- * asserted in the dev lane. If those two named the file separately, the harness
- * could believe a StorageClass exists that bring-up no longer creates -- an
- * assertion resting on absent substrate, which is the exact shape of a check
- * that did not run looking like a check that passed.
+ * APPLIES these at bring-up; `argocd-health-test.ts` reads them to decide
+ * whether an Application that requests a capability may be asserted in the dev
+ * lane. If those two named the files separately, the harness could believe a
+ * StorageClass exists that bring-up no longer creates -- an assertion resting
+ * on absent substrate, which is the exact shape of a check that did not run
+ * looking like a check that passed.
+ *
+ * (Until 2026-09-23 these were `longhorn.yaml` -- a class NAMED after the
+ * provider, bound to local-path -- and `zeta-local-path.yaml`.)
  *
  * Repo-RELATIVE (not absolute) because the harness resolves them against a
  * caller-supplied `repoRoot`, which its unit tests point at fixture trees.
  */
 export const DEV_STORAGE_ALIAS_MANIFEST_RELPATHS = {
-  zetaLocalPath: "full-ai-cluster/dev-cluster/manifests/zeta-local-path.yaml",
-  longhorn: "full-ai-cluster/dev-cluster/manifests/longhorn.yaml",
+  blockLocal: "full-ai-cluster/dev-cluster/manifests/zeta-block-local.yaml",
+  blockReplicated: "full-ai-cluster/dev-cluster/manifests/zeta-block-replicated.yaml",
 } as const;
 
-/** The StorageClass name the dev/CI longhorn alias is required to declare. */
-export const DEV_LONGHORN_ALIAS_CLASS_NAME = "longhorn";
+/**
+ * The StorageClass name each dev binding manifest is REQUIRED to declare. A
+ * file whose class name drifted from its key binds nothing the charts ask for.
+ */
+export const DEV_STORAGE_ALIAS_CLASS_NAMES: Readonly<Record<keyof typeof DEV_STORAGE_ALIAS_MANIFEST_RELPATHS, string>> = {
+  blockLocal: "zeta-block-local",
+  blockReplicated: "zeta-block-replicated",
+};
+
+/**
+ * StorageClasses kind (`standard`) and k3s/k3d (`local-path`) ship marked
+ * DEFAULT. Bring-up clears that mark so `zeta-block-local` is the ONE default,
+ * as on metal -- two defaults is the ambiguous config k3s-server.nix records
+ * binding class-less PVCs non-deterministically (node-09485d, 2026-06-07).
+ */
+export const DEV_STOCK_DEFAULT_STORAGE_CLASSES: readonly string[] = ["standard", "local-path"];
 
 /**
  * Provisioners a dev/CI substrate can actually satisfy.
  *
- * The alias check is NOT "is there a StorageClass by that name" -- that is
+ * The binding check is NOT "is there a StorageClass by that name" -- that is
  * satisfied by `provisioner: driver.longhorn.io`, which is exactly the thing a
  * kind node cannot run. An edit that "restored parity" by pointing the dev
- * manifest at the real Longhorn driver would then unlock ten Applications onto
- * a class that can provision nothing, and every one of their PVCs would pend.
- * So the provisioner is pinned to what the dev substrate ships.
+ * `zeta-block-replicated` binding at the real Longhorn driver would then
+ * unlock every replicated-storage Application onto a class that can provision
+ * nothing, and every one of their PVCs would pend. So the provisioner is
+ * pinned to what the dev substrate ships.
  */
 export const DEV_SATISFIABLE_PROVISIONERS: ReadonlySet<string> = new Set(["rancher.io/local-path"]);
 

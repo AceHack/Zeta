@@ -72,7 +72,7 @@ spec:
           # cluster's corpus, not a library; the failure mode when it is
           # outgrown is loud (write errors), not silent.
           size: 32Gi
-          storageClassName: longhorn
+          storageClassName: zeta-block-replicated
         modules:
           # Use the cluster's own LLM serving for vectorization +
           # generative endpoints. Swap to text-embeddings-inference

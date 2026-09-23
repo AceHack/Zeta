@@ -27,7 +27,7 @@ import {
   buildPlan,
   classifyApplications,
   classifySmokeApplications,
-  devLonghornStorageClassAliasDeclared,
+  devBoundStorageCapabilities,
   discoverExpectedApplications,
   DEV_EXCLUDED_REASONS,
   auditDevExclusionReasons,
@@ -486,11 +486,13 @@ describe("081KSXN940008QG0R000SCP2H1 argocd-health-test manifest parsing", () =>
     }
   });
 
-  // Title qualified on this branch: dev now applies a StorageClass NAMED
-  // longhorn, so the rule this test pins is the one that still holds when no
-  // such class exists. Both halves matter and neither replaces the other.
-  test("isExcludedFromIncludedProof catches Longhorn in child manifests when dev has no such class", () => {
-    const repoRoot = mkdtempSync(join(tmpdir(), "zeta-argocd-health-longhorn-"));
+  // The storage rule, since 2026-09-23: charts name a CAPABILITY, dev binds some
+  // of them, and an Application requesting one dev does not bind is excluded.
+  const NONE: ReadonlySet<string> = new Set();
+  const DEV_RWO: ReadonlySet<string> = new Set(["zeta-block-replicated", "zeta-block-local"]);
+
+  test("isExcludedFromIncludedProof catches a class in child manifests that dev does not bind", () => {
+    const repoRoot = mkdtempSync(join(tmpdir(), "zeta-argocd-health-class-"));
     try {
       const appDir = join(repoRoot, "full-ai-cluster/k8s/applications/demo");
       mkdirSync(appDir, { recursive: true });
@@ -500,34 +502,57 @@ describe("081KSXN940008QG0R000SCP2H1 argocd-health-test manifest parsing", () =>
       );
       writeFileSync(
         join(appDir, "statefulset.yaml"),
-        "spec:\n  volumeClaimTemplates:\n    - spec:\n        storageClassName: longhorn\n",
+        "spec:\n  volumeClaimTemplates:\n    - spec:\n        storageClassName: zeta-block-replicated\n",
       );
       const appText = readFileSync(join(appDir, "Application.yaml"), "utf8");
-      expect(isExcludedFromIncludedProof("demo", appText, appDir, false)).toBe(true);
+      expect(isExcludedFromIncludedProof("demo", appText, appDir, NONE)).toBe(true);
+      expect(isExcludedFromIncludedProof("demo", appText, appDir, DEV_RWO)).toBe(false);
     } finally {
       rmSync(repoRoot, { recursive: true, force: true });
     }
   });
 
   /**
-   * 081M0JXF6MS087G0R001HC34TM — the longhorn rule is CONDITIONAL on substrate,
-   * not deleted. These four tests pin both branches plus the RWX carve-out;
-   * without the pair, "we made those apps testable" would be indistinguishable
-   * from "we stopped checking".
+   * 081M0JXF6MS087G0R001HC34TM, generalised — the storage rule is CONDITIONAL on
+   * substrate, not deleted. Both branches plus the RWX carve-out; without the
+   * pair, "we made those apps testable" would be indistinguishable from "we
+   * stopped checking".
    */
-  test("the longhorn rule stops applying once dev declares a StorageClass by that name", () => {
-    const repoRoot = mkdtempSync(join(tmpdir(), "zeta-argocd-health-alias-on-"));
+  test("the storage rule follows the SET of bound capabilities, one name at a time", () => {
+    const repoRoot = mkdtempSync(join(tmpdir(), "zeta-argocd-health-bound-"));
     try {
       const appDir = join(repoRoot, "full-ai-cluster/k8s/applications/demo");
       mkdirSync(appDir, { recursive: true });
       writeFileSync(
         join(appDir, "Application.yaml"),
-        "apiVersion: argoproj.io/v1alpha1\nkind: Application\nmetadata:\n  name: demo\nspec:\n  source:\n    helm:\n      values: |\n        storageClass: longhorn\n",
+        "apiVersion: argoproj.io/v1alpha1\nkind: Application\nmetadata:\n  name: demo\nspec:\n  source:\n    helm:\n      valuesObject:\n        a:\n          storageClass: zeta-block-replicated\n        b:\n          storageClass: zeta-block-local\n",
       );
       const appText = readFileSync(join(appDir, "Application.yaml"), "utf8");
       // Same Application, same manifest text -- only the substrate answer moves.
-      expect(isExcludedFromIncludedProof("demo", appText, appDir, false)).toBe(true);
-      expect(isExcludedFromIncludedProof("demo", appText, appDir, true)).toBe(false);
+      expect(isExcludedFromIncludedProof("demo", appText, appDir, NONE)).toBe(true);
+      // ONE of the two bound is not enough: the unbound claim would still pend.
+      expect(isExcludedFromIncludedProof("demo", appText, appDir, new Set(["zeta-block-local"]))).toBe(true);
+      expect(isExcludedFromIncludedProof("demo", appText, appDir, DEV_RWO)).toBe(false);
+    } finally {
+      rmSync(repoRoot, { recursive: true, force: true });
+    }
+  });
+
+  test("a PROVIDER-named class is never bound in dev, so it stays excluded even with every capability bound", () => {
+    // The old alias made `longhorn` bindable in dev. That door is closed: dev
+    // binds capability names only, so a manifest regressing to a provider name
+    // drops out of the proof (and storage-capabilities.ts refuses it outright).
+    const repoRoot = mkdtempSync(join(tmpdir(), "zeta-argocd-health-provider-"));
+    try {
+      const appDir = join(repoRoot, "full-ai-cluster/k8s/applications/demo");
+      mkdirSync(appDir, { recursive: true });
+      writeFileSync(
+        join(appDir, "Application.yaml"),
+        "apiVersion: argoproj.io/v1alpha1\nkind: Application\nmetadata:\n  name: demo\nspec: {}\n",
+      );
+      writeFileSync(join(appDir, "pvc.yaml"), "kind: PersistentVolumeClaim\nspec:\n  storageClassName: longhorn\n");
+      const appText = readFileSync(join(appDir, "Application.yaml"), "utf8");
+      expect(isExcludedFromIncludedProof("demo", appText, appDir, DEV_RWO)).toBe(true);
     } finally {
       rmSync(repoRoot, { recursive: true, force: true });
     }
@@ -536,14 +561,13 @@ describe("081KSXN940008QG0R000SCP2H1 argocd-health-test manifest parsing", () =>
   test("a ReadWriteMany claim stays excluded regardless of which class it names", () => {
     // The access mode is the hazard, not the class name: EVERY dev class is
     // rancher.io/local-path, which is RWO-only. So the RWX rule must gate on its
-    // own, not nested inside the longhorn branch -- otherwise an RWX claim
-    // against zeta-local-path, against kind's default, or against no class at
-    // all sails through and hangs.
+    // own, not nested inside the class rule -- otherwise an RWX claim against a
+    // bound capability, or against no class at all, sails through and hangs.
     const repoRoot = mkdtempSync(join(tmpdir(), "zeta-argocd-health-rwx-"));
     try {
       const claims = [
-        "kind: PersistentVolumeClaim\nspec:\n  accessModes: [ ReadWriteMany ]\n  storageClassName: longhorn\n",
-        "kind: PersistentVolumeClaim\nspec:\n  accessModes: [ ReadWriteMany ]\n  storageClassName: zeta-local-path\n",
+        "kind: PersistentVolumeClaim\nspec:\n  accessModes: [ ReadWriteMany ]\n  storageClassName: zeta-block-replicated\n",
+        "kind: PersistentVolumeClaim\nspec:\n  accessModes: [ ReadWriteMany ]\n  storageClassName: zeta-block-local\n",
         "kind: PersistentVolumeClaim\nspec:\n  accessModes: [ ReadWriteMany ]\n",
       ];
       for (const [index, claim] of claims.entries()) {
@@ -555,76 +579,64 @@ describe("081KSXN940008QG0R000SCP2H1 argocd-health-test manifest parsing", () =>
         );
         writeFileSync(join(appDir, "cache-pvc.yaml"), claim);
         const appText = readFileSync(join(appDir, "Application.yaml"), "utf8");
-        expect(isExcludedFromIncludedProof("demo", appText, appDir, true), claim).toBe(true);
+        expect(isExcludedFromIncludedProof("demo", appText, appDir, DEV_RWO), claim).toBe(true);
       }
     } finally {
       rmSync(repoRoot, { recursive: true, force: true });
     }
   });
 
-  test("devLonghornStorageClassAliasDeclared fails CLOSED on absent, wrong-kind and wrong-name manifests", () => {
-    const repoRoot = mkdtempSync(join(tmpdir(), "zeta-argocd-health-alias-parse-"));
+  test("devBoundStorageCapabilities fails CLOSED per file: absent, wrong kind, wrong name, provider-bound", () => {
+    const repoRoot = mkdtempSync(join(tmpdir(), "zeta-argocd-health-bind-parse-"));
     const manifestDir = join(repoRoot, "full-ai-cluster/dev-cluster/manifests");
-    const manifest = join(manifestDir, "longhorn.yaml");
+    const replicated = join(manifestDir, "zeta-block-replicated.yaml");
+    const local = join(manifestDir, "zeta-block-local.yaml");
+    const sc = (name: string, provisioner: string) =>
+      `apiVersion: storage.k8s.io/v1\nkind: StorageClass\nmetadata:\n  name: ${name}\nprovisioner: ${provisioner}\n`;
     try {
       mkdirSync(manifestDir, { recursive: true });
       // Absent.
-      expect(devLonghornStorageClassAliasDeclared(repoRoot)).toBe(false);
+      expect([...devBoundStorageCapabilities(repoRoot)]).toEqual([]);
       // Present but not a StorageClass.
-      writeFileSync(manifest, "kind: ConfigMap\nmetadata:\n  name: longhorn\n");
-      expect(devLonghornStorageClassAliasDeclared(repoRoot)).toBe(false);
-      // A StorageClass under a different name -- claims nothing about `longhorn`.
-      writeFileSync(
-        manifest,
-        "apiVersion: storage.k8s.io/v1\nkind: StorageClass\nmetadata:\n  name: not-longhorn\nprovisioner: rancher.io/local-path\n",
-      );
-      expect(devLonghornStorageClassAliasDeclared(repoRoot)).toBe(false);
-      // A StorageClass with no provisioner binds to nothing.
-      writeFileSync(manifest, "apiVersion: storage.k8s.io/v1\nkind: StorageClass\nmetadata:\n  name: longhorn\n");
-      expect(devLonghornStorageClassAliasDeclared(repoRoot)).toBe(false);
+      writeFileSync(replicated, "kind: ConfigMap\nmetadata:\n  name: zeta-block-replicated\n");
+      expect(devBoundStorageCapabilities(repoRoot).has("zeta-block-replicated")).toBe(false);
+      // A StorageClass under a name other than the file's capability binds nothing charts ask for.
+      writeFileSync(replicated, sc("longhorn", "rancher.io/local-path"));
+      expect(devBoundStorageCapabilities(repoRoot).has("zeta-block-replicated")).toBe(false);
+      expect(devBoundStorageCapabilities(repoRoot).has("longhorn")).toBe(false);
+      // No provisioner binds to nothing.
+      writeFileSync(replicated, "apiVersion: storage.k8s.io/v1\nkind: StorageClass\nmetadata:\n  name: zeta-block-replicated\n");
+      expect(devBoundStorageCapabilities(repoRoot).has("zeta-block-replicated")).toBe(false);
       // THE FAIL-OPEN THAT WOULD OTHERWISE BITE: right name, right kind, but
-      // bound to the real Longhorn driver, which a kind node cannot run. An edit
-      // "restoring parity" this way would unlock ten Applications onto a class
-      // that provisions nothing, and every PVC would pend.
-      writeFileSync(
-        manifest,
-        "apiVersion: storage.k8s.io/v1\nkind: StorageClass\nmetadata:\n  name: longhorn\nprovisioner: driver.longhorn.io\n",
-      );
-      expect(devLonghornStorageClassAliasDeclared(repoRoot)).toBe(false);
-      // Unparseable.
-      writeFileSync(manifest, "kind: StorageClass\n\tname: longhorn\n  : :\n");
-      expect(devLonghornStorageClassAliasDeclared(repoRoot)).toBe(false);
-      // Multi-document: `parseYaml` throws on `---` separators rather than
-      // silently taking the first document, so this lands in the catch.
-      writeFileSync(
-        manifest,
-        "apiVersion: storage.k8s.io/v1\nkind: StorageClass\nmetadata:\n  name: longhorn\nprovisioner: rancher.io/local-path\n---\nkind: ConfigMap\n",
-      );
-      expect(devLonghornStorageClassAliasDeclared(repoRoot)).toBe(false);
-      // The real shape.
-      writeFileSync(
-        manifest,
-        "apiVersion: storage.k8s.io/v1\nkind: StorageClass\nmetadata:\n  name: longhorn\nprovisioner: rancher.io/local-path\n",
-      );
-      expect(devLonghornStorageClassAliasDeclared(repoRoot)).toBe(true);
+      // bound to the real Longhorn driver, which a kind node cannot run.
+      writeFileSync(replicated, sc("zeta-block-replicated", "driver.longhorn.io"));
+      expect(devBoundStorageCapabilities(repoRoot).has("zeta-block-replicated")).toBe(false);
+      // Multi-document: `parseYaml` throws on `---` rather than taking the first.
+      writeFileSync(replicated, `${sc("zeta-block-replicated", "rancher.io/local-path")}---\nkind: ConfigMap\n`);
+      expect(devBoundStorageCapabilities(repoRoot).has("zeta-block-replicated")).toBe(false);
+      // The real shape -- and each file answers only for its own capability.
+      writeFileSync(replicated, sc("zeta-block-replicated", "rancher.io/local-path"));
+      expect([...devBoundStorageCapabilities(repoRoot)]).toEqual(["zeta-block-replicated"]);
+      writeFileSync(local, sc("zeta-block-local", "rancher.io/local-path"));
+      expect([...devBoundStorageCapabilities(repoRoot)].sort()).toEqual(["zeta-block-local", "zeta-block-replicated"]);
     } finally {
       rmSync(repoRoot, { recursive: true, force: true });
     }
   });
 
-  test("the shipped tree declares the dev longhorn alias — the assertions above rest on it", () => {
-    // Not decoration. Every one of the ten newly-asserted Applications is
-    // asserted BECAUSE this returns true against the real repo. If the manifest
-    // is deleted or renamed, this goes red here rather than silently reverting
-    // ten Applications to unasserted, which `auditAppliedButUnasserted` would
-    // then report as unexplained drift instead of as the intended state.
-    expect(devLonghornStorageClassAliasDeclared()).toBe(true);
+  test("the shipped tree binds both RWO capabilities in dev, and never zeta-shared", () => {
+    // Not decoration. Every storage-backed Application is asserted BECAUSE this
+    // holds against the real repo. If a binding file is deleted or renamed, this
+    // goes red here rather than silently reverting those Applications to
+    // unasserted.
+    expect([...devBoundStorageCapabilities()].sort()).toEqual(["zeta-block-local", "zeta-block-replicated"]);
   });
 
-  test("longhorn stays glob-excluded from the dev catalog, so the alias cannot collide", () => {
-    // The alias is a cluster-scoped object named `longhorn`. If the Longhorn
-    // chart were ever admitted to the dev catalog it would create a second
-    // object of that name and the two would fight. This is the guard.
+  test("longhorn stays glob-excluded from the dev catalog -- the chart itself needs block devices", () => {
+    // Until 2026-09-23 this guarded a NAME collision: dev's `longhorn` alias vs
+    // the chart's own `longhorn` class. The alias is gone (dev binds capability
+    // names), so no collision is possible; what keeps the chart out is that it
+    // needs real block devices + open-iscsi, which the QEMU test covers.
     expect(rootDevCatalogExcludedDirs().has("longhorn")).toBe(true);
   });
 

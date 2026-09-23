@@ -68,7 +68,7 @@ export interface Blueprint {
   envFrom?: BlueprintEnvFrom[]; // env vars sourced from Secret keys (credentials)
   ports?: BlueprintPort[];
   storage?: { size: string; mountPath: string }; // optional persistent volume (Longhorn)
-  storageClassName?: string; // StorageClass for the volume; default "longhorn"
+  storageClassName?: string; // CAPABILITY-named StorageClass (never a provider); default "zeta-block-replicated"
   resources?: { cpu?: string; memory?: string };
   probe?: { readiness?: Probe; liveness?: Probe }; // health checks on the main container
   variables?: BlueprintVariable[];
@@ -138,7 +138,9 @@ export function renderDeployable(bp: Blueprint, cr: Deployable): K8sObject[] {
   const expose: Expose = cr.spec.expose ?? bp.defaultExpose ?? "none";
   const stateful = isTrue(bp.stateful) || (!!bp.storage && stableNeeded(bp));
   const storageSize = cr.spec.size?.storage ?? bp.storage?.size;
-  const storageClassName = bp.storageClassName ?? "longhorn";
+  // A capability name, never a provider name: each cluster binds it (metal ->
+  // Longhorn, dev/CI -> local-path). See storage-capabilities.ts.
+  const storageClassName = bp.storageClassName ?? "zeta-block-replicated";
   const out: K8sObject[] = [];
 
   // ── primary container ──────────────────────────────────────────────

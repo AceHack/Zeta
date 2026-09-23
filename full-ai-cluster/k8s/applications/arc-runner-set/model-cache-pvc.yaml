@@ -34,7 +34,7 @@ metadata:
   namespace: arc-runners
 spec:
   accessModes: [ ReadWriteMany ]
-  storageClassName: longhorn
+  storageClassName: zeta-shared
   resources:
     requests:
       storage: 100Gi

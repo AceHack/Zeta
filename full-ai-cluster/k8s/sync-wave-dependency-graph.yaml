@@ -259,11 +259,14 @@ spec:
     - chart: longhorn
       dependsOn: []
       citations: {}
-      # The `longhorn` StorageClass provider. Every `storageClassName: longhorn`
-      # PVC below is an edge INTO its consumers, not out of it. (The other
-      # StorageClass in use, `zeta-local-path`, is a bootstrap manifest —
-      # full-ai-cluster/dev-cluster/manifests/zeta-local-path.yaml — not an
-      # Application, so it produces no edge.)
+      # The provisioner behind the `zeta-block-replicated` and `zeta-shared`
+      # storage CAPABILITIES on metal (full-ai-cluster/nixos/modules/local-storage.nix
+      # binds them to driver.longhorn.io). Charts name the capability, never
+      # `longhorn` (since 2026-09-23; storage-capabilities.ts), but the edge is
+      # unchanged: every `storageClassName: zeta-block-replicated` PVC below
+      # still pends until this Application runs. (`zeta-block-local`, the
+      # default, is bound to local-path by that same k3s bootstrap manifest --
+      # not an Application, so it produces no edge.)
 
     - chart: arc-controller
       dependsOn: []
@@ -286,7 +289,7 @@ spec:
       dependsOn: []
       citations: {}
       # full-ai-cluster/k8s/applications/seaweedfs/Application.yaml:42 uses
-      # `storageClass: zeta-local-path` — bootstrap, not an Application.
+      # `storageClass: zeta-block-local` — bootstrap, not an Application.
 
     - chart: headlamp
       dependsOn: []
@@ -343,8 +346,8 @@ spec:
       dependsOn: []
       citations: {}
       # full-ai-cluster/k8s/applications/forgejo/Application.yaml:38 pins
-      # `storageClass: zeta-local-path` (bootstrap). The trailing comment "or
-      # longhorn for HA" is an option, not a declaration.
+      # `storageClass: zeta-block-local` (bootstrap). The trailing comment "or
+      # zeta-block-replicated" is an option, not a declaration.
 
     - chart: gitlab
       dependsOn: []
@@ -420,7 +423,7 @@ spec:
         longhorn: >-
           full-ai-cluster/k8s/applications/platform/portal.yaml:123-129 — the
           portal StatefulSet's volumeClaimTemplate renders
-          `storageClassName: longhorn`, annotated "THIS is the StatefulSet PVC
+          `storageClassName: zeta-block-replicated`, annotated "THIS is the StatefulSet PVC
           -> storageClass the design needs." Identical in shape to fact #6 in
           full-ai-cluster/k8s/applications/vault/TOPOLOGY.md, which MEASURED the
           same inversion for vault ("Vault syncs at wave -60; longhorn installs
@@ -432,64 +435,64 @@ spec:
       citations:
         longhorn: >-
           full-ai-cluster/k8s/applications/game-hosting/gmod/statefulset.yaml:93
-          renders `storageClassName: longhorn`.
+          renders `storageClassName: zeta-block-replicated`.
 
-    # ── Layer 6: storage consumers (`storageClassName: longhorn`) ────────────
+    # ── Layer 6: storage consumers (`storageClassName: zeta-block-replicated`) ────────────
     - chart: agent-memory
       dependsOn: [longhorn]
       citations:
         longhorn: >-
           full-ai-cluster/k8s/applications/agent-memory/statefulset.yaml:72
-          renders `storageClassName: longhorn`.
+          renders `storageClassName: zeta-block-replicated`.
 
     - chart: cockroachdb
       dependsOn: [longhorn]
       citations:
         longhorn: >-
           full-ai-cluster/k8s/applications/cockroachdb/Application.yaml:44 sets
-          `storageClass: longhorn`.
+          `storageClass: zeta-block-replicated`.
 
     - chart: nats
       dependsOn: [longhorn]
       citations:
         longhorn: >-
           full-ai-cluster/k8s/applications/nats/Application.yaml:43 sets
-          `storageClassName: longhorn`.
+          `storageClassName: zeta-block-replicated`.
 
     - chart: redis
       dependsOn: [longhorn]
       citations:
         longhorn: >-
           full-ai-cluster/k8s/applications/redis/Application.yaml:28,40 set
-          `storageClass: longhorn`.
+          `storageClass: zeta-block-replicated`.
 
     - chart: tempo
       dependsOn: [longhorn]
       citations:
         longhorn: >-
           full-ai-cluster/k8s/applications/tempo/Application.yaml:28 sets
-          `storageClassName: longhorn`.
+          `storageClassName: zeta-block-replicated`.
 
     - chart: kube-prometheus-stack
       dependsOn: [longhorn]
       citations:
         longhorn: >-
           full-ai-cluster/k8s/applications/kube-prometheus-stack/Application.yaml:46,70,131
-          set `storageClassName: longhorn`.
+          set `storageClassName: zeta-block-replicated`.
 
     - chart: headscale
       dependsOn: [longhorn]
       citations:
         longhorn: >-
           full-ai-cluster/k8s/applications/headscale/Application.yaml:40 sets
-          `storageClass: longhorn`.
+          `storageClass: zeta-block-replicated`.
 
     - chart: openziti-controller
       dependsOn: [longhorn, cert-manager, trust-manager]
       citations:
         longhorn: >-
           full-ai-cluster/k8s/applications/oz/Application.yaml:33 sets
-          `storageClass: longhorn`.
+          `storageClass: zeta-block-replicated`.
         cert-manager: >-
           ziti-controller 3.1.1 renders 8 `cert-manager.io/v1` Certificates and
           5 Issuers (measured by `helm template` against this Application's own
@@ -516,7 +519,7 @@ spec:
           provider before CRD consumer.
         longhorn: >-
           full-ai-cluster/k8s/applications/arc-runner-set/model-cache-pvc.yaml:12
-          renders `storageClassName: longhorn`, and the runner pod template
+          renders `storageClassName: zeta-block-replicated`, and the runner pod template
           mounts it as `claimName: arc-model-cache`.
 
     # ── Layer 7: object-store consumers ──────────────────────────────────────
@@ -543,7 +546,7 @@ spec:
           Repointed from minio on 2026-09-01.
         longhorn: >-
           full-ai-cluster/k8s/applications/mimir/Application.yaml:82,86,90 set
-          `storageClass: longhorn`.
+          `storageClass: zeta-block-replicated`.
 
     # ── Layer 8: telemetry shippers (write INTO the data planes) ─────────────
     - chart: alloy
@@ -580,7 +583,7 @@ spec:
       citations:
         longhorn: >-
           full-ai-cluster/k8s/applications/hindsight/Application.yaml:34 sets
-          `storageClass: longhorn`.
+          `storageClass: zeta-block-replicated`.
         cockroachdb: >-
           full-ai-cluster/k8s/applications/hindsight/Application.yaml:62 —
           `postgresql://hindsight:$(PG_PASSWORD)@cockroachdb-public.cockroachdb.svc.cluster.local:26257/hindsight`.
@@ -593,14 +596,14 @@ spec:
       citations:
         longhorn: >-
           full-ai-cluster/k8s/applications/ollama/Application.yaml:53 sets
-          `storageClass: longhorn`.
+          `storageClass: zeta-block-replicated`.
 
     - chart: vllm
       dependsOn: [longhorn]
       citations:
         longhorn: >-
           full-ai-cluster/k8s/applications/vllm/deployment.yaml:56 sets
-          `storageClassName: longhorn`.
+          `storageClassName: zeta-block-replicated`.
 
     - chart: deepseek-coder
       dependsOn: [ollama]
@@ -624,7 +627,7 @@ spec:
       citations:
         longhorn: >-
           full-ai-cluster/k8s/applications/weaviate/Application.yaml:33 sets
-          `storageClassName: longhorn`.
+          `storageClassName: zeta-block-replicated`.
         ollama: >-
           full-ai-cluster/k8s/applications/weaviate/Application.yaml:40,44 —
           both `text2vec-ollama` and `generative-ollama` modules are `enabled:

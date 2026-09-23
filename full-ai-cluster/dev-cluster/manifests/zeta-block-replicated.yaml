@@ -1,0 +1,35 @@
+# Dev/CI binding of the `zeta-block-replicated` storage CAPABILITY.
+#
+# Charts never name a storage provider; they name a capability, and each cluster
+# binds it (src/Core.TypeScript/cluster/storage-capabilities.ts). Metal binds
+# this one to Longhorn (full-ai-cluster/nixos/modules/local-storage.nix). A kind
+# or k3d node has no second disk and no open-iscsi, so dev binds it to the
+# `rancher.io/local-path` provisioner kind and k3s already run.
+#
+# THIS REPLACES THE OLD `longhorn` ALIAS (2026-08-21 .. 2026-09-23), which gave
+# dev a StorageClass NAMED `longhorn` over local-path so charts that said
+# "longhorn" could bind. It worked -- it is what first let ten Applications into
+# the proof -- but it made the dev cluster claim to be a provider it was not.
+# Here nothing claims to be Longhorn: the chart asks for replicated block
+# storage, and dev answers honestly with the best it has.
+#
+# WHAT DEV DOES NOT GIVE THIS CAPABILITY, stated rather than implied: no
+# replication (one node, one directory) and no capacity enforcement (a 100Gi
+# request binds on a runner with far less, because the volume is a directory on
+# the node filesystem). The proof asserts that a workload BINDS and RUNS, not
+# that it would survive a disk loss.
+#
+# Do NOT deploy a second local-path provisioner Deployment: kind already ships
+# one, and a duplicate fights it. This declares a NAME only.
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: zeta-block-replicated
+  annotations:
+    zeta.io/storage-capability: block-replicated
+    zeta.io/dev-substrate-binding: >-
+      dev/CI binds the replicated-block capability to rancher.io/local-path;
+      metal binds it to driver.longhorn.io. Never applied to the metal cluster.
+provisioner: rancher.io/local-path
+volumeBindingMode: WaitForFirstConsumer
+reclaimPolicy: Delete

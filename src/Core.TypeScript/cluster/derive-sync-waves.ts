@@ -158,8 +158,9 @@ export const ORDER_ADJUDICATION_PENDING: ReadonlyMap<string, string> = new Map([
     "The portal StatefulSet's PVC is Longhorn-backed but `platform` syncs at -20 and longhorn at -15, so the " +
       "PVC pends until Longhorn lands. This is fact #6 of vault/TOPOLOGY.md repeating on a second Application: " +
       "there it was MEASURED (`PVCs pend in the interim`) and repaired by moving vault to the bootstrap " +
-      "`zeta-local-path` StorageClass. Two repairs are available here -- move platform after longhorn, or move " +
-      "the portal volume to zeta-local-path -- and they differ in the durability guarantee for the Room/event " +
+      "`zeta-local-path` StorageClass (now the `zeta-block-local` capability). Two repairs are available here -- " +
+      "move platform after longhorn, or move the portal volume from `zeta-block-replicated` to `zeta-block-local` " +
+      "-- and they differ in the durability guarantee for the Room/event " +
       "log, which is a design call for the maintainer, not a mechanical renumber.",
   ],
   [

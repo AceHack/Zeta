@@ -108,15 +108,15 @@ spec:
         # StorageClass.
         ingester:
           persistentVolume:
-            storageClass: longhorn
+            storageClass: zeta-block-replicated
             size: 16Gi
         store_gateway:
           persistentVolume:
-            storageClass: longhorn
+            storageClass: zeta-block-replicated
             size: 16Gi
         compactor:
           persistentVolume:
-            storageClass: longhorn
+            storageClass: zeta-block-replicated
             size: 16Gi
         # DECLARED so the ladder can price it. mimir-distributed 6.2.0 turns the
         # INGEST-STORAGE architecture on by default -- `kafka.enabled: true` plus

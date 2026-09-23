@@ -16,9 +16,10 @@
  */
 
 import { describe, expect, test } from "bun:test";
-import { mkdtempSync, mkdirSync, rmSync, writeFileSync } from "node:fs";
+import { mkdtempSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
+import { parseAllDocuments } from "yaml";
 import {
   allApplicationsSettled,
   appsFailedToRecover,
@@ -55,6 +56,7 @@ import {
   patchRootApplicationRevision,
   pvcsReboundAfterRecovery,
   readClusterIdentity,
+  rebindReplicatedCapability,
   readKubernetesVersionPin,
   renderAppVerdictMarkdown,
   renderPowerCycleVerdictMarkdown,
@@ -1263,5 +1265,43 @@ describe("renderPowerCycleVerdictMarkdown", () => {
     expect(markdown).toContain("NOT_RECOVERED");
     expect(markdown).toContain("APP_NOT_HEALTHY");
     expect(markdown).toContain("cilium");
+  });
+});
+
+/**
+ * THE REPLICA'S STORAGE REBIND (2026-09-23). Metal's local-storage.nix binds the
+ * `zeta-block-replicated` capability to driver.longhorn.io; the replica has no
+ * disks, so `--with-longhorn-alias` swaps that one document for the dev binding.
+ * A swap rather than an extra file, because a StorageClass's provisioner is
+ * immutable and two objects of one name cannot both apply.
+ */
+describe("rebindReplicatedCapability", () => {
+  const repoRoot = resolve(import.meta.dir, "../../..");
+  const roster = buildRoster({
+    k3sServerNixPath: join(repoRoot, "full-ai-cluster/nixos/modules/k3s-server.nix"),
+    localStorageNixPath: join(repoRoot, "full-ai-cluster/nixos/modules/local-storage.nix"),
+  });
+  const local = roster.find((entry) => entry.attr === "local-path-provisioner");
+  const devBinding = readFileSync(join(repoRoot, "full-ai-cluster/dev-cluster/manifests/zeta-block-replicated.yaml"), "utf8");
+  const classes = (text: string): Record<string, string> =>
+    Object.fromEntries(
+      parseAllDocuments(text)
+        .map((doc) => doc.toJS() as { kind?: string; metadata?: { name?: string }; provisioner?: string } | null)
+        .filter((doc) => doc?.kind === "StorageClass")
+        .map((doc) => [doc?.metadata?.name ?? "", doc?.provisioner ?? ""]),
+    );
+
+  test("rebinds ONLY the replicated capability, to local-path, and keeps every other document", () => {
+    expect(local).toBeDefined();
+    const before = classes(local?.content ?? "");
+    expect(before["zeta-block-replicated"]).toBe("driver.longhorn.io");
+    const after = rebindReplicatedCapability(local?.content ?? "", devBinding);
+    expect(classes(after)).toEqual({ ...before, "zeta-block-replicated": "rancher.io/local-path" });
+    expect(parseAllDocuments(after).length).toBe(parseAllDocuments(local?.content ?? "").length);
+  });
+
+  test("THROWS when there is nothing to rebind -- a silent no-op would keep Longhorn and pend every claim", () => {
+    const noClass = "apiVersion: v1\nkind: Namespace\nmetadata:\n  name: local-path-storage\n";
+    expect(() => rebindReplicatedCapability(noClass, devBinding)).toThrow(/no `zeta-block-replicated` StorageClass/);
   });
 });

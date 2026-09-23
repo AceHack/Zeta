@@ -97,7 +97,7 @@ describe("game server blueprint (stateful, UDP, storage, sidecar, install)", () 
     const ss = one(objs, "StatefulSet");
     const vct = (ss.spec as any).volumeClaimTemplates;
     expect(vct[0].metadata.name).toBe("data");
-    expect(vct[0].spec.storageClassName).toBe("longhorn");
+    expect(vct[0].spec.storageClassName).toBe("zeta-block-replicated");
     expect(vct[0].spec.resources.requests.storage).toBe("20Gi");
   });
   test("install becomes an initContainer; main has templated args/env", () => {
@@ -291,18 +291,18 @@ describe("production fields: envFrom (Secret), probes, storageClassName", () => 
     });
   });
 
-  // (c) storageClassName overrides the longhorn default on the PVC / volumeClaimTemplate.
-  describe("storageClassName overrides the longhorn default", () => {
+  // (c) storageClassName overrides the zeta-block-replicated default on the PVC / volumeClaimTemplate.
+  describe("storageClassName overrides the zeta-block-replicated default", () => {
     test("StatefulSet volumeClaimTemplate uses the named class", () => {
       const db: Blueprint = {
         name: "pg",
         stateful: true,
         image: "postgres:16",
         storage: { size: "50Gi", mountPath: "/var/lib/postgresql/data" },
-        storageClassName: "zeta-local-path",
+        storageClassName: "zeta-block-local",
       };
       const ss = one(renderDeployable(db, instance("fast-db", { blueprint: "pg" })), "StatefulSet");
-      expect((ss.spec as any).volumeClaimTemplates[0].spec.storageClassName).toBe("zeta-local-path");
+      expect((ss.spec as any).volumeClaimTemplates[0].spec.storageClassName).toBe("zeta-block-local");
     });
     test("stateless PVC also honors the named class", () => {
       const cache: Blueprint = {
@@ -310,10 +310,10 @@ describe("production fields: envFrom (Secret), probes, storageClassName", () => 
         stateful: false,
         image: "redis:7",
         storage: { size: "5Gi", mountPath: "/data" },
-        storageClassName: "zeta-local-path",
+        storageClassName: "zeta-block-local",
       };
       const pvc = one(renderDeployable(cache, instance("kv", { blueprint: "cache" })), "PersistentVolumeClaim");
-      expect((pvc.spec as any).storageClassName).toBe("zeta-local-path");
+      expect((pvc.spec as any).storageClassName).toBe("zeta-block-local");
     });
   });
 
@@ -330,9 +330,9 @@ describe("production fields: envFrom (Secret), probes, storageClassName", () => 
     const objs = renderDeployable(legacy, instance("plain-db", { blueprint: "legacy-db" }));
     const main = () => (one(objs, "StatefulSet").spec as any).template.spec.containers[0];
 
-    test("longhorn stays the default storageClassName", () => {
+    test("zeta-block-replicated stays the default storageClassName", () => {
       const vct = (one(objs, "StatefulSet").spec as any).volumeClaimTemplates;
-      expect(vct[0].spec.storageClassName).toBe("longhorn");
+      expect(vct[0].spec.storageClassName).toBe("zeta-block-replicated");
     });
     test("no probes are rendered", () => {
       expect(main().readinessProbe).toBeUndefined();

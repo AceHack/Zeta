@@ -1,0 +1,28 @@
+# Dev/CI binding of the `zeta-block-local` storage CAPABILITY -- the CLUSTER
+# DEFAULT, on dev exactly as on metal.
+#
+# Node-local, unreplicated RWO block over `rancher.io/local-path`, the
+# provisioner kind and k3s already run. Metal binds the same capability to the
+# same provisioner (full-ai-cluster/nixos/modules/local-storage.nix), so this is
+# the one class whose dev and metal behaviour match exactly.
+#
+# WHY IT IS THE DEFAULT, and why dev marks it default too: a chart that omits
+# `storageClassName` lands on the default, and dev should resolve that omission
+# the way metal does. Bring-up clears the default flag from kind's `standard` /
+# k3s's `local-path` so there is exactly one (applyDevStorageClassAliases). The
+# argument for local rather than replicated is in storage-capabilities.ts.
+#
+# Was `zeta-local-path` until 2026-09-23: same provisioner, same binding mode;
+# only the name changed, from what implements it to what it guarantees.
+#
+# Do NOT deploy a second provisioner (conflicts with kind's bundled Deployment).
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: zeta-block-local
+  annotations:
+    storageclass.kubernetes.io/is-default-class: "true"
+    zeta.io/storage-capability: block-local
+provisioner: rancher.io/local-path
+volumeBindingMode: WaitForFirstConsumer
+reclaimPolicy: Delete

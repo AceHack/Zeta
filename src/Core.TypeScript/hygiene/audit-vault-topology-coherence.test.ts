@@ -309,9 +309,9 @@ describe("parsers", () => {
     expect(retryJoinSchemes("no joins here")).toEqual([]);
   });
 
-  it("bootStorageClasses finds zeta-local-path in the real nix module", () => {
+  it("bootStorageClasses finds every capability binding declared in the real nix module", () => {
     const nix = readFileSync(join(REPO_ROOT, "full-ai-cluster", "nixos", "modules", "local-storage.nix"), "utf8");
-    expect(bootStorageClasses(nix)).toContain("zeta-local-path");
+    expect(bootStorageClasses(nix).sort()).toEqual(["zeta-block-local", "zeta-block-replicated", "zeta-shared"]);
   });
 
   it("syncWaveOf reads the ArgoCD annotation and rejects garbage", () => {
@@ -327,10 +327,23 @@ describe("against the real tree", () => {
     expect(auditVaultApplication(doc, deriveWorldFacts(REPO_ROOT))).toEqual([]);
   });
 
-  it("the tree really does derive longhorn as a late wave and zeta-local-path as boot", () => {
+  it("the tree really does derive longhorn as a late wave and zeta-block-local as boot", () => {
     const world = deriveWorldFacts(REPO_ROOT);
-    expect(world.storageClassAvailability.get("zeta-local-path")).toBe("boot");
+    expect(world.storageClassAvailability.get("zeta-block-local")).toBe("boot");
     expect(world.storageClassAvailability.get("longhorn")).toBe(-15);
+  });
+
+  /**
+   * DECLARED AT BOOT IS NOT PROVISIONABLE AT BOOT (2026-09-23). local-storage.nix
+   * now declares the Longhorn-backed capability classes alongside the local one.
+   * Reading "declared in the k3s manifest" as "boot" would clear a vault claim on
+   * `zeta-block-replicated` at wave -60 -- the fact #6 pend, un-flagged. They
+   * must inherit the Longhorn Application's wave instead.
+   */
+  it("a capability class bound to Longhorn is available at Longhorn's wave, NOT at boot", () => {
+    const world = deriveWorldFacts(REPO_ROOT);
+    expect(world.storageClassAvailability.get("zeta-block-replicated")).toBe(-15);
+    expect(world.storageClassAvailability.get("zeta-shared")).toBe(-15);
   });
 
   it("TOPOLOGY.md documents every rule the audit can emit", () => {

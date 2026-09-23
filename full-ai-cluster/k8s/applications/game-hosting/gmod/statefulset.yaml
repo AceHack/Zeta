@@ -90,7 +90,7 @@ spec:
         name: data
       spec:
         accessModes: [ "ReadWriteOnce" ]
-        storageClassName: longhorn
+        storageClassName: zeta-block-replicated
         resources:
           requests:
             # SIZE CUT, NOT A POD CUT: 20Gi -> 10Gi; `replicas` above is

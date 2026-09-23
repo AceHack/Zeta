@@ -67,7 +67,7 @@ spec:
                   properties:
                     size: { type: string }
                     mountPath: { type: string }
-                storageClassName: { type: string, description: "StorageClass for the persistent volume; defaults to longhorn" }
+                storageClassName: { type: string, description: "Capability-named StorageClass for the persistent volume (zeta-block-replicated / zeta-block-local / zeta-shared); defaults to zeta-block-replicated" }
                 resources:
                   type: object
                   properties:

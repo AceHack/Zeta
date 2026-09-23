@@ -62,6 +62,7 @@ import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { parseArgs } from "node:util";
 import { parse as parseYaml } from "yaml";
+import { metalStorageBindings } from "../cluster/storage-capabilities.ts";
 
 /**
  * The chart revision behind every encoded behaviour in this file.
@@ -602,7 +603,15 @@ export function auditVaultApplication(doc: unknown, world: WorldFacts): Finding[
 // The world facts above are DERIVED from the tree here, never hand-listed,
 // so the audit cannot drift from what the repo actually contains.
 
-/** StorageClass names installed by the k3s auto-manifest set, before ArgoCD. */
+/** The provisioner local-storage.nix itself deploys, so its classes provision from boot. */
+export const BOOT_PROVISIONER = "rancher.io/local-path";
+
+/** Provisioner -> the Application directory that installs it (the wave it becomes available at). */
+export const PROVISIONER_PROVIDER_APP: Readonly<Record<string, string>> = {
+  "driver.longhorn.io": "longhorn",
+};
+
+/** StorageClass names DECLARED by the k3s auto-manifest set, before ArgoCD (not necessarily provisionable then). */
 export function bootStorageClasses(nixText: string): string[] {
   const out: string[] = [];
   const re = /kind:\s*StorageClass[\s\S]{0,200}?name:\s*([a-z0-9-]+)/g;
@@ -650,13 +659,34 @@ export function deriveWorldFacts(root: string): WorldFacts {
   });
 
   const availability = new Map<string, "boot" | number>();
+  const appsDir = join(k8sDir, "applications");
   const nixPath = join(root, "full-ai-cluster", "nixos", "modules", "local-storage.nix");
   if (existsSync(nixPath)) {
-    for (const c of bootStorageClasses(readFileSync(nixPath, "utf8"))) {
-      availability.set(c, "boot");
+    // A class DECLARED at boot is not a class that PROVISIONS at boot. Since
+    // 2026-09-23 local-storage.nix declares every storage-capability binding,
+    // including `zeta-block-replicated` / `zeta-shared` on driver.longhorn.io --
+    // and a claim on those pends until the Longhorn Application (wave -15) is
+    // running, exactly the vault/TOPOLOGY.md fact #6 inversion. So availability
+    // follows the PROVISIONER: local-path is deployed by this same k3s manifest
+    // and is "boot"; any other provisioner is available at its provider
+    // Application's wave, or is left unknown (which FAILS a claim on it).
+    const bindings = metalStorageBindings(root);
+    const declared = new Set(bootStorageClasses(readFileSync(nixPath, "utf8")));
+    for (const c of declared) {
+      const binding = bindings.find((b) => b.name === c);
+      const provisioner = binding?.provisioner ?? BOOT_PROVISIONER;
+      if (provisioner === BOOT_PROVISIONER) {
+        availability.set(c, "boot");
+        continue;
+      }
+      const providerDir = PROVISIONER_PROVIDER_APP[provisioner];
+      if (providerDir === undefined) continue;
+      const appYaml = join(appsDir, providerDir, "Application.yaml");
+      if (existsSync(appYaml) === false) continue;
+      const wave = syncWaveOf(parseYaml(readFileSync(appYaml, "utf8")));
+      if (wave !== undefined) availability.set(c, wave);
     }
   }
-  const appsDir = join(k8sDir, "applications");
   if (existsSync(appsDir)) {
     for (const e of readdirSync(appsDir, { withFileTypes: true })) {
       if (e.isDirectory() === false) continue;

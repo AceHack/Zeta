@@ -1,6 +1,9 @@
 {
   "$comment": [
-    "STORAGE SIZE PROFILES — the per-deployment ladder for `longhorn` PVC capacity.",
+    "STORAGE SIZE PROFILES — the per-deployment ladder for the metal LONGHORN POOL's PVC capacity:",
+    "every claim on a capability metal binds to driver.longhorn.io (`zeta-block-replicated`,",
+    "`zeta-shared`; storage-capabilities.ts metalPoolCapabilities). Charts named `longhorn`",
+    "directly until 2026-09-23; prose below that says `longhorn` means this pool.",
     "",
     "Read by src/Core.TypeScript/cluster/storage-profiles.ts, which the",
     "single-node readiness auditor imports. Applied to the manifests by",
@@ -1468,7 +1471,7 @@
     "large"
   ],
   "$comment_claims": [
-    "One row per `longhorn` PVC claim in the tree. The row's (path, storageClassField)",
+    "One row per Longhorn-POOL PVC claim in the tree (`zeta-block-replicated` / `zeta-shared`). The row's (path, storageClassField)",
     "pair is the SAME coordinate the readiness auditor's extractor produces, so the",
     "two are cross-checkable in both directions: a claim with no row fails, and a row",
     "with no claim fails. Neither can go stale in silence.",

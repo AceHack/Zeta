@@ -53,7 +53,7 @@ metadata:
   namespace: vllm
 spec:
   accessModes: [ ReadWriteOnce ]
-  storageClassName: longhorn
+  storageClassName: zeta-block-replicated
   resources:
     requests: { storage: 200Gi }
 ---

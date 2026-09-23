@@ -251,6 +251,42 @@ export function parseInlineWriteTextManifest(nixSource: string, attr: string): {
   return { filename, content: dedentNixIndentedString(raw) };
 }
 
+/**
+ * Swap the METAL `zeta-block-replicated` StorageClass document inside the
+ * rostered local-path-provisioner manifest for the DEV binding of the same
+ * capability.
+ *
+ * Why a swap and not an extra file: the old alias was a class NAMED `longhorn`,
+ * which the metal roster never declared, so it could ride along as
+ * `zz-longhorn-alias.yaml`. Since 2026-09-23 metal declares the capability
+ * itself (bound to driver.longhorn.io, in local-storage.nix), and a second
+ * object of the same name cannot apply -- a StorageClass's provisioner is
+ * immutable. So the replica rebinds that one document and touches nothing else.
+ *
+ * THROWS if the roster declares no such document: a rebind that found nothing
+ * to rebind would leave the Longhorn binding in place and every replicated PVC
+ * pending, while the flag read as applied.
+ */
+export function rebindReplicatedCapability(rosterContent: string, devBindingYaml: string): string {
+  const docs = rosterContent.split(/^---[ \t]*$/m);
+  const isReplicatedClass = (doc: string): boolean =>
+    /^kind:\s*StorageClass\s*$/m.test(doc) && /^\s+name:\s*zeta-block-replicated\s*$/m.test(doc);
+  const index = docs.findIndex(isReplicatedClass);
+  if (index === -1) {
+    throw new Error(
+      "rebindReplicatedCapability: the rostered manifest declares no `zeta-block-replicated` StorageClass to rebind " +
+        "-- local-storage.nix changed shape, and the replica would otherwise keep the Longhorn binding silently",
+    );
+  }
+  const body = devBindingYaml
+    .split("\n")
+    .filter((line) => !line.startsWith("#"))
+    .join("\n")
+    .trim();
+  docs[index] = `\n${body}\n`;
+  return docs.join("---");
+}
+
 export interface RosterEntry {
   /** The `services.k3s.manifests` attribute name, e.g. `argocd-install`. */
   readonly attr: string;
@@ -573,9 +609,12 @@ export function buildPlan(options: BuildPlanOptions): ReplicaPlan {
       id: "no-longhorn-disks",
       reason:
         "No real/extra block devices are attached to the container, so Longhorn (an ArgoCD-owned child Application, " +
-        "not in this bootstrap roster) cannot provide replicated storage here. Applications requesting " +
-        "storageClass: longhorn will stay Pending unless the dev-cluster longhorn alias " +
-        "(full-ai-cluster/dev-cluster/manifests/longhorn.yaml) is applied by --with-longhorn-alias.",
+        "not in this bootstrap roster) cannot provide replicated storage here. local-storage.nix binds the " +
+        "`zeta-block-replicated` capability to driver.longhorn.io, so Applications requesting it stay Pending unless " +
+        "--with-longhorn-alias rebinds that ONE class to the dev binding " +
+        "(full-ai-cluster/dev-cluster/manifests/zeta-block-replicated.yaml, rancher.io/local-path) inside the " +
+        "rostered local-path-provisioner manifest -- a rebind, not a second object, because a StorageClass's " +
+        "provisioner is immutable and two objects of one name cannot both apply.",
     },
     {
       id: "no-gpu",
@@ -1576,19 +1615,24 @@ export async function runReplica(opts: RunOptions): Promise<RunReport> {
   mkdirSync(opts.scratchDir, { recursive: true });
   const manifestsDir = join(opts.scratchDir, "manifests");
   mkdirSync(manifestsDir, { recursive: true });
-  for (const entry of plan.roster) {
-    writeFileSync(join(manifestsDir, entry.filename), entry.content, "utf-8");
-  }
+  let devReplicatedBinding: string | null = null;
   if (opts.withLonghornAlias) {
-    const aliasPath = join(REPO_ROOT, "full-ai-cluster/dev-cluster/manifests/longhorn.yaml");
+    const bindingPath = join(REPO_ROOT, "full-ai-cluster/dev-cluster/manifests/zeta-block-replicated.yaml");
     // One syscall, one answer — see the identical fix (and its reason) in buildRoster above.
     try {
-      writeFileSync(join(manifestsDir, "zz-longhorn-alias.yaml"), readFileSync(aliasPath, "utf-8"), "utf-8");
+      devReplicatedBinding = readFileSync(bindingPath, "utf-8");
     } catch (e) {
       if ((e as NodeJS.ErrnoException).code !== "ENOENT") throw e;
-      // --with-longhorn-alias is best-effort: the alias manifest not existing
+      // --with-longhorn-alias is best-effort: the binding manifest not existing
       // is a recorded divergence, not a fatal error for the replica run.
     }
+  }
+  for (const entry of plan.roster) {
+    const content =
+      devReplicatedBinding !== null && entry.attr === "local-path-provisioner"
+        ? rebindReplicatedCapability(entry.content, devReplicatedBinding)
+        : entry.content;
+    writeFileSync(join(manifestsDir, entry.filename), content, "utf-8");
   }
 
   log(`pulling ${plan.image} ...`);
@@ -2498,8 +2542,8 @@ async function main(): Promise<void> {
       gitRef: laneTree.gitRef,
       excludeGlob,
     });
-    // The dev rung's storage claims need the dev longhorn StorageClass alias this
-    // replica would otherwise never apply; --with-longhorn-alias is redundant once
+    // The dev rung's storage claims need the dev `zeta-block-replicated` binding
+    // this replica would otherwise never apply; --with-longhorn-alias is redundant once
     // --serve-tree is given, so it is simply implied rather than requiring both flags.
     withLonghornAlias = true;
   }

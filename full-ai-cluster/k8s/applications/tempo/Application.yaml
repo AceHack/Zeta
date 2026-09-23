@@ -25,7 +25,7 @@ spec:
                 path: /var/tempo/traces
         persistence:
           enabled: true
-          storageClassName: longhorn
+          storageClassName: zeta-block-replicated
           # SIZE CUT, NOT A POD CUT: 50Gi -> 20Gi, one pod either way.
           #
           # ITS GOVERNOR DOES NOT MOVE WITH IT, and this is the one cut in this

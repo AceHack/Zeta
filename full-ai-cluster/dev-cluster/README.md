@@ -24,12 +24,16 @@ What differs between dev and prod:
   plus workers.
 - **CNI** - k3d runs Cilium as a kube-proxy replacement, kind CI uses
   kindnet unless a CNI test opts in, and prod runs Cilium.
-- **Storage** - dev/CI use local ephemeral storage behind
-  `rancher.io/local-path`. Prod uses Longhorn multi-disk storage. The
-  two are reconciled by NAME, not by changing the manifests: bring-up
-  applies alias StorageClasses called `zeta-local-path` AND `longhorn`
-  (`manifests/*.yaml`), both pointing at the local-path provisioner, so
-  a chart asking for `storageClass: longhorn` binds unmodified.
+- **Storage** - charts name a storage CAPABILITY, never a provider:
+  `zeta-block-replicated`, `zeta-block-local` (the default) or
+  `zeta-shared` (RWX). Each cluster binds the names: prod binds the
+  replicated and shared capabilities to Longhorn and the local one to
+  `rancher.io/local-path` (`nixos/modules/local-storage.nix`); dev/CI bind
+  both RWO capabilities to `rancher.io/local-path` (`manifests/zeta-block-*.yaml`)
+  and leave `zeta-shared` unbound. Same manifests on both, and neither
+  cluster pretends to be a provider it is not.
+  `src/Core.TypeScript/cluster/storage-capabilities.ts` refuses a provider
+  name in any Application or rendered claim.
 - **GPU** - dev/CI have none by default. Prod can use NVIDIA, AMD, or
   Intel GPUs.
 - **Identity** - SPIRE is present in the shared manifest tree, but its
@@ -53,7 +57,14 @@ App-of-Apps `exclude:` glob in `apply-root-app.ts`:
   GPU. Remove from the exclude list if you have an Apple Silicon
   Mac + a model server that runs on MPS (vLLM nightly does).
 
-### The `longhorn` alias, and why the exclusion is conditional rather than gone
+### The `longhorn` alias (2026-08-21 .. 2026-09-23), and why the exclusion is conditional rather than gone
+
+> **Superseded 2026-09-23.** The alias below was replaced by capability-named
+> classes (see **Storage** above): charts request `zeta-block-replicated`, and
+> dev binds that name to local-path instead of impersonating `longhorn`. The
+> conditional-exclusion reasoning is unchanged and now reads "requests a class
+> dev does not bind" -- `devBoundStorageCapabilities()` fails closed per file.
+> The history is kept because it is why the rule is conditional.
 
 The 081KSXN940008QG0R000SCP2H1 health harness used to exclude EVERY
 Application whose YAML tree mentioned `storageClass: longhorn`. That rule

@@ -87,7 +87,7 @@ export function remediate(signal: Signal, opts?: { withinQuota?: boolean }): Rem
     case "unready":
       return { signal, action: { domain: "lifecycle", summary: "restart to clear unready state" }, plan: "Unready: restart the workload and re-check readiness." };
     case "pvc-pending":
-      return { signal, action: { domain: "config", summary: "verify storageClass + provisioner" }, plan: "PVC Pending: confirm the longhorn StorageClass is default and the provisioner is healthy." };
+      return { signal, action: { domain: "config", summary: "verify storageClass + provisioner" }, plan: "PVC Pending: confirm the capability StorageClass it names (zeta-block-*) is bound on this cluster and its provisioner is healthy." };
     case "image-pull-error":
       // An image/registry fix usually means a config change the tenant must confirm.
       return { signal, action: { domain: "config", summary: "correct image ref / pull secret", gated: "external-repo" }, plan: "ImagePull error: the image or pull secret is wrong — proposing a corrected reference for approval." };

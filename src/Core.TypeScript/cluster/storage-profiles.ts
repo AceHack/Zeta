@@ -559,15 +559,23 @@ export interface ExtractedClaim {
 export function crossCheckClaims(
   catalogue: ProfileCatalogue,
   extracted: readonly ExtractedClaim[],
-  storageClass: string,
+  /**
+   * The class, or the SET of classes, the catalogue governs. A set since
+   * 2026-09-23: charts name capabilities, and more than one capability can be
+   * bound to the one metal pool the catalogue budgets (single-node-readiness
+   * passes `metalPoolCapabilities()`).
+   */
+  storageClasses: string | readonly string[],
   profile: string,
 ): readonly ProfileFinding[] {
+  const governed: readonly string[] = typeof storageClasses === "string" ? [storageClasses] : storageClasses;
+  const storageClass = governed.join("|");
   const byCoordinate = new Map<string, ProfileClaim>();
   for (const claim of catalogue.claims) byCoordinate.set(`${claim.path} ${claim.storageClassField}`, claim);
   const matched = new Set<string>();
   const findings: ProfileFinding[] = [];
   for (const claim of extracted) {
-    if (claim.storageClass !== storageClass) continue;
+    if (!governed.includes(claim.storageClass)) continue;
     const key = `${claim.path} ${claim.field}`;
     const row = byCoordinate.get(key);
     if (row === undefined) {

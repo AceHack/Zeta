@@ -77,6 +77,7 @@ import {
   type ResourceCatalogue,
 } from "./storage-profiles.ts";
 import { clusterDefaultStorageClass } from "./cluster-default-storage-class.ts";
+import { metalPoolCapabilities } from "./storage-capabilities.ts";
 import { classifySyncPolicy } from "./manual-sync-policy.ts";
 import {
   DEFAULT_SNAPSHOT_PATH as DEFAULT_RESOURCE_REQUESTS_SNAPSHOT_PATH,
@@ -1886,7 +1887,13 @@ export function findStorageProfileDrift(
     ];
   }
   const drift = verifyProfileApplied(catalogue, profile, repoRoot);
-  const cross = catalogue.claims.length === 0 ? [] : crossCheckClaims(catalogue, storageClaims, "longhorn", profile);
+  // The catalogue governs the METAL LONGHORN POOL, not one class name: since
+  // 2026-09-23 charts name capabilities, and two of them (`zeta-block-replicated`
+  // and `zeta-shared`) are bound to that one pool on metal. The set is DERIVED
+  // from the metal bindings in local-storage.nix rather than restated, so a
+  // capability rebound to another provider leaves the ladder's scope with it.
+  const cross =
+    catalogue.claims.length === 0 ? [] : crossCheckClaims(catalogue, storageClaims, metalPoolCapabilities(repoRoot), profile);
   const findings: Finding[] = [];
   if (drift.length > 0) {
     findings.push({
@@ -2166,7 +2173,15 @@ export function auditAll(
   const override =
     catalogue === null || !catalogue.profiles.includes(ledger.activeStorageProfile)
       ? null
-      : new Map<string, number>([["longhorn", profileTotalGib(catalogue, ledger.activeStorageProfile)]]);
+      : new Map<string, number>(
+          // The profile total is the whole governed POOL (rows on every class the
+          // metal Longhorn binding serves), credited to each budgeted class -- one
+          // today, `zeta-block-replicated`. Read from the ledger, never a literal.
+          ledger.budgetedStorageClasses.map((storageClass) => [
+            storageClass,
+            profileTotalGib(catalogue, ledger.activeStorageProfile),
+          ]),
+        );
   const findings = [
     ...findRootAppCollisions(collectRootAppIdentities(manifests), ledger.acknowledgedRootAppDuplicates),
     ...(catalogue === null ? [] : findStorageProfileDrift(ledger, catalogue, storageClaims, repoRoot)),

@@ -62,7 +62,7 @@ spec:
             storageSpec:
               volumeClaimTemplate:
                 spec:
-                  storageClassName: longhorn
+                  storageClassName: zeta-block-replicated
                   accessModes: [ ReadWriteOnce ]
                   # SIZE CUT, NOT A POD CUT: 100Gi -> 32Gi; prometheusSpec's
                   # replicas default of 1 is unchanged. THE GOVERNOR MOVED WITH
@@ -86,7 +86,7 @@ spec:
             passwordKey: admin-password
           persistence:
             enabled: true
-            storageClassName: longhorn
+            storageClassName: zeta-block-replicated
             # SIZE CUT, NOT A POD CUT: 10Gi -> 5Gi; the grafana subchart's
             # replicas default of 1 is unchanged. Grafana's sqlite plus
             # dashboards. No governor to move: dashboards are provisioned, not
@@ -147,7 +147,7 @@ spec:
             storage:
               volumeClaimTemplate:
                 spec:
-                  storageClassName: longhorn
+                  storageClassName: zeta-block-replicated
                   accessModes: [ ReadWriteOnce ]
                   # SIZE CUT, NOT A POD CUT: 10Gi -> 5Gi; alertmanagerSpec's
                   # replicas default of 1 is unchanged. Silences and the

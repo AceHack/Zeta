@@ -86,7 +86,7 @@ spec:
           data:
             type: persistentVolumeClaim
             size: 20Gi
-            storageClass: zeta-local-path
+            storageClass: zeta-block-local
           s3:
             enabled: true
             enableAuth: true

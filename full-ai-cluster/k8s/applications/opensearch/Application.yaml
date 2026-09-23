@@ -208,7 +208,7 @@ spec:
           # no backup target configured at all (081M1Q0WR89087G0R0036G0T0B) --
           # spending replication on the one store that can be rebuilt from source
           # would be the wrong allocation of the storage we have.
-          storageClass: zeta-local-path
+          storageClass: zeta-block-local
   destination:
     server: https://kubernetes.default.svc
     namespace: opensearch

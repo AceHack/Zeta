@@ -79,7 +79,7 @@
       "chart": "mimir-distributed",
       "repoURL": "https://grafana.github.io/helm-charts",
       "version": "6.2.0",
-      "valuesHash": "sha256:8a2f20ed5553e515ab3a767584320fd399bcd771c772d352d3255ba51dee917e",
+      "valuesHash": "sha256:9aaf5f702a7f63640db01bbd512eb0462066b79ec6699897428ddf63f09805f3",
       "services": {
         "mimir-rollout-operator": [
           443
@@ -181,7 +181,7 @@
       "chart": "tempo",
       "repoURL": "https://grafana-community.github.io/helm-charts",
       "version": "2.3.0",
-      "valuesHash": "sha256:9dfdbbb8489ede820dbbc762345e16f0a8848715e6d8d90c77fef57a35e786c0",
+      "valuesHash": "sha256:03ea652daf6f33d513c58c96fb4a4702549ca996f0904ab221ed4caedb18c8a5",
       "services": {
         "tempo": [
           6831,

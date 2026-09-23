@@ -335,8 +335,8 @@ let
     (check "exactly one default-StorageClass annotation exists in the whole first-boot set (leg 2)" (
       countOccurrences defaultClassAnnotation allText == 1
     ))
-    (check "the one default class is named zeta-local-path (leg 3)" (
-      countOccurrences "\n        name: zeta-local-path\n" localStorageText == 1
+    (check "the one default class is named zeta-block-local (leg 3)" (
+      countOccurrences "\n        name: zeta-block-local\n" localStorageText == 1
     ))
   ];
 

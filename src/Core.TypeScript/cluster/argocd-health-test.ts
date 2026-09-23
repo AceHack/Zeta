@@ -38,14 +38,15 @@ import {
   DEV_CILIUM_LB_KIND_MANIFEST_RELPATH,
   DEV_CILIUM_LB_KIND_POOL_NAME,
   DEV_GHCR_PULL_SECRET,
-  DEV_LONGHORN_ALIAS_CLASS_NAME,
   DEV_SATISFIABLE_PROVISIONERS,
+  DEV_STORAGE_ALIAS_CLASS_NAMES,
   DEV_STORAGE_ALIAS_MANIFEST_RELPATHS,
   type DevBootstrapSecretSpec,
 } from "./dev-cluster/lib.ts";
 import { DEFAULT_ROOT_DEV_CATALOG, ciliumOwnsCniSlot, type KindCni } from "./ports.ts";
 import { buildLaneTreeBundle, laneTreeRepoUrl, SERVED_GIT_REF } from "./lane-tree-source.ts";
 import { applyResourceProfile, loadResourceCatalogue } from "./storage-profiles.ts";
+import { storageClassValues } from "./storage-capabilities.ts";
 // Ordinal (code-point) ordering, per .claude/rules/culture-invariant-by-default.md.
 // NOT localeCompare: it is culture-SENSITIVE, so the same directory names sort
 // differently per machine locale. That matters here because this ordering is not
@@ -534,27 +535,34 @@ export const DEV_EXCLUDED_REASONS: ReadonlyMap<string, string> = new Map([
   ],
   [
     "longhorn",
-    "Replicated block storage wants real disks and more than one node; a single kind node inside a runner has " +
-      "neither -- it needs real block devices plus open-iscsi on the node. This entry is also the ROOT of the " +
-      "largest deferral group in this file: every " +
-      "APPLIED_BUT_UNASSERTED_REASONS row reading 'requests storageClass: longhorn' is downstream of it, so " +
-      "lifting this one collapses several. " +
-      "LIFTS WHEN: a dev StorageClass provides the `longhorn` name in this lane, or the Applications that " +
-      "request it are parameterised to the substrate's default class. " +
+    "THE CHART ITSELF, and only the chart: replicated block storage wants real block devices plus open-iscsi " +
+      "on the node, and a kind node inside a runner has neither. " +
+      "IT NO LONGER HOLDS ANY OTHER APPLICATION OUT, and that half of this entry is CLOSED. It used to be the " +
+      "root of the largest deferral group in this file (every row reading 'requests storageClass: longhorn'). " +
+      "The first exit was a dev StorageClass NAMED `longhorn` over local-path (2026-08-21); since 2026-09-23 " +
+      "no chart names a provider at all -- charts request the capability `zeta-block-replicated`, metal binds it " +
+      "to Longhorn and dev to rancher.io/local-path (storage-capabilities.ts), so the consumers are asserted " +
+      "with no Longhorn anywhere in the lane. " +
+      "WHERE LONGHORN IS PROVEN INSTEAD: the NixOS QEMU test attaches real virtual disks and binds a volume " +
+      "through the chart (full-ai-cluster/nixos/tests/longhorn-volume-binds.nix). " +
+      "LIFTS WHEN: a CI lane attaches block devices to its node (a VM-backed runner, or the metal cluster) -- " +
+      "not by any change to this Application. " +
       "ANCHORS, CHECKED BY `reason-truth.ts`: each names an artifact this tree holds, so a claim that outlives its artifact goes red instead of reading on. " +
-      "[cite: path full-ai-cluster/dev-cluster/manifests/longhorn.yaml] " +
+      "[cite: path full-ai-cluster/nixos/tests/longhorn-volume-binds.nix] " +
+      "[cite: path full-ai-cluster/dev-cluster/manifests/zeta-block-replicated.yaml] " +
       "[cite: chart-pin full-ai-cluster/longhorn longhorn 1.12.1] " +
       "[cite: glob-defers longhorn] ",
   ],
   [
     "ollama",
-    "Requests nvidia.com/gpu with nodeSelector zeta.io/gpu, and a 200Gi longhorn PVC. A GitHub-hosted runner " +
+    "Requests nvidia.com/gpu with nodeSelector zeta.io/gpu, and a 200Gi PVC on the replicated capability " +
+      "(`zeta-block-replicated`, Longhorn on metal). A GitHub-hosted runner " +
       "has neither, and the multi-GiB image pull alone outruns the job timeout -- so the Application would " +
       "HANG rather than fail, which is the worse of the two. " +
       "LIFTS WHEN: the lane runs on a GPU-bearing self-hosted runner (arc-runner-set), or this Application " +
       "grows a CPU-only dev profile with a small model and a substrate-default StorageClass. " +
       "ANCHORS, CHECKED BY `reason-truth.ts`: each names an artifact this tree holds, so a claim that outlives its artifact goes red instead of reading on. " +
-      "[cite: pvc-class full-ai-cluster/ollama longhorn] " +
+      "[cite: pvc-class full-ai-cluster/ollama zeta-block-replicated] " +
       "[cite: pvc-total full-ai-cluster/ollama 200] " +
       "[cite: glob-defers ollama] ",
   ],
@@ -644,10 +652,10 @@ export const DEV_EXCLUDED_REASONS: ReadonlyMap<string, string> = new Map([
   ],
   [
     "vllm",
-    "Same class as ollama: CUDA image, nvidia.com/gpu request, 200Gi longhorn PVC. " +
+    "Same class as ollama: CUDA image, nvidia.com/gpu request, 200Gi PVC on `zeta-block-replicated`. " +
       "LIFTS WHEN: a GPU-bearing self-hosted runner exists for this lane, or a CPU-only dev profile ships. " +
       "ANCHORS, CHECKED BY `reason-truth.ts`: each names an artifact this tree holds, so a claim that outlives its artifact goes red instead of reading on. " +
-      "[cite: pvc-class full-ai-cluster/vllm longhorn] " +
+      "[cite: pvc-class full-ai-cluster/vllm zeta-block-replicated] " +
       "[cite: pvc-total full-ai-cluster/vllm 200] " +
       "[cite: glob-defers vllm] ",
   ],
@@ -1135,7 +1143,7 @@ export const APPLIED_BUT_UNASSERTED_REASONS: ReadonlyMap<string, string> = new M
       "LIFTS WHEN: this lane reports hindsight at `health=Healthy` -- NOT `sync=Synced health=Healthy`. The lane accepts `sync=Unknown health=Healthy` (argocd, cert-manager, external-secrets, headlamp, loki and node-feature-discovery all pass that way in the same green run; minio was in that list until 2026-09-01 and is not an app any more), and a LIFTS WHEN stricter than the gate it names is exactly what kept `headscale` deferred for a cycle after its defect was gone. Reaching it needs (a) the lane-wide capacity trade in (1)/(2) settled by the maintainer, and (b) whatever (3) turns out to cost once (a) lets a pod run long enough to find out. " +
       "ANCHORS, CHECKED BY `reason-truth.ts`: each names an artifact this tree holds, so a claim that outlives its artifact goes red instead of reading on. The four capacity numbers above are citations rather than prose FOR THAT REASON -- they are the numbers a reader is most likely to act on, so they are the ones that must not be allowed to go quietly stale. " +
       "[cite: glob-applies hindsight] " +
-      "[cite: pvc-class full-ai-cluster/hindsight longhorn] " +
+      "[cite: pvc-class full-ai-cluster/hindsight zeta-block-replicated] " +
       "[cite: pvc-total full-ai-cluster/hindsight 10] " +
       "[cite: chart-pin full-ai-cluster/hindsight hindsight 0.9.2] " +
       "[cite: resource-rung hindsight metal 1000] " +
@@ -1206,24 +1214,14 @@ export function isIncludedScope(scope: Scope): boolean {
   return scope === "included" || scope === "full";
 }
 
-function requestsLonghornStorageClass(yamlText: string): boolean {
-  return yamlText.split("\n").some((line) => {
-    const trimmed = line.trim();
-    const separator = trimmed.indexOf(":");
-    if (separator < 0) return false;
-    const key = trimmed.slice(0, separator);
-    if (key !== "storageClass" && key !== "storageClassName") return false;
-    const rawValue =
-      trimmed
-        .slice(separator + 1)
-        .split("#", 1)[0]
-        ?.trim() ?? "";
-    const value =
-      (rawValue.startsWith('"') && rawValue.endsWith('"')) || (rawValue.startsWith("'") && rawValue.endsWith("'"))
-        ? rawValue.slice(1, -1)
-        : rawValue;
-    return value === "longhorn";
-  });
+/**
+ * Every StorageClass NAME an Application's text requests. Since 2026-09-23 a
+ * name is a capability (`zeta-block-replicated` ...), never a provider -- see
+ * storage-capabilities.ts, whose line scanner this reuses so the lint and this
+ * rule read `storageClass:` identically.
+ */
+function requestedStorageClasses(yamlText: string): readonly string[] {
+  return storageClassValues(yamlText).map((entry) => entry.value);
 }
 
 function listYamlFilesUnder(dir: string, depth = 0): readonly string[] {
@@ -1237,8 +1235,8 @@ function listYamlFilesUnder(dir: string, depth = 0): readonly string[] {
   });
 }
 
-function yamlTreeReferencesLonghorn(appDir: string): boolean {
-  return listYamlFilesUnder(appDir).some((file) => requestsLonghornStorageClass(readFileSync(file, "utf8")));
+function yamlTreeRequestedStorageClasses(appDir: string): readonly string[] {
+  return listYamlFilesUnder(appDir).flatMap((file) => requestedStorageClasses(readFileSync(file, "utf8")));
 }
 
 /**
@@ -1358,9 +1356,15 @@ function yamlTreeRequestsReadWriteMany(appDir: string): boolean {
 }
 
 /**
- * Does the repo DECLARE a dev/CI substrate StorageClass named `longhorn`?
+ * Which storage CAPABILITIES does the repo bind for the dev/CI substrate?
  *
- * This is the SUBSTRATE CONDITION the longhorn exclusion now hangs on. It is
+ * Since 2026-09-23 charts name a capability, never a provider
+ * (storage-capabilities.ts), and dev binds the two RWO ones in
+ * `dev-cluster/manifests/`. The question used to be "is there a class NAMED
+ * `longhorn`"; it is now "which of the names charts ask for can this lane
+ * serve", and the answer is a set. `zeta-shared` is never in it.
+ *
+ * This is the SUBSTRATE CONDITION the storage exclusion hangs on. It is
  * deliberately a fact about the checked-in tree rather than about a live
  * cluster, because `isExcludedFromIncludedProof` is a pure, offline predicate
  * that `app-of-apps-discovery.ts` and the unit tests call with no cluster in
@@ -1381,8 +1385,19 @@ function yamlTreeRequestsReadWriteMany(appDir: string): boolean {
  * edit that "restores parity" by naming the real driver silently unlock ten
  * Applications onto a class that provisions nothing.
  */
-export function devLonghornStorageClassAliasDeclared(repoRoot = REPO_ROOT): boolean {
-  const path = resolve(repoRoot, DEV_STORAGE_ALIAS_MANIFEST_RELPATHS.longhorn);
+export function devBoundStorageCapabilities(repoRoot = REPO_ROOT): ReadonlySet<string> {
+  const bound = new Set<string>();
+  for (const key of Object.keys(DEV_STORAGE_ALIAS_MANIFEST_RELPATHS) as (keyof typeof DEV_STORAGE_ALIAS_MANIFEST_RELPATHS)[]) {
+    const expectedName = DEV_STORAGE_ALIAS_CLASS_NAMES[key];
+    if (devBindingManifestDeclares(resolve(repoRoot, DEV_STORAGE_ALIAS_MANIFEST_RELPATHS[key]), expectedName)) {
+      bound.add(expectedName);
+    }
+  }
+  return bound;
+}
+
+/** One dev binding file, fail-closed in every direction (see the doc above). */
+function devBindingManifestDeclares(path: string, expectedName: string): boolean {
   if (!existsSync(path)) return false;
   let document: unknown;
   try {
@@ -1397,7 +1412,7 @@ export function devLonghornStorageClassAliasDeclared(repoRoot = REPO_ROOT): bool
   if (!DEV_SATISFIABLE_PROVISIONERS.has(record.provisioner)) return false;
   const metadata = record.metadata;
   if (typeof metadata !== "object" || metadata === null) return false;
-  return (metadata as { name?: unknown }).name === DEV_LONGHORN_ALIAS_CLASS_NAME;
+  return (metadata as { name?: unknown }).name === expectedName;
 }
 
 /**
@@ -1464,7 +1479,12 @@ export function isExcludedFromIncludedProof(
   dir: string,
   appText: string,
   appDir: string,
-  aliasDeclared: boolean = devLonghornStorageClassAliasDeclared(),
+  /**
+   * The capabilities the dev substrate binds (`devBoundStorageCapabilities`).
+   * An Application requesting ANY class outside this set is excluded: its PVC
+   * could never bind here, and a pending PVC reads as Progressing, not failed.
+   */
+  devBound: ReadonlySet<string> = devBoundStorageCapabilities(),
   /**
    * The provider the proof is running on, when known.
    *
@@ -1492,8 +1512,8 @@ export function isExcludedFromIncludedProof(
   // scan catches in-repo manifests (arc-runner-set), the render catches
   // upstream charts (where most of these Applications keep their PVCs).
   if (yamlTreeRequestsReadWriteMany(appDir) || renderedClaimsRequestReadWriteMany(dir)) return true;
-  if (aliasDeclared) return false;
-  return requestsLonghornStorageClass(appText) || yamlTreeReferencesLonghorn(appDir);
+  const requested = [...requestedStorageClasses(appText), ...yamlTreeRequestedStorageClasses(appDir)];
+  return requested.some((storageClass) => !devBound.has(storageClass));
 }
 
 function usageFailure(message: string): Failure {
@@ -1829,9 +1849,9 @@ export function discoverExpectedApplications(
 ): readonly ExpectedApplication[] {
   // Read the substrate condition ONCE for the whole roster: it is a property of
   // the repo, not of any one Application, and re-reading it per directory would
-  // let two Applications in the same run disagree about whether dev has a
-  // `longhorn` StorageClass.
-  const aliasDeclared = devLonghornStorageClassAliasDeclared(repoRoot);
+  // let two Applications in the same run disagree about which storage
+  // capabilities dev binds.
+  const devBound = devBoundStorageCapabilities(repoRoot);
   const appsDir = resolve(repoRoot, "full-ai-cluster/k8s/applications");
   // DEPTH 2, via the module the root catalogue also uses. Depth 1 missed
   // `game-hosting/gmod`, which ArgoCD's non-segment-bounded glob does apply --
@@ -1854,7 +1874,7 @@ export function discoverExpectedApplications(
         dir,
         name,
         path: appPath.slice(repoRoot.length + 1),
-        excludedFromDev: isExcludedFromIncludedProof(dir, appText, appDir, aliasDeclared, provider, kindCni),
+        excludedFromDev: isExcludedFromIncludedProof(dir, appText, appDir, devBound, provider, kindCni),
         manualSync: classifySyncPolicy(appText).kind === "manual",
       },
     ];
@@ -1919,7 +1939,7 @@ export function buildPlan(options: CliOptions, repoRoot = REPO_ROOT): HarnessPla
       "wait for applications.argoproj.io CRD establishment",
       ...(isIncludedScope(options.scope)
         ? [
-            `assert the dev alias StorageClass "${DEV_LONGHORN_ALIAS_CLASS_NAME}" the repo declares is actually present, before anything waits on a PVC that needs it`,
+            `assert the dev storage-capability StorageClasses (${Object.values(DEV_STORAGE_ALIAS_CLASS_NAMES).join(", ")}) the repo binds are actually present, before anything waits on a PVC that needs one`,
             ...DEV_BOOTSTRAP_SECRETS.map(
               (spec) =>
                 `assert the dev credential ${spec.namespace}/${spec.name} the bring-up mints is actually present, before its Application waits on a Secret that must pre-exist`,
@@ -2322,33 +2342,37 @@ function bootstrapCluster(plan: HarnessPlan, options: CliOptions): Failure | nul
  */
 function assertDevStorageClassPresent(plan: HarnessPlan): Failure | null {
   if (!isIncludedScope(plan.scope)) return null;
-  if (!devLonghornStorageClassAliasDeclared()) return null;
-  const args = ["get", "storageclass", DEV_LONGHORN_ALIAS_CLASS_NAME, "-o", "jsonpath={.provisioner}"];
-  const result = runCommand("kubectl", args, 60_000);
-  const provisioner = result.stdout.trim();
-  const satisfiable = result.status === 0 && DEV_SATISFIABLE_PROVISIONERS.has(provisioner);
-  if (satisfiable) return null;
-  const cause =
-    result.status === 0
-      ? `it is bound to provisioner "${provisioner}", which this lane cannot run`
-      : "it is not present";
-  return {
-    kind: "DevStorageClassMissing",
-    message:
-      `${DEV_STORAGE_ALIAS_MANIFEST_RELPATHS.longhorn} declares a dev StorageClass named ` +
-      `"${DEV_LONGHORN_ALIAS_CLASS_NAME}" over ${[...DEV_SATISFIABLE_PROVISIONERS].join("/")}, and the ` +
-      `included proof asserts Applications that request it, but in cluster ${plan.clusterName} ${cause}. ` +
-      `Those PVCs would stay Pending, which ArgoCD reports as Progressing rather than Degraded, so the run ` +
-      `would burn its whole timeout instead of failing. Failing now instead. Check that the bring-up path ` +
-      `still applies the alias manifest.`,
-    command: ["kubectl", ...args],
-    detail: {
-      stdout: result.stdout.slice(-2000),
-      stderr: result.stderr.slice(-2000),
-      clusterName: plan.clusterName,
-      observedProvisioner: provisioner,
-    },
-  };
+  const bound = devBoundStorageCapabilities();
+  for (const key of Object.keys(DEV_STORAGE_ALIAS_MANIFEST_RELPATHS) as (keyof typeof DEV_STORAGE_ALIAS_MANIFEST_RELPATHS)[]) {
+    const className = DEV_STORAGE_ALIAS_CLASS_NAMES[key];
+    if (!bound.has(className)) continue;
+    const args = ["get", "storageclass", className, "-o", "jsonpath={.provisioner}"];
+    const result = runCommand("kubectl", args, 60_000);
+    const provisioner = result.stdout.trim();
+    const satisfiable = result.status === 0 && DEV_SATISFIABLE_PROVISIONERS.has(provisioner);
+    if (satisfiable) continue;
+    const cause =
+      result.status === 0
+        ? `it is bound to provisioner "${provisioner}", which this lane cannot run`
+        : "it is not present";
+    return {
+      kind: "DevStorageClassMissing",
+      message:
+        `${DEV_STORAGE_ALIAS_MANIFEST_RELPATHS[key]} binds the storage capability "${className}" over ` +
+        `${[...DEV_SATISFIABLE_PROVISIONERS].join("/")}, and the included proof asserts Applications that request ` +
+        `it, but in cluster ${plan.clusterName} ${cause}. Those PVCs would stay Pending, which ArgoCD reports as ` +
+        `Progressing rather than Degraded, so the run would burn its whole timeout instead of failing. Failing ` +
+        `now instead. Check that the bring-up path still applies the binding manifest.`,
+      command: ["kubectl", ...args],
+      detail: {
+        stdout: result.stdout.slice(-2000),
+        stderr: result.stderr.slice(-2000),
+        clusterName: plan.clusterName,
+        observedProvisioner: provisioner,
+      },
+    };
+  }
+  return null;
 }
 
 /**

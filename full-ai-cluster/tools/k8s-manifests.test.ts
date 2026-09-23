@@ -184,12 +184,12 @@ describe("platform app: generic Blueprint/Deployable engine wiring", () => {
     expect(c).not.toContain('resources: ["*"]'); // least-privilege, no wildcard
   });
 
-  test("portal is a StatefulSet with a Longhorn volumeClaimTemplate (durable rooms = agent-memory pattern)", () => {
+  test("portal is a StatefulSet with a replicated (zeta-block-replicated) volumeClaimTemplate (durable rooms = agent-memory pattern)", () => {
     const p = read("portal.yaml");
     expect(p).toContain("kind: StatefulSet");
     expect(p).not.toContain("kind: Deployment"); // must be stateful, not a Deployment
     expect(p).toContain("volumeClaimTemplates");
-    expect(p).toContain("storageClassName: longhorn");
+    expect(p).toContain("storageClassName: zeta-block-replicated");
     expect(p).toContain("/var/lib/zeta-rooms"); // the durable mount
     expect(p).toContain("pods/log"); // live logs RBAC (the real resource console)
     expect(p).toContain("metrics.k8s.io"); // live metrics RBAC
@@ -202,20 +202,20 @@ describe("session-added apps: required objects present", () => {
   const dir = join(K8S, "applications");
   const read = (p: string) => readFileSync(join(dir, p), "utf8");
 
-  test("gmod has StatefulSet + LoadBalancer Service + longhorn PVC", () => {
+  test("gmod has StatefulSet + LoadBalancer Service + replicated PVC", () => {
     const ss = read("game-hosting/gmod/statefulset.yaml");
     expect(ss).toContain("kind: StatefulSet");
-    expect(ss).toContain("storageClassName: longhorn");
+    expect(ss).toContain("storageClassName: zeta-block-replicated");
     expect(ss).toContain("volumeClaimTemplates");
     const svc = read("game-hosting/gmod/service.yaml");
     expect(svc).toContain("type: LoadBalancer");
     expect(svc).toContain("27015");
   });
 
-  test("agent-memory binds a longhorn PVC via volumeClaimTemplates", () => {
+  test("agent-memory binds a replicated PVC via volumeClaimTemplates", () => {
     const ss = read("agent-memory/statefulset.yaml");
     expect(ss).toContain("kind: StatefulSet");
-    expect(ss).toContain("storageClassName: longhorn");
+    expect(ss).toContain("storageClassName: zeta-block-replicated");
   });
 
   test("cilium-lb-ipam declares an IP pool + an L2 announcement policy", () => {

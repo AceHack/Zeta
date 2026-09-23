@@ -60,7 +60,7 @@ spec:
           # `bun src/Core.TypeScript/cluster/image-footprint.ts --report` for the
           # measured per-app ranking, and `runner-disk.ts --measure` for the disk.
           size: 200Gi
-          storageClass: longhorn
+          storageClass: zeta-block-replicated
         nodeSelector:
           zeta.io/gpu: nvidia
         resources:

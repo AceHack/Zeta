@@ -61,7 +61,7 @@ spec:
         persistence:
           enabled: true
           size: 20Gi
-          storageClass: zeta-local-path   # or longhorn for HA
+          storageClass: zeta-block-local   # or zeta-block-replicated for durable, replicated storage
         # NO `postgresql:` key -- deliberately, and this is a BEHAVIOUR CHANGE.
         #
         # This manifest used to carry `postgresql.enabled: true` ("ships its own

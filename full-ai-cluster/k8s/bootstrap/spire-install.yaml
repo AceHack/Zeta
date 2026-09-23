@@ -68,7 +68,7 @@ spec:
       persistence:
         type: pvc
         size: 5Gi
-        storageClass: zeta-local-path
+        storageClass: zeta-block-local
       # PINNED 2026-09-22. `spire-lib.kubectl-image` (charts/spire-lib/templates/_helpers.tpl
       # in chart 0.24.2) derives this hook image's tag from `.Capabilities.KubeVersion.Version`
       # whenever `tools.kubectl.image.tag` is empty -- its own default. K3S reports

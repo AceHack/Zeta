@@ -138,7 +138,7 @@ spec:
           persistence:
             type: pvc
             size: 5Gi
-            storageClass: zeta-local-path
+            storageClass: zeta-block-local
           # PINNED 2026-09-22 -- mirrors k8s/bootstrap/spire-install.yaml (see the comment
           # there for the full derivation and the live-VM evidence: run 35687536936,
           # helm-install-spire's post-install-job ErrImagePull-looping on

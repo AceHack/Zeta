@@ -121,7 +121,7 @@ spec:
             # what survives a restart, not what can be cached -- maxmemory governs
             # that and is a memory setting, not this one.
             size: 8Gi
-            storageClass: longhorn
+            storageClass: zeta-block-replicated
         # NO TOP-LEVEL `persistence:` HERE. An earlier draft had one and
         # inert-valuesobject-keys refused it: this chart has no such key. One
         # StatefulSet renders with `replicas: 3` -- primary plus two replicas --

@@ -11,7 +11,7 @@
 // class simply did not exist for it.
 //
 // Two oracles are worth having only while they can be compared. If each one
-// carried its own copy of "the default is zeta-local-path", a change to the
+// carried its own copy of "the default is zeta-block-local", a change to the
 // nixos module would move one and not the other, and the disagreement would
 // stop being informative — it would just be stale. So the reading lives here
 // once and both import it, which makes their agreement on this term structural
@@ -41,12 +41,13 @@ function readIfPresent(abs: string): string | null {
  * The name annotated `storageclass.kubernetes.io/is-default-class: "true"`, or
  * `null` when the tree does not declare one.
  *
- * AN ABSENT `storageClassName` IS NOT "NO DISK" AND IS NOT "longhorn". It is
- * whatever class the cluster marks default, and on this cluster that is
- * `zeta-local-path` — `rancher.io/local-path`, a hostPath directory with
- * `reclaimPolicy: Delete`, declared in the nixos module above. Longhorn ships
- * `defaultClass: false` in `full-ai-cluster`, so nothing falls back to the
- * replicated class by accident.
+ * AN ABSENT `storageClassName` IS NOT "NO DISK" AND IS NOT REPLICATED. It is
+ * whatever class the cluster marks default, and on this cluster that is the
+ * `zeta-block-local` capability (named `zeta-local-path` until 2026-09-23) —
+ * `rancher.io/local-path`, a hostPath directory with `reclaimPolicy: Delete`,
+ * declared in the nixos module above. Neither Longhorn-backed capability is
+ * default, and Longhorn ships `defaultClass: false`, so nothing falls back to
+ * the replicated pool by accident (why: storage-capabilities.ts).
  *
  * That distinction is the whole reason storageClass is compared and not just
  * size: a claim that declares `longhorn` and renders blank does not merely

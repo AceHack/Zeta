@@ -103,9 +103,10 @@ spec:
           # (full-ai-cluster/nixos/modules/local-storage.nix). The
           # semantic-memory Postgres was on node-local delete-on-reclaim disk
           # for as long as this file said `longhorn`. Re-rendered after the
-          # move: 10Gi, storageClassName "longhorn".
+          # move: 10Gi, storageClassName "longhorn" -- since 2026-09-23 the
+          # capability name `zeta-block-replicated`, which metal binds to Longhorn.
           persistence:
-            storageClass: longhorn
+            storageClass: zeta-block-replicated
             # SIZE CUT, NOT A POD CUT: 20Gi -> 10Gi, one primary either way.
             #
             # THE CUT TO REVISIT FIRST if this box gains room. This is the

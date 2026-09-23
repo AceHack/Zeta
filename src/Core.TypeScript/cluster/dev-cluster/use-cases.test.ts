@@ -412,9 +412,11 @@ describe("kind CI use case", () => {
   /**
    * 081M0JXF6MS087G0R001HC34TM — THE WIRING FALSIFIER.
    *
-   * `isExcludedFromIncludedProof` stops excluding ten longhorn-backed
-   * Applications because `dev-cluster/manifests/longhorn.yaml` exists in the
-   * tree. That is a claim about the REPO. It only buys anything if bring-up
+   * `isExcludedFromIncludedProof` stops excluding every Application that names
+   * `zeta-block-replicated` / `zeta-block-local` because the dev binding
+   * manifests for those capabilities exist in the tree (they replaced the
+   * `longhorn.yaml` alias on 2026-09-23). That is a claim about the REPO. It
+   * only buys anything if bring-up
    * actually applies the file, and nothing about the repo-side claim can
    * detect a dropped `applyFileManifest` call. This test can: delete either
    * line from `applyDevStorageClassAliases` and it goes red.
@@ -424,7 +426,7 @@ describe("kind CI use case", () => {
    * exclusion was protecting against -- so the aliases must precede the
    * app-of-apps root, never merely accompany it.
    */
-  test("kind bring-up applies both dev alias StorageClasses BEFORE the app-of-apps root", () => {
+  test("kind bring-up applies both dev capability bindings BEFORE the app-of-apps root", () => {
     const log: string[] = [];
     bringUpKindCiCluster(fakePorts(log), {
       configPath: "/tmp/kind.yaml",
@@ -432,20 +434,45 @@ describe("kind CI use case", () => {
       gitRef: "main",
       gitRepoUrl: "https://github.com/Lucent-Financial-Group/Zeta",
     });
-    const longhorn = `file:${devStorageAliasManifestPath("longhorn")}`;
-    const zetaLocalPath = `file:${devStorageAliasManifestPath("zetaLocalPath")}`;
-    expect(log).toContain(longhorn);
-    expect(log).toContain(zetaLocalPath);
+    const replicated = `file:${devStorageAliasManifestPath("blockReplicated")}`;
+    const local = `file:${devStorageAliasManifestPath("blockLocal")}`;
+    expect(log).toContain(replicated);
+    expect(log).toContain(local);
     const catalogAt = log.findIndex((entry) => entry.startsWith("catalog:"));
     expect(catalogAt).toBeGreaterThan(-1);
-    expect(log.indexOf(longhorn)).toBeLessThan(catalogAt);
-    expect(log.indexOf(zetaLocalPath)).toBeLessThan(catalogAt);
+    expect(log.indexOf(replicated)).toBeLessThan(catalogAt);
+    expect(log.indexOf(local)).toBeLessThan(catalogAt);
+  });
+
+  /**
+   * ONE DEFAULT, AS ON METAL. kind ships `standard` marked default; the dev
+   * binding marks `zeta-block-local` default too. Unless bring-up clears the
+   * stock mark, a class-less PVC binds whichever default is newest -- the
+   * ambiguity k3s-server.nix records on node-09485d. Asserted in BOTH
+   * directions: a stock class that exists is un-marked, and one that does not
+   * exist is left alone (a patch against an absent object would fail bring-up).
+   */
+  test("bring-up clears the stock default class that exists, and only that one", () => {
+    const log: string[] = [];
+    bringUpKindCiCluster(fakePorts(log, ["storageclass/standard@-"]), {
+      configPath: "/tmp/kind.yaml",
+      clusterName: "zeta-ci",
+      gitRef: "main",
+      gitRepoUrl: "https://github.com/Lucent-Financial-Group/Zeta",
+    });
+    const cleared = log.filter((entry) => entry.startsWith("patch:storageclass/"));
+    expect(cleared).toEqual([
+      'patch:storageclass/standard@-:{"metadata":{"annotations":{"storageclass.kubernetes.io/is-default-class":"false"}}}',
+    ]);
+    const catalogAt = log.findIndex((entry) => entry.startsWith("catalog:"));
+    expect(log.indexOf(cleared[0] ?? "")).toBeLessThan(catalogAt);
+    expect(log.indexOf(cleared[0] ?? "")).toBeGreaterThan(log.indexOf(`file:${devStorageAliasManifestPath("blockLocal")}`));
   });
 
   test("k3d bring-up applies the same aliases — the exclusion rule is provider-independent", () => {
     // `isExcludedFromIncludedProof` does not know which provider is running, so
-    // a `longhorn` class that exists only under kind would have the k3d lane
-    // asserting Applications it cannot bind.
+    // a capability bound only under kind would have the k3d lane asserting
+    // Applications it cannot bind.
     const log: string[] = [];
     bringUpK3dDevCluster(fakePorts(log), {
       configPath: "/tmp/k3d.yaml",
@@ -456,11 +483,11 @@ describe("kind CI use case", () => {
       gitRepoUrl: "https://github.com/Lucent-Financial-Group/Zeta",
       env: {},
     });
-    const longhorn = `file:${devStorageAliasManifestPath("longhorn")}`;
-    expect(log).toContain(longhorn);
+    const replicated = `file:${devStorageAliasManifestPath("blockReplicated")}`;
+    expect(log).toContain(replicated);
     const catalogAt = log.findIndex((entry) => entry.startsWith("catalog:"));
     expect(catalogAt).toBeGreaterThan(-1);
-    expect(log.indexOf(longhorn)).toBeLessThan(catalogAt);
+    expect(log.indexOf(replicated)).toBeLessThan(catalogAt);
   });
 
   /**

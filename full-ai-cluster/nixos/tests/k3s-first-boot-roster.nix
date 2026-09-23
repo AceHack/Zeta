@@ -193,22 +193,22 @@ pkgs.testers.nixosTest {
 
     # -- LINK 1: the single default StorageClass -------------------------
     # k3s ships local-path-provisioner and marks its class default;
-    # local-storage.nix declares zeta-local-path ALSO default. Two defaults
+    # local-storage.nix declares zeta-block-local ALSO default. Two defaults
     # is an ambiguous config in which a class-less PVC binds
     # non-deterministically -- observed on node-09485d, 2026-06-07, which is
     # why --disable=local-storage is in extraFlags. Asserted BEFORE the heavy
     # pulls because it needs none of them.
-    with subtest("exactly one default StorageClass, and it is zeta-local-path"):
-        server.wait_until_succeeds(f"{kc} get storageclass zeta-local-path", timeout=600)
+    with subtest("exactly one default StorageClass, and it is zeta-block-local"):
+        server.wait_until_succeeds(f"{kc} get storageclass zeta-block-local", timeout=600)
         defaults = server.succeed(
             f"{kc} get storageclass "
             f"-o jsonpath='{{range .items[?(@.metadata.annotations."
             f"storageclass\\.kubernetes\\.io/is-default-class==\"true\")]}}"
             f"{{.metadata.name}} {{end}}'"
         ).split()
-        assert defaults == ["zeta-local-path"], (
+        assert defaults == ["zeta-block-local"], (
             "first boot must leave exactly one default StorageClass named "
-            f"zeta-local-path; got {defaults}. Two defaults means k3s' own "
+            f"zeta-block-local; got {defaults}. Two defaults means k3s' own "
             "local-storage addon came back (check --disable=local-storage)."
         )
 

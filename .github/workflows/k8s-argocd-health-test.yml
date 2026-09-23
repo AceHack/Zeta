@@ -146,6 +146,9 @@ on:
       # catalogue against it offline. Editing either without re-measuring is
       # exactly the drift this job exists to catch, so all four are watched.
       - "src/Core.TypeScript/cluster/rendered-storage-claims.ts"
+      - "src/Core.TypeScript/cluster/storage-capabilities.ts"
+      - "src/Core.TypeScript/cluster/storage-capabilities.test.ts"
+      - "full-ai-cluster/nixos/modules/local-storage.nix"
       - "src/Core.TypeScript/cluster/rendered-storage-claims.test.ts"
       - "src/Core.TypeScript/cluster/rendered-storage-claims.baseline.json"
       - "src/Core.TypeScript/cluster/rendered-storage-claims.snapshot.json"
@@ -271,6 +274,9 @@ on:
       # catalogue against it offline. Editing either without re-measuring is
       # exactly the drift this job exists to catch, so all four are watched.
       - "src/Core.TypeScript/cluster/rendered-storage-claims.ts"
+      - "src/Core.TypeScript/cluster/storage-capabilities.ts"
+      - "src/Core.TypeScript/cluster/storage-capabilities.test.ts"
+      - "full-ai-cluster/nixos/modules/local-storage.nix"
       - "src/Core.TypeScript/cluster/rendered-storage-claims.test.ts"
       - "src/Core.TypeScript/cluster/rendered-storage-claims.baseline.json"
       - "src/Core.TypeScript/cluster/rendered-storage-claims.snapshot.json"
@@ -715,6 +721,20 @@ jobs:
 
       - name: Audit declared storage claims against the measured render
         run: bun src/Core.TypeScript/cluster/rendered-storage-claims.ts --offline
+
+      # NO CHART NAMES A STORAGE PROVIDER (2026-09-23). Charts request one of
+      # three CAPABILITIES -- zeta-block-replicated, zeta-block-local (default),
+      # zeta-shared -- and each cluster binds them: metal in
+      # nixos/modules/local-storage.nix (Longhorn / local-path), dev in
+      # dev-cluster/manifests/ (local-path; zeta-shared unbound). The audit is an
+      # ALLOWLIST over every Application/bootstrap manifest AND the committed
+      # render, so a provider name nobody listed is refused too, and it holds
+      # each cluster to one default + WaitForFirstConsumer. Offline, <1s.
+      - name: Run storage-capability falsifiers
+        run: bun test src/Core.TypeScript/cluster/storage-capabilities.test.ts
+
+      - name: Audit that no manifest names a storage provider
+        run: bun src/Core.TypeScript/cluster/storage-capabilities.ts
 
       # DOES EVERY `valuesObject` KEY EXIST IN THE CHART? -- the general form of
       # the defect the step above catches only by accident.
@@ -1198,7 +1218,7 @@ jobs:
         # 1165m / 9164Mi and fits the runner budget (2500m / 9216Mi). Metal stays
         # in git for USB/hardware. Disk is a different ladder: this job already
         # runs `--check-envelope` (70 GiB). PVC sizes stay at the metal storage
-        # profile because CI `zeta-local-path` is thin and shrinking PVCs would
+        # profile because CI `zeta-block-local` is thin and shrinking PVCs would
         # not be a USB rehearsal. Do not invent a fourth budget. Do not shrink
         # metal.
         run: |

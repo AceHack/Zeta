@@ -119,7 +119,7 @@ spec:
             type: ClusterIP
         persistence:
           enabled: true
-          storageClass: longhorn
+          storageClass: zeta-block-replicated
           # SIZE CUT, NOT A POD CUT: 5Gi -> 3Gi, one pod either way. Small
           # service state. Like headscale this row exists so the profile total
           # covers the whole tree, not because 2 GiB was worth recovering.
