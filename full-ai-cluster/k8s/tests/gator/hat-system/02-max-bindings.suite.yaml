@@ -1,0 +1,41 @@
+# gator verify suite -- 02-max-bindings (HatMaxBindings, maxBindingsPerWearer: 3).
+apiVersion: test.gatekeeper.sh/v1alpha1
+kind: Suite
+metadata:
+  name: hat-max-bindings
+tests:
+- name: hatmaxbindings
+  template: _policies/02-max-bindings.template.yaml
+  constraint: _policies/02-max-bindings.constraint.yaml
+  cases:
+  - name: fourth-binding-denied
+    object: reviews/create-executor-alice.yaml
+    inventory: [inventory/alice-holds-3-active.yaml]
+    assertions:
+    - violations: 1
+    - message: "already holds 3 hats; max is 3"
+      violations: 1
+  # Found by this suite: a HatBinding has no status until the operator first
+  # reconciles it, and `b.status.phase != "Revoked"` is UNDEFINED on a missing
+  # status, so the comprehension dropped every unreconciled binding. With the
+  # operator down, the cap admitted an unbounded number of bindings.
+  - name: fourth-binding-denied-when-held-bindings-are-unreconciled
+    object: reviews/create-executor-alice.yaml
+    inventory: [inventory/alice-holds-3-no-status.yaml]
+    assertions:
+    - violations: 1
+  - name: third-binding-admits
+    object: reviews/create-executor-alice.yaml
+    inventory: [inventory/alice-holds-2-active.yaml]
+    assertions:
+    - violations: no
+  - name: revoked-bindings-do-not-count
+    object: reviews/create-executor-alice.yaml
+    inventory: [inventory/alice-holds-2-active-1-revoked.yaml]
+    assertions:
+    - violations: no
+  - name: another-wearers-bindings-do-not-count
+    object: reviews/create-executor-alice.yaml
+    inventory: [inventory/bob-holds-3-active.yaml]
+    assertions:
+    - violations: no

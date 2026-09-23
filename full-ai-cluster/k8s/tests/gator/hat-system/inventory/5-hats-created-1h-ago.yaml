@@ -1,0 +1,34 @@
+apiVersion: society.zeta.io/v1alpha1
+kind: Hat
+metadata: {name: recent-0, creationTimestamp: "{{now-3600s}}"}
+spec:
+  description: gator suite fixture recent-0
+  authority: {rules: []}
+---
+apiVersion: society.zeta.io/v1alpha1
+kind: Hat
+metadata: {name: recent-1, creationTimestamp: "{{now-3600s}}"}
+spec:
+  description: gator suite fixture recent-1
+  authority: {rules: []}
+---
+apiVersion: society.zeta.io/v1alpha1
+kind: Hat
+metadata: {name: recent-2, creationTimestamp: "{{now-3600s}}"}
+spec:
+  description: gator suite fixture recent-2
+  authority: {rules: []}
+---
+apiVersion: society.zeta.io/v1alpha1
+kind: Hat
+metadata: {name: recent-3, creationTimestamp: "{{now-3600s}}"}
+spec:
+  description: gator suite fixture recent-3
+  authority: {rules: []}
+---
+apiVersion: society.zeta.io/v1alpha1
+kind: Hat
+metadata: {name: recent-4, creationTimestamp: "{{now-3600s}}"}
+spec:
+  description: gator suite fixture recent-4
+  authority: {rules: []}

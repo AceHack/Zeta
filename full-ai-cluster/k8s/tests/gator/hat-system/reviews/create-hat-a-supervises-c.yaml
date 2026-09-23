@@ -1,0 +1,17 @@
+apiVersion: admission.k8s.io/v1
+kind: AdmissionReview
+request:
+  uid: create-hat-a-supervises-c
+  kind: {group: society.zeta.io, version: v1alpha1, kind: Hat}
+  resource: {group: society.zeta.io, version: v1alpha1, resource: hats}
+  name: hat-a
+  operation: CREATE
+  userInfo: {username: gator-suite}
+  object:
+    apiVersion: society.zeta.io/v1alpha1
+    kind: Hat
+    metadata: {name: hat-a}
+    spec:
+      description: gator suite fixture hat-a
+      authority: {rules: []}
+      supervises: [hat-c]

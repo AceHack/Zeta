@@ -1,0 +1,63 @@
+# gator verify suite -- 07-no-supervisor-cycles (HatNoCycle).
+apiVersion: test.gatekeeper.sh/v1alpha1
+kind: Suite
+metadata:
+  name: hat-no-cycle
+tests:
+- name: hatnocycle
+  template: _policies/07-no-supervisor-cycles.template.yaml
+  constraint: _policies/07-no-supervisor-cycles.constraint.yaml
+  cases:
+  - name: two-cycle-on-create-denied
+    object: reviews/create-hat-a-supervises-b.yaml
+    inventory: [inventory/hat-b-supervises-a.yaml]
+    assertions:
+    - violations: 1
+    - message: "supervisor cycle: hat hat-a would supervise hat-b"
+      violations: 1
+  - name: three-cycle-on-create-denied
+    object: reviews/create-hat-a-supervises-b.yaml
+    inventory: [inventory/hat-b-supervises-c-supervises-a.yaml]
+    assertions:
+    - violations: 1
+  - name: self-supervision-denied
+    object: reviews/create-hat-a-supervises-itself.yaml
+    inventory: [_hats/executor.yaml, _hats/hat-designer.yaml, _hats/observer.yaml, _hats/policy-admin.yaml]
+    assertions:
+    - violations: 1
+  # Found by this suite: with NO Hat synced (gatekeeper's cache not yet warm, or
+  # the first Hat ever) the catalogue lookup was UNDEFINED and the rule failed
+  # open, admitting even a hat that supervises itself.
+  - name: self-supervision-denied-with-an-empty-hat-inventory
+    object: reviews/create-hat-a-supervises-itself.yaml
+    assertions:
+    - violations: 1
+  - name: cycle-closed-by-update-denied
+    object: reviews/update-hat-b-supervises-a.yaml
+    inventory: [inventory/hat-a-supervises-b.yaml]
+    assertions:
+    - violations: 1
+  - name: chain-without-cycle-admits
+    object: reviews/create-hat-a-supervises-b.yaml
+    inventory: [inventory/hat-c-supervises-b.yaml]
+    assertions:
+    - violations: no
+  - name: unrelated-edge-admits
+    object: reviews/create-hat-a-supervises-c.yaml
+    inventory: [inventory/hat-b-supervises-a.yaml]
+    assertions:
+    - violations: no
+  # A catalogue that already holds a cycle (a -> b -> a, admitted before this
+  # policy existed, or by a webhook outage) must stay REPAIRABLE: the update that
+  # removes hat-b's edge has to be admitted, not refused because of the cycle it
+  # is breaking.
+  - name: update-breaking-an-existing-cycle-admits
+    object: reviews/update-hat-b-supervises-nothing.yaml
+    inventory: [inventory/hat-a-supervises-b.yaml, inventory/hat-b-supervises-a.yaml]
+    assertions:
+    - violations: no
+  - name: hat-without-supervises-admits
+    object: reviews/create-hat-new.yaml
+    inventory: [inventory/hat-b-supervises-a.yaml]
+    assertions:
+    - violations: no

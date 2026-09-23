@@ -1,0 +1,37 @@
+# gator verify suite -- 05-warmup (HatWarmup). UPDATE reviews carry oldObject;
+# `{{now+600s}}` is rendered at run time (see 01-cooldown.suite.yaml).
+apiVersion: test.gatekeeper.sh/v1alpha1
+kind: Suite
+metadata:
+  name: hat-warmup
+tests:
+- name: hatwarmup
+  template: _policies/05-warmup.template.yaml
+  constraint: _policies/05-warmup.constraint.yaml
+  cases:
+  - name: promote-to-active-inside-window-denied
+    object: reviews/promote-warmup-to-active-early.yaml
+    assertions:
+    - violations: 1
+    - message: "warmup not complete for hat executor binding alice-executor"
+      violations: 1
+  - name: promote-to-active-after-window-admits
+    object: reviews/promote-warmup-to-active-after-window.yaml
+    assertions:
+    - violations: no
+  - name: staying-in-warmup-admits
+    object: reviews/warmup-stays-warmup-early.yaml
+    assertions:
+    - violations: no
+  # Only the Warmup -> Active TRANSITION is gated. A status write on a binding
+  # that is already Active (conditions, effectiveAuthority) while the old
+  # warmupEndsAt is still in the future must not be refused -- the mutation
+  # suite showed no case pinned this until it was added.
+  - name: active-binding-status-refresh-inside-window-admits
+    object: reviews/active-status-refresh-inside-window.yaml
+    assertions:
+    - violations: no
+  - name: create-is-not-a-promotion-admits
+    object: reviews/create-active-binding.yaml
+    assertions:
+    - violations: no

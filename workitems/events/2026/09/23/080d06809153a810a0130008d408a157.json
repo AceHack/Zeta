@@ -1,0 +1,14 @@
+{
+  "id": "080d06809153a810a0130008d408a157",
+  "at": "2026-09-23T21:00:46.581Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M3814AKM087G0R0013STJE5",
+    "type": "task",
+    "title": "Execute the hat-system Gatekeeper policies in CI with gator verify",
+    "slug": "execute-the-hat-system-gatekeeper-policies-in-ci-with-gator",
+    "priority": "P2",
+    "filename": "081M3814AKM087G0R0013STJE5-execute-the-hat-system-gatekeeper-policies-in-ci-with-gator.md"
+  }
+}

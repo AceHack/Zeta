@@ -32,3 +32,12 @@ kind = "0.31.0"
 kubectl = "1.36.1"
 helm = "4.2.0"
 "github:yannh/kubeconform" = "0.7.0"
+# gator: Gatekeeper's official OFFLINE policy tester (`gator verify`). Executes the
+# hat-system ConstraintTemplates' Rego against suites of admission reviews + inventory,
+# with no cluster (`full-ai-cluster/k8s/applications/hat-system/policy-tests/`).
+# MUST equal the gatekeeper chart pin in
+# `full-ai-cluster/k8s/applications/open-policy-agent/Application.yaml` -- gator embeds
+# the same OPA/Rego engine and constraint framework as the admission webhook, so a
+# version skew would test a different engine than the one that enforces. Held
+# together by `src/Core.TypeScript/cluster/gator-verify-hat-policies.ts`.
+gator = "3.23.1"

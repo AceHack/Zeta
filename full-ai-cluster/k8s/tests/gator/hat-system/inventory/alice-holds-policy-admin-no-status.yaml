@@ -1,0 +1,6 @@
+apiVersion: society.zeta.io/v1alpha1
+kind: HatBinding
+metadata: {name: alice-policy-admin-new, namespace: hat-system}
+spec:
+  hat: policy-admin
+  wearer: {spiffeID: "spiffe://zeta.local/agent/alice"}

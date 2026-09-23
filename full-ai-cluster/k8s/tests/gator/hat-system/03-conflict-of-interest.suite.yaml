@@ -1,0 +1,95 @@
+# gator verify suite -- 03-conflict-of-interest (HatConflict).
+#
+# EXECUTES the Rego. Before this suite, the only test of this policy was
+# `src/Core.TypeScript/cluster/hat-conflict-symmetry.test.ts`, which models the
+# rule from the policy's text and cannot catch a Rego error or a wrong field path.
+#
+# Not runnable by bare `gator verify` from this directory: `_policies/` and
+# `_hats/` are materialised by `src/Core.TypeScript/cluster/gator-verify-hat-policies.ts`,
+# which splits each two-document policy file (gator reads only the FIRST document
+# of a `template:` / `constraint:` path) and copies the committed seed hats, so the
+# inventory is the real catalogue rather than a restatement of it.
+#
+# The load-bearing cases are the BOTH-ORDERS pairs. `policy-admin` declares
+# `conflictsWith: [executor, hat-designer]` and neither names it back, so one order
+# is refused by the incoming hat's declaration and the other ONLY by the reverse
+# rule. `executor` <-> `hat-designer` declare each other, so both rules fire and
+# the pair is caught twice -- the assertion counts that exactly.
+apiVersion: test.gatekeeper.sh/v1alpha1
+kind: Suite
+metadata:
+  name: hat-conflict-of-interest
+tests:
+- name: hatconflict
+  template: _policies/03-conflict-of-interest.template.yaml
+  constraint: _policies/03-conflict-of-interest.constraint.yaml
+  cases:
+  # -- policy-admin / executor: one-sided declaration, both orders --------------
+  - name: holds-executor-binds-policy-admin-denied-by-incoming-declaration
+    object: reviews/create-policy-admin-alice.yaml
+    inventory: [_hats/executor.yaml, _hats/hat-designer.yaml, _hats/observer.yaml, _hats/policy-admin.yaml, inventory/alice-holds-executor.yaml]
+    assertions:
+    - violations: 1
+    - message: "cannot bind hat policy-admin while holding conflicting hat executor"
+      violations: 1
+  - name: holds-policy-admin-binds-executor-denied-by-reverse-rule
+    object: reviews/create-executor-alice.yaml
+    inventory: [_hats/executor.yaml, _hats/hat-designer.yaml, _hats/observer.yaml, _hats/policy-admin.yaml, inventory/alice-holds-policy-admin.yaml]
+    assertions:
+    - violations: 1
+    - message: "cannot bind hat executor while holding policy-admin, which declares it conflicting"
+      violations: 1
+  # -- policy-admin / hat-designer: the other one-sided pair ---------------------
+  - name: holds-hat-designer-binds-policy-admin-denied
+    object: reviews/create-policy-admin-alice.yaml
+    inventory: [_hats/executor.yaml, _hats/hat-designer.yaml, _hats/observer.yaml, _hats/policy-admin.yaml, inventory/alice-holds-hat-designer.yaml]
+    assertions:
+    - violations: 1
+  - name: holds-policy-admin-binds-hat-designer-denied
+    object: reviews/create-hat-designer-alice.yaml
+    inventory: [_hats/executor.yaml, _hats/hat-designer.yaml, _hats/observer.yaml, _hats/policy-admin.yaml, inventory/alice-holds-policy-admin.yaml]
+    assertions:
+    - violations: 1
+  # -- executor / hat-designer: mutual declaration, both orders, caught twice ----
+  - name: holds-executor-binds-hat-designer-denied-twice
+    object: reviews/create-hat-designer-alice.yaml
+    inventory: [_hats/executor.yaml, _hats/hat-designer.yaml, _hats/observer.yaml, _hats/policy-admin.yaml, inventory/alice-holds-executor.yaml]
+    assertions:
+    - violations: 2
+  - name: holds-hat-designer-binds-executor-denied-twice
+    object: reviews/create-executor-alice.yaml
+    inventory: [_hats/executor.yaml, _hats/hat-designer.yaml, _hats/observer.yaml, _hats/policy-admin.yaml, inventory/alice-holds-hat-designer.yaml]
+    assertions:
+    - violations: 2
+  # -- a binding the operator has not reconciled yet still conflicts -------------
+  # A freshly created HatBinding has NO status until the operator's first
+  # reconcile (the controller switches on `case "", PhasePending`). Found by this
+  # suite: `existing.status.phase != "Revoked"` is UNDEFINED when status is absent,
+  # so such a binding was invisible and a wearer could take both halves of a
+  # conflict pair inside that window -- or indefinitely while the operator is down.
+  - name: holds-unreconciled-policy-admin-binds-executor-denied
+    object: reviews/create-executor-alice.yaml
+    inventory: [_hats/executor.yaml, _hats/hat-designer.yaml, _hats/observer.yaml, _hats/policy-admin.yaml, inventory/alice-holds-policy-admin-no-status.yaml]
+    assertions:
+    - violations: 1
+  # -- must admit ------------------------------------------------------------------
+  - name: revoked-conflicting-binding-admits
+    object: reviews/create-policy-admin-alice.yaml
+    inventory: [_hats/executor.yaml, _hats/hat-designer.yaml, _hats/observer.yaml, _hats/policy-admin.yaml, inventory/alice-holds-executor-revoked.yaml]
+    assertions:
+    - violations: no
+  - name: conflicting-hat-held-by-another-wearer-admits
+    object: reviews/create-executor-alice.yaml
+    inventory: [_hats/executor.yaml, _hats/hat-designer.yaml, _hats/observer.yaml, _hats/policy-admin.yaml, inventory/bob-holds-policy-admin.yaml]
+    assertions:
+    - violations: no
+  - name: non-conflicting-pair-admits
+    object: reviews/create-observer-alice.yaml
+    inventory: [_hats/executor.yaml, _hats/hat-designer.yaml, _hats/observer.yaml, _hats/policy-admin.yaml, inventory/alice-holds-policy-admin.yaml]
+    assertions:
+    - violations: no
+  - name: first-binding-admits
+    object: reviews/create-policy-admin-alice.yaml
+    inventory: [_hats/executor.yaml, _hats/hat-designer.yaml, _hats/observer.yaml, _hats/policy-admin.yaml]
+    assertions:
+    - violations: no

@@ -1,0 +1,15 @@
+apiVersion: society.zeta.io/v1alpha1
+kind: Hat
+metadata: {name: hat-b}
+spec:
+  description: gator suite fixture hat-b
+  authority: {rules: []}
+  supervises: [hat-c]
+---
+apiVersion: society.zeta.io/v1alpha1
+kind: Hat
+metadata: {name: hat-c}
+spec:
+  description: gator suite fixture hat-c
+  authority: {rules: []}
+  supervises: [hat-a]
