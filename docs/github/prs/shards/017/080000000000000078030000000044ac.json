@@ -1,0 +1,12 @@
+{
+  "pr_number": 17580,
+  "archive_path": "docs/history/pr-reviews/2026/09/23/PR-17580-feat-cluster-the-dev-lane-s-declared-disk-fits-the-hosted-runner.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-23T23:10:10.733Z",
+  "schema_version": "v1",
+  "commit_sha": "34c29cf988ef2fa552f306eeba5cd44248788209",
+  "title": "feat(cluster): the dev lane's declared disk fits the hosted runner",
+  "state": "MERGED",
+  "merged_at": "2026-09-23T23:09:27Z",
+  "head_ref": "shadow/dev-lane-storage-fits"
+}

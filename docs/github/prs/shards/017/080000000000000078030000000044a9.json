@@ -1,0 +1,12 @@
+{
+  "pr_number": 17577,
+  "archive_path": "docs/history/pr-reviews/2026/09/23/PR-17577-feat-forge-host-wait-run-arm-auto-merge-explain-failures-homemade-github-clis.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-23T23:04:10.634Z",
+  "schema_version": "v1",
+  "commit_sha": "4fad89b17afe17951c8a616afec3a3f11f212516",
+  "title": "feat(forge-host): wait-run, arm-auto-merge, explain-failures — homemade GitHub CLIs",
+  "state": "MERGED",
+  "merged_at": "2026-09-23T23:03:21Z",
+  "head_ref": "shadow/wait-run-arm-auto-merge-clis"
+}

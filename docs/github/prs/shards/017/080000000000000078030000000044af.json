@@ -1,0 +1,12 @@
+{
+  "pr_number": 17583,
+  "archive_path": "docs/history/pr-reviews/2026/09/23/PR-17583-deps-test-xunit-v3-4-0-1-with-fscheck-fscheck-xunit-v3-3-4-0-replaces-17459.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-23T23:07:27.594Z",
+  "schema_version": "v1",
+  "commit_sha": "83d1d4be1c6ef5f6930da35d2ec276af7b101456",
+  "title": "deps(test): xunit.v3 4.0.1 with FsCheck + FsCheck.Xunit.v3 3.4.0 (replaces #17459)",
+  "state": "MERGED",
+  "merged_at": "2026-09-23T23:06:39Z",
+  "head_ref": "shadow/xunit-v3-4-with-fscheck-3-4"
+}
