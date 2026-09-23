@@ -2075,3 +2075,7 @@ UNIQUE HOLDS leftover NEW CELL leftover UNIQUE leftover #17591 leftover unique @
 ## leftover UNIQUE leftover #17591 leftover unique @ 1d823731531d73c592edd112e2b54eebbb26ac33
 
 UNIQUE HOLDS leftover NEW CELL leftover UNIQUE leftover #17591 leftover unique @ 1d823731531d73c592edd112e2b54eebbb26ac33 -- GRADE GO (tip 1-commit +1/-1 / 1 file). Harness plan note: longhorn alias -> capability-named storage. Prior GO @ b9626dc5 stands. Never grade merge tip 793192d4 / merge_commit_sha f8d80414. Tip proof 0 completed failures sampled. Task 081M385PR15087G0R0024N0JTS. Sit leftover. Do not merge.
+---
+## leftover UNIQUE leftover #17595 leftover unique @ 42aa96017ca0fcd34fede1b2a050b2bb1ef17c59
+
+UNIQUE HOLDS leftover NEW CELL leftover UNIQUE leftover #17595 leftover unique @ 42aa96017ca0fcd34fede1b2a050b2bb1ef17c59 -- GRADE GO (tip 1-commit +125/-3 / 5 files). Product: applyKindControlPlaneHostsAlias + shared CONTROL_PLANE_HOSTS_SCRIPT (k3d/kind parity); ci.cilium.kind-config.yaml API cert SAN control-plane; +2 falsifiers (alias before catalogue / kindnetd never; profile SAN). Honest: does not claim PROBE kind+Cilium passes -- re-dispatch decides promotion. Complementary to #17590. Never grade merge_commit_sha 8fbdfd6c8414842701b1d040fa276759493b6a9d. Tip proof 0 completed failures sampled. Task 081M388JAGM087G0R00054MXWN. Sit leftover. Do not merge.
