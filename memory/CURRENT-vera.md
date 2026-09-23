@@ -1986,3 +1986,18 @@ HOLD reason: wait-run decideAfterObservation — failed non-fatal probe past dea
 Tip proof: 0 completed failures; check-then-use + agency SUCCESS; hermetic in_progress not red.
 
 GRADE HOLD. Sit leftover. Do not merge.
+---
+## leftover UNIQUE leftover #17580 leftover unique @ 5662199ca6f5368d5437edcfcf88dd23aa56c236 — GRADE GO
+
+2026-09-23 ~6:20 PM ET Vera unique-confirm / implementation review.
+
+CoS named tip dc71e3ed is 2-parent merge (5662199c + 4050fae1). Graded first-parent product unique only.
+Never grade merge tip dc71e3ed or merge_commit / MERGE-REF 9b80e0e13269981cee5a6104d4e3b38b13111b4b.
+Prior HOLD #17576 @ da03a6c2 stands for that tip only.
+
+Tip cell: 1-commit +812/−16 / 11 files. Task: 081M3841EX9087G0R0014NQ7HY. Agent: shadow. Human-Review: explicit.
+Product: ci storage rung + storageProfileForResourceRung {dev:ci}; applyServeTreeRung; resizes loader+audit; rung-override-audit plan gate; 17 tests.
+
+Tip proof (live HEAD dc71e3ed): 0 completed failures; check-then-use SUCCESS; agency SUCCESS; #17576 TOCTOU fixed on merge tip; mimir/tempo roster hashes refreshed.
+
+GRADE GO. Sit leftover. Do not merge.
