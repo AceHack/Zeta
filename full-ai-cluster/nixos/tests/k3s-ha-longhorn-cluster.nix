@@ -89,10 +89,13 @@
 #   cd full-ai-cluster
 #   nix build .#checks.x86_64-linux.k3s-ha-longhorn-cluster -L --option sandbox false
 #
-# BUDGET: 3 guests x 4096 MiB = 12 GiB of guest RAM on a 16 GiB ubuntu-24.04
-# hosted runner (public repo: 4 vCPU / 16 GiB). The CI step samples host memory
-# while it runs and prints the peak, and every guest prints `free -m` at each
-# phase, so the budget in the workflow comment is a measurement, not this guess.
+# BUDGET: 3 guests x 3584 MiB on a 16 GiB / 4 vCPU ubuntu-24.04 hosted runner.
+# MEASURED on the first run (35920509908, 3 x 4096 MiB, everything on the root
+# image): host RAM peak 14572 of 15989 MiB; the join + three Ready nodes +
+# Longhorn on three nodes took 1476 s of test-script time; then the PVC bind
+# timed out because etcd was starved of disk (see the vdc note in mkServer).
+# The CI step samples host memory and prints the peak; every guest prints
+# `free -m` at each phase.
 #
 # Per `.claude/rules/automated-tests-are-the-shield-assert-dont-skip.md` this
 # test asserts and fails; there is no skip path.
@@ -168,16 +171,61 @@ let
     # NOT `fileSystems` — the qemu-vm module drops the latter silently (measured in
     # longhorn-volume-binds.nix: Longhorn registered `disks: {}`).
     zeta.longhorn.dataDisks = [ "/var/lib/longhorn-disk1" ];
-    virtualisation.emptyDiskImages = [ 4096 ];
+
+    # TWO emulated devices per node, both `cache=unsafe` (qemu drops guest
+    # flushes; the host page cache still holds every write, so a guest crash()
+    # loses nothing — only a HOST crash would, and the host is a disposable
+    # runner):
+    #   vdb — Longhorn's data disk (the device under test).
+    #   vdc — /var/lib/rancher: embedded etcd's WAL + containerd's image store.
+    #
+    # WHY, MEASURED (run 35920509908, first run of this test): with everything
+    # on the default `cache=writeback` root image, three etcd WALs plus three
+    # image pulls shared one hosted-runner disk. etcd logged `slow fdatasync`
+    # (>1 s) and `apply request took too long` up to 5.7 s, raft re-elected
+    # leaders, and k3s exited on `failed to wait for apiserver being healthy`
+    # on EVERY server — 20+ restarts in 40 min — until the PVC bind timed out
+    # at 900 s. That is the emulated disk failing etcd's documented latency
+    # budget, not the product: real control planes put this directory on
+    # NVMe. It is a statement about the emulated HARDWARE, and it grants the
+    # product no reachability or configuration it does not ship.
+    virtualisation.emptyDiskImages = [
+      { size = 4096; driveConfig.driveExtraOpts.cache = "unsafe"; }
+      { size = 10240; driveConfig.driveExtraOpts.cache = "unsafe"; }
+    ];
     virtualisation.fileSystems."/var/lib/longhorn-disk1" = {
       device = "/dev/vdb";
       fsType = "ext4";
       autoFormat = true;
     };
+    virtualisation.fileSystems."/var/lib/rancher" = {
+      device = "/dev/vdc";
+      fsType = "ext4";
+      autoFormat = true;
+    };
+    # ...and etcd's own directory on tmpfs, because the disk move above was NOT
+    # enough (run 35926193063): with /var/lib/rancher on a cache=unsafe disk,
+    # etcd still logged 26847 `slow fdatasync` warnings (max 1.84 s) and k3s
+    # kept restarting. At ~13.2 GiB of 16 GiB host RAM used, the host has no
+    # page cache to absorb three guests' writes, so qemu's writes block on
+    # host dirty-page throttling whatever the cache mode. tmpfs takes etcd off
+    # the host disk entirely. Harness-only, and harmless to what this test
+    # proves: the only node that crashes is server3, and quorum survives on
+    # the two that do not. `db/etcd` itself is NOT pre-created, so
+    # k3s-datastore-preflight still sees a from-scratch node.
+    virtualisation.fileSystems."/var/lib/rancher/k3s/server/db" = {
+      device = "tmpfs";
+      fsType = "tmpfs";
+      options = [ "size=1g" "mode=0700" ];
+    };
 
-    virtualisation.memorySize = 4096; # MiB — see BUDGET in the header
+    # 3584, not 4096 (run 35920509908: host peak 14572 of 15989 MiB with three
+    # 4096 MiB guests, while each guest reported ~1.0-1.3 GiB used — the rest
+    # was guest page cache the host could not reclaim). 3 x 3584 leaves the
+    # runner ~1.5 GiB more headroom.
+    virtualisation.memorySize = 3584; # MiB
     virtualisation.cores = 2;
-    virtualisation.diskSize = 12288; # MiB — images for Cilium + Longhorn per node
+    virtualisation.diskSize = 4096; # MiB — images now live on vdc
   } (if founder then {
     # Cilium (the CNI; nothing is Ready without it) + Longhorn as a HelmChart CR
     # mirroring k8s/applications/longhorn/Application.yaml. Only the founder
@@ -231,6 +279,12 @@ let
 
     # Held back so the script joins members one at a time.
     systemd.services.k3s.wantedBy = lib.mkForce [ ];
+    # ...and so is Longhorn's disk annotator, because it `wants = [ "k3s.service" ]`:
+    # left in multi-user.target it pulls k3s up at boot anyway. Measured on run
+    # 35920509908 — both joiners started k3s at ~49 s, before the founder
+    # existed, and crash-looped on `failed to get CA certs`. The script starts
+    # it after the join.
+    systemd.services.zeta-longhorn-node-disks.wantedBy = lib.mkForce [ ];
   }) ];
   };
 in
@@ -258,6 +312,26 @@ pkgs.testers.nixosTest {
             print(m.name, m.succeed("free -m | awk '/Mem:/{print \"used=\"$3\"MiB total=\"$2\"MiB\"}'").strip())
 
     kc = "KUBECONFIG=/etc/rancher/k3s/k3s.yaml k3s kubectl"
+
+    def wait_or_dump(machine, cmd, timeout):
+        # A bare wait_until_succeeds that times out says nothing about WHY.
+        # The first run of this test died that way at the PVC bind; this dumps
+        # the state a reader needs before re-raising.
+        try:
+            machine.wait_until_succeeds(cmd, timeout=timeout)
+        except Exception:
+            for d in (
+                f"{kc} get nodes -o wide",
+                f"{kc} get pods -A -o wide",
+                f"{kc} get pvc,pv,volumeattachments",
+                f"{kc} get events -A --sort-by=.lastTimestamp | tail -n 60",
+                f"{kc} -n longhorn-system get volumes.longhorn.io,replicas.longhorn.io,engines.longhorn.io -o wide",
+                f"{kc} -n longhorn-system logs -l app=csi-provisioner --tail=40 --all-containers",
+                "systemctl --no-pager status k3s.service | head -n 20",
+            ):
+                print(machine.succeed(f"{d} 2>&1 || true"))
+            raise
+
     IPS = {
         "server1": "${nodes.server1.networking.primaryIPAddress}",
         "server2": "${nodes.server2.networking.primaryIPAddress}",
@@ -298,8 +372,12 @@ pkgs.testers.nixosTest {
         )
         joiner.succeed(f"timeout 5 bash -c 'echo >/dev/tcp/{IPS['server1']}/2379'")
         joiner.succeed(f"timeout 5 bash -c 'echo >/dev/tcp/{IPS['server1']}/2380'")
+        # Assert the hold held: k3s must not already be running (see the
+        # annotator note in mkServer — it was, on the first run).
+        joiner.fail("systemctl is-active --quiet k3s.service")
         joiner.systemctl("start k3s.service")
         joiner.wait_for_unit("k3s.service", timeout=600)
+        joiner.systemctl("start zeta-longhorn-node-disks.service")
         server1.wait_until_succeeds(
             f"{kc} get node {name} -o jsonpath='{{.metadata.labels}}' "
             "| grep -q 'node-role.kubernetes.io/etcd'",
@@ -419,10 +497,10 @@ pkgs.testers.nixosTest {
         "echo WRITTEN $(cat blob.sha256) && sleep 3600",
     ))
     server1.succeed(f"{kc} apply -f /tmp/writer.yaml")
-    server1.wait_until_succeeds(
-        f"{kc} get pvc ha-proof --no-headers 2>/dev/null | grep -q ' Bound '", timeout=900
+    wait_or_dump(
+        server1, f"{kc} get pvc ha-proof --no-headers 2>/dev/null | grep -q ' Bound '", 900
     )
-    server1.wait_until_succeeds(f"{kc} logs writer 2>/dev/null | grep -q WRITTEN", timeout=900)
+    wait_or_dump(server1, f"{kc} logs writer 2>/dev/null | grep -q WRITTEN", 900)
     written = server1.succeed(f"{kc} logs writer").strip()
     m = re.search(r"WRITTEN ([0-9a-f]{64})", written)
     assert m, f"writer did not report a sha256: {written!r}"
@@ -493,7 +571,7 @@ pkgs.testers.nixosTest {
         "cd /data && sha256sum -c blob.sha256; echo RC=$? READ $(cat blob.sha256); sleep 3600",
     ))
     server1.succeed(f"{kc} apply -f /tmp/reader.yaml")
-    server1.wait_until_succeeds(f"{kc} logs reader 2>/dev/null | grep -q 'RC='", timeout=1500)
+    wait_or_dump(server1, f"{kc} logs reader 2>/dev/null | grep -q 'RC='", 1500)
     out = server1.succeed(f"{kc} logs reader").strip()
     assert "blob: OK" in out and "RC=0" in out and f"READ {digest}" in out, (
         f"data written on server3 did not read back intact on server1 after "

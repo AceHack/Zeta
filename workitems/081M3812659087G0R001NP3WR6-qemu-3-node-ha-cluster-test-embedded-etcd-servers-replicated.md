@@ -64,3 +64,36 @@ separate from the CNI endpoint), or a VIP / kube-vip-style address.
   the product" eval check. The known violation is gone; the check is not built.
 - `longhorn-volume-binds.nix` pins chart 1.7.2 while prod runs 1.12.1; this
   test uses 1.12.1.
+
+## Run log
+
+- **Run 35920509908 (first CI run, #17569 as merged): RED at the PVC bind.**
+  PASSED: server2 + server3 joined as etcd members, one CA, source-scoped etcd
+  rules present, all three nodes Ready on Cilium, Longhorn manager Ready on all
+  three with each node's own disk registered, StorageClass `numberOfReplicas=3`
+  — 1476 s of test-script time. FAILED: `pvc ha-proof` never Bound in 900 s.
+  Cause, from the journal: etcd starved of disk on the shared runner disk
+  (`slow fdatasync` > 1 s, applies up to 5.7 s, raft re-elections), k3s exiting
+  on `failed to wait for apiserver being healthy` on every server, 20+
+  restarts. Host RAM peak 14572 / 15989 MiB. Also found: Longhorn's disk
+  annotator `wants` k3s, so the joiners' held-back k3s started at boot anyway.
+  Fix in the follow-up PR: /var/lib/rancher on its own `cache=unsafe` disk,
+  guests 3584 MiB, annotator held back with the joiners' k3s, and a
+  diagnostic dump on every long wait.
+- **Run 35926193063 (rancher on a cache=unsafe disk, 3584 MiB): RED at the PVC
+  bind again.** Much faster formation (3 Ready at 336 s, Longhorn at 1155 s),
+  but 26847 `slow fdatasync` warnings and continued k3s restarts; the CSI
+  sidecars were only created 2 min before the timeout (driver-deployer had
+  restarted 16 times). Host RAM peak 13213 / 15989 MiB. Next: etcd's db dir
+  on tmpfs, and the job moved to workflow_dispatch only until it has a green
+  run on a hosted runner.
+- **Run 35930213010 (etcd db on tmpfs): RED at the PVC bind, cause now CPU.**
+  slow-fdatasync gone (1 warning); 3 Ready at 329 s, Longhorn up at 566 s. But
+  16825 `apply request took too long` (2-5 s on read-only ranges) and 12 k3s
+  exits on `leaderelection lost` (renew deadline missed), so Longhorn's CSI
+  never settled. Host RAM 13156 / 15989 MiB.
+  **Verdict: this 3-server + Cilium + Longhorn test does not fit a 4-vCPU
+  hosted runner.** Options, not done here: (a) run it on an 8+ vCPU runner;
+  (b) a hosted-runner variant with 1 server + 2 agents (agents run no
+  apiserver/etcd), keeping this one for the HA claim. NOT an option: relaxing
+  leader-election timers in the harness, which would hide starvation.
