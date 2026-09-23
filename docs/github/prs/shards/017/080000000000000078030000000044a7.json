@@ -1,0 +1,12 @@
+{
+  "pr_number": 17575,
+  "archive_path": "docs/history/pr-reviews/2026/09/23/PR-17575-feat-cluster-the-balanced-lanes-now-deploy-their-charts-and-assert-them.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-23T22:09:08.208Z",
+  "schema_version": "v1",
+  "commit_sha": "d69da61607bb5726a8a16622b4b7851e496bc8d7",
+  "title": "feat(cluster): the balanced lanes now deploy their charts and assert them",
+  "state": "MERGED",
+  "merged_at": "2026-09-23T22:08:27Z",
+  "head_ref": "feat/lanes-deploy-their-charts-v2"
+}
