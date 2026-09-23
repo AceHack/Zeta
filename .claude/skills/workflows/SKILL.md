@@ -13,6 +13,13 @@ Governs its own form per `.claude/rules/rules-are-small-carved-sentences-pointin
 and `.claude/rules/mirror-beacon-register-discipline.md` (carved sentence = hub /
 Beacon; blueprint = satellite / Mirror). The directory is an independent shipping unit.
 
+## GitHub from a loop — homemade CLIs, not improvised `gh api`
+
+In `src/Core.TypeScript/forge-host/github/`: `poll-pr-gate.ts` (gate state) ·
+`wait-run.ts` (wait for a run) · `explain-failures.ts` (why it is red) ·
+`arm-auto-merge.ts` (arm + verify). REST-first per
+`.claude/rules/rest-is-the-default-transport-graphql-is-the-contested-budget.md`.
+
 ## Blueprints
 
 - [`git-workflow-expert`](blueprints/git-workflow-expert.md) — Git workflow — branch-per-round, squash-merge to main, PR as round-close, Co-Authored-By, upstream contribution §23.

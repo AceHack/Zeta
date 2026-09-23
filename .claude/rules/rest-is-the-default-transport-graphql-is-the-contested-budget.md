@@ -32,6 +32,10 @@ means a SECONDARY (burst) limit**, which those counters never reflect.
 
 ## Pointers
 
+- **Use the homemade CLIs, not a hand-rolled loop** (all in `src/Core.TypeScript/forge-host/github/`):
+  `wait-run.ts` (wait for a run; REST, slow poll, back-off, `unknown` ≠ failure) ·
+  `explain-failures.ts` (failing check → job → steps → annotations) ·
+  `arm-auto-merge.ts` (the one GraphQL mutation, verified by a REST readback).
 - `docs/research/2026-08-26-graphql-is-the-contested-budget-rest-is-the-default-transport-and-a-probe-must-not-share-the-channel-it-drains.md`
   — the detail: the **REST substitution table**, every measurement, the three
   loop disciplines, the Beacon anchors (Chandra–Toueg failure detectors,

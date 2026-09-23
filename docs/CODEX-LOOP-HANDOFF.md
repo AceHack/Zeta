@@ -225,13 +225,24 @@ maintainer:
 
 ```bash
 # Single PR
-bun tools/github/poll-pr-gate.ts <PR>
+bun src/Core.TypeScript/forge-host/github/poll-pr-gate.ts <PR>
 
 # Multi-PR
-bun tools/github/poll-pr-gate-batch.ts <PR1> <PR2> ...
+bun src/Core.TypeScript/forge-host/github/poll-pr-gate-batch.ts <PR1> <PR2> ...
 # or:
-bun tools/github/poll-pr-gate-batch.ts --all-open
+bun src/Core.TypeScript/forge-host/github/poll-pr-gate-batch.ts --all-open
+
+# Wait for a run, explain a red one, arm auto-merge (REST-first; see below)
+bun src/Core.TypeScript/forge-host/github/wait-run.ts --pr <PR> --workflow gate.yml
+bun src/Core.TypeScript/forge-host/github/explain-failures.ts --pr <PR>
+bun src/Core.TypeScript/forge-host/github/arm-auto-merge.ts <PR>
 ```
+
+`wait-run` reports `completed` / `timed-out` / `unknown` (exit 0/1 · 3 · 4) and never
+reports an unobservable run as passed or failed. `explain-failures` names the failing
+check, its job id, failing steps and failure annotations. `arm-auto-merge` reports
+`armed` / `already-merged` / `not-armed` / `unknown` from a READBACK, because
+`gh pr merge --auto` exits 0 even when nothing was armed.
 
 Both emit structured JSON with `gate`, `requiredChecks`,
 `unresolvedThreads`, `nextAction`. **NEVER** reach for
@@ -420,9 +431,10 @@ GPT-5.5's actual overnight behaviour.
   wrapper.
 - `src/Core.TypeScript/lanes/README.md` — rung-2 doc/code lane
   discipline.
-- `tools/github/poll-pr-gate.ts`,
-  `tools/github/poll-pr-gate-batch.ts` —
-  refresh-world-model scripts.
+- `src/Core.TypeScript/forge-host/github/poll-pr-gate.ts`,
+  `src/Core.TypeScript/forge-host/github/poll-pr-gate-batch.ts` —
+  refresh-world-model scripts; `wait-run.ts`, `explain-failures.ts`,
+  `arm-auto-merge.ts` in the same directory — wait, diagnose, arm.
 - `docs/AUTONOMOUS-LOOP.md` — Claude Code loop spec
   (parallel doc for the harness this doc is replacing
   for overnight duty).

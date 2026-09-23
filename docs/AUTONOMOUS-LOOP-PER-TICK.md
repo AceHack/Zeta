@@ -35,7 +35,9 @@ steps gate later ones.
 ([`.claude/rules/refresh-before-decide.md`](../.claude/rules/refresh-before-decide.md)).
 Never act on stale state. Minimum refresh:
 
-- `bun tools/github/poll-pr-gate-batch.ts --all-open` — current state of all my open PRs
+- `bun src/Core.TypeScript/forge-host/github/poll-pr-gate-batch.ts --all-open` — current state of all my open PRs
+- `bun src/Core.TypeScript/forge-host/github/wait-run.ts --pr <N> --workflow gate.yml` — wait for a run (REST, 60 s poll, back-off); verdict `completed` / `timed-out` / `unknown`
+- `bun src/Core.TypeScript/forge-host/github/explain-failures.ts --pr <N>` — WHY it is red: failing check, job id, failing steps, failure annotations
 - `git fetch origin main && git status` — main HEAD + local state
 - `CronList` — verify the autonomous-loop sentinel is still armed
 - `bun src/Core.TypeScript/orchestrator-checks/cron-sentinel-mutex.ts --json` — detect concurrent Otto-CLI peer sessions
@@ -165,7 +167,7 @@ Anything that matters past compaction MUST be:
 
 - Committed to a git-tracked file
 - Pushed via PR (main is PR-required; direct push to main is blocked)
-- Auto-merge armed (`gh pr merge <N> --auto --squash`)
+- Auto-merge armed and VERIFIED (`bun src/Core.TypeScript/forge-host/github/arm-auto-merge.ts <N>` — reads `auto_merge` back; exit 0 only when armed)
 
 Verify gates (per AGENTS.md; these are the **full** repo gates,
 not touched-file-only — three autonomous surfaces converge here, so

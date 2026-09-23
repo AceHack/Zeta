@@ -52,7 +52,7 @@ a finding) rather than 1.
 ## 5. Ship
 
 Set branch: `export ZETA_EXPECTED_BRANCH=<branch> && git checkout -b "$ZETA_EXPECTED_BRANCH"`
-Open PR against `main`. Arm auto-merge: `gh pr merge <N> --auto --squash`.
+Open PR against `main`. Arm auto-merge: `bun src/Core.TypeScript/forge-host/github/arm-auto-merge.ts <N>` (reads it back; `gh pr merge --auto` exits 0 even when nothing armed).
 
 ## 6. When stuck
 
