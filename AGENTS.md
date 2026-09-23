@@ -485,7 +485,7 @@ break.
 **Full test suite:**
 
 ```bash
-dotnet test Zeta.sln -c Release
+dotnet test --solution Zeta.sln -c Release
 ```
 
 Must end with all tests passing. Property-based

@@ -101,7 +101,7 @@ const CHECKS: readonly Check[] = [
   { label: "lint: Go", cmd: ["bun", "src/Core.TypeScript/lint/lint-go.ts"] },
   // The long poles last (skipped under --quick).
   { label: "dotnet build -c Release", cmd: ["dotnet", "build", "Zeta.sln", "-c", "Release"], slow: true },
-  { label: "dotnet test -c Release", cmd: ["dotnet", "test", "Zeta.sln", "-c", "Release"], slow: true },
+  { label: "dotnet test -c Release", cmd: ["dotnet", "test", "--solution", "Zeta.sln", "-c", "Release"], slow: true },
 ];
 
 type Status = "pass" | "fail" | "skip";

@@ -167,7 +167,7 @@ export interface RefusedCandidate {
 export const REFUSED_CANDIDATES: readonly RefusedCandidate[] = [
   {
     path: "/usr/share/dotnet",
-    usedBy: "`dotnet build -c Release` / `dotnet test Zeta.sln` — CLAUDE.md §4 build gate, and the binding constraint of the low-memory lane.",
+    usedBy: "`dotnet build -c Release` / `dotnet test --solution Zeta.sln` — CLAUDE.md §4 build gate, and the binding constraint of the low-memory lane.",
   },
   {
     path: "/opt/hostedtoolcache/node",

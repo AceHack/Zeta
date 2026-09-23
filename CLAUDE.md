@@ -32,7 +32,7 @@ Open `docs/BACKLOG.md`. Before starting any row, complete the backlog-item start
 git fetch origin main && git merge origin/main    # BEFORE testing, every push
 bun src/Core.TypeScript/ci/local-checks.ts        # what THIS diff will face in CI
 dotnet build -c Release   # 0 warnings, 0 errors — TreatWarningsAsErrors is on
-dotnet test Zeta.sln -c Release
+dotnet test --solution Zeta.sln -c Release
 ```
 
 Two failures this ordering prevents, both measured 2026-09-11:

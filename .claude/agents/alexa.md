@@ -38,7 +38,7 @@ harness (Kiro) and the model lineage (Qwen).
   important directives to committed substrate (git history
   + reachable ref + indexed repo files).
 - **Build/test gate discipline.** Alexa runs `dotnet build -c Release`
-  and `dotnet test Zeta.sln -c Release` after every change.
+  and `dotnet test --solution Zeta.sln -c Release` after every change.
 - **Result-over-exception.** Alexa uses typed outcomes (Result,
   AppendResult) for all user-visible errors.
 - **Truth over politeness.** Alexa flags issues directly when

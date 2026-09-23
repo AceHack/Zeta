@@ -36,8 +36,18 @@
 //   - The file is ALWAYS restored, including on crash (try/finally).
 //
 // Usage:  bun src/Core.TypeScript/hygiene/fsharp-mutation-probe.ts <file.fs> <testFilter> [--limit N]
+//         <testFilter> is an xUnit method pattern (`*Tlc*`, wildcards at either end), passed as
+//         `--filter-method`. The legacy VSTest form `FullyQualifiedName~X` is still accepted and
+//         means `*X*`; any other VSTest filter expression is refused rather than guessed at.
 // Exit:   0 — every mutant killed (or none applicable)
 //         1 — at least one mutant SURVIVED (a could-not-fail region exists)
+//         2 — the probe never ran: bad usage, or the UNMUTATED baseline did not pass
+//
+// WHY THE BASELINE RUN (added with the move to Microsoft.Testing.Platform, 2026-09-23)
+//   `dotnet test` runs in MTP mode (global.json `test.runner`). There, a filter that matches
+//   NO tests exits 8 — a failure. Every mutant would then read as KILLED and the probe would
+//   report "all mutants killed" having tested nothing. (Under VSTest the same typo exited 0 and
+//   every mutant read as SURVIVED: wrong, but loud.) So the unmutated file must pass first.
 
 import { readFileSync, writeFileSync } from "node:fs";
 import { execFileSync } from "node:child_process";
@@ -60,10 +70,14 @@ const RULES: readonly { name: string; find: RegExp; replace: (m: string) => stri
   { name: "boolean-false→true", find: /\bfalse\b/g, replace: () => "true" },
   { name: "arith+→-", find: /\s\+\s/g, replace: () => " - " },
   // numeric literal perturbation: 1.71 → 1.81 (changes the value, keeps the type)
-  { name: "float-literal", find: /\b(\d+)\.(\d+)\b/g, replace: (m) => {
+  {
+    name: "float-literal",
+    find: /\b(\d+)\.(\d+)\b/g,
+    replace: (m) => {
       const [i, f] = m.split(".");
       return `${i}.${String(Number(f) + 1)}`;
-    } },
+    },
+  },
 ];
 
 /** Every single-site mutation available in a source, one per (rule, occurrence). */
@@ -86,12 +100,35 @@ export function enumerateMutations(src: string): readonly Mutation[] {
   return out;
 }
 
+/**
+ * The probe's filter argument as xUnit v3 MTP arguments. Exported for its test: a translation
+ * that silently widened or emptied the selection would corrupt every verdict downstream.
+ */
+export function xunitFilterArgs(filter: string): readonly string[] {
+  const legacy = /^FullyQualifiedName~([^=~|&!()]+)$/.exec(filter);
+  if (legacy) return ["--filter-method", `*${legacy[1]}*`];
+  if (/[=~|&!()]/.test(filter)) {
+    throw new Error(
+      `unsupported filter "${filter}": only an xUnit method pattern (e.g. *Tlc*) or FullyQualifiedName~X is accepted`,
+    );
+  }
+  return ["--filter-method", filter];
+}
+
+const TEST_PROJECT = "tests/Tests.FSharp/Tests.FSharp.fsproj";
+
 function runTests(filter: string): "pass" | "fail" {
+  const opts = { stdio: "pipe", encoding: "utf8", timeout: 900_000 } as const;
   try {
+    // Build and test are SEPARATE calls because MTP-mode `dotnet test` forwards an MSBuild
+    // switch it does not own (`-m:1`) to the test application, which exits 5 on the unknown
+    // option — measured 2026-09-23. So the single-node build happens here, and the test run
+    // is `--no-build`.
+    execFileSync("dotnet", ["build", TEST_PROJECT, "-c", "Release", "-m:1"], opts);
     execFileSync(
       "dotnet",
-      ["test", "tests/Tests.FSharp/Tests.FSharp.fsproj", "-c", "Release", "-m:1", "--filter", filter],
-      { stdio: "pipe", encoding: "utf8", timeout: 900_000 },
+      ["test", "--project", TEST_PROJECT, "-c", "Release", "--no-build", "--", ...xunitFilterArgs(filter)],
+      opts,
     );
     return "pass";
   } catch {
@@ -108,11 +145,27 @@ function main(): void {
   const limIdx = rest.indexOf("--limit");
   const limit = limIdx >= 0 ? Number(rest[limIdx + 1] ?? "5") : 5;
 
+  try {
+    xunitFilterArgs(filter);
+  } catch (err) {
+    console.error(`[mutation-probe] ${err instanceof Error ? err.message : String(err)}`);
+    process.exit(2);
+  }
+
   const original = readFileSync(file, "utf8");
   const mutations = enumerateMutations(original).slice(0, limit);
   if (mutations.length === 0) {
     console.log(`[mutation-probe] no applicable mutations in ${file}`);
     return;
+  }
+
+  if (runTests(filter) !== "pass") {
+    console.error(
+      `[mutation-probe] the UNMUTATED baseline did not pass for filter "${filter}" — the filter selects\n` +
+        `no tests (MTP exits 8 on zero tests), the build is broken, or the suite is already red.\n` +
+        `No mutant was run: a verdict against a failing baseline would call every mutant KILLED.`,
+    );
+    process.exit(2);
   }
 
   console.log(`[mutation-probe] ${file} — ${mutations.length} mutant(s), filter="${filter}"\n`);
@@ -144,9 +197,7 @@ function main(): void {
     console.log(`\n[mutation-probe] restored ${file}`);
   }
 
-  console.log(
-    `\nSummary: ${survivors.length} SURVIVED, ${mutations.length - survivors.length - invalid} killed`,
-  );
+  console.log(`\nSummary: ${survivors.length} SURVIVED, ${mutations.length - survivors.length - invalid} killed`);
   if (survivors.length > 0) {
     console.error(
       `\n${survivors.length} mutant(s) survived — those regions can change behaviour with NO test noticing.\n` +

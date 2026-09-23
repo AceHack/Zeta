@@ -72,9 +72,7 @@ switch (command) {
       "00:00:30",
     ]);
     run("dotnet-trace", ["convert", "--format", "speedscope", "trace.nettrace"]);
-    process.stdout.write(
-      "Open trace.speedscope.json at https://www.speedscope.app\n",
-    );
+    process.stdout.write("Open trace.speedscope.json at https://www.speedscope.app\n");
     break;
   }
 
@@ -102,30 +100,17 @@ switch (command) {
     break;
 
   case "coverage":
-    run(
-      "dotnet",
-      [
-        "test",
-        "Zeta.sln",
-        "-c",
-        "Release",
-        "/p:CollectCoverage=true",
-        "/p:CoverletOutputFormat=cobertura",
-        "/p:CoverletOutput=./TestResults/",
-        '/p:Exclude=[Dbsp.Tests.*]*',
-      ],
-      repoRoot(),
+    // REFUSED, not run. This used coverlet.msbuild (`/p:CollectCoverage=true`), which hooks
+    // the VSTest target — and `dotnet test` now runs in Microsoft.Testing.Platform mode
+    // (global.json `test.runner`), where that target never executes. Running it would print a
+    // green test run and write no coverage file: a coverage command that cannot produce
+    // coverage. The MTP extension (coverlet.MTP) must match xunit.v3's MTP major, so it lands
+    // after the xunit.v3 4.x bump — workitem 081M380V792087G0R001PR993V.
+    process.stderr.write(
+      "profile.ts coverage: unavailable under Microsoft.Testing.Platform until coverlet.MTP is added " +
+        "(workitem 081M380V792087G0R001PR993V). Nothing was run.\n",
     );
-    run(
-      "reportgenerator",
-      [
-        "-reports:tests/**/TestResults/coverage.cobertura.xml",
-        "-targetdir:./coverage-report",
-        "-reporttypes:Html",
-      ],
-      repoRoot(),
-    );
-    process.stdout.write("Coverage HTML at ./coverage-report/index.html\n");
+    process.exitCode = 2;
     break;
 
   default:
@@ -136,9 +121,8 @@ switch (command) {
   bun tools/profile.ts trace <pid>        # session trace for speedscope.app
   bun tools/profile.ts gcdump <pid>       # heap dump for PerfView
   bun tools/profile.ts bench [filter]     # BenchmarkDotNet run with memory diagnoser
-  bun tools/profile.ts coverage           # run tests with coverage, emit HTML
+  bun tools/profile.ts coverage           # unavailable under MTP (081M380V792087G0R001PR993V)
 `);
-    if (command !== "" && command !== "-h" && command !== "--help")
-      process.exit(64);
+    if (command !== "" && command !== "-h" && command !== "--help") process.exit(64);
     break;
 }
