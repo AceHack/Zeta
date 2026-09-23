@@ -171,6 +171,14 @@ export const ESP_DESTINATION_CONTENT_CLASS = Object.freeze({
    * nothing and grants nothing.
    */
   "/zeta-qemu-k3s-first-boot-verify": "public-identifier",
+  /**
+   * WP21 (081M35C7NJR087G0R002S4R654). A single line, `ZETA_ISO_COMMIT='<40-hex>'` —
+   * the git commit to check out after cloning. A commit sha is not a secret: it is
+   * routinely public in commit messages, PR URLs and `git log`, and knowing it grants
+   * no access to anything the reader could not already reach by cloning the (public)
+   * repo. Reading the marker discloses which commit was pinned and nothing else.
+   */
+  "/zeta-repo-pin": "public-identifier",
 } satisfies Record<EspDestination, InjectionContentClass | PendingClassification>);
 
 /**

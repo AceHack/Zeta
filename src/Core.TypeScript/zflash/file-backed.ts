@@ -54,6 +54,8 @@ export interface FileBackedZflashCliOptions {
   readonly qemuBakeTestCredMarker?: boolean;
   /** WP11 QEMU only: write `/zeta-qemu-k3s-first-boot-verify` (public marker). */
   readonly qemuK3sFirstBootVerifyMarker?: boolean;
+  /** WP21 (081M35C7NJR087G0R002S4R654): full 40-hex commit sha for `/zeta-repo-pin`. See lib.ts. */
+  readonly repoPinCommit?: string;
 }
 
 export type FileBackedZflashCliParseResult =
@@ -422,6 +424,7 @@ export function runFileBackedZflashCli(
     ...(options.qemuBakeTestCredMarker === true ? { qemuBakeTestCredMarker: true } : {}),
     ...(options.qemuK3sFirstBootVerifyMarker === true ? { qemuK3sFirstBootVerifyMarker: true } : {}),
     ...(options.qemuCredsPassphrase === undefined ? {} : { qemuCredsPassphrase: options.qemuCredsPassphrase }),
+    ...(options.repoPinCommit === undefined ? {} : { repoPinCommit: options.repoPinCommit }),
   };
   const planned = planFileBackedZflashImage(planInput);
   if (!planned.ok) return { ok: false, error: planned.error };

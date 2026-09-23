@@ -41,16 +41,18 @@
  *   2 — usage error or missing dependencies
  */
 
-import { execFileSync, spawn } from "node:child_process";
+import { execFileSync, spawn, spawnSync } from "node:child_process";
 import { appendFileSync, existsSync, mkdtempSync, readFileSync, statSync, unlinkSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import {
+  assertRepoPinHonouredSerial,
   assertUsbISerialGuestSerial,
   assertWifiEspInstallSerial,
   serialFirstBootInProgress,
 } from "../zflash/test-harness/serial-markers";
+import { isFullGitCommitSha } from "../installer/repo-pin.ts";
 import {
   DEFAULT_QEMU_PASSPHRASE,
   DEFAULT_QEMU_WIFI_PASSWORD,
@@ -65,6 +67,28 @@ import { firstSessionPhase3Enabled, phase3BootMarkersSatisfied } from "./qemu-fi
 
 const REPO_ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "../../..");
 const TEST_INFRA_PUBKEY = resolve(REPO_ROOT, "src/Core.TypeScript/zflash/test-harness/keys/zeta-test-infra.pub");
+
+/**
+ * WP21 (081M35C7NJR087G0R002S4R654) — the commit this workflow run is
+ * actually testing. `GITHUB_SHA` is what CI sets it to (the exact commit the
+ * ISO is built from in THIS run, for every trigger type including
+ * workflow_dispatch and schedule); a local `bun` invocation with no
+ * `GITHUB_SHA` falls back to `git rev-parse HEAD` so the repo-pin contract
+ * still exercises something meaningful outside CI. `undefined` (neither
+ * resolves to a valid 40-hex sha — e.g. a shallow clone with a truncated
+ * `HEAD`) means the repo-pin bake + assertion are skipped entirely rather
+ * than baking a value zeta-install.sh would itself refuse.
+ */
+function resolveRepoPinCommit(): string | undefined {
+  const fromEnv = (process.env.GITHUB_SHA ?? "").trim();
+  if (isFullGitCommitSha(fromEnv)) return fromEnv;
+  const result = spawnSync("git", ["-C", REPO_ROOT, "rev-parse", "HEAD"], { encoding: "utf8" });
+  if (result.status === 0) {
+    const sha = result.stdout.trim();
+    if (isFullGitCommitSha(sha)) return sha;
+  }
+  return undefined;
+}
 
 /** zeta-install.sh success banner (end of install script). */
 const INSTALL_COMPLETE_MARKER = "ZETA CLUSTER NODE INSTALL COMPLETE";
@@ -1845,6 +1869,18 @@ async function main(): Promise<never> {
   // WP11 — computed before createVirtualDisk so the extra k3s + Helm-chart
   // image headroom is sized in from the start rather than resized mid-run.
   const requireK3sFirstBootVerify = k3sFirstBootVerifyPhaseEnabled();
+  // WP21 (081M35C7NJR087G0R002S4R654) — only meaningful alongside WP11: that
+  // is the lane that already proves something about the INSTALLED disk, and
+  // pinning the install to this run's own commit is what makes "a PR's
+  // NixOS-module change reaches the installed system" provable rather than
+  // asserted. `undefined` (no resolvable sha) silently skips the bake +
+  // assertion below rather than failing the whole run over provenance.
+  const repoPinCommit = requireK3sFirstBootVerify ? resolveRepoPinCommit() : undefined;
+  if (requireK3sFirstBootVerify && repoPinCommit === undefined) {
+    console.warn(
+      "[qemu-full-install-test] WP21: no resolvable 40-hex commit (GITHUB_SHA unset/invalid and `git rev-parse HEAD` failed) — repo-pin bake + assertion skipped this run",
+    );
+  }
 
   createVirtualDisk(diskPath, requireK3sFirstBootVerify ? K3S_VERIFY_DISK_SIZE_GB : DISK_SIZE_GB);
 
@@ -1907,6 +1943,7 @@ async function main(): Promise<never> {
       ...(requireUefiKeyfilePicker ? { qemuCredsPassphrase: DEFAULT_QEMU_PASSPHRASE } : {}),
       ...(requireUefiKeyfileRestore ? { qemuBakeTestCredMarker: true } : {}),
       ...(requireK3sFirstBootVerify ? { qemuK3sFirstBootVerifyMarker: true } : {}),
+      ...(repoPinCommit === undefined ? {} : { repoPinCommit }),
     });
     if ("error" in prepared) {
       console.error(`[qemu-full-install-test] USB boot-image bake failed: ${prepared.error}`);
@@ -1998,6 +2035,28 @@ async function main(): Promise<never> {
       );
     }
     console.log("[qemu-full-install-test] wifi ESP phase-1 contract ok (profile write; association deferred)");
+  }
+
+  // WP21 (081M35C7NJR087G0R002S4R654) — the installed disk was built from
+  // THIS run's own commit, not whatever $REPO_URL's default branch happened
+  // to be at install time. Only asserted when a pin was actually baked
+  // (repoPinCommit resolved above); a run with no resolvable commit already
+  // warned and installs unpinned, same as any hand-built ISO.
+  if (repoPinCommit !== undefined) {
+    const repoPin = assertRepoPinHonouredSerial(phase1Serial, repoPinCommit);
+    if (!repoPin.ok) {
+      writeArtifactSerialLog(phase1Serial, "");
+      reportResult(
+        {
+          exitCode: 1,
+          reason: `repo-pin contract failed — ${repoPin.reason}`,
+          serialLogTail: phase1Serial.slice(-2000),
+          ...(phase1.elapsedSeconds !== undefined ? { elapsedSeconds: phase1.elapsedSeconds } : {}),
+        },
+        artifactSerialLogPath,
+      );
+    }
+    console.log(`[qemu-full-install-test] repo-pin contract ok — installed tree HEAD=${repoPinCommit} (WP21)`);
   }
 
   // USB image only. ISO/cdrom cascade-5 has no usb-storage serial=; missing

@@ -1,0 +1,14 @@
+{
+  "id": "080d06561eb33010a0130008a68b4557",
+  "at": "2026-09-22T20:17:07.174Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M35C7NJR087G0R002S4R654",
+    "type": "task",
+    "title": "Pin USB installer install-time clone to the ISO/flash commit, not remote default-branch HEAD",
+    "slug": "pin-usb-installer-install-time-clone-to-the-iso-flash-commit",
+    "priority": "P1",
+    "filename": "081M35C7NJR087G0R002S4R654-pin-usb-installer-install-time-clone-to-the-iso-flash-commit.md"
+  }
+}

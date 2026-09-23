@@ -53,12 +53,13 @@ describe("the rail is exhaustive over the destinations lib.ts can actually plan"
       qemuCredsPassphrase: "qemu-test-secret",
       qemuBakeTestCredMarker: true,
       qemuK3sFirstBootVerifyMarker: true,
+      repoPinCommit: "a1b2c3d4e5f60718293a4b5c6d7e8f9012345678",
     });
     expect(planned.ok).toBe(true);
     if (!planned.ok) return;
     const emitted = planned.value.espWrites.map((write) => write.destination);
-    // All TEN destinations exercised.
-    expect(new Set(emitted).size).toBe(10);
+    // All ELEVEN destinations exercised.
+    expect(new Set(emitted).size).toBe(11);
     for (const destination of emitted) {
       expect(ESP_DESTINATION_CONTENT_CLASS[destination]).toBeDefined();
     }
@@ -76,6 +77,7 @@ describe("the rail is exhaustive over the destinations lib.ts can actually plan"
       "/zeta-qemu-bake-test-cred",
       "/zeta-qemu-creds-passphrase",
       "/zeta-qemu-k3s-first-boot-verify",
+      "/zeta-repo-pin",
       "/zeta-wifi-credentials.json",
     ]);
   });

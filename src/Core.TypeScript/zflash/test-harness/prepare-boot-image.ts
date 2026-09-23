@@ -86,6 +86,14 @@ export interface PrepareBootImageInput {
   readonly qemuBakeTestCredMarker?: boolean;
   /** WP11 QEMU-only: bake `/zeta-qemu-k3s-first-boot-verify` so the installed disk's first boot runs the k3s bring-up verdict unit. */
   readonly qemuK3sFirstBootVerifyMarker?: boolean;
+  /**
+   * WP21 (081M35C7NJR087G0R002S4R654): full 40-hex commit sha to bake as
+   * `/zeta-repo-pin`, overriding the ISO-baked ZETA_ISO_COMMIT so
+   * zeta-install.sh checks out this exact commit after cloning. The QEMU
+   * full-install lane sets this to the workflow's own commit so a PR's
+   * NixOS-module changes are what actually gets installed.
+   */
+  readonly repoPinCommit?: string;
 }
 
 export interface PrepareBootImageResult {
@@ -182,6 +190,7 @@ export function prepareBootImage(input: PrepareBootImageInput): PrepareBootImage
     ...(input.qemuBakeTestCredMarker === true ? { qemuBakeTestCredMarker: true } : {}),
     ...(input.qemuK3sFirstBootVerifyMarker === true ? { qemuK3sFirstBootVerifyMarker: true } : {}),
     ...(input.qemuCredsPassphrase === undefined ? {} : { qemuCredsPassphrase: input.qemuCredsPassphrase }),
+    ...(input.repoPinCommit === undefined ? {} : { repoPinCommit: input.repoPinCommit }),
   });
 
   if (!result.ok) {

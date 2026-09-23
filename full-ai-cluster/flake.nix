@@ -89,7 +89,14 @@
 
       mkSystem = { system ? "x86_64-linux", modules }: nixpkgs.lib.nixosSystem {
         inherit system;
-        specialArgs = { inherit inputs stateVersion; };
+        # `self` added 081M35C7NJR087G0R002S4R654 (WP21): the installer
+        # configuration reads `self.rev` to embed the exact commit this ISO was
+        # built from (`/etc/zeta-iso-provenance`), so `zeta-install.sh` can pin
+        # the post-clone checkout to it instead of always installing the
+        # remote's default-branch HEAD. Harmless for every other host: `self`
+        # is just one more unused specialArg to a module whose signature ends
+        # in `...`.
+        specialArgs = { inherit inputs stateVersion self; };
         modules = [
           ({ nixpkgs.overlays = [ (import ./nixos/overlays/mise-pin.nix) ]; })
         ] ++ modules;
