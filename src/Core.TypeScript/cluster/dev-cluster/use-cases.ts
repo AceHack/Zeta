@@ -143,9 +143,42 @@ export function applyVendoredGatewayApiCrds(ports: DevClusterPorts): void {
  */
 export function applyK3dControlPlaneHostsAlias(ports: DevClusterPorts, kubeApiHost: string): void {
   console.log("Mapping control-plane -> 127.0.0.1 on the k3d server node (metal k3s-server.nix founder hosts) ...");
-  const script =
-    "grep -qE '(^|[[:space:]])control-plane($|[[:space:]])' /etc/hosts || echo '127.0.0.1 control-plane' >> /etc/hosts";
-  ports.process.run("docker", ["exec", kubeApiHost, "sh", "-c", script], { timeoutMs: 30_000 });
+  mapControlPlaneToLoopback(ports, kubeApiHost);
+}
+
+/** The idempotent `/etc/hosts` line both substrates need, written into one node container. */
+export const CONTROL_PLANE_HOSTS_SCRIPT =
+  "grep -qE '(^|[[:space:]])control-plane($|[[:space:]])' /etc/hosts || echo '127.0.0.1 control-plane' >> /etc/hosts";
+
+function mapControlPlaneToLoopback(ports: DevClusterPorts, nodeContainer: string): void {
+  ports.process.run("docker", ["exec", nodeContainer, "sh", "-c", CONTROL_PLANE_HOSTS_SCRIPT], { timeoutMs: 30_000 });
+}
+
+/**
+ * The SAME mapping on the kind control-plane node, for `--cni cilium` (2026-09-23).
+ *
+ * MEASURED, dispatch run 35929570637 (PROBE kind+Cilium included proof): 14
+ * minutes into the run `cilium-*` sat in Init:CrashLoopBackOff and
+ * `cilium-operator` in CrashLoopBackOff, and 30 Applications went Degraded or
+ * Progressing behind them (cert-manager's webhook unreachable, then everything
+ * that needs it). The sequence is the one this function's k3d twin was written
+ * for: the bring-up helm-installs Cilium with `k8sServiceHost` rewritten to the
+ * kind node's Docker DNS name, then the included lane LIFTS the `cilium`
+ * Application (`ciliumOwnsCniSlot`), ArgoCD adopts the release and selfHeals it
+ * back to the metal value `control-plane` -- a name the kind node cannot
+ * resolve. k3d had this line; kind did not.
+ *
+ * Resolving the name is half of it. The agent dials `https://control-plane:6443`
+ * and verifies the API server's certificate, so the kind profile also SANs
+ * `control-plane` (ci.cilium.kind-config.yaml, kubeadm `certSANs`) -- the same
+ * pair metal gets from k3s-server.nix (`/etc/hosts` + `--tls-san=control-plane`).
+ * The cilium agent is hostNetwork, so the node's `/etc/hosts` is what it reads.
+ *
+ * kind names its control-plane container `<cluster>-control-plane`.
+ */
+export function applyKindControlPlaneHostsAlias(ports: DevClusterPorts, clusterName: string): void {
+  console.log("Mapping control-plane -> 127.0.0.1 on the kind control-plane node (parity with metal and k3d) ...");
+  mapControlPlaneToLoopback(ports, `${clusterName}-control-plane`);
 }
 
 /**
@@ -634,6 +667,7 @@ export function bringUpKindCiCluster(ports: DevClusterPorts, options: KindCiBrin
   if (cni === "cilium") {
     console.log("Waiting for Kubernetes API readiness (nodes stay NotReady until Cilium is the CNI) ...");
     controlPlane.waitForApiReady(60, 3000);
+    applyKindControlPlaneHostsAlias(ports, options.clusterName);
     applyVendoredGatewayApiCrds(ports);
     installShippedCiliumOnKind(ports, options.clusterName);
     controlPlane.waitForAllNodesReady(180);

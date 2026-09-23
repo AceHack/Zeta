@@ -1,0 +1,14 @@
+{
+  "id": "080d06844950b010a01300086ee375b0",
+  "at": "2026-09-23T23:10:45.270Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M388JAGM087G0R00054MXWN",
+    "type": "bug",
+    "title": "kind --cni cilium: ArgoCD adopting the cilium Application reverts k8sServiceHost to control-plane, which the kind node cannot resolve or verify -- agent init CrashLoop, whole lane Degraded",
+    "slug": "kind-cni-cilium-argocd-adopting-the-cilium-application-rever",
+    "priority": "P2",
+    "filename": "081M388JAGM087G0R00054MXWN-kind-cni-cilium-argocd-adopting-the-cilium-application-rever.md"
+  }
+}

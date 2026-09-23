@@ -87,3 +87,14 @@ nodes:
       - |
         kind: KubeletConfiguration
         maxPods: 250
+      # `control-plane` in the API server's certificate (2026-09-23): once the
+      # included lane lifts the `cilium` Application, ArgoCD reverts Cilium's
+      # `k8sServiceHost` to the metal value `control-plane`. The bring-up maps
+      # that name to 127.0.0.1 on this node (applyKindControlPlaneHostsAlias);
+      # this SAN is what lets the agent's TLS verification accept it -- the
+      # same pair metal gets from k3s-server.nix (/etc/hosts + --tls-san).
+      - |
+        kind: ClusterConfiguration
+        apiServer:
+          certSANs:
+            - control-plane
