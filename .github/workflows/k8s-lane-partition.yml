@@ -224,9 +224,10 @@ jobs:
       ZETA_HOST_TIER: full
       MISE_ENV: full
     runs-on: ubuntu-24.04
-    # Install (~5) + pull/measure (~5) + k3d bring-up and ArgoCD sync (<=20
-    # harness timeout) + diagnostics. The old 30 covered only the first two.
-    timeout-minutes: 60
+    # Install (~5) + pull/measure (~5) + k3d bring-up and ArgoCD sync (<=40,
+    # the harness's 2400s, matching the passing included jobs) + vault init +
+    # diagnostics. The old 30 covered only the first two.
+    timeout-minutes: 75
     strategy:
       fail-fast: false
       matrix:
@@ -381,6 +382,16 @@ jobs:
       # PRICES subjects at `metal` to reserve the headroom, and serving subjects
       # at `metal` while their dependencies stay at `dev` is the next step, not
       # this one. Charts the proof excludes by reason stay excluded here too.
+      # FLAGS MATCH THE TWO PASSING `included` JOBS (live-kind-included,
+      # live-kind-cilium-included). The first live run of these lanes
+      # (35919883647) omitted `--ephemeral-vault-init`: all six lanes stalled on
+      # the same shared base -- openbao and spire Progressing for 20 minutes,
+      # openbao because nothing unsealed it, spire because it waits on openbao --
+      # while every lane-specific chart went Healthy (lane-4 18/21, lane-5 16/19).
+      # `cilium` stalled too, and that one is NOT explained by the vault flag:
+      # on kind it is excluded (kindnetd), so no `included` run has ever proven
+      # the ArgoCD cilium Application Healthy. The diagnostics step below prints
+      # per-resource health so the next stall names its resource.
       - name: Bring up the lane on k3d and assert Synced+Healthy
         env:
           ZETA_ARGOCD_GIT_REF: ${{ github.event.pull_request.head.sha || github.sha }}
@@ -399,9 +410,10 @@ jobs:
             --config full-ai-cluster/dev-cluster/profiles/ci.k3d-config.yaml \
             --cluster-name zeta-ci \
             --git-ref "$ZETA_ARGOCD_GIT_REF" \
-            --timeout-sec 1200 \
-            --poll-sec 10 \
+            --timeout-sec 2400 \
+            --poll-sec 15 \
             --serve-tree dev \
+            --ephemeral-vault-init \
             --lane-dirs "$LANE_DIRS"
 
       - name: What ArgoCD saw (on failure)
@@ -410,3 +422,12 @@ jobs:
           kubectl -n argocd get applications -o wide || true
           kubectl -n argocd get applications -o jsonpath='{range .items[*]}{.metadata.name}{"\t"}{.status.sync.status}{"\t"}{.status.health.status}{"\t"}{.status.conditions[*].message}{"\n"}{end}' || true
           kubectl get pods -A --field-selector=status.phase!=Running,status.phase!=Succeeded -o wide || true
+          echo "--- per-resource health of every Application that is not Healthy ---"
+          for app in $(kubectl -n argocd get applications -o jsonpath='{range .items[?(@.status.health.status!="Healthy")]}{.metadata.name}{" "}{end}' 2>/dev/null); do
+            echo "== $app"
+            kubectl -n argocd get application "$app" -o jsonpath='{range .status.resources[?(@.health.status!="Healthy")]}{.kind}/{.namespace}/{.name}{"\t"}{.health.status}{"\t"}{.health.message}{"\n"}{end}' || true
+          done
+          echo "--- cilium workloads (never before asserted under an included run) ---"
+          kubectl -n kube-system get ds,deploy -l app.kubernetes.io/part-of=cilium -o wide || true
+          kubectl -n kube-system rollout status ds/cilium --timeout=5s || true
+          kubectl -n kube-system get pods -l k8s-app=cilium -o wide || true
