@@ -2063,3 +2063,7 @@ UNIQUE HOLDS leftover NEW CELL leftover UNIQUE leftover #17587 leftover unique @
 ## leftover UNIQUE leftover #17590 leftover unique @ 36c172c0079e8c958eb8372643f444b40f26bec6
 
 UNIQUE HOLDS leftover NEW CELL leftover UNIQUE leftover #17590 leftover unique @ 36c172c0079e8c958eb8372643f444b40f26bec6 -- GRADE GO (tip 1-commit +81/-14 / 4 files). Lanes move k3d->kind+Cilium (LB pool + WireGuard preflight; measured cilium/spire stalls). Lockstep covers kind/cilium. Never grade MERGE-REF f9df193b. Tip proof 0 completed failures sampled. Task 081M3878Y6S087G0R00248VJH6. Sit leftover. Do not merge.
+---
+## leftover UNIQUE leftover #17589 leftover unique @ 2636141e309842e0c3f58ed164821b76bc9f4ac2
+
+UNIQUE HOLDS leftover NEW CELL leftover UNIQUE leftover #17589 leftover unique @ 2636141e309842e0c3f58ed164821b76bc9f4ac2 -- GRADE GO (tip 1-commit +38/-10 / 3 files). CoS-named c95df3cc is 2-parent MERGE tip+main -- never grade; never merge_commit b438a2f6. Tip: etcd db tmpfs + cluster-ha workflow_dispatch only. Prior unique @ cc6fed63 (rancher disk / joiners held / wait_or_dump) in ancestry. Follow-up #17569. Task 081M3812659087G0R001NP3WR6. Sit leftover. Do not merge.
