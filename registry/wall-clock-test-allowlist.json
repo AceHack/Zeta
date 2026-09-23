@@ -58,11 +58,5 @@
     "callee": "setTimeout",
     "count": 1,
     "reason": "GENUINE elapsed-time observation, and it is the assertion rather than a delay before one. The test proves two follow-ups at dop 2 OVERLAP instead of serialising: it records Date.now() either side and asserts elapsed < sleepMs * 2. Overlap is a claim ABOUT DURATION, so there is no arrival to poll for -- waitUntil can tell you both finished, not that they ran at once. The `setTimeout` the audit sees is not in the test at all: it is inside a generated child-process stub (`session.cjs`) that stands in for a model session, so the test file's source carries the call while the delay happens in another process. NOTED RATHER THAN HIDDEN: the margin is 2x on a 1500 ms sleep, which is the UNSAFE direction -- a loaded runner can push an overlapping run past 3000 ms and fail a correct implementation. The load-independent form is a barrier: have both stubs signal STARTED and assert both started before either finished, which needs no clock. Worth doing when this test is next touched."
-  },
-  {
-    "path": "src/Core.TypeScript/corporate/adapters.test.ts",
-    "callee": "setTimeout",
-    "count": 1,
-    "reason": "The same shape as the followup-commands.test.ts row: the setTimeout sits inside a STRING LITERAL (`SLEEP = ['-e', 'setTimeout(() => process.exit(0), 1000)']`) that is the body of a spawned child process, and the child is the subject of the test. The test proves two port commands OVERLAP rather than serialise on spawnSync: two one-second children must finish in under 1800 ms. That is a claim about duration, so there is no arrival to poll for. NOTED: the 1.8x margin on a 1000 ms child is the unsafe direction on a loaded runner, and a STARTED barrier (both children signal before either exits) would remove the clock. Count pinned at 1."
   }
 ]

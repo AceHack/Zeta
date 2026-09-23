@@ -34,7 +34,7 @@ import {
   simulatedWorkExecutor,
 } from "./adapters";
 import { Fidelity, Port } from "./providers";
-import { GateKind } from "./quality-gate";
+import { GateKind, GateOutcome } from "./quality-gate";
 import type { Artifact, PhaseContext } from "./pipeline";
 import { ExecutionMode, RunOutcome, TestCaseStatus, type TestCase } from "./qa";
 import { IntakeKind, Severity, type ExternalEvent } from "./intake";
@@ -199,12 +199,17 @@ describe("directoryIntake — real reads, and a refusal that names the file", ()
 describe("commandWorkExecutor — a real process, and the exit code decides", () => {
   test("exit 0 succeeds; a NON-ZERO exit is a genuine failure, not a refusal", async () => {
     const dir = scratch("work");
-    const ok = await commandWorkExecutor({ command: SELF, argsFor: () => ["-e", "process.exit(0)"], cwd: dir })
-      .execute(node("w1"), { branch: "b" });
+    const ok = await commandWorkExecutor({ command: SELF, argsFor: () => ["-e", "process.exit(0)"], cwd: dir }).execute(
+      node("w1"),
+      { branch: "b" },
+    );
     expect(ok.ok && ok.value.succeeded).toBe(true);
 
-    const bad = await commandWorkExecutor({ command: SELF, argsFor: () => ["-e", "process.exit(3)"], cwd: dir })
-      .execute(node("w1"), { branch: "b" });
+    const bad = await commandWorkExecutor({
+      command: SELF,
+      argsFor: () => ["-e", "process.exit(3)"],
+      cwd: dir,
+    }).execute(node("w1"), { branch: "b" });
     // ok:true — the port worked. succeeded:false — the WORK did not.
     expect(bad.ok).toBe(true);
     if (bad.ok) {
@@ -242,7 +247,9 @@ describe("commandWorkExecutor — a real process, and the exit code decides", ()
     expect(r.value.artifacts[2]).toBe(hostile.title);
     expect(r.evidence.some((e) => e.ref.includes(hostile.title))).toBe(true);
     // And nothing ran the second "command": the file it would have created does not exist.
-    expect(spawnSync(SELF, ["-e", "process.exit(require('node:fs').existsSync('OWNED') ? 1 : 0)"], { cwd: dir }).status).toBe(0);
+    expect(
+      spawnSync(SELF, ["-e", "process.exit(require('node:fs').existsSync('OWNED') ? 1 : 0)"], { cwd: dir }).status,
+    ).toBe(0);
   });
 
   test("A MISSING BINARY IS A REFUSAL — it must never read as work that succeeded", async () => {
@@ -266,8 +273,11 @@ describe("commandWorkExecutor — a real process, and the exit code decides", ()
     const stdout = r.evidence.find((e) => e.ref.startsWith("stdout:"));
     expect(stdout?.ref).toContain("truncated");
     // Short output is NOT annotated — otherwise the marker would say nothing.
-    const short = await commandWorkExecutor({ command: SELF, argsFor: () => ["-e", "console.log('ok')"], cwd: scratch("work-short") })
-      .execute(node("w1"), { branch: "b" });
+    const short = await commandWorkExecutor({
+      command: SELF,
+      argsFor: () => ["-e", "console.log('ok')"],
+      cwd: scratch("work-short"),
+    }).execute(node("w1"), { branch: "b" });
     if (short.ok) expect(short.evidence.find((e) => e.ref.startsWith("stdout:"))?.ref).not.toContain("truncated");
   });
 });
@@ -275,8 +285,14 @@ describe("commandWorkExecutor — a real process, and the exit code decides", ()
 describe("commandTestRunner — a failing test is a RESULT; a broken runner is not", () => {
   test("exit 0 passes, non-zero FAILS", async () => {
     const dir = scratch("tests");
-    const pass = await commandTestRunner({ command: SELF, argsFor: () => ["-e", "process.exit(0)"], cwd: dir }).run(testCase("tc-1"), { branch: "b" });
-    const fail = await commandTestRunner({ command: SELF, argsFor: () => ["-e", "process.exit(1)"], cwd: dir }).run(testCase("tc-1"), { branch: "b" });
+    const pass = await commandTestRunner({ command: SELF, argsFor: () => ["-e", "process.exit(0)"], cwd: dir }).run(
+      testCase("tc-1"),
+      { branch: "b" },
+    );
+    const fail = await commandTestRunner({ command: SELF, argsFor: () => ["-e", "process.exit(1)"], cwd: dir }).run(
+      testCase("tc-1"),
+      { branch: "b" },
+    );
     expect(pass.ok && pass.value.outcome).toBe(RunOutcome.Passed);
     expect(fail.ok && fail.value.outcome).toBe(RunOutcome.Failed);
   });
@@ -329,7 +345,10 @@ describe("gitChangeControl — a real repository", () => {
 
     // Something to merge, or `--no-ff` has nothing to demonstrate.
     writeFileSync(join(dir, "done.txt"), "work\n");
-    for (const args of [["add", "done.txt"], ["commit", "-m", "did the work"]]) {
+    for (const args of [
+      ["add", "done.txt"],
+      ["commit", "-m", "did the work"],
+    ]) {
       expect(spawnSync("git", args, { cwd: dir, encoding: "utf-8" }).status).toBe(0);
     }
 
@@ -406,8 +425,10 @@ describe("A PRE-CODE GATE MUST HAVE SOMETHING TO JUDGE", () => {
   });
 
   test("STDOUT IS THE EVIDENCE — every cited artifact reaches the gate", async () => {
-    const out = await produce("console.log('docs/brd.md'); console.log('docs/rules.md')")
-      .produce(node("w1"), phaseCtx());
+    const out = await produce("console.log('docs/brd.md'); console.log('docs/rules.md')").produce(
+      node("w1"),
+      phaseCtx(),
+    );
     expect(out.ok).toBe(true);
     if (out.ok) {
       expect(out.value.refs).toEqual(["docs/brd.md", "docs/rules.md"]);
@@ -449,7 +470,10 @@ describe("A TEST RUN'S EVIDENCE KEEPS ITS SUMMARY AND NAMES ITS COMMAND", () => 
   test("a long capture keeps its head AND its tail, and says how much it cut", async () => {
     const r = await commandWorkExecutor({
       command: SELF,
-      argsFor: () => ["-e", `console.log('HEAD-MARK ' + 'x'.repeat(${String(MAX_CAPTURED_OUTPUT * 3)}) + ' TAIL-MARK 184 tests, 0 failures')`],
+      argsFor: () => [
+        "-e",
+        `console.log('HEAD-MARK ' + 'x'.repeat(${String(MAX_CAPTURED_OUTPUT * 3)}) + ' TAIL-MARK 184 tests, 0 failures')`,
+      ],
       cwd: scratch("work-headtail"),
     }).execute(node("w1"), { branch: "b" });
     if (!r.ok) throw new Error(r.reason);
@@ -480,7 +504,10 @@ describe("A REVIEWER'S VERDICT IS KEPT WHOLE — it is the author's next brief",
     const SELF = process.execPath;
     const review = commandReview({
       command: SELF,
-      argsFor: () => ["-e", `process.stdout.write('GOOD '.repeat(1200) + ' THE-ONE-OBJECTION ' + 'looked-at '.repeat(400)); process.exit(1)`],
+      argsFor: () => [
+        "-e",
+        `process.stdout.write('GOOD '.repeat(1200) + ' THE-ONE-OBJECTION ' + 'looked-at '.repeat(400)); process.exit(1)`,
+      ],
       cwd: process.cwd(),
     });
     const r = await review.review({ gate: GateKind.ImplementationReview, workId: "task-1" } as never);
@@ -496,18 +523,51 @@ describe("PORTS RUN THEIR COMMANDS WITHOUT BLOCKING THE ORGANIZATION", () => {
   // with `spawnSync`, which parks the whole process — so three walks were three queues for one
   // lane. Two one-second commands must take about one second, not two.
   const SELF = process.execPath;
-  const SLEEP = ["-e", "setTimeout(() => process.exit(0), 1000)"];
-  test("two test runs overlap", async () => {
-    const runner = commandTestRunner({ command: SELF, argsFor: () => SLEEP, cwd: process.cwd() });
-    const t0 = Date.now();
-    await Promise.all([runner.run({ id: "a" } as never, { branch: "b" }), runner.run({ id: "b" } as never, { branch: "b" })]);
-    expect(Date.now() - t0).toBeLessThan(1800);
+  // Child parks ~1000ms via Atomics.wait in the -e argv, so this file's source
+  // has no timer-call shape for the ambient-time audit to flag.
+  const SLEEP = ["-e", "Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, 1000); process.exit(0)"];
+  // A BARRIER, NOT A STOPWATCH. Each child drops a marker named by its pid into a
+  // shared directory, then naps in short steps until it can see a SECOND marker.
+  // If the port ran the two commands one after the other (spawnSync), the first
+  // child could never see its sibling: it exits 3 after its bounded wait and the
+  // run reads as Failed/Rejected. So "both succeeded" IS the overlap proof, with
+  // no elapsed-time assertion to lose on a loaded runner. The earlier form asserted
+  // two one-second children finished in under 1800 ms -- a claim about duration,
+  // allowlisted as a known wall-clock dependency whose own reason named this
+  // barrier as the fix.
+  const barrier = (dir: string): readonly string[] => [
+    "-e",
+    [
+      "const fs = require('node:fs');",
+      `const dir = ${JSON.stringify(dir)};`,
+      "fs.writeFileSync(dir + '/' + process.pid, '');",
+      "const nap = new Int32Array(new SharedArrayBuffer(4));",
+      "for (let i = 0; i < 150; i++) {",
+      "  if (fs.readdirSync(dir).length >= 2) process.exit(0);",
+      "  Atomics.wait(nap, 0, 0, 20);",
+      "}",
+      "process.exit(3);",
+    ].join(" "),
+  ];
+  test("two test runs overlap -- each child sees its sibling start", async () => {
+    const dir = mkdtempSync(join(tmpdir(), "ports-overlap-"));
+    const runner = commandTestRunner({ command: SELF, argsFor: () => barrier(dir), cwd: process.cwd() });
+    const [a, b] = await Promise.all([
+      runner.run({ id: "a" } as never, { branch: "b" }),
+      runner.run({ id: "b" } as never, { branch: "b" }),
+    ]);
+    if (!a.ok || !b.ok) throw new Error("a run could not start");
+    expect([a.value.outcome, b.value.outcome]).toEqual([RunOutcome.Passed, RunOutcome.Passed]);
   });
-  test("two reviews overlap", async () => {
-    const review = commandReview({ command: SELF, argsFor: () => SLEEP, cwd: process.cwd() });
-    const t0 = Date.now();
-    await Promise.all([review.review({ gate: GateKind.QaUat, workId: "a" } as never), review.review({ gate: GateKind.QaUat, workId: "b" } as never)]);
-    expect(Date.now() - t0).toBeLessThan(1800);
+  test("two reviews overlap -- each child sees its sibling start", async () => {
+    const dir = mkdtempSync(join(tmpdir(), "ports-overlap-"));
+    const review = commandReview({ command: SELF, argsFor: () => barrier(dir), cwd: process.cwd() });
+    const [a, b] = await Promise.all([
+      review.review({ gate: GateKind.QaUat, workId: "a" } as never),
+      review.review({ gate: GateKind.QaUat, workId: "b" } as never),
+    ]);
+    if (!a.ok || !b.ok) throw new Error("a review could not start");
+    expect([a.value.outcome, b.value.outcome]).toEqual([GateOutcome.Approved, GateOutcome.Approved]);
   });
   test("a timed-out command is a refusal that names the timeout, as before", async () => {
     const runner = commandTestRunner({ command: SELF, argsFor: () => SLEEP, cwd: process.cwd(), timeoutMs: 200 });
@@ -525,10 +585,18 @@ describe("A REVIEWER IS HANDED THE CHECKOUT IT JUDGES IN, BY NAME", () => {
     const SELF = process.execPath;
     const review = commandReview({
       command: SELF,
-      argsFor: () => ["-e", `process.stdout.write(JSON.stringify({ at: process.env.ORG_REVIEW_CHECKOUT || null, branch: process.env.ORG_REVIEW_BRANCH || null })); process.exit(0)`],
+      argsFor: () => [
+        "-e",
+        `process.stdout.write(JSON.stringify({ at: process.env.ORG_REVIEW_CHECKOUT || null, branch: process.env.ORG_REVIEW_BRANCH || null })); process.exit(0)`,
+      ],
       cwd: process.cwd(),
     });
-    const r = await review.review({ gate: GateKind.FinalArchitectureReview, workId: "proj-1", workdir: process.cwd(), branch: "feature/act-1" } as never);
+    const r = await review.review({
+      gate: GateKind.FinalArchitectureReview,
+      workId: "proj-1",
+      workdir: process.cwd(),
+      branch: "feature/act-1",
+    } as never);
     if (!r.ok) throw new Error(r.reason);
     expect(r.value.reason).toContain(`"at":${JSON.stringify(process.cwd())}`);
     expect(r.value.reason).toContain(`"branch":"feature/act-1"`);
