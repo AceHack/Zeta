@@ -1,0 +1,245 @@
+# k3s-first-boot-roster-vm.yml — BUILD (not just evaluate) the one check that boots
+# the REAL NixOS first-boot k3s manifest roster: nixos/tests/k3s-first-boot-roster.nix
+# (`.#checks.x86_64-linux.k3s-first-boot-roster`).
+#
+# WHY THIS EXISTS (081M33NZP3J087G0R003WS1BFH). k3s-server.nix declares ten
+# auto-applied manifests and local-storage.nix an eleventh; every OTHER VM test in
+# nixos/tests/ overrides `services.k3s.manifests` away before booting (mkForce to
+# empty, or reduced to a subset) — see the header of k3s-first-boot-roster.nix for the
+# full list. k3s-first-boot-roster.nix is the only test that boots the roster whole,
+# and it answers the open question k3s-server.nix's own comment block #5 names: does
+# `root-application.yaml` — an argoproj.io/v1alpha1 Application submitted by the k3s
+# deploy controller seconds into boot, before the ArgoCD Helm chart has created that
+# CRD — ever land as `Application/zeta-root`, or does it stick forever behind a kind
+# the API server had never heard of at submission time? Three NAMED verdicts, never a
+# bare timeout (self-heals / inconclusive / stuck) — see the test file's own header.
+#
+# The check has existed in `full-ai-cluster/flake.nix` (~line 704) since it was
+# written, and is exposed as a flake check. NOTHING BUILT IT. `first-boot-manifest-check.yml`
+# only runs `nix flake check --no-build`, which evaluates the derivation but never
+# realises it (a nixosTest's testScript does not execute at eval time). And
+# `build-ai-cluster-iso.yml` — the only lane in this repo that DOES boot online VM
+# tests with `--option sandbox false` (k3s-cluster-online, longhorn-volume-binds) —
+# has no step naming `k3s-first-boot-roster` at all: `grep -n k3s-first-boot-roster
+# .github/workflows/build-ai-cluster-iso.yml` returned nothing before this file
+# existed, despite a comment in `first-boot-manifest-check.yml` claiming it did (fixed
+# alongside this workflow — see that file's history).
+#
+# WHY A SEPARATE WORKFLOW, NOT A STEP IN build-ai-cluster-iso.yml. That job already
+# measures 32-70 min per the comments in its own file, and this check alone is
+# "budget 45-70 min ... and ~10 GB of image pulls" per k3s-first-boot-roster.nix's own
+# header — the single most expensive check in the flake. Folding it into the ISO lane
+# would roughly double every PR's build-iso wait for a question most PRs did not touch.
+# Kept separate and scoped narrowly instead (daily cron + workflow_dispatch + PRs that
+# actually touch the roster's inputs), matching the discipline
+# `first-boot-manifest-check.yml` already established for the eval-only half of this
+# same question.
+#
+# MIRRORS build-ai-cluster-iso.yml's online-VM steps exactly: same pinned
+# actions/checkout, same pinned DeterminateSystems/nix-installer-action with
+# `determinate: false` (upstream Nix only — no FlakeHub OIDC login, which flaked with
+# "Transient authentication mechanism error" on PR #8095), same
+# `--option sandbox false` to let the QEMU user-mode NIC reach the internet for image
+# pulls, same ubuntu-24.04 runner (exposes /dev/kvm; the nixosTest driver falls back to
+# TCG if absent, just slower).
+
+name: k3s-first-boot-roster-vm
+
+on:
+  schedule:
+    # Daily, off-minute — the fleet's convention (see the `cron:` lines across
+    # .github/workflows/*.yml) so schedules do not pile up on the hour boundary.
+    # src/Core.TypeScript/forge-host/github/workflow-triggers.ts derives this
+    # workflow's liveness EXPECTATION straight from this line — no separate
+    # registration needed.
+    #
+    # Minute 45 chosen because it collides with NOTHING repo-wide: measured via
+    # `src/Core.TypeScript/pr-categorization/pr-categorization.test.ts`'s own
+    # "this lane does not collide with another lane on the same cron minute"
+    # falsifier (that test scans EVERY workflow's leading cron minute, so the
+    # collision it caught on the first attempt -- minute 34, shared with
+    # pr-categorization-cadence.yml's `34 */6 * * *` -- was real, not a false
+    # positive).
+    - cron: "45 5 * * *"
+  workflow_dispatch: {}
+  pull_request:
+    paths:
+      # THE ROSTER'S OWN INPUTS, and nothing wider. This check answers one question
+      # about how the roster in these files behaves on a real boot; a PR that does not
+      # touch any of them cannot have changed that answer, so it should not pay
+      # 45-70 min and ~10 GB of pulls to re-confirm it.
+      - "full-ai-cluster/k8s/bootstrap/**"
+      - "full-ai-cluster/nixos/modules/k3s-server.nix"
+      - "full-ai-cluster/nixos/modules/local-storage.nix"
+      - "full-ai-cluster/nixos/tests/k3s-first-boot-roster.nix"
+      - ".github/workflows/k3s-first-boot-roster-vm.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: k3s-first-boot-roster-vm-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  boot-real-roster:
+    name: boot the real first-boot roster (online VM)
+    runs-on: ubuntu-24.04
+    # Test header budgets "45-70 min ... on a KVM-capable runner". 90 min gives real
+    # cold-cache headroom (nix install + flake eval + ~10 GB of image pulls) without
+    # matching the ISO lane's 180-240 min ceiling — this job builds one derivation,
+    # not an installer image.
+    timeout-minutes: 90
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Install Nix
+        # Same pinned action and the same `determinate: false` as build-ai-cluster-iso.yml,
+        # first-boot-manifest-check.yml and root-flake-check.yml. Upstream Nix only — no
+        # FlakeHub login, which flaked with "Transient authentication mechanism error" on
+        # PR #8095.
+        uses: DeterminateSystems/nix-installer-action@3138316df39ed29be04236d7ffc686fa525866aa # v23
+        with:
+          determinate: false
+
+      - name: Show flake metadata
+        working-directory: full-ai-cluster
+        run: nix flake metadata --json | jq '{description, lastModified, revision}'
+
+      # THE REAL BOOT. `--option sandbox false` lets the QEMU user-mode NIC reach the
+      # internet for the five Helm charts (~10 GB of images) — the nix sandbox blocks
+      # network by default; the GitHub runner user is a trusted nix user so the flag is
+      # honored (same reasoning as build-ai-cluster-iso.yml's k3s-cluster-online and
+      # longhorn-volume-binds steps).
+      #
+      # `continue-on-error: true` + a later step reading `steps.roster_test.outcome`:
+      # the log upload and the named-verdict summary must run whichever way this goes
+      # (`if: always()` below), and a run that failed BEFORE reaching a named verdict
+      # (an earlier subtest, or a harness problem like no KVM / no network) is exactly
+      # what the summary step exists to tell apart from a real STUCK/INCONCLUSIVE
+      # verdict — so the job's pass/fail is decided explicitly at the end, not by
+      # whichever step happens to run last.
+      - name: NixOS test — the real first-boot roster boots (online; does zeta-root land?)
+        id: roster_test
+        continue-on-error: true
+        working-directory: full-ai-cluster
+        run: |
+          set -o pipefail
+          nix build .#checks.x86_64-linux.k3s-first-boot-roster \
+            -L --print-build-logs --fallback --option sandbox false \
+            2>&1 | tee /tmp/k3s-first-boot-roster.log
+
+      - name: Upload VM test log
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: k3s-first-boot-roster-log
+          path: /tmp/k3s-first-boot-roster.log
+          if-no-files-found: warn
+          retention-days: 14
+
+      # NAMED VERDICTS, not a bare pass/fail — the whole point of the test file, carried
+      # through to the humans reading CI.
+      #
+      # CORRECTED 2026-09-22 (081M33NZP3J087G0R003WS1BFH, second pass). This step used to
+      # derive the verdict by grepping the AssertionError TEXT of the STUCK/INCONCLUSIVE
+      # branches and falling back to `steps.roster_test.outcome` for the success case —
+      # which meant the passing case (VERDICT A) left NO distinctive line in the log at
+      # all; a human reading the raw artifact could not find the verdict, only infer it
+      # from the job's green checkmark. k3s-first-boot-roster.nix now prints an explicit,
+      # unconditional `VERDICT_NAME=ROOT_LANDED|ROOT_INCONCLUSIVE|ROOT_NEVER_LANDED` line
+      # in ALL three branches (see LINK 5), so this step reads that marker directly instead
+      # of re-deriving it from prose or from the step's own pass/fail. A run that never
+      # reaches LINK 5 at all (harness failure, an earlier LINK failing, KVM/network
+      # problems, or — new — the helm-install first-attempt / no-bad-pods health gates
+      # failing) has no marker and is reported as UNKNOWN rather than guessed at: a probe
+      # that cannot tell "no internet" from "STUCK" must say so, not report one as the
+      # other (rest-is-the-default-transport's failed-probe-is-unknown discipline, applied
+      # here to a VM boot instead of an API call).
+      - name: Print named verdicts to the job summary
+        if: always()
+        run: |
+          set -uo pipefail
+          log=/tmp/k3s-first-boot-roster.log
+          {
+            echo "## k3s-first-boot-roster — VM verdicts"
+            echo ""
+            echo "Run: [$GITHUB_RUN_ID]($GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID)"
+            echo ""
+          } >> "$GITHUB_STEP_SUMMARY"
+
+          if [ ! -f "$log" ]; then
+            echo "**root-application (zeta-root): UNKNOWN** — the VM build produced no log at all (installer/build step itself failed before the test ran)." >> "$GITHUB_STEP_SUMMARY"
+          elif grep -q "VERDICT_NAME=ROOT_NEVER_LANDED" "$log"; then
+            {
+              echo "**root-application (zeta-root): STUCK (ROOT_NEVER_LANDED).** The Application"
+              echo "CRD exists but \`Application/zeta-root\` was never created — the k3s deploy"
+              echo "controller does not retry an apply whose kind was unknown at submission time."
+              echo "The app-of-apps root never lands on a first boot."
+            } >> "$GITHUB_STEP_SUMMARY"
+          elif grep -q "VERDICT_NAME=ROOT_INCONCLUSIVE" "$log"; then
+            {
+              echo "**root-application (zeta-root): INCONCLUSIVE (ROOT_INCONCLUSIVE).**"
+              echo "\`applications.argoproj.io\` never appeared — the ArgoCD chart itself did not"
+              echo "finish installing, so this run says nothing about deploy-controller retry"
+              echo "behaviour."
+            } >> "$GITHUB_STEP_SUMMARY"
+          elif grep -q "VERDICT_NAME=ROOT_LANDED" "$log"; then
+            {
+              echo "**root-application (zeta-root): SELF-HEALS (ROOT_LANDED).** The deploy"
+              echo "controller re-applied \`root-application\` after the ArgoCD chart established"
+              echo "the CRD — the outcome the design silently assumed, now measured rather than"
+              echo "hoped for."
+            } >> "$GITHUB_STEP_SUMMARY"
+          else
+            {
+              echo "**root-application (zeta-root): UNKNOWN.** No \`VERDICT_NAME=\` marker in the"
+              echo "log — the run did not reach LINK 5. Could be an earlier subtest (including the"
+              echo "helm-install first-attempt or no-bad-pods health gates below), a cancelled /"
+              echo "timed-out job, or a harness problem (KVM, network, image pulls). See the"
+              echo "uploaded log and the per-subtest markers below before treating this as a"
+              echo "finding about the roster."
+            } >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+          {
+            echo ""
+            echo "### root-application poll transcript (\`VERDICT root_crd=... zeta_root=...\`)"
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+          grep -E '^VERDICT root_crd=' "$log" 2>/dev/null >> "$GITHUB_STEP_SUMMARY" \
+            || echo "(no root_crd/zeta_root poll lines found — LINK 5 was not reached)" >> "$GITHUB_STEP_SUMMARY"
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+
+          {
+            echo ""
+            echo "### helm-install first-attempt evidence (spire-crds / spire / trust-manager / external-secrets)"
+            echo ""
+            echo "A chart's Job reaching \`Complete\` is NOT enough on its own — measured on run"
+            echo "35687536936: \`helm-install-spire\` reached Complete only after 301s, behind a"
+            echo "failed pod attempt on a bad image pin, and the older version of this workflow"
+            echo "read that as green. \`job_status_failed\` and \`pod_container_restarts_total\` must"
+            echo "both read 0 for a genuinely clean install; anything else means \`kubectl wait\`"
+            echo "was quietly retried underneath this workflow's own assertion."
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+          grep -E '^VERDICT helm-install-' "$log" 2>/dev/null >> "$GITHUB_STEP_SUMMARY" \
+            || echo "(no helm-install VERDICT lines found — that subtest was not reached)" >> "$GITHUB_STEP_SUMMARY"
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+
+          {
+            echo ""
+            echo "### Subtests reached in this run"
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+          grep -E '^(subtest:| {4}subtest:)' "$log" 2>/dev/null | sed -E 's/^[[:space:]]*//' >> "$GITHUB_STEP_SUMMARY" \
+            || echo "(no subtest markers found — see the full uploaded log)" >> "$GITHUB_STEP_SUMMARY"
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Fail the job if the roster test did not pass
+        if: steps.roster_test.outcome == 'failure'
+        run: |
+          echo "::error title=k3s-first-boot-roster did not pass::See the named verdict in the job summary and the uploaded k3s-first-boot-roster-log artifact for the full nixosTest output."
+          exit 1

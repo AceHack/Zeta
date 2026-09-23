@@ -3,5 +3,9 @@
   "sdk": {
     "version": "10.0.401",
     "rollForward": "latestPatch"
+  },
+  "//test": "`dotnet test` runs in Microsoft.Testing.Platform (MTP) mode, not VSTest mode. xunit.v3 4.x ships MTP v2, which refuses VSTest mode on the .NET 10 SDK (https://aka.ms/dotnet-test-mtp-error); xunit.v3 3.x ships MTP v1 1.9, which supports this mode too (needs >= 1.7). Consequences: pass `--solution X.sln` / `--project X.csproj` (never a positional path), and the VSTest flags (--blame-*, --logger, --filter, --collect) do not exist. See docs: https://learn.microsoft.com/dotnet/core/testing/unit-testing-with-dotnet-test#mtp-mode-of-dotnet-test",
+  "test": {
+    "runner": "Microsoft.Testing.Platform"
   }
 }

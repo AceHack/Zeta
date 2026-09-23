@@ -236,7 +236,7 @@ export function valuesTreePaths(values: unknown, prefix = ""): { literal: string
  * `.Values.clientApi.advertisedHost` has `clientApi`, and a manifest that sets
  * the parent map is not declaring a key the chart lacks.
  *
- * OPEN — the chart consumes a node wholesale. Four forms, all measured in this
+ * OPEN — the chart consumes a node wholesale. Five forms, all measured in this
  * tree's charts rather than imagined:
  *
  *   `range $k, $v := .Values.persistence`   bjw-s common, keyed by item name
@@ -245,6 +245,34 @@ export function valuesTreePaths(values: unknown, prefix = ""): { literal: string
  *                                           this form out flagged
  *                                           node-feature-discovery's whole
  *                                           worker configuration as inert
+ *   `$config := omit .Values.configs.cm "create" ...`
+ *                                           bound through a FILTER FUNCTION,
+ *                                           not a bare assignment — rule 4
+ *                                           below only matches `$x := .Values.y`
+ *                                           with nothing between `:=` and
+ *                                           `.Values`, so it missed this.
+ *                                           MEASURED 2026-09-22: argo-cd
+ *                                           10.8.0's `argo-cd.config.cm`
+ *                                           (_helpers.tpl:219) reads
+ *                                           `omit .Values.configs.cm "create"
+ *                                           "annotations"
+ *                                           "resourceExclusionsAdditional"`
+ *                                           into `$config`, merges it into
+ *                                           `$merged`, then `range $key, $value
+ *                                           := $merged` — three hops from
+ *                                           `.Values.configs.cm` to the
+ *                                           `range` this guard already
+ *                                           recognizes, and the guard flagged
+ *                                           `configs.cm.resource.customizations
+ *                                           .health.argoproj.io_Application`
+ *                                           inert despite a direct `helm
+ *                                           template` render proving the key
+ *                                           lands verbatim in argocd-cm's
+ *                                           `data`. `omit`/`pick` both return
+ *                                           a FILTERED COPY of the same map —
+ *                                           wholesale in the same sense
+ *                                           `toYaml` is, just with named keys
+ *                                           removed or kept rather than none.
  *   `$values := .Values.env`                bound, then ranged elsewhere —
  *                                           bjw-s `_env_vars.tpl` does exactly
  *                                           this, and a rule that only saw the
@@ -287,6 +315,14 @@ export function templateValuesRefs(text: string): { literal: string[]; open: str
     // at least as often as the prefix form; both are the same act.
     /\.Values\.([A-Za-z_][A-Za-z0-9_.-]*)\s*\|\s*(?:toYaml|toJson|toPrettyJson|tpl|nindent|indent)/g,
     /\$[A-Za-z_][A-Za-z0-9_]*\s*:?=\s*\.Values\.([A-Za-z_][A-Za-z0-9_.-]*)/g,
+    // BOUND THROUGH A FILTER FUNCTION -- `$x := omit .Values.y "a" "b"` (also
+    // `pick`, the same shape the other direction). MEASURED 2026-09-22 on
+    // argo-cd 10.8.0 (`argo-cd.config.cm`, _helpers.tpl:219): see the doc
+    // comment above. `omit`/`pick` return a filtered COPY of the map they are
+    // given, so a `.Values.X` fed to either is consumed wholesale in the same
+    // sense a bare `range`/`toYaml` is -- named keys are removed or kept, but
+    // nothing about the SHAPE of the reach changes.
+    /\$[A-Za-z_][A-Za-z0-9_]*\s*:?=\s*(?:omit|pick)\s+\.Values\.([A-Za-z_][A-Za-z0-9_.-]*)/g,
   ];
   for (const form of openForms) {
     for (const match of text.matchAll(form)) {

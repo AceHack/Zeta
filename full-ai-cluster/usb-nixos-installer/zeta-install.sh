@@ -68,8 +68,67 @@ HOST="${1:-}"
 STORAGE_BACKEND="${STORAGE_BACKEND:-longhorn}"
 # Minimum longhorn1 slice at the disk tail (root takes everything between ESP and this).
 LONGHORN1_TAIL="${LONGHORN1_TAIL:-1G}"
+# WP21 (081M35C7NJR087G0R002S4R654): the commit to check out after cloning
+# $REPO_URL, and the operator override that lets a checkout failure proceed
+# on the default branch anyway instead of aborting. See the ZETA-REPO-PIN
+# block below + src/Core.TypeScript/installer/repo-pin.ts.
+ZETA_ISO_COMMIT="${ZETA_ISO_COMMIT:-}"
+ZETA_ALLOW_REPO_DRIFT="${ZETA_ALLOW_REPO_DRIFT:-}"
 
 bail() { echo "ERROR: $*" >&2; exit 1; }
+
+# ZETA-REPO-PIN-BEGIN ------------------------------------
+# WP21 (081M35C7NJR087G0R002S4R654) — pure decision functions for the
+# install-time repo pin, checked for parity against the TypeScript oracle
+# src/Core.TypeScript/installer/repo-pin.ts by
+# src/Core.TypeScript/installer/repo-pin-shell-parity.test.ts. Neither
+# function performs any IO; the actual `git fetch`/`checkout` and the
+# resulting outcome logging happen at the call site (Step 6, after the
+# clone), which is inherently imperative and is exercised end-to-end by the
+# QEMU full-install lane instead.
+#
+# THE DEFECT THIS CLOSES: zeta-install.sh's `git clone "$REPO_URL"` at the
+# clone step below carries no ref, so the installed system was always built
+# from the remote's default-branch HEAD at INSTALL time -- never the commit
+# the ISO (or a zflash-prepared medium) was actually built from and tested
+# against. A PR's own NixOS-module changes were therefore unprovable on the
+# real install path before merge, and a USB flashed on day X could install
+# whatever main happened to be on day Y.
+
+# 40 lowercase-or-mixed hex characters is a full git commit sha. Pure string
+# classification, no IO: "empty" (nothing to honour -- today's unpinned
+# behaviour, unchanged) | "invalid-format" (something is present but is not
+# a commit sha -- refused rather than silently ignored, same "refuse junk"
+# posture as every other ESP-sourced value in this script) | "valid"
+# (attempt the checkout).
+zeta_repo_pin_validate() {
+  local raw="$1"
+  if [ -z "$raw" ]; then
+    echo "empty"
+    return
+  fi
+  if [[ "$raw" =~ ^[0-9a-fA-F]{40}$ ]]; then
+    echo "valid"
+  else
+    echo "invalid-format"
+  fi
+}
+
+# What to do when a present pin could not be honoured -- the checkout
+# failed, or the format was junk to begin with. FAIL CLOSED unless the
+# operator named the exact override literal: an installer that silently
+# installs a different tree than the one it was tested from is the defect
+# class this whole work package closes, so the default on a broken pin is
+# to abort, never to proceed quietly.
+zeta_repo_pin_decide_on_failure() {
+  local allow_drift="$1"
+  if [ "$allow_drift" = "1" ]; then
+    echo "override-proceed"
+  else
+    echo "fail-closed"
+  fi
+}
+# ZETA-REPO-PIN-END --------------------------------------
 
 # Operator-facing prompts run only on an interactive console session.
 # ZETA_AUTO_CONFIRM=WIPE (first-boot / QEMU CI via zeta-first-boot.sh) and
@@ -1806,6 +1865,51 @@ fi
 echo "Cloning $REPO_URL ..."
 sudo git clone "$REPO_URL" /mnt/etc/zeta
 
+# ── WP21 (081M35C7NJR087G0R002S4R654): pin the checkout to the ISO/flash commit ──
+#
+# The clone above has no ref, so without this the install always runs
+# whatever commit is HEAD of $REPO_URL's default branch RIGHT NOW, never the
+# commit this ISO was built from (or a zflash ESP override names). A plain
+# clone may not contain a non-default-branch commit, so it is fetched
+# explicitly by sha -- GitHub allows this for any commit reachable in a repo
+# you can read, even one nowhere in refs/heads.
+REPO_PIN_OUTCOME="no-pin"
+REPO_PIN_VALIDATION="$(zeta_repo_pin_validate "$ZETA_ISO_COMMIT")"
+case "$REPO_PIN_VALIDATION" in
+  empty)
+    echo "[repo-pin] no ZETA_ISO_COMMIT pin present (hand-built ISO, or no ESP override); installing $REPO_URL default-branch HEAD (today's behaviour, unchanged)."
+    ;;
+  invalid-format)
+    echo "[repo-pin] ZETA_ISO_COMMIT='${ZETA_ISO_COMMIT}' is not a 40-hex git commit; refusing to treat it as a pin." >&2
+    if [ "$(zeta_repo_pin_decide_on_failure "$ZETA_ALLOW_REPO_DRIFT")" = "override-proceed" ]; then
+      echo "[repo-pin] WARNING: ZETA_ALLOW_REPO_DRIFT=1 set — proceeding on $REPO_URL default-branch HEAD anyway." >&2
+      REPO_PIN_OUTCOME="overridden-invalid-format"
+    else
+      bail "ZETA_ISO_COMMIT='${ZETA_ISO_COMMIT}' is not a valid 40-hex git commit sha. Refusing to install an unpinned tree under a pin that cannot even be parsed -- this is almost always a corrupted ESP override or a build-time mistake, not an operator decision. Remedy: fix the pin (it should be exactly 40 hex characters), or set ZETA_ALLOW_REPO_DRIFT=1 to explicitly install $REPO_URL default-branch HEAD instead."
+    fi
+    ;;
+  valid)
+    echo "[repo-pin] ZETA_ISO_COMMIT=${ZETA_ISO_COMMIT} — fetching + checking out the pinned commit ..."
+    if GIT_TERMINAL_PROMPT=0 timeout 60 sudo git -C /mnt/etc/zeta fetch --depth=1 origin "$ZETA_ISO_COMMIT" \
+       && sudo git -C /mnt/etc/zeta checkout --detach "$ZETA_ISO_COMMIT"; then
+      REPO_PIN_ACTUAL_SHA="$(git -C /mnt/etc/zeta rev-parse HEAD)"
+      echo "[repo-pin] honoured: HEAD is now ${REPO_PIN_ACTUAL_SHA} (pinned ${ZETA_ISO_COMMIT})"
+      REPO_PIN_OUTCOME="honoured"
+    else
+      if [ "$(zeta_repo_pin_decide_on_failure "$ZETA_ALLOW_REPO_DRIFT")" = "override-proceed" ]; then
+        echo "[repo-pin] WARNING: could not check out pinned commit $ZETA_ISO_COMMIT (fetch or checkout failed -- see git output above); ZETA_ALLOW_REPO_DRIFT=1 set — proceeding on $(git -C /mnt/etc/zeta rev-parse HEAD) (default branch)." >&2
+        REPO_PIN_OUTCOME="overridden"
+      else
+        bail "could not check out the pinned ISO commit $ZETA_ISO_COMMIT in the cloned $REPO_URL (fetch or checkout failed -- see the git output above). Installing the default branch instead would put a DIFFERENT tree on this disk than the one this ISO was built from and tested against -- exactly the defect this pin exists to close. Remedy: check network connectivity and that the commit exists on $REPO_URL, or set ZETA_ALLOW_REPO_DRIFT=1 to explicitly proceed on the default branch and record that it happened."
+      fi
+    fi
+    ;;
+  *)
+    bail "internal error: zeta_repo_pin_validate returned an unrecognised verdict '${REPO_PIN_VALIDATION}'. Refusing rather than guessing."
+    ;;
+esac
+echo "[repo-pin] outcome=${REPO_PIN_OUTCOME} pin=${ZETA_ISO_COMMIT:-<none>}"
+
 echo "Generating hardware-configuration.nix ..."
 sudo nixos-generate-config --root /mnt --force
 # 081KSNY2Z0008QG0R0008PN7RQ / 081KSGS9H0008QG0R0011BC7T2: flake hosts import ./hardware-configuration.nix from the
@@ -2684,6 +2788,28 @@ if [ -n "$QEMU_BAKE_TEST_CRED_FILE" ]; then
 else
   echo "[uefi-keyfile] no zeta-qemu-bake-test-cred on boot USB ESP"
 fi
+# WP11: /zeta-qemu-k3s-first-boot-verify asks the INSTALLED disk's own first
+# multi-user boot to run a bounded k3s + first-boot-roster bring-up check and
+# print a JSON verdict to serial (zeta-k3s-first-boot-verify.nix). Nothing
+# else in the tree ever writes this marker, so it is staged straight onto the
+# install target -- OFF on every real install.
+QEMU_K3S_VERIFY_FILE=""
+if [ ${#SEARCH_DIRS[@]} -gt 0 ]; then
+  QEMU_K3S_VERIFY_FILE=$(sudo find "${SEARCH_DIRS[@]}" \
+    -maxdepth 5 -name "zeta-qemu-k3s-first-boot-verify" -type f 2>/dev/null | head -1 || true)
+fi
+if [ -z "$QEMU_K3S_VERIFY_FILE" ] && [ -f "$PROBE_MOUNT/zeta-qemu-k3s-first-boot-verify" ]; then
+  QEMU_K3S_VERIFY_FILE="$PROBE_MOUNT/zeta-qemu-k3s-first-boot-verify"
+fi
+if [ -n "$QEMU_K3S_VERIFY_FILE" ]; then
+  echo "[k3s-first-boot-verify] found zeta-qemu-k3s-first-boot-verify on boot USB ESP"
+  sudo mkdir -p /mnt/etc/zeta
+  echo "1" | sudo tee /mnt/etc/zeta/qemu-k3s-first-boot-verify >/dev/null
+  sudo chmod 0644 /mnt/etc/zeta/qemu-k3s-first-boot-verify
+  echo "[k3s-first-boot-verify]   wrote /mnt/etc/zeta/qemu-k3s-first-boot-verify (installed-disk first-boot verdict unit)"
+else
+  echo "[k3s-first-boot-verify] no zeta-qemu-k3s-first-boot-verify on boot USB ESP"
+fi
 # 081KZHJPJCF: unmount the boot USB ESP that was RE-mounted for the iter-5.2 hostname +
 # iter-5-wifi probes (see the re-mount before iter-5.2). Harmless no-op if it was never
 # re-mounted (no pubkey / empty BOOT_ESP_PART).
@@ -2949,6 +3075,7 @@ metadata:
     zeta.lucent-financial-group.com/flake-commit: \"$FLAKE_COMMIT\"
     zeta.lucent-financial-group.com/flake-host: \"$HOST\"
     zeta.lucent-financial-group.com/registered-via: \"iter-5.4.1\"
+    zeta.lucent-financial-group.com/repo-pin-outcome: \"${REPO_PIN_OUTCOME:-no-pin}\"
   labels:
     zeta.lucent-financial-group.com/maintainer: \"$MAINTAINER\"
 spec:
@@ -2961,6 +3088,7 @@ spec:
     flake-commit: \"$FLAKE_COMMIT\"
     flake-host: \"$HOST\"
     registered-via: \"iter-5.4.1\"
+    repo-pin-outcome: \"${REPO_PIN_OUTCOME:-no-pin}\"
   hardware:"
   [ -n "$CPU_MODEL" ] && NODE_YAML="$NODE_YAML
     cpu: \"$CPU_MODEL\""

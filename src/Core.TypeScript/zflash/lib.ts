@@ -11,6 +11,7 @@ import {
   type ZetaFirstbootRole,
 } from "./firstboot-role.ts";
 import { planFirstbootConfWithNamedBaoElf, type NamedBaoElfAsk } from "./firstboot-bao-elf.ts";
+import { isFullGitCommitSha } from "../installer/repo-pin.ts";
 
 /**
  * RFC1123 hostname regex.
@@ -196,7 +197,21 @@ export interface FileBackedEspWrite {
     // 081M12178AR: QEMU restore probe. Presence asks 6.95-picker to bake one
     // deterministic gh-cli test cred instead of --defer-all (empty bake).
     // Literal bytes "1\n" — public identifier, not a secret.
-    | "/zeta-qemu-bake-test-cred";
+    | "/zeta-qemu-bake-test-cred"
+    // WP11: QEMU-only. Presence asks the INSTALLED disk's first multi-user
+    // boot to run zeta-k3s-first-boot-verify (bounded k3s + roster bring-up
+    // check, JSON verdict to serial). Literal bytes "1\n" — public
+    // identifier, not a secret. See zeta-install.sh's probe for it and
+    // full-ai-cluster/nixos/modules/zeta-first-boot-k3s-verify.nix.
+    | "/zeta-qemu-k3s-first-boot-verify"
+    // WP21 (081M35C7NJR087G0R002S4R654): overrides the ISO-baked
+    // ZETA_ISO_COMMIT (/etc/zeta-iso-provenance) so a QEMU test lane (or an
+    // operator) can pin the installed tree to a commit different from the
+    // one this ISO was built from, without rebuilding it. Read by
+    // zeta-first-boot.sh's zeta_source_esp_repo_pin, consumed by
+    // zeta-install.sh's ZETA-REPO-PIN block. Content is a single
+    // bash-sourceable `ZETA_ISO_COMMIT='<40-hex>'` line.
+    | "/zeta-repo-pin";
   readonly sourcePath?: string;
   readonly content?: string;
 }
@@ -241,6 +256,25 @@ export interface FileBackedZflashImagePlanInput {
    * only; not implied by the passphrase file or the keyfile bind marker.
    */
   readonly qemuBakeTestCredMarker?: boolean;
+  /**
+   * When true, writes `/zeta-qemu-k3s-first-boot-verify` (WP11). Asks the
+   * INSTALLED disk's own first multi-user boot to run a bounded k3s +
+   * first-boot-roster bring-up check and print a JSON verdict to serial.
+   * QEMU-only; nothing else ever writes this file, so it is OFF on every
+   * real install.
+   */
+  readonly qemuK3sFirstBootVerifyMarker?: boolean;
+  /**
+   * WP21 (081M35C7NJR087G0R002S4R654): when set, writes `/zeta-repo-pin`
+   * (`ZETA_ISO_COMMIT='<commit>'`) so the booting node checks out this exact
+   * commit after cloning $REPO_URL, overriding whatever this ISO was built
+   * from. Must be a full 40-hex git commit sha — refused otherwise, same
+   * "refuse junk" posture as `zeta-install.sh`'s own validation
+   * (src/Core.TypeScript/installer/repo-pin.ts). The QEMU full-install lane
+   * uses this to pin an installed disk to the PR's own commit, proving a
+   * branch-only NixOS-module change reaches the real install path.
+   */
+  readonly repoPinCommit?: string;
   /**
    * When set, writes `/zeta-firstboot.conf` so the booting node learns
    * whether it founds a cluster or joins one. Omitted → unchanged behaviour:
@@ -473,6 +507,28 @@ export function planFileBackedZflashImage(input: FileBackedZflashImagePlanInput)
     espWrites.push({
       content: "1\n",
       destination: "/zeta-qemu-bake-test-cred",
+    });
+  }
+  if (input.qemuK3sFirstBootVerifyMarker === true) {
+    espWrites.push({
+      content: "1\n",
+      destination: "/zeta-qemu-k3s-first-boot-verify",
+    });
+  }
+  if (input.repoPinCommit !== undefined) {
+    const commit = input.repoPinCommit.trim();
+    if (!isFullGitCommitSha(commit)) {
+      return {
+        ok: false,
+        error: `repoPinCommit must be a full 40-hex git commit sha: ${JSON.stringify(input.repoPinCommit)}`,
+      };
+    }
+    // Single-quoted, and the value is hex-only by construction (the check
+    // above), so there is nothing for the quote to need escaping from —
+    // same posture as firstboot-role.ts's `shellQuote`.
+    espWrites.push({
+      content: `ZETA_ISO_COMMIT='${commit}'\n`,
+      destination: "/zeta-repo-pin",
     });
   }
   // 081KSNY2Z0008QG0R0008PN7RQ role provisioning. Ordered AFTER the existing

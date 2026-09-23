@@ -5,6 +5,20 @@ kind: Application
 metadata:
   annotations:
     argocd.argoproj.io/sync-wave: "0"
+    # DELIBERATELY NOT `zeta.io/gates-later-waves` (081M33T23ZQ087G0R002ZYRHDG).
+    # This Application DOES provide a genuinely-consumed CRD group
+    # (monitoring.coreos.com -- platform's ServiceMonitor/PrometheusRule
+    # depend on it) and would otherwise be a strong gating candidate. It is
+    # EXCLUDED because it depends on an unminted secret: `admin.existingSecret:
+    # grafana-admin-credentials` below is a NAMED reference (not the chart's
+    # empty-string "generate one for me" idiom), and
+    # collectTreeMintedSecretNames() confirms nothing in the committed tree
+    # mints it -- only the dev/CI harness does. Without it Grafana's pod
+    # cannot start, so this Application itself would never reach Healthy on a
+    # fresh metal install, and gating on it would propagate that stall to
+    # everything after wave 0. platform's consumption is protected instead by
+    # `SkipDryRunOnMissingResource=true` on the two CRD-gated resources
+    # (platform/monitoring.yaml).
   name: kube-prometheus-stack
   namespace: argocd
   finalizers: [ resources-finalizer.argocd.argoproj.io ]
@@ -140,6 +154,27 @@ spec:
                   # notification log, both small and both self-expiring, so
                   # there is no governor to move and 5Gi is ample.
                   resources: { requests: { storage: 5Gi } }
+        # STARTUP PROBE -- THE BUNDLED SUBCHART EXPOSES THE COORDINATE DIRECTLY.
+        # MEASURED (helm pull kube-prometheus-stack 88.6.3 --untar):
+        # charts/kube-state-metrics/templates/deployment.yaml renders `startupProbe`
+        # from `.Values.startupProbe.enabled` (default false) alongside its own
+        # `livenessProbe` (`initialDelaySeconds: 5, periodSeconds: 10, failureThreshold:
+        # 3` by chart default -> 25s kill budget).
+        #
+        # WHY: kube-state-metrics restarted (restartCount 1, self-healed) in run
+        # 35703810167 of the 5 kind-included-lane CI runs examined 2026-09-22 -- a
+        # first-boot-pressure symptom on a fast Go binary that lists every object in the
+        # API server on startup, which is cheap in steady state and not free on a node
+        # still scheduling ~120 pods.
+        #
+        # Kubelet holds `livenessProbe` off entirely until `startupProbe` first
+        # succeeds -- the correct primitive. periodSeconds 10 (chart default),
+        # failureThreshold 30 -> startup kill budget 0+29*10=290s; the chart's own 25s
+        # liveness resumes once startup succeeds.
+        kube-state-metrics:
+          startupProbe:
+            enabled: true
+            failureThreshold: 30
   destination:
     server: https://kubernetes.default.svc
     namespace: monitoring

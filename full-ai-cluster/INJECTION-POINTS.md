@@ -63,10 +63,17 @@ file to confirm it is an AES-256-GCM envelope.
 | `/zeta-join-token`            | **secret material**                         | **refused by class; ships under the §6 recorded exception** |
 | `/zeta-wifi-credentials.json` | **secret material**                         | **REFUSED — no exception on file; see §4a**                 |
 | `/zeta-qemu-creds-passphrase` | **UNDECIDED — pending security review**     | **REFUSED; see §4b**                                        |
+| `/zeta-qemu-k3s-first-boot-verify` | public identifier (the literal bytes `1\n`) | permitted by class                                     |
 
 A ninth destination arrived later: `/zeta-qemu-bake-test-cred` (081M12178AR), a
 public-identifier marker (`1\n`) that asks the guest picker to bake one
 deterministic gh-cli _test_ token. The token is not on the ESP.
+
+A tenth destination, `/zeta-qemu-k3s-first-boot-verify` (WP11), is the same
+shape again: presence asks the INSTALLED disk's own first multi-user boot to
+run `zeta-k3s-first-boot-verify.nix`'s bounded k3s + first-boot-roster
+bring-up check and print a JSON verdict to serial. Reading the marker
+discloses nothing and grants nothing.
 
 **What is NOT claimed.** This module performs no cryptography and no key
 material passes through it. Nothing here is sealed, bound, attested, or
@@ -488,6 +495,93 @@ Operator's substrate-honest acknowledgment 2026-05-27: _"i know you can't preser
 - [081KSGS9H0008QG0R001JNKBFD](../docs/backlog/P2/081KSGS9H0008QG0R001JNKBFD-node-local-claude-agent-stewards-own-registration-pr-then-reports-k8s-cluster-status-operator-interactive-login-pattern-aaron-2026-05-26.md) — node-local Claude agent stewards own registration PR
 - [081KSKBP80008QG0R003AX2A69](../docs/backlog/P1/081KSKBP80008QG0R003AX2A69-credential-persistence-on-usb-esp-plus-boot-sequence-auth-method-picker-encrypted-blob-bound-to-usb-uuid-plus-operator-passphrase-aaron-2026-05-27.md) — credential persistence on USB ESP + boot-sequence auth-method picker (the active substrate this catalog cross-references for in-flight rows 5 + 6 above)
 - [081KSKBP80008QG0R00146WEX1](../docs/backlog/P1/081KSKBP80008QG0R00146WEX1-post-boot-ai-as-home-owner-not-controlled-runtime-every-knob-from-first-boot-aaron-2026-05-27.md) — post-boot AI as home-owner; 3-mode USB-boot recovery substrate (fix / reformat-with-current-keys / full-reflash); operational-freedom mechanism; AI-worry-about-mistakes dissolves
+
+## In-cluster catalog Secrets — who mints them on metal vs dev (WP14, 081M343EEP8087G0R000BAF6QF)
+
+Everything above is USB-ESP / flash-time injection. This section is the OTHER
+half: Secrets the AUTO-SYNCED ArgoCD catalog (`k8s/applications/`) references
+by name (`existingSecret`, `secretKeyRef`, `envFrom`, `imagePullSecrets`) but
+does not create itself — the class `audit-existing-secret-is-minted.ts`
+watches for the dev/CI lane. `first-boot-replica.ts` run 35700790207 (real
+NixOS k3s roster in Docker, ArgoCD syncing the dev rung) found
+`CreateContainerConfigError` for hindsight, loki, mimir and opensearch, all
+traced to this gap.
+
+The split that matters: **INTERNAL** (a random credential used only BETWEEN
+in-cluster components — nothing outside the cluster ever needs to know it) vs
+**EXTERNAL** (operator-supplied — a real third-party credential this cluster
+cannot generate for itself). INTERNAL + nobody-mints-it-on-metal is a
+first-boot defect; EXTERNAL + nobody-mints-it-on-metal is an operator gap, not
+a bug, and MUST NOT be papered over with a randomly-generated value.
+
+| Secret                         | Namespace(s)                             | Class        | Mints on metal                                                                                  | Mints in dev/CI                                            |
+| ------------------------------- | ----------------------------------------- | ------------ | ------------------------------------------------------------------------------------------------ | ----------------------------------------------------------- |
+| `grafana-admin-credentials`     | `monitoring`                              | INTERNAL     | `k8s/bootstrap/internal-secret-seeding.yaml` (Job, create-if-absent)                              | `DEV_GRAFANA_ADMIN_SECRET` (`dev-cluster/lib.ts`)            |
+| `ziti-admin-credentials`        | `openziti`                                | INTERNAL     | `k8s/bootstrap/internal-secret-seeding.yaml`                                                      | `DEV_ZITI_ADMIN_SECRET`                                      |
+| `opensearch-admin-credentials`  | `opensearch`                              | INTERNAL     | `k8s/bootstrap/internal-secret-seeding.yaml`                                                      | `DEV_OPENSEARCH_ADMIN_SECRET`                                |
+| `forgejo-initial-admin`         | `forgejo`                                 | INTERNAL     | `k8s/bootstrap/internal-secret-seeding.yaml`                                                      | `DEV_FORGEJO_ADMIN_SECRET`                                   |
+| `gitlab-initial-root-password`  | `gitlab`                                  | INTERNAL     | `k8s/bootstrap/internal-secret-seeding.yaml` (WP24, 081M35K4PV6087G0R001Z3E0P8)                    | `DEV_GITLAB_ROOT_SECRET`                                     |
+| `zeta-blob-store`               | `object-store`, `loki`, `mimir`, `gitlab` | INTERNAL     | `k8s/bootstrap/internal-secret-seeding.yaml` (ONE value, four namespaces, one pod)                 | `DEV_BLOB_STORE_SECRET`                                      |
+| `redis-auth`                    | `redis`, `orleans`                        | INTERNAL     | `k8s/bootstrap/internal-secret-seeding.yaml` (ONE value, two namespaces, one pod)                  | `DEV_REDIS_AUTH_SECRET`                                      |
+| `hindsight-llm-api-key`         | `hindsight`                               | **EXTERNAL** | **NOBODY — see below.** A real Groq API key; this cluster cannot draw one for itself.              | `DEV_HINDSIGHT_LLM_SECRET` (placeholder value; boot-check only, no LLM call succeeds) |
+| `ghcr-pull` (`imagePullSecrets`) | `zeta-platform`                           | **EXTERNAL** | **NOBODY — already tracked above** ("GHCR pull token" row, 081M33TN49G087G0R000X5ZJ75)             | `DEV_GHCR_PULL_SECRET` (from a CI-held token)                |
+| `arc-github-app` (`githubConfigSecret`) | `arc-runners`                     | **EXTERNAL** | **NOBODY.** A real GitHub App id/installation id/private key; `arc-runner-set/Application.yaml`'s own header says so ("Materialised by external-secrets from Vault"). Acknowledged in `existing-secret-is-minted.baseline.json` (`arc-runner-set\|arc-github-app`) — `arc-runner-set` is also in `DEV_EXCLUDED_REASONS`, so no pod in the dev lane ever resolves the name. | none — operator/Vault-provisioned on metal, never minted in dev/CI |
+
+### The six INTERNAL rows above were the first-boot defect; five fixed by WP14, `gitlab-initial-root-password` by WP24
+
+Before WP14, nothing on a real USB/metal install minted any of the first five
+INTERNAL credentials — matching this repo's own `existing-secret-is-minted.baseline.json`
+`orleans|redis-auth` entry ("redis's OWN Application.yaml has the identical
+unminted reference … metal: Sealed Secret / Vault") and the `redis` chart
+comment ("create via Sealed Secret / Vault") that named the intent without
+ever shipping the mechanism. `gitlab-initial-root-password` was a SIXTH such
+gap that WP14/WP16's own accounting missed for a mechanical reason: the
+reference (`global.initialRootPassword.secret`, a bare `secret:` leaf) was
+INVISIBLE to `audit-existing-secret-is-minted.ts` until WP24 widened that
+script's detection — see the workitem for the full trace, including why this
+tree seeds the Secret itself rather than relying on the GitLab chart's own
+`shared-secrets` pre-install hook (broader `get`/`list`/`create`/`patch` RBAC
+than every sibling credential in this class uses).
+
+`k8s/bootstrap/internal-secret-seeding.yaml` is a k3s first-boot manifest
+(`nixos/modules/k3s-server.nix`'s `services.k3s.manifests` roster — the SAME
+mechanism `openziti-namespace.yaml` and the other `*-install.yaml` bootstrap
+files already use), applied BEFORE ArgoCD exists. It mints exactly these seven
+credentials, per-namespace RBAC-scoped (`create` on `secrets` only, nothing
+else), `kubectl create` (never `apply`/`replace`, so an existing Secret is
+never overwritten). Key shapes are cross-checked against `dev-cluster/lib.ts`'s
+`DEV_BOOTSTRAP_SECRETS` / `DEV_SHARED_SECRETS` by
+`internal-secret-seeding.test.ts` so the two cannot silently drift apart.
+
+**Randomness (hardened WP16, 081M349QTRM087G0R001HM7ESM):** each Job's FIRST
+step is a `draw-entropy` initContainer (`busybox`, pinned by tag AND digest —
+the one container here with a shell) that reads `/dev/urandom` and writes the
+value ONLY to an in-memory (`emptyDir: {medium: Memory}`, tmpfs) volume shared
+with the rest of that pod. The `kubectl` containers (still
+`registry.k8s.io/kubectl:v1.32.3`, already vetted in this tree by
+`k8s/applications/hat-system/gatekeeper-crd-wait.yaml`) read the secret value
+off that file with `--from-file`, never as an argv token or env var. WP14's
+original mechanism drew randomness from each Job's own pod UID via the
+Kubernetes Downward API, which was weak: a pod UID is readable by anyone with
+`get`/`list` on Pods in the namespace and appears in events/audit
+logs/`kubectl describe`, and a UUIDv4's ~122 bits come from the apiserver's ID
+generator, not a CSPRNG designated for secrets.
+
+### `hindsight-llm-api-key` stays an EXTERNAL gap, on purpose
+
+`hindsight/Application.yaml`'s own header already made this call (Aaron
+2026-09-07, "the decision that is not mine to make": ESO on metal + a minted
+dev Secret) — the Secret's NAME is shared between metal and dev, but its
+PROVENANCE is not, and metal's half (a `ClusterSecretStore` + `ExternalSecret`)
+does not exist yet. This is not something WP14 papers over: a randomly-drawn
+value here would clear the crash loop and never do the one thing the
+credential exists for (an actual LLM call). Isolation check: `hindsight` is
+NOT `zeta.io/gates-later-waves` (not in the annotated set anywhere under
+`k8s/applications/*/Application.yaml`), so its `CreateContainerConfigError`
+today does not block any later sync wave — matching `kube-prometheus-stack`'s
+same deliberate non-gating annotation. Lifts when a `ClusterSecretStore` +
+`ExternalSecret` land for this namespace; see the Application's own header for
+the five layers that still have to exist first.
 
 ## Remaining gaps (no backlog row yet — candidates per constitutional rail)
 

@@ -176,6 +176,28 @@ describe("the full bundle, built against the live tree", () => {
     expect(existsSync(join(bundle.repo.dir, "objects/info/alternates"))).toBe(false);
   });
 
+  test("ONLY applications/ is served -- and every Application still resolves its path", () => {
+    // The fix for the 1001072 B overflow (2026-09-22): bootstrap/, the JSON ledgers,
+    // tests/ and docs never reach ArgoCD. The second half is the falsifier for
+    // pruning too much: every self-referencing source.path must exist in the clone.
+    const clone = join(work, "clone");
+    const subtree = join(clone, SERVED_SUBTREE);
+    expect(readdirSync(subtree)).toEqual(["applications"]);
+    const appsDir = join(subtree, "applications");
+    const paths = new Set<string>();
+    const walk = (dir: string): void => {
+      for (const e of readdirSync(dir, { withFileTypes: true })) {
+        const p = join(dir, e.name);
+        if (e.isDirectory()) walk(p);
+        else if (e.name === "Application.yaml")
+          for (const m of readFileSync(p, "utf8").matchAll(/^\s*path:\s*(full-ai-cluster\/\S+)\s*$/gm)) paths.add(m[1] as string);
+      }
+    };
+    walk(appsDir);
+    expect(paths.size).toBeGreaterThan(5);
+    for (const p of paths) expect(existsSync(join(clone, p))).toBe(true);
+  });
+
   test("the packed tree fits the ConfigMap budget, with the measurement printed", () => {
     console.log(
       `[lane-tree] packed ${String(bundle.packedBytes)} bytes of ${String(MAX_TREE_BYTES)} ` +

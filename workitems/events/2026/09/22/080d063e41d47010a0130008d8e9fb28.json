@@ -1,0 +1,14 @@
+{
+  "id": "080d063e41d47010a0130008d8e9fb28",
+  "at": "2026-09-22T06:23:03.310Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M33WGEMC087G0R0037ZQ9VW",
+    "type": "bug",
+    "title": "argocd-health-test.ts: evidence-based terminal Degraded + soak phase for the live-kind-included lane",
+    "slug": "argocd-health-test-ts-evidence-based-terminal-degraded-soak",
+    "priority": "P2",
+    "filename": "081M33WGEMC087G0R0037ZQ9VW-argocd-health-test-ts-evidence-based-terminal-degraded-soak.md"
+  }
+}

@@ -24,6 +24,33 @@ spec:
       valuesObject:
         statefulset:
           replicas: 3
+          # STARTUP PROBE -- THE CHART EXPOSES THE COORDINATE DIRECTLY. MEASURED (helm
+          # pull cockroachdb 22.0.3 --untar): templates/statefulset.yaml renders
+          # `startupProbe` from `.Values.statefulset.customStartupProbe` when set, and
+          # only the chart's own hardcoded liveness (`initialDelaySeconds: 30,
+          # periodSeconds: 5`, failureThreshold default 3 -> 40s kill budget) otherwise.
+          # Not individually vetted at WP15's 2026-09-22 catalog audit; ranked here as a
+          # known slow starter (JVM/DB category per WP18) -- CockroachDB self-joins the
+          # Raft cluster and, on a first boot with 3 replicas starting alongside ~120
+          # other pods, that can outrun the 40s liveness window before the process is
+          # even listening.
+          #
+          # Kubelet holds `livenessProbe` off entirely until `startupProbe` first
+          # succeeds -- the correct primitive, not a widened liveness window.
+          # periodSeconds 10, failureThreshold 30 -> startup kill budget 0+29*10=290s;
+          # the chart's own 40s liveness resumes once startup succeeds, so a genuinely
+          # wedged node still dies in steady state.
+          customStartupProbe:
+            httpGet:
+              path: /health
+              port: http
+              # `tls.enabled: true` below -- the chart's own default liveness probe adds
+              # this scheme conditionally; customStartupProbe is a full replacement (no
+              # merge), so it must be named explicitly here too.
+              scheme: HTTPS
+            initialDelaySeconds: 0
+            periodSeconds: 10
+            failureThreshold: 30
         storage:
           persistentVolume:
             enabled: true
@@ -121,6 +148,30 @@ spec:
   destination:
     server: https://kubernetes.default.svc
     namespace: cockroachdb
+  # ServerSideApply DELIBERATELY ABSENT -- the spire lesson (spire/Application.yaml)
+  # reproduced here. MEASURED 2026-09-22 by rendering this Application's own
+  # valuesObject against chart 22.0.3 and inspecting the StatefulSet's
+  # `volumeClaimTemplates[0]` (JSON-encoded 4690 bytes total): the chart emits
+  # exactly name/accessModes/storageClassName/resources.requests.storage, none of
+  # `apiVersion`, `kind`, `status` or `metadata.creationTimestamp`. Under
+  # ServerSideApply, ArgoCD's local diff runs the desired object through the same
+  # internal apiVersion-conversion path the real API server does, and that path
+  # (argoproj/argo-cd#11143, apelisse comment 2023-01-24: "the apiserver does lots
+  # of conversions internally ... with server-side apply, the conversion acts
+  # exactly as a default") introduces those four fields into the PREDICTED live
+  # object -- so ArgoCD compares a desired manifest that never had them against a
+  # live object where the conversion put them there, forever. This is
+  # argo-cd#11143 / #18568, the same StatefulSet+volumeClaimTemplates+SSA class
+  # linhng98 lists nats under too.
+  # ignoreDifferences on `.spec.volumeClaimTemplates[]?.metadata.creationTimestamp`
+  # is not viable: spire/Application.yaml MEASURED that ArgoCD introduces
+  # `creationTimestamp: null` downstream of the normalizer the ignore rule runs
+  # against (marshalling through Go's non-pointer `ObjectMeta.CreationTimestamp`),
+  # so an ignore rule can never reach it.
+  # DROPPING ServerSideApply is safe here on the same basis spire's was: the
+  # largest resource this chart renders is this StatefulSet at 4690 bytes,
+  # 55x under the 262144-byte cap `kubectl.kubernetes.io/last-applied-configuration`
+  # (client-side apply's mechanism) is subject to.
   syncPolicy:
     automated: { prune: false, selfHeal: true }
-    syncOptions: [ CreateNamespace=true, ServerSideApply=true ]
+    syncOptions: [ CreateNamespace=true ]

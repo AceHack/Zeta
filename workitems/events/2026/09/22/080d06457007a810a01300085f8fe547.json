@@ -1,0 +1,14 @@
+{
+  "id": "080d06457007a810a01300085f8fe547",
+  "at": "2026-09-22T10:34:01.845Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M34AW07F087G0R001KATSP6",
+    "type": "bug",
+    "title": "Applications that never stay Synced: perpetual OutOfSync / self-heal churn on StatefulSet volumeClaimTemplates and argo-workflows CRDs",
+    "slug": "applications-that-never-stay-synced-perpetual-outofsync-self",
+    "priority": "P2",
+    "filename": "081M34AW07F087G0R001KATSP6-applications-that-never-stay-synced-perpetual-outofsync-self.md"
+  }
+}

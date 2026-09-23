@@ -482,6 +482,56 @@ describe("planFileBackedZflashImage", () => {
     ]);
   });
 
+  test("plans the WP11 k3s-first-boot-verify marker as an ESP write of literal 1", () => {
+    const result = planFileBackedZflashImage({
+      espOffsetBytes: 1_048_576,
+      isoPath: "artifacts/zeta-installer.iso",
+      outputImagePath: "artifacts/zflash-baked.img",
+      qemuK3sFirstBootVerifyMarker: true,
+    });
+
+    expect(result.ok).toBe(true);
+    if (!result.ok) throw new Error(result.error);
+    expect(result.value.espWrites).toEqual([
+      {
+        content: "1\n",
+        destination: "/zeta-qemu-k3s-first-boot-verify",
+      },
+    ]);
+  });
+
+  test("WP21: plans a valid repo-pin commit as a bash-sourceable ESP write", () => {
+    const result = planFileBackedZflashImage({
+      espOffsetBytes: 1_048_576,
+      isoPath: "artifacts/zeta-installer.iso",
+      outputImagePath: "artifacts/zflash-baked.img",
+      repoPinCommit: "a1b2c3d4e5f60718293a4b5c6d7e8f9012345678",
+    });
+
+    expect(result.ok).toBe(true);
+    if (!result.ok) throw new Error(result.error);
+    expect(result.value.espWrites).toEqual([
+      {
+        content: "ZETA_ISO_COMMIT='a1b2c3d4e5f60718293a4b5c6d7e8f9012345678'\n",
+        destination: "/zeta-repo-pin",
+      },
+    ]);
+  });
+
+  test("WP21: refuses a repo-pin commit that is not a full 40-hex sha", () => {
+    for (const junk of ["main", "a1b2c3", "not-a-sha", "a1b2c3d4e5f60718293a4b5c6d7e8f9012345678a"]) {
+      const result = planFileBackedZflashImage({
+        espOffsetBytes: 1_048_576,
+        isoPath: "artifacts/zeta-installer.iso",
+        outputImagePath: "artifacts/zflash-baked.img",
+        repoPinCommit: junk,
+      });
+      expect(result.ok).toBe(false);
+      if (result.ok) throw new Error(`expected refusal for repoPinCommit=${junk}`);
+      expect(result.error).toContain("repoPinCommit must be a full 40-hex git commit sha");
+    }
+  });
+
   test("rejects an empty QEMU cred passphrase without echoing a value", () => {
     const result = planFileBackedZflashImage({
       espOffsetBytes: 1_048_576,

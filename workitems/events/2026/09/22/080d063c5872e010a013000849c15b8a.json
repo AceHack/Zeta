@@ -1,0 +1,14 @@
+{
+  "id": "080d063c5872e010a013000849c15b8a",
+  "at": "2026-09-22T05:16:14.300Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M33RP3JV087G0R003JBGPKC",
+    "type": "bug",
+    "title": "Pin KubeVersion-derived image tags (SPIRE kubectl hook) and fix kubernetes-version.json drift",
+    "slug": "pin-kubeversion-derived-image-tags-spire-kubectl-hook-and-fi",
+    "priority": "P2",
+    "filename": "081M33RP3JV087G0R003JBGPKC-pin-kubeversion-derived-image-tags-spire-kubectl-hook-and-fi.md"
+  }
+}

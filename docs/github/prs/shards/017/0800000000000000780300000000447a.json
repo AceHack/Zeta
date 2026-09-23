@@ -1,0 +1,12 @@
+{
+  "pr_number": 17530,
+  "archive_path": "docs/history/pr-reviews/2026/09/22/PR-17530-fix-installer-test-make-the-installed-disk-verify-name-why-k3s-never-started.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-22T20:25:47.677Z",
+  "schema_version": "v1",
+  "commit_sha": "0428005fa02edf3018300ff72e1223e31571d973",
+  "title": "fix(installer-test): make the installed-disk verify name WHY k3s never started",
+  "state": "MERGED",
+  "merged_at": "2026-09-22T20:25:04Z",
+  "head_ref": "claude/wp11-k3s-diagnostics"
+}

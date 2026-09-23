@@ -268,9 +268,11 @@ jobs:
           --no-restore
 
       - name: Test low-memory Core smoke graph
+        # `--project`, not a positional path: global.json opts `dotnet test` into
+        # Microsoft.Testing.Platform mode, which rejects the positional form.
         run: >
           dotnet test
-          tests/Core.CSharp.Tests/Core.CSharp.Tests.csproj
+          --project tests/Core.CSharp.Tests/Core.CSharp.Tests.csproj
           -c Release
           --no-build
           --no-restore

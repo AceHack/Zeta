@@ -1,0 +1,12 @@
+{
+  "pr_number": 17472,
+  "archive_path": "docs/history/pr-reviews/2026/09/22/PR-17472-ci-full-ai-cluster-build-the-real-k3s-first-boot-roster-vm-check.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-22T08:20:57.635Z",
+  "schema_version": "v1",
+  "commit_sha": "6e38562c065bbb4673ec5489807942365eb0dc3c",
+  "title": "ci(full-ai-cluster): build the real k3s-first-boot-roster VM check",
+  "state": "MERGED",
+  "merged_at": "2026-09-22T08:20:07Z",
+  "head_ref": "claude/first-boot-roster-vm"
+}

@@ -1,0 +1,14 @@
+{
+  "id": "080d063afec3e810a0130008cc51caae",
+  "at": "2026-09-22T04:29:02.461Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M33NZP3J087G0R003WS1BFH",
+    "type": "task",
+    "title": "Wire the real k3s-first-boot-roster VM test into a CI workflow",
+    "slug": "wire-the-real-k3s-first-boot-roster-vm-test-into-a-ci-workfl",
+    "priority": "P1",
+    "filename": "081M33NZP3J087G0R003WS1BFH-wire-the-real-k3s-first-boot-roster-vm-test-into-a-ci-workfl.md"
+  }
+}

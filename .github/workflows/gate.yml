@@ -837,14 +837,32 @@ jobs:
         run: dotnet build Zeta.sln -c Release
 
       - name: Test
-        # `id:` is load-bearing — the blame-printer below keys off THIS step's
-        # outcome, not off the job's. See the note there.
+        # `id:` is load-bearing — the step-outcome reporter below keys off THIS
+        # step's outcome, not off the job's. See the note there.
         id: test
         if: needs.path-filter.outputs.code == 'true'
-        # --blame-crash / --blame-hang-timeout: when the test host crashes or
-        # hangs (the silent "MSB4181: VSTestTask returned false but did not log
-        # an error" class — seen once on windows-11-arm), collect a crash dump
-        # and a Sequence_*.xml naming the in-flight test, instead of a mystery.
+        # MICROSOFT.TESTING.PLATFORM MODE (global.json `test.runner`). xunit.v3 4.x ships
+        # MTP v2, which refuses the VSTest mode of `dotnet test` on the .NET 10 SDK, so the
+        # VSTest flags this step used to carry do not exist any more:
+        #   --solution Zeta.sln   replaces the positional path (MTP mode rejects it).
+        #   everything after `--` goes to each test application, not to `dotnet test`.
+        #   --long-running 300    replaces --blame-hang-timeout's "name the in-flight test":
+        #                         xUnit reports, BY NAME, every test still running after 300 s.
+        #   --timeout 20m         replaces --blame-hang-timeout's kill: each test app is
+        #                         stopped after 20 min (slowest leg's WHOLE step was ~8 min on
+        #                         run 33998492679), so a hang fails this step well inside the
+        #                         job's own timeout instead of consuming it.
+        # NOT carried over: the blame crash dump + Sequence_*.xml. Nothing uploaded the dump,
+        # and MTP-mode `dotnet test` reports each test app's exit code by name, so the old
+        # "MSB4181: VSTestTask returned false but did not log an error" mystery (the reason
+        # --blame-crash was added) cannot occur. Naming the in-flight test on a CRASH needs the
+        # Microsoft.Testing.Extensions.CrashDump package, which must match xunit.v3's MTP major
+        # — see workitem 081M380V792087G0R001PR993V.
+        #
+        # MTP mode also removes the Windows-only "Catastrophic failure ... Test process did not
+        # return valid JSON" flake: that was xunit.runner.visualstudio (the VSTest adapter)
+        # launching sibling test processes and parsing their stdout. MTP runs each test app
+        # directly and talks to it over a pipe, so no stdout is parsed.
         #
         # ZETA_PERF_OBS_FILE: the perf emitter appends each `##perf-obs` line here as well as to
         # stdout, so the collector below has a file to fold. This is an ENV VAR and nothing else --
@@ -859,7 +877,7 @@ jobs:
         # File.AppendAllText handles Windows and POSIX without the workflow knowing which it is on.
         env:
           ZETA_PERF_OBS_FILE: ${{ runner.temp }}/zeta-perf-obs.log
-        run: dotnet test Zeta.sln -c Release --no-build --verbosity normal --blame-crash --blame-hang-timeout 15m
+        run: dotnet test --solution Zeta.sln -c Release --no-build --verbosity normal -- --long-running 300 --timeout 20m
 
       - name: Retain unexpected TLC attempts
         if: always() && needs.path-filter.outputs.code == 'true'
@@ -920,31 +938,13 @@ jobs:
         # workflow-command annotation, so the answer appears in the check-run summary
         # where `Process completed with exit code 1` currently sits alone.
         #
-        # `if: failure()` is correct HERE (unlike the blame printer below) precisely
+        # `if: failure()` is correct HERE (unlike a reporter that needs `bun`) precisely
         # because this step has no prerequisite that could also have failed.
         if: failure()
         run: |
           echo "::error title=build-and-test: which step failed::install-unix=${{ steps.install_unix.outcome }} install-windows=${{ steps.install_windows.outcome }} roslyn-guard=${{ steps.roslyn_guard.outcome }} build=${{ steps.build.outcome }} test=${{ steps.test.outcome }}"
           echo "[step-outcomes] install-unix=${{ steps.install_unix.outcome }} install-windows=${{ steps.install_windows.outcome }} roslyn-guard=${{ steps.roslyn_guard.outcome }} build=${{ steps.build.outcome }} test=${{ steps.test.outcome }}"
           echo "[step-outcomes] a failing install means the toolchain never provisioned; read that step's log, not the reporters below."
-
-      - name: Name the crashed/hung test (on failure)
-        # Surface the blame Sequence_*.xml into the CI log so a host crash/hang
-        # is diagnosable without artifact plumbing — turns "VSTestTask returned
-        # false" into "test X was running when the host died". Cross-platform (bun).
-        #
-        # Gated on `steps.test.outcome`, NOT on bare `failure()`. Under `failure()`
-        # this ran after ANY earlier step failed — including the toolchain-install
-        # step, which is the one step whose job is to put `bun` on PATH. So when
-        # install failed, this fired without a `bun` to run and died with
-        # "The term 'bun' is not recognized", adding a second red step and a second
-        # `Process completed with exit code 1` annotation that said nothing about
-        # either failure. A failure reporter that fails is worse than no reporter:
-        # it buries the real annotation under its own. print-blame-sequences.ts is
-        # exit-0-always by contract, so gating on the Test step's own outcome makes
-        # a non-zero exit here mean what it should — a defect in the reporter.
-        if: failure() && steps.test.outcome == 'failure'
-        run: bun src/Core.TypeScript/ci/print-blame-sequences.ts
 
       - name: Skipped (docs-only PR)
         # Status-check passthrough: when the path filter said code=false,

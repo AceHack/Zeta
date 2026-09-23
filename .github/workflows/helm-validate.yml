@@ -66,11 +66,30 @@ on:
       # themselves changing is a reason to re-run them.
       - "examples/helm-dependency-graph/**"
       - "full-ai-cluster/k8s/tests/**"
+      # ADDED 2026-09-22: image-resolvability.ts (+ the render helpers it
+      # reuses -- image-footprint.ts, rendered-storage-claims.ts,
+      # declared-cluster-trees.ts) live under src/Core.TypeScript/cluster/,
+      # which was not in this filter -- a PR touching only the checker itself
+      # would not have run it. Same reasoning as `full-ai-cluster/k8s/tests/**`
+      # two lines up: the tool changing is a reason to re-run it.
+      - "src/Core.TypeScript/cluster/**"
       - ".github/workflows/helm-validate.yml"
       - ".mise.toml"
       - ".mise.full.toml"
       - "package.json"
       - "bun.lock"
+      # ADDED 081M1...WP3: the CRD provider/consumer ordering analyzer and the
+      # secret-reference audit it shares a workflow job with. Both changed the
+      # `full-ai-cluster/k8s/applications/**` tree AND the checkers themselves,
+      # so both paths matter -- a checker edit with no manifest edit must still
+      # re-run, the same reasoning as `full-ai-cluster/k8s/tests/**` above.
+      - "src/Core.TypeScript/cluster/crd-provider-consumer-order.ts"
+      - "src/Core.TypeScript/cluster/crd-provider-consumer-order.test.ts"
+      - "src/Core.TypeScript/cluster/audit-existing-secret-is-minted.ts"
+      - "src/Core.TypeScript/cluster/audit-existing-secret-is-minted.test.ts"
+      - "src/Core.TypeScript/cluster/existing-secret-is-minted.baseline.json"
+      - "src/Core.TypeScript/hygiene/audit-argocd-pin-parity.ts"
+      - "src/Core.TypeScript/hygiene/audit-argocd-pin-parity.test.ts"
   push:
     branches: [main]
     paths:
@@ -87,11 +106,21 @@ on:
       # themselves changing is a reason to re-run them.
       - "examples/helm-dependency-graph/**"
       - "full-ai-cluster/k8s/tests/**"
+      # See the note on the pull_request trigger above.
+      - "src/Core.TypeScript/cluster/**"
       - ".github/workflows/helm-validate.yml"
       - ".mise.toml"
       - ".mise.full.toml"
       - "package.json"
       - "bun.lock"
+      # See the note on the pull_request trigger above.
+      - "src/Core.TypeScript/cluster/crd-provider-consumer-order.ts"
+      - "src/Core.TypeScript/cluster/crd-provider-consumer-order.test.ts"
+      - "src/Core.TypeScript/cluster/audit-existing-secret-is-minted.ts"
+      - "src/Core.TypeScript/cluster/audit-existing-secret-is-minted.test.ts"
+      - "src/Core.TypeScript/cluster/existing-secret-is-minted.baseline.json"
+      - "src/Core.TypeScript/hygiene/audit-argocd-pin-parity.ts"
+      - "src/Core.TypeScript/hygiene/audit-argocd-pin-parity.test.ts"
   schedule:
     # DAILY (was "0 9 * * 1", weekly Monday) — Aaron 2026-08-13: "it should be
     # more often than weekly on the k8s testing". The k8s-argocd lane moved to
@@ -227,6 +256,42 @@ jobs:
         # silently stop bootstrapping again. 2.0 s measured locally.
         run: bun test full-ai-cluster/k8s/tests/validate-bootstrap.test.ts
 
+      - name: ArgoCD chart-pin + Application-CRD health-lua parity (offline, 5 sites)
+        # ADDED 081M1...WP3. Checks the SAME five install sites
+        # audit-argocd-pin-parity.ts already covers for chart VERSION, now also
+        # for `configs.cm["resource.customizations.health.argoproj.io_Application"]`
+        # -- the lua that restores Application-CRD health assessment (removed
+        # upstream in ArgoCD 1.8), without which sync-wave gating among the
+        # ~50 child Applications under zeta-root only orders the apply, never
+        # the convergence. Offline, no cluster, ~0.1 s.
+        run: bun src/Core.TypeScript/hygiene/audit-argocd-pin-parity.ts
+
+      - name: Prove the ArgoCD pin-parity checker can go red (mutation-style fixtures)
+        run: bun test src/Core.TypeScript/hygiene/audit-argocd-pin-parity.test.ts
+
+      - name: Sync-wave derivation, including the manual-sync-floor gating check
+        # ADDED 081M1...WP3. `derive-sync-waves.ts` is already wired into
+        # k8s-argocd-health-test.yml; run here too because THIS workflow is the
+        # one whose `paths:` trigger actually covers every
+        # `full-ai-cluster/k8s/applications/**` edit, and the manual-sync-floor
+        # finding (a declared manual-sync Application, e.g. cdi/kubevirt/
+        # ollama/vllm, sitting before an automated Application's wave) is
+        # exactly the class of defect this workflow exists to catch before it
+        # reaches a real cluster. Offline, no cluster.
+        run: bun test src/Core.TypeScript/cluster/derive-sync-waves.test.ts
+
+      - name: Secret references — valuesObject AND raw pod-spec (imagePullSecrets/envFrom/secretKeyRef/volumes)
+        # ADDED 081M1...WP3. Extends the existing valuesObject-only scan with a
+        # raw-manifest scan (`collectRawSecretReferences`) checked against what
+        # the TREE ITSELF mints (`collectTreeMintedSecretNames`) rather than the
+        # dev/CI bootstrap roster -- the metal-real minted set. Both scans and
+        # their shared baseline (existing-secret-is-minted.baseline.json) are
+        # offline, no cluster, ~0.2 s.
+        run: bun src/Core.TypeScript/cluster/audit-existing-secret-is-minted.ts
+
+      - name: Prove the secret-reference audit can go red (fixtures)
+        run: bun test src/Core.TypeScript/cluster/audit-existing-secret-is-minted.test.ts
+
   charts:
     # Network half: does the pinned chart:version actually exist, does it
     # render with the values we hand it, and is the render schema-valid.
@@ -359,6 +424,48 @@ jobs:
         # line. `spire-install.yaml` really does carry two HelmCharts.
         run: bun test full-ai-cluster/k8s/tests/render-first-boot-charts.test.ts
 
+      - name: Refuse a first-boot image that depends on the cluster's Kubernetes version
+        # ADDED 2026-09-22 (081M33RP3JV087G0R003JBGPKC), after GitHub Actions run
+        # 35687536936 measured a real NixOS VM boot the first-boot roster on: the SPIRE
+        # chart's post-install/post-upgrade/pre-delete hooks derive their `kubectl` image's
+        # TAG from `.Capabilities.KubeVersion.Version` whenever `tools.kubectl.image.tag`
+        # is unset. k3s reported v1.35.7+k3s1, the chart derived
+        # `docker.io/rancher/kubectl:v1.35.7`, and rancher had never published that tag --
+        # helm-install-spire's post-install Job ErrImagePull/NotFound-looped forever on
+        # real hardware. Fixed by pinning the tag explicitly in both
+        # k8s/bootstrap/spire-install.yaml and its ArgoCD twin.
+        #
+        # This is the CLASS-CATCHER, not the fix: it renders every first-boot chart TWICE,
+        # at the declared Kubernetes version and at declared+1 patch (the shape of "the
+        # next k3s bump"), and fails if any chart's set of rendered `image:` values
+        # differs between the two -- which is the one thing that can happen only when an
+        # image depends on the cluster version. Verified 2026-09-22 to go RED on the
+        # pre-fix spire-install.yaml (rancher/kubectl v1.35.6 vs v1.35.7 across the two
+        # renders) and GREEN once the pin landed.
+        run: bun full-ai-cluster/k8s/tests/render-kube-version-image-drift.ts --scope bootstrap
+
+      - name: Refuse a catalog image that depends on the cluster's Kubernetes version
+        # Same check, same day, the CATALOG half (full-ai-cluster/k8s/applications and
+        # infra/k8s/applications) -- the ArgoCD Applications that adopt each first-boot
+        # release once ArgoCD comes up, plus the ~30 more that only ever install through
+        # ArgoCD. MEASURED 2026-09-22: 0 drifted across every Helm-sourced Application in
+        # both trees (directory-sourced apps carry no chart and are skipped, as they are
+        # by every other renderer in this file). One latent instance is KNOWN and
+        # deliberately not pinned here: kube-prometheus-stack's
+        # `charts/crds/templates/upgrade/job.yaml` derives its `kubectl` sidecar tag the
+        # same way, but `upgradeJob.enabled` defaults false and nothing in this tree
+        # overrides it, so the Job never renders and this check correctly sees nothing to
+        # diff. If that default ever flips, this step starts catching it.
+        run: bun full-ai-cluster/k8s/tests/render-kube-version-image-drift.ts --scope catalog
+
+      - name: Prove the KubeVersion-image-drift checker parses what it claims (offline)
+        # Same discipline as the render-first-boot-charts pairing above: the two steps just
+        # ran the network half; this covers the patch-bump arithmetic, the image-collection
+        # walk, and the Application.yaml Helm-source parse offline, which is where this
+        # checker would go quietly wrong -- a bump that silently no-ops would make the
+        # before/after renders identical by construction and the whole check vacuous.
+        run: bun test full-ai-cluster/k8s/tests/render-kube-version-image-drift.test.ts
+
       - name: Ratchet the full-ai-cluster tree (render + failure ceiling)
         # ADDED 2026-08-20. The 122-file, ~60-Application tree at
         # full-ai-cluster/k8s had NEVER been rendered by CI. Pointing this same
@@ -400,3 +507,109 @@ jobs:
         # code as separate values, and refuses to report a count at all if no
         # 'Results:' line is present -- an empty run is not zero failures.
         run: bun full-ai-cluster/k8s/tests/ratchet-app-failures.ts
+
+      - name: CRD provider/consumer sync-wave ordering (helm template --include-crds over every Application)
+        # ADDED 081M1...WP3. Renders every Helm-sourced Application (reads
+        # directory-sourced ones straight off disk) and checks that every
+        # consumed non-core kind has a PROVIDER -- a CRD from another
+        # Application, a bootstrap-installed component (cilium/cert-manager/
+        # external-secrets/spire/trust-manager/gateway-api-crds, always
+        # available before ArgoCD exists), or a declared operator-runtime
+        # registration (kubevirt/cdi/cilium's own CRDs, Gatekeeper's per-
+        # ConstraintTemplate CRDs) -- that reconciles STRICTLY BEFORE the
+        # consumer, or that the consumer carries
+        # `SkipDryRunOnMissingResource=true`. This is the exact shape of the
+        # `platform -> kube-prometheus-stack` finding already registered in
+        # sync-wave-dependency-graph.yaml's ORDER_ADJUDICATION_PENDING, turned
+        # into a check that runs on every PR instead of a one-off manual scan.
+        #
+        # WHY THIS IS NO LONGER COSMETIC: with
+        # `resource.customizations.health.argoproj.io_Application` restored in
+        # argocd-cm (this same change), sync-wave gating across zeta-root's
+        # ~50 child Applications WAITS for each wave to be Healthy before the
+        # next one starts. A CRD-ordering violation that used to self-heal on
+        # the next reconcile can now leave an Application permanently
+        # SyncFailed/non-Healthy, wedging every later wave. This step is what
+        # makes that class of defect a PR-time failure instead of a metal-time
+        # deadlock.
+        #
+        # No `--allow-unrendered`: helm is confirmed on PATH above, so a render
+        # failure here is a real defect, never a missing-tool skip.
+        run: bun src/Core.TypeScript/cluster/crd-provider-consumer-order.ts
+
+      - name: Prove the CRD-order analyzer can go red (synthetic falsifiers + live-tree regression guard)
+        # Two halves (see the file's own header): synthetic cases drive each
+        # finding kind (NO-PROVIDER, ORDER, WEBHOOK-SAME-WAVE) with an injected
+        # render function, no helm needed; the live-tree half (helm IS on PATH
+        # in this job) re-derives the real audit and pins the
+        # platform/monitoring.yaml SkipDryRunOnMissingResource fix.
+        run: bun test src/Core.TypeScript/cluster/crd-provider-consumer-order.test.ts
+
+      - name: Liveness kill budget (helm template over every Application; a livenessProbe must not fire before the app can listen)
+        # ADDED WP15, 2026-09-22. Renders every Helm-sourced Application (reads
+        # directory-sourced ones straight off disk) and flags any container
+        # that carries a `livenessProbe`, no `startupProbe`, and a kill budget
+        # (`initialDelaySeconds + (failureThreshold-1)*periodSeconds`) under
+        # 120s -- the exact shape that crash-looped hindsight's `api` container
+        # on PR #17505 (killed mid-migration by its own liveness probe on a
+        # busy node before it could finish listening). `KILL_BUDGET_ALLOWLIST`
+        # in the script itself carries every currently-acknowledged exception
+        # with a reason; a NEW container in that shape fails here rather than
+        # reaching a live-kind soak phase to discover it the hard way.
+        #
+        # No `--allow-unrendered`: helm is confirmed on PATH above, so a render
+        # failure here is a real defect, never a missing-tool skip.
+        run: bun src/Core.TypeScript/cluster/liveness-kill-budget.ts
+
+      - name: Prove the liveness-kill-budget checker can go red (synthetic falsifiers + live-tree regression guard)
+        # Two halves (see the file's own header): synthetic cases drive the
+        # kill-budget arithmetic, the container walk, and the allowlist match
+        # with hand-built fixtures, no helm needed; the live-tree half (helm IS
+        # on PATH in this job) re-derives the real audit and asserts zero
+        # unacknowledged findings, same assertion the step above makes by exit
+        # code, restated as a structured `bun test` failure.
+        run: bun test src/Core.TypeScript/cluster/liveness-kill-budget.test.ts
+
+      - name: Image resolvability (offline, snapshot-gated) — every image the first-boot roster + Applications pull
+        # ADDED 2026-09-22. Renders the SAME first-boot roster + Applications this
+        # job already rendered above (helm chart archives are warm in
+        # .helm-render-cache), extracts every container image, and looks each one
+        # up in the checked-in snapshot (full-ai-cluster/k8s/image-resolvability.json)
+        # -- no registry socket opened here, same DV2.0 split
+        # image-source-provenance.ts already uses and for the identical reason: a
+        # gate that gets its "does this tag exist" answer from six third-party
+        # registries on every PR would fail on their bad afternoons, not ours.
+        #
+        # `missing` (registry 404 -- tag/digest genuinely absent) and
+        # `arch-missing` (resolves, but no linux/amd64 in the manifest) FAIL this
+        # step: either one is a guaranteed ImagePullBackOff at first boot on a box
+        # with nobody watching. `unknown` (auth-required, or the image was never
+        # measured) is printed with a count and does not fail -- a probe that
+        # could not be verified must never read as "verified missing".
+        run: bun src/Core.TypeScript/cluster/image-resolvability.ts
+
+      - name: Image resolvability network refresh (daily cron only; red here is the signal, does not block a PR)
+        # ADDED 2026-09-22. The NETWORK half of the check above, riding this
+        # workflow's EXISTING daily cron (see the file header: chart pins,
+        # repos and now individual TAGS can all be deleted or moved upstream,
+        # none of which produces a commit here) rather than a new one --
+        # chart-version-refresh.yml's own header names the identical reasoning
+        # for not giving image-source-provenance.ts a second schedule.
+        #
+        # Resolves every currently-rendered image LIVE against its registry,
+        # DoP-limited and retried, and rewrites the snapshot in the runner's
+        # working tree. It does NOT commit: same discipline as
+        # chart-version-refresh.yml (evidence is reviewed before it becomes
+        # the thing the blocking step above trusts), so the refreshed snapshot
+        # is uploaded as an artifact for a maintainer to review and commit.
+        if: github.event_name == 'schedule'
+        run: bun src/Core.TypeScript/cluster/image-resolvability.ts --refresh
+
+      - name: Upload the refreshed image-resolvability snapshot
+        if: github.event_name == 'schedule' && always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: image-resolvability-${{ github.run_id }}
+          path: full-ai-cluster/k8s/image-resolvability.json
+          if-no-files-found: error
+          retention-days: 90

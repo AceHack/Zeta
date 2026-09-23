@@ -1,0 +1,14 @@
+{
+  "id": "080d065992db3810a01300089113cbab",
+  "at": "2026-09-22T22:17:50.183Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M35K4PV6087G0R001Z3E0P8",
+    "type": "task",
+    "title": "Mint the GitLab initial-root-password metal secret and close the secret-audit detection gap that hid it",
+    "slug": "mint-the-gitlab-initial-root-password-metal-secret-and-close",
+    "priority": "P2",
+    "filename": "081M35K4PV6087G0R001Z3E0P8-mint-the-gitlab-initial-root-password-metal-secret-and-close.md"
+  }
+}

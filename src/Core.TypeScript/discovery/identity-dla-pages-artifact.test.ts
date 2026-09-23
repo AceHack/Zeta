@@ -3,7 +3,7 @@ import { mkdtempSync, mkdirSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { PAGES_WASM_ASSETS } from "./identity-dla-pages-wasm-assets";
-import { verifyPagesArtifact } from "./identity-dla-pages-artifact";
+import { scriptDeclaresEvidenceRoute, verifyPagesArtifact } from "./identity-dla-pages-artifact";
 
 const roots: string[] = [];
 
@@ -44,13 +44,37 @@ function fixture(
   for (const asset of PAGES_WASM_ASSETS) {
     const target = join(root, asset.published);
     mkdirSync(join(target, ".."), { recursive: true });
-    writeFileSync(target, options.validWasm === false ? "<html>stale</html>" : Buffer.from([0x00, 0x61, 0x73, 0x6d, 0x01, 0x00, 0x00, 0x00]));
+    writeFileSync(
+      target,
+      options.validWasm === false
+        ? "<html>stale</html>"
+        : Buffer.from([0x00, 0x61, 0x73, 0x6d, 0x01, 0x00, 0x00, 0x00]),
+    );
   }
   return root;
 }
 
 afterEach(() => {
   while (roots.length > 0) rmSync(roots.pop()!, { recursive: true, force: true });
+});
+
+describe("scriptDeclaresEvidenceRoute — readdir order is not a contract (081M35PQN5Y087G0R000YCPATJ)", () => {
+  const routeBody =
+    "import('./PasskeyProposalPanel-fixture.js') evidence-seam evidence-seam/receipt/ evidence-seam/sources";
+  const readerBody = "evidence-seam docs/room-evidence/index.json";
+
+  test("the index route chunk qualifies; the reader chunk does not", () => {
+    expect(scriptDeclaresEvidenceRoute(routeBody)).toBe(true);
+    expect(scriptDeclaresEvidenceRoute(readerBody)).toBe(false);
+  });
+
+  test("reader-first order still selects the route chunk — the live CI fail on b17179b081", () => {
+    const scripts = [
+      { asset: "EvidenceRoomPage-fixture.js", body: readerBody },
+      { asset: "index-fixture.js", body: routeBody },
+    ];
+    expect(scripts.find((script) => scriptDeclaresEvidenceRoute(script.body))?.asset).toBe("index-fixture.js");
+  });
 });
 
 describe("identity-dla Pages artifact verification", () => {

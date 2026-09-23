@@ -1,0 +1,76 @@
+{
+  "$comment": "081KSXN940008QG0R000SCP2H1 Task B soak-phase STARTUP-RESTARTS policy. Read by readStartupRestartBaseline() in argocd-health-test.ts, compared against startupRestartEntries() by classifyStartupRestarts()/classifyStartupRestartEntry(). Keyed by (app, container) -- NEVER by pod name/hash, which churns on every rollout. THIS IS A THRESHOLD, NOT A BOTH-DIRECTIONS EXACT-MATCH RATCHET: a container is COVERED (no warning, no failure) whenever its measured restartCount is <= the row's maxRestarts; an UNCOVERED restartCount>=STARTUP_RESTART_HARD_FAIL_THRESHOLD (3) fails, an uncovered 1-2 is a warning only, and a baseline row not measured this run is a notice (never a failure) unless its lastSeen is more than STARTUP_RESTART_STALE_DAYS (14) old. The original both-directions exact-match ratchet flaked on run 35695286428 -- the SAME tree as run 35692573183, one push later -- naming two DIFFERENT pairs (argocd/repo-server, spire/spire-controller-manager) that had not restarted the first time; restartCount 1-2 is a nondeterministic dependency-ordering wait, not a stable fingerprint, so it cannot be a set-equality key.",
+  "measured": "union of run 35692573183 (PR #17480, live-kind-included, ubuntu-24.04, 2026-09-22T06:12:09Z, 8 pairs) and run 35695286428 (PR #17480, live-kind-included pull_request trigger, ubuntu-24.04, 2026-09-22T06:50:03Z, 12 pairs, 2 of them new). maxRestarts = max(restartCount observed across both runs) + 1.",
+  "allowed": [
+    {
+      "app": "argocd",
+      "container": "repo-server",
+      "maxRestarts": 2,
+      "reason": "restarts=1 on run 35695286428 only (absent from run 35692573183). No fatal error captured in that run's log; consistent with a probe-timing race during ArgoCD's own bootstrap (the argocd Application syncing its own components, including redis, in the same wave as repo-server).",
+      "lastSeen": "2026-09-22"
+    },
+    {
+      "app": "dapr",
+      "container": "dapr-operator",
+      "maxRestarts": 4,
+      "reason": "fatal at first boot: 'unable to load configuration, config: daprsystem, err: configurations.dapr.io \"daprsystem\" not found'. dapr's own Configuration CRD instance is applied by the same Application moments after the operator container starts; the restarted replica finds it. restarts=3 on run 35692573183, restarts=1 on run 35695286428.",
+      "lastSeen": "2026-09-22"
+    },
+    {
+      "app": "dapr",
+      "container": "dapr-sentry",
+      "maxRestarts": 4,
+      "reason": "fatal at first boot: 'loading default config. couldn't find config name \"daprsystem\": config CRD not found' -- same Configuration-CRD-not-applied-yet ordering as dapr-operator; dapr-sentry is also dapr's own mTLS root-cert issuer, so its first-boot sequence separately waits on that bundle. restarts=3 on run 35692573183, restarts=2 on run 35695286428.",
+      "lastSeen": "2026-09-22"
+    },
+    {
+      "app": "hindsight",
+      "container": "api",
+      "maxRestarts": 3,
+      "reason": "Killing event: 'Container api failed liveness probe, will be restarted' -- readiness/liveness probes fired ('dial tcp ...:8888: connect: connection refused') before the app server finished its own startup; a probe-timing race, not a dependency failure. restarts=2 on run 35692573183, restarts=1 on run 35695286428.",
+      "lastSeen": "2026-09-22"
+    },
+    {
+      "app": "keda",
+      "container": "keda-operator",
+      "maxRestarts": 2,
+      "reason": "leader-election + admission-webhook CA cert rotation on first boot (visible: 'Attempting to acquire leader lease' -> 'Successfully acquired lease' -> 'Ensuring CA cert' -> 'CA certs are injected to webhooks'); no fatal error captured, consistent with a probe-timing restart during that sequence, not a crash. restarts=1 on both runs.",
+      "lastSeen": "2026-09-22"
+    },
+    {
+      "app": "mimir",
+      "container": "distributor",
+      "maxRestarts": 4,
+      "reason": "'module failed' / distributor-service: 'dial tcp 10.96.5.131:9092: connect: connection refused' to mimir-kafka -- the ingest-storage backend, a sibling StatefulSet applied in the same sync wave with no ordering guarantee ahead of the distributor. restarts=3 on both runs.",
+      "lastSeen": "2026-09-22"
+    },
+    {
+      "app": "mimir",
+      "container": "ingester",
+      "maxRestarts": 4,
+      "reason": "same mimir-kafka-not-ready-yet 'connection refused' as distributor/ruler, observed on all three ingester zone pods (zone-a/b/c) on both runs. restarts up to 3 on run 35692573183, up to 2 on run 35695286428.",
+      "lastSeen": "2026-09-22"
+    },
+    {
+      "app": "mimir",
+      "container": "ruler",
+      "maxRestarts": 4,
+      "reason": "same mimir-kafka-not-ready-yet 'connection refused' -- ruler's own module failure is 'depends on module distributor-service, which has failed'. restarts=3 on run 35692573183, restarts=1 on run 35695286428.",
+      "lastSeen": "2026-09-22"
+    },
+    {
+      "app": "spire",
+      "container": "spire-agent",
+      "maxRestarts": 3,
+      "reason": "'Health check has failed' / 'subsystem is not live or ready' -> 'Health check recovered' one second later -- the agent's own health-check subsystem briefly not ready while it waits on the spire-server's workload-API socket. restarts=2 on both runs.",
+      "lastSeen": "2026-09-22"
+    },
+    {
+      "app": "spire",
+      "container": "spire-controller-manager",
+      "maxRestarts": 2,
+      "reason": "restarts=1 on run 35695286428 only (absent from run 35692573183). Runs as a sidecar in the spire-server-0 pod; consistent with the controller-manager waiting on the spire-server API in the same pod to be ready before it can start reconciling.",
+      "lastSeen": "2026-09-22"
+    }
+  ]
+}

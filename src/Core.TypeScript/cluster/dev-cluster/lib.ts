@@ -101,6 +101,79 @@ export interface DevBootstrapSecretSpec {
   readonly user: string;
   /** Why this object exists, written into the manifest so it is legible in-cluster. */
   readonly reason: string;
+  /**
+   * The consumer's documented password-strength rule this credential's mint must satisfy
+   * BY CONSTRUCTION, or absent (the default) when the audit found no such rule.
+   *
+   * "opensearch-strength" is the only value today: see `OPENSEARCH_ADMIN_PASSWORD_REGEX`
+   * and `DEV_OPENSEARCH_ADMIN_SECRET` below for the citation and the WP19c precedent this
+   * mirrors. Every other bootstrap secret was audited (081M35DFB9B087G0R003WD5WJ6, WP22) and
+   * found unconstrained: kube-prometheus-stack bcrypt-hashes whatever Grafana admin password
+   * string it is given (no complexity check); the `ziti-controller` chart and OpenZiti's
+   * edge API documentation name no minimum-length or character-class rule for the
+   * bootstrap admin password; Forgejo/Gitea's `PASSWORD_COMPLEXITY` defaults to `off`
+   * (docs.gitea.com/administration/config-cheat-sheet, `[security]` section) and
+   * `MIN_PASSWORD_LENGTH` defaults to 6, well under the 32-byte mint below. For those,
+   * `randomBytes(24).toString("base64url")` is sufficient without a `passwordPolicy`.
+   */
+  readonly passwordPolicy?: "opensearch-strength";
+}
+
+/**
+ * OpenSearch Security's admin-password strength check, reproduced VERBATIM.
+ *
+ * `install_demo_configuration.sh` (org.opensearch.security.tools.democonfig.Installer)
+ * validates the admin password against this regex before letting the process start
+ * (docs.opensearch.org/latest/security/configuration/demo-configuration/;
+ * opensearch-project/security#4081 records the demo installer's validation as its own,
+ * separate from the runtime `plugins.security.restapi.password_validation_regex` setting).
+ * Exported so the unit test pins this literal against the cited source rather than a
+ * re-typed copy that could silently drift from it.
+ */
+export const OPENSEARCH_ADMIN_PASSWORD_REGEX = /(?=.*[A-Z])(?=.*[^a-zA-Z\d])(?=.*[0-9])(?=.*[a-z]).{8,}/;
+
+/**
+ * Hex-nibble -> target-alphabet maps, kept identical to the `tr` tables
+ * `internal-secret-seeding.yaml`'s WP19c fix uses on metal, so dev/CI and metal draw
+ * passwords in the SAME shape against the SAME rule instead of two independently-argued
+ * ones drifting apart.
+ */
+export const OPENSEARCH_PASSWORD_UPPER_MAP = "ABCDEFGHIJKLMNOP";
+export const OPENSEARCH_PASSWORD_SPECIAL_MAP = "!@#$%^&*()-_=+.,";
+
+function hexNibblesTo(alphabet: string, hex: string): string {
+  return hex
+    .split("")
+    .map((nibble) => {
+      const index = Number.parseInt(nibble, 16);
+      if (Number.isNaN(index)) {
+        throw new Error(`composeOpenSearchAdminPassword: "${hex}" is not a hex string`);
+      }
+      return alphabet[index];
+    })
+    .join("");
+}
+
+/**
+ * Compose an admin password that satisfies `OPENSEARCH_ADMIN_PASSWORD_REGEX` BY
+ * CONSTRUCTION, on every draw -- never by chance the way relying on a generic alphabet's
+ * own composition would (measured: `randomBytes(24).toString("base64url")` has roughly a
+ * 38% chance per draw of containing no `-`/`_`, base64url's only non-alphanumeric
+ * characters, so ~38% of dev/CI clusters would fail this exact check the same way the
+ * metal hex draw failed it on 100% of draws before WP19c).
+ *
+ * PURE, and the three hex draws are PARAMETERS rather than drawn in here -- same
+ * discipline as `buildDevAdminSecretManifest` -- so this is testable without entropy and
+ * the one place entropy enters is the caller. `upperHex`/`specialHex` are each expected to
+ * be one byte of hex (2 nibbles); `bodyHex` carries the rest of the entropy unmapped,
+ * exactly as the metal shell pipeline's `admin-password-body` does.
+ */
+export function composeOpenSearchAdminPassword(upperHex: string, specialHex: string, bodyHex: string): string {
+  return (
+    hexNibblesTo(OPENSEARCH_PASSWORD_UPPER_MAP, upperHex) +
+    hexNibblesTo(OPENSEARCH_PASSWORD_SPECIAL_MAP, specialHex) +
+    bodyHex
+  );
 }
 
 /**
@@ -301,6 +374,11 @@ export const DEV_OPENSEARCH_ADMIN_SECRET: DevBootstrapSecretSpec = {
   reason:
     "Minted per dev/CI cluster at bring-up because OpenSearch >= 2.12 refuses to start without " +
     "OPENSEARCH_INITIAL_ADMIN_PASSWORD while the security plugin is on.",
+  // WP22 (081M35DFB9B087G0R003WD5WJ6): the generic `randomBytes(24).toString("base64url")`
+  // draw every other bootstrap secret uses has ~38% odds per draw of containing no special
+  // character, which OPENSEARCH_ADMIN_PASSWORD_REGEX requires -- an intermittently
+  // crash-looping dev/CI opensearch pod, the same defect class WP19c fixed on metal.
+  passwordPolicy: "opensearch-strength",
 } as const;
 
 /**
@@ -385,6 +463,16 @@ export const BLOB_STORE_ENV_KEY = "BLOB_STORE_SECRET_KEY";
 export const SEAWEEDFS_S3_CONFIG_KEY = "seaweedfs_s3_config";
 
 /**
+ * In-cluster S3 endpoint of the shared SeaweedFS store, host:port form (no scheme).
+ *
+ * Repeated as a literal in `loki/Application.yaml` and `mimir/Application.yaml`
+ * (`s3.endpoint`) rather than sourced from one constant there, because those values render
+ * through Helm, not TypeScript. Named here because the two builders below DO run in
+ * TypeScript and would otherwise be a third, independently-drifting copy.
+ */
+export const SEAWEEDFS_S3_ENDPOINT = "blob-store-seaweedfs-all-in-one.object-store.svc:8333";
+
+/**
  * The identities document seaweedfs's S3 gateway authenticates against.
  *
  * ONE IDENTITY, not the chart's default two. The chart's own template also mints an
@@ -404,19 +492,83 @@ export function seaweedfsS3Config(secretKey: string): string {
   });
 }
 
+/**
+ * The key GitLab's Rails app reads out of `global.appConfig.object_store.connection.secret`
+ * (default key name "connection" -- `charts/gitlab/templates/_objectStorage.tpl`
+ * `gitlab.appConfig.objectStorage.mountSecrets`, mounted and `YAML.load_file`'d by the
+ * chart's own init container).
+ */
+export const GITLAB_OBJECT_STORE_CONNECTION_KEY = "connection";
+
+/**
+ * The key the container registry reads out of `registry.storage.secret` (default key name
+ * "config" -- `charts/registry/templates/deployment.yaml`, spliced into the rendered
+ * `storage:` block by the chart's entrypoint script at `/config/storage/config`).
+ */
+export const GITLAB_REGISTRY_STORAGE_KEY = "config";
+
+/**
+ * GitLab's "consolidated object storage" connection block -- one connection shared by
+ * lfs/artifacts/uploads/packages (none of them carry a per-type override in
+ * `gitlab/Application.yaml`, so all four fall back to this at runtime; that fallback is
+ * GitLab's own Rails-side `ObjectStoreSettings`, not something this chart renders).
+ * Shape verified against `charts/gitlab/templates/_objectStorage.tpl`
+ * `gitlab.appConfig.objectStorage.connection.minio` -- the same five keys, `provider`
+ * through `aws_secret_access_key`, with SeaweedFS's endpoint standing in for minio's.
+ */
+export function gitlabObjectStoreConnection(secretKey: string): string {
+  return [
+    "provider: AWS",
+    "region: us-east-1",
+    `host: ${SEAWEEDFS_S3_ENDPOINT}`,
+    `endpoint: http://${SEAWEEDFS_S3_ENDPOINT}`,
+    "path_style: true",
+    `aws_access_key_id: ${BLOB_STORE_ACCESS_KEY}`,
+    `aws_secret_access_key: ${secretKey}`,
+    "",
+  ].join("\n");
+}
+
+/**
+ * The container registry's own `storage.s3.*` config fragment -- a DIFFERENT shape from
+ * `gitlabObjectStoreConnection` above because the registry is the upstream Docker
+ * distribution binary, not GitLab's Rails app, and reads its storage driver config directly
+ * (`charts/registry/values.yaml` documents the `s3:` driver keys: `accesskey` / `secretkey`
+ * / `region` / `regionendpoint` / `bucket` / `secure` / `v4auth`).
+ */
+export function gitlabRegistryStorageConfig(secretKey: string): string {
+  return [
+    "s3:",
+    `  accesskey: ${BLOB_STORE_ACCESS_KEY}`,
+    `  secretkey: ${secretKey}`,
+    "  region: us-east-1",
+    `  regionendpoint: http://${SEAWEEDFS_S3_ENDPOINT}`,
+    "  bucket: gitlab-registry",
+    "  secure: false",
+    "  v4auth: true",
+    "",
+  ].join("\n");
+}
+
 export const DEV_BLOB_STORE_SECRET: DevSharedSecretSpec = {
   name: "zeta-blob-store",
   // The producer and every consumer. `applyDevSharedSecrets` draws once and applies to all
-  // three, which is the entire reason this shape exists.
-  namespaces: ["object-store", "loki", "mimir"],
+  // four, which is the entire reason this shape exists. `gitlab` added 2026-09-22 alongside
+  // the bundled-minio removal (gitlab/Application.yaml) -- same shared value, two more key
+  // shapes (Rails consolidated object storage + the registry's own storage driver config).
+  namespaces: ["object-store", "loki", "mimir", "gitlab"],
   keys: (value) => ({
     [SEAWEEDFS_S3_CONFIG_KEY]: seaweedfsS3Config(value),
     [BLOB_STORE_ENV_KEY]: value,
+    [GITLAB_OBJECT_STORE_CONNECTION_KEY]: gitlabObjectStoreConnection(value),
+    [GITLAB_REGISTRY_STORAGE_KEY]: gitlabRegistryStorageConfig(value),
   }),
   reason:
     "Minted per dev/CI cluster at bring-up. seaweedfs authenticates its S3 gateway against " +
     "seaweedfs_s3_config; loki and mimir expand BLOB_STORE_SECRET_KEY into their " +
-    "secret_access_key with -config.expand-env=true. All four must agree on one value.",
+    "secret_access_key with -config.expand-env=true; gitlab reads `connection` for its " +
+    "consolidated Rails object storage and `config` for the container registry's storage " +
+    "driver. All five must agree on one value.",
 } as const;
 
 export const DEV_HINDSIGHT_LLM_SECRET: DevSharedSecretSpec = {
@@ -451,11 +603,7 @@ export const DEV_SHARED_SECRETS: readonly DevSharedSecretSpec[] = [
  * `stringData` rather than `data` for the same reason as above: the API server does the
  * base64, so nothing here is an encoded blob a reader must decode before auditing it.
  */
-export function buildDevSharedSecretManifest(
-  spec: DevSharedSecretSpec,
-  namespace: string,
-  value: string,
-): string {
+export function buildDevSharedSecretManifest(spec: DevSharedSecretSpec, namespace: string, value: string): string {
   const entries = Object.entries(spec.keys(value));
   return [
     "apiVersion: v1",
@@ -473,11 +621,69 @@ export function buildDevSharedSecretManifest(
   ].join("\n");
 }
 
+/**
+ * The GitLab initial-root-password credential the chart's own migrations Job mounts, and that
+ * NOTHING in this tree minted until WP24 (081M35K4PV6087G0R001Z3E0P8) -- confirmed by
+ * `audit-existing-secret-is-minted.ts` returning ZERO references for `gitlab` before that
+ * script's own detection gap (a bare `secret:` leaf, GitLab's chart convention, not the
+ * `existingSecret`/`secretName` shapes the audit recognised) was widened alongside this entry.
+ *
+ * THE NAME AND KEY ARE MEASURED, NOT GUESSED. `gitlab/Application.yaml` sets
+ * `global.initialRootPassword.secret: gitlab-initial-root-password` and
+ * `global.initialRootPassword.key: password` explicitly (overriding the chart's own default
+ * `<release>-gitlab-initial-root-password`). `helm pull gitlab --repo https://charts.gitlab.io/
+ * --version 8.7.0 --untar` confirms both template helpers
+ * (`templates/_migrations.tpl` `gitlab.migrations.initialRootPassword.{secret,key}`) resolve to
+ * exactly those two values, and the migrations Job mounts the key at
+ * `migrations/initial_root_password` (`charts/gitlab/charts/migrations/templates/_jobspec.yaml`).
+ *
+ * WHY THIS TREE MINTS IT RATHER THAN LEANING ON THE CHART'S OWN GENERATOR. The chart ships a
+ * `shared-secrets` pre-install/pre-upgrade hook Job (`templates/shared-secrets/_generate_secrets.sh.tpl`,
+ * enabled by default) that calls `generate_secret_if_needed` for this exact name if it is
+ * absent -- so, on a plain `helm install`, this credential is not actually a gap. It is
+ * deliberately not relied on here because its own RBAC (`templates/shared-secrets/rbac-config.yaml`)
+ * grants `get`/`list`/`create`/`patch` on `secrets` and its script GETs-then-PATCHes an existing
+ * object -- exactly the broader, mutate-in-place shape `internal-secret-seeding.yaml`'s own header
+ * replaced with create-only least-privilege RBAC for every OTHER credential in this class (WP14/
+ * WP16). Pre-seeding this one Secret before ArgoCD's sync-wave 30 keeps GitLab on the same
+ * create-only, single-purpose-RBAC posture as every sibling credential, and it means the
+ * password's strength (see below) is asserted here rather than trusted to the chart's
+ * `gen_random 'a-zA-Z0-9' 64` implementation.
+ *
+ * PASSWORD RULE, CHECKED AGAINST GITLAB'S OWN DOCUMENTATION (docs.gitlab.com/user/profile/
+ * user_passwords/, chart appVersion v17.7.0): minimum 8 characters, maximum 128, must not match
+ * a list of 4,500+ known breached passwords, must not contain the account's name/username/email,
+ * must not contain a predictable word such as "gitlab". NO uppercase/special-character class
+ * requirement (unlike OpenSearch below). `randomBytes(24).toString("base64url")` (this file's
+ * generic mint) is 32 characters, comfortably inside [8, 128], and a CSPRNG draw has no
+ * meaningful chance of colliding with a breach list or embedding "gitlab" -- satisfied by
+ * construction, no `passwordPolicy` needed.
+ *
+ * `userKey`/`user` are UNUSED BY THE CHART (only `password` is ever read) and kept anyway for
+ * shape parity with every other `DevBootstrapSecretSpec` -- the same choice already made for
+ * `REDIS_AUTH_USER_KEY` above ("username is unused by the chart ... present so this object
+ * stays on the same DevBootstrapSecretSpec as the other two"). `root` is GitLab's own fixed
+ * administrator username, not a value this Secret's `username` key actually configures.
+ */
+export const DEV_GITLAB_ROOT_SECRET: DevBootstrapSecretSpec = {
+  namespace: "gitlab",
+  name: "gitlab-initial-root-password",
+  userKey: "username",
+  passwordKey: "password",
+  user: "root",
+  reason:
+    "Minted per dev/CI cluster at bring-up because gitlab/Application.yaml sets " +
+    "global.initialRootPassword.secret: gitlab-initial-root-password (key `password`), and the " +
+    "chart's migrations Job mounts that key at migrations/initial_root_password with no fallback " +
+    "-- the webservice never reaches Ready without it.",
+} as const;
+
 export const DEV_BOOTSTRAP_SECRETS: readonly DevBootstrapSecretSpec[] = [
   DEV_GRAFANA_ADMIN_SECRET,
   DEV_ZITI_ADMIN_SECRET,
   DEV_OPENSEARCH_ADMIN_SECRET,
   DEV_FORGEJO_ADMIN_SECRET,
+  DEV_GITLAB_ROOT_SECRET,
 ] as const;
 
 /**

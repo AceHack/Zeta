@@ -1,0 +1,12 @@
+{
+  "pr_number": 17495,
+  "archive_path": "docs/history/pr-reviews/2026/09/22/PR-17495-feat-cluster-first-boot-replica-stage-6-serve-the-dev-rung-classify-convergence-.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-22T08:07:33.822Z",
+  "schema_version": "v1",
+  "commit_sha": "bee02b441570dfb893cf16911f3d121eee5a0b41",
+  "title": "feat(cluster): first-boot replica stage 6 — serve the dev rung, classify convergence, soak",
+  "state": "MERGED",
+  "merged_at": "2026-09-22T08:06:52Z",
+  "head_ref": "claude/first-boot-replica-catalog"
+}

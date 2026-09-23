@@ -77,6 +77,13 @@ import { relative, resolve } from "node:path";
 import { parseAllDocuments } from "yaml";
 import { resolveGraph, type AppDependencyGraphSpec, type DependencyNode } from "../ace/deps.ts";
 import { listApplicationManifests } from "./app-of-apps-discovery.ts";
+// THE ONE DEFINITION OF "deliberately manual-sync" (see that module's header).
+// The manual-sync-floor check below needs to know which shipped Applications
+// are manual for the SAME reason manual-sync-policy.ts itself exists: an
+// absent `spec.syncPolicy.automated` block is indistinguishable from a
+// forgotten one, so "manual" must be read from the declared annotation, never
+// inferred from the block's absence.
+import { classifySyncPolicy } from "./manual-sync-policy.ts";
 
 const REPO_ROOT = resolve(import.meta.dir, "../../..");
 
@@ -134,7 +141,17 @@ export const ORDER_ADJUDICATION_PENDING: ReadonlyMap<string, string> = new Map([
       "platform needing a wave later than -20; (3) add SkipDryRunOnMissingResource=true to platform's " +
       "syncOptions -- silences the symptom and keeps the inversion; (4) drop the ServiceMonitor/PrometheusRule. " +
       "(2) looks right and is still a maintainer call, because it changes which Application owns the " +
-      "platform's own telemetry.",
+      "platform's own telemetry. " +
+      "REPAIR (3) APPLIED 2026-09-22 (crd-provider-consumer-order.ts, WP3): both resources in " +
+      "platform/monitoring.yaml now carry `argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true`. " +
+      "This was upgraded from a bootstrap-noise annoyance to a genuine deadlock risk by the SAME change: once " +
+      "`resource.customizations.health.argoproj.io_Application` is restored in argocd-cm (081M1...WP3 defect 1), " +
+      "ArgoCD's wave progression actually WAITS for wave -20 (platform) to be Healthy before starting wave 0 " +
+      "(kube-prometheus-stack) -- and a permanently SyncFailed ServiceMonitor/PrometheusRule would have made " +
+      "platform permanently non-Healthy, wedging every later wave behind it forever. The order registration " +
+      "below is UNCHANGED and still correct to keep: the wave NUMBERS still disagree (kube-prometheus-stack " +
+      "still reconciles after platform), which is exactly what this registry tracks; what changed is that the " +
+      "disagreement can no longer fail the sync outright.",
   ],
   [
     "platform -> longhorn",
@@ -207,6 +224,15 @@ export interface ShippedApplication {
   readonly path: string;
   /** The hand-written `argocd.argoproj.io/sync-wave`, or null when absent. */
   readonly wave: number | null;
+  /**
+   * `classifySyncPolicy(...).kind === "manual"` -- a WELL-FORMED declared
+   * manual-sync posture (manual-sync-policy.ts). `invalid` and `automated`
+   * both read as `false` here: an invalid declaration must never be cheaper to
+   * satisfy than a correct one (manual-sync-policy.ts's own stated invariant),
+   * so it stays under the full automated-Application floor requirement rather
+   * than earning the manual exemption it failed to declare correctly.
+   */
+  readonly manualSync: boolean;
 }
 
 function isRecord(value: unknown): value is Record<string, unknown> {
@@ -241,7 +267,8 @@ export function readShippedApplications(repoRoot = REPO_ROOT): readonly ShippedA
       // absent rather than silently coercing it to something plausible.
       const text2 = raw === undefined || raw === null ? "" : String(raw).trim();
       const wave = /^-?\d+$/.test(text2) ? Number.parseInt(text2, 10) : null;
-      out.push({ name, path: relative(repoRoot, abs), wave });
+      const manualSync = classifySyncPolicy(text).kind === "manual";
+      out.push({ name, path: relative(repoRoot, abs), wave, manualSync });
     }
   }
   return out.sort((a, b) => (a.name < b.name ? -1 : a.name > b.name ? 1 : 0));
@@ -297,6 +324,12 @@ export interface CniFloorViolation {
   readonly cniWave: number;
 }
 
+export interface ManualSyncFloorViolation {
+  readonly app: string;
+  readonly wave: number;
+  readonly maxAutomatedWave: number;
+}
+
 export interface WaveAudit {
   /** Shipped Applications with no node in the declaration. Finding 1. */
   readonly undeclared: readonly string[];
@@ -314,6 +347,26 @@ export interface WaveAudit {
   readonly staleAdjudications: readonly string[];
   /** Applications at or below the CNI's wave. Finding 6. */
   readonly cniFloorViolations: readonly CniFloorViolation[];
+  /**
+   * A declared manual-sync Application sitting BEFORE some automated
+   * Application's wave. Finding 7.
+   *
+   * WHY THIS CHECK EXISTS: `resource.customizations.health.argoproj.io_Application`
+   * in argocd-cm (full-ai-cluster/k8s/bootstrap/argocd-install.yaml +
+   * applications/argocd/Application.yaml) restores real health assessment for
+   * child Applications, which means sync-wave progression across zeta-root's
+   * ~50 children now WAITS for each wave to be Healthy before starting the
+   * next one -- GLOBALLY, not per dependency edge. A manual-sync Application
+   * (cdi, kubevirt, ollama, vllm -- manual-sync-policy.ts) is, by design,
+   * never auto-synced: its honest health on a fresh cluster is "Missing"
+   * forever, until a human runs `argocd app sync <name>`. Left at any wave
+   * other than the tail, it would wedge every automated Application behind it
+   * -- forever, on every fresh install, cluster-wide. This is NOT a
+   * per-edge dependency question (the CNI-floor check's shape); it is a
+   * global-ordering safety property, so it is checked the same way: as one
+   * invariant rather than as N edges.
+   */
+  readonly manualSyncFloorViolations: readonly ManualSyncFloorViolation[];
   /** ace's derived DAG heights, by chart. Reported, never enforced numerically. */
   readonly derivedWaves: ReadonlyMap<string, number>;
   /** ace's topological order, with the synthetic graph root removed. */
@@ -399,6 +452,28 @@ export function auditInputs(
     }
   }
 
+  // The manual-sync floor. A manual-sync app never auto-converges, so it must
+  // sit at or after every AUTOMATED app's wave -- otherwise, once Application
+  // health gating is live, its permanent "Missing" health wedges every
+  // automated app behind it. Only checked among apps with a parseable wave;
+  // an unannotated app is already finding 3.
+  const manualSyncFloorViolations: ManualSyncFloorViolation[] = [];
+  {
+    const automatedWaves = shipped
+      .filter((a) => !a.manualSync && a.wave !== null)
+      .map((a) => a.wave as number);
+    const maxAutomatedWave = automatedWaves.length === 0 ? null : Math.max(...automatedWaves);
+    if (maxAutomatedWave !== null) {
+      for (const app of shipped) {
+        if (!app.manualSync) continue;
+        if (app.wave === null) continue;
+        if (app.wave < maxAutomatedWave) {
+          manualSyncFloorViolations.push({ app: app.name, wave: app.wave, maxAutomatedWave });
+        }
+      }
+    }
+  }
+
   // The derivation itself. `resolveGraph` throws on a cycle or an edge to an
   // unknown chart; both are genuine refusals, so they are allowed to propagate.
   const resolved = resolveGraph(spec);
@@ -424,6 +499,7 @@ export function auditInputs(
     unregisteredOrderViolations,
     staleAdjudications,
     cniFloorViolations,
+    manualSyncFloorViolations,
     derivedWaves,
     derivedOrder: resolved.order.filter((c) => c !== rootName),
   };
@@ -437,7 +513,8 @@ export function auditIsClean(audit: WaveAudit): boolean {
     audit.uncitedEdges.length === 0 &&
     audit.unregisteredOrderViolations.length === 0 &&
     audit.staleAdjudications.length === 0 &&
-    audit.cniFloorViolations.length === 0
+    audit.cniFloorViolations.length === 0 &&
+    audit.manualSyncFloorViolations.length === 0
   );
 }
 
@@ -486,6 +563,16 @@ export function formatWaveAudit(audit: WaveAudit): string {
     `CNI-FLOOR -- ${audit.cniFloorViolations.length} Application(s) reconcile at or before the CNI.`,
     audit.cniFloorViolations.map(
       (v) => `${v.app} (wave ${v.wave}) is not strictly after ${CNI_CHART} (wave ${v.cniWave}).`,
+    ),
+  );
+  push(
+    `MANUAL-SYNC-FLOOR -- ${audit.manualSyncFloorViolations.length} declared manual-sync Application(s) sit ` +
+      `before an automated Application's wave.`,
+    audit.manualSyncFloorViolations.map(
+      (v) =>
+        `${v.app} (wave ${v.wave}) is manual-sync and never auto-converges, but an automated Application syncs ` +
+        `as late as wave ${v.maxAutomatedWave} -- move ${v.app} to wave ${v.maxAutomatedWave} or later, or every ` +
+        `wave from ${v.wave} on wedges behind its permanent "Missing" health once Application health gating is live.`,
     ),
   );
 

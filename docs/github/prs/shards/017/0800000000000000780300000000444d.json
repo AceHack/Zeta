@@ -1,0 +1,12 @@
+{
+  "pr_number": 17485,
+  "archive_path": "docs/history/pr-reviews/2026/09/22/PR-17485-chore-hygiene-refresh-the-published-chart-snapshot-16-days-stale.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-22T06:57:44.427Z",
+  "schema_version": "v1",
+  "commit_sha": "53b53fc6dfaf8afaeec60be24b7824b90fc010e9",
+  "title": "chore(hygiene): refresh the published-chart snapshot (16 days stale)",
+  "state": "MERGED",
+  "merged_at": "2026-09-22T06:57:03Z",
+  "head_ref": "claude/refresh-chart-currency-snapshot"
+}

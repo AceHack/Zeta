@@ -1,0 +1,12 @@
+{
+  "pr_number": 17520,
+  "archive_path": "docs/history/pr-reviews/2026/09/22/PR-17520-chore-workitems-close-081m348vyz1087g0r0002gqm11-wp15-merged-17516.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-22T10:43:35.916Z",
+  "schema_version": "v1",
+  "commit_sha": "1fadaa8f9bdb5fcc2290f2ea68eab41b206361c9",
+  "title": "chore(workitems): close 081M348VYZ1087G0R0002GQM11 -- WP15 merged (#17516)",
+  "state": "MERGED",
+  "merged_at": "2026-09-22T10:42:51Z",
+  "head_ref": "claude/close-wp15-workitem"
+}

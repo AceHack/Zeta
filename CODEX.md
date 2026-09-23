@@ -48,7 +48,7 @@ machine.
 
 ```bash
 dotnet build -c Release   # 0 warnings, 0 errors — TreatWarningsAsErrors is on
-dotnet test Zeta.sln -c Release
+dotnet test --solution Zeta.sln -c Release
 ```
 
 ## 5. Ship

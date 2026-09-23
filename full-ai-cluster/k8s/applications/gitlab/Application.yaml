@@ -39,6 +39,57 @@ spec:
           initialRootPassword:
             secret: gitlab-initial-root-password
             key: password
+          # BUNDLED MINIO IS OFF -- ITS TWO IMAGES ARE GONE FROM DOCKER HUB.
+          #
+          # `charts/minio` (this chart's own bundled subchart, gated ENTIRELY on
+          # `global.minio.enabled` -- every template under it, verified against every
+          # file in `charts/minio/templates/`, opens with `{{- if .Values.global.minio.enabled
+          # -}}`) defaults to `enabled: true` and pulls `minio/minio:RELEASE.2017-12-28T01-21-00Z`
+          # (the deployment) and `minio/mc:RELEASE.2018-07-13T00-53-22Z` (the create-buckets Job).
+          # MEASURED 2026-09-22, same finding as PR #17475 (image-resolvability) and PR #17479
+          # (registry-mirror-coverage): both tags -- and every OTHER tag in both repositories --
+          # 401 "authentication required" from `registry-1.docker.io` with a valid anonymous pull
+          # token (control test against `library/alpine:latest` with the same token flow
+          # succeeded, so this is the repository, not the token). Docker Hub confirms the removal
+          # dates to ~2026-09-11, coincident with MinIO's community-edition Docker Hub deprecation
+          # -- the SAME upstream event `object-store/BLOB-STORE-CONTRACT.md` already documents for
+          # the cluster's own former `minio/` Application (archived repo, no security patches,
+          # replaced by SeaweedFS 2026-09-01). A first-boot sync of this Application with the
+          # bundled subchart enabled ImagePullBackOffs on both, and the create-buckets Job that
+          # the Rails app's object storage depends on never completes.
+          #
+          # A verified alternative image was checked and rejected: GitLab's own upstream image
+          # mirror (`registry.gitlab.com/gitlab-org/cloud-native/mirror/images/...`) carries no
+          # `minio` project at all -- `GET .../groups/gitlab-org/projects?search=minio&include_subgroups=true`
+          # returns an empty list. `quay.io/minio/minio` and `quay.io/minio/mc` DO still resolve
+          # (both linux/amd64 + linux/arm64), but their newest tags are RELEASE.2025-09-07 and
+          # RELEASE.2025-08-13 respectively -- no release since, consistent with the same
+          # archival BLOB-STORE-CONTRACT.md records (Feb 2026, no further development, no security
+          # patches). Repointing the bundled subchart at quay.io would re-import the exact
+          # unpatched-object-store posture the cluster already paid down once for its shared
+          # store; it is not "maintained", only "still pullable".
+          #
+          # So GitLab is pointed at the SAME in-cluster SeaweedFS every other object-storage
+          # consumer here uses (loki/Application.yaml, mimir/Application.yaml,
+          # object-store/BLOB-STORE-CONTRACT.md) via the chart's own documented "consolidated
+          # object storage" form -- one connection, all types (lfs/artifacts/uploads/packages)
+          # unless overridden per type, none are here. `appConfig.objectStorage.configuration` in
+          # `charts/gitlab/templates/_objectStorage.tpl` renders the CONSOLIDATED
+          # `object_store.connection` block only when `.config.connection` is set (below) --
+          # `global.minio.enabled: false` above removes the automatic minio-connection fallback
+          # branch in that same template, which is why disabling minio and configuring the
+          # connection are one change, not two.
+          minio:
+            enabled: false
+          appConfig:
+            object_store:
+              enabled: true
+              connection:
+                # `key` defaults to "connection" (charts/gitlab/templates/_objectStorage.tpl
+                # `gitlab.appConfig.objectStorage.mountSecrets`) -- named anyway so the
+                # secret's shape is legible from this file without opening the chart.
+                secret: zeta-blob-store
+                key: connection
         # Disable bundled components — cluster has its own.
         certmanager:    { install: false }
         nginx-ingress:  { enabled: false }
@@ -46,6 +97,65 @@ spec:
         gitlab-runner:
           install: true
           runners: { privileged: false, tags: "kubernetes,zeta-cluster" }
+          # LIVENESS KILL BUDGET -- WIDENED, NOT A startupProbe: MEASURED (helm pull
+          # gitlab 8.7.0 --untar) that charts/gitlab-runner/templates/deployment.yaml
+          # renders `livenessProbe` with no `startupProbe` key anywhere in the
+          # subchart. Chart default (`initialDelaySeconds: 60, periodSeconds: 10,
+          # failureThreshold: 3`, kill budget 80s) is generous already but GitLab as a
+          # whole is a known slow starter (WP18 category b) and the runner's readiness
+          # depends on the GitLab instance it registers against being reachable.
+          # `livenessProbe.failureThreshold` is the values coordinate (default 3).
+          #
+          # failureThreshold: 20 (chart's own initialDelaySeconds/periodSeconds
+          # unchanged) -> kill budget 60+19*10=250s.
+          livenessProbe:
+            failureThreshold: 20
+        # LIVENESS KILL BUDGET for gitlab-shell -- THE CHART EXPOSES A COORDINATE, ONE
+        # NESTING LEVEL DEEPER THAN registry/postgresql/redis/gitlab-runner ABOVE.
+        # MEASURED (helm pull gitlab 8.7.0 --untar): gitlab-shell is a subchart of the
+        # UMBRELLA CHART'S OWN "gitlab" subchart (charts/gitlab/charts/gitlab-shell/),
+        # not of the top-level umbrella directly -- so its values coordinate from this
+        # Application's valuesObject is `gitlab.gitlab-shell.*`, not `gitlab-shell.*`.
+        # (`gitlab-exporter` and `kas` live at the same nesting; both were checked and
+        # found to have NO values coordinate at all -- see the allowlist entries for
+        # both in liveness-kill-budget.ts.)
+        #
+        # charts/gitlab/charts/gitlab-shell/templates/deployment.yaml renders
+        # `deployment.livenessProbe.failureThreshold` (chart default 3, kill budget
+        # 30s: initialDelaySeconds 10 + (3-1)*periodSeconds 10) with no `startupProbe`
+        # key in this subchart either.
+        #
+        # failureThreshold: 20 (chart's own initialDelaySeconds/periodSeconds
+        # unchanged) -> kill budget 10+19*10=200s.
+        gitlab:
+          gitlab-shell:
+            deployment:
+              livenessProbe:
+                failureThreshold: 20
+        # Container registry's object storage is a SEPARATE config surface from
+        # `global.appConfig.object_store` above -- `charts/registry` is a Go binary, not the
+        # Rails app, and reads its own `storage.secret`/`storage.key` (default "config"),
+        # mounted at `/config/storage/config` and spliced into the rendered `storage:` block by
+        # the chart's own entrypoint script (`charts/registry/templates/deployment.yaml` +
+        # `_helper_create_buckets.sh`-adjacent config template). Same SeaweedFS endpoint, same
+        # shared `zeta-blob-store` credential, different secret key holding the registry's own
+        # `storage.s3.*` YAML shape (`gitlab-registry` bucket, `secure: false` -- in-cluster,
+        # no TLS -- `v4auth: true`).
+        registry:
+          storage:
+            secret: zeta-blob-store
+            key: config
+          # LIVENESS KILL BUDGET -- WIDENED, NOT A startupProbe: MEASURED
+          # (charts/registry/templates/deployment.yaml) that this container renders
+          # `deployment.livenessProbe.failureThreshold` (chart default 3, kill budget
+          # 25s: initialDelaySeconds 5 + (3-1)*periodSeconds 10) with no `startupProbe`
+          # key in the registry subchart.
+          #
+          # failureThreshold: 20 (chart's own initialDelaySeconds/periodSeconds
+          # unchanged) -> kill budget 5+19*10=195s.
+          deployment:
+            livenessProbe:
+              failureThreshold: 20
         # THE FOUR BUNDLED BITNAMI IMAGES, RE-POINTED AT `bitnamilegacy`.
         #
         # This Application was the largest entry in the partitioner's CANNOT BE
@@ -79,12 +189,53 @@ spec:
         postgresql:
           image:
             repository: bitnamilegacy/postgresql
+          # STARTUP PROBES -- THIS IS A BITNAMI CHART; BOTH CONTAINERS EXPOSE THE
+          # COORDINATE DIRECTLY. MEASURED (helm pull postgresql --repo
+          # https://charts.bitnami.com/bitnami -- the same subchart gitlab vendors):
+          # `templates/primary/statefulset.yaml` renders `startupProbe` from
+          # `.Values.primary.startupProbe.enabled` / `.Values.metrics.startupProbe.enabled`
+          # (both default false), alongside `customLivenessProbe`/`livenessProbe.enabled`
+          # for the always-on liveness (postgresql container: 80s kill budget; metrics
+          # container: 55s).
+          #
+          # WHY: not individually vetted at WP15's 2026-09-22 catalog audit; postgresql
+          # is a known slow starter (WP18 category b) -- GitLab's embedded Postgres runs
+          # first-boot init/WAL replay before it can answer `pg_isready`.
+          #
+          # Kubelet holds `livenessProbe` off entirely until `startupProbe` first
+          # succeeds. Chart default startupProbe shape (initialDelaySeconds 30,
+          # periodSeconds 10, failureThreshold 15 -> 30+14*10=170s) is widened further
+          # to failureThreshold 30 -> 30+29*10=320s; the chart's own liveness (80s /
+          # 55s) resumes once startup succeeds.
+          primary:
+            startupProbe:
+              enabled: true
+              failureThreshold: 30
           metrics:
             image:
               repository: bitnamilegacy/postgres-exporter
+            startupProbe:
+              enabled: true
+              failureThreshold: 30
         redis:
           image:
             repository: bitnamilegacy/redis
+          # STARTUP PROBE -- SAME BITNAMI SHAPE AS postgresql ABOVE. MEASURED
+          # (charts/redis/templates/master/application.yaml): `master.startupProbe.enabled`
+          # (default false) exists alongside the always-on `master.livenessProbe`
+          # (chart default -> 40s kill budget). Not individually vetted at WP15's
+          # 2026-09-22 catalog audit; redis is bundled with GitLab's own slow-starter
+          # profile (WP18 category b) -- Sentinel/AOF replay on first boot.
+          #
+          # Kubelet holds `livenessProbe` off until `startupProbe` first succeeds. The
+          # chart's own default `initialDelaySeconds: 20` is left as-is (not zeroed);
+          # periodSeconds 10, failureThreshold 30 -> startup kill budget 20+29*10=310s;
+          # the chart's own 40s liveness resumes once startup succeeds.
+          master:
+            startupProbe:
+              enabled: true
+              periodSeconds: 10
+              failureThreshold: 30
           metrics:
             image:
               repository: bitnamilegacy/redis-exporter

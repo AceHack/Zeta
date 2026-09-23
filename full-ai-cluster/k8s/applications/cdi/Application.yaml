@@ -41,7 +41,23 @@ apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
   annotations:
-    argocd.argoproj.io/sync-wave: "-5"   # alongside kubevirt, before VM workloads
+    # MOVED -5 -> 50 (081M1...WP3, resource.customizations.health.argoproj.io_Application
+    # gate). This is a declared manual-sync Application (see the annotation
+    # below): nothing ever auto-syncs it, so its honest live health on a fresh
+    # cluster is "Missing" forever, until a human runs `argocd app sync cdi`.
+    # Once Application-CRD health assessment is restored in argocd-cm (this same
+    # change), sync-wave gating starts WAITING for each wave's Applications to
+    # be Healthy before starting the next wave -- globally, across the whole
+    # zeta-root sync, regardless of the dependency graph. A manual-sync app
+    # sitting at any wave OTHER than the last would therefore wedge every
+    # automated Application behind it forever. Nothing in this tree depends ON
+    # cdi (sync-wave-dependency-graph.yaml has no `dependsOn: [cdi]` edge and no
+    # manifest here references a kubevirt.io/cdi.kubevirt.io CRD), so moving it
+    # to the tail is free. Matches the same convention already used by the
+    # other two manual-sync Applications, ollama/vllm (both wave 50).
+    # `derive-sync-waves.ts`'s manual-sync-floor check refuses if this ever
+    # drifts below the automated-Application ceiling again.
+    argocd.argoproj.io/sync-wave: "50"   # LAST wave -- manual-sync; see comment above
     # Machine-readable form of the header above, read by
     # src/Core.TypeScript/cluster/manual-sync-policy.ts. The comment states the
     # intent to humans; this states it to the checkers, which otherwise cannot

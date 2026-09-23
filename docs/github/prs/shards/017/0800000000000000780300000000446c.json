@@ -1,0 +1,12 @@
+{
+  "pr_number": 17516,
+  "archive_path": "docs/history/pr-reviews/2026/09/22/PR-17516-fix-cluster-liveness-probe-must-not-kill-startup-hindsight-crash-loop-catalog-au.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-22T10:37:30.428Z",
+  "schema_version": "v1",
+  "commit_sha": "b97e2f9b55374a7a295adde59127d93f9d5f6a88",
+  "title": "fix(cluster): liveness probe must not kill startup (hindsight crash loop + catalog audit)",
+  "state": "MERGED",
+  "merged_at": "2026-09-22T10:36:35Z",
+  "head_ref": "claude/liveness-must-not-kill-startup"
+}

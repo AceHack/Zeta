@@ -1,0 +1,14 @@
+{
+  "id": "080d0644df58a810a013000863875cc9",
+  "at": "2026-09-22T10:14:16.597Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M349QTRM087G0R001HM7ESM",
+    "type": "task",
+    "title": "Harden metal internal-secret-seeding: CSPRNG entropy off tmpfs, never pod UID",
+    "slug": "harden-metal-internal-secret-seeding-csprng-entropy-off-tmpf",
+    "priority": "P1",
+    "filename": "081M349QTRM087G0R001HM7ESM-harden-metal-internal-secret-seeding-csprng-entropy-off-tmpf.md"
+  }
+}

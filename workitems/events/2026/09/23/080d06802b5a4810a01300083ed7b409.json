@@ -1,0 +1,14 @@
+{
+  "id": "080d06802b5a4810a01300083ed7b409",
+  "at": "2026-09-23T20:46:51.209Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M380ATT8087G0R001TE6GZW",
+    "type": "task",
+    "title": "Convert rung-overrides.json to human-readable YAML (hand-edited config, long prose reasons)",
+    "slug": "convert-rung-overrides-json-to-human-readable-yaml-hand-edit",
+    "priority": "P2",
+    "filename": "081M380ATT8087G0R001TE6GZW-convert-rung-overrides-json-to-human-readable-yaml-hand-edit.md"
+  }
+}

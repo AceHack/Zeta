@@ -1,0 +1,14 @@
+{
+  "id": "080d06403d177010a0130008d22b91ca",
+  "at": "2026-09-22T07:32:18.798Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M340F8QD087G0R0037MPBB4",
+    "type": "task",
+    "title": "Drop resolved minio acknowledgement entries; gate on stale acks",
+    "slug": "drop-resolved-minio-acknowledgement-entries-gate-on-stale-ac",
+    "priority": "P2",
+    "filename": "081M340F8QD087G0R0037MPBB4-drop-resolved-minio-acknowledgement-entries-gate-on-stale-ac.md"
+  }
+}

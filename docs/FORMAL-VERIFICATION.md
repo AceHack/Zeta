@@ -52,7 +52,7 @@ lake build
 bun run tools/formal-verification/run-alloy.ts --all
 
 # 3. Z3 symbolic verification
-dotnet test tests/Tests.FSharp -c Release --filter "FullyQualifiedName~FormalVerificationTests"
+dotnet test --project tests/Tests.FSharp -c Release -- --filter-class "Zeta.Tests.Formal.Z3LawsTests"   # 80 tests; the old VSTest filter named a class that no longer exists
 
 # 4. TLA+ concurrent protocols model checking
 java -cp tla2tools.jar tlc2.TLC -config tools/tla/specs/SpineAsyncProtocol.cfg tools/tla/specs/SpineAsyncProtocol.tla

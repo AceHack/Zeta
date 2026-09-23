@@ -173,6 +173,24 @@ spec:
       jsonPointers:
         - /data/username
         - /data/password
+  # ServerSideApply DELIBERATELY DROPPED, 2026-09-22 -- A SECOND, INDEPENDENT
+  # DRIFT SOURCE from the Secret randomness documented above. Live run
+  # 35713533700 showed `StatefulSet/weaviate: sync=OutOfSync health=-` even with
+  # the Secret ignore rule already in place, and the Application itself flipped
+  # to `OutOfSync/Progressing` during the post-Healthy soak -- an actual re-apply,
+  # not the benign OutOfSync+Healthy this lane otherwise tolerates. MEASURED:
+  # chart 17.8.3 with this valuesObject renders the `weaviate` StatefulSet's
+  # `volumeClaimTemplates[0]` (JSON-encoded 3923 bytes, the single largest
+  # resource this chart renders -- 66x under the 262144-byte
+  # last-applied-configuration cap) as
+  # name/accessModes/storageClassName/resources.requests.storage only -- the same
+  # argo-cd#11143 class as cockroachdb/headscale/hindsight/nats/opensearch and the
+  # spire precedent (spire/Application.yaml).
+  # RespectIgnoreDifferences DOES NOT NEED ServerSideApply: the sync-options.md
+  # description ("pre-patching the desired state before applying it") and the
+  # controller/sync.go comment cited above describe patching the desired object
+  # before the apply call, independent of which apply mode follows -- so the
+  # Secret ignore rule above is unaffected by this change.
   syncPolicy:
     automated: { prune: false, selfHeal: true }
-    syncOptions: [ CreateNamespace=true, ServerSideApply=true, RespectIgnoreDifferences=true ]
+    syncOptions: [ CreateNamespace=true, RespectIgnoreDifferences=true ]

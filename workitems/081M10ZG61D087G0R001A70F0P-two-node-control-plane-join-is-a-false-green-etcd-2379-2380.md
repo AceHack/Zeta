@@ -123,3 +123,26 @@ it must go red; the current tree must NOT satisfy it.
 - #15673 — introduced the two-control-plane test
 - 081M10ZG62W087G0R002X76P1D — arguably the root: no second control-plane host exists to carry the override
 - 081M10ZG63M087G0R000SG5KV6 — the general check that would have caught this class; landing it and fixing this are ONE change
+
+## Status 2026-09-23 (081M3812659087G0R001NP3WR6) — harness no longer exceeds the product
+
+Decision: server HA IS supported (the joiner path `injected-server-join.nix` +
+zflash `--role joiner` ships), so the product must be able to express it — as an
+explicit, default-off, source-scoped option, which keeps the hardware firewall
+default unchanged:
+
+- `nixos/modules/k3s-etcd-peers.nix` (imported by `k3s-server.nix`):
+  `zeta.k3sServer.etcdPeers` admits 2379/2380 from the named peers ONLY
+  (iptables `-s <peer>` ACCEPTs at the head of `nixos-fw`; nftables input rule
+  when that backend is on). Default `[ ]` = closed, as before.
+- Evaluation now REFUSES a role=server node with `serverAddr` set when nothing
+  admits etcd peer traffic (the option, both ports flat, both ports on an
+  interface, or a non-CNI trusted interface) — caveats 1 and 2 above both honoured.
+- `k3s-server-join.nix` sets the option instead of `allowedTCPPorts = [ 2379 2380 ]`
+  and now also asserts the rule is source-scoped and NOT a flat open.
+- `k3s-etcd-peers-model` eval check pins it; its `lo` property is a real mutation
+  the first draft failed.
+
+NOT done (why this item stays open): the founder-side runtime probe. A founder
+with `etcdPeers = [ ]` still refuses joiners at runtime, and only a joiner-side
+probe before k3s starts can name that.

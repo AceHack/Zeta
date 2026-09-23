@@ -1,0 +1,14 @@
+{
+  "id": "080d063beabb8810a01300082528f5a4",
+  "at": "2026-09-22T05:01:15.505Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M33QTNVD087G0R002632YDV",
+    "type": "task",
+    "title": "First-boot replica measures ROOT_LANDED: k3s deploy controller retries root-application.yaml",
+    "slug": "first-boot-replica-measures-root-landed-k3s-deploy-controlle",
+    "priority": "P2",
+    "filename": "081M33QTNVD087G0R002632YDV-first-boot-replica-measures-root-landed-k3s-deploy-controlle.md"
+  }
+}

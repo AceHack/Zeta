@@ -310,3 +310,39 @@ export function assertUsbISerialGuestSerial(
   }
   return { ok: true, matchedMarkers: required };
 }
+
+export type RepoPinHonouredSerialResult =
+  | { readonly ok: true; readonly actualSha: string }
+  | { readonly ok: false; readonly reason: string };
+
+/**
+ * WP21 (081M35C7NJR087G0R002S4R654) — assert the DISK actually installed
+ * carries `expectedCommit`, not whatever $REPO_URL's default branch happened
+ * to be at install time. Parses zeta-install.sh's own
+ * `[repo-pin] honoured: HEAD is now <sha> (pinned <sha>)` line rather than
+ * trusting the `[repo-pin] outcome=...` summary alone — that line is the
+ * actual `git rev-parse HEAD` read back off the cloned tree, not merely a
+ * label the script believes about itself.
+ */
+export function assertRepoPinHonouredSerial(
+  serialOutput: string,
+  expectedCommit: string,
+): RepoPinHonouredSerialResult {
+  const match = serialOutput.match(/\[repo-pin] honoured: HEAD is now ([0-9a-fA-F]{40}) \(pinned ([0-9a-fA-F]{40})\)/);
+  if (!match) {
+    return {
+      ok: false,
+      reason:
+        `"[repo-pin] honoured: HEAD is now <sha> (pinned <sha>)" not found on serial ` +
+        `(expected commit ${expectedCommit}); check the "[repo-pin] outcome=..." line for what actually happened`,
+    };
+  }
+  const [, actualSha, pinnedSha] = match as unknown as [string, string, string];
+  if (actualSha.toLowerCase() !== expectedCommit.toLowerCase() || pinnedSha.toLowerCase() !== expectedCommit.toLowerCase()) {
+    return {
+      ok: false,
+      reason: `repo-pin honoured a DIFFERENT commit than expected: actual=${actualSha} pinned=${pinnedSha} expected=${expectedCommit}`,
+    };
+  }
+  return { ok: true, actualSha };
+}

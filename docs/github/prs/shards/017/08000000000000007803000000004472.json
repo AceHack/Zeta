@@ -1,0 +1,12 @@
+{
+  "pr_number": 17522,
+  "archive_path": "docs/history/pr-reviews/2026/09/22/PR-17522-fix-cluster-close-perpetual-outofsync-self-heal-churn-on-7-first-boot-applicatio.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-22T11:27:45.877Z",
+  "schema_version": "v1",
+  "commit_sha": "6a1bc83b81ed0eab4a277a786cc64211206b6c45",
+  "title": "fix(cluster): close perpetual OutOfSync / self-heal churn on 7 first-boot Applications",
+  "state": "MERGED",
+  "merged_at": "2026-09-22T11:27:00Z",
+  "head_ref": "claude/no-perpetual-outofsync"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 17517,
+  "archive_path": "docs/history/pr-reviews/2026/09/22/PR-17517-fix-cluster-csprng-entropy-for-metal-internal-secret-seeding-never-pod-uid-wp16.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-22T11:20:03.498Z",
+  "schema_version": "v1",
+  "commit_sha": "d85ac040c4c3093997d8360248044320f682004a",
+  "title": "fix(cluster): CSPRNG entropy for metal internal-secret-seeding, never pod UID (WP16)",
+  "state": "MERGED",
+  "merged_at": "2026-09-22T11:19:04Z",
+  "head_ref": "claude/secret-seeding-csprng"
+}

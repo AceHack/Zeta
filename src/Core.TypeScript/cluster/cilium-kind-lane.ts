@@ -98,9 +98,15 @@ export const IFNAME_MAX_LENGTH = 15;
  * `var RequiredGVKs`. Kind constants there are already the plural resource
  * names (`tlsroutes`, `backendtlspolicies`, …).
  *
- * Two entries are missing from the vendored v1.2.1 STANDARD bundle:
- * `tlsroutes` (experimental / TLSRoute v1 migration) and
- * `backendtlspolicies` (added to RequiredGVKs after 1.16).
+ * ALL SEVEN are satisfied by the vendored bundle as of 2026-09-22 (bumped
+ * Gateway API v1.2.1 STANDARD -> v1.6.1 STANDARD in
+ * `full-ai-cluster/k8s/bootstrap/gateway-api-crds.yaml`; see that file's own
+ * vendoring note). `tlsroutes` and `backendtlspolicies` did not exist at all
+ * under v1.2.1; `referencegrants` existed but only at `v1beta1` -- a
+ * name-presence check alone would have missed that gap, which is why
+ * `gatewayApiCrdCoverage` below checks name presence only and this list's
+ * own MEASURED history (081M33T23ZQ087G0R002ZYRHDG follow-on) is what caught
+ * the version gap, not the checker.
  */
 export const CILIUM_PINNED_REQUIRED_GATEWAY_API_CRDS: readonly string[] = [
   "gatewayclasses.gateway.networking.k8s.io",
@@ -479,18 +485,35 @@ export interface GatewayApiCrdCoverage {
  * Compare the CRDs the pinned Cilium chart requires against the bundle this
  * repo vendors.
  *
- * WHY IT MATTERS AND WHY NOBODY NOTICED. Both shipped Cilium surfaces set
- * `gatewayAPI.enabled: true`. `full-ai-cluster/k8s/bootstrap/gateway-api-crds.yaml`
- * is the Gateway API v1.2.1 STANDARD channel — five CRDs, no `TLSRoute`, no
- * `BackendTLSPolicy`. Cilium 1.20.1's `discoverCRDsWithRetry` calls `checkCRDs`
- * against `helpers.RequiredGVKs`, and on a permanent miss it logs `"Required
- * GatewayAPI resources are not found, please refer to docs for installation
+ * WHY IT MATTERED AND WHY NOBODY NOTICED, UNTIL THE REPLICA CAUGHT IT
+ * (081M33T23ZQ087G0R002ZYRHDG follow-on, 2026-09-22). Both shipped Cilium
+ * surfaces set `gatewayAPI.enabled: true`. Until 2026-09-22,
+ * `full-ai-cluster/k8s/bootstrap/gateway-api-crds.yaml` was the Gateway API
+ * v1.2.1 STANDARD channel — five CRDs, no `TLSRoute`, no `BackendTLSPolicy`,
+ * and `ReferenceGrant` at `v1beta1` only. Cilium 1.20.1's
+ * `discoverCRDsWithRetry` calls `checkCRDs` against `helpers.RequiredGVKs`
+ * (all seven, at `v1`), and on a permanent miss it logs `"Required GatewayAPI
+ * resources are not found, please refer to docs for installation
  * instructions"` and returns `Enabled: false` — the operator does not crash,
- * the Deployment stays Ready, and ArgoCD reports the Application Healthy. The
- * Gateway API controller simply never starts.
+ * the Deployment stays Ready, and ArgoCD's WORKLOAD-level health reports the
+ * Application Healthy even though the Gateway API controller never starts.
+ * What DOES surface it: the chart's own `GatewayClass/cilium` ships with a
+ * static placeholder `status.conditions[Accepted]=Unknown/Pending: Waiting
+ * for controller`, which only a live Gateway API controller ever updates —
+ * so with the controller silently disabled, ArgoCD's built-in GatewayClass
+ * health check reports the `cilium` Application permanently Progressing.
+ * MEASURED via `first-boot-replica.ts` against the real k3s bootstrap
+ * roster, 2026-09-22 — the Application sat Progressing for 15+ minutes with
+ * every cilium pod Running (docs/research/2026-09-22-argo-cd-applications-stuck-progressing-first-boot-cilium-spire-openbao-longhorn.md).
+ * The vendored bundle now ships Gateway API v1.6.1 STANDARD (all ten CRDs;
+ * `referencegrants` at both `v1` and `v1beta1`), which is why `missing`
+ * below is empty on the live tree.
  *
  * That is the local shape of "a check that did not run must never look like a
- * check that passed", applied to a FEATURE rather than a check.
+ * check that passed", applied to a FEATURE rather than a check — and the
+ * concrete case for why relying only on workload Ready/Healthy is not enough:
+ * the health signal that actually caught this lived on a CR
+ * (`GatewayClass.status.conditions`), not on any Deployment/DaemonSet.
  */
 export function gatewayApiCrdCoverage(repoRoot = REPO_ROOT): GatewayApiCrdCoverage {
   const bundlePath = join(repoRoot, GATEWAY_API_CRD_BUNDLE);
@@ -518,34 +541,23 @@ export function gatewayApiCrdCoverage(repoRoot = REPO_ROOT): GatewayApiCrdCovera
  * CRDs Cilium requires that this repo knowingly does not vendor, with the
  * consequence and the condition that lifts the entry.
  *
- * Recorded rather than fixed HERE because vendoring the experimental channel
- * changes what first-boot applies on metal, which is a cluster-config decision
- * and not this lane's to make. What this lane owes is that the gap is VISIBLE
- * and goes red the day it moves in either direction.
+ * EMPTY as of 2026-09-22: both entries this map used to carry (`tlsroutes`,
+ * `backendtlspolicies`) were lifted by bumping the vendored bundle from
+ * Gateway API v1.2.1 STANDARD to v1.6.1 STANDARD — see
+ * `full-ai-cluster/k8s/bootstrap/gateway-api-crds.yaml`'s own vendoring note
+ * and `gatewayApiCrdCoverage`'s docstring above for the mechanism (the
+ * `cilium` Application stuck Progressing on the real first-boot roster,
+ * traced to `GatewayClass.status.conditions[Accepted]` never being set
+ * because the Gateway API controller silently never started).
+ *
+ * Kept as the live mechanism, not deleted: the next time a Cilium bump adds
+ * a `RequiredGVKs` entry the vendored bundle does not cover,
+ * `gatewayApiCrdCoverage.missing` goes non-empty and
+ * `auditGatewayApiCrdGap.unexplained` goes red until a reasoned entry is
+ * added here — same discipline as before, now starting from zero gaps
+ * instead of two.
  */
-export const GATEWAY_API_CRD_GAP_REASONS: ReadonlyMap<string, string> = new Map([
-  [
-    "tlsroutes.gateway.networking.k8s.io",
-    "TLSRoute is in the Gateway API EXPERIMENTAL channel (v1 as of Gateway API " +
-      "v1.6.1); the vendored bundle is v1.2.1 STANDARD. Cilium 1.20.1 lists it in " +
-      "operator/pkg/gateway-api/helpers/schemes.go `RequiredGVKs`, so with it absent " +
-      "`checkCRDs` fails, `discoverCRDsWithRetry` logs and returns Enabled: false, and " +
-      "the Gateway API controller never starts -- silently, with the operator Ready and " +
-      "the Application Healthy. LIFTS WHEN: a Gateway API bundle that includes TLSRoute " +
-      "v1 is added to full-ai-cluster/k8s/bootstrap/gateway-api-crds.yaml, or " +
-      "gatewayAPI.enabled is set false on both Cilium value surfaces. Either resolves " +
-      "it; leaving both as they are does not.",
-  ],
-  [
-    "backendtlspolicies.gateway.networking.k8s.io",
-    "BackendTLSPolicy joined Cilium RequiredGVKs after 1.16 (schemes.go at tag " +
-      "v1.20.1). The vendored Gateway API v1.2.1 STANDARD bundle does not include it. " +
-      "Same silent-disable as TLSRoute: checkCRDs fails, operator Ready, Application " +
-      "Healthy, controller never starts. LIFTS WHEN: the CRD is vendored into " +
-      "full-ai-cluster/k8s/bootstrap/gateway-api-crds.yaml, or gatewayAPI.enabled is " +
-      "set false on both Cilium value surfaces. Not a drive-by vendor of v1.6.1.",
-  ],
-]);
+export const GATEWAY_API_CRD_GAP_REASONS: ReadonlyMap<string, string> = new Map([]);
 
 export interface GatewayApiCrdDrift {
   readonly unexplained: readonly string[];

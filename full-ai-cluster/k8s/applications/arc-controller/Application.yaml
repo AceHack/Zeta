@@ -24,6 +24,17 @@ metadata:
     # After cert-manager / external-secrets (wave 0) so the runner set's
     # credentials exist before the controller starts reconciling it.
     argocd.argoproj.io/sync-wave: "3"
+    # OPT-IN HEALTH GATING (081M33T23ZQ087G0R002ZYRHDG). arc-controller
+    # provides actions.github.com/AutoscalingRunnerSet, genuinely consumed by
+    # arc-runner-set. Verified metal-safe: this Application itself "registers
+    # nothing" (its own header) and carries zero Secret/existingSecret
+    # references -- the GitHub App credential gap documented elsewhere
+    # belongs to arc-runner-set, the CONSUMER, not this provider. Not
+    # declared manual-sync.
+    # UNGATED 2026-09-22 (architect): never observed reaching Healthy on the real
+    # bootstrap path, and a stuck gate at wave 3 would stall waves 4-50 (opensearch,
+    # hindsight, temporal, forgejo/gitlab...). Its one consumer, arc-runner-set, is a
+    # later wave with automated retry. Re-add with replica evidence.
   name: arc-controller
   namespace: argocd
   finalizers: [ resources-finalizer.argocd.argoproj.io ]

@@ -24,7 +24,7 @@ tools/setup/install.sh
 dotnet build Zeta.sln -c Release
 
 # Test
-dotnet test Zeta.sln -c Release --no-build
+dotnet test --solution Zeta.sln -c Release --no-build
 
 # Before opening a PR: run every gate dimension locally, all failures at once
 # (lints + tsc + build + test; --quick skips the slow build + test)

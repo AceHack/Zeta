@@ -20,7 +20,7 @@
       "means": "Zero warnings and zero errors (TreatWarningsAsErrors is on)."
     },
     "dotnet-test": {
-      "command": "dotnet test Zeta.sln -c Release",
+      "command": "dotnet test --solution Zeta.sln -c Release",
       "means": "The .NET test suite completed with no failures."
     },
     "ts-lint": {

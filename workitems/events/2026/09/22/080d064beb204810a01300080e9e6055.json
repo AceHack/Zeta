@@ -1,0 +1,14 @@
+{
+  "id": "080d064beb204810a01300080e9e6055",
+  "at": "2026-09-22T14:20:33.161Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M34QTS06087G0R0015D7X5W",
+    "type": "bug",
+    "title": "opensearch-cluster-master-0 crash-loops after first-boot-replica power-cycle (stage 8)",
+    "slug": "opensearch-cluster-master-0-crash-loops-after-first-boot-rep",
+    "priority": "P2",
+    "filename": "081M34QTS06087G0R0015D7X5W-opensearch-cluster-master-0-crash-loops-after-first-boot-rep.md"
+  }
+}

@@ -8,6 +8,23 @@ kind: Application
 metadata:
   annotations:
     argocd.argoproj.io/sync-wave: "-80"
+    # OPT-IN HEALTH GATING (081M33T23ZQ087G0R002ZYRHDG). Cilium provides
+    # cilium.io CRDs cilium-lb-ipam consumes (CiliumLoadBalancerIPPool,
+    # CiliumL2AnnouncementPolicy) and IS the pod-networking precondition every
+    # later Application already assumes (the CNI-floor invariant in
+    # derive-sync-waves.ts). Verified metal-safe: zero Secret/existingSecret
+    # references anywhere in this Application (collectSecretReferences /
+    # collectRawSecretReferences both empty), not declared manual-sync, and
+    # bootstrap-installed (cilium-install.yaml applies it before ArgoCD
+    # exists at all, so it has the longest possible head start to be Ready).
+    # crd-provider-consumer-order.ts's gating invariants (a)/(b) check this
+    # annotation stays justified.
+    # UNGATED 2026-09-22 (architect): the first-boot replica (real k3s bootstrap path)
+    # observed this Application Synced/PROGRESSING for 15+ min with every cilium pod
+    # Running (run 35696323545), and with this gate on only 3 Applications synced in
+    # 480s (PR #17477's replica run). A provider that is not OBSERVED to reach Healthy
+    # must not gate every later wave. Re-add once the Progressing resource is found
+    # (investigation: branch claude/why-argo-apps-stay-progressing).
   name: cilium
   namespace: argocd
   finalizers:
@@ -47,6 +64,14 @@ spec:
           mode: cluster-pool
           operator:
             clusterPoolIPv4PodCIDRList: [ "10.143.0.0/17" ]
+            # EXPLICIT, in lockstep with the bootstrap HelmChart twin
+            # (k8s/bootstrap/cilium-install.yaml) — see its comment. The
+            # single-node --kubelet-arg=max-pods=220 budget in k3s-server.nix
+            # / k3s-agent.nix relies on this node getting a /24 (254 usable
+            # addresses) from cluster-pool IPAM, which is the chart default at
+            # 1.20.1 but is now stated rather than inherited so a future chart
+            # bump cannot shrink it out from under the pod-count budget.
+            clusterPoolIPv4MaskSize: 24
 
         # BPF MASQUERADE (required by the spec).
         bpf:

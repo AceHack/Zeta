@@ -89,7 +89,14 @@
 
       mkSystem = { system ? "x86_64-linux", modules }: nixpkgs.lib.nixosSystem {
         inherit system;
-        specialArgs = { inherit inputs stateVersion; };
+        # `self` added 081M35C7NJR087G0R002S4R654 (WP21): the installer
+        # configuration reads `self.rev` to embed the exact commit this ISO was
+        # built from (`/etc/zeta-iso-provenance`), so `zeta-install.sh` can pin
+        # the post-clone checkout to it instead of always installing the
+        # remote's default-branch HEAD. Harmless for every other host: `self`
+        # is just one more unused specialArg to a module whose signature ends
+        # in `...`.
+        specialArgs = { inherit inputs stateVersion self; };
         modules = [
           ({ nixpkgs.overlays = [ (import ./nixos/overlays/mise-pin.nix) ]; })
         ] ++ modules;
@@ -430,6 +437,32 @@
               echo "$status" | tee "$out"
             '';
 
+          # Properties of the DOCKER HUB PULL-THROUGH MIRROR module (WP9,
+          # 081M33STPKN087G0R0004B5CAK) -- that it renders
+          # /etc/rancher/k3s/registries.yaml with docker.io pointed at
+          # mirror.gcr.io, that BOTH k3s-server.nix and k3s-agent.nix import
+          # it, and that neither disables the default-registry-endpoint
+          # fallback (the flag that would turn a mirror miss into a hard pull
+          # failure -- see the module's own header).
+          #
+          # NOT a VM test and NOT a boot test -- it says nothing about whether
+          # mirror.gcr.io actually serves these images
+          # (src/Core.TypeScript/cluster/registry-mirror-coverage.ts measures
+          # that, report-only, not gated).
+          #
+          # Costs no VM, runs on every system, and its assertions fire during
+          # EVALUATION -- so `nix flake check --no-build` already runs it.
+          k3s-registry-mirrors-model =
+            let
+              report = import ./nixos/tests/k3s-registry-mirrors-eval-test.nix {
+                inherit pkgs;
+                inherit (nixpkgs) lib;
+              };
+            in
+            pkgs.runCommand "k3s-registry-mirrors-model" { inherit (report) status; } ''
+              echo "$status" | tee "$out"
+            '';
+
           # Properties of the TPM-SEAL desired-state model — the module that
           # answers "what can the nix installer pre-stage for a hardware-backed
           # auto-unseal", and the gate that stops it from deciding seal-key
@@ -688,6 +721,17 @@
           longhorn-volume-binds =
             import ./nixos/tests/longhorn-volume-binds.nix { inherit pkgs; };
 
+          # A CLUSTER, not a node: three role=server members with embedded-etcd
+          # HA (founder + two joins through injected-server-join.nix, etcd peers
+          # admitted by the PRODUCT option zeta.k3sServer.etcdPeers), all Ready
+          # on Cilium, Longhorn with 3 replicas placed on 3 distinct nodes, then
+          # one replica-holding node hard power-cut: API reads + quorum writes
+          # survive and the data reads back on a survivor.
+          # REQUIRES internet -> build with `--option sandbox false`.
+          # See nixos/tests/k3s-ha-longhorn-cluster.nix.
+          k3s-ha-longhorn-cluster =
+            import ./nixos/tests/k3s-ha-longhorn-cluster.nix { inherit pkgs; };
+
           # THE ONLY CHECK THAT APPLIES THE REAL FIRST-BOOT ROSTER. Every
           # other VM test above overrides `services.k3s.manifests` away, so
           # the declared boot sequence had never run anywhere. This one boots
@@ -703,6 +747,23 @@
           # is eval-only and costs nothing.
           k3s-first-boot-roster =
             import ./nixos/tests/k3s-first-boot-roster.nix { inherit pkgs; };
+
+          # WP20 (root-cause oracle for run 35717757526: k3s.service never
+          # reached active on the REAL installed disk in 4201s). Boots the
+          # WHOLE `nixosConfigurations.control-plane` host config -- not a
+          # hand-picked subset of modules like every other lane above -- so
+          # it is the only VM test that can see an ordering-graph defect
+          # spanning secure-boot/host-seal/tpm2/AI-agents/avahi/samba/docker/
+          # the k3s+longhorn+cilium-wireguard preflights/injected-*/creds-
+          # restore-and-register, none of which any smaller test imports at
+          # once. See nixos/tests/control-plane-host-boots-k3s.nix for the
+          # full rationale, the two deliberate deviations from the real host
+          # config (both cosmetic), and why REQUIRES INTERNET like the roster
+          # test above.
+          #
+          #   nix build .#checks.x86_64-linux.control-plane-host-boots-k3s -L --option sandbox false
+          control-plane-host-boots-k3s =
+            import ./nixos/tests/control-plane-host-boots-k3s.nix { inherit pkgs; };
 
           # EVAL-ONLY (no VM, no boot): asserts that the preflight-attestation
           # gate in nixos/modules/nvidia-open-guard.nix still REFUSES an
@@ -743,6 +804,47 @@
               };
             in
             pkgs.runCommand "gpu-node-label-preflight" { inherit (report) status; } ''
+              echo "$status" | tee "$out"
+            '';
+
+          # EVAL-ONLY (no VM, no boot): properties of k8s-node-tunables.nix —
+          # the module that raises vm.max_map_count and the fs.inotify.*
+          # limits the ~150-pod Argo CD catalog needs. Reads the REAL
+          # nixosConfigurations.control-plane and .worker-gpu, so it proves
+          # both real hosts ship every value declared in
+          # k8s/node-tunables.json (the single source of truth this module
+          # AND src/Core.TypeScript/cluster/node-tunables.ts both read), not
+          # only that the module evaluates. 081M33PQ4MG087G0R002ZKDAVR.
+          # See nixos/tests/k8s-node-tunables-eval-test.nix.
+          k8s-node-tunables-model =
+            let
+              report = import ./nixos/tests/k8s-node-tunables-eval-test.nix {
+                inherit pkgs;
+                nixosConfig = self.nixosConfigurations.control-plane;
+                secondHostConfig = self.nixosConfigurations.worker-gpu;
+              };
+            in
+            pkgs.runCommand "k8s-node-tunables-model" { inherit (report) status; } ''
+              echo "$status" | tee "$out"
+            '';
+
+          # EVAL-ONLY (no VM, no boot): properties of k3s-etcd-peers.nix — the
+          # opt-in, source-scoped etcd 2379/2380 admission multi-server HA needs,
+          # and the evaluation-time refusal of a JOINING control plane nothing
+          # admits etcd traffic to (081M10ZG61D087G0R001A70F0P). Reads the real
+          # nixosConfigurations.control-plane to prove the shipped host's
+          # firewall is UNCHANGED, and pins the mutation that made the refusal
+          # vacuous in its first draft (NixOS's implicit trusted `lo`).
+          # See nixos/tests/k3s-etcd-peers-eval-test.nix.
+          k3s-etcd-peers-model =
+            let
+              report = import ./nixos/tests/k3s-etcd-peers-eval-test.nix {
+                inherit (nixpkgs) lib;
+                inherit nixpkgs;
+                controlPlaneConfig = self.nixosConfigurations.control-plane;
+              };
+            in
+            pkgs.runCommand "k3s-etcd-peers-model" { inherit (report) status; } ''
               echo "$status" | tee "$out"
             '';
         };

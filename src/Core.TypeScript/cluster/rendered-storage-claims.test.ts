@@ -628,7 +628,10 @@ describe("the live catalogue against the measured render", () => {
     // 301 -> 321 GiB on 2026-09-04: opensearch added a 20Gi PVC on zeta-local-path.
     // 321 -> 336 on 2026-09-05: openbao adds 10Gi data + 5Gi audit.
     // 336 -> 230 on 2026-09-05: vault removed (-30 GiB), openbao added (+15).
-    expect(totals.get("zeta-local-path")).toBe(230);
+    // 230 -> 220 on 2026-09-22: gitlab's bundled minio subchart disabled
+    // (`global.minio.enabled: false` -- both minio/minio and minio/mc were
+    // withdrawn from Docker Hub); its 10Gi `gitlab-minio` PVC no longer renders.
+    expect(totals.get("zeta-local-path")).toBe(220);
   });
 
   // WAS "the two live inert-values defects are still exactly two apps". Both

@@ -163,6 +163,10 @@ on:
       - "src/Core.TypeScript/cluster/gatekeeper-ignore-label.test.ts"
       - "src/Core.TypeScript/cluster/lane-tree-source.ts"
       - "src/Core.TypeScript/cluster/lane-tree-source.test.ts"
+      - "src/Core.TypeScript/cluster/rung-overrides.ts"
+      - "src/Core.TypeScript/cluster/rung-overrides.test.ts"
+      - "full-ai-cluster/k8s/rung-overrides.yaml"
+      - "src/Core.TypeScript/cluster/startup-restart-baseline.json"
       - "docs/backlog/P1/081KSXN940008QG0R000SCP2H1-kubernetes-argocd-kind-k3d-integration-health-tests-separate.md"
       - ".github/workflows/k8s-argocd-health-test.yml"
       - ".mise.toml"
@@ -284,6 +288,10 @@ on:
       - "src/Core.TypeScript/cluster/gatekeeper-ignore-label.test.ts"
       - "src/Core.TypeScript/cluster/lane-tree-source.ts"
       - "src/Core.TypeScript/cluster/lane-tree-source.test.ts"
+      - "src/Core.TypeScript/cluster/rung-overrides.ts"
+      - "src/Core.TypeScript/cluster/rung-overrides.test.ts"
+      - "full-ai-cluster/k8s/rung-overrides.yaml"
+      - "src/Core.TypeScript/cluster/startup-restart-baseline.json"
       - "docs/backlog/P1/081KSXN940008QG0R000SCP2H1-kubernetes-argocd-kind-k3d-integration-health-tests-separate.md"
       - ".github/workflows/k8s-argocd-health-test.yml"
       - ".mise.toml"
@@ -537,7 +545,10 @@ jobs:
       # budget is deliberate -- the day this tree outgrows ConfigMap delivery should
       # arrive as a named message here, not as an etcd rejection inside a live lane.
       - name: Run lane-tree source falsifiers (the resource-rung override point)
-        run: bun test src/Core.TypeScript/cluster/lane-tree-source.test.ts
+        # rung-overrides.test.ts rides here since 2026-09-23: it is the other half of
+        # the same override point, and until then it was named by no workflow and no
+        # path filter -- so editing an override triggered none of the lanes it shapes.
+        run: bun test src/Core.TypeScript/cluster/lane-tree-source.test.ts src/Core.TypeScript/cluster/rung-overrides.test.ts
 
       # SYNC-WAVE DERIVATION. The App-of-Apps bring-up order is DERIVED from
       # full-ai-cluster/k8s/sync-wave-dependency-graph.yaml by ace's own engine
@@ -928,6 +939,11 @@ jobs:
       - name: Install bun dependencies
         run: bun install --frozen-lockfile
 
+      # Runner sysctls, set to match the real NixOS host (081M33PQ4MG087G0R002ZKDAVR)
+      # BEFORE the kind cluster below is created. See .github/actions/apply-node-tunables.
+      - name: Apply node kernel tunables (parity with the NixOS host)
+        uses: ./.github/actions/apply-node-tunables
+
       # WHAT DISK THIS RUNNER ACTUALLY HAS, measured rather than quoted.
       #
       # `storage-profiles.json`'s runnerEnvelope carried `freeDiskGib: 14` when
@@ -1155,6 +1171,11 @@ jobs:
 
       - name: Install bun dependencies
         run: bun install --frozen-lockfile
+
+      # Runner sysctls, set to match the real NixOS host (081M33PQ4MG087G0R002ZKDAVR)
+      # BEFORE the k3d cluster below is created. See .github/actions/apply-node-tunables.
+      - name: Apply node kernel tunables (parity with the NixOS host)
+        uses: ./.github/actions/apply-node-tunables
 
       - name: Confirm k3d is on PATH before anything depends on it
         # Fail HERE with the tool's name rather than inside a bootstrap that
@@ -1544,6 +1565,11 @@ jobs:
       - name: Install bun dependencies
         run: bun install --frozen-lockfile
 
+      # Runner sysctls, set to match the real NixOS host (081M33PQ4MG087G0R002ZKDAVR)
+      # BEFORE the kind cluster below is created. See .github/actions/apply-node-tunables.
+      - name: Apply node kernel tunables (parity with the NixOS host)
+        uses: ./.github/actions/apply-node-tunables
+
       # The same three things full-ai-cluster/nixos/modules/cilium-wireguard-node-preflight.nix
       # checks on a metal node, run here on the runner kernel the kind node
       # containers share. GATING, not advisory: the shipped values ask for
@@ -1698,6 +1724,11 @@ jobs:
 
       - name: Install bun dependencies
         run: bun install --frozen-lockfile
+
+      # Runner sysctls, set to match the real NixOS host (081M33PQ4MG087G0R002ZKDAVR)
+      # BEFORE the kind cluster below is created. See .github/actions/apply-node-tunables.
+      - name: Apply node kernel tunables (parity with the NixOS host)
+        uses: ./.github/actions/apply-node-tunables
 
       - name: Preflight the WireGuard kernel path on the runner
         run: |
@@ -1924,6 +1955,11 @@ jobs:
       - name: Install bun dependencies
         run: bun install --frozen-lockfile
 
+      # Runner sysctls, set to match the real NixOS host (081M33PQ4MG087G0R002ZKDAVR)
+      # BEFORE the kind cluster below is created. See .github/actions/apply-node-tunables.
+      - name: Apply node kernel tunables (parity with the NixOS host)
+        uses: ./.github/actions/apply-node-tunables
+
       # `--ephemeral-vault-init` (2026-08-21). The harness performs
       # vault/TOPOLOGY.md section 5's init+unseal procedure against THIS kind
       # cluster, which the teardown step below destroys unconditionally.
@@ -2022,6 +2058,7 @@ jobs:
             --poll-sec 15 \
             --serve-tree dev \
             --ephemeral-vault-init \
+            --soak-sec 300 \
             | tee "$RUNNER_TEMP/included-proof.log"
 
       # The other half of making the failure loud. Runs even when the proof failed --
@@ -2395,6 +2432,11 @@ jobs:
 
       - name: Install bun dependencies
         run: bun install --frozen-lockfile
+
+      # Runner sysctls, set to match the real NixOS host (081M33PQ4MG087G0R002ZKDAVR)
+      # BEFORE the kind cluster below is created. See .github/actions/apply-node-tunables.
+      - name: Apply node kernel tunables (parity with the NixOS host)
+        uses: ./.github/actions/apply-node-tunables
 
       # RECORD what the runner actually had, rather than asserting it. If a
       # runner image ever does ship /dev/kvm, KubeVirt uses hardware emulation

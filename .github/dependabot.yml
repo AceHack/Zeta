@@ -228,7 +228,14 @@ updates:
       - "/genesis/_src"
       - "/src/Core.TypeScript/*"
       - "/src/Renderers/website"
-      - "/src/apps/twitch-ai"
+      # NOT "/src/apps/twitch-ai". It is a member of the ROOT bun workspace
+      # (`package.json` "workspaces") and its versions are locked in the root
+      # `bun.lock`, so the `bun` entry above already owns it via "/". Listing it
+      # here too made two ecosystems manage one manifest: #17456 bumped its
+      # `package.json` while touching only a stale `package-lock.json`, never
+      # `bun.lock`, and every `bun install --frozen-lockfile` in CI failed -- 50
+      # checks red on a minor-version group. By this entry's own rule above
+      # (npm/pnpm lockfile, or none) it never belonged here.
       - "/tools/setup/persona-keys"
     schedule:
       interval: "weekly"

@@ -64,8 +64,10 @@
 # So `applyDevBootstrapSecrets` now mints `opensearch/opensearch-admin-credentials`
 # per cluster at bring-up (`randomBytes(24).toString("base64url")` -- never
 # logged, never written to the tree, dies with the cluster), and
-# `opensearch/minted-admin-credential-dev` in `rung-overrides.json` points the
-# container at it via `extraEnvs` + `secretKeyRef`. Dev therefore runs the SAME
+# the `extraEnvs` + `secretKeyRef` block below points the container at it. That
+# block began as a dev-only rung override (`opensearch/minted-admin-credential-dev`)
+# and now lives in this manifest for BOTH rungs, so no override for it remains in
+# `rung-overrides.yaml` -- corrected 2026-09-23. Dev therefore runs the SAME
 # security posture as metal, which is the argument for having a dev RUNG rather
 # than a dev FORK.
 #
@@ -210,6 +212,16 @@ spec:
   destination:
     server: https://kubernetes.default.svc
     namespace: opensearch
+  # ServerSideApply DELIBERATELY ABSENT -- same class as cockroachdb/headscale/
+  # hindsight/nats, the spire precedent (spire/Application.yaml). MEASURED
+  # 2026-09-22, chart 3.8.0 with this valuesObject: the
+  # `opensearch-cluster-master` StatefulSet's `volumeClaimTemplates[0]`
+  # (JSON-encoded 4343 bytes) sets only
+  # name/accessModes/storageClassName/resources.requests.storage. Live run
+  # 35713533700 showed exactly this resource OutOfSync while the ConfigMap,
+  # Services and PodDisruptionBudget stayed Synced. Largest resource this chart
+  # renders is this StatefulSet, ~60x under the 262144-byte
+  # last-applied-configuration cap.
   syncPolicy:
     automated: { prune: false, selfHeal: true }
-    syncOptions: [ CreateNamespace=true, ServerSideApply=true ]
+    syncOptions: [ CreateNamespace=true ]

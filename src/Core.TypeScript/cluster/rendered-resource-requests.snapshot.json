@@ -470,9 +470,9 @@
         },
         {
           "appId": "full-ai-cluster/gitlab",
-          "cpuMillis": 2525,
-          "memoryMib": 5733,
-          "pods": 17,
+          "cpuMillis": 2375,
+          "memoryMib": 5605,
+          "pods": 15,
           "workloads": [
             {
               "workload": "Deployment/gitlab-gitlab-exporter",
@@ -497,12 +497,6 @@
               "replicas": 1,
               "cpuMillis": 100,
               "memoryMib": 95
-            },
-            {
-              "workload": "Deployment/gitlab-minio",
-              "replicas": 1,
-              "cpuMillis": 100,
-              "memoryMib": 128
             },
             {
               "workload": "Deployment/gitlab-registry",
@@ -539,12 +533,6 @@
               "replicas": 1,
               "cpuMillis": 250,
               "memoryMib": 200
-            },
-            {
-              "workload": "Job/gitlab-minio-create-buckets-6dd4f99",
-              "replicas": 1,
-              "cpuMillis": 50,
-              "memoryMib": 0
             },
             {
               "workload": "Job/gitlab-shared-secrets-f7cfd97",
@@ -1797,9 +1785,9 @@
         },
         {
           "appId": "full-ai-cluster/gitlab",
-          "cpuMillis": 2525,
-          "memoryMib": 5733,
-          "pods": 17,
+          "cpuMillis": 2375,
+          "memoryMib": 5605,
+          "pods": 15,
           "workloads": [
             {
               "workload": "Deployment/gitlab-gitlab-exporter",
@@ -1824,12 +1812,6 @@
               "replicas": 1,
               "cpuMillis": 100,
               "memoryMib": 95
-            },
-            {
-              "workload": "Deployment/gitlab-minio",
-              "replicas": 1,
-              "cpuMillis": 100,
-              "memoryMib": 128
             },
             {
               "workload": "Deployment/gitlab-registry",
@@ -1866,12 +1848,6 @@
               "replicas": 1,
               "cpuMillis": 250,
               "memoryMib": 200
-            },
-            {
-              "workload": "Job/gitlab-minio-create-buckets-6dd4f99",
-              "replicas": 1,
-              "cpuMillis": 50,
-              "memoryMib": 0
             },
             {
               "workload": "Job/gitlab-shared-secrets-f7cfd97",

@@ -72,6 +72,17 @@ spec:
   destination:
     server: https://kubernetes.default.svc
     namespace: nats
+  # ServerSideApply DELIBERATELY ABSENT -- same class as cockroachdb/headscale/
+  # hindsight, the spire precedent (spire/Application.yaml), and named by
+  # argo-cd#11143 commenter linhng98 as a chart this exact defect hits ("this issue
+  # appear with serverSideApply in any volumeClaimTemplates related helmchart
+  # (harbor, vault, eck, nats, ...)"). MEASURED 2026-09-22, chart 2.14.6 with this
+  # valuesObject: the `nats` StatefulSet's `volumeClaimTemplates[0]`
+  # (JSON-encoded 2778 bytes) sets only
+  # name/accessModes/storageClassName/resources.requests.storage. Live run
+  # 35713533700 showed exactly this resource OutOfSync while nats-box and the
+  # ConfigMap/Services stayed Synced. Largest resource this chart renders is this
+  # StatefulSet, ~94x under the 262144-byte last-applied-configuration cap.
   syncPolicy:
     automated: { prune: false, selfHeal: true }
-    syncOptions: [ CreateNamespace=true, ServerSideApply=true ]
+    syncOptions: [ CreateNamespace=true ]

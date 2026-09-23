@@ -1,0 +1,14 @@
+{
+  "id": "080d064056765010a01300084f34a3e8",
+  "at": "2026-09-22T07:35:46.634Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M340NKP9087G0R000F8YHXQ",
+    "type": "task",
+    "title": "first-boot replica stage 6: serve the dev rung, classify pod convergence, soak",
+    "slug": "first-boot-replica-stage-6-serve-the-dev-rung-classify-pod-c",
+    "priority": "P1",
+    "filename": "081M340NKP9087G0R000F8YHXQ-first-boot-replica-stage-6-serve-the-dev-rung-classify-pod-c.md"
+  }
+}

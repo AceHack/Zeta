@@ -1,5 +1,5 @@
 import { test, expect, describe } from "bun:test";
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import {
   classifyFailedJob,
@@ -252,7 +252,11 @@ describe("guard 4 — the Windows leg can never match", () => {
       name: "build-and-test (windows-2022)",
       conclusion: "failure",
       steps: [
-        { number: 9, name: "Install toolchain via three-way-parity script (Windows; GOVERNANCE §24)", conclusion: "failure" },
+        {
+          number: 9,
+          name: "Install toolchain via three-way-parity script (Windows; GOVERNANCE §24)",
+          conclusion: "failure",
+        },
       ],
     };
     const log = `${APT_BUDGET_EXHAUSTED} 420s apt budget\n##[error]Process completed with exit code 124.`;
@@ -488,7 +492,9 @@ describe("guard 6 — install.ps1's scoop -> winget -> choco chain is a real fal
     // `elseif ($(Have winget))` is the exact shape that made choco unreachable.
     expect(loop).not.toMatch(/elseif\s*\(\$\(Have\s+(scoop|winget|choco)\)\)/);
     for (const source of ["scoop", "winget", "choco"]) {
-      expect(loop).toMatch(new RegExp(`(?<!else)if\\s*\\(\\$\\(Have\\s+${source}\\)\\)\\s*\\{\\s*\\$candidates\\s*\\+=`));
+      expect(loop).toMatch(
+        new RegExp(`(?<!else)if\\s*\\(\\$\\(Have\\s+${source}\\)\\)\\s*\\{\\s*\\$candidates\\s*\\+=`),
+      );
     }
   });
 
@@ -525,33 +531,34 @@ describe("guard 6 — install.ps1's scoop -> winget -> choco chain is a real fal
 //   ##[error]Process completed with exit code 1.
 //
 // Both annotations on the check-run then read `Process completed with exit code
-// 1` and neither named gnupg. print-blame-sequences.ts is exit-0-always by
-// contract, so a non-zero exit there can only ever mean the step ran somewhere
-// it does not belong.
-describe("guard 7 — the blame printer runs only after the TEST step failed", () => {
+// 1` and neither named gnupg.
+//
+// 2026-09-23: that blame printer (print-blame-sequences.ts) is GONE. `dotnet test` now runs
+// in Microsoft.Testing.Platform mode, which writes no VSTest `Sequence_*.xml`, so the printer
+// would have reported "the host did not crash" on every crash. Its replacement is owed in
+// workitem 081M380V792087G0R001PR993V. The general guard below still binds whatever comes
+// back: a failure()-gated reporter that needs `bun` must be scoped to the step it reports on.
+describe("guard 7 — a failure reporter must not be able to fail", () => {
   const gate = readFileSync(GATE_YML_PATH, "utf8");
   const workflow = parseYaml(gate) as {
     jobs: Record<string, { steps?: { name?: string; id?: string; if?: string; run?: string }[] }>;
   };
   const steps = workflow.jobs["build-and-test"]?.steps ?? [];
   const testStep = steps.findIndex((s) => s.name === "Test");
-  const blameStep = steps.findIndex((s) => (s.run ?? "").includes("print-blame-sequences.ts"));
 
-  test("both steps still exist in build-and-test (no vacuous lookup)", () => {
+  test("the Test step still exists in build-and-test (no vacuous lookup)", () => {
     expect(testStep).toBeGreaterThan(-1);
-    expect(blameStep).toBeGreaterThan(testStep);
   });
 
-  test("the Test step keeps the `id` the reporter's condition depends on", () => {
+  test("the Test step keeps the `id` the step-outcome reporter depends on", () => {
     expect(steps[testStep]?.id).toBe("test");
   });
 
-  test("the reporter is gated on that step's OUTCOME, not on bare failure()", () => {
-    const cond = steps[blameStep]?.if ?? "";
-    expect(cond).toContain("steps.test.outcome == 'failure'");
-    // The regression shape: `failure()` with no step-scoped clause fires after ANY
-    // earlier step — including the one that installs the `bun` this step invokes.
-    expect(cond.replace(/steps\.test\.outcome\s*==\s*'failure'/, "").includes("steps.")).toBe(false);
+  test("the VSTest blame printer is not left behind to report a false 'no crash'", () => {
+    // Under MTP there is no Sequence_*.xml to find, so the printer's "nothing found" branch
+    // would fire on EVERY failure, crashes included — a reporter that cannot report.
+    expect(steps.some((s) => (s.run ?? "").includes("print-blame-sequences.ts"))).toBe(false);
+    expect(existsSync(join(import.meta.dir, "print-blame-sequences.ts"))).toBe(false);
   });
 
   // The GENERAL form of the defect, stated once so the class cannot come back under a new name.
@@ -585,12 +592,5 @@ describe("guard 7 — the blame printer runs only after the TEST step failed", (
     // And it must land in the check-run annotations, which is where the useless
     // `Process completed with exit code 1` pair showed up with nothing beside it.
     expect(free?.run ?? "").toContain("::error title=");
-  });
-
-  test("the reporter it guards is genuinely exit-0-always (the contract it relies on)", () => {
-    const printer = readFileSync(join(import.meta.dir, "print-blame-sequences.ts"), "utf8");
-    expect(printer).toContain("Exit 0 always");
-    expect(printer).not.toContain("process.exit(1)");
-    expect(printer).not.toContain("throw new Error");
   });
 });

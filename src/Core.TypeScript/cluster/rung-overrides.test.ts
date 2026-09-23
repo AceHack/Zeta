@@ -8,18 +8,20 @@ import { describe, expect, test } from "bun:test";
 import { mkdtempSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
+import { stringify } from "yaml";
 
 import { applyRungOverrides, loadRungOverrides, type RungOverride } from "./rung-overrides.ts";
 
 const RUNGS = ["dev", "metal"] as const;
+const ROSTER_HEADER = { apiVersion: "cluster.zeta.io/v1", kind: "RungOverrides" };
 
-function fixture(app: string, overrides: unknown): string {
+function fixture(app: string, overrides: unknown, header: Record<string, unknown> = ROSTER_HEADER): string {
   const root = mkdtempSync(join(tmpdir(), "zeta-rung-override-"));
   const dir = join(root, "full-ai-cluster/k8s/applications/demo");
   mkdirSync(dir, { recursive: true });
   writeFileSync(join(dir, "Application.yaml"), app);
   mkdirSync(join(root, "full-ai-cluster/k8s"), { recursive: true });
-  writeFileSync(join(root, "full-ai-cluster/k8s/rung-overrides.json"), JSON.stringify({ overrides }));
+  writeFileSync(join(root, "full-ai-cluster/k8s/rung-overrides.yaml"), stringify({ ...header, overrides }));
   return root;
 }
 
@@ -55,6 +57,13 @@ describe("loadRungOverrides — refusals at load, before anything is written", (
   test("an override that sets nothing and removes nothing is REFUSED", () => {
     const root = fixture(APP, [{ ...BASE, set: {}, remove: [] }]);
     expect(() => loadRungOverrides(RUNGS, root)).toThrow(/sets nothing and removes nothing/);
+  });
+
+  test("a roster with the wrong kind is REFUSED — a stray manifest is not an override roster", () => {
+    const root = fixture(APP, [{ ...BASE, set: { "spec.gpu": false } }], { apiVersion: "v1", kind: "ConfigMap" });
+    expect(() => loadRungOverrides(RUNGS, root)).toThrow(/kind RungOverrides/);
+    const bare = fixture(APP, [{ ...BASE, set: { "spec.gpu": false } }], {});
+    expect(() => loadRungOverrides(RUNGS, bare)).toThrow(/kind RungOverrides/);
   });
 
   test("duplicate ids are REFUSED", () => {

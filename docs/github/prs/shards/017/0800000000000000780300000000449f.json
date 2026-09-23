@@ -1,0 +1,12 @@
+{
+  "pr_number": 17567,
+  "archive_path": "docs/history/pr-reviews/2026/09/23/PR-17567-refactor-cluster-rung-overrides-as-yaml-the-hand-edited-roster-made-readable.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-23T21:24:26.066Z",
+  "schema_version": "v1",
+  "commit_sha": "cb5c8f9f143879ea9905a75c428a4173c0dc4ec4",
+  "title": "refactor(cluster): rung-overrides as YAML, the hand-edited roster made readable",
+  "state": "MERGED",
+  "merged_at": "2026-09-23T21:21:46Z",
+  "head_ref": "shadow/rung-overrides-yaml"
+}

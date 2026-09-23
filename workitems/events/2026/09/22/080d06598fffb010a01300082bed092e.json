@@ -1,0 +1,14 @@
+{
+  "id": "080d06598fffb010a01300082bed092e",
+  "at": "2026-09-22T22:17:26.774Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M35K3ZYD087G0R001JN6544",
+    "type": "bug",
+    "title": "arity-nonequality red on main: strengthen OpenSearch hex-draw regex falsifier",
+    "slug": "arity-nonequality-red-on-main-strengthen-opensearch-hex-draw",
+    "priority": "P2",
+    "filename": "081M35K3ZYD087G0R001JN6544-arity-nonequality-red-on-main-strengthen-opensearch-hex-draw.md"
+  }
+}

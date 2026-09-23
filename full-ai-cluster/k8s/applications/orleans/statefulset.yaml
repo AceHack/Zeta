@@ -75,6 +75,22 @@ spec:
             limits:
               cpu: "2"
               memory: "2Gi"
+          # STARTUP PROBE -- our own manifest, so the coordinate is free: no chart to
+          # dig through, just add the key. Kept liveness's own tcpSocket check but let
+          # the kubelet withhold it until startup succeeds once, instead of widening
+          # liveness's own window.
+          #
+          # WHY: orleans-silo was observed CRASHLOOP(CrashLoopBackOff) in the
+          # 2026-09-22 first-boot-replica run (real k3s roster, artifact
+          # first-boot-replica-report from run 35700790207) -- also ★ known slow
+          # starter (JVM-adjacent .NET cluster membership warmup per the audit tool's
+          # own classification). Silo membership formation (joining the Orleans
+          # cluster via the shared clustering table) can outrun the 60s liveness
+          # window (30 + (3-1)*15) under first-boot pod/image pressure.
+          #
+          # periodSeconds 10, failureThreshold 30 -> startup kill budget
+          # 0+29*10=290s; steady-state liveness (60s) is untouched.
+          startupProbe:   { tcpSocket: { port: silo }, periodSeconds: 10, failureThreshold: 30 }
           livenessProbe:  { tcpSocket: { port: silo }, initialDelaySeconds: 30, periodSeconds: 15 }
           readinessProbe: { tcpSocket: { port: gateway }, initialDelaySeconds: 10, periodSeconds: 5 }
       volumes:

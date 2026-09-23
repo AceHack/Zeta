@@ -1,0 +1,29 @@
+{
+  "pr_number": 17475,
+  "archive_path": "docs/history/pr-reviews/2026/09/22/PR-17475-feat-cluster-verify-every-first-boot-image-actually-pulls-wp4-image-resolvabilit.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7yh2ot",
+    "comment:PRRC_kwDOSF9kNM7yh2p2",
+    "comment:PRRC_kwDOSF9kNM7yh2pG",
+    "comment:PRRC_kwDOSF9kNM7yh2pP",
+    "comment:PRRC_kwDOSF9kNM7yh2pZ",
+    "comment:PRRC_kwDOSF9kNM7yh2pg",
+    "comment:PRRC_kwDOSF9kNM7yh2po",
+    "comment:PRRC_kwDOSF9kNM7yh2pw",
+    "thread:PRRT_kwDOSF9kNM6kno36",
+    "thread:PRRT_kwDOSF9kNM6kno3C",
+    "thread:PRRT_kwDOSF9kNM6kno3V",
+    "thread:PRRT_kwDOSF9kNM6kno3_",
+    "thread:PRRT_kwDOSF9kNM6kno3e",
+    "thread:PRRT_kwDOSF9kNM6kno3m",
+    "thread:PRRT_kwDOSF9kNM6kno3s",
+    "thread:PRRT_kwDOSF9kNM6kno3z"
+  ],
+  "fetched_at": "2026-09-22T07:09:22.205Z",
+  "schema_version": "v1",
+  "commit_sha": "8d3f5af1baf4a7f2a9190323d46e98de68200d65",
+  "title": "feat(cluster): verify every first-boot image actually pulls (WP4 image-resolvability)",
+  "state": "MERGED",
+  "merged_at": "2026-09-22T07:08:37Z",
+  "head_ref": "claude/image-resolvability"
+}

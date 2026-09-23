@@ -1,0 +1,12 @@
+{
+  "pr_number": 17474,
+  "archive_path": "docs/history/pr-reviews/2026/09/22/PR-17474-feat-full-ai-cluster-nixos-node-kernel-tunables-for-the-150-pod-catalog-ci-sysct.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-22T06:40:28.488Z",
+  "schema_version": "v1",
+  "commit_sha": "b48f3c5eb655e4bc718b93c5458ce0b9781a8458",
+  "title": "feat(full-ai-cluster): NixOS node kernel tunables for the ~150-pod catalog + CI sysctl parity",
+  "state": "MERGED",
+  "merged_at": "2026-09-22T06:39:47Z",
+  "head_ref": "claude/node-kernel-tunables"
+}

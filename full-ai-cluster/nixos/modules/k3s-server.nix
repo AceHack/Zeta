@@ -32,6 +32,34 @@
     # module that defines it, or it can only be evaluated inside an aggregate
     # that happens to supply it.
     ./cluster-network.nix
+
+    # WP9 (081M33STPKN087G0R0004B5CAK): the Docker Hub pull-through mirror.
+    # Writes /etc/rancher/k3s/registries.yaml so this node's containerd tries
+    # mirror.gcr.io before burning Docker Hub's 100-pull/6h anonymous quota on
+    # the ~50 docker.io images the bootstrap roster + catalog pull at first
+    # boot. Imported here AND on k3s-agent.nix — every node needs the mirror,
+    # not just the control plane. See the module's own header for the
+    # fallback-safety argument (a mirror miss/outage can never make a pull
+    # fail that would otherwise succeed).
+    ./k3s-registry-mirrors.nix
+
+    # WP20 (081M34R7P99087G0R000H77GX9): drops k3s.service's After=/Wants=
+    # network-online.target (root-cause work for run 35717757526: k3s.service
+    # never reached active in 4201s on the real installed disk) and adds a
+    # bounded ExecStartPre wait for an address in its place. See that
+    # module's header for the full citation, the honest limit on what a VM
+    # negative control could and could not validate, and why the drop and the
+    # bounded wait are both needed. Imported here AND on k3s-agent.nix --
+    # nixpkgs names the unit "k3s" on both roles.
+    ./k3s-wait-for-address.nix
+
+    # Defines `zeta.k3sServer.etcdPeers` — the OPT-IN, source-scoped admission
+    # of etcd 2379/2380 that multi-server HA needs and that the firewall comment
+    # below has prescribed since it was written. Default empty: this host's
+    # firewall is unchanged unless a host names its peers. Also refuses, at
+    # evaluation, a JOINING server that nothing admits etcd traffic to
+    # (081M10ZG61D087G0R001A70F0P). See the module header for the decision.
+    ./k3s-etcd-peers.nix
   ];
 
   services.k3s = {
@@ -106,6 +134,42 @@
       # node-09485d (2026-06-07). Keep exactly one default.
       "--disable=local-storage"
 
+      # Pod-count ceiling — kubelet's `--max-pods` default is 110, and it is a
+      # COUNT limit independent of the CPU/memory budget work in
+      # `full-ai-cluster/k8s/storage-profiles.json`: shrinking every request in
+      # the tree would not schedule one more pod once the count ceiling is hit.
+      #
+      # MEASURED, NOT GUESSED. `src/Core.TypeScript/cluster/rendered-resource-requests.snapshot.json`
+      # renders 147 pods across the 49 Applications the metal root
+      # (`bootstrap/root-application.yaml`) applies. The steady-state floor —
+      # what a fresh single-node sync actually leaves Running/Pending, not the
+      # render's raw total — is measured in
+      # `src/Core.TypeScript/cluster/single-node-readiness.ts`'s `findPodBudget`:
+      # subtract the four manual-sync Applications (cdi, kubevirt, ollama, vllm —
+      # `manual-sync-policy.ts`; never auto-applied) and every Job/CronJob pod
+      # (terminal — the kubelet's max-pods admission counts only non-terminal
+      # pods), add the k3s-bundled coredns + metrics-server + this file's own
+      # local-path-provisioner (none of which any Application renders). That
+      # floor is ~124 today, already inside the default 110 ceiling's failure
+      # zone, and it only grows as Applications are added.
+      #
+      # 220 clears the default 110 by 2x and the measured ~124 by ~77%, while
+      # staying under the 254 usable addresses Cilium's cluster-pool IPAM hands
+      # this single node at the chart's default `clusterPoolIPv4MaskSize: 24`
+      # (`k8s/applications/cilium/Application.yaml` / `k8s/bootstrap/cilium-install.yaml`,
+      # both now set that key explicitly since this budget relies on it) — a
+      # pod ceiling above the node's own address block would be a limit the
+      # network could never actually let a pod reach. Not 250: that would leave
+      # only 4 addresses of slack against the /24, which the node's own
+      # cilium_host router IP and any hostNetwork pod already eats into.
+      #
+      # SET ON BOTH SERVER AND AGENT (`k3s-agent.nix` carries the identical
+      # flag) — `--kubelet-arg` configures the LOCAL kubelet, so a control
+      # plane that also schedules pods and a worker both need it; it is not one
+      # of the networking flags k3s-agent.nix's own comment says are
+      # server-only.
+      "--kubelet-arg=max-pods=220"
+
       # Cluster CIDRs — DERIVED from the cluster's identity, not hardcoded.
       #
       # These used to read `10.42.0.0/16` / `10.43.0.0/16` as literals, which
@@ -148,9 +212,10 @@
     #
     #      aa-gateway-api-crds -> argocd-install -> argocd-namespace ->
     #      cert-manager-install -> cilium-install -> cilium-namespace ->
-    #      external-secrets-install -> local-path-provisioner (from
-    #      local-storage.nix) -> openziti-namespace -> root-application ->
-    #      spire-install -> trust-manager-install
+    #      external-secrets-install -> internal-secret-seeding ->
+    #      local-path-provisioner (from local-storage.nix) ->
+    #      openziti-namespace -> root-application -> spire-install ->
+    #      trust-manager-install
     #
     # 3. SUBMISSION ORDER IS NOT DEPENDENCY ORDER, and no renaming can make it
     #    one. The deploy controller submits all eleven files within seconds of
@@ -186,6 +251,17 @@
     #      nixos/tests/k3s-first-boot-roster.nix is the VM test that decides
     #      it, with three named verdicts instead of a timeout. UNRUN as of
     #      2026-08-21: it needs a KVM host, internet, and ~45-70 min.
+    #
+    #      CORROBORATING MEASUREMENT (2026-09-22, WP1,
+    #      src/Core.TypeScript/cluster/first-boot-replica.ts): a Docker
+    #      container configured to match this file's extraFlags + roster
+    #      (not the NixOS VM test above, which is still unrun) measured
+    #      VERDICT A -- ROOT_LANDED. applications.argoproj.io/zeta-root
+    #      appeared once the ArgoCD chart's Job completed and the CRD existed;
+    #      the deploy controller retried the earlier unknown-kind apply and
+    #      self-healed. Recorded as corroborating evidence, not a replacement
+    #      for the VM test this comment names -- see workitem
+    #      081M33QTNVD087G0R002632YDV.
     #
     # The DEPENDENCY INTENT below (per Aaron 2026-05-25) is retained because
     # it is the design, but note it is expressed in ArgoCD sync waves and in
@@ -246,6 +322,17 @@
       trust-manager-install.source = ../../k8s/bootstrap/trust-manager-install.yaml;
       # External Secrets Operator (operator + CRDs; no store wired yet).
       external-secrets-install.source = ../../k8s/bootstrap/external-secrets-install.yaml;
+      # INTERNAL secret seeding (WP14, 081M343EEP8087G0R000BAF6QF) -- mints
+      # grafana-admin-credentials / ziti-admin-credentials /
+      # opensearch-admin-credentials / forgejo-initial-admin / zeta-blob-store /
+      # redis-auth ONLY IF ABSENT, so the catalog Applications that name these
+      # Secrets by reference never hit CreateContainerConfigError on a fresh
+      # metal/USB install. Self-contained (creates its own namespaces, including
+      # a redundant `openziti` -- this file sorts BEFORE openziti-namespace.yaml
+      # lexically, see internal-secret-seeding.yaml's own header). Sorts before
+      # ArgoCD exists, which is the point: every consuming Application finds its
+      # Secret already in place at sync time.
+      internal-secret-seeding.source = ../../k8s/bootstrap/internal-secret-seeding.yaml;
       # ArgoCD (reconciler for everything else).
       argocd-namespace.source = ../../k8s/bootstrap/argocd-namespace.yaml;
       argocd-install.source = ../../k8s/bootstrap/argocd-install.yaml;
@@ -327,13 +414,15 @@
       4244    # Hubble server
       4245    # Hubble Relay
       8472    # legacy flannel/VXLAN (kept for safety)
-      # etcd ports 2379/2380 intentionally NOT in this list.
-      # K3S embedded etcd binds 127.0.0.1 by default. Opening
-      # those ports at the host firewall would risk exposing etcd
-      # to the LAN if the bind address ever drifts. For multi-
-      # server HA, add 2379/2380 to a host-specific override that
-      # ALSO scopes them with `interfacesIn`/source-IP filtering to
-      # the other control-plane nodes only.
+      # etcd ports 2379/2380 intentionally NOT in this list: a flat
+      # allowedTCPPorts entry would admit them from every address that
+      # can reach the NIC. (Correction: embedded etcd does NOT bind only
+      # 127.0.0.1 — once it has a node IP it listens on <node-ip>:2379
+      # and :2380 too, which is how run 33035015161 saw the refusal
+      # land in THIS firewall. The firewall is the guard, not the bind.)
+      # For multi-server HA set `zeta.k3sServer.etcdPeers` (see
+      # ./k3s-etcd-peers.nix): it admits both ports from the named
+      # control-plane peers ONLY. Default empty = closed, as before.
     ];
     allowedUDPPorts = [
       8472    # VXLAN (Cilium can also run native-routing)
@@ -384,4 +473,8 @@
   # `lib.mkDefault` so a host can switch it off.
   zeta.k3sJoinIntentPreflight.enable = lib.mkDefault true;
   zeta.k3sJoinIntentPreflight.role = lib.mkDefault "server";
+
+  # WP20 root-cause fix: see ./k3s-wait-for-address.nix (imported above) for
+  # the systemd.services.k3s.after/wants override, the ExecStartPre bounded
+  # address wait, and the full citation + honest limits on validation.
 }

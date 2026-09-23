@@ -1,0 +1,12 @@
+{
+  "pr_number": 17537,
+  "archive_path": "docs/history/pr-reviews/2026/09/22/PR-17537-chore-workitems-close-081m34qts06087g0r0015d7x5w-opensearch-crash-loop-fixed-by-.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-22T20:08:12.115Z",
+  "schema_version": "v1",
+  "commit_sha": "ec23fca40188451d824342c1cc67b2d2a973a587",
+  "title": "chore(workitems): close 081M34QTS06087G0R0015D7X5W (opensearch crash-loop, fixed by #17534)",
+  "state": "MERGED",
+  "merged_at": "2026-09-22T20:07:22Z",
+  "head_ref": "wp19c-workitem-close-081M34QTS06087G0R0015D7X5W"
+}

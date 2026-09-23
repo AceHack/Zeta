@@ -45,7 +45,7 @@
 // reports "this StatefulSet's redundancy is nominal, not real on N nodes".
 // Whether that is acceptable for a PoC is the ledger's (human's) call.
 
-import { readFileSync, readdirSync, existsSync, statSync } from "node:fs";
+import { readFileSync, readdirSync, existsSync, statSync, type Dirent } from "node:fs";
 import { clusterDirs } from "./declared-cluster-trees.ts";
 import { join, relative, resolve, sep } from "node:path";
 import { parseAllDocuments } from "yaml";
@@ -77,6 +77,12 @@ import {
   type ResourceCatalogue,
 } from "./storage-profiles.ts";
 import { clusterDefaultStorageClass } from "./cluster-default-storage-class.ts";
+import { classifySyncPolicy } from "./manual-sync-policy.ts";
+import {
+  DEFAULT_SNAPSHOT_PATH as DEFAULT_RESOURCE_REQUESTS_SNAPSHOT_PATH,
+  loadSnapshot as loadResourceRequestsSnapshot,
+  type AppMeasurement,
+} from "./rendered-resource-requests.ts";
 
 const REPO_ROOT = resolve(import.meta.dir, "../../..");
 
@@ -125,6 +131,7 @@ export interface Finding {
     | "false-redundancy"
     | "capacity-provenance"
     | "compute-provenance"
+    | "pod-budget"
     | "rung-coverage"
     | "storage-profile"
     | "resource-profile"
@@ -226,6 +233,18 @@ export interface Ledger {
    * inherited. Deleting the entry is the fix, and the fix is a maintainer call.
    */
   readonly acknowledgedRungBudgetGap: readonly string[];
+  /**
+   * Pod-COUNT shortfalls against the kubelet's configured `--max-pods` ceiling,
+   * recorded as `<declared>pods@<nodeCount>node(s)>><budget>pods@<hostname-or-"unset">`.
+   *
+   * Same shape as `acknowledgedComputeShortfall` and for the same reason: both
+   * numbers are in the key so any later growth in the steady-state pod count —
+   * or a lowered `max-pods` — re-reddens instead of being silently absorbed.
+   * Defaulted to EMPTY (not refused) in `readLedger`, same as
+   * `acknowledgedComputeShortfall`: an absent key can only make this check
+   * louder, never quieter.
+   */
+  readonly acknowledgedPodBudgetShortfall: readonly string[];
 }
 
 // ---------------------------------------------------------------------------
@@ -1277,6 +1296,325 @@ export function findResourceProfileDrift(
 }
 
 // ---------------------------------------------------------------------------
+// POD BUDGET — does the steady-state pod COUNT fit the kubelet's --max-pods?
+//
+// THE DEFECT THIS CLOSES
+// -----------------------
+// Every check above this one prices CPU and memory. Nothing priced the number
+// of pods, and the kubelet enforces that as a THIRD, independent ceiling:
+// `--max-pods` (default 110) admits or refuses a pod purely on COUNT, before
+// its requests are ever weighed against allocatable CPU/memory. A node can
+// have gigabytes and cores to spare and still refuse the 111th pod with
+// `0/1 nodes are available: 1 Too many pods` — exactly the failure the CI
+// kind/k3d dev-cluster profiles already raise `maxPods: 250` to dodge
+// (`full-ai-cluster/dev-cluster/profiles/ci.kind-config.yaml`,
+// `ci.cilium.kind-config.yaml`). Nothing in `k3s-server.nix` / `k3s-agent.nix`
+// ever set the equivalent kubelet flag for the hardware install this ladder is
+// FOR, so a fresh single-node metal boot had no static check standing between
+// it and the same wall — the tail of the sync waves would sit Pending forever,
+// and nothing above would have gone red.
+//
+// THE ARITHMETIC, against the render's OWN pod counts
+// -----------------------------------------------------
+// `rendered-resource-requests.snapshot.json` (the same measured render
+// `findComputeProvenance` prices) carries a `pods` count and a per-workload
+// breakdown for every Application. This check derives the STEADY-STATE floor
+// from it rather than trusting the raw total, because the raw total overcounts
+// in two ways and the render cannot see two more:
+//
+//   SUBTRACT declared manual-sync Applications (`manual-sync-policy.ts`) —
+//     cdi, kubevirt, ollama, vllm as of this writing. Nothing in this lane ever
+//     syncs them (see that module's header), so their rendered pods never
+//     exist on a fresh boot. Derived from each Application's own annotation,
+//     never a hardcoded list — an app leaving or joining that set moves this
+//     total with no edit here.
+//   SUBTRACT Job/CronJob pods. The kubelet's max-pods admission counts only
+//     NON-TERMINAL pods (Running/Pending); a Job's pod moves to Succeeded and
+//     stops counting. Counting it as steady-state load would overstate by
+//     every migration/init/admission Job the tree runs (23 of them today).
+//   ADD the k3s-bundled `coredns` + `metrics-server` (not disabled by any
+//     `--disable=` flag in `k3s-server.nix` — grep confirms `servicelb`,
+//     `traefik` and `local-storage` are the only three) plus THIS repo's own
+//     `local-path-provisioner` re-declaration (`local-storage.nix`, read
+//     directly off its committed Deployment rather than assumed). None of
+//     these renders from any Application, so the render structurally cannot
+//     see them — same shape as the storage ladder's "chart-default PVC" gap.
+//
+// Measured 2026-09-22: 147 rendered − 23 Job/CronJob − 3 manual-sync (cdi 1,
+// kubevirt 2; ollama/vllm already render 0) + 3 kube-system baseline = 124.
+// `KUBE_SYSTEM_ADDON_PODS` (coredns + metrics-server) is a NAMED ASSUMPTION,
+// not a measurement — like `OS_ROOT_ALLOWANCE_GIB` above, it is not something
+// any checked-in manifest states, because k3s vendors those charts internally.
+//
+// CONVICTS, NEVER ACQUITS — same discipline as `findComputeProvenance`. The
+// floor above undercounts anything neither the render nor the two named
+// constants can see (a future BestEffort DaemonSet, an operator-created pod),
+// so staying under budget here proves nothing on its own; exceeding it is a
+// real count against a real kubelet ceiling.
+// ---------------------------------------------------------------------------
+
+export const K3S_SERVER_NIX_PATH = "full-ai-cluster/nixos/modules/k3s-server.nix";
+export const K3S_AGENT_NIX_PATH = "full-ai-cluster/nixos/modules/k3s-agent.nix";
+export const LOCAL_STORAGE_NIX_PATH = "full-ai-cluster/nixos/modules/local-storage.nix";
+
+const MAX_PODS_FLAG = /--kubelet-arg=max-pods=(\d+)/;
+
+/** `--kubelet-arg=max-pods=N` -> N, or `null` when the flag is absent or malformed. */
+export function readMaxPodsFlag(text: string): number | null {
+  const match = MAX_PODS_FLAG.exec(text);
+  if (match === null) return null;
+  const n = Number(match[1]);
+  return Number.isInteger(n) && n > 0 ? n : null;
+}
+
+/** The kubelet `max-pods` flag as configured on each role, or `null` per role when absent/unreadable. */
+export interface MaxPodsConfig {
+  readonly server: number | null;
+  readonly agent: number | null;
+}
+
+export function readConfiguredMaxPods(repoRoot = REPO_ROOT): MaxPodsConfig {
+  const serverText = readIfPresent(resolve(repoRoot, K3S_SERVER_NIX_PATH));
+  const agentText = readIfPresent(resolve(repoRoot, K3S_AGENT_NIX_PATH));
+  return {
+    server: serverText === null ? null : readMaxPodsFlag(serverText),
+    agent: agentText === null ? null : readMaxPodsFlag(agentText),
+  };
+}
+
+/**
+ * `replicas: N` on the `local-path-provisioner` Deployment inside
+ * `local-storage.nix`'s embedded manifest — READ, not assumed, because it is a
+ * committed manifest and a hand-typed number here could drift from it.
+ * `null` when the file or the field cannot be found (the caller then falls
+ * back to the chart's own single-replica shape, documented at the call site).
+ */
+export function readLocalPathProvisionerReplicas(repoRoot = REPO_ROOT): number | null {
+  const text = readIfPresent(resolve(repoRoot, LOCAL_STORAGE_NIX_PATH));
+  if (text === null) return null;
+  const nameIndex = text.indexOf("name: local-path-provisioner");
+  if (nameIndex < 0) return null;
+  const after = text.slice(nameIndex);
+  const match = /replicas:\s*(\d+)/.exec(after);
+  if (match === null) return null;
+  const n = Number(match[1]);
+  return Number.isInteger(n) && n >= 0 ? n : null;
+}
+
+/**
+ * `coredns` + `metrics-server` — k3s's own bundled addons. NEITHER is disabled
+ * by any `--disable=` flag in `k3s-server.nix` (only `servicelb`, `traefik`
+ * and `local-storage` are), and neither renders from any Application this
+ * repo declares, so the rendered-resource-requests snapshot structurally
+ * cannot see them. A NAMED ASSUMPTION (one pod each, k3s's chart defaults),
+ * not a measurement — no manifest for either is checked in here to read a
+ * true count off. Kept as a constant so it is one number to argue with rather
+ * than a literal buried in the arithmetic, same discipline as
+ * `OS_ROOT_ALLOWANCE_GIB` above.
+ */
+export const KUBE_SYSTEM_ADDON_PODS = 2;
+
+export interface PodBudget {
+  /** Steady-state non-terminal pod count this check derived. */
+  readonly pods: number;
+  /** Rendered total before any subtraction — the render's raw `pods` sum. */
+  readonly renderedTotal: number;
+  readonly jobAndCronJobPods: number;
+  readonly manualSyncPods: number;
+  readonly kubeSystemBaselinePods: number;
+  readonly localPathProvisionerReplicas: number;
+}
+
+/**
+ * Every auto-synced Application's tree-qualified id whose own manifest
+ * declares `zeta.io/sync-policy: manual` — derived by re-classifying each
+ * `applications/*\/Application.yaml` with `manual-sync-policy.ts`'s own
+ * `classifySyncPolicy`, never a hardcoded roster. An app leaving or joining
+ * that set moves this check with no edit here, same discipline
+ * `manual-sync-policy.ts` itself documents.
+ */
+export function manualSyncAppIds(repoRoot = REPO_ROOT): ReadonlySet<string> {
+  const appsDir = resolve(repoRoot, "full-ai-cluster/k8s/applications");
+  const out = new Set<string>();
+  // ATTEMPT the read; do not `existsSync` first — the check-then-use pair is a
+  // TOCTOU window (`lint-check-then-use-file-races.ts`): the directory can be
+  // created, removed or replaced between the check and the use, so the
+  // answer the check returned is already stale. One syscall, one answer — a
+  // miss IS the ENOENT. Same discipline `readIfPresent` above applies to files.
+  let entries: readonly Dirent[];
+  try {
+    entries = readdirSync(appsDir, { withFileTypes: true });
+  } catch (error) {
+    if ((error as NodeJS.ErrnoException).code === "ENOENT") return out;
+    throw error;
+  }
+  for (const entry of entries) {
+    if (!entry.isDirectory()) continue;
+    const manifestText = readIfPresent(join(appsDir, entry.name, "Application.yaml"));
+    if (manifestText === null) continue;
+    const declaration = classifySyncPolicy(manifestText);
+    if (declaration.kind === "manual") out.add(`full-ai-cluster/${entry.name}`);
+  }
+  return out;
+}
+
+/** Sum of an app's Job/CronJob workload replicas — terminal, excluded from the steady-state floor. */
+function jobAndCronJobPods(app: AppMeasurement): number {
+  let total = 0;
+  for (const workload of app.workloads) {
+    const kind = workload.workload.split("/")[0] ?? "";
+    if (kind === "Job" || kind === "CronJob") total += workload.replicas;
+  }
+  return total;
+}
+
+/** The steady-state pod-count floor for `profile`, or `null` when the snapshot has no such rung. */
+export function computePodBudget(
+  apps: readonly AppMeasurement[],
+  manualIds: ReadonlySet<string>,
+  localPathReplicas: number | null,
+): PodBudget {
+  let renderedTotal = 0;
+  let jobPods = 0;
+  let manualPods = 0;
+  for (const app of apps) {
+    renderedTotal += app.pods;
+    jobPods += jobAndCronJobPods(app);
+    if (manualIds.has(app.appId)) manualPods += app.pods;
+  }
+  // Fall back to the chart's own single-replica shape when the manifest cannot
+  // be read — UNDER-counting the baseline would be the acquitting direction,
+  // so 1 (not 0) is the honest fallback for a Deployment this repo declares
+  // with `replicas: 1` today.
+  const localPath = localPathReplicas ?? 1;
+  const kubeSystemBaselinePods = KUBE_SYSTEM_ADDON_PODS + localPath;
+  return {
+    pods: renderedTotal - jobPods - manualPods + kubeSystemBaselinePods,
+    renderedTotal,
+    jobAndCronJobPods: jobPods,
+    manualSyncPods: manualPods,
+    kubeSystemBaselinePods,
+    localPathProvisionerReplicas: localPath,
+  };
+}
+
+export function podBudgetShortfallKey(pods: number, nodeCount: number, maxPods: number | null, host: string): string {
+  const budget = maxPods === null ? "unset" : String(maxPods);
+  return `${String(pods)}pods@${String(nodeCount)}node(s)>>${budget}pods@${host}`;
+}
+
+export function findPodBudget(
+  ledger: Ledger,
+  repoRoot = REPO_ROOT,
+  snapshotPath = DEFAULT_RESOURCE_REQUESTS_SNAPSHOT_PATH,
+): readonly Finding[] {
+  const snapshot = loadResourceRequestsSnapshot(snapshotPath, repoRoot);
+  if (snapshot === null) {
+    return [
+      {
+        check: "pod-budget",
+        severity: "blocker",
+        message:
+          `Pod count UNVERIFIED: no snapshot at ${snapshotPath}. Run ` +
+          `\`bun src/Core.TypeScript/cluster/rendered-resource-requests.ts --measure\` first — a pod-count ` +
+          `budget with no render to read is not a check.`,
+        detail: ["this finding is NOT acknowledgeable — an absent comparator is not debt, it is an absent check"],
+      },
+    ];
+  }
+  const profileMeasurement = snapshot.profiles.find((profile) => profile.profile === ledger.activeResourceProfile);
+  if (profileMeasurement === undefined) {
+    return [
+      {
+        check: "pod-budget",
+        severity: "blocker",
+        message:
+          `Pod count UNVERIFIED: ${snapshotPath} carries no "${ledger.activeResourceProfile}" rung. Known: ` +
+          `${snapshot.profiles.map((profile) => profile.profile).join(", ")}.`,
+        detail: ["this finding is NOT acknowledgeable — an absent comparator is not debt, it is an absent check"],
+      },
+    ];
+  }
+
+  const budget = computePodBudget(
+    profileMeasurement.apps,
+    manualSyncAppIds(repoRoot),
+    readLocalPathProvisionerReplicas(repoRoot),
+  );
+  const maxPods = readConfiguredMaxPods(repoRoot);
+  // The SERVER's flag is the comparator: on a single-node PoC the control
+  // plane is also the only kubelet scheduling pods. `agent` is checked
+  // separately below so a worker joining with a lower ceiling is not silent.
+  const configured = maxPods.server;
+  const findings: Finding[] = [];
+
+  if (configured === null) {
+    findings.push({
+      check: "pod-budget",
+      severity: "blocker",
+      message:
+        `Pod count UNVERIFIED: ${K3S_SERVER_NIX_PATH} sets no \`--kubelet-arg=max-pods=N\`, so the node runs the ` +
+        `kubelet default of 110 — below the measured steady-state floor of ${String(budget.pods)} pods ` +
+        `(${String(budget.renderedTotal)} rendered − ${String(budget.jobAndCronJobPods)} Job/CronJob − ` +
+        `${String(budget.manualSyncPods)} manual-sync + ${String(budget.kubeSystemBaselinePods)} kube-system ` +
+        `baseline). The tail of the sync waves would sit Pending with "Too many pods" and no check above this ` +
+        `one would go red.`,
+      detail: ["this finding is NOT acknowledgeable — an absent comparator is not debt, it is an absent check"],
+    });
+    return findings;
+  }
+
+  const totalBudget = configured * ledger.nodeCount;
+  if (budget.pods > totalBudget) {
+    const key = podBudgetShortfallKey(budget.pods, ledger.nodeCount, configured, K3S_SERVER_NIX_PATH);
+    if (!ledger.acknowledgedPodBudgetShortfall.includes(key)) {
+      findings.push({
+        check: "pod-budget",
+        severity: "blocker",
+        message:
+          `Steady-state pod count ${String(budget.pods)} exceeds the configured kubelet ceiling of ` +
+          `${String(configured)} x ${String(ledger.nodeCount)} node(s) = ${String(totalBudget)} by ` +
+          `${String(budget.pods - totalBudget)}. Pods past the line take "0/1 nodes are available: 1 Too many ` +
+          `pods" and stay Pending forever — a count limit, not a resource one; no amount of CPU/memory headroom ` +
+          `fixes it. Raise \`--kubelet-arg=max-pods\` on both k3s-server.nix and k3s-agent.nix, trim the ` +
+          `catalogue, or record the shortfall as debt.`,
+        detail: [
+          `rendered: ${String(budget.renderedTotal)} pods across ${String(profileMeasurement.apps.length)} Applications`,
+          `− Job/CronJob (terminal, excluded from max-pods admission): ${String(budget.jobAndCronJobPods)}`,
+          `− manual-sync Applications (never auto-applied): ${String(budget.manualSyncPods)}`,
+          `+ kube-system baseline (coredns + metrics-server + local-path-provisioner): ${String(budget.kubeSystemBaselinePods)}`,
+          `= ${String(budget.pods)} steady-state pods`,
+          `acknowledge with: ${key}`,
+        ],
+      });
+    }
+  }
+
+  if (maxPods.agent !== null && maxPods.agent !== configured) {
+    findings.push({
+      check: "pod-budget",
+      severity: "blocker",
+      message:
+        `${K3S_SERVER_NIX_PATH} sets max-pods=${String(configured)} and ${K3S_AGENT_NIX_PATH} sets ` +
+        `max-pods=${String(maxPods.agent)} — a worker joining with a different ceiling than the control plane ` +
+        `is a disagreement nobody stated. Set the same value on both.`,
+      detail: [],
+    });
+  } else if (maxPods.agent === null) {
+    findings.push({
+      check: "pod-budget",
+      severity: "blocker",
+      message:
+        `${K3S_AGENT_NIX_PATH} sets no \`--kubelet-arg=max-pods=N\`. A worker that joins runs the kubelet ` +
+        `default of 110 while the control plane runs ${String(configured)} — set the same flag on both roles.`,
+      detail: ["this finding is NOT acknowledgeable — an absent comparator is not debt, it is an absent check"],
+    });
+  }
+
+  return findings;
+}
+
+// ---------------------------------------------------------------------------
 // RUNG COVERAGE — is the rung CI budgets the rung the tree carries?
 //
 // THE DEFECT THIS CLOSES, measured 2026-08-22:
@@ -1838,6 +2176,13 @@ export function auditAll(
     ...findLedgerFigureDrift(ledger, storageClaims, catalogue, ledgerPath, repoRoot),
     ...findResourceProfileDrift(ledger, resources, repoRoot),
     ...findComputeProvenance(ledger, measuredNodes, resources, repoRoot),
+    // Gated on `resources`, same as findComputeProvenance/findRungCoverage just
+    // above: a caller that supplied no resource catalogue (every synthetic-tree
+    // test in this file) has not wired the compute half of the audit at all, and
+    // pod budget is that same rung concept — a real repoRoot with no resources
+    // catalogue would itself be malformed, which `main()` already refuses via
+    // `loadResourceCatalogue` before `auditAll` is ever reached.
+    ...(resources === null ? [] : findPodBudget(ledger, repoRoot)),
     ...findRungCoverage(ledger, resources, repoRoot),
   ];
   return {
@@ -1901,6 +2246,7 @@ export function readLedger(path: string, repoRoot = REPO_ROOT): Ledger {
     // reading. A missing key can only make these checks louder, never quieter.
     acknowledgedComputeShortfall: parsed.acknowledgedComputeShortfall ?? [],
     acknowledgedRungBudgetGap: parsed.acknowledgedRungBudgetGap ?? [],
+    acknowledgedPodBudgetShortfall: parsed.acknowledgedPodBudgetShortfall ?? [],
   };
 }
 
@@ -1963,6 +2309,33 @@ function printComputeSection(
   );
 }
 
+/** The pod-count half of the report — printed on EVERY run, same reasoning as `printComputeSection`. */
+function printPodBudgetSection(ledger: Ledger, repoRoot = REPO_ROOT): void {
+  console.log("\nPod count — the kubelet's --max-pods ceiling is a COUNT limit, independent of CPU/memory:");
+  const snapshot = loadResourceRequestsSnapshot(DEFAULT_RESOURCE_REQUESTS_SNAPSHOT_PATH, repoRoot);
+  const profileMeasurement = snapshot?.profiles.find((profile) => profile.profile === ledger.activeResourceProfile);
+  if (snapshot === null || profileMeasurement === undefined) {
+    console.log(`  UNVERIFIED — see findings (no "${ledger.activeResourceProfile}" rung in the snapshot)`);
+    return;
+  }
+  const budget = computePodBudget(
+    profileMeasurement.apps,
+    manualSyncAppIds(repoRoot),
+    readLocalPathProvisionerReplicas(repoRoot),
+  );
+  console.log(
+    `  ${String(budget.renderedTotal)} rendered − ${String(budget.jobAndCronJobPods)} Job/CronJob − ` +
+      `${String(budget.manualSyncPods)} manual-sync + ${String(budget.kubeSystemBaselinePods)} kube-system ` +
+      `baseline = ${String(budget.pods)} steady-state pods`,
+  );
+  const maxPods = readConfiguredMaxPods(repoRoot);
+  const configuredLabel = maxPods.server === null ? "UNSET (kubelet default 110)" : String(maxPods.server);
+  console.log(
+    `  configured: server=${configuredLabel} agent=${maxPods.agent === null ? "UNSET" : String(maxPods.agent)} ` +
+      `x ${String(ledger.nodeCount)} node(s)`,
+  );
+}
+
 function main(argv: readonly string[]): void {
   if (argv.includes("-h") || argv.includes("--help")) {
     console.error(
@@ -2022,6 +2395,7 @@ function main(argv: readonly string[]): void {
         `storage profile=${profile}, resource rung=${ledger.activeResourceProfile}`,
     );
     printComputeSection(ledger, report.measuredNodes, resources);
+    printPodBudgetSection(ledger, REPO_ROOT);
     console.log("\nStorage profile ladder (declared = size x pods over every longhorn claim):");
     for (const name of catalogue.profiles) {
       const declared = profileTotalGib(catalogue, name);

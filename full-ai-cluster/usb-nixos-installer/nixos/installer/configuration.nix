@@ -4,7 +4,7 @@
 # needed to boot a target machine and run `nixos-install --flake`
 # against a host config from this repo.
 
-{ config, pkgs, lib, modulesPath, ... }:
+{ config, pkgs, lib, modulesPath, self, ... }:
 
 {
   imports = [
@@ -345,6 +345,42 @@
     HOST=control-plane
     REPO_URL=https://github.com/Lucent-Financial-Group/Zeta
     ETHERNET_WAIT_SECS=30
+  '';
+
+  # ── WP21 (081M35C7NJR087G0R002S4R654): install-time repo-pin provenance ──
+  #
+  # zeta-install.sh used to `git clone $REPO_URL` with NO ref, so the
+  # installed system was always built from the remote's DEFAULT BRANCH HEAD
+  # at INSTALL time, never the commit this ISO was actually built (and
+  # tested) from. Two consequences: a PR's NixOS-module changes could never
+  # be exercised by the real install path before merge, and a USB flashed on
+  # day X installs whatever main is on day Y.
+  #
+  # `self.rev` is a standard flake attribute (see NixOS's own
+  # `system.nixos.revision = self.rev or self.dirtyRev or "unknown"`
+  # convention) — the exact commit `nix build .#installer-iso` evaluated
+  # from, with NO impure env lookup and NO extra build input. It is only
+  # absent when the flake was evaluated from a DIRTY git tree (uncommitted
+  # changes) — i.e. a hand-built ISO from a local checkout — in which case
+  # `self ? rev` is false and this ships "unknown", which zeta-install.sh's
+  # repo-pin block treats exactly like no pin at all (today's behaviour,
+  # unchanged).
+  #
+  # `zeta-first-boot.sh` sources this file the same way it sources
+  # `/etc/zeta-firstboot.conf` above (see :45-60), and an ESP-written
+  # `/zeta-repo-pin` (same "ESP overrides ISO" shape as the role conf) can
+  # override ZETA_ISO_COMMIT without rebuilding the ISO — the path
+  # src/Core.TypeScript/ci/qemu-full-install-test.ts uses to prove a PR's own
+  # commit is what actually gets installed. `zeta-install.sh`'s
+  # ZETA-REPO-PIN block (and its TypeScript oracle,
+  # src/Core.TypeScript/installer/repo-pin.ts) do the validation +
+  # fail-closed/override decision.
+  environment.etc."zeta-iso-provenance".text = ''
+    # zeta-iso-provenance — baked into the ISO by full-ai-cluster/flake.nix
+    # at `nix build .#installer-iso` time. Sourced as bash by
+    # zeta-first-boot.sh, in preference order BELOW an ESP-written
+    # /zeta-repo-pin override.
+    ZETA_ISO_COMMIT=${self.rev or "unknown"}
   '';
 
   # Marker file: presence enables the first-boot service. Absent on the

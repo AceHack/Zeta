@@ -15,6 +15,7 @@ import {
   buildDevAdminSecretManifest,
   buildDevSharedSecretManifest,
   buildDevRegistryPullSecretManifest,
+  composeOpenSearchAdminPassword,
   DEV_BOOTSTRAP_SECRETS,
   DEV_SHARED_SECRETS,
   DEV_CILIUM_LB_KIND_CRDS,
@@ -24,6 +25,7 @@ import {
   resolveRegistryToken,
   REPO_ROOT,
 } from "./lib.ts";
+import type { DevBootstrapSecretSpec } from "./lib.ts";
 import { CHART_ROTATION_CONSTRAINTS } from "../chart-rotation-conformance.ts";
 import { SERVED_GIT_REF } from "../lane-tree-source.ts";
 
@@ -191,9 +193,35 @@ export function applyDevBootstrapSecrets(ports: DevClusterPorts): void {
       continue;
     }
     console.log(`Minting dev/CI credential ${namespace}/${name} (value is per-cluster and never logged) ...`);
-    ports.controlPlane.applyInlineManifest(buildDevAdminSecretManifest(spec, randomBytes(24).toString("base64url")));
+    ports.controlPlane.applyInlineManifest(buildDevAdminSecretManifest(spec, mintDevAdminPassword(spec)));
   }
   applyDevSharedSecrets(ports);
+}
+
+/**
+ * Draw one admin-secret password, honoring `spec.passwordPolicy` when the consumer's
+ * chart documents a strength rule this mint must satisfy BY CONSTRUCTION.
+ *
+ * WP22 (081M35DFB9B087G0R003WD5WJ6): every OTHER bootstrap secret's consumer was audited
+ * and found unconstrained (see `DevBootstrapSecretSpec.passwordPolicy`'s docstring in
+ * `lib.ts`), so `randomBytes(24).toString("base64url")` stays their draw -- it already
+ * guarantees upper/lower/digit at astronomically high probability and none of them require
+ * a special character. `"opensearch-strength"` is the one exception: OpenSearch Security's
+ * `OPENSEARCH_ADMIN_PASSWORD_REGEX` requires all four classes, and base64url's draw has only
+ * ~62% odds per attempt of including `-`/`_` (its only non-alphanumeric characters), so
+ * relying on chance would fail ~38% of dev/CI clusters the same way the metal hex draw
+ * failed 100% of them before WP19c. `composeOpenSearchAdminPassword` guarantees the classes
+ * instead of hoping for them, using the SAME hex-nibble maps as WP19c's metal fix.
+ */
+function mintDevAdminPassword(spec: DevBootstrapSecretSpec): string {
+  if (spec.passwordPolicy === "opensearch-strength") {
+    return composeOpenSearchAdminPassword(
+      randomBytes(1).toString("hex"),
+      randomBytes(1).toString("hex"),
+      randomBytes(31).toString("hex"),
+    );
+  }
+  return randomBytes(24).toString("base64url");
 }
 
 /**
@@ -287,9 +315,7 @@ export interface CredentialRotation {
 export function rotateDevCredential(ports: DevClusterPorts, target: string): CredentialRotation {
   const shared = DEV_SHARED_SECRETS.find((spec) => spec.name === target);
   if (shared !== undefined) {
-    const missing = shared.namespaces.filter(
-      (ns) => !ports.controlPlane.resourceExists(`secret/${shared.name}`, ns),
-    );
+    const missing = shared.namespaces.filter((ns) => !ports.controlPlane.resourceExists(`secret/${shared.name}`, ns));
     if (missing.length > 0) {
       return {
         credential: shared.name,
@@ -342,9 +368,7 @@ export function rotateDevCredential(ports: DevClusterPorts, target: string): Cre
   }
 
   console.log(`Rotating dev/CI credential ${target} (new value is per-cluster and never logged) ...`);
-  ports.controlPlane.applyInlineManifest(
-    buildDevAdminSecretManifest(spec, randomBytes(24).toString("base64url")),
-  );
+  ports.controlPlane.applyInlineManifest(buildDevAdminSecretManifest(spec, mintDevAdminPassword(spec)));
   return {
     credential: target,
     rotated: true,
@@ -384,7 +408,6 @@ export function allDevCredentialTargets(): readonly string[] {
   ];
 }
 
-
 /**
  * Which Applications keep the old value until restarted.
  *
@@ -396,7 +419,6 @@ export function allDevCredentialTargets(): readonly string[] {
 function consumersOf(credential: string): readonly string[] {
   return CHART_ROTATION_CONSTRAINTS.filter((c) => c.secret === credential).map((c) => c.consumer);
 }
-
 
 export function applyDevSharedSecrets(ports: DevClusterPorts): void {
   for (const spec of DEV_SHARED_SECRETS) {
@@ -479,6 +501,11 @@ export function applyDevRegistryPullSecret(
 }
 
 export interface KindCiBringUpOptions {
+  /**
+   * One lane's Application directories; absent is the whole roster. Scopes the
+   * root catalogue's exclude glob via `laneScopedExcludeGlob`.
+   */
+  readonly laneDirs?: readonly string[];
   readonly configPath: string;
   readonly clusterName: string;
   readonly gitRef: string;
@@ -528,6 +555,11 @@ export interface KindCiBringUpOptions {
 }
 
 export interface K3dDevBringUpOptions {
+  /**
+   * One lane's Application directories; absent is the whole roster. Scopes the
+   * root catalogue's exclude glob via `laneScopedExcludeGlob`.
+   */
+  readonly laneDirs?: readonly string[];
   readonly configPath: string;
   readonly clusterName: string;
   readonly agentCount: number;
@@ -652,7 +684,7 @@ export function bringUpKindCiCluster(ports: DevClusterPorts, options: KindCiBrin
   // readiness wait removes entirely.
   const rootRepoUrl = applyLaneTreeSource(ports, options.laneTree) ?? options.gitRepoUrl;
   const catalogRef = laneTreeCatalogRef(options.laneTree, options.gitRef);
-  appCatalog.applyRootDevCatalog(catalogRef, rootRepoUrl, "kind", cni);
+  appCatalog.applyRootDevCatalog(catalogRef, rootRepoUrl, "kind", cni, options.laneDirs ?? null);
 }
 
 /**
@@ -664,10 +696,7 @@ export function bringUpKindCiCluster(ports: DevClusterPorts, options: KindCiBrin
  * contain. Absent a lane tree, the bring-up ref is still what GitHub-hosted
  * catalogs need on a PR.
  */
-function laneTreeCatalogRef(
-  laneTree: { readonly gitRef?: string } | undefined,
-  bringUpRef: string,
-): string {
+function laneTreeCatalogRef(laneTree: { readonly gitRef?: string } | undefined, bringUpRef: string): string {
   if (laneTree === undefined) return bringUpRef;
   return laneTree.gitRef ?? SERVED_GIT_REF;
 }
@@ -1040,7 +1069,7 @@ export function bringUpK3dDevCluster(ports: DevClusterPorts, options: K3dDevBrin
   // PROVIDER PASSED. Without it the catalogue keeps the static exclude glob
   // while the harness asserts the k3d-lifted roster -- asserted-but-unapplied,
   // which hangs for the full timeout and blames the Application.
-  appCatalog.applyRootDevCatalog(catalogRef, rootRepoUrl, "k3d");
+  appCatalog.applyRootDevCatalog(catalogRef, rootRepoUrl, "k3d", "kindnetd", options.laneDirs ?? null);
 }
 
 export function tearDownK3dDevCluster(ports: DevClusterPorts, clusterName: string): void {

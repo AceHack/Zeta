@@ -1,0 +1,12 @@
+{
+  "pr_number": 17486,
+  "archive_path": "docs/history/pr-reviews/2026/09/22/PR-17486-fix-cluster-gitlab-bundled-minio-is-gone-from-docker-hub-repoint-at-seaweedfs.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-22T07:24:30.670Z",
+  "schema_version": "v1",
+  "commit_sha": "35b873b8e2ba192e6ce0f6e8aee08b568e8f7533",
+  "title": "fix(cluster): gitlab bundled minio is gone from Docker Hub -- repoint at seaweedfs",
+  "state": "MERGED",
+  "merged_at": "2026-09-22T07:23:37Z",
+  "head_ref": "claude/gitlab-minio-image-gone"
+}

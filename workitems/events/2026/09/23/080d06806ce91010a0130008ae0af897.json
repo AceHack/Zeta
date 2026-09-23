@@ -1,0 +1,14 @@
+{
+  "id": "080d06806ce91010a0130008ae0af897",
+  "at": "2026-09-23T20:55:48.258Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M380V792087G0R001PR993V",
+    "type": "task",
+    "title": "Restore crash dumps and test coverage under MTP: add CrashDump/HangDump and coverlet.MTP extensions after xunit.v3 4.x lands",
+    "slug": "restore-crash-dumps-and-test-coverage-under-mtp-add-crashdum",
+    "priority": "P2",
+    "filename": "081M380V792087G0R001PR993V-restore-crash-dumps-and-test-coverage-under-mtp-add-crashdum.md"
+  }
+}

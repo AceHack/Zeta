@@ -69,6 +69,23 @@ spec:
         type: pvc
         size: 5Gi
         storageClass: zeta-local-path
+      # PINNED 2026-09-22. `spire-lib.kubectl-image` (charts/spire-lib/templates/_helpers.tpl
+      # in chart 0.24.2) derives this hook image's tag from `.Capabilities.KubeVersion.Version`
+      # whenever `tools.kubectl.image.tag` is empty -- its own default. K3S reports
+      # `v1.35.7+k3s1`, the helper strips that to `v1.35.7`, and `rancher/kubectl:v1.35.7` has
+      # never been published (Docker Hub 404; confirmed live on GitHub Actions run
+      # 35687536936: helm-install-spire's post-install-job ErrImagePull/NotFound-loops
+      # forever). `rancher/kubectl:v1.35.6` IS published, multi-arch (linux/amd64 +
+      # linux/arm64 verified via the Docker Hub tags API), and is the newest tag that exists --
+      # so pin here rather than let the chart derive a tag from a cluster version the image
+      # publisher hasn't caught up to yet. Four hook templates read this same value
+      # (post-install, post-upgrade, pre-delete twice); pinning it once here fixes all four.
+      # Mirrored at k8s/applications/spire/Application.yaml (the ArgoCD twin) -- keep both in
+      # sync, see bootstrap-application-pin-parity.
+      tools:
+        kubectl:
+          image:
+            tag: v1.35.6
     spire-agent:
       workloadAttestors:
         k8s: { enabled: true, skipKubeletVerification: false }

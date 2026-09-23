@@ -27,9 +27,25 @@
 #
 # WHAT IT DOES NOT COVER, stated so the green is read correctly: `--no-build` realises
 # nothing, so `k3s-first-boot-roster` -- a full `nixosTest` whose own header says it
-# "REQUIRES INTERNET (five Helm charts and roughly 2-3 GB of images)" -- is EVALUATED here
-# and RUN only by the ISO lane. This says the roster and its order are still well-formed.
-# It does not say the cluster boots.
+# "REQUIRES INTERNET (five Helm charts and roughly 2-3 GB of images)" -- is only EVALUATED
+# here, never built or run.
+#
+# CORRECTED 2026-09-22 (081M33NZP3J087G0R003WS1BFH). This comment used to claim
+# `k3s-first-boot-roster` was "RUN only by the ISO lane" (`build-ai-cluster-iso.yml`). That
+# was false when written and stayed false for a month: `build-ai-cluster-iso.yml` never had
+# a step building `.#checks.x86_64-linux.k3s-first-boot-roster` -- `grep -n
+# k3s-first-boot-roster .github/workflows/build-ai-cluster-iso.yml` returns nothing. Nothing
+# in this repository ever booted the real roster; five other VM tests in
+# `nixos/tests/` all `mkForce` the manifest set down to a subset before booting (see the
+# header of `k3s-first-boot-roster.nix` for the roster of exceptions).
+#
+# The VM now has a real lane: `k3s-first-boot-roster-vm.yml`, a daily-cron +
+# workflow_dispatch + scoped-PR job that builds `.#checks.x86_64-linux.k3s-first-boot-roster`
+# with `--option sandbox false`, on ~90 min budget. It is not the ISO lane and does not run
+# per ordinary PR (45-70 min and ~10 GB of pulls is too expensive to gate every push); it is
+# the thing that actually answers whether `zeta-root` lands.
+# This lane says the roster and its order are still well-formed at EVAL time. It does not
+# say the cluster boots -- `k3s-first-boot-roster-vm.yml` is what says that.
 
 name: first-boot-manifest-check
 
@@ -50,12 +66,23 @@ on:
       - "full-ai-cluster/nixos/modules/k3s-server.nix"
       - "full-ai-cluster/nixos/tests/k3s-first-boot-apply-order-eval-test.nix"
       - "full-ai-cluster/nixos/tests/k3s-first-boot-roster.nix"
+      # ADDED 2026-09-22 (081M33RP3JV087G0R003JBGPKC): this file's own `$comment` says
+      # provenance is DERIVED from the flake lock via `nix eval`, and names the exact
+      # command -- but nothing ran it, so the declaration drifted from the lock for three
+      # weeks (1.35.6 declared, 1.35.7 actually locked) before a real VM boot (run
+      # 35687536936) found the gap the hard way. This lane already installs nix and
+      # evaluates this flake; the new "Assert kubernetes-version.json agrees with the
+      # locked k3s version" step below is the check that comment always described.
+      - "full-ai-cluster/k8s/kubernetes-version.json"
+      - "full-ai-cluster/flake.lock"
       - ".github/workflows/first-boot-manifest-check.yml"
   push:
     branches: [main]
     paths:
       - "full-ai-cluster/k8s/bootstrap/**"
       - "full-ai-cluster/nixos/modules/k3s-server.nix"
+      - "full-ai-cluster/k8s/kubernetes-version.json"
+      - "full-ai-cluster/flake.lock"
   workflow_dispatch: {}
 
 permissions:
@@ -102,6 +129,35 @@ jobs:
         run: |
           set -o pipefail
           nix flake check --no-build --all-systems --show-trace 2>&1 | tee /tmp/fac-flake-check.log
+
+      - name: Assert kubernetes-version.json agrees with the locked k3s version
+        # ADDED 2026-09-22 (081M33RP3JV087G0R003JBGPKC). full-ai-cluster/k8s/kubernetes-version.json's
+        # own header has named this exact `nix eval` as its provenance since 2026-09-01 and
+        # promised "WHEN THE LOCK MOVES, this file moves with it" -- but nothing ran the
+        # command, so nixpkgs bumping `pkgs.k3s` from 1.35.6+k3s1 to 1.35.7+k3s1 underneath
+        # full-ai-cluster/flake.lock left the declaration stale for three weeks. A real VM
+        # boot found it the hard way (run 35687536936): every render/kubeconform lane in
+        # this repo had been validating manifests against a Kubernetes API surface the
+        # cluster does not have.
+        #
+        # `--impure` is required for `builtins.getFlake` outside a flake's own evaluation;
+        # this lane already runs `nix flake check` above, so it is not adding impurity the
+        # job did not already accept. x86_64-linux, not the runner's own platform: that is
+        # the platform the cluster nodes run, and evaluating for the runner would answer a
+        # different question (the file's own header names this exact trap).
+        working-directory: full-ai-cluster
+        run: |
+          set -euo pipefail
+          locked=$(nix eval --raw --impure --expr \
+            'let f = builtins.getFlake (toString ./.); in f.inputs.nixpkgs.legacyPackages.x86_64-linux.k3s.version')
+          echo "flake.lock resolves pkgs.k3s to: $locked"
+          declared=$(jq -r '.k3sVersion' k8s/kubernetes-version.json)
+          echo "k8s/kubernetes-version.json declares k3sVersion: $declared"
+          if [ "$locked" != "$declared" ]; then
+            echo "::error title=kubernetes-version.json is stale::full-ai-cluster/k8s/kubernetes-version.json declares k3sVersion=$declared but flake.lock resolves pkgs.k3s to $locked. Update kubernetesVersion, k3sVersion and measuredOn in that file to match (see its \$comment for the nix eval command and why every render/kubeconform lane in this repo depends on it being current)."
+            exit 1
+          fi
+          echo "kubernetes-version.json agrees with the locked k3s version."
 
       - name: Assert the check actually checked something
         # ANTI-VACUITY, copied deliberately from `root-flake-check.yml`, whose own comment

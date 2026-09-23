@@ -1,0 +1,12 @@
+{
+  "pr_number": 17510,
+  "archive_path": "docs/history/pr-reviews/2026/09/22/PR-17510-chore-workitems-complete-wp14-tracking-item.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-22T09:51:16.327Z",
+  "schema_version": "v1",
+  "commit_sha": "df486420bba9f306f9c1466254dd474b26692442",
+  "title": "chore(workitems): complete WP14 tracking item",
+  "state": "MERGED",
+  "merged_at": "2026-09-22T09:50:32Z",
+  "head_ref": "claude/wp14-complete-workitem"
+}

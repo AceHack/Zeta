@@ -1,0 +1,12 @@
+{
+  "pr_number": 17515,
+  "archive_path": "docs/history/pr-reviews/2026/09/22/PR-17515-fix-cluster-stage-6-soak-allowlists-the-confirmed-non-metal-spire-agent-restart.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-22T11:45:25.239Z",
+  "schema_version": "v1",
+  "commit_sha": "6c853b6fe08f8c6208b3e0b60675529ee5a94427",
+  "title": "fix(cluster): stage 6 soak allowlists the confirmed-non-metal spire-agent restart",
+  "state": "MERGED",
+  "merged_at": "2026-09-22T11:44:40Z",
+  "head_ref": "claude/spire-soak-regression-allowlist"
+}

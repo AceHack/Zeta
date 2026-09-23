@@ -1,0 +1,12 @@
+{
+  "pr_number": 17501,
+  "archive_path": "docs/history/pr-reviews/2026/09/22/PR-17501-docs-workitem-record-two-genuine-catalog-findings-from-first-boot-replica-run-35.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-22T08:32:24.189Z",
+  "schema_version": "v1",
+  "commit_sha": "c0e08af8533115f234e034a737a1bbe510b97799",
+  "title": "docs(workitem): record two genuine catalog findings from first-boot-replica run 35700790207",
+  "state": "MERGED",
+  "merged_at": "2026-09-22T08:31:39Z",
+  "head_ref": "claude/first-boot-replica-catalog-findings"
+}

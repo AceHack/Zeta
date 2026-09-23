@@ -1,0 +1,12 @@
+{
+  "pr_number": 17543,
+  "archive_path": "docs/history/pr-reviews/2026/09/22/PR-17543-fix-cluster-pin-opensearch-hex-draw-regex-fail-by-equality.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-22T22:47:20.435Z",
+  "schema_version": "v1",
+  "commit_sha": "88628fd7afc9f255010b26327261293545a65073",
+  "title": "fix(cluster): pin OpenSearch hex-draw regex fail by equality",
+  "state": "MERGED",
+  "merged_at": "2026-09-22T22:46:39Z",
+  "head_ref": "cursor/opensearch-arity-nonequality-27c5"
+}

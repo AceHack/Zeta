@@ -9,6 +9,17 @@ const RECEIPT_DETAIL_ROUTE = "evidence-seam/receipt/";
 const RECEIPT_DETAIL_MARKER = "COPY RECEIPT ID";
 const SOURCE_MANIFEST_ROUTE = "evidence-seam/sources";
 const SOURCE_MANIFEST_MARKER = "SOURCE MANIFEST";
+const ROOM_EVIDENCE_READER_MARKER = "room-evidence";
+
+/**
+ * The route chunk mentions `evidence-seam`. The reader chunk often does too
+ * (`#/evidence-seam`, `evidence-seam docs/room-evidence/...`). `readdirSync`
+ * order is not a contract, so `find(includes("evidence-seam"))` can return
+ * either file. The reader is the one that also names `room-evidence`.
+ */
+export function scriptDeclaresEvidenceRoute(body: string): boolean {
+  return body.includes("evidence-seam") && !body.includes(ROOM_EVIDENCE_READER_MARKER);
+}
 
 export type PagesArtifactEvidence = Readonly<{
   readonly entryAsset: string;
@@ -44,42 +55,43 @@ export function verifyPagesArtifact(artifactRoot: string): PagesArtifactEvidence
   const indexPath = join(artifactRoot, "index.html");
   const index = readFileSync(indexPath, "utf8");
   const entryMatch = /assets\/(index-[A-Za-z0-9_-]+\.js)/.exec(index);
-  if (!entryMatch?.[1]) throw new Error("teaching error: Pages index does not reference a hashed JavaScript entry asset");
+  if (!entryMatch?.[1])
+    throw new Error("teaching error: Pages index does not reference a hashed JavaScript entry asset");
   const entryAsset = entryMatch[1];
   const assetsDirectory = join(artifactRoot, "assets");
-  const scriptAssets = readdirSync(assetsDirectory).filter(asset => asset.endsWith(".js"));
-  const scripts = scriptAssets.map(asset => ({ asset, body: readFileSync(join(assetsDirectory, asset), "utf8") }));
-  const authorizationAsset = scripts.find(script => script.body.includes(CURRENT_PROPOSAL_MARKER))?.asset;
+  const scriptAssets = readdirSync(assetsDirectory).filter((asset) => asset.endsWith(".js"));
+  const scripts = scriptAssets.map((asset) => ({ asset, body: readFileSync(join(assetsDirectory, asset), "utf8") }));
+  const authorizationAsset = scripts.find((script) => script.body.includes(CURRENT_PROPOSAL_MARKER))?.asset;
   if (!authorizationAsset) {
     throw new Error("teaching error: Pages artifact omits the current one-time device authorization control");
   }
-  const evidenceRouteAsset = scripts.find(script => script.body.includes("evidence-seam"))?.asset;
+  const evidenceRouteAsset = scripts.find((script) => scriptDeclaresEvidenceRoute(script.body))?.asset;
   if (!evidenceRouteAsset) {
     throw new Error("teaching error: Pages artifact omits the evidence-room route");
   }
-  const evidenceReaderAsset = scripts.find(script => script.body.includes("room-evidence"))?.asset;
+  const evidenceReaderAsset = scripts.find((script) => script.body.includes(ROOM_EVIDENCE_READER_MARKER))?.asset;
   if (!evidenceReaderAsset) {
     throw new Error("teaching error: Pages artifact omits the durable room-evidence reader");
   }
-  if (!scripts.some(script => script.body.includes(RECEIPT_DETAIL_ROUTE))) {
+  if (!scripts.some((script) => script.body.includes(RECEIPT_DETAIL_ROUTE))) {
     throw new Error("teaching error: Pages artifact omits the receipt-detail route");
   }
   const receiptDetailAsset = scripts.find(
-    script => script.asset.startsWith("EvidenceReceiptDetailPage-") && script.body.includes(RECEIPT_DETAIL_MARKER),
+    (script) => script.asset.startsWith("EvidenceReceiptDetailPage-") && script.body.includes(RECEIPT_DETAIL_MARKER),
   )?.asset;
   if (!receiptDetailAsset) {
     throw new Error("teaching error: Pages artifact omits the receipt-detail page");
   }
-  if (!scripts.some(script => script.body.includes(SOURCE_MANIFEST_ROUTE))) {
+  if (!scripts.some((script) => script.body.includes(SOURCE_MANIFEST_ROUTE))) {
     throw new Error("teaching error: Pages artifact omits the source-manifest route");
   }
   const sourceManifestAsset = scripts.find(
-    script => script.asset.startsWith("EvidenceSourceManifestPage-") && script.body.includes(SOURCE_MANIFEST_MARKER),
+    (script) => script.asset.startsWith("EvidenceSourceManifestPage-") && script.body.includes(SOURCE_MANIFEST_MARKER),
   )?.asset;
   if (!sourceManifestAsset) {
     throw new Error("teaching error: Pages artifact omits the source-manifest page");
   }
-  if (scripts.some(script => script.body.includes(RETIRED_PROPOSAL_MARKER))) {
+  if (scripts.some((script) => script.body.includes(RETIRED_PROPOSAL_MARKER))) {
     throw new Error("teaching error: Pages artifact still contains the retired GitHub issue-form proposal transport");
   }
   for (const asset of PAGES_WASM_ASSETS) assertWasmMagic(join(artifactRoot, asset.published));
@@ -101,7 +113,7 @@ export function verifyPagesArtifact(artifactRoot: string): PagesArtifactEvidence
     sourceManifestAsset,
     proposalMarker: CURRENT_PROPOSAL_MARKER,
     wasmAssets: [
-      ...PAGES_WASM_ASSETS.map(asset => asset.published),
+      ...PAGES_WASM_ASSETS.map((asset) => asset.published),
       ...(goPublished ? [GO_PAGES_ASSET.published, GO_PAGES_BRIDGE.published] : []),
     ],
     goOracle: goPublished ? "published" : "absent",

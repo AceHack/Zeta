@@ -133,6 +133,18 @@ export const CHART_ROTATION_CONSTRAINTS: readonly RotationConstraint[] = [
     reason:
       "Same shape as Grafana: one name, an operator login, seeded at first boot. Named INITIAL admin, so like OpenSearch the live rotation path is the application's own user management rather than this field.",
   },
+  {
+    secret: "gitlab/gitlab-initial-root-password",
+    consumer: "gitlab",
+    field: "global.initialRootPassword.secret",
+    upstreamCapability: "SINGLE_BY_DESIGN",
+    downtimeSeconds: "UNMEASURED",
+    measurementRoute:
+      "live-kind: rotate the Secret, restart the migrations Job, measure until a login with the new credential succeeds.",
+    exit: "ACCEPT",
+    reason:
+      "SINGLE_BY_DESIGN, read from the field's own name: `initialRootPassword` seeds the root account's password once, at first migration -- it is not a credential the running webservice re-reads. Same shape as OpenSearch's INITIAL_ADMIN_PASSWORD: rotation is the application's own user/password management (GitLab's admin panel or `gitlab-rails runner`), not a Secret swap through this field. ACCEPT for the same reason as Grafana/forgejo: an operator login, seeded once at first boot.",
+  },
 ];
 
 /** A minted Secret with no constraint row, or a row naming a Secret nothing mints. */

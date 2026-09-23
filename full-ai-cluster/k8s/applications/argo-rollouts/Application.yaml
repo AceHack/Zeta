@@ -23,6 +23,26 @@ spec:
       valuesObject:
         controller:
           replicas: 1
+          # LIVENESS KILL BUDGET -- WIDENED, NOT A startupProbe: MEASURED (helm pull
+          # argo-rollouts 2.43.0 --untar) that templates/controller/deployment.yaml
+          # renders `livenessProbe` only (`{{ toYaml .Values.controller.livenessProbe }}`)
+          # -- no `startupProbe` key anywhere in this template.
+          #
+          # WHY: argo-rollouts restarted (restartCount 1, self-healed) in run 35703810167
+          # of the 5 kind-included-lane CI runs examined 2026-09-22 -- a first-boot-
+          # pressure symptom on a fast Go controller, same shape as keda-operator. Chart
+          # default (`initialDelaySeconds: 30, periodSeconds: 20, failureThreshold: 3`,
+          # kill budget 70s) leaves little margin under first-boot pod/image pressure.
+          #
+          # failureThreshold: 10 (chart's own periodSeconds: 20 unchanged) -> kill budget
+          # 30+9*20=210s.
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: healthz
+            initialDelaySeconds: 30
+            periodSeconds: 20
+            failureThreshold: 10
         dashboard:
           enabled: true
           serviceType: ClusterIP

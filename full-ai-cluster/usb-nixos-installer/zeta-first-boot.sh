@@ -45,6 +45,18 @@ fi
 CONF=/etc/zeta-firstboot.conf
 [[ -f "$CONF" ]] && . "$CONF"
 
+# ── WP21 (081M35C7NJR087G0R002S4R654): ISO-baked repo-pin provenance ──────
+#
+# Sourced the same way as the ISO's zeta-firstboot.conf just above:
+# /etc/zeta-iso-provenance is written by full-ai-cluster/flake.nix at ISO
+# build time (self.rev) and carries ZETA_ISO_COMMIT. Absent on any ISO built
+# before this landed, or when self.rev was unavailable (dirty tree, i.e. a
+# hand-built ISO) -- sourcing a missing file is a no-op, same fail-safe shape
+# as the role conf, and zeta-install.sh treats an empty/unset ZETA_ISO_COMMIT
+# as "no pin" (today's unpinned behaviour). An ESP override further below
+# takes precedence over whatever this line sets.
+[[ -f /etc/zeta-iso-provenance ]] && . /etc/zeta-iso-provenance
+
 # ── 081KSNY2Z0008QG0R0008PN7RQ scenario 5: ESP-provided role overrides the ISO's ──
 #
 # The line above sources a file baked into the ISO's read-only Nix store, which
@@ -83,6 +95,37 @@ zeta_source_esp_firstboot_conf() {
   return 1
 }
 zeta_source_esp_firstboot_conf || true
+
+# ── WP21 (081M35C7NJR087G0R002S4R654): ESP-side repo-pin override ────────
+#
+# /zeta-repo-pin on the ESP, sourced in PREFERENCE to the ISO-baked
+# /etc/zeta-iso-provenance above -- same "ESP wins" shape as the role conf
+# just above, kept as its own tiny mount/source/unmount rather than folded
+# into zeta_source_esp_firstboot_conf so neither one's failure mode can
+# touch the other. Lets a QEMU test lane (or an operator) pin a different
+# commit than the one baked into this ISO without rebuilding it. Writer:
+# src/Core.TypeScript/zflash/lib.ts (planFileBackedZflashImage repoPinCommit).
+# Content is a single bash assignment, single-quoted and hex-only by
+# construction at the writer (see repo-pin.ts / lib.ts validation), same
+# injection posture as the role conf.
+zeta_source_esp_repo_pin() {
+  local part conf
+  mkdir -p "$ESP_CONF_MOUNT" 2>/dev/null || return 1
+  for part in /dev/disk/by-label/* /dev/sd?[0-9] /dev/nvme?n?p[0-9] /dev/vd?[0-9] /dev/mmcblk?p[0-9]; do
+    [[ -b "$part" ]] || continue
+    mount -t vfat -o ro "$part" "$ESP_CONF_MOUNT" 2>/dev/null || continue
+    conf="$ESP_CONF_MOUNT/zeta-repo-pin"
+    if [[ -f "$conf" ]]; then
+      # shellcheck disable=SC1090
+      . "$conf"
+      umount "$ESP_CONF_MOUNT" 2>/dev/null || true
+      return 0
+    fi
+    umount "$ESP_CONF_MOUNT" 2>/dev/null || true
+  done
+  return 1
+}
+zeta_source_esp_repo_pin || true
 
 HOST="${HOST:-control-plane}"
 ZETA_ROLE="${ZETA_ROLE:-first-control-plane}"
@@ -554,6 +597,15 @@ export ZETA_AUTO_CONFIRM=WIPE
 export BOOT_DISK=auto
 export HOST
 export REPO_URL
+# WP21 (081M35C7NJR087G0R002S4R654): sourced (not exported) by either
+# conf above, so the child zeta-install process would not see it without
+# this -- same "sourced vars need an explicit export" note as the bao pair
+# above. Empty is a valid value (no pin); zeta-install.sh's repo-pin block
+# treats that as today's unpinned behaviour. ZETA_ALLOW_REPO_DRIFT is an
+# operator override, set in THIS process's own environment (not written by
+# either conf), so it passes through unchanged.
+export ZETA_ISO_COMMIT="${ZETA_ISO_COMMIT:-}"
+export ZETA_ALLOW_REPO_DRIFT="${ZETA_ALLOW_REPO_DRIFT:-}"
 # zeta-install handles the rest: disk enum → wipe → partition →
 # format → mount → clone → nixos-install. Exits with the OS still
 # booted in the USB live environment; this script then reboots so

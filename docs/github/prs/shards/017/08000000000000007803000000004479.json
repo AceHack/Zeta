@@ -1,0 +1,12 @@
+{
+  "pr_number": 17529,
+  "archive_path": "docs/history/pr-reviews/2026/09/22/PR-17529-feat-cluster-power-cycle-recovery-stage-for-first-boot-replica-wp19.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-22T15:00:20.059Z",
+  "schema_version": "v1",
+  "commit_sha": "caacb425240a5889a740a5fd2d1c36f04073365b",
+  "title": "feat(cluster): power-cycle recovery stage for first-boot-replica (WP19)",
+  "state": "MERGED",
+  "merged_at": "2026-09-22T14:59:28Z",
+  "head_ref": "claude/first-boot-replica-power-cycle"
+}

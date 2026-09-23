@@ -1,0 +1,12 @@
+{
+  "pr_number": 17507,
+  "archive_path": "docs/history/pr-reviews/2026/09/22/PR-17507-fix-cluster-gating-annotation-requires-observed-healthy-evidence-checked.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-22T09:55:31.897Z",
+  "schema_version": "v1",
+  "commit_sha": "e57781deb9a2e8ede32dfb0d30eefb270e0cd5e8",
+  "title": "fix(cluster): gating annotation requires observed-Healthy evidence, checked",
+  "state": "MERGED",
+  "merged_at": "2026-09-22T09:54:44Z",
+  "head_ref": "claude/gate-requires-observed-healthy"
+}

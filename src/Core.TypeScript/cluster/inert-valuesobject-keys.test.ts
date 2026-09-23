@@ -861,18 +861,22 @@ describe("the CLI's exit code — the thing CI actually reads", () => {
     expect(runCli(["--offline"]).status).toBe(0);
   });
 
-  test("exits 1 when the baseline is empty — the 12 acknowledged findings are REAL, not absent", () => {
+  test("exits 1 when the baseline is empty — the 15 acknowledged findings are REAL, not absent", () => {
     // Points the run at a baseline path that does not exist, which loads as an
     // empty baseline. If this exits 0, either the findings evaporated or the
     // exit code stopped depending on them.
     const run = runCli(["--offline", "--baseline", "src/Core.TypeScript/cluster/testdata/no-such-baseline.json"]);
     expect(run.status).toBe(1);
-    // 11 -> 14: mimir 6.2.0 carries three storage keys the derivation cannot see
-    // (the chart comments them out), acknowledged with the render that proves they
-    // work. Emptying the baseline must turn EVERY acknowledged finding back into a
-    // refusal, so this count tracks the baseline or the assertion stops proving the
-    // findings are real.
-    expect(run.stdout).toContain("REFUSED (12)");
+    // Previously 12 (see the mimir entries' own "11 -> 14" note above this
+    // block; the two counts were never reconciled and that is a pre-existing
+    // imprecision, not one this change resolves). 12 -> 15 on WP18 (2026-09-22):
+    // three loki `sidecar.startupProbe.*` entries, same false-positive-of-the-
+    // derivation class as the mimir storage keys (a `toYaml (omit . "enabled")`
+    // dump this static scan cannot see into), acknowledged with the render
+    // that proves they work. Emptying the baseline must turn EVERY
+    // acknowledged finding back into a refusal, so this count tracks the
+    // baseline or the assertion stops proving the findings are real.
+    expect(run.stdout).toContain("REFUSED (15)");
     expect(run.stdout).toContain("FAILED");
   });
 });

@@ -1,0 +1,14 @@
+{
+  "id": "080d067fac9d4010a0130008895ea586",
+  "at": "2026-09-23T20:29:32.968Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M37ZB4X7087G0R000XX6BSD",
+    "type": "task",
+    "title": "fast-check property tests read as assertion-free to eslint-plugin-sonarjs 4.2.1",
+    "slug": "fast-check-property-tests-read-as-assertion-free-to-eslint-p",
+    "priority": "P2",
+    "filename": "081M37ZB4X7087G0R000XX6BSD-fast-check-property-tests-read-as-assertion-free-to-eslint-p.md"
+  }
+}

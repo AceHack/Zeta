@@ -1,0 +1,12 @@
+{
+  "pr_number": 17524,
+  "archive_path": "docs/history/pr-reviews/2026/09/22/PR-17524-fix-cluster-rank-and-fix-slow-starter-liveness-kill-budget-risks-wp18.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-22T15:30:58.998Z",
+  "schema_version": "v1",
+  "commit_sha": "983f9e564665c71d8960e6dc9bba08aafe9bceab",
+  "title": "fix(cluster): rank and fix slow-starter liveness kill-budget risks (WP18)",
+  "state": "MERGED",
+  "merged_at": "2026-09-22T15:30:10Z",
+  "head_ref": "claude/slow-starter-liveness-budgets"
+}

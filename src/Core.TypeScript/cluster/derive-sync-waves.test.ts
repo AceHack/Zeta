@@ -71,6 +71,15 @@ describe("the live full-ai-cluster tree", () => {
     expect(audit.cniFloorViolations).toEqual([]);
   });
 
+  test("every declared manual-sync Application sits at or after every automated Application's wave", () => {
+    // cdi, kubevirt, ollama, vllm: none of them ever auto-syncs, so once
+    // Application health gating is live (resource.customizations.health.
+    // argoproj.io_Application in argocd-cm) a manual-sync app anywhere but the
+    // tail would wedge the whole zeta-root sync behind its permanent "Missing"
+    // health. cdi/kubevirt moved from wave -5 to wave 50 for exactly this.
+    expect(audit.manualSyncFloorViolations).toEqual([]);
+  });
+
   test("the declaration covers exactly the app-of-apps roster, at its real size", () => {
     // Pinned so that a roster that silently shrinks (a glob narrowed, a walk
     // that stops recursing) cannot make "everything is declared" true by
@@ -162,8 +171,8 @@ describe("the live full-ai-cluster tree", () => {
 // B. Synthetic falsifiers -- each finding driven to fire
 // ---------------------------------------------------------------------------
 
-function app(name: string, wave: number | null): ShippedApplication {
-  return { name, path: `full-ai-cluster/k8s/applications/${name}/Application.yaml`, wave };
+function app(name: string, wave: number | null, manualSync = false): ShippedApplication {
+  return { name, path: `full-ai-cluster/k8s/applications/${name}/Application.yaml`, wave, manualSync };
 }
 
 /**
@@ -325,6 +334,46 @@ describe("falsifiers", () => {
     );
     expect(audit.cniFloorViolations).toEqual([]);
     expect(auditIsClean(audit)).toBe(true);
+  });
+
+  test("a manual-sync Application before an automated Application's wave is a MANUAL-SYNC-FLOOR finding", () => {
+    const audit = auditNoPending(
+      [CILIUM, app("manual", -5, true), app("automated", 10, false)],
+      declaration([
+        { chart: "cilium", dependsOn: [] },
+        { chart: "manual", dependsOn: [] },
+        { chart: "automated", dependsOn: [] },
+      ]),
+    );
+    expect(audit.manualSyncFloorViolations).toEqual([{ app: "manual", wave: -5, maxAutomatedWave: 10 }]);
+    expect(auditIsClean(audit)).toBe(false);
+    expect(formatWaveAudit(audit)).toContain("MANUAL-SYNC-FLOOR");
+  });
+
+  test("a manual-sync Application AT the automated ceiling is not a finding", () => {
+    // Ties are fine: nothing comes after the tail wave, so a manual app sharing
+    // it with automated apps blocks nothing.
+    const audit = auditNoPending(
+      [CILIUM, app("manual", 10, true), app("automated", 10, false)],
+      declaration([
+        { chart: "cilium", dependsOn: [] },
+        { chart: "manual", dependsOn: [] },
+        { chart: "automated", dependsOn: [] },
+      ]),
+    );
+    expect(audit.manualSyncFloorViolations).toEqual([]);
+  });
+
+  test("a manual-sync Application AFTER every automated Application is not a finding", () => {
+    const audit = auditNoPending(
+      [CILIUM, app("manual", 50, true), app("automated", 10, false)],
+      declaration([
+        { chart: "cilium", dependsOn: [] },
+        { chart: "manual", dependsOn: [] },
+        { chart: "automated", dependsOn: [] },
+      ]),
+    );
+    expect(audit.manualSyncFloorViolations).toEqual([]);
   });
 
   test("a cycle in the declaration is refused by ace, not silently ordered", () => {

@@ -1,0 +1,14 @@
+{
+  "id": "080d06421ee78010a013000893d7547c",
+  "at": "2026-09-22T08:38:05.808Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M3447Q7E087G0R001PJ6YNY",
+    "type": "bug",
+    "title": "cilium Application stuck Progressing forever on first-boot: GatewayClass never Accepted (vendored Gateway API CRDs v1.2.1 missing v1 TLSRoute/BackendTLSPolicy/ReferenceGrant that cilium 1.20.1 requires)",
+    "slug": "cilium-application-stuck-progressing-forever-on-first-boot-g",
+    "priority": "P2",
+    "filename": "081M3447Q7E087G0R001PJ6YNY-cilium-application-stuck-progressing-forever-on-first-boot-g.md"
+  }
+}

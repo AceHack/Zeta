@@ -1,0 +1,12 @@
+{
+  "pr_number": 17531,
+  "archive_path": "docs/history/pr-reviews/2026/09/22/PR-17531-feat-cluster-boot-the-real-control-plane-host-config-in-a-vm-test-wp20.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-22T20:26:19.831Z",
+  "schema_version": "v1",
+  "commit_sha": "47d5cbd6c9fdfe6e37aba510f907c29b77601aab",
+  "title": "feat(cluster): boot the real control-plane host config in a VM test (WP20)",
+  "state": "MERGED",
+  "merged_at": "2026-09-22T20:25:24Z",
+  "head_ref": "claude/control-plane-host-vm-boot"
+}

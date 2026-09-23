@@ -1,0 +1,12 @@
+{
+  "pr_number": 17508,
+  "archive_path": "docs/history/pr-reviews/2026/09/22/PR-17508-fix-cluster-why-argo-cd-applications-stay-progressing-forever-on-first-boot-cili.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-22T10:01:22.737Z",
+  "schema_version": "v1",
+  "commit_sha": "67d0390ec4dca2ea3c5f95b3a0355a1c5685229d",
+  "title": "fix(cluster): why Argo CD Applications stay Progressing forever on first-boot (cilium, spire, openbao, longhorn)",
+  "state": "MERGED",
+  "merged_at": "2026-09-22T10:00:02Z",
+  "head_ref": "claude/why-argo-apps-stay-progressing"
+}

@@ -1,0 +1,14 @@
+{
+  "id": "080d06806c942810a0130008ec5a3d05",
+  "at": "2026-09-23T20:55:45.541Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M380V4M4087G0R003R4FM8X",
+    "type": "task",
+    "title": "Run dotnet test under Microsoft.Testing.Platform so xunit.v3 4.x (MTP v2) can land",
+    "slug": "run-dotnet-test-under-microsoft-testing-platform-so-xunit-v3",
+    "priority": "P2",
+    "filename": "081M380V4M4087G0R003R4FM8X-run-dotnet-test-under-microsoft-testing-platform-so-xunit-v3.md"
+  }
+}

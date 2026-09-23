@@ -228,16 +228,12 @@ describe("Gateway API CRD coverage", () => {
     );
   });
 
-  test("the vendored bundle is missing TLSRoute and BackendTLSPolicy, and both gaps are registered", () => {
+  test("the vendored bundle (Gateway API v1.6.1 STANDARD, bumped 2026-09-22) covers all seven required CRDs", () => {
     const coverage = gatewayApiCrdCoverage();
-    expect(coverage.missing).toEqual([
-      "tlsroutes.gateway.networking.k8s.io",
-      "backendtlspolicies.gateway.networking.k8s.io",
-    ]);
-    expect(GATEWAY_API_CRD_GAP_REASONS.has("tlsroutes.gateway.networking.k8s.io")).toBe(true);
-    expect(GATEWAY_API_CRD_GAP_REASONS.has("backendtlspolicies.gateway.networking.k8s.io")).toBe(
-      true,
-    );
+    expect(coverage.missing).toEqual([]);
+    expect(coverage.present).toEqual(CILIUM_PINNED_REQUIRED_GATEWAY_API_CRDS);
+    // No gap left to register — the gap-reasons map documents CURRENT gaps only.
+    expect(GATEWAY_API_CRD_GAP_REASONS.size).toBe(0);
   });
 
   test("the audit is green on the live tree in both directions", () => {
@@ -246,7 +242,7 @@ describe("Gateway API CRD coverage", () => {
     expect(drift.stale).toEqual([]);
   });
 
-  test("each registered gap names a condition that would lift it", () => {
+  test("each registered gap (if any) names a condition that would lift it", () => {
     for (const reason of GATEWAY_API_CRD_GAP_REASONS.values()) {
       expect(reason).toContain("LIFTS WHEN:");
     }

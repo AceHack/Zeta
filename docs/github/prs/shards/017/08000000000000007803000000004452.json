@@ -1,0 +1,12 @@
+{
+  "pr_number": 17490,
+  "archive_path": "docs/history/pr-reviews/2026/09/22/PR-17490-docs-workitem-correct-the-record-on-081m33qtnvd087g0r002632ydv-coordinator-claim.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-22T07:17:25.675Z",
+  "schema_version": "v1",
+  "commit_sha": "b0c28ff5b0bb2fb9d0b7ff512d64d1ae490e5d89",
+  "title": "docs(workitem): correct the record on 081M33QTNVD087G0R002632YDV — coordinator claims were real",
+  "state": "MERGED",
+  "merged_at": "2026-09-22T07:16:41Z",
+  "head_ref": "claude/first-boot-replica-workitem-correction"
+}

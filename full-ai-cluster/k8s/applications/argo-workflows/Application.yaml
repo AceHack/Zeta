@@ -5,6 +5,52 @@ kind: Application
 metadata:
   annotations:
     argocd.argoproj.io/sync-wave: "0"
+    # ServerSideDiff=true, 2026-09-22 -- fixes perpetual OutOfSync on
+    # CustomResourceDefinition/workfloweventbindings.argoproj.io and
+    # .../workflowtasksets.argoproj.io (live run 35713533700; the same two CRDs
+    # named the app's ONLY diffs in the resource-level dump).
+    #
+    # NOT the same fix as cockroachdb/headscale/hindsight/nats/opensearch/weaviate
+    # (dropping ServerSideApply): that fix is UNAVAILABLE here. MEASURED, this
+    # chart's own `crds.full: false` render at 2.0.4: the largest CRD,
+    # workflowtasksets.argoproj.io, is 227552 bytes JSON-encoded -- already 87% of
+    # the 262144-byte last-applied-configuration cap BEFORE accounting for the
+    # `kubectl.kubernetes.io/last-applied-configuration` annotation embedding a
+    # second, near-equal-sized copy of the object as a string inside its own
+    # annotations (the mechanism the cap is measured against;
+    # spire/Application.yaml's own note: "CRD schemas are the resources that
+    # genuinely approach that cap"). Client-side apply would fail outright here,
+    # not merely drift.
+    #
+    # ROOT CAUSE IS THE SAME FAMILY, ONE LAYER UP FROM VolumeClaimTemplates.
+    # These CRDs (files/crds/minimal/argoproj.io_workflowtasksets.yaml etc,
+    # static, deterministic -- two renders diff byte-identical) declare no
+    # `spec.conversion` and no `spec.preserveUnknownFields`; both are DEFAULTED by
+    # the API server on a v1 CustomResourceDefinition when omitted
+    # (`conversion.strategy: None`, `preserveUnknownFields: false`). Under
+    # ServerSideApply, ArgoCD's local diff runs the desired object through the
+    # same internal conversion the real API server applies -- argo-cd#11143,
+    # apelisse (Kubernetes SIG API Machinery) 2023-01-24: "the apiserver does lots
+    # of conversions internally ... with server-side apply, the conversion acts
+    # exactly as a default ... they end up appearing in the dry-run output" -- so
+    # the predicted-live object carries fields the desired manifest never had.
+    #
+    # THE UPSTREAM-DOCUMENTED FIX FOR THIS EXACT MISMATCH, not a workaround
+    # invented here: ServerSideDiff replaces ArgoCD's local conversion-emulation
+    # with an actual dry-run request to the API server
+    # (https://argo-cd.readthedocs.io/en/stable/user-guide/diff-strategies/#server-side-diff),
+    # so the predicted object IS what the API server would produce, not a guess at
+    # it. Confirmed by multiple independent reporters on argo-cd#11143 and #24791
+    # closing this identical defect (javydekoning: "Confirmed, adding annotation
+    # ... Fixes this for me"; jg-tecso: "this work for me"). Stable since ArgoCD
+    # 3.1.0 (this cluster runs chart argo-cd 10.8.0, well past that floor) -- no
+    # longer beta, per pjiang-dev on the same thread.
+    #
+    # WHAT IT COSTS: an extra dry-run apply request per resource per diff
+    # (heavier than the local prediction ServerSideApply alone does), scoped to
+    # THIS Application only via the annotation rather than cluster-wide via
+    # argocd-cm, so no other Application's diff cost changes.
+    argocd.argoproj.io/compare-options: ServerSideDiff=true
   name: argo-workflows
   namespace: argocd
   finalizers: [ resources-finalizer.argocd.argoproj.io ]

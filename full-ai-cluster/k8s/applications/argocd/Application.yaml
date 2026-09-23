@@ -55,6 +55,44 @@ spec:
         configs:
           params:
             server.insecure: true   # TLS terminated upstream once ingress lands
+          cm:
+            # MUST STAY IN LOCKSTEP with `configs.cm` in
+            # full-ai-cluster/k8s/bootstrap/argocd-install.yaml AND THE OTHER
+            # DECLARED CLUSTER TREE'S mirrored bootstrap file
+            # (audit-argocd-pin-parity.ts's own HELMCHART_PIN_FILES roster,
+            # via declared-cluster-trees.ts -- not spelled out by path here on
+            # purpose: that second tree is the stale one 081M00QCHWA087G0R000GKKRXD
+            # is retiring, and cluster-tree-consumers.json refuses a NEW
+            # literal reference to it from a full-ai-cluster manifest) -- see
+            # the full explanation on the full-ai-cluster bootstrap copy (the OPT-IN
+            # redesign, 081M33T23ZQ087G0R002ZYRHDG: gating on EVERY
+            # Application converts one never-Healthy app -- platform's
+            # unminted ghcr-pull, openbao's sealed state, any manual-sync app
+            # -- into a whole-cluster stall). Restores Application-CRD health
+            # assessment (removed upstream in ArgoCD 1.8; argo-cd
+            # docs/operator-manual/upgrading/1.7-1.8.md, quoted verbatim
+            # inside the annotation guard below), which sync-wave gating for
+            # Applications annotated `zeta.io/gates-later-waves: "true"`
+            # depends on. `audit-argocd-pin-parity.ts`'s health-lua parity
+            # check fails on drift across all three copies.
+            resource.customizations.health.argoproj.io_Application: |
+              hs = {}
+              hs.status = "Healthy"
+              hs.message = "non-gating: health not propagated to wave ordering (zeta.io/gates-later-waves not set)"
+              if obj.metadata ~= nil and obj.metadata.annotations ~= nil and obj.metadata.annotations["zeta.io/gates-later-waves"] == "true" then
+                -- Upstream lua, verbatim, from argo-cd docs/operator-manual/upgrading/1.7-1.8.md.
+                hs.status = "Progressing"
+                hs.message = ""
+                if obj.status ~= nil then
+                  if obj.status.health ~= nil then
+                    hs.status = obj.status.health.status
+                    if obj.status.health.message ~= nil then
+                      hs.message = obj.status.health.message
+                    end
+                  end
+                end
+              end
+              return hs
         notifications:
           enabled: false
   destination:
