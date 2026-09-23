@@ -62,7 +62,7 @@
  */
 
 import { spawnSync } from "node:child_process";
-import { cpSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync, statSync, writeFileSync } from "node:fs";
+import { cpSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, relative } from "node:path";
 import { parse, parseAllDocuments, stringify } from "yaml";
@@ -158,7 +158,9 @@ interface Suite {
 
 /** Does this case assert at least one violation (`yes` or a positive count)? */
 function expectsViolation(c: SuiteCase): boolean {
-  return (c.assertions ?? []).some((a) => a.violations === "yes" || a.violations === true || (typeof a.violations === "number" && a.violations > 0));
+  return (c.assertions ?? []).some(
+    (a) => a.violations === "yes" || a.violations === true || (typeof a.violations === "number" && a.violations > 0),
+  );
 }
 /** Does this case assert zero violations overall? */
 function expectsAdmit(c: SuiteCase): boolean {
@@ -169,9 +171,13 @@ function expectsAdmit(c: SuiteCase): boolean {
  * Every coverage defect, given the policy stems and the parsed suites. Empty
  * means every policy has at least one must-violate and one must-admit case.
  */
-export function coverageFailures(stems: readonly string[], suites: readonly { file: string; suite: Suite }[]): string[] {
+export function coverageFailures(
+  stems: readonly string[],
+  suites: readonly { file: string; suite: Suite }[],
+): string[] {
   const failures: string[] = [];
-  if (stems.length === 0) failures.push(`no policy files under ${HAT_POLICY_DIR} -- an empty roster passes trivially, so it is a failure`);
+  if (stems.length === 0)
+    failures.push(`no policy files under ${HAT_POLICY_DIR} -- an empty roster passes trivially, so it is a failure`);
   const tally = new Map<string, { deny: number; admit: number }>();
   for (const stem of stems) tally.set(stem, { deny: 0, admit: 0 });
   for (const { file, suite } of suites) {
@@ -179,7 +185,9 @@ export function coverageFailures(stems: readonly string[], suites: readonly { fi
       const m = /^_policies\/(.+)\.template\.yaml$/.exec(t.template ?? "");
       const stem = m?.[1];
       if (stem === undefined || !tally.has(stem)) {
-        failures.push(`${file}: test ${t.name ?? "?"} names template ${t.template ?? "(none)"}, which is not a committed policy`);
+        failures.push(
+          `${file}: test ${t.name ?? "?"} names template ${t.template ?? "(none)"}, which is not a committed policy`,
+        );
         continue;
       }
       const row = tally.get(stem);
@@ -191,8 +199,10 @@ export function coverageFailures(stems: readonly string[], suites: readonly { fi
     }
   }
   for (const [stem, row] of [...tally].sort((a, b) => stringCompare(a[0], b[0]))) {
-    if (row.deny === 0) failures.push(`${stem}: no MUST-VIOLATE case -- a policy that denies nothing would pass its suite`);
-    if (row.admit === 0) failures.push(`${stem}: no MUST-ADMIT case -- a policy that denies everything would pass its suite`);
+    if (row.deny === 0)
+      failures.push(`${stem}: no MUST-VIOLATE case -- a policy that denies nothing would pass its suite`);
+    if (row.admit === 0)
+      failures.push(`${stem}: no MUST-ADMIT case -- a policy that denies everything would pass its suite`);
   }
   return failures;
 }
@@ -206,11 +216,15 @@ export function pinFailures(appYaml: string, miseToml: string, gatorVersionLine:
   if (chart.length === 0) failures.push(`${GATEKEEPER_APP}: no spec.source.targetRevision`);
   if (mise.length === 0) failures.push(`${MISE_FULL}: no \`gator = "<version>"\` pin`);
   if (chart.length > 0 && mise.length > 0 && chart !== mise) {
-    failures.push(`gator ${mise} (${MISE_FULL}) != gatekeeper chart ${chart} (${GATEKEEPER_APP}) -- the suite would test a different engine than the one that enforces`);
+    failures.push(
+      `gator ${mise} (${MISE_FULL}) != gatekeeper chart ${chart} (${GATEKEEPER_APP}) -- the suite would test a different engine than the one that enforces`,
+    );
   }
   const running = /gator version v?(\S+?)[\s,]/.exec(gatorVersionLine + " ")?.[1] ?? "";
   if (mise.length > 0 && running !== mise) {
-    failures.push(`gator on PATH reports ${running.length > 0 ? running : "(unparseable: " + gatorVersionLine.trim() + ")"}, pinned ${mise}`);
+    failures.push(
+      `gator on PATH reports ${running.length > 0 ? running : "(unparseable: " + gatorVersionLine.trim() + ")"}, pinned ${mise}`,
+    );
   }
   return failures;
 }
@@ -219,9 +233,9 @@ export function pinFailures(appYaml: string, miseToml: string, gatorVersionLine:
 function listFiles(dir: string): string[] {
   const out: string[] = [];
   const walk = (d: string): void => {
-    for (const name of readdirSync(d)) {
-      const p = join(d, name);
-      if (statSync(p).isDirectory()) walk(p);
+    for (const entry of readdirSync(d, { withFileTypes: true })) {
+      const p = join(d, entry.name);
+      if (entry.isDirectory()) walk(p);
       else out.push(relative(dir, p));
     }
   };
@@ -267,12 +281,14 @@ export function materialise(
 function main(argv: readonly string[]): number {
   const repoRoot = defaultRepoRoot();
   const at = argv.indexOf("--policies");
-  const policiesDir = at >= 0 && argv[at + 1] !== undefined ? argv[at + 1] ?? "" : join(repoRoot, HAT_POLICY_DIR);
+  const policiesDir = at >= 0 && argv[at + 1] !== undefined ? (argv[at + 1] ?? "") : join(repoRoot, HAT_POLICY_DIR);
   const keep = argv.includes("--keep");
 
   const version = spawnSync("gator", ["--version"], { encoding: "utf8" });
   if (version.error !== undefined || version.status !== 0) {
-    console.error("::error::gator is not on PATH -- NOTHING RAN. Install it with `MISE_ENV=full mise install gator` (pinned in .mise.full.toml).");
+    console.error(
+      "::error::gator is not on PATH -- NOTHING RAN. Install it with `MISE_ENV=full mise install gator` (pinned in .mise.full.toml).",
+    );
     return 2;
   }
   const pins = pinFailures(
