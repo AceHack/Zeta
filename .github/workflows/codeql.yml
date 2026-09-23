@@ -780,9 +780,52 @@ jobs:
       # ---- Analyze + upload SARIF ----------------------------
 
       - name: Perform CodeQL Analysis
-        if: steps.src.outputs.has_source == 'true'
+        if: steps.src.outputs.has_source == 'true' && matrix.language != 'javascript-typescript'
         uses: github/codeql-action/analyze@b96794f015dfd88f77b49b1c93e0fa7110f94c63 # v4.38.0
         with:
+          category: "/language:${{ matrix.language }}"
+
+      # JavaScript/TypeScript: analyze WITHOUT uploading, drop ONE rule's results
+      # on files the TypeScript compiler already checks, then upload the rest.
+      #
+      # `js/call-to-non-callable` cannot follow this repo's `.ts`-extension
+      # imports, so it types every imported function as `undefined` and flags
+      # correct calls (stripRemotePrefix; isFullGitCommitSha x5 on #17541). Now
+      # that the quality pack runs on every PR, each false positive opens review
+      # threads that BLOCK merge under required conversation resolution. On a
+      # file tsc checks, strict tsc already refuses non-callable calls and gates
+      # every PR, so the rule adds only false positives there. It keeps firing on
+      # every file tsc does NOT check (~51 plain JS files, and AssemblyScript
+      # under src/wasm-dla), and every other rule is untouched. The file set comes
+      # from `tsc --listFilesOnly`, not from re-reading tsconfig's globs.
+      # Filter + falsifiers: src/Core.TypeScript/ci/codeql-drop-tsc-dominated.ts
+      - name: Perform CodeQL Analysis (javascript-typescript, no upload)
+        if: steps.src.outputs.has_source == 'true' && matrix.language == 'javascript-typescript'
+        uses: github/codeql-action/analyze@b96794f015dfd88f77b49b1c93e0fa7110f94c63 # v4.38.0
+        with:
+          category: "/language:${{ matrix.language }}"
+          upload: never
+          output: codeql-sarif
+
+      - name: Setup pinned Bun (for the tsc file list)
+        if: steps.src.outputs.has_source == 'true' && matrix.language == 'javascript-typescript'
+        uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
+
+      - name: Drop js/call-to-non-callable on tsc-checked files only
+        if: steps.src.outputs.has_source == 'true' && matrix.language == 'javascript-typescript'
+        shell: bash
+        run: |
+          set -euo pipefail
+          bun install --frozen-lockfile
+          bunx tsc -p tsconfig.json --listFilesOnly > "$RUNNER_TEMP/tsc-files.txt"
+          bun src/Core.TypeScript/ci/codeql-drop-tsc-dominated.ts \
+            --sarif codeql-sarif --tsc-files "$RUNNER_TEMP/tsc-files.txt" --repo-root "$GITHUB_WORKSPACE"
+
+      - name: Upload filtered SARIF (javascript-typescript)
+        if: steps.src.outputs.has_source == 'true' && matrix.language == 'javascript-typescript'
+        uses: github/codeql-action/upload-sarif@b96794f015dfd88f77b49b1c93e0fa7110f94c63  # v4.38.0
+        with:
+          sarif_file: codeql-sarif
           category: "/language:${{ matrix.language }}"
 
   # ---------------------------------------------------------------------------

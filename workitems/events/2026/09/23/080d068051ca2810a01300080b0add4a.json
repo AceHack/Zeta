@@ -1,0 +1,14 @@
+{
+  "id": "080d068051ca2810a01300080b0add4a",
+  "at": "2026-09-23T20:52:06.085Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M380MEA3087G0R001KSY6R1",
+    "type": "bug",
+    "title": "js/call-to-non-callable false positives on .ts-extension imports block correct PRs via bot threads",
+    "slug": "js-call-to-non-callable-false-positives-on-ts-extension-impo",
+    "priority": "P2",
+    "filename": "081M380MEA3087G0R001KSY6R1-js-call-to-non-callable-false-positives-on-ts-extension-impo.md"
+  }
+}
