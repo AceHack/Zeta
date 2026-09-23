@@ -2059,3 +2059,7 @@ UNIQUE HOLDS leftover NEW CELL leftover UNIQUE leftover #17583 leftover unique @
 ## leftover UNIQUE leftover #17587 leftover unique @ 0b025e5673a8b33a8ec40a84e8c2a4736d0d1021
 
 UNIQUE HOLDS leftover NEW CELL leftover UNIQUE leftover #17587 leftover unique @ 0b025e5673a8b33a8ec40a84e8c2a4736d0d1021 -- GRADE HOLD (tip 1-commit +194/-1 / 4 files argocd-health-test.ts/.test.ts + workitem + event). Product: parseUnhealthyResources + snapshot/verdict carry + soak `{unhealthy: ...}` for Synced/Progressing. HOLD: classifyApplications duplicates unhealthyResources spread (drop one). Never grade merge_commit b340013e. Tip proof 0 completed failures sampled. Task 081M386W2ZA087G0R002834BSW. Sit leftover. Do not merge.
+---
+## leftover UNIQUE leftover #17590 leftover unique @ 36c172c0079e8c958eb8372643f444b40f26bec6
+
+UNIQUE HOLDS leftover NEW CELL leftover UNIQUE leftover #17590 leftover unique @ 36c172c0079e8c958eb8372643f444b40f26bec6 -- GRADE GO (tip 1-commit +81/-14 / 4 files). Lanes move k3d->kind+Cilium (LB pool + WireGuard preflight; measured cilium/spire stalls). Lockstep covers kind/cilium. Never grade MERGE-REF f9df193b. Tip proof 0 completed failures sampled. Task 081M3878Y6S087G0R00248VJH6. Sit leftover. Do not merge.
