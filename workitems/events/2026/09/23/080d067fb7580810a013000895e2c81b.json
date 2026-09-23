@@ -1,0 +1,14 @@
+{
+  "id": "080d067fb7580810a013000895e2c81b",
+  "at": "2026-09-23T20:31:00.865Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M37ZDTR0087G0R001E5D3ZT",
+    "type": "bug",
+    "title": "dependabot manages twitch-ai under both bun and npm, so npm-group bumps break frozen-lockfile installs",
+    "slug": "dependabot-manages-twitch-ai-under-both-bun-and-npm-so-npm-g",
+    "priority": "P2",
+    "filename": "081M37ZDTR0087G0R001E5D3ZT-dependabot-manages-twitch-ai-under-both-bun-and-npm-so-npm-g.md"
+  }
+}
