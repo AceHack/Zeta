@@ -15,8 +15,8 @@
 ## Counts
 
 - **Declared unhashed:** 7 — each one names its own reason on its own row.
-- **Undeclared unhashed:** 133 — visible and countable, but not yet declarable. This number must only fall.
-- **Digest-covered:** 1998.
+- **Undeclared unhashed:** 134 — visible and countable, but not yet declarable. This number must only fall.
+- **Digest-covered:** 2007.
 
 ## Declared — an unhashed dependency that says why
 
@@ -50,7 +50,7 @@ work of removing one is nameable rather than vague.
 | `from-ollama` | 3 | `3 row(s)` | key/value file, not a row-per-dependency format; the model is named by a mutable ollama tag | `tools/setup/manifests/from-ollama` |
 | `from-uv-tool` | 1 | `ruff==0.16.5` | parseSimpleManifest treats the whole line as a pip requirement, so a k=v attribute cannot be added without changing the parser; `==` pins a version, never the wheel's bytes | `tools/setup/manifests/from-uv-tool` |
 | `from-uv-venv` | 4 | `azure-quantum==3.10.0, qdk[azure]==1.29.1, qsharp==1.29.1, quantum-circuit==0.9.247` | pip specs pin a version; hashes need a --require-hashes requirements file this mechanism does not use | `tools/setup/manifests/from-uv-venv` |
-| `mise` | 7 | `github:yannh/kubeconform, helm, k3d, kind, kubectl, rust, zig` | mise pins a VERSION; a per-tool digest needs a committed mise.lock, which this tree does not have yet. `MISE_PYTHON_GITHUB_ATTESTATIONS=0` in tools/setup/common/mise.sh also disables the one upstream attestation check that exists | `.mise.full.toml` |
+| `mise` | 8 | `gator, github:yannh/kubeconform, helm, k3d, kind, kubectl, rust, zig` | mise pins a VERSION; a per-tool digest needs a committed mise.lock, which this tree does not have yet. `MISE_PYTHON_GITHUB_ATTESTATIONS=0` in tools/setup/common/mise.sh also disables the one upstream attestation check that exists | `.mise.full.toml` |
 | `mise` | 18 | `1password-cli, actionlint, bun, dotnet, go, golangci-lint, java, node, npm:markdownlint-cli2, pipx:mypy, pipx:ruff, pipx:semgrep, pipx:yamllint, python, rust, shellcheck, uv, zig` | mise pins a VERSION; a per-tool digest needs a committed mise.lock, which this tree does not have yet. `MISE_PYTHON_GITHUB_ATTESTATIONS=0` in tools/setup/common/mise.sh also disables the one upstream attestation check that exists | `.mise.toml` |
 | `windows` | 14 | `git, gnupg, lua, nodejs, ollama, opensc, pandoc, podman, qemu, r, tailscale, tectonic, yubico-piv-tool, yubikey-manager-cli` | scoop/winget/choco manifests carry the hash upstream; we pin the package id only | `tools/setup/manifests/windows` |
 
@@ -80,7 +80,7 @@ Listed so the numbers above are a ratio rather than a scare.
 | `from-url` | `src/Core.Alloy/alloy.jar` | `tools/setup/manifests/from-url` |
 | `from-zip` | `~/.zeta/codeql-cli` | `tools/setup/manifests/from-zip` |
 | `from-zip` | `~/.zeta/fricas` | `tools/setup/manifests/from-zip` |
-| `github-actions` | `337 SHA-pinned reference(s)` | `.github/workflows` |
+| `github-actions` | `352 SHA-pinned reference(s)` | `.github/workflows` |
 | `npm` | `40 integrity-covered package(s)` | `agentic-organization/package-lock.json` |
 | `npm` | `428 integrity-covered package(s)` | `bun.lock` |
 | `npm` | `5 integrity-covered package(s)` | `full-ai-cluster/platform-controller/bun.lock` |
@@ -88,8 +88,7 @@ Listed so the numbers above are a ratio rather than a scare.
 | `npm` | `100 integrity-covered package(s)` | `full-ai-cluster/portal/web/bun.lock` |
 | `npm` | `870 integrity-covered package(s)` | `package-lock.json` |
 | `npm` | `43 integrity-covered package(s)` | `src/apps/twitch-ai/bun.lock` |
-| `npm` | `92 integrity-covered package(s)` | `src/apps/twitch-ai/package-lock.json` |
-| `npm` | `8 integrity-covered package(s)` | `tools/setup/persona-keys/bun.lock` |
+| `npm` | `94 integrity-covered package(s)` | `src/apps/twitch-ai/package-lock.json` |
 | `nuget` | `38 centrally-versioned package(s)` | `Directory.Packages.props` |
 | `yamllint-requirements.txt` | `PyYAML` | `tools/setup/manifests/yamllint-requirements.txt` |
 | `yamllint-requirements.txt` | `pathspec` | `tools/setup/manifests/yamllint-requirements.txt` |

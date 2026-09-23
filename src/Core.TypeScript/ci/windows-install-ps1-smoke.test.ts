@@ -222,7 +222,10 @@ test("declaring ZETA_HOST_TIER=full still reaches the full graph (capability kep
   expect(parseWindowsHostTierPolicy(installer).miseEnvFullGuardTier).toBe("full");
 });
 
-test(".mise.full.toml's only non-mirror entries are the k8s five — what tier=standard now skips", () => {
+test(".mise.full.toml's only non-mirror entries are the k8s set — what tier=standard now skips", () => {
+  // `gator` (Gatekeeper's offline policy tester) joined the k8s five on 2026-09-23. It is
+  // Kubernetes tooling like the rest, AND upstream publishes no Windows build of it, so a
+  // Windows host skipping the full tier is the only shape that could work anyway.
   // This is the fact that makes the tests above mean anything: if the k8s tools were ALSO in
   // `.mise.toml`, narrowing the tier would change nothing, and if `.mise.full.toml` carried
   // something else Windows needs, narrowing it would break the lane.
@@ -238,7 +241,7 @@ test(".mise.full.toml's only non-mirror entries are the k8s five — what tier=s
   const fullTools = declared(full);
   const baseTools = new Set(declared(base));
   const onlyInFull = fullTools.filter((t) => !baseTools.has(t)).sort();
-  expect(onlyInFull).toEqual(["github:yannh/kubeconform", "helm", "k3d", "kind", "kubectl"]);
+  expect(onlyInFull).toEqual(["gator", "github:yannh/kubeconform", "helm", "k3d", "kind", "kubectl"]);
   // The mirrors: present in BOTH, so a standard-tier host installs the same versions.
   expect(fullTools.filter((t) => baseTools.has(t)).sort()).toEqual(["rust", "zig"]);
 });
