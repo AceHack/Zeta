@@ -2067,3 +2067,7 @@ UNIQUE HOLDS leftover NEW CELL leftover UNIQUE leftover #17590 leftover unique @
 ## leftover UNIQUE leftover #17589 leftover unique @ 2636141e309842e0c3f58ed164821b76bc9f4ac2
 
 UNIQUE HOLDS leftover NEW CELL leftover UNIQUE leftover #17589 leftover unique @ 2636141e309842e0c3f58ed164821b76bc9f4ac2 -- GRADE GO (tip 1-commit +38/-10 / 3 files). CoS-named c95df3cc is 2-parent MERGE tip+main -- never grade; never merge_commit b438a2f6. Tip: etcd db tmpfs + cluster-ha workflow_dispatch only. Prior unique @ cc6fed63 (rancher disk / joiners held / wait_or_dump) in ancestry. Follow-up #17569. Task 081M3812659087G0R001NP3WR6. Sit leftover. Do not merge.
+---
+## leftover UNIQUE leftover #17591 leftover unique @ b9626dc5fb22e24e7e3f270b5004b90c5c17aa4d
+
+UNIQUE HOLDS leftover NEW CELL leftover UNIQUE leftover #17591 leftover unique @ b9626dc5fb22e24e7e3f270b5004b90c5c17aa4d -- GRADE GO (tip 1-commit +405/-9 / 9 files). gpuVendor dimension + AMD ollama/vllm forms; empty selection keeps committed NVIDIA; lane-memory citation. Never grade MERGE-REF alone (merge_commit_sha null). Tip proof 0 completed failures sampled. Task 081M385PR15087G0R0024N0JTS. Sit leftover. Do not merge.
