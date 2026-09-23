@@ -1,0 +1,12 @@
+{
+  "pr_number": 17569,
+  "archive_path": "docs/history/pr-reviews/2026/09/23/PR-17569-test-cluster-3-node-ha-k3s-replicated-longhorn-qemu-test-etcd-peers-admitted-by-.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-23T21:31:11.299Z",
+  "schema_version": "v1",
+  "commit_sha": "1d4b1cc07021b8b81f6e2a4ded99a95ac28c0dd1",
+  "title": "test(cluster): 3-node HA k3s + replicated Longhorn QEMU test; etcd peers admitted by the product, not the harness",
+  "state": "MERGED",
+  "merged_at": "2026-09-23T21:30:19Z",
+  "head_ref": "shadow/k3s-ha-cluster-qemu-test"
+}
