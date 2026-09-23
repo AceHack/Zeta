@@ -1,0 +1,12 @@
+{
+  "pr_number": 17545,
+  "archive_path": "docs/history/pr-reviews/2026/09/23/PR-17545-fix-cluster-mint-the-gitlab-root-password-secret-and-close-the-audit-gap-that-hi.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-23T01:18:05.232Z",
+  "schema_version": "v1",
+  "commit_sha": "f847105d2439701d55e249c0043221e42c631456",
+  "title": "fix(cluster): mint the GitLab root-password secret and close the audit gap that hid it (WP24)",
+  "state": "MERGED",
+  "merged_at": "2026-09-23T01:17:22Z",
+  "head_ref": "claude/gitlab-root-secret-and-secret-sweep"
+}
