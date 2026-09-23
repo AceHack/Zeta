@@ -197,7 +197,28 @@ in
             ${pkgs.systemd}/bin/systemctl list-jobs --no-pager
             ${pkgs.systemd}/bin/systemctl status network-online.target NetworkManager-wait-online.service systemd-networkd-wait-online.service --no-pager -n 5
             ${pkgs.systemd}/bin/systemctl --failed --no-pager
-            ${pkgs.systemd}/bin/journalctl -u k3s.service -b --no-pager -n 60
+            # MEASURED run 35780287818: the tail alone was 60 identical agent
+            # retries ("server is not ready: ... serving-kubelet.key: <nil>"),
+            # which says the SERVER never finished starting and says nothing
+            # about why. The server's own startup lines are at the HEAD of this
+            # unit's journal, and its failures are level=fatal/error lines
+            # anywhere in it -- so capture both, not just the last screenful.
+            echo "--- k3s journal HEAD (server startup) ---"
+            ${pkgs.systemd}/bin/journalctl -u k3s.service -b --no-pager -n 400 | ${pkgs.coreutils}/bin/head -n 120
+            echo "--- k3s journal: fatal/error lines ---"
+            ${pkgs.systemd}/bin/journalctl -u k3s.service -b --no-pager \
+              | ${pkgs.gnugrep}/bin/grep -iE "level=(fatal|error)|panic|cannot|refused|timeout|no such file" \
+              | ${pkgs.coreutils}/bin/head -n 60
+            echo "--- k3s journal TAIL ---"
+            ${pkgs.systemd}/bin/journalctl -u k3s.service -b --no-pager -n 20
+            # The agent waits on files the server writes; whether they exist,
+            # and whether any is EMPTY, separates "server still working" from
+            # "server wrote a truncated key and the agent will retry forever".
+            echo "--- k3s agent/server TLS material ---"
+            ${pkgs.coreutils}/bin/ls -l /var/lib/rancher/k3s/agent /var/lib/rancher/k3s/server/tls 2>&1 | ${pkgs.coreutils}/bin/head -n 40
+            echo "--- disk + memory ---"
+            ${pkgs.coreutils}/bin/df -h /var/lib/rancher /var 2>&1
+            ${pkgs.procps}/bin/free -m 2>&1
             # systemd breaks an ordering cycle by DELETING a start job, which
             # leaves the unit inactive forever with nothing in its own journal.
             ${pkgs.systemd}/bin/journalctl -b --no-pager | ${pkgs.gnugrep}/bin/grep -iE "ordering cycle|deleted to break|Job .* failed|dependency failed" | ${pkgs.coreutils}/bin/tail -n 40
