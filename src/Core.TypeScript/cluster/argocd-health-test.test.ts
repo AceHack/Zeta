@@ -39,6 +39,7 @@ import {
   mergeArgoCdTimeoutDiagnostics,
   restartingContainersFromPodsJson,
   parseApplicationList,
+  parseUnhealthyResources,
   formatHealthWaitProgress,
   confirmedDegradedTerminalFailure,
   degradedApplicationNames,
@@ -2125,7 +2126,10 @@ describe("crash-loop containers are found, not guessed", () => {
       pods([
         {
           metadata: { namespace: "kube-system", name: "coredns-abc" },
-          status: { phase: "Running", containerStatuses: [{ name: "coredns", restartCount: 0, state: { running: {} } }] },
+          status: {
+            phase: "Running",
+            containerStatuses: [{ name: "coredns", restartCount: 0, state: { running: {} } }],
+          },
         },
       ]),
     );
@@ -2135,8 +2139,14 @@ describe("crash-loop containers are found, not guessed", () => {
   test("orders by restart count, so the worst offender is logged first under the cap", () => {
     const out = restartingContainersFromPodsJson(
       pods([
-        { metadata: { namespace: "a", name: "p1" }, status: { containerStatuses: [{ name: "c", restartCount: 2, state: {} }] } },
-        { metadata: { namespace: "b", name: "p2" }, status: { containerStatuses: [{ name: "c", restartCount: 9, state: {} }] } },
+        {
+          metadata: { namespace: "a", name: "p1" },
+          status: { containerStatuses: [{ name: "c", restartCount: 2, state: {} }] },
+        },
+        {
+          metadata: { namespace: "b", name: "p2" },
+          status: { containerStatuses: [{ name: "c", restartCount: 9, state: {} }] },
+        },
       ]),
     );
     expect(out.map((r) => r.pod)).toEqual(["p2", "p1"]);
@@ -2168,9 +2178,7 @@ describe("081KSXN940008QG0R000SCP2H1 evidence-based terminal Degraded (run 35628
     status: {
       phase: "Pending",
       conditions: [{ type: "PodScheduled", status: "True" }],
-      initContainerStatuses: [
-        { name: "init-config-reloader", restartCount: 0, ready: false, state: { running: {} } },
-      ],
+      initContainerStatuses: [{ name: "init-config-reloader", restartCount: 0, ready: false, state: { running: {} } }],
       containerStatuses: [
         { name: "prometheus", restartCount: 0, ready: false, state: { waiting: { reason: "PodInitializing" } } },
       ],
@@ -2189,7 +2197,9 @@ describe("081KSXN940008QG0R000SCP2H1 evidence-based terminal Degraded (run 35628
     status: {
       phase: "Pending",
       initContainerStatuses: [{ name: "init-pki", restartCount: 0, ready: false, state: { running: {} } }],
-      containerStatuses: [{ name: "ziti-controller", restartCount: 0, ready: false, state: { waiting: { reason: "PodInitializing" } } }],
+      containerStatuses: [
+        { name: "ziti-controller", restartCount: 0, ready: false, state: { waiting: { reason: "PodInitializing" } } },
+      ],
     },
   };
 
@@ -2212,7 +2222,12 @@ describe("081KSXN940008QG0R000SCP2H1 evidence-based terminal Degraded (run 35628
           name: "headscale",
           restartCount: 0,
           ready: false,
-          state: { waiting: { reason: "ImagePullBackOff", message: 'Back-off pulling image "ghcr.io/juanfont/headscale:bad-tag"' } },
+          state: {
+            waiting: {
+              reason: "ImagePullBackOff",
+              message: 'Back-off pulling image "ghcr.io/juanfont/headscale:bad-tag"',
+            },
+          },
         },
       ],
     },
@@ -2243,7 +2258,12 @@ describe("081KSXN940008QG0R000SCP2H1 evidence-based terminal Degraded (run 35628
     status: {
       phase: "Pending",
       conditions: [
-        { type: "PodScheduled", status: "False", reason: "Unschedulable", message: "0/1 nodes are available: 1 Insufficient cpu." },
+        {
+          type: "PodScheduled",
+          status: "False",
+          reason: "Unschedulable",
+          message: "0/1 nodes are available: 1 Insufficient cpu.",
+        },
       ],
       containerStatuses: [],
     },
@@ -2282,8 +2302,22 @@ describe("081KSXN940008QG0R000SCP2H1 evidence-based terminal Degraded (run 35628
     const pods = podsFromPodsJson(
       podsJson([
         kubePrometheusStackPodInitializing, // monitoring, exclusive to kube-prometheus-stack
-        { metadata: { namespace: "cert-manager", name: "cert-manager-0", labels: { "app.kubernetes.io/instance": "cert-manager" } }, status: {} },
-        { metadata: { namespace: "cert-manager", name: "trust-manager-0", labels: { "app.kubernetes.io/instance": "trust-manager" } }, status: {} },
+        {
+          metadata: {
+            namespace: "cert-manager",
+            name: "cert-manager-0",
+            labels: { "app.kubernetes.io/instance": "cert-manager" },
+          },
+          status: {},
+        },
+        {
+          metadata: {
+            namespace: "cert-manager",
+            name: "trust-manager-0",
+            labels: { "app.kubernetes.io/instance": "trust-manager" },
+          },
+          status: {},
+        },
         { metadata: { namespace: "cert-manager", name: "unlabelled-0" }, status: {} },
       ]),
     );
@@ -2294,20 +2328,40 @@ describe("081KSXN940008QG0R000SCP2H1 evidence-based terminal Degraded (run 35628
     ];
 
     test("an app with an exclusive namespace gets every pod in it, label or not", () => {
-      const owned = podsBelongingToApplication({ name: "kube-prometheus-stack", namespace: "monitoring" }, allApplications, pods);
+      const owned = podsBelongingToApplication(
+        { name: "kube-prometheus-stack", namespace: "monitoring" },
+        allApplications,
+        pods,
+      );
       expect(owned.map((p) => p.name)).toEqual(["prometheus-kube-prometheus-stack-kube-prom-prometheus-0"]);
     });
 
     test("a SHARED namespace is disambiguated by the instance label", () => {
-      const certManagerPods = podsBelongingToApplication({ name: "cert-manager", namespace: "cert-manager" }, allApplications, pods);
+      const certManagerPods = podsBelongingToApplication(
+        { name: "cert-manager", namespace: "cert-manager" },
+        allApplications,
+        pods,
+      );
       expect(certManagerPods.map((p) => p.name)).toEqual(["cert-manager-0"]);
-      const trustManagerPods = podsBelongingToApplication({ name: "trust-manager", namespace: "cert-manager" }, allApplications, pods);
+      const trustManagerPods = podsBelongingToApplication(
+        { name: "trust-manager", namespace: "cert-manager" },
+        allApplications,
+        pods,
+      );
       expect(trustManagerPods.map((p) => p.name)).toEqual(["trust-manager-0"]);
     });
 
     test("an unlabelled pod in a shared namespace is attributed to NEITHER app -- never guessed", () => {
-      const certManagerPods = podsBelongingToApplication({ name: "cert-manager", namespace: "cert-manager" }, allApplications, pods);
-      const trustManagerPods = podsBelongingToApplication({ name: "trust-manager", namespace: "cert-manager" }, allApplications, pods);
+      const certManagerPods = podsBelongingToApplication(
+        { name: "cert-manager", namespace: "cert-manager" },
+        allApplications,
+        pods,
+      );
+      const trustManagerPods = podsBelongingToApplication(
+        { name: "trust-manager", namespace: "cert-manager" },
+        allApplications,
+        pods,
+      );
       expect(certManagerPods.some((p) => p.name === "unlabelled-0")).toBe(false);
       expect(trustManagerPods.some((p) => p.name === "unlabelled-0")).toBe(false);
     });
@@ -2325,7 +2379,9 @@ describe("081KSXN940008QG0R000SCP2H1 evidence-based terminal Degraded (run 35628
       // MUTATION-SANITY: below the threshold, the same reason is NOT terminal.
       const belowThreshold: PodSnapshot = {
         ...(pod as PodSnapshot),
-        containers: [{ ...(pod as PodSnapshot).containers[0]!, restartCount: CRASHLOOP_RESTART_TERMINAL_THRESHOLD - 1 }],
+        containers: [
+          { ...(pod as PodSnapshot).containers[0]!, restartCount: CRASHLOOP_RESTART_TERMINAL_THRESHOLD - 1 },
+        ],
       };
       expect(podBlockingReason(belowThreshold)).toBeNull();
     });
@@ -2384,7 +2440,10 @@ describe("081KSXN940008QG0R000SCP2H1 evidence-based terminal Degraded (run 35628
     test("Running but not yet Ready, still within the startup grace window, is NOT terminal", () => {
       const youngPod = {
         metadata: { namespace: "vllm", name: "vllm-0", creationTimestamp: "2026-09-19T16:53:50Z" },
-        status: { phase: "Running", containerStatuses: [{ name: "vllm", restartCount: 0, ready: false, state: { running: {} } }] },
+        status: {
+          phase: "Running",
+          containerStatuses: [{ name: "vllm", restartCount: 0, ready: false, state: { running: {} } }],
+        },
       };
       const [pod] = podsFromPodsJson(podsJson([youngPod]));
       expect(podStillProvisioning(pod as PodSnapshot, now)).toBe(true);
@@ -2408,13 +2467,19 @@ describe("081KSXN940008QG0R000SCP2H1 evidence-based terminal Degraded (run 35628
 
     test("kube-prometheus-stack Degraded while PodInitializing: NOT terminal, at any degradedForSec below the ceiling", () => {
       const [pod] = podsFromPodsJson(podsJson([kubePrometheusStackPodInitializing]));
-      expect(degradedApplicationTerminalEvidence(evidence("kube-prometheus-stack", [pod as PodSnapshot], 30), now)).toBeNull();
-      expect(degradedApplicationTerminalEvidence(evidence("kube-prometheus-stack", [pod as PodSnapshot], 599), now)).toBeNull();
+      expect(
+        degradedApplicationTerminalEvidence(evidence("kube-prometheus-stack", [pod as PodSnapshot], 30), now),
+      ).toBeNull();
+      expect(
+        degradedApplicationTerminalEvidence(evidence("kube-prometheus-stack", [pod as PodSnapshot], 599), now),
+      ).toBeNull();
     });
 
     test("openziti-controller Degraded while Init:0/1: NOT terminal", () => {
       const [pod] = podsFromPodsJson(podsJson([ozitiInitZeroOfOne]));
-      expect(degradedApplicationTerminalEvidence(evidence("openziti-controller", [pod as PodSnapshot], 30), now)).toBeNull();
+      expect(
+        degradedApplicationTerminalEvidence(evidence("openziti-controller", [pod as PodSnapshot], 30), now),
+      ).toBeNull();
     });
 
     test("CrashLoopBackOff restart=6 is terminal on the FIRST poll (more fail-fast than the old two-poll rule)", () => {
@@ -2441,15 +2506,26 @@ describe("081KSXN940008QG0R000SCP2H1 evidence-based terminal Degraded (run 35628
     test("no hard evidence, past the ceiling, with no pod making progress -> terminal", () => {
       const stuckNoOpinion = {
         metadata: { namespace: "loki", name: "loki-0", creationTimestamp: "2026-09-19T16:00:00Z" },
-        status: { phase: "Running", containerStatuses: [{ name: "loki", restartCount: 0, ready: false, state: { running: {} } }] },
+        status: {
+          phase: "Running",
+          containerStatuses: [{ name: "loki", restartCount: 0, ready: false, state: { running: {} } }],
+        },
       };
       const [pod] = podsFromPodsJson(podsJson([stuckNoOpinion]));
       const farPast = now + (DEGRADED_CEILING_SECONDS + 3600) * 1000; // container is long past its startup grace too
-      const hit = degradedApplicationTerminalEvidence(evidence("loki", [pod as PodSnapshot], DEGRADED_CEILING_SECONDS), farPast);
+      const hit = degradedApplicationTerminalEvidence(
+        evidence("loki", [pod as PodSnapshot], DEGRADED_CEILING_SECONDS),
+        farPast,
+      );
       expect(hit).not.toBeNull();
       expect(hit?.reason).toContain("ceiling");
       // MUTATION-SANITY: one second short of the ceiling, the same pod is NOT terminal.
-      expect(degradedApplicationTerminalEvidence(evidence("loki", [pod as PodSnapshot], DEGRADED_CEILING_SECONDS - 1), farPast)).toBeNull();
+      expect(
+        degradedApplicationTerminalEvidence(
+          evidence("loki", [pod as PodSnapshot], DEGRADED_CEILING_SECONDS - 1),
+          farPast,
+        ),
+      ).toBeNull();
     });
 
     test("not Synced/Degraded at all -> null regardless of pods", () => {
@@ -2470,8 +2546,20 @@ describe("081KSXN940008QG0R000SCP2H1 evidence-based terminal Degraded (run 35628
       const [crashPod] = podsFromPodsJson(podsJson([crashLoopingPod]));
       const failure = evidenceBasedDegradedTerminalFailure(
         [
-          { name: "kube-prometheus-stack", syncStatus: "Synced", healthStatus: "Degraded", degradedForSec: 30, pods: [initializingPod as PodSnapshot] },
-          { name: "mimir", syncStatus: "Synced", healthStatus: "Degraded", degradedForSec: 15, pods: [crashPod as PodSnapshot] },
+          {
+            name: "kube-prometheus-stack",
+            syncStatus: "Synced",
+            healthStatus: "Degraded",
+            degradedForSec: 30,
+            pods: [initializingPod as PodSnapshot],
+          },
+          {
+            name: "mimir",
+            syncStatus: "Synced",
+            healthStatus: "Degraded",
+            degradedForSec: 15,
+            pods: [crashPod as PodSnapshot],
+          },
         ],
         now,
       );
@@ -2487,8 +2575,20 @@ describe("081KSXN940008QG0R000SCP2H1 evidence-based terminal Degraded (run 35628
       expect(
         evidenceBasedDegradedTerminalFailure(
           [
-            { name: "kube-prometheus-stack", syncStatus: "Synced", healthStatus: "Degraded", degradedForSec: 30, pods: [initializingPod as PodSnapshot] },
-            { name: "openziti-controller", syncStatus: "Synced", healthStatus: "Degraded", degradedForSec: 30, pods: [ozitiPod as PodSnapshot] },
+            {
+              name: "kube-prometheus-stack",
+              syncStatus: "Synced",
+              healthStatus: "Degraded",
+              degradedForSec: 30,
+              pods: [initializingPod as PodSnapshot],
+            },
+            {
+              name: "openziti-controller",
+              syncStatus: "Synced",
+              healthStatus: "Degraded",
+              degradedForSec: 30,
+              pods: [ozitiPod as PodSnapshot],
+            },
           ],
           now,
         ),
@@ -2527,7 +2627,12 @@ describe("081KSXN940008QG0R000SCP2H1 soak phase -- does it crash-loop after the 
         status: {
           phase: "Running",
           containerStatuses: [
-            { name: "ingester", restartCount: 3, ready: false, state: { terminated: { reason: "Error", exitCode: 1 } } },
+            {
+              name: "ingester",
+              restartCount: 3,
+              ready: false,
+              state: { terminated: { reason: "Error", exitCode: 1 } },
+            },
           ],
         },
       };
@@ -2550,7 +2655,9 @@ describe("081KSXN940008QG0R000SCP2H1 soak phase -- does it crash-loop after the 
         ...stablePod,
         status: {
           phase: "Running",
-          containerStatuses: [{ name: "ingester", restartCount: 3, ready: false, state: { waiting: { reason: "CrashLoopBackOff" } } }],
+          containerStatuses: [
+            { name: "ingester", restartCount: 3, ready: false, state: { waiting: { reason: "CrashLoopBackOff" } } },
+          ],
         },
       };
       expect(soakRestartRegressions(baseline, podsFromPodsJson(podsJson([stillWaiting])))).toHaveLength(1);
@@ -2630,7 +2737,10 @@ describe("081KSXN940008QG0R000SCP2H1 soak phase -- does it crash-loop after the 
     });
 
     test("names an Application that left Healthy/Synced", () => {
-      const failure = soakRegressionFailure([], [{ name: "mimir", ok: false, syncStatus: "OutOfSync", healthStatus: "Degraded" }]);
+      const failure = soakRegressionFailure(
+        [],
+        [{ name: "mimir", ok: false, syncStatus: "OutOfSync", healthStatus: "Degraded" }],
+      );
       expect(failure?.message).toContain("mimir");
       expect(failure?.message).toContain("left Healthy/Synced");
     });
@@ -2663,7 +2773,10 @@ describe("081KSXN940008QG0R000SCP2H1 soak phase -- does it crash-loop after the 
     });
 
     test("omits the bracketed resource list -- not '[]' -- when outOfSyncResources is absent", () => {
-      const failure = soakRegressionFailure([], [{ name: "mimir", ok: false, syncStatus: "OutOfSync", healthStatus: "Degraded" }]);
+      const failure = soakRegressionFailure(
+        [],
+        [{ name: "mimir", ok: false, syncStatus: "OutOfSync", healthStatus: "Degraded" }],
+      );
       expect(failure?.message).not.toContain("[]");
       expect(failure?.message).not.toContain("[");
     });
@@ -2675,29 +2788,80 @@ describe("081KSXN940008QG0R000SCP2H1 soak phase -- does it crash-loop after the 
       );
       expect(failure?.message).not.toContain("[");
     });
+
+    // 2026-09-23: 12 of 18 `included` failures since the soak phase landed were
+    // Applications flipping during the soak, and the `Synced/Progressing` ones --
+    // argo-rollouts, the most frequent -- named NO resource, because nothing was
+    // out of sync. `status.resources[].health` carries the answer; this reads it.
+    test("names the UNHEALTHY resource for a Synced/Progressing flip that has nothing out of sync", () => {
+      const failure = soakRegressionFailure(
+        [],
+        [
+          {
+            name: "argo-rollouts",
+            ok: false,
+            syncStatus: "Synced",
+            healthStatus: "Progressing",
+            unhealthyResources: ["Deployment/argo-rollouts Progressing: Waiting for rollout to finish"],
+          },
+        ],
+      );
+      expect(failure?.message).toContain(
+        "argo-rollouts left Healthy/Synced (Synced/Progressing) {unhealthy: Deployment/argo-rollouts Progressing: Waiting for rollout to finish}",
+      );
+    });
+
+    test("omits the unhealthy block when unhealthyResources is absent or empty", () => {
+      for (const extra of [{}, { unhealthyResources: [] }]) {
+        const failure = soakRegressionFailure(
+          [],
+          [{ name: "keda", ok: false, syncStatus: "Synced", healthStatus: "Progressing", ...extra }],
+        );
+        expect(failure?.message).not.toContain("{unhealthy");
+      }
+    });
   });
 
   describe("startupRestartEntries -- attributed to an app, sorted, excludes healthy containers", () => {
     test("only restarted containers appear, attributed via podsBelongingToApplication", () => {
       const restartedInMonitoring = {
-        metadata: { namespace: "monitoring", name: "prometheus-0", labels: { "app.kubernetes.io/instance": "kube-prometheus-stack" } },
-        status: { phase: "Running", containerStatuses: [{ name: "prometheus", restartCount: 1, ready: true, state: { running: {} } }] },
+        metadata: {
+          namespace: "monitoring",
+          name: "prometheus-0",
+          labels: { "app.kubernetes.io/instance": "kube-prometheus-stack" },
+        },
+        status: {
+          phase: "Running",
+          containerStatuses: [{ name: "prometheus", restartCount: 1, ready: true, state: { running: {} } }],
+        },
       };
       const healthyElsewhere = {
         metadata: { namespace: "redis", name: "redis-0" },
-        status: { phase: "Running", containerStatuses: [{ name: "redis", restartCount: 0, ready: true, state: { running: {} } }] },
+        status: {
+          phase: "Running",
+          containerStatuses: [{ name: "redis", restartCount: 0, ready: true, state: { running: {} } }],
+        },
       };
       const pods = podsFromPodsJson(podsJson([restartedInMonitoring, healthyElsewhere]));
       const entries = startupRestartEntries(pods, [{ name: "kube-prometheus-stack", namespace: "monitoring" }]);
       expect(entries).toEqual([
-        { app: "kube-prometheus-stack", namespace: "monitoring", pod: "prometheus-0", container: "prometheus", restartCount: 1 },
+        {
+          app: "kube-prometheus-stack",
+          namespace: "monitoring",
+          pod: "prometheus-0",
+          container: "prometheus",
+          restartCount: 1,
+        },
       ]);
     });
 
-    test("an unattributed pod (no matching Application) still reports, with app=\"\"", () => {
+    test('an unattributed pod (no matching Application) still reports, with app=""', () => {
       const orphan = {
         metadata: { namespace: "mystery", name: "mystery-0" },
-        status: { phase: "Running", containerStatuses: [{ name: "c", restartCount: 4, ready: true, state: { running: {} } }] },
+        status: {
+          phase: "Running",
+          containerStatuses: [{ name: "c", restartCount: 4, ready: true, state: { running: {} } }],
+        },
       };
       const entries = startupRestartEntries(podsFromPodsJson(podsJson([orphan])), []);
       expect(entries).toEqual([{ app: "", namespace: "mystery", pod: "mystery-0", container: "c", restartCount: 4 }]);
@@ -2714,7 +2878,13 @@ describe("081KSXN940008QG0R000SCP2H1 soak phase -- does it crash-loop after the 
       restartCount,
     });
     const baselineWithMimir = (maxRestarts: number): readonly StartupRestartBaselineEntry[] => [
-      { app: "mimir", container: "ingester", maxRestarts, reason: "mimir-kafka not ready yet at first boot", lastSeen: "2026-09-22" },
+      {
+        app: "mimir",
+        container: "ingester",
+        maxRestarts,
+        reason: "mimir-kafka not ready yet at first boot",
+        lastSeen: "2026-09-22",
+      },
     ];
 
     describe("classifyStartupRestartEntry -- the per-(app,container) verdict", () => {
@@ -2738,8 +2908,12 @@ describe("081KSXN940008QG0R000SCP2H1 soak phase -- does it crash-loop after the 
 
       test("MUTATION-SANITY: one restart below the threshold does not fail; the baseline exactly at the observed count covers it", () => {
         const byKey = new Map<string, StartupRestartBaselineEntry>();
-        expect(classifyStartupRestartEntry(mimirEntry(STARTUP_RESTART_HARD_FAIL_THRESHOLD - 1), byKey)).not.toBe("fail");
-        const covered = new Map(baselineWithMimir(STARTUP_RESTART_HARD_FAIL_THRESHOLD).map((e) => [`${e.app}::${e.container}`, e]));
+        expect(classifyStartupRestartEntry(mimirEntry(STARTUP_RESTART_HARD_FAIL_THRESHOLD - 1), byKey)).not.toBe(
+          "fail",
+        );
+        const covered = new Map(
+          baselineWithMimir(STARTUP_RESTART_HARD_FAIL_THRESHOLD).map((e) => [`${e.app}::${e.container}`, e]),
+        );
         expect(classifyStartupRestartEntry(mimirEntry(STARTUP_RESTART_HARD_FAIL_THRESHOLD), covered)).toBe("ok");
         // one restart OVER the covered ceiling is fail again, not silently absorbed
         expect(classifyStartupRestartEntry(mimirEntry(STARTUP_RESTART_HARD_FAIL_THRESHOLD + 1), covered)).toBe("fail");
@@ -2756,7 +2930,13 @@ describe("081KSXN940008QG0R000SCP2H1 soak phase -- does it crash-loop after the 
       test("a crash loop (restartCount>=3, uncovered) is a failure; a 1-2 wait is a warning, not a failure", () => {
         const measured = [
           mimirEntry(3),
-          { app: "dapr", namespace: "dapr-system", pod: "dapr-operator-0", container: "dapr-operator", restartCount: 1 },
+          {
+            app: "dapr",
+            namespace: "dapr-system",
+            pod: "dapr-operator-0",
+            container: "dapr-operator",
+            restartCount: 1,
+          },
         ];
         const result = classifyStartupRestarts(measured, [], now);
         expect(result.failures.map((f) => f.entry.container)).toEqual(["ingester"]);
@@ -2864,9 +3044,7 @@ describe("081M23CWG35087G0R003HXVV5Y a Degraded read on ONE poll is not a Degrad
 
   test("a DIFFERENT app degrading on the next poll does not confirm the first", () => {
     // Two single-sample blips in a row are still two single samples.
-    const otherDegraded = [
-      { name: "mimir", ok: false, syncStatus: "Synced", healthStatus: "Degraded" },
-    ];
+    const otherDegraded = [{ name: "mimir", ok: false, syncStatus: "Synced", healthStatus: "Degraded" }];
     expect(confirmedDegradedTerminalFailure(degradedNow, otherDegraded)).toBe(null);
   });
 
@@ -2891,9 +3069,7 @@ describe("081M23BCR90087G0R002GYP7TE a failed sync is never reconciled", () => {
     "Failed last sync attempt to [c73cc49e53fc13198df1cdb9ea054bc364e1c01f]: " +
     "one or more synchronization tasks completed unsuccessfully (retried 10 times).";
 
-  const hatSystem = (
-    conditions?: readonly { type: string; message: string }[],
-  ): ArgoApplicationSnapshot => ({
+  const hatSystem = (conditions?: readonly { type: string; message: string }[]): ArgoApplicationSnapshot => ({
     name: "hat-system",
     syncStatus: "OutOfSync",
     healthStatus: "Healthy",
@@ -2915,16 +3091,11 @@ describe("081M23BCR90087G0R002GYP7TE a failed sync is never reconciled", () => {
     // says true for BOTH. That is why the failure has to be read from the
     // condition rather than inferred from two status strings.
     expect(isApplicationSynced(hatSystem())).toBe(true);
-    expect(
-      isApplicationSynced(hatSystem([{ type: "SyncError", message: HAT_SYSTEM_SYNC_ERROR }])),
-    ).toBe(true);
+    expect(isApplicationSynced(hatSystem([{ type: "SyncError", message: HAT_SYSTEM_SYNC_ERROR }]))).toBe(true);
   });
 
   test("applicationOutcome REFUSES an Application whose last sync failed", () => {
-    const outcome = applicationOutcome(
-      autoSync,
-      hatSystem([{ type: "SyncError", message: HAT_SYSTEM_SYNC_ERROR }]),
-    );
+    const outcome = applicationOutcome(autoSync, hatSystem([{ type: "SyncError", message: HAT_SYSTEM_SYNC_ERROR }]));
     expect(outcome.ok).toBe(false);
     expect(outcome.reason).toContain("SyncError");
     expect(outcome.reason).toContain("retried 10 times");
@@ -3014,11 +3185,38 @@ describe("081M23BCR90087G0R002GYP7TE a failed sync is never reconciled", () => {
         "CustomResourceDefinition/workfloweventbindings.argoproj.io",
         "CustomResourceDefinition/workflowtasksets.argoproj.io",
       ]);
-      const verdicts = classifyApplications([{ ...autoSync, name: "argo-workflows", dir: "argo-workflows" }], snapshots);
+      const verdicts = classifyApplications(
+        [{ ...autoSync, name: "argo-workflows", dir: "argo-workflows" }],
+        snapshots,
+      );
       expect(verdicts[0]?.outOfSyncResources).toEqual([
         "CustomResourceDefinition/workfloweventbindings.argoproj.io",
         "CustomResourceDefinition/workflowtasksets.argoproj.io",
       ]);
+    });
+
+    // The carry step, pinned. Without this, classifyApplications could drop the
+    // field and every parser test would stay green while the soak message went
+    // back to naming no resource -- the very gap unhealthyResources closes.
+    test("unhealthyResources survives from the snapshot into the verdict", () => {
+      const snapshots = parseApplicationList(
+        JSON.stringify({
+          items: [
+            {
+              metadata: { name: "argo-rollouts" },
+              status: {
+                sync: { status: "Synced" },
+                health: { status: "Progressing" },
+                resources: [
+                  { kind: "Deployment", name: "argo-rollouts", health: { status: "Progressing", message: "rolling" } },
+                ],
+              },
+            },
+          ],
+        }),
+      );
+      const verdicts = classifyApplications([{ ...autoSync, name: "argo-rollouts", dir: "argo-rollouts" }], snapshots);
+      expect(verdicts[0]?.unhealthyResources).toEqual(["Deployment/argo-rollouts Progressing: rolling"]);
     });
 
     test("a Synced-only resource list produces NO outOfSyncResources field, not an empty array", () => {
@@ -3041,7 +3239,11 @@ describe("081M23BCR90087G0R002GYP7TE a failed sync is never reconciled", () => {
 
     test("no status.resources at all -> no outOfSyncResources field (old fixtures, absent field, unchanged)", () => {
       const snapshots = parseApplicationList(
-        JSON.stringify({ items: [{ metadata: { name: "argocd" }, status: { sync: { status: "Synced" }, health: { status: "Healthy" } } }] }),
+        JSON.stringify({
+          items: [
+            { metadata: { name: "argocd" }, status: { sync: { status: "Synced" }, health: { status: "Healthy" } } },
+          ],
+        }),
       );
       expect(snapshots[0]?.outOfSyncResources).toBeUndefined();
     });
@@ -3070,16 +3272,12 @@ function snapshotFixture(rendered: unknown): string {
 
 describe("RWX detected from the rendered snapshot", () => {
   test("an upstream chart rendering ReadWriteMany is caught", () => {
-    const root = snapshotFixture([
-      { appId: "full-ai-cluster/someapp", accessModes: ["ReadWriteMany"] },
-    ]);
+    const root = snapshotFixture([{ appId: "full-ai-cluster/someapp", accessModes: ["ReadWriteMany"] }]);
     expect(renderedClaimsRequestReadWriteMany("someapp", root)).toBe(true);
   });
 
   test("a chart rendering only ReadWriteOnce is not caught", () => {
-    const root = snapshotFixture([
-      { appId: "full-ai-cluster/someapp", accessModes: ["ReadWriteOnce"] },
-    ]);
+    const root = snapshotFixture([{ appId: "full-ai-cluster/someapp", accessModes: ["ReadWriteOnce"] }]);
     expect(renderedClaimsRequestReadWriteMany("someapp", root)).toBe(false);
   });
 
@@ -3092,9 +3290,7 @@ describe("RWX detected from the rendered snapshot", () => {
   });
 
   test("another app's RWX claim does not implicate this one", () => {
-    const root = snapshotFixture([
-      { appId: "full-ai-cluster/other", accessModes: ["ReadWriteMany"] },
-    ]);
+    const root = snapshotFixture([{ appId: "full-ai-cluster/other", accessModes: ["ReadWriteMany"] }]);
     expect(renderedClaimsRequestReadWriteMany("someapp", root)).toBe(false);
   });
 
@@ -3126,5 +3322,71 @@ describe("RWX detected from the rendered snapshot", () => {
   test("silence is reported, not read as clearance", () => {
     const root = snapshotFixture([{ appId: "full-ai-cluster/covered", accessModes: ["ReadWriteOnce"] }]);
     expect(appsTheRenderIsSilentAbout(["covered", "uncovered"], root)).toEqual(["uncovered"]);
+  });
+});
+
+describe("parseUnhealthyResources -- which resources are not Healthy, read from status.resources[].health", () => {
+  const status = (resources: unknown[]): Record<string, unknown> => ({ resources });
+
+  test("names a non-Healthy resource with its health message", () => {
+    expect(
+      parseUnhealthyResources(
+        status([
+          {
+            kind: "Deployment",
+            name: "argo-rollouts",
+            health: { status: "Progressing", message: "Waiting for rollout to finish" },
+          },
+        ]),
+      ),
+    ).toEqual(["Deployment/argo-rollouts Progressing: Waiting for rollout to finish"]);
+  });
+
+  test("Healthy resources, and resources ArgoCD assigns no health (CRDs), are not reported", () => {
+    expect(
+      parseUnhealthyResources(
+        status([
+          { kind: "Deployment", name: "ok", health: { status: "Healthy" } },
+          { kind: "CustomResourceDefinition", name: "rollouts.argoproj.io", status: "OutOfSync" },
+        ]),
+      ),
+    ).toEqual([]);
+  });
+
+  test("a health status with no message still names the resource", () => {
+    expect(
+      parseUnhealthyResources(status([{ kind: "StatefulSet", name: "s", health: { status: "Degraded" } }])),
+    ).toEqual(["StatefulSet/s Degraded"]);
+  });
+
+  test("ordinal-sorted and deterministic", () => {
+    expect(
+      parseUnhealthyResources(
+        status([
+          { kind: "Deployment", name: "b", health: { status: "Progressing" } },
+          { kind: "Deployment", name: "a", health: { status: "Progressing" } },
+        ]),
+      ),
+    ).toEqual(["Deployment/a Progressing", "Deployment/b Progressing"]);
+  });
+
+  test("parseApplicationList carries it onto the snapshot", () => {
+    const [snap] = parseApplicationList(
+      JSON.stringify({
+        items: [
+          {
+            metadata: { name: "argo-rollouts" },
+            status: {
+              sync: { status: "Synced" },
+              health: { status: "Progressing" },
+              resources: [
+                { kind: "Deployment", name: "argo-rollouts", health: { status: "Progressing", message: "rolling" } },
+              ],
+            },
+          },
+        ],
+      }),
+    );
+    expect(snap?.unhealthyResources).toEqual(["Deployment/argo-rollouts Progressing: rolling"]);
   });
 });
