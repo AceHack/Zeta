@@ -2417,3 +2417,17 @@ WP27 -- QEMU_DISK_SIZE_GB=1400 (Longhorn floor 1379/sched 959>=943); drop allowL
 ```
 
 WP27 tip-confirm -- invert WP28 harness so QEMU_DISK clears root floor; lane consts alias structurally; both Longhorn gates ok w/ empty override; refuse-signal on synthetic 40/64/floor/floor+ESP; prior GO product stands; never grade merge 86eca9fa / parent 34048076.
+## leftover UNIQUE leftover #17635 leftover unique @ 03834468c681093b7416983f3270b9e23ea6dc53 -- GRADE GO
+
+```
++--------------------------------------------------------------+
+| UNIQUE #17635 @ 03834468  GRADE GO                           |
+| tip=HEAD 1p +428/-24/4; parent d416c151                      |
+| product PASS @ tip (WP11 noBadPods 180s soak + shell-parity) |
+| soft: mergeable blocked; CI in_progress; e2e QEMU not run    |
+| hard: none                                                   |
+| proof: /workspace/vera-17635-03834468-review.md              |
++--------------------------------------------------------------+
+```
+
+WP11 -- noBadPods polls measured 180s soak (POLL 15s); two-consecutive zeta_wp11_* settle; bad_pod_diag; podCount+samples verdict JSON; qemu optional fields; load-bearing NEVER SETTLES/SETTLES LATE shell-parity; never grade merge 2d948711.
