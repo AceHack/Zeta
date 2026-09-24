@@ -1697,7 +1697,8 @@ jobs:
           fi
           bun src/Core.TypeScript/cluster/dev-cluster/kind-down.ts --cluster-name zeta-ci-cilium
 
-  # THE MISSING CELL OF THE 2x2. Dispatch-gated; see `workflow_dispatch` above.
+  # THE MISSING CELL OF THE 2x2. Runs on push + schedule since 2026-09-23 (see the
+  # `if:` below); was dispatch-gated until its first green, run 35934909707.
   #
   #   CNI        orchestrator   app roster asserted   result
   #   kindnetd   kind           included              green, 25 apps
@@ -1717,7 +1718,23 @@ jobs:
   live-kind-cilium-included:
     name: PROBE kind+Cilium included proof (${{ matrix.runner }})
     needs: dry-run
-    if: github.event_name == 'workflow_dispatch' && inputs.cilium_included_probe == 'true'
+    # PROMOTED 2026-09-23 from dispatch-only to PUSH + the daily SCHEDULE (still
+    # dispatchable, still NOT on pull_request). Dispatch run 35934909707 went
+    # GREEN for the first time since 2026-09-09 once #17595/#17599 gave kind the
+    # control-plane parity k3d and metal have: 37 auto-sync Applications
+    # Synced+Healthy, `cilium` and `weaviate` among them -- the two this lane
+    # exists to add over kindnetd's 35. A lane that only runs when someone
+    # remembers to dispatch it is coverage that does not COUNT, so main now
+    # measures it on every merge that touches these paths and once a day.
+    # Kept off pull_request on purpose: one green is not a track record, the
+    # job costs ~60 runner-minutes, and a flaky non-required red on every PR
+    # teaches people to ignore it. Promote it to PRs once main's history of
+    # this job says it is steady. The job name keeps "PROBE" so no required-
+    # check or dashboard keyed on it moves.
+    if: >-
+      github.event_name == 'push' ||
+      github.event_name == 'schedule' ||
+      (github.event_name == 'workflow_dispatch' && inputs.cilium_included_probe == 'true')
     strategy:
       fail-fast: false
       matrix:

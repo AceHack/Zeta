@@ -7,6 +7,8 @@
 // would be worse than the exclusion it replaces.
 
 import { describe, expect, test } from "bun:test";
+import { readFileSync as readWorkflowFile } from "node:fs";
+import { parse as parseWorkflowYaml } from "yaml";
 import {
   CILIUM_PINNED_REQUIRED_GATEWAY_API_CRDS,
   IFNAME_MAX_LENGTH,
@@ -310,5 +312,32 @@ describe("WireGuard preflight probe device — the falsifier for a real CI failu
     expect(wireguardProbeInterfaceIsValid("x".repeat(IFNAME_MAX_LENGTH + 1))).toBe(false);
     expect(wireguardProbeInterfaceIsValid("has space")).toBe(false);
     expect(wireguardProbeInterfaceIsValid("has/slash")).toBe(false);
+  });
+});
+
+/**
+ * 081M38C267E087G0R0034RRP4X -- the kind+Cilium included proof COUNTS.
+ *
+ * It went green for the first time on dispatch run 35934909707 (37 Applications
+ * Synced+Healthy, `cilium` and `weaviate` among them). A lane that runs only when
+ * someone dispatches it is coverage nobody is measuring, so it runs on push to
+ * main and on the daily schedule. Pinned both ways: those triggers are present,
+ * and pull_request is NOT (one green is not a track record; see the job's
+ * comment for when to promote it further).
+ */
+describe("the kind+Cilium included proof runs on a cadence", () => {
+  const workflow = parseWorkflowYaml(
+    readWorkflowFile(new URL("../../../.github/workflows/k8s-argocd-health-test.yml", import.meta.url), "utf8"),
+  ) as { jobs: Record<string, { if?: string }> };
+  const condition = workflow.jobs["live-kind-cilium-included"]?.if ?? "";
+
+  test("push and schedule run it; dispatch still can", () => {
+    expect(condition).toContain("github.event_name == 'push'");
+    expect(condition).toContain("github.event_name == 'schedule'");
+    expect(condition).toContain("inputs.cilium_included_probe == 'true'");
+  });
+
+  test("pull_request does not -- not yet", () => {
+    expect(condition).not.toContain("pull_request");
   });
 });

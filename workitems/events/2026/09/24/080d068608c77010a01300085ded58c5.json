@@ -1,0 +1,14 @@
+{
+  "id": "080d068608c77010a01300085ded58c5",
+  "at": "2026-09-24T00:11:50.894Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M38C267E087G0R0034RRP4X",
+    "type": "task",
+    "title": "Promote the kind+Cilium included proof from dispatch-only probe to push + daily schedule so Cilium and weaviate coverage counts",
+    "slug": "promote-the-kind-cilium-included-proof-from-dispatch-only-pr",
+    "priority": "P2",
+    "filename": "081M38C267E087G0R0034RRP4X-promote-the-kind-cilium-included-proof-from-dispatch-only-pr.md"
+  }
+}
