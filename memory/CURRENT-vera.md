@@ -2257,3 +2257,17 @@ UNIQUE HOLDS leftover NEW CELL leftover UNIQUE leftover #17608 leftover unique @
 - Soft: tip SHA 0 check_runs; 607<<943 declared debt; filed 081M397QHX8087G0R003DQSY0B; ollama/vllm rebind held
 - Task: 081M393B9TB087G0R000Y529Z8
 - Sit leftover. Do not merge.
+## leftover UNIQUE leftover #17608 leftover unique @ 54636b14df6ea2d710419d406d0054eefda3abe2 -- GRADE GO
+
+- When: 2026-09-24 ~4:58 AM ET tip-confirm / re-grade past GO
+- PR: https://github.com/Lucent-Financial-Group/Zeta/pull/17608 OPEN
+- Branch: claude/k3s-zero-length-tls-self-heal
+- Task: 081M38G8NGC087G0R001GEGEDK
+- Tip (graded only): 54636b14df6ea2d710419d406d0054eefda3abe2
+- Parent: ef996add5313ea791825887a097583c1971f6466 (prior GO)
+- Never grade: merge_commit_sha 003d77dcae7c6e51444bac3084c46672d773e351; merge-of-main parent 26b96854
+- Tip-only: +13/-0 / 1 file -- full-ai-cluster/nixos/tests/k3s-agent-tls-self-heal.nix
+- Product: test-only; print target 3 VM-test skip loud (EXERCISED vs NOT PRESENT) so green skip cannot look identical to a pass; cites runs 35943840554 and 35954415942 when skipped; module unchanged
+- Soft: tip CI settling (0 fails at grade time)
+- Prior GO @ ef996add stands (networking.enableIPv6=false QEMU slirp)
+- Sit leftover. Do not merge.
