@@ -1,0 +1,12 @@
+{
+  "pr_number": 17579,
+  "archive_path": "docs/history/pr-reviews/2026/09/24/PR-17579-fix-cluster-attribute-stage-6-pods-to-their-owning-application-not-namespace-nam.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-24T01:14:52.080Z",
+  "schema_version": "v1",
+  "commit_sha": "9e9d54861a3c7b884f1f8fb24207688653529658",
+  "title": "fix(cluster): attribute stage-6 pods to their owning Application, not namespace==name (WP23)",
+  "state": "MERGED",
+  "merged_at": "2026-09-24T01:14:08Z",
+  "head_ref": "claude/replica-verdict-attribution"
+}
