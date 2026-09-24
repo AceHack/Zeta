@@ -1,0 +1,12 @@
+{
+  "pr_number": 17640,
+  "archive_path": "docs/history/pr-reviews/2026/09/24/PR-17640-fix-zflash-log-the-esp-offset-and-its-provenance-on-every-bake-not-only-on-a-ref.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-24T23:06:08.319Z",
+  "schema_version": "v1",
+  "commit_sha": "f5966fbc2127ccb1ae93d2ceb25f6f39a241c374",
+  "title": "fix(zflash): log the ESP offset and its provenance on every bake, not only on a refusal (WP29)",
+  "state": "MERGED",
+  "merged_at": "2026-09-24T23:05:22Z",
+  "head_ref": "claude/wp29-log-esp-offset"
+}
