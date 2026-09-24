@@ -71,6 +71,45 @@ describe("installer preflights run BEFORE anything is destroyed", () => {
     expect(clone).toBeGreaterThan(wipe);
   });
 
+  // WP28 (081M393B9TB087G0R000Y529Z8) — a third instance of the same class,
+  // and the first one that is not about the install FAILING.
+  //
+  //   B5  Longhorn capacity. The installer gives Longhorn the longhorn1 TAIL off
+  //       the boot disk (1G by default) plus every non-boot disk whole, and the
+  //       committed roster declares ~943 GiB of driver.longhorn.io PVCs against
+  //       it. On a single-disk box the pool is one gibibyte whatever the disk's
+  //       size. Nothing refused: the install SUCCEEDED, the cluster came up, and
+  //       fifteen Applications' PVCs pended forever while the operator read PVC
+  //       events to find out why.
+  //
+  // That is why it belongs here rather than in a post-install health check. The
+  // whole geometry is known before anything is wiped, so the honest moment to
+  // refuse is with the previous OS still on the disk — and the bail prints the
+  // arithmetic plus three remedies rather than a verdict.
+  it("B5: the Longhorn capacity check precedes the wipe", () => {
+    const capacity = firstCodeLine(/assert_longhorn_pool_holds_the_roster\b/);
+    expect(capacity).toBeLessThan(Number.POSITIVE_INFINITY);
+    expect(capacity).toBeLessThan(wipe);
+  });
+
+  it("B5: the check is CALLED, not merely defined", () => {
+    // A preflight that is defined and never invoked is the vacuity class in its
+    // purest form: it reads as protection, greps as present, and runs never.
+    // `firstCodeLine` finds the definition line too, so match the bare call.
+    const invocation = lines.findIndex((l) => /^assert_longhorn_pool_holds_the_roster\s*$/.test(l.trimEnd()));
+    expect(invocation).toBeGreaterThan(-1);
+    expect(invocation + 1).toBeLessThan(wipe);
+  });
+
+  it("B5: the partition step it protects is still AFTER the wipe", () => {
+    // Same shape as B4 above: if the longhorn1 partition were ever created
+    // before the wipe, this preflight would be redundant rather than wrong, and
+    // the reasoning recorded above would be stale.
+    const partition = firstCodeLine(/sgdisk\s+-n\s+"3:0:0"/);
+    expect(partition).toBeLessThan(Number.POSITIVE_INFINITY);
+    expect(partition).toBeGreaterThan(wipe);
+  });
+
   it("the network probe cannot hang the zero-typing path", () => {
     // A black-hole route that accepts SYN and never replies, or a credential
     // prompt on a private URL, would otherwise stall here forever -- on the
