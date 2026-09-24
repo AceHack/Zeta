@@ -2374,3 +2374,17 @@ WP28 render-twice census over 49 Applications (45 stable / 4 unstable regenerate
 ```
 
 WP27 ESP first-boot conf scan prints esp-conf=/tried= unconditionally; role-less conf does not set ZETA_ROLE_SOURCE=esp:; assertEspFirstbootConfWasRead convicts run-35985197702 miss from guest serial; never merge_commit 7970497c; filed-not-fixed 081M39K8ND1087G0R000G4EN4N.
+## leftover UNIQUE leftover #17626 leftover unique @ 2ebf7f79188212888a93b937d16844c8e4356e2d -- GRADE GO
+
+```
++--------------------------------------------------------------+
+| UNIQUE #17626 @ 2ebf7f79  GRADE GO                           |
+| tip=HEAD 1p +265/-24/8; parent 399b9217                      |
+| product PASS @ tip (spawn-cap sweep + lint + baseline note)  |
+| soft: mergeable blocked; CI in_progress                      |
+| hard: none                                                   |
+| proof: /workspace/vera-17626-2ebf7f79-review.md              |
++--------------------------------------------------------------+
+```
+
+WP28 follow-up to #17622 -- delete inert defaultRunHelm clone; maxBuffer DEFAULT_MAX_BYTES on remaining Node spawnSync sites; uncapped-renderer-spawn lint (Bun.spawnSync excluded); baseline provenance; never grade merge 6fbb2b09.
