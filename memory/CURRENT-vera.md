@@ -2155,3 +2155,17 @@ UNIQUE HOLDS leftover NEW CELL leftover UNIQUE leftover #17608 leftover unique @
 - Product: only_wp11=true workflow_dispatch skips eight pre-ISO NixOS steps (seven always-on hermetic/online + longhorn-volume-binds) via if: always() && !(workflow_dispatch && inputs.only_wp11); PR/push paths unchanged; WP25 self-heal NixOS step stays unconditional (no if:)
 - Tip proof: sample SUCCESS, 0 FAILURE; soft gate/build-iso/dispatch still in flight
 - Sit leftover. Do not merge.
+---
+## leftover UNIQUE leftover #17609 leftover unique @ 003233158e03adba679ddfc662d108d4e3203053 — GRADE GO
+
+- PR: https://github.com/Lucent-Financial-Group/Zeta/pull/17609 OPEN
+- Branch: claude/qemu-graceful-guest-shutdown
+- Task: 081M392JR97087G0R003QAFH0Y
+- Tip (grade this SHA only): 003233158e03adba679ddfc662d108d4e3203053
+- Live HEAD IS tip — never grade merge_commit_sha 829cdd245e1793506290eace7b34f97c915bbe6d
+- Parent: e7a39dca93835003b6699b5642c888a2f440d704 (main)
+- Tip-only: +1181/−11 / 6 files
+- Product: QMP system_powerdown graceful guest teardown replaces silent SIGTERM-to-emulator (page-cache discard → zero-length k3s agent files); ladder graceful→SIGTERM→SIGKILL with loud WARNING on fallback; falsifier assertNothingToHealAfterGracefulShutdown convicts post-graceful WP25 removals
+- Independent of #17608 (no k3s-agent-tls-self-heal.* edits)
+- Tip proof: many SUCCESS; soft 2 failures (agencysignature PR body + check-then-use-races) + CI in flight
+- Sit leftover. Do not merge.
