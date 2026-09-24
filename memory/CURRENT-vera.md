@@ -2360,3 +2360,17 @@ tip-only seaweedfs SFTP Secret ignoreDifferences (5 data keys) + RespectIgnoreDi
 ```
 
 WP28 render-twice census over 49 Applications (45 stable / 4 unstable regenerated-secret+fresh-identity / 0 unmeasured); both-directions baseline; paired-suffix wildcard; helm-validate charts wired; spawnSync maxBuffer+blank-stderr; never grade merge b64282b2.
+## leftover UNIQUE leftover #17625 leftover unique @ 50efd3df52ad02a1bccc827fc6fabde9799fce7e -- GRADE GO
+
+```
++--------------------------------------------------------------+
+| UNIQUE #17625 @ 50efd3df  GRADE GO                           |
+| tip=HEAD 1p +361/-4/5; parent 399b9217                       |
+| product PASS @ tip (esp-conf/tried; role-less; serial assert)|
+| soft: mergeable blocked; CI in_progress at review            |
+| hard: none                                                   |
+| proof: /workspace/vera-17625-50efd3df-review.md              |
++--------------------------------------------------------------+
+```
+
+WP27 ESP first-boot conf scan prints esp-conf=/tried= unconditionally; role-less conf does not set ZETA_ROLE_SOURCE=esp:; assertEspFirstbootConfWasRead convicts run-35985197702 miss from guest serial; never merge_commit 7970497c; filed-not-fixed 081M39K8ND1087G0R000G4EN4N.
