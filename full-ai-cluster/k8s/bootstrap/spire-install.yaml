@@ -53,6 +53,37 @@ spec:
   version: 0.24.2
   targetNamespace: spire
   createNamespace: true
+  # WP26 (081M38GCTFX087G0R003MMTXJE), MEASURED on first-boot-replica run
+  # 35946414428: this job's `helm install` permanently CrashLoopBackOff'd
+  # (66 retries over 97 minutes, never once succeeding) with
+  #   Error: INSTALLATION FAILED: unable to continue with install:
+  #   ServiceAccount "spire-spiffe-csi-driver" in namespace "spire" exists
+  #   and cannot be imported into the current release: invalid ownership
+  #   metadata; annotation validation error: missing key
+  #   "meta.helm.sh/release-name": must be set to "spire"
+  #
+  # THIS IS THE HANDOFF RACING ITSELF, not a chart defect. The design (see
+  # the spire-crds HelmChart above, "K3S at first boot, then the Application
+  # adopts it") is that THIS bootstrap install creates the release and
+  # ArgoCD's spire Application (k8s/applications/spire/Application.yaml,
+  # sync-wave -50) takes over afterward. Nothing gates ArgoCD's reconcile on
+  # this job's completion -- it is a separate controller with no
+  # dependency edge on a k3s HelmChart CR -- so ArgoCD can (and, on this
+  # run, did) apply the identical spiffe-csi-driver ServiceAccount FIRST via
+  # a plain `kubectl apply`, which writes no `meta.helm.sh/*` annotations.
+  # Helm 3's install-time ownership check then refuses to touch that object
+  # forever: nothing about a retry changes the annotation, so every one of
+  # the 66 observed retries failed identically -- not a transient race that
+  # self-resolves, a permanent one.
+  #
+  # `takeOwnership` is the k3s helm-controller's own field for exactly this
+  # (helm.cattle.io/v1 HelmChartSpec: "Set to True if helm should take
+  # ownership of existing resources") -- it lets THIS install adopt
+  # resources that already exist without Helm's bookkeeping annotations,
+  # whichever installer put them there, instead of refusing outright. It
+  # does not change what gets installed, only whether a pre-existing,
+  # unowned match blocks the install.
+  takeOwnership: true
   valuesContent: |-
     global:
       spire:

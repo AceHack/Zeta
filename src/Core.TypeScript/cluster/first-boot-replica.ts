@@ -1134,9 +1134,22 @@ export function isKnownSealedByDesign(appName: string): boolean {
  * `isKnownSoakRegression`'s own discipline: only the `spire-agent` container
  * qualifies. A `spire-server` (or any other) issue in this namespace is NOT
  * covered and still fails the app, exactly as before.
+ *
+ * WP26, MEASURED on run 35946414428: the identical artifact (restartCount
+ * 20, `describe pod`'s Last State Terminated/Exit Code 1, connection-refused
+ * liveness/readiness events) was sampled while the container happened to be
+ * in its brief `Running` window BETWEEN crashes rather than sitting in
+ * `CrashLoopBackOff` at poll time — `classifyPod`'s fallback branch reports
+ * that as `UNKNOWN` with detail `"not converged: phase=Running ..."`, not
+ * `CRASHLOOP`. Same pod, same cycle, different instant sampled. Widened to
+ * cover that specific fallback shape too, still scoped to `spire-agent`
+ * pods only — a `FailedScheduling` or any other UNKNOWN detail shape is a
+ * real, different failure and stays uncovered.
  */
 export function isKnownSpireAgentDnsCrashLoop(issue: PodVerdict): boolean {
-  return issue.namespace === "spire" && issue.category === "CRASHLOOP" && issue.name.startsWith("spire-agent");
+  if (issue.namespace !== "spire" || !issue.name.startsWith("spire-agent")) return false;
+  if (issue.category === "CRASHLOOP") return true;
+  return issue.category === "UNKNOWN" && issue.detail.startsWith("not converged: phase=Running");
 }
 
 export interface AppVerdictContext {
@@ -1247,6 +1260,36 @@ export function computeAppVerdicts(
 /** Convergence-wait stop condition: no Application is still mid-reconcile. */
 export function allApplicationsSettled(apps: readonly { readonly health: string }[]): boolean {
   return apps.every((a) => a.health !== "Progressing");
+}
+
+/** One poll's roster shape, as `rosterHasStabilized` compares across two consecutive polls. */
+export interface RosterPollState {
+  readonly settled: boolean;
+  readonly count: number;
+}
+
+/**
+ * WP26 (081M38GCTFX087G0R003MMTXJE): `allApplicationsSettled` is vacuously
+ * true over any list with no Application still Progressing -- including a
+ * list that has barely started growing. MEASURED, run 35943167812: stage 6's
+ * poll observed `apps.every(...)` true at apps=2 (only `argocd` +
+ * `zeta-root`, both trivially Healthy) *before* ArgoCD's app-of-apps
+ * recursion had created the other ~40 Applications the lane-tree actually
+ * declares -- stage 8's baseline 8 minutes later saw the real roster at 37.
+ * Stage 6 recorded "2 Applications: 2 Healthy, 0 FAIL" and every downstream
+ * stage treated that as a real green, never assessing cilium/spire/weaviate/
+ * or anything else at all. `apps.every(f)` over a list that has not finished
+ * being populated is not "nothing is mid-reconcile", it is "nothing has been
+ * asked yet" -- the same vacuity class as a check that cannot fail.
+ *
+ * Requires the settled state to hold, AND the roster SIZE to be unchanged,
+ * across two consecutive polls before the roster counts as stabilized. A
+ * roster still being populated grows between polls (2 -> 37 took under 8
+ * minutes here; `opts.pollMs` polls far more often than that), so the count
+ * check catches exactly the window `allApplicationsSettled` alone cannot.
+ */
+export function rosterHasStabilized(previous: RosterPollState | null, current: RosterPollState): boolean {
+  return previous !== null && previous.settled && current.settled && previous.count === current.count;
 }
 
 /** One container's restart count, sampled during the soak phase. */
@@ -2310,6 +2353,7 @@ export async function runReplica(opts: RunOptions): Promise<RunReport> {
     const s6Deadline = s6Start + opts.stage567TimeoutSec;
     let appConvergence: readonly AppConvergenceSnapshot[] = [];
     let settled = false;
+    let previousRosterPoll: RosterPollState | null = null;
     await waitUntil(s6Deadline, opts.pollMs, () => {
       const appsJson = kubectl(runner, kubeconfigPath, ["-n", "argocd", "get", "applications.argoproj.io", "-o", "json"], 30_000);
       if (appsJson.status !== 0) return false;
@@ -2318,7 +2362,12 @@ export async function runReplica(opts: RunOptions): Promise<RunReport> {
         log("WARNING: stage 6 could not parse Applications JSON (or the roster is empty)");
         return false;
       }
-      settled = allApplicationsSettled(appConvergence);
+      // WP26: settled-and-stable, not just settled -- see `rosterHasStabilized`.
+      // A single poll's "nothing Progressing" is vacuous while the app-of-apps
+      // roster is still being created.
+      const currentRosterPoll: RosterPollState = { settled: allApplicationsSettled(appConvergence), count: appConvergence.length };
+      settled = rosterHasStabilized(previousRosterPoll, currentRosterPoll);
+      previousRosterPoll = currentRosterPoll;
       return settled;
     });
 
@@ -2334,6 +2383,16 @@ export async function runReplica(opts: RunOptions): Promise<RunReport> {
     const failingApps = appVerdicts.filter((v) => v.verdict === "FAIL");
     const divergentApps = appVerdicts.filter((v) => v.verdict === "DIVERGENCE");
     const healthyCount = appVerdicts.length - failingApps.length - divergentApps.length;
+
+    // WP26: a stage-6 FAIL never throws (the stage just records `ok: false`
+    // and stages 7/8 still run), so the top-level catch's own
+    // `collectFailureDiagnostics` never fires for one — a FAIL app carried only
+    // `classifyPod`'s one-line summary ("not converged: phase=Running
+    // restartCount=1") with no record of WHY, and that evidence is gone once
+    // the throwaway container is torn down. Pulled here, before it disappears.
+    if (failingApps.length > 0) {
+      collectAppFailureDiagnostics(runner, kubeconfigPath, failingApps, podIssues, appConvergence, log);
+    }
 
     log(
       `stage 6: settled=${String(settled)} apps=${String(appVerdicts.length)} Healthy=${String(healthyCount)} ` +
@@ -2676,6 +2735,124 @@ export async function runReplica(opts: RunOptions): Promise<RunReport> {
       runner.run("docker", ["volume", "rm", "-f", `${opts.containerName}-data`], { timeoutMs: 30_000 });
     } else {
       log(`--keep set: leaving ${opts.containerName} running. Tear down with: docker rm -f ${opts.containerName} && docker volume rm -f ${opts.containerName}-data`);
+    }
+  }
+}
+
+/**
+ * WP26 (081M35ETM11087G0R0002Y62F5): stage 6's own diagnostics collector for
+ * a FAIL verdict, called from inside stage 6 itself rather than a `catch` —
+ * see the call site's comment for why the existing `collectFailureDiagnostics`
+ * (only reachable via a thrown exception) never runs for a FAIL app that
+ * stage 6 records without throwing. For every pod-level issue attributed to
+ * a failing app: `describe pod`, `logs --previous` (falling back to the
+ * current instance's logs when no previous terminated container exists — the
+ * same fallback `collectCrashLoopDiagnostics` uses), and the destination
+ * namespace's events. A FAIL app with NO attributed pod issue (Argo's own
+ * resource health stuck Progressing with every pod already converged, e.g.
+ * weaviate's StatefulSet health check) instead dumps the Application's own
+ * `status.resources[]` snapshot plus every workload + event in its
+ * destination namespace, since there is no single pod name to target.
+ * Printed to the job log only — unbounded text, never folded into the
+ * report JSON artifact.
+ */
+function collectAppFailureDiagnostics(
+  runner: Runner,
+  kubeconfigPath: string,
+  failingApps: readonly AppVerdict[],
+  podIssues: readonly PodVerdict[],
+  appConvergence: readonly AppConvergenceSnapshot[],
+  log: (line: string) => void,
+): void {
+  const snapshotByName = new Map(appConvergence.map((a) => [a.name, a]));
+  const namespacesLogged = new Set<string>();
+  const logNamespaceEvents = (ns: string): void => {
+    if (namespacesLogged.has(ns)) return;
+    namespacesLogged.add(ns);
+    const events = kubectl(runner, kubeconfigPath, ["-n", ns, "get", "events", "--sort-by=.lastTimestamp"], 20_000);
+    log(`--- events in ${ns} ---`);
+    log(events.stdout || events.stderr || "(no output)");
+  };
+  for (const app of failingApps) {
+    const relevant = podIssues.filter((p) => p.isFailure && p.appName === app.name);
+    log(`=== FAIL diagnostics: ${app.name} (${app.reason}) ===`);
+    if (relevant.length === 0) {
+      const snap = snapshotByName.get(app.name);
+      const ns = snap?.destinationNamespace;
+      log(`--- ${app.name}: no attributed pod issue; Application resources: ${JSON.stringify(snap?.resources ?? [])} ---`);
+      // WP26: MEASURED (run 35954645236) that the generation/revision dump
+      // below reads Healthy-by-the-book for cilium and weaviate (generation
+      // == observedGeneration, currentRevision == updateRevision, every
+      // replica Ready) while ArgoCD still reports the Application itself
+      // Progressing -- so whatever ArgoCD's health verdict is reading, it is
+      // NOT lagging workload-controller status. Dump the Application's own
+      // full `.status.health` (its `message` field, which
+      // `AppConvergenceSnapshot` does not carry, may name the resource or
+      // reason gitops-engine's aggregation picked) and the last lines of the
+      // application-controller's own log mentioning this app, to see ArgoCD's
+      // reasoning directly rather than re-deriving it from workload state.
+      const appHealth = kubectl(runner, kubeconfigPath, ["-n", "argocd", "get", "applications.argoproj.io", app.name, "-o", "jsonpath={.status.health}"], 20_000);
+      log(`--- ${app.name}: full Application .status.health ---`);
+      log(appHealth.stdout || appHealth.stderr || "(no output)");
+      // MEASURED (run 35960112028): the official ArgoCD Helm chart runs the
+      // application-controller as a StatefulSet, not a Deployment --
+      // `logs deployment/argocd-application-controller` returned a flat
+      // NotFound every time, so this workload's own reasoning was never
+      // actually captured. Try both; log which one (if either) resolved.
+      let controllerLogs = kubectl(runner, kubeconfigPath, ["-n", "argocd", "logs", "statefulset/argocd-application-controller", "--tail=3000"], 20_000);
+      if (controllerLogs.status !== 0) {
+        controllerLogs = kubectl(runner, kubeconfigPath, ["-n", "argocd", "logs", "deployment/argocd-application-controller", "--tail=3000"], 20_000);
+      }
+      const matchingLines = controllerLogs.stdout
+        .split("\n")
+        .filter((line) => line.includes(app.name))
+        .slice(-60);
+      log(`--- ${app.name}: application-controller log lines mentioning it (last 60 of ${String(matchingLines.length)} matched) ---`);
+      log(matchingLines.length > 0 ? matchingLines.join("\n") : controllerLogs.stderr || "(no matching lines; controller may log by different key)");
+      if (ns !== undefined) {
+        const workloads = kubectl(runner, kubeconfigPath, ["-n", ns, "get", "pods,statefulsets,deployments,daemonsets", "-o", "wide"], 20_000);
+        log(`--- workloads in ${ns} ---`);
+        log(workloads.stdout || workloads.stderr || "(no output)");
+        // gitops-engine's built-in StatefulSet/Deployment/DaemonSet health
+        // check reads exactly these fields -- a `Progressing` Application
+        // with every pod already Ready is most often `.metadata.generation`
+        // outrunning `.status.observedGeneration` (the controller has not
+        // caught up to the LAST spec write ArgoCD's own sync applied) rather
+        // than anything a pod-level or `kubectl get -o wide` view shows.
+        const revisionKinds: ReadonlySet<string> = new Set(["StatefulSet", "Deployment", "DaemonSet"]);
+        for (const r of snap?.resources ?? []) {
+          if (!revisionKinds.has(r.kind)) continue;
+          const jsonpath =
+            "generation={.metadata.generation} observedGeneration={.status.observedGeneration} " +
+            "readyReplicas={.status.readyReplicas} replicas={.status.replicas} updatedReplicas={.status.updatedReplicas} " +
+            "currentRevision={.status.currentRevision} updateRevision={.status.updateRevision}";
+          const rev = kubectl(runner, kubeconfigPath, ["-n", r.namespace, "get", r.kind.toLowerCase(), r.name, "-o", `jsonpath=${jsonpath}`], 20_000);
+          log(`--- ${r.kind}/${r.namespace}/${r.name} generation/revision fields ---`);
+          log(rev.stdout || rev.stderr || "(no output)");
+        }
+        logNamespaceEvents(ns);
+      }
+      continue;
+    }
+    for (const issue of relevant) {
+      const describe = kubectl(runner, kubeconfigPath, ["-n", issue.namespace, "describe", "pod", issue.name], 20_000);
+      log(`--- describe pod ${issue.namespace}/${issue.name} ---`);
+      log(describe.stdout || describe.stderr || "(no output)");
+      const previous = kubectl(
+        runner,
+        kubeconfigPath,
+        ["-n", issue.namespace, "logs", issue.name, "--all-containers", "--previous", "--tail=200"],
+        20_000,
+      );
+      const usePrevious = previous.status === 0 && previous.stdout.trim().length > 0;
+      log(usePrevious ? "--- logs --previous (crashed instance) ---" : "--- logs (no previous terminated container; current instance) ---");
+      if (usePrevious) {
+        log(previous.stdout);
+      } else {
+        const current = kubectl(runner, kubeconfigPath, ["-n", issue.namespace, "logs", issue.name, "--all-containers", "--tail=200"], 20_000);
+        log(current.stdout || current.stderr || "(no output)");
+      }
+      logNamespaceEvents(issue.namespace);
     }
   }
 }

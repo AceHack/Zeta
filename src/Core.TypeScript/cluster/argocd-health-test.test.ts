@@ -2092,6 +2092,92 @@ describe("081M0JXXFV0087G0R00...: the four newly-visible non-storage defects", (
     // the cluster credential for no reason.
     expect(document.spec?.syncPolicy?.syncOptions ?? []).toContain("RespectIgnoreDifferences=true");
   });
+
+  /**
+   * CILIUM (WP26, 081M38GCTFX087G0R003MMTXJE). Same drift class as weaviate
+   * above -- the chart self-signs `cilium-ca` / `hubble-relay-client-certs` /
+   * `hubble-server-certs` fresh on every `helm template` render, which kept
+   * the Application Progressing on a self-heal loop (MEASURED offline via a
+   * two-render diff, and live via the application-controller's own log on
+   * run 35965954133 -- see the Application's comment). The ignore rule must
+   * stay scoped to exactly these three Secrets' data keys: widening it to
+   * `data` as a whole or dropping a Secret name would hide real drift on
+   * objects this same chart also renders (ConfigMaps, RBAC, the DaemonSet/
+   * Deployment specs) that must keep being compared.
+   */
+  test("cilium's ignore rule is KEPT and stays scoped to its three self-signed TLS Secrets", () => {
+    const document = parseYaml(readApp("cilium")) as {
+      spec?: {
+        ignoreDifferences?: readonly {
+          group?: string;
+          kind?: string;
+          name?: string;
+          jsonPointers?: readonly string[];
+          jqPathExpressions?: readonly string[];
+          managedFieldsManagers?: readonly string[];
+        }[];
+        syncPolicy?: { syncOptions?: readonly string[] };
+      };
+    };
+    const rules = document.spec?.ignoreDifferences ?? [];
+    expect(rules.length).toBe(3);
+    const byName = new Map(rules.map((r) => [r.name, r]));
+    expect(byName.get("cilium-ca")?.kind).toBe("Secret");
+    expect(byName.get("cilium-ca")?.jsonPointers).toEqual(["/data/ca.crt", "/data/ca.key"]);
+    expect(byName.get("hubble-relay-client-certs")?.jsonPointers).toEqual(["/data/ca.crt", "/data/tls.crt", "/data/tls.key"]);
+    expect(byName.get("hubble-server-certs")?.jsonPointers).toEqual(["/data/ca.crt", "/data/tls.crt", "/data/tls.key"]);
+    // No escape hatches, same discipline as weaviate's rule.
+    for (const rule of rules) {
+      expect(rule.jqPathExpressions).toBeUndefined();
+      expect(rule.managedFieldsManagers).toBeUndefined();
+    }
+    expect(document.spec?.syncPolicy?.syncOptions ?? []).toContain("RespectIgnoreDifferences=true");
+    // Cilium's own reasons for ServerSideApply (multiple field managers on
+    // the CNI's shared resources) are unrelated to this fix -- it must stay.
+    expect(document.spec?.syncPolicy?.syncOptions ?? []).toContain("ServerSideApply=true");
+  });
+
+  /**
+   * SEAWEEDFS (081M39EMBRW087G0R001RHMEDJ). Third instance of the same
+   * class: `templates/sftp/sftp-secret.yaml` mints fresh SFTP credentials +
+   * an ed25519 private key on every render (MEASURED offline, two-render
+   * diff). The release name is `blob-store-seaweedfs` (set explicitly in
+   * this Application's `helm.releaseName`), so the rendered Secret's name
+   * carries that prefix -- pinned here so a release-name rename does not
+   * silently leave the ignore rule pointed at a Secret that no longer
+   * exists (which would read as Synced/Healthy while quietly no longer
+   * protecting anything).
+   */
+  test("seaweedfs's ignore rule is KEPT and stays scoped to its SFTP credential Secret", () => {
+    const document = parseYaml(readApp("seaweedfs")) as {
+      spec?: {
+        ignoreDifferences?: readonly {
+          group?: string;
+          kind?: string;
+          name?: string;
+          jsonPointers?: readonly string[];
+          jqPathExpressions?: readonly string[];
+          managedFieldsManagers?: readonly string[];
+        }[];
+        syncPolicy?: { syncOptions?: readonly string[] };
+      };
+    };
+    const rules = document.spec?.ignoreDifferences ?? [];
+    expect(rules.length).toBe(1);
+    const rule = rules[0]!;
+    expect(rule.kind).toBe("Secret");
+    expect(rule.name).toBe("blob-store-seaweedfs-sftp-secret");
+    expect(rule.jsonPointers).toEqual([
+      "/data/admin_password",
+      "/data/readonly_password",
+      "/data/public_user_password",
+      "/data/seaweedfs_sftp_config",
+      "/data/seaweedfs_sftp_ssh_private_key",
+    ]);
+    expect(rule.jqPathExpressions).toBeUndefined();
+    expect(rule.managedFieldsManagers).toBeUndefined();
+    expect(document.spec?.syncPolicy?.syncOptions ?? []).toContain("RespectIgnoreDifferences=true");
+  });
 });
 
 describe("crash-loop containers are found, not guessed", () => {

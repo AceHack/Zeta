@@ -112,6 +112,49 @@ spec:
   destination:
     server: https://kubernetes.default.svc
     namespace: object-store
+  # 081M39EMBRW087G0R001RHMEDJ -- THE THIRD INSTANCE of the randAlphaNum-class
+  # drift already fixed for weaviate and cilium (this Application's own
+  # census: 4 of 44 render non-deterministically). `templates/sftp/
+  # sftp-secret.yaml` mints admin/readonly/public_user SFTP passwords + an
+  # ed25519 private key fresh on every `helm template` invocation -- MEASURED
+  # offline via a two-render diff of `blob-store-seaweedfs-sftp-secret`
+  # (5 of ~1500 rendered lines differ, every credential and the config JSON
+  # that embeds them).
+  #
+  # The chart's own `helm.sh/hook: pre-install,pre-upgrade` +
+  # `helm.sh/resource-policy: keep` on this Secret is NOT protection against
+  # this: `pre-install,pre-upgrade` maps to ArgoCD's PreSync phase (unlike a
+  # `test` hook, which gitops-engine's helm-hook mapper does not recognize
+  # and therefore never applies at all -- confirmed the OPPOSITE case for
+  # gitlab's test-runner Pod, left unfixed for that reason). PreSync hooks
+  # DO run on every sync, and `resource-policy: keep` only stops Helm's own
+  # uninstall from deleting the object -- it says nothing about ArgoCD
+  # re-applying a freshly-randomized render over it on the next PreSync.
+  #
+  # SAME REMEDY as weaviate/cilium, same vendor citation (argo-cd
+  # docs/user-guide/diffing.md's `randAlphaNum` entry). Scoped to exactly
+  # this Secret's 5 data keys.
+  #
+  # NAMED RISK, not hidden: `RespectIgnoreDifferences=true` is now used by
+  # THREE Applications in this roster (cilium, weaviate, and this one) and
+  # is the strongest open lead on why cilium/weaviate stay stuck
+  # `Progressing` even once their own resync loops stop (081M38GCTFX087G0R003MMTXJE
+  # -- `grep -rl RespectIgnoreDifferences` matched exactly those two files
+  # before this change, and no other app in the roster shows that symptom).
+  # Adding a third instance is a deliberate bet that the credential-churn
+  # bug (confirmed, live, security-relevant) outweighs a possible-but-
+  # unconfirmed stuck-health repeat; watch this Application's health in the
+  # next triggered first-boot-replica run as the check on that bet.
+  ignoreDifferences:
+    - group: ""
+      kind: Secret
+      name: blob-store-seaweedfs-sftp-secret
+      jsonPointers:
+        - /data/admin_password
+        - /data/readonly_password
+        - /data/public_user_password
+        - /data/seaweedfs_sftp_config
+        - /data/seaweedfs_sftp_ssh_private_key
   syncPolicy:
     automated: { prune: false, selfHeal: true }
-    syncOptions: [ CreateNamespace=true, ServerSideApply=true ]
+    syncOptions: [ CreateNamespace=true, ServerSideApply=true, RespectIgnoreDifferences=true ]

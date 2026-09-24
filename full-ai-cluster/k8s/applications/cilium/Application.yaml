@@ -148,6 +148,57 @@ spec:
   destination:
     server: https://kubernetes.default.svc
     namespace: kube-system
+  # WP26 (081M38GCTFX087G0R003MMTXJE) -- THE SAME `randAlphaNum`-CLASS DRIFT
+  # weaviate/Application.yaml already fixed, for cilium's own three
+  # self-signed-TLS Secrets. MEASURED offline (no cluster involved, same
+  # method as weaviate's own investigation): rendered this Application's own
+  # valuesObject against chart 1.20.1 TWICE and diffed. `cilium-ca`
+  # (ca.crt/ca.key), `hubble-relay-client-certs` (ca.crt/tls.crt/tls.key) and
+  # `hubble-server-certs` (ca.crt/tls.crt/tls.key) differ completely between
+  # the two renders -- fresh self-signed CA + leaf certs every invocation.
+  # Everything else rendered is otherwise unaffected.
+  #
+  # LIVE CONFIRMATION (run 35965954133): the application-controller's own log
+  # shows repeated partial self-heal syncs -- `SelfHealAttemptsCount` at 7 and
+  # climbing -- touching ONLY these three Secrets every cycle ("Tasks
+  # (dry-run)" listing exactly `Secret:cilium-ca`, `Secret:
+  # hubble-relay-client-certs`, `Secret:hubble-server-certs`, nothing else),
+  # each one logged `serverside-applied` then immediately re-triggering
+  # "Requesting app refresh caused by object update". This is the mechanism
+  # holding the Application at Progressing/OutOfSync-on-a-loop even though
+  # every DaemonSet/Deployment reads Healthy by the book (generation ==
+  # observedGeneration, every replica Ready -- checked directly, run
+  # 35954645236) with no pod-level crash-loop anywhere.
+  #
+  # SAME REMEDY weaviate already uses, same vendor citation (argo-cd
+  # docs/user-guide/diffing.md: "A Helm chart is using a template function
+  # such as `randAlphaNum` ... `ignoreDifferences` is the mechanism it names
+  # for it"). Scoped to exactly these three Secrets' `/data` keys -- nothing
+  # else in this chart's output is affected. `RespectIgnoreDifferences` does
+  # NOT require dropping ServerSideApply (weaviate's own Application.yaml
+  # comment already established this from the sync.go source, unrelated to
+  # apply mode), so ServerSideApply stays on here.
+  ignoreDifferences:
+    - group: ""
+      kind: Secret
+      name: cilium-ca
+      jsonPointers:
+        - /data/ca.crt
+        - /data/ca.key
+    - group: ""
+      kind: Secret
+      name: hubble-relay-client-certs
+      jsonPointers:
+        - /data/ca.crt
+        - /data/tls.crt
+        - /data/tls.key
+    - group: ""
+      kind: Secret
+      name: hubble-server-certs
+      jsonPointers:
+        - /data/ca.crt
+        - /data/tls.crt
+        - /data/tls.key
   syncPolicy:
     automated:
       prune: false   # never prune Cilium — too load-bearing
@@ -155,3 +206,4 @@ spec:
     syncOptions:
       - CreateNamespace=true
       - ServerSideApply=true
+      - RespectIgnoreDifferences=true

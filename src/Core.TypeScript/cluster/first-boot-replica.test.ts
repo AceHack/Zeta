@@ -71,6 +71,8 @@ import {
   renderPowerCycleVerdictMarkdown,
   REPO_ROOT,
   restartCountRegressions,
+  rosterHasStabilized,
+  type RosterPollState,
   secretDataChangedAfterRecovery,
   seededInternalSecretTargets,
   type AppConvergenceSnapshot,
@@ -1024,6 +1026,31 @@ describe("isKnownSpireAgentDnsCrashLoop", () => {
     const issue: PodVerdict = { namespace: "other", name: "spire-agent-x", category: "CRASHLOOP", isFailure: true, detail: "CrashLoopBackOff" };
     expect(isKnownSpireAgentDnsCrashLoop(issue)).toBe(false);
   });
+
+  // MEASURED on run 35946414428 (2026-09-24): the SAME confirmed non-metal
+  // artifact (restartCount 20, `describe pod`'s Last State: Terminated,
+  // Exit Code 1, liveness/readiness connection-refused events matching the
+  // documented hostNetwork DNS failure) was sampled while the container
+  // happened to be in its `Running` window between crashes rather than
+  // sitting in `CrashLoopBackOff` — `classifyPod`'s fallback branch reports
+  // that as UNKNOWN, not CRASHLOOP, even though it is the identical
+  // artifact caught at a different point in the same cycle.
+  test("the same crash loop caught between crashes (Running, high restartCount) IS covered", () => {
+    const issue: PodVerdict = {
+      namespace: "spire",
+      name: "spire-agent-w4dgw",
+      category: "UNKNOWN",
+      isFailure: true,
+      detail: "not converged: phase=Running scheduled=true restartCount=20",
+    };
+    expect(isKnownSpireAgentDnsCrashLoop(issue)).toBe(true);
+  });
+
+  test("an UNKNOWN spire-agent issue that is NOT the Running fallback shape is still not covered", () => {
+    // e.g. a FailedScheduling UNKNOWN -- a real, different failure mode.
+    const issue: PodVerdict = { namespace: "spire", name: "spire-agent-w4dgw", category: "UNKNOWN", isFailure: true, detail: "FailedScheduling: 0/1 nodes are available" };
+    expect(isKnownSpireAgentDnsCrashLoop(issue)).toBe(false);
+  });
 });
 
 describe("manualSyncDeclarations against the real applications tree", () => {
@@ -1176,6 +1203,42 @@ describe("allApplicationsSettled", () => {
 
   test("true for an empty list (vacuously settled — callers gate on length separately)", () => {
     expect(allApplicationsSettled([])).toBe(true);
+  });
+});
+
+// ──────────────────────────── rosterHasStabilized ──────────────────────────
+
+describe("rosterHasStabilized", () => {
+  test("false on the very first poll — no previous poll to compare against", () => {
+    expect(rosterHasStabilized(null, { settled: true, count: 2 })).toBe(false);
+  });
+
+  test("REGRESSION (run 35943167812): settled=true at a small, still-growing count is NOT stabilized", () => {
+    // apps=2 (argocd + zeta-root, both trivially Healthy) on both of two
+    // consecutive polls would have passed under `allApplicationsSettled`
+    // alone; it must also fail here once the roster actually starts
+    // growing on poll 3.
+    const poll1: RosterPollState = { settled: true, count: 2 };
+    const poll2: RosterPollState = { settled: true, count: 2 };
+    expect(rosterHasStabilized(poll1, poll2)).toBe(true); // stable at 2 -- indistinguishable from a real 2-app roster
+    const poll3: RosterPollState = { settled: false, count: 37 }; // the roster just grew and most of it is Progressing
+    expect(rosterHasStabilized(poll2, poll3)).toBe(false);
+  });
+
+  test("false when the count changed even though both polls were settled", () => {
+    expect(rosterHasStabilized({ settled: true, count: 2 }, { settled: true, count: 37 })).toBe(false);
+  });
+
+  test("false when the current poll is not settled, regardless of history", () => {
+    expect(rosterHasStabilized({ settled: true, count: 37 }, { settled: false, count: 37 })).toBe(false);
+  });
+
+  test("false when the previous poll was not settled, even if counts match and current is settled", () => {
+    expect(rosterHasStabilized({ settled: false, count: 37 }, { settled: true, count: 37 })).toBe(false);
+  });
+
+  test("true once settled holds at the same count for two consecutive polls", () => {
+    expect(rosterHasStabilized({ settled: true, count: 37 }, { settled: true, count: 37 })).toBe(true);
   });
 });
 

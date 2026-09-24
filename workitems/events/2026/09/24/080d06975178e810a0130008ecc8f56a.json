@@ -1,0 +1,14 @@
+{
+  "id": "080d06975178e810a0130008ecc8f56a",
+  "at": "2026-09-24T10:15:57.981Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M39EMBRW087G0R001RHMEDJ",
+    "type": "task",
+    "title": "Helm-render nondeterminism census: seaweedfs SFTP creds + gitlab test-hook pod name also regenerate on every render (cilium/weaviate already fixed)",
+    "slug": "helm-render-nondeterminism-census-seaweedfs-sftp-creds-gitla",
+    "priority": "P2",
+    "filename": "081M39EMBRW087G0R001RHMEDJ-helm-render-nondeterminism-census-seaweedfs-sftp-creds-gitla.md"
+  }
+}

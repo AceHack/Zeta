@@ -1,0 +1,14 @@
+{
+  "id": "080d0688334ff010a0130008b4d8b8a8",
+  "at": "2026-09-24T01:27:33.630Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M38GCTFX087G0R003MMTXJE",
+    "type": "task",
+    "title": "first-boot-replica: diagnose+fix the 3 real stage-6 FAILs (cilium restart, spire-server StatefulSet patch, weaviate stuck Progressing)",
+    "slug": "first-boot-replica-diagnose-fix-the-3-real-stage-6-fails-cil",
+    "priority": "P2",
+    "filename": "081M38GCTFX087G0R003MMTXJE-first-boot-replica-diagnose-fix-the-3-real-stage-6-fails-cil.md"
+  }
+}
