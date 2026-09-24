@@ -1,0 +1,12 @@
+{
+  "pr_number": 17629,
+  "archive_path": "docs/history/pr-reviews/2026/09/24/PR-17629-docs-workitems-the-cdrom-boot-lane-cannot-receive-the-longhorn-override-and-a-co.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-24T13:06:14.074Z",
+  "schema_version": "v1",
+  "commit_sha": "d0bd7d92cdecefc4ab1e5654dead8e7cca3d511a",
+  "title": "docs(workitems): the cdrom-boot lane cannot receive the Longhorn override (and a correction to #17625)",
+  "state": "MERGED",
+  "merged_at": "2026-09-24T13:05:30Z",
+  "head_ref": "claude/cdrom-lane-longhorn-override-gap"
+}
