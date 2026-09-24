@@ -39,6 +39,12 @@
     # here AND on k3s-server.nix -- nixpkgs names the unit "k3s" on both
     # roles, so the ordering risk and the node-ip risk are identical.
     ./k3s-wait-for-address.nix
+
+    # WP25 (081M38G8NGC087G0R001GEGEDK): see that module's header. Imported
+    # here AND on k3s-server.nix -- an agent's own kubelet/agent certs live
+    # under this SAME path on a server too (its embedded agent), so the
+    # zero-length-file defect and the fix are identical on both roles.
+    ./k3s-agent-tls-self-heal.nix
   ];
 
   # k3s's join is the join (Aaron 2026-08-13, closing PR #10493's open

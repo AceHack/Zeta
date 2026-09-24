@@ -125,8 +125,21 @@ on:
       # QEMU. WP11 is the installed-disk first-boot k3s verify -- the lane that
       # answers "does Kubernetes come up on a real install", which is the one
       # under active diagnosis. Default false: a plain dispatch is unchanged.
+      #
+      # ALSO skips the seven always-on hermetic NixOS test steps that run
+      # BEFORE the ISO is even built (control-plane cluster-init, node
+      # platform fixes, agent join, cluster-CIDR/server-join eval, a second
+      # control plane joins, dirty-disk fail-closed, cluster-online) plus the
+      # push/workflow_dispatch-gated longhorn-volume-binds step -- MEASURED
+      # (run 35965945581): a WP11-scoped dispatch spent its first ~25+ min
+      # sitting in "k3s agent JOINS the server", nowhere near the ISO build,
+      # none of which exercises the installed-disk boot path WP11 measures.
+      # This is scoped to the WORKFLOW_DISPATCH TRIGGER ONLY -- the PR path
+      # (pull_request) and push still run every one of those steps
+      # unconditionally; a dispatch with only_wp11 is a deliberately narrowed
+      # probe, not a weakening of the lane.
       only_wp11:
-        description: "Run only the WP11 installed-disk first-boot k3s verify"
+        description: "Run only the WP11 installed-disk first-boot k3s verify (also skips the pre-ISO-build NixOS test steps on a dispatch; PR/push runs are unaffected)"
         type: boolean
         default: false
   # WP11 — the installed-disk first-boot k3s verify step below (gated to
@@ -335,7 +348,10 @@ jobs:
       # pods Running (those need the Cilium CNI image); that is an online
       # cluster-integration lane (081KSGS9H0008QG0R0011BC7T2 Slice 2+). ubuntu-24.04 runners
       # expose /dev/kvm; the nixosTest driver falls back to TCG if absent.
+      # Skipped only on a WP11-scoped dispatch (only_wp11=true) -- the PR and
+      # push paths run this step unconditionally, same as before.
       - name: NixOS test — k3s control-plane reaches active (token-deadlock regression)
+        if: always() && !(github.event_name == 'workflow_dispatch' && inputs.only_wp11)
         working-directory: full-ai-cluster
         run: nix build .#checks.x86_64-linux.k3s-control-plane-cluster-init -L --print-build-logs --fallback
 
@@ -353,7 +369,9 @@ jobs:
       #
       # Hermetic (no internet), ~2 min, so it runs early beside the other
       # fast node-level check rather than behind the ~15-min ISO build.
+      # Skipped only on a WP11-scoped dispatch -- PR and push are unaffected.
       - name: NixOS test — node platform fixes are live (rpfilter/iscsi/storage flags)
+        if: always() && !(github.event_name == 'workflow_dispatch' && inputs.only_wp11)
         timeout-minutes: 20
         working-directory: full-ai-cluster
         run: nix build .#checks.x86_64-linux.k3s-control-plane-platform-fixes -L --print-build-logs --fallback
@@ -375,7 +393,9 @@ jobs:
       # Hermetic — no internet, so the joined node stays NotReady and the test
       # asserts MEMBERSHIP, not readiness (readiness is the online lane
       # below). Runs before the ~15-min ISO build so a broken join fails fast.
+      # Skipped only on a WP11-scoped dispatch -- PR and push are unaffected.
       - name: NixOS test — k3s agent JOINS the server (scenario 5 markers on serial)
+        if: always() && !(github.event_name == 'workflow_dispatch' && inputs.only_wp11)
         timeout-minutes: 30
         working-directory: full-ai-cluster
         run: nix build .#checks.x86_64-linux.k3s-agent-join -L --print-build-logs --fallback
@@ -408,7 +428,9 @@ jobs:
       #
       # They cost no VM and their assertions fire during EVALUATION, so this is
       # seconds, not minutes.
+      # Skipped only on a WP11-scoped dispatch -- PR and push are unaffected.
       - name: Nix eval checks — cluster CIDR derivation + server-join model (were unrun)
+        if: always() && !(github.event_name == 'workflow_dispatch' && inputs.only_wp11)
         timeout-minutes: 10
         working-directory: full-ai-cluster
         run: |
@@ -430,7 +452,9 @@ jobs:
       # Hermetic (no internet -> no CNI -> nodes stay NotReady): membership and
       # CA identity, never readiness. ~1-2 min, budgeted from the measured 67 s
       # the two-node agent-join step costs on this runner.
+      # Skipped only on a WP11-scoped dispatch -- PR and push are unaffected.
       - name: NixOS test — a second CONTROL PLANE joins (one cluster CA, not two)
+        if: always() && !(github.event_name == 'workflow_dispatch' && inputs.only_wp11)
         timeout-minutes: 30
         working-directory: full-ai-cluster
         run: nix build .#checks.x86_64-linux.k3s-server-join -L --print-build-logs --fallback
@@ -448,10 +472,45 @@ jobs:
       # rewire that unit `wantedBy` and k3s starts anyway, the script still
       # exits 1, and every existing assertion still passes. This step asserts
       # the thing that mutation breaks — that k3s.service never started.
+      # Skipped only on a WP11-scoped dispatch -- PR and push are unaffected.
       - name: NixOS test — dirty disk FAILS CLOSED (k3s must not start)
+        if: always() && !(github.event_name == 'workflow_dispatch' && inputs.only_wp11)
         timeout-minutes: 30
         working-directory: full-ai-cluster
         run: nix build .#checks.x86_64-linux.k3s-datastore-preflight-fail-closed -L --print-build-logs --fallback
+
+      # ZERO-LENGTH k3s CREDENTIALS SELF-HEAL, on a real boot. WP25
+      # (081M38G8NGC087G0R001GEGEDK). `nixos/tests/k3s-agent-tls-self-heal.nix`
+      # was wired into `flake.nix` (`k3s-agent-tls-self-heal`) but named by NO
+      # workflow step -- the same gap this file's own history already has two
+      # precedents for (see "node platform fixes" and "cluster CIDR
+      # derivation" above): a check that only `nix flake check`/`nix build`
+      # locally would ever run is a check CI never runs, and this repo
+      # refuses that shape (a check that did not run must never look like one
+      # that passed).
+      #
+      # k3s-agent-tls-self-heal.test.ts already EXECUTES the repair script
+      # over fixture directories and proves the pure "which files get
+      # removed" logic, including the allowlist regression this step's
+      # sibling VM test also carries (a real WP25 CI run measured the
+      # pre-allowlist revision removing 3243 legitimately zero-length files
+      # from inside containerd's own image store in one boot -- see PR
+      # #17608). What no fixture-directory test can reach is whether systemd
+      # actually runs the ExecStartPre before k3s on a REAL boot, and whether
+      # a REAL k3s regenerates the files and reaches active once they're
+      # gone -- and whether the planted containerd-snapshot fixture survives
+      # that same real boot. That is this step's job.
+      #
+      # Hermetic (no internet, no image pulls) and boots ONE node twice
+      # (write real cert material, stop, truncate, restart) -- same shape and
+      # cost class as "dirty disk FAILS CLOSED" immediately above; on the PR
+      # path rather than gated to workflow_dispatch because it is cheap (see
+      # the measured wall-clock this comment will carry once the first PR run
+      # completes).
+      - name: NixOS test — zero-length k3s credentials self-heal on boot
+        timeout-minutes: 30
+        working-directory: full-ai-cluster
+        run: nix build .#checks.x86_64-linux.k3s-agent-tls-self-heal -L --print-build-logs --fallback
 
       # ONLINE end-to-end proof: boots the control-plane WITH internet,
       # installs Cilium for real, asserts the node reaches Ready + CoreDNS
@@ -461,7 +520,9 @@ jobs:
       # user-mode NIC reach the internet to pull images (the nix sandbox
       # blocks network); the GitHub runner user is a trusted nix user, so
       # the flag is honored. ubuntu-24.04 exposes /dev/kvm. Budget ~20 min.
+      # Skipped only on a WP11-scoped dispatch -- PR and push are unaffected.
       - name: NixOS test — cluster comes ALL the way up (online; node Ready + CoreDNS)
+        if: always() && !(github.event_name == 'workflow_dispatch' && inputs.only_wp11)
         timeout-minutes: 35
         working-directory: full-ai-cluster
         run: nix build .#checks.x86_64-linux.k3s-cluster-online -L --print-build-logs --fallback --option sandbox false
@@ -479,8 +540,10 @@ jobs:
       # convention: it needs internet and ~15-25 min on a cold runner, so PR runs
       # stay fast while main keeps the guarantee. Measured 162 s of test-script
       # time on a warm host; the runner cost is image pulls, not the assertions.
+      # Already push/workflow_dispatch-gated (see above); now ALSO skipped on
+      # a WP11-scoped dispatch specifically -- a push run is unaffected.
       - name: NixOS test — a longhorn PVC actually BINDS and data survives
-        if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+        if: always() && (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && !(github.event_name == 'workflow_dispatch' && inputs.only_wp11)
         timeout-minutes: 45
         working-directory: full-ai-cluster
         run: nix build .#checks.x86_64-linux.longhorn-volume-binds -L --print-build-logs --fallback --option sandbox false

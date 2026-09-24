@@ -1,0 +1,14 @@
+{
+  "id": "080d069660e47010a013000811085e16",
+  "at": "2026-09-24T09:43:07.150Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M39CR74D087G0R002BEG2G4",
+    "type": "task",
+    "title": "k3s stillborn-datastore recovery: has-ever-bootstrapped sentinel for a power-cut in the first ~20s",
+    "slug": "k3s-stillborn-datastore-recovery-has-ever-bootstrapped-senti",
+    "priority": "P1",
+    "filename": "081M39CR74D087G0R002BEG2G4-k3s-stillborn-datastore-recovery-has-ever-bootstrapped-senti.md"
+  }
+}

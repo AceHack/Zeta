@@ -53,6 +53,17 @@
     # nixpkgs names the unit "k3s" on both roles.
     ./k3s-wait-for-address.nix
 
+    # WP25 (081M38G8NGC087G0R001GEGEDK): root-cause work for run 35927439681
+    # -- k3s.service stuck `activating` for 70+ minutes on the real installed
+    # disk, retrying forever on zero-length agent cert/kubeconfig files left
+    # by an unclean stop. Adds a bounded ExecStartPre that removes only
+    # zero-length files under /var/lib/rancher/k3s/agent before k3s starts.
+    # See that module's header for the full citation (rancher/dynamiclistener
+    # LoadOrGenerateKeyFile) and for why server/tls and server/cred are
+    # deliberately out of scope. Imported here AND on k3s-agent.nix -- a
+    # server also runs its own embedded agent under this same path.
+    ./k3s-agent-tls-self-heal.nix
+
     # Defines `zeta.k3sServer.etcdPeers` — the OPT-IN, source-scoped admission
     # of etcd 2379/2380 that multi-server HA needs and that the firewall comment
     # below has prescribed since it was written. Default empty: this host's
@@ -478,4 +489,8 @@
   # WP20 root-cause fix: see ./k3s-wait-for-address.nix (imported above) for
   # the systemd.services.k3s.after/wants override, the ExecStartPre bounded
   # address wait, and the full citation + honest limits on validation.
+
+  # WP25 root-cause fix: see ./k3s-agent-tls-self-heal.nix (imported above)
+  # for the zero-length-file ExecStartPre, the dynamiclistener citation, and
+  # why server/tls + server/cred are deliberately out of scope.
 }

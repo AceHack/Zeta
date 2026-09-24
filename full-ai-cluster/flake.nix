@@ -665,6 +665,18 @@
           k3s-control-plane-platform-fixes =
             import ./nixos/tests/k3s-control-plane-platform-fixes.nix { inherit pkgs; };
 
+          # WP25 (081M38G8NGC087G0R001GEGEDK). Boots a real k3s server,
+          # truncates every file under /var/lib/rancher/k3s/agent to 0 bytes
+          # (the exact state run 35927439681 measured on the real installed
+          # disk), restarts k3s, and asserts it reaches active + /readyz
+          # again -- proving the self-heal ExecStartPre in
+          # nixos/modules/k3s-agent-tls-self-heal.nix actually recovers a
+          # real node, not just a fixture directory (that half is
+          # src/Core.TypeScript/hygiene/k3s-agent-tls-self-heal.test.ts).
+          # Hermetic. See nixos/tests/k3s-agent-tls-self-heal.nix.
+          k3s-agent-tls-self-heal =
+            import ./nixos/tests/k3s-agent-tls-self-heal.nix { inherit pkgs; };
+
           # TWO-NODE: an agent configured by nixos/modules/k3s-agent.nix joins
           # a server configured by nixos/modules/k3s-server.nix on one shared
           # virtual segment, and k3s-join-observer.nix announces it on serial

@@ -1,0 +1,14 @@
+{
+  "id": "080d068822b0a810a0130008c79176d4",
+  "at": "2026-09-24T01:25:17.461Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M38G8NGC087G0R001GEGEDK",
+    "type": "task",
+    "title": "k3s agent TLS/kubeconfig self-heal: remove zero-length files before k3s starts (WP25)",
+    "slug": "k3s-agent-tls-kubeconfig-self-heal-remove-zero-length-files",
+    "priority": "P1",
+    "filename": "081M38G8NGC087G0R001GEGEDK-k3s-agent-tls-kubeconfig-self-heal-remove-zero-length-files.md"
+  }
+}

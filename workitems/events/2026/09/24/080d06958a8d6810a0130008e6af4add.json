@@ -1,0 +1,14 @@
+{
+  "id": "080d06958a8d6810a0130008e6af4add",
+  "at": "2026-09-24T09:13:51.277Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M39B2MDA087G0R003CCEJPQ",
+    "type": "task",
+    "title": "k3s crash-loops ~495 times on first boot after self-heal clears the truncation (WP25 follow-up)",
+    "slug": "k3s-crash-loops-495-times-on-first-boot-after-self-heal-clea",
+    "priority": "P1",
+    "filename": "081M39B2MDA087G0R003CCEJPQ-k3s-crash-loops-495-times-on-first-boot-after-self-heal-clea.md"
+  }
+}

@@ -85,6 +85,7 @@ const INACTIVE_SHELL_INVENTORY_PREFIXES: readonly string[] = ["db/", "docs/recov
 export const EXPECTED_RETAINED_SHELL: readonly string[] = [
   ".gemini/service/install-lior-service.sh",
   ".gemini/service/lior-loop.sh",
+  "full-ai-cluster/nixos/modules/k3s-agent-tls-self-heal.sh",
   "full-ai-cluster/nixos/modules/k3s-datastore-preflight.sh",
   "full-ai-cluster/nixos/modules/k3s-join-intent-preflight.sh",
   "full-ai-cluster/usb-nixos-installer/zeta-first-boot.sh",
@@ -130,6 +131,18 @@ const RETAINED_SHELL_CATEGORY_ORDER: readonly RetainedShellCategory[] = [
 export const RETAINED_SHELL_CATEGORY_BY_FILE: Readonly<Record<string, RetainedShellCategory>> = {
   ".gemini/service/install-lior-service.sh": "host-service wrappers",
   ".gemini/service/lior-loop.sh": "host-service wrappers",
+  // WP25 (081M38G8NGC087G0R001GEGEDK): a systemd `ExecStartPre` on
+  // systemd.services.k3s, on both k3s-server.nix and k3s-agent.nix. Removes
+  // zero-length files under /var/lib/rancher/k3s/agent before k3s starts --
+  // the self-heal for a truncated write from an unclean stop (a power cut
+  // mid-first-boot wedged k3s forever retrying "error loading key ...:
+  // <nil>", measured on run 35927439681). Same retained-shell edge as its
+  // two siblings below: it runs on the boot path, the node's closure
+  // carries no bun, and an ExecStartPre cannot wait for one. Kept as a
+  // tracked `.sh` rather than an inline Nix string so it stays on this
+  // inventory AND can be EXECUTED by
+  // `k3s-agent-tls-self-heal.test.ts`, which runs every branch in CI.
+  "full-ai-cluster/nixos/modules/k3s-agent-tls-self-heal.sh": "host-service wrappers",
   // A systemd `ExecStart` on a NixOS cluster node, ordered before k3s.service:
   // it refuses to let k3s start when a node provisioned to JOIN already holds a
   // datastore (k3s silently IGNORES every join argument in that state). The
