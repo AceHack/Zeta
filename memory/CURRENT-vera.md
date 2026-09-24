@@ -2487,3 +2487,10 @@ WP11 tip-confirm -- K3S_ACTIVE on verdict 6 (distinct NEVER-ACTIVE log + optiona
 - Product: three-attempt RO ESP ladder (vfat -> auto-vfat|msdos gated findmnt -> vfat-ascii); ZETA_FAT_MOUNT_VIA/WHY + ZETA_ESP_MOUNT_VIA/WHY; iter-4.2 NOTE; first-boot (mounted-via:;after:); install zeta_pf_probe_esp / iter-4.2 / iter-5.2 + first-boot zeta_try_mount_esp_ro; esp-mount-ladder.test.ts extracts shipped shell + anti-vacuity. Mitigation after #17638/#17640; work item stays open.
 - Soft: mergeable blocked; auto_merge squash on; CI in_progress mix; 1 unrelated cross-verify fail. Hard: none.
 - Sit leftover. Do not merge.
+
+## leftover UNIQUE leftover #17641 leftover unique @ 8e496af2cfaede5a1044c73299dd2a3be290f93f -- GRADE GO
+
+- Tip 1-commit +27/-7 / 1 file; parent 99db52e7 (1p). Live HEAD IS tip -- never grade a merge. Prior GO @ 99db52e7 stands.
+- Product: esp-mount-ladder.test.ts harness spawnSync(bash -c) -> spawnShellDeclared (cross-verify hand-rolled-io); failed/truncated spawn throws (no empty-stdout false story); ladder shell product from prior GO untouched.
+- Soft: mergeable blocked; auto_merge squash on; tip checks unfinished. Hard: none. Never grade REST HEAD 2172b4a3 / merge_commit_sha 4f988a0d.
+- Sit leftover. Do not merge.
