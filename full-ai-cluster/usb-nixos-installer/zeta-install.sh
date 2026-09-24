@@ -1128,6 +1128,80 @@ zeta_pf_ext4_used_bytes() {
   echo $(( (bcount - bfree) * bsz ))
 }
 
+# ── WP29 MITIGATION (081M39CJP96087G0R001T4J2R3) — NOT A FIX ─────────────
+#
+# Read-only mount of a FAT ESP, with THREE attempts instead of one.
+#
+# blkid parses the FAT superblock in USERSPACE; `mount -t vfat` additionally
+# needs the kernel driver AND its NLS charset modules. "Label readable, mount
+# refused" -- which is what run 36044770870's guest reported for EVERY
+# candidate, `/dev/disk/by-label/EFIBOOT` included -- is the signature of a
+# kernel-side capability problem, not a data problem. That reading survives
+# every measurement taken: both ISOs put the ESP at LBA 268, the pre-WP29
+# detector resolves 137_216 through the MBR branch on both, and replaying the
+# bake on the failing ISO yields a clean, mountable, byte-exact ESP.
+#
+# Two causes fit, and they are told apart ON SIGHT by what this records:
+#   - NLS charset unavailable -> `FAT-fs: IO charset iso8859-1 not found` /
+#     `codepage cp437 not found` as -EINVAL. Attempt 3 names a charset
+#     explicitly and may succeed where attempt 1 was refused.
+#   - a device-level read error -> all three fail, each with the kernel's own
+#     words. Three errors instead of one is strictly more information.
+#
+# Under the first cause this turns a lost install into a completed one plus a
+# diagnostic; under the second it costs two syscalls and buys evidence. It is
+# a MITIGATION: it explains nothing and does not close the work item.
+#
+# Attempt 2 drops `-t vfat` and lets the kernel autodetect, which is also the
+# only attempt that could mount something that is NOT FAT (this probe walks
+# iso9660 partitions too), so its success is accepted ONLY after the mounted
+# type is confirmed FAT. With no way to confirm, the attempt counts as failed:
+# an unconfirmable mount is not a pass.
+#
+# Sets ZETA_FAT_MOUNT_VIA (the attempt that worked) and ZETA_FAT_MOUNT_WHY
+# (one token per refusal, space-free so callers can print it inline).
+ZETA_FAT_MOUNT_VIA=""
+ZETA_FAT_MOUNT_WHY=""
+zeta_squeeze_mount_error() {
+  local squeezed
+  squeezed="$(printf '%s' "${1:-}" | head -1 | tr -c 'A-Za-z0-9._/=:-' '_' | cut -c1-64)" || :
+  printf '%s' "${squeezed:-no-stderr}"
+}
+zeta_mount_fat_ro() {
+  local part="$1" mnt="$2" err fstype
+  ZETA_FAT_MOUNT_VIA=""
+  ZETA_FAT_MOUNT_WHY=""
+
+  if err="$(sudo mount -t vfat -o ro "$part" "$mnt" 2>&1 >/dev/null)"; then
+    ZETA_FAT_MOUNT_VIA="vfat"
+    return 0
+  fi
+  ZETA_FAT_MOUNT_WHY="vfat=$(zeta_squeeze_mount_error "$err")"
+
+  if err="$(sudo mount -o ro "$part" "$mnt" 2>&1 >/dev/null)"; then
+    fstype="$(findmnt -n -o FSTYPE "$mnt" 2>/dev/null)" || fstype=""
+    case "$fstype" in
+      vfat|msdos)
+        ZETA_FAT_MOUNT_VIA="auto-${fstype}"
+        return 0
+        ;;
+      *)
+        sudo umount "$mnt" 2>/dev/null || true
+        ZETA_FAT_MOUNT_WHY="${ZETA_FAT_MOUNT_WHY}|auto=mounted-as-${fstype:-unknown}-not-FAT"
+        ;;
+    esac
+  else
+    ZETA_FAT_MOUNT_WHY="${ZETA_FAT_MOUNT_WHY}|auto=$(zeta_squeeze_mount_error "$err")"
+  fi
+
+  if err="$(sudo mount -t vfat -o ro,iocharset=ascii,codepage=437 "$part" "$mnt" 2>&1 >/dev/null)"; then
+    ZETA_FAT_MOUNT_VIA="vfat-ascii"
+    return 0
+  fi
+  ZETA_FAT_MOUNT_WHY="${ZETA_FAT_MOUNT_WHY}|ascii=$(zeta_squeeze_mount_error "$err")"
+  return 1
+}
+
 # $1=partition. Read-only mount, look for the Zeta ESP payload, unmount.
 # Prints "<hascreds01>|<factor>|<hasefi01>" or nothing when not mountable.
 # NEVER reads the CONTENT of zeta-creds.enc. Presence and the recorded factor
@@ -1135,7 +1209,7 @@ zeta_pf_ext4_used_bytes() {
 zeta_pf_probe_esp() {
   local part="$1" hascreds hasefi factor
   sudo mkdir -p "$ZETA_PROBE_MOUNT" 2>/dev/null || return 1
-  sudo mount -t vfat -o ro "$part" "$ZETA_PROBE_MOUNT" 2>/dev/null || return 1
+  zeta_mount_fat_ro "$part" "$ZETA_PROBE_MOUNT" || return 1
   hascreds=0; hasefi=0; factor="-"
   if sudo test -f "$ZETA_PROBE_MOUNT/zeta-creds.enc"; then hascreds=1; fi
   if sudo test -d "$ZETA_PROBE_MOUNT/EFI/ZETA"; then hasefi=1; fi
@@ -2350,7 +2424,15 @@ if [ -z "$PUBKEY_FILE" ]; then
         *) part="${dev}${partsfx}" ;;
       esac
       [ -b "$part" ] || continue
-      if mount_err="$(sudo mount -t vfat -o ro "$part" "$PROBE_MOUNT" 2>&1 >/dev/null)"; then
+      if zeta_mount_fat_ro "$part" "$PROBE_MOUNT"; then
+        # Name the attempt that carried it. `vfat` is the healthy shape;
+        # anything else means attempt 1 was refused and the WP29 mitigation
+        # is what kept this install from losing every ESP injection.
+        [ "$ZETA_FAT_MOUNT_VIA" = "vfat" ] || {
+          echo "[iter-4.2]   NOTE: $part mounted via '$ZETA_FAT_MOUNT_VIA', NOT plain 'mount -t vfat'."
+          echo "[iter-4.2]         first attempt(s) refused: $ZETA_FAT_MOUNT_WHY"
+          echo "[iter-4.2]         (WP29 081M39CJP96087G0R001T4J2R3 — this is a mitigation firing, not a healthy run)"
+        }
         if [ -f "$PROBE_MOUNT/zeta-authorized-keys.pub" ]; then
           PUBKEY_FILE="$PROBE_MOUNT/zeta-authorized-keys.pub"
           BOOT_ESP_PART="$part"
@@ -2358,9 +2440,8 @@ if [ -z "$PUBKEY_FILE" ]; then
         fi
         sudo umount "$PROBE_MOUNT" 2>/dev/null || true
       else
-        mount_err="$(printf '%s' "$mount_err" | head -1 | cut -c1-96)" || :
         ZETA_ESP_MOUNT_ERRORS="${ZETA_ESP_MOUNT_ERRORS}${ZETA_ESP_MOUNT_ERRORS:+
-}    ${part}: ${mount_err:-<no stderr from mount>}"
+}    ${part}: ${ZETA_FAT_MOUNT_WHY}"
       fi
     done
   done
@@ -2883,7 +2964,11 @@ echo "[iter-5.2] ── probing boot USB for injected hostname ──"
 # still had it mounted, was found). No-op if the ESP was never found (BOOT_ESP_PART empty) or is
 # already mounted. Unmounted once after the iter-5-wifi probe.
 if [ -n "$BOOT_ESP_PART" ] && [ -b "$BOOT_ESP_PART" ]; then
-  sudo mount -t vfat -o ro "$BOOT_ESP_PART" "$PROBE_MOUNT" 2>/dev/null || true
+  # WP29: same three-attempt ladder as the iter-4.2 probe that found this
+  # partition. Re-mounting with the single `-t vfat` attempt would lose the
+  # ESP again at iter-5.2/iter-5-wifi on exactly the runs the mitigation is
+  # for -- the probe would succeed and every later reader would still fail.
+  zeta_mount_fat_ro "$BOOT_ESP_PART" "$PROBE_MOUNT" || true
 fi
 HOSTNAME_DST="/mnt/etc/zeta/cluster-node-id"
 HOSTNAME_FILE=""

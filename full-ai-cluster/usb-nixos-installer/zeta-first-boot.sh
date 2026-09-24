@@ -122,22 +122,104 @@ ZETA_ESP_CONF_TRIED=""
 # src/Core.TypeScript/ci/qemu-full-install-test.ts parses `tried=(\S*)`,
 # so the reason is squeezed to [A-Za-z0-9._/:-] and truncated. Nothing
 # here changes control flow -- a failed mount still just continues.
+# Squeeze a mount's stderr into one space-free token. `espConfScanOutcome` in
+# src/Core.TypeScript/ci/qemu-full-install-test.ts parses `tried=(\S*)`, so a
+# space here would truncate the field and lose the rest of the device list.
+# `|| :` because pipefail is on and `head -1` can SIGPIPE the producer; the
+# assignment has already happened by then, so a harmless broken pipe must not
+# read as a failure.
+zeta_squeeze_mount_error() {
+  local squeezed
+  squeezed="$(printf '%s' "${1:-}" | head -1 | tr -c 'A-Za-z0-9._/=:-' '_' | cut -c1-64)" || :
+  printf '%s' "${squeezed:-no-stderr}"
+}
+
+# ── WP29 MITIGATION (081M39CJP96087G0R001T4J2R3) — NOT A FIX ──────────────
+#
+# THREE ATTEMPTS INSTEAD OF ONE, because the failure is kernel-side and the
+# first attempt is the only one that can be defeated by it.
+#
+# blkid parses the FAT superblock in USERSPACE; `mount -t vfat` additionally
+# needs the kernel driver AND its NLS charset modules. "Label readable, mount
+# refused" — which is what 36044770870's guest reported for EVERY candidate,
+# `/dev/disk/by-label/EFIBOOT` included — is the signature of a kernel-side
+# capability problem rather than a data problem, and that reading survives the
+# measurements: both ISOs put the ESP at LBA 268, the pre-WP29 detector
+# resolves 137_216 through the MBR branch on both, and a bake replayed on the
+# failing ISO produces a clean, mountable, byte-exact ESP. The bytes were fine.
+#
+# Two candidates fit, and they are distinguished ON SIGHT by what this records:
+#   - NLS charset unavailable -> `FAT-fs (sda2): IO charset iso8859-1 not
+#     found` / `codepage cp437 not found`, surfacing as -EINVAL. Attempt 3
+#     names an explicit charset and may well succeed where attempt 1 did not.
+#   - a device-level read error -> all three fail, with the kernel's words for
+#     each. Three errors instead of one is strictly more information.
+#
+# So under one cause this turns a lost install into a completed one plus a
+# diagnostic; under the other it costs two extra syscalls and buys evidence.
+# It is a MITIGATION: it does not explain the refusal and it does not close
+# 081M39CJP96087G0R001T4J2R3. `ZETA_ESP_MOUNT_VIA` names the attempt that
+# worked, so a run that only succeeds on attempt 2 or 3 is visibly NOT a
+# healthy run.
+#
+# Attempt 2 drops `-t vfat` and lets the kernel autodetect — which is also the
+# one attempt that could mount something that is NOT a FAT filesystem (the
+# loop walks iso9660 partitions too), so its success is accepted ONLY after
+# the mounted type is confirmed to be FAT. Without a way to confirm, the
+# attempt is treated as failed; an unconfirmable mount is not a pass.
+ZETA_ESP_MOUNT_VIA=""
+ZETA_ESP_MOUNT_WHY=""
+zeta_try_mount_esp_ro() {
+  local part="$1" mnt="$2" err fstype
+  ZETA_ESP_MOUNT_VIA=""
+  ZETA_ESP_MOUNT_WHY=""
+
+  if err="$(mount -t vfat -o ro "$part" "$mnt" 2>&1 >/dev/null)"; then
+    ZETA_ESP_MOUNT_VIA="vfat"
+    return 0
+  fi
+  ZETA_ESP_MOUNT_WHY="vfat=$(zeta_squeeze_mount_error "$err")"
+
+  if err="$(mount -o ro "$part" "$mnt" 2>&1 >/dev/null)"; then
+    fstype="$(findmnt -n -o FSTYPE "$mnt" 2>/dev/null)" || fstype=""
+    case "$fstype" in
+      vfat|msdos)
+        ZETA_ESP_MOUNT_VIA="auto-${fstype}"
+        return 0
+        ;;
+      *)
+        umount "$mnt" 2>/dev/null || true
+        ZETA_ESP_MOUNT_WHY="${ZETA_ESP_MOUNT_WHY}|auto=mounted-as-${fstype:-unknown}-not-FAT"
+        ;;
+    esac
+  else
+    ZETA_ESP_MOUNT_WHY="${ZETA_ESP_MOUNT_WHY}|auto=$(zeta_squeeze_mount_error "$err")"
+  fi
+
+  if err="$(mount -t vfat -o ro,iocharset=ascii,codepage=437 "$part" "$mnt" 2>&1 >/dev/null)"; then
+    ZETA_ESP_MOUNT_VIA="vfat-ascii"
+    return 0
+  fi
+  ZETA_ESP_MOUNT_WHY="${ZETA_ESP_MOUNT_WHY}|ascii=$(zeta_squeeze_mount_error "$err")"
+  return 1
+}
+
 zeta_source_esp_firstboot_conf() {
-  local part conf mount_stderr
+  local part conf
   mkdir -p "$ESP_CONF_MOUNT" 2>/dev/null || { ZETA_ESP_CONF="mkdir-failed:$ESP_CONF_MOUNT"; return 1; }
   for part in /dev/disk/by-label/* /dev/sd?[0-9] /dev/nvme?n?p[0-9] /dev/vd?[0-9] /dev/mmcblk?p[0-9]; do
     [[ -b "$part" ]] || continue
     # Every block device the loop actually considered, so an empty list is
     # visibly an empty list rather than an unexplained miss.
     ZETA_ESP_CONF_TRIED="${ZETA_ESP_CONF_TRIED}${ZETA_ESP_CONF_TRIED:+,}${part}"
-    mount_stderr="$(mount -t vfat -o ro "$part" "$ESP_CONF_MOUNT" 2>&1 >/dev/null)" || {
-      # `|| :` because pipefail is on and `head -1` can SIGPIPE the producer;
-      # the assignment has already happened by then, so this keeps the value
-      # rather than letting a harmless broken pipe read as a failure.
-      mount_stderr="$(printf '%s' "$mount_stderr" | head -1 | tr -c 'A-Za-z0-9._/:-' '_' | cut -c1-72)" || :
-      ZETA_ESP_CONF_TRIED="${ZETA_ESP_CONF_TRIED}(no-vfat:${mount_stderr:-no-stderr})"
+    zeta_try_mount_esp_ro "$part" "$ESP_CONF_MOUNT" || {
+      ZETA_ESP_CONF_TRIED="${ZETA_ESP_CONF_TRIED}(no-vfat:${ZETA_ESP_MOUNT_WHY})"
       continue
     }
+    # Name the attempt that worked. `via=vfat` is the healthy shape; anything
+    # else means attempt 1 was refused and the mitigation carried the install.
+    [[ "$ZETA_ESP_MOUNT_VIA" == "vfat" ]] ||
+      ZETA_ESP_CONF_TRIED="${ZETA_ESP_CONF_TRIED}(mounted-via:${ZETA_ESP_MOUNT_VIA};after:${ZETA_ESP_MOUNT_WHY})"
     conf="$ESP_CONF_MOUNT/zeta-firstboot.conf"
     if [[ -f "$conf" ]]; then
       # shellcheck disable=SC1090
