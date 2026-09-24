@@ -1,0 +1,12 @@
+{
+  "pr_number": 17618,
+  "archive_path": "docs/history/pr-reviews/2026/09/24/PR-17618-fix-ci-the-installed-disk-s-first-boot-is-one-boot-a-wp11-run-that-measured-noth.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-24T10:05:09.687Z",
+  "schema_version": "v1",
+  "commit_sha": "f8a5a636ec0eb49d349f8cedfbe52abdd4376ce7",
+  "title": "fix(ci): the installed disk's FIRST boot is ONE boot; a WP11 run that measured nothing fails at the sentence, not the timeout (WP27)",
+  "state": "MERGED",
+  "merged_at": "2026-09-24T10:04:20Z",
+  "head_ref": "claude/wp11-hard-fail-and-longhorn-override"
+}
