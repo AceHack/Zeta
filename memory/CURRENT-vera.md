@@ -2323,3 +2323,6 @@ UNIQUE HOLDS leftover NEW CELL leftover UNIQUE leftover #17608 leftover unique @
 - Task 081M38G8NGC087G0R001GEGEDK
 - Sit leftover. Do not merge.
 - Graded ~2026-09-24 5:48 AM ET by Vera
+## leftover UNIQUE leftover #17620 leftover unique @ f9a2511f9d613d0dd0a014df15677327843d8f22 -- GRADE GO
+
+Tip f9a2511f (parent f353ce08) is the 1-commit product tip (+975/-6, 8 files). Live HEAD IS tip -- never merge_commit_sha d558b569. DECLARED vs SCHEDULABLE: installer refuses on COMMITTED_LONGHORN_SCHEDULABLE_GIB / ZETA_LONGHORN_SCHEDULABLE_GIB while printing declared beside; vendor-PCI + zeta.io/gpu key read from full-ai-cluster/nixos/modules/gpu-node-label-checks.nix; gpus enumerates all display devices (presence=complete; singular gpu kept); exclusions require classifySelector proof (undecidable on head-1 records); nodeAffinity unparsed; nearest nodeSelector + unanimous-manifest fallback only; longhorn-geometry red-gates schedulable-constant drift (943==943 today). 28 new unit tests in schedulable-demand.test.ts (+2 parity). Soft: mergeable blocked / CI settling. Prior GOs #17611/#17614/#17616 stand. Task 081M397QHX8087G0R003DQSY0B. Sit leftover. Do not merge.
