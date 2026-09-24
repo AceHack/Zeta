@@ -138,8 +138,18 @@ on:
       # (pull_request) and push still run every one of those steps
       # unconditionally; a dispatch with only_wp11 is a deliberately narrowed
       # probe, not a weakening of the lane.
+      #
+      # HOW TO PASS IT (081M39CJP96087G0R001T4J2R3, WP29): a boolean input is
+      # read below as `inputs.only_wp11`, and `gh workflow run` sends `-f`
+      # values as STRINGS while `-F` sends typed values. Use:
+      #
+      #   gh workflow run build-ai-cluster-iso.yml --ref main -F only_wp11=true
+      #
+      # `docs/ops/WP11-SCOPED-DISPATCH.md` carries the same command plus how to
+      # CONFIRM it took, which is the part worth doing: read the job's step
+      # conclusions and require the dispatch-only steps to say `skipped`.
       only_wp11:
-        description: "Run only the WP11 installed-disk first-boot k3s verify (also skips the pre-ISO-build NixOS test steps on a dispatch; PR/push runs are unaffected)"
+        description: "Run only the WP11 installed-disk first-boot k3s verify (also skips the pre-ISO-build NixOS test steps on a dispatch; PR/push runs are unaffected). Pass with `gh workflow run ... -F only_wp11=true` — -F, not -f, because -f sends a string"
         type: boolean
         default: false
   # WP11 — the installed-disk first-boot k3s verify step below (gated to
@@ -718,8 +728,19 @@ jobs:
       # must run with budget left — measured run 32647553460 died with
       # restore still in_progress after those earlier dispatch jobs ate the
       # wall clock. Workflow_dispatch only — not on gate.
+      #
+      # 081M39CJP96087G0R001T4J2R3 (WP29) — THE `!inputs.only_wp11` HALF WAS
+      # MISSING HERE while the sibling upload step below already carried it.
+      # MEASURED on run 36044770870, dispatched with only_wp11: every other
+      # dispatch-only step reported `skipped` and this one RAN, for 15m 48s,
+      # and then `Upload UEFI keyfile restore serial log` — which DID have the
+      # guard — skipped, so the failure it produced could not be read. Run
+      # 36014672753 did exactly the same thing four hours earlier, and both
+      # restore failures are therefore unrecoverable. A step that runs while
+      # its log upload is skipped is a check nobody can read, so the two
+      # conditions must AGREE, not merely both exist.
       - name: UEFI keyfile restore decrypt (workflow_dispatch only)
-        if: github.event_name == 'workflow_dispatch'
+        if: github.event_name == 'workflow_dispatch' && !inputs.only_wp11
         timeout-minutes: 90
         working-directory: full-ai-cluster
         env:

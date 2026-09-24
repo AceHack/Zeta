@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import { mkdtempSync, readFileSync, rmSync } from "node:fs";
+import { mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { TPM_CHAR_DEVICE } from "../../cluster/bao-load-site.ts";
@@ -135,5 +135,80 @@ describe("prepare-boot-image constants", () => {
     );
     expect(DEFAULT_QEMU_PROBE_GH_CLI).toBe("test-token-for-qemu-b0891");
     expect(installer).toContain(`PICKER_PROBE_ENV="${DEFAULT_QEMU_PROBE_GH_CLI}"`);
+  });
+});
+
+describe("ESP offset resolution — 081M39CJP96087G0R001T4J2R3 (WP29)", () => {
+  function syntheticIso(espLba: number | null, totalBytes: number): Buffer {
+    const iso = Buffer.alloc(totalBytes);
+    iso.writeUInt16LE(0xaa55, 0x1fe);
+    if (espLba !== null) {
+      iso[0x1be + 4] = 0xef;
+      iso.writeUInt32LE(espLba, 0x1be + 8);
+      const esp = iso.subarray(espLba * 512, espLba * 512 + 512);
+      esp.writeUInt16LE(0xaa55, 0x1fe);
+      esp.write("FAT12   ", 0x36, "latin1");
+    }
+    return iso;
+  }
+
+  function withIso(iso: Buffer, run: (isoPath: string) => void): void {
+    const dir = mkdtempSync(join(tmpdir(), "zeta-wp29-esp-offset-"));
+    try {
+      const isoPath = join(dir, "zeta-installer.iso");
+      writeFileSync(isoPath, iso);
+      run(isoPath);
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  }
+
+  test("the real ISO's LBA-268 ESP resolves from the MBR, not from the fallback constant", async () => {
+    // The measured installer ISO of run 36044770870: ESP at LBA 268 (137_216
+    // bytes), 3 MiB, FAT12. The LBA-276 fallback constant is 4_096 bytes
+    // INSIDE that partition, so "fell back" and "read the MBR" are not
+    // distinguishable by the number alone.
+    const { resolveEspOffsetForIso } = await import("./prepare-boot-image");
+    withIso(syntheticIso(268, 1024 * 1024), (isoPath) => {
+      expect(resolveEspOffsetForIso(isoPath)).toEqual({
+        offsetBytes: 268 * 512,
+        source: "mbr",
+      });
+    });
+  });
+
+  test("an ESP past the old 141_824-byte head bound is now FOUND, not silently guessed", async () => {
+    // The old `resolveEspOffsetBytesForIso` handed the scan exactly
+    // `fallback + 512` bytes, so this ISO's 0xEF entry failed
+    // `isoHead.length >= partOffset + 512`, the MBR branch was skipped without
+    // a word, and 141_312 came back for an image whose ESP is at 2_097_152.
+    const { resolveEspOffsetForIso } = await import("./prepare-boot-image");
+    withIso(syntheticIso(4096, 4 * 1024 * 1024), (isoPath) => {
+      expect(resolveEspOffsetForIso(isoPath)).toEqual({
+        offsetBytes: 4096 * 512,
+        source: "mbr",
+      });
+    });
+  });
+
+  test("prepareBootImage REFUSES an ISO whose ESP offset nothing confirms", async () => {
+    // No 0xEF entry and no FAT boot sector at the fallback. Baking would send
+    // every injection to a constant and then read its own writes back from
+    // that same constant as proof — so the refusal has to happen here, before
+    // the write, or not at all.
+    const { prepareBootImage } = await import("./prepare-boot-image");
+    withIso(syntheticIso(null, 1024 * 1024), (isoPath) => {
+      const result = prepareBootImage({
+        isoPath,
+        outputImagePath: join(tmpdir(), "zeta-wp29-never-written.img"),
+        withCredentialBlob: false,
+        testMode: true,
+        hostname: "node-qemu-test",
+        pubkeyPath: join(import.meta.dir, "keys/zeta-test-infra.pub"),
+      });
+      expect("error" in result).toBe(true);
+      if (!("error" in result)) throw new Error("expected a refusal");
+      expect(result.error).toContain("ESP offset could not be confirmed");
+    });
   });
 });

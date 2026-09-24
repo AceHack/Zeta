@@ -20,6 +20,7 @@ import {
 } from "./firstboot-bao-elf.ts";
 import { railFindingsForEspWrites } from "./injection-rail.ts";
 import type {
+  FileBackedEspWrite,
   FileBackedZflashImageExecution,
   FileBackedZflashImageExecutionFeedback,
   FileBackedZflashImageExecutor,
@@ -365,6 +366,108 @@ function describeExecutionFeedback(error: FileBackedZflashImageExecutionFeedback
   return `command failed (${formatCommand(error.command)}) with exit ${error.exitCode ?? "unknown"}: ${output || "no output"}`;
 }
 
+/**
+ * Read the baked ESP back and refuse anything the guest could not use.
+ *
+ * 081KZHJPJCF established the shape: `mcopy` can exit 0 without the file
+ * landing, so read the ESP back rather than trusting the writer. What it read
+ * back was `mdir -i <image>@@<offset> ::` — the ROOT DIRECTORY, and only its
+ * names.
+ *
+ * 081M39CJP96087G0R001T4J2R3 (WP29) MEASURED what that does and does not see,
+ * on the real 1.67 GiB installer ISO of run 36044770870 (ESP at LBA 268,
+ * 3 MiB, FAT12) baked through this exact path and then damaged on purpose:
+ *
+ *   image truncated to 1_000_000 bytes  ->  `mdir ::` EXIT 0. Check passes.
+ *   image truncated to 2_000_000 bytes  ->  `mdir ::` EXIT 0. Check passes.
+ *
+ * A FAT12 root directory lives at sector 11 — byte 5_632 of the ESP, about
+ * 143 KB into the image. `mdir ::` reads the boot sector and that one region
+ * and stops. It never follows a FAT chain and never touches the data area, so
+ * everything past ~143 KB could be missing and the bake still reports success.
+ * (The same experiment also falsified truncation as the CAUSE of this work
+ * item's `(no-vfat)`: a truncated image still mounts. The blindness is real;
+ * it is simply not what bit us.)
+ *
+ * So the read-back now does two things the listing cannot:
+ *
+ *  1. `mdir -/ ::` — RECURSIVE. Walks every directory cluster through the FAT,
+ *     including the ISO's own `EFI/BOOT/...`, so a filesystem that cannot be
+ *     traversed end to end fails here instead of in a guest 40 minutes later.
+ *  2. `mtype ::/<file>` per inline write — reads the bytes back through the
+ *     allocation chain into the data area and compares them to what was asked
+ *     for. This is the only check here that proves the DATA is retrievable
+ *     rather than merely indexed.
+ *
+ * Honest limit, because the same discipline applies to this function: every
+ * command addresses `<image>@@<espOffsetBytes>`, so a bake that wrote to the
+ * wrong offset verifies its own writes at the wrong offset and passes. That
+ * class is refused earlier, by `prepareBootImage`, which will not bake against
+ * an offset nothing confirmed. Nothing DOWNSTREAM of the write can catch it.
+ *
+ * Content is never echoed: `/zeta-wifi-credentials.json`,
+ * `/zeta-join-token` and `/zeta-qemu-creds-passphrase` are plaintext secrets
+ * on a FAT partition (see `railFindingsForEspWrites`), so a mismatch reports
+ * byte counts and the destination, never the bytes.
+ */
+function verifyBakedEspReadBack(
+  executor: FileBackedZflashImageExecutor,
+  imageSpecifier: string,
+  espWrites: readonly FileBackedEspWrite[],
+): string | null {
+  const listing = executor.runCommand({
+    command: "mdir",
+    args: ["-i", imageSpecifier, "-/", "::"],
+  });
+  if (listing.exitCode !== 0) {
+    return (
+      `ESP write verification could not list the ESP after bake (mdir exit ` +
+      `${listing.exitCode ?? "unknown"}): ${listing.stderr || listing.stdout || "no output"}`
+    );
+  }
+  const listingText = listing.stdout ?? "";
+  const missing = espWrites
+    .map((write) => write.destination.replace(/^\/+/, ""))
+    .filter((name) => !listingText.includes(name));
+  if (missing.length > 0) {
+    return (
+      `ESP write verification failed — ${missing.length} planned file(s) absent from the ESP ` +
+      `after bake despite mcopy reporting success (silent drop, 081KZHJPJCF): ` +
+      `${missing.join(", ")}.\nESP listing:\n${listingText}`
+    );
+  }
+
+  for (const write of espWrites) {
+    // Only inline writes: their expected bytes are in hand. A `sourcePath`
+    // write would need the source re-read (and may be binary), which is a
+    // different check; the recursive listing above still covers it.
+    if (write.content === undefined) continue;
+    const readBack = executor.runCommand({
+      command: "mtype",
+      args: ["-i", imageSpecifier, `::${write.destination}`],
+    });
+    if (readBack.exitCode !== 0) {
+      return (
+        `ESP write verification failed — ${write.destination} is listed on the ESP but its CONTENT ` +
+        `could not be read back (mtype exit ${readBack.exitCode ?? "unknown"}, 081M39CJP96087G0R001T4J2R3): ` +
+        `${readBack.stderr || "no output"}. A name in the directory with unreadable data behind it is ` +
+        `what the guest sees as a missing injection.`
+      );
+    }
+    const actual = readBack.stdout ?? "";
+    if (actual !== write.content) {
+      return (
+        `ESP write verification failed — ${write.destination} read back with different bytes than were ` +
+        `written (081M39CJP96087G0R001T4J2R3): planned ${write.content.length} byte(s), read ` +
+        `${actual.length} byte(s). Contents are not printed — some ESP destinations carry plaintext ` +
+        `secrets.`
+      );
+    }
+  }
+
+  return null;
+}
+
 export function runFileBackedZflashCli(
   options: FileBackedZflashCliOptions,
   deps: FileBackedZflashCliRunDeps = {},
@@ -478,30 +581,9 @@ export function runFileBackedZflashCli(
   // override via deps.verifyEspWrites. Skipped when there are no ESP writes to verify.
   const shouldVerify = deps.verifyEspWrites ?? deps.executor === undefined;
   if (shouldVerify && planned.value.espWrites.length > 0) {
-    const listing = executor.runCommand({
-      command: "mdir",
-      args: ["-i", executionPlan.value.mtoolsImageSpecifier, "::"],
-    });
-    if (listing.exitCode !== 0) {
-      return {
-        ok: false,
-        error:
-          `ESP write verification could not list the ESP after bake (mdir exit ` +
-          `${listing.exitCode ?? "unknown"}): ${listing.stderr || listing.stdout || "no output"}`,
-      };
-    }
-    const listingText = listing.stdout ?? "";
-    const missing = planned.value.espWrites
-      .map((write) => write.destination.replace(/^\/+/, ""))
-      .filter((name) => !listingText.includes(name));
-    if (missing.length > 0) {
-      return {
-        ok: false,
-        error:
-          `ESP write verification failed — ${missing.length} planned file(s) absent from the ESP ` +
-          `after bake despite mcopy reporting success (silent drop, 081KZHJPJCF): ` +
-          `${missing.join(", ")}.\nESP listing:\n${listingText}`,
-      };
+    const failure = verifyBakedEspReadBack(executor, executionPlan.value.mtoolsImageSpecifier, planned.value.espWrites);
+    if (failure !== null) {
+      return { ok: false, error: failure };
     }
   }
 

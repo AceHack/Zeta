@@ -32,7 +32,11 @@ import { existsSync, mkdtempSync, readFileSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
-import { detectIsohybridEspOffsetBytes, ISOHYBRID_ESP_OFFSET_FALLBACK_BYTES } from "../lib.ts";
+import {
+  detectIsohybridEspOffset,
+  ISOHYBRID_ESP_OFFSET_FALLBACK_BYTES,
+  type IsohybridEspOffset,
+} from "../lib.ts";
 import { runFileBackedZflashCli } from "../file-backed.ts";
 import { firstbootRoleFromFlags, type ZetaFirstbootRole } from "../firstboot-role.ts";
 import {
@@ -115,16 +119,56 @@ export interface PrepareBootImageResult {
   readonly firstbootRoleBaked?: ZetaFirstbootRole["kind"];
 }
 
+/**
+ * The ESP offset AND whether anything confirmed it — see {@link IsohybridEspOffset}.
+ *
+ * 081M39CJP96087G0R001T4J2R3 (WP29) — THE SCAN USED TO BE HANDED A BUFFER
+ * TRIMMED TO EXACTLY THE ANSWER IT WAS ALLOWED TO FIND. The old body was
+ *
+ *     const headSize = Math.max(512, ISOHYBRID_ESP_OFFSET_FALLBACK_BYTES + 512);
+ *     readFileSync(isoPath).subarray(0, headSize)
+ *
+ * i.e. 141_824 bytes: enough to check the LBA-276 fallback and nothing else.
+ * An MBR 0xEF entry pointing anywhere past LBA 276 then failed
+ * `isoHead.length >= partOffset + 512` inside the scan, the MBR branch was
+ * skipped in silence, and the constant came back for an image it does not
+ * describe. The measured ISO of run 36044770870 puts its ESP at LBA 268
+ * (offset 137_216, 3 MiB, FAT12) — inside the old bound by 4_608 bytes. One
+ * megabyte further in and it would not have been, with nothing saying so.
+ *
+ * The whole image is passed now. The scan indexes at computed offsets rather
+ * than walking, so a larger buffer costs nothing and removes the bound as a
+ * source of wrong answers.
+ *
+ * KNOWN LIMIT, deliberately left: `readFileSync` pulls the entire ISO into
+ * memory (1.67 GiB for the measured installer) and would throw outright past
+ * its ~2 GiB ceiling. The bounded `openSync`/`readSync` version that fixes
+ * both is a `js/insecure-temporary-file` CodeQL sink — every QEMU lane hands
+ * this function an ISO path under `os.tmpdir()`, and the query models
+ * `fs.openSync` as file creation regardless of the `"r"` flag. Changing it is
+ * a separate change with its own argument to make; it is not worth smuggling
+ * in behind an offset fix, and this is the pre-existing behaviour, not a
+ * regression.
+ */
+export function resolveEspOffsetForIso(isoPath: string): IsohybridEspOffset {
+  return detectIsohybridEspOffset(readFileSync(isoPath));
+}
+
 export function resolveEspOffsetBytesForIso(isoPath: string): number {
-  const headSize = Math.max(512, ISOHYBRID_ESP_OFFSET_FALLBACK_BYTES + 512);
-  const isoHead = readFileSync(isoPath).subarray(0, headSize);
-  return detectIsohybridEspOffsetBytes(isoHead);
+  return resolveEspOffsetForIso(isoPath).offsetBytes;
 }
 
 export function checkZflashToolchain(): string | null {
   for (const [bin, installHint, probeArgs] of [
     ["qemu-img", "qemu-utils", ["--version"] as const],
     ["mcopy", "mtools", ["-V"] as const],
+    // 081M39CJP96087G0R001T4J2R3 (WP29): the post-bake read-back in
+    // file-backed.ts runs `mdir` and `mtype`. `mdir` was already being used
+    // without ever being probed for — same package as `mcopy`, so in practice
+    // it is there, but "in practice it is there" is how a missing tool becomes
+    // a confusing mid-bake failure instead of a named precondition.
+    ["mdir", "mtools", ["-V"] as const],
+    ["mtype", "mtools", ["-V"] as const],
   ] as const) {
     try {
       const result = spawnSync(bin, [...probeArgs], { encoding: "utf8" });
@@ -157,11 +201,10 @@ export function writeTestCredentialBlob(outputPath: string): void {
 }
 
 export function prepareBootImage(input: PrepareBootImageInput): PrepareBootImageResult | { readonly error: string } {
-  const toolchainError = checkZflashToolchain();
-  if (toolchainError !== null) {
-    return { error: toolchainError };
-  }
-
+  // Inputs are judged before the environment is: what was ASKED FOR can be
+  // wrong on any machine, so refusing it first makes the refusal reproducible
+  // rather than conditional on which binaries happen to be installed. The
+  // toolchain probe still runs below, before anything is executed.
   const absIso = resolve(input.isoPath);
   if (!existsSync(absIso)) {
     return { error: `installer ISO not found: ${absIso}` };
@@ -170,7 +213,35 @@ export function prepareBootImage(input: PrepareBootImageInput): PrepareBootImage
     return { error: `ssh pubkey not found: ${input.pubkeyPath}` };
   }
 
-  const espOffsetBytes = resolveEspOffsetBytesForIso(absIso);
+  // 081M39CJP96087G0R001T4J2R3 (WP29) — REFUSE AN OFFSET NOTHING CONFIRMED.
+  //
+  // Every ESP write, and the post-bake read-back that judges them, addresses
+  // this one number. When it is wrong they are wrong TOGETHER: `mcopy` writes
+  // at the bad offset and `mdir` reads its own writes back from the bad offset
+  // and reports success. The bake cannot detect its own miss by looking harder
+  // at the place it already looked, so the number has to be refused up front
+  // or not at all.
+  //
+  // `fallback-unconfirmed` means no 0xEF partition entry resolved AND no FAT
+  // boot sector was found at the fallback — the offset is a constant that
+  // nothing about this ISO agrees with.
+  const espOffset = resolveEspOffsetForIso(absIso);
+  if (espOffset.source === "fallback-unconfirmed") {
+    return {
+      error:
+        `ESP offset could not be confirmed for ${absIso}: no MBR 0xEF partition entry resolved to a ` +
+        `FAT boot sector, and there is no FAT boot sector at the LBA-276 fallback ` +
+        `(${ISOHYBRID_ESP_OFFSET_FALLBACK_BYTES} bytes) either. Baking would write every injection to ` +
+        `an offset nothing verified, and the post-bake read-back reads from that same offset, so it ` +
+        `would confirm the writes and the guest would still find nothing. Refusing instead.`,
+    };
+  }
+  const espOffsetBytes = espOffset.offsetBytes;
+
+  const toolchainError = checkZflashToolchain();
+  if (toolchainError !== null) {
+    return { error: toolchainError };
+  }
 
   let credentialBlobPath: string | undefined;
   if (input.withCredentialBlob) {

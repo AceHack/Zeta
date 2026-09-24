@@ -21,6 +21,7 @@ import {
   composeAuthorizedKeysFileContent,
   composeWifiCredentialsFileContent,
   detectIsoArchFromPath,
+  detectIsohybridEspOffset,
   detectIsohybridEspOffsetBytes,
   executeFileBackedZflashImageExecutionPlan,
   generateRandomNodeName,
@@ -345,6 +346,67 @@ describe("detectIsohybridEspOffsetBytes", () => {
     head.writeUInt16LE(0xaa55, ISOHYBRID_ESP_OFFSET_FALLBACK_BYTES + 0x1fe);
     head.write("FAT12   ", ISOHYBRID_ESP_OFFSET_FALLBACK_BYTES + 0x36, "latin1");
     expect(detectIsohybridEspOffsetBytes(head)).toBe(ISOHYBRID_ESP_OFFSET_FALLBACK_BYTES);
+  });
+});
+
+describe("detectIsohybridEspOffset — 081M39CJP96087G0R001T4J2R3 (WP29)", () => {
+  // The bytes are unchanged; what is new is that the caller can tell a
+  // MEASURED offset from a CONSTANT. The old function ended with two branches
+  // returning the same value, so its own FAT-BPB guard could not change the
+  // answer — a check that cannot fail, sitting on the one number every ESP
+  // write and the entire post-bake read-back address.
+
+  test("an MBR 0xEF entry backed by a real FAT boot sector is 'mbr'", () => {
+    expect(detectIsohybridEspOffset(syntheticIsoHeadWithEspAtLba(268))).toEqual({
+      offsetBytes: 268 * 512,
+      source: "mbr",
+    });
+  });
+
+  test("a FAT boot sector at the fallback with no usable 0xEF entry is 'fallback-confirmed'", () => {
+    const head = Buffer.alloc(ISOHYBRID_ESP_OFFSET_FALLBACK_BYTES + 512);
+    head.writeUInt16LE(0xaa55, ISOHYBRID_ESP_OFFSET_FALLBACK_BYTES + 0x1fe);
+    head.write("FAT12   ", ISOHYBRID_ESP_OFFSET_FALLBACK_BYTES + 0x36, "latin1");
+    expect(detectIsohybridEspOffset(head)).toEqual({
+      offsetBytes: ISOHYBRID_ESP_OFFSET_FALLBACK_BYTES,
+      source: "fallback-confirmed",
+    });
+  });
+
+  test("no 0xEF entry and no FAT at the fallback is 'fallback-unconfirmed', not a silent answer", () => {
+    const head = Buffer.alloc(ISOHYBRID_ESP_OFFSET_FALLBACK_BYTES + 512);
+    head.writeUInt16LE(0xaa55, 0x1fe);
+    expect(detectIsohybridEspOffset(head)).toEqual({
+      offsetBytes: ISOHYBRID_ESP_OFFSET_FALLBACK_BYTES,
+      source: "fallback-unconfirmed",
+    });
+  });
+
+  test("a HEAD TOO SHORT to reach the 0xEF entry's target reports unconfirmed, not the constant as fact", () => {
+    // This is the live trap: `resolveEspOffsetBytesForIso` used to hand in
+    // exactly `fallback + 512` bytes, so an ESP past LBA 276 failed
+    // `isoHead.length >= partOffset + 512`, the MBR branch was skipped in
+    // silence, and 141_312 came back for an image it does not describe.
+    const full = syntheticIsoHeadWithEspAtLba(4096);
+    const truncated = full.subarray(0, ISOHYBRID_ESP_OFFSET_FALLBACK_BYTES + 512);
+
+    expect(detectIsohybridEspOffset(full).source).toBe("mbr");
+    expect(detectIsohybridEspOffset(full).offsetBytes).toBe(4096 * 512);
+    expect(detectIsohybridEspOffset(truncated)).toEqual({
+      offsetBytes: ISOHYBRID_ESP_OFFSET_FALLBACK_BYTES,
+      source: "fallback-unconfirmed",
+    });
+  });
+
+  test("detectIsohybridEspOffsetBytes still returns exactly what it always did", () => {
+    for (const head of [
+      syntheticIsoHeadWithEspAtLba(276),
+      syntheticIsoHeadWithEspAtLba(268),
+      Buffer.alloc(ISOHYBRID_ESP_OFFSET_FALLBACK_BYTES + 512),
+      Buffer.alloc(0),
+    ]) {
+      expect(detectIsohybridEspOffsetBytes(head)).toBe(detectIsohybridEspOffset(head).offsetBytes);
+    }
   });
 });
 

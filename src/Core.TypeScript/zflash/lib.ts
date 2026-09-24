@@ -405,10 +405,48 @@ function isFatBpbSector(sector: Buffer): boolean {
 }
 
 /**
- * Locate the FAT ESP byte offset inside an isohybrid installer image head.
- * Mirrors flash-and-inject.ts MBR scan + LBA-276 fallback used on real USB bakes.
+ * Where {@link detectIsohybridEspOffset}'s answer came from, and whether
+ * anything confirmed it.
+ *
+ * - `mbr` — an 0xEF partition entry pointed here AND a FAT BPB was read at
+ *   that offset. Two independent facts agreed.
+ * - `fallback-confirmed` — no usable 0xEF entry, but a FAT BPB *is* present at
+ *   the LBA-276 fallback. The guess was checked and held.
+ * - `fallback-unconfirmed` — **nothing was verified.** No 0xEF entry resolved
+ *   and no FAT BPB was found at the fallback, either because the head buffer
+ *   was too short to reach it or because those bytes are not a boot sector.
+ *   The offset is a constant, not a measurement.
  */
-export function detectIsohybridEspOffsetBytes(isoHead: Buffer): number {
+export type IsohybridEspOffsetSource = "mbr" | "fallback-confirmed" | "fallback-unconfirmed";
+
+export interface IsohybridEspOffset {
+  readonly offsetBytes: number;
+  readonly source: IsohybridEspOffsetSource;
+}
+
+/**
+ * Locate the FAT ESP byte offset inside an isohybrid installer image head, and
+ * SAY whether anything confirmed it.
+ *
+ * 081M39CJP96087G0R001T4J2R3 (WP29) — the previous shape of this scan ended:
+ *
+ *     if (headIsLongEnough && isFatBpbSector(...)) return fallback;
+ *     return fallback;
+ *
+ * Two branches, one value. The `isFatBpbSector` guard could not change the
+ * answer, so it was a check that cannot fail: every caller received a bare
+ * number and had no way to ask whether it had been verified or merely
+ * assumed. That matters because the head passed in is bounded —
+ * `resolveEspOffsetBytesForIso` sized it at exactly `fallback + 512`, so an
+ * ESP whose start LBA is past 276 fails `isoHead.length >= partOffset + 512`,
+ * the MBR branch is skipped silently, and the constant is returned for an
+ * image it does not describe.
+ *
+ * The numbers are unchanged. What is new is `source`, so a caller can refuse
+ * to bake against an offset nothing confirmed instead of writing there and
+ * reading its own writes back as proof.
+ */
+export function detectIsohybridEspOffset(isoHead: Buffer): IsohybridEspOffset {
   if (isoHead.length >= 512) {
     const mbr = isoHead.subarray(0, 512);
     for (let partition = 0; partition < 4; partition++) {
@@ -418,7 +456,7 @@ export function detectIsohybridEspOffsetBytes(isoHead: Buffer): number {
       if (type === 0xef && startLba > 0) {
         const partOffset = startLba * 512;
         if (isoHead.length >= partOffset + 512 && isFatBpbSector(isoHead.subarray(partOffset, partOffset + 512))) {
-          return partOffset;
+          return { offsetBytes: partOffset, source: "mbr" };
         }
       }
     }
@@ -426,9 +464,20 @@ export function detectIsohybridEspOffsetBytes(isoHead: Buffer): number {
 
   const fallback = ISOHYBRID_ESP_OFFSET_FALLBACK_BYTES;
   if (isoHead.length >= fallback + 512 && isFatBpbSector(isoHead.subarray(fallback, fallback + 512))) {
-    return fallback;
+    return { offsetBytes: fallback, source: "fallback-confirmed" };
   }
-  return fallback;
+  return { offsetBytes: fallback, source: "fallback-unconfirmed" };
+}
+
+/**
+ * Locate the FAT ESP byte offset inside an isohybrid installer image head.
+ * Mirrors flash-and-inject.ts MBR scan + LBA-276 fallback used on real USB bakes.
+ *
+ * Byte-identical behaviour to before {@link detectIsohybridEspOffset} existed;
+ * prefer that one when you can act on an unconfirmed answer.
+ */
+export function detectIsohybridEspOffsetBytes(isoHead: Buffer): number {
+  return detectIsohybridEspOffset(isoHead).offsetBytes;
 }
 
 /**

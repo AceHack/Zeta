@@ -2317,6 +2317,21 @@ fi
 
 # Try 2: probe likely-USB block devices for a FAT partition with the pubkey.
 # Skip BOOT_DISK + DATA_DISKS (install targets).
+#
+# WP29 (081M39CJP96087G0R001T4J2R3) — RECORD WHY EACH MOUNT REFUSED.
+#
+# This loop discarded `mount`'s stderr, so a partition that carries a
+# readable FAT label and still will not mount produced the same silence as
+# a partition that is genuinely not FAT. Measured on run 36044770870: the
+# guest's earlier zeta-first-boot scan reported EVERY candidate as
+# `(no-vfat)` -- including `/dev/disk/by-label/EFIBOOT`, a symlink that only
+# exists because blkid HAD parsed that boot sector -- and this probe then
+# missed the pubkey, iter-5.2 missed the hostname and WP11 missed its
+# marker. The kernel said why, once per attempt, and nothing kept it.
+#
+# ZETA_ESP_MOUNT_ERRORS collects one `part=reason` per refusal and is
+# printed in the not-found branch below. Nothing here changes control flow.
+ZETA_ESP_MOUNT_ERRORS=""
 if [ -z "$PUBKEY_FILE" ]; then
   echo "[iter-4.2]   not in mounted FS; probing USB partitions ..."
   for dev in /dev/sd? /dev/nvme?n? /dev/vd? /dev/mmcblk?; do
@@ -2335,13 +2350,17 @@ if [ -z "$PUBKEY_FILE" ]; then
         *) part="${dev}${partsfx}" ;;
       esac
       [ -b "$part" ] || continue
-      if sudo mount -t vfat -o ro "$part" "$PROBE_MOUNT" 2>/dev/null; then
+      if mount_err="$(sudo mount -t vfat -o ro "$part" "$PROBE_MOUNT" 2>&1 >/dev/null)"; then
         if [ -f "$PROBE_MOUNT/zeta-authorized-keys.pub" ]; then
           PUBKEY_FILE="$PROBE_MOUNT/zeta-authorized-keys.pub"
           BOOT_ESP_PART="$part"
           break 2
         fi
         sudo umount "$PROBE_MOUNT" 2>/dev/null || true
+      else
+        mount_err="$(printf '%s' "$mount_err" | head -1 | cut -c1-96)" || :
+        ZETA_ESP_MOUNT_ERRORS="${ZETA_ESP_MOUNT_ERRORS}${ZETA_ESP_MOUNT_ERRORS:+
+}    ${part}: ${mount_err:-<no stderr from mount>}"
       fi
     done
   done
@@ -2648,6 +2667,20 @@ else
   echo
   echo "=== [iter-4.2] DIAGNOSTICS ==="
   echo "reason: no operator SSH pubkey found on boot USB ESP"
+  echo
+  # WP29 (081M39CJP96087G0R001T4J2R3): the kernel's own words for every
+  # partition that refused a vfat mount. "no ESP mount was even attempted"
+  # (nothing matched the device globs) and "the ESP was there and the kernel
+  # would not mount it" used to produce byte-identical diagnostics; they do
+  # not any more. `lsblk` below says what exists, this says what happened.
+  echo "--- vfat mount refusals during the probe ---"
+  if [ -n "$ZETA_ESP_MOUNT_ERRORS" ]; then
+    printf '%s\n' "$ZETA_ESP_MOUNT_ERRORS"
+  else
+    echo "    (none — no candidate partition refused a mount, so the probe"
+    echo "     either matched no partitions at all or mounted them and found"
+    echo "     no zeta-authorized-keys.pub; see lsblk below)"
+  fi
   echo
   echo "--- external block devices ---"
   ls /dev/sd? /dev/nvme?n? /dev/vd? /dev/mmcblk? 2>/dev/null || echo "(none)"

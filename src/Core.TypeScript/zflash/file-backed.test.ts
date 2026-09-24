@@ -5,6 +5,64 @@ import { join } from "node:path";
 import { TPM_CHAR_DEVICE } from "../cluster/bao-load-site.ts";
 import { parseFileBackedZflashArgs, runFileBackedZflashCli } from "./file-backed.ts";
 import { NIXOS_HOST_BAO, nixosHostBaoAsk, planFirstbootConfWithNamedBaoElf } from "./firstboot-bao-elf.ts";
+import type { FileBackedZflashImageExecutor } from "./lib.ts";
+
+/**
+ * An executor that behaves like a working ESP: it remembers what each `mcopy`
+ * put where, then answers `mdir` and `mtype` from that memory.
+ *
+ * 081M39CJP96087G0R001T4J2R3 (WP29) — the previous fixtures returned a
+ * hand-written `mdir` listing and an empty string for everything else, which
+ * could only ever exercise "is the name in the listing". The post-bake
+ * read-back now also reads CONTENT back through the FAT chain, and a mock
+ * that cannot hold content cannot falsify that. Each option below injects
+ * exactly one real failure mode.
+ */
+function espSimulatingExecutor(
+  damage: {
+    /** Names to omit from the `mdir` listing — the 081KZHJPJCF silent drop. */
+    readonly dropFromListing?: readonly string[];
+    /** Listed, but its data cannot be read back — a name with no bytes behind it. */
+    readonly unreadable?: string;
+    /** Listed and readable, but the bytes came back different. */
+    readonly corruptTo?: { readonly destination: string; readonly content: string };
+  } = {},
+): FileBackedZflashImageExecutor {
+  const staged = new Map<string, string>();
+  const onEsp = new Map<string, string>();
+  return {
+    writeFile: (file) => {
+      staged.set(file.path, file.content);
+    },
+    runCommand: (command) => {
+      const ok = { exitCode: 0, stderr: "", stdout: "" } as const;
+      if (command.command === "mcopy") {
+        // mcopy -o -i <spec> <source> ::<destination>
+        const source = command.args.at(-2) ?? "";
+        const destination = (command.args.at(-1) ?? "").replace(/^::/, "");
+        onEsp.set(destination, staged.get(source) ?? `<bytes of ${source}>`);
+        return ok;
+      }
+      if (command.command === "mdir") {
+        const names = [...onEsp.keys()]
+          .map((destination) => destination.replace(/^\/+/, ""))
+          .filter((name) => !(damage.dropFromListing ?? []).includes(name));
+        return { exitCode: 0, stderr: "", stdout: `${names.join("\n")}\n` };
+      }
+      if (command.command === "mtype") {
+        const destination = (command.args.at(-1) ?? "").replace(/^::/, "");
+        if (damage.unreadable !== undefined && destination === damage.unreadable) {
+          return { exitCode: 1, stderr: "mtype: Input/output error", stdout: "" };
+        }
+        if (damage.corruptTo !== undefined && destination === damage.corruptTo.destination) {
+          return { exitCode: 0, stderr: "", stdout: damage.corruptTo.content };
+        }
+        return { exitCode: 0, stderr: "", stdout: onEsp.get(destination) ?? "" };
+      }
+      return ok;
+    },
+  };
+}
 
 describe("parseFileBackedZflashArgs", () => {
   test("parses the file-backed QEMU image CLI shape", () => {
@@ -384,17 +442,7 @@ describe("runFileBackedZflashCli", () => {
       {
         createInlineStagingDirectory: () => "/private/tmp/zflash-inline-abc123",
         verifyEspWrites: true,
-        executor: {
-          runCommand: (command) =>
-            command.command === "mdir"
-              ? {
-                  exitCode: 0,
-                  stderr: "",
-                  stdout: "zeta-authorized-keys.pub\nzeta-hostname.txt\nzeta-wifi-credentials.json\n",
-                }
-              : { exitCode: 0, stderr: "", stdout: "" },
-          writeFile: () => {},
-        },
+        executor: espSimulatingExecutor(),
       },
     );
 
@@ -417,13 +465,7 @@ describe("runFileBackedZflashCli", () => {
       {
         createInlineStagingDirectory: () => "/private/tmp/zflash-inline-abc123",
         verifyEspWrites: true,
-        executor: {
-          runCommand: (command) =>
-            command.command === "mdir"
-              ? { exitCode: 0, stderr: "", stdout: "zeta-authorized-keys.pub\nzeta-hostname.txt\n" }
-              : { exitCode: 0, stderr: "", stdout: "" },
-          writeFile: () => {},
-        },
+        executor: espSimulatingExecutor({ dropFromListing: ["zeta-wifi-credentials.json"] }),
       },
     );
 
@@ -431,6 +473,104 @@ describe("runFileBackedZflashCli", () => {
     if (result.ok) throw new Error("expected verification failure");
     expect(result.error).toContain("zeta-wifi-credentials.json");
     expect(result.error).toContain("silent drop");
+  });
+
+  test("walks the ESP recursively, not just its root directory (081M39CJP96087G0R001T4J2R3)", () => {
+    // MEASURED on the real 1.67 GiB installer ISO of run 36044770870, baked
+    // through this path and then truncated to 1_000_000 and 2_000_000 bytes:
+    // `mdir -i <img>@@<off> ::` exited 0 both times. A FAT12 root directory
+    // sits at byte 5_632 of the ESP, so a root listing is satisfied by the
+    // first ~143 KB of the image and says nothing about the rest. `-/` walks
+    // every directory cluster through the FAT instead.
+    const commands: string[] = [];
+    const esp = espSimulatingExecutor();
+    const result = runFileBackedZflashCli(
+      {
+        espOffsetBytes: 1_048_576,
+        hostname: "pikachu",
+        isoPath: "artifacts/zeta-installer.iso",
+        outputImagePath: "artifacts/zflash-baked.img",
+        pubkeyPath: "fixtures/id_ed25519.pub",
+      },
+      {
+        createInlineStagingDirectory: () => "/private/tmp/zflash-inline-abc123",
+        verifyEspWrites: true,
+        executor: {
+          writeFile: (file) => esp.writeFile(file),
+          runCommand: (command) => {
+            commands.push(`${command.command} ${command.args.join(" ")}`);
+            return esp.runCommand(command);
+          },
+        },
+      },
+    );
+
+    expect(result.ok).toBe(true);
+    const mdirCommands = commands.filter((line) => line.startsWith("mdir "));
+    expect(mdirCommands).toHaveLength(1);
+    expect(mdirCommands[0]).toBe("mdir -i artifacts/zflash-baked.img@@1048576 -/ ::");
+  });
+
+  test("fails when a listed ESP file's CONTENT cannot be read back (081M39CJP96087G0R001T4J2R3)", () => {
+    // A name in the directory with unreachable data behind it is exactly what
+    // a guest reports as a missing injection, and the root listing that used
+    // to be the whole check cannot tell the two apart.
+    const result = runFileBackedZflashCli(
+      {
+        espOffsetBytes: 1_048_576,
+        hostname: "pikachu",
+        isoPath: "artifacts/zeta-installer.iso",
+        outputImagePath: "artifacts/zflash-baked.img",
+        pubkeyPath: "fixtures/id_ed25519.pub",
+      },
+      {
+        createInlineStagingDirectory: () => "/private/tmp/zflash-inline-abc123",
+        verifyEspWrites: true,
+        executor: espSimulatingExecutor({ unreadable: "/zeta-hostname.txt" }),
+      },
+    );
+
+    expect(result.ok).toBe(false);
+    if (result.ok) throw new Error("expected verification failure");
+    expect(result.error).toContain("/zeta-hostname.txt");
+    expect(result.error).toContain("could not be read back");
+  });
+
+  test("fails when an ESP file reads back with different bytes, and never prints them", () => {
+    // The wifi blob is a plaintext secret on a FAT partition
+    // (railFindingsForEspWrites says so). A mismatch must name the
+    // destination and the byte counts and nothing else.
+    //
+    // Asserted by EXACT EQUALITY on the whole message rather than by a pair of
+    // `not.toContain` absence checks: an absence assertion witnesses one
+    // rendering of a leak and never its absence (audit-check-arity-nonequality
+    // R5), whereas a string that EQUALS this one cannot contain the ssid or the
+    // password by construction.
+    const result = runFileBackedZflashCli(
+      {
+        espOffsetBytes: 1_048_576,
+        isoPath: "artifacts/zeta-installer.iso",
+        outputImagePath: "artifacts/zflash-baked.img",
+        pubkeyPath: "fixtures/id_ed25519.pub",
+        wifiPassword: "super-secret",
+        wifiSsid: "Homelab",
+      },
+      {
+        createInlineStagingDirectory: () => "/private/tmp/zflash-inline-abc123",
+        verifyEspWrites: true,
+        executor: espSimulatingExecutor({
+          corruptTo: { destination: "/zeta-wifi-credentials.json", content: "{}" },
+        }),
+      },
+    );
+
+    expect(result.ok).toBe(false);
+    if (result.ok) throw new Error("expected verification failure");
+    expect(result.error).toBe(
+      "ESP write verification failed — /zeta-wifi-credentials.json read back with different bytes than " +
+        "were written (081M39CJP96087G0R001T4J2R3): planned 45 byte(s), read 2 byte(s). Contents are not " +
+        "printed — some ESP destinations carry plaintext secrets.",
+    );
   });
 
   test("rejects malformed wifi flags without printing the password", () => {

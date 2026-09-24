@@ -96,16 +96,46 @@ ESP_CONF_MOUNT=/run/zeta-boot-esp
 # `ZETA_ESP_CONF` records the outcome and is printed unconditionally below.
 ZETA_ESP_CONF="none"
 ZETA_ESP_CONF_TRIED=""
+#
+# ── WP29 (081M39CJP96087G0R001T4J2R3): `(no-vfat)` HAS TO SAY WHY ────────
+#
+# WP27 above made the scan speak; this makes its one interesting verdict
+# say something. `(no-vfat)` was the mount's exit status with the mount's
+# OWN EXPLANATION thrown away by `2>/dev/null`, and that is the whole gap
+# between the two runs this work item compares:
+#
+#   36014672753 (WP11 green):   EFIBOOT(no-conf) ... /dev/sda2(no-conf)
+#   36044770870 (WP11 lost it): EFIBOOT(no-vfat) ... /dev/sda2(no-vfat)
+#
+# Identical dispatch, identical preceding steps, identical QEMU command
+# line, ISOs three non-ESP commits apart. udev had already read the FAT
+# label off that partition -- `/dev/disk/by-label/EFIBOOT` EXISTS in the
+# failing list -- so blkid could parse the boot sector while the kernel
+# refused the mount, and it stayed refused for the whole install rather
+# than settling. That is a narrow class of failure ("Unable to load NLS
+# charset", an -EINVAL from the BPB, EBUSY on the mountpoint) and the
+# kernel names which one it is, on stderr, every time. We were discarding
+# it, so every occurrence cost a fresh ~40-minute run and still produced
+# no cause.
+#
+# Keep the field SPACE-FREE: `espConfScanOutcome` in
+# src/Core.TypeScript/ci/qemu-full-install-test.ts parses `tried=(\S*)`,
+# so the reason is squeezed to [A-Za-z0-9._/:-] and truncated. Nothing
+# here changes control flow -- a failed mount still just continues.
 zeta_source_esp_firstboot_conf() {
-  local part conf
+  local part conf mount_stderr
   mkdir -p "$ESP_CONF_MOUNT" 2>/dev/null || { ZETA_ESP_CONF="mkdir-failed:$ESP_CONF_MOUNT"; return 1; }
   for part in /dev/disk/by-label/* /dev/sd?[0-9] /dev/nvme?n?p[0-9] /dev/vd?[0-9] /dev/mmcblk?p[0-9]; do
     [[ -b "$part" ]] || continue
     # Every block device the loop actually considered, so an empty list is
     # visibly an empty list rather than an unexplained miss.
     ZETA_ESP_CONF_TRIED="${ZETA_ESP_CONF_TRIED}${ZETA_ESP_CONF_TRIED:+,}${part}"
-    mount -t vfat -o ro "$part" "$ESP_CONF_MOUNT" 2>/dev/null || {
-      ZETA_ESP_CONF_TRIED="${ZETA_ESP_CONF_TRIED}(no-vfat)"
+    mount_stderr="$(mount -t vfat -o ro "$part" "$ESP_CONF_MOUNT" 2>&1 >/dev/null)" || {
+      # `|| :` because pipefail is on and `head -1` can SIGPIPE the producer;
+      # the assignment has already happened by then, so this keeps the value
+      # rather than letting a harmless broken pipe read as a failure.
+      mount_stderr="$(printf '%s' "$mount_stderr" | head -1 | tr -c 'A-Za-z0-9._/:-' '_' | cut -c1-72)" || :
+      ZETA_ESP_CONF_TRIED="${ZETA_ESP_CONF_TRIED}(no-vfat:${mount_stderr:-no-stderr})"
       continue
     }
     conf="$ESP_CONF_MOUNT/zeta-firstboot.conf"
