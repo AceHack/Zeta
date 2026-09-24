@@ -47,9 +47,14 @@
 #   5. rootLanded        -- applications.argoproj.io CRD exists AND
 #                            argocd/Application zeta-root exists (deploy-controller
 #                            retry verdict k3s-first-boot-roster.nix names A/B/C)
-#   6. noBadPods         -- no pod ErrImagePull/ImagePullBackOff/CrashLoopBackOff at
-#                            the end of the bounded window; every bad pod + its
-#                            restart count is reported, never just a boolean
+#   6. noBadPods         -- polls (never a single snapshot) for up to a 180s soak,
+#                            measured from the clean-VM-oracle settle baseline
+#                            (081M343EM0R087G0R003C8ZHJ7), after rootLanded --
+#                            a pod counts as settled only once TWO consecutive
+#                            samples agree it is neither in the bad-phase set
+#                            nor still accumulating restarts. Every still-bad
+#                            pod + its restart count + a describe/logs dump is
+#                            reported, never just a boolean (081M39T5661087G0R001FTJ78W).
 #
 # Never blocks real boot: RemainAfterExit + TimeoutStartSec=0 so the oneshot
 # is never killed mid-poll by systemd's 90s default (a killed oneshot reads
@@ -164,6 +169,11 @@ in
         JQ=${pkgs.jq}/bin/jq
         DATE=${pkgs.coreutils}/bin/date
         SLEEP=${pkgs.coreutils}/bin/sleep
+        AWK=${pkgs.gawk}/bin/awk
+        WC=${pkgs.coreutils}/bin/wc
+        TR=${pkgs.coreutils}/bin/tr
+        MKTEMP=${pkgs.coreutils}/bin/mktemp
+        MV=${pkgs.coreutils}/bin/mv
 
         kc() {
           ${config.services.k3s.package}/bin/k3s kubectl --kubeconfig "${kubeconfig}" "$@"
@@ -332,32 +342,181 @@ in
         fi
         log "[wp11-k3s-verify] verdict 5/6 rootLanded=''${ROOT_APPLIED} crdSeen=''${ROOT_CRD_SEEN} verdict=''${ROOT_VERDICT} elapsed=''${ROOT_LANDED_ELAPSED}s"
 
-        # --- verdict 6: no bad pods at the end of the window --------------------
-        BAD_PODS_JSON="[]"
+        # --- verdict 6: no bad pods, once the roster has had time to settle -----
+        #
+        # 081M39T5661087G0R001FTJ78W. This was the ONLY one of six verdicts
+        # with no poll -- a bare snapshot fired the instant verdict 5
+        # resolved (MEASURED run 35996447262: rootLanded at elapsed=140s,
+        # this block ran at elapsed=141s -- one second later, the earliest
+        # possible instant ANY pod could show transient startup-ordering
+        # churn). spire-agent (a DaemonSet) has no readiness dependency on
+        # spire-server (a StatefulSet); each is independently scheduled and
+        # pulls its own image, so spire-agent racing spire-server at first
+        # boot is expected, not a defect -- see the workitem for the full
+        # trace. Give this verdict the same poll-to-a-bound shape its five
+        # siblings above already have.
+        #
+        # SOAK_SECONDS is NOT tuned to pass any specific run -- it is the
+        # settle time this repo already MEASURED for the identical class of
+        # churn on a clean VM oracle: 081M343EM0R087G0R003C8ZHJ7 (run
+        # 35706939767) held spire-agent's restartCount flat at 3, "settled
+        # during ordinary startup churn, then stable," across a 180s
+        # sampling window (first-boot-replica.ts, the
+        # isKnownSpireAgentDnsCrashLoop docstring). A pod that has not
+        # settled inside that same 180s here is failing for a different
+        # reason than the one that number was measured against.
+        #
+        # SETTLED requires TWO CONSECUTIVE samples to agree a pod is both
+        # out of the bad-phase set AND not still accumulating restarts --
+        # never a single all-clear snapshot, because a genuinely
+        # crash-looping container can read "Running" for one sample between
+        # crashes (first-boot-replica.ts's own classifyPod fallback exists
+        # for exactly this ambiguity). A pod that never stops climbing, or
+        # is still bad at the deadline, still FAILS -- this soak widens
+        # WHEN the check looks, never WHAT it tolerates.
+        SOAK_SECONDS=180
+        POLL_SECONDS=15
+
+        # ZETA-WP11-NOBADPODS-BEGIN -- pure text processing: no kubectl, no
+        # jq, no globals but its own arguments and "$AWK" (a plain shell
+        # variable, set once near the top of this script from the gawk
+        # package, so this block is bash-sourceable outside Nix once $AWK is
+        # set to any awk on PATH). Shell-parity tested against a real
+        # bash+awk in
+        # src/Core.TypeScript/ci/wp11-nobadpods-shell-parity.test.ts, same
+        # discipline as longhorn-capacity-preflight-shell-parity.test.ts.
+        zeta_wp11_snapshot_restarts() {
+          # $1 = raw `kubectl get pods -A --no-headers` text (a file)
+          # $2 = output file: "namespace name restarts", one pod per line
+          "$AWK" '{print $1, $2, $5+0}' "$1" > "$2"
+        }
+
+        zeta_wp11_unsettled_pods() {
+          # $1 = raw `kubectl get pods -A --no-headers` text (a file), THIS sample
+          # $2 = restarts-snapshot file from the PREVIOUS sample (per
+          #      zeta_wp11_snapshot_restarts above); may not exist, or be
+          #      empty, on the first sample
+          # stdout: "namespace name status restarts", one line per pod that
+          #      is UNSETTLED -- its status matches the bad-phase set, OR
+          #      its restart count is higher than the previous sample
+          #      recorded for it, OR the previous sample never saw it at
+          #      all (so the FIRST sample alone can never conclude anything
+          #      has settled -- there is nothing yet to compare against).
+          "$AWK" -v prevfile="$2" '
+            BEGIN {
+              while ((getline pline < prevfile) > 0) {
+                split(pline, f, " ")
+                key = f[1] SUBSEP f[2]
+                prevr[key] = f[3]
+                seen[key] = 1
+              }
+            }
+            {
+              ns = $1; name = $2; status = $4; restarts = $5 + 0
+              key = ns SUBSEP name
+              bad = (status == "ErrImagePull" || status == "ImagePullBackOff" || status == "CrashLoopBackOff")
+              climbing = 1
+              if (key in seen) {
+                if (restarts <= prevr[key]) climbing = 0
+              }
+              if (bad || climbing) print ns, name, status, restarts
+            }
+          ' "$1"
+        }
+        # ZETA-WP11-NOBADPODS-END
+
+        # 081M38GCTFX087G0R003MMTXJE built `collectAppFailureDiagnostics` for
+        # the Docker-replica lane because a bad pod with no describe/logs
+        # evidence cannot be diagnosed from the verdict alone; this is that
+        # same discipline's sibling here, same reason
+        # (081M39T5661087G0R001FTJ78W: grepping this lane's own serial-log
+        # artifact for run 35996447262 found ZERO pod diagnostics beyond the
+        # bare verdict line -- the instrument this lane needs was absent
+        # exactly where the failure was).
+        bad_pod_diag() {
+          # $1 = file of "namespace name status restarts", one line per
+          #      still-unsettled pod at the end of the soak.
+          while IFS=' ' read -r _ns _name _status _restarts; do
+            [ -z "$_ns" ] && continue
+            log "[wp11-k3s-verify] --- bad pod diagnostics: ''${_ns}/''${_name} (status=''${_status} restarts=''${_restarts}) ---"
+            {
+              kc -n "$_ns" describe pod "$_name"
+              echo "--- logs --previous (falls back to current if no previous terminated container) ---"
+              kc -n "$_ns" logs "$_name" --all-containers --previous --tail=100 2>/dev/null \
+                || kc -n "$_ns" logs "$_name" --all-containers --tail=100
+            } 2>&1 | while IFS= read -r _l; do log "[wp11-bad-pod-diag] $_l"; done
+          done < "$1"
+        }
+
+        RESTARTS_SNAPSHOT="$($MKTEMP)"
+        : > "$RESTARTS_SNAPSHOT"
+        CUR_PODS_FILE="$($MKTEMP)"
+        : > "$CUR_PODS_FILE"
+        UNSETTLED_FILE="$($MKTEMP)"
+        : > "$UNSETTLED_FILE"
+        SAMPLES=0
         if [ "$K3S_ACTIVE" = "true" ]; then
-          BAD_LINES="$(kc get pods -A --no-headers 2>/dev/null | \
-            ${pkgs.gnugrep}/bin/grep -E 'ErrImagePull|ImagePullBackOff|CrashLoopBackOff' || true)"
-          if [ -n "$BAD_LINES" ]; then
-            while IFS= read -r line; do
-              [ -z "$line" ] && continue
-              ns="$(echo "$line" | ${pkgs.gawk}/bin/awk '{print $1}')"
-              name="$(echo "$line" | ${pkgs.gawk}/bin/awk '{print $2}')"
-              restarts="$(echo "$line" | ${pkgs.gawk}/bin/awk '{print $5}')"
-              status="$(echo "$line" | ${pkgs.gawk}/bin/awk '{print $4}')"
-              BAD_PODS_JSON="$(echo "$BAD_PODS_JSON" | "$JQ" \
-                --arg ns "$ns" --arg name "$name" --arg status "$status" --arg restarts "$restarts" \
-                '. + [{namespace: $ns, name: $name, status: $status, restarts: $restarts}]')"
-            done <<EOF
-$BAD_LINES
-EOF
+          soak_deadline=$(( $(now_ts) + SOAK_SECONDS ))
+          if [ "$soak_deadline" -gt "$deadline_ts" ]; then
+            soak_deadline=$deadline_ts
           fi
+          while true; do
+            SAMPLES=$(( SAMPLES + 1 ))
+            kc get pods -A --no-headers > "$CUR_PODS_FILE" 2>/dev/null || : > "$CUR_PODS_FILE"
+            zeta_wp11_unsettled_pods "$CUR_PODS_FILE" "$RESTARTS_SNAPSHOT" > "$UNSETTLED_FILE"
+            NEXT_SNAPSHOT="$($MKTEMP)"
+            zeta_wp11_snapshot_restarts "$CUR_PODS_FILE" "$NEXT_SNAPSHOT"
+            "$MV" -f "$NEXT_SNAPSHOT" "$RESTARTS_SNAPSHOT"
+            # settled only once TWO samples agree (SAMPLES>=2) there is
+            # nothing left unsettled -- see the header comment above.
+            if [ "$SAMPLES" -ge 2 ] && [ ! -s "$UNSETTLED_FILE" ]; then
+              break
+            fi
+            if [ "$(now_ts)" -ge "$soak_deadline" ]; then
+              break
+            fi
+            "$SLEEP" "$POLL_SECONDS"
+          done
         fi
+
+        # 081M39T5661087G0R001FTJ78W item 4: distinguish "no bad pods among N"
+        # from "no pods at all" (k3s never active, so this block never even
+        # ran) -- both used to read noBadPods=true with nothing to tell them
+        # apart, which is a SIXTH verdict reading green as confirmation that
+        # nothing was wrong while measuring nothing (MEASURED: this is what
+        # main printed all night on runs where k3s never became active).
+        # $K3S_ACTIVE is carried into the verdict directly rather than left
+        # to be inferred from podCount=0, which a genuinely-empty-but-active
+        # cluster could also produce.
+        TOTAL_POD_COUNT=$("$WC" -l < "$CUR_PODS_FILE" | "$TR" -d ' ')
+
+        BAD_PODS_JSON="[]"
         NO_BAD_PODS=true
-        if [ "$(echo "$BAD_PODS_JSON" | "$JQ" 'length')" -gt 0 ]; then
+        if [ -s "$UNSETTLED_FILE" ]; then
           NO_BAD_PODS=false
+          while IFS=' ' read -r _ns _name _status _restarts; do
+            [ -z "$_ns" ] && continue
+            BAD_PODS_JSON="$(echo "$BAD_PODS_JSON" | "$JQ" \
+              --arg ns "$_ns" --arg name "$_name" --arg status "$_status" --arg restarts "$_restarts" \
+              '. + [{namespace: $ns, name: $name, status: $status, restarts: $restarts}]')"
+          done < "$UNSETTLED_FILE"
         fi
         BAD_PODS_ELAPSED=$(elapsed)
-        log "[wp11-k3s-verify] verdict 6/6 noBadPods=''${NO_BAD_PODS} elapsed=''${BAD_PODS_ELAPSED}s"
+
+        # 081M39T5661087G0R001FTJ78W item 3: a soak that prints only its
+        # final boolean joins the class of check-whose-failure-and-absence-
+        # look-identical this repo has been bitten by all night. Say what
+        # was waited for, for how long, and how it resolved -- pass and fail
+        # are different sentences, not just a different word.
+        if [ "$K3S_ACTIVE" != "true" ]; then
+          log "[wp11-k3s-verify] verdict 6/6 noBadPods=true after ''${BAD_PODS_ELAPSED}s -- k3s.service NEVER BECAME ACTIVE, 0 pods were ever checked; this is NOT a confirmation that nothing was wrong (see verdict 2/6 above)"
+        elif [ "$NO_BAD_PODS" = "true" ]; then
+          log "[wp11-k3s-verify] verdict 6/6 noBadPods=true after ''${BAD_PODS_ELAPSED}s (''${SAMPLES} sample(s), ''${TOTAL_POD_COUNT} pod(s) total, all settled)"
+        else
+          BAD_SUMMARY="$("$AWK" 'BEGIN{sep=""} {printf "%s%s/%s restartCount=%s", sep, $1, $2, $4; sep=", "} END{print ""}' "$UNSETTLED_FILE")"
+          log "[wp11-k3s-verify] verdict 6/6 noBadPods=false after ''${BAD_PODS_ELAPSED}s (''${SAMPLES} sample(s), ''${TOTAL_POD_COUNT} pod(s) total, deadline reached): ''${BAD_SUMMARY} still unsettled"
+          bad_pod_diag "$UNSETTLED_FILE"
+        fi
 
         VERDICT_JSON="$("$JQ" -n \
           --argjson bootedMultiUser "$BOOTED_MULTI_USER" \
@@ -374,13 +533,16 @@ EOF
           --argjson noBadPods "$NO_BAD_PODS" \
           --argjson badPods "$BAD_PODS_JSON" \
           --argjson badPodsElapsedSeconds "$BAD_PODS_ELAPSED" \
+          --argjson podCount "$TOTAL_POD_COUNT" \
+          --argjson samples "$SAMPLES" \
+          --argjson k3sActiveForPods "$K3S_ACTIVE" \
           '{
             bootedMultiUser: {ok: $bootedMultiUser, elapsedSeconds: $bootedMultiUserElapsedSeconds},
             k3sServiceActive: {ok: $k3sServiceActive, elapsedSeconds: $k3sServiceActiveElapsedSeconds},
             nodeReady: {ok: $nodeReady, elapsedSeconds: $nodeReadyElapsedSeconds},
             helmJobs: {jobs: $helmJobs, elapsedSeconds: $helmJobsElapsedSeconds},
             rootLanded: {ok: $rootLanded, verdict: $rootLandedVerdict, elapsedSeconds: $rootLandedElapsedSeconds},
-            noBadPods: {ok: $noBadPods, pods: $badPods, elapsedSeconds: $badPodsElapsedSeconds}
+            noBadPods: {ok: $noBadPods, pods: $badPods, elapsedSeconds: $badPodsElapsedSeconds, podCount: $podCount, samples: $samples, k3sActive: $k3sActiveForPods}
           }')"
 
         log "${jsonBeginMarker}"

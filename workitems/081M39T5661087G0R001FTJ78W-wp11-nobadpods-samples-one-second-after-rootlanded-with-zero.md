@@ -142,3 +142,81 @@ printed to the same serial log everything else already goes to.
   this fix's 180s bound is grounded in.
 - 081M38GCTFX087G0R003MMTXJE — the diagnostics-collector precedent this
   workitem's last section asks WP11 to grow its own version of.
+
+## Implemented (branch claude/wp11-nobadpods-soak-fix)
+
+All four items from this workitem, plus the diagnostics gap, landed:
+
+1. **Soak, not snapshot.** `SOAK_SECONDS=180`, cited at the constant to
+   081M343EM0R087G0R003C8ZHJ7 / run 35706939767, explicitly NOT a number
+   chosen to pass any specific run. Polls every 15s (`POLL_SECONDS`,
+   matching verdict 5's own cadence) up to the soak bound or the unit's
+   overall `deadline_ts`, whichever is sooner.
+2. **A genuine crash-loop still fails.** A pod counts as settled only once
+   TWO CONSECUTIVE samples agree it is neither in the bad-phase set nor
+   accumulating restarts (`zeta_wp11_unsettled_pods`) -- guards against the
+   known ambiguity that a crash-looping container can read "Running" for
+   one sample between crashes. Proven in
+   `src/Core.TypeScript/ci/wp11-nobadpods-shell-parity.test.ts`, which
+   extracts the two pure decision functions VERBATIM from the `.nix` module
+   (same shell-parity discipline as
+   `longhorn-capacity-preflight-shell-parity.test.ts`) and runs them under
+   a real bash+awk: 8 tests, including "NEVER SETTLES" (restart count
+   climbs across 5 simulated samples, unsettled at every one, including the
+   last -- the load-bearing proof that the soak can still produce FAIL) and
+   "SETTLES LATE" (bad on sample 1, clean with the same restart count on
+   sample 2 -> settled, the PASS path this whole fix exists to reach
+   honestly).
+3. **One line, both outcomes distinguishable.** `noBadPods=true after 62s
+   (5 sample(s), 42 pod(s) total, all settled)` vs `noBadPods=false after
+   180s (12 sample(s), 42 pod(s) total, deadline reached): spire/spire-
+   agent-jl9fg restartCount=7 still unsettled`.
+4. **podCount + samples in the JSON**, cheap, reportable-only (does not
+   change what `ok` means) -- distinguishes "no bad pods among N" from "no
+   pods at all". Added as OPTIONAL fields to
+   `K3sFirstBootVerifyVerdict.noBadPods` in `qemu-full-install-test.ts` so
+   older verdict JSON still parses; the GH-step-summary line surfaces both
+   when present.
+5. **Diagnostics gap closed in the same PR** (it was small): `bad_pod_diag`
+   mirrors the existing `k3s_diag` function's shape (same file) -- `kubectl
+   describe pod` + `logs --previous` (falls back to current) for every
+   still-unsettled pod at the end of the soak, mirrored to serial through
+   the same `log()` channel everything else in this unit already uses.
+
+Not yet verified end-to-end on a real QEMU boot (that costs a full ISO
+build + boot cycle); verified by shell-parity (the actual decision logic,
+proven against a real bash+awk) and `tsc`/`bun test` for the TS side. The
+next triggered `build-ai-cluster-iso` run is what closes that gap.
+
+## End-to-end verified (run 36020388280, `workflow_dispatch` with `only_wp11: true`, this branch)
+
+The `build-iso-aarch64 + qemu-boot` job -- the one that runs the actual WP11
+verify unit on a real QEMU boot of the actual installed disk -- **passed**.
+Serial log, verdict 6/6 exactly as designed:
+
+    [wp11-k3s-verify] verdict 6/6 noBadPods=true after 155s (2 sample(s), 38 pod(s) total, all settled)
+
+Two samples (matching `POLL_SECONDS=15`), settled cleanly, the richer
+report (sample count + pod count) present in both the log line and the
+JSON (`"noBadPods": {"ok": true, "pods": [], "elapsedSeconds": 155,
+"podCount": 38, "samples": 2}`). All six verdicts passed on this run.
+
+**The overall workflow run still reported "failure"** -- from two OTHER
+jobs (`build-iso`, `k3s HA cluster + replicated Longhorn (3 VMs)`),
+unrelated to this fix: `build-iso`'s failure is a disk-floor refusal in a
+completely different test scenario (`boot-cluster-up`, WP28's Longhorn-
+capacity-preflight work, "BOOT disk /dev/vda is 40 GiB... need >= 122
+GiB"), nothing to do with `zeta-first-boot-k3s-verify.nix`. CONFIRMED
+pre-existing and branch-independent: the SAME overall "failure" status
+occurs on `main` itself, on the SAME run the coordinator cited as WP11's
+first clean green (36014672753) -- `gh run list --workflow=build-ai-
+cluster-iso.yml --branch main` shows it as `failure` too. This fix's own
+job is unaffected and green; the other failure is a separate, pre-existing
+issue out of this workitem's scope.
+
+The `k3sActive` addition (item 4 follow-up, commit after this dispatch was
+triggered) was NOT covered by this specific QEMU run -- it landed
+milliseconds after dispatch, so this run's verify unit predates it by one
+commit. Covered by `tsc` + the unchanged 134 shell-parity/unit tests; a
+fresh end-to-end run would need a second dispatch if that specific line's
+live behavior needs its own proof.
