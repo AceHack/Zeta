@@ -198,6 +198,102 @@ assert_boot_disk_large_enough() {
   fi
 }
 
+# ZETA-LONGHORN-CAPACITY-BEGIN -----------------------------------
+# WP28 (081M393B9TB087G0R000Y529Z8) — pure decision functions for the
+# pre-wipe Longhorn capacity refusal, checked for parity against the
+# TypeScript oracle src/Core.TypeScript/installer/longhorn-capacity-preflight.ts
+# by src/Core.TypeScript/installer/longhorn-capacity-preflight-shell-parity.test.ts.
+# No IO here; the `blockdev` reads and the `bail` happen at the call site,
+# which runs alongside assert_boot_disk_large_enough — BEFORE the wipe.
+#
+# THE DEFECT THIS CLOSES: on a single-disk install this script gives Longhorn
+# exactly LONGHORN1_TAIL (1G by default) and nothing else — ESP + root take the
+# rest of the boot disk, and the root filesystem is never a Longhorn data path
+# (nixos/modules/longhorn-disks.nix derives `dataDisks` from the
+# /var/lib/longhorn-disk* mountpoints this script creates). The committed
+# roster declares ~943 GiB of driver.longhorn.io PVCs against it, so fifteen
+# Applications' PVCs pend forever on a cluster that otherwise comes up. Nothing
+# caught it because every CI lane rebinds zeta-block-replicated to
+# rancher.io/local-path (full-ai-cluster/dev-cluster/manifests/), and the
+# readiness auditor's capacity check compares against the sum of every BLOCK
+# DEVICE rather than against what this script actually partitions.
+#
+# Integer GiB throughout, and every clamp rounds capacity DOWN: a junk reading
+# must not manufacture headroom, and a fractional GiB must not acquit.
+
+# min(storageOverProvisioningPercentage, 100 - storageMinimalAvailablePercentage)
+# with both at the chart defaults k8s/applications/longhorn/Application.yaml
+# leaves in place (100 and 25; longhorn-1.7.2/values.yaml ~214/~216). Pinned to
+# the deployed Application by longhorn-capacity-preflight.test.ts.
+ZETA_LONGHORN_USABLE_PERCENT=75
+
+# The committed roster's driver.longhorn.io-class demand, GiB. Measured
+# 2026-09-24; see COMMITTED_LONGHORN_DEMAND_GIB in the TS oracle for the
+# derivation. Recomputed from the render snapshot on every run of
+# src/Core.TypeScript/cluster/single-node-readiness.ts, which REFUSES when the
+# roster has moved past this number — so it cannot go stale quietly.
+ZETA_LONGHORN_DEMAND_GIB=943
+
+# A positive whole number, or 0. Negative, fractional and non-numeric all
+# collapse to 0 so both sides of the parity refuse junk identically.
+zeta_clamp_gib() {
+  case "$1" in
+    ''|*[!0-9]*) echo 0 ;;
+    *) if [ "$1" -gt 0 ] 2>/dev/null; then echo "$1"; else echo 0; fi ;;
+  esac
+}
+
+# Bytes -> whole GiB, floored.
+zeta_bytes_to_gib() {
+  local bytes
+  bytes="$(zeta_clamp_gib "$1")"
+  echo $(( bytes / 1073741824 ))
+}
+
+# Raw Longhorn capacity this installer provisions: the longhorn1 TAIL off the
+# boot disk (never the root filesystem) plus every non-boot internal disk whole.
+# Usage: zeta_provisioned_longhorn_gib <tail_gib> [<data_disk_gib> ...]
+zeta_provisioned_longhorn_gib() {
+  local total d
+  total="$(zeta_clamp_gib "$1")"
+  shift
+  for d in "$@"; do
+    total=$(( total + $(zeta_clamp_gib "$d") ))
+  done
+  echo "$total"
+}
+
+# GiB Longhorn will actually place out of a raw pool, floored.
+zeta_schedulable_longhorn_gib() {
+  local raw pct
+  raw="$(zeta_clamp_gib "$1")"
+  pct="$(zeta_clamp_gib "$2")"
+  if [ "$raw" -eq 0 ] || [ "$pct" -eq 0 ]; then
+    echo 0
+    return
+  fi
+  echo $(( raw * pct / 100 ))
+}
+
+# "ok" | "override" | "undersized". FAIL CLOSED: a pool that cannot hold the
+# roster aborts the install unless the operator named the exact override
+# literal, because a cluster that comes up half-started and leaves someone
+# reading PVC events is strictly worse than a refusal with the numbers on
+# screen — and at this point nothing has been wiped yet.
+zeta_longhorn_capacity_verdict() {
+  local schedulable="$1" demand="$2" override="$3"
+  if [ "$schedulable" -ge "$demand" ] 2>/dev/null; then
+    echo "ok"
+    return
+  fi
+  if [ "$override" = "1" ]; then
+    echo "override"
+    return
+  fi
+  echo "undersized"
+}
+# ZETA-LONGHORN-CAPACITY-END ------------------------------------
+
 # ── Step 1: enumerate internal disks ──────────────────────────────
 # Fixed (RM=0), writable (RO=0), type=disk, NOT USB. Includes NVMe,
 # SATA, SAS, RAID volumes, etc. Excludes loop, removable, read-only.
@@ -1435,6 +1531,59 @@ fi
 
 # Validate BOOT disk fits the layout before any destructive work.
 assert_boot_disk_large_enough "$BOOT_DISK"
+
+# WP28 (081M393B9TB087G0R000Y529Z8): refuse a Longhorn pool that cannot hold
+# the committed roster — BEFORE the wipe, with the arithmetic on screen.
+#
+# The pool this installer provisions is the longhorn1 TAIL off the boot disk
+# plus every non-boot internal disk whole. It is NOT the sum of the block
+# devices, and on a single-disk box it is LONGHORN1_TAIL regardless of how big
+# that disk is: ESP + root take the remainder, and the root filesystem is never
+# a Longhorn data path.
+assert_longhorn_pool_holds_the_roster() {
+  local tail_gib raw_gib schedulable verdict d data_gib
+  local -a data_sizes=()
+  tail_gib="$(zeta_bytes_to_gib "$LONGHORN1_TAIL_BYTES")"
+  for d in "${DATA_DISKS[@]:-}"; do
+    [[ -n "$d" ]] || continue
+    data_gib="$(zeta_bytes_to_gib "$(blockdev --getsize64 "$d")")"
+    data_sizes+=("$data_gib")
+  done
+  raw_gib="$(zeta_provisioned_longhorn_gib "$tail_gib" "${data_sizes[@]:-}")"
+  schedulable="$(zeta_schedulable_longhorn_gib "$raw_gib" "$ZETA_LONGHORN_USABLE_PERCENT")"
+  verdict="$(zeta_longhorn_capacity_verdict "$schedulable" "$ZETA_LONGHORN_DEMAND_GIB" "${ZETA_ALLOW_LONGHORN_UNDERSIZED:-}")"
+
+  # Printed on EVERY install, green or not. A standing decision that only
+  # appears when it fails is a decision nobody revisits.
+  echo
+  echo "Longhorn pool this install provisions (the partitions, not the disks):"
+  echo "  longhorn1 tail on $BOOT_DISK      ${tail_gib} GiB   (LONGHORN1_TAIL=${LONGHORN1_TAIL})"
+  if [[ ${#data_sizes[@]} -eq 0 ]]; then
+    echo "  whole non-boot disks                0 GiB   (single-disk install)"
+  else
+    local i=0
+    for d in "${DATA_DISKS[@]}"; do
+      echo "  longhorn$((i + 2)) whole disk $d   ${data_sizes[$i]} GiB"
+      i=$((i + 1))
+    done
+  fi
+  echo "  raw pool                          ${raw_gib} GiB"
+  echo "  x ${ZETA_LONGHORN_USABLE_PERCENT}% Longhorn will place       ${schedulable} GiB"
+  echo "  committed roster demands          ${ZETA_LONGHORN_DEMAND_GIB} GiB  (driver.longhorn.io classes)"
+
+  case "$verdict" in
+    ok) echo "  verdict: fits, $((schedulable - ZETA_LONGHORN_DEMAND_GIB)) GiB spare" ;;
+    override)
+      echo "  verdict: UNDERSIZED by $((ZETA_LONGHORN_DEMAND_GIB - schedulable)) GiB — proceeding on ZETA_ALLOW_LONGHORN_UNDERSIZED=1 override"
+      echo "  those PVCs will pend. This is debt you named, not a cleared check."
+      ;;
+    *)
+      bail "Longhorn would get ${schedulable} GiB schedulable (raw ${raw_gib} GiB x ${ZETA_LONGHORN_USABLE_PERCENT}%) but the committed roster declares ${ZETA_LONGHORN_DEMAND_GIB} GiB of driver.longhorn.io PVCs — short by $((ZETA_LONGHORN_DEMAND_GIB - schedulable)) GiB. Nothing has been wiped. Three remedies, cheapest first: (1) ADD A SECOND INTERNAL DISK — this installer formats every non-boot internal disk whole as longhorn2..N, so one more drive is the usual fix and needs no flags; (2) raise the boot disk's Longhorn slice, e.g. LONGHORN1_TAIL=$(( (ZETA_LONGHORN_DEMAND_GIB * 100 / ZETA_LONGHORN_USABLE_PERCENT) + 1 ))G (bounds: >=1G, <=1T, and root still needs what is left); (3) install anyway and accept that those PVCs pend, with ZETA_ALLOW_LONGHORN_UNDERSIZED=1."
+      ;;
+  esac
+  echo
+}
+assert_longhorn_pool_holds_the_roster
 
 # ── Step 2.9: the cancel window (R7, 2026-06-09) ──────────────────
 #

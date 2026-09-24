@@ -78,6 +78,7 @@ import {
 } from "./storage-profiles.ts";
 import { clusterDefaultStorageClass } from "./cluster-default-storage-class.ts";
 import { metalPoolCapabilities } from "./storage-capabilities.ts";
+import { COMMITTED_LONGHORN_DEMAND_GIB } from "../installer/longhorn-capacity-preflight.ts";
 import { classifySyncPolicy } from "./manual-sync-policy.ts";
 import {
   DEFAULT_SNAPSHOT_PATH as DEFAULT_RESOURCE_REQUESTS_SNAPSHOT_PATH,
@@ -85,7 +86,7 @@ import {
   type AppMeasurement,
 } from "./rendered-resource-requests.ts";
 
-const REPO_ROOT = resolve(import.meta.dir, "../../..");
+export const REPO_ROOT = resolve(import.meta.dir, "../../..");
 
 /** Charts whose default `podAntiAffinity.type` is `soft` — i.e. co-scheduling is ALLOWED unless overridden. */
 const SOFT_ANTIAFFINITY_BY_DEFAULT = new Set(["cockroachdb"]);
@@ -132,6 +133,7 @@ export interface Finding {
     | "false-redundancy"
     | "capacity-provenance"
     | "compute-provenance"
+    | "longhorn-geometry"
     | "pod-budget"
     | "rung-coverage"
     | "storage-profile"
@@ -246,6 +248,23 @@ export interface Ledger {
    * louder, never quieter.
    */
   readonly acknowledgedPodBudgetShortfall: readonly string[];
+  /**
+   * Longhorn pools that the INSTALLER's geometry cannot fill, recorded as
+   * `longhorn-geometry=<schedulable>GiB<<<demand>GiB@<hostname>`.
+   *
+   * Both numbers are in the key for the same reason as
+   * `acknowledgedComputeShortfall`: a roster that grows, or a `LONGHORN1_TAIL`
+   * that shrinks, re-reddens rather than being absorbed by an acknowledgement
+   * taken against different arithmetic. Defaulted to EMPTY in `readLedger` —
+   * an absent key can only make this check louder.
+   *
+   * NOTE what this can and cannot acknowledge. A node whose partitioned pool is
+   * too small is a HARDWARE fact somebody may knowingly carry. A
+   * `COMMITTED_LONGHORN_DEMAND_GIB` that has drifted from the roster is NOT
+   * acknowledgeable at all, because that is the installer refusing at a number
+   * no longer describing anything — an absent check wearing a threshold.
+   */
+  readonly acknowledgedLonghornGeometryShortfall: readonly string[];
 }
 
 // ---------------------------------------------------------------------------
@@ -1096,6 +1115,308 @@ export function findCapacityProvenance(
   return findings;
 }
 
+
+// ---------------------------------------------------------------------------
+// LONGHORN GEOMETRY provenance — the PARTITIONING term the comparator above is
+// missing, and the reason it reads green on a cluster that cannot start.
+//
+// WHY A FOURTH COMPARATOR AND NOT A TWEAK TO `capacity-provenance`
+// ----------------------------------------------------------------
+// `capacity-provenance` bounds the roster by the SUM OF EVERY BLOCK DEVICE on
+// the smallest registered node. Its own header already states what that
+// ignores: it "counts the USB stick, and it ignores the ESP, the root
+// filesystem, swap, and Longhorn's own reserve". That was written as a note
+// about generosity — the bound convicts and never acquits, so over-counting was
+// the safe direction for the question it asks.
+//
+// It is not the safe direction for the question an OPERATOR asks, because the
+// missing term is not a reserve percentage. It is PARTITIONING. Measured
+// 2026-09-24 on the committed tree:
+//
+//   zeta-install.sh:70    LONGHORN1_TAIL="${LONGHORN1_TAIL:-1G}"
+//   zeta-install.sh       sgdisk -n "2:0:-${LONGHORN1_TAIL}"  -> root
+//   zeta-install.sh       sgdisk -n "3:0:0"                   -> longhorn1
+//   zeta-install.sh       mount longhorn1 at /var/lib/longhorn-disk1
+//   longhorn-disks.nix    dataDisks <- requiredMounts (those mountpoints ONLY)
+//   longhorn Application  createDefaultDiskLabeledNodes: true
+//
+// So on a single-disk install Longhorn's entire pool is the tail — 1 GiB — no
+// matter how large the disk is, because ESP + root take the rest and the root
+// filesystem is NEVER a Longhorn data path. Physical disks are not schedulable
+// capacity. Running the auditor against node-ad1efd prints `1047 GiB` measured,
+// a `763 GiB` schedulable estimate, and `no blockers.` — while the machine it
+// describes would hand Longhorn either 1 GiB or 116 GiB depending on which
+// device the operator picks as the boot disk.
+//
+// That is the most expensive class this repo names: not a missing check, but an
+// EXISTING check that reads green on the defect. A check that did not measure
+// the thing looks exactly like one that passed.
+//
+// THE INFERENCE IS ONE-WAY, SAME AS ITS NEIGHBOURS
+// ------------------------------------------------
+// The capacity side is read as generously as the registration permits: the
+// BOOT disk is assumed to be the SMALLEST device, so every larger one becomes a
+// whole-disk longhorn2..N. Nothing in a ClusterNode registration records which
+// device the operator booted, and assuming the favourable one keeps the verdict
+// convicting: falling short under the most generous reading is proven, while
+// clearing it proves nothing (the operator may well boot the big disk).
+//
+// The demand side takes the LARGER of the two available readings per class,
+// for the mirror reason — see `longhornPoolDemandGib`.
+// ---------------------------------------------------------------------------
+
+export const ZETA_INSTALL_SH_PATH = "full-ai-cluster/usb-nixos-installer/zeta-install.sh";
+
+/**
+ * `LONGHORN1_TAIL`'s default, in whole GiB, READ OUT OF the installer.
+ *
+ * Read and never restated, because the whole finding is about this literal: a
+ * copy of it in this file would be a second roster that agrees by coincidence,
+ * and the first edit to the installer would make the gate describe a geometry
+ * nothing installs.
+ *
+ * `null` when the line is absent or carries a unit this cannot convert — the
+ * caller REFUSES rather than substituting a number, same as an absent
+ * registration in `findCapacityProvenance`.
+ */
+export function installerLonghornTailGib(repoRoot = REPO_ROOT): number | null {
+  const text = readIfPresent(resolve(repoRoot, ZETA_INSTALL_SH_PATH));
+  if (text === null) return null;
+  const match = /^LONGHORN1_TAIL="\$\{LONGHORN1_TAIL:-(\d+)([KMGT])\}"/m.exec(text);
+  if (match === null) return null;
+  const magnitude = Number(match[1]);
+  if (!Number.isFinite(magnitude)) return null;
+  // Binary units, matching the installer's own `size_spec_to_bytes`.
+  const gib: Readonly<Record<string, number>> = { K: 1 / 1024 ** 2, M: 1 / 1024, G: 1, T: 1024 };
+  const scale = gib[match[2] ?? ""];
+  if (scale === undefined) return null;
+  return Math.floor(magnitude * scale);
+}
+
+/** One Longhorn-bound StorageClass's demand, with BOTH readings kept so the print can show its work. */
+export interface LonghornClassDemand {
+  readonly storageClass: string;
+  readonly renderedGib: number;
+  readonly derivedGib: number;
+  /** `max(rendered, derived)` — see `longhornPoolDemandGib`. */
+  readonly gib: number;
+}
+
+export interface LonghornPoolDemand {
+  readonly perClass: readonly LonghornClassDemand[];
+  readonly totalGib: number;
+}
+
+/**
+ * The committed roster's demand on the metal Longhorn pool, in GiB.
+ *
+ * SCOPE is derived, never a hardcoded pair: `metalPoolCapabilities()` parses
+ * `local-storage.nix` and returns the classes metal binds to the same
+ * provisioner as `zeta-block-replicated` (`driver.longhorn.io`) — today that
+ * and `zeta-shared`. If `zeta-shared` were rebound tomorrow its claims would
+ * leave this scope on the same edit, rather than being counted against a pool
+ * they no longer use.
+ *
+ * VALUE is `max(rendered, derived)` PER CLASS, because the two readings are
+ * blind in OPPOSITE directions and neither dominates:
+ *
+ *   - the YAML-derived extractor cannot see pod counts that live in an upstream
+ *     chart (mimir renders 3 ingesters and 3 store-gateways our YAML never
+ *     mentions), so it reads LOW on `zeta-block-replicated`: 779 against 843;
+ *   - the render snapshot covers the trees it was run over, so it reads LOW on
+ *     a class whose claims live outside them: 0 against 100 on `zeta-shared`.
+ *
+ * Taking either reading alone would acquit on the class the other one sees. A
+ * comparator that picks the smaller of two available numbers because it is the
+ * one that flatters the conclusion has chosen its own verdict.
+ *
+ * `null` when the render snapshot cannot be read at all — an absent measurement
+ * is not a demand of zero.
+ */
+export function longhornPoolDemandGib(
+  repoRoot = REPO_ROOT,
+  claims: readonly StorageClaim[] | null = null,
+): LonghornPoolDemand | null {
+  const pool = metalPoolCapabilities(repoRoot);
+  if (pool.length === 0) return null;
+  const rendered = readRenderedTotals(repoRoot);
+  if (rendered === null) return null;
+
+  const derivedClaims = claims ?? defaultStorageClaims(repoRoot);
+  const derived = new Map(storageTotals(derivedClaims));
+
+  const perClass = pool
+    .map((storageClass) => {
+      const renderedGib = Math.round(rendered.total.get(storageClass) ?? 0);
+      const derivedGib = Math.round(derived.get(storageClass) ?? 0);
+      return { storageClass, renderedGib, derivedGib, gib: Math.max(renderedGib, derivedGib) };
+    })
+    .sort((a, b) => stringCompare(a.storageClass, b.storageClass));
+
+  return { perClass, totalGib: perClass.reduce((sum, row) => sum + row.gib, 0) };
+}
+
+/**
+ * The storage claims `auditAll` would derive, for callers that want the demand
+ * without running the whole audit (the preflight's constant-pinning test, and
+ * the CLI's print path). Loads the catalogue so `excludesPrimaryAt` matches;
+ * a catalogue that cannot be read degrades to `null`, which is the same shape
+ * `auditAll` accepts from a synthetic-tree caller.
+ */
+function defaultStorageClaims(repoRoot = REPO_ROOT): readonly StorageClaim[] {
+  let catalogue: ProfileCatalogue | null = null;
+  try {
+    catalogue = loadCatalogue(DEFAULT_CATALOGUE_PATH);
+  } catch {
+    catalogue = null;
+  }
+  const manifests = loadManifests(DEFAULT_ROOTS, repoRoot);
+  return manifests.flatMap((manifest) =>
+    extractStorageClaims(manifest, {
+      clusterDefault: clusterDefaultStorageClass(repoRoot),
+      instantiated: instantiatedBlueprints(manifests),
+      excludesPrimaryAt: excludesPrimaryCoordinates(catalogue),
+    }),
+  );
+}
+
+/** What zeta-install.sh would hand Longhorn on a given node, read as generously as the registration permits. */
+export interface InstallerGeometry {
+  /** The device assumed to be the boot disk: the SMALLEST, which maximises the pool. */
+  readonly bootDiskGib: number;
+  /** `LONGHORN1_TAIL` — all the boot disk contributes. */
+  readonly tailGib: number;
+  /** Every other device, whole, as longhorn2..N. */
+  readonly dataDiskGib: readonly number[];
+  /** `tailGib` + the data disks. */
+  readonly rawGib: number;
+}
+
+/**
+ * Apply the installer's partitioning to a measured node.
+ *
+ * `null` when the registration records no parsable device — an unmeasured node
+ * must not read as a node with no disks (the same distinction `MeasuredNode`
+ * draws between `null` and zero).
+ */
+export function installerGeometryFor(node: MeasuredNode, tailGib: number): InstallerGeometry | null {
+  const sizes = node.devices
+    .map((line) => deviceLineToGib(line))
+    .filter((gib): gib is number => gib !== null)
+    .sort((a, b) => a - b);
+  if (sizes.length === 0) return null;
+  const [bootDiskGib = 0, ...dataDiskGib] = sizes;
+  return {
+    bootDiskGib,
+    tailGib,
+    dataDiskGib,
+    rawGib: dataDiskGib.reduce((sum, gib) => sum + gib, tailGib),
+  };
+}
+
+export function longhornGeometryShortfallKey(schedulableGib: number, demandGib: number, host: string): string {
+  return `longhorn-geometry=${schedulableGib.toFixed(0)}GiB<<${demandGib.toFixed(0)}GiB@${host}`;
+}
+
+export function findLonghornGeometry(
+  ledger: Ledger,
+  nodes: readonly MeasuredNode[],
+  repoRoot = REPO_ROOT,
+  claims: readonly StorageClaim[] | null = null,
+): readonly Finding[] {
+  const demand = longhornPoolDemandGib(repoRoot, claims);
+  if (demand === null || demand.totalGib === 0) return [];
+
+  const tailGib = installerLonghornTailGib(repoRoot);
+  if (tailGib === null) {
+    return [
+      {
+        check: "longhorn-geometry",
+        severity: "blocker",
+        message:
+          `Longhorn geometry UNVERIFIED: ${demand.totalGib.toFixed(0)} GiB of driver.longhorn.io PVCs are ` +
+          `declared, but ${ZETA_INSTALL_SH_PATH}'s LONGHORN1_TAIL default could not be read. That literal IS ` +
+          `the Longhorn pool on a single-disk install, so without it there is no comparator with provenance ` +
+          `and the only honest verdict is "I cannot know". Restore the default or update the reader.`,
+        detail: ["this finding is NOT acknowledgeable — an absent comparator is not debt, it is an absent check"],
+      },
+    ];
+  }
+
+  // The committed refusal the installer carries must describe the roster the
+  // installer will actually meet. It is a literal in shell-reachable TypeScript
+  // only because the ISO ships no bun and the repo is not cloned until after
+  // the wipe; this is what stops it going stale quietly.
+  const findings: Finding[] = [];
+  if (COMMITTED_LONGHORN_DEMAND_GIB !== demand.totalGib) {
+    findings.push({
+      check: "longhorn-geometry",
+      severity: "blocker",
+      message:
+        `The installer refuses at ${COMMITTED_LONGHORN_DEMAND_GIB} GiB but the roster now declares ` +
+        `${demand.totalGib.toFixed(0)} GiB on the metal Longhorn pool. zeta-install.sh cannot compute this ` +
+        `number (no bun on the ISO, no clone before the wipe), so it carries it as a constant — which makes ` +
+        `THIS the check that keeps it true. Update COMMITTED_LONGHORN_DEMAND_GIB in ` +
+        `src/Core.TypeScript/installer/longhorn-capacity-preflight.ts and ZETA_LONGHORN_DEMAND_GIB in ` +
+        `${ZETA_INSTALL_SH_PATH} to ${demand.totalGib.toFixed(0)}.`,
+      detail: [
+        ...demand.perClass.map(
+          (row) =>
+            `${row.gib.toFixed(0).padStart(6)} GiB  ${row.storageClass}  ` +
+            `(rendered ${row.renderedGib.toFixed(0)}, derived ${row.derivedGib.toFixed(0)}, max wins)`,
+        ),
+        "this finding is NOT acknowledgeable — a stale refusal threshold is an absent check, not debt",
+      ],
+    });
+  }
+
+  const measured = nodes.filter((node) => node.totalGib !== null);
+  if (measured.length === 0) {
+    findings.push({
+      check: "longhorn-geometry",
+      severity: "blocker",
+      message:
+        `Longhorn geometry UNVERIFIED: no checked-in ClusterNode registration carries a measurable ` +
+        `spec.hardware.storage, so the ${demand.totalGib.toFixed(0)} GiB of driver.longhorn.io PVCs cannot be ` +
+        `compared against the pool zeta-install.sh would actually partition. Register a node.`,
+      detail: ["this finding is NOT acknowledgeable — an absent comparator is not debt, it is an absent check"],
+    });
+    return findings;
+  }
+
+  const fraction = mostConservativeUsableFraction(collectLonghornReserves(loadManifests(DEFAULT_ROOTS, repoRoot)));
+  for (const node of measured) {
+    const geometry = installerGeometryFor(node, tailGib);
+    if (geometry === null) continue;
+    const schedulable = Math.floor(geometry.rawGib * fraction) * ledger.nodeCount;
+    if (schedulable >= demand.totalGib) continue;
+    const key = longhornGeometryShortfallKey(schedulable, demand.totalGib, node.hostname);
+    if (ledger.acknowledgedLonghornGeometryShortfall.includes(key)) continue;
+    findings.push({
+      check: "longhorn-geometry",
+      severity: "blocker",
+      message:
+        `zeta-install.sh would give Longhorn ${schedulable.toFixed(0)} GiB schedulable on ${node.hostname}, but ` +
+        `the roster declares ${demand.totalGib.toFixed(0)} GiB of driver.longhorn.io PVCs — short by ` +
+        `${(demand.totalGib - schedulable).toFixed(0)} GiB. The pool is the longhorn1 TAIL off the boot disk ` +
+        `(${geometry.tailGib} GiB) plus every NON-boot disk whole, NOT the sum of the block devices: ESP + root ` +
+        `take the remainder and the root filesystem is never a Longhorn data path. On a single-disk install ` +
+        `that pool is ${geometry.tailGib} GiB whatever the disk's size. Those PVCs pend forever.`,
+      detail: [
+        `measured evidence: ${node.path}`,
+        ...node.devices.map((device) => `  ${device}`).sort((a, b) => stringCompare(a, b)),
+        `boot disk assumed to be the SMALLEST device (${geometry.bootDiskGib} GiB) — the most GENEROUS reading`,
+        `pool = ${geometry.tailGib} GiB tail + ${geometry.dataDiskGib.length} whole disk(s) ` +
+          `[${geometry.dataDiskGib.join(", ")}] = ${geometry.rawGib} GiB raw`,
+        `x ${(fraction * 100).toFixed(0)}% Longhorn will place x ${ledger.nodeCount} node(s) = ${schedulable} GiB`,
+        `roster: ${demand.perClass.map((row) => `${row.storageClass} ${row.gib.toFixed(0)} GiB`).join(" + ")}`,
+        `cheapest remedy is usually a second internal disk: the installer formats every non-boot disk whole`,
+        `acknowledge with: ${key}`,
+      ],
+    });
+  }
+  return findings;
+}
 
 // ---------------------------------------------------------------------------
 // COMPUTE provenance — the CPU/memory half of the same comparator
@@ -2186,6 +2507,7 @@ export function auditAll(
     ...findRootAppCollisions(collectRootAppIdentities(manifests), ledger.acknowledgedRootAppDuplicates),
     ...(catalogue === null ? [] : findStorageProfileDrift(ledger, catalogue, storageClaims, repoRoot)),
     ...findCapacityProvenance(storageClaims, ledger, measuredNodes, override),
+    ...findLonghornGeometry(ledger, measuredNodes, repoRoot, storageClaims),
     ...findStorageBudgetOverruns(storageClaims, ledger, override),
     ...findFalseRedundancy(replicaClaims, ledger),
     ...findLedgerFigureDrift(ledger, storageClaims, catalogue, ledgerPath, repoRoot),
@@ -2262,6 +2584,7 @@ export function readLedger(path: string, repoRoot = REPO_ROOT): Ledger {
     acknowledgedComputeShortfall: parsed.acknowledgedComputeShortfall ?? [],
     acknowledgedRungBudgetGap: parsed.acknowledgedRungBudgetGap ?? [],
     acknowledgedPodBudgetShortfall: parsed.acknowledgedPodBudgetShortfall ?? [],
+    acknowledgedLonghornGeometryShortfall: parsed.acknowledgedLonghornGeometryShortfall ?? [],
   };
 }
 
@@ -2321,6 +2644,64 @@ function printComputeSection(
     "  That bound is the node's WHOLE capacity: nothing is held back for the kubelet, the control plane,\n" +
       "  kube-system or the OS, and BestEffort pods never appear in the declared total at all. Exceeding it\n" +
       "  convicts; staying under it proves nothing on its own.",
+  );
+}
+
+/**
+ * The INSTALLER-GEOMETRY half of the report — printed on EVERY run, green or not.
+ *
+ * Same reasoning as `printComputeSection`: a standing decision that only
+ * appears when it fails is a decision nobody revisits. And here it matters more
+ * than usual, because the number a reader is most likely to carry away from
+ * this report is the `Measured node capacity` line above — the sum of the block
+ * devices — which is NOT what the installer hands Longhorn. Printing the
+ * partitioned pool beside it is what stops the generous number being read as
+ * the operational one.
+ */
+function printLonghornGeometrySection(
+  ledger: Ledger,
+  nodes: readonly MeasuredNode[],
+  claims: readonly StorageClaim[],
+  reserves: readonly LonghornReserve[],
+  repoRoot = REPO_ROOT,
+): void {
+  console.log("\nLonghorn pool zeta-install.sh actually PARTITIONS (not the sum of the block devices):");
+  const demand = longhornPoolDemandGib(repoRoot, claims);
+  const tailGib = installerLonghornTailGib(repoRoot);
+  if (demand === null || tailGib === null) {
+    console.log("  UNVERIFIED — see findings (no render snapshot, no Longhorn-bound class, or no readable tail)");
+    return;
+  }
+  console.log(
+    `  roster demand: ${demand.perClass
+      .map((row) => `${row.storageClass} ${row.gib.toFixed(0)} GiB`)
+      .join(" + ")} = ${demand.totalGib.toFixed(0)} GiB` +
+      `   (per class: max(rendered, derived) — the two readings are blind in opposite directions)`,
+  );
+  console.log(
+    `  LONGHORN1_TAIL default ${tailGib} GiB, read from ${ZETA_INSTALL_SH_PATH} — on a SINGLE-DISK install ` +
+      `that is the WHOLE pool,\n  whatever the disk's size: ESP + root take the rest and the root filesystem ` +
+      `is never a Longhorn data path.`,
+  );
+  const fraction = mostConservativeUsableFraction(reserves);
+  for (const node of nodes) {
+    const geometry = installerGeometryFor(node, tailGib);
+    if (geometry === null) {
+      console.log(`  ${node.hostname.padEnd(18)} UNMEASURED (no parsable hardware.storage in ${node.path})`);
+      continue;
+    }
+    const schedulable = Math.floor(geometry.rawGib * fraction) * ledger.nodeCount;
+    const over = demand.totalGib - schedulable;
+    console.log(
+      `  ${node.hostname.padEnd(18)} ${geometry.tailGib} GiB tail + [${geometry.dataDiskGib.join(", ")}] whole ` +
+        `= ${geometry.rawGib} GiB raw x ${(fraction * 100).toFixed(0)}% x ${ledger.nodeCount} node(s) ` +
+        `= ${schedulable} GiB  ` +
+        (over > 0 ? `SHORT by ${over} GiB` : `fits, ${-over} GiB spare`),
+    );
+  }
+  console.log(
+    "  Boot disk assumed to be the SMALLEST device, which MAXIMISES the pool — no registration records which\n" +
+      "  device was booted. Falling short under that reading convicts; clearing it proves nothing.",
   );
 }
 
@@ -2510,6 +2891,7 @@ function main(argv: readonly string[]): void {
         );
       }
     }
+    printLonghornGeometrySection(ledger, report.measuredNodes, report.storageClaims, report.longhornReserves);
     // Acknowledged shortfalls suppress the exit code, never the print. A
     // silently-acknowledged oversubscription is the same vacuity as an
     // aspirational comparator, one layer down.

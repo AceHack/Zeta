@@ -130,6 +130,18 @@ on:
       - "maintainers/*/cluster-nodes/**"
       - "src/Core.TypeScript/cluster/single-node-readiness.ts"
       - "src/Core.TypeScript/cluster/single-node-readiness.test.ts"
+      # WP28 (081M393B9TB087G0R000Y529Z8). The readiness auditor's
+      # longhorn-geometry check imports COMMITTED_LONGHORN_DEMAND_GIB from here
+      # and REFUSES when it disagrees with the roster it recomputes. Watched
+      # because it is the ONLY thing keeping that constant true: the installer
+      # cannot compute the demand (no bun on the ISO, no clone before the wipe),
+      # so an edit here that is not re-checked leaves zeta-install.sh refusing
+      # at a number describing a roster that no longer exists.
+      - "src/Core.TypeScript/installer/longhorn-capacity-preflight.ts"
+      # And the geometry it is compared against: the LONGHORN1_TAIL default IS
+      # the Longhorn pool on a single-disk install, and the auditor reads it out
+      # of this file rather than restating it.
+      - "full-ai-cluster/usb-nixos-installer/zeta-install.sh"
       - "src/Core.TypeScript/cluster/storage-profiles.ts"
       - "src/Core.TypeScript/cluster/storage-profiles.test.ts"
       # The disk half of the runner envelope, and its measurer.
@@ -260,6 +272,18 @@ on:
       - "maintainers/*/cluster-nodes/**"
       - "src/Core.TypeScript/cluster/single-node-readiness.ts"
       - "src/Core.TypeScript/cluster/single-node-readiness.test.ts"
+      # WP28 (081M393B9TB087G0R000Y529Z8). The readiness auditor's
+      # longhorn-geometry check imports COMMITTED_LONGHORN_DEMAND_GIB from here
+      # and REFUSES when it disagrees with the roster it recomputes. Watched
+      # because it is the ONLY thing keeping that constant true: the installer
+      # cannot compute the demand (no bun on the ISO, no clone before the wipe),
+      # so an edit here that is not re-checked leaves zeta-install.sh refusing
+      # at a number describing a roster that no longer exists.
+      - "src/Core.TypeScript/installer/longhorn-capacity-preflight.ts"
+      # And the geometry it is compared against: the LONGHORN1_TAIL default IS
+      # the Longhorn pool on a single-disk install, and the auditor reads it out
+      # of this file rather than restating it.
+      - "full-ai-cluster/usb-nixos-installer/zeta-install.sh"
       - "src/Core.TypeScript/cluster/storage-profiles.ts"
       - "src/Core.TypeScript/cluster/storage-profiles.test.ts"
       # The disk half of the runner envelope, and its measurer.

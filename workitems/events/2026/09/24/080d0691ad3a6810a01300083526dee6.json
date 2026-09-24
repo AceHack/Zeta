@@ -1,0 +1,14 @@
+{
+  "id": "080d0691ad3a6810a01300083526dee6",
+  "at": "2026-09-24T06:58:46.733Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M393B9TB087G0R000Y529Z8",
+    "type": "bug",
+    "title": "single-disk USB install gives Longhorn a 1 GiB tail against ~943 GiB of committed longhorn-class PVC demand",
+    "slug": "single-disk-usb-install-gives-longhorn-a-1-gib-tail-against",
+    "priority": "P2",
+    "filename": "081M393B9TB087G0R000Y529Z8-single-disk-usb-install-gives-longhorn-a-1-gib-tail-against.md"
+  }
+}
