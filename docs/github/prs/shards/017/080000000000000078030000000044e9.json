@@ -1,0 +1,12 @@
+{
+  "pr_number": 17641,
+  "archive_path": "docs/history/pr-reviews/2026/09/24/PR-17641-fix-installer-three-attempt-esp-mount-ladder-and-say-which-attempt-carried-it-wp.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-24T23:41:25.961Z",
+  "schema_version": "v1",
+  "commit_sha": "ce28e469a28a72a335588b8a8c687ebfc53eed90",
+  "title": "fix(installer): three-attempt ESP mount ladder, and say which attempt carried it (WP29 mitigation)",
+  "state": "MERGED",
+  "merged_at": "2026-09-24T23:40:43Z",
+  "head_ref": "claude/wp29-esp-mount-fallback"
+}
