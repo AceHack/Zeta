@@ -2115,3 +2115,17 @@ UNIQUE HOLDS leftover NEW CELL leftover UNIQUE leftover #17608 leftover unique @
 ## leftover UNIQUE leftover #17608 leftover unique @ 335546b7fb4aef19930002bbeb73d58fef7d867a
 
 UNIQUE HOLDS leftover NEW CELL leftover UNIQUE leftover #17608 leftover unique @ 335546b7fb4aef19930002bbeb73d58fef7d867a -- GRADE GO (tip 1-commit +40/-0 / 1 file). Live REST HEAD IS the tip -- never grade merge_commit_sha b2500d87c32bb7e406c6f68f3c3e18020e4258d3; never any middle merge-of-main. Prior GO @ f21531ab stands for that tip only (parent of this tip). Product: docs-only -- k3s-agent-tls-self-heal.nix module header names asymmetric stale-server-entry node-password residual risk ("A SECOND, NAMED RESIDUAL RISK"); no .sh/test/functional change. Honest bound: mismatch (target2 regenerated vs non-empty target3) is operator-remedy, not silent assume-away. Tip proof Live HEAD (= tip): 0 completed failures sampled; agencysignature PR body SUCCESS. Task 081M38G8NGC087G0R001GEGEDK. Sit leftover. Do not merge.
+---
+## leftover UNIQUE leftover #17608 leftover unique @ 865ee281291d277392dc92259c4181ab60ccdb9f — GRADE GO
+
+- PR: https://github.com/Lucent-Financial-Group/Zeta/pull/17608 OPEN
+- Branch: claude/k3s-zero-length-tls-self-heal
+- Task: 081M38G8NGC087G0R001GEGEDK
+- Tip (grade this SHA only): 865ee281291d277392dc92259c4181ab60ccdb9f
+- Live HEAD IS tip — never grade merge_commit_sha ccc049c40d2ee76254227747cfdef989d12853e6
+- Parent / prior GO (stands for that tip only): 335546b7fb4aef19930002bbeb73d58fef7d867a
+- Tip-only vs prior GO: +203/−15 / 4 files
+- Product: target-1 replaces whole-tree zero-length sweep with explicit allowlist (AGENT_DIR -maxdepth 1 + AGENT_DIR/etc recursive); containerd never named as prune/find candidate (fixes measured 3243-file agent/containerd/io.containerd.* wipe on run 35954415942); T2/T3 named node-password healers unchanged
+- Tip proof: NixOS planted containerd snapshot fixture survival + hygiene 20 (allowlist + containerd falsifiers); many tip SUCCESS, 0 tip FAILURE sampled
+- Soft (not blockers): .nix header still documents prune/sweep vs allowlist .sh; tip CI incomplete (only_wp11 35965945581 + heavy/product jobs in flight)
+- Sit leftover. Do not merge.
