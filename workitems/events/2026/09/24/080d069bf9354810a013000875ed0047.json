@@ -1,0 +1,14 @@
+{
+  "id": "080d069bf9354810a013000875ed0047",
+  "at": "2026-09-24T12:58:40.681Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M39QY9N8087G0R000E08D2B",
+    "type": "bug",
+    "title": "The cdrom-boot install lane cannot receive the Longhorn override: no vfat partition exists to stage an ESP conf on",
+    "slug": "the-cdrom-boot-install-lane-cannot-receive-the-longhorn-over",
+    "priority": "P2",
+    "filename": "081M39QY9N8087G0R000E08D2B-the-cdrom-boot-install-lane-cannot-receive-the-longhorn-over.md"
+  }
+}
