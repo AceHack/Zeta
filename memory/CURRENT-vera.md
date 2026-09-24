@@ -2183,3 +2183,17 @@ UNIQUE HOLDS leftover NEW CELL leftover UNIQUE leftover #17608 leftover unique @
 - Soft: check-then-use-races outside tip files; chart-currency; PR-body agency signature; findLonghornGeometry [] if demand null/0 (not HOLD)
 - Tip proof: soft failures only + CI mixed in-flight
 - Sit leftover. Do not merge.
+---
+## leftover UNIQUE leftover #17608 leftover unique @ 32293b6bd5a7398ab8472407af8cd7e4a1216bb6 — GRADE GO
+
+- PR: https://github.com/Lucent-Financial-Group/Zeta/pull/17608 OPEN
+- Branch: claude/k3s-zero-length-tls-self-heal
+- Task: 081M38G8NGC087G0R001GEGEDK
+- Tip (grade this SHA only): 32293b6bd5a7398ab8472407af8cd7e4a1216bb6
+- Live HEAD IS tip — never grade merge_commit_sha 36131c7f7aef3955e39d2d13d0747d7c20975bf1
+- Parent: b5707e40597d5660bc67382b91ab4556736d0422 (prior GO stands for that tip only)
+- Tip-only: +25/−2 / 1 file
+- Product: NixOS test race fix in k3s-agent-tls-self-heal.nix — wait_until_succeeds(timeout=60) on first-boot + post-recovery node-passwd (measured race run 35967573812); module under test unchanged
+- Prior GO @ b5707e40 and @ 47eb3ea5 stand for those tips only
+- Tip proof: 0 failures on tip checks; soft ~33 in_progress incl. build-iso
+- Sit leftover. Do not merge.
