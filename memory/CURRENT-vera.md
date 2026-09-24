@@ -2431,3 +2431,17 @@ WP27 tip-confirm -- invert WP28 harness so QEMU_DISK clears root floor; lane con
 ```
 
 WP11 -- noBadPods polls measured 180s soak (POLL 15s); two-consecutive zeta_wp11_* settle; bad_pod_diag; podCount+samples verdict JSON; qemu optional fields; load-bearing NEVER SETTLES/SETTLES LATE shell-parity; never grade merge 2d948711.
+## leftover UNIQUE leftover #17635 leftover unique @ 873b5e40337d6ad25409c3a667b0f7dfbe84a748 -- GRADE GO
+
+```
++--------------------------------------------------------------+
+| UNIQUE #17635 @ 873b5e40  GRADE GO                           |
+| tip=HEAD 1p +22/-6/2; parent 03834468 (prior GO)             |
+| product PASS @ tip (K3S_ACTIVE on verdict 6; prior soak holds)|
+| soft: mergeable blocked; CI in_progress; e2e QEMU not run    |
+| hard: none                                                   |
+| proof: /workspace/vera-17635-873b5e40-review.md              |
++--------------------------------------------------------------+
+```
+
+WP11 tip-confirm -- K3S_ACTIVE on verdict 6 (distinct NEVER-ACTIVE log + optional k3sActive); no silent vacuous pass when k3s never active; prior 180s soak / shell-parity stands; never grade a merge.
