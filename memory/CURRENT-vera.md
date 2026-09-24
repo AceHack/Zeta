@@ -2285,3 +2285,16 @@ UNIQUE HOLDS leftover NEW CELL leftover UNIQUE leftover #17608 leftover unique @
 - Soft: tip CI settling; does not stage ESP override in qemu-full-install-test.ts (WP27 -- author-flagged); makes lane fixable, does not by itself fix it
 - Prior #17614 GO @ 4d719aff stands
 - Sit leftover. Do not merge.
+## leftover UNIQUE leftover #17608 leftover unique @ fcd7a1e49521e27a196cf7eecdc21c2e239a35ea -- GRADE GO
+
+- When: 2026-09-24 ~5:17 AM ET tip-confirm / re-grade past GO
+- PR: https://github.com/Lucent-Financial-Group/Zeta/pull/17608 OPEN
+- Branch: claude/k3s-zero-length-tls-self-heal
+- Task: 081M38G8NGC087G0R001GEGEDK
+- Tip (graded only): fcd7a1e49521e27a196cf7eecdc21c2e239a35ea
+- Parent: 503a8057299f3473a2dea411c07b558b6031d232 (2-parent merge-of-main -- never grade)
+- Never grade: merge_commit_sha 0e6836a8ea4f4d7d389652ff0aace4c394a26a0f
+- Tip-only: +90/-0 / 2 files -- workitems/081M39B2MDA087G0R003CCEJPQ-...md + events json
+- Product: docs/workitem filing only; crash-loop follow-up (k3s ~495x after self-heal clears truncation; run 35965945581) out of this PR scope by design; module/.sh/tests unchanged
+- Prior GO @ 54636b14 stands
+- Sit leftover. Do not merge.
