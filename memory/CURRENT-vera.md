@@ -2197,3 +2197,17 @@ UNIQUE HOLDS leftover NEW CELL leftover UNIQUE leftover #17608 leftover unique @
 - Prior GO @ b5707e40 and @ 47eb3ea5 stand for those tips only
 - Tip proof: 0 failures on tip checks; soft ~33 in_progress incl. build-iso
 - Sit leftover. Do not merge.
+---
+## leftover UNIQUE leftover #17611 leftover unique @ 7934facd41699d2eacae067b9eb70d6fc4d74f87 -- GRADE GO
+
+- PR: https://github.com/Lucent-Financial-Group/Zeta/pull/17611 OPEN
+- Branch: claude/longhorn-installer-geometry
+- Task: 081M393B9TB087G0R000Y529Z8
+- Tip (grade this SHA only): 7934facd41699d2eacae067b9eb70d6fc4d74f87
+- Live HEAD IS tip -- never grade merge_commit_sha 23905859b69eacb9077d3df9a8ada5683183aa78
+- Parent: e7a39dca93835003b6699b5642c888a2f440d704 (main)
+- Tip-only: +1463/-1 / 11 files
+- Product: pre-wipe Longhorn capacity refuse (ZETA-LONGHORN-CAPACITY + assert_longhorn_pool_holds_the_roster) + longhorn-geometry max(rendered,derived) vs LONGHORN1_TAIL+non-boot (boot=smallest) + shell/TS parity; COMMITTED_LONGHORN_DEMAND_GIB=943; debt 699GiB<<943GiB ledger
+- Replaces #17610 (sit; prior GO @ 34c58e5e stands for that tip only) -- main-based rebase, no WP27 stack
+- Soft: CI settling; agencysignature PR-body; TOCTOU outside tip files
+- Sit leftover. Do not merge.
