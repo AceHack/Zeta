@@ -1,0 +1,12 @@
+{
+  "pr_number": 17616,
+  "archive_path": "docs/history/pr-reviews/2026/09/24/PR-17616-fix-installer-a-disk-below-the-root-floor-refuses-or-takes-the-named-override-no.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-24T09:34:09.801Z",
+  "schema_version": "v1",
+  "commit_sha": "7573349422d08dab4b036404f244804466df4c1f",
+  "title": "fix(installer): a disk below the root floor refuses OR takes the named override — not a negative tail (WP28)",
+  "state": "MERGED",
+  "merged_at": "2026-09-24T09:33:23Z",
+  "head_ref": "claude/longhorn-small-disk-override"
+}
