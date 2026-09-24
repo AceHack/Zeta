@@ -2445,3 +2445,14 @@ WP11 -- noBadPods polls measured 180s soak (POLL 15s); two-consecutive zeta_wp11
 ```
 
 WP11 tip-confirm -- K3S_ACTIVE on verdict 6 (distinct NEVER-ACTIVE log + optional k3sActive); no silent vacuous pass when k3s never active; prior 180s soak / shell-parity stands; never grade a merge.
+
+## leftover UNIQUE leftover #17638 leftover unique @ 145fca6d2d6e5df720bb962b6a35d66234fc05ef -- GRADE GO
+
+- Tip: `145fca6d2d6e5df720bb962b6a35d66234fc05ef` (1-parent; parent `22069473faf2319ccfa548678150f3a2ea0ba59d`)
+- PR: https://github.com/Lucent-Financial-Group/Zeta/pull/17638 -- WP29 lost-ESP-injection instrumentation
+- Tip-only: +795/-66 / 11 files vs parent/main
+- Product PASS: no-vfat:<reason> + install probe diagnostics; post-bake mdir -/ recursive FAT + mtype content round-trip (secrets never echoed); detectIsohybridEspOffset confirm-or-refuse fallback-unconfirmed before write; only_wp11 guard parity on UEFI keyfile restore decrypt + WP11-SCOPED-DISPATCH.md
+- Soft: mergeable_state=blocked; auto_merge squash on; CI in_progress; e2e WP11 QEMU not completed on tip
+- Hard: none
+- Sit leftover. Do not merge. Author notes root cause of intermittent loss not fixed here.
+- Proof (local box path, not in repo): /workspace/vera-17638-145fca6d-review.md (also in uploads/)
