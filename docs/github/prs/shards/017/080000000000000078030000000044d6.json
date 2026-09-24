@@ -1,0 +1,12 @@
+{
+  "pr_number": 17622,
+  "archive_path": "docs/history/pr-reviews/2026/09/24/PR-17622-feat-cluster-render-every-application-twice-and-refuse-new-non-determinism-wp28.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-24T11:24:32.431Z",
+  "schema_version": "v1",
+  "commit_sha": "dadd6b8f3d940eea8c9c958016789f401ebeb175",
+  "title": "feat(cluster): render every Application twice and refuse new non-determinism (WP28)",
+  "state": "MERGED",
+  "merged_at": "2026-09-24T11:23:48Z",
+  "head_ref": "claude/render-determinism-census"
+}
