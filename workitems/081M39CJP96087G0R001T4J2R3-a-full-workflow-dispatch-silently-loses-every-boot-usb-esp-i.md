@@ -255,5 +255,61 @@ Landed (PR for this work item):
      verified everything and one that verified nothing used to be
      indistinguishable in a log.
 
+  6. **A three-attempt mount ladder at every read-only FAT mount site**
+     (`zeta_mount_fat_ro` / `zeta_try_mount_esp_ro`): `-t vfat -o ro`, then
+     kernel autodetect, then `-t vfat -o ro,iocharset=ascii,codepage=437`.
+     A MITIGATION — see the section below.
+
 NOT closed: **why the kernel refused the mount.** Item 1 is what answers it,
 and it answers it on the next occurrence rather than by another sampling run.
+Three PRs (#17638, #17640, #17641) carry this work item and **none of them
+claims to close it.** The mitigation holding is not the cause being found.
+
+## The mount ladder, and the correction that made it safe to have
+
+The ladder exists because of what the measurements leave standing. blkid parses
+the FAT superblock in **userspace**; `mount -t vfat` additionally needs the
+**kernel driver and its NLS charset modules**. "Label readable, mount refused"
+is therefore the signature of a kernel-side capability problem, not a data
+problem — and every measurement agrees the data was fine. Only attempt 1 can be
+defeated by the kernel being unable to do the thing.
+
+**The original proposal was "try `mount` with no `-t`, let the kernel
+autodetect", and as written it would have been a worse bug than the one being
+mitigated.** Both probes walk **iso9660** partitions — `/dev/sda1` is in the
+failing runs' own `tried=` list — so an autodetect attempt can succeed on a
+filesystem that is not FAT, and the probe would then have sourced
+`/zeta-firstboot.conf` off the wrong filesystem. Silently. What makes attempt 2
+safe to have at all is that its success is accepted only after `findmnt`
+confirms `vfat`/`msdos`; anything unconfirmable is unmounted and counted as a
+failure. Recorded as a **correction**, not as a guard someone chose to add.
+
+Two further shapes, both deliberate:
+
+- **All three read-only FAT mount sites, not one.** `zeta_pf_probe_esp`, the
+  iter-4.2 pubkey probe, and the iter-5.2 / iter-5-wifi re-mount of the
+  remembered ESP. iter-4.2 mounting via the mitigation while a later reader
+  still gave up on attempt 1 would manufacture exactly the split-brain this
+  work item is about: one reader finds the ESP, the next reports `(no-vfat)`.
+  The `rw` ledger mount is untouched — different mode, different question.
+- **`via=vfat` is the healthy shape.** Anything else prints a NOTE naming the
+  attempt that won and the refusals before it. A run the mitigation carried
+  must never read as a healthy one; that is the difference between a mitigation
+  and a fix quietly becoming permanent.
+
+## A test harness that cannot report its own breakage is not a test harness
+
+Recorded because it happened *inside* the machinery built to catch this class,
+which makes it the most instructive instance in this work item.
+
+The bash harness for the ladder's falsifiers first read
+`run.ok ? run.value.stdout : ""`. An unspawnable shell would have parsed every
+field to the empty string and failed the assertions with the wrong story —
+a check whose failure is indistinguishable from its absence, which is the exact
+defect the whole work item is about, reproduced in the tool written to refuse
+it. Both halves are now loud: the spawn **throws** on failure, and the shell
+function extractor **throws** rather than returning `""`, so the suite cannot
+pass against an empty function.
+
+The general form, since it outlives this bug: **a test harness that cannot
+report its own breakage is not a test harness.**
