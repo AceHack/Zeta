@@ -1469,11 +1469,20 @@ describe("WP27 — after a graceful phase-2 shutdown there must be nothing to he
       import.meta.dir,
       "../../../full-ai-cluster/nixos/modules/k3s-agent-tls-self-heal.sh",
     );
-    if (!existsSync(producer)) {
+    // One syscall, one answer: an `existsSync` guard here would be a
+    // check-then-use race (lint-check-then-use-file-races / CWE-367), and the
+    // question being asked — "has WP25's producer landed yet?" — is exactly the
+    // kind whose answer can change between the two calls.
+    let sh: string;
+    try {
+      sh = readFileSync(producer, "utf8");
+    } catch (err) {
+      if ((err as NodeJS.ErrnoException).code !== "ENOENT") throw err;
+      // Producer absent: PR #17608 is unmerged. The constants stand on their own
+      // until it lands, and `status: "inert"` above is what keeps that honest.
       expect(SELF_HEAL_PREFIX).toBe("[zeta-k3s-agent-tls-self-heal]");
       return;
     }
-    const sh = readFileSync(producer, "utf8");
     expect(sh).toContain("removing zero-length file:");
     expect(sh).toContain("clear: no zero-length files under $AGENT_DIR");
     expect(sh).toContain("clear: $NODE_PASSWORD_FILE is absent or non-empty");
