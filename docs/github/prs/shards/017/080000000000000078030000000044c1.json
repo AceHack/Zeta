@@ -1,0 +1,12 @@
+{
+  "pr_number": 17601,
+  "archive_path": "docs/history/pr-reviews/2026/09/24/PR-17601-ci-cluster-kind-cilium-included-proof-runs-on-push-schedule-cilium-coverage-coun.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-24T00:34:20.683Z",
+  "schema_version": "v1",
+  "commit_sha": "7e25629efba4717addd8cdaaad44827a980e97d0",
+  "title": "ci(cluster): kind+Cilium included proof runs on push + schedule -- Cilium coverage counts",
+  "state": "MERGED",
+  "merged_at": "2026-09-24T00:33:36Z",
+  "head_ref": "shadow/cilium-included-lane-counts"
+}
