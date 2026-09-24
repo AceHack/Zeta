@@ -1,0 +1,12 @@
+{
+  "pr_number": 17591,
+  "archive_path": "docs/history/pr-reviews/2026/09/24/PR-17591-feat-cluster-gpu-vendor-is-a-per-cluster-override-dimension-amd-forms-for-ollama.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-24T00:41:40.904Z",
+  "schema_version": "v1",
+  "commit_sha": "9ad3abac5c7afcded20af6d5617851a33ed85efd",
+  "title": "feat(cluster): GPU vendor is a per-cluster override dimension -- AMD forms for ollama and vllm",
+  "state": "MERGED",
+  "merged_at": "2026-09-24T00:40:55Z",
+  "head_ref": "shadow/gpu-vendor-dimension"
+}
