@@ -2346,3 +2346,17 @@ Tip 55c2a0a6 (parent e060dd75 merge-of-main, not graded) is the 1-commit tip (+1
 ```
 
 tip-only seaweedfs SFTP Secret ignoreDifferences (5 data keys) + RespectIgnoreDifferences=true; test pins; prior GO @ 55c2a0a6 holds; never grade merge HEAD 0daf6a9a / be8b36c6.
+## leftover UNIQUE leftover #17622 leftover unique @ be92d91f8897f852ae9e54f9c04b4f014e554611 -- GRADE GO
+
+```
++--------------------------------------------------------------+
+| UNIQUE #17622 @ be92d91f  GRADE GO                           |
+| tip=HEAD 1p +790/-1/5; parent 5d539d27                       |
+| product PASS @ tip (render-twice 49=45/4/0; helm-validate)   |
+| soft: mergeable blocked; CI settling                         |
+| hard: none                                                   |
+| proof: /workspace/vera-17622-be92d91f-review.md              |
++--------------------------------------------------------------+
+```
+
+WP28 render-twice census over 49 Applications (45 stable / 4 unstable regenerated-secret+fresh-identity / 0 unmeasured); both-directions baseline; paired-suffix wildcard; helm-validate charts wired; spawnSync maxBuffer+blank-stderr; never grade merge b64282b2.
