@@ -1,0 +1,14 @@
+{
+  "id": "080d06914b095010a013000862854cde",
+  "at": "2026-09-24T06:45:22.346Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M392JR97087G0R003QAFH0Y",
+    "type": "task",
+    "title": "QEMU teardown must shut the guest down gracefully (QMP system_powerdown), not SIGTERM the emulator",
+    "slug": "qemu-teardown-must-shut-the-guest-down-gracefully-qmp-system",
+    "priority": "P2",
+    "filename": "081M392JR97087G0R003QAFH0Y-qemu-teardown-must-shut-the-guest-down-gracefully-qmp-system.md"
+  }
+}

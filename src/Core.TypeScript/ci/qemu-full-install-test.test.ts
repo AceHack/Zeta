@@ -16,9 +16,16 @@ import {
   assertUefiKeyfileRestoreWrongPassphraseContract,
   assertUsbISerialPhase1Contract,
   assertWifiEspPhase1Contract,
+  assertNothingToHealAfterGracefulShutdown,
   buildQemuDiskBootArgsPure,
   buildQemuInstallArgsPure,
   buildQemuK3sVerifyBootArgsPure,
+  SELF_HEAL_AGENT_DIR_ABSENT,
+  SELF_HEAL_CLEAR_AGENT_DIR,
+  SELF_HEAL_CLEAR_NODE_PASSWORD,
+  SELF_HEAL_PREFIX,
+  SELF_HEAL_REMOVING_PREFIX,
+  selfHealRemovedPaths,
   detectInstalledLoginPrompt,
   detectPhase2Success,
   detectUnexpectedControlPlaneLogin,
@@ -1310,5 +1317,177 @@ describe("WP11 — installed-disk first-boot k3s verify", () => {
       "utf8",
     );
     expect(common).toContain("./zeta-first-boot-k3s-verify.nix");
+  });
+});
+
+// ── WP27 (081M392JR97087G0R003QAFH0Y) ──────────────────────────────────────
+
+describe("WP27 — QMP socket wiring into the QEMU argv", () => {
+  const qmpArg = "unix:/tmp/zeta/qmp-phase2.sock,server=on,wait=off";
+
+  it("adds -qmp to the disk-boot argv when a socket path is given", () => {
+    const args = buildQemuDiskBootArgsPure(
+      "/tmp/disk.qcow2",
+      "/tmp/serial.log",
+      "/usr/share/OVMF/OVMF_CODE.fd",
+      "/tmp/OVMF_VARS.fd",
+      false,
+      undefined,
+      "/tmp/zeta/qmp-phase2.sock",
+    );
+    expect(args).toContain("-qmp");
+    expect(args).toContain(qmpArg);
+  });
+
+  it("adds -qmp to the WP11 phase-3 argv when a socket path is given", () => {
+    const args = buildQemuK3sVerifyBootArgsPure(
+      "/tmp/disk.qcow2",
+      "/tmp/serial.log",
+      "/usr/share/OVMF/OVMF_CODE.fd",
+      "/tmp/OVMF_VARS.fd",
+      false,
+      "/tmp/zeta/qmp-phase3.sock",
+    );
+    expect(args).toContain("-qmp");
+    expect(args).toContain("unix:/tmp/zeta/qmp-phase3.sock,server=on,wait=off");
+  });
+
+  it("adds -qmp to the installer argv when a socket path is given", () => {
+    const args = buildQemuInstallArgsPure(
+      { kind: "iso", path: "/tmp/zeta.iso" },
+      "/tmp/disk.qcow2",
+      "/tmp/serial.log",
+      false,
+      "/usr/share/OVMF/OVMF_CODE.fd",
+      "/tmp/OVMF_VARS.fd",
+      "/tmp/zeta/qmp-phase1.sock",
+    );
+    expect(args).toContain("-qmp");
+    expect(args).toContain("unix:/tmp/zeta/qmp-phase1.sock,server=on,wait=off");
+  });
+
+  it("leaves the argv byte-identical when no socket path is given", () => {
+    const without = buildQemuDiskBootArgsPure(
+      "/tmp/disk.qcow2",
+      "/tmp/serial.log",
+      "/usr/share/OVMF/OVMF_CODE.fd",
+      "/tmp/OVMF_VARS.fd",
+      false,
+    );
+    expect(without).not.toContain("-qmp");
+    expect(without.join(" ")).not.toContain("qmp");
+  });
+});
+
+describe("WP27 — after a graceful phase-2 shutdown there must be nothing to heal", () => {
+  const CLEAN_SERIAL =
+    `${SELF_HEAL_CLEAR_AGENT_DIR}\n` +
+    `${SELF_HEAL_CLEAR_NODE_PASSWORD}\n` +
+    "[   12.334] k3s.service: Started Lightweight Kubernetes.\n";
+
+  it("is INERT (not a pass, not a failure) when WP25's self-heal is absent from the ISO", () => {
+    // PR #17608 is unmerged; until an ISO carries that script there is no marker
+    // to assert on, and inventing a pass would be exactly the vacuity this
+    // assertion exists to prevent.
+    const verdict = assertNothingToHealAfterGracefulShutdown("ordinary boot serial, no self-heal\n", "graceful");
+    expect(verdict.status).toBe("inert");
+    expect(verdict.ok).toBe(true);
+    expect(verdict.reason).toContain("17608");
+    expect(verdict.reason).toContain("INERT");
+  });
+
+  it("passes when the self-heal ran and reported both targets clear", () => {
+    const verdict = assertNothingToHealAfterGracefulShutdown(CLEAN_SERIAL, "graceful");
+    expect(verdict.status).toBe("clean");
+    expect(verdict.ok).toBe(true);
+  });
+
+  it("accepts an agent dir that does not exist yet as 'nothing to heal'", () => {
+    const verdict = assertNothingToHealAfterGracefulShutdown(
+      `${SELF_HEAL_AGENT_DIR_ABSENT}\n${SELF_HEAL_CLEAR_NODE_PASSWORD}\n`,
+      "graceful",
+    );
+    expect(verdict.status).toBe("clean");
+    expect(verdict.ok).toBe(true);
+  });
+
+  it("FAILS when a graceful shutdown was still followed by zero-length removals", () => {
+    // The falsifier's whole point: the teardown claims the disk was synced, and
+    // the self-heal proves it was not.
+    const serial =
+      `${SELF_HEAL_REMOVING_PREFIX} /var/lib/rancher/k3s/agent/client-kubelet.key\n` +
+      `${SELF_HEAL_REMOVING_PREFIX} /etc/rancher/node/password\n` +
+      "[zeta-k3s-agent-tls-self-heal]   removed 2 zero-length file(s)\n";
+    const verdict = assertNothingToHealAfterGracefulShutdown(serial, "graceful");
+    expect(verdict.ok).toBe(false);
+    expect(verdict.status).toBe("healed");
+    expect(verdict.reason).toContain("client-kubelet.key");
+    expect(verdict.reason).toContain("/etc/rancher/node/password");
+  });
+
+  it("does NOT convict when phase 2 was killed rather than shut down", () => {
+    // Asserting a clean disk after a crash would be an assertion about a
+    // precondition that did not hold. It reports the path instead.
+    const serial = `${SELF_HEAL_REMOVING_PREFIX} /var/lib/rancher/k3s/agent/client-kubelet.key\n`;
+    for (const path of ["sigterm", "sigkill", "already-exited"] as const) {
+      const verdict = assertNothingToHealAfterGracefulShutdown(serial, path);
+      expect(verdict.ok).toBe(true);
+      expect(verdict.status).toBe("precondition-absent");
+      expect(verdict.reason).toContain(path);
+    }
+  });
+
+  it("does NOT convict when phase 2's guest exited on its own before teardown", () => {
+    const verdict = assertNothingToHealAfterGracefulShutdown(CLEAN_SERIAL, undefined);
+    expect(verdict.status).toBe("precondition-absent");
+    expect(verdict.ok).toBe(true);
+  });
+
+  it("refuses to pass on SILENCE — the unit ran, removed nothing, and said nothing", () => {
+    const verdict = assertNothingToHealAfterGracefulShutdown(
+      `${SELF_HEAL_PREFIX} starting\n`,
+      "graceful",
+    );
+    expect(verdict.ok).toBe(false);
+    expect(verdict.status).toBe("indeterminate");
+    expect(verdict.reason).toContain("Silence is not a pass");
+  });
+
+  it("extracts every removed path, in serial order", () => {
+    const serial =
+      `${SELF_HEAL_REMOVING_PREFIX} /a/one.key\nnoise\n${SELF_HEAL_REMOVING_PREFIX} /b/two.crt\n`;
+    expect(selfHealRemovedPaths(serial)).toEqual(["/a/one.key", "/b/two.crt"]);
+  });
+
+  it("keeps the duplicated markers coherent with the producer WHEN it is present", () => {
+    // These literals are duplicated from full-ai-cluster/nixos/modules/
+    // k3s-agent-tls-self-heal.sh (WP25, PR #17608). That file is not on main
+    // yet, so this check is itself inert-but-present: it verifies coherence
+    // once the producer lands and never fails for its absence. The `inert`
+    // status above is what keeps that honest in the meantime.
+    const producer = resolve(
+      import.meta.dir,
+      "../../../full-ai-cluster/nixos/modules/k3s-agent-tls-self-heal.sh",
+    );
+    // One syscall, one answer: an `existsSync` guard here would be a
+    // check-then-use race (lint-check-then-use-file-races / CWE-367), and the
+    // question being asked — "has WP25's producer landed yet?" — is exactly the
+    // kind whose answer can change between the two calls.
+    let sh: string;
+    try {
+      sh = readFileSync(producer, "utf8");
+    } catch (err) {
+      if ((err as NodeJS.ErrnoException).code !== "ENOENT") throw err;
+      // Producer absent: PR #17608 is unmerged. The constants stand on their own
+      // until it lands, and `status: "inert"` above is what keeps that honest.
+      expect(SELF_HEAL_PREFIX).toBe("[zeta-k3s-agent-tls-self-heal]");
+      return;
+    }
+    expect(sh).toContain("removing zero-length file:");
+    expect(sh).toContain("clear: no zero-length files under $AGENT_DIR");
+    expect(sh).toContain("clear: $NODE_PASSWORD_FILE is absent or non-empty");
+    // The defaults the constants above hardcode.
+    expect(sh).toContain('AGENT_DIR="${ZETA_K3S_AGENT_DIR:-/var/lib/rancher/k3s/agent}"');
+    expect(sh).toContain('NODE_PASSWORD_FILE="${ZETA_K3S_NODE_PASSWORD_FILE:-/etc/rancher/node/password}"');
   });
 });

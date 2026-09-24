@@ -64,6 +64,14 @@ import { QEMU_USB_TEST_SERIAL, qemuUsbStorageDeviceArg } from "../installer/qemu
 import { UEFI_KEYFILE_SERIAL } from "../installer/uefi-keyfile-esp.ts";
 import { USB_ISERIAL_SERIAL } from "../installer/usb-iserial-probe.ts";
 import { firstSessionPhase3Enabled, phase3BootMarkersSatisfied } from "./qemu-first-session-phase3.ts";
+import {
+  QMP_TIMEOUT_MS,
+  qmpSocketArgs,
+  qmpSystemPowerdown,
+  tearDownGuest,
+  type TeardownOutcome,
+  type TeardownPath,
+} from "./qemu-guest-teardown.ts";
 
 const REPO_ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "../../..");
 const TEST_INFRA_PUBKEY = resolve(REPO_ROOT, "src/Core.TypeScript/zflash/test-harness/keys/zeta-test-infra.pub");
@@ -175,6 +183,131 @@ export const K3S_VERIFY_JSON_END_MARKER = "ZETA_K3S_FIRST_BOOT_VERIFY_JSON_END";
 export const PHASE3_K3S_VERIFY_SERIAL_SEPARATOR =
   "\n\n=== PHASE 3 (WP11): reboot installed disk WITH network; verify k3s + first-boot roster ===\n\n";
 
+// -- WP27 falsifier: after a GRACEFUL phase-2 shutdown there is nothing to heal --
+//
+// THE HOPE THIS TURNS INTO A MEASUREMENT. Making the teardown graceful is a
+// claim about the guest filesystem: that phase 3 now boots a disk whose blocks
+// actually landed. Nothing about a green WP11 verdict would prove that on its
+// own -- k3s could come up because WP25's self-heal DELETED the truncated
+// credentials and k3s regenerated them, which is exactly what the lane measured
+// before this change and exactly what it must stop measuring.
+//
+// So the assertion is on the self-heal's OWN output: after a graceful phase-2
+// shutdown it must find nothing to do. If it is still removing files, the
+// graceful path did not deliver what it promises, whatever the verdict says.
+//
+// INERT-BUT-PRESENT ON PURPOSE. These markers come from
+// `full-ai-cluster/nixos/modules/k3s-agent-tls-self-heal.sh`, which lands on PR
+// #17608 (WP25) and is NOT merged as of this writing. Until an ISO carries it, a
+// phase-3 serial has no `[zeta-k3s-agent-tls-self-heal]` line at all and this
+// returns `inert` -- reported loudly on stdout, never silently green, and never
+// red for the absence of somebody else's unmerged file. Nothing here edits
+// #17608's files; the literals below are duplicated from it deliberately, and
+// `status: "inert"` is what makes that duplication self-announcing when it
+// drifts rather than quietly vacuous.
+
+/** Producer: `k3s-agent-tls-self-heal.sh` `say()`. Its presence means the unit ran. */
+export const SELF_HEAL_PREFIX = "[zeta-k3s-agent-tls-self-heal]";
+
+/** The agent dir was clean. `AGENT_DIR` default, verbatim. */
+export const SELF_HEAL_CLEAR_AGENT_DIR =
+  "[zeta-k3s-agent-tls-self-heal]   clear: no zero-length files under /var/lib/rancher/k3s/agent";
+
+/** The agent dir did not exist yet -- also "nothing to heal", not a finding. */
+export const SELF_HEAL_AGENT_DIR_ABSENT =
+  "[zeta-k3s-agent-tls-self-heal]   /var/lib/rancher/k3s/agent does not exist yet; nothing to heal.";
+
+/** Target 2: the per-node registration secret. */
+export const SELF_HEAL_CLEAR_NODE_PASSWORD =
+  "[zeta-k3s-agent-tls-self-heal]   clear: /etc/rancher/node/password is absent or non-empty";
+
+/** Any removal at all. Its PRESENCE on a graceful run is the defect. */
+export const SELF_HEAL_REMOVING_PREFIX = "[zeta-k3s-agent-tls-self-heal]   removing zero-length file:";
+
+export type SelfHealStatus = "inert" | "precondition-absent" | "clean" | "healed" | "indeterminate";
+
+/** Every path the self-heal reported removing, in serial order. */
+export function selfHealRemovedPaths(serial: string): readonly string[] {
+  const out: string[] = [];
+  const re = /\[zeta-k3s-agent-tls-self-heal\]\s+removing zero-length file:\s+(\S+)/g;
+  let m: RegExpExecArray | null;
+  while ((m = re.exec(serial)) !== null) {
+    if (m[1] !== undefined) out.push(m[1]);
+  }
+  return out;
+}
+
+/**
+ * Exported for unit tests. `ok: false` convicts ONLY when the self-heal ran, the
+ * phase-2 guest was shut down gracefully, and files were still removed.
+ */
+export function assertNothingToHealAfterGracefulShutdown(
+  phase3Serial: string,
+  phase2TeardownPath: TeardownPath | undefined,
+): { readonly ok: boolean; readonly status: SelfHealStatus; readonly reason: string } {
+  if (!phase3Serial.includes(SELF_HEAL_PREFIX)) {
+    return {
+      ok: true,
+      status: "inert",
+      reason:
+        `phase-3 serial carries no "${SELF_HEAL_PREFIX}" line, so the WP25 self-heal ` +
+        "(PR #17608, unmerged at the time this assertion was written) is not in this ISO. " +
+        "Nothing is asserted about zero-length files; this is INERT, not a pass.",
+    };
+  }
+  const removed = selfHealRemovedPaths(phase3Serial);
+  if (phase2TeardownPath !== "graceful") {
+    return {
+      ok: true,
+      status: "precondition-absent",
+      reason:
+        `phase 2 was torn down via "${phase2TeardownPath ?? "(guest exited on its own)"}", not a ` +
+        "graceful guest shutdown, so a crashed-disk state is EXPECTED and nothing is asserted here. " +
+        `The self-heal removed ${removed.length} file(s)` +
+        (removed.length > 0 ? `: ${removed.join(", ")}` : "") +
+        ". This is the path the lane took on every run before WP27 — see the phase-2 teardown line " +
+        "for why the graceful rung was not reached.",
+    };
+  }
+  if (removed.length > 0) {
+    return {
+      ok: false,
+      status: "healed",
+      reason:
+        "phase 2 shut its guest down GRACEFULLY, yet the phase-3 self-heal still removed " +
+        `${removed.length} zero-length file(s): ${removed.join(", ")}. A synced filesystem cannot ` +
+        "produce truncated credentials, so either the guest did not actually flush (check the " +
+        "phase-2 teardown line's elapsed time — a graceful path that returns in under a second " +
+        "did not run a real systemd shutdown) or these files are being truncated by something " +
+        "other than the teardown.",
+    };
+  }
+  const agentDirAccounted =
+    phase3Serial.includes(SELF_HEAL_CLEAR_AGENT_DIR) || phase3Serial.includes(SELF_HEAL_AGENT_DIR_ABSENT);
+  if (!agentDirAccounted || !phase3Serial.includes(SELF_HEAL_CLEAR_NODE_PASSWORD)) {
+    // The unit ran and removed nothing, but did not say the two things it says
+    // when it finds nothing. Green here would be a pass on silence, which is the
+    // vacuity class; report it instead of assuming the best.
+    return {
+      ok: false,
+      status: "indeterminate",
+      reason:
+        "the WP25 self-heal ran and removed nothing, but did not report a clear verdict for both " +
+        `targets (expected "${SELF_HEAL_CLEAR_AGENT_DIR}" or "${SELF_HEAL_AGENT_DIR_ABSENT}", and ` +
+        `"${SELF_HEAL_CLEAR_NODE_PASSWORD}"). Either the script's wording drifted from the literals ` +
+        "duplicated here, or it exited early. Silence is not a pass.",
+    };
+  }
+  return {
+    ok: true,
+    status: "clean",
+    reason:
+      "phase 2 shut its guest down gracefully and the phase-3 self-heal found NOTHING to heal — " +
+      "the installed disk was synced, so this run measured the ordinary user path (install, clean " +
+      "reboot, k3s up) rather than the post-crash path.",
+  };
+}
+
 /** Separator between phase-1 installer serial and phase-2 disk-boot serial in artifacts. */
 export const PHASE2_SERIAL_SEPARATOR = "\n\n=== PHASE 2: boot installed disk (no ISO) ===\n\n";
 
@@ -211,6 +344,17 @@ interface InstallResult {
   readonly serialLogTail?: string;
   readonly elapsedSeconds?: number;
   readonly hostname?: string;
+  /**
+   * WP27 — which rung of the teardown ladder stopped this phase's guest.
+   * Absent when the guest exited on its own before teardown was reached.
+   *
+   * Load-bearing rather than decorative: the phase-3 self-heal falsifier
+   * ({@link assertNothingToHealAfterGracefulShutdown}) may only convict when
+   * phase 2 actually took the `graceful` rung. Demanding a clean disk from a
+   * guest that was shot would be an assertion about a precondition that did not
+   * hold.
+   */
+  readonly teardown?: TeardownOutcome;
 }
 
 /** Exported for unit tests. */
@@ -1103,6 +1247,7 @@ function buildQemuInstallArgs(
   diskPath: string,
   serialLogPath: string,
   tmpDir: string,
+  qmpSocketPath?: string,
 ): string[] {
   // PHASE 1 UEFI-BOOTS TOO. It used to boot the installer on the default SeaBIOS,
   // i.e. legacy/CSM. `zeta-install.sh` now refuses when `/sys/firmware/efi` is
@@ -1126,6 +1271,7 @@ function buildQemuInstallArgs(
     kvmEnabled(),
     ovmf.code,
     varsPath,
+    qmpSocketPath,
   );
 }
 
@@ -1137,6 +1283,7 @@ export function buildQemuInstallArgsPure(
   kvm: boolean,
   ovmfCodePath: string,
   ovmfVarsPath: string,
+  qmpSocketPath?: string,
 ): string[] {
   const args: string[] = [
     "-machine",
@@ -1183,6 +1330,13 @@ export function buildQemuInstallArgsPure(
   } else {
     args.push("-cpu", "qemu64");
   }
+  // WP27 — the socket the teardown asks the GUEST to power down through
+  // (`qemu-guest-teardown.ts`). Optional so every existing unit test's argv
+  // stays byte-identical when it is absent, and so a phase that genuinely has
+  // no later reader can opt out rather than silently get a half-wired one.
+  if (qmpSocketPath !== undefined) {
+    args.push(...qmpSocketArgs(qmpSocketPath));
+  }
   return args;
 }
 
@@ -1191,6 +1345,7 @@ function buildQemuDiskBootArgs(
   serialLogPath: string,
   tmpDir: string,
   fwCfgPassphraseFile?: string,
+  qmpSocketPath?: string,
 ): string[] {
   const ovmf = resolveOvmfFirmware();
   if (!ovmf) {
@@ -1204,6 +1359,7 @@ function buildQemuDiskBootArgs(
     varsPath,
     kvmEnabled(),
     fwCfgPassphraseFile,
+    qmpSocketPath,
   );
 }
 
@@ -1215,6 +1371,7 @@ export function buildQemuDiskBootArgsPure(
   ovmfVarsPath: string,
   kvm: boolean,
   fwCfgPassphraseFile?: string,
+  qmpSocketPath?: string,
 ): string[] {
   // Phase 2 only needs a login prompt on serial — no network. A virtio-net
   // NIC exposes a UEFI "Misc Device" boot entry (Pci 0x3,0x0) that can win
@@ -1251,10 +1408,22 @@ export function buildQemuDiskBootArgsPure(
   } else {
     args.push("-cpu", "qemu64");
   }
+  // WP27 — the socket the teardown asks the GUEST to power down through
+  // (`qemu-guest-teardown.ts`). Optional so every existing unit test's argv
+  // stays byte-identical when it is absent, and so a phase that genuinely has
+  // no later reader can opt out rather than silently get a half-wired one.
+  if (qmpSocketPath !== undefined) {
+    args.push(...qmpSocketArgs(qmpSocketPath));
+  }
   return args;
 }
 
-function buildQemuK3sVerifyBootArgs(diskPath: string, serialLogPath: string, tmpDir: string): string[] {
+function buildQemuK3sVerifyBootArgs(
+  diskPath: string,
+  serialLogPath: string,
+  tmpDir: string,
+  qmpSocketPath?: string,
+): string[] {
   const ovmf = resolveOvmfFirmware();
   if (!ovmf) {
     throw new Error("OVMF firmware missing; cannot UEFI-boot installed systemd-boot disk");
@@ -1263,7 +1432,14 @@ function buildQemuK3sVerifyBootArgs(diskPath: string, serialLogPath: string, tmp
   // reboots after them, so reusing that name would hand this boot whatever
   // NVRAM state phase 2b's wrong-passphrase reboot left behind.
   const varsPath = prepareWritableOvmfVars(tmpDir, ovmf.varsTemplate, "OVMF_VARS_k3sverify.fd");
-  return buildQemuK3sVerifyBootArgsPure(diskPath, serialLogPath, ovmf.code, varsPath, kvmEnabled());
+  return buildQemuK3sVerifyBootArgsPure(
+    diskPath,
+    serialLogPath,
+    ovmf.code,
+    varsPath,
+    kvmEnabled(),
+    qmpSocketPath,
+  );
 }
 
 /**
@@ -1283,6 +1459,7 @@ export function buildQemuK3sVerifyBootArgsPure(
   ovmfCodePath: string,
   ovmfVarsPath: string,
   kvm: boolean,
+  qmpSocketPath?: string,
 ): string[] {
   const args: string[] = [
     "-machine",
@@ -1315,6 +1492,13 @@ export function buildQemuK3sVerifyBootArgsPure(
     args.push("-enable-kvm", "-cpu", "host");
   } else {
     args.push("-cpu", "qemu64");
+  }
+  // WP27 — the socket the teardown asks the GUEST to power down through
+  // (`qemu-guest-teardown.ts`). Optional so every existing unit test's argv
+  // stays byte-identical when it is absent, and so a phase that genuinely has
+  // no later reader can opt out rather than silently get a half-wired one.
+  if (qmpSocketPath !== undefined) {
+    args.push(...qmpSocketArgs(qmpSocketPath));
   }
   return args;
 }
@@ -1706,11 +1890,61 @@ async function waitForK3sFirstBootVerifyVerdict(serialLogPath: string): Promise<
   };
 }
 
+/**
+ * WP27 (081M392JR97087G0R003QAFH0Y) — how this phase's guest is stopped.
+ *
+ * This used to be unconditional and invisible:
+ *
+ *     qemu.kill("SIGTERM"); await Bun.sleep(2000); qemu.kill("SIGKILL");
+ *
+ * SIGTERM to `qemu-system-x86_64` kills the EMULATOR, never the guest. The guest
+ * kernel is told nothing, so its page cache is dropped and every dirty block
+ * that had not reached the virtual disk is lost — which on ext4 with delayed
+ * allocation is precisely how a file ends up with an inode and no data blocks.
+ * Phase 3 then boots a disk full of ZERO-LENGTH credentials and k3s wedges,
+ * because `LoadOrGenerateKeyFile` will not regenerate a file that exists.
+ *
+ * So every phase whose disk a LATER phase reads now asks the guest to shut
+ * itself down first. See `src/Core.TypeScript/ci/qemu-guest-teardown.ts` for the
+ * ladder and for why the rung taken is printed rather than assumed.
+ */
+interface PhaseTeardownPolicy {
+  /** Ask the guest to power down (ACPI via QMP) before reaching for a signal. */
+  readonly graceful: boolean;
+  /** One clause, logged verbatim, saying why this phase gets that treatment. */
+  readonly reason: string;
+}
+
+/**
+ * The phase finished its work and a later phase (or this run's own verdict)
+ * reads the disk it wrote. This is the case the defect was in.
+ */
+const TEARDOWN_SYNC_FOR_NEXT_PHASE: PhaseTeardownPolicy = {
+  graceful: true,
+  reason: "a later phase boots this same disk; its filesystem must be synced",
+};
+
+/**
+ * DELIBERATE MID-WORK KILL, LEFT AS A KILL ON PURPOSE. When `wait()` already
+ * returned a failure the guest has NOT finished what it was doing — a hard-fail
+ * marker on serial, a timeout, an installer aborted mid-run. Nothing downstream
+ * will open that disk (phase 1's failure exits the run; phase 2's failure skips
+ * phase 3), so spending up to `GRACEFUL_WAIT_MS` syncing a filesystem nobody
+ * reads would buy nothing and cost CI minutes on exactly the runs that are
+ * already slow. The reason is logged, so a reader never has to infer which of
+ * the two cases a run was in.
+ */
+const TEARDOWN_ABORT_NO_SYNC: PhaseTeardownPolicy = {
+  graceful: false,
+  reason: "phase already failed; guest did not finish its work and no later phase reads this disk",
+};
+
 async function runQemuUntil(
   args: string[],
   serialLogPath: string,
   wait: () => Promise<InstallResult>,
   phaseLabel: string,
+  qmpSocketPath?: string,
 ): Promise<InstallResult> {
   console.log(`[qemu-full-install-test] ${phaseLabel}: qemu-system-x86_64 ${args.join(" ")}`);
 
@@ -1736,11 +1970,31 @@ async function runQemuUntil(
 
   if (!qemuExited) {
     console.log(`[qemu-full-install-test] ${phaseLabel}: stopping QEMU (PID ${qemu.pid})`);
-    qemu.kill("SIGTERM");
-    await Bun.sleep(2000);
-    if (!qemuExited) {
-      qemu.kill("SIGKILL");
-    }
+    const policy = result.exitCode === 0 ? TEARDOWN_SYNC_FOR_NEXT_PHASE : TEARDOWN_ABORT_NO_SYNC;
+    // No QMP socket for this phase means the graceful rung is unreachable. Say
+    // so instead of attempting it and reporting a confusing transport error.
+    const graceful = policy.graceful && qmpSocketPath !== undefined;
+    const reason =
+      policy.graceful && qmpSocketPath === undefined
+        ? "no QMP socket was configured for this phase, so a guest shutdown cannot be requested"
+        : policy.reason;
+    const teardown = await tearDownGuest(
+      {
+        hasExited: () => qemuExited,
+        powerdown: () =>
+          qmpSocketPath === undefined
+            ? Promise.resolve({ ok: false as const, error: "no QMP socket configured" })
+            : qmpSystemPowerdown(qmpSocketPath, QMP_TIMEOUT_MS, (line) =>
+                console.log(`[qemu-full-install-test] ${phaseLabel}: ${line}`),
+              ),
+        kill: (signal) => qemu.kill(signal),
+        sleep: (ms) => Bun.sleep(ms),
+        now: () => Date.now(),
+        log: (line) => console.log(`[qemu-full-install-test] ${line}`),
+      },
+      { graceful, label: phaseLabel, reason },
+    );
+    return { ...result, teardown };
   }
 
   return result;
@@ -1971,11 +2225,16 @@ async function main(): Promise<never> {
     phase1Label = "phase 1 (zflash USB install + WP11 k3s-first-boot-verify marker)";
   }
 
+  // WP27 — one QMP socket per phase, never shared: phases run in sequence but a
+  // stale socket file from a killed predecessor would have this phase's teardown
+  // connect to nothing and report a transport error for the wrong reason.
+  const phase1QmpSocket = join(tmpDir, "qmp-phase1.sock");
   const phase1 = await runQemuUntil(
-    buildQemuInstallArgs(bootMedia, diskPath, phase1SerialLogPath, tmpDir),
+    buildQemuInstallArgs(bootMedia, diskPath, phase1SerialLogPath, tmpDir, phase1QmpSocket),
     phase1SerialLogPath,
     () => waitForInstallComplete(phase1SerialLogPath),
     phase1Label,
+    phase1QmpSocket,
   );
   const phase1Serial = readSerial(phase1SerialLogPath);
   if (phase1.exitCode !== 0) {
@@ -2144,8 +2403,12 @@ async function main(): Promise<never> {
     phase2Label = "phase 2+3 (disk boot + first-session)";
   }
 
+  // THE TRANSITION THE WHOLE OF WP27 IS ABOUT: phase 3 boots this exact disk, so
+  // phase 2's guest has to sync before it stops. Killing the emulator here is
+  // what manufactured the zero-length k3s credentials WP25 had to heal.
+  const phase2QmpSocket = join(tmpDir, "qmp-phase2.sock");
   const phase2 = await runQemuUntil(
-    buildQemuDiskBootArgs(diskPath, phase2SerialLogPath, tmpDir, fwCfgPassphraseFile),
+    buildQemuDiskBootArgs(diskPath, phase2SerialLogPath, tmpDir, fwCfgPassphraseFile, phase2QmpSocket),
     phase2SerialLogPath,
     () =>
       waitForInstalledLogin(
@@ -2155,6 +2418,7 @@ async function main(): Promise<never> {
         requireUefiKeyfileRestore,
       ),
     phase2Label,
+    phase2QmpSocket,
   );
 
   const phase2Serial = readSerial(phase2SerialLogPath);
@@ -2195,11 +2459,14 @@ async function main(): Promise<never> {
     console.log(
       "[qemu-full-install-test] phase 2b — rebooting installed disk with WRONG fw_cfg passphrase (still hypervisor transport; not metal)",
     );
+    // Phase 2b reboots the SAME disk phase 3 will boot, so it syncs too.
+    const phase2bQmpSocket = join(tmpDir, "qmp-phase2b.sock");
     const phase2b = await runQemuUntil(
-      buildQemuDiskBootArgs(diskPath, phase2bSerialLogPath, tmpDir, wrongFwCfg),
+      buildQemuDiskBootArgs(diskPath, phase2bSerialLogPath, tmpDir, wrongFwCfg, phase2bQmpSocket),
       phase2bSerialLogPath,
       () => waitForRestoreRefusal(phase2bSerialLogPath),
       "phase 2b (disk boot + wrong-passphrase restore refusal)",
+      phase2bQmpSocket,
     );
     const phase2bSerial = readSerial(phase2bSerialLogPath);
     writeArtifactSerialLog(phase1Serial, phase2Serial, phase2bSerial);
@@ -2251,11 +2518,17 @@ async function main(): Promise<never> {
       console.log(
         "[qemu-full-install-test] phase 3 (WP11) — rebooting installed disk WITH network; verifying k3s + first-boot roster",
       );
+      // Phase 3 is the last reader of this disk, so nothing downstream needs its
+      // sync. It still gets the socket: a clean k3s shutdown is what the NEXT
+      // scenario in this lane would inherit if one is ever chained after it, and
+      // the uniform path keeps the teardown line greppable across all four phases.
+      const phase3QmpSocket = join(tmpDir, "qmp-phase3.sock");
       const phase3 = await runQemuUntil(
-        buildQemuK3sVerifyBootArgs(diskPath, phase3SerialLogPath, tmpDir),
+        buildQemuK3sVerifyBootArgs(diskPath, phase3SerialLogPath, tmpDir, phase3QmpSocket),
         phase3SerialLogPath,
         () => waitForK3sFirstBootVerifyVerdict(phase3SerialLogPath),
         "phase 3 (WP11 k3s first-boot verify)",
+        phase3QmpSocket,
       );
       const phase3Serial = readSerial(phase3SerialLogPath);
       writeFileSync(
@@ -2299,8 +2572,33 @@ async function main(): Promise<never> {
         }
       }
 
+      // WP27 — the teardown's own falsifier, reported BEFORE the verdict is
+      // acted on so it is readable whether phase 3 went green or red.
+      const selfHeal = assertNothingToHealAfterGracefulShutdown(phase3Serial, phase2.teardown?.path);
+      console.log(
+        `[qemu-full-install-test] WP27 zero-length-file check: ${selfHeal.status.toUpperCase()} — ${selfHeal.reason}`,
+      );
+      // The WP11 verdict is reported FIRST when it failed: it is the lane's own
+      // primary signal, and a red phase 3 explains far more than a self-heal
+      // status would. The check above has already printed either way, so nothing
+      // is hidden by this ordering — what it prevents is a WP11 failure being
+      // relabelled as a WP27 one.
       if (phase3.exitCode !== 0) {
         reportResult(phase3, artifactSerialLogPath);
+      }
+      // A GREEN phase 3 that only got there because the self-heal deleted
+      // truncated credentials is the false green this whole work item exists to
+      // close, so it turns the run red here.
+      if (!selfHeal.ok) {
+        reportResult(
+          {
+            exitCode: 1,
+            reason: `WP27 graceful-shutdown contract failed (${selfHeal.status}) — ${selfHeal.reason}`,
+            serialLogTail: phase3Serial.slice(-2000),
+            ...(phase3.elapsedSeconds !== undefined ? { elapsedSeconds: phase3.elapsedSeconds } : {}),
+          },
+          artifactSerialLogPath,
+        );
       }
       console.log("[qemu-full-install-test] WP11 phase 3 ok — all six k3s first-boot verdicts passed");
     }
