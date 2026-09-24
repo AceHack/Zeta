@@ -76,22 +76,72 @@ CONF=/etc/zeta-firstboot.conf
 # this line SOURCES it as bash.
 ZETA_ROLE_SOURCE="iso:/etc/zeta-firstboot.conf"
 ESP_CONF_MOUNT=/run/zeta-boot-esp
+
+# ── WP27 (081M392JR97087G0R003QAFH0Y): the scan has to SAY what it saw ───
+#
+# This scan used to be entirely silent. A run that found no conf, a run whose
+# mount failed on every candidate, and a run where the loop matched no block
+# device at all produced BYTE-IDENTICAL output: nothing. The only downstream
+# evidence was `source=iso:` on the role line, which is ALSO what a correct
+# run prints when no ESP conf was staged -- so "the conf was not there" and
+# "the conf was there and I could not read it" were indistinguishable.
+#
+# That cost a full CI run to not-diagnose. Run 35985197702 staged
+# `/zeta-firstboot.conf` on the ESP -- the plan contains it, the execution
+# plan emits the `mcopy`, and file-backed.ts's post-bake `mdir` verification
+# (081KZHJPJCF, which FAILS the bake on a silent drop) passed -- and the guest
+# still reported `source=iso:`. Nothing in the serial could say why, because
+# this function never spoke.
+#
+# `ZETA_ESP_CONF` records the outcome and is printed unconditionally below.
+ZETA_ESP_CONF="none"
+ZETA_ESP_CONF_TRIED=""
 zeta_source_esp_firstboot_conf() {
   local part conf
-  mkdir -p "$ESP_CONF_MOUNT" 2>/dev/null || return 1
+  mkdir -p "$ESP_CONF_MOUNT" 2>/dev/null || { ZETA_ESP_CONF="mkdir-failed:$ESP_CONF_MOUNT"; return 1; }
   for part in /dev/disk/by-label/* /dev/sd?[0-9] /dev/nvme?n?p[0-9] /dev/vd?[0-9] /dev/mmcblk?p[0-9]; do
     [[ -b "$part" ]] || continue
-    mount -t vfat -o ro "$part" "$ESP_CONF_MOUNT" 2>/dev/null || continue
+    # Every block device the loop actually considered, so an empty list is
+    # visibly an empty list rather than an unexplained miss.
+    ZETA_ESP_CONF_TRIED="${ZETA_ESP_CONF_TRIED}${ZETA_ESP_CONF_TRIED:+,}${part}"
+    mount -t vfat -o ro "$part" "$ESP_CONF_MOUNT" 2>/dev/null || {
+      ZETA_ESP_CONF_TRIED="${ZETA_ESP_CONF_TRIED}(no-vfat)"
+      continue
+    }
     conf="$ESP_CONF_MOUNT/zeta-firstboot.conf"
     if [[ -f "$conf" ]]; then
       # shellcheck disable=SC1090
       . "$conf"
-      ZETA_ROLE_SOURCE="esp:$part"
+      ZETA_ESP_CONF="esp:$part"
+      # ── PROVENANCE IS ABOUT THE ROLE, NOT ABOUT THE FILE ──────────────
+      #
+      # `ZETA_ROLE_SOURCE=esp:` is read a few lines down as "a human chose
+      # this role" (ZETA_ROLE_DECLARED=yes), and a declared role SKIPS
+      # bootstrap-or-join discovery outright. That was sound while the ESP
+      # conf could only exist because someone passed `--role`.
+      #
+      # It no longer can be. An ESP conf may now carry first-boot values that
+      # say nothing about the role at all (the QEMU lanes stage
+      # ZETA_ALLOW_LONGHORN_UNDERSIZED this way). Claiming `esp:` for one of
+      # those would silently promote every such node from DEFAULTED to
+      # DECLARED and turn discovery off -- a behaviour change smuggled in by
+      # an unrelated value, which is exactly the conflation the role-source
+      # comment below exists to prevent.
+      #
+      # So the role's provenance moves only when the conf ACTUALLY DECLARES a
+      # role. Checked against the file, not against the resulting variable:
+      # ZETA_ROLE is already set from the ISO conf by this point, so "is it
+      # set?" cannot distinguish the two.
+      if grep -qE '^[[:space:]]*ZETA_ROLE=' "$conf" 2>/dev/null; then
+        ZETA_ROLE_SOURCE="esp:$part"
+      fi
       umount "$ESP_CONF_MOUNT" 2>/dev/null || true
       return 0
     fi
+    ZETA_ESP_CONF_TRIED="${ZETA_ESP_CONF_TRIED}(no-conf)"
     umount "$ESP_CONF_MOUNT" 2>/dev/null || true
   done
+  [[ -n "$ZETA_ESP_CONF_TRIED" ]] || ZETA_ESP_CONF="no-block-devices-matched"
   return 1
 }
 zeta_source_esp_firstboot_conf || true
@@ -129,6 +179,11 @@ zeta_source_esp_repo_pin || true
 
 HOST="${HOST:-control-plane}"
 ZETA_ROLE="${ZETA_ROLE:-first-control-plane}"
+# WP27 -- printed on EVERY boot, including (especially) the boots where the
+# scan found nothing. `esp-conf=` is the outcome, `tried=` is the candidate
+# list with a per-candidate reason, and `role-source=` stays separate because
+# a conf that declares no role does not move the role's provenance.
+echo "[081M392JR97087G0R003QAFH0Y-esp-conf] esp-conf=${ZETA_ESP_CONF} tried=${ZETA_ESP_CONF_TRIED:-<none>}"
 echo "[081KSNY2Z0008QG0R0008PN7RQ-role] role=${ZETA_ROLE} host=${HOST} source=${ZETA_ROLE_SOURCE}"
 if [[ "${ZETA_ROLE}" == "joiner" ]]; then
   echo "[081KSNY2Z0008QG0R0008PN7RQ-role]   join server: ${ZETA_JOIN_SERVER_URL:-<unset>}"

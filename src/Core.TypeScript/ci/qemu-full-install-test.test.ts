@@ -16,7 +16,10 @@ import {
   assertUefiKeyfileRestoreWrongPassphraseContract,
   assertUsbISerialPhase1Contract,
   assertWifiEspPhase1Contract,
+  assertEspFirstbootConfWasRead,
   assertNothingToHealAfterGracefulShutdown,
+  ESP_CONF_SCAN_PREFIX,
+  espConfScanOutcome,
   assertWp11VerdictUnitEnabled,
   ESP_PROBE_NO_HOSTNAME,
   ESP_PROBE_NO_PUBKEY,
@@ -1591,12 +1594,33 @@ describe("WP11 — a run that measured NOTHING must not report as a timeout", ()
 });
 
 describe("WP27 — the Longhorn-undersized override is staged on the ESP, never in the ISO", () => {
-  it("the installer honours the override env the harness stages", () => {
+  // THE TEST THAT USED TO BE HERE COULD NOT FAIL FOR THE RIGHT REASON. It
+  // asserted `expect(sh).toContain("ZETA_ALLOW_LONGHORN_UNDERSIZED")` — a
+  // statement about a file in THIS repo, not about a value reaching a guest.
+  // Run 35985197702 bailed on the very refusal the override exists to spare,
+  // with that assertion green. The end-to-end contract below replaced it; what
+  // survives here is the half a static check can honestly make.
+  it("every link in the chain is present in its own producer", () => {
     const sh = readFileSync(
       resolve(import.meta.dir, "../../../full-ai-cluster/usb-nixos-installer/zeta-install.sh"),
       "utf8",
     );
+    const firstBoot = readFileSync(
+      resolve(import.meta.dir, "../../../full-ai-cluster/usb-nixos-installer/zeta-first-boot.sh"),
+      "utf8",
+    );
+    // The installer reads it...
     expect(sh).toContain("ZETA_ALLOW_LONGHORN_UNDERSIZED");
+    // ...and first-boot must EXPORT it, not merely set it. A sourced value
+    // reaches that shell and not the zeta-install child, which is a knob that
+    // turns and is not connected.
+    expect(firstBoot).toContain("export ZETA_ALLOW_LONGHORN_UNDERSIZED");
+    // ...and the scan must be able to report a miss, or a broken chain is
+    // indistinguishable from a lane that staged nothing.
+    expect(firstBoot).toContain(ESP_CONF_SCAN_PREFIX);
+    // Presence in three files is still not arrival in a guest. That is what
+    // `assertEspFirstbootConfWasRead` is for, and why this test is no longer
+    // the only thing standing behind this feature.
   });
 
   it("the ISO's own firstboot conf does NOT carry it — that would delete the guard", () => {
@@ -1615,5 +1639,77 @@ describe("WP27 — the Longhorn-undersized override is staged on the ESP, never 
       return;
     }
     expect(conf).not.toContain("ZETA_ALLOW_LONGHORN_UNDERSIZED");
+  });
+});
+
+describe("WP27 — the staged ESP conf must be OBSERVED to arrive", () => {
+  const READ = `${ESP_CONF_SCAN_PREFIX} esp-conf=esp:/dev/sda2 tried=/dev/sda1(no-vfat),/dev/sda2\n`;
+  const MISSED = `${ESP_CONF_SCAN_PREFIX} esp-conf=none tried=/dev/sda1(no-vfat),/dev/sda2(no-conf)\n`;
+
+  it("parses the outcome and the candidate list the guest tried", () => {
+    expect(espConfScanOutcome(READ)).toEqual({
+      outcome: "esp:/dev/sda2",
+      tried: "/dev/sda1(no-vfat),/dev/sda2",
+    });
+    expect(espConfScanOutcome(MISSED)).toEqual({
+      outcome: "none",
+      tried: "/dev/sda1(no-vfat),/dev/sda2(no-conf)",
+    });
+  });
+
+  it("passes when the guest reports reading the ESP conf", () => {
+    const verdict = assertEspFirstbootConfWasRead(READ);
+    expect(verdict.ok).toBe(true);
+    if (verdict.ok) expect(verdict.outcome).toBe("esp:/dev/sda2");
+  });
+
+  it("FAILS on exactly the shape run 35985197702 produced", () => {
+    // Staged on the ESP, guest read the ISO's own conf, every staged value
+    // silently dropped, and the run went on to bail on the refusal the
+    // override was meant to spare it.
+    const verdict = assertEspFirstbootConfWasRead(MISSED);
+    expect(verdict.ok).toBe(false);
+    if (!verdict.ok) {
+      expect(verdict.reason).toContain("esp-conf=none");
+      // The message must send the reader at the guest, not at the bake — the
+      // host side is proven and saying otherwise costs another run.
+      expect(verdict.reason).toContain("The host side is not the suspect");
+      expect(verdict.reason).toContain("(no-conf)");
+    }
+  });
+
+  it("reports an ISO with no instrumentation as ITS OWN case, not as 'not found'", () => {
+    // An old ISO and a broken scan are different findings; only one of them is
+    // a defect in this change, and folding them together is how a rebuild need
+    // gets misread as a regression.
+    const verdict = assertEspFirstbootConfWasRead("ordinary first-boot serial\n");
+    expect(verdict.ok).toBe(false);
+    if (!verdict.ok) expect(verdict.reason).toContain("predates the scan instrumentation");
+    expect(espConfScanOutcome("ordinary first-boot serial\n")).toBeNull();
+  });
+
+  it("an empty candidate list is reported as an empty list", () => {
+    const verdict = assertEspFirstbootConfWasRead(
+      `${ESP_CONF_SCAN_PREFIX} esp-conf=no-block-devices-matched tried=<none>\n`,
+    );
+    expect(verdict.ok).toBe(false);
+    if (!verdict.ok) expect(verdict.reason).toContain("no-block-devices-matched");
+  });
+});
+
+describe("WP27 — a role-less ESP conf must NOT claim the role was declared", () => {
+  it("zeta-first-boot.sh moves ZETA_ROLE_SOURCE only when the conf declares a role", () => {
+    const sh = readFileSync(
+      resolve(import.meta.dir, "../../../full-ai-cluster/usb-nixos-installer/zeta-first-boot.sh"),
+      "utf8",
+    );
+    // `esp:` on the ROLE source is read as "a human chose this role", and a
+    // declared role skips bootstrap-or-join discovery outright. Now that an ESP
+    // conf can carry values that say nothing about the role, claiming `esp:`
+    // for one of those would turn discovery off via an unrelated knob.
+    expect(sh).toContain("grep -qE '^[[:space:]]*ZETA_ROLE=' \"$conf\"");
+    // And the conf's own arrival is reported separately from the role's
+    // provenance, because they are now two different facts.
+    expect(sh).toContain("ZETA_ESP_CONF=\"esp:$part\"");
   });
 });

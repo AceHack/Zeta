@@ -436,6 +436,98 @@ export function assertWp11VerdictUnitEnabled(phase1Serial: string):
   };
 }
 
+// -- WP27: the ESP conf has to be OBSERVED to arrive, not merely written -----
+//
+// THE JOIN NO UNIT TEST CROSSES. The Longhorn override is staged on the flashed
+// image's ESP `/zeta-firstboot.conf`, and every link in that chain has a passing
+// test: the plan contains the write, the execution plan emits the `mcopy`,
+// file-backed.ts's post-bake `mdir` verification (081KZHJPJCF) FAILS the bake on
+// a silent drop, and `zeta-first-boot.sh` sources the conf and exports the name.
+//
+// Run 35985197702 nonetheless bailed before the wipe with
+//
+//   ERROR: BOOT disk /dev/vda is 64 GiB, which cannot hold ESP 1 GiB + root
+//   floor 120 GiB + a 1 GiB minimum longhorn1 tail (need >= 122 GiB)
+//
+// -- the refusal the override exists to spare this lane -- and the guest's own
+// first line said `source=iso:/etc/zeta-firstboot.conf`. Every link correct in
+// isolation; the chain broken at a join nothing crossed.
+//
+// AND THE TEST THAT WAS SUPPOSED TO COVER IT COULD NOT. It asserted that
+// `zeta-install.sh` CONTAINS the string `ZETA_ALLOW_LONGHORN_UNDERSIZED` --
+// a statement about a file in this repo, not about a value reaching a guest.
+// That is the same shape as a `${VAR:-}` that is never exported: a knob that
+// turns and is not connected. It has been replaced by the assertion below,
+// which reads what the GUEST reported.
+//
+// The guest now prints its ESP-conf scan outcome unconditionally, including
+// when it finds nothing, so this can convict instead of inferring from silence.
+
+/** `zeta-first-boot.sh`, printed on every boot. Producer of the two below. */
+export const ESP_CONF_SCAN_PREFIX = "[081M392JR97087G0R003QAFH0Y-esp-conf]";
+
+/** The scan found and sourced the ESP conf. Everything else is a miss. */
+export const ESP_CONF_FOUND_FRAGMENT = "esp-conf=esp:";
+
+/**
+ * Exported for unit tests. What the guest reported about the ESP first-boot
+ * conf: the outcome, and the candidate block devices it actually tried.
+ *
+ * `null` means the guest never printed the line at all — an ISO built before
+ * this instrumentation existed. That is reported as its own case rather than
+ * folded into "not found", because an old ISO and a broken scan are different
+ * findings and only one of them is a defect in this change.
+ */
+export function espConfScanOutcome(
+  phase1Serial: string,
+): { readonly outcome: string; readonly tried: string } | null {
+  const m = phase1Serial.match(
+    /\[081M392JR97087G0R003QAFH0Y-esp-conf\]\s+esp-conf=(\S+)\s+tried=(\S*)/,
+  );
+  if (m === null || m[1] === undefined) return null;
+  return { outcome: m[1], tried: m[2] ?? "" };
+}
+
+/**
+ * Exported for unit tests. When this harness staged ANY value on the ESP
+ * first-boot conf, the guest must report having read it.
+ *
+ * Call only on a lane that actually staged one — on every other lane a `none`
+ * outcome is correct and asserting against it would be a check that convicts
+ * the innocent.
+ */
+export function assertEspFirstbootConfWasRead(phase1Serial: string):
+  | { readonly ok: true; readonly outcome: string }
+  | { readonly ok: false; readonly reason: string } {
+  const scan = espConfScanOutcome(phase1Serial);
+  if (scan === null) {
+    return {
+      ok: false,
+      reason:
+        `phase-1 serial carries no "${ESP_CONF_SCAN_PREFIX}" line at all. Either this ISO ` +
+        "predates the scan instrumentation in zeta-first-boot.sh (rebuild it), or " +
+        "zeta-first-boot.sh did not reach that line. Until it prints, nothing in this run " +
+        "can say whether the staged ESP conf arrived — which is the condition this " +
+        "assertion exists to end.",
+    };
+  }
+  if (scan.outcome.startsWith("esp:")) {
+    return { ok: true, outcome: scan.outcome };
+  }
+  return {
+    ok: false,
+    reason:
+      `this lane staged values on the ESP /zeta-firstboot.conf, but the guest reported ` +
+      `esp-conf=${scan.outcome} (tried=${scan.tried || "<none>"}), so it read the ISO's own ` +
+      "conf instead and every staged value was silently dropped. The host side is not the " +
+      "suspect: the write is in the plan, the execution plan emits the mcopy, and the " +
+      "post-bake mdir verification (081KZHJPJCF) fails the bake when a file does not land. " +
+      "Read `tried=` — an empty list means the scan matched no block device, a `(no-vfat)` " +
+      "suffix means the candidate would not mount as vfat, and `(no-conf)` means it mounted " +
+      "and the file was not on it.",
+  };
+}
+
 /** Separator between phase-1 installer serial and phase-2 disk-boot serial in artifacts. */
 export const PHASE2_SERIAL_SEPARATOR = "\n\n=== PHASE 2: boot installed disk (no ISO) ===\n\n";
 
@@ -2625,6 +2717,30 @@ async function main(): Promise<never> {
     console.log(
       "[qemu-full-install-test] WP11 precondition ok — the installed disk carries " +
         "/etc/zeta/qemu-k3s-first-boot-verify, so the phase-3 verdict unit will run",
+    );
+  }
+
+  // WP27 — the end-to-end falsifier for the staged ESP conf. Every lane that
+  // reaches here baked a USB image, and every such bake stages
+  // ZETA_ALLOW_LONGHORN_UNDERSIZED on /zeta-firstboot.conf, so the guest must
+  // report having read it. Checked AFTER the phase-1 contracts above so a
+  // genuine install failure is still reported as itself.
+  if (bootMedia.kind === "usb-image") {
+    const espConf = assertEspFirstbootConfWasRead(phase1Serial);
+    if (!espConf.ok) {
+      writeArtifactSerialLog(phase1Serial, "");
+      reportResult(
+        {
+          exitCode: 1,
+          reason: `ESP first-boot conf contract failed — ${espConf.reason}`,
+          serialLogTail: phase1Serial.slice(-3000),
+          ...(phase1.elapsedSeconds !== undefined ? { elapsedSeconds: phase1.elapsedSeconds } : {}),
+        },
+        artifactSerialLogPath,
+      );
+    }
+    console.log(
+      `[qemu-full-install-test] ESP first-boot conf contract ok — guest read ${espConf.outcome}`,
     );
   }
 

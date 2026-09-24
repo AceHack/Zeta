@@ -1,0 +1,14 @@
+{
+  "id": "080d0699a2ad1810a013000826f34800",
+  "at": "2026-09-24T11:36:57.507Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M39K8ND1087G0R000G4EN4N",
+    "type": "bug",
+    "title": "Cluster discovery has NEVER run: avahi-browse rejects --no-db-lookup, so bootstrap-or-join always falls back",
+    "slug": "cluster-discovery-has-never-run-avahi-browse-rejects-no-db-l",
+    "priority": "P2",
+    "filename": "081M39K8ND1087G0R000G4EN4N-cluster-discovery-has-never-run-avahi-browse-rejects-no-db-l.md"
+  }
+}
