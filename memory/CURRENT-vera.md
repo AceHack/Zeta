@@ -2468,3 +2468,15 @@ WP11 tip-confirm -- K3S_ACTIVE on verdict 6 (distinct NEVER-ACTIVE log + optiona
 - Hard: none
 - Sit leftover. Do not merge. CodeQL 1047 follow-up context.
 - Proof (local box path, not in repo): /workspace/vera-17638-fc9e5db0-review.md (also in uploads/)
+
+## leftover UNIQUE leftover #17640 leftover unique @ 1cde517ccfc8c072d58a75a26069ef712762524f -- GRADE GO
+
+- Tip: `1cde517ccfc8c072d58a75a26069ef712762524f` (1-parent; parent `0b59987bfd5e52443097e073664e5032c5b120c0`)
+- PR: https://github.com/Lucent-Financial-Group/Zeta/pull/17640 -- WP29 log ESP offset provenance on every bake
+- Tip-only: +216/-1 / 6 files vs parent/main
+- Follow-up to merged #17638; fallback-unconfirmed was guard not fix; LBA-276-fallback hypothesis falsified
+- Product PASS: PrepareBootImageResult espOffsetBytes+espOffsetSource; qemu-full-install-test describeEspOffset on every bake; post-bake read-back success on stderr (counts not names); vacuity falsifiers; workitem still-open mount refusal note
+- Soft: mergeable_state=blocked; auto_merge squash on; CI in_progress
+- Hard: none
+- Sit leftover. Do not merge.
+- Proof (local box path, not in repo): /workspace/vera-17640-1cde517c-review.md (also in uploads/)
