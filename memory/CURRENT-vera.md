@@ -2388,3 +2388,17 @@ WP27 ESP first-boot conf scan prints esp-conf=/tried= unconditionally; role-less
 ```
 
 WP28 follow-up to #17622 -- delete inert defaultRunHelm clone; maxBuffer DEFAULT_MAX_BYTES on remaining Node spawnSync sites; uncapped-renderer-spawn lint (Bun.spawnSync excluded); baseline provenance; never grade merge 6fbb2b09.
+## leftover UNIQUE leftover #17631 leftover unique @ 197aba9e0cc70c20174e8004b23512f417c477aa -- GRADE GO
+
+```
++--------------------------------------------------------------+
+| UNIQUE #17631 @ 197aba9e  GRADE GO                           |
+| tip=HEAD 1p +322/-28/2; parent d0bd7d92                      |
+| product PASS @ tip (QEMU disk 1400 + Longhorn real geom)     |
+| soft: mergeable blocked; CI in_progress                      |
+| hard: none                                                   |
+| proof: /workspace/vera-17631-197aba9e-review.md              |
++--------------------------------------------------------------+
+```
+
+WP27 -- QEMU_DISK_SIZE_GB=1400 (Longhorn floor 1379/sched 959>=943); drop allowLonghornUndersized ESP staging; reportQcowAllocation post phase-1; assertEspFirstbootConfWasRead dormant when no conf staged; never grade merge 9c80aedd.
