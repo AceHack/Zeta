@@ -2142,3 +2142,16 @@ UNIQUE HOLDS leftover NEW CELL leftover UNIQUE leftover #17608 leftover unique @
 - Product: ci(cluster) wires flake check k3s-agent-tls-self-heal into build-ai-cluster-iso.yml PR-path step after dirty-disk fail-closed neighbour (nix build .#checks.x86_64-linux.k3s-agent-tls-self-heal); closes gap where flake check existed but no workflow step ran it; no continue-on-error / if: escape
 - Tip proof: many SUCCESS, 0 FAILURE sampled; soft build-iso step #16 (new gate) + run 35966469899 still in flight
 - Sit leftover. Do not merge.
+---
+## leftover UNIQUE leftover #17608 leftover unique @ b5707e40597d5660bc67382b91ab4556736d0422 — GRADE GO
+
+- PR: https://github.com/Lucent-Financial-Group/Zeta/pull/17608 OPEN
+- Branch: claude/k3s-zero-length-tls-self-heal
+- Task: 081M38G8NGC087G0R001GEGEDK
+- Tip (grade this SHA only): b5707e40597d5660bc67382b91ab4556736d0422
+- Live HEAD IS tip — never grade merge_commit_sha bfd432d844f6a61b98497a3f83be4898604ffb25
+- Parent / prior GO (stands for that tip only): 47eb3ea50dc316962c3c27614ce83816775dc1e3
+- Tip-only vs prior GO: +32/−2 / 1 file
+- Product: only_wp11=true workflow_dispatch skips eight pre-ISO NixOS steps (seven always-on hermetic/online + longhorn-volume-binds) via if: always() && !(workflow_dispatch && inputs.only_wp11); PR/push paths unchanged; WP25 self-heal NixOS step stays unconditional (no if:)
+- Tip proof: sample SUCCESS, 0 FAILURE; soft gate/build-iso/dispatch still in flight
+- Sit leftover. Do not merge.
