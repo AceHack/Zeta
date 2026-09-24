@@ -2456,3 +2456,15 @@ WP11 tip-confirm -- K3S_ACTIVE on verdict 6 (distinct NEVER-ACTIVE log + optiona
 - Hard: none
 - Sit leftover. Do not merge. Author notes root cause of intermittent loss not fixed here.
 - Proof (local box path, not in repo): /workspace/vera-17638-145fca6d-review.md (also in uploads/)
+
+## leftover UNIQUE leftover #17638 leftover unique @ fc9e5db0f0c433a2700f6c249116a1fb2446236c -- GRADE GO
+
+- Tip: `fc9e5db0f0c433a2700f6c249116a1fb2446236c` (1-parent; parent `145fca6d2d6e5df720bb962b6a35d66234fc05ef`)
+- Prior GO @ `145fca6d` stands for that tip only
+- PR: https://github.com/Lucent-Financial-Group/Zeta/pull/17638 -- WP29 follow-up: ESP offset from whole ISO
+- Tip-only: +43/-44 / 2 files (prepare-boot-image.ts + .test.ts)
+- Product PASS: bounded openSync/readSync/ISO_HEAD removed; readFileSync(whole ISO) restored so MBR 0xEF past old 141824-byte head bound is findable; ~1.67 GiB pull / ~2 GiB ceiling limit documented; fallback-unconfirmed refuse before write and no always-same-value double-return intact
+- Soft: mergeable_state=blocked; auto_merge squash on; CI in_progress
+- Hard: none
+- Sit leftover. Do not merge. CodeQL 1047 follow-up context.
+- Proof (local box path, not in repo): /workspace/vera-17638-fc9e5db0-review.md (also in uploads/)
