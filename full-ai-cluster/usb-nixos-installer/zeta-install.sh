@@ -258,6 +258,25 @@ ZETA_LONGHORN_USABLE_PERCENT=75
 # roster has moved past this number — so it cannot go stale quietly.
 ZETA_LONGHORN_DEMAND_GIB=943
 
+# What the installer actually REFUSES at: the demand the CURRENTLY REGISTERED
+# fleet could ever be asked for, GiB. 081M397QHX8087G0R003DQSY0B.
+#
+# Equal to the declared total today, and that is the point rather than an
+# oversight. 400 GiB of the 943 belongs to ollama and vllm, both
+# `nodeSelector: zeta.io/gpu: nvidia`, and every checked-in ClusterNode records
+# an Intel adapter -- but under the old `lspci ... | head -1` capture those
+# records establish what IS present and never what is NOT, so the exclusion is
+# UNDECIDABLE and an unproven exclusion must not shrink the number a gate
+# convicts on.
+#
+# One node re-registering under the fixed capture (spec.hardware.gpus, every
+# display device) makes it provable, the split becomes exact at 543, and this
+# constant drops. single-node-readiness.ts REFUSES while the two disagree.
+#
+# BOTH are printed. Convicting on one while showing only the other is how a
+# number stops meaning what its reader thinks it means.
+ZETA_LONGHORN_SCHEDULABLE_GIB=943
+
 # A positive whole number, or 0. Negative, fractional and non-numeric all
 # collapse to 0 so both sides of the parity refuse junk identically.
 zeta_clamp_gib() {
@@ -1686,7 +1705,7 @@ assert_longhorn_pool_holds_the_roster() {
   done
   raw_gib="$(zeta_provisioned_longhorn_gib "$tail_gib" "${data_sizes[@]:-}")"
   schedulable="$(zeta_schedulable_longhorn_gib "$raw_gib" "$ZETA_LONGHORN_USABLE_PERCENT")"
-  verdict="$(zeta_longhorn_capacity_verdict "$schedulable" "$ZETA_LONGHORN_DEMAND_GIB" "${ZETA_ALLOW_LONGHORN_UNDERSIZED:-}")"
+  verdict="$(zeta_longhorn_capacity_verdict "$schedulable" "$ZETA_LONGHORN_SCHEDULABLE_GIB" "${ZETA_ALLOW_LONGHORN_UNDERSIZED:-}")"
 
   # Printed on EVERY install, green or not. A standing decision that only
   # appears when it fails is a decision nobody revisits.
@@ -1704,12 +1723,13 @@ assert_longhorn_pool_holds_the_roster() {
   fi
   echo "  raw pool                          ${raw_gib} GiB"
   echo "  x ${ZETA_LONGHORN_USABLE_PERCENT}% Longhorn will place       ${schedulable} GiB"
-  echo "  committed roster demands          ${ZETA_LONGHORN_DEMAND_GIB} GiB  (driver.longhorn.io classes)"
+  echo "  committed roster DECLARES         ${ZETA_LONGHORN_DEMAND_GIB} GiB  (driver.longhorn.io classes)"
+  echo "  SCHEDULABLE on registered nodes   ${ZETA_LONGHORN_SCHEDULABLE_GIB} GiB  <- the refusal is measured against THIS"
 
   case "$verdict" in
-    ok) echo "  verdict: fits, $((schedulable - ZETA_LONGHORN_DEMAND_GIB)) GiB spare" ;;
+    ok) echo "  verdict: fits, $((schedulable - ZETA_LONGHORN_SCHEDULABLE_GIB)) GiB spare" ;;
     override)
-      echo "  verdict: UNDERSIZED by $((ZETA_LONGHORN_DEMAND_GIB - schedulable)) GiB — proceeding on ZETA_ALLOW_LONGHORN_UNDERSIZED=1 override"
+      echo "  verdict: UNDERSIZED by $((ZETA_LONGHORN_SCHEDULABLE_GIB - schedulable)) GiB — proceeding on ZETA_ALLOW_LONGHORN_UNDERSIZED=1 override"
       echo "  those PVCs will pend. This is debt you named, not a cleared check."
       ;;
     *)
@@ -3342,7 +3362,23 @@ zeta_self_reg_compose_node_yaml() {
   CPU_MODEL=$(grep 'model name' /proc/cpuinfo 2>/dev/null | head -1 | cut -d: -f2- | sed 's/^[[:space:]]*//' | sed 's/"//g' || echo "")
   MEM_TOTAL=$(free -h --si 2>/dev/null | awk '/Mem:/{print $2}' || echo "")
   CPU_CORES=$(nproc 2>/dev/null || echo "")
+  # WP28 (081M397QHX8087G0R003DQSY0B): capture EVERY display device, not the first.
+  #
+  # `head -1` recorded one line, and a box with integrated Intel graphics plus a
+  # discrete NVIDIA card records the Intel one -- it sits at 00:02.0 and sorts
+  # first -- while the NVIDIA card is simply absent from the registration. So
+  # the record established what IS present and could never establish what is
+  # NOT, which makes "no registered node has an NVIDIA GPU" unprovable from the
+  # committed fleet. That matters because
+  # src/Core.TypeScript/cluster/schedulable-demand.ts wants to EXCLUDE claims
+  # whose workload can never be placed, and an exclusion shrinks the demand a
+  # capacity gate convicts on -- so it has to be proven, not inferred.
+  #
+  # GPU_LINE is kept for `spec.hardware.gpu` so existing readers and existing
+  # registrations are unaffected; GPU_LINES adds `spec.hardware.gpus`, whose
+  # PRESENCE is what marks a registration as a complete enumeration.
   GPU_LINE=$(lspci -nn 2>/dev/null | grep -iE 'vga|3d|display' | head -1 | sed 's/"//g' || echo "")
+  GPU_LINES=$(lspci -nn 2>/dev/null | grep -iE 'vga|3d|display' | sed 's/"//g' | awk 'NF{print "      - \"" $0 "\""}' || echo "")
   IP_ADDR=$(ip -4 -o addr 2>/dev/null | awk '/inet/ && !/lo/{print $4; exit}' || echo "")
   MAC_ADDR=$(ip -o link 2>/dev/null | awk '/state UP/ && !/lo/{for(i=1;i<=NF;i++) if($i=="link/ether"){print $(i+1); exit}}' || echo "")
   STORAGE_LINES=$(lsblk -ndo NAME,SIZE,TYPE -e7 2>/dev/null | awk '$3=="disk" && $2!="0B"{print "      - \"/dev/" $1 " " $2 "\""}' || echo "")
@@ -3382,6 +3418,12 @@ spec:
     cores: $CPU_CORES"
   [ -n "$GPU_LINE" ] && NODE_YAML="$NODE_YAML
     gpu: \"$GPU_LINE\""
+  # `gpus` present == this registration enumerates ALL display devices. Its
+  # ABSENCE is meaningful and is what older registrations carry, so nothing
+  # backfills it.
+  [ -n "$GPU_LINES" ] && NODE_YAML="$NODE_YAML
+    gpus:
+$GPU_LINES"
   [ -n "$STORAGE_LINES" ] && NODE_YAML="$NODE_YAML
     storage:
 $STORAGE_LINES"

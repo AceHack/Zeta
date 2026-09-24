@@ -83,8 +83,17 @@ import {
   metalStorageBindings,
 } from "./storage-capabilities.ts";
 import {
+  gpuEvidenceOf,
+  gpuLabelKey,
+  pciVendorIds,
+  splitDemand,
+  type SchedulableDemand,
+  type SelectedClaim,
+} from "./schedulable-demand.ts";
+import {
   autoLonghornTailGib,
   COMMITTED_LONGHORN_DEMAND_GIB,
+  COMMITTED_LONGHORN_SCHEDULABLE_GIB,
   LOCAL_PATH_ADVISORY_GIB,
   LONGHORN1_TAIL_AUTO,
   ROOT_FLOOR_GIB,
@@ -127,6 +136,23 @@ export interface StorageClaim {
   readonly gibibytes: number;
   /** Per-pod claims are multiplied by the StatefulSet replica count. */
   readonly replicas: number;
+  /**
+   * `[key, value]` pairs from the `nodeSelector` that governs this claim's
+   * owning workload — empty when nothing selects.
+   *
+   * 081M397QHX8087G0R003DQSY0B: a claim whose workload can never be placed is
+   * declared capacity that no node will ever be asked for, because every
+   * capability class is `WaitForFirstConsumer` and an unconsumed PVC provisions
+   * nothing. Carried on the claim so `schedulable-demand.ts` can split the
+   * total without re-walking the manifests.
+   *
+   * OPTIONAL, and absent means "no selector was read" rather than "no selector
+   * exists". Both readings leave the claim counted in DECLARED, which is the
+   * conservative direction: capacity leaves the total only when a selector is
+   * PRESENT and PROVEN unsatisfiable, so a fixture or caller that omits this
+   * cannot shrink the demand by accident.
+   */
+  readonly nodeSelector?: readonly (readonly [string, string])[];
 }
 
 export interface RootAppIdentity {
@@ -416,6 +442,74 @@ export function extractReplicaClaims(manifest: AppManifest, nodeCount: number): 
 }
 
 /** Nearest enclosing replica count for a storage field, so per-pod PVCs are multiplied correctly. */
+/**
+ * The one `nodeSelector` every document in a manifest agrees on, or `[]`.
+ *
+ * `[]` both when nothing selects and when two documents select DIFFERENTLY —
+ * the two are not distinguished on purpose, because both leave the claim in the
+ * DECLARED total and neither may shrink it.
+ */
+function unanimousSelector(manifest: AppManifest): readonly (readonly [string, string])[] {
+  const seen = new Map<string, readonly (readonly [string, string])[]>();
+  for (const doc of manifest.docs) {
+    for (const [field, value] of walk(doc)) {
+      if (lastSegment(field) !== "nodeSelector") continue;
+      if (!isRecord(value)) continue;
+      const pairs = Object.entries(value)
+        .filter((entry): entry is [string, string] => typeof entry[1] === "string")
+        .map(([key, selected]) => [key, selected] as const)
+        .sort((a, b) => stringCompare(a[0], b[0]));
+      if (pairs.length === 0) continue;
+      seen.set(pairs.map(([key, selected]) => `${key}=${selected}`).join(","), pairs);
+    }
+  }
+  return seen.size === 1 ? ([...seen.values()][0] ?? []) : [];
+}
+
+/**
+ * The `nodeSelector` governing a storage claim: the nearest enclosing one.
+ *
+ * Same nearest-shared-prefix idiom as `replicasGoverning` just below, and it
+ * inherits that function's honest limitation — this is a HEURISTIC over a
+ * generic YAML walk, not a Kubernetes owner-reference resolution. It can
+ * therefore attribute a neighbouring workload's selector to a claim, exactly as
+ * `replicasGoverning` is documented to borrow a neighbouring replica count.
+ *
+ * WHICH WAY THAT ERROR LEANS, and it is why the heuristic is acceptable here:
+ * attributing a selector that is not really there moves a claim OUT of the
+ * schedulable total, which is the ACQUITTING direction — so it must not be
+ * trusted on its own. It is not: a selector only removes capacity once
+ * `classifySelector` PROVES no registered node can carry it, and today nothing
+ * is provable, so every selected claim lands in the `undecidable` bucket and
+ * the exit code keeps using the DECLARED total regardless.
+ *
+ * `affinity.nodeAffinity` is deliberately NOT parsed. It expresses `In`/`NotIn`
+ * over sets with required-vs-preferred tiers, and a half-understood parse of it
+ * would produce confident wrong answers. An unparsed selector contributes
+ * nothing here, which leaves the claim in DECLARED — the safe direction.
+ */
+function selectorGoverning(doc: Json, storageField: string): readonly (readonly [string, string])[] {
+  let best: (readonly [string, string])[] = [];
+  let bestDepth = -1;
+  for (const [field, value] of walk(doc)) {
+    if (lastSegment(field) !== "nodeSelector") continue;
+    if (!isRecord(value)) continue;
+    const pairs = Object.entries(value)
+      .filter((entry): entry is [string, string] => typeof entry[1] === "string")
+      .map(([key, selected]) => [key, selected] as const)
+      .sort((a, b) => stringCompare(a[0], b[0]));
+    if (pairs.length === 0) continue;
+    const parent = field.slice(0, Math.max(0, field.lastIndexOf(".")));
+    const shared = parent.length > 0 && storageField.startsWith(parent.slice(0, parent.lastIndexOf(".") + 1));
+    const depth = shared ? parent.length : 0;
+    if (depth > bestDepth) {
+      bestDepth = depth;
+      best = [...pairs];
+    }
+  }
+  return best;
+}
+
 function replicasGoverning(doc: Json, storageField: string): number {
   let best = 1;
   let bestDepth = -1;
@@ -511,6 +605,18 @@ export function extractStorageClaims(
   const out: StorageClaim[] = [];
   const clusterDefault = options.clusterDefault ?? null;
   const instantiated = options.instantiated ?? new Set<string>();
+  // A PVC is very often its OWN document, with the nodeSelector on the sibling
+  // Deployment that mounts it (vllm is exactly this shape: `deployment.yaml`
+  // carries the selector and a `---`-separated PersistentVolumeClaim carries
+  // the storage). A per-document walk cannot see across that boundary, so the
+  // manifest-wide selector is computed once and used as the FALLBACK when a
+  // claim's own document declares none.
+  //
+  // USED ONLY WHEN EVERY SELECTOR IN THE MANIFEST AGREES. With two disagreeing
+  // workloads there is no single answer and attributing either would be a
+  // guess, so the claim keeps an empty selector and stays in DECLARED — the
+  // conservative direction, same as everywhere else in this split.
+  const manifestSelector = unanimousSelector(manifest);
   for (const doc of manifest.docs) {
     if (isTemplateDocument(doc, instantiated)) continue;
     for (const [field, value] of walk(doc)) {
@@ -528,6 +634,7 @@ export function extractStorageClaims(
       const size = sizeNear(doc, scope);
       if (size === null) continue;
       const governing = replicasGoverning(doc, field);
+      const nodeSelector = selectorGoverning(doc, field);
       const replicas = options.excludesPrimaryAt?.has(`${manifest.path} ${field}`) === true ? governing + 1 : governing;
       out.push({
         app: manifest.app,
@@ -536,6 +643,7 @@ export function extractStorageClaims(
         storageClass,
         gibibytes: size,
         replicas,
+        nodeSelector: nodeSelector.length > 0 ? nodeSelector : manifestSelector,
       });
     }
   }
@@ -702,6 +810,24 @@ export interface MeasuredNode {
   readonly cpuMillis: number | null;
   /** `spec.hardware.memory` parsed as DECIMAL bytes (see `siMemoryToMib`), in MiB. */
   readonly memoryMib: number | null;
+  /**
+   * `spec.hardware.gpu` — the LEGACY single display-device line, captured as
+   * `lspci -nn | grep -iE 'vga|3d|display' | head -1`. One device, so it
+   * establishes what IS there and never what is not.
+   */
+  readonly gpu?: string | null;
+  /**
+   * `spec.hardware.gpus` — EVERY display device, from the fixed capture.
+   * `null` means the registration predates it and is not an enumeration, which
+   * is the distinction `schedulable-demand.ts` refuses to blur: absence of
+   * evidence is not evidence of absence.
+   *
+   * Both GPU fields are OPTIONAL for the same reason `nodeSelector` is on a
+   * claim: a node with no recorded GPU evidence makes every GPU selector
+   * UNDECIDABLE, which keeps that capacity in the DECLARED total. Omitting them
+   * can never shrink the demand.
+   */
+  readonly gpus?: readonly string[] | null;
 }
 
 /**
@@ -833,6 +959,8 @@ export function collectMeasuredNodes(
       const rawMemory = at(at(spec, "hardware"), "memory");
       const coresRaw = typeof rawCores === "number" ? rawCores : null;
       const memoryRaw = typeof rawMemory === "string" ? rawMemory : null;
+      const rawGpu = at(at(spec, "hardware"), "gpu");
+      const rawGpus = at(at(spec, "hardware"), "gpus");
       out.push({
         path: rel,
         hostname: typeof rawHost === "string" ? rawHost : rel,
@@ -842,6 +970,10 @@ export function collectMeasuredNodes(
         memoryRaw,
         cpuMillis: coresRaw === null ? null : coresToMillis(coresRaw),
         memoryMib: memoryRaw === null ? null : siMemoryToMib(memoryRaw),
+        gpu: typeof rawGpu === "string" ? rawGpu : null,
+        gpus: Array.isArray(rawGpus)
+          ? rawGpus.filter((entry): entry is string => typeof entry === "string")
+          : null,
       });
     }
   }
@@ -1414,6 +1546,33 @@ export function findLonghornGeometry(
   // only because the ISO ships no bun and the repo is not cloned until after
   // the wipe; this is what stops it going stale quietly.
   const findings: Finding[] = [];
+  // The SCHEDULABLE constant is what the installer refuses at, so it is checked
+  // against what this fleet can actually be asked for; the DECLARED constant is
+  // checked against the roster. Both, because convicting on a stale number and
+  // printing a stale number are two different defects with the same cause.
+  const split = longhornSchedulableDemand(repoRoot, claims, nodes);
+  const schedulableTarget = split !== null && split.exact ? split.lowerBoundGib : demand.totalGib;
+  if (COMMITTED_LONGHORN_SCHEDULABLE_GIB !== schedulableTarget) {
+    findings.push({
+      check: "longhorn-geometry",
+      severity: "blocker",
+      message:
+        `The installer REFUSES at ${COMMITTED_LONGHORN_SCHEDULABLE_GIB} GiB but the schedulable demand on the ` +
+        `registered fleet is now ${schedulableTarget.toFixed(0)} GiB. ` +
+        (split?.exact === true
+          ? `Every registration now enumerates its display devices, so the unschedulable claims are PROVEN and ` +
+            `the split is exact — the installer should refuse at the smaller, credible number.`
+          : `Nothing is proven unschedulable yet, so schedulable still equals declared.`) +
+        ` Update COMMITTED_LONGHORN_SCHEDULABLE_GIB in ` +
+        `src/Core.TypeScript/installer/longhorn-capacity-preflight.ts and ZETA_LONGHORN_SCHEDULABLE_GIB in ` +
+        `${ZETA_INSTALL_SH_PATH} to ${schedulableTarget.toFixed(0)}.`,
+      detail: [
+        `declared ${demand.totalGib.toFixed(0)} GiB · proven unschedulable ${(split?.unschedulableGib ?? 0).toFixed(0)} GiB · undecidable ${(split?.undecidableGib ?? 0).toFixed(0)} GiB`,
+        ...(split?.rows ?? []).map((row) => `${row.gib.toFixed(0).padStart(5)} GiB  ${row.app}  [${row.selector}]  ${row.verdict.kind}`),
+        "this finding is NOT acknowledgeable — a stale refusal threshold is an absent check, not debt",
+      ],
+    });
+  }
   if (COMMITTED_LONGHORN_DEMAND_GIB !== demand.totalGib) {
     findings.push({
       check: "longhorn-geometry",
@@ -2842,6 +3001,83 @@ export function printedBringUpNote(repoRoot = REPO_ROOT): string {
   );
 }
 
+/**
+ * The declared/schedulable split over the metal Longhorn pool.
+ *
+ * 081M397QHX8087G0R003DQSY0B. `declaredGib` is what the roster asks for and
+ * keeps the exit code; the bounds are what the CURRENTLY REGISTERED fleet could
+ * ever be asked for. See `schedulable-demand.ts` for why there are three
+ * verdicts rather than two, and why nothing is provable today.
+ *
+ * `null` when the pool's classes or the render snapshot cannot be read — the
+ * same absent-comparator refusal the rest of this file makes.
+ */
+export function longhornSchedulableDemand(
+  repoRoot = REPO_ROOT,
+  claims: readonly StorageClaim[] | null = null,
+  nodes: readonly MeasuredNode[] | null = null,
+): SchedulableDemand | null {
+  const pool = new Set(metalPoolCapabilities(repoRoot));
+  if (pool.size === 0) return null;
+  const vendorIds = pciVendorIds(repoRoot);
+  const labelKey = vendorIds === null ? null : gpuLabelKey(repoRoot);
+  const measured = nodes ?? collectMeasuredNodes(repoRoot, DEFAULT_REGISTRATIONS_ROOT);
+  const evidence =
+    vendorIds === null
+      ? []
+      : measured.map((node) =>
+          gpuEvidenceOf(
+            { hostname: node.hostname, path: node.path, gpu: node.gpu ?? null, gpus: node.gpus ?? null },
+            vendorIds,
+          ),
+        );
+  const selected: SelectedClaim[] = [];
+  for (const claim of claims ?? defaultStorageClaims(repoRoot)) {
+    if (!pool.has(claim.storageClass)) continue;
+    selected.push({
+      app: claim.app,
+      path: claim.path,
+      storageClass: claim.storageClass,
+      gib: claim.gibibytes * claim.replicas,
+      selector: claim.nodeSelector ?? [],
+    });
+  }
+  return splitDemand(selected, evidence, labelKey, longhornPoolDemandGib(repoRoot, claims)?.totalGib ?? null);
+}
+
+/**
+ * The DECLARED vs SCHEDULABLE half of the report — printed on EVERY run.
+ *
+ * Both numbers, side by side, with every excluded app NAMED and the reason it
+ * was excluded. A smaller number appearing with no explanation is how a gate
+ * quietly stops meaning what its readers think it means.
+ */
+function printSchedulableSection(repoRoot: string, claims: readonly StorageClaim[], nodes: readonly MeasuredNode[]): void {
+  console.log("\nDECLARED vs SCHEDULABLE-ON-REGISTERED-HARDWARE (Longhorn pool):");
+  const split = longhornSchedulableDemand(repoRoot, claims, nodes);
+  if (split === null) {
+    console.log("  UNVERIFIED — the pool's classes could not be read from local-storage.nix");
+    return;
+  }
+  console.log(`  declared                       ${split.declaredGib.toFixed(0).padStart(5)} GiB   <- KEEPS THE EXIT CODE`);
+  console.log(`  proven unschedulable           ${split.unschedulableGib.toFixed(0).padStart(5)} GiB`);
+  console.log(`  UNDECIDABLE from registrations ${split.undecidableGib.toFixed(0).padStart(5)} GiB`);
+  console.log(
+    split.exact
+      ? `  schedulable                    ${split.lowerBoundGib.toFixed(0).padStart(5)} GiB   (exact — nothing undecidable)`
+      : `  schedulable                    ${split.lowerBoundGib.toFixed(0)}–${split.upperBoundGib.toFixed(0)} GiB   (a RANGE, because the undecidable rows could go either way)`,
+  );
+  for (const row of split.rows) {
+    console.log(`    ${row.gib.toFixed(0).padStart(4)} GiB  ${row.app}  [${row.selector}]  ${row.verdict.kind.toUpperCase()}`);
+    console.log(`             ${row.verdict.kind === "satisfied" ? `by ${row.verdict.by.join(", ")}` : row.verdict.why}`);
+  }
+  console.log(
+    "  This is a property of the CURRENTLY REGISTERED FLEET, not a permanent fact: a node joining tomorrow\n" +
+      "  with a matching GPU makes those claims schedulable with no manifest edit at all. So the exit code\n" +
+      "  stays on DECLARED until the split is exact, exactly as the bring-up subset is reported never discounted.",
+  );
+}
+
 /** The pod-count half of the report — printed on EVERY run, same reasoning as `printComputeSection`. */
 function printPodBudgetSection(ledger: Ledger, repoRoot = REPO_ROOT): void {
   console.log("\nPod count — the kubelet's --max-pods ceiling is a COUNT limit, independent of CPU/memory:");
@@ -3025,6 +3261,7 @@ function main(argv: readonly string[]): void {
       }
     }
     printLonghornGeometrySection(ledger, report.measuredNodes, report.storageClaims, report.longhornReserves);
+    printSchedulableSection(REPO_ROOT, report.storageClaims, report.measuredNodes);
     // Acknowledged shortfalls suppress the exit code, never the print. A
     // silently-acknowledged oversubscription is the same vacuity as an
     // aspirational comparator, one layer down.

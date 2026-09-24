@@ -1,11 +1,12 @@
 ---
 id: 081M397QHX8087G0R003DQSY0B
 type: task
-state: backlog
+state: done
 priority: P2
 slug: report-schedulable-longhorn-demand-beside-declared-exclude-c
 title: "report SCHEDULABLE longhorn demand beside declared: exclude claims whose workload carries a nodeSelector no registered node satisfies"
 created: 2026-09-24T08:15:22.536Z
+completed: 2026-09-24T10:03:41.601Z
 depends_on: []
 composes_with: []
 ---

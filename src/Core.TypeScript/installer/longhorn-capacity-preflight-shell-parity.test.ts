@@ -33,6 +33,7 @@ import { join } from "node:path";
 import {
   autoLonghornTailGib,
   COMMITTED_LONGHORN_DEMAND_GIB,
+  COMMITTED_LONGHORN_SCHEDULABLE_GIB,
   ESP_GIB,
   LOCAL_PATH_ADVISORY_GIB,
   LONGHORN_MIN_TAIL_GIB,
@@ -245,6 +246,21 @@ describe("the shell constants agree with the TypeScript oracle", () => {
 
   it("ZETA_LOCAL_PATH_ADVISORY_GIB == LOCAL_PATH_ADVISORY_GIB", () => {
     expect(runShell('echo "$ZETA_LOCAL_PATH_ADVISORY_GIB"')).toBe(String(LOCAL_PATH_ADVISORY_GIB));
+  });
+
+  it("ZETA_LONGHORN_SCHEDULABLE_GIB == COMMITTED_LONGHORN_SCHEDULABLE_GIB", () => {
+    // The number the refusal is measured against. Equal to declared today
+    // because nothing is PROVEN unschedulable; it drops when a node
+    // re-registers under the enumerating capture.
+    expect(runShell('echo "$ZETA_LONGHORN_SCHEDULABLE_GIB"')).toBe(String(COMMITTED_LONGHORN_SCHEDULABLE_GIB));
+  });
+
+  it("the installer convicts on SCHEDULABLE and prints DECLARED beside it", () => {
+    // Convicting on one number while showing only the other is how a figure
+    // stops meaning what its reader thinks it means.
+    expect(SRC).toContain('zeta_longhorn_capacity_verdict "$schedulable" "$ZETA_LONGHORN_SCHEDULABLE_GIB"');
+    expect(SRC).toContain("committed roster DECLARES");
+    expect(SRC).toContain("SCHEDULABLE on registered nodes");
   });
 
   it("ZETA_LONGHORN_DEMAND_GIB == COMMITTED_LONGHORN_DEMAND_GIB", () => {

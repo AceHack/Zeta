@@ -242,6 +242,37 @@ export function autoLonghornTailGib(diskGib: number, rootFloorGib: number = ROOT
  */
 export const COMMITTED_LONGHORN_DEMAND_GIB = 943;
 
+/**
+ * The demand the installer actually REFUSES at, in GiB.
+ *
+ * 081M397QHX8087G0R003DQSY0B. `COMMITTED_LONGHORN_DEMAND_GIB` above is what the
+ * roster DECLARES; this is what the CURRENTLY REGISTERED fleet could ever be
+ * asked for. The installer prints both and convicts on this one, because a
+ * guard that refuses an install over demand nobody can generate will eventually
+ * refuse a legitimate one — and then the operator sets the override reflexively,
+ * which is how a fail-closed check becomes a formality.
+ *
+ * TODAY THE TWO ARE EQUAL, AND THAT IS THE POINT RATHER THAN AN OVERSIGHT.
+ * 400 GiB of the 943 belongs to `ollama` and `vllm`, both
+ * `nodeSelector: zeta.io/gpu: nvidia`, and every checked-in ClusterNode records
+ * an Intel adapter. But the capture was `lspci … | head -1` — ONE device — so
+ * those records establish what IS present and can never establish what is NOT.
+ * The exclusion is therefore UNDECIDABLE rather than proven, and an unproven
+ * exclusion must not shrink the number a gate convicts on. So schedulable ==
+ * declared until the evidence supports otherwise.
+ *
+ * WHAT WOULD CHANGE IT: one node re-registering under the fixed capture, which
+ * writes `spec.hardware.gpus` enumerating EVERY display device. When every
+ * registration enumerates, `schedulable-demand.ts` can prove the exclusion, the
+ * split becomes exact at 543 GiB, and this constant drops with it —
+ * `single-node-readiness.ts`'s `longhorn-geometry` check REFUSES while the two
+ * disagree, so the drop is a red gate rather than a quiet one.
+ *
+ * And a node joining with an NVIDIA card moves it back up, with no manifest
+ * edit involved. This is a property of the FLEET, not of the roster.
+ */
+export const COMMITTED_LONGHORN_SCHEDULABLE_GIB = 943;
+
 /** Env var an operator sets to proceed past an undersized Longhorn pool. */
 export const LONGHORN_UNDERSIZED_OVERRIDE_ENV = "ZETA_ALLOW_LONGHORN_UNDERSIZED";
 
@@ -325,7 +356,7 @@ export type LonghornCapacityVerdict = "ok" | "override" | "undersized";
 
 export function longhornCapacityVerdict(
   schedulableGib: number,
-  demandGib: number = COMMITTED_LONGHORN_DEMAND_GIB,
+  demandGib: number = COMMITTED_LONGHORN_SCHEDULABLE_GIB,
   overrideValue = "",
 ): LonghornCapacityVerdict {
   if (schedulableGib >= demandGib) return "ok";
