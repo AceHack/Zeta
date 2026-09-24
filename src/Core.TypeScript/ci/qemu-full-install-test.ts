@@ -179,7 +179,15 @@ const K3S_VERIFY_TIMEOUT_SECONDS = 4500;
 /** Byte-identical to zeta-first-boot-k3s-verify.nix's jsonBeginMarker/jsonEndMarker. */
 export const K3S_VERIFY_JSON_BEGIN_MARKER = "ZETA_K3S_FIRST_BOOT_VERIFY_JSON_BEGIN";
 export const K3S_VERIFY_JSON_END_MARKER = "ZETA_K3S_FIRST_BOOT_VERIFY_JSON_END";
-/** Separator between phase-2 and the WP11 phase-3 serial in the merged artifact. */
+/**
+ * Separator between phase-2 and a SEPARATE phase-3 serial in the merged artifact.
+ *
+ * NO LONGER EMITTED. WP27 removed the WP11 lane's reboot — the login banner and
+ * the k3s verdict now come from ONE installed-disk boot — so there is no second
+ * serial to separate. Kept because the constant is part of this module's tested
+ * surface and because a future lane that genuinely needs two installed-disk
+ * boots should reuse this spelling rather than invent a second one.
+ */
 export const PHASE3_K3S_VERIFY_SERIAL_SEPARATOR =
   "\n\n=== PHASE 3 (WP11): reboot installed disk WITH network; verify k3s + first-boot roster ===\n\n";
 
@@ -305,6 +313,126 @@ export function assertNothingToHealAfterGracefulShutdown(
       "phase 2 shut its guest down gracefully and the phase-3 self-heal found NOTHING to heal — " +
       "the installed disk was synced, so this run measured the ordinary user path (install, clean " +
       "reboot, k3s up) rather than the post-crash path.",
+  };
+}
+
+// -- WP11 PRECONDITION: a run that measured NOTHING must not look like a timeout --
+//
+// MEASURED on run 35965945581 (workflow_dispatch, full). The harness logged
+//
+//   QEMU_K3S_FIRST_BOOT_PHASE=1 (WP11) -- baking /zeta-qemu-k3s-first-boot-verify
+//
+// and the guest's own phase-1 serial then said
+//
+//   [k3s-first-boot-verify] no zeta-qemu-k3s-first-boot-verify on boot USB ESP
+//
+// so `/mnt/etc/zeta/qemu-k3s-first-boot-verify` was never written, the verdict
+// unit was never enabled, and `wp11-k3s-verify` appears ZERO times in a 445 KB
+// serial log. The harness then sat for 100 MINUTES printing "waiting for k3s
+// first-boot verdict" and failed on timeout -- which reads as "k3s was slow"
+// and was in fact "k3s was never measured".
+//
+// AND THE DEFECT IS WIDER THAN WP11, which is why the diagnosis below names it.
+// In that same run the guest ALSO reported `no operator SSH pubkey found on boot
+// USB ESP` and `no zeta-hostname.txt on USB ESP`, and generated a random
+// hostname instead of the baked `node-qemu-k3s-verify`. EVERY ESP injection was
+// lost, not just this one. The comparison case is main's scheduled run
+// 35960376641, whose guest found `/tmp/zeta-boot-esp/zeta-authorized-keys.pub`,
+// the injected hostname, and the WP11 marker, and produced all six verdicts.
+// Both bakes took ~2s and printed the same two harness lines, so the divergence
+// is on the guest's ESP-probe side, not in the bake's own output.
+//
+// This does not fix that. It makes it LOUD AND IMMEDIATE instead of silent and
+// 100 minutes long, and it says which of the two shapes was seen.
+
+/** zeta-install.sh, WP11 block. The marker was found and the unit will be enabled. */
+export const WP11_ESP_MARKER_FOUND = "[k3s-first-boot-verify] found zeta-qemu-k3s-first-boot-verify on boot USB ESP";
+
+/** zeta-install.sh, WP11 block. The marker was NOT found -- no verdict can ever come. */
+export const WP11_ESP_MARKER_ABSENT = "[k3s-first-boot-verify] no zeta-qemu-k3s-first-boot-verify on boot USB ESP";
+
+/** zeta-install.sh, WP11 block. POSITIVE evidence that the unit was actually enabled. */
+export const WP11_VERDICT_UNIT_ENABLED =
+  "[k3s-first-boot-verify]   wrote /mnt/etc/zeta/qemu-k3s-first-boot-verify";
+
+/** iter-4.2's own failure line. Present means the ESP probe found nothing at all. */
+export const ESP_PROBE_NO_PUBKEY = "reason: no operator SSH pubkey found on boot USB ESP";
+
+/** iter-5.2's own failure line. The baked hostname was lost with everything else. */
+export const ESP_PROBE_NO_HOSTNAME = "[iter-5.2]   no zeta-hostname.txt on USB ESP";
+
+/**
+ * Exported for unit tests. Why the WP11 verdict can never arrive, or null when
+ * nothing rules it out.
+ *
+ * Call ONLY when QEMU_K3S_FIRST_BOOT_PHASE=1: on every other lane the guest
+ * prints the `no ...` line legitimately, because no marker was baked.
+ */
+export function wp11PreconditionFailure(phase1Serial: string): string | null {
+  // TWO observables of ONE condition. The WP11 marker is the one that makes the
+  // verdict impossible, but the injected HOSTNAME is lost by the same failure
+  // and is worth its own refusal: this harness always bakes a hostname for a
+  // USB-image lane, so a guest that generated a random one installed something
+  // other than the node this lane thinks it is testing, and the phase-2 login
+  // contract downstream is then asserting against a name nobody chose.
+  if (!phase1Serial.includes(WP11_ESP_MARKER_ABSENT)) {
+    if (phase1Serial.includes(ESP_PROBE_NO_HOSTNAME)) {
+      return (
+        "the boot-USB ESP lost the INJECTED HOSTNAME on a lane that bakes one — the guest said " +
+        `"${ESP_PROBE_NO_HOSTNAME}" and generated a random node-<6hex> instead. The WP11 marker ` +
+        "did survive, so this run can still produce a verdict, but it is a verdict about a node " +
+        "whose identity the harness did not choose, from an ESP that is demonstrably dropping " +
+        "injections. Same condition as a missing marker, caught one observable earlier."
+      );
+    }
+    return null;
+  }
+  // Was the whole ESP lost, or only this marker? Both are failures; they point
+  // at different producers, so the message says which one was measured.
+  const wholeEspLost =
+    phase1Serial.includes(ESP_PROBE_NO_PUBKEY) || phase1Serial.includes(ESP_PROBE_NO_HOSTNAME);
+  const scope = wholeEspLost
+    ? "THE WHOLE BOOT-USB ESP PROBE CAME BACK EMPTY — the guest also reported no " +
+      "operator pubkey and/or no injected hostname, so every ESP injection was lost, " +
+      "not just this marker. Look at the image bake and at the guest's ESP mount " +
+      "(zeta-install.sh iter-4.2 probes it; a healthy run prints " +
+      "'found: /tmp/zeta-boot-esp/zeta-authorized-keys.pub'), not at k3s."
+    : "Only the WP11 marker is missing; the rest of the ESP was readable. Look at " +
+      "the marker bake (prepareBootImage qemuK3sFirstBootVerifyMarker -> " +
+      "lib.ts /zeta-qemu-k3s-first-boot-verify) and at zeta-install.sh's WP11 block.";
+  return (
+    "the WP11 verdict unit was never enabled on this install — nothing about k3s was measured. " +
+    `The guest said "${WP11_ESP_MARKER_ABSENT}" during phase 1, so ` +
+    "/mnt/etc/zeta/qemu-k3s-first-boot-verify was never written and " +
+    "zeta-first-boot-k3s-verify.nix's ConditionPathExists can never fire. " +
+    `${scope} ` +
+    "Aborting now rather than waiting out the phase-3 timeout: a run that measured " +
+    "nothing must never look like a run that measured something and was slow."
+  );
+}
+
+/**
+ * Exported for unit tests. POSITIVE evidence that phase 1 enabled the verdict
+ * unit — never merely the absence of the `no ...` line.
+ *
+ * A serial truncated before the WP11 block, and a reworded producer, both leave
+ * NEITHER line present. Requiring the `wrote` line means that case is reported
+ * instead of passing on silence.
+ */
+export function assertWp11VerdictUnitEnabled(phase1Serial: string):
+  | { readonly ok: true }
+  | { readonly ok: false; readonly reason: string } {
+  const precondition = wp11PreconditionFailure(phase1Serial);
+  if (precondition !== null) return { ok: false, reason: precondition };
+  if (phase1Serial.includes(WP11_VERDICT_UNIT_ENABLED)) return { ok: true };
+  return {
+    ok: false,
+    reason:
+      `phase-1 serial carries NEITHER "${WP11_ESP_MARKER_FOUND}" + "${WP11_VERDICT_UNIT_ENABLED}" ` +
+      `NOR "${WP11_ESP_MARKER_ABSENT}". The WP11 block either did not run, was reworded, or the ` +
+      "serial was truncated before it. Nothing enabled the verdict unit this lane then waits for, " +
+      "and passing on that silence is how a 100-minute timeout gets reported instead of a " +
+      "precondition failure.",
   };
 }
 
@@ -1516,7 +1644,10 @@ function checkFailureMarkers(content: string): string | null {
   return null;
 }
 
-async function waitForInstallComplete(serialLogPath: string): Promise<InstallResult> {
+async function waitForInstallComplete(
+  serialLogPath: string,
+  requireK3sFirstBootVerify = false,
+): Promise<InstallResult> {
   const start = Date.now();
   const deadline = start + INSTALL_TIMEOUT_SECONDS * 1000;
   let lastReportedMinute = -1;
@@ -1568,6 +1699,23 @@ async function waitForInstallComplete(serialLogPath: string): Promise<InstallRes
         serialLogTail: content.slice(-2000),
         elapsedSeconds: elapsedSec,
       };
+    }
+
+    // WP11 precondition, checked DURING phase 1 rather than after it. The guest
+    // states this failure out loud a couple of minutes into the install, and
+    // everything after it — the rest of the install, the phase-2 boot, and 75
+    // minutes of phase-3 polling — is spent waiting for a verdict that cannot
+    // come. Abort at the sentence, not at the timeout.
+    if (requireK3sFirstBootVerify) {
+      const precondition = wp11PreconditionFailure(content);
+      if (precondition !== null) {
+        return {
+          exitCode: 1,
+          reason: `phase 1 FAILURE — ${precondition}`,
+          serialLogTail: content.slice(-3000),
+          elapsedSeconds: elapsedSec,
+        };
+      }
     }
 
     if (
@@ -1694,6 +1842,66 @@ async function waitForInstalledLogin(
  * Phase 2b: wait until the wrong-passphrase restore contract is satisfied.
  * Do not require login. Decrypt refusal is success, not a FAILURE_MARKER.
  */
+/**
+ * WP27 — ONE first boot, because that is what a machine does.
+ *
+ * THE DEFECT THIS REMOVES, measured on run 35968222668 (the first run with a
+ * graceful teardown). Phase 2 boots the installed disk with NO network, waits
+ * for a login banner, and stops ~26 seconds in. k3s.service starts anyway,
+ * creates `/var/lib/rancher/k3s/server/db`, and gets about 20 seconds — not
+ * enough to write bootstrap data. Now that the guest shuts down CLEANLY that
+ * half-initialised datastore is DURABLY on disk, and k3s will not initialise
+ * into a non-empty datastore, so the next boot fails forever:
+ *
+ *   level=fatal msg="Error: preparing server: failed to bootstrap cluster data:
+ *   failed to reconcile with local datastore: no bootstrap data found in
+ *   datastore - check server token value and verify datastore integrity"
+ *
+ * 58 restarts, 76 fatals, `k3sServiceActive=false` at 4202s, and no recovery
+ * path on that disk.
+ *
+ * THE ARTEFACT IS THE SPLIT ITSELF. On metal, phase 2 and phase 3 are the SAME
+ * BOOT: a machine installs, reboots ONCE, and k3s comes up. The harness split
+ * that boot in two purely to check a login banner, and the artificial second
+ * boot is what manufactures the stillborn datastore. So for this lane there is
+ * no reboot: the login assertion is made from the same serial, earlier, and the
+ * boot then continues into the verdict. The lane now measures ONE first boot,
+ * which is what it always claimed to measure and never did.
+ *
+ * DELIBERATELY NOT "wipe the datastore before phase 3". That would hide a defect
+ * that also exists on METAL — a machine powered off in the first ~20 seconds of
+ * its first boot (an impatient operator, a power cut, a tripped breaker) gets a
+ * permanently wedged cluster that no reboot recovers. That fix belongs in the
+ * product, not in the harness that found it.
+ *
+ * The verdict budget starts at the login rather than at boot, which is the
+ * generous direction: the guest unit's own bound is 4200s from multi-user and
+ * login lands ~20s in, so the unit always reports before this wait expires.
+ */
+async function waitForInstalledLoginThenK3sVerdict(
+  serialLogPath: string,
+  expectedHostname: string | null,
+  requireFirstSession: boolean,
+  requireUefiKeyfileRestore: boolean,
+): Promise<InstallResult> {
+  const login = await waitForInstalledLogin(
+    serialLogPath,
+    expectedHostname,
+    requireFirstSession,
+    requireUefiKeyfileRestore,
+  );
+  if (login.exitCode !== 0) return login;
+  console.log(
+    `[qemu-full-install-test] combined first boot — ${login.reason}; ` +
+      "SAME boot continues into the WP11 k3s verdict (no reboot, so no half-initialised datastore)",
+  );
+  const verdict = await waitForK3sFirstBootVerifyVerdict(serialLogPath);
+  return {
+    ...verdict,
+    ...(login.hostname !== undefined ? { hostname: login.hostname } : {}),
+  };
+}
+
 async function waitForRestoreRefusal(serialLogPath: string): Promise<InstallResult> {
   const start = Date.now();
   const deadline = start + DISK_BOOT_TIMEOUT_SECONDS * 1000;
@@ -2197,6 +2405,27 @@ async function main(): Promise<never> {
       ...(requireUefiKeyfilePicker ? { qemuCredsPassphrase: DEFAULT_QEMU_PASSPHRASE } : {}),
       ...(requireUefiKeyfileRestore ? { qemuBakeTestCredMarker: true } : {}),
       ...(requireK3sFirstBootVerify ? { qemuK3sFirstBootVerifyMarker: true } : {}),
+      // WP27 — stage the Longhorn-undersized override on THIS image's ESP.
+      //
+      // #17611/#17614 added a pre-wipe refusal: the installer bails when the
+      // provisioned Longhorn pool cannot hold the committed roster. Every lane
+      // in this harness runs on ONE virtual disk of 40 GiB (64 for WP11), which
+      // is BY DESIGN — these lanes test install MECHANICS, not capacity — and
+      // `zeta_auto_longhorn1_tail_gib` computes `disk - 1 GiB ESP - 120 GiB root
+      // floor`, i.e. a negative tail clamped to 0, which refuses. Correctly: on
+      // real hardware that disk genuinely cannot hold the 943 GiB roster.
+      //
+      // So the override is staged on the flashed image, never baked into the
+      // ISO's own /etc/zeta-firstboot.conf — that file ships on every USB cut
+      // from this ISO and a value there would clear the guard for real operator
+      // installs, which is the guard deleting itself.
+      //
+      // Unconditional in this branch on purpose: all five workflow invocations
+      // of this harness set one of the flags that reaches it, so there is no
+      // lane that needs the override and does not get it — and no lane that
+      // gets it without needing it, since every one of them is a single-disk
+      // 40/64 GiB QEMU install.
+      allowLonghornUndersized: true,
       ...(repoPinCommit === undefined ? {} : { repoPinCommit }),
     });
     if ("error" in prepared) {
@@ -2232,7 +2461,7 @@ async function main(): Promise<never> {
   const phase1 = await runQemuUntil(
     buildQemuInstallArgs(bootMedia, diskPath, phase1SerialLogPath, tmpDir, phase1QmpSocket),
     phase1SerialLogPath,
-    () => waitForInstallComplete(phase1SerialLogPath),
+    () => waitForInstallComplete(phase1SerialLogPath, requireK3sFirstBootVerify),
     phase1Label,
     phase1QmpSocket,
   );
@@ -2375,6 +2604,30 @@ async function main(): Promise<never> {
     );
   }
 
+  // WP11 — POSITIVE evidence that phase 1 enabled the verdict unit, checked
+  // before anything else consumes phase 1's success. The in-poll abort above
+  // catches the guest SAYING the marker is absent; this catches the case where
+  // it said neither thing, which a "did the bad line appear?" check passes on.
+  if (requireK3sFirstBootVerify) {
+    const unitEnabled = assertWp11VerdictUnitEnabled(phase1Serial);
+    if (!unitEnabled.ok) {
+      writeArtifactSerialLog(phase1Serial, "");
+      reportResult(
+        {
+          exitCode: 1,
+          reason: `WP11 precondition failed — ${unitEnabled.reason}`,
+          serialLogTail: phase1Serial.slice(-3000),
+          ...(phase1.elapsedSeconds !== undefined ? { elapsedSeconds: phase1.elapsedSeconds } : {}),
+        },
+        artifactSerialLogPath,
+      );
+    }
+    console.log(
+      "[qemu-full-install-test] WP11 precondition ok — the installed disk carries " +
+        "/etc/zeta/qemu-k3s-first-boot-verify, so the phase-3 verdict unit will run",
+    );
+  }
+
   const hostname = phase1.hostname ?? extractGeneratedHostname(phase1Serial);
   console.log(`[qemu-full-install-test] phase 1 done; expected hostname: ${hostname ?? "(infer at login)"}`);
 
@@ -2394,8 +2647,17 @@ async function main(): Promise<never> {
     );
   }
 
-  let phase2Label = "phase 2 (disk boot)";
-  if (requireUefiKeyfileRestore && requireFirstSession) {
+  // WP11 runs the installed disk's first boot ONCE — login banner and k3s
+  // verdict from the same boot. Every other lane keeps the two-phase shape.
+  const combinedFirstBoot = requireK3sFirstBootVerify;
+
+  let phase2Label = combinedFirstBoot
+    ? "phase 2+3 (installed-disk FIRST boot: login + WP11 k3s verdict, one boot)"
+    : "phase 2 (disk boot)";
+  if (combinedFirstBoot) {
+    // Leave the label alone: the combined boot's own description is the
+    // accurate one and the branches below all describe a split boot.
+  } else if (requireUefiKeyfileRestore && requireFirstSession) {
     phase2Label = "phase 2+3 (disk boot + first-session + UEFI keyfile restore decrypt)";
   } else if (requireUefiKeyfileRestore) {
     phase2Label = "phase 2 (disk boot + UEFI keyfile restore decrypt)";
@@ -2403,20 +2665,36 @@ async function main(): Promise<never> {
     phase2Label = "phase 2+3 (disk boot + first-session)";
   }
 
-  // THE TRANSITION THE WHOLE OF WP27 IS ABOUT: phase 3 boots this exact disk, so
-  // phase 2's guest has to sync before it stops. Killing the emulator here is
-  // what manufactured the zero-length k3s credentials WP25 had to heal.
+  // THE TRANSITION THE WHOLE OF WP27 IS ABOUT: a later phase boots this exact
+  // disk, so this guest has to sync before it stops. Killing the emulator here
+  // is what manufactured the zero-length k3s credentials WP25 had to heal.
+  //
+  // AND ON THE WP11 LANE THERE IS NO LATER PHASE, because the reboot is gone.
+  // See `waitForInstalledLoginThenK3sVerdict`: the installed disk's FIRST boot
+  // is one boot on metal, so this lane runs it as one — network-enabled args,
+  // the login assertion made from the same serial, and the verdict after it.
+  // The split was manufacturing a half-initialised k3s datastore that no
+  // subsequent boot could recover from.
   const phase2QmpSocket = join(tmpDir, "qmp-phase2.sock");
   const phase2 = await runQemuUntil(
-    buildQemuDiskBootArgs(diskPath, phase2SerialLogPath, tmpDir, fwCfgPassphraseFile, phase2QmpSocket),
+    combinedFirstBoot
+      ? buildQemuK3sVerifyBootArgs(diskPath, phase2SerialLogPath, tmpDir, phase2QmpSocket)
+      : buildQemuDiskBootArgs(diskPath, phase2SerialLogPath, tmpDir, fwCfgPassphraseFile, phase2QmpSocket),
     phase2SerialLogPath,
     () =>
-      waitForInstalledLogin(
-        phase2SerialLogPath,
-        hostname,
-        requireFirstSession,
-        requireUefiKeyfileRestore,
-      ),
+      combinedFirstBoot
+        ? waitForInstalledLoginThenK3sVerdict(
+            phase2SerialLogPath,
+            hostname,
+            requireFirstSession,
+            requireUefiKeyfileRestore,
+          )
+        : waitForInstalledLogin(
+            phase2SerialLogPath,
+            hostname,
+            requireFirstSession,
+            requireUefiKeyfileRestore,
+          ),
     phase2Label,
     phase2QmpSocket,
   );
@@ -2511,30 +2789,22 @@ async function main(): Promise<never> {
   // boots at all; a disk that never reached login has nothing further worth
   // rebooting into.
   if (requireK3sFirstBootVerify) {
-    if (phase2.exitCode !== 0) {
+    if (phase2.exitCode !== 0 && !combinedFirstBoot) {
       console.log("[qemu-full-install-test] WP11 phase 3 skipped — phase 2 (disk boot login) did not succeed");
     } else {
-      const phase3SerialLogPath = join(tmpDir, "phase3-serial.log");
+      // ONE BOOT (see `waitForInstalledLoginThenK3sVerdict`): the verdict is
+      // already in this lane's only installed-disk serial. There is no second
+      // boot to run, and therefore no half-initialised k3s datastore for one to
+      // inherit. `phase3` IS `phase2` here, deliberately and by name, so every
+      // consumer below is reading the boot that actually produced the verdict.
+      const phase3 = phase2;
+      const phase3Serial = phase2Serial;
       console.log(
-        "[qemu-full-install-test] phase 3 (WP11) — rebooting installed disk WITH network; verifying k3s + first-boot roster",
+        "[qemu-full-install-test] WP11 — verdict came from the installed disk's FIRST boot " +
+          "(no reboot between the login banner and the k3s check; that reboot is what used to " +
+          "manufacture a stillborn k3s datastore)",
       );
-      // Phase 3 is the last reader of this disk, so nothing downstream needs its
-      // sync. It still gets the socket: a clean k3s shutdown is what the NEXT
-      // scenario in this lane would inherit if one is ever chained after it, and
-      // the uniform path keeps the teardown line greppable across all four phases.
-      const phase3QmpSocket = join(tmpDir, "qmp-phase3.sock");
-      const phase3 = await runQemuUntil(
-        buildQemuK3sVerifyBootArgs(diskPath, phase3SerialLogPath, tmpDir, phase3QmpSocket),
-        phase3SerialLogPath,
-        () => waitForK3sFirstBootVerifyVerdict(phase3SerialLogPath),
-        "phase 3 (WP11 k3s first-boot verify)",
-        phase3QmpSocket,
-      );
-      const phase3Serial = readSerial(phase3SerialLogPath);
-      writeFileSync(
-        artifactSerialLogPath,
-        mergeFullInstallSerialLogs(phase1Serial, phase2Serial) + PHASE3_K3S_VERIFY_SERIAL_SEPARATOR + phase3Serial,
-      );
+      writeFileSync(artifactSerialLogPath, mergeFullInstallSerialLogs(phase1Serial, phase2Serial));
 
       const parsed = parseK3sFirstBootVerifyVerdict(phase3Serial);
       if (parsed.ok) {
@@ -2574,7 +2844,11 @@ async function main(): Promise<never> {
 
       // WP27 — the teardown's own falsifier, reported BEFORE the verdict is
       // acted on so it is readable whether phase 3 went green or red.
-      const selfHeal = assertNothingToHealAfterGracefulShutdown(phase3Serial, phase2.teardown?.path);
+      // WHOSE teardown is the precondition? The boot that WROTE the disk this
+      // one read. With the reboot gone that is phase 1 (the install), not
+      // phase 2 — phase 2 IS this boot. Getting this wrong would assert a clean
+      // disk against a shutdown that never happened.
+      const selfHeal = assertNothingToHealAfterGracefulShutdown(phase3Serial, phase1.teardown?.path);
       console.log(
         `[qemu-full-install-test] WP27 zero-length-file check: ${selfHeal.status.toUpperCase()} — ${selfHeal.reason}`,
       );

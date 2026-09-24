@@ -17,6 +17,13 @@ import {
   assertUsbISerialPhase1Contract,
   assertWifiEspPhase1Contract,
   assertNothingToHealAfterGracefulShutdown,
+  assertWp11VerdictUnitEnabled,
+  ESP_PROBE_NO_HOSTNAME,
+  ESP_PROBE_NO_PUBKEY,
+  WP11_ESP_MARKER_ABSENT,
+  WP11_ESP_MARKER_FOUND,
+  WP11_VERDICT_UNIT_ENABLED,
+  wp11PreconditionFailure,
   buildQemuDiskBootArgsPure,
   buildQemuInstallArgsPure,
   buildQemuK3sVerifyBootArgsPure,
@@ -1489,5 +1496,124 @@ describe("WP27 — after a graceful phase-2 shutdown there must be nothing to he
     // The defaults the constants above hardcode.
     expect(sh).toContain('AGENT_DIR="${ZETA_K3S_AGENT_DIR:-/var/lib/rancher/k3s/agent}"');
     expect(sh).toContain('NODE_PASSWORD_FILE="${ZETA_K3S_NODE_PASSWORD_FILE:-/etc/rancher/node/password}"');
+  });
+});
+
+// -- WP11 precondition + the Longhorn-undersized ESP override -----------------
+
+describe("WP11 — a run that measured NOTHING must not report as a timeout", () => {
+  const HEALTHY =
+    `${WP11_ESP_MARKER_FOUND}\n` +
+    `${WP11_VERDICT_UNIT_ENABLED} (installed-disk first-boot verdict unit)\n`;
+
+  it("says nothing is wrong when the marker was found", () => {
+    expect(wp11PreconditionFailure(HEALTHY)).toBeNull();
+    expect(assertWp11VerdictUnitEnabled(HEALTHY).ok).toBe(true);
+  });
+
+  it("convicts on the guest's own 'no marker on boot USB ESP' line", () => {
+    const reason = wp11PreconditionFailure(`${WP11_ESP_MARKER_ABSENT}\n`);
+    expect(reason).not.toBeNull();
+    expect(reason).toContain("nothing about k3s was measured");
+    expect(reason).toContain("must never look like a run that measured something and was slow");
+  });
+
+  it("distinguishes 'the whole ESP was lost' from 'only this marker is missing'", () => {
+    // Run 35965945581: the guest also reported no pubkey and no injected
+    // hostname, so the finding is the ESP probe, not the WP11 bake. Reporting
+    // the narrow shape there would send the next reader to the wrong producer.
+    const wholeEspLost = wp11PreconditionFailure(
+      `${ESP_PROBE_NO_PUBKEY}\n${ESP_PROBE_NO_HOSTNAME}\n${WP11_ESP_MARKER_ABSENT}\n`,
+    );
+    expect(wholeEspLost).toContain("WHOLE BOOT-USB ESP PROBE CAME BACK EMPTY");
+    expect(wholeEspLost).toContain("not at k3s");
+
+    const markerOnly = wp11PreconditionFailure(`${WP11_ESP_MARKER_ABSENT}\n`);
+    expect(markerOnly).toContain("Only the WP11 marker is missing");
+    expect(markerOnly).not.toContain("WHOLE BOOT-USB ESP PROBE");
+  });
+
+  it("the pubkey line ALONE is enough to widen the diagnosis", () => {
+    const reason = wp11PreconditionFailure(`${ESP_PROBE_NO_PUBKEY}\n${WP11_ESP_MARKER_ABSENT}\n`);
+    expect(reason).toContain("WHOLE BOOT-USB ESP PROBE CAME BACK EMPTY");
+  });
+
+  it("REFUSES to pass on silence — neither the found line nor the absent line", () => {
+    // A serial truncated before the WP11 block leaves both lines missing. A
+    // check that only looks for the bad line passes here, which is the vacuity
+    // class: absence of bad news read as good news.
+    const verdict = assertWp11VerdictUnitEnabled("install ran, serial cut short\n");
+    expect(verdict.ok).toBe(false);
+    if (!verdict.ok) {
+      expect(verdict.reason).toContain("NEITHER");
+      expect(verdict.reason).toContain("passing on that silence");
+    }
+  });
+
+  it("refuses a 'found' line that was never followed by the write", () => {
+    // Found-but-not-written is a real intermediate state (mkdir/tee could fail),
+    // and it is the one that still lets phase 3 wait 75 minutes for nothing.
+    const verdict = assertWp11VerdictUnitEnabled(`${WP11_ESP_MARKER_FOUND}\n`);
+    expect(verdict.ok).toBe(false);
+  });
+
+  it("convicts on the LOST INJECTED HOSTNAME even when the WP11 marker survived", () => {
+    // A second observable of the same condition. The harness always bakes a
+    // hostname for a USB-image lane, so a guest that generated a random one
+    // installed a node whose identity nobody chose — and the phase-2 login
+    // contract downstream would then assert against that random name and pass.
+    const reason = wp11PreconditionFailure(
+      `${ESP_PROBE_NO_HOSTNAME}\n${WP11_ESP_MARKER_FOUND}\n${WP11_VERDICT_UNIT_ENABLED}\n`,
+    );
+    expect(reason).not.toBeNull();
+    expect(reason).toContain("lost the INJECTED HOSTNAME");
+    expect(reason).toContain("caught one observable earlier");
+  });
+
+  it("stays silent on a healthy serial that carries neither symptom", () => {
+    // The falsifier for the widening above: it must not fire on the good case.
+    expect(wp11PreconditionFailure(HEALTHY)).toBeNull();
+  });
+
+  it("keeps the duplicated markers coherent with zeta-install.sh", () => {
+    const sh = readFileSync(
+      resolve(import.meta.dir, "../../../full-ai-cluster/usb-nixos-installer/zeta-install.sh"),
+      "utf8",
+    );
+    // Byte-identical producers. Reword the shell and this test names the drift,
+    // instead of the predicate above quietly becoming one that cannot fire.
+    expect(sh).toContain(WP11_ESP_MARKER_FOUND);
+    expect(sh).toContain(WP11_ESP_MARKER_ABSENT);
+    expect(sh).toContain(WP11_VERDICT_UNIT_ENABLED);
+    expect(sh).toContain("no operator SSH pubkey found on boot USB ESP");
+    expect(sh).toContain("no zeta-hostname.txt on USB ESP");
+  });
+});
+
+describe("WP27 — the Longhorn-undersized override is staged on the ESP, never in the ISO", () => {
+  it("the installer honours the override env the harness stages", () => {
+    const sh = readFileSync(
+      resolve(import.meta.dir, "../../../full-ai-cluster/usb-nixos-installer/zeta-install.sh"),
+      "utf8",
+    );
+    expect(sh).toContain("ZETA_ALLOW_LONGHORN_UNDERSIZED");
+  });
+
+  it("the ISO's own firstboot conf does NOT carry it — that would delete the guard", () => {
+    // The ESP conf travels with ONE flashed image. /etc/zeta-firstboot.conf
+    // ships on every USB cut from the ISO, so a value there would clear the
+    // pre-wipe Longhorn refusal for real operator installs too.
+    const isoConf = resolve(
+      import.meta.dir,
+      "../../../full-ai-cluster/usb-nixos-installer/nixos/installer/configuration.nix",
+    );
+    let conf: string;
+    try {
+      conf = readFileSync(isoConf, "utf8");
+    } catch (err) {
+      if ((err as NodeJS.ErrnoException).code !== "ENOENT") throw err;
+      return;
+    }
+    expect(conf).not.toContain("ZETA_ALLOW_LONGHORN_UNDERSIZED");
   });
 });

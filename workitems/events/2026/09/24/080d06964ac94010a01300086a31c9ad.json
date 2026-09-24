@@ -1,0 +1,14 @@
+{
+  "id": "080d06964ac94010a01300086a31c9ad",
+  "at": "2026-09-24T09:40:06.056Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M39CJP96087G0R001T4J2R3",
+    "type": "bug",
+    "title": "A full workflow_dispatch silently loses EVERY boot-USB ESP injection: pubkey, hostname and the WP11 marker",
+    "slug": "a-full-workflow-dispatch-silently-loses-every-boot-usb-esp-i",
+    "priority": "P2",
+    "filename": "081M39CJP96087G0R001T4J2R3-a-full-workflow-dispatch-silently-loses-every-boot-usb-esp-i.md"
+  }
+}

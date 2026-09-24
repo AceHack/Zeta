@@ -54,6 +54,8 @@ export interface FileBackedZflashCliOptions {
   readonly qemuBakeTestCredMarker?: boolean;
   /** WP11 QEMU only: write `/zeta-qemu-k3s-first-boot-verify` (public marker). */
   readonly qemuK3sFirstBootVerifyMarker?: boolean;
+  /** WP27: append `ZETA_ALLOW_LONGHORN_UNDERSIZED='1'` to the ESP firstboot conf. See lib.ts. */
+  readonly allowLonghornUndersized?: boolean;
   /** WP21 (081M35C7NJR087G0R002S4R654): full 40-hex commit sha for `/zeta-repo-pin`. See lib.ts. */
   readonly repoPinCommit?: string;
 }
@@ -423,6 +425,7 @@ export function runFileBackedZflashCli(
     ...(options.bindUefiKeyfileMarker === true ? { bindUefiKeyfileMarker: true } : {}),
     ...(options.qemuBakeTestCredMarker === true ? { qemuBakeTestCredMarker: true } : {}),
     ...(options.qemuK3sFirstBootVerifyMarker === true ? { qemuK3sFirstBootVerifyMarker: true } : {}),
+    ...(options.allowLonghornUndersized === true ? { allowLonghornUndersized: true } : {}),
     ...(options.qemuCredsPassphrase === undefined ? {} : { qemuCredsPassphrase: options.qemuCredsPassphrase }),
     ...(options.repoPinCommit === undefined ? {} : { repoPinCommit: options.repoPinCommit }),
   };

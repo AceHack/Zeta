@@ -744,3 +744,56 @@ describe("the advisory half carries what the refusal deliberately does not", () 
     expect(joinEndpointAdvisory("https://192.168.4.152:6444")).toMatch(/6444/);
   });
 });
+
+describe("WP27 — allowLonghornUndersized stages the override on the ESP", () => {
+  const base = {
+    isoPath: "/tmp/installer.iso",
+    outputImagePath: "/tmp/out.img",
+    espOffsetBytes: 141_312,
+    pubkeyPath: "/tmp/id.pub",
+  } as const;
+
+  test("creates /zeta-firstboot.conf when no role asked for one", () => {
+    const planned = planFileBackedZflashImage({ ...base, allowLonghornUndersized: true });
+    if (!planned.ok) throw new Error(planned.error);
+    const conf = planned.value.espWrites.find((w) => w.destination === "/zeta-firstboot.conf");
+    expect(conf?.content).toBe("ZETA_ALLOW_LONGHORN_UNDERSIZED='1'\n");
+  });
+
+  test("APPENDS to the role conf rather than making a second one", () => {
+    // Two files at the same ESP destination would be a coin toss for
+    // `zeta_source_esp_firstboot_conf`, which takes the first it finds.
+    const planned = planFileBackedZflashImage({
+      ...base,
+      firstbootRole: { kind: "joiner", serverUrl: "https://control-plane.local:6443" },
+      allowLonghornUndersized: true,
+    });
+    if (!planned.ok) throw new Error(planned.error);
+    const confs = planned.value.espWrites.filter((w) => w.destination === "/zeta-firstboot.conf");
+    expect(confs).toHaveLength(1);
+    expect(confs[0]?.content).toContain("ZETA_ROLE='joiner'");
+    expect(confs[0]?.content).toContain("ZETA_ALLOW_LONGHORN_UNDERSIZED='1'");
+    // The override is LAST, so it cannot be clobbered by a role key re-assigned
+    // further down the same sourced file.
+    expect(confs[0]?.content?.trimEnd().split("\n").at(-1)).toBe("ZETA_ALLOW_LONGHORN_UNDERSIZED='1'");
+  });
+
+  test("omitting it leaves the plan byte-identical", () => {
+    const without = planFileBackedZflashImage({ ...base });
+    const explicitlyOff = planFileBackedZflashImage({ ...base, allowLonghornUndersized: false });
+    if (!without.ok || !explicitlyOff.ok) throw new Error("both must plan");
+    expect(explicitlyOff.value).toEqual(without.value);
+    expect(without.value.espWrites.some((w) => w.destination === "/zeta-firstboot.conf")).toBe(false);
+  });
+
+  test("is bash-sourceable: a single quoted assignment, newline-terminated", () => {
+    const planned = planFileBackedZflashImage({ ...base, allowLonghornUndersized: true });
+    if (!planned.ok) throw new Error(planned.error);
+    const conf = planned.value.espWrites.find((w) => w.destination === "/zeta-firstboot.conf");
+    expect(conf?.content).toMatch(/^[A-Z_]+='1'\n$/);
+    // The ESP conf is SOURCED as bash by zeta-first-boot.sh, so nothing in it
+    // may be expandable.
+    expect(conf?.content).not.toContain("$");
+    expect(conf?.content).not.toContain("`");
+  });
+});

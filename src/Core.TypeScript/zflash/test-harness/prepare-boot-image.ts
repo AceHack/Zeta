@@ -87,6 +87,16 @@ export interface PrepareBootImageInput {
   /** WP11 QEMU-only: bake `/zeta-qemu-k3s-first-boot-verify` so the installed disk's first boot runs the k3s bring-up verdict unit. */
   readonly qemuK3sFirstBootVerifyMarker?: boolean;
   /**
+   * WP27 (081M392JR97087G0R003QAFH0Y): stage
+   * `ZETA_ALLOW_LONGHORN_UNDERSIZED='1'` on the ESP for this ONE image.
+   *
+   * Every QEMU install lane runs on a single virtual disk of 40 or 64 GiB,
+   * which is BY DESIGN -- these lanes test install mechanics, not capacity --
+   * and the #17611/#17614 pre-wipe Longhorn refusal correctly bails on it. The
+   * override travels with the flashed image, never with the ISO.
+   */
+  readonly allowLonghornUndersized?: boolean;
+  /**
    * WP21 (081M35C7NJR087G0R002S4R654): full 40-hex commit sha to bake as
    * `/zeta-repo-pin`, overriding the ISO-baked ZETA_ISO_COMMIT so
    * zeta-install.sh checks out this exact commit after cloning. The QEMU
@@ -189,6 +199,7 @@ export function prepareBootImage(input: PrepareBootImageInput): PrepareBootImage
     ...(input.bindUefiKeyfileMarker === true ? { bindUefiKeyfileMarker: true } : {}),
     ...(input.qemuBakeTestCredMarker === true ? { qemuBakeTestCredMarker: true } : {}),
     ...(input.qemuK3sFirstBootVerifyMarker === true ? { qemuK3sFirstBootVerifyMarker: true } : {}),
+    ...(input.allowLonghornUndersized === true ? { allowLonghornUndersized: true } : {}),
     ...(input.qemuCredsPassphrase === undefined ? {} : { qemuCredsPassphrase: input.qemuCredsPassphrase }),
     ...(input.repoPinCommit === undefined ? {} : { repoPinCommit: input.repoPinCommit }),
   });

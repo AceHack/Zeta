@@ -12,6 +12,7 @@ import {
 } from "./firstboot-role.ts";
 import { planFirstbootConfWithNamedBaoElf, type NamedBaoElfAsk } from "./firstboot-bao-elf.ts";
 import { isFullGitCommitSha } from "../installer/repo-pin.ts";
+import { LONGHORN_UNDERSIZED_OVERRIDE_ENV } from "../installer/longhorn-capacity-preflight.ts";
 
 /**
  * RFC1123 hostname regex.
@@ -264,6 +265,27 @@ export interface FileBackedZflashImagePlanInput {
    * real install.
    */
   readonly qemuK3sFirstBootVerifyMarker?: boolean;
+  /**
+   * WP27 (081M392JR97087G0R003QAFH0Y): append
+   * `ZETA_ALLOW_LONGHORN_UNDERSIZED='1'` to the ESP `/zeta-firstboot.conf`,
+   * creating that file when no firstboot role asked for one.
+   *
+   * WHY IT IS A FLASH-TIME KNOB AND NOT AN ISO ONE. #17611/#17614 added a
+   * pre-wipe refusal: the installer bails when the provisioned Longhorn pool
+   * cannot hold the committed roster. A QEMU lane has ONE virtual disk of
+   * 40 or 64 GiB BY DESIGN -- it tests install MECHANICS, not capacity -- so
+   * `disk - 1 GiB ESP - the root floor` computes to 0 schedulable GiB and the
+   * refusal is correct and fires on every run. Baking the override into the
+   * ISO's own `/etc/zeta-firstboot.conf` would clear the guard for every
+   * operator install cut from that ISO, which is the guard deleting itself.
+   * On the ESP it travels with ONE flashed image, the one a test harness made.
+   *
+   * The consumer is `zeta-first-boot.sh`, which already sources the ESP conf
+   * (`zeta_source_esp_firstboot_conf`) and EXPORTS this name so it reaches the
+   * `zeta-install.sh` child -- a value merely sourced reaches that shell and
+   * not the child, which is a knob that turns and is not connected.
+   */
+  readonly allowLonghornUndersized?: boolean;
   /**
    * WP21 (081M35C7NJR087G0R002S4R654): when set, writes `/zeta-repo-pin`
    * (`ZETA_ISO_COMMIT='<commit>'`) so the booting node checks out this exact
@@ -574,6 +596,35 @@ export function planFileBackedZflashImage(input: FileBackedZflashImagePlanInput)
       ok: false,
       error: "namedBaoElf requires firstbootRole; bao names with no role conf are never read",
     };
+  }
+
+  // WP27 -- the Longhorn-undersized override, appended to whatever
+  // /zeta-firstboot.conf this plan already has (role-driven or not) so there is
+  // exactly ONE conf on the ESP and `zeta_source_esp_firstboot_conf` cannot pick
+  // the wrong one. Ordered after the role block for the same reason that block
+  // is ordered last: a plan that does not ask for this stays byte-identical.
+  if (input.allowLonghornUndersized === true) {
+    const line = `${LONGHORN_UNDERSIZED_OVERRIDE_ENV}='1'
+`;
+    const existing = espWrites.findIndex((w) => w.destination === ZETA_FIRSTBOOT_CONF_ESP_DESTINATION);
+    if (existing >= 0) {
+      const prior = espWrites[existing];
+      // `sourcePath` writes carry no inline content to append to. The conf is
+      // always a content write (firstboot-role.ts renders it), so this is a
+      // refusal rather than a silent skip -- appending nothing would look like
+      // the override landed.
+      if (prior === undefined || prior.content === undefined) {
+        return {
+          ok: false,
+          error:
+            `allowLonghornUndersized cannot append ${LONGHORN_UNDERSIZED_OVERRIDE_ENV} to ` +
+            `${ZETA_FIRSTBOOT_CONF_ESP_DESTINATION}: that ESP write has no inline content`,
+        };
+      }
+      espWrites[existing] = { ...prior, content: prior.content + line };
+    } else {
+      espWrites.push({ content: line, destination: ZETA_FIRSTBOOT_CONF_ESP_DESTINATION });
+    }
   }
 
   if (espWrites.length === 0) {
