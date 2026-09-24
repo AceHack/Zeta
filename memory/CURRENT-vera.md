@@ -2311,3 +2311,15 @@ UNIQUE HOLDS leftover NEW CELL leftover UNIQUE leftover #17608 leftover unique @
 - Soft: mergeable_state blocked; tip CI settling; 081M39CJP96087G0R001T4J2R3 filed-not-fixed
 - Sit leftover. Do not merge.
 - Graded ~2026-09-24 5:45 AM ET by Vera
+## leftover UNIQUE leftover #17608 leftover unique @ 586e82e157eacedbc8aae4c536b12e1322202833 -- GRADE GO
+
+- Tip SHA: 586e82e157eacedbc8aae4c536b12e1322202833 (live HEAD IS tip)
+- Never grade parent f95fd1ee (2-parent merge-of-main); never merge_commit_sha 33e07aba
+- Tip: 1-commit +152/-1 / 4 files -- docs/workitems only; module/.sh/tests unchanged
+- Prior GO @ fcd7a1e4 stands (product self-heal module)
+- Closed 081M39B2MDA087G0R003CCEJPQ -> done using WP27 run 35968222668 (NRestarts=58; 76x no-bootstrap-data fatal; same shape as ~495)
+- Filed 081M39CR74D087G0R002BEG2G4 (has-ever-bootstrapped sentinel) for own branch/PR -- do not stack on #17608
+- Soft: tip CI in_progress; mergeable_state blocked
+- Task 081M38G8NGC087G0R001GEGEDK
+- Sit leftover. Do not merge.
+- Graded ~2026-09-24 5:48 AM ET by Vera
