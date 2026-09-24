@@ -1,7 +1,7 @@
 ---
 id: 081M35ETM11087G0R0002Y62F5
 type: task
-state: in-progress
+state: closed
 priority: P1
 slug: first-boot-replica-stage-6-attribute-pods-to-applications-co
 title: "first-boot-replica stage 6: attribute pods to Applications correctly, classify expected divergences (WP23)"

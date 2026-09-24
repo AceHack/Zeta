@@ -1,0 +1,10 @@
+{
+  "id": "080d0687d32c2810a013000850f63241",
+  "at": "2026-09-24T01:14:26.053Z",
+  "by": "otto-cli",
+  "kind": "closed",
+  "payload": {
+    "workItemId": "081M35ETM11087G0R0002Y62F5",
+    "reason": "Merged in PR #17579"
+  }
+}
