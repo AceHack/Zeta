@@ -1,0 +1,12 @@
+{
+  "pr_number": 17607,
+  "archive_path": "docs/history/pr-reviews/2026/09/24/PR-17607-fix-cluster-spire-cilium-root-causes-fixed-weaviate-cilium-shared-cause-lead-doc.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-24T13:26:35.140Z",
+  "schema_version": "v1",
+  "commit_sha": "357464bdd245dec59df306616218a55f34dfde0c",
+  "title": "fix(cluster): spire + cilium root causes fixed; weaviate/cilium shared-cause lead documented (WP26)",
+  "state": "MERGED",
+  "merged_at": "2026-09-24T13:25:37Z",
+  "head_ref": "claude/replica-remaining-failures"
+}
