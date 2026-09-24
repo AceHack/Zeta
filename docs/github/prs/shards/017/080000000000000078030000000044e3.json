@@ -1,0 +1,12 @@
+{
+  "pr_number": 17635,
+  "archive_path": "docs/history/pr-reviews/2026/09/24/PR-17635-fix-ci-wp11-nobadpods-polls-to-a-measured-180s-soak-instead-of-a-one-second-snap.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-24T17:39:22.495Z",
+  "schema_version": "v1",
+  "commit_sha": "739b88581da0e88a3e24f356015075c3fe515f48",
+  "title": "fix(ci): WP11 noBadPods polls to a measured 180s soak instead of a one-second snapshot",
+  "state": "MERGED",
+  "merged_at": "2026-09-24T17:38:34Z",
+  "head_ref": "claude/wp11-nobadpods-soak-fix"
+}
