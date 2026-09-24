@@ -1,0 +1,12 @@
+{
+  "pr_number": 17625,
+  "archive_path": "docs/history/pr-reviews/2026/09/24/PR-17625-fix-installer-make-the-esp-first-boot-conf-scan-say-what-it-saw-a-role-less-conf.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-24T12:02:06.387Z",
+  "schema_version": "v1",
+  "commit_sha": "0a2eef3360a312d4cfe1a225cc1f5d67d58e90e9",
+  "title": "fix(installer): make the ESP first-boot conf scan say what it saw; a role-less conf must not claim the role was declared (WP27)",
+  "state": "MERGED",
+  "merged_at": "2026-09-24T12:00:57Z",
+  "head_ref": "claude/esp-firstboot-conf-without-role"
+}
