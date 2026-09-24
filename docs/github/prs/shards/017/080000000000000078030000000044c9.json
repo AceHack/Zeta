@@ -1,0 +1,12 @@
+{
+  "pr_number": 17609,
+  "archive_path": "docs/history/pr-reviews/2026/09/24/PR-17609-fix-ci-shut-the-qemu-guest-down-qmp-system-powerdown-not-the-emulator-wp27.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-24T08:18:45.392Z",
+  "schema_version": "v1",
+  "commit_sha": "15bf57ecff633394ab107d839e660811f8c988c3",
+  "title": "fix(ci): shut the QEMU GUEST down (QMP system_powerdown), not the emulator (WP27)",
+  "state": "MERGED",
+  "merged_at": "2026-09-24T08:18:02Z",
+  "head_ref": "claude/qemu-graceful-guest-shutdown"
+}
