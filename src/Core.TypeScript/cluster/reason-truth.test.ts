@@ -611,6 +611,19 @@ describe("resource-rung / lane-cpu are checked against the ladder, not the prose
     );
   });
 
+  test("lane-memory: the memory twin, total AND verdict checked", () => {
+    // 2026-09-23: at `dev` the lane's binding constraint is MEMORY (~116Mi
+    // spare), so "no room for this chart" reasons cite it.
+    expect(checkCitation(only("[cite: lane-memory dev 9100 fits]"), EVIDENCE, subject("gitlab", ""))).toBe(null);
+    expect(checkCitation(only("[cite: lane-memory dev 9101 fits]"), EVIDENCE, subject("gitlab", ""))?.rule).toBe(
+      "cited-lane-total-disagrees",
+    );
+    expect(checkCitation(only("[cite: lane-memory dev 9100 over]"), EVIDENCE, subject("gitlab", ""))?.rule).toBe(
+      "cited-lane-verdict-disagrees",
+    );
+    expect(checkCitation(only("[cite: lane-memory metal 15548 over]"), EVIDENCE, subject("gitlab", ""))).toBe(null);
+  });
+
   test("the VERDICT is checked independently of the total", () => {
     // The pair is what carries the argument: 4231m is a fact, "over" is the
     // claim. A citation that got the number right and the verdict wrong would

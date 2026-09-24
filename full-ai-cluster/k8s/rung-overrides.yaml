@@ -35,6 +35,22 @@
 # nested YAML -- quote them so they read as one key.
 apiVersion: cluster.zeta.io/v1
 kind: RungOverrides
+# ── DIMENSIONS: what a cluster HAS, beyond how big it is (2026-09-23) ─────────
+# The rung says how big a cluster is; a dimension says what it physically has.
+# `gpuVendor` exists because nodeSelector cannot express OR and `nvidia.com/gpu`
+# vs `amd.com/gpu` are DIFFERENT extended resources -- one committed tree cannot
+# ask for "either". So the committed tree carries ONE vendor (`committed`,
+# NVIDIA: the maintainer's box) and an override with `when: {gpuVendor: amd}`
+# describes the departure for an AMD cluster, instead of a forked Application.
+# An override conditioned on the committed value is refused (it could only
+# restate the tree). Selected per cluster when the tree is built:
+# `applyServeTreeRung(rung, staged, {gpuVendor: "amd"})`. The node side already
+# speaks both vendors: nixos/modules/gpu-device-plugin.nix runs the ROCm device
+# plugin on nodes labelled `zeta.io/gpu: amd`.
+dimensions:
+  gpuVendor:
+    committed: nvidia
+    values: [nvidia, amd]
 overrides:
   - id: ollama/cpu-only-dev
     path: full-ai-cluster/k8s/applications/ollama/Application.yaml
@@ -226,3 +242,66 @@ overrides:
     resizes:
       - claim: full-ai-cluster/spire spire-data/spire-server
         size: 512Mi
+
+  # ── AMD GPU FORMS (2026-09-23) ──────────────────────────────────────────────
+  # Metal clusters whose GPU is AMD. The committed tree stays NVIDIA; these fire
+  # only for a tree built with `gpuVendor: amd`.
+  - id: ollama/amd-gpu-metal
+    path: full-ai-cluster/k8s/applications/ollama/Application.yaml
+    docIndex: 0
+    rung: metal
+    when:
+      gpuVendor: amd
+    reason: >-
+      An AMD GPU node advertises `amd.com/gpu` (ROCm device plugin) and is
+      labelled `zeta.io/gpu: amd`; the committed tree requests `nvidia.com/gpu`
+      and selects `zeta.io/gpu: nvidia`, so on AMD hardware the pod could never
+      schedule. `ollama.gpu.type: amd` makes the pinned otwld chart (1.79.0) pull
+      its ROCm image -- `ollama/ollama:<appVersion>-rocm`, the pinned form of
+      `ollama/ollama:rocm` -- and add `amd.com/gpu` to the limits; the requests
+      and limits maps are REPLACED because the chart merges our map over its own
+      and the committed map still names `nvidia.com/gpu` (a key with dots, which
+      no dotted path can remove on its own). Sizing is metal's, unchanged.
+    liftsWhen: >-
+      never on an AMD cluster -- this is the AMD form, not a workaround; it is
+      deleted only if the committed tree stops being vendor-specific.
+    set:
+      "spec.source.helm.valuesObject.ollama.gpu.type": amd
+      "spec.source.helm.valuesObject.nodeSelector":
+        zeta.io/gpu: amd
+      "spec.source.helm.valuesObject.resources.requests":
+        cpu: "2"
+        memory: 8Gi
+        amd.com/gpu: 1
+      "spec.source.helm.valuesObject.resources.limits":
+        cpu: "8"
+        memory: 32Gi
+        amd.com/gpu: 1
+  - id: vllm/amd-gpu-metal
+    path: full-ai-cluster/k8s/applications/vllm/deployment.yaml
+    docIndex: 1
+    rung: metal
+    when:
+      gpuVendor: amd
+    reason: >-
+      Same substrate fact as ollama: an AMD node offers `amd.com/gpu` under
+      `zeta.io/gpu: amd`, and the committed Deployment asks for `nvidia.com/gpu`
+      under `zeta.io/gpu: nvidia` from the CUDA-only `vllm/vllm-openai` image.
+      vLLM's ROCm build is a different image (`rocm/vllm`, published by AMD), so
+      the image, the selector and both resource maps change together; args,
+      replicas (0) and the cache claim do not.
+    liftsWhen: >-
+      never on an AMD cluster -- this is the AMD form, not a workaround; it is
+      deleted only if the committed tree stops being vendor-specific.
+    set:
+      "spec.template.spec.nodeSelector":
+        zeta.io/gpu: amd
+      "spec.template.spec.containers[0].image": rocm/vllm:latest
+      "spec.template.spec.containers[0].resources.requests":
+        cpu: "4"
+        memory: 16Gi
+        amd.com/gpu: 1
+      "spec.template.spec.containers[0].resources.limits":
+        cpu: "8"
+        memory: 64Gi
+        amd.com/gpu: 1

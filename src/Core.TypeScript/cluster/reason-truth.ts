@@ -147,7 +147,8 @@ export type CitationKind =
   | "glob-applies"
   | "workflow-job"
   | "resource-rung"
-  | "lane-cpu";
+  | "lane-cpu"
+  | "lane-memory";
 
 const CITATION_ARITY: Readonly<Record<CitationKind, number>> = {
   path: 1,
@@ -166,6 +167,7 @@ const CITATION_ARITY: Readonly<Record<CitationKind, number>> = {
   "workflow-job": 2,
   "resource-rung": 3,
   "lane-cpu": 3,
+  "lane-memory": 3,
 };
 
 const CITATION_KINDS: ReadonlySet<string> = new Set(Object.keys(CITATION_ARITY));
@@ -743,6 +745,45 @@ export function checkCitation(citation: Citation, evidence: Evidence, subject: R
         "cited-rung-disagrees",
         `${arg(0)} at rung "${arg(1)}" totals ${String(measured)}m across ${String(rows.length)} row(s), ` +
           `not ${arg(2)}m -- the reason outlived the ladder it was written against`,
+      );
+    }
+    case "lane-memory": {
+      // `[cite: lane-memory <profile> <memoryMib> fits|over]` -- the MEMORY twin
+      // of `lane-cpu` (2026-09-23). Added because the dev lane's binding
+      // constraint moved: at `dev` it fits CPU with ~785m spare but memory with
+      // only ~116Mi, so every exclusion that is really "no room" is a memory
+      // claim, and a memory claim deserves the same checked citation.
+      const catalogue = evidence.resourceCatalogue;
+      if (catalogue === null) return refute("resource-catalogue-absent", RESOURCE_CATALOGUE_MISSING);
+      if (!catalogue.profiles.includes(arg(0))) {
+        return refute(
+          "cited-rung-unknown",
+          `"${arg(0)}" is not a rung -- ${FULL_AI_CLUSTER_CATALOGUE} declares ${catalogue.profiles.join(", ")}`,
+        );
+      }
+      const verdictWord = arg(2);
+      if (verdictWord !== "fits" && verdictWord !== "over") {
+        return refute(
+          "cited-lane-verdict-disagrees",
+          `the third argument must be "fits" or "over", not "${verdictWord}"`,
+        );
+      }
+      const total = resourceTotal(catalogue, arg(0), evidence.devLaneDirs);
+      const claimed = Number.parseInt(arg(1), 10);
+      if (!Number.isFinite(claimed) || total.memoryMib !== claimed) {
+        return refute(
+          "cited-lane-total-disagrees",
+          `the dev lane at rung "${arg(0)}" totals ${String(total.memoryMib)}Mi across ` +
+            `${String(evidence.devLaneDirs.length)} Applications, not ${arg(1)}Mi`,
+        );
+      }
+      const budget = envelopeBudget(catalogue.envelope);
+      const fits = total.memoryMib <= budget.memoryMib;
+      if (fits === (verdictWord === "fits")) return null;
+      return refute(
+        "cited-lane-verdict-disagrees",
+        `the reason says the lane is "${verdictWord}" at rung "${arg(0)}", but ${String(total.memoryMib)}Mi ` +
+          `against a ${String(budget.memoryMib)}Mi budget ${fits ? "FITS" : "does NOT fit"}`,
       );
     }
     case "lane-cpu": {

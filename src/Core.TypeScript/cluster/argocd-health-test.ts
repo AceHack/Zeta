@@ -23,7 +23,13 @@
  *   2 - usage error or named dependency/preflight failure
  */
 
-import { applyRungOverrides, loadRungOverrides } from "./rung-overrides.ts";
+import {
+  applyRungOverrides,
+  type ClusterSelection,
+  loadOverrideDimensions,
+  loadRungOverrides,
+  validateSelection,
+} from "./rung-overrides.ts";
 import { spawnSync } from "node:child_process";
 import { existsSync, mkdtempSync, readdirSync, readFileSync } from "node:fs";
 import { tmpdir } from "node:os";
@@ -550,7 +556,14 @@ export const DEV_EXCLUDED_REASONS: ReadonlyMap<string, string> = new Map([
       "[cite: chart-pin full-ai-cluster/gitlab gitlab 8.7.0] " +
       "[cite: published gitlab 8.7.0] " +
       "[cite: path infra/README.md:165] " +
-      "[cite: glob-defers gitlab] ",
+      "[cite: glob-defers gitlab] " +
+      "UPDATE 2026-09-23 -- THE CAPACITY HALF IS MEASURED NOW, AND IT IS MEMORY, NOT CPU. At chart defaults " +
+      "gitlab requests 2375m / 5605Mi (storage-profiles.json ungoverned row, 15 workloads); the dev lane at " +
+      "`dev` already reserves 9100Mi of its 9216Mi application budget " +
+      "[cite: lane-memory dev 9100 fits] -- 116Mi of room. CPU is compressible and could be floored at the dev rung; " +
+      "memory is not, so no CPU override makes gitlab fit THIS lane. Its images add ~12.4 GiB on disk " +
+      "(image-footprint.ts). SHARPENED LIFTS WHEN: a lane with >= 5.6 GiB of memory headroom runs it (the " +
+      "lane-partition work is where that comes from) AND its workloads get a dev form sized for that lane.",
   ],
   [
     "longhorn",
@@ -583,7 +596,16 @@ export const DEV_EXCLUDED_REASONS: ReadonlyMap<string, string> = new Map([
       "ANCHORS, CHECKED BY `reason-truth.ts`: each names an artifact this tree holds, so a claim that outlives its artifact goes red instead of reading on. " +
       "[cite: pvc-class full-ai-cluster/ollama zeta-block-replicated] " +
       "[cite: pvc-total full-ai-cluster/ollama 200] " +
-      "[cite: glob-defers ollama] ",
+      "[cite: glob-defers ollama] " +
+      "UPDATE 2026-09-23 -- A DEV FORM AND AN AMD FORM EXIST NOW, and what still holds it out is written " +
+      "here rather than implied. rung-overrides.yaml `ollama/cpu-only-dev` turns the GPU off, drops the " +
+      "selector and sizes it 250m / 512Mi at one replica; `ollama/amd-gpu-metal` is the ROCm form for an AMD " +
+      "cluster. Two blockers remain, either sufficient: (1) it is MANUAL-SYNC BY DESIGN -- the local-models " +
+      "phase is deferred by the maintainer -- so a lane could assert only the weaker manual-sync contract; " +
+      "(2) the dev form's 512Mi does not fit the lane's remaining memory " +
+      "[cite: lane-memory dev 9100 fits] and the lane budget prices ollama at its stale ungoverned row (0m / 0Mi, " +
+      "written when resources were unset) rather than the override's request. LIFTS WHEN: the maintainer " +
+      "re-enables automated sync for the local-models phase AND a lane with that memory headroom exists.",
   ],
   [
     PLATFORM_APP_DIR,
@@ -634,7 +656,9 @@ export const DEV_EXCLUDED_REASONS: ReadonlyMap<string, string> = new Map([
       "ANCHORS, CHECKED BY `reason-truth.ts`: each names an artifact this tree holds, so a claim that outlives its artifact goes red instead of reading on. " +
       "[cite: path full-ai-cluster/portal/DEPLOY.md:122] " +
       "[cite: path .github/workflows/build-platform-images.yml] " +
-      "[cite: glob-defers platform] ",
+      "[cite: glob-defers platform] " +
+      "UPDATE 2026-09-23: even with the pull measured, it needs 160Mi at `dev` and the lane has 116Mi left " +
+      "[cite: lane-memory dev 9100 fits] -- so the lift also needs lane room, not only a credential.",
   ],
   [
     "temporal",
@@ -667,7 +691,9 @@ export const DEV_EXCLUDED_REASONS: ReadonlyMap<string, string> = new Map([
       "[cite: renders full-ai-cluster/temporal] " +
       "[cite: no-pvc full-ai-cluster/temporal] " +
       "[cite: chart-pin full-ai-cluster/temporal temporal 0.59.0] " +
-      "[cite: glob-defers temporal] ",
+      "[cite: glob-defers temporal] " +
+      "UPDATE 2026-09-23: independently of both blockers, it requests 1184Mi at `dev` against 116Mi left in " +
+      "the lane [cite: lane-memory dev 9100 fits] -- the schema/TLS fixes alone would not fit it into this lane.",
   ],
   [
     "vllm",
@@ -676,7 +702,13 @@ export const DEV_EXCLUDED_REASONS: ReadonlyMap<string, string> = new Map([
       "ANCHORS, CHECKED BY `reason-truth.ts`: each names an artifact this tree holds, so a claim that outlives its artifact goes red instead of reading on. " +
       "[cite: pvc-class full-ai-cluster/vllm zeta-block-replicated] " +
       "[cite: pvc-total full-ai-cluster/vllm 200] " +
-      "[cite: glob-defers vllm] ",
+      "[cite: glob-defers vllm] " +
+      "UPDATE 2026-09-23 -- MEASURED, AND DISK BINDS BEFORE THE GPU DOES. The CUDA image is ~23 GiB on disk " +
+      "(image-footprint.ts); beside the dev lane's ~32 GiB of images that leaves nothing inside a hosted " +
+      "runner's 66 GiB, so a CPU form would still need its own lane. vLLM's CPU backend is a different image " +
+      "and needs a model downloaded at start; neither has been measured on a hosted runner, so no dev form is " +
+      "claimed. An AMD form exists (`vllm/amd-gpu-metal`, rocm/vllm). LIFTS WHEN: a GPU-bearing self-hosted " +
+      "runner serves a lane, or a CPU image + tiny model is measured on a hosted runner in a lane with the disk.",
   ],
 ]);
 
@@ -1981,7 +2013,7 @@ export function buildPlan(options: CliOptions, repoRoot = REPO_ROOT): HarnessPla
     notes: [
       "081KSXN940008QG0R000SCP2H1 is separate from 081KSNY2Z0008QG0R0008PN7RQ; this harness does not test USB reformat retention.",
       "Dev health assertions exclude cilium (except k3d, and kind --cni cilium), the Longhorn chart itself, GPU model-SERVING (ollama/vllm), ReadWriteMany claims, and apps deferred on a named blocker recorded in APPLIED_BUT_UNASSERTED_REASONS; k3d and kind --cni cilium bootstrap Cilium directly, kind --cni kindnetd uses kind's default CNI.",
-      "Longhorn-BACKED manifests are no longer storage-excluded: dev applies a StorageClass named longhorn over rancher.io/local-path (dev-cluster/manifests/longhorn.yaml), so those PVCs bind. MEASURED on run 32519516070: 6 of the 11 formerly-excluded apps reached Synced+Healthy (headscale, mimir, nats, oz, redis, tempo); the other 5 bound their volumes and then failed for named NON-storage defects, visible for the first time. TWO of those five are fixed as of 2026-08-21 and are PROVEN so by live run 32532470499 -- cockroachdb (the chart init Job moved out of ArgoCD PostSync, which deadlocks against the health it is needed to produce) and kube-prometheus-stack (Grafana admin Secret minted at bring-up). weaviate was asserted alongside them for a few hours and the same run refuted it: two `type: LoadBalancer` Services can never be Healthy on a kind node, a blocker independent of the render nondeterminism that was fixed. hindsight remains, on three independent blockers. Still excluded outright are ReadWriteMany claims, which no dev provisioner can serve, and the whole rule returns if that manifest is absent (081M0JXF6MS087G0R001HC34TM).",
+      "Storage is by CAPABILITY, not provider (since 2026-09-23; storage-capabilities.ts): charts request zeta-block-replicated / zeta-block-local / zeta-shared, and dev binds the two RWO capabilities to rancher.io/local-path (dev-cluster/manifests/zeta-block-*.yaml) where it used to fake a class NAMED longhorn, so those PVCs bind. Served dev trees carry the `ci` storage rung + dev resize overrides so the declared disk fits the runner. MEASURED on run 32519516070: 6 of the 11 formerly-excluded apps reached Synced+Healthy (headscale, mimir, nats, oz, redis, tempo); the other 5 bound their volumes and then failed for named NON-storage defects, visible for the first time. TWO of those five are fixed as of 2026-08-21 and are PROVEN so by live run 32532470499 -- cockroachdb (the chart init Job moved out of ArgoCD PostSync, which deadlocks against the health it is needed to produce) and kube-prometheus-stack (Grafana admin Secret minted at bring-up). weaviate was asserted alongside them for a few hours and the same run refuted it: two `type: LoadBalancer` Services can never be Healthy on a kind node, a blocker independent of the render nondeterminism that was fixed. hindsight remains, on three independent blockers. Still excluded outright are ReadWriteMany claims (zeta-shared is deliberately unbound in dev), and any class dev does not bind -- including a provider name -- keeps its Application out (081M0JXF6MS087G0R001HC34TM).",
       "ZETA_CONTAINER_RUNTIME is the repo-wide OCI runtime switch; use --runtime for one-off explicit harness runs.",
     ],
   };
@@ -2245,13 +2277,28 @@ function waitForKubectl(
 export function applyServeTreeRung(
   profile: string,
   stagedRoot: string,
+  /**
+   * Non-rung cluster properties (`rung-overrides.yaml` `dimensions`), e.g.
+   * `{gpuVendor: "amd"}` for an AMD GPU cluster. Empty = every dimension at its
+   * committed value (NVIDIA), i.e. exactly the tree this built before
+   * dimensions existed. Validated: an undeclared name or value THROWS rather
+   * than silently building the committed tree under another label.
+   */
+  selection: ClusterSelection = {},
 ): { readonly rungEdits: number; readonly storageEdits: number; readonly overrideEdits: number; readonly storageProfile: string | null } {
+  validateSelection(selection, loadOverrideDimensions(stagedRoot));
   const catalogue = loadResourceCatalogue(undefined, stagedRoot);
   const rungEdits = applyResourceProfile(catalogue, profile, stagedRoot).length;
   const storageProfile = storageProfileForResourceRung(profile, undefined, stagedRoot);
   const storageEdits =
     storageProfile === null ? 0 : applyProfile(loadCatalogue(undefined, stagedRoot), storageProfile, stagedRoot).length;
-  const overrideEdits = applyRungOverrides(loadRungOverrides(catalogue.profiles, stagedRoot), profile, stagedRoot).length;
+  const overrideEdits = applyRungOverrides(
+    loadRungOverrides(catalogue.profiles, stagedRoot),
+    profile,
+    stagedRoot,
+    true,
+    selection,
+  ).length;
   return { rungEdits, storageEdits, overrideEdits, storageProfile };
 }
 

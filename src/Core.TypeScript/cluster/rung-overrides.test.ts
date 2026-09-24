@@ -10,7 +10,15 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { stringify } from "yaml";
 
-import { applyRungOverrides, loadRungOverrides, type RungOverride } from "./rung-overrides.ts";
+import {
+  applyRungOverrides,
+  loadOverrideDimensions,
+  loadRungOverrides,
+  type RungOverride,
+  validateSelection,
+} from "./rung-overrides.ts";
+import { applyServeTreeRung } from "./argocd-health-test.ts";
+import { stageLaneTree } from "./lane-tree-source.ts";
 
 const RUNGS = ["dev", "metal"] as const;
 const ROSTER_HEADER = { apiVersion: "cluster.zeta.io/v1", kind: "RungOverrides" };
@@ -137,5 +145,73 @@ describe("the LIVE override roster", () => {
       expect(o.reason.length).toBeGreaterThan(40);
       expect(o.liftsWhen.length).toBeGreaterThan(0);
     }
+  });
+});
+
+/**
+ * THE GPU VENDOR DIMENSION (2026-09-23). nodeSelector cannot express OR and
+ * `nvidia.com/gpu` / `amd.com/gpu` are different resources, so the vendor is a
+ * per-cluster selection, not a fork. These pin: conditioned overrides never
+ * fire for the committed selection, the AMD selection rewrites BOTH GPU
+ * workloads completely (no NVIDIA key survives), and a typo cannot build the
+ * committed tree under the AMD label.
+ */
+describe("cluster dimensions -- the GPU vendor", () => {
+  const DIMS = { gpuVendor: { committed: "nvidia", values: ["nvidia", "amd"] } };
+  const withDims = (overrides: unknown, dims: unknown = DIMS) =>
+    fixture(APP, overrides, { ...ROSTER_HEADER, dimensions: dims });
+
+  test("a `when` naming an undeclared dimension, an unknown value, or the COMMITTED value is REFUSED", () => {
+    const set = { "spec.gpu": false };
+    expect(() => loadRungOverrides(RUNGS, withDims([{ ...BASE, set, when: { cpuArch: "arm" } }]))).toThrow(/does not declare/);
+    expect(() => loadRungOverrides(RUNGS, withDims([{ ...BASE, set, when: { gpuVendor: "intel" } }]))).toThrow(/is not one of/);
+    expect(() => loadRungOverrides(RUNGS, withDims([{ ...BASE, set, when: { gpuVendor: "nvidia" } }]))).toThrow(/COMMITTED value/);
+  });
+
+  test("a dimension with one value, or a committed value outside its values, is REFUSED", () => {
+    const one = { ...BASE, set: { "spec.gpu": false } };
+    expect(() => loadRungOverrides(RUNGS, withDims([one], { gpuVendor: { committed: "nvidia", values: ["nvidia"] } }))).toThrow(/at least two/);
+    expect(() => loadRungOverrides(RUNGS, withDims([one], { gpuVendor: { committed: "tpu", values: ["nvidia", "amd"] } }))).toThrow(/not one of its values/);
+  });
+
+  test("a conditioned override fires ONLY for its selection; the default selection is the committed tree", () => {
+    const root = withDims([{ ...BASE, rung: "metal", when: { gpuVendor: "amd" }, set: { "spec.nodeSelector": { "zeta.io/gpu": "amd" } } }]);
+    const loaded = loadRungOverrides(RUNGS, root);
+    expect(applyRungOverrides(loaded, "metal", root, false)).toEqual([]);
+    expect(applyRungOverrides(loaded, "metal", root, false, { gpuVendor: "nvidia" })).toEqual([]);
+    expect(applyRungOverrides(loaded, "metal", root, false, { gpuVendor: "amd" })).toHaveLength(1);
+  });
+
+  test("a selection naming an undeclared dimension or value THROWS -- never the committed tree under another label", () => {
+    const dims = loadOverrideDimensions();
+    expect(() => validateSelection({ gpuVendor: "amdd" }, dims)).toThrow(/not one of/);
+    expect(() => validateSelection({ gpu: "amd" }, dims)).toThrow(/unknown cluster dimension/);
+    expect(() => validateSelection({ gpuVendor: "amd" }, dims)).not.toThrow();
+  });
+
+  test("LIVE: the AMD metal tree has no NVIDIA request or selector left in ollama or vllm; the committed tree is untouched", () => {
+    const repoRoot = join(import.meta.dir, "../../..");
+    const read = (root: string, rel: string) =>
+      readFileSync(join(root, "full-ai-cluster/k8s/applications", rel), "utf8").replace(/#.*$/gm, "");
+    const staged = mkdtempSync(join(tmpdir(), "zeta-amd-tree-"));
+    stageLaneTree(repoRoot, staged, "http://lane.invalid/zeta.git");
+    const result = applyServeTreeRung("metal", staged, { gpuVendor: "amd" });
+    expect(result.overrideEdits).toBeGreaterThan(0);
+    for (const rel of ["ollama/Application.yaml", "vllm/deployment.yaml"]) {
+      expect(read(staged, rel), rel).not.toContain("nvidia");
+      expect(read(staged, rel), rel).toContain("amd.com/gpu: 1");
+      expect(read(staged, rel), rel).toContain("zeta.io/gpu: amd");
+      // The committed tree keeps the NVIDIA default.
+      expect(read(repoRoot, rel), rel).toContain("nvidia.com/gpu");
+    }
+    expect(read(staged, "ollama/Application.yaml")).toContain("type: amd");
+    expect(read(staged, "vllm/deployment.yaml")).toContain("image: rocm/vllm:latest");
+  });
+
+  test("LIVE: the default metal build fires no vendor override at all", () => {
+    const repoRoot = join(import.meta.dir, "../../..");
+    const staged = mkdtempSync(join(tmpdir(), "zeta-nv-tree-"));
+    stageLaneTree(repoRoot, staged, "http://lane.invalid/zeta.git");
+    expect(applyServeTreeRung("metal", staged).overrideEdits).toBe(0);
   });
 });

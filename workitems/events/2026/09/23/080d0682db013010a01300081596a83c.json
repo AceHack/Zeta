@@ -1,0 +1,14 @@
+{
+  "id": "080d0682db013010a01300081596a83c",
+  "at": "2026-09-23T22:20:44.454Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M385PR15087G0R0024N0JTS",
+    "type": "task",
+    "title": "GPU vendor as a per-cluster rung-override dimension: AMD (ROCm) forms for ollama and vllm, NVIDIA stays the committed default",
+    "slug": "gpu-vendor-as-a-per-cluster-rung-override-dimension-amd-rocm",
+    "priority": "P2",
+    "filename": "081M385PR15087G0R0024N0JTS-gpu-vendor-as-a-per-cluster-rung-override-dimension-amd-rocm.md"
+  }
+}

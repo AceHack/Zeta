@@ -30,6 +30,7 @@ function synthetic(partial: Partial<RungOverride> & Pick<RungOverride, "id" | "p
     set: {},
     remove: [],
     resizes: [],
+    when: {},
     ...partial,
   };
 }
