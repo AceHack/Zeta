@@ -20,8 +20,11 @@
 import { describe, expect, it } from "bun:test";
 
 import {
+  autoLonghornTailGib,
   COMMITTED_LONGHORN_DEMAND_GIB,
+  LONGHORN1_TAIL_AUTO,
   LONGHORN_USABLE_PERCENT,
+  ROOT_FLOOR_GIB,
   LONGHORN_UNDERSIZED_OVERRIDE_TOKEN,
   bytesToGib,
   longhornCapacityVerdict,
@@ -150,17 +153,36 @@ describe("COMMITTED_LONGHORN_DEMAND_GIB is derived from the roster, not typed in
 });
 
 describe("the installer's own default tail is what the refusal is measured against", () => {
-  it("zeta-install.sh's LONGHORN1_TAIL default is readable, and today is 1 GiB", () => {
-    // Read, never restated. If somebody raises the default this test records the
-    // new number; if they delete or obfuscate it, the read returns null and the
-    // readiness auditor's longhorn-geometry check REFUSES rather than guessing.
-    expect(installerLonghornTailGib(REPO_ROOT)).toBe(1);
+  it("zeta-install.sh's LONGHORN1_TAIL default is readable, and is now `auto`", () => {
+    // Read, never restated. Until the geometry fix this was the literal `1G`,
+    // and the assertion below is what that literal could not survive. If the
+    // line is deleted or obfuscated the read returns null and the readiness
+    // auditor's longhorn-geometry check REFUSES rather than guessing.
+    expect(installerLonghornTailGib(REPO_ROOT)).toBe(LONGHORN1_TAIL_AUTO);
   });
 
-  it("that default cannot hold the roster — the defect, stated as arithmetic", () => {
-    const tail = installerLonghornTailGib(REPO_ROOT);
-    expect(tail).not.toBeNull();
-    const schedulable = schedulableLonghornGib(provisionedLonghornGib(tail ?? 0, []), LONGHORN_USABLE_PERCENT);
+  it("the OLD fixed 1 GiB default could not hold the roster — the defect, as arithmetic", () => {
+    // Kept as a regression: a 1 GiB tail on a single-disk install is 0 GiB
+    // schedulable against 943 of demand. If anyone reinstates a fixed small
+    // tail, `installerLonghornTailGib` reports it and the geometry comparator
+    // convicts on exactly this shape.
+    const schedulable = schedulableLonghornGib(provisionedLonghornGib(1, []), LONGHORN_USABLE_PERCENT);
+    expect(schedulable).toBe(0);
+    expect(schedulable).toBeLessThan(COMMITTED_LONGHORN_DEMAND_GIB);
+  });
+
+  it("the computed tail on a 1 TiB single disk clears the roster's BRING-UP total", () => {
+    // The property the whole USB-installer effort is for: plug it in, and the
+    // applications a fresh sync actually applies come up. 931 − 1 − 120 = 810
+    // raw, x75% = 607 schedulable, against 443 GiB at bring-up.
+    const schedulable = schedulableLonghornGib(
+      provisionedLonghornGib(autoLonghornTailGib(931, ROOT_FLOOR_GIB), []),
+      LONGHORN_USABLE_PERCENT,
+    );
+    expect(schedulable).toBe(607);
+    // Still short of the 943 GiB STEADY-STATE total, and deliberately so: the
+    // geometry fix is necessary and is not sufficient, which is why the
+    // shortfall stays recorded as debt rather than being papered over here.
     expect(schedulable).toBeLessThan(COMMITTED_LONGHORN_DEMAND_GIB);
   });
 });

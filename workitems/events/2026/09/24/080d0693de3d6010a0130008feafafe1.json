@@ -1,0 +1,14 @@
+{
+  "id": "080d0693de3d6010a0130008feafafe1",
+  "at": "2026-09-24T08:15:22.540Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M397QHX8087G0R003DQSY0B",
+    "type": "task",
+    "title": "report SCHEDULABLE longhorn demand beside declared: exclude claims whose workload carries a nodeSelector no registered node satisfies",
+    "slug": "report-schedulable-longhorn-demand-beside-declared-exclude-c",
+    "priority": "P2",
+    "filename": "081M397QHX8087G0R003DQSY0B-report-schedulable-longhorn-demand-beside-declared-exclude-c.md"
+  }
+}

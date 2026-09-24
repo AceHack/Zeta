@@ -50,12 +50,36 @@
 // ---------------------------------
 // Some declared capacity provisions nothing on a fresh sync (a manual-sync
 // Application, or a PVC manifest no Application reaches). That is REPORTED,
-// never DISCOUNTED. Longhorn's StorageClass is volumeBindingMode: Immediate
-// (hardcoded in longhorn-1.7.2/templates/storageclass.yaml), so an applied PVC
-// provisions its replica with zero consuming pods; what keeps the capacity off
-// the disk is the Application never being applied, and that is one
-// `argocd app sync` away from being false. Convicting on the bring-up subset
-// would be a gate that passes today and fails the first time someone ran it.
+// never DISCOUNTED.
+//
+// CORRECTED 2026-09-24 (WP28, 081M393B9TB087G0R000Y529Z8). This paragraph used
+// to read "Longhorn's StorageClass is volumeBindingMode: Immediate (hardcoded
+// in longhorn-1.7.2/templates/storageclass.yaml), so an applied PVC provisions
+// its replica with zero consuming pods." That sentence is TRUE OF A CLASS
+// NOTHING IN THIS ROSTER CLAIMS ON. The chart's own `longhorn` class is indeed
+// Immediate, but applications/longhorn/Application.yaml sets
+// `persistence.defaultClass: false`, and every claim in the tree names a
+// CAPABILITY class instead -- `zeta-block-replicated`, `zeta-shared`,
+// `zeta-block-local` -- all three of which
+// full-ai-cluster/nixos/modules/local-storage.nix binds
+// `volumeBindingMode: WaitForFirstConsumer`. `git log -L` on that block shows
+// `zeta-block-replicated` was CREATED that way by #17576 ("charts name a
+// storage capability, never a provider"); it has never been Immediate. The
+// prose described the pre-rename provider-named class and was carried across
+// the rename without being re-checked.
+//
+// THE CONCLUSION SURVIVES THE CORRECTION, which is the test of whether it was
+// real. Under WaitForFirstConsumer an applied PVC waits for a schedulable
+// consumer instead of provisioning at once, so bring-up is still not a
+// discount -- it is one `argocd app sync` AND one schedulable pod away from
+// being false, rather than one sync away. Convicting on the bring-up subset
+// would still be a gate that passes today and fails the first time someone
+// ran it.
+//
+// The auditor no longer restates the mode in prose at all: it READS it out of
+// local-storage.nix at print time (`printedBringUpNote` in
+// single-node-readiness.ts), because a sentence can rot again and a parsed
+// value cannot. That file is authoritative; this comment is commentary.
 
 import { readFileSync, writeFileSync, existsSync, readdirSync } from "node:fs";
 import { resolve } from "node:path";

@@ -77,8 +77,18 @@ import {
   type ResourceCatalogue,
 } from "./storage-profiles.ts";
 import { clusterDefaultStorageClass } from "./cluster-default-storage-class.ts";
-import { metalPoolCapabilities } from "./storage-capabilities.ts";
-import { COMMITTED_LONGHORN_DEMAND_GIB } from "../installer/longhorn-capacity-preflight.ts";
+import {
+  METAL_STORAGE_BINDINGS_SOURCE,
+  metalPoolCapabilities,
+  metalStorageBindings,
+} from "./storage-capabilities.ts";
+import {
+  autoLonghornTailGib,
+  COMMITTED_LONGHORN_DEMAND_GIB,
+  LOCAL_PATH_ADVISORY_GIB,
+  LONGHORN1_TAIL_AUTO,
+  ROOT_FLOOR_GIB,
+} from "../installer/longhorn-capacity-preflight.ts";
 import { classifySyncPolicy } from "./manual-sync-policy.ts";
 import {
   DEFAULT_SNAPSHOT_PATH as DEFAULT_RESOURCE_REQUESTS_SNAPSHOT_PATH,
@@ -1154,12 +1164,12 @@ export function findCapacityProvenance(
 //
 // THE INFERENCE IS ONE-WAY, SAME AS ITS NEIGHBOURS
 // ------------------------------------------------
-// The capacity side is read as generously as the registration permits: the
-// BOOT disk is assumed to be the SMALLEST device, so every larger one becomes a
-// whole-disk longhorn2..N. Nothing in a ClusterNode registration records which
-// device the operator booted, and assuming the favourable one keeps the verdict
-// convicting: falling short under the most generous reading is proven, while
-// clearing it proves nothing (the operator may well boot the big disk).
+// The capacity side is read as generously as the registration permits: every
+// boot-disk choice the installer would not REFUSE is enumerated, and the one
+// yielding the largest pool wins. Nothing in a ClusterNode registration records
+// which device the operator booted, and assuming the favourable one keeps the
+// verdict convicting: falling short under the most generous reading is proven,
+// while clearing it proves nothing.
 //
 // The demand side takes the LARGER of the two available readings per class,
 // for the mirror reason — see `longhornPoolDemandGib`.
@@ -1168,20 +1178,29 @@ export function findCapacityProvenance(
 export const ZETA_INSTALL_SH_PATH = "full-ai-cluster/usb-nixos-installer/zeta-install.sh";
 
 /**
- * `LONGHORN1_TAIL`'s default, in whole GiB, READ OUT OF the installer.
+ * `LONGHORN1_TAIL`'s default, READ OUT OF the installer.
  *
  * Read and never restated, because the whole finding is about this literal: a
  * copy of it in this file would be a second roster that agrees by coincidence,
  * and the first edit to the installer would make the gate describe a geometry
  * nothing installs.
  *
- * `null` when the line is absent or carries a unit this cannot convert — the
- * caller REFUSES rather than substituting a number, same as an absent
- * registration in `findCapacityProvenance`.
+ * Three outcomes, and the difference between the last two matters:
+ *
+ *   a number   — a fixed tail in whole GiB, whatever the disk's size
+ *   `"auto"`   — the tail is COMPUTED per boot disk (disk − ESP − root floor),
+ *                so it cannot be known without a disk. `installerGeometryFor`
+ *                resolves it against each measured node.
+ *   `null`     — the line is absent, or carries a unit this cannot convert.
+ *                The caller REFUSES rather than substituting a number, same as
+ *                an absent registration in `findCapacityProvenance`.
  */
-export function installerLonghornTailGib(repoRoot = REPO_ROOT): number | null {
+export type InstallerTailDefault = number | "auto";
+
+export function installerLonghornTailGib(repoRoot = REPO_ROOT): InstallerTailDefault | null {
   const text = readIfPresent(resolve(repoRoot, ZETA_INSTALL_SH_PATH));
   if (text === null) return null;
+  if (/^LONGHORN1_TAIL="\$\{LONGHORN1_TAIL:-auto\}"/m.test(text)) return LONGHORN1_TAIL_AUTO;
   const match = /^LONGHORN1_TAIL="\$\{LONGHORN1_TAIL:-(\d+)([KMGT])\}"/m.exec(text);
   if (match === null) return null;
   const magnitude = Number(match[1]);
@@ -1191,6 +1210,16 @@ export function installerLonghornTailGib(repoRoot = REPO_ROOT): number | null {
   const scale = gib[match[2] ?? ""];
   if (scale === undefined) return null;
   return Math.floor(magnitude * scale);
+}
+
+/** The root floor the installer reserves, READ OUT OF it — never restated here, same reason as the tail. */
+export function installerRootFloorGib(repoRoot = REPO_ROOT): number | null {
+  const text = readIfPresent(resolve(repoRoot, ZETA_INSTALL_SH_PATH));
+  if (text === null) return null;
+  const match = /^ZETA_ROOT_FLOOR_GIB=(\d+)$/m.exec(text);
+  if (match === null) return null;
+  const value = Number(match[1]);
+  return Number.isInteger(value) && value > 0 ? value : null;
 }
 
 /** One Longhorn-bound StorageClass's demand, with BOTH readings kept so the print can show its work. */
@@ -1299,19 +1328,56 @@ export interface InstallerGeometry {
  * must not read as a node with no disks (the same distinction `MeasuredNode`
  * draws between `null` and zero).
  */
-export function installerGeometryFor(node: MeasuredNode, tailGib: number): InstallerGeometry | null {
+export function installerGeometryFor(
+  node: MeasuredNode,
+  tail: InstallerTailDefault,
+  rootFloorGib: number | null = null,
+): InstallerGeometry | null {
   const sizes = node.devices
     .map((line) => deviceLineToGib(line))
     .filter((gib): gib is number => gib !== null)
     .sort((a, b) => a - b);
   if (sizes.length === 0) return null;
-  const [bootDiskGib = 0, ...dataDiskGib] = sizes;
-  return {
-    bootDiskGib,
-    tailGib,
-    dataDiskGib,
-    rawGib: dataDiskGib.reduce((sum, gib) => sum + gib, tailGib),
-  };
+  const floor = rootFloorGib ?? ROOT_FLOOR_GIB;
+
+  // EVERY candidate boot disk, not the smallest one.
+  //
+  // The first version of this took the smallest device as the boot disk,
+  // because under a FIXED tail that maximises the pool: the boot disk
+  // contributes a constant, so giving up the least capacity to it is best. That
+  // reasoning INVERTS under `LONGHORN1_TAIL=auto`, where the tail is
+  // (disk − ESP − root floor) and a BIGGER boot disk yields a bigger tail. On
+  // node-ad1efd the smallest device is 115.5 GiB, which cannot hold the 120 GiB
+  // floor at all — so the "generous" reading was picking a shape the installer
+  // would refuse outright.
+  //
+  // Enumerating and taking the maximum is generous under BOTH tail modes, and
+  // needs no separate case. Candidates whose tail comes back 0 are dropped
+  // first: that is the installer bailing, and a layout it refuses is not a
+  // layout whose capacity counts.
+  const candidates = sizes
+    .map((bootDiskGib, index) => {
+      const dataDiskGib = sizes.filter((_, other) => other !== index);
+      const tailGib =
+        tail === LONGHORN1_TAIL_AUTO ? autoLonghornTailGib(Math.floor(bootDiskGib), floor) : tail;
+      return {
+        bootDiskGib,
+        tailGib,
+        dataDiskGib,
+        rawGib: dataDiskGib.reduce((sum, gib) => sum + gib, tailGib),
+      };
+    })
+    .filter((candidate) => candidate.tailGib >= 1);
+
+  // No candidate means the installer would refuse EVERY boot-disk choice on
+  // this node — the disk cannot hold ESP + root floor + a 1 GiB tail. That is a
+  // pool of zero, reported as such rather than as an unmeasured node, because
+  // it IS measured and the answer is "nothing".
+  if (candidates.length === 0) {
+    const [bootDiskGib = 0, ...dataDiskGib] = sizes;
+    return { bootDiskGib, tailGib: 0, dataDiskGib, rawGib: 0 };
+  }
+  return candidates.reduce((best, candidate) => (candidate.rawGib > best.rawGib ? candidate : best));
 }
 
 export function longhornGeometryShortfallKey(schedulableGib: number, demandGib: number, host: string): string {
@@ -1386,7 +1452,7 @@ export function findLonghornGeometry(
 
   const fraction = mostConservativeUsableFraction(collectLonghornReserves(loadManifests(DEFAULT_ROOTS, repoRoot)));
   for (const node of measured) {
-    const geometry = installerGeometryFor(node, tailGib);
+    const geometry = installerGeometryFor(node, tailGib, installerRootFloorGib(repoRoot));
     if (geometry === null) continue;
     const schedulable = Math.floor(geometry.rawGib * fraction) * ledger.nodeCount;
     if (schedulable >= demand.totalGib) continue;
@@ -1399,13 +1465,17 @@ export function findLonghornGeometry(
         `zeta-install.sh would give Longhorn ${schedulable.toFixed(0)} GiB schedulable on ${node.hostname}, but ` +
         `the roster declares ${demand.totalGib.toFixed(0)} GiB of driver.longhorn.io PVCs — short by ` +
         `${(demand.totalGib - schedulable).toFixed(0)} GiB. The pool is the longhorn1 TAIL off the boot disk ` +
-        `(${geometry.tailGib} GiB) plus every NON-boot disk whole, NOT the sum of the block devices: ESP + root ` +
-        `take the remainder and the root filesystem is never a Longhorn data path. On a single-disk install ` +
-        `that pool is ${geometry.tailGib} GiB whatever the disk's size. Those PVCs pend forever.`,
+        `(${geometry.tailGib} GiB) plus every NON-boot disk whole, NOT the sum of the block devices: the ESP and ` +
+        `the root floor take the remainder and the root filesystem is never a Longhorn data path. Those PVCs ` +
+        `pend forever.`,
       detail: [
         `measured evidence: ${node.path}`,
         ...node.devices.map((device) => `  ${device}`).sort((a, b) => stringCompare(a, b)),
-        `boot disk assumed to be the SMALLEST device (${geometry.bootDiskGib} GiB) — the most GENEROUS reading`,
+        `boot disk assumed to be ${geometry.bootDiskGib} GiB — whichever choice MAXIMISES the pool, the most GENEROUS reading`,
+        tailGib === LONGHORN1_TAIL_AUTO
+          ? `tail is COMPUTED (LONGHORN1_TAIL=auto): ${geometry.bootDiskGib} GiB boot disk − 1 GiB ESP − ` +
+            `${String(installerRootFloorGib(repoRoot) ?? ROOT_FLOOR_GIB)} GiB root floor = ${geometry.tailGib} GiB`
+          : `tail is a FIXED ${String(tailGib)} GiB, so the boot disk's size does not change it`,
         `pool = ${geometry.tailGib} GiB tail + ${geometry.dataDiskGib.length} whole disk(s) ` +
           `[${geometry.dataDiskGib.join(", ")}] = ${geometry.rawGib} GiB raw`,
         `x ${(fraction * 100).toFixed(0)}% Longhorn will place x ${ledger.nodeCount} node(s) = ${schedulable} GiB`,
@@ -2678,14 +2748,25 @@ function printLonghornGeometrySection(
       .join(" + ")} = ${demand.totalGib.toFixed(0)} GiB` +
       `   (per class: max(rendered, derived) — the two readings are blind in opposite directions)`,
   );
+  const rootFloorGib = installerRootFloorGib(repoRoot);
   console.log(
-    `  LONGHORN1_TAIL default ${tailGib} GiB, read from ${ZETA_INSTALL_SH_PATH} — on a SINGLE-DISK install ` +
-      `that is the WHOLE pool,\n  whatever the disk's size: ESP + root take the rest and the root filesystem ` +
-      `is never a Longhorn data path.`,
+    tailGib === LONGHORN1_TAIL_AUTO
+      ? `  LONGHORN1_TAIL=auto, root floor ${String(rootFloorGib ?? ROOT_FLOOR_GIB)} GiB — read from ` +
+          `${ZETA_INSTALL_SH_PATH}. On a SINGLE-DISK install the pool is\n  (disk − 1 GiB ESP − root floor): ` +
+          `root takes a COMPUTED floor and longhorn1 takes the rest. The root filesystem is never a Longhorn\n` +
+          `  data path, so whatever root over-reserves is not schedulable capacity.`
+      : `  LONGHORN1_TAIL default ${String(tailGib)} GiB, read from ${ZETA_INSTALL_SH_PATH} — a FIXED tail, so ` +
+          `on a SINGLE-DISK\n  install that is the WHOLE pool whatever the disk's size: ESP + root take the ` +
+          `rest and the root\n  filesystem is never a Longhorn data path.`,
+  );
+  console.log(
+    `  local-path PVC ceilings that also land on ROOT: ${LOCAL_PATH_ADVISORY_GIB} GiB — ADVISORY, NOT RESERVED,\n` +
+      `  and the first thing that fills root. The provisioner is \`mkdir -p\` with no quota, so a PVC there costs\n` +
+      `  the bytes WRITTEN; reserving the ceiling would starve the pool for bytes nobody has written.`,
   );
   const fraction = mostConservativeUsableFraction(reserves);
   for (const node of nodes) {
-    const geometry = installerGeometryFor(node, tailGib);
+    const geometry = installerGeometryFor(node, tailGib, installerRootFloorGib(repoRoot));
     if (geometry === null) {
       console.log(`  ${node.hostname.padEnd(18)} UNMEASURED (no parsable hardware.storage in ${node.path})`);
       continue;
@@ -2700,8 +2781,64 @@ function printLonghornGeometrySection(
     );
   }
   console.log(
-    "  Boot disk assumed to be the SMALLEST device, which MAXIMISES the pool — no registration records which\n" +
-      "  device was booted. Falling short under that reading convicts; clearing it proves nothing.",
+    "  Boot disk assumed to be whichever choice MAXIMISES the pool, among the choices the installer would not\n" +
+      "  refuse — no registration records which device was booted. Falling short under the most generous\n" +
+      "  reading convicts; clearing it proves nothing.",
+  );
+}
+
+/**
+ * The bring-up note, with the binding mode READ from `local-storage.nix`
+ * instead of restated in prose.
+ *
+ * WHY THIS IS A FUNCTION AND NOT A STRING (WP28, 2026-09-24). Until this
+ * change the line printed on every run said:
+ *
+ *   "Longhorn's StorageClass is volumeBindingMode Immediate, so any PVC that
+ *    gets applied provisions with zero pods, and a manual-sync app is one
+ *    `argocd app sync` from being counted."
+ *
+ * That is FALSE, and it has never been true of the class it names.
+ * `full-ai-cluster/nixos/modules/local-storage.nix` binds all three capability
+ * classes `volumeBindingMode: WaitForFirstConsumer` — `zeta-block-local`,
+ * `zeta-block-replicated` and `zeta-shared` alike — and `git log -L` on that
+ * block shows `zeta-block-replicated` was CREATED that way by #17576 ("charts
+ * name a storage capability, never a provider"). The prose described the older
+ * provider-named `longhorn` class and was carried across the rename without
+ * being re-checked.
+ *
+ * It is the worst place for a stale claim: this file's entire job is refusing
+ * unchecked assertions, and this particular assertion was PRINTED to every
+ * reader on every run. It measurably misled one — the premise "Longhorn prices
+ * ceilings, local-path prices use" was built on it, and is false under
+ * WaitForFirstConsumer because an unconsumed PVC reserves nothing either way.
+ *
+ * So the fix is not a better sentence. A sentence can rot again; a value read
+ * out of the authoritative file cannot. `metalStorageBindings()` already parses
+ * `local-storage.nix` for `storage-capabilities.ts`, so this costs one import
+ * and no new parser.
+ *
+ * WHAT DOES NOT CHANGE: bring-up is still a REPORT and never a discount. Under
+ * WaitForFirstConsumer the reason is different — an applied PVC waits for a
+ * schedulable consumer rather than provisioning at once — but a manual-sync app
+ * is still one `argocd app sync` and one schedulable pod away from being
+ * counted, and sizing a node for the smaller number is still a bet.
+ */
+export function printedBringUpNote(repoRoot = REPO_ROOT): string {
+  const modes = [...new Set(metalStorageBindings(repoRoot).map((binding) => binding.bindingMode))].sort((a, b) =>
+    stringCompare(a, b),
+  );
+  // UNKNOWN, not a default. If the bindings cannot be read, saying nothing
+  // about the mode is honest; naming one would be the same defect again.
+  const measured =
+    modes.length === 0
+      ? "volumeBindingMode could not be read from " + METAL_STORAGE_BINDINGS_SOURCE
+      : `volumeBindingMode ${modes.join(" / ")} (read from ${METAL_STORAGE_BINDINGS_SOURCE})`;
+  return (
+    "  Bring-up is the subset whose Application is actually applied on a fresh sync. It is a REPORT, never a\n" +
+    `  discount: this cluster's StorageClasses are ${measured},\n` +
+    "  so an applied PVC waits for a schedulable consumer rather than provisioning at once — but a manual-sync\n" +
+    "  app is still one `argocd app sync` and one schedulable pod away from being counted."
   );
 }
 
@@ -2801,11 +2938,7 @@ function main(argv: readonly string[]): void {
           (name === profile ? "   <- ACTIVE (ledger.activeStorageProfile)" : ""),
       );
     }
-    console.log(
-      "  Bring-up is the subset whose Application is actually applied on a fresh sync. It is a REPORT, never a\n" +
-        "  discount: Longhorn's StorageClass is volumeBindingMode Immediate, so any PVC that gets applied\n" +
-        "  provisions with zero pods, and a manual-sync app is one `argocd app sync` from being counted.",
-    );
+    console.log(printedBringUpNote(REPO_ROOT));
     console.log("\nDerived per-node storage requirement (sum of declared PVC capacity x replicas):");
     const floor = verifiedNodeCapacity(report.measuredNodes);
     const rendered = readRenderedTotals();

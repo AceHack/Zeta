@@ -573,8 +573,8 @@
     "",
     "THE TWO ENTRIES BELOW ARE DEBT, NOT CLEARANCE. Both registered nodes carry",
     "two devices; read as generously as the registration permits (boot is the",
-    "SMALLER device, so the larger becomes longhorn2 whole) each yields 699 GiB",
-    "schedulable against 943 of demand. Short by 244. A geometry change alone",
+    "SMALLER device, so the larger becomes longhorn2 whole) each yields 694 GiB",
+    "schedulable against 943 of demand. Short by 249. A geometry change alone",
     "CANNOT close that gap on this hardware -- growing the tail buys back only",
     "what ESP and root do not need -- so the remedy is a maintainer call between",
     "a smaller storage rung, more disk, and a larger tail. Recorded here so the",
@@ -591,8 +591,8 @@
     "absent check wearing a threshold -- not debt."
   ],
   "acknowledgedLonghornGeometryShortfall": [
-    "longhorn-geometry=699GiB<<943GiB@node-ad1efd",
-    "longhorn-geometry=699GiB<<943GiB@node-b1e1b5"
+    "longhorn-geometry=694GiB<<943GiB@node-ad1efd",
+    "longhorn-geometry=694GiB<<943GiB@node-b1e1b5"
   ],
   "$comment_acknowledgedRootAppDuplicates": [
     "RETIRED 2026-09-06. This entry read: 'Tracked for consolidation; delete this",

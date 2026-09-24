@@ -31,8 +31,12 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 
 import {
+  autoLonghornTailGib,
   COMMITTED_LONGHORN_DEMAND_GIB,
+  ESP_GIB,
+  LOCAL_PATH_ADVISORY_GIB,
   LONGHORN_USABLE_PERCENT,
+  ROOT_FLOOR_GIB,
   bytesToGib,
   clampGibFromText,
   longhornCapacityVerdict,
@@ -89,6 +93,7 @@ describe("the parity block is extractable and self-contained", () => {
       "zeta_clamp_gib",
       "zeta_bytes_to_gib",
       "zeta_provisioned_longhorn_gib",
+      "zeta_auto_longhorn1_tail_gib",
       "zeta_schedulable_longhorn_gib",
       "zeta_longhorn_capacity_verdict",
     ]) {
@@ -191,7 +196,47 @@ describe("zeta_longhorn_capacity_verdict agrees with longhornCapacityVerdict", (
   }
 });
 
+describe("zeta_auto_longhorn1_tail_gib agrees with autoLonghornTailGib", () => {
+  // The geometry fix, across the shapes that matter: the single 1 TiB disk this
+  // whole work package is about, a disk exactly at the refusal boundary, and
+  // one either side of it.
+  for (const diskGib of [0, 64, 120, 121, 122, 256, 931, 2048, 4096]) {
+    it(`${String(diskGib)} GiB boot disk`, () => {
+      const shell = runShell('zeta_auto_longhorn1_tail_gib "$DISK" "$FLOOR"', {
+        DISK: String(diskGib),
+        FLOOR: String(ROOT_FLOOR_GIB),
+      });
+      expect(shell).toBe(String(autoLonghornTailGib(diskGib, ROOT_FLOOR_GIB)));
+    });
+  }
+
+  it("both sides return 0 — meaning REFUSE — on a disk too small for ESP + floor + 1 GiB", () => {
+    // 0 is not a tail, on either side. A shell that clamped to 1 would put the
+    // original defect back while the oracle said otherwise.
+    expect(runShell('zeta_auto_longhorn1_tail_gib "$DISK" "$FLOOR"', { DISK: "120", FLOOR: "120" })).toBe("0");
+    expect(autoLonghornTailGib(120, 120)).toBe(0);
+  });
+
+  it("junk collapses to 0 on both sides rather than manufacturing a tail", () => {
+    for (const junk of ["", "-931", "931.5", "abc"]) {
+      expect(runShell('zeta_auto_longhorn1_tail_gib "$DISK" "$FLOOR"', { DISK: junk, FLOOR: "120" })).toBe("0");
+    }
+  });
+});
+
 describe("the shell constants agree with the TypeScript oracle", () => {
+  it("ZETA_ROOT_FLOOR_GIB == ROOT_FLOOR_GIB", () => {
+    expect(runShell('echo "$ZETA_ROOT_FLOOR_GIB"')).toBe(String(ROOT_FLOOR_GIB));
+  });
+
+  it("ZETA_ESP_GIB == ESP_GIB", () => {
+    expect(runShell('echo "$ZETA_ESP_GIB"')).toBe(String(ESP_GIB));
+  });
+
+  it("ZETA_LOCAL_PATH_ADVISORY_GIB == LOCAL_PATH_ADVISORY_GIB", () => {
+    expect(runShell('echo "$ZETA_LOCAL_PATH_ADVISORY_GIB"')).toBe(String(LOCAL_PATH_ADVISORY_GIB));
+  });
+
   it("ZETA_LONGHORN_DEMAND_GIB == COMMITTED_LONGHORN_DEMAND_GIB", () => {
     expect(runShell('echo "$ZETA_LONGHORN_DEMAND_GIB"')).toBe(String(COMMITTED_LONGHORN_DEMAND_GIB));
   });

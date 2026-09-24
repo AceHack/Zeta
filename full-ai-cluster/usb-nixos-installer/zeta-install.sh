@@ -27,8 +27,13 @@
 #      ZETA_AUTO_CONFIRM=WIPE also skips iter-5.3 password,
 #      081KSKBP80008QG0R003AX2A69.3b passphrase, gh-auth, vendor logins.
 #   5. Wipe + partition:
-#        BOOT disk: ESP 1G + root (max — fills disk) + longhorn1 (1G tail);
-#        no fixed root cap; layout is chosen at install-time partition (Step 4)
+#        BOOT disk: ESP 1G + root (a COMPUTED FLOOR, 120G) + longhorn1 (the
+#        REST of the disk). WP28 inverted this: root used to fill the disk and
+#        longhorn1 got a fixed 1G tail, so a 1 TiB single-disk install handed
+#        Longhorn ONE GIBIBYTE against a roster declaring ~943G of
+#        driver.longhorn.io PVCs. The root floor is the whole roster's unpacked
+#        container images (73G) + OS/swap/logs (30G) x 1.15.
+#        LONGHORN1_TAIL=<size> overrides and root then takes what is left.
 #        DATA disks: each becomes a single longhorn{2..N} whole-disk
 #   6. Format (FAT32 ESP + ext4 root + ext4 longhorn{1..N})
 #   7. Mount per the standard /mnt/var/lib/longhorn-disk{1..N} layout
@@ -66,8 +71,19 @@ echo
 REPO_URL="${REPO_URL:-https://github.com/Lucent-Financial-Group/Zeta}"
 HOST="${1:-}"
 STORAGE_BACKEND="${STORAGE_BACKEND:-longhorn}"
-# Minimum longhorn1 slice at the disk tail (root takes everything between ESP and this).
-LONGHORN1_TAIL="${LONGHORN1_TAIL:-1G}"
+# The longhorn1 slice at the boot disk's tail.
+#
+# WP28 (081M393B9TB087G0R000Y529Z8): "auto" INVERTS the old layout. It used to
+# default to 1G, with root taking everything between the ESP and that tail --
+# so a 1 TiB single-disk install handed Longhorn ONE GIBIBYTE against a roster
+# declaring ~943 GiB of driver.longhorn.io PVCs, and the rest of the disk was
+# not spent but simply unreachable, because the root filesystem is never a
+# Longhorn data path. Under "auto" ROOT gets a computed floor
+# (ZETA_ROOT_FLOOR_GIB, below) and longhorn1 gets the REST.
+#
+# An explicit size (>=1G, <=1T) still overrides, and root then takes what is
+# left; the operator owns the floor decision in that case.
+LONGHORN1_TAIL="${LONGHORN1_TAIL:-auto}"
 # WP21 (081M35C7NJR087G0R002S4R654): the commit to check out after cloning
 # $REPO_URL, and the operator override that lets a checkout failure proceed
 # on the default branch anyway instead of aborting. See the ZETA-REPO-PIN
@@ -153,12 +169,20 @@ size_spec_to_bytes() {
   esac
 }
 
-LONGHORN1_TAIL_BYTES="$(size_spec_to_bytes "$LONGHORN1_TAIL")"
-if (( LONGHORN1_TAIL_BYTES < 1024 * 1024 * 1024 )); then
-  bail "LONGHORN1_TAIL=$LONGHORN1_TAIL too small (need >= 1G for longhorn1 tail)"
-fi
-if (( LONGHORN1_TAIL_BYTES > 1024 * 1024 * 1024 * 1024 )); then
-  bail "LONGHORN1_TAIL=$LONGHORN1_TAIL too large (max 1T tail slice)"
+# "auto" cannot be sized until the BOOT disk is known, so it is left EMPTY here
+# and resolved in Step 2 once it is. Empty is the sentinel, and the resolver
+# below is the only thing that fills it -- an explicit size keeps its existing
+# bounds unchanged.
+if [[ "$LONGHORN1_TAIL" == "auto" ]]; then
+  LONGHORN1_TAIL_BYTES=""
+else
+  LONGHORN1_TAIL_BYTES="$(size_spec_to_bytes "$LONGHORN1_TAIL")"
+  if (( LONGHORN1_TAIL_BYTES < 1024 * 1024 * 1024 )); then
+    bail "LONGHORN1_TAIL=$LONGHORN1_TAIL too small (need >= 1G for longhorn1 tail)"
+  fi
+  if (( LONGHORN1_TAIL_BYTES > 1024 * 1024 * 1024 * 1024 )); then
+    bail "LONGHORN1_TAIL=$LONGHORN1_TAIL too large (max 1T tail slice)"
+  fi
 fi
 
 # /dev/nvme0n1 → /dev/nvme0n1p1; /dev/sda → /dev/sda1.
@@ -292,6 +316,61 @@ zeta_longhorn_capacity_verdict() {
   fi
   echo "undersized"
 }
+# --- WP28 root floor / auto tail (081M393B9TB087G0R000Y529Z8) --------
+# EVERY CONSTANT HERE IS GiB (binary, 1024^3). The measurement they come from
+# is published in GB (decimal, 10^9) and converted in the TS oracle with the
+# arithmetic shown. Mixing the two in a capacity floor is the Mars Climate
+# Orbiter class; keep them in GiB.
+
+# (73 GiB unpacked images for the WHOLE roster + 30 GiB OS/swap/nix/logs)
+# x 1.15 safety = 118.45 -> 120. The 73 is image-footprint.measured.json's
+# `all` cohort, 77.69 GB x 10^9 / 1024^3 = 72.35 GiB rounded up. That x2.67
+# unpack ratio is a MEASURED OVER-ESTIMATE for the two images that dominate
+# (a CI pull found x1.77 and x2.35), so this term is HIGH -- which on the
+# ROOT side is the SAFE direction: root gets more than it needs and Longhorn
+# gets less than it could, costing capacity and causing no failure. The same
+# ratio on the DEMAND side of a capacity check would be the ACQUITTING
+# direction and is not used there.
+ZETA_ROOT_FLOOR_GIB=120
+
+# The ESP: `sgdisk -n "1:0:+1G"` below.
+ZETA_ESP_GIB=1
+
+# Declared local-path PVC capacity that also lands on ROOT. ADVISORY, NOT
+# RESERVED, and not part of the root floor: local-storage.nix binds
+# zeta-block-local WaitForFirstConsumer and the provisioner's helper is
+# `mkdir -m 0777 -p "$VOL_DIR"` -- a directory with no quota -- so a PVC there
+# consumes the bytes WRITTEN and nothing more. Reserving it would starve the
+# Longhorn pool for bytes nobody has written. It is PRINTED because it is
+# still the first thing that fills root.
+ZETA_LOCAL_PATH_ADVISORY_GIB=220
+
+# The longhorn1 tail for a boot disk of <disk_gib>, under LONGHORN1_TAIL=auto:
+# root takes a computed FLOOR and longhorn1 takes the REST.
+#
+# THE DEFECT THIS REPLACES: the tail was a fixed 1G and root took everything
+# else, so a 1 TiB single-disk install gave Longhorn ONE GIBIBYTE and root
+# ~930 of which it needs ~120. The remainder was not spent, it was simply not
+# reachable -- the root filesystem is never a Longhorn data path.
+#
+# 0 means REFUSE, not "use 1": a tail clamped to 1 would be the old defect
+# wearing a computation. The caller bails with the numbers printed.
+zeta_auto_longhorn1_tail_gib() {
+  local disk floor tail
+  disk="$(zeta_clamp_gib "$1")"
+  floor="$(zeta_clamp_gib "$2")"
+  if [ "$disk" -eq 0 ] || [ "$floor" -eq 0 ]; then
+    echo 0
+    return
+  fi
+  tail=$(( disk - ZETA_ESP_GIB - floor ))
+  if [ "$tail" -ge 1 ]; then
+    echo "$tail"
+  else
+    echo 0
+  fi
+}
+
 # ZETA-LONGHORN-CAPACITY-END ------------------------------------
 
 # ── Step 1: enumerate internal disks ──────────────────────────────
@@ -376,9 +455,29 @@ for d in "${SORTED[@]}"; do
   [[ "$d" != "$BOOT_DISK" ]] && DATA_DISKS+=("$d")
 done
 
+# WP28 (081M393B9TB087G0R000Y529Z8): resolve LONGHORN1_TAIL=auto now that the
+# BOOT disk is known. Root gets a computed floor; longhorn1 gets the rest.
+if [[ -z "$LONGHORN1_TAIL_BYTES" ]]; then
+  boot_gib="$(zeta_bytes_to_gib "$(blockdev --getsize64 "$BOOT_DISK")")"
+  auto_tail_gib="$(zeta_auto_longhorn1_tail_gib "$boot_gib" "$ZETA_ROOT_FLOOR_GIB")"
+  if [[ "$auto_tail_gib" -lt 1 ]]; then
+    bail "BOOT disk $BOOT_DISK is ${boot_gib} GiB, which cannot hold ESP ${ZETA_ESP_GIB} GiB + root floor ${ZETA_ROOT_FLOOR_GIB} GiB + a 1 GiB minimum longhorn1 tail (need >= $((ZETA_ESP_GIB + ZETA_ROOT_FLOOR_GIB + 1)) GiB). The root floor is the whole roster's unpacked container images (73 GiB) plus OS/swap/logs (30 GiB) with a 1.15 safety factor. Nothing has been wiped. Use a larger boot disk, or set LONGHORN1_TAIL explicitly to take the floor decision yourself (>=1G, <=1T) and accept that root may not hold every image."
+  fi
+  LONGHORN1_TAIL="${auto_tail_gib}G"
+  LONGHORN1_TAIL_BYTES=$(( auto_tail_gib * 1024 * 1024 * 1024 ))
+  echo
+  echo "Longhorn tail computed from the BOOT disk (LONGHORN1_TAIL=auto):"
+  echo "  boot disk                         ${boot_gib} GiB"
+  echo "  - ESP                             ${ZETA_ESP_GIB} GiB"
+  echo "  - root floor                      ${ZETA_ROOT_FLOOR_GIB} GiB   (73 GiB images all-cohort + 30 GiB OS, x1.15)"
+  echo "  = longhorn1                       ${auto_tail_gib} GiB"
+  echo "  local-path PVC ceilings on root   ${ZETA_LOCAL_PATH_ADVISORY_GIB} GiB   ADVISORY, NOT RESERVED — the first thing that fills root"
+  echo "  Set LONGHORN1_TAIL=<size> to override (>=1G, <=1T); root then takes what is left."
+fi
+
 echo
 echo "About to FULL-WIPE the following disks:"
-echo "  BOOT: $BOOT_DISK   (ESP 1G + root max + longhorn1 ${LONGHORN1_TAIL} tail)"
+echo "  BOOT: $BOOT_DISK   (ESP 1G + root ${ZETA_ROOT_FLOOR_GIB}G floor + longhorn1 ${LONGHORN1_TAIL})"
 if [[ ${#DATA_DISKS[@]} -eq 0 ]]; then
   echo "  DATA: (none — single-disk install; only longhorn1 on boot disk)"
 else

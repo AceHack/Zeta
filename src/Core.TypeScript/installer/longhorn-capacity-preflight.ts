@@ -84,6 +84,112 @@
  */
 export const LONGHORN_USABLE_PERCENT = 75;
 
+// ---------------------------------------------------------------------------
+// THE ROOT FLOOR — what root needs, so `longhorn1` can have the REST.
+//
+// EVERY TERM BELOW IS GiB (binary, 1024^3). The measurement it is built from is
+// published in GB (decimal, 10^9) and is converted here with the arithmetic
+// shown. Mixing the two in a capacity floor is the Mars Climate Orbiter class
+// this repo cites by name, and `single-node-readiness.ts` already carries one
+// units trap of its own (`free -h --si`, so a registration's `66G` is 62942Mi).
+// If you edit these, keep them in GiB and show the conversion.
+// ---------------------------------------------------------------------------
+
+/**
+ * Unpacked container images for the WHOLE roster, GiB.
+ *
+ * `image-footprint.measured.json` (measured 2026-09-01) reports the `all`
+ * cohort at 29.10 GB compressed and **77.69 GB** estimated on disk, applying a
+ * x2.67 unpack ratio because containerd stores layers UNPACKED. Converted:
+ *
+ *   77.69 GB x 10^9 / 1024^3 = 72.35 GiB  ->  73 GiB, rounded UP
+ *
+ * The `all` cohort rather than `applied` (34.18 GB / 31.8 GiB): a root
+ * filesystem that only fits the apps applied today would need repartitioning
+ * the first time somebody runs `argocd app sync` on a deferred one, and
+ * repartitioning is the one thing this layout cannot do after the fact.
+ *
+ * WHICH WAY THE ERROR LEANS, and this is the sentence that matters most here:
+ * the x2.67 ratio is a MEASURED OVER-ESTIMATE for the two images that dominate
+ * — that file records a CI run that pulled them and found hindsight-api
+ * extracts at x1.77 and vllm at x2.35 — so this term is HIGH, by roughly 57%
+ * for the largest. On the ROOT side of the comparison, high is the SAFE
+ * direction: root gets more than it needs and Longhorn gets less than it could,
+ * which costs capacity and cannot cause a failure. The SAME ratio on the
+ * DEMAND side of a capacity check would be the ACQUITTING direction and would
+ * have to be argued for separately. It is used here and nowhere else.
+ */
+export const IMAGE_FOOTPRINT_ALL_COHORT_GIB = 73;
+
+/**
+ * OS, swap, /nix/store generations and logs, GiB. A BUDGET CHOICE, not a
+ * measurement — the same 30 GiB `single-node-readiness.ts` already carries as
+ * `OS_ROOT_ALLOWANCE_GIB`, reused rather than re-guessed so there is one number
+ * to argue with. It does NOT include the ESP, which is its own partition here.
+ */
+export const OS_ROOT_ALLOWANCE_GIB = 30;
+
+/** Safety factor over (images + OS). Stated so the rounding is a decision rather than a habit. */
+export const ROOT_FLOOR_SAFETY_FACTOR = 1.15;
+
+/**
+ * What root gets on a single-disk install before `longhorn1` takes the rest, GiB.
+ *
+ *   (73 images + 30 OS) x 1.15 = 118.45  ->  120 GiB
+ *
+ * NOT INCLUDED, AND DELIBERATELY SO: the local-path PVC ceilings that also land
+ * on root — `LOCAL_PATH_ADVISORY_GIB` below, 220 GiB today. Reserving them
+ * would starve the Longhorn pool for bytes nobody has written, because
+ * `local-storage.nix` binds `zeta-block-local` `WaitForFirstConsumer` and the
+ * local-path provisioner's own helper is `mkdir -m 0777 -p "$VOL_DIR"` — a
+ * directory with no quota and no reference to the requested size. A PVC there
+ * consumes the bytes WRITTEN and nothing more. So the ceiling is advisory, and
+ * the installer REPORTS it instead of reserving it. It is still the first thing
+ * that fills root, which is why it is printed rather than merely commented.
+ */
+export const ROOT_FLOOR_GIB = 120;
+
+/**
+ * Declared local-path PVC capacity that lands on the ROOT filesystem, GiB.
+ * ADVISORY, NOT RESERVED — see `ROOT_FLOOR_GIB`.
+ *
+ * MEASURED 2026-09-24 from `rendered-storage-claims.snapshot.json` over the
+ * classes bound to `rancher.io/local-path` (`zeta-block-local` plus the cluster
+ * default): gitlab 66, dapr 48, forgejo 20, loki 20, opensearch 20, seaweedfs
+ * 20, openbao 15, mimir 6, spire 5 = 220 GiB. Pinned by test to that snapshot,
+ * so it cannot drift silently any more than the Longhorn demand can.
+ */
+export const LOCAL_PATH_ADVISORY_GIB = 220;
+
+/** The ESP, GiB. `sgdisk -n "1:0:+1G"` in zeta-install.sh. */
+export const ESP_GIB = 1;
+
+/** `LONGHORN1_TAIL`'s value when the installer should compute the tail from the disk. */
+export const LONGHORN1_TAIL_AUTO = "auto";
+
+/**
+ * The `longhorn1` tail for a boot disk of `diskGib`, under `LONGHORN1_TAIL=auto`.
+ *
+ * THE DEFECT THIS REPLACES: the tail was a fixed `1G` and root took everything
+ * else, so a 1 TiB single-disk install gave Longhorn ONE GIBIBYTE and root
+ * ~930, of which root needs ~120. The remainder was not spent, it was simply
+ * not reachable — the root filesystem is never a Longhorn data path.
+ *
+ * Inverted: root gets a computed floor and `longhorn1` gets the REST.
+ *
+ * Returns 0 when the disk cannot hold ESP + root floor + a 1 GiB minimum tail.
+ * 0 is not a tail — it is the caller's signal to REFUSE, which
+ * `assert_boot_disk_large_enough` already does with the numbers printed. A
+ * clamped-to-1 tail would be the old defect wearing a computation.
+ */
+export function autoLonghornTailGib(diskGib: number, rootFloorGib: number = ROOT_FLOOR_GIB): number {
+  const disk = clampGib(diskGib);
+  const floor = clampGib(rootFloorGib);
+  if (disk === 0 || floor === 0) return 0;
+  const tail = disk - ESP_GIB - floor;
+  return tail >= 1 ? tail : 0;
+}
+
 /**
  * The committed roster's `driver.longhorn.io`-class PVC demand, in GiB.
  *

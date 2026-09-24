@@ -1936,7 +1936,7 @@
       "podsSource": "singleton",
       "podsEvidence": "otwld/ollama 1.6.0 renders one PVC for the release regardless of replicaCount; the Application ships replicaCount: 0 for the deferred local-models phase.",
       "scheduledAtBringUp": false,
-      "bringUpNote": "zeta.io/sync-policy: manual — the Application is never applied on a fresh sync, so no PVC object exists. NOT because replicaCount is 0: Longhorn's StorageClass is volumeBindingMode Immediate, so an applied PVC would provision at once with no pods.",
+      "bringUpNote": "zeta.io/sync-policy: manual — the Application is never applied on a fresh sync, so no PVC object exists. NOT because replicaCount is 0. CORRECTED 2026-09-24 (WP28, 081M393B9TB087G0R000Y529Z8): this note used to say 'Longhorn's StorageClass is volumeBindingMode Immediate, so an applied PVC would provision at once with no pods', which is true of the chart's own `longhorn` class and FALSE of every class this roster claims on -- local-storage.nix binds zeta-block-replicated, zeta-shared and zeta-block-local all WaitForFirstConsumer, and git log -L shows zeta-block-replicated was created that way by #17576. So an applied PVC here waits for a schedulable consumer rather than provisioning at once; what keeps this capacity off the disk is still the Application never being applied, now one `argocd app sync` AND one schedulable pod away from being false.",
       "consequence": "minimal keeps only ~10Gi of local model cache: room for one small quantised model, not a library. The local-models phase is deferred anyway, so this is planning capacity today; it becomes real the moment someone runs `argocd app sync ollama`.",
       "renderedApp": "full-ai-cluster/ollama",
       "renderedPvcPattern": "^ollama$",
