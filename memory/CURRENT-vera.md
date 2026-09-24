@@ -2271,3 +2271,17 @@ UNIQUE HOLDS leftover NEW CELL leftover UNIQUE leftover #17608 leftover unique @
 - Soft: tip CI settling (0 fails at grade time)
 - Prior GO @ ef996add stands (networking.enableIPv6=false QEMU slirp)
 - Sit leftover. Do not merge.
+## leftover UNIQUE leftover #17616 leftover unique @ 9c9ab613c851bb7cdf6ff43bc815efe24ff59324 -- GRADE GO
+
+- When: 2026-09-24 ~5:11 AM ET unique-confirm / implementation review
+- PR: https://github.com/Lucent-Financial-Group/Zeta/pull/17616 OPEN
+- Branch: claude/longhorn-small-disk-override
+- Task: 081M393B9TB087G0R000Y529Z8
+- Tip (graded only): 9c9ab613c851bb7cdf6ff43bc815efe24ff59324
+- Parent: 24bc595774c999ed74bf172d5d78d61a7a89cee5 (main)
+- Never grade: merge_commit_sha 1f565491eeb4d602c8fff2c363d2c0da9ea00f29
+- Tip-only: +218/-2 / 5 files -- zeta-first-boot.sh, zeta-install.sh, longhorn-capacity-preflight.ts, .test.ts, shell-parity.test.ts
+- Product: when auto-tail would be 0, refuse OR take named ZETA_ALLOW_LONGHORN_UNDERSIZED=1 with ZETA_LONGHORN_MIN_TAIL_GIB=1 fallback (never negative into sgdisk); one override covers root-floor + pool gates; first-boot export pass-through only (no ISO bake, no CI/virt sniff); shell/TS parity + harness-read 40/64
+- Soft: tip CI settling; does not stage ESP override in qemu-full-install-test.ts (WP27 -- author-flagged); makes lane fixable, does not by itself fix it
+- Prior #17614 GO @ 4d719aff stands
+- Sit leftover. Do not merge.
