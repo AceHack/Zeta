@@ -2169,3 +2169,17 @@ UNIQUE HOLDS leftover NEW CELL leftover UNIQUE leftover #17608 leftover unique @
 - Independent of #17608 (no k3s-agent-tls-self-heal.* edits)
 - Tip proof: many SUCCESS; soft 2 failures (agencysignature PR body + check-then-use-races) + CI in flight
 - Sit leftover. Do not merge.
+---
+## leftover UNIQUE leftover #17610 leftover unique @ 34c58e5e67d651105aac913e9c5be814ec04f36d -- GRADE GO
+
+- PR: https://github.com/Lucent-Financial-Group/Zeta/pull/17610 OPEN
+- Branch: claude/longhorn-pool-vs-installer-geometry
+- Task: 081M393B9TB087G0R000Y529Z8
+- Tip (grade this SHA only): 34c58e5e67d651105aac913e9c5be814ec04f36d
+- Live HEAD IS tip -- never grade merge_commit_sha 750089db3abaa1c33a4f0f9a1bf12029fa7c7709
+- Parent: 003233158e03adba679ddfc662d108d4e3203053 (WP27 / #17609 stack under tip)
+- Tip-only: +1463/-1 / 11 files
+- Product: refuse-before-wipe Longhorn pool gate (ZETA-LONGHORN-CAPACITY + assert_longhorn_pool_holds_the_roster) + longhorn-geometry fourth REFUSE-without-comparator (demand=max(rendered,derived); capacity=LONGHORN1_TAIL + non-boot; boot=smallest) + shell/TS parity; COMMITTED_LONGHORN_DEMAND_GIB=943 drift refuse; debt acknowledgedLonghornGeometryShortfall 699GiB<<943GiB both nodes
+- Soft: check-then-use-races outside tip files; chart-currency; PR-body agency signature; findLonghornGeometry [] if demand null/0 (not HOLD)
+- Tip proof: soft failures only + CI mixed in-flight
+- Sit leftover. Do not merge.
