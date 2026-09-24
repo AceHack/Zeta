@@ -2237,3 +2237,13 @@ UNIQUE HOLDS leftover NEW CELL leftover UNIQUE leftover #17608 leftover unique @
 - Product: test-only CWE-367 fix -- existsSync gating readFileSync replaced with readFileSync + ENOENT catch in qemu-full-install-test.test.ts; QMP graceful guest shutdown product unchanged
 - Soft: PR-body Agency-Signature trailers missing; tip CI settling
 - Sit leftover. Do not merge.
+## leftover UNIQUE leftover #17608 leftover unique @ ef996add5313ea791825887a097583c1971f6466 -- GRADE GO
+
+- Tip: ef996add5313ea791825887a097583c1971f6466 (1-commit +19/-0 / 1 files)
+- PR: #17608 OPEN -- fix(cluster): k3s agent TLS/kubeconfig self-heal (WP25)
+- Live HEAD IS tip -- never merge_commit_sha 624b30132486924ec8b3930c80bfd90d8c98c4f0; never parent 26b9685470bcfe6ef7fe55bcf92513a2d3000726 (2-parent merge-of-main)
+- Prior GO @ 887f34e3975b1772e874023130bfb1fe26c35253 and @ 32293b6bd5a7398ab8472407af8cd7e4a1216bb6 stand for those tips only
+- Product: test-only NixOS VM falsifier -- networking.enableIPv6 = false; measured fix for QEMU slirp IPv6/v4 etcd member-list mismatch on live systemctl stop/start without reboot (PR run 35972134922); module unchanged
+- Soft: tip CI settling (build-iso in_progress among others); prior soft (real-box / hermetic t3) from @ 887f34e3 stands
+- Task: 081M38G8NGC087G0R001GEGEDK
+- Sit leftover. Do not merge.
