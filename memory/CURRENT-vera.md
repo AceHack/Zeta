@@ -2402,3 +2402,18 @@ WP28 follow-up to #17622 -- delete inert defaultRunHelm clone; maxBuffer DEFAULT
 ```
 
 WP27 -- QEMU_DISK_SIZE_GB=1400 (Longhorn floor 1379/sched 959>=943); drop allowLonghornUndersized ESP staging; reportQcowAllocation post phase-1; assertEspFirstbootConfWasRead dormant when no conf staged; never grade merge 9c80aedd.
+## leftover UNIQUE leftover #17631 leftover unique @ 72e9499fc842615d4d05e251fad4fb017de360d3 -- GRADE GO
+
+```
++--------------------------------------------------------------+
+| UNIQUE #17631 @ 72e9499f  GRADE GO                           |
+| tip=HEAD 1p +58/-17/1; parent 34048076 (merge; not graded)   |
+| prior GO @ 197aba9e stands; tip-move preflight harness only  |
+| product PASS @ tip (WP28 invert + Longhorn gates + synthetic)|
+| soft: mergeable blocked; auto_merge squash; CI in_progress   |
+| hard: none                                                   |
+| proof: /workspace/vera-17631-72e9499f-review.md              |
++--------------------------------------------------------------+
+```
+
+WP27 tip-confirm -- invert WP28 harness so QEMU_DISK clears root floor; lane consts alias structurally; both Longhorn gates ok w/ empty override; refuse-signal on synthetic 40/64/floor/floor+ESP; prior GO product stands; never grade merge 86eca9fa / parent 34048076.
