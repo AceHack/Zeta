@@ -1,0 +1,12 @@
+{
+  "pr_number": 17626,
+  "archive_path": "docs/history/pr-reviews/2026/09/24/PR-17626-fix-io-sweep-the-1-mib-spawn-cap-out-of-every-renderer-and-refuse-the-fourth-wp2.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-24T12:15:48.041Z",
+  "schema_version": "v1",
+  "commit_sha": "18ef89ebdac9442bd6a0539ed9d05f6ef868c919",
+  "title": "fix(io): sweep the 1 MiB spawn cap out of every renderer, and refuse the fourth (WP28)",
+  "state": "MERGED",
+  "merged_at": "2026-09-24T12:15:10Z",
+  "head_ref": "claude/sweep-helm-spawn-buffer-caps"
+}
