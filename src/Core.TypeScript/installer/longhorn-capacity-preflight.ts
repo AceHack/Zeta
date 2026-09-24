@@ -164,6 +164,23 @@ export const LOCAL_PATH_ADVISORY_GIB = 220;
 /** The ESP, GiB. `sgdisk -n "1:0:+1G"` in zeta-install.sh. */
 export const ESP_GIB = 1;
 
+/**
+ * The smallest `longhorn1` tail zeta-install.sh will create, GiB.
+ *
+ * Reached ONLY under `ZETA_ALLOW_LONGHORN_UNDERSIZED=1`, on a boot disk too
+ * small for the root floor. It is the pre-WP28 layout — a minimum tail, root
+ * takes the rest — kept as a NAMED FALLBACK rather than as a default, because
+ * as a default it is the exact defect this work package exists to close: a
+ * 1 TiB disk handing Longhorn one gibibyte. As an explicitly-named fallback on
+ * a 40 GiB virtual disk it is the only layout that installs at all.
+ *
+ * ONE OVERRIDE COVERS BOTH REFUSALS — the root floor and the pool — because
+ * they are the same claim measured at two points ("this disk cannot hold the
+ * committed roster"). A second env var would make an operator name the same
+ * fact twice, and the second one would be the one nobody sets.
+ */
+export const LONGHORN_MIN_TAIL_GIB = 1;
+
 /** `LONGHORN1_TAIL`'s value when the installer should compute the tail from the disk. */
 export const LONGHORN1_TAIL_AUTO = "auto";
 

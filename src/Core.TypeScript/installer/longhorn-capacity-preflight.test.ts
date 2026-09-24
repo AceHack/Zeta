@@ -18,10 +18,14 @@
  */
 
 import { describe, expect, it } from "bun:test";
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
 
 import {
   autoLonghornTailGib,
   COMMITTED_LONGHORN_DEMAND_GIB,
+  ESP_GIB,
+  LONGHORN_MIN_TAIL_GIB,
   LONGHORN1_TAIL_AUTO,
   LONGHORN_USABLE_PERCENT,
   ROOT_FLOOR_GIB,
@@ -184,5 +188,136 @@ describe("the installer's own default tail is what the refusal is measured again
     // geometry fix is necessary and is not sufficient, which is why the
     // shortfall stays recorded as debt rather than being papered over here.
     expect(schedulable).toBeLessThan(COMMITTED_LONGHORN_DEMAND_GIB);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// THE DELIBERATELY-SMALL DISK — WP28 (081M393B9TB087G0R000Y529Z8).
+//
+// The QEMU install lanes create ONE virtual disk of 40 GiB (or 64 GiB for the
+// WP11 installed-disk first-boot verify). Both are SMALLER than the 120 GiB
+// root floor, so the auto-tail resolver refuses them — which would have failed
+// every install-to-disk lane, including the one this whole effort depends on.
+//
+// That case is now named and tested rather than discovered. The sizes are read
+// out of the harness rather than restated, so a lane that resizes its disk
+// re-checks this arithmetic instead of silently leaving it stale.
+// ---------------------------------------------------------------------------
+
+const QEMU_HARNESS = join(REPO_ROOT, "src/Core.TypeScript/ci/qemu-full-install-test.ts");
+
+function harnessDiskGib(constName: string): number {
+  const source = readFileSync(QEMU_HARNESS, "utf8");
+  const match = new RegExp(`^const ${constName} = (\\d+);`, "m").exec(source);
+  if (match === null) throw new Error(`${constName} not found in qemu-full-install-test.ts`);
+  return Number(match[1]);
+}
+
+describe("a boot disk smaller than the root floor never produces a negative tail", () => {
+  it("the QEMU lanes' disks are BOTH below the root floor — which is why this group exists", () => {
+    // If a lane ever grows its disk past the floor this assertion records it,
+    // and the override below stops being load-bearing for that lane.
+    expect(harnessDiskGib("DISK_SIZE_GB")).toBeLessThan(ROOT_FLOOR_GIB);
+    expect(harnessDiskGib("K3S_VERIFY_DISK_SIZE_GB")).toBeLessThan(ROOT_FLOOR_GIB);
+  });
+
+  for (const constName of ["DISK_SIZE_GB", "K3S_VERIFY_DISK_SIZE_GB"] as const) {
+    it(`${constName} yields 0, never a negative remainder`, () => {
+      // 0 is the REFUSE signal. A negative would reach `sgdisk -n "2:0:-<n>G"`
+      // as an end code computed from a negative remainder, which is how a
+      // partitioner is asked to do something nobody intended.
+      const tail = autoLonghornTailGib(harnessDiskGib(constName), ROOT_FLOOR_GIB);
+      expect(tail).toBe(0);
+      expect(tail).toBeGreaterThanOrEqual(0);
+    });
+  }
+
+  it("the boundary is exactly ESP + floor + 1, and one GiB either side behaves", () => {
+    expect(autoLonghornTailGib(ROOT_FLOOR_GIB + ESP_GIB, ROOT_FLOOR_GIB)).toBe(0);
+    expect(autoLonghornTailGib(ROOT_FLOOR_GIB + ESP_GIB + 1, ROOT_FLOOR_GIB)).toBe(LONGHORN_MIN_TAIL_GIB);
+  });
+
+  it("the minimum tail matches the lower bound an explicit LONGHORN1_TAIL already has", () => {
+    // One minimum in the installer, not two that agree by coincidence.
+    expect(LONGHORN_MIN_TAIL_GIB).toBe(1);
+  });
+});
+
+describe("the small-disk fallback is gated on the SAME named override, not on a test mode", () => {
+  const INSTALL_SH = readFileSync(join(REPO_ROOT, "full-ai-cluster/usb-nixos-installer/zeta-install.sh"), "utf8");
+
+  it("the resolver checks ZETA_ALLOW_LONGHORN_UNDERSIZED before falling back", () => {
+    // Structural, and it says what it cannot prove: it does not execute the
+    // resolver (that needs `blockdev` and a real device). What it does prove is
+    // that the fallback is reachable only through the named override, and the
+    // arithmetic itself is executed by the parity test against real bash.
+    const resolver = INSTALL_SH.slice(
+      INSTALL_SH.indexOf("resolve LONGHORN1_TAIL=auto"),
+      INSTALL_SH.indexOf("About to FULL-WIPE"),
+    );
+    expect(resolver).toContain('"${ZETA_ALLOW_LONGHORN_UNDERSIZED:-}" == "1"');
+    expect(resolver).toContain("ZETA_LONGHORN_MIN_TAIL_GIB");
+    expect(resolver).toContain("bail ");
+  });
+
+  it("it does NOT detect CI, a container, or a virtual disk", () => {
+    // A check that disables itself when it notices it is being tested is a
+    // check that cannot fail where it matters most — the vacuity class built
+    // into the guard that exists to refuse it. The override is named by the
+    // caller; the installer never infers it.
+    //
+    // COMMENTS ARE STRIPPED FIRST, and that is not a convenience: the bail text
+    // legitimately explains why the QEMU lanes set the override, and a scan
+    // that failed on the word rather than on the BRANCH would be measuring
+    // prose. It is the executable lines that must contain no sniffing.
+    const resolver = INSTALL_SH.slice(
+      INSTALL_SH.indexOf("resolve LONGHORN1_TAIL=auto"),
+      INSTALL_SH.indexOf("About to FULL-WIPE"),
+    )
+      .split("\n")
+      .filter((line) => !line.trimStart().startsWith("#"))
+      .join("\n");
+    for (const sniff of ["$CI", "GITHUB_ACTIONS", "/sys/class/dmi", "systemd-detect-virt", "hypervisor"]) {
+      expect(resolver).not.toContain(sniff);
+    }
+    // The only condition the fallback branches on is the named override.
+    const conditions = resolver.match(/^\s*(?:el)?if .*$/gm) ?? [];
+    expect(conditions.some((line) => line.includes("ZETA_ALLOW_LONGHORN_UNDERSIZED"))).toBe(true);
+  });
+
+  it("the override still PRINTS the arithmetic — it clears the exit, not the report", () => {
+    const resolver = INSTALL_SH.slice(
+      INSTALL_SH.indexOf("resolve LONGHORN1_TAIL=auto"),
+      INSTALL_SH.indexOf("About to FULL-WIPE"),
+    );
+    expect(resolver).toContain("debt you named, not a cleared check");
+  });
+});
+
+describe("the override REACHES the installer — a pass-through with no policy", () => {
+  const FIRST_BOOT = readFileSync(join(REPO_ROOT, "full-ai-cluster/usb-nixos-installer/zeta-first-boot.sh"), "utf8");
+
+  it("zeta-first-boot.sh exports it, because sourced vars are not inherited", () => {
+    // The ESP conf is SOURCED, so a value set there reaches this script's shell
+    // and not the child `zeta-install` process. Without this export the
+    // override could be set correctly and still do nothing — a knob that turns
+    // and is not connected.
+    expect(FIRST_BOOT).toContain('export ZETA_ALLOW_LONGHORN_UNDERSIZED="${ZETA_ALLOW_LONGHORN_UNDERSIZED:-}"');
+  });
+
+  it("unset stays unset — the pass-through sets no policy of its own", () => {
+    // `${VAR:-}` and nothing else. If this line ever grew a default, every USB
+    // install would clear the guard.
+    expect(FIRST_BOOT).not.toContain("export ZETA_ALLOW_LONGHORN_UNDERSIZED=1");
+  });
+
+  it("it is NOT baked into the ISO's own zeta-firstboot.conf", () => {
+    // That file ships on every USB, so a value there would clear the guard for
+    // every operator install as well — the guard deleting itself.
+    const isoConfig = readFileSync(
+      join(REPO_ROOT, "full-ai-cluster/usb-nixos-installer/nixos/installer/configuration.nix"),
+      "utf8",
+    );
+    expect(isoConfig).not.toContain("ZETA_ALLOW_LONGHORN_UNDERSIZED");
   });
 });

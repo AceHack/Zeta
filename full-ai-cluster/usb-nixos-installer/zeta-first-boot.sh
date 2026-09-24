@@ -606,6 +606,24 @@ export REPO_URL
 # either conf), so it passes through unchanged.
 export ZETA_ISO_COMMIT="${ZETA_ISO_COMMIT:-}"
 export ZETA_ALLOW_REPO_DRIFT="${ZETA_ALLOW_REPO_DRIFT:-}"
+# WP28 (081M393B9TB087G0R000Y529Z8): the same pass-through, for the Longhorn
+# capacity override. zeta-install.sh REFUSES before the wipe when the disk
+# cannot hold the committed roster's driver.longhorn.io PVCs, and refuses again
+# when it cannot hold the root floor; both are cleared by this one variable,
+# which names the debt rather than hiding it (the arithmetic still prints).
+#
+# It is a PASS-THROUGH and nothing else. This line sets no policy: an unset
+# value stays unset and the installer refuses exactly as it would on a real
+# machine. It exists so that a deliberately-small disk -- the QEMU install
+# lanes' 40/64 GiB virtual disk, sized for install MECHANICS rather than for
+# the roster -- can name the override on the ESP conf or in this process's
+# environment and have it actually REACH the installer. Sourced vars need an
+# explicit export, same note as the pair above.
+#
+# Deliberately NOT baked into the ISO's own /etc/zeta-firstboot.conf: that file
+# ships on every USB, so a value there would clear the guard for every operator
+# install as well, which is the guard deleting itself.
+export ZETA_ALLOW_LONGHORN_UNDERSIZED="${ZETA_ALLOW_LONGHORN_UNDERSIZED:-}"
 # zeta-install handles the rest: disk enum → wipe → partition →
 # format → mount → clone → nixos-install. Exits with the OS still
 # booted in the USB live environment; this script then reboots so

@@ -35,6 +35,7 @@ import {
   COMMITTED_LONGHORN_DEMAND_GIB,
   ESP_GIB,
   LOCAL_PATH_ADVISORY_GIB,
+  LONGHORN_MIN_TAIL_GIB,
   LONGHORN_USABLE_PERCENT,
   ROOT_FLOOR_GIB,
   bytesToGib,
@@ -200,7 +201,10 @@ describe("zeta_auto_longhorn1_tail_gib agrees with autoLonghornTailGib", () => {
   // The geometry fix, across the shapes that matter: the single 1 TiB disk this
   // whole work package is about, a disk exactly at the refusal boundary, and
   // one either side of it.
-  for (const diskGib of [0, 64, 120, 121, 122, 256, 931, 2048, 4096]) {
+  // 40 and 64 are the QEMU install lanes' virtual disks, named explicitly
+  // because both are BELOW the root floor and both are now on the critical path
+  // for every ISO run. 121/122 straddle the refusal boundary.
+  for (const diskGib of [0, 40, 64, 120, 121, 122, 256, 931, 2048, 4096]) {
     it(`${String(diskGib)} GiB boot disk`, () => {
       const shell = runShell('zeta_auto_longhorn1_tail_gib "$DISK" "$FLOOR"', {
         DISK: String(diskGib),
@@ -231,6 +235,12 @@ describe("the shell constants agree with the TypeScript oracle", () => {
 
   it("ZETA_ESP_GIB == ESP_GIB", () => {
     expect(runShell('echo "$ZETA_ESP_GIB"')).toBe(String(ESP_GIB));
+  });
+
+  it("ZETA_LONGHORN_MIN_TAIL_GIB == LONGHORN_MIN_TAIL_GIB", () => {
+    // The small-disk fallback's tail. Pinned across the pair because it is the
+    // one number that, as a DEFAULT, would be the original defect.
+    expect(runShell('echo "$ZETA_LONGHORN_MIN_TAIL_GIB"')).toBe(String(LONGHORN_MIN_TAIL_GIB));
   });
 
   it("ZETA_LOCAL_PATH_ADVISORY_GIB == LOCAL_PATH_ADVISORY_GIB", () => {

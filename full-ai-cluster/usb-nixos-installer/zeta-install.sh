@@ -336,6 +336,19 @@ ZETA_ROOT_FLOOR_GIB=120
 # The ESP: `sgdisk -n "1:0:+1G"` below.
 ZETA_ESP_GIB=1
 
+# The smallest longhorn1 tail this installer will create, GiB.
+#
+# Reached ONLY under ZETA_ALLOW_LONGHORN_UNDERSIZED=1, on a boot disk too small
+# for the root floor. It is the pre-WP28 layout -- a minimum tail, root takes
+# the rest -- kept as a named fallback rather than as a default, because as a
+# DEFAULT it is the exact defect WP28 exists to close: a 1 TiB disk handing
+# Longhorn one gibibyte. As an explicitly-named fallback on a 40 GiB virtual
+# disk it is the only layout that installs at all.
+#
+# It also matches the lower bound an explicit LONGHORN1_TAIL already has, so
+# there is one minimum in this file rather than two that agree by coincidence.
+ZETA_LONGHORN_MIN_TAIL_GIB=1
+
 # Declared local-path PVC capacity that also lands on ROOT. ADVISORY, NOT
 # RESERVED, and not part of the root floor: local-storage.nix binds
 # zeta-block-local WaitForFirstConsumer and the provisioner's helper is
@@ -461,7 +474,30 @@ if [[ -z "$LONGHORN1_TAIL_BYTES" ]]; then
   boot_gib="$(zeta_bytes_to_gib "$(blockdev --getsize64 "$BOOT_DISK")")"
   auto_tail_gib="$(zeta_auto_longhorn1_tail_gib "$boot_gib" "$ZETA_ROOT_FLOOR_GIB")"
   if [[ "$auto_tail_gib" -lt 1 ]]; then
-    bail "BOOT disk $BOOT_DISK is ${boot_gib} GiB, which cannot hold ESP ${ZETA_ESP_GIB} GiB + root floor ${ZETA_ROOT_FLOOR_GIB} GiB + a 1 GiB minimum longhorn1 tail (need >= $((ZETA_ESP_GIB + ZETA_ROOT_FLOOR_GIB + 1)) GiB). The root floor is the whole roster's unpacked container images (73 GiB) plus OS/swap/logs (30 GiB) with a 1.15 safety factor. Nothing has been wiped. Use a larger boot disk, or set LONGHORN1_TAIL explicitly to take the floor decision yourself (>=1G, <=1T) and accept that root may not hold every image."
+    # The disk cannot hold ESP + root floor + a 1 GiB minimum tail.
+    #
+    # ONE OVERRIDE COVERS BOTH GATES, and that is deliberate. This refusal and
+    # the pool refusal below are the SAME claim measured at two points -- "this
+    # disk cannot hold the committed roster" -- so an operator who has already
+    # said `ZETA_ALLOW_LONGHORN_UNDERSIZED=1` has answered both. A second env
+    # var would make them name the same fact twice, and the second one would be
+    # the one nobody sets.
+    #
+    # The fallback is the MINIMUM tail with root taking the rest -- the
+    # pre-WP28 layout -- because on a disk this small that is the only layout
+    # that installs at all. It is the right shape for a lane testing install
+    # MECHANICS on a deliberately small virtual disk, and the wrong shape for a
+    # real cluster, which is exactly why it costs a named override.
+    if [[ "${ZETA_ALLOW_LONGHORN_UNDERSIZED:-}" == "1" ]]; then
+      auto_tail_gib="$ZETA_LONGHORN_MIN_TAIL_GIB"
+      echo
+      echo "BOOT disk $BOOT_DISK is ${boot_gib} GiB — too small for the ${ZETA_ROOT_FLOOR_GIB} GiB root floor."
+      echo "  Proceeding on ZETA_ALLOW_LONGHORN_UNDERSIZED=1 with a MINIMUM ${ZETA_LONGHORN_MIN_TAIL_GIB} GiB longhorn1 tail;"
+      echo "  root takes the rest. The committed roster will NOT fit and its PVCs will pend."
+      echo "  This is debt you named, not a cleared check."
+    else
+      bail "BOOT disk $BOOT_DISK is ${boot_gib} GiB, which cannot hold ESP ${ZETA_ESP_GIB} GiB + root floor ${ZETA_ROOT_FLOOR_GIB} GiB + a 1 GiB minimum longhorn1 tail (need >= $((ZETA_ESP_GIB + ZETA_ROOT_FLOOR_GIB + 1)) GiB). The root floor is the whole roster's unpacked container images (73 GiB) plus OS/swap/logs (30 GiB) with a 1.15 safety factor. Nothing has been wiped. Three remedies: (1) use a larger boot disk; (2) set LONGHORN1_TAIL explicitly to take the floor decision yourself (>=1G, <=1T), accepting that root may not hold every image; (3) install anyway on a MINIMUM ${ZETA_LONGHORN_MIN_TAIL_GIB} GiB tail with ZETA_ALLOW_LONGHORN_UNDERSIZED=1, accepting that the roster's PVCs will pend — which is what the QEMU install lanes do, because their virtual disk is sized for install mechanics rather than for the roster."
+    fi
   fi
   LONGHORN1_TAIL="${auto_tail_gib}G"
   LONGHORN1_TAIL_BYTES=$(( auto_tail_gib * 1024 * 1024 * 1024 ))
