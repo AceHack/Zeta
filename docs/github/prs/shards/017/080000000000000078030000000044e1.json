@@ -1,0 +1,12 @@
+{
+  "pr_number": 17633,
+  "archive_path": "docs/history/pr-reviews/2026/09/24/PR-17633-docs-workitems-respectignoredifferences-refuted-for-cilium-wp11-nobadpods-sample.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-24T13:51:18.092Z",
+  "schema_version": "v1",
+  "commit_sha": "e4949cb87679dc2051e47e081e349cea7c59e76c",
+  "title": "docs(workitems): RespectIgnoreDifferences refuted for cilium; WP11 noBadPods samples too early (judgement)",
+  "state": "MERGED",
+  "merged_at": "2026-09-24T13:50:09Z",
+  "head_ref": "claude/wp11-nobadpods-and-respectignoredifferences-finding"
+}
