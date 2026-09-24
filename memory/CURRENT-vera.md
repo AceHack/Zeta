@@ -2298,3 +2298,16 @@ UNIQUE HOLDS leftover NEW CELL leftover UNIQUE leftover #17608 leftover unique @
 - Product: docs/workitem filing only; crash-loop follow-up (k3s ~495x after self-heal clears truncation; run 35965945581) out of this PR scope by design; module/.sh/tests unchanged
 - Prior GO @ 54636b14 stands
 - Sit leftover. Do not merge.
+## leftover UNIQUE leftover #17618 leftover unique @ 8e94131060c560c16052f74e73005438837fa349 -- GRADE GO
+
+- Tip SHA: 8e94131060c560c16052f74e73005438837fa349 (live HEAD IS tip)
+- Never grade merge_commit_sha 37b7e06a
+- Tip: 2 commits, +657/-36, 8 files on claude/wp11-hard-fail-and-longhorn-override
+- Uniques: e52431ea (ESP Longhorn override + measured-nothing fail-at-sentence) then 8e941310 (one-boot + hostname observable + workitem 081M39CJP96087G0R001T4J2R3)
+- Parent of tip range: 75733494 (#17616 merge on main) -- prior #17616 GO @ 9c9ab613 and #17609 GO @ 48013564 stand
+- (1) WP11 first boot ONE boot: waitForInstalledLoginThenK3sVerdict; phase3=phase2; self-heal phase1.teardown; deliberately not wipe-datastore-before-phase3
+- (2) wp11PreconditionFailure inside phase-1 poll; assertWp11VerdictUnitEnabled requires wrote-line; second observable ESP_PROBE_NO_HOSTNAME while marker survived
+- (3) ZETA_ALLOW_LONGHORN_UNDERSIZED=1 append-last on flashed ESP /zeta-firstboot.conf (not ISO); pairs #17616 export
+- Soft: mergeable_state blocked; tip CI settling; 081M39CJP96087G0R001T4J2R3 filed-not-fixed
+- Sit leftover. Do not merge.
+- Graded ~2026-09-24 5:45 AM ET by Vera
