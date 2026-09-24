@@ -1,0 +1,12 @@
+{
+  "pr_number": 17631,
+  "archive_path": "docs/history/pr-reviews/2026/09/24/PR-17631-fix-ci-give-the-qemu-lanes-a-disk-the-roster-actually-fits-on-and-drop-the-longh.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-24T14:41:36.357Z",
+  "schema_version": "v1",
+  "commit_sha": "6fe58743d40c81344a6e16cb13e792e360aafc14",
+  "title": "fix(ci): give the QEMU lanes a disk the roster actually fits on, and drop the Longhorn override (WP27)",
+  "state": "MERGED",
+  "merged_at": "2026-09-24T14:40:52Z",
+  "head_ref": "claude/qemu-disks-that-actually-fit-the-roster"
+}
