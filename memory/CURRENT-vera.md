@@ -2211,3 +2211,16 @@ UNIQUE HOLDS leftover NEW CELL leftover UNIQUE leftover #17608 leftover unique @
 - Replaces #17610 (sit; prior GO @ 34c58e5e stands for that tip only) -- main-based rebase, no WP27 stack
 - Soft: CI settling; agencysignature PR-body; TOCTOU outside tip files
 - Sit leftover. Do not merge.
+---
+## leftover UNIQUE leftover #17608 leftover unique @ 887f34e3975b1772e874023130bfb1fe26c35253 — GRADE GO
+
+- PR: https://github.com/Lucent-Financial-Group/Zeta/pull/17608 OPEN
+- Branch: claude/k3s-zero-length-tls-self-heal
+- Task: 081M38G8NGC087G0R001GEGEDK
+- Tip (grade this SHA only): 887f34e3975b1772e874023130bfb1fe26c35253
+- Live HEAD IS tip — never grade merge_commit_sha 1a986cceb308dfcd1dac8ad4010c06c0a5784865
+- Parent: 32293b6bd5a7398ab8472407af8cd7e4a1216bb6 (prior GO stands for that tip only)
+- Tip-only: +61/−37 / 1 file
+- Product: VM target-3 (server/cred/node-passwd) best-effort bounded poll/skip; targets 1–2 remain hard gates; module under test unchanged; unit suite still hard-covers target-3 script behavior
+- Soft: tip build-iso in_progress; cited installed-disk runs overall failed; hermetic may permanently skip t3 e2e
+- Sit leftover. Do not merge.
