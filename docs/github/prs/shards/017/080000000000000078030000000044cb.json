@@ -1,0 +1,12 @@
+{
+  "pr_number": 17611,
+  "archive_path": "docs/history/pr-reviews/2026/09/24/PR-17611-fix-installer-refuse-a-longhorn-pool-that-cannot-hold-the-roster-before-the-wipe.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-24T08:09:47.339Z",
+  "schema_version": "v1",
+  "commit_sha": "2018980898eadee8aec1d1ddf11a4ff06463ace9",
+  "title": "fix(installer): refuse a Longhorn pool that cannot hold the roster, before the wipe (WP28)",
+  "state": "MERGED",
+  "merged_at": "2026-09-24T08:09:09Z",
+  "head_ref": "claude/longhorn-installer-geometry"
+}
