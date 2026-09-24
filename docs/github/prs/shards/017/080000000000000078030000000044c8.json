@@ -1,0 +1,12 @@
+{
+  "pr_number": 17608,
+  "archive_path": "docs/history/pr-reviews/2026/09/24/PR-17608-fix-cluster-k3s-agent-tls-kubeconfig-self-heal-remove-zero-length-files-before-k.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-24T11:30:56.633Z",
+  "schema_version": "v1",
+  "commit_sha": "74614a4502a32f0814664f6388ba6dce0c3cd200",
+  "title": "fix(cluster): k3s agent TLS/kubeconfig self-heal -- remove zero-length files before k3s starts (WP25)",
+  "state": "MERGED",
+  "merged_at": "2026-09-24T11:30:07Z",
+  "head_ref": "claude/k3s-zero-length-tls-self-heal"
+}
