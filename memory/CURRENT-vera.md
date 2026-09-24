@@ -2247,3 +2247,13 @@ UNIQUE HOLDS leftover NEW CELL leftover UNIQUE leftover #17608 leftover unique @
 - Soft: tip CI settling (build-iso in_progress among others); prior soft (real-box / hermetic t3) from @ 887f34e3 stands
 - Task: 081M38G8NGC087G0R001GEGEDK
 - Sit leftover. Do not merge.
+## leftover UNIQUE leftover #17614 leftover unique @ 4d719aff464d4e7c9ea9230e96443efed9a45948 -- GRADE GO
+
+- Tip: 4d719aff464d4e7c9ea9230e96443efed9a45948 (unique 2-commit tip cell; tip +543/-63 / 7 files; range vs #17611 merge-base ~+800/-77 / 11 files)
+- PR: #17614 OPEN -- fix(installer): root computed floor / longhorn1 REST + auditor binding mode (WP28)
+- Live HEAD IS merge ec9a1344e48b1b7ca335ed856069a325c50337c8 -- never grade; never merge_commit_sha 8df2aa67e5d149f3b1bbcf64dba09c0fb9015754
+- Prior #17611 GO @ 7934facd41699d2eacae067b9eb70d6fc4d74f87 stands (refuse-before-wipe intact)
+- Product: (1) printedBringUpNote reads volumeBindingMode from local-storage.nix via metalStorageBindings; fail-closed if unreadable; REPORT-never-discount preserved. (2) LONGHORN1_TAIL=auto; root floor 120 GiB ((73+30)x1.15); longhorn1 REST; refuse-not-clamp; installerGeometryFor max over acceptable boot disks; shell/TS parity on zeta_auto_longhorn1_tail_gib. Algebra: 931-1-120=810; floor(810x75%)=607 (>443 bring-up).
+- Soft: tip SHA 0 check_runs; 607<<943 declared debt; filed 081M397QHX8087G0R003DQSY0B; ollama/vllm rebind held
+- Task: 081M393B9TB087G0R000Y529Z8
+- Sit leftover. Do not merge.
