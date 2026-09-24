@@ -144,3 +144,53 @@ mystery still open for cilium+weaviate with a concrete lead
 block every PR") and is expected to stay red until the shared mystery is
 solved -- that is not a reason to hold this PR's two confirmed, live-
 verified fixes off `main`.
+
+## The `RespectIgnoreDifferences` self-causation hypothesis is REFUTED for cilium (checked, not assumed)
+
+Raised after #17607 merged: read the correlation ("cilium and weaviate are
+the only two apps using `RespectIgnoreDifferences=true`, and the only two
+stuck Progressing") the other way round -- does the ANNOTATION cause the
+symptom, rather than being coincidentally applied to apps that also have
+it? This mattered urgently because seaweedfs got the same annotation in
+the same PR, which would have widened the defect from two apps to three
+while fixing a different one.
+
+**Checked directly against data already in hand, no new CI needed.**
+`ignoreDifferences`/`RespectIgnoreDifferences` were added to cilium's
+Application.yaml partway through this session (commit `899f18517c`). Two
+runs exist straddling that change, otherwise as close to a controlled
+pair as this investigation gets:
+
+| run | cilium's own Application.yaml | cilium's FAIL reason |
+|---|---|---|
+| 35946414428 (BEFORE the annotation existed) | no `ignoreDifferences`, no `RespectIgnoreDifferences` | `health=Progressing with no classified pod issue attributed to it (conditions: ExcludedResourceWarning: Resource discovery.k8s.io/EndpointSlice cilium-ingress is excluded in the settings)` |
+| 35973241862 (AFTER the annotation landed) | both present | **identical string, byte-for-byte**: `health=Progressing with no classified pod issue attributed to it (conditions: ExcludedResourceWarning: Resource discovery.k8s.io/EndpointSlice cilium-ingress is excluded in the settings)` |
+
+The symptom is IDENTICAL before the annotation ever touched cilium and
+after. **This refutes `RespectIgnoreDifferences` as the cause for cilium**
+-- whatever produces the stuck-Progressing state was already present with
+neither `ignoreDifferences` nor `RespectIgnoreDifferences` in the
+manifest. The correlation this workitem noted earlier ("exactly the apps
+using this option show the symptom") is better explained by a confound:
+apps that need `ignoreDifferences` at all are exactly the apps whose chart
+self-generates content at template time, and that same chart-authoring
+pattern (external subchart, complex health-relevant CRs, non-standard
+resource shapes) is independently plausible as a source of whatever is
+actually confusing ArgoCD's health aggregation. The annotation and the
+symptom share a cause; the annotation is not the cause.
+
+**Not independently re-verified for weaviate or seaweedfs** -- weaviate
+has carried the annotation since before this session started (no "before"
+baseline exists to compare against), and seaweedfs's fix is too recent to
+have an equivalent before/after pair. But cilium's clean natural
+experiment is strong enough that the coordinator's proposed discriminating
+test (drop `RespectIgnoreDifferences`, keep `ignoreDifferences`, see if
+health recovers) was not run -- the answer for the shared mechanism is
+already known with more certainty than that test would have added, and
+running it against a THIRD data point would cost another ~1h CI round for
+a hypothesis already refuted at the point that mattered most (the app
+whose fix I had just shipped).
+
+**Disposition: no changes needed to cilium/weaviate/seaweedfs's landed
+fixes.** The stuck-Progressing mystery (both cilium and weaviate) remains
+open and unexplained; it is not `RespectIgnoreDifferences` itself.

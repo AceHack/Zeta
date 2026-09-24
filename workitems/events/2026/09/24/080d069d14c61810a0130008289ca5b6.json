@@ -1,0 +1,14 @@
+{
+  "id": "080d069d14c61810a0130008289ca5b6",
+  "at": "2026-09-24T13:37:23.651Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M39T5661087G0R001FTJ78W",
+    "type": "bug",
+    "title": "WP11 noBadPods samples ONE second after rootLanded with zero soak -- measures startup ordering churn as a crash",
+    "slug": "wp11-nobadpods-samples-one-second-after-rootlanded-with-zero",
+    "priority": "P2",
+    "filename": "081M39T5661087G0R001FTJ78W-wp11-nobadpods-samples-one-second-after-rootlanded-with-zero.md"
+  }
+}
