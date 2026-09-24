@@ -117,6 +117,33 @@ export interface PrepareBootImageResult {
   readonly wifiCredentialsBaked: boolean;
   /** `undefined` means the image carries no role and installs a control plane. */
   readonly firstbootRoleBaked?: ZetaFirstbootRole["kind"];
+  /**
+   * 081M39CJP96087G0R001T4J2R3 (WP29) — THE OFFSET EVERY ESP WRITE USED, AND
+   * WHETHER ANYTHING CONFIRMED IT, REPORTED ON THE GOOD CASE TOO.
+   *
+   * Refusing the bad case is only half the discipline. The scan this replaces
+   * ended `if (guard) return fallback; return fallback;` — a check that could
+   * not disagree with the thing it checked — and part of why that survived is
+   * that a SUCCESSFUL bake never said which path it took. Making only the
+   * failure loud would leave the next reader where the last one was: unable to
+   * tell a measured offset from a constant by reading the log.
+   *
+   * Callers print these; they land in the CI job log, which outlives the
+   * runner and the image.
+   */
+  readonly espOffsetBytes: number;
+  readonly espOffsetSource: IsohybridEspOffset["source"];
+}
+
+/** One log line: what offset a bake used, and what backed it. */
+export function describeEspOffset(offset: IsohybridEspOffset): string {
+  const provenance =
+    offset.source === "mbr"
+      ? "an MBR 0xEF entry and a FAT boot sector at that offset agree"
+      : offset.source === "fallback-confirmed"
+        ? "no usable 0xEF entry; the LBA-276 fallback was CHECKED and a FAT boot sector is there"
+        : "UNCONFIRMED — nothing about this image verified the offset";
+  return `ESP offset ${offset.offsetBytes} bytes (LBA ${offset.offsetBytes / 512}) source=${offset.source} — ${provenance}`;
 }
 
 /**
@@ -281,6 +308,8 @@ export function prepareBootImage(input: PrepareBootImageInput): PrepareBootImage
 
   return {
     outputImagePath: resolve(input.outputImagePath),
+    espOffsetBytes,
+    espOffsetSource: espOffset.source,
     ...(credentialBlobPath === undefined ? {} : { credentialBlobPath }),
     bootImageEnv: input.withCredentialBlob ? "ZFLASH_QEMU_RETENTION_BOOT_IMAGE" : "ZFLASH_QEMU_PATH_FORK_BOOT_IMAGE",
     wifiCredentialsBaked: input.wifiCredentials !== undefined,

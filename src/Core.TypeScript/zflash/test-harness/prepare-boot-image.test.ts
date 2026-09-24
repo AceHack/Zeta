@@ -191,6 +191,22 @@ describe("ESP offset resolution — 081M39CJP96087G0R001T4J2R3 (WP29)", () => {
     });
   });
 
+  test("describeEspOffset names the provenance, so a log distinguishes measured from guessed", async () => {
+    const { describeEspOffset } = await import("./prepare-boot-image");
+    expect(describeEspOffset({ offsetBytes: 137_216, source: "mbr" })).toBe(
+      "ESP offset 137216 bytes (LBA 268) source=mbr — an MBR 0xEF entry and a FAT boot sector at that offset agree",
+    );
+    // The two fallback outcomes carry the SAME NUMBER, and a log that renders
+    // them identically would reproduce the exact defect this work item began
+    // with: one value, two meanings, no way to tell which you got.
+    const confirmed = describeEspOffset({ offsetBytes: 141_312, source: "fallback-confirmed" });
+    const unconfirmed = describeEspOffset({ offsetBytes: 141_312, source: "fallback-unconfirmed" });
+    expect(confirmed).toContain("141312");
+    expect(unconfirmed).toContain("141312");
+    expect(confirmed).not.toBe(unconfirmed);
+    expect(unconfirmed).toContain("UNCONFIRMED");
+  });
+
   test("prepareBootImage REFUSES an ISO whose ESP offset nothing confirms", async () => {
     // No 0xEF entry and no FAT boot sector at the fallback. Baking would send
     // every injection to a constant and then read its own writes back from

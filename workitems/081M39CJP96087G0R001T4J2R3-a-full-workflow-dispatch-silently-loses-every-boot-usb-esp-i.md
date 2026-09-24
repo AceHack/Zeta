@@ -166,6 +166,61 @@ That is a narrow failure class — `Unable to load NLS charset`, an `-EINVAL`
 from the BPB, `EBUSY` on the mountpoint — and **the kernel names which one, on
 stderr, every time.** Both guest probes were discarding it with `2>/dev/null`.
 
+## FALSIFIED: "the bake took the LBA-276 fallback and wrote over the real FAT"
+
+The most promising remaining hypothesis, and the only one that explained both
+halves of the symptom at once: the fallback constant (141 312) sits **4 096
+bytes inside** the real ESP (137 216), so a bake that fell back would write on
+top of the FAT tables while leaving the boot sector — and therefore the
+`EFIBOOT` label udev reads — untouched. Label readable, filesystem unmountable,
+permanently. It also explained the intermittency, since the two runs booted
+different ISOs.
+
+It is wrong, on three independent measurements. **Both ISOs were pulled from
+their run artifacts and their MBRs parsed:**
+
+| | 36014672753 (green) | 36044770870 (lost every injection) |
+|---|---|---|
+| ISO size | 1 751 285 760 | 1 751 285 760 |
+| ISO sha256 | `ee4d1602b293d18c…` | `94c84a355cd41107…` (different content, as expected) |
+| MBR part1 | type `0xEF`, **startLBA 268**, 6144 sectors | type `0xEF`, **startLBA 268**, 6144 sectors |
+| ESP | offset 137 216, 3.00 MiB | offset 137 216, 3.00 MiB |
+| BPB at 137 216 | FAT, label `EFIBOOT`, oem `mkfs.fat` | identical |
+| BPB at 141 312 (fallback) | **absent** | **absent** |
+| pre-WP29 `detectIsohybridEspOffsetBytes`, run byte-for-byte on the exact 141 824-byte head it was given | **137 216, via the MBR branch** | **137 216, via the MBR branch** |
+
+1. **The geometry does not vary between builds.** Both ISOs put the ESP at LBA
+   268. The ISO is not the hidden variable.
+2. **The fallback was never reached in either run.** The old algorithm resolves
+   through the MBR branch on both heads.
+3. **And if it had been reached it would have been LOUD, not silent.** There is
+   no FAT boot sector at 141 312, and mtools refuses one. Measured on the real
+   failing ISO:
+
+   ```
+   mcopy -o -i fb.img@@141312 payload ::/zeta-authorized-keys.pub
+     exit=1   init :: non DOS media / Cannot initialize '::'
+   mdir  -i fb.img@@141312 ::
+     exit=1   (same)
+   real ESP at 137216 afterwards: MOUNTS OK
+   bytes differing inside the 3 MiB ESP vs a clean convert: 0
+   ```
+
+   A fallback bake fails at `mcopy`, so `runFileBackedZflashCli` returns
+   command-failed, `prepareBootImage` errors, and the harness exits 2 in about
+   two seconds. It never produces a booting guest, and it writes nothing.
+
+**Consequence for what shipped:** `prepareBootImage`'s `fallback-unconfirmed`
+refusal is a **guard, not the fix.** It turns a cryptic `init :: non DOS media`
+into a named refusal one step earlier, which is worth having; it is not what
+lost these injections, and this work item does not close on it.
+
+**Still open, and now narrowed to one question:** what made the kernel refuse
+`mount -t vfat` on a partition whose FAT label blkid had just read, for a whole
+install, on one run and not the next, from an image whose ESP geometry is
+identical and whose bake path is deterministic. The mount-error capture below
+is what answers that, on the next occurrence.
+
 ## What landed, and what did not
 
 Landed (PR for this work item):
@@ -189,6 +244,16 @@ Landed (PR for this work item):
    own writes back from it as proof. The head buffer also grew from 141 824
    bytes — exactly enough to check the fallback and nothing else — to 8 MiB,
    read with a bounded `read()` instead of loading the whole ISO into memory.
+
+  5. Every bake now LOGS the offset it used and what backed it — on the good
+     case too, not only on a refusal. `[qemu-full-install-test] ESP offset
+     137216 bytes (LBA 268) source=mbr — ...` in the job log. The two runs
+     compared above printed identical bake lines, so answering "did this bake
+     resolve the offset or guess it?" required downloading an ISO artifact and
+     parsing its MBR by hand. It now requires reading one line. The post-bake
+     read-back prints its own one-line result for the same reason: a bake that
+     verified everything and one that verified nothing used to be
+     indistinguishable in a log.
 
 NOT closed: **why the kernel refused the mount.** Item 1 is what answers it,
 and it answers it on the next occurrence rather than by another sampling run.

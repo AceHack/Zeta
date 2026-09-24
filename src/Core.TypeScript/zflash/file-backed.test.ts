@@ -449,6 +449,65 @@ describe("runFileBackedZflashCli", () => {
     expect(result.ok).toBe(true);
   });
 
+  test("says SO when the read-back passes — the good case is visible too (081M39CJP96087G0R001T4J2R3)", () => {
+    // A bake that verified everything and a bake that verified nothing used to
+    // print the same thing: nothing. So "was this image checked, and how?" was
+    // unanswerable from a log, which is how the root-cause hunt for the lost
+    // injections ended up downloading an ISO artifact and parsing its MBR by
+    // hand. Secrets stay out: counts, not names.
+    const lines: string[] = [];
+    const result = runFileBackedZflashCli(
+      {
+        espOffsetBytes: 1_048_576,
+        hostname: "pikachu",
+        isoPath: "artifacts/zeta-installer.iso",
+        outputImagePath: "artifacts/zflash-baked.img",
+        pubkeyPath: "fixtures/id_ed25519.pub",
+        wifiPassword: "super-secret",
+        wifiSsid: "Homelab",
+      },
+      {
+        createInlineStagingDirectory: () => "/private/tmp/zflash-inline-abc123",
+        verifyEspWrites: true,
+        executor: espSimulatingExecutor(),
+        log: (line) => lines.push(line),
+      },
+    );
+
+    expect(result.ok).toBe(true);
+    expect(lines).toHaveLength(1);
+    expect(lines[0]).toBe(
+      "zflash: ESP read-back ok — 3 planned file(s) present in a RECURSIVE listing, 2 of them byte-compared " +
+        "through the FAT chain (1 source-file write(s) checked by presence only). Verified at " +
+        "artifacts/zflash-baked.img@@1048576.",
+    );
+  });
+
+  test("says NOTHING on the success path when the read-back is off", () => {
+    // The line is evidence that verification RAN. It must not appear when it
+    // did not, or it becomes the vacuity class one layer up: a log claiming a
+    // check that never happened.
+    const lines: string[] = [];
+    const result = runFileBackedZflashCli(
+      {
+        espOffsetBytes: 1_048_576,
+        hostname: "pikachu",
+        isoPath: "artifacts/zeta-installer.iso",
+        outputImagePath: "artifacts/zflash-baked.img",
+        pubkeyPath: "fixtures/id_ed25519.pub",
+      },
+      {
+        createInlineStagingDirectory: () => "/private/tmp/zflash-inline-abc123",
+        verifyEspWrites: false,
+        executor: espSimulatingExecutor(),
+        log: (line) => lines.push(line),
+      },
+    );
+
+    expect(result.ok).toBe(true);
+    expect(lines).toEqual([]);
+  });
+
   test("fails loud when a planned ESP write is silently absent after bake (081KZHJPJCF)", () => {
     // mcopy reports exit 0 for every write, but the ESP read-back omits the wifi file —
     // the observed CI silent-drop. Verification must catch it and name the missing file.

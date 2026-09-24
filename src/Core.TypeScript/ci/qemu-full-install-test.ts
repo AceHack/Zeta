@@ -57,6 +57,7 @@ import {
   DEFAULT_QEMU_PASSPHRASE,
   DEFAULT_QEMU_WIFI_PASSWORD,
   DEFAULT_QEMU_WIFI_SSID,
+  describeEspOffset,
   prepareBootImage,
 } from "../zflash/test-harness/prepare-boot-image";
 import { validateSelfRegCiCoherent } from "./self-reg-serial.ts";
@@ -2704,6 +2705,20 @@ async function main(): Promise<never> {
     }
     bootMedia = { kind: "usb-image", path: prepared.outputImagePath };
     console.log(`[qemu-full-install-test] USB boot image: ${bootMedia.path}`);
+    // 081M39CJP96087G0R001T4J2R3 (WP29) — say which offset this bake wrote to
+    // and what backed it, on EVERY run and not only on a refusal.
+    //
+    // Runs 36014672753 and 36044770870 bake the same lane minutes apart and
+    // one loses every injection. Their two bake steps printed IDENTICAL lines,
+    // so nothing in the job log could distinguish them, and answering "did
+    // this bake resolve the offset or guess it?" needed the ISO artifact and a
+    // hand-written MBR parse. It now needs one line of the log.
+    console.log(
+      `[qemu-full-install-test] ${describeEspOffset({
+        offsetBytes: prepared.espOffsetBytes,
+        source: prepared.espOffsetSource,
+      })}`,
+    );
   }
   if (!kvmEnabled()) {
     console.warn(`[qemu-full-install-test] ${KVM_PATH} not available; using TCG (slow)`);

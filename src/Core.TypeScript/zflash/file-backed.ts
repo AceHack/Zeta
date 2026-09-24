@@ -85,6 +85,21 @@ export interface FileBackedZflashCliRunDeps {
    * only worth having if it is READ. See `injection-rail.ts`.
    */
   readonly warn?: (line: string) => void;
+  /**
+   * Where the post-bake read-back's SUCCESS line goes
+   * (081M39CJP96087G0R001T4J2R3).
+   *
+   * Defaults to stderr, deliberately: `main()` writes
+   * `ZFLASH_QEMU_RETENTION_BOOT_IMAGE=...` to stdout and callers parse that,
+   * so a new stdout line would be a wire-format change wearing a log's
+   * clothes.
+   *
+   * It exists because refusing the bad case is only half the discipline. A
+   * bake that verified everything and a bake that verified nothing printed the
+   * same thing — nothing — so "was this image actually checked, and how?" was
+   * unanswerable from a log.
+   */
+  readonly log?: (line: string) => void;
 }
 
 export type FileBackedZflashCliRunResult =
@@ -414,6 +429,7 @@ function verifyBakedEspReadBack(
   executor: FileBackedZflashImageExecutor,
   imageSpecifier: string,
   espWrites: readonly FileBackedEspWrite[],
+  log: (line: string) => void,
 ): string | null {
   const listing = executor.runCommand({
     command: "mdir",
@@ -437,6 +453,7 @@ function verifyBakedEspReadBack(
     );
   }
 
+  let contentVerified = 0;
   for (const write of espWrites) {
     // Only inline writes: their expected bytes are in hand. A `sourcePath`
     // write would need the source re-read (and may be binary), which is a
@@ -463,8 +480,16 @@ function verifyBakedEspReadBack(
         `secrets.`
       );
     }
+    contentVerified++;
   }
 
+  // The good case, said out loud. Counts, not names: `/zeta-join-token` and
+  // friends are secrets, and this line goes in CI logs.
+  log(
+    `zflash: ESP read-back ok — ${espWrites.length} planned file(s) present in a RECURSIVE listing, ` +
+      `${contentVerified} of them byte-compared through the FAT chain (${espWrites.length - contentVerified} ` +
+      `source-file write(s) checked by presence only). Verified at ${imageSpecifier}.`,
+  );
   return null;
 }
 
@@ -581,7 +606,13 @@ export function runFileBackedZflashCli(
   // override via deps.verifyEspWrites. Skipped when there are no ESP writes to verify.
   const shouldVerify = deps.verifyEspWrites ?? deps.executor === undefined;
   if (shouldVerify && planned.value.espWrites.length > 0) {
-    const failure = verifyBakedEspReadBack(executor, executionPlan.value.mtoolsImageSpecifier, planned.value.espWrites);
+    const failure = verifyBakedEspReadBack(
+      executor,
+      executionPlan.value.mtoolsImageSpecifier,
+      planned.value.espWrites,
+      deps.log ?? ((line: string) => process.stderr.write(`${line}
+`)),
+    );
     if (failure !== null) {
       return { ok: false, error: failure };
     }
