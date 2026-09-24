@@ -365,12 +365,38 @@ function defaultRunHelm(
       cwd,
       encoding: "utf8",
       timeout: timeoutMs,
+      // MEASURED 2026-09-24: without this, six charts are silently unrenderable.
+      //
+      // Node's default `maxBuffer` is 1 MiB. `helm template` on a large chart
+      // blows straight past it -- cloudnative-pg alone renders 1,272,266 bytes
+      // -- and spawnSync then KILLS the child with ENOBUFS. The six biggest
+      // charts in the tree (arc-controller, argo-rollouts, argocd,
+      // cloudnativepg, external-secrets, kube-prometheus-stack) all failed this
+      // way, and every consumer of this renderer quietly stopped seeing them:
+      // the storage-claims snapshot, image-footprint, image-resolvability and
+      // inert-valuesobject-keys alike.
+      //
+      // The cap is not removed, it is RAISED to the repo's own
+      // `DEFAULT_MAX_BYTES` (64 MiB, safe-io.ts). An unbounded child can hang
+      // the process on a runaway render; a 64x headroom over the largest chart
+      // measured cannot.
+      maxBuffer: 64 * 1024 * 1024,
       env: { ...process.env, HELM_EXPERIMENTAL_OCI: "1" },
     });
+    // `result.error` FIRST, and the `??` chain below is why this is not a
+    // stylistic change. On ENOBUFS and on timeout, spawnSync sets `status` to
+    // null and leaves `stderr` as the EMPTY STRING rather than undefined -- so
+    // `result.stderr ?? result.error.message` never reached the message, and
+    // the caller reported `helm-template-failed` with an empty detail. A
+    // failure that cannot say why is the shape that cost a day here: the six
+    // charts above read as a chart defect for as long as nobody ran helm by
+    // hand.
+    const failure = result.error === undefined ? "" : `${result.error.name}: ${result.error.message}`;
+    const stderr = (result.stderr ?? "").trim() === "" ? failure : (result.stderr ?? "");
     return {
       status: result.status ?? 1,
       stdout: result.stdout ?? "",
-      stderr: result.stderr ?? (result.error === undefined ? "" : String(result.error.message)),
+      stderr,
     };
   };
 }

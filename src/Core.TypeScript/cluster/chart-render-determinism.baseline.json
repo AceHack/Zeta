@@ -1,0 +1,96 @@
+{
+  "$comment": [
+    "CHART RENDER DETERMINISM - every Application rendered TWICE and compared.",
+    "Written by `bun src/Core.TypeScript/cluster/chart-render-determinism.ts --measure`;",
+    "checked by the same file with no flag. Do not hand-edit: re-measure.",
+    "",
+    "A chart whose render differs from ITSELF is non-deterministic by construction.",
+    "ArgoCD diffs a fresh render against live state on every sync, sees a difference",
+    "that is not a drift, re-applies, and under selfHeal the workload churns forever",
+    "- on any cluster, including the one that boots off the USB installer.",
+    "",
+    "== THE FOUR ROWS, AND WHAT EACH ONE NEEDS ==========================",
+    "regenerated-secret  the chart mints a password or certificate at TEMPLATE time.",
+    "                    Remedy: supply the value (existingSecret, a pre-created",
+    "                    Secret, an external-secrets reference) so it stops inventing",
+    "                    one. cilium (CA + two hubble cert pairs), seaweedfs (sftp),",
+    "                    weaviate (cluster-api basic auth).",
+    "fresh-identity      a hook/test Pod whose NAME carries a random suffix. Remedy:",
+    "                    exclude the hook from the render, or accept it via",
+    "                    ignoreDifferences. Nothing about its contents is wrong.",
+    "                    gitlab (webservice test runner).",
+    "contents-differ     anything else. No instance today; kept so a NEW shape is",
+    "                    reported rather than bucketed into one of the two above.",
+    "",
+    "== WHY fresh-identity ROWS CARRY A `*` =============================",
+    "Their whole defect is the random suffix, so a literal name here would make THIS",
+    "FILE non-deterministic - it would go red against the next run of the same tree,",
+    "which is the failure the row exists to record. The suffix is derived by",
+    "COMPARING the two renders' names, never guessed from one of them: the first",
+    "version guessed, required a digit, and missed `jjcvk`.",
+    "",
+    "== THE UNMEASURED SET ==============================================",
+    "NAMED, and never counted as stable: an app nobody can render has not been shown",
+    "to be deterministic. It is EMPTY today, and it was six an hour before this file",
+    "existed - arc-controller, argo-rollouts, argocd, cloudnativepg, external-secrets",
+    "and kube-prometheus-stack all reported `helm-template-failed` with an EMPTY",
+    "detail. Running helm by hand on cloudnativepg exited 0 and produced 1,272,266",
+    "bytes: the failure was OURS, a 1 MiB spawnSync maxBuffer in defaultRunHelm, and",
+    "the reason was lost because spawnSync leaves stderr as the empty string on that",
+    "path so the `??` fallback never reached error.message. Both halves are fixed.",
+    "Six charts that 'could not be rendered' were six charts nobody had rendered.",
+    "",
+    "stable + unstable + unmeasured always equals appsDiscovered; a test asserts it."
+  ],
+  "measuredOn": "2026-09-24",
+  "helmVersion": "v4.2.0+g0646808",
+  "appsDiscovered": 49,
+  "stable": 45,
+  "unstable": [
+    {
+      "appId": "full-ai-cluster/cilium",
+      "documents": [
+        {
+          "document": "Secret/kube-system/cilium-ca",
+          "shape": "regenerated-secret"
+        },
+        {
+          "document": "Secret/kube-system/hubble-relay-client-certs",
+          "shape": "regenerated-secret"
+        },
+        {
+          "document": "Secret/kube-system/hubble-server-certs",
+          "shape": "regenerated-secret"
+        }
+      ]
+    },
+    {
+      "appId": "full-ai-cluster/gitlab",
+      "documents": [
+        {
+          "document": "Pod/gitlab/gitlab-webservice-test-runner-*",
+          "shape": "fresh-identity"
+        }
+      ]
+    },
+    {
+      "appId": "full-ai-cluster/seaweedfs",
+      "documents": [
+        {
+          "document": "Secret/object-store/blob-store-seaweedfs-sftp-secret",
+          "shape": "regenerated-secret"
+        }
+      ]
+    },
+    {
+      "appId": "full-ai-cluster/weaviate",
+      "documents": [
+        {
+          "document": "Secret//weaviate-cluster-api-basic-auth",
+          "shape": "regenerated-secret"
+        }
+      ]
+    }
+  ],
+  "unmeasured": []
+}
