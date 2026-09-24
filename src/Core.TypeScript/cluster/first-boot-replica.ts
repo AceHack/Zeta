@@ -80,6 +80,11 @@ import {
 // "what does the dev/CI catalog actually apply".
 import { buildLaneTreeForProfile } from "./argocd-health-test.ts";
 import { rootDevCatalogExcludeGlobFor } from "./ports.ts";
+// Stage 6 verdict classification (WP23): manual-sync apps are DIVERGENCE, never
+// FAIL, and the roster is read from the SAME convention `manual-sync-policy.ts`
+// already governs — never a second hand list next to it (its own header names
+// that drift as the exact failure this module exists to prevent).
+import { manualSyncAssertion, manualSyncDeclarations } from "./manual-sync-policy.ts";
 
 // ───────────────────────────── Small helpers ────────────────────────────
 
@@ -757,6 +762,12 @@ export function applyServeTreeOverride(plan: ReplicaPlan, override: ServeTreeOve
 // is inverted (a CrashLoopBackOff read as CAPACITY would pass the harness on a
 // genuinely broken app, which is the exact false-green stage 6 exists to remove).
 
+/** One entry of a Pod's `metadata.ownerReferences[]` — the controller-chain link `attributePodToApp` walks. */
+export interface PodOwnerRef {
+  readonly kind: string;
+  readonly name: string;
+}
+
 /** One `helm.cattle.io` job-pod OR ArgoCD child-Application pod, as `kubectl get pods -A -o json` reports it. */
 export interface PodSummary {
   readonly namespace: string;
@@ -768,6 +779,10 @@ export interface PodSummary {
   readonly containerWaitingReasons: readonly string[];
   /** Max restartCount across this pod's containers. */
   readonly restartCount: number;
+  /** `metadata.ownerReferences[]` — used by `attributePodToApp` to resolve a pod to its owning workload in a SHARED namespace. */
+  readonly ownerRefs: readonly PodOwnerRef[];
+  /** `metadata.labels["app.kubernetes.io/instance"]` — ArgoCD's own default resource-tracking label; the fallback attribution mechanism. `null` when absent. */
+  readonly instanceLabel: string | null;
 }
 
 /** A `FailedScheduling` Warning event against a Pod, as `kubectl get events -A -o json` reports it. */
@@ -787,6 +802,14 @@ export interface PodVerdict {
   /** CAPACITY/STORAGE are named-and-tolerated substrate gaps (a DIVERGENCE); everything else FAILs the app. */
   readonly isFailure: boolean;
   readonly detail: string;
+  /**
+   * The owning Application's name, as resolved by `attributePodIssues` —
+   * `undefined` when attribution was never run (in which case
+   * `computeAppVerdict` falls back to `namespace === app.name`, preserving
+   * every caller that pre-dates attribution), `null` when attribution ran
+   * and genuinely found no owner.
+   */
+  readonly appName?: string | null;
 }
 
 const CAPACITY_MESSAGE = /Insufficient (?:cpu|memory)/i;
@@ -852,10 +875,37 @@ export function classifyPods(
 
 export type AppVerdictLabel = "Healthy" | "DIVERGENCE" | "FAIL";
 
+/** One `status.resources[]` entry ArgoCD reports for an Application — a resource it directly applied (never a generated child like a ReplicaSet or Pod). */
+export interface AppResourceRef {
+  readonly kind: string;
+  readonly namespace: string;
+  readonly name: string;
+  /** `null` when ArgoCD has not evaluated this resource's health at all. */
+  readonly health: string | null;
+}
+
+/** One `status.conditions[]` entry — ArgoCD's own diagnostic text for why an Application isn't converging (ComparisonError, SharedResourceWarning, ...). */
+export interface AppConditionEntry {
+  readonly type: string;
+  readonly message: string;
+}
+
 export interface AppConvergenceSnapshot {
   readonly name: string;
   readonly sync: string;
   readonly health: string;
+  /**
+   * `spec.destination.namespace` — WHERE this Application's own resources are
+   * declared to land. Optional so every existing caller/fixture built before
+   * WP23 (attribution) still type-checks; `computeNamespaceOwnership` treats
+   * an absent value as "unknown", never as `name` (item 1: never infer the
+   * namespace from the app name).
+   */
+  readonly destinationNamespace?: string;
+  /** `status.resources[]` — what ArgoCD actually applied. `[]`/undefined when not fetched. */
+  readonly resources?: readonly AppResourceRef[];
+  /** `status.conditions[]`. `[]`/undefined when not fetched. */
+  readonly conditions?: readonly AppConditionEntry[];
 }
 
 export interface AppVerdict {
@@ -866,42 +916,332 @@ export interface AppVerdict {
   readonly reason: string;
 }
 
+// ─────────── Pod ⟶ Application attribution (WP23) ───────────
+//
+// REPLACES `pod.namespace === app.name`. That equality held only because most
+// workload directories under `full-ai-cluster/k8s/applications/` happen to
+// deploy into a namespace named after themselves — it is FALSE for cilium
+// (kube-system), kube-prometheus-stack (monitoring), openziti-controller
+// (openziti), seaweedfs (object-store), and every other Application whose
+// `spec.destination.namespace` diverges from its directory name, which is
+// exactly the class of false FAIL this rewrite exists to remove.
+
+const WORKLOAD_RESOURCE_KINDS: ReadonlySet<string> = new Set([
+  "Pod",
+  "StatefulSet",
+  "DaemonSet",
+  "Deployment",
+  "Job",
+  "CronJob",
+  "ReplicaSet",
+]);
+
+/**
+ * Does `pod` belong to `resource`? Walked via `metadata.ownerReferences`, the
+ * one link a Pod cannot misreport (the API server sets it, not the workload
+ * author). Two kinds need a ONE-HOP PREFIX match rather than an exact name
+ * match, because `status.resources[]` names the Application-applied object,
+ * never the intermediate controller Kubernetes itself creates:
+ *   - Deployment "foo" -> ReplicaSet "foo-<hash>" -> Pod (ownerRef: ReplicaSet "foo-<hash>")
+ *   - CronJob "foo" -> Job "foo-<timestamp>" -> Pod (ownerRef: Job "foo-<timestamp>")
+ * StatefulSet/DaemonSet/Job own their Pods DIRECTLY (an exact ownerRef match),
+ * and a bare `Pod` resource entry matches on its own name.
+ */
+export function podBelongsToResource(pod: PodSummary, resource: AppResourceRef): boolean {
+  if (resource.namespace !== pod.namespace || !WORKLOAD_RESOURCE_KINDS.has(resource.kind)) return false;
+  if (resource.kind === "Pod") return resource.name === pod.name;
+  if (resource.kind === "StatefulSet" || resource.kind === "DaemonSet" || resource.kind === "Job") {
+    return pod.ownerRefs.some((o) => o.kind === resource.kind && o.name === resource.name);
+  }
+  if (resource.kind === "Deployment") {
+    return pod.ownerRefs.some((o) => o.kind === "ReplicaSet" && o.name.startsWith(`${resource.name}-`));
+  }
+  if (resource.kind === "CronJob") {
+    return pod.ownerRefs.some((o) => o.kind === "Job" && o.name.startsWith(`${resource.name}-`));
+  }
+  if (resource.kind === "ReplicaSet") {
+    return pod.ownerRefs.some((o) => o.kind === "ReplicaSet" && o.name === resource.name);
+  }
+  return false;
+}
+
+/**
+ * Namespace -> the Application name(s) that CLAIM it, via `destinationNamespace`
+ * and/or a `status.resources[]` entry landing there. A namespace with exactly
+ * one claimant is namespace-exclusive (the common case: `hindsight`, `weaviate`,
+ * `openbao`, `cdi`, ...); more than one (`kube-system`: cilium, cilium-lb-ipam,
+ * sealed-secrets) means `attributePodToApp` must disambiguate further.
+ */
+export function computeNamespaceOwnership(apps: readonly AppConvergenceSnapshot[]): ReadonlyMap<string, readonly string[]> {
+  const claimants = new Map<string, Set<string>>();
+  const claim = (namespace: string | undefined, appName: string) => {
+    if (namespace === undefined || namespace === "") return;
+    if (!claimants.has(namespace)) claimants.set(namespace, new Set());
+    (claimants.get(namespace) as Set<string>).add(appName);
+  };
+  for (const app of apps) {
+    claim(app.destinationNamespace, app.name);
+    for (const r of app.resources ?? []) claim(r.namespace, app.name);
+  }
+  return new Map([...claimants.entries()].map(([ns, set]) => [ns, [...set].sort(compareOrdinal)]));
+}
+
+/**
+ * Resolve one pod to its owning Application. THREE mechanisms, tried in order,
+ * chosen for the reason noted at each step (item 1's "say which mechanism and
+ * why"):
+ *   1. Namespace-exclusive fast path — only one Application claims this
+ *      namespace, so there is nothing to disambiguate (the common case).
+ *   2. Owner-reference match against each candidate's declared `status.resources`
+ *      (`podBelongsToResource`) — precise, because the API server (not any
+ *      workload author) sets `ownerReferences`.
+ *   3. `app.kubernetes.io/instance` label — ArgoCD's own default
+ *      resource-tracking label (this tree sets no `application.instanceLabelKey`
+ *      override, confirmed by grep over `full-ai-cluster/`), for a pod whose
+ *      immediate controller isn't itself one of the Application's tracked
+ *      `status.resources` entries (e.g. a Job's transient pod when only the
+ *      CronJob is tracked).
+ * `null` when no namespace claims the pod at all, or every mechanism above
+ * comes up empty — the caller (`computeAppVerdict`'s "no classified pod issue"
+ * branch) still FAILs rather than silently dropping the pod.
+ */
+export function attributePodToApp(
+  pod: PodSummary,
+  apps: readonly AppConvergenceSnapshot[],
+  ownership: ReadonlyMap<string, readonly string[]>,
+): string | null {
+  const claimants = ownership.get(pod.namespace) ?? [];
+  if (claimants.length === 0) return null;
+  if (claimants.length === 1) return claimants[0] as string;
+  for (const appName of claimants) {
+    const app = apps.find((a) => a.name === appName);
+    if (app?.resources?.some((r) => podBelongsToResource(pod, r)) === true) return appName;
+  }
+  if (pod.instanceLabel !== null && claimants.includes(pod.instanceLabel)) return pod.instanceLabel;
+  return null;
+}
+
+/** Tag every classified pod issue with its resolved owning Application (`attributePodToApp`), for `computeAppVerdict` to filter on instead of `namespace === app.name`. */
+export function attributePodIssues(
+  pods: readonly PodSummary[],
+  podIssues: readonly PodVerdict[],
+  apps: readonly AppConvergenceSnapshot[],
+): readonly PodVerdict[] {
+  const ownership = computeNamespaceOwnership(apps);
+  const podByKey = new Map(pods.map((p) => [`${p.namespace}/${p.name}`, p]));
+  return podIssues.map((issue) => {
+    const pod = podByKey.get(`${issue.namespace}/${issue.name}`);
+    return { ...issue, appName: pod === undefined ? null : attributePodToApp(pod, apps, ownership) };
+  });
+}
+
+// ─────────── Named, sourced expected-divergence classification (WP23) ───────────
+
+/** One `## In-cluster catalog Secrets` row from `full-ai-cluster/INJECTION-POINTS.md` classified `**EXTERNAL**` — operator-supplied, no first-boot lane can mint it. */
+export interface ExternalSecretCatalogEntry {
+  readonly secretName: string;
+  readonly namespaces: readonly string[];
+  /** The row's "Mints on metal" cell — why this is a real, named gap rather than a bug. */
+  readonly note: string;
+}
+
+const INJECTION_POINTS_SECTION_HEADING = "## In-cluster catalog Secrets";
+
+/**
+ * Parses the markdown table under `## In-cluster catalog Secrets` in
+ * `full-ai-cluster/INJECTION-POINTS.md` for rows marked `**EXTERNAL**` — the
+ * canonical, human-maintained roster of "operator-supplied, no first-boot
+ * lane can mint this" credentials (WP14, 081M343EEP8087G0R000BAF6QF). Parsed
+ * from the SAME table a maintainer reads, never re-typed as a second hand
+ * list that could silently drift from it (this file's own recurring
+ * discipline — see `manifestTargetFilename`/`buildRoster`'s docstrings for
+ * the same refusal applied to the k3s manifest roster).
+ *
+ * A parser that cannot find the section, or finds an EXTERNAL row it cannot
+ * parse, throws rather than silently returning fewer entries — the same
+ * "fails LOUDLY" discipline this file's own header states for the Nix parsers.
+ */
+export function parseExternalSecretCatalog(markdown: string): readonly ExternalSecretCatalogEntry[] {
+  const headingIdx = markdown.indexOf(INJECTION_POINTS_SECTION_HEADING);
+  if (headingIdx === -1) {
+    throw new Error(`no \`${INJECTION_POINTS_SECTION_HEADING}\` section found — INJECTION-POINTS.md's shape has changed under this parser`);
+  }
+  const afterHeading = markdown.slice(headingIdx + INJECTION_POINTS_SECTION_HEADING.length);
+  const nextHeadingIdx = afterHeading.search(/\n## /);
+  const section = nextHeadingIdx === -1 ? afterHeading : afterHeading.slice(0, nextHeadingIdx);
+  const tableLines = section.split("\n").filter((l) => l.trim().startsWith("|"));
+  if (tableLines.length < 3) {
+    throw new Error(
+      `${INJECTION_POINTS_SECTION_HEADING}: expected a markdown table (header + separator + >=1 row), found ${String(tableLines.length)} '|' line(s)`,
+    );
+  }
+  const entries: ExternalSecretCatalogEntry[] = [];
+  for (const line of tableLines.slice(2)) {
+    const cells = line.split("|").slice(1, -1).map((c) => c.trim());
+    const [secretCell, namespaceCell, classCell, mintsOnMetalCell] = cells;
+    if (secretCell === undefined || namespaceCell === undefined || classCell === undefined) continue;
+    if (!classCell.includes("**EXTERNAL**")) continue;
+    const nameMatch = /`([^`]+)`/.exec(secretCell);
+    const secretName = nameMatch?.[1];
+    if (secretName === undefined) {
+      throw new Error(`${INJECTION_POINTS_SECTION_HEADING}: EXTERNAL row's Secret cell has no backtick-quoted name: ${secretCell}`);
+    }
+    const namespaces = [...namespaceCell.matchAll(/`([^`]+)`/g)].flatMap((m) => (m[1] === undefined ? [] : [m[1]]));
+    if (namespaces.length === 0) {
+      throw new Error(`${INJECTION_POINTS_SECTION_HEADING}: EXTERNAL row for \`${secretName}\` has no backtick-quoted namespace`);
+    }
+    entries.push({ secretName, namespaces, note: mintsOnMetalCell ?? "" });
+  }
+  return entries;
+}
+
+/** Does `namespace` host an EXTERNAL secret per the catalog? Returns the matching entry (for the reason string) or `null`. */
+export function externalSecretGapFor(namespace: string, catalog: readonly ExternalSecretCatalogEntry[]): ExternalSecretCatalogEntry | null {
+  return catalog.find((e) => e.namespaces.includes(namespace)) ?? null;
+}
+
+/**
+ * OpenBao boots UNINITIALISED (sealed) on every fresh cluster —
+ * `full-ai-cluster/k8s/applications/openbao/TOPOLOGY.md` §5: initialisation
+ * is a GATED class (an operator-run ceremony handing out unseal key shares;
+ * `.claude/rules/no-directives.md`'s gated-class sense), never automated. A
+ * sealed store answers its own health probe with an explicit "sealed" exit
+ * code (TOPOLOGY.md: "`vault status` exits `2` when sealed and `1` on
+ * error; a NotReady pod exiting `2` is an uninitialised **sealed** signal
+ * rather than an error") — so its pod sits Running with zero restarts
+ * FOREVER, which `classifyPod` correctly reads as converged (no issue to
+ * classify), and its StatefulSet health never leaves Progressing. This
+ * replica boots exactly what `k3s-server.nix` + the metal catalog ship (no
+ * automated init exists anywhere in this tree), so a Progressing openbao
+ * with no classified pod issue is the HONEST first-boot state — metal shows
+ * the identical Progressing until an operator runs the init ceremony.
+ */
+export function isKnownSealedByDesign(appName: string): boolean {
+  return appName === "openbao";
+}
+
+/**
+ * The `spire-agent-hostnetwork-dns-in-nested-container` DIVERGENCE (see
+ * `buildPlan`'s `divergences` array) reaching stage 6 as a pod-level
+ * CrashLoopBackOff — CONFIRMED non-metal via the same VM oracle
+ * `isKnownSoakRegression` already cites (`k3s-first-boot-roster-vm.yml` run
+ * 35706939767: spire-agent's restartCount held flat with no container
+ * nesting). This is the APP-VERDICT sibling of that soak-level allowlist —
+ * `isKnownSoakRegression` only stopped a soak REGRESSION from failing stage
+ * 6; it never taught `computeAppVerdict` that the SAME crash loop, caught at
+ * the initial convergence snapshot rather than during the soak, is the
+ * identical known artifact. NARROW ON PURPOSE, matching
+ * `isKnownSoakRegression`'s own discipline: only the `spire-agent` container
+ * qualifies. A `spire-server` (or any other) issue in this namespace is NOT
+ * covered and still fails the app, exactly as before.
+ */
+export function isKnownSpireAgentDnsCrashLoop(issue: PodVerdict): boolean {
+  return issue.namespace === "spire" && issue.category === "CRASHLOOP" && issue.name.startsWith("spire-agent");
+}
+
+export interface AppVerdictContext {
+  /** Application name -> its declared reason, from `manual-sync-policy.ts`'s own convention — never a hand list. */
+  readonly manualSyncApps: ReadonlyMap<string, string>;
+  readonly externalSecretCatalog: readonly ExternalSecretCatalogEntry[];
+}
+
+export const EMPTY_APP_VERDICT_CONTEXT: AppVerdictContext = { manualSyncApps: new Map(), externalSecretCatalog: [] };
+
+/** `app.resources` entries ArgoCD itself marked unhealthy, plus `app.conditions` — item 3's "still informative" payload for a Progressing/Missing app with no classified pod issue. `""` when there is genuinely nothing more to say (both empty/absent). */
+function describeUnexplainedDivergence(app: AppConvergenceSnapshot): string {
+  const unhealthyResources = (app.resources ?? []).filter((r) => r.health !== null && r.health !== "Healthy");
+  const parts: string[] = [];
+  if (unhealthyResources.length > 0) {
+    parts.push(`unhealthy resources: ${unhealthyResources.map((r) => `${r.kind}/${r.namespace}/${r.name}=${String(r.health)}`).join(", ")}`);
+  }
+  if ((app.conditions ?? []).length > 0) {
+    parts.push(`conditions: ${(app.conditions ?? []).map((c) => `${c.type}: ${c.message}`).join("; ")}`);
+  }
+  return parts.length === 0 ? "" : ` (${parts.join("; ")})`;
+}
+
 /**
  * One Application's verdict, from ArgoCD's own sync/health plus every classified pod
- * issue attributed to it. Pod-to-Application attribution is by NAMESPACE — every
- * workload directory under `full-ai-cluster/k8s/applications/` deploys into a
- * namespace named after itself (measured across the roster this harness excludes and
- * asserts), so `pod.namespace === app.name` is the same correlation
- * `collectFailureDiagnostics`-style per-Application diagnostics already assume
- * elsewhere in this cluster tooling. An app with issues this rule cannot attribute
- * (no pod in a same-named namespace) still FAILs rather than reading as silently
- * Healthy — see the final branch.
+ * issue ATTRIBUTED to it via `attributePodIssues` (item 1 — never `namespace === app.name`).
+ *
+ * Classification order:
+ *   1. Healthy health -> Healthy, unconditionally.
+ *   2. A declared manual-sync app (`manual-sync-policy.ts`) -> the weaker
+ *      `manualSyncAssertion` contract: Missing/Healthy is DIVERGENCE (as
+ *      designed), anything else is still a genuine FAIL.
+ *   3. No attributed pod issue: `isKnownSealedByDesign` (openbao) is a named
+ *      DIVERGENCE; otherwise FAIL, enriched with `describeUnexplainedDivergence`
+ *      so a genuinely-unattributable app (item 3) still reports something —
+ *      never the bare, uninformative "no classified pod issue".
+ *   4. Attributed pod issues exist: a `SECRET` issue in a namespace the
+ *      EXTERNAL-secret catalog names is reclassified DIVERGENCE (an operator
+ *      gap, not a defect); a `spire-agent` CrashLoopBackOff is reclassified
+ *      DIVERGENCE too (`isKnownSpireAgentDnsCrashLoop` — confirmed non-metal);
+ *      any OTHER isFailure issue still FAILs the app; otherwise DIVERGENCE
+ *      (the existing CAPACITY/STORAGE class).
  */
-export function computeAppVerdict(app: AppConvergenceSnapshot, podIssues: readonly PodVerdict[]): AppVerdict {
-  const mine = podIssues.filter((p) => p.namespace === app.name);
+export function computeAppVerdict(
+  app: AppConvergenceSnapshot,
+  podIssues: readonly PodVerdict[],
+  context: AppVerdictContext = EMPTY_APP_VERDICT_CONTEXT,
+): AppVerdict {
+  const mine = podIssues.filter((p) => (p.appName !== undefined ? p.appName : p.namespace) === app.name);
+
   if (app.health === "Healthy") {
     return { ...app, verdict: "Healthy", reason: "sync/health OK" };
   }
+
+  const manualSyncReason = context.manualSyncApps.get(app.name);
+  if (manualSyncReason !== undefined) {
+    const outcome = manualSyncAssertion({ syncStatus: app.sync, healthStatus: app.health, message: "" });
+    return outcome.ok
+      ? { ...app, verdict: "DIVERGENCE", reason: `declared manual-sync (manual-sync-policy.ts: "${manualSyncReason}") — ${outcome.reason || "Missing (never synced in this lane, as designed)"}` }
+      : { ...app, verdict: "FAIL", reason: `declared manual-sync (manual-sync-policy.ts: "${manualSyncReason}") but ${outcome.reason}` };
+  }
+
   if (mine.length === 0) {
+    if (isKnownSealedByDesign(app.name) && (app.health === "Progressing" || app.health === "Missing")) {
+      return {
+        ...app,
+        verdict: "DIVERGENCE",
+        reason: "sealed by design (full-ai-cluster/k8s/applications/openbao/TOPOLOGY.md §5) — uninitialised on every fresh cluster; no automated init exists in this tree",
+      };
+    }
     return {
       ...app,
       verdict: "FAIL",
-      reason: `health=${app.health} with no classified pod issue in namespace "${app.name}" to explain it`,
+      reason: `health=${app.health} with no classified pod issue attributed to it${describeUnexplainedDivergence(app)}`,
     };
   }
-  const failing = mine.filter((p) => p.isFailure);
+
   const summary = (list: readonly PodVerdict[]) => list.map((p) => `${p.name}:${String(p.category)}(${p.detail})`).join("; ");
-  if (failing.length > 0) {
-    return { ...app, verdict: "FAIL", reason: summary(failing) };
+  const trulyFailing: PodVerdict[] = [];
+  const divergent: PodVerdict[] = [...mine.filter((p) => !p.isFailure)];
+  for (const p of mine.filter((p) => p.isFailure)) {
+    const gap = p.category === "SECRET" ? externalSecretGapFor(app.destinationNamespace ?? "", context.externalSecretCatalog) : null;
+    if (gap !== null) {
+      divergent.push({ ...p, detail: `${p.detail} — EXTERNAL credential \`${gap.secretName}\` per full-ai-cluster/INJECTION-POINTS.md (${gap.note}); operator-supplied, no first-boot lane mints it` });
+    } else if (isKnownSpireAgentDnsCrashLoop(p)) {
+      divergent.push({
+        ...p,
+        detail: `${p.detail} — confirmed non-metal (spire-agent-hostnetwork-dns-in-nested-container DIVERGENCE; VM oracle run 35706939767 held restartCount flat with no container nesting)`,
+      });
+    } else {
+      trulyFailing.push(p);
+    }
   }
-  return { ...app, verdict: "DIVERGENCE", reason: summary(mine) };
+  if (trulyFailing.length > 0) {
+    return { ...app, verdict: "FAIL", reason: summary(trulyFailing) };
+  }
+  return { ...app, verdict: "DIVERGENCE", reason: summary(divergent) };
 }
 
 export function computeAppVerdicts(
   apps: readonly AppConvergenceSnapshot[],
   podIssues: readonly PodVerdict[],
+  context: AppVerdictContext = EMPTY_APP_VERDICT_CONTEXT,
 ): readonly AppVerdict[] {
-  return apps.map((a) => computeAppVerdict(a, podIssues));
+  return apps.map((a) => computeAppVerdict(a, podIssues, context));
 }
 
 /** Convergence-wait stop condition: no Application is still mid-reconcile. */
@@ -1092,7 +1432,13 @@ export function parsePvcBindings(stdout: string): readonly PvcBinding[] {
   return out.sort((a, b) => compareOrdinal(`${a.namespace}/${a.name}`, `${b.namespace}/${b.name}`));
 }
 
-/** Parse `kubectl get applications.argoproj.io -o json` into sync/health snapshots. Never throws — an unparseable listing yields `[]`. */
+/**
+ * Parse `kubectl get applications.argoproj.io -o json` into convergence
+ * snapshots — sync/health PLUS `spec.destination.namespace` and
+ * `status.resources[]`/`status.conditions[]` (WP23: attribution and the
+ * item-3 "still informative" payload both need these). Never throws — an
+ * unparseable listing yields `[]`.
+ */
 export function parseAppConvergenceSnapshots(stdout: string): readonly AppConvergenceSnapshot[] {
   let parsed: unknown;
   try {
@@ -1106,14 +1452,31 @@ export function parseAppConvergenceSnapshots(stdout: string): readonly AppConver
   for (const item of items) {
     const record = item as {
       metadata?: { name?: unknown };
-      status?: { sync?: { status?: unknown }; health?: { status?: unknown } };
+      spec?: { destination?: { namespace?: unknown } };
+      status?: {
+        sync?: { status?: unknown };
+        health?: { status?: unknown };
+        resources?: { kind?: unknown; namespace?: unknown; name?: unknown; health?: { status?: unknown } }[];
+        conditions?: { type?: unknown; message?: unknown }[];
+      };
     };
     const name = record.metadata?.name;
     if (typeof name !== "string") continue;
+    const resources: AppResourceRef[] = (record.status?.resources ?? []).flatMap((r) =>
+      typeof r.kind === "string" && typeof r.namespace === "string" && typeof r.name === "string"
+        ? [{ kind: r.kind, namespace: r.namespace, name: r.name, health: typeof r.health?.status === "string" ? r.health.status : null }]
+        : [],
+    );
+    const conditions: AppConditionEntry[] = (record.status?.conditions ?? []).flatMap((c) =>
+      typeof c.type === "string" && typeof c.message === "string" ? [{ type: c.type, message: c.message }] : [],
+    );
     out.push({
       name,
       sync: typeof record.status?.sync?.status === "string" ? record.status.sync.status : "Unknown",
       health: typeof record.status?.health?.status === "string" ? record.status.health.status : "Unknown",
+      ...(typeof record.spec?.destination?.namespace === "string" ? { destinationNamespace: record.spec.destination.namespace } : {}),
+      resources,
+      conditions,
     });
   }
   return out;
@@ -1343,7 +1706,11 @@ export interface HelmChartAttempt {
   readonly detail: string;
 }
 
-/** Parse `kubectl get pods -A -o json` stdout into the shape `classifyPod` needs. Never throws — an unparseable/empty listing yields `[]`. */
+/**
+ * Parse `kubectl get pods -A -o json` stdout into the shape `classifyPod`
+ * needs, PLUS `ownerRefs`/`instanceLabel` (WP23: `attributePodToApp` needs
+ * both). Never throws — an unparseable/empty listing yields `[]`.
+ */
 export function parsePodSummaries(stdout: string): readonly PodSummary[] {
   let parsed: unknown;
   try {
@@ -1356,7 +1723,12 @@ export function parsePodSummaries(stdout: string): readonly PodSummary[] {
   const out: PodSummary[] = [];
   for (const item of items) {
     const record = item as {
-      metadata?: { name?: unknown; namespace?: unknown };
+      metadata?: {
+        name?: unknown;
+        namespace?: unknown;
+        labels?: Record<string, unknown>;
+        ownerReferences?: { kind?: unknown; name?: unknown }[];
+      };
       status?: {
         phase?: unknown;
         conditions?: { type?: unknown; status?: unknown }[];
@@ -1375,6 +1747,10 @@ export function parsePodSummaries(stdout: string): readonly PodSummary[] {
       .map((cs) => cs.state?.waiting?.reason)
       .filter((r): r is string => typeof r === "string");
     const restartCount = statuses.reduce((max, cs) => Math.max(max, typeof cs.restartCount === "number" ? cs.restartCount : 0), 0);
+    const ownerRefs: PodOwnerRef[] = (record.metadata?.ownerReferences ?? []).flatMap((o) =>
+      typeof o.kind === "string" && typeof o.name === "string" ? [{ kind: o.kind, name: o.name }] : [],
+    );
+    const instanceLabelRaw = record.metadata?.labels?.["app.kubernetes.io/instance"];
     out.push({
       namespace,
       name,
@@ -1382,6 +1758,8 @@ export function parsePodSummaries(stdout: string): readonly PodSummary[] {
       scheduled: scheduledByCondition || statuses.length > 0,
       containerWaitingReasons,
       restartCount,
+      ownerRefs,
+      instanceLabel: typeof instanceLabelRaw === "string" ? instanceLabelRaw : null,
     });
   }
   return out;
@@ -1916,36 +2294,43 @@ export async function runReplica(opts: RunOptions): Promise<RunReport> {
     //   3. Soak (~300s in CI): re-sample every container's restartCount and FAIL if
     //      any of them increases while otherwise steady — a converged snapshot that
     //      then crash-loops is not convergence.
+    // Verdict context (item 2): sourced from the SAME machine-readable
+    // conventions a maintainer reads, never a hand-maintained list next to
+    // them — `manual-sync-policy.ts`'s own annotation convention, and the
+    // `**EXTERNAL**` rows of `full-ai-cluster/INJECTION-POINTS.md`'s
+    // in-cluster-catalog-Secrets table.
+    const verdictContext: AppVerdictContext = {
+      manualSyncApps: new Map(
+        manualSyncDeclarations(join(REPO_ROOT, "full-ai-cluster/k8s/applications")).map((d) => [d.app, d.reason]),
+      ),
+      externalSecretCatalog: parseExternalSecretCatalog(readFileSync(join(REPO_ROOT, "full-ai-cluster/INJECTION-POINTS.md"), "utf-8")),
+    };
+
     const s6Start = nowSeconds();
     const s6Deadline = s6Start + opts.stage567TimeoutSec;
-    let appConvergence: AppConvergenceSnapshot[] = [];
+    let appConvergence: readonly AppConvergenceSnapshot[] = [];
     let settled = false;
     await waitUntil(s6Deadline, opts.pollMs, () => {
       const appsJson = kubectl(runner, kubeconfigPath, ["-n", "argocd", "get", "applications.argoproj.io", "-o", "json"], 30_000);
       if (appsJson.status !== 0) return false;
-      try {
-        const parsed = JSON.parse(appsJson.stdout) as {
-          items?: { metadata?: { name?: string }; status?: { sync?: { status?: string }; health?: { status?: string } } }[];
-        };
-        appConvergence = (parsed.items ?? [])
-          .filter((a): a is typeof a & { metadata: { name: string } } => typeof a.metadata?.name === "string")
-          .map((a) => ({
-            name: a.metadata.name,
-            sync: a.status?.sync?.status ?? "Unknown",
-            health: a.status?.health?.status ?? "Unknown",
-          }));
-      } catch (e) {
-        log(`WARNING: stage 6 could not parse Applications JSON: ${reason(e)}`);
+      appConvergence = parseAppConvergenceSnapshots(appsJson.stdout);
+      if (appConvergence.length === 0) {
+        log("WARNING: stage 6 could not parse Applications JSON (or the roster is empty)");
         return false;
       }
-      settled = appConvergence.length > 0 && allApplicationsSettled(appConvergence);
+      settled = allApplicationsSettled(appConvergence);
       return settled;
     });
 
     const podsJsonAtSettle = kubectl(runner, kubeconfigPath, ["get", "pods", "-A", "-o", "json"], 30_000);
     const eventsJson = kubectl(runner, kubeconfigPath, ["get", "events", "-A", "-o", "json"], 30_000);
-    const podIssues = classifyPods(parsePodSummaries(podsJsonAtSettle.stdout), parseFailedSchedulingEvents(eventsJson.stdout));
-    const appVerdicts = computeAppVerdicts(appConvergence, podIssues);
+    const podsAtSettle = parsePodSummaries(podsJsonAtSettle.stdout);
+    const podIssues = attributePodIssues(
+      podsAtSettle,
+      classifyPods(podsAtSettle, parseFailedSchedulingEvents(eventsJson.stdout)),
+      appConvergence,
+    );
+    const appVerdicts = computeAppVerdicts(appConvergence, podIssues, verdictContext);
     const failingApps = appVerdicts.filter((v) => v.verdict === "FAIL");
     const divergentApps = appVerdicts.filter((v) => v.verdict === "DIVERGENCE");
     const healthyCount = appVerdicts.length - failingApps.length - divergentApps.length;

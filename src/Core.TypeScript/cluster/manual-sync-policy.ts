@@ -158,6 +158,39 @@ export interface SyncPolicyViolation {
   readonly problem: string;
 }
 
+export interface ManualSyncDeclaration {
+  /** The Application directory name — same identifier ArgoCD's own `metadata.name` uses. */
+  readonly app: string;
+  readonly reason: string;
+}
+
+/**
+ * Every Application under `appsDir` that DECLARES itself manual-sync
+ * (`classifySyncPolicy` returns `kind: "manual"`), with its stated reason.
+ *
+ * Exists so a CONSUMER of the convention (first-boot-replica.ts's stage 6
+ * verdict classifier, first among them) can ask "which apps are deliberately
+ * manual-sync, and why" without growing a second hand-maintained roster next
+ * to `auditSyncPolicyDeclarations`'s violation-only view — the exact drift
+ * this module's own header (`-- WHY THIS FILE EXISTS --`) was written to
+ * prevent. `invalid` declarations are excluded on purpose: a malformed
+ * annotation earns the FULL Synced+Healthy contract, never the weaker one
+ * (`classifySyncPolicy`'s own FAIL-CLOSED section).
+ */
+export function manualSyncDeclarations(appsDir: string): readonly ManualSyncDeclaration[] {
+  if (!existsSync(appsDir)) return [];
+  return readdirSync(appsDir, { withFileTypes: true })
+    .filter((entry) => entry.isDirectory())
+    .map((entry) => entry.name)
+    .sort((a, b) => (a < b ? -1 : a > b ? 1 : 0))
+    .flatMap((dir): ManualSyncDeclaration[] => {
+      const path = join(appsDir, dir, "Application.yaml");
+      if (!existsSync(path)) return [];
+      const declaration = classifySyncPolicy(readFileSync(path, "utf8"));
+      return declaration.kind === "manual" ? [{ app: dir, reason: declaration.reason }] : [];
+    });
+}
+
 /**
  * Audit every depth-1 `<dir>/Application.yaml` under an applications tree.
  *

@@ -6,6 +6,7 @@ import {
   auditSyncPolicyDeclarations,
   classifySyncPolicy,
   manualSyncAssertion,
+  manualSyncDeclarations,
   MANUAL_SYNC_ACCEPTABLE_HEALTH,
   COMPARISON_COMPLETED_SYNC_STATUS,
 } from "./manual-sync-policy.ts";
@@ -125,6 +126,40 @@ describe("manual-sync convention, over the real tree", () => {
     } finally {
       rmSync(root, { recursive: true, force: true });
     }
+  });
+});
+
+describe("manualSyncDeclarations", () => {
+  test("over the real tree: exactly the four apps, each with a non-empty reason (first-boot-replica.ts's WP23 source of truth)", () => {
+    const declarations = manualSyncDeclarations(APPS_DIR);
+    expect(declarations.map((d) => d.app)).toEqual(["cdi", "kubevirt", "ollama", "vllm"]);
+    for (const d of declarations) expect(d.reason.length).toBeGreaterThan(0);
+  });
+
+  test("PROOF IT GOES RED: a temp tree's manual app is reported with its reason, an invalid one is not", () => {
+    const root = mkdtempSync(join(tmpdir(), "zeta-manual-sync-decl-"));
+    try {
+      const manualDir = join(root, "manual-app");
+      mkdirSync(manualDir, { recursive: true });
+      writeFileSync(join(manualDir, "Application.yaml"), withAnnotations(MANUAL_ANNOTATIONS, NO_AUTOMATED));
+
+      const invalidDir = join(root, "invalid-app");
+      mkdirSync(invalidDir, { recursive: true });
+      writeFileSync(join(invalidDir, "Application.yaml"), manifest(HEAD.concat(NO_AUTOMATED)));
+
+      const autoDir = join(root, "auto-app");
+      mkdirSync(autoDir, { recursive: true });
+      writeFileSync(join(autoDir, "Application.yaml"), manifest(HEAD.concat(AUTOMATED)));
+
+      const declarations = manualSyncDeclarations(root);
+      expect(declarations).toEqual([{ app: "manual-app", reason: "adopts an operator installed by hand under live guests" }]);
+    } finally {
+      rmSync(root, { recursive: true, force: true });
+    }
+  });
+
+  test("a nonexistent directory yields []", () => {
+    expect(manualSyncDeclarations(join(tmpdir(), "zeta-manual-sync-decl-does-not-exist"))).toEqual([]);
   });
 });
 

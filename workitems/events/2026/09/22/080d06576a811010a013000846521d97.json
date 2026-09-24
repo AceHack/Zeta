@@ -1,0 +1,14 @@
+{
+  "id": "080d06576a811010a013000846521d97",
+  "at": "2026-09-22T21:02:25.314Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M35ETM11087G0R0002Y62F5",
+    "type": "task",
+    "title": "first-boot-replica stage 6: attribute pods to Applications correctly, classify expected divergences (WP23)",
+    "slug": "first-boot-replica-stage-6-attribute-pods-to-applications-co",
+    "priority": "P1",
+    "filename": "081M35ETM11087G0R0002Y62F5-first-boot-replica-stage-6-attribute-pods-to-applications-co.md"
+  }
+}
