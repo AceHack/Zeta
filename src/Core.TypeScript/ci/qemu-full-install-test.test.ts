@@ -17,6 +17,10 @@ import {
   assertUsbISerialPhase1Contract,
   assertWifiEspPhase1Contract,
   assertEspFirstbootConfWasRead,
+  describeQcowAllocation,
+  gib,
+  parseQcowSizes,
+  qcowAllocationIsConcerning,
   assertNothingToHealAfterGracefulShutdown,
   ESP_CONF_SCAN_PREFIX,
   espConfScanOutcome,
@@ -1711,5 +1715,119 @@ describe("WP27 — a role-less ESP conf must NOT claim the role was declared", (
     // And the conf's own arrival is reported separately from the role's
     // provenance, because they are now two different facts.
     expect(sh).toContain("ZETA_ESP_CONF=\"esp:$part\"");
+  });
+});
+
+describe("WP27 — the qcow2 sparseness claim is measured, not asserted", () => {
+  const GiB = 1024 ** 3;
+
+  it("parses qemu-img's two sizes and keeps them separate", () => {
+    // virtual-size is what the GUEST sees; actual-size is what the RUNNER
+    // pays. The whole disk-size decision rests on the gap between them, so
+    // neither is ever inferred from the other.
+    const parsed = parseQcowSizes(
+      JSON.stringify({ "virtual-size": 1400 * GiB, "actual-size": 18 * GiB, format: "qcow2" }),
+    );
+    expect(parsed).toEqual({ virtualBytes: 1400 * GiB, actualBytes: 18 * GiB });
+  });
+
+  it("returns null rather than a wrong number on unparseable output", () => {
+    expect(parseQcowSizes("not json")).toBeNull();
+    expect(parseQcowSizes(JSON.stringify({ "virtual-size": "1400G" }))).toBeNull();
+    expect(parseQcowSizes(JSON.stringify(null))).toBeNull();
+  });
+
+  it("reports the ratio that IS the sparseness claim", () => {
+    const line = describeQcowAllocation(
+      "after phase 1 (install)",
+      { virtualBytes: 1400 * GiB, actualBytes: 18 * GiB },
+      60 * GiB,
+    );
+    expect(line).toContain("virtual=1400.0 GiB");
+    expect(line).toContain("allocated=18.0 GiB");
+    expect(line).toContain("1.29% of virtual");
+    expect(line).toContain("runner free: 60.0 GiB");
+  });
+
+  it("says free space is UNKNOWN rather than omitting the clause", () => {
+    // "no headroom line" and "headroom is fine" must not look the same — that
+    // is the shape this whole work item has been chasing all night.
+    const line = describeQcowAllocation("x", { virtualBytes: GiB, actualBytes: GiB }, null);
+    expect(line).toContain("runner free space: unknown");
+  });
+
+  it("flags the eager-allocation world and stays quiet in the sparse one", () => {
+    const sparse = { virtualBytes: 1400 * GiB, actualBytes: 18 * GiB };
+    const eager = { virtualBytes: 1400 * GiB, actualBytes: 900 * GiB };
+    expect(qcowAllocationIsConcerning(sparse, 60 * GiB)).toBe(false);
+    expect(qcowAllocationIsConcerning(eager, 60 * GiB)).toBe(true);
+    // Unknown free space cannot convict: the comparison has no second operand.
+    expect(qcowAllocationIsConcerning(eager, null)).toBe(false);
+  });
+
+  it("formats GiB without pretending to precision it does not have", () => {
+    expect(gib(0)).toBe("0.0 GiB");
+    expect(gib(1536 * 1024 * 1024)).toBe("1.5 GiB");
+  });
+});
+
+describe("WP27 — the QEMU disk is sized so BOTH Longhorn gates pass on the arithmetic", () => {
+  it("re-derives the floor from zeta-install.sh's own constants", () => {
+    const sh = readFileSync(
+      resolve(import.meta.dir, "../../../full-ai-cluster/usb-nixos-installer/zeta-install.sh"),
+      "utf8",
+    );
+    const num = (name: string): number => {
+      const m = sh.match(new RegExp(`^${name}=(\\d+)$`, "m"));
+      if (m === null || m[1] === undefined) throw new Error(`${name} not found in zeta-install.sh`);
+      return Number(m[1]);
+    };
+    const esp = num("ZETA_ESP_GIB");
+    const rootFloor = num("ZETA_ROOT_FLOOR_GIB");
+    const demand = num("ZETA_LONGHORN_DEMAND_GIB");
+    const usablePercent = num("ZETA_LONGHORN_USABLE_PERCENT");
+
+    // Gate 2 (the capacity verdict): schedulable = tail * usable% / 100, and
+    // `ok` needs schedulable >= demand.
+    const tailNeeded = Math.ceil((demand * 100) / usablePercent);
+    const diskNeeded = esp + rootFloor + tailNeeded;
+
+    const harness = readFileSync(resolve(import.meta.dir, "qemu-full-install-test.ts"), "utf8");
+    const m = harness.match(/^const QEMU_DISK_SIZE_GB = (\d+);$/m);
+    expect(m).not.toBeNull();
+    const configured = Number(m?.[1]);
+
+    // The point of deriving rather than hardcoding: if the roster grows, or
+    // the root floor moves, THIS test goes red instead of a 90-minute lane.
+    expect(configured).toBeGreaterThanOrEqual(diskNeeded);
+
+    // And gate 1 (the pre-wipe disk-size bail) is implied by gate 2 — a disk
+    // that satisfies the demand necessarily clears ESP + floor + 1 — but it is
+    // asserted so a future change that relaxes gate 2 cannot silently
+    // reintroduce the bail that started this.
+    expect(configured).toBeGreaterThanOrEqual(esp + rootFloor + 1);
+
+    // Integer truncation is real: assert the ACTUAL schedulable, not the ideal.
+    const tail = configured - esp - rootFloor;
+    expect(Math.floor((tail * usablePercent) / 100)).toBeGreaterThanOrEqual(demand);
+  });
+
+  it("no longer stages the Longhorn override — the lanes test the real path", () => {
+    const harness = readFileSync(resolve(import.meta.dir, "qemu-full-install-test.ts"), "utf8");
+    // Comments are stripped first, deliberately. The removal is DOCUMENTED in
+    // a comment that names the option, so a naive `toContain` would match the
+    // explanation of why it is gone and fail on the correct tree — a check
+    // that fires on the thing it is supposed to approve of.
+    const code = harness
+      .replace(/\/\*[\s\S]*?\*\//gu, "")
+      .split(/\r?\n/u)
+      .map((line) => line.replace(/\/\/.*$/u, ""))
+      .join("\n");
+    // A lane running under ZETA_ALLOW_LONGHORN_UNDERSIZED=1 measures the one
+    // path a real USB install should never take.
+    expect(code).not.toContain("allowLonghornUndersized");
+    // And the falsifier for the stripper itself: something that IS live code
+    // must survive it, or this test would pass on an empty string.
+    expect(code).toContain("const QEMU_DISK_SIZE_GB");
   });
 });

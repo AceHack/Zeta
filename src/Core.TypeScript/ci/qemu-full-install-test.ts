@@ -148,6 +148,42 @@ const DISK_BOOT_TIMEOUT_SECONDS = 1800;
 const POLL_INTERVAL_MS = 2000;
 const MEMORY_MB = 4096;
 const CPU_COUNT = 2;
+// ── WP27: a disk the ROSTER ACTUALLY FITS ON, so the lanes stop testing the
+// ── override path and start testing the path an operator gets ─────────────
+//
+// THE DEFECT THIS REPLACES. #17611/#17614 added a pre-wipe refusal when the
+// provisioned Longhorn pool cannot hold the committed roster, and on a 40/64 GiB
+// virtual disk it fires — correctly. The first answer was to stage
+// `ZETA_ALLOW_LONGHORN_UNDERSIZED=1` on the flashed image's ESP, which worked
+// (run 35996447262 read it, and the lane produced five of six passing verdicts
+// for the first time). But it means EVERY QEMU install exercises the override
+// path — the one path a real USB install should never take — so the geometry
+// code is short-circuited on every run and the cdrom lane, which has no vfat
+// partition to stage anything on, cannot be unblocked at all
+// (081M39QY9N8087G0R000E08D2B).
+//
+// THE ARITHMETIC, from zeta-install.sh's own constants:
+//
+//   tail          = disk - ZETA_ESP_GIB(1) - ZETA_ROOT_FLOOR_GIB(120)
+//   schedulable   = tail * ZETA_LONGHORN_USABLE_PERCENT(75) / 100   [integer]
+//   verdict `ok`  requires schedulable >= ZETA_LONGHORN_DEMAND_GIB(943)
+//
+// so tail >= ceil(943 * 100 / 75) = 1258, and disk >= 1 + 120 + 1258 = 1379.
+// 1400 is that with slack: tail 1279, schedulable 959 >= 943. The slack is
+// deliberate — an exact fit would turn any future +1 GiB of roster demand into
+// a red lane with no margin to absorb it.
+//
+// WHY THIS IS NEARLY FREE, AND WHY IT IS MEASURED RATHER THAN ASSERTED. qcow2
+// is SPARSE: `qemu-img create` allocates a couple of hundred KB regardless of
+// the virtual size, and the file grows only with what the guest WRITES (~17-20
+// GiB for a full install). The failure mode that would break that assumption is
+// `mkfs.ext4` eagerly writing inode tables across a ~1.3 TiB partition; modern
+// `mke2fs` defaults to `lazy_itable_init=1` so it should not, but "should not"
+// is not a measurement. `reportQcowAllocation` prints the virtual AND allocated
+// size after every phase, so a run says which of the two worlds it is in
+// instead of leaving it to be assumed.
+const QEMU_DISK_SIZE_GB = 1400;
+
 // 20 -> 40. The first failure in this lane's red streak was ENOSPC, not the
 // marker above: `uv tool install` died with "No space left on device" while the
 // installed system was being provisioned, after #16920 added nine toolchains
@@ -162,15 +198,19 @@ const CPU_COUNT = 2;
 //
 // AND THIS IS A REAL-METAL FINDING, not just a CI one: the same nine toolchains
 // install onto a real host, so any target disk near 20 GB fails the same way.
-const DISK_SIZE_GB = 40;
+const DISK_SIZE_GB = QEMU_DISK_SIZE_GB;
 const KVM_PATH = "/dev/kvm";
 
 // WP11 — opt-in phase 3: reboot the INSTALLED disk a second time, this time
 // with network, and let zeta-k3s-first-boot-verify.nix's oneshot unit watch
 // k3s + the first-boot roster converge. Dedicated constants so this phase's
 // heavier budget never changes phase 1/2's numbers for the required lane.
-/** Bigger disk: k3s + ~2-3 GB of Helm-chart images on top of the toolchain install phase 1 already does. */
-const K3S_VERIFY_DISK_SIZE_GB = 64;
+/**
+ * WP27 — the same disk as every other lane now. There is no longer a reason
+ * for this one to be bigger: {@link QEMU_DISK_SIZE_GB} is sized so the ROSTER
+ * fits, and k3s plus a few GB of Helm-chart images is noise against that.
+ */
+const K3S_VERIFY_DISK_SIZE_GB = QEMU_DISK_SIZE_GB;
 /** k3s-first-boot-roster.nix's own header: "deliberately oversized" to keep under-provisioning from reading as an ordering bug. */
 const K3S_VERIFY_MEMORY_MB = 12288;
 const K3S_VERIFY_CPU_COUNT = 4;
@@ -526,6 +566,87 @@ export function assertEspFirstbootConfWasRead(phase1Serial: string):
       "suffix means the candidate would not mount as vfat, and `(no-conf)` means it mounted " +
       "and the file was not on it.",
   };
+}
+
+// -- WP27: is a 1400 GiB qcow2 actually sparse? MEASURE it, do not assume ----
+//
+// Raising the virtual disk so the roster genuinely fits rests on one property:
+// qcow2 allocates what the guest WRITES, not what it was declared as. That is
+// true of `qemu-img create`, and the thing that could break it is `mkfs.ext4`
+// eagerly writing inode tables across a ~1.3 TiB partition. Modern `mke2fs`
+// defaults to `lazy_itable_init=1` so it should not -- but "should not" is not
+// a measurement, and this lane has already spent a night on assumptions that
+// read like facts.
+//
+// So every run reports both numbers and the runner's free space. A run in the
+// sparse world and a run in the eager world now look DIFFERENT in the log
+// rather than identical until one of them hits ENOSPC.
+
+/** Exported for unit tests. Bytes -> GiB, one decimal. */
+export function gib(bytes: number): string {
+  return `${(bytes / 1024 ** 3).toFixed(1)} GiB`;
+}
+
+/**
+ * Exported for unit tests. Parse `qemu-img info --output=json`'s two sizes.
+ *
+ * `virtual-size` is what the guest sees; `actual-size` is what the file costs
+ * the runner. The gap between them IS the sparseness claim, so both are
+ * reported and neither is inferred from the other.
+ */
+export function parseQcowSizes(
+  json: string,
+): { readonly virtualBytes: number; readonly actualBytes: number } | null {
+  try {
+    const parsed: unknown = JSON.parse(json);
+    if (typeof parsed !== "object" || parsed === null) return null;
+    const row = parsed as Record<string, unknown>;
+    const virtualBytes = row["virtual-size"];
+    const actualBytes = row["actual-size"];
+    if (typeof virtualBytes !== "number" || typeof actualBytes !== "number") return null;
+    return { virtualBytes, actualBytes };
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Exported for unit tests. The sentence a run prints about its own disk cost.
+ *
+ * `freeBytes` may be null when the runner's free space could not be read; that
+ * is reported as unknown rather than silently omitted, because "no headroom
+ * line" and "headroom is fine" must not look the same.
+ */
+export function describeQcowAllocation(
+  label: string,
+  sizes: { readonly virtualBytes: number; readonly actualBytes: number },
+  freeBytes: number | null,
+): string {
+  const ratio = sizes.virtualBytes > 0 ? (sizes.actualBytes / sizes.virtualBytes) * 100 : 0;
+  const headroom =
+    freeBytes === null
+      ? "runner free space: unknown (df could not be read)"
+      : `runner free: ${gib(freeBytes)}`;
+  return (
+    `${label}: qcow2 virtual=${gib(sizes.virtualBytes)} allocated=${gib(sizes.actualBytes)} ` +
+    `(${ratio.toFixed(2)}% of virtual); ${headroom}`
+  );
+}
+
+/**
+ * Exported for unit tests. True when the image is costing so much of the
+ * runner's remaining space that the sparseness assumption is in doubt.
+ *
+ * Deliberately a WARNING and not a failure: a lane whose verdict is about k3s
+ * must not go red because a disk-accounting heuristic fired. The number is in
+ * the log either way, which is the part that settles the question.
+ */
+export function qcowAllocationIsConcerning(
+  sizes: { readonly virtualBytes: number; readonly actualBytes: number },
+  freeBytes: number | null,
+): boolean {
+  if (freeBytes === null) return false;
+  return sizes.actualBytes > freeBytes;
 }
 
 /** Separator between phase-1 installer serial and phase-2 disk-boot serial in artifacts. */
@@ -2347,6 +2468,43 @@ export function reclaimLargeTempArtifacts(paths: readonly string[]): {
   return { removed, bytesReclaimed };
 }
 
+/**
+ * Print what this run's disk image actually costs. Never throws and never
+ * fails a phase: it is an observation, and an observation that can take a lane
+ * red would get removed the first time it misfired.
+ */
+function reportQcowAllocation(label: string, diskPath: string): void {
+  try {
+    const info = spawnSync("qemu-img", ["info", "--output=json", diskPath], { encoding: "utf8" });
+    if (info.status !== 0) {
+      console.log(`[qemu-full-install-test] ${label}: qcow2 size unknown (qemu-img info exit ${String(info.status)})`);
+      return;
+    }
+    const sizes = parseQcowSizes(info.stdout ?? "");
+    if (sizes === null) {
+      console.log(`[qemu-full-install-test] ${label}: qcow2 size unknown (unparseable qemu-img output)`);
+      return;
+    }
+    let freeBytes: number | null = null;
+    const df = spawnSync("df", ["-B1", "--output=avail", dirname(diskPath)], { encoding: "utf8" });
+    if (df.status === 0) {
+      const line = (df.stdout ?? "").trim().split(/\r?\n/u).at(-1)?.trim();
+      const parsed = line === undefined ? Number.NaN : Number(line);
+      if (Number.isFinite(parsed)) freeBytes = parsed;
+    }
+    console.log(`[qemu-full-install-test] ${describeQcowAllocation(label, sizes, freeBytes)}`);
+    if (qcowAllocationIsConcerning(sizes, freeBytes)) {
+      console.warn(
+        `[qemu-full-install-test] WARNING — ${label}: the image has allocated more than the runner has left. ` +
+          "The qcow2 sparseness this lane's disk size depends on may not be holding (WP27); " +
+          "check whether mkfs is writing inode tables eagerly.",
+      );
+    }
+  } catch (err) {
+    console.log(`[qemu-full-install-test] ${label}: qcow2 size unknown (${String(err)})`);
+  }
+}
+
 function reportResult(result: InstallResult, serialLogPath: string): never {
   console.log("");
   console.log("=== Result ===");
@@ -2439,6 +2597,11 @@ async function main(): Promise<never> {
   createVirtualDisk(diskPath, requireK3sFirstBootVerify ? K3S_VERIFY_DISK_SIZE_GB : DISK_SIZE_GB);
 
   let bootMedia: InstallBootMedia = { kind: "iso", path: isoPath };
+  // WP27 — whether this run staged anything on the ESP /zeta-firstboot.conf.
+  // False since the Longhorn override was removed; kept as a named condition
+  // rather than deleted so the contract above wakes up by itself the moment a
+  // lane stages one again, instead of being rediscovered as missing.
+  const stagedEspFirstbootConf = false;
   if (requireWifiEsp || requireUsbISerial || requireUefiKeyfile || requireK3sFirstBootVerify) {
     const usbImagePath = join(
       tmpDir,
@@ -2497,27 +2660,21 @@ async function main(): Promise<never> {
       ...(requireUefiKeyfilePicker ? { qemuCredsPassphrase: DEFAULT_QEMU_PASSPHRASE } : {}),
       ...(requireUefiKeyfileRestore ? { qemuBakeTestCredMarker: true } : {}),
       ...(requireK3sFirstBootVerify ? { qemuK3sFirstBootVerifyMarker: true } : {}),
-      // WP27 — stage the Longhorn-undersized override on THIS image's ESP.
+      // WP27 — THE OVERRIDE IS GONE, DELIBERATELY.
       //
-      // #17611/#17614 added a pre-wipe refusal: the installer bails when the
-      // provisioned Longhorn pool cannot hold the committed roster. Every lane
-      // in this harness runs on ONE virtual disk of 40 GiB (64 for WP11), which
-      // is BY DESIGN — these lanes test install MECHANICS, not capacity — and
-      // `zeta_auto_longhorn1_tail_gib` computes `disk - 1 GiB ESP - 120 GiB root
-      // floor`, i.e. a negative tail clamped to 0, which refuses. Correctly: on
-      // real hardware that disk genuinely cannot hold the 943 GiB roster.
+      // `allowLonghornUndersized: true` used to be staged here, on this image's
+      // ESP `/zeta-firstboot.conf`, and it worked: run 35996447262's guest read
+      // `esp-conf=esp:/dev/disk/by-label/EFIBOOT` and the lane produced five of
+      // six passing verdicts for the first time.
       //
-      // So the override is staged on the flashed image, never baked into the
-      // ISO's own /etc/zeta-firstboot.conf — that file ships on every USB cut
-      // from this ISO and a value there would clear the guard for real operator
-      // installs, which is the guard deleting itself.
-      //
-      // Unconditional in this branch on purpose: all five workflow invocations
-      // of this harness set one of the flags that reaches it, so there is no
-      // lane that needs the override and does not get it — and no lane that
-      // gets it without needing it, since every one of them is a single-disk
-      // 40/64 GiB QEMU install.
-      allowLonghornUndersized: true,
+      // It is removed because a lane running under
+      // `ZETA_ALLOW_LONGHORN_UNDERSIZED=1` is measuring the one path a real USB
+      // install should never take. {@link QEMU_DISK_SIZE_GB} is now sized so
+      // both gates pass on the arithmetic, which exercises the computed root
+      // floor, the tail, and the real sgdisk geometry end to end instead of
+      // short-circuiting them. The zflash `allowLonghornUndersized` option
+      // itself stays — it is a tested, legitimate capability for an operator
+      // who knowingly wants it — it is simply not what CI does.
       ...(repoPinCommit === undefined ? {} : { repoPinCommit }),
     });
     if ("error" in prepared) {
@@ -2557,6 +2714,7 @@ async function main(): Promise<never> {
     phase1Label,
     phase1QmpSocket,
   );
+  reportQcowAllocation("after phase 1 (install)", diskPath);
   const phase1Serial = readSerial(phase1SerialLogPath);
   if (phase1.exitCode !== 0) {
     writeArtifactSerialLog(phase1Serial, "");
@@ -2720,12 +2878,23 @@ async function main(): Promise<never> {
     );
   }
 
-  // WP27 — the end-to-end falsifier for the staged ESP conf. Every lane that
-  // reaches here baked a USB image, and every such bake stages
-  // ZETA_ALLOW_LONGHORN_UNDERSIZED on /zeta-firstboot.conf, so the guest must
-  // report having read it. Checked AFTER the phase-1 contracts above so a
-  // genuine install failure is still reported as itself.
-  if (bootMedia.kind === "usb-image") {
+  // WP27 — the end-to-end falsifier for a STAGED ESP conf.
+  //
+  // DORMANT AS OF THIS COMMIT, and saying so out loud is the point. It was
+  // added when every USB bake staged ZETA_ALLOW_LONGHORN_UNDERSIZED on
+  // /zeta-firstboot.conf; that override is gone (the disk now fits the roster
+  // honestly), so no lane stages a conf and there is nothing to demand the
+  // guest read. Asserting anyway would convict every lane; keeping it live by
+  // staging a no-op value to give it something to find would be the vacuity
+  // class wearing a test.
+  //
+  // ESP ARRIVAL IS STILL COVERED, by a different observable that every USB
+  // lane really does stage: the injected hostname. `wp11PreconditionFailure`
+  // convicts on `[iter-5.2]   no zeta-hostname.txt on USB ESP`, and the guest's
+  // own `esp-conf=` line (081M392JR97087G0R003QAFH0Y) reports the scan outcome
+  // on every boot regardless. So the join is not uncovered — it is covered by
+  // the thing the lane actually stages.
+  if (stagedEspFirstbootConf && bootMedia.kind === "usb-image") {
     const espConf = assertEspFirstbootConfWasRead(phase1Serial);
     if (!espConf.ok) {
       writeArtifactSerialLog(phase1Serial, "");
@@ -2741,6 +2910,13 @@ async function main(): Promise<never> {
     }
     console.log(
       `[qemu-full-install-test] ESP first-boot conf contract ok — guest read ${espConf.outcome}`,
+    );
+  } else if (bootMedia.kind === "usb-image") {
+    const scan = espConfScanOutcome(phase1Serial);
+    console.log(
+      "[qemu-full-install-test] ESP first-boot conf contract DORMANT — this lane stages no " +
+        "/zeta-firstboot.conf, so nothing is asserted about it. This is not a pass. " +
+        `Guest reported esp-conf=${scan?.outcome ?? "<no line>"}.`,
     );
   }
 

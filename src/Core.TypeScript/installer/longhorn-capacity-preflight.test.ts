@@ -192,16 +192,25 @@ describe("the installer's own default tail is what the refusal is measured again
 });
 
 // ---------------------------------------------------------------------------
-// THE DELIBERATELY-SMALL DISK — WP28 (081M393B9TB087G0R000Y529Z8).
+// A BOOT DISK SMALLER THAN THE ROOT FLOOR — WP28 (081M393B9TB087G0R000Y529Z8),
+// updated by WP27 (081M392JR97087G0R003QAFH0Y).
 //
-// The QEMU install lanes create ONE virtual disk of 40 GiB (or 64 GiB for the
-// WP11 installed-disk first-boot verify). Both are SMALLER than the 120 GiB
-// root floor, so the auto-tail resolver refuses them — which would have failed
-// every install-to-disk lane, including the one this whole effort depends on.
+// THE ORIGINAL SHAPE. The QEMU install lanes created ONE virtual disk of 40 GiB
+// (64 for the WP11 verify). Both were SMALLER than the 120 GiB root floor, so
+// the auto-tail resolver refused them, and the lanes ran under
+// `ZETA_ALLOW_LONGHORN_UNDERSIZED=1`.
 //
-// That case is now named and tested rather than discovered. The sizes are read
-// out of the harness rather than restated, so a lane that resizes its disk
-// re-checks this arithmetic instead of silently leaving it stale.
+// THAT IS NO LONGER TRUE, and this group's own comment anticipated it: "if a
+// lane ever grows its disk past the floor this assertion records it, and the
+// override below stops being load-bearing for that lane." WP27 raised the
+// lanes to a single `QEMU_DISK_SIZE_GB` sized so BOTH gates pass on the
+// arithmetic, precisely so the lanes stop exercising the override path — the
+// one path a real USB install should never take — and start exercising the
+// computed floor, the tail, and the real sgdisk geometry.
+//
+// So the harness-derived assertions now check the OPPOSITE fact, and the
+// refuse-signal coverage moves to synthetic small disks, where it belongs: it
+// is a property of the resolver, not of whatever size a CI lane happens to use.
 // ---------------------------------------------------------------------------
 
 const QEMU_HARNESS = join(REPO_ROOT, "src/Core.TypeScript/ci/qemu-full-install-test.ts");
@@ -213,20 +222,52 @@ function harnessDiskGib(constName: string): number {
   return Number(match[1]);
 }
 
-describe("a boot disk smaller than the root floor never produces a negative tail", () => {
-  it("the QEMU lanes' disks are BOTH below the root floor — which is why this group exists", () => {
-    // If a lane ever grows its disk past the floor this assertion records it,
-    // and the override below stops being load-bearing for that lane.
-    expect(harnessDiskGib("DISK_SIZE_GB")).toBeLessThan(ROOT_FLOOR_GIB);
-    expect(harnessDiskGib("K3S_VERIFY_DISK_SIZE_GB")).toBeLessThan(ROOT_FLOOR_GIB);
+/** The two lane constants alias one number; this is that alias, read out of the harness. */
+function harnessAliasesQemuDiskSize(constName: string): boolean {
+  const source = readFileSync(QEMU_HARNESS, "utf8");
+  return new RegExp(`^const ${constName} = QEMU_DISK_SIZE_GB;`, "m").test(source);
+}
+
+describe("the QEMU lanes now install on a disk the roster ACTUALLY FITS ON", () => {
+  it("the lane disk clears the root floor, so the override is no longer load-bearing", () => {
+    // The inverse of what this assertion said before WP27, and the change is
+    // the point rather than an accommodation: a lane that installs on a disk
+    // which genuinely fits the roster is strictly better evidence than one
+    // that installs on a disk which does not and says so.
+    expect(harnessDiskGib("QEMU_DISK_SIZE_GB")).toBeGreaterThan(ROOT_FLOOR_GIB + ESP_GIB);
   });
 
-  for (const constName of ["DISK_SIZE_GB", "K3S_VERIFY_DISK_SIZE_GB"] as const) {
-    it(`${constName} yields 0, never a negative remainder`, () => {
+  it("both lane constants alias the ONE size — no lane keeps a stale small disk", () => {
+    // Read structurally rather than numerically: if either is ever given its
+    // own literal again, this fails instead of silently diverging.
+    expect(harnessAliasesQemuDiskSize("DISK_SIZE_GB")).toBe(true);
+    expect(harnessAliasesQemuDiskSize("K3S_VERIFY_DISK_SIZE_GB")).toBe(true);
+  });
+
+  it("its tail satisfies the COMMITTED demand — both gates pass on the arithmetic", () => {
+    // Gate 1: a real tail, not the 0 refuse-signal. Gate 2: the capacity
+    // verdict against the committed roster, with the integer truncation the
+    // shell actually performs.
+    const tail = autoLonghornTailGib(harnessDiskGib("QEMU_DISK_SIZE_GB"), ROOT_FLOOR_GIB);
+    expect(tail).toBeGreaterThanOrEqual(LONGHORN_MIN_TAIL_GIB);
+    const schedulable = schedulableLonghornGib(provisionedLonghornGib(tail, []));
+    expect(schedulable).toBeGreaterThanOrEqual(COMMITTED_LONGHORN_DEMAND_GIB);
+    // And no override is needed to reach that verdict.
+    expect(longhornCapacityVerdict(schedulable, COMMITTED_LONGHORN_DEMAND_GIB, "")).toBe("ok");
+  });
+});
+
+describe("a boot disk smaller than the root floor never produces a negative tail", () => {
+  // Synthetic sizes, not harness constants. The refuse signal is a property of
+  // the RESOLVER and must hold whatever any CI lane is configured to use —
+  // tying it to a lane's disk size made it stop existing the moment the lane
+  // grew, which is how coverage evaporates without anyone deciding to drop it.
+  for (const diskGib of [40, 64, ROOT_FLOOR_GIB, ROOT_FLOOR_GIB + ESP_GIB] as const) {
+    it(`a ${diskGib} GiB boot disk yields 0, never a negative remainder`, () => {
       // 0 is the REFUSE signal. A negative would reach `sgdisk -n "2:0:-<n>G"`
       // as an end code computed from a negative remainder, which is how a
       // partitioner is asked to do something nobody intended.
-      const tail = autoLonghornTailGib(harnessDiskGib(constName), ROOT_FLOOR_GIB);
+      const tail = autoLonghornTailGib(diskGib, ROOT_FLOOR_GIB);
       expect(tail).toBe(0);
       expect(tail).toBeGreaterThanOrEqual(0);
     });
