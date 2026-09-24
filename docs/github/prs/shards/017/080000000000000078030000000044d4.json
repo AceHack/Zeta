@@ -1,0 +1,12 @@
+{
+  "pr_number": 17620,
+  "archive_path": "docs/history/pr-reviews/2026/09/24/PR-17620-feat-cluster-report-schedulable-demand-beside-declared-and-refuse-on-the-schedul.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-24T10:44:08.765Z",
+  "schema_version": "v1",
+  "commit_sha": "48580070893fe82374d6e8c65ef5971b5023fe4c",
+  "title": "feat(cluster): report SCHEDULABLE demand beside declared, and refuse on the schedulable one (WP28)",
+  "state": "MERGED",
+  "merged_at": "2026-09-24T10:43:21Z",
+  "head_ref": "claude/schedulable-vs-declared-demand"
+}
