@@ -1,0 +1,12 @@
+{
+  "pr_number": 17605,
+  "archive_path": "docs/history/pr-reviews/2026/09/24/PR-17605-chore-workitems-close-081m35etm11087g0r0002y62f5-fixed-by-17579.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-24T01:21:14.849Z",
+  "schema_version": "v1",
+  "commit_sha": "cd4b79d3dd8e6910aeff99cf17c042297bb0c3a8",
+  "title": "chore(workitems): close 081M35ETM11087G0R0002Y62F5 (fixed by #17579)",
+  "state": "MERGED",
+  "merged_at": "2026-09-24T01:20:33Z",
+  "head_ref": "chore/close-081M35ETM11087G0R0002Y62F5"
+}
