@@ -1,0 +1,12 @@
+{
+  "pr_number": 17614,
+  "archive_path": "docs/history/pr-reviews/2026/09/24/PR-17614-fix-installer-root-takes-a-computed-floor-so-longhorn1-gets-the-rest-and-the-aud.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-24T09:01:44.057Z",
+  "schema_version": "v1",
+  "commit_sha": "6816d22db2a12ab777acbb9822d8f284c86d2909",
+  "title": "fix(installer): root takes a computed floor so longhorn1 gets the rest, and the auditor stops printing a false binding mode (WP28)",
+  "state": "MERGED",
+  "merged_at": "2026-09-24T09:00:57Z",
+  "head_ref": "claude/longhorn-geometry-and-binding-mode"
+}
