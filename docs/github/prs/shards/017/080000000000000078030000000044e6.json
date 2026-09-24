@@ -1,0 +1,15 @@
+{
+  "pr_number": 17638,
+  "archive_path": "docs/history/pr-reviews/2026/09/24/PR-17638-fix-installer-make-the-lost-esp-injection-failure-say-why-and-stop-verifying-a-b.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM70TGP1",
+    "thread:PRRT_kwDOSF9kNM6lxko8"
+  ],
+  "fetched_at": "2026-09-24T22:25:10.496Z",
+  "schema_version": "v1",
+  "commit_sha": "1cba8790a34515195e184d2194c5b484dde21543",
+  "title": "fix(installer): make the lost-ESP-injection failure say why, and stop verifying a bake against itself (WP29)",
+  "state": "MERGED",
+  "merged_at": "2026-09-24T22:24:23Z",
+  "head_ref": "claude/wp29-dispatch-esp-injection-loss"
+}
