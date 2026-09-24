@@ -2332,3 +2332,17 @@ Tip 56a506f9 (parent f9a2511f) is the 1-commit tip (+57/-9 / 1 file). Live HEAD 
 ## leftover UNIQUE leftover #17607 leftover unique @ 55c2a0a6eb39751b17e739b4f264a96da53c4d62 -- GRADE GO
 
 Tip 55c2a0a6 (parent e060dd75 merge-of-main, not graded) is the 1-commit tip (+110/-0 / 2 workitem files); stack vs main 10 commits +604/-2 / 9 files. Live HEAD IS tip -- never merge_commit_sha 08aa8489. Product @ tip tree PASS: spire takeOwnership + widened isKnownSpireAgentDnsCrashLoop (Running-window); cilium ignoreDifferences + RespectIgnoreDifferences for 3 TLS Secrets; first-boot-replica rosterHasStabilized + collectAppFailureDiagnostics; weaviate/cilium stuck-Progressing RespectIgnoreDifferences lead documented not fixed; tip 081M39EMBRW census (seaweedfs+gitlab) with deliberately no seaweedfs ignoreDifferences. Soft: mergeable blocked / CI; open leads (cilium/weaviate still FAIL). Tasks 081M38GCTFX087G0R003MMTXJE + 081M39EMBRW087G0R001RHMEDJ. Sit leftover. Do not merge.
+## leftover UNIQUE leftover #17607 leftover unique @ 4c6337efa4c92555b345762a9d2a64c6d9303e5a -- GRADE GO
+
+```
++--------------------------------------------------------------+
+| UNIQUE #17607 @ 4c6337ef  GRADE GO                           |
+| tip=4c6337efa4c92555b345762a9d2a64c6d9303e5a parent=55c2a0a6 1p |
+| product PASS @ tip tree (seaweedfs ignore + pins + prior)    |
+| soft: mergeable blocked; live HEAD 0daf6a9a=2p merge (ungraded)|
+| hard: none                                                   |
+| proof: /workspace/vera-17607-4c6337ef-review.md              |
++--------------------------------------------------------------+
+```
+
+tip-only seaweedfs SFTP Secret ignoreDifferences (5 data keys) + RespectIgnoreDifferences=true; test pins; prior GO @ 55c2a0a6 holds; never grade merge HEAD 0daf6a9a / be8b36c6.
