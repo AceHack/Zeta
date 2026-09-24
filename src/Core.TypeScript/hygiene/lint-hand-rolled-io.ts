@@ -120,7 +120,13 @@ import { extname, join } from "node:path";
 // VOCABULARY
 // ═══════════════════════════════════════════════════════════════════════════
 
-export type Rule = "shell-string-spawn" | "unbounded-fetch-to-disk" | "unreadable" | "empty-suppression" | "scan-floor";
+export type Rule =
+  | "shell-string-spawn"
+  | "uncapped-renderer-spawn"
+  | "unbounded-fetch-to-disk"
+  | "unreadable"
+  | "empty-suppression"
+  | "scan-floor";
 
 export interface Finding {
   readonly rule: Rule;
@@ -135,6 +141,18 @@ export interface Finding {
 
 /** The replacements, carried in data so every refusal prints one. */
 export const REPLACEMENTS: ReadonlyMap<Rule, string> = new Map([
+  [
+    "uncapped-renderer-spawn",
+    "Pass `maxBuffer: DEFAULT_MAX_BYTES` (src/Core.TypeScript/io/safe-io.ts, 64 MiB) — RAISED, never " +
+      "removed, because an unbounded child can hang the process. Node's default is 1 MiB and " +
+      "`helm template` on a large chart renders well past it (cloudnative-pg alone is 1,272,266 " +
+      "bytes); spawnSync then KILLS the child with ENOBUFS and hands back a TRUNCATED stdout. Also " +
+      "consult `result.error` BEFORE the streams: on ENOBUFS and on timeout spawnSync sets `status` " +
+      "to null and leaves `stderr` as the EMPTY STRING, so a `stderr ?? error.message` fallback " +
+      "never reaches the message and the failure cannot say why. Better still, import the one " +
+      "runner — `defaultRunHelm` from src/Core.TypeScript/cluster/rendered-storage-claims.ts — " +
+      "rather than writing a fourth copy of it.",
+  ],
   [
     "shell-string-spawn",
     "Use an argument vector: `spawnArgv(program, args)` from src/Core.TypeScript/io/safe-io.ts — " +
@@ -259,6 +277,51 @@ export function lineOf(text: string, index: number): number {
  * that matters.
  */
 const EXEC_SYNC_CALL = /\bexecSync\s*\(/gu;
+
+/**
+ * A `node:child_process.spawnSync` whose command is a RENDERER or a VALIDATOR.
+ *
+ * `Bun.spawnSync` is deliberately excluded by the negative lookbehind: it does
+ * not carry Node's 1 MiB `maxBuffer` semantics, so a Bun call without the
+ * option is not the same defect. `image-resolvability.ts:367` is that shape and
+ * must not be "fixed" by the next person doing this sweep.
+ */
+const NODE_SPAWN_SYNC_CALL = /(?<!Bun\.)\bspawnSync\s*\(/gu;
+
+/**
+ * Commands whose stdout is a DOCUMENT SET rather than a status line.
+ *
+ * Variable spellings (`helmBin`, `k3sBin`) are included on purpose: the command
+ * is usually held in a binding rather than written as a literal, and matching
+ * only literals would miss every real site -- including the three this rule was
+ * written for.
+ */
+const RENDERER_COMMANDS = /\b(helm|helmBin|kubeconform|kubectl|k3sBin|kustomize)\b/u;
+
+/**
+ * The source text of a call, from its opening paren to the matching close.
+ *
+ * A fixed-size window would be wrong in both directions: too small and a
+ * `maxBuffer` on a later line is missed (a false refusal), too large and the
+ * NEXT call's options are read as this one's (a false clearance, which is
+ * worse). Counting parens is the only reading that tracks the actual call.
+ *
+ * Unbalanced input returns what it has rather than throwing: this lint runs
+ * over thousands of files and a parse it cannot complete must degrade to a
+ * finding, never to a crash that stops the scan.
+ */
+function callText(source: string, openParenIndex: number): string {
+  let depth = 0;
+  for (let at = openParenIndex; at < source.length; at += 1) {
+    const ch = source[at];
+    if (ch === "(") depth += 1;
+    else if (ch === ")") {
+      depth -= 1;
+      if (depth === 0) return source.slice(openParenIndex, at + 1);
+    }
+  }
+  return source.slice(openParenIndex);
+}
 
 /** `shell: true` in an options object — the flag that turns argv back into syntax. */
 const SHELL_TRUE = /\bshell\s*:\s*true\b/gu;
@@ -458,6 +521,33 @@ export function analyzeSource(text: string, path: string): readonly Finding[] {
       m.index,
       `shell-argv-${m[2] ?? "sh"}`,
       `A shell (\`${m[2] ?? "sh"}\`) invoked with \`${m[4] ?? "-c"}\`: the argument is a program, not data.`,
+    );
+  }
+
+  // ── an uncapped renderer/validator spawn ────────────────────────────────
+  //
+  // MEASURED 2026-09-24, three times in one tree. `helm template` on a large
+  // chart renders past Node's 1 MiB `maxBuffer` default (cloudnative-pg alone
+  // is 1,272,266 bytes); `spawnSync` then kills the child with ENOBUFS and
+  // returns TRUNCATED stdout. The six biggest charts silently stopped being
+  // rendered, and the reason was lost because spawnSync leaves `stderr` as the
+  // empty string on that path.
+  //
+  // The worst instance was not a missing measurement but a passing validator:
+  // audit-local-helm-charts.ts piped a possibly-truncated render into
+  // `kubeconform`, which then validated a SHORTER document set and reported
+  // success over material it never saw.
+  for (const m of masked.matchAll(NODE_SPAWN_SYNC_CALL)) {
+    const call = callText(masked, m.index + m[0].length - 1);
+    if (!RENDERER_COMMANDS.test(call)) continue;
+    if (/\bmaxBuffer\b/u.test(call)) continue;
+    record(
+      "uncapped-renderer-spawn",
+      m.index,
+      "spawnSync-renderer-uncapped",
+      "A `node:child_process.spawnSync` running a renderer or validator with no `maxBuffer`. Node's " +
+        "default is 1 MiB, so a large render is KILLED with ENOBUFS and its stdout comes back " +
+        "truncated — which reads as a chart defect, or worse, as a validator passing.",
     );
   }
 

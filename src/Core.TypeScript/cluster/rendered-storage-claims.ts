@@ -125,6 +125,7 @@ import {
 import { resolve, join, dirname } from "node:path";
 import { applicationDirs } from "./declared-cluster-trees.ts";
 import { spawnSync } from "node:child_process";
+import { DEFAULT_MAX_BYTES } from "../io/safe-io.ts";
 import { parseAllDocuments, stringify as yamlStringify } from "yaml";
 import { stringCompare } from "../collation/collation.ts";
 import { quantityToGib } from "./single-node-readiness.ts";
@@ -356,7 +357,16 @@ export interface RenderOptions {
   readonly kubeVersion?: string | undefined;
 }
 
-function defaultRunHelm(
+/**
+ * The ONE helm runner. Exported because it was cloned, and the clone rotted.
+ *
+ * `inert-valuesobject-keys.ts` carried a BYTE-IDENTICAL copy of this function,
+ * including the 1 MiB `maxBuffer` defect fixed here in #17622 -- so the fix
+ * landed in one of the two and the other kept silently dropping the six
+ * largest charts. Three hand-rolled clones of one helm invocation is why this
+ * class recurred; exporting it removes one of them outright.
+ */
+export function defaultRunHelm(
   helmBin: string,
   timeoutMs: number,
 ): (args: readonly string[], cwd: string) => { status: number; stdout: string; stderr: string } {
@@ -380,7 +390,7 @@ function defaultRunHelm(
       // `DEFAULT_MAX_BYTES` (64 MiB, safe-io.ts). An unbounded child can hang
       // the process on a runaway render; a 64x headroom over the largest chart
       // measured cannot.
-      maxBuffer: 64 * 1024 * 1024,
+      maxBuffer: DEFAULT_MAX_BYTES,
       env: { ...process.env, HELM_EXPERIMENTAL_OCI: "1" },
     });
     // `result.error` FIRST, and the `??` chain below is why this is not a

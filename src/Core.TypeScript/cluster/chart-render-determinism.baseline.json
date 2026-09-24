@@ -40,6 +40,9 @@
     "path so the `??` fallback never reached error.message. Both halves are fixed.",
     "Six charts that 'could not be rendered' were six charts nobody had rendered.",
     "",
+    "The 1 MiB spawn cap was latent when this was measured and active by 2026-09-24; a",
+    "regeneration in that window would have been silently short, and #17622 closed it.",
+    "",
     "stable + unstable + unmeasured always equals appsDiscovered; a test asserts it."
   ],
   "measuredOn": "2026-09-24",

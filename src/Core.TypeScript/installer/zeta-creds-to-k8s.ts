@@ -30,6 +30,7 @@
 // Logs names, byte counts, and skip reasons. NEVER logs credential bytes.
 
 import { spawnSync } from "node:child_process";
+import { DEFAULT_MAX_BYTES } from "../io/safe-io.ts";
 import { readFileSync } from "node:fs";
 import { basename, join } from "node:path";
 import { USB_HSM_COMPANION } from "../cluster/seal-emulator-rung.ts";
@@ -348,6 +349,15 @@ export function kubectlEffects(k3sBin: string, kubeconfig: string): ClusterEffec
       input: stdin,
       encoding: "utf8",
       stdio: ["pipe", "pipe", "pipe"],
+      // Node's `maxBuffer` default is 1 MiB, and exceeding it KILLS the child
+      // with ENOBUFS and returns truncated stdout. Today's callers are small
+      // (`get ns`, `apply -f -`, `get secret -o jsonpath`), so this is a guard
+      // rather than a fix for an observed truncation -- but it runs DURING THE
+      // INSTALL, applying credentials, where a silently truncated reply is the
+      // worst possible place to discover the limit. Found by the
+      // `uncapped-renderer-spawn` rule added alongside this change, which is
+      // the point of having the rule: this site was not on anybody's list.
+      maxBuffer: DEFAULT_MAX_BYTES,
     });
 
   return {

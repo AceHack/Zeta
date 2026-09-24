@@ -47,6 +47,7 @@ import { join, resolve, dirname, relative, basename } from "node:path";
 import { fileURLToPath } from "node:url";
 import { parseArgs } from "node:util";
 import { spawnSync } from "node:child_process";
+import { DEFAULT_MAX_BYTES } from "../io/safe-io.ts";
 import { parse as parseYaml } from "yaml";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
@@ -304,8 +305,35 @@ export function checkDependencyCoupling(root: string, chartDirs: string[]): Find
   return out;
 }
 
+/**
+ * Run a tool and merge its streams.
+ *
+ * `maxBuffer` IS THE WHOLE POINT OF THIS COMMENT. Node's default is 1 MiB, and
+ * this helper runs `helm template` -- a large chart renders well past that
+ * (cloudnative-pg alone is 1,272,266 bytes). `spawnSync` then KILLS the child
+ * with ENOBUFS and returns a TRUNCATED stdout.
+ *
+ * That is worse here than a missing measurement, because the output of this
+ * call is piped into `kubeconform`: a truncated render means the validator
+ * checks a SHORTER document set and passes. A schema validator reporting
+ * success over material it never saw is the vacuity class, in the check whose
+ * entire job is schema validation.
+ *
+ * `r.error` is consulted BEFORE the streams, which is the other half: on
+ * ENOBUFS and on timeout `spawnSync` sets `status` to null and leaves `stderr`
+ * as the EMPTY STRING rather than undefined, so a `stderr ?? error.message`
+ * fallback never reaches the message and the failure cannot say why. This
+ * helper already had that ordering right; the cap is what it was missing.
+ *
+ * NOT UNIFIED with `defaultRunHelm` in cluster/rendered-storage-claims.ts,
+ * deliberately: that one returns separated streams plus a status and injects
+ * HELM_EXPERIMENTAL_OCI for chart pulls, while this one merges the streams for
+ * a human-readable `detail` and is also used for a VALIDATOR that reads stdin.
+ * Two different contracts. What they share is the bound, and they now share it
+ * by importing one constant rather than by both spelling out a number.
+ */
 function run(cmd: string, args: string[]): { rc: number; out: string } {
-  const r = spawnSync(cmd, args, { encoding: "utf8" });
+  const r = spawnSync(cmd, args, { encoding: "utf8", maxBuffer: DEFAULT_MAX_BYTES });
   if (r.error) return { rc: 127, out: String(r.error.message) };
   return { rc: r.status ?? 1, out: `${r.stdout ?? ""}${r.stderr ?? ""}` };
 }
@@ -383,8 +411,15 @@ export function checkWithHelm(chartDirs: string[], root: string): HelmResult {
     const kcr = spawnSync("kubeconform", ["-strict", "-summary", "-"], {
       encoding: "utf8",
       input: tpl.out,
+      // Same 1 MiB default, same reason. `-summary` keeps kubeconform's own
+      // output small, but a chart with many invalid documents is not summary-
+      // sized, and a truncated VERDICT is as misleading as a truncated render.
+      maxBuffer: DEFAULT_MAX_BYTES,
     });
-    const kcRc = kcr.status ?? 1;
+    // A null status is ENOBUFS or timeout, not a clean "kubeconform said no".
+    // Reported as a distinct failure rather than folded into `rc`, so nobody
+    // reads "exited 1" and goes looking for a schema error that is not there.
+    const kcRc = kcr.status ?? (kcr.error === undefined ? 1 : 127);
     findings.push({
       chart: rel,
       ok: kcRc === 0,

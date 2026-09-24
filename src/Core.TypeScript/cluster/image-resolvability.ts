@@ -358,6 +358,25 @@ function renderBootstrapChart(
  * uses it, hit no failures of this shape). Supplied via `RenderOptions.runHelm`
  * rather than editing the shared renderer, which several other validators use
  * unmodified.
+ *
+ * RESOLVED UPSTREAM 2026-09-24, and the history is worth keeping because it is
+ * the reason the bug survived. This comment is a correct diagnosis of a real
+ * defect -- the same six charts, the same ENOBUFS, the same empty stderr -- and
+ * it was fixed HERE, privately, by handing this one caller a different runner.
+ * The shared renderer was left alone precisely BECAUSE "several other
+ * validators use it unmodified", so three of them kept the defect: the
+ * storage-claims renderer, a byte-identical clone in inert-valuesobject-keys.ts,
+ * and audit-local-helm-charts.ts, where a truncated render fed `kubeconform`
+ * and made a schema validator pass over material it never saw. A local
+ * workaround for a shared defect leaves the shared defect.
+ *
+ * `defaultRunHelm` now sets `maxBuffer: DEFAULT_MAX_BYTES` and reports
+ * `error.message` when stderr is blank, so this Bun runner is no longer
+ * load-bearing for that failure. It is kept because it is not wrong and
+ * swapping a working render path buys nothing -- and `Bun.spawnSync` genuinely
+ * does not carry Node's 1 MiB ceiling, so the `uncapped-renderer-spawn` lint
+ * deliberately does NOT flag it. Do not "fix" this call by adding `maxBuffer`;
+ * Bun's options do not have one.
  */
 function bunRunHelm(
   helmBin: string,

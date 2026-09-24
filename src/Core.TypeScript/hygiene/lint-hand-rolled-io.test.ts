@@ -391,3 +391,85 @@ describe("parseArgs", () => {
     expect(parseArgs([]).roots).toEqual(["."]);
   });
 });
+
+// ═══════════════════════════════════════════════════════════════════════════
+// uncapped-renderer-spawn — the 1 MiB ceiling that silently truncates a render
+//
+// MEASURED 2026-09-24, FOUR times in one tree. `helm template` on a large
+// chart renders past Node's 1 MiB `maxBuffer` default (cloudnative-pg alone is
+// 1,272,266 bytes); spawnSync kills the child with ENOBUFS and returns a
+// TRUNCATED stdout. The worst instance piped that render into `kubeconform`,
+// which then validated a shorter document set and PASSED.
+// ═══════════════════════════════════════════════════════════════════════════
+
+describe("uncapped-renderer-spawn", () => {
+  test("a helm spawnSync with no maxBuffer is refused", () => {
+    const src = `const r = spawnSync(helmBin, ["template", chart], { encoding: "utf8" });`;
+    expect(rules(analyzeSource(src, F))).toContain("uncapped-renderer-spawn");
+  });
+
+  test("the same call WITH maxBuffer is clean — so the rule is not merely unable to pass", () => {
+    const src = `const r = spawnSync(helmBin, ["template", chart], { encoding: "utf8", maxBuffer: DEFAULT_MAX_BYTES });`;
+    expect(rules(analyzeSource(src, F))).not.toContain("uncapped-renderer-spawn");
+  });
+
+  test("kubeconform counts — a truncated VERDICT is as misleading as a truncated render", () => {
+    const src = `const r = spawnSync("kubeconform", ["-strict", "-"], { input: tpl.out });`;
+    expect(rules(analyzeSource(src, F))).toContain("uncapped-renderer-spawn");
+  });
+
+  test("Bun.spawnSync is NOT flagged — it does not carry Node's ceiling", () => {
+    // image-resolvability.ts:367 is exactly this shape and is correct. The
+    // negative lookbehind is what stops the next person doing this sweep from
+    // "fixing" a call whose options object has no maxBuffer to set.
+    const src = `const r = Bun.spawnSync([helmBin, "template", chart], { stdout: "pipe" });`;
+    expect(rules(analyzeSource(src, F))).not.toContain("uncapped-renderer-spawn");
+  });
+
+  test("a NON-renderer spawnSync is not flagged — `git config` is a status line", () => {
+    // Scoping it to renderers and validators is deliberate. Flagging every
+    // uncapped spawnSync in the tree would bury the four that matter under
+    // dozens that cannot approach 1 MiB, and a rule nobody can act on gets
+    // baselined wholesale.
+    const src = `const r = spawnSync("git", ["config", "--get", "core.hooksPath"], { encoding: "utf8" });`;
+    expect(rules(analyzeSource(src, F))).not.toContain("uncapped-renderer-spawn");
+  });
+
+  test("the command held in a VARIABLE is still caught", () => {
+    // Every real site spells the command as a binding, not a literal. A
+    // literal-only rule would have matched none of the four.
+    const src = `const r = spawnSync(k3sBin, ["kubectl", "get", "ns"], { encoding: "utf8" });`;
+    expect(rules(analyzeSource(src, F))).toContain("uncapped-renderer-spawn");
+  });
+
+  test("maxBuffer on a LATER line of the same call is found", () => {
+    // The call text is read by counting parens, not by a fixed window. A
+    // window too small produces a false refusal here.
+    const src = [
+      `const r = spawnSync(helmBin, [...args], {`,
+      `  cwd,`,
+      `  encoding: "utf8",`,
+      `  timeout: timeoutMs,`,
+      `  maxBuffer: DEFAULT_MAX_BYTES,`,
+      `});`,
+    ].join("\n");
+    expect(rules(analyzeSource(src, F))).not.toContain("uncapped-renderer-spawn");
+  });
+
+  test("a NEIGHBOURING call's maxBuffer does not clear this one", () => {
+    // The opposite failure, and the worse of the two: a window too large reads
+    // the next call's options as this one's and clears a real finding.
+    const src = [
+      `const a = spawnSync(helmBin, ["template", chart], { encoding: "utf8" });`,
+      `const b = spawnSync("tar", ["-xf", f], { maxBuffer: DEFAULT_MAX_BYTES });`,
+    ].join("\n");
+    expect(rules(analyzeSource(src, F))).toContain("uncapped-renderer-spawn");
+  });
+
+  test("the refusal names the replacement, so it cannot be routed around", () => {
+    const found = analyzeSource(`spawnSync(helmBin, ["template"], {});`, F);
+    const fix = found.find((f) => f.rule === "uncapped-renderer-spawn")?.fix ?? "";
+    expect(fix).toContain("maxBuffer: DEFAULT_MAX_BYTES");
+    expect(fix).toContain("defaultRunHelm");
+  });
+});

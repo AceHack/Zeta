@@ -91,7 +91,7 @@ import { resolve, join } from "node:path";
 import { spawnSync } from "node:child_process";
 import { parse as parseYaml } from "yaml";
 import { stringCompare } from "../collation/collation.ts";
-import { discoverApplications, type ApplicationSource } from "./rendered-storage-claims.ts";
+import { defaultRunHelm, discoverApplications, type ApplicationSource } from "./rendered-storage-claims.ts";
 
 const REPO_ROOT = resolve(import.meta.dir, "../../..");
 
@@ -640,24 +640,16 @@ export interface FetchOptions {
   readonly runHelm?: (args: readonly string[], cwd: string) => { status: number; stdout: string; stderr: string };
 }
 
-function defaultRunHelm(
-  helmBin: string,
-  timeoutMs: number,
-): (args: readonly string[], cwd: string) => { status: number; stdout: string; stderr: string } {
-  return (args, cwd) => {
-    const result = spawnSync(helmBin, [...args], {
-      cwd,
-      encoding: "utf8",
-      timeout: timeoutMs,
-      env: { ...process.env, HELM_EXPERIMENTAL_OCI: "1" },
-    });
-    return {
-      status: result.status ?? 1,
-      stdout: result.stdout ?? "",
-      stderr: result.stderr ?? (result.error === undefined ? "" : String(result.error.message)),
-    };
-  };
-}
+// The helm runner lives in ONE place now: `defaultRunHelm`, imported above.
+//
+// This file used to carry a BYTE-IDENTICAL copy of it, and that copy is why
+// this defect class recurred. When #17622 fixed the 1 MiB `spawnSync`
+// maxBuffer here-in-original, the clone kept it -- so every run of THIS audit
+// silently dropped the six largest charts (arc-controller, argo-rollouts,
+// argocd, cloudnativepg, external-secrets, kube-prometheus-stack) with an
+// ENOBUFS whose reason was swallowed by the same `stderr ?? ...` shape. A
+// "no new findings" verdict from a renderer that cannot render six of the
+// inputs is not a measurement.
 
 function safeName(value: string): string {
   return value.replace(/[^A-Za-z0-9._-]/g, "_");
