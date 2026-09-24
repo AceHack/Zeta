@@ -2480,3 +2480,10 @@ WP11 tip-confirm -- K3S_ACTIVE on verdict 6 (distinct NEVER-ACTIVE log + optiona
 - Hard: none
 - Sit leftover. Do not merge.
 - Proof (local box path, not in repo): /workspace/vera-17640-1cde517c-review.md (also in uploads/)
+
+## leftover UNIQUE leftover #17641 leftover unique @ 99db52e730f6f7346cc55ee3b259412eef46f9a6 -- GRADE GO
+
+- Tip 1-commit +401/-12 / 3 files; parent 0b59987b (1p). Live HEAD IS tip -- never grade a merge.
+- Product: three-attempt RO ESP ladder (vfat -> auto-vfat|msdos gated findmnt -> vfat-ascii); ZETA_FAT_MOUNT_VIA/WHY + ZETA_ESP_MOUNT_VIA/WHY; iter-4.2 NOTE; first-boot (mounted-via:;after:); install zeta_pf_probe_esp / iter-4.2 / iter-5.2 + first-boot zeta_try_mount_esp_ro; esp-mount-ladder.test.ts extracts shipped shell + anti-vacuity. Mitigation after #17638/#17640; work item stays open.
+- Soft: mergeable blocked; auto_merge squash on; CI in_progress mix; 1 unrelated cross-verify fail. Hard: none.
+- Sit leftover. Do not merge.
