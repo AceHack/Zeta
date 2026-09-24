@@ -2224,3 +2224,16 @@ UNIQUE HOLDS leftover NEW CELL leftover UNIQUE leftover #17608 leftover unique @
 - Product: VM target-3 (server/cred/node-passwd) best-effort bounded poll/skip; targets 1–2 remain hard gates; module under test unchanged; unit suite still hard-covers target-3 script behavior
 - Soft: tip build-iso in_progress; cited installed-disk runs overall failed; hermetic may permanently skip t3 e2e
 - Sit leftover. Do not merge.
+---
+## leftover UNIQUE leftover #17609 leftover unique @ 480135649ffd2caf4e6f668e40b0402e4cfb6720 -- GRADE GO
+
+- PR: https://github.com/Lucent-Financial-Group/Zeta/pull/17609 OPEN
+- Branch: claude/qemu-graceful-guest-shutdown
+- Task: 081M392JR97087G0R003QAFH0Y
+- Tip (grade this SHA only): 480135649ffd2caf4e6f668e40b0402e4cfb6720
+- Live HEAD IS tip -- never grade merge_commit_sha ddd1663c8274828d2015d0b3b588ac78097ba87c
+- Parent: 003233158e03adba679ddfc662d108d4e3203053 (prior GO stands for that tip only)
+- Tip-only: +11/-2 / 1 file
+- Product: test-only CWE-367 fix -- existsSync gating readFileSync replaced with readFileSync + ENOENT catch in qemu-full-install-test.test.ts; QMP graceful guest shutdown product unchanged
+- Soft: PR-body Agency-Signature trailers missing; tip CI settling
+- Sit leftover. Do not merge.
