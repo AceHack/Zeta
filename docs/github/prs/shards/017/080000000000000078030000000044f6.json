@@ -1,0 +1,12 @@
+{
+  "pr_number": 17654,
+  "archive_path": "docs/history/pr-reviews/2026/09/25/PR-17654-fix-cluster-test-the-excludedresourcewarning-endpointslice-hypothesis-for-cilium.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-25T07:45:00.621Z",
+  "schema_version": "v1",
+  "commit_sha": "02f848d357eb8e7f1034bbbeb765cc8baa137ead",
+  "title": "fix(cluster): test the ExcludedResourceWarning/EndpointSlice hypothesis for cilium's stuck Progressing",
+  "state": "MERGED",
+  "merged_at": "2026-09-25T07:44:17Z",
+  "head_ref": "claude/cilium-endpointslice-exclusion-hypothesis"
+}
