@@ -18,7 +18,7 @@
 
 import { describe, expect, test } from "bun:test";
 import { spawnSync } from "node:child_process";
-import { existsSync, mkdirSync, mkdtempSync, readFileSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { join as posixJoin } from "node:path/posix";
@@ -101,6 +101,10 @@ function runRecovery(opts: RunOpts): { readonly status: number; readonly stdout:
       ZETA_K3S_RESTART_CMD: `echo restarted >> ${restartLogFile}`,
       ZETA_RESTART_THRESHOLD: String(opts.threshold ?? 6),
       ZETA_SERIAL_DEVICE: posixJoin(opts.f.root, "no-such-serial-device"),
+      // Per-fixture, so the once-per-boot verdict latch does not leak between
+      // tests. On a real node this lives on /run (tmpfs), which is empty again
+      // at every boot -- a fresh fixture root is that boot's analogue.
+      ZETA_VERDICT_STATE_FILE: posixJoin(opts.f.root, "verdict-state"),
     },
     encoding: "utf8",
     maxBuffer: 64 * 1024,
@@ -140,7 +144,7 @@ describe("the has-served case -- NEVER removed, under any circumstance", () => {
     const r2 = runRecovery({ f, nrestarts: 59 });
     expect(r2.stdout).not.toContain("REFUSING");
     expect(existsSync(f.datastoreDir)).toBe(true);
-  });
+  }, 30000);
 });
 
 describe("the stillborn case -- recoverable exactly once", () => {
@@ -155,7 +159,7 @@ describe("the stillborn case -- recoverable exactly once", () => {
     expect(r.stdout).toContain("RECOVERING");
   });
 
-  test("below the restart threshold: nothing happens yet, quietly", () => {
+  test("below the restart threshold: nothing is DONE, but the boot still says so", () => {
     const f = fixture({ served: false, fatalPresent: true });
 
     const r = runRecovery({ f, nrestarts: 2, threshold: 6 });
@@ -163,7 +167,10 @@ describe("the stillborn case -- recoverable exactly once", () => {
     expect(r.status).toBe(0);
     expect(existsSync(f.datastoreDir)).toBe(true);
     expect(r.restartLog).toBe("");
-    expect(r.stdout).toBe("");
+    // NOT silence. A unit that decided "not yet" must not look identical on
+    // the console to a unit that never started -- that indistinguishability
+    // is the defect class this module was written inside of.
+    expect(r.stdout).toContain("VERDICT unbootstrapped-watching");
   });
 
   test("exactly at the threshold: recovers", () => {
@@ -192,7 +199,7 @@ describe("the stillborn case -- recoverable exactly once", () => {
     // in it).
     expect(r2.restartLog).toBe(r1.restartLog);
     expect(r2.stdout).toContain("Not retrying automatically");
-  });
+  }, 30000);
 });
 
 describe("a crash-loop for a DIFFERENT reason -- diagnosed, never wiped", () => {
@@ -210,9 +217,59 @@ describe("a crash-loop for a DIFFERENT reason -- diagnosed, never wiped", () => 
 
   test("the diagnostic prints only once across repeated polls", () => {
     const f = fixture({ served: false, fatalPresent: false });
-    runRecovery({ f, nrestarts: 20 });
+    const r1 = runRecovery({ f, nrestarts: 20 });
+    expect(r1.stdout).toContain("VERDICT other-crash-loop");
     const r2 = runRecovery({ f, nrestarts: 21 });
+    // Silent on the SECOND poll is correct -- the verdict has not changed,
+    // and the unit re-runs every 10s forever. Once per outcome, not once
+    // per poll.
     expect(r2.stdout).toBe("");
+  }, 30000);
+});
+
+// The third of the three outcomes the console must be able to tell apart.
+// "There is no datastore" and "there is a datastore I chose not to touch"
+// are completely different facts about the machine, and before this verdict
+// existed they arrived as the same silence.
+describe("no datastore at all -- says so, rather than saying nothing", () => {
+  test("the datastore directory does not exist: distinct verdict, nothing touched", () => {
+    const f = fixture({ served: false, fatalPresent: true });
+    rmSync(f.datastoreDir, { recursive: true, force: true });
+
+    const r = runRecovery({ f, nrestarts: 58 });
+
+    expect(r.status).toBe(0);
+    expect(r.restartLog).toBe("");
+    expect(r.stdout).toContain("VERDICT datastore-absent");
+    // Not confusable with either of the other two outcomes.
+    expect(r.stdout).not.toContain("RECOVERING");
+    expect(r.stdout).not.toContain("REFUSING");
+  });
+});
+
+describe("the three outcomes are mutually exclusive verdict codes", () => {
+  test("recovered, refused, and absent each emit their own code and no other", () => {
+    const recovered = runRecovery({ f: fixture({ served: false, fatalPresent: true }), nrestarts: 10 });
+    const refused = runRecovery({ f: fixture({ served: true, fatalPresent: true }), nrestarts: 10 });
+    const absentFixture = fixture({ served: false, fatalPresent: true });
+    rmSync(absentFixture.datastoreDir, { recursive: true, force: true });
+    const absent = runRecovery({ f: absentFixture, nrestarts: 10 });
+
+    const codes = ["stillborn-recovered", "served-refused", "datastore-absent"] as const;
+    const emitted = [recovered.stdout, refused.stdout, absent.stdout].map((out) =>
+      codes.filter((c) => out.includes(`VERDICT ${c}`)),
+    );
+
+    expect(emitted).toEqual([["stillborn-recovered"], ["served-refused"], ["datastore-absent"]]);
+  }, 30000);
+
+  test("a served datastore on a HEALTHY node still states its verdict", () => {
+    // No crash loop at all -- the ordinary steady state, which must still be
+    // distinguishable from a unit that never ran.
+    const f = fixture({ served: true, fatalPresent: false });
+    const r = runRecovery({ f, nrestarts: 0 });
+    expect(r.stdout).toContain("VERDICT served");
+    expect(existsSync(f.datastoreDir)).toBe(true);
   });
 });
 
@@ -289,7 +346,7 @@ describe("the sentinel writer -- write-once, only on a real readyz success", () 
     runSentinel(sentinelFile, root, "true");
     const after = readFileSync(sentinelFile, "utf8");
     expect(after).toBe(before);
-  });
+  }, 30000);
 
   test("write-once: readyz is never even consulted once the sentinel exists", () => {
     const { root, sentinelFile } = sentinelFixture();

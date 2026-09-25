@@ -90,6 +90,50 @@ say() {
   fi
 }
 
+# EVERY OUTCOME SPEAKS, AND THEY ARE DISTINGUISHABLE FROM EACH OTHER.
+#
+# The defect class this whole module exists inside of is a check whose
+# FAILURE and whose ABSENCE look identical -- silence. The first revision of
+# this script printed only on the paths where it ACTED, so a boot on which
+# it decided "nothing to do" was byte-identical, on the console, to a boot on
+# which the unit never started at all. That is the seventh instance of the
+# same defect, written into the fix for the sixth.
+#
+# So every terminal path below ends in `verdict <code> <sentence>`, and the
+# codes are mutually exclusive. The three that matter most, named:
+#
+#   stillborn-recovered  no sentinel, the datastore had never served, it was
+#                        discarded so k3s could found fresh
+#   served / served-refused
+#                        the sentinel is present; this datastore has served
+#                        and is NEVER touched, whatever k3s is reporting
+#   datastore-absent     there is no datastore directory at all -- nothing to
+#                        recover and nothing at risk
+#
+# PRINTED ONCE PER BOOT PER DISTINCT VERDICT, not once per poll: the unit
+# restarts every 10s forever, so printing unconditionally would bury the
+# console, and latching the FIRST verdict of the boot would report
+# "watching" on a node that went on to recover. Recording the last verdict
+# and printing only on CHANGE gives exactly one line per outcome that
+# actually occurred, in the order they occurred -- the boot's whole story,
+# in one line each. The state file lives on /run (tmpfs), so it is empty
+# again at every boot without anything having to clean it up.
+VERDICT_STATE_FILE="${ZETA_VERDICT_STATE_FILE:-/run/zeta-k3s-datastore-bootstrap-recovery.verdict}"
+
+verdict() {
+  verdict_code="$1"
+  verdict_sentence="$2"
+  verdict_previous=""
+  if [ -e "$VERDICT_STATE_FILE" ]; then
+    verdict_previous="$(cat "$VERDICT_STATE_FILE" 2>/dev/null || echo '')"
+  fi
+  if [ "$verdict_previous" != "$verdict_code" ]; then
+    say "[zeta-k3s-datastore-bootstrap-recovery]   VERDICT ${verdict_code}: ${verdict_sentence}"
+    mkdir -p "$(dirname -- "$VERDICT_STATE_FILE")" 2>/dev/null || true
+    printf '%s' "$verdict_code" > "$VERDICT_STATE_FILE" 2>/dev/null || true
+  fi
+}
+
 # Independent guard, same shape as k3s-agent-tls-self-heal.sh's "server"
 # refusal: whatever ZETA_DATASTORE_DIR is set to, refuse outright (do
 # nothing) if it does not end in exactly ".../server/db" -- this stops a
@@ -108,9 +152,50 @@ case "$nrestarts" in
   '' | *[!0-9]*) nrestarts=0 ;;
 esac
 
+# OUTCOME 3 OF 3: THERE IS NO DATASTORE AT ALL. Checked before anything else
+# reads a restart count or a journal, because "no datastore" and "a datastore
+# I decided not to touch" are completely different facts about this machine
+# and must never arrive as the same silence. Nothing to recover, nothing at
+# risk -- k3s has not created its datastore yet (very early first boot), or
+# this is not a server role.
+if [ ! -d "$DATASTORE_DIR" ]; then
+  verdict datastore-absent "no k3s datastore directory exists at ${DATASTORE_DIR} -- nothing to recover, and nothing at risk."
+  exit 0
+fi
+
+# OUTCOME 2 OF 3: THE SENTINEL IS PRESENT -- THIS DATASTORE HAS SERVED.
+#
+# STRUCTURALLY FIRST, ON PURPOSE. This branch returns before the recovery
+# code below is even REACHABLE, so the one-way property ("the window closes
+# forever the first time the cluster works") is a property of the script's
+# SHAPE and not of a condition someone has to re-verify by reading to the
+# end. Nothing after this point can run while the sentinel exists.
+if [ -e "$SENTINEL_FILE" ]; then
+  if [ "$nrestarts" -ge "$THRESHOLD" ] &&
+     printf '%s' "$(eval "$JOURNAL_CMD" 2>/dev/null || echo '')" | grep -qF "$FATAL_SIGNATURE"; then
+    # The ambiguous case this module exists for: k3s's own message cannot
+    # tell "never bootstrapped" from "wrong token against a real cluster".
+    # The sentinel can, and it says this one is real.
+    if [ ! -e "$RECOVERY_ATTEMPTED_FILE" ]; then
+      say "[zeta-k3s-datastore-bootstrap-recovery]   REFUSING: k3s reports \"$FATAL_SIGNATURE\" but this datastore has ALREADY served -- sentinel present at $SENTINEL_FILE."
+      say "[zeta-k3s-datastore-bootstrap-recovery]   This is very likely a WRONG TOKEN, not a stillborn datastore: k3s's own message cannot tell the two apart, but a served datastore is never touched here regardless. NOTHING HAS BEEN DELETED."
+      say "[zeta-k3s-datastore-bootstrap-recovery]   Remedy: verify /var/lib/rancher/k3s/server/token matches what agents present, or restore $DATASTORE_DIR from an out-of-band backup. This script will not act on it."
+      : > "$RECOVERY_ATTEMPTED_FILE"
+    fi
+    verdict served-refused "marker present at ${SENTINEL_FILE} and k3s is reporting the stillborn fatal -- refusing to touch ${DATASTORE_DIR}; nothing has been deleted."
+  else
+    verdict served "marker present at ${SENTINEL_FILE} -- this datastore has served and will never be auto-discarded; nothing to do."
+  fi
+  exit 0
+fi
+
+# From here down the sentinel does NOT exist.
 if [ "$nrestarts" -lt "$THRESHOLD" ]; then
-  # Not enough evidence yet. Quiet -- this script is invoked in a poll loop
-  # (systemd Restart=always) and will be asked again shortly.
+  # Not enough evidence yet -- but say so once, rather than exiting silently.
+  # This is the ordinary shape of a healthy first boot before k3s has
+  # finished bootstrapping, and it must be distinguishable from a unit that
+  # never ran.
+  verdict unbootstrapped-watching "datastore at ${DATASTORE_DIR} has not served yet and k3s has restarted ${nrestarts} time(s) (threshold ${THRESHOLD}) -- watching, nothing done."
   exit 0
 fi
 
@@ -129,29 +214,18 @@ if ! printf '%s' "$journal" | grep -qF "$FATAL_SIGNATURE"; then
     done
     : > "$RECOVERY_ATTEMPTED_FILE"
   fi
+  verdict other-crash-loop "k3s has restarted ${nrestarts} time(s) but NOT with the stillborn fatal -- ${DATASTORE_DIR} untouched; this needs diagnosis, journal dumped above."
   exit 0
 fi
 
-# The stillborn-shaped fatal IS present.
-if [ -e "$SENTINEL_FILE" ]; then
-  # THIS DATASTORE HAS SERVED BEFORE. NEVER DELETE IT, under any
-  # circumstance -- the one-way property. This is very likely a wrong
-  # token presented to a real, healthy cluster; k3s's own error text
-  # cannot distinguish that from the stillborn case, but the sentinel can.
-  if [ ! -e "$RECOVERY_ATTEMPTED_FILE" ]; then
-    say "[zeta-k3s-datastore-bootstrap-recovery]   REFUSING: k3s reports \"$FATAL_SIGNATURE\" but this datastore has ALREADY served -- sentinel present at $SENTINEL_FILE."
-    say "[zeta-k3s-datastore-bootstrap-recovery]   This is very likely a WRONG TOKEN, not a stillborn datastore: k3s's own message cannot tell the two apart, but a served datastore is never touched here regardless. NOTHING HAS BEEN DELETED."
-    say "[zeta-k3s-datastore-bootstrap-recovery]   Remedy: verify /var/lib/rancher/k3s/server/token matches what agents present, or restore $DATASTORE_DIR from an out-of-band backup. This script will not act on it."
-    : > "$RECOVERY_ATTEMPTED_FILE"
-  fi
-  exit 0
-fi
-
+# The stillborn-shaped fatal IS present, and the sentinel does not exist
+# (the has-served branch above already returned if it did).
 if [ -e "$RECOVERY_ATTEMPTED_FILE" ]; then
   # Already recovered (or reported) once this boot. One attempt, ever, per
   # boot -- if it is STILL failing with the same signature after a fresh
   # datastore, wiping again would not be recovery, it would be a loop.
   say "[zeta-k3s-datastore-bootstrap-recovery]   k3s is still failing with the stillborn signature after one recovery attempt this boot. Not retrying automatically -- this needs a human."
+  verdict stillborn-recovery-exhausted "one recovery already happened this boot and k3s still reports the stillborn fatal -- not retrying; this needs a human."
   exit 0
 fi
 
@@ -163,4 +237,5 @@ say "[zeta-k3s-datastore-bootstrap-recovery]   Removing $DATASTORE_DIR and resta
 : > "$RECOVERY_ATTEMPTED_FILE"
 rm -rf -- "$DATASTORE_DIR"
 eval "$RESTART_CMD" || true
+verdict stillborn-recovered "no marker at ${SENTINEL_FILE} and k3s reported the stillborn fatal ${nrestarts} restart(s) in -- ${DATASTORE_DIR} was discarded so k3s can found fresh; no state was destroyed."
 exit 0
