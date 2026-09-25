@@ -112,21 +112,42 @@ pkgs.testers.nixosTest {
     #    If this fails, the module is inverted: no sentinel is ever
     #    written and every healthy datastore becomes eligible for
     #    deletion. Nothing in the fixture suite can catch that. ──────────
-    machine.wait_for_unit("zeta-k3s-datastore-bootstrap-sentinel.service", timeout=120)
+    # NEVER `wait_for_unit` ON EITHER OF THESE TWO UNITS. MEASURED on this
+    # test's own first wired run (36089766331): both are `Type=simple` with
+    # `Restart=always` / `RestartSec=10s`, so they run for ~80ms, exit 0
+    # ("Deactivated successfully" in that run's journal), and start again 10s
+    # later. They are INACTIVE for roughly 99% of wall-clock, and
+    # `wait_for_unit` waits for ACTIVE -- so against a poll loop it is a coin
+    # flip. That run won the flip for the sentinel unit and lost it for the
+    # recovery unit, timing out after 121.02s on a node where BOTH were
+    # working perfectly. Winning by luck was the worse half of that outcome:
+    # a green from this predicate would have meant nothing.
+    #
+    # Assert the observable EFFECT instead -- the file that got written, the
+    # verdict that got printed. That is what the module promises; unit
+    # activeness at an arbitrary instant is not.
     machine.wait_until_succeeds(f"test -s {sentinel}", timeout=180)
     machine.succeed(
         "journalctl -u zeta-k3s-datastore-bootstrap-sentinel.service -o cat"
         " | grep -q 'this datastore has now served'"
     )
 
-    # ── The recovery unit is alive and SAYING something on a healthy node.
+    # ── The recovery unit is RUNNING and SAYING something on a healthy node.
     #    A unit that decided "nothing to do" must never be indistinguishable
-    #    on the console from a unit that never started. ──────────────────
-    machine.wait_for_unit("zeta-k3s-datastore-bootstrap-recovery.service", timeout=120)
+    #    on the console from a unit that never started -- so assert the
+    #    steady-state verdict by name, not merely that some verdict appeared.
+    #    Run 36089766331 measured this exact line at t=44s on a real boot. ──
     machine.wait_until_succeeds(
         "journalctl -u zeta-k3s-datastore-bootstrap-recovery.service -o cat"
-        " | grep -q 'VERDICT '",
+        " | grep -q 'VERDICT served:'",
         timeout=180,
+    )
+    # And the boot's earlier state, before the sentinel existed, was reported
+    # too -- the two are different facts and arrived as different lines
+    # (measured at t=34s and t=44s respectively on that same run).
+    machine.succeed(
+        "journalctl -u zeta-k3s-datastore-bootstrap-recovery.service -o cat"
+        " | grep -q 'VERDICT unbootstrapped-watching:'"
     )
 
     # ── TARGET 2: reproduce the REAL ambiguous fatal, the honest way.

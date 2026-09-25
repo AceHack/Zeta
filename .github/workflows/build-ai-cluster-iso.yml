@@ -546,6 +546,13 @@ jobs:
       #      the whole module rests on, asserted in prose everywhere and
       #      measured only here -- and SURVIVES it.
       #
+      # COST, MEASURED rather than estimated. Run 36089766331 (this step's
+      # first wired run, which went red on a test-harness defect -- see the
+      # test file's header on `wait_for_unit` against a poll loop): 4m 00s,
+      # 03:30:43 -> 03:34:43, of which 121s was a timeout that a correct
+      # predicate does not pay. Its sibling above, same shape, measured
+      # 3m 01s on the same run. Budget it at the self-heal step's class.
+      #
       # Hermetic (no internet, no image pulls); boots ONE node and restarts
       # k3s in place, same shape and cost class as the self-heal step above.
       #
