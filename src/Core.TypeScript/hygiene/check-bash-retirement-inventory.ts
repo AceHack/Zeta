@@ -86,6 +86,8 @@ export const EXPECTED_RETAINED_SHELL: readonly string[] = [
   ".gemini/service/install-lior-service.sh",
   ".gemini/service/lior-loop.sh",
   "full-ai-cluster/nixos/modules/k3s-agent-tls-self-heal.sh",
+  "full-ai-cluster/nixos/modules/k3s-datastore-bootstrap-recovery.sh",
+  "full-ai-cluster/nixos/modules/k3s-datastore-bootstrap-sentinel-write.sh",
   "full-ai-cluster/nixos/modules/k3s-datastore-preflight.sh",
   "full-ai-cluster/nixos/modules/k3s-join-intent-preflight.sh",
   "full-ai-cluster/usb-nixos-installer/zeta-first-boot.sh",
@@ -143,6 +145,21 @@ export const RETAINED_SHELL_CATEGORY_BY_FILE: Readonly<Record<string, RetainedSh
   // inventory AND can be EXECUTED by
   // `k3s-agent-tls-self-heal.test.ts`, which runs every branch in CI.
   "full-ai-cluster/nixos/modules/k3s-agent-tls-self-heal.sh": "host-service wrappers",
+  // 081M39CR74D087G0R002BEG2G4: a systemd service ordered after k3s.service,
+  // polling `systemctl`/`journalctl` to recover a STILLBORN k3s datastore
+  // (one that has never completed bootstrap, e.g. a power cut in the first
+  // ~20s of first boot) while never touching one that has genuinely served.
+  // Same retained-shell edge as its siblings: it runs on the boot path, the
+  // node's closure carries no bun, and this decision logic must speak on
+  // metal with no harness present. Kept as a tracked `.sh` so it stays on
+  // this inventory AND can be EXECUTED by
+  // `k3s-datastore-bootstrap-recovery.test.ts`, which drives every branch
+  // (the has-served case above all) over fixtures in CI.
+  "full-ai-cluster/nixos/modules/k3s-datastore-bootstrap-recovery.sh": "host-service wrappers",
+  // The write side of the same guard: records that a datastore has EVER
+  // served, exactly once, only on a real `/readyz` success. Same
+  // retained-shell edge and same reason it stays a tracked `.sh`.
+  "full-ai-cluster/nixos/modules/k3s-datastore-bootstrap-sentinel-write.sh": "host-service wrappers",
   // A systemd `ExecStart` on a NixOS cluster node, ordered before k3s.service:
   // it refuses to let k3s start when a node provisioned to JOIN already holds a
   // datastore (k3s silently IGNORES every join argument in that state). The

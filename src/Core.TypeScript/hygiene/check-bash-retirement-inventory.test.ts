@@ -180,6 +180,10 @@ describe("buildInventoryReport", () => {
           // zero-length agent cert/kubeconfig files before k3s starts. Same
           // boot-path edge as its siblings below.
           "full-ai-cluster/nixos/modules/k3s-agent-tls-self-heal.sh",
+          // Stillborn-datastore recovery pair, ordered after k3s.service.
+          // Same boot-path retained-shell edge as the rest of this category.
+          "full-ai-cluster/nixos/modules/k3s-datastore-bootstrap-recovery.sh",
+          "full-ai-cluster/nixos/modules/k3s-datastore-bootstrap-sentinel-write.sh",
           // systemd ExecStart on a NixOS cluster node, ordered before
           // k3s.service. The node's closure carries no bun, so the boot path
           // is a retained-shell edge.
@@ -318,7 +322,7 @@ describe("renderReport", () => {
       report.retainedCategories.find((summary) => summary.category === "setup/bootstrap")?.files.length ?? 0;
     expect(renderReport(report)).toContain(`- setup/bootstrap: ${bootstrapCount.toString()}`);
     expect(renderReport(report)).toContain("- git hooks: 4");
-    expect(renderReport(report)).toContain("- host-service wrappers: 5");
+    expect(renderReport(report)).toContain("- host-service wrappers: 7");
   });
 
   test("renders drift sections", () => {
