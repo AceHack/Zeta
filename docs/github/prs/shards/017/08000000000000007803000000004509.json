@@ -1,0 +1,12 @@
+{
+  "pr_number": 17673,
+  "archive_path": "docs/history/pr-reviews/2026/09/25/PR-17673-fix-installer-name-the-rate-limit-instead-of-handing-the-operator-a-rust-source-.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-25T09:57:58.148Z",
+  "schema_version": "v1",
+  "commit_sha": "f4f4192305ca9f485d3c06b67bb6456c33687391",
+  "title": "fix(installer): NAME the rate limit instead of handing the operator a Rust source location (WP31)",
+  "state": "MERGED",
+  "merged_at": "2026-09-25T09:57:11Z",
+  "head_ref": "claude/wp31-name-the-rate-limit"
+}
