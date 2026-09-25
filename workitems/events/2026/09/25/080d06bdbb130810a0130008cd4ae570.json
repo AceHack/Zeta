@@ -1,0 +1,14 @@
+{
+  "id": "080d06bdbb130810a0130008cd4ae570",
+  "at": "2026-09-25T08:38:34.849Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M3BVERK0087G0R001GVH1QP",
+    "type": "bug",
+    "title": "First-boot install.sh fails closed when GitHub's UNAUTHENTICATED API rate limit blocks mise attestation verification",
+    "slug": "first-boot-install-sh-fails-closed-when-github-s-unauthentic",
+    "priority": "P2",
+    "filename": "081M3BVERK0087G0R001GVH1QP-first-boot-install-sh-fails-closed-when-github-s-unauthentic.md"
+  }
+}
