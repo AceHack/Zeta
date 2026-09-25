@@ -1,0 +1,12 @@
+{
+  "pr_number": 17666,
+  "archive_path": "docs/history/pr-reviews/2026/09/25/PR-17666-fix-argocd-the-control-plane-was-besteffort-8-millicores-for-the-renderer-that-s.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-25T09:18:29.112Z",
+  "schema_version": "v1",
+  "commit_sha": "7bd69788710c7ad10afe837c72a19f8f4aa20812",
+  "title": "fix(argocd): the control plane was BestEffort — ~8 millicores for the renderer that stalls the roster (WP32)",
+  "state": "MERGED",
+  "merged_at": "2026-09-25T09:17:34Z",
+  "head_ref": "claude/wp32-argocd-control-plane-capacity"
+}
