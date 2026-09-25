@@ -2255,6 +2255,21 @@ export interface K3sFirstBootVerifyVerdict {
      */
     readonly probeFailures?: number;
     /**
+     * 081M3BSXAD6087G0R001XQ0WNY — pod counts at the LAST sample, as strings
+     * because a probe that could not answer reports `-` rather than `0`. Two
+     * numbers because they answer different halves: eviction takes pods AWAY
+     * (total falls), while a pod can persist in a terminal phase and still be
+     * gone as far as a workload is concerned (running falls, total does not).
+     *
+     * They exist because their absence cost a real answer. On the first live
+     * run (36097310492) Applications regressed 25/35 -> 13/35, and eviction
+     * and render-failure both predict that fall. They were separated only by
+     * INFERENCE from ArgoCD's health field; a pod-count series would have
+     * measured it. Optional so older verdict JSON still parses.
+     */
+    readonly podTotalAtLastSample?: string;
+    readonly podRunningAtLastSample?: string;
+    /**
      * `zeta-root`'s OWN sync status. `Synced` is what establishes the roster
      * is COMPLETE — an Application the root never created is invisible to a
      * loop over live Applications, so "0 unconverged" without this would be
@@ -2361,6 +2376,12 @@ export function summarizeK3sFirstBootVerifyVerdict(verdict: K3sFirstBootVerifyVe
         (roster.probeFailures === undefined
           ? ""
           : `, ${roster.probeFailures} sample(s) could not reach the API server (counted UNKNOWN, never as an empty roster)`),
+    ...(roster?.podTotalAtLastSample === undefined
+      ? []
+      : [
+          `     pods at the last sample: ${roster.podRunningAtLastSample ?? "-"} Running of ${roster.podTotalAtLastSample} total` +
+            ` — a pod count that FELL with the Application count is eviction; one that HELD while Applications went Unknown is render failure`,
+        ]),
     // Every non-converged row, including EXCLUSIONS. An exclusion nobody can
     // see is how a verdict becomes decorative; a converged app needs no line.
     ...(roster?.apps ?? [])

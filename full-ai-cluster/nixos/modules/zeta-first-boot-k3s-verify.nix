@@ -1034,6 +1034,8 @@ in
         ROSTER_UNATTRIBUTED=0
         ROSTER_SAMPLES=0
         ROSTER_PROBE_FAILURES=0
+        ROSTER_POD_TOTAL="-"
+        ROSTER_POD_RUNNING="-"
         FACTS_FILE="$($MKTEMP)"
         : > "$FACTS_FILE"
         CLASS_FILE="$($MKTEMP)"
@@ -1076,9 +1078,45 @@ in
             ROSTER_UNATTRIBUTED="''${5:-0}"
             ROSTER_APP_COUNT="''${6:-0}"
 
+            # POD COUNTS, PER SAMPLE. 081M3BSXAD6087G0R001XQ0WNY.
+            #
+            # This is one line of kubectl and its absence cost a real answer.
+            # When the first live run (36097310492) showed Applications
+            # regressing -- 25/35 Synced+Healthy at t=1214s down to 13/35 at
+            # t=3007s -- two mechanisms predicted that fall:
+            #
+            #   EVICTION       the node is under memory pressure, the kubelet
+            #                  evicts BestEffort pods, and Applications that had
+            #                  converged lose their workloads. Predicts the POD
+            #                  count falling with the Application count.
+            #   RENDER FAILURE ArgoCD's repo-server cannot re-render inside its
+            #                  timeout, so Applications flip to sync=Unknown
+            #                  while their pods KEEP RUNNING. Predicts the pod
+            #                  count HOLDING while the Application count falls.
+            #
+            # They were separated, but only by INFERENCE -- from ArgoCD's health
+            # field (47 of 102 unconverged rows read health=Healthy, and the
+            # eviction signature `sync=Synced health=Missing` occurred ZERO
+            # times) plus a grep for eviction/OOM/memory-pressure that found
+            # nothing. That is good evidence and it is not a measurement.
+            # Verdict 6 counted pods exactly ONCE, at t=152s, and nothing looked
+            # again for the next hour.
+            #
+            # Two numbers, because they answer different halves: TOTAL pods
+            # (eviction takes pods away) and RUNNING pods (a pod can persist in
+            # a terminal phase and still be gone as far as a workload is
+            # concerned). Failures are non-fatal to the sample and report `-`
+            # rather than `0` -- a probe that did not answer must never look
+            # like a cluster with no pods, which is the defect this verdict has
+            # now been bitten by once at this very layer.
+            ROSTER_POD_TOTAL="$(kc get pods -A --no-headers 2>/dev/null | "$WC" -l | "$TR" -d ' ')"
+            if [ -z "$ROSTER_POD_TOTAL" ]; then ROSTER_POD_TOTAL="-"; fi
+            ROSTER_POD_RUNNING="$(kc get pods -A --no-headers --field-selector=status.phase=Running 2>/dev/null | "$WC" -l | "$TR" -d ' ')"
+            if [ -z "$ROSTER_POD_RUNNING" ]; then ROSTER_POD_RUNNING="-"; fi
+
             # Requirement: report progress WHILE waiting. Sixty-seven minutes of
             # silence on a serial log is indistinguishable from a hang.
-            log "[wp11-k3s-verify] roster progress t=$(elapsed)s sample=''${ROSTER_SAMPLES}: ''${ROSTER_CONVERGED}/''${ROSTER_APP_COUNT} Synced+Healthy, ''${ROSTER_UNCONVERGED} progressing, ''${ROSTER_EXCLUDED} excluded, ''${ROSTER_UNDECIDABLE} undecidable, ''${ROSTER_UNATTRIBUTED} unattributed pod(s) (zeta-root sync=''${ROOT_SYNC_STATUS})"
+            log "[wp11-k3s-verify] roster progress t=$(elapsed)s sample=''${ROSTER_SAMPLES}: ''${ROSTER_CONVERGED}/''${ROSTER_APP_COUNT} Synced+Healthy, ''${ROSTER_UNCONVERGED} progressing, ''${ROSTER_EXCLUDED} excluded, ''${ROSTER_UNDECIDABLE} undecidable, ''${ROSTER_UNATTRIBUTED} unattributed pod(s), pods ''${ROSTER_POD_RUNNING}/''${ROSTER_POD_TOTAL} Running/total (zeta-root sync=''${ROOT_SYNC_STATUS})"
             if [ $(( ROSTER_SAMPLES % 5 )) -eq 1 ]; then
               "$AWK" -F '\t' '$1 == "unconverged" || $1 == "undecidable" { printf "  %s %s -- %s\n", $1, $2, $3 }' "$CLASS_FILE" \
                 | ${pkgs.coreutils}/bin/head -n 15 \
@@ -1160,6 +1198,8 @@ in
           --argjson rosterUnattributedCount "$ROSTER_UNATTRIBUTED" \
           --argjson rosterSamples "$ROSTER_SAMPLES" \
           --argjson rosterProbeFailures "$ROSTER_PROBE_FAILURES" \
+          --arg rosterPodTotal "$ROSTER_POD_TOTAL" \
+          --arg rosterPodRunning "$ROSTER_POD_RUNNING" \
           --arg rootSyncStatus "$ROOT_SYNC_STATUS" \
           --argjson k3sActiveForRoster "$K3S_ACTIVE" \
           '{
@@ -1181,6 +1221,8 @@ in
               unattributedPodCount: $rosterUnattributedCount,
               samples: $rosterSamples,
               probeFailures: $rosterProbeFailures,
+              podTotalAtLastSample: $rosterPodTotal,
+              podRunningAtLastSample: $rosterPodRunning,
               rootSyncStatus: $rootSyncStatus,
               k3sActive: $k3sActiveForRoster
             }

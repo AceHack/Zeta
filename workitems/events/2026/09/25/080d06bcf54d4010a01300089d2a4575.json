@@ -1,0 +1,14 @@
+{
+  "id": "080d06bcf54d4010a01300089d2a4575",
+  "at": "2026-09-25T08:11:34.696Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M3BSXAD6087G0R001XQ0WNY",
+    "type": "task",
+    "title": "Verdict 7 samples Applications but not pods, so eviction vs render-failure had to be separated by inference",
+    "slug": "verdict-7-samples-applications-but-not-pods-so-eviction-vs-r",
+    "priority": "P2",
+    "filename": "081M3BSXAD6087G0R001XQ0WNY-verdict-7-samples-applications-but-not-pods-so-eviction-vs-r.md"
+  }
+}
