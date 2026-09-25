@@ -233,7 +233,26 @@ export type Qcow2RetentionExecutionResult =
 
 const DEFAULT_MEMORY_MB = 4096;
 const DEFAULT_CPU_COUNT = 2;
-const DEFAULT_DISK_SIZE_GB = 20;
+/**
+ * 081M3CAJD7J087G0R0021H6WRS (WP35) — the virtual disk scenarios 3 and 4 install
+ * onto, EXPORTED so the decision that depends on it can be derived rather than
+ * guessed.
+ *
+ * 20 GiB is deliberate and unchanged since the harness was written (#6220):
+ * these two lanes test partitioning, retention and the migrate-vs-fresh fork —
+ * install MECHANICS — and a bigger disk buys them nothing. It is NOT the
+ * 1400 GiB of `src/Core.TypeScript/ci/qemu-full-install-test.ts`, which the
+ * plain-install lanes need so the Longhorn capacity gate passes on real
+ * arithmetic; these lanes never shared that constant and never will.
+ *
+ * It is exported because the installer's pre-wipe root-floor refusal (#17616)
+ * bails on any disk below ESP + root floor + a 1 GiB minimum tail, so whether
+ * these lanes must stage `ZETA_ALLOW_LONGHORN_UNDERSIZED=1` is a FUNCTION of
+ * this number. See `harnessDiskNeedsLonghornOverride` in `run.ts`: raise this
+ * constant past the floor and the override disarms itself, rather than sitting
+ * there as a stale `true` that silently keeps taking the override path.
+ */
+export const DEFAULT_DISK_SIZE_GB = 20;
 const DEFAULT_RETENTION_COMMAND_TIMEOUT_MS = 30 * 60 * 1000;
 const DEFAULT_RETENTION_POLL_INTERVAL_MS = 1000;
 const DEFAULT_QEMU_STOP_TIMEOUT_MS = 5000;

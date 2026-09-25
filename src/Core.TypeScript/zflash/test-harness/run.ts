@@ -56,6 +56,7 @@ import { prepareBootImage } from "./prepare-boot-image";
 import { ovmfForPlanning, requireOvmfForGuest } from "../../ci/ovmf-firmware.ts";
 import {
   createSpawnSyncQcow2RetentionExecutor,
+  DEFAULT_DISK_SIZE_GB,
   executeQcow2SnapshotRetentionPlan,
   planQcow2SnapshotRetention,
   type Qcow2RetentionExecutionFeedback,
@@ -560,6 +561,67 @@ function resolveTestInfraPubkeyPath(): string {
   return resolve(REPO_ROOT, "src/Core.TypeScript/zflash/test-harness/keys/zeta-test-infra.pub");
 }
 
+/**
+ * 081M3CAJD7J087G0R0021H6WRS (WP35) — the installer's own pre-wipe root-floor
+ * arithmetic, restated here so the override below is DERIVED from the harness
+ * disk rather than pinned to a `true` that nobody re-checks.
+ *
+ * `zeta-install.sh` refuses, before touching anything, when the boot disk
+ * cannot hold `ZETA_ESP_GIB` + `ZETA_ROOT_FLOOR_GIB` + a 1 GiB minimum
+ * longhorn1 tail. `zflash/test-harness/longhorn-floor.test.ts` reads those three
+ * constants out of the shell script and fails if these copies drift, so this is
+ * a checked restatement rather than a second source of truth.
+ */
+const INSTALLER_ESP_GIB = 1;
+const INSTALLER_ROOT_FLOOR_GIB = 120;
+const INSTALLER_MIN_LONGHORN_TAIL_GIB = 1;
+
+/** The smallest boot disk `zeta-install.sh` will install on without a named override. */
+export const INSTALLER_PRE_WIPE_FLOOR_GIB =
+  INSTALLER_ESP_GIB + INSTALLER_ROOT_FLOOR_GIB + INSTALLER_MIN_LONGHORN_TAIL_GIB;
+
+/**
+ * 081M3CAJD7J087G0R0021H6WRS (WP35) — WHY THESE TWO LANES TAKE THE OVERRIDE AND
+ * THE OTHERS DO NOT.
+ *
+ * Scenarios 3 (reformat with retention) and 4 (path-fork migrate vs fresh) are
+ * the only coverage of an operator reflashing over an existing install and of
+ * the migrate-versus-fresh decision. What they test is install MECHANICS —
+ * partitioning, retention across a reformat, which branch the fork takes — and
+ * none of that is a claim about capacity. So they run on the harness's 20 GiB
+ * `DEFAULT_DISK_SIZE_GB`, which is below the pre-wipe floor above, and the
+ * honest way to run below the floor is the named override the installer itself
+ * names: `ZETA_ALLOW_LONGHORN_UNDERSIZED=1`, staged on the flashed image's ESP.
+ * The installer's own refusal text says so in as many words.
+ *
+ * The plain-install lanes take the opposite answer, and must: their claim IS
+ * capacity, so #17631 gave them a 1400 GiB disk the roster genuinely fits on
+ * (`QEMU_DISK_SIZE_GB` in `src/Core.TypeScript/ci/qemu-full-install-test.ts`)
+ * precisely so they stop exercising the override path. Two lanes, two disks,
+ * two answers, because they are testing two different things.
+ *
+ * WHAT WENT WRONG (the regression this repairs). #17616 added the pre-wipe
+ * refusal; #17618 unblocked the plain-install lanes by staging this override on
+ * the ESP; #17631 unblocked them again, better, with a disk that fits. These
+ * two lanes were unblocked NEITHER time. `allowLonghornUndersized` has been
+ * threaded all the way from `lib.ts` to `prepare-boot-image.ts` since #17618
+ * and nothing ever set it here. Measured on run 36097366591: both scenarios'
+ * serial logs stop at `ERROR: BOOT disk /dev/vda is 20 GiB, which cannot hold
+ * ...  Nothing has been wiped.` about 2.5 minutes in, then sit at a shell for
+ * the remaining ~27 minutes of the marker timeout. There is no slow reformat —
+ * `mkfs` is never reached, because nothing is ever wiped.
+ *
+ * NOT A SOFTENED ASSERTION. The override buys these lanes the pre-WP28 layout
+ * (minimum tail, root takes the rest) so the install proceeds and the
+ * partitioning and retention assertions can run at all. It says nothing about
+ * whether the roster fits, and it is not permitted to leak into a lane whose
+ * verdict is about capacity — which is why it is derived from the disk size
+ * instead of passed in by a caller who might reuse it.
+ */
+export function harnessDiskNeedsLonghornOverride(diskSizeGB: number = DEFAULT_DISK_SIZE_GB): boolean {
+  return diskSizeGB < INSTALLER_PRE_WIPE_FLOOR_GIB;
+}
+
 function ensureZflashBootImage(
   isoPath: string,
   outputPath: string,
@@ -572,6 +634,7 @@ function ensureZflashBootImage(
     testMode: true,
     hostname: "node-qemu-test",
     pubkeyPath: resolveTestInfraPubkeyPath(),
+    ...(harnessDiskNeedsLonghornOverride() ? { allowLonghornUndersized: true } : {}),
   });
   if ("error" in prepared) {
     return { error: prepared.error };

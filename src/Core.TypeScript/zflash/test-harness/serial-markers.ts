@@ -133,13 +133,49 @@ export const RETENTION_FAILURE_SERIAL_MARKERS: readonly string[] = [
 export const UEFI_REQUIRED_TERMINAL_MARKER = "ERROR: not booted in UEFI mode";
 
 /**
+ * 081M3CAJD7J087G0R0021H6WRS (WP35) — zeta-first-boot's OWN verdict that the install it
+ * launched has ended in failure, which the marker above could not cover.
+ *
+ * THE HOLE THIS CLOSES, AND WHY IT WAS INVISIBLE. `nixos@zeta-installer:~` is already a
+ * terminal marker, and it IS present when zeta-first-boot gives up — `drop_to_shell` lands
+ * on exactly that prompt. But the wait loop suppresses that one marker while
+ * `serialFirstBootInProgress` holds (`qemu-state.ts`), and it holds forever once
+ * "[3/3] Running zeta-install" has been printed. The suppression is right — the login
+ * banner appears long before the install finishes, so tripping on it would fail every
+ * healthy run — and its cost is that the one case where first-boot reaches that prompt
+ * *because it failed* looked identical to still working.
+ *
+ * MEASURED, run 36097366591. Scenario 3 and scenario 4 both printed
+ * `ERROR: BOOT disk /dev/vda is 20 GiB ... Nothing has been wiped.` and then this line,
+ * roughly 2.5 minutes into a 1,800,000 ms wait, and sat at a shell prompt for the
+ * remaining ~27 minutes — about 55 runner-minutes per dispatch spent re-proving a verdict
+ * the guest had already announced. This is the same failure 081M24BB3TD087G0R001PJTW9A
+ * recorded for the UEFI refusal, arriving through a different door.
+ *
+ * WHY IT IS SOUND AS A *TERMINAL* MARKER. `zeta-first-boot.sh` emits it in the single
+ * `else` branch where `zeta-install` returned neither 0 (reboot) nor 10 (cancelled at the
+ * pre-wipe window, which has its own CANCELLED line); that branch does nothing but drop to
+ * a shell. There is no path from this line back to a completed install, so stopping on it
+ * cannot mask a run that would otherwise have passed.
+ *
+ * The `(rc=` tail is deliberate: it pins the match to the emitter's exact format string
+ * rather than to the English words "Install failed", which appear in prose elsewhere.
+ *
+ * NOT a softened assertion: a run that trips this still exits non-zero, with the guest's
+ * own reason in the serial log. Only the time-to-verdict changes.
+ */
+export const FIRST_BOOT_INSTALL_FAILED_TERMINAL_MARKER = "[zeta-first-boot] Install failed (rc=";
+
+/**
  * Terminal markers every install-shaped boot honours. `nixos@zeta-installer:~` means the
  * live ISO dropped to its own shell instead of running zeta-first-boot; the UEFI refusal
- * means the firmware was wrong before anything could be installed.
+ * means the firmware was wrong before anything could be installed; the first-boot failure
+ * line means zeta-install ran and lost.
  */
 export const RETENTION_ABSENT_TERMINAL_MARKERS: readonly string[] = [
   "nixos@zeta-installer:~",
   UEFI_REQUIRED_TERMINAL_MARKER,
+  FIRST_BOOT_INSTALL_FAILED_TERMINAL_MARKER,
 ];
 
 /** Emitted on tty1 and mirrored to ttyS0 while zeta-first-boot.service runs. */

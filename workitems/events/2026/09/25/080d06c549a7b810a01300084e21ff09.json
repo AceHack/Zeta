@@ -1,0 +1,14 @@
+{
+  "id": "080d06c549a7b810a01300084e21ff09",
+  "at": "2026-09-25T13:02:42.935Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M3CAJD7J087G0R0021H6WRS",
+    "type": "bug",
+    "title": "The reformat-with-retention and path-fork lanes refuse pre-wipe on a 20 GiB disk and then dead-wait the full 30-minute marker timeout",
+    "slug": "the-reformat-with-retention-and-path-fork-lanes-refuse-pre-w",
+    "priority": "P2",
+    "filename": "081M3CAJD7J087G0R0021H6WRS-the-reformat-with-retention-and-path-fork-lanes-refuse-pre-w.md"
+  }
+}
