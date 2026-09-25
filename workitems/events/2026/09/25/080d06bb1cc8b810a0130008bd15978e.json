@@ -1,0 +1,14 @@
+{
+  "id": "080d06bb1cc8b810a0130008bd15978e",
+  "at": "2026-09-25T07:07:03.831Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M3BP768B087G0R0010C6GPR",
+    "type": "bug",
+    "title": "Verdict 7 never emitted: a bound that outlives the reader, a probe failure read as zero apps, and undecidable firing on ordinary nodeAffinity",
+    "slug": "verdict-7-never-emitted-a-bound-that-outlives-the-reader-a-p",
+    "priority": "P2",
+    "filename": "081M3BP768B087G0R0010C6GPR-verdict-7-never-emitted-a-bound-that-outlives-the-reader-a-p.md"
+  }
+}

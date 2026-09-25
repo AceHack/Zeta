@@ -142,7 +142,21 @@ const label = (pair: string): string => ["L", pair].join(TAB);
 const pendingPod = (
   namespace: string,
   name: string,
-  opts: { instance?: string; affinity?: boolean; selKey?: string; selValue?: string } = {},
+  opts: {
+    instance?: string;
+    affinity?: boolean;
+    /**
+     * The pod's own `PodScheduled=False` condition — the SCHEDULER's verdict.
+     * 081M3BP768B087G0R0010C6GPR added it as a required conjunct for
+     * `undecidable`: bare "Pending + has nodeAffinity" fired on `longhorn` and
+     * `node-feature-discovery` on the first live run (36097310492), because
+     * almost every chart's DaemonSet carries a `kubernetes.io/os: linux`
+     * nodeAffinity and every pod is Pending for a moment while its image pulls.
+     */
+    schedulerRefused?: boolean;
+    selKey?: string;
+    selValue?: string;
+  } = {},
 ): string =>
   [
     "P",
@@ -150,6 +164,7 @@ const pendingPod = (
     name,
     opts.instance ?? "-",
     (opts.affinity ?? false) ? "true" : "false",
+    (opts.schedulerRefused ?? false) ? "true" : "false",
     opts.selKey ?? "-",
     opts.selValue ?? "-",
   ].join(TAB);
@@ -418,7 +433,7 @@ describe("zeta_wp11_classify_roster — undecidable is said out loud, never assu
         app("arc-runner-set", "Synced", "Progressing"),
         ns("arc-runner-set", "arc-runners"),
         NODE_LABELS,
-        pendingPod("arc-runners", "runner-0", { affinity: true }),
+        pendingPod("arc-runners", "runner-0", { affinity: true, schedulerRefused: true }),
       ].join("\n"),
       "affinity.tsv",
     );
@@ -427,13 +442,59 @@ describe("zeta_wp11_classify_roster — undecidable is said out loud, never assu
     expect(rows[0]?.detail).toContain("arc-runners/runner-0");
   });
 
+  /**
+   * THE NARROWING, AND THE CASE THAT MEASURED IT. Bare "Pending + carries
+   * required nodeAffinity" is far too broad: almost every chart's DaemonSet
+   * carries a `kubernetes.io/os: linux` nodeAffinity, and every pod is Pending
+   * for a moment while its image pulls. MEASURED on the first live run
+   * (36097310492) it fired on `longhorn` and `node-feature-discovery` — two
+   * ordinary, perfectly schedulable workloads — which would have made the
+   * verdict permanently red for a reason about this CHECK rather than about
+   * the cluster.
+   *
+   * So the scheduler must have actually REFUSED to place the pod. A pod that
+   * is Pending while pulling an image is not a scheduling question at all.
+   */
+  it("nodeAffinity WITHOUT the scheduler refusing is NOT undecidable — the 081M3BP768B087G0R0010C6GPR narrowing", () => {
+    const rows = classify(
+      [
+        app("longhorn", "Synced", "Progressing"),
+        ns("longhorn", "longhorn-system"),
+        NODE_LABELS,
+        // A DaemonSet pod mid image-pull: Pending, carries the usual
+        // `kubernetes.io/os: linux` nodeAffinity, and the scheduler has
+        // already placed it (PodScheduled is not False).
+        pendingPod("longhorn-system", "longhorn-manager-abc", { affinity: true, schedulerRefused: false }),
+      ].join("\n"),
+      "affinity-not-refused.tsv",
+    );
+    expect(rows[0]?.bucket).toBe("unconverged");
+    expect(rows[0]?.detail).not.toContain("nodeAffinity");
+  });
+
+  it("the scheduler refusing WITHOUT nodeAffinity is not undecidable either — both conjuncts are required", () => {
+    const rows = classify(
+      [
+        app("cockroachdb", "Synced", "Progressing"),
+        ns("cockroachdb", "cockroachdb"),
+        NODE_LABELS,
+        // Unschedulable for a reason this check does not claim to explain
+        // (insufficient CPU, say). That is a real failure, not an exclusion
+        // and not an "I could not tell".
+        pendingPod("cockroachdb", "cockroachdb-0", { affinity: false, schedulerRefused: true }),
+      ].join("\n"),
+      "refused-no-affinity.tsv",
+    );
+    expect(rows[0]?.bucket).toBe("unconverged");
+  });
+
   it("a PROVEN unschedulable selector wins over undecidable nodeAffinity on the same app", () => {
     const rows = classify(
       [
         app("ollama", "Synced", "Progressing"),
         ns("ollama", "ollama"),
         NODE_LABELS,
-        pendingPod("ollama", "affinity-0", { affinity: true }),
+        pendingPod("ollama", "affinity-0", { affinity: true, schedulerRefused: true }),
         pendingPod("ollama", "gpu-0", { selKey: "zeta.io/gpu", selValue: "nvidia" }),
       ].join("\n"),
       "both.tsv",
@@ -447,7 +508,7 @@ describe("zeta_wp11_classify_roster — undecidable is said out loud, never assu
         app("redis", "Synced", "Healthy"),
         ns("redis", "redis"),
         NODE_LABELS,
-        pendingPod("redis", "redis-backup-0", { affinity: true }),
+        pendingPod("redis", "redis-backup-0", { affinity: true, schedulerRefused: true }),
       ].join("\n"),
       "converged-pending.tsv",
     );
@@ -472,7 +533,7 @@ describe("zeta_wp11_roster_counts", () => {
       ns("arc-runner-set", "arc-runners"),
       NODE_LABELS,
       pendingPod("ollama", "ollama-0", { selKey: "zeta.io/gpu", selValue: "nvidia" }),
-      pendingPod("arc-runners", "runner-0", { affinity: true }),
+      pendingPod("arc-runners", "runner-0", { affinity: true, schedulerRefused: true }),
       pendingPod("nowhere", "orphan-0", { selKey: "zeta.io/gpu", selValue: "nvidia" }),
     ].join("\n");
     // converged unconverged excluded undecidable unattributed applications

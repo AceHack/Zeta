@@ -60,7 +60,39 @@
 #                            Synced+Healthy inside a bound; every one that
 #                            cannot is NAMED with its reason and excluded.
 #                            See "VERDICT 7" below -- it is the one that
-#                            answers the maintainer's actual question.
+#                            answers the maintainer's actual question, WITHIN
+#                            THE SUBSTRATE LIMIT stated immediately below.
+#
+# WHAT VERDICT 7 ACTUALLY MEASURES -- READ THIS BEFORE QUOTING IT
+# ----------------------------------------------------------------
+# NOT "the roster converges". "THE ROSTER CONVERGES ON A 4-vCPU / 12 GiB NODE."
+# The two hardware figures, side by side and both MEASURED:
+#
+#                   this lane's guest        registered ClusterNodes     ratio
+#   vCPU / cores    4                        16, 16, 22, 22             18-25%
+#   memory          12 GiB                   66 G (all four)             ~18%
+#
+# Sources: `K3S_VERIFY_CPU_COUNT` / `K3S_VERIFY_MEMORY_MB` in
+# src/Core.TypeScript/ci/qemu-full-install-test.ts, and
+# maintainers/*/cluster-nodes/*/node.yaml.
+#
+# THE GUEST CANNOT BE GIVEN MORE. The GitHub-hosted ubuntu-24.04 runner is
+# itself 4 vCPU / 16 GiB, so the guest already takes ALL FOUR vCPUs and 12 of
+# the host's 16 GiB. That is a hard ceiling on what this lane can ever measure,
+# not a setting someone forgot to raise. And those 4 vCPUs are simultaneously
+# running k3s + kubelet, containerd pulling against a 134-entry image roster,
+# and ArgoCD rendering 49 Applications.
+#
+# So a GREEN verdict 7 says the roster converges on roughly a QUARTER of the
+# CPU and a FIFTH of the memory of the box it is meant to represent -- which is
+# a strong result, and a narrower claim than the verdict's name suggests. A RED
+# one does NOT automatically transfer to the target hardware either. The first
+# live run (36097310492) went red for exactly this reason: the ArgoCD control
+# plane was starved, convergence PEAKED at 25/35 and regressed to 13/35, and
+# `zeta-root` itself never completed a comparison. Filed, with the substrate
+# measurement, as 081M3BPJNRS087G0R0008WFXBZ -- which is a REAL finding about
+# modest hardware (an operator installing on a small box gets exactly that),
+# not a CI artifact to wave away.
 #
 # VERDICT 7 -- WHY IT EXISTS AND WHY IT IS NOT "ALL APPLICATIONS HEALTHY"
 # -----------------------------------------------------------------------
@@ -686,11 +718,16 @@ in
           #   A <app> <syncStatus> <healthStatus> <policyAnnotation> <hasAutomated> <policyReason> <message>
           #   N <app> <namespace>                  -- a namespace this app claims
           #   L <labelKey=labelValue>              -- carried by at least one Node
-          #   P <podNs> <podName> <instanceLabel> <hasRequiredNodeAffinity> <selKey> <selValue>
+          #   P <podNs> <podName> <instanceLabel> <hasRequiredNodeAffinity> <schedulerSaysUnschedulable> <selKey> <selValue>
           #                                        -- one row per Pending pod per
           #                                           nodeSelector pair; a pod with
           #                                           no nodeSelector emits one row
-          #                                           with "-" "-"
+          #                                           with "-" "-".
+          #                                           `schedulerSaysUnschedulable`
+          #                                           is the pod's own
+          #                                           PodScheduled=False
+          #                                           condition -- the SCHEDULER's
+          #                                           verdict, not an inference.
           #
           # $2 = the root Application's name. Excluded from the roster -- verdict
           #      5 owns it, and its own sync status is the SHELL's completeness
@@ -713,8 +750,30 @@ in
           #                          contract is `unconverged`, not excluded.
           #   excluded-unschedulable a Pending pod of this app demands a
           #                          nodeSelector label NO Node carries.
-          #   undecidable            this check cannot decide it. Counted, named,
+          #   undecidable            the SCHEDULER says a pod of this app cannot
+          #                          be placed (PodScheduled=False) AND the pod
+          #                          carries required nodeAffinity, which this
+          #                          check does not evaluate. Counted, named,
           #                          and it FAILS the verdict.
+          #
+          #                          BOTH halves are required, and the first
+          #                          half was added after the first live run.
+          #                          081M3BP768B087G0R0010C6GPR: bare
+          #                          "Pending + has nodeAffinity" is far too
+          #                          broad, because almost every chart's
+          #                          DaemonSet carries a
+          #                          `kubernetes.io/os: linux` nodeAffinity and
+          #                          every pod is Pending for a moment while its
+          #                          image pulls. MEASURED run 36097310492: it
+          #                          fired on `longhorn` and
+          #                          `node-feature-discovery` -- two ordinary,
+          #                          perfectly schedulable workloads -- which
+          #                          would have made the verdict permanently red
+          #                          for a reason about this CHECK rather than
+          #                          about the cluster. A pod that is Pending
+          #                          while pulling an image is not a scheduling
+          #                          question at all, and the scheduler's own
+          #                          condition is what separates the two.
           #   unattributed-pod       a provably unschedulable Pending pod that
           #                          belongs to no single Application. Reported
           #                          rather than dropped, and it FAILS the
@@ -738,9 +797,9 @@ in
             $1 == "P" {
               pk = $2 SUBSEP $3
               if (!(pk in podSeen)) { podSeen[pk] = 1; podOrder[++pn] = pk }
-              podNs[pk] = $2; podName[pk] = $3; podInst[pk] = $4; podAff[pk] = $5
-              if ($6 != "-") {
-                want = $6 "=" $7
+              podNs[pk] = $2; podName[pk] = $3; podInst[pk] = $4; podAff[pk] = $5; podSchedFalse[pk] = $6
+              if ($7 != "-") {
+                want = $7 "=" $8
                 if (!(want in nodeLabel) && !(pk in podUnsched)) podUnsched[pk] = want
               }
               next
@@ -767,7 +826,11 @@ in
                 }
                 if (pk in podUnsched) {
                   if (!(owner in unschedWhy)) unschedWhy[owner] = podUnsched[pk] " (pod " podNs[pk] "/" podName[pk] ")"
-                } else if (podAff[pk] == "true") {
+                } else if (podAff[pk] == "true" && podSchedFalse[pk] == "true") {
+                  # BOTH halves. The scheduler has to have actually refused to
+                  # place it (PodScheduled=False), not merely "it is Pending" --
+                  # see the `undecidable` entry in this function header for the
+                  # measurement that added this conjunct.
                   if (!(owner in affWhy)) affWhy[owner] = podNs[pk] "/" podName[pk]
                 }
               }
@@ -809,7 +872,7 @@ in
                   continue
                 }
                 if (a in affWhy) {
-                  printf "undecidable\t%s\tPending pod %s carries requiredDuringSchedulingIgnoredDuringExecution nodeAffinity, which this check does not evaluate (it decides spec.nodeSelector only); sync=%s health=%s%s\n", a, affWhy[a], sync[a], health[a], note
+                  printf "undecidable\t%s\tthe scheduler REFUSED to place pod %s (PodScheduled=False) and it carries requiredDuringSchedulingIgnoredDuringExecution nodeAffinity, which this check does not evaluate (it decides spec.nodeSelector only); sync=%s health=%s%s\n", a, affWhy[a], sync[a], health[a], note
                   continue
                 }
                 printf "unconverged\t%s\tsync=%s health=%s msg=%s%s\n", a, sync[a], health[a], msg[a], note
@@ -843,8 +906,35 @@ in
           # Flattening ONLY -- every decision lives in the awk above, which is
           # the half a parity test can execute. jq here extracts fields and
           # nothing more.
+          #
+          # RETURNS 1 WHEN THE APPLICATIONS PROBE ITSELF FAILED, and the caller
+          # must treat that sample as UNKNOWN rather than as a measurement.
+          # 081M3BP768B087G0R0010C6GPR: the first live run of this verdict
+          # (36097310492) piped that probe straight into jq under `|| true`, so
+          # a kubectl that could not reach the API server produced an EMPTY
+          # facts file, which classified as a perfectly clean `0/0` roster.
+          # MEASURED: 17 of 59 samples read `0/0 ... zeta-root sync=-` on a
+          # cluster that at its peak had 25 of 35 Applications Synced+Healthy.
+          # A failed probe reported as a negative result is the exact defect
+          # class this verdict was built to catch, reproduced one layer down in
+          # the verdict's own collection -- and had the final sample been one of
+          # those 17, the verdict would have reported `appCount=0` about a
+          # cluster it simply failed to ask.
           : > "$1"
-          kc -n argocd get applications -o json 2>/dev/null | "$JQ" -r '
+          _apps_json="$($MKTEMP)"
+          if ! kc -n argocd get applications -o json > "$_apps_json" 2>/dev/null; then
+            ${pkgs.coreutils}/bin/rm -f "$_apps_json"
+            return 1
+          fi
+          # An empty body is the same failure wearing exit code 0 (a truncated
+          # response, a connection closed mid-stream). `.items` absent is NOT
+          # the same as `.items == []`: a real cluster with no Applications
+          # still returns a List with an empty items array.
+          if ! "$JQ" -e 'has("items")' < "$_apps_json" >/dev/null 2>&1; then
+            ${pkgs.coreutils}/bin/rm -f "$_apps_json"
+            return 1
+          fi
+          "$JQ" -r '
             def dash(n): (. // "") | tostring | gsub("[\t\n\r]"; " ") | .[0:n] | (if . == "" then "-" else . end);
             .items[]? | . as $app
             | ( [ "A",
@@ -859,20 +949,28 @@ in
               ( [ "N", ($app.metadata.name | dash(120)), ($app.spec.destination.namespace | dash(120)) ] | @tsv ),
               ( (($app.status.resources // [])[] | select((.namespace // "") != "")
                  | [ "N", ($app.metadata.name | dash(120)), (.namespace | dash(120)) ] | @tsv) )
-          ' >> "$1" || true
+          ' < "$_apps_json" >> "$1" || true
+          ${pkgs.coreutils}/bin/rm -f "$_apps_json"
+          # Nodes and pods are NOT fatal to a sample: they only ever make the
+          # exclusion buckets SMALLER (no labels -> nothing is provably
+          # unschedulable; no pods -> nothing is undecidable), which is the
+          # conservative direction. The Applications probe is the one that
+          # decides whether there is a measurement at all.
           kc get nodes -o json 2>/dev/null | "$JQ" -r '
             .items[]? | (.metadata.labels // {}) | to_entries[] | [ "L", "\(.key)=\(.value)" ] | @tsv
           ' >> "$1" || true
           kc get pods -A -o json 2>/dev/null | "$JQ" -r '
             .items[]? | select((.status.phase // "") == "Pending") | . as $p
             | ((($p.spec.affinity.nodeAffinity.requiredDuringSchedulingIgnoredDuringExecution) // null) != null) as $aff
+            | ((($p.status.conditions // []) | map(select(.type == "PodScheduled" and .status == "False")) | length) > 0) as $unsched
             | (($p.metadata.labels // {})["app.kubernetes.io/instance"] // "-") as $inst
             | (($p.spec.nodeSelector // {}) | to_entries) as $sel
             | if ($sel | length) == 0
-              then [ "P", $p.metadata.namespace, $p.metadata.name, $inst, ($aff | tostring), "-", "-" ] | @tsv
-              else ($sel[] | [ "P", $p.metadata.namespace, $p.metadata.name, $inst, ($aff | tostring), .key, (.value | tostring) ] | @tsv)
+              then ([ "P", $p.metadata.namespace, $p.metadata.name, $inst, ($aff | tostring), ($unsched | tostring), "-", "-" ] | @tsv)
+              else ($sel[] | [ "P", $p.metadata.namespace, $p.metadata.name, $inst, ($aff | tostring), ($unsched | tostring), .key, (.value | tostring) ] | @tsv)
               end
           ' >> "$1" || true
+          return 0
         }
 
         roster_app_diag() {
@@ -891,11 +989,38 @@ in
             done
         }
 
-        # 4200s = the UPPER end of k3s-first-boot-roster.nix own measured 45-70
-        # min budget, because the app-of-apps roster is a strict superset of the
-        # bring-up that number was measured against. Clamped to deadline_ts
-        # below, which is what actually bites.
-        ROSTER_DEADLINE_SECONDS=4200
+        # 3000s, and the number was CORRECTED DOWNWARD after the first live run
+        # (081M3BP768B087G0R0010C6GPR). This is not relaxing a bound to make a
+        # run pass -- it is the opposite, and the distinction is the whole
+        # reason for the paragraph:
+        #
+        #   A BOUND THAT OUTLIVES ITS READER IS NOT A BOUND. THE VERDICT SIMPLY
+        #   NEVER EXISTS.
+        #
+        # The first version used 4200s (the upper end of k3s-first-boot-
+        # roster.nix's measured 45-70 min) and clamped it to this unit's overall
+        # `deadline_ts`, on the assumption that the harness's own
+        # `K3S_VERIFY_TIMEOUT_SECONDS` (4500s) left ~300s of slack. IT DOES NOT.
+        # The harness counts from the PHASE-3 LOGIN and this unit counts from
+        # its own ExecStart, and MEASURED on run 36097310492 the two clocks are
+        # ~770s apart: the harness stopped reading serial while the unit was
+        # still polling at its own t=3730s, so NO verdict-7 JSON was ever
+        # emitted and the whole block was ABSENT. (The `ABSENT is a FAILURE`
+        # guard in summarizeK3sFirstBootVerifyVerdict is what turned that into
+        # a red instead of a silent pass -- it earned its keep on the first
+        # run.)
+        #
+        # 3000s + the measured ~770s offset + a reporting budget for ~50 rows
+        # and up to ten per-app diagnostics lands the emit around the harness's
+        # t=4000s, ~500s inside its 4500s.
+        #
+        # AND THE SHORTER BOUND COSTS NOTHING MEASURABLE. Same run: convergence
+        # PEAKED at 25/35 Synced+Healthy at t=1214s and then went BACKWARDS
+        # (13/35 from t=3007s onward, unchanged across the last four samples
+        # 723s apart) as ArgoCD's repo-server began failing manifest generation
+        # with `DeadlineExceeded`. More wall clock was not producing more
+        # convergence; it was producing more silence.
+        ROSTER_DEADLINE_SECONDS=3000
         ROSTER_POLL_SECONDS=30
 
         ROSTER_OK=false
@@ -908,6 +1033,7 @@ in
         ROSTER_UNDECIDABLE=0
         ROSTER_UNATTRIBUTED=0
         ROSTER_SAMPLES=0
+        ROSTER_PROBE_FAILURES=0
         FACTS_FILE="$($MKTEMP)"
         : > "$FACTS_FILE"
         CLASS_FILE="$($MKTEMP)"
@@ -921,7 +1047,23 @@ in
           log "[wp11-k3s-verify] roster: waiting up to $(( roster_deadline - $(now_ts) ))s for every Application that CAN converge to reach Synced+Healthy"
           while true; do
             ROSTER_SAMPLES=$(( ROSTER_SAMPLES + 1 ))
-            collect_roster_facts "$FACTS_FILE"
+            # A FAILED PROBE IS `unknown`, NEVER A NEGATIVE RESULT
+            # (081M3BP768B087G0R0010C6GPR). The previous counts are left
+            # STANDING rather than overwritten with zeros, because a kubectl
+            # that could not reach the API server has measured nothing at all --
+            # and a sample that measured nothing must not be able to report a
+            # clean roster. Loud on serial, and carried into the verdict JSON as
+            # `probeFailures` so a reader can tell a quiet cluster from an
+            # unreachable one.
+            if ! collect_roster_facts "$FACTS_FILE"; then
+              ROSTER_PROBE_FAILURES=$(( ROSTER_PROBE_FAILURES + 1 ))
+              log "[wp11-k3s-verify] roster probe FAILED at t=$(elapsed)s sample=''${ROSTER_SAMPLES} -- kubectl could not list Applications in namespace argocd. This sample is UNKNOWN: the previous counts stand and are NOT overwritten with zeros (''${ROSTER_PROBE_FAILURES} failure(s) so far)"
+              if [ "$(now_ts)" -ge "$roster_deadline" ]; then
+                break
+              fi
+              "$SLEEP" "$ROSTER_POLL_SECONDS"
+              continue
+            fi
             zeta_wp11_classify_roster "$FACTS_FILE" "zeta-root" > "$CLASS_FILE"
             ROOT_SYNC_STATUS="$(kc -n argocd get application zeta-root -o jsonpath='{.status.sync.status}' 2>/dev/null || true)"
             if [ -z "$ROOT_SYNC_STATUS" ]; then ROOT_SYNC_STATUS="-"; fi
@@ -971,13 +1113,13 @@ in
         if [ "$K3S_ACTIVE" != "true" ]; then
           log "[wp11-k3s-verify] verdict 7/7 rosterConverged=false after ''${ROSTER_ELAPSED}s -- k3s.service NEVER BECAME ACTIVE, so ZERO Applications were ever examined; this is a failure, not a clean roster (see verdict 2/7 above)"
         elif [ "$ROSTER_APP_COUNT" -eq 0 ]; then
-          log "[wp11-k3s-verify] verdict 7/7 rosterConverged=false after ''${ROSTER_ELAPSED}s (''${ROSTER_SAMPLES} sample(s)) -- ZERO Applications were observed in namespace argocd (zeta-root sync=''${ROOT_SYNC_STATUS}); an empty roster is an absent measurement, never a clean one"
+          log "[wp11-k3s-verify] verdict 7/7 rosterConverged=false after ''${ROSTER_ELAPSED}s (''${ROSTER_SAMPLES} sample(s)) -- ZERO Applications were observed in namespace argocd (zeta-root sync=''${ROOT_SYNC_STATUS}); an empty roster is an absent measurement, never a clean one [''${ROSTER_PROBE_FAILURES} of ''${ROSTER_SAMPLES} sample(s) could not reach the API server at all and were counted as UNKNOWN, never as an empty roster]"
         elif [ "$ROSTER_OK" = "true" ]; then
-          log "[wp11-k3s-verify] verdict 7/7 rosterConverged=true after ''${ROSTER_ELAPSED}s (''${ROSTER_SAMPLES} sample(s)): ''${ROSTER_CONVERGED}/''${ROSTER_APP_COUNT} Applications Synced+Healthy, ''${ROSTER_EXCLUDED} excluded and named below, 0 undecidable (zeta-root sync=''${ROOT_SYNC_STATUS}, so the roster is COMPLETE)"
+          log "[wp11-k3s-verify] verdict 7/7 rosterConverged=true after ''${ROSTER_ELAPSED}s (''${ROSTER_SAMPLES} sample(s)): ''${ROSTER_CONVERGED}/''${ROSTER_APP_COUNT} Applications Synced+Healthy, ''${ROSTER_EXCLUDED} excluded and named below, 0 undecidable (zeta-root sync=''${ROOT_SYNC_STATUS}, so the roster is COMPLETE) [''${ROSTER_PROBE_FAILURES} of ''${ROSTER_SAMPLES} sample(s) could not reach the API server at all and were counted as UNKNOWN, never as an empty roster]"
         elif [ "$ROOT_SYNC_STATUS" != "Synced" ]; then
-          log "[wp11-k3s-verify] verdict 7/7 rosterConverged=false after ''${ROSTER_ELAPSED}s (''${ROSTER_SAMPLES} sample(s)): zeta-root itself reports sync=''${ROOT_SYNC_STATUS}, not Synced -- the roster is INCOMPLETE, so the ''${ROSTER_APP_COUNT} Applications seen are not known to be all of them (''${ROSTER_CONVERGED} of them Synced+Healthy, ''${ROSTER_UNCONVERGED} progressing)"
+          log "[wp11-k3s-verify] verdict 7/7 rosterConverged=false after ''${ROSTER_ELAPSED}s (''${ROSTER_SAMPLES} sample(s)): zeta-root itself reports sync=''${ROOT_SYNC_STATUS}, not Synced -- the roster is INCOMPLETE, so the ''${ROSTER_APP_COUNT} Applications seen are not known to be all of them (''${ROSTER_CONVERGED} of them Synced+Healthy, ''${ROSTER_UNCONVERGED} progressing) [''${ROSTER_PROBE_FAILURES} of ''${ROSTER_SAMPLES} sample(s) could not reach the API server at all and were counted as UNKNOWN, never as an empty roster]"
         else
-          log "[wp11-k3s-verify] verdict 7/7 rosterConverged=false after ''${ROSTER_ELAPSED}s (''${ROSTER_SAMPLES} sample(s), bound reached): ''${ROSTER_CONVERGED}/''${ROSTER_APP_COUNT} Synced+Healthy, ''${ROSTER_UNCONVERGED} did NOT converge within the bound, ''${ROSTER_UNDECIDABLE} undecidable, ''${ROSTER_UNATTRIBUTED} unattributed pod(s)"
+          log "[wp11-k3s-verify] verdict 7/7 rosterConverged=false after ''${ROSTER_ELAPSED}s (''${ROSTER_SAMPLES} sample(s), bound reached): ''${ROSTER_CONVERGED}/''${ROSTER_APP_COUNT} Synced+Healthy, ''${ROSTER_UNCONVERGED} did NOT converge within the bound, ''${ROSTER_UNDECIDABLE} undecidable, ''${ROSTER_UNATTRIBUTED} unattributed pod(s) [''${ROSTER_PROBE_FAILURES} of ''${ROSTER_SAMPLES} sample(s) could not reach the API server at all and were counted as UNKNOWN, never as an empty roster]"
         fi
         # Every row, every boot -- including the excluded ones. An exclusion
         # nobody can see is how a verdict becomes decorative.
@@ -1017,6 +1159,7 @@ in
           --argjson rosterUndecidableCount "$ROSTER_UNDECIDABLE" \
           --argjson rosterUnattributedCount "$ROSTER_UNATTRIBUTED" \
           --argjson rosterSamples "$ROSTER_SAMPLES" \
+          --argjson rosterProbeFailures "$ROSTER_PROBE_FAILURES" \
           --arg rootSyncStatus "$ROOT_SYNC_STATUS" \
           --argjson k3sActiveForRoster "$K3S_ACTIVE" \
           '{
@@ -1037,6 +1180,7 @@ in
               undecidableCount: $rosterUndecidableCount,
               unattributedPodCount: $rosterUnattributedCount,
               samples: $rosterSamples,
+              probeFailures: $rosterProbeFailures,
               rootSyncStatus: $rootSyncStatus,
               k3sActive: $k3sActiveForRoster
             }

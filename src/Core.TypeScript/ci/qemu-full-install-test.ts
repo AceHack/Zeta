@@ -2244,6 +2244,17 @@ export interface K3sFirstBootVerifyVerdict {
     readonly unattributedPodCount: number;
     readonly samples: number;
     /**
+     * 081M3BP768B087G0R0010C6GPR — samples where `kubectl get applications`
+     * could not reach the API server AT ALL. Those samples are `unknown`, not
+     * "zero Applications": the previous counts stand rather than being
+     * overwritten with zeros. MEASURED run 36097310492: 17 of 59 samples, on a
+     * cluster whose peak was 25/35 Synced+Healthy. A high count here means the
+     * verdict's own instrument was struggling, which is a different finding
+     * from a roster that would not converge — and the two used to be
+     * indistinguishable. Optional so verdict JSON predating the fix parses.
+     */
+    readonly probeFailures?: number;
+    /**
      * `zeta-root`'s OWN sync status. `Synced` is what establishes the roster
      * is COMPLETE — an Application the root never created is invisible to a
      * loop over live Applications, so "0 unconverged" without this would be
@@ -2346,7 +2357,10 @@ export function summarizeK3sFirstBootVerifyVerdict(verdict: K3sFirstBootVerifyVe
         `${roster.samples} sample(s)) — ${roster.convergedCount}/${roster.appCount} Synced+Healthy, ` +
         `${roster.unconvergedCount} did not converge, ${roster.excludedCount} excluded, ` +
         `${roster.undecidableCount} undecidable, ${roster.unattributedPodCount} unattributed pod(s); ` +
-        `zeta-root sync=${roster.rootSyncStatus}, k3sActive=${String(roster.k3sActive)}`,
+        `zeta-root sync=${roster.rootSyncStatus}, k3sActive=${String(roster.k3sActive)}` +
+        (roster.probeFailures === undefined
+          ? ""
+          : `, ${roster.probeFailures} sample(s) could not reach the API server (counted UNKNOWN, never as an empty roster)`),
     // Every non-converged row, including EXCLUSIONS. An exclusion nobody can
     // see is how a verdict becomes decorative; a converged app needs no line.
     ...(roster?.apps ?? [])

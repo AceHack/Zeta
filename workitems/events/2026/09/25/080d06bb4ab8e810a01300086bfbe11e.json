@@ -1,0 +1,14 @@
+{
+  "id": "080d06bb4ab8e810a01300086bfbe11e",
+  "at": "2026-09-25T07:13:20.157Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M3BPJNRS087G0R0008WFXBZ",
+    "type": "bug",
+    "title": "ArgoCD repo-server DeadlineExceeded on manifest generation is what stops the roster converging on an installed disk",
+    "slug": "argocd-repo-server-deadlineexceeded-on-manifest-generation-i",
+    "priority": "P2",
+    "filename": "081M3BPJNRS087G0R0008WFXBZ-argocd-repo-server-deadlineexceeded-on-manifest-generation-i.md"
+  }
+}
