@@ -23,6 +23,46 @@
 # toolchain shape: docker + kubectl only, no helm, no kind, no k3d — the
 # rancher/k3s Docker image's own helm-controller does every chart install.
 #
+# TWO RESOURCE MODES (WP33), two jobs, two different questions:
+#
+#   `first-boot-replica` (every PR that touches the roster, plus schedule and
+#   dispatch) runs UNCONSTRAINED -- no --cpus/--memory. It answers "IS THE
+#   ROSTER INTERNALLY CONSISTENT?" and it is the fast per-PR signal. Unchanged
+#   by WP33; every baseline it has ever recorded still describes it.
+#
+#   `first-boot-replica-constrained` (schedule + dispatch ONLY) applies the
+#   INSTALLED-DISK guest's own envelope -- K3S_VERIFY_CPU_COUNT /
+#   K3S_VERIFY_MEMORY_MB imported from ci/qemu-full-install-test.ts, plus swap
+#   denied because that guest declares `swapDevices = [ ]`. It answers "DOES IT
+#   CONVERGE WHEN THE CONTROL PLANE HAS TO COMPETE?", which the installed-disk
+#   lane otherwise charges a ~90-minute ISO build to ask.
+#
+# WHAT IT BINDS, AND WHY THAT IS THE POINT: both jobs run on ubuntu-24.04
+# (4 vCPU / ~15.9 GiB), so --cpus=4 is at or above what the host gives anyway and
+# DOES NOT BIND -- the harness says so on every run (cpu-limit-binds=no). The CPU
+# tax the installed-disk lane pays is QEMU-s own overhead, which no --cpus number
+# expresses, and inventing a tax fraction would be a fabricated constant. So this
+# lane binds MEMORY and DENIES SWAP while leaving CPU alone, which is precisely
+# the instrument WP32-s standing prediction needs: after #17666 the failure mode
+# should MOVE to memory (the roster over-commits the guest 1.47x at dev, masked
+# until now because CPU starvation stopped 14 of 49 Applications from ever being
+# created). Swap denial is derived from swapDevices = [ ] in the guest-s own
+# hardware-configuration.nix -- Docker-s 2x default would otherwise lend the
+# container 12 GiB of runner swapfile the real node does not have, turning an OOM
+# kill into thrash and excusing the lane from the condition it is testing.
+#
+# WHY THE CONSTRAINED JOB IS NOT ON pull_request, argued from a measurement:
+# the five most recent completed runs of the unconstrained job took 64-70 min
+# each (36108486753: 07:36:19Z -> 08:41:16Z = 65 min). The constrained job runs
+# the SAME eight stages with less memory and no swap, so it cannot be cheaper.
+# Neither job is in the required gate, so a per-PR constrained run would buy no
+# blocking signal for ~65 extra runner-minutes on every roster PR. The question
+# it answers is about the ENVELOPE, which does not change per PR the way the
+# roster does -- daily is the right cadence, and dispatch is there for the day
+# someone wants the answer now. On schedule and dispatch BOTH jobs run, in
+# parallel, on the SAME commit: that is the controlled side-by-side comparison,
+# and it is the only way the two numbers mean anything next to each other.
+#
 # NOT IN THE REQUIRED GATE. This is the first CI lane to ever boot the real
 # roster; until it has run green a number of times on `main`, a flake here
 # must not block every PR. Add it to the required-checks ruleset only once
@@ -171,5 +211,95 @@ jobs:
         with:
           name: first-boot-replica-report
           path: first-boot-replica-report.json
+          if-no-files-found: warn
+          retention-days: 30
+
+  # ─────────────────────── WP33: the constrained lane ──────────────────────
+  #
+  # Identical to the job above in every respect EXCEPT `--constrained`. Kept as
+  # a near-duplicate rather than a matrix on purpose: a matrix axis would make
+  # the per-PR job's `if:` condition and the two jobs' names conditional too,
+  # and this lane's whole value is that a reader can tell at a glance WHICH
+  # envelope produced a given number. The harness prints `mode=...` with the
+  # host capacity and a per-limit `*-binds` verdict on every run, in stdout, in
+  # the JSON report and at the top of the step summary, so the artifacts are
+  # self-describing even when read months later out of context.
+  #
+  # IT MUST BE ABLE TO FAIL AND IT MUST BE ABLE TO PASS. Nothing here is relaxed
+  # to manufacture a green: same stage budgets, same soak, same power-cycle. A
+  # constrained run that converges as well as the unconstrained one is a REAL
+  # finding (it would mean the installed-disk regression has a cause other than
+  # the resource envelope), and so is one that does not.
+  first-boot-replica-constrained:
+    name: first-boot replica (constrained to the installed-disk guest envelope)
+    # Schedule + dispatch only -- see the header note for the measured argument.
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-24.04
+    # Same budget as the unconstrained job. This lane cannot be faster than that
+    # one (same eight stages, strictly less memory, no swap), and sizing it
+    # tighter would turn a slow convergence -- the very signal it exists to
+    # catch -- into a job timeout that reports nothing per-Application.
+    timeout-minutes: 180
+    env:
+      ZETA_HOST_TIER: full
+      MISE_ENV: full
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Restore apt archives (root fix for the exit-124 install-step class)
+        uses: ./.github/actions/apt-archive-cache
+        with:
+          tier: full
+
+      - name: Install toolchain via three-way-parity script
+        env:
+          MISE_GITHUB_TOKEN: ${{ github.token }}
+        run: ./tools/setup/install.sh
+
+      - name: Install bun dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Show the plan and the derived envelope (dry-run)
+        # --dry-run --constrained resolves the envelope from
+        # ci/qemu-full-install-test.ts WITHOUT Docker, so a derivation that can no
+        # longer be trusted REFUSES here (exit 2) in seconds rather than after an
+        # hour of booting -- and never by substituting a guessed limit.
+        run: bun src/Core.TypeScript/cluster/first-boot-replica.ts --dry-run --constrained
+
+      - name: Boot the real roster under the installed-disk envelope
+        env:
+          ZETA_FBR_GIT_REF: ${{ inputs.target-revision || github.sha }}
+          ZETA_FBR_GIT_REPO_URL: https://github.com/Lucent-Financial-Group/Zeta
+        run: |
+          bun src/Core.TypeScript/cluster/first-boot-replica.ts \
+            --run \
+            --constrained \
+            --container-name zeta-first-boot-replica-constrained \
+            --host-api-port 16453 \
+            --target-revision "$ZETA_FBR_GIT_REF" \
+            --repo-url "$ZETA_FBR_GIT_REPO_URL" \
+            --serve-tree dev \
+            --json-out first-boot-replica-constrained-report.json \
+            --stage3-timeout-sec 2400 \
+            --stage4-timeout-sec 900 \
+            --stage567-timeout-sec 1800 \
+            --soak-sec 300 \
+            --power-cycle \
+            --power-cycle-timeout-sec 900 \
+            --power-cycle-soak-sec 300
+
+      - name: Tear down (safety net -- the harness already tears down unless killed by the job timeout)
+        if: always()
+        run: |
+          docker rm -f zeta-first-boot-replica-constrained 2>/dev/null || true
+          docker volume rm -f zeta-first-boot-replica-constrained-data 2>/dev/null || true
+
+      - name: Upload the stage-verdict report
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: first-boot-replica-constrained-report
+          path: first-boot-replica-constrained-report.json
           if-no-files-found: warn
           retention-days: 30

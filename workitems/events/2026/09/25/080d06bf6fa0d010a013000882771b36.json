@@ -1,0 +1,14 @@
+{
+  "id": "080d06bf6fa0d010a013000882771b36",
+  "at": "2026-09-25T09:38:11.098Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M3BYVX0R087G0R0025VPVVS",
+    "type": "task",
+    "title": "first-boot replica: a constrained resource mode matching the installed-disk guest envelope",
+    "slug": "first-boot-replica-a-constrained-resource-mode-matching-the",
+    "priority": "P2",
+    "filename": "081M3BYVX0R087G0R0025VPVVS-first-boot-replica-a-constrained-resource-mode-matching-the.md"
+  }
+}

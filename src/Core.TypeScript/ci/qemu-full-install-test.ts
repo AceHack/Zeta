@@ -212,9 +212,21 @@ const KVM_PATH = "/dev/kvm";
  * fits, and k3s plus a few GB of Helm-chart images is noise against that.
  */
 const K3S_VERIFY_DISK_SIZE_GB = QEMU_DISK_SIZE_GB;
-/** k3s-first-boot-roster.nix's own header: "deliberately oversized" to keep under-provisioning from reading as an ordering bug. */
-const K3S_VERIFY_MEMORY_MB = 12288;
-const K3S_VERIFY_CPU_COUNT = 4;
+/**
+ * k3s-first-boot-roster.nix's own header: "deliberately oversized" to keep
+ * under-provisioning from reading as an ordering bug.
+ *
+ * EXPORTED (WP33) because `cluster/first-boot-replica.ts`'s `--constrained`
+ * mode applies THIS envelope to its Docker container so the two lanes are
+ * asking the same question of the same roster. It imports these symbols; it
+ * does not keep a second copy of the numbers. A second drifting copy of a
+ * resource budget is a defect class this tree has paid for repeatedly, so if
+ * this constant moves, the replica's constrained mode moves with it or the
+ * build fails.
+ */
+export const K3S_VERIFY_MEMORY_MB = 12288;
+/** @see K3S_VERIFY_MEMORY_MB — same envelope, exported for the same reason. */
+export const K3S_VERIFY_CPU_COUNT = 4;
 /** k3s-first-boot-roster.nix budgets 45-70 min for the same bring-up on a comparable VM; the guest unit's own DEADLINE_SECONDS mirrors this. */
 const K3S_VERIFY_TIMEOUT_SECONDS = 4500;
 /** Byte-identical to zeta-first-boot-k3s-verify.nix's jsonBeginMarker/jsonEndMarker. */

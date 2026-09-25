@@ -20,6 +20,9 @@ import { mkdtempSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "nod
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 import { parseAllDocuments } from "yaml";
+// WP33: imported so the constrained mode can be proven to read THESE numbers
+// and not a copy of them. See the "derives, never duplicates" test below.
+import { K3S_VERIFY_CPU_COUNT, K3S_VERIFY_MEMORY_MB } from "../ci/qemu-full-install-test.ts";
 import {
   allApplicationsSettled,
   appsFailedToRecover,
@@ -27,6 +30,7 @@ import {
   attributePodIssues,
   attributePodToApp,
   buildDockerRunArgs,
+  describeResourceMode,
   buildPlan,
   buildRoster,
   classifyPod,
@@ -40,6 +44,8 @@ import {
   dedentNixIndentedString,
   EMPTY_APP_VERDICT_CONTEXT,
   evaluatePowerCycle,
+  parseDockerInfoCapacity,
+  resolveConstrainedLimits,
   externalSecretGapFor,
   extractBracedBlock,
   extractHelmCharts,
@@ -437,6 +443,149 @@ describe("buildDockerRunArgs", () => {
     expect(args.slice(-3)).toEqual(["server", "--tls-san=control-plane", "--flannel-backend=none"]); // order preserved
     expect(args.at(-2)).toBe("--tls-san=control-plane");
     expect(args.at(-1)).toBe("--flannel-backend=none");
+  });
+});
+
+// ──────────────── WP33: the constrained resource mode ─────────────────────
+//
+// Four things are pinned here, and only the first is about argv shape:
+//   1. the DEFAULT argv is unchanged — no --cpus, no --memory, no --memory-swap —
+//      so every baseline recorded in first-boot-replica.ts still describes what
+//      the default lane measures;
+//   2. the constrained envelope is DERIVED from ci/qemu-full-install-test.ts and
+//      is not a second copy of those numbers (this test goes red if either file
+//      moves without the other);
+//   3. a derivation that cannot be trusted REFUSES rather than guessing;
+//   4. the mode is REPORTED, with a per-limit binds verdict, because a `--cpus=4`
+//      on a 4-vCPU host is not a constraint and must not read as one.
+
+describe("buildDockerRunArgs resource limits (WP33)", () => {
+  const base = {
+    containerName: "zeta-replica",
+    image: "rancher/k3s:v1.35.6-k3s1",
+    manifestsHostDir: "/tmp/manifests",
+    hostApiPort: 16443,
+    extraFlags: ["--tls-san=control-plane"],
+  } as const;
+
+  test("omitting limits reproduces the pre-WP33 argv exactly — no baseline in the default lane moves", () => {
+    const args = buildDockerRunArgs({ ...base });
+    expect(args).not.toContain("--cpus");
+    expect(args).not.toContain("--memory");
+    expect(args).not.toContain("--memory-swap");
+    // And byte-identical to the argv the constrained call produces minus the six limit tokens.
+    const constrained = buildDockerRunArgs({ ...base, limits: { cpus: 4, memoryMb: 12288 } });
+    expect(constrained.filter((a) => !["--cpus", "--memory", "--memory-swap", "4", "12288m"].includes(a))).toEqual(args);
+  });
+
+  test("with limits, emits --cpus/--memory and DENIES swap by setting --memory-swap equal to --memory", () => {
+    const args = buildDockerRunArgs({ ...base, limits: { cpus: 4, memoryMb: 12288 } });
+    expect(args[args.indexOf("--cpus") + 1]).toBe("4");
+    expect(args[args.indexOf("--memory") + 1]).toBe("12288m");
+    // Swap denial is DERIVED, not a preference: the installed-disk guest declares
+    // `swapDevices = [ ]`. Docker's default would be 2x --memory of runner swapfile,
+    // which would hide the very memory pressure this mode exists to look for.
+    expect(args[args.indexOf("--memory-swap") + 1]).toBe(args[args.indexOf("--memory") + 1]);
+  });
+
+  test("limit flags precede the image argument — a docker run flag after the image is an argument to k3s", () => {
+    const args = buildDockerRunArgs({ ...base, limits: { cpus: 4, memoryMb: 12288 } });
+    const imageIndex = args.indexOf(base.image);
+    expect(imageIndex).toBeGreaterThan(-1);
+    for (const flag of ["--cpus", "--memory", "--memory-swap"]) {
+      expect(args.indexOf(flag)).toBeGreaterThan(-1);
+      expect(args.indexOf(flag)).toBeLessThan(imageIndex);
+    }
+    // The k3s subcommand and this roster's flags still come last, untouched.
+    expect(args.slice(-2)).toEqual(["server", "--tls-san=control-plane"]);
+  });
+});
+
+describe("resolveConstrainedLimits (WP33)", () => {
+  test("DERIVES the envelope from ci/qemu-full-install-test.ts and never duplicates it", () => {
+    // The whole point of the mode. If someone re-types 12288 or 4 into
+    // first-boot-replica.ts, or changes the guest budget without the replica
+    // following, this assertion is what goes red — in milliseconds, not in a
+    // 90-minute ISO build that silently measured the wrong envelope.
+    expect(resolveConstrainedLimits()).toEqual({ cpus: K3S_VERIFY_CPU_COUNT, memoryMb: K3S_VERIFY_MEMORY_MB });
+  });
+
+  test("REFUSES rather than guessing when the source constants are not usable numbers", () => {
+    const refuses = [
+      { cpus: undefined, memoryMb: 12288 },
+      { cpus: Number.NaN, memoryMb: 12288 },
+      { cpus: 0, memoryMb: 12288 },
+      { cpus: -4, memoryMb: 12288 },
+      { cpus: Number.POSITIVE_INFINITY, memoryMb: 12288 },
+      { cpus: "4", memoryMb: 12288 },
+      { cpus: 4, memoryMb: null },
+      { cpus: 4, memoryMb: 0 },
+      { cpus: 4, memoryMb: 12288.5 },
+      { cpus: 4, memoryMb: "12288" },
+    ];
+    for (const source of refuses) {
+      expect(() => resolveConstrainedLimits(source)).toThrow(/REFUSING rather than substituting a guess/);
+    }
+  });
+
+  test("the refusal names WHICH constant it could not read", () => {
+    expect(() => resolveConstrainedLimits({ cpus: 4, memoryMb: -1 })).toThrow(/K3S_VERIFY_MEMORY_MB=-1/);
+    expect(() => resolveConstrainedLimits({ cpus: -1, memoryMb: 12288 })).toThrow(/K3S_VERIFY_CPU_COUNT=-1/);
+  });
+});
+
+describe("parseDockerInfoCapacity (WP33)", () => {
+  test("reads NCPU and MemTotal, converting bytes to MiB", () => {
+    expect(parseDockerInfoCapacity("4 16766304256\n")).toEqual({ cpus: 4, memoryMb: 15989 });
+  });
+
+  test("an unreadable field is null — never a substituted default", () => {
+    expect(parseDockerInfoCapacity("")).toEqual({ cpus: null, memoryMb: null });
+    expect(parseDockerInfoCapacity("<nil> <nil>")).toEqual({ cpus: null, memoryMb: null });
+    expect(parseDockerInfoCapacity("4")).toEqual({ cpus: 4, memoryMb: null });
+  });
+});
+
+describe("describeResourceMode (WP33)", () => {
+  test("states the mode on an unconstrained run", () => {
+    const line = describeResourceMode({ mode: "unconstrained" }, { cpus: 4, memoryMb: 15989 });
+    expect(line).toContain("mode=unconstrained");
+    expect(line).toContain("cpus=unlimited");
+    expect(line).toContain("host-cpus=4");
+  });
+
+  test("a limit at or above the host's capacity reports binds=no — the whole reason this string exists", () => {
+    // MEASURED on ubuntu-24.04 (4 vCPU / ~15.9 GiB): --cpus=4 is NOT a constraint
+    // there. Reporting `mode=constrained cpus=4` and stopping would let a green run
+    // read as "converges under the installed-disk CPU budget" when CPU was never
+    // restricted — a check indistinguishable from its own absence.
+    const line = describeResourceMode(
+      { mode: "constrained", limits: { cpus: 4, memoryMb: 12288 } },
+      { cpus: 4, memoryMb: 15989 },
+    );
+    expect(line).toContain("mode=constrained cpus=4 memory=12288m");
+    expect(line).toContain("cpu-limit-binds=no");
+    expect(line).toContain("memory-limit-binds=yes");
+  });
+
+  test("a limit below the host's capacity reports binds=yes", () => {
+    const line = describeResourceMode(
+      { mode: "constrained", limits: { cpus: 4, memoryMb: 12288 } },
+      { cpus: 16, memoryMb: 65536 },
+    );
+    expect(line).toContain("cpu-limit-binds=yes");
+    expect(line).toContain("memory-limit-binds=yes");
+  });
+
+  test("an unreadable host is UNKNOWN, never assumed to bind", () => {
+    const line = describeResourceMode(
+      { mode: "constrained", limits: { cpus: 4, memoryMb: 12288 } },
+      { cpus: null, memoryMb: null },
+    );
+    expect(line).toContain("host-cpus=unknown");
+    expect(line).toContain("host-memory=unknown");
+    expect(line).toContain("cpu-limit-binds=unknown");
+    expect(line).toContain("memory-limit-binds=unknown");
   });
 });
 
@@ -1395,6 +1544,23 @@ describe("parseRestartSamples", () => {
 // ───────────────────────────── renderAppVerdictMarkdown ───────────────────
 
 describe("renderAppVerdictMarkdown", () => {
+  test("WP33: prints the resource envelope under the heading, on the empty path too", () => {
+    const line = "mode=constrained cpus=4 memory=12288m host-cpus=4 host-memory=15989m cpu-limit-binds=no memory-limit-binds=yes";
+    expect(renderAppVerdictMarkdown([], line)).toContain(line);
+    expect(
+      renderAppVerdictMarkdown(
+        [{ name: "argocd", sync: "Synced", health: "Healthy", verdict: "Healthy", reason: "ok" }],
+        line,
+      ),
+    ).toContain(line);
+  });
+
+  test("WP33: a caller that omits the envelope SAYS SO rather than leaving a blank", () => {
+    // A missing envelope must not render as an absent line a reader fills in with
+    // an assumption — the two modes are only comparable when both are labelled.
+    expect(renderAppVerdictMarkdown([])).toContain("mode=unreported");
+  });
+
   test("reports the empty case plainly rather than an empty table", () => {
     const markdown = renderAppVerdictMarkdown([]);
     expect(markdown).toContain("no Application verdicts were produced");

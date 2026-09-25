@@ -38,9 +38,140 @@
  * a parser that goes quiet on an unrecognised line is the vacuity class:
  * it looks like coverage and provides none.
  *
+ * TWO RESOURCE MODES, ANSWERING TWO DIFFERENT QUESTIONS (WP33). They are not
+ * a better and a worse version of each other; keep both.
+ *
+ *   `mode=unconstrained` (the default, and the ONLY behaviour before WP33) —
+ *     no `--cpus`, no `--memory`. The container gets the whole runner. This
+ *     answers "IS THE ROSTER INTERNALLY CONSISTENT?": do the manifests apply,
+ *     do the waves order, do the charts render, does the root Application land.
+ *     Every baseline recorded in this file was measured in this mode and none
+ *     of them moves — `--constrained` is purely additive.
+ *
+ *   `mode=constrained` (`--constrained`) — applies the INSTALLED-DISK guest's
+ *     own envelope, imported from `ci/qemu-full-install-test.ts`
+ *     (`K3S_VERIFY_CPU_COUNT` / `K3S_VERIFY_MEMORY_MB`), never a second copy of
+ *     those numbers. This answers "DOES IT CONVERGE WHEN THE CONTROL PLANE HAS
+ *     TO COMPETE?" — the question the installed-disk lane costs a ~90-minute
+ *     ISO build to ask, and this lane asks in minutes.
+ *
+ * WHAT THE CONSTRAINED MODE ACTUALLY BINDS, and why that is its PURPOSE rather
+ * than its limitation. Both lanes run on `ubuntu-24.04` (4 vCPU / ~15.9 GiB), so
+ * `--cpus=4` there is at or above what the host would give anyway and DOES NOT
+ * BIND. The CPU tax the installed-disk lane really pays is QEMU's own overhead,
+ * which is not expressible as a `--cpus` number, and inventing a tax fraction
+ * ("QEMU costs about 40%, so --cpus=2.5") would be a fabricated constant wearing
+ * a measurement's clothes. So this mode binds MEMORY, DENIES SWAP, and leaves
+ * CPU effectively unbound -- and says so.
+ *
+ * That is exactly the instrument WP32's standing prediction needs. After the
+ * control-plane capacity fix (#17666) the claim on record is that the failure
+ * mode should MOVE TO MEMORY rather than vanish: the roster over-commits the
+ * guest's memory (1.47x at the dev rung), and that never bit only because CPU
+ * starvation stopped 14 of 49 Applications from ever being created. A lane that
+ * constrains memory while leaving CPU alone tests that claim IN ISOLATION.
+ *
+ * THE SWAP DENIAL IS THE SHARPER HALF, and it is derived, not chosen. Docker's
+ * default `--memory-swap` is 2x `--memory`, so a plain `--memory=12288m` would
+ * have handed the container 12 GiB of the RUNNER'S SWAPFILE that the real node
+ * does not have -- `hosts/control-plane/hardware-configuration.nix` declares
+ * `swapDevices = [ ]`. Memory pressure would then have surfaced as thrash
+ * instead of the OOM kill the guest actually takes, and the lane would have
+ * looked like it survived a condition it had quietly been excused from: a
+ * fidelity defect that is invisible by construction and would have been
+ * permanent. It is derived from that host config rather than set to a literal
+ * so that it stays true if someone gives the node swap later.
+ *
+ * FIRST MEASURED RESULT (dispatch 36119931377, both jobs in parallel on 5855983,
+ * a commit carrying both #17654 and #17666). THE LANE CAN FAIL, AND IT DOES:
+ *
+ *              unconstrained                    constrained
+ *   stage 6    35 Healthy / 5 DIV / 2 FAIL      22 Healthy / 3 DIV / 17 FAIL
+ *   soak       0 unexpected restart regressions 11 unexpected
+ *   stage 8    PASS  RECOVERED                  FAIL  NOT_RECOVERED (spire-server)
+ *   wall       65m51s                           59m44s
+ *
+ * Memory was the ONLY limit that bound (`cpu-limit-binds=no memory-limit-binds=yes`
+ * on both lines, host 4 vCPU / 15989m), and constraining it cost 13 Healthy
+ * Applications and produced 15 more FAILs. Note the constrained run was FASTER
+ * while converging far worse -- stage 6 gives up and moves on, so wall clock is
+ * not a convergence proxy.
+ *
+ * THE MECHANISM IT REPRODUCES IS A LIVENESS CRASH-LOOP CASCADE:
+ *
+ *   memory pressure -> containers slow -> LIVENESS PROBES TIME OUT ->
+ *   the kubelet SIGKILLs them -> restart -> more pressure
+ *
+ * and the kill's origin is MEASURED, not inferred: the cluster emitted 61 kubelet
+ * `Normal Killing ... Container <name> failed liveness probe, will be restarted`
+ * events, over 28 DISTINCT containers -- including `coredns` and `metrics-server`,
+ * which are not workloads but the node's own floor. That is why exit 137 arrives
+ * with `Reason: Error` and there are ZERO `OOMKilled`, ZERO `Evicted` and no
+ * `MemoryPressure` node condition: the LIVENESS PROBES KILL THESE CONTAINERS
+ * BEFORE THE OOM KILLER EVER REACHES THEM. `OOMKilled` is what a pod's own memory
+ * cgroup produces; a kubelet probe kill produces `Error`.
+ *
+ * READ THE LIST IN THIS ORDER, BECAUSE TWO OF THE 28 ARE NOT WORKLOADS.
+ * `coredns` and `metrics-server` are the NODE'S OWN FLOOR. DNS being liveness-
+ * killed under this envelope means an unknown share of the other 26 are DOWNSTREAM
+ * VICTIMS rather than independent findings: a pod that cannot resolve a Service
+ * name fails its own probe for a reason that has nothing to do with its own
+ * resource budget. So the 26 are a list of SYMPTOMS of at least two causes, and
+ * the floor is the one to fix first -- widening a budget on `db` or `tempo` while
+ * DNS is being killed underneath them is treating a symptom of a cause still
+ * running. The list may shorten on its own once the floor holds.
+ *
+ * The probe failures are `context deadline exceeded` rather than `connection
+ * refused` almost throughout -- the endpoint is there and cannot answer in time,
+ * which is starvation, not a crash. Beyond the two floor components, named
+ * components include argocd-repo-server, argocd-server, cert-manager-webhook,
+ * cilium-operator, hubble-relay/ui, dapr-{operator,sentry,placement-server,
+ * scheduler-server}, keda's manager, argo-workflows,
+ * spire-{server,agent,controller-manager}, kube-state-metrics, prometheus,
+ * grafana, tempo, loki's canary, sealed-secrets' controller, headlamp,
+ * postgresql, and cockroachdb's `db` (which also logged `slow range RPC: have
+ * been waiting 118.13s`).
+ *
+ * SO WP32'S PREDICTION IS CONSISTENT WITH THIS AND IS NOT CONFIRMED IN THE FORM
+ * IT WAS STATED. The failure did move, and it moved when memory was the only
+ * thing constrained -- but it arrives as a liveness cascade rather than as the OOM
+ * kill or eviction that "the failure mode moves to memory" predicted. Memory
+ * pressure is the plausible upstream cause and this harness has not measured that
+ * it is the ONLY one; what it has measured is the kill mechanism.
+ *
+ * THIS REPO ALREADY OWNS THE LEVER: `liveness-kill-budget.ts` computes
+ * `initialDelaySeconds + (failureThreshold - 1) * periodSeconds`, and keda's
+ * Application carries the worked precedent (threshold widened 3 -> 20 after
+ * keda-operator was measured restarting in 4 of 5 CI runs, because that chart
+ * ships no `startupProbe`). The 28 containers above are a LIST, not an anecdote,
+ * and unlike the run that motivated keda's fix this one is controlled. Deliberately
+ * NOT acted on in the change that produced it: a budget widened in the same commit
+ * would make the measurement unreviewable.
+ *
+ * COMPARING TWO RUNS: use two runs OF THE SAME COMMIT. On schedule and dispatch
+ * both jobs run in parallel on one commit for exactly this reason. A constrained
+ * run compared against a remembered unconstrained number from an earlier commit
+ * confounds the envelope with whatever landed in between, and the difference
+ * reads as "constraint" when part of it is "the fixes".
+ *
+ * WHAT THIS LANE IS FOR, in one sentence, because a future reader needs the
+ * purpose and not only the behaviour: IT IS THE FASTEST INSTRUMENT IN THIS REPO
+ * FOR THE QUESTION THE MAINTAINER ACTUALLY ASKED -- does the roster come up on a
+ * modest box without applications crash-looping or failing to start. Sixty
+ * minutes, no ISO build, controlled against an unconstrained twin on the SAME
+ * COMMIT, and it reproduces the crash-loop cascade that previously needed a
+ * ~90-minute installed-disk run to see at all.
+ *
+ * AND THE MODE IS REPORTED ON EVERY RUN, in stdout, in the JSON report and in
+ * the step-summary markdown — with the HOST capacity beside it, so a reader can
+ * tell whether each declared limit actually BINDS. A `--cpus=4` on a 4-vCPU
+ * runner constrains nothing; reporting it as a constraint would be a check that
+ * cannot fail wearing a measurement's clothes. See `describeResourceMode`.
+ *
  * Usage:
  *   bun src/Core.TypeScript/cluster/first-boot-replica.ts --dry-run
  *   bun src/Core.TypeScript/cluster/first-boot-replica.ts --run
+ *   bun src/Core.TypeScript/cluster/first-boot-replica.ts --run --constrained
  *   bun src/Core.TypeScript/cluster/first-boot-replica.ts --run --keep --json-out report.json
  *
  * Exit codes: 0 = every required stage verdict passed; 1 = a required stage
@@ -85,6 +216,11 @@ import { rootDevCatalogExcludeGlobFor } from "./ports.ts";
 // already governs — never a second hand list next to it (its own header names
 // that drift as the exact failure this module exists to prevent).
 import { manualSyncAssertion, manualSyncDeclarations } from "./manual-sync-policy.ts";
+// WP33 constrained mode: the installed-disk guest's OWN resource envelope,
+// imported from the harness that declares it. Never re-typed here — see
+// `resolveConstrainedLimits`, which refuses to run rather than guess if these
+// ever stop being usable numbers.
+import { K3S_VERIFY_CPU_COUNT, K3S_VERIFY_MEMORY_MB } from "../ci/qemu-full-install-test.ts";
 
 // ───────────────────────────── Small helpers ────────────────────────────
 
@@ -1890,7 +2026,121 @@ export function parseRestartSamples(stdout: string): readonly RestartSample[] {
  * is the obvious next step, but it changes what every existing baseline in this file
  * measured, so it is a change to make on purpose with the baselines re-measured rather
  * than as a side effect of the change that noticed it.
+ *
+ * WP33 (2026-09-25) TOOK THAT NEXT STEP AS A SECOND MODE, NOT AS AN EDIT TO THIS ONE.
+ * `opts.limits` is absent by default and this argv is unchanged when it is, so every
+ * baseline above still describes what the default lane measures. `--constrained` supplies
+ * the installed-disk guest's own envelope (imported, never re-typed) and answers the other
+ * question. The paragraph above stands as the correct reading OF THE DEFAULT MODE.
+ *
+ * ONE MEASURED CAVEAT WP33 ADDS, because it changes how a constrained green reads: both
+ * lanes run on `ubuntu-24.04` (4 vCPU / 16 GiB), so `--cpus=4` there is at or above what
+ * the host would give anyway and DOES NOT BIND. The memory limit does (12288m of ~15.9 GiB),
+ * and so does the swap denial. That is why `describeResourceMode` prints a per-limit
+ * `*-binds` verdict instead of only the numbers — see its docstring.
  */
+// ══════════════════ WP33: the constrained resource mode ══════════════════
+
+/** A container resource envelope. Both fields are positive; `resolveConstrainedLimits` is the only sanctioned way to obtain one. */
+export interface ContainerResourceLimits {
+  /** Docker `--cpus` — CFS quota, in whole-CPU units. */
+  readonly cpus: number;
+  /** Docker `--memory` (and `--memory-swap`, see `buildDockerRunArgs`), in MiB. */
+  readonly memoryMb: number;
+}
+
+/** What the Docker DAEMON says it has. `null` on either field means "could not be read" — never a substituted default. */
+export interface HostCapacity {
+  readonly cpus: number | null;
+  readonly memoryMb: number | null;
+}
+
+/** Which of the two modes this run is in. `unconstrained` is the pre-WP33 behaviour, unchanged. */
+export type ResourceMode =
+  | { readonly mode: "unconstrained" }
+  | { readonly mode: "constrained"; readonly limits: ContainerResourceLimits };
+
+/**
+ * Derive the constrained envelope from the installed-disk harness's OWN constants.
+ *
+ * REFUSES rather than guesses. The default argument is the real import, so in
+ * normal operation this cannot drift from `qemu-full-install-test.ts`; the
+ * parameter exists so the refusal path is testable without corrupting the
+ * import. If those symbols ever stop being usable numbers the caller gets a
+ * throw and this lane does not run — a fabricated limit would make the harness
+ * REPORT a constraint it never applied, which is worse than not running at all.
+ */
+export function resolveConstrainedLimits(
+  source: { readonly cpus: unknown; readonly memoryMb: unknown } = {
+    cpus: K3S_VERIFY_CPU_COUNT,
+    memoryMb: K3S_VERIFY_MEMORY_MB,
+  },
+): ContainerResourceLimits {
+  const bad: string[] = [];
+  const { cpus, memoryMb } = source;
+  if (typeof cpus !== "number" || !Number.isFinite(cpus) || cpus <= 0) bad.push(`K3S_VERIFY_CPU_COUNT=${String(cpus)}`);
+  if (typeof memoryMb !== "number" || !Number.isInteger(memoryMb) || memoryMb <= 0) {
+    bad.push(`K3S_VERIFY_MEMORY_MB=${String(memoryMb)}`);
+  }
+  if (bad.length > 0) {
+    throw new Error(
+      `--constrained cannot derive the installed-disk guest envelope from ci/qemu-full-install-test.ts (${bad.join(", ")}). ` +
+        "REFUSING rather than substituting a guess: a fabricated limit would make this lane report a constraint it never applied.",
+    );
+  }
+  return { cpus: cpus as number, memoryMb: memoryMb as number };
+}
+
+/** Parse `docker info --format "{{.NCPU}} {{.MemTotal}}"`. Unparseable fields come back `null`, never a default. */
+export function parseDockerInfoCapacity(stdout: string): HostCapacity {
+  const parts = stdout.trim().split(/\s+/u);
+  const ncpu = Number(parts[0]);
+  const memBytes = Number(parts[1]);
+  return {
+    cpus: Number.isFinite(ncpu) && ncpu > 0 ? ncpu : null,
+    memoryMb: Number.isFinite(memBytes) && memBytes > 0 ? Math.floor(memBytes / (1024 * 1024)) : null,
+  };
+}
+
+/** Ask the Docker daemon what it has. A failed probe yields `{null, null}` — an UNKNOWN, which `describeResourceMode` prints as such. */
+export function readHostCapacity(runner: Runner): HostCapacity {
+  const info = runner.run("docker", ["info", "--format", "{{.NCPU}} {{.MemTotal}}"], { timeoutMs: 15_000 });
+  if (info.status !== 0) return { cpus: null, memoryMb: null };
+  return parseDockerInfoCapacity(info.stdout);
+}
+
+/** `yes` / `no` / `unknown` — a limit BINDS only when it is strictly below what the host would otherwise give. */
+function bindsWord(limit: number, hostValue: number | null): "yes" | "no" | "unknown" {
+  if (hostValue === null) return "unknown";
+  return limit < hostValue ? "yes" : "no";
+}
+
+/**
+ * The one line every run must print, whichever mode it is in.
+ *
+ * WHY THE HOST FIGURES ARE PART OF IT, and why `*-binds` is not decoration: a
+ * `--cpus=4` on a 4-vCPU runner is not a constraint, it is the status quo with
+ * a flag attached. Printing `mode=constrained cpus=4` and stopping there would
+ * let a green run read as "converges under the installed-disk CPU budget" when
+ * nothing about CPU was actually restricted. This effort has already found ten
+ * checks whose result could not be told apart from their absence; a limit that
+ * silently fails to bind would be the eleventh. So the binding verdict is
+ * stated, and an unreadable host is `unknown` — never assumed to bind.
+ */
+export function describeResourceMode(resourceMode: ResourceMode, host: HostCapacity): string {
+  const hostPart = `host-cpus=${host.cpus === null ? "unknown" : String(host.cpus)} host-memory=${
+    host.memoryMb === null ? "unknown" : `${String(host.memoryMb)}m`
+  }`;
+  if (resourceMode.mode === "unconstrained") {
+    return `mode=unconstrained cpus=unlimited memory=unlimited ${hostPart} cpu-limit-binds=no memory-limit-binds=no`;
+  }
+  const { cpus, memoryMb } = resourceMode.limits;
+  return (
+    `mode=constrained cpus=${String(cpus)} memory=${String(memoryMb)}m ${hostPart} ` +
+    `cpu-limit-binds=${bindsWord(cpus, host.cpus)} memory-limit-binds=${bindsWord(memoryMb, host.memoryMb)}`
+  );
+}
+
 /** `docker run` argv for the replica, matching the official rancher/k3s single-node Docker recipe plus this roster's flags. */
 export function buildDockerRunArgs(opts: {
   readonly containerName: string;
@@ -1898,7 +2148,30 @@ export function buildDockerRunArgs(opts: {
   readonly manifestsHostDir: string;
   readonly hostApiPort: number;
   readonly extraFlags: readonly string[];
+  /**
+   * WP33 `--constrained`. ABSENT means the pre-WP33 argv, byte for byte — every
+   * baseline in this file was measured without these flags and none of them moves.
+   */
+  readonly limits?: ContainerResourceLimits;
 }): string[] {
+  // `--memory-swap` equal to `--memory` DISABLES swap for the container, and that
+  // is derived, not a preference: the installed-disk guest this envelope comes
+  // from declares `swapDevices = [ ]` (hosts/control-plane/hardware-configuration.nix),
+  // so it has none. Docker's default (`--memory-swap` = 2x `--memory`) would hand
+  // the container 12 GiB of the runner's swapfile that the real node does not have,
+  // and memory pressure would show up as thrash instead of the OOM kill the guest
+  // would take — which is precisely the signal this mode exists to look for.
+  const limitArgs =
+    opts.limits === undefined
+      ? []
+      : [
+          "--cpus",
+          String(opts.limits.cpus),
+          "--memory",
+          `${String(opts.limits.memoryMb)}m`,
+          "--memory-swap",
+          `${String(opts.limits.memoryMb)}m`,
+        ];
   return [
     "run",
     "-d",
@@ -1907,6 +2180,7 @@ export function buildDockerRunArgs(opts: {
     "--hostname",
     "control-plane",
     "--privileged",
+    ...limitArgs,
     "--tmpfs",
     "/run",
     "--tmpfs",
@@ -1964,6 +2238,11 @@ async function waitUntil(
 export interface RunOptions {
   readonly plan: ReplicaPlan;
   readonly runner: Runner;
+  /**
+   * WP33. Omitted is `{ mode: "unconstrained" }` — the pre-WP33 behaviour, byte
+   * for byte. Whichever it is, it is REPORTED (stdout + JSON + step summary).
+   */
+  readonly resourceMode?: ResourceMode;
   readonly scratchDir: string;
   readonly containerName: string;
   readonly hostApiPort: number;
@@ -2015,6 +2294,14 @@ export interface RunReport {
     readonly helmCharts: readonly { readonly name: string; readonly namespace: string; readonly chart: string; readonly version: string }[];
     readonly divergences: readonly Divergence[];
   };
+  /**
+   * WP33: the resource envelope this run actually had, as
+   * `describeResourceMode` renders it — mode, limits, host capacity, and whether
+   * each limit BINDS. Present on every report, including the early-return
+   * failure reports, because a run whose envelope is not stated is a measurement
+   * nobody can compare against another run.
+   */
+  readonly resourceMode: string;
   readonly stages: readonly StageVerdict[];
   /** Per-app verdict table (WP1b spec item 5) — `[]` when stage 6 never ran (an earlier stage failed first). */
   readonly appVerdicts: readonly AppVerdict[];
@@ -2060,6 +2347,14 @@ export async function runReplica(opts: RunOptions): Promise<RunReport> {
   const stages: StageVerdict[] = [];
   const t0 = nowSeconds();
 
+  // WP33: state the envelope BEFORE anything else happens, and carry it on every
+  // report this function can return — including the early-return failures above
+  // stage 1. A failed run whose resource envelope is unknown cannot be compared
+  // with the run it is supposed to be compared with.
+  const resourceMode: ResourceMode = opts.resourceMode ?? { mode: "unconstrained" };
+  const resourceModeLine = describeResourceMode(resourceMode, readHostCapacity(runner));
+  log(`resource envelope: ${resourceModeLine}`);
+
   mkdirSync(opts.scratchDir, { recursive: true });
   const manifestsDir = join(opts.scratchDir, "manifests");
   mkdirSync(manifestsDir, { recursive: true });
@@ -2088,6 +2383,7 @@ export async function runReplica(opts: RunOptions): Promise<RunReport> {
   if (pull.status !== 0) {
     return {
       plan: planSummary(plan),
+      resourceMode: resourceModeLine,
       stages: [{ stage: 0, name: "docker pull", ok: false, elapsedSeconds: nowSeconds() - t0, detail: pull.stderr || pull.stdout }],
       appVerdicts: [],
       ok: false,
@@ -2100,12 +2396,14 @@ export async function runReplica(opts: RunOptions): Promise<RunReport> {
     manifestsHostDir: manifestsDir,
     hostApiPort: opts.hostApiPort,
     extraFlags: [...plan.extraFlags],
+    ...(resourceMode.mode === "constrained" ? { limits: resourceMode.limits } : {}),
   });
   log(`docker ${runArgs.join(" ")}`);
   const started = runner.run("docker", runArgs, { timeoutMs: 60_000 });
   if (started.status !== 0) {
     return {
       plan: planSummary(plan),
+      resourceMode: resourceModeLine,
       stages: [{ stage: 0, name: "docker run", ok: false, elapsedSeconds: nowSeconds() - t0, detail: started.stderr || started.stdout }],
       appVerdicts: [],
       ok: false,
@@ -2154,7 +2452,7 @@ export async function runReplica(opts: RunOptions): Promise<RunReport> {
       detail: apiUp ? "GET /readyz OK" : "kubeconfig or /readyz never became available",
     });
     if (!apiUp) {
-      return { plan: planSummary(plan), stages, appVerdicts: [], ok: false };
+      return { plan: planSummary(plan), resourceMode: resourceModeLine, stages, appVerdicts: [], ok: false };
     }
 
     // ── Serve tree (WP1b): apply the in-cluster lane-tree git server ──
@@ -2184,7 +2482,7 @@ export async function runReplica(opts: RunOptions): Promise<RunReport> {
         detail: laneTreeApply.status === 0 ? "applied" : laneTreeApply.stderr || laneTreeApply.stdout,
       });
       if (laneTreeApply.status !== 0) {
-        return { plan: planSummary(plan), stages, appVerdicts: [], ok: false };
+        return { plan: planSummary(plan), resourceMode: resourceModeLine, stages, appVerdicts: [], ok: false };
       }
     }
 
@@ -2329,7 +2627,7 @@ export async function runReplica(opts: RunOptions): Promise<RunReport> {
     });
 
     if (!applied) {
-      return { plan: planSummary(plan), stages, appVerdicts: [], ok: false };
+      return { plan: planSummary(plan), resourceMode: resourceModeLine, stages, appVerdicts: [], ok: false };
     }
 
     // ── Stage 5: child Applications appear ────────────────────────────
@@ -2617,7 +2915,7 @@ export async function runReplica(opts: RunOptions): Promise<RunReport> {
           elapsedSeconds: nowSeconds() - s8Start,
           detail: `docker kill failed: ${kill.stderr || kill.stdout}`,
         });
-        return { plan: planSummary(plan), stages, appVerdicts, ok: false };
+        return { plan: planSummary(plan), resourceMode: resourceModeLine, stages, appVerdicts, ok: false };
       }
       const restarted = runner.run("docker", ["start", opts.containerName], { timeoutMs: 30_000 });
       const downtimeSeconds = nowSeconds() - cutAt;
@@ -2629,7 +2927,7 @@ export async function runReplica(opts: RunOptions): Promise<RunReport> {
           elapsedSeconds: nowSeconds() - s8Start,
           detail: `docker start failed after power-cut (downtime ${downtimeSeconds.toFixed(1)}s): ${restarted.stderr || restarted.stdout}`,
         });
-        return { plan: planSummary(plan), stages, appVerdicts, ok: false };
+        return { plan: planSummary(plan), resourceMode: resourceModeLine, stages, appVerdicts, ok: false };
       }
       log(`stage 8: container restarted (downtime ${downtimeSeconds.toFixed(1)}s) — waiting for recovery`);
 
@@ -2746,6 +3044,7 @@ export async function runReplica(opts: RunOptions): Promise<RunReport> {
 
     return {
       plan: planSummary(plan),
+      resourceMode: resourceModeLine,
       stages,
       appVerdicts,
       ...(powerCycleVerdict === undefined ? {} : { powerCycleVerdict }),
@@ -2980,9 +3279,20 @@ function planSummary(plan: ReplicaPlan): RunReport["plan"] {
 
 // ─────────────────────────────── CLI ─────────────────────────────────────
 
-/** Render the per-app verdict table (WP1b spec item 5) as GitHub-flavoured markdown, for `$GITHUB_STEP_SUMMARY`. */
-export function renderAppVerdictMarkdown(appVerdicts: readonly AppVerdict[]): string {
-  const heading = "## first-boot replica: catalog convergence (stage 6)\n\n";
+/**
+ * Render the per-app verdict table (WP1b spec item 5) as GitHub-flavoured markdown, for `$GITHUB_STEP_SUMMARY`.
+ *
+ * WP33: `resourceModeLine` is printed directly under the heading, on the empty
+ * path too. Two runs of this table are only comparable if a reader can see the
+ * envelope each one had, and the step summary is where most readers see it.
+ * Optional so the pre-WP33 call shape still compiles; a caller that omits it
+ * says so in the output (mode=unreported) rather than leaving a blank a reader
+ * would fill in with an assumption.
+ */
+export function renderAppVerdictMarkdown(appVerdicts: readonly AppVerdict[], resourceModeLine?: string): string {
+  const heading =
+    "## first-boot replica: catalog convergence (stage 6)\n\n" +
+    "`" + (resourceModeLine ?? "mode=unreported") + "`\n\n";
   if (appVerdicts.length === 0) {
     return `${heading}_no Application verdicts were produced — an earlier stage failed before stage 6 ran._\n`;
   }
@@ -3050,6 +3360,11 @@ async function main(): Promise<void> {
       "stage3-timeout-sec": { type: "string", default: "2400" },
       "stage4-timeout-sec": { type: "string", default: "900" },
       "stage567-timeout-sec": { type: "string", default: "600" },
+      // WP33: apply the INSTALLED-DISK guest's own envelope (--cpus/--memory,
+      // swap denied) so this lane can ask the constrained question the 90-minute
+      // ISO lane otherwise has a monopoly on. Off by default; the default argv
+      // is byte-identical to the pre-WP33 one, so no baseline in this file moves.
+      constrained: { type: "boolean", default: false },
       // WP19: stage 8, an optional power-cycle recovery check after stage 7 —
       // SIGKILL the container, restart it, and verify the cluster converges
       // again with its data intact. Off by default (purely additive to
@@ -3077,6 +3392,18 @@ async function main(): Promise<void> {
     process.exit(2);
   }
 
+  // WP33: resolve the constrained envelope BEFORE anything expensive starts, so a
+  // refusal costs nothing and can never be mistaken for a convergence failure later.
+  let resourceMode: ResourceMode = { mode: "unconstrained" };
+  if (args.constrained === true) {
+    try {
+      resourceMode = { mode: "constrained", limits: resolveConstrainedLimits() };
+    } catch (e) {
+      console.error(reason(e));
+      process.exit(2);
+    }
+  }
+
   if (args["dry-run"] || !args["run"]) {
     console.log("=== PLAN (dry-run) ===");
     console.log(`cluster: ${plan.clusterName}  podCidr=${plan.podCidr}  serviceCidr=${plan.serviceCidr}`);
@@ -3089,6 +3416,11 @@ async function main(): Promise<void> {
     for (const c of plan.helmCharts) {
       console.log(`  ${c.name} (ns=${c.namespace}) chart=${c.chart} version=${c.version} bootstrap=${String(c.bootstrap)}`);
     }
+    console.log(
+      resourceMode.mode === "constrained"
+        ? `resource mode: constrained  cpus=${String(resourceMode.limits.cpus)}  memory=${String(resourceMode.limits.memoryMb)}m  (swap denied; derived from ci/qemu-full-install-test.ts)`
+        : `resource mode: unconstrained  (no --cpus/--memory; the container gets the whole host)`,
+    );
     console.log(`root-application -> repoURL=${plan.rootRepoUrl} targetRevision=${plan.rootTargetRevision}`);
     console.log(`DIVERGENCES from metal:`);
     for (const d of plan.divergences) console.log(`  [${d.id}] ${d.reason}`);
@@ -3154,6 +3486,7 @@ async function main(): Promise<void> {
     stage4TimeoutSec: Number(args["stage4-timeout-sec"] ?? "900"),
     stage567TimeoutSec: Number(args["stage567-timeout-sec"] ?? "600"),
     soakSec: Number(args["soak-sec"] ?? "300"),
+    resourceMode,
     ...(laneTreeManifests === undefined ? {} : { laneTreeManifests }),
     powerCycle: args["power-cycle"] ?? false,
     powerCycleTimeoutSec: Number(args["power-cycle-timeout-sec"] ?? "900"),
@@ -3162,13 +3495,17 @@ async function main(): Promise<void> {
     log: (line) => console.log(line),
   });
 
+  console.log(`\nresource envelope: ${report.resourceMode}`);
   console.log("\n=== STAGE VERDICTS ===");
   for (const s of report.stages) {
     const label = s.ok === true ? "PASS" : s.ok === false ? "FAIL" : "INCONCLUSIVE";
     console.log(`  [${label}] stage ${String(s.stage)} ${s.name} (${s.elapsedSeconds.toFixed(1)}s): ${s.detail}`);
   }
 
-  const verdictMarkdown = renderAppVerdictMarkdown(report.appVerdicts) + `\n${renderPowerCycleVerdictMarkdown(report.powerCycleVerdict)}`;
+  // WP33: the envelope goes on the step-summary table too — see renderAppVerdictMarkdown.
+  const verdictMarkdown =
+    renderAppVerdictMarkdown(report.appVerdicts, report.resourceMode) +
+    `\n${renderPowerCycleVerdictMarkdown(report.powerCycleVerdict)}`;
   console.log(`\n${verdictMarkdown}`);
   const summaryPath = process.env["GITHUB_STEP_SUMMARY"];
   if (summaryPath !== undefined && summaryPath !== "") {
