@@ -2557,3 +2557,13 @@ WP11 tip-confirm -- K3S_ACTIVE on verdict 6 (distinct NEVER-ACTIVE log + optiona
 - Uniqueness of cilium: Argo CD v3.5.2 controller/state.go:754-763 warns only on excluded resources the Application renders; cilium 1.20.1 renders its own cilium-ingress EndpointSlice.
 - Soft: mechanism probably wrong (excluded resources are dropped before health; likelier cause is the cilium-ingress LoadBalancer Service Progressing until it gets an LB address, gitops-engine health_service.go:28-38); stale infra/k8s/bootstrap/argocd-install.yaml not updated and no parity check; comment nits ("for diff purposes", state.go attributed to gitops-engine); CI in progress, 0 failed at grading.
 - Hard fails: none. Sit leftover. Do not merge.
+
+## leftover UNIQUE leftover #17656 leftover unique @ 8ff711a97b8b53ebfaf6841f6fffc99c711a19e5 -- GRADE HOLD
+
+- PR #17656 (maximdolphin) feat(ci): verdict 7 rosterConverged, every Application that CAN converge does, on the installed disk (WP31). Graded 2026-09-25 ~01:20 ET for Chief of Staff.
+- Tip: 1-parent on 6ea402ea, not a merge. 1 commit, +1107/-16, 6 files. PR base cb05ddd7 (#17653 squashed); net diff byte-identical to tip. Never grade merge_commit 21b3a3b1.
+- Hard fail 1: qemu-full-install-test.test.ts:1340 `{ ...passing, rosterConverged: undefined }` is TS2375 under exactOptionalPropertyTypes; CI lint (TS) fails on it. Fix: destructure the key out.
+- Hard fail 2: zeta-first-boot-k3s-verify.nix L811-813 node-labels query `|| true`; an empty result makes Pending pods with any nodeSelector unschedulable (L692) and excludes their app (L755), so one API blip can lock in a false PASS. Reproduced. Fix: require a node label seen or fail the poll; add a test.
+- Verified otherwise: bounded 4200s wait, pass needs zeta-root Synced, >=1 app, zero unconverged; named derived exclusions; empty roster and query failures FAIL; parity test runs the real .nix block (24 pass, 12 fail under mutation); no verdict weakened; Nix escaping correct.
+- Soft: one unschedulable pod excuses a whole app; all-excluded roster passes; TS trusts shell ok alone; workitem stub; ~4200s vs 4500s timeout.
+- GO once both hard fails are fixed on a new 1-parent tip. Sit leftover. Do not merge.
