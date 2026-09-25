@@ -2567,3 +2567,13 @@ WP11 tip-confirm -- K3S_ACTIVE on verdict 6 (distinct NEVER-ACTIVE log + optiona
 - Verified otherwise: bounded 4200s wait, pass needs zeta-root Synced, >=1 app, zero unconverged; named derived exclusions; empty roster and query failures FAIL; parity test runs the real .nix block (24 pass, 12 fail under mutation); no verdict weakened; Nix escaping correct.
 - Soft: one unschedulable pod excuses a whole app; all-excluded roster passes; TS trusts shell ok alone; workitem stub; ~4200s vs 4500s timeout.
 - GO once both hard fails are fixed on a new 1-parent tip. Sit leftover. Do not merge.
+
+## leftover UNIQUE leftover #17657 leftover unique @ 2bf0cbfc9be984a7e1fe4678848d12244140d593 -- GRADE GO
+
+- PR #17657 (maximdolphin) docs(installer): correct the ambiguity claim this module rested on (WP30). Graded 2026-09-25 ~01:27 ET for Chief of Staff.
+- Tip: 1-parent on cb05ddd7 (#17653 squash), not a merge. 1 commit, +188/-76, 5 files; net PR diff identical to tip. PR base 3a6ce9d2 (docs-only archive on cb05ddd7). Never grade merge_commit 1865d6ae.
+- Measured: run 36095623765 at c600e475; after the wrong-token write, k3s printed 'encrypted with different token' 28 times and 'no bootstrap data found in datastore' zero times; NOT REPRODUCED within 150s; VERDICT served; datastore and sentinel survived.
+- Only executable change is one refusal string (.sh L196); FATAL_SIGNATURE, sentinel check and delete conditions unchanged. A served datastore still can never be auto-discarded.
+- VM test not weakened (wrong-token restart, survival checks, token restore all unconditional). Hygiene 22/22 pass with 30s timeouts, bodies otherwise identical.
+- Soft (significant): new wording says the signature filter runs BEFORE the sentinel; the code checks the sentinel first (.sh L185) with the signature inside (L186-187, L219). Wrong order in module .nix L65, test .nix L47/L243, workitem L88, commit msg, PR body. No behaviour effect. Other soft: no test pins the UNEXPECTED text; Remedy line L197 still leads with 'verify the token'; single-run evidence.
+- Hard fails: none. Sit leftover. Do not merge.
