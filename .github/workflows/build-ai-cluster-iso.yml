@@ -517,7 +517,16 @@ jobs:
       # path rather than gated to workflow_dispatch because it is cheap (see
       # the measured wall-clock this comment will carry once the first PR run
       # completes).
+      #
+      # SKIPPED ON A WP11-SCOPED DISPATCH, like every other NixOS step in this
+      # job. This guard was missing when the step was added (WP25, now
+      # stopped; the step was left with no owner and no branch in flight), so
+      # every narrowed WP11 probe has been paying 3m 01s -- MEASURED on run
+      # 36089766331 -- for a hermetic VM test that exercises nothing the
+      # installed-disk first-boot lane measures. Trigger condition only; what
+      # this step asserts is unchanged.
       - name: NixOS test — zero-length k3s credentials self-heal on boot
+        if: always() && !(github.event_name == 'workflow_dispatch' && inputs.only_wp11)
         timeout-minutes: 30
         working-directory: full-ai-cluster
         run: nix build .#checks.x86_64-linux.k3s-agent-tls-self-heal -L --print-build-logs --fallback
@@ -545,6 +554,13 @@ jobs:
       #      the identical ambiguous fatal a stillborn one does -- the claim
       #      the whole module rests on, asserted in prose everywhere and
       #      measured only here -- and SURVIVES it.
+      #
+      # COST, MEASURED rather than estimated. Run 36089766331 (this step's
+      # first wired run, which went red on a test-harness defect -- see the
+      # test file's header on `wait_for_unit` against a poll loop): 4m 00s,
+      # 03:30:43 -> 03:34:43, of which 121s was a timeout that a correct
+      # predicate does not pay. Its sibling above, same shape, measured
+      # 3m 01s on the same run. Budget it at the self-heal step's class.
       #
       # Hermetic (no internet, no image pulls); boots ONE node and restarts
       # k3s in place, same shape and cost class as the self-heal step above.
@@ -1511,7 +1527,25 @@ jobs:
   # `gate (required)` is the only required check on main.
   cluster-ha:
     name: k3s HA cluster + replicated Longhorn (3 VMs)
-    if: ${{ github.event_name == 'workflow_dispatch' }}
+    # SKIPPED ON A WP11-SCOPED DISPATCH -- AT THE JOB LEVEL, DELIBERATELY, and
+    # this is the one of the three orphaned steps that needed a DIFFERENT fix
+    # rather than the step-level guard its siblings carry.
+    #
+    # Its lone NixOS step was ungated like the two in `build`, but gating the
+    # STEP here would have been half a fix: this job is a 120-minute,
+    # three-guest lane whose Checkout / Free runner disk / Install Nix /
+    # memory-sampler steps are its own setup, and a skipped final step would
+    # still have paid for all of it on a runner. The whole job is what a
+    # narrowed probe must not start, so the condition belongs on the job.
+    #
+    # `github.event_name == 'workflow_dispatch'` alone admitted EVERY dispatch,
+    # including `only_wp11=true` -- so a probe deliberately narrowed to the
+    # installed-disk first-boot lane was also booting a 3-node HA cluster with
+    # replicated Longhorn. The `only_cluster_ha` lane is unaffected (`&&`
+    # short-circuits, and that input is orthogonal), and PR/push never reached
+    # this job at all. Trigger condition only; what the step asserts is
+    # unchanged.
+    if: ${{ github.event_name == 'workflow_dispatch' && !inputs.only_wp11 }}
     runs-on: ubuntu-24.04
     timeout-minutes: 120
     permissions:
