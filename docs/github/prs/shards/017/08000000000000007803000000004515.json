@@ -1,0 +1,12 @@
+{
+  "pr_number": 17685,
+  "archive_path": "docs/history/pr-reviews/2026/09/25/PR-17685-docs-trajectories-usb-installer-first-boot-reliability-handoff-for-the-next-agen.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-25T13:55:29.762Z",
+  "schema_version": "v1",
+  "commit_sha": "f3d7b48135b0d75a28b795c2cbe0ead3ff92c9f7",
+  "title": "docs(trajectories): USB installer first-boot reliability — handoff for the next agent",
+  "state": "MERGED",
+  "merged_at": "2026-09-25T13:54:34Z",
+  "head_ref": "claude/usb-installer-trajectory-resume"
+}
