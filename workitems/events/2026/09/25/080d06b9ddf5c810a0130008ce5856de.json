@@ -1,0 +1,14 @@
+{
+  "id": "080d06b9ddf5c810a0130008ce5856de",
+  "at": "2026-09-25T06:23:32.025Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M3BKQFNC087G0R003MDGSAX",
+    "type": "task",
+    "title": "The sync-policy convention needs a SECOND VALUE, not a wider bucket: converges-only-after-an-operator-action",
+    "slug": "the-sync-policy-convention-needs-a-second-value-not-a-wider",
+    "priority": "P2",
+    "filename": "081M3BKQFNC087G0R003MDGSAX-the-sync-policy-convention-needs-a-second-value-not-a-wider.md"
+  }
+}

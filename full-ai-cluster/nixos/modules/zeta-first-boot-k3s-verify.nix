@@ -175,8 +175,26 @@
 # this unit runs on an installed disk with no checkout; baking a snapshot in at
 # Nix eval time would create a second, separately-drifting copy of a roster.
 # So they stay `unconverged`, named on serial with their last Sync+Health
-# state. Widening a bucket until a red goes green is the one move that would
-# make this verdict stop meaning anything.
+# state. The vocabulary gap is filed as 081M3BKQFNC087G0R003MDGSAX: the
+# convention needs a SECOND VALUE (converges-only-after-an-operator-action),
+# not a wider `manual`. Widening a bucket until a red goes green is the one
+# move that would make this verdict stop meaning anything.
+#
+# WHO OWNS THE RED -- READ THIS BEFORE SKIPPING A RED LANE.
+# A permanently-red lane stops being read, and a lane nobody reads is worth
+# less than no lane. So the known non-convergences are OWNED, by name, here:
+#
+#   cilium, weaviate   WP26. Synced+Progressing; cilium names its own cause,
+#                      an ExcludedResourceWarning on EndpointSlice
+#                      cilium-ingress. Being worked.
+#   openbao, hindsight 081M3BKQFNC087G0R003MDGSAX (above). Awaiting the second
+#                      sync-policy value; until then they are correctly red.
+#
+# FOUR KNOWN, ALL OWNED. **A FIFTH NAME IN THE `unconverged` LIST IS THE
+# SIGNAL THIS VERDICT EXISTS TO PRODUCE** -- it is something new, on a real
+# installed disk, that no other lane caught. Do not read past it. And when
+# the four above are closed, this list must shrink with them, or it becomes
+# the standing excuse it was written to prevent.
 #
 # AND IT REPORTS WHILE IT WAITS. Sixty-seven minutes of silence on a serial log
 # is indistinguishable from a hang, so every poll prints a counts line
