@@ -1,0 +1,12 @@
+{
+  "pr_number": 17670,
+  "archive_path": "docs/history/pr-reviews/2026/09/25/PR-17670-docs-installer-map-every-external-dependency-a-first-boot-has-by-what-the-operat.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-25T09:05:22.961Z",
+  "schema_version": "v1",
+  "commit_sha": "95a054c49e62bbeba33f03bf27db51c1a5a030b4",
+  "title": "docs(installer): map EVERY external dependency a first boot has, by what the operator gets when it fails (WP31)",
+  "state": "MERGED",
+  "merged_at": "2026-09-25T09:04:40Z",
+  "head_ref": "claude/wp31-first-boot-external-deps"
+}
