@@ -2577,3 +2577,13 @@ WP11 tip-confirm -- K3S_ACTIVE on verdict 6 (distinct NEVER-ACTIVE log + optiona
 - VM test not weakened (wrong-token restart, survival checks, token restore all unconditional). Hygiene 22/22 pass with 30s timeouts, bodies otherwise identical.
 - Soft (significant): new wording says the signature filter runs BEFORE the sentinel; the code checks the sentinel first (.sh L185) with the signature inside (L186-187, L219). Wrong order in module .nix L65, test .nix L47/L243, workitem L88, commit msg, PR body. No behaviour effect. Other soft: no test pins the UNEXPECTED text; Remedy line L197 still leads with 'verify the token'; single-run evidence.
 - Hard fails: none. Sit leftover. Do not merge.
+
+## leftover UNIQUE leftover #17656 leftover unique @ 6a9559b2f342a1bd96fbea8e2a44d220e48f4f63 -- GRADE HOLD
+
+- Re-grade of PR #17656 (WP31 verdict 7 rosterConverged). Graded 2026-09-25 ~01:34 ET for Chief of Staff. Prior HOLD @ 8ff711a9.
+- Tip: not a merge; 1 parent 2661623f = 2-parent merge of 8ff711a9 and main cb05ddd7 (adds only main's sentinel.nix). Tip-only delta +39/-1, 2 files. Merge added nothing to PR files. Never grade 2661623f or merge_commit 41c94c1f.
+- HF1 fixed: test.ts L1340 destructures rosterConverged out; local tsc passes at tip (fails TS2375 at 8ff711a9); CI lint (TS) green; mutation still bites.
+- HF2 still open: .nix L845-847 node-labels query still `|| true`; no labels-seen guard (L719, L726); app excluded (L788-791); pass check L928-933 unchanged. Reproduced: labels missing turns an unconverged app into excluded-unschedulable and a false PASS.
+- Header comment accurate (cdi/kubevirt excluded; spire/openbao/hindsight full contract); replica figures unsourced.
+- Soft: auto-merge on, could merge with HF2 open; one pod excuses a whole app; TS trusts roster.ok.
+- GO once HF2 fixed on a new 1-parent tip. Sit leftover. Do not merge.
