@@ -1,0 +1,12 @@
+{
+  "pr_number": 17677,
+  "archive_path": "docs/history/pr-reviews/2026/09/25/PR-17677-fix-ci-the-guard-against-a-failed-probe-must-not-read-as-zero-itself-read-as-zer.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-25T11:10:29.752Z",
+  "schema_version": "v1",
+  "commit_sha": "6998a5cc35e52ebfaec3ff7db5a577513db6c8ea",
+  "title": "fix(ci): the guard against \"a failed probe must not read as zero\" itself read as zero (WP31)",
+  "state": "MERGED",
+  "merged_at": "2026-09-25T11:09:45Z",
+  "head_ref": "claude/wp31-pod-probe-guard"
+}
