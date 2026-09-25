@@ -1,0 +1,186 @@
+# full-ai-cluster/nixos/modules/k3s-bootstrap-image-preload.nix
+#
+# THE AIRGAP IMAGE DIRECTORY K3S IMPORTS BEFORE IT PULLS ANYTHING — WP34
+# (081M3BZ111D087G0R000YBMKRY).
+#
+# -- THE FAILURE THIS IS FOR -----------------------------------------------
+# A first boot pulls 134 distinct container images across EIGHT registries,
+# and the pull-through mirror (`k3s-registry-mirrors.nix`) covers exactly ONE
+# of them: docker.io, 48 of the 134, 36%. The other 86 come from quay.io,
+# ghcr.io, registry.gitlab.com, registry.k8s.io, cgr.dev and public ECR, each
+# enforcing its own per-source-IP rate limit. An operator behind an office
+# NAT, a CGNAT ISP or a campus network shares that budget with strangers, and
+# when it is spent the install does not stop and say so -- it half-provisions
+# and the only explanation the operator gets is an ImagePullBackOff on a box
+# nobody is SSH'd into.
+#
+# -- THE MECHANISM ---------------------------------------------------------
+# k3s imports every image archive found in
+# `/var/lib/rancher/k3s/agent/images/` into containerd at agent startup,
+# BEFORE any pull is attempted (https://docs.k3s.io/installation/airgap,
+# "Manually Deploy Images Method"). An image already in containerd is not
+# pulled, whatever the registry is doing. So a tarball in that directory
+# converts "the cluster comes up if five unmirrored registries are reachable
+# and under quota" into "the cluster comes up".
+#
+# This module owns the DIRECTORY and the contract. It does not own the
+# tarball, and the reason is measured rather than stylistic -- see below.
+#
+# -- WHY THE TARBALL IS NOT A NIX STORE PATH -------------------------------
+# The obvious design is a derivation in the control-plane closure. It does not
+# work here, and the reason is worth recording so nobody re-proposes it:
+#
+#   `zeta-install.sh` installs by CLONING the repo onto /mnt and running
+#   `nixos-install --flake /mnt/etc/zeta/full-ai-cluster#<host>`. The flake
+#   source at install time is therefore the GIT CLONE, which cannot contain a
+#   1 GB tarball (it is not committed, and committing it would put a binary in
+#   a tree whose whole verification discipline is text). A derivation that
+#   FETCHED the images instead would fetch them at INSTALL time, from the same
+#   rate-limited registries, on the operator's machine -- i.e. it would move
+#   the failure earlier rather than remove it, and it would defeat the
+#   verify-in-CI property that is the point.
+#
+# So the tarball rides the ISO as a plain file and the installer copies it to
+# the target. That keeps the pull-and-verify in CI, where there are
+# credentials, no meaningful rate limit, and a human reading a red build.
+#
+# -- WHAT THIS DOES NOT COVER. SAY IT PLAINLY. -----------------------------
+# The preload carries the BOOTSTRAP roster only -- the ~25 images behind the
+# seven charts `services.k3s.manifests` installs (cilium, cert-manager, spire,
+# trust-manager, external-secrets, argocd, local-path). The remaining ~109
+# images are the ArgoCD catalog and they still pull from eight registries.
+#
+#   THIS MAKES THE CLUSTER COME UP WITHOUT A REGISTRY.
+#   IT DOES NOT MAKE THE ROSTER CONVERGE OFFLINE.
+#
+# The operator gets a running cluster with ArgoCD visibly reconciling and
+# visibly behind, instead of a partially provisioned node with no explanation.
+# That is the whole claim. Overclaiming it would be worse than not shipping it.
+#
+# k3s's OWN built-ins (`rancher/mirrored-pause`, `mirrored-coredns-coredns`,
+# `mirrored-metrics-server`, `klipper-lb`, `klipper-helm`) are also absent,
+# deliberately: they are not in `services.k3s.manifests`, k3s supplies them,
+# and they are all `docker.io/rancher/*` -- the one registry the mirror
+# already covers. Preloading them is a separate ~150 MB decision with a ready
+# mechanism (nixpkgs exposes the official airgap tarball as
+# `k3s.airgapImages`), and it is not made here.
+#
+# -- ABSENCE IS NEVER SILENT -----------------------------------------------
+# The defect class this whole effort is about is a step that does not happen
+# and leaves no record. So when the preload is enabled and the archive is not
+# there, this module does not shrug:
+#
+#   - `zeta-bootstrap-image-preload-status.service` runs BEFORE k3s, writes
+#     `/run/zeta-bootstrap-image-preload.status` with a NAMED verdict
+#     (PRESENT/<bytes> or ABSENT), and logs it to the journal.
+#   - Nothing here *fails* the boot on absence. That is deliberate: a node
+#     with a working network and no preload is a node that boots fine, and
+#     refusing to start k3s over a missing optimisation would turn a
+#     reliability improvement into a new way to brick an install. The verdict
+#     is a MEASUREMENT, and the oracle reading it is a human or a later check
+#     -- never this module.
+#
+# -- THE SOURCE OF TRUTH FOR *WHICH* IMAGES --------------------------------
+# `full-ai-cluster/k8s/bootstrap-preload-images.json`, generated by
+# `src/Core.TypeScript/cluster/bootstrap-image-preload.ts --refresh`, which
+# DERIVES the set by parsing `services.k3s.manifests` and rendering the charts
+# it names. There is no hand-written image list anywhere in this feature, and
+# that is the point: a second copy of a roster is a defect class this tree has
+# paid for repeatedly.
+
+{ config, lib, ... }:
+
+let
+  cfg = config.zeta.bootstrapImagePreload;
+in
+{
+  options.zeta.bootstrapImagePreload = {
+    enable = lib.mkOption {
+      type = lib.types.bool;
+      default = false;
+      description = ''
+        Own `/var/lib/rancher/k3s/agent/images/` and report, before k3s starts,
+        whether the bootstrap image archive the installer was supposed to copy
+        there is actually present.
+
+        Enabled by `k3s-server.nix` for control planes. Setting it does NOT by
+        itself put any image on the disk -- the archive is placed by
+        `zeta-install.sh` from the ISO. See this file's header for why it
+        cannot be a store path.
+      '';
+    };
+
+    imagesDir = lib.mkOption {
+      type = lib.types.str;
+      default = "/var/lib/rancher/k3s/agent/images";
+      description = ''
+        Where k3s looks for image archives to import at agent startup. Not
+        configurable in k3s itself; exposed here so the installer, the status
+        service and the tests name it once rather than four times.
+      '';
+    };
+
+    archiveName = lib.mkOption {
+      type = lib.types.str;
+      default = "zeta-bootstrap-images.tar";
+      description = ''
+        The filename `zeta-install.sh` copies out of the ISO. k3s imports every
+        archive in the directory regardless of name; this one is fixed so the
+        status service below can say PRESENT or ABSENT about a specific file
+        rather than about an empty directory, which is a weaker statement.
+      '';
+    };
+
+    statusFile = lib.mkOption {
+      type = lib.types.str;
+      default = "/run/zeta-bootstrap-image-preload.status";
+      description = ''
+        Where the named verdict is written. A tmpfs path on purpose: it
+        describes THIS boot, and a stale verdict from a previous boot read as a
+        current one is exactly the class of mistake the verdict exists to
+        prevent.
+      '';
+    };
+  };
+
+  config = lib.mkIf cfg.enable {
+    # k3s creates this itself, but only once the agent has started -- which is
+    # after it has already looked for archives in it. Creating it here means
+    # the installer has somewhere to copy to, and means the status service
+    # below reports ABSENT rather than failing on a missing directory.
+    systemd.tmpfiles.rules = [
+      "d ${cfg.imagesDir} 0700 root root - -"
+    ];
+
+    systemd.services.zeta-bootstrap-image-preload-status = {
+      description = "Report whether the bootstrap container-image preload is present on this boot";
+      wantedBy = [ "multi-user.target" ];
+      before = [ "k3s.service" ];
+      after = [ "systemd-tmpfiles-setup.service" ];
+      unitConfig.DefaultDependencies = false;
+      serviceConfig = {
+        Type = "oneshot";
+        RemainAfterExit = true;
+      };
+      script = ''
+        archive="${cfg.imagesDir}/${cfg.archiveName}"
+        if [ -s "$archive" ]; then
+          bytes=$(stat -c %s "$archive")
+          echo "PRESENT $bytes $archive" > "${cfg.statusFile}"
+          echo "[zeta-preload] PRESENT: $archive ($bytes bytes) -- k3s will import it before pulling anything."
+        else
+          echo "ABSENT $archive" > "${cfg.statusFile}"
+          # Loud, and deliberately NOT fatal. See the module header: a node
+          # with a working network and no preload boots fine, and refusing to
+          # start k3s over a missing optimisation would convert a reliability
+          # improvement into a new way to brick an install.
+          echo "[zeta-preload] ABSENT: $archive is missing or empty."
+          echo "[zeta-preload] Every bootstrap image will be PULLED. On a spent registry rate limit"
+          echo "[zeta-preload] that is an ImagePullBackOff, not a refusal -- which is the failure this"
+          echo "[zeta-preload] preload exists to remove. If this node was installed from a Zeta ISO,"
+          echo "[zeta-preload] the installer's copy step did not run or the ISO carried no archive."
+        fi
+      '';
+    };
+  };
+}

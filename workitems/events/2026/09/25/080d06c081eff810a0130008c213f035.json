@@ -1,0 +1,14 @@
+{
+  "id": "080d06c081eff810a0130008c213f035",
+  "at": "2026-09-25T10:15:38.239Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M3C10FFX087G0R0033DYXG0",
+    "type": "task",
+    "title": "Two kubectl images at two versions in the bootstrap roster cost 36.5 MB of the preload payload twice",
+    "slug": "two-kubectl-images-at-two-versions-in-the-bootstrap-roster-c",
+    "priority": "P2",
+    "filename": "081M3C10FFX087G0R0033DYXG0-two-kubectl-images-at-two-versions-in-the-bootstrap-roster-c.md"
+  }
+}

@@ -477,6 +477,57 @@
     volumeID = lib.mkForce "ZETA_INSTALL";
     makeEfiBootable = true;
     makeUsbBootable = true;
+
+    # WP34 (081M3BZ111D087G0R000YBMKRY) — THE BOOTSTRAP CONTAINER IMAGES.
+    #
+    # ~1.0 GB of OCI layout carrying the 25 images the first-boot roster needs
+    # before ArgoCD exists. `zeta-install.sh` copies it onto the target at
+    # /var/lib/rancher/k3s/agent/images/, where k3s imports it into containerd
+    # BEFORE attempting any pull. Twenty-one of the twenty-five sit on
+    # registries the pull-through mirror does not cover, so without it a spent
+    # rate limit on quay.io or ghcr.io is an ImagePullBackOff on a box nobody
+    # is SSH'd into. See nixos/modules/k3s-bootstrap-image-preload.nix.
+    #
+    # BUILT BY CI AND STAGED INTO THE FLAKE SOURCE — not committed, and not
+    # fetched by nix. Each alternative was ruled out for a measured reason:
+    #
+    #   - COMMITTING it would put a 1 GB binary in a tree whose verification
+    #     discipline is that proofs are text (`no-binary-in-proof-lineage`).
+    #   - A nix FIXED-OUTPUT derivation needs an output hash for content that is
+    #     fetched, and that hash cannot be produced without running the fetch —
+    #     so the first landing would carry a placeholder, i.e. a build broken by
+    #     construction.
+    #   - FETCHING AT INSTALL TIME would pull from the same rate-limited
+    #     registries on the operator's machine, which moves the failure earlier
+    #     rather than removing it and throws away the verify-in-CI property that
+    #     is the entire point.
+    #
+    # ABSENT ON A LOCAL BUILD, AND NOT SILENTLY. `builtins.pathExists` is false
+    # when a developer runs `nix build .#installer-iso` without building the
+    # archive first, and the ISO is then built without it — correct for a dev
+    # ISO, and REPORTED by the `lib.warn` below rather than left to be inferred
+    # from a smaller file. The release-side guarantee is not this predicate: it
+    # is the workflow step that builds the archive before `nix build` runs at
+    # all, plus `src/Core.TypeScript/ci/audit-installer-iso-content.ts`, which
+    # looks inside the built ISO.
+    contents =
+      let
+        archive = ../../preload/zeta-bootstrap-images.tar;
+      in
+      if builtins.pathExists archive then
+        [
+          {
+            source = archive;
+            target = "/zeta/zeta-bootstrap-images.tar";
+          }
+        ]
+      else
+        lib.warn (
+          "zeta: no bootstrap container-image archive at usb-nixos-installer/preload/ -- this ISO will install "
+          + "nodes that PULL every bootstrap image on first boot. Fine for a local build; a release must run "
+          + "`bun src/Core.TypeScript/cluster/bootstrap-image-preload.ts --build-archive` first (the "
+          + "build-ai-cluster-iso workflow does)."
+        ) [ ];
   };
 
   environment.etc."zeta-install.md".text = ''

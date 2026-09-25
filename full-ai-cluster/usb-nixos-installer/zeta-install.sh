@@ -3953,6 +3953,63 @@ sudo nixos-install \
 cleanup_symlinks
 trap - EXIT
 
+# ── Step 6.93b: WP34 — copy the bootstrap container images off the ISO ────────
+#
+# 081M3BZ111D087G0R000YBMKRY. The installed node's very first boot pulls 134
+# container images across EIGHT registries, and the pull-through mirror covers
+# ONE of them (docker.io, 48/134, 36%). The 25 images the BOOTSTRAP roster
+# needs -- cilium, cert-manager, spire, trust-manager, external-secrets, argocd,
+# local-path -- are 21/25 on registries the mirror does NOT cover. If quay.io or
+# ghcr.io is down, or this operator's NAT has spent its per-source-IP budget on
+# somebody else's pulls, those charts never come up and the only explanation the
+# operator gets is an ImagePullBackOff on a box nobody is SSH'd into.
+#
+# The ISO carries them (isoImage.contents in
+# usb-nixos-installer/nixos/installer/configuration.nix). k3s imports every
+# archive in /var/lib/rancher/k3s/agent/images/ into containerd at agent startup
+# BEFORE any pull is attempted, so this copy is the whole mechanism.
+#
+# WHY A COPY AND NOT A NIX STORE PATH: this installer runs `nixos-install
+# --flake /mnt/etc/zeta/full-ai-cluster#$HOST` against a fresh GIT CLONE, and a
+# clone cannot contain a 1 GB tarball. The full reasoning, including why a
+# fixed-output derivation and an install-time fetch were both rejected, is in
+# nixos/modules/k3s-bootstrap-image-preload.nix.
+#
+# NON-FATAL BY DESIGN, AND NEVER SILENT. A node with a working network installs
+# perfectly well without this, so a missing or unreadable archive must not abort
+# an install that is otherwise complete -- that would turn a reliability
+# improvement into a new way to lose a machine. But absence is announced here
+# AND on every subsequent boot by
+# zeta-bootstrap-image-preload-status.service, which writes a named
+# PRESENT/ABSENT verdict to /run. The failure this whole work item is about is a
+# step that did not happen and left no record; a skip nobody prints would be
+# that failure wearing this feature's clothes.
+ZETA_PRELOAD_SRC="/iso/zeta/zeta-bootstrap-images.tar"
+ZETA_PRELOAD_DST_DIR="/mnt/var/lib/rancher/k3s/agent/images"
+if [ -s "$ZETA_PRELOAD_SRC" ]; then
+  echo "[wp34] staging the bootstrap container images from the ISO ..."
+  if sudo mkdir -p "$ZETA_PRELOAD_DST_DIR" \
+    && sudo cp "$ZETA_PRELOAD_SRC" "$ZETA_PRELOAD_DST_DIR/zeta-bootstrap-images.tar"; then
+    echo "[wp34] staged $(du -h "$ZETA_PRELOAD_SRC" | cut -f1) to ${ZETA_PRELOAD_DST_DIR#/mnt}/zeta-bootstrap-images.tar"
+    echo "[wp34] k3s will import these before pulling anything, so the bootstrap charts"
+    echo "[wp34] come up even if quay.io / ghcr.io / registry.k8s.io are unreachable."
+    echo "[wp34] NOTE: this covers the BOOTSTRAP roster only. The ~109 ArgoCD catalog"
+    echo "[wp34] images still pull from eight registries -- the cluster comes UP offline,"
+    echo "[wp34] it does not CONVERGE offline."
+  else
+    echo "[wp34] WARNING: could not copy the bootstrap image archive to $ZETA_PRELOAD_DST_DIR."
+    echo "[wp34] The install continues. This node will PULL every bootstrap image on first"
+    echo "[wp34] boot; on a spent registry rate limit that is an ImagePullBackOff, not a"
+    echo "[wp34] refusal. Check disk space on /mnt and the boot-time verdict in"
+    echo "[wp34] /run/zeta-bootstrap-image-preload.status."
+  fi
+else
+  echo "[wp34] no bootstrap image archive on this ISO ($ZETA_PRELOAD_SRC absent or empty)."
+  echo "[wp34] The install continues. This node will PULL every bootstrap image on first boot."
+  echo "[wp34] An ISO built by the build-ai-cluster-iso workflow carries one; a locally built"
+  echo "[wp34] ISO does not unless the archive was built before 'nix build .#installer-iso'."
+fi
+
 # ── Step 6.94: 081KSKBP80008QG0R003AX2A69.3a cred-picker stub ───────────────────────────
 # The actual picker invocation lives at Step 6.95-picker (below) which
 # fires AFTER 6.95a-bootstrap clones the repo + installs bun. This

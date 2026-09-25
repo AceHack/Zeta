@@ -433,3 +433,13 @@ test-results/
 #   bun src/Core.TypeScript/search/inverted/build.ts --rev origin/main --out <dir>
 # The storage design is marked `toy` — see src/Core.TypeScript/search/inverted/format.ts.
 db/search-index/
+
+# WP34 (081M3BZ111D087G0R000YBMKRY): the bootstrap container-image archive the
+# ISO carries. ~1.0 GB, built by
+# `src/Core.TypeScript/cluster/bootstrap-image-preload.ts --build-archive` and
+# staged into the flake source by the build-ai-cluster-iso workflow with
+# `git add -f`. NEVER committed: a 1 GB binary in a tree whose verification
+# discipline is that proofs are TEXT is what `no-binary-in-proof-lineage`
+# forbids. The TEXT half -- which images, at which digests, at what size --
+# lives in full-ai-cluster/k8s/bootstrap-preload-images.json and IS committed.
+full-ai-cluster/usb-nixos-installer/preload/

@@ -188,6 +188,14 @@
     # harness's zeta-install.sh probe ever writes, so this import is a no-op
     # (unit never starts) on every real install.
     ./zeta-first-boot-k3s-verify.nix
+    # WP34 (081M3BZ111D087G0R000YBMKRY): own /var/lib/rancher/k3s/agent/images/
+    # -- the directory k3s imports container images from BEFORE it pulls
+    # anything -- and report a named PRESENT/ABSENT verdict about the bootstrap
+    # archive on every boot. Imported here rather than in k3s-server.nix
+    # because EVERY node's k3s agent reads that directory, exactly as
+    # k3s-registry-mirrors.nix is imported by both roles for the same reason:
+    # a preload only the control plane has does not help a worker start pods.
+    ./k3s-bootstrap-image-preload.nix
   ];
 
   # B-0852.4 default-on flip (operator pain point closure 2026-05-27).
@@ -208,6 +216,12 @@
   # maintainers/<gh-user>/cluster-nodes/<host> PR) once cred-restore has put gh
   # auth back. Idempotent; per-host opt-out: zeta.selfRegister.enable = false;
   zeta.selfRegister.enable = lib.mkDefault true;
+
+  # WP34: on by default on every node. Enabling this does NOT by itself put an
+  # image on the disk -- it owns the directory k3s imports from and makes the
+  # archive's ABSENCE a named, logged verdict instead of a step nobody records.
+  # Per-host opt-out: `zeta.bootstrapImagePreload.enable = false;`
+  zeta.bootstrapImagePreload.enable = lib.mkDefault true;
 
   # B-0891 slice 3: numbered menu by default; set useLlm = true for Ollama chooser.
   zeta.firstSession.enable = lib.mkDefault true;

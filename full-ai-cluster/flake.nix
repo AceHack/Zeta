@@ -463,6 +463,35 @@
               echo "$status" | tee "$out"
             '';
 
+          # Properties of the BOOTSTRAP IMAGE PRELOAD module (WP34,
+          # 081M3BZ111D087G0R000YBMKRY) -- that every node imports it, that it
+          # owns the directory k3s reads airgap archives from, that its status
+          # unit runs BEFORE k3s, and that a MISSING archive is loud and
+          # NON-FATAL. That last pair is the whole point: silent absence is the
+          # defect class the work item exists to remove, and a hard failure over
+          # a missing optimisation would be a new way to brick a working
+          # install.
+          #
+          # NOT a VM test and NOT a boot test -- it says nothing about whether
+          # any ISO carries the archive, nor whether the image names inside it
+          # match what the charts render. That is
+          # src/Core.TypeScript/cluster/bootstrap-preload-blackhole.ts, which
+          # boots k3s with the unmirrored registries blackholed and refuses to
+          # report a result without a red negative control.
+          #
+          # Costs no VM, and its assertions fire during EVALUATION -- so
+          # `nix flake check --no-build` already runs it.
+          k3s-bootstrap-image-preload-model =
+            let
+              report = import ./nixos/tests/k3s-bootstrap-image-preload-eval-test.nix {
+                inherit pkgs;
+                inherit (nixpkgs) lib;
+              };
+            in
+            pkgs.runCommand "k3s-bootstrap-image-preload-model" { inherit (report) status; } ''
+              echo "$status" | tee "$out"
+            '';
+
           # Properties of the TPM-SEAL desired-state model — the module that
           # answers "what can the nix installer pre-stage for a hardware-backed
           # auto-unseal", and the gate that stops it from deciding seal-key

@@ -1,0 +1,14 @@
+{
+  "id": "080d06bf84217010a01300082c9f0a0b",
+  "at": "2026-09-25T09:40:59.054Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M3BZ111D087G0R000YBMKRY",
+    "type": "task",
+    "title": "Preload the first-boot bootstrap image set into the ISO so a registry outage delays the roster instead of bricking the install",
+    "slug": "preload-the-first-boot-bootstrap-image-set-into-the-iso-so-a",
+    "priority": "P2",
+    "filename": "081M3BZ111D087G0R000YBMKRY-preload-the-first-boot-bootstrap-image-set-into-the-iso-so-a.md"
+  }
+}
