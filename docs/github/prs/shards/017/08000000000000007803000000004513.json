@@ -1,0 +1,12 @@
+{
+  "pr_number": 17683,
+  "archive_path": "docs/history/pr-reviews/2026/09/25/PR-17683-fix-ci-the-reformat-and-path-fork-lanes-refuse-pre-wipe-on-their-own-20-gib-disk.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-25T13:41:22.642Z",
+  "schema_version": "v1",
+  "commit_sha": "9e421e3197383c686f2ade4274435590aaee3b25",
+  "title": "fix(ci): the reformat and path-fork lanes refuse pre-wipe on their own 20 GiB disk — it was never the 1400 GiB one (WP35)",
+  "state": "MERGED",
+  "merged_at": "2026-09-25T13:40:40Z",
+  "head_ref": "claude/wp35-reformat-phase-timings"
+}
