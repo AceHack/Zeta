@@ -1,0 +1,12 @@
+{
+  "pr_number": 17660,
+  "archive_path": "docs/history/pr-reviews/2026/09/25/PR-17660-docs-ci-name-who-owns-each-red-and-file-the-sync-policy-vocabulary-gap-wp31.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-25T06:48:05.429Z",
+  "schema_version": "v1",
+  "commit_sha": "9cead3b194a5e47050d60dd57763ffc2cb32eb28",
+  "title": "docs(ci): name who OWNS each red, and file the sync-policy vocabulary gap (WP31)",
+  "state": "MERGED",
+  "merged_at": "2026-09-25T06:47:15Z",
+  "head_ref": "claude/wp31-operator-action-sync-policy"
+}
