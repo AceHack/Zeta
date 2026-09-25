@@ -1,0 +1,14 @@
+{
+  "id": "080d06bd4eb56810a0130008ab51bbe8",
+  "at": "2026-09-25T08:23:47.117Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M3BTKNNB087G0R000EPCNJ1",
+    "type": "bug",
+    "title": "k8s/bootstrap has no inert-key coverage: the manifests that run FIRST are the ones nothing scans",
+    "slug": "k8s-bootstrap-has-no-inert-key-coverage-the-manifests-that-r",
+    "priority": "P2",
+    "filename": "081M3BTKNNB087G0R000EPCNJ1-k8s-bootstrap-has-no-inert-key-coverage-the-manifests-that-r.md"
+  }
+}

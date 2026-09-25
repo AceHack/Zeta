@@ -610,15 +610,25 @@ describe("eight mutations against the live validators", () => {
   // carrying a REAL debt still convicts a dead one" — which is the property that
   // stops the next genuine shortfall hiding behind an expired row.
   test("7 the lane register carries the live shortfall, and a revived one is convicted STALE", () => {
-    // 2026-09-07: THE REGISTER IS EMPTY AGAIN, because the memory shortfall is GONE --
-    // gmod's 2048Mi left the lane and 11148Mi became 9100Mi against a 9216Mi budget. The
-    // mutation below is unchanged in kind and is now back to its original, weaker form:
-    // "an empty register rejects everything". The sharper property it had while a real
-    // debt was carried is preserved in the comment above rather than deleted, because a
-    // register that is empty for the right reason and one that is empty because someone
-    // removed a row look identical from here -- which is exactly why `auditRunnerBudget`
-    // is asserted on the line below rather than trusted.
-    expect(liveCatalogue.acknowledgedLaneBudgetShortfall.map((a) => a.key)).toEqual([]);
+    // 2026-09-25: THE REGISTER CARRIES A ROW AGAIN, so this test is back to its SHARPER
+    // form -- the one the comment below could only preserve in prose while no live debt
+    // existed to assert it against.
+    //
+    // 2026-09-07 had emptied it: gmod's 2048Mi left the lane and 11148Mi became 9100Mi
+    // against a 9216Mi budget. That fit carried 116 MiB of headroom while 26 of the 49
+    // Applications rendered pods requesting NOTHING and so contributed zero to the total,
+    // which made it an UNDERCOUNT rather than a fit -- the first honest pricing of any of
+    // them was always going to end it. Pricing the ArgoCD control plane was that first one.
+    //
+    // Why the sharper form is worth having: an empty register and a register someone
+    // emptied look identical from here. With a row present the assertion has two halves a
+    // single edit cannot satisfy at once -- the LIVE key must be carried, and a key whose
+    // arithmetic has moved on must still be convicted STALE rather than quietly honoured.
+    expect(liveCatalogue.acknowledgedLaneBudgetShortfall.map((a) => a.key)).toEqual([
+      "dev memory 9868>9216",
+    ]);
+    // Carried, so `dev` comes back clean. The acknowledgement is what suppresses it, and
+    // the revived row below is what proves the suppression is not indiscriminate.
     expect(auditRunnerBudget(liveCatalogue, "dev")).toEqual([]);
     const revived = {
       ...liveCatalogue,

@@ -52,6 +52,13 @@ spec:
         server:
           service:
             type: ClusterIP   # ingress lands separately
+          # Inside the ONE `server:` block on purpose — a second one lower down
+          # would be a YAML duplicate key, and duplicate keys are last-wins and
+          # silent, so it would have deleted `service.type` without a word.
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
         configs:
           params:
             server.insecure: true   # TLS terminated upstream once ingress lands
@@ -203,6 +210,76 @@ spec:
                 - UpdateRequest
         notifications:
           enabled: false
+        # ── THE MIRROR THAT WAS NOT A MIRROR ────────────────────────────────
+        #
+        # The comment at the top of this valuesObject states an invariant:
+        # "Mirror the bootstrap values so adopting this Application is a no-op
+        # transition." MEASURED 2026-09-25 by rendering BOTH value sets at the
+        # pinned chart 10.8.0 and diffing the workloads, THAT WAS FALSE:
+        #
+        #   bootstrap valuesContent -> 6 workloads
+        #   this valuesObject       -> 7 workloads (+ Deployment/argocd-dex-server)
+        #
+        # Four keys the bootstrap sets were absent here — `dex.enabled: false`,
+        # `redis-ha.enabled: false`, `controller.replicas: 1`,
+        # `repoServer.replicas: 1` — so adoption did not adopt, it CHANGED the
+        # release: it turned dex back on and added a Deployment plus its image
+        # pull. At sync-wave -90. Which is the EARLIEST wave, on the most
+        # contended node state a fresh install ever has, while ~135 images are
+        # still being pulled. The one moment the control plane could least
+        # afford another pod was the moment this added one.
+        #
+        # A stated contract contradicted by a render is not a documentation
+        # nit; it is the same class of defect as a check that cannot fail. The
+        # falsifier added with this change is therefore an assertion about the
+        # RENDER — that these two value sets produce byte-identical workload
+        # sets — and not about which keys are present. Key-presence is exactly
+        # what let this drift: every key here was individually fine, and the
+        # set of them was wrong.
+        dex:
+          enabled: false   # SSO wires in via a Sealed Secret + values patch
+        redis-ha:
+          enabled: false   # single-control-plane bootstrap
+        # Requests: see the long rationale on the bootstrap copy, which is the
+        # single place it is written -- including the part this short form must
+        # not flatten. Short form: every ArgoCD container was BestEffort
+        # (measured), and the WP11 roster went BACKWARDS from 25/35 to 13/35,
+        # which rules out "needs longer" (measured). Eviction was the first
+        # explanation offered for the fall and is REFUTED -- zero evictions, zero
+        # OOM kills, and 22 rows at sync=Unknown with health=Healthy: the pods
+        # were up and the RENDER is what failed. These literals are the `metal`
+        # rung and are governed by `resourceClaims` in storage-profiles.json.
+        controller:
+          replicas: 1
+          resources:
+            requests:
+              cpu: 250m
+              memory: 512Mi
+        repoServer:
+          replicas: 1
+          resources:
+            requests:
+              cpu: 250m
+              memory: 512Mi
+        redis:
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+        # `applicationSet.enabled` USED TO LIVE HERE AND WAS REMOVED 2026-09-25: it is
+        # INERT at argo-cd 10.8.0. The chart's values.yaml has no `applicationSet.enabled`
+        # key and templates/argocd-applicationset/deployment.yaml carries no `{{- if }}`
+        # guard at all -- the controller renders unconditionally. The key was real at
+        # 7.7.10 and the 7.7.10 -> 10.6.0 bump orphaned it; nothing noticed because
+        # `inert-valuesobject-keys.ts` scans Application valuesObjects and this bootstrap
+        # file is not one. It surfaced only when the Application was made to mirror this
+        # file for real, which is the parity repair doing its job on its first run.
+        # Removing it is a no-op on the render, verified by diffing before and after.
+        applicationSet:
+          resources:
+            requests:
+              cpu: 50m
+              memory: 128Mi
   destination:
     server: https://kubernetes.default.svc
     namespace: argocd

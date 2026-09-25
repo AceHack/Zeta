@@ -191,6 +191,98 @@
       # server-only.
       "--kubelet-arg=max-pods=220"
 
+      # ── NODE RESERVATIONS — Allocatable was Capacity, so nothing was held
+      # ── back for the process that IS the control plane ────────────────────
+      #
+      # THE DEFECT. Until 2026-09-25 this file raised `max-pods` to 220 and set
+      # no `kube-reserved`, no `system-reserved` and no eviction threshold. Both
+      # default to empty, so Allocatable == Capacity: the scheduler was free to
+      # hand out every millicore and every byte of the node to pods, reserving
+      # nothing for the k3s server process — which on k3s is not a set of pods.
+      # apiserver, scheduler, controller-manager and the kine/etcd datastore all
+      # run INSIDE the `k3s.service` systemd unit, outside every pod cgroup, and
+      # therefore outside everything the scheduler is accounting for.
+      #
+      # MEASURED, same dispatch as the ArgoCD requests fix (36097310492, WP11,
+      # real installed disk). This is a SECOND and INDEPENDENT starvation, not
+      # the pod-QoS one, and fixing only the pod side would have left it:
+      #   - 7 of 100 unconverged ArgoCD rows read `failed to get server version`
+      #   - the verdict's own apiserver probe failed on 17 of 59 samples
+      # Both are the apiserver being intermittently unreachable on a node that
+      # had promised its entire capacity to something else.
+      #
+      # `single-node-readiness.ts` has been printing the same sentence on every
+      # run without anything acting on it: "That bound is the node's WHOLE
+      # capacity: nothing is held back for the kubelet, the control plane,
+      # kube-system or the OS."
+      #
+      # WHY ONE ABSOLUTE NUMBER IS DEFENSIBLE ON BOTH HARDWARE PROFILES, which
+      # is the part that has to be argued rather than asserted. `kube-reserved`
+      # takes an absolute quantity, not a fraction, so a number tuned for one
+      # box normally mis-serves the other — too small to protect the big node,
+      # or large enough to cripple the small one. It works here because of what
+      # the reserved process actually scales with:
+      #
+      #   the k3s server's load tracks the CLUSTER (object count, watch streams,
+      #   reconcile rate), NOT the NODE it runs on.
+      #
+      # The roster is the same roster on both: 49 Applications, ~145 rendered
+      # pods, one node. So the apiserver has the same work to do on the 4-vCPU
+      # WP11 guest as on a 16-core registered ClusterNode, and one absolute
+      # reservation is the right shape for it. What differs is only what the
+      # reservation COSTS, and that is stated below rather than left implied.
+      #
+      # WHAT EACH PROFILE PAYS
+      #                                    4-vCPU/12288Mi guest    16-core/62942Mi node
+      #   kube-reserved    500m / 1Gi            12.5% / 8.3%           3.1% / 1.6%
+      #   system-reserved  250m / 512Mi           6.3% / 4.2%           1.6% / 0.8%
+      #   eviction-hard            500Mi                / 4.1%                 / 0.8%
+      #   total                                 18.8% / 16.6%           4.7% / 3.2%
+      #
+      # On the big node this is rounding error. On the guest it is real, and it
+      # is the correct trade: 18.8% of the CPU withheld from pods is how the
+      # apiserver stops being unreachable, and an apiserver that answers is
+      # worth more than three more pods that cannot be scheduled through it.
+      #
+      # HONEST LIMIT, AND IT IS THE IMPORTANT LINE HERE. Without
+      # `--kube-reserved-cgroup` these flags are ACCOUNTING, not ENFORCEMENT.
+      # They shrink Allocatable so the scheduler stops over-committing the node;
+      # they do NOT create a cgroup that guarantees the k3s process those shares
+      # under contention. So this is a fix for OVER-SCHEDULING, and it reaches
+      # CPU contention only indirectly, by admitting fewer competitors. The
+      # enforcement form is deliberately not taken: it requires the cgroup to
+      # exist and be correctly parented before the kubelet starts, and a
+      # misconfigured `--kube-reserved-cgroup` makes the kubelet refuse to start
+      # at all — which on a first-boot installer is an unrecoverable node rather
+      # than a slow one.
+      #
+      # EVICTION THRESHOLD. k3s inherits the kubelet default
+      # `memory.available<100Mi`, which on a node this size is below the noise
+      # floor of a burst of image pulls: the kernel OOM killer fires before the
+      # kubelet ever notices, and it picks its victim by oom_score rather than
+      # by QoS or by what the cluster needs. 500Mi gives the kubelet room to
+      # make that choice deliberately and in QoS order. The roster's declared
+      # memory exceeds this guest's RAM at every rung, so eviction on a small
+      # box is not a hypothetical, and which pod dies is the whole question.
+      #
+      # ALL FOUR SIGNALS ARE RESTATED, AND THAT IS NOT VERBOSITY — IT IS THE BUG
+      # THIS FLAG INVITES. `--eviction-hard` REPLACES the kubelet's entire
+      # default map rather than merging into it, so passing `memory.available`
+      # alone would silently DELETE `imagefs.available<15%` and
+      # `nodefs.inodesFree<5%`. On a node that pulls ~135 images on first boot,
+      # dropping the imagefs threshold removes the trigger for image garbage
+      # collection under disk pressure — a disk-exhaustion regression shipped as
+      # a memory fix, invisible in the diff. The three non-memory values below
+      # are the kubelet's own defaults, written out so they survive; only
+      # `memory.available` is changed, 100Mi -> 500Mi.
+      #
+      # SET ON BOTH SERVER AND AGENT for the same reason `max-pods` is, with one
+      # difference recorded in k3s-agent.nix: an agent runs no apiserver, so its
+      # `kube-reserved` covers kubelet and containerd alone and is smaller.
+      "--kubelet-arg=kube-reserved=cpu=500m,memory=1Gi"
+      "--kubelet-arg=system-reserved=cpu=250m,memory=512Mi"
+      "--kubelet-arg=eviction-hard=memory.available<500Mi,nodefs.available<10%,imagefs.available<15%,nodefs.inodesFree<5%"
+
       # Cluster CIDRs — DERIVED from the cluster's identity, not hardcoded.
       #
       # These used to read `10.42.0.0/16` / `10.43.0.0/16` as literals, which

@@ -1864,6 +1864,33 @@ export function parseRestartSamples(stdout: string): readonly RestartSample[] {
   return out;
 }
 
+/**
+ * A MEASURED FIDELITY GAP, recorded here because it changes how this harness's
+ * results should be read (WP32, 2026-09-25).
+ *
+ * This argv sets no `--cpus`, no `--memory` and no `--cpuset-cpus`. The container gets
+ * the whole runner host and no hypervisor tax. The installed-disk lane it stands in for
+ * does not: `qemu-full-install-test.ts` gives the WP11 guest `-m 12288 -smp 4`, inside a
+ * 4-vCPU/16-GiB runner that is also running QEMU itself.
+ *
+ * So the replica is SYSTEMATICALLY OPTIMISTIC ABOUT CPU, and that is exactly the axis
+ * that matters for the ArgoCD control plane. Dispatch 36097310492 measured the gap: the
+ * installed disk peaked at 25/35 Synced+Healthy and fell to 13/35, while this harness's
+ * most recent full run reached 35 Healthy of 42. Eviction is REFUTED as the cause of that
+ * difference -- the serial carries zero evictions and zero OOM kills -- which leaves CPU
+ * headroom as the remaining explanation, and CPU headroom is precisely what this argv
+ * declines to constrain.
+ *
+ * WHAT THAT MEANS FOR A READER: a green run here is evidence that the roster is
+ * INTERNALLY CONSISTENT -- manifests apply, waves order, charts render -- and is NOT
+ * evidence that it converges on constrained hardware. This harness cannot currently
+ * produce the repo-server starvation the installed-disk lane reproduces on every run.
+ *
+ * NOT FIXED HERE, deliberately. Adding `--cpus=4 --memory=12g` would narrow the gap and
+ * is the obvious next step, but it changes what every existing baseline in this file
+ * measured, so it is a change to make on purpose with the baselines re-measured rather
+ * than as a side effect of the change that noticed it.
+ */
 /** `docker run` argv for the replica, matching the official rancher/k3s single-node Docker recipe plus this roster's flags. */
 export function buildDockerRunArgs(opts: {
   readonly containerName: string;

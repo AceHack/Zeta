@@ -482,7 +482,13 @@
     "the same lane from 2006m to 1081m on top of that. Both are true; only the first",
     "one lifted the entry."
   ],
-  "acknowledgedLaneBudgetShortfall": [],
+  "acknowledgedLaneBudgetShortfall": [
+    {
+      "key": "dev memory 9868>9216",
+      "reason": "THE FIRST HONEST PRICING OF ANY BestEffort APP WAS ALWAYS GOING TO TIP THIS LANE, and ArgoCD happened to be the one that did it. Before this change the dev lane declared 9100Mi against a 9216Mi budget -- 116Mi of headroom, 98.7% consumed -- while 26 of 49 Applications rendered pods requesting NOTHING and therefore contributed 0Mi to that total. The lane was not fitting; it was fitting because most of what it runs was invisible to the arithmetic. Pricing the ArgoCD control plane (768Mi at the dev rung across five components) makes 652Mi of that invisibility visible and nothing else about the lane changed. WHY THE OVERFLOW IS NOT ABSORBED BY SMALLER REQUESTS: the defect being repaired is an under-request. Dispatch 36097310492 watched the WP11 roster peak at 25/35 Synced+Healthy and fall BACKWARDS to 13/35, which rules out slowness -- more wall clock made it worse. Whether the fall was eviction or overlapping reconciliation sweeps (081M3BPJNRS087G0R0008WFXBZ) is not settled and is not claimed; what is measured is that every ArgoCD pod was BestEffort, which is the first thing the kubelet evicts and the last thing a starved renderer needs to be. Shrinking these requests to clear a budget line would restore the exact condition that produced the regression, in the lane whose whole job is to catch it. The dev numbers are already the smaller of the two rungs, chosen against the 40-app kind/k3d workload rather than the 145-pod metal roster. WHAT IS ACTUALLY OWED: the other 25 Applications that still request nothing -- missing-resource-requests.ts names 18 remaining ACTIONABLE rows with the chart coordinate for each. Pricing them will make this number worse before it gets better, and that is the point: the budget must be measured against what the lane RUNS, not against what it happens to have declared.",
+      "liftsWhen": "LIFTS WHEN: `storage-profiles.ts --resource-profile dev --budget` reports the dev lane's memory total at or under the 9216Mi runner budget -- the gate itself, not a paraphrase of it. Two routes reach it and either one suffices: the reserved headroom is re-measured against what the lane actually consumes (the 6144Mi reservation was sized when most of the lane was BestEffort and invisible), or the dev lane partition sheds enough Applications that the priced roster fits. Pricing MORE apps moves this number the wrong way and must not be read as a reason to stop."
+    }
+  ],
   "resourceProfiles": [
     "dev",
     "metal"
@@ -539,6 +545,101 @@
       }
     },
     {
+      "id": "full-ai-cluster/argocd/applicationset",
+      "dir": "argocd",
+      "path": "full-ai-cluster/k8s/applications/argocd/Application.yaml",
+      "docIndex": 0,
+      "requestsField": "spec.source.helm.valuesObject.applicationSet.resources.requests",
+      "pods": 1,
+      "metalSource": "manifest",
+      "evidence": "AUTHORED BY US, because upstream declares NONE -- the same case as full-ai-cluster/cloudnativepg/manager and priced the same way. argo-cd 10.8.0 ships `resources: {}` for every component, and an unset request is not a small request: it is BestEffort QoS. MEASURED 2026-09-25 by `helm template` at the pinned 10.8.0 against BOTH pin sites' own values (k8s/bootstrap/argocd-install.yaml valuesContent and this Application's valuesObject): nine containers, every one with `requests` absent. This row and its four siblings put that right; `metal` reproduces the committed literal exactly, so `--resource-profile metal --verify` stays clean. Re-rendered after the change, the two value sets are RENDER-EQUIVALENT (7 containers, identical requests) -- which is the invariant Application.yaml already claimed and did not hold: it was silently adding a dex-server Deployment at sync-wave -90.",
+      "consequence": "THE EVICTION THAT WENT BACKWARDS. Dispatch 36097310492 (WP11, real installed disk, 2026-09-25) watched the roster peak at 25/35 Synced+Healthy at t=1214s and fall to 13/35 by t=3007s, flat over the last four samples 723s apart. Convergence that LOSES ground is not convergence that is slow, so no timeout and no amount of extra wall clock could have reached it -- more time made it worse. That much is measured. Eviction was the first reading of that fall and is REFUTED: dispatch 36097310492's serial shows zero evictions, zero OOM kills and no MemoryPressure, and the crosstab puts the regression on the SYNC axis (22 rows sync=Unknown with health=Healthy; zero sync=Synced/health=Missing, the eviction signature). The renderer is what failed, which is what this row prices. What IS measured without inference is that every ArgoCD pod was BestEffort. The ApplicationSet controller generates Applications from generators. This tree drives its roster from an app-of-apps root rather than from ApplicationSets, so it is close to idle on a fresh boot and takes the smallest rung of the five. Governed anyway, because `enabled: true` means it is a running pod, and an ungoverned running pod is exactly the BestEffort hole this change exists to close. CPU is compressible so the dev rung throttles rather than kills. Dev CPU here is chosen on this row's own merits and NOT by inheriting the 25m floor of $comment_devCpuFloor: that floor was authorized for the rows that existed when it was taken, and applying it to a row governed afterwards would be EXTENDING an authorization rather than inheriting one -- the same reasoning that block itself gives for leaving game-hosting/gmod at 100m. DEV MEMORY IS LOWER THAN METAL, AND THAT IS A WORKLOAD JUDGEMENT RATHER THAN A SHAVE: the dev lane is a 40-Application kind/k3d smoke cluster while metal is a 145-pod roster on an installed disk, and cache size, concurrent render set and watch stream all scale with the roster -- the same reason full-ai-cluster/hindsight/postgresql already carries dev 128Mi against metal 256Mi. DISCLOSED, because it also happens to reduce a budget overflow: the dev lane sat at 9100Mi of a 9216Mi budget BEFORE this change, so it had 116Mi of headroom and the first honest pricing of ANY BestEffort app was always going to tip it. The residue is carried as pinned debt in acknowledgedLaneBudgetShortfall rather than absorbed by shrinking these numbers below what ArgoCD needs -- which is the whole defect this row exists to repair.",
+      "cpuMillis": {
+        "dev": 25,
+        "metal": 50
+      },
+      "memoryMib": {
+        "dev": 64,
+        "metal": 128
+      }
+    },
+    {
+      "id": "full-ai-cluster/argocd/controller",
+      "dir": "argocd",
+      "path": "full-ai-cluster/k8s/applications/argocd/Application.yaml",
+      "docIndex": 0,
+      "requestsField": "spec.source.helm.valuesObject.controller.resources.requests",
+      "pods": 1,
+      "metalSource": "manifest",
+      "evidence": "AUTHORED BY US, because upstream declares NONE -- the same case as full-ai-cluster/cloudnativepg/manager and priced the same way. argo-cd 10.8.0 ships `resources: {}` for every component, and an unset request is not a small request: it is BestEffort QoS. MEASURED 2026-09-25 by `helm template` at the pinned 10.8.0 against BOTH pin sites' own values (k8s/bootstrap/argocd-install.yaml valuesContent and this Application's valuesObject): nine containers, every one with `requests` absent. This row and its four siblings put that right; `metal` reproduces the committed literal exactly, so `--resource-profile metal --verify` stays clean. Re-rendered after the change, the two value sets are RENDER-EQUIVALENT (7 containers, identical requests) -- which is the invariant Application.yaml already claimed and did not hold: it was silently adding a dex-server Deployment at sync-wave -90.",
+      "consequence": "THE EVICTION THAT WENT BACKWARDS. Dispatch 36097310492 (WP11, real installed disk, 2026-09-25) watched the roster peak at 25/35 Synced+Healthy at t=1214s and fall to 13/35 by t=3007s, flat over the last four samples 723s apart. Convergence that LOSES ground is not convergence that is slow, so no timeout and no amount of extra wall clock could have reached it -- more time made it worse. That much is measured. Eviction was the first reading of that fall and is REFUTED: dispatch 36097310492's serial shows zero evictions, zero OOM kills and no MemoryPressure, and the crosstab puts the regression on the SYNC axis (22 rows sync=Unknown with health=Healthy; zero sync=Synced/health=Missing, the eviction signature). The renderer is what failed, which is what this row prices. What IS measured without inference is that every ArgoCD pod was BestEffort. The application-controller holds the cluster resource cache and runs every reconcile, so it is the component whose eviction stops convergence outright -- nothing else drives it. Evicting this pod is what turns a slow bring-up into one that goes BACKWARDS, because the Applications it had already reconciled stop being re-reconciled by anything at all. CPU is compressible so the dev rung throttles rather than kills. Dev CPU here is chosen on this row's own merits and NOT by inheriting the 25m floor of $comment_devCpuFloor: that floor was authorized for the rows that existed when it was taken, and applying it to a row governed afterwards would be EXTENDING an authorization rather than inheriting one -- the same reasoning that block itself gives for leaving game-hosting/gmod at 100m. DEV MEMORY IS LOWER THAN METAL, AND THAT IS A WORKLOAD JUDGEMENT RATHER THAN A SHAVE: the dev lane is a 40-Application kind/k3d smoke cluster while metal is a 145-pod roster on an installed disk, and cache size, concurrent render set and watch stream all scale with the roster -- the same reason full-ai-cluster/hindsight/postgresql already carries dev 128Mi against metal 256Mi. DISCLOSED, because it also happens to reduce a budget overflow: the dev lane sat at 9100Mi of a 9216Mi budget BEFORE this change, so it had 116Mi of headroom and the first honest pricing of ANY BestEffort app was always going to tip it. The residue is carried as pinned debt in acknowledgedLaneBudgetShortfall rather than absorbed by shrinking these numbers below what ArgoCD needs -- which is the whole defect this row exists to repair.",
+      "cpuMillis": {
+        "dev": 100,
+        "metal": 250
+      },
+      "memoryMib": {
+        "dev": 256,
+        "metal": 512
+      }
+    },
+    {
+      "id": "full-ai-cluster/argocd/redis",
+      "dir": "argocd",
+      "path": "full-ai-cluster/k8s/applications/argocd/Application.yaml",
+      "docIndex": 0,
+      "requestsField": "spec.source.helm.valuesObject.redis.resources.requests",
+      "pods": 1,
+      "metalSource": "manifest",
+      "evidence": "AUTHORED BY US, because upstream declares NONE -- the same case as full-ai-cluster/cloudnativepg/manager and priced the same way. argo-cd 10.8.0 ships `resources: {}` for every component, and an unset request is not a small request: it is BestEffort QoS. MEASURED 2026-09-25 by `helm template` at the pinned 10.8.0 against BOTH pin sites' own values (k8s/bootstrap/argocd-install.yaml valuesContent and this Application's valuesObject): nine containers, every one with `requests` absent. This row and its four siblings put that right; `metal` reproduces the committed literal exactly, so `--resource-profile metal --verify` stays clean. Re-rendered after the change, the two value sets are RENDER-EQUIVALENT (7 containers, identical requests) -- which is the invariant Application.yaml already claimed and did not hold: it was silently adding a dex-server Deployment at sync-wave -90.",
+      "consequence": "THE EVICTION THAT WENT BACKWARDS. Dispatch 36097310492 (WP11, real installed disk, 2026-09-25) watched the roster peak at 25/35 Synced+Healthy at t=1214s and fall to 13/35 by t=3007s, flat over the last four samples 723s apart. Convergence that LOSES ground is not convergence that is slow, so no timeout and no amount of extra wall clock could have reached it -- more time made it worse. That much is measured. Eviction was the first reading of that fall and is REFUTED: dispatch 36097310492's serial shows zero evictions, zero OOM kills and no MemoryPressure, and the crosstab puts the regression on the SYNC axis (22 rows sync=Unknown with health=Healthy; zero sync=Synced/health=Missing, the eviction signature). The renderer is what failed, which is what this row prices. What IS measured without inference is that every ArgoCD pod was BestEffort. The repo-server's manifest cache. Evicting it fails no sync directly; it makes every subsequent manifest generation a COLD render, which on a node where rendering was already the bottleneck is the failure amplifying itself. redis-ha is disabled (single control plane), so this one pod is the entire cache. CPU is compressible so the dev rung throttles rather than kills. Dev CPU here is chosen on this row's own merits and NOT by inheriting the 25m floor of $comment_devCpuFloor: that floor was authorized for the rows that existed when it was taken, and applying it to a row governed afterwards would be EXTENDING an authorization rather than inheriting one -- the same reasoning that block itself gives for leaving game-hosting/gmod at 100m. DEV MEMORY IS LOWER THAN METAL, AND THAT IS A WORKLOAD JUDGEMENT RATHER THAN A SHAVE: the dev lane is a 40-Application kind/k3d smoke cluster while metal is a 145-pod roster on an installed disk, and cache size, concurrent render set and watch stream all scale with the roster -- the same reason full-ai-cluster/hindsight/postgresql already carries dev 128Mi against metal 256Mi. DISCLOSED, because it also happens to reduce a budget overflow: the dev lane sat at 9100Mi of a 9216Mi budget BEFORE this change, so it had 116Mi of headroom and the first honest pricing of ANY BestEffort app was always going to tip it. The residue is carried as pinned debt in acknowledgedLaneBudgetShortfall rather than absorbed by shrinking these numbers below what ArgoCD needs -- which is the whole defect this row exists to repair.",
+      "cpuMillis": {
+        "dev": 25,
+        "metal": 100
+      },
+      "memoryMib": {
+        "dev": 64,
+        "metal": 128
+      }
+    },
+    {
+      "id": "full-ai-cluster/argocd/repo-server",
+      "dir": "argocd",
+      "path": "full-ai-cluster/k8s/applications/argocd/Application.yaml",
+      "docIndex": 0,
+      "requestsField": "spec.source.helm.valuesObject.repoServer.resources.requests",
+      "pods": 1,
+      "metalSource": "manifest",
+      "evidence": "AUTHORED BY US, because upstream declares NONE -- the same case as full-ai-cluster/cloudnativepg/manager and priced the same way. argo-cd 10.8.0 ships `resources: {}` for every component, and an unset request is not a small request: it is BestEffort QoS. MEASURED 2026-09-25 by `helm template` at the pinned 10.8.0 against BOTH pin sites' own values (k8s/bootstrap/argocd-install.yaml valuesContent and this Application's valuesObject): nine containers, every one with `requests` absent. This row and its four siblings put that right; `metal` reproduces the committed literal exactly, so `--resource-profile metal --verify` stays clean. Re-rendered after the change, the two value sets are RENDER-EQUIVALENT (7 containers, identical requests) -- which is the invariant Application.yaml already claimed and did not hold: it was silently adding a dex-server Deployment at sync-wave -90.",
+      "consequence": "THE EVICTION THAT WENT BACKWARDS. Dispatch 36097310492 (WP11, real installed disk, 2026-09-25) watched the roster peak at 25/35 Synced+Healthy at t=1214s and fall to 13/35 by t=3007s, flat over the last four samples 723s apart. Convergence that LOSES ground is not convergence that is slow, so no timeout and no amount of extra wall clock could have reached it -- more time made it worse. That much is measured. Eviction was the first reading of that fall and is REFUTED: dispatch 36097310492's serial shows zero evictions, zero OOM kills and no MemoryPressure, and the crosstab puts the regression on the SYNC axis (22 rows sync=Unknown with health=Healthy; zero sync=Synced/health=Missing, the eviction signature). The renderer is what failed, which is what this row prices. What IS measured without inference is that every ArgoCD pod was BestEffort. The repo-server is the one that RENDERS: it forks helm/kustomize per manifest generation, and it was doing that for 49 Applications on a cgroup weight of 1 out of 507 -- about 8 millicores of the 4-vCPU guest, shared with six sibling pods. That is the `DeadlineExceeded ... failed to generate manifest for source 1 of 1` that 19 of the 100 unconverged rows reported, and it is why raising that deadline was REJECTED: the deadline was never the binding constraint. 512Mi at metal is sized for concurrent Helm renders of charts the size of gitlab and mimir. CPU is compressible so the dev rung throttles rather than kills. Dev CPU here is chosen on this row's own merits and NOT by inheriting the 25m floor of $comment_devCpuFloor: that floor was authorized for the rows that existed when it was taken, and applying it to a row governed afterwards would be EXTENDING an authorization rather than inheriting one -- the same reasoning that block itself gives for leaving game-hosting/gmod at 100m. DEV MEMORY IS LOWER THAN METAL, AND THAT IS A WORKLOAD JUDGEMENT RATHER THAN A SHAVE: the dev lane is a 40-Application kind/k3d smoke cluster while metal is a 145-pod roster on an installed disk, and cache size, concurrent render set and watch stream all scale with the roster -- the same reason full-ai-cluster/hindsight/postgresql already carries dev 128Mi against metal 256Mi. DISCLOSED, because it also happens to reduce a budget overflow: the dev lane sat at 9100Mi of a 9216Mi budget BEFORE this change, so it had 116Mi of headroom and the first honest pricing of ANY BestEffort app was always going to tip it. The residue is carried as pinned debt in acknowledgedLaneBudgetShortfall rather than absorbed by shrinking these numbers below what ArgoCD needs -- which is the whole defect this row exists to repair.",
+      "cpuMillis": {
+        "dev": 100,
+        "metal": 250
+      },
+      "memoryMib": {
+        "dev": 256,
+        "metal": 512
+      }
+    },
+    {
+      "id": "full-ai-cluster/argocd/server",
+      "dir": "argocd",
+      "path": "full-ai-cluster/k8s/applications/argocd/Application.yaml",
+      "docIndex": 0,
+      "requestsField": "spec.source.helm.valuesObject.server.resources.requests",
+      "pods": 1,
+      "metalSource": "manifest",
+      "evidence": "AUTHORED BY US, because upstream declares NONE -- the same case as full-ai-cluster/cloudnativepg/manager and priced the same way. argo-cd 10.8.0 ships `resources: {}` for every component, and an unset request is not a small request: it is BestEffort QoS. MEASURED 2026-09-25 by `helm template` at the pinned 10.8.0 against BOTH pin sites' own values (k8s/bootstrap/argocd-install.yaml valuesContent and this Application's valuesObject): nine containers, every one with `requests` absent. This row and its four siblings put that right; `metal` reproduces the committed literal exactly, so `--resource-profile metal --verify` stays clean. Re-rendered after the change, the two value sets are RENDER-EQUIVALENT (7 containers, identical requests) -- which is the invariant Application.yaml already claimed and did not hold: it was silently adding a dex-server Deployment at sync-wave -90.",
+      "consequence": "THE EVICTION THAT WENT BACKWARDS. Dispatch 36097310492 (WP11, real installed disk, 2026-09-25) watched the roster peak at 25/35 Synced+Healthy at t=1214s and fall to 13/35 by t=3007s, flat over the last four samples 723s apart. Convergence that LOSES ground is not convergence that is slow, so no timeout and no amount of extra wall clock could have reached it -- more time made it worse. That much is measured. Eviction was the first reading of that fall and is REFUTED: dispatch 36097310492's serial shows zero evictions, zero OOM kills and no MemoryPressure, and the crosstab puts the regression on the SYNC axis (22 rows sync=Unknown with health=Healthy; zero sync=Synced/health=Missing, the eviction signature). The renderer is what failed, which is what this row prices. What IS measured without inference is that every ArgoCD pod was BestEffort. The API/UI server. It is the only one of the five a bring-up does not strictly need -- convergence proceeds with it down -- so it takes one of the smallest rungs. It is still governed rather than left BestEffort because `failed to get server version` was reported on 7 of the 100 unconverged rows, and an evicted API surface is one of the ways that reads. CPU is compressible so the dev rung throttles rather than kills. Dev CPU here is chosen on this row's own merits and NOT by inheriting the 25m floor of $comment_devCpuFloor: that floor was authorized for the rows that existed when it was taken, and applying it to a row governed afterwards would be EXTENDING an authorization rather than inheriting one -- the same reasoning that block itself gives for leaving game-hosting/gmod at 100m. DEV MEMORY IS LOWER THAN METAL, AND THAT IS A WORKLOAD JUDGEMENT RATHER THAN A SHAVE: the dev lane is a 40-Application kind/k3d smoke cluster while metal is a 145-pod roster on an installed disk, and cache size, concurrent render set and watch stream all scale with the roster -- the same reason full-ai-cluster/hindsight/postgresql already carries dev 128Mi against metal 256Mi. DISCLOSED, because it also happens to reduce a budget overflow: the dev lane sat at 9100Mi of a 9216Mi budget BEFORE this change, so it had 116Mi of headroom and the first honest pricing of ANY BestEffort app was always going to tip it. The residue is carried as pinned debt in acknowledgedLaneBudgetShortfall rather than absorbed by shrinking these numbers below what ArgoCD needs -- which is the whole defect this row exists to repair.",
+      "cpuMillis": {
+        "dev": 25,
+        "metal": 100
+      },
+      "memoryMib": {
+        "dev": 128,
+        "metal": 128
+      }
+    },
+    {
       "id": "full-ai-cluster/cloudnativepg/manager",
       "dir": "cloudnativepg",
       "path": "full-ai-cluster/k8s/applications/cloudnativepg/Application.yaml",
@@ -574,6 +675,25 @@
       "memoryMib": {
         "dev": 2048,
         "metal": 2048
+      }
+    },
+    {
+      "id": "full-ai-cluster/headscale/headscale",
+      "dir": "headscale",
+      "path": "full-ai-cluster/k8s/applications/headscale/statefulset.yaml",
+      "docIndex": 0,
+      "requestsField": "spec.template.spec.containers[0].resources.requests",
+      "pods": 1,
+      "metalSource": "manifest",
+      "evidence": "IN-REPO MANIFEST WE OWN, written 2026-09-05 when this Application left Helm for a raw git path (081M1HH1ERN087G0R00309EG9D). Before that headscale sat in `ungovernedRequests` at 0/0 with the honest note that the chart left resources unset -- so no rung priced it and nothing could. The literal here is 100m / 128Mi on container `headscale` in statefulset.yaml, and `metal` reproduces it exactly, so `--resource-profile metal --verify` stays clean.",
+      "consequence": "A single-replica control plane holding the tailnet's route table in sqlite. CPU is compressible, so the dev rung's 50m throttles a busy headscale rather than failing it. MEMORY IS UNCHANGED ACROSS RUNGS on purpose: memory is the incompressible axis, and under-requesting it makes this pod the first eviction candidate under node pressure -- evicting the control plane to save 64Mi trades a bounded slowdown for a tailnet-wide outage.",
+      "cpuMillis": {
+        "dev": 50,
+        "metal": 100
+      },
+      "memoryMib": {
+        "dev": 128,
+        "metal": 128
       }
     },
     {
@@ -1052,6 +1172,25 @@
       "consequence": "THE CUT IS 1000m/2Gi -> 250m/1024Mi, and the two axes do not cost the same. CPU 250m is compressible: indexing and query throughput are throttled, a bulk index runs slower, nothing is killed -- acceptable for a dev lane whose index holds test data. MEMORY IS THE INCOMPRESSIBLE ONE AND IS THE NAMED RISK: the heap is pinned at 512M, so 1024Mi leaves ~512Mi for JVM non-heap (metaspace, thread stacks, direct buffers) and for the OS page cache Lucene reads through. That is enough for a small index and is NOT enough for a large bulk load: at dev a big enough ingest OOMKills the pod rather than merely running slow. The dev rung is therefore sized for a smoke-test index, not for a workload, and anything that tries to index real volume in CI should expect the kill and raise the rung rather than read the kill as a defect in OpenSearch."
     },
     {
+      "id": "full-ai-cluster/orleans/silo",
+      "dir": "orleans",
+      "path": "full-ai-cluster/k8s/applications/orleans/statefulset.yaml",
+      "docIndex": 0,
+      "requestsField": "spec.template.spec.containers[0].resources.requests",
+      "pods": 1,
+      "metalSource": "manifest",
+      "evidence": "IN-REPO MANIFEST WE OWN. Became governable on 2026-09-06 when `replicas` went 0 -> 1: at zero the coordinate was carried as an `unreachable-git-path-request` baseline with x0 replicas, which priced nothing because nothing ran. The literal on container `silo` is 500m / 512Mi and `metal` reproduces it exactly, so `--resource-profile metal --verify` stays clean.",
+      "consequence": "A single Orleans silo forming cluster membership over Redis. CPU is compressible, so the dev rung's 250m throttles startup rather than failing it. MEMORY IS UNCHANGED ACROSS RUNGS and that is deliberate: this is a .NET host plus the Orleans runtime, 512Mi is already modest for it, and memory is the incompressible axis -- an under-request makes this pod the first eviction candidate under node pressure, and evicting the silo does not slow the cluster down, it dissolves the membership the cluster IS.",
+      "cpuMillis": {
+        "dev": 250,
+        "metal": 500
+      },
+      "memoryMib": {
+        "dev": 512,
+        "metal": 512
+      }
+    },
+    {
       "id": "full-ai-cluster/platform/controller",
       "dir": "platform",
       "path": "full-ai-cluster/k8s/applications/platform/controller.yaml",
@@ -1202,44 +1341,6 @@
         "dev": 64,
         "metal": 128
       }
-    },
-    {
-      "id": "full-ai-cluster/headscale/headscale",
-      "dir": "headscale",
-      "path": "full-ai-cluster/k8s/applications/headscale/statefulset.yaml",
-      "docIndex": 0,
-      "requestsField": "spec.template.spec.containers[0].resources.requests",
-      "pods": 1,
-      "metalSource": "manifest",
-      "evidence": "IN-REPO MANIFEST WE OWN, written 2026-09-05 when this Application left Helm for a raw git path (081M1HH1ERN087G0R00309EG9D). Before that headscale sat in `ungovernedRequests` at 0/0 with the honest note that the chart left resources unset -- so no rung priced it and nothing could. The literal here is 100m / 128Mi on container `headscale` in statefulset.yaml, and `metal` reproduces it exactly, so `--resource-profile metal --verify` stays clean.",
-      "consequence": "A single-replica control plane holding the tailnet's route table in sqlite. CPU is compressible, so the dev rung's 50m throttles a busy headscale rather than failing it. MEMORY IS UNCHANGED ACROSS RUNGS on purpose: memory is the incompressible axis, and under-requesting it makes this pod the first eviction candidate under node pressure -- evicting the control plane to save 64Mi trades a bounded slowdown for a tailnet-wide outage.",
-      "cpuMillis": {
-        "dev": 50,
-        "metal": 100
-      },
-      "memoryMib": {
-        "dev": 128,
-        "metal": 128
-      }
-    },
-    {
-      "id": "full-ai-cluster/orleans/silo",
-      "dir": "orleans",
-      "path": "full-ai-cluster/k8s/applications/orleans/statefulset.yaml",
-      "docIndex": 0,
-      "requestsField": "spec.template.spec.containers[0].resources.requests",
-      "pods": 1,
-      "metalSource": "manifest",
-      "evidence": "IN-REPO MANIFEST WE OWN. Became governable on 2026-09-06 when `replicas` went 0 -> 1: at zero the coordinate was carried as an `unreachable-git-path-request` baseline with x0 replicas, which priced nothing because nothing ran. The literal on container `silo` is 500m / 512Mi and `metal` reproduces it exactly, so `--resource-profile metal --verify` stays clean.",
-      "consequence": "A single Orleans silo forming cluster membership over Redis. CPU is compressible, so the dev rung's 250m throttles startup rather than failing it. MEMORY IS UNCHANGED ACROSS RUNGS and that is deliberate: this is a .NET host plus the Orleans runtime, 512Mi is already modest for it, and memory is the incompressible axis -- an under-request makes this pod the first eviction candidate under node pressure, and evicting the silo does not slow the cluster down, it dissolves the membership the cluster IS.",
-      "cpuMillis": {
-        "dev": 250,
-        "metal": 500
-      },
-      "memoryMib": {
-        "dev": 512,
-        "metal": 512
-      }
     }
   ],
   "ungovernedRequests": [
@@ -1266,12 +1367,6 @@
       "cpuMillis": 0,
       "memoryMib": 0,
       "evidence": "argo-workflows 0.42.5 rendered 2026-08-21: chart default resources are unset."
-    },
-    {
-      "dir": "argocd",
-      "cpuMillis": 0,
-      "memoryMib": 0,
-      "evidence": "argo-cd 7.7.10 rendered 2026-08-21: chart default resources are unset for every component."
     },
     {
       "dir": "cdi",

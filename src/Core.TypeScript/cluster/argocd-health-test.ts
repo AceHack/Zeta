@@ -448,7 +448,7 @@ export const DEV_EXCLUDED_REASONS: ReadonlyMap<string, string> = new Map([
       "[cite: glob-defers game-hosting/gmod] " +
       "[cite: resource-rung game-hosting/gmod dev 100] " +
       "[cite: resource-rung game-hosting/gmod metal 1000] " +
-      "[cite: lane-cpu dev 1715 fits]",
+      "[cite: lane-cpu dev 1990 fits]",
   ],
   // `agent-memory` is NOT here. It LEFT this map on 2026-09-03, and the entry is
   // recorded as closed rather than the lines silently deleted.
@@ -559,8 +559,12 @@ export const DEV_EXCLUDED_REASONS: ReadonlyMap<string, string> = new Map([
       "[cite: glob-defers gitlab] " +
       "UPDATE 2026-09-23 -- THE CAPACITY HALF IS MEASURED NOW, AND IT IS MEMORY, NOT CPU. At chart defaults " +
       "gitlab requests 2375m / 5605Mi (storage-profiles.json ungoverned row, 15 workloads); the dev lane at " +
-      "`dev` already reserves 9100Mi of its 9216Mi application budget " +
-      "[cite: lane-memory dev 9100 fits] -- 116Mi of room. CPU is compressible and could be floored at the dev rung; " +
+      "`dev` now reserves 9868Mi against a 9216Mi application budget " +
+      "[cite: lane-memory dev 9868 over] -- OVER by 652Mi, carried as pinned debt (`dev memory 9868>9216`). " +
+      "It read `9100Mi fits, 116Mi of room` until 2026-09-25, and that was an UNDERCOUNT rather than a fit: " +
+      "26 of 49 Applications declared nothing at all, so pricing the ArgoCD control plane (081M3BQ5GX6087G0R003N44WMZ) " +
+      "made 768Mi of the invisible load visible and tipped it. This strengthens the reason rather than weakening " +
+      "it -- there is now less than no room. CPU is compressible and could be floored at the dev rung; " +
       "memory is not, so no CPU override makes gitlab fit THIS lane. Its images add ~12.4 GiB on disk " +
       "(image-footprint.ts). SHARPENED LIFTS WHEN: a lane with >= 5.6 GiB of memory headroom runs it (the " +
       "lane-partition work is where that comes from) AND its workloads get a dev form sized for that lane.",
@@ -603,7 +607,7 @@ export const DEV_EXCLUDED_REASONS: ReadonlyMap<string, string> = new Map([
       "cluster. Two blockers remain, either sufficient: (1) it is MANUAL-SYNC BY DESIGN -- the local-models " +
       "phase is deferred by the maintainer -- so a lane could assert only the weaker manual-sync contract; " +
       "(2) the dev form's 512Mi does not fit the lane's remaining memory " +
-      "[cite: lane-memory dev 9100 fits] and the lane budget prices ollama at its stale ungoverned row (0m / 0Mi, " +
+      "[cite: lane-memory dev 9868 over] and the lane budget prices ollama at its stale ungoverned row (0m / 0Mi, " +
       "written when resources were unset) rather than the override's request. LIFTS WHEN: the maintainer " +
       "re-enables automated sync for the local-models phase AND a lane with that memory headroom exists.",
   ],
@@ -657,8 +661,10 @@ export const DEV_EXCLUDED_REASONS: ReadonlyMap<string, string> = new Map([
       "[cite: path full-ai-cluster/portal/DEPLOY.md:122] " +
       "[cite: path .github/workflows/build-platform-images.yml] " +
       "[cite: glob-defers platform] " +
-      "UPDATE 2026-09-23: even with the pull measured, it needs 160Mi at `dev` and the lane has 116Mi left " +
-      "[cite: lane-memory dev 9100 fits] -- so the lift also needs lane room, not only a credential.",
+      "UPDATE 2026-09-23: even with the pull measured, it needs 160Mi at `dev` and the lane had 116Mi left " +
+      "[cite: lane-memory dev 9868 over] -- and as of 2026-09-25 it has none: the lane is OVER by 652Mi " +
+      "(081M3BQ5GX6087G0R003N44WMZ priced the ArgoCD control plane, which had declared nothing). So the lift " +
+      "needs lane room even more than it did, not only a credential.",
   ],
   [
     "temporal",
@@ -692,8 +698,9 @@ export const DEV_EXCLUDED_REASONS: ReadonlyMap<string, string> = new Map([
       "[cite: no-pvc full-ai-cluster/temporal] " +
       "[cite: chart-pin full-ai-cluster/temporal temporal 0.59.0] " +
       "[cite: glob-defers temporal] " +
-      "UPDATE 2026-09-23: independently of both blockers, it requests 1184Mi at `dev` against 116Mi left in " +
-      "the lane [cite: lane-memory dev 9100 fits] -- the schema/TLS fixes alone would not fit it into this lane.",
+      "UPDATE 2026-09-23: independently of both blockers, it requests 1184Mi at `dev` against a lane that is now " +
+      "OVER its budget by 652Mi [cite: lane-memory dev 9868 over] -- it had 116Mi left until 2026-09-25. The " +
+      "schema/TLS fixes alone would not fit it into this lane, and now fit it less.",
   ],
   [
     "vllm",
@@ -1199,8 +1206,8 @@ export const APPLIED_BUT_UNASSERTED_REASONS: ReadonlyMap<string, string> = new M
       "[cite: chart-pin full-ai-cluster/hindsight hindsight 0.9.2] " +
       "[cite: resource-rung hindsight metal 1000] " +
       "[cite: resource-rung hindsight dev 75] " +
-      "[cite: lane-cpu metal 7390 over] " +
-      "[cite: lane-cpu dev 1715 fits] " +
+      "[cite: lane-cpu metal 8140 over] " +
+      "[cite: lane-cpu dev 1990 fits] " +
       "[cite: workflow-job k8s-argocd-health-test.yml dry-run] " +
       "[cite: path full-ai-cluster/k8s/bootstrap/root-application.yaml] " +
       "[cite: path maintainers/Addisons820/cluster-nodes/node-ad1efd/node.yaml] " +

@@ -1,5 +1,5 @@
 {
-  "measuredOn": "2026-09-06",
+  "measuredOn": "2026-09-25",
   "appsDiscovered": [
     "full-ai-cluster/agent-memory",
     "full-ai-cluster/alloy",
@@ -156,39 +156,33 @@
         },
         {
           "appId": "full-ai-cluster/argocd",
-          "cpuMillis": 0,
-          "memoryMib": 0,
-          "pods": 7,
+          "cpuMillis": 275,
+          "memoryMib": 768,
+          "pods": 6,
           "workloads": [
             {
               "workload": "Deployment/argocd-applicationset-controller",
               "replicas": 1,
-              "cpuMillis": 0,
-              "memoryMib": 0
-            },
-            {
-              "workload": "Deployment/argocd-dex-server",
-              "replicas": 1,
-              "cpuMillis": 0,
-              "memoryMib": 0
+              "cpuMillis": 25,
+              "memoryMib": 64
             },
             {
               "workload": "Deployment/argocd-redis",
               "replicas": 1,
-              "cpuMillis": 0,
-              "memoryMib": 0
+              "cpuMillis": 25,
+              "memoryMib": 64
             },
             {
               "workload": "Deployment/argocd-repo-server",
               "replicas": 1,
-              "cpuMillis": 0,
-              "memoryMib": 0
+              "cpuMillis": 100,
+              "memoryMib": 256
             },
             {
               "workload": "Deployment/argocd-server",
               "replicas": 1,
-              "cpuMillis": 0,
-              "memoryMib": 0
+              "cpuMillis": 25,
+              "memoryMib": 128
             },
             {
               "workload": "Job/argocd-redis-secret-init",
@@ -199,11 +193,17 @@
             {
               "workload": "StatefulSet/argocd-application-controller",
               "replicas": 1,
-              "cpuMillis": 0,
-              "memoryMib": 0
+              "cpuMillis": 100,
+              "memoryMib": 256
             }
           ],
-          "overlaid": []
+          "overlaid": [
+            "full-ai-cluster/argocd/applicationset",
+            "full-ai-cluster/argocd/controller",
+            "full-ai-cluster/argocd/redis",
+            "full-ai-cluster/argocd/repo-server",
+            "full-ai-cluster/argocd/server"
+          ]
         },
         {
           "appId": "full-ai-cluster/cdi",
@@ -529,19 +529,19 @@
               "memoryMib": 0
             },
             {
-              "workload": "Job/gitlab-migrations-421058f",
+              "workload": "Job/gitlab-migrations-7f8956d",
               "replicas": 1,
               "cpuMillis": 250,
               "memoryMib": 200
             },
             {
-              "workload": "Job/gitlab-shared-secrets-f7cfd97",
+              "workload": "Job/gitlab-shared-secrets-8e3b4d2",
               "replicas": 1,
               "cpuMillis": 50,
               "memoryMib": 0
             },
             {
-              "workload": "Job/gitlab-shared-secrets-f7cfd97-selfsign",
+              "workload": "Job/gitlab-shared-secrets-8e3b4d2-selfsign",
               "replicas": 1,
               "cpuMillis": 50,
               "memoryMib": 0
@@ -1471,39 +1471,33 @@
         },
         {
           "appId": "full-ai-cluster/argocd",
-          "cpuMillis": 0,
-          "memoryMib": 0,
-          "pods": 7,
+          "cpuMillis": 750,
+          "memoryMib": 1408,
+          "pods": 6,
           "workloads": [
             {
               "workload": "Deployment/argocd-applicationset-controller",
               "replicas": 1,
-              "cpuMillis": 0,
-              "memoryMib": 0
-            },
-            {
-              "workload": "Deployment/argocd-dex-server",
-              "replicas": 1,
-              "cpuMillis": 0,
-              "memoryMib": 0
+              "cpuMillis": 50,
+              "memoryMib": 128
             },
             {
               "workload": "Deployment/argocd-redis",
               "replicas": 1,
-              "cpuMillis": 0,
-              "memoryMib": 0
+              "cpuMillis": 100,
+              "memoryMib": 128
             },
             {
               "workload": "Deployment/argocd-repo-server",
               "replicas": 1,
-              "cpuMillis": 0,
-              "memoryMib": 0
+              "cpuMillis": 250,
+              "memoryMib": 512
             },
             {
               "workload": "Deployment/argocd-server",
               "replicas": 1,
-              "cpuMillis": 0,
-              "memoryMib": 0
+              "cpuMillis": 100,
+              "memoryMib": 128
             },
             {
               "workload": "Job/argocd-redis-secret-init",
@@ -1514,11 +1508,17 @@
             {
               "workload": "StatefulSet/argocd-application-controller",
               "replicas": 1,
-              "cpuMillis": 0,
-              "memoryMib": 0
+              "cpuMillis": 250,
+              "memoryMib": 512
             }
           ],
-          "overlaid": []
+          "overlaid": [
+            "full-ai-cluster/argocd/applicationset",
+            "full-ai-cluster/argocd/controller",
+            "full-ai-cluster/argocd/redis",
+            "full-ai-cluster/argocd/repo-server",
+            "full-ai-cluster/argocd/server"
+          ]
         },
         {
           "appId": "full-ai-cluster/cdi",
@@ -1844,19 +1844,19 @@
               "memoryMib": 0
             },
             {
-              "workload": "Job/gitlab-migrations-421058f",
+              "workload": "Job/gitlab-migrations-7f8956d",
               "replicas": 1,
               "cpuMillis": 250,
               "memoryMib": 200
             },
             {
-              "workload": "Job/gitlab-shared-secrets-f7cfd97",
+              "workload": "Job/gitlab-shared-secrets-8e3b4d2",
               "replicas": 1,
               "cpuMillis": 50,
               "memoryMib": 0
             },
             {
-              "workload": "Job/gitlab-shared-secrets-f7cfd97-selfsign",
+              "workload": "Job/gitlab-shared-secrets-8e3b4d2-selfsign",
               "replicas": 1,
               "cpuMillis": 50,
               "memoryMib": 0

@@ -93,6 +93,30 @@
       # k3s-server.nix's comment) already exceeds, and 220 stays under the
       # 254-address /24 Cilium's cluster-pool IPAM hands each node.
       "--kubelet-arg=max-pods=220"
+
+      # Node reservations — the agent's half, and DELIBERATELY SMALLER than the
+      # server's. The long derivation lives on k3s-server.nix's copy and is not
+      # repeated; what differs here is the only thing that should:
+      #
+      #   AN AGENT RUNS NO APISERVER. On k3s the apiserver, scheduler,
+      #   controller-manager and kine all live inside `k3s.service` on the
+      #   SERVER, so the server reserves for them. An agent's `k3s-agent.service`
+      #   is kubelet plus containerd and nothing else, so 250m / 512Mi covers
+      #   what is actually there rather than copying a number sized for a
+      #   process this node does not run.
+      #
+      # Reserving the server's 500m/1Gi here would withhold half a core from
+      # pods on every worker to protect a control plane that is not on it --
+      # which is how a reservation becomes a tax. `system-reserved` and the
+      # eviction threshold ARE the same on both: the OS and the kernel's OOM
+      # behaviour do not care which k3s role the node holds.
+      #
+      # Same honest limit as the server copy: without `--kube-reserved-cgroup`
+      # these are ACCOUNTING, not ENFORCEMENT -- they stop the scheduler
+      # over-committing the node, and do not guarantee shares under contention.
+      "--kubelet-arg=kube-reserved=cpu=250m,memory=512Mi"
+      "--kubelet-arg=system-reserved=cpu=250m,memory=512Mi"
+      "--kubelet-arg=eviction-hard=memory.available<500Mi,nodefs.available<10%,imagefs.available<15%,nodefs.inodesFree<5%"
     ];
   };
 

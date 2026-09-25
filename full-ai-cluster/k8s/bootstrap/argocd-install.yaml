@@ -51,6 +51,15 @@ spec:
     server:
       service:
         type: ClusterIP   # ingress lands separately
+      # Requests live HERE, inside the one `server:` block, not in a second one
+      # at the foot of this file: YAML duplicate keys are LAST-WINS AND SILENT,
+      # so a second `server:` would have deleted `service.type` without a word.
+      # The other four components' requests sit at the foot because their blocks
+      # are there; the rationale for all five is written once, beside `controller:`.
+      resources:
+        requests:
+          cpu: 100m
+          memory: 128Mi
     configs:
       params:
         server.insecure: true   # TLS terminated upstream once ingress lands
@@ -210,9 +219,136 @@ spec:
       enabled: false   # SSO wires in via a Sealed Secret + values patch
     redis-ha:
       enabled: false   # single-control-plane bootstrap
+    # ── RESOURCE REQUESTS — the GitOps engine must not be BestEffort ──────────
+    #
+    # MEASURED 2026-09-25 from dispatch 36097310492 (WP11, real installed disk,
+    # 05:32:14 -> 07:02:27). Verdicts 1-6 all green at 152s. The Application
+    # roster then peaked at 25/35 Synced+Healthy at t=1214s and went BACKWARDS
+    # to 13/35 by t=3007s, flat across the last four samples 723s apart.
+    #
+    # THE BACKWARDS CURVE RULES OUT "IT NEEDS LONGER", WHICH IS THE PART THAT IS
+    # MEASURED. Convergence that LOSES ground is not convergence that is slow, so
+    # no timeout increase and no extra wall clock reaches it — more time made it
+    # worse.
+    #
+    # WHICH MECHANISM PRODUCED THE FALL: eviction was the first answer here and it
+    # is REFUTED. Recorded rather than quietly replaced, because the refutation is
+    # more useful than the guess was.
+    #
+    # An earlier draft of this comment asserted "what goes backwards is what gets
+    # EVICTED". Dispatch 36097310492's own 2857-line serial says otherwise:
+    #   evicted / OOMKilled / MemoryPressure / oom_reaper / "Out of memory"  = 0
+    # and the crosstab of the 102 unconverged rows puts the regression on the
+    # SYNC axis, not the health axis:
+    #   22  sync=Unknown    health=Healthy   <- comparison failed, WORKLOAD FINE
+    #   25  sync=OutOfSync  health=Healthy
+    #    0  sync=Synced     health=Missing   <- the eviction signature, absent
+    # 47 of 102 rows sat at health=Healthy, and six of the final twelve read
+    # "Failed to load TARGET state" while the LIVE state was read successfully.
+    # The pods were UP; ArgoCD could not render what they should be.
+    #
+    # SO THE EVIDENCE NAMES THE RENDERER, FROM THE CLUSTER SIDE, and it agrees
+    # with what this file measured from the manifest side. Three substrates now
+    # name the same organ: the manifests (no requests at either pin site), the
+    # installed disk (19 DeadlineExceeded on manifest generation, 7 `failed to
+    # get server version`), and the Docker replica (leader-election timeouts
+    # under load, WP26). Different methods, one starved control plane.
+    #
+    # AND THE MEMORY OVER-COMMIT HAS NOT BEEN TESTED YET, which is the part to
+    # carry forward. The roster over-commits this guest's RAM at both rungs
+    # (1.47x dev, 2.09x metal) and that did NOT bite in this run -- because only
+    # 35 of 49 Applications were ever created, `zeta-root` itself never having
+    # completed a comparison. The roster never reached its full memory demand.
+    #
+    #   THE CPU STARVATION PREVENTED THE MEMORY OVER-COMMIT FROM MANIFESTING.
+    #
+    # So this fix makes a FALSIFIABLE PREDICTION, stated before the next run
+    # rather than explained after it: the failure mode should MOVE, not vanish.
+    # More Applications deploy, and memory becomes the next wall. If the next
+    # dispatch shows pressure or eviction where this one showed none, that is
+    # this change working and the 1.47x arriving on schedule -- not a new defect,
+    # and not a reason to read the fix as failed.
+    #
+    #
+    # WHAT IS MEASURED RATHER THAN INFERRED: every ArgoCD container was
+    # BestEffort. This file and k8s/applications/argocd/Application.yaml between
+    # them set not one `resources` key, and argo-cd 10.8.0 ships `resources: {}`
+    # for every component. Rendering BOTH value sets at the pinned chart
+    # confirmed it — nine containers, zero requests, no exceptions.
+    #
+    # THE CPU HALF, in cgroup terms. Kubernetes maps a request to a share
+    # (MilliCPUToShares: max(2, m*1024/1000)); an ABSENT request takes the floor
+    # of 2, which is cgroup-v2 weight 1. Against the committed roster in
+    # rendered-resource-requests.snapshot.json that puts the whole ArgoCD
+    # control plane at weight 1 of 507 at the `metal` rung — 0.20% of the
+    # 4-vCPU WP11 guest, about 8 millicores, shared across SEVEN pods. A
+    # repo-server rendering 49 Applications' Helm charts on 8 millicores is the
+    # `DeadlineExceeded ... failed to generate manifest` that 19 of the 100
+    # unconverged rows reported. The deadline was not too short; the renderer
+    # was handed 0.2% of the machine.
+    #
+    # THE FINDING WAS NOT MISSING, IT WAS UNACTED. `missing-resource-requests.ts`
+    # has printed `full-ai-cluster/argocd` as ACTIONABLE row #1 since 2026-09-04,
+    # and its own header names argocd in the BestEffort set in so many words. A
+    # check nobody acts on is one step past a check nobody reads.
+    #
+    # REQUESTS ONLY, NO LIMITS, deliberately. A CPU limit throttles the renderer,
+    # which is the opposite of the intent; a memory limit OOM-kills the very
+    # controller that would have to recover from it. What is bought here is a
+    # SCHEDULING reservation plus a cgroup share — precisely what
+    # storage-profiles.json's $comment_devCpuFloor says a request is, and
+    # nothing here lowers a ceiling because none of these components has one.
+    #
+    # WHY IT COSTS A LARGE NODE NOTHING AND SAVES A SMALL ONE. 750m / 1408Mi is
+    # 4.7% of CPU and 2.2% of RAM on the SMALLEST registered ClusterNode
+    # (node-ad1efd: 16 logical cores, 62942Mi measured — single-node-readiness.ts
+    # reads it). On the 4-vCPU guest it is the difference between ArgoCD holding
+    # a reservation and ArgoCD standing first in the eviction queue. And ArgoCD
+    # is installed by THIS bootstrap, before any roster Application exists, so
+    # it claims that capacity on an EMPTY node: the reservation is actually
+    # available at the moment it is taken.
+    #
+    # THE TRADE, STATED RATHER THAN HIDDEN. On a node whose requests already
+    # exceed capacity, 750m reserved here is 750m the roster cannot have, so
+    # some workload reaches `Insufficient cpu` sooner than it does today. That
+    # is the intended direction and not a side effect: a Pending application pod
+    # is recoverable — ArgoCD retries it — while a starved ArgoCD is not,
+    # because nothing else drives convergence at all. The engine that has to do
+    # the recovering must not be the first thing to lose.
+    #
+    # Governed by `resourceClaims` rows in full-ai-cluster/k8s/storage-profiles.json
+    # (full-ai-cluster/argocd/{repo-server,controller,server,redis,applicationset}).
+    # These literals ARE the `metal` rung, so `--resource-profile metal --verify`
+    # reproduces them byte-for-byte, and the `dev` rung lowers CPU only — memory
+    # is incompressible and an under-request there recreates this exact defect.
     controller:
       replicas: 1
+      resources:
+        requests:
+          cpu: 250m
+          memory: 512Mi
     repoServer:
       replicas: 1
+      resources:
+        requests:
+          cpu: 250m
+          memory: 512Mi
+    redis:
+      resources:
+        requests:
+          cpu: 100m
+          memory: 128Mi
+    # `applicationSet.enabled` USED TO LIVE HERE AND WAS REMOVED 2026-09-25: it is
+    # INERT at argo-cd 10.8.0. The chart's values.yaml has no `applicationSet.enabled`
+    # key and templates/argocd-applicationset/deployment.yaml carries no `{{- if }}`
+    # guard at all -- the controller renders unconditionally. The key was real at
+    # 7.7.10 and the 7.7.10 -> 10.6.0 bump orphaned it; nothing noticed because
+    # `inert-valuesobject-keys.ts` scans Application valuesObjects and this bootstrap
+    # file is not one. It surfaced only when the Application was made to mirror this
+    # file for real, which is the parity repair doing its job on its first run.
+    # Removing it is a no-op on the render, verified by diffing before and after.
     applicationSet:
-      enabled: true
+      resources:
+        requests:
+          cpu: 50m
+          memory: 128Mi

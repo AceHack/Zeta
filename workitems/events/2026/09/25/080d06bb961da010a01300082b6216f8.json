@@ -1,0 +1,14 @@
+{
+  "id": "080d06bb961da010a01300082b6216f8",
+  "at": "2026-09-25T07:23:37.780Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M3BQ5GX6087G0R003N44WMZ",
+    "type": "bug",
+    "title": "argocd control plane is BestEffort: repo-server starves at 0.5% CPU on a contended node",
+    "slug": "argocd-control-plane-is-besteffort-repo-server-starves-at-0",
+    "priority": "P2",
+    "filename": "081M3BQ5GX6087G0R003N44WMZ-argocd-control-plane-is-besteffort-repo-server-starves-at-0.md"
+  }
+}

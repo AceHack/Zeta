@@ -1898,8 +1898,14 @@ describe("081M0JXXFV0087G0R00...: the four newly-visible non-storage defects", (
       // (1000m at metal, 250m at dev). The citations move with the ladder because
       // that is what they are for -- prose that did not follow is the drift
       // `reason-truth.ts` catches, and it caught exactly this pair today.
-      "[cite: lane-cpu metal 7390 over]",
-      "[cite: lane-cpu dev 1715 fits]",
+      // 7390 -> 8140 and 1715 -> 1990 on 2026-09-25: the ArgoCD control plane was
+      // PRICED (081M3BQ5GX6087G0R003N44WMZ). All five of its components had
+      // declared nothing at any rung, so the lane totals had never included the
+      // GitOps engine that drives the lane. Same discipline as the pair above --
+      // the citations move with the ladder, and `reason-truth.ts` caught this one
+      // too, which is the third time that mechanism has found the drift first.
+      "[cite: lane-cpu metal 8140 over]",
+      "[cite: lane-cpu dev 1990 fits]",
     ]) {
       expect(reason).toContain(cited);
     }
