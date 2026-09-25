@@ -1,0 +1,12 @@
+{
+  "pr_number": 17651,
+  "archive_path": "docs/history/pr-reviews/2026/09/25/PR-17651-docs-ops-a-dispatch-on-main-can-be-evicted-by-any-merge-to-main-wp29.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-25T04:38:28.637Z",
+  "schema_version": "v1",
+  "commit_sha": "b279d0c617ef0d27f440b95f06aa714c50380c4e",
+  "title": "docs(ops): a dispatch on main can be evicted by any merge to main (WP29)",
+  "state": "MERGED",
+  "merged_at": "2026-09-25T04:37:46Z",
+  "head_ref": "claude/wp29-dispatch-concurrency-hazard"
+}
