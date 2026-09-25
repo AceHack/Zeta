@@ -2515,3 +2515,11 @@ WP11 tip-confirm -- K3S_ACTIVE on verdict 6 (distinct NEVER-ACTIVE log + optiona
 - Product: served-datastore NixOS step if: always() && !(github.event_name == 'workflow_dispatch' && inputs.only_wp11) -- runs on every PR/push/schedule; skipped only on WP11-scoped dispatch; matches 7 sibling steps. sentinel-write.sh comment-only, accurate. Prior product untouched.
 - Soft: mergeable blocked; auto_merge squash on; CI in_progress, 0 failed; step-count wording nits. Hard: none.
 - Sit leftover. Do not merge.
+
+## leftover UNIQUE leftover #17650 leftover unique @ e056832c72013072671d3d782ef333b729572794 -- GRADE GO
+
+- Date: 2026-09-25 ~12:05 AM ET. Requested by Chief of Staff (task 081M39CR74D087G0R002BEG2G4). PR #17650 fix(ci): assert the EFFECT, not a poll loop's momentary activeness (WP30), branch claude/wp30-vm-test-poll-loop-predicate, author maximdolphin.
+- Refused pasted tip 2dcfe9efab85a2f7ed4716b9055a43b1d2df4ebb: it is a 2-parent merge of origin/main (parents e056832c + base 5c07fc05). Graded the 1-parent product unique e056832c (parent 1a03c3fa). Net PR diff (2 files, +33/-5) is byte-identical to e056832c files (test blob 20ae6b9712, yml blob 53106f67dd). Never grade 2dcfe9ef or merge_commit c75b769cb37d32f309fa836838186b7a48d11800.
+- Product: k3s-datastore-bootstrap-sentinel.nix drops wait_for_unit on the two Type=simple/Restart=always poll-loop units (active ~80ms per 10s since both scripts exit 0); replaced by bounded wait_until_succeeds on `test -s <sentinel>` and journalctl grep 'VERDICT served:' (timeout=180). Sentinel path equals SENTINEL_FILE in sentinel-write.sh and recovery.sh; VERDICT strings match `VERDICT ${code}:` exactly (colon excludes served-refused). Stricter than prior bare 'VERDICT ' grep; unbootstrapped-watching ordering sound (log-once-per-change, state in /run); Target 2 checks unchanged. build-ai-cluster-iso.yml change is 7 comment lines only; only_wp11 guard, timeout-minutes 30, nix build line untouched.
+- Soft: unbootstrapped-watching assert has a ~1s race (fails loud, never false-green); NixOS VM step not yet run on tip; branch carries #17646 squashed commits + merge of main (rebaseable=false); mergeable_state blocked; auto_merge squash on; CI 0 failed / 14 in progress.
+- Hard fails: none. Disposition: sit leftover; do not merge.
