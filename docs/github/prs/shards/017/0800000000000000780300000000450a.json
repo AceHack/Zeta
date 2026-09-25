@@ -1,0 +1,12 @@
+{
+  "pr_number": 17674,
+  "archive_path": "docs/history/pr-reviews/2026/09/25/PR-17674-feat-replica-a-constrained-mode-so-the-roster-can-be-asked-the-installed-disk-qu.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-25T11:47:47.341Z",
+  "schema_version": "v1",
+  "commit_sha": "2671d8ca447e1d21159438e1bdf403ee8c770589",
+  "title": "feat(replica): a constrained mode, so the roster can be asked the installed-disk question in minutes (WP33)",
+  "state": "MERGED",
+  "merged_at": "2026-09-25T11:46:43Z",
+  "head_ref": "claude/wp33-constrained-replica"
+}
