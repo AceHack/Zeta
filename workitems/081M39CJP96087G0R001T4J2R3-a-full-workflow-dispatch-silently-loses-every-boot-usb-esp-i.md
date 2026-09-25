@@ -16,6 +16,72 @@ composes_with: []
      STATE = this folder; completion moves the file to workitems/done/YYYY/MM/.
      Identity is the zetaid prefix — resolve cross-refs by `081M39CJP96087G0R001T4J2R3-*.md` glob. -->
 
+## ROOT CAUSE FOUND (2026-09-25) — AND IT IS NOT A CI DEFECT
+
+**A whole-disk mount of the boot medium makes every partition on it unopenable
+for the rest of the install, and which one gets mounted is a udev coin flip.**
+
+An isohybrid ISO's MBR partition 1 starts at **LBA 0** and spans the whole
+image, so `/dev/sda` and `/dev/sda1` expose the **same iso9660 filesystem with
+the same `ZETA_INSTALL` label**. `/dev/disk/by-label/ZETA_INSTALL` therefore
+resolves to whichever udev processed last. When it lands on the **whole disk**,
+the boot medium is mounted from `/dev/sda`, which holds that device `O_EXCL` —
+and `mount` on any partition of it returns `-EBUSY`, rendered by util-linux as
+`fsconfig system call failed: /dev/sda2: Can't open blockdev`.
+
+**The severity is on real hardware, not in CI.** A USB stick is the same
+isohybrid image with the same LBA-0 partition 1, the same duplicate label and
+the same race. On the losing side of the coin an operator gets: no injected SSH
+pubkeys (iter-4.2), a random `node-<6hex>` instead of the hostname they chose
+(iter-5.2), no wifi credentials (iter-5-wifi), and no firstboot conf — with
+nothing said about any of it. Run 36044770870's guest did exactly that and came
+up as `node-24cfc8`. The CI framing this was filed under is the smaller half.
+
+### The evidence, from one run
+
+Run 36073981145, five lanes that print the ESP scan, same ISO, minutes apart:
+
+| lane | `/dev/sda1` | `/dev/sda2` |
+|---|---|---|
+| restore / wifi / keyfile / retention | openable (iso9660, not FAT) | **mounted** |
+| **picker** | **Can't open blockdev** | **Can't open blockdev** |
+
+`/dev/sda1` is byte-identical in all five. A filesystem property cannot vary
+like that; a claim on the device can. The failing lane's own `lsblk` names the
+claim:
+
+```
+sda      8:0    0  1.6G  1 disk /iso      <-- the WHOLE DISK is mounted
+├─sda1   8:1    0  1.6G  1 part
+└─sda2   8:2    0    3M  1 part
+```
+
+**Reproduced locally, end to end**, with the real installer ISO on a loop
+device: `mount -t vfat` on the ESP partition succeeds with the whole disk
+unclaimed, and all three ladder rungs are refused (`already mounted or mount
+point busy`) the moment `mount <wholedisk>` is held — including on `p1`, which
+is not FAT at all. Control and treatment on the same bytes, seconds apart.
+
+### The fix that landed, and the one that has not
+
+**Rung 4** of the ESP mount ladder reads the ESP through the whole disk at a
+**derived** offset — `mcopy -s -n -o -i /dev/sda@@<offset> ::/ <tmpfs>` — which
+needs no mount of the partition, no loop device and no kernel FAT driver, and
+is therefore not blocked by the claim. The offset comes from `lsblk -bno START`
+(sysfs, needs no open of the partition, which is the point); unreadable or zero
+**refuses** rather than guessing. `mtools` ships in the ISO's systemPackages.
+Announces itself as `via=mtools-copy:/dev/sda@@137216`, because a run the fix
+carried must not read as a healthy one. Verified against the shipped function
+with the claim actually held.
+
+**Not fixed: the ambiguity itself.** The duplicate label is what makes udev's
+resolution a coin flip, and rung 4 is a workaround for something that may be
+deletable at the source. Filed separately as
+**081M3B7Z38Q087G0R003F9X7HM** so the workaround does not quietly become the
+design.
+
+---
+
 ## The condition
 
 On one measured run of `build-ai-cluster-iso.yml`, the installer guest found
@@ -260,8 +326,11 @@ Landed (PR for this work item):
      kernel autodetect, then `-t vfat -o ro,iocharset=ascii,codepage=437`.
      A MITIGATION — see the section below.
 
-NOT closed: **why the kernel refused the mount.** Item 1 is what answers it,
-and it answers it on the next occurrence rather than by another sampling run.
+~~NOT closed: **why the kernel refused the mount.**~~ **ANSWERED** on run
+36073981145, by exactly the mechanism item 1 predicted: the capture reported
+its own cause on the first occurrence after it landed. See the root-cause
+section at the top of this file. What remains open is the ambiguity that makes
+it a coin flip, which is 081M3B7Z38Q087G0R003F9X7HM.
 Three PRs (#17638, #17640, #17641) carry this work item and **none of them
 claims to close it.** The mitigation holding is not the cause being found.
 

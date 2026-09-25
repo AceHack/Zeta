@@ -1164,8 +1164,95 @@ ZETA_FAT_MOUNT_VIA=""
 ZETA_FAT_MOUNT_WHY=""
 zeta_squeeze_mount_error() {
   local squeezed
-  squeezed="$(printf '%s' "${1:-}" | head -1 | tr -c 'A-Za-z0-9._/=:-' '_' | cut -c1-64)" || :
+  # WP29, second pass: strip util-linux's `mount: <mountpoint>: ` prefix FIRST.
+  # Measured on run 36073981145 (picker lane): the 64-char cap spent 36 of its
+  # characters on `mount:_/tmp/zeta-boot-esp:_` and cut the kernel's actual
+  # answer at `Can_t_o` -- the truncation ate exactly the half worth keeping.
+  # The mountpoint is ours and constant; the tail is the evidence.
+  squeezed="$(printf '%s' "${1:-}" | head -1 | sed 's|^mount: [^:]*: ||' | tr -c 'A-Za-z0-9._/=:-' '_' | cut -c1-72)" || :
   printf '%s' "${squeezed:-no-stderr}"
+}
+
+# ── WP29 RUNG 4: READ THE ESP WITHOUT OPENING THE PARTITION AT ALL ───────
+#
+# ROOT CAUSE, measured on run 36073981145 and reproduced locally end to end.
+# An isohybrid ISO's partition 1 starts at LBA 0 and spans the whole image, so
+# `/dev/sda` and `/dev/sda1` expose the SAME iso9660 filesystem with the SAME
+# `ZETA_INSTALL` label. `/dev/disk/by-label/ZETA_INSTALL` therefore resolves to
+# whichever udev processed last. When it resolves to the WHOLE DISK, the boot
+# medium is mounted from `/dev/sda`, which holds that device O_EXCL -- and
+# every partition of it becomes unopenable for the rest of the install:
+#
+#   picker lane:  sda1 AND sda2 = `fsconfig system call failed: Can't open blockdev`
+#   four others:  sda1 = openable (iso9660, not FAT), sda2 = mounted
+#
+# Same ISO, same run, minutes apart. Local proof with a real isohybrid image:
+# `mount -t vfat` on the partition succeeds with the whole disk unclaimed and
+# is refused with `already mounted or mount point busy` once `mount <disk>` is
+# held. Rungs 1-3 all lose, because all three open the partition.
+#
+# NOT A CI DEFECT. A real USB stick is the same isohybrid image with the same
+# LBA-0 partition 1, the same duplicate label and the same udev race, so on
+# metal this silently costs the operator their injected SSH pubkeys, their
+# chosen hostname and their wifi credentials, and the node comes up as
+# `node-<6hex>` with no indication why.
+#
+# THE CLAIM NEVER CLEARS -- `/iso` stays mounted for the whole install -- so
+# waiting was never an option; the rung has to route around it.
+#
+# WHY MTOOLS AND NOT `losetup -r`: both avoid the exclusive claim, and mtools
+# is the smaller answer. `mcopy -i <wholedisk>@@<offset>` needs no mount, no
+# loop device to allocate and release, and no kernel FAT driver at all -- it is
+# the exact inverse of how the ESP was WRITTEN (`mcopy -i img@@offset` on the
+# host), and `mtools` ships in this ISO's systemPackages beside `util-linux`.
+# Verified working while the claim is held, on a real isohybrid image.
+#
+# THE OFFSET IS DERIVED, NEVER CONSTANT. This work item began with a fallback
+# constant that was wrong and could not disagree with itself; a second constant
+# would be the same mistake. `lsblk -bno START` reads sysfs, so it needs no
+# open of the partition -- which is the whole point, since the partition is
+# what cannot be opened. Unreadable or zero => REFUSE, never guess.
+#
+# READ-ONLY BY CONSTRUCTION: this materialises a COPY of the ESP onto a fresh
+# tmpfs at the caller's mountpoint. Every consumer keeps working on a path and
+# the caller's `umount` still unmounts. Writes to it would NOT reach the ESP;
+# no read-only consumer writes, and the `rw` ledger mount is a different
+# function that is deliberately untouched.
+zeta_esp_copy_out_mtools() {
+  local part="$1" mnt="$2" start disk offset err
+  start="$(lsblk -bno START "$part" 2>/dev/null | head -1 | tr -cd '0-9')" || start=""
+  case "$start" in
+    "" | *[!0-9]*)
+      ZETA_FAT_MOUNT_WHY="${ZETA_FAT_MOUNT_WHY}|mtools=no-partition-start-in-sysfs"
+      return 1
+      ;;
+  esac
+  offset=$(( start * 512 ))
+  if [ "$offset" -le 0 ]; then
+    # A partition at LBA 0 is the whole-disk alias, not an ESP.
+    ZETA_FAT_MOUNT_WHY="${ZETA_FAT_MOUNT_WHY}|mtools=start-lba-0-not-a-partition"
+    return 1
+  fi
+  disk="$(lsblk -bno PKNAME "$part" 2>/dev/null | head -1 | tr -cd 'A-Za-z0-9._-')" || disk=""
+  if [ -z "$disk" ]; then
+    ZETA_FAT_MOUNT_WHY="${ZETA_FAT_MOUNT_WHY}|mtools=no-parent-disk-in-sysfs"
+    return 1
+  fi
+  if ! sudo mount -t tmpfs -o size=16m,mode=0700 zeta-esp-copyout "$mnt" 2>/dev/null; then
+    ZETA_FAT_MOUNT_WHY="${ZETA_FAT_MOUNT_WHY}|mtools=tmpfs-mount-failed"
+    return 1
+  fi
+  # Exit status only. mtools warns `Could not get geometry of device` on a
+  # whole-disk read and still exits 0; treating stderr as failure would refuse
+  # a working read. A non-FAT offset makes mcopy exit non-zero (`init ::
+  # non DOS media`), so success here implies a real FAT at that offset.
+  if err="$(sudo mcopy -s -n -o -i "/dev/${disk}@@${offset}" "::/" "$mnt/" 2>&1 >/dev/null)"; then
+    ZETA_FAT_MOUNT_VIA="mtools-copy:/dev/${disk}@@${offset}"
+    return 0
+  fi
+  sudo umount "$mnt" 2>/dev/null || true
+  ZETA_FAT_MOUNT_WHY="${ZETA_FAT_MOUNT_WHY}|mtools=$(zeta_squeeze_mount_error "$err")"
+  return 1
 }
 zeta_mount_fat_ro() {
   local part="$1" mnt="$2" err fstype
@@ -1199,6 +1286,9 @@ zeta_mount_fat_ro() {
     return 0
   fi
   ZETA_FAT_MOUNT_WHY="${ZETA_FAT_MOUNT_WHY}|ascii=$(zeta_squeeze_mount_error "$err")"
+
+  # Rung 4 -- the only one that does not open the partition. See the header.
+  zeta_esp_copy_out_mtools "$part" "$mnt" && return 0
   return 1
 }
 

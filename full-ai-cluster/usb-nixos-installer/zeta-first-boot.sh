@@ -130,8 +130,89 @@ ZETA_ESP_CONF_TRIED=""
 # read as a failure.
 zeta_squeeze_mount_error() {
   local squeezed
-  squeezed="$(printf '%s' "${1:-}" | head -1 | tr -c 'A-Za-z0-9._/=:-' '_' | cut -c1-64)" || :
+  # WP29, second pass: strip util-linux's `mount: <mountpoint>: ` prefix FIRST.
+  # Measured on run 36073981145 (picker lane): the 64-char cap spent 36 of its
+  # characters on `mount:_/run/zeta-boot-esp:_` and cut the kernel's actual
+  # answer at `Can_t_o` -- the truncation ate exactly the half that was worth
+  # capturing. The mountpoint is ours and constant; the tail is the evidence.
+  squeezed="$(printf '%s' "${1:-}" | head -1 | sed 's|^mount: [^:]*: ||' | tr -c 'A-Za-z0-9._/=:-' '_' | cut -c1-72)" || :
   printf '%s' "${squeezed:-no-stderr}"
+}
+
+# ── WP29 RUNG 4: READ THE ESP WITHOUT OPENING THE PARTITION AT ALL ───────
+#
+# ROOT CAUSE, measured on run 36073981145 and reproduced locally end to end.
+# An isohybrid ISO's partition 1 starts at LBA 0 and spans the whole image, so
+# `/dev/sda` and `/dev/sda1` expose the SAME iso9660 filesystem with the SAME
+# `ZETA_INSTALL` label. `/dev/disk/by-label/ZETA_INSTALL` therefore resolves to
+# whichever udev processed last. When it resolves to the WHOLE DISK, the boot
+# medium is mounted from `/dev/sda`, which holds that device O_EXCL -- and
+# every partition of it becomes unopenable for the rest of the install:
+#
+#   picker lane:  sda1 AND sda2 = `fsconfig system call failed: Can't open blockdev`
+#   four others:  sda1 = openable (iso9660, not FAT), sda2 = mounted
+#
+# Same ISO, same run, minutes apart. Local proof with a real isohybrid image:
+# `mount -t vfat` on the partition succeeds with the whole disk unclaimed and
+# is refused with `already mounted or mount point busy` once `mount <disk>` is
+# held. Rungs 1-3 all lose, because all three open the partition.
+#
+# THE CLAIM NEVER CLEARS -- `/iso` stays mounted for the whole install -- so
+# waiting was never an option; the rung has to route around it.
+#
+# WHY MTOOLS AND NOT `losetup -r`: both avoid the exclusive claim, and mtools
+# is the smaller answer. `mcopy -i <wholedisk>@@<offset>` needs no mount, no
+# loop device to allocate and release, and no kernel FAT driver at all -- it is
+# the exact inverse of how the ESP was WRITTEN (`mcopy -i img@@offset` on the
+# host), and `mtools` ships in this ISO's systemPackages beside `util-linux`.
+# Verified working while the claim is held, on a real isohybrid image.
+#
+# THE OFFSET IS DERIVED, NEVER CONSTANT. This work item began with a fallback
+# constant that was wrong and could not disagree with itself; a second constant
+# would be the same mistake. `lsblk -bno START` reads sysfs, so it needs no
+# open of the partition -- which is the whole point, since the partition is
+# what cannot be opened. Unreadable or zero => REFUSE, never guess.
+#
+# READ-ONLY BY CONSTRUCTION: this materialises a COPY of the ESP onto a fresh
+# tmpfs at the caller's mountpoint. Every consumer keeps working on a path and
+# the caller's `umount` still unmounts. Writes to it would NOT reach the ESP;
+# no read-only consumer writes, and the `rw` ledger mount is a different
+# function that is deliberately untouched.
+zeta_esp_copy_out_mtools() {
+  local part="$1" mnt="$2" start disk offset err
+  start="$(lsblk -bno START "$part" 2>/dev/null | head -1 | tr -cd '0-9')" || start=""
+  case "$start" in
+    "" | *[!0-9]*)
+      ZETA_ESP_MOUNT_WHY="${ZETA_ESP_MOUNT_WHY}|mtools=no-partition-start-in-sysfs"
+      return 1
+      ;;
+  esac
+  offset=$(( start * 512 ))
+  if [ "$offset" -le 0 ]; then
+    # A partition at LBA 0 is the whole-disk alias, not an ESP.
+    ZETA_ESP_MOUNT_WHY="${ZETA_ESP_MOUNT_WHY}|mtools=start-lba-0-not-a-partition"
+    return 1
+  fi
+  disk="$(lsblk -bno PKNAME "$part" 2>/dev/null | head -1 | tr -cd 'A-Za-z0-9._-')" || disk=""
+  if [ -z "$disk" ]; then
+    ZETA_ESP_MOUNT_WHY="${ZETA_ESP_MOUNT_WHY}|mtools=no-parent-disk-in-sysfs"
+    return 1
+  fi
+  if ! mount -t tmpfs -o size=16m,mode=0700 zeta-esp-copyout "$mnt" 2>/dev/null; then
+    ZETA_ESP_MOUNT_WHY="${ZETA_ESP_MOUNT_WHY}|mtools=tmpfs-mount-failed"
+    return 1
+  fi
+  # Exit status only. mtools warns `Could not get geometry of device` on a
+  # whole-disk read and still exits 0; treating stderr as failure would refuse
+  # a working read. A non-FAT offset makes mcopy exit non-zero (`init ::
+  # non DOS media`), so success here implies a real FAT at that offset.
+  if err="$(mcopy -s -n -o -i "/dev/${disk}@@${offset}" "::/" "$mnt/" 2>&1 >/dev/null)"; then
+    ZETA_ESP_MOUNT_VIA="mtools-copy:/dev/${disk}@@${offset}"
+    return 0
+  fi
+  umount "$mnt" 2>/dev/null || true
+  ZETA_ESP_MOUNT_WHY="${ZETA_ESP_MOUNT_WHY}|mtools=$(zeta_squeeze_mount_error "$err")"
+  return 1
 }
 
 # ── WP29 MITIGATION (081M39CJP96087G0R001T4J2R3) — NOT A FIX ──────────────
@@ -201,6 +282,9 @@ zeta_try_mount_esp_ro() {
     return 0
   fi
   ZETA_ESP_MOUNT_WHY="${ZETA_ESP_MOUNT_WHY}|ascii=$(zeta_squeeze_mount_error "$err")"
+
+  # Rung 4 -- the only one that does not open the partition. See the header.
+  zeta_esp_copy_out_mtools "$part" "$mnt" && return 0
   return 1
 }
 
@@ -211,7 +295,16 @@ zeta_source_esp_firstboot_conf() {
     [[ -b "$part" ]] || continue
     # Every block device the loop actually considered, so an empty list is
     # visibly an empty list rather than an unexplained miss.
-    ZETA_ESP_CONF_TRIED="${ZETA_ESP_CONF_TRIED}${ZETA_ESP_CONF_TRIED:+,}${part}"
+    # Resolve by-label symlinks INLINE. `/dev/disk/by-label/ZETA_INSTALL`
+    # resolving to the whole disk rather than to partition 1 is the coin flip
+    # this whole work item turns on, and printing the symlink's NAME said
+    # nothing about which way it landed. Space-free: `espConfScanOutcome`
+    # parses `tried=(\S*)`.
+    if [[ -L "$part" ]]; then
+      ZETA_ESP_CONF_TRIED="${ZETA_ESP_CONF_TRIED}${ZETA_ESP_CONF_TRIED:+,}${part}->$(readlink -f "$part" 2>/dev/null || echo unresolvable)"
+    else
+      ZETA_ESP_CONF_TRIED="${ZETA_ESP_CONF_TRIED}${ZETA_ESP_CONF_TRIED:+,}${part}"
+    fi
     zeta_try_mount_esp_ro "$part" "$ESP_CONF_MOUNT" || {
       ZETA_ESP_CONF_TRIED="${ZETA_ESP_CONF_TRIED}(no-vfat:${ZETA_ESP_MOUNT_WHY})"
       continue
@@ -295,7 +388,15 @@ ZETA_ROLE="${ZETA_ROLE:-first-control-plane}"
 # scan found nothing. `esp-conf=` is the outcome, `tried=` is the candidate
 # list with a per-candidate reason, and `role-source=` stays separate because
 # a conf that declares no role does not move the role's provenance.
-echo "[081M392JR97087G0R003QAFH0Y-esp-conf] esp-conf=${ZETA_ESP_CONF} tried=${ZETA_ESP_CONF_TRIED:-<none>}"
+# WP29: what the boot medium is mounted FROM, on every run and not only on a
+# failure. A whole-disk source (`/dev/sda`) holds that device O_EXCL and makes
+# every partition of it unopenable for the rest of the install; a partition
+# source (`/dev/sda1`) does not. Until this line existed, the failing side had
+# `lsblk` from the iter-4.2 diagnostics block -- which prints ONLY on failure
+# -- and the healthy side had nothing, so the difference between them was
+# INFERRED rather than measured. Now both sides say it.
+ZETA_ESP_BOOT_MEDIUM="$(findmnt -n -o SOURCE /iso 2>/dev/null | head -1 | tr -d '[:space:]')" || ZETA_ESP_BOOT_MEDIUM=""
+echo "[081M392JR97087G0R003QAFH0Y-esp-conf] esp-conf=${ZETA_ESP_CONF} tried=${ZETA_ESP_CONF_TRIED:-<none>} boot-medium=${ZETA_ESP_BOOT_MEDIUM:-<not-mounted-at-/iso>}"
 echo "[081KSNY2Z0008QG0R0008PN7RQ-role] role=${ZETA_ROLE} host=${HOST} source=${ZETA_ROLE_SOURCE}"
 if [[ "${ZETA_ROLE}" == "joiner" ]]; then
   echo "[081KSNY2Z0008QG0R0008PN7RQ-role]   join server: ${ZETA_JOIN_SERVER_URL:-<unset>}"

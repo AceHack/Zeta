@@ -1,0 +1,14 @@
+{
+  "id": "080d06b3fc68c810a0130008a0282835",
+  "at": "2026-09-25T02:57:58.553Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M3B7Z38Q087G0R003F9X7HM",
+    "type": "task",
+    "title": "Remove the duplicate ZETA_INSTALL label: isohybrid partition 1 at LBA 0 makes by-label resolution a coin flip",
+    "slug": "remove-the-duplicate-zeta-install-label-isohybrid-partition",
+    "priority": "P2",
+    "filename": "081M3B7Z38Q087G0R003F9X7HM-remove-the-duplicate-zeta-install-label-isohybrid-partition.md"
+  }
+}
