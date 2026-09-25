@@ -1,0 +1,12 @@
+{
+  "pr_number": 17662,
+  "archive_path": "docs/history/pr-reviews/2026/09/25/PR-17662-fix-ci-verdict-7-must-emit-must-not-read-a-failed-probe-as-zero-apps-and-must-no.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-25T07:55:55.259Z",
+  "schema_version": "v1",
+  "commit_sha": "c4128b1a5b9ebba7458dcabfd6b11c44d4db5321",
+  "title": "fix(ci): verdict 7 must EMIT, must not read a failed probe as zero apps, and must not call ordinary pods undecidable (WP31)",
+  "state": "MERGED",
+  "merged_at": "2026-09-25T07:55:16Z",
+  "head_ref": "claude/wp31-verdict7-emits-and-narrows"
+}
