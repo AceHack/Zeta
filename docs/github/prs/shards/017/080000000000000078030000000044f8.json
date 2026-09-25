@@ -1,0 +1,12 @@
+{
+  "pr_number": 17656,
+  "archive_path": "docs/history/pr-reviews/2026/09/25/PR-17656-feat-ci-verdict-7-every-application-that-can-converge-does-on-the-installed-disk.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-25T05:50:04.887Z",
+  "schema_version": "v1",
+  "commit_sha": "6ff5e29975ccaa7a84da8526c5ce889b86139a7d",
+  "title": "feat(ci): verdict 7 — every Application that CAN converge does, on the installed disk (WP31)",
+  "state": "MERGED",
+  "merged_at": "2026-09-25T05:49:16Z",
+  "head_ref": "claude/wp31-roster-converged-verdict"
+}
