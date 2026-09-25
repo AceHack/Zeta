@@ -1,0 +1,12 @@
+{
+  "pr_number": 17650,
+  "archive_path": "docs/history/pr-reviews/2026/09/25/PR-17650-fix-ci-assert-the-effect-not-a-poll-loop-s-momentary-activeness-wp30.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-25T04:40:09.436Z",
+  "schema_version": "v1",
+  "commit_sha": "2d88ea12b5722298b26a6185e9bc749c357af282",
+  "title": "fix(ci): assert the EFFECT, not a poll loop's momentary activeness (WP30)",
+  "state": "MERGED",
+  "merged_at": "2026-09-25T04:39:21Z",
+  "head_ref": "claude/wp30-vm-test-poll-loop-predicate"
+}

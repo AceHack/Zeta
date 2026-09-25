@@ -1,0 +1,12 @@
+{
+  "pr_number": 17653,
+  "archive_path": "docs/history/pr-reviews/2026/09/25/PR-17653-fix-ci-the-wrong-token-fixture-must-be-a-well-formed-token-wp30.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-25T05:07:26.607Z",
+  "schema_version": "v1",
+  "commit_sha": "cb05ddd7453163c30aa3b7753b07d56da9984770",
+  "title": "fix(ci): the wrong-token fixture must be a WELL-FORMED token (WP30)",
+  "state": "MERGED",
+  "merged_at": "2026-09-25T05:06:40Z",
+  "head_ref": "claude/wp30-wrong-token-fixture"
+}
