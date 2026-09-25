@@ -13,6 +13,31 @@
 # FIRST, unconditionally, before doing anything else that could observe a
 # transient false success).
 #
+# THE WRITER'S HEALTH IS A PRECONDITION OF THE READER'S SAFETY. READ THIS
+# BEFORE CHANGING READYZ_CMD BELOW.
+#
+# The recovery script's entire licence to delete anything is "no sentinel
+# means this datastore never served". That inference is only sound while
+# THIS script can actually write the sentinel. If READYZ_CMD ever stops
+# succeeding -- a typo, k3s dropped from the unit's `path`, a moved
+# kubeconfig, an endpoint k3s renames -- then the sentinel is never written
+# on any node, every HEALTHY datastore reads as stillborn forever, and the
+# module whose purpose is to prevent data loss begins causing it, on every
+# node, with the recovery path firing exactly as designed.
+#
+# Nothing else in the pair can detect that. The recovery script cannot tell
+# "never served" from "served, but the writer is broken" -- they are the
+# same absence. So this script's failure branch REFUSES TO BE SILENT: it
+# prints `VERDICT waiting-for-readyz` once per boot, naming the sentinel it
+# is not writing. A node that prints that line and never follows it with
+# "this datastore has now served" is a node where this command is broken,
+# and that is the only warning that will ever arrive.
+#
+# `nixos/tests/k3s-datastore-bootstrap-sentinel.nix` is the falsifier: it
+# boots a real k3s and asserts the DEFAULT command below genuinely succeeds
+# from inside this unit. A change to READYZ_CMD that passes the fixture
+# tests and fails that one is the inversion described above.
+#
 # WHY readyz AND NOT "k3s.service is active": `systemctl is-active` answers
 # whether the PROCESS is running, not whether the CLUSTER bootstrapped --
 # exactly the gap that produces this whole defect class (a process can be
