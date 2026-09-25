@@ -2501,3 +2501,10 @@ WP11 tip-confirm -- K3S_ACTIVE on verdict 6 (distinct NEVER-ACTIVE log + optiona
 - Product (WP30): sentinel db/.zeta-datastore-has-served written only after real /readyz (tmp+rename atomic); sentinel-PRESENT exits 0 before the only rm (wrong-token stays fatal, NOTHING HAS BEEN DELETED); sole delete rm -rf -- "$DATASTORE_DIR" guarded to */server/db, only when sentinel absent + restarts>=6 + exact no-bootstrap-data fatal + no prior attempt marker; fixture test non-vacuous; NixOS real-k3s test wired via flake.nix + build-ai-cluster-iso.yml.
 - Soft: mergeable blocked; auto_merge squash on; CI in_progress (NixOS test unrun). Soft follow-ups: legacy served datastores lack sentinel until first healthy boot; attempt marker on-disk (once ever, fails safe); no fsync after rename; possible flaky red; k3s wrong-token text unconfirmed; HA joiner untested. Hard: none.
 - Sit leftover. Do not merge.
+
+## leftover UNIQUE leftover #17647 leftover unique @ e4469aad8777ed9f090827ffff42ff12698c4fcb -- GRADE GO
+
+- Tip 1-commit +542/-23 / 6 files; parent 08c2b41 (1p, = base). Live HEAD IS tip -- never grade merge-ref 2fa87168.
+- Product (WP29 root cause): rung 4 last in both ladders after vfat/auto/ascii fail; offset = lsblk START*512 + PKNAME parent, no hard-coded fallback; fails closed on empty start / start 0 / missing parent / tmpfs fail; mcopy -s image@@offset to tmpfs at caller mountpoint, read-only; via=mtools-copy:/dev/X@@off; WHY space-free, tried=(\S*) intact; install/first-boot parity; 7 non-vacuous rung-4 tests; workitem stays open, #17638/#17640/#17641 do not close it.
+- Soft: mergeable blocked; auto_merge squash on; CI in_progress, 0 failed; no run yet shows via=mtools-copy carrying a boot; test gaps; tmpfs 0700 vs manual non-root; repo-pin reader still plain vfat. Hard: none.
+- Sit leftover. Do not merge.
