@@ -1,0 +1,14 @@
+{
+  "id": "080d06be4926d810a013000874c18aac",
+  "at": "2026-09-25T08:57:58.747Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M3BWJ96T087G0R0028WT3S3",
+    "type": "task",
+    "title": "Inventory every external dependency of a first boot, and classify each by what an operator gets when it is unavailable",
+    "slug": "inventory-every-external-dependency-of-a-first-boot-and-clas",
+    "priority": "P2",
+    "filename": "081M3BWJ96T087G0R0028WT3S3-inventory-every-external-dependency-of-a-first-boot-and-clas.md"
+  }
+}

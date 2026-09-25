@@ -68,30 +68,64 @@ than kubeconform failing to *install* — so the two should not be conflated.
 What they share is being network-dependent failures of the same tool within
 the same hour, which is worth noting when triaging either.
 
-## Candidate directions
+## Directions, RANKED
 
-1. **Give the verification path a token where one exists.** In CI the runner
-   has `GITHUB_TOKEN` and the guest does not; passing one in would lift the
-   limit to 5000/hour and remove this class from the lane entirely. It does
-   nothing for a real operator.
-2. **Make the failure NAME the rate limit.** Today the operator sees
-   `install.sh FAILED rc=1` and a stack location in `toolset_install.rs`. "You
-   are rate-limited by GitHub's unauthenticated API; retry in N minutes or
-   supply a token" is a different and far more actionable sentence. This is the
-   cheapest fix and is worth doing regardless of the others.
-3. **Retry with backoff on 403 rate-limit specifically.** The current 3 attempts
-   are close together; a rate limit needs minutes, not seconds. Note the
-   response carries the reset time.
-4. **Pre-stage the verified binary in the ISO.** It is already a pinned version;
-   verifying at image-build time (where a token exists) and shipping the result
-   removes the first-boot network dependency altogether. Biggest change, best
-   outcome for the operator.
+### (4) PRE-STAGE THE VERIFIED BINARY IN THE ISO -- THIS IS THE FIX
+
+It is already a pinned version. The ISO is already built in CI, **where a token
+exists and the rate limit is not a factor.** Verification at BUILD time is
+strictly better than verification at install time: it happens **once**, on a
+machine we control, with the policy **fully enforced**, instead of once per
+operator on a network we do not control.
+
+It **removes the dependency** rather than making it more reliable, which is the
+disposition to prefer whenever it is reachable.
+
+### (2) NAME THE RATE LIMIT -- do this FIRST, regardless of (4)
+
+Small, and it converts a mystery into a diagnosis even if (4) slips. Today the
+operator gets:
+
+    install.sh FAILED rc=1
+    Location: src/toolset/toolset_install.rs:244
+
+What they need is:
+
+    GitHub API rate limit exceeded (60/hour per IP, unauthenticated).
+    Resets at <time from the response>. Wait, or use a different network,
+    or supply a token.
+
+One tells them nothing. The other tells them what to do.
+
+### (3) Back off on a 403 rate limit -- a PALLIATIVE, and say so
+
+Worth having: the current three attempts are seconds apart and the response
+carries the reset time. **But state its limit out loud** -- a rate-limit window
+can be up to an hour, and **no in-install backoff can wait that out.** It
+narrows the failure window; it does not close it.
+
+### (1) Token where one exists -- CI ONLY
+
+Lifts CI to 5000/hour and removes this class from the lane. **It does nothing
+for a real operator**, who has no token, and it must not be allowed to look
+like an operator fix -- fixing the lane while leaving the product broken is how
+a check stops representing what it claims to.
 
 **Do NOT respond by disabling attestation verification.** The policy caught a
-real regression and the `.mise.toml` note records it.
+real regression and the `.mise.toml` note records it. Written plainly for the
+next person under time pressure reaching for the disable flag:
+
+> **The answer is to verify EARLIER, not to verify LESS.**
 
 ## Origin
 
 081M3BEGSQR087G0R003610CGB (WP31). Found while attempting to verify that WP11
 verdict 7 now emits — the run could not answer that question because the
 install never completed, which is itself the finding.
+
+## Part of a larger surface
+
+This is one row of 081M3BWJ96T087G0R0028WT3S3 -- the inventory of EVERY external
+dependency a first boot has, classified by what an operator gets when it is
+unavailable (named refusal / partial install / silent skip). Three rows of that
+table were discovered in a single night by a single lane.
