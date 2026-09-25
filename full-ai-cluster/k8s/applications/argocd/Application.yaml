@@ -93,6 +93,114 @@ spec:
                 end
               end
               return hs
+            # WP26 follow-up (081M38GCTFX087G0R003MMTXJE): the chart's OWN
+            # default `resource.exclusions` (argo-cd/values.yaml, this
+            # chart's pinned version) excludes `discovery.k8s.io/
+            # {Endpoints,EndpointSlice}` for a stated reason: "never child
+            # objects of managed resources that need to be presented in the
+            # resource tree." cilium is the ONE Application in this
+            # 42-app roster where that assumption does not hold -- MEASURED:
+            # cilium is the only app (of 42, most of which also own a
+            # Service and therefore an EndpointSlice) whose
+            # `status.conditions` carries
+            # `ExcludedResourceWarning: Resource discovery.k8s.io/
+            # EndpointSlice cilium-ingress is excluded in the settings`, and
+            # cilium is the app that reads `health=Progressing with no
+            # classified pod issue attributed to it` in every triggered
+            # first-boot-replica run -- every DaemonSet/Deployment it owns
+            # reads Healthy by the book (generation==observedGeneration,
+            # every replica Ready, zero restarts) with nothing else to
+            # explain the stuck health.
+            #
+            # HONEST REGISTER: this override is a well-evidenced HYPOTHESIS,
+            # not a proven fix -- gitops-engine's `state.go` removes excluded
+            # resources from `targetObjs` BEFORE health aggregation runs, so
+            # the causal path from "excluded" to "stuck Progressing" is not
+            # confirmed at the source level; only the correlation (unique
+            # among 42 apps, present in every run) is. Re-including
+            # `discovery.k8s.io/EndpointSlice` in ArgoCD's tracking is the
+            # cheapest way to let the replica lane's own live evidence
+            # settle it: if cilium reaches Healthy, the hypothesis holds; if
+            # it reads a genuinely unhealthy EndpointSlice instead, that is
+            # still strictly better than the current unattributable silence;
+            # if neither changes, this override should be reverted.
+            #
+            # `Endpoints` (the deprecated core/v1 API) stays excluded --
+            # nothing in this cluster reads it, and it is still the same
+            # high-churn object class the chart's own comment warns about.
+            # Every OTHER chart-default exclusion (Leases, Authn/Authz
+            # review kinds, CertificateSigningRequest/CertificateRequest,
+            # cilium.io's OWN internal CiliumIdentity/CiliumEndpoint/
+            # CiliumEndpointSlice, Kyverno reporting kinds) is reproduced
+            # verbatim below -- this is a NARROWING of the default list by
+            # exactly one kind, never a blanket "track everything" reversion
+            # (`resourceExclusionsAdditional` is append-only for ADDING
+            # exclusions, so removing one kind requires restating the whole
+            # list rather than a one-line diff against the chart default).
+            #
+            # The high-churn/UI-clutter cost the chart's exclusion exists to
+            # avoid does NOT reappear un-mitigated: the SAME chart version
+            # unconditionally ships
+            # `resource.customizations.ignoreResourceUpdates.
+            # discovery.k8s.io_EndpointSlice` (jsonPointers: /metadata,
+            # /endpoints, /ports) as its own default key, independent of
+            # `resource.exclusions` -- so once EndpointSlice is tracked,
+            # ArgoCD still ignores per-poll endpoint/port churn for diff
+            # purposes; only HEALTH computation newly sees the resource.
+            #
+            # MUST STAY IN LOCKSTEP with `configs.cm` in
+            # full-ai-cluster/k8s/bootstrap/argocd-install.yaml (same
+            # reasoning as the health-lua key above: this bootstrap installs
+            # ArgoCD first, this Application then adopts it, and a
+            # divergent argocd-cm between the two would flip exclusion
+            # semantics on ArgoCD's very first self-managed reconcile).
+            resource.exclusions: |
+              - apiGroups:
+                - ''
+                kinds:
+                - Endpoints
+              - apiGroups:
+                - coordination.k8s.io
+                kinds:
+                - Lease
+              - apiGroups:
+                - authentication.k8s.io
+                - authorization.k8s.io
+                kinds:
+                - SelfSubjectReview
+                - TokenReview
+                - LocalSubjectAccessReview
+                - SelfSubjectAccessReview
+                - SelfSubjectRulesReview
+                - SubjectAccessReview
+              - apiGroups:
+                - certificates.k8s.io
+                kinds:
+                - CertificateSigningRequest
+              - apiGroups:
+                - cert-manager.io
+                kinds:
+                - CertificateRequest
+              - apiGroups:
+                - cilium.io
+                kinds:
+                - CiliumIdentity
+                - CiliumEndpoint
+                - CiliumEndpointSlice
+              - apiGroups:
+                - kyverno.io
+                - reports.kyverno.io
+                - wgpolicyk8s.io
+                kinds:
+                - PolicyReport
+                - ClusterPolicyReport
+                - EphemeralReport
+                - ClusterEphemeralReport
+                - AdmissionReport
+                - ClusterAdmissionReport
+                - BackgroundScanReport
+                - ClusterBackgroundScanReport
+                - UpdateRequest
         notifications:
           enabled: false
   destination:

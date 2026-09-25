@@ -1,0 +1,14 @@
+{
+  "id": "080d06b79ac32010a0130008a60f0c34",
+  "at": "2026-09-25T05:04:27.236Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M3BF6P31087G0R0016MRA51",
+    "type": "task",
+    "title": "cilium's stuck-Progressing: test the ExcludedResourceWarning/EndpointSlice hypothesis; weaviate confirmed a DIFFERENT unexplained cause",
+    "slug": "cilium-s-stuck-progressing-test-the-excludedresourcewarning",
+    "priority": "P2",
+    "filename": "081M3BF6P31087G0R0016MRA51-cilium-s-stuck-progressing-test-the-excludedresourcewarning.md"
+  }
+}

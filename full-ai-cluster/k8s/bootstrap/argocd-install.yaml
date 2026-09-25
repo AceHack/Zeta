@@ -133,6 +133,77 @@ spec:
             end
           end
           return hs
+        # WP26 follow-up (081M38GCTFX087G0R003MMTXJE): the chart's OWN
+        # default `resource.exclusions` excludes `discovery.k8s.io/
+        # {Endpoints,EndpointSlice}` for a stated reason ("never child
+        # objects of managed resources that need to be presented in the
+        # resource tree") that does not hold for cilium -- MEASURED: cilium
+        # is the only Application (of 42) whose `status.conditions` carries
+        # `ExcludedResourceWarning: Resource discovery.k8s.io/EndpointSlice
+        # cilium-ingress is excluded in the settings`, and the app that
+        # reads `health=Progressing with no classified pod issue
+        # attributed to it` in every triggered first-boot-replica run with
+        # every DaemonSet/Deployment it owns reading Healthy by the book.
+        #
+        # HONEST REGISTER: a well-evidenced HYPOTHESIS, not a proven fix --
+        # see the full derivation on the mirrored key in
+        # full-ai-cluster/k8s/applications/argocd/Application.yaml, which
+        # this key MUST STAY IN LOCKSTEP with (same reasoning as the
+        # health-lua key above).
+        #
+        # `Endpoints` (deprecated core/v1) stays excluded; every OTHER
+        # chart-default exclusion is reproduced verbatim -- a narrowing of
+        # the default by exactly one kind, never a blanket reversion. The
+        # chart's own `resource.customizations.ignoreResourceUpdates.
+        # discovery.k8s.io_EndpointSlice` default (unconditional, not shown
+        # here) keeps diff noise suppressed once this resource is tracked.
+        resource.exclusions: |
+          - apiGroups:
+            - ''
+            kinds:
+            - Endpoints
+          - apiGroups:
+            - coordination.k8s.io
+            kinds:
+            - Lease
+          - apiGroups:
+            - authentication.k8s.io
+            - authorization.k8s.io
+            kinds:
+            - SelfSubjectReview
+            - TokenReview
+            - LocalSubjectAccessReview
+            - SelfSubjectAccessReview
+            - SelfSubjectRulesReview
+            - SubjectAccessReview
+          - apiGroups:
+            - certificates.k8s.io
+            kinds:
+            - CertificateSigningRequest
+          - apiGroups:
+            - cert-manager.io
+            kinds:
+            - CertificateRequest
+          - apiGroups:
+            - cilium.io
+            kinds:
+            - CiliumIdentity
+            - CiliumEndpoint
+            - CiliumEndpointSlice
+          - apiGroups:
+            - kyverno.io
+            - reports.kyverno.io
+            - wgpolicyk8s.io
+            kinds:
+            - PolicyReport
+            - ClusterPolicyReport
+            - EphemeralReport
+            - ClusterEphemeralReport
+            - AdmissionReport
+            - ClusterAdmissionReport
+            - BackgroundScanReport
+            - ClusterBackgroundScanReport
+            - UpdateRequest
     notifications:
       enabled: false
     dex:
