@@ -1,0 +1,12 @@
+{
+  "pr_number": 17644,
+  "archive_path": "docs/history/pr-reviews/2026/09/24/PR-17644-docs-workitem-record-the-autodetect-correction-and-the-harness-lesson-wp29.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-25T00:00:03.609Z",
+  "schema_version": "v1",
+  "commit_sha": "3188c393fa3eceb159e0248b6c13b3f2b5c153f6",
+  "title": "docs(workitem): record the autodetect correction and the harness lesson (WP29)",
+  "state": "MERGED",
+  "merged_at": "2026-09-24T23:59:15Z",
+  "head_ref": "claude/wp29-record-ladder-correction"
+}
