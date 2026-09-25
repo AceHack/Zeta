@@ -1,0 +1,14 @@
+{
+  "id": "080d06b6ab3a8010a01300086581ec8c",
+  "at": "2026-09-25T04:31:44.976Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M3BDAST3087G0R001RQ60DR",
+    "type": "task",
+    "title": "Nine QEMU steps blame a missing ISO when the real cause is an earlier red NixOS test",
+    "slug": "nine-qemu-steps-blame-a-missing-iso-when-the-real-cause-is-a",
+    "priority": "P2",
+    "filename": "081M3BDAST3087G0R001RQ60DR-nine-qemu-steps-blame-a-missing-iso-when-the-real-cause-is-a.md"
+  }
+}
