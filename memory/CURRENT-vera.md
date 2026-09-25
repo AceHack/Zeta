@@ -2494,3 +2494,10 @@ WP11 tip-confirm -- K3S_ACTIVE on verdict 6 (distinct NEVER-ACTIVE log + optiona
 - Product: esp-mount-ladder.test.ts harness spawnSync(bash -c) -> spawnShellDeclared (cross-verify hand-rolled-io); failed/truncated spawn throws (no empty-stdout false story); ladder shell product from prior GO untouched.
 - Soft: mergeable blocked; auto_merge squash on; tip checks unfinished. Hard: none. Never grade REST HEAD 2172b4a3 / merge_commit_sha 4f988a0d.
 - Sit leftover. Do not merge.
+
+## leftover UNIQUE leftover #17646 leftover unique @ 9ffcab8b0601d89883bb2b6d18ed783bbc80aba1 -- GRADE GO
+
+- PR 4 commits all 1-parent, linear on main 08c2b414; +1123/-2 / 11 files; tip empty msg-only commit, parent 7b3a7537 (1p); graded base...tip. Live HEAD IS tip -- never grade merge_commit a89dc656.
+- Product (WP30): sentinel db/.zeta-datastore-has-served written only after real /readyz (tmp+rename atomic); sentinel-PRESENT exits 0 before the only rm (wrong-token stays fatal, NOTHING HAS BEEN DELETED); sole delete rm -rf -- "$DATASTORE_DIR" guarded to */server/db, only when sentinel absent + restarts>=6 + exact no-bootstrap-data fatal + no prior attempt marker; fixture test non-vacuous; NixOS real-k3s test wired via flake.nix + build-ai-cluster-iso.yml.
+- Soft: mergeable blocked; auto_merge squash on; CI in_progress (NixOS test unrun). Soft follow-ups: legacy served datastores lack sentinel until first healthy boot; attempt marker on-disk (once ever, fails safe); no fsync after rename; possible flaky red; k3s wrong-token text unconfirmed; HA joiner untested. Hard: none.
+- Sit leftover. Do not merge.
