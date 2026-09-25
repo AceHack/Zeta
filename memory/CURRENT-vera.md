@@ -2508,3 +2508,10 @@ WP11 tip-confirm -- K3S_ACTIVE on verdict 6 (distinct NEVER-ACTIVE log + optiona
 - Product (WP29 root cause): rung 4 last in both ladders after vfat/auto/ascii fail; offset = lsblk START*512 + PKNAME parent, no hard-coded fallback; fails closed on empty start / start 0 / missing parent / tmpfs fail; mcopy -s image@@offset to tmpfs at caller mountpoint, read-only; via=mtools-copy:/dev/X@@off; WHY space-free, tried=(\S*) intact; install/first-boot parity; 7 non-vacuous rung-4 tests; workitem stays open, #17638/#17640/#17641 do not close it.
 - Soft: mergeable blocked; auto_merge squash on; CI in_progress, 0 failed; no run yet shows via=mtools-copy carrying a boot; test gaps; tmpfs 0700 vs manual non-root; repo-pin reader still plain vfat. Hard: none.
 - Sit leftover. Do not merge.
+
+## leftover UNIQUE leftover #17646 leftover unique @ 1a03c3fa7541b0ef942473994ab814c4ab15c445 -- GRADE GO
+
+- Tip 1-commit +33/-0 / 2 files; parent 9ffcab8b (1p). Live HEAD IS tip -- never grade merge_commit 8352400e. Prior GO @ 9ffcab8b stands.
+- Product: served-datastore NixOS step if: always() && !(github.event_name == 'workflow_dispatch' && inputs.only_wp11) -- runs on every PR/push/schedule; skipped only on WP11-scoped dispatch; matches 7 sibling steps. sentinel-write.sh comment-only, accurate. Prior product untouched.
+- Soft: mergeable blocked; auto_merge squash on; CI in_progress, 0 failed; step-count wording nits. Hard: none.
+- Sit leftover. Do not merge.
