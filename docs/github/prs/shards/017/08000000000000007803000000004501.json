@@ -1,0 +1,12 @@
+{
+  "pr_number": 17665,
+  "archive_path": "docs/history/pr-reviews/2026/09/25/PR-17665-feat-ci-verdict-7-samples-pod-counts-too-so-a-red-can-name-its-own-cause-wp31.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-25T08:36:24.299Z",
+  "schema_version": "v1",
+  "commit_sha": "7b806b60cd7da03d2d85423fa3acec17ed10635e",
+  "title": "feat(ci): verdict 7 samples POD counts too, so a red can name its own cause (WP31)",
+  "state": "MERGED",
+  "merged_at": "2026-09-25T08:35:37Z",
+  "head_ref": "claude/wp31-roster-samples-pods"
+}
