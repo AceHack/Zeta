@@ -61,6 +61,23 @@ if eval "$READYZ_CMD" >/dev/null 2>&1; then
   if [ -e "$SENTINEL_FILE" ]; then
     say "[zeta-k3s-datastore-bootstrap-sentinel]   this datastore has now served (readyz succeeded); wrote $SENTINEL_FILE -- it will never be auto-discarded again."
   fi
+  exit 0
+fi
+
+# READYZ HAS NOT SUCCEEDED YET. Say so ONCE per boot, and never again.
+#
+# This branch is the one that can silently destroy a cluster, which is why
+# it refuses to be quiet. If the default READYZ_CMD above is ever wrong --
+# a typo, k3s absent from the unit's `path`, a moved kubeconfig -- then
+# readyz never succeeds, the sentinel is never written, and a datastore
+# that HAS served looks stillborn to the recovery script forever. The
+# failure would be invisible: a unit running happily, doing nothing,
+# reporting nothing. One line per boot is what makes it visible instead.
+WAITING_STATE_FILE="${ZETA_WAITING_STATE_FILE:-/run/zeta-k3s-datastore-bootstrap-sentinel.waiting}"
+if [ ! -e "$WAITING_STATE_FILE" ]; then
+  say "[zeta-k3s-datastore-bootstrap-sentinel]   VERDICT waiting-for-readyz: k3s has not yet answered readyz, so ${SENTINEL_FILE} is NOT written and this datastore does not yet count as having served. Polling."
+  mkdir -p "$(dirname -- "$WAITING_STATE_FILE")" 2>/dev/null || true
+  : > "$WAITING_STATE_FILE" 2>/dev/null || true
 fi
 
 exit 0

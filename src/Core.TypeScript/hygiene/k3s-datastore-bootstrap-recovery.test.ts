@@ -317,6 +317,8 @@ describe("the sentinel writer -- write-once, only on a real readyz success", () 
         LC_ALL: "C",
         ZETA_SENTINEL_FILE: sentinelFile,
         ZETA_K3S_READYZ_CMD: readyzCmd,
+        // Per-fixture, same reason as the recovery script's verdict latch.
+        ZETA_WAITING_STATE_FILE: posixJoin(root, "waiting-state"),
         ZETA_SERIAL_DEVICE: posixJoin(root, "no-such-serial-device"),
       },
       encoding: "utf8",
@@ -329,6 +331,17 @@ describe("the sentinel writer -- write-once, only on a real readyz success", () 
     const r = runSentinel(sentinelFile, root, "false");
     expect(r.status).toBe(0);
     expect(existsSync(sentinelFile)).toBe(false);
+  });
+
+  test("readyz fails: the writer SAYS it is not writing, rather than going quiet", () => {
+    // The catastrophic silent failure: if the real readyz command were ever
+    // wrong (typo, k3s not on the unit's path, moved kubeconfig), the
+    // sentinel would never be written, and a datastore that HAS served
+    // would look stillborn to the recovery script forever. This line is the
+    // only thing that would make that visible on the console.
+    const { root, sentinelFile } = sentinelFixture();
+    const r = runSentinel(sentinelFile, root, "false");
+    expect(r.stdout).toContain("VERDICT waiting-for-readyz");
   });
 
   test("readyz succeeds: sentinel is written", () => {

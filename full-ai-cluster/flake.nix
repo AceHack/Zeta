@@ -677,6 +677,21 @@
           k3s-agent-tls-self-heal =
             import ./nixos/tests/k3s-agent-tls-self-heal.nix { inherit pkgs; };
 
+          # 081M39CR74D087G0R002BEG2G4. Boots a real k3s server and proves the
+          # two halves of the stillborn-datastore guard that fixture tests
+          # structurally cannot reach: (1) the sentinel unit's DEFAULT readyz
+          # command really succeeds against a real k3s from inside its real
+          # systemd unit -- if it did not, no sentinel would ever be written
+          # and every healthy datastore would look stillborn to the recovery
+          # script, inverting the guard into the data loss it exists to
+          # prevent; and (2) a real, already-served datastore presented with a
+          # WRONG TOKEN reproduces the same ambiguous fatal a stillborn one
+          # does, and SURVIVES it. The decision logic itself is pinned over
+          # fixtures in src/Core.TypeScript/hygiene/k3s-datastore-bootstrap-recovery.test.ts.
+          # Hermetic. See nixos/tests/k3s-datastore-bootstrap-sentinel.nix.
+          k3s-datastore-bootstrap-sentinel =
+            import ./nixos/tests/k3s-datastore-bootstrap-sentinel.nix { inherit pkgs; };
+
           # TWO-NODE: an agent configured by nixos/modules/k3s-agent.nix joins
           # a server configured by nixos/modules/k3s-server.nix on one shared
           # virtual segment, and k3s-join-observer.nix announces it on serial
