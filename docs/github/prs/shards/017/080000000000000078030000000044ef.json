@@ -1,0 +1,12 @@
+{
+  "pr_number": 17647,
+  "archive_path": "docs/history/pr-reviews/2026/09/25/PR-17647-fix-installer-read-the-esp-through-the-whole-disk-when-the-partition-cannot-be-o.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-25T03:28:25.565Z",
+  "schema_version": "v1",
+  "commit_sha": "19a9087e1e6c1b95076ae24b0ba4fd3b06095a7a",
+  "title": "fix(installer): read the ESP through the whole disk when the partition cannot be opened (WP29 root cause)",
+  "state": "MERGED",
+  "merged_at": "2026-09-25T03:27:44Z",
+  "head_ref": "claude/wp29-esp-loop-rung"
+}
