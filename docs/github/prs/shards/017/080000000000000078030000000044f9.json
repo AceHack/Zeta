@@ -1,0 +1,12 @@
+{
+  "pr_number": 17657,
+  "archive_path": "docs/history/pr-reviews/2026/09/25/PR-17657-docs-installer-correct-the-ambiguity-claim-this-module-rested-on-wp30.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-25T05:44:27.015Z",
+  "schema_version": "v1",
+  "commit_sha": "0ce6de335adc5c2cb309ddad47c4bc28515b564f",
+  "title": "docs(installer): correct the ambiguity claim this module rested on (WP30)",
+  "state": "MERGED",
+  "merged_at": "2026-09-25T05:43:37Z",
+  "head_ref": "claude/wp30-ambiguity-claim-correction"
+}
