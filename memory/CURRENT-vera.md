@@ -2546,3 +2546,14 @@ WP11 tip-confirm -- K3S_ACTIVE on verdict 6 (distinct NEVER-ACTIVE log + optiona
 - Product: sed s/:[^:]*$/:wrongpassword.../ (L187-190) changes only the password of K10<CA>::server:<hex>; CA and user survive so normalisation passes; the replacement contains non-hex letters so it can never equal a generated password. The wrong-token restart is unconditional (L187-196); datastore present, non-empty, and sentinel present stay unconditional (L249-251); restore + readyz 300s unconditional (L257-264). Only served-refused wait + NOTHING HAS BEEN DELETED (L230-243) became observed; both branches print. TARGET 1 untouched. Refusal pinned in k3s-datastore-bootstrap-recovery.test.ts L116-146, L135-138, L263. Normalisation diagnosis confirmed in run 36093540290.
 - Soft: no assert that the tokens differ (suggest cmp -s fail after L190); upstream k3s storage.go says 'encrypted with different token', not 'no bootstrap data found', for a wrong token on existing bootstrap, so the observed branch is likely always NOT REPRODUCED (safe: served, nothing deleted; nixpkgs k3s version unchecked); '25' is ~55 normalisation failures; main red inferred (run 36095318786 in progress); blocked; auto_merge squash on; CI 0 failed / 10 in progress.
 - Hard fails: none. Disposition: sit leftover; do not merge.
+
+## leftover UNIQUE leftover #17654 leftover unique @ 39722755bd51548ce341c5db28ce2cf553a0d8d0 -- GRADE GO
+
+- PR #17654 (maximdolphin) fix(cluster): test the ExcludedResourceWarning/EndpointSlice hypothesis for cilium's stuck Progressing. Graded 2026-09-25 ~01:10 ET for Chief of Staff.
+- Tip: 1-parent on 6ea402ea (= base), not a merge. 1 commit, +312/-0, 4 files. Net PR diff identical to tip. Never grade merge_commit 3e649ea1.
+- Lockstep: Application.yaml:157-203 and argocd-install.yaml:160-206 parse to identical exclusion lists; both pin argo-cd chart 10.8.0.
+- Only discovery.k8s.io/EndpointSlice dropped vs argo-helm 10.8.0 defaults; core Endpoints stays excluded; other six default rules unchanged.
+- Mechanism filed as hypothesis (wi.md:70/85), with a revert outcome (wi.md:88-102). first-boot-replica.ts untouched.
+- Uniqueness of cilium: Argo CD v3.5.2 controller/state.go:754-763 warns only on excluded resources the Application renders; cilium 1.20.1 renders its own cilium-ingress EndpointSlice.
+- Soft: mechanism probably wrong (excluded resources are dropped before health; likelier cause is the cilium-ingress LoadBalancer Service Progressing until it gets an LB address, gitops-engine health_service.go:28-38); stale infra/k8s/bootstrap/argocd-install.yaml not updated and no parity check; comment nits ("for diff purposes", state.go attributed to gitops-engine); CI in progress, 0 failed at grading.
+- Hard fails: none. Sit leftover. Do not merge.
