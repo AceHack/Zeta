@@ -2587,3 +2587,16 @@ WP11 tip-confirm -- K3S_ACTIVE on verdict 6 (distinct NEVER-ACTIVE log + optiona
 - Header comment accurate (cdi/kubevirt excluded; spire/openbao/hindsight full contract); replica figures unsourced.
 - Soft: auto-merge on, could merge with HF2 open; one pod excuses a whole app; TS trusts roster.ok.
 - GO once HF2 fixed on a new 1-parent tip. Sit leftover. Do not merge.
+
+## leftover UNIQUE leftover #17660 leftover unique @ 42d22349748752478ed95c84a096fddefea5e042 -- GRADE GO
+
+2026-09-25 ~02:30 AM ET. #17660 (maximdolphin, WP31): docs(ci) header naming the owner of each known unconverged app, plus backlog workitem 081M3BKQFNC087G0R003MDGSAX (sync-policy needs a second value, operator-action). Tip 42d22349 is 1-parent on daec93bc (the PR base, an ordinary archive commit, not a merge); +131/-2 in 3 files. Merge_commit_sha 6406a3ed not graded.
+
+- .nix change is comment-only: one hunk at L178-197, every line starts with '#', header comments end at L214 and Nix code starts at L215.
+- Ownership claims are consistent: cilium and weaviate are WP26, openbao is sealed by design, hindsight needs an external key.
+- Workitem and event JSON are well-formed and match sibling conventions; the sync-policy vocabulary is described accurately (manual-sync-policy.ts L77, L80-83, L50-62).
+- HF2 from #17656 is now on main (landed as 6ff5e299) and untouched here: nodes query ends in `|| true` at L863-865, no label count at L737, exclusion at L807-809, pass gate at L946-951. #17660 does not claim the gate is fail-closed.
+- Soft S1: the new block owns every known red but not the known false green from HF2; file HF2 as a workitem and name it there.
+- Soft S2: the workitem keeps the coexisting-automated refusal for operator-action, which would reject openbao and hindsight, the two apps it is meant for.
+- Soft S3: cilium's ExcludedResourceWarning cause is stated as fact but is a hypothesis in #17654; weaviate is not being worked. Soft S4: FOUR KNOWN comes from the Docker replica.
+- No hard fails. Sit leftover. Do not merge.
