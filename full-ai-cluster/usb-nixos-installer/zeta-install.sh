@@ -4085,6 +4085,76 @@ if [ -d "$ZETA_HOME" ]; then
     # backoff; only the FINAL failure takes the non-fatal WARN + diag + PARTIAL-PROVISION path.
     # This is deliberately scoped to the first-boot path — the shared tools/setup/install.sh (also
     # consumed by CI runners + devcontainers, GOVERNANCE §24) is left untouched.
+    # ZETA-INSTALL-FAILURE-CAUSE-BEGIN -- pure text processing over the install
+    # log: no network, no globals, no side effects. Shell-parity tested against
+    # a real bash in
+    # src/Core.TypeScript/installer/install-failure-cause-shell-parity.test.ts,
+    # same discipline as longhorn-capacity-preflight-shell-parity.test.ts.
+    #
+    # 081M3BVERK0087G0R001GVH1QP. MEASURED, run 36110246885: the first-boot
+    # install failed after all three attempts, and everything the operator was
+    # given was
+    #
+    #     WARN: install.sh FAILED rc=1 after 3 attempts
+    #     Location: src/toolset/toolset_install.rs:244
+    #
+    # -- a Rust source location in a tool they did not know they were running.
+    # The actual cause was GitHub's UNAUTHENTICATED API rate limit (60/hour PER
+    # SOURCE IP) refusing the artifact-attestation verification that
+    # `.mise.toml`'s trust policy requires. Nothing about the machine was wrong
+    # and nothing the operator could read said so.
+    #
+    # A cause they cannot act on is the same as no cause at all, so this turns
+    # the known signatures into a sentence that names the dependency and what
+    # to do about it. Anything unrecognised prints NOTHING and falls through to
+    # the existing generic error-line diag below -- this narrows the message
+    # when it CAN, and never replaces evidence with a guess.
+    zeta_install_failure_cause() {
+      # $1 = the install log. stdout: a named, actionable diagnosis, or nothing.
+      [ -f "$1" ] || return 0
+      if grep -qiE 'API rate limit exceeded|rate limit exceeded for' "$1" 2>/dev/null; then
+        # Which tools, by name, so the operator can see it is one dependency
+        # and not their hardware.
+        # The same tool appears on two lines in mise's output -- once as
+        # `mise ERROR Failed to install X` and once as `0: Failed to install X:`
+        # -- and the trailing colon on the second makes `sort -u` keep BOTH,
+        # so the operator was told two tools were blocked when one was. Strip
+        # trailing punctuation before deduping. (Found by this block's own
+        # parity test, not in the field.)
+        _blocked=$(grep -oE 'Failed to install [A-Za-z0-9:@./_-]+' "$1" 2>/dev/null \
+          | sed -e 's/^Failed to install //' -e 's/[:.,]*$//' | sort -u | tr '\n' ' ')
+        _reset=$(grep -oE '"?x-ratelimit-reset"?[": ]+[0-9]+' "$1" 2>/dev/null | grep -oE '[0-9]+$' | head -1)
+        echo "CAUSE: GitHub's UNAUTHENTICATED API rate limit (60 requests/hour PER SOURCE IP) refused the artifact-attestation verification that this repo's mise trust policy requires before installing a pinned tool."
+        echo "CAUSE: NOTHING IS WRONG WITH THIS MACHINE. The limit is shared by every device on your public IP -- an office NAT, a CGNAT ISP or a campus network may have spent it before you started."
+        [ -n "$_blocked" ] && echo "CAUSE: blocked tool(s): ${_blocked}"
+        if [ -n "$_reset" ]; then
+          echo "CAUSE: the limit resets at $(date -u -d "@$_reset" +%Y-%m-%dT%H:%M:%SZ 2>/dev/null || echo "epoch $_reset")."
+        else
+          echo "CAUSE: the reset time was not in the response; GitHub's window is one hour from your first request."
+        fi
+        echo "REMEDY: wait for the reset and re-run 'cd ~/Zeta && ZETA_HOST_TIER=full tools/setup/install.sh', or re-run from a network with a different public IP, or export GITHUB_TOKEN=<a token> first (raises the limit to 5000/hour)."
+        echo "REMEDY: do NOT disable attestation verification to get past this. The policy catches real supply-chain regressions; the fix is to verify EARLIER (pre-staged at image-build time), not to verify LESS."
+        return 0
+      fi
+      if grep -qiE 'could not resolve host|temporary failure in name resolution|name or service not known' "$1" 2>/dev/null; then
+        echo "CAUSE: DNS resolution failed during the install -- this node could not look up a hostname it needed."
+        echo "REMEDY: check connectivity (the role prompt offers nmtui), then re-run 'cd ~/Zeta && ZETA_HOST_TIER=full tools/setup/install.sh'."
+        return 0
+      fi
+      if grep -qiE 'connection refused|connection timed out|network is unreachable|failed to connect' "$1" 2>/dev/null; then
+        echo "CAUSE: a network connection failed during the install -- a host this node needed was unreachable."
+        echo "REMEDY: check connectivity (the role prompt offers nmtui), then re-run 'cd ~/Zeta && ZETA_HOST_TIER=full tools/setup/install.sh'."
+        return 0
+      fi
+      if grep -qiE 'no space left on device|disk quota exceeded' "$1" 2>/dev/null; then
+        echo "CAUSE: the disk filled during the install."
+        echo "REMEDY: free space under \$HOME and /nix, then re-run 'cd ~/Zeta && ZETA_HOST_TIER=full tools/setup/install.sh'."
+        return 0
+      fi
+      return 0
+    }
+    # ZETA-INSTALL-FAILURE-CAUSE-END
+
     install_rc=1
     install_max_attempts=3
     install_attempt=1
@@ -4114,6 +4184,15 @@ if [ -d "$ZETA_HOME" ]; then
       # are different instructions — #9937's rc-capture + marker (below) keep the "notice".
       if [ "$install_rc" -ne 0 ]; then
         echo "[iter-5.5.0]   WARN: install.sh FAILED rc=$install_rc after ${install_max_attempts} attempts — runtimes/agent CLIs may be partial; retry post-reboot via 'cd ~/Zeta && ZETA_HOST_TIER=full tools/setup/install.sh'"
+        # 081M3BVERK0087G0R001GVH1QP: the NAMED cause first, when there is one.
+        # It goes ABOVE the generic error-line grep deliberately -- the grep
+        # below is 40 lines of everything matching /error|fail|cannot/, and the
+        # one sentence that tells the operator what to do must not be buried in
+        # it. Prints nothing when the cause is not recognised, so the generic
+        # diag remains the floor and never the ceiling.
+        zeta_install_failure_cause "$install_log" | while IFS= read -r _cause_line; do
+          [ -n "$_cause_line" ] && echo "[iter-5.5.0]   ${_cause_line}"
+        done
         # 081KZETP6AT: surface the actual error lines from the FULL log (verbose output can bury the
         # failure above tail's window). Regardless of whether the cause is mise, bun, nix, or a script.
         echo "[iter-5.5.0]   --- install.sh error lines (081KZETP6AT diag) ---"
