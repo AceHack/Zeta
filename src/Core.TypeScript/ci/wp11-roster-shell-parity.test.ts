@@ -555,3 +555,46 @@ describe("zeta_wp11_roster_counts", () => {
     expect(counts(facts, "nodesonly.tsv")).toEqual([0, 0, 0, 0, 0, 0]);
   });
 });
+
+describe("zeta_wp11_count_or_unknown — a failed probe is `-`, NEVER `0`", () => {
+  function countOrUnknown(status: number, stdout: string): string {
+    writeFileSync(join(workdir, "count-input.txt"), stdout, "utf8");
+    const runner = join(workdir, "runner.sh");
+    writeFileSync(
+      runner,
+      `set -uo pipefail\nAWK="$(command -v awk)"\nsource ./parity-block.sh\n` +
+        `zeta_wp11_count_or_unknown ${String(status)} "$(cat count-input.txt)"\n`,
+      "utf8",
+    );
+    const result = spawnSync("bash", ["runner.sh"], { cwd: workdir, encoding: "utf8" });
+    if (result.status !== 0) throw new Error(`bash exited ${String(result.status)}: ${result.stderr}`);
+    return result.stdout.trim();
+  }
+
+  /**
+   * THE LOAD-BEARING CASE, and the one the first version of this guard could
+   * not express. A probe that FAILED and a cluster that genuinely has no pods
+   * produce the SAME stdout — nothing. Only the exit status separates them,
+   * and the first version tested stdout for emptiness instead, which can never
+   * be true once `wc -l` has turned "nothing" into `0`.
+   */
+  it("a FAILED probe with empty output is `-`", () => {
+    expect(countOrUnknown(1, "")).toBe("-");
+  });
+
+  it("a SUCCEEDING probe with empty output is `0` — a real, measured zero", () => {
+    expect(countOrUnknown(0, "")).toBe("0");
+  });
+
+  it("a FAILED probe that still printed something is `-` — the status wins", () => {
+    expect(countOrUnknown(1, "pod-a\npod-b\n")).toBe("-");
+  });
+
+  it("counts every non-blank row, including the last with no trailing newline", () => {
+    expect(countOrUnknown(0, "ns a 1/1 Running\nns b 1/1 Running\nns c 0/1 Pending")).toBe("3");
+  });
+
+  it("ignores blank lines rather than counting them as pods", () => {
+    expect(countOrUnknown(0, "ns a 1/1 Running\n\n\nns b 1/1 Running\n")).toBe("2");
+  });
+});

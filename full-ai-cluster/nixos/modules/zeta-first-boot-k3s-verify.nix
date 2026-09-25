@@ -900,6 +900,33 @@ in
             }
           ' "$1"
         }
+        zeta_wp11_count_or_unknown() {
+          # $1 = the probe's EXIT STATUS. $2 = the probe's stdout.
+          # stdout: the number of non-blank lines, or "-" when the probe failed.
+          #
+          # THE EXIT STATUS IS THE ONLY THING THAT DISTINGUISHES THEM, and the
+          # first version of this guard did not use it. It wrote
+          #
+          #     t="$(probe | wc -l | tr -d ' ')"; [ -z "$t" ] && t="-"
+          #
+          # and that emptiness test CAN NEVER BE TRUE: a probe that fails
+          # prints nothing, `wc -l` counts nothing and prints `0`, and `0` is
+          # not empty. So the guard written to stop a failed probe reading as
+          # zero reported zero on every failed probe -- a check that cannot
+          # fail, guarding against checks that cannot fail. MEASURED run
+          # 36114004943: two samples printed `pods 0/0` and NOT ONE ever
+          # printed `pods -/-`, on a cluster carrying ~148 pods.
+          #
+          # awk rather than `wc -l` because command substitution strips the
+          # trailing newline, and `wc -l` would undercount the last row by one.
+          if [ "$1" -ne 0 ]; then
+            echo "-"
+            return 0
+          fi
+          printf '%s
+' "$2" | "$AWK" 'NF { n++ } END { print n + 0 }'
+        }
+
         # ZETA-WP11-ROSTER-END
 
         collect_roster_facts() {
@@ -1108,11 +1135,29 @@ in
             # concerned). Failures are non-fatal to the sample and report `-`
             # rather than `0` -- a probe that did not answer must never look
             # like a cluster with no pods, which is the defect this verdict has
-            # now been bitten by once at this very layer.
-            ROSTER_POD_TOTAL="$(kc get pods -A --no-headers 2>/dev/null | "$WC" -l | "$TR" -d ' ')"
-            if [ -z "$ROSTER_POD_TOTAL" ]; then ROSTER_POD_TOTAL="-"; fi
-            ROSTER_POD_RUNNING="$(kc get pods -A --no-headers --field-selector=status.phase=Running 2>/dev/null | "$WC" -l | "$TR" -d ' ')"
-            if [ -z "$ROSTER_POD_RUNNING" ]; then ROSTER_POD_RUNNING="-"; fi
+            # now been bitten by twice at this very layer.
+            #
+            # THE SECOND TIME WAS THIS GUARD ITSELF. The first version wrote
+            #
+            #     ROSTER_POD_TOTAL="$(kc get pods -A --no-headers | $WC -l | $TR -d ' ')"
+            #     if [ -z "$ROSTER_POD_TOTAL" ]; then ROSTER_POD_TOTAL="-"; fi
+            #
+            # and the emptiness test CAN NEVER BE TRUE: a kubectl that fails
+            # prints nothing, `wc -l` counts nothing and prints `0`, and `0` is
+            # not empty. So the guard against "a failed probe must not read as
+            # zero" itself reported zero on a failed probe -- a check that
+            # cannot fail, guarding against checks that cannot fail. MEASURED
+            # run 36114004943: two samples printed `pods 0/0` and NOT ONE ever
+            # printed `pods -/-`, on a cluster carrying ~148 pods.
+            #
+            # The exit STATUS is the only thing that distinguishes them, so
+            # that is what is tested now. `grep -c .` rather than `wc -l`
+            # because command substitution strips the trailing newline and
+            # `wc -l` would undercount the last row by one.
+            _pods_all="$(kc get pods -A --no-headers 2>/dev/null)"; _pods_all_rc=$?
+            ROSTER_POD_TOTAL="$(zeta_wp11_count_or_unknown "$_pods_all_rc" "$_pods_all")"
+            _pods_run="$(kc get pods -A --no-headers --field-selector=status.phase=Running 2>/dev/null)"; _pods_run_rc=$?
+            ROSTER_POD_RUNNING="$(zeta_wp11_count_or_unknown "$_pods_run_rc" "$_pods_run")"
 
             # Requirement: report progress WHILE waiting. Sixty-seven minutes of
             # silence on a serial log is indistinguishable from a hang.
