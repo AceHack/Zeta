@@ -1,0 +1,14 @@
+{
+  "id": "080d06b743382810a013000827d2a7f5",
+  "at": "2026-09-25T04:52:30.085Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M3BEGSQR087G0R003610CGB",
+    "type": "task",
+    "title": "WP11 verdict 7: every Application that CAN converge on this node reaches Synced+Healthy; the rest are named and excluded",
+    "slug": "wp11-verdict-7-every-application-that-can-converge-on-this-n",
+    "priority": "P2",
+    "filename": "081M3BEGSQR087G0R003610CGB-wp11-verdict-7-every-application-that-can-converge-on-this-n.md"
+  }
+}

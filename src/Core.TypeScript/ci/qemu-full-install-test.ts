@@ -379,7 +379,7 @@ export function assertNothingToHealAfterGracefulShutdown(
 // hostname instead of the baked `node-qemu-k3s-verify`. EVERY ESP injection was
 // lost, not just this one. The comparison case is main's scheduled run
 // 35960376641, whose guest found `/tmp/zeta-boot-esp/zeta-authorized-keys.pub`,
-// the injected hostname, and the WP11 marker, and produced all six verdicts.
+// the injected hostname, and the WP11 marker, and produced all seven verdicts.
 // Both bakes took ~2s and printed the same two harness lines, so the divergence
 // is on the guest's ESP-probe side, not in the bake's own output.
 //
@@ -2218,6 +2218,56 @@ export interface K3sFirstBootVerifyVerdict {
      */
     readonly k3sActive?: boolean;
   };
+  /**
+   * 081M3BEGSQR087G0R003610CGB (WP31) — verdict 7/7. Every ArgoCD Application
+   * that CAN converge on this node reached Synced+Healthy inside the bound;
+   * every one that cannot is named in `apps` with its bucket and reason.
+   *
+   * OPTIONAL IN THE TYPE, FATAL AT RUNTIME. Older verdict JSON (pre-WP31) has
+   * no such key, and a parser that threw on it could not read an archived
+   * serial log. But the module and this parser ship in the same commit, so on
+   * a LIVE run its absence means the unit did not get as far as emitting it —
+   * `summarizeK3sFirstBootVerifyVerdict` therefore reports ABSENT and FAILS,
+   * rather than treating a missing verdict as a passing one. That equivalence
+   * is the exact class this lane keeps being bitten by.
+   */
+  readonly rosterConverged?: {
+    readonly ok: boolean;
+    readonly apps: readonly K3sFirstBootVerifyRosterApp[];
+    readonly elapsedSeconds: number;
+    /** Applications observed (excludes `unattributed-pod` rows, which name pods). */
+    readonly appCount: number;
+    readonly convergedCount: number;
+    readonly unconvergedCount: number;
+    readonly excludedCount: number;
+    readonly undecidableCount: number;
+    readonly unattributedPodCount: number;
+    readonly samples: number;
+    /**
+     * `zeta-root`'s OWN sync status. `Synced` is what establishes the roster
+     * is COMPLETE — an Application the root never created is invisible to a
+     * loop over live Applications, so "0 unconverged" without this would be
+     * the empty-roster false green.
+     */
+    readonly rootSyncStatus: string;
+    /** Same value as `k3sServiceActive.ok`, carried here for the same reason `noBadPods.k3sActive` is. */
+    readonly k3sActive: boolean;
+  };
+}
+
+/** One row of verdict 7's roster classification. `bucket` is the discriminator; `detail` always says why. */
+export interface K3sFirstBootVerifyRosterApp {
+  /**
+   * `converged` | `unconverged` | `excluded-manual-sync` |
+   * `excluded-unschedulable` | `undecidable` | `unattributed-pod`.
+   * A plain string rather than a union: the producer is an awk program in a
+   * `.nix` module, and a union here would turn a new bucket it learns to emit
+   * into a parse failure rather than a line a reader can still read.
+   */
+  readonly bucket: string;
+  /** The Application name, or `namespace/pod` for an `unattributed-pod` row. */
+  readonly name: string;
+  readonly detail: string;
 }
 
 /**
@@ -2248,7 +2298,7 @@ export function parseK3sFirstBootVerifyVerdict(
 }
 
 /**
- * Exported for unit tests. The single pass/fail gate over all six verdicts,
+ * Exported for unit tests. The single pass/fail gate over all seven verdicts,
  * plus a human-readable line per verdict for console + $GITHUB_STEP_SUMMARY.
  */
 export function summarizeK3sFirstBootVerifyVerdict(verdict: K3sFirstBootVerifyVerdict): {
@@ -2256,13 +2306,21 @@ export function summarizeK3sFirstBootVerifyVerdict(verdict: K3sFirstBootVerifyVe
   readonly lines: readonly string[];
 } {
   const helmOk = verdict.helmJobs.jobs.every((j) => j.complete);
+  // 081M3BEGSQR087G0R003610CGB: ABSENT is a FAILURE, never a pass. The module
+  // and this parser ship together, so a verdict block with no
+  // `rosterConverged` key means the unit stopped before emitting it — and a
+  // missing check that reads like a passing one is the class this lane has
+  // now been bitten by nine times.
+  const roster = verdict.rosterConverged;
+  const rosterOk = roster !== undefined && roster.ok;
   const ok =
     verdict.bootedMultiUser.ok &&
     verdict.k3sServiceActive.ok &&
     verdict.nodeReady.ok &&
     helmOk &&
     verdict.rootLanded.ok &&
-    verdict.noBadPods.ok;
+    verdict.noBadPods.ok &&
+    rosterOk;
 
   const lines: string[] = [
     `1. bootedMultiUser: ${verdict.bootedMultiUser.ok ? "PASS" : "FAIL"} (elapsed ${verdict.bootedMultiUser.elapsedSeconds}s)`,
@@ -2280,6 +2338,20 @@ export function summarizeK3sFirstBootVerifyVerdict(verdict: K3sFirstBootVerifyVe
     ...verdict.noBadPods.pods.map(
       (p) => `     - ${p.namespace}/${p.name}: status=${p.status} restarts=${p.restarts}`,
     ),
+    roster === undefined
+      ? "7. rosterConverged: FAIL — ABSENT from the verdict JSON. The module emitting this block " +
+        "ships with this parser, so a missing verdict 7 means the unit stopped before reaching it; " +
+        "it is NOT a clean roster."
+      : `7. rosterConverged: ${roster.ok ? "PASS" : "FAIL"} (elapsed ${roster.elapsedSeconds}s, ` +
+        `${roster.samples} sample(s)) — ${roster.convergedCount}/${roster.appCount} Synced+Healthy, ` +
+        `${roster.unconvergedCount} did not converge, ${roster.excludedCount} excluded, ` +
+        `${roster.undecidableCount} undecidable, ${roster.unattributedPodCount} unattributed pod(s); ` +
+        `zeta-root sync=${roster.rootSyncStatus}, k3sActive=${String(roster.k3sActive)}`,
+    // Every non-converged row, including EXCLUSIONS. An exclusion nobody can
+    // see is how a verdict becomes decorative; a converged app needs no line.
+    ...(roster?.apps ?? [])
+      .filter((a) => a.bucket !== "converged")
+      .map((a) => `     - [${a.bucket}] ${a.name}: ${a.detail}`),
   ];
   return { ok, lines };
 }
@@ -2306,7 +2378,7 @@ async function waitForK3sFirstBootVerifyVerdict(serialLogPath: string): Promise<
       return {
         exitCode: summary.ok ? 0 : 1,
         reason: summary.ok
-          ? "WP11 phase 3 — all six k3s first-boot verdicts passed"
+          ? "WP11 phase 3 — all seven k3s first-boot verdicts passed"
           : `WP11 phase 3 — one or more k3s first-boot verdicts failed:\n${summary.lines.join("\n")}`,
         serialLogTail: content.slice(-3000),
         elapsedSeconds: elapsedSec,
@@ -3202,7 +3274,7 @@ async function main(): Promise<never> {
           artifactSerialLogPath,
         );
       }
-      console.log("[qemu-full-install-test] WP11 phase 3 ok — all six k3s first-boot verdicts passed");
+      console.log("[qemu-full-install-test] WP11 phase 3 ok — all seven k3s first-boot verdicts passed");
     }
   }
 

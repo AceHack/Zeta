@@ -37,7 +37,7 @@
 # marker (see lib.ts `qemuK3sFirstBootVerifyMarker` / the zeta-install.sh
 # probe next to `zeta-qemu-bake-test-cred`).
 #
-# SIX NAMED VERDICTS, ONE JSON BLOB, BRACKETED ON SERIAL
+# SEVEN NAMED VERDICTS, ONE JSON BLOB, BRACKETED ON SERIAL
 # ---------------------------------------------------------
 #   1. bootedMultiUser  -- this unit running at all IS the evidence (multi-user.target reached)
 #   2. k3sServiceActive -- `systemctl is-active k3s.service`
@@ -55,6 +55,133 @@
 #                            nor still accumulating restarts. Every still-bad
 #                            pod + its restart count + a describe/logs dump is
 #                            reported, never just a boolean (081M39T5661087G0R001FTJ78W).
+#   7. rosterConverged   -- 081M3BEGSQR087G0R003610CGB (WP31). Every ArgoCD
+#                            Application that CAN converge on this node reaches
+#                            Synced+Healthy inside a bound; every one that
+#                            cannot is NAMED with its reason and excluded.
+#                            See "VERDICT 7" below -- it is the one that
+#                            answers the maintainer's actual question.
+#
+# VERDICT 7 -- WHY IT EXISTS AND WHY IT IS NOT "ALL APPLICATIONS HEALTHY"
+# -----------------------------------------------------------------------
+# Verdicts 1-6 stop short of the question that prompted this whole lane:
+# "will the applications on the helm chart start up correctly when I plug the
+# USB in". `helmJobs` covers SEVEN bootstrap charts (cilium ... argocd) and
+# nothing else; `rootLanded` means the app-of-apps root OBJECT exists, never
+# that its ~48 children converged. So the roster question was answered only by
+# the Docker replica (first-boot-replica.ts) and the kind lanes, and never once
+# on a real installed disk.
+#
+# A naive "every Application Healthy" verdict would be UNPASSABLE, and an
+# unpassable verdict is worse than an absent one -- it trains a reader to
+# ignore a red. Two classes legitimately cannot converge here:
+#
+#   * DECLARED MANUAL-SYNC. `cdi`, `kubevirt`, `ollama`, `vllm` omit
+#     `spec.syncPolicy.automated` ON PURPOSE and say so in a machine-readable
+#     annotation (`zeta.io/sync-policy: manual` + a non-empty
+#     `zeta.io/sync-policy-reason`). Nothing on this boot runs
+#     `argocd app sync`, so they can never reach Synced.
+#   * UNSCHEDULABLE ON THIS FLEET. A workload whose `nodeSelector` demands a
+#     label no Node carries (`zeta.io/gpu: nvidia` against a box with an Intel
+#     Arc) stays Pending forever BY DESIGN.
+#
+# DERIVED, NEVER A HARDCODED LIST -- and derived from the SAME definitions the
+# rest of the tree already uses, not a second opinion:
+#
+#   * the manual-sync convention is `manual-sync-policy.ts`'s, read off the
+#     LIVE Application object (ArgoCD applies those annotations verbatim, so
+#     the declaration travels with the object and needs no repo checkout on
+#     the installed disk). The three refusals that file names are reproduced
+#     exactly: annotation without a reason, annotation WITH an `automated:`
+#     block, and an omitted block with no annotation are all MALFORMED and
+#     earn the FULL Synced+Healthy contract -- a malformed declaration must
+#     never be cheaper to satisfy than a correct one.
+#   * an excluded manual-sync app is still ASSERTED, by
+#     `manual-sync-policy.ts`'s own weaker contract: ArgoCD must have COMPLETED
+#     a comparison (sync in {Synced, OutOfSync}, never Unknown -- that would be
+#     a ComparisonError) and health must be Missing (never synced here) or
+#     Healthy (synced by hand). An exclusion that asserts nothing is a
+#     decoration.
+#   * schedulability is decided the way KUBERNETES decides it: a Pending pod's
+#     `spec.nodeSelector` pair against the union of every Node's labels. In
+#     cluster this is EXACT, which is the half `schedulable-demand.ts` (WP28,
+#     PR #17620) could only call `undecidable` from a checked-in `ClusterNode`
+#     registration -- there, `lspci ... | head -1` cannot prove a second card
+#     is ABSENT; here, the scheduler's own input (Node labels) is readable
+#     directly and proves it.
+#
+# THREE OUTCOMES, NEVER TWO, AND THE THIRD IS SAID OUT LOUD. `undecidable` is
+# the WP28 disposition carried over: this check evaluates `spec.nodeSelector`
+# and NOT `affinity.nodeAffinity` (a full match-expression language; a second
+# evaluator for it would be exactly the second reasoning this reuses
+# `schedulable-demand.ts` to avoid). A Pending pod carrying required
+# nodeAffinity therefore makes its Application `undecidable` -- reported by
+# name, counted separately, and FAILING the verdict, because "I could not
+# tell" is not "it worked".
+#
+# THE EMPTY-ROSTER FALSE GREEN, CLOSED. "0 unconverged out of 0 Applications"
+# is the exact shape this effort has now found NINE times: a check whose
+# failure and whose absence look identical. Three guards: (a) the verdict
+# carries `k3sActive` and `appCount` into its own JSON, the way verdict 6
+# already does for `podCount`; (b) it requires `zeta-root` ITSELF to report
+# `sync=Synced` -- that is what establishes the roster is COMPLETE, since an
+# Application the root never created is invisible to a loop over live
+# Applications; (c) a provably-unschedulable Pending pod that cannot be
+# attributed to exactly one Application is reported as `unattributed-pod`
+# rather than dropped, and fails the verdict.
+#
+# THE BOUND, AND WHERE THE NUMBER CAME FROM. `k3s-first-boot-roster.nix`'s own
+# header budgets 45-70 min for k3s plus ~2-3 GB of Helm image pulls converging
+# on a comparable VM. The app-of-apps roster is a strict SUPERSET of that
+# bring-up (~48 more Applications), so the bound is that range's UPPER end --
+# 70 min = 4200s -- never a mid value and never a number chosen to make one
+# run pass. It is then CLAMPED by this unit's existing overall
+# `DEADLINE_SECONDS` (also 4200s), which is what actually bites: verdicts 1-6
+# resolve at ~150s on a green run, leaving ~4050s for verdict 7. That clamp is
+# what keeps the unit emitting before the harness's own
+# `K3S_VERIFY_TIMEOUT_SECONDS` (4500s) and inside the workflow step's
+# `timeout-minutes: 100` -- MEASURED run 36073981145: the ENTIRE step
+# (ISO boot + install + reboot + all six verdicts) took 19m48s, so ~80 min of
+# that budget was unused. No workflow or harness timeout changes with this.
+#
+# WHAT THIS DELIBERATELY DOES *NOT* EXCLUDE, CROSS-CHECKED AGAINST THE REPLICA.
+# The Docker-replica lane (first-boot-replica.ts stage 6) measured the same
+# roster on 2026-09-25: 42 Applications, 35 Healthy, 5 DIVERGENCE, 2 FAIL. The
+# two derivations agree on four and differ on three, and every difference runs
+# in the same direction -- THIS verdict excludes LESS:
+#
+#   cdi, kubevirt    -> both call it manual-sync. AGREE.
+#   cilium, weaviate -> both red (Synced+Progressing; cilium names its own
+#                       cause, an ExcludedResourceWarning on EndpointSlice
+#                       cilium-ingress). AGREE, and WP26 owns that fix.
+#   spire            -> the replica classifies its crash loop as confirmed
+#                       NON-METAL (nested-container DNS). This lane IS metal,
+#                       so spire must converge here, and excluding it would
+#                       import a Docker artifact into a metal verdict.
+#                       DIFFERING IS THE CORRECT BEHAVIOUR -- and spire reading
+#                       unconverged here would be a finding about that
+#                       classification, not about this check.
+#   openbao          -> sealed by design on a fresh cluster.
+#   hindsight        -> needs an external API key no fresh cluster can hold.
+#
+# openbao and hindsight are a REAL gap, left open on purpose. Both are
+# defensible non-convergences that hold on metal too, and neither carries a
+# machine-readable declaration this unit could read off the live object.
+# `zeta.io/sync-policy: manual` is the wrong annotation for them -- neither is
+# manual-SYNC; both are converges-only-after-an-operator-action, which the
+# convention has no word for yet. `full-ai-cluster/INJECTION-POINTS.md`'s
+# `**EXTERNAL**` table is the maintained source for hindsight's half and
+# first-boot-replica.ts already parses it, but that table lives in the REPO and
+# this unit runs on an installed disk with no checkout; baking a snapshot in at
+# Nix eval time would create a second, separately-drifting copy of a roster.
+# So they stay `unconverged`, named on serial with their last Sync+Health
+# state. Widening a bucket until a red goes green is the one move that would
+# make this verdict stop meaning anything.
+#
+# AND IT REPORTS WHILE IT WAITS. Sixty-seven minutes of silence on a serial log
+# is indistinguishable from a hang, so every poll prints a counts line
+# (`N Synced+Healthy, M progressing, K excluded, U undecidable`) and every
+# fifth poll names what is still outstanding.
 #
 # Never blocks real boot: RemainAfterExit + TimeoutStartSec=0 so the oneshot
 # is never killed mid-poll by systemd's 90s default (a killed oneshot reads
@@ -192,7 +319,7 @@ in
 
         BOOTED_MULTI_USER=true
         BOOTED_ELAPSED=$(elapsed)
-        log "[wp11-k3s-verify] verdict 1/6 bootedMultiUser=true elapsed=''${BOOTED_ELAPSED}s"
+        log "[wp11-k3s-verify] verdict 1/7 bootedMultiUser=true elapsed=''${BOOTED_ELAPSED}s"
 
         # Why k3s is NOT active, mirrored line by line to serial. MEASURED run
         # 35717757526: k3sServiceActive=false after 4201s with nothing on serial
@@ -266,7 +393,7 @@ in
           "$SLEEP" 5
         done
         K3S_ACTIVE_ELAPSED=$(elapsed)
-        log "[wp11-k3s-verify] verdict 2/6 k3sServiceActive=''${K3S_ACTIVE} elapsed=''${K3S_ACTIVE_ELAPSED}s"
+        log "[wp11-k3s-verify] verdict 2/7 k3sServiceActive=''${K3S_ACTIVE} elapsed=''${K3S_ACTIVE_ELAPSED}s"
         if [ "$K3S_ACTIVE" = false ]; then k3s_diag "deadline"; fi
 
         # --- verdict 3: node Ready (Cilium up) --------------------------------
@@ -282,7 +409,7 @@ in
           done
         fi
         NODE_READY_ELAPSED=$(elapsed)
-        log "[wp11-k3s-verify] verdict 3/6 nodeReady=''${NODE_READY} elapsed=''${NODE_READY_ELAPSED}s"
+        log "[wp11-k3s-verify] verdict 3/7 nodeReady=''${NODE_READY} elapsed=''${NODE_READY_ELAPSED}s"
 
         # --- verdict 4: rostered HelmChart helm-install Jobs -------------------
         HELM_JOBS_JSON="[]"
@@ -314,7 +441,7 @@ in
             '. + [{chart: $chart, exists: $exists, complete: $complete, failedAttempts: $failed}]')"
         done
         HELM_JOBS_ELAPSED=$(elapsed)
-        log "[wp11-k3s-verify] verdict 4/6 helmJobs elapsed=''${HELM_JOBS_ELAPSED}s"
+        log "[wp11-k3s-verify] verdict 4/7 helmJobs elapsed=''${HELM_JOBS_ELAPSED}s"
 
         # --- verdict 5: root-application lands (ROOT_LANDED) -------------------
         # Same three-outcome discriminator k3s-first-boot-roster.nix uses:
@@ -340,7 +467,7 @@ in
         elif [ "$ROOT_CRD_SEEN" != "true" ]; then
           ROOT_VERDICT="inconclusive-crd-absent"
         fi
-        log "[wp11-k3s-verify] verdict 5/6 rootLanded=''${ROOT_APPLIED} crdSeen=''${ROOT_CRD_SEEN} verdict=''${ROOT_VERDICT} elapsed=''${ROOT_LANDED_ELAPSED}s"
+        log "[wp11-k3s-verify] verdict 5/7 rootLanded=''${ROOT_APPLIED} crdSeen=''${ROOT_CRD_SEEN} verdict=''${ROOT_VERDICT} elapsed=''${ROOT_LANDED_ELAPSED}s"
 
         # --- verdict 6: no bad pods, once the roster has had time to settle -----
         #
@@ -509,13 +636,339 @@ in
         # was waited for, for how long, and how it resolved -- pass and fail
         # are different sentences, not just a different word.
         if [ "$K3S_ACTIVE" != "true" ]; then
-          log "[wp11-k3s-verify] verdict 6/6 noBadPods=true after ''${BAD_PODS_ELAPSED}s -- k3s.service NEVER BECAME ACTIVE, 0 pods were ever checked; this is NOT a confirmation that nothing was wrong (see verdict 2/6 above)"
+          log "[wp11-k3s-verify] verdict 6/7 noBadPods=true after ''${BAD_PODS_ELAPSED}s -- k3s.service NEVER BECAME ACTIVE, 0 pods were ever checked; this is NOT a confirmation that nothing was wrong (see verdict 2/7 above)"
         elif [ "$NO_BAD_PODS" = "true" ]; then
-          log "[wp11-k3s-verify] verdict 6/6 noBadPods=true after ''${BAD_PODS_ELAPSED}s (''${SAMPLES} sample(s), ''${TOTAL_POD_COUNT} pod(s) total, all settled)"
+          log "[wp11-k3s-verify] verdict 6/7 noBadPods=true after ''${BAD_PODS_ELAPSED}s (''${SAMPLES} sample(s), ''${TOTAL_POD_COUNT} pod(s) total, all settled)"
         else
           BAD_SUMMARY="$("$AWK" 'BEGIN{sep=""} {printf "%s%s/%s restartCount=%s", sep, $1, $2, $4; sep=", "} END{print ""}' "$UNSETTLED_FILE")"
-          log "[wp11-k3s-verify] verdict 6/6 noBadPods=false after ''${BAD_PODS_ELAPSED}s (''${SAMPLES} sample(s), ''${TOTAL_POD_COUNT} pod(s) total, deadline reached): ''${BAD_SUMMARY} still unsettled"
+          log "[wp11-k3s-verify] verdict 6/7 noBadPods=false after ''${BAD_PODS_ELAPSED}s (''${SAMPLES} sample(s), ''${TOTAL_POD_COUNT} pod(s) total, deadline reached): ''${BAD_SUMMARY} still unsettled"
           bad_pod_diag "$UNSETTLED_FILE"
+        fi
+
+        # --- verdict 7: the app-of-apps ROSTER converges -----------------------
+        #
+        # 081M3BEGSQR087G0R003610CGB (WP31). See the "VERDICT 7" section of this
+        # file's header for why this is not "every Application Healthy", where
+        # the exclusion set is derived from, and where the bound's number came
+        # from. What follows is the mechanism.
+
+        # ZETA-WP11-ROSTER-BEGIN -- pure text processing: no kubectl, no jq, no
+        # globals but its own arguments and "$AWK" (a plain shell variable, set
+        # once near the top of this script from the gawk package, so this block
+        # is bash-sourceable outside Nix once $AWK is set to any awk on PATH).
+        # Shell-parity tested against a real bash+awk in
+        # src/Core.TypeScript/ci/wp11-roster-shell-parity.test.ts, same
+        # discipline as wp11-nobadpods-shell-parity.test.ts.
+        zeta_wp11_classify_roster() {
+          # $1 = the collected-facts file. One TAB-separated record per line,
+          #      typed by column 1. "-" is the empty sentinel in EVERY field,
+          #      so a missing value is never an empty column that shifts the
+          #      others.
+          #
+          #   A <app> <syncStatus> <healthStatus> <policyAnnotation> <hasAutomated> <policyReason> <message>
+          #   N <app> <namespace>                  -- a namespace this app claims
+          #   L <labelKey=labelValue>              -- carried by at least one Node
+          #   P <podNs> <podName> <instanceLabel> <hasRequiredNodeAffinity> <selKey> <selValue>
+          #                                        -- one row per Pending pod per
+          #                                           nodeSelector pair; a pod with
+          #                                           no nodeSelector emits one row
+          #                                           with "-" "-"
+          #
+          # $2 = the root Application's name. Excluded from the roster -- verdict
+          #      5 owns it, and its own sync status is the SHELL's completeness
+          #      gate, not this function's business.
+          #
+          # stdout, one TAB-separated line per Application (plus any
+          # unattributed pod), in the order the A records arrived:
+          #
+          #   <bucket> <name> <detail>
+          #
+          #   converged              Synced + Healthy.
+          #   unconverged            did not reach it and nothing excuses that.
+          #   excluded-manual-sync   declares zeta.io/sync-policy: manual WITH a
+          #                          reason and no automated block, AND still
+          #                          satisfies the weaker contract
+          #                          (manual-sync-policy.ts's
+          #                          COMPARISON_COMPLETED_SYNC_STATUS x
+          #                          MANUAL_SYNC_ACCEPTABLE_HEALTH). A declared
+          #                          manual-sync app that FAILS that weaker
+          #                          contract is `unconverged`, not excluded.
+          #   excluded-unschedulable a Pending pod of this app demands a
+          #                          nodeSelector label NO Node carries.
+          #   undecidable            this check cannot decide it. Counted, named,
+          #                          and it FAILS the verdict.
+          #   unattributed-pod       a provably unschedulable Pending pod that
+          #                          belongs to no single Application. Reported
+          #                          rather than dropped, and it FAILS the
+          #                          verdict -- an exclusion nobody can see is
+          #                          how a verdict becomes decorative.
+          "$AWK" -F '\t' -v rootapp="$2" '
+            $1 == "A" {
+              a = $2
+              if (a == rootapp) next
+              if (!(a in seenApp)) { seenApp[a] = 1; order[++n] = a }
+              sync[a] = $3; health[a] = $4; ann[a] = $5; auto[a] = $6; reason[a] = $7; msg[a] = $8
+              next
+            }
+            $1 == "N" {
+              if ($2 == rootapp) next
+              pair = $3 SUBSEP $2
+              if (!(pair in nsPairSeen)) { nsPairSeen[pair] = 1; nsCount[$3]++; nsOwner[$3] = $2 }
+              next
+            }
+            $1 == "L" { nodeLabel[$2] = 1; next }
+            $1 == "P" {
+              pk = $2 SUBSEP $3
+              if (!(pk in podSeen)) { podSeen[pk] = 1; podOrder[++pn] = pk }
+              podNs[pk] = $2; podName[pk] = $3; podInst[pk] = $4; podAff[pk] = $5
+              if ($6 != "-") {
+                want = $6 "=" $7
+                if (!(want in nodeLabel) && !(pk in podUnsched)) podUnsched[pk] = want
+              }
+              next
+            }
+            END {
+              # Attribute every Pending pod to at most one Application. Namespace
+              # ownership first (the unambiguous case), then ArgoCD own
+              # app.kubernetes.io/instance tracking label as the tiebreak -- the
+              # same order first-boot-replica.ts attributePodToApp uses, minus
+              # the ownerReference pass, which needs the API server.
+              for (i = 1; i <= pn; i++) {
+                pk = podOrder[i]
+                ns = podNs[pk]
+                owner = ""
+                if (nsCount[ns] == 1) owner = nsOwner[ns]
+                else if (podInst[pk] != "-" && (podInst[pk] in seenApp)) owner = podInst[pk]
+                if (owner == "") {
+                  if (pk in podUnsched) {
+                    if (nsCount[ns] == 0) why = "no Application claims namespace " ns
+                    else why = "namespace " ns " is claimed by " nsCount[ns] " Applications and the pod carries no usable app.kubernetes.io/instance label"
+                    printf "unattributed-pod\t%s/%s\tPending and provably unschedulable (no Node carries %s), but it cannot be attributed: %s\n", podNs[pk], podName[pk], podUnsched[pk], why
+                  }
+                  continue
+                }
+                if (pk in podUnsched) {
+                  if (!(owner in unschedWhy)) unschedWhy[owner] = podUnsched[pk] " (pod " podNs[pk] "/" podName[pk] ")"
+                } else if (podAff[pk] == "true") {
+                  if (!(owner in affWhy)) affWhy[owner] = podNs[pk] "/" podName[pk]
+                }
+              }
+
+              for (i = 1; i <= n; i++) {
+                a = order[i]
+                # manual-sync-policy.ts classifySyncPolicy, the "manual" arm:
+                # annotation exactly "manual", NO automated block, non-empty
+                # reason. Anything else carrying the annotation is `invalid`
+                # there and earns the FULL contract here -- fail-closed, so a
+                # malformed declaration is never cheaper than a correct one.
+                manual = (ann[a] == "manual" && auto[a] == "false" && reason[a] != "-")
+                note = ""
+                if (ann[a] != "-" && !manual) {
+                  note = " [sync-policy declaration MALFORMED: annotation=" ann[a] " automated=" auto[a] " reason=" (reason[a] == "-" ? "absent" : "present") "; the full Synced+Healthy contract applies]"
+                } else if (ann[a] == "-" && auto[a] == "false") {
+                  note = " [omits spec.syncPolicy.automated and claims no zeta.io/sync-policy: manual -- an absent block is indistinguishable from a forgotten one, so the full Synced+Healthy contract applies]"
+                }
+
+                if (manual) {
+                  comparisonDone = (sync[a] == "Synced" || sync[a] == "OutOfSync")
+                  healthOk = (health[a] == "Missing" || health[a] == "Healthy")
+                  if (comparisonDone && healthOk) {
+                    printf "excluded-manual-sync\t%s\tnothing on this boot runs `argocd app sync` and the Application declares zeta.io/sync-policy: manual; it still passed the weaker contract (sync=%s health=%s). Stated reason: %s\n", a, sync[a], health[a], reason[a]
+                  } else if (!comparisonDone) {
+                    printf "unconverged\t%s\tdeclared manual-sync, but ArgoCD never COMPLETED a comparison (sync=%s), so its source did not render; health=%s msg=%s\n", a, sync[a], health[a], msg[a]
+                  } else {
+                    printf "unconverged\t%s\tdeclared manual-sync, but health=%s; a never-synced app must read Missing and a hand-synced one Healthy (sync=%s msg=%s)\n", a, health[a], sync[a], msg[a]
+                  }
+                  continue
+                }
+
+                if (sync[a] == "Synced" && health[a] == "Healthy") {
+                  printf "converged\t%s\tsync=Synced health=Healthy%s\n", a, note
+                  continue
+                }
+                if (a in unschedWhy) {
+                  printf "excluded-unschedulable\t%s\tno Node carries the nodeSelector label %s, so this Application cannot schedule on this fleet; sync=%s health=%s%s\n", a, unschedWhy[a], sync[a], health[a], note
+                  continue
+                }
+                if (a in affWhy) {
+                  printf "undecidable\t%s\tPending pod %s carries requiredDuringSchedulingIgnoredDuringExecution nodeAffinity, which this check does not evaluate (it decides spec.nodeSelector only); sync=%s health=%s%s\n", a, affWhy[a], sync[a], health[a], note
+                  continue
+                }
+                printf "unconverged\t%s\tsync=%s health=%s msg=%s%s\n", a, sync[a], health[a], msg[a], note
+              }
+            }
+          ' "$1"
+        }
+
+        zeta_wp11_roster_counts() {
+          # $1 = a classification file as zeta_wp11_classify_roster emits.
+          # stdout: ONE line, six space-separated integers --
+          #   converged unconverged excluded undecidable unattributed applications
+          # `applications` deliberately EXCLUDES unattributed-pod rows, which
+          # name pods and not Applications; counting them as apps would inflate
+          # the denominator the progress line prints.
+          "$AWK" -F '\t' '
+            { c[$1]++ }
+            END {
+              conv = c["converged"] + 0
+              unconv = c["unconverged"] + 0
+              excl = c["excluded-manual-sync"] + 0 + c["excluded-unschedulable"] + 0
+              undec = c["undecidable"] + 0
+              unattr = c["unattributed-pod"] + 0
+              printf "%d %d %d %d %d %d\n", conv, unconv, excl, undec, unattr, conv + unconv + excl + undec
+            }
+          ' "$1"
+        }
+        # ZETA-WP11-ROSTER-END
+
+        collect_roster_facts() {
+          # Flattening ONLY -- every decision lives in the awk above, which is
+          # the half a parity test can execute. jq here extracts fields and
+          # nothing more.
+          : > "$1"
+          kc -n argocd get applications -o json 2>/dev/null | "$JQ" -r '
+            def dash(n): (. // "") | tostring | gsub("[\t\n\r]"; " ") | .[0:n] | (if . == "" then "-" else . end);
+            .items[]? | . as $app
+            | ( [ "A",
+                  ($app.metadata.name | dash(120)),
+                  ($app.status.sync.status | dash(40)),
+                  ($app.status.health.status | dash(40)),
+                  ($app.metadata.annotations["zeta.io/sync-policy"] | dash(40)),
+                  (if ($app.spec.syncPolicy.automated // null) == null then "false" else "true" end),
+                  ($app.metadata.annotations["zeta.io/sync-policy-reason"] | dash(180)),
+                  (($app.status.health.message // ($app.status.conditions[0].message? // "")) | dash(160))
+                ] | @tsv ),
+              ( [ "N", ($app.metadata.name | dash(120)), ($app.spec.destination.namespace | dash(120)) ] | @tsv ),
+              ( (($app.status.resources // [])[] | select((.namespace // "") != "")
+                 | [ "N", ($app.metadata.name | dash(120)), (.namespace | dash(120)) ] | @tsv) )
+          ' >> "$1" || true
+          kc get nodes -o json 2>/dev/null | "$JQ" -r '
+            .items[]? | (.metadata.labels // {}) | to_entries[] | [ "L", "\(.key)=\(.value)" ] | @tsv
+          ' >> "$1" || true
+          kc get pods -A -o json 2>/dev/null | "$JQ" -r '
+            .items[]? | select((.status.phase // "") == "Pending") | . as $p
+            | ((($p.spec.affinity.nodeAffinity.requiredDuringSchedulingIgnoredDuringExecution) // null) != null) as $aff
+            | (($p.metadata.labels // {})["app.kubernetes.io/instance"] // "-") as $inst
+            | (($p.spec.nodeSelector // {}) | to_entries) as $sel
+            | if ($sel | length) == 0
+              then [ "P", $p.metadata.namespace, $p.metadata.name, $inst, ($aff | tostring), "-", "-" ] | @tsv
+              else ($sel[] | [ "P", $p.metadata.namespace, $p.metadata.name, $inst, ($aff | tostring), .key, (.value | tostring) ] | @tsv)
+              end
+          ' >> "$1" || true
+        }
+
+        roster_app_diag() {
+          # $1 = classification file. Dumps ArgoCD own account of why, for up to
+          # ten unconverged Applications. Same discipline as bad_pod_diag: a
+          # verdict that names an app and cannot say why leaves the reader with
+          # the failure and none of the evidence.
+          "$AWK" -F '\t' '$1 == "unconverged" { print $2 }' "$1" | ${pkgs.coreutils}/bin/head -n 10 \
+          | while IFS= read -r _app; do
+              [ -z "$_app" ] && continue
+              log "[wp11-k3s-verify] --- unconverged Application diagnostics: ''${_app} ---"
+              {
+                kc -n argocd get application "$_app" -o json \
+                  | "$JQ" -r '{sync: .status.sync.status, health: .status.health, conditions: .status.conditions, operation: .status.operationState.message}'
+              } 2>&1 | while IFS= read -r _l; do log "[wp11-roster-diag] $_l"; done
+            done
+        }
+
+        # 4200s = the UPPER end of k3s-first-boot-roster.nix own measured 45-70
+        # min budget, because the app-of-apps roster is a strict superset of the
+        # bring-up that number was measured against. Clamped to deadline_ts
+        # below, which is what actually bites.
+        ROSTER_DEADLINE_SECONDS=4200
+        ROSTER_POLL_SECONDS=30
+
+        ROSTER_OK=false
+        ROSTER_ROWS_JSON="[]"
+        ROOT_SYNC_STATUS="-"
+        ROSTER_APP_COUNT=0
+        ROSTER_CONVERGED=0
+        ROSTER_UNCONVERGED=0
+        ROSTER_EXCLUDED=0
+        ROSTER_UNDECIDABLE=0
+        ROSTER_UNATTRIBUTED=0
+        ROSTER_SAMPLES=0
+        FACTS_FILE="$($MKTEMP)"
+        : > "$FACTS_FILE"
+        CLASS_FILE="$($MKTEMP)"
+        : > "$CLASS_FILE"
+
+        if [ "$K3S_ACTIVE" = "true" ]; then
+          roster_deadline=$(( $(now_ts) + ROSTER_DEADLINE_SECONDS ))
+          if [ "$roster_deadline" -gt "$deadline_ts" ]; then
+            roster_deadline=$deadline_ts
+          fi
+          log "[wp11-k3s-verify] roster: waiting up to $(( roster_deadline - $(now_ts) ))s for every Application that CAN converge to reach Synced+Healthy"
+          while true; do
+            ROSTER_SAMPLES=$(( ROSTER_SAMPLES + 1 ))
+            collect_roster_facts "$FACTS_FILE"
+            zeta_wp11_classify_roster "$FACTS_FILE" "zeta-root" > "$CLASS_FILE"
+            ROOT_SYNC_STATUS="$(kc -n argocd get application zeta-root -o jsonpath='{.status.sync.status}' 2>/dev/null || true)"
+            if [ -z "$ROOT_SYNC_STATUS" ]; then ROOT_SYNC_STATUS="-"; fi
+
+            set -- $(zeta_wp11_roster_counts "$CLASS_FILE")
+            ROSTER_CONVERGED="''${1:-0}"
+            ROSTER_UNCONVERGED="''${2:-0}"
+            ROSTER_EXCLUDED="''${3:-0}"
+            ROSTER_UNDECIDABLE="''${4:-0}"
+            ROSTER_UNATTRIBUTED="''${5:-0}"
+            ROSTER_APP_COUNT="''${6:-0}"
+
+            # Requirement: report progress WHILE waiting. Sixty-seven minutes of
+            # silence on a serial log is indistinguishable from a hang.
+            log "[wp11-k3s-verify] roster progress t=$(elapsed)s sample=''${ROSTER_SAMPLES}: ''${ROSTER_CONVERGED}/''${ROSTER_APP_COUNT} Synced+Healthy, ''${ROSTER_UNCONVERGED} progressing, ''${ROSTER_EXCLUDED} excluded, ''${ROSTER_UNDECIDABLE} undecidable, ''${ROSTER_UNATTRIBUTED} unattributed pod(s) (zeta-root sync=''${ROOT_SYNC_STATUS})"
+            if [ $(( ROSTER_SAMPLES % 5 )) -eq 1 ]; then
+              "$AWK" -F '\t' '$1 == "unconverged" || $1 == "undecidable" { printf "  %s %s -- %s\n", $1, $2, $3 }' "$CLASS_FILE" \
+                | ${pkgs.coreutils}/bin/head -n 15 \
+                | while IFS= read -r _l; do log "[wp11-roster] $_l"; done
+            fi
+
+            if [ "$ROOT_SYNC_STATUS" = "Synced" ] \
+              && [ "$ROSTER_APP_COUNT" -gt 0 ] \
+              && [ "$ROSTER_UNCONVERGED" -eq 0 ] \
+              && [ "$ROSTER_UNDECIDABLE" -eq 0 ] \
+              && [ "$ROSTER_UNATTRIBUTED" -eq 0 ]; then
+              ROSTER_OK=true
+              break
+            fi
+            if [ "$(now_ts)" -ge "$roster_deadline" ]; then
+              break
+            fi
+            "$SLEEP" "$ROSTER_POLL_SECONDS"
+          done
+        fi
+        ROSTER_ELAPSED=$(elapsed)
+
+        ROSTER_ROWS_JSON="$("$JQ" -R -s -c '
+          split("\n") | map(select(length > 0) | split("\t")) | map({bucket: .[0], name: .[1], detail: .[2]})
+        ' < "$CLASS_FILE" 2>/dev/null || echo "[]")"
+
+        # THREE DISTINGUISHABLE SENTENCES, on the serial, on every boot --
+        # converged / did-not-converge-within-bound / excluded-and-why. A
+        # verdict whose pass and whose "nothing was measured" read the same is
+        # the class this effort has now found NINE instances of; this is the
+        # same guard verdict 6 carries, applied to the roster.
+        if [ "$K3S_ACTIVE" != "true" ]; then
+          log "[wp11-k3s-verify] verdict 7/7 rosterConverged=false after ''${ROSTER_ELAPSED}s -- k3s.service NEVER BECAME ACTIVE, so ZERO Applications were ever examined; this is a failure, not a clean roster (see verdict 2/7 above)"
+        elif [ "$ROSTER_APP_COUNT" -eq 0 ]; then
+          log "[wp11-k3s-verify] verdict 7/7 rosterConverged=false after ''${ROSTER_ELAPSED}s (''${ROSTER_SAMPLES} sample(s)) -- ZERO Applications were observed in namespace argocd (zeta-root sync=''${ROOT_SYNC_STATUS}); an empty roster is an absent measurement, never a clean one"
+        elif [ "$ROSTER_OK" = "true" ]; then
+          log "[wp11-k3s-verify] verdict 7/7 rosterConverged=true after ''${ROSTER_ELAPSED}s (''${ROSTER_SAMPLES} sample(s)): ''${ROSTER_CONVERGED}/''${ROSTER_APP_COUNT} Applications Synced+Healthy, ''${ROSTER_EXCLUDED} excluded and named below, 0 undecidable (zeta-root sync=''${ROOT_SYNC_STATUS}, so the roster is COMPLETE)"
+        elif [ "$ROOT_SYNC_STATUS" != "Synced" ]; then
+          log "[wp11-k3s-verify] verdict 7/7 rosterConverged=false after ''${ROSTER_ELAPSED}s (''${ROSTER_SAMPLES} sample(s)): zeta-root itself reports sync=''${ROOT_SYNC_STATUS}, not Synced -- the roster is INCOMPLETE, so the ''${ROSTER_APP_COUNT} Applications seen are not known to be all of them (''${ROSTER_CONVERGED} of them Synced+Healthy, ''${ROSTER_UNCONVERGED} progressing)"
+        else
+          log "[wp11-k3s-verify] verdict 7/7 rosterConverged=false after ''${ROSTER_ELAPSED}s (''${ROSTER_SAMPLES} sample(s), bound reached): ''${ROSTER_CONVERGED}/''${ROSTER_APP_COUNT} Synced+Healthy, ''${ROSTER_UNCONVERGED} did NOT converge within the bound, ''${ROSTER_UNDECIDABLE} undecidable, ''${ROSTER_UNATTRIBUTED} unattributed pod(s)"
+        fi
+        # Every row, every boot -- including the excluded ones. An exclusion
+        # nobody can see is how a verdict becomes decorative.
+        while IFS="$(printf '\t')" read -r _bucket _name _detail; do
+          [ -z "$_bucket" ] && continue
+          log "[wp11-k3s-verify]   roster ''${_bucket}: ''${_name} -- ''${_detail}"
+        done < "$CLASS_FILE"
+        if [ "$ROSTER_OK" != "true" ] && [ "$K3S_ACTIVE" = "true" ] && [ "$ROSTER_UNCONVERGED" -gt 0 ]; then
+          roster_app_diag "$CLASS_FILE"
         fi
 
         VERDICT_JSON="$("$JQ" -n \
@@ -536,13 +989,39 @@ in
           --argjson podCount "$TOTAL_POD_COUNT" \
           --argjson samples "$SAMPLES" \
           --argjson k3sActiveForPods "$K3S_ACTIVE" \
+          --argjson rosterConverged "$ROSTER_OK" \
+          --argjson rosterApps "$ROSTER_ROWS_JSON" \
+          --argjson rosterElapsedSeconds "$ROSTER_ELAPSED" \
+          --argjson rosterAppCount "$ROSTER_APP_COUNT" \
+          --argjson rosterConvergedCount "$ROSTER_CONVERGED" \
+          --argjson rosterUnconvergedCount "$ROSTER_UNCONVERGED" \
+          --argjson rosterExcludedCount "$ROSTER_EXCLUDED" \
+          --argjson rosterUndecidableCount "$ROSTER_UNDECIDABLE" \
+          --argjson rosterUnattributedCount "$ROSTER_UNATTRIBUTED" \
+          --argjson rosterSamples "$ROSTER_SAMPLES" \
+          --arg rootSyncStatus "$ROOT_SYNC_STATUS" \
+          --argjson k3sActiveForRoster "$K3S_ACTIVE" \
           '{
             bootedMultiUser: {ok: $bootedMultiUser, elapsedSeconds: $bootedMultiUserElapsedSeconds},
             k3sServiceActive: {ok: $k3sServiceActive, elapsedSeconds: $k3sServiceActiveElapsedSeconds},
             nodeReady: {ok: $nodeReady, elapsedSeconds: $nodeReadyElapsedSeconds},
             helmJobs: {jobs: $helmJobs, elapsedSeconds: $helmJobsElapsedSeconds},
             rootLanded: {ok: $rootLanded, verdict: $rootLandedVerdict, elapsedSeconds: $rootLandedElapsedSeconds},
-            noBadPods: {ok: $noBadPods, pods: $badPods, elapsedSeconds: $badPodsElapsedSeconds, podCount: $podCount, samples: $samples, k3sActive: $k3sActiveForPods}
+            noBadPods: {ok: $noBadPods, pods: $badPods, elapsedSeconds: $badPodsElapsedSeconds, podCount: $podCount, samples: $samples, k3sActive: $k3sActiveForPods},
+            rosterConverged: {
+              ok: $rosterConverged,
+              apps: $rosterApps,
+              elapsedSeconds: $rosterElapsedSeconds,
+              appCount: $rosterAppCount,
+              convergedCount: $rosterConvergedCount,
+              unconvergedCount: $rosterUnconvergedCount,
+              excludedCount: $rosterExcludedCount,
+              undecidableCount: $rosterUndecidableCount,
+              unattributedPodCount: $rosterUnattributedCount,
+              samples: $rosterSamples,
+              rootSyncStatus: $rootSyncStatus,
+              k3sActive: $k3sActiveForRoster
+            }
           }')"
 
         log "${jsonBeginMarker}"

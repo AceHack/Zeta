@@ -1252,7 +1252,7 @@ describe("WP11 — installed-disk first-boot k3s verify", () => {
     expect(parsed.reason).toContain("unparsable");
   });
 
-  it("summarize: overall PASS only when all six verdicts pass, including every helm chart", () => {
+  it("summarize: overall PASS only when all seven verdicts pass, including every helm chart", () => {
     const passing: K3sFirstBootVerifyVerdict = {
       bootedMultiUser: { ok: true, elapsedSeconds: 1 },
       k3sServiceActive: { ok: true, elapsedSeconds: 30 },
@@ -1266,8 +1266,28 @@ describe("WP11 — installed-disk first-boot k3s verify", () => {
       },
       rootLanded: { ok: true, verdict: "landed", elapsedSeconds: 600 },
       noBadPods: { ok: true, pods: [], elapsedSeconds: 900 },
+      rosterConverged: {
+        ok: true,
+        apps: [
+          { bucket: "converged", name: "redis", detail: "sync=Synced health=Healthy" },
+          { bucket: "excluded-manual-sync", name: "cdi", detail: "declares zeta.io/sync-policy: manual" },
+        ],
+        elapsedSeconds: 1800,
+        appCount: 2,
+        convergedCount: 1,
+        unconvergedCount: 0,
+        excludedCount: 1,
+        undecidableCount: 0,
+        unattributedPodCount: 0,
+        samples: 12,
+        rootSyncStatus: "Synced",
+        k3sActive: true,
+      },
     };
     expect(summarizeK3sFirstBootVerifyVerdict(passing).ok).toBe(true);
+    // The exclusion is PRINTED. An exclusion nobody can see is how a verdict
+    // becomes decorative (081M3BEGSQR087G0R003610CGB).
+    expect(summarizeK3sFirstBootVerifyVerdict(passing).lines.join("\n")).toContain("[excluded-manual-sync] cdi");
 
     const oneChartIncomplete: K3sFirstBootVerifyVerdict = {
       ...passing,
@@ -1294,6 +1314,37 @@ describe("WP11 — installed-disk first-boot k3s verify", () => {
     const badPodSummary = summarizeK3sFirstBootVerifyVerdict(badPodPresent);
     expect(badPodSummary.ok).toBe(false);
     expect(badPodSummary.lines.join("\n")).toContain("CrashLoopBackOff");
+
+    // 081M3BEGSQR087G0R003610CGB — verdict 7 gates the overall result, and an
+    // Application that did not converge is NAMED with its last Sync+Health
+    // state rather than reduced to a count.
+    const rosterFailed: K3sFirstBootVerifyVerdict = {
+      ...passing,
+      rosterConverged: {
+        ...(passing.rosterConverged as NonNullable<K3sFirstBootVerifyVerdict["rosterConverged"]>),
+        ok: false,
+        apps: [{ bucket: "unconverged", name: "temporal", detail: "sync=OutOfSync health=Progressing msg=-" }],
+        convergedCount: 0,
+        unconvergedCount: 1,
+        excludedCount: 0,
+      },
+    };
+    const rosterSummary = summarizeK3sFirstBootVerifyVerdict(rosterFailed);
+    expect(rosterSummary.ok).toBe(false);
+    expect(rosterSummary.lines.join("\n")).toContain("[unconverged] temporal");
+    expect(rosterSummary.lines.join("\n")).toContain("health=Progressing");
+
+    // ABSENT must read as a FAILURE, never as a pass. The module emitting the
+    // verdict block ships with this parser, so a missing verdict 7 on a live
+    // run means the unit stopped before reaching it.
+    // The key is OMITTED, never set to `undefined` — `exactOptionalPropertyTypes`
+    // is on, and the distinction is the point: an omitted key is what an older
+    // verdict JSON, or a unit that stopped before emitting verdict 7, actually
+    // parses to.
+    const { rosterConverged: _absentRoster, ...rosterAbsent } = passing;
+    const absentSummary = summarizeK3sFirstBootVerifyVerdict(rosterAbsent);
+    expect(absentSummary.ok).toBe(false);
+    expect(absentSummary.lines.join("\n")).toContain("ABSENT");
   });
 
   it("has its own serial separator, distinct from phase 2/2b", () => {
