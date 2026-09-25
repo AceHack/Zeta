@@ -1,0 +1,12 @@
+{
+  "pr_number": 17668,
+  "archive_path": "docs/history/pr-reviews/2026/09/25/PR-17668-docs-installer-first-boot-fails-closed-on-github-s-unauthenticated-api-rate-limi.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-25T08:46:13.024Z",
+  "schema_version": "v1",
+  "commit_sha": "7afe81c3e619d77f6a23dd13678fd93115d8ed8d",
+  "title": "docs(installer): first boot fails CLOSED on GitHub's unauthenticated API rate limit (WP31)",
+  "state": "MERGED",
+  "merged_at": "2026-09-25T08:45:31Z",
+  "head_ref": "claude/wp31-attestation-ratelimit"
+}
