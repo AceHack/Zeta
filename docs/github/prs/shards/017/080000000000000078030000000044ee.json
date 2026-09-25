@@ -1,0 +1,12 @@
+{
+  "pr_number": 17646,
+  "archive_path": "docs/history/pr-reviews/2026/09/25/PR-17646-fix-installer-a-k3s-datastore-that-has-served-is-never-auto-discarded-wp30.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-25T03:47:35.655Z",
+  "schema_version": "v1",
+  "commit_sha": "db83af343b27795ccaf243ce9d210a5d3fdb57ba",
+  "title": "fix(installer): a k3s datastore that has SERVED is never auto-discarded (WP30)",
+  "state": "MERGED",
+  "merged_at": "2026-09-25T03:46:48Z",
+  "head_ref": "claude/wp30-k3s-stillborn-datastore-sentinel"
+}
