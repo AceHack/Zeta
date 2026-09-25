@@ -71,6 +71,15 @@
     # evaluation, a JOINING server that nothing admits etcd traffic to
     # (081M10ZG61D087G0R001A70F0P). See the module header for the decision.
     ./k3s-etcd-peers.nix
+
+    # 081M39CR74D087G0R002BEG2G4: a has-ever-bootstrapped sentinel + recovery
+    # pair, server role only (a worker has no server/db). Recovers a
+    # STILLBORN datastore -- one truncated by a power cut in the first ~20s
+    # of first boot, before k3s ever wrote bootstrap data into it -- while
+    # NEVER touching a datastore that has genuinely served, under any
+    # circumstance. See that module's header for the full citation and the
+    # one-way property this pair guarantees.
+    ./k3s-datastore-bootstrap-recovery.nix
   ];
 
   services.k3s = {

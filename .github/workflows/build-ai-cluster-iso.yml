@@ -522,6 +522,45 @@ jobs:
         working-directory: full-ai-cluster
         run: nix build .#checks.x86_64-linux.k3s-agent-tls-self-heal -L --print-build-logs --fallback
 
+      # 081M39CR74D087G0R002BEG2G4. The has-ever-bootstrapped sentinel guard.
+      # k3s creates server/db and, if the machine is stopped in the first ~20s
+      # of its FIRST boot, leaves it non-empty with no bootstrap data in it --
+      # the one state k3s will not initialise into, so it refuses forever and
+      # no reboot recovers (measured: run 35968222668, 58 restarts, 76 fatals,
+      # on a real installed disk). A sentinel written only once k3s's own
+      # /readyz has succeeded is what makes discarding such a datastore safe:
+      # before it exists the datastore has never held anything, after it
+      # exists the datastore is never touched again.
+      #
+      # THE DECISION LOGIC IS ALREADY PINNED OVER FIXTURES in
+      # src/Core.TypeScript/hygiene/k3s-datastore-bootstrap-recovery.test.ts,
+      # which runs on the bun path. This step exists for the two halves that
+      # test structurally cannot reach, and both are the dangerous ones:
+      #   1. that the sentinel unit's DEFAULT readyz command actually succeeds
+      #      against a real k3s from inside its real unit -- if it silently
+      #      never did, no sentinel would ever be written and every healthy
+      #      datastore would look stillborn to the recovery script, inverting
+      #      the guard into the data loss it exists to prevent;
+      #   2. that a real, already-served datastore given a WRONG TOKEN emits
+      #      the identical ambiguous fatal a stillborn one does -- the claim
+      #      the whole module rests on, asserted in prose everywhere and
+      #      measured only here -- and SURVIVES it.
+      #
+      # Hermetic (no internet, no image pulls); boots ONE node and restarts
+      # k3s in place, same shape and cost class as the self-heal step above.
+      #
+      # SKIPPED ON A WP11-SCOPED DISPATCH, like the pre-ISO-build NixOS steps
+      # above it. A hermetic VM test that boots k3s twice exercises nothing
+      # the installed-disk first-boot lane measures, so leaving the guard off
+      # would silently lengthen every narrowed probe -- MEASURED tonight by
+      # WP29 at 15m 48s burned on exactly this omission, on one step. The PR
+      # and push paths are unaffected and run this every time.
+      - name: NixOS test — a datastore that has SERVED is never auto-discarded
+        if: always() && !(github.event_name == 'workflow_dispatch' && inputs.only_wp11)
+        timeout-minutes: 30
+        working-directory: full-ai-cluster
+        run: nix build .#checks.x86_64-linux.k3s-datastore-bootstrap-sentinel -L --print-build-logs --fallback
+
       # ONLINE end-to-end proof: boots the control-plane WITH internet,
       # installs Cilium for real, asserts the node reaches Ready + CoreDNS
       # Running. This is the gate that catches the full bring-up chain
