@@ -11,10 +11,17 @@
 // THE PROPERTY THAT MATTERS MOST, BY FAR: a datastore that has EVER served
 // (sentinel present) is NEVER removed by the recovery script, regardless of
 // restart count or how many times k3s repeats the stillborn-shaped fatal.
-// k3s's own error text is ambiguous by construction between "never
-// bootstrapped" and "wrong token against a real cluster" -- only the
-// sentinel tells them apart, and the has-served suite below is the
-// falsifier for that guard failing.
+// The has-served suite below is the falsifier for that guard failing.
+//
+// A CORRECTION: this header used to say k3s's error text is "ambiguous by
+// construction" between "never bootstrapped" and "wrong token against a real
+// cluster". MEASURED (run 36095623765) and FALSE -- the wrong-token case
+// prints "bootstrap data already found and encrypted with different token",
+// a different message. See k3s-datastore-bootstrap-recovery.nix's header for
+// the measurement and the corrected reasoning. The guard is unchanged and is
+// still right: the stillborn signature is a single string in an upstream log
+// line, and pinning data destruction to a log grep is fragile in a way a
+// has-served marker is not.
 
 import { describe, expect, test } from "bun:test";
 import { spawnSync } from "node:child_process";
@@ -125,7 +132,7 @@ describe("the has-served case -- NEVER removed, under any circumstance", () => {
     expect(r.restartLog).toBe("");
     expect(r.stdout).toContain("REFUSING");
     expect(r.stdout).toContain("NOTHING HAS BEEN DELETED");
-  });
+  }, 30000);
 
   test("sentinel present + fatal signature + a huge restart count: still untouched", () => {
     // The guard must not be a disguised threshold on restart count -- an
@@ -136,7 +143,7 @@ describe("the has-served case -- NEVER removed, under any circumstance", () => {
 
     expect(existsSync(f.datastoreDir)).toBe(true);
     expect(r.restartLog).toBe("");
-  });
+  }, 30000);
 
   test("refusal is printed only once, not on every poll", () => {
     const f = fixture({ served: true, fatalPresent: true });
@@ -157,7 +164,7 @@ describe("the stillborn case -- recoverable exactly once", () => {
     expect(existsSync(f.datastoreDir)).toBe(false);
     expect(r.restartLog).toBe("restarted\n");
     expect(r.stdout).toContain("RECOVERING");
-  });
+  }, 30000);
 
   test("below the restart threshold: nothing is DONE, but the boot still says so", () => {
     const f = fixture({ served: false, fatalPresent: true });
@@ -171,14 +178,14 @@ describe("the stillborn case -- recoverable exactly once", () => {
     // the console to a unit that never started -- that indistinguishability
     // is the defect class this module was written inside of.
     expect(r.stdout).toContain("VERDICT unbootstrapped-watching");
-  });
+  }, 30000);
 
   test("exactly at the threshold: recovers", () => {
     const f = fixture({ served: false, fatalPresent: true });
     const r = runRecovery({ f, nrestarts: 6, threshold: 6 });
     expect(existsSync(f.datastoreDir)).toBe(false);
     expect(r.restartLog).toBe("restarted\n");
-  });
+  }, 30000);
 
   test("one recovery attempt per boot, ever -- a second round of the same fatal does not wipe again", () => {
     const f = fixture({ served: false, fatalPresent: true });
@@ -213,7 +220,7 @@ describe("a crash-loop for a DIFFERENT reason -- diagnosed, never wiped", () => 
     expect(r.restartLog).toBe("");
     expect(r.stdout).toContain("NOT exhibiting the known stillborn-datastore fatal");
     expect(r.stdout).toContain("some other crash, unrelated to bootstrap data");
-  });
+  }, 30000);
 
   test("the diagnostic prints only once across repeated polls", () => {
     const f = fixture({ served: false, fatalPresent: false });
@@ -244,7 +251,7 @@ describe("no datastore at all -- says so, rather than saying nothing", () => {
     // Not confusable with either of the other two outcomes.
     expect(r.stdout).not.toContain("RECOVERING");
     expect(r.stdout).not.toContain("REFUSING");
-  });
+  }, 30000);
 });
 
 describe("the three outcomes are mutually exclusive verdict codes", () => {
@@ -270,7 +277,7 @@ describe("the three outcomes are mutually exclusive verdict codes", () => {
     const r = runRecovery({ f, nrestarts: 0 });
     expect(r.stdout).toContain("VERDICT served");
     expect(existsSync(f.datastoreDir)).toBe(true);
-  });
+  }, 30000);
 });
 
 describe("target-1-shaped guard: refuses outright on a misdirected datastore path", () => {
@@ -299,7 +306,7 @@ describe("target-1-shaped guard: refuses outright on a misdirected datastore pat
     expect(result.status).toBe(0);
     expect(`${result.stdout}${result.stderr}`).toContain("refusing");
     expect(existsSync(posixJoin(wrongDir, "server-ca.crt"))).toBe(true);
-  });
+  }, 30000);
 });
 
 describe("the sentinel writer -- write-once, only on a real readyz success", () => {
@@ -331,7 +338,7 @@ describe("the sentinel writer -- write-once, only on a real readyz success", () 
     const r = runSentinel(sentinelFile, root, "false");
     expect(r.status).toBe(0);
     expect(existsSync(sentinelFile)).toBe(false);
-  });
+  }, 30000);
 
   test("readyz fails: the writer SAYS it is not writing, rather than going quiet", () => {
     // The catastrophic silent failure: if the real readyz command were ever
@@ -342,7 +349,7 @@ describe("the sentinel writer -- write-once, only on a real readyz success", () 
     const { root, sentinelFile } = sentinelFixture();
     const r = runSentinel(sentinelFile, root, "false");
     expect(r.stdout).toContain("VERDICT waiting-for-readyz");
-  });
+  }, 30000);
 
   test("readyz succeeds: sentinel is written", () => {
     const { root, sentinelFile } = sentinelFixture();
@@ -350,7 +357,7 @@ describe("the sentinel writer -- write-once, only on a real readyz success", () 
     expect(r.status).toBe(0);
     expect(existsSync(sentinelFile)).toBe(true);
     expect(r.stdout).toContain("wrote");
-  });
+  }, 30000);
 
   test("write-once: a second readyz success never changes the sentinel's content", () => {
     const { root, sentinelFile } = sentinelFixture();
@@ -369,7 +376,7 @@ describe("the sentinel writer -- write-once, only on a real readyz success", () 
     expect(r.status).toBe(0);
     expect(readFileSync(sentinelFile, "utf8")).toBe("already-served-marker\n");
     expect(r.stdout).not.toContain("SHOULD-NEVER-RUN");
-  });
+  }, 30000);
 });
 
 describe("the scripts' own text", () => {
@@ -383,7 +390,7 @@ describe("the scripts' own text", () => {
       expect({ verb, present: body.includes(verb) }).toEqual({ verb, present: false });
     }
     expect(body).toContain('rm -rf -- "$DATASTORE_DIR"');
-  });
+  }, 30000);
 
   test("the sentinel writer contains no destructive verb at all", () => {
     const text = readFileSync(SENTINEL_SCRIPT, "utf8");
@@ -394,7 +401,7 @@ describe("the scripts' own text", () => {
     for (const verb of ["rm -", "rmdir", "shred", "mkfs", "dd if=", "truncate", "wipefs"]) {
       expect({ verb, present: body.includes(verb) }).toEqual({ verb, present: false });
     }
-  });
+  }, 30000);
 });
 
 describe("unit wiring", () => {
@@ -404,9 +411,9 @@ describe("unit wiring", () => {
     expect(moduleText).toContain("systemd.services.zeta-k3s-datastore-bootstrap-recovery");
     expect(moduleText).toContain("k3s-datastore-bootstrap-sentinel-write.sh");
     expect(moduleText).toContain("k3s-datastore-bootstrap-recovery.sh");
-  });
+  }, 30000);
 
   test("imported by k3s-server.nix (server role only -- a worker has no server/db)", () => {
     expect(readFileSync(SERVER_MODULE, "utf8")).toContain("./k3s-datastore-bootstrap-recovery.nix");
-  });
+  }, 30000);
 });

@@ -25,11 +25,47 @@
 # the datastore whenever k3s reports that fatal is confiscation of the one
 # thing on the machine that cannot be regenerated (manifesto §5) -- the
 # exact thing `k3s-datastore-preflight.nix` already refuses to do, for the
-# dirty-disk case. k3s's OWN error text is ambiguous by construction
-# ("check server token value AND verify datastore integrity") -- the
-# identical message appears when a GOOD, already-served datastore is
-# presented with a WRONG token, and deleting there would destroy a healthy
-# cluster.
+# dirty-disk case.
+#
+# THE ORIGINAL JUSTIFICATION FOR THIS GUARD WAS WRONG. It is corrected here,
+# in place, rather than quietly replaced -- the reason the claim survived into
+# five files is that nobody could tell it had never been measured, and a bare
+# replacement assertion would inherit exactly that defect.
+#
+# WHAT WAS CLAIMED, in every header of this module: that k3s's own message is
+# "ambiguous by construction" -- that because it says "check server token
+# value AND verify datastore integrity", the identical text appears when a
+# GOOD, already-served datastore meets a WRONG token. That was a hint string
+# read as a disambiguator.
+#
+# WHAT WAS MEASURED, run 36095623765: a real, already-served datastore
+# presented with a well-formed WRONG token (derived from the real one, so
+# normalisation passes) does NOT produce the stillborn message. Across 151s of
+# polling, every k3s restart printed this instead:
+#
+#   level=fatal msg="Error: preparing server: failed to bootstrap cluster
+#   data: failed to reconcile with local datastore: bootstrap data already
+#   found and encrypted with different token"
+#
+# k3s DISTINGUISHES the two cases, with two different messages:
+#
+#   stillborn datastore          -> "no bootstrap data found in datastore ..."
+#   good datastore, wrong token  -> "bootstrap data already found and
+#                                    encrypted with different token"
+#
+# THE GUARD IS STILL RIGHT; ITS REASON IS NARROWER AND MORE DURABLE. The
+# signature is not ambiguous, but it is A SINGLE STRING IN AN UPSTREAM LOG
+# LINE, and pinning data destruction to a log grep is fragile in a way a
+# has-served marker is not. k3s can merge, reword or reorder those messages in
+# any release; the sentinel does not care.
+#
+# AND THE MEASUREMENT BOUGHT A STRONGER PROPERTY THAN THE ONE DESIGNED FOR,
+# so it is stated as a property rather than left as a happy accident:
+# FATAL_SIGNATURE matches ONLY the stillborn message, so the wrong-token case
+# never reaches the recovery path at all -- it is filtered one step BEFORE the
+# sentinel is ever consulted. TWO INDEPENDENT CONDITIONS must both hold before
+# anything is deleted, and either one alone is sufficient to refuse. The
+# sentinel is belt-and-braces here, not the primary guard.
 #
 # THE GUARD: A HAS-EVER-BOOTSTRAPPED SENTINEL. Two systemd services, two
 # standalone scripts (same discipline as `k3s-agent-tls-self-heal.sh`: a

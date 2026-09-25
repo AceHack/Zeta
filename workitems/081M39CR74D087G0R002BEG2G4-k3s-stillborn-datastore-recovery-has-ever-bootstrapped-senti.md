@@ -50,10 +50,44 @@ that no reboot recovers.** Same failure class as the zero-length truncation PR
 Deleting `/var/lib/rancher/k3s/server/db` when k3s reports that fatal is
 confiscation of the one thing on the machine that cannot be regenerated (manifesto
 §5), the exact thing `full-ai-cluster/nixos/modules/k3s-datastore-preflight.nix`
-already refuses to do. k3s's own message is ALSO ambiguous by construction --
-"check server token value AND verify datastore integrity" -- the same text appears
-when a GOOD datastore is presented with a WRONG token, and deleting there would
-destroy a healthy cluster.
+already refuses to do.
+
+> **CORRECTION (2026-09-25, measured on run 36095623765).** The paragraph that
+> stood here claimed k3s's own message is "ALSO ambiguous by construction --
+> 'check server token value AND verify datastore integrity' -- the same text
+> appears when a GOOD datastore is presented with a WRONG token". **That is
+> false**, and it was never measured before being written into five file
+> headers, three commit messages and this work item. A real, already-served
+> datastore given a well-formed wrong token prints a *different* message, on
+> every restart across 151s of polling:
+>
+> ```
+> level=fatal msg="... failed to reconcile with local datastore: bootstrap
+> data already found and encrypted with different token"
+> ```
+>
+> k3s **distinguishes** the two cases:
+>
+> | condition | message |
+> |---|---|
+> | stillborn datastore | `no bootstrap data found in datastore ...` |
+> | good datastore, wrong token | `bootstrap data already found and encrypted with different token` |
+>
+> A hint string was read as a disambiguator. The error is recorded next to the
+> claim rather than quietly replaced, because the reason it survived into five
+> files is that nobody could tell it had never been measured.
+>
+> **The guard is still right; its reason is narrower and more durable.** The
+> signature is not ambiguous, but it is a *single string in an upstream log
+> line*, and pinning data destruction to a log grep is fragile in a way a
+> has-served marker is not. k3s can merge, reword or reorder those messages in
+> any release; the sentinel does not care.
+>
+> **And the measurement bought a stronger property than the one designed for.**
+> `FATAL_SIGNATURE` matches only the stillborn message, so the wrong-token case
+> never reaches the recovery path at all -- it is filtered one step *before* the
+> sentinel is consulted. Two independent conditions must both hold before
+> anything is deleted, and either alone is sufficient to refuse.
 
 ## The shape to defend, and argue with first: a has-ever-bootstrapped sentinel
 

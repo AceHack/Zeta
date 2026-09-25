@@ -26,10 +26,20 @@
 # datastore whenever k3s reports this fatal is confiscation of the one thing
 # on the machine that cannot be regenerated (manifesto §5) -- the exact thing
 # `k3s-datastore-preflight.sh` already refuses to do, for the dirty-disk
-# case. k3s's OWN message is ambiguous by construction ("check server token
-# value AND verify datastore integrity") -- the identical text appears when
-# a GOOD, already-served datastore is presented with a WRONG token, and
-# deleting there would destroy a healthy cluster.
+# case.
+#
+# A CORRECTION, NOT A CLAIM. Earlier revisions of this header said k3s's
+# message is "ambiguous by construction" -- that the identical text appears
+# when a GOOD datastore meets a WRONG token. MEASURED (run 36095623765) and
+# FALSE: a served datastore given a well-formed wrong token prints "bootstrap
+# data already found and encrypted with different token", a DIFFERENT message.
+# k3s distinguishes the two cases. Full measurement and the corrected
+# reasoning live in `k3s-datastore-bootstrap-recovery.nix`'s header.
+#
+# What survives, and is the real reason for the sentinel: the stillborn
+# signature is a SINGLE STRING IN AN UPSTREAM LOG LINE, and pinning data
+# destruction to a log grep is fragile in a way a has-served marker is not.
+# k3s can merge, reword or reorder those messages in any release.
 #
 # THE GUARD: A HAS-EVER-BOOTSTRAPPED SENTINEL, WRITTEN ELSEWHERE. This
 # script never writes the sentinel itself --
@@ -41,10 +51,12 @@
 #     STILLBORN. This datastore has never held anything a client ever
 #     depended on, so discarding it destroys no state. Recover: delete ONLY
 #     the datastore directory, restart k3s, done -- ONCE per boot, ever.
-#   - Sentinel PRESENT + the fatal signature = AMBIGUOUS, almost certainly a
-#     wrong token presented to a real, already-served cluster. NEVER
-#     deleted, regardless of restart count. Loud refusal with the remedy
-#     instead.
+#   - Sentinel PRESENT + the fatal signature = REFUSE. A datastore that has
+#     served is never deleted, regardless of restart count -- loud refusal
+#     with the remedy instead. NOTE this combination is not expected in the
+#     wrong-token case at all: that case prints a different message (see the
+#     correction above), so it is already excluded by the signature check.
+#     This branch is the SECOND of two independent guards.
 #   - The fatal signature ABSENT = some OTHER crash-loop. Not this script's
 #     problem to fix; a loud, one-time diagnostic dump instead of silence.
 #
@@ -173,12 +185,15 @@ fi
 if [ -e "$SENTINEL_FILE" ]; then
   if [ "$nrestarts" -ge "$THRESHOLD" ] &&
      printf '%s' "$(eval "$JOURNAL_CMD" 2>/dev/null || echo '')" | grep -qF "$FATAL_SIGNATURE"; then
-    # The ambiguous case this module exists for: k3s's own message cannot
-    # tell "never bootstrapped" from "wrong token against a real cluster".
-    # The sentinel can, and it says this one is real.
+    # The second of two independent guards. The wrong-token case prints a
+    # DIFFERENT message ("bootstrap data already found and encrypted with
+    # different token", measured on run 36095623765), so it never matches
+    # FATAL_SIGNATURE and never reaches here. Reaching here means the
+    # stillborn signature appeared against a datastore that HAS served --
+    # unexplained, and therefore exactly the moment to touch nothing.
     if [ ! -e "$RECOVERY_ATTEMPTED_FILE" ]; then
       say "[zeta-k3s-datastore-bootstrap-recovery]   REFUSING: k3s reports \"$FATAL_SIGNATURE\" but this datastore has ALREADY served -- sentinel present at $SENTINEL_FILE."
-      say "[zeta-k3s-datastore-bootstrap-recovery]   This is very likely a WRONG TOKEN, not a stillborn datastore: k3s's own message cannot tell the two apart, but a served datastore is never touched here regardless. NOTHING HAS BEEN DELETED."
+      say "[zeta-k3s-datastore-bootstrap-recovery]   This is UNEXPECTED: a wrong token normally reports \"bootstrap data already found and encrypted with different token\" instead, so this combination is not explained by the usual causes. A served datastore is never touched here regardless. NOTHING HAS BEEN DELETED."
       say "[zeta-k3s-datastore-bootstrap-recovery]   Remedy: verify /var/lib/rancher/k3s/server/token matches what agents present, or restore $DATASTORE_DIR from an out-of-band backup. This script will not act on it."
       : > "$RECOVERY_ATTEMPTED_FILE"
     fi
