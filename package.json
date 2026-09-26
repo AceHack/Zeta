@@ -88,22 +88,22 @@
     "@types/bun": "1.4.2",
     "@types/semver": "7.8.0",
     "assemblyscript": "0.28.20",
-    "eslint": "10.10.0",
-    "eslint-plugin-sonarjs": "4.2.0",
-    "fast-check": "4.9.0",
+    "eslint": "10.11.0",
+    "eslint-plugin-sonarjs": "4.2.1",
+    "fast-check": "4.10.2",
     "globals": "17.12.0",
     "jiti": "2.7.0",
-    "markdownlint-cli2": "0.23.2",
+    "markdownlint-cli2": "0.23.3",
     "playwright": "1.63.0",
-    "prettier": "3.9.6",
+    "prettier": "3.9.9",
     "prettier-plugin-toml": "2.0.6",
-    "quantum-circuit": "0.9.250",
+    "quantum-circuit": "0.9.251",
     "semver": "7.8.5",
     "stylelint": "17.15.0",
     "stylelint-config-standard": "40.0.0",
     "typescript": "6.0.3",
-    "typescript-eslint": "8.70.0",
-    "vite": "8.2.2",
+    "typescript-eslint": "8.70.1",
+    "vite": "8.3.0",
     "z3-solver": "5.2.0"
   },
   "overrides": {
@@ -124,6 +124,6 @@
     "epub-gen-memory": "^1.1.2",
     "micro-key-producer": "0.10.2",
     "pg": "8.23.0",
-    "yaml": "^2.9.0"
+    "yaml": "^2.9.1"
   }
 }
