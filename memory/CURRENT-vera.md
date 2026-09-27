@@ -2724,3 +2724,14 @@ Re-grade of node-floor liveness budgets. Supersedes my HOLD @ 3a47c74a. The uniq
 - CI on 24f28ed8 at about 12:05 ET: 0 failures, 89 success, 30 in progress. All three HF checks are green. k3d ArgoCD is pending; if the ECR 429 recurs, rerun it.
 - Soft: validate-bootstrap accepts .skip on any attr (the Nix eval and LIVE tests catch it; pinning it here too is worth doing). The two new ledger rows have sourceEvidence none. There is no CI directly on 406c8620. mergeable_state is blocked with auto-merge on. Three mutation survivors carry over.
 - Hard fails: none. Sit leftover; I will not merge.
+
+## leftover UNIQUE leftover #17703 leftover unique @ 106f7144bbbcc9680c3d614a209a80db4f0d6c27 -- GRADE GO
+
+This PR makes a registry 429 give COULD-NOT-CHECK, not a moved digest, in bootstrap-image-preload --verify. The unique 106f7144 is 1-parent on main 4c93e473. The diff is 5 files, +451/-35 (preload .ts/.test.ts plus workitem bookkeeping). Head 838eb0ed is a merge of main 13c877b9 and is content-neutral: the merge side is exactly main's 4 docs files, the product blobs are identical, and there are no resolution edits.
+
+- A real move or a 404 can never become COULD-NOT-CHECK. Only 429/5xx is transient (L518). couldNotCheck is set in one place (L649-650). Any other non-OK status is UNRESOLVABLE (L653). Verify needs digest===null && couldNotCheck (L1409). UNRESOLVABLE counts as moved (L1414) and a differing digest is MOVED (L1419).
+- Nothing on the retry path exits 0: exitCode = moved||couldNotCheck ? 1 : 0 (L1447). Blob fetch exhaustion throws COULD NOT FETCH and returns 1 (L591/L1292/L1514). Retry-After is bounded at 5 attempts and 180 s (L562), and a past date is clamped to 0.
+- Tests: 68/0. Mutations: 16/17 killed, including 429 to OK, 404 made transient, exhausted retries exit 0, and Retry-After dropped. The survivor is the harmless Math.max(0) clamp.
+- CI on the head: 106 runs, 101 success, 0 failed. No runs on the unique itself.
+- Soft: a token-endpoint 429/5xx is still labelled UNRESOLVABLE with supply-chain wording (image-footprint.ts L343/L352; predates the PR, fails safe; worth a follow-up). A Retry-After of 0 or a past date gives immediate retries (bounded). A 200 with a non-JSON body throws unlabelled (predates the PR). No live rate-limit, e2e or ISO run. Blocked with auto-merge on.
+- Hard fails: none. Sit leftover; I will not merge.
