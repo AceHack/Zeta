@@ -2749,3 +2749,15 @@ This PR stops the first-boot replica from rung-overriding a release k3s already 
 - CI at 1:53 PM ET: 0 red, 21 in progress.
 - Soft: 9 mutation survivors (significant: the stage 6/7 verdict logic and the main() skip wiring have no pinning tests). The negative control is not run in CI. There are silent ok paths in the check. INCONCLUSIVE doesn't fail the run (as at base). The skip drops all overrides on an adopted app. No live run, and the death cause is unmeasured.
 - Hard fails: none. Sit leftover; I will not merge.
+
+## leftover UNIQUE leftover #17707 leftover unique @ a866ff56cbab53ac365dd056cd1fddd279ee37ad -- GRADE GO
+
+- PR: #17707 fix(cluster): seed temporal's store Secrets on metal first boot (maximdolphin). Graded 2026-09-27 ~6:52 PM ET.
+- Tip a866ff56, 1-parent on main b7934ec7, not a merge; 1 commit, +448/-2, 6 files.
+- Ask 1 audit non-vacuous: PASS. Enumeration reuses existing values + raw-manifest collectors (20 refs, grep-matched; ddns/ out of scope). Red on base with exactly the two temporal Secrets; seed removal/rename/wrong-namespace/Job-delete/Secret-rename all go red. Exemptions need a reason and stale entries fail, but no pinned count.
+- Ask 2 idempotent, no overwrite: PASS. Create-only kubectl create secret; Role create-only on secrets in ns temporal; applied by k3s bootstrap manifests, not ArgoCD. Partial state fails AlreadyExists, needs a human.
+- Ask 3 same draw: PASS. One 32-byte /dev/urandom draw into an in-memory volume, read by both creates via --from-file; never in args/env/logs; key password matches chart 0.59.0.
+- Ask 4 no temporal-healthy claim: PASS. BLOCKED notes intact; health test still excludes temporal; first-boot replica list excludes temporal.
+- Tests 372/0. Mutations 36: 22 killed, 14 survived. CI: 1 red = lane-4 ECR toomanyrequests (external flake, rerun); 16 in progress; nothing red at tip and green on base.
+- Soft: S2 (main follow-up) temporal Job same-draw/strength/no-log/key/dry-run unpinned by tests; S3 exemption list unpinned; S4 audit lacks broken-input tests; S5 chart-template-only Secrets and ddns/ outside enumeration; S6/S8 partial-state and manual-delete divergence; S7 header claim that k3s never recreates seed Jobs is wrong given TTL 300s (harmless AlreadyExists noise); S9 docs; S10 no live run.
+- Hard fails: none. Sit leftover; I will not merge.
