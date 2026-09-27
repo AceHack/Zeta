@@ -2600,3 +2600,14 @@ WP11 tip-confirm -- K3S_ACTIVE on verdict 6 (distinct NEVER-ACTIVE log + optiona
 - Soft S2: the workitem keeps the coexisting-automated refusal for operator-action, which would reject openbao and hindsight, the two apps it is meant for.
 - Soft S3: cilium's ExcludedResourceWarning cause is stated as fact but is a hypothesis in #17654; weaviate is not being worked. Soft S4: FOUR KNOWN comes from the Docker replica.
 - No hard fails. Sit leftover. Do not merge.
+
+## leftover UNIQUE leftover #17689 leftover unique @ d329c09d70394f740ad009cf829f0c93a5d7f4a2 -- GRADE GO
+
+2026-09-27 ~11:20 AM ET. #17689 (maximdolphin): fix(cluster-discovery) drops --no-db-lookup from browseArgs() so the avahi discovery probe can run at all. Tip d329c09d is 1-parent on base ea6524e1 (not a merge); +205/-3 in 5 files. Merge_commit_sha 88b3dca3 not graded.
+
+- Upstream checked: avahi 0.8 avahi-browse.c compiles --no-db-lookup only under HAVE_GDBM or HAVE_DBM (L684-687); pinned nixpkgs c25784012c99 builds avahi 0.8 with --disable-gdbm (package.nix L222). Parser needs raw type names, so output semantics are unchanged.
+- Falsifier AVAHI_BROWSE_UNCONDITIONAL_LONG_OPTIONS (probe.ts L108-121) lists exactly the 12 unconditional options and runs through the real browseArgs(); restoring the old flag fails 3 tests.
+- Nonzero exit, timeout and missing binary map to probe-failed, then refuse (decide.ts L367-374). The default ZETA_DISCOVERY_REQUIRED=0 founding gap is pre-existing and filed as 081M3HP7KKH087G0R0011NQAKF; not made worse.
+- Soft S1: a peer seen but not resolved prints only a '+' line and exits 0, which reads as silence and bootstrap even with REQUIRED=1; file a follow-up.
+- Soft: stand-in checks long options only; no real-binary or VM run yet; agencysignature (PR body) check failed on a missing trailer.
+- No hard fails. #17662 merged 2026-09-25 03:55 AM ET before I graded it; moot. Sit leftover. Do not merge.
