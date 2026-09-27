@@ -1,0 +1,12 @@
+{
+  "pr_number": 17707,
+  "archive_path": "docs/history/pr-reviews/2026/09/27/PR-17707-fix-cluster-seed-temporal-s-store-secrets-on-metal-first-boot.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-27T22:58:46.056Z",
+  "schema_version": "v1",
+  "commit_sha": "5b4e0311bcbe755896e09f67f8452002f87a3e31",
+  "title": "fix(cluster): seed temporal's store Secrets on metal first boot",
+  "state": "MERGED",
+  "merged_at": "2026-09-27T22:58:02Z",
+  "head_ref": "claude/temporal-default-store-secret"
+}
