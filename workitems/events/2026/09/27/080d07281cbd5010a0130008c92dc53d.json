@@ -1,0 +1,14 @@
+{
+  "id": "080d07281cbd5010a0130008c92dc53d",
+  "at": "2026-09-27T22:36:53.034Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M3JG75X9087G0R000GHA4QA",
+    "type": "bug",
+    "title": "gmod SteamCMD install crash-loops: runs as root, fails Missing file permissions",
+    "slug": "gmod-steamcmd-install-crash-loops-runs-as-root-fails-missing",
+    "priority": "P2",
+    "filename": "081M3JG75X9087G0R000GHA4QA-gmod-steamcmd-install-crash-loops-runs-as-root-fails-missing.md"
+  }
+}

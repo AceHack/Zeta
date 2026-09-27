@@ -24,13 +24,24 @@ spec:
         app.kubernetes.io/name: gmod
     spec:
       securityContext:
-        fsGroup: 1000 # shared group so game + sftp can both write /data
+        # Shared group so game + sftp can both write /data. Kubelet chgrps the
+        # volume to 1000 (g+rw, setgid dirs) on every mount under the default
+        # fsGroupChangePolicy (Always), which also repairs files an earlier
+        # root run left group-read-only. Do NOT switch to OnRootMismatch.
+        fsGroup: 1000
       initContainers:
         # Install / update Garry's Mod dedicated server (Steam app 4020) into
         # the persistent Longhorn volume. First run is slow; subsequent restarts
         # validate-only (fast) since the files persist.
         - name: install
           image: cm2network/steamcmd:root
+          # SteamCMD must NOT run as root: as uid 0 it failed with
+          # "Failed to install app '4020' (Missing file permissions)" on the
+          # fresh bare-metal install of 2026-09-27. Run as the image's own
+          # `steam` user (uid/gid 1000, owner of /home/steam/steamcmd); the
+          # pod's fsGroup 1000 is what lets that identity write the PVC.
+          # Guard: src/Core.TypeScript/cluster/pvc-write-identity.ts
+          securityContext: { runAsUser: 1000, runAsGroup: 1000 }
           command: [ "/bin/bash", "-c" ]
           args:
             - |
@@ -46,6 +57,7 @@ spec:
       containers:
         - name: gmod
           image: cm2network/steamcmd:root
+          securityContext: { runAsUser: 1000, runAsGroup: 1000 } # same identity as `install`
           workingDir: /data/gmod
           command: [ "/bin/bash", "-c" ]
           args:
