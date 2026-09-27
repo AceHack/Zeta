@@ -1,11 +1,12 @@
 ---
 id: 081M3C10FFX087G0R0033DYXG0
 type: task
-state: backlog
+state: done
 priority: P2
 slug: two-kubectl-images-at-two-versions-in-the-bootstrap-roster-c
 title: "Two kubectl images at two versions in the bootstrap roster cost 36.5 MB of the preload payload twice"
 created: 2026-09-25T10:15:38.237Z
+completed: 2026-09-27T15:10:58.984Z
 depends_on: []
 composes_with: []
 ---
@@ -75,3 +76,39 @@ So the constraints are:
 
 WP34 ships with both images in the archive. This is a 3% saving and a
 version-skew question, not a defect.
+
+## Resolution (2026-09-27)
+
+Collapsed onto the spire hook's image, **without** touching the spire chart:
+`internal-secret-seeding.yaml` is this repo's own manifest, so it moved to
+`docker.io/rancher/kubectl:v1.35.6` — the exact string spire's
+`tools.kubectl.image.tag` pin already renders. No values override, no chart
+pinned away from upstream (question 2 above never had to be answered).
+
+1. **The v1.32.3 pin was aged, not deliberate.** It was chosen because
+   `gatekeeper-crd-wait.yaml` already vetted it (`--for=create` needs >=1.32);
+   the seeding Jobs only run `kubectl create secret generic`. v1.35.6 is one
+   minor off the 1.35.7 server instead of three.
+2. **Capability match, measured from the registry** (anonymous Docker Hub
+   manifest + config blob for the amd64 manifest
+   `sha256:da5097fc…`): built FROM scratch, three layers (`/bin/kubectl`,
+   `/etc/passwd`, `/etc/group`), `Entrypoint ["/bin/kubectl"]`, no shell —
+   the same shell-less shape and the same binary path the Jobs' explicit
+   `command: ["/bin/kubectl"]` names. Multi-arch (amd64 + arm64). One
+   difference: image `USER kubectl` is non-numeric, which `runAsNonRoot`
+   rejects unless the pod names a numeric user — every seeding Job already
+   sets `runAsUser: 1001`, and the test now pins that.
+3. **The tag exists**: `bootstrap-image-preload.ts --verify` resolves all 25
+   images to their pinned digests; `image-source-provenance.ts` ledger gained
+   the measured `registry-1.docker.io/rancher/kubectl` row.
+4. **Preload refreshed**: 26 -> 25 images, `totalCompressedBytes`
+   1,022,787,139 -> 1,004,034,155 — **18,752,984 B (18.8 MB) saved**, exactly
+   the removed image; every other digest unchanged. (Refreshed through
+   `buildSnapshot` with the sandbox image passed in, because Docker was not
+   running on the Windows host; the value passed is the one already in the
+   snapshot.)
+
+`gatekeeper-crd-wait.yaml` (ArgoCD lane, not in the preload) still uses
+`registry.k8s.io/kubectl:v1.32.3`; the cluster still pulls both at runtime.
+Moving it too is a separate, optional change. **Not verified here:** a real
+cluster/VM run of the seeding Jobs on the new image.

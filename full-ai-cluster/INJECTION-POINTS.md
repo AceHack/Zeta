@@ -557,9 +557,10 @@ never overwritten). Key shapes are cross-checked against `dev-cluster/lib.ts`'s
 step is a `draw-entropy` initContainer (`busybox`, pinned by tag AND digest —
 the one container here with a shell) that reads `/dev/urandom` and writes the
 value ONLY to an in-memory (`emptyDir: {medium: Memory}`, tmpfs) volume shared
-with the rest of that pod. The `kubectl` containers (still
-`registry.k8s.io/kubectl:v1.32.3`, already vetted in this tree by
-`k8s/applications/hat-system/gatekeeper-crd-wait.yaml`) read the secret value
+with the rest of that pod. The `kubectl` containers
+(`docker.io/rancher/kubectl:v1.35.6` — the same shell-less, FROM-scratch image
+the spire chart's hooks already pull in the bootstrap roster, so the preload
+archive carries one kubectl rather than two; 081M3C10FFX087G0R0033DYXG0) read the secret value
 off that file with `--from-file`, never as an argv token or env var. WP14's
 original mechanism drew randomness from each Job's own pod UID via the
 Kubernetes Downward API, which was weak: a pod UID is readable by anyone with

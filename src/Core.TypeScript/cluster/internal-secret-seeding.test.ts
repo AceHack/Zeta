@@ -41,10 +41,8 @@ import {
 
 const REPO_ROOT = resolve(import.meta.dir, "../../..");
 const MANIFEST_PATH = join(REPO_ROOT, "full-ai-cluster/k8s/bootstrap/internal-secret-seeding.yaml");
-const GATEKEEPER_WAIT_PATH = join(
-  REPO_ROOT,
-  "full-ai-cluster/k8s/applications/hat-system/gatekeeper-crd-wait.yaml",
-);
+const SPIRE_INSTALL_PATH = join(REPO_ROOT, "full-ai-cluster/k8s/bootstrap/spire-install.yaml");
+const PRELOAD_IMAGES_PATH = join(REPO_ROOT, "full-ai-cluster/k8s/bootstrap-preload-images.json");
 
 const manifestText = readFileSync(MANIFEST_PATH, "utf-8");
 const docs = parseAllDocuments(manifestText);
@@ -61,6 +59,7 @@ interface AnyDoc {
   readonly spec?: {
     readonly template?: {
       readonly spec?: {
+        readonly securityContext?: { readonly runAsNonRoot?: boolean; readonly runAsUser?: unknown };
         readonly containers?: readonly ContainerDoc[];
         readonly initContainers?: readonly ContainerDoc[];
       };
@@ -160,18 +159,44 @@ describe("internal-secret-seeding.yaml — every seed call uses `create`, never 
   }
 });
 
-describe("internal-secret-seeding.yaml — image is the ALREADY-PINNED kubectl image, not a new dependency", () => {
-  const gatekeeperText = readFileSync(GATEKEEPER_WAIT_PATH, "utf-8");
-  const pinnedImageMatch = /image:\s*(registry\.k8s\.io\/kubectl:v[\d.]+)/.exec(gatekeeperText);
+// 081M3C10FFX087G0R0033DYXG0: the seeding Jobs use the SAME kubectl image the
+// spire chart's hooks already pull in this bootstrap roster, so the preload
+// archive carries one kubectl instead of two (was registry.k8s.io/kubectl:v1.32.3
+// alongside docker.io/rancher/kubectl:v1.35.6 -- 36.5 MB for the same tool).
+// The tag is read from spire-install.yaml's pin, never derived from the kube
+// version (rancher never published v1.35.7; see image-resolvability.ts).
+describe("internal-secret-seeding.yaml — image is the spire hook's kubectl, not a second one", () => {
+  const spireText = readFileSync(SPIRE_INSTALL_PATH, "utf-8");
+  const spireTag = /tools:\s*\n\s*kubectl:\s*\n\s*image:\s*\n\s*tag:\s*(v[\d.]+)/.exec(spireText)?.[1];
 
-  test("gatekeeper-crd-wait.yaml still pins the image this file assumes (fixture didn't drift)", () => {
-    expect(pinnedImageMatch).not.toBeNull();
+  test("spire-install.yaml still pins tools.kubectl.image.tag (fixture didn't drift)", () => {
+    expect(spireTag).toBeDefined();
   });
 
   const containers = kubectlContainers();
   for (const c of containers) {
-    test(`container ${c.name} uses the SAME pinned image as gatekeeper-crd-wait.yaml`, () => {
-      expect(c.image).toBe(pinnedImageMatch?.[1]);
+    test(`container ${c.name} uses docker.io/rancher/kubectl at spire's pinned tag`, () => {
+      expect(c.image).toBe(`docker.io/rancher/kubectl:${spireTag}`);
+    });
+  }
+
+  test("the generated preload roster carries exactly ONE kubectl image", () => {
+    const preload = JSON.parse(readFileSync(PRELOAD_IMAGES_PATH, "utf-8")) as {
+      images: readonly { reference: string }[];
+    };
+    const kubectls = preload.images.map((i) => i.reference).filter((r) => /\/kubectl[:@]/.test(r));
+    expect(kubectls).toEqual([`docker.io/rancher/kubectl:${spireTag}`]);
+  });
+
+  // rancher/kubectl's image USER is the NON-numeric `kubectl`. Under
+  // runAsNonRoot the kubelet refuses a non-numeric image user unless the pod
+  // names a numeric runAsUser -- so every Job must keep one.
+  for (const o of objects.filter((x) => x.kind === "Job")) {
+    test(`Job ${o.metadata?.name} sets a numeric runAsUser alongside runAsNonRoot`, () => {
+      const sc = o.spec?.template?.spec?.securityContext;
+      expect(sc?.runAsNonRoot).toBe(true);
+      expect(typeof sc?.runAsUser).toBe("number");
+      expect(sc?.runAsUser).not.toBe(0);
     });
   }
 });

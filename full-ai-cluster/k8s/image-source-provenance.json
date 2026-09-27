@@ -340,6 +340,18 @@
       "resolvedAt": "2026-09-22"
     },
     {
+      "repository": "registry-1.docker.io/rancher/kubectl",
+      "tags": {
+        "v1.35.6": 200
+      },
+      "artifact": "public",
+      "sourceRepo": "rancher/kubectl",
+      "sourceEvidence": "oci-label",
+      "sourceVisibility": "unknown",
+      "packagePresence": "not-ghcr",
+      "resolvedAt": "2026-09-27"
+    },
+    {
       "repository": "registry-1.docker.io/vllm/vllm-openai",
       "tags": {
         "latest": 200
