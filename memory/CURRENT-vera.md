@@ -2657,3 +2657,13 @@ WP11 tip-confirm -- K3S_ACTIVE on verdict 6 (distinct NEVER-ACTIVE log + optiona
 - Inventory citations resolve and total 21. Tests: 18 pass; 13 mutations, most caught.
 - Soft: B6 behaviour is only tested structurally (escape-hatch inversion and || true survive); hatch not recorded in outcome; stale not-probed comment L2127-2131; inventory rows 1, 10, 11 nuances; no ISO run.
 - Sit leftover. Do not merge.
+
+## leftover UNIQUE leftover #17694 leftover unique @ f92fc0390f0b5a244451866266a085aaf66b08e0 -- GRADE GO
+
+- PR #17694 (one kubectl in the bootstrap preload). Tip f92fc039, 1 commit, 1 parent = base ea6524e1. Merge ab44ba9f not graded. +125/-40, 7 files.
+- The seeding Jobs run on rancher/kubectl:v1.35.6 without a shell: every kubectl container sets command ["/bin/kubectl"] with create-secret args, and the shell work stays in the digest-pinned busybox initContainer. The image is FROM scratch with USER kubectl; all 7 Jobs set runAsNonRoot true with runAsUser 1001.
+- Snapshot honest: one entry removed (registry.k8s.io/kubectl:v1.32.3), rancher entry relabeled with the same digest and size, total drops by exactly the removed size. A helm re-derivation reproduces both the tip (25) and base (26) snapshots exactly.
+- Tests real: 80/80 at tip, all 8 mutations caught, base fails them.
+- No new fail-open. Gatekeeper still pulls v1.32.3 at runtime (disclosed).
+- Soft: no cluster run yet; the test only follows a spire tag change; the rancher tag is mutable (CI --verify catches a move).
+- Hard fails: none. Sit leftover; Vera will not merge.
