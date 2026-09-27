@@ -106,8 +106,18 @@ export const INSTALL_COMPLETE_SERIAL_MARKER = "ZETA CLUSTER NODE INSTALL COMPLET
 /** Baseline snapshot boundary for scenarios 3/4 — must not stop at mid-install [iter-5.1]. */
 export const INITIAL_INSTALL_SERIAL_MARKERS: readonly string[] = [INSTALL_COMPLETE_SERIAL_MARKER];
 
+/**
+ * Substring-scanned over the WHOLE serial log, so a broad marker fails GOOD installs.
+ *
+ * "Kernel panic", never bare "panic": nixpkgs 26.05 ships a stock systemd unit whose
+ * derivation is `unit-panic-on-fail.service.drv`, and `nixos-install` prints it in its
+ * "derivations will be built" list. On run 36333822934 bare "panic" matched that line and
+ * killed scenarios 3 and 4 at ~4 min, mid-download, with nothing wrong in the guest. The
+ * sibling lane (`ci/qemu-full-install-test.ts` FAILURE_MARKERS) learned this first; the
+ * falsifier is the store-path fixture in `qemu-state.test.ts`.
+ */
 export const RETENTION_FAILURE_SERIAL_MARKERS: readonly string[] = [
-  "panic",
+  "Kernel panic",
   "FATAL",
   "Refusing to wipe",
   "no internet",

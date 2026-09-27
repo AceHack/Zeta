@@ -1,0 +1,14 @@
+{
+  "id": "080d072823f8b010a01300084dfd8866",
+  "at": "2026-09-27T22:37:52.278Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M3JG8ZRN087G0R00001RG0J",
+    "type": "bug",
+    "title": "USB installer reinstall scenarios 3+4 killed mid-install: bare 'panic' failure marker matches nixos-install store path unit-panic-on-fail.service.drv",
+    "slug": "usb-installer-reinstall-scenarios-3-4-killed-mid-install-bar",
+    "priority": "P2",
+    "filename": "081M3JG8ZRN087G0R00001RG0J-usb-installer-reinstall-scenarios-3-4-killed-mid-install-bar.md"
+  }
+}

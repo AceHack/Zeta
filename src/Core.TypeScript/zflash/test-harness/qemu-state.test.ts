@@ -634,7 +634,7 @@ describe("081KSNY2Z0008QG0R0008PN7RQ QEMU state-preservation planner", () => {
       spawnManagedCommand: () => managedProcess(5001, []),
       readSerialOutput: () => {
         readCount += 1;
-        return readCount === 1 ? "" : "panic: installer crashed";
+        return readCount === 1 ? "" : "Kernel panic - not syncing: installer crashed";
       },
     });
 
@@ -867,5 +867,83 @@ describe("serialTailForFailure", () => {
     const out = serialTailForFailure("only one line", 40);
     expect(out).toContain("last 1 serial line(s)");
     expect(out).toContain("only one line");
+  });
+});
+
+/**
+ * Scenarios 3 and 4 (reinstall over an existing install) -- the failure-marker scan must not
+ * stop a HEALTHY install on a nix store path.
+ *
+ * Fixture: the real serial log of run 36333822934 (job 108660735337, artifacts
+ * b0891-retention-serial-logs / b0891-path-fork-serial-logs), stripped to the lines around
+ * the match. nixpkgs 26.05 ships a stock systemd unit whose derivation is
+ * `unit-panic-on-fail.service.drv`, and `nixos-install` prints it in its "derivations will be
+ * built" list. The substring marker "panic" matched it, and the harness killed both installs
+ * at ~4 minutes with `failure marker observed in serial log: panic` while the guest was still
+ * copying store paths. The sibling lane (`ci/qemu-full-install-test.ts`) had already narrowed
+ * the same marker to "Kernel panic" for the same reason; this harness never got that fix.
+ */
+const HEALTHY_MID_INSTALL_SERIAL = [
+  "[repo-pin] outcome=honoured pin=d8ff0da24bcf3fbd20ca257853535c37c6bb7598",
+  "Running nixos-install --flake /mnt/etc/zeta/full-ai-cluster#control-plane ...",
+  "warning: Git tree '/mnt/etc/zeta' is dirty",
+  "copying channel...",
+  "building the flake in git+file:///mnt/etc/zeta?dir=full-ai-cluster&shallow=1...",
+  "these 358 derivations will be built:",
+  "  /nix/store/mmm0gxpk770958pdad2z63wzm2dx4bi7-unit-initrd-find-nixos-closure.service.drv",
+  "  /nix/store/n3kppcrfdxaap9gwrhymfjhmkc147si5-unit-panic-on-fail.service.drv",
+  "  /nix/store/qbpkj0r9zvybykafqf3pabyxi3bw3wwk-linux-6.18.49-modules.drv",
+  "these 705 paths will be fetched (2.2 GiB download, 9.0 GiB unpacked):",
+  "  /nix/store/hanvcd6n35hk4y5p747xxxpji105y7xc-perl5.42.0-Test-Fatal-0.017",
+  "  /nix/store/ygm832ld7xriny26c213wzkjgbynhmvx-perl5.42.0-Test-RequiresInternet-0.05",
+  "copying path '/nix/store/yv92l27ab0y5kkwq7j5kq3vxbbj41s24-kubectl-1.36.3-man' from 'https://cache.nixos.org'...",
+  "",
+].join("\n");
+
+describe("scenarios 3/4 initial install: failure-marker scan over a healthy nixos-install", () => {
+  /** Drive the REAL wait loop -- the one the executor hands the initial-install step. */
+  function runInitialInstall(serialAfterBaseline: string): QemuCommandExecution {
+    const plan = retentionPlan();
+    let readCount = 0;
+    const executor = createSpawnSyncQcow2RetentionExecutor({
+      pollIntervalMs: 1,
+      timeoutMs: 2_000,
+      spawnCommand: () => ({ exitCode: 0, stdout: "ok", stderr: "" }),
+      spawnManagedCommand: () => managedProcess(5301, []),
+      readSerialOutput: () => {
+        readCount += 1;
+        return readCount === 1 ? "" : serialAfterBaseline;
+      },
+    });
+    if (executor.runCommandUntilSerialMarkers === undefined) throw new Error("executor has no wait loop");
+    return executor.runCommandUntilSerialMarkers(
+      "initial-install-from-iso-with-disk",
+      plan.initialInstallFromIsoWithDisk,
+      plan.initialInstallStopCondition,
+    );
+  }
+
+  test("a store path named unit-panic-on-fail does NOT stop a healthy install (run 36333822934)", () => {
+    const execution = runInitialInstall(`${HEALTHY_MID_INSTALL_SERIAL}ZETA CLUSTER NODE INSTALL COMPLETE\n`);
+    expect(execution.stderr).not.toContain("failure marker observed");
+    expect(execution.exitCode).toBe(0);
+  });
+
+  test("no configured failure marker matches the healthy mid-install fixture", () => {
+    expect(RETENTION_FAILURE_SERIAL_MARKERS.filter((m) => HEALTHY_MID_INSTALL_SERIAL.includes(m))).toEqual([]);
+  });
+
+  test("negative control: a real kernel panic still stops fast", () => {
+    const execution = runInitialInstall(
+      `${HEALTHY_MID_INSTALL_SERIAL}[  812.004211] Kernel panic - not syncing: VFS: Unable to mount root fs\n`,
+    );
+    expect(execution.exitCode).toBe(1);
+    expect(execution.stderr).toContain("failure marker observed in serial log: Kernel panic");
+  });
+
+  test("negative control: [zeta-first-boot] Install failed (rc= still stops fast", () => {
+    const execution = runInitialInstall(`${HEALTHY_MID_INSTALL_SERIAL}[zeta-first-boot] Install failed (rc=1)\n`);
+    expect(execution.exitCode).toBe(1);
+    expect(execution.stderr).toContain("[zeta-first-boot] Install failed (rc=");
   });
 });
