@@ -214,6 +214,7 @@ import {
   adjudicate,
   auditAgainstSnapshot,
   auditExitCode,
+  discoverBootstrapHelmCharts,
   pathsToTree,
   schemaOfEntry,
   templateValuesRefs,
@@ -223,6 +224,7 @@ import {
   type ChartSchema,
   type InertFinding,
 } from "./inert-valuesobject-keys.ts";
+import { clusterK8sRoots, readDeclaredTrees } from "./declared-cluster-trees.ts";
 
 const HISTORY = join(import.meta.dir, "testdata", "inert-valuesobject-history");
 
@@ -876,7 +878,10 @@ describe("the CLI's exit code — the thing CI actually reads", () => {
     // that proves they work. Emptying the baseline must turn EVERY
     // acknowledged finding back into a refusal, so this count tracks the
     // baseline or the assertion stops proving the findings are real.
-    expect(run.stdout).toContain("REFUSED (15)");
+    // 15 -> 16 (2026-09-27, 081M3BTKNNB087G0R000EPCNJ1): the scan now covers
+    // k8s/bootstrap, whose spire HelmChart carries the same removed
+    // `skipKubeletVerification` key the spire Application does.
+    expect(run.stdout).toContain("REFUSED (16)");
     expect(run.stdout).toContain("FAILED");
   });
 });
@@ -1018,5 +1023,83 @@ describe("the literal-ancestor rule — measured as never firing on this tree, s
     const schema: ChartSchema = { literal: [], open: ["persistence.config"], dynamic: [], charts: [] };
     expect(classifyPath("persistence", schema)).toBe("accepted");
     expect(classifyPath("persistenceOther", schema)).toBe("inert");
+  });
+});
+
+describe("081M3BTKNNB087G0R000EPCNJ1 — k8s/bootstrap HelmCharts are scanned, not just Applications", () => {
+  // The manifests K3s applies at FIRST BOOT, before ArgoCD exists, were the one surface
+  // this scanner could not see: their values are `spec.valuesContent`, a YAML string,
+  // in a file that is not an Application.
+  test("every bootstrap HelmChart is discovered — including the SECOND document of a multi-doc file", () => {
+    const ids = discoverBootstrapHelmCharts(REPO_ROOT).map((source) => source.appId);
+    expect(ids).toContain("full-ai-cluster/bootstrap/argocd");
+    expect(ids).toContain("full-ai-cluster/bootstrap/cilium");
+    // spire-install.yaml carries spire-crds AND spire; a first-document parse drops one.
+    expect(ids).toContain("full-ai-cluster/bootstrap/spire-crds");
+    expect(ids).toContain("full-ai-cluster/bootstrap/spire");
+    // Every declared k8s root is scanned, stale ones included — read from the roster
+    // rather than named here, so this file does not couple to a tree scheduled for deletion.
+    const trees = clusterK8sRoots(readDeclaredTrees(REPO_ROOT)).map((root) => root.replace(/\/k8s$/, ""));
+    for (const tree of trees) expect(ids.some((id) => id.startsWith(`${tree}/bootstrap/`))).toBe(true);
+  });
+
+  test("the embedded valuesContent is parsed into keys, not carried as a string", () => {
+    const argocd = discoverBootstrapHelmCharts(REPO_ROOT).find(
+      (source) => source.appId === "full-ai-cluster/bootstrap/argocd",
+    );
+    expect(argocd?.targetRevision).not.toBe("");
+    expect(Object.keys((argocd?.valuesObject ?? {}) as Record<string, unknown>)).toContain("applicationSet");
+  });
+
+  test("the snapshot covers every bootstrap chart — none is NOT COVERED", () => {
+    expect(SNAPSHOT).not.toBeNull();
+    const result = auditAgainstSnapshot(SNAPSHOT!, { repoRoot: REPO_ROOT });
+    expect(result.uncovered.filter((id) => id.includes("/bootstrap/"))).toEqual([]);
+    expect(result.appsDiscovered).toBeGreaterThanOrEqual(discoverBootstrapHelmCharts(REPO_ROOT).length);
+  });
+
+  /** A throwaway repo root holding the declared-tree roster and ONE bootstrap file. */
+  function bootstrapOnlyRoot(argocdInstallText: string): string {
+    const root = mkdtempSync(join(tmpdir(), "inert-bootstrap-"));
+    const roster = "src/Core.TypeScript/hygiene/cluster-tree-consumers.json";
+    mkdirSync(join(root, "src/Core.TypeScript/hygiene"), { recursive: true });
+    writeFileSync(join(root, roster), readFileSync(join(REPO_ROOT, roster), "utf8"));
+    // Every declared root must exist or `bootstrapDirs` refuses (a guard scanning one
+    // fewer tree is a guard that did not run); only the live one gets a file.
+    for (const k8sRoot of clusterK8sRoots(readDeclaredTrees(REPO_ROOT))) {
+      mkdirSync(join(root, k8sRoot, "bootstrap"), { recursive: true });
+    }
+    writeFileSync(join(root, "full-ai-cluster/k8s/bootstrap/argocd-install.yaml"), argocdInstallText);
+    return root;
+  }
+
+  const ARGOCD_INSTALL = readFileSync(join(REPO_ROOT, "full-ai-cluster/k8s/bootstrap/argocd-install.yaml"), "utf8");
+  const PLANTED_KEY = "full-ai-cluster/bootstrap/argocd applicationSet.enabled";
+
+  test("THE FALSIFIER: re-planting `applicationSet.enabled: true` — the key this item was written about — goes RED", () => {
+    // Exact history: argo-cd 7.7.10 had this key, the bump to 10.x orphaned it, and it sat
+    // in argocd-install.yaml governing nothing until a parity change exposed it by accident.
+    const planted = ARGOCD_INSTALL.replace(/^ {4}applicationSet:\n/m, "    applicationSet:\n      enabled: true\n");
+    expect(planted).not.toBe(ARGOCD_INSTALL); // the plant landed, or this test proves nothing
+    const root = bootstrapOnlyRoot(planted);
+    try {
+      const result = auditAgainstSnapshot(SNAPSHOT!, { repoRoot: root, baselinePath: "no-such-baseline.json" });
+      expect(result.refused.map((finding) => finding.key)).toContain(PLANTED_KEY);
+      expect(auditExitCode(result)).toBe(1);
+    } finally {
+      rmSync(root, { recursive: true, force: true });
+    }
+  });
+
+  test("NEGATIVE CONTROL: the same file as checked in is green on that key", () => {
+    const root = bootstrapOnlyRoot(ARGOCD_INSTALL);
+    try {
+      const result = auditAgainstSnapshot(SNAPSHOT!, { repoRoot: root, baselinePath: "no-such-baseline.json" });
+      expect(result.appsChecked).toBe(1);
+      expect(result.refused.map((finding) => finding.key)).not.toContain(PLANTED_KEY);
+      expect(result.refused).toEqual([]);
+    } finally {
+      rmSync(root, { recursive: true, force: true });
+    }
   });
 });

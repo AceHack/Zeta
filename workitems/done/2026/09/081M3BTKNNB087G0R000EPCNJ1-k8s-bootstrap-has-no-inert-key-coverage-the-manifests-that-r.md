@@ -1,11 +1,12 @@
 ---
 id: 081M3BTKNNB087G0R000EPCNJ1
 type: bug
-state: backlog
+state: done
 priority: P2
 slug: k8s-bootstrap-has-no-inert-key-coverage-the-manifests-that-r
 title: "k8s/bootstrap has no inert-key coverage: the manifests that run FIRST are the ones nothing scans"
 created: 2026-09-25T08:23:47.115Z
+completed: 2026-09-27T15:21:55.525Z
 depends_on: []
 composes_with: []
 ---
@@ -78,3 +79,23 @@ history rather than a synthetic one.
 - `src/Core.TypeScript/hygiene/audit-argocd-pin-parity.ts` — `parseHelmChartValues`, the embedded-YAML parse to reuse
 - `src/Core.TypeScript/cluster/declared-cluster-trees.ts` — `bootstrapManifests()`, the roster
 - 081M3BQ5GX6087G0R003N44WMZ — the WP32 change that exposed it
+
+## Closure (2026-09-27)
+
+`inert-valuesobject-keys.ts` now scans every `helm.cattle.io/v1` HelmChart under each
+declared tree's `k8s/bootstrap/` (`discoverBootstrapHelmCharts`, via
+`declared-cluster-trees.ts`'s `bootstrapDirs`). It parses `spec.valuesContent` per YAML
+DOCUMENT rather than per file, so `spire-install.yaml`'s second HelmChart is not dropped.
+There are 8 bootstrap charts across both declared trees. Six reused pins the snapshot
+already measured. `cilium@1.20.1` was newly measured into
+`inert-valuesobject-keys.schema.json`. `spire-crds` declares no values.
+
+**First run: one finding.** `full-ai-cluster/bootstrap/spire
+spire-agent.workloadAttestors.k8s.skipKubeletVerification` is the same removed-in-0.23.x key
+the spire Application already carries in the baseline. It is baselined beside that entry,
+not fixed. Turning kubelet verification ON changes first-boot attestation behaviour and
+has to land in both places at once.
+
+**Falsifier:** the test re-plants `applicationSet.enabled: true` into a copy of
+`argocd-install.yaml`, the exact key this item was written about. The audit goes red. The
+negative control runs on the unmodified file and stays green.

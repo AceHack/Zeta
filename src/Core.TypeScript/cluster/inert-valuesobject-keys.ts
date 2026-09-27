@@ -89,8 +89,9 @@
 import { readFileSync, readdirSync, mkdirSync, writeFileSync, renameSync, rmSync, type Dirent } from "node:fs";
 import { resolve, join } from "node:path";
 import { spawnSync } from "node:child_process";
-import { parse as parseYaml } from "yaml";
+import { parse as parseYaml, parseAllDocuments } from "yaml";
 import { stringCompare } from "../collation/collation.ts";
+import { bootstrapDirs } from "./declared-cluster-trees.ts";
 import { defaultRunHelm, discoverApplications, type ApplicationSource } from "./rendered-storage-claims.ts";
 
 const REPO_ROOT = resolve(import.meta.dir, "../../..");
@@ -1272,9 +1273,88 @@ export function historicalFixtureSources(repoRoot = REPO_ROOT): readonly Applica
   return out;
 }
 
+/**
+ * Every `helm.cattle.io/v1` HelmChart under each declared tree's `k8s/bootstrap/`,
+ * as an audit source whose `valuesObject` is the parsed `spec.valuesContent`.
+ *
+ * 081M3BTKNNB087G0R000EPCNJ1 — WHY THE BOOTSTRAP TREE IS IN SCOPE. These are the
+ * manifests K3s applies at FIRST BOOT, before ArgoCD exists to correct anything, and
+ * until this function they were the one surface nothing scanned: their values live in
+ * `spec.valuesContent`, a YAML document embedded as a STRING, in a file that is not an
+ * Application, so `discoverApplications` never saw them. Measured on 2026-09-25:
+ * `argocd-install.yaml` carried `applicationSet.enabled: true`, a key argo-cd 10.8.0
+ * does not have (orphaned by the 7.7.10 -> 10.6.0 bump), and it surfaced only by
+ * accident, when a parity change copied it into an Application.
+ *
+ * Same parse as `parseHelmChartValues` in `audit-argocd-pin-parity.ts`, applied per
+ * DOCUMENT rather than per file, because `spire-install.yaml` carries two HelmCharts
+ * in one file and a first-document parse would silently skip the second.
+ *
+ * `appId` is `<tree>/bootstrap/<metadata.name>` so a bootstrap chart and the
+ * Application of the same name never share a baseline key.
+ *
+ * A `valuesContent` that is not valid YAML THROWS: an unparseable document is one no
+ * key of which was checked, and the only honest outcome for that is loud.
+ */
+export function discoverBootstrapHelmCharts(repoRoot = REPO_ROOT): readonly ApplicationSource[] {
+  const out: ApplicationSource[] = [];
+  for (const dir of bootstrapDirs(repoRoot)) {
+    const tree = dir.replace(/\/k8s\/bootstrap$/, "");
+    const files = (readdirIfPresent(resolve(repoRoot, dir)) ?? [])
+      .filter((entry) => entry.isFile() && /\.ya?ml$/.test(entry.name))
+      .map((entry) => entry.name)
+      .sort((a, b) => stringCompare(a, b));
+    for (const file of files) {
+      const manifestPath = `${dir}/${file}`;
+      const text = readIfPresent(resolve(repoRoot, manifestPath));
+      if (text === null) continue;
+      for (const doc of parseAllDocuments(text)) {
+        const obj = doc.toJS() as Record<string, unknown> | null;
+        if (obj === null || obj["kind"] !== "HelmChart") continue;
+        const apiVersion = obj["apiVersion"];
+        if (typeof apiVersion !== "string" || !apiVersion.startsWith("helm.cattle.io/")) continue;
+        const spec = (obj["spec"] ?? {}) as Record<string, unknown>;
+        const metadata = (obj["metadata"] ?? {}) as Record<string, unknown>;
+        const name = typeof metadata["name"] === "string" ? metadata["name"] : file;
+        const valuesContent = spec["valuesContent"];
+        let valuesObject: unknown = {};
+        if (typeof valuesContent === "string") {
+          try {
+            valuesObject = (parseYaml(valuesContent) as unknown) ?? {};
+          } catch (error) {
+            throw new Error(
+              `${manifestPath}: HelmChart ${name} has a spec.valuesContent that is not valid YAML, so none of its ` +
+                `keys can be checked: ${(error as Error).message}`,
+            );
+          }
+        }
+        out.push({
+          appId: `${tree}/bootstrap/${name}`,
+          manifestPath,
+          kind: "helm-remote",
+          repoURL: typeof spec["repo"] === "string" ? spec["repo"] : "",
+          chart: typeof spec["chart"] === "string" ? spec["chart"] : "",
+          targetRevision: typeof spec["version"] === "string" ? spec["version"] : "",
+          releaseName: name,
+          namespace: typeof spec["targetNamespace"] === "string" ? spec["targetNamespace"] : "kube-system",
+          valuesObject,
+          gitPath: "",
+          includeGlob: "",
+        });
+      }
+    }
+  }
+  return out;
+}
+
+/** Everything the audit compares: every Application source, then every bootstrap HelmChart. */
+export function discoverAuditSources(repoRoot = REPO_ROOT): readonly ApplicationSource[] {
+  return [...discoverApplications(repoRoot), ...discoverBootstrapHelmCharts(repoRoot)];
+}
+
 export function measureSchemaSnapshot(options: FetchOptions & { repoRoot?: string | undefined } = {}): SchemaSnapshot {
   const repoRoot = options.repoRoot ?? REPO_ROOT;
-  const sources = discoverApplications(repoRoot);
+  const sources = discoverAuditSources(repoRoot);
   // Fixture pins are measured too, so the historical proofs survive a chart bump.
   // They contribute CHART SCHEMAS only, never `entries` -- see historicalFixtureSources.
   const fixturePins = historicalFixtureSources(repoRoot);
@@ -1420,7 +1500,7 @@ export function auditAgainstSnapshot(
     snapshot.entries.map((entry) => [`${entry.appId} ${entry.chart}@${entry.targetRevision}`, entry] as const),
   );
   return auditFrom(
-    discoverApplications(repoRoot),
+    discoverAuditSources(repoRoot),
     (source) => {
       const entry = byKey.get(`${source.appId} ${source.chart}@${source.targetRevision}`);
       if (entry === undefined) return null;
@@ -1434,7 +1514,7 @@ export function auditAgainstSnapshot(
 export function auditLive(options: FetchOptions & { baselinePath?: string | undefined } = {}): AuditResult {
   const repoRoot = options.repoRoot ?? REPO_ROOT;
   return auditFrom(
-    discoverApplications(repoRoot),
+    discoverAuditSources(repoRoot),
     (source) => chartSchemaFor(source, { ...options, repoRoot }),
     loadBaseline(options.baselinePath, repoRoot),
   );
