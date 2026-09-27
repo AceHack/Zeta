@@ -356,15 +356,28 @@
   # be exercised by the real install path before merge, and a USB flashed on
   # day X installs whatever main is on day Y.
   #
-  # `self.rev` is a standard flake attribute (see NixOS's own
-  # `system.nixos.revision = self.rev or self.dirtyRev or "unknown"`
-  # convention) — the exact commit `nix build .#installer-iso` evaluated
-  # from, with NO impure env lookup and NO extra build input. It is only
-  # absent when the flake was evaluated from a DIRTY git tree (uncommitted
-  # changes) — i.e. a hand-built ISO from a local checkout — in which case
-  # `self ? rev` is false and this ships "unknown", which zeta-install.sh's
-  # repo-pin block treats exactly like no pin at all (today's behaviour,
-  # unchanged).
+  # `self.rev` is a standard flake attribute — the exact commit
+  # `nix build .#installer-iso` evaluated from, with NO impure env lookup.
+  # It is absent whenever the git tree is DIRTY, and the release build is
+  # ALWAYS dirty: the workflow `git add -f`s the WP34 bootstrap image
+  # archive so the flake can see it. That shipped `unknown` here, which
+  # zeta-install.sh's validator refuses as junk (`invalid-format` ->
+  # fail-closed), so EVERY CI-built ISO aborted its install unless a test
+  # harness happened to write an ESP `/zeta-repo-pin` over it (nightly
+  # 36297481926, 2026-09-27: `ZETA_ISO_COMMIT='unknown' is not a 40-hex git
+  # commit`). An earlier version of this comment claimed `unknown` was
+  # treated like no pin; the validator never did that.
+  #
+  # So the fallback order is:
+  #   1. `self.rev` — clean tree.
+  #   2. `preload/iso-commit` — written and staged by the workflow ONLY after
+  #      it asserts the preload archive is the tree's ONLY difference from
+  #      HEAD, so the source nix evaluates IS that commit. Never committed.
+  #   3. "" — a genuinely dirty hand build. The validator classifies empty as
+  #      `no-pin` (install default-branch HEAD, logged), which is the honest
+  #      outcome: no commit exists that this ISO was built from.
+  # Never `self.dirtyRev`: it would pin a hand build carrying local code
+  # changes to a commit that does not contain them.
   #
   # `zeta-first-boot.sh` sources this file the same way it sources
   # `/etc/zeta-firstboot.conf` above (see :45-60), and an ESP-written
@@ -380,7 +393,14 @@
     # at `nix build .#installer-iso` time. Sourced as bash by
     # zeta-first-boot.sh, in preference order BELOW an ESP-written
     # /zeta-repo-pin override.
-    ZETA_ISO_COMMIT=${self.rev or "unknown"}
+    ZETA_ISO_COMMIT=${
+      let
+        stagedCommit = ../../preload/iso-commit;
+      in
+      self.rev or (
+        if builtins.pathExists stagedCommit then lib.trim (builtins.readFile stagedCommit) else ""
+      )
+    }
   '';
 
   # Marker file: presence enables the first-boot service. Absent on the

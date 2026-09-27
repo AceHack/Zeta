@@ -676,6 +676,22 @@ jobs:
           # verification discipline is that proofs are TEXT is exactly what
           # `no-binary-in-proof-lineage` forbids.
           git add -f full-ai-cluster/usb-nixos-installer/preload/zeta-bootstrap-images.tar
+          # Staging the archive makes the tree DIRTY, so the flake loses
+          # `self.rev` and the ISO would bake no commit pin (nightly
+          # 36297481926: every CI-built ISO aborted its install on
+          # `ZETA_ISO_COMMIT='unknown'`). Hand the commit in the same way --
+          # but only after proving the archive is the ONLY difference from
+          # HEAD, so the pin names exactly the source nix is about to build.
+          # See the provenance block in nixos/installer/configuration.nix.
+          dirt="$(git status --porcelain --untracked-files=no)"
+          expected="A  full-ai-cluster/usb-nixos-installer/preload/zeta-bootstrap-images.tar"
+          if [ "$dirt" != "$expected" ]; then
+            echo "::error title=ISO source is not HEAD plus the preload archive::refusing to stamp $(git rev-parse HEAD) as the ISO's commit; tracked changes besides the archive:" >&2
+            printf '%s\n' "$dirt" >&2
+            exit 1
+          fi
+          git rev-parse HEAD > full-ai-cluster/usb-nixos-installer/preload/iso-commit
+          git add -f full-ai-cluster/usb-nixos-installer/preload/iso-commit
 
       - name: Build installer ISO
         id: iso_build
@@ -700,6 +716,26 @@ jobs:
             exit 1
           fi
           echo "bootstrap image archive present on the ISO"
+
+      # The installer REFUSES an unparseable pin (zeta-install.sh ZETA-REPO-PIN
+      # block), so a release ISO whose provenance is not a 40-hex commit aborts
+      # every operator install. That shipped silently from WP34 until nightly
+      # 36297481926 because every lane that tested it also wrote an ESP pin over
+      # the baked one. Read the REALIZED file (the same store path the ISO's
+      # closure carries), not the option that produces it, and require it to
+      # name exactly the commit this job checked out.
+      - name: The built ISO pins the commit it was built from
+        working-directory: full-ai-cluster
+        run: |
+          set -euo pipefail
+          f="$(nix build --no-link --print-out-paths '.#nixosConfigurations.installer.config.environment.etc."zeta-iso-provenance".source')"
+          baked="$(sed -n "s/^ *ZETA_ISO_COMMIT=//p" "$f")"
+          head="$(git rev-parse HEAD)"
+          echo "baked pin: '${baked}'  HEAD: ${head}"
+          if [ "$baked" != "$head" ]; then
+            echo "::error title=ISO provenance pin is wrong::the ISO bakes ZETA_ISO_COMMIT='${baked}', expected ${head}. zeta-install.sh fails closed on a pin it cannot honour." >&2
+            exit 1
+          fi
 
       - name: The built ISO carries the name this repo chose
         working-directory: full-ai-cluster
