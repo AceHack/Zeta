@@ -1,0 +1,14 @@
+{
+  "id": "080d071b573c4010a013000808859584",
+  "at": "2026-09-27T15:10:29.256Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M3HPNSW7087G0R001W2Z6YX",
+    "type": "bug",
+    "title": "A real install has no operator-facing first-boot verdict: zeta-first-boot-k3s-verify is test-only, so cluster-phase dependency failures are visible only via kubectl",
+    "slug": "a-real-install-has-no-operator-facing-first-boot-verdict-zet",
+    "priority": "P2",
+    "filename": "081M3HPNSW7087G0R001W2Z6YX-a-real-install-has-no-operator-facing-first-boot-verdict-zet.md"
+  }
+}

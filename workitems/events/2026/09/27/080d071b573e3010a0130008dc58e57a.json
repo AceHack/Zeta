@@ -1,0 +1,14 @@
+{
+  "id": "080d071b573e3010a0130008dc58e57a",
+  "at": "2026-09-27T15:10:29.318Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M3HPNSY5087G0R002QAVCEJ",
+    "type": "bug",
+    "title": "After the wipe, the repo clone and nixos-install have no overall time bound",
+    "slug": "after-the-wipe-the-repo-clone-and-nixos-install-have-no-over",
+    "priority": "P2",
+    "filename": "081M3HPNSY5087G0R002QAVCEJ-after-the-wipe-the-repo-clone-and-nixos-install-have-no-over.md"
+  }
+}

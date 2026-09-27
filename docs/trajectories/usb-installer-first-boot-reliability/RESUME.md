@@ -112,6 +112,7 @@ the item says so.
 | A full `workflow_dispatch` intermittently loses **every** ESP injection | root cause found; the ambiguity itself is not deleted | `081M39CJP96087G0R001T4J2R3` |
 | `openbao` / `hindsight` have no machine-readable "needs an operator action" declaration | they are neither manual-sync nor broken; the convention lacks a word | `081M3BKQFNC087G0R003MDGSAX` |
 | Which half of the capacity fix produced the reachability result | #17666 bundled pod requests *and* node reservations; one pair cannot separate them | needs a run with one applied |
+| Three first-boot external dependencies still **hang** (post-wipe clone, bootstrap chart repos, k3s built-in images) | full map, 21 rows, in `docs/ops/FIRST-BOOT-EXTERNAL-DEPENDENCIES.md` | `081M3HPNST9087G0R001X410AE` · `081M3HPNSW7087G0R001W2Z6YX` · `081M3HPNSY5087G0R002QAVCEJ` |
 
 ---
 
@@ -170,6 +171,9 @@ A rule proposal carrying all ten original instances is queued as a task chip
 ---
 
 ## 7. Evidence links
+
+First-boot external-dependency inventory (every dependency, what an operator gets when
+it is down): [`docs/ops/FIRST-BOOT-EXTERNAL-DEPENDENCIES.md`](../../ops/FIRST-BOOT-EXTERNAL-DEPENDENCIES.md).
 
 Runs worth keeping (artifacts expire — pull what you need before they do):
 

@@ -2164,9 +2164,35 @@ echo "[preflight] UEFI mode confirmed (/sys/firmware/efi present)."
 # most common failure -- no working network at all.
 echo "[preflight] checking the repository is reachable before anything is destroyed ..."
 if ! GIT_TERMINAL_PROMPT=0 timeout 60 git ls-remote "$REPO_URL" HEAD >/dev/null 2>&1; then
-  bail "cannot reach $REPO_URL (git ls-remote failed or timed out after 60s). The install clones this repo AFTER wiping every disk in scope, so proceeding would destroy the current system and then fail with nothing bootable. Fix networking first -- the role prompt offers nmtui, or configure from the shell and re-run. Nothing has been wiped."
+  bail "cannot reach $REPO_URL (git ls-remote failed or timed out after 60s). The install clones this repo AFTER wiping every disk in scope, so proceeding would destroy the current system and then fail with nothing bootable. Fix networking first -- the role prompt offers nmtui, or configure from the shell and re-run. If networking looks fine, check the clock: TLS fails on a skewed clock, and this machine reads $(date -u +%Y-%m-%dT%H:%M:%SZ) UTC. Nothing has been wiped."
 fi
 echo "[preflight] repository reachable ($REPO_URL)."
+
+# ── B6: the binary cache is the SECOND network dependency, also after the wipe ──
+#
+# 081M3BWJ96T087G0R0028WT3S3 (first-boot dependency inventory). The paragraph
+# above says it plainly: a network that reaches GitHub but not cache.nixos.org
+# still fails after the wipe. `nixos-install` below runs with `fallback true`,
+# so an unreachable cache does not refuse -- it turns into building the whole
+# closure from source, each download bounded but the total not, and the only
+# thing the operator sees is a Nix error or a build that never ends, on a disk
+# that has already been wiped. Same shape as B3/B4, so the same answer: probe
+# before anything is destroyed and say which dependency it was.
+#
+# nix-cache-info is the substituter's own handshake file (a few bytes). The
+# escape hatch mirrors ZETA_ALLOW_REPO_DRIFT: set ZETA_ALLOW_NO_BINARY_CACHE=1
+# to proceed on a from-source build deliberately, and the log records that you
+# did. A missing curl is a probe that DID NOT RUN, reported as such, never a pass.
+ZETA_BINARY_CACHE_URL="${ZETA_BINARY_CACHE_URL:-https://cache.nixos.org}"
+if ! command -v curl >/dev/null 2>&1; then
+  echo "[preflight] binary-cache probe DID NOT RUN: curl is not on PATH. This is a check that did not run, NOT a check that passed." >&2
+elif timeout 30 curl -fsS --connect-timeout 10 --max-time 20 -o /dev/null "$ZETA_BINARY_CACHE_URL/nix-cache-info" 2>/dev/null; then
+  echo "[preflight] binary cache reachable ($ZETA_BINARY_CACHE_URL)."
+elif [ "${ZETA_ALLOW_NO_BINARY_CACHE:-}" = "1" ]; then
+  echo "[preflight] WARNING: $ZETA_BINARY_CACHE_URL is unreachable and ZETA_ALLOW_NO_BINARY_CACHE=1 is set -- proceeding; nixos-install will build from source and may take hours." >&2
+else
+  bail "cannot reach the Nix binary cache $ZETA_BINARY_CACHE_URL (GET /nix-cache-info failed or timed out). GitHub is reachable, but nixos-install downloads the system closure from this cache AFTER wiping every disk in scope; without it every package builds from source, which fails or runs for hours on a machine that no longer has an OS. Fix the network path to $ZETA_BINARY_CACHE_URL (proxy, firewall, DNS) and re-run, or set ZETA_ALLOW_NO_BINARY_CACHE=1 to accept a from-source build. Nothing has been wiped."
+fi
 
 # ── Step 3: wipe every disk in scope ──────────────────────────────
 for d in "$BOOT_DISK" "${DATA_DISKS[@]}"; do
@@ -4123,8 +4149,11 @@ if [ -d "$ZETA_HOME" ]; then
   # .mise.toml). Subsequent 6.95d block is a no-op if directory exists.
   if [ ! -d "$ZETA_HOME/Zeta" ]; then
     echo "[iter-5.5.0] pre-cloning Zeta repo to $ZETA_HOME/Zeta..."
-    sudo -u "#$ZETA_UID" git clone https://github.com/Lucent-Financial-Group/Zeta.git "$ZETA_HOME/Zeta" 2>&1 | tail -3 || \
-      echo "[iter-5.5.0]   WARN: clone failed — target runtime/agent bootstrap cannot run; can retry post-reboot"
+    # Bounded (081M3BWJ96T087G0R0028WT3S3): git has no default network timeout, so
+    # a route that accepts SYN and never replies would stall the install here
+    # forever with nothing on screen. 600s is generous for a full clone.
+    timeout 600 sudo -u "#$ZETA_UID" env GIT_TERMINAL_PROMPT=0 git clone https://github.com/Lucent-Financial-Group/Zeta.git "$ZETA_HOME/Zeta" 2>&1 | tail -3 || \
+      echo "[iter-5.5.0]   WARN: clone of github.com/Lucent-Financial-Group/Zeta failed or timed out after 600s — target runtime/agent bootstrap cannot run; can retry post-reboot"
   fi
 
   # 6.95a-bootstrap — invoke the canonical install entry from the

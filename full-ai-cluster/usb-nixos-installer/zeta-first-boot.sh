@@ -568,7 +568,14 @@ drop_to_shell() {
 has_internet() {
   # IP first (QEMU NAT often has DNS lag); github.com proves DNS for nixos-install.
   ping -c 1 -W 2 -q 1.1.1.1 >/dev/null 2>&1 && return 0
-  ping -c 1 -W 2 -q github.com >/dev/null 2>&1
+  ping -c 1 -W 2 -q github.com >/dev/null 2>&1 && return 0
+  # ICMP is not what the install needs, and plenty of networks drop it while
+  # passing HTTPS. Without this line such a network reads as OFFLINE forever:
+  # on a box with wifi hardware that is an nmtui loop nobody asked for.
+  # Bounded so an offline check still costs seconds, not minutes.
+  # (081M3BWJ96T087G0R0028WT3S3 first-boot dependency inventory.)
+  command -v curl >/dev/null 2>&1 \
+    && curl -fsS --connect-timeout 5 --max-time 10 -o /dev/null https://github.com >/dev/null 2>&1
 }
 
 has_wifi_hardware() {

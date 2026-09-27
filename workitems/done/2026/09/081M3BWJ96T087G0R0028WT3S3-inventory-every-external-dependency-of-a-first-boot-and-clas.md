@@ -1,11 +1,12 @@
 ---
 id: 081M3BWJ96T087G0R0028WT3S3
 type: task
-state: backlog
+state: done
 priority: P2
 slug: inventory-every-external-dependency-of-a-first-boot-and-clas
 title: "Inventory every external dependency of a first boot, and classify each by what an operator gets when it is unavailable"
 created: 2026-09-25T08:57:58.746Z
+completed: 2026-09-27T15:13:03.229Z
 depends_on: []
 composes_with: []
 ---
@@ -103,3 +104,14 @@ operator cannot see.
 one lane: #5 blocked a verification run, #8 stopped the roster converging, and
 #9 turned out never to have executed. That rate of discovery on a surface
 nobody had enumerated is the argument for enumerating it.
+
+## Resolution (2026-09-27)
+
+The map is `docs/ops/FIRST-BOOT-EXTERNAL-DEPENDENCIES.md` — 21 rows, each cited to
+file:line and tagged MEASURED / source / fixed-here. Three `hangs` were fixed in the same
+PR with tests (ICMP-only network probe, unprobed binary cache before the wipe, unbounded
+pre-clone). The three that remain are minted: `081M3HPNST9087G0R001X410AE`,
+`081M3HPNSW7087G0R001W2Z6YX`, `081M3HPNSY5087G0R002QAVCEJ`. Row #9 of this item's draft
+("silent skip") is corrected there: the discovery fallback is named on the console; what
+is silent is that discovery has never executed. Most rows remain read-from-source, and
+the doc says so.

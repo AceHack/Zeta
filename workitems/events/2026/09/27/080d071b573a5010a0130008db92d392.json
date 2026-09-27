@@ -1,0 +1,14 @@
+{
+  "id": "080d071b573a5010a0130008db92d392",
+  "at": "2026-09-27T15:10:29.194Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M3HPNST9087G0R001X410AE",
+    "type": "bug",
+    "title": "First-boot bootstrap HelmCharts fetch charts from five repo hosts at runtime; the image preload does not cover them and an unreachable repo retries with nothing on the console",
+    "slug": "first-boot-bootstrap-helmcharts-fetch-charts-from-five-repo",
+    "priority": "P2",
+    "filename": "081M3HPNST9087G0R001X410AE-first-boot-bootstrap-helmcharts-fetch-charts-from-five-repo.md"
+  }
+}
