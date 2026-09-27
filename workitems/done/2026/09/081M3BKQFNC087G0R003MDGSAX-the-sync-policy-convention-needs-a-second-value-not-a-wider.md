@@ -1,11 +1,12 @@
 ---
 id: 081M3BKQFNC087G0R003MDGSAX
 type: task
-state: backlog
+state: done
 priority: P2
 slug: the-sync-policy-convention-needs-a-second-value-not-a-wider
 title: "The sync-policy convention needs a SECOND VALUE, not a wider bucket: converges-only-after-an-operator-action"
 created: 2026-09-25T06:23:32.012Z
+completed: 2026-09-27T15:39:40.122Z
 depends_on: []
 composes_with: []
 ---
@@ -95,3 +96,32 @@ bucket — see the WHAT THIS DELIBERATELY DOES NOT EXCLUDE section of
 7's DERIVED exclusion set against the Docker replica's MEASURED one. The two
 agreed on four Applications and differed on three, every difference in the
 conservative direction.
+
+## Closure (2026-09-27)
+
+The value is `zeta.io/sync-policy: converges-only-after-an-operator-action`
+(`OPERATOR_ACTION_SYNC_POLICY_VALUE`).
+
+- `manual-sync-policy.ts`: `classifySyncPolicy` returns `kind: "operator-action"`.
+  The reason is required. The `automated:` rule is INVERTED: the value without an
+  automated block is refused, because "synced, then waiting on a human" is false of an
+  app nothing syncs. `operatorActionAssertion` is stronger than the manual contract:
+  sync must be exactly `Synced`, and health must have been evaluated. Only health may
+  lag. `operatorActionDeclarations` reads the tree.
+- Consumers that key on `kind === "manual"` treat the new kind as automated, which is
+  correct because it is automated.
+- WP11 verdict 7 (`zeta-first-boot-k3s-verify.nix`): a new `excluded-operator-action`
+  bucket. It counts toward `excluded` and prints the reason (the reason field width
+  went 180 -> 400 so the doc pointer survives). OutOfSync or unevaluated health stays
+  `unconverged`. Synced+Healthy is `converged`.
+- `first-boot-replica.ts` stage 6: `operatorActionApps` comes from the declaration and
+  runs before the name-based `isKnownSealedByDesign` fallback.
+- `openbao` and `hindsight` are annotated. Each reason names the action and its doc
+  (`openbao/TOPOLOGY.md` §5 and `INJECTION-POINTS.md`).
+- **Operator-facing:** the installer's completion banner (`zeta-install.sh`, "ZETA
+  CLUSTER NODE INSTALL COMPLETE") now has an OPERATOR ACTIONS section. It prints a
+  `k3s kubectl ... custom-columns` command that lists these apps off the LIVE cluster
+  with their reasons, so the banner cannot drift from the declarations.
+
+Not verified on a live cluster: the banner command and the verdict-7 bucket, which is
+exercised by `wp11-roster-shell-parity.test.ts` against the real awk.

@@ -4918,6 +4918,18 @@ else
   echo "       ssh zeta@\$(hostname)"
 fi
 echo
+# 081M3BKQFNC087G0R003MDGSAX — some Applications CANNOT converge without a human,
+# by design (OpenBao's init ceremony, an external API key). They declare
+# `zeta.io/sync-policy: converges-only-after-an-operator-action` with the action in
+# `zeta.io/sync-policy-reason`. The list is read off the LIVE cluster rather than
+# printed from here, so this banner cannot drift from the declarations.
+echo "  OPERATOR ACTIONS — the cluster does NOT fully converge without them:"
+echo "    Some Applications are synced automatically and then wait on YOU"
+echo "    (e.g. the OpenBao init ceremony, an external LLM API key). Until"
+echo "    you act they read Progressing/Degraded; that is expected, not a crash."
+echo "    List them, each with the action and the doc that describes it:"
+echo '      sudo k3s kubectl -n argocd get applications -o custom-columns='"'"'NAME:.metadata.name,POLICY:.metadata.annotations.zeta\.io/sync-policy,ACTION:.metadata.annotations.zeta\.io/sync-policy-reason'"'"' | grep -e NAME -e converges-only-after-an-operator-action'
+echo
 echo "================================================================"
 echo
 

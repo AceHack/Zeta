@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
+import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 import {
@@ -7,6 +7,9 @@ import {
   classifySyncPolicy,
   manualSyncAssertion,
   manualSyncDeclarations,
+  OPERATOR_ACTION_SYNC_POLICY_VALUE,
+  operatorActionAssertion,
+  operatorActionDeclarations,
   MANUAL_SYNC_ACCEPTABLE_HEALTH,
   COMPARISON_COMPLETED_SYNC_STATUS,
 } from "./manual-sync-policy.ts";
@@ -244,5 +247,76 @@ describe("manual-sync live assertion", () => {
     const weak = applicationOutcome(expectedApp("cdi", true), snapshot("cdi", "OutOfSync", "Missing"));
     expect(strict.ok).toBe(false);
     expect(weak.ok).toBe(true);
+  });
+});
+
+/**
+ * 081M3BKQFNC087G0R003MDGSAX — the SECOND value. A second word, not a wider
+ * bucket: each test below is a way the new value could become a mute button, or
+ * could blur into `manual`, and each has to stay refused.
+ */
+describe("converges-only-after-an-operator-action", () => {
+  const OP_ANNOTATIONS = [
+    `    zeta.io/sync-policy: ${OPERATOR_ACTION_SYNC_POLICY_VALUE}`,
+    "    zeta.io/sync-policy-reason: a human runs the init ceremony",
+  ];
+
+  test("ACCEPTED: the value, a non-empty reason, AND an automated block (the app IS synced)", () => {
+    const declaration = classifySyncPolicy(withAnnotations(OP_ANNOTATIONS, AUTOMATED));
+    expect(declaration).toEqual({ kind: "operator-action", reason: "a human runs the init ceremony" });
+  });
+
+  test("REFUSED: the value with NO automated block — 'synced, then waiting' is false of an app nothing syncs", () => {
+    const declaration = classifySyncPolicy(withAnnotations(OP_ANNOTATIONS, NO_AUTOMATED));
+    expect(declaration.kind).toBe("invalid");
+    expect(declaration.kind === "invalid" ? declaration.problem : "").toContain("NO spec.syncPolicy.automated");
+  });
+
+  test("REFUSED: the value with no reason", () => {
+    const declaration = classifySyncPolicy(
+      withAnnotations([`    zeta.io/sync-policy: ${OPERATOR_ACTION_SYNC_POLICY_VALUE}`], AUTOMATED),
+    );
+    expect(declaration.kind).toBe("invalid");
+  });
+
+  test("NOT manual: consumers that key on kind === 'manual' keep the FULL contract for it", () => {
+    expect(classifySyncPolicy(withAnnotations(OP_ANNOTATIONS, AUTOMATED)).kind).not.toBe("manual");
+  });
+
+  test("assertion: Synced + Progressing/Degraded/Missing passes — only HEALTH may lag", () => {
+    for (const health of ["Progressing", "Degraded", "Missing", "Healthy"]) {
+      expect(operatorActionAssertion({ syncStatus: "Synced", healthStatus: health, message: "" }).ok).toBe(true);
+    }
+  });
+
+  test("STILL RED, and STRONGER than manual-sync: OutOfSync is refused here (manual accepts it)", () => {
+    const snap = { syncStatus: "OutOfSync", healthStatus: "Missing", message: "" };
+    expect(manualSyncAssertion(snap).ok).toBe(true);
+    const outcome = operatorActionAssertion(snap);
+    expect(outcome.ok).toBe(false);
+    expect(outcome.reason).toContain("cannot explain a sync failure");
+  });
+
+  test("STILL RED: Unknown sync, and an unevaluated health", () => {
+    expect(operatorActionAssertion({ syncStatus: "Unknown", healthStatus: "Missing", message: "" }).ok).toBe(false);
+    expect(operatorActionAssertion({ syncStatus: "Synced", healthStatus: "Unknown", message: "" }).ok).toBe(false);
+    expect(operatorActionAssertion({ syncStatus: "Synced", healthStatus: "", message: "" }).ok).toBe(false);
+  });
+
+  test("over the real tree: exactly openbao and hindsight, each naming its action", () => {
+    const declared = operatorActionDeclarations(APPS_DIR);
+    expect(declared.map((d) => d.app)).toEqual(["hindsight", "openbao"]);
+    for (const d of declared) expect(d.reason.length).toBeGreaterThan(40);
+    expect(declared.find((d) => d.app === "openbao")?.reason).toContain("TOPOLOGY.md");
+    expect(declared.find((d) => d.app === "hindsight")?.reason).toContain("INJECTION-POINTS.md");
+  });
+
+  test("the installer's completion banner lists them off the live cluster, by this exact value", () => {
+    const installer = readFileSync(
+      resolve(import.meta.dir, "../../../full-ai-cluster/usb-nixos-installer/zeta-install.sh"),
+      "utf8",
+    );
+    expect(installer).toContain(`grep -e NAME -e ${OPERATOR_ACTION_SYNC_POLICY_VALUE}`);
+    expect(installer).toContain("zeta\\.io/sync-policy-reason");
   });
 });

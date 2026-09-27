@@ -215,7 +215,12 @@ import { rootDevCatalogExcludeGlobFor } from "./ports.ts";
 // FAIL, and the roster is read from the SAME convention `manual-sync-policy.ts`
 // already governs — never a second hand list next to it (its own header names
 // that drift as the exact failure this module exists to prevent).
-import { manualSyncAssertion, manualSyncDeclarations } from "./manual-sync-policy.ts";
+import {
+  manualSyncAssertion,
+  manualSyncDeclarations,
+  operatorActionAssertion,
+  operatorActionDeclarations,
+} from "./manual-sync-policy.ts";
 // WP33 constrained mode: the installed-disk guest's OWN resource envelope,
 // imported from the harness that declares it. Never re-typed here — see
 // `resolveConstrainedLimits`, which refuses to run rather than guess if these
@@ -1291,6 +1296,12 @@ export function isKnownSpireAgentDnsCrashLoop(issue: PodVerdict): boolean {
 export interface AppVerdictContext {
   /** Application name -> its declared reason, from `manual-sync-policy.ts`'s own convention — never a hand list. */
   readonly manualSyncApps: ReadonlyMap<string, string>;
+  /**
+   * Application name -> declared reason for `converges-only-after-an-operator-action`
+   * (081M3BKQFNC087G0R003MDGSAX), read from the same convention. Optional so a
+   * context built without it keeps the pre-existing behaviour.
+   */
+  readonly operatorActionApps?: ReadonlyMap<string, string>;
   readonly externalSecretCatalog: readonly ExternalSecretCatalogEntry[];
 }
 
@@ -1346,6 +1357,17 @@ export function computeAppVerdict(
     return outcome.ok
       ? { ...app, verdict: "DIVERGENCE", reason: `declared manual-sync (manual-sync-policy.ts: "${manualSyncReason}") — ${outcome.reason || "Missing (never synced in this lane, as designed)"}` }
       : { ...app, verdict: "FAIL", reason: `declared manual-sync (manual-sync-policy.ts: "${manualSyncReason}") but ${outcome.reason}` };
+  }
+
+  // 081M3BKQFNC087G0R003MDGSAX: synced, then waiting on a HUMAN action. Read from the
+  // declaration, not from `isKnownSealedByDesign`'s name check below (which stays as a
+  // fallback for a tree that predates the annotation).
+  const operatorActionReason = context.operatorActionApps?.get(app.name);
+  if (operatorActionReason !== undefined) {
+    const outcome = operatorActionAssertion({ syncStatus: app.sync, healthStatus: app.health, message: "" });
+    return outcome.ok
+      ? { ...app, verdict: "DIVERGENCE", reason: `converges only after an operator action (manual-sync-policy.ts): ${operatorActionReason}` }
+      : { ...app, verdict: "FAIL", reason: `declared converges-only-after-an-operator-action, but ${outcome.reason}` };
   }
 
   if (mine.length === 0) {
@@ -2670,6 +2692,9 @@ export async function runReplica(opts: RunOptions): Promise<RunReport> {
     const verdictContext: AppVerdictContext = {
       manualSyncApps: new Map(
         manualSyncDeclarations(join(REPO_ROOT, "full-ai-cluster/k8s/applications")).map((d) => [d.app, d.reason]),
+      ),
+      operatorActionApps: new Map(
+        operatorActionDeclarations(join(REPO_ROOT, "full-ai-cluster/k8s/applications")).map((d) => [d.app, d.reason]),
       ),
       externalSecretCatalog: parseExternalSecretCatalog(readFileSync(join(REPO_ROOT, "full-ai-cluster/INJECTION-POINTS.md"), "utf-8")),
     };

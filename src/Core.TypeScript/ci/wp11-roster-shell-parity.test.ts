@@ -598,3 +598,68 @@ describe("zeta_wp11_count_or_unknown — a failed probe is `-`, NEVER `0`", () =
     expect(countOrUnknown(0, "ns a 1/1 Running\n\n\nns b 1/1 Running\n")).toBe("2");
   });
 });
+
+describe("zeta_wp11_classify_roster — converges-only-after-an-operator-action (081M3BKQFNC087G0R003MDGSAX)", () => {
+  const OP = "converges-only-after-an-operator-action";
+  const BAO_REASON = "OpenBao comes up SEALED; a human runs the init ceremony in TOPOLOGY.md section 5";
+  const opApp = (sync: string, health: string, opts: { automated?: boolean; reason?: string } = {}): string =>
+    app("openbao", sync, health, { annotation: OP, automated: opts.automated ?? true, ...(opts.reason === undefined ? {} : { reason: opts.reason }) });
+
+  it("Synced + Progressing is its OWN bucket, with the operator action on the line — not `unconverged`", () => {
+    const rows = classify([opApp("Synced", "Progressing", { reason: BAO_REASON }), ns("openbao", "openbao")].join("\n"), "op-ok.tsv");
+    expect(rows[0]?.bucket).toBe("excluded-operator-action");
+    expect(rows[0]?.detail).toContain(BAO_REASON);
+    expect(rows[0]?.detail).toContain("health=Progressing");
+  });
+
+  it("Degraded (a crash loop waiting on an external key) is the same bucket", () => {
+    const rows = classify([opApp("Synced", "Degraded", { reason: "external API key" }), ns("openbao", "openbao")].join("\n"), "op-degraded.tsv");
+    expect(rows[0]?.bucket).toBe("excluded-operator-action");
+  });
+
+  it("once the operator acted, Synced + Healthy is plain `converged`", () => {
+    const rows = classify([opApp("Synced", "Healthy", { reason: BAO_REASON }), ns("openbao", "openbao")].join("\n"), "op-healthy.tsv");
+    expect(rows[0]?.bucket).toBe("converged");
+  });
+
+  /** STRONGER than manual-sync: OutOfSync is accepted there, and must not be here. */
+  it("STILL RED: OutOfSync — a pending human action cannot explain a sync failure", () => {
+    const rows = classify([opApp("OutOfSync", "Progressing", { reason: BAO_REASON }), ns("openbao", "openbao")].join("\n"), "op-outofsync.tsv");
+    expect(rows[0]?.bucket).toBe("unconverged");
+    expect(rows[0]?.detail).toContain("cannot explain a sync failure");
+  });
+
+  it("STILL RED: health never evaluated (Unknown)", () => {
+    const rows = classify([opApp("Synced", "Unknown", { reason: BAO_REASON }), ns("openbao", "openbao")].join("\n"), "op-unknown.tsv");
+    expect(rows[0]?.bucket).toBe("unconverged");
+  });
+
+  it("MALFORMED: the value with NO automated block earns the full contract, and says so", () => {
+    const rows = classify(
+      [opApp("Synced", "Progressing", { automated: false, reason: BAO_REASON }), ns("openbao", "openbao")].join("\n"),
+      "op-noauto.tsv",
+    );
+    expect(rows[0]?.bucket).toBe("unconverged");
+    expect(rows[0]?.detail).toContain("MALFORMED");
+  });
+
+  it("MALFORMED: the value with no reason earns the full contract", () => {
+    const rows = classify([opApp("Synced", "Progressing"), ns("openbao", "openbao")].join("\n"), "op-noreason.tsv");
+    expect(rows[0]?.bucket).toBe("unconverged");
+  });
+
+  it("the bucket counts toward `excluded`, never toward `converged` or `unconverged`", () => {
+    expect(
+      counts(
+        [opApp("Synced", "Progressing", { reason: BAO_REASON }), ns("openbao", "openbao"), app("redis", "Synced", "Healthy"), ns("redis", "redis")].join("\n"),
+        "op-counts.tsv",
+      ),
+    ).toEqual([1, 0, 1, 0, 0, 2]);
+  });
+
+  it("the awk literal is the string manual-sync-policy.ts exports — one vocabulary, not two", async () => {
+    const { OPERATOR_ACTION_SYNC_POLICY_VALUE } = await import("../cluster/manual-sync-policy.ts");
+    expect(OP).toBe(OPERATOR_ACTION_SYNC_POLICY_VALUE);
+    expect(SRC).toContain(`ann[a] == "${OPERATOR_ACTION_SYNC_POLICY_VALUE}"`);
+  });
+});

@@ -196,21 +196,19 @@
 #   openbao          -> sealed by design on a fresh cluster.
 #   hindsight        -> needs an external API key no fresh cluster can hold.
 #
-# openbao and hindsight are a REAL gap, left open on purpose. Both are
-# defensible non-convergences that hold on metal too, and neither carries a
-# machine-readable declaration this unit could read off the live object.
-# `zeta.io/sync-policy: manual` is the wrong annotation for them -- neither is
-# manual-SYNC; both are converges-only-after-an-operator-action, which the
-# convention has no word for yet. `full-ai-cluster/INJECTION-POINTS.md`'s
-# `**EXTERNAL**` table is the maintained source for hindsight's half and
-# first-boot-replica.ts already parses it, but that table lives in the REPO and
-# this unit runs on an installed disk with no checkout; baking a snapshot in at
-# Nix eval time would create a second, separately-drifting copy of a roster.
-# So they stay `unconverged`, named on serial with their last Sync+Health
-# state. The vocabulary gap is filed as 081M3BKQFNC087G0R003MDGSAX: the
-# convention needs a SECOND VALUE (converges-only-after-an-operator-action),
-# not a wider `manual`. Widening a bucket until a red goes green is the one
-# move that would make this verdict stop meaning anything.
+# openbao and hindsight WERE a real gap, closed by a second convention value
+# rather than a wider bucket (081M3BKQFNC087G0R003MDGSAX). Both are defensible
+# non-convergences that hold on metal too, and neither is manual-SYNC: both
+# are synced automatically and then wait on a HUMAN action (the OpenBao init
+# ceremony; an external LLM API key). They now declare
+# `zeta.io/sync-policy: converges-only-after-an-operator-action` with a reason
+# naming the action and its doc, read off the LIVE object like `manual` -- no
+# repo checkout, no second roster baked in at Nix eval time. They land in
+# `excluded-operator-action`, and are asserted MORE strongly than manual-sync:
+# sync must be exactly Synced, health must have been evaluated; only health may
+# lag. A sync failure on either stays `unconverged`. Widening a bucket until a
+# red goes green is the one move that would make this verdict stop meaning
+# anything, which is why this is a second word and not a wider one.
 #
 # WHO OWNS THE RED -- READ THIS BEFORE SKIPPING A RED LANE.
 # A permanently-red lane stops being read, and a lane nobody reads is worth
@@ -219,13 +217,15 @@
 #   cilium, weaviate   WP26. Synced+Progressing; cilium names its own cause,
 #                      an ExcludedResourceWarning on EndpointSlice
 #                      cilium-ingress. Being worked.
-#   openbao, hindsight 081M3BKQFNC087G0R003MDGSAX (above). Awaiting the second
-#                      sync-policy value; until then they are correctly red.
+#   openbao, hindsight no longer red on their own account: they report as
+#                      `excluded-operator-action`, naming the human action.
+#                      If either shows up `unconverged`, its SYNC failed --
+#                      that is a real finding, not the pending action.
 #
-# FOUR KNOWN, ALL OWNED. **A FIFTH NAME IN THE `unconverged` LIST IS THE
+# TWO KNOWN, BOTH OWNED. **A THIRD NAME IN THE `unconverged` LIST IS THE
 # SIGNAL THIS VERDICT EXISTS TO PRODUCE** -- it is something new, on a real
 # installed disk, that no other lane caught. Do not read past it. And when
-# the four above are closed, this list must shrink with them, or it becomes
+# the two above are closed, this list must shrink with them, or it becomes
 # the standing excuse it was written to prevent.
 #
 # AND IT REPORTS WHILE IT WAITS. Sixty-seven minutes of silence on a serial log
@@ -748,6 +748,14 @@ in
           #                          MANUAL_SYNC_ACCEPTABLE_HEALTH). A declared
           #                          manual-sync app that FAILS that weaker
           #                          contract is `unconverged`, not excluded.
+          #   excluded-operator-action declares zeta.io/sync-policy:
+          #                          converges-only-after-an-operator-action
+          #                          WITH a reason and WITH an automated block,
+          #                          reads sync=Synced, and has an EVALUATED
+          #                          health that is not yet Healthy
+          #                          (manual-sync-policy.ts's
+          #                          operatorActionAssertion). The reason -- the
+          #                          human action -- is on the line.
           #   excluded-unschedulable a Pending pod of this app demands a
           #                          nodeSelector label NO Node carries.
           #   undecidable            the SCHEDULER says a pod of this app cannot
@@ -843,8 +851,13 @@ in
                 # there and earns the FULL contract here -- fail-closed, so a
                 # malformed declaration is never cheaper than a correct one.
                 manual = (ann[a] == "manual" && auto[a] == "false" && reason[a] != "-")
+                # The "operator-action" arm (081M3BKQFNC087G0R003MDGSAX): the
+                # annotation exactly converges-only-after-an-operator-action,
+                # an automated block PRESENT (the app IS synced), non-empty
+                # reason. Anything else is malformed -> full contract.
+                opAction = (ann[a] == "converges-only-after-an-operator-action" && auto[a] == "true" && reason[a] != "-")
                 note = ""
-                if (ann[a] != "-" && !manual) {
+                if (ann[a] != "-" && !manual && !opAction) {
                   note = " [sync-policy declaration MALFORMED: annotation=" ann[a] " automated=" auto[a] " reason=" (reason[a] == "-" ? "absent" : "present") "; the full Synced+Healthy contract applies]"
                 } else if (ann[a] == "-" && auto[a] == "false") {
                   note = " [omits spec.syncPolicy.automated and claims no zeta.io/sync-policy: manual -- an absent block is indistinguishable from a forgotten one, so the full Synced+Healthy contract applies]"
@@ -859,6 +872,24 @@ in
                     printf "unconverged\t%s\tdeclared manual-sync, but ArgoCD never COMPLETED a comparison (sync=%s), so its source did not render; health=%s msg=%s\n", a, sync[a], health[a], msg[a]
                   } else {
                     printf "unconverged\t%s\tdeclared manual-sync, but health=%s; a never-synced app must read Missing and a hand-synced one Healthy (sync=%s msg=%s)\n", a, health[a], sync[a], msg[a]
+                  }
+                  continue
+                }
+
+                # manual-sync-policy.ts operatorActionAssertion. STRONGER than
+                # the manual arm on what can be observed: it IS synced, so sync
+                # must be exactly Synced; only health may lag, and it must have
+                # been EVALUATED. Synced+Healthy falls through to `converged`
+                # (the operator already acted). An exclusion that asserts
+                # nothing is a decoration, so a sync failure stays unconverged.
+                if (opAction && !(sync[a] == "Synced" && health[a] == "Healthy")) {
+                  evaluated = (health[a] == "Progressing" || health[a] == "Degraded" || health[a] == "Suspended" || health[a] == "Missing")
+                  if (sync[a] != "Synced") {
+                    printf "unconverged\t%s\tdeclared converges-only-after-an-operator-action, which means it IS synced -- but sync=%s; a pending human action cannot explain a sync failure (health=%s msg=%s)\n", a, sync[a], health[a], msg[a]
+                  } else if (!evaluated) {
+                    printf "unconverged\t%s\tdeclared converges-only-after-an-operator-action, but health=%s -- ArgoCD never evaluated it (sync=%s msg=%s)\n", a, health[a], sync[a], msg[a]
+                  } else {
+                    printf "excluded-operator-action\t%s\tSynced, and waiting on a HUMAN action before it can become Healthy (health=%s). OPERATOR ACTION: %s\n", a, health[a], reason[a]
                   }
                   continue
                 }
@@ -893,7 +924,7 @@ in
             END {
               conv = c["converged"] + 0
               unconv = c["unconverged"] + 0
-              excl = c["excluded-manual-sync"] + 0 + c["excluded-unschedulable"] + 0
+              excl = c["excluded-manual-sync"] + 0 + c["excluded-unschedulable"] + 0 + c["excluded-operator-action"] + 0
               undec = c["undecidable"] + 0
               unattr = c["unattributed-pod"] + 0
               printf "%d %d %d %d %d %d\n", conv, unconv, excl, undec, unattr, conv + unconv + excl + undec
@@ -970,7 +1001,7 @@ in
                   ($app.status.health.status | dash(40)),
                   ($app.metadata.annotations["zeta.io/sync-policy"] | dash(40)),
                   (if ($app.spec.syncPolicy.automated // null) == null then "false" else "true" end),
-                  ($app.metadata.annotations["zeta.io/sync-policy-reason"] | dash(180)),
+                  ($app.metadata.annotations["zeta.io/sync-policy-reason"] | dash(400)),
                   (($app.status.health.message // ($app.status.conditions[0].message? // "")) | dash(160))
                 ] | @tsv ),
               ( [ "N", ($app.metadata.name | dash(120)), ($app.spec.destination.namespace | dash(120)) ] | @tsv ),

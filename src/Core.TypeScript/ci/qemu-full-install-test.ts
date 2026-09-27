@@ -2335,7 +2335,8 @@ export interface K3sFirstBootVerifyVerdict {
 export interface K3sFirstBootVerifyRosterApp {
   /**
    * `converged` | `unconverged` | `excluded-manual-sync` |
-   * `excluded-unschedulable` | `undecidable` | `unattributed-pod`.
+   * `excluded-unschedulable` | `excluded-operator-action` | `undecidable` |
+   * `unattributed-pod`.
    * A plain string rather than a union: the producer is an awk program in a
    * `.nix` module, and a union here would turn a new bucket it learns to emit
    * into a parse failure rather than a line a reader can still read.

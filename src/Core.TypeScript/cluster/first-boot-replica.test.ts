@@ -1267,6 +1267,21 @@ describe("computeAppVerdict — expected-divergence classification (WP23)", () =
     expect(v.verdict).toBe("FAIL");
   });
 
+  test("081M3BKQFNC087G0R003MDGSAX: a declared operator-action app, Synced but sealed -> DIVERGENCE naming the action", () => {
+    const app: AppConvergenceSnapshot = { name: "openbao", sync: "Synced", health: "Progressing", destinationNamespace: "openbao", resources: [], conditions: [] };
+    const context: AppVerdictContext = { manualSyncApps: new Map(), operatorActionApps: new Map([["openbao", "a human runs the init ceremony"]]), externalSecretCatalog: [] };
+    const v = computeAppVerdict(app, [], context);
+    expect(v.verdict).toBe("DIVERGENCE");
+    expect(v.reason).toContain("a human runs the init ceremony");
+  });
+
+  test("081M3BKQFNC087G0R003MDGSAX: a declared operator-action app that is OutOfSync still FAILs — the action cannot explain a sync failure", () => {
+    const app: AppConvergenceSnapshot = { name: "openbao", sync: "OutOfSync", health: "Progressing", destinationNamespace: "openbao", resources: [], conditions: [] };
+    const context: AppVerdictContext = { manualSyncApps: new Map(), operatorActionApps: new Map([["openbao", "reason"]]), externalSecretCatalog: [] };
+    const v = computeAppVerdict(app, [], context);
+    expect(v.verdict).toBe("FAIL");
+  });
+
   test("a SECRET pod issue in a namespace the EXTERNAL-secret catalog names -> DIVERGENCE, not FAIL", () => {
     const app: AppConvergenceSnapshot = { name: "hindsight", sync: "OutOfSync", health: "Progressing", destinationNamespace: "hindsight", resources: [], conditions: [] };
     const issues: PodVerdict[] = [

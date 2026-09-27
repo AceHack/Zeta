@@ -16,6 +16,10 @@ kind: Application
 metadata:
   annotations:
     argocd.argoproj.io/sync-wave: "10"
+    # 081M3BKQFNC087G0R003MDGSAX. Synced automatically, then waiting on an EXTERNAL
+    # credential no fresh cluster can mint -- see manual-sync-policy.ts.
+    zeta.io/sync-policy: converges-only-after-an-operator-action
+    zeta.io/sync-policy-reason: "Needs a real LLM API key in Secret hindsight-llm-api-key, which is EXTERNAL: this cluster cannot draw one for itself, so an operator supplies it. See full-ai-cluster/INJECTION-POINTS.md, section 'hindsight-llm-api-key stays an EXTERNAL gap, on purpose'."
   name: hindsight
   namespace: argocd
   finalizers: [ resources-finalizer.argocd.argoproj.io ]

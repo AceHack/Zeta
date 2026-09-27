@@ -67,6 +67,12 @@ metadata:
     # right to: every replica count and affinity rule below is unreadable
     # without knowing which topology they target. One voter, one node.
     cluster.zeta.io/topology: single-node
+    # 081M3BKQFNC087G0R003MDGSAX. Synced automatically, then SEALED by design until a
+    # human runs the gated init ceremony -- not manual-sync, and not broken. Read by
+    # manual-sync-policy.ts, first-boot-replica.ts stage 6 and WP11 verdict 7 off the
+    # live object; the installer's completion banner prints the command that lists it.
+    zeta.io/sync-policy: converges-only-after-an-operator-action
+    zeta.io/sync-policy-reason: "OpenBao comes up SEALED and uninitialised on every fresh cluster, and no agent may run `operator init` (gated: it mints the root token and the unseal shares). A human runs the init ceremony in full-ai-cluster/k8s/applications/openbao/TOPOLOGY.md section 5; after that the unseal sidecar unseals it on every restart."
   name: openbao
   namespace: argocd
   finalizers: [ resources-finalizer.argocd.argoproj.io ]

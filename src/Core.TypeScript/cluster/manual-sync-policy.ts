@@ -66,6 +66,25 @@
  * `automated` there: full Synced+Healthy. A malformed declaration must never be
  * cheaper to satisfy than a correct one, or the malformed form becomes the
  * preferred way to quiet a lane.
+ *
+ * -- THE SECOND VALUE: converges-only-after-an-operator-action ----------------
+ * 081M3BKQFNC087G0R003MDGSAX. `openbao` (sealed by design until a human runs the
+ * init ceremony) and `hindsight` (needs an EXTERNAL API key no fresh cluster can
+ * hold) are NOT manual-sync: both ARE synced automatically, and both then wait
+ * on a human action of a different kind. Widening `manual` to cover them would
+ * erase the distinction a checker needs, so the convention has a second value:
+ *
+ *   metadata.annotations:
+ *     zeta.io/sync-policy: converges-only-after-an-operator-action
+ *     zeta.io/sync-policy-reason: "<the action, and where it is documented>"
+ *   spec.syncPolicy:
+ *     automated: { ... }          # REQUIRED -- the app IS synced
+ *
+ * It is asserted MORE strongly than `manual`, not less: the app is applied, so
+ * it must read `Synced`; only its HEALTH may lag (see `operatorActionAssertion`).
+ * The same refusals apply: no reason -> invalid; and here the `automated:`
+ * rule is inverted -- this value WITHOUT an `automated:` block is refused,
+ * because "synced, waiting on a human" is false of an app nothing syncs.
  */
 
 import { existsSync, readdirSync, readFileSync } from "node:fs";
@@ -75,10 +94,12 @@ import { parse as parseYaml } from "yaml";
 export const SYNC_POLICY_ANNOTATION = "zeta.io/sync-policy";
 export const SYNC_POLICY_REASON_ANNOTATION = "zeta.io/sync-policy-reason";
 export const MANUAL_SYNC_POLICY_VALUE = "manual";
+export const OPERATOR_ACTION_SYNC_POLICY_VALUE = "converges-only-after-an-operator-action";
 
 export type SyncPolicyDeclaration =
   | { readonly kind: "automated" }
   | { readonly kind: "manual"; readonly reason: string }
+  | { readonly kind: "operator-action"; readonly reason: string }
   | { readonly kind: "invalid"; readonly problem: string };
 
 function asRecord(value: unknown): Record<string, unknown> | null {
@@ -127,10 +148,33 @@ export function classifySyncPolicy(yamlText: string): SyncPolicyDeclaration {
   // Ordinal, exact. Not lowercased: `.claude/rules/culture-invariant-by-default.md`
   // -- and a typo like `Manual` should be refused loudly rather than case-folded
   // into acceptance, because case-folding is how an unintended value passes.
+  if (rawPolicy === OPERATOR_ACTION_SYNC_POLICY_VALUE) {
+    if (!hasAutomated) {
+      return {
+        kind: "invalid",
+        problem:
+          `declares ${SYNC_POLICY_ANNOTATION}: ${OPERATOR_ACTION_SYNC_POLICY_VALUE} but ships NO spec.syncPolicy.automated ` +
+          `block -- that value means "synced, then waiting on a human", which is false of an app nothing syncs ` +
+          `(an app nothing syncs is '${MANUAL_SYNC_POLICY_VALUE}')`,
+      };
+    }
+    if (typeof rawReason !== "string" || rawReason.trim().length === 0) {
+      return {
+        kind: "invalid",
+        problem:
+          `declares ${OPERATOR_ACTION_SYNC_POLICY_VALUE} with no non-empty ${SYNC_POLICY_REASON_ANNOTATION} -- ` +
+          "the reason is where the operator learns WHICH action; without it the declaration is a mute button",
+      };
+    }
+    return { kind: "operator-action", reason: rawReason.trim() };
+  }
+
   if (rawPolicy !== MANUAL_SYNC_POLICY_VALUE) {
     return {
       kind: "invalid",
-      problem: `${SYNC_POLICY_ANNOTATION} must be exactly '${MANUAL_SYNC_POLICY_VALUE}' (got: ${JSON.stringify(rawPolicy)})`,
+      problem:
+        `${SYNC_POLICY_ANNOTATION} must be exactly '${MANUAL_SYNC_POLICY_VALUE}' or ` +
+        `'${OPERATOR_ACTION_SYNC_POLICY_VALUE}' (got: ${JSON.stringify(rawPolicy)})`,
     };
   }
 
@@ -188,6 +232,26 @@ export function manualSyncDeclarations(appsDir: string): readonly ManualSyncDecl
       if (!existsSync(path)) return [];
       const declaration = classifySyncPolicy(readFileSync(path, "utf8"));
       return declaration.kind === "manual" ? [{ app: dir, reason: declaration.reason }] : [];
+    });
+}
+
+/**
+ * Every Application under `appsDir` that declares
+ * `converges-only-after-an-operator-action`, with its stated reason. Same shape and
+ * same reason for existing as `manualSyncDeclarations`: a consumer reads the
+ * declaration, never a hand-kept list of app names.
+ */
+export function operatorActionDeclarations(appsDir: string): readonly ManualSyncDeclaration[] {
+  if (!existsSync(appsDir)) return [];
+  return readdirSync(appsDir, { withFileTypes: true })
+    .filter((entry) => entry.isDirectory())
+    .map((entry) => entry.name)
+    .sort((a, b) => (a < b ? -1 : a > b ? 1 : 0))
+    .flatMap((dir): ManualSyncDeclaration[] => {
+      const path = join(appsDir, dir, "Application.yaml");
+      if (!existsSync(path)) return [];
+      const declaration = classifySyncPolicy(readFileSync(path, "utf8"));
+      return declaration.kind === "operator-action" ? [{ app: dir, reason: declaration.reason }] : [];
     });
 }
 
@@ -255,6 +319,57 @@ export interface AssertionOutcome {
   readonly ok: boolean;
   /** Empty when ok; otherwise the text the verdict reports. */
   readonly reason: string;
+}
+
+/**
+ * Health values ArgoCD reports once it has actually EVALUATED an app's health.
+ * `Unknown` and empty mean it never did, which is not "waiting on a human" -- it
+ * is "nobody looked".
+ */
+export const EVALUATED_HEALTH: ReadonlySet<string> = new Set([
+  "Healthy",
+  "Progressing",
+  "Degraded",
+  "Suspended",
+  "Missing",
+]);
+
+/**
+ * The contract for a DECLARED `converges-only-after-an-operator-action` app.
+ *
+ * STRONGER than `manualSyncAssertion` on the half that can be observed: the app
+ * IS synced automatically, so `syncStatus` must be exactly `Synced` -- an
+ * `OutOfSync` or `Unknown` here is a real defect (a render error, a rejected
+ * apply) that the pending human action cannot explain. Only HEALTH is permitted
+ * to lag, because the missing action (an unsealed store, an external key) is
+ * precisely what keeps the workload from becoming ready; it must still have been
+ * evaluated.
+ *
+ * `ok: true` does NOT mean converged. The caller reports this as its own bucket,
+ * with the declared reason, so a reader sees WHICH human action is outstanding.
+ */
+export function operatorActionAssertion(snapshot: SyncHealthSnapshot): AssertionOutcome {
+  const detail = snapshot.message === "" ? "" : " (" + snapshot.message + ")";
+  if (snapshot.syncStatus !== "Synced") {
+    const shown = snapshot.syncStatus === "" ? "empty" : snapshot.syncStatus;
+    return {
+      ok: false,
+      reason:
+        "declared converges-only-after-an-operator-action, which means it IS synced -- but syncStatus=" +
+        shown +
+        "; a pending human action cannot explain a sync failure" +
+        detail,
+    };
+  }
+  if (!EVALUATED_HEALTH.has(snapshot.healthStatus)) {
+    const shown = snapshot.healthStatus === "" ? "empty" : snapshot.healthStatus;
+    return {
+      ok: false,
+      reason:
+        "declared converges-only-after-an-operator-action, but health=" + shown + " -- ArgoCD never evaluated it" + detail,
+    };
+  }
+  return { ok: true, reason: "" };
 }
 
 /**
