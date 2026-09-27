@@ -2735,3 +2735,17 @@ This PR makes a registry 429 give COULD-NOT-CHECK, not a moved digest, in bootst
 - CI on the head: 106 runs, 101 success, 0 failed. No runs on the unique itself.
 - Soft: a token-endpoint 429/5xx is still labelled UNRESOLVABLE with supply-chain wording (image-footprint.ts L343/L352; predates the PR, fails safe; worth a follow-up). A Retry-After of 0 or a past date gives immediate retries (bounded). A 200 with a non-JSON body throws unlabelled (predates the PR). No live rate-limit, e2e or ISO run. Blocked with auto-merge on.
 - Hard fails: none. Sit leftover; I will not merge.
+
+## leftover UNIQUE leftover #17705 leftover unique @ 22b98f8c3457784f16a4179bead30cd00b0c5a76 -- GRADE GO
+
+This PR stops the first-boot replica from rung-overriding a release k3s already installed (spire never synced). The unique 22b98f8c is 1-parent on main base d8ff0da2. 1 commit, +860/-11, 11 files. It is not a merge.
+
+- The root cause is real. spire/disk-dev sets 512Mi (rung-overrides.yaml:229-244), while the bootstrap HelmChart and committed Application are 5Gi. volumeClaimTemplates are immutable: base job 108660739403 shows 'spec: Forbidden'.
+- The skip hides nothing. Only rung overrides on adopted apps are dropped. The skip set is pinned to [spire/disk-dev], and the replica serves the committed 5Gi that k3s installed.
+- The immutable-field check is real. It compares the StatefulSet selector, serviceName, podManagementPolicy and full volumeClaimTemplates, plus selector/clusterIP/PVC fields. The default run is 7 pairs x 2 trees ok, and --apply-all-overrides exits 1 on spire-server 5Gi vs 512Mi. It is wired into helm-validate.
+- Stage 6/7 open no fail-open. Stage 6 only adds && !deadAfter6 (stricter). In stage 7, zero samples went from a vacuous PASS to INCONCLUSIVE, the aggregation is unchanged from base, and no base FAIL becomes non-failing. This is unlike #17699.
+- The adoption list is derived: discoverBootstrapCrs plus adoptionPairs, by chart and tree. It gives 8 CRs and 7 pairs.
+- Tests: 12/12, 8/8, 175/175. Mutations: 13/22 killed.
+- CI at 1:53 PM ET: 0 red, 21 in progress.
+- Soft: 9 mutation survivors (significant: the stage 6/7 verdict logic and the main() skip wiring have no pinning tests). The negative control is not run in CI. There are silent ok paths in the check. INCONCLUSIVE doesn't fail the run (as at base). The skip drops all overrides on an adopted app. No live run, and the death cause is unmeasured.
+- Hard fails: none. Sit leftover; I will not merge.
