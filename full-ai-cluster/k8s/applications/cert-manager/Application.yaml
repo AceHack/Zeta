@@ -37,7 +37,7 @@ spec:
           enabled: true
         # Enable the Gateway API integration so cert-manager can solve ACME
         # HTTP-01 via http01.gatewayHTTPRoute and auto-provision certs for
-        # Gateway listeners (zeta-gateway → portal-tls). Requires the Gateway
+        # Gateway listeners (zeta-public-gateway → portal-tls, install-time; see k8s/public-tls/). Requires the Gateway
         # API CRDs. Cilium does NOT ship them (gatewayAPI.enabled consumes them).
         # Metal first-boot applies full-ai-cluster/k8s/bootstrap/gateway-api-crds.yaml
         # as aa-gateway-api-crds. Kind --cni cilium and k3d bring-up apply the

@@ -1,0 +1,14 @@
+{
+  "id": "080d07281c900810a013000823740916",
+  "at": "2026-09-27T22:36:51.585Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M3JG74G0087G0R001XJC837",
+    "type": "bug",
+    "title": "platform never syncs: ACME email and portal hostname are hardcoded example.com placeholders; make them install-time config (ESP -> prompt -> unset)",
+    "slug": "platform-never-syncs-acme-email-and-portal-hostname-are-hard",
+    "priority": "P2",
+    "filename": "081M3JG74G0087G0R001XJC837-platform-never-syncs-acme-email-and-portal-hostname-are-hard.md"
+  }
+}

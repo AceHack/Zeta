@@ -405,6 +405,171 @@ zeta_auto_longhorn1_tail_gib() {
 
 # ZETA-LONGHORN-CAPACITY-END ------------------------------------
 
+# ZETA-PUBLIC-TLS-BEGIN ------------------------------------------
+# 081M3JG74G0087G0R001XJC837 — the two public-TLS settings, resolved at the START
+# of the install. Pure functions plus one resolver; checked for parity against
+# src/Core.TypeScript/installer/public-endpoint.ts by
+# src/Core.TypeScript/installer/public-endpoint-shell-parity.test.ts.
+#
+# THE DEFECT THIS CLOSES: the platform Application applied Let's Encrypt issuers
+# with `email: you@example.com` and routes for `portal.example.com`. Nobody edits
+# a file in a generic installer, so every install shipped them, the ACME account
+# was refused, and ArgoCD's health wait on the issuers blocked the whole platform.
+# Nothing in the repo carries a default any more; the values come from here.
+#
+# RESOLUTION ORDER, and nothing else:
+#   1. ZETA_ACME_EMAIL + ZETA_PUBLIC_DOMAIN from the ESP /zeta-firstboot.conf
+#      (zflash --acme-email / --public-domain; zeta-first-boot.sh exports them);
+#   2. otherwise ASK — before any disk work, so nobody waits through the long
+#      part of the install to meet a question;
+#   3. otherwise (Enter, EOF, no TTY, no keypress) UNSET: no public TLS, and a
+#      platform that still syncs Healthy on the LAN.
+# An ESP value that fails validation is REFUSED loudly and treated as absent;
+# half a pair is never applied.
+
+# RFC 2606 §2/§3 reserved names, plus RFC 6762 `.local`. Never a public endpoint,
+# and the ACME CA refuses every one of them.
+zeta_public_domain_validate() {
+  local raw="$1" lower tld rest sld
+  local re='^([A-Za-z0-9]([A-Za-z0-9-]{0,61}[A-Za-z0-9])?\.)+[A-Za-z]([A-Za-z0-9-]{0,61}[A-Za-z0-9])?$'
+  if [ -z "$raw" ]; then
+    echo "empty"
+    return
+  fi
+  # portal.<domain> must still fit in 253.
+  if [ "${#raw}" -gt 246 ] || ! [[ "$raw" =~ $re ]]; then
+    echo "invalid-format"
+    return
+  fi
+  lower="${raw,,}"
+  tld="${lower##*.}"
+  case "$tld" in
+    test|example|invalid|localhost|local) echo "reserved"; return ;;
+  esac
+  rest="${lower%.*}"
+  sld="${rest##*.}.${tld}"
+  case "$sld" in
+    example.com|example.net|example.org) echo "reserved"; return ;;
+  esac
+  echo "valid"
+}
+
+# Deliberately narrower than RFC 5322: no quote, space, `$` or backtick can ever
+# reach a file this installer writes or a manifest the node renders.
+zeta_acme_email_validate() {
+  local raw="$1" d
+  local re='^([A-Za-z0-9._%+-]{1,64})@(.+)$'
+  if [ -z "$raw" ]; then
+    echo "empty"
+    return
+  fi
+  if ! [[ "$raw" =~ $re ]]; then
+    echo "invalid-format"
+    return
+  fi
+  d="$(zeta_public_domain_validate "${BASH_REMATCH[2]}")"
+  case "$d" in
+    valid) echo "valid" ;;
+    reserved) echo "reserved-domain" ;;
+    *) echo "invalid-format" ;;
+  esac
+}
+
+# zeta_public_tls_resolve <mode>
+#   mode: ask        prompt now (interactive zeta-install)
+#         gate:<N>   offer the prompt behind a single 'p' keypress for N seconds
+#                    (the first-boot path: a TTY, but the zero-typing default)
+#         none       never read stdin
+# Sets ZETA_PUBLIC_TLS_SOURCE (esp|prompt|unset), ZETA_PUBLIC_TLS_EMAIL,
+# ZETA_PUBLIC_TLS_DOMAIN (lowercased). Messages go to stderr.
+ZETA_PUBLIC_TLS_MAX_ATTEMPTS=5
+zeta_public_tls_resolve() {
+  local mode="$1" e d ev dv key n
+  ZETA_PUBLIC_TLS_SOURCE="unset"
+  ZETA_PUBLIC_TLS_EMAIL=""
+  ZETA_PUBLIC_TLS_DOMAIN=""
+  e="${ZETA_ACME_EMAIL:-}"
+  d="${ZETA_PUBLIC_DOMAIN:-}"
+  if [ -n "$e" ] || [ -n "$d" ]; then
+    ev="$(zeta_acme_email_validate "$e")"
+    dv="$(zeta_public_domain_validate "$d")"
+    if [ "$ev" = "valid" ] && [ "$dv" = "valid" ]; then
+      ZETA_PUBLIC_TLS_SOURCE="esp"
+      ZETA_PUBLIC_TLS_EMAIL="$e"
+      ZETA_PUBLIC_TLS_DOMAIN="${d,,}"
+      return 0
+    fi
+    echo "[public-tls] REFUSED the ESP values (email: ${ev}, domain: ${dv}). Both are required, and neither may be an RFC 2606 name. Ignoring them." >&2
+  fi
+  case "$mode" in
+    ask) ;;
+    gate:*)
+      echo "[public-tls] Press 'p' within ${mode#gate:}s to set up PUBLIC TLS (Let's Encrypt for portal.<your-domain>)." >&2
+      echo "[public-tls] Any other key, or waiting, installs LAN-only (no public hostname, no certificate)." >&2
+      key=""
+      read -r -n 1 -s -t "${mode#gate:}" key || key=""
+      if [ "${key,,}" != "p" ]; then
+        return 0
+      fi
+      ;;
+    *) return 0 ;;
+  esac
+  echo "[public-tls] Public TLS: the portal is published as portal.<domain> with a Let's Encrypt certificate." >&2
+  echo "[public-tls] Press Enter at either question to skip (LAN-only; nothing public is configured)." >&2
+  n=0
+  while :; do
+    e=""
+    read -r -p "[public-tls] ACME contact email (Let's Encrypt expiry notices): " e || e=""
+    [ -z "$e" ] && return 0
+    ev="$(zeta_acme_email_validate "$e")"
+    [ "$ev" = "valid" ] && break
+    echo "[public-tls]   rejected (${ev}): need local@domain.tld; example.com/.test/.invalid/.localhost/.example are refused." >&2
+    n=$((n + 1))
+    [ "$n" -ge "$ZETA_PUBLIC_TLS_MAX_ATTEMPTS" ] && return 0
+  done
+  n=0
+  while :; do
+    d=""
+    read -r -p "[public-tls] Public base domain (portal.<domain> will be served), e.g. yourdomain.net: " d || d=""
+    [ -z "$d" ] && return 0
+    dv="$(zeta_public_domain_validate "$d")"
+    [ "$dv" = "valid" ] && break
+    echo "[public-tls]   rejected (${dv}): need a DNS name with 2+ labels; RFC 2606 names are refused." >&2
+    n=$((n + 1))
+    [ "$n" -ge "$ZETA_PUBLIC_TLS_MAX_ATTEMPTS" ] && return 0
+  done
+  ZETA_PUBLIC_TLS_SOURCE="prompt"
+  ZETA_PUBLIC_TLS_EMAIL="$e"
+  ZETA_PUBLIC_TLS_DOMAIN="${d,,}"
+  return 0
+}
+# ZETA-PUBLIC-TLS-END --------------------------------------------
+
+# ── Step 0.5: public TLS settings (081M3JG74G0087G0R001XJC837) ────
+# Asked HERE, before disk enumeration, so the operator meets the question at the
+# start of the install rather than after the long work. A joiner does not ask:
+# the public endpoint is a property of the cluster its founder already decided.
+if [[ "${ZETA_ROLE:-}" == "joiner" ]]; then
+  ZETA_PUBLIC_TLS_MODE="none"
+elif zeta_install_prompts_enabled; then
+  ZETA_PUBLIC_TLS_MODE="ask"
+elif [[ -t 0 ]]; then
+  ZETA_PUBLIC_TLS_MODE="gate:${PUBLIC_TLS_PROMPT_SECS:-15}"
+else
+  ZETA_PUBLIC_TLS_MODE="none"
+fi
+echo
+echo "[public-tls] ── public TLS (ACME email + public domain) ──"
+zeta_public_tls_resolve "$ZETA_PUBLIC_TLS_MODE"
+if [ "$ZETA_PUBLIC_TLS_SOURCE" = "unset" ]; then
+  echo "[public-tls] UNSET — LAN-only platform: no ClusterIssuer, no Certificate, no public hostname."
+  echo "[public-tls]   (to add it later: write /etc/zeta/acme-email + /etc/zeta/public-domain on the node,"
+  echo "[public-tls]    then sudo nixos-rebuild switch --impure --flake /etc/zeta/full-ai-cluster#<host>)"
+else
+  echo "[public-tls] SET (source: ${ZETA_PUBLIC_TLS_SOURCE}) — portal.${ZETA_PUBLIC_TLS_DOMAIN}, ACME contact ${ZETA_PUBLIC_TLS_EMAIL}"
+fi
+echo
+
 # ── Step 1: enumerate internal disks ──────────────────────────────
 # Fixed (RM=0), writable (RO=0), type=disk, NOT USB. Includes NVMe,
 # SATA, SAS, RAID volumes, etc. Excludes loop, removable, read-only.
@@ -3205,6 +3370,20 @@ else
 fi
 echo
 
+# ── Step 6.64: persist the public-TLS settings (081M3JG74G0087G0R001XJC837) ──
+# Resolved at Step 0.5 (ESP -> prompt -> unset). Written ONLY when set, as two
+# public-identifier files the NixOS module injected-public-tls.nix reads at
+# evaluation time; their absence IS the unset state, so nothing is written for it.
+if [ "${ZETA_PUBLIC_TLS_SOURCE:-unset}" != "unset" ]; then
+  sudo mkdir -p /mnt/etc/zeta
+  printf '%s\n' "$ZETA_PUBLIC_TLS_EMAIL" | sudo tee /mnt/etc/zeta/acme-email >/dev/null
+  printf '%s\n' "$ZETA_PUBLIC_TLS_DOMAIN" | sudo tee /mnt/etc/zeta/public-domain >/dev/null
+  sudo chmod 0644 /mnt/etc/zeta/acme-email /mnt/etc/zeta/public-domain
+  echo "[public-tls] wrote /mnt/etc/zeta/acme-email + /mnt/etc/zeta/public-domain (portal.${ZETA_PUBLIC_TLS_DOMAIN})"
+else
+  echo "[public-tls] unset — no /mnt/etc/zeta/acme-email or public-domain written (LAN-only platform)"
+fi
+
 # ── Step 6.65: persist the node ZetaId (2026-08-23) ───────────────
 #
 # Aaron 2026-08-22: "yes we should move this to a zetaid."
@@ -3937,6 +4116,10 @@ maybe_symlink /mnt/etc/zeta/cluster-join-server-url /etc/zeta/cluster-join-serve
 # is loud but is not the install anyone wanted. Symlinked so evaluation sees
 # what the installed system will see.
 maybe_symlink /mnt/etc/zeta/k3s-join-token /etc/zeta/k3s-join-token
+# 081M3JG74G0087G0R001XJC837: injected-public-tls.nix reads both at evaluation
+# time, so without these the ACME Application would silently not render.
+maybe_symlink /mnt/etc/zeta/acme-email /etc/zeta/acme-email
+maybe_symlink /mnt/etc/zeta/public-domain /etc/zeta/public-domain
 
 # 081KSNY2Z0008QG0R0008PN7RQ QEMU phase-3: non-interactive CI installs enable boot-time first-session
 # demo (systemd oneshot tees markers to ttyS0; qemu-full-install-test asserts them).
@@ -4918,6 +5101,22 @@ else
   echo "       ssh zeta@\$(hostname)"
 fi
 echo
+# 081M3JG74G0087G0R001XJC837 — the public-TLS operator step, only when SET.
+if [ "${ZETA_PUBLIC_TLS_SOURCE:-unset}" != "unset" ]; then
+  echo "  PUBLIC TLS: portal.${ZETA_PUBLIC_TLS_DOMAIN} (ACME contact ${ZETA_PUBLIC_TLS_EMAIL})"
+  echo "    The certificate CANNOT issue until you do both of these:"
+  echo "      1. DNS: an A record  portal.${ZETA_PUBLIC_TLS_DOMAIN}  ->  your public IP"
+  echo "      2. Router: forward TCP 80 and 443 to the public gateway's LoadBalancer IP:"
+  echo "           sudo k3s kubectl -n zeta-platform get gateway zeta-public-gateway -o jsonpath='{.status.addresses[0].value}'"
+  echo "    Until then 'platform-public-tls' reads Progressing; the rest of the platform"
+  echo "    is unaffected (it is a separate Application). Watch it with:"
+  echo "      sudo k3s kubectl -n zeta-platform get certificate portal-tls"
+  echo
+else
+  echo "  PUBLIC TLS: not configured (LAN-only). The portal is on the zeta-gateway"
+  echo "    LoadBalancer IP, port 80, any hostname. See INJECTION-POINTS.md §10 to add it."
+  echo
+fi
 # 081M3BKQFNC087G0R003MDGSAX — some Applications CANNOT converge without a human,
 # by design (OpenBao's init ceremony, an external API key). They declare
 # `zeta.io/sync-policy: converges-only-after-an-operator-action` with the action in

@@ -16,8 +16,8 @@ only you can do.
 | File | What it does |
 |---|---|
 | `k8s/applications/ddns/cronjob.yaml` | Namecheap DDNS updater (every 5 min, runs in-cluster so Namecheap sees your real public IP) |
-| `k8s/applications/platform/gateway.yaml` | `zeta-gateway` — the Cilium Gateway the portal publishes on (HTTP :80 + HTTPS :443), TLS auto-provisioned by cert-manager |
-| `k8s/applications/platform/clusterissuer.yaml` | Let's Encrypt staging + prod issuers (HTTP-01, no DNS API / no Cloudflare) |
+| `k8s/applications/platform/gateway.yaml` | `zeta-gateway` — the LAN Cilium Gateway the portal publishes on (HTTP :80, any hostname) |
+| `k8s/public-tls/` | install-time `platform-public-tls` Application: Let's Encrypt staging + prod issuers (HTTP-01, no DNS API / no Cloudflare), the `zeta-public-gateway` (:80 + :443) and the `portal-public` route |
 | `k8s/applications/cert-manager/Application.yaml` | `enableGatewayAPI: true` so cert-manager can solve via the Gateway |
 | `portal.yaml` / `controller.yaml` | `imagePullPolicy: Always` so a rollout pulls fresh `:latest` |
 
@@ -25,13 +25,15 @@ So the infra is all defined. The rest is your domain/email values + 3 real-world
 
 ---
 
-## The values to fill (5 edits)
+## The values to supply (none are files you edit)
+
+Your **domain** and **ACME email** are install-time configuration, never repo edits
+(`INJECTION-POINTS.md` §10): pass `zflash --acme-email you@yourdomain.com --public-domain
+yourdomain.com`, or answer the prompt at the start of the install. The portal is then
+published as `portal.yourdomain.com`. Skip both and the cluster installs LAN-only.
 
 | Value | Where | To |
 |---|---|---|
-| Your domain | `gateway.yaml` HTTPS listener `hostname` | `portal.yourdomain.com` |
-| Same domain | `portal.yaml` HTTPRoute `hostnames` | `portal.yourdomain.com` (must match the Gateway) |
-| Your email | `clusterissuer.yaml` (both issuers) | your real email |
 | DDNS host list | `ddns/cronjob.yaml` `DDNS_HOSTS` | the host records you create (default `@ *` is fine) |
 | LB IP range | `cilium-lb-ipam/ip-pool.yaml` | a free IP block on **your** subnet |
 
@@ -60,8 +62,9 @@ kubectl -n zeta-platform logs job/ddns-now      # expect: "updated @" / "updated
 
 - DHCP-reserve the machine's LAN IP.
 - Port-forward → the machine / the Cilium LB IP:
-  - **Portal HTTPS:** `80` + `443` TCP → the `zeta-gateway` LoadBalancer IP
-    (`kubectl -n zeta-platform get gateway zeta-gateway` / `get svc`).
+  - **Portal HTTPS:** `80` + `443` TCP → the `zeta-public-gateway` LoadBalancer IP
+    (`kubectl -n zeta-platform get gateway zeta-public-gateway` / `get svc`). It exists
+    only when the install was given an ACME email + domain.
   - **Game servers (UDP):** the game's ports → that game's LoadBalancer Service IP. e.g.
     GMod `27015` UDP+TCP · Unturned `27015-27017` UDP · Arma Reforger `2001`+`17777` UDP.
 
@@ -73,19 +76,15 @@ DNS must resolve to your IP **and** :80 must be forwarded **before** the cert ca
 (Let's Encrypt HTTP-01 reaches back on :80). So:
 
 1. Do actions 1–3 above. Confirm `dig portal.yourdomain.com` returns your public IP.
-2. Start staging first to avoid rate limits: in `gateway.yaml` set the annotation to
-   `cert-manager.io/cluster-issuer: letsencrypt-staging`, push (ArgoCD applies), and watch:
+2. Watch the certificate (issued by `letsencrypt-prod`; `letsencrypt-staging` also exists
+   for a manual dry run):
    ```bash
    kubectl -n zeta-platform get certificate          # portal-tls → Ready=True
    kubectl -n zeta-platform describe certificate portal-tls   # follow the HTTP-01 order if pending
    ```
-3. Once staging issues cleanly, flip the annotation back to `letsencrypt-prod`, push, and
-   delete the staging secret so it re-issues a trusted cert:
-   ```bash
-   kubectl -n zeta-platform delete secret portal-tls
-   ```
-4. Browse `https://portal.yourdomain.com` (trusted padlock on prod).
-5. Game: players connect to `game.yourdomain.com:<port>` → DNS → your IP → router → Service → pod.
+   Until it is Ready, `platform-public-tls` reads Progressing; `platform` is unaffected.
+3. Browse `https://portal.yourdomain.com` (trusted padlock on prod).
+4. Game: players connect to `game.yourdomain.com:<port>` → DNS → your IP → router → Service → pod.
 
 ---
 

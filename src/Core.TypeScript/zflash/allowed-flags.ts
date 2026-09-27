@@ -34,4 +34,8 @@ export const ZFLASH_ALLOWED_FLAGS: ReadonlySet<string> = new Set([
   "--flake-host",
   "--join-server-url",
   "--join-token",
+  // 081M3JG74G0087G0R001XJC837: the public-TLS pair, validated by the same
+  // `planPublicEndpoint` the file-backed image path runs.
+  "--acme-email",
+  "--public-domain",
 ]);

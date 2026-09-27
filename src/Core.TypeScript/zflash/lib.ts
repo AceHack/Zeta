@@ -13,6 +13,7 @@ import {
 import { planFirstbootConfWithNamedBaoElf, type NamedBaoElfAsk } from "./firstboot-bao-elf.ts";
 import { isFullGitCommitSha } from "../installer/repo-pin.ts";
 import { LONGHORN_UNDERSIZED_OVERRIDE_ENV } from "../installer/longhorn-capacity-preflight.ts";
+import { planPublicEndpoint, renderPublicEndpointConfLines, type PublicEndpoint } from "../installer/public-endpoint.ts";
 
 /**
  * RFC1123 hostname regex.
@@ -286,6 +287,16 @@ export interface FileBackedZflashImagePlanInput {
    * not the child, which is a knob that turns and is not connected.
    */
   readonly allowLonghornUndersized?: boolean;
+  /**
+   * 081M3JG74G0087G0R001XJC837: the public-TLS pair (zflash `--acme-email` /
+   * `--public-domain`), appended to the ESP `/zeta-firstboot.conf` as
+   * `ZETA_ACME_EMAIL` / `ZETA_PUBLIC_DOMAIN`. Step 1 of the installer's
+   * resolution order (ESP -> prompt -> unset); `zeta-first-boot.sh` sources and
+   * EXPORTS the pair. Re-validated here, so a reserved (RFC 2606) or malformed
+   * pair is refused even when handed in without the CLI. Omitted -> no line at
+   * all, and the installer asks at the start of the install instead.
+   */
+  readonly publicEndpoint?: PublicEndpoint;
   /**
    * WP21 (081M35C7NJR087G0R002S4R654): when set, writes `/zeta-repo-pin`
    * (`ZETA_ISO_COMMIT='<commit>'`) so the booting node checks out this exact
@@ -645,6 +656,30 @@ export function planFileBackedZflashImage(input: FileBackedZflashImagePlanInput)
       ok: false,
       error: "namedBaoElf requires firstbootRole; bao names with no role conf are never read",
     };
+  }
+
+  // 081M3JG74G0087G0R001XJC837 -- the public-TLS pair, appended to the ONE
+  // /zeta-firstboot.conf exactly as the WP27 override below is, and ordered
+  // before it so that override stays the conf's last line.
+  if (input.publicEndpoint !== undefined) {
+    const pe = planPublicEndpoint(input.publicEndpoint);
+    if (!pe.ok) return { ok: false, error: pe.error };
+    if (pe.value !== null) {
+      const lines = renderPublicEndpointConfLines(pe.value);
+      const existing = espWrites.findIndex((w) => w.destination === ZETA_FIRSTBOOT_CONF_ESP_DESTINATION);
+      if (existing >= 0) {
+        const prior = espWrites[existing];
+        if (prior === undefined || prior.content === undefined) {
+          return {
+            ok: false,
+            error: `publicEndpoint cannot append to ${ZETA_FIRSTBOOT_CONF_ESP_DESTINATION}: that ESP write has no inline content`,
+          };
+        }
+        espWrites[existing] = { ...prior, content: prior.content + lines };
+      } else {
+        espWrites.push({ content: lines, destination: ZETA_FIRSTBOOT_CONF_ESP_DESTINATION });
+      }
+    }
   }
 
   // WP27 -- the Longhorn-undersized override, appended to whatever

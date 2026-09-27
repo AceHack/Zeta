@@ -169,8 +169,11 @@ spec:
     # what lets the scrape config say what it means.
     - { name: metrics, port: 8080, targetPort: http }
 ---
-# Publish the portal on the shared Cilium Gateway (HTTPS via cert-manager). The
-# hostname is a placeholder — set it to your domain.
+# Publish the portal on the LAN Cilium Gateway, for ANY Host header — so it works
+# with no domain configured. The public, TLS-terminated route for
+# portal.<domain> exists only when the install supplied a domain, and lives in
+# the separate `platform-public-tls` Application (full-ai-cluster/k8s/public-tls/).
+# No hostname is hardcoded here, ever (081M3JG74G0087G0R001XJC837).
 apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute
 metadata:
@@ -181,7 +184,6 @@ metadata:
 spec:
   parentRefs:
     - { name: zeta-gateway, namespace: zeta-platform }
-  hostnames: ["portal.zeta.example.com"]
   rules:
     - backendRefs:
         - { name: portal, port: 80 }

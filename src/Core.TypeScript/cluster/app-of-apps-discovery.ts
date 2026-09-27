@@ -450,7 +450,7 @@ export const ORPHANED_SUPPORTING_REASONS: ReadonlyMap<string, string> = new Map(
   [
     "platform/examples/gmod-server.yaml",
     "INTENTIONAL, not a defect. Three `kind: Deployable` CRs used as documentation of the platform CRD surface. " +
-      "applications/platform/Application.yaml sets recurse:false and an explicit include list of the 15 " +
+      "applications/platform/Application.yaml sets recurse:false and an explicit include list of the 14 " +
       "manifests it owns, so `examples/` is excluded by construction rather than by accident. Applying these " +
       "would create real game-server workloads from a doc sample.",
   ],

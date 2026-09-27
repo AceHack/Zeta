@@ -127,7 +127,7 @@ export const ORDER_ADJUDICATION_PENDING: ReadonlyMap<string, string> = new Map([
       "non-core apiVersions and mapping each custom kind to its installing Application. It was the ONLY " +
       "missing edge that class found across all 47 Applications, and service-DNS derivation cannot see it. " +
       "`platform/monitoring.yaml` ships a monitoring.coreos.com/v1 ServiceMonitor and PrometheusRule, both " +
-      "applied (`monitoring` is one of the 15 names in the Application's own directory.include glob), while " +
+      "applied (`monitoring` is one of the 14 names in the Application's own directory.include glob), while " +
       "kube-prometheus-stack installs those CRDs at wave 0 against platform's -20. " +
       "THIS ONE DEGRADES DIFFERENTLY FROM ITS TWO SIBLINGS, which is why it is registered separately rather " +
       "than folded in: a Gateway with no pool is ADMITTED and simply address-less, and a PVC with no " +

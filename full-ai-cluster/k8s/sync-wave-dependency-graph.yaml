@@ -393,24 +393,28 @@ spec:
 
     # ── Layer 5: the platform control plane ──────────────────────────────────
     - chart: platform
-      dependsOn: [cert-manager, cilium, cilium-lb-ipam, longhorn, kube-prometheus-stack]
+      # NO cert-manager edge, and its absence is the fix (081M3JG74G0087G0R001XJC837).
+      # platform used to apply clusterissuer.yaml (ClusterIssuer, a cert-manager
+      # CRD) with `email: you@example.com`; on a real node the issuers never went
+      # Ready and ArgoCD's wave -1 health wait on them blocked every later platform
+      # object. The ACME issuers now live in the install-time `platform-public-tls`
+      # Application (k8s/public-tls/, rendered by nixos/modules/injected-public-tls.nix
+      # only when an ACME email + domain were supplied). It is not in the
+      # app-of-apps roster, so it is not a node here, and it is not ordered
+      # against platform: it retries until cert-manager's CRDs exist and waits on
+      # nothing platform needs.
+      dependsOn: [cilium, cilium-lb-ipam, longhorn, kube-prometheus-stack]
       citations:
         kube-prometheus-stack: >-
           full-ai-cluster/k8s/applications/platform/monitoring.yaml ships a
           `monitoring.coreos.com/v1` ServiceMonitor (line 29) and PrometheusRule
-          (line 50), and `monitoring` is one of the 15 names in this Application's
+          (line 50), and `monitoring` is one of the 14 names in this Application's
           own directory.include glob, so BOTH are applied. Those CRDs are installed
           by kube-prometheus-stack. Derived mechanically 2026-09-03 by scanning
           in-repo manifests for non-core apiVersions and mapping each custom kind to
           its installing Application -- the CRD evidence class, which service-DNS
           derivation cannot see. This edge was MISSING, and it is the only one that
           class found across all 47 Applications.
-        cert-manager: >-
-          full-ai-cluster/k8s/applications/platform/clusterissuer.yaml:17,38
-          declare `apiVersion: cert-manager.io/v1`, `kind: ClusterIssuer` — a
-          cert-manager CRD. :14 states the prereq explicitly: "cert-manager runs
-          with enableGatewayAPI=true so the http01.gatewayHTTPRoute solver is
-          available."
         cilium: >-
           full-ai-cluster/k8s/applications/platform/gateway.yaml:1 — "the shared
           Cilium Gateway the portal (and any WebApp HTTPRoute) publishes on."

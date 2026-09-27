@@ -11,11 +11,26 @@
 # postgres, worker), the default Policy, and the reconcile controller. The portal
 # UI that renders these is a later build (COLLABORATION-MODEL.md §10). Headlamp
 # shows them as soon as the CRDs register.
+#
+# NO ACME HERE (081M3JG74G0087G0R001XJC837). `clusterissuer.yaml` used to be in
+# the include list below with `email: you@example.com`; the issuers could never
+# go Ready, and ArgoCD's wave -1 health wait on them blocked every later object
+# in this Application on a real node. Public TLS is install-time configuration
+# and a SEPARATE Application (`platform-public-tls`, rendered by
+# nixos/modules/injected-public-tls.nix from full-ai-cluster/k8s/public-tls/),
+# so ACME health can never gate the platform again, and with no values supplied
+# it does not exist at all.
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
   annotations:
     argocd.argoproj.io/sync-wave: "-20"   # CRDs early — before anything that creates these resources
+    # StatefulSet/portal's volumeClaimTemplates under ServerSideApply read as
+    # perpetually OutOfSync with the client-side SSA diff (the live template gains
+    # apiVersion/kind/volumeMode/status; the predicted one gains
+    # creationTimestamp:null — argo-cd#11143). SSA stays for the large CRDs; the
+    # diff moves server-side. Checked by cluster/ssa-volumeclaimtemplate-drift.ts.
+    argocd.argoproj.io/compare-options: ServerSideDiff=true
   name: platform
   namespace: argocd
   finalizers: [ resources-finalizer.argocd.argoproj.io ]
@@ -26,7 +41,7 @@ spec:
     targetRevision: main
     path: full-ai-cluster/k8s/applications/platform
     directory:
-      include: '{namespace,crd-policy,crd-gameserver,crd-app,crd-webapp,crd-blueprint,crd-deployable,crd-tenant,policy-default,blueprints,controller,portal,clusterissuer,gateway,monitoring}.yaml'
+      include: '{namespace,crd-policy,crd-gameserver,crd-app,crd-webapp,crd-blueprint,crd-deployable,crd-tenant,policy-default,blueprints,controller,portal,gateway,monitoring}.yaml'
   destination:
     server: https://kubernetes.default.svc
     namespace: zeta-platform

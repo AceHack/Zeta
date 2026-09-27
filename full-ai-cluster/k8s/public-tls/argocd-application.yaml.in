@@ -1,0 +1,55 @@
+# full-ai-cluster/k8s/public-tls/argocd-application.yaml.in
+#
+# A TEMPLATE, not a manifest: nothing applies this file as-is (the `.in` suffix
+# keeps it out of every *.yaml scan and out of kustomize). 081M3JG74G0087G0R001XJC837.
+#
+# nixos/modules/injected-public-tls.nix reads /etc/zeta/acme-email and
+# /etc/zeta/public-domain (written by zeta-install.sh from the ESP conf or the
+# start-of-install prompt), substitutes the two @ZETA_*@ tokens below with
+# `builtins.replaceStrings`, and hands the result to the k3s auto-deploy roster —
+# the same path `root-application.yaml` takes into the cluster. When either value
+# is absent, the module adds nothing and this Application never exists.
+#
+# The values reach the ACME objects ONLY as these JSON6902 patches; the kustomize
+# base (resources.yaml) carries neither. Both values are validated at install
+# time to a character set with no quote or backslash, so they are safe inside the
+# single-quoted JSON strings below. src/Core.TypeScript/cluster/public-tls.ts
+# mirrors this substitution and patch application for the tests.
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: platform-public-tls
+  namespace: argocd
+  finalizers: [ resources-finalizer.argocd.argoproj.io ]
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/Lucent-Financial-Group/Zeta
+    targetRevision: main
+    path: full-ai-cluster/k8s/public-tls
+    kustomize:
+      patches:
+        - target: { group: cert-manager.io, kind: ClusterIssuer, name: letsencrypt-staging }
+          patch: '[{"op":"add","path":"/spec/acme/email","value":"@ZETA_ACME_EMAIL@"}]'
+        - target: { group: cert-manager.io, kind: ClusterIssuer, name: letsencrypt-prod }
+          patch: '[{"op":"add","path":"/spec/acme/email","value":"@ZETA_ACME_EMAIL@"}]'
+        - target: { group: gateway.networking.k8s.io, kind: Gateway, name: zeta-public-gateway }
+          patch: '[{"op":"add","path":"/spec/listeners/1/hostname","value":"portal.@ZETA_PUBLIC_DOMAIN@"}]'
+        - target: { group: gateway.networking.k8s.io, kind: HTTPRoute, name: portal-public }
+          patch: '[{"op":"add","path":"/spec/hostnames","value":["portal.@ZETA_PUBLIC_DOMAIN@"]}]'
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: zeta-platform
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - ServerSideApply=true
+    # Unbounded, for the same reason as `platform`: this Application consumes CRDs
+    # (cert-manager.io, gateway.networking.k8s.io) and a namespace it does not own,
+    # and a lost race must not be permanent. It can sit Progressing until DNS and
+    # port-forwarding exist; nothing else waits on it.
+    retry:
+      limit: -1
+      backoff: { duration: 30s, factor: 2, maxDuration: 5m }

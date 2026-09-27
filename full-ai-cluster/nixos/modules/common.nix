@@ -52,6 +52,12 @@
     # No-op on agents: the module guards its config to `services.k3s.role ==
     # "server"`, so a worker imports the options and contributes nothing.
     ./cluster-discovery-advertise.nix
+    # 081M3JG74G0087G0R001XJC837: public TLS as INSTALL-TIME configuration.
+    # With /etc/zeta/acme-email + /etc/zeta/public-domain present (written by
+    # zeta-install.sh from the ESP conf or the start-of-install prompt), a k3s
+    # server gets the `platform-public-tls` ArgoCD Application. Absent -> adds
+    # nothing, and the platform runs LAN-only with no issuer and no hostname.
+    ./injected-public-tls.nix
     ./login-banner.nix
     # 081M00KTH58087G0R00120WT6F: the option surface for Secure Boot desired
     # state. At its default phase ("off") it sets NO boot option and contributes

@@ -52,12 +52,10 @@ export interface SsaVctFinding {
  * produce a finding -- an entry that no longer does is reported as stale, so the
  * list cannot outlive the defect it excuses.
  */
-export const DEFERRED: Readonly<Record<string, string>> = {
-  platform:
-    "StatefulSet/portal under ServerSideApply=true, which this Application keeps for its CRDs (the " +
-    "last-applied-configuration cap). Closure is ServerSideDiff=true, not dropping SSA; left to the " +
-    "concurrent platform Application fix (work item 081M3JFZ59B087G0R0014NP4J7 records the hit).",
-};
+// EMPTY. `platform` (StatefulSet/portal) was the one entry; closed by
+// `argocd.argoproj.io/compare-options: ServerSideDiff=true` on
+// platform/Application.yaml (081M3JG74G0087G0R001XJC837), keeping SSA for its CRDs.
+export const DEFERRED: Readonly<Record<string, string>> = {};
 
 type Obj = Record<string, unknown>;
 const asObj = (v: unknown): Obj => (v !== null && typeof v === "object" && !Array.isArray(v) ? (v as Obj) : {});

@@ -958,6 +958,14 @@ export ZETA_ALLOW_REPO_DRIFT="${ZETA_ALLOW_REPO_DRIFT:-}"
 # ships on every USB, so a value there would clear the guard for every operator
 # install as well, which is the guard deleting itself.
 export ZETA_ALLOW_LONGHORN_UNDERSIZED="${ZETA_ALLOW_LONGHORN_UNDERSIZED:-}"
+# 081M3JG74G0087G0R001XJC837: the public-TLS pair zflash --acme-email /
+# --public-domain baked into the ESP conf. Same pass-through as the lines above
+# -- sourced vars need an explicit export to reach zeta-install, which validates
+# them (and refuses RFC 2606 names) as step 1 of ESP -> prompt -> unset. Empty is
+# the normal value: zeta-install then asks at the start of the install, and
+# Enter/timeout there means no public TLS.
+export ZETA_ACME_EMAIL="${ZETA_ACME_EMAIL:-}"
+export ZETA_PUBLIC_DOMAIN="${ZETA_PUBLIC_DOMAIN:-}"
 # zeta-install handles the rest: disk enum → wipe → partition →
 # format → mount → clone → nixos-install. Exits with the OS still
 # booted in the USB live environment; this script then reboots so

@@ -89,7 +89,11 @@ describe("081M0N90CHX087G0R0034C7NPT — the out-of-subset constructs the graph 
     // previously-undeclared platform -> kube-prometheus-stack CRD edge was added.
     // The node's existing `dependsOn: [...]` flow sequence was extended in place,
     // so flow-seq is unchanged at 29.
-    expect(folded).toBe(46);
+    // 46 -> 45 folded on 2026-09-27 (081M3JG74G0087G0R001XJC837): `platform`
+    // lost its `cert-manager: >-` citation with the edge itself -- the ACME
+    // issuers moved out of platform into the install-time platform-public-tls
+    // Application. flow-seq unchanged: dependsOn was shortened in place.
+    expect(folded).toBe(45);
     expect(flowSeq).toBe(29);
   });
 });

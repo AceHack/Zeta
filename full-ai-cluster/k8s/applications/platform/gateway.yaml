@@ -1,18 +1,25 @@
-# zeta-gateway — the shared Cilium Gateway the portal (and any WebApp HTTPRoute)
-# publishes on. Cilium gives this Gateway a LoadBalancer Service that pulls an IP
-# from the cilium-lb-ipam pool — THAT is the IP your router forwards :80 + :443 to.
+# zeta-gateway — the shared LAN Cilium Gateway the portal (and any WebApp
+# HTTPRoute) publishes on. Cilium gives this Gateway a LoadBalancer Service that
+# pulls an IP from the cilium-lb-ipam pool.
 #
-# TLS is provisioned by cert-manager via the `cert-manager.io/cluster-issuer`
-# annotation below: cert-manager watches this Gateway, reads each HTTPS listener's
-# hostname, runs the ACME HTTP-01 challenge through the :80 listener, and writes
-# the cert into the Secret named in `certificateRefs` (portal-tls). No DNS API and
-# no Cloudflare needed — only that Let's Encrypt can reach :80 (so your DNS must
-# resolve to your IP and your router must forward :80 BEFORE the cert issues).
+# LAN ONLY, NO HOSTNAME, NO TLS — deliberately (081M3JG74G0087G0R001XJC837).
+# This file used to carry an HTTPS listener with `hostname: portal.example.com
+# # ← CHANGE` and a `cert-manager.io/cluster-issuer` annotation, and the platform
+# Application also applied two Let's Encrypt ClusterIssuers with
+# `email: you@example.com`. A generic installer never changes a file, so every
+# install applied the placeholders; the ACME server refused the account, the
+# issuers never went Ready, and ArgoCD waited on them forever — nothing after
+# them in `platform` (controller, portal, this Gateway, the monitoring objects,
+# the Blueprints) was ever applied.
 #
-# ── CHANGE BEFORE IT WORKS ──
-#   • the HTTPS listener `hostname` below → your real domain
-#   • keep it in sync with the portal HTTPRoute hostname in portal.yaml
-#   • apply clusterissuer.yaml (it carries your ACME email) — see SETUP.md
+# Public TLS is now INSTALL-TIME CONFIGURATION and lives in its own Application:
+# when the operator supplies an ACME email + public domain (zflash
+# `--acme-email/--public-domain`, or the prompt at the start of the install),
+# nixos/modules/injected-public-tls.nix hands k3s the `platform-public-tls`
+# Application, which owns the issuers and a separate public Gateway serving
+# portal.<domain> on :80/:443 (full-ai-cluster/k8s/public-tls/). With no values,
+# none of that exists and this Gateway is the whole ingress story.
+# See full-ai-cluster/INJECTION-POINTS.md §10.
 apiVersion: gateway.networking.k8s.io/v1
 kind: Gateway
 metadata:
@@ -20,28 +27,13 @@ metadata:
   namespace: zeta-platform
   annotations:
     argocd.argoproj.io/sync-wave: "0"
-    # cert-manager provisions + renews the HTTPS listener cert into `portal-tls`.
-    # Use letsencrypt-staging first to avoid rate limits, then flip to -prod.
-    cert-manager.io/cluster-issuer: letsencrypt-prod
 spec:
   gatewayClassName: cilium
   listeners:
-    # :80 — plain HTTP. Serves the ACME HTTP-01 challenge (cert-manager injects a
-    # temporary HTTPRoute here during issuance) and any non-TLS route. Game servers
-    # do NOT use this — they are raw UDP via their own LoadBalancer Services.
+    # :80 — plain HTTP, any Host header. Game servers do NOT use this — they are
+    # raw UDP via their own LoadBalancer Services.
     - name: http
       protocol: HTTP
       port: 80
-      allowedRoutes:
-        namespaces: { from: All }
-    # :443 — HTTPS, TLS terminated at the Gateway using the cert-manager cert.
-    - name: https
-      protocol: HTTPS
-      port: 443
-      hostname: "portal.example.com"   # ← CHANGE to your domain (e.g. portal.yourdomain.com)
-      tls:
-        mode: Terminate
-        certificateRefs:
-          - { kind: Secret, name: portal-tls }
       allowedRoutes:
         namespaces: { from: All }

@@ -19,6 +19,7 @@ import {
   type NamedBaoElfAsk,
 } from "./firstboot-bao-elf.ts";
 import { railFindingsForEspWrites } from "./injection-rail.ts";
+import { planPublicEndpoint, type PublicEndpoint } from "../installer/public-endpoint.ts";
 import type {
   FileBackedEspWrite,
   FileBackedZflashImageExecution,
@@ -59,6 +60,8 @@ export interface FileBackedZflashCliOptions {
   readonly allowLonghornUndersized?: boolean;
   /** WP21 (081M35C7NJR087G0R002S4R654): full 40-hex commit sha for `/zeta-repo-pin`. See lib.ts. */
   readonly repoPinCommit?: string;
+  /** 081M3JG74G0087G0R001XJC837: `--acme-email` + `--public-domain`, validated. See lib.ts. */
+  readonly publicEndpoint?: PublicEndpoint;
 }
 
 export type FileBackedZflashCliParseResult =
@@ -130,7 +133,10 @@ const USAGE =
   "  --bind-uefi-keyfile-marker   write /zeta-bind-uefi-keyfile (guest persist-opt-in; not default)\n" +
   "  --qemu-creds-passphrase-file <path>  write /zeta-qemu-creds-passphrase from a file (QEMU; not argv)\n" +
   "  --qemu-bake-test-cred-marker write /zeta-qemu-bake-test-cred (QEMU restore probe bake; not default)\n" +
-  "  --qemu-k3s-first-boot-verify-marker  write /zeta-qemu-k3s-first-boot-verify (WP11 QEMU-only; not default)\n";
+  "  --qemu-k3s-first-boot-verify-marker  write /zeta-qemu-k3s-first-boot-verify (WP11 QEMU-only; not default)\n" +
+  "  --acme-email <addr>          public TLS: ACME contact, onto /zeta-firstboot.conf (requires --public-domain)\n" +
+  "  --public-domain <domain>     public TLS: base domain; the portal is published as portal.<domain>\n" +
+  "                               (omit both: the installer asks at the start of the install; Enter = no public TLS)\n";
 
 function resolveTestInfraPubkeyPath(): string {
   return resolveZetaTestInfraPubkeyFromZflashModule(import.meta.url);
@@ -230,6 +236,8 @@ export function parseFileBackedZflashArgs(args: readonly string[]): FileBackedZf
   let qemuBakeTestCredMarker = false;
   let qemuK3sFirstBootVerifyMarker = false;
   let qemuCredsPassphraseFile: string | undefined;
+  let acmeEmailFlag: string | undefined;
+  let publicDomainFlag: string | undefined;
 
   for (let index = 0; index < args.length; index++) {
     const arg = args[index]!;
@@ -268,7 +276,9 @@ export function parseFileBackedZflashArgs(args: readonly string[]): FileBackedZf
       arg === "--join-token" ||
       arg === "--bao-load-site" ||
       arg === "--bao-path" ||
-      arg === "--qemu-creds-passphrase-file"
+      arg === "--qemu-creds-passphrase-file" ||
+      arg === "--acme-email" ||
+      arg === "--public-domain"
     ) {
       const value = requireValue(args, index, arg);
       if (typeof value !== "string") return { kind: "error", error: value.error };
@@ -293,6 +303,8 @@ export function parseFileBackedZflashArgs(args: readonly string[]): FileBackedZf
       else if (arg === "--bao-load-site") baoLoadSiteFlag = value;
       else if (arg === "--bao-path") baoPathFlag = value;
       else if (arg === "--qemu-creds-passphrase-file") qemuCredsPassphraseFile = value;
+      else if (arg === "--acme-email") acmeEmailFlag = value;
+      else if (arg === "--public-domain") publicDomainFlag = value;
       else inlineStagingDirectory = value;
       index++;
       continue;
@@ -312,6 +324,12 @@ export function parseFileBackedZflashArgs(args: readonly string[]): FileBackedZf
     ...(joinTokenSourcePath === undefined ? {} : { joinTokenSourcePath }),
   });
   if (!firstbootRole.ok) return { kind: "error", error: firstbootRole.error };
+
+  const publicEndpoint = planPublicEndpoint({
+    ...(acmeEmailFlag === undefined ? {} : { acmeEmail: acmeEmailFlag }),
+    ...(publicDomainFlag === undefined ? {} : { publicDomain: publicDomainFlag }),
+  });
+  if (!publicEndpoint.ok) return { kind: "error", error: publicEndpoint.error };
 
   const namedArgv: string[] = [];
   if (baoLoadSiteFlag !== undefined) namedArgv.push(`--bao-load-site=${baoLoadSiteFlag}`);
@@ -362,6 +380,7 @@ export function parseFileBackedZflashArgs(args: readonly string[]): FileBackedZf
       ...(qemuBakeTestCredMarker ? { qemuBakeTestCredMarker: true } : {}),
       ...(qemuK3sFirstBootVerifyMarker ? { qemuK3sFirstBootVerifyMarker: true } : {}),
       ...(qemuCredsPassphrase === undefined ? {} : { qemuCredsPassphrase }),
+      ...(publicEndpoint.value === null ? {} : { publicEndpoint: publicEndpoint.value }),
     },
   };
 }
@@ -556,6 +575,7 @@ export function runFileBackedZflashCli(
     ...(options.allowLonghornUndersized === true ? { allowLonghornUndersized: true } : {}),
     ...(options.qemuCredsPassphrase === undefined ? {} : { qemuCredsPassphrase: options.qemuCredsPassphrase }),
     ...(options.repoPinCommit === undefined ? {} : { repoPinCommit: options.repoPinCommit }),
+    ...(options.publicEndpoint === undefined ? {} : { publicEndpoint: options.publicEndpoint }),
   };
   const planned = planFileBackedZflashImage(planInput);
   if (!planned.ok) return { ok: false, error: planned.error };
