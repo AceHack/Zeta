@@ -226,6 +226,13 @@ overrides:
     resizes:
       - claim: full-ai-cluster/seaweedfs blob-store-seaweedfs-all-in-one-data
         size: 2Gi
+  # NOT APPLIED ON THE FIRST-BOOT REPLICA (081M3HYPQCR087G0R003C2VPRS). That lane also
+  # runs k3s's bootstrap roster, whose spire-install.yaml installs this same release at
+  # the committed 5Gi -- and a StatefulSet's volumeClaimTemplates are immutable, so the
+  # Application at 512Mi could never sync there ("spec: Forbidden", dispatch
+  # 36333824468). The replica skips every override on an Application that adopts a
+  # bootstrap HelmChart; adoption-immutable-fields.ts renders both sides to check it.
+  # The kind/k3d lanes install no bootstrap charts, so the resize still holds there.
   - id: spire/disk-dev
     path: full-ai-cluster/k8s/applications/spire/Application.yaml
     docIndex: 0

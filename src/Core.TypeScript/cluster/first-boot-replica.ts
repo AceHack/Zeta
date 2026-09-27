@@ -210,6 +210,10 @@ import {
 // directory excluded here can never silently drift apart into two answers for
 // "what does the dev/CI catalog actually apply".
 import { buildLaneTreeForProfile } from "./argocd-health-test.ts";
+import { adoptionPairs, discoverBootstrapCrs, overridesOnAdoptedApplications } from "./adoption-immutable-fields.ts";
+import { discoverApplications } from "./rendered-storage-claims.ts";
+import { loadRungOverrides } from "./rung-overrides.ts";
+import { loadResourceCatalogue } from "./storage-profiles.ts";
 import { rootDevCatalogExcludeGlobFor } from "./ports.ts";
 // Stage 6 verdict classification (WP23): manual-sync apps are DIVERGENCE, never
 // FAIL, and the roster is read from the SAME convention `manual-sync-policy.ts`
@@ -2377,6 +2381,86 @@ export interface RunReport {
   readonly ok: boolean;
 }
 
+/** The fields of `docker inspect --format '{{json .State}}'` a dead-container report needs. */
+export interface ContainerState {
+  readonly running: boolean;
+  readonly status: string;
+  readonly exitCode: number | null;
+  readonly oomKilled: boolean;
+  readonly error: string;
+  readonly startedAt: string;
+  readonly finishedAt: string;
+}
+
+/** Parse `docker inspect --format '{{json .State}}'`, or `null` when it is not that shape. */
+export function parseContainerState(json: string): ContainerState | null {
+  let raw: unknown;
+  try {
+    raw = JSON.parse(json.trim());
+  } catch {
+    return null;
+  }
+  if (typeof raw !== "object" || raw === null) return null;
+  const s = raw as Record<string, unknown>;
+  if (typeof s["Running"] !== "boolean") return null;
+  return {
+    running: s["Running"],
+    status: typeof s["Status"] === "string" ? s["Status"] : "unknown",
+    exitCode: typeof s["ExitCode"] === "number" ? s["ExitCode"] : null,
+    oomKilled: s["OOMKilled"] === true,
+    error: typeof s["Error"] === "string" ? s["Error"] : "",
+    startedAt: typeof s["StartedAt"] === "string" ? s["StartedAt"] : "",
+    finishedAt: typeof s["FinishedAt"] === "string" ? s["FinishedAt"] : "",
+  };
+}
+
+/**
+ * What a dead container's state MEANS, stated as the fact Docker reports -- never a guess
+ * dressed as a cause. OOMKilled is Docker's own flag for the cgroup OOM killer reaping the
+ * container's main process (k3s, which runs the whole node in-process), which is the
+ * container-sized form of a bare-metal node running out of memory.
+ */
+export function classifyContainerDeath(state: ContainerState): string {
+  if (state.running) return "running";
+  if (state.oomKilled) {
+    return "OOMKilled: the cgroup OOM killer reaped the container's main process (k3s -- the whole node) at the --memory cap; on metal this is whole-node memory exhaustion";
+  }
+  if (state.exitCode === 137) return "exit 137 (SIGKILL) WITHOUT OOMKilled: killed from outside the container's cgroup accounting, or by the host OOM killer";
+  if (state.exitCode === 0) return "exited 0: k3s shut itself down";
+  return `exited ${String(state.exitCode)}: k3s died on its own -- read the log tail`;
+}
+
+/**
+ * `null` while the container is running; otherwise a NAMED failure carrying Docker's own
+ * exit state and the last k3s log lines. Measured need, dispatch 36333824468: the
+ * constrained replica's container died during stage 6, the soak and stage 7 then read
+ * "no regressions / no churn" off a refused API server, and the only trace was stage 8's
+ * `docker kill` saying the container `is not running` -- with no exit code, no OOM flag
+ * and no log. Evidence that is gone once the throwaway container is removed.
+ */
+export function containerDeathReport(
+  runner: Runner,
+  containerName: string,
+  logLines = 40,
+): { readonly confirmed: boolean; readonly report: string } | null {
+  const inspect = runner.run("docker", ["inspect", "--format", "{{json .State}}", containerName], { timeoutMs: 30_000 });
+  const state = inspect.status === 0 ? parseContainerState(inspect.stdout) : null;
+  if (state?.running === true) return null;
+  const tail = runner.run("docker", ["logs", "--tail", String(logLines), containerName], { timeoutMs: 30_000 });
+  const logText = `${tail.stdout}${tail.stderr}`.trim();
+  const head =
+    state === null
+      ? `container ${containerName}: state UNREADABLE (docker inspect exit ${String(inspect.status)}: ${(inspect.stderr || inspect.stdout).trim()})`
+      : `container ${containerName} is ${state.status} -- ExitCode=${String(state.exitCode)} OOMKilled=${String(state.oomKilled)} ` +
+        `Error=${JSON.stringify(state.error)} StartedAt=${state.startedAt} FinishedAt=${state.finishedAt} -- ${classifyContainerDeath(state)}`;
+  // `confirmed` only when Docker itself SAID the container is not running. An unreadable
+  // state is reported, never promoted to a death -- a docker CLI hiccup is not a dead node.
+  return {
+    confirmed: state !== null,
+    report: `${head}\n--- last ${String(logLines)} container log line(s) ---\n${logText === "" ? "(none)" : logText}`,
+  };
+}
+
 /**
  * Make the container's ENTIRE mount tree recursively SHARED, inside its OWN
  * mount namespace (not the Docker host's — see `buildDockerRunArgs`' note on
@@ -2823,12 +2907,20 @@ export async function runReplica(opts: RunOptions): Promise<RunReport> {
       );
     }
 
+    // A soak over a DEAD node reads every restart count as absent, which the
+    // regression diff reports as "steady". Ask Docker whether the node is still
+    // there before believing that (dispatch 36333824468 did exactly this).
+    const deathAfter6 = containerDeathReport(runner, opts.containerName);
+    if (deathAfter6 !== null) log(`stage 6: CONTAINER NOT RUNNING -- ${deathAfter6.report}`);
+    const deadAfter6 = deathAfter6?.confirmed === true;
+
     stages.push({
       stage: 6,
       name: "convergence report (per-Application verdict: Healthy/DIVERGENCE/FAIL) + soak",
-      ok: failingApps.length === 0 && classifiedSoak.unexpected.length === 0,
+      ok: failingApps.length === 0 && classifiedSoak.unexpected.length === 0 && !deadAfter6,
       elapsedSeconds: nowSeconds() - s6Start,
       detail:
+        (deadAfter6 ? `NODE CONTAINER DIED -- ${(deathAfter6?.report ?? "").split("\n")[0] ?? ""}; ` : "") +
         `settled=${String(settled)}; ${String(appVerdicts.length)} Applications: ${String(healthyCount)} Healthy, ` +
         `${String(divergentApps.length)} DIVERGENCE, ${String(failingApps.length)} FAIL` +
         (opts.soakSec > 0
@@ -2918,15 +3010,25 @@ export async function runReplica(opts: RunOptions): Promise<RunReport> {
       .filter(([, statuses]) => statuses.filter((s, i) => i > 0 && s !== statuses[i - 1]).length >= 2)
       .map(([name]) => name);
     const churning = [...new Set([...helmChurning, ...argoOscillating])];
+    // "No churn" needs samples to mean anything. Zero samples across every owner --
+    // what a dead node's refused API produces -- is a check that did not run, and is
+    // reported INCONCLUSIVE rather than PASS.
+    const sampleCount = [...Object.values(helmSecretSamples), ...Object.values(argoSyncSamples)].reduce((n, s) => n + s.length, 0);
+    const deathAfter7 = containerDeathReport(runner, opts.containerName);
+    if (deathAfter7 !== null) log(`stage 7: CONTAINER NOT RUNNING -- ${deathAfter7.report}`);
+    const unobserved = sampleCount === 0 || deathAfter7?.confirmed === true;
     stages.push({
       stage: 7,
       name: "dual-owner churn check (helm-controller vs ArgoCD)",
-      ok: churning.length === 0,
+      ok: churning.length > 0 ? false : unobserved ? null : true,
       elapsedSeconds: nowSeconds() - s7Start,
       detail:
-        churning.length === 0
-          ? "no release resourceVersion churn and no ArgoCD sync-status oscillation observed"
-          : `CHURNING: ${churning.join(", ")} (helm-secret: ${helmChurning.join(", ") || "none"}; argo-sync-oscillation: ${argoOscillating.join(", ") || "none"})`,
+        churning.length > 0
+          ? `CHURNING: ${churning.join(", ")} (helm-secret: ${helmChurning.join(", ") || "none"}; argo-sync-oscillation: ${argoOscillating.join(", ") || "none"})`
+          : unobserved
+            ? `INCONCLUSIVE: ${String(sampleCount)} sample(s) collected` +
+              (deathAfter7?.confirmed === true ? ` -- node container not running: ${deathAfter7.report.split("\n")[0] ?? ""}` : "")
+            : "no release resourceVersion churn and no ArgoCD sync-status oscillation observed",
       evidence: { helmSecretSamples, argoSyncSamples },
     });
 
@@ -2983,7 +3085,12 @@ export async function runReplica(opts: RunOptions): Promise<RunReport> {
           name: "power-cycle recovery",
           ok: false,
           elapsedSeconds: nowSeconds() - s8Start,
-          detail: `docker kill failed: ${kill.stderr || kill.stdout}`,
+          detail:
+            `docker kill failed: ${kill.stderr || kill.stdout}` +
+            ((): string => {
+              const death = containerDeathReport(runner, opts.containerName);
+              return death === null ? "" : `\n${death.report}`;
+            })(),
         });
         return { plan: planSummary(plan), resourceMode: resourceModeLine, stages, appVerdicts, ok: false };
       }
@@ -3513,7 +3620,22 @@ async function main(): Promise<void> {
   let laneTreeManifests: string | undefined;
   if (serveTreeProfile !== null) {
     console.log(`[serve-tree] building lane tree for resource rung "${serveTreeProfile}" ...`);
-    const laneTree = buildLaneTreeForProfile(serveTreeProfile, targetRevision);
+    // THIS lane also runs the k3s bootstrap roster, which installs the COMMITTED
+    // bootstrap HelmCharts -- no rung touches them. So a rung override on an
+    // Application that adopts one of those releases would make the two owners
+    // disagree, and on an immutable field ArgoCD can never sync: measured on
+    // dispatch 36333824468, `spire/disk-dev` (512Mi) against the bootstrap's 5Gi
+    // spire-server volumeClaimTemplate, "StatefulSet.apps is invalid: spec:
+    // Forbidden" retried forever (081M3HYPQCR087G0R003C2VPRS). Those overrides are
+    // skipped here and only here; the kind/k3d lanes install no bootstrap charts.
+    // `adoption-immutable-fields.ts` renders both sides and is the falsifier.
+    const skipOverrideIds = new Set(
+      overridesOnAdoptedApplications(
+        loadRungOverrides(loadResourceCatalogue().profiles),
+        adoptionPairs(discoverBootstrapCrs(), discoverApplications()),
+      ).map((o) => o.id),
+    );
+    const laneTree = buildLaneTreeForProfile(serveTreeProfile, targetRevision, { skipOverrideIds });
     if (laneTree === null) {
       // Unreachable: buildLaneTreeForProfile(profile, ref) only returns null when
       // profile === null, and serveTreeProfile is checked non-null just above.

@@ -2293,6 +2293,17 @@ export function applyServeTreeRung(
    * than silently building the committed tree under another label.
    */
   selection: ClusterSelection = {},
+  /**
+   * Rung-override ids NOT to apply. For a lane that ALSO runs the k3s bootstrap
+   * roster (the first-boot replica): an override on an Application that adopts a
+   * bootstrap HelmChart makes the two owners of one release disagree, because k3s
+   * installs the committed bootstrap values and no rung ever touches them. When the
+   * disagreement lands on an immutable field the Application can never sync
+   * (081M3HYPQCR087G0R003C2VPRS: `spire/disk-dev`, a StatefulSet volumeClaimTemplate
+   * 512Mi vs 5Gi). Empty (the default) = every override, i.e. unchanged behaviour
+   * for the kind/k3d lanes, which install no bootstrap HelmCharts.
+   */
+  options: { readonly skipOverrideIds?: ReadonlySet<string> } = {},
 ): { readonly rungEdits: number; readonly storageEdits: number; readonly overrideEdits: number; readonly storageProfile: string | null } {
   validateSelection(selection, loadOverrideDimensions(stagedRoot));
   const catalogue = loadResourceCatalogue(undefined, stagedRoot);
@@ -2300,8 +2311,9 @@ export function applyServeTreeRung(
   const storageProfile = storageProfileForResourceRung(profile, undefined, stagedRoot);
   const storageEdits =
     storageProfile === null ? 0 : applyProfile(loadCatalogue(undefined, stagedRoot), storageProfile, stagedRoot).length;
+  const skip = options.skipOverrideIds ?? new Set<string>();
   const overrideEdits = applyRungOverrides(
-    loadRungOverrides(catalogue.profiles, stagedRoot),
+    loadRungOverrides(catalogue.profiles, stagedRoot).filter((o) => !skip.has(o.id)),
     profile,
     stagedRoot,
     true,
@@ -2313,6 +2325,8 @@ export function applyServeTreeRung(
 export function buildLaneTreeForProfile(
   profile: string | null,
   gitRef: string,
+  /** Passed to `applyServeTreeRung` -- see its `skipOverrideIds`. */
+  options: { readonly skipOverrideIds?: ReadonlySet<string> } = {},
 ): { readonly manifests: string; readonly repoUrl: string; readonly gitRef: string } | null {
   if (profile === null) return null;
   const catalogue = loadResourceCatalogue();
@@ -2348,10 +2362,12 @@ export function buildLaneTreeForProfile(
     // carries sizes a hosted runner can actually hold. Same `applyProfile` the
     // `--apply` path uses, so the numbers are the ones `--verify` checks.
     applyRung: (stagedRoot: string) => {
-      const applied = applyServeTreeRung(profile, stagedRoot);
+      const applied = applyServeTreeRung(profile, stagedRoot, {}, options);
+      const skipped = [...(options.skipOverrideIds ?? [])];
       console.log(
         `[serve-tree] rung edits=${String(applied.rungEdits)} storage edits=${String(applied.storageEdits)} ` +
-          `(profile ${applied.storageProfile ?? "unchanged"}) override edits=${String(applied.overrideEdits)}`,
+          `(profile ${applied.storageProfile ?? "unchanged"}) override edits=${String(applied.overrideEdits)}` +
+          (skipped.length === 0 ? "" : ` skipped overrides=${skipped.join(",")}`),
       );
       return applied.rungEdits + applied.storageEdits + applied.overrideEdits;
     },

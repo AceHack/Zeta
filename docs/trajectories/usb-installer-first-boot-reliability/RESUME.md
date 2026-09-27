@@ -83,6 +83,7 @@ why the constrained mode exists.
 | Four charts rendered **non-deterministically** (regenerated Secrets / a fresh-identity hook Pod) — perpetual churn under selfHeal | render-twice census, baselined |
 | First boot depended on GitHub's **60/hour per-IP** attestation API; behind a NAT it fails closed with a Rust stack location | the failure now names the rate limit and its reset |
 | 134 first-boot images span **eight registries**; the cache covered **one** | 26 bootstrap images preloaded; proven with every registry blackholed |
+| `spire` could **never sync on the replica**: the dev-rung override put the adopting Application's volumeClaimTemplate at 512Mi against the k3s bootstrap's 5Gi — an immutable field (`081M3HYPQCR087G0R003C2VPRS`). Replica-lane only; the committed/metal pair renders identically | replica skips overrides on bootstrap-adopted Applications; `adoption-immutable-fields.ts` renders all 7 pairs × {committed, dev-served}, red on spire with `--apply-all-overrides` |
 
 ### The ESP defect is worth understanding before touching anything near it
 
@@ -112,6 +113,7 @@ the item says so.
 | A full `workflow_dispatch` intermittently loses **every** ESP injection | root cause found; the ambiguity itself is not deleted | `081M39CJP96087G0R001T4J2R3` |
 | `openbao` / `hindsight` have no machine-readable "needs an operator action" declaration | they are neither manual-sync nor broken; the convention lacks a word | `081M3BKQFNC087G0R003MDGSAX` |
 | Which half of the capacity fix produced the reachability result | #17666 bundled pod requests *and* node reservations; one pair cannot separate them | needs a run with one applied |
+| The **constrained replica's node container died on its own** during stage 6 (dispatch 36333824468; API refused from 17:12:33, stage 8 found it `not running`). Cause **not recorded** — the harness never read Docker's exit state; the soak and stage 7 then passed vacuously over the dead API | if OOMKilled, it is whole-node memory exhaustion at 12 GiB, i.e. the metal memory-pressure question | the harness now records ExitCode/OOMKilled/log tail and fails stage 6 / marks stage 7 inconclusive on a dead node (`081M3HYPQCR087G0R003C2VPRS`); **re-run the constrained lane to read it** |
 | Three first-boot external dependencies still **hang** (post-wipe clone, bootstrap chart repos, k3s built-in images) | full map, 21 rows, in `docs/ops/FIRST-BOOT-EXTERNAL-DEPENDENCIES.md` | `081M3HPNST9087G0R001X410AE` · `081M3HPNSW7087G0R001W2Z6YX` · `081M3HPNSY5087G0R002QAVCEJ` |
 
 ---

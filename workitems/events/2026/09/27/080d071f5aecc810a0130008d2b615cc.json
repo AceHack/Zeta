@@ -1,0 +1,14 @@
+{
+  "id": "080d071f5aecc810a0130008d2b615cc",
+  "at": "2026-09-27T17:30:48.089Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M3HYPQCR087G0R003C2VPRS",
+    "type": "bug",
+    "title": "spire Application can never sync on a rung-overlaid first-boot lane: dev override diverges an immutable StatefulSet field from the k3s bootstrap install",
+    "slug": "spire-application-can-never-sync-on-a-rung-overlaid-first-bo",
+    "priority": "P2",
+    "filename": "081M3HYPQCR087G0R003C2VPRS-spire-application-can-never-sync-on-a-rung-overlaid-first-bo.md"
+  }
+}
