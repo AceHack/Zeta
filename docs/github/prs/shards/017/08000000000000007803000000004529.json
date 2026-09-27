@@ -1,0 +1,12 @@
+{
+  "pr_number": 17705,
+  "archive_path": "docs/history/pr-reviews/2026/09/27/PR-17705-fix-cluster-first-boot-replica-must-not-rung-override-a-release-k3s-already-inst.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-27T18:07:02.665Z",
+  "schema_version": "v1",
+  "commit_sha": "d0cf7ae0477154242a7a22b2ad129b1c054db260",
+  "title": "fix(cluster): first-boot replica must not rung-override a release k3s already installed (spire never synced)",
+  "state": "MERGED",
+  "merged_at": "2026-09-27T18:06:20Z",
+  "head_ref": "claude/spire-statefulset-immutable"
+}

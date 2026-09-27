@@ -1,0 +1,12 @@
+{
+  "pr_number": 17697,
+  "archive_path": "docs/history/pr-reviews/2026/09/27/PR-17697-fix-cluster-stop-liveness-probes-killing-the-node-s-floor-when-it-is-slow-not-de.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-27T16:34:59.749Z",
+  "schema_version": "v1",
+  "commit_sha": "e70af5c346d2a8618731e3f864c50911d3201cca",
+  "title": "fix(cluster): stop liveness probes killing the node's floor when it is slow, not dead",
+  "state": "MERGED",
+  "merged_at": "2026-09-27T16:34:13Z",
+  "head_ref": "claude/node-floor-liveness-budgets"
+}
