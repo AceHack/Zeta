@@ -2634,3 +2634,15 @@ WP11 tip-confirm -- K3S_ACTIVE on verdict 6 (distinct NEVER-ACTIVE log + optiona
 - No new fail-open: every stop, timeout and early exit is still exit 1.
 - Soft: no workflow_dispatch yet and workitem moved to done first; baseline is now a prepared install; PR body names the wrong function; wiring test matches source text; agencysignature (PR body) is red.
 - No hard fails. Sit leftover. Do not merge.
+
+## leftover UNIQUE leftover #17692 leftover unique @ 41863d35749b220391eca96f338e5f8f589fd91a -- GRADE GO
+
+2026-09-27 ~11:28 AM ET. #17692 (maximdolphin): platform gets unbounded sync retry for the CRD race, weaviate services move to ClusterIP, and the WP11 diag names the failure. Tip 41863d35 is 1-parent on base ea6524e1 (not a merge); +156/-4 in 6 files. Merge_commit 4464ca13 not graded.
+
+- platform/Application.yaml L57-59 retry limit -1 is valid for pinned Argo CD v3.5.2 (retries forever when Limit < 0); the error stays visible in operationState while retrying.
+- WP11 check reads Synced plus Healthy from status and is bounded at 3000s, ending red if not converged, so the retry does not mask a failure there.
+- weaviate chart v17.8.3 renders both service types directly; no consumer depends on LoadBalancer.
+- Diag reorder verified locally: nothing dropped, no verdict variable set, no new || true.
+- Soft S1: add retry.refresh: true, or a persistent failure blocks fix-forward auto-sync until the operation is terminated by hand. Soft S2: if platform is ever asserted in the kind/k3d test, a still-retrying operation must count as not reconciled.
+- Soft: stale two-LoadBalancer comments; undecidable-only runs print no scheduler reason; no live run yet.
+- No hard fails. Sit leftover. Do not merge.
