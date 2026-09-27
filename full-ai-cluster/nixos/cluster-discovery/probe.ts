@@ -78,10 +78,47 @@ function failure(reason: ProbeFailureReason, detail: string, elapsedMs: number):
   return { kind: "probe-failed", reason, detail, elapsedMs };
 }
 
-/** Arguments for one browse pass: parsable, resolving, terminating, no name lookups. */
+/**
+ * Arguments for one browse pass: parsable, resolving, terminating.
+ *
+ * NO `--no-db-lookup`. That flag was here until 2026-09-27 and made every pass
+ * exit 1 (`avahi-browse: unrecognized option '--no-db-lookup'`, run
+ * 35985197702), so discovery had never once run on a shipped image. Verified
+ * against source, not assumed: avahi 0.8 `avahi-utils/avahi-browse.c` compiles
+ * `-k/--no-db-lookup` (and `-b/--dump-db`) only under
+ * `#if defined(HAVE_GDBM) || defined(HAVE_DBM)`, and nixpkgs builds avahi with
+ * `--disable-gdbm` (pkgs/by-name/av/avahi/package.nix at the flake-locked rev
+ * c25784012c99). Dropping it changes no output: with no service-type database
+ * there is no lookup to suppress, and where one exists `_zeta-k3s._tcp` is not
+ * in it, so the type column is the raw type either way.
+ *
+ * Every flag here must be in `AVAHI_BROWSE_UNCONDITIONAL_LONG_OPTIONS`; the
+ * test that enforces it is the falsifier the old flag never had.
+ */
 export function browseArgs(): readonly string[] {
-  return ["--parsable", "--resolve", "--terminate", "--no-db-lookup", ZETA_CLUSTER_SERVICE_TYPE];
+  return ["--parsable", "--resolve", "--terminate", ZETA_CLUSTER_SERVICE_TYPE];
 }
+
+/**
+ * The long options avahi 0.8's `avahi-browse` accepts on EVERY build -- the
+ * `long_options[]` table in avahi-utils/avahi-browse.c minus the two entries
+ * behind the gdbm/dbm guard (`no-db-lookup`, `dump-db`). A flag outside this
+ * set may be rejected by the binary the probe actually receives.
+ */
+export const AVAHI_BROWSE_UNCONDITIONAL_LONG_OPTIONS: ReadonlySet<string> = new Set([
+  "help",
+  "version",
+  "browse-domains",
+  "domain",
+  "all",
+  "verbose",
+  "terminate",
+  "cache",
+  "ignore-local",
+  "resolve",
+  "no-fail",
+  "parsable",
+]);
 
 /**
  * Run the dwell and report what was observed.

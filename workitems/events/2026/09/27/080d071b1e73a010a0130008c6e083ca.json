@@ -1,0 +1,14 @@
+{
+  "id": "080d071b1e73a010a0130008c6e083ca",
+  "at": "2026-09-27T15:02:44.084Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M3HP7KKH087G0R0011NQAKF",
+    "type": "task",
+    "title": "A probe that could not run still founds a cluster by default: gate ZETA_DISCOVERY_REQUIRED=1 on discovery having run once",
+    "slug": "a-probe-that-could-not-run-still-founds-a-cluster-by-default",
+    "priority": "P2",
+    "filename": "081M3HP7KKH087G0R0011NQAKF-a-probe-that-could-not-run-still-founds-a-cluster-by-default.md"
+  }
+}

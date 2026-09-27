@@ -74,3 +74,19 @@ known about whether discovery works at all.
 The WP11 lane runs a single node on a user-mode NIC with no peers, so its correct
 outcome is the fallback either way. This blocks nothing in CI; it blocks knowing
 whether a second machine on a real segment would ever join.
+
+## Progress 2026-09-27
+
+- **Half 1 (the flag): fixed.** `browseArgs()` no longer passes `--no-db-lookup`.
+  Verified against source: avahi 0.8 `avahi-utils/avahi-browse.c` compiles
+  `-k/--no-db-lookup` and `-b/--dump-db` only under `HAVE_GDBM || HAVE_DBM`, and
+  nixpkgs (flake-locked rev c25784012c99, `pkgs/by-name/av/avahi/package.nix`)
+  configures `--disable-gdbm`.
+- **Half 2 (the falsifier): partial.** `probe.test.ts` now checks every long
+  option against the avahi 0.8 unconditional option table and runs the probe
+  against a getopt-faithful stand-in; it goes red on the old flag. It is still a
+  source-derived table, **not the binary** -- nothing yet runs the real
+  `zeta-cluster-discover` against the real `avahi-browse`. No NixOS VM test
+  exercises discovery today. Stays open until one does (or a QEMU serial log
+  shows the probe reaching `silence`).
+- Follow-up on the probe-failed default: 081M3HP7KKH087G0R0011NQAKF.

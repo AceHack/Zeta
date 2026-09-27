@@ -12,7 +12,13 @@
 
 import { describe, expect, test } from "bun:test";
 
-import { PASS_OFFSETS_MS, probeForClusters, type BrowsePassResult } from "./probe";
+import {
+  AVAHI_BROWSE_UNCONDITIONAL_LONG_OPTIONS,
+  PASS_OFFSETS_MS,
+  browseArgs,
+  probeForClusters,
+  type BrowsePassResult,
+} from "./probe";
 
 const CLUSTER = "a".repeat(64);
 const TXT = `"txtvers=1" "cluster=${CLUSTER}" "td=zeta.home" "role=control-plane" "node=node-ad1efd"`;
@@ -164,5 +170,87 @@ describe("the adapter and the decision compose end to end", () => {
     const { decideClusterBoot } = await import("./decide");
     const decision = decideClusterBoot({ probe: outcome, credentials: { tokenAvailable: false } });
     expect(decision.action).toBe("bootstrap");
+  });
+});
+
+describe("the argument list is one the shipped avahi-browse accepts (081M39K8ND1087G0R000G4EN4N)", () => {
+  // Until 2026-09-27 browseArgs() carried `--no-db-lookup`, which avahi 0.8
+  // compiles only with gdbm/dbm -- and nixpkgs builds avahi `--disable-gdbm`.
+  // Every pass exited 1, so discovery had NEVER run on a shipped image, and the
+  // existing tests stayed green because they checked the args as a value.
+
+  /**
+   * A getopt-faithful stand-in for the nixpkgs avahi-browse: long options in
+   * the unconditional table are accepted, anything else is rejected exactly the
+   * way the measured binary rejected `--no-db-lookup` (run 35985197702).
+   */
+  function nixpkgsAvahiBrowse(stdout: string): (args: readonly string[]) => Promise<BrowsePassResult> {
+    return async (args) => {
+      for (const arg of args) {
+        if (arg.startsWith("--") && !AVAHI_BROWSE_UNCONDITIONAL_LONG_OPTIONS.has(arg.slice(2).split("=")[0] ?? "")) {
+          return { exitCode: 1, stdout: "", stderr: `avahi-browse: unrecognized option '${arg}'` };
+        }
+      }
+      return ok(stdout);
+    };
+  }
+
+  test("every long option is one avahi 0.8 compiles on every build (fails on --no-db-lookup)", () => {
+    const longOptions = browseArgs()
+      .filter((arg) => arg.startsWith("--"))
+      .map((arg) => arg.slice(2));
+    expect(longOptions.length).toBeGreaterThan(0);
+    for (const option of longOptions) {
+      expect(AVAHI_BROWSE_UNCONDITIONAL_LONG_OPTIONS.has(option)).toBe(true);
+    }
+    // The gdbm-only pair must never be in the accepted set, or the guard above is vacuous.
+    expect(AVAHI_BROWSE_UNCONDITIONAL_LONG_OPTIONS.has("no-db-lookup")).toBe(false);
+    expect(AVAHI_BROWSE_UNCONDITIONAL_LONG_OPTIONS.has("dump-db")).toBe(false);
+  });
+
+  test("the args still ask for parsable, resolved, terminating output on our service type", () => {
+    const args = browseArgs();
+    expect(args).toContain("--parsable");
+    expect(args).toContain("--resolve");
+    expect(args).toContain("--terminate");
+    expect(args[args.length - 1]).toBe("_zeta-k3s._tcp");
+  });
+
+  test("against the stand-in, an empty segment is a SILENCE with every pass counted", async () => {
+    const time = virtualTime();
+    const outcome = await probeForClusters({ runBrowse: nixpkgsAvahiBrowse(""), ...time });
+    expect(outcome.kind).toBe("silence");
+    if (outcome.kind !== "silence") {
+      return;
+    }
+    expect(outcome.queryBursts).toBe(PASS_OFFSETS_MS.length);
+  });
+
+  test("against the stand-in, a live cluster is FOUND", async () => {
+    const time = virtualTime();
+    const outcome = await probeForClusters({ runBrowse: nixpkgsAvahiBrowse(RESOLVED), ...time });
+    expect(outcome.kind).toBe("responded");
+  });
+
+  test("the measured rejection is probe-failed, never silence, and the decision never bootstraps on it", async () => {
+    const time = virtualTime();
+    const outcome = await probeForClusters({
+      runBrowse: async () => ({
+        exitCode: 1,
+        stdout: "",
+        stderr: "avahi-browse: unrecognized option '--no-db-lookup'",
+      }),
+      ...time,
+    });
+    expect(outcome.kind).toBe("probe-failed");
+    if (outcome.kind !== "probe-failed") {
+      return;
+    }
+    expect(outcome.reason).toBe("browser-error");
+    const { decideClusterBoot } = await import("./decide");
+    for (const tokenAvailable of [true, false]) {
+      const decision = decideClusterBoot({ probe: outcome, credentials: { tokenAvailable } });
+      expect(decision.action).toBe("refuse");
+    }
   });
 });
