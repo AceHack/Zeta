@@ -1,0 +1,12 @@
+{
+  "pr_number": 17694,
+  "archive_path": "docs/history/pr-reviews/2026/09/27/PR-17694-fix-cluster-one-kubectl-in-the-bootstrap-preload-not-two.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-27T15:47:25.187Z",
+  "schema_version": "v1",
+  "commit_sha": "2ddcf3686b21f8c047b173ec48788a36c5433eaf",
+  "title": "fix(cluster): one kubectl in the bootstrap preload, not two",
+  "state": "MERGED",
+  "merged_at": "2026-09-27T15:46:08Z",
+  "head_ref": "claude/first-boot-hygiene-kubectl"
+}

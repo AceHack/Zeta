@@ -1,0 +1,12 @@
+{
+  "pr_number": 17696,
+  "archive_path": "docs/history/pr-reviews/2026/09/27/PR-17696-fix-cluster-the-inert-key-scanner-now-covers-k8s-bootstrap-the-manifests-that-ru.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-27T15:51:38.584Z",
+  "schema_version": "v1",
+  "commit_sha": "1467da7cad8b73ed414c922c03d44914f7095a22",
+  "title": "fix(cluster): the inert-key scanner now covers k8s/bootstrap, the manifests that run before ArgoCD exists",
+  "state": "MERGED",
+  "merged_at": "2026-09-27T15:50:54Z",
+  "head_ref": "claude/first-boot-hygiene-inert-bootstrap"
+}
