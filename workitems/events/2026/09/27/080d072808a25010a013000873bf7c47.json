@@ -1,0 +1,14 @@
+{
+  "id": "080d072808a25010a013000873bf7c47",
+  "at": "2026-09-27T22:34:08.330Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M3JG2529087G0R00244CH9D",
+    "type": "bug",
+    "title": "gitlab upgrade-check pre-upgrade hook deadlocks every fresh ArgoCD install",
+    "slug": "gitlab-upgrade-check-pre-upgrade-hook-deadlocks-every-fresh",
+    "priority": "P2",
+    "filename": "081M3JG2529087G0R00244CH9D-gitlab-upgrade-check-pre-upgrade-hook-deadlocks-every-fresh.md"
+  }
+}

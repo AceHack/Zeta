@@ -94,6 +94,34 @@ spec:
         certmanager:    { install: false }
         nginx-ingress:  { enabled: false }
         prometheus:     { install: false }
+        # THE CHART'S UPGRADE CHECK IS OFF -- UNDER ARGOCD IT DEADLOCKS EVERY FRESH INSTALL.
+        #
+        # MEASURED 2026-09-27 on a fresh bare-metal install (no previous GitLab): Job
+        # `gitlab-gitlab-upgrade-check` failed every retry with the single line "Please follow
+        # the upgrade documentation at https://docs.gitlab.com/ee/update/#upgrade-paths", and
+        # the app sat OutOfSync/Missing "waiting for completion of hook batch/Job/...upgrade-check".
+        #
+        # Why (helm pull gitlab 8.7.0 --untar): templates/upgrade_check_hook.yaml is a
+        # `helm.sh/hook: pre-upgrade` Job mounting the `gitlab-gitlab-chart-info` ConfigMap
+        # (`optional: true`), and templates/_runcheck.tpl exits 1 when `/chart-info/gitlabVersion`
+        # is absent. chart-info (templates/chart-info.yaml) is an ORDINARY resource, not a hook.
+        # Under Helm this is correct -- `helm install` never runs a pre-upgrade hook. ArgoCD maps
+        # BOTH pre-install and pre-upgrade onto PreSync, which runs on the FIRST sync too, before
+        # the Sync phase creates chart-info; the failed PreSync hook then blocks the Sync phase, so
+        # chart-info is never created and every retry fails identically. Not a version mismatch:
+        # GITLAB_VERSION=17.7.0 / CHART_VERSION=8.7.0 pass the same script once chart-info exists.
+        #
+        # The chart has no values coordinate for the Job's hook annotation, so the check cannot be
+        # moved to a phase where it means something; disabling it is the only values-level fix.
+        # HONEST LIMIT: this also drops the guard on FUTURE `targetRevision` bumps (it would have
+        # read the previous sync's chart-info then), so a bump must follow GitLab's documented
+        # upgrade path by hand: https://docs.gitlab.com/charts/installation/upgrade.html
+        #
+        # Falsifier: src/Core.TypeScript/cluster/upgrade-only-hook-first-sync.test.ts -- red if any
+        # upgrade-only hook in this render reads a non-hook object of the same render; it also runs
+        # the chart's own runcheck offline (forced on) to prove the failure above, and goes red if a
+        # future chart version stops failing closed -- the cue to re-enable the check.
+        upgradeCheck:   { enabled: false }
         gitlab-runner:
           install: true
           runners: { privileged: false, tags: "kubernetes,zeta-cluster" }
