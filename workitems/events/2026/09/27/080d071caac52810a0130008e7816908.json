@@ -1,0 +1,14 @@
+{
+  "id": "080d071caac52810a0130008e7816908",
+  "at": "2026-09-27T15:56:50.725Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M3HSAP54087G0R002B846XC",
+    "type": "bug",
+    "title": "bootstrap-image-preload --verify reports a registry 429 as a moved digest (a supply-chain event) instead of could-not-check",
+    "slug": "bootstrap-image-preload-verify-reports-a-registry-429-as-a-m",
+    "priority": "P2",
+    "filename": "081M3HSAP54087G0R002B846XC-bootstrap-image-preload-verify-reports-a-registry-429-as-a-m.md"
+  }
+}

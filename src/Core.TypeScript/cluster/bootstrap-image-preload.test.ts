@@ -41,6 +41,11 @@ import {
   type Snapshot,
   unmirroredHosts,
   verifyContentAddress,
+  resolveAmd64Digest,
+  retryAfterMs,
+  verifySnapshot,
+  withTransientRetry,
+  type RetryPolicy,
 } from "./bootstrap-image-preload.ts";
 
 function snapshotOf(images: readonly { reference: string; amd64Digest?: string | null; bytes?: number }[]): Snapshot {
@@ -508,6 +513,146 @@ describe("the content check — the falsifiers the CodeQL dismissal rests on", (
 
   test("a NON-OK response is refused before any content check", async () => {
     const down = (): Promise<Response> => Promise.resolve(new Response("", { status: 503 }));
-    await expect(fetchBlob("quay.io", "cilium/cilium", trueDigest, new Map(), down)).rejects.toThrow(/HTTP 503/);
+    await expect(fetchBlob("quay.io", "cilium/cilium", trueDigest, new Map(), down, NO_WAIT)).rejects.toThrow(/HTTP 503/);
+  });
+
+  test("a PERSISTENT 503 on a blob says COULD NOT FETCH — rerun, not a moved digest", async () => {
+    const down = (): Promise<Response> => Promise.resolve(new Response("", { status: 503 }));
+    await expect(fetchBlob("quay.io", "cilium/cilium", trueDigest, new Map(), down, NO_WAIT)).rejects.toThrow(
+      /COULD NOT FETCH .*not a moved digest/,
+    );
+  });
+
+  test("a 429 on a blob, then the bytes: the archive build retries through it", async () => {
+    let calls = 0;
+    const flaky = (): Promise<Response> =>
+      Promise.resolve(calls++ === 0 ? new Response("", { status: 429 }) : new Response(bytes, { status: 200 }));
+    const got = await fetchBlob("quay.io", "cilium/cilium", trueDigest, new Map(), flaky, NO_WAIT);
+    expect(new TextDecoder().decode(got)).toBe("hello");
+    expect(calls).toBe(2);
+  });
+});
+
+/** Zero-wait policy for tests; records every requested sleep. */
+const sleeps: number[] = [];
+const NO_WAIT: RetryPolicy = {
+  maxAttempts: 5,
+  maxTotalWaitMs: 180_000,
+  baseDelayMs: 5_000,
+  sleep: (ms) => {
+    sleeps.push(ms);
+    return Promise.resolve();
+  },
+};
+
+// 081M3HSAP54087G0R002B846XC — PR #17695's build-iso (job 108649139794) failed
+// `--verify` on `manifest HTTP 429` from public ECR, reported as "no longer resolve to
+// the pinned digest ... a supply-chain event". A 429 is "could not check".
+describe("--verify: a rate limit is COULD-NOT-CHECK, never a moved digest", () => {
+  const REF = "ecr-public.aws.com/docker/library/redis:8.6.4-alpine";
+  const PINNED = `sha256:${"a".repeat(64)}`;
+  const index = (): Response =>
+    new Response(
+      JSON.stringify({ manifests: [{ digest: PINNED, platform: { architecture: "amd64", os: "linux" } }] }),
+      { status: 200 },
+    );
+  const tooMany = (retryAfter?: string): Response =>
+    new Response("", { status: 429, ...(retryAfter === undefined ? {} : { headers: { "retry-after": retryAfter } }) });
+
+  test("429 -> retry -> ok: resolves to the pinned digest, honouring Retry-After", async () => {
+    sleeps.length = 0;
+    let calls = 0;
+    const registry = (): Promise<Response> => Promise.resolve(calls++ === 0 ? tooMany("7") : index());
+    const pin = await resolveAmd64Digest(REF, new Map(), registry, NO_WAIT);
+    expect(pin).toEqual({ digest: PINNED });
+    expect(calls).toBe(2);
+    expect(sleeps).toEqual([7_000]);
+  });
+
+  test("429 persistent -> COULD-NOT-CHECK after the bounded attempts, with its own reason", async () => {
+    sleeps.length = 0;
+    let calls = 0;
+    const registry = (): Promise<Response> => {
+      calls++;
+      return Promise.resolve(tooMany());
+    };
+    const pin = await resolveAmd64Digest(REF, new Map(), registry, NO_WAIT);
+    expect(pin.digest).toBeNull();
+    expect(pin.couldNotCheck).toBe(true);
+    expect(pin.reason).toContain("HTTP 429 after 5 attempt(s)");
+    expect(calls).toBe(5);
+    expect(sleeps).toEqual([5_000, 10_000, 20_000, 40_000]); // bounded: 75 s of backoff in total
+  });
+
+  test("a network error is COULD-NOT-CHECK too", async () => {
+    const registry = (): Promise<Response> => Promise.reject(new Error("ECONNRESET"));
+    const pin = await resolveAmd64Digest(REF, new Map(), registry, NO_WAIT);
+    expect(pin.couldNotCheck).toBe(true);
+    expect(pin.reason).toContain("ECONNRESET");
+  });
+
+  test("a 404 is NOT retried and NOT could-not-check — the tag is gone, which IS a finding", async () => {
+    let calls = 0;
+    const registry = (): Promise<Response> => {
+      calls++;
+      return Promise.resolve(new Response("", { status: 404 }));
+    };
+    const pin = await resolveAmd64Digest(REF, new Map(), registry, NO_WAIT);
+    expect(calls).toBe(1);
+    expect(pin.couldNotCheck).toBeUndefined();
+    expect(pin.reason).toBe("manifest HTTP 404");
+  });
+
+  test("a Retry-After beyond the remaining budget stops retrying instead of hanging the job", async () => {
+    let calls = 0;
+    const registry = (): Promise<Response> => {
+      calls++;
+      return Promise.resolve(tooMany("3600"));
+    };
+    const pin = await resolveAmd64Digest(REF, new Map(), registry, NO_WAIT);
+    expect(calls).toBe(1);
+    expect(pin.couldNotCheck).toBe(true);
+  });
+
+  test("verifySnapshot: COULD-NOT-CHECK exits 1 with 'rerun' and never says supply-chain event", async () => {
+    const snapshot = snapshotOf([{ reference: REF, amd64Digest: PINNED }]);
+    const result = await verifySnapshot(snapshot, () =>
+      Promise.resolve({ digest: null, reason: "manifest HTTP 429 after 5 attempt(s)", couldNotCheck: true }),
+    );
+    expect(result.exitCode).toBe(1);
+    expect(result.couldNotCheck).toBe(1);
+    expect(result.moved).toBe(0);
+    const text = result.err.join("\n");
+    expect(text).toContain("COULD-NOT-CHECK");
+    expect(text).toContain("Rerun");
+    expect(text).not.toContain("supply-chain event,");
+    expect(text).not.toContain("no longer resolve");
+  });
+
+  test("NEGATIVE CONTROL: a digest that resolves to a DIFFERENT value is still a supply-chain event", async () => {
+    const snapshot = snapshotOf([{ reference: REF, amd64Digest: PINNED }]);
+    const result = await verifySnapshot(snapshot, () => Promise.resolve({ digest: `sha256:${"b".repeat(64)}` }));
+    expect(result.exitCode).toBe(1);
+    expect(result.moved).toBe(1);
+    expect(result.couldNotCheck).toBe(0);
+    expect(result.err.join("\n")).toContain("supply-chain event");
+  });
+
+  test("the pinned digest resolving exits 0", async () => {
+    const snapshot = snapshotOf([{ reference: REF, amd64Digest: PINNED }]);
+    const result = await verifySnapshot(snapshot, () => Promise.resolve({ digest: PINNED }));
+    expect(result.exitCode).toBe(0);
+  });
+
+  test("retryAfterMs reads delta-seconds and HTTP-dates, and nothing else", () => {
+    expect(retryAfterMs("12")).toBe(12_000);
+    expect(retryAfterMs("Thu, 01 Jan 1970 00:00:10 GMT", 0)).toBe(10_000);
+    expect(retryAfterMs(null)).toBeNull();
+    expect(retryAfterMs("soon")).toBeNull();
+  });
+
+  test("withTransientRetry returns at once on a non-transient answer", async () => {
+    const r = await withTransientRetry(() => Promise.resolve(new Response("", { status: 200 })), NO_WAIT);
+    expect(r).toMatchObject({ attempts: 1, transient: false });
   });
 });

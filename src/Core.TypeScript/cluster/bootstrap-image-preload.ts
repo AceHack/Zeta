@@ -479,6 +479,133 @@ export function loadSnapshot(repoRoot: string = REPO_ROOT): Snapshot {
   return JSON.parse(readFileSync(join(repoRoot, SNAPSHOT_PATH), "utf8")) as Snapshot;
 }
 
+// ---------------------------------------------------------------------------
+// Transient registry failures — "could not check" is not "moved"
+// ---------------------------------------------------------------------------
+//
+// 081M3HSAP54087G0R002B846XC. build-iso on PR #17695 (job 108649139794) failed
+// `--verify` with `UNRESOLVABLE ecr-public.aws.com/docker/library/redis:8.6.4-alpine
+// — manifest HTTP 429`, reported as "1 of 26 images no longer resolve to the pinned
+// digest ... a supply-chain event". A 429 says nothing about the digest: the
+// registry declined to answer. Reporting it as MOVED is taking a string at face
+// value, and it trains a reader to dismiss the one message that must never be
+// dismissed. So a 429, a 5xx, or a network error is RETRIED with bounded backoff
+// (honouring Retry-After), and if it persists it is its own state,
+// COULD-NOT-CHECK, with its own message. Only a digest that RESOLVES to a
+// different value is a supply-chain event.
+
+export type Sleep = (ms: number) => Promise<void>;
+
+export interface RetryPolicy {
+  /** Total attempts, including the first. */
+  readonly maxAttempts: number;
+  /** Upper bound on the SUM of waits; a Retry-After beyond what is left ends the retries. */
+  readonly maxTotalWaitMs: number;
+  /** Backoff when no Retry-After is given: base, 2x base, 4x base ... */
+  readonly baseDelayMs: number;
+  readonly sleep: Sleep;
+}
+
+export const DEFAULT_RETRY_POLICY: RetryPolicy = {
+  maxAttempts: 5,
+  maxTotalWaitMs: 180_000,
+  baseDelayMs: 5_000,
+  sleep: (ms) => new Promise((done) => setTimeout(done, ms)),
+};
+
+/** A status that says the registry did not answer the question — never that the answer changed. */
+export function isTransientStatus(status: number): boolean {
+  return status === 429 || (status >= 500 && status <= 599);
+}
+
+/** Retry-After as milliseconds (delta-seconds or HTTP-date), or `null` when absent or unreadable. */
+export function retryAfterMs(header: string | null, now: number = Date.now()): number | null {
+  if (header === null || header.trim() === "") return null;
+  const trimmed = header.trim();
+  if (/^\d+$/.test(trimmed)) return Number.parseInt(trimmed, 10) * 1000;
+  const at = Date.parse(trimmed);
+  return Number.isNaN(at) ? null : Math.max(0, at - now);
+}
+
+export interface RetriedResponse {
+  /** The last response, or `undefined` when every attempt threw. */
+  readonly response?: Response;
+  /** The last thrown error, when the last attempt threw. */
+  readonly error?: unknown;
+  readonly attempts: number;
+  /** True when the final outcome is still transient (429 / 5xx / network) — COULD-NOT-CHECK. */
+  readonly transient: boolean;
+}
+
+/**
+ * Run `attempt` until it returns a non-transient response, or the policy is spent.
+ * Never throws: the caller decides what a spent budget means.
+ */
+export async function withTransientRetry(
+  attempt: () => Promise<Response>,
+  policy: RetryPolicy = DEFAULT_RETRY_POLICY,
+): Promise<RetriedResponse> {
+  let waited = 0;
+  for (let n = 1; ; n++) {
+    let response: Response | undefined;
+    let error: unknown;
+    try {
+      response = await attempt();
+    } catch (e) {
+      error = e;
+    }
+    if (response !== undefined && !isTransientStatus(response.status)) {
+      return { response, attempts: n, transient: false };
+    }
+    const hinted = response === undefined ? null : retryAfterMs(response.headers.get("retry-after"));
+    const delay = hinted ?? policy.baseDelayMs * 2 ** (n - 1);
+    if (n >= policy.maxAttempts || waited + delay > policy.maxTotalWaitMs) {
+      return { ...(response === undefined ? { error } : { response }), attempts: n, transient: true };
+    }
+    await policy.sleep(delay);
+    waited += delay;
+  }
+}
+
+function transientReason(label: string, retried: RetriedResponse): string {
+  const what =
+    retried.response !== undefined
+      ? `${label} HTTP ${String(retried.response.status)}`
+      : `${label} request failed (${retried.error instanceof Error ? retried.error.message : String(retried.error)})`;
+  return `${what} after ${String(retried.attempts)} attempt(s)`;
+}
+
+/**
+ * The archive-build form: the same retries, and a spent budget THROWS with a message
+ * that says "rate limited / unavailable — rerun", because `--build-archive` pulls the
+ * same images from the same registries and would hit the same wall `--verify` did.
+ */
+async function retriedOrThrow(
+  label: string,
+  attempt: () => Promise<Response>,
+  policy: RetryPolicy = DEFAULT_RETRY_POLICY,
+): Promise<Response> {
+  const retried = await withTransientRetry(attempt, policy);
+  if (retried.transient || retried.response === undefined) {
+    throw new Error(
+      `${transientReason(label, retried)} — COULD NOT FETCH (rate limited or registry unavailable); rerun, this is not a moved digest`,
+    );
+  }
+  return retried.response;
+}
+
+export type ManifestFetcher =(url: string, repository: string, tokens: Map<string, string>) => Promise<Response>;
+
+export interface ResolvedPin {
+  readonly digest: string | null;
+  readonly reason?: string;
+  /**
+   * The registry never answered (rate limited, 5xx, network) even after retries.
+   * COULD-NOT-CHECK: says nothing about whether the digest moved.
+   */
+  readonly couldNotCheck?: boolean;
+}
+
 /**
  * The digest a reference resolves to on linux/amd64.
  *
@@ -490,7 +617,10 @@ export function loadSnapshot(repoRoot: string = REPO_ROOT): Snapshot {
 export async function resolveAmd64Digest(
   reference: string,
   tokens: Map<string, string> = new Map(),
-): Promise<{ readonly digest: string | null; readonly reason?: string }> {
+  // Injected ONLY by the falsifiers (a registry that 429s, then answers).
+  fetchManifestImpl: ManifestFetcher = fetchManifest,
+  retry: RetryPolicy = DEFAULT_RETRY_POLICY,
+): Promise<ResolvedPin> {
   const { host, repository, reference: ref } = parseImageReference(reference);
   // INLINE, not behind a helper: `.github/codeql/codeql-config.yml` records that only a
   // guard CodeQL's DEFAULT taint barriers recognise closes a first-party alert, and its
@@ -512,7 +642,14 @@ export async function resolveAmd64Digest(
   if (!/^[a-zA-Z0-9_][a-zA-Z0-9._-]{0,127}$|^sha256:[0-9a-f]{64}$/.test(ref)) {
     throw new Error(`refusing to request ${JSON.stringify(ref)}: not a tag or a digest`);
   }
-  const response = await fetchManifest(base + ref, repository, tokens);
+  // The URL is built HERE, after the guards and outside the retry closure, so the
+  // guarded value is what the closure captures.
+  const manifestUrl = base + ref;
+  const retried = await withTransientRetry(() => fetchManifestImpl(manifestUrl, repository, tokens), retry);
+  if (retried.transient || retried.response === undefined) {
+    return { digest: null, reason: transientReason("manifest", retried), couldNotCheck: true };
+  }
+  const response = retried.response;
   if (!response.ok) return { digest: null, reason: `manifest HTTP ${String(response.status)}` };
   const manifest = (await response.json()) as Record<string, unknown>;
   const index = manifest.manifests;
@@ -971,6 +1108,7 @@ export async function fetchBlob(
   // the defect class this whole work item is about — so the refusal is proven
   // end to end, with a registry that lies about what it is serving.
   fetchImpl: FetchLike = fetch,
+  retry: RetryPolicy = DEFAULT_RETRY_POLICY,
 ): Promise<Uint8Array> {
   // INLINE, not behind a helper: `.github/codeql/codeql-config.yml` records that only a
   // guard CodeQL's DEFAULT taint barriers recognise closes a first-party alert, and its
@@ -991,14 +1129,14 @@ export async function fetchBlob(
   const headers: Record<string, string> = { "User-Agent": "zeta-bootstrap-image-preload/1" };
   const cached = tokens.get(repository);
   if (cached !== undefined) headers.Authorization = `Bearer ${cached}`;
-  let response = await fetchImpl(url, { headers });
+  let response = await retriedOrThrow(`blob ${digest}`, () => fetchImpl(url, { headers }), retry);
   if (response.status === 401) {
     // Warm the token through the manifest path, which already knows every
     // registry's realm/service shape, then retry exactly once.
     await fetchManifest(`https://${host}/v2/${repository}/manifests/${digest}`, repository, tokens);
     const refreshed = tokens.get(repository);
     if (refreshed !== undefined) headers.Authorization = `Bearer ${refreshed}`;
-    response = await fetchImpl(url, { headers });
+    response = await retriedOrThrow(`blob ${digest}`, () => fetchImpl(url, { headers }), retry);
   }
   if (!response.ok) throw new Error(`blob ${digest} HTTP ${String(response.status)}`);
   return verifyContentAddress(new Uint8Array(await response.arrayBuffer()), digest, `${host}/${repository}`);
@@ -1052,7 +1190,8 @@ async function stageImage(
   if (!/^[a-zA-Z0-9_][a-zA-Z0-9._-]{0,127}$|^sha256:[0-9a-f]{64}$/.test(item.topReference)) {
     throw new Error(`refusing to request ${JSON.stringify(item.topReference)}: not a tag or a digest`);
   }
-  const response = await fetchManifest(base + item.topReference, item.repository, tokens);
+  const topUrl = base + item.topReference;
+  const response = await retriedOrThrow("manifest", () => fetchManifest(topUrl, item.repository, tokens));
   if (!response.ok) throw new Error(`manifest HTTP ${String(response.status)}`);
   const mediaType = (response.headers.get("content-type") ?? "").split(";")[0] ?? "";
   if (!MANIFEST_ACCEPT_TYPES.includes(mediaType)) {
@@ -1081,7 +1220,8 @@ async function stageImage(
     if (!/^[a-zA-Z0-9_][a-zA-Z0-9._-]{0,127}$|^sha256:[0-9a-f]{64}$/.test(amd64.digest)) {
       throw new Error(`refusing to request ${JSON.stringify(amd64.digest)}: not a tag or a digest`);
     }
-    const childResponse = await fetchManifest(base + amd64.digest, item.repository, tokens);
+    const childUrl = base + amd64.digest;
+    const childResponse = await retriedOrThrow("amd64 manifest", () => fetchManifest(childUrl, item.repository, tokens));
     if (!childResponse.ok) throw new Error(`amd64 manifest HTTP ${String(childResponse.status)}`);
     const childBytes = new Uint8Array(await childResponse.arrayBuffer());
     const childDigest = hexDigest(childBytes);
@@ -1232,6 +1372,81 @@ function writeSnapshot(snapshot: Snapshot, repoRoot: string): void {
   writeFileSync(join(repoRoot, SNAPSHOT_PATH), `${JSON.stringify(snapshot, null, 2)}\n`, "utf8");
 }
 
+export interface VerifyResult {
+  /** Resolved to a DIFFERENT digest, or no longer resolvable (404, no amd64 entry) — a supply-chain event. */
+  readonly moved: number;
+  /** The registry never answered (429 / 5xx / network) after retries — says nothing about the digest. */
+  readonly couldNotCheck: number;
+  readonly ok: number;
+  readonly exitCode: number;
+  readonly out: readonly string[];
+  readonly err: readonly string[];
+}
+
+/**
+ * `--verify`, as a function of the resolver, so the three outcomes are testable
+ * without a network: ok, MOVED/UNRESOLVABLE (supply-chain event), and
+ * COULD-NOT-CHECK (rate limited or unavailable — rerun).
+ *
+ * COULD-NOT-CHECK still exits 1: a verification that did not run is not a pass,
+ * and the ISO must not ship on an unverified pin. What changes is the SENTENCE —
+ * "rate limited, rerun", never "supply-chain event" — and the two are counted
+ * separately, so one of each prints both messages.
+ */
+export async function verifySnapshot(
+  snapshot: Snapshot,
+  resolveImpl: (reference: string, tokens: Map<string, string>) => Promise<ResolvedPin> = (reference, tokens) =>
+    resolveAmd64Digest(reference, tokens),
+): Promise<VerifyResult> {
+  const tokens = new Map<string, string>();
+  const out: string[] = [];
+  const err: string[] = [];
+  let moved = 0;
+  let couldNotCheck = 0;
+  let ok = 0;
+  for (const image of snapshot.images) {
+    const pin = await resolveImpl(image.reference, tokens);
+    if (pin.digest === null && pin.couldNotCheck === true) {
+      err.push(`  COULD-NOT-CHECK ${image.reference} — ${pin.reason ?? "no reason reported"}`);
+      couldNotCheck++;
+      continue;
+    }
+    if (pin.digest === null) {
+      err.push(`  UNRESOLVABLE  ${image.reference} — ${pin.reason ?? "no reason reported"}`);
+      moved++;
+      continue;
+    }
+    if (pin.digest !== image.amd64Digest) {
+      err.push(`  MOVED         ${image.reference}`);
+      err.push(`                snapshot ${image.amd64Digest ?? "(none)"}`);
+      err.push(`                registry ${pin.digest}`);
+      moved++;
+      continue;
+    }
+    out.push(`  ok            ${image.reference}`);
+    ok++;
+  }
+  const total = String(snapshot.images.length);
+  if (moved > 0) {
+    err.push(
+      `\n${String(moved)} of ${total} images no longer resolve to the pinned digest. ` +
+        `Run \`${REFRESH_COMMAND}\` and review the diff — an image that moved under its tag is a supply-chain event, not a chore.`,
+    );
+  }
+  if (couldNotCheck > 0) {
+    err.push(
+      `\n${String(couldNotCheck)} of ${total} images COULD NOT BE CHECKED: the registry rate-limited or failed ` +
+        `(429 / 5xx / network) even after bounded retries. This is NOT a moved digest and NOT a supply-chain event — ` +
+        `nothing was learned about the pin. Rerun the job; if it persists, the registry's anonymous budget for this ` +
+        `runner IP is exhausted.`,
+    );
+  }
+  if (moved === 0 && couldNotCheck === 0) {
+    out.push(`\nall ${total} images still resolve to their pinned digest`);
+  }
+  return { moved, couldNotCheck, ok, exitCode: moved > 0 || couldNotCheck > 0 ? 1 : 0, out, err };
+}
+
 export async function main(argv: readonly string[], repoRoot: string = REPO_ROOT): Promise<number> {
   const { values } = parseArgs({
     args: [...argv],
@@ -1278,34 +1493,10 @@ export async function main(argv: readonly string[], repoRoot: string = REPO_ROOT
   }
 
   if (values.verify === true) {
-    const snapshot = loadSnapshot(repoRoot);
-    const tokens = new Map<string, string>();
-    let moved = 0;
-    for (const image of snapshot.images) {
-      const pin = await resolveAmd64Digest(image.reference, tokens);
-      if (pin.digest === null) {
-        console.error(`  UNRESOLVABLE  ${image.reference} — ${pin.reason ?? "no reason reported"}`);
-        moved++;
-        continue;
-      }
-      if (pin.digest !== image.amd64Digest) {
-        console.error(`  MOVED         ${image.reference}`);
-        console.error(`                snapshot ${image.amd64Digest ?? "(none)"}`);
-        console.error(`                registry ${pin.digest}`);
-        moved++;
-        continue;
-      }
-      console.log(`  ok            ${image.reference}`);
-    }
-    if (moved > 0) {
-      console.error(
-        `\n${String(moved)} of ${String(snapshot.images.length)} images no longer resolve to the pinned digest. ` +
-          `Run \`${REFRESH_COMMAND}\` and review the diff — an image that moved under its tag is a supply-chain event, not a chore.`,
-      );
-      return 1;
-    }
-    console.log(`\nall ${String(snapshot.images.length)} images still resolve to their pinned digest`);
-    return 0;
+    const result = await verifySnapshot(loadSnapshot(repoRoot));
+    for (const line of result.out) console.log(line);
+    for (const line of result.err) console.error(line);
+    return result.exitCode;
   }
 
   if (values["build-archive"] === true) {
