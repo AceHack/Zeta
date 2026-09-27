@@ -2611,3 +2611,14 @@ WP11 tip-confirm -- K3S_ACTIVE on verdict 6 (distinct NEVER-ACTIVE log + optiona
 - Soft S1: a peer seen but not resolved prints only a '+' line and exits 0, which reads as silence and bootstrap even with REQUIRED=1; file a follow-up.
 - Soft: stand-in checks long options only; no real-binary or VM run yet; agencysignature (PR body) check failed on a missing trailer.
 - No hard fails. #17662 merged 2026-09-25 03:55 AM ET before I graded it; moot. Sit leftover. Do not merge.
+
+## leftover UNIQUE leftover #17690 leftover unique @ 930c019bfcdf12378a3a02dba8d810258542a25a -- GRADE GO
+
+2026-09-27 ~11:22 AM ET. #17690 (maximdolphin, P0): CI-built ISOs bake a real commit pin instead of 'unknown'. Tip 930c019b is 1-parent on base ea6524e1 (not a merge); +66/-10 in 2 files. Merge_commit_sha f1974b9b not graded.
+
+- zeta-install.sh is unchanged and fail-closed: 'unknown', short, garbage or whitespace pins are invalid-format and bail (L2356); an empty pin is the documented no-pin (L2347-2348, repo-pin.ts L67-68).
+- The workflow stamp (L666-694) runs under set -euo pipefail and refuses any tracked dirty path other than the archive; it writes exactly HEAD to preload/iso-commit.
+- configuration.nix L396-403: pin is self.rev, else trimmed iso-commit, else empty; dirtyRev appears only in a comment. Verified by local flake eval against pinned nixpkgs c25784012c99.
+- Falsifier L720-738 realizes the zeta-iso-provenance store file and exits 1 unless it equals HEAD; not vacuous.
+- Soft: new CI steps have not run yet; falsifier does not read from the squashfs; no 40-hex check at eval time; a force-added stale iso-commit in a hand build bakes a wrong but valid pin; dirty hand builds move to no-pin; PR builds pin the merge sha; aarch64 has no falsifier; agencysignature (PR body) is red.
+- No hard fails. Sit leftover. Do not merge.
