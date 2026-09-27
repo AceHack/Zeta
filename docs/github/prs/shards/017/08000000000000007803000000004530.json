@@ -1,0 +1,12 @@
+{
+  "pr_number": 17712,
+  "archive_path": "docs/history/pr-reviews/2026/09/27/PR-17712-fix-platform-acme-email-public-domain-are-install-time-config-never-example-com.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-27T23:33:33.554Z",
+  "schema_version": "v1",
+  "commit_sha": "3fa2bc325e4626d6dcc2739208a82253280a3458",
+  "title": "fix(platform): ACME email + public domain are install-time config, never example.com",
+  "state": "MERGED",
+  "merged_at": "2026-09-27T23:32:51Z",
+  "head_ref": "claude/platform-acme-install-config"
+}
