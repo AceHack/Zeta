@@ -2622,3 +2622,15 @@ WP11 tip-confirm -- K3S_ACTIVE on verdict 6 (distinct NEVER-ACTIVE log + optiona
 - Falsifier L720-738 realizes the zeta-iso-provenance store file and exits 1 unless it equals HEAD; not vacuous.
 - Soft: new CI steps have not run yet; falsifier does not read from the squashfs; no 40-hex check at eval time; a force-added stale iso-commit in a hand build bakes a wrong but valid pin; dirty hand builds move to no-pin; PR builds pin the merge sha; aarch64 has no falsifier; agencysignature (PR body) is red.
 - No hard fails. Sit leftover. Do not merge.
+
+## leftover UNIQUE leftover #17691 leftover unique @ 40878b0a978a361dfe80c7f998fc7270c9c6a9b9 -- GRADE GO
+
+2026-09-27 ~11:24 AM ET. #17691 (maximdolphin): the first-boot fail-fast marker from #17683 could never fire, and scenario 4's baseline still booted the bare ISO. Tip 40878b0a is 1-parent on base ea6524e1 (not a merge); +184/-10 in 6 files. Merge ref 938e84a5 not graded.
+
+- Old loop (base qemu-state.ts L902-909) took the first matching marker, then suppressed the prompt during first boot, so Install-failed was never reached. New terminalFailureMarkerToStopOn (L842-851) returns the first matching non-suppressed marker; the loop calls it at L932-936.
+- Reproduced: prompt plus Install-failed during first boot now stops on Install-failed; prompt alone keeps waiting. 64-combination sweep adds only real-failure stops.
+- Tests not vacuous: 17 pass at tip; restoring old logic and wiring fails 3.
+- Scenario 4 baseline now boots the fresh image as USB (qemu-state.ts L554-566, run.ts L854-866); production 20 GiB refusal untouched, override is harness-only.
+- No new fail-open: every stop, timeout and early exit is still exit 1.
+- Soft: no workflow_dispatch yet and workitem moved to done first; baseline is now a prepared install; PR body names the wrong function; wiring test matches source text; agencysignature (PR body) is red.
+- No hard fails. Sit leftover. Do not merge.
