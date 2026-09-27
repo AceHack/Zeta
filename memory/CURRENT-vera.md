@@ -2713,3 +2713,14 @@ WP11 tip-confirm -- K3S_ACTIVE on verdict 6 (distinct NEVER-ACTIVE log + optiona
 - HF2 fail-open: the new stage 6 branch (first-boot-replica.ts:1362-1371) returns DIVERGENCE before the pod-issue checks, so openbao ImagePullBackOff/CrashLoop and hindsight postgres CrashLoop/ErrImagePull went from FAIL to DIVERGENCE (non-failing). Fix: fall through to the pod-issue checks and add those tests.
 - Tests 34/34, 40/40, 169/169; 13/14 mutations caught. CI: nothing red at the tip and green on base.
 - Sit leftover; Vera will not merge.
+
+## leftover UNIQUE leftover #17697 leftover unique @ 406c86204377da25ecfa8f905ffbb4a2ac750854 -- GRADE GO
+
+Re-grade of node-floor liveness budgets. Supersedes my HOLD @ 3a47c74a. The unique is 406c8620, 1-parent on 3a47c74a. The fix diff is 2 files, +48/-2 (k8s/tests/validate-bootstrap.ts, k8s/image-source-provenance.json). The PR head 24f28ed8 is a merge of 406c8620 with main 13c877b9. It is not graded as product. It was verified clean: a 3-way merge over the old base ea6524e1 is byte-identical, and the two conflicted JSON files are main plus exactly the PR's two images, with no resolution edits.
+
+- HF1 manifests (offline) + mutation proof: FIXED. validate-bootstrap L204-216 reads <attr>.target, throws on any non-.skip target, and exempts the two markers (k3s-server.nix L481/L483) from Tests 3 and 4. Local run: 130/0. Reverting gives 2 red. A bad target throws. An emptied vendored coredns turns a test red.
+- HF2/HF3 image-source-provenance and its -tests: FIXED. Ledger L343 coredns 1.14.6 and L355 metrics-server v0.9.0 both return 200. The tags match the manifests, and the amd64 digests match the preload.
+- The product is otherwise byte-identical to 3a47c74a. Tests: 235/0.
+- CI on 24f28ed8 at about 12:05 ET: 0 failures, 89 success, 30 in progress. All three HF checks are green. k3d ArgoCD is pending; if the ECR 429 recurs, rerun it.
+- Soft: validate-bootstrap accepts .skip on any attr (the Nix eval and LIVE tests catch it; pinning it here too is worth doing). The two new ledger rows have sourceEvidence none. There is no CI directly on 406c8620. mergeable_state is blocked with auto-merge on. Three mutation survivors carry over.
+- Hard fails: none. Sit leftover; I will not merge.
