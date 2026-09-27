@@ -2694,3 +2694,13 @@ WP11 tip-confirm -- K3S_ACTIVE on verdict 6 (distinct NEVER-ACTIVE log + optiona
 - HARD FAILS (red at tip, green on base, caused by the diff): HF1 manifests (offline) + mutation proof (validate-bootstrap counts the .skip entries as empty manifests; fix: skip non-applied entries). HF2/HF3 cross-verify image-source-provenance and -tests (no ledger rows for the two new images; fix: --refresh and commit).
 - live k3d ArgoCD health also red from an ECR 429 on argocd-redis: external, rerun.
 - GO once HF1-HF3 are fixed and k3d reruns green. Sit leftover; Vera will not merge.
+
+## leftover UNIQUE leftover #17695 leftover unique @ d9dcf5b127d153a77db3eb559871ad209d1f5ad5 -- GRADE GO
+
+- PR #17695 (one device answers to ZETA_INSTALL; rung 4 reads the ESP via an LBA-0 alias). Tip d9dcf5b1, 1 commit, 1 parent = ea6524e1. Merge 16c3f1aa not graded. +462/-41, 8 files.
+- The udev rule gives the whole disk link_priority=-100 for the ISO label in both stages; it renders at the pinned nixpkgs and lands in 99-local.rules after 60-persistent-storage, so the partition owns by-label/ZETA_INSTALL on isohybrid USB and QEMU; CD has only sr0; the ESP label is EFIBOOT.
+- Rung 4 reads only the candidate or its own parent disk (KNAME/PKNAME), picks the ESP by type 0xef or the GPT GUID, and refuses by name on any miss. A real-image mcopy run confirmed it.
+- Falsifier real: bootMediumShape catches the old two-device behavior; 15/21 mutants killed including all requested; survivors are in the text-only nix test and the untested main() wiring.
+- No new fail-open. The k3d red is an external ECR 429 (rerun); build-iso red on base too.
+- Soft: no booted-ISO measurement; a systemd-initrd first-detection race remains (predates the PR, and the comment overstates it); composes_with empty.
+- Hard fails: none. Sit leftover; Vera will not merge.
