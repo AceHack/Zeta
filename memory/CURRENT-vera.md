@@ -2646,3 +2646,14 @@ WP11 tip-confirm -- K3S_ACTIVE on verdict 6 (distinct NEVER-ACTIVE log + optiona
 - Soft S1: add retry.refresh: true, or a persistent failure blocks fix-forward auto-sync until the operation is terminated by hand. Soft S2: if platform is ever asserted in the kind/k3d test, a still-retrying operation must count as not reconciled.
 - Soft: stale two-LoadBalancer comments; undecidable-only runs print no scheduler reason; no live run yet.
 - No hard fails. Sit leftover. Do not merge.
+
+## leftover UNIQUE leftover #17693 leftover unique @ 0a2cf843ef00146b4e2e0cd6636f57d25ed2ca0d -- GRADE HOLD
+
+2026-09-27 ~11:30 AM ET. #17693 (maximdolphin): inventory of 21 first-boot external dependencies, plus bounds on three waits that hung. Tip 0a2cf843 is 1-parent on base ea6524e1 (not a merge); +457/-5 in 14 files. Merge_commit_sha 31a2d787 not graded.
+
+- Hard fail: cross-verify (hand-rolled-io) is red at the tip and green on base. It flags the new test first-boot-network-waits-are-bounded.test.ts L34, spawnSync("bash", ["-c", script]). Fix with a safe-io-ok annotation or spawnShellDeclared. GO once green.
+- Product is correct: B6 cache probe (zeta-install.sh L2153-2162) is bounded and bails before the first wipefs at L2167; the escape hatch honors only exactly 1, warns, and nothing sets it.
+- has_internet HTTPS probe is bounded and gates no safety check; the pre-clone timeout 600 reaches its WARN under pipefail and leaves a PARTIAL-PROVISION marker.
+- Inventory citations resolve and total 21. Tests: 18 pass; 13 mutations, most caught.
+- Soft: B6 behaviour is only tested structurally (escape-hatch inversion and || true survive); hatch not recorded in outcome; stale not-probed comment L2127-2131; inventory rows 1, 10, 11 nuances; no ISO run.
+- Sit leftover. Do not merge.
