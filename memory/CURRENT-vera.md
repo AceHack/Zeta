@@ -2685,3 +2685,12 @@ WP11 tip-confirm -- K3S_ACTIVE on verdict 6 (distinct NEVER-ACTIVE log + optiona
 - No product file changed, so the prior findings carry over: B6 refuses before the first wipefs, the escape hatch opens only on exactly 1, and the waits are bounded.
 - CI: 0 failures; agencysignature is now green. Soft: ISO and kind/k3d lanes are still running; B6 is still only structurally tested.
 - Hard fails: none. Sit leftover; Vera will not merge.
+
+## leftover UNIQUE leftover #17697 leftover unique @ 3a47c74a32d7086d1065142fe9dce01b55bffbb3 -- GRADE HOLD
+
+- PR #17697 (node-floor liveness budgets). Tip 3a47c74a, 1 commit, 1 parent = ea6524e1. Merge b0b724f6 not graded. +1028/-39, 17 files.
+- Product correct: coredns.yaml.skip and metrics-server-deployment.yaml.skip match k3s 1.35.7+k3s1 filenames and land before first start; no --disable; vendored copies byte-identical to k3s except resolved templates and probes; DNS IP 10.99.192.10; no duplicate controllers.
+- Probes: CoreDNS/metrics-server tolerate a 45s stall (was 21s), cockroach 125s (was 11s); readiness unchanged so dead pods leave service in about 6-10s. Tests real; preload honest (27/28 re-derived, redis 429).
+- HARD FAILS (red at tip, green on base, caused by the diff): HF1 manifests (offline) + mutation proof (validate-bootstrap counts the .skip entries as empty manifests; fix: skip non-applied entries). HF2/HF3 cross-verify image-source-provenance and -tests (no ledger rows for the two new images; fix: --refresh and commit).
+- live k3d ArgoCD health also red from an ECR 429 on argocd-redis: external, rerun.
+- GO once HF1-HF3 are fixed and k3d reruns green. Sit leftover; Vera will not merge.
