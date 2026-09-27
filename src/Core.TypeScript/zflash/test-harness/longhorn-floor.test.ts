@@ -23,7 +23,8 @@ import {
   harnessDiskNeedsLonghornOverride,
   INSTALLER_PRE_WIPE_FLOOR_GIB,
 } from "./run";
-import { DEFAULT_DISK_SIZE_GB } from "./qemu-state";
+import { DEFAULT_DISK_SIZE_GB, terminalFailureMarkerToStopOn } from "./qemu-state";
+import { planPathForkBaselineBootstrap } from "./path-fork";
 import {
   FIRST_BOOT_INSTALL_FAILED_TERMINAL_MARKER,
   RETENTION_ABSENT_TERMINAL_MARKERS,
@@ -146,5 +147,98 @@ describe("081M3CAJD7J087G0R0021H6WRS — a failed first boot is AUDIBLE instead 
     const cancelled = "[zeta-first-boot] CANCELLED at the pre-wipe window. Nothing was wiped.";
     expect(cancelled).not.toContain(FIRST_BOOT_INSTALL_FAILED_TERMINAL_MARKER);
     expect(ZETA_FIRST_BOOT_SH).toContain('"$ZETA_INSTALL_RC" = "10"');
+  });
+});
+
+describe("081M3CAJD7J087G0R0021H6WRS — the WAIT LOOP stops on the failure line, not just the marker list", () => {
+  // Run 36140151239 ran the #17683 head commit and still dead-waited: scenario 3 took
+  // 30m10s, scenario 4 30m19s. The replay above passed because it asked the LIST
+  // (`.filter`), while the loop asked `markers.find(...)` — which returned the suppressed
+  // shell prompt first and never reached the failure line. These tests address the
+  // function the loop itself calls, so they cannot pass while the loop hangs.
+  const measuredOn36140151239 = [
+    "[3/3] Running zeta-install control-plane (non-interactive) ...",
+    "ERROR: BOOT disk /dev/vda is 20 GiB, which cannot hold ESP 1 GiB + root floor 120 GiB",
+    "[zeta-first-boot] Install failed (rc=1). See output above.",
+    "[zeta-first-boot] Dropping to interactive shell.",
+    "nixos@zeta-installer:~]$",
+  ].join("\n");
+
+  test("THE REPLAY THROUGH THE LOOP'S OWN DECISION: it stops on the failure line", () => {
+    expect(terminalFailureMarkerToStopOn(measuredOn36140151239, RETENTION_ABSENT_TERMINAL_MARKERS)).toBe(
+      FIRST_BOOT_INSTALL_FAILED_TERMINAL_MARKER,
+    );
+  });
+
+  test("NEGATIVE CONTROL: the pre-fix decision (first match, then suppress) keeps waiting on the same log", () => {
+    // The old two-step, reconstructed. If this ever stops returning `undefined`, the
+    // replay above is no longer demonstrating the defect it was written for.
+    const firstMatch = RETENTION_ABSENT_TERMINAL_MARKERS.find((m) => measuredOn36140151239.includes(m));
+    const oldDecision =
+      firstMatch !== undefined &&
+      !(firstMatch === "nixos@zeta-installer:~" && serialFirstBootInProgress(measuredOn36140151239))
+        ? firstMatch
+        : undefined;
+    expect(firstMatch).toBe("nixos@zeta-installer:~");
+    expect(oldDecision).toBeUndefined();
+  });
+
+  test("a healthy in-progress install still does not stop (the prompt stays suppressed)", () => {
+    const healthy = [
+      "[3/3] Running zeta-install control-plane (non-interactive) ...",
+      "nixos@zeta-installer:~]$",
+      "Partitioning /dev/vda ...",
+    ].join("\n");
+    expect(terminalFailureMarkerToStopOn(healthy, RETENTION_ABSENT_TERMINAL_MARKERS)).toBeUndefined();
+  });
+
+  test("the prompt alone, with no first boot in progress, still stops (old behaviour kept)", () => {
+    expect(terminalFailureMarkerToStopOn("nixos@zeta-installer:~]$", RETENTION_ABSENT_TERMINAL_MARKERS)).toBe(
+      "nixos@zeta-installer:~",
+    );
+  });
+});
+
+describe("081M3CAJD7J087G0R0021H6WRS — scenario 4's BASELINE install can boot the prepared image", () => {
+  // Run 36140151239: scenario 3 (prepared image) got past the pre-wipe floor; scenario
+  // 4's baseline bootstrap booted the bare ISO, which carries no override, and printed
+  // the byte-identical 20 GiB refusal.
+  const firmware = {
+    kind: "ovmf",
+    codePath: "/usr/share/OVMF/OVMF_CODE_4M.fd",
+    varsPath: "run/OVMF_VARS.test.fd",
+  } as const;
+
+  test("with a boot image, the baseline install boots it and not the ISO as a cdrom", () => {
+    const planned = planPathForkBaselineBootstrap({
+      isoPath: "run/zeta.iso",
+      bootImagePath: "run/zeta.iso.path-fork-boot-fresh.img",
+      startingDiskPath: "run/start.qcow2",
+      baselineSerialLogPath: "run/baseline.serial.log",
+      uefiFirmware: firmware,
+    });
+    if ("error" in planned) throw new Error(planned.error);
+    const args = planned.initialInstallFromIsoWithDisk.args.join(" ");
+    expect(args).toContain("run/zeta.iso.path-fork-boot-fresh.img");
+    expect(args).not.toContain("-cdrom");
+  });
+
+  test("NEGATIVE CONTROL: without one it is the bare ISO — the configuration that refused", () => {
+    const planned = planPathForkBaselineBootstrap({
+      isoPath: "run/zeta.iso",
+      startingDiskPath: "run/start.qcow2",
+      baselineSerialLogPath: "run/baseline.serial.log",
+      uefiFirmware: firmware,
+    });
+    if ("error" in planned) throw new Error(planned.error);
+    expect(planned.initialInstallFromIsoWithDisk.args).toContain("-cdrom");
+  });
+
+  test("runPathForkRuntime hands the baseline the FRESH prepared image", () => {
+    // Source-level pin on the wiring: the planner accepting an image is worthless if the
+    // one caller that runs in CI never passes it.
+    const runSource = readFileSync(join(import.meta.dir, "run.ts"), "utf8");
+    const call = runSource.slice(runSource.indexOf("planPathForkBaselineBootstrap({"));
+    expect(call.slice(0, 800)).toContain("bootImagePath: freshBootImagePath");
   });
 });

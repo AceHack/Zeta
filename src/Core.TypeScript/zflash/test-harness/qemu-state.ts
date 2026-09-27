@@ -820,6 +820,36 @@ function firstMatchedMarker(serialOutput: string, markers: readonly string[]): s
   return markers.find((marker) => serialOutput.includes(marker));
 }
 
+/**
+ * The terminal marker the wait loop must STOP on, or `undefined` to keep waiting.
+ *
+ * 081M3CAJD7J087G0R0021H6WRS — WHY THIS IS ITS OWN FUNCTION. The loop used to take
+ * `firstMatchedMarker(output, terminalFailureMarkers)` and THEN ask whether that one
+ * marker was suppressed. `nixos@zeta-installer:~` is first in
+ * `RETENTION_ABSENT_TERMINAL_MARKERS`, it is present on every failed first boot (the
+ * drop-to-shell prompt), and it is suppressed while first boot is in progress — so the
+ * loop picked it, discarded it, and never looked at `[zeta-first-boot] Install failed
+ * (rc=` further down the list. #17683 added that marker and its test replayed the
+ * serial log through `.filter`, not through the loop, so the test passed while the loop
+ * still dead-waited. Measured on run 36140151239 (the #17683 head commit itself):
+ * scenario 3 took 30m10s and scenario 4 30m19s, both after the guest had printed the
+ * failure line within ~3 minutes.
+ *
+ * So suppression is applied PER MARKER, and the first UNSUPPRESSED match wins. The wait
+ * loop calls exactly this, and the falsifier in `longhorn-floor.test.ts` calls it too —
+ * the test addresses the value the loop uses, not a copy of it.
+ */
+export function terminalFailureMarkerToStopOn(
+  phaseSerialOutput: string,
+  terminalFailureMarkers: readonly string[],
+): string | undefined {
+  const firstBootInProgress = serialFirstBootInProgress(phaseSerialOutput);
+  return terminalFailureMarkers.find(
+    (marker) =>
+      phaseSerialOutput.includes(marker) && !(marker === "nixos@zeta-installer:~" && firstBootInProgress),
+  );
+}
+
 function serialOutputAfterBaseline(serialOutput: string, baseline: string): string {
   if (baseline.length === 0) {
     return serialOutput;
@@ -899,14 +929,11 @@ function runManagedCommandUntilSerialMarkers(
       };
     }
 
-    const terminalFailureMarker = firstMatchedMarker(phaseSerialOutput, stopCondition.terminalFailureMarkers ?? []);
-    if (
-      terminalFailureMarker !== undefined &&
-      !(
-        terminalFailureMarker === "nixos@zeta-installer:~" &&
-        serialFirstBootInProgress(phaseSerialOutput)
-      )
-    ) {
+    const terminalFailureMarker = terminalFailureMarkerToStopOn(
+      phaseSerialOutput,
+      stopCondition.terminalFailureMarkers ?? [],
+    );
+    if (terminalFailureMarker !== undefined) {
       stopManagedProcess(managed, "SIGTERM", pollIntervalMs);
       return {
         step,

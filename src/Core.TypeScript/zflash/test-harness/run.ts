@@ -853,6 +853,10 @@ export function runPathForkRuntime(isoPath: string, options: PathForkRuntimeOpti
       ? (() => {
           const plannedBootstrap = planPathForkBaselineBootstrap({
             isoPath: absIsoPath,
+            // The FRESH image (no credential blob): the baseline stands in for a prior
+            // plain install, and it must carry the same derived longhorn override the
+            // forks do or it refuses pre-wipe on the harness disk (081M3CAJD7J087G0R0021H6WRS).
+            ...(freshBootImagePath === undefined ? {} : { bootImagePath: freshBootImagePath }),
             startingDiskPath: artifacts.startingDiskPath,
             baselineSerialLogPath: artifacts.baselineSerialLogPath,
             // Its own NVRAM: the baseline install runs BEFORE both forks and must not

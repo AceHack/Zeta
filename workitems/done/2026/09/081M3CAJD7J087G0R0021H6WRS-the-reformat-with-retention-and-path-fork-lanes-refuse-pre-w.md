@@ -1,11 +1,12 @@
 ---
 id: 081M3CAJD7J087G0R0021H6WRS
 type: bug
-state: backlog
+state: done
 priority: P2
 slug: the-reformat-with-retention-and-path-fork-lanes-refuse-pre-w
 title: "The reformat-with-retention and path-fork lanes refuse pre-wipe on a 20 GiB disk and then dead-wait the full 30-minute marker timeout"
 created: 2026-09-25T13:02:42.930Z
+completed: 2026-09-27T15:04:56.329Z
 depends_on: []
 composes_with: []
 ---
@@ -88,3 +89,27 @@ avahi-browse: unrecognized option '--no-db-lookup')`. Bootstrap-or-join discover
 run in these lanes; it falls back to the ISO default role every time. The harness says so
 honestly ("This is a check that did not run, NOT a check that passed"), but the flag is
 wrong against the shipped avahi and the discovery path is unmeasured.
+
+## Closure (2026-09-27) — #17683 landed both fixes, and neither fully took
+
+Run **36140151239** ran the #17683 head commit (`02c93a887c`). Scenario 3 took **30m10s**
+and scenario 4 **30m19s** — the same dead wait. The serial logs show why, one defect each:
+
+1. **The fail-fast marker could never fire in the wait loop.** The loop took the FIRST
+   matching terminal marker and only then asked whether it was suppressed.
+   `nixos@zeta-installer:~` is first in `RETENTION_ABSENT_TERMINAL_MARKERS`, is present on
+   every failed first boot, and is suppressed while first boot is in progress — so the loop
+   picked it, discarded it, and never reached `[zeta-first-boot] Install failed (rc=`. The
+   #17683 replay test asked the list via `.filter`, not the loop, so it passed while the loop
+   hung. Fix: `terminalFailureMarkerToStopOn` in `qemu-state.ts` applies suppression per
+   marker; the loop and the test call the same function, with a negative control that
+   reconstructs the old two-step and shows it returns "keep waiting" on the same log.
+2. **Scenario 4's baseline install booted the bare ISO**, which carries no ESP override, so
+   it printed the byte-identical 20 GiB refusal while scenario 3 (prepared image) got past
+   the floor. Fix: `planPathForkBaselineBootstrap` takes an optional `bootImagePath` and
+   `runPathForkRuntime` passes the fresh (no-credential-blob) prepared image.
+
+**Not verified by a dispatch.** Both fixes are pinned by unit tests on the functions the
+lanes call; no `workflow_dispatch` has been run on them. Scenario 3 in 36140151239 got past
+the floor and then failed on `ZETA_ISO_COMMIT='unknown' is not a 40-hex git commit` — a
+repo-pin defect owned elsewhere. With fix 1 that now costs ~3 minutes, not 30.

@@ -392,6 +392,18 @@ export type PathForkExecutionResult =
 
 export interface PathForkBaselineBootstrapInput {
   readonly isoPath: string;
+  /**
+   * The zflash-prepared USB image to install the baseline from, instead of the bare ISO.
+   *
+   * 081M3CAJD7J087G0R0021H6WRS. The bare ISO carries no ESP overrides, so on the
+   * harness's 20 GiB disk the baseline install hit #17616's pre-wipe root-floor refusal
+   * no matter what the forks were given — measured on run 36140151239, where scenario 3
+   * (which already boots a prepared image) got past the floor and scenario 4's baseline
+   * printed the byte-identical `ERROR: BOOT disk /dev/vda is 20 GiB` refusal. A prepared
+   * image carries `ZETA_ALLOW_LONGHORN_UNDERSIZED=1` exactly when
+   * `harnessDiskNeedsLonghornOverride()` says the disk needs it.
+   */
+  readonly bootImagePath?: string;
   readonly startingDiskPath: string;
   readonly baselineSerialLogPath: string;
   readonly snapshotName?: string;
@@ -412,6 +424,7 @@ export function planPathForkBaselineBootstrap(
 ): Qcow2SnapshotRetentionPlan | { readonly error: string } {
   const planned = planQcow2SnapshotRetention({
     isoPath: input.isoPath,
+    ...(input.bootImagePath === undefined ? {} : { bootImagePath: input.bootImagePath }),
     diskPath: input.startingDiskPath,
     serialLogPath: input.baselineSerialLogPath,
     snapshotName: input.snapshotName ?? DEFAULT_SNAPSHOT_NAME,
