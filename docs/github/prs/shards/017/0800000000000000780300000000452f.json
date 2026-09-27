@@ -1,0 +1,12 @@
+{
+  "pr_number": 17711,
+  "archive_path": "docs/history/pr-reviews/2026/09/27/PR-17711-fix-gitlab-disable-the-upgrade-check-that-deadlocks-every-fresh-argocd-install.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-27T23:06:24.419Z",
+  "schema_version": "v1",
+  "commit_sha": "7e36f08cae1b806499288c0a00b36b0fceea8e8f",
+  "title": "fix(gitlab): disable the upgrade check that deadlocks every fresh ArgoCD install",
+  "state": "MERGED",
+  "merged_at": "2026-09-27T23:05:43Z",
+  "head_ref": "claude/gitlab-upgrade-check-fresh-install"
+}
