@@ -2784,3 +2784,15 @@ This PR stops the first-boot replica from rung-overriding a release k3s already 
 - CI: 1 red = build-iso ECR 429 (external flake); nothing red at tip and green on base; scenarios 3/4 not yet re-run end to end.
 - Soft: S4 (significant) the new Install failed (rc= control cannot tell a terminal stop from a timeout (M7/M8/M10/M18 survive); not hard because longhorn-floor.test.ts pins that marker; fix by asserting "terminal marker observed". S1 userspace panic forms dropped. S2 pre-existing: oops/BUG/lockup/emergency/stage-1 failures match no marker, only the 30-min timeout. S3 dead markers (no internet vs installer's "No internet"; bail/FATAL/Refusing to wipe have no emitter). S5 M11/M12 unpinned. S6 edited older test lacks timeoutMs. S7 build-iso ECR 429, ISO/VM in progress. S8 mergeable_state blocked, auto-merge on.
 - Hard fails: none. Sit leftover; I will not merge.
+
+## leftover UNIQUE leftover #17709 leftover unique @ 4f34b08cc2814ff0d2bbf52bd604062f3d54f37d -- GRADE GO
+
+- PR: #17709 fix(cluster): agent-memory + gmod permanently OutOfSync under ServerSideApply (maximdolphin). Graded 2026-09-27 ~7:14 PM ET. Auto-merge squashed it at 7:05:39 PM ET as a5970095 on main 2e00345d during review; all 6 file hashes match the tip.
+- Tip 4f34b08c, 1-parent on b7934ec7, not a merge; 1 commit, +268/-2, 6 files.
+- Ask 1 drop-SSA is right: PASS. SSA came with file creation with no reason; no CRDs or second field owner; largest object 2174 bytes vs 262144 annotation limit. Matches #17522 precedent. Fixes the drift: tip proof lane shows agent-memory Synced Healthy (main was OutOfSync). gmod not measured live.
+- Ask 2 blind spots: soft. 38 SSA apps, 9 git-directory seen, 29 Helm unseen; seven Helm apps with SSA + vCT StatefulSets invisible (dapr, gitlab, loki, mimir, openbao, redis, tempo). Stale deferral caught by test; deferral list not pinned.
+- Ask 3 #17708: no conflict. gmod statefulset.yaml untouched (hash df9d13d6); no file overlap; combined tree 15/15; either merge order.
+- Ask 4 fail-open: pass with soft gaps (parse errors, missing dirs, empty scan only caught via stale deferral). Wired into TS hermetic.
+- Tests 5/5; data mutations 13/13 as expected; source mutations 19: 8 killed, 11 survived (C11 sources[] and C18 first-doc-only would fail open for shapes not in tree). CI 0 failures; base green.
+- Soft: S1 PR overstates manifest-side fix impossible (loki declares vCT apiVersion/kind, Synced under SSA). S2 Helm/kustomize/multi-source invisible. S3 live lane accepts OutOfSync+Healthy. S4 deferral unpinned. S5 parse/missing/empty not caught. S6 C11/C18. S7 portal deferral reason weak. S8 no metal run. S9 #17708 needs branch update. S10 once #17712 empties DEFERRED, empty/broken scan passes; add a minimum-apps assertion (carried to #17712 review).
+- Hard fails: none. I did not merge.
