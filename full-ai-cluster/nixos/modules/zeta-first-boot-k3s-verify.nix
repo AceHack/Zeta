@@ -1005,14 +1005,46 @@ in
           # ten unconverged Applications. Same discipline as bad_pod_diag: a
           # verdict that names an app and cannot say why leaves the reader with
           # the failure and none of the evidence.
-          "$AWK" -F '\t' '$1 == "unconverged" { print $2 }' "$1" | ${pkgs.coreutils}/bin/head -n 10 \
+          #
+          # ORDER, NOT JUST A CAP. The cap of ten stays (every call here delays
+          # the verdict JSON, see ROSTER_DEADLINE_SECONDS), but it used to take
+          # the FIRST ten alphabetically -- and on run 36221053730 that spent all
+          # ten on a-k and left `platform`, the one row carrying a FAILED SYNC,
+          # with no diagnostics at all. Rows that are not the capacity signature
+          # (`sync=Synced health=Progressing`) go first now: an OutOfSync, Degraded
+          # or Missing row is where a defect rather than a small box shows up.
+          #
+          # `failedTasks` names WHICH resource a failed sync could not apply --
+          # "one or more synchronization tasks completed unsuccessfully" on its
+          # own names none -- and it costs no extra call: it is in the same JSON.
+          # `outOfSyncResources` does the same for an app that reads OutOfSync
+          # right after "successfully synced" (agent-memory and gmod on that run):
+          # which object keeps drifting is the whole question, and it was never
+          # printed.
+          "$AWK" -F '\t' '
+            $1 == "unconverged" { if ($3 ~ /^sync=Synced health=Progressing/) later[++m] = $2; else print $2 }
+            END { for (i = 1; i <= m; i++) print later[i] }
+          ' "$1" | ${pkgs.coreutils}/bin/head -n 10 \
           | while IFS= read -r _app; do
               [ -z "$_app" ] && continue
               log "[wp11-k3s-verify] --- unconverged Application diagnostics: ''${_app} ---"
               {
                 kc -n argocd get application "$_app" -o json \
-                  | "$JQ" -r '{sync: .status.sync.status, health: .status.health, conditions: .status.conditions, operation: .status.operationState.message}'
+                  | "$JQ" -r '{sync: .status.sync.status, health: .status.health, conditions: .status.conditions, operation: .status.operationState.message, failedTasks: ([(.status.operationState.syncResult.resources // [])[] | select(((.status // "") != "Synced") or ((.hookPhase // "") | test("Failed|Error"))) | {kind, namespace, name, status, hookPhase, message}] | .[0:8]), outOfSyncResources: ([(.status.resources // [])[] | select((.status // "") != "Synced") | {kind, namespace, name, status}] | .[0:8])}'
               } 2>&1 | while IFS= read -r _l; do log "[wp11-roster-diag] $_l"; done
+            done
+          # An `undecidable` row names a pod the scheduler refused, and the
+          # refusal's own REASON is on the pod's PodScheduled condition. Without
+          # it the row reads as a nodeAffinity question even when it is not: every
+          # DaemonSet pod carries required nodeAffinity (the controller pins it to
+          # its node with matchFields metadata.name), so `alloy` on run 36221053730
+          # was reported as an affinity puzzle while the actual reason -- whatever
+          # the scheduler said -- was never printed. At most three extra calls.
+          "$AWK" -F '\t' '$1 == "undecidable" && match($3, /place pod [^ ]+/) { print substr($3, RSTART + 10, RLENGTH - 10) }' "$1" \
+          | ${pkgs.coreutils}/bin/head -n 3 \
+          | while IFS= read -r _pod; do
+              [ -z "$_pod" ] && continue
+              log "[wp11-roster-diag] scheduler on ''${_pod}: $(kc -n "''${_pod%%/*}" get pod "''${_pod#*/}" -o jsonpath='{.status.conditions[?(@.type=="PodScheduled")].message}' 2>&1)"
             done
         }
 

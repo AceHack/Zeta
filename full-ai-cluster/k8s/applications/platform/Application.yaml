@@ -37,3 +37,23 @@ spec:
     syncOptions:
       - CreateNamespace=true
       - ServerSideApply=true   # CRDs: server-side apply handles large schemas + ordering
+    # UNBOUNDED retry, because this Application consumes a CRD it does not own.
+    # monitoring.yaml's ServiceMonitor + PrometheusRule are monitoring.coreos.com
+    # kinds that kube-prometheus-stack installs at wave 0, and this Application
+    # syncs at -20. SkipDryRunOnMissingResource defers only the DRY RUN; the real
+    # apply is still rejected until the CRD exists. With no `retry` block ArgoCD
+    # gives up after 5 attempts, and an automated sync is never re-attempted for
+    # a revision whose sync already failed -- so on a pinned-revision install,
+    # losing that race is permanent.
+    # MEASURED, WP11 installed-disk run 36221053730 (2026-09-26): `platform`
+    # sync=OutOfSync health=Degraded, "Failed last sync attempt to [ea6524e1...]:
+    # one or more synchronization tasks completed unsuccessfully (retried 5
+    # times)" at t=3216s, with kube-prometheus-stack long since installed. A race
+    # against another Application's render time is not a capacity question; it
+    # can be lost on any box.
+    # limit -1 keeps retrying with backoff capped at 5m, so the sync lands on the
+    # first attempt after the CRD registers. Registered order finding:
+    # derive-sync-waves.ts ORDER_ADJUDICATION_PENDING["platform -> kube-prometheus-stack"].
+    retry:
+      limit: -1
+      backoff: { duration: 30s, factor: 2, maxDuration: 5m }

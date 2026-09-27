@@ -60,6 +60,40 @@ spec:
           repo: semitechnologies/weaviate
           tag: 1.32.7
         replicas: 1 # bump to 3 for HA once cluster has the headroom
+        # CLUSTER-INTERNAL, NOT LoadBalancer. The chart defaults BOTH `service`
+        # and `grpcService` to `type: LoadBalancer`, which did two things here
+        # and neither was intended:
+        #
+        #  1. HEALTH GATED ON LB-IPAM. gitops-engine `getCorev1ServiceHealth`
+        #     reports a LoadBalancer Service with empty
+        #     `status.loadBalancer.ingress` as Progressing, forever. MEASURED:
+        #     kind/kindnetd (no LB implementation) held weaviate Progressing
+        #     with `weaviate-0` 1/1 Running for 39m (run 32532470499); kind
+        #     `--cni cilium`, where both Services got pool addresses, went
+        #     Healthy (run 33697305243); the Docker first-boot replica, which
+        #     excludes cilium-lb-ipam, read `health=Progressing with no
+        #     classified pod issue` (run 36303440548). So weaviate's convergence
+        #     depended on two of the eleven addresses in zeta-lb-pool -- a
+        #     block that ip-pool.yaml itself says must be adjusted to the
+        #     operator's LAN -- on every box.
+        #  2. EXPOSURE. It published a vector store whose chart default is
+        #     `authentication.anonymous_access.enabled: true` on a LAN address.
+        #
+        # Nothing outside the cluster consumes it (no manifest in this tree
+        # names weaviate other than this one); in-cluster clients use
+        # weaviate.weaviate.svc / weaviate-grpc.weaviate.svc, which ClusterIP
+        # serves unchanged. Publish it deliberately, behind auth, if that
+        # changes.
+        #
+        # NOT PROVEN to be the WP11 installed-disk cause (run 36221053730:
+        # Synced/Progressing, conditions empty, no resource-level health in the
+        # dump). It removes the one mechanism measured to hold this
+        # Application Progressing; whether anything else does on metal is for
+        # the next run to say.
+        service:
+          type: ClusterIP
+        grpcService:
+          type: ClusterIP
         storage:
           # SIZE CUT, NOT A POD CUT: 100Gi -> 32Gi. `replicas: 1` above is
           # unchanged and was never a candidate -- there is no redundancy here

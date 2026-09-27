@@ -331,3 +331,60 @@ needs a run with one half applied.
 
 And it remains **one pair**. The intermittency established in run 2 applies
 here too: a rate needs N runs, not two.
+
+---
+
+# RUN 4 AND THE REPLICA: THE RENDERER HAS ~8x HEADROOM, SO NO TIMEOUT IS RAISED
+
+Installed-disk run **36221053730** (2026-09-26, `main` at `ea6524e127`, carrying
+#17666), and the scheduled first-boot replica **36303440548** (2026-09-27, both
+the unconstrained lane and the one constrained to the WP11 guest envelope):
+
+| source | `DeadlineExceeded` on manifest generation |
+|---|---|
+| run 36221053730 serial + job log | **0** |
+| replica, unconstrained | **0** |
+| replica, constrained (4 vCPU envelope) | **0** (the one hit is an etcd client retry, not the repo-server) |
+
+That is now **four** installed-disk runs after run 1 without the symptom
+(36114004943, 36117868219, 36221053730, plus the replica pair), three of them
+after #17666.
+
+**The deadline was measured against, not guessed at.** The application
+controller logs `GetRepoObjs stats ... manifests_ms=` per render. The replica
+keeps those lines only for the Applications it diagnoses, so the sample is
+**narrow -- 12 renders, of `zeta-root`, `weaviate` and `cilium` only**: on the
+constrained replica the slowest is **`zeta-root`, 7847 ms**, and the child
+Applications in it render in under 600 ms. The error text
+`rpc error: code = DeadlineExceeded` is the controller's gRPC deadline to the
+repo-server, `controller.repo.server.timeout.seconds`, default **60 s** -- about
+**8x** the slowest measured render on the smallest envelope this repo tests.
+
+So the candidate directions above (raise `ARGOCD_EXEC_TIMEOUT` /
+`controller.repo.server.timeout.seconds`, cap `reposerver.parallelism.limit`)
+are **not applied**: the measurement they were waiting for says the renderer is
+not near its deadline once it is no longer BestEffort. Raising a timeout that is
+not being hit would change nothing measurable and would lengthen the time a
+genuinely hung render holds a controller worker.
+
+**What stays open:** the rate question from run 2 -- one pre-fix sample in two
+showed the symptom, so "fixed" is a statement about four post-fix samples, not
+about a rate. Re-open this item on the first `DeadlineExceeded` row that
+reappears, with the `manifests_ms` of the Application that hit it.
+
+## What run 36221053730 showed instead
+
+Not repo-server starvation. The roster reached 23/49 with **0 of 95** samples
+unable to reach the API server. The two defects in it that are box-independent
+were fixed alongside this note (branch `claude/roster-convergence-apps`):
+
+- `platform` -- sync failed permanently after the default 5 retries because
+  `monitoring.yaml`'s ServiceMonitor/PrometheusRule are applied before
+  kube-prometheus-stack registers their CRD; `syncPolicy.retry` is now unbounded.
+- `weaviate` -- its two chart-default `type: LoadBalancer` Services gate its
+  health on LB-IPAM; both are now ClusterIP.
+
+And the verdict's own diagnostics were spending their ten-app budget
+alphabetically, so `platform` (the only failed sync) got none. They now take
+non-capacity rows first and print the failed sync tasks, the drifting resources
+and the scheduler's refusal message.

@@ -151,7 +151,15 @@ export const ORDER_ADJUDICATION_PENDING: ReadonlyMap<string, string> = new Map([
       "platform permanently non-Healthy, wedging every later wave behind it forever. The order registration " +
       "below is UNCHANGED and still correct to keep: the wave NUMBERS still disagree (kube-prometheus-stack " +
       "still reconciles after platform), which is exactly what this registry tracks; what changed is that the " +
-      "disagreement can no longer fail the sync outright.",
+      "disagreement can no longer fail the sync outright. " +
+      "CORRECTION 2026-09-27: 'ArgoCD's retry does converge it' above was an assumption, and the first cluster " +
+      "to run this Application refuted it. SkipDryRunOnMissingResource defers only the dry run; the real apply " +
+      "is still rejected while the CRD is absent. WP11 installed-disk run 36221053730 ended with `platform` " +
+      "OutOfSync/Degraded, 'one or more synchronization tasks completed unsuccessfully (retried 5 times)': the " +
+      "default retry budget ran out before kube-prometheus-stack registered the CRD, and ArgoCD never " +
+      "re-attempts an automated sync of a revision that already failed. REPAIR (5) APPLIED: platform's " +
+      "syncPolicy.retry is now unbounded (limit -1, backoff capped at 5m). The wave inversion stays registered " +
+      "here because the numbers still disagree.",
   ],
   [
     "platform -> longhorn",
