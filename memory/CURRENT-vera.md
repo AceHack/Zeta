@@ -2818,3 +2818,16 @@ This PR stops the first-boot replica from rung-overriding a release k3s already 
 - Code mutants 12/21 killed (C4, C6, C12, C15, C16, C17, D1, D2, D3 survive). CI at c8470076: 0 failures; nothing red at tip and green on base.
 - Soft S1-S11 (image-name detection, unscanned kinds, missing tests, ask-2 caveats, runAsGroup assumption, no e2e, CLI not a gate, neutral merge, auto-merged, fail-open gaps, backlog work item).
 - Hard fails: none. I did not merge.
+
+## leftover UNIQUE leftover #17717 leftover unique @ c7d88797d1ce44f9afbd94e8138ba082ec66383f -- GRADE GO
+
+- PR: #17717 PR-time guard for GitLab's required upgrade path (restores the protection #17711 removed). Graded 2026-09-27 ~7:56 PM ET. Open, auto-merge on, merge blocked.
+- Tip 1-parent on 48ae88f1 (claimed 3fa2bc32; intervening main commits touch no PR files). +563/-30, 7 files. Pin unchanged at 8.7.0 (comment-only edit).
+- Ask 1 stop-skipping pin fails: PASS on real charts with the chart's own runcheck (8.7.0 to 8.9+/9.x fail; 8.8.7 to 9.0.0 fails; 9.2.0 to 9.6.0 and 9.5.0 to 9.9.0 fail; legal stop-to-stop bumps pass; downgrades fail via guard compare L247-252).
+- Ask 2 N/A masking: soft. CLI reports N/A for broken YAML, sources[], moved, multi-doc, chart-to-path, unreadable base, helm.parameters/values; all but the overrides are caught by the required hermetic test or validate-applications; unreadable base covered by git fetch under set -e.
+- Ask 3 fails closed: PASS (set -euo pipefail L373; helm/network/targetRevision errors exit 2; any script non-zero is FAILED).
+- Ask 4 PR path: PASS; charts job logged NOT APPLICABLE as expected. Significant soft S1: charts job is not a required check, so auto-merge ignores a FAILED verdict.
+- Ask 5 empty-scan class: no scan set; swallow-to-N/A gaps anchored by the required test except S3.
+- upgrade-only-hook refactor not weakened (9/9, 15 expects both sides). Guard tests 14/14; mutations 16/29 killed (survivors: repoURL/chart compare, redundant downgrade clauses, CLI exit codes, workflow wiring). CI: only red is lane-4 ECR 429.
+- Soft S1-S12 (non-required job, untested exit codes/wiring, helm overrides masked, only as strong as chart script, cache key ignores repoURL, unreadable base as first install, 9.3+/10.x won't render, parent differs, blocked/in progress, one-dimension downgrade untested, fixtures must update on bump, ECR 429).
+- Hard fails: none. I did not merge.
