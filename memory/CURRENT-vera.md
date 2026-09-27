@@ -2667,3 +2667,12 @@ WP11 tip-confirm -- K3S_ACTIVE on verdict 6 (distinct NEVER-ACTIVE log + optiona
 - No new fail-open. Gatekeeper still pulls v1.32.3 at runtime (disclosed).
 - Soft: no cluster run yet; the test only follows a spire tag change; the rancher tag is mutable (CI --verify catches a move).
 - Hard fails: none. Sit leftover; Vera will not merge.
+
+## leftover UNIQUE leftover #17696 leftover unique @ 3a231b0c68a3c7625270caa32ea750a0cbc163ad -- GRADE GO
+
+- PR #17696 (inert-key scanner covers k8s/bootstrap). Tip 3a231b0c, 1 commit, 1 parent = base ea6524e1. Merge 7a7add3f not graded. +2521/-7, 6 files.
+- Discovery reads every YAML doc, keeps only helm.cattle.io HelmChart, parses valuesContent (invalid YAML throws). 57 sources = 49 Applications + 8 bootstrap charts (7 full-ai-cluster, 1 infra), re-derived at the tip.
+- Falsifier real: 65/65 at tip; nine mutations killed. Survivors (soft): swallowed valuesContent parse error, snapshot and live paths on Applications only.
+- skipKubeletVerification is truly inert (removed in spire chart 0.23.x; helm template byte-identical true vs false). Baselining is honest but it hides a live security gap: the spire-agent k8s workload attestor skips kubelet cert verification (verification.type defaults to skip). Fix is verification.type auto/hostCert/apiServerCA in both manifests.
+- Soft: no appId uniqueness assertion; HelmChartConfig not scanned; 2314-line duplicate cilium snapshot block from a trailing slash in the repo key; live --check-snapshot not re-run.
+- Hard fails: none. Sit leftover; Vera will not merge.
