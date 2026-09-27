@@ -1,0 +1,12 @@
+{
+  "pr_number": 17693,
+  "archive_path": "docs/history/pr-reviews/2026/09/27/PR-17693-docs-ops-inventory-every-first-boot-external-dependency-bound-three-that-hung.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-27T15:54:06.980Z",
+  "schema_version": "v1",
+  "commit_sha": "4c93e4737c9fe8fb6cf98340b08123122657326d",
+  "title": "docs(ops): inventory every first-boot external dependency; bound three that hung",
+  "state": "MERGED",
+  "merged_at": "2026-09-27T15:53:26Z",
+  "head_ref": "claude/first-boot-hygiene-deps-inventory"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 17699,
+  "archive_path": "docs/history/pr-reviews/2026/09/27/PR-17699-feat-cluster-second-sync-policy-value-converges-only-after-an-operator-action-op.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-27T16:02:55.808Z",
+  "schema_version": "v1",
+  "commit_sha": "8874cdcab2833ddd7d90729fbfe0a75d4d8917bf",
+  "title": "feat(cluster): second sync-policy value converges-only-after-an-operator-action (openbao, hindsight)",
+  "state": "MERGED",
+  "merged_at": "2026-09-27T16:02:12Z",
+  "head_ref": "claude/first-boot-hygiene-operator-action"
+}
