@@ -1,0 +1,14 @@
+{
+  "id": "080d07280ed03010a0130008a52c4b39",
+  "at": "2026-09-27T22:34:58.950Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M3JG3PG5087G0R00368503Y",
+    "type": "bug",
+    "title": "Metal install never creates temporal-default-store / temporal-visibility-store; temporal pods CreateContainerConfigError",
+    "slug": "metal-install-never-creates-temporal-default-store-temporal",
+    "priority": "P2",
+    "filename": "081M3JG3PG5087G0R00368503Y-metal-install-never-creates-temporal-default-store-temporal.md"
+  }
+}

@@ -148,8 +148,11 @@ spec:
                   user: temporal
                   # No password in git. The Secret is NOT created by this chart
                   # when `existingSecret` is set (server-secret.yaml guards on
-                  # it); it is the sealed-secrets/ESO artifact named in the
-                  # second BLOCKED note above.
+                  # it). On metal it is minted at first boot by
+                  # `k8s/bootstrap/internal-secret-seeding.yaml` (seed-temporal-store,
+                  # key `password`, the SAME value as temporal-visibility-store
+                  # below -- one SQL user). The CockroachDB `temporal` user that
+                  # must carry that password is still the second BLOCKED note.
                   existingSecret: temporal-default-store
                   maxConns: 20
                   maxIdleConns: 20
