@@ -1,0 +1,12 @@
+{
+  "pr_number": 17710,
+  "archive_path": "docs/history/pr-reviews/2026/09/27/PR-17710-fix-zflash-reinstall-scenarios-3-4-stopped-a-healthy-install-on-a-store-path-nam.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-27T23:07:36.866Z",
+  "schema_version": "v1",
+  "commit_sha": "08e8e675b7f047614d2a7a53b6929df00e1400ab",
+  "title": "fix(zflash): reinstall scenarios 3+4 stopped a healthy install on a store path named unit-panic-on-fail",
+  "state": "MERGED",
+  "merged_at": "2026-09-27T23:06:46Z",
+  "head_ref": "claude/reinstall-scenarios-3-4"
+}

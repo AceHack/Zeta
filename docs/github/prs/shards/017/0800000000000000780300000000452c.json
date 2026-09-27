@@ -1,0 +1,12 @@
+{
+  "pr_number": 17708,
+  "archive_path": "docs/history/pr-reviews/2026/09/27/PR-17708-fix-gmod-run-steamcmd-as-steam-1000-not-root-so-app-4020-installs.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-27T23:26:27.664Z",
+  "schema_version": "v1",
+  "commit_sha": "48ae88f1d0f6912d6c1e000452422f3a4e222f29",
+  "title": "fix(gmod): run SteamCMD as steam (1000), not root, so app 4020 installs",
+  "state": "MERGED",
+  "merged_at": "2026-09-27T23:25:44Z",
+  "head_ref": "claude/gmod-steamcmd-permissions"
+}
