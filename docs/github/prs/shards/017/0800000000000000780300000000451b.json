@@ -1,0 +1,12 @@
+{
+  "pr_number": 17691,
+  "archive_path": "docs/history/pr-reviews/2026/09/27/PR-17691-fix-ci-the-fail-fast-marker-17683-added-could-never-fire-scenario-4-s-baseline-s.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-27T15:38:09.055Z",
+  "schema_version": "v1",
+  "commit_sha": "dfa27b6a00bd6bf7486e461d185758a1d8a2b4f9",
+  "title": "fix(ci): the fail-fast marker #17683 added could never fire; scenario 4's baseline still booted the bare ISO",
+  "state": "MERGED",
+  "merged_at": "2026-09-27T15:37:19Z",
+  "head_ref": "claude/first-boot-hygiene-fail-fast"
+}

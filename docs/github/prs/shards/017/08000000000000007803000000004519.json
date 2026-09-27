@@ -1,0 +1,12 @@
+{
+  "pr_number": 17689,
+  "archive_path": "docs/history/pr-reviews/2026/09/27/PR-17689-fix-cluster-discovery-drop-no-db-lookup-so-the-discovery-probe-can-run-at-all.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-27T15:36:52.415Z",
+  "schema_version": "v1",
+  "commit_sha": "b8394556eb1a7791ac69cde906b1538cb2da10f1",
+  "title": "fix(cluster-discovery): drop --no-db-lookup so the discovery probe can run at all",
+  "state": "MERGED",
+  "merged_at": "2026-09-27T15:36:06Z",
+  "head_ref": "claude/cluster-discovery-avahi-flag"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 17695,
+  "archive_path": "docs/history/pr-reviews/2026/09/27/PR-17695-fix-installer-one-device-answers-to-zeta-install-rung-4-reads-the-esp-through-an.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-27T15:45:46.542Z",
+  "schema_version": "v1",
+  "commit_sha": "721d4971a9d174a6bc090bff31b3851247201e5e",
+  "title": "fix(installer): one device answers to ZETA_INSTALL; rung 4 reads the ESP through an LBA-0 alias",
+  "state": "MERGED",
+  "merged_at": "2026-09-27T15:44:59Z",
+  "head_ref": "claude/esp-single-install-label"
+}

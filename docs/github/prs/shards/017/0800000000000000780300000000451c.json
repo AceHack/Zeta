@@ -1,0 +1,12 @@
+{
+  "pr_number": 17692,
+  "archive_path": "docs/history/pr-reviews/2026/09/27/PR-17692-fix-cluster-platform-crd-race-sync-failure-weaviate-off-loadbalancer-wp11-diag-n.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-27T15:38:20.812Z",
+  "schema_version": "v1",
+  "commit_sha": "032a0e001b5522933899c3d0adff6aaf83c50b1b",
+  "title": "fix(cluster): platform CRD-race sync failure, weaviate off LoadBalancer, WP11 diag names the failure",
+  "state": "MERGED",
+  "merged_at": "2026-09-27T15:37:39Z",
+  "head_ref": "claude/roster-convergence-apps"
+}
