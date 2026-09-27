@@ -61,6 +61,16 @@ interface LadderScenario {
   readonly pkname?: string;
   /** Exit status of rung 4's `mcopy` copy-out (default 0 = the ESP was read). */
   readonly mcopyStatus?: number;
+  /** `lsblk -dnro TYPE` — "disk" makes the candidate the whole-disk alias. Default "part". */
+  readonly devtype?: string;
+  /** `lsblk -dnro KNAME` — the whole disk's kernel name. Default "sda". */
+  readonly kname?: string;
+  /**
+   * `lsblk -bnro START,PARTTYPE /dev/<disk>` — the parent's rows, disk first.
+   * Default is the measured isohybrid layout: the disk row (no start, no
+   * type), partition 1 at LBA 0 type 0x00, the ESP at LBA 268 type 0xef.
+   */
+  readonly siblings?: readonly string[];
 }
 
 interface LadderOutcome {
@@ -117,8 +127,13 @@ function runLadder(scenario: LadderScenario): LadderOutcome {
     // to be.
     "lsblk() {",
     '  case "$*" in',
+    // Most specific first: `START,PARTTYPE` also contains START and TYPE, and
+    // PKNAME also contains KNAME.
+    `    *PARTTYPE*) printf '%s\\n' ${(scenario.siblings ?? [" ", "0 0x00", "268 0xef"]).map((l) => `'${l}'`).join(" ")} ;;`,
+    `    *-dnro\\ TYPE*) printf '%s\\n' '${scenario.devtype ?? "part"}' ;;`,
     `    *START*) ${scenario.start === undefined ? `printf '268\n'` : scenario.start === "" ? "return 1" : `printf '%s\n' '${scenario.start}'`} ;;`,
     `    *PKNAME*) ${scenario.pkname === undefined ? `printf 'sda\n'` : scenario.pkname === "" ? "return 1" : `printf '%s\n' '${scenario.pkname}'`} ;;`,
+    `    *-dnro\\ KNAME*) printf '%s\\n' '${scenario.kname ?? "sda"}' ;;`,
     '    *) return 1 ;;',
     "  esac",
     "}",
@@ -326,17 +341,64 @@ describe("ESP read-only mount ladder (081M39CJP96087G0R001T4J2R3)", () => {
     expect(got.mcopyCalls).toEqual([]);
   }, BASH_TEST_TIMEOUT_MS);
 
-  test("rung 4 REFUSES a partition that starts at LBA 0 — that is the whole-disk alias", () => {
-    // An isohybrid partition 1 starts at LBA 0 and spans the whole image. It
-    // is the same iso9660 the disk itself exposes, not an ESP, and `@@0` would
-    // be meaningless. Reproduced against the shipped function on a real image.
+  test("rung 4 reads the ESP THROUGH an LBA-0 alias by resolving its parent disk (081M3B7Z38Q087G0R003F9X7HM)", () => {
+    // An isohybrid partition 1 starts at LBA 0 and spans the whole image. It is
+    // not an ESP and `@@0` would read the iso9660 -- but its parent disk holds
+    // the ESP. Nightly run 36297481926 printed exactly the old refusal,
+    // `mtools=start-lba-0-not-a-partition`, on the candidate whose parent held
+    // the ESP. The rung now looks the ESP up by TYPE among the parent's
+    // partitions instead of giving up.
     const got = runLadder({
       mounts: [{ status: 32 }, { status: 32 }, { status: 32 }],
       start: "0",
+      pkname: "sda",
+    });
+    expect(got.status).toBe(0);
+    // The ESP's OWN start (268), not the alias's (0): 268 x 512.
+    expect(got.mcopyCalls).toEqual(["-s -n -o -i /dev/sda@@137216 ::/ /run/probe/"]);
+    // And it says it got there through an alias, so the scan line cannot
+    // present the LBA-0 partition as if it were the ESP.
+    expect(got.via).toBe("mtools-copy:/dev/sda@@137216:from-lba-0-alias");
+  }, BASH_TEST_TIMEOUT_MS);
+
+  test("rung 4 still REFUSES an LBA-0 alias whose parent has no ESP partition — no offset is guessed", () => {
+    const got = runLadder({
+      mounts: [{ status: 32 }, { status: 32 }, { status: 32 }],
+      start: "0",
+      pkname: "sda",
+      siblings: [" ", "0 0x00", "2048 0x83"],
     });
     expect(got.status).toBe(1);
-    expect(got.why).toContain("mtools=start-lba-0-not-a-partition");
+    expect(got.why).toContain("mtools=lba-0-alias-no-esp-partition-on-/dev/sda");
+    expect(got.why).not.toMatch(/\s/u);
     expect(got.mcopyCalls).toEqual([]);
+  }, BASH_TEST_TIMEOUT_MS);
+
+  test("rung 4 skips a zero-start ESP-typed row rather than reading @@0", () => {
+    // A 0xef entry at LBA 0 would point mcopy at the iso9660 header. It is
+    // skipped, and the next ESP-typed row with a real start is used.
+    const got = runLadder({
+      mounts: [{ status: 32 }, { status: 32 }, { status: 32 }],
+      start: "0",
+      siblings: [" ", "0 0xef", "276 0xEF"],
+    });
+    expect(got.status).toBe(0);
+    expect(got.mcopyCalls).toEqual(["-s -n -o -i /dev/sda@@141312 ::/ /run/probe/"]);
+  }, BASH_TEST_TIMEOUT_MS);
+
+  test("rung 4 reads the ESP through a WHOLE-DISK candidate (the by-label coin flip landing on /dev/sda)", () => {
+    // The GPT ESP GUID is accepted as well as MBR 0xEF, case-insensitively: a
+    // stick re-partitioned GPT-only must not fall through.
+    const got = runLadder({
+      mounts: [{ status: 32 }, { status: 32 }, { status: 32 }],
+      devtype: "disk",
+      kname: "sdb",
+      start: "",
+      siblings: [" ", "2048 C12A7328-F81F-11D2-BA4B-00A0C93EC93B"],
+    });
+    expect(got.status).toBe(0);
+    expect(got.mcopyCalls).toEqual(["-s -n -o -i /dev/sdb@@1048576 ::/ /run/probe/"]);
+    expect(got.via).toBe("mtools-copy:/dev/sdb@@1048576:from-whole-disk-alias");
   }, BASH_TEST_TIMEOUT_MS);
 
   test("rung 4 REFUSES when the parent disk cannot be resolved", () => {
@@ -397,8 +459,49 @@ describe("ESP read-only mount ladder (081M39CJP96087G0R001T4J2R3)", () => {
     expect(firstBoot).toContain("not-FAT");
     expect(firstBoot).toContain("zeta_esp_copy_out_mtools");
     const firstBootRung4 = sliceShellFunction(readFileSync(FIRST_BOOT_SH, "utf8"), "zeta_esp_copy_out_mtools");
-    for (const piece of ["lsblk -bno START", "lsblk -bno PKNAME", "mcopy -s -n -o -i", "start-lba-0-not-a-partition"]) {
+    for (const piece of ["lsblk -bno START", "lsblk -bno PKNAME", "mcopy -s -n -o -i", "START,PARTTYPE", "-alias-no-esp-partition-on-"]) {
       expect(firstBootRung4).toContain(piece);
     }
+    // Stronger than piece-matching: the two rung-4 bodies are the SAME text
+    // modulo the variable prefix and install.sh's `sudo`. A fix landed in one
+    // copy only is the split-brain this suite exists to catch.
+    const installRung4 = sliceShellFunction(readFileSync(INSTALL_SH, "utf8"), "zeta_esp_copy_out_mtools");
+    const normalise = (body: string): string =>
+      body.replace(/ZETA_(?:FAT|ESP)_MOUNT_/gu, "ZETA_X_MOUNT_").replace(/sudo /gu, "");
+    expect(normalise(installRung4)).toBe(normalise(firstBootRung4));
+  }, BASH_TEST_TIMEOUT_MS);
+
+  test("a readable ESP without the conf says WHAT it held — readable-and-unstaged is not unopenable", () => {
+    // 081M3B7Z38Q087G0R003F9X7HM: nightly 36297481926 printed `/dev/sda2(no-conf)`
+    // on a lane whose bake stages no conf at all, and only a log dive could
+    // say the mount had worked. `saw=` makes that visible on the scan line.
+    const fn = sliceShellFunction(readFileSync(FIRST_BOOT_SH, "utf8"), "zeta_esp_top_level_listing");
+    const script = [
+      "set -uo pipefail",
+      fn,
+      'd="$(mktemp -d)"; mkdir "$d/EFI"; : > "$d/zeta-hostname.txt"; : > "$d/zeta creds,x.enc"',
+      'e="$(mktemp -d)"',
+      'printf "FULL=%s\\n" "$(zeta_esp_top_level_listing "$d")"',
+      'printf "EMPTY=%s\\n" "$(zeta_esp_top_level_listing "$e")"',
+      'printf "MISSING=%s\\n" "$(zeta_esp_top_level_listing "$d/does-not-exist")"',
+      'rm -rf "$d" "$e"',
+    ].join("\n");
+    const run = spawnShellDeclared("bash", script, {
+      reason:
+        "081M3B7Z38Q087G0R003F9X7HM: drives the SHIPPED zeta-first-boot.sh ESP listing helper against " +
+        "real temp directories; the program is composed from repo text and test literals.",
+    });
+    if (!run.ok) throw new Error(`listing harness could not run bash: ${JSON.stringify(run.error)}`);
+    const field = (key: string): string => new RegExp(`^${key}=(.*)$`, "mu").exec(run.value.stdout)?.[1] ?? "";
+    // Ordinal order, `+`-joined, and a space or comma in a name squeezed away:
+    // `tried=(\S*)` is comma-separated per candidate.
+    // (Sorted BEFORE squeezing: ' ' 0x20 < '-' 0x2d, so the spaced name comes first.)
+    expect(field("FULL")).toBe("EFI+zeta_creds_x.enc+zeta-hostname.txt");
+    expect(field("FULL")).not.toMatch(/[\s,]/u);
+    // Three different findings, three different tokens.
+    expect(field("EMPTY")).toBe("nothing");
+    expect(field("MISSING")).toBe("unlistable");
+    const scan = readFileSync(FIRST_BOOT_SH, "utf8");
+    expect(scan).toContain('(no-conf:saw=$(zeta_esp_top_level_listing "$ESP_CONF_MOUNT"))');
   }, BASH_TEST_TIMEOUT_MS);
 });

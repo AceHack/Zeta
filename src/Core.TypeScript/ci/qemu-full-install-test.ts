@@ -576,9 +576,47 @@ export function assertEspFirstbootConfWasRead(phase1Serial: string):
       "suspect: the write is in the plan, the execution plan emits the mcopy, and the " +
       "post-bake mdir verification (081KZHJPJCF) fails the bake when a file does not land. " +
       "Read `tried=` — an empty list means the scan matched no block device, a `(no-vfat)` " +
-      "suffix means the candidate would not mount as vfat, and `(no-conf)` means it mounted " +
-      "and the file was not on it.",
+      "suffix means the candidate could not be opened or read as FAT (the reason follows the " +
+      "colon), and `(no-conf:saw=...)` means it mounted and the file was not on it — `saw=` " +
+      "lists what WAS there (`nothing` = an empty FAT, `unlistable` = the listing failed).",
   };
+}
+
+// -- 081M3B7Z38Q087G0R003F9X7HM: the boot medium must never be the WHOLE disk --
+//
+// An isohybrid ISO's MBR partition 1 starts at LBA 0 and spans the image, so the
+// whole disk and partition 1 carry the same ZETA_INSTALL label and `by-label`
+// picked between them by udev event order. Mounted from the WHOLE disk, /iso
+// holds it O_EXCL and every partition -- the ESP included -- is unopenable for
+// the rest of the install (measured, 081M39CJP96087G0R001T4J2R3). The installer
+// now pins the label to the partition with a udev link_priority
+// (nixos/modules/install-label-single-device.nix). This is that fix's falsifier,
+// and it reads what the GUEST reported rather than what the Nix says.
+//
+// Three outcomes, never two: a partition is a pass, a whole disk is a failure,
+// and a missing or unparseable report is a check that DID NOT RUN -- which must
+// not be folded into either, because an old ISO and a regression are different
+// findings.
+
+/** What `boot-medium=` on the esp-conf scan line says the /iso mount source is. */
+export type BootMediumShape =
+  | { readonly kind: "partition"; readonly device: string }
+  | { readonly kind: "whole-disk"; readonly device: string }
+  | { readonly kind: "not-reported"; readonly detail: string };
+
+const PARTITION_DEVICE = /^\/dev\/(?:(?:sd|vd|hd|xvd)[a-z]+[0-9]+|(?:nvme[0-9]+n[0-9]+|mmcblk[0-9]+|loop[0-9]+)p[0-9]+)$/u;
+const WHOLE_DISK_DEVICE = /^\/dev\/(?:(?:sd|vd|hd|xvd)[a-z]+|nvme[0-9]+n[0-9]+|mmcblk[0-9]+|sr[0-9]+)$/u;
+
+/** Exported for unit tests. Classifies the guest-reported boot-medium device. */
+export function bootMediumShape(phase1Serial: string): BootMediumShape {
+  const m = phase1Serial.match(/\[081M392JR97087G0R003QAFH0Y-esp-conf\][^\n]*\sboot-medium=(\S+)/u);
+  if (m === null || m[1] === undefined) {
+    return { kind: "not-reported", detail: "no esp-conf scan line carrying boot-medium= in the serial" };
+  }
+  const device = m[1];
+  if (PARTITION_DEVICE.test(device)) return { kind: "partition", device };
+  if (WHOLE_DISK_DEVICE.test(device)) return { kind: "whole-disk", device };
+  return { kind: "not-reported", detail: `boot-medium=${device} is not a block device this check can classify` };
 }
 
 // -- WP27: is a 1400 GiB qcow2 actually sparse? MEASURE it, do not assume ----
@@ -3072,6 +3110,34 @@ async function main(): Promise<never> {
       "[qemu-full-install-test] ESP first-boot conf contract DORMANT — this lane stages no " +
         "/zeta-firstboot.conf, so nothing is asserted about it. This is not a pass. " +
         `Guest reported esp-conf=${scan?.outcome ?? "<no line>"}.`,
+    );
+  }
+
+  // 081M3B7Z38Q087G0R003F9X7HM — USB lanes only: a `-cdrom` lane's medium is
+  // `sr0`, a whole disk with no partitions, and that is correct there.
+  if (bootMedia.kind === "usb-image") {
+    const medium = bootMediumShape(phase1Serial);
+    if (medium.kind === "whole-disk") {
+      writeArtifactSerialLog(phase1Serial, "");
+      reportResult(
+        {
+          exitCode: 1,
+          reason:
+            `boot medium mounted from the WHOLE disk (${medium.device}) — the ZETA_INSTALL ` +
+            "by-label link resolved to the disk instead of its LBA-0 partition, so /iso holds the " +
+            "disk O_EXCL and the ESP is unopenable for the whole install. The udev link_priority " +
+            "in nixos/modules/install-label-single-device.nix exists to make this impossible; " +
+            "either it is not in this ISO or it did not take effect.",
+          serialLogTail: phase1Serial.slice(-3000),
+          ...(phase1.elapsedSeconds !== undefined ? { elapsedSeconds: phase1.elapsedSeconds } : {}),
+        },
+        artifactSerialLogPath,
+      );
+    }
+    console.log(
+      medium.kind === "partition"
+        ? `[qemu-full-install-test] boot-medium single-device check ok — /iso mounted from ${medium.device}`
+        : `[qemu-full-install-test] boot-medium single-device check DID NOT RUN — ${medium.detail}. This is not a pass.`,
     );
   }
 

@@ -81,3 +81,28 @@ boot of the same image, and the whole disk must never be the boot medium's
 mount source. Both are now recorded on every run by the WP29 scan line
 (`boot-medium=` and the `part->target` symlink resolution), so the check is a
 grep over a serial log rather than new machinery.
+
+## What landed (2026-09-27) — and what is NOT yet verified
+
+- **Pinned, not deleted.** The image layout is unchanged (the blast radius above
+  still applies to touching it). Instead a udev rule gives the whole disk
+  `link_priority=-100` when it carries the ISO volume label, so the LBA-0
+  partition always owns `by-label/ZETA_INSTALL` and `/iso` is never mounted
+  from the whole disk. Applied in the initrd (the stage-1 `/iso` mount) and in
+  stage 2 (the first-boot scan): `full-ai-cluster/usb-nixos-installer/nixos/modules/install-label-single-device.nix`.
+  Optical media keep working: `sr0` has no partitions, so it stays the only
+  candidate.
+- **The falsifier above is now live.** `bootMediumShape` in
+  `src/Core.TypeScript/ci/qemu-full-install-test.ts` fails a USB lane whose
+  guest reports `boot-medium=` a whole disk, and reports "did not run" (not a
+  pass) when the line is absent.
+- **Rung 4 hardened.** An LBA-0 or whole-disk candidate no longer refuses; it
+  resolves the parent disk and reads the ESP at the ESP partition's own start
+  (by type `0xef` / the GPT ESP GUID). `(no-conf)` now carries `saw=` so a
+  readable-but-unstaged ESP is distinguishable on sight. Nightly 36297481926's
+  `/dev/sda2(no-conf)` was that case: the initial-format lane stages no
+  `/zeta-firstboot.conf` at all, and the ESP mounted fine.
+- **Not verified:** the udev rule has not run on any built ISO or real hardware
+  at the time of writing (no local `nix`). The first ISO CI run carrying it is
+  the measurement; until it prints `boot-medium=` a partition on every USB
+  lane across repeated runs, this item stays open.

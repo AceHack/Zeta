@@ -15,6 +15,11 @@
     # and mise's prebuilt toolchains (bun/node/python/rust/java/dotnet) cannot
     # execve without an interpreter — the deterministic first-boot failure.
     ../modules/foreign-binaries.nix
+    # 081M3B7Z38Q087G0R003F9X7HM: the isohybrid whole disk and its LBA-0
+    # partition 1 both carry ZETA_INSTALL; a udev link_priority makes the
+    # partition own the by-label link, so the /iso mount can no longer claim the
+    # whole disk O_EXCL and lock the ESP (where zflash's injections live) out.
+    ../modules/install-label-single-device.nix
   ];
 
   networking.hostName = "zeta-installer";

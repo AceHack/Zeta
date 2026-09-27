@@ -171,7 +171,9 @@ zeta_squeeze_mount_error() {
 # constant that was wrong and could not disagree with itself; a second constant
 # would be the same mistake. `lsblk -bno START` reads sysfs, so it needs no
 # open of the partition -- which is the whole point, since the partition is
-# what cannot be opened. Unreadable or zero => REFUSE, never guess.
+# what cannot be opened. Unreadable => REFUSE, never guess. Zero (the LBA-0
+# alias) or a whole-disk candidate => look the ESP up BY TYPE among the parent
+# disk's partitions (081M3B7Z38Q087G0R003F9X7HM) -- still derived, never assumed.
 #
 # READ-ONLY BY CONSTRUCTION: this materialises a COPY of the ESP onto a fresh
 # tmpfs at the caller's mountpoint. Every consumer keeps working on a path and
@@ -179,24 +181,52 @@ zeta_squeeze_mount_error() {
 # no read-only consumer writes, and the `rw` ledger mount is a different
 # function that is deliberately untouched.
 zeta_esp_copy_out_mtools() {
-  local part="$1" mnt="$2" start disk offset err
-  start="$(lsblk -bno START "$part" 2>/dev/null | head -1 | tr -cd '0-9')" || start=""
-  case "$start" in
-    "" | *[!0-9]*)
-      ZETA_ESP_MOUNT_WHY="${ZETA_ESP_MOUNT_WHY}|mtools=no-partition-start-in-sysfs"
-      return 1
-      ;;
-  esac
-  offset=$(( start * 512 ))
-  if [ "$offset" -le 0 ]; then
-    # A partition at LBA 0 is the whole-disk alias, not an ESP.
-    ZETA_ESP_MOUNT_WHY="${ZETA_ESP_MOUNT_WHY}|mtools=start-lba-0-not-a-partition"
-    return 1
+  local part="$1" mnt="$2" start disk offset err devtype alias=""
+  # 081M3B7Z38Q087G0R003F9X7HM: a candidate that IS the boot medium's alias --
+  # the whole disk, or the isohybrid partition 1 at LBA 0 that spans it -- is
+  # not an ESP, but the ESP is INSIDE it. Measured on nightly run 36297481926:
+  # `/dev/sda1(...|mtools=start-lba-0-not-a-partition)` with boot-medium
+  # `/dev/sda1`, i.e. this rung refused the one candidate whose parent disk
+  # holds the ESP. Resolve the parent and read the ESP partition's own offset
+  # out of sysfs/udev instead of refusing.
+  devtype="$(lsblk -dnro TYPE "$part" 2>/dev/null | head -1 | tr -cd 'a-z')" || devtype=""
+  if [ "$devtype" = "disk" ]; then
+    alias="whole-disk"
+    disk="$(lsblk -dnro KNAME "$part" 2>/dev/null | head -1 | tr -cd 'A-Za-z0-9._-')" || disk=""
+  else
+    start="$(lsblk -bno START "$part" 2>/dev/null | head -1 | tr -cd '0-9')" || start=""
+    case "$start" in
+      "" | *[!0-9]*)
+        ZETA_ESP_MOUNT_WHY="${ZETA_ESP_MOUNT_WHY}|mtools=no-partition-start-in-sysfs"
+        return 1
+        ;;
+    esac
+    offset=$(( start * 512 ))
+    # A partition at LBA 0 is the whole-disk alias, not an ESP -- `@@0` would
+    # read the iso9660 at the front of the image. Its PARENT still holds the ESP.
+    [ "$offset" -le 0 ] && alias="lba-0"
+    disk="$(lsblk -bno PKNAME "$part" 2>/dev/null | head -1 | tr -cd 'A-Za-z0-9._-')" || disk=""
   fi
-  disk="$(lsblk -bno PKNAME "$part" 2>/dev/null | head -1 | tr -cd 'A-Za-z0-9._-')" || disk=""
   if [ -z "$disk" ]; then
     ZETA_ESP_MOUNT_WHY="${ZETA_ESP_MOUNT_WHY}|mtools=no-parent-disk-in-sysfs"
     return 1
+  fi
+  if [ -n "$alias" ]; then
+    # The ESP partition's start, by TYPE, from the parent's partition list:
+    # MBR 0xEF or the GPT ESP GUID. lsblk takes both from sysfs/the udev
+    # database, so this opens nothing the boot medium's claim could refuse.
+    # First match only; zero/unreadable starts are skipped, never guessed.
+    start="$(lsblk -bnro START,PARTTYPE "/dev/${disk}" 2>/dev/null | awk '
+      { t = tolower($2) }
+      (t == "0xef" || t == "c12a7328-f81f-11d2-ba4b-00a0c93ec93b") && $1 ~ /^[0-9]+$/ && $1 > 0 { print $1; exit }
+    ')" || start=""
+    case "$start" in
+      "" | *[!0-9]*)
+        ZETA_ESP_MOUNT_WHY="${ZETA_ESP_MOUNT_WHY}|mtools=${alias}-alias-no-esp-partition-on-/dev/${disk}"
+        return 1
+        ;;
+    esac
+    offset=$(( start * 512 ))
   fi
   if ! mount -t tmpfs -o size=16m,mode=0700 zeta-esp-copyout "$mnt" 2>/dev/null; then
     ZETA_ESP_MOUNT_WHY="${ZETA_ESP_MOUNT_WHY}|mtools=tmpfs-mount-failed"
@@ -207,7 +237,10 @@ zeta_esp_copy_out_mtools() {
   # a working read. A non-FAT offset makes mcopy exit non-zero (`init ::
   # non DOS media`), so success here implies a real FAT at that offset.
   if err="$(mcopy -s -n -o -i "/dev/${disk}@@${offset}" "::/" "$mnt/" 2>&1 >/dev/null)"; then
-    ZETA_ESP_MOUNT_VIA="mtools-copy:/dev/${disk}@@${offset}"
+    # Say when the ESP was reached THROUGH an alias: the candidate name the
+    # caller records is then not the ESP's own device, and a reader of the
+    # scan line has to be able to tell.
+    ZETA_ESP_MOUNT_VIA="mtools-copy:/dev/${disk}@@${offset}${alias:+:from-${alias}-alias}"
     return 0
   fi
   umount "$mnt" 2>/dev/null || true
@@ -288,6 +321,21 @@ zeta_try_mount_esp_ro() {
   return 1
 }
 
+# The top-level entries of a mounted ESP as one scan-line token: names squeezed
+# to [A-Za-z0-9._-], joined by `+`, ordinal (LC_ALL=C) order, first 12 only.
+# `nothing` means the FAT was readable and EMPTY -- a different finding from a
+# FAT that holds files but not the conf -- and `unlistable` is a third, so an
+# `ls` failure can never pass itself off as an empty ESP.
+zeta_esp_top_level_listing() {
+  local listing
+  if ! listing="$(LC_ALL=C ls -1A "$1" 2>/dev/null)"; then
+    printf 'unlistable'
+    return 0
+  fi
+  listing="$(printf '%s\n' "$listing" | LC_ALL=C sort | head -12 | tr -c 'A-Za-z0-9._\n-' '_' | paste -sd+ -)" || :
+  printf '%s' "${listing:-nothing}"
+}
+
 zeta_source_esp_firstboot_conf() {
   local part conf
   mkdir -p "$ESP_CONF_MOUNT" 2>/dev/null || { ZETA_ESP_CONF="mkdir-failed:$ESP_CONF_MOUNT"; return 1; }
@@ -343,7 +391,18 @@ zeta_source_esp_firstboot_conf() {
       umount "$ESP_CONF_MOUNT" 2>/dev/null || true
       return 0
     fi
-    ZETA_ESP_CONF_TRIED="${ZETA_ESP_CONF_TRIED}(no-conf)"
+    # 081M3B7Z38Q087G0R003F9X7HM: `(no-conf)` alone could not say whether the
+    # FAT was READ and simply lacked the file, or was some other FAT entirely.
+    # Nightly run 36297481926 printed `/dev/sda2(no-conf)` on the
+    # initial-format lane and it took a log dive to establish that the mount
+    # had worked and that lane stages no conf at all (its bake plans only
+    # authorized-keys, hostname and creds). `saw=` names the top-level entries
+    # the mount DID expose, so "readable, unstaged" is visible on sight --
+    # `saw=EFI+zeta-hostname.txt+...` -- and an unopenable device is still
+    # the separate `(no-vfat:...)` branch above, never this one. Space-free
+    # and comma-free (`espConfScanOutcome` parses `tried=(\S*)`; commas
+    # separate candidates), ordinal-sorted, capped.
+    ZETA_ESP_CONF_TRIED="${ZETA_ESP_CONF_TRIED}(no-conf:saw=$(zeta_esp_top_level_listing "$ESP_CONF_MOUNT"))"
     umount "$ESP_CONF_MOUNT" 2>/dev/null || true
   done
   [[ -n "$ZETA_ESP_CONF_TRIED" ]] || ZETA_ESP_CONF="no-block-devices-matched"

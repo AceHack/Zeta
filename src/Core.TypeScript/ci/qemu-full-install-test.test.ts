@@ -24,6 +24,7 @@ import {
   assertNothingToHealAfterGracefulShutdown,
   ESP_CONF_SCAN_PREFIX,
   espConfScanOutcome,
+  bootMediumShape,
   assertWp11VerdictUnitEnabled,
   ESP_PROBE_NO_HOSTNAME,
   ESP_PROBE_NO_PUBKEY,
@@ -1749,6 +1750,56 @@ describe("WP27 — the staged ESP conf must be OBSERVED to arrive", () => {
     );
     expect(verdict.ok).toBe(false);
     if (!verdict.ok) expect(verdict.reason).toContain("no-block-devices-matched");
+  });
+});
+
+describe("081M3B7Z38Q087G0R003F9X7HM — the boot medium must be a partition, never the whole disk", () => {
+  // The real line from nightly 36297481926 (initial-format lane), verbatim in shape.
+  const HEALTHY =
+    `${ESP_CONF_SCAN_PREFIX} esp-conf=none tried=/dev/disk/by-label/EFIBOOT->/dev/sda2(no-conf),` +
+    "/dev/sda1(no-vfat:vfat=fsconfig___failed:_/dev/sda1:_Can_t_open_blockdev._|mtools=start-lba-0-not-a-partition)" +
+    " boot-medium=/dev/sda1\n";
+  const COIN_FLIP_LOST = `${ESP_CONF_SCAN_PREFIX} esp-conf=none tried=/dev/sda2(no-vfat:vfat=x) boot-medium=/dev/sda\n`;
+
+  it("the partition shape passes", () => {
+    expect(bootMediumShape(HEALTHY)).toEqual({ kind: "partition", device: "/dev/sda1" });
+    expect(bootMediumShape(`${ESP_CONF_SCAN_PREFIX} esp-conf=none tried= boot-medium=/dev/nvme0n1p1\n`).kind).toBe(
+      "partition",
+    );
+  });
+
+  it("the whole-disk shape — the measured failure — is convicted", () => {
+    expect(bootMediumShape(COIN_FLIP_LOST)).toEqual({ kind: "whole-disk", device: "/dev/sda" });
+    expect(bootMediumShape(`${ESP_CONF_SCAN_PREFIX} esp-conf=none tried= boot-medium=/dev/nvme0n1\n`).kind).toBe(
+      "whole-disk",
+    );
+  });
+
+  it("no line, an unmounted /iso, or an unrecognised device is DID-NOT-RUN, never a pass or a fail", () => {
+    expect(bootMediumShape("ordinary serial\n").kind).toBe("not-reported");
+    expect(
+      bootMediumShape(`${ESP_CONF_SCAN_PREFIX} esp-conf=none tried= boot-medium=<not-mounted-at-/iso>\n`).kind,
+    ).toBe("not-reported");
+    expect(bootMediumShape(`${ESP_CONF_SCAN_PREFIX} esp-conf=none tried= boot-medium=/dev/mapper/x\n`).kind).toBe(
+      "not-reported",
+    );
+  });
+
+  it("the ISO really carries the rule this check falsifies, in BOTH udev stages", () => {
+    const nix = readFileSync(
+      resolve(import.meta.dir, "../../../full-ai-cluster/usb-nixos-installer/nixos/modules/install-label-single-device.nix"),
+      "utf8",
+    );
+    expect(nix).toContain('ENV{DEVTYPE}=="disk"');
+    expect(nix).toContain("ENV{ID_FS_LABEL}==\"${config.isoImage.volumeID}\"");
+    expect(nix).toContain('OPTIONS+="link_priority=-100"');
+    expect(nix).toContain("boot.initrd.services.udev.rules = zetaInstallLabelOnePartition;");
+    expect(nix).toContain("services.udev.extraRules = zetaInstallLabelOnePartition;");
+    const installer = readFileSync(
+      resolve(import.meta.dir, "../../../full-ai-cluster/usb-nixos-installer/nixos/installer/configuration.nix"),
+      "utf8",
+    );
+    expect(installer).toContain("../modules/install-label-single-device.nix");
   });
 });
 
