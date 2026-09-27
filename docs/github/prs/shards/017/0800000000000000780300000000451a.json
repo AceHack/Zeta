@@ -1,0 +1,12 @@
+{
+  "pr_number": 17690,
+  "archive_path": "docs/history/pr-reviews/2026/09/27/PR-17690-fix-installer-ci-built-isos-bake-a-real-commit-pin-instead-of-unknown-p0.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-27T15:35:16.790Z",
+  "schema_version": "v1",
+  "commit_sha": "a8dd050f05b10b700a0553266ec7c752f1993db2",
+  "title": "fix(installer): CI-built ISOs bake a real commit pin instead of `unknown` (P0)",
+  "state": "MERGED",
+  "merged_at": "2026-09-27T15:34:30Z",
+  "head_ref": "claude/iso-pin-survives-preload"
+}
