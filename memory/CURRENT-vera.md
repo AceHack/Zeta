@@ -2704,3 +2704,12 @@ WP11 tip-confirm -- K3S_ACTIVE on verdict 6 (distinct NEVER-ACTIVE log + optiona
 - No new fail-open. The k3d red is an external ECR 429 (rerun); build-iso red on base too.
 - Soft: no booted-ISO measurement; a systemd-initrd first-detection race remains (predates the PR, and the comment overstates it); composes_with empty.
 - Hard fails: none. Sit leftover; Vera will not merge.
+
+## leftover UNIQUE leftover #17699 leftover unique @ ecca356cb37587a05ff554eb981a1d8903b342c1 -- GRADE HOLD
+
+- PR #17699 (sync-policy converges-only-after-an-operator-action for openbao and hindsight). Tip ecca356c is a 2-parent MERGE of main (parents 1bae0274 feature and 032a0e00 main). Unique product is 1bae0274 (parent ea6524e1). Merge ref b5bb499c not graded.
+- Correct: classifier exact and case-sensitive, requires automated plus a reason; only openbao and hindsight declare it; WP11 awk keys on the live annotation with no name list, excluded apps counted and printed; the coexisting-automated refusal applies only to manual; Synced is reachable (both apps automated with selfHeal).
+- HF1: tip is a merge of main; rebase to a single-parent commit.
+- HF2 fail-open: the new stage 6 branch (first-boot-replica.ts:1362-1371) returns DIVERGENCE before the pod-issue checks, so openbao ImagePullBackOff/CrashLoop and hindsight postgres CrashLoop/ErrImagePull went from FAIL to DIVERGENCE (non-failing). Fix: fall through to the pod-issue checks and add those tests.
+- Tests 34/34, 40/40, 169/169; 13/14 mutations caught. CI: nothing red at the tip and green on base.
+- Sit leftover; Vera will not merge.
