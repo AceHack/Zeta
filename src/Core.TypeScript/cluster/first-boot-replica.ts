@@ -341,30 +341,74 @@ export interface ManifestSourceEntry {
   readonly attr: string;
   readonly literal: string;
   readonly path: string;
+  /**
+   * An explicit `<attr>.target = "<filename>";` override, when the entry sets
+   * one. Only the k3s `.skip` markers do (k3s-server.nix's floor block); every
+   * other entry's filename is nixpkgs' `mkManifestTarget(attr)`.
+   */
+  readonly target?: string;
 }
 
-/** `<attr>.source = <path literal>;` bindings inside a `manifests = { ... }` attrset — same shape `validate-bootstrap.ts` reads. */
+/**
+ * `<attr>.source = <path literal>;` bindings inside a `manifests = { ... }`
+ * attrset — same shape `validate-bootstrap.ts` reads — plus any
+ * `<attr>.target = "<filename>";` override on the same attribute. A `target`
+ * whose attribute has no path `source` is REFUSED rather than dropped: it would
+ * be a file the real node links and this replica silently does not write.
+ */
 export function parseManifestSourceRoster(nixSource: string, moduleDir: string): ManifestSourceEntry[] {
   const block = extractBracedBlock(nixSource, "manifests = {", "{", "}");
-  const entries: ManifestSourceEntry[] = [];
+  const sources: { attr: string; literal: string; path: string }[] = [];
+  const targets = new Map<string, string>();
   for (const rawLine of block.split("\n")) {
     const line = rawLine.trim();
+    if (line.startsWith("#")) continue;
     const eq = line.indexOf("=");
     if (eq === -1) continue;
     const lhs = line.slice(0, eq).trim();
+    const semi = line.indexOf(";", eq);
+    if (semi === -1) continue;
+    const rhs = line.slice(eq + 1, semi).trim();
+    const TARGET_ATTR = ".target";
+    if (lhs.endsWith(TARGET_ATTR)) {
+      const attr = lhs.slice(0, lhs.length - TARGET_ATTR.length);
+      const quoted = /^"([^"$\\]+)"$/.exec(rhs);
+      if (attr.length === 0 || quoted === null) {
+        throw new Error(`manifests: \`${line}\` — a target this parser cannot read as a plain string literal`);
+      }
+      targets.set(attr, quoted[1] ?? "");
+      continue;
+    }
     const SOURCE_ATTR = ".source";
     if (!lhs.endsWith(SOURCE_ATTR)) continue;
     const attr = lhs.slice(0, lhs.length - SOURCE_ATTR.length);
     if (attr.length === 0) continue;
-    const semi = line.indexOf(";", eq);
-    if (semi === -1) continue;
-    const literal = line.slice(eq + 1, semi).trim();
+    const literal = rhs;
     const isPathLiteral = literal.startsWith("./") || literal.startsWith("../") || literal.startsWith("/");
     if (!isPathLiteral) continue; // the inline pkgs.writeText entry is handled separately
     const path = isAbsolute(literal) ? resolve(literal) : resolve(join(moduleDir, literal));
-    entries.push({ attr, literal, path });
+    sources.push({ attr, literal, path });
   }
-  return entries;
+  const sourced = new Set(sources.map((s) => s.attr));
+  for (const attr of targets.keys()) {
+    if (!sourced.has(attr)) {
+      throw new Error(`manifests: \`${attr}.target\` is set but \`${attr}\` has no path \`source\` this parser can read`);
+    }
+  }
+  return sources.map((s) => {
+    const target = targets.get(s.attr);
+    return target === undefined ? s : { ...s, target };
+  });
+}
+
+/**
+ * Whether the k3s deploy controller would APPLY a file of this name. It
+ * submits only `.yaml`/`.yml`/`.json` (k3s pkg/deploy/controller.go
+ * `shouldSkipFile`); anything else in the manifests directory — a `.skip`
+ * marker — is read for its NAME and never applied.
+ */
+export function isAppliedManifestFilename(filename: string): boolean {
+  return filename.endsWith(".yaml") || filename.endsWith(".yml") || filename.endsWith(".json");
 }
 
 /**
@@ -493,9 +537,9 @@ export function buildRoster(inputs: RosterBuildInputs): RosterEntry[] {
     }
     roster.push({
       attr: entry.attr,
-      filename: manifestTargetFilename(entry.attr),
+      filename: entry.target ?? manifestTargetFilename(entry.attr),
       content,
-      sourceDescription: entry.literal,
+      sourceDescription: entry.target === undefined ? entry.literal : `${entry.literal} (target ${entry.target})`,
     });
   }
   if (seenAttrs.has("local-path-provisioner")) {
@@ -734,7 +778,7 @@ export function buildPlan(options: BuildPlanOptions): ReplicaPlan {
   const patchedContent = patchRootApplicationRevision(rootEntry.content, rootRepoUrl, options.targetRevision);
   roster = roster.map((e) => (e.attr === ROOT_APPLICATION_ATTR ? { ...e, content: patchedContent } : e));
 
-  const applyOrder = roster.map((e) => e.filename);
+  const applyOrder = roster.filter((e) => isAppliedManifestFilename(e.filename)).map((e) => e.filename);
 
   const divergences: Divergence[] = [
     {
@@ -893,7 +937,8 @@ export function applyServeTreeOverride(plan: ReplicaPlan, override: ServeTreeOve
         `by reference here, not restated, so the two lanes cannot silently disagree about what "excluded" means.`,
     },
   ];
-  return { ...plan, roster, applyOrder: roster.map((e) => e.filename), divergences };
+  const applyOrder = roster.filter((e) => isAppliedManifestFilename(e.filename)).map((e) => e.filename);
+  return { ...plan, roster, applyOrder, divergences };
 }
 
 // ──────────────── Stage 6: pod/app convergence classification ───────────

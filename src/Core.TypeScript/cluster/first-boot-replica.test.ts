@@ -52,6 +52,7 @@ import {
   hashSecretData,
   injectRootApplicationExclude,
   isKnownSealedByDesign,
+  isAppliedManifestFilename,
   isKnownSoakRegression,
   isKnownSpireAgentDnsCrashLoop,
   k3sVersionToDockerTag,
@@ -189,6 +190,41 @@ describe("parseManifestSourceRoster", () => {
   test("does not see an inline pkgs.writeText entry (that is a different parser's job)", () => {
     const src = `manifests = {\n  foo.source = pkgs.writeText "foo.yaml" '' bar '';\n};`;
     expect(parseManifestSourceRoster(src, "/repo")).toEqual([]);
+  });
+
+  test("an explicit `target` override (a k3s .skip marker) becomes the entry's filename", () => {
+    const src = [
+      "manifests = {",
+      "  # k3s-skip-coredns.target = \"not-this.skip\"; (a comment, never read)",
+      '  k3s-skip-coredns.target = "coredns.yaml.skip";',
+      "  k3s-skip-coredns.source = ../../k8s/bootstrap/k3s-packaged-manifest.skip;",
+      "  cilium-install.source = ../../k8s/bootstrap/cilium-install.yaml;",
+      "};",
+    ].join("\n");
+    const entries = parseManifestSourceRoster(src, "/repo/m");
+    expect(entries.map((e) => [e.attr, e.target])).toEqual([
+      ["k3s-skip-coredns", "coredns.yaml.skip"],
+      ["cilium-install", undefined],
+    ]);
+  });
+
+  test("a target with no readable path source is refused, never silently dropped", () => {
+    const src = 'manifests = {\n  orphan.target = "orphan.yaml.skip";\n};';
+    expect(() => parseManifestSourceRoster(src, "/repo")).toThrow(/orphan\.target/);
+  });
+
+  test("a target that is not a plain string literal is refused", () => {
+    const src = 'manifests = {\n  x.target = "${name}.skip";\n  x.source = ./x;\n};';
+    expect(() => parseManifestSourceRoster(src, "/repo")).toThrow(/plain string literal/);
+  });
+});
+
+describe("isAppliedManifestFilename", () => {
+  test("k3s applies .yaml/.yml/.json only; a .skip marker is never applied", () => {
+    expect(isAppliedManifestFilename("k3s-coredns.yaml")).toBe(true);
+    expect(isAppliedManifestFilename("a.yml")).toBe(true);
+    expect(isAppliedManifestFilename("a.json")).toBe(true);
+    expect(isAppliedManifestFilename("coredns.yaml.skip")).toBe(false);
   });
 });
 
@@ -620,12 +656,20 @@ describe("buildPlan against the real repository files (LIVE, no Docker)", () => 
       "cilium-namespace.yaml",
       "external-secrets-install.yaml",
       "internal-secret-seeding.yaml",
+      "k3s-coredns.yaml",
+      "k3s-metrics-server.yaml",
       "local-path-provisioner.yaml",
       "openziti-namespace.yaml",
       "root-application.yaml",
       "spire-install.yaml",
       "trust-manager-install.yaml",
     ]);
+    // The floor's two k3s skip markers are WRITTEN (they are roster entries the
+    // node links) but never APPLIED -- same split the Nix eval test's
+    // `skipMarkers` makes.
+    expect(
+      plan.roster.map((e) => e.filename).filter((f) => !isAppliedManifestFilename(f)).sort(),
+    ).toEqual(["coredns.yaml.skip", "metrics-server-deployment.yaml.skip"]);
 
     expect(plan.helmCharts.map((c) => c.name)).toEqual([
       "argocd",

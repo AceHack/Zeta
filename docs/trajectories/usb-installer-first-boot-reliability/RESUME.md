@@ -104,7 +104,7 @@ the item says so.
 | what | why it matters | where |
 |---|---|---|
 | **Does the roster converge on 16–22 core / 66 G hardware?** | the only substrate that matters and nothing here can reach it | unmeasurable in CI; needs the maintainer's box |
-| Fix the node **floor** (coredns, metrics-server), then re-derive liveness budgets | 26 of the 28 may be downstream symptoms | `liveness-kill-budget.ts`; keda's 3→20 is the worked precedent |
+| Floor fixed (coredns, metrics-server vendored, liveness 1s/3 → 5s/5) and cockroachdb widened; **re-measure the constrained lane**, then re-derive the rest | 26 of the 28 may be downstream symptoms; nothing re-measured yet | `081M3HPXKAJ087G0R001SQEXWY` (remaining census); `liveness-kill-budget.ts` now reports stall tolerance |
 | Scenario 3/4 end-to-end — **reflashing over an existing install** | the last ordinary operator path with no evidence | dispatch 36140151239 was in flight at handoff; PR #17683 merged the fix, the run had not reported |
 | `weaviate` stuck `Synced`/`Progressing` | last unexplained app; conditions array is **empty** | cilium's `ExcludedResourceWarning` cause was ruled out |
 | Bootstrap-or-join **discovery has never run** | `probe.ts:83` passes `--no-db-lookup`, which this avahi-browse rejects | `081M39K8ND1087G0R000G4EN4N` |

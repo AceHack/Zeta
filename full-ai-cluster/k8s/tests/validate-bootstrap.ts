@@ -194,12 +194,31 @@ function parseSourceBinding(rawLine: string, moduleDir: string): RosterEntry | n
  */
 function readManifestRoster(nixSource: string, moduleDir: string): RosterEntry[] {
   const entries: RosterEntry[] = [];
-  for (const rawLine of extractManifestsAttrset(nixSource).split("\n")) {
+  const attrset = extractManifestsAttrset(nixSource);
+  for (const rawLine of attrset.split("\n")) {
     const entry = parseSourceBinding(rawLine, moduleDir);
     if (entry !== null) entries.push(entry);
   }
+  // `<attr>.target = "<name>";` -- only the k3s `.skip` markers in k3s-server.nix's
+  // floor block set one. A marker's CONTENT is never read by k3s (only its name),
+  // so it is exempt from the YAML tests below; every other target is refused.
+  for (const rawLine of attrset.split("\n")) {
+    const line = rawLine.trim();
+    if (line.startsWith("#")) continue;
+    const m = /^([\w-]+)\.target\s*=\s*"([^"]+)";$/.exec(line);
+    if (m === null) continue;
+    const attr = m[1] ?? "";
+    const target = m[2] ?? "";
+    if (!target.endsWith(".skip")) {
+      throw new Error(`${attr}.target = "${target}": only k3s \`.skip\` markers may override target`);
+    }
+    skipMarkerAttrs.add(attr);
+  }
   return entries.sort((a, b) => compareOrdinal(a.attr, b.attr));
 }
+
+/** Attributes whose `target` is a k3s `.skip` marker -- linked for their NAME, never applied. */
+const skipMarkerAttrs = new Set<string>();
 
 let roster: RosterEntry[];
 try {
@@ -308,7 +327,10 @@ function parseManifest(content: string): ManifestDoc[] {
   return out;
 }
 
-const manifests: ParsedManifest[] = resolved.map((entry) => {
+for (const entry of resolved) {
+  if (skipMarkerAttrs.has(entry.attr)) ok(`${entry.attr}: k3s .skip marker (content never applied) — exempt from YAML tests`);
+}
+const manifests: ParsedManifest[] = resolved.filter((entry) => !skipMarkerAttrs.has(entry.attr)).map((entry) => {
   try {
     return { entry, docs: parseManifest(readFileSync(entry.path, "utf-8")), parseError: null };
   } catch (e) {

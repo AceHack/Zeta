@@ -84,8 +84,11 @@ let
   # with `target = lib.mkDefault (mkManifestTarget name)` at line 384, linked
   # into `manifestDir = /var/lib/rancher/k3s/server/manifests` at line 27.
   #
-  # `target` is mkDefault, so an entry MAY override it -- in which case this
-  # reconstruction would be wrong. P0 refuses that case rather than guessing.
+  # `target` is mkDefault, so an entry MAY override it. Exactly the entries in
+  # `declaredTargetOverrides` below do -- the two k3s `.skip` markers that keep
+  # k3s's packaged CoreDNS / metrics-server Deployment out of the deploy
+  # controller (see the floor block in k3s-server.nix) -- and P0 refuses a
+  # target on anything else rather than guessing at it.
   mkManifestTarget =
     name:
     if lib.hasSuffix ".yaml" name || lib.hasSuffix ".yml" name || lib.hasSuffix ".json" name then
@@ -93,11 +96,25 @@ let
     else
       name + ".yaml";
 
-  targetOf = name: mkManifestTarget name;
+  declaredTargetOverrides = {
+    k3s-skip-coredns = "coredns.yaml.skip";
+    k3s-skip-metrics-server = "metrics-server-deployment.yaml.skip";
+  };
+
+  targetOf = name: if merged.${name} ? target then merged.${name}.target else mkManifestTarget name;
+
+  # The k3s deploy controller applies only .yaml/.yml/.json (pkg/deploy/
+  # controller.go `shouldSkipFile`); any other file in the directory is a
+  # marker and is never submitted. So the skip markers are NOT in the order.
+  isApplied =
+    target: lib.hasSuffix ".yaml" target || lib.hasSuffix ".yml" target || lib.hasSuffix ".json" target;
+
+  allTargets = map targetOf mergedNames;
+  skipMarkers = builtins.sort (a: b: a < b) (builtins.filter (t: !(isApplied t)) allTargets);
 
   # Nix string `<` is bytewise, matching the Go sort of the directory listing
   # the k3s deploy controller walks. This is SUBMISSION order -- see P5.
-  appliedOrder = builtins.sort (a: b: a < b) (map targetOf mergedNames);
+  appliedOrder = builtins.sort (a: b: a < b) (builtins.filter isApplied allTargets);
 
   # -- The pinned expectation (a golden vector for the boot sequence) ------
   #
@@ -118,6 +135,12 @@ let
     # than "before its own namespaces are used", and it declares those
     # namespaces itself (see the file's own header).
     "internal-secret-seeding.yaml"
+    # Added 2026-09-27: k3s's own CoreDNS and metrics-server Deployment,
+    # vendored with widened liveness probes (the node's floor; measured on
+    # dispatch 36119931377). No ordering property depends on where they land:
+    # both are core/apps/rbac objects the API server admits immediately.
+    "k3s-coredns.yaml"
+    "k3s-metrics-server.yaml"
     "local-path-provisioner.yaml"
     # Added 2026-08-22 with the trust-manager trust-namespace move. It sorts
     # here, which is BEFORE trust-manager-install.yaml — the one ordering
@@ -254,8 +277,21 @@ let
     (check "no two modules declare the same manifest name (a collision is a silent overwrite)" (
       duplicateNames == [ ]
     ))
-    (check "no entry overrides `target`, so <name>.yaml is the exact deployed filename" (
-      builtins.all (n: !(merged.${n} ? target)) mergedNames
+    (check "only the declared skip markers override `target`, each to its declared filename" (
+      builtins.all (
+        n:
+        if declaredTargetOverrides ? ${n} then
+          (merged.${n}.target or null) == declaredTargetOverrides.${n}
+        else
+          !(merged.${n} ? target)
+      ) mergedNames
+      && builtins.all (n: builtins.elem n mergedNames) (builtins.attrNames declaredTargetOverrides)
+    ))
+    (check "the skip markers are exactly the two packaged k3s files the floor replaces" (
+      skipMarkers == [
+        "coredns.yaml.skip"
+        "metrics-server-deployment.yaml.skip"
+      ]
     ))
     (check "every entry this check could not open is declared (nothing is silently skipped)" (
       sortStrings nonPathSourced == sortStrings declaredInlineSources

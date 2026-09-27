@@ -22,6 +22,8 @@ import {
   formatTable,
   needsStartupProbe,
   probeKillBudgetSeconds,
+  probeStallToleranceSeconds,
+  probeTimeoutSeconds,
   summarizeDoc,
   unacknowledgedFindings,
   type AuditResult,
@@ -147,7 +149,45 @@ describe("summarizeDoc", () => {
       hasReadiness: true,
       hasStartup: false,
       killBudgetSeconds: 20,
+      livenessTimeoutSeconds: 1,
+      stallToleranceSeconds: 21,
     });
+  });
+});
+
+describe("probeStallToleranceSeconds / probeTimeoutSeconds -- the steady-state axis", () => {
+  test("k3s's packaged CoreDNS BEFORE the floor fix: (3-1)*10 + 1 = 21s -- killed on dispatch 36119931377", () => {
+    const k3sCoreDns = { initialDelaySeconds: 60, periodSeconds: 10, timeoutSeconds: 1, failureThreshold: 3 };
+    expect(probeStallToleranceSeconds(k3sCoreDns)).toBe(21);
+    expect(probeTimeoutSeconds(k3sCoreDns)).toBe(1);
+  });
+
+  test("upstream Kubernetes' CoreDNS shape (the floor fix): (5-1)*10 + 5 = 45s", () => {
+    expect(probeStallToleranceSeconds({ initialDelaySeconds: 60, periodSeconds: 10, timeoutSeconds: 5, failureThreshold: 5 })).toBe(45);
+  });
+
+  test("initialDelaySeconds does NOT enter the steady-state axis -- that is the startup budget's job", () => {
+    const a = probeStallToleranceSeconds({ initialDelaySeconds: 0, periodSeconds: 10, failureThreshold: 3 });
+    const b = probeStallToleranceSeconds({ initialDelaySeconds: 600, periodSeconds: 10, failureThreshold: 3 });
+    expect(a).toBe(b);
+  });
+
+  test("an absent timeoutSeconds is the Kubernetes default 1s, not zero and not 'unknown'", () => {
+    expect(probeTimeoutSeconds({})).toBe(1);
+    expect(probeStallToleranceSeconds({})).toBe(21); // (3-1)*10 + 1
+  });
+
+  test("no probe is null; a malformed one (non-positive timeout/period/threshold) is refused as null", () => {
+    expect(probeStallToleranceSeconds(undefined)).toBeNull();
+    expect(probeTimeoutSeconds(undefined)).toBeNull();
+    expect(probeStallToleranceSeconds({ timeoutSeconds: 0 })).toBeNull();
+    expect(probeStallToleranceSeconds({ periodSeconds: 0 })).toBeNull();
+    expect(probeStallToleranceSeconds({ failureThreshold: 0 })).toBeNull();
+  });
+
+  test("keda's 3 -> 20 widening moved this axis too: (20-1)*10 + 1 = 191s", () => {
+    // keda-operator logged liveness FAILURES on 36119931377 but was not among the 28 killed.
+    expect(probeStallToleranceSeconds({ periodSeconds: 10, failureThreshold: 20 })).toBe(191);
   });
 });
 
@@ -162,6 +202,8 @@ function container(overrides: Partial<ContainerProbeSummary>): ContainerProbeSum
     hasReadiness: true,
     hasStartup: false,
     killBudgetSeconds: 50,
+    livenessTimeoutSeconds: 1,
+    stallToleranceSeconds: 21,
     ...overrides,
   };
 }

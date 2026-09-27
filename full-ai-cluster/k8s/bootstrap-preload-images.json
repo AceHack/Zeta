@@ -6,7 +6,7 @@
     "full-ai-cluster/nixos/modules/k3s-server.nix",
     "full-ai-cluster/nixos/modules/local-storage.nix"
   ],
-  "totalCompressedBytes": 1004034155,
+  "totalCompressedBytes": 1051040335,
   "unsized": 0,
   "images": [
     {
@@ -201,6 +201,22 @@
       ],
       "amd64Digest": "sha256:fe541e6e7ee182cd6469c831f74026a4e36a5fa059d582459eca40b17c5275b3",
       "compressedBytes": 18580473
+    },
+    {
+      "reference": "rancher/mirrored-coredns-coredns:1.14.6",
+      "rosterAttrs": [
+        "k3s-coredns"
+      ],
+      "amd64Digest": "sha256:1ba6f47265602e2e50a9c4669e3a955e4298a0d30dc82f39293d4bf1a851e0ff",
+      "compressedBytes": 23752713
+    },
+    {
+      "reference": "rancher/mirrored-metrics-server:v0.9.0",
+      "rosterAttrs": [
+        "k3s-metrics-server"
+      ],
+      "amd64Digest": "sha256:25d291fde59974547bac6f07fa9d6cf6f5bedd1f19d60c893311c5e741e0a42f",
+      "compressedBytes": 23253467
     },
     {
       "reference": "registry.k8s.io/sig-storage/csi-node-driver-registrar:v2.9.4",

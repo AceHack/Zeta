@@ -56,13 +56,17 @@
  * single pod — including the pods whose own images are preloaded. 0.3 MB, and
  * the best ratio in the payload.
  *
- * `mirrored-coredns-coredns`, `mirrored-metrics-server`, `klipper-lb` and
- * `klipper-helm` are still out. They ARE pulled at first boot, and that is now
- * stated rather than denied — but they are all `docker.io/rancher/*`, i.e. the
- * one registry the mirror covers, and each supports a service that degrades
- * rather than a node that cannot run. Preloading them is a separate ~150 MB
- * decision with a ready mechanism (nixpkgs exposes the official airgap tarball
- * as `k3s.airgapImages`), and it is not made here.
+ * `mirrored-coredns-coredns` and `mirrored-metrics-server` are now IN, and not
+ * by a decision made here: since 2026-09-27 the roster vendors k3s's own
+ * CoreDNS and metrics-server Deployment (`k8s/bootstrap/k3s-coredns.yaml`,
+ * `k3s-metrics-server.yaml`, so their liveness probes could be widened), and
+ * this module derives from the roster — so their images arrived with them.
+ * `klipper-lb` and `klipper-helm` are still out. They ARE pulled at first boot,
+ * and that is stated rather than denied — but they are `docker.io/rancher/*`,
+ * the one registry the mirror covers, and each supports a service that degrades
+ * rather than a node that cannot run. Preloading them is a separate decision
+ * with a ready mechanism (nixpkgs exposes the official airgap tarball as
+ * `k3s.airgapImages`), and it is not made here.
  *
  * -- DERIVED, NEVER LISTED ------------------------------------------------
  * A second hand-maintained copy of a roster is a defect class this repo has

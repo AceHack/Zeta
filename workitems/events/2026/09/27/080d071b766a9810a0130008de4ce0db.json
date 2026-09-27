@@ -1,0 +1,14 @@
+{
+  "id": "080d071b766a9810a0130008de4ce0db",
+  "at": "2026-09-27T15:14:44.691Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M3HPXKAJ087G0R001SQEXWY",
+    "type": "bug",
+    "title": "Liveness probes kill slow-but-alive containers under memory pressure: floor first (coredns, metrics-server), then re-derive app budgets",
+    "slug": "liveness-probes-kill-slow-but-alive-containers-under-memory",
+    "priority": "P2",
+    "filename": "081M3HPXKAJ087G0R001SQEXWY-liveness-probes-kill-slow-but-alive-containers-under-memory.md"
+  }
+}

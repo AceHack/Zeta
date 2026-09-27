@@ -108,6 +108,51 @@ export function probeKillBudgetSeconds(probe: unknown): number | null {
   return initialDelay + (failureThreshold - 1) * period;
 }
 
+// ── The SECOND axis: a RUNNING container that becomes slow ────────────────────
+//
+// `probeKillBudgetSeconds` answers "can it finish STARTING?". It is blind to the
+// failure the constrained replica lane actually measured (dispatch 36119931377):
+// a container that started fine, is ALIVE, and under memory pressure answers its
+// probe more slowly than `timeoutSeconds`. 89 of the 122 `Liveness probe failed`
+// lines in that job's log are the client-timeout shape (`context deadline
+// exceeded (Client.Timeout exceeded ...)`) and 22 are `connection refused`; 61
+// kills over 28 containers followed, with zero OOMKilled and zero Evicted. None of
+// that is visible to a startup budget -- `initialDelaySeconds` has long elapsed.
+//
+// What bounds THAT kill is how long a stall the probe tolerates: the kubelet
+// kills after `failureThreshold` CONSECUTIVE failures, and a probe fails once it
+// takes longer than `timeoutSeconds`. So a stall must outlast
+//
+//     (failureThreshold - 1) * periodSeconds + timeoutSeconds
+//
+// to be fatal. `timeoutSeconds` is ALSO a floor in its own right: a process
+// whose every answer takes longer than it is killed after that window however
+// long it stays alive. Kubernetes' default is 1s, which is why it bites first.
+
+/** Kubernetes API default for `timeoutSeconds`, applied only where the field is absent. */
+const DEFAULT_TIMEOUT_SECONDS = 1;
+
+/** `timeoutSeconds` as the kubelet will use it, or `null` when `probe` is not a probe object. */
+export function probeTimeoutSeconds(probe: unknown): number | null {
+  if (!isRecord(probe)) return null;
+  return typeof probe.timeoutSeconds === "number" ? probe.timeoutSeconds : DEFAULT_TIMEOUT_SECONDS;
+}
+
+/**
+ * Seconds a RUNNING container may stall before its liveness probe kills it:
+ * `(failureThreshold - 1) * periodSeconds + timeoutSeconds`. `null` for no probe
+ * or a malformed one (same refusal as `probeKillBudgetSeconds`).
+ */
+export function probeStallToleranceSeconds(probe: unknown): number | null {
+  if (!isRecord(probe)) return null;
+  const period = typeof probe.periodSeconds === "number" ? probe.periodSeconds : DEFAULT_PERIOD_SECONDS;
+  const failureThreshold =
+    typeof probe.failureThreshold === "number" ? probe.failureThreshold : DEFAULT_FAILURE_THRESHOLD;
+  const timeout = probeTimeoutSeconds(probe) ?? DEFAULT_TIMEOUT_SECONDS;
+  if (period <= 0 || failureThreshold <= 0 || timeout <= 0) return null;
+  return (failureThreshold - 1) * period + timeout;
+}
+
 // ── Container extraction ─────────────────────────────────────────────────────
 
 export interface ContainerProbeSummary {
@@ -120,6 +165,10 @@ export interface ContainerProbeSummary {
   readonly hasReadiness: boolean;
   readonly hasStartup: boolean;
   readonly killBudgetSeconds: number | null;
+  /** The liveness probe's `timeoutSeconds` (default 1), `null` with no liveness probe. */
+  readonly livenessTimeoutSeconds: number | null;
+  /** `probeStallToleranceSeconds` of the liveness probe -- the steady-state axis. */
+  readonly stallToleranceSeconds: number | null;
 }
 
 /**
@@ -158,6 +207,8 @@ export function summarizeDoc(app: string, doc: unknown): ContainerProbeSummary[]
     hasReadiness: c.readinessProbe !== undefined,
     hasStartup: c.startupProbe !== undefined,
     killBudgetSeconds: probeKillBudgetSeconds(c.livenessProbe),
+    livenessTimeoutSeconds: probeTimeoutSeconds(c.livenessProbe),
+    stallToleranceSeconds: probeStallToleranceSeconds(c.livenessProbe),
   }));
 }
 
@@ -459,8 +510,8 @@ export function auditCatalog(apps: readonly ShippedApplication[], repoRoot = REP
 export function formatTable(result: AuditResult, thresholdSeconds = DEFAULT_KILL_BUDGET_THRESHOLD_SECONDS): string {
   const lines: string[] = [];
   lines.push(
-    `| app | kind/resource | container | liveness | readiness | startup | kill budget | flag |`,
-    `|---|---|---|---|---|---|---|---|`,
+    `| app | kind/resource | container | liveness | readiness | startup | kill budget | timeout | stall tolerance | flag |`,
+    `|---|---|---|---|---|---|---|---|---|---|`,
   );
   const sorted = [...result.containers].sort(
     (a, b) => compareOrdinal(a.app, b.app) || compareOrdinal(a.container, b.container),
@@ -472,7 +523,8 @@ export function formatTable(result: AuditResult, thresholdSeconds = DEFAULT_KILL
     const slow = isKnownSlowStarter(c.app) ? " ★" : "";
     lines.push(
       `| ${c.app}${slow} | ${c.kind}/${c.resource} | ${c.container} | ${String(c.hasLiveness)} | ` +
-        `${String(c.hasReadiness)} | ${String(c.hasStartup)} | ${c.killBudgetSeconds ?? "n/a"}s | ${marker} |`,
+        `${String(c.hasReadiness)} | ${String(c.hasStartup)} | ${c.killBudgetSeconds ?? "n/a"}s | ` +
+        `${c.livenessTimeoutSeconds ?? "n/a"}s | ${c.stallToleranceSeconds ?? "n/a"}s | ${marker} |`,
     );
   }
   if (result.renderErrors.length > 0) {

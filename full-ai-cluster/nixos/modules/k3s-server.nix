@@ -451,6 +451,37 @@
       argocd-install.source = ../../k8s/bootstrap/argocd-install.yaml;
       # Root App-of-Apps — hands off to ArgoCD.
       root-application.source = ../../k8s/bootstrap/root-application.yaml;
+
+      # ── THE NODE'S FLOOR: k3s's own CoreDNS and metrics-server, vendored ──
+      #
+      # MEASURED (constrained replica lane, dispatch 36119931377): under memory
+      # pressure both were killed by their OWN liveness probes while alive and
+      # slow -- `context deadline exceeded (Client.Timeout exceeded ...)`, not a
+      # refused connection -- with zero OOMKilled and zero Evicted across the run.
+      # k3s ships both probes at `timeoutSeconds: 1, failureThreshold: 3`. Every
+      # other pod depends on these two, so they are fixed before any app's budget.
+      #
+      # WHY VENDORED, NOT PATCHED. k3s rewrites its packaged manifests on every
+      # start, offers no HelmChartConfig for these two (they are plain manifests,
+      # not charts), and `--disable=coredns` would also switch off the node
+      # controller that writes `NodeHosts` into CoreDNS's ConfigMap
+      # (k3s pkg/server/server.go: `node.Register(ctx, !Skips["coredns"], ...)`).
+      # A `<file>.skip` marker is the one mechanism that removes a single
+      # packaged file from the deploy controller and nothing else
+      # (pkg/deploy/controller.go `listFilesIn`): it is keyed by BASENAME
+      # anywhere in the manifests tree, which is what lets the second marker
+      # reach `metrics-server/metrics-server-deployment.yaml` while leaving that
+      # directory's RBAC, Service and APIService with k3s.
+      #
+      # The two `target`s below are the only entries in this roster that set
+      # one; `k3s-first-boot-apply-order-eval-test.nix` declares them and still
+      # refuses a target on any other entry.
+      k3s-coredns.source = ../../k8s/bootstrap/k3s-coredns.yaml;
+      k3s-metrics-server.source = ../../k8s/bootstrap/k3s-metrics-server.yaml;
+      k3s-skip-coredns.target = "coredns.yaml.skip";
+      k3s-skip-coredns.source = ../../k8s/bootstrap/k3s-packaged-manifest.skip;
+      k3s-skip-metrics-server.target = "metrics-server-deployment.yaml.skip";
+      k3s-skip-metrics-server.source = ../../k8s/bootstrap/k3s-packaged-manifest.skip;
     };
   };
 

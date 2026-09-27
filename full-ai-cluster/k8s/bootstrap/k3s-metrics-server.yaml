@@ -1,0 +1,126 @@
+# full-ai-cluster/k8s/bootstrap/k3s-metrics-server.yaml
+#
+# k3s's OWN packaged metrics-server Deployment, vendored so its liveness probe
+# can be widened. Companion to `k3s-coredns.yaml`, whose header carries the full
+# argument; only what differs is repeated here.
+#
+# VENDORED FROM k3s v1.35.7+k3s1, `manifests/metrics-server/metrics-server-
+# deployment.yaml` (ServiceAccount + Deployment), byte-for-byte except the two
+# `%{...}%` template variables resolved below and the livenessProbe. The OTHER
+# six files in k3s's `metrics-server/` directory (RBAC, Service, APIService) are
+# NOT vendored and are still applied by k3s: the `.skip` marker is keyed by
+# basename (`metrics-server-deployment.yaml.skip`), so it removes this one file
+# and nothing else. `k3s-packaged-manifests.test.ts` pins the k3s version.
+#
+# THE DEFECT, same run (36119931377): `Container metrics-server failed liveness
+# probe, will be restarted`, preceded by readiness failures of the timeout shape
+# (`Client.Timeout exceeded while awaiting headers`) -- alive, slow, killed.
+# metrics-server is the node's floor for anything that reads `metrics.k8s.io`
+# (HPA, KEDA's metrics adapter, `kubectl top`), and an APIService whose backend
+# is restarting makes API discovery itself report errors.
+#
+# THE CHANGE: `timeoutSeconds: 1 -> 5`, `failureThreshold: 3 -> 5`, the same
+# upstream-Kubernetes floor shape as CoreDNS (see that file's anchor). Upstream
+# metrics-server's own manifest does not set a timeout at all (Kubernetes'
+# default is 1s), so it offers no more generous value to cite; this is the
+# floor-component value applied consistently rather than a number derived
+# separately for one container.
+#
+# NOT CHANGED: `priorityClassName: system-node-critical` and requests
+# (cpu 100m / memory 70Mi, Burstable) were already right in k3s's copy.
+#
+# RESOLVED TEMPLATE VARIABLES:
+#   %{SYSTEM_DEFAULT_REGISTRY}%   ""                               (no --system-default-registry)
+#   %{PREFERRED_ADDRESS_TYPES}%   InternalIP,ExternalIP,Hostname   (k3s `addrTypesPrioTemplate(false)`;
+#                                                                  --flannel-external-ip is not set)
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: metrics-server
+  namespace: kube-system
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: metrics-server
+  namespace: kube-system
+  labels:
+    k8s-app: metrics-server
+spec:
+  revisionHistoryLimit: 0
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+  selector:
+    matchLabels:
+      k8s-app: metrics-server
+  template:
+    metadata:
+      name: metrics-server
+      labels:
+        k8s-app: metrics-server
+    spec:
+      priorityClassName: "system-node-critical"
+      serviceAccountName: metrics-server
+      tolerations:
+        - key: "CriticalAddonsOnly"
+          operator: "Exists"
+        - key: "node-role.kubernetes.io/control-plane"
+          operator: "Exists"
+          effect: "NoSchedule"
+      nodeSelector:
+        kubernetes.io/os: linux
+      volumes:
+      # mount in tmp so we can safely use from-scratch images and/or read-only containers
+      - name: tmp-dir
+        emptyDir: {}
+      containers:
+      - name: metrics-server
+        image: "rancher/mirrored-metrics-server:v0.9.0"
+        args:
+        - --cert-dir=/tmp
+        - --secure-port=10250
+        - --kubelet-preferred-address-types=InternalIP,ExternalIP,Hostname
+        - --kubelet-use-node-status-port
+        - --metric-resolution=15s
+        - --tls-cipher-suites=TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305,TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305
+        resources:
+          requests:
+            cpu: 100m
+            memory: 70Mi
+        ports:
+        - name: https
+          containerPort: 10250
+          protocol: TCP
+        readinessProbe:
+          httpGet:
+            path: /readyz
+            port: https
+            scheme: HTTPS
+          initialDelaySeconds: 0
+          periodSeconds: 2
+          timeoutSeconds: 1
+          successThreshold: 1
+          failureThreshold: 3
+        livenessProbe:
+          httpGet:
+            path: /livez
+            port: https
+            scheme: HTTPS
+          initialDelaySeconds: 60
+          periodSeconds: 10
+          # k3s: 1. See the header.
+          timeoutSeconds: 5
+          successThreshold: 1
+          # k3s: 3. See the header.
+          failureThreshold: 5
+        securityContext:
+          readOnlyRootFilesystem: true
+          runAsNonRoot: true
+          runAsUser: 1000
+          allowPrivilegeEscalation: false
+        volumeMounts:
+        - name: tmp-dir
+          mountPath: /tmp

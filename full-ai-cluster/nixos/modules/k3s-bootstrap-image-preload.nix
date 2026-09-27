@@ -57,13 +57,15 @@
 # visibly behind, instead of a partially provisioned node with no explanation.
 # That is the whole claim. Overclaiming it would be worse than not shipping it.
 #
-# k3s's OWN built-ins (`rancher/mirrored-pause`, `mirrored-coredns-coredns`,
-# `mirrored-metrics-server`, `klipper-lb`, `klipper-helm`) are also absent,
-# deliberately: they are not in `services.k3s.manifests`, k3s supplies them,
-# and they are all `docker.io/rancher/*` -- the one registry the mirror
-# already covers. Preloading them is a separate ~150 MB decision with a ready
-# mechanism (nixpkgs exposes the official airgap tarball as
-# `k3s.airgapImages`), and it is not made here.
+# k3s's OWN built-ins: `mirrored-coredns-coredns` and `mirrored-metrics-server`
+# ARE preloaded since 2026-09-27, because the roster now vendors those two
+# Deployments (k3s-server.nix's floor block) and the set is derived from the
+# roster; the sandbox image is preloaded for the reason bootstrap-image-preload.ts
+# gives. `klipper-lb` and `klipper-helm` are still absent, deliberately: they are
+# not in `services.k3s.manifests`, k3s supplies them, and they are
+# `docker.io/rancher/*` -- the one registry the mirror already covers.
+# Preloading them is a separate decision with a ready mechanism (nixpkgs
+# exposes the official airgap tarball as `k3s.airgapImages`), not made here.
 #
 # -- ABSENCE IS NEVER SILENT -----------------------------------------------
 # The defect class this whole effort is about is a step that does not happen

@@ -1,0 +1,296 @@
+# full-ai-cluster/k8s/bootstrap/k3s-coredns.yaml
+#
+# k3s's OWN packaged CoreDNS, vendored so its liveness probe can be widened.
+#
+# VENDORED FROM k3s v1.35.7+k3s1, `manifests/coredns.yaml`, byte-for-byte except
+# (a) the four `%{...}%` template variables k3s substitutes at stage time, resolved
+# below, and (b) the livenessProbe, the one intended change. `k3s-packaged-
+# manifests.test.ts` fails when `k8s/kubernetes-version.json`'s k3sVersion moves
+# away from the version named on the first line of this paragraph -- re-vendor
+# from the new tag then, because the bundled image tag moves with it.
+#
+# -- THE DEFECT (measured, dispatch 36119931377, constrained replica lane) ----
+# Memory pressure -> containers slow -> liveness probes TIME OUT -> the kubelet
+# kills them -> restart -> more pressure. 61 kubelet `failed liveness probe, will
+# be restarted` events over 28 containers, zero OOMKilled, zero Evicted. CoreDNS
+# was one of them:
+#
+#   Liveness probe failed: Get "http://10.143.0.192:8080/health": context
+#   deadline exceeded (Client.Timeout exceeded while awaiting headers)
+#   Container coredns failed liveness probe, will be restarted
+#
+# `context deadline exceeded` is the kubelet's 1s client timeout, not a refused
+# connection: the process was ALIVE and SLOW. Across the whole job log, 89 of
+# the 122 `Liveness probe failed` lines are that client-timeout shape and 22 are
+# `connection refused` (lines, not unique events -- `kubectl describe` and
+# `get events` both print each one). k3s
+# ships this probe at `timeoutSeconds: 1, failureThreshold: 3` -- three answers
+# slower than one second, ~21s of stall, and cluster DNS is restarted. Restarting
+# DNS on a node that is slow because it is contended adds a cold CoreDNS and a
+# window with no DNS at all to that contention; every pod that resolves a name
+# then slows too. It is the node's FLOOR, which is why it is fixed first.
+#
+# -- THE CHANGE, AND ITS ANCHOR -------------------------------------------------
+# `timeoutSeconds: 1 -> 5`, `failureThreshold: 3 -> 5`. These are not invented:
+# they are UPSTREAM Kubernetes' own CoreDNS values (kubernetes/kubernetes
+# `cluster/addons/dns/coredns/coredns.yaml.base`, and kubeadm's CoreDNS
+# Deployment): `initialDelaySeconds: 60, timeoutSeconds: 5, successThreshold: 1,
+# failureThreshold: 5`. k3s tightened them; this restores the upstream shape.
+# Stall tolerance before a kill goes from ~21s (2x10 + 1) to ~45s (4x10 + 5).
+#
+# NOT GENEROUS WITHOUT LIMIT, deliberately. A WEDGED CoreDNS is a cluster-wide
+# DNS outage and the liveness probe is its only self-heal; 45s is the upstream
+# trade and this file takes it rather than a larger number nothing measured.
+#
+# -- WHAT IS NOT CHANGED, AND WHY ------------------------------------------------
+# QoS and priority were already right in k3s's manifest and are kept verbatim:
+# Burstable with requests (cpu 100m / memory 70Mi, limit 170Mi) and
+# `priorityClassName: system-cluster-critical`. The readinessProbe is kept:
+# readiness never kills, it only removes the endpoint.
+#
+# -- HOW k3s's OWN COPY IS KEPT OUT ---------------------------------------------
+# NOT `--disable=coredns`: that also sets k3s's `Skips["coredns"]`, which turns
+# off the node controller that writes `NodeHosts` into the ConfigMap below
+# (k3s pkg/server/server.go `node.Register(ctx, !Skips["coredns"], ...)`), and
+# this Deployment mounts that key. Instead a `coredns.yaml.skip` marker sits in
+# the manifests directory (see `k3s-packaged-manifest.skip`): the deploy
+# controller ignores `coredns.yaml` (pkg/deploy/controller.go `shouldSkipFile`)
+# while every other k3s behaviour stays on. k3s still WRITES its copy on each
+# start; it is simply never applied.
+#
+# -- RESOLVED TEMPLATE VARIABLES ------------------------------------------------
+#   %{CLUSTER_DOMAIN}%               cluster.local  (k3s default; no --cluster-domain is set)
+#   %{SYSTEM_DEFAULT_REGISTRY}%      ""             (no --system-default-registry is set)
+#   %{CLUSTER_DNS}%                  10.99.192.10   (k3s: service CIDR + 10; the kubelet's --cluster-dns)
+#   %{CLUSTER_DNS_LIST}%             [10.99.192.10]
+#   %{CLUSTER_DNS_IPFAMILYPOLICY}%   SingleStack    (one cluster DNS address)
+# The service CIDR is DERIVED from `cluster-identity.json` (10.99.192.0/19 for
+# cluster `zeta`), so the DNS address is a restatement of it like Cilium's pod
+# CIDR is -- and `k3s-packaged-manifests.test.ts` re-derives it from the cluster
+# name and fails when this Service disagrees. A
+# Service whose clusterIP disagrees with the kubelet's --cluster-dns is a node on
+# which every pod's resolv.conf points at nothing.
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: coredns
+  namespace: kube-system
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  labels:
+    kubernetes.io/bootstrapping: rbac-defaults
+  name: system:coredns
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - endpoints
+  - services
+  - pods
+  - namespaces
+  verbs:
+  - list
+  - watch
+- apiGroups:
+  - discovery.k8s.io
+  resources:
+  - endpointslices
+  verbs:
+  - list
+  - watch
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  annotations:
+    rbac.authorization.kubernetes.io/autoupdate: "true"
+  labels:
+    kubernetes.io/bootstrapping: rbac-defaults
+  name: system:coredns
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: system:coredns
+subjects:
+- kind: ServiceAccount
+  name: coredns
+  namespace: kube-system
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: coredns
+  namespace: kube-system
+data:
+  Corefile: |
+    .:53 {
+        errors
+        health
+        ready
+        kubernetes cluster.local in-addr.arpa ip6.arpa {
+          pods insecure
+          fallthrough in-addr.arpa ip6.arpa
+        }
+        hosts /etc/coredns/NodeHosts {
+          ttl 60
+          reload 15s
+          fallthrough
+        }
+        prometheus :9153
+        cache 30
+        loop
+        reload
+        loadbalance
+        import /etc/coredns/custom/*.override
+        forward . /etc/resolv.conf
+    }
+    import /etc/coredns/custom/*.server
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: coredns
+  namespace: kube-system
+  labels:
+    k8s-app: kube-dns
+    kubernetes.io/name: "CoreDNS"
+spec:
+  revisionHistoryLimit: 0
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+  selector:
+    matchLabels:
+      k8s-app: kube-dns
+  template:
+    metadata:
+      labels:
+        k8s-app: kube-dns
+    spec:
+      priorityClassName: "system-cluster-critical"
+      serviceAccountName: coredns
+      tolerations:
+        - key: "CriticalAddonsOnly"
+          operator: "Exists"
+        - key: "node-role.kubernetes.io/control-plane"
+          operator: "Exists"
+          effect: "NoSchedule"
+      nodeSelector:
+        kubernetes.io/os: linux
+      topologySpreadConstraints:
+        - maxSkew: 1
+          topologyKey: kubernetes.io/hostname
+          whenUnsatisfiable: DoNotSchedule
+          labelSelector:
+            matchLabels:
+              k8s-app: kube-dns
+        - maxSkew: 1
+          topologyKey: topology.kubernetes.io/zone
+          whenUnsatisfiable: ScheduleAnyway
+          labelSelector:
+            matchLabels:
+              k8s-app: kube-dns
+      containers:
+      - name: coredns
+        image: "rancher/mirrored-coredns-coredns:1.14.6"
+        imagePullPolicy: IfNotPresent
+        resources:
+          limits:
+            memory: 170Mi
+          requests:
+            cpu: 100m
+            memory: 70Mi
+        args: [ "-conf", "/etc/coredns/Corefile" ]
+        volumeMounts:
+        - name: config-volume
+          mountPath: /etc/coredns
+          readOnly: true
+        - name: custom-config-volume
+          mountPath: /etc/coredns/custom
+          readOnly: true
+        ports:
+        - containerPort: 53
+          name: dns
+          protocol: UDP
+        - containerPort: 53
+          name: dns-tcp
+          protocol: TCP
+        - containerPort: 9153
+          name: metrics
+          protocol: TCP
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            add:
+            - NET_BIND_SERVICE
+            drop:
+            - all
+          readOnlyRootFilesystem: true
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8080
+            scheme: HTTP
+          initialDelaySeconds: 60
+          periodSeconds: 10
+          # k3s: 1. Upstream Kubernetes CoreDNS: 5. See the header.
+          timeoutSeconds: 5
+          successThreshold: 1
+          # k3s: 3. Upstream Kubernetes CoreDNS: 5. See the header.
+          failureThreshold: 5
+        readinessProbe:
+          httpGet:
+            path: /ready
+            port: 8181
+            scheme: HTTP
+          initialDelaySeconds: 0
+          periodSeconds: 2
+          timeoutSeconds: 1
+          successThreshold: 1
+          failureThreshold: 3
+      dnsPolicy: Default
+      volumes:
+        - name: config-volume
+          configMap:
+            name: coredns
+            items:
+            - key: Corefile
+              path: Corefile
+            - key: NodeHosts
+              path: NodeHosts
+        - name: custom-config-volume
+          configMap:
+            name: coredns-custom
+            optional: true
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: kube-dns
+  namespace: kube-system
+  annotations:
+    prometheus.io/port: "9153"
+    prometheus.io/scrape: "true"
+  labels:
+    k8s-app: kube-dns
+    kubernetes.io/cluster-service: "true"
+    kubernetes.io/name: "CoreDNS"
+spec:
+  selector:
+    k8s-app: kube-dns
+  clusterIP: 10.99.192.10
+  clusterIPs: [10.99.192.10]
+  ports:
+  - name: dns
+    port: 53
+    protocol: UDP
+  - name: dns-tcp
+    port: 53
+    protocol: TCP
+  - name: metrics
+    port: 9153
+    protocol: TCP
+  ipFamilyPolicy: SingleStack

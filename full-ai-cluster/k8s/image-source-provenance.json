@@ -352,6 +352,30 @@
       "resolvedAt": "2026-09-27"
     },
     {
+      "repository": "registry-1.docker.io/rancher/mirrored-coredns-coredns",
+      "tags": {
+        "1.14.6": 200
+      },
+      "artifact": "public",
+      "sourceRepo": null,
+      "sourceEvidence": "none",
+      "sourceVisibility": "unknown",
+      "packagePresence": "not-ghcr",
+      "resolvedAt": "2026-09-27"
+    },
+    {
+      "repository": "registry-1.docker.io/rancher/mirrored-metrics-server",
+      "tags": {
+        "v0.9.0": 200
+      },
+      "artifact": "public",
+      "sourceRepo": null,
+      "sourceEvidence": "none",
+      "sourceVisibility": "unknown",
+      "packagePresence": "not-ghcr",
+      "resolvedAt": "2026-09-27"
+    },
+    {
       "repository": "registry-1.docker.io/vllm/vllm-openai",
       "tags": {
         "latest": 200

@@ -1,0 +1,17 @@
+# full-ai-cluster/k8s/bootstrap/k3s-packaged-manifest.skip
+#
+# A k3s SKIP MARKER. Its content is never read -- only its FILENAME matters, and
+# the filename is set by `target` in `nixos/modules/k3s-server.nix`, which links
+# this one file into /var/lib/rancher/k3s/server/manifests/ twice:
+#
+#   coredns.yaml.skip                     -> k3s ignores its packaged coredns.yaml
+#   metrics-server-deployment.yaml.skip   -> k3s ignores its packaged metrics-server Deployment
+#
+# k3s pkg/deploy/controller.go `listFilesIn`: every `<name>.skip` in the tree
+# makes the deploy controller ignore any manifest whose BASENAME is `<name>`.
+# The replacements are `k3s-coredns.yaml` and `k3s-metrics-server.yaml` beside
+# this file; their headers carry why (liveness probes that kill a slow-but-alive
+# floor component under memory pressure, measured on dispatch 36119931377).
+#
+# Not `.yaml`, on purpose: the deploy controller only applies .yaml/.yml/.json,
+# so this file is never itself submitted to the API server.
