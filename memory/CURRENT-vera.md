@@ -2676,3 +2676,12 @@ WP11 tip-confirm -- K3S_ACTIVE on verdict 6 (distinct NEVER-ACTIVE log + optiona
 - skipKubeletVerification is truly inert (removed in spire chart 0.23.x; helm template byte-identical true vs false). Baselining is honest but it hides a live security gap: the spire-agent k8s workload attestor skips kubelet cert verification (verification.type defaults to skip). Fix is verification.type auto/hostCert/apiServerCA in both manifests.
 - Soft: no appId uniqueness assertion; HelmChartConfig not scanned; 2314-line duplicate cilium snapshot block from a trailing slash in the repo key; live --check-snapshot not re-run.
 - Hard fails: none. Sit leftover; Vera will not merge.
+
+## leftover UNIQUE leftover #17693 leftover unique @ 5c07c93c90bd467bac53802d8e589011d4502edb -- GRADE GO
+
+- Re-grade of PR #17693 (first-boot dependency inventory); supersedes the HOLD at 0a2cf843. Tip 5c07c93c, 1 parent = 0a2cf843 (fix-forward). Merge ref 3f3140e3 not graded. 1 commit, +15/-5, test file only.
+- The hard fail is closed: the test now runs bash on a temp script via safe-io spawnArgv (allowed by checkArgv; no safe-io-ok escape). CI cross-verify (hand-rolled-io) is green (job 108650118460, 0 not grandfathered); local lint is 0 at the tip and reproduces the finding at the parent.
+- The test is unchanged in substance: 18/18, 7 cases, same negative control, and all re-run mutations caught.
+- No product file changed, so the prior findings carry over: B6 refuses before the first wipefs, the escape hatch opens only on exactly 1, and the waits are bounded.
+- CI: 0 failures; agencysignature is now green. Soft: ISO and kind/k3d lanes are still running; B6 is still only structurally tested.
+- Hard fails: none. Sit leftover; Vera will not merge.
