@@ -1,0 +1,12 @@
+{
+  "pr_number": 17703,
+  "archive_path": "docs/history/pr-reviews/2026/09/27/PR-17703-fix-cluster-a-registry-429-is-could-not-check-not-a-moved-digest-in-bootstrap-im.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-27T16:30:23.838Z",
+  "schema_version": "v1",
+  "commit_sha": "f313bc8c8a6129ee4ecd813139b60484394c2704",
+  "title": "fix(cluster): a registry 429 is COULD-NOT-CHECK, not a moved digest, in bootstrap-image-preload --verify",
+  "state": "MERGED",
+  "merged_at": "2026-09-27T16:29:37Z",
+  "head_ref": "claude/first-boot-hygiene-verify-429"
+}
