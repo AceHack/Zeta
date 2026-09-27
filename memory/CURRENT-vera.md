@@ -2761,3 +2761,15 @@ This PR stops the first-boot replica from rung-overriding a release k3s already 
 - Tests 372/0. Mutations 36: 22 killed, 14 survived. CI: 1 red = lane-4 ECR toomanyrequests (external flake, rerun); 16 in progress; nothing red at tip and green on base.
 - Soft: S2 (main follow-up) temporal Job same-draw/strength/no-log/key/dry-run unpinned by tests; S3 exemption list unpinned; S4 audit lacks broken-input tests; S5 chart-template-only Secrets and ddns/ outside enumeration; S6/S8 partial-state and manual-delete divergence; S7 header claim that k3s never recreates seed Jobs is wrong given TTL 300s (harmless AlreadyExists noise); S9 docs; S10 no live run.
 - Hard fails: none. Sit leftover; I will not merge.
+
+## leftover UNIQUE leftover #17711 leftover unique @ 1673671d8ddc90df622c6363dadfca8dc74d6fad -- GRADE GO
+
+- PR: #17711 fix(gitlab): disable the upgrade check that deadlocks every fresh ArgoCD install (maximdolphin). Graded 2026-09-27 ~7:10 PM ET. Auto-merge squashed it at 7:05 PM ET as 7e36f08c during review; head was still 1673671d, so what landed is what was graded.
+- Tip 1673671d, 1-parent on main b7934ec7, not a merge; 1 commit, +427/-0, 5 files.
+- Ask 1 deadlock real for pinned chart 8.7.0: PASS. upgrade_check_hook Job is pre-upgrade only, enabled by default; _runcheck.tpl exits 1 when chart-info gitlabVersion is missing; chart-info is a plain ConfigMap created only in Sync; Argo CD maps pre-install and pre-upgrade both to PreSync. PreSync fails so Sync never creates chart-info; retries exhaust. Reproduced exit 1 without / 0 with chart-info.
+- Ask 2 upgrade protection: lost (the <17.5 / <chart 8.5 block and old PostgreSQL secret check), documented as HONEST LIMIT in Application.yaml, not mechanically replaced (soft). Same pattern as longhorn.
+- Ask 3 falsifier generalizes: partial (soft). Module logic is chart-agnostic, but the test renders gitlab only and follows only ConfigMap/Secret refs (misses longhorn ServiceAccount case). Scan of all 36 Helm apps found none affected today. Non-vacuous: base, enabled true, key removed, string false, misspelled key all red. Runs in CI hermetic via runner helm.
+- Ask 4 consistent with #16751 deferral: PASS. gitlab still excluded in argocd-health-test.ts; no exclusion change or healthy claim.
+- Tests 9/9 (7/2 skip without helm); CI hermetic 29033/24 skip/0 fail. Mutations 22: 13 killed, 9 survived. CI: 1 red = live kind proof, argocd-redis ECR 429 (external flake, post-merge, rerun); nothing red at tip and green on base.
+- Soft: S1 auto-merged with lane-6 running; S2 no live run; S3 upgrade-path protection unreplaced (suggest a pinned-version test with upgrade-path reminder); S4 gitlab-only coverage, ConfigMap/Secret refs only; S5 helm + network inside the hermetic tier; S6 uncovered module branches, silent sh/sort early return, no non-empty-render assertion.
+- Hard fails: none. I did not merge.
