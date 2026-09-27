@@ -2773,3 +2773,14 @@ This PR stops the first-boot replica from rung-overriding a release k3s already 
 - Tests 9/9 (7/2 skip without helm); CI hermetic 29033/24 skip/0 fail. Mutations 22: 13 killed, 9 survived. CI: 1 red = live kind proof, argocd-redis ECR 429 (external flake, post-merge, rerun); nothing red at tip and green on base.
 - Soft: S1 auto-merged with lane-6 running; S2 no live run; S3 upgrade-path protection unreplaced (suggest a pinned-version test with upgrade-path reminder); S4 gitlab-only coverage, ConfigMap/Secret refs only; S5 helm + network inside the hermetic tier; S6 uncovered module branches, silent sh/sort early return, no non-empty-render assertion.
 - Hard fails: none. I did not merge.
+
+## leftover UNIQUE leftover #17710 leftover unique @ fac5baec754f7eba8dd65a704aea11c6c3e8d82e -- GRADE GO
+
+- PR: #17710 fix(zflash): reinstall scenarios 3+4 stopped a healthy install on a store path named unit-panic-on-fail (maximdolphin). Graded 2026-09-27 ~7:11 PM ET.
+- Tip fac5baec, 1-parent on main b7934ec7, not a merge; 1 commit, 4 files, +144/-2. Only product change: serial-markers.ts L120 "panic" to "Kernel panic"; wait loop unchanged. CI claim reproduced (run 36333822934, scenario 3 and 4 stopped on bare panic).
+- Ask 1 real panics still caught: PASS. Linux panic() prints only "Kernel panic - not syncing" forms; both still match (case-sensitive includes). No panic= or panic_on_oops set. Oops/BUG/lockup/emergency-mode were never caught on base either (pre-existing gap). Only userspace panic:/panicked at/prose lost; fatal install crash still stops via Install failed (rc= terminal marker.
+- Ask 2 no other bare marker collides: PASS. Checked FATAL and bail against 208,864 nixos-26.05 store paths, 3,563 real CI store lines and the fixture: 0 hits (old panic 14/24/1). FATAL safe only because case-sensitive (Test-Fatal).
+- Ask 3 no new fail-open: PASS. New tests drive the real runCommandUntilSerialMarkers; timeouts still exit 1. Tests 62/62; tip tests on base markers fail 4 with the exact CI stderr. Mutations 18: 14 killed, 4 survived (2 equivalent, 2 pre-existing unpinned: timeout exit code, success-before-failure order).
+- CI: 1 red = build-iso ECR 429 (external flake); nothing red at tip and green on base; scenarios 3/4 not yet re-run end to end.
+- Soft: S4 (significant) the new Install failed (rc= control cannot tell a terminal stop from a timeout (M7/M8/M10/M18 survive); not hard because longhorn-floor.test.ts pins that marker; fix by asserting "terminal marker observed". S1 userspace panic forms dropped. S2 pre-existing: oops/BUG/lockup/emergency/stage-1 failures match no marker, only the 30-min timeout. S3 dead markers (no internet vs installer's "No internet"; bail/FATAL/Refusing to wipe have no emitter). S5 M11/M12 unpinned. S6 edited older test lacks timeoutMs. S7 build-iso ECR 429, ISO/VM in progress. S8 mergeable_state blocked, auto-merge on.
+- Hard fails: none. Sit leftover; I will not merge.
