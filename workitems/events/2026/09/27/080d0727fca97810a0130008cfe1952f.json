@@ -1,0 +1,14 @@
+{
+  "id": "080d0727fca97810a0130008cfe1952f",
+  "at": "2026-09-27T22:32:30.255Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M3JFZ59B087G0R0014NP4J7",
+    "type": "bug",
+    "title": "agent-memory (and gmod) StatefulSet permanently OutOfSync under ServerSideApply: volumeClaimTemplates conversion artifacts",
+    "slug": "agent-memory-and-gmod-statefulset-permanently-outofsync-unde",
+    "priority": "P2",
+    "filename": "081M3JFZ59B087G0R0014NP4J7-agent-memory-and-gmod-statefulset-permanently-outofsync-unde.md"
+  }
+}

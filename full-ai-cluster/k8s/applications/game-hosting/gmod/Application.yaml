@@ -25,6 +25,15 @@ spec:
     automated:
       prune: false      # never auto-delete a game server + its world volume
       selfHeal: true
+    # ServerSideApply DELIBERATELY ABSENT (work item 081M3JFZ59B087G0R0014NP4J7)
+    # -- same class as agent-memory/headscale/spire (argo-cd#11143): a
+    # StatefulSet with volumeClaimTemplates under SSA reads OutOfSync forever on
+    # the defaulted `apiVersion`/`kind`/`volumeMode`/`status` of the claim
+    # template plus the `metadata.creationTimestamp: null` ArgoCD's prediction
+    # adds, which no manifest field or ignore rule can reach. Live: StatefulSet/
+    # gmod was this Application's only OutOfSync resource. This change touches
+    # only the sync option -- the pod securityContext/volumes are untouched.
+    # The StatefulSet is ~4KB, far under the 262144-byte cap client-side apply's
+    # last-applied-configuration is subject to.
     syncOptions:
       - CreateNamespace=true
-      - ServerSideApply=true

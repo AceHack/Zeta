@@ -37,6 +37,20 @@ spec:
       # agent's memory. Manual delete only.
       prune: false
       selfHeal: true
+    # ServerSideApply DELIBERATELY ABSENT (work item 081M3JFZ59B087G0R0014NP4J7)
+    # -- the headscale/spire class (argo-cd#11143). MEASURED live on a fresh
+    # bare-metal install: this Application sat OutOfSync/Healthy with ONE
+    # OutOfSync resource, StatefulSet/agent-memory, while the controller re-ran
+    # "serverside-applied ... successfully synced" every ~5 min (selfHeal
+    # churn, never converged). The live volumeClaimTemplates[0] carries
+    # `apiVersion: v1`, `kind: PersistentVolumeClaim`, `spec.volumeMode:
+    # Filesystem` and `status.phase: Pending`, none written in statefulset.yaml.
+    # Declaring them there cannot close it: ArgoCD's SSA-predicted object also
+    # gains `metadata.creationTimestamp: null` downstream of the manifest AND of
+    # any ignoreDifferences rule (spire/Application.yaml, measured 2x2).
+    # headscale -- structurally identical, SSA dropped -- is Synced on the same
+    # node. Client-side apply is free here: the StatefulSet is ~4KB, far under
+    # the 262144-byte last-applied-configuration cap. Refused offline by
+    # src/Core.TypeScript/cluster/ssa-volumeclaimtemplate-drift.test.ts.
     syncOptions:
       - CreateNamespace=true
-      - ServerSideApply=true
