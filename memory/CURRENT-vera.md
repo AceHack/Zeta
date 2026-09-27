@@ -2806,3 +2806,15 @@ This PR stops the first-boot replica from rung-overriding a release k3s already 
 - Tests pass except one unrelated Bun.YAML tab test (local bun 1.4.2 vs pinned 1.3.13). Mutations 30 killed, 15 survived (all fail safe or declared), 2 equivalent. CI: 2 red lanes are ECR 429; nothing else red at tip and green on base.
 - Soft: S1 significant: with DEFERRED empty, the drift tree test passes on an empty or broken scan (the stale check was the only catch); swallowing code is #17709's; needs a minimum-apps positive control; told CoS to treat as HOLD if read strictly. S2 placeholder audit no floor. S3 device cli.ts/gate/joiner text-only tests. S4 installer write step untested (declared). S5 Nix module doesn't reject reserved names, not evaluated. S6 'large CRDs' reason wrong (largest platform object 3998 bytes). S7 no platform health lane, no e2e. S8 existing nodes keep old example.com ClusterIssuers (prune false), cleanup undocumented. S9 ServerSideDiff caveats, no live Synced seen. S10 seven Helm SSA apps out of scope. S11 CI running, merge blocked. S12 two neutral merges.
 - Hard fails: none. I did not merge.
+
+## leftover UNIQUE leftover #17708 leftover unique @ 6a92dde309bbd609d7c94ed5eeb903435a604957 -- GRADE GO
+
+- PR: #17708 gmod SteamCMD runs as uid/gid 1000 plus the pvc-write-identity guard. Graded 2026-09-27 ~7:34 PM ET, post-merge: auto-merge squashed it at 7:25 PM ET as 48ae88f1 from head c8470076, whose 5 PR files are byte-identical to 6a92dde3.
+- Chain b7934ec7 > 60f72142 > 6a92dde3, all 1-parent; 5 files +329/-1. 6a92dde3 is a lint fix: Dirent walk replaces statSync (check-then-use lint red at 60f72142, now 0 findings).
+- Merge head c8470076 content-neutral (matches five main commits blob-for-blob; PR files untouched).
+- Ask 1 scan not vacuous: PASS (111 files; old manifest 2 findings, tip 0; tests 10/10; manifest mutations 10/10).
+- Ask 2 root-owned PVC files usable by uid 1000: PASS on metal via fsGroup 1000 + Always policy; caveats: local-path gets no repair, root-owned chmod/utime, re-walk per start, no chown/wipe note.
+- Ask 3 no new fail-open: significant soft. Parse errors unchecked, bare catch continue, empty scan passes (D2 no-recurse survives), and 6a92dde3 newly skips symlinks silently (no effect today, 0 symlinks). DT_UNKNOWN tested on ext2 ^filetype: safe. Graded soft because it is a brand-new guard, nothing that used to fail now passes, and it is the same class as #17709 S5 and #17712 S1. Reviewer proposed HOLD; told CoS to treat as HOLD if read strictly. Follow-up: fail on parse errors, drop bare catch, minimum-scan assertion, symlink policy, initContainers and precedence tests; bundle with the #17709/#17712 empty-scan fix.
+- Code mutants 12/21 killed (C4, C6, C12, C15, C16, C17, D1, D2, D3 survive). CI at c8470076: 0 failures; nothing red at tip and green on base.
+- Soft S1-S11 (image-name detection, unscanned kinds, missing tests, ask-2 caveats, runAsGroup assumption, no e2e, CLI not a gate, neutral merge, auto-merged, fail-open gaps, backlog work item).
+- Hard fails: none. I did not merge.
