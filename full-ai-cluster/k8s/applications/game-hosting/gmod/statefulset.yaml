@@ -84,9 +84,30 @@ spec:
         # SFTP sidecar — FTP access to the same game files (the FTP root IS the
         # Longhorn PVC). Key-based auth: drop operator/tenant pubkeys into the
         # `gmod-sftp-keys` ConfigMap (the controller injects them per tenant).
+        #
+        # SFTP IS OPT-IN. A fresh install has no `gmod-sftp-keys` ConfigMap (the
+        # volume is `optional`, so the mount is an empty dir), and atmoz's
+        # create-sftp-user dies on `cat /home/gmod/.ssh/keys/*` when that dir is
+        # empty -- a crash-looping sidecar that held gmod-0 at 1/2 and the
+        # StatefulSet unready on the 2026-09-27 bare-metal install. So the
+        # entrypoint is gated: with no key file the sidecar idles (pod Ready,
+        # no sshd listening) and polls; once a key appears it execs atmoz.
+        # Operator step to enable SFTP:
+        #   kubectl -n game-hosting create configmap gmod-sftp-keys --from-file=operator.pub=$HOME/.ssh/id_ed25519.pub
+        # The kubelet projects it into the running pod within its sync period
+        # (~1 min); `kubectl -n game-hosting delete pod gmod-0` forces it.
+        # Guard: src/Core.TypeScript/cluster/gmod-sftp-keys.test.ts
         - name: sftp
           image: atmoz/sftp:alpine
-          args: [ "gmod::1000:1000" ] # user gmod, key-only (no password)
+          command: [ "/bin/sh", "-c" ]
+          args:
+            - |
+              KEYS=/home/gmod/.ssh/keys
+              if ! ls "$KEYS"/* >/dev/null 2>&1; then
+                echo "SFTP disabled: no public key in $KEYS (ConfigMap gmod-sftp-keys absent/empty); waiting"
+                until ls "$KEYS"/* >/dev/null 2>&1; do sleep 30; done
+              fi
+              exec /entrypoint gmod::1000:1000 # user gmod, key-only (no password)
           ports:
             - { name: sftp, containerPort: 22, protocol: TCP }
           volumeMounts:

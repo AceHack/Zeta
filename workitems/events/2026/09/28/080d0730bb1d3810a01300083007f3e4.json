@@ -1,0 +1,14 @@
+{
+  "id": "080d0730bb1d3810a01300083007f3e4",
+  "at": "2026-09-28T03:38:07.655Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M3K1ERX5087G0R002Z8GE0B",
+    "type": "bug",
+    "title": "gmod sftp sidecar crash-loops on fresh install when gmod-sftp-keys ConfigMap is absent",
+    "slug": "gmod-sftp-sidecar-crash-loops-on-fresh-install-when-gmod-sft",
+    "priority": "P2",
+    "filename": "081M3K1ERX5087G0R002Z8GE0B-gmod-sftp-sidecar-crash-loops-on-fresh-install-when-gmod-sft.md"
+  }
+}
