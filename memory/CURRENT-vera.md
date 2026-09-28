@@ -2853,3 +2853,11 @@ This PR stops the first-boot replica from rung-overriding a release k3s already 
 - NEW HARD FAIL H4: CI 'derive the lane matrix' red at 14794f07 (job 108740049833, 56/57), green on base (3fa2bc32, main 1d9c2350). lane-partition.test.ts:597-599 still asserts temporal -> cockroachdb, but the PR changed sync-wave-dependency-graph.yaml:577 to dependsOn: [temporal-postgres]. Previously masked because the missing footprint made buildModel throw. Fix: retarget or delete those assertions.
 - Softs: S1 doc.errors still ignored at metal-secret-production.ts:207 (significant, new guard; HOLD if strict). S3 temporal-datastore test still does not pin btree_gin, TLS or image. S10 CNPG postgres image (154.6 MiB) not counted in lane disk. S11 latent laneRootExclude (lane-partition.ts:964-971) leaves temporal/postgres in lane-1 root-exclude output.
 - Re-grade path: 1-parent fix on 4ed59e9f turning derive-the-lane-matrix green, ideally with S1 and S3. Sit leftover; not merged.
+
+## leftover UNIQUE leftover #17718 leftover unique @ 54cc781a5d9e3667e6895bcf46fd340e4194b3ec -- GRADE GO
+
+- Re-grade of the H4 fix after HOLD @ 4ed59e9f. Tip 54cc781a is 1-parent on 14794f07 (neutral merge of main). Diff is lane-partition.test.ts only (+9/-5); other 34 PR files byte-identical to 4ed59e9f. Live head; not merged; auto-merge armed.
+- H4 fixed: test now asserts old map key gone (:600), temporal -> cockroachdb absent (:601), temporal -> temporal-postgres present and observed (:602-603); hindsight/spire assertion (:594) unchanged. Five mutations all caught.
+- CI 'derive the lane matrix' green at tip (job 108745009485, 57/0). H1-H3 still green (ace-suite 1025/0, plan + unit green). 0 failures of 125 runs at ~8:50 PM ET; required gate and codeql had not reported yet (soft; if red, HOLD).
+- Softs: S1 doc.errors ignored at metal-secret-production.ts:207 (significant, new guard; HOLD if strict). S3 temporal-datastore test pins. S10 CNPG image not in lane disk. S11 latent laneRootExclude. S12 (significant) lost coverage for intent-wording-judged-observed; classifier-to-grep mutation at lane-partition.ts:250 survives; needs a synthetic fixture. S13 stale-key comment at :597-598 is inaccurate.
+- Sit leftover; not merged.
