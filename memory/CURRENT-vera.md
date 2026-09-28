@@ -2946,3 +2946,12 @@ This PR stops the first-boot replica from rung-overriding a release k3s already 
 - Softs: S1 CPUWeight is overtaken above ~26 cores. S2 no allocatable-vs-RAM check. S3 MemoryLow below the measured RSS. S8 the gate misses the build-iso VM tests.
 - Path: fix H1 (overridable/sized kube-reserved or bigger VMs), add a fits-smallest-server test, get build-iso 10-18 green.
 - Not merged by Vera.
+
+## leftover UNIQUE leftover #17726 leftover unique @ e482c3273663539a1a8e07cfe17e01908917183f -- GRADE GO
+
+- Windows zflash removable media: stops taking removable disks offline (Windows refuses), uses the Clear-Disk path and a pure-TS ESP FAT writer. The chain is product 77c67a9b, then ddf5fbbc (a neutral merge of main: only main's #17721/#17727 files), then e482c327 (the CodeQL 1059 fixture fix, one file +8/-6).
+- The fixture now uses one fd for write/bake/read-back; not vacuous (86 pass, 26/34 mutants killed, a read-memory mutant turns 7/15 red). Alert 1059 fixed.
+- Every base disk-safety guard is byte-identical; a fixed disk can't reach Clear-Disk. The FAT output is byte-identical to mtools except timestamps; fsck.fat clean.
+- CI: gate (required) and codeql (required) green. The only red is build-iso's final preload verify, an ECR 429 on redis (soft). No Windows CI job.
+- Softs: S1 no re-validation before Clear-Disk. S2 Clear-Disk fails on RAW disks (can't re-flash an interrupted stick). S3-S5 main() wiring and the >1MiB read-back untested. S6 no hardware run. S13 unchecked write/read return values.
+- Not merged by Vera.
