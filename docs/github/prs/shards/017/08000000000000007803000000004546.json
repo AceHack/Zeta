@@ -1,0 +1,12 @@
+{
+  "pr_number": 17734,
+  "archive_path": "docs/history/pr-reviews/2026/09/28/PR-17734-fix-installer-the-dev-toolchain-runs-after-first-boot-in-the-background-bounded.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-28T05:10:49.448Z",
+  "schema_version": "v1",
+  "commit_sha": "e71efca59df03f4efb6a047c05a8771bd748e9a9",
+  "title": "fix(installer): the dev toolchain runs after first boot, in the background, bounded",
+  "state": "MERGED",
+  "merged_at": "2026-09-28T05:10:05Z",
+  "head_ref": "claude/installer-devtoolchain-postboot"
+}
