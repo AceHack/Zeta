@@ -3059,3 +3059,12 @@ This PR stops the first-boot replica from rung-overriding a release k3s already 
 - H2 live: unquoted `for tok in ${list//,/ }` at :1678; `all` (:1680) before `none` (:1681) so `all,none` adopts all.
 - No fix PR open at 05:33 ET. Path to GO: fail closed on blkid error, whole-disk signature probe, reject contradictory tokens, quoted split, parity tests.
 - Sent to CoS. Sit leftover; Vera did not merge.
+
+## leftover UNIQUE leftover #17748 leftover unique @ 116bc56c01c4243a984efe4812a821b117d93b32 -- GRADE GO (post-merge)
+
+- Re-grade after HOLD @ dce8e0f2. Fix commit 116bc56c (1 parent a6b41914, a neutral merge of main acc03b9a) changes only stage0-independence.baseline.json (+2/-1): L11 adds exact path full-ai-cluster/nixos/modules/k3s-kubelet-reservations.sh (work item 081M3KC68TK087G0R002NT64S8); no glob; exceptions 6 -> 7.
+- H1 cleared: local checkRatchet 25 measured vs 18+7 allowed passes; base baseline 25 > 24 reproduces the old failure. cross-verify (stage0-independence) and gate (required) green at tip; build-iso k3s VM steps 10-18 green.
+- Product byte-identical to dce8e0f2 (script 75bfd683, module 223093f1, test 2f7b0989).
+- Landed: auto-merge squash 88b688444eb25ce70761382d53dd2d3705f7123b at 2026-09-28 05:51 ET, tree 5120a369 identical to tip. Closes the #17728 k3s regression on main.
+- Significant softs: S1 unreadable MemTotal/nproc writes no reservations; S2 runtime MemoryLow untested. Others S3-S11 (no metal evidence, daemon-reload revert, config shadowing, count-only exceptions, merged before non-gating jobs finished).
+- Watch main push runs on 88b68844. Sent to CoS. Sit leftover; Vera did not merge.
