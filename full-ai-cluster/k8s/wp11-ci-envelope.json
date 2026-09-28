@@ -1,0 +1,28 @@
+{
+  "$comment": "Applications the WP11 installed-disk QEMU guest (4 vCPU / 12288 MiB, ci/qemu-full-install-test.ts K3S_VERIFY_*) does NOT deploy, and why. Read by nixos/modules/zeta-wp11-ci-envelope.nix, which on a guest carrying the WP11 marker file ONLY replaces the root Application with a copy carrying `directory.exclude` over these dirs (same ArgoCD mechanism and same dirs as DEFAULT_ROOT_DEV_CATALOG in src/Core.TypeScript/cluster/ports.ts). A real install never has the marker and deploys everything. Each entry's request numbers are the METAL rung of src/Core.TypeScript/cluster/rendered-resource-requests.snapshot.json summed over every Application under that dir; wp11-ci-envelope.test.ts fails if they drift. Work item 081M3K1K1XV087G0R002A6YFRS.",
+  "evidence": "run 36364782876 (main@37734dd3c2): roster peaked at 19/44 Synced+Healthy near t=1000s, then the API server stopped answering (14 of 62 probes failed, `connection refused` on 6443 at the end) at 157 pods, up from 134-138 before #17711 (gitlab deploys), #17718 (temporal on CNPG Postgres) and #17708 (gmod SteamCMD installs). Those three add 10533 MiB / 4875m / 24 pods of requests at the metal rung -- more than the guest's entire allocatable (12288 MiB - 2 GiB kube-reserved - 512 MiB system-reserved - 500 MiB eviction-hard = 9228 MiB; 4000m - 750m = 3250m).",
+  "liftsWhen": "the WP11 guest is larger (a runner with more than 16 GiB), or the metal cluster -- which never carries the marker and already deploys these unchanged. Nothing about the excluded Applications was modified to make them leave.",
+  "excluded": [
+    {
+      "dir": "gitlab",
+      "reason": "Largest single addition: 15 pods, sidekiq 1907 MiB + webservice 2480 MiB requested. Began deploying with #17711 the day the lane collapsed. Already excluded from the dev/CI kind lanes for the same substrate reason.",
+      "memoryMib": 5605,
+      "cpuMillis": 2375,
+      "pods": 15
+    },
+    {
+      "dir": "temporal",
+      "reason": "Temporal services plus its CNPG Postgres cluster (#17718), 8 pods. Already excluded from the dev/CI kind lanes.",
+      "memoryMib": 2880,
+      "cpuMillis": 1500,
+      "pods": 8
+    },
+    {
+      "dir": "game-hosting/gmod",
+      "reason": "A game-server sample, not the platform under test; 2048 MiB whose request storage-profiles.json declines to cut. #17708 made its first boot a SteamCMD download+install. Already excluded from the dev/CI kind lanes (see ports.ts).",
+      "memoryMib": 2048,
+      "cpuMillis": 1000,
+      "pods": 1
+    }
+  ]
+}

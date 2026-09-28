@@ -1,0 +1,14 @@
+{
+  "id": "080d0730cc3de010a01300085334aa80",
+  "at": "2026-09-28T03:40:27.964Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M3K1K1XV087G0R002A6YFRS",
+    "type": "task",
+    "title": "WP11 verify: capture k3s journal, OOM, PSI and restart count when the API stops answering",
+    "slug": "wp11-verify-capture-k3s-journal-oom-psi-and-restart-count-wh",
+    "priority": "P1",
+    "filename": "081M3K1K1XV087G0R002A6YFRS-wp11-verify-capture-k3s-journal-oom-psi-and-restart-count-wh.md"
+  }
+}

@@ -276,6 +276,13 @@ let
   ];
 in
 {
+  # The WP11 guest's resource envelope (081M3K1K1XV087G0R002A6YFRS): on a guest
+  # carrying this module's marker ONLY, the root Application is swapped for one
+  # that excludes the dirs in k8s/wp11-ci-envelope.json. Verdict 7 below prints
+  # what it excluded. That module, not this one, writes cluster state -- this
+  # unit still only observes.
+  imports = [ ./zeta-wp11-ci-envelope.nix ];
+
   systemd.services.zeta-k3s-first-boot-verify = {
     description = "WP11 QEMU-only: verify k3s + first-boot roster on the INSTALLED disk";
     wantedBy = [ "multi-user.target" ];
@@ -411,6 +418,107 @@ in
             ${pkgs.systemd}/bin/journalctl -b --no-pager | ${pkgs.gnugrep}/bin/grep -iE "ordering cycle|deleted to break|Job .* failed|dependency failed" | ${pkgs.coreutils}/bin/tail -n 40
           } 2>&1 | while IFS= read -r _l; do log "[wp11-k3s-diag] $_l"; done
         }
+
+        # --- control-plane PRESSURE diagnostics (081M3K1K1XV087G0R002A6YFRS) --
+        #
+        # MEASURED run 36364782876: the API server stopped answering at ~157
+        # pods (14 of 62 roster probes failed, then `connection refused` on
+        # 6443 while k3s.service stayed active), and this serial log carried
+        # NO journal or kernel lines -- so whether k3s restarted, etcd stalled,
+        # the OOM killer fired or the node thrashed on reclaim could not be
+        # told apart. This captures the evidence that separates them, the first
+        # time the API stops answering and again at the end.
+        #
+        # THREE STATES, never two: `captured` (every section's command
+        # succeeded), `failed` (at least one did not -- named, with its exit
+        # status), `did-not-run` (the trigger never happened). A capture that
+        # failed must not read as one that found nothing.
+        SYSTEMCTL=${pkgs.systemd}/bin/systemctl
+        JOURNALCTL=${pkgs.systemd}/bin/journalctl
+        FREE=${pkgs.procps}/bin/free
+        CAT=${pkgs.coreutils}/bin/cat
+        GREP=${pkgs.gnugrep}/bin/grep
+        TAIL=${pkgs.coreutils}/bin/tail
+        RM=${pkgs.coreutils}/bin/rm
+        PSI_DIR=/proc/pressure
+        CGROUP_ROOT=/sys/fs/cgroup
+        # ZETA-WP11-PRESSURE-BEGIN
+        PRESSURE_UNREACHABLE_STATE=did-not-run
+        PRESSURE_UNREACHABLE_DETAIL=""
+        PRESSURE_END_STATE=did-not-run
+        PRESSURE_END_DETAIL=""
+        PRESSURE_LAST_STATE=did-not-run
+        PRESSURE_LAST_DETAIL=""
+        zeta_wp11_pressure_section() {
+          # $1 = section name; the rest = the command. Streams its output to
+          # the log, then records the section as captured or failed(exit N).
+          _ps_name="$1"
+          shift
+          _ps_out="$("$MKTEMP")"
+          "$@" > "$_ps_out" 2>&1
+          _ps_rc=$?
+          while IFS= read -r _ps_line; do
+            log "[wp11-pressure] $_ps_name | $_ps_line"
+          done < "$_ps_out"
+          "$RM" -f "$_ps_out"
+          if [ "$_ps_rc" -eq 0 ]; then
+            log "[wp11-pressure] $_ps_name: captured"
+          else
+            log "[wp11-pressure] $_ps_name: FAILED (exit $_ps_rc) -- this section measured nothing"
+            PRESSURE_LAST_DETAIL="$PRESSURE_LAST_DETAIL $_ps_name(exit $_ps_rc)"
+          fi
+        }
+        zeta_wp11_oom_lines() {
+          # The kernel log is read FIRST and its failure is a failure. Only
+          # then is "no OOM line" a finding: grep exiting 1 on a log that WAS
+          # read means zero OOM kills, which is evidence, not an error.
+          _oom_log="$("$MKTEMP")"
+          if ! "$JOURNALCTL" -k -b --no-pager > "$_oom_log"; then
+            "$RM" -f "$_oom_log"
+            return 1
+          fi
+          _oom_n="$("$GREP" -ciE 'out of memory|oom-kill|oom_reaper|killed process' "$_oom_log")"
+          "$GREP" -iE 'out of memory|oom-kill|oom_reaper|killed process' "$_oom_log" | "$TAIL" -n 40
+          echo "kernel OOM line(s) this boot: $_oom_n"
+          "$RM" -f "$_oom_log"
+          return 0
+        }
+        zeta_wp11_cgroup_protection() {
+          # Whether k3s-process-protection.nix reached the kernel: the live
+          # weights and memory protection, k3s.service vs the pods' slice.
+          _cg_rc=0
+          for _cg in system.slice system.slice/k3s.service kubepods.slice; do
+            for _f in cpu.weight memory.low memory.min memory.current; do
+              if [ -r "$CGROUP_ROOT/$_cg/$_f" ]; then
+                echo "$_cg $_f=$("$CAT" "$CGROUP_ROOT/$_cg/$_f")"
+              else
+                echo "$_cg $_f=UNREADABLE"
+                _cg_rc=1
+              fi
+            done
+          done
+          return "$_cg_rc"
+        }
+        zeta_wp11_pressure_diag() {
+          # $1 = why it ran. Sets PRESSURE_LAST_STATE / PRESSURE_LAST_DETAIL.
+          PRESSURE_LAST_DETAIL=""
+          log "[wp11-pressure] --- control-plane pressure diagnostics ($1, t=$(elapsed)s) ---"
+          zeta_wp11_pressure_section "k3s-restarts" "$SYSTEMCTL" show k3s.service -p NRestarts -p ActiveState -p SubState -p ExecMainStartTimestamp -p ExecMainStatus --no-pager
+          zeta_wp11_pressure_section "free-m" "$FREE" -m
+          zeta_wp11_pressure_section "psi-cpu" "$CAT" "$PSI_DIR/cpu"
+          zeta_wp11_pressure_section "psi-memory" "$CAT" "$PSI_DIR/memory"
+          zeta_wp11_pressure_section "psi-io" "$CAT" "$PSI_DIR/io"
+          zeta_wp11_pressure_section "kernel-oom" zeta_wp11_oom_lines
+          zeta_wp11_pressure_section "cgroup-protection" zeta_wp11_cgroup_protection
+          zeta_wp11_pressure_section "k3s-journal" "$JOURNALCTL" -u k3s.service -b --no-pager -n 200
+          if [ -z "$PRESSURE_LAST_DETAIL" ]; then
+            PRESSURE_LAST_STATE=captured
+          else
+            PRESSURE_LAST_STATE=failed
+          fi
+          log "[wp11-pressure] result ($1): $PRESSURE_LAST_STATE$PRESSURE_LAST_DETAIL"
+        }
+        # ZETA-WP11-PRESSURE-END
 
         # --- verdict 2: k3s.service active -----------------------------------
         K3S_ACTIVE=false
@@ -1150,6 +1258,12 @@ in
             if ! collect_roster_facts "$FACTS_FILE"; then
               ROSTER_PROBE_FAILURES=$(( ROSTER_PROBE_FAILURES + 1 ))
               log "[wp11-k3s-verify] roster probe FAILED at t=$(elapsed)s sample=''${ROSTER_SAMPLES} -- kubectl could not list Applications in namespace argocd. This sample is UNKNOWN: the previous counts stand and are NOT overwritten with zeros (''${ROSTER_PROBE_FAILURES} failure(s) so far)"
+              # The FIRST time the API stops answering: capture why, once.
+              if [ "$PRESSURE_UNREACHABLE_STATE" = "did-not-run" ]; then
+                zeta_wp11_pressure_diag "api-unreachable"
+                PRESSURE_UNREACHABLE_STATE="$PRESSURE_LAST_STATE"
+                PRESSURE_UNREACHABLE_DETAIL="$PRESSURE_LAST_DETAIL"
+              fi
               if [ "$(now_ts)" -ge "$roster_deadline" ]; then
                 break
               fi
@@ -1221,6 +1335,13 @@ in
             ROSTER_POD_TOTAL="$(zeta_wp11_count_or_unknown "$_pods_all_rc" "$_pods_all")"
             _pods_run="$(kc get pods -A --no-headers --field-selector=status.phase=Running 2>/dev/null)"; _pods_run_rc=$?
             ROSTER_POD_RUNNING="$(zeta_wp11_count_or_unknown "$_pods_run_rc" "$_pods_run")"
+            # A pod listing that did not answer (`pods -/-`) is the API going
+            # away too -- run 36364782876 showed it before any roster probe failed.
+            if { [ "$_pods_all_rc" -ne 0 ] || [ "$_pods_run_rc" -ne 0 ]; } && [ "$PRESSURE_UNREACHABLE_STATE" = "did-not-run" ]; then
+              zeta_wp11_pressure_diag "api-unreachable"
+              PRESSURE_UNREACHABLE_STATE="$PRESSURE_LAST_STATE"
+              PRESSURE_UNREACHABLE_DETAIL="$PRESSURE_LAST_DETAIL"
+            fi
 
             # Requirement: report progress WHILE waiting. Sixty-seven minutes of
             # silence on a serial log is indistinguishable from a hang.
@@ -1277,6 +1398,23 @@ in
           roster_app_diag "$CLASS_FILE"
         fi
 
+        # What this guest was told NOT to deploy, every boot. An exclusion
+        # nobody can see is how a verdict becomes decorative, so a missing state
+        # file is its own answer (did-not-run), never "nothing excluded".
+        CI_ENVELOPE_STATE=did-not-run
+        CI_ENVELOPE_EXCLUDE="-"
+        CI_ENVELOPE_DETAIL="no /run/zeta-wp11-ci-envelope/state: zeta-wp11-ci-envelope.service did not run"
+        if [ -r /run/zeta-wp11-ci-envelope/state ]; then
+          IFS="$(printf '\t')" read -r CI_ENVELOPE_STATE CI_ENVELOPE_EXCLUDE CI_ENVELOPE_DETAIL < /run/zeta-wp11-ci-envelope/state || true
+        fi
+        log "[wp11-k3s-verify] ci envelope: state=$CI_ENVELOPE_STATE excluded-from-this-guest=$CI_ENVELOPE_EXCLUDE ($CI_ENVELOPE_DETAIL) -- a real install deploys these"
+
+        # Always, at the end: the node's state when the verdict was taken.
+        zeta_wp11_pressure_diag "end"
+        PRESSURE_END_STATE="$PRESSURE_LAST_STATE"
+        PRESSURE_END_DETAIL="$PRESSURE_LAST_DETAIL"
+        log "[wp11-k3s-verify] pressure diagnostics: api-unreachable=''${PRESSURE_UNREACHABLE_STATE}''${PRESSURE_UNREACHABLE_DETAIL} end=''${PRESSURE_END_STATE}''${PRESSURE_END_DETAIL}"
+
         VERDICT_JSON="$("$JQ" -n \
           --argjson bootedMultiUser "$BOOTED_MULTI_USER" \
           --argjson bootedMultiUserElapsedSeconds "$BOOTED_ELAPSED" \
@@ -1310,7 +1448,19 @@ in
           --arg rosterPodRunning "$ROSTER_POD_RUNNING" \
           --arg rootSyncStatus "$ROOT_SYNC_STATUS" \
           --argjson k3sActiveForRoster "$K3S_ACTIVE" \
+          --arg pressureOnApiUnreachable "$PRESSURE_UNREACHABLE_STATE" \
+          --arg pressureOnApiUnreachableFailed "$PRESSURE_UNREACHABLE_DETAIL" \
+          --arg pressureAtEnd "$PRESSURE_END_STATE" \
+          --arg pressureAtEndFailed "$PRESSURE_END_DETAIL" \
+          --arg ciEnvelopeState "$CI_ENVELOPE_STATE" \
+          --arg ciEnvelopeExclude "$CI_ENVELOPE_EXCLUDE" \
+          --arg ciEnvelopeDetail "$CI_ENVELOPE_DETAIL" \
           '{
+            ciEnvelope: {state: $ciEnvelopeState, excludeGlob: $ciEnvelopeExclude, detail: $ciEnvelopeDetail},
+            pressureDiagnostics: {
+              onApiUnreachable: {state: $pressureOnApiUnreachable, failedSections: $pressureOnApiUnreachableFailed},
+              atEnd: {state: $pressureAtEnd, failedSections: $pressureAtEndFailed}
+            },
             bootedMultiUser: {ok: $bootedMultiUser, elapsedSeconds: $bootedMultiUserElapsedSeconds},
             k3sServiceActive: {ok: $k3sServiceActive, elapsedSeconds: $k3sServiceActiveElapsedSeconds},
             nodeReady: {ok: $nodeReady, elapsedSeconds: $nodeReadyElapsedSeconds},
