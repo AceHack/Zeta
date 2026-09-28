@@ -7,7 +7,7 @@
 ---
 # Garry's Mod — the game-server base test. Stateful (world + addons persist),
 # UDP game port exposed on the LAN, an SFTP sidecar for the FTP-root workflow,
-# a one-time steamcmd install. A Deployable referencing this needs only a name.
+# and the image's own steamcmd install. A Deployable referencing this needs only a name.
 apiVersion: platform.zeta.io/v1alpha1
 kind: Blueprint
 metadata:
@@ -19,27 +19,43 @@ spec:
   # WAS `:gmod`, WHICH IS A 404 -- THE PUBLISHER'S TAG IS `garrysmod`.
   # MEASURED 2026-08-23, not guessed: `ghcr.io/v2/ich777/steamcmd/tags/list`
   # returns 94 tags and `gmod` is not among them; `garrysmod` is, and it is the
-  # only Garry's-Mod-shaped entry there. The `+app_update 4020` below is Steam's
+  # only Garry's-Mod-shaped entry there. The `GAME_ID: 4020` below is Steam's
   # Garry's Mod Dedicated Server appid, so the tag and the install agree. Until
   # now this Blueprint named an image nobody publishes: a Deployable referencing
   # it would ImagePullBackOff, and `measure-lane-footprints.ts` could not size
   # it, which is part of why the whole `platform` Application sat in the
   # partitioner's CANNOT BE PRICED quarantine.
   image: ghcr.io/ich777/steamcmd:garrysmod
-  install: "/opt/steamcmd/steamcmd.sh +force_install_dir /data +login anonymous +app_update 4020 validate +quit"
-  command: ["/data/srcds_run"]
-  args: ["-game", "garrysmod", "-port", "${PORT}", "+maxplayers", "${MAXPLAYERS}", "+gamemode", "${GAMEMODE}", "+map", "${MAP}"]
+  # NO `install:`, `command:` OR `args:` — the image installs and runs itself
+  # (workitem 081M0QB1ZCV087G0R001P9YCPX). The old install line called
+  # `/opt/steamcmd/steamcmd.sh`, which is in no layer of this image. Its
+  # Entrypoint `/opt/scripts/start.sh` (as root) chowns /serverdata, drops to
+  # the `steam` user and runs `start-server.sh`, which downloads steamcmd into
+  # STEAMCMD_DIR (/serverdata/steamcmd), runs `app_update ${GAME_ID}` into
+  # SERVER_DIR (/serverdata/serverfiles), then execs
+  # `srcds_run -game ${GAME_NAME} ${GAME_PARAMS} -console +port ${GAME_PORT}`.
+  # Overriding `command:` skipped all of that. The contract was read from the
+  # image's own config and layers; evidence in
+  # full-ai-cluster/platform-controller/src/blueprint.test.ts.
   env:
-    SRCDS_PORT: "${PORT}"
+    GAME_ID: "4020"
+    GAME_NAME: "garrysmod"
+    GAME_PARAMS: "+maxplayers ${MAXPLAYERS} +gamemode ${GAMEMODE} +map ${MAP}"
+    GAME_PORT: "${PORT}"
+    VALIDATE: "${VALIDATE}"
   ports:
     - { name: game, port: 27015, protocol: UDP }
-  storage: { size: "20Gi", mountPath: /data }
+  # SERVER_DIR, not DATA_DIR: a volume over /serverdata would hide the image's
+  # empty `steamcmd/` directory, and start-server.sh wgets into it without a
+  # mkdir. So steamcmd is re-fetched on each pod start; the game files persist.
+  storage: { size: "20Gi", mountPath: /serverdata/serverfiles }
   resources: { cpu: "2", memory: "4Gi" }
   variables:
     - { name: PORT, default: "27015", description: "UDP game port" }
     - { name: MAP, default: "gm_construct" }
     - { name: GAMEMODE, default: "sandbox" }
     - { name: MAXPLAYERS, default: "16" }
+    - { name: VALIDATE, default: "true", description: "`true` makes steamcmd validate the install on every start (the old install line always validated)" }
   sidecars:
     - { name: sftp, image: atmoz/sftp:alpine, mountDataAt: /home/zeta/data }
   defaultExpose: lan
@@ -110,19 +126,31 @@ spec:
   category: game
   stateful: true
   image: ghcr.io/ich777/steamcmd:unturned
-  install: "/opt/steamcmd/steamcmd.sh +force_install_dir /data +login anonymous +app_update 1110390 validate +quit"
-  command: ["/data/ServerHelper.sh"]
-  args: ["+InternetServer/${SERVERNAME}", "+map/${MAP}", "+Max_Players/${MAXPLAYERS}"]
+  # NO `install:`, `command:` OR `args:` — same contract as `gmod` above
+  # (workitem 081M0QB1ZCV087G0R001P9YCPX): the image's own start.sh fetches
+  # steamcmd, installs GAME_ID into /serverdata/serverfiles, installs RocketMod
+  # (image default ROCKET_MOD=true), then execs
+  # `Unturned_Headless.x86_64 -nographics ${GAME_PARAMS} -port:${GAME_PORT} -sv`.
+  # GAME_PARAMS carries the three tokens the old `args:` handed to
+  # ServerHelper.sh; whether Unturned honours each of them on this launch path
+  # is not verified here.
+  env:
+    GAME_ID: "1110390"
+    GAME_PARAMS: "+InternetServer/${SERVERNAME} +map/${MAP} +Max_Players/${MAXPLAYERS}"
+    GAME_PORT: "27015"
+    VALIDATE: "${VALIDATE}"
   ports:
     - { name: game, port: 27015, protocol: UDP }
     - { name: query, port: 27016, protocol: UDP }
     - { name: query2, port: 27017, protocol: UDP }
-  storage: { size: "10Gi", mountPath: /data }
+  # SERVER_DIR, not DATA_DIR — see `gmod`.
+  storage: { size: "10Gi", mountPath: /serverdata/serverfiles }
   resources: { cpu: "2", memory: "3Gi" }
   variables:
     - { name: SERVERNAME, default: "Zeta" }
     - { name: MAP, default: "PEI" }
     - { name: MAXPLAYERS, default: "24" }
+    - { name: VALIDATE, default: "true", description: "`true` makes steamcmd validate the install on every start (the old install line always validated)" }
   sidecars:
     - { name: sftp, image: atmoz/sftp:alpine, mountDataAt: /home/zeta/data }
   defaultExpose: lan
@@ -173,10 +201,9 @@ spec:
 # execs `./ArmaReforgerServer` in `/reforger`. Overriding `command:` would skip
 # both the install and the config generation, so the correct fix for the path
 # mismatch here is to stop issuing the command at all and configure by env.
-# (`gmod` and `unturned` above still carry the wrong `/opt/steamcmd` path and
-# still keep the ich777 images — that half stays open in workitem
-# 081M0QB1ZCV087G0R001P9YCPX, because fixing it is a different change: those
-# images are driven by their own `/opt/scripts/start.sh` + `GAME_ID`.)
+# (`gmod` and `unturned` above got the same treatment in a later change of
+# workitem 081M0QB1ZCV087G0R001P9YCPX: their ich777 images are driven by their
+# own `/opt/scripts/start.sh` + `GAME_ID`, so they too issue no command.)
 apiVersion: platform.zeta.io/v1alpha1
 kind: Blueprint
 metadata:

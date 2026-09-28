@@ -1,0 +1,11 @@
+{
+  "id": "080d0731b5848010a013000861fee00a",
+  "at": "2026-09-28T04:12:18.960Z",
+  "by": "otto-cli",
+  "kind": "state-changed",
+  "payload": {
+    "workItemId": "081M0QB1ZCV087G0R001P9YCPX",
+    "from": "backlog",
+    "to": "done"
+  }
+}

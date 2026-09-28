@@ -365,32 +365,53 @@ describe("ownership + AI labels are stamped on every child", () => {
   });
 });
 
-// ── SteamCMD install write identity (workitem 081M3K1408D087G0R000WP4NDE) ─
+// ── ich777 SteamCMD blueprints: identity + image contract ───────────────
+// Workitems 081M3K1408D087G0R000WP4NDE (identity, PR #17721) and
+// 081M0QB1ZCV087G0R001P9YCPX (the steamcmd path).
 //
-// PR #17708 fixed gmod's hand-written StatefulSet by forcing runAsUser 1000,
-// because cm2network/steamcmd owns its tree as uid 1000. The question here was
-// whether the controller-rendered SteamCMD Blueprints carry the same defect.
-// They do NOT, and forcing runAsUser here would be the regression:
+// IDENTITY. PR #17708 fixed gmod's hand-written StatefulSet by forcing
+// runAsUser 1000, because cm2network/steamcmd owns its tree as uid 1000. The
+// controller-rendered `ghcr.io/ich777/steamcmd:*` Blueprints must NOT copy that:
+// their registry configs carry no `User`, so the process starts as root, and the
+// image's own `/opt/scripts/start.sh` does `usermod` / `groupmod` /
+// `chown -R ${UID}:${GID} ${DATA_DIR}` and then `su steam` to drop to UID=99,
+// GID=100. That drop REQUIRES starting as root. So the controller imposes NO
+// process identity: pod securityContext is exactly { fsGroup: 1000 }, and no
+// container carries a securityContext of its own.
 //
-//   * Every Blueprint with an `install:` in the shipped library runs a
-//     `ghcr.io/ich777/steamcmd:*` image. Their registry configs (garrysmod,
-//     unturned, amd64, read 2026-09-27) carry NO `User`, so the process starts
-//     as root; the image's own `/opt/scripts/start.sh` then does `usermod` /
-//     `groupmod` / `chown -R ${UID}:${GID}` and `su steam` to drop to UID=99,
-//     GID=100 (env defaults). That drop REQUIRES starting as root.
-//   * The rendered pod overrides `command` for both the install init and main,
-//     so start.sh never runs and nothing drops: both run as root, which can
-//     write the fsGroup-1000 PVC. No "Missing file permissions" path exists.
+// IMAGE CONTRACT. Read 2026-09-28 from the registry (config blob + every layer),
+// not from a README — ghcr.io/ich777/steamcmd, linux/amd64:
+//   garrysmod  index sha256:8b7aa732d5317ea6ea3cd0c53d599af9121fd438fa6c4c536e48cc1f2cb4bfc7
+//   unturned   index sha256:7aad70045a425c8f14262305b0f5e5d7832bc8e930be8b61c1c2e3e193972840
+//   both  Entrypoint ["/opt/scripts/start.sh"], no Cmd, no User
+//         Env DATA_DIR=/serverdata STEAMCMD_DIR=/serverdata/steamcmd
+//             SERVER_DIR=/serverdata/serverfiles GAME_ID=template
+//             GAME_NAME=template GAME_PARAMS=template GAME_PORT=27015
+//             VALIDATE= UID=99 GID=100
+//   layers: the only steamcmd-shaped path is the EMPTY directory
+//     `serverdata/steamcmd/` (beside `serverdata/serverfiles/`); `opt/` holds
+//     only `opt/scripts/start.sh` and `opt/scripts/start-server.sh`. There is
+//     no `/opt/steamcmd` and no steamcmd binary anywhere in the image.
+//   The two scripts extracted from the last layer are byte-identical (modulo
+//   CRLF) to the `garrysmod` / `unturned` branches of ich777/docker-steamcmd-server.
+// `start-server.sh` is what installs the game. If `${STEAMCMD_DIR}/steamcmd.sh`
+// is missing it wgets steamcmd_linux.tar.gz INTO `${STEAMCMD_DIR}` (it never
+// mkdirs it), runs `+force_install_dir ${SERVER_DIR} +app_update ${GAME_ID}`
+// (plus `validate` iff VALIDATE == "true"), then starts the server from
+// `${SERVER_DIR}`:
+//   garrysmod  srcds_run -game ${GAME_NAME} ${GAME_PARAMS} -console +port ${GAME_PORT}
+//   unturned   Unturned_Headless.x86_64 -nographics ${GAME_PARAMS} -port:${GAME_PORT} -sv
+// So, pinned below:
+//   * no `command` / `args` on main and no install initContainer — an override
+//     skips start.sh, steamcmd is never fetched, and nothing is installed;
+//   * GAME_ID is the Steam appid (never the image's `template`);
+//   * the PVC mounts at SERVER_DIR, not DATA_DIR: a volume over /serverdata
+//     would hide the image's `serverdata/steamcmd/` directory, and the wget
+//     into it would fail on a fresh volume.
 //
-// So the invariant is: the controller imposes NO process identity — pod-level
-// securityContext is exactly { fsGroup: 1000 } and the install init carries no
-// securityContext. UID/GID-env-matches-fsGroup is NOT the invariant, because
-// the env is only consumed by the entrypoint these pods bypass.
-//
-// NOT pinned here (needs the network, not a unit test): that the images still
-// have no `User`. If a future tag sets one, this test stays green and the pod
-// will run as that user — re-read the image config when bumping a tag.
-describe("SteamCMD install blueprints impose no process identity (library data)", () => {
+// NOT pinned here (needs the network): that a future tag keeps this contract.
+// Re-read the image config and layers when bumping a tag.
+describe("ich777 SteamCMD blueprints: no imposed identity; the image's own entrypoint installs the game (library data)", () => {
   const libPath = new URL("../../k8s/applications/platform/blueprints.yaml", import.meta.url);
   const docs = Bun.YAML.parse(readFileSync(libPath, "utf8")) as Array<{
     metadata: { name: string };
@@ -398,24 +419,43 @@ describe("SteamCMD install blueprints impose no process identity (library data)"
   }>;
   const steamcmd = docs
     .map((d) => ({ name: d.metadata.name, ...d.spec }) as Blueprint)
-    .filter((bp) => bp.install !== undefined && bp.image.startsWith("ghcr.io/ich777/steamcmd:"));
+    .filter((bp) => bp.image.startsWith("ghcr.io/ich777/steamcmd:"));
+  const APPID: Record<string, string> = { gmod: "4020", unturned: "1110390" };
 
-  test("the library actually contains SteamCMD install blueprints (not vacuous)", () => {
+  test("the library actually contains the ich777 SteamCMD blueprints (not vacuous)", () => {
     expect(steamcmd.map((b) => b.name).sort()).toEqual(["gmod", "unturned"]);
   });
 
   for (const bp of steamcmd) {
     const objs = renderDeployable(bp, instance(`${bp.name}-srv`, { blueprint: bp.name }));
     const podSpec = (one(objs, "StatefulSet").spec as any).template.spec;
+    const main = podSpec.containers.find((c: any) => c.name === "main");
+    const env: Record<string, string> = Object.fromEntries((main.env ?? []).map((e: any) => [e.name, e.value]));
 
     test(`${bp.name}: pod securityContext is exactly { fsGroup: 1000 } — no runAsUser/runAsGroup/runAsNonRoot`, () => {
       expect(podSpec.securityContext).toEqual({ fsGroup: 1000 });
+      for (const c of [...podSpec.containers, ...(podSpec.initContainers ?? [])]) expect(c.securityContext).toBeUndefined();
     });
-    test(`${bp.name}: install init runs the image's default (root) identity and mounts the PVC`, () => {
-      const init = podSpec.initContainers.find((c: any) => c.name === "install");
-      expect(init.image).toBe(bp.image);
-      expect(init.securityContext).toBeUndefined();
-      expect(init.volumeMounts).toEqual([{ name: "data", mountPath: bp.storage!.mountPath }]);
+    test(`${bp.name}: no command/args override and no install initContainer — /opt/scripts/start.sh runs`, () => {
+      expect(main.command).toBeUndefined();
+      expect(main.args).toBeUndefined();
+      expect(podSpec.initContainers).toBeUndefined();
+    });
+    test(`${bp.name}: nothing in the pod names /opt/steamcmd, a path the image does not ship`, () => {
+      expect(JSON.stringify(podSpec)).not.toContain("/opt/steamcmd");
+    });
+    test(`${bp.name}: GAME_ID is the Steam appid, GAME_PORT the game port, GAME_PARAMS set`, () => {
+      expect(env.GAME_ID).toBe(APPID[bp.name]);
+      expect(env.GAME_PORT).toBe("27015");
+      expect(env.GAME_PARAMS).toBeDefined();
+      expect(env.GAME_PARAMS).not.toBe("template");
+    });
+    test(`${bp.name}: the PVC mounts at SERVER_DIR, leaving the image's steamcmd directory in place`, () => {
+      expect(main.volumeMounts).toEqual([{ name: "data", mountPath: "/serverdata/serverfiles" }]);
     });
   }
+
+  test("gmod: GAME_NAME is the srcds game directory", () => {
+    expect(steamcmd.find((b) => b.name === "gmod")?.env?.GAME_NAME).toBe("garrysmod");
+  });
 });

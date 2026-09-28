@@ -1,11 +1,12 @@
 ---
 id: 081M0QB1ZCV087G0R001P9YCPX
 type: bug
-state: backlog
+state: done
 priority: P2
 slug: two-platform-game-blueprints-name-images-and-paths-that-do-n
 title: "Two platform game Blueprints name images and paths that do not exist — arma-reforger has no publisher image, and every steamcmd blueprint calls the wrong steamcmd path"
 created: 2026-08-23T12:55:46.331Z
+completed: 2026-09-28T04:12:18.959Z
 depends_on: []
 composes_with: []
 ---
@@ -173,5 +174,31 @@ measures fine, so no pricing signal will ever point at it.
 - [x] `arma-reforger` names a real image, pinned so it cannot float
 - [x] that Blueprint's invocation agrees with what its image actually ships, checked against
       the image's own config and layers rather than against this file
-- [ ] `gmod` and `unturned` stop calling a steamcmd that is not in their image, and stop
+- [x] `gmod` and `unturned` stop calling a steamcmd that is not in their image, and stop
       overriding the entrypoint that would have installed the game
+
+---
+
+## UPDATE 2026-09-28 — finding 2 CLOSED
+
+`gmod` and `unturned` now drive their ich777 images the way the images are built: no
+`install:`, `command:` or `args:`, so `/opt/scripts/start.sh` runs, fetches steamcmd into
+`/serverdata/steamcmd`, `app_update`s `GAME_ID` into `/serverdata/serverfiles`, and execs
+the server with `GAME_NAME` / `GAME_PARAMS` / `GAME_PORT`. The PVC mounts at `SERVER_DIR`
+(`/serverdata/serverfiles`), not at `/serverdata`: `start-server.sh` wgets into
+`STEAMCMD_DIR` without a mkdir, so a volume over `/serverdata` would hide the image's empty
+`steamcmd/` directory and break a fresh install. The cost is that steamcmd is re-fetched on
+each pod start; the game files persist.
+
+Evidence, re-read 2026-09-28 from the registry (linux/amd64 config + all six layers of both
+`garrysmod` and `unturned`): Entrypoint `/opt/scripts/start.sh`, no Cmd, no User; the only
+steamcmd-shaped path is the empty `serverdata/steamcmd/`; the shipped `start.sh` /
+`start-server.sh` are byte-identical (modulo CRLF) to the upstream `garrysmod` / `unturned`
+branches. Pinned by `full-ai-cluster/platform-controller/src/blueprint.test.ts` — red on
+origin/main (9 failing assertions), green after; the PR #17721 fsGroup-only identity
+invariant stays green throughout.
+
+**Not verified:** a live pod actually installing and serving either game; that Unturned
+honours the `+InternetServer/…` `+map/…` `+Max_Players/…` tokens on the image's launch path.
+**Still open elsewhere:** `full-ai-cluster/portal/src/blueprint-agent.ts` (the AI draft
+generator) still emits the old `/opt/steamcmd` install lines and the `:gmod` 404 tag.
