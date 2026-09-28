@@ -2935,3 +2935,14 @@ This PR stops the first-boot replica from rung-overriding a release k3s already 
 - Merged at 00:37 AM ET as squash 0a9e808f; the 4 PR blobs are identical to the tip.
 - Softs S1-S7 carried (SIGTERM, keys read at start, mutation survivors, blueprint atmoz sidecars exit 3). S8 neutral merge. S9 a ?? fallback rather than a throw.
 - Not merged by Vera.
+
+## leftover UNIQUE leftover #17728 leftover unique @ 7b6a8c1ce51618dc77d429c77bb51994b158c0fc -- GRADE HOLD
+
+- HOLD (post-merge). k3s process protection: MemoryLow, CPUWeight=1000 and OOMScoreAdjust=-999 on k3s.service and system.slice; kubelet qps/burst/soft eviction; server kube-reserved 1Gi to 2Gi. Product 7b6a8c1c is 1-parent on 03fd62b6; the requested tip fae7e691 is a neutral merge of main (identical PR blobs).
+- Auto-merged at 12:42 AM ET as 80408f05 while build-iso k3s VM tests were red, because the required gate doesn't cover build-iso. The regression is on main; revert or hotfix is Aaron's call.
+- H1: the server reservation is 2Gi + 512Mi + 500Mi = 3060Mi, over the 2560 MB test VM capacity. kubelet 1.35 exits on invalid Node Allocatable (node_container_manager_linux.go:301), so k3s crash-loops. The CI log shows reservation 3208642560 > capacity 2591301632. build-iso steps 10/11/12/14 are red, green on main and neighbours. Any server under ~3 GiB fails.
+- Otherwise correct: eval clean on all hosts, the slice path is valid, the 830 weight formula is right, pods keep the kubelet OOM scores.
+- Test is text-only; survivors are mkIf false, a duplicate later kube-reserved, and max-pod-grace. S5 is significant.
+- Softs: S1 CPUWeight is overtaken above ~26 cores. S2 no allocatable-vs-RAM check. S3 MemoryLow below the measured RSS. S8 the gate misses the build-iso VM tests.
+- Path: fix H1 (overridable/sized kube-reserved or bigger VMs), add a fits-smallest-server test, get build-iso 10-18 green.
+- Not merged by Vera.
