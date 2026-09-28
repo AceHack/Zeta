@@ -740,12 +740,12 @@ fi
 #                             error this whole module exists to prevent.
 #   refuse, probe DID NOT RUN probe-failed, dwell-too-short.
 #                             -> say so LOUDLY, name the reason on screen, and
-#                             fall back to the declared ISO default. That is
-#                             byte-for-byte today's behaviour; what changes is
-#                             that the non-result is NAMED instead of silently
-#                             reading as "no cluster". ZETA_DISCOVERY_REQUIRED=1
-#                             turns the fallback into a halt for operators who
-#                             would rather stop than proceed unchecked.
+#                             HALT and ask for c/w (081M3HP7KKH087G0R0011NQAKF,
+#                             the default since 2026-09-28): the ISO default
+#                             would FOUND a cluster nobody chose for this node.
+#                             ZETA_DISCOVERY_REQUIRED=0 restores the old
+#                             fall-back-to-the-ISO-default; ZETA_DISCOVERY=off
+#                             always falls back (the operator chose it).
 #
 # Knobs, all env-overridable in the systemd unit or from a shell:
 #   ZETA_DISCOVERY=off             skip the probe entirely (reported as a
@@ -754,11 +754,49 @@ fi
 #   ZETA_DISCOVERY_ACK_SHORT_DWELL=1  acknowledge a dwell below that floor;
 #                                  WITHOUT it a short dwell refuses rather than
 #                                  letting a two-second silence read as absence
-#   ZETA_DISCOVERY_REQUIRED=1      a probe that could not run halts the install
+#   ZETA_DISCOVERY_REQUIRED=1      (default) a probe that could not run halts and asks c/w;
+#                                  =0 falls back to the ISO default role instead
 ZETA_DISCOVERY="${ZETA_DISCOVERY:-auto}"
 ZETA_DISCOVERY_DWELL_MS="${ZETA_DISCOVERY_DWELL_MS:-30000}"
 ZETA_DISCOVERY_ACK_SHORT_DWELL="${ZETA_DISCOVERY_ACK_SHORT_DWELL:-0}"
-ZETA_DISCOVERY_REQUIRED="${ZETA_DISCOVERY_REQUIRED:-0}"
+# 081M3HP7KKH087G0R0011NQAKF: default FLIPPED 0 -> 1. With the role undeclared,
+# a probe that could not run used to fall back to the ISO default
+# (control-plane) -- i.e. FOUND a cluster on a segment nobody observed. On a
+# second machine where discovery errors, that is a second cluster, undone by
+# hand. A halt that asks is reversible; a second cluster is not cheaply so.
+# The precondition the work item set is met: main's push run 36364582344
+# (2026-09-28, scenario serial log) shows the probe RUNNING on the ISO and
+# reaching "BOOTSTRAP — nothing answered, and the silence passed", so the
+# lanes that run discovery are not halted by this flip. ZETA_DISCOVERY_REQUIRED=0
+# restores the old fallback; ZETA_DISCOVERY=off is an operator decision and is
+# never halted on (see zeta_discovery_nonresult_decision).
+ZETA_DISCOVERY_REQUIRED="${ZETA_DISCOVERY_REQUIRED:-1}"
+
+# ZETA-DISCOVERY-NONRESULT-BEGIN ---------------------------------------
+# Pure decisions (no I/O, no globals). Shell-parity tested in
+# src/Core.TypeScript/installer/discovery-nonresult-shell-parity.test.ts.
+#
+# $1 = ZETA_DISCOVERY_REQUIRED, $2 = kind of non-result: "off" when the
+# operator turned discovery off, anything else when the probe could not run.
+# stdout: "fallback" (keep the ISO default role) or "ask" (halt, ask c/w).
+zeta_discovery_nonresult_decision() {
+  # `off` was CHOSEN. An operator who disabled the probe declared something;
+  # halting them to ask again would override that choice.
+  if [ "$2" = "off" ]; then echo "fallback"; return 0; fi
+  if [ "$1" = "0" ]; then echo "fallback"; return 0; fi
+  echo "ask"
+}
+# $1 = the key the operator pressed ("" on EOF / no terminal).
+# stdout: "control-plane" | "worker" | "shell". Anything but c/w is a shell --
+# never a silent default, which is the whole point of asking.
+zeta_discovery_key_decision() {
+  case "$1" in
+    c|C) echo "control-plane" ;;
+    w|W) echo "worker" ;;
+    *) echo "shell" ;;
+  esac
+}
+# ZETA-DISCOVERY-NONRESULT-END -----------------------------------------
 
 # Halt path: a cluster was heard and this node may not join it. Refusing to
 # act is the whole point, so this does NOT time out into a default.
@@ -802,16 +840,41 @@ zeta_discovery_halt() {
 
 # Loud fallback: the probe could not run. Names the non-result rather than
 # letting it read as silence.
+# $1 = reason text, $2 = kind ("off" when the operator disabled discovery).
 zeta_discovery_could_not_run() {
   echo "[zeta-discovery] DISCOVERY DID NOT RUN: ${1}"
   echo "[zeta-discovery] This is a check that did not run, NOT a check that passed."
   echo "[zeta-discovery] The segment was never observed, so nothing here says the"
   echo "[zeta-discovery] network is empty."
-  if [[ "${ZETA_DISCOVERY_REQUIRED}" == "1" ]]; then
-    echo "[zeta-discovery] ZETA_DISCOVERY_REQUIRED=1 -> halting rather than guessing."
-    drop_to_shell
+  if [[ "$(zeta_discovery_nonresult_decision "${ZETA_DISCOVERY_REQUIRED}" "${2:-probe}")" == "fallback" ]]; then
+    echo "[zeta-discovery] Falling back to the ISO default role: ${HOST} (role=${ZETA_ROLE})."
+    return 0
   fi
-  echo "[zeta-discovery] Falling back to the ISO default role: ${HOST} (role=${ZETA_ROLE})."
+  # 081M3HP7KKH087G0R0011NQAKF: HALT and ask. The ISO default (control-plane)
+  # would FOUND a cluster, and nobody chose it for this node. No timeout on
+  # purpose: a timeout would be a default, and a default here is the split-brain.
+  echo "[zeta-discovery] HALTED — not founding a cluster on a segment nobody observed."
+  echo "[zeta-discovery] The ISO default (${HOST}) was not chosen for THIS node, and if a"
+  echo "[zeta-discovery] cluster already runs here, founding another is undone by hand."
+  echo "[zeta-discovery] Declare the role now:"
+  echo "[zeta-discovery]   c = found a NEW cluster here (control-plane)"
+  echo "[zeta-discovery]   w = install as worker-gpu (joiner)"
+  echo "[zeta-discovery]   any other key = shell (ZETA_DISCOVERY_REQUIRED=0 restores the old fallback)"
+  local key=""
+  read -n 1 -s key || key=""
+  case "$(zeta_discovery_key_decision "${key}")" in
+    control-plane)
+      HOST=control-plane; ZETA_ROLE=first-control-plane; ZETA_ROLE_SOURCE="keystroke:c"
+      ;;
+    worker)
+      HOST=worker-gpu; ZETA_ROLE=joiner; ZETA_ROLE_SOURCE="keystroke:w"
+      ;;
+    *)
+      drop_to_shell
+      ;;
+  esac
+  export ZETA_ROLE
+  echo "[zeta-discovery] DECLARED by keystroke: ${HOST} (role=${ZETA_ROLE}, source=${ZETA_ROLE_SOURCE})."
 }
 
 echo
@@ -820,7 +883,7 @@ if [[ "${ZETA_ROLE_DECLARED}" == "yes" ]]; then
   echo "[zeta-discovery] SKIPPED — the role was DECLARED (${ZETA_ROLE_SOURCE})."
   echo "[zeta-discovery] An explicit declaration always wins over discovery."
 elif [[ "${ZETA_DISCOVERY}" == "off" ]]; then
-  zeta_discovery_could_not_run "disabled by ZETA_DISCOVERY=off"
+  zeta_discovery_could_not_run "disabled by ZETA_DISCOVERY=off" off
 elif ! command -v zeta-cluster-discover >/dev/null 2>&1; then
   # An older ISO without the discover package. Absence of the tool is a
   # non-result, never an empty network.

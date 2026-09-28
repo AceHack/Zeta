@@ -136,6 +136,10 @@ export const FULL_INSTALL_FAILURE_MARKERS: readonly string[] = [
   "no internet",
   INSTALLER_BAIL_SERIAL_MARKER,
   "[zeta-first-boot] Install failed",
+  // 081M3HP7KKH087G0R0011NQAKF: discovery could not run and the installer now
+  // HALTS for a c/w keypress with no timeout. Nobody presses keys in a lane, so
+  // without this the lane would wait out its whole phase-1 budget in silence.
+  "[zeta-discovery] HALTED",
 ];
 
 const IDLE_INSTALLER_SHELL_MARKER = "nixos@zeta-installer:~";

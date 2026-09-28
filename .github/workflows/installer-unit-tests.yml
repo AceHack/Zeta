@@ -37,6 +37,7 @@ on:
       # 081M3K23YCP087G0R003BVDS1P: dev-toolchain-post-boot.test.ts EXECUTES
       # this runner and reads its module; the same reason as zeta-install.sh.
       - "full-ai-cluster/nixos/modules/zeta-dev-toolchain.*"
+      - "full-ai-cluster/usb-nixos-installer/zeta-first-boot.sh"
       # The Touch ID sudo installer/verifier. Its PURE core (assess/render/parse)
       # is exercised here; the LIVE check can only run on a Mac, so the logic is
       # a total function over a facts record precisely so CI can still test it.
@@ -59,6 +60,7 @@ on:
       # run -- a check that did not run, looking like a check that passed.
       - "full-ai-cluster/usb-nixos-installer/zeta-install.sh"
       - "full-ai-cluster/nixos/modules/zeta-dev-toolchain.*"
+      - "full-ai-cluster/usb-nixos-installer/zeta-first-boot.sh"
       # The Touch ID sudo installer/verifier. Its PURE core (assess/render/parse)
       # is exercised here; the LIVE check can only run on a Mac, so the logic is
       # a total function over a facts record precisely so CI can still test it.
