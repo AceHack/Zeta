@@ -1,0 +1,12 @@
+{
+  "pr_number": 17728,
+  "archive_path": "docs/history/pr-reviews/2026/09/28/PR-17728-fix-k3s-protect-the-k3s-process-itself-pods-outweighed-it-8-3-1-and-nothing-guar.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-28T04:43:05.096Z",
+  "schema_version": "v1",
+  "commit_sha": "80408f05d6c721d15060fc6540254d2eac64b7a9",
+  "title": "fix(k3s): protect the k3s process itself; pods outweighed it 8.3:1 and nothing guarded its memory",
+  "state": "MERGED",
+  "merged_at": "2026-09-28T04:42:21Z",
+  "head_ref": "claude/k3s-process-protection"
+}
