@@ -2990,3 +2990,11 @@ This PR stops the first-boot replica from rung-overriding a release k3s already 
 - CI @ c4f8a9bd: 0 failures, codeql (required) green, gate pending.
 - Softs: S1 (significant) test gaps (loop/pickup, exact uid, Deployment path). S2 no Service/port for SFTP. S3 arma write access. S4 restart for key rotation. S5 ConfigMap-create grants SFTP. S6 no live pod. S7 auto-merge armed.
 - Path to GO: add configMaps to the CRD sidecar schema plus a Blueprint-vs-CRD validation test. Did not merge.
+
+## leftover UNIQUE leftover #17737 leftover unique @ efdc3f05747555892b8d838c80aae18f0fbc39ac -- GRADE GO (post-merge)
+
+- #17737 makes GitLab reachable on a fresh install: Cilium Gateway pinned to 192.168.1.250 (last address of the .240-.250 pool), public-tls listeners/routes per host, auth-token runner Job (GitLab 17.7 CreateRunnerService), client-side apply for gitaly's duplicate TZ, KAS off. Product efdc3f05 is 1-parent on 642b5d84 (red falsifiers), 1-parent on 03fd62b6. Live HEAD 206d6393 is a content-neutral merge (14 PR files identical). Auto-merged 01:33 ET 2026-09-28 as squash d4a8dbc8, byte-identical to the product.
+- All claims true. Local: gitlab-exposure 3/8 to 11/11, public-tls 16/5 to 21/21; tsc strict clean; render 67 objects, kubeconform strict 67/67. Mutations 24/33 killed.
+- CI: gate (required) green 01:33, codeql (required) green 01:20, TS hermetic 29,263/0 with the helm render tests actually run. Two non-required reds not PR-caused (chart snapshot refresh, keda soak in a lane that excludes gitlab).
+- Softs: S1 (significant) LAN pin hard-coded in 3 places. S2 (significant) token Job exits 0 on every error with stderr discarded, so no ArgoCD retry (fail-soft, not a security fail-open). S3 (significant) new-test survivors (Secret name/key, /v2/, kas.enabled, exit-0 mode). S4 (significant) wrong '/v2/' comment: the 17.7 Dependency Proxy lives there. S6 permanent pods/exec on the token SA. S7-S14 minor. No live run.
+- Hard fails: none. Did not merge.
