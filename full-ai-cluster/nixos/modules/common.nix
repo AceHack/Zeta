@@ -374,6 +374,23 @@
   };
   security.sudo.wheelNeedsPassword = lib.mkDefault true;
 
+  # 081M3K16QKA087G0R002GT2F8X: /etc/zeta is the flake this node REBUILDS FROM,
+  # cloned by the installer as root. It stays root-owned on purpose: root
+  # evaluates and activates it (`sudo nixos-rebuild switch --impure --flake /etc/zeta/...`), it
+  # holds root-only files (initial-hashedpassword), and a tree the unprivileged
+  # user could write is a tree that user could turn into root the next time
+  # anyone rebuilds. What it must NOT do is refuse to be READ -- measured on
+  # node-5b2dfa: `git -C /etc/zeta rev-parse HEAD` as zeta ->
+  # "fatal: detected dubious ownership". Git's safe.directory check guards
+  # against a LESS privileged owner planting hooks/config for you to run;
+  # trusting a root-owned repo trusts the account that already controls the
+  # machine, so this entry costs nothing. Declared in the system gitconfig so it
+  # holds for every user and survives a rebuild.
+  programs.git = {
+    enable = true;
+    config.safe.directory = "/etc/zeta";
+  };
+
   environment.systemPackages = with pkgs; [
     git vim htop btop tmux ripgrep jq yq-go curl wget rsync tree
     file unzip iproute2 iputils dnsutils nmap tcpdump mtr

@@ -1,0 +1,14 @@
+{
+  "id": "080d07309af36010a0130008b85baae5",
+  "at": "2026-09-28T03:33:44.172Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M3K16QKA087G0R002GT2F8X",
+    "type": "bug",
+    "title": "Installer leaves root-owned paths under ~zeta and /etc/zeta unreadable by git (chroot UID resolution fails; creds-to-k8s runs kubectl as root with HOME=/home/zeta)",
+    "slug": "installer-leaves-root-owned-paths-under-zeta-and-etc-zeta-un",
+    "priority": "P2",
+    "filename": "081M3K16QKA087G0R002GT2F8X-installer-leaves-root-owned-paths-under-zeta-and-etc-zeta-un.md"
+  }
+}

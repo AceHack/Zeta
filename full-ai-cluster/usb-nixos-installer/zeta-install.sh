@@ -4297,19 +4297,58 @@ ZETA_HOME=/mnt/home/zeta
 # P0 fix (PR #5388 Copilot review): resolve zeta UID/GID from the
 # INSTALLED system rather than hardcoding 1000:100 — if another user
 # is created first or NixOS module config changes, hardcoded IDs would
-# chown files to the wrong owner. chroot reads /mnt/etc/passwd via the
-# installed system's id binary which is authoritative.
-ZETA_UID=$(sudo chroot /mnt id -u zeta 2>/dev/null || echo "")
-ZETA_GID=$(sudo chroot /mnt id -g zeta 2>/dev/null || echo "")
-if [ -z "$ZETA_UID" ] || [ -z "$ZETA_GID" ]; then
-  echo "[iter-5.5.0]   WARN: could not resolve zeta UID/GID from /mnt via chroot;"
+# chown files to the wrong owner.
+#
+# 081M3K16QKA087G0R002GT2F8X: read the installed system's account database as
+# a FILE. The previous `sudo chroot /mnt id -u zeta` could never succeed on
+# NixOS: a chroot resolves `id` through PATH, and every PATH entry the live ISO
+# carries (/run/current-system/sw/bin, /run/wrappers/bin) is a /run path that
+# does not exist inside /mnt until the installed system BOOTS -- /run is a tmpfs
+# populated at activation. So every install on real metal printed the WARN
+# below and guessed 1000:100. The guess happened to be right, which is exactly
+# why nobody noticed that the resolution was dead.
+#
+# nixos-install's activation has already written /mnt/etc/passwd by the time
+# this runs -- it is the same activation that created /mnt/home/zeta, which the
+# block below gates on. The home directory's own ownership is the second
+# witness: NixOS createHome chowns it to the user.
+# ZETA-HOME-IDS-BEGIN -- pure: reads two paths, no globals, no side effects.
+# Shell-parity tested in src/Core.TypeScript/installer/home-ownership-shell-parity.test.ts.
+zeta_resolve_home_ids() {
+  # $1 = passwd file, $2 = the user's home dir, $3 = user name.
+  # stdout: "<uid> <gid> <source>"; rc 1 when neither witness resolves.
+  _zr_uid=""; _zr_gid=""
+  if [ -r "$1" ]; then
+    _zr_line=$(awk -F: -v u="$3" '$1 == u { print $3 " " $4; exit }' "$1" 2>/dev/null)
+    _zr_uid=${_zr_line%% *}; _zr_gid=${_zr_line##* }
+  fi
+  case "$_zr_uid:$_zr_gid" in
+    :*|*:|*[!0-9:]*) ;;
+    *) echo "$_zr_uid $_zr_gid passwd"; return 0 ;;
+  esac
+  if [ -d "$2" ]; then
+    _zr_line=$(stat -c '%u %g' "$2" 2>/dev/null)
+    _zr_uid=${_zr_line%% *}; _zr_gid=${_zr_line##* }
+    case "$_zr_uid:$_zr_gid" in
+      :*|*:|*[!0-9:]*) ;;
+      # A root-owned home is not a witness for the user -- it is the bug itself.
+      0:*) ;;
+      *) echo "$_zr_uid $_zr_gid home-dir"; return 0 ;;
+    esac
+  fi
+  return 1
+}
+# ZETA-HOME-IDS-END
+if ZETA_IDS=$(zeta_resolve_home_ids /mnt/etc/passwd "$ZETA_HOME" zeta); then
+  read -r ZETA_UID ZETA_GID ZETA_IDS_SOURCE <<<"$ZETA_IDS"
+  echo "[iter-5.5.0]   resolved zeta UID:GID = $ZETA_UID:$ZETA_GID (from the installed system's $ZETA_IDS_SOURCE)"
+else
+  echo "[iter-5.5.0]   WARN: could not resolve zeta UID/GID from /mnt/etc/passwd or $ZETA_HOME;"
   echo "[iter-5.5.0]   falling back to NixOS defaults (1000:100). If the installed"
   echo "[iter-5.5.0]   system uses different IDs, post-reboot file ownership may"
-  echo "[iter-5.5.0]   need correction via 'sudo chown -R zeta:users ~/.{config,bun,Zeta}'"
+  echo "[iter-5.5.0]   need correction via 'sudo chown -R zeta:users /home/zeta'"
   ZETA_UID=1000
   ZETA_GID=100
-else
-  echo "[iter-5.5.0]   resolved zeta UID:GID = $ZETA_UID:$ZETA_GID (via chroot id zeta)"
 fi
 
 if [ -d "$ZETA_HOME" ]; then
@@ -5031,6 +5070,19 @@ if [ -d "$ZETA_HOME" ]; then
   # 6.95d — pre-clone now happens up in 6.95a-bootstrap (before mise
   # install needs .mise.toml). This sub-step is intentionally empty
   # since the clone moved up.
+
+  # 081M3K16QKA087G0R002GT2F8X: ownership by CONSTRUCTION, not by remembering.
+  # Steps above that write under $ZETA_HOME as root (sudo mkdir, cp, tee) each
+  # have to remember their own chown, and one that forgets leaves a root-owned
+  # path in the operator's home that fails much later as a Permission denied
+  # nobody can trace back here. One recursive sweep AFTER the last write makes
+  # "everything under ~zeta is zeta's" true whichever step forgot. Modes are not
+  # touched, so the go-rwx the credential steps set survives.
+  # home-ownership-shell-parity.test.ts pins this as the LAST write under
+  # $ZETA_HOME in this script.
+  # ZETA-HOME-OWNERSHIP-SWEEP
+  sudo chown -R "$ZETA_UID:$ZETA_GID" "$ZETA_HOME"
+  echo "[iter-5.5.0] ownership sweep: everything under ${ZETA_HOME#/mnt} is now $ZETA_UID:$ZETA_GID"
 
   echo "[iter-5.5.0] ── DONE — first login will have: install.sh-managed runtimes + declarative agent CLIs on PATH; ~/Zeta cloned (via 6.95a-bootstrap); ~/.config/{gh,claude} populated when available; ~/.bun/bin on PATH ──"
 else

@@ -33,6 +33,12 @@ let
       type = lib.types.attrsOf lib.types.unspecified;
       default = { };
     };
+    # 081M3K16QKA087G0R002GT2F8X: the module re-owns a root-owned ~/.kube with
+    # tmpfiles rules; the stub must declare the option the real NixOS has.
+    options.systemd.tmpfiles.rules = lib.mkOption {
+      type = lib.types.listOf lib.types.str;
+      default = [ ];
+    };
     options.services.k3s = {
       enable = lib.mkOption { type = lib.types.bool; default = true; };
       role = lib.mkOption { type = lib.types.str; default = "server"; };

@@ -79,6 +79,16 @@ in
   };
 
   config = lib.mkIf cfg.enable {
+    # 081M3K16QKA087G0R002GT2F8X: repair what the old HOME=${cfg.home} left
+    # behind on nodes installed before this fix -- a root-owned ~/.kube that
+    # made `ls ~/.kube` Permission denied for the operator. `d` creates it
+    # zeta-owned and `Z` recursively re-owns anything already inside. Harmless
+    # on a fresh node (the directory is simply the operator's own).
+    systemd.tmpfiles.rules = [
+      "d ${cfg.home}/.kube 0700 ${cfg.user} users -"
+      "Z ${cfg.home}/.kube - ${cfg.user} users -"
+    ];
+
     systemd.services.zeta-creds-to-k8s = {
       description = "Project USB-restored host credentials into Kubernetes Secrets (081M1PWSF56087G0R000FDS3NY)";
       wantedBy = [ "multi-user.target" ];
@@ -95,8 +105,19 @@ in
         RemainAfterExit = true;
         User = "root";
         WorkingDirectory = "/";
+        # 081M3K16QKA087G0R002GT2F8X: HOME is root's OWN state directory, never
+        # the operator's. With HOME=${cfg.home} this ROOT unit ran `k3s kubectl`,
+        # which writes its discovery cache to $HOME/.kube/cache -- so the first
+        # boot of every control plane left /home/zeta/.kube owned root:root, 0750
+        # (measured on node-5b2dfa: created 23:20:10, the second this unit ran).
+        # The home is still passed EXPLICITLY (`--home`) to the projector, and
+        # bun is resolved by absolute path below; MISE_DATA_DIR keeps the shim
+        # fallback pointed at the operator's installs without borrowing $HOME.
+        StateDirectory = "zeta-creds-to-k8s";
+        StateDirectoryMode = "0700";
         Environment = [
-          "HOME=${cfg.home}"
+          "HOME=/var/lib/zeta-creds-to-k8s"
+          "MISE_DATA_DIR=${cfg.home}/.local/share/mise"
           "PATH=${cfg.home}/.local/share/mise/shims:${cfg.home}/.bun/bin:/run/current-system/sw/bin:/usr/bin:/bin"
           "MISE_TRUSTED_CONFIG_PATHS=${cfg.repoRoot}"
         ];
