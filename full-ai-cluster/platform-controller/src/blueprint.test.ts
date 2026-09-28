@@ -8,8 +8,10 @@
 //   4. a stateful database         (TCP port + storage, cluster-only)
 // Plus the value-substitution and resolution rules each on their own.
 
-import { expect, test, describe } from "bun:test";
-import { readFileSync } from "node:fs";
+import { expect, test, describe, afterAll } from "bun:test";
+import { readFileSync, mkdtempSync, mkdirSync, writeFileSync, rmSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 import { API_VERSION } from "./types.ts";
 import {
   type Blueprint,
@@ -458,4 +460,104 @@ describe("ich777 SteamCMD blueprints: no imposed identity; the image's own entry
   test("gmod: GAME_NAME is the srcds game directory", () => {
     expect(steamcmd.find((b) => b.name === "gmod")?.env?.GAME_NAME).toBe("garrysmod");
   });
+});
+
+// ── atmoz/sftp sidecars are opt-in (library data, rendered) ──────────────
+//
+// PR #17722 found every `atmoz/sftp:alpine` sidecar in the Blueprint library
+// rendered with NO args (no user spec) and NO keys mount. atmoz's /entrypoint
+// with no user spec has no user to create, and its create-sftp-user runs
+// `cat /home/<user>/.ssh/keys/*` (set -Eeo pipefail), which exits non-zero when
+// that dir holds no key — so the sidecar crash-loops and holds every game-server
+// pod unready. gmod's standalone StatefulSet fixed this in #17722 by making SFTP
+// OPT-IN; the rendered sidecars follow the same pattern here:
+//   * an OPTIONAL per-server ConfigMap `<resource>-sftp-keys` is mounted
+//     read-only at /home/zeta/.ssh/keys (absent => the kubelet mounts an empty dir);
+//   * a `sh -c` gate idles ("SFTP disabled") while that dir has no key file
+//     (ConfigMap `..data` bookkeeping is a dotfile and does not match `*`), then
+//     `exec /entrypoint zeta::<uid>:<gid>` once one appears;
+//   * <uid>:<gid> is the owner of the data the sidecar serves. ich777 images'
+//     start.sh does `chown -R ${UID}:${GID} ${DATA_DIR}` with image defaults
+//     UID=99 GID=100 (read from the image config, 2026-09-28), so 99:100. The
+//     acemod arma-reforger image has no `User` (runs as root, files owned 0:0);
+//     SFTP as root is refused, so it uses the pod fsGroup 1000:1000 — read access
+//     via the group, write to game-created files NOT guaranteed.
+// create-sftp-user (atmoz/sftp master) accepts a non-unique uid and creates a
+// missing gid group, so 99:100 on alpine is a valid spec.
+//
+// Like src/Core.TypeScript/cluster/gmod-sftp-keys.test.ts, this RUNS the rendered
+// sidecar's effective script under `sh` with atmoz's /entrypoint replaced by a
+// stub that fails exactly the way atmoz does on an empty keys dir, and the poll
+// `sleep` replaced by a marker that ends the run (no timers).
+describe("atmoz/sftp sidecars are opt-in: idle without a key, start atmoz with a user spec once one exists", () => {
+  const libPath = new URL("../../k8s/applications/platform/blueprints.yaml", import.meta.url);
+  const docs = Bun.YAML.parse(readFileSync(libPath, "utf8")) as Array<{ metadata: { name: string }; spec: Omit<Blueprint, "name"> }>;
+  const withSftp = docs
+    .map((d) => ({ name: d.metadata.name, ...d.spec }) as Blueprint)
+    .filter((bp) => (bp.sidecars ?? []).some((s) => s.image.startsWith("atmoz/sftp")));
+  const OWNER: Record<string, string> = { gmod: "99:100", unturned: "99:100", "arma-reforger": "1000:1000" };
+  const KEYS = "/home/zeta/.ssh/keys";
+
+  const ROOT = mkdtempSync(join(tmpdir(), "bp-sftp-keys-")).replaceAll("\\", "/");
+  afterAll(() => rmSync(ROOT, { recursive: true, force: true }));
+
+  /** The shell the sidecar actually runs: its own `sh -c` script, or atmoz's entrypoint with its args. */
+  const effectiveScript = (c: any): string =>
+    c.command ? (expect(c.command.slice(-1)[0]).toBe("-c"), c.args?.[0] ?? "") : `exec /entrypoint ${(c.args ?? []).join(" ")}`;
+
+  async function run(script: string, keysDir: string): Promise<{ code: number | null; out: string }> {
+    const stub = `${ROOT}/entrypoint-${Math.random().toString(36).slice(2)}`;
+    writeFileSync(stub, `#!/bin/sh\n[ $# -gt 0 ] || { echo "atmoz: no users"; exit 1; }\ncat ${keysDir}/* >/dev/null 2>&1 || { echo "create-sftp-user: Error"; exit 1; }\necho "ATMOZ-STARTED $*"\n`, { mode: 0o755 });
+    const s = script.replaceAll(KEYS, keysDir).replaceAll("/entrypoint", `sh ${stub}`).replaceAll(/sleep \d+/g, "{ echo IDLE-POLL; exit 0; }");
+    const p = Bun.spawn(["sh", "-c", s], { stdout: "pipe", stderr: "pipe" });
+    const out = (await new Response(p.stdout).text()) + (await new Response(p.stderr).text());
+    await p.exited;
+    return { code: p.exitCode, out };
+  }
+
+  test("the library has the three atmoz/sftp sidecar blueprints (not vacuous)", () => {
+    expect(withSftp.map((b) => b.name).sort()).toEqual(["arma-reforger", "gmod", "unturned"]);
+  });
+
+  for (const bp of withSftp) {
+    const objs = renderDeployable(bp, instance(`${bp.name}-srv`, { blueprint: bp.name }));
+    const podSpec = (one(objs, "StatefulSet").spec as any).template.spec;
+    const sftp = podSpec.containers.find((c: any) => c.image?.startsWith("atmoz/sftp"));
+    const script = effectiveScript(sftp);
+
+    test(`${bp.name}: keys come from an OPTIONAL per-server ConfigMap mounted read-only at ${KEYS}`, () => {
+      const m = (sftp.volumeMounts ?? []).find((v: any) => v.mountPath === KEYS);
+      expect(m?.readOnly).toBe(true);
+      const vol = (podSpec.volumes ?? []).find((v: any) => v.name === m?.name);
+      expect(vol?.configMap).toEqual({ name: `${bp.name}-srv-sftp-keys`, optional: true });
+    });
+    test(`${bp.name}: the data volume is still served at /home/zeta/data`, () => {
+      expect(sftp.volumeMounts).toContainEqual({ name: "data", mountPath: "/home/zeta/data" });
+    });
+    test(`${bp.name}: empty keys dir -> the sidecar idles, never reaching atmoz (no crash-loop)`, async () => {
+      const dir = `${ROOT}/${bp.name}-empty`;
+      mkdirSync(dir);
+      const r = await run(script, dir);
+      expect(r.out).toContain("IDLE-POLL");
+      expect(r.out).not.toContain("Error");
+      expect(r.out).not.toContain("no users");
+      expect(r.code).toBe(0);
+    });
+    test(`${bp.name}: ConfigMap bookkeeping (..data) alone is not a key`, async () => {
+      const dir = `${ROOT}/${bp.name}-dotonly`;
+      mkdirSync(`${dir}/..data`, { recursive: true });
+      const r = await run(script, dir);
+      expect(r.out).toContain("IDLE-POLL");
+      expect(r.out).not.toContain("ATMOZ-STARTED");
+    });
+    test(`${bp.name}: a key present -> atmoz starts with key-only user zeta::${OWNER[bp.name]}`, async () => {
+      const dir = `${ROOT}/${bp.name}-withkey`;
+      mkdirSync(dir);
+      writeFileSync(`${dir}/operator.pub`, "ssh-ed25519 AAAAtest operator\n");
+      const r = await run(script, dir);
+      expect(r.code).toBe(0);
+      expect(r.out).toContain(`ATMOZ-STARTED zeta::${OWNER[bp.name]}`);
+      expect(r.out).not.toContain("IDLE-POLL");
+    });
+  }
 });

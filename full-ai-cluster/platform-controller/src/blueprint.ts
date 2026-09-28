@@ -54,6 +54,10 @@ export interface BlueprintSidecar {
   args?: string[];
   ports?: BlueprintPort[];
   mountDataAt?: string; // mount the shared data volume here (e.g. an SFTP sidecar)
+  // ConfigMaps mounted read-only into this sidecar. `name` is templated with
+  // ${VAR} (e.g. "${RESOURCE_NAME}-sftp-keys" for a per-server ConfigMap);
+  // `optional` lets the pod start with an empty dir while it does not exist.
+  configMaps?: { name: string; mountPath: string; optional?: boolean }[];
 }
 
 /** A reusable run-recipe. Stored as a Blueprint CR or a library entry — DATA. */
@@ -169,14 +173,21 @@ export function renderDeployable(bp: Blueprint, cr: Deployable): K8sObject[] {
   };
 
   const containers: Record<string, unknown>[] = [mainContainer];
+  const configMapVolumes: Record<string, unknown>[] = []; // inline pod volumes, rendered on BOTH workload kinds
   for (const sc of bp.sidecars ?? []) {
+    const scMounts: Record<string, unknown>[] = sc.mountDataAt && bp.storage ? [{ name: "data", mountPath: sc.mountDataAt }] : [];
+    (sc.configMaps ?? []).forEach((cm, i) => {
+      const vol = `${sc.name}-cm-${i}`;
+      configMapVolumes.push({ name: vol, configMap: { name: sub(cm.name), ...(cm.optional ? { optional: true } : {}) } });
+      scMounts.push({ name: vol, mountPath: cm.mountPath, readOnly: true });
+    });
     containers.push({
       name: sc.name,
       image: sc.image,
       ...(sc.command ? { command: sc.command.map(sub) } : {}),
       ...(sc.args ? { args: sc.args.map(sub) } : {}),
       ...(sc.ports ? { ports: sc.ports.map((p) => ({ name: p.name, containerPort: p.port, protocol: p.protocol ?? "TCP" })) } : {}),
-      ...(sc.mountDataAt && bp.storage ? { volumeMounts: [{ name: "data", mountPath: sc.mountDataAt }] } : {}),
+      ...(scMounts.length ? { volumeMounts: scMounts } : {}),
     });
   }
 
@@ -193,7 +204,9 @@ export function renderDeployable(bp: Blueprint, cr: Deployable): K8sObject[] {
   // ── workload (Deployment | StatefulSet) ────────────────────────────
   const replicas = cr.spec.replicas ?? 1;
   if (stateful) {
-    podSpec.volumes = [{ name: "data-extra-cm", emptyDir: {} }]; // placeholder slot; PVC via template
+    // The data PVC comes from volumeClaimTemplates, never an inline volume; only
+    // sidecar ConfigMap volumes are inline.
+    if (configMapVolumes.length) podSpec.volumes = configMapVolumes;
     out.push({
       apiVersion: "apps/v1",
       kind: "StatefulSet",
@@ -202,7 +215,7 @@ export function renderDeployable(bp: Blueprint, cr: Deployable): K8sObject[] {
         serviceName: name,
         replicas,
         selector: { matchLabels: { "app.kubernetes.io/name": name } },
-        template: { metadata: { labels: lbls }, spec: stripPlaceholder(podSpec) },
+        template: { metadata: { labels: lbls }, spec: podSpec },
         ...(bp.storage
           ? {
               volumeClaimTemplates: [
@@ -223,8 +236,9 @@ export function renderDeployable(bp: Blueprint, cr: Deployable): K8sObject[] {
         metadata: { name: `${name}-data`, namespace: ns, labels: lbls, ownerReferences: [owner] },
         spec: { accessModes: ["ReadWriteOnce"], storageClassName, resources: { requests: { storage: storageSize } } },
       });
-      podSpec.volumes = [{ name: "data", persistentVolumeClaim: { claimName: `${name}-data` } }];
     }
+    const volumes = [...(bp.storage ? [{ name: "data", persistentVolumeClaim: { claimName: `${name}-data` } }] : []), ...configMapVolumes];
+    if (volumes.length) podSpec.volumes = volumes;
     out.push({
       apiVersion: "apps/v1",
       kind: "Deployment",
@@ -281,8 +295,4 @@ export function renderDeployable(bp: Blueprint, cr: Deployable): K8sObject[] {
 // explicitly stateless — game servers / DBs. Web apps set stateful:false.
 function stableNeeded(bp: Blueprint): boolean {
   return bp.stateful !== false;
-}
-function stripPlaceholder(podSpec: Record<string, unknown>): Record<string, unknown> {
-  const { volumes, ...rest } = podSpec;
-  return rest; // StatefulSet gets its volume from volumeClaimTemplates, not an inline volume
 }

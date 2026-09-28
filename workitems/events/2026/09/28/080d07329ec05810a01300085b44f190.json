@@ -1,0 +1,14 @@
+{
+  "id": "080d07329ec05810a01300085b44f190",
+  "at": "2026-09-28T04:44:09.611Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M3K57P0A087G0R000AZ486D",
+    "type": "bug",
+    "title": "Platform Blueprint atmoz/sftp sidecars render with no user spec and no keys mount, so they crash-loop and hold game pods unready",
+    "slug": "platform-blueprint-atmoz-sftp-sidecars-render-with-no-user-s",
+    "priority": "P2",
+    "filename": "081M3K57P0A087G0R000AZ486D-platform-blueprint-atmoz-sftp-sidecars-render-with-no-user-s.md"
+  }
+}

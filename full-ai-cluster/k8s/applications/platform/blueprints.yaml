@@ -56,8 +56,29 @@ spec:
     - { name: GAMEMODE, default: "sandbox" }
     - { name: MAXPLAYERS, default: "16" }
     - { name: VALIDATE, default: "true", description: "`true` makes steamcmd validate the install on every start (the old install line always validated)" }
+  # SFTP IS OPT-IN (same pattern as game-hosting/gmod, PR #17722). atmoz needs a
+  # user spec and, for a key-only user, at least one key file — without either
+  # it crash-loops and holds the pod unready. So the sidecar idles ("SFTP
+  # disabled") until the OPTIONAL per-server ConfigMap `<name>-sftp-keys` holds
+  # a key, then execs atmoz. `zeta::99:100` = key-only, uid/gid of the data
+  # owner (the ich777 start.sh chowns DATA_DIR to UID=99 GID=100). Enable with:
+  #   kubectl -n <ns> create configmap <name>-sftp-keys --from-file=operator.pub=$HOME/.ssh/id_ed25519.pub
+  # Guard: full-ai-cluster/platform-controller/src/blueprint.test.ts
   sidecars:
-    - { name: sftp, image: atmoz/sftp:alpine, mountDataAt: /home/zeta/data }
+    - name: sftp
+      image: atmoz/sftp:alpine
+      command: ["/bin/sh", "-c"]
+      args:
+        - |
+          KEYS=/home/zeta/.ssh/keys
+          if ! ls "$KEYS"/* >/dev/null 2>&1; then
+            echo "SFTP disabled: no public key in $KEYS (ConfigMap ${RESOURCE_NAME}-sftp-keys absent/empty); waiting"
+            until ls "$KEYS"/* >/dev/null 2>&1; do sleep 30; done
+          fi
+          exec /entrypoint zeta::99:100
+      mountDataAt: /home/zeta/data
+      configMaps:
+        - { name: "${RESOURCE_NAME}-sftp-keys", mountPath: /home/zeta/.ssh/keys, optional: true }
   defaultExpose: lan
 ---
 # Generic web app — stateless, single HTTP port, routable on a public host via
@@ -151,8 +172,22 @@ spec:
     - { name: MAP, default: "PEI" }
     - { name: MAXPLAYERS, default: "24" }
     - { name: VALIDATE, default: "true", description: "`true` makes steamcmd validate the install on every start (the old install line always validated)" }
+  # SFTP opt-in, key-only as the data owner 99:100 — see `gmod`.
   sidecars:
-    - { name: sftp, image: atmoz/sftp:alpine, mountDataAt: /home/zeta/data }
+    - name: sftp
+      image: atmoz/sftp:alpine
+      command: ["/bin/sh", "-c"]
+      args:
+        - |
+          KEYS=/home/zeta/.ssh/keys
+          if ! ls "$KEYS"/* >/dev/null 2>&1; then
+            echo "SFTP disabled: no public key in $KEYS (ConfigMap ${RESOURCE_NAME}-sftp-keys absent/empty); waiting"
+            until ls "$KEYS"/* >/dev/null 2>&1; do sleep 30; done
+          fi
+          exec /entrypoint zeta::99:100
+      mountDataAt: /home/zeta/data
+      configMaps:
+        - { name: "${RESOURCE_NAME}-sftp-keys", mountPath: /home/zeta/.ssh/keys, optional: true }
   defaultExpose: lan
 ---
 # Arma Reforger dedicated server — Steam app 1874900.
@@ -237,6 +272,23 @@ spec:
     - { name: MAXPLAYERS, default: "32" }
     - { name: CONFIG, default: "docker_generated", description: "ARMA_CONFIG — `docker_generated` regenerates the config from these variables; any other value is a filename under /reforger/Configs used as-is" }
     - { name: GAME_PORT, default: "2001" }
+  # SFTP opt-in — see `gmod`. The user is 1000:1000 (the pod fsGroup), NOT the
+  # data owner: this image has no `User`, so it runs as root and its files are
+  # 0:0, and SFTP is not served as root. Read access is via the fsGroup; write
+  # access to files the game created is NOT guaranteed.
   sidecars:
-    - { name: sftp, image: atmoz/sftp:alpine, mountDataAt: /home/zeta/data }
+    - name: sftp
+      image: atmoz/sftp:alpine
+      command: ["/bin/sh", "-c"]
+      args:
+        - |
+          KEYS=/home/zeta/.ssh/keys
+          if ! ls "$KEYS"/* >/dev/null 2>&1; then
+            echo "SFTP disabled: no public key in $KEYS (ConfigMap ${RESOURCE_NAME}-sftp-keys absent/empty); waiting"
+            until ls "$KEYS"/* >/dev/null 2>&1; do sleep 30; done
+          fi
+          exec /entrypoint zeta::1000:1000
+      mountDataAt: /home/zeta/data
+      configMaps:
+        - { name: "${RESOURCE_NAME}-sftp-keys", mountPath: /home/zeta/.ssh/keys, optional: true }
   defaultExpose: lan
