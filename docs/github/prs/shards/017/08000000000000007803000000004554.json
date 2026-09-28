@@ -1,0 +1,12 @@
+{
+  "pr_number": 17748,
+  "archive_path": "docs/history/pr-reviews/2026/09/28/PR-17748-fix-k3s-size-kubelet-reservations-to-the-node-so-small-nodes-can-start.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-28T09:52:34.685Z",
+  "schema_version": "v1",
+  "commit_sha": "88b688444eb25ce70761382d53dd2d3705f7123b",
+  "title": "fix(k3s): size kubelet reservations to the node so small nodes can start",
+  "state": "MERGED",
+  "merged_at": "2026-09-28T09:51:46Z",
+  "head_ref": "claude/kubelet-reservation-scales"
+}
