@@ -1,0 +1,12 @@
+{
+  "pr_number": 17736,
+  "archive_path": "docs/history/pr-reviews/2026/09/28/PR-17736-fix-platform-blueprint-atmoz-sftp-sidecars-are-opt-in-instead-of-crash-looping.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-28T05:18:31.748Z",
+  "schema_version": "v1",
+  "commit_sha": "cf206d56d6435b7c690891763c21e6a18077a0ab",
+  "title": "fix(platform): Blueprint atmoz/sftp sidecars are opt-in instead of crash-looping",
+  "state": "MERGED",
+  "merged_at": "2026-09-28T05:17:44Z",
+  "head_ref": "claude/blueprint-sftp-optin"
+}
