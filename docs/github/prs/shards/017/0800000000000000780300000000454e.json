@@ -1,0 +1,12 @@
+{
+  "pr_number": 17742,
+  "archive_path": "docs/history/pr-reviews/2026/09/28/PR-17742-fix-installer-bound-the-post-wipe-clone-and-nixos-install-a-hang-is-a-named-fail.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-28T05:56:33.545Z",
+  "schema_version": "v1",
+  "commit_sha": "fccc9a2d3657e579fdd8dd03c2245f574e84aee4",
+  "title": "fix(installer): bound the post-wipe clone and nixos-install; a hang is a named failure",
+  "state": "MERGED",
+  "merged_at": "2026-09-28T05:55:46Z",
+  "head_ref": "claude/installer-bounded-clone"
+}

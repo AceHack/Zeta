@@ -1,0 +1,12 @@
+{
+  "pr_number": 17745,
+  "archive_path": "docs/history/pr-reviews/2026/09/28/PR-17745-fix-installer-a-discovery-probe-that-could-not-run-halts-and-asks-never-founds.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-28T06:31:19.592Z",
+  "schema_version": "v1",
+  "commit_sha": "c3ecfaa350bbeb87e1dbaa9c0d076ad8ad26a8df",
+  "title": "fix(installer): a discovery probe that could not run halts and asks, never founds",
+  "state": "MERGED",
+  "merged_at": "2026-09-28T06:30:30Z",
+  "head_ref": "claude/installer-discovery-halt"
+}
