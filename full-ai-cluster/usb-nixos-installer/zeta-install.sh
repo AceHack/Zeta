@@ -146,6 +146,37 @@ zeta_repo_pin_decide_on_failure() {
 }
 # ZETA-REPO-PIN-END --------------------------------------
 
+# ZETA-BOUNDED-STEP-BEGIN -------------------------------------------
+# 081M3HPNSY5087G0R002QAVCEJ: every network-bound step AFTER the wipe gets an
+# overall wall-clock bound, so a hang becomes a NAMED failure instead of an
+# install that sits forever with nothing on screen. `nixos-install` already
+# bounds each DOWNLOAD (connect/stalled timeouts); nothing bounded the RUN, and
+# the post-wipe `git clone` had no bound and no GIT_TERMINAL_PROMPT=0 at all.
+#
+# $1 = step name (for the message), $2 = seconds, rest = the command.
+# Returns the command's own rc, or 124 on timeout (after printing a line that
+# names the step and the bound). --kill-after: a child that ignores SIGTERM is
+# killed 30 s later, so the bound is a bound.
+# Shell-parity tested in src/Core.TypeScript/installer/bounded-step-shell-parity.test.ts.
+zeta_bounded_step() {
+  local name="$1" secs="$2" rc=0
+  shift 2
+  timeout --kill-after=30 "$secs" "$@" || rc=$?
+  # 124 = timeout sent TERM; 137 = the --kill-after KILL (128+9).
+  if [ "$rc" -eq 124 ] || [ "$rc" -eq 137 ]; then
+    echo "TIMEOUT: ${name} did not finish within ${secs}s -- stopped (rc=${rc})." >&2
+    return 124
+  fi
+  return "$rc"
+}
+# ZETA-BOUNDED-STEP-END ---------------------------------------------
+
+# Overridable bounds. Generous on purpose: they exist to turn a HANG into a
+# named failure, not to race a slow-but-progressing link. nixos-install may
+# build from source when the cache is flaky (`--option fallback true`).
+ZETA_CLONE_TIMEOUT_SECS="${ZETA_CLONE_TIMEOUT_SECS:-900}"
+ZETA_NIXOS_INSTALL_TIMEOUT_SECS="${ZETA_NIXOS_INSTALL_TIMEOUT_SECS:-10800}"
+
 # Operator-facing prompts run only on an interactive console session.
 # ZETA_AUTO_CONFIRM=WIPE (first-boot / QEMU CI via zeta-first-boot.sh) and
 # non-TTY stdin both suppress them — iter-5.3 password, 081KSKBP80008QG0R003AX2A69.3b passphrase,
@@ -2554,8 +2585,18 @@ if [[ -z "$HOST" ]]; then
   echo "Selected: $HOST"
 fi
 
-echo "Cloning $REPO_URL ..."
-sudo git clone "$REPO_URL" /mnt/etc/zeta
+echo "Cloning $REPO_URL ... (bounded ${ZETA_CLONE_TIMEOUT_SECS}s)"
+# 081M3HPNSY5087G0R002QAVCEJ: bounded, and GIT_TERMINAL_PROMPT=0 so a credential
+# prompt fails instead of waiting on a keyboard nobody is at. `sudo env` because
+# sudo's env_reset would drop a plain GIT_TERMINAL_PROMPT= prefix.
+zeta_clone_rc=0
+zeta_bounded_step "repo clone ($REPO_URL -> /mnt/etc/zeta)" "$ZETA_CLONE_TIMEOUT_SECS" \
+  sudo env GIT_TERMINAL_PROMPT=0 git clone "$REPO_URL" /mnt/etc/zeta || zeta_clone_rc=$?
+if [ "$zeta_clone_rc" -eq 124 ]; then
+  bail "the repo clone did not finish within ${ZETA_CLONE_TIMEOUT_SECS}s (${REPO_URL}). The disks are ALREADY WIPED. The network reached ${REPO_URL} seconds ago in the preflight, so this is a stall mid-transfer, not 'no network'. Remedy: check the link, then re-run the install (the wipe repeats; nothing on these disks is lost that was not already lost); raise the bound with ZETA_CLONE_TIMEOUT_SECS=<seconds> on a slow link."
+elif [ "$zeta_clone_rc" -ne 0 ]; then
+  bail "the repo clone failed (rc=${zeta_clone_rc}, ${REPO_URL}) -- see git's output above. The disks are ALREADY WIPED. Remedy: check connectivity and that ${REPO_URL} is reachable, then re-run the install."
+fi
 
 # ── WP21 (081M35C7NJR087G0R002S4R654): pin the checkout to the ISO/flash commit ──
 #
@@ -4181,14 +4222,27 @@ echo "Running nixos-install --flake /mnt/etc/zeta/full-ai-cluster#$HOST ..."
 # but UNBLOCKS the install instead of looping on the same 5 files.
 # Full reproducibility work (closure-baking, Cachix mirror, extra-substituters)
 # tracked at 081KSGS9H0008QG0R003X5Y2A5.
-sudo nixos-install \
+#
+# 081M3HPNSY5087G0R002QAVCEJ: the per-download bounds above do not bound the
+# RUN -- a flake input fetch from github: (not baked into the ISO) or a
+# from-source fallback build can still stall the whole install with nothing on
+# screen. The overall bound turns that into a named failure.
+echo "[nixos-install] bounded ${ZETA_NIXOS_INSTALL_TIMEOUT_SECS}s overall (ZETA_NIXOS_INSTALL_TIMEOUT_SECS)"
+zeta_nixos_install_rc=0
+zeta_bounded_step "nixos-install ($HOST)" "$ZETA_NIXOS_INSTALL_TIMEOUT_SECS" \
+  sudo nixos-install \
   --impure \
   --option fallback true \
   --option connect-timeout 10 \
   --option stalled-download-timeout 60 \
   --option download-attempts 3 \
   --flake "/mnt/etc/zeta/full-ai-cluster#$HOST" \
-  --no-root-password
+  --no-root-password || zeta_nixos_install_rc=$?
+if [ "$zeta_nixos_install_rc" -eq 124 ]; then
+  bail "nixos-install did not finish within ${ZETA_NIXOS_INSTALL_TIMEOUT_SECS}s. The usual causes are a stalled github: flake-input fetch (flake inputs are not baked into the ISO) or a from-source fallback build after cache.nixos.org downloads kept failing -- the last lines above say which. Remedy: check the link and re-run the install; on a slow link raise the bound with ZETA_NIXOS_INSTALL_TIMEOUT_SECS=<seconds>."
+elif [ "$zeta_nixos_install_rc" -ne 0 ]; then
+  bail "nixos-install failed (rc=${zeta_nixos_install_rc}) -- Nix's own error is above."
+fi
 
 # Explicit cleanup at end (defense-in-depth; trap also handles this on
 # success OR failure exit paths).
