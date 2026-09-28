@@ -1,0 +1,12 @@
+{
+  "pr_number": 17721,
+  "archive_path": "docs/history/pr-reviews/2026/09/28/PR-17721-test-platform-controller-pin-steamcmd-blueprint-write-identity-no-runasuser-no-d.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-28T04:06:11.543Z",
+  "schema_version": "v1",
+  "commit_sha": "dedf8f4d76bbfab75cd6ff4a35e2f801dd24104a",
+  "title": "test(platform-controller): pin SteamCMD blueprint write identity — no runAsUser (no defect)",
+  "state": "MERGED",
+  "merged_at": "2026-09-28T04:05:20Z",
+  "head_ref": "claude/blueprint-steamcmd-identity"
+}
