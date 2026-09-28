@@ -1,0 +1,12 @@
+{
+  "pr_number": 17723,
+  "archive_path": "docs/history/pr-reviews/2026/09/28/PR-17723-fix-installer-ownership-under-zeta-and-etc-zeta-right-by-construction.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-28T04:28:37.796Z",
+  "schema_version": "v1",
+  "commit_sha": "66c0ee8e57c47d27200209916de7256269ccf698",
+  "title": "fix(installer): ownership under ~zeta and /etc/zeta right by construction",
+  "state": "MERGED",
+  "merged_at": "2026-09-28T04:27:54Z",
+  "head_ref": "claude/installer-ownership"
+}

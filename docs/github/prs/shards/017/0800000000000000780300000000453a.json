@@ -1,0 +1,12 @@
+{
+  "pr_number": 17722,
+  "archive_path": "docs/history/pr-reviews/2026/09/28/PR-17722-fix-gmod-make-the-sftp-sidecar-opt-in-so-a-fresh-install-goes-healthy.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-28T04:38:10.898Z",
+  "schema_version": "v1",
+  "commit_sha": "0a9e808faf27e29a884269e07d39291982cd9460",
+  "title": "fix(gmod): make the SFTP sidecar opt-in so a fresh install goes Healthy",
+  "state": "MERGED",
+  "merged_at": "2026-09-28T04:37:25Z",
+  "head_ref": "claude/gmod-sftp-keys"
+}
