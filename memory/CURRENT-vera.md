@@ -2888,3 +2888,11 @@ This PR stops the first-boot replica from rung-overriding a release k3s already 
 - CI: gate (required) and codeql (required) green; TS hermetic 29165/0; 0 failures.
 - Softs: S6 (significant) #17708 pvc-write-identity guard does not cover kind: Blueprint; over rendered StatefulSets it flags steamcmd-as-root 4 times -- two opposite rules, silent only via coverage gap. S1 main/sidecar securityContext unpinned. S2 entrypoint-bypass unpinned. S4 missing /opt/steamcmd/steamcmd.sh (081M0QB1ZCV). S5 regression rationale overstated. S7 future start.sh fix loses group 1000. S9 empty workitem body.
 - Sit leftover; not merged by me.
+
+## leftover UNIQUE leftover #17725 leftover unique @ 172b5e153770475ca402ab216819fcd570d622e0 -- GRADE HOLD
+
+- ArgoCD redis from docker.io/library/redis instead of anonymous public.ecr.aws. 1-parent on 03fd62b6; 10 files +161/-36. Auto-merge on.
+- HARD FAIL H1: cilium-k3d-values.test.ts:122 counts server.service.type=ClusterIP == 2, now 1 because the PR folded two literals into one constant. plan + unit tests red (job 108781824403), green on base. All live kind/k3d ArgoCD health jobs need dry-run, so they were skipped: the claimed fix was never exercised. TS hermetic runs the file; gate (required) expected red.
+- Product correct: three surfaces render docker.io redis:8.6.4-alpine; no digest pin in manifests, multi-arch index identical across docker.io, ecr and mirror.gcr.io; no arm64 regression. Snapshots and pin-parity green. New pin test real (base 68/4, tip 72/72).
+- Softs: S1 fifth install site infra/k8s/bootstrap/argocd-install.yaml still ecr-public (applied by k3s-server.nix L77). S2 stale measured row. S3 no Docker Hub auth. S4 call-site revert survives. S6 lane-5 chainguard 403 flake.
+- Re-grade path: fix the test (assert both call sites spread ARGOCD_HELM_SET_VALUES), then need green live kind/k3d ArgoCD health, lanes 3/4/6, gate. Sit leftover; not merged.
