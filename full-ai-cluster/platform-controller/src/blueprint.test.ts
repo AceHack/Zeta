@@ -9,6 +9,7 @@
 // Plus the value-substitution and resolution rules each on their own.
 
 import { expect, test, describe } from "bun:test";
+import { readFileSync } from "node:fs";
 import { API_VERSION } from "./types.ts";
 import {
   type Blueprint,
@@ -362,4 +363,59 @@ describe("ownership + AI labels are stamped on every child", () => {
       expect((o.metadata as any).labels["platform.zeta.io/admin"]).toBe("otto");
     }
   });
+});
+
+// ── SteamCMD install write identity (workitem 081M3K1408D087G0R000WP4NDE) ─
+//
+// PR #17708 fixed gmod's hand-written StatefulSet by forcing runAsUser 1000,
+// because cm2network/steamcmd owns its tree as uid 1000. The question here was
+// whether the controller-rendered SteamCMD Blueprints carry the same defect.
+// They do NOT, and forcing runAsUser here would be the regression:
+//
+//   * Every Blueprint with an `install:` in the shipped library runs a
+//     `ghcr.io/ich777/steamcmd:*` image. Their registry configs (garrysmod,
+//     unturned, amd64, read 2026-09-27) carry NO `User`, so the process starts
+//     as root; the image's own `/opt/scripts/start.sh` then does `usermod` /
+//     `groupmod` / `chown -R ${UID}:${GID}` and `su steam` to drop to UID=99,
+//     GID=100 (env defaults). That drop REQUIRES starting as root.
+//   * The rendered pod overrides `command` for both the install init and main,
+//     so start.sh never runs and nothing drops: both run as root, which can
+//     write the fsGroup-1000 PVC. No "Missing file permissions" path exists.
+//
+// So the invariant is: the controller imposes NO process identity — pod-level
+// securityContext is exactly { fsGroup: 1000 } and the install init carries no
+// securityContext. UID/GID-env-matches-fsGroup is NOT the invariant, because
+// the env is only consumed by the entrypoint these pods bypass.
+//
+// NOT pinned here (needs the network, not a unit test): that the images still
+// have no `User`. If a future tag sets one, this test stays green and the pod
+// will run as that user — re-read the image config when bumping a tag.
+describe("SteamCMD install blueprints impose no process identity (library data)", () => {
+  const libPath = new URL("../../k8s/applications/platform/blueprints.yaml", import.meta.url);
+  const docs = Bun.YAML.parse(readFileSync(libPath, "utf8")) as Array<{
+    metadata: { name: string };
+    spec: Omit<Blueprint, "name">;
+  }>;
+  const steamcmd = docs
+    .map((d) => ({ name: d.metadata.name, ...d.spec }) as Blueprint)
+    .filter((bp) => bp.install !== undefined && bp.image.startsWith("ghcr.io/ich777/steamcmd:"));
+
+  test("the library actually contains SteamCMD install blueprints (not vacuous)", () => {
+    expect(steamcmd.map((b) => b.name).sort()).toEqual(["gmod", "unturned"]);
+  });
+
+  for (const bp of steamcmd) {
+    const objs = renderDeployable(bp, instance(`${bp.name}-srv`, { blueprint: bp.name }));
+    const podSpec = (one(objs, "StatefulSet").spec as any).template.spec;
+
+    test(`${bp.name}: pod securityContext is exactly { fsGroup: 1000 } — no runAsUser/runAsGroup/runAsNonRoot`, () => {
+      expect(podSpec.securityContext).toEqual({ fsGroup: 1000 });
+    });
+    test(`${bp.name}: install init runs the image's default (root) identity and mounts the PVC`, () => {
+      const init = podSpec.initContainers.find((c: any) => c.name === "install");
+      expect(init.image).toBe(bp.image);
+      expect(init.securityContext).toBeUndefined();
+      expect(init.volumeMounts).toEqual([{ name: "data", mountPath: bp.storage!.mountPath }]);
+    });
+  }
 });
