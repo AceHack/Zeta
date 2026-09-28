@@ -1,0 +1,12 @@
+{
+  "pr_number": 17732,
+  "archive_path": "docs/history/pr-reviews/2026/09/28/PR-17732-feat-wp11-say-why-the-api-went-away-and-stop-the-ci-guest-deploying-what-it-cann.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-28T05:25:38.407Z",
+  "schema_version": "v1",
+  "commit_sha": "fa13e3d023e2365d32e7ab5004329eef1887cb5d",
+  "title": "feat(wp11): say why the API went away, and stop the CI guest deploying what it cannot hold",
+  "state": "MERGED",
+  "merged_at": "2026-09-28T05:24:48Z",
+  "head_ref": "claude/wp11-pressure-diag-and-ci-envelope"
+}
