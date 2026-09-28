@@ -2998,3 +2998,13 @@ This PR stops the first-boot replica from rung-overriding a release k3s already 
 - CI: gate (required) green 01:33, codeql (required) green 01:20, TS hermetic 29,263/0 with the helm render tests actually run. Two non-required reds not PR-caused (chart snapshot refresh, keda soak in a lane that excludes gitlab).
 - Softs: S1 (significant) LAN pin hard-coded in 3 places. S2 (significant) token Job exits 0 on every error with stderr discarded, so no ArgoCD retry (fail-soft, not a security fail-open). S3 (significant) new-test survivors (Secret name/key, /v2/, kas.enabled, exit-0 mode). S4 (significant) wrong '/v2/' comment: the 17.7 Dependency Proxy lives there. S6 permanent pods/exec on the token SA. S7-S14 minor. No live run.
 - Hard fails: none. Did not merge.
+
+## leftover UNIQUE leftover #17741 leftover unique @ 09255cb345becb37e3226effefbb99d3e3ecb8bf -- GRADE HOLD
+
+- Main regression: #17736 squash-merged 01:17 ET 2026-09-28 as cf206d56, byte-identical to my HOLD tip 0df1120f, without the CRD fix. crd-blueprint.yaml (blob 5da2d53e) still lacks sidecar.configMaps, so the platform SSA sync rejects gmod/unturned/arma-reforger on a real kube-apiserver v1.31. CI is blind (platform excluded from live-kind).
+- #17741 aligns the portal blueprint-agent drafts with ich777 + opt-in sftp. Product 09255cb3 is 1-parent on cf206d56; live HEAD 1d493e5d is a content-neutral merge (7 PR files identical). +410/-153. Open, auto-merge armed.
+- H1 (hard): the new sftp() helper (blueprint-agent.ts:58) emits configMaps for all game drafts and 'add sftp'. The portal saves drafts via SSA (data-k8s.ts:81-93); against main's CRD 7/9 product drafts are rejected and the real request returns HTTP 500 (parent drafts 9/9 applied). It makes the pre-existing CRD gap worse: game drafts can no longer be saved. With configMaps in the CRD: 201, 9/9.
+- The rest is correct: CRD untouched; steamcmd-contract.ts matches the real ich777 images; refactor keeps every prior assertion; no new fail-open. portal 127/127, platform-controller 87/87, tsc strict clean, mutations 19/29.
+- CI @ 1d493e5d: 0 failures, codeql (required) green, gate pending.
+- Softs: S1/S2 (significant) new-test gaps (idle loop, exact uid, VALIDATE, env names). S3 count-only control tests. S4 add-sftp without image gives 500. S5 no client-spec allowlist (pre-existing). S6-S8 minor.
+- Path to GO: add configMaps to the CRD sidecar schema (here or first, also fixing main) plus a Blueprint/draft-vs-CRD validation test. Did not merge.
