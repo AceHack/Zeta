@@ -9,7 +9,7 @@
 // Plus the value-substitution and resolution rules each on their own.
 
 import { expect, test, describe, afterAll } from "bun:test";
-import { readFileSync, mkdtempSync, mkdirSync, writeFileSync, rmSync } from "node:fs";
+import { readFileSync, mkdtempSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { API_VERSION } from "./types.ts";
@@ -21,6 +21,7 @@ import {
   resolveValues,
   substitute,
 } from "./blueprint.ts";
+import { ICH777_IMAGE_PREFIX, ich777ContractViolations, sftpGateViolations } from "./steamcmd-contract.ts";
 
 // ── helpers ───────────────────────────────────────────────────────────
 function instance(name: string, spec: Deployable["spec"]): Deployable {
@@ -367,6 +368,12 @@ describe("ownership + AI labels are stamped on every child", () => {
   });
 });
 
+/** The shipped Blueprint library, as Blueprint values. */
+function library(): Blueprint[] {
+  const docs = Bun.YAML.parse(readFileSync(new URL("../../k8s/applications/platform/blueprints.yaml", import.meta.url), "utf8")) as Array<{ metadata: { name: string }; spec: Omit<Blueprint, "name"> }>;
+  return docs.map((d) => ({ name: d.metadata.name, ...d.spec }) as Blueprint);
+}
+
 // ── ich777 SteamCMD blueprints: identity + image contract ───────────────
 // Workitems 081M3K1408D087G0R000WP4NDE (identity, PR #17721) and
 // 081M0QB1ZCV087G0R001P9YCPX (the steamcmd path).
@@ -413,151 +420,70 @@ describe("ownership + AI labels are stamped on every child", () => {
 //
 // NOT pinned here (needs the network): that a future tag keeps this contract.
 // Re-read the image config and layers when bumping a tag.
-describe("ich777 SteamCMD blueprints: no imposed identity; the image's own entrypoint installs the game (library data)", () => {
-  const libPath = new URL("../../k8s/applications/platform/blueprints.yaml", import.meta.url);
-  const docs = Bun.YAML.parse(readFileSync(libPath, "utf8")) as Array<{
-    metadata: { name: string };
-    spec: Omit<Blueprint, "name">;
-  }>;
-  const steamcmd = docs
-    .map((d) => ({ name: d.metadata.name, ...d.spec }) as Blueprint)
-    .filter((bp) => bp.image.startsWith("ghcr.io/ich777/steamcmd:"));
-  const APPID: Record<string, string> = { gmod: "4020", unturned: "1110390" };
+describe("ich777 SteamCMD blueprints: the image's own entrypoint installs the game (library data)", () => {
+  const steamcmd = library().filter((bp) => bp.image.startsWith(ICH777_IMAGE_PREFIX));
+  const EXPECT: Record<string, { appId: string; gamePort: string }> = {
+    gmod: { appId: "4020", gamePort: "27015" },
+    unturned: { appId: "1110390", gamePort: "27015" },
+  };
 
   test("the library actually contains the ich777 SteamCMD blueprints (not vacuous)", () => {
     expect(steamcmd.map((b) => b.name).sort()).toEqual(["gmod", "unturned"]);
   });
 
   for (const bp of steamcmd) {
-    const objs = renderDeployable(bp, instance(`${bp.name}-srv`, { blueprint: bp.name }));
-    const podSpec = (one(objs, "StatefulSet").spec as any).template.spec;
-    const main = podSpec.containers.find((c: any) => c.name === "main");
-    const env: Record<string, string> = Object.fromEntries((main.env ?? []).map((e: any) => [e.name, e.value]));
-
-    test(`${bp.name}: pod securityContext is exactly { fsGroup: 1000 } — no runAsUser/runAsGroup/runAsNonRoot`, () => {
-      expect(podSpec.securityContext).toEqual({ fsGroup: 1000 });
-      for (const c of [...podSpec.containers, ...(podSpec.initContainers ?? [])]) expect(c.securityContext).toBeUndefined();
-    });
-    test(`${bp.name}: no command/args override and no install initContainer — /opt/scripts/start.sh runs`, () => {
-      expect(main.command).toBeUndefined();
-      expect(main.args).toBeUndefined();
-      expect(podSpec.initContainers).toBeUndefined();
-    });
-    test(`${bp.name}: nothing in the pod names /opt/steamcmd, a path the image does not ship`, () => {
-      expect(JSON.stringify(podSpec)).not.toContain("/opt/steamcmd");
-    });
-    test(`${bp.name}: GAME_ID is the Steam appid, GAME_PORT the game port, GAME_PARAMS set`, () => {
-      expect(env.GAME_ID).toBe(APPID[bp.name]);
-      expect(env.GAME_PORT).toBe("27015");
-      expect(env.GAME_PARAMS).toBeDefined();
-      expect(env.GAME_PARAMS).not.toBe("template");
-    });
-    test(`${bp.name}: the PVC mounts at SERVER_DIR, leaving the image's steamcmd directory in place`, () => {
-      expect(main.volumeMounts).toEqual([{ name: "data", mountPath: "/serverdata/serverfiles" }]);
+    test(`${bp.name}: satisfies the ich777 contract (steamcmd-contract.ts)`, () => {
+      const podSpec = (one(renderDeployable(bp, instance(`${bp.name}-srv`, { blueprint: bp.name })), "StatefulSet").spec as any).template.spec;
+      expect(ich777ContractViolations(podSpec, EXPECT[bp.name]!)).toEqual([]);
     });
   }
 
   test("gmod: GAME_NAME is the srcds game directory", () => {
     expect(steamcmd.find((b) => b.name === "gmod")?.env?.GAME_NAME).toBe("garrysmod");
   });
+
+  // The helper must be able to fail: the pre-#17729 gmod shape trips it.
+  test("control: the pre-#17729 gmod shape is reported, not passed", () => {
+    const old: Blueprint = {
+      name: "gmod-old", stateful: true, image: "ghcr.io/ich777/steamcmd:garrysmod",
+      install: "/opt/steamcmd/steamcmd.sh +force_install_dir /data +login anonymous +app_update 4020 validate +quit",
+      command: ["/data/srcds_run"], storage: { size: "1Gi", mountPath: "/data" },
+    };
+    const podSpec = (one(renderDeployable(old, instance("old", { blueprint: "gmod-old" })), "StatefulSet").spec as any).template.spec;
+    expect(ich777ContractViolations(podSpec, { appId: "4020", gamePort: "27015" }).length).toBeGreaterThanOrEqual(5);
+  });
 });
 
 // ── atmoz/sftp sidecars are opt-in (library data, rendered) ──────────────
-//
-// PR #17722 found every `atmoz/sftp:alpine` sidecar in the Blueprint library
-// rendered with NO args (no user spec) and NO keys mount. atmoz's /entrypoint
-// with no user spec has no user to create, and its create-sftp-user runs
-// `cat /home/<user>/.ssh/keys/*` (set -Eeo pipefail), which exits non-zero when
-// that dir holds no key — so the sidecar crash-loops and holds every game-server
-// pod unready. gmod's standalone StatefulSet fixed this in #17722 by making SFTP
-// OPT-IN; the rendered sidecars follow the same pattern here:
-//   * an OPTIONAL per-server ConfigMap `<resource>-sftp-keys` is mounted
-//     read-only at /home/zeta/.ssh/keys (absent => the kubelet mounts an empty dir);
-//   * a `sh -c` gate idles ("SFTP disabled") while that dir has no key file
-//     (ConfigMap `..data` bookkeeping is a dotfile and does not match `*`), then
-//     `exec /entrypoint zeta::<uid>:<gid>` once one appears;
-//   * <uid>:<gid> is the owner of the data the sidecar serves. ich777 images'
-//     start.sh does `chown -R ${UID}:${GID} ${DATA_DIR}` with image defaults
-//     UID=99 GID=100 (read from the image config, 2026-09-28), so 99:100. The
-//     acemod arma-reforger image has no `User` (runs as root, files owned 0:0);
-//     SFTP as root is refused, so it uses the pod fsGroup 1000:1000 — read access
-//     via the group, write to game-created files NOT guaranteed.
-// create-sftp-user (atmoz/sftp master) accepts a non-unique uid and creates a
-// missing gid group, so 99:100 on alpine is a valid spec.
-//
-// Like src/Core.TypeScript/cluster/gmod-sftp-keys.test.ts, this RUNS the rendered
-// sidecar's effective script under `sh` with atmoz's /entrypoint replaced by a
-// stub that fails exactly the way atmoz does on an empty keys dir, and the poll
-// `sleep` replaced by a marker that ends the run (no timers).
+// PR #17736 / workitem 081M3K57P0A087G0R000AZ486D; the full contract, the uid:gid
+// reasoning and the stub-based runner live in steamcmd-contract.ts.
+//   gmod/unturned: 99:100 (ich777 start.sh chowns DATA_DIR to UID=99 GID=100)
+//   arma-reforger: 1000:1000 (acemod image runs as root; SFTP is not served as root,
+//                  so the fsGroup — read via the group, write to game files NOT guaranteed)
 describe("atmoz/sftp sidecars are opt-in: idle without a key, start atmoz with a user spec once one exists", () => {
-  const libPath = new URL("../../k8s/applications/platform/blueprints.yaml", import.meta.url);
-  const docs = Bun.YAML.parse(readFileSync(libPath, "utf8")) as Array<{ metadata: { name: string }; spec: Omit<Blueprint, "name"> }>;
-  const withSftp = docs
-    .map((d) => ({ name: d.metadata.name, ...d.spec }) as Blueprint)
-    .filter((bp) => (bp.sidecars ?? []).some((s) => s.image.startsWith("atmoz/sftp")));
+  const withSftp = library().filter((bp) => (bp.sidecars ?? []).some((s) => s.image.startsWith("atmoz/sftp")));
   const OWNER: Record<string, string> = { gmod: "99:100", unturned: "99:100", "arma-reforger": "1000:1000" };
-  const KEYS = "/home/zeta/.ssh/keys";
-
   const ROOT = mkdtempSync(join(tmpdir(), "bp-sftp-keys-")).replaceAll("\\", "/");
   afterAll(() => rmSync(ROOT, { recursive: true, force: true }));
-
-  /** The shell the sidecar actually runs: its own `sh -c` script, or atmoz's entrypoint with its args. */
-  const effectiveScript = (c: any): string =>
-    c.command ? (expect(c.command.slice(-1)[0]).toBe("-c"), c.args?.[0] ?? "") : `exec /entrypoint ${(c.args ?? []).join(" ")}`;
-
-  async function run(script: string, keysDir: string): Promise<{ code: number | null; out: string }> {
-    const stub = `${ROOT}/entrypoint-${Math.random().toString(36).slice(2)}`;
-    writeFileSync(stub, `#!/bin/sh\n[ $# -gt 0 ] || { echo "atmoz: no users"; exit 1; }\ncat ${keysDir}/* >/dev/null 2>&1 || { echo "create-sftp-user: Error"; exit 1; }\necho "ATMOZ-STARTED $*"\n`, { mode: 0o755 });
-    const s = script.replaceAll(KEYS, keysDir).replaceAll("/entrypoint", `sh ${stub}`).replaceAll(/sleep \d+/g, "{ echo IDLE-POLL; exit 0; }");
-    const p = Bun.spawn(["sh", "-c", s], { stdout: "pipe", stderr: "pipe" });
-    const out = (await new Response(p.stdout).text()) + (await new Response(p.stderr).text());
-    await p.exited;
-    return { code: p.exitCode, out };
-  }
 
   test("the library has the three atmoz/sftp sidecar blueprints (not vacuous)", () => {
     expect(withSftp.map((b) => b.name).sort()).toEqual(["arma-reforger", "gmod", "unturned"]);
   });
 
   for (const bp of withSftp) {
-    const objs = renderDeployable(bp, instance(`${bp.name}-srv`, { blueprint: bp.name }));
-    const podSpec = (one(objs, "StatefulSet").spec as any).template.spec;
-    const sftp = podSpec.containers.find((c: any) => c.image?.startsWith("atmoz/sftp"));
-    const script = effectiveScript(sftp);
-
-    test(`${bp.name}: keys come from an OPTIONAL per-server ConfigMap mounted read-only at ${KEYS}`, () => {
-      const m = (sftp.volumeMounts ?? []).find((v: any) => v.mountPath === KEYS);
-      expect(m?.readOnly).toBe(true);
-      const vol = (podSpec.volumes ?? []).find((v: any) => v.name === m?.name);
-      expect(vol?.configMap).toEqual({ name: `${bp.name}-srv-sftp-keys`, optional: true });
-    });
-    test(`${bp.name}: the data volume is still served at /home/zeta/data`, () => {
-      expect(sftp.volumeMounts).toContainEqual({ name: "data", mountPath: "/home/zeta/data" });
-    });
-    test(`${bp.name}: empty keys dir -> the sidecar idles, never reaching atmoz (no crash-loop)`, async () => {
-      const dir = `${ROOT}/${bp.name}-empty`;
-      mkdirSync(dir);
-      const r = await run(script, dir);
-      expect(r.out).toContain("IDLE-POLL");
-      expect(r.out).not.toContain("Error");
-      expect(r.out).not.toContain("no users");
-      expect(r.code).toBe(0);
-    });
-    test(`${bp.name}: ConfigMap bookkeeping (..data) alone is not a key`, async () => {
-      const dir = `${ROOT}/${bp.name}-dotonly`;
-      mkdirSync(`${dir}/..data`, { recursive: true });
-      const r = await run(script, dir);
-      expect(r.out).toContain("IDLE-POLL");
-      expect(r.out).not.toContain("ATMOZ-STARTED");
-    });
-    test(`${bp.name}: a key present -> atmoz starts with key-only user zeta::${OWNER[bp.name]}`, async () => {
-      const dir = `${ROOT}/${bp.name}-withkey`;
-      mkdirSync(dir);
-      writeFileSync(`${dir}/operator.pub`, "ssh-ed25519 AAAAtest operator\n");
-      const r = await run(script, dir);
-      expect(r.code).toBe(0);
-      expect(r.out).toContain(`ATMOZ-STARTED zeta::${OWNER[bp.name]}`);
-      expect(r.out).not.toContain("IDLE-POLL");
+    test(`${bp.name}: opt-in gate, optional keys ConfigMap, key-only user zeta::${OWNER[bp.name]}`, async () => {
+      const podSpec = (one(renderDeployable(bp, instance(`${bp.name}-srv`, { blueprint: bp.name })), "StatefulSet").spec as any).template.spec;
+      expect(await sftpGateViolations(podSpec, `${bp.name}-srv`, `zeta::${OWNER[bp.name]}`, ROOT)).toEqual([]);
     });
   }
+
+  // The runner must be able to fail: a bare sidecar (the pre-#17736 shape) trips it.
+  test("control: the pre-#17736 bare sidecar is reported, not passed", async () => {
+    const bare: Blueprint = {
+      name: "bare", stateful: true, image: "x", storage: { size: "1Gi", mountPath: "/d" },
+      sidecars: [{ name: "sftp", image: "atmoz/sftp:alpine", mountDataAt: "/home/zeta/data" }],
+    };
+    const podSpec = (one(renderDeployable(bare, instance("bare", { blueprint: "bare" })), "StatefulSet").spec as any).template.spec;
+    expect((await sftpGateViolations(podSpec, "bare", "zeta::99:100", ROOT)).length).toBeGreaterThanOrEqual(3);
+  });
 });

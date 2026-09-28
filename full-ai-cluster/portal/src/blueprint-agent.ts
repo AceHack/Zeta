@@ -10,7 +10,14 @@
 
 export interface BlueprintVariable { name: string; default?: string; description?: string }
 export interface BlueprintPort { name: string; port: number; protocol?: "TCP" | "UDP"; web?: boolean }
-export interface BlueprintSidecar { name: string; image: string; mountDataAt?: string }
+export interface BlueprintSidecar {
+  name: string;
+  image: string;
+  command?: string[];
+  args?: string[];
+  mountDataAt?: string;
+  configMaps?: { name: string; mountPath: string; optional?: boolean }[];
+}
 export interface BlueprintProposal {
   name: string;
   category: string; // game | database | web | app
@@ -27,8 +34,39 @@ export interface BlueprintProposal {
   defaultExpose?: "none" | "cluster" | "lan" | "public";
 }
 
-const SFTP: BlueprintSidecar = { name: "sftp", image: "atmoz/sftp:alpine", mountDataAt: "/home/zeta/data" };
-const steam = (appId: number, dir = "/data") => `/opt/steamcmd/steamcmd.sh +force_install_dir ${dir} +login anonymous +app_update ${appId} validate +quit`;
+// SFTP is OPT-IN, the same shape as the shipped library (PR #17736): atmoz needs a
+// user spec and, for a key-only user, at least one key file, or it crash-loops and
+// holds the pod unready. So the sidecar idles ("SFTP disabled") until the OPTIONAL
+// per-server ConfigMap `<name>-sftp-keys` holds a key, then execs atmoz as the owner
+// of the data it serves (`uidGid`). Enable with:
+//   kubectl -n <ns> create configmap <name>-sftp-keys --from-file=operator.pub=$HOME/.ssh/id_ed25519.pub
+const sftp = (uidGid: string): BlueprintSidecar => ({
+  name: "sftp",
+  image: "atmoz/sftp:alpine",
+  command: ["/bin/sh", "-c"],
+  args: [
+    [
+      "KEYS=/home/zeta/.ssh/keys",
+      'if ! ls "$KEYS"/* >/dev/null 2>&1; then',
+      '  echo "SFTP disabled: no public key in $KEYS (ConfigMap ${RESOURCE_NAME}-sftp-keys absent/empty); waiting"',
+      '  until ls "$KEYS"/* >/dev/null 2>&1; do sleep 30; done',
+      "fi",
+      `exec /entrypoint zeta::${uidGid}`,
+    ].join("\n"),
+  ],
+  mountDataAt: "/home/zeta/data",
+  configMaps: [{ name: "${RESOURCE_NAME}-sftp-keys", mountPath: "/home/zeta/.ssh/keys", optional: true }],
+});
+// ich777 images start.sh-chown their data to UID=99 GID=100 (image config defaults).
+const SFTP_ICH777 = sftp("99:100");
+
+// ich777/docker-steamcmd-server images install AND run themselves (PR #17729): their
+// Entrypoint /opt/scripts/start.sh downloads steamcmd into /serverdata/steamcmd,
+// `app_update ${GAME_ID}` into /serverdata/serverfiles, then execs the server with
+// the image's own launch line + ${GAME_PARAMS}. There is no /opt/steamcmd in any of
+// them, so a draft must issue no install/command/args, configure by env, and mount
+// its PVC at SERVER_DIR (a volume over /serverdata would hide the empty steamcmd dir).
+const ICH777_SERVER_DIR = "/serverdata/serverfiles";
 
 // ── the game-server knowledge base (real SteamCMD specs) ───────────────
 interface GameDef { match: RegExp; build: () => BlueprintProposal; note: string }
@@ -38,13 +76,14 @@ const GAMES: GameDef[] = [
     match: /gmod|garry'?s ?mod|garrys/i,
     note: "Garry's Mod (Source dedicated, SteamCMD app 4020) — UDP 27015, world+addons persist, SFTP for the data root.",
     build: () => ({
-      name: "gmod", category: "game", image: "ghcr.io/ich777/steamcmd:gmod",
-      install: steam(4020), command: ["/data/srcds_run"],
-      args: ["-game", "garrysmod", "-port", "${PORT}", "+maxplayers", "${MAXPLAYERS}", "+gamemode", "${GAMEMODE}", "+map", "${MAP}"],
-      env: { SRCDS_PORT: "${PORT}" }, ports: [{ name: "game", port: 27015, protocol: "UDP" }],
-      storage: { size: "20Gi", mountPath: "/data" }, resources: { cpu: "2", memory: "4Gi" },
-      variables: [{ name: "PORT", default: "27015" }, { name: "MAP", default: "gm_construct" }, { name: "GAMEMODE", default: "sandbox" }, { name: "MAXPLAYERS", default: "16" }],
-      sidecars: [SFTP], defaultExpose: "lan",
+      // `:gmod` is not a tag this publisher ships; `garrysmod` is (and agrees with appid 4020).
+      name: "gmod", category: "game", image: "ghcr.io/ich777/steamcmd:garrysmod",
+      // start-server.sh: srcds_run -game ${GAME_NAME} ${GAME_PARAMS} -console +port ${GAME_PORT}
+      env: { GAME_ID: "4020", GAME_NAME: "garrysmod", GAME_PARAMS: "+maxplayers ${MAXPLAYERS} +gamemode ${GAMEMODE} +map ${MAP}", GAME_PORT: "${PORT}", VALIDATE: "${VALIDATE}" },
+      ports: [{ name: "game", port: 27015, protocol: "UDP" }],
+      storage: { size: "20Gi", mountPath: ICH777_SERVER_DIR }, resources: { cpu: "2", memory: "4Gi" },
+      variables: [{ name: "PORT", default: "27015" }, { name: "MAP", default: "gm_construct" }, { name: "GAMEMODE", default: "sandbox" }, { name: "MAXPLAYERS", default: "16" }, { name: "VALIDATE", default: "true", description: "`true` validates the install on every start" }],
+      sidecars: [SFTP_ICH777], defaultExpose: "lan",
     }),
   },
   {
@@ -52,12 +91,12 @@ const GAMES: GameDef[] = [
     note: "Unturned (SteamCMD app 1110390) — UDP 27015 (+ query 27016/27017), Rocket-friendly, SFTP for Servers/<name>/.",
     build: () => ({
       name: "unturned", category: "game", image: "ghcr.io/ich777/steamcmd:unturned",
-      install: steam(1110390), command: ["/data/ServerHelper.sh"],
-      args: ["+InternetServer/${SERVERNAME}", "+map/${MAP}", "+Max_Players/${MAXPLAYERS}"],
+      // start-server.sh: Unturned_Headless.x86_64 -nographics ${GAME_PARAMS} -port:${GAME_PORT} -sv
+      env: { GAME_ID: "1110390", GAME_PARAMS: "+InternetServer/${SERVERNAME} +map/${MAP} +Max_Players/${MAXPLAYERS}", GAME_PORT: "27015", VALIDATE: "${VALIDATE}" },
       ports: [{ name: "game", port: 27015, protocol: "UDP" }, { name: "query", port: 27016, protocol: "UDP" }, { name: "query2", port: 27017, protocol: "UDP" }],
-      storage: { size: "10Gi", mountPath: "/data" }, resources: { cpu: "2", memory: "3Gi" },
-      variables: [{ name: "SERVERNAME", default: "Zeta", description: "instance name (folder under Servers/)" }, { name: "MAP", default: "PEI" }, { name: "MAXPLAYERS", default: "24" }],
-      sidecars: [SFTP], defaultExpose: "lan",
+      storage: { size: "10Gi", mountPath: ICH777_SERVER_DIR }, resources: { cpu: "2", memory: "3Gi" },
+      variables: [{ name: "SERVERNAME", default: "Zeta", description: "instance name (folder under Servers/)" }, { name: "MAP", default: "PEI" }, { name: "MAXPLAYERS", default: "24" }, { name: "VALIDATE", default: "true", description: "`true` validates the install on every start" }],
+      sidecars: [SFTP_ICH777], defaultExpose: "lan",
     }),
   },
   {
@@ -65,7 +104,7 @@ const GAMES: GameDef[] = [
     // exist: `ghcr.io/ich777/steamcmd:armareforger` is a 404 and that publisher
     // ships no Arma Reforger image under any name (94 tags enumerated
     // 2026-08-23; only `arma3` and `arma3exilemod` are arma-family). It is
-    // therefore the one entry that is NOT `steam(appid)`-shaped: ACE Mod's
+    // therefore a different image from the ich777 entries: ACE Mod's
     // image installs and launches the app itself from `STEAM_APPID`, so the
     // draft configures by environment and issues no install/command. Pinned by
     // digest with the tag kept beside it for legibility; the digest is what the
@@ -84,7 +123,10 @@ const GAMES: GameDef[] = [
       ports: [{ name: "game", port: 2001, protocol: "UDP" }, { name: "query", port: 17777, protocol: "UDP" }],
       storage: { size: "15Gi", mountPath: "/reforger" }, resources: { cpu: "4", memory: "6Gi" },
       variables: [{ name: "SERVERNAME", default: "Zeta Reforger" }, { name: "SCENARIO", default: "{ECC61978EDCC2B5A}Missions/23_Campaign.conf", description: "GAME_SCENARIO_ID — the image's documented default scenario id" }, { name: "MAXPLAYERS", default: "32" }, { name: "CONFIG", default: "docker_generated", description: "ARMA_CONFIG — `docker_generated` builds the config from these variables; anything else is a filename under /reforger/Configs" }, { name: "GAME_PORT", default: "2001" }],
-      sidecars: [SFTP], defaultExpose: "lan",
+      // This image has no `User` (runs as root, files 0:0) and SFTP is not served as
+      // root, so the sftp user is the pod fsGroup: read via the group; write to files
+      // the game created is NOT guaranteed.
+      sidecars: [sftp("1000:1000")], defaultExpose: "lan",
     }),
   },
   {
@@ -92,12 +134,13 @@ const GAMES: GameDef[] = [
     note: "Valheim Dedicated (SteamCMD app 896660) — UDP 2456-2458, world saves persist.",
     build: () => ({
       name: "valheim", category: "game", image: "ghcr.io/ich777/steamcmd:valheim",
-      install: steam(896660), command: ["/data/valheim_server.x86_64"],
-      args: ["-name", "${SERVERNAME}", "-world", "${WORLD}", "-password", "${PASSWORD}", "-port", "2456"],
+      // start-server.sh: valheim_server.x86_64 -name "${SRV_NAME}" -port ${GAME_PORT}
+      //   -world "${WORLD_NAME}" -password "${SRV_PWD}" -public ${PUBLIC} ${GAME_PARAMS}
+      env: { GAME_ID: "896660", SRV_NAME: "${SERVERNAME}", WORLD_NAME: "${WORLD}", SRV_PWD: "${PASSWORD}", GAME_PARAMS: "", GAME_PORT: "2456", VALIDATE: "${VALIDATE}" },
       ports: [{ name: "game", port: 2456, protocol: "UDP" }, { name: "query", port: 2457, protocol: "UDP" }],
-      storage: { size: "8Gi", mountPath: "/data" }, resources: { cpu: "2", memory: "4Gi" },
-      variables: [{ name: "SERVERNAME", default: "Zeta" }, { name: "WORLD", default: "Dedicated" }, { name: "PASSWORD", default: "change-me", description: "min 5 chars" }],
-      sidecars: [SFTP], defaultExpose: "lan",
+      storage: { size: "8Gi", mountPath: ICH777_SERVER_DIR }, resources: { cpu: "2", memory: "4Gi" },
+      variables: [{ name: "SERVERNAME", default: "Zeta" }, { name: "WORLD", default: "Dedicated" }, { name: "PASSWORD", default: "change-me", description: "min 5 chars" }, { name: "VALIDATE", default: "true", description: "`true` validates the install on every start" }],
+      sidecars: [SFTP_ICH777], defaultExpose: "lan",
     }),
   },
   {
@@ -105,11 +148,13 @@ const GAMES: GameDef[] = [
     note: "Rust Dedicated (SteamCMD app 258550) — UDP 28015, RAM-hungry (8Gi+).",
     build: () => ({
       name: "rust", category: "game", image: "ghcr.io/ich777/steamcmd:rust",
-      install: steam(258550), command: ["/data/RustDedicated"],
-      args: ["-batchmode", "+server.port", "28015", "+server.maxplayers", "${MAXPLAYERS}", "+server.hostname", "${SERVERNAME}", "+server.worldsize", "${WORLDSIZE}"],
-      ports: [{ name: "game", port: 28015, protocol: "UDP" }], storage: { size: "20Gi", mountPath: "/data" }, resources: { cpu: "4", memory: "8Gi" },
-      variables: [{ name: "SERVERNAME", default: "Zeta Rust" }, { name: "MAXPLAYERS", default: "50" }, { name: "WORLDSIZE", default: "3000" }],
-      sidecars: [SFTP], defaultExpose: "lan",
+      // start-server.sh: RustDedicated -batchmode -server.port ${GAME_PORT} … -server.hostname
+      //   "${SERVER_NAME}" … ${GAME_PARAMS}. GAME_ID and GAME_PARAMS default to `template` in
+      // this image, so both MUST be set.
+      env: { GAME_ID: "258550", SERVER_NAME: "${SERVERNAME}", GAME_PARAMS: "+server.maxplayers ${MAXPLAYERS} +server.worldsize ${WORLDSIZE}", GAME_PORT: "28015", VALIDATE: "${VALIDATE}" },
+      ports: [{ name: "game", port: 28015, protocol: "UDP" }], storage: { size: "20Gi", mountPath: ICH777_SERVER_DIR }, resources: { cpu: "4", memory: "8Gi" },
+      variables: [{ name: "SERVERNAME", default: "Zeta Rust" }, { name: "MAXPLAYERS", default: "50" }, { name: "WORLDSIZE", default: "3000" }, { name: "VALIDATE", default: "true", description: "`true` validates the install on every start" }],
+      sidecars: [SFTP_ICH777], defaultExpose: "lan",
     }),
   },
   {
@@ -120,7 +165,9 @@ const GAMES: GameDef[] = [
       env: { EULA: "TRUE", TYPE: "${TYPE}", VERSION: "${VERSION}", MOTD: "${MOTD}", MAX_PLAYERS: "${MAXPLAYERS}", MEMORY: "3G" },
       ports: [{ name: "game", port: 25565, protocol: "TCP" }], storage: { size: "10Gi", mountPath: "/data" }, resources: { cpu: "2", memory: "4Gi" },
       variables: [{ name: "TYPE", default: "PAPER", description: "VANILLA | PAPER | FABRIC | FORGE" }, { name: "VERSION", default: "LATEST" }, { name: "MOTD", default: "A Zeta server" }, { name: "MAXPLAYERS", default: "20" }],
-      sidecars: [SFTP], defaultExpose: "lan",
+      // itzg/minecraft-server's registry config (:latest, 2026-09-28) sets UID=1000 GID=1000
+      // and no User — the data owner, so the sftp user matches it.
+      sidecars: [sftp("1000:1000")], defaultExpose: "lan",
     }),
   },
 ];
@@ -168,7 +215,8 @@ export function build(message: string, draft?: BlueprintProposal): BuildResult {
     if (port) { d.ports = [...(d.ports ?? []), { name: `port-${port[1]}`, port: Number(port[1]), protocol: (port[2]?.toUpperCase() as "TCP" | "UDP") ?? "TCP" }]; return { reply: `Added ${port[2]?.toUpperCase() ?? "TCP"} port ${port[1]}.`, spec: d }; }
     const rn = t.match(/(?:rename|call|name)\s+(?:it\s+)?(?:to\s+)?([a-z0-9][a-z0-9-]*)/i);
     if (rn && rn[1] !== "it" && rn[1] !== "to") { d.name = rn[1]!; return { reply: `Renamed the blueprint to "${d.name}".`, spec: d }; }
-    if (/sftp|file|ftp/.test(t) && !d.sidecars?.length) { d.sidecars = [SFTP]; return { reply: "Added an SFTP sidecar for file access on the data volume.", spec: d }; }
+    // ich777 images own their data as 99:100; otherwise the pod fsGroup is the one identity known to reach the volume.
+    if (/sftp|file|ftp/.test(t) && !d.sidecars?.length) { d.sidecars = [d.image.startsWith("ghcr.io/ich777/steamcmd:") ? SFTP_ICH777 : sftp("1000:1000")]; return { reply: "Added an SFTP sidecar for file access on the data volume (opt-in: it stays off until the <name>-sftp-keys ConfigMap holds a public key).", spec: d }; }
     return { reply: `I can tweak: exposure (lan/public/cluster), memory/cpu, "add variable NAME", "add port N", rename, or SFTP. Or save it as is.`, spec: d };
   }
 

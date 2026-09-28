@@ -1,0 +1,14 @@
+{
+  "id": "080d0733b31fe810a01300083fbf520f",
+  "at": "2026-09-28T05:21:53.661Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M3K7CRZW087G0R002W225YV",
+    "type": "bug",
+    "title": "Portal blueprint-agent drafts use /opt/steamcmd, a 404 gmod tag and bare atmoz sidecars - the contract the shipped library already fixed",
+    "slug": "portal-blueprint-agent-drafts-use-opt-steamcmd-a-404-gmod-ta",
+    "priority": "P2",
+    "filename": "081M3K7CRZW087G0R002W225YV-portal-blueprint-agent-drafts-use-opt-steamcmd-a-404-gmod-ta.md"
+  }
+}
