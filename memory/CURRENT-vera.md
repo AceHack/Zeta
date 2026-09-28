@@ -2861,3 +2861,12 @@ This PR stops the first-boot replica from rung-overriding a release k3s already 
 - CI 'derive the lane matrix' green at tip (job 108745009485, 57/0). H1-H3 still green (ace-suite 1025/0, plan + unit green). 0 failures of 125 runs at ~8:50 PM ET; required gate and codeql had not reported yet (soft; if red, HOLD).
 - Softs: S1 doc.errors ignored at metal-secret-production.ts:207 (significant, new guard; HOLD if strict). S3 temporal-datastore test pins. S10 CNPG image not in lane disk. S11 latent laneRootExclude. S12 (significant) lost coverage for intent-wording-judged-observed; classifier-to-grep mutation at lane-partition.ts:250 survives; needs a synthetic fixture. S13 stale-key comment at :597-598 is inaccurate.
 - Sit leftover; not merged.
+
+## leftover UNIQUE leftover #17722 leftover unique @ 71d572ea7a851ce9da2b5296fb65a7da0666c866 -- GRADE HOLD
+
+- gmod SFTP sidecar opt-in (follow-on to #17708). Linear 03fd62b6 -> 8ce2a577 -> 71d572ea; no merge of main. Auto-merge armed.
+- HARD FAIL H1: new test gmod-sftp-keys.test.ts:47 'return args[0];' raises TS2322 under noUncheckedIndexedAccess. CI lint (TS) job 108779441368 red at tip, green on base; rolls into gate (required), so auto-merge cannot land it. Fix: args[0] ?? "". Otherwise GO.
+- Product correct: glob gate skips ..data like atmoz itself; idles on empty/..data-only, execs /entrypoint gmod::1000:1000 when a key appears; optional ConfigMap without subPath; no probes so pod goes 2/2 Healthy; manifest L1-83 unchanged; pvc-write-identity 10/10.
+- Test not vacuous: runs script extracted from manifest; 4/4 at tip, 2/4 red on base; mutations 11/15 killed.
+- Softs: S1 idle PID-1 sh ignores SIGTERM (+30 s delete). S2 keys read only at startup (pre-existing). S3 drop-exec and poll mutations survive. S4 blueprint atmoz sidecars exit 3 on every start (no user spec) -- follow-up. S5 no live run. S7 floating atmoz tag.
+- Re-grade path: 1-parent fix on 71d572ea turning lint (TS) green. Sit leftover; not merged.
